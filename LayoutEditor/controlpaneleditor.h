@@ -1,0 +1,176 @@
+#ifndef CONTROLPANELEDITOR_H
+#define CONTROLPANELEDITOR_H
+#include "editor.h"
+#include "liblayouteditor_global.h"
+
+class ShapeDrawer;
+class PortalIcon;
+class CircuitBuilder;
+class LibTables;
+class ItemPalette;
+class LIBLAYOUTEDITORSHARED_EXPORT ControlPanelEditor : public Editor
+{
+    Q_OBJECT
+public:
+    explicit ControlPanelEditor(QWidget *parent = 0);
+    ~ControlPanelEditor();
+ ControlPanelEditor(const ControlPanelEditor& other) : Editor((QWidget*)other.parent()) {}
+    /*public*/ bool _debug;
+    /*public*/ ControlPanelEditor(QString name, QWidget *parent = 0);
+    /*public*/ void setCopyMenu(Positionable* p, QMenu* popup);
+    /*public*/ void putPortalIcon(PortalIcon* pos);
+    /*public*/ static /*final*/ QString POSITIONABLE_LIST_FLAVOR;// = java.awt.datatransfer.DataFlavor.javaJVMLocalObjectMimeType + ";class=jmri.jmrit.display.controlPanelEditor.ControlPanelEditor";
+
+
+//    /*public*/ static final ResourceBundle rbcp = ResourceBundle.getBundle("jmri.jmrit.display.controlPanelEditor.ControlPanelBundle");
+
+    // DnD
+    //    /*public*/ static final String POSITIONABLE_LIST_FLAVOR = java.awt.datatransfer.DataFlavor.javaJVMLocalObjectMimeType +
+    //               ";class=jmri.jmrit.display.controlPanelEditor.ControlPanelEditor";
+    /*public*/ void initView();
+    /*public*/ void setSelectionGroup(QList<Positionable*> group);
+    /*public*/ void resetEditor();
+    /*public*/ QList <Positionable*>* getClipGroup();
+    /*public*/ void setTitle();
+    /*public*/ void setDefaultPortalIcons(QHash<QString, NamedIcon*>* map);
+    /*public*/ QHash<QString, NamedIcon*>* getPortalIconMap();
+    /*public*/ bool getShapeSelect() ;
+    /*public*/ void setShapeSelect(bool set) ;
+    /*public*/ ShapeDrawer* getShapeDrawer();
+ /*public*/ CircuitBuilder* getCircuitBuilder();
+
+signals:
+    void selectionRect(QRectF);
+
+public slots:
+ /*public*/ void setUseGlobalFlag(bool set); // SLOT
+    void onItemTableList();
+    void actionCut();
+    /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
+    /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event);
+    /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event);
+    /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event);
+    /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);
+    /*public*/ void setAllEditable(bool edit);
+
+private:
+ /*private*/ QMenu* _editorMenu;
+ /*private*/ QMenu* _markerMenu;
+ /*private*/ QMenu* _warrantMenu;
+ /*private*/ QMenu* _circuitMenu;
+ /*private*/ QMenu* _drawMenu;
+ /*private*/ CircuitBuilder* _circuitBuilder;
+ /*private*/ ShapeDrawer* _shapeDrawer;
+/*private*/ ItemPalette* _itemPalette;
+    /*private*/ bool _disableShapeSelection;
+    /*private*/ bool _disablePortalSelection;// = true;		// only select PortalIcon in CircuitBuilder
+
+ /*private*/ QAction* useGlobalFlagBox;// = new QAction(tr("Override individual Position & Control settings "));
+////    /*private*/ JCheckBoxMenuItem editableBox = new JCheckBoxMenuItem(Bundle.getMessage("CloseEditor"));
+ /*private*/ QAction* positionableBox;// = new QAction(tr("All panel items can be repositioned"),this);
+ /*private*/ QAction* controllingBox;// = new QAction(tr("Panel items control layout"));
+ /*private*/ QAction* showTooltipBox;// = new QAction(tr("Show tooltips for all items"),this);
+ /*private*/ QAction* hiddenBox;// = new QAction(tr("Show all hidden items"), this);
+//    /*private*/ JRadioButtonMenuItem scrollBoth = new JRadioButtonMenuItem(Bundle.getMessage("ScrollBoth"));
+//    /*private*/ JRadioButtonMenuItem scrollNone = new JRadioButtonMenuItem(Bundle.getMessage("ScrollNone"));
+//    /*private*/ JRadioButtonMenuItem scrollHorizontal = new JRadioButtonMenuItem(Bundle.getMessage("ScrollHorizontal"));
+//    /*private*/ JRadioButtonMenuItem scrollVertical = new JRadioButtonMenuItem(Bundle.getMessage("ScrollVertical"));
+    /*private*/ QAction* disableShapeSelect;// = new JCheckBoxMenuItem(Bundle.getMessage("disableShapeSelect"));
+      Logger* log;
+ int _fitX;// = 0;
+ int _fitY;// = 0;
+ /*private*/ void makeFileMenu();
+ void dragEnterEvent(QDragEnterEvent *);
+ //void dropEvent(QDropEvent *);
+ void dragMoveEvent(QDragMoveEvent *);
+ qint64 _clickTime;
+ void abortPasteItems();
+ void pasteItems();
+ LibTables* libTables;
+ QPointF dragPos;
+ QList <Positionable*>* _clipGroup;
+ bool bPopupTrigger;
+ DataFlavor* _positionableDataFlavor;
+ DataFlavor* _positionableListDataFlavor;
+ DataFlavor* _namedIconDataFlavor;
+ /*private*/ QHash<QString, NamedIcon*>* _portalIconMap;
+ /*private*/ void makePortalIconMap();
+ /*private*/ bool _regular;// = true;	// true when TO_ARROW shows entry into ToBlock
+ /*private*/ bool _hide;// = false;	// true when arrow should NOT show entry into ToBlock
+
+
+
+private slots:
+ /*private*/ void zoomRestore(); // SLOT
+ /*private*/ void zoomToFit();
+ void dropEvent(QGraphicsSceneDragDropEvent* e);
+void on_itemPallette();
+void keyPressEvent(QKeyEvent *);
+void keyReleaseEvent(QKeyEvent *);
+/*private*/ void copyToClipboard();
+/*private*/ void pasteFromClipboard();
+void selectAllAction();
+void storeImageIndexAction();
+void changePEViewAction();
+void deleteAction();
+void closeEditor();
+void sceneChanged(QList<QRectF>);
+void on_disableShapeSelect(bool);
+void on_makeCircuitMenu();
+
+protected:
+ /*protected*/ QMenuBar* _menuBar;
+ /*protected*/ void init(QString name);
+ /*protected*/ QMenu* _editMenu;
+ /*protected*/ QMenu* _fileMenu;
+ /*protected*/ QMenu* _optionMenu;
+ /*protected*/ QMenu* _iconMenu;
+ /*protected*/ QMenu* _zoomMenu;
+ /*protected*/ void makeDrawMenu();
+ /*protected*/ void makeIconMenu();
+ /*protected*/ void makeZoomMenu();
+ /*protected*/ void makeMarkerMenu();
+ /*protected*/ void makeOptionMenu();
+ /*protected*/ void makeEditMenu();
+ /*protected*/ void makeWarrantMenu(bool );
+/*protected*/ Positionable* getCurrentSelection(QGraphicsSceneMouseEvent* event);
+/*protected*/ Positionable* getCopySelection(QGraphicsSceneMouseEvent* event);
+/*protected*/ virtual void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
+/*protected*/ void makeCircuitMenu();
+/*protected*/ void makeCircuitMenu(bool edit);
+/*protected*/ void disableMenus();
+/*protected*/ QList<Positionable*> getSelectionGroup();
+/*protected*/ void highlight(Positionable* pos);
+/*protected*/ void copyItem(Positionable* p);
+/*protected*/ void makeDataFlavors();
+/*protected*/ NamedIcon* getPortalIcon(QString name);
+
+
+friend class CircuitBuilder;
+friend class EditCircuitFrame;
+friend class DuplicateActionListener;
+friend class EditPortalDirection;
+};
+Q_DECLARE_METATYPE(ControlPanelEditor)
+
+class CPEditItemActionListener : public ActionListener
+{
+    Q_OBJECT
+    ControlPanelEditor* panelEd;
+public slots:
+    /*public*/ void actionPerformed(ActionEvent* e = 0);
+public:
+    CPEditItemActionListener* init(ControlPanelEditor* pe);
+};
+class DuplicateActionListener : public ActionListener
+{
+ Q_OBJECT
+ Positionable* comp;
+ ControlPanelEditor* edit;
+public slots:
+    /*public*/ void actionPerformed(ActionEvent* e = 0);
+public:
+    DuplicateActionListener* init(Positionable* pos, ControlPanelEditor* edit);
+};
+
+#endif // CONTROLPANELEDITOR_H

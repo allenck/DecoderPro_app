@@ -1,0 +1,103 @@
+#ifndef OBLOCKTABLEMODEL_H
+#define OBLOCKTABLEMODEL_H
+#include "beantabledatamodel.h"
+#include "jtable.h"
+
+class OBlock;
+class TableFrames;
+class OBlockManager;
+class DecimalFormat;
+class OBlockTableModel : public BeanTableDataModel
+{
+ Q_OBJECT
+public:
+ explicit OBlockTableModel(QObject *parent = 0);
+ /*public*/ OBlockTableModel(TableFrames* parent);
+ /*public*/ Manager* getManager();
+ /*public*/ NamedBean* getBySystemName(QString name) const;
+ /*public*/ NamedBean* getByUserName(QString name);
+ /*public*/ void clickOn(NamedBean* t);
+ /*public*/ QString getValue(QString name);
+ /*public*/ int columnCount(const QModelIndex &parent) const;
+ /*public*/ int rowCount(const QModelIndex &parent) const;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const;
+ /*public*/ static int numberOfLeadingZeros(int i);
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+ /*public*/ int getPreferredWidth(int col);
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+ enum COLOUMNS
+ {
+  SYSNAMECOL = 0,
+  USERNAMECOL = 1,
+  COMMENTCOL = 2,
+  STATECOL = 3,
+  SENSORCOL = 4,
+  EDIT_COL = 5,			// Path button
+  DELETE_COL = 6,
+  LENGTHCOL = 7,
+  UNITSCOL = 8,
+  REPORTERCOL = 9,
+  REPORT_CURRENTCOL = 10,
+  PERMISSIONCOL = 11,
+  SPEEDCOL = 12,
+  ERR_SENSORCOL = 13,
+  CURVECOL = 14,
+  NUMCOLS = 15
+ };
+
+ static /*public*/ /*final*/ QString noneText;// = AbstractTableAction.rb.getString("BlockNone");
+ static /*public*/ /*final*/ QString gradualText;// = AbstractTableAction.rb.getString("BlockGradual");
+ static /*public*/ /*final*/ QString tightText;// = AbstractTableAction.rb.getString("BlockTight");
+ static /*public*/ /*final*/ QString severeText;// = AbstractTableAction.rb.getString("BlockSevere");
+ static /*final*/ QStringList curveOptions;// = {noneText, gradualText, tightText, severeText};
+signals:
+
+public slots:
+ /*public*/ void propertyChange(PropertyChangeEvent* e);
+
+private:
+ Logger* log;
+
+
+ static QString ZEROS;// = "00000000";
+
+ DecimalFormat* twoDigit;// = new java.text.DecimalFormat("0.00");
+
+ OBlockManager* _manager;
+ /*private*/ /*final*/ QStringList tempRow;// = new String[NUMCOLS];
+ /*private*/ float _tempLen;// = 0.0f;      // mm for length col of tempRow
+ TableFrames* _parent;
+ void addHeaderListener(JTable* table);
+ void initTempRow();
+ /*private*/ static bool sensorExists(QString name);
+ bool noWarnDelete;// = false;
+ void deleteBean(OBlock* bean);
+
+protected:
+ /*protected*/ QString getBeanType();
+ /*protected*/ QString getMasterClassName();
+ /*protected*/ QList<NamedBean*> getBeanList();
+ static /*protected*/ QString getValue(int state);
+
+ friend class JInternalFrame;
+ friend class TableFrames;
+ friend class BlockPortalTableModel;
+};
+class OBSComboBoxDelegate : public QItemDelegate
+{
+Q_OBJECT
+public:
+  OBSComboBoxDelegate(QAbstractTableModel* model, QStringList items, QObject *parent = 0);
+
+  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  void setEditorData(QWidget *editor, const QModelIndex &index) const;
+  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+private:
+  QAbstractTableModel* model;
+  QStringList items;
+};
+#endif // OBLOCKTABLEMODEL_H

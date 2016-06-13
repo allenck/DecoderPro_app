@@ -1,0 +1,70 @@
+# Python code to define common JMRI defaults
+#
+# Assumes JMRI has already been initialized, so this
+# can reference various managers, etc.
+#
+# This is only read once, when the JMRI library first executes
+# a script, so changes will not take effect until after restarting
+# the program
+#
+# Author: Bob Jacobsen, copyright 2003, 2004
+# Part of the JMRI distribution
+#
+# The next line is maintained by CVS, please don't change it
+# $Revision: 27263 $
+
+#define shortcuts to some managers
+#import jmri
+turnouts     = InstanceManager.turnoutManagerInstance()
+sensors      = InstanceManager.sensorManagerInstance()
+signals      = InstanceManager.signalHeadManagerInstance()
+masts        = InstanceManager.signalMastManagerInstance()
+lights       = InstanceManager.lightManagerInstance()
+dcc          = InstanceManager.commandStationInstance()
+reporters    = InstanceManager.reporterManagerInstance()
+memories     = InstanceManager.memoryManagerInstance()
+routes       = InstanceManager.routeManagerInstance()
+blocks       = InstanceManager.blockManagerInstance()
+powermanager = InstanceManager.powerManagerInstance()
+programmers  = InstanceManager.programmerManagerInstance()
+shutdown     = InstanceManager.shutDownManagerInstance()
+audio        = InstanceManager.audioManagerInstance()
+layoutblocks = InstanceManager.layoutBlockManagerInstance()
+warrants     = InstanceManager.warrantManagerInstance()
+
+# shortcut some constants
+import Turnout.CLOSED         as CLOSED
+import Turnout.THROWN         as THROWN
+import Turnout.CABLOCKOUT         as CABLOCKOUT
+import Turnout.PUSHBUTTONLOCKOUT  as PUSHBUTTONLOCKOUT
+import Turnout.UNLOCKED       as UNLOCKED
+import Turnout.LOCKED         as LOCKED
+
+import Sensor.ACTIVE          as ACTIVE
+import Sensor.INACTIVE        as INACTIVE
+
+import NamedBean.UNKNOWN      as UNKNOWN
+import NamedBean.INCONSISTENT as INCONSISTENT
+
+import SignalHead.DARK        as DARK
+import SignalHead.RED         as RED
+import SignalHead.YELLOW      as YELLOW
+import SignalHead.GREEN       as GREEN
+import SignalHead.LUNAR       as LUNAR
+import SignalHead.FLASHRED    as FLASHRED
+import SignalHead.FLASHYELLOW as FLASHYELLOW
+import SignalHead.FLASHGREEN  as FLASHGREEN
+import SignalHead.FLASHLUNAR  as FLASHLUNAR
+
+True = 1
+False = 0
+
+# define a helper function
+def decodeJmriFilename(name) :
+    return util.FileUtil.getExternalFilename(name)
+    
+# define a convenient class for listening to changes
+import java
+class PropertyListener(PropertyChangeListener):
+    def propertyChange(self, event):
+        print "Object", event.source, "changed",event.propertyName, "from", event.oldValue, "to", event.newValue

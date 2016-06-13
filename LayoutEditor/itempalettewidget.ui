@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ItemPaletteWidget</class>
+ <widget class="QWidget" name="ItemPaletteWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>494</width>
+    <height>846</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_ItemPalette">
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>493</width>
+        <height>810</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_scrollArea">
+       <item>
+        <widget class="QTabWidget" name="_tabPane">
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Turnout 1</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QWidget" name="topPanel_Tab1" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_topPanelMemory">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Memory Table</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="tableWidget_2"/>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_topPanelTab1">
+                <item>
+                 <widget class="QPushButton" name="pushButton_3">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Add New Table Item </string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_4">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Clear Table Selections</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="MemoryTab">
+          <attribute name="title">
+           <string>Memory</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_Memory">
+           <item>
+            <widget class="QWidget" name="topPanel" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Memory Table</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="tableWidget"/>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QPushButton" name="pushButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Add New Table Item </string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Clear Table Selections</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="instructions" native="true">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_instructions">
+              <item>
+               <widget class="QLabel" name="blurb1">
+                <property name="text">
+                 <string>To Add an Icon to your control panel:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="blurb2">
+                <property name="text">
+                 <string>--drag and icon from the display panel below to your control panel</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="blurb3Layout">
+                <item>
+                 <widget class="QLabel" name="blurb3Icon">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="LayoutEditor.qrc">:/resources/icons/misc/X-red.gif</pixmap>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="blurb3Text">
+                  <property name="text">
+                   <string>is displayed for the Display Memory Icon when Memory is null.</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="blurb4">
+                <property name="text">
+                 <string>When memory is and empty string i.e. &quot;&quot;, the display memory icon is blank.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="blurb5">
+                <property name="text">
+                 <string>When blank, enter a value in the other memory icons to view and drag it. </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_instructions">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>432</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="blurb6">
+                <property name="text">
+                 <string>The ComboBox Memory Icon sets a memory by selecting and item from the ComboBox.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="blurb7">
+                <property name="text">
+                 <string>Use the &quot;Edit Memory Icon&quot; popup to add or delete items.</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="_DnDIconPanel" native="true">
+             <layout class="QGridLayout" name="gridLayout_DND">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetFixedSize</enum>
+              </property>
+              <item row="1" column="0">
+               <widget class="QWidget" name="_writeMem" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_InputBoxMemory_2">
+                 <item>
+                  <widget class="QGroupBox" name="gbInputBox">
+                   <property name="title">
+                    <string>Drag to Panel</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_gbInputBoxMemory">
+                    <item>
+                     <widget class="QLineEdit" name="_textBox"/>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QWidget" name="displayMemory" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_DisplayMemory">
+                 <item>
+                  <widget class="QGroupBox" name="gbDisplayMemory">
+                   <property name="title">
+                    <string>Drag to Panel</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_gbDisplayMemory">
+                    <item>
+                     <widget class="QLabel" name="label_20">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="LayoutEditor.qrc">:/resources/icons/misc/X-red.gif</pixmap>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="2" colspan="2">
+               <widget class="QWidget" name="spinnerMemory" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_SpinnerMemory">
+                 <item>
+                  <widget class="QGroupBox" name="gbSpinnerMemory">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="title">
+                    <string>Drag to Panel</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_gbSpinnerMemory">
+                    <item>
+                     <widget class="QSpinBox" name="_spinnerMemory"/>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_colWidth">
+                <item>
+                 <widget class="QLabel" name="lbColWidth">
+                  <property name="text">
+                   <string>Col Width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="_spinner"/>
+                </item>
+               </layout>
+              </item>
+              <item row="3" column="0">
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>207</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="3" column="1" colspan="2">
+               <widget class="QWidget" name="comboBoxMemory" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_InputBoxMemory">
+                 <item>
+                  <widget class="QLabel" name="lbComboBoxMemory">
+                   <property name="text">
+                    <string>ComboBox Memory</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>207</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="lbInputBoxMemory">
+                <property name="text">
+                 <string>Input Box Memory</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="lbSpinnerMemory">
+                <property name="text">
+                 <string>Spinner Memory</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="lbDisplayMemory">
+                <property name="text">
+                 <string>Display Memory</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QGroupBox" name="gbComboBoxMemory">
+                <property name="title">
+                 <string>Drag to Panel</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_gbComboBoxMemory">
+                 <item>
+                  <widget class="QComboBox" name="_comboBox"/>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="LayoutEditor.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,22 @@
+#ifndef LOCOBUFFERUSBCONNECTIONCONFIGXML_H
+#define LOCOBUFFERUSBCONNECTIONCONFIGXML_H
+#include "abstractserialconnectionconfigxml.h"
+#include "libPr3_global.h"
+
+class LIBPR3SHARED_EXPORT LocobufferUsbConnectionConfigXml : public AbstractSerialConnectionConfigXml
+{
+    Q_OBJECT
+public:
+    explicit LocobufferUsbConnectionConfigXml(QObject *parent = 0);
+
+signals:
+
+public slots:
+protected:
+    /*protected*/ void getInstance();
+    /*protected*/ void getInstance(QObject* object) ;
+    /*protected*/ void _register();
+
+};
+
+#endif // LOCOBUFFERUSBCONNECTIONCONFIGXML_H

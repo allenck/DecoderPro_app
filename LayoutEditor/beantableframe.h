@@ -1,0 +1,39 @@
+#ifndef BEANTABLEFRAME_H
+#define BEANTABLEFRAME_H
+#include "../LayoutEditor/jmrijframe.h"
+#include "liblayouteditor_global.h"
+
+class JTable;
+class BeanTableDataModel;
+class LIBLAYOUTEDITORSHARED_EXPORT BeanTableFrame : public JmriJFrame
+{
+    Q_OBJECT
+public:
+    explicit BeanTableFrame(QWidget *parent = 0);
+    /*public*/ BeanTableFrame(QString s, QWidget *parent = 0);
+    /*public*/ BeanTableFrame(BeanTableDataModel* model, QString helpTarget, JTable* dataTab, QWidget *parent = 0);
+    /*public*/ void dispose();
+
+signals:
+
+public slots:
+private:
+    BeanTableDataModel*		dataModel;
+    JTable*			dataTable;
+    //JScrollPane 		dataScroll;
+    QWidget* bottomBox;		// panel at bottom for extra buttons etc
+    int bottomBoxIndex;	// index to insert extra stuff
+    static /*final*/ int bottomStrutWidth;// = 20;
+    void extras();
+
+protected:
+    /*protected*/ void addToBottomBox(QWidget* comp, QString c);
+    /*protected*/ QWidget* getBottomBox();
+friend class SensorTableAction;
+friend class TurnoutTableAction;
+friend class AudioTableFrame;
+friend class BlockTableFrame;
+friend class BlockTableAction;
+};
+
+#endif // BEANTABLEFRAME_H

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://www.jmri.org/xml/XSLT/panelfile.xsl"?>
+<!DOCTYPE layout-config SYSTEM "layout-config-2-5-6.dtd">
+
+<layout-config>
+  <sensors class="jmri.managers.configurexml.InternalSensorManagerXml">
+    <sensor systemName="ISCLOCKRUNNING" inverted="false" />
+  </sensors>
+  <timebase class="jmri.jmrit.simpleclock.configurexml.SimpleTimebaseXml" time="Wed Jun 24 11:13:58 EDT 2009" rate="1.0" run="yes" master="yes" sync="no" correct="no" display="no" startstopped="no" startsettime="no" startclockoption="0" />
+  <paneleditor class="jmri.jmrit.display.configurexml.PanelEditorXml" name="2009 Clinic 1" x="1791" y="174" height="775" width="559" editable="yes" positionable="yes" showcoordinates="no" controlling="yes" hide="no" panelmenu="yes" scrollable="none">
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="0" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-left-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="12" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-blank-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="337" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-sw-sig-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="272" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-sw-sig-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="207" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-sw-sig-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="142" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-sw-sig-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="77" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-blank-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="402" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-blank-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="467" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-blank-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="532" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-right-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="170" y="357" level="5" text="5" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="171" y="471" level="5" text="6" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="235" y="357" level="5" text="7" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="236" y="471" level="5" text="8" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="301" y="356" level="5" text="9" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="298" y="471" level="5" text="10" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="363" y="357" level="5" text="11" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="363" y="471" level="5" text="12" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="219" y="651" level="3" size="12" style="0" red="0" green="0" blue="0" icon="USS-plate" rotate="0" />
+  </paneleditor>
+  <!--Written by JMRI version 2.5.6 on Thu Jun 25 22:44:57 EDT 2009 $Id: XmlFile.java,v 1.42 2009/06/07 19:20:26 dan_boudreau Exp $-->
+</layout-config>
+

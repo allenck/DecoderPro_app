@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LayoutEditor</class>
+ <widget class="QMainWindow" name="LayoutEditor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1240</width>
+    <height>426</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>MyLayoutEditor</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Location -x: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="xLabel">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maxLength">
+         <number>5</number>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>y:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="yLabel">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maxLength">
+         <number>5</number>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Turnout: Name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edTurnoutName"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Additional Name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edExtraName">
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Type</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkRH">
+        <property name="text">
+         <string>RH</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkLH">
+        <property name="text">
+         <string>LH</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkWYE">
+        <property name="text">
+         <string>WYE</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkDoubleXover">
+        <property name="text">
+         <string>Double Xover</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkRHXover">
+        <property name="text">
+         <string>RH Xover</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkLHXover">
+        <property name="text">
+         <string>LH Xover</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkSingleSlip">
+        <property name="text">
+         <string>Single Slip</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkDoubleSlip">
+        <property name="text">
+         <string>DoubleSlip</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Rotation</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edRotation">
+        <property name="inputMethodHints">
+         <set>Qt::ImhFormattedNumbersOnly</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>2</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Block: Name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edBlockName"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Occupancy Sensor</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edOccupancySensor"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Track:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkLevelCrossing">
+        <property name="text">
+         <string>Level Crossing</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkTrackSegment">
+        <property name="text">
+         <string>Track Segment</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkDashed">
+        <property name="text">
+         <string>Dashed</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkMainline">
+        <property name="text">
+         <string>Mainline</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="spacing">
+       <number>2</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Track Nodes:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkEndBumper">
+        <property name="text">
+         <string>End Bumper</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkAnchorPoint">
+        <property name="text">
+         <string>Anchor Point</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Labels: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkTextLabel">
+        <property name="text">
+         <string>Text Label</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edTextLabel"/>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkMemoryLabel">
+        <property name="text">
+         <string>Memory Label</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edMemoryLabel"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="spacing">
+       <number>2</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="chkMultisensor">
+        <property name="text">
+         <string>Multi-sensor</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnChange">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to change icons used to represent sensors, signal head or label (whichever is checked at the right).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Change Icons...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkSensorIcon">
+        <property name="text">
+         <string>Sensor Icon</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edSensorIcon"/>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkSignalHeadIcon">
+        <property name="text">
+         <string>Signal Head Icon</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edSignalHeadIcon"/>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkSignalMastIcon">
+        <property name="text">
+         <string>SignalMast Icon</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edSignalMastIcon">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to add a signal mast icon when next clicking with shift down.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkIconLabel">
+        <property name="text">
+         <string>Icon Label</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QWidget" name="editPanel" native="true"/>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>42</height>
+       </size>
+      </property>
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1240</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionSave_panels"/>
+    <addaction name="actionDelete_this_panel"/>
+    <addaction name="actionLoad_XML"/>
+    <addaction name="actionLoad_Other_XML"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_as"/>
+   </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Options</string>
+    </property>
+    <widget class="QMenu" name="menuShow_scrollbars">
+     <property name="title">
+      <string>Show scrollbars</string>
+     </property>
+     <addaction name="actionBoth_scrollbars"/>
+     <addaction name="actionNo_scrollbars"/>
+     <addaction name="actionHorizontal_only"/>
+     <addaction name="actionVertical_only"/>
+    </widget>
+    <widget class="QMenu" name="menuShow_icon_tooltips">
+     <property name="title">
+      <string>Show icon tooltips</string>
+     </property>
+     <addaction name="actionNever"/>
+     <addaction name="actionAlways"/>
+     <addaction name="actionIn_edit_mode_only"/>
+     <addaction name="actionNot_in_edit_mode_only"/>
+    </widget>
+    <widget class="QMenu" name="menuSet_Background_color">
+     <property name="title">
+      <string>Set Background color</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuSet_default_track_color">
+     <property name="title">
+      <string>Set default track color</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuSet_default_text_color">
+     <property name="title">
+      <string>Set default text color</string>
+     </property>
+    </widget>
+    <addaction name="actionEdit_mode"/>
+    <addaction name="actionAllow_repositioning"/>
+    <addaction name="actionAllow_layout_control"/>
+    <addaction name="actionAllow_turnout_animation"/>
+    <addaction name="actionShow_help_bar_in_edit_mode"/>
+    <addaction name="actionShow_grid_in_edit_mode"/>
+    <addaction name="actionSnap_to_grid_when_adding"/>
+    <addaction name="actionSnap_to_grid_when_moving"/>
+    <addaction name="menuShow_scrollbars"/>
+    <addaction name="menuShow_icon_tooltips"/>
+    <addaction name="actionShow_turnout_circles"/>
+    <addaction name="actionEnable_antialiasing_smoother_lines"/>
+    <addaction name="separator"/>
+    <addaction name="actionNew_title"/>
+    <addaction name="actionAdd_background_image_2"/>
+    <addaction name="menuSet_Background_color"/>
+    <addaction name="actionAdd_Fast_Clock"/>
+    <addaction name="actionAdd_Turntable"/>
+    <addaction name="actionAdd_reporter_label"/>
+    <addaction name="actionEdit_track_width"/>
+    <addaction name="menuSet_default_track_color"/>
+    <addaction name="menuSet_default_text_color"/>
+    <addaction name="actionMoveLayout"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionScale_Translate_track_diagram"/>
+    <addaction name="actionTranslate_Selection"/>
+    <addaction name="actionUndo_Translate_Selection"/>
+    <addaction name="actionUse_Program_Default_Turnout_size"/>
+    <addaction name="separator"/>
+    <addaction name="actionSkip_unsignalled_Internal_Turnouts"/>
+    <addaction name="actionSet_Signals_at_Turnout"/>
+    <addaction name="actionSet_Signals_at_Block_Boundary"/>
+    <addaction name="actionSet_Signals_at_Crossover"/>
+    <addaction name="actionSet_Signals_at_Level_Crossing"/>
+    <addaction name="actionSet_SIgnals_at_Throat_to_Throat_Turnouts"/>
+    <addaction name="actionSet_Signals_at_Three_Way_Turnout"/>
+    <addaction name="actionSet_Signals_at_a_Slip"/>
+    <addaction name="actionEntry_Exit"/>
+   </widget>
+   <widget class="QMenu" name="menuZoom">
+    <property name="title">
+     <string>Zoom</string>
+    </property>
+    <addaction name="actionNo_zoom"/>
+    <addaction name="actionX_1_5"/>
+    <addaction name="actionX_2_0"/>
+    <addaction name="actionX_3_0"/>
+    <addaction name="actionX_4_0"/>
+   </widget>
+   <widget class="QMenu" name="menuMarker">
+    <property name="title">
+     <string>Marker</string>
+    </property>
+    <addaction name="actionAdd_loco"/>
+    <addaction name="actionAdd_loco_from_roster"/>
+    <addaction name="actionRemove_markers"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuZoom"/>
+   <addaction name="menuMarker"/>
+   <addaction name="menuWindow"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionSave_panels">
+   <property name="text">
+    <string>Save panels ...</string>
+   </property>
+  </action>
+  <action name="actionDelete_this_panel">
+   <property name="text">
+    <string>Delete this panel ...</string>
+   </property>
+  </action>
+  <action name="actionEdit_mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Edit mode</string>
+   </property>
+  </action>
+  <action name="actionAllow_repositioning">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Allow repositioning</string>
+   </property>
+  </action>
+  <action name="actionAllow_layout_control">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Allow layout control</string>
+   </property>
+  </action>
+  <action name="actionAllow_turnout_animation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Allow turnout animation</string>
+   </property>
+  </action>
+  <action name="actionShow_help_bar_in_edit_mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show help bar in edit mode</string>
+   </property>
+  </action>
+  <action name="actionShow_grid_in_edit_mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show grid in edit mode</string>
+   </property>
+  </action>
+  <action name="actionSnap_to_grid_when_adding">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap to grid when adding</string>
+   </property>
+  </action>
+  <action name="actionSnap_to_grid_when_moving">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap to grid when moving</string>
+   </property>
+  </action>
+  <action name="actionBoth_scrollbars">
+   <property name="text">
+    <string>Both scrollbars</string>
+   </property>
+  </action>
+  <action name="actionNo_scrollbars">
+   <property name="text">
+    <string>No scrollbars</string>
+   </property>
+  </action>
+  <action name="actionHorizontal_only">
+   <property name="text">
+    <string>Horizontal only</string>
+   </property>
+  </action>
+  <action name="actionVertical_only">
+   <property name="text">
+    <string>Vertical only</string>
+   </property>
+  </action>
+  <action name="actionNever">
+   <property name="text">
+    <string>Never</string>
+   </property>
+  </action>
+  <action name="actionAlways">
+   <property name="text">
+    <string>Always</string>
+   </property>
+  </action>
+  <action name="actionIn_edit_mode_only">
+   <property name="text">
+    <string>In edit mode only</string>
+   </property>
+  </action>
+  <action name="actionNot_in_edit_mode_only">
+   <property name="text">
+    <string>Not in edit mode only</string>
+   </property>
+  </action>
+  <action name="actionShow_turnout_circles">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show turnout circles</string>
+   </property>
+  </action>
+  <action name="actionEnable_antialiasing_smoother_lines">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable antialiasing (smoother lines)</string>
+   </property>
+  </action>
+  <action name="actionNew_title">
+   <property name="text">
+    <string>New title ...</string>
+   </property>
+  </action>
+  <action name="actionNo_zoom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>No zoom</string>
+   </property>
+  </action>
+  <action name="actionX_1_5">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>x 1.5</string>
+   </property>
+  </action>
+  <action name="actionX_2_0">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>x 2.0</string>
+   </property>
+  </action>
+  <action name="actionX_3_0">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>x 3.0</string>
+   </property>
+  </action>
+  <action name="actionX_4_0">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>x 4.0</string>
+   </property>
+  </action>
+  <action name="actionAdd_loco">
+   <property name="text">
+    <string>Add loco...</string>
+   </property>
+  </action>
+  <action name="actionAdd_loco_from_roster">
+   <property name="text">
+    <string>Add loco from roster...</string>
+   </property>
+  </action>
+  <action name="actionRemove_markers">
+   <property name="text">
+    <string>Remove markers</string>
+   </property>
+  </action>
+  <action name="actionEdit_track_width">
+   <property name="text">
+    <string>Edit track width</string>
+   </property>
+  </action>
+  <action name="actionAdd_reporter_label">
+   <property name="text">
+    <string>Add reporter label</string>
+   </property>
+  </action>
+  <action name="actionPlaceholder">
+   <property name="text">
+    <string>placeholder</string>
+   </property>
+  </action>
+  <action name="actionPlaceholder_2">
+   <property name="text">
+    <string>Placeholder</string>
+   </property>
+  </action>
+  <action name="actionAdd_background_image_2">
+   <property name="text">
+    <string>Add background image</string>
+   </property>
+  </action>
+  <action name="actionLoad_xl">
+   <property name="text">
+    <string>Load XML</string>
+   </property>
+  </action>
+  <action name="actionLoad_XML">
+   <property name="text">
+    <string>Load XML</string>
+   </property>
+  </action>
+  <action name="actionPlaceholder_3">
+   <property name="text">
+    <string>placeholder</string>
+   </property>
+  </action>
+  <action name="actionPlaceholder_4">
+   <property name="text">
+    <string>placeholder</string>
+   </property>
+  </action>
+  <action name="actionLoad_Other_Xml">
+   <property name="text">
+    <string>Load Other XML</string>
+   </property>
+  </action>
+  <action name="actionLoad_Other_XML">
+   <property name="text">
+    <string>Load Other XML</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+  </action>
+  <action name="actionScale_Translate_track_diagram">
+   <property name="text">
+    <string>Scale/Translate Track Diagram...</string>
+   </property>
+  </action>
+  <action name="actionTranslate_Selection">
+   <property name="text">
+    <string>Translate Selection</string>
+   </property>
+  </action>
+  <action name="actionUndo_Translate_Selection">
+   <property name="text">
+    <string>Undo Translate Selection</string>
+   </property>
+  </action>
+  <action name="actionUse_Program_Default_Turnout_size">
+   <property name="text">
+    <string>Use Program Default Turnout size</string>
+   </property>
+  </action>
+  <action name="actionSkip_unsignalled_Internal_Turnouts">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Skip Unsignalled Internal Turnouts</string>
+   </property>
+  </action>
+  <action name="actionSet_Signals_at_Turnout">
+   <property name="text">
+    <string>Set Signals at Turnout...</string>
+   </property>
+  </action>
+  <action name="actionSet_Signals_at_Block_Boundary">
+   <property name="text">
+    <string>Set Signals at Block Boundary...</string>
+   </property>
+  </action>
+  <action name="actionSet_Signals_at_Crossover">
+   <property name="text">
+    <string>Set Signals at Crossover...</string>
+   </property>
+  </action>
+  <action name="actionSet_Signals_at_Level_Crossing">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Set Signals at Level Crossing...</string>
+   </property>
+  </action>
+  <action name="actionSet_SIgnals_at_Throat_to_Throat_Turnouts">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Set SIgnals at Throat to Throat Turnouts...</string>
+   </property>
+  </action>
+  <action name="actionSet_Signals_at_Three_Way_Turnout">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Set Signals at 3-Way Turnout...</string>
+   </property>
+  </action>
+  <action name="actionSet_Signals_at_a_Slip">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Set Signals at a Slip...</string>
+   </property>
+  </action>
+  <action name="actionEntry_Exit">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Entry Exit...</string>
+   </property>
+  </action>
+  <action name="actionAdd_Fast_Clock">
+   <property name="text">
+    <string>Add Fast Clock</string>
+   </property>
+  </action>
+  <action name="actionInit">
+   <property name="text">
+    <string>Init</string>
+   </property>
+  </action>
+  <action name="actionMoveLayout">
+   <property name="text">
+    <string>MoveLayout</string>
+   </property>
+  </action>
+  <action name="actionAdd_Turntable">
+   <property name="text">
+    <string>Add Turntable</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

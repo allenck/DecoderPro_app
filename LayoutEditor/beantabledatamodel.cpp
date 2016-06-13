@@ -1,0 +1,1265 @@
+#include "beantabledatamodel.h"
+#include "manager.h"
+#include "abstractmanager.h"
+#include "exceptions.h"
+#include "namedbean.h"
+#include <QMessageBox>
+#include <QVBoxLayout>
+#include <QCheckBox>
+#include <QSizePolicy>
+#include <QPushButton>
+#include "instancemanager.h"
+#include "jtextfield.h"
+#include "jtable.h"
+#include "systemnamecomparator.h"
+#include "../Tables/logixtableaction.h"
+#include <QLabel>
+#include "../Tables/turnouttableaction.h"
+#include <QHeaderView>
+#include "hardcopywriter.h"
+#include <QVector>
+#include <QSortFilterProxyModel>
+#include "xtablecolumnmodel.h"
+#include "userpreferencesmanager.h"
+#include <QMenu>
+#include <QClipboard>
+#include <QApplication>
+#include "inputdialog.h"
+#include <QComboBox>
+#include "pushbuttondelegate.h"
+#include "buttoncolumndelegate.h"
+
+//BeanTableDataModel::BeanTableDataModel(QObject *parent) :
+//    QAbstractTableModel(parent)
+//{
+//}
+/**
+ * Table data model for display of NamedBean manager contents
+ * @author		Bob Jacobsen   Copyright (C) 2003
+ * @author      Dennis Miller   Copyright (C) 2006
+ * @version		$Revision: 21081 $
+ */
+//abstract /*public*/ class BeanTableDataModel extends javax.swing.table.AbstractTableModel
+//            implements PropertyChangeListener {
+
+///*static*/ /*public*/ /*final*/ int BeanTableDataModel::NUMCOLUMN = 5;
+
+
+/*public*/ BeanTableDataModel::BeanTableDataModel(QObject *parent) :   AbstractTableModel(parent)
+{
+ //super();
+ log = new Logger("BeanTableDataModel");
+ sysNameList = QStringList();
+ noWarnDelete = false;
+ buttonMap = QList<int>();
+ nbMan = (NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager");
+}
+
+void /*public*/ BeanTableDataModel::init()
+{
+ AbstractManager* manager = (AbstractManager*)getManager();
+ if(manager != NULL)
+ {
+  manager->addPropertyChangeListener((PropertyChangeListener*)this);
+  updateNameList();
+  connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ }
+}
+BeanTableDataModel::~BeanTableDataModel()
+{
+ delete log;
+}
+Manager* BeanTableDataModel::getManager() {return NULL;}
+void BeanTableDataModel::setManager(Manager *) {}
+
+/*protected*/ /*synchronized*/ void BeanTableDataModel::updateNameList()
+{
+ AbstractManager* mgr = (AbstractManager*)getManager();
+
+ // first, remove listeners from the individual objects
+ if (!sysNameList.isEmpty())
+ {
+  for (int i = 0; i< sysNameList.size(); i++)
+  {
+   // if object has been deleted, it's not here; ignore it
+   NamedBean* b = getBySystemName(sysNameList.at(i));
+   AbstractNamedBean* anb = (AbstractNamedBean*)b;
+
+   if (b!=NULL)
+   {
+    b->removePropertyChangeListener((PropertyChangeListener*)this);
+    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   }
+  }
+ }
+ sysNameList = mgr->getSystemNameList();
+ qSort(sysNameList.begin(), sysNameList.end(), SystemNameComparator::compare);
+ // and add them back in
+ for (int i = 0; i< sysNameList.size(); i++)
+ {
+  NamedBean* b;
+  //getBySystemName(sysNameList.at(i))->addPropertyChangeListener((PropertyChangeListener*)this, NULL, "Table View");
+  if(qobject_cast<TurnoutTableDataModel*>(this)!= NULL)
+  {
+   TurnoutTableDataModel* m = (TurnoutTableDataModel*)this;
+   b = m->getBySystemName(sysNameList.at(i));
+  }
+  else
+   b = getBySystemName(sysNameList.at(i));
+  AbstractNamedBean* anb = (AbstractNamedBean*)b;
+  connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ }
+}
+
+
+/*public*/ void BeanTableDataModel::propertyChange(PropertyChangeEvent* e)
+{
+ if (e->getPropertyName()==("length"))
+ {
+  // a new NamedBean is available in the manager
+  updateNameList();
+  log->debug("Table changed length to "+QString::number(sysNameList.size()));
+  fireTableDataChanged();
+ }
+ else if (matchPropertyName(e))
+ {
+  // a value changed.  Find it, to avoid complete redraw
+  //if(e.getSource() instanceof NamedBean)
+  if(dynamic_cast<NamedBean*>(e->getSource())!= NULL)
+  {
+   QString name = ((NamedBean*)e->getSource())->getSystemName();
+   if (log->isDebugEnabled()) log->debug("Update cell "+QString::number(sysNameList.indexOf(name))+"," +QString::number(VALUECOL)+" for "+name);
+   // since we can add columns, the entire row is marked as updated
+   int row = sysNameList.indexOf(name);
+   try
+   {
+    fireTableRowsUpdated(row, row);
+   }
+   catch (Exception ex)
+   {
+    log->error(ex.getMessage());
+   }
+  }
+ }
+}
+
+/**
+ * Is this property event announcing a change this table should display?
+ * <P>
+ * Note that events will come both from the NamedBeans and also from the manager
+ */
+/*protected*/ bool BeanTableDataModel::matchPropertyName(PropertyChangeEvent* e)
+{
+ return (e->getPropertyName().indexOf("State")>=0 || e->getPropertyName().indexOf("Appearance")>=0
+            || e->getPropertyName().indexOf("Comment")>=0) || e->getPropertyName().indexOf("UserName")>=0;
+}
+
+/*public*/ int BeanTableDataModel::rowCount(const QModelIndex &/*parent*/) const
+{
+ return sysNameList.size();
+}
+
+/*public*/ int BeanTableDataModel::columnCount(const QModelIndex &/*parent*/) const
+{ return NUMCOLUMN;}
+
+/*public*/ QVariant BeanTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+ if(orientation == Qt::Horizontal && role  == Qt::DisplayRole)
+ {
+    switch (section)
+    {
+    case SYSNAMECOL: return tr("System Name"); //"System Name";
+    case USERNAMECOL: return tr("User Name"); //"User Name";
+    case VALUECOL: return tr("State"); //"State";
+    case COMMENTCOL: return tr("Comment"); //"Comment";
+    case DELETECOL: return "";
+
+    default: break;
+    }
+ }
+ return QVariant();
+}
+
+// /*public*/ Class<?> getColumnClass(int col) {
+//    switch (col) {
+//    case SYSNAMECOL:
+//    case USERNAMECOL:
+//    case COMMENTCOL:
+//        return String.class;
+//    case VALUECOL:
+//    case DELETECOL:
+//        return JButton.class;
+//    default:
+//        return NULL;
+//    }
+//}
+
+/*public*/ Qt::ItemFlags BeanTableDataModel::flags(const QModelIndex &index) const
+{
+ switch (index.column())
+ {
+  case VALUECOL:
+   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+  case COMMENTCOL:
+  case DELETECOL:
+   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+  case USERNAMECOL:
+  {
+   NamedBean* b = getBySystemName(sysNameList.at(index.row()));
+   if(b != NULL &&((b->getUserName()=="") || b->getUserName()==("")))
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    //$FALL-THROUGH$
+  }
+ case SYSNAMECOL:
+  default:
+   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+ }
+ return Qt::NoItemFlags;
+}
+
+/*public*/ QVariant BeanTableDataModel::data(const QModelIndex &index, int role) const
+{
+ if(!index.isValid())
+   return QVariant();
+ if(role == Qt::DisplayRole || role == Qt::EditRole)
+ {
+  NamedBean* b = NULL;
+  switch (index.column())
+  {
+    case SYSNAMECOL:  // slot number
+        return sysNameList.at(index.row());
+    case USERNAMECOL:  // return user name
+        // sometimes, the TableSorter invokes this on rows that no longer exist, so we check
+        b = getBySystemName(sysNameList.at(index.row()));
+        return (b!=NULL) ? b->getUserName() : NULL;
+    case VALUECOL:  //
+        return getValue(sysNameList.at(index.row()));
+    case COMMENTCOL:
+        b = getBySystemName(sysNameList.at(index.row()));
+        return (b!=NULL) ? b->getComment() : NULL;
+    case DELETECOL:  //
+        return ("Delete");
+    default:
+//        log->error("internal state inconsistent with table request for "+QString::number(index.row())+" "+QString::number(index.column()));
+        break;
+  }
+ }
+  return QVariant();
+}
+
+/*public*/ int BeanTableDataModel::getPreferredWidth(int col) {
+    switch (col) {
+    case SYSNAMECOL:
+        return  JTextField(5).getPreferredSize().width();
+    case COMMENTCOL:
+    case USERNAMECOL:
+        return  JTextField(15).getPreferredSize().width();
+    case VALUECOL: // not actually used due to the configureTable, setColumnToHoldButton, configureButton
+    case DELETECOL: // not actually used due to the configureTable, setColumnToHoldButton, configureButton
+        return  JTextField(22).getPreferredSize().width();
+    default:
+        log->warn("Unexpected column in getPreferredWidth: "+QString::number(col));
+        return  JTextField(8).getPreferredSize().width();
+    }
+}
+
+/*abstract*/ /*public*/ QString BeanTableDataModel::getValue(QString /*systemName*/) const {return "";}
+
+//abstract protected Manager getManager();
+//protected void setManager(Manager man){ }
+
+/*abstract*/ /*protected*/ NamedBean* BeanTableDataModel::getBySystemName(QString /*name*/) const
+{
+//    if(qobject_cast<ProxySensorManager*>(senManager) != NULL)
+//        return ((ProxySensorManager*)senManager)->getBeanBySystemName(name);
+//       else
+//        return ((AbstractSensorManager*)senManager)->getBySystemName(name);
+
+ return NULL;
+}
+/*abstract*/ /*protected*/ NamedBean* BeanTableDataModel::getByUserName(QString /*name*/){return NULL;}
+//abstract protected void clickOn(NamedBean t);
+
+/*public*/ int BeanTableDataModel::getDisplayDeleteMsg()
+{
+ return ((UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption(getMasterClassName(),"deleteInUse");
+//    return QMessageBox::question(NULL, tr("Question"), tr("Are you sure you want to delete %1?").arg("??"), QMessageBox::Yes|QMessageBox::No);
+}
+
+/*public*/ void BeanTableDataModel::setDisplayDeleteMsg(int /*boo*/)
+{
+//    InstanceManager::getDefault("UserPreferencesManager")->setMultipleChoiceOption(getMasterClassName(), "deleteInUse", boo);
+}
+
+/*abstract*/ /*protected*/ QString BeanTableDataModel::getMasterClassName() {return "";}
+
+
+/*public*/ bool BeanTableDataModel:: setData(const QModelIndex &index, const QVariant &value, int role)
+{
+ if(!index.isValid()) return false;
+ int col = index.column();
+ int row = index.row();
+ if(role == Qt::EditRole)
+ {
+  if (col==USERNAMECOL)
+  {
+   //Directly changing the username should only be possible if the username was previously NULL or ""
+   // check to see if user name already exists
+//   if (((String)value)==("")) value = NULL;
+//   else {
+   NamedBean* nB = getByUserName(value.toString());
+   if (nB != NULL)
+   {
+    log->error("User name is not unique " + value.toString());
+//    QString msg;
+//        msg = java.text.MessageFormat.format(AbstractTableAction.rb
+//                .getString("WarningUserName"),
+//                new Object[] { ("" + value) });
+//        JOptionPane.showMessageDialog(NULL, msg,
+//                AbstractTableAction.rb.getString("WarningTitle"),
+//                JOptionPane.ERROR_MESSAGE);
+    QMessageBox::warning(0, tr("Warning"), tr("User Name \" %1 \" has already been used.").arg(value.toString()));
+     return false;
+    }
+    NamedBean* nBean = getBySystemName(sysNameList.at(row));
+    nBean->setUserName( value.toString());
+    if(nbMan->inUse(sysNameList.at(row), nBean))
+    {
+//    String msg = java.text.MessageFormat.format(AbstractTableAction.rb
+//        .getString("UpdateToUserName"),
+//        new Object[] { getBeanType(),value,sysNameList.get(row) });
+//    int optionPane = JOptionPane.showConfirmDialog(NULL,
+//        msg, AbstractTableAction.rb.getString("UpdateToUserNameTitle"),
+//        JOptionPane.YES_NO_OPTION);
+//    if(optionPane == JOptionPane.YES_OPTION){
+    switch(QMessageBox::question(NULL, tr("Update usage to UserName"), tr("\"Do you want to update references to this %1\nto use the UserName \"%2\" rather than its SystemName \"%3}?").arg(getBeanType()).arg(value.toString()).arg(sysNameList.at(row) ),QMessageBox::Yes | QMessageBox::No))
+    {
+    case QMessageBox::Yes:
+     //This will update the bean reference from the systemName to the userName
+     try
+     {
+      nbMan->updateBeanFromSystemToUser(nBean);
+     } catch (JmriException ex) {
+            //We should never get an exception here as we already check that the username is not valid
+     }
+     break;
+    default:
+     break;
+    }
+   }
+
+   fireTableRowsUpdated(row, row);
+  }
+  else if (col==COMMENTCOL)
+  {
+   getBySystemName(sysNameList.at(row))->setComment(value.toString());
+   fireTableRowsUpdated(row, row);
+  }
+  else if (col==VALUECOL)
+  {
+   // button fired, swap state
+   NamedBean* t = getBySystemName(sysNameList.at(row));
+   clickOn(t);
+   fireTableRowsUpdated(row, row);
+  }
+  else if (col==DELETECOL)
+  {
+   // button fired, delete Bean
+   //beginRemoveRows(QModelIndex(), row, row);
+   deleteBean(row, col);
+   //endRemoveRows();
+  }
+  //fireTableRowsUpdated(row, row);
+  setPersistentButtons();
+  return true;
+ }
+ return false;
+}
+
+void BeanTableDataModel::On_deleteBean_triggered()
+{
+ deleteBean(row, 0);
+}
+
+/*protected*/ void BeanTableDataModel::deleteBean(int row, int /*col*/)
+{
+ /*final*/ t = getBySystemName(sysNameList.at(row));
+ int count = ((AbstractNamedBean*)t)->getNumPropertyChangeListeners()-1; // one is this table
+ if (log->isDebugEnabled()) log->debug("Delete with "+QString::number(count));
+ if (getDisplayDeleteMsg()==QMessageBox::Yes)
+ {
+  this->row = row;
+  doDelete(t);
+ }
+ else
+ {
+  /*final*/ dialog = new QDialog();
+  QString msg;
+  QString msg1;
+  dialog->setWindowTitle(tr("Warning"));
+  //dialog.setLocationRelativeTo(NULL);
+  //dialog.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+  QWidget* container = new QWidget();
+  //container.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+  container->setLayout(new QVBoxLayout(container/*, BoxLayout.Y_AXIS*/));
+  if (count>0)
+  { // warn of listeners attached before delete
+   msg = tr("Are you sure you want to delete %1?").arg(t->getSystemName());
+
+   QLabel* question = new QLabel(msg);
+   //question.setAlignmentX(Component.CENTER_ALIGNMENT);
+   container->layout()->addWidget(question);
+
+   msg1 = tr("It is in use by %1 other objects.").arg(count);
+
+   question = new QLabel(msg1);
+   //question.setAlignmentX(Component.CENTER_ALIGNMENT);
+   container->layout()->addWidget(question);
+
+   QList<QString>* listenerRefs = t->getListenerRefs();
+   if(listenerRefs->size()>0)
+   {
+    question = new QLabel("    ");
+    container->layout()->addWidget(question);
+    QStringList listeners = QStringList();
+    for (int i = 0; i<listenerRefs->size(); i++)
+    {
+     if(!listeners.contains(listenerRefs->at(i)))
+      listeners.append(listenerRefs->at(i));
+    }
+
+    for (int i = 0; i<listeners.size(); i++)
+    {
+     question = new QLabel(listeners.at(i));
+     //question.setAlignmentX(Component.CENTER_ALIGNMENT);
+     container->layout()->addWidget(question);
+    }
+   }
+  }
+  else
+  {
+   msg = tr("Are you sure you want to delete %1?").arg(t->getSystemName());
+   QLabel* question = new QLabel(msg);
+   //question.setAlignmentX(Component.CENTER_ALIGNMENT);
+   container->layout()->addWidget(question);
+  }
+
+  /*final*/  remember = new QCheckBox(tr("Remember this setting for next time?"));
+  //remember->setFont(remember.getFont().deriveFont(10f));
+  //remember.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+  QPushButton* yesButton = new QPushButton(tr("Yes"));
+  QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  sizePolicy.setHorizontalStretch(0);
+  sizePolicy.setVerticalStretch(0);
+  sizePolicy.setHeightForWidth(yesButton->sizePolicy().hasHeightForWidth());
+  yesButton->setSizePolicy(sizePolicy);
+
+  QPushButton* noButton = new QPushButton("No");
+  noButton->setSizePolicy(sizePolicy);
+  QWidget* button = new QWidget();
+  //button.setAlignmentX(Component.CENTER_ALIGNMENT);
+  button->setLayout(new QHBoxLayout());
+  button->layout()->addWidget(yesButton);
+  button->layout()->addWidget(noButton);
+  container->layout()->addWidget(button);
+
+//  noButton.addActionListener(new ActionListener(){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            //there is no point in remembering this the user will never be
+//            //able to delete a bean!
+//            /*if(remember.isSelected()){
+//                setDisplayDeleteMsg(0x01);
+//            }*/
+//            dialog.dispose();
+//        }
+//    });
+  connect(noButton, SIGNAL(clicked()), this, SLOT(on_noButton_clicked()));
+//    yesButton.addActionListener(new ActionListener(){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            if(remember.isSelected()) {
+//               setDisplayDeleteMsg(0x02);
+//            }
+//            doDelete(t);
+//            dialog.dispose();
+//        }
+//    });
+  connect(yesButton, SIGNAL(clicked()), this, SLOT(on_yesButton_clicked()));
+  container->layout()->addWidget(remember);
+  //container.setAlignmentX(Component.CENTER_ALIGNMENT);
+  //container.setAlignmentY(Component.CENTER_ALIGNMENT);
+  dialog->setLayout(new QVBoxLayout());
+  dialog->layout()->addWidget(container);
+  //dialog.pack();
+  /*dialog.setModal(true);
+  dialog.setVisible(true)*/;
+  dialog->exec();
+ }
+}
+
+void BeanTableDataModel::on_noButton_clicked()
+{
+ dialog->reject();
+ dialog->close();
+}
+void BeanTableDataModel::on_yesButton_clicked()
+{
+ dialog->accept();
+ if(remember->isChecked())
+ {
+  setDisplayDeleteMsg(0x02);
+ }
+ beginRemoveRows(QModelIndex(), row, row);
+ doDelete(t);
+ endRemoveRows();
+ dialog->close();
+}
+
+
+/**
+ * Delete the bean after all the checking has been done.
+ * <P>
+ * Separate so that it can be easily subclassed if other functionality is needed.
+ */
+void BeanTableDataModel::doDelete(NamedBean*  bean)
+{
+ getManager()->deregister(bean);
+ bean->dispose();
+}
+
+/**
+ * Configure a table to have our standard rows and columns.
+ * This is optional, in that other table formats can use this table model.
+ * But we put it here to help keep it consistent.
+ * @param table
+ */
+/*public*/ void BeanTableDataModel::configureTable(JTable* table)
+{
+ this->table = table;
+ // allow reordering of the columns
+//    table.getTableHeader().setReorderingAllowed(true);
+
+//    // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
+//    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+ // resize columns as requested
+ for (int i=0; i<table->horizontalHeader()->count(); i++)
+ {
+  int width = getPreferredWidth(i);
+  //table.getColumnModel().getColumn(i).setPreferredWidth(width);
+  table->setColumnWidth(i,width);
+ }
+ //table.sizeColumnsToFit(-1);
+ table->resizeColumnsToContents();
+ table->resizeRowsToContents();
+
+ configValueColumn(table);
+ configDeleteColumn(table);
+
+//    MouseListener popupListener = new PopupListener();
+//    table.addMouseListener(popupListener);
+
+ loadTableColumnDetails(table);
+ table->setContextMenuPolicy(Qt::CustomContextMenu);
+ connect(table, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showPopup(QPoint)));
+ setPersistentButtons();
+}
+
+/*protected*/ void BeanTableDataModel::configValueColumn(JTable* table) {
+    // have the value column hold a button
+    //setColumnToHoldButton(table, VALUECOL, configureButton());
+ connect(table, SIGNAL(clicked(QModelIndex)),this, SLOT(On_itemClicked(QModelIndex)));
+}
+void BeanTableDataModel::On_itemClicked(QModelIndex index)
+{
+ if(index.column() == VALUECOL)
+ {
+  if(index.row() > sysNameList.count()) return;
+  NamedBean* t = getBySystemName(sysNameList.at(index.row()));
+  clickOn(t);
+ }
+}
+
+/*public*/ QPushButton* BeanTableDataModel::configureButton()
+{
+ // pick a large size
+ QPushButton* b = new QPushButton(tr("Inconsistent"));
+//    b.putClientProperty("JComponent.sizeVariant","small");
+//    b.putClientProperty("JButton.buttonType","square");
+ return b;
+}
+
+/*protected*/ void BeanTableDataModel::configDeleteColumn(JTable* table)
+{
+ // have the delete column hold a button
+ setColumnToHoldButton(table, DELETECOL/*, new QPushButton(tr("Delete"))*/);
+}
+
+///**
+// * Service method to setup a column so that it will hold a
+// * button for it's values
+// * @param table
+// * @param column
+// * @param sample Typical button, used for size
+// */
+///*protected*/ void BeanTableDataModel::setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/)
+//{ // TODO:
+// // install a button renderer & editor
+////    ButtonRenderer buttonRenderer = new ButtonRenderer();
+////    table.setDefaultRenderer(JButton.class,buttonRenderer);
+////    TableCellEditor buttonEditor = new ButtonEditor(new JButton());
+////    table.setDefaultEditor(JButton.class,buttonEditor);
+////    // ensure the table rows, columns have enough room for buttons
+////    table.setRowHeight(sample.getPreferredSize().height);
+////    table.getColumnModel().getColumn(column)
+////        .setPreferredWidth((sample.getPreferredSize().width)+4);
+// this->table = table;
+// table->setItemDelegateForColumn(column, new PushButtonDelegate());
+// buttonMap.append(column);
+// setPersistentButtons();
+//}
+
+void BeanTableDataModel::OnButtonClicked(QObject* o)
+{
+ QModelIndex* index = (QModelIndex*)o;
+ QString name = sysNameList.at(index->row());
+ setData(*index, 0, Qt::EditRole);
+ emit buttonClicked(index, name);
+}
+
+/*synchronized*/ /*public*/ void BeanTableDataModel::dispose()
+{
+ getManager()->removePropertyChangeListener((PropertyChangeListener*)this);
+ if (!sysNameList.isEmpty())
+ {
+  for (int i = 0; i< sysNameList.size(); i++)
+  {
+   NamedBean* b = getBySystemName(sysNameList.at(i));
+   if (b!=NULL) b->removePropertyChangeListener((PropertyChangeListener*)this);
+  }
+ }
+}
+
+/**
+ * Method to self print or print preview the table.
+ * Printed in equally sized columns across the page with headings and
+ * vertical lines between each column. Data is word wrapped within a column.
+ * Can handle data as strings, comboboxes or booleans
+ */
+//@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
+// Only used occasionally, so inefficient String processing not really a problem
+// though it would be good to fix it if you're working in this area
+/*public*/ void BeanTableDataModel::printTable(HardcopyWriter* w)
+{
+ // determine the column size - evenly sized, with space between for lines
+ int columnSize = (w->getCharactersPerLine()- this->columnCount(QModelIndex()) - 1)/this->columnCount(QModelIndex());
+
+ // Draw horizontal dividing line
+ w->write(w->getCurrentLineNumber(), 0, w->getCurrentLineNumber(),
+       (columnSize+1)*this->columnCount(QModelIndex()));
+
+ // print the column header labels
+ QVector<QString> columnStrings =  QVector<QString>(this->columnCount(QModelIndex()));
+ // Put each column header in the array
+ for (int i = 0; i < this->columnCount(QModelIndex()); i++)
+ {
+     columnStrings.replace(i, this->headerData(i, Qt::Horizontal,Qt::DisplayRole).toString());
+ }
+ w->setFontWeight(QFont::Bold);
+ printColumns(w, columnStrings.toList(), columnSize);
+ w->setFontWeight(QFont::Normal);
+ w->write(w->getCurrentLineNumber(), 0, w->getCurrentLineNumber(),
+         (columnSize+1)*this->columnCount(QModelIndex()));
+
+ // now print each row of data
+ // create a base string the width of the column
+ QString spaces = "";
+ for (int i = 0; i < columnSize; i++) {
+     spaces = spaces + " ";
+ }
+ for (int i = 0; i < this->rowCount(QModelIndex()); i++)
+ {
+  for (int j = 0; j < this->columnCount(QModelIndex()); j++)
+  {
+   //check for special, non string contents
+   QVariant val = data(index(i,j),Qt::DisplayRole);
+   if (val == QVariant())
+   {
+    columnStrings.replace(j, spaces);
+   }
+//   else if (this->getValueAt(i, j)instanceof JComboBox)
+//   {
+//    columnStrings[j] = (String)((JComboBox) this->getValueAt(i, j)).getSelectedItem();
+//   }
+//   else if (this->getValueAt(i, j)instanceof Boolean)
+//   {
+//    columnStrings[j] = ( this->getValueAt(i, j)).toString();
+//   }
+//   else columnStrings[j] = (String) this->getValueAt(i, j);
+   else columnStrings.replace(j,val.toString());
+  }
+ printColumns(w, columnStrings.toList(), columnSize);
+ w->write(w->getCurrentLineNumber(), 0, w->getCurrentLineNumber(),
+         (columnSize+1)*this->columnCount(QModelIndex()));
+ }
+ w->close();
+}
+
+//@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
+// Only used occasionally, so inefficient String processing not really a problem
+// though it would be good to fix it if you're working in this area
+/*protected*/ void BeanTableDataModel::printColumns(HardcopyWriter* w, QStringList columnStrings, int columnSize)
+{
+ QString columnString = "";
+ QString lineString = "";
+ // create a base string the width of the column
+ QString spaces = "";
+ for (int i = 0; i < columnSize; i++) {
+     spaces = spaces + " ";
+ }
+ // loop through each column
+ bool complete = false;
+ while (!complete)
+ {
+  complete = true;
+  for (int i = 0; i < columnStrings.length(); i++)
+  {
+   // if the column string is too wide cut it at word boundary (valid delimiters are space, - and _)
+   // use the intial part of the text,pad it with spaces and place the remainder back in the array
+   // for further processing on next line
+   // if column string isn't too wide, pad it to column width with spaces if needed
+   if (columnStrings[i].length() > columnSize)
+   {
+    bool noWord = true;
+    for (int k = columnSize; k >= 1 ; k--)
+    {
+     if (columnStrings[i].mid(k-1,k)==(" ")
+         || columnStrings[i].mid(k-1,k)==("-")
+         || columnStrings[i].mid(k-1,k)==("_"))
+     {
+      columnString = columnStrings[i].mid(0,k)
+          + spaces.mid(columnStrings[i].mid(0,k).length());
+      columnStrings.replace(i, columnStrings[i].mid(k));
+      noWord = false;
+      complete = false;
+      break;
+     }
+    }
+    if (noWord)
+    {
+     columnString = columnStrings[i].mid(0,columnSize);
+     columnStrings.replace(i, columnStrings[i].mid(columnSize));
+     complete = false;
+    }
+   }
+   else
+   {
+    columnString = columnStrings[i] + spaces.mid(columnStrings[i].length());
+    columnStrings[i] = "";
+   }
+   lineString = lineString + columnString + " ";
+  }
+  try
+  {
+   w->write(QColor(Qt::black), lineString);
+   //write vertical dividing lines
+   for (int i = 0; i < w->getCharactersPerLine(); i = i+columnSize+1)
+   {
+    w->write(w->getCurrentLineNumber(), i, w->getCurrentLineNumber() + 1, i);
+   }
+   lineString = "\n";
+   w->write(QColor(Qt::black),lineString);
+   lineString = "";
+  }
+  catch (IOException e)
+  { log->warn("error during printing: "+e.getMessage());}
+ }
+}
+#if 1
+/*public*/ JTable* BeanTableDataModel::makeJTable(QSortFilterProxyModel* sorter)
+{
+ JTable* table = new JTable(sorter);
+// {
+//  /*public*/ boolean editCellAt(int row, int column, java.util.EventObject e) {
+//      boolean res = super.editCellAt(row, column, e);
+//      java.awt.Component c = this->getEditorComponent();
+//      if (c instanceof javax.swing.JTextField) {
+//          ( (JTextField) c).selectAll();
+//      }
+//      return res;
+//  }
+// };
+// table.getTableHeader().setReorderingAllowed(true);
+ table->setColumnModel(new XTableColumnModel());
+// table.createDefaultColumnsFromModel();
+
+// addMouseListenerToHeader(table);
+ return table;
+}
+#endif
+/*abstract*/ /*protected*/ QString BeanTableDataModel::getBeanType()
+{
+    return "Bean";
+}
+#if 0
+class PopupListener extends MouseAdapter {
+    /*public*/ void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger())
+            showPopup(e);
+    }
+
+    /*public*/ void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger())
+            showPopup(e);
+    }
+}
+#endif
+/*protected*/ void BeanTableDataModel::showPopup(QPoint p)
+{
+ QModelIndex index= table->indexAt(p);
+ row = index.row();
+// JTable* source = (JTable)e.getSource();
+//    TableSorter tmodel = ((TableSorter)source.getModel());
+//    int row = source.rowAtPoint( e.getPoint() );
+//    int column = source.columnAtPoint( e.getPoint() );
+//    if (! source.isRowSelected(row))
+//        source.changeSelection(row, column, false, false);
+//    final int rowindex = tmodel.modelIndex(row);
+ QMenu* popupMenu = new QMenu();
+ QAction* menuItem = new QAction(tr("Copy User Name"),this);
+//    menuItem.addActionListener(new ActionListener(){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            copyName(rowindex, 0);
+//        }
+//    });
+ connect(menuItem, SIGNAL(triggered()), this, SLOT(On_copyName_triggered()));
+ popupMenu->addAction(menuItem);
+
+ menuItem = new QAction(tr("Rename"), this);
+//    menuItem.addActionListener(new ActionListener(){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            renameBean(rowindex, 0);
+//        }
+//    });
+ connect(menuItem, SIGNAL(triggered()), this, SLOT(On_renameBean_triggered()));
+ popupMenu->addAction(menuItem);
+
+ menuItem = new QAction(tr("Remove User Name"),this);
+//    menuItem.addActionListener(new ActionListener(){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            removeName(rowindex, 0);
+//        }
+//    });
+ connect(menuItem, SIGNAL(triggered()), this, SLOT(On_removeName_triggered()));
+ popupMenu->addAction(menuItem);
+
+ menuItem = new QAction(tr("Move"),this);
+//    menuItem.addActionListener(new ActionListener(){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            moveBean(rowindex, 0);
+//        }
+//    });
+ connect(menuItem, SIGNAL(triggered()), this, SLOT(On_moveBean_triggered()));
+ popupMenu->addAction(menuItem);
+
+ menuItem = new QAction(tr("Delete"),this);
+//    menuItem.addActionListener(new ActionListener(){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            deleteBean(rowindex, 0);
+//        }
+//    });
+ connect(menuItem, SIGNAL(triggered()), this, SLOT(On_deleteBean_triggered()));
+ popupMenu->addAction(menuItem);
+ addToPopUp(popupMenu);
+ popupMenu->popup(table->viewport()->mapToGlobal(p));
+}
+
+void BeanTableDataModel::addToPopUp(QMenu *popup) {}
+
+#if 0
+class popupmenuRemoveName implements ActionListener {
+    int row;
+    popupmenuRemoveName(int row) {
+        this->row=row;
+    }
+    /*public*/ void actionPerformed(ActionEvent e) {
+        deleteBean(row, 0);
+    }
+}
+
+
+#endif
+void BeanTableDataModel::On_copyName_triggered()
+{
+ copyName(row);
+}
+
+/*public*/ void BeanTableDataModel::copyName(int row)
+{
+ NamedBean* nBean = getBySystemName(sysNameList.at(row));
+ QClipboard* clipboard = QApplication::clipboard();
+ //   StringSelection name = new StringSelection(nBean.getUserName());
+ clipboard->setText(nBean->getUserName());
+}
+
+void BeanTableDataModel::On_renameBean_triggered()
+{
+ renameBean(row);
+}
+
+/*public*/ void BeanTableDataModel::renameBean(int row)
+{
+ NamedBean* nBean = getBySystemName(sysNameList.at(row));
+ QString oldName = nBean->getUserName();
+ JTextField* _newName = new JTextField(20);
+ _newName->setText(oldName);
+// Object[] renameBeanOption = {"Cancel", "OK", _newName};
+// int retval = JOptionPane.showOptionDialog(NULL,
+//                                           "Rename UserName From " + oldName, "Rename " + getBeanType(),
+//                                           0, JOptionPane.INFORMATION_MESSAGE, NULL,
+//                                           renameBeanOption, renameBeanOption[2] );
+ InputDialog* dlg = new InputDialog("Rename UserName From " + oldName, oldName, NULL);
+ dlg->setWindowTitle("Rename " + getBeanType());
+ if(dlg->exec() != QDialog::Accepted ) return;
+
+ QString value = dlg->value().trimmed();
+ //name not changed.
+ return;
+
+ if(value==(oldName))
+ {
+ }
+ else
+ {
+  NamedBean* nB = getByUserName(value);
+  if (nB != NULL)
+  {
+   log->error("User name is not unique " + value);
+   QString msg;
+//      msg = java.text.MessageFormat.format(AbstractTableAction.rb
+//              .getString("WarningUserName"),
+//              new Object[] { ("" + value) });
+//      JOptionPane.showMessageDialog(NULL, msg,
+//              AbstractTableAction.rb.getString("WarningTitle"),
+//              JOptionPane.ERROR_MESSAGE);
+   QMessageBox::warning(NULL, tr("Warning"), tr("User Name \" %1 \" has already been used.").arg(value));
+   return;
+  }
+ }
+
+ nBean->setUserName(value);
+ fireTableRowsUpdated(row, row);
+ if(value!=(""))
+ {
+  if(oldName==NULL || oldName==(""))
+  {
+   if(!nbMan->inUse(sysNameList.at(row), nBean))
+    return;
+//   QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
+//           .getString("UpdateToUserName"),
+//           new Object[] { getBeanType(),value,sysNameList.get(row) });
+//   int optionPane = JOptionPane.showConfirmDialog(NULL,
+//       msg, AbstractTableAction.rb.getString("UpdateToUserNameTitle"),
+//       JOptionPane.YES_NO_OPTION);
+//   if(optionPane == JOptionPane.YES_OPTION)
+   if(QMessageBox::question(NULL, tr("Update usage to UserName"), tr("Do you want to update references to this %1\nto use the UserName \"%2\" rather than its SystemName \"%3?\"").arg(getBeanType()).arg(value).arg(sysNameList.at(row)),QMessageBox::Yes | QMessageBox::No)!= QMessageBox::Yes)
+   {
+    //This will update the bean reference from the systemName to the userName
+    try
+    {
+     nbMan->updateBeanFromSystemToUser(nBean);
+    }
+    catch (JmriException ex)
+    {
+     //We should never get an exception here as we already check that the username is not valid
+    }
+   }
+  }
+  else
+  {
+   nbMan->renameBean(oldName, value, nBean);
+  }
+
+ }
+ else
+ {
+  //This will update the bean reference from the old userName to the SystemName
+  nbMan->updateBeanFromUserToSystem(nBean);
+ }
+}
+void BeanTableDataModel::On_removeName_triggered()
+{
+ removeName(row);
+}
+/*public*/ void BeanTableDataModel::removeName(int row){
+    NamedBean* nBean = getBySystemName(sysNameList.at(row));
+//    QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
+//            .getString("UpdateToSystemName"),
+//            new Object[] { getBeanType()});
+//    int optionPane = JOptionPane.showConfirmDialog(NULL,
+//        msg, AbstractTableAction.rb.getString("UpdateToSystemNameTitle"),
+//        JOptionPane.YES_NO_OPTION);
+//    if(optionPane == JOptionPane.YES_OPTION)
+    if(QMessageBox::question(NULL, tr("Update usage to SystemName"), tr("Do you want to update references to this %1\nto use the SystemName?"), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
+    {
+     nbMan->updateBeanFromUserToSystem(nBean);
+    }
+    nBean->setUserName("");
+    fireTableRowsUpdated(row, row);
+}
+void BeanTableDataModel::On_moveBean_triggered()
+{
+ moveBean(row);
+}
+
+#if 1
+/*public*/ void BeanTableDataModel::moveBean(int row)
+{
+ /*final*/ NamedBean* t = getBySystemName(sysNameList.at(row));
+ QString currentName = t->getUserName();
+ NamedBean* oldNameBean = getBySystemName(sysNameList.at(row));
+
+ if((currentName==NULL) || currentName==(""))
+ {
+  //        JOptionPane.showMessageDialog(NULL,"Can not move an empty UserName");
+  QMessageBox::warning(NULL, tr("Warning"), tr("Can not move an empty UserName"));
+  return;
+ }
+
+ QComboBox* box = new QComboBox();
+ QStringList nameList = getManager()->getSystemNameList();
+ for(int i = 0; i<nameList.size(); i++)
+ {
+  NamedBean* nb = getBySystemName(nameList.at(i));
+  //Only add items that do not have a username assigned.
+  if(nb->getDisplayName()==(nameList.at(i)))
+   box->addItem(nameList.at(i));
+ }
+
+// int retval = JOptionPane.showOptionDialog(NULL,
+//      "Move " + getBeanType() + " " + currentName + " from " + oldNameBean.getSystemName(), "Move UserName",
+//                                          0, JOptionPane.INFORMATION_MESSAGE, NULL,
+//                                          new Object[]{"Cancel", "OK", box}, NULL );
+ int retval = QMessageBox::information(NULL, tr("Move UserName"), "Move " + getBeanType() + " " + currentName + " from " + oldNameBean->getSystemName(), QMessageBox::Ok | QMessageBox::Cancel);
+ log->debug("Dialog value "+QString::number(retval)+" selected "+QString::number(box->currentIndex())+":"
+          +box->currentText());
+ if (retval != QMessageBox::Ok) return;
+ QString entry = box->currentText();
+ NamedBean* newNameBean = getBySystemName(entry);
+ if(oldNameBean!=newNameBean)
+ {
+  oldNameBean->setUserName("");
+  newNameBean->setUserName(currentName);
+  ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->moveBean(oldNameBean, newNameBean, currentName);
+  if(nbMan->inUse(newNameBean->getSystemName(), newNameBean))
+  {
+//            String msg = java.text.MessageFormat.format(AbstractTableAction.rb
+//                .getString("UpdateToUserName"),
+//                new Object[] { getBeanType(),currentName,sysNameList.get(row)});
+//            int optionPane = JOptionPane.showConfirmDialog(NULL,msg, AbstractTableAction.rb.getString("UpdateToUserNameTitle"), JOptionPane.YES_NO_OPTION);
+//        if(optionPane == JOptionPane.YES_OPTION)
+   if(QMessageBox::question(NULL, tr("UpdateToUserNameTitle"), tr("UpdateToUserName").arg(getBeanType()).arg(currentName).arg(sysNameList.at(row)), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   {
+    try
+    {
+     nbMan->updateBeanFromSystemToUser(newNameBean);
+    }
+    catch (JmriException ex)
+    {
+     //We should never get an exception here as we already check that the username is not valid
+    }
+   }
+  }
+  fireTableRowsUpdated(row, row);
+  ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
+        showInfoMessage("Reminder",getBeanType() + " " + tr("UpdateComplete"),"BeanTableDataModel", "remindSaveReLoad");
+    //JOptionPane.showMessageDialog(NULL, getBeanType() + " " + AbstractTableAction.rb.getString("UpdateComplete"));
+ }
+}
+#if 0
+protected void showTableHeaderPopup(MouseEvent e, JTable table){
+    JPopupMenu popupMenu = new JPopupMenu();
+    XTableColumnModel tcm = (XTableColumnModel)table.getColumnModel();
+    for (int i = 0; i < tcm.getColumnCount(false); i++) {
+        TableColumn tc = tcm.getColumnByModelIndex(i);
+        String columnName = table.getModel().getColumnName(i);
+        if(columnName!=NULL && !columnName==("")){
+            JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(table.getModel().getColumnName(i), tcm.isColumnVisible(tc));
+            menuItem.addActionListener(new headerActionListener(tc, tcm));
+            popupMenu.add(menuItem);
+        }
+
+    }
+    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+}
+
+static class headerActionListener implements ActionListener {
+    TableColumn tc;
+    XTableColumnModel tcm;
+    headerActionListener(TableColumn tc, XTableColumnModel tcm){
+         this->tc = tc;
+         this->tcm = tcm;
+    }
+
+    /*public*/ void actionPerformed(ActionEvent e){
+        JCheckBoxMenuItem check = (JCheckBoxMenuItem) e.getSource();
+        //Do not allow the last column to be hidden
+        if(!check.isSelected() && tcm.getColumnCount(true)==1){
+            return;
+        }
+        tcm.setColumnVisible(tc, check.isSelected());
+    }
+}
+#endif
+/*protected*/ void BeanTableDataModel::addMouseListenerToHeader(JTable* table)
+{
+#if 0 // TODO:
+    MouseListener mouseHeaderListener = new TableHeaderListener(table);
+    table.getTableHeader().addMouseListener(mouseHeaderListener);
+#endif
+}
+#if 0
+class TableHeaderListener extends MouseAdapter {
+
+    JTable table;
+    TableHeaderListener(JTable tbl){
+        super();
+        table=tbl;
+    }
+
+    @Override
+    /*public*/ void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            showTableHeaderPopup(e, table);
+        }
+    }
+
+    @Override
+    /*public*/ void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            showTableHeaderPopup(e, table);
+        }
+    }
+
+    @Override
+    /*public*/ void mouseClicked(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            showTableHeaderPopup(e, table);
+        }
+    }
+}
+#endif
+/*public*/ void BeanTableDataModel::saveTableColumnDetails(JTable* table){
+    saveTableColumnDetails(table, getMasterClassName());
+}
+#endif
+/*public*/ void BeanTableDataModel::saveTableColumnDetails(JTable* table, QString beantableref)
+{
+ UserPreferencesManager* p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
+#if 1
+ XTableColumnModel* tcm = (XTableColumnModel*)table->getColumnModel();
+ QSortFilterProxyModel* tmodel = ((QSortFilterProxyModel*)table->getModel());
+ QListIterator<TableColumn*> en = tcm->getColumns(false);
+ while(en.hasNext())
+ {
+  TableColumn* tc = en.next();
+
+  try
+  {
+   QString columnName = tc->getHeaderValue().toString();
+   //skip empty or blank columns
+   if(columnName!=(""))
+   {
+    int index = tcm->getColumnIndex(tc->getIdentifier(), false);
+    p->setTableColumnPreferences(beantableref, columnName, index, tc->getPreferredWidth(), /*tmodel->getSortingStatus(tc->getModelIndex())*/true, !tcm->isColumnVisible(tc));
+   }
+  }
+  catch (Exception e)
+  {
+   log->warn("unable to store settings for table column " + tc->getHeaderValue().toString());
+   //e.printStackTrace();
+  }
+ }
+#endif
+}
+/*public*/ void BeanTableDataModel::loadTableColumnDetails(JTable* table)
+{
+ loadTableColumnDetails(table, getMasterClassName());
+}
+
+/*public*/ void BeanTableDataModel::loadTableColumnDetails(JTable* table, QString beantableref)
+{
+ UserPreferencesManager* p = (UserPreferencesManager*)  InstanceManager::getDefault("UserPreferencesManager");
+ //Set all the sort and width details of the table first.
+
+#if 0
+    //Reorder the columns first
+    for (int i = 0; i < table.columnCount(QModelIndex()); i++) {
+        String columnName = p.getTableColumnAtNum(beantableref, i);
+        if (columnName != NULL) {
+            int originalLocation = -1;
+            for (int j = 0; j < table.columnCount(QModelIndex()); j++) {
+                if (table.getColumnName(j)==(columnName)) {
+                    originalLocation = j;
+                    break;
+                }
+            }
+            if (originalLocation != -1 && (originalLocation != i)) {
+                table.moveColumn(originalLocation, i);
+            }
+        }
+    }
+#endif
+ //Set column widths, sort order and hidden status
+    table->createDefaultColumnsFromModel();
+ XTableColumnModel* tcm = (XTableColumnModel*)table->getColumnModel();
+ QListIterator<TableColumn*> en = tcm->getColumns(false);
+    //jtable.setDefaultEditor(Object.class, new RosterCellEditor());
+ QSortFilterProxyModel* tmodel = ((QSortFilterProxyModel*)table->getModel());
+ while(en.hasNext())
+ {
+  TableColumn* tc = en.next();
+  QString columnName = tc->getHeaderValue().toString();
+  if (p->getTableColumnWidth(beantableref, columnName) != -1)
+  {
+   int width = p->getTableColumnWidth(beantableref, columnName);
+   tc->setPreferredWidth(width);
+
+   int sort = p->getTableColumnSort(beantableref, columnName);
+//   tmodel->setSortingStatus(tc->getModelIndex(), sort);
+
+   if(p->getTableColumnHidden(beantableref, columnName))
+   {
+    tcm->setColumnVisible(tc, false);
+   }
+   else
+   {
+    tcm->setColumnVisible(tc, true);
+   }
+  }
+ }
+}
+
+//void BeanTableDataModel::fireTableDataChanged()
+//{
+// beginResetModel();
+// endResetModel();
+// setPersistentButtons();
+//}
+
+//void BeanTableDataModel::fireTableRowsUpdated(int, int)
+//{
+// beginResetModel();
+// endResetModel();
+// setPersistentButtons();
+//}
+
+//void BeanTableDataModel::setPersistentButtons()
+//{
+// for(int row = 0; row < rowCount(QModelIndex()); row ++)
+// {
+//  foreach(int col, buttonMap)
+//   table->openPersistentEditor(index(row, col));
+// }
+//}

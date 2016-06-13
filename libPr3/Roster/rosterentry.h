@@ -1,0 +1,216 @@
+#ifndef ROSTERENTRY_H
+#define ROSTERENTRY_H
+
+#include <QObject>
+#include "locoaddress.h"
+#include <QMap>
+#include "logger.h"
+#include <QStringList>
+#include <QDir>
+#include <QtXml>
+#include "dcclocoaddress.h"
+#include "propertychangesupport.h"
+#include "Roster/cvtablemodel.h"
+#include "Roster/locofile.h"
+#include "Roster/indexedcvtablemodel.h"
+#include "basicrosterentry.h"
+
+class RosterSpeedProfile;
+class HardcopyWriter;
+class PropertyChangeEvent;
+class CvTableModel;
+class IndexedCvTableModel;
+class VariableTableModel;
+class LIBPR3SHARED_EXPORT RosterEntry : public BasicRosterEntry
+{
+    Q_OBJECT
+public:
+ /*public*/ static /*final*/ QString SPEED_PROFILE;// = "speedprofile"; // NOI18N
+    /*public*/ static /*final*/ QString SOUND_LABEL;// = "soundlabel"; // NOI18N
+    /*public*/ /*final*/ static int MAXSOUNDNUM;// = 32;
+    explicit RosterEntry(QObject *parent = 0);
+    /*final*/const static int MAXFNNUM = 28;
+    /*public*/ int getMAXFNNUM() { return MAXFNNUM; }
+    /**
+     * Construct a blank object.
+     *
+     */
+//    /*public*/ RosterEntry() ;
+    /*public*/ RosterEntry(QString fileName,QObject *parent = 0);
+    /*public*/ RosterEntry(RosterEntry* pEntry, QString pID,QObject *parent = 0);
+    /*public*/ void setId(QString s);
+    /*public*/ QString getId();
+    /*public*/ void   setFileName(QString s);
+    /*public*/ QString getFileName();
+    /*public*/ QString getPathName();
+    /**
+     * Ensure the entry has a valid filename. If none
+     * exists, create one based on the ID string. Does _not_
+     * enforce any particular naming; you have to check separately
+     * for "&lt.none&gt." or whatever your convention is for indicating
+     * an invalid name.  Does replace the space, period, colon, slash and
+     * backslash characters so that the filename will be generally usable.
+     */
+    /*public*/ void ensureFilenameExists();
+    /*public*/ RosterEntry(QDomElement e);
+    /*public*/ LocoAddress* getAddress(QDomElement element);
+    /*public*/ void loadFunctions(QDomElement e3);
+    /*public*/ void loadAttributes(QDomElement e3);
+    /*public*/ void putAttribute(QString key, QString value);
+    /*public*/ QString getAttribute(QString key) ;
+    /*public*/ QString titleString();
+    /*public*/ void deleteAttribute(QString key);
+    /*public*/ QSet<QString> getAttributes();
+    /*public*/ QStringList getAttributeList();
+    /*public*/ int getMaxSpeedPCT();
+    /*public*/ void setMaxSpeedPCT(int maxSpeedPCT);
+    /*protected*/ void warnShortLong(QString id);
+    /*public*/ QDomElement store(QDomDocument doc);
+    /*public*/ QString toString();
+    /*public*/ void updateFile();
+    /*public*/ void   setRoadName(QString s);
+    /*public*/ QString getRoadName();
+    /*public*/ void   setRoadNumber(QString s);
+    /*public*/ QString getRoadNumber();
+    /*public*/ void   setMfg(QString s);
+    /*public*/ QString getMfg();
+    /*public*/ void   setModel(QString s);
+    /*public*/ QString getModel();
+    /*public*/ void   setOwner(QString s);
+    /*public*/ QString getOwner();
+    /*public*/ void   setDccAddress(QString s);
+    /*public*/ QString getDccAddress();
+    /*public*/ void setLongAddress(bool b);
+    /*public*/ RosterSpeedProfile* getSpeedProfile();
+    /*public*/ void setSpeedProfile(RosterSpeedProfile* sp);
+    /*public*/ bool isLongAddress();
+    /*public*/ void setProtocol(LocoAddress::Protocol protocol);
+    /*public*/ LocoAddress::Protocol getProtocol();
+    /*public*/ QString getProtocolAsString();
+    /*public*/ void   setComment(QString s);
+    /*public*/ QString getComment();
+    /*public*/ void   setDecoderModel(QString s);
+    /*public*/ QString getDecoderModel();
+    /*public*/ void   setDecoderFamily(QString s);
+    /*public*/ QString getDecoderFamily();
+    /*public*/ void   setDecoderComment(QString s);
+    /*public*/ QString getDecoderComment();
+    /*public*/ DccLocoAddress* getDccLocoAddress();
+    /*public*/ void setImagePath(QString s) ;
+    /*public*/ QString getImagePath();
+    /*public*/ void setIconPath(QString s);
+    /*public*/ QString getIconPath();
+    /*public*/ void setShuntingFunction(QString fn);
+    /*public*/ QString getShuntingFunction();
+    /*public*/ void setURL(QString s);
+    /*public*/ QString getURL();
+    /*public*/ void setDateUpdated(QString s);
+    /*public*/ QString getDateUpdated();
+    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
+    /*protected*/ /*synchronized*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+    qint32 getRfidTag();
+    void setRfidTag(QString tag);
+    /*public*/ void setFunctionLabel(int fn, QString label);
+    /*public*/ QString getFunctionLabel(int fn);
+    /*public*/ void setSoundLabel(int fn, QString label);
+    /*public*/ QString getSoundLabel(int fn);
+    /*public*/ void setFunctionImage(int fn, QString s);
+    /*public*/ QString getFunctionImage(int fn);
+    /*public*/ void setFunctionSelectedImage(int fn, QString s);
+    /*public*/ QString getFunctionSelectedImage(int fn);
+    /*public*/ void setFunctionLockable(int fn, bool lockable);
+    /*public*/ bool getFunctionLockable(int fn);
+    /*public*/ void loadCvModel(CvTableModel* cvModel, IndexedCvTableModel* iCvModel);
+    /*public*/ void writeFile(CvTableModel* cvModel, IndexedCvTableModel* iCvModel, VariableTableModel* variableModel);
+    /*public*/ void changeDateUpdated();
+    /*public*/ void setOpen(bool boo);
+    /*public*/ bool isOpen();
+    /*public*/ void readFile();
+    /*public*/ void printEntry(HardcopyWriter* w);
+    /*public*/ void printEntryDetails(HardcopyWriter* w);
+    /*public*/ QVector<QString> wrapComment(QString comment, int textSpace);
+    /*public*/ static QString getDefaultOwner() ;
+    /*public*/ static void setDefaultOwner(QString n);
+
+
+signals:
+ void propertyChange(PropertyChangeEvent*);
+    
+public slots:
+private:
+    static /*private*/ QString _defaultOwner;// = "";
+    void init();
+    Logger* log;
+    bool loadedOnce;// = false;
+    /**
+     * Store the root element of the JDOM tree representing this
+     * RosterEntry.
+     */
+    /*private*/ QDomElement mRootElement;// = NULL;
+    PropertyChangeSupport* pcs;
+    QDomElement storeLocoAddress(QDomDocument doc, LocoAddress* addr);
+    int openCounter;// =0;
+    QMutex mutex;
+    /*private*/ int blanks;//=0;
+    /*private*/ int textSpaceWithIcon;//=0;
+    QString indent;// = "                      ";
+    int indentWidth;// = indent.length();
+    QString newLine;// = "\n";
+    /*private*/ int writeWrappedComment(HardcopyWriter* w, QString text, QString title, int textSpace);
+
+protected:
+    // members to remember all the info
+    /*protected*/ QString _fileName;// = null;
+
+    /*protected*/ QString _id;// = "";
+    /*protected*/ QString _roadName;// = "";
+    /*protected*/ QString _roadNumber;// = "";
+    /*protected*/ QString _mfg;// = "";
+    /*protected*/ QString _owner;// = _defaultOwner;
+    /*protected*/ QString _model;// = "";
+    /*protected*/ QString _dccAddress;// = "3";
+    ///*protected*/ bool _isLongAddress = false;
+    /*protected*/ LocoAddress::Protocol _protocol;// = LocoAddress::DCC_SHORT;
+    /*protected*/ QString _comment;// = "";
+    /*protected*/ QString _decoderModel;// = "";
+    /*protected*/ QString _decoderFamily;// = "";
+    /*protected*/ QString _decoderComment;// = "";
+    /*protected*/ QString _dateUpdated;// = "";
+    /*protected*/ int _maxSpeedPCT;// = 100;
+    /*protected*/ QVector<QString> functionLabels;
+    /*protected*/ QVector<QString> soundLabels;
+    /*protected*/ QVector<QString> functionSelectedImages;
+    /*protected*/ QVector<QString> functionImages;
+    /*protected*/ QVector<bool> functionLockables;
+    /*protected*/ QString _isShuntingOn;//="";
+    qint32 _rfidTag;
+
+
+    QMap<QString,QString>* attributePairs;
+
+    /*protected*/ QString _imageFilePath;// = FileUtil.getUserResourcePath() ; // at DndImagePanel init will
+    /*protected*/ QString _iconFilePath;// = FileUtil.getUserResourcePath() ;  // force image copy to that folder
+    /*protected*/ QString _URL;// = "";
+    /*protected*/ RosterSpeedProfile* _sp;// = NULL;
+    QDomElement createTextElement(QDomDocument doc, QString tagName, QString text);
+ friend class RosterFrame;
+};
+#ifndef VPTR_H
+#define VPTR_H
+template <class T> class VPtr
+{
+public:
+    static T* asPtr(QVariant v)
+    {
+    return  (T *) v.value<void *>();
+    }
+
+    static QVariant asQVariant(T* ptr)
+    {
+    return qVariantFromValue((void *) ptr);
+    }
+};
+#endif
+Q_DECLARE_METATYPE (QList<RosterEntry*>*)
+#endif // ROSTERENTRY_H

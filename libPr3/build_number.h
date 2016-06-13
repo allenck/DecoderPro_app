@@ -1,0 +1,15 @@
+#ifndef LIBPR3_BUILD_NUMBER_H
+#define LIBPR3_BUILD_NUMBER_H
+#include <QString>
+
+#define VER_BUILDNR 29467
+#define VER_DATE 20150821
+#define VER_HOUR 11
+#define VER_MINUTE 54
+#define VER_SECOND 55
+
+
+
+
+
+#endif // LIBPR3_BUILD_NUMBER_H

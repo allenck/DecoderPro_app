@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AddEditLightControlDialog</class>
+ <widget class="QDialog" name="AddEditLightControlDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>453</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Control Type:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox">
+       <item>
+        <property name="text">
+         <string>None</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>By Sensor</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>By Fast Clock</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>By Turnout Status</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>By Timed On</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>By Two Sensors</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lblNoControl">
+     <property name="text">
+      <string>No Automated Control Selected</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="lblSensor">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Sensor Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="edSensor1"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="edSensor2"/>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="lblSensorState">
+       <property name="text">
+        <string>Sense for ON</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cbSensorState">
+       <item>
+        <property name="text">
+         <string>Active</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Inactive</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="lblTimeOn">
+       <property name="text">
+        <string>Time on (hh:mm)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QTimeEdit" name="timeEditOn"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lblTimeOff">
+       <property name="text">
+        <string>Time off (hh:mm)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QTimeEdit" name="timeEditOff"/>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="lblTurnoutName">
+       <property name="text">
+        <string>Turnout Name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="edTurnout"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lblStatusTurnout">
+       <property name="text">
+        <string>Status for ON</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="cbStatusTurnout">
+       <item>
+        <property name="text">
+         <string>Closed</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Thrown</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="QLabel" name="lblTriggerSensor">
+       <property name="text">
+        <string>Trigger Sensor Name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="edTriggerSensor"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lblDuration">
+       <property name="text">
+        <string>Duration ON (msec)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="sbDuration"/>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>379</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="8" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="btnCreate">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Create</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancel">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <zorder>label</zorder>
+  <zorder>comboBox</zorder>
+  <zorder>lblNoControl</zorder>
+  <zorder>horizontalSpacer</zorder>
+  <zorder>btnCreate</zorder>
+  <zorder>btnCancel</zorder>
+  <zorder>btnCancel</zorder>
+  <zorder>lblSensor</zorder>
+  <zorder>edSensor1</zorder>
+  <zorder>lblSensorState</zorder>
+  <zorder>cbSensorState</zorder>
+  <zorder>lblTimeOn</zorder>
+  <zorder>lblTimeOff</zorder>
+  <zorder>timeEditOff</zorder>
+  <zorder>timeEditOn</zorder>
+  <zorder>lblTurnoutName</zorder>
+  <zorder>edTurnout</zorder>
+  <zorder>lblStatusTurnout</zorder>
+  <zorder>cbStatusTurnout</zorder>
+  <zorder>lblTriggerSensor</zorder>
+  <zorder>edTriggerSensor</zorder>
+  <zorder>lblDuration</zorder>
+  <zorder>sbDuration</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

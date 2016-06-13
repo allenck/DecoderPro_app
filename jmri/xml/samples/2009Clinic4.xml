@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://www.jmri.org/xml/XSLT/panelfile.xsl"?>
+<!DOCTYPE layout-config SYSTEM "layout-config-2-5-7.dtd">
+
+<layout-config>
+  <turnouts class="jmri.jmrix.loconet.configurexml.LnTurnoutManagerXml">
+    <operations automate="false">
+      <operation name="NoFeedback" class="jmri.configurexml.turnoutoperations.NoFeedbackTurnoutOperationXml" interval="300" maxtries="2" />
+      <operation name="Sensor" class="jmri.configurexml.turnoutoperations.SensorTurnoutOperationXml" interval="300" maxtries="3" />
+      <operation name="Raw" class="jmri.configurexml.turnoutoperations.RawTurnoutOperationXml" interval="300" maxtries="1" />
+    </operations>
+    <turnout systemName="LT1" feedback="MONITORING" inverted="false" automate="Default" />
+    <turnout systemName="LT2" feedback="MONITORING" inverted="false" automate="Default" />
+    <turnout systemName="LT3" feedback="MONITORING" inverted="false" automate="Default" />
+    <turnout systemName="LT4" feedback="MONITORING" inverted="false" automate="Default" />
+  </turnouts>
+  <sensors class="jmri.jmrix.loconet.configurexml.LnSensorManagerXml">
+    <sensor systemName="LS13" inverted="false" />
+    <sensor systemName="LS2" inverted="false" />
+    <sensor systemName="LS6" inverted="false" />
+    <sensor systemName="LS9" inverted="false" />
+  </sensors>
+  <sensors class="jmri.managers.configurexml.InternalSensorManagerXml">
+    <sensor systemName="IS10:CB" inverted="false" />
+    <sensor systemName="IS11:NWK" inverted="false" />
+    <sensor systemName="IS11:RWK" inverted="false" />
+    <sensor systemName="IS11:WL" inverted="false" />
+    <sensor systemName="IS12:CB" inverted="false" />
+    <sensor systemName="IS5:NWK" inverted="false" />
+    <sensor systemName="IS5:RWK" inverted="false" />
+    <sensor systemName="IS5:WL" inverted="false" />
+    <sensor systemName="IS6:CB" inverted="false" />
+    <sensor systemName="IS6:LDGL" inverted="false" />
+    <sensor systemName="IS6:RDGL" inverted="false" />
+    <sensor systemName="IS6:RGL" inverted="false" />
+    <sensor systemName="IS7:NWK" inverted="false" />
+    <sensor systemName="IS7:RWK" inverted="false" />
+    <sensor systemName="IS7:WL" inverted="false" />
+    <sensor systemName="IS8:CB" inverted="false" />
+    <sensor systemName="IS9:NWK" inverted="false" />
+    <sensor systemName="IS9:RWK" inverted="false" />
+    <sensor systemName="IS9:WL" inverted="false" />
+    <sensor systemName="ISCLOCKRUNNING" inverted="false" />
+  </sensors>
+  <timebase class="jmri.jmrit.simpleclock.configurexml.SimpleTimebaseXml" time="Wed Jun 24 11:13:58 EDT 2009" rate="1.0" run="yes" master="yes" sync="no" correct="no" display="no" startstopped="no" startsettime="no" startclockoption="0" />
+  <logixs class="jmri.configurexml.DefaultLogixManagerXml">
+    <logix systemName="IX11:WC" userName="Plant 11 Switch Controller" enabled="yes">
+      <logixConditional systemName="IX11:WCC1" order="0" />
+      <logixConditional systemName="IX11:WCC2" order="1" />
+    </logix>
+    <logix systemName="IX11:WK" userName="Plant 11 Switch Indicator" enabled="yes">
+      <logixConditional systemName="IX11:WKC1" order="0" />
+    </logix>
+    <logix systemName="IX5:WC" userName="Plant 5 Switch Controller" enabled="yes">
+      <logixConditional systemName="IX5:WCC1" order="0" />
+      <logixConditional systemName="IX5:WCC2" order="1" />
+    </logix>
+    <logix systemName="IX5:WK" userName="Plant 5 Switch Indicator" enabled="yes">
+      <logixConditional systemName="IX5:WKC1" order="0" />
+    </logix>
+    <logix systemName="IX7:WC" userName="Plant 7 Switch Controller" enabled="yes">
+      <logixConditional systemName="IX7:WCC1" order="0" />
+      <logixConditional systemName="IX7:WCC2" order="1" />
+    </logix>
+    <logix systemName="IX7:WK" userName="Plant 7 Switch Indicator" enabled="yes">
+      <logixConditional systemName="IX7:WKC1" order="0" />
+    </logix>
+    <logix systemName="IX9:WC" userName="Plant 9 Switch Controller" enabled="yes">
+      <logixConditional systemName="IX9:WCC1" order="0" />
+      <logixConditional systemName="IX9:WCC2" order="1" />
+    </logix>
+    <logix systemName="IX9:WK" userName="Plant 9 Switch Indicator" enabled="yes">
+      <logixConditional systemName="IX9:WKC1" order="0" />
+    </logix>
+  </logixs>
+  <conditionals class="jmri.configurexml.DefaultConditionalManagerXml">
+    <conditional systemName="IX11:WCC1" userName="Switch 11 Normal" antecedent="((R1 and R2) and notR3) and R4" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS13" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS12:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="3" negated="yes" type="4" systemName="LT4" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS11:WL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-send.wav" />
+      <conditionalAction option="1" type="17" systemName="LT4" data="2" delay="5" string="5" />
+    </conditional>
+    <conditional systemName="IX11:WCC2" userName="Switch 11 Reverse" antecedent="((R1 and R2) and notR3) and R4" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS13" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS12:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="3" negated="yes" type="3" systemName="LT4" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS11:WL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-send.wav" />
+      <conditionalAction option="1" type="17" systemName="LT4" data="4" delay="5" string="5" />
+    </conditional>
+    <conditional systemName="IX11:WKC1" userName="LT4" antecedent="R1" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="3" systemName="LT4" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS11:NWK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="10" systemName="IS11:RWK" data="2" delay="5" string="5" />
+      <conditionalAction option="2" type="9" systemName="IS11:RWK" data="4" delay="0" string="" />
+      <conditionalAction option="2" type="10" systemName="IS11:NWK" data="2" delay="5" string="5" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-receive.wav" />
+    </conditional>
+    <conditional systemName="IX5:WCC1" userName="Switch 5 Normal" antecedent="((R1 and R2) and notR3) and R4" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS2" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS6:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="3" negated="yes" type="4" systemName="LT1" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS5:WL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-send.wav" />
+      <conditionalAction option="1" type="17" systemName="LT1" data="2" delay="5" string="5" />
+    </conditional>
+    <conditional systemName="IX5:WCC2" userName="Switch 5 Reverse" antecedent="((R1 and R2) and notR3) and R4" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS2" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS6:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="3" negated="yes" type="3" systemName="LT1" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS5:WL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-send.wav" />
+      <conditionalAction option="1" type="17" systemName="LT1" data="4" delay="5" string="5" />
+    </conditional>
+    <conditional systemName="IX5:WKC1" userName="LT1" antecedent="R1" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="3" systemName="LT1" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS5:NWK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="10" systemName="IS5:RWK" data="2" delay="5" string="5" />
+      <conditionalAction option="2" type="9" systemName="IS5:RWK" data="4" delay="0" string="" />
+      <conditionalAction option="2" type="10" systemName="IS5:NWK" data="2" delay="5" string="5" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-receive.wav" />
+    </conditional>
+    <conditional systemName="IX7:WCC1" userName="Switch 7 Normal" antecedent="((R1 and R2) and notR3) and R4" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS6" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS8:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="3" negated="yes" type="4" systemName="LT2" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS7:WL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-send.wav" />
+      <conditionalAction option="1" type="17" systemName="LT2" data="2" delay="5" string="5" />
+    </conditional>
+    <conditional systemName="IX7:WCC2" userName="Switch 7 Reverse" antecedent="((R1 and R2) and notR3) and R4" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS6" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS8:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="3" negated="yes" type="3" systemName="LT2" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS7:WL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-send.wav" />
+      <conditionalAction option="1" type="17" systemName="LT2" data="4" delay="5" string="5" />
+    </conditional>
+    <conditional systemName="IX7:WKC1" userName="LT2" antecedent="R1" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="3" systemName="LT2" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS7:NWK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="10" systemName="IS7:RWK" data="2" delay="5" string="5" />
+      <conditionalAction option="2" type="9" systemName="IS7:RWK" data="4" delay="0" string="" />
+      <conditionalAction option="2" type="10" systemName="IS7:NWK" data="2" delay="5" string="5" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-receive.wav" />
+    </conditional>
+    <conditional systemName="IX9:WCC1" userName="Switch 9 Normal" antecedent="((R1 and R2) and notR3) and R4" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS9" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS10:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="3" negated="yes" type="4" systemName="LT3" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS9:WL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-send.wav" />
+      <conditionalAction option="1" type="17" systemName="LT3" data="2" delay="5" string="5" />
+    </conditional>
+    <conditional systemName="IX9:WCC2" userName="Switch 9 Reverse" antecedent="((R1 and R2) and notR3) and R4" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS9" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS10:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="3" negated="yes" type="3" systemName="LT3" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS9:WL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-send.wav" />
+      <conditionalAction option="1" type="17" systemName="LT3" data="4" delay="5" string="5" />
+    </conditional>
+    <conditional systemName="IX9:WKC1" userName="LT3" antecedent="R1" logicType="1">
+      <conditionalStateVariable operator="4" negated="no" type="3" systemName="LT3" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS9:NWK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="10" systemName="IS9:RWK" data="2" delay="5" string="5" />
+      <conditionalAction option="2" type="9" systemName="IS9:RWK" data="4" delay="0" string="" />
+      <conditionalAction option="2" type="10" systemName="IS9:NWK" data="2" delay="5" string="5" />
+      <conditionalAction option="1" type="15" systemName=" " data="-1" delay="0" string="/usr/local/JMRI/resources/sounds/Code-receive.wav" />
+    </conditional>
+  </conditionals>
+  <paneleditor class="jmri.jmrit.display.configurexml.PanelEditorXml" name="2009 Clinic 4" x="1874" y="62" height="775" width="559" editable="yes" positionable="yes" showcoordinates="no" controlling="yes" hide="no" panelmenu="yes" scrollable="none">
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="0" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-left-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="12" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-blank-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="337" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-sw-sig-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="272" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-sw-sig-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="207" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-sw-sig-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="142" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-sw-sig-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="77" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-blank-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="402" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-blank-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="467" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-blank-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="532" y="0" level="1" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/background/Panel-right-7.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="170" y="357" level="5" text="5" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="171" y="471" level="5" text="6" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="235" y="357" level="5" text="7" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="236" y="471" level="5" text="8" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="301" y="356" level="5" text="9" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="298" y="471" level="5" text="10" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="363" y="357" level="5" text="11" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="363" y="471" level="5" text="12" size="11" style="0" red="255" green="255" blue="255" />
+    <positionablelabel forcecontroloff="false" fixed="true" showtooltip="false" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="219" y="651" level="3" size="12" style="0" red="0" green="0" blue="0" icon="USS-plate" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="297" y="153" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/sw-l.gif" rotate="2" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="163" y="153" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/sw-l.gif" rotate="2" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="230" y="153" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/sw-r.gif" rotate="2" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="364" y="153" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/sw-r.gif" rotate="2" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="402" y="183" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/block.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="134" y="183" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/block.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="335" y="154" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/block.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="335" y="183" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/block.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="201" y="154" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/block.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="201" y="183" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/block.gif" rotate="0" />
+    <positionablelabel forcecontroloff="false" fixed="false" showtooltip="true" class="jmri.jmrit.display.configurexml.PositionableLabelXml" x="268" y="183" level="3" size="12" style="0" red="0" green="0" blue="0" icon="resources/icons/USS/proto/block.gif" rotate="0" />
+    <sensoricon sensor="LS2" x="175" y="176" level="10" active="resources/icons/USS/sensor/red-on.gif" inactive="resources/icons/USS/sensor/red-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/s-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="LS6" x="231" y="177" level="10" active="resources/icons/USS/sensor/red-on.gif" inactive="resources/icons/USS/sensor/red-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/s-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="LS9" x="309" y="177" level="10" active="resources/icons/USS/sensor/red-on.gif" inactive="resources/icons/USS/sensor/red-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/s-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="LS13" x="365" y="177" level="10" active="resources/icons/USS/sensor/red-on.gif" inactive="resources/icons/USS/sensor/red-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/s-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS5:WL" x="162" y="379" level="10" active="resources/icons/USS/plate/levers/l-left.gif" inactive="resources/icons/USS/plate/levers/l-right.gif" unknown="resources/icons/USS/plate/levers/l-unknown.gif" inconsistent="resources/icons/USS/plate/levers/l-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS7:WL" x="227" y="379" level="10" active="resources/icons/USS/plate/levers/l-left.gif" inactive="resources/icons/USS/plate/levers/l-right.gif" unknown="resources/icons/USS/plate/levers/l-unknown.gif" inconsistent="resources/icons/USS/plate/levers/l-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS9:WL" x="291" y="380" level="10" active="resources/icons/USS/plate/levers/l-left.gif" inactive="resources/icons/USS/plate/levers/l-right.gif" unknown="resources/icons/USS/plate/levers/l-unknown.gif" inconsistent="resources/icons/USS/plate/levers/l-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS11:WL" x="356" y="379" level="10" active="resources/icons/USS/plate/levers/l-left.gif" inactive="resources/icons/USS/plate/levers/l-right.gif" unknown="resources/icons/USS/plate/levers/l-unknown.gif" inconsistent="resources/icons/USS/plate/levers/l-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS8:CB" x="229" y="581" level="10" active="resources/icons/USS/plate/levers/code-press.gif" inactive="resources/icons/USS/plate/levers/code.gif" unknown="resources/icons/USS/plate/levers/code-unknown.gif" inconsistent="resources/icons/USS/plate/levers/code-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="true" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS6:CB" x="163" y="580" level="10" active="resources/icons/USS/plate/levers/code-press.gif" inactive="resources/icons/USS/plate/levers/code.gif" unknown="resources/icons/USS/plate/levers/code-unknown.gif" inconsistent="resources/icons/USS/plate/levers/code-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="true" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS10:CB" x="293" y="581" level="10" active="resources/icons/USS/plate/levers/code-press.gif" inactive="resources/icons/USS/plate/levers/code.gif" unknown="resources/icons/USS/plate/levers/code-unknown.gif" inconsistent="resources/icons/USS/plate/levers/code-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="true" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS12:CB" x="359" y="580" level="10" active="resources/icons/USS/plate/levers/code-press.gif" inactive="resources/icons/USS/plate/levers/code.gif" unknown="resources/icons/USS/plate/levers/code-unknown.gif" inconsistent="resources/icons/USS/plate/levers/code-inconsistent.gif" rotate="0" forcecontroloff="false" momentary="true" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS5:RWK" x="178" y="340" level="10" active="resources/icons/USS/sensor/amber-on.gif" inactive="resources/icons/USS/sensor/amber-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/amber-off.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS7:RWK" x="243" y="341" level="10" active="resources/icons/USS/sensor/amber-on.gif" inactive="resources/icons/USS/sensor/amber-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/amber-off.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS9:RWK" x="308" y="340" level="10" active="resources/icons/USS/sensor/amber-on.gif" inactive="resources/icons/USS/sensor/amber-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/amber-off.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS11:RWK" x="374" y="341" level="10" active="resources/icons/USS/sensor/amber-on.gif" inactive="resources/icons/USS/sensor/amber-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/amber-off.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS5:NWK" x="146" y="340" level="10" active="resources/icons/USS/sensor/green-on.gif" inactive="resources/icons/USS/sensor/green-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/green-off.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS7:NWK" x="212" y="340" level="10" active="resources/icons/USS/sensor/green-on.gif" inactive="resources/icons/USS/sensor/green-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/green-off.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS9:NWK" x="276" y="341" level="10" active="resources/icons/USS/sensor/green-on.gif" inactive="resources/icons/USS/sensor/green-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/green-off.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <sensoricon sensor="IS11:NWK" x="341" y="340" level="10" active="resources/icons/USS/sensor/green-on.gif" inactive="resources/icons/USS/sensor/green-off.gif" unknown="resources/icons/USS/sensor/s-unknown.gif" inconsistent="resources/icons/USS/sensor/green-off.gif" rotate="0" forcecontroloff="false" momentary="false" class="jmri.jmrit.display.configurexml.SensorIconXml" />
+    <multisensoricon x="161" y="493" level="10" inactive="resources/icons/USS/plate/levers/l-inactive.gif" unknown="resources/icons/USS/plate/levers/l-unknown.gif" inconsistent="resources/icons/USS/plate/levers/l-inconsistent.gif" rotate="0" updown="false" forcecontroloff="false" class="jmri.jmrit.display.configurexml.MultiSensorIconXml">
+      <multisensoriconentry sensor="IS6:LDGL" icon="resources/icons/USS/plate/levers/l-left.gif" />
+      <multisensoriconentry sensor="IS6:RGL" icon="resources/icons/USS/plate/levers/l-vertical.gif" />
+      <multisensoriconentry sensor="IS6:RDGL" icon="resources/icons/USS/plate/levers/l-right.gif" />
+    </multisensoricon>
+  </paneleditor>
+  <!--Written by JMRI version 2.5.7-Pete4 on Tue Jun 30 18:53:42 EDT 2009 $Id: XmlFile.java,v 1.43 2009/06/27 22:25:51 dan_boudreau Exp $-->
+</layout-config>
+

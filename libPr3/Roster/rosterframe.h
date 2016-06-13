@@ -1,0 +1,284 @@
+#ifndef ROSTERFRAME_H
+#define ROSTERFRAME_H
+
+#include "jmrijframe.h"
+#include "loconetsystemconnectionmemo.h"
+#include <QComboBox>
+#include <QAction>
+#include "identifyloco.h"
+#include <QToolButton>
+#include "lnpowermanager.h"
+#include "instancemanager.h"
+#include <QLabel>
+#include "roster.h"
+#include "rostergroupspanel.h"
+#include "exportrosteritemaction.h"
+#include "copyrosteritemaction.h"
+
+namespace Ui {
+class RosterFrame;
+}
+typedef void (*NoParm)();
+
+class DecoderFile;
+class UserPreferencesManager;
+class PropertyChangeEvent;
+class ConnectionConfig;
+class ProgModeSelector;
+class QLabel;
+//class ConnectionConfig;
+class RosterEntry;
+class Roster;
+class PaneProgFrame;
+class RosterEntryUpdateListener;
+class LIBPR3SHARED_EXPORT RosterFrame : public JmriJFrame
+{
+    Q_OBJECT
+
+public:
+    explicit RosterFrame(QWidget *parent = 0);
+    RosterFrame(QString name, QWidget *parent = 0);
+    RosterFrame(QString name, QString menubarFile, QString toolbarFile, QWidget *parent = 0);
+    ~RosterFrame();
+    RosterFrame(const RosterFrame&) : JmriJFrame() {}
+    QString getTitle();
+//    void propertyChange(PropertyChangeEvent*);
+    //static int openWindowInstances;// = 0;
+    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    static QList<RosterFrame*> frameInstances;// = new ArrayList<RosterFrame>();
+    /*public*/ QMenuBar* getMenu();
+    /*public*/ void setAllowQuit(bool allowQuit);
+
+public slots:
+    void On_ConnectionStatusPropertyChange(PropertyChangeEvent*);
+    void On_InstanceManagerPropertyChange(PropertyChangeEvent*);
+    void On_newLoco_clicked();
+    /*public*/ Q_INVOKABLE /*virtual*/ void remoteCalls(QStringList args);
+
+private:
+    Ui::RosterFrame *ui;
+    void common();
+    Roster* roster;
+    RosterEntry* rosterEntry;
+    QToolButton* newLoco;
+    QToolButton* identifyLoco;
+    QToolButton* togglePower;
+    QList<RosterEntry*> list;
+    JFrame* progFrame;
+    QComboBox* cbProgrammers;
+    ProgModeSelector* modePanel;
+    QComboBox* cbProgMode;
+    UserPreferencesManager* p;
+//    ConnectionConfig* serModeProCon;// = NULL;
+//    ConnectionConfig* opsModeProCon;// = NULL;
+    QLabel* programmerStatusLabel;
+    QLabel* statusField;
+    QLabel* serviceModeProgrammerLabel;
+    QLabel* operationsModeProgrammerLabel;
+    QString programmer1; // "Comprehensive
+    QString programmer2; // "Basic"
+    QVector<RosterEntry*> rows;
+ Logger* log;
+ bool inStartProgrammer;// = false;
+ RosterEntryUpdateListener* rosterEntryUpdateListener;
+ void updateRow(int row, RosterEntry* re);
+ void updateDetails();
+ bool bUpdating;
+ void updateInfo();
+ ConnectionConfig* serModeProCon;// = null;
+ ConnectionConfig* opsModeProCon;// = null;
+// JRadioButtonMenuItem contextEdit = new JRadioButtonMenuItem(Bundle.getMessage("Edit"));
+// JRadioButtonMenuItem contextOps = new JRadioButtonMenuItem(Bundle.getMessage("ProgrammingOnMain"));
+// JRadioButtonMenuItem contextService = new JRadioButtonMenuItem(Bundle.getMessage("ProgrammingTrack"));
+ QSignalMapper* signalMapper;
+ RosterGroupsPanel* groups;
+ QMenuBar* menuBar;// = new JMenuBar();
+ void closeEvent(QCloseEvent *);
+ void handleQuit(QCloseEvent* e);
+ void saveWindowDetails();
+ bool hideGroups;// = false;
+ bool _hideRosterImage;// = false;
+ QHash<QString, NoParm>* slotTable;
+ bool checkIfEntrySelected();
+
+private slots:
+    void on_tableWidget_cellClicked(int row, int col);
+    void on_btnLabelsMedia_clicked();
+    void on_btnThrottle_clicked();
+//    void on_menuWindow_aboutToShow();
+    void on_btnProgram_clicked();
+    void on_actionHide_Show_Summary_Panel_triggered();
+    void on_actionHide_Show_Roster_Image_triggered();
+    void on_actionProgramming_Track_triggered();
+    void on_actionProgramming_On_Main_triggered();
+    void on_actionEdit_Only_triggered();
+    void on_actionLabels_and_Media_triggered();
+    void on_actionNew_Throttle_triggered();
+    void on_togglePower_clicked();
+    void on_actionDelete_Loco_triggered();
+    void on_tableWidget_cellChanged(int, int);
+    void propertyChange(PropertyChangeEvent* e);
+    void On_cbProgrammers_currentIndexChanged(QString);
+    void updateProgMode();
+    void On_splitterMoved(int, int);
+    void On_Quit();
+
+protected:
+    /*protected*/ bool _allowQuit;// = true;
+    /*protected*/ /*final*/ void buildWindow();
+    /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+    /*protected*/ QVector<RosterEntry*> selectRosterEntry(QString rosterGroup);
+    /*protected*/ void buildGUI(QString menubarFile, QString toolbarFile);
+    /*protected*/ void addMainMenuBar(QString menuFile);
+    /*protected*/ void addMainToolBar(QString toolBarFile);
+    /*protected*/ void allowQuit(bool quitAllowed);
+    /*protected*/ void addMainStatusBar(); // from TwoPaneTbWindow
+    /*protected*/ JmriAbstractAction* getNewWindowAction();
+    /*protected*/ JmriAbstractAction* newWindowAction;
+     /*protected*/ bool hideBottomPane;// = false;
+protected slots:
+    /*protected*/ void startIdentifyLoco();
+    /*protected*/ void selectLoco(int dccAddress, bool isLong, int mfgId, int modelId);
+    /*protected*/ void updateProgrammerStatus();
+    /*protected*/ void setNewWindowAction(JmriAbstractAction* newWindowAction);
+    /*protected*/ void systemsMenu();
+    /*protected*/ void printLoco(bool boo);
+    /*protected*/ void exportLoco();
+    /*protected*/ void copyLoco();
+    /*protected*/ void startProgrammer(DecoderFile* decoderFile, RosterEntry* re, QString filename);
+    /*protected*/ void newWindow();
+    /*protected*/ void newWindow(JmriAbstractAction* action);
+
+ friend class PwrListener;
+ friend class MyIdentifyLoco;
+ friend class RosterEntryUpdateListener;
+ friend class PropertyChangeSupport;
+};
+
+class  PwrListener : public PropertyChangeListener
+{
+ Q_OBJECT
+public:
+ PwrListener(RosterFrame* parent)
+ {
+  this->parent = parent;
+
+ }
+ void propertyChange(PropertyChangeEvent *e)
+ {
+  if(e->getPropertyName() == "Power")
+  {
+   LnPowerManager* pmgr = (LnPowerManager*)InstanceManager::powerManagerInstance();
+   if(pmgr->isPowerOn())
+   {
+    //parent->togglePower = new QToolButton();
+    parent->togglePower->setIcon(QIcon(":/resources/icons/throttles/power_green.png") );
+    parent->togglePower->setText(tr("Power on"));
+   }
+   else if (pmgr->isPowerOff())
+   {
+    //parent->togglePower = new QToolButton( );
+    parent->togglePower->setIcon(QIcon(":/resources/icons/throttles/power_red.png"));
+    parent->togglePower->setText(tr("Power off"));
+   }
+   else
+   {
+    //parent->togglePower = new QToolButton( );
+    parent->togglePower->setIcon(QIcon(":/resources/icons/throttles/power_yellow.png"));
+    parent->togglePower->setText(tr("Power unknown"));
+   }
+  }
+ }
+ private:
+  RosterFrame* parent;
+  friend class RosterFrame;
+};
+Q_DECLARE_METATYPE(RosterFrame)
+class MyIdentifyLoco : public IdentifyLoco
+{
+    Q_OBJECT
+ public:
+    MyIdentifyLoco(RosterFrame* me)
+    {
+     who = me;
+    }
+
+private:
+ RosterFrame* who;// = me;
+
+    //@Override
+protected:
+ void done(int dccAddress)
+ {
+  // if Done, updated the selected decoder
+   //who->selectLoco(dccAddress, !shortAddr, cv8val, cv7val);
+  emit doneSignal(dccAddress, !shortAddr, cv8val, cv7val);
+ }
+signals:
+ void doneSignal(int dccAddress, bool bLongAddr, int cv8Val, int cv7Val);
+ //@Override
+ protected: void message(QString m)
+ {
+  who->statusField->setText(m);
+ }
+
+    //@Override
+    protected: void error() {
+        // raise the button again
+        //idloco.setSelected(false);
+    }
+};
+class RosterEntryUpdateListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ public:
+    RosterEntryUpdateListener(RosterFrame* f);
+public slots:
+    void propertyChange(PropertyChangeEvent *);
+
+private:
+    RosterFrame* f;
+protected:
+};
+
+/*static*/ class ExportRosterItem : public ExportRosterItemAction
+{
+
+    /**
+     *
+     */
+    //private static final long serialVersionUID = 5920288372458701120L;
+public:
+    ExportRosterItem(QString pName, QWidget* pWho, RosterEntry* re)
+     : ExportRosterItemAction(pName, pWho)
+    {
+        //super(pName, pWho);
+        setExistingEntry(re);
+    }
+protected:
+    //@Override
+    /*protected*/ bool selectFrom() {
+        return true;
+    }
+};
+
+/*static*/ class CopyRosterItem : public  CopyRosterItemAction {
+
+    /**
+     *
+     */
+    //private static final long serialVersionUID = -4822095767152284104L;
+public:
+    CopyRosterItem(QString pName, QWidget* pWho, RosterEntry* re)
+     : CopyRosterItemAction(pName, pWho)
+    {
+        //super(pName, pWho);
+        setExistingEntry(re);
+    }
+
+    //@Override
+    /*protected*/ bool selectFrom() {
+        return true;
+    }
+};
+#endif // ROSTERFRAME_H

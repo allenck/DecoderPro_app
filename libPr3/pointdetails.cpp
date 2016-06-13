@@ -1,0 +1,780 @@
+#include "pointdetails.h"
+#include "source.h"
+#include "destinationpoints.h"
+#include "../LayoutEditor/layouteditor.h"
+#include "abstractsensor.h"
+#include "signalmast.h"
+#include "sensor.h"
+#include "signalhead.h"
+#include "defaultsignalmastmanager.h"
+#include "abstractsignalheadmanager.h"
+#include <QThread>
+#include <QVector>
+
+//PointDetails::PointDetails(QObject *parent) :
+//    QObject(parent)
+//{
+//}
+///*public*/ class PointDetails {
+    //May want to look at putting a listener on the refLoc to listen to updates to blocks, signals and sensors attached to it
+
+    /*static*/ int PointDetails::nxButtonTimeout = 10;
+
+/*public*/ PointDetails::PointDetails(LayoutBlock* facing, LayoutBlock* protecting, QObject *parent): QObject(parent)
+{
+    this->facing=facing;
+    this->protecting = protecting;
+    panel = NULL;
+    routeToSet = false;
+    routeFromSet = false;
+    destinations = new QHash<DestinationPoints*, Source*>() ;//(5);
+    nxButtonState = EntryExitPairs::NXBUTTONINACTIVE;
+    extendedtime = false;
+    log = new Logger("PointDetails");
+}
+
+LayoutBlock* PointDetails::getFacing(){ return facing; }
+LayoutBlock* PointDetails::getProtecting(){ return protecting; }
+
+//This might be better off a ref to the source pointdetail.
+void PointDetails::setRouteTo(bool boo){
+    routeToSet = boo;
+}
+
+void PointDetails::setRouteFrom(bool boo){
+    routeFromSet = boo;
+}
+
+/*public*/ void PointDetails::setPanel(LayoutEditor* panel){
+    this->panel = panel;
+}
+
+void PointDetails::setSensor(Sensor* sen){
+    if(sensor==sen)
+        return;
+    if(sensor!=NULL)
+    {
+        //sensor.removePropertyChangeListener(nxButtonListener);
+        AbstractSensor* s = (AbstractSensor*)sensor;
+        disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+    }
+    sensor = sen;
+    if(sensor!=NULL)
+    {
+     //sensor.addPropertyChangeListener(nxButtonListener);
+     AbstractSensor* s = (AbstractSensor*)sensor;
+     connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+    }
+
+}
+
+void PointDetails::addSensorList(){
+    //sensor.addPropertyChangeListener(nxButtonListener);
+    AbstractSensor* s = (AbstractSensor*)sensor;
+    connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+}
+
+void PointDetails::removeSensorList(){
+    //sensor.removePropertyChangeListener(nxButtonListener);
+    AbstractSensor* s = (AbstractSensor*)sensor;
+    disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+}
+
+//Sensor getSensor() { return sensor; }
+
+//protected PropertyChangeListener nxButtonListener = new PropertyChangeListener() {
+//First off if we were inactive, and now active
+//        /*public*/ void propertyChange(PropertyChangeEvent e) {
+/*public*/ void PointDetails::nxButtonListener(PropertyChangeEvent* e)
+{
+    if(e->getPropertyName()!=("KnownState"))
+        return;
+    int now = e->getNewValue().toInt();
+    int old = e->getOldValue().toInt();
+
+    if((old==Sensor::UNKNOWN) || (old==Sensor::INCONSISTENT)){
+        setButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+        return;
+    }
+
+    DestinationPoints* destPoint = NULL;
+
+    //for(Entry<DestinationPoints, Source> dp: destinations->entrySet()){
+    QHashIterator<DestinationPoints*, Source*> dp(*destinations);
+    while(dp.hasNext())
+    {
+     dp.next();
+        destPoint = dp.key();
+        if(destPoint->isEnabled() && dp.value()->getPoint()->getNXState()==EntryExitPairs::NXBUTTONSELECTED){
+            setButtonState(EntryExitPairs::NXBUTTONSELECTED);
+            destPoint->activeBean(false);
+            return;
+        }
+    }
+
+    if(sourceRoute!=NULL)
+    {
+     if(now==Sensor::ACTIVE && getNXState()==EntryExitPairs::NXBUTTONINACTIVE)
+     {
+      setButtonState(EntryExitPairs::NXBUTTONSELECTED);
+      //for(Entry<PointDetails, DestinationPoints> en : sourceRoute->pointToDest.entrySet()){
+      QMapIterator<PointDetails*, DestinationPoints*> en(*sourceRoute->pointToDest);
+      while(en.hasNext())
+      {
+       en.next();
+                //Sensor sen = getSensorFromPoint(en.getKey().getPoint());
+                //Set a time out on the source sensor, so that if its state hasn't been changed, then we will clear it out.
+                if(en.value()->isEnabled() && !en.value()->getUniDirection()){
+                    if(en.key()->getNXState()==EntryExitPairs::NXBUTTONSELECTED){
+                        sourceRoute->activeBean(en.value(), true);
+                    }
+                }
+            }
+        } else if (now==Sensor::INACTIVE && getNXState()==EntryExitPairs::NXBUTTONSELECTED){
+            //sensor inactive, nxbutton state was selected, going to set back to inactive - ie user cancelled button
+            setButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+        } else if (now==Sensor::INACTIVE && getNXState()==EntryExitPairs::NXBUTTONACTIVE){
+            //Sensor gone inactive, while nxbutton was selected - potential start of user either clear route or setting another
+            setButtonState(EntryExitPairs::NXBUTTONSELECTED);
+            //for(Entry<PointDetails, DestinationPoints> en : sourceRoute->pointToDest.entrySet())
+            QMapIterator<PointDetails*, DestinationPoints*> en(*sourceRoute->pointToDest);
+            while(en.hasNext())
+            {
+                en.next();
+                //Sensor sen = getSensorFromPoint(en.getKey().getPoint());
+                //Set a time out on the source sensor, so that if its state hasn't been changed, then we will clear it out.
+                if(en.value()->isEnabled() && !en.value()->getUniDirection()){
+                    if(en.key()->getNXState()==EntryExitPairs::NXBUTTONSELECTED){
+                        sourceRoute->activeBean(en.value(), false);
+                    }
+                }
+            }
+        }
+    } else if (destPoint!=NULL){
+        //Button set as a destination but has no source, it has had a change in state
+        if(now==Sensor::ACTIVE){
+            //State now is Active will set flashing
+            setButtonState(EntryExitPairs::NXBUTTONSELECTED);
+        } else if(getNXState()==EntryExitPairs::NXBUTTONACTIVE){
+            //Sensor gone inactive while it was previosly active
+            setButtonState(EntryExitPairs::NXBUTTONSELECTED);
+        } else if(getNXState()==EntryExitPairs::NXBUTTONSELECTED){
+            //Sensor gone inactive while it was previously selected therefore will cancel
+            setButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+        }
+    }
+}
+//    };
+
+void PointDetails::setSignalMast(SignalMast* mast) {
+    signalmast = mast;
+}
+
+void PointDetails::setSource(Source* src){
+    if(sourceRoute==src)
+        return;
+    sourceRoute=src;
+}
+
+void PointDetails::setDestination(DestinationPoints* srcdp, Source* src){
+    if(!destinations->contains(srcdp)){
+        destinations->insert(srcdp, src);
+    }
+}
+
+void PointDetails::removeDestination(DestinationPoints* srcdp){
+    destinations->remove(srcdp);
+    if(sourceRoute==NULL && destinations->size()==0){
+        stopFlashSensor();
+        //sensor.removePropertyChangeListener(nxButtonListener);
+        AbstractSensor* s = (AbstractSensor*)sensor;
+        disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+        setSensor(NULL);
+    }
+}
+
+void PointDetails::removeSource(Source* /*src*/){
+    sourceRoute=NULL;
+    if(destinations->size()==0) {
+        stopFlashSensor();
+        //sensor.removePropertyChangeListener(nxButtonListener);
+        AbstractSensor* s = (AbstractSensor*)sensor;
+        disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+        setSensor(NULL);
+    }
+}
+
+
+void PointDetails::setButtonState(int state){
+    setNXButtonState(state);
+}
+
+void PointDetails::setNXState(int state){
+    if(state==nxButtonState)
+        return;
+    if(state==EntryExitPairs::NXBUTTONSELECTED) {
+        nxButtonTimeOut();
+        flashSensor();
+    } else {
+        cancelNXButtonTimeOut();
+        stopFlashSensor();
+    }
+    nxButtonState=state;
+}
+
+int PointDetails::getNXState(){
+    return nxButtonState;
+}
+
+SignalMast* PointDetails::getSignalMast() { return signalmast; }
+
+void PointDetails::setSignalHead(SignalHead* head){
+    signalhead = head;
+}
+
+SignalHead* PointDetails::getSignalHead() { return signalhead; }
+
+/*public*/ LayoutEditor* PointDetails::getPanel() { return panel; }
+
+/*public*/ void PointDetails::setRefObject(NamedBean* refObs){
+    refObj = refObs;
+    if (panel!=NULL && refObj!=NULL){
+        //if (refObj instanceof SignalMast)
+        if(qobject_cast<SignalMast*>(refObj)!=NULL)
+        {
+            QString mast = ((SignalMast*)refObj)->getUserName();
+            refLoc = panel->findPositionablePointByEastBoundSignalMast(mast);
+            if(refLoc==NULL)
+                refLoc = panel->findPositionablePointByWestBoundSignalMast(mast);
+            if(refLoc==NULL)
+                refLoc = panel->findLayoutTurnoutBySignalMast(mast);
+            if(refLoc==NULL)
+                refLoc = panel->findLevelXingBySignalMast(mast);
+            if(refLoc==NULL)
+                refLoc = panel->findLayoutSlipBySignalMast(mast);
+            if(refLoc==NULL){
+                mast = ((SignalMast*)refObj)->getSystemName();
+                if(refLoc==NULL)
+                    refLoc = panel->findPositionablePointByWestBoundSignalMast(mast);
+                if(refLoc==NULL)
+                    refLoc = panel->findLayoutTurnoutBySignalMast(mast);
+                if(refLoc==NULL)
+                    refLoc = panel->findLevelXingBySignalMast(mast);
+                if(refLoc==NULL)
+                    refLoc = panel->findLayoutSlipBySignalMast(mast);
+            }
+        }
+        else
+            //if (refObj instanceof Sensor)
+            if(qobject_cast<Sensor*>(refObj)!=NULL)
+            {
+            QString sourceSensor = ((Sensor*)refObj)->getSystemName();
+            refLoc = panel->findPositionablePointByEastBoundSensor(sourceSensor);
+            if(refLoc==NULL)
+                refLoc = panel->findPositionablePointByWestBoundSensor(sourceSensor);
+            if(refLoc==NULL)
+                refLoc = panel->findLayoutTurnoutBySensor(sourceSensor);
+            if(refLoc==NULL)
+                refLoc = panel->findLevelXingBySensor(sourceSensor);
+            if(refLoc==NULL)
+                refLoc = panel->findLayoutSlipBySensor(sourceSensor);
+            if(refLoc==NULL){
+                sourceSensor = ((Sensor*)refObj)->getUserName();
+                refLoc = panel->findPositionablePointByEastBoundSensor(sourceSensor);
+                if(refLoc==NULL)
+                    refLoc = panel->findPositionablePointByWestBoundSensor(sourceSensor);
+                if(refLoc==NULL)
+                    refLoc = panel->findLayoutTurnoutBySensor(sourceSensor);
+                if(refLoc==NULL)
+                    refLoc = panel->findLevelXingBySensor(sourceSensor);
+                if(refLoc==NULL)
+                    refLoc = panel->findLayoutSlipBySensor(sourceSensor);
+            }
+            setSensor((Sensor*)refObj);
+        }
+            else
+                //if (refObj instanceof SignalHead)
+                if(qobject_cast<SignalHead*>(refObj)!=NULL)
+                {
+            QString signal = ((SignalHead*)refObj)->getDisplayName();
+            refLoc = panel->findPositionablePointByEastBoundSignal(signal);
+            if(refLoc==NULL)
+                refLoc = panel->findPositionablePointByWestBoundSignal(signal);
+        }
+    }
+    if (refLoc!=NULL){
+        //if(refLoc instanceof PositionablePoint)
+        if(qobject_cast<PositionablePoint*>(refLoc)!=NULL)
+        {
+            //((PositionablePoint)refLoc).addPropertyChangeListener(this);
+        }
+        else
+            //if (refLoc instanceof LayoutTurnout)
+            if(qobject_cast<LayoutTurnout*>(refLoc)!=NULL)
+            {
+            //((LayoutTurnout)refLoc).addPropertyChangeListener(this);
+        }
+            //else if (refLoc instanceof LevelXing)
+        if(qobject_cast<LayoutTurnout*>(refLoc)!=NULL)
+            {
+            //((LevelXing)refLoc).addPropertyChangeListener(this);
+        }
+        else
+            //if (refLoc instanceof LayoutSlip){
+            if(qobject_cast<LayoutSlip*>(refLoc)!=NULL)
+            {
+            //((Layoutslip)refLoc).addPropertyChangeListener(this);
+        }
+    }
+    //With this set ref we can probably add a listener to it, so that we can detect when a change to the point details takes place
+}
+
+/*public*/ NamedBean* PointDetails::getRefObject(){ return refObj; }
+
+/*public*/ QObject* PointDetails::getRefLocation() { return refLoc; }
+
+//LayoutEditor getLayoutEditor() { return panel; }
+
+bool PointDetails::isRouteToPointSet() { return routeToSet; }
+bool PointDetails::isRouteFromPointSet() { return routeFromSet; }
+
+/*public*/ QString PointDetails::getDisplayName(){
+    if(sensor!=NULL){
+        QString description = sensor->getDisplayName();
+        if(signalmast!=NULL){
+            description = description + " (" + signalmast->getDisplayName() +")";
+        }
+        return description;
+    }
+
+    //if(refObj instanceof SignalMast)
+    if(qobject_cast<SignalMast*>(refObj)!=NULL)
+    {
+     return ((SignalMast*)refObj)->getDisplayName();
+    }
+    else
+        //if (refObj instanceof Sensor)
+        if(qobject_cast<Sensor*>(refLoc)!=NULL)
+    {
+        return ((Sensor*)refObj)->getDisplayName();
+    }
+        //else if (refObj instanceof SignalHead)
+    if(qobject_cast<SignalHead*>(refLoc)!=NULL)
+        {
+        return ((SignalHead*)refObj)->getDisplayName();
+    }
+    return "no display name";
+}
+
+void PointDetails::nxButtonTimeOut(){
+    if((nxButtonTimeOutThr!=NULL) && (nxButtonTimeOutThr->isRunning())){
+        return;
+    }
+    extendedtime = true;
+    ButtonTimeOut* t = new ButtonTimeOut(this);
+    nxButtonTimeOutThr = new QThread(t);
+    nxButtonTimeOutThr->setObjectName( "NX Button Timeout " + getSensor()->getDisplayName());
+
+    nxButtonTimeOutThr->start();
+}
+
+void PointDetails::cancelNXButtonTimeOut(){
+    if(nxButtonTimeOutThr!=NULL)
+        nxButtonTimeOutThr->exit();
+
+}
+
+
+/*public*/ void PointDetails::flashSensor(){
+    foreach(SensorIcon* si, *getPanel()->sensorList){
+        if(si->getSensor()==getSensor()){
+            si->flashSensor(2, Sensor::ACTIVE, Sensor::INACTIVE);
+        }
+    }
+}
+
+/*public*/ void PointDetails::stopFlashSensor(){
+    foreach(SensorIcon* si, *getPanel()->sensorList){
+        if(si->getSensor()==getSensor()){
+            si->stopFlash();
+        }
+    }
+}
+
+/*synchronized*/ /*public*/ void PointDetails::setNXButtonState(int state)
+{
+    QMutexLocker locker(&mutex);
+    if(getSensor()==NULL)
+        return;
+    if(state==EntryExitPairs::NXBUTTONINACTIVE){
+        //If a route is set to or from out point then we need to leave/set the sensor to ACTIVE
+        if(isRouteToPointSet()){
+            state=EntryExitPairs::NXBUTTONACTIVE;
+        } else if(isRouteFromPointSet()){
+            state=EntryExitPairs::NXBUTTONACTIVE;
+        }
+    }
+    setNXState(state);
+    int sensorState = Sensor::UNKNOWN;
+    switch(state){
+        case EntryExitPairs::NXBUTTONINACTIVE : sensorState = Sensor::INACTIVE;
+                                                break;
+    case EntryExitPairs::NXBUTTONACTIVE   : sensorState = Sensor::ACTIVE;
+                                                break;
+    case EntryExitPairs::NXBUTTONSELECTED : sensorState = Sensor::ACTIVE;
+                                                break;
+    default                             : sensorState = Sensor::UNKNOWN;
+                                                break;
+    }
+
+    //Might need to clear listeners at the stage and then reapply them after.
+    if(((AbstractSensor*)getSensor())->getKnownState()!=sensorState){
+        removeSensorList();
+        try {
+            ((AbstractSensor*)getSensor())->setKnownState(sensorState);
+        } catch (JmriException ex){
+            log->error(ex.getMessage());
+        }
+        addSensorList();
+    }
+}
+
+Sensor* PointDetails::getSensor(){
+    if (getRefObject()==NULL)
+        return NULL;
+    if((getPanel()!=NULL) && (!getPanel()->isEditable()) && (sensor!=NULL))
+        return sensor;
+
+    //if (getRefObject() instanceof Sensor)
+    if(qobject_cast<Sensor*>(getRefObject())!= NULL)
+        return (Sensor*)getRefObject();
+    QObject* objLoc = getRefLocation();
+    QObject* objRef = getRefObject();
+    SignalMast* mast=NULL;
+    SignalHead* head=NULL;
+    QString username = "";
+    QString systemname = "";
+    Sensor* sensor = NULL;
+    //if(objRef instanceof SignalMast)
+    if(qobject_cast<SignalMast*>(objRef)!= NULL)
+    {
+        mast = (SignalMast*)objRef;
+        username = mast->getUserName();
+        systemname = mast->getSystemName();
+    }
+    //if(objRef instanceof SignalHead)
+    if(qobject_cast<SignalHead*>(objRef)!= NULL)
+    {
+        head = (SignalHead*)objRef;
+        username = head->getUserName();
+        systemname = head->getSystemName();
+    }
+    SensorManager* sm = InstanceManager::sensorManagerInstance();
+    //if (objLoc instanceof PositionablePoint)
+    if(qobject_cast<PositionablePoint*>(objLoc)!= NULL)
+    {
+        PositionablePoint* p = (PositionablePoint*)objLoc;
+        if(mast!=NULL) {
+            if((p->getEastBoundSignalMast()==(username)) ||
+                    p->getEastBoundSignalMast()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(p->getEastBoundSensor());
+            else if((p->getWestBoundSignalMast()==(username)) ||
+                    p->getWestBoundSignalMast()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(p->getWestBoundSensor());
+        }
+        else if(head!=NULL) {
+            if((p->getEastBoundSignal()==(username)) ||
+                    p->getEastBoundSignal()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(p->getEastBoundSensor());
+            else if((p->getWestBoundSignal()==(username)) ||
+                    p->getWestBoundSignal()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(p->getWestBoundSensor());
+        }
+    }
+    else
+        //if (objLoc instanceof LayoutTurnout)
+        if(qobject_cast<LayoutTurnout*>(objLoc)!= NULL)
+        {
+        LayoutTurnout* t = (LayoutTurnout*)objLoc;
+        if(mast!=NULL){
+            if((t->getSignalAMast()==(username)) || (t->getSignalAMast()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorA());
+            else if((t->getSignalBMast()==(username)) || (t->getSignalBMast()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorB());
+            else if((t->getSignalCMast()==(username)) || (t->getSignalCMast()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorC());
+            else if((t->getSignalDMast()==(username)) || (t->getSignalDMast()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorD());
+        }
+        if(head!=NULL){
+            if((t->getSignalA1Name()==(username)) || (t->getSignalA1Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorA());
+            else if((t->getSignalA2Name()==(username)) || (t->getSignalA2Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorA());
+            else if((t->getSignalA3Name()==(username)) || (t->getSignalA3Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorA());
+            else if((t->getSignalB1Name()==(username)) || (t->getSignalB1Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorB());
+            else if((t->getSignalB2Name()==(username)) || (t->getSignalB2Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorB());
+            else if((t->getSignalC1Name()==(username)) || (t->getSignalC1Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorC());
+            else if((t->getSignalC2Name()==(username)) || (t->getSignalC2Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorC());
+            else if((t->getSignalD1Name()==(username)) || (t->getSignalD1Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorD());
+            else if((t->getSignalD2Name()==(username)) || (t->getSignalD2Name()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorD());
+        }
+    }
+        else
+            //if (objLoc instanceof LevelXing)
+            if(qobject_cast<LevelXing*>(objLoc)!= NULL)
+            {
+        LevelXing* x = (LevelXing*)objLoc;
+        if(mast!=NULL){
+            if((x->getSignalAMastName()==(username)) || (x->getSignalAMastName()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorAName());
+            else if((x->getSignalBMastName()==(username)) || (x->getSignalBMastName()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorBName());
+            else if((x->getSignalCMastName()==(username)) || (x->getSignalCMastName()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorCName());
+            else if((x->getSignalDMastName()==(username)) || (x->getSignalDMastName()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorDName());
+        }
+        if(head!=NULL){
+            if((x->getSignalAName()==(username)) || (x->getSignalAName()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorAName());
+            else if((x->getSignalBName()==(username)) || (x->getSignalBName()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorBName());
+            else if((x->getSignalCName()==(username)) || (x->getSignalCName()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorCName());
+            else if((x->getSignalDName()==(username)) || (x->getSignalDName()==(systemname)))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorDName());
+        }
+    }
+    else
+                //if (objLoc instanceof LayoutSlip)
+                if(qobject_cast<LayoutSlip*>(objLoc)!= NULL)
+                {
+        LayoutSlip* sl = (LayoutSlip*)objLoc;
+        if(mast!=NULL)
+        {
+            if(sl->getSignalAMast()==(username) || sl->getSignalAMast()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorA());
+            else if(sl->getSignalBMast()==(username) || sl->getSignalBMast()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorB());
+            else if(sl->getSignalCMast()==(username) || sl->getSignalCMast()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorC());
+            else if(sl->getSignalDMast()==(username)|| sl->getSignalDMast()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorD());
+        }
+        if(head!=NULL){
+            if(sl->getSignalA1Name()==(username) || sl->getSignalA1Name()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorA());
+            else if(sl->getSignalB1Name()==(username) || sl->getSignalB1Name()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorB());
+            else if(sl->getSignalC1Name()==(username) || sl->getSignalC1Name()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorC());
+            else if(sl->getSignalD1Name()==(username) || sl->getSignalD1Name()==(systemname))
+                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorD());
+        }
+    }
+    setSensor(sensor);
+    return sensor;
+}
+
+NamedBean* PointDetails::getSignal(){
+    if((getPanel()!=NULL) && (!getPanel()->isEditable()) && (getSignalMast()!=NULL))
+        return getSignalMast();
+    if((getPanel()!=NULL) && (!getPanel()->isEditable()) && (getSignalHead()!=NULL))
+        return getSignalHead();
+    SignalMastManager* sm = InstanceManager::signalMastManagerInstance();
+    SignalHeadManager* sh = InstanceManager::signalHeadManagerInstance();
+    NamedBean* signal = NULL;
+
+    if(getRefObject()==NULL) {
+        log->error("Signal not found at point");
+        return NULL;
+    }
+    else
+        //if (getRefObject() instanceof SignalMast)
+        if(qobject_cast<SignalMast*>(getRefObject())!= NULL)
+        {
+        signal =  getRefObject();
+        setSignalMast(((SignalMast*)getRefObject()));
+        return signal;
+    }
+        else
+            //if (getRefObject() instanceof SignalHead)
+       if(qobject_cast<SignalHead*>(getRefObject())!= NULL)
+
+        {
+        signal =  getRefObject();
+        setSignalHead(((SignalHead*)getRefObject()));
+        return signal;
+    }
+
+
+    Sensor* sen = (Sensor*) getRefObject();
+    log->debug("looking at Sensor " + sen->getDisplayName());
+    QString username = sen->getUserName();
+    QString systemname = sen->getSystemName();
+    //if(getRefLocation() instanceof PositionablePoint)
+    if(qobject_cast<PositionablePoint*>(getRefLocation())!= NULL)
+    {
+        PositionablePoint* p = (PositionablePoint*)getRefLocation();
+        if((p->getEastBoundSensor()==(username)) ||
+                p->getEastBoundSensor()==(systemname)){
+
+            if(p->getEastBoundSignalMast()!=(""))
+                signal =  ((DefaultSignalMastManager*)sm)->getSignalMast(p->getEastBoundSignalMast());
+
+            else if(p->getEastBoundSignal()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(p->getEastBoundSignal());
+        }
+        else if((p->getWestBoundSensor()==(username)) ||
+                p->getWestBoundSensor()==(systemname)){
+
+            if(p->getWestBoundSignalMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(p->getWestBoundSignalMast());
+
+            else if(p->getWestBoundSignal()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(p->getWestBoundSignal());
+        }
+    }
+    else
+        //if(getRefLocation() instanceof LayoutTurnout)
+        if(qobject_cast<LayoutTurnout*>(getRefLocation())!= NULL)
+        {
+        LayoutTurnout* t = (LayoutTurnout*)getRefLocation();
+        if(t->getSensorA()==(username) || t->getSensorA()==(systemname))
+            if(t->getSignalAMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalAMast());
+            else if(t->getSignalA1Name()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalA1Name());
+
+        else if(t->getSensorB()==(username) || t->getSensorB()==(systemname))
+            if(t->getSignalBMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalBMast());
+            else if(t->getSignalB1Name()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalB1Name());
+
+            else if((t->getSensorC()==(username)) || (t->getSensorC()==(systemname)))
+            if(t->getSignalCMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalCMast());
+            else if(t->getSignalC1Name()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalC1Name());
+
+            else if((t->getSensorD()==(username)) || (t->getSensorD()==(systemname)))
+            if(t->getSignalDMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalDMast());
+            else if(t->getSignalD1Name()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalD1Name());
+    }
+
+    else
+            //if(getRefLocation() instanceof LevelXing)
+                if(qobject_cast<LevelXing*>(getRefLocation())!= NULL)
+            {
+        LevelXing* x = (LevelXing*)getRefLocation();
+        if((x->getSensorAName()==(username)) ||( x->getSensorAName()==(systemname)))
+            if(x->getSignalAMastName()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalAMastName());
+            else if(x->getSignalAName()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalAName());
+
+            else if((x->getSensorBName()==(username)) || (x->getSensorBName()==(systemname)))
+            if(x->getSignalBMastName()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalBMastName());
+            else if(x->getSignalBName()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalBName());
+
+            else if((x->getSensorCName()==(username)) || (x->getSensorCName()==(systemname)))
+            if(x->getSignalCMastName()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalCMastName());
+            else if(x->getSignalCName()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalCName());
+
+            else if((x->getSensorDName()==(username) )|| (x->getSensorDName()==(systemname)))
+            if(x->getSignalDMastName()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalDMastName());
+            else if(x->getSignalDName()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalDName());
+    }
+    else
+     //if(getRefLocation() instanceof LayoutSlip)
+     if(qobject_cast<LayoutSlip*>(getRefLocation())!= NULL){
+        LayoutSlip* t = (LayoutSlip*)getRefLocation();
+        if((t->getSensorA()==(username)) || (t->getSensorA()==(systemname)))
+            if(t->getSignalAMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalAMast());
+            else if(t->getSignalA1Name()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalA1Name());
+
+            else if((t->getSensorB()==(username)) || (t->getSensorB()==(systemname)))
+            if(t->getSignalBMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalBMast());
+            else if(t->getSignalB1Name()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalB1Name());
+
+            else if((t->getSensorC()==(username)) || (t->getSensorC()==(systemname)))
+            if(t->getSignalCMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalCMast());
+            else if(t->getSignalC1Name()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalC1Name());
+
+        else if(t->getSensorD()==(username) || t->getSensorD()==(systemname))
+            if(t->getSignalDMast()!=(""))
+                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalDMast());
+            else if(t->getSignalD1Name()!=(""))
+                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalD1Name());
+    }
+    //if(signal instanceof SignalMast)
+    if(qobject_cast<SignalMast*>(signal)!= NULL)
+        setSignalMast(((SignalMast*)signal));
+    else
+        //if (signal instanceof SignalHead)
+        if(qobject_cast<SignalHead*>(signal)!= NULL)
+        setSignalHead(((SignalHead*)signal));
+    return signal;
+}
+//@Override
+/*public*/ bool PointDetails::equals(QObject* obj){
+    if(obj ==this)
+        return true;
+    if(obj ==NULL)
+        return false;
+
+        if(!(metaObject()->className()==obj->metaObject()->className()))
+            return false;
+        else{
+            PointDetails* tmp = (PointDetails*)obj;
+            if(tmp->getFacing()!=this->facing)
+                return false;
+            if(tmp->getProtecting()!=this->protecting)
+                return false;
+            if(tmp->getPanel()!=this->panel)
+                return false;
+        }
+    return true;
+}
+
+////@Override
+///*public*/ int PointDetails::hashCode() {
+//    int hash = 7;
+//    hash = 37 * hash + (this->panel != NULL ? this->panel->hashCode() : 0);
+//    hash = 37 * hash + (this->facing != NULL ? this->facing->hashCode() : 0);
+//    hash = 37 * hash + (this->protecting != NULL ? this->protecting->hashCode() : 0);
+//    return hash;
+//}
+#if 0
+java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
+/*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
+    pcs.addPropertyChangeListener(l);
+}
+/*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
+    pcs.removePropertyChangeListener(l);
+}
+protected void firePropertyChange(String p, Object old, Object n) { pcs.firePropertyChange(p,old,n);}
+#endif

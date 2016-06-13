@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Ubuntu</family>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>LocoNet Monitor</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QListWidget" name="listWidget"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionPreferences"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <widget class="QMenu" name="menuCommand_Station">
+     <property name="title">
+      <string>Command Station</string>
+     </property>
+     <addaction name="actionNull"/>
+    </widget>
+    <widget class="QMenu" name="menuClocks">
+     <property name="title">
+      <string>Clocks</string>
+     </property>
+     <addaction name="actionSetup_Fast_Clock"/>
+     <addaction name="actionNixie_Clock"/>
+     <addaction name="actionLCD_Clock"/>
+     <addaction name="actionAnalog_Clock"/>
+    </widget>
+    <addaction name="actionClear_display"/>
+    <addaction name="menuCommand_Station"/>
+    <addaction name="separator"/>
+    <addaction name="actionObject_View"/>
+    <addaction name="actionLayout_Editor"/>
+    <addaction name="actionPanel_Editor"/>
+    <addaction name="actionControl_Panel_Editor"/>
+    <addaction name="menuClocks"/>
+    <addaction name="actionTables"/>
+    <addaction name="actionNew_Throttle"/>
+    <addaction name="actionThrottle_Windows"/>
+    <addaction name="actionPower_Control"/>
+    <addaction name="actionTurnouts"/>
+   </widget>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>Language</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Options</string>
+    </property>
+    <addaction name="actionAuto_scroll_to_bottom"/>
+    <addaction name="actionValues_in_Hex"/>
+   </widget>
+   <widget class="QMenu" name="menuLocoNet">
+    <property name="title">
+     <string>LocoNet</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuLanguage"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuLocoNet"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionExit">
+   <property name="text">
+    <string>exit</string>
+   </property>
+  </action>
+  <action name="actionConfig">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Config</string>
+   </property>
+  </action>
+  <action name="actionClear_display">
+   <property name="text">
+    <string>Clear display</string>
+   </property>
+  </action>
+  <action name="actionLocoIO">
+   <property name="text">
+    <string>LocoIO</string>
+   </property>
+  </action>
+  <action name="actionSave_Module">
+   <property name="text">
+    <string>Save Module</string>
+   </property>
+  </action>
+  <action name="actionRestore_Module">
+   <property name="text">
+    <string>Restore Module</string>
+   </property>
+  </action>
+  <action name="actionModule">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Error! No LocoIO modules.</string>
+   </property>
+  </action>
+  <action name="actionValues_in_Hex">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Values in Hex</string>
+   </property>
+  </action>
+  <action name="actionProbe">
+   <property name="text">
+    <string>Probe</string>
+   </property>
+   <property name="toolTip">
+    <string>Probe LocoNet for online modules</string>
+   </property>
+  </action>
+  <action name="actionQuery_Cv">
+   <property name="text">
+    <string>Query Cv</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionCommand_Station">
+   <property name="text">
+    <string>Command Station</string>
+   </property>
+  </action>
+  <action name="actionNull">
+   <property name="text">
+    <string>null</string>
+   </property>
+  </action>
+  <action name="actionLocoNet_Message">
+   <property name="text">
+    <string>LocoNet Message</string>
+   </property>
+  </action>
+  <action name="actionObject_View">
+   <property name="text">
+    <string>Object View</string>
+   </property>
+  </action>
+  <action name="actionLayout_Editor">
+   <property name="text">
+    <string>Layout Editor</string>
+   </property>
+  </action>
+  <action name="actionTables">
+   <property name="text">
+    <string>Tables</string>
+   </property>
+  </action>
+  <action name="actionPanel_Editor">
+   <property name="text">
+    <string>Panel Editor</string>
+   </property>
+  </action>
+  <action name="actionNew_Throttle">
+   <property name="text">
+    <string>New Throttle</string>
+   </property>
+  </action>
+  <action name="actionThrottle_Windows">
+   <property name="text">
+    <string>Throttle Windows</string>
+   </property>
+  </action>
+  <action name="actionRoster">
+   <property name="text">
+    <string>Roster</string>
+   </property>
+  </action>
+  <action name="actionSlot_monitor">
+   <property name="text">
+    <string>Slot monitor</string>
+   </property>
+  </action>
+  <action name="actionControl_Panel_Editor">
+   <property name="text">
+    <string>Control Panel Editor</string>
+   </property>
+  </action>
+  <action name="actionAuto_scroll_to_bottom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto scroll to bottom</string>
+   </property>
+  </action>
+  <action name="actionSetup_Fast_Clock">
+   <property name="text">
+    <string>Setup Fast Clock</string>
+   </property>
+  </action>
+  <action name="actionNixie_Clock">
+   <property name="text">
+    <string>Nixie Clock</string>
+   </property>
+  </action>
+  <action name="actionLCD_Clock">
+   <property name="text">
+    <string>LCD Clock</string>
+   </property>
+  </action>
+  <action name="actionAnalog_Clock">
+   <property name="text">
+    <string>Analog Clock</string>
+   </property>
+  </action>
+  <action name="actionPower_Control">
+   <property name="text">
+    <string>Power Control</string>
+   </property>
+  </action>
+  <action name="actionTurnouts">
+   <property name="text">
+    <string>Turnouts</string>
+   </property>
+  </action>
+  <action name="actionMonitor">
+   <property name="text">
+    <string>Monitor</string>
+   </property>
+  </action>
+  <action name="actionService_Mode_Programmer_Programmer_track">
+   <property name="text">
+    <string>Service Mode Programmer (Programmer track)</string>
+   </property>
+  </action>
+  <action name="actionTest_glass_pane">
+   <property name="text">
+    <string>test glass pane</string>
+   </property>
+  </action>
+  <action name="actionConfigure_Command_Station">
+   <property name="text">
+    <string>Configure Command Station</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionConnection_Config">
+   <property name="text">
+    <string>Connection Config</string>
+   </property>
+  </action>
+  <action name="actionConnect">
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </action>
+  <action name="actionProbe">
+   <property name="text">
+    <string>Probe</string>
+   </property>
+  </action>
+  <action name="actionQuery_Cv">
+   <property name="text">
+    <string>Query Cv</string>
+   </property>
+  </action>
+  <action name="actionLocoNet_Message">
+   <property name="text">
+    <string>LocoNet Message</string>
+   </property>
+  </action>
+  <action name="actionX">
+   <property name="text">
+    <string>x</string>
+   </property>
+  </action>
+  <action name="actionSlot_Monitor">
+   <property name="text">
+    <string>Slot Monitor</string>
+   </property>
+  </action>
+  <action name="actionDS64_Programmer">
+   <property name="text">
+    <string>DS64 Programmer</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

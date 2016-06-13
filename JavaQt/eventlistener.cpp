@@ -1,0 +1,12 @@
+#include "eventlistener.h"
+
+EventListener::EventListener(QObject *parent) :
+    QObject(parent)
+{
+}
+/**
+ * A tagging interface that all event listener interfaces must extend.
+ * @since JDK1.1
+ */
+//public interface EventListener {
+//}

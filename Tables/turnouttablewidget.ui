@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TurnoutTableWidget</class>
+ <widget class="QWidget" name="TurnoutTableWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>671</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="columnCount">
+      <number>17</number>
+     </property>
+     <column>
+      <property name="text">
+       <string>System Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>User Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Cmd</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Comment</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Inverted</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Locked</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Feedback</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Mode</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Sensor1</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Sensor2</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Automate</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Lock Mode</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Decoder</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Closed Speed</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Thrown Speed</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

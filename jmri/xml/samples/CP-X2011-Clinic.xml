@@ -1,0 +1,3033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/xml/XSLT/panelfile-2-9-6.xsl"?>
+<layout-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://jmri.org/xml/schema/layout-2-9-6.xsd">
+  <jmriversion>
+    <major>2</major>
+    <minor>12</minor>
+    <test>0</test>
+    <modifier />
+  </jmriversion>
+  <logixs class="jmri.managers.configurexml.DefaultLogixManagerXml">
+    <logix systemName="IX:Gcontrol" userName="Signal Control" enabled="yes">
+      <systemName>IX:Gcontrol</systemName>
+      <userName>Signal Control</userName>
+      <logixConditional systemName="IX:GcontrolC1" order="0" />
+      <logixConditional systemName="IX:GcontrolC2" order="1" />
+      <logixConditional systemName="IX:GcontrolC3" order="2" />
+      <logixConditional systemName="IX:GcontrolC4" order="3" />
+      <logixConditional systemName="IX:GcontrolC5" order="4" />
+      <logixConditional systemName="IX:GcontrolC6" order="5" />
+      <logixConditional systemName="IX:GcontrolC7" order="6" />
+      <logixConditional systemName="IX:GcontrolC9" order="7" />
+      <logixConditional systemName="IX:GcontrolC10" order="8" />
+      <logixConditional systemName="IX:GcontrolC11" order="9" />
+      <logixConditional systemName="IX:GcontrolC12" order="10" />
+      <logixConditional systemName="IX:GcontrolC13" order="11" />
+    </logix>
+    <logix systemName="IX:Invert" userName="Detector bug fix" enabled="yes">
+      <systemName>IX:Invert</systemName>
+      <userName>Detector bug fix</userName>
+      <logixConditional systemName="IX:InvertC1" order="0" />
+      <logixConditional systemName="IX:InvertC2" order="1" />
+      <logixConditional systemName="IX:InvertC3" order="2" />
+      <logixConditional systemName="IX:InvertC4" order="3" />
+      <logixConditional systemName="IX:InvertC5" order="4" />
+      <logixConditional systemName="IX:InvertC6" order="5" />
+      <logixConditional systemName="IX:InvertC7" order="6" />
+      <logixConditional systemName="IX:InvertC8" order="7" />
+      <logixConditional systemName="IX:InvertC9" order="8" />
+      <logixConditional systemName="IX:InvertC10" order="9" />
+    </logix>
+    <logix systemName="IX:Wcontrol" userName="Switch Control" enabled="yes">
+      <systemName>IX:Wcontrol</systemName>
+      <userName>Switch Control</userName>
+      <logixConditional systemName="IX:WcontrolC1" order="0" />
+      <logixConditional systemName="IX:WcontrolC2" order="1" />
+      <logixConditional systemName="IX:WcontrolC3" order="2" />
+      <logixConditional systemName="IX:WcontrolC4" order="3" />
+    </logix>
+    <logix systemName="RTXIX:Initialize" userName="Initialize" enabled="yes">
+      <systemName>RTXIX:Initialize</systemName>
+      <userName>Initialize</userName>
+      <logixConditional systemName="RTXIX:Initialize1T" order="0" />
+      <logixConditional systemName="RTXIX:Initialize2T" order="1" />
+    </logix>
+    <logix systemName="SYS" userName="System Logix" enabled="yes">
+      <systemName>SYS</systemName>
+      <userName>System Logix</userName>
+      <logixConditional systemName="SYS_SGC_8K" order="0" />
+      <logixConditional systemName="SYS_SGC_6K" order="1" />
+      <logixConditional systemName="SYS_SGC_IS0" order="2" />
+      <logixConditional systemName="SYS_SGC_IS10" order="3" />
+      <logixConditional systemName="SYS_SGC_IS6" order="4" />
+      <logixConditional systemName="SYS_SGC_IS8" order="5" />
+    </logix>
+  </logixs>
+  <sensors class="jmri.jmrix.loconet.configurexml.LnSensorManagerXml">
+    <sensor systemName="LS1" inverted="false">
+      <systemName>LS1</systemName>
+    </sensor>
+    <sensor systemName="LS10" inverted="false">
+      <systemName>LS10</systemName>
+    </sensor>
+    <sensor systemName="LS100" inverted="false">
+      <systemName>LS100</systemName>
+    </sensor>
+    <sensor systemName="LS101" inverted="false">
+      <systemName>LS101</systemName>
+    </sensor>
+    <sensor systemName="LS102" inverted="false">
+      <systemName>LS102</systemName>
+    </sensor>
+    <sensor systemName="LS103" inverted="false">
+      <systemName>LS103</systemName>
+    </sensor>
+    <sensor systemName="LS104" inverted="false">
+      <systemName>LS104</systemName>
+    </sensor>
+    <sensor systemName="LS105" inverted="false">
+      <systemName>LS105</systemName>
+    </sensor>
+    <sensor systemName="LS106" inverted="false">
+      <systemName>LS106</systemName>
+    </sensor>
+    <sensor systemName="LS107" inverted="false">
+      <systemName>LS107</systemName>
+    </sensor>
+    <sensor systemName="LS108" inverted="false">
+      <systemName>LS108</systemName>
+    </sensor>
+    <sensor systemName="LS109" inverted="false">
+      <systemName>LS109</systemName>
+    </sensor>
+    <sensor systemName="LS110" inverted="false">
+      <systemName>LS110</systemName>
+    </sensor>
+    <sensor systemName="LS111" inverted="false">
+      <systemName>LS111</systemName>
+    </sensor>
+    <sensor systemName="LS112" inverted="false">
+      <systemName>LS112</systemName>
+    </sensor>
+    <sensor systemName="LS17" inverted="false">
+      <systemName>LS17</systemName>
+    </sensor>
+    <sensor systemName="LS18" inverted="false">
+      <systemName>LS18</systemName>
+    </sensor>
+    <sensor systemName="LS19" inverted="false">
+      <systemName>LS19</systemName>
+    </sensor>
+    <sensor systemName="LS2" inverted="false">
+      <systemName>LS2</systemName>
+    </sensor>
+    <sensor systemName="LS20" inverted="false">
+      <systemName>LS20</systemName>
+    </sensor>
+    <sensor systemName="LS201" inverted="false">
+      <systemName>LS201</systemName>
+    </sensor>
+    <sensor systemName="LS202" inverted="false">
+      <systemName>LS202</systemName>
+    </sensor>
+    <sensor systemName="LS203" inverted="false">
+      <systemName>LS203</systemName>
+    </sensor>
+    <sensor systemName="LS204" inverted="false">
+      <systemName>LS204</systemName>
+    </sensor>
+    <sensor systemName="LS205" inverted="false">
+      <systemName>LS205</systemName>
+    </sensor>
+    <sensor systemName="LS206" inverted="false">
+      <systemName>LS206</systemName>
+    </sensor>
+    <sensor systemName="LS207" inverted="false">
+      <systemName>LS207</systemName>
+    </sensor>
+    <sensor systemName="LS208" inverted="false">
+      <systemName>LS208</systemName>
+    </sensor>
+    <sensor systemName="LS209" inverted="false">
+      <systemName>LS209</systemName>
+    </sensor>
+    <sensor systemName="LS21" inverted="false">
+      <systemName>LS21</systemName>
+    </sensor>
+    <sensor systemName="LS210" inverted="false">
+      <systemName>LS210</systemName>
+    </sensor>
+    <sensor systemName="LS211" inverted="false">
+      <systemName>LS211</systemName>
+    </sensor>
+    <sensor systemName="LS212" inverted="false">
+      <systemName>LS212</systemName>
+    </sensor>
+    <sensor systemName="LS213" inverted="false">
+      <systemName>LS213</systemName>
+    </sensor>
+    <sensor systemName="LS214" inverted="false">
+      <systemName>LS214</systemName>
+    </sensor>
+    <sensor systemName="LS215" inverted="false">
+      <systemName>LS215</systemName>
+    </sensor>
+    <sensor systemName="LS216" inverted="false">
+      <systemName>LS216</systemName>
+    </sensor>
+    <sensor systemName="LS217" inverted="false">
+      <systemName>LS217</systemName>
+    </sensor>
+    <sensor systemName="LS218" inverted="false">
+      <systemName>LS218</systemName>
+    </sensor>
+    <sensor systemName="LS219" inverted="false">
+      <systemName>LS219</systemName>
+    </sensor>
+    <sensor systemName="LS22" inverted="false">
+      <systemName>LS22</systemName>
+    </sensor>
+    <sensor systemName="LS220" inverted="false">
+      <systemName>LS220</systemName>
+    </sensor>
+    <sensor systemName="LS221" inverted="false">
+      <systemName>LS221</systemName>
+    </sensor>
+    <sensor systemName="LS222" inverted="false">
+      <systemName>LS222</systemName>
+    </sensor>
+    <sensor systemName="LS223" inverted="false">
+      <systemName>LS223</systemName>
+    </sensor>
+    <sensor systemName="LS224" inverted="false">
+      <systemName>LS224</systemName>
+    </sensor>
+    <sensor systemName="LS23" inverted="false">
+      <systemName>LS23</systemName>
+    </sensor>
+    <sensor systemName="LS241" inverted="false">
+      <systemName>LS241</systemName>
+    </sensor>
+    <sensor systemName="LS242" inverted="false">
+      <systemName>LS242</systemName>
+    </sensor>
+    <sensor systemName="LS243" inverted="false">
+      <systemName>LS243</systemName>
+    </sensor>
+    <sensor systemName="LS244" inverted="false">
+      <systemName>LS244</systemName>
+    </sensor>
+    <sensor systemName="LS245" inverted="false">
+      <systemName>LS245</systemName>
+    </sensor>
+    <sensor systemName="LS246" inverted="false">
+      <systemName>LS246</systemName>
+    </sensor>
+    <sensor systemName="LS247" inverted="false">
+      <systemName>LS247</systemName>
+    </sensor>
+    <sensor systemName="LS248" inverted="false">
+      <systemName>LS248</systemName>
+    </sensor>
+    <sensor systemName="LS249" inverted="false">
+      <systemName>LS249</systemName>
+    </sensor>
+    <sensor systemName="LS250" inverted="false">
+      <systemName>LS250</systemName>
+    </sensor>
+    <sensor systemName="LS251" inverted="false">
+      <systemName>LS251</systemName>
+    </sensor>
+    <sensor systemName="LS252" inverted="false">
+      <systemName>LS252</systemName>
+    </sensor>
+    <sensor systemName="LS253" inverted="false">
+      <systemName>LS253</systemName>
+    </sensor>
+    <sensor systemName="LS254" inverted="false">
+      <systemName>LS254</systemName>
+    </sensor>
+    <sensor systemName="LS255" inverted="false">
+      <systemName>LS255</systemName>
+    </sensor>
+    <sensor systemName="LS256" inverted="false">
+      <systemName>LS256</systemName>
+    </sensor>
+    <sensor systemName="LS257" inverted="false">
+      <systemName>LS257</systemName>
+    </sensor>
+    <sensor systemName="LS258" inverted="false">
+      <systemName>LS258</systemName>
+    </sensor>
+    <sensor systemName="LS259" inverted="false">
+      <systemName>LS259</systemName>
+    </sensor>
+    <sensor systemName="LS260" inverted="false">
+      <systemName>LS260</systemName>
+    </sensor>
+    <sensor systemName="LS261" inverted="false">
+      <systemName>LS261</systemName>
+    </sensor>
+    <sensor systemName="LS262" inverted="false">
+      <systemName>LS262</systemName>
+    </sensor>
+    <sensor systemName="LS263" inverted="false">
+      <systemName>LS263</systemName>
+    </sensor>
+    <sensor systemName="LS264" inverted="false">
+      <systemName>LS264</systemName>
+    </sensor>
+    <sensor systemName="LS265" inverted="false">
+      <systemName>LS265</systemName>
+    </sensor>
+    <sensor systemName="LS266" inverted="false">
+      <systemName>LS266</systemName>
+    </sensor>
+    <sensor systemName="LS267" inverted="false">
+      <systemName>LS267</systemName>
+    </sensor>
+    <sensor systemName="LS268" inverted="false">
+      <systemName>LS268</systemName>
+    </sensor>
+    <sensor systemName="LS269" inverted="false">
+      <systemName>LS269</systemName>
+    </sensor>
+    <sensor systemName="LS270" inverted="false">
+      <systemName>LS270</systemName>
+    </sensor>
+    <sensor systemName="LS271" inverted="false">
+      <systemName>LS271</systemName>
+    </sensor>
+    <sensor systemName="LS272" inverted="false">
+      <systemName>LS272</systemName>
+    </sensor>
+    <sensor systemName="LS273" inverted="false">
+      <systemName>LS273</systemName>
+    </sensor>
+    <sensor systemName="LS274" inverted="false">
+      <systemName>LS274</systemName>
+    </sensor>
+    <sensor systemName="LS275" inverted="false">
+      <systemName>LS275</systemName>
+    </sensor>
+    <sensor systemName="LS276" inverted="false">
+      <systemName>LS276</systemName>
+    </sensor>
+    <sensor systemName="LS277" inverted="false">
+      <systemName>LS277</systemName>
+    </sensor>
+    <sensor systemName="LS278" inverted="false">
+      <systemName>LS278</systemName>
+    </sensor>
+    <sensor systemName="LS279" inverted="false">
+      <systemName>LS279</systemName>
+    </sensor>
+    <sensor systemName="LS280" inverted="false">
+      <systemName>LS280</systemName>
+    </sensor>
+    <sensor systemName="LS281" inverted="false">
+      <systemName>LS281</systemName>
+    </sensor>
+    <sensor systemName="LS282" inverted="false">
+      <systemName>LS282</systemName>
+    </sensor>
+    <sensor systemName="LS283" inverted="false">
+      <systemName>LS283</systemName>
+    </sensor>
+    <sensor systemName="LS284" inverted="false">
+      <systemName>LS284</systemName>
+    </sensor>
+    <sensor systemName="LS285" inverted="false">
+      <systemName>LS285</systemName>
+    </sensor>
+    <sensor systemName="LS286" inverted="false">
+      <systemName>LS286</systemName>
+    </sensor>
+    <sensor systemName="LS287" inverted="false">
+      <systemName>LS287</systemName>
+    </sensor>
+    <sensor systemName="LS288" inverted="false">
+      <systemName>LS288</systemName>
+    </sensor>
+    <sensor systemName="LS297" inverted="false">
+      <systemName>LS297</systemName>
+    </sensor>
+    <sensor systemName="LS298" inverted="false">
+      <systemName>LS298</systemName>
+    </sensor>
+    <sensor systemName="LS299" inverted="false">
+      <systemName>LS299</systemName>
+    </sensor>
+    <sensor systemName="LS3" inverted="false">
+      <systemName>LS3</systemName>
+    </sensor>
+    <sensor systemName="LS300" inverted="false">
+      <systemName>LS300</systemName>
+    </sensor>
+    <sensor systemName="LS301" inverted="false">
+      <systemName>LS301</systemName>
+    </sensor>
+    <sensor systemName="LS302" inverted="false">
+      <systemName>LS302</systemName>
+    </sensor>
+    <sensor systemName="LS303" inverted="false">
+      <systemName>LS303</systemName>
+    </sensor>
+    <sensor systemName="LS304" inverted="false">
+      <systemName>LS304</systemName>
+    </sensor>
+    <sensor systemName="LS353" inverted="false">
+      <systemName>LS353</systemName>
+    </sensor>
+    <sensor systemName="LS354" inverted="false">
+      <systemName>LS354</systemName>
+    </sensor>
+    <sensor systemName="LS355" inverted="false">
+      <systemName>LS355</systemName>
+    </sensor>
+    <sensor systemName="LS356" inverted="false">
+      <systemName>LS356</systemName>
+    </sensor>
+    <sensor systemName="LS357" inverted="false">
+      <systemName>LS357</systemName>
+    </sensor>
+    <sensor systemName="LS358" inverted="false">
+      <systemName>LS358</systemName>
+    </sensor>
+    <sensor systemName="LS359" inverted="false">
+      <systemName>LS359</systemName>
+    </sensor>
+    <sensor systemName="LS360" inverted="false">
+      <systemName>LS360</systemName>
+    </sensor>
+    <sensor systemName="LS361" inverted="false">
+      <systemName>LS361</systemName>
+    </sensor>
+    <sensor systemName="LS362" inverted="false">
+      <systemName>LS362</systemName>
+    </sensor>
+    <sensor systemName="LS363" inverted="false">
+      <systemName>LS363</systemName>
+    </sensor>
+    <sensor systemName="LS364" inverted="false">
+      <systemName>LS364</systemName>
+    </sensor>
+    <sensor systemName="LS365" inverted="false">
+      <systemName>LS365</systemName>
+    </sensor>
+    <sensor systemName="LS366" inverted="false">
+      <systemName>LS366</systemName>
+    </sensor>
+    <sensor systemName="LS367" inverted="false">
+      <systemName>LS367</systemName>
+    </sensor>
+    <sensor systemName="LS368" inverted="false">
+      <systemName>LS368</systemName>
+    </sensor>
+    <sensor systemName="LS4" inverted="false">
+      <systemName>LS4</systemName>
+    </sensor>
+    <sensor systemName="LS49" inverted="false">
+      <systemName>LS49</systemName>
+    </sensor>
+    <sensor systemName="LS5" inverted="false">
+      <systemName>LS5</systemName>
+    </sensor>
+    <sensor systemName="LS50" inverted="false">
+      <systemName>LS50</systemName>
+    </sensor>
+    <sensor systemName="LS51" inverted="false">
+      <systemName>LS51</systemName>
+    </sensor>
+    <sensor systemName="LS513" inverted="false">
+      <systemName>LS513</systemName>
+    </sensor>
+    <sensor systemName="LS514" inverted="false">
+      <systemName>LS514</systemName>
+    </sensor>
+    <sensor systemName="LS515" inverted="false">
+      <systemName>LS515</systemName>
+    </sensor>
+    <sensor systemName="LS516" inverted="false">
+      <systemName>LS516</systemName>
+    </sensor>
+    <sensor systemName="LS517" inverted="false">
+      <systemName>LS517</systemName>
+    </sensor>
+    <sensor systemName="LS518" inverted="false">
+      <systemName>LS518</systemName>
+    </sensor>
+    <sensor systemName="LS519" inverted="false">
+      <systemName>LS519</systemName>
+    </sensor>
+    <sensor systemName="LS52" inverted="false">
+      <systemName>LS52</systemName>
+    </sensor>
+    <sensor systemName="LS520" inverted="false">
+      <systemName>LS520</systemName>
+    </sensor>
+    <sensor systemName="LS53" inverted="false">
+      <systemName>LS53</systemName>
+    </sensor>
+    <sensor systemName="LS54" inverted="false">
+      <systemName>LS54</systemName>
+    </sensor>
+    <sensor systemName="LS55" inverted="false">
+      <systemName>LS55</systemName>
+    </sensor>
+    <sensor systemName="LS56" inverted="false">
+      <systemName>LS56</systemName>
+    </sensor>
+    <sensor systemName="LS6" inverted="false">
+      <systemName>LS6</systemName>
+    </sensor>
+    <sensor systemName="LS65" inverted="false">
+      <systemName>LS65</systemName>
+    </sensor>
+    <sensor systemName="LS66" inverted="false">
+      <systemName>LS66</systemName>
+    </sensor>
+    <sensor systemName="LS67" inverted="false">
+      <systemName>LS67</systemName>
+    </sensor>
+    <sensor systemName="LS68" inverted="false">
+      <systemName>LS68</systemName>
+    </sensor>
+    <sensor systemName="LS69" inverted="false">
+      <systemName>LS69</systemName>
+    </sensor>
+    <sensor systemName="LS7" inverted="false">
+      <systemName>LS7</systemName>
+    </sensor>
+    <sensor systemName="LS70" inverted="false">
+      <systemName>LS70</systemName>
+    </sensor>
+    <sensor systemName="LS71" inverted="false">
+      <systemName>LS71</systemName>
+    </sensor>
+    <sensor systemName="LS72" inverted="false">
+      <systemName>LS72</systemName>
+    </sensor>
+    <sensor systemName="LS8" inverted="false">
+      <systemName>LS8</systemName>
+    </sensor>
+    <sensor systemName="LS81" inverted="false">
+      <systemName>LS81</systemName>
+    </sensor>
+    <sensor systemName="LS82" inverted="false">
+      <systemName>LS82</systemName>
+    </sensor>
+    <sensor systemName="LS83" inverted="false">
+      <systemName>LS83</systemName>
+    </sensor>
+    <sensor systemName="LS84" inverted="false">
+      <systemName>LS84</systemName>
+    </sensor>
+    <sensor systemName="LS85" inverted="false">
+      <systemName>LS85</systemName>
+    </sensor>
+    <sensor systemName="LS86" inverted="false">
+      <systemName>LS86</systemName>
+    </sensor>
+    <sensor systemName="LS87" inverted="false">
+      <systemName>LS87</systemName>
+    </sensor>
+    <sensor systemName="LS88" inverted="false">
+      <systemName>LS88</systemName>
+    </sensor>
+    <sensor systemName="LS89" inverted="false">
+      <systemName>LS89</systemName>
+    </sensor>
+    <sensor systemName="LS9" inverted="false">
+      <systemName>LS9</systemName>
+    </sensor>
+    <sensor systemName="LS90" inverted="false">
+      <systemName>LS90</systemName>
+    </sensor>
+    <sensor systemName="LS91" inverted="false">
+      <systemName>LS91</systemName>
+    </sensor>
+    <sensor systemName="LS92" inverted="false">
+      <systemName>LS92</systemName>
+    </sensor>
+    <sensor systemName="LS93" inverted="false">
+      <systemName>LS93</systemName>
+    </sensor>
+    <sensor systemName="LS94" inverted="false">
+      <systemName>LS94</systemName>
+    </sensor>
+    <sensor systemName="LS95" inverted="false">
+      <systemName>LS95</systemName>
+    </sensor>
+    <sensor systemName="LS96" inverted="false">
+      <systemName>LS96</systemName>
+    </sensor>
+    <sensor systemName="LS97" inverted="false">
+      <systemName>LS97</systemName>
+    </sensor>
+    <sensor systemName="LS98" inverted="false">
+      <systemName>LS98</systemName>
+    </sensor>
+    <sensor systemName="LS99" inverted="false">
+      <systemName>LS99</systemName>
+    </sensor>
+  </sensors>
+  <turnouts class="jmri.jmrix.loconet.configurexml.LnTurnoutManagerXml">
+    <operations automate="false">
+      <operation name="NoFeedback" class="jmri.configurexml.turnoutoperations.NoFeedbackTurnoutOperationXml" interval="300" maxtries="2" />
+      <operation name="Raw" class="jmri.configurexml.turnoutoperations.RawTurnoutOperationXml" interval="300" maxtries="1" />
+      <operation name="Sensor" class="jmri.configurexml.turnoutoperations.SensorTurnoutOperationXml" interval="300" maxtries="3" />
+    </operations>
+    <defaultclosedspeed>Normal</defaultclosedspeed>
+    <defaultthrownspeed>Restricted</defaultthrownspeed>
+    <turnout systemName="LT1" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT1</systemName>
+    </turnout>
+    <turnout systemName="LT10" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT10</systemName>
+    </turnout>
+    <turnout systemName="LT105" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT105</systemName>
+    </turnout>
+    <turnout systemName="LT106" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT106</systemName>
+    </turnout>
+    <turnout systemName="LT107" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT107</systemName>
+    </turnout>
+    <turnout systemName="LT108" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT108</systemName>
+    </turnout>
+    <turnout systemName="LT109" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT109</systemName>
+    </turnout>
+    <turnout systemName="LT11" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT11</systemName>
+    </turnout>
+    <turnout systemName="LT110" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT110</systemName>
+    </turnout>
+    <turnout systemName="LT111" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT111</systemName>
+    </turnout>
+    <turnout systemName="LT112" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT112</systemName>
+    </turnout>
+    <turnout systemName="LT113" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT113</systemName>
+    </turnout>
+    <turnout systemName="LT114" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT114</systemName>
+    </turnout>
+    <turnout systemName="LT115" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT115</systemName>
+    </turnout>
+    <turnout systemName="LT116" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT116</systemName>
+    </turnout>
+    <turnout systemName="LT117" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT117</systemName>
+    </turnout>
+    <turnout systemName="LT118" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT118</systemName>
+    </turnout>
+    <turnout systemName="LT119" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT119</systemName>
+    </turnout>
+    <turnout systemName="LT12" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT12</systemName>
+    </turnout>
+    <turnout systemName="LT120" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT120</systemName>
+    </turnout>
+    <turnout systemName="LT13" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT13</systemName>
+    </turnout>
+    <turnout systemName="LT14" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT14</systemName>
+    </turnout>
+    <turnout systemName="LT15" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT15</systemName>
+    </turnout>
+    <turnout systemName="LT16" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT16</systemName>
+    </turnout>
+    <turnout systemName="LT17" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT17</systemName>
+    </turnout>
+    <turnout systemName="LT18" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT18</systemName>
+    </turnout>
+    <turnout systemName="LT19" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT19</systemName>
+    </turnout>
+    <turnout systemName="LT2" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT2</systemName>
+    </turnout>
+    <turnout systemName="LT20" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT20</systemName>
+    </turnout>
+    <turnout systemName="LT201" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT201</systemName>
+    </turnout>
+    <turnout systemName="LT202" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT202</systemName>
+    </turnout>
+    <turnout systemName="LT203" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT203</systemName>
+    </turnout>
+    <turnout systemName="LT204" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT204</systemName>
+    </turnout>
+    <turnout systemName="LT205" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT205</systemName>
+    </turnout>
+    <turnout systemName="LT206" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT206</systemName>
+    </turnout>
+    <turnout systemName="LT207" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT207</systemName>
+    </turnout>
+    <turnout systemName="LT208" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT208</systemName>
+    </turnout>
+    <turnout systemName="LT21" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT21</systemName>
+    </turnout>
+    <turnout systemName="LT217" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT217</systemName>
+    </turnout>
+    <turnout systemName="LT218" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT218</systemName>
+    </turnout>
+    <turnout systemName="LT219" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT219</systemName>
+    </turnout>
+    <turnout systemName="LT22" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT22</systemName>
+    </turnout>
+    <turnout systemName="LT220" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT220</systemName>
+    </turnout>
+    <turnout systemName="LT221" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT221</systemName>
+    </turnout>
+    <turnout systemName="LT222" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT222</systemName>
+    </turnout>
+    <turnout systemName="LT223" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT223</systemName>
+    </turnout>
+    <turnout systemName="LT224" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT224</systemName>
+    </turnout>
+    <turnout systemName="LT225" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT225</systemName>
+    </turnout>
+    <turnout systemName="LT226" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT226</systemName>
+    </turnout>
+    <turnout systemName="LT227" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT227</systemName>
+    </turnout>
+    <turnout systemName="LT228" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT228</systemName>
+    </turnout>
+    <turnout systemName="LT229" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT229</systemName>
+    </turnout>
+    <turnout systemName="LT23" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT23</systemName>
+    </turnout>
+    <turnout systemName="LT230" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT230</systemName>
+    </turnout>
+    <turnout systemName="LT231" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT231</systemName>
+    </turnout>
+    <turnout systemName="LT232" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT232</systemName>
+    </turnout>
+    <turnout systemName="LT24" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT24</systemName>
+    </turnout>
+    <turnout systemName="LT25" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT25</systemName>
+    </turnout>
+    <turnout systemName="LT26" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT26</systemName>
+    </turnout>
+    <turnout systemName="LT27" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT27</systemName>
+    </turnout>
+    <turnout systemName="LT28" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT28</systemName>
+    </turnout>
+    <turnout systemName="LT29" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT29</systemName>
+    </turnout>
+    <turnout systemName="LT3" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT3</systemName>
+    </turnout>
+    <turnout systemName="LT30" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT30</systemName>
+    </turnout>
+    <turnout systemName="LT31" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT31</systemName>
+    </turnout>
+    <turnout systemName="LT32" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT32</systemName>
+    </turnout>
+    <turnout systemName="LT321" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT321</systemName>
+    </turnout>
+    <turnout systemName="LT322" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT322</systemName>
+    </turnout>
+    <turnout systemName="LT323" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT323</systemName>
+    </turnout>
+    <turnout systemName="LT324" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT324</systemName>
+    </turnout>
+    <turnout systemName="LT325" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT325</systemName>
+    </turnout>
+    <turnout systemName="LT326" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT326</systemName>
+    </turnout>
+    <turnout systemName="LT327" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT327</systemName>
+    </turnout>
+    <turnout systemName="LT328" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT328</systemName>
+    </turnout>
+    <turnout systemName="LT329" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT329</systemName>
+    </turnout>
+    <turnout systemName="LT33" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT33</systemName>
+    </turnout>
+    <turnout systemName="LT330" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT330</systemName>
+    </turnout>
+    <turnout systemName="LT331" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT331</systemName>
+    </turnout>
+    <turnout systemName="LT332" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT332</systemName>
+    </turnout>
+    <turnout systemName="LT333" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT333</systemName>
+    </turnout>
+    <turnout systemName="LT334" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT334</systemName>
+    </turnout>
+    <turnout systemName="LT335" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT335</systemName>
+    </turnout>
+    <turnout systemName="LT336" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT336</systemName>
+    </turnout>
+    <turnout systemName="LT337" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT337</systemName>
+    </turnout>
+    <turnout systemName="LT338" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT338</systemName>
+    </turnout>
+    <turnout systemName="LT339" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT339</systemName>
+    </turnout>
+    <turnout systemName="LT34" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT34</systemName>
+    </turnout>
+    <turnout systemName="LT340" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT340</systemName>
+    </turnout>
+    <turnout systemName="LT341" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT341</systemName>
+    </turnout>
+    <turnout systemName="LT342" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT342</systemName>
+    </turnout>
+    <turnout systemName="LT343" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT343</systemName>
+    </turnout>
+    <turnout systemName="LT344" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT344</systemName>
+    </turnout>
+    <turnout systemName="LT345" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT345</systemName>
+    </turnout>
+    <turnout systemName="LT346" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT346</systemName>
+    </turnout>
+    <turnout systemName="LT347" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT347</systemName>
+    </turnout>
+    <turnout systemName="LT348" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT348</systemName>
+    </turnout>
+    <turnout systemName="LT349" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT349</systemName>
+    </turnout>
+    <turnout systemName="LT35" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT35</systemName>
+    </turnout>
+    <turnout systemName="LT350" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT350</systemName>
+    </turnout>
+    <turnout systemName="LT351" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT351</systemName>
+    </turnout>
+    <turnout systemName="LT352" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT352</systemName>
+    </turnout>
+    <turnout systemName="LT36" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT36</systemName>
+    </turnout>
+    <turnout systemName="LT37" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT37</systemName>
+    </turnout>
+    <turnout systemName="LT38" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT38</systemName>
+    </turnout>
+    <turnout systemName="LT39" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT39</systemName>
+    </turnout>
+    <turnout systemName="LT4" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT4</systemName>
+    </turnout>
+    <turnout systemName="LT40" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT40</systemName>
+    </turnout>
+    <turnout systemName="LT5" feedback="MONITORING" sensor1="LS21" sensor2="LS22" inverted="false" automate="Default">
+      <systemName>LT5</systemName>
+    </turnout>
+    <turnout systemName="LT57" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT57</systemName>
+    </turnout>
+    <turnout systemName="LT58" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT58</systemName>
+    </turnout>
+    <turnout systemName="LT59" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT59</systemName>
+    </turnout>
+    <turnout systemName="LT6" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT6</systemName>
+    </turnout>
+    <turnout systemName="LT60" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT60</systemName>
+    </turnout>
+    <turnout systemName="LT61" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT61</systemName>
+    </turnout>
+    <turnout systemName="LT62" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT62</systemName>
+    </turnout>
+    <turnout systemName="LT63" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT63</systemName>
+    </turnout>
+    <turnout systemName="LT64" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT64</systemName>
+    </turnout>
+    <turnout systemName="LT7" feedback="MONITORING" sensor1="LS17" sensor2="LS18" inverted="false" automate="Default">
+      <systemName>LT7</systemName>
+    </turnout>
+    <turnout systemName="LT8" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT8</systemName>
+    </turnout>
+    <turnout systemName="LT9" feedback="MONITORING" inverted="false" automate="Default">
+      <systemName>LT9</systemName>
+    </turnout>
+  </turnouts>
+  <memories class="jmri.managers.configurexml.DefaultMemoryManagerXml">
+    <memory systemName="IMCURRENTTIME" value="3:42 PM">
+      <systemName>IMCURRENTTIME</systemName>
+    </memory>
+    <memory systemName="IMRATEFACTOR" value="1.0">
+      <systemName>IMRATEFACTOR</systemName>
+    </memory>
+  </memories>
+  <sensors class="jmri.managers.configurexml.InternalSensorManagerXml">
+    <sensor systemName="IS0:LDGL" inverted="false">
+      <systemName>IS0:LDGL</systemName>
+    </sensor>
+    <sensor systemName="IS0:NGL" inverted="false">
+      <systemName>IS0:NGL</systemName>
+    </sensor>
+    <sensor systemName="IS0:RDGL" inverted="false">
+      <systemName>IS0:RDGL</systemName>
+    </sensor>
+    <sensor systemName="IS10:LDGL" inverted="false">
+      <systemName>IS10:LDGL</systemName>
+    </sensor>
+    <sensor systemName="IS10:NGL" inverted="false">
+      <systemName>IS10:NGL</systemName>
+    </sensor>
+    <sensor systemName="IS10:RDGL" inverted="false">
+      <systemName>IS10:RDGL</systemName>
+    </sensor>
+    <sensor systemName="IS10:TK" inverted="false">
+      <systemName>IS10:TK</systemName>
+    </sensor>
+    <sensor systemName="IS1:TK" inverted="false">
+      <systemName>IS1:TK</systemName>
+    </sensor>
+    <sensor systemName="IS2:TK" inverted="false">
+      <systemName>IS2:TK</systemName>
+    </sensor>
+    <sensor systemName="IS3:TK" inverted="false">
+      <systemName>IS3:TK</systemName>
+    </sensor>
+    <sensor systemName="IS4:TK" inverted="false">
+      <systemName>IS4:TK</systemName>
+    </sensor>
+    <sensor systemName="IS5:CB" inverted="false">
+      <systemName>IS5:CB</systemName>
+    </sensor>
+    <sensor systemName="IS5:CO" inverted="false">
+      <systemName>IS5:CO</systemName>
+    </sensor>
+    <sensor systemName="IS5:COR" inverted="false">
+      <systemName>IS5:COR</systemName>
+    </sensor>
+    <sensor systemName="IS5:CR" inverted="false">
+      <systemName>IS5:CR</systemName>
+    </sensor>
+    <sensor systemName="IS5:TK" inverted="false">
+      <systemName>IS5:TK</systemName>
+    </sensor>
+    <sensor systemName="IS5:WL" inverted="false">
+      <systemName>IS5:WL</systemName>
+    </sensor>
+    <sensor systemName="IS6:COR" inverted="false" userName="6 Call On Relay">
+      <systemName>IS6:COR</systemName>
+      <userName>6 Call On Relay</userName>
+    </sensor>
+    <sensor systemName="IS6:LDGK" inverted="false">
+      <systemName>IS6:LDGK</systemName>
+    </sensor>
+    <sensor systemName="IS6:LDGL" inverted="false">
+      <systemName>IS6:LDGL</systemName>
+    </sensor>
+    <sensor systemName="IS6:NGK" inverted="false">
+      <systemName>IS6:NGK</systemName>
+    </sensor>
+    <sensor systemName="IS6:NGL" inverted="false">
+      <systemName>IS6:NGL</systemName>
+    </sensor>
+    <sensor systemName="IS6:RDGK" inverted="false">
+      <systemName>IS6:RDGK</systemName>
+    </sensor>
+    <sensor systemName="IS6:RDGL" inverted="false">
+      <systemName>IS6:RDGL</systemName>
+    </sensor>
+    <sensor systemName="IS6:TK" inverted="false">
+      <systemName>IS6:TK</systemName>
+    </sensor>
+    <sensor systemName="IS7:CB" inverted="false">
+      <systemName>IS7:CB</systemName>
+    </sensor>
+    <sensor systemName="IS7:CO" inverted="false">
+      <systemName>IS7:CO</systemName>
+    </sensor>
+    <sensor systemName="IS7:CR" inverted="false">
+      <systemName>IS7:CR</systemName>
+    </sensor>
+    <sensor systemName="IS7:TK" inverted="false">
+      <systemName>IS7:TK</systemName>
+    </sensor>
+    <sensor systemName="IS7:WL" inverted="false">
+      <systemName>IS7:WL</systemName>
+    </sensor>
+    <sensor systemName="IS8:COR" inverted="false" userName="8 Call On Relay">
+      <systemName>IS8:COR</systemName>
+      <userName>8 Call On Relay</userName>
+    </sensor>
+    <sensor systemName="IS8:LDGK" inverted="false">
+      <systemName>IS8:LDGK</systemName>
+    </sensor>
+    <sensor systemName="IS8:LDGL" inverted="false">
+      <systemName>IS8:LDGL</systemName>
+    </sensor>
+    <sensor systemName="IS8:NGK" inverted="false">
+      <systemName>IS8:NGK</systemName>
+    </sensor>
+    <sensor systemName="IS8:NGL" inverted="false">
+      <systemName>IS8:NGL</systemName>
+    </sensor>
+    <sensor systemName="IS8:RDGK" inverted="false">
+      <systemName>IS8:RDGK</systemName>
+    </sensor>
+    <sensor systemName="IS8:RDGL" inverted="false">
+      <systemName>IS8:RDGL</systemName>
+    </sensor>
+    <sensor systemName="IS8:TK" inverted="false">
+      <systemName>IS8:TK</systemName>
+    </sensor>
+    <sensor systemName="IS9:TK" inverted="false">
+      <systemName>IS9:TK</systemName>
+    </sensor>
+    <sensor systemName="ISCLOCKRUNNING" inverted="false">
+      <systemName>ISCLOCKRUNNING</systemName>
+    </sensor>
+    <sensor systemName="ISINIT" inverted="false">
+      <systemName>ISINIT</systemName>
+    </sensor>
+  </sensors>
+  <timebase class="jmri.jmrit.simpleclock.configurexml.SimpleTimebaseXml" time="Thu May 19 16:59:15 EDT 2011" rate="1.0" run="yes" master="yes" sync="no" correct="no" display="no" startstopped="no" startsettime="no" startclockoption="0" />
+  <signalheads class="jmri.managers.configurexml.AbstractSignalHeadManagerXml">
+    <signalhead class="jmri.implementation.configurexml.VirtualSignalHeadXml" systemName="IH:0L" userName="0L">
+      <systemName>IH:0L</systemName>
+      <userName>0L</userName>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.VirtualSignalHeadXml" systemName="IH:10R" userName="10R">
+      <systemName>IH:10R</systemName>
+      <userName>10R</userName>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;11&quot;;&quot;12&quot;" userName="LH11">
+      <systemName>IH:SE8C:"11";"12"</systemName>
+      <userName>LH11</userName>
+      <comment>8R Siding</comment>
+      <turnoutname defines="low">11</turnoutname>
+      <turnoutname defines="high">12</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;14&quot;;&quot;15&quot;" userName="LH14">
+      <systemName>IH:SE8C:"14";"15"</systemName>
+      <userName>LH14</userName>
+      <comment>8L Middle</comment>
+      <turnoutname defines="low">14</turnoutname>
+      <turnoutname defines="high">15</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;16&quot;;&quot;17&quot;" userName="LH16">
+      <systemName>IH:SE8C:"16";"17"</systemName>
+      <userName>LH16</userName>
+      <comment>8L Upper</comment>
+      <turnoutname defines="low">16</turnoutname>
+      <turnoutname defines="high">17</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;19&quot;;&quot;20&quot;" userName="LH19">
+      <systemName>IH:SE8C:"19";"20"</systemName>
+      <userName>LH19</userName>
+      <comment>6R Upper</comment>
+      <turnoutname defines="low">19</turnoutname>
+      <turnoutname defines="high">20</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;21&quot;;&quot;22&quot;" userName="LH21">
+      <systemName>IH:SE8C:"21";"22"</systemName>
+      <userName>LH21</userName>
+      <comment>6R Middle</comment>
+      <turnoutname defines="low">21</turnoutname>
+      <turnoutname defines="high">22</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;24&quot;;&quot;25&quot;" userName="LH24">
+      <systemName>IH:SE8C:"24";"25"</systemName>
+      <userName>LH24</userName>
+      <comment>6L Siding</comment>
+      <turnoutname defines="low">24</turnoutname>
+      <turnoutname defines="high">25</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;26&quot;;&quot;27&quot;" userName="LH26">
+      <systemName>IH:SE8C:"26";"27"</systemName>
+      <userName>LH26</userName>
+      <comment>6L Main</comment>
+      <turnoutname defines="low">26</turnoutname>
+      <turnoutname defines="high">27</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;29&quot;;&quot;30&quot;" userName="LH29">
+      <systemName>IH:SE8C:"29";"30"</systemName>
+      <userName>LH29</userName>
+      <comment>2L</comment>
+      <turnoutname defines="low">29</turnoutname>
+      <turnoutname defines="high">30</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;31&quot;;&quot;32&quot;" userName="LH31">
+      <systemName>IH:SE8C:"31";"32"</systemName>
+      <userName>LH31</userName>
+      <comment>2R</comment>
+      <turnoutname defines="low">31</turnoutname>
+      <turnoutname defines="high">32</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;33&quot;;&quot;34&quot;" userName="LH33">
+      <systemName>IH:SE8C:"33";"34"</systemName>
+      <userName>LH33</userName>
+      <comment>4L</comment>
+      <turnoutname defines="low">33</turnoutname>
+      <turnoutname defines="high">34</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;35&quot;;&quot;36&quot;" userName="LH35">
+      <systemName>IH:SE8C:"35";"36"</systemName>
+      <userName>LH35</userName>
+      <turnoutname defines="low">35</turnoutname>
+      <turnoutname defines="high">36</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SE8cSignalHeadXml" systemName="IH:SE8C:&quot;9&quot;;&quot;10&quot;" userName="LH9">
+      <systemName>IH:SE8C:"9";"10"</systemName>
+      <userName>LH9</userName>
+      <comment>8R Main</comment>
+      <turnoutname defines="low">9</turnoutname>
+      <turnoutname defines="high">10</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SingleTurnoutSignalHeadXml" systemName="LH13" userName="LH13">
+      <systemName>LH13</systemName>
+      <userName>LH13</userName>
+      <comment>8R Siding Marker</comment>
+      <appearance defines="thrown">dark</appearance>
+      <appearance defines="closed">red</appearance>
+      <turnoutname defines="aspect">13</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SingleTurnoutSignalHeadXml" systemName="LH18" userName="LH18">
+      <systemName>LH18</systemName>
+      <userName>LH18</userName>
+      <comment>8L Lunar</comment>
+      <appearance defines="thrown">lunar</appearance>
+      <appearance defines="closed">red</appearance>
+      <turnoutname defines="aspect">18</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SingleTurnoutSignalHeadXml" systemName="LH23" userName="LH23">
+      <systemName>LH23</systemName>
+      <userName>LH23</userName>
+      <comment>6R Lunar</comment>
+      <appearance defines="thrown">lunar</appearance>
+      <appearance defines="closed">red</appearance>
+      <turnoutname defines="aspect">23</turnoutname>
+    </signalhead>
+    <signalhead class="jmri.implementation.configurexml.SingleTurnoutSignalHeadXml" systemName="LH28" userName="LH28">
+      <systemName>LH28</systemName>
+      <userName>LH28</userName>
+      <comment>6L Siding Marker</comment>
+      <appearance defines="thrown">red</appearance>
+      <appearance defines="closed">dark</appearance>
+      <turnoutname defines="aspect">28</turnoutname>
+    </signalhead>
+  </signalheads>
+  <signalmasts class="jmri.managers.configurexml.DefaultSignalMastManagerXml">
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-1-3-hi(LH13)(LH11)" userName="8R-S">
+      <systemName>IF$shsm:CSX-1998:CLS-1-3-hi(LH13)(LH11)</systemName>
+      <userName>8R-S</userName>
+      <comment>TK8 Left Siding</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-1-3-hi(LH28)(LH24)" userName="6L-S">
+      <systemName>IF$shsm:CSX-1998:CLS-1-3-hi(LH28)(LH24)</systemName>
+      <userName>6L-S</userName>
+      <comment>TK6 Left Siding</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-3-2-hi(LH16)(LH14)(LH18)" userName="8L">
+      <systemName>IF$shsm:CSX-1998:CLS-3-3-2-hi(LH16)(LH14)(LH18)</systemName>
+      <userName>8L</userName>
+      <comment>TK8 Left</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-3-2-hi(LH19)(LH21)(LH23)" userName="6R">
+      <systemName>IF$shsm:CSX-1998:CLS-3-3-2-hi(LH19)(LH21)(LH23)</systemName>
+      <userName>6R</userName>
+      <comment>TK6 Right</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-hi(0L)" userName="0L">
+      <systemName>IF$shsm:CSX-1998:CLS-3-hi(0L)</systemName>
+      <userName>0L</userName>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-hi(10R)" userName="10R">
+      <systemName>IF$shsm:CSX-1998:CLS-3-hi(10R)</systemName>
+      <userName>10R</userName>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-hi(LH26)" userName="6L-M">
+      <systemName>IF$shsm:CSX-1998:CLS-3-hi(LH26)</systemName>
+      <userName>6L-M</userName>
+      <comment>TK8 Left Main</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-hi(LH29)" userName="2L">
+      <systemName>IF$shsm:CSX-1998:CLS-3-hi(LH29)</systemName>
+      <userName>2L</userName>
+      <comment>TK2 Left</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-hi(LH31)" userName="2R">
+      <systemName>IF$shsm:CSX-1998:CLS-3-hi(LH31)</systemName>
+      <userName>2R</userName>
+      <comment>TK2 Right</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-hi(LH33)" userName="4L">
+      <systemName>IF$shsm:CSX-1998:CLS-3-hi(LH33)</systemName>
+      <userName>4L</userName>
+      <comment>TK4 Left</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-hi(LH35)" userName="4R">
+      <systemName>IF$shsm:CSX-1998:CLS-3-hi(LH35)</systemName>
+      <userName>4R</userName>
+      <comment>TK4 Right</comment>
+    </signalmast>
+    <signalmast systemName="IF$shsm:CSX-1998:CLS-3-hi(LH9)" userName="8R-M">
+      <systemName>IF$shsm:CSX-1998:CLS-3-hi(LH9)</systemName>
+      <userName>8R-M</userName>
+      <comment>TK8 Left Main</comment>
+    </signalmast>
+  </signalmasts>
+  <signalgroups class="jmri.managers.configurexml.DefaultSignalGroupManagerXml" />
+  <signalmastlogics class="jmri.managers.configurexml.DefaultSignalMastLogicManagerXml">
+    <logicDelay>500</logicDelay>
+    <signalmastlogic>
+      <sourceSignalMast>2L</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>0L</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS6:LDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS8:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>4L</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>2L</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS9:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS6:LDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>4R</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>6R</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS0:RDGL</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS10:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS6:LDGK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>2R</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>4R</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS0:RDGL</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS9:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS6:LDGL</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>6R</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>8R-M</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <turnouts>
+          <turnout>
+            <turnoutName>LT5</turnoutName>
+            <turnoutState>closed</turnoutState>
+          </turnout>
+        </turnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS2:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS3:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS6:RDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+      <destinationMast>
+        <destinationSignalMast>8R-S</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <turnouts>
+          <turnout>
+            <turnoutName>LT5</turnoutName>
+            <turnoutState>thrown</turnoutState>
+          </turnout>
+        </turnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS3:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS1:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS6:RDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>8R-M</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>10R</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <turnouts>
+          <turnout>
+            <turnoutName>LT7</turnoutName>
+            <turnoutState>closed</turnoutState>
+          </turnout>
+        </turnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS5:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS8:RDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS4:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>8R-S</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>10R</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>yes</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <turnouts>
+          <turnout>
+            <turnoutName>LT7</turnoutName>
+            <turnoutState>thrown</turnoutState>
+          </turnout>
+        </turnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS5:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS8:RDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS4:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>6L-S</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>4L</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <turnouts>
+          <turnout>
+            <turnoutName>LT5</turnoutName>
+            <turnoutState>thrown</turnoutState>
+          </turnout>
+        </turnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS3:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS10:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS6:LDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>6L-M</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>4L</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <turnouts>
+          <turnout>
+            <turnoutName>LT5</turnoutName>
+            <turnoutState>closed</turnoutState>
+          </turnout>
+        </turnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS3:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS10:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS6:LDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>8L</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>6L-S</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <turnouts>
+          <turnout>
+            <turnoutName>LT7</turnoutName>
+            <turnoutState>thrown</turnoutState>
+          </turnout>
+        </turnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS8:LDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS1:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS4:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+      <destinationMast>
+        <destinationSignalMast>6L-M</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <turnouts>
+          <turnout>
+            <turnoutName>LT7</turnoutName>
+            <turnoutState>closed</turnoutState>
+          </turnout>
+        </turnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS8:LDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS2:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS4:TK</sensorName>
+            <sensorState>inActive</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>0L</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>0L</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS0:LDGL</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS6:LDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+    <signalmastlogic>
+      <sourceSignalMast>10R</sourceSignalMast>
+      <destinationMast>
+        <destinationSignalMast>10R</destinationSignalMast>
+        <comment />
+        <enabled>yes</enabled>
+        <allowAutoMaticSignalMastGeneration>no</allowAutoMaticSignalMastGeneration>
+        <useLayoutEditor>no</useLayoutEditor>
+        <useLayoutEditorTurnouts>no</useLayoutEditorTurnouts>
+        <useLayoutEditorBlocks>no</useLayoutEditorBlocks>
+        <lockTurnouts>no</lockTurnouts>
+        <sensors>
+          <sensor>
+            <sensorName>IS8:RDGK</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+          <sensor>
+            <sensorName>IS10:RDGL</sensorName>
+            <sensorState>active</sensorState>
+          </sensor>
+        </sensors>
+      </destinationMast>
+    </signalmastlogic>
+  </signalmastlogics>
+  <conditionals class="jmri.managers.configurexml.DefaultConditionalManagerXml">
+    <conditional systemName="IX:GcontrolC1" userName="6L" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC1</systemName>
+      <userName>6L</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS5:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS6:LDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS0:RDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS6:LDGK" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC10" userName="6COR on" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC10</systemName>
+      <userName>6COR on</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS5:CO" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS5:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS6:RDGL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="9" systemName="IS6:NGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:RDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:LDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="10" systemName="IS6:COR" data="2" delay="2" string="2" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC11" userName="6COR off" antecedent="R1 and R2" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC11</systemName>
+      <userName>6COR off</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS5:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS5:CO" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="10" systemName="IS6:COR" data="4" delay="2" string="2" />
+      <conditionalAction option="1" type="37" systemName="6R" data="-1" delay="0" string="Stop" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC12" userName="6 Restricting" antecedent="R1" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC12</systemName>
+      <userName>6 Restricting</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS6:COR" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="37" systemName="6R" data="-1" delay="0" string="Restricting" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC13" userName="8 Restricting" antecedent="R1" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC13</systemName>
+      <userName>8 Restricting</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS8:COR" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="37" systemName="8L" data="-1" delay="0" string="Restricting" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC2" userName="6N" antecedent="R1 and R2" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC2</systemName>
+      <userName>6N</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS5:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS6:NGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS6:NGK" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC3" userName="6R" antecedent="R1 and R2" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC3</systemName>
+      <userName>6R</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS5:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS6:RDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS6:RDGK" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC4" userName="8L" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC4</systemName>
+      <userName>8L</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS7:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS8:LDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS7:CO" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS8:LDGK" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC5" userName="8N" antecedent="R1 and R2" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC5</systemName>
+      <userName>8N</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS7:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS8:NGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS8:NGK" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC6" userName="8R" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC6</systemName>
+      <userName>8R</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS7:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS8:RDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS10:LDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS8:RDGK" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC7" userName="8COR on" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC7</systemName>
+      <userName>8COR on</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS7:CO" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS7:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS8:LDGL" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="9" systemName="IS8:NGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:LDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:RDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="10" systemName="IS8:COR" data="2" delay="2" string="2" />
+    </conditional>
+    <conditional systemName="IX:GcontrolC9" userName="8COR off" antecedent="R1 and R2" logicType="1" triggerOnChange="yes">
+      <systemName>IX:GcontrolC9</systemName>
+      <userName>8COR off</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS7:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS7:CO" dataString="" num1="0" num2="0" triggersCalc="no" />
+      <conditionalAction option="1" type="37" systemName="8L" data="-1" delay="0" string="Stop" />
+      <conditionalAction option="1" type="10" systemName="IS8:COR" data="4" delay="2" string="2" />
+    </conditional>
+    <conditional systemName="IX:InvertC1" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC1</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS1" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS1:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS1:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC10" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC10</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS10" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS10:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS10:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC2" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC2</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS2" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS2:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS2:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC3" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC3</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS3" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS3:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS3:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC4" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC4</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS4" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS4:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS4:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC5" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC5</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS5" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS5:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS5:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC6" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC6</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS6" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS6:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS6:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC7" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC7</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS7" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS7:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS7:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC8" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC8</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS8" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS8:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS8:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:InvertC9" antecedent="R1" logicType="1" triggerOnChange="no">
+      <systemName>IX:InvertC9</systemName>
+      <conditionalStateVariable operator="4" negated="no" type="2" systemName="LS9" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS9:TK" data="2" delay="0" string="" />
+      <conditionalAction option="2" type="9" systemName="IS9:TK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:WcontrolC1" userName="Switch 5 Closed" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:WcontrolC1</systemName>
+      <userName>Switch 5 Closed</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS5:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS5:WL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS3:TK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="2" systemName="LT5" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:WcontrolC2" userName="Switch 5 Thrown" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:WcontrolC2</systemName>
+      <userName>Switch 5 Thrown</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS5:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS5:WL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS3:TK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="2" systemName="LT5" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:WcontrolC3" userName="Switch 7 Closed" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:WcontrolC3</systemName>
+      <userName>Switch 7 Closed</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS7:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="1" systemName="IS7:WL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS4:TK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="2" systemName="LT7" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="IX:WcontrolC4" userName="Switch 7 Thrown" antecedent="R1 and R2 and R3" logicType="1" triggerOnChange="yes">
+      <systemName>IX:WcontrolC4</systemName>
+      <userName>Switch 7 Thrown</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="IS7:CB" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS7:WL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="1" negated="no" type="2" systemName="IS4:TK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="2" systemName="LT7" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="RTXIX:Initialize1T" userName="Route 1C Initialize" antecedent="R1 AND NOT R2" logicType="3" triggerOnChange="yes">
+      <systemName>RTXIX:Initialize1T</systemName>
+      <userName>Route 1C Initialize</userName>
+      <conditionalStateVariable operator="4" negated="no" type="1" systemName="ISCLOCKRUNNING" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="2" negated="yes" type="1" systemName="ISCLOCKRUNNING" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS0:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS0:NGL" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS0:RDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS5:CB" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS5:CO" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS5:WL" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:LDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:NGK" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:NGL" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:RDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:RDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS7:CB" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS7:CO" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS7:WL" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:LDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:NGK" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:NGL" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:RDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:RDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS10:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS10:NGL" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS10:RDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="LS17" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="LS18" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="LS21" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="LS22" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="2" systemName="LT5" data="2" delay="0" string="" />
+      <conditionalAction option="1" type="2" systemName="LT7" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="RTXIX:Initialize2T" userName="Route 2C Initialize" antecedent="NOT R1" logicType="3" triggerOnChange="yes">
+      <systemName>RTXIX:Initialize2T</systemName>
+      <userName>Route 2C Initialize</userName>
+      <conditionalStateVariable operator="2" negated="yes" type="1" systemName="ISCLOCKRUNNING" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="3" type="9" systemName="IS0:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS0:NGL" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS0:RDGL" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS5:CB" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS5:CO" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS5:WL" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS6:LDGK" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS6:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS6:NGK" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS6:NGL" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS6:RDGK" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS6:RDGL" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS7:CB" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS7:CO" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS7:WL" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS8:LDGK" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS8:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS8:NGK" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS8:NGL" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS8:RDGK" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS8:RDGL" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS10:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS10:NGL" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="IS10:RDGL" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="LS17" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="LS18" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="LS21" data="4" delay="0" string="" />
+      <conditionalAction option="3" type="9" systemName="LS22" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="2" systemName="LT5" data="2" delay="0" string="" />
+      <conditionalAction option="3" type="2" systemName="LT7" data="2" delay="0" string="" />
+    </conditional>
+    <conditional systemName="SYS_SGC_6K" userName="Sensor Group 6K" antecedent="" logicType="2" triggerOnChange="yes">
+      <systemName>SYS_SGC_6K</systemName>
+      <userName>Sensor Group 6K</userName>
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS6:LDGK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS6:NGK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS6:RDGK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS6:LDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:NGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:RDGK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="SYS_SGC_8K" userName="Sensor Group 8K" antecedent="" logicType="2" triggerOnChange="yes">
+      <systemName>SYS_SGC_8K</systemName>
+      <userName>Sensor Group 8K</userName>
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS8:LDGK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS8:NGK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS8:RDGK" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS8:LDGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:NGK" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:RDGK" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="SYS_SGC_IS0" userName="Sensor Group IS0" antecedent="" logicType="2" triggerOnChange="yes">
+      <systemName>SYS_SGC_IS0</systemName>
+      <userName>Sensor Group IS0</userName>
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS0:LDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS0:NGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS0:RDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS0:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS0:NGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS0:RDGL" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="SYS_SGC_IS10" userName="Sensor Group IS10" antecedent="" logicType="2" triggerOnChange="yes">
+      <systemName>SYS_SGC_IS10</systemName>
+      <userName>Sensor Group IS10</userName>
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS10:LDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS10:NGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS10:RDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS10:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS10:NGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS10:RDGL" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="SYS_SGC_IS6" userName="Sensor Group IS6" antecedent="" logicType="2" triggerOnChange="yes">
+      <systemName>SYS_SGC_IS6</systemName>
+      <userName>Sensor Group IS6</userName>
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS6:LDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS6:NGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS6:RDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS6:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:NGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS6:RDGL" data="4" delay="0" string="" />
+    </conditional>
+    <conditional systemName="SYS_SGC_IS8" userName="Sensor Group IS8" antecedent="" logicType="2" triggerOnChange="yes">
+      <systemName>SYS_SGC_IS8</systemName>
+      <userName>Sensor Group IS8</userName>
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS8:LDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS8:NGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalStateVariable operator="5" negated="no" type="1" systemName="IS8:RDGL" dataString="" num1="0" num2="0" triggersCalc="yes" />
+      <conditionalAction option="1" type="9" systemName="IS8:LDGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:NGL" data="4" delay="0" string="" />
+      <conditionalAction option="1" type="9" systemName="IS8:RDGL" data="4" delay="0" string="" />
+    </conditional>
+  </conditionals>
+  <oblocks class="jmri.jmrit.logix.configurexml.OBlockManagerXml" />
+  <warrants class="jmri.jmrit.logix.configurexml.WarrantManagerXml" />
+  <paneleditor class="jmri.jmrit.display.panelEditor.configurexml.PanelEditorXml" name="CP Clinic" x="2931" y="25" height="771" width="814" editable="yes" positionable="yes" showtooltips="yes" controlling="yes" hide="no" panelmenu="yes" scrollable="none">
+    <positionablelabel x="0" y="0" level="1" forcecontroloff="false" hidden="no" positionable="false" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-left-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="12" y="0" level="1" forcecontroloff="false" hidden="no" positionable="false" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="77" y="0" level="1" forcecontroloff="false" hidden="no" positionable="false" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="142" y="0" level="1" forcecontroloff="false" hidden="no" positionable="false" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="402" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-sw-sig-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="272" y="0" level="1" forcecontroloff="false" hidden="no" positionable="false" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="597" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-sw-sig-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="727" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <turnouticon turnout="LT5" x="419" y="155" level="7" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" tristate="false" class="jmri.jmrit.display.configurexml.TurnoutIconXml">
+      <toolTip>LT5</toolTip>
+      <icons>
+        <closed url="program:resources/icons/USS/track/turnout/left/east/os-l-e-closed.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </closed>
+        <thrown url="program:resources/icons/USS/track/turnout/left/east/os-l-e-thrown.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </thrown>
+        <unknown url="program:resources/icons/USS/track/turnout/left/east/os-l-e-unknown.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </unknown>
+        <inconsistent url="program:resources/icons/USS/track/turnout/left/east/os-l-e-inconsistent.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </inconsistent>
+      </icons>
+      <iconmaps />
+    </turnouticon>
+    <turnouticon turnout="LT7" x="609" y="155" level="7" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" tristate="false" class="jmri.jmrit.display.configurexml.TurnoutIconXml">
+      <toolTip>LT7</toolTip>
+      <icons>
+        <closed url="program:resources/icons/USS/track/turnout/right/west/os-r-w-closed.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </closed>
+        <thrown url="program:resources/icons/USS/track/turnout/right/west/os-r-w-thrown.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </thrown>
+        <unknown url="program:resources/icons/USS/track/turnout/right/west/os-r-w-unknown.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </unknown>
+        <inconsistent url="program:resources/icons/USS/track/turnout/right/west/os-r-w-inconsistent.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </inconsistent>
+      </icons>
+      <iconmaps />
+    </turnouticon>
+    <positionablelabel x="698" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/gap.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="136" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/gap.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="247" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/gap.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="76" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="106" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="466" y="156" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="537" y="156" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="467" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="538" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="754" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <turnouticon turnout="LT5" x="407" y="340" level="7" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" tristate="false" class="jmri.jmrit.display.configurexml.TurnoutIconXml">
+      <toolTip>LT5</toolTip>
+      <icons>
+        <closed url="program:resources/icons/USS/sensor/green-on.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </closed>
+        <thrown url="program:resources/icons/USS/sensor/green-off.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </thrown>
+        <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </unknown>
+        <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </inconsistent>
+      </icons>
+      <iconmaps />
+    </turnouticon>
+    <turnouticon turnout="LT7" x="602" y="339" level="7" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" tristate="false" class="jmri.jmrit.display.configurexml.TurnoutIconXml">
+      <toolTip>LT7</toolTip>
+      <icons>
+        <closed url="program:resources/icons/USS/sensor/green-on.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </closed>
+        <thrown url="program:resources/icons/USS/sensor/green-off.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </thrown>
+        <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </unknown>
+        <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </inconsistent>
+      </icons>
+      <iconmaps />
+    </turnouticon>
+    <turnouticon turnout="LT5" x="439" y="340" level="7" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" tristate="false" class="jmri.jmrit.display.configurexml.TurnoutIconXml">
+      <toolTip>LT5</toolTip>
+      <icons>
+        <closed url="program:resources/icons/USS/sensor/amber-off.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </closed>
+        <thrown url="program:resources/icons/USS/sensor/amber-on.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </thrown>
+        <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </unknown>
+        <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </inconsistent>
+      </icons>
+      <iconmaps />
+    </turnouticon>
+    <turnouticon turnout="LT7" x="634" y="339" level="7" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" tristate="false" class="jmri.jmrit.display.configurexml.TurnoutIconXml">
+      <toolTip>LT7</toolTip>
+      <icons>
+        <closed url="program:resources/icons/USS/sensor/amber-off.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </closed>
+        <thrown url="program:resources/icons/USS/sensor/amber-on.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </thrown>
+        <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </unknown>
+        <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+          <rotation>0</rotation>
+        </inconsistent>
+      </icons>
+      <iconmaps />
+    </turnouticon>
+    <positionablelabel x="603" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/b-short.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="601" y="156" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/b-short.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="609" y="156" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/b-short.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="459" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/b-short.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="450" y="156" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/b-short.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="458" y="156" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/b-short.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <sensoricon sensor="IS3:TK" x="398" y="175" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS3:TK</toolTip>
+      <active url="program:resources/icons/USS/sensor/red-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/red-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS4:TK" x="648" y="177" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS4:TK</toolTip>
+      <active url="program:resources/icons/USS/sensor/red-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/red-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS1:TK" x="525" y="152" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS1:TK</toolTip>
+      <active url="program:resources/icons/USS/sensor/white-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/white-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS2:TK" x="526" y="177" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS2:TK</toolTip>
+      <active url="program:resources/icons/USS/sensor/white-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/white-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS5:TK" x="742" y="177" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS5:TK</toolTip>
+      <active url="program:resources/icons/USS/sensor/white-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/white-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS8:TK" x="78" y="176" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS8:TK</toolTip>
+      <active url="program:resources/icons/USS/sensor/white-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/white-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS9:TK" x="190" y="176" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS9:TK</toolTip>
+      <active url="program:resources/icons/USS/sensor/white-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/white-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS10:TK" x="297" y="176" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS10:TK</toolTip>
+      <active url="program:resources/icons/USS/sensor/white-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/white-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS5:WL" x="421" y="379" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS5:WL</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/l-left.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/l-right.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/l-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/l-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS7:WL" x="617" y="379" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS7:WL</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/l-left.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/l-right.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/l-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/l-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS5:CB" x="423" y="582" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="true" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS5:CB</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/code-press.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/code.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/code-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/code-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS7:CB" x="618" y="582" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="true" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS7:CB</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/code-press.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/code.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/code-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/code-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <positionablelabel x="430" y="355" level="4" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" text="5" size="12" style="1" red="255" green="255" blue="255" justification="centre" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Text Label</toolTip>
+    </positionablelabel>
+    <positionablelabel x="625" y="356" level="4" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" text="7" size="12" style="1" red="255" green="255" blue="255" justification="centre" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Text Label</toolTip>
+    </positionablelabel>
+    <multisensoricon x="421" y="493" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" updown="false" class="jmri.jmrit.display.configurexml.MultiSensorIconXml">
+      <toolTip>IS6:LDGL,IS6:NGL,IS6:RDGL</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/l-left.gif" degrees="0" scale="1.0" sensor="IS6:LDGL">
+        <rotation>0</rotation>
+      </active>
+      <active url="program:resources/icons/USS/plate/levers/l-vertical.gif" degrees="0" scale="1.0" sensor="IS6:NGL">
+        <rotation>0</rotation>
+      </active>
+      <active url="program:resources/icons/USS/plate/levers/l-right.gif" degrees="0" scale="1.0" sensor="IS6:RDGL">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/l-inactive.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/l-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/l-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+    </multisensoricon>
+    <multisensoricon x="616" y="492" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" updown="false" class="jmri.jmrit.display.configurexml.MultiSensorIconXml">
+      <toolTip>IS8:LDGL,IS8:NGL,IS8:RDGL</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/l-left.gif" degrees="0" scale="1.0" sensor="IS8:LDGL">
+        <rotation>0</rotation>
+      </active>
+      <active url="program:resources/icons/USS/plate/levers/l-vertical.gif" degrees="0" scale="1.0" sensor="IS8:NGL">
+        <rotation>0</rotation>
+      </active>
+      <active url="program:resources/icons/USS/plate/levers/l-right.gif" degrees="0" scale="1.0" sensor="IS8:RDGL">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/l-inactive.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/l-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/l-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+    </multisensoricon>
+    <sensoricon sensor="IS6:LDGK" x="408" y="454" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS6:LDGK</toolTip>
+      <active url="program:resources/icons/USS/sensor/green-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/green-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS6:RDGK" x="440" y="454" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS6:RDGK</toolTip>
+      <active url="program:resources/icons/USS/sensor/green-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/green-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS8:LDGK" x="603" y="454" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS8:LDGK</toolTip>
+      <active url="program:resources/icons/USS/sensor/green-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/green-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS8:RDGK" x="634" y="454" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS8:RDGK</toolTip>
+      <active url="program:resources/icons/USS/sensor/green-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/green-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS6:NGK" x="424" y="440" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS6:NGK</toolTip>
+      <active url="program:resources/icons/USS/sensor/red-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/red-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS8:NGK" x="618" y="441" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS8:NGK</toolTip>
+      <active url="program:resources/icons/USS/sensor/red-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/red-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <positionablelabel x="430" y="470" level="4" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" text="6" size="12" style="1" red="255" green="255" blue="255" justification="centre" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Text Label</toolTip>
+    </positionablelabel>
+    <positionablelabel x="626" y="471" level="4" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" text="8" size="12" style="1" red="255" green="255" blue="255" justification="centre" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Text Label</toolTip>
+    </positionablelabel>
+    <sensoricon sensor="IS7:CO" x="617" y="546" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS7:CO</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/switch-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/switch-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/switch-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/switch-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="IS5:CO" x="422" y="546" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>IS5:CO</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/switch-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/switch-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/switch-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/switch-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <positionablelabel x="617" y="529" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/plate/base-plates/misc/call-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="422" y="530" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/plate/base-plates/misc/call-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <signalmasticon signalmast="8L" x="641" y="164" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="270" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>8L (IF$shsm:CSX-1998:CLS-3-3-2-hi(LH16)(LH14)(LH18))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="8R-M" x="563" y="193" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="90" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>8R-M (IF$shsm:CSX-1998:CLS-3-hi(LH9))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="8R-S" x="562" y="168" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="90" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>8R-S (IF$shsm:CSX-1998:CLS-1-3-hi(LH13)(LH11))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="6L-M" x="458" y="170" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="270" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>6L-M (IF$shsm:CSX-1998:CLS-3-hi(LH26))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="6L-S" x="450" y="145" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="270" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>6L-S (IF$shsm:CSX-1998:CLS-1-3-hi(LH28)(LH24))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="6R" x="362" y="195" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="90" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>6R (IF$shsm:CSX-1998:CLS-3-3-2-hi(LH19)(LH21)(LH23))</toolTip>
+    </signalmasticon>
+    <positionablelabel x="467" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="207" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="532" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="662" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="337" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-blank-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="792" y="0" level="1" forcecontroloff="false" hidden="no" positionable="true" showtooltip="false" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <icon url="program:resources/icons/USS/background/Panel-right-7.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="719" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="298" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="328" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="363" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="389" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="502" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="502" y="156" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="573" y="156" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="573" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="673" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="649" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="30" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="46" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="157" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="187" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="217" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <positionablelabel x="268" y="179" level="3" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" icon="yes" class="jmri.jmrit.display.configurexml.PositionableLabelXml">
+      <toolTip>Icon</toolTip>
+      <icon url="program:resources/icons/USS/track/block/block.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </icon>
+    </positionablelabel>
+    <signalmasticon signalmast="2L" x="96" y="162" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="270" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>2L (IF$shsm:CSX-1998:CLS-3-hi(LH29))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="4L" x="208" y="163" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="270" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>4L (IF$shsm:CSX-1998:CLS-3-hi(LH33))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="2R" x="147" y="196" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="90" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>2R (IF$shsm:CSX-1998:CLS-3-hi(LH31))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="4R" x="259" y="197" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="90" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>4R (IF$shsm:CSX-1998:CLS-3-hi(LH35))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="0L" x="12" y="162" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="270" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>0L (IF$shsm:CSX-1998:CLS-3-hi(0L))</toolTip>
+    </signalmasticon>
+    <signalmasticon signalmast="10R" x="748" y="197" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" clickmode="0" litmode="false" degrees="90" scale="1.0" imageset="default" class="jmri.jmrit.display.configurexml.SignalMastIconXml">
+      <toolTip>10R (IF$shsm:CSX-1998:CLS-3-hi(10R))</toolTip>
+    </signalmasticon>
+    <multisensoricon x="17" y="232" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" updown="false" class="jmri.jmrit.display.configurexml.MultiSensorIconXml">
+      <toolTip>IS0:LDGL,IS0:NGL,IS0:RDGL</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/l-left.gif" degrees="0" scale="1.0" sensor="IS0:LDGL">
+        <rotation>0</rotation>
+      </active>
+      <active url="program:resources/icons/USS/plate/levers/l-vertical.gif" degrees="0" scale="1.0" sensor="IS0:NGL">
+        <rotation>0</rotation>
+      </active>
+      <active url="program:resources/icons/USS/plate/levers/l-right.gif" degrees="0" scale="1.0" sensor="IS0:RDGL">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/l-inactive.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/l-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/l-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+    </multisensoricon>
+    <multisensoricon x="758" y="227" level="10" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" updown="false" class="jmri.jmrit.display.configurexml.MultiSensorIconXml">
+      <toolTip>IS10:LDGL,IS10:NGL,IS10:RDGL</toolTip>
+      <active url="program:resources/icons/USS/plate/levers/l-left.gif" degrees="0" scale="1.0" sensor="IS10:LDGL">
+        <rotation>0</rotation>
+      </active>
+      <active url="program:resources/icons/USS/plate/levers/l-vertical.gif" degrees="0" scale="1.0" sensor="IS10:NGL">
+        <rotation>0</rotation>
+      </active>
+      <active url="program:resources/icons/USS/plate/levers/l-right.gif" degrees="0" scale="1.0" sensor="IS10:RDGL">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/plate/levers/l-inactive.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/plate/levers/l-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/plate/levers/l-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+    </multisensoricon>
+    <sensoricon sensor="6 Call On Relay" x="425" y="532" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>6 Call On Relay (IS6:COR)</toolTip>
+      <active url="program:resources/icons/USS/sensor/white-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/white-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+    <sensoricon sensor="8 Call On Relay" x="620" y="532" level="9" forcecontroloff="false" hidden="no" positionable="true" showtooltip="true" editable="true" momentary="false" icon="yes" class="jmri.jmrit.display.configurexml.SensorIconXml">
+      <toolTip>8 Call On Relay (IS8:COR)</toolTip>
+      <active url="program:resources/icons/USS/sensor/white-on.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </active>
+      <inactive url="program:resources/icons/USS/sensor/white-off.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inactive>
+      <unknown url="program:resources/icons/USS/sensor/s-unknown.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </unknown>
+      <inconsistent url="program:resources/icons/USS/sensor/s-inconsistent.gif" degrees="0" scale="1.0">
+        <rotation>0</rotation>
+      </inconsistent>
+      <iconmaps />
+    </sensoricon>
+  </paneleditor>
+  <filehistory>
+    <operation>
+      <type>app</type>
+      <date>Fri Jul 15 15:36:13 EDT 2011</date>
+      <filename>DecoderPro version 2.12 starts under Java 1.6.0_26 at Fri Jul 15 15:36:11 EDT 2011</filename>
+    </operation>
+    <operation>
+      <type>Load OK</type>
+      <date>Fri Jul 15 15:36:13 EDT 2011</date>
+      <filename>UserPrefsDecoderProConfig2.xml</filename>
+    </operation>
+    <operation>
+      <type>Load OK</type>
+      <date>Fri Jul 15 15:36:16 EDT 2011</date>
+      <filename>DecoderProConfig2.xml</filename>
+    </operation>
+    <operation>
+      <type>Load OK</type>
+      <date>Fri Jul 15 15:36:51 EDT 2011</date>
+      <filename>CP-X2011-Clinic.xml</filename>
+      <filehistory>
+        <operation>
+          <type>app</type>
+          <date>Tue Jul 05 10:25:36 PDT 2011</date>
+          <filename>DecoderPro version 2.11.8 starts under Java 1.6.0_22 at Tue Jul 05 10:25:36 PDT 2011</filename>
+        </operation>
+        <operation>
+          <type>Load OK</type>
+          <date>Tue Jul 05 10:25:36 PDT 2011</date>
+          <filename>UserPrefsDecoderProConfig2.xml</filename>
+        </operation>
+        <operation>
+          <type>Load OK</type>
+          <date>Tue Jul 05 10:25:40 PDT 2011</date>
+          <filename>DecoderProConfig2.xml</filename>
+        </operation>
+        <operation>
+          <type>Load OK</type>
+          <date>Tue Jul 05 10:26:00 PDT 2011</date>
+          <filename>CP-X2011-Clinic.xml</filename>
+          <filehistory>
+            <operation>
+              <type>app</type>
+              <date>Tue Jul 05 10:23:44 PDT 2011</date>
+              <filename>DecoderPro version 2.11.8 starts under Java 1.6.0_22 at Tue Jul 05 10:23:43 PDT 2011</filename>
+            </operation>
+            <operation>
+              <type>Load OK</type>
+              <date>Tue Jul 05 10:23:44 PDT 2011</date>
+              <filename>UserPrefsDecoderProConfig2.xml</filename>
+            </operation>
+            <operation>
+              <type>Load OK</type>
+              <date>Tue Jul 05 10:23:47 PDT 2011</date>
+              <filename>DecoderProConfig2.xml</filename>
+            </operation>
+            <operation>
+              <type>Load OK</type>
+              <date>Tue Jul 05 10:24:10 PDT 2011</date>
+              <filename>CP-X2011-Clinic.xml</filename>
+              <filehistory>
+                <operation>
+                  <type>app</type>
+                  <date>Mon Jun 27 17:23:56 EDT 2011</date>
+                  <filename>DecoderPro version 2.11.9+dev starts under Java 1.6.0_24 at Mon Jun 27 17:23:56 EDT 2011</filename>
+                </operation>
+                <operation>
+                  <type>Load OK</type>
+                  <date>Mon Jun 27 17:23:57 EDT 2011</date>
+                  <filename>UserPrefsDecoderProConfig2.xml</filename>
+                </operation>
+                <operation>
+                  <type>Load OK</type>
+                  <date>Mon Jun 27 17:23:59 EDT 2011</date>
+                  <filename>DecoderProConfig2.xml</filename>
+                </operation>
+                <operation>
+                  <type>Load OK</type>
+                  <date>Mon Jun 27 17:24:34 EDT 2011</date>
+                  <filename>CP-X2011-Clinic.xml</filename>
+                  <filehistory>
+                    <operation>
+                      <type>app</type>
+                      <date>Sun Jun 26 23:24:28 EDT 2011</date>
+                      <filename>DecoderPro version 2.11.8 starts under Java 1.6.0_24 at Sun Jun 26 23:24:27 EDT 2011</filename>
+                    </operation>
+                    <operation>
+                      <type>Load OK</type>
+                      <date>Sun Jun 26 23:24:28 EDT 2011</date>
+                      <filename>UserPrefsDecoderProConfig2.xml</filename>
+                    </operation>
+                    <operation>
+                      <type>Load OK</type>
+                      <date>Sun Jun 26 23:24:30 EDT 2011</date>
+                      <filename>DecoderProConfig2.xml</filename>
+                    </operation>
+                    <operation>
+                      <type>Load OK</type>
+                      <date>Sun Jun 26 23:24:49 EDT 2011</date>
+                      <filename>CP-X2011-Clinic.xml</filename>
+                      <filehistory>
+                        <operation>
+                          <type>app</type>
+                          <date>Sun Jun 26 22:53:53 EDT 2011</date>
+                          <filename>DecoderPro version 2.11.8 starts under Java 1.6.0_24 at Sun Jun 26 22:53:52 EDT 2011</filename>
+                        </operation>
+                        <operation>
+                          <type>Load OK</type>
+                          <date>Sun Jun 26 22:53:54 EDT 2011</date>
+                          <filename>UserPrefsDecoderProConfig2.xml</filename>
+                        </operation>
+                        <operation>
+                          <type>Load OK</type>
+                          <date>Sun Jun 26 22:53:57 EDT 2011</date>
+                          <filename>DecoderProConfig2.xml</filename>
+                        </operation>
+                        <operation>
+                          <type>Load OK</type>
+                          <date>Sun Jun 26 22:54:19 EDT 2011</date>
+                          <filename>CP-X2011-Clinic.xml</filename>
+                        </operation>
+                        <operation>
+                          <type>Store</type>
+                          <date>Sun Jun 26 23:24:04 EDT 2011</date>
+                          <filename />
+                        </operation>
+                      </filehistory>
+                    </operation>
+                    <operation>
+                      <type>Store</type>
+                      <date>Sun Jun 26 23:27:59 EDT 2011</date>
+                      <filename />
+                    </operation>
+                  </filehistory>
+                </operation>
+                <operation>
+                  <type>Store</type>
+                  <date>Mon Jun 27 18:45:02 EDT 2011</date>
+                  <filename />
+                </operation>
+              </filehistory>
+            </operation>
+            <operation>
+              <type>Store</type>
+              <date>Tue Jul 05 10:25:27 PDT 2011</date>
+              <filename />
+            </operation>
+          </filehistory>
+        </operation>
+        <operation>
+          <type>Store</type>
+          <date>Tue Jul 05 10:28:28 PDT 2011</date>
+          <filename />
+        </operation>
+      </filehistory>
+    </operation>
+    <operation>
+      <type>Store</type>
+      <date>Fri Jul 15 15:42:19 EDT 2011</date>
+      <filename />
+    </operation>
+  </filehistory>
+  <!--Written by JMRI version 2.12 on Fri Jul 15 15:42:19 EDT 2011 $Id: XmlFile.java,v 1.59 2011/04/23 15:16:38 hebbos Exp $-->
+</layout-config>
+

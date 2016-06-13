@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PanelEditor</class>
+ <widget class="QMainWindow" name="PanelEditor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QWidget" name="editPanel" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionOpenEditor"/>
+    <addaction name="actionDelete_this_panel"/>
+   </widget>
+   <widget class="QMenu" name="menuMarker">
+    <property name="title">
+     <string>Marker</string>
+    </property>
+    <addaction name="actionAdd_loco"/>
+    <addaction name="actionAdd_Loco_from_roster"/>
+    <addaction name="actionRemove_markers"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuMarker"/>
+   <addaction name="menuWindow"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpenEditor">
+   <property name="text">
+    <string>Change view to Control Panel Editor</string>
+   </property>
+  </action>
+  <action name="actionDelete_this_panel">
+   <property name="text">
+    <string>Delete this panel</string>
+   </property>
+  </action>
+  <action name="actionAdd_loco">
+   <property name="text">
+    <string>Add Loco</string>
+   </property>
+  </action>
+  <action name="actionAdd_Loco_from_roster">
+   <property name="text">
+    <string>Add Loco from roster</string>
+   </property>
+  </action>
+  <action name="actionRemove_markers">
+   <property name="text">
+    <string>Remove markers</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

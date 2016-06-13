@@ -1,0 +1,2367 @@
+#include "controlpaneleditor.h"
+#include "instancemanager.h"
+#include <QMenuBar>
+#include "configxmlmanager.h"
+#include "itempalette.h"
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDrag>
+#include <QMimeData>
+#include "turnouticon.h"
+#include "sensoricon.h"
+#include "signalheadicon.h"
+#include "lighticon.h"
+#include "editscene.h"
+#include "positionablepopuputil.h"
+#include <QRectF>
+#include "locoicon.h"
+#include "memoryicon.h"
+#include "analogclock2display.h"
+#include "../Tables/libtables.h"
+#include "indicatortrackicon.h"
+#include "multiiconeditor.h"
+#include "memoryinputicon.h"
+#include "memorycomboicon.h"
+#include "memoryspinnericon.h"
+#include "circuitbuilder.h"
+#include <QGraphicsProxyWidget>
+#include <QGraphicsScene>
+#include "oblockmanager.h"
+#include <QClipboard>
+#include <QApplication>
+#include "storexmluseraction.h"
+#include "positionablejcomponent.h"
+#include "imageindexeditor.h"
+#include "coordinateedit.h"
+#include "shapedrawer.h"
+#include "warranttableaction.h"
+#include "dataflavor.h"
+#include "reportericon.h"
+#include <QGraphicsSceneDragDropEvent>
+#include <QPointF>
+#include "proxyreportermanager.h"
+#include "helputil.h"
+#include "indicatorturnouticon.h"
+#include "indicatortrackicon.h"
+#include "indicatorturnouticonxml.h"
+#include "indicatortrackiconxml.h"
+#include "turnouticon.h"
+#include "turnouticonxml.h"
+#include "sensoricon.h"
+#include "sensoriconxml.h"
+#include "lighticon.h"
+#include "lighticonxml.h"
+#include "signalheadicon.h"
+#include "signalheadiconxml.h"
+#include "signalmasticonxml.h"
+#include "memoryiconxml.h"
+#include "memorycomboiconxml.h"
+#include "memoryinputiconxml.h"
+#include "memoryspinnericonxml.h"
+#include "reportericonxml.h"
+#include "multisensoriconxml.h"
+#include "multisensoricon.h"
+#include "helputil.h"
+#include "helpbroker.h"
+#include "portalicon.h"
+
+ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
+    Editor(parent)
+{
+ init("NoName");
+}
+/**
+ * Provides a simple editor for adding jmri.jmrit.display items
+ * to a captive JFrame.
+ * <P>GUI is structured as a band of common parameters across the
+ * top, then a series of things you can add.
+ * <P>
+ * All created objects are put specific levels depending on their
+ * type (higher levels are in front):
+ * <UL>
+ * <LI>BKG background
+ * <LI>ICONS icons and other drawing symbols
+ * <LI>LABELS text labels
+ * <LI>TURNOUTS turnouts and other variable track items
+ * <LI>SENSORS sensors and other independently modified objects
+ * </UL>
+ * Note that higher numbers appear behind lower numbers.
+ * <P>
+ * The "contents" List keeps track of all the objects added to the target
+ * frame for later manipulation.
+ * Extends the behavior it shares with PanelPro
+ * DnD implemented at JDK 1.2 for backward compatibility
+ * <P>
+ * @author  Pete Cressman Copyright: Copyright (c) 2009, 2010, 2011
+ * @version $Revision: 21062 $
+ *
+ */
+
+///*public*/ class ControlPanelEditor extends Editor implements DropTargetListener, ClipboardOwner, KeyListener {
+
+
+//    /*public*/ ControlPanelEditor() {
+//    }
+
+/*public*/ /*static*/ /*final*/ QString ControlPanelEditor::POSITIONABLE_LIST_FLAVOR = QString("application/x-java-jvm-local-objectref") +
+           ";class=jmri.jmrit.display.controlPanelEditor.ControlPanelEditor";
+
+/*public*/ ControlPanelEditor::ControlPanelEditor(QString name, QWidget *parent) : Editor(name, parent)
+{
+ //super(name);
+ init(name);
+}
+ControlPanelEditor::~ControlPanelEditor()
+{
+ delete log;
+ delete _itemPalette;
+}
+
+/*protected*/ void ControlPanelEditor::init(QString name)
+{
+ log = new Logger("ControlPanelEditor");
+ setObjectName("ControlPanelEditor");
+ _debug = true;
+ setAcceptDrops(true);
+ _fitX = 0;
+ _fitY = 0;
+ _clickTime = 0;
+ _warrantMenu = NULL;
+ _circuitMenu = NULL;
+ _editorMenu = NULL;
+ _drawMenu = NULL;
+ libTables = NULL;
+ _portalIconMap = NULL;
+
+ useGlobalFlagBox = new QAction(tr("Override individual Position & Control settings "),this);
+ useGlobalFlagBox->setCheckable(true);
+ positionableBox = new QAction(tr("All panel items can be repositioned"),this);
+ positionableBox->setCheckable(true);
+ controllingBox = new QAction(tr("Panel items control layout"),this);
+ controllingBox->setCheckable(true);
+ hiddenBox = new QAction(tr("Show all hidden items"), this);
+ hiddenBox->setCheckable(true);
+ disableShapeSelect = new QAction(tr("Disable Selecting Shapes"), this);
+ disableShapeSelect->setCheckable(true);
+ showTooltipBox = new QAction(tr("Show tooltips for all items"),this);
+ showTooltipBox->setCheckable(true);
+ _regular = true;	// true when TO_ARROW shows entry into ToBlock
+ _hide = false;	// true when arrow should NOT show entry into ToBlock
+_disablePortalSelection = true;		// only select PortalIcon in CircuitBuilder
+
+ setVisible(false);
+ _debug = log->isDebugEnabled();
+//    java.awt.Container contentPane = this.getContentPane();
+//    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+ QWidget* contentPane = new QWidget();
+ contentPane->setLayout(new QVBoxLayout());
+ this->setCentralWidget(contentPane);
+
+ // make menus
+ setGlobalSetsLocalFlag(false);
+ setUseGlobalFlag(false);
+ _menuBar = new QMenuBar();
+ _circuitBuilder = new CircuitBuilder(this);
+  _shapeDrawer = new ShapeDrawer(this);
+  makeDrawMenu();
+  makeWarrantMenu(false);
+  makeIconMenu();
+  makeZoomMenu();
+  makeMarkerMenu();
+  makeOptionMenu();
+  makeEditMenu();
+  makeFileMenu();
+ //_menuBar->addMenu(HelpUtil::instance()->makeHelpMenu("package.jmri.jmrit.display.ControlPanelEditor", true));
+
+ setMenuBar(_menuBar);
+ addHelpMenu("package.jmri.jmrit.display.ControlPanelEditor", true);
+
+ Editor::setTargetPanel(NULL, NULL);
+ Editor::setTargetPanelSize(300, 300);
+ editScene = (EditScene*)Editor::getTargetPanel();
+ _itemPalette = new ItemPalette(tr("Item Palette"), this);
+ editPanel->setDragMode(QGraphicsView::NoDrag);
+ editPanel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+ connect(editScene, SIGNAL(sceneDropEvent(QGraphicsSceneDragDropEvent*)), this, SLOT(dropEvent(QGraphicsSceneDragDropEvent*)));
+ connect(editScene, SIGNAL(sceneMousePress(QGraphicsSceneMouseEvent*)), this, SLOT(mousePressed(QGraphicsSceneMouseEvent*)));
+ connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)), this, SLOT(mouseReleased(QGraphicsSceneMouseEvent*)));
+ connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(mouseMoved(QGraphicsSceneMouseEvent*)));
+ connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)), this, SLOT(mouseClicked(QGraphicsSceneMouseEvent*)));
+// makeDataFlavors();
+    // set scrollbar initial state
+//    setScroll(SCROLL_BOTH);
+//    scrollBoth.setSelected(true);
+//    super.setDefaultToolTip(new ToolTip(NULL,0,0,new Font("Serif", Font.PLAIN, 12),
+//                                        Color.black, new Color(255, 250, 210), Color.black));
+ // register the resulting panel for later configuration
+ ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerUser(this);
+ pack();
+ setVisible(true);
+//    addKeyListener(this);
+}
+
+/*protected*/ void ControlPanelEditor::makeIconMenu() {
+    _iconMenu = new QMenu(tr("Add Items"));
+    _menuBar->addMenu(_iconMenu/*, 0*/);
+
+    QAction* mi = new QAction(tr("Item Palette"),this);
+//    mi.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                _itemPalette.setVisible(true);
+//            }
+//        });
+    connect(mi, SIGNAL(triggered()), this, SLOT(on_itemPallette()));
+//    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+    _iconMenu->addAction(mi);
+    QAction* lt;
+    _iconMenu->addAction(lt= new QAction(tr("Item Table List"),this));
+//    mi = (JMenuItem)_iconMenu.getMenuComponent(1);
+//    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+    connect(lt, SIGNAL(triggered()), this, SLOT(onItemTableList()));
+}
+void ControlPanelEditor::on_itemPallette()
+{
+ _itemPalette->setVisible(true);
+}
+
+void ControlPanelEditor::onItemTableList()
+{
+ if(libTables == NULL)
+     libTables = new LibTables();
+  libTables->show();
+}
+
+/*protected*/ void ControlPanelEditor::makeCircuitMenu() {
+    if (_circuitMenu==NULL) {
+        _circuitMenu = _circuitBuilder->makeMenu();
+    }
+    _menuBar->addMenu(_circuitMenu/*, 0*/);
+}
+/*protected*/ void ControlPanelEditor::makeCircuitMenu(bool edit)
+{
+ _circuitMenu = _circuitBuilder->makeMenu();
+ if (edit)
+ {
+  //int idx = _menuBar.getComponentIndex(_warrantMenu);
+  //_menuBar->addMenu(_circuitMenu, ++idx);
+  _menuBar->insertMenu((QAction*)_warrantMenu, _circuitMenu);
+  //_menuBar.revalidate();
+ }
+}
+/*protected*/ void ControlPanelEditor::makeDrawMenu() {
+    if (_drawMenu==NULL) {
+        _drawMenu = _shapeDrawer->makeMenu();
+    }
+    _drawMenu->addAction(disableShapeSelect);
+//    disableShapeSelect.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent event) {
+//            _disableShapeSelection = disableShapeSelect.isSelected();
+//        }
+//    });
+    connect(disableShapeSelect, SIGNAL(triggered(bool)), this, SLOT(on_disableShapeSelect(bool)));
+    _menuBar->addMenu(_drawMenu/*, 0*/);
+}
+
+void ControlPanelEditor::on_disableShapeSelect(bool)
+{
+ _disableShapeSelection = disableShapeSelect->isChecked();
+}
+
+/*public*/ bool ControlPanelEditor::getShapeSelect()
+{
+ return !_disableShapeSelection;
+}
+
+/*public*/ void ControlPanelEditor::setShapeSelect(bool set)
+{
+ _disableShapeSelection = !set;
+ disableShapeSelect->setChecked(_disableShapeSelection);
+}
+
+/*public*/ ShapeDrawer* ControlPanelEditor::getShapeDrawer()
+{
+ return _shapeDrawer;
+}
+/*protected*/ void ControlPanelEditor::makeZoomMenu()
+{
+ _zoomMenu = new QMenu(tr("Zoom"));
+ _menuBar->addMenu(_zoomMenu/*, 0*/);
+ QAction* addItem = new QAction(tr("No Zoom"),this);
+ _zoomMenu->addAction(addItem);
+//    addItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                zoomRestore();
+//            }
+//        });
+ connect(addItem, SIGNAL(triggered()), this, SLOT(zoomRestore()));
+ addItem = new QAction(tr("Zoom"),this);
+ _zoomMenu->addAction(addItem);
+#if 0
+ PositionableJComponent z = new PositionableJComponent(this);
+    z.setScale(getPaintScale());
+    addItem.addActionListener(CoordinateEdit.getZoomEditAction(z));
+#endif
+ addItem = new QAction(tr("Zoom To Fit"),this);
+ _zoomMenu->addAction(addItem);
+// addItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                zoomToFit();
+//            }
+//        });
+ connect(addItem, SIGNAL(triggered()), this, SLOT(zoomToFit()));
+}
+
+/*protected*/ void ControlPanelEditor::makeWarrantMenu(bool edit)
+{
+ _warrantMenu = WarrantTableAction::makeWarrantMenu(edit, this);
+ if (_warrantMenu == NULL)
+ {
+  _warrantMenu = new QMenu(tr("Warrants"),this);
+  QAction* aboutItem = new QAction(tr("About Warrants"),this);
+  HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.Warrant", NULL);
+  _warrantMenu->addAction(aboutItem);
+  aboutItem = new QAction(tr("About OBlocks&Portals"),this);
+  HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", NULL);
+  _warrantMenu->addAction(aboutItem);
+  aboutItem = new QAction(tr("Open Circuit Menu"),this);
+  _warrantMenu->addAction(aboutItem);
+//  aboutItem.addActionListener(new ActionListener() {
+//      @Override
+//      public void actionPerformed(ActionEvent event) {
+//          makeCircuitMenu(true);
+//      }
+//  });
+  connect(aboutItem, SIGNAL(triggered()), this, SLOT(on_makeCircuitMenu()));
+ }
+ else
+ {
+  makeCircuitMenu(edit);
+ }
+ _menuBar->addMenu(_warrantMenu/*, 0*/);
+}
+
+void ControlPanelEditor::on_makeCircuitMenu()
+{
+ makeCircuitMenu(true);
+}
+
+/*protected*/ void ControlPanelEditor::makeMarkerMenu() {
+    _markerMenu = new QMenu(tr("Marker"));
+    _menuBar->addMenu(_markerMenu);
+//    _markerMenu.add(new AbstractAction(Bundle.getMessage("AddLoco")){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            locoMarkerFromInput();
+//        }
+//    });
+    QAction* act = new QAction(tr("Add Loco"),this);
+    _markerMenu->addAction(act);
+    Editor* editor = (Editor*)this;
+    connect(act, SIGNAL(triggered()), editor, SLOT(locoMarkerFromInput()));
+//    _markerMenu.add(new AbstractAction(Bundle.getMessage("AddLocoRoster")){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            locoMarkerFromRoster();
+//        }
+//    });
+    act = new QAction(tr("Add Loco from roster"),this);
+    _markerMenu->addAction(act);
+    connect(act, SIGNAL(triggered()), editor, SLOT(locoMarkerFromRoster()));
+//    _markerMenu.add(new AbstractAction(Bundle.getMessage("RemoveMarkers")){
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            removeMarkers();
+//        }
+//    });
+    act = new QAction(tr("Remove markers"),this);
+    _markerMenu->addAction(act);
+    connect(act, SIGNAL(triggered()), editor, SLOT(removeMarkers()));
+}
+
+/*protected*/ void ControlPanelEditor::makeOptionMenu()
+{
+ _optionMenu = new QMenu(tr("Option"));
+ _menuBar->addMenu(_optionMenu/*, 0*/);
+ // use globals item
+ _optionMenu->addAction(useGlobalFlagBox);
+//    useGlobalFlagBox.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                setUseGlobalFlag(useGlobalFlagBox.isSelected());
+//            }
+//        });
+ connect(useGlobalFlagBox, SIGNAL(toggled(bool)), this, SLOT(setUseGlobalFlag(bool)));
+ useGlobalFlagBox->setChecked(useGlobalFlag());
+ // positionable item
+ _optionMenu->addAction(positionableBox);
+//    positionableBox.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                setAllPositionable(positionableBox.isSelected());
+//            }
+//        });
+ connect(positionableBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setAllPositionable(bool)));
+ positionableBox->setChecked(allPositionable());
+ // controlable item
+ _optionMenu->addAction(controllingBox);
+//    controllingBox.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                setAllControlling(controllingBox.isSelected());
+//            }
+//        });
+ connect(controllingBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setAllControlling(bool)));
+ controllingBox->setChecked(allControlling());
+ // hidden item
+ _optionMenu->addAction(hiddenBox);
+//    hiddenBox.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                setShowHidden(hiddenBox.isSelected());
+//            }
+//        });
+ connect(hiddenBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setShowHidden(bool)));
+ hiddenBox->setChecked(showHidden());
+
+ _optionMenu->addAction(showTooltipBox);
+//    showTooltipBox.addActionListener(new ActionListener() {
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            setAllShowTooltip(showTooltipBox.isSelected());
+//        }
+//    });
+ connect(showTooltipBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setAllShowTooltip(bool)));
+ showTooltipBox->setChecked(showTooltip());
+#if 0
+    // Show/Hide Scroll Bars
+    QMenu* scrollMenu = new JMenu(Bundle.getMessage("ComboBoxScrollable"));
+    _optionMenu.add(scrollMenu);
+    ButtonGroup scrollGroup = new ButtonGroup();
+    scrollGroup.add(scrollBoth);
+    scrollMenu.add(scrollBoth);
+    scrollBoth.addActionListener(new ActionListener() {
+            /*public*/ void actionPerformed(ActionEvent event) {
+                setScroll(SCROLL_BOTH);
+//                    repaint();
+            }
+        });
+    scrollGroup.add(scrollNone);
+    scrollMenu.add(scrollNone);
+    scrollNone.addActionListener(new ActionListener() {
+            /*public*/ void actionPerformed(ActionEvent event) {
+                setScroll(SCROLL_NONE);
+//                    repaint();
+            }
+        });
+    scrollGroup.add(scrollHorizontal);
+    scrollMenu.add(scrollHorizontal);
+    scrollHorizontal.addActionListener(new ActionListener() {
+            /*public*/ void actionPerformed(ActionEvent event) {
+                setScroll(SCROLL_HORIZONTAL);
+//                    repaint();
+            }
+        });
+    scrollGroup.add(scrollVertical);
+    scrollMenu.add(scrollVertical);
+    scrollVertical.addActionListener(new ActionListener() {
+            /*public*/ void actionPerformed(ActionEvent event) {
+                setScroll(SCROLL_VERTICAL);
+//                    repaint();
+            }
+        });
+#endif
+}
+
+/*private*/ void ControlPanelEditor::makeFileMenu() {
+    _fileMenu = new QMenu(tr("File"));
+    _menuBar->addMenu(_fileMenu/*, 0*/);
+#if 1
+//    _fileMenu->addAction(new NewPanelAction(Bundle.getMessage("New Panel...")));
+
+    StoreXmlUserAction* act = new StoreXmlUserAction(tr("Save Panels..."),this);
+    QAction* savePanelsAction = new QAction(tr("Save Panels..."),this);
+    _fileMenu->addAction(savePanelsAction);
+    connect(savePanelsAction, SIGNAL(triggered()), act, SLOT(actionPerformed()));
+    QAction* storeIndexItem = new QAction(tr("Store Image Index"),this);
+    _fileMenu->addAction(storeIndexItem);
+//    storeIndexItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                jmri.jmrit.catalog.ImageIndexEditor.storeImageIndex();
+//            }
+//        });
+    connect(storeIndexItem, SIGNAL(triggered()), this, SLOT(storeImageIndexAction()));
+    QAction* editItem = new QAction(tr("Rename Panel"),this);
+    PositionableJComponent* z = new PositionableJComponent((Editor*)this);
+    z->setScale(getPaintScale());
+    //editItem->addMenu(CoordinateEdit::getNameEditAction(z));
+//    _fileMenu->addAction(CoordinateEdit::getNameEditAction(z));
+    _fileMenu->addAction(editItem);
+
+    editItem = new QAction(tr("Create/Edit Image Index"),this);
+    _fileMenu->addAction(editItem);
+//    editItem.addActionListener(new ActionListener() {
+//            ControlPanelEditor panelEd;
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                ImageIndexEditor ii = ImageIndexEditor.instance(panelEd);
+//                ii.pack();
+//                ii.setVisible(true);
+//            }
+//            ActionListener init(ControlPanelEditor pe) {
+//                panelEd = pe;
+//                return this;
+//            }
+//        }.init(this));
+    CPEditItemActionListener* eial = new CPEditItemActionListener();
+    eial->init(this);
+    connect(editItem, SIGNAL(triggered()), eial, SLOT(actionPerformed()));
+    editItem = new QAction(tr("Change view to Panel Editor"),this);
+    _fileMenu->addAction(editItem);
+
+//    editItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                changeView("jmri.jmrit.display.panelEditor.PanelEditor");
+//                _itemPalette.dispose();
+//            }
+//        });
+    connect(editItem, SIGNAL(triggered()), this, SLOT(changePEViewAction()));
+    _fileMenu->addSeparator();
+    QAction* deleteItem = new QAction(tr("Delete This Panel..."),this);
+    _fileMenu->addAction(deleteItem);
+//    deleteItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                if (deletePanel() ) {
+//                    dispose(true);
+//                }
+//            }
+//        });
+    connect(deleteItem, SIGNAL(triggered()), this, SLOT(deleteAction()));
+
+    _fileMenu->addSeparator();
+    editItem = new QAction(tr("Close Editor"),this);
+    _fileMenu->addAction(editItem);
+//    editItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                setAllEditable(false);
+//            }
+//        });
+    connect(editItem, SIGNAL(triggered()), this, SLOT(closeEditor()));
+#endif
+}
+void CPEditItemActionListener::actionPerformed(ActionEvent *e)
+{
+    ImageIndexEditor* ii = ImageIndexEditor::instance(panelEd);
+    ii->pack();
+    ii->setVisible(true);
+}
+CPEditItemActionListener* CPEditItemActionListener::init(ControlPanelEditor *ed)
+{
+  panelEd = ed;
+ return this;
+
+}
+void ControlPanelEditor::changePEViewAction()
+{
+ changeView("PanelEditor");
+ _itemPalette->dispose();
+}
+void ControlPanelEditor::deleteAction()
+{
+ if (deletePanel() )
+ {
+  dispose(true);
+ }
+}
+void ControlPanelEditor::closeEditor()
+{
+ setAllEditable(false);
+}
+void ControlPanelEditor::storeImageIndexAction()
+{
+ ImageIndexEditor::storeImageIndex();
+}
+
+/**
+ * Create an Edit menu to support cut/copy/paste.
+ * An incredible hack to get some semblance of CCP between panels.  The hack works for
+ * one of two problems.
+ * 1. Invoking a copy to the system clipboard causes a delayed repaint placed on the
+ *    EventQueue whenever ScrollBars are invoked.  This repaint ends with a NULL
+ *    pointer exception at
+ *    javax.swing.plaf.basic.BasicScrollPaneUI.paint(BasicScrollPaneUI.java:90)
+ *    This error occurs regardless of the method used to put the copy in the
+ *    clipboard - JDK 1.2 style or 1.4 TransferHandler
+ *    Fixed! Get the plaf glue (BasicScrollPaneUI) and call installUI(_panelScrollPane)
+ *    See copyToClipboard() below, line 527 (something the Java code should have done)
+ *    No scrollbars - no problem.  Hack does not fix this problem.
+ * 2. The clipboard provides a shallow copy of what was placed there.  For things that
+ *    have an icon Map (ArrayLists) the Tranferable data is shallow.  The Hack to
+ *    work around this is:  Place a reference to the panel copying to the clipboad
+ *    in the clipboard and let the pasting panel callback to the copying panel
+ *    to get the data.
+ *    See public ArrayList<Positionable> getClipGroup() {} below.
+ */
+/*protected*/ void ControlPanelEditor::makeEditMenu() {
+    _editMenu = new QMenu("Edit");
+    _menuBar->addMenu(_editMenu/*, 0*/);
+//    _editMenu.setMnemonic(KeyEvent.VK_E);
+/*
+Tutorial recommended method not satisfactory.
+    TransferActionListener actionListener = new TransferActionListener();
+    JMenuItem menuItem = new JMenuItem("Cut");
+    menuItem.setActionCommand((String)TransferHandler.getCutAction().getValue(Action.NAME));
+    menuItem.addActionListener(actionListener);
+    menuItem.setAccelerator(
+      KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+    menuItem.setMnemonic(KeyEvent.VK_T);
+    _editMenu.add(menuItem);
+
+    menuItem = new JMenuItem("Copy");
+    menuItem.setActionCommand((String)TransferHandler.getCopyAction().getValue(Action.NAME));
+    menuItem.addActionListener(actionListener);
+    menuItem.setAccelerator(
+      KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+    menuItem.setMnemonic(KeyEvent.VK_C);
+    _editMenu.add(menuItem);
+
+    menuItem = new JMenuItem("Paste");
+    menuItem.setActionCommand((String)TransferHandler.getPasteAction().getValue(Action.NAME));
+    menuItem.addActionListener(actionListener);
+    menuItem.setAccelerator(
+      KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+    menuItem.setMnemonic(KeyEvent.VK_P);
+    _editMenu.add(menuItem);
+    */
+#if 1
+    QAction* menuItem = new QAction(tr("Cut"),this);
+//    menuItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                copyToClipboard();
+//                removeSelections(NULL);
+//            }
+//        });
+//    menuItem.setAccelerator(
+//      KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+//    menuItem.setMnemonic(KeyEvent.VK_T);
+    _editMenu->addAction(menuItem);
+    connect(menuItem, SIGNAL(triggered()), this, SLOT(actionCut()));
+
+    menuItem = new QAction(tr("Copy"), this);
+//    menuItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                copyToClipboard();
+//            }
+//        });
+//    menuItem.setAccelerator(
+//      KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+//    menuItem.setMnemonic(KeyEvent.VK_C);
+    _editMenu->addAction(menuItem);
+    connect(menuItem, SIGNAL(triggered()), this, SLOT(copyToClipboard()));
+
+    menuItem = new QAction(tr("Paste"), this);
+//    menuItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                pasteFromClipboard();
+//            }
+//        });
+//    menuItem.setAccelerator(
+//      KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+//    menuItem.setMnemonic(KeyEvent.VK_P);
+    _editMenu->addAction(menuItem);
+    connect(menuItem, SIGNAL(triggered()), this, SLOT(pasteFromClipboard()));
+
+    menuItem = new QAction(tr("Select All"),this);
+//    menuItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                _selectionGroup = _contents;
+//                _targetPanel.repaint();
+//            }
+//        });
+//    menuItem.setAccelerator(
+//      KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+    _editMenu->addAction(menuItem);
+    connect(menuItem, SIGNAL(triggered()), this, SLOT(selectAllAction()));
+#endif
+}
+void ControlPanelEditor::actionCut()
+{
+ copyToClipboard();
+ removeSelections(NULL);
+}
+void ControlPanelEditor::selectAllAction()
+{
+ QList <Positionable*> list = _contents->toList();
+ _selectionGroup = list;
+ //_targetPanel->repaint();
+
+}
+
+/**
+ * *********************** end Menus ************************
+ */
+/*public*/ CircuitBuilder* ControlPanelEditor::getCircuitBuilder()
+{
+ return _circuitBuilder;
+}
+
+/*private*/ void ControlPanelEditor::pasteFromClipboard() {
+#if 0
+    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+    DataFlavor[] flavors = clipboard.getAvailableDataFlavors();
+    for (int k=0; k<flavors.length; k++) {
+        if (_positionableListDataFlavor.equals(flavors[k])) {
+            Point pt = _targetPanel.getMousePosition(true);
+            try{
+//                    ArrayList clipGroup = (ArrayList)clipboard.getData(_positionableListDataFlavor);
+                ControlPanelEditor ed =
+                    (ControlPanelEditor)clipboard.getData(_positionableListDataFlavor);
+                ArrayList<Positionable> clipGroup = ed.getClipGroup();
+                if (clipGroup!=NULL && clipGroup.size()>0) {
+                    Positionable pos = clipGroup.get(0);
+                    int minX = pos.getLocation().x;
+                    int minY = pos.getLocation().y;
+                    // locate group at mouse point
+                    for (int i=1; i<clipGroup.size(); i++) {
+                        pos = clipGroup.get(i);
+                        minX = qMin(minX, pos.getLocation().x);
+                        minY = qMin(minY, pos.getLocation().y);
+                    }
+                    if (_pastePending) {
+                        abortPasteItems();
+                    }
+                    _selectionGroup = new ArrayList<Positionable>();
+                    for (int i=0; i<clipGroup.size(); i++) {
+                        //pos = clipGroup.get(i).deepClone();
+                        pos = clipGroup.get(i);
+                        // make positionable belong to this editor
+                        pos.setEditor(this);
+                        pos.setLocation(pos.getLocation().x+pt.x-minX, pos.getLocation().y+pt.y-minY);
+                        // now set display level in the pane.
+                        pos.setDisplayLevel(pos.getDisplayLevel());
+                        putItem(pos);
+                        pos.updateSize();
+                        pos.setVisible(true);
+                        _selectionGroup.add(pos);
+                        if (pos instanceof PositionableIcon) {
+                            jmri.NamedBean bean = pos.getNamedBean();
+                            if (bean!=NULL) {
+                                ((PositionableIcon)pos).displayState(bean.getState());
+                            }
+                        }
+                        if (_debug) log.debug("Paste Added at ("+pos.getLocation().x+", "+pos.getLocation().y+")");
+                    }
+                }
+                return;
+            } catch(IOException ioe) {
+                log.warn("Editor Paste caught IOException", ioe);
+            } catch(UnsupportedFlavorException ufe) {
+                log.warn("Editor Paste caught UnsupportedFlavorException",ufe);
+            }
+        }
+    }
+#endif
+}
+
+/*
+* The editor instance is dragged.  When dropped this editor will reference
+* the list of positionables (_clipGroup) for pasting
+*/
+/*private*/ void ControlPanelEditor::copyToClipboard() {
+    if (_selectionGroup!=QList<Positionable*>()) {
+        QList <Positionable*>* dragGroup = new QList <Positionable*>();
+
+        for (int i=0; i<_selectionGroup.size(); i++) {
+            Positionable* pos = _selectionGroup.at(i)->deepClone();
+            dragGroup->append(pos);
+            removeFromTarget(pos);   // cloned item gets added to _targetPane during cloning
+        }
+        if (_debug) log->debug("copyToClipboard: cloned _selectionGroup, size= "+_selectionGroup.size());
+//            abortPasteItems(dragGroup);
+        _clipGroup = dragGroup;
+
+        QClipboard* clipboard =/* Toolkit.getDefaultToolkit().getSystemClipboard();*/ QApplication::clipboard();
+//        clipboard.setContents(new PositionableListDnD(this), this);
+//        // workaround to recognize CCP
+//        getPanelScrollPane().getUI().installUI(getPanelScrollPane());
+//            clipboard.setContents(new PositionableListDnD(dragGroup), NULL);
+        if (_debug) log->debug("copyToClipboard: setContents _selectionGroup, size= "+_selectionGroup.size());
+
+    } else {
+        _clipGroup = NULL;
+    }
+}
+
+/*public*/ QList <Positionable*>* ControlPanelEditor::getClipGroup()
+{
+ if (_debug) log->debug(QString("getClipGroup: _clipGroup")+(_clipGroup==NULL?"=NULL":", size= "+_clipGroup->size()));
+ if (_clipGroup==NULL)
+ {
+  return NULL;
+ }
+ QList<Positionable*>* clipGrp = new QList<Positionable*>();
+ for (int i=0; i<_clipGroup->size(); i++)
+ {
+  Positionable* pos = _clipGroup->at(i)->deepClone();
+  clipGrp->append(pos);
+  removeFromTarget(pos);   // cloned item gets added to _targetPane during cloning
+ }
+ return clipGrp;
+}
+#if 0
+///// implementation of ClipboardOwner
+/*public*/ void lostOwnership(Clipboard clipboard, Transferable contents) {
+       /* don't care */
+    if (_debug) log.debug("lostOwnership: content flavor[0] = "+contents.getTransferDataFlavors()[0]);
+}
+#endif
+// override
+/*public*/ void ControlPanelEditor::setAllEditable(bool edit)
+{
+ if (edit)
+ {
+  if (_editorMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_editorMenu);
+   _editorMenu->setVisible(false);
+  }
+  if (_markerMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_markerMenu);
+   _markerMenu->setVisible(false);
+  }
+  if (_warrantMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_warrantMenu);
+   _warrantMenu->setVisible(false);
+  }
+  if (_drawMenu==NULL)
+  {
+   makeDrawMenu();
+  }
+  else
+  {
+   //_menuBar->addMenu(_drawMenu/*, 0*/);
+   _drawMenu->setVisible(true);
+  }
+  if (_circuitMenu==NULL)
+  {
+   makeCircuitMenu();
+  }
+  else
+  {
+   //_menuBar->addMenu(_circuitMenu/*, 0*/);
+   _circuitMenu->setVisible(true);
+  }
+  if(_warrantMenu == NULL)
+   makeWarrantMenu(edit);
+
+  if (_iconMenu==NULL)
+  {
+   makeIconMenu();
+  }
+  else
+  {
+   //_menuBar->addMenu(_iconMenu/*, 0*/);
+   _iconMenu->setVisible(true);
+  }
+  if (_zoomMenu==NULL)
+  {
+   makeZoomMenu();
+  }
+  else
+  {
+   //_menuBar->addMenu(_zoomMenu/*, 0*/);
+   _zoomMenu->setVisible(true);
+  }
+  if (_optionMenu==NULL)
+  {
+    makeOptionMenu();
+  }
+  else
+  {
+   //_menuBar->addMenu(_optionMenu/*, 0*/);
+   _optionMenu->setVisible(true);
+  }
+  if (_editMenu==NULL)
+  {
+   makeEditMenu();
+  }
+  else
+  {
+   //_menuBar->addMenu(_editMenu/*, 0*/);
+   _editMenu->setVisible(true);
+  }
+  if (_fileMenu==NULL)
+  {
+    makeFileMenu();
+  }
+  else
+  {
+   //_menuBar->addMenu(_fileMenu/*, 0*/);
+   _fileMenu->setVisible(true);
+  }
+ }
+ else
+ {
+  if (_fileMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_fileMenu);
+   _fileMenu->setVisible(false);
+  }
+  if (_editMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_editMenu);
+   _editMenu->setVisible(false);
+  }
+  if (_optionMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_optionMenu);
+   _menuBar->setVisible(false);
+  }
+  if (_zoomMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_zoomMenu);
+   _zoomMenu->setVisible(false);
+  }
+  if (_iconMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_iconMenu);
+   _iconMenu->setVisible(false);
+  }
+  if (_warrantMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_warrantMenu);
+   _warrantMenu->setVisible(false);
+  }
+  if (_circuitMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_circuitMenu);
+   _circuitMenu->setVisible(false);
+  }
+  if (_drawMenu!=NULL)
+  {
+   //_menuBar->removeAction((QAction*)_drawMenu);
+   _drawMenu->setVisible(false);
+  }
+  if (((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getSystemNameList().size() > 1)
+  {
+   makeWarrantMenu(edit);
+  }
+  if (_markerMenu==NULL)
+  {
+   makeMarkerMenu();
+  }
+  else
+  {
+   //_menuBar->addMenu(_markerMenu/*, 0*/);
+   _markerMenu->setVisible(true);
+  }
+  if (_editorMenu==NULL)
+  {
+   _editorMenu = new QMenu(tr("Edit"));
+//            _editorMenu.add(new AbstractAction(Bundle.getMessage("OpenEditor")) {
+//                    /*public*/ void actionPerformed(ActionEvent e) {
+//                        setAllEditable(true);
+//                    }
+//             });
+   QAction* act = new QAction(tr("Open Editor"),this);
+   connect(act, SIGNAL(triggered(bool)), this, SLOT(setAllEditable(bool)));
+  }
+  _menuBar->addMenu(_editorMenu/*, 0*/);
+ }
+ Editor::setAllEditable(edit);
+ setTitle();
+ // _menuBar->validate();
+}
+
+// override
+/*public*/ void ControlPanelEditor::setUseGlobalFlag(bool set) {
+    positionableBox->setEnabled(set);
+    //positionableBox.invalidate();
+    controllingBox->setEnabled(set);
+    //controllingBox.invalidate();
+    Editor::setUseGlobalFlag(set);
+}
+
+/*private*/ void ControlPanelEditor::zoomRestore() // SLOT
+{
+ QList <Positionable*> contents = getContents();
+ for (int i=0; i<contents.size(); i++) {
+        Positionable* p = contents.at(i);
+        ((PositionableLabel*)p)->setLocation(((PositionableLabel*)p)->getX()+_fitX, ((PositionableLabel*)p)->getY()+_fitY);
+    }
+    setPaintScale(1.0);
+}
+
+/*private*/ void ControlPanelEditor::zoomToFit() // SLOT
+{
+    double minX = 1000.0;
+    double maxX = 0.0;
+    double minY = 1000.0;
+    double maxY = 0.0;
+    QList <Positionable*> contents = getContents();
+    for (int i=0; i<contents.size(); i++) {
+        Positionable* p = contents.at(i);
+        minX = qMin((double)((PositionableLabel*)p)->getX(), minX);
+        minY = qMin((double)((PositionableLabel*)p)->getY(), minY);
+        maxX = qMax((double)((PositionableLabel*)p)->getX()+((PositionableLabel*)p)->getWidth(), maxX);
+        maxY = qMax((double)((PositionableLabel*)p)->getY()+((PositionableLabel*)p)->getHeight(), maxY);
+    }
+    _fitX = (int)qFloor(minX);
+    _fitY = (int)qFloor(minY);
+
+//    QFrame* frame = getTargetFrame();
+#if 0 //TODO:
+    QWidget* contentPane = getTargetFrame()->getContentPane();
+    QSize dim = contentPane->size();
+    QSize d = getTargetPanel()->size();
+    getTargetPanel()->resize((int)qCeil(maxX-minX), (int)qCil(maxY-minY));
+
+    JScrollPane scrollPane = getPanelScrollPane();
+    scrollPane.getHorizontalScrollBar().setValue(0);
+    scrollPane.getVerticalScrollBar().setValue(0);
+    JViewport viewPort = scrollPane.getViewport();
+    Dimension dv = viewPort.getExtentSize();
+
+    int dX = frame.getWidth()-dv.width;
+    int dY = frame.getHeight()-dv.height;
+    if (_debug) log.debug("zoomToFit: layoutWidth= "+(maxX-minX)+", layoutHeight= "+(maxY-minY)+
+                          "\n\tframeWidth= "+frame.getWidth()+", frameHeight= "+frame.getHeight()+
+                          ", viewWidth= "+dv.width+", viewHeight= "+dv.height+
+                          "\n\tconWidth= "+dim.width+", conHeight= "+dim.height+
+                          ", panelWidth= "+d.width+", panelHeight= "+d.height);
+    double ratioX = dv.width/(maxX-minX);
+    double ratioY = dv.height/(maxY-minY);
+    double ratio = qMin(ratioX, ratioY);
+    /*
+    if (ratioX<ratioY) {
+        if (ratioX>1.0) {
+            ratio = ratioX;
+        } else {
+            ratio = ratioY;
+        }
+    } else {
+        if (ratioY<1.0) {
+            ratio = ratioX;
+        } else {
+            ratio = ratioY;
+        }
+    } */
+    _fitX = (int)qFloor(minX);
+    _fitY = (int)qFloor(minY);
+    for (int i=0; i<contents.size(); i++) {
+        Positionable p = contents.get(i);
+        p.setLocation(p.getX()-_fitX, p.getY()-_fitY);
+    }
+    setScroll(SCROLL_BOTH);
+    setPaintScale(ratio);
+    setScroll(SCROLL_NONE);
+    scrollNone.setSelected(true);
+    //getTargetPanel().setSize((int)Math.ceil(maxX), (int)Math.ceil(maxY));
+    frame.setSize((int)Math.ceil((maxX-minX)*ratio)+dX, (int)Math.ceil((maxY-minY)*ratio)+dY);
+    scrollPane.getHorizontalScrollBar().setValue(0);
+    scrollPane.getVerticalScrollBar().setValue(0);
+    if (_debug) log.debug("zoomToFit: ratio= "+ratio+", w= "+(maxX-minX)+", h= "+(maxY-minY)+
+                          ", frameWidth= "+frame.getWidth()+", frameHeight= "+frame.getHeight());
+#endif
+}
+#if 1
+/*public*/ void ControlPanelEditor::setTitle()
+{
+ QString name = getName();
+ if (name==NULL || name.length()==0)
+ {
+  name = tr("Control Panel");
+ }
+ if (isEditable())
+ {
+  if(!name.contains( "Editor"))
+   JFrame::setTitle(name+" "+tr("Editor"));
+  else
+   JFrame::setTitle(name);
+ }
+ else
+ {
+  JFrame::setTitle(name);
+ }
+}
+
+// all content loaded from file.
+/*public*/ void loadComplete() {
+}
+#endif
+/**
+ * After construction, initialize all the widgets to their saved config settings.
+ */
+/*public*/ void ControlPanelEditor::initView() {
+//        editableBox.setSelected(isEditable());
+    positionableBox->setChecked(allPositionable());
+    controllingBox->setChecked(allControlling());
+    //showCoordinatesBox.setSelected(showCoordinates());
+    showTooltipBox->setChecked(showTooltip());
+    hiddenBox->setChecked(showHidden());
+//    switch (_scrollState) {
+//        case SCROLL_NONE:
+//            scrollNone.setSelected(true);
+//            break;
+//        case SCROLL_BOTH:
+//            scrollBoth.setSelected(true);
+//            break;
+//        case SCROLL_HORIZONTAL:
+//            scrollHorizontal.setSelected(true);
+//            break;
+//        case SCROLL_VERTICAL:
+//            scrollVertical.setSelected(true);
+//            break;
+//    }
+}
+
+/***************** Overriden methods of Editor *******************/
+
+/*protected*/ Positionable* ControlPanelEditor::getCurrentSelection(QGraphicsSceneMouseEvent* event) {
+    if (_pastePending) {
+        return getCopySelection(event);
+    }
+    QList <Positionable*> selections = getSelectedItems(event);
+    Positionable* selection = NULL;
+    if (selections.size() > 0)
+    {
+        //if (event.isShiftDown() && selections.size() > 1)
+        if((event->modifiers()& Qt::ShiftModifier)  && (selections.size() > 1))
+        {
+            selection = selections.at(1);
+        } else {
+            selection = selections.at(0);
+        }
+        //if (event.isControlDown())
+        if((event->modifiers()& Qt::ControlModifier))
+        {
+            // select bottom-most item over the background, otherwise take the background item
+            selection = selections.at(selections.size()-1);
+            if (((PositionableLabel*)selection)->getDisplayLevel()<=BKG && selections.size() > 1) {
+                selection = selections.at(selections.size()-2);
+            }
+        } else if (((PositionableLabel*)selection)->getDisplayLevel()<=BKG)
+        {
+            selection = NULL;
+        }
+    }
+    return selection;
+}
+
+/*protected*/ Positionable* ControlPanelEditor::getCopySelection(QGraphicsSceneMouseEvent* event) {
+    if (_selectionGroup==QList<Positionable*>()) {
+        return NULL;
+    }
+    double x = event->scenePos().x();
+    double y = event->scenePos().y();
+
+    for (int i=0; i<_selectionGroup.size(); i++) {
+        Positionable* p = _selectionGroup.at(i);
+        QRect rect2D =  QRect(((PositionableLabel*)p)->getX()*_paintScale,
+                                                           ((PositionableLabel*)p)->getY()*_paintScale,
+                                                           ((PositionableLabel*)p)->maxWidth()*_paintScale,
+                                                           ((PositionableLabel*)p)->maxHeight()*_paintScale);
+        if (rect2D.contains(QPoint(x, y))) {
+            return p;
+        }
+    }
+    return NULL;
+}
+#if 0
+/*********** KeyListener *********/
+/*public*/ void keyTyped(KeyEvent e) {
+}
+/*public*/ void keyPressed(KeyEvent e) {
+    if (_selectionGroup==NULL) {
+        return;
+    }
+    int x = 0;
+    int y = 0;
+    switch (e.getKeyCode()){
+        case KeyEvent.VK_UP:
+        case KeyEvent.VK_KP_UP:
+            y=-1;
+            break;
+        case KeyEvent.VK_DOWN:
+        case KeyEvent.VK_KP_DOWN:
+            y=1;
+            break;
+        case KeyEvent.VK_LEFT:
+        case KeyEvent.VK_KP_LEFT:
+            x=-1;
+            break;
+        case KeyEvent.VK_RIGHT:
+        case KeyEvent.VK_KP_RIGHT:
+            x=1;
+            break;
+    }
+    for (int i=0; i<_selectionGroup.size(); i++){
+        moveItem(_selectionGroup.get(i), x, y);
+    }
+    repaint();
+}
+/*public*/ void keyReleased(KeyEvent e) {}
+
+/*********** Mouse ***************/
+#endif
+#if 1
+/*public*/ void ControlPanelEditor::mousePressed(QGraphicsSceneMouseEvent* event)
+{
+ bPopupTrigger = event->buttons()& Qt::RightButton;
+
+ //setToolTip(NULL); // ends tooltip if displayed
+ if (_debug) log->debug("mousePressed at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+") _dragging="+(_dragging?"yes":"no"));
+ //  " _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup.size()));
+ //    _circuitBuilder.saveSelectionGroup(_selectionGroup);
+ _anchorX = event->scenePos().x();
+ _anchorY = event->scenePos().y();
+ _lastX = _anchorX;
+ _lastY = _anchorY;
+
+//    if (_shapeDrawer.doMousePressed(event)) {
+//        _selectionGroup = NULL;
+//        _currentSelection = NULL;
+//        return;
+//    }
+ _currentSelection = getCurrentSelection(event);
+
+ if(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL)
+ {
+     ((PositionableJPanel*)_currentSelection)->widget->mousePressEvent(event);
+     return;
+ }
+
+ //if (!event.isPopupTrigger()&& !event.isMetaDown() && !event.isAltDown())
+ if(!(event->buttons()&Qt::RightButton) && !(event->modifiers()&Qt::MetaModifier) && !(event->modifiers()&Qt::AltModifier))
+ {
+  if((event->buttons()&Qt::LeftButton))
+   dragPos = event->scenePos();
+  /*  if (!event.isControlDown()) */
+  {
+   if (_currentSelection!=NULL)
+   {
+    //if (!event.isControlDown() && !event.isShiftDown())
+    if(!(event->modifiers()& Qt::ControlModifier)  && !(event->modifiers()& Qt::ShiftModifier) )
+    {
+     ((PositionableLabel*)_currentSelection)->doMousePressed(event);
+    }
+    if (isEditable())
+    {
+     if ( !/*event.isControlDown()*/ !(event->modifiers()& Qt::ControlModifier) &&
+             (_selectionGroup!=QList<Positionable*>() && !_selectionGroup.contains(_currentSelection)) )
+     {
+      if (_pastePending)
+      {
+       abortPasteItems();
+      }
+      _selectionGroup = QList<Positionable*>();
+     }
+    }
+   }
+   else
+   {
+    _highlightcomponent = QRectF();
+    if (_pastePending) {
+        abortPasteItems();
+    }
+    _selectionGroup = QList<Positionable*>();
+   }
+  }
+ }
+ else
+ {
+  if (_currentSelection==NULL || (_selectionGroup!=QList<Positionable*>() && !_selectionGroup.contains(_currentSelection)) )
+  {
+   _selectionGroup = QList<Positionable*>();
+  }
+ }
+//    _circuitBuilder.doMousePressed(event);
+//    _targetPanel->repaint(); // needed for ToolTip
+}
+#endif
+/*public*/ void ControlPanelEditor::mouseReleased(QGraphicsSceneMouseEvent* event)
+{
+ bool bMetaDown =event->modifiers()&Qt::MetaModifier;
+ bool bControlDown = event->modifiers()&Qt::ControlModifier;
+ bool bAltDown = event->modifiers() & Qt::AltModifier;
+ bool bShiftDown = event->modifiers()& Qt::ShiftModifier;
+
+ setToolTip(NULL); // ends tooltip if displayed
+ if (_debug) log->debug("mouseReleased at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+") dragging= "+(_dragging?"yes":"no")
+                           +" pastePending= "+(_pastePending?"yes":"no")+" selectRect "+(_selectRect==QRectF()?"=":"!")+"= NULL");
+ //" _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup.size()));
+ dragPos = QPointF();
+ if (_dragging)
+ {
+  mouseDragged(event);
+ }
+ Positionable* selection = getCurrentSelection(event);
+
+ //if ((event.isPopupTrigger() || event.isMetaDown() || event.isAltDown()) && !_dragging)
+ if(/*(event->buttons()& Qt::RightButton)*/(bPopupTrigger || /*(event->modifiers()&Qt::MetaModifier)*/ bMetaDown) && !_dragging)
+ {
+  if (selection!=NULL)
+  {
+   //_highlightcomponent = QRectF();
+   if(qobject_cast<MemoryInputIcon*>(selection) != NULL ||qobject_cast<MemorySpinnerIcon*>(selection) != NULL|| qobject_cast<MemoryComboIcon*>(selection)!= NULL )
+   {
+    _highlightcomponent =
+    ((PositionableJPanel*)selection)->getBounds();
+    //((PositionableLabel*)selection)->_itemGroup->setFocus();
+    ((PositionableLabel*)selection)->widget->mouseReleaseEvent(event);
+//   }
+//   else
+    if(qobject_cast<PositionableJPanel*>(selection)!=NULL)
+    {
+     _highlightcomponent =
+        ((PositionableJComponent*)selection)->getBounds();
+     if(event->button()&Qt::RightButton)
+      showPopUp(selection, event);
+    }
+   }
+   else
+   {
+    _highlightcomponent = ((PositionableLabel*)selection)->_itemGroup->boundingRect();
+    if(event->button()&Qt::RightButton)
+     showPopUp(selection, event);
+//   else
+//    selection->setFocus();
+   }
+  }
+  else if (!_selectRect.isNull())
+  {
+   emit selectionRect(_selectRect);
+   makeSelectionGroup(event);
+  }
+ }
+ else
+ {
+  if (selection!=NULL)
+  {
+   //if (!event.isControlDown() && !event.isShiftDown())
+   if(!(event->modifiers()&Qt::ControlModifier) && !(event->modifiers()& Qt::ShiftModifier))
+   {
+    ((PositionableLabel*)selection)->doMouseReleased(event);
+   }
+  }
+  // when dragging, don't change selection group
+  if (isEditable())
+  {
+//            if (_shapeDrawer.doMouseReleased(selection, event)) {
+//                _selectRect = NULL;
+//            }
+//            if (selection!=NULL && !_circuitBuilder.doMouseReleased(selection, event)) {
+//                if (!_dragging) {
+//                    modifySelectionGroup(selection, event);
+//                }
+//            }
+   if (!_selectRect.isNull())
+   {
+       emit selectionRect(_selectRect);
+    makeSelectionGroup(event);
+   }
+  }
+  if (_pastePending && _dragging)
+  {
+   pasteItems();
+  }
+ }
+ _currentSelection = NULL;
+ _selectRect = QRectF();
+
+ // if not sending MouseClicked, do it here
+//    if (jmri.util.swing.SwingSettings.getNonStandardMouseEvent())
+ mouseClicked(event);
+
+ _dragging = false;
+//    _targetPanel.repaint(); // needed for ToolTip
+ paint(editScene);
+//        if (_debug) log.debug("mouseReleased at ("+event.getX()+","+event.getY()+
+//        " _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup.size()));
+}
+
+/*public*/ void ControlPanelEditor::mouseClicked(QGraphicsSceneMouseEvent* event)
+{
+ bool bControlDown = event->modifiers() & Qt::ControlModifier;
+ bool bShiftDown = event->modifiers() & Qt::ShiftModifier;
+
+ //if (jmri.util.swing.SwingSettings.getNonStandardMouseEvent())
+ {
+  qint64 time = QDateTime::currentMSecsSinceEpoch();
+  if (time-_clickTime < 20)
+  {
+   return;
+  }
+  _clickTime = time;
+ }
+
+ setToolTip(NULL); // ends tooltip if displayed
+ if (_debug) log->debug("mouseClicked at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+")");
+
+ Positionable* selection = getCurrentSelection(event);
+// if (_shapeDrawer.doMouseClicked(selection, event)) {
+//        return;
+// }
+
+ //if (event.isPopupTrigger() || event.isMetaDown() || event.isAltDown())
+ if((event->buttons()&Qt::RightButton)!=0 || (event->modifiers()&Qt::MetaModifier)!= 0 ||(event->modifiers()&Qt::AltModifier)!=0)
+ {
+  if (selection!=NULL)
+  {
+   _highlightcomponent = QRectF();
+   showPopUp(selection, event);
+  }
+ }
+ else
+ {
+  if (selection!=NULL)
+  {
+   //if (!_circuitBuilder.doMouseClicked(selection, event) &&
+//                    !event.isControlDown() && !event.isShiftDown() )
+   if(/*!_circuitBuilder->doMouseClicked(selection, event) &&*/ !bControlDown && !bShiftDown)
+   {
+    selection->doMouseClicked(event);
+   }
+  }
+ }
+ //_targetPanel->repaint(); // needed for ToolTip
+ paint(editScene);
+
+}
+
+/*public*/ void ControlPanelEditor::mouseDragged(QGraphicsSceneMouseEvent* event)
+{
+    //if (_debug) log.debug("mouseDragged at ("+event.getX()+","+event.getY()+")");
+ //    setToolTip(NULL); // ends tooltip if displayed
+
+ //    if (_circuitBuilder.doMouseDragged(_currentSelection, event) ) {
+ //        return;
+ //    }
+ //if (!event.isPopupTrigger() && !event.isMetaDown() && !event.isAltDown() && (isEditable() || _currentSelection instanceof LocoIcon))
+  QList<Positionable*> selections = getSelectedItems(event);
+ if(!(event->buttons()& Qt::RightButton)  && !(event->modifiers()& Qt::MetaModifier) && !(event->modifiers()& Qt::AltModifier) && (isEditable() || qobject_cast<LocoIcon*>(_currentSelection)!=0))
+ {
+  moveIt:
+  if (_currentSelection!=NULL && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable()))
+  {
+   int deltaX = event->scenePos().x() - _lastX;
+   int deltaY = event->scenePos().y() - _lastY;
+   int minX = getItemX(_currentSelection, deltaX);
+   int minY = getItemY(_currentSelection, deltaY);
+   if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(_currentSelection))
+   {
+    for (int i=0; i<_selectionGroup.size(); i++)
+    {
+     minX = qMin(getItemX(_selectionGroup.at(i), deltaX), minX);
+     minY = qMin(getItemY(_selectionGroup.at(i), deltaY), minY);
+    }
+   }
+   if (minX<0 || minY<0)
+   {
+    // Don't allow move beyond the left or top borders
+    //goto moveIt;
+    return;
+
+//        // or use this choice:
+//        // Expand the panel to the left or top as needed by the move
+//        // Probably not the preferred solution - use the above break
+//        if (_selectionGroup!=NULL && _selectionGroup.contains(_currentSelection)) {
+//            QList <Positionable*> allItems = getContents();
+//            for (int i=0; i<allItems.size(); i++){
+//                moveItem(allItems.at(i), -deltaX, -deltaY);
+//            }
+//        } else {
+//            moveItem(_currentSelection, -deltaX, -deltaY);
+//        }
+
+    }
+    if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(_currentSelection))
+    {
+     for (int i=0; i<_selectionGroup.size(); i++)
+     {
+      moveItem(_selectionGroup.at(i), deltaX, deltaY);
+     }
+     _highlightcomponent = QRectF();
+    }
+    else
+    {
+      moveItem(_currentSelection, deltaX, deltaY);
+      // don't highlight LocoIcon in edit mode
+      if (isEditable())
+      {
+       //_highlightcomponent = QRectF(((PositionableLabel*)_currentSelection)->getX(), ((PositionableLabel*)_currentSelection)->getY(),((PositionableLabel*)_currentSelection)->maxWidth(), ((PositionableLabel*)_currentSelection)->maxHeight());
+          if(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL || qobject_cast<MemorySpinnerIcon*>(_currentSelection)!= NULL || qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL)
+              _highlightcomponent = ((PositionableJPanel*)_currentSelection)->getBounds();
+          else
+       _highlightcomponent =((PositionableLabel*)_currentSelection)->_itemGroup->boundingRect();
+//       if(_highlightcomponent.x() == 0 && _highlightcomponent.y()  == 0 )
+//       {
+//        _highlightcomponent.setTopLeft(event->scenePos());
+//       }
+      }
+     }
+    }
+    else
+    {
+    if ((isEditable() && _selectionGroup==QList<Positionable*>()) /*|| _shapeDrawer.doMouseDragged(_currentSelection, event)*/)
+    {
+     drawSelectRect(event->scenePos().x(), event->scenePos().y());
+    }
+   }
+  }
+  _dragging = true;
+  _lastX = event->scenePos().x();
+  _lastY = event->scenePos().y();
+  //_targetPanel.repaint(); // needed for ToolTip
+  paint(editScene);
+
+}
+
+/*public*/ void ControlPanelEditor::mouseMoved(QGraphicsSceneMouseEvent* event) {
+    //if (_debug) log.debug("mouseMoved at ("+event.getX()+","+event.getY()+")");
+    //if (_dragging || event.isPopupTrigger() || event.isMetaDown() || event.isAltDown())
+ dLoc = event->scenePos();
+ if(_dragging || (event->buttons()& Qt::LeftButton) || (event->modifiers()& Qt::MetaModifier) || (event->modifiers()&Qt::AltModifier))
+ {
+  mouseDragged(event);
+  return;
+ }
+
+ if((event->buttons()&Qt::RightButton) && event->scenePos() != dragPos)
+  mouseDragged(event);
+
+ Positionable* selection = getCurrentSelection(event);
+ if(selection != NULL)
+     _highlightcomponent = ((PositionableLabel*)selection)->getBounds();
+ if (selection!=NULL && selection->getDisplayLevel()>BKG /*&& selection->showTooltip()*/)
+ {
+        //showToolTip(selection, event);
+        //selection->highlightlabel(true);
+//        selection->setFocus();
+//        event->accept();
+  if(qobject_cast<MemoryInputIcon*>(selection) != NULL ||qobject_cast<MemorySpinnerIcon*>(selection) != NULL|| qobject_cast<MemoryComboIcon*>(selection)!= NULL)
+  {
+   _currentSelection = selection;
+   ((PositionableJPanel*)selection)->widget->mouseMoveEvent(event);
+   _highlightcomponent = ((PositionableJPanel*)selection)->getBounds();
+
+  }
+  else
+  {
+    _highlightcomponent = ((PositionableLabel*)selection)->getBounds();
+  }
+ }
+ else
+ {
+  setToolTip(NULL);
+ }
+ //_targetPanel.repaint();
+ paint(editScene);
+
+}
+#if 0
+/*public*/ void mouseEntered(MouseEvent event) {
+}
+
+/*public*/ void mouseExited(MouseEvent event) {
+    setToolTip(NULL);
+    //_targetPanel.repaint();  // needed for ToolTip
+    paint(editScene);
+
+}
+
+
+/*************** implementation of Abstract Editor methods ***********/
+
+/**
+ * The target window has been requested to close, don't delete it at this
+ *   time.  Deletion must be accomplished via the Delete this panel menu item.
+ */
+/*protected*/ void targetWindowClosingEvent(java.awt.event.WindowEvent e) {
+    jmri.jmrit.catalog.ImageIndexEditor.checkImageIndex();
+    targetWindowClosing(true);
+}
+
+/*protected*/ void paintTargetPanel(Graphics g) {
+}
+
+/**
+ * Set an object's location when it is created.
+ */
+/*public*/ void setNextLocation(Positionable obj) {
+    obj.setLocation(0, 0);
+}
+#endif
+/**
+* Set up selections for a paste.  Note a copy of _selectionGroup is made that is
+* NOT in the _contents.  This disconnected ArrayList is added to the _contents
+* when (if) a paste is made.  The disconnected _selectionGroup can be dragged to
+* a new location.
+*/
+/*protected*/ void ControlPanelEditor::copyItem(Positionable* p) {
+    if (_debug) log->debug("Enter copyItem: _selectionGroup "+(_selectionGroup!=QList<Positionable*>() ?
+                                              "size= "+QString::number(_selectionGroup.size()) : "NULL"));
+    // If popup menu hit again, Paste selections and make another copy
+    if (_pastePending) {
+        pasteItems();
+    }
+    if (_selectionGroup!=QList<Positionable*>() && !_selectionGroup.contains(p)) {
+        _selectionGroup = QList<Positionable*>();
+    }
+    if (_selectionGroup==QList<Positionable*>()) {
+        _selectionGroup = QList <Positionable*>();
+        _selectionGroup.append(p);
+    }
+    QList<Positionable*> selectionGroup =  QList<Positionable*>();
+    for (int i=0; i<_selectionGroup.size(); i++) {
+        Positionable* pos = _selectionGroup.at(i)->deepClone();
+        selectionGroup.append(pos);
+    }
+    _selectionGroup = selectionGroup;  // group is now disconnected
+    _pastePending = true;
+//        if (_debug) log.debug("Exit copyItem: _selectionGroup.size()= "+_selectionGroup.size());
+}
+
+void ControlPanelEditor::pasteItems() {
+    if (_selectionGroup!=QList<Positionable*>()) {
+        for (int i=0; i<_selectionGroup.size(); i++) {
+            Positionable* pos = _selectionGroup.at(i);
+            //if (pos instanceof PositionableIcon)
+            if(qobject_cast<PositionableIcon*>(pos)!=NULL)
+            {
+                NamedBean* bean = ((PositionableIcon*)pos)->getNamedBean();
+                if (bean!=NULL) {
+                    ((PositionableIcon*)pos)->displayState(bean->getState());
+                }
+            }
+            putItem(pos);
+            if (_debug) log->debug("Add "+((PositionableLabel*)_selectionGroup.at(i))->getNameString());
+        }
+    }
+    _pastePending = false;
+}
+
+/**
+* Showing the popup of a member of _selectionGroup causes an image to be placed
+* in to the _targetPanel.  If the objects are not put into _contents (putItem(p))
+* the image will persist.  Thus set these transitory object invisible.
+*/
+void ControlPanelEditor::abortPasteItems() {
+    if (_debug) log->debug("abortPasteItems: _selectionGroup"+
+                          (_selectionGroup==QList<Positionable*>()?"=NULL":(".size="+QString::number(_selectionGroup.size()))));
+    if (_selectionGroup!=QList<Positionable*>()) {
+        for (int i=0; i<_selectionGroup.size(); i++) {
+            _selectionGroup.at(i)->setVisible(false);
+            _selectionGroup.at(i)->remove();
+        }
+    }
+    _selectionGroup = QList<Positionable*>();
+    _pastePending = false;
+}
+
+/**
+* Add an action to copy the Positionable item and the group to which is may belong.
+*/
+/*public*/ void ControlPanelEditor::setCopyMenu(Positionable* p, QMenu* popup)
+{
+  QAction* edit = new QAction(tr("Duplicate"),this);
+  DuplicateActionListener* dal = new DuplicateActionListener();
+  dal->init(p, this);
+//    edit.addActionListener(new ActionListener() {
+//        Positionable comp;
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            copyItem(comp);
+//        }
+//        ActionListener init(Positionable pos) {
+//            comp = pos;
+//            return this;
+//        }
+//    }.init(p));
+    popup->addAction(edit);
+    connect(edit, SIGNAL(triggered()), dal, SLOT(actionPerformed()));
+}
+DuplicateActionListener* DuplicateActionListener::init(Positionable* pos, ControlPanelEditor* edit)
+{
+ comp = pos;
+ this->edit = edit;
+ return this;
+}
+void DuplicateActionListener::actionPerformed(ActionEvent *)
+{
+ edit->copyItem(comp);
+}
+
+/**
+*  Create popup for a Positionable object
+* Popup items common to all positionable objects are done before
+* and after the items that pertain only to specific Positionable
+* types.
+*/
+/*protected*/ void ControlPanelEditor::showPopUp(Positionable* p, QGraphicsSceneMouseEvent* /*event*/)
+{
+ if (!p->isVisible())
+ {
+  return;     // component must be showing on the screen to determine its location
+ }
+ QMenu* popup = new QMenu();
+
+ PositionablePopupUtil* util = p->getPopupUtility();
+ if (((PositionableLabel*)p)->isEditable())
+ {
+  // items common to all
+  if (((PositionableLabel*)p)->doViemMenu())
+  {
+   popup->addAction(new QAction(p->getNameString(),this));
+   setPositionableMenu(p, popup);
+   if (p->isPositionable())
+   {
+    setShowCoordinatesMenu(p, popup);
+    setShowAlignmentMenu(p, popup);
+   }
+   setDisplayLevelMenu(p, popup);
+   setHiddenMenu(p, popup);
+   popup->addSeparator();
+  }
+  setCopyMenu(p, popup);
+
+  // items with defaults or using overrides
+  bool popupSet = false;
+//            popupSet |= p.setRotateOrthogonalMenu(popup);
+  //if(qobject_cast<PositionableLabel*>(p)!= NULL)
+  {
+   popupSet |= p->setRotateMenu(popup);
+   popupSet |= p->setScaleMenu(popup);
+   if (popupSet)
+   {
+    popup->addSeparator();
+    popupSet = false;
+   }
+   popupSet = p->setEditItemMenu(popup);    // ItemPalette Editor
+  }
+  if (popupSet)
+  {
+   popup->addSeparator();
+   popupSet = false;
+  }
+  //if(qobject_cast<PositionableLabel*>(p)!= NULL)
+   popupSet = p->setTextEditMenu(popup);
+  //if (p instanceof PositionableLabel)
+  if(qobject_cast<PositionableLabel*>(p)!=NULL)
+  {
+   PositionableLabel* pl = (PositionableLabel*)p;
+   if (!pl->isIcon())
+   {
+    popupSet |= setTextAttributes(p, popup);
+   }
+  }
+  else if (qobject_cast<PositionableJPanel*>(p) != NULL)
+  {
+   popupSet |= setTextAttributes(p, popup);
+  }
+  if (popupSet)
+  {
+   popup->addSeparator();
+   popupSet = false;
+  }
+  p->setDisableControlMenu(popup);
+  if (util!=NULL)
+  {
+   util->setAdditionalEditPopUpMenu(popup);
+  }
+   // for Positionables with unique settings
+  p->showPopUp(popup);
+  if(p->doViemMenu())
+  {
+   setShowTooltipMenu(p, popup);
+   setRemoveMenu(p, popup);
+  }
+ }
+ else
+ {
+  p->showPopUp(popup);
+  if (util!=NULL)
+  {
+   util->setAdditionalViewPopUpMenu(popup);
+  }
+ }
+//    popup.show((Component)p, p.getWidth()/2+(int)((getPaintScale()-1.0)*p.getX()),
+//                p.getHeight()/2+(int)((getPaintScale()-1.0)*p.getY()));
+ popup->exec(QCursor::pos());
+}
+
+/********************* Circuitbuilder ************************************/
+
+/*protected*/ void ControlPanelEditor::disableMenus() {
+    _warrantMenu->setEnabled(false);
+    _iconMenu->setEnabled(false);
+    _zoomMenu->setEnabled(false);
+    _optionMenu->setEnabled(false);
+    _editMenu->setEnabled(false);
+    _fileMenu->setEnabled(false);
+}
+
+/*public*/ void ControlPanelEditor::resetEditor() {
+    // enable menus
+    _warrantMenu->setEnabled(true);
+    _iconMenu->setEnabled(true);
+    _zoomMenu->setEnabled(true);
+    _optionMenu->setEnabled(true);
+    _editMenu->setEnabled(true);
+    _fileMenu->setEnabled(true);
+    // reset colors
+    _highlightcomponent = QRectF();
+//    TargetPane targetPane = (TargetPane)getTargetPanel();
+//    targetPane.setDefaultColors();
+    setSelectionGroup(QList<Positionable*>());
+}
+
+/*protected*/ void ControlPanelEditor::highlight(Positionable* pos) {
+    if (pos==NULL) {
+        _highlightcomponent = QRectF();
+    } else {
+        _highlightcomponent =  QRectF(pos->getX(), pos->getY(),
+                                        pos->maxWidth(), pos->maxHeight());
+    }
+    repaint();
+}
+
+/*public*/ void ControlPanelEditor::setSelectionGroup(QList<Positionable*> group) {
+    _highlightcomponent = QRectF();
+//        _currentSelection = NULL;		need non-NULL for Portal dragging in CircuitBuilder
+    _selectionGroup = group;
+    //repaint();
+}
+
+/*protected*/ QList<Positionable*> ControlPanelEditor::getSelectionGroup() {
+    return _selectionGroup;
+}
+
+/*private*/ void ControlPanelEditor::makePortalIconMap()
+{
+ _portalIconMap =  new QHash<QString, NamedIcon*>();
+ _portalIconMap->insert(PortalIcon::VISIBLE,
+         new NamedIcon("resources/icons/throttles/RoundRedCircle20.png", "resources/icons/throttles/RoundRedCircle20.png"));
+ _portalIconMap->insert(PortalIcon::PATH,
+         new NamedIcon("resources/icons/greenSquare.gif", "resources/icons/greenSquare.gif"));
+ _portalIconMap->insert(PortalIcon::HIDDEN,
+         new NamedIcon("resources/icons/Invisible.gif", "resources/icons/Invisible.gif"));
+ _portalIconMap->insert(PortalIcon::TO_ARROW,
+         new NamedIcon("resources/icons/track/toArrow.gif", "resources/icons/track/toArrow.gif"));
+ _portalIconMap->insert(PortalIcon::FROM_ARROW,
+         new NamedIcon("resources/icons/track/fromArrow.gif", "resources/icons/track/fromArrow.gif"));
+}
+
+/*protected*/ NamedIcon* ControlPanelEditor::getPortalIcon(QString name)
+{
+ if (_portalIconMap == NULL || _portalIconMap->isEmpty())
+ {		// set defaults
+     makePortalIconMap();
+ }
+ return _portalIconMap->value(name);
+}
+/*public*/ QHash<QString, NamedIcon*>* ControlPanelEditor::getPortalIconMap() {
+ if (_portalIconMap == NULL || _portalIconMap->isEmpty())
+ {		// set defaults
+  makePortalIconMap();
+ }
+ return _portalIconMap;
+}
+
+/*public*/ void ControlPanelEditor::setDefaultPortalIcons(QHash<QString, NamedIcon*>* map)
+{
+ _portalIconMap = map;
+ QVectorIterator<Positionable*> it(  *_contents);
+ while (it.hasNext())
+ {
+  Positionable* pos = it.next();
+  //f (pos instanceof PortalIcon)
+  if(qobject_cast<PortalIcon*>(pos) != NULL)
+  {
+   ((PortalIcon*) pos)->initMap();
+  }
+ }
+}
+
+/*public*/ void ControlPanelEditor::putPortalIcon(PortalIcon* pos) {
+    _circuitBuilder->addPortalIcon(pos);
+}
+
+/**************************** DnD **************************************/
+
+/*protected*/ void ControlPanelEditor::makeDataFlavors() {
+//        _targetPanel.setTransferHandler(new DnDIconHandler(this));
+    try {
+        _positionableDataFlavor = new DataFlavor(POSITIONABLE_FLAVOR);
+        _namedIconDataFlavor = new DataFlavor(ImageIndexEditor::IconDataFlavorMime);
+        _positionableListDataFlavor = new DataFlavor(POSITIONABLE_LIST_FLAVOR);
+    } catch (ClassNotFoundException cnfe) {
+//        cnfe.printStackTrace();
+    }
+//    new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
+}
+
+#if 0
+/*************************** DropTargetListener ************************/
+
+/*public*/ void dragExit(DropTargetEvent evt) {}
+/*public*/ void dragEnter(DropTargetDragEvent evt) {}
+/*public*/ void dragOver(DropTargetDragEvent evt) {}
+/*public*/ void dropActionChanged(DropTargetDragEvent evt) {}
+
+//@SuppressWarnings("unchecked")
+//@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
+// Only used occasionally, so inefficient String processing not really a problem
+// though it would be good to fix it if you're working in this area
+/*public*/ void drop(DropTargetDropEvent evt) {
+    try {
+        //Point pt = evt.getLocation(); coords relative to entire window
+        Point pt = _targetPanel.getMousePosition(true);
+        Transferable tr = evt.getTransferable();
+        if (_debug) {
+            DataFlavor[] flavors = tr.getTransferDataFlavors();
+            String flavor = "";
+            for (int i=0; i<flavors.length; i++) {
+                flavor += flavors[i].getRepresentationClass().getName()+", ";
+            }
+            log.debug("Editor Drop: flavor classes= "+flavor);
+        }
+        if (tr.isDataFlavorSupported(_positionableDataFlavor)) {
+            Positionable item = (Positionable)tr.getTransferData(_positionableDataFlavor);
+            if (item==NULL) {
+//                    if (_debug) log.debug("Drop of NULL POSITIONABLE_FLAVOR");
+                JOptionPane.showMessageDialog(NULL, ItemPalette.rbp.getString("noRowSelected"),
+                        ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            item.setLocation(pt.x, pt.y);
+            // now set display level in the pane.
+            item.setDisplayLevel(item.getDisplayLevel());
+            item.setEditor(this);
+            putItem(item);
+            item.updateSize();
+            //if (_debug) log.debug("Drop positionable "+item.getNameString()+
+            //                                    " as "+item.getClass().getName()+
+            //                                    ", w= "+item.maxWidth()+", h= "+item.maxHeight());
+            evt.dropComplete(true);
+            return;
+        } else if (tr.isDataFlavorSupported(_namedIconDataFlavor)) {
+              NamedIcon newIcon = new NamedIcon((NamedIcon)tr.getTransferData(_namedIconDataFlavor));
+              String url = newIcon.getURL();
+              NamedIcon icon = NamedIcon.getIconByName(url);
+              PositionableLabel ni = new PositionableLabel(icon, this);
+              ni.setPopupUtility(NULL);        // no text
+              // infer a background icon from the size
+              if (icon.getIconHeight()>500 || icon.getIconWidth()>600) {
+                  ni.setDisplayLevel(BKG);
+              } else {
+                  ni.setDisplayLevel(ICONS);
+              }
+              ni.setLocation(pt.x, pt.y);
+              ni.setEditor(this);
+              putItem(ni);
+              ni.updateSize();
+              evt.dropComplete(true);
+              return;
+        } else if (tr.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            String text = (String)tr.getTransferData(DataFlavor.stringFlavor);
+            PositionableLabel l = new PositionableLabel(text, this);
+            l.setSize(l.getPreferredSize().width, l.getPreferredSize().height);
+            l.setDisplayLevel(LABELS);
+            l.setLocation(pt.x, pt.y);
+            l.setEditor(this);
+            putItem(l);
+            evt.dropComplete(true);
+        } else if (tr.isDataFlavorSupported(_positionableListDataFlavor)) {
+            ArrayList<Positionable> dragGroup =
+                    (ArrayList<Positionable>)tr.getTransferData(_positionableListDataFlavor);
+            for (int i=0; i<dragGroup.size(); i++) {
+                Positionable pos = dragGroup.get(i);
+                pos.setEditor(this);
+                putItem(pos);
+                pos.updateSize();
+                if (_debug) log.debug("DnD Add "+pos.getNameString());
+            }
+        } else {
+            log.warn("Editor DropTargetListener  supported DataFlavors not available at drop from "
+                     +tr.getClass().getName());
+        }
+    } catch(IOException ioe) {
+        log.warn("Editor DropTarget caught IOException", ioe);
+    } catch(UnsupportedFlavorException ufe) {
+        log.warn("Editor DropTarget caught UnsupportedFlavorException",ufe);
+    }
+    if (_debug) log.debug("Editor DropTargetListener drop REJECTED!");
+    evt.rejectDrop();
+}
+
+static /*protected*/ class PositionableListDnD implements Transferable {
+    ControlPanelEditor _sourceEditor;
+    DataFlavor _dataFlavor;
+
+    PositionableListDnD(ControlPanelEditor source) {
+        _sourceEditor = source;
+        try {
+            _dataFlavor = new DataFlavor(POSITIONABLE_LIST_FLAVOR);
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+    }
+
+    /*public*/ Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException,IOException {
+        if (log.isDebugEnabled()) log.debug("PositionableListDnD.getTransferData:");
+        if (flavor.equals(_dataFlavor)) {
+            return _sourceEditor;
+        }
+        throw new UnsupportedFlavorException(flavor);
+    }
+
+    /*public*/ DataFlavor[] getTransferDataFlavors() {
+        return new DataFlavor[] { _dataFlavor };
+    }
+
+    /*public*/ bool isDataFlavorSupported(DataFlavor flavor) {
+        if (flavor.equals(_dataFlavor)) {
+            return true;
+        }
+        return false;
+    }
+//}
+#endif
+void ControlPanelEditor::dragEnterEvent(QDragEnterEvent *event)
+{
+ event->acceptProposedAction();
+}
+void ControlPanelEditor::dragMoveEvent(QDragMoveEvent *de)
+{
+ // The event needs to be accepted here
+ de->accept();
+}
+void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
+{
+ const QMimeData* m = event->mimeData();
+ QString text = m->text();
+ if(text.startsWith("DataFlavor["))
+ {
+  qDebug() << text;
+  QString mimeText = text.mid(11+9, text.length()-12 -9);
+  DataFlavor* flavor = new DataFlavor(mimeText);
+  QString xmlData = flavor->getParameter("xml");
+  QString decoded = QUrl::fromEncoded(xmlData.toLocal8Bit()).toString();
+  log->debug(decoded);
+
+  if(flavor->getRepresentationClass() == "ReporterIcon")
+  {
+//   ReporterIcon* pos = new ReporterIcon(this);
+//   QString reporterName = flavor->getParameter("reporter");
+//   Reporter* r = ((ProxyReporterManager*)InstanceManager::reporterManagerInstance())->provideReporter(reporterName);
+//   pos->setReporter(r);
+//   pos->setLocation(event->pos().x(),event->pos().y());
+//   pos->setDisplayLevel(REPORTERS);
+//   pos->setVisible(true);
+//   pos->setSize(pos->getPreferredSize().width(), pos->getPreferredSize().height());
+//   putItem(pos);
+   ReporterIconXml* xml = new ReporterIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   ReporterIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   addToTarget(l);
+  }
+  else  if(flavor->getRepresentationClass()=="TurnoutIcon")
+  {
+   TurnoutIconXml* xml = new TurnoutIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   TurnoutIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setLevel(Editor::TURNOUTS);
+   addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="SensorIcon")
+  {
+   SensorIconXml* xml = new SensorIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   SensorIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setLevel(Editor::SENSORS);
+   l->setEditor(this);
+   addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="LightIcon")
+  {
+   LightIconXml* xml = new LightIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   LightIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setLevel(Editor::LIGHTS);
+   addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="IndicatorTrackIcon")
+  {
+   IndicatorTrackIconXml* xml = new IndicatorTrackIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   IndicatorTrackIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setLevel(Editor::TURNOUTS);
+   addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="IndicatorTurnoutIcon")
+  {
+   IndicatorTurnoutIconXml* xml = new IndicatorTurnoutIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   QGraphicsScene* scene = getTargetPanel();
+   //connect(scene, SIGNAL(changed(QList<QRectF>)), this, SLOT(sceneChanged(QList<QRectF>)));
+   xml->load(e,this);
+   IndicatorTurnoutIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setLevel(Editor::TURNOUTS);
+   addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="SignalHeadIcon")
+  {
+   SignalHeadIconXml* xml = new SignalHeadIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   SignalHeadIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setLevel(Editor::SIGNALS);
+   addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="SignalMastIcon")
+  {
+   SignalMastIconXml* xml = new SignalMastIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   SignalMastIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setLevel(Editor::SIGNALS);
+   addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="MemoryIcon")
+  {
+      MemoryIconXml* xml = new MemoryIconXml;
+      xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+      QDomNodeList list = xml->doc.childNodes();
+      QDomElement e = list.at(0).toElement();
+      xml->load(e,this);
+      MemoryIcon* l = xml->getIcon();
+      l->setLocation(event->scenePos().x(), event->scenePos().y());
+      l->setLevel(Editor::MEMORIES);
+      addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="MemoryInputIcon")
+  {
+      MemoryInputIconXml* xml = new MemoryInputIconXml;
+      xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+      QDomNodeList list = xml->doc.childNodes();
+      QDomElement e = list.at(0).toElement();
+      xml->load(e,this);
+      MemoryInputIcon* l = xml->getIcon();
+      l->setLocation(event->scenePos().x(), event->scenePos().y());
+      l->setLevel(Editor::MEMORIES);
+      addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="MemoryComboIcon")
+  {
+      MemoryComboIconXml* xml = new MemoryComboIconXml;
+      xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+      QDomNodeList list = xml->doc.childNodes();
+      QDomElement e = list.at(0).toElement();
+      xml->load(e,this);
+      MemoryComboIcon* l = xml->getIcon();
+      l->setLocation(event->scenePos().x(), event->scenePos().y());
+      l->setLevel(Editor::MEMORIES);
+      addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="MemorySpinnerIcon")
+  {
+      MemorySpinnerIconXml* xml = new MemorySpinnerIconXml;
+      xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+      QDomNodeList list = xml->doc.childNodes();
+      QDomElement e = list.at(0).toElement();
+      xml->load(e,this);
+      MemorySpinnerIcon* l = xml->getIcon();
+      l->setLocation(event->scenePos().x(), event->scenePos().y());
+      l->setLevel(Editor::MEMORIES);
+      addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="PositionableLabel")
+  {
+   PositionableLabelXml* xml = new PositionableLabelXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   PositionableLabel* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setLevel(Editor::LABELS);
+   addToTarget(l);
+  }
+  else if(flavor->getRepresentationClass()=="MultiSensorIcon")
+  {
+   MultiSensorIconXml* xml = new MultiSensorIconXml;
+   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   MultiSensorIcon* l = xml->getIcon();
+   l->setLocation(event->scenePos().x(), event->scenePos().y());
+   addToTarget(l);
+  }
+ }
+ else if(text.contains(";"))
+ {
+     QString name = text.mid(0, text.indexOf(";"));
+     QString type = text.mid(text.indexOf(";")+1);
+     if(type=="TurnoutIcon")
+     {
+      TurnoutIcon* t = new TurnoutIcon(this);
+      t->setTurnout(name);
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+      putItem((Positionable*)t);
+     }
+     else if(type=="SensorIcon")
+     {
+      MultiIconEditor*   iconEditor = new MultiIconEditor(4);
+         iconEditor->setIcon(0, "Active:",":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
+         iconEditor->setIcon(1, "Inactive", ":/resources/icons/smallschematics/tracksegments/circuit-empty.gif");
+         iconEditor->setIcon(2, "Inconsistent:", ":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
+         iconEditor->setIcon(3, "Unknown:",":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
+         iconEditor->complete();
+      SensorIcon* t = new SensorIcon(this);
+      t->setIcon("SensorStateActive", iconEditor->getIcon(0));
+      t->setIcon("SensorStateInactive", iconEditor->getIcon(1));
+      t->setIcon("BeanStateInconsistent", iconEditor->getIcon(2));
+      t->setIcon("BeanStateUnknown", iconEditor->getIcon(3));t->setLocation(event->scenePos().x(), event->scenePos().y());
+      t->setLevel(Editor::SENSORS);
+      t->setSensor(name);
+      t->setVisible(true);
+      putItem((Positionable*)t);
+     }
+     else if(type=="SignalHeadIcon")
+     {
+      SignalHeadIcon* t = new SignalHeadIcon(this);
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+      t->setSignalHead(name);
+      putItem((Positionable*)t);
+     }
+     else if(type=="LightIcon")
+     {
+      LightIcon* t = new LightIcon(this);
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+      t->setLight(name);
+      putItem((Positionable*)t);
+     }
+     else if(type=="MemoryIcon")
+     {
+      MemoryIcon* t = new MemoryIcon(name,this);
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+//      t->setLight(name);
+      t->setLevel(Editor::MEMORIES);
+      putItem((Positionable*)t);
+     }
+     else if(type=="MemoryInputIcon")
+     {
+      MemoryInputIcon* t = new MemoryInputIcon(5,this);
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+//      t->setLight(name);
+      t->setLevel(Editor::MEMORIES);
+      putItem((Positionable*)t);
+     }
+     else if(type=="MemoryComboIcon")
+     {
+      MemoryComboIcon* t = new MemoryComboIcon(this, QStringList());
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+//      t->setLight(name);
+      t->setLevel(Editor::MEMORIES);
+      putItem((Positionable*)t);
+     }
+     else if(type=="MemorySpinnerIcon")
+     {
+      MemorySpinnerIcon* t = new MemorySpinnerIcon(this);
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+//      t->setLight(name);
+      t->setLevel(Editor::MEMORIES);
+      putItem((Positionable*)t);
+     }
+     else if(type=="AnalogClock2Display")
+     {
+      AnalogClock2Display* t = new AnalogClock2Display(this);
+      t->setOpaque(false);
+      t->update();
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+      t->setLevel(Editor::CLOCK);
+      t->setVisible(true);
+      t->setScale(1.0);
+      putItem((Positionable*)t);
+      t->paint(editScene);
+     }
+     else if(type == "IndicatorTrackIcon")
+     {
+      IndicatorTrackIcon* t = new IndicatorTrackIcon(this);
+
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+      t->setLevel(Editor::TURNOUTS);
+      putItem((Positionable*)t);
+     }
+     else if(type == "IndicatorTurnoutIcon")
+     {
+      IndicatorTurnoutIcon* t = new IndicatorTurnoutIcon(this);
+
+      t->setLocation(event->scenePos().x(), event->scenePos().y());
+      t->setLevel(Editor::TURNOUTS);
+      putItem((Positionable*)t);
+     }
+     else if(type=="PositionableLabel")
+     {
+      PositionableLabel* l = new PositionableLabel(NamedIcon::getIconByName(name), /*_editor*/(Editor*)parent());
+      l->setPopupUtility(NULL);        // no text
+      l->setLevel(Editor::BKG);
+      l->setLocation(event->scenePos().x(), event->scenePos().y());
+      putItem((Positionable*)l);
+     }
+ }
+}
+void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
+{
+ qDebug("scene changed");
+}
+
+void ControlPanelEditor::keyPressEvent(QKeyEvent * event)
+{
+ QList<Positionable*> l = getSelectedItems(QPointF(_lastX, _lastY));
+ if(l.size() > 0)
+     _currentSelection = l.at(0);
+ if(_currentSelection != NULL &&(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL))
+    {
+     editScene->setFocusItem(((PositionableJPanel*)_currentSelection)->widget);
+       ((PositionableJPanel*)_currentSelection)->widget->keyPressEvent(event);
+     event->setAccepted(true);
+        return;
+    }
+}
+void ControlPanelEditor::keyReleaseEvent(QKeyEvent * event)
+{
+    QList<Positionable*> l = getSelectedItems(QPointF(_lastX, _lastY));
+    if(l.size() > 0)
+        _currentSelection = l.at(0);
+
+    if(_currentSelection != NULL &&(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL))
+    {
+        ((PositionableJPanel*)_currentSelection)->widget->keyReleaseEvent(event);
+        event->setAccepted(true);
+        return;
+    }
+}

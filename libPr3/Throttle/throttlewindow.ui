@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ThrottleWindow</class>
+ <widget class="QMainWindow" name="ThrottleWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>297</width>
+    <height>737</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QFormLayout" name="formLayout_2">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>297</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNew_Throttle"/>
+    <addaction name="actionOpenthrottle"/>
+    <addaction name="actionSave_current_throttle"/>
+    <addaction name="actionSave_current_throttle_as"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_throttles_layout"/>
+    <addaction name="actionSave_throttles_layout"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoad_default_throttles_layout"/>
+    <addaction name="actionSave_as_defautl_throttles_layout"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionAddress_Panel"/>
+    <addaction name="actionControl_Panel"/>
+    <addaction name="actionFunction_Panel"/>
+    <addaction name="separator"/>
+    <addaction name="actionReset_function_buttons"/>
+    <addaction name="actionGet_all_throttle_components_in_bounds"/>
+    <addaction name="separator"/>
+    <addaction name="actionSwitch_throttle_frame_view_mode"/>
+    <addaction name="separator"/>
+    <addaction name="actionSHow_Hide_throttles_list_window"/>
+   </widget>
+   <widget class="QMenu" name="menuPower">
+    <property name="title">
+     <string>Power</string>
+    </property>
+    <addaction name="actionPower_On"/>
+    <addaction name="actionPower_Off"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
+   <addaction name="menuPower"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <action name="actionPower_On">
+   <property name="text">
+    <string>Power On</string>
+   </property>
+  </action>
+  <action name="actionPower_Off">
+   <property name="text">
+    <string>Power Off</string>
+   </property>
+  </action>
+  <action name="actionAddress_Panel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Address Panel</string>
+   </property>
+  </action>
+  <action name="actionControl_Panel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Control Panel</string>
+   </property>
+  </action>
+  <action name="actionFunction_Panel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Function Panel</string>
+   </property>
+  </action>
+  <action name="actionReset_function_buttons">
+   <property name="text">
+    <string>Reset function buttons</string>
+   </property>
+  </action>
+  <action name="actionGet_all_throttle_components_in_bounds">
+   <property name="text">
+    <string>Get all throttle components in bounds</string>
+   </property>
+  </action>
+  <action name="actionSwitch_throttle_frame_view_mode">
+   <property name="text">
+    <string>Switch throttle frame view mode</string>
+   </property>
+  </action>
+  <action name="actionSHow_Hide_throttles_list_window">
+   <property name="text">
+    <string>Show/Hide throttles list window</string>
+   </property>
+  </action>
+  <action name="actionNew_Throttle">
+   <property name="text">
+    <string>New Throttle</string>
+   </property>
+  </action>
+  <action name="actionOpenthrottle">
+   <property name="text">
+    <string>openthrottle</string>
+   </property>
+  </action>
+  <action name="actionSave_current_throttle">
+   <property name="text">
+    <string>Save current throttle</string>
+   </property>
+  </action>
+  <action name="actionSave_current_throttle_as">
+   <property name="text">
+    <string>Save current throttle as...</string>
+   </property>
+  </action>
+  <action name="actionOpen_throttles_layout">
+   <property name="text">
+    <string>Open throttles layout...</string>
+   </property>
+  </action>
+  <action name="actionSave_throttles_layout">
+   <property name="text">
+    <string>Save throttles layout...</string>
+   </property>
+  </action>
+  <action name="actionLoad_default_throttles_layout">
+   <property name="text">
+    <string>Load default throttles layout</string>
+   </property>
+  </action>
+  <action name="actionSave_as_defautl_throttles_layout">
+   <property name="text">
+    <string>Save as defautl throttles layout</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,1314 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2013-03-22T17:32:56
+#
+#-------------------------------------------------
+unix:{
+QTSERIALPORT_PROJECT_ROOT = /home/allen/Projects/qtserialport
+}
+win32:{
+QTSERIALPORT_PROJECT_ROOT =C:/Users/Allen/Projects/qt-qtserialport-stable/qt-qtserialport
+}
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT       += widgets  gui webkitwidgets serialport multimedia
+} else {
+    include($$QTSERIALPORT_PROJECT_ROOT/src/serialport/qt4support/serialport.prf)
+}
+win32_msvc: {
+ QMAKE_CXXFLAGS += /wd4290
+ QMAKE_CFLAGS_DEBUG += /wd4290
+}
+
+APPNAME = "LocoNetMonitor"
+APPVERSION = 0.1
+
+#QT       -= gui
+QT       += core xml  gui printsupport   sql network webkitwidgets multimedia
+
+TARGET = Pr3
+TEMPLATE = lib
+unix{
+ isEmpty(PREFIX): PREFIX_USR = /usr
+ isEmpty(PREFIX): PREFIX_LOCAL = $${PREFIX_USR}/local
+ isEmpty(LIB_INSTALL_DIR): LIB_INSTALL_DIR = $${PREFIX_LOCAL}/lib
+ exists($$PWD/../ftdilib/libftdilib.so) {
+  isEmpty(FTDI): FTDI = 1
+  DEFINES += HAVE_FTDI
+  message("ftdilib.dll found!")
+ }
+}
+win32{
+ isEmpty(PREFIX): PREFIX_USR = "C:/"
+ isEmpty(PREFIX): PREFIX_LOCAL = $${PREFIX_USR}QGeomColl
+ isEmpty(PREFIX): PREFIX_LOCAL = C:/$${APPNAME}
+ isEmpty(DLL_INSTALL_DIR): DLL_INSTALL_DIR = C:/$${APPNAME}build_nr
+ exists($$PWD/../ftdilib/debug/ftdilib.dll) {
+  isEmpty(FTDI): FTDI = 1
+  DEFINES += HAVE_FTDI
+  message("ftdilib.dll found!")
+ }
+}
+
+#isEmpty(SECTION_LOGIC): SECTION_LOGIC = 1 # set = 1 to compile Section and Block logic
+#isEmpty(LAYOUT_LOGIC): LAYOUT_LOGIC = 0 # set = 1 to compile Layout logic
+
+DEFINES += LIBPR3_LIBRARY
+#build_nr.commands = $$PWD/../release/AutoIncreaseBuildNr $$PWD/build_number.h
+#build_nr.depends = FORCE
+#QMAKE_EXTRA_TARGETS += build_nr
+#PRE_TARGETDEPS += build_nr
+
+SOURCES += \
+    loconetmessage.cpp \
+    lnconstants.cpp \
+    llnmon.cpp \
+    serialport.cpp \
+    dccmanufacturerlist.cpp \
+    lnconnectiontypelist.cpp \
+    activeflag.cpp \
+    loconetlistener.cpp \
+    lnportcontroller.cpp \
+    lntrafficcontroller.cpp \
+    abstractserialportcontroller.cpp \
+    abstractportcontroller.cpp \
+    lnpacketizer.cpp \
+    locobufferadapter.cpp \
+    masterthread.cpp \
+    locobufferusbadapter.cpp \
+    libpr3version.cpp \
+    language.cpp \
+    dcclocoaddress.cpp \
+    slotmanager.cpp \
+    abstractprogrammer.cpp \
+    loconetslot.cpp \
+    systemconnectionmemo.cpp \
+    loconetsystemconnectionmemo.cpp \
+    abstractpowermanager.cpp \
+    powermanager.cpp \
+    lnpowermanager.cpp \
+    loconetthrottledtransmitter.cpp \
+    lnprogrammermanager.cpp \
+    defaultprogrammermanager.cpp \
+    namedbeanhandle.cpp \
+    abstractturnout.cpp \
+    abstractnamedbean.cpp \
+    turnout.cpp \
+    namedbeanhandlemanager.cpp \
+    turnoutoperation.cpp \
+    turnoutoperationmanager.cpp \
+    abstractturnoutmanager.cpp \
+    abstractmanager.cpp \
+    lnturnoutmanager.cpp \
+    lnturnout.cpp \
+    abstractsensor.cpp \
+    sensormanager.cpp \
+    abstractsensormanager.cpp \
+    lnsensormanager.cpp \
+    lnsensoraddress.cpp \
+    lnsensor.cpp \
+    abstractreportermanager.cpp \
+    abstractreporter.cpp \
+    lnreporter.cpp \
+    lnreportermanager.cpp \
+    timebase.cpp \
+    abstractproxymanager.cpp \
+    pr3systemconnectionmemo.cpp \
+    instancemanager.cpp \
+    proxyreportermanager.cpp \
+    proxysensormanager.cpp \
+    proxyturnoutmanager.cpp \
+    internalsensormanager.cpp \
+    internalturnoutmanager.cpp \
+    abstractmemory.cpp \
+    physicallocation.cpp \
+    scale.cpp \
+    defaultmemorymanager.cpp \
+    abstractmemorymanager.cpp \
+    defaultmemory.cpp \
+    namedbean.cpp \
+    internalreportermanager.cpp \
+    Roster/roster.cpp \
+    Roster/rosterentry.cpp \
+    dcclocoaddressxml.cpp \
+    Roster/rosterentrycombobox.cpp \
+    Roster/rostergroupcombobox.cpp \
+    Roster/rosterentryselectorpanel.cpp \
+    turnoutoperator.cpp \
+    nofeedbackturnoutoperation.cpp \
+    commonturnoutoperation.cpp \
+    nofeedbackturnoutoperator.cpp \
+    abstractidtag.cpp \
+    rfidreporter.cpp \
+    defaultidtagmanager.cpp \
+    defaultidtag.cpp \
+    defaultshutdownmanager.cpp \
+    shutdownmanager.cpp \
+    rfidsensormanager.cpp \
+    rfidsensor.cpp \
+    sensor.cpp \
+    rfidreportermanager.cpp \
+    basicrosterentry.cpp \
+    abstractthrottle.cpp \
+    commandstation.cpp \
+    nmrapacket.cpp \
+    dccconsist.cpp \
+    throttle.cpp \
+    dccconsistmanager.cpp \
+    abstractthrottlemanager.cpp \
+    lnthrottlemanager.cpp \
+    proglistener.cpp \
+    throttlemanager.cpp \
+    consistlistener.cpp \
+    rfidusb.cpp \
+    defaultroutemanager.cpp \
+    defaultroute.cpp \
+    decimalformat.cpp \
+    blockvaluefile.cpp \
+    abstractlightmanager.cpp \
+    lnlightmanager.cpp \
+    lnlight.cpp \
+    abstractlight.cpp \
+    lightcontrol.cpp \
+    proxylightmanager.cpp \
+    internallightmanager.cpp \
+    loconetconsistmanager.cpp \
+    lnclockcontrol.cpp \
+    defaultclockcontrol.cpp \
+    abstractconsistmanager.cpp \
+    abstractvariablelight.cpp \
+    configuremanager.cpp \
+    simpletimebase.cpp \
+    loconetthrottle.cpp \
+    Throttle/throttlewindow.cpp \
+    Throttle/listthrottles.cpp \
+    Roster/functionlabelsmediadlg.cpp \
+    Roster/locofile.cpp \
+    Roster/cvtablemodel.cpp \
+    Roster/indexedcvtablemodel.cpp \
+    Roster/abstractvalue.cpp \
+    Roster/cvvalue.cpp \
+    Roster/variabletablemodel.cpp \
+    Roster/variablevalue.cpp \
+    Roster/abstractqualifier.cpp \
+    Roster/valuequalifier.cpp \
+    Roster/enumvariablevalue.cpp \
+    Roster/compositevariablevalue.cpp \
+    Roster/decvariablevalue.cpp \
+    Roster/hexvariablevalue.cpp \
+    Roster/indexedenumvariablevalue.cpp \
+    Roster/indexedvariablevalue.cpp \
+    Roster/longaddrvariablevalue.cpp \
+    Roster/shortaddrvariablevalue.cpp \
+    Roster/speedtablevarvalue.cpp \
+    Roster/splitvariablevalue.cpp \
+    Roster/constantvalue.cpp \
+    Roster/qualifiercombiner.cpp \
+    Roster/decoderfile.cpp \
+    Roster/resettablemodel.cpp \
+    Roster/combocheckbox.cpp \
+    Roster/comboradiobuttons.cpp \
+    Roster/listdataevent.cpp \
+    Roster/indexedcombocheckbox.cpp \
+    Roster/indexedpairvariablevalue.cpp \
+    Roster/decvarslider.cpp \
+    Roster/comboonradiobutton.cpp \
+    Roster/combooffradiobutton.cpp \
+    Roster/indexedvarslider.cpp \
+    Roster/changeevent.cpp \
+    Roster/rosterentrypane.cpp \
+    Roster/decoderindexfile.cpp \
+    Roster/defaultcomboboxmodel.cpp \
+    Roster/abstractlistmodel.cpp \
+    Roster/busyglasspane.cpp \
+    Roster/dccaddresspanel.cpp \
+    Roster/paneprogpane.cpp \
+    Roster/watchinglabel.cpp \
+    Roster/vartextfield.cpp \
+    Roster/fnmappanel.cpp \
+    Roster/functionlabelspane.cpp \
+    Roster/paneprogframe.cpp \
+    Roster/paneopsprogframe.cpp \
+    Roster/rosterframe.cpp \
+    connectionstatus.cpp \
+    Roster/abstractidentify.cpp \
+    Roster/identifyloco.cpp \
+    Roster/dcclocoaddressselector.cpp \
+    Roster/factoryresetaction.cpp \
+    Roster/rostermedia.cpp \
+    Roster/optionsdialog.cpp \
+    Signal/defaultsignalhead.cpp \
+    Signal/abstractsignalhead.cpp \
+    Signal/abstractsignalheadmanager.cpp \
+    Signal/defaultsignalmastlogic.cpp \
+    Signal/signalmastlogic.cpp \
+    Signal/signalspeedmap.cpp \
+    Signal/defaultsignalappearancemap.cpp \
+    Signal/defaultsignalmastmanager.cpp \
+    Signal/signalheadsignalmast.cpp \
+    Signal/abstractsignalmast.cpp \
+    Signal/defaultsignalsystem.cpp \
+    Signal/defaultsignalsystemmanager.cpp \
+    Signal/lnse8csignalhead.cpp \
+    Signal/se8csignalhead.cpp \
+    memorymanager.cpp \
+    Signal/defaultsignalmastlogicmanager.cpp \
+    Signal/singleturnoutsignalhead.cpp \
+    Signal/doubleturnoutsignalhead.cpp \
+    Signal/virtualsignalhead.cpp \
+    Signal/turnoutsignalmast.cpp \
+    Signal/virtualsignalmast.cpp \
+    Signal/addsignalmastpanel.cpp \
+    sensorturnoutoperator.cpp \
+    Signal/signalmastrepeater.cpp \
+    defaultusermessagepreferences.cpp \
+    defaultlogix.cpp \
+    jmrisimplepropertylistener.cpp \
+    defaultlogixmanager.cpp \
+    conditionalvariable.cpp \
+    conditionalmanager.cpp \
+    jmritwostatepropertylistener.cpp \
+    jmriclockpropertylistener.cpp \
+    jmrimultistatepropertylistener.cpp \
+    conditional.cpp \
+    defaultconditionalmanager.cpp \
+    defaultconditional.cpp \
+    sensorgroupconditional.cpp \
+    defaultconditionalaction.cpp \
+    connectionnamefromsystemname.cpp \
+    oblock.cpp \
+    portal.cpp \
+    warrant.cpp \
+    blockorder.cpp \
+    opath.cpp \
+    throttlesetting.cpp \
+    oblockmanager.cpp \
+    engineer.cpp \
+    Throttle/learnthrottleframe.cpp \
+    warrantmanager.cpp \
+    entryexitpairs.cpp \
+    source.cpp \
+    pointdetails.cpp \
+    destinationpoints.cpp \
+    Throttle/throttleslistpanel.cpp \
+    memory.cpp \
+    timeunit.cpp \
+    pushbuttonpacket.cpp \
+    rawturnoutoperation.cpp \
+    sensorturnoutoperation.cpp \
+    Signal/tripleturnoutsignalhead.cpp \
+    Signal/quadoutputsignalhead.cpp \
+    timertask.cpp \
+    Signal/defaultsignalgroupmanager.cpp \
+    Signal/defaultsignalgroup.cpp \
+    Throttle/throttlestablemodel.cpp \
+    Throttle/throttlestablecellrenderer.cpp \
+    Roster/rostericonfactory.cpp \
+    Throttle/throttleframemanager.cpp \
+    Throttle/addresspanel.cpp \
+    Roster/nceconsistroster.cpp \
+    Roster/nceconsistrosterentry.cpp \
+    Throttle/throttleframepropertyeditor.cpp \
+    Throttle/throttlecreationaction.cpp \
+    Throttle/powermanagerbutton.cpp \
+    Throttle/smallpowermanagerbutton.cpp \
+    Throttle/largepowermanagerbutton.cpp \
+    Throttle/controlpanel.cpp \
+    Throttle/functionpanel.cpp \
+    Throttle/functionbutton.cpp \
+    Roster/createrostergroupaction.cpp \
+    Roster/rostermenu.cpp \
+    Roster/panenewprogaction.cpp \
+    Roster/paneeditaction.cpp \
+    Roster/locoselpane.cpp \
+    Roster/knownlocoselpane.cpp \
+    Roster/progdefault.cpp \
+    Roster/xmlfilenamefilter.cpp \
+    Roster/locoseltreepane.cpp \
+    Roster/combinedlocoseltreepane.cpp \
+    Roster/combinedlocoselpane.cpp \
+    Roster/globalrosterentrycombobox.cpp \
+    Roster/identifydecoder.cpp \
+    Roster/copyrosteritemaction.cpp \
+    Roster/abstractrosteritemaction.cpp \
+    Roster/deleterosteritemaction.cpp \
+    Roster/rosterframeaction.cpp \
+    Roster/paneserviceprogframe.cpp \
+    Roster/progmodeselector.cpp \
+    Roster/progservicemodecombobox.cpp \
+    Roster/simpleprogaction.cpp \
+    Roster/simpleprogframe.cpp \
+    Roster/progmodepane.cpp \
+    Roster/progservicemodepane.cpp \
+    Roster/progopsmodepane.cpp \
+    Roster/paneprogaction.cpp \
+    Roster/paneopsprogaction.cpp \
+    LocoIO/lnpanel.cpp \
+    LocoIO/cmdstnconfigpane.cpp \
+    LocoIO/lncommandstationtype.cpp \
+    lnpr2packetizer.cpp \
+    Roster/qualifieradder.cpp \
+    Roster/field.cpp \
+    Roster/fnmappanelesu.cpp \
+    Roster/arithmeticqualifier.cpp \
+    Roster/jcomponentqualifier.cpp \
+    Roster/dccaddressvarhandler.cpp \
+    Roster/printaction.cpp \
+    Roster/printcvaction.cpp \
+    Roster/printrosterentry.cpp \
+    lnopsmodeprogrammer.cpp \
+    programmingmode.cpp \
+    Roster/abstractconnectionconfig.cpp \
+    abstractserialconnectionconfig.cpp \
+    loconet/Pr3/pr3connectionconfig.cpp \
+    loconet/Pr3/connectionconfigxml.cpp \
+    pr3adapter.cpp \
+    Roster/twoindexprogrammerfacade.cpp \
+    Roster/accessoryopsmodeprogrammerfacade.cpp \
+    Roster/abstractprogrammerfacade.cpp \
+    Roster/programmerfacadeselector.cpp \
+    Roster/multiindexprogrammerfacade.cpp \
+    loconet/Locobuffer/locobufferconnectionconfig.cpp \
+    loconet/LocobufferUsb/locobufferusbconnectionconfig.cpp \
+    loconet/LocobufferUsb/locobufferusbconnectionconfigxml.cpp \
+    loconet/Locobuffer/locobufferconnectionconfigxml.cpp \
+    resourcebundle.cpp \
+    loconet/HexFile/hexfileserver.cpp \
+    loconet/HexFile/hexfileframe.cpp \
+    loconet/HexFile/lnhexfileport.cpp \
+    loconet/HexFile/debugprogrammermanager.cpp \
+    loconet/HexFile/debugthrottlemanager.cpp \
+    loconet/HexFile/debugthrottle.cpp \
+    nmraconsistmanager.cpp \
+    nmraconsist.cpp \
+    loconet/HexFile/progdebugger.cpp \
+    loconet/HexFile/hexfileconnectionconfigxml.cpp \
+    loconet/HexFile/hexfileconnectionconfig.cpp \
+    abstractsimulatorconnectionconfig.cpp \
+    profile.cpp \
+    audiocommand.cpp \
+    abstractaudiothread.cpp \
+    defaultaudiomanager.cpp \
+    abstractaudiomanager.cpp \
+    audio.cpp \
+    abstractaudio.cpp \
+    abstractaudiobuffer.cpp \
+    nullaudiofactory.cpp \
+    abstractaudiofactory.cpp \
+    nullaudiosource.cpp \
+    nullaudiobuffer.cpp \
+    nullaudiolistener.cpp \
+    abstractaudiolistener.cpp \
+    abstractaudiosource.cpp \
+    audiocommandthread.cpp \
+    audiosource.cpp \
+    qtsoundaudiofactory.cpp \
+    qtsoundaudiobuffer.cpp \
+    audioinputstream.cpp \
+    audiosystem.cpp \
+    wavfilereader.cpp \
+    qtsoundaudiosource.cpp \
+    qtsoundaudiolistener.cpp \
+    floatcontrol.cpp \
+    clip.cpp \
+    dataline.cpp \
+    line.cpp \
+    mixer.cpp \
+    audiofileformat.cpp \
+    audioformat.cpp \
+    LocoIO/locostatspanel.cpp \
+    LocoIO/jmrinamedpaneaction.cpp \
+    LocoIO/lnnamedpaneaction.cpp \
+    LocoIO/slotmonpane.cpp \
+    LocoIO/abstractboardprogpanel.cpp \
+    LocoIO/ds64panel.cpp \
+    LocoIO/clockmonpane.cpp \
+    LocoIO/locoidpanel.cpp \
+    messagepanel.cpp \
+    lnmessagemanager.cpp \
+    pr3selectpane.cpp \
+    loaderpane.cpp \
+    memorycontents.cpp \
+    loconet/lnovertcppacketizer.cpp \
+    loconet/lnnetworkportcontroller.cpp \
+    abstractnetworkportcontroller.cpp \
+    loconet/lntcpdriveradapter.cpp \
+    loconet/server.cpp \
+    loconet/serveraction.cpp \
+    loconet/serverframe.cpp \
+    loconet/jmriserver.cpp \
+    loconet/clientrxhandler.cpp \
+    Roster/stringtokenizer.cpp \
+    loconet/LnOverTcp/lnovertcpconnectionconfig.cpp \
+    abstractnetworkconnectionconfig.cpp \
+    abstractnetworkconnectionconfigxml.cpp \
+    loconet/LnOverTcp/lnovertcpconnectionconfigxml.cpp \
+    Roster/importrosteritemaction.cpp \
+    Roster/exportrosteritemaction.cpp \
+    Roster/deleterostergroupaction.cpp \
+    Roster/rosterentrytogroupaction.cpp \
+    Roster/removerosterentrytogroupaction.cpp \
+    Roster/rostergrouptableaction.cpp \
+    Roster/rostergrouptablemodel.cpp \
+    Roster/rostergrouptableframe.cpp \
+    Roster/fullbackupexportaction.cpp \
+    Roster/fullbackupimportaction.cpp \
+    Roster/speedprofilepanel.cpp \
+    Roster/rosterspeedprofile.cpp \
+    Roster/speedprofileframe.cpp \
+    Roster/speedprofileaction.cpp \
+    loconet/soundloaderpane.cpp \
+    loconet/loaderengine.cpp \
+    loconet/spjfile.cpp \
+    loconet/sdfbuffer.cpp \
+    loconet/sdfmacro.cpp \
+    loconet/channelstart.cpp \
+    loconet/skemestart.cpp \
+    loconet/sdlversion.cpp \
+    loconet/endsound.cpp \
+    loconet/generatetrigger.cpp \
+    loconet/sdfconstants.cpp \
+    loconet/delaysound.cpp \
+    loconet/twobytemacro.cpp \
+    loconet/fourbytemacro.cpp \
+    loconet/skipontrigger.cpp \
+    loconet/initiatesound.cpp \
+    loconet/play.cpp \
+    loconet/maskcompare.cpp \
+    loconet/loadmodifier.cpp \
+    loconet/branchto.cpp \
+    loconet/editorfilepane.cpp \
+    loconet/editortabledatamodel.cpp \
+    loconet/editorpane.cpp \
+    loconet/wavbuffer.cpp \
+    loconet/editorframe.cpp \
+    loconet/sdfeditorpane.cpp \
+    loconet/sdfmacroeditor.cpp \
+    loconet/jeditorpane.cpp \
+    loconet/monitoringlabel.cpp \
+    loconet/defaultmutabletreemodel.cpp \
+    loconet/channelstarteditor.cpp \
+    loconet/sdlversioneditor.cpp \
+    loconet/skemestarteditor.cpp \
+    loconet/generatetriggereditor.cpp \
+    loconet/initiatesoundeditor.cpp \
+    loconet/loadmodifiereditor.cpp \
+    loconet/playeditor.cpp \
+    loconet/maskcompareeditor.cpp \
+    loconet/branchtoeditor.cpp \
+    loconet/endsoundeditor.cpp \
+    loconet/delaysoundeditor.cpp \
+    loconet/skipontriggereditor.cpp \
+    loconet/twobytemacroeditor.cpp \
+    loconet/fourbytemacroeditor.cpp \
+    loconet/qtsoundaudioclip.cpp \
+    loconet/loconetmsgdialog.cpp \
+    loconet/querycvdialog.cpp \
+    loconet/loconetmenu.cpp \
+    defaultinstanceinitializer.cpp \
+    Throttle/throttleslistaction.cpp \
+    Roster/rostergroupspanel.cpp \
+    Roster/decoderindexcreateaction.cpp \
+    Roster/updatedecoderdefinitionaction.cpp \
+    Roster/recreaterosteraction.cpp \
+    Roster/rostergroup.cpp \
+    Roster/paneprogdp3action.cpp \
+    Roster/printrosteraction.cpp \
+    Roster/copyrostergroupaction.cpp \
+    Roster/renamerostergroupaction.cpp \
+    Roster/installdecoderfileaction.cpp \
+    Roster/installdecoderurlaction.cpp \
+    Signal/dccsignalmast.cpp \
+    deferringprogrammermanager.cpp \
+    vsdecodermanager.cpp \
+    vsdecoderpreferences.cpp \
+    listeningspot.cpp \
+    vsdlistener.cpp \
+    addressedhighcvprogrammerfacade.cpp \
+    vsdecodermanagerthread.cpp \
+    vsdecoder.cpp \
+    vsdmanagerframe.cpp \
+    vsdconfig.cpp \
+    vsdfile.cpp \
+    zipfile.cpp \
+    vsdsound.cpp \
+    vsdecoderevent.cpp \
+    storexmlvsdecoderaction.cpp \
+    trigger.cpp \
+    soundevent.cpp \
+    momentarysoundevent.cpp \
+    togglesoundevent.cpp \
+    enginesoundevent.cpp \
+    configurablesound.cpp \
+    steamsound.cpp \
+    enginesound.cpp \
+    dieselsound.cpp \
+    diesel3sound.cpp \
+    buttontrigger.cpp \
+    enginepane.cpp \
+    dieselpane.cpp \
+    soundbite.cpp \
+    notchtransition.cpp \
+    audioutil.cpp \
+    triggerlistener.cpp \
+    booltrigger.cpp \
+    throttletrigger.cpp \
+    floattrigger.cpp \
+    notchtrigger.cpp \
+    inttrigger.cpp \
+    control.cpp \
+    managerdefaultselector.cpp \
+    managerdefaultselectorxml.cpp \
+    path.cpp \
+     block.cpp \
+     beansetting.cpp \
+    blockmanager.cpp \
+    entrypoint.cpp
+
+ !contains(FTDI, 1) {
+    SOURCES +=
+ }
+HEADERS += \
+    loconetmessage.h \
+    lnconstants.h \
+    llnmon.h \
+    serialport.h \
+    dccmanufacturerlist.h \
+    lnconnectiontypelist.h \
+    activeflag.h \
+    lntrafficcontroller.h \
+    loconetinterface.h \
+    lnpacketizer.h \
+    lnportcontroller.h \
+    abstractserialportcontroller.h \
+    locobufferadapter.h \
+    loconetlistener.h \
+    pr3adapter.h \
+    masterthread.h \
+    libPr3_global.h \
+    locobufferusbadapter.h \
+    build_number.h \
+    libpr3version.h \
+    language.h \
+    locoaddress.h \
+    dcclocoaddress.h \
+    slotmanager.h \
+    abstractprogrammer.h \
+    programmer.h \
+    loconetslot.h \
+    slotlistener.h \
+    systemconnectionmemo.h \
+    loconetsystemconnectionmemo.h \
+    powermanager.h \
+    abstractpowermanager.h \
+    lnpowermanager.h \
+    loconetthrottledtransmitter.h \
+    programmermanager.h \
+    lnprogrammermanager.h \
+    defaultprogrammermanager.h \
+    turnout.h \
+    namedbean.h \
+    manager.h \
+    abstractturnout.h \
+    abstractnamedbean.h \
+    namedbeanhandle.h \
+    namedbeanhandlemanager.h \
+    turnoutoperation.h \
+    turnoutmanager.h \
+    turnoutoperationmanager.h \
+    abstractturnoutmanager.h \
+    abstractmanager.h \
+    lnturnoutmanager.h \
+    lnturnout.h \
+    abstractsensor.h \
+    sensormanager.h \
+    abstractsensormanager.h \
+    lnsensormanager.h \
+    lnsensoraddress.h \
+    lnsensor.h \
+    abstractreportermanager.h \
+    abstractreporter.h \
+    lnreporter.h \
+    reportermanager.h \
+    reporter.h \
+    lnreportermanager.h \
+    timebase.h \
+    abstractproxymanager.h \
+    pr3systemconnectionmemo.h \
+    instancemanager.h \
+    proxyreportermanager.h \
+    proxysensormanager.h \
+    proxyturnoutmanager.h \
+    internalsensormanager.h \
+    internalturnoutmanager.h \
+    runnable.h \
+    sensor.h \
+    abstractmemory.h \
+    physicallocationreporter.h \
+    physicallocation.h \
+    initializer.h \
+    scale.h \
+    defaultmemorymanager.h \
+    abstractmemorymanager.h \
+    defaultmemory.h \
+    internalreportermanager.h \
+    Roster/roster.h \
+    Roster/rosterentry.h \
+    dcclocoaddressxml.h \
+    Roster/rosterentryselector.h \
+    Roster/rosterentrycombobox.h \
+    Roster/rostergroupcombobox.h \
+    Roster/rosterentryselectorpanel.h \
+    turnoutoperator.h \
+    nofeedbackturnoutoperation.h \
+    commonturnoutoperation.h \
+    nofeedbackturnoutoperator.h \
+    rfidinteface.h \
+    message.h \
+    idtag.h \
+    abstractidtag.h \
+    idtagmanager.h \
+    rfidreporter.h \
+    defaultidtagmanager.h \
+    defaultidtag.h \
+    clockcontrol.h \
+    abstractportcontroller.h \
+    shutdownmanager.h \
+    defaultshutdownmanager.h \
+    rfidsensormanager.h \
+    rfidsensor.h \
+    rfidlistener.h \
+    abstractmrlistener.h \
+    rfidreportermanager.h \
+    throttle.h \
+    basicrosterentry.h \
+    abstractthrottle.h \
+    throttlemanager.h \
+    commandstation.h \
+    nmrapacket.h \
+    consistmanager.h \
+    dccconsistmanager.h \
+    dccconsist.h \
+    consist.h \
+    abstractthrottlemanager.h \
+    dccthrottle.h \
+    lnthrottlemanager.h \
+    proglistener.h \
+    consistlistener.h \
+    memory.h \
+    rfidusb.h \
+    routemanager.h \
+    route.h \
+    defaultroutemanager.h \
+    defaultroute.h \
+    decimalformat.h \
+    blockvaluefile.h \
+    lightmanager.h \
+    abstractlightmanager.h \
+    lightcontrol.h \
+    lnlightmanager.h \
+    lnlight.h \
+    abstractlight.h \
+    proxylightmanager.h \
+    internallightmanager.h \
+    loconetconsistmanager.h \
+    defaultclockcontrol.h \
+    abstractconsistmanager.h \
+    lnclockcontrol.h \
+    abstractvariablelight.h \
+    configuremanager.h \
+    simpletimebase.h \
+    loconetthrottle.h \
+    Throttle/throttlewindow.h \
+    Throttle/listthrottles.h \
+    Roster/functionlabelsmediadlg.h \
+    Roster/locofile.h \
+    Roster/cvtablemodel.h \
+    Roster/indexedcvtablemodel.h \
+    Roster/abstractvalue.h \
+    Roster/cvvalue.h \
+    Roster/variabletablemodel.h \
+    Roster/variablevalue.h \
+    Roster/qualifier.h \
+    Roster/abstractqualifier.h \
+    Roster/valuequalifier.h \
+    Roster/enumvariablevalue.h \
+    Roster/compositevariablevalue.h \
+    Roster/decvariablevalue.h \
+    Roster/hexvariablevalue.h \
+    Roster/indexedenumvariablevalue.h \
+    Roster/indexedvariablevalue.h \
+    Roster/longaddrvariablevalue.h \
+    Roster/shortaddrvariablevalue.h \
+    Roster/speedtablevarvalue.h \
+    Roster/splitvariablevalue.h \
+    Roster/constantvalue.h \
+    Roster/qualifiercombiner.h \
+    Roster/decoderfile.h \
+    Roster/resettablemodel.h \
+    Roster/combocheckbox.h \
+    Roster/comboradiobuttons.h \
+    Roster/listdatalistener.h \
+    Roster/listdataevent.h \
+    Roster/indexedcombocheckbox.h \
+    Roster/indexedpairvariablevalue.h \
+    Roster/decvarslider.h \
+    Roster/comboonradiobutton.h \
+    Roster/combooffradiobutton.h \
+    Roster/indexedvarslider.h \
+    Roster/changeevent.h \
+    Roster/rosterentrypane.h \
+    Roster/decoderindexfile.h \
+    Roster/defaultcomboboxmodel.h \
+    Roster/abstractlistmodel.h \
+    Roster/paneprogpane.h \
+    Roster/itemlistener.h \
+    Roster/panecontainer.h \
+    Roster/busyglasspane.h \
+    Roster/dccaddresspanel.h \
+    Roster/watchinglabel.h \
+    Roster/vartextfield.h \
+    Roster/fnmappanel.h \
+    Roster/functionlabelspane.h \
+    Roster/paneprogframe.h \
+    Roster/paneopsprogframe.h \
+    Roster/rosterframe.h \
+    connectionconfiginterface.h \
+    connectionstatus.h \
+    Roster/abstractidentify.h \
+    Roster/identifyloco.h \
+    Roster/factoryresetaction.h \
+    Roster/dcclocoaddressselector.h \
+    Roster/rostermedia.h \
+    Roster/optionsdialog.h \
+    Signal/signalheadmanager.h \
+    Signal/signalmast.h \
+    Signal/signalmastmanager.h \
+    Signal/signalsystemmanager.h \
+    Signal/signalsystem.h \
+    Signal/signalgroup.h \
+    Signal/signalgroupmanager.h \
+    Signal/defaultsignalhead.h \
+    Signal/abstractsignalhead.h \
+    Signal/abstractsignalheadmanager.h \
+    Signal/signalhead.h \
+    Signal/signalappearancemap.h \
+    Signal/signalmastlogic.h \
+    Signal/defaultsignalmastlogic.h \
+    Signal/signalmastlogicmanager.h \
+    Signal/signalspeedmap.h \
+    Signal/defaultsignalappearancemap.h \
+    Signal/defaultsignalmastmanager.h \
+    Signal/signalheadsignalmast.h \
+    Signal/abstractsignalmast.h \
+    Signal/defaultsignalsystem.h \
+    Signal/defaultsignalsystemmanager.h \
+    Signal/lnse8csignalhead.h \
+    Signal/se8csignalhead.h \
+    memorymanager.h \
+    Signal/singleturnoutsignalhead.h \
+    Signal/doubleturnoutsignalhead.h \
+    Signal/virtualsignalhead.h \
+    Signal/defaultsignalmastlogicmanager.h \
+    Signal/turnoutsignalmast.h \
+    Signal/virtualsignalmast.h \
+    Signal/addsignalmastpanel.h \
+    #document.h
+    sensorturnoutoperator.h \
+    Signal/signalmastrepeater.h \
+    userpreferencesmanager.h \
+    defaultusermessagepreferences.h \
+    catalogtree.h \
+    comparable.h \
+    comparator.h \
+    actionlistener.h \
+    logix.h \
+    defaultlogix.h \
+    conditional.h \
+    jmrisimplepropertylistener.h \
+    logixmanager.h \
+    defaultlogixmanager.h \
+    conditionalvariable.h \
+    conditionalmanager.h \
+    jmritwostatepropertylistener.h \
+    jmriclockpropertylistener.h \
+    jmrimultistatepropertylistener.h \
+    conditionalaction.h \
+    defaultconditionalmanager.h \
+    defaultconditional.h \
+    sensorgroupconditional.h \
+    defaultconditionalaction.h \
+    connectionnamefromsystemname.h \
+    oblock.h \
+    portal.h \
+    warrant.h \
+    blockorder.h \
+    opath.h \
+    throttlesetting.h \
+    oblockmanager.h \
+    engineer.h \
+    Throttle/learnthrottleframe.h \
+    warrantmanager.h \
+    entryexitpairs.h \
+    source.h \
+    pointdetails.h \
+    destinationpoints.h \
+    Throttle/throttleslistpanel.h \
+    timeunit.h \
+    pushbuttonpacket.h \
+    rawturnoutoperation.h \
+    sensorturnoutoperation.h \
+    Signal/tripleturnoutsignalhead.h \
+    Signal/quadoutputsignalhead.h \
+    timertask.h \
+    Signal/defaultsignalgroupmanager.h \
+    Signal/defaultsignalgroup.h \
+    Throttle/throttlestablemodel.h \
+    Throttle/throttlestablecellrenderer.h \
+    Roster/rostericonfactory.h \
+    Throttle/throttleframemanager.h \
+    Throttle/addresspanel.h \
+    Throttle/addresslistener.h \
+    Roster/nceconsistroster.h \
+    Roster/nceconsistrosterentry.h \
+    Throttle/throttleframepropertyeditor.h \
+    Throttle/throttlecreationaction.h \
+    Throttle/largepowermanagerbutton.h \
+    Throttle/powermanagerbutton.h \
+    Throttle/smallpowermanagerbutton.h \
+    Throttle/controlpanel.h \
+    Throttle/functionpanel.h \
+    Throttle/functionbutton.h \
+    Throttle/functionlistener.h \
+    Roster/createrostergroupaction.h \
+    Roster/rostermenu.h \
+    Roster/panenewprogaction.h \
+    Roster/paneeditaction.h \
+    Roster/locoselpane.h \
+    Roster/knownlocoselpane.h \
+    Roster/progdefault.h \
+    Roster/xmlfilenamefilter.h \
+    Roster/locoseltreepane.h \
+    Roster/combinedlocoseltreepane.h \
+    Roster/combinedlocoselpane.h \
+    Roster/globalrosterentrycombobox.h \
+    Roster/identifydecoder.h \
+    Roster/copyrosteritemaction.h \
+    Roster/abstractrosteritemaction.h \
+    Roster/deleterosteritemaction.h \
+    Roster/rosterframeaction.h \
+    Roster/paneserviceprogframe.h \
+    Roster/progmodeselector.h \
+    Roster/progservicemodecombobox.h \
+    Roster/simpleprogaction.h \
+    Roster/simpleprogframe.h \
+    Roster/progmodepane.h \
+    Roster/progservicemodepane.h \
+    Roster/progopsmodepane.h \
+    Roster/paneprogaction.h \
+    Roster/paneopsprogaction.h \
+    LocoIO/lnpanel.h \
+    LocoIO/cmdstnconfigpane.h \
+    LocoIO/lncommandstationtype.h \
+    lnpr2packetizer.h \
+    Roster/qualifieradder.h \
+    Roster/field.h \
+    Roster/fnmappanelesu.h \
+    Roster/arithmeticqualifier.h \
+    Roster/jcomponentqualifier.h \
+    Roster/dccaddressvarhandler.h \
+    Roster/printaction.h \
+    Roster/printcvaction.h \
+    Roster/printrosterentry.h \
+    addressedprogrammer.h \
+    lnopsmodeprogrammer.h \
+    programmingmode.h \
+    globalprogrammermanager.h \
+    addressedprogrammermanager.h \
+    Roster/connectionconfig.h \
+    Roster/abstractconnectionconfig.h \
+    abstractserialconnectionconfig.h \
+    loconet/Pr3/pr3connectionconfig.h \
+    loconet/Pr3/connectionconfigxml.h \
+    Roster/twoindexprogrammerfacade.h \
+    Roster/accessoryopsmodeprogrammerfacade.h \
+    Roster/abstractprogrammerfacade.h \
+    Roster/programmerfacadeselector.h \
+    Roster/multiindexprogrammerfacade.h \
+    loconet/Locobuffer/locobufferconnectionconfig.h \
+    loconet/LocobufferUsb/locobufferusbconnectionconfig.h \
+    loconet/LocobufferUsb/locobufferusbconnectionconfigxml.h \
+    loconet/Locobuffer/locobufferconnectionconfigxml.h \
+    resourcebundle.h \
+    loconet/HexFile/hexfileserver.h \
+    loconet/HexFile/hexfileframe.h \
+    loconet/HexFile/lnhexfileport.h \
+    loconet/HexFile/debugprogrammermanager.h \
+    loconet/HexFile/debugthrottlemanager.h \
+    loconet/HexFile/debugthrottle.h \
+    nmraconsistmanager.h \
+    nmraconsist.h \
+    loconet/HexFile/progdebugger.h \
+    loconet/HexFile/hexfileconnectionconfigxml.h \
+    loconet/HexFile/hexfileconnectionconfig.h \
+    abstractsimulatorconnectionconfig.h \
+    profile.h \
+    audiocommand.h \
+    audio.h \
+    audiobuffer.h \
+    audiomanager.h \
+    audiofactory.h \
+    audiosource.h \
+    audiothread.h \
+    abstractaudiothread.h \
+    defaultaudiomanager.h \
+    abstractaudiomanager.h \
+    abstractaudio.h \
+    abstractaudiobuffer.h \
+    audiolistener.h \
+    nullaudiofactory.h \
+    abstractaudiofactory.h \
+    nullaudiosource.h \
+    nullaudiobuffer.h \
+    nullaudiolistener.h \
+    abstractaudiolistener.h \
+    abstractaudiosource.h \
+    audiocommandthread.h \
+    qtsoundaudiofactory.h \
+    qtsoundaudiobuffer.h \
+    audioinputstream.h \
+    audiosystem.h \
+    wavfilereader.h \
+    qtsoundaudiosource.h \
+    qtsoundaudiolistener.h \
+    floatcontrol.h \
+    clip.h \
+    dataline.h \
+    line.h \
+    mixer.h \
+    audiofilereader.h \
+    audiofileformat.h \
+    audioformat.h \
+    LocoIO/locostatspanel.h \
+    LocoIO/jmrinamedpaneaction.h \
+    LocoIO/lnnamedpaneaction.h \
+    LocoIO/lnpanelinterface.h \
+    LocoIO/slotmonpane.h \
+    LocoIO/abstractboardprogpanel.h \
+    LocoIO/ds64panel.h \
+    LocoIO/clockmonpane.h \
+    LocoIO/locoidpanel.h \
+    messagepanel.h \
+    lnmessagemanager.h \
+    pr3selectpane.h \
+    loaderpane.h \
+    memorycontents.h \
+    loconet/lnovertcppacketizer.h \
+    loconet/lnnetworkportcontroller.h \
+    abstractnetworkportcontroller.h \
+    loconet/lntcpdriveradapter.h \
+    loconet/server.h \
+    loconet/serverlistner.h \
+    loconet/serveraction.h \
+    loconet/serverframe.h \
+    loconet/jmriserver.h \
+    loconet/clientrxhandler.h \
+    Roster/stringtokenizer.h \
+    loconet/LnOverTcp/lnovertcpconnectionconfig.h \
+    abstractnetworkconnectionconfig.h \
+    abstractnetworkconnectionconfigxml.h \
+    loconet/LnOverTcp/lnovertcpconnectionconfigxml.h \
+    loconet/networkportadapter.h \
+    Roster/importrosteritemaction.h \
+    Roster/exportrosteritemaction.h \
+    Roster/deleterostergroupaction.h \
+    Roster/rosterentrytogroupaction.h \
+    Roster/removerosterentrytogroupaction.h \
+    Roster/rostergrouptableaction.h \
+    Roster/rostergrouptablemodel.h \
+    Roster/rostergrouptableframe.h \
+    Roster/fullbackupexportaction.h \
+    Roster/fullbackupimportaction.h \
+    Roster/speedprofilepanel.h \
+    Roster/rosterspeedprofile.h \
+    Roster/speedprofileframe.h \
+    Roster/speedprofileaction.h \
+    loconet/soundloaderpane.h \
+    loconet/loaderengine.h \
+    loconet/spjfile.h \
+    loconet/sdfbuffer.h \
+    loconet/sdfmacro.h \
+    loconet/sdfconstants.h \
+    loconet/channelstart.h \
+    loconet/skemestart.h \
+    loconet/sdlversion.h \
+    loconet/endsound.h \
+    loconet/generatetrigger.h \
+    loconet/delaysound.h \
+    loconet/twobytemacro.h \
+    loconet/fourbytemacro.h \
+    loconet/skipontrigger.h \
+    loconet/initiatesound.h \
+    loconet/play.h \
+    loconet/maskcompare.h \
+    loconet/loadmodifier.h \
+    loconet/branchto.h \
+    loconet/editorfilepane.h \
+    loconet/editortabledatamodel.h \
+    loconet/editorpane.h \
+    loconet/wavbuffer.h \
+    loconet/editorframe.h \
+    loconet/sdfeditorpane.h \
+    loconet/sdfmacroeditor.h \
+    loconet/jeditorpane.h \
+    loconet/monitoringlabel.h \
+    loconet/defaultmutabletreemodel.h \
+    loconet/channelstarteditor.h \
+    loconet/sdlversioneditor.h \
+    loconet/skemestarteditor.h \
+    loconet/generatetriggereditor.h \
+    loconet/initiatesoundeditor.h \
+    loconet/loadmodifiereditor.h \
+    loconet/playeditor.h \
+    loconet/maskcompareeditor.h \
+    loconet/branchtoeditor.h \
+    loconet/endsoundeditor.h \
+    loconet/delaysoundeditor.h \
+    loconet/skipontriggereditor.h \
+    loconet/twobytemacroeditor.h \
+    loconet/fourbytemacroeditor.h \
+    loconet/qtsoundaudioclip.h \
+    loconet/loconetmsgdialog.h \
+    loconet/loconetmenu.h\
+    loconet/querycvdialog.h \
+    Throttle/throttleslistaction.h \
+    Roster/rostergroupspanel.h \
+    Roster/decoderindexcreateaction.h \
+    Roster/updatedecoderdefinitionaction.h \
+    Roster/recreaterosteraction.h \
+    Roster/rostergroup.h \
+    Roster/rosterobject.h \
+    beaninterface.h \
+    Roster/paneprogdp3action.h \
+    Roster/printrosteraction.h \
+    light.h \
+    Roster/copyrostergroupaction.h \
+    Roster/renamerostergroupaction.h \
+    Roster/installdecoderfileaction.h \
+    Roster/installdecoderurlaction.h \
+    Signal/dccsignalmast.h \
+    deferringprogrammermanager.h \
+    vsdecodermanager.h \
+    vsdecoderpreferences.h \
+    listeningspot.h \
+    vsdlistener.h \
+    addressedhighcvprogrammerfacade.h \
+    vsdecodermanagerthread.h \
+    vsdecoder.h \
+    vsdmanagerframe.h \
+    vsdconfig.h \
+    vsdfile.h \
+    zipfile.h \
+    vsdsound.h \
+    vsdecoderevent.h \
+    storexmlvsdecoderaction.h \
+    trigger.h \
+    soundevent.h \
+    momentarysoundevent.h \
+    togglesoundevent.h \
+    enginesoundevent.h \
+    configurablesound.h \
+    steamsound.h \
+    enginesound.h \
+    dieselsound.h \
+    diesel3sound.h \
+    buttontrigger.h \
+    enginepane.h \
+    dieselpane.h \
+    soundbite.h \
+    notchtransition.h \
+    audioutil.h \
+    triggerlistener.h \
+    booltrigger.h \
+    throttletrigger.h \
+    floattrigger.h \
+    notchtrigger.h \
+    inttrigger.h \
+    control.h \
+    managerdefaultselector.h \
+    managerdefaultselectorxml.h \
+    path.h \
+     block.h \
+     beansetting.h\
+    blockmanager.h \
+    #sectionmanager.h \
+    defaultinstanceinitializer.h \
+    instanceinitializer.h \
+    entrypoint.h
+
+ !contains(FTDI, 1) {
+    HEADERS +=
+ }
+
+symbian {
+    MMP_RULES += EXPORTUNFROZEN
+    TARGET.UID3 = 0xE60D7F4C
+    TARGET.CAPABILITY = 
+    TARGET.EPOCALLOWDLLDATA = 1
+    addFiles.sources = libPr3.dll
+    addFiles.path = !:/sys/bin
+    DEPLOYMENT += addFiles
+}
+
+unix:!symbian {
+    maemo5 {
+        target.path = /opt/usr/lib
+    } else {
+        target.path = /usr/lib
+#ifdef LAYOUTS
+#include "Layout/connectivityutil.h"
+#include "Layout/layoutturnout.h"
+#include "Layout/layoutblock.h"
+#
+    }
+    INSTALLS += target
+}
+#contains(SECTION_LOGIC, 1) {
+##    DEFINES += BLOCKS_AND_SECTIONS
+#    HEADERS += path.h \
+#     block.h \
+#     beansetting.h\
+#    blockmanager.h \
+#    #sectionmanager.h \
+#    defaultinstanceinitializer.h \
+#    instanceinitializer.h \
+#    entrypoint.h
+
+#    SOURCES += path.cpp \
+#     block.cpp \
+#     beansetting.cpp \
+#    blockmanager.cpp \
+#    entrypoint.cpp
+# }
+
+
+INCLUDEPATH += $$PWD LocoIObuild_nr
+
+win32 {
+QMAKE_LFLAGS += -static-libgcc
+}
+
+#win32:CONFIG(release, debug|release): LIBS += -lQtSerialPort
+#else:win32:CONFIG(debug, debug|release):  LIBS += -lQtSerialPortd
+
+unix:!symbian{
+ maemo5{
+  target.path = /opt$${LIB_INSTALL_DIR}
+#  headers.path = /opt$${INCLUDES_INSTALL_DIR}
+ }
+ else{
+  target.path = $${LIB_INSTALL_DIR}
+#  headers.path = $${INCLUDES_INSTALL_DIR}
+ }
+ INSTALLS += target #headers
+}
+win32:{
+  target.path = $${DLL_INSTALL_DIR}
+#  headers.path = $${INCLUDES_INSTALL_DIR}
+ INSTALLS += target #headers
+}
+TRANSLATIONS += \
+    languages/libPr3_de.ts \
+    languages/libPr3_en.ts
+
+RESOURCES += \
+    libPr3.qrc
+
+FORMS += \
+    Throttle/throttlewindow.ui \
+    Throttle/listthrottles.ui \
+    Roster/functionlabelsmediadlg.ui \
+    Roster/rosterentrypane.ui \
+    Roster/functionlabelspane.ui \
+    Roster/paneprogframe.ui \
+    Roster/rosterframe.ui \
+    Roster/factoryresetaction.ui \
+    Roster/rostermedia.ui \
+    Roster/optionsdialog.ui \
+    Throttle/addresspanel.ui \
+    Throttle/functionpanel.ui \
+    loconet/loconetmsgdialog.ui \
+    loconet/querycvdialog.ui
+
+
+OTHER_FILES += \
+    proglistener. \
+    turnouts.sip \
+    configure.py
+
+DEPENDPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet
+INCLUDEPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet
+
+DEFINES += USE_THREAD
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/release/ -lquazip
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/debug/ -lquazipd
+else:unix: LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/ -lquazip
+
+INCLUDEPATH += $$PWD/../../../../quazip-0.7.2/quazip
+DEPENDPATH += $$PWD/../../../../quazip-0.7.2/quazip
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
+else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+
+INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
+DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
+
+INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
+DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/release/ -lLocoIO
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/debug/ -lLocoIO
+else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
+
+INCLUDEPATH += $$PWD/../LocoIO
+DEPENDPATH += $$PWD/../LocoIO
+
+
+
+win32:INCLUDEPATH += C:/Users/Allen/Downloads/zlib127/zlib-1.2.7/
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
+else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+
+INCLUDEPATH += $$PWD/../JavaQt
+DEPENDPATH += $$PWD/../JavaQt
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ -lLayoutEditor
+else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+
+INCLUDEPATH += $$PWD/../LayoutEditor
+DEPENDPATH += $$PWD/../LayoutEditor
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
+else:unix: LIBS += -L$$PWD/../libPref/ -lPref
+
+INCLUDEPATH += $$PWD/../libPref/
+DEPENDPATH += $$PWD/../libPref
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
+else:unix: LIBS += -L$$PWD/../Tables/ -lTables
+
+INCLUDEPATH += $$PWD/../Tables
+DEPENDPATH += $$PWD/../Tables
+
+
+INCLUDEPATH += $$PWD/../../../../quazip-0.7.2/quazip/debug
+DEPENDPATH += $$PWD/../../../../quazip-0.7.2/quazip/debug

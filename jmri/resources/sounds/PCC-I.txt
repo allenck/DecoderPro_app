@@ -1,0 +1,71 @@
+============================================================================
+                       PRE-WAR (AIR) PCC STREETCAR SOUNDS PROJECT
+This Sound Project was developed by Fred Miller for use in DCC controlled
+models of Pre-War (Air) PCC Streetcars. 
+============================================================================
+Project:	PCC-I.SPJ		Developed 8/24/10
+SDF:    	PCC-I.ASM
+============================================================================
+(A) Function Key Definitions
+============================================================================
+F0	Headlight (Motor Decoder)
+F1	Continuous Warning Gongs
+F2	One/two Gongs
+F3	Available (Motor Decoder)
+F4	Door Open/Close (when not moving) Track Squeal (when moving)
+F5	Available (Motor Decoder)
+F6	Mute all sounds
+============================================================================
+(B) Sound FX defined CV's:
+============================================================================
+CV3 	Accelerate Momentum [0]
+CV4 	Decelerate Momentum [0]
+CV8 	Default Reset [9]
+CV58	Master Vol 0-15 [15]
+CV60	Sound Scheme [0]
+CV132	Notch Rate [64]
+CV135	Mute Volume [0]
+CV140	Motor/Track Sounds[45]
+CV141	Gong Volume [64]
+CV142	Air Compressor Volume [64]  
+CV143	Door Sounds Volume [64]
+CV144	Farebox Clink Volume [64]
+CV145	Voice Sounds Volume [64]
+CV146	Track Squeal Volume [64]
+CV147	Time between Compressor runs (2 sec incr) [60]
+CV148	Compressor run time (2 sec incr) [10]
+CV149	Author ID 0xFC - Freds Carbarn [252]
+CV150	Project - PCC-1 [4]
+CV151	Gong Count [3] F2 1 or 2 Gongs, 3 auto start w/2 gongs
+============================================================================
+(C) General Notes
+============================================================================
+This Project was developed to add sounds to a Pre-war (air) PCC Street car
+such as the Con-Cor HO PC equipped with a Digitrax SFX sound decoder, e.g.,
+Digitrax SN144 Motor/Sound decoder or a Digitrax SoundBug in parallel with
+any motor decoder.
+
+- Track Sounds will reflect the throttle speed settings.
+- Air Compressor sounds will cycle on/off based on CV settings.
+- F1 issues continuous warning Gongs
+- F2 issues one or two trolley gongs depending on CV151 setting.
+- When the streetcar is NOT moving F4 On/Off will issue PCC door open/close
+  sounds accompanied with random farebox and operator comments.  When the car
+  is moving, F4 will issue track squeal sounds.
+- F6 Mute all sounds
+- Other Function keys are available for Motor Decoder use, e.g, headlights, etc.
+
+The overall sound volume is controlled by Master Volume CV58.  Other individual sound
+volumes are set by CVs listed above.  The Default for CV58 is 15 but can be set 0-15
+from a Throttle or the simulated throttle in SoundLoader.  Individual sound volume
+CVs can be set 0-64.  A setting of 1 effectively turns off that sound.
+
+The software for this Sound Project was developed by Fred Miller.  Original Sound
+clips were graciously loaned by Carl Schultz of Transit Gloria Mundi.
+Although the sound clips were substantially edited by Fred Miller for
+use in the Digitrax SFX Sound Decoders, ownership of the original sounds remains
+with Transit Gloria Mundi and cannot be reproduced without permission.
+
+This Sound Project was developed for the trolley modeling community and the
+PCC-I.SPJ project file can be shared without charge. 
+

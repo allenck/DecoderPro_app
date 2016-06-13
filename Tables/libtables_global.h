@@ -1,0 +1,12 @@
+#ifndef LIBTABLES_GLOBAL_H
+#define LIBTABLES_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(LIBTABLES_LIBRARY)
+#  define LIBTABLESSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define LIBTABLESSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // LIBTABLES_GLOBAL_H

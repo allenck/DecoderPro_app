@@ -1,0 +1,26 @@
+<h1>RFID support</h1>
+<p>RFID support uses the RFID readers and USB interface that can be obtained from [https://www.sparkfun.com/products/11839 | 
+Spark Fun Electronics - RFID Starter Kit].  In order to be able to identify which USB reader has read an RFID tag, the standard Virtual COM Port (VCP)
+comm port drivers for Linux and Windows cannot be used. Instead, the D2XX drivers appropriate driver for your system must be installed. 
+The drivers and installation instructions can be found [http://www.ftdichip.com/Drivers/D2XX.htm |here] and 
+[http://www.ftdichip.com/Support/Documents/AppNotes/AN_220_FTDI_Drivers_Installation_Guide_for_Linux%20.pdf |Installation guide].</p>
+
+<p>Once the D2XX driver has been installed, the ftdilib project can then be built.</p>
+<h2>Linux considerations</h2>
+<p>The D2XX driver will only be accessible for root users unless several other changes are made to your system. </p>
+<h3>rules.d</h3>
+A special rules.d file containing the following two lines must be created in /etc/udev/rules.d/99-ftdi.rules:
+
+SUBSYSTEMS=="usb",  ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE:="0660", GROUP="adm", SYMLINK+="FTDI1", DRIVERS=="usb"<br>
+
+SUBSYSTEMS=="usb",  ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001" ACTION=="add" RUN+="/usr/local/bin/ftdi_rmmod.sh"<br>
+
+<p>The above example will allow access to users in the "adm" group. If you wish, you can create a group other than "adm". The user must me a member of
+whatever group is specified in /etc/udev/rules.d/99-ftdi.rules. The rule also runs a script that automatically unloads the default VCP driver 
+when a FTDI USB device is plugged in: "/usr/local/bin/ftdi_rmmod.sh". It should contain the following 3 lines:</p>
+
+#!/bin/sh<br>
+rmmod ftdi_sio<br>
+rmmod usbserial<br>
+
+Note: Make sure that "/etc/udev/rules.d/99-ftdi.rules" is executable!

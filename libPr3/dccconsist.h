@@ -1,0 +1,71 @@
+#ifndef DCCCONSIST_H
+#define DCCCONSIST_H
+#include <QList>
+#include <QHash>
+#include "consist.h"
+#include "logger.h"
+#include <QVector>
+#include <QMutex>
+
+class DccLocoAddress;
+class ConsistListener;
+class DccConsist : public Consist
+{
+    Q_OBJECT
+public:
+    explicit DccConsist(int address, QObject *parent = 0);
+    /*public*/ DccConsist(DccLocoAddress* address, QObject *parent = 0) ;
+    /*public*/ void dispose();
+    /*public*/ void setConsistType(int consist_type);
+    /*public*/ int getConsistType();
+    /*public*/ DccLocoAddress* getConsistAddress();
+    /*public*/ bool isAddressAllowed(DccLocoAddress* address);
+    /*public*/ int sizeLimit();
+    /*public*/ QList<DccLocoAddress*>* getConsistList();
+    /*public*/ bool contains(DccLocoAddress* address);
+    /*public*/ bool getLocoDirection(DccLocoAddress* address);
+    /*public*/ void add(DccLocoAddress* LocoAddress,bool directionNormal);
+    /*public*/ void restore(DccLocoAddress* LocoAddress,bool directionNormal);
+    /*public*/ void remove(DccLocoAddress* LocoAddress);
+    /*public*/ void setPosition(DccLocoAddress* address,int position);
+    /*public*/ int getPosition(DccLocoAddress* address);
+    /*public*/ void addConsistListener(ConsistListener* Listener);
+    /*public*/ void removeConsistListener(ConsistListener* Listener);
+    /*public*/ void setConsistID(QString ID);
+    /*public*/ QString getConsistID();
+    /*public*/ void reverse();
+
+signals:
+
+public slots:
+    /*public*/ void programmingOpReply(int value, int status);
+private:
+ Logger* log;
+ // data member to hold the throttle listener objects
+ /*final private */QVector<ConsistListener*>* listeners;// = new Vector<ConsistListener>();
+ QMutex mutex;
+protected:
+    /*protected*/ QList<DccLocoAddress*>* ConsistList;// = NULL; // A List of Addresses in the consist
+
+    /*protected*/ QHash<DccLocoAddress*, bool>* ConsistDir;// = NULL; // A Hash table
+                                        // containing the directions of
+                    // each locomotive in the consist,
+                    // keyed by Loco Address.
+
+    /*protected*/ QHash<DccLocoAddress*, int>* ConsistPosition;// = NULL; // A Hash table
+                                        // containing the position of
+                    // each locomotive in the consist,
+                    // keyed by Loco Address.
+
+    /*protected*/ int ConsistType;// = ADVANCED_CONSIST;
+
+    /*protected*/ DccLocoAddress* consistAddress;// = NULL;
+
+    /*protected*/ QString ConsistID;// = NULL;
+ /*protected*/ void addToAdvancedConsist(DccLocoAddress* LocoAddress, bool directionNormal);
+ /*protected*/ void removeFromAdvancedConsist(DccLocoAddress* LocoAddress);
+ /*protected*/ void notifyConsistListeners(DccLocoAddress*  LocoAddress, int ErrorCode);
+
+};
+
+#endif // DCCCONSIST_H

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FunctionPanel</class>
+ <widget class="QDockWidget" name="FunctionPanel">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>285</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>DockWidget</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="FunctionButton" name="btnF1">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="FunctionButton" name="btnF2">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="FunctionButton" name="btnF3">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="2">
+     <widget class="QPushButton" name="btnHash">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>#</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="FunctionButton" name="btnF15">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F15</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="FunctionButton" name="btnF12">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F12</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="FunctionButton" name="btnF9">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F9</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="FunctionButton" name="btnF6">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F6</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="FunctionButton" name="btnF5">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F5</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="FunctionButton" name="btnF8">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F8</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="FunctionButton" name="btnLight">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Light</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QPushButton" name="btnStar">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>*</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="FunctionButton" name="btnF13">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F13</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="FunctionButton" name="btnF10">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F10</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="FunctionButton" name="btnF7">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F7</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="FunctionButton" name="btnF4">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F4</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="FunctionButton" name="btnF11">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F11</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="FunctionButton" name="btnF14">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>F14</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FunctionButton</class>
+   <extends>QPushButton</extends>
+   <header>functionbutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

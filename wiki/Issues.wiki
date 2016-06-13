@@ -1,0 +1,12 @@
+<h1>Issues (as of March 2, 2015)</h1>
+<h2>Serial Com port problems</h2>
+<p>On Ubuntu 14.04 with Qt version 5.4.2, could not get serial port to deliver any traffic. Looked in the system log with dmesg and found this:
+<ol>
+	<li>[ 5032.659570] cdc_acm 3-2.1:1.0: failed to set dtr/rts</li>
+	<li>[ 5179.752892] systemd-hostnamed[3921]: Warning: nss-myhostname is not installed. Changing the local hostname might make it unresolveable. Please install nss-myhostname!</li>
+</ol>
+
+</p>
+<p>Installed package libnss-myhostname and now USB port opens and delivers traffic"</p>
+<p>Also, you may get access denied on opening a serial port unless you are a member of the 'dialout' group.
+<p>When the serial port is opened, it issues an error message "No such file or directory". However, the port seems to be working properly and so this error should be ignored.

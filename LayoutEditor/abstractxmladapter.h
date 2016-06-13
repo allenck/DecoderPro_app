@@ -1,0 +1,35 @@
+#ifndef ABSTRACTXMLADAPTER_H
+#define ABSTRACTXMLADAPTER_H
+#include "xmladapter.h"
+#include "configxmlmanager.h"
+#include "liblayouteditor_global.h"
+
+class LIBLAYOUTEDITORSHARED_EXPORT AbstractXmlAdapter : public XmlAdapter
+{
+    Q_OBJECT
+public:
+    explicit AbstractXmlAdapter(QObject *parent = 0);
+    /*public*/ void creationErrorEncountered (
+                Level* level,
+                QString description,
+                QString systemName,
+                QString userName,
+                Throwable* exception
+            ) throw (JmriConfigureXmlException);
+    /*public*/ bool loadDeferred() ;
+    /*public*/ int loadOrder();
+    /*public*/ void setConfigXmlManager(ConfigXmlManager* c) ;
+    QDomDocument doc;
+    virtual void setDoc(QDomDocument doc);
+
+signals:
+
+public slots:
+private:
+    /*private*/ ConfigXmlManager* c;
+  protected:
+    /*protected*/ ConfigXmlManager* getConfigXmlManager() ;
+ QObject *parent;
+};
+
+#endif // ABSTRACTXMLADAPTER_H

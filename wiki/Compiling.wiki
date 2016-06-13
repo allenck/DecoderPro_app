@@ -1,0 +1,48 @@
+<h1>Compiling LocoNetMonitor</h1>
+LocoNetMonitor has been developed using QT 4.8.3 although earlier versions should work as well. Qt is available for Linux, Windows, Mac and other
+systems. Qt can be downloaded from: [http://qt-project.org/downloads|Qt downloads]. You will also need to download the QtCreator IDE program. 
+<p>
+The program requires the use of the [http://qt-project.org/wiki/QtSerialPort | QtSerialPort] package which is included in Qt 5.0+ but can be downloaded 
+for use with QT 4.x versions. Even though the QtSerialPort module is included with Qt 5.0, it does not, when running on Linux, display
+manufacturer or descriptive info. In order to display this info, it is necessary to install the udevlib-dev packagage  ([/doc/tip/DecoderPro_app/wiki/rfid.wiki |instructions])and to download the
+current QtSerialPort source (as of August, 2013). As of November, 2013, the QtSerialPort package included with Qt 5.0 provides the nececessary support.</p>
+<p>
+The program consists of seven projects:
+<ol>
+   <li><strong>AutoIncreaseBuildNr</strong>This is a little utility program that is used to automatically increment the build number in a c++ header file.</li>
+	<li><b>LocoNetMonitor</b> This is the main program. It contains the User Interfaces.</li>
+	<li><b>libPr3</b> This project creates a library that contains classes for accessing LocoNet messages and manages configuration data for 
+	LocoIO modules. </li>
+ <li><strong>ftdilib</strong> This project supports RFID readers that can be obtained from [https://www.sparkfun.com/products/11839 | Spark Fun Electronics]</li>
+ <li><strong>libLayoutEditor</strong> This project creates a library of routines that are used to create and edit a GUI layout panel.</li>
+ <li><strong>libTables</strong> This project creates a library that provides a dialog to display and edit various system tables such as turnouts, sensors, blocks, etc.</li>
+ <li><strong>libPrefs</strong> This project creates a library with functions relating to setting and viewing preferences.</li>
+</ol>
+</p>
+<h2>Downloading the source</h2>
+The source repository uses Fossil. Fossil can be downloaded for various platforms at 
+[http://www.fossil-scm.org/download.html | http://www.fossil-scm.org/download.html]. Download the program and make it available in your 
+path as is appropriate for your operating system. 
+
+To prepare for downloading the source, perform these steps: 
+<ol>
+	<li>Select a root directory where the source will reside. In my case, I have a directory called 'Projects' although
+	it can be any name you choose. </li>
+	<li>In the 'Projects' directory, create a directory named 'DecoderPro'. Again, the name you choose for this directory is not important. </li>
+	<li>Change to the 'DecoderPro' directory.</li>
+	<li>Clone the source repository with the command: '<strong>fossil clone http://acksoft.dyndns.biz:1080/cgi-bin/fossil/DecoderPro decoderpro.fossil</strong>'. 
+	This will create a file named 'decoderpro.fossil' which is your local repository copy.</li>
+	<li>Next, issue the command '<strong>fossil open decoderpro.fossil</strong>'. 
+	This will download the source and other files in the project. It will create a directory 'DecoderPro_app in the '../DecoderPro/' 
+	directory containing directories: 'AutoIncreaseBuildNr', 'ftdilib', 'libPr3', 'LocoNetMonitor', 'LayoutEditor', 'Tables' and
+	'wiki'.  
+	<li>In QtCreator, open the 'AutoIncreaseBuildNr.pro', 'libPr3.pro' and 'LocoNetMonitor.pro' project files in their respective directories. </li>
+   <li>Project AutoIncreaseBuildNr should be built first as it is required by the other projects. If you want the optional RFID support, 
+   ftdilib must be [/doc/tip/DecoderPro_app/wiki/rfid.wiki |compiled and built]. Then likewise, the library, libPr3 must be compiled before LocoNetMonitor.</li>	
+	<li>The source can be updated at any time with any changes since you created the project or last ran 'fossil update' at any time by running '<strong>fossil update</strong>'</li>
+</ol>
+<h2>Windows</h2>
+<p>On Windows, a USB driver is required. There are instructions in the 
+[http://users.telenet.be/deloof/Locobuffer/LocoBuffer%20EN.pdf|LocoBuffer Manual] on how to do this. 
+
+</ol>

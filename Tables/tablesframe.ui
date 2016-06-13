@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TablesFrame</class>
+ <widget class="QMainWindow" name="TablesFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QListWidget" name="listWidget">
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>Turnouts</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Sensors</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Lights</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Signal Heads</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Signal Masts</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Signal Groups</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Signal Mast Logic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Reporters</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Memory Variables</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Routes</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>LRoutes</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Logix</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Blocks</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Sections</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Transits</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Audio</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Id Tags</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
