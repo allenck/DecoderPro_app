@@ -1,0 +1,7 @@
+This repository contains a port of the Java JMRI Model Railroad Interface software to QT (C++). The majority of JMRI code has been ported except only Digitrax (LocoNet) hardware is supported. In addition, scripting and Audio support still needs more work. 
+
+This project was started because I wanted better support for the LocoIO series of boards so users of that hardware might find this port of interest. 
+
+Scripting support requires that Python and Python Qt be installed. Also, zip files require the Quazip package be installed. 
+
+This code should run OK under Qt 4 and Qt 5 up to version 5.4. Most of the development has been done on Linux (Ubuntu) and Windows support has not been tested extensively.
