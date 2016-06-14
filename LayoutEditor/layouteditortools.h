@@ -104,6 +104,9 @@ QString headName, JmriJFrame* frame);
     /*public*/ void setSignalMastsAtLevelXing(JFrame* theFrame);
     /*public*/ void setSensorsAtLevelXingFromMenu (LevelXing* xing, QVector<QString>* blocks, MultiIconEditor* theEditor,JFrame* theFrame);
     /*public*/ void setSensorsAtLevelXing(MultiIconEditor* theEditor, JFrame* theFrame);
+    /*public*/ void set3WayFromMenu(QString aName, QString bName,
+                    MultiIconEditor* theEditor, JFrame* theFrame );
+    /*public*/ void setSignalsAt3WayTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
 
 signals:
     
@@ -573,6 +576,7 @@ private:
     /*private*/ SignalHead* bHead;// = null;
     /*private*/ SignalHead* cHead;//= null;
     /*private*/ SignalHead* dHead;// = null;
+
     // operational variables for Set Sensors at Level Crossing tool
     /*private*/ JmriJFrame* sensorsAtXingFrame;// = NULL;
     /*private*/ bool setSensorsAtXingOpen;// = false;
@@ -612,44 +616,109 @@ private:
     /*private*/ void addNearSensorToSlipLogic(QString name);
 
     // operational variables for Set SignalMast at Slip tool
-/*private*/ JmriJFrame* signalMastsAtSlipFrame;// = NULL;
-/*private*/ bool setSignalMastsAtSlipOpen;// = false;
+ /*private*/ JmriJFrame* signalMastsAtSlipFrame;// = NULL;
+ /*private*/ bool setSignalMastsAtSlipOpen;// = false;
 
- QPushButton* getSavedSlipSignalMasts;// = NULL;
- QPushButton* setSlipSignalMastsDone;// = NULL;
- QPushButton* setSlipSignalMastsCancel;// = NULL;
+  QPushButton* getSavedSlipSignalMasts;// = NULL;
+  QPushButton* setSlipSignalMastsDone;// = NULL;
+  QPushButton* setSlipSignalMastsCancel;// = NULL;
 
- /*private*/ bool slipMastFromMenu;// = false;
- /*private*/ QVector<QString>* slipBlocks;// = new String[4];
+  /*private*/ bool slipMastFromMenu;// = false;
+  /*private*/ QVector<QString>* slipBlocks;// = new String[4];
 
- BeanDetails* slipSignalMastA;
- BeanDetails* slipSignalMastB;
- BeanDetails* slipSignalMastC;
- BeanDetails* slipSignalMastD;
+  BeanDetails* slipSignalMastA;
+  BeanDetails* slipSignalMastB;
+  BeanDetails* slipSignalMastC;
+  BeanDetails* slipSignalMastD;
 
 
- QWidget*signalMastLayoutSlipPanel;// = new QWidget();
- /*private*/ bool getLevelCrossingInformation();
- /*private*/ bool getXingSignalHeadInformation();
- /*private*/ void placeXingA();
- /*private*/ void placeXingB();
- /*private*/ void placeXingC();
- /*private*/ void placeXingD();
- /*private*/ void setLogicXing(SignalHead* head, TrackSegment* track, LayoutBlock*crossBlock,TrackSegment* crossTrack1, TrackSegment* crossTrack2, QString headName);
- void refreshSignalMastAtSlipComboBox();
- /*private*/ bool getSlipMastInformation();
- QGridLayout* signalMastLayoutSlipPanelLayout;
- void refreshSignalMastAtXingComboBox();
- /*private*/ bool getLevelCrossingMastInformation();
- /*private*/ void placeXingAIcon(PositionableIcon* icon, bool right, double fromPoint);
- /*private*/ void placeXingBIcon(PositionableIcon* icon, bool right, double fromPoint);
- /*private*/ void placeXingCIcon(PositionableIcon* icon, bool right, double fromPoint);
- /*private*/ void placeXingDIcon(PositionableIcon* icon, bool right, double fromPoint);
- QGridLayout* signalMastLevelXingPanelLayout;
- /*private*/ bool getLevelCrossingSensorInformation();
- QGridLayout* sensorXingPanelLayout;
- QGridLayout* sensorSlipPanelLayout;
- QGridLayout* signalMastTurnoutPanelLayout;
+  QWidget*signalMastLayoutSlipPanel;// = new QWidget();
+  /*private*/ bool getLevelCrossingInformation();
+  /*private*/ bool getXingSignalHeadInformation();
+  /*private*/ void placeXingA();
+  /*private*/ void placeXingB();
+  /*private*/ void placeXingC();
+  /*private*/ void placeXingD();
+  /*private*/ void setLogicXing(SignalHead* head, TrackSegment* track, LayoutBlock*crossBlock,TrackSegment* crossTrack1, TrackSegment* crossTrack2, QString headName);
+  void refreshSignalMastAtSlipComboBox();
+  /*private*/ bool getSlipMastInformation();
+  QGridLayout* signalMastLayoutSlipPanelLayout;
+  void refreshSignalMastAtXingComboBox();
+  /*private*/ bool getLevelCrossingMastInformation();
+  /*private*/ void placeXingAIcon(PositionableIcon* icon, bool right, double fromPoint);
+  /*private*/ void placeXingBIcon(PositionableIcon* icon, bool right, double fromPoint);
+  /*private*/ void placeXingCIcon(PositionableIcon* icon, bool right, double fromPoint);
+  /*private*/ void placeXingDIcon(PositionableIcon* icon, bool right, double fromPoint);
+  QGridLayout* signalMastLevelXingPanelLayout;
+  /*private*/ bool getLevelCrossingSensorInformation();
+  QGridLayout* sensorXingPanelLayout;
+  QGridLayout* sensorSlipPanelLayout;
+  QGridLayout* signalMastTurnoutPanelLayout;
+
+  // operational variables for Set Signals at 3-Way Turnout tool
+  /*private*/ JmriJFrame* setSignalsAt3WayFrame;// =NULL;
+  /*private*/ bool setSignalsAt3WayOpen;// =false;
+  JTextField* turnoutANameField;// =new JTextField(16);
+  JTextField* turnoutBNameField;// =new JTextField(16);
+  JTextField* a13WayField;// =new JTextField(16);
+  JTextField* a23WayField;// =new JTextField(16);
+  JTextField* a33WayField;// =new JTextField(16);
+  JTextField* b3WayField;// =new JTextField(16);
+  JTextField* c3WayField;// =new JTextField(16);
+  JTextField* d3WayField;// =new JTextField(16);
+  QCheckBox* setA13WayHead;// =new QCheckBox(tr("Add Signal Head Icon to Panel"));
+  QCheckBox* setupA13WayLogic;// =new QCheckBox(tr("Set up Logic"));
+  QCheckBox* setA23WayHead;// =new QCheckBox(tr("Add Signal Head Icon to Panel"));
+  QCheckBox* setupA23WayLogic;// =new QCheckBox(tr("Set up Logic"));
+  QCheckBox* setA33WayHead;// =new QCheckBox(tr("Add Signal Head Icon to Panel"));
+  QCheckBox* setupA33WayLogic;// =new QCheckBox(tr("Set up Logic"));
+  QCheckBox* setB3WayHead;// =new QCheckBox(tr("Add Signal Head Icon to Panel"));
+  QCheckBox* setupB3WayLogic;// =new QCheckBox(tr("Set up Logic"));
+  QCheckBox* setC3WayHead;// =new QCheckBox(tr("Add Signal Head Icon to Panel"));
+  QCheckBox* setupC3WayLogic;// =new QCheckBox(tr("Set up Logic"));
+  QCheckBox* setD3WayHead;// =new QCheckBox(tr("Add Signal Head Icon to Panel"));
+  QCheckBox* setupD3WayLogic;// =new QCheckBox(tr("Set up Logic"));
+  QPushButton* getSaved3WaySignalHeads;// =NULL;
+  QPushButton* change3WaySignalIcon;// =NULL;
+  QPushButton* set3WaySignalsDone;// =NULL;
+  QPushButton* set3WaySignalsCancel;// =NULL;
+  /*private*/ LayoutTurnout* layoutTurnoutA;// =NULL;
+  /*private*/ LayoutTurnout* layoutTurnoutB;// =NULL;
+  /*private*/ Turnout* turnoutA;// =NULL;
+  /*private*/ Turnout* turnoutB;// =NULL;
+  ///*private*/ TrackSegment* conTrack = NULL;
+  SignalHead* a13WayHead;// =NULL;   // saved in A1 of Turnout A - Throat - continuing
+  SignalHead* a23WayHead;// =NULL;   // saved in A2 of Turnout A - Throat - diverging A (optional)
+  SignalHead* a33WayHead;// =NULL;   // saved in A3 of Turnout A - Throat - diverging B (optional)
+  SignalHead* b3WayHead;// =NULL;    // saved in C1 of Turnout A - at diverging A
+  SignalHead* c3WayHead;// =NULL;    // saved in B1 of Turnout B - at continuing
+  SignalHead* d3WayHead;// =NULL;    // saved in C1 of Turnout B - at diverging B
+  bool layoutTurnoutAHorizontal;// =false;
+  bool layoutTurnoutAVertical;// =false;
+  bool layoutTurnoutBHorizontal;// =false;
+  bool layoutTurnoutBVertical;// =false;
+  bool layoutTurnoutAThroatLeft;// =false;
+  bool layoutTurnoutAThroatUp;// =false;
+  bool layoutTurnoutBThroatLeft;// =false;
+  bool layoutTurnoutBThroatUp;// =false;
+  bool layoutTurnoutABUp;// =false;
+  bool layoutTurnoutABLeft;// =false;
+  bool layoutTurnoutBBUp;// =false;
+  bool layoutTurnoutBBLeft;// =false;
+  /*private*/ bool get3WayTurnoutInformation();
+  /*private*/ bool get3WaySignalHeadInformation();
+  /*private*/ void place3WayThroatContinuing();
+  /*private*/ void place3WayThroatDivergingA();
+  /*private*/ void place3WayThroatDivergingB();
+  /*private*/ void place3WayDivergingA();
+  /*private*/ void place3WayContinuing();
+  /*private*/ void place3WayDivergingB();
+  /*private*/ void set3WayLogicThroatContinuing();
+  /*private*/ void set3WayLogicThroatDivergingA() ;
+  /*private*/ void set3WayLogicThroatDivergingB() ;
+  /*private*/ void set3WayLogicDivergingA();
+  /*private*/ void set3WayLogicContinuing();
+  /*private*/ void set3WayLogicDivergingB();
 
  private slots:
     void changeSignalAtBoundaryIcon_clicked();
@@ -706,6 +775,10 @@ private:
     /*private*/ void setXingSignalMastsDonePressed (ActionEvent* a = 0);
     /*private*/ void xingSensorsGetSaved (ActionEvent* a = 0);
     void on_changeSensorXingIcon();
+    /*private*/ void getSaved3WaySignals (ActionEvent* a = 0);
+    /*private*/ void set3WaySignalsCancelPressed (ActionEvent* a = 0);
+    void On_change3WaySignalIconClicked();
+    /*private*/ void set3WaySignalsDonePressed (ActionEvent* a = 0);
 
     friend class SSWindowListener;
     friend class SXWindowListener;
@@ -714,6 +787,7 @@ private:
     friend class XSSSWindowListener;
     friend class SASWindowListener;
     friend class SSFWindowListener;
+    friend class S3WWindowListener;
 };
 /*static*/ class BeanDetails : public QObject
 {
@@ -828,4 +902,16 @@ public:
   parent->setSignalsCancelPressed();
  }
 };
+class S3WWindowListener: public WindowListener
+{
+ Q_OBJECT
+ LayoutEditorTools* parent;
+public:
+ S3WWindowListener(LayoutEditorTools* parent) { this->parent = parent;}
+ void windowClosing(QCloseEvent */*e*/)
+ {
+  parent->set3WaySignalsCancelPressed();
+ }
+};
+
 #endif // LAYOUTEDITORTOOLS_H

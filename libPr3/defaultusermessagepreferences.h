@@ -329,6 +329,8 @@ class LIBPR3SHARED_EXPORT DefaultUserMessagePreferences : public UserPreferences
     Q_OBJECT
 public:
     explicit DefaultUserMessagePreferences(QObject *parent = 0);
+ ~DefaultUserMessagePreferences() {}
+ DefaultUserMessagePreferences(const DefaultUserMessagePreferences&) {}
     /*public*/ static DefaultUserMessagePreferences* getInstance();
     /*public*/ /*synchronized*/ void allowSave() ;
     /*public*/ /*synchronized*/ void disallowSave() ;
@@ -429,7 +431,7 @@ protected:
 friend class UserPreferencesShutDownTask;
 };
 
-
+Q_DECLARE_METATYPE(DefaultUserMessagePreferences)
 /*private*/ /*static*/ class ComboBoxLastSelection
 {
     QString comboBoxName;// = NULL;

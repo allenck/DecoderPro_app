@@ -5133,7 +5133,7 @@ void LayoutEditor::addLabel()
  }
 }
 
-///*public*/ void LayoutEditor::super_putItem(Positionable* l)
+///*public*/ void MyLayoutEditor::super_putItem(Positionable* l)
 //  {
 //   PositionableLabel* pl = qobject_cast<PositionableLabel*>(l);
 //  //l->invalidate();
@@ -5155,7 +5155,7 @@ void LayoutEditor::addLabel()
 //}
 
 #if 0
-/*protected*/ void LayoutEditor::addToTarget(Positionable* l)
+/*protected*/ void MyLayoutEditor::addToTarget(Positionable* l)
 {
 //  JComponent c = (JComponent)l;
 //  c.invalidate();
@@ -5196,7 +5196,7 @@ void LayoutEditor::addLabel()
  }
 }
 #endif
-///*public*/ bool LayoutEditor::removeFromContents(Positionable* l)
+///*public*/ bool MyLayoutEditor::removeFromContents(Positionable* l)
 //{
 // return remove(l);
 //}
@@ -5393,7 +5393,7 @@ void LayoutEditor::addSensor(QString name)
 //* Display the X & Y coordinates of the Positionable item and provide a
 //* dialog memu item to edit them.
 //*/
-///*public*/ bool LayoutEditor::setShowCoordinatesMenu(Positionable* p, QMenu* popup)
+///*public*/ bool MyLayoutEditor::setShowCoordinatesMenu(Positionable* p, QMenu* popup)
 //{
 // if (showCoordinates())
 // {
@@ -5426,11 +5426,11 @@ void LayoutEditor::addSensor(QString name)
 //}
 /* Positionable has set a new level.  Editor must change it in the target panel.
 */
-///*public*/ void LayoutEditor::displayLevelChange(Positionable* /*l*/){
+///*public*/ void MyLayoutEditor::displayLevelChange(Positionable* /*l*/){
 //  removeFromTarget(l);
 //  addToTarget(l);
 //}
-///*public*/ void LayoutEditor::setDisplayLevelMenu(Positionable* p, QMenu* popup)
+///*public*/ void MyLayoutEditor::setDisplayLevelMenu(Positionable* p, QMenu* popup)
 //{
 //  QMenu* edit = new QMenu(tr("Edit Level"));
 //  SensorIcon* ps = qobject_cast<SensorIcon*>(p);
@@ -5441,7 +5441,7 @@ void LayoutEditor::addSensor(QString name)
 //  popup->addMenu(edit);
 //}
 
-///*public*/ void LayoutEditor::setPositionableMenu(Positionable* p, QMenu* popup)
+///*public*/ void MyLayoutEditor::setPositionableMenu(Positionable* p, QMenu* popup)
 //{
 // saveP = p;
 ////  JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(Bundle.getMessage("LockPosition"));
@@ -5470,7 +5470,7 @@ void LayoutEditor::addSensor(QString name)
 //  connect(lockItem, SIGNAL(toggled(bool)), this, SLOT(On_lockPosition_triggered(bool)));
 //}
 
-//void LayoutEditor::On_lockPosition_triggered(bool bChecked)
+//void MyLayoutEditor::On_lockPosition_triggered(bool bChecked)
 //{
 //   PositionableLabel* pl = qobject_cast<PositionableLabel*>(saveP);
 //   if(pl != NULL)
@@ -5480,7 +5480,7 @@ void LayoutEditor::addSensor(QString name)
 //    ps->setPositionable(!bChecked);
 //}
 
-///*public*/ void LayoutEditor::setShowCoordinates(bool state)
+///*public*/ void MyLayoutEditor::setShowCoordinates(bool state)
 //{
 //  _showCoordinates = state;
 //  for (int i = 0; i<_contents->size(); i++)
@@ -5488,7 +5488,7 @@ void LayoutEditor::addSensor(QString name)
 //   _contents->at(i)->setViewCoordinates(state);
 //  }
 //}
-///*public*/ bool LayoutEditor::showCoordinates()
+///*public*/ bool MyLayoutEditor::showCoordinates()
 //{
 //  return _showCoordinates;
 //}
@@ -5690,7 +5690,7 @@ void LayoutEditor::on_actionAdd_loco_triggered()
  //markerImage->append(l);  // redundant??
 }
 
-///*public*/ void LayoutEditor::superPutLocoIcon(LocoIcon* l, QString name)
+///*public*/ void MyLayoutEditor::superPutLocoIcon(LocoIcon* l, QString name)
 //{
 //  l->setText(name);
 //  l->setHorizontalTextPosition(JLabel::CENTER);
@@ -6265,7 +6265,7 @@ void LayoutEditor::on_actionEdit_track_width_triggered()
  colorButtonGroup->addAction(act);
  menu->addAction(act);
 }
-///*protected*/ void LayoutEditor::makeBackgroundColorMenu(QMenu* colorMenu)
+///*protected*/ void MyLayoutEditor::makeBackgroundColorMenu(QMenu* colorMenu)
 //{
 // colorMenu->clear();
 // QActionGroup* buttonGrp = new QActionGroup(this);
@@ -6496,7 +6496,7 @@ void LayoutEditor::OnDefaultTextColorSelected(QAction *act)
  layoutName = name;
  setWindowTitle("LayoutEditor - "+name);
 }
-//QString LayoutEditor::colorToString(QColor c)
+//QString MyLayoutEditor::colorToString(QColor c)
 //{
 // for(int i=0; i < _colors.size(); i++)
 // {

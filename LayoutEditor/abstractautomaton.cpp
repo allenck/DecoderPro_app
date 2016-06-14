@@ -146,8 +146,6 @@ AbstractAutomaton::~AbstractAutomaton()
   connect(this, SIGNAL(finished()), currentThread, SLOT(quit()));
   connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
   connect(currentThread, SIGNAL(finished()), currentThread, SLOT(deleteLater()));
-
-  connect(currentThread, SIGNAL(terminated()), this, SLOT(threadTerminated()));
  }
  else
  {

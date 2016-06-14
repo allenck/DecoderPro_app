@@ -171,6 +171,8 @@
 #include "configuremanager.h"
 #include "trainmanifesttext.h"
 #include "layoutturntablexml.h"
+#include "filehistory.h"
+#include "defaultusermessagepreferences.h"
 
 bool Metatypes::done = false;
 
@@ -355,6 +357,8 @@ Metatypes::Metatypes(QObject *parent) :
  //qRegisterMetaType<ConfigureManager>("ConfigureManager");
  qRegisterMetaType<Operations::TrainManifestText>("TrainManifestText");
  qRegisterMetaType<LayoutTurntableXml>("LayoutTurntableXml");
+ qRegisterMetaType<FileHistory>("FileHistory");
+ qRegisterMetaType<DefaultUserMessagePreferences>("DefaultUserMessagePreferences");
 
  Metatypes::done = true;
 }

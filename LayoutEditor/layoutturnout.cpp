@@ -1793,7 +1793,6 @@ void LayoutTurnout::on_setSignalsAct_triggered()
   tools->setThroatToThroatFromMenu(instance,linkedTurnoutName,
         layoutEditor->signalIconEditor,layoutEditor->signalFrame);
  }
-#if 0 // TODO:
  else if (linkType==FIRST_3_WAY) {
     tools->set3WayFromMenu(turnoutName, linkedTurnoutName,
         layoutEditor->signalIconEditor,layoutEditor->signalFrame);
@@ -1802,7 +1801,6 @@ void LayoutTurnout::on_setSignalsAct_triggered()
     tools->set3WayFromMenu(linkedTurnoutName, turnoutName,
         layoutEditor->signalIconEditor,layoutEditor->signalFrame);
  }
-#endif
 }
 
 /*public*/ QStringList LayoutTurnout::getBlockBoundaries()
