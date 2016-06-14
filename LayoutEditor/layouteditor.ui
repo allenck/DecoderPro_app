@@ -456,7 +456,6 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionSnap_to_grid_when_moving"/>
     <addaction name="menuShow_scrollbars"/>
     <addaction name="menuShow_icon_tooltips"/>
-    <addaction name="actionShow_turnout_circles"/>
     <addaction name="actionEnable_antialiasing_smoother_lines"/>
     <addaction name="separator"/>
     <addaction name="actionNew_title"/>

@@ -302,8 +302,8 @@ _contents = new QVector<Positionable*>();
  //editScene = new EditScene(QRectF(-100, -100, 400, 400), this);
  editScene = new EditScene(QRectF(0, 0, panelWidth, panelHeight), this);
  _targetPanel = editScene;
- _Colors << tr("Black")<<tr("Dark Gray")<<tr("Gray")<<tr("Light Gray")<<tr("White")<<tr("Red")<<tr("Orange")<<tr("Yellow")<<tr("Green")<<tr("Blue")<<tr("Magenta");
- _colors << QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) << QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red) << QColor(255, 170, 0) << QColor(Qt::yellow ) << QColor(Qt::green) <<QColor(Qt::blue) <<QColor(Qt::magenta)<<QColor();
+ _Colors << tr("Black")<<tr("Dark Gray")<<tr("Gray")<<tr("Light Gray")<<tr("White")<<tr("Red")<<tr("Pink") <<tr("Orange")<<tr("Yellow")<<tr("Green")<<tr("Blue")<<tr("Magenta");
+ _colors << QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) << QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red)<<QColor(255,192,203) << QColor(255, 170, 0) << QColor(Qt::yellow ) << QColor(Qt::green) <<QColor(Qt::blue) <<QColor(Qt::magenta)<<QColor();
  QActionGroup* trackColorActGrp =new QActionGroup(this);
  QActionGroup* textColorActGrp = new QActionGroup(this);
  QActionGroup* backgroundColorActGrp = new QActionGroup(this);
@@ -403,6 +403,7 @@ _contents = new QVector<Positionable*>();
  _newIcon = NULL;
  _delete = NULL;
  finder = new LayoutEditorFindItems(this);
+ ui->menuOptions->addMenu( setupTurnoutSubMenu());
 
 // register the resulting panel for later configuration
  InstanceManager::configureManagerInstance()->registerUser(this);
@@ -417,6 +418,161 @@ _contents = new QVector<Positionable*>();
 {
  log.debug("Frame size now w=" + QString::number(w) + ", h=" + QString::number(h));
  Editor::resize(w, h);
+}
+
+/*public*/ QMenu* LayoutEditor::setupTurnoutSubMenu()
+{
+ //turnout options submenu
+ QMenu* turnoutOptionsMenu = new QMenu(tr("Turnout Options"));
+ //optionMenu.add(turnoutOptionsMenu);
+
+ // circle on Turnouts
+ turnoutCirclesOnItem = new QAction(tr("Show Turnout Circles"),this);
+ turnoutCirclesOnItem->setCheckable(true);
+ turnoutOptionsMenu->addAction(turnoutCirclesOnItem);
+// turnoutCirclesOnItem.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         turnoutCirclesWithoutEditMode = turnoutCirclesOnItem.isSelected();
+//         repaint();
+//     }
+// });
+ connect(turnoutCirclesOnItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutCirclesOnItem_triggered(bool)));
+ turnoutCirclesOnItem->setChecked(turnoutCirclesWithoutEditMode);
+
+ // select turnout circle color
+ QMenu* turnoutCircleColorMenu = new QMenu(tr("Set Turnout Circle Color"));
+ turnoutCircleColorButtonGroup = new QActionGroup(this);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Use Default Track Color"), QColor());
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Black"), Qt::black);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Dark Gray"), Qt::darkGray);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Gray"), Qt::gray);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Light Gray"), Qt::lightGray);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("White"), Qt::white);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Red"), Qt::red);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Pink"), QColor(255,192,203));
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Orange"), QColor(255, 165, 0));
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Yellow"), Qt::yellow);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Green"), Qt::green);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Blue"), Qt::blue);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Magenta"), Qt::magenta);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Cyan"), Qt::cyan);
+ turnoutOptionsMenu->addMenu(turnoutCircleColorMenu);
+ connect(turnoutCircleColorButtonGroup, SIGNAL(triggered(QAction*)), this, SLOT(On_turnoutCircleColorButtonGroup_triggered(QAction*)));
+
+ // select turnout circle size
+ QMenu* turnoutCircleSizeMenu = new QMenu(tr("Turnout Circle Size"));
+ turnoutCircleSizeButtonGroup = new QActionGroup(this);
+ addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "1", 1);
+ addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "2", 2);
+ addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "3", 3);
+ addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "4", 4);
+ addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "5", 5);
+ addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "6", 6);
+ addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "7", 7);
+ addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "8", 8);
+ turnoutOptionsMenu->addMenu(turnoutCircleSizeMenu);
+ connect(turnoutCircleSizeButtonGroup, SIGNAL(triggered(QAction*)), this, SLOT(On_turnoutCircleSizeButtonGroup_triggered(QAction*)));
+
+ // enable drawing of unselected leg (helps when diverging angle is small)
+ turnoutDrawUnselectedLegItem = new QAction(tr("TurnoutDrawUnselectedLeg"),this);
+ turnoutDrawUnselectedLegItem->setCheckable(true);
+ turnoutOptionsMenu->addAction(turnoutDrawUnselectedLegItem);
+// turnoutDrawUnselectedLegItem.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegItem->isChecked();
+//         repaint();
+//     }
+// });
+ connect(turnoutDrawUnselectedLegItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutDrawUnselectedLegItem_triggered(bool)));
+ turnoutDrawUnselectedLegItem->setChecked(turnoutDrawUnselectedLeg);
+ return turnoutOptionsMenu;
+}
+
+void LayoutEditor::On_turnoutCirclesOnItem_triggered(bool)
+{
+ turnoutCirclesWithoutEditMode = turnoutCirclesOnItem->isChecked();
+ repaint();
+}
+
+void LayoutEditor::On_turnoutDrawUnselectedLegItem_triggered(bool)
+{
+ turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegItem->isChecked();
+ repaint();
+}
+
+void LayoutEditor::addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color)
+{
+//        ActionListener a = new ActionListener() {
+//            final Color desiredColor = color;
+
+//            public void actionPerformed(ActionEvent e) {
+//                turnoutCircleColor = desiredColor;
+//                setDirty(true);
+//                repaint();
+//            }
+//        };
+ QAction* r = new QAction(name, this);
+ r->setCheckable(true);
+ r->setData(_colors.indexOf(color));
+ //r.addActionListener(a);
+ turnoutCircleColorButtonGroup->addAction(r);
+ if (turnoutCircleColor==(color)) {
+     r->setChecked(true);
+ } else {
+     r->setChecked(false);
+ }
+ menu->addAction(r);
+//        turnoutCircleColorMenuItems[turnoutCircleColorCount] = r;
+//        turnoutCircleColors[turnoutCircleColorCount] = color;
+//        turnoutCircleColorCount++;
+}
+
+void LayoutEditor::On_turnoutCircleColorButtonGroup_triggered(QAction * act)
+{
+ turnoutCircleColor = /*desiredColor*/_colors.at(act->data().toInt());
+ setDirty(true);
+ repaint();
+
+}
+
+void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size)
+{
+//        ActionListener a = new ActionListener() {
+//            final int desiredSize = size;
+
+//            public void actionPerformed(ActionEvent e) {
+//                if (turnoutCircleSize != desiredSize) {
+//                    turnoutCircleSize = desiredSize;
+//                    setDirty(true);
+//                    repaint();
+//                }
+//            }
+//        };
+ QAction* r = new QAction(name, this);
+ r->setCheckable(true);
+ r->setData(size);
+ //r.addActionListener(a);
+ turnoutCircleSizeButtonGroup->addAction(r);
+ if (turnoutCircleSize == size) {
+     r->setChecked(true);
+ } else {
+     r->setChecked(false);
+ }
+ menu->addAction(r);
+//        turnoutCircleSizeMenuItems[turnoutCircleSizeCount] = r;
+//        turnoutCircleSizes[turnoutCircleSizeCount] = size;
+//        turnoutCircleSizeCount++;
+}
+
+void LayoutEditor::On_turnoutCircleSizeButtonGroup_triggered(QAction *act)
+{
+ int desiredSize = act->data().toInt();
+ if (turnoutCircleSize != desiredSize)
+ {
+  turnoutCircleSize = desiredSize;
+  setDirty(true);
+  repaint();
+ }
 }
 
 /*protected*/ void  LayoutEditor::targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* e)
@@ -4707,10 +4863,10 @@ QGraphicsView* LayoutEditor::panel()
  if (!noWarnTurntable)
  {
 //     int selectedValue = JOptionPane.showOptionDialog(this,
-//             rb.getString("Question4r"), rb.getString("WarningTitle"),
+//             tr("Question4r"), tr("WarningTitle"),
 //             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, NULL,
-//             new Object[]{rb.getString("ButtonYes"), rb.getString("ButtonNo"),
-//                 rb.getString("ButtonYesPlus")}, rb.getString("ButtonNo"));
+//             new Object[]{tr("ButtonYes"), tr("ButtonNo"),
+//                 tr("ButtonYesPlus")}, tr("ButtonNo"));
   int selectedValue = QMessageBox::question(this, tr("Warning"), tr("Are you sure you want to remove this turntable from the panel?"),QMessageBox::Yes | QMessageBox::No);
      if (selectedValue == QMessageBox::No) {
          return (false);   // return without creating if "No" response

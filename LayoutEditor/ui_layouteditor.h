@@ -649,7 +649,6 @@ public:
         menuOptions->addAction(actionSnap_to_grid_when_moving);
         menuOptions->addAction(menuShow_scrollbars->menuAction());
         menuOptions->addAction(menuShow_icon_tooltips->menuAction());
-        menuOptions->addAction(actionShow_turnout_circles);
         menuOptions->addAction(actionEnable_antialiasing_smoother_lines);
         menuOptions->addSeparator();
         menuOptions->addAction(actionNew_title);

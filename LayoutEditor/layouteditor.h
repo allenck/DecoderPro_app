@@ -354,6 +354,7 @@ public:
     void setDirty(bool b = true);
     /*public*/ void addTurntable(QPointF pt);
     /*public*/ QT_DEPRECATED LayoutTurntable* findLayoutTurntableByName(QString name);
+    /*public*/ QMenu* setupTurnoutSubMenu();
 
 private:
  Ui::LayoutEditor *ui;
@@ -585,6 +586,12 @@ JTextField* yMove;
 /*private*/ QPointF windowCenter();
 /*private*/ void drawTurntableRects(EditScene* g2);
 /*private*/ void drawSlipRects(EditScene* g2);
+QAction* turnoutCirclesOnItem;
+void addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+void addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size);
+QActionGroup* turnoutCircleColorButtonGroup;
+QActionGroup* turnoutCircleSizeButtonGroup;
+QAction* turnoutDrawUnselectedLegItem;
 
 private slots:
  void OnScenePos(QGraphicsSceneMouseEvent*);
@@ -641,6 +648,10 @@ private slots:
  void on_actionMoveLayout_triggered();
  void on_okMove_clicked();
  void on_actionAdd_Turntable_triggered();
+ void On_turnoutCirclesOnItem_triggered(bool);
+ void On_turnoutDrawUnselectedLegItem_triggered(bool);
+ void On_turnoutCircleColorButtonGroup_triggered(QAction*);
+ void On_turnoutCircleSizeButtonGroup_triggered(QAction*);
 
 protected:
  /**

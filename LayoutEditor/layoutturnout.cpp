@@ -3807,6 +3807,7 @@ void LayoutTurnout::drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2)
  circle->setPen( QPen( editor->turnoutCircleColor.isValid() ? editor->turnoutCircleColor : editor->defaultTrackColor, 1, Qt::SolidLine ) );
  g2->addItem(circle);
 }
+
 void LayoutTurnout::repaint(LayoutEditor *editor, QGraphicsScene *g2)
 {
  invalidate(g2);
