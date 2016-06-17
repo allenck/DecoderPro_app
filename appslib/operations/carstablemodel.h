@@ -121,6 +121,7 @@ namespace Operations
   Logger* log;
 
  friend class CarsTableFrame;
+ friend class DeleteCarRosterAction;
  };
 }
 #endif // CARSTABLEMODEL_H

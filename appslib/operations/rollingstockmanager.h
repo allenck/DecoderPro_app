@@ -48,6 +48,7 @@ namespace Operations
   /*public*/ QList<RollingStock*>* getByLastDateList() ;
   /*public*/ QList<RollingStock*>* getByLastDateList(QList<RollingStock*>* inList);
   /*public*/ QList<RollingStock*>* getByTrainList(Train* train);
+  /*public*/ void resetMoves();
 
  signals:
 

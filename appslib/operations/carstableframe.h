@@ -74,7 +74,9 @@ class RollingStock;
   /*private*/ void updateNumCars();
   CarEditFrame* f;// = null;
   Logger* log;
-
+  friend class CarPrintOptionFrame;
+  friend class PrintCarRosterAction;
+  friend class DeleteCarRosterAction;
  };
 }
 #endif // CARSTABLEFRAME_H

@@ -25,6 +25,8 @@ namespace Operations
   /*protected*/ JmriJFrame* fstatus;
   /*protected*/ File* getFile();
   /*protected*/ QTextStream* getBufferedReader(File* file);
+  /*protected*/ void createStatusFrame(QString title);
+  /*protected*/ QStringList parseCommaLine(QString line, int arraySize);
 
  };
 }

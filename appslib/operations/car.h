@@ -15,6 +15,12 @@ namespace Operations
   Car(QObject* parent = 0);
   /*public*/ Car(QString road, QString number,QObject* parent =0);
   /*public*/ Car* copy();
+  /*public*/ static /*final*/ QString EXTENSION_REGEX;// =" ";
+  /*public*/ static /*final*/ QString CABOOSE_EXTENSION;// =Bundle.getMessage("(C)");
+  /*public*/ static /*final*/ QString FRED_EXTENSION;// =Bundle.getMessage("(F)");
+  /*public*/ static /*final*/ QString PASSENGER_EXTENSION;// =Bundle.getMessage("(P)");
+  /*public*/ static /*final*/ QString UTILITY_EXTENSION;// =Bundle.getMessage("(U)");
+  /*public*/ static /*final*/ QString HAZARDOUS_EXTENSION;// =Bundle.getMessage("(H)");
   /*public*/ static /*final*/ QString LOAD_CHANGED_PROPERTY; //="Car load changed"; // NOI18N property change descriptions
   /*public*/ static /*final*/ QString WAIT_CHANGED_PROPERTY; //="Car wait changed"; // NOI18N
   /*public*/ static /*final*/ QString NEXT_WAIT_CHANGED_PROPERTY; //="Car next wait changed"; // NOI18N

@@ -36,7 +36,8 @@ namespace Operations
  */
 ///*public*/ class RollingStock implements java.beans.PropertyChangeListener {
  /*public*/ /*static*/ /*final*/ QString RollingStock::NONE = "";
- /*protected*/ /*static*/ /*final*/ QString RollingStock::DEFAULT_WEIGHT = "0";
+ /*public static final*/ int RollingStock::DEFAULT_BLOCKING_ORDER = 0;
+ /*public static final*/ bool RollingStock::FORCE = true; // ignore length, type, etc. when setting car's track/*protected*/ /*static*/ /*final*/ QString RollingStock::DEFAULT_WEIGHT = "0";
 
 
  /*public*/ /*static*/ /*final*/ QString RollingStock::LOCATION_UNKNOWN = "0";
@@ -58,6 +59,7 @@ namespace Operations
  // the draw bar length must only be calculated once at startup
 /*public*/ /*static*/ /*final*/ int RollingStock::COUPLER = (Setup::getLengthUnit()==/*(Setup::FEET)*/tr("feet") ? 4 :1); // stocks
 
+/*protected*/ /*static*/ /*final*/ QString RollingStock::DEFAULT_WEIGHT = "0";
 
 /*public*/ RollingStock::RollingStock(QObject *parent) :
  QObject(parent) {

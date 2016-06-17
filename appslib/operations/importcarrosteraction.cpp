@@ -1,5 +1,6 @@
 #include "importcarrosteraction.h"
 #include "importcars.h"
+
 namespace Operations
 {
 /**
@@ -30,6 +31,8 @@ namespace Operations
      mb.setName("Import Cars"); // NOI18N
      mb.start();
 #endif
+     ImportCars* import = new ImportCars();
+     import->process();
  }
 
 }

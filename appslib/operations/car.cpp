@@ -27,7 +27,12 @@ namespace Operations
 
     //CarLoads* carLoads = CarLoads::instance();
 
-
+    /*public static final*/ QString Car::EXTENSION_REGEX = " ";
+    /*public static final*/ QString Car::CABOOSE_EXTENSION = tr("(C)");
+    /*public static final*/ QString Car::FRED_EXTENSION = tr("(F)");
+    /*public static final*/ QString Car::PASSENGER_EXTENSION = tr("(P)");
+    /*public static final*/ QString Car::UTILITY_EXTENSION = tr("(U)");
+    /*public static final*/ QString Car::HAZARDOUS_EXTENSION = tr("(H)");
     /*public*/ /*static*/  /*final*/ QString Car::LOAD_CHANGED_PROPERTY = "Car load changed"; // NOI18N property change descriptions
     /*public*/ /*static*/  /*final*/ QString Car::WAIT_CHANGED_PROPERTY = "Car wait changed"; // NOI18N
     /*public*/ /*static*/  /*final*/ QString Car::NEXT_WAIT_CHANGED_PROPERTY = "Car next wait changed"; // NOI18N

@@ -36,7 +36,9 @@
 
 
 // constructor modified to add print preview parameter
-/*public*/ HardcopyWriter::HardcopyWriter(JFrame* frame, QString jobname, int fontsize, double leftmargin, double rightmargin,  double topmargin, double bottommargin, bool preview, QObject* parent)
+/*public*/ HardcopyWriter::HardcopyWriter(JFrame* frame, QString jobname, int fontsize,
+                                          double leftmargin, double rightmargin,  double topmargin, double bottommargin,
+                                          bool preview, QObject* parent)
     : QObject(parent) /*throw(HardcopyWriter::PrintCanceledException)*/
 {
  common();
@@ -44,7 +46,9 @@
 }
 
 // constructor modified to add default printer name and page orientation
-/*public*/ HardcopyWriter::HardcopyWriter(JFrame* frame, QString jobname, int fontsize, double leftmargin, double rightmargin, double topmargin, double bottommargin, bool preview, QString printerName, bool landscape,
+/*public*/ HardcopyWriter::HardcopyWriter(JFrame* frame, QString jobname, int fontsize,
+                                          double leftmargin, double rightmargin, double topmargin, double bottommargin,
+                                          bool preview, QString printerName, bool landscape,
         bool printHeader, QSize pagesize, QObject* parent) /*throws HardcopyWriter.PrintCanceledException*/
     : QObject(parent)
 {
@@ -61,7 +65,7 @@
   if (preview)
     this->pagesize = QSize(792, 612);
  }
- else if (preview && !pagesize.isNull())
+ else if (preview && pagesize.isValid())
  {
   this->pagesize = pagesize;
  }

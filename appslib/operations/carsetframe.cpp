@@ -98,6 +98,7 @@ namespace Operations
 
      // optional panel return when empty, load, and kernel
      //paneOptional->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptional")));
+     pOptional->setStyleSheet(gbStyleSheet);
      pOptional->setTitle("optional");
      //pOptional->setLayout(new BoxLayout(pOptional, BoxLayout.Y_AXIS));
      QWidget* pOptionalPane = new QWidget;

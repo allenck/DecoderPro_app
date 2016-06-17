@@ -314,7 +314,14 @@ SOURCES += appslib.cpp \
     operations/trainroadoptionsframe.cpp \
     operations/trainmanifestoptionframe.cpp \
     operations/trainscriptaction.cpp \
-    operations/trainscriptframe.cpp
+    operations/trainscriptframe.cpp \
+    operations/exportcarrosteraction.cpp \
+    operations/exportcars.cpp \
+    operations/printcarrosteraction.cpp \
+    operations/deletecarrosteraction.cpp \
+    operations/resetcarmovesaction.cpp \
+    operations/exporttrainrosteraction.cpp \
+    operations/exporttrains.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -613,7 +620,14 @@ HEADERS += appslib.h\
     operations/trainroadoptionsframe.h \
     operations/trainmanifestoptionframe.h \
     operations/trainscriptaction.h \
-    operations/trainscriptframe.h
+    operations/trainscriptframe.h \
+    operations/exportcarrosteraction.h \
+    operations/exportcars.h \
+    operations/printcarrosteraction.h \
+    operations/deletecarrosteraction.h \
+    operations/resetcarmovesaction.h \
+    operations/exporttrainrosteraction.h \
+    operations/exporttrains.h
 
 unix:!symbian {
     maemo5 {

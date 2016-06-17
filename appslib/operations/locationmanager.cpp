@@ -396,7 +396,7 @@ QObject(parent)
          }
      }
      log->info(tr("Max track name (%1) at (%2) length %3").arg(maxTrackName).arg(maxLocNameForTrack).arg(_maxTrackNameLength));
-     log->info(tr("Max location name (%1) length %1").arg(maxLocationName).arg(_maxLocationNameLength));
+     log->info(tr("Max location name (%1) length %2").arg(maxLocationName).arg(_maxLocationNameLength));
      log->info(tr("Max location and track name (%1 length %2").arg(maxLocationAndTrackName).arg(_maxLocationAndTrackNameLength));
  }
 

@@ -140,15 +140,15 @@ namespace Operations
      }
      firePropertyChange(LISTLENGTH_CHANGED_PROPERTY, oldSize, (_hashTable.size()));
  }
-#if 0
-    /*public*/ void resetMoves() {
-        Enumeration<String> en = _hashTable.keys();
-        while (en.hasMoreElements()) {
-            RollingStock rs = getById(en.nextElement());
-            rs.setMoves(0);
+
+    /*public*/ void RollingStockManager::resetMoves() {
+        QStringListIterator en(_hashTable.keys());
+        while (en.hasNext()) {
+            RollingStock* rs = getById(en.next());
+            rs->setMoves(0);
         }
     }
-#endif
+
     /**
      * Returns a list (no order) of RollingStock.
      *

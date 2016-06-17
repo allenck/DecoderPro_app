@@ -7,6 +7,7 @@ namespace Operations
 {
  class APPSLIBSHARED_EXPORT CarRosterMenu : public QMenu
  {
+  Q_OBJECT
  public:
 
   enum MENUTYPES
@@ -31,7 +32,7 @@ namespace Operations
    ENTRYMENU = 3
   };
   /*public*/ CarRosterMenu(QString pMenuName, MENUTYPES pMenuType, QWidget* pWho);
-
+ private:
  };
 }
 #endif // CARROSTERMENU_H

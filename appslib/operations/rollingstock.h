@@ -26,6 +26,8 @@ namespace Operations
   //explicit RollingStock(QObject *parent = 0);
   PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ static /*final*/ QString NONE;// = "";
+  /*public*/ static /*final*/ int DEFAULT_BLOCKING_ORDER;// = 0;
+  /*public*/ static /*final*/ bool FORCE;// = true; // ignore length, type, etc. when setting car's track
   /*public*/ RollingStock(QObject *parent = 0) ;
   /*public*/ RollingStock(QString road, QString number, QObject *parent = 0);
   /*public*/ static QString createId(QString road, QString number);

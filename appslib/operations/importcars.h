@@ -14,9 +14,6 @@ namespace Operations
   void process();
 
  signals:
-  void finished();
-  void status(QString);
-  void msg(QString, QString);
 
  private:
   CarManager* manager;//= CarManager.instance();
