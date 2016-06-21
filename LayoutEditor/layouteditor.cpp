@@ -6920,6 +6920,15 @@ int LayoutEditor::getTurnoutType(QString name)
   }
   tools->setSignalsAtTToTTurnouts(signalIconEditor, signalFrame);
  }
+ void LayoutEditor::on_actionSet_Signals_at_Three_Way_Turnout()
+ {
+  if (tools == NULL)
+  {
+   tools = new LayoutEditorTools(this);
+  }
+  tools->setSignalsAt3WayTurnout(signalIconEditor, signalFrame);
+ }
+
  void LayoutEditor::on_actionEntry_Exit_triggered()
  {
   if (tools == NULL)

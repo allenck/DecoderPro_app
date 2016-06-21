@@ -857,7 +857,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSet_Signals_at_Three_Way_Turnout">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Set Signals at 3-Way Turnout...</string>

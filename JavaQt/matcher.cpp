@@ -80,7 +80,7 @@ Matcher::Matcher()
  * @spec        JSR-51
  */
 
-public final class Matcher implements MatchResult {
+//public final class Matcher implements MatchResult {
 
 /**
  * The Pattern object that created this Matcher.

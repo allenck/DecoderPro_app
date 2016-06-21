@@ -4,6 +4,7 @@
 #include <QUrl>
 #include "file.h"
 #include "matcher.h"
+#include <QTextStream>
 
 const QString FileUtil::PROGRAM = "program:"; // NOI18N
 const QString FileUtil::PREFERENCES = "preference:"; // NOI18N
@@ -768,7 +769,7 @@ FileUtil::FileUtil(QObject *parent) :
 /*static*/ /*public*/ QUrl FileUtil::findExternalFilename(QString path) {
     return FileUtil::findURL(FileUtil::getExternalFilename(path));
 }
-#if 0
+
 /**
  * Search for a file or JAR resource by name and return the
  * {@link java.io.InputStream} for that file. Search order is defined by
@@ -780,8 +781,9 @@ FileUtil::FileUtil(QObject *parent) :
  * @see #findURL(java.lang.QString)
  * @see #findURL(java.lang.QString, java.lang.QString[])
  */
-static /*public*/ InputStream findInputStream(QString path) {
-    return FileUtil.findInputStream(path, new QString[]{});
+//static /*public*/ InputStream findInputStream(QString path) {
+/*static*/ /*public*/ QTextStream* FileUtil::findInputStream(QString path) {
+    return FileUtil::findInputStream(path, QStringList());
 }
 
 /**
@@ -796,18 +798,25 @@ static /*public*/ InputStream findInputStream(QString path) {
  * @see #findURL(java.lang.QString)
  * @see #findURL(java.lang.QString, java.lang.QString[])
  */
-static /*public*/ InputStream findInputStream(QString path, @NonNull QString... searchPaths) {
-    URL file = FileUtil.findURL(path, searchPaths);
-    if (file != NULL) {
-        try {
-            return file.openStream();
-        } catch (IOException ex) {
-            log.error(ex.getLocalizedMessage(), ex);
-        }
+//static /*public*/ InputStream findInputStream(QString path, @NonNull QString... searchPaths) {
+/*static*/ /*public*/ QTextStream* FileUtil::findInputStream(QString path, /*@NonNull*/ QStringList searchPaths) {
+    QUrl file = FileUtil::findURL(path, searchPaths);
+    if (file.isValid()) {
+//        try {
+//            return file.openStream();
+     QFile* f = new QFile(file.fileName());
+     if(f != NULL && f->open(QIODevice::ReadOnly))
+     {
+      QTextStream* stream = new QTextStream(f);
+      return stream;
+     }
+//        } catch (IOException ex) {
+//            log.error(ex.getLocalizedMessage(), ex);
+//        }
     }
     return NULL;
 }
-#endif
+
 /**
  * Get the resources directory within the user's files directory.
  *

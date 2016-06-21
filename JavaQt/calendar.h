@@ -239,7 +239,8 @@ enum STAMPVALS
 /**
  * Value of the {@link #AM_PM} field indicating the
  * period of the day from midnight to just before noon.
- *//*public*/ /*final*/ static int AM ;//= 0;
+ */
+ /*public*/ /*final*/ static int AM ;//= 0;
 /**
  * Value of the {@link #AM_PM} field indicating the
  * period of the day from noon to just before midnight.

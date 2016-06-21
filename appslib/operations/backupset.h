@@ -13,7 +13,7 @@ namespace Operations
  {
   Q_OBJECT
  public:
-   explicit BackupSet(QObject *parent = 0);
+  explicit BackupSet(QObject *parent = 0) {}
   /*public*/ BackupSet(File* dir, QObject *parent = 0);
   ~BackupSet() {}
   BackupSet(const BackupSet&) {}

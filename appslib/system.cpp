@@ -1,6 +1,7 @@
 #include "system.h"
 #include <qsettings.h>
 #include <QStringList>
+#include "properties.h"
 
 System::System(QObject *parent) :
   QObject(parent)
@@ -21,12 +22,16 @@ QString System::getProperty(QString key)
  settings.endGroup();
  return value;
 }
-QStringList System::getProperties()
+Properties* System::getProperties()
 {
  QSettings settings;
  settings.beginGroup("Properties");
  QStringList properties = settings.allKeys();
+ props = new Properties;
+ foreach (QString key, properties) {
+ props->setProperty(key, settings.value(key).toString());
+ }
  settings.endGroup();
- return properties;
+ return props;
 }
-
+Properties* System::props = NULL;

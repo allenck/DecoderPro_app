@@ -18,6 +18,7 @@
 #include "flowlayout.h"
 #include "profile.h"
 #include "system.h"
+#include "properties.h"
 
 //Apps3::Apps3(QObject *parent) :
 //  AppsBase(parent)
@@ -325,7 +326,7 @@
     ProfileManager::defaultManager()->setConfigFile(profileFile);
     // See if the profile to use has been specified on the command line as
     // a system property jmri.profile as a profile id.
-    if (System::getProperties().contains(ProfileManager::SYSTEM_PROPERTY)) {
+    if (System::getProperties()->containsKey(ProfileManager::SYSTEM_PROPERTY)) {
         ProfileManager::defaultManager()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
     }
     // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here

@@ -1,0 +1,11 @@
+from PythonQt import jmri
+from PythonQt.jmri import Turnout
+
+
+turnouts     = InstanceManager.turnoutManagerInstance()
+CLOSED = Turnout.CLOSED
+lt1 = turnouts.provideTurnout("1")
+print lt1.getFeedbackModeName()
+print lt1.getDisplayName()
+lt1.setCommandedState(CLOSED())
+print lt1.getCommandedState()

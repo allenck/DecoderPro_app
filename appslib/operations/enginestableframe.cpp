@@ -224,7 +224,7 @@ namespace Operations
   // build menu
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
-  toolMenu->addMenu(new EngineRosterMenu(tr("TitleEngineRoster"), EngineRosterMenu::MAINMENU, this));
+  toolMenu->addMenu(new EngineRosterMenu(tr("Engine Roster"), EngineRosterMenu::MAINMENU, this));
 //        toolMenu.add(new NceConsistEngineAction(tr("MenuItemNceSync"), this));
   menuBar->addMenu(toolMenu);
   menuBar->addMenu(new OperationsMenu());

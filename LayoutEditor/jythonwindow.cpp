@@ -225,6 +225,8 @@ void JythonWindow::on_clearButton_clicked()
 }
 void JythonWindow::On_stdErr(QString err)
 {
+ if(area == NULL)
+  actionPerformed();
  area->append(err);
 }
 void JythonWindow::On_stdOut(QString out)

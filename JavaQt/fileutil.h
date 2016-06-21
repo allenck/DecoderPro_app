@@ -8,6 +8,7 @@
 #include <QDir>
 #include "javaqt_global.h"
 
+class QTextStream;
 class File;
 class JAVAQTSHARED_EXPORT FileUtil : public QObject
 {
@@ -26,6 +27,8 @@ public:
     static /*public*/ QString getPortableFilename(File* file, bool ignoreUserFilesPath, bool ignoreProfilePath);
     static /*public*/ QString getPortableFilename(QString filename, bool ignoreUserFilesPath, bool ignoreProfilePath);
     static /*public*/ bool isPortableFilename(QString filename);
+    static /*public*/ QTextStream* findInputStream(QString path);
+    static /*public*/ QTextStream* findInputStream(QString path, /*@NonNull*/ QStringList searchPaths);
 
     /**
      * Portable reference to items in the JMRI program directory.

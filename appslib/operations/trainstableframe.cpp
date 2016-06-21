@@ -44,7 +44,10 @@
 #include "changedeparturetimesaction.h"
 #include "trainsscheduleaction.h"
 #include "traincopyaction.h"
+#ifdef SCRIPTING_ENABLED
 #include "trainsscriptaction.h"
+#endif
+#include "exporttrainrosteraction.h"
 
 namespace Operations
 {
@@ -307,11 +310,13 @@ namespace Operations
   toolMenu->addAction(new TrainsTableSetColorAction(this));
   toolMenu->addAction(new TrainsScheduleAction(tr("TimeTable"),this));
   toolMenu->addAction(new TrainCopyAction(tr("Copy Train"),this));
+#ifdef SCRIPTING_ENABLED
   toolMenu->addAction(new TrainsScriptAction(tr("Scripts"), this));
+#endif
 #if 0
   toolMenu.add(new SetupExcelProgramFrameAction(tr("MenuItemSetupExcelProgram")));
-  toolMenu.add(new ExportTrainRosterAction());
 #endif
+  toolMenu->addAction(new ExportTrainRosterAction(this));
   toolMenu->addAction(new PrintTrainsAction(tr("Print"), new JFrame(), false, this));
   toolMenu->addAction(new PrintTrainsAction(tr("Print Preview"), new JFrame(), true, this));
 
@@ -332,10 +337,9 @@ namespace Operations
   //SetupaddPropertyChangeListener(this);
   // listen for location switch list changes
   addPropertyChangeLocations();
-#if 1
+
   // auto save
   new AutoSave();
-#endif
  }
 
  /*public*/ void TrainsTableFrame::radioButtonActionPerformed(QWidget* ae)

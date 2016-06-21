@@ -17,6 +17,7 @@
 #include "blockvaluefile.h"
 #include "system.h"
 #include "metatypes.h"
+#include "properties.h"
 
 AppsBase::AppsBase(QObject *parent) :
     QObject(parent)
@@ -176,7 +177,7 @@ AppsBase::AppsBase(QObject *parent) :
  // See if the profile to use has been specified on the command line as
  // a system property jmri.profile as a profile id.
 #if 1
- if (System::getProperties().contains(ProfileManager::SYSTEM_PROPERTY))
+ if (System::getProperties()->containsKey(ProfileManager::SYSTEM_PROPERTY))
  {
   ProfileManager::defaultManager()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
  }

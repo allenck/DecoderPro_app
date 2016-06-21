@@ -90,8 +90,6 @@ void PythonWrappers::defineClasses()
 // PythonQt::priv()->registerClass(&AbstractAutomaton::staticMetaObject, "MyPackage", PythonQtCreateObject<PythonQtWrapper_AbstractAutomaton>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AbstractAutomaton>, module, 0);
 // PythonQt::priv()->registerClass(&Siglet::staticMetaObject, "MyPackage", PythonQtCreateObject<PythonQtWrapper_Siglet>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Siglet>, module, 0);
 
-
-
  PythonQt::self()->registerCPPClass("AbstractShutDownTask", "ShutDownTask", "jmri", PythonQtCreateObject<AbstractShutDownTask_Wrapper> );
 #endif
 }

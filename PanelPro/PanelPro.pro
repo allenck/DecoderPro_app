@@ -14,6 +14,8 @@ TARGET = PanelPro
 TEMPLATE = app
 
 
+unix:PREFIX = /usr/local
+
 SOURCES += \
     main.cpp \
     panelpro.cpp
@@ -75,41 +77,32 @@ else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
 
-ENABLE_SCRIPTING = "Y"
+unix:exists($$PREFIX/lib/libPythonQt.so){
+ ENABLE_SCRIPTING = "Y"
+}
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
-    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_QtAll_d
-    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_QtAll
-    else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_QtAll_d -lPythonQt_d
+    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/release/ -lPythonQt_d
+    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/debug/ -lPythonQt_d
+    else:unix: LIBS += -L/usr/local/lib/ -lPythonQt -lPythonQt_QtAll
 
-    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/src
-    DEPENDPATH += $$PWD/../../../../PythonQt3.0/src
+    INCLUDEPATH += $$PREFIX/include/PythonQt
+    DEPENDPATH += $$PREFIX/include/Python
 
+#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
+#    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt
+#    else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_d
 
-#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lpython2.7
-#    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lpython2.7
-#    else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lpython2.7
-
-#    INCLUDEPATH += /usr/include/python2.7/
-#    DEPENDPATH += /usr/include/python2.7/
-#    win32:INCLUDEPATH += C:\Python27\include
-#    win32:DEPENDPATH += C:\Python27\include
-
-
-    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
-    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt
-    else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_d
-
-    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
-    DEPENDPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
+#    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
+#    DEPENDPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
  include(../python.prf)
- message(python scripts are enabled)
+ message(PanelPro: python scripts are enabled)
 
 }
 else {
- message(Python scripts will be disabled)
+ message(PanelPro::Python scripts will be disabled)
 }
 
 TRANSLATIONS += \

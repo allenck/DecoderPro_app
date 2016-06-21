@@ -2168,7 +2168,7 @@ private void installDefaultTransferHandlerIfNecessary() {
  *     FutureTask&lt;Boolean&gt; future =
  *         new FutureTask&lt;Boolean&gt;(
  *             new Callable&lt;Boolean&gt;() {
- *                 /*public*/ Boolean call() {
+ *                 public Boolean call() {
  *                     return textComponent.print(.....);
  *                 }
  *             });

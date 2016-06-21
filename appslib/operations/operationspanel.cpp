@@ -300,6 +300,11 @@ namespace Operations
      }
      scrollPane->setMinimumSize(QSize(width * 95 / 100, 60));
  }
+
+ /*protected*/ void OperationsPanel::adjustTextAreaColumnWidth(QWidget* scrollPane, HtmlTextEdit* textArea) {
+     this->adjustTextAreaColumnWidth(scrollPane, textArea, this->sizeHint());
+ }
+
 /*protected*/ void OperationsPanel::adjustTextAreaColumnWidth(QWidget* scrollPane, HtmlTextEdit* textArea, QSize size) {
     //FontMetrics metrics = getFontMetrics(textArea->font());
     QFontMetrics metrics = QFontMetrics(textArea->font());

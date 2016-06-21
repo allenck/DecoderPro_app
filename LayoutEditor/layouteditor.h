@@ -652,6 +652,7 @@ private slots:
  void On_turnoutDrawUnselectedLegItem_triggered(bool);
  void On_turnoutCircleColorButtonGroup_triggered(QAction*);
  void On_turnoutCircleSizeButtonGroup_triggered(QAction*);
+ void on_actionSet_Signals_at_Three_Way_Turnout();
 
 protected:
  /**

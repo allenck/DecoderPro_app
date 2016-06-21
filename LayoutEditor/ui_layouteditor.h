@@ -295,7 +295,7 @@ public:
         actionSet_SIgnals_at_Throat_to_Throat_Turnouts->setEnabled(true);
         actionSet_Signals_at_Three_Way_Turnout = new QAction(LayoutEditor);
         actionSet_Signals_at_Three_Way_Turnout->setObjectName(QStringLiteral("actionSet_Signals_at_Three_Way_Turnout"));
-        actionSet_Signals_at_Three_Way_Turnout->setEnabled(false);
+        actionSet_Signals_at_Three_Way_Turnout->setEnabled(true);
         actionSet_Signals_at_a_Slip = new QAction(LayoutEditor);
         actionSet_Signals_at_a_Slip->setObjectName(QStringLiteral("actionSet_Signals_at_a_Slip"));
         actionSet_Signals_at_a_Slip->setEnabled(true);

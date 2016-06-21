@@ -1,3 +1,6 @@
+/* Include in this file, header files for each class for which Python bindings are to be
+ * generated.
+ */
 #include "siglet.h"
 #include "sensor.h"
 #include "turnout.h"
@@ -18,8 +21,9 @@
 #include "proxylightmanager.h"
 #include "commandstation.h"
 #include "reportermanager.h"
-#include "memoryManager.h"
+#include "memorymanager.h"
 #include "routemanager.h"
+#include "blockmanager.h"
 #include "powermanager.h"
 #include "programmermanager.h"
 #include "shutdownmanager.h"
@@ -45,7 +49,8 @@
 #include "propertychangeevent.h"
 #include "fileutil.h"
 #include "propertychangelistener.h"
-#include "protocol.h"
+#include "locoaddress.h"
 #include "loconetinterface.h"
 #include "rfidsensormanager.h"
 #include "abstractsensormanager.h"
+#include "turnout.h"

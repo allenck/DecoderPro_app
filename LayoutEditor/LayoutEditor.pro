@@ -13,10 +13,14 @@ TEMPLATE = lib
 
 DEFINES += LIBLAYOUTEDITOR_LIBRARY
 
+PREFIX = /usr/lib
+
+unix:exists($$PREFIX/lib/libPythonQt.so){
 ENABLE_SCRIPTING = "Y"
+}
 equals(ENABLE_SCRIPTING, "Y") {
  DEFINES += SCRIPTING_ENABLED
- message("LayoutEditor Scripting is enabled")
+ message("LayoutEditor: Scripting is enabled")
  include($$PWD/generated_cpp/jmri/jmri.pri)
  SOURCES +=     jythonsiglet.cpp \
     jythonautomaton.cpp \
@@ -26,7 +30,14 @@ equals(ENABLE_SCRIPTING, "Y") {
     inputwindowaction.cpp \
     inputwindow.cpp \
     jythonwindow.cpp \
-    pythonwrappers.cpp
+    pythonwrappers.cpp  \
+    scripts/jmriscriptenginemanager.cpp \
+    scripts/scriptenginemanager.cpp \
+    scripts/classloader.cpp \
+    scripts/simplebindings.cpp \
+    scripts/scriptengine.cpp \
+    scripts/pythoninterpreter.cpp \
+    scripts/scriptcontext.cpp
  HEADERS +=     jythonsiglet.h \
     jythonautomaton.h \
     jythonautomatonaction.h \
@@ -35,17 +46,25 @@ equals(ENABLE_SCRIPTING, "Y") {
     inputwindowaction.h \
     inputwindow.h \
     jythonwindow.h \
-    pythonwrappers.h
+    pythonwrappers.h \
+    scripts/jmriscriptenginemanager.h \
+    scripts/scriptenginemanager.h \
+    scripts/classloader.h \
+    scripts/scriptenginefactory.h \
+    scripts/simplebindings.h \
+    scripts/bindings.h \
+    scripts/scriptengine.h \
+    scripts/pythoninterpreter.h \
+    scripts/scriptcontext.h
 
     include(../python.prf)
 
-#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
-#    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_d
-#    else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_d
+    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/release/ -lPythonQt_d
+    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/debug/ -lPythonQt_d
+    else:unix: LIBS += -L/$$PREFIX/lib/ -lPythonQt
 
-#    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
-#    DEPENDPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
-
+    INCLUDEPATH += $$PREFIX/include/PythonQt
+    DEPENDPATH += $$PREFIX/include/PythonQt
 
 #    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Qt/5.4/gcc/plugins/designer/release/ -lpyqt5
 #    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Qt/5.4/gcc/plugins/designer/debug/ -lpyqt5
@@ -59,12 +78,12 @@ message("Qt path=" + $$(QTDIR))
 #    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_QtAll_d
 #    else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_QtAll_d
 
-    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/src
-    DEPENDPATH += $$PWD/../../../../PythonQt3.0/src
+#    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/src
+#    DEPENDPATH += $$PWD/../../../../PythonQt3.0/src
 
 }
 else {
- message("LayoutEditor Scripting is disabled")
+ message("LayoutEditor: Scripting is disabled")
 }
 
 
@@ -734,6 +753,7 @@ HEADERS += liblayouteditor_global.h \
     layoutturntablexml.h \
     layouteditor.h
 
+
 FORMS    += \
     edittracksegmentdlg.ui \
     createeditblock.ui \
@@ -789,28 +809,6 @@ win32_msvc: {
 OTHER_FILES += \
     libLayoutEditor.so.1.0
 
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_QtAll_d
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_QtAll_d
-#else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_QtAll_d
-
-#INCLUDEPATH += $$PWD/../../../../PythonQt3.0/src
-#DEPENDPATH += $$PWD/../../../../PythonQt3.0/src
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../../usr/lib/x86_64-linux-gnu/qt4/plugins/designer/release/ -lpyqt4
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../../usr/lib/x86_64-linux-gnu/qt4/plugins/designer/debug/ -lpyqt4
-#else:unix: LIBS += -L$$PWD/../../../../../../../usr/lib/x86_64-linux-gnu/qt4/plugins/designer/ -lpyqt4
-
-#INCLUDEPATH += $$PWD/../../../../../../../usr/lib/x86_64-linux-gnu/qt4/plugins/designer
-#DEPENDPATH += $$PWD/../../../../../../../usr/lib/x86_64-linux-gnu/qt4/plugins/designer
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lpython2.7
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lpython2.7
-#else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lpython2.7
-
-#INCLUDEPATH += /usr/include/python2.7/
-#DEPENDPATH += /usr/include/python2.7/
-
-
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
@@ -827,23 +825,6 @@ else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
 INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
 DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
 
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
-#else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
-
-#INCLUDEPATH += $$PWD/../appslib
-#DEPENDPATH += $$PWD/../appslib
-
-
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/Trolltech/Qt-4.8.3/plugins/designer/release/ -lpyqt4
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/Trolltech/Qt-4.8.3/plugins/designer/debug/ -lpyqt4
-#else:unix: LIBS += -L$$PWD/../../../../../../../usr/local/Trolltech/Qt-4.8.3/plugins/designer/ -lpyqt4
-
-#INCLUDEPATH += $$PWD/../../../../../../../usr/local/Trolltech/Qt-4.8.3/plugins/designer
-#DEPENDPATH += $$PWD/../../../../../../../usr/local/Trolltech/Qt-4.8.3/plugins/designer
-
 DISTFILES += \
     drawroundrect.o
 
@@ -854,11 +835,6 @@ else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
 
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python35/libs/ -lpython35
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python35/libs/ -lpython35
-
-#INCLUDEPATH += $$PWD/../../../../../Python35/include
-#DEPENDPATH += $$PWD/../../../../../Python35/include
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
 
@@ -872,16 +848,3 @@ else:unix: LIBS += -L$$PWD/../Tables/ -lTables
 INCLUDEPATH += $$PWD/../Tables/debug
 DEPENDPATH += $$PWD/../Tables/debug
 
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_d
-#else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_d
-
-#INCLUDEPATH += $$PWD/../../../../PythonQt3.0
-#DEPENDPATH += $$PWD/../../../../PythonQt3.0
-
-win32: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt
-unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_d
-
-INCLUDEPATH += $$PWD/../../../../PythonQt3.0
-DEPENDPATH += $$PWD/../../../../PythonQt3.0

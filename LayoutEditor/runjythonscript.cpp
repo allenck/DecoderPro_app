@@ -116,6 +116,7 @@ void RunJythonScript::common()
  else
  {
   log->info("No file selected");
+  dispose();
  }
 }
 

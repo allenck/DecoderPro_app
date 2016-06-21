@@ -180,3 +180,7 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+TRANSLATIONS += \
+    languages/JavaQt_de.ts \
+    languages/JavaQt_en.ts

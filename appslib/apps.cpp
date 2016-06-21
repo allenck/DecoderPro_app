@@ -80,6 +80,7 @@
 #include "printdecoderlistaction.h"
 #include "system.h"
 #include "debugmenu.h"
+#include "properties.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -188,7 +189,7 @@ bool Apps::configDeferredLoadOK = false;
  ProfileManager::defaultManager()->setConfigFile(profileFile);
  // See if the profile to use has been specified on the command line as
  // a system property jmri.profile as a profile id.
- if (System::getProperties().contains(ProfileManager::SYSTEM_PROPERTY))
+ if (System::getProperties()->containsKey(ProfileManager::SYSTEM_PROPERTY))
  {
   ProfileManager::defaultManager()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
  }

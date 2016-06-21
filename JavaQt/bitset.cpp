@@ -1028,7 +1028,7 @@ void BitSet::common()
  * <p>The hash code is defined to be the result of the following
  * calculation:
  *  <pre> {@code
- *  /*public*/ int hashCode() {
+ *  public int hashCode() {
  *     long h = 1234;
  *     long[] words = toLongArray();
  *     for (int i = words.length; --i >= 0; )

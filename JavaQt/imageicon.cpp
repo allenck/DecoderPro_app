@@ -682,4 +682,5 @@ protected class AccessibleImageIcon extends AccessibleContext
     {
         s.defaultWriteObject();
     }
+};
 #endif

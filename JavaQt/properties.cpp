@@ -1023,7 +1023,7 @@ throw (IOException)
 //    return ((sval == NULL) && (defaults != NULL)) ? defaults.getProperty(key) : sval;
     return hash.value(key);
 }
-#if 0
+
 /**
  * Searches for the property with the specified key in this property list.
  * If the key is not found in this property list, the default property list,
@@ -1037,11 +1037,11 @@ throw (IOException)
  * @see     #setProperty
  * @see     #defaults
  */
-/*public*/ String getProperty(String key, String defaultValue) {
-    String val = getProperty(key);
+/*public*/ QString Properties::getProperty(QString key, QString defaultValue) {
+    QString val = getProperty(key);
     return (val == NULL) ? defaultValue : val;
 }
-
+#if 0
 /**
  * Returns an enumeration of all the keys in this property list,
  * including distinct keys in the default property list if a key

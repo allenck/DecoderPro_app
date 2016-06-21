@@ -16,6 +16,12 @@ ENABLE_SCRIPTING = "Y"
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
+ SOURCES += operations/trainsscriptaction.cpp \
+    operations/trainsscriptframe.cpp
+
+HEADERS +=     operations/trainscriptaction.h \
+    operations/trainscriptframe.h
+
 }
 
 SOURCES += appslib.cpp \
@@ -302,8 +308,6 @@ SOURCES += appslib.cpp \
     operations/alternatetrackframe.cpp \
     operations/showcarsintrainaction.cpp \
     operations/showcarsintrainframe.cpp \
-    operations/trainsscriptframe.cpp \
-    operations/trainsscriptaction.cpp \
     operations/locationtrackblockingorderaction.cpp \
     operations/locationtrackblockingorderframe.cpp \
     operations/locationtrackblockingordertablemodel.cpp \
@@ -619,8 +623,6 @@ HEADERS += appslib.h\
     operations/trainmanifestoptionaction.h \
     operations/trainroadoptionsframe.h \
     operations/trainmanifestoptionframe.h \
-    operations/trainscriptaction.h \
-    operations/trainscriptframe.h \
     operations/exportcarrosteraction.h \
     operations/exportcars.h \
     operations/printcarrosteraction.h \
@@ -669,8 +671,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ -lLayoutEditor
 else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
 
-INCLUDEPATH += $$PWD/../LayoutEditor
-DEPENDPATH += $$PWD/../LayoutEditor
+INCLUDEPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
+DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 
 OTHER_FILES += \
     libappslib.so.1.0.0

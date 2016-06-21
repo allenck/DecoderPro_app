@@ -22,6 +22,8 @@ win32_msvc: {
 APPNAME = "LocoNetMonitor"
 APPVERSION = 0.1
 
+PREFIX = /usr/local
+
 #QT       -= gui
 QT       += core xml  gui printsupport   sql network webkitwidgets multimedia
 
@@ -1144,7 +1146,6 @@ HEADERS += \
     defaultinstanceinitializer.h \
     instanceinitializer.h \
     entrypoint.h
-
  !contains(FTDI, 1) {
     HEADERS +=
  }
@@ -1253,10 +1254,10 @@ DEFINES += USE_THREAD
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/release/ -lquazip
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/debug/ -lquazipd
-else:unix: LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/ -lquazip
+else:unix: LIBS += -L/usr/local/lib/ -lquazip
 
-INCLUDEPATH += $$PWD/../../../../quazip-0.7.2/quazip
-DEPENDPATH += $$PWD/../../../../quazip-0.7.2/quazip
+INCLUDEPATH += $$PREFIX/quazip
+DEPENDPATH += $$PREFIX/quazip
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib

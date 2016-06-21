@@ -8,53 +8,26 @@
 #include <editor.h>
 #include <light.h>
 #include <locoaddress.h>
-#include <loconetinterface.h>
-#include <loconetmessage.h>
 #include <manager.h>
 #include <memorymanager.h>
 #include <namedbean.h>
 #include <positionable.h>
 #include <powermanager.h>
 #include <programmermanager.h>
-#include <propertychangeevent.h>
-#include <propertychangelistener.h>
-#include <propertychangesupport.h>
 #include <proxylightmanager.h>
 #include <proxysensormanager.h>
 #include <proxyturnoutmanager.h>
-#include <qaction.h>
 #include <qbytearray.h>
 #include <qcolor.h>
-#include <qcompleter.h>
 #include <qcoreevent.h>
-#include <qcursor.h>
-#include <qevent.h>
 #include <qfont.h>
-#include <qgraphicsitem.h>
-#include <qgraphicsproxywidget.h>
-#include <qgraphicssceneevent.h>
-#include <qicon.h>
-#include <qkeysequence.h>
-#include <qlabel.h>
-#include <qlayout.h>
 #include <qlist.h>
-#include <qlocale.h>
-#include <qmargins.h>
-#include <qmenu.h>
+#include <qmetaobject.h>
 #include <qobject.h>
-#include <qpaintdevice.h>
-#include <qpainter.h>
-#include <qpalette.h>
-#include <qpixmap.h>
 #include <qpoint.h>
 #include <qrect.h>
-#include <qregion.h>
-#include <qsize.h>
-#include <qsizepolicy.h>
 #include <qstringlist.h>
-#include <qstyle.h>
 #include <qvector.h>
-#include <qwidget.h>
 #include <reportermanager.h>
 #include <rfidsensormanager.h>
 #include <routemanager.h>
@@ -65,224 +38,10 @@
 #include <signalhead.h>
 #include <throttle.h>
 #include <turnout.h>
-#include <windowlistener.h>
-#include "liblayouteditor_global.h"
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_LocoAddress : public LocoAddress
-{
-public:
-    PythonQtShell_LocoAddress():LocoAddress(),_wrapper(NULL) {};
-
-   ~PythonQtShell_LocoAddress();
-
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void customEvent(QEvent*  arg__1);
-virtual bool  event(QEvent*  arg__1);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual int  getNumber();
-virtual void timerEvent(QTimerEvent*  arg__1);
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_LocoAddress : public LocoAddress
-{ public:
-inline int  promoted_getNumber() { return LocoAddress::getNumber(); }
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_LocoAddress : public QObject
-{ Q_OBJECT
-public:
-public slots:
-LocoAddress* new_LocoAddress();
-void delete_LocoAddress(LocoAddress* obj) { delete obj; } 
-   int  getNumber(LocoAddress* theWrappedObject);
-};
 
 
 
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_LocoNetInterface : public LocoNetInterface
-{
-public:
-    PythonQtShell_LocoNetInterface(QObject*  parent = 0):LocoNetInterface(parent),_wrapper(NULL) {};
-
-   ~PythonQtShell_LocoNetInterface();
-
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void customEvent(QEvent*  arg__1);
-virtual bool  event(QEvent*  arg__1);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual void sendLocoNetMessage(LocoNetMessage*  arg__1);
-virtual bool  status();
-virtual void timerEvent(QTimerEvent*  arg__1);
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_LocoNetInterface : public LocoNetInterface
-{ public:
-inline void promoted_sendLocoNetMessage(LocoNetMessage*  arg__1) { LocoNetInterface::sendLocoNetMessage(arg__1); }
-inline bool  promoted_status() { return LocoNetInterface::status(); }
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_LocoNetInterface : public QObject
-{ Q_OBJECT
-public:
-public slots:
-LocoNetInterface* new_LocoNetInterface(QObject*  parent = 0);
-void delete_LocoNetInterface(LocoNetInterface* obj) { delete obj; } 
-   void sendLocoNetMessage(LocoNetInterface* theWrappedObject, LocoNetMessage*  arg__1);
-   bool  status(LocoNetInterface* theWrappedObject);
-};
-
-
-
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_LocoNetMessage : public LocoNetMessage
-{
-public:
-    PythonQtShell_LocoNetMessage(QVector<char >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(NULL) {};
-    PythonQtShell_LocoNetMessage(QVector<int >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(NULL) {};
-    PythonQtShell_LocoNetMessage(const LocoNetMessage&  original, QObject*  parent = 0):LocoNetMessage(original, parent),_wrapper(NULL) {};
-    PythonQtShell_LocoNetMessage(int  len, QObject*  parent = 0):LocoNetMessage(len, parent),_wrapper(NULL) {};
-
-   ~PythonQtShell_LocoNetMessage();
-
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void customEvent(QEvent*  arg__1);
-virtual bool  event(QEvent*  arg__1);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual void timerEvent(QTimerEvent*  arg__1);
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_LocoNetMessage : public LocoNetMessage
-{ public:
-static inline bool  promoted_highBit(int  val) { return LocoNetMessage::highBit(val); }
-static inline int  promoted_highByte(int  val) { return LocoNetMessage::highByte(val); }
-static inline int  promoted_lowByte(int  val) { return LocoNetMessage::lowByte(val); }
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_LocoNetMessage : public QObject
-{ Q_OBJECT
-public:
-public slots:
-LocoNetMessage* new_LocoNetMessage(QVector<char >  contents, QObject*  parent = 0);
-LocoNetMessage* new_LocoNetMessage(QVector<int >  contents, QObject*  parent = 0);
-LocoNetMessage* new_LocoNetMessage(const LocoNetMessage&  original, QObject*  parent = 0);
-LocoNetMessage* new_LocoNetMessage(int  len, QObject*  parent = 0);
-void delete_LocoNetMessage(LocoNetMessage* obj) { delete obj; } 
-   bool  checkParity(LocoNetMessage* theWrappedObject);
-   bool  equals(LocoNetMessage* theWrappedObject, QObject*  o);
-   int  getElement(LocoNetMessage* theWrappedObject, int  n);
-   int  getNumDataElements(LocoNetMessage* theWrappedObject);
-   int  getOpCode(LocoNetMessage* theWrappedObject);
-   QString  getOpCodeHex(LocoNetMessage* theWrappedObject);
-   QVector<int >  getPeerXfrData(LocoNetMessage* theWrappedObject);
-   int  hashCode(LocoNetMessage* theWrappedObject);
-   bool  static_LocoNetMessage_highBit(int  val);
-   int  static_LocoNetMessage_highByte(int  val);
-   int  inputRepAddr(LocoNetMessage* theWrappedObject);
-   int  static_LocoNetMessage_lowByte(int  val);
-   LocoNetMessage*  static_LocoNetMessage_makePeerXfr(int  src, int  dst, QVector<int >  d, int  code);
-   LocoNetMessage*  static_LocoNetMessage_makePeerXfr2(int  src, int  dsth, int  dstl, int  svAdrh, int  svAdrl, QVector<int >  d, int  code);
-   int  sensorAddr(LocoNetMessage* theWrappedObject);
-   void setElement(LocoNetMessage* theWrappedObject, int  n, int  v);
-   void setOpCode(LocoNetMessage* theWrappedObject, int  i);
-   void setParity(LocoNetMessage* theWrappedObject);
-   QByteArray  toByteArray(LocoNetMessage* theWrappedObject);
-   QVector<char >  toCharArray(LocoNetMessage* theWrappedObject);
-   QString  toString(LocoNetMessage* theWrappedObject);
-   int  turnoutAddr(LocoNetMessage* theWrappedObject);
-    QString py_toString(LocoNetMessage*);
-void py_set__dataBytes(LocoNetMessage* theWrappedObject, QVector<int >  _dataBytes){ theWrappedObject->_dataBytes = _dataBytes; }
-QVector<int >  py_get__dataBytes(LocoNetMessage* theWrappedObject){ return theWrappedObject->_dataBytes; }
-};
-
-
-
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_Manager : public Manager
-{
-public:
-    PythonQtShell_Manager(QObject*  parent = 0):Manager(parent),_wrapper(NULL) {};
-
-   ~PythonQtShell_Manager();
-
-virtual void Register(NamedBean*  arg__1);
-virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1);
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void customEvent(QEvent*  arg__1);
-virtual void deregister(NamedBean*  arg__1);
-virtual void dispose();
-virtual bool  event(QEvent*  arg__1);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual NamedBean*  getBeanBySystemName(QString  arg__1);
-virtual NamedBean*  getBeanByUserName(QString  arg__1);
-virtual NamedBean*  getNamedBean(QString  arg__1);
-virtual QStringList  getSystemNameArray();
-virtual QStringList  getSystemNameList();
-virtual QString  getSystemPrefix();
-virtual int  getXMLOrder();
-virtual QString  makeSystemName(QString  arg__1);
-virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
-virtual void timerEvent(QTimerEvent*  arg__1);
-virtual char  typeLetter();
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_Manager : public Manager
-{ public:
-inline void promoted_Register(NamedBean*  arg__1) { Manager::Register(arg__1); }
-inline void promoted_addPropertyChangeListener(PropertyChangeListener*  arg__1) { Manager::addPropertyChangeListener(arg__1); }
-inline void promoted_deregister(NamedBean*  arg__1) { Manager::deregister(arg__1); }
-inline void promoted_dispose() { Manager::dispose(); }
-inline NamedBean*  promoted_getBeanBySystemName(QString  arg__1) { return Manager::getBeanBySystemName(arg__1); }
-inline NamedBean*  promoted_getBeanByUserName(QString  arg__1) { return Manager::getBeanByUserName(arg__1); }
-inline NamedBean*  promoted_getNamedBean(QString  arg__1) { return Manager::getNamedBean(arg__1); }
-inline QStringList  promoted_getSystemNameArray() { return Manager::getSystemNameArray(); }
-inline QStringList  promoted_getSystemNameList() { return Manager::getSystemNameList(); }
-inline QString  promoted_getSystemPrefix() { return Manager::getSystemPrefix(); }
-inline int  promoted_getXMLOrder() { return Manager::getXMLOrder(); }
-inline QString  promoted_makeSystemName(QString  arg__1) { return Manager::makeSystemName(arg__1); }
-inline void promoted_removePropertyChangeListener(PropertyChangeListener*  arg__1) { Manager::removePropertyChangeListener(arg__1); }
-inline char  promoted_typeLetter() { return Manager::typeLetter(); }
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_Manager : public QObject
-{ Q_OBJECT
-public:
-public slots:
-Manager* new_Manager(QObject*  parent = 0);
-void delete_Manager(Manager* obj) { delete obj; } 
-   void Register(Manager* theWrappedObject, NamedBean*  arg__1);
-   void addPropertyChangeListener(Manager* theWrappedObject, PropertyChangeListener*  arg__1);
-   void deregister(Manager* theWrappedObject, NamedBean*  arg__1);
-   void dispose(Manager* theWrappedObject);
-   NamedBean*  getBeanBySystemName(Manager* theWrappedObject, QString  arg__1);
-   NamedBean*  getBeanByUserName(Manager* theWrappedObject, QString  arg__1);
-   NamedBean*  getNamedBean(Manager* theWrappedObject, QString  arg__1);
-   QStringList  getSystemNameArray(Manager* theWrappedObject);
-   QStringList  getSystemNameList(Manager* theWrappedObject);
-   QString  getSystemPrefix(Manager* theWrappedObject);
-   int  getXMLOrder(Manager* theWrappedObject);
-   QString  makeSystemName(Manager* theWrappedObject, QString  arg__1);
-   void removePropertyChangeListener(Manager* theWrappedObject, PropertyChangeListener*  arg__1);
-   char  typeLetter(Manager* theWrappedObject);
-};
-
-
-
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_MemoryManager : public MemoryManager
+class PythonQtShell_MemoryManager : public MemoryManager
 {
 public:
     PythonQtShell_MemoryManager(QObject*  parent = 0):MemoryManager(parent),_wrapper(NULL) {};
@@ -300,6 +59,7 @@ virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual NamedBean*  getNamedBean(QString  name);
+virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -313,7 +73,7 @@ virtual char  typeLetter();
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_MemoryManager : public QObject
+class PythonQtWrapper_MemoryManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -325,7 +85,7 @@ void delete_MemoryManager(MemoryManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_NamedBean : public NamedBean
+class PythonQtShell_NamedBean : public NamedBean
 {
 public:
     PythonQtShell_NamedBean(QObject*  parent = 0):NamedBean(parent),_wrapper(NULL) {};
@@ -364,7 +124,7 @@ virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_NamedBean : public NamedBean
+class PythonQtPublicPromoter_NamedBean : public NamedBean
 { public:
 inline void promoted_addPropertyChangeListener(PropertyChangeListener*  l) { NamedBean::addPropertyChangeListener(l); }
 inline void promoted_addPropertyChangeListener(PropertyChangeListener*  l, QString  name, const QString  listenerRef) { NamedBean::addPropertyChangeListener(l, name, listenerRef); }
@@ -389,7 +149,7 @@ inline void promoted_setUserName(QString  s) { NamedBean::setUserName(s); }
 inline void promoted_updateListenerRef(PropertyChangeListener*  l, QString  newName) { NamedBean::updateListenerRef(l, newName); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_NamedBean : public QObject
+class PythonQtWrapper_NamedBean : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -424,7 +184,7 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_Positionable : public Positionable
+class PythonQtShell_Positionable : public Positionable
 {
 public:
     PythonQtShell_Positionable(QString  text, QWidget*  parent = 0):Positionable(text, parent),_wrapper(NULL) {};
@@ -432,15 +192,8 @@ public:
 
    ~PythonQtShell_Positionable();
 
-virtual void actionEvent(QActionEvent*  arg__1);
-virtual void changeEvent(QEvent*  arg__1);
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void closeEvent(QCloseEvent*  arg__1);
 virtual bool  contains(int  arg__1, int  arg__2);
-virtual void contextMenuEvent(QContextMenuEvent*  ev);
-virtual void customEvent(QEvent*  arg__1);
 virtual Positionable*  deepClone();
-virtual int  devType() const;
 virtual void doMouseClicked(QGraphicsSceneMouseEvent*  arg__1);
 virtual void doMouseDragged(QGraphicsSceneMouseEvent*  arg__1);
 virtual void doMouseEntered(QGraphicsSceneMouseEvent*  arg__1);
@@ -449,17 +202,7 @@ virtual void doMouseMoved(QGraphicsSceneMouseEvent*  arg__1);
 virtual void doMousePressed(QGraphicsSceneMouseEvent*  arg__1);
 virtual void doMouseReleased(QGraphicsSceneMouseEvent*  arg__1);
 virtual bool  doViemMenu();
-virtual void dragEnterEvent(QDragEnterEvent*  arg__1);
-virtual void dragLeaveEvent(QDragLeaveEvent*  arg__1);
-virtual void dragMoveEvent(QDragMoveEvent*  arg__1);
-virtual void dropEvent(QDropEvent*  arg__1);
-virtual void enterEvent(QEvent*  arg__1);
-virtual bool  event(QEvent*  e);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual Positionable*  finishClone(Positionable*  arg__1);
-virtual void focusInEvent(QFocusEvent*  ev);
-virtual bool  focusNextPrevChild(bool  next);
-virtual void focusOutEvent(QFocusEvent*  ev);
 virtual QColor  getBackground();
 virtual QRectF  getBounds(QRectF  arg__1);
 virtual int  getDegrees();
@@ -477,10 +220,6 @@ virtual bool  getViewCoordinates();
 virtual int  getWidth();
 virtual int  getX();
 virtual int  getY();
-virtual int  heightForWidth(int  arg__1) const;
-virtual void hideEvent(QHideEvent*  arg__1);
-virtual void inputMethodEvent(QInputMethodEvent*  arg__1);
-virtual QVariant  inputMethodQuery(Qt::InputMethodQuery  arg__1) const;
 virtual void invalidate();
 virtual bool  isControlling();
 virtual bool  isEditable();
@@ -488,23 +227,11 @@ virtual bool  isHidden();
 virtual bool  isOpaque();
 virtual bool  isPositionable();
 virtual bool  isVisible();
-virtual void keyPressEvent(QKeyEvent*  ev);
-virtual void keyReleaseEvent(QKeyEvent*  arg__1);
 virtual void languageChange();
-virtual void leaveEvent(QEvent*  arg__1);
 virtual int  maxHeight();
 virtual int  maxWidth();
-virtual int  metric(QPaintDevice::PaintDeviceMetric  arg__1) const;
-virtual void mouseDoubleClickEvent(QMouseEvent*  arg__1);
-virtual void mouseMoveEvent(QMouseEvent*  ev);
-virtual void mousePressEvent(QMouseEvent*  ev);
-virtual void mouseReleaseEvent(QMouseEvent*  ev);
-virtual void moveEvent(QMoveEvent*  arg__1);
-virtual QPaintEngine*  paintEngine() const;
-virtual void paintEvent(QPaintEvent*  arg__1);
 virtual void remove();
 virtual bool  requestFocusInWindow();
-virtual void resizeEvent(QResizeEvent*  arg__1);
 virtual void rotate(int  arg__1);
 virtual void setBackground(QColor  arg__1);
 virtual void setControlling(bool  arg__1);
@@ -529,21 +256,17 @@ virtual void setSize(int  arg__1, int  arg__2);
 virtual bool  setTextEditMenu(QMenu*  arg__1);
 virtual void setViewCoordinates(bool  arg__1);
 virtual void setVisible(bool  b);
-virtual void showEvent(QShowEvent*  arg__1);
 virtual void showHidden();
 virtual bool  showPopUp(QMenu*  arg__1);
 virtual bool  showTooltip();
 virtual bool  storeItem();
-virtual void tabletEvent(QTabletEvent*  arg__1);
-virtual void timerEvent(QTimerEvent*  arg__1);
 virtual bool  updateScene();
 virtual void updateSize();
-virtual void wheelEvent(QWheelEvent*  arg__1);
 
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_Positionable : public Positionable
+class PythonQtPublicPromoter_Positionable : public Positionable
 { public:
 inline bool  promoted_contains(int  arg__1, int  arg__2) { return Positionable::contains(arg__1, arg__2); }
 inline Positionable*  promoted_deepClone() { return Positionable::deepClone(); }
@@ -580,6 +303,7 @@ inline bool  promoted_isHidden() { return Positionable::isHidden(); }
 inline bool  promoted_isOpaque() { return Positionable::isOpaque(); }
 inline bool  promoted_isPositionable() { return Positionable::isPositionable(); }
 inline bool  promoted_isVisible() { return Positionable::isVisible(); }
+inline void promoted_languageChange() { Positionable::languageChange(); }
 inline int  promoted_maxHeight() { return Positionable::maxHeight(); }
 inline int  promoted_maxWidth() { return Positionable::maxWidth(); }
 inline void promoted_remove() { Positionable::remove(); }
@@ -616,7 +340,7 @@ inline bool  promoted_updateScene() { return Positionable::updateScene(); }
 inline void promoted_updateSize() { Positionable::updateSize(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_Positionable : public QObject
+class PythonQtWrapper_Positionable : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -659,6 +383,7 @@ void delete_Positionable(Positionable* obj) { delete obj; }
    bool  isOpaque(Positionable* theWrappedObject);
    bool  isPositionable(Positionable* theWrappedObject);
    bool  isVisible(Positionable* theWrappedObject);
+   void languageChange(Positionable* theWrappedObject);
    int  maxHeight(Positionable* theWrappedObject);
    int  maxWidth(Positionable* theWrappedObject);
    void remove(Positionable* theWrappedObject);
@@ -702,7 +427,7 @@ QGraphicsItemGroup*  py_get__itemGroup(Positionable* theWrappedObject){ return t
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_PowerManager : public PowerManager
+class PythonQtShell_PowerManager : public PowerManager
 {
 public:
     PythonQtShell_PowerManager(QObject*  parent = 0):PowerManager(parent),_wrapper(NULL) {};
@@ -725,7 +450,7 @@ virtual void timerEvent(QTimerEvent*  arg__1);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_PowerManager : public PowerManager
+class PythonQtPublicPromoter_PowerManager : public PowerManager
 { public:
 inline void promoted_addPropertyChangeListener(PropertyChangeListener*  arg__1) { PowerManager::addPropertyChangeListener(arg__1); }
 inline void promoted_dispose() { PowerManager::dispose(); }
@@ -735,7 +460,7 @@ inline void promoted_removePropertyChangeListener(PropertyChangeListener*  arg__
 inline void promoted_setPower(int  arg__1) { PowerManager::setPower(arg__1); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_PowerManager : public QObject
+class PythonQtWrapper_PowerManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -754,7 +479,7 @@ void delete_PowerManager(PowerManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_ProgrammerManager : public ProgrammerManager
+class PythonQtShell_ProgrammerManager : public ProgrammerManager
 {
 public:
     PythonQtShell_ProgrammerManager(QObject*  parent = 0):ProgrammerManager(parent),_wrapper(NULL) {};
@@ -773,14 +498,14 @@ virtual void timerEvent(QTimerEvent*  arg__1);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_ProgrammerManager : public ProgrammerManager
+class PythonQtPublicPromoter_ProgrammerManager : public ProgrammerManager
 { public:
 inline QString  promoted_getUserName() { return ProgrammerManager::getUserName(); }
 inline bool  promoted_isAddressedModePossible() { return ProgrammerManager::isAddressedModePossible(); }
 inline bool  promoted_isGlobalProgrammerAvailable() { return ProgrammerManager::isGlobalProgrammerAvailable(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_ProgrammerManager : public QObject
+class PythonQtWrapper_ProgrammerManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -795,123 +520,7 @@ void delete_ProgrammerManager(ProgrammerManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_PropertyChangeEvent : public PropertyChangeEvent
-{
-public:
-    PythonQtShell_PropertyChangeEvent(QObject*  source, QString  propertyName, QObject*  oldValue, QObject*  newValue, QObject*  parent = 0):PropertyChangeEvent(source, propertyName, oldValue, newValue, parent),_wrapper(NULL) {};
-    PythonQtShell_PropertyChangeEvent(QObject*  source, QString  propertyName, QVariant  oldValue, QVariant  newValue, QObject*  parent = 0):PropertyChangeEvent(source, propertyName, oldValue, newValue, parent),_wrapper(NULL) {};
-
-   ~PythonQtShell_PropertyChangeEvent();
-
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void customEvent(QEvent*  arg__1);
-virtual bool  event(QEvent*  arg__1);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual void timerEvent(QTimerEvent*  arg__1);
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_PropertyChangeEvent : public QObject
-{ Q_OBJECT
-public:
-public slots:
-PropertyChangeEvent* new_PropertyChangeEvent(QObject*  source, QString  propertyName, QObject*  oldValue, QObject*  newValue, QObject*  parent = 0);
-PropertyChangeEvent* new_PropertyChangeEvent(QObject*  source, QString  propertyName, QVariant  oldValue, QVariant  newValue, QObject*  parent = 0);
-void delete_PropertyChangeEvent(PropertyChangeEvent* obj) { delete obj; } 
-   void appendTo(PropertyChangeEvent* theWrappedObject, QString  sb);
-   QVariant  getNewValue(PropertyChangeEvent* theWrappedObject);
-   QVariant  getOldValue(PropertyChangeEvent* theWrappedObject);
-   QVariant  getPropagationId(PropertyChangeEvent* theWrappedObject);
-   QString  getPropertyName(PropertyChangeEvent* theWrappedObject);
-   void setPropagationId(PropertyChangeEvent* theWrappedObject, QVariant  propagationId);
-   QString  toString(PropertyChangeEvent* theWrappedObject);
-    QString py_toString(PropertyChangeEvent*);
-void py_set_source(PropertyChangeEvent* theWrappedObject, QObject*  source){ theWrappedObject->source = source; }
-QObject*  py_get_source(PropertyChangeEvent* theWrappedObject){ return theWrappedObject->source; }
-};
-
-
-
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_PropertyChangeListener : public PropertyChangeListener
-{
-public:
-    PythonQtShell_PropertyChangeListener():PropertyChangeListener(),_wrapper(NULL) {};
-
-   ~PythonQtShell_PropertyChangeListener();
-
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void customEvent(QEvent*  arg__1);
-virtual bool  event(QEvent*  arg__1);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual void propertyChange(PropertyChangeEvent*  e);
-virtual void timerEvent(QTimerEvent*  arg__1);
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_PropertyChangeListener : public PropertyChangeListener
-{ public:
-inline void promoted_propertyChange(PropertyChangeEvent*  e) { this->propertyChange(e); }
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_PropertyChangeListener : public QObject
-{ Q_OBJECT
-public:
-public slots:
-PropertyChangeListener* new_PropertyChangeListener();
-void delete_PropertyChangeListener(PropertyChangeListener* obj) { delete obj; } 
-   void propertyChange(PropertyChangeListener* theWrappedObject, PropertyChangeEvent*  e);
-};
-
-
-
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_PropertyChangeSupport : public PropertyChangeSupport
-{
-public:
-    PythonQtShell_PropertyChangeSupport(QObject*  sourceBean, QObject*  parent = 0):PropertyChangeSupport(sourceBean, parent),_wrapper(NULL) {};
-
-   ~PythonQtShell_PropertyChangeSupport();
-
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void customEvent(QEvent*  arg__1);
-virtual bool  event(QEvent*  arg__1);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual void timerEvent(QTimerEvent*  arg__1);
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_PropertyChangeSupport : public QObject
-{ Q_OBJECT
-public:
-public slots:
-PropertyChangeSupport* new_PropertyChangeSupport(QObject*  sourceBean, QObject*  parent = 0);
-void delete_PropertyChangeSupport(PropertyChangeSupport* obj) { delete obj; } 
-   void addPropertyChangeListener(PropertyChangeSupport* theWrappedObject, PropertyChangeListener*  listener);
-   void addPropertyChangeListener(PropertyChangeSupport* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
-   void fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, QVariant  oldValue, QVariant  newValue);
-   void fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, bool  oldValue, bool  newValue);
-   void fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, int  oldValue, int  newValue);
-   void firePropertyChange(PropertyChangeSupport* theWrappedObject, PropertyChangeEvent*  event);
-   void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue);
-   void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue);
-   QList<PropertyChangeListener* >*  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject);
-   QList<PropertyChangeListener* >*  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
-   bool  hasListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
-   void removePropertyChangeListener(PropertyChangeSupport* theWrappedObject, PropertyChangeListener*  listener);
-   void removePropertyChangeListener(PropertyChangeSupport* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
-};
-
-
-
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_ProxyLightManager : public ProxyLightManager
+class PythonQtShell_ProxyLightManager : public ProxyLightManager
 {
 public:
     PythonQtShell_ProxyLightManager(QObject*  parent = 0):ProxyLightManager(parent),_wrapper(NULL) {};
@@ -929,6 +538,7 @@ virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual NamedBean*  getNamedBean(QString  name);
+virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -944,14 +554,14 @@ virtual char  typeLetter();
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_ProxyLightManager : public ProxyLightManager
+class PythonQtPublicPromoter_ProxyLightManager : public ProxyLightManager
 { public:
 inline int  promoted_getXMLOrder() { return ProxyLightManager::getXMLOrder(); }
 inline NamedBean*  promoted_makeBean(int  i, QString  systemName, QString  userName) { return ProxyLightManager::makeBean(i, systemName, userName); }
 inline AbstractManager*  promoted_makeInternalManager() { return ProxyLightManager::makeInternalManager(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_ProxyLightManager : public QObject
+class PythonQtWrapper_ProxyLightManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -979,7 +589,7 @@ void delete_ProxyLightManager(ProxyLightManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_ProxySensorManager : public ProxySensorManager
+class PythonQtShell_ProxySensorManager : public ProxySensorManager
 {
 public:
     PythonQtShell_ProxySensorManager():ProxySensorManager(),_wrapper(NULL) {};
@@ -998,6 +608,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual AbstractManager*  getInternal();
 virtual NamedBean*  getNamedBean(QString  name);
+virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -1013,7 +624,7 @@ virtual char  typeLetter();
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_ProxySensorManager : public ProxySensorManager
+class PythonQtPublicPromoter_ProxySensorManager : public ProxySensorManager
 { public:
 inline AbstractManager*  promoted_getInternal() { return ProxySensorManager::getInternal(); }
 inline int  promoted_getXMLOrder() { return ProxySensorManager::getXMLOrder(); }
@@ -1023,7 +634,7 @@ inline NamedBean*  promoted_newNamedBean(QString  systemName, QString  userName)
 inline NamedBean*  promoted_provideNamedBean(QString  name) { return ProxySensorManager::provideNamedBean(name); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_ProxySensorManager : public QObject
+class PythonQtWrapper_ProxySensorManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1055,7 +666,7 @@ void delete_ProxySensorManager(ProxySensorManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_ProxyTurnoutManager : public ProxyTurnoutManager
+class PythonQtShell_ProxyTurnoutManager : public ProxyTurnoutManager
 {
 public:
     PythonQtShell_ProxyTurnoutManager(QObject*  parent = 0):ProxyTurnoutManager(parent),_wrapper(NULL) {};
@@ -1073,6 +684,7 @@ virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual NamedBean*  getNamedBean(QString  name);
+virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -1088,7 +700,7 @@ virtual char  typeLetter();
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_ProxyTurnoutManager : public ProxyTurnoutManager
+class PythonQtPublicPromoter_ProxyTurnoutManager : public ProxyTurnoutManager
 { public:
 inline int  promoted_getXMLOrder() { return ProxyTurnoutManager::getXMLOrder(); }
 inline NamedBean*  promoted_makeBean(int  i, QString  systemName, QString  userName) { return ProxyTurnoutManager::makeBean(i, systemName, userName); }
@@ -1096,7 +708,7 @@ inline AbstractManager*  promoted_makeInternalManager() { return ProxyTurnoutMan
 inline NamedBean*  promoted_newNamedBean(QString  systemName, QString  userName) { return ProxyTurnoutManager::newNamedBean(systemName, userName); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_ProxyTurnoutManager : public QObject
+class PythonQtWrapper_ProxyTurnoutManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1132,7 +744,7 @@ void delete_ProxyTurnoutManager(ProxyTurnoutManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_ReporterManager : public ReporterManager
+class PythonQtShell_ReporterManager : public ReporterManager
 {
 public:
     PythonQtShell_ReporterManager():ReporterManager(),_wrapper(NULL) {};
@@ -1151,6 +763,7 @@ virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual NamedBean*  getBeanBySystemName(QString  arg__1);
 virtual NamedBean*  getBeanByUserName(QString  arg__1);
 virtual NamedBean*  getNamedBean(QString  arg__1);
+virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList() const;
@@ -1164,14 +777,14 @@ virtual char  typeLetter();
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_ReporterManager : public ReporterManager
+class PythonQtPublicPromoter_ReporterManager : public ReporterManager
 { public:
-inline bool  promoted_allowMultipleAdditions(QString  systemName) const { return this->allowMultipleAdditions(systemName); }
-inline QString  promoted_getNextValidAddress(QString  curAddress, QString  prefix) const { return this->getNextValidAddress(curAddress, prefix); }
-inline QStringList  promoted_getSystemNameList() const { return this->getSystemNameList(); }
+inline bool  promoted_allowMultipleAdditions(QString  systemName) const { return ReporterManager::allowMultipleAdditions(systemName); }
+inline QString  promoted_getNextValidAddress(QString  curAddress, QString  prefix) const { return ReporterManager::getNextValidAddress(curAddress, prefix); }
+inline QStringList  promoted_getSystemNameList() const { return ReporterManager::getSystemNameList(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_ReporterManager : public QObject
+class PythonQtWrapper_ReporterManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1186,7 +799,7 @@ void delete_ReporterManager(ReporterManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_RfidSensorManager : public RfidSensorManager
+class PythonQtShell_RfidSensorManager : public RfidSensorManager
 {
 public:
     PythonQtShell_RfidSensorManager(QObject*  parent = 0):RfidSensorManager(parent),_wrapper(NULL) {};
@@ -1206,9 +819,12 @@ virtual bool  event(QEvent*  arg__1);
 virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
+virtual Sensor*  getBySystemName(QString  key);
+virtual Sensor*  getByUserName(QString  key);
 virtual long  getDefaultSensorDebounceGoingActive();
 virtual long  getDefaultSensorDebounceGoingInActive();
 virtual NamedBean*  getNamedBean(QString  name);
+virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
 virtual Sensor*  getSensor(QString  name);
 virtual QStringList  getSystemNameArray();
@@ -1229,13 +845,13 @@ virtual void updateAll();
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_RfidSensorManager : public RfidSensorManager
+class PythonQtPublicPromoter_RfidSensorManager : public RfidSensorManager
 { public:
 inline void promoted_dispose() { RfidSensorManager::dispose(); }
 inline QString  promoted_getSystemPrefix() { return RfidSensorManager::getSystemPrefix(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_RfidSensorManager : public QObject
+class PythonQtWrapper_RfidSensorManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1251,7 +867,7 @@ void delete_RfidSensorManager(RfidSensorManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_RouteManager : public RouteManager
+class PythonQtShell_RouteManager : public RouteManager
 {
 public:
     PythonQtShell_RouteManager(QObject*  parent = 0):RouteManager(parent),_wrapper(NULL) {};
@@ -1269,6 +885,7 @@ virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual NamedBean*  getNamedBean(QString  name);
+virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -1282,12 +899,12 @@ virtual char  typeLetter();
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_RouteManager : public RouteManager
+class PythonQtPublicPromoter_RouteManager : public RouteManager
 { public:
 inline void promoted_dispose() { RouteManager::dispose(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_RouteManager : public QObject
+class PythonQtWrapper_RouteManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1300,7 +917,7 @@ void delete_RouteManager(RouteManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_Sensor : public Sensor
+class PythonQtShell_Sensor : public Sensor
 {
 public:
     PythonQtShell_Sensor(QObject*  parent = 0):Sensor(parent),_wrapper(NULL) {};
@@ -1351,7 +968,7 @@ virtual void useDefaultTimerSettings(bool  arg__1) const;
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_Sensor : public Sensor
+class PythonQtPublicPromoter_Sensor : public Sensor
 { public:
 inline void promoted_addPropertyChangeListener(PropertyChangeListener*  arg__1) const { Sensor::addPropertyChangeListener(arg__1); }
 inline void promoted_dispose() const { Sensor::dispose(); }
@@ -1370,7 +987,7 @@ inline bool  promoted_useDefaultTimerSettings() const { return Sensor::useDefaul
 inline void promoted_useDefaultTimerSettings(bool  arg__1) const { Sensor::useDefaultTimerSettings(arg__1); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_Sensor : public QObject
+class PythonQtWrapper_Sensor : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1399,7 +1016,7 @@ void delete_Sensor(Sensor* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_SensorManager : public SensorManager
+class PythonQtShell_SensorManager : public SensorManager
 {
 public:
     PythonQtShell_SensorManager(QObject*  parent = 0):SensorManager(parent),_wrapper(NULL) {};
@@ -1418,9 +1035,12 @@ virtual bool  event(QEvent*  arg__1);
 virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
+virtual Sensor*  getBySystemName(QString  arg__1);
+virtual Sensor*  getByUserName(QString  arg__1);
 virtual long  getDefaultSensorDebounceGoingActive();
 virtual long  getDefaultSensorDebounceGoingInActive();
 virtual NamedBean*  getNamedBean(QString  name);
+virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QString  getNextValidAddress(QString  arg__1, QString  arg__2);
 virtual Sensor*  getSensor(QString  arg__1) const;
 virtual QStringList  getSystemNameArray();
@@ -1441,11 +1061,13 @@ virtual void updateAll() const;
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_SensorManager : public SensorManager
+class PythonQtPublicPromoter_SensorManager : public SensorManager
 { public:
 inline bool  promoted_allowMultipleAdditions(QString  arg__1) { return SensorManager::allowMultipleAdditions(arg__1); }
 inline QString  promoted_createSystemName(QString  arg__1, QString  arg__2) const { return SensorManager::createSystemName(arg__1, arg__2); }
 inline void promoted_dispose() const { SensorManager::dispose(); }
+inline Sensor*  promoted_getBySystemName(QString  arg__1) { return SensorManager::getBySystemName(arg__1); }
+inline Sensor*  promoted_getByUserName(QString  arg__1) { return SensorManager::getByUserName(arg__1); }
 inline long  promoted_getDefaultSensorDebounceGoingActive() { return SensorManager::getDefaultSensorDebounceGoingActive(); }
 inline long  promoted_getDefaultSensorDebounceGoingInActive() { return SensorManager::getDefaultSensorDebounceGoingInActive(); }
 inline QString  promoted_getNextValidAddress(QString  arg__1, QString  arg__2) { return SensorManager::getNextValidAddress(arg__1, arg__2); }
@@ -1457,7 +1079,7 @@ inline void promoted_setDefaultSensorDebounceGoingInActive(long  arg__1) { Senso
 inline void promoted_updateAll() const { SensorManager::updateAll(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_SensorManager : public QObject
+class PythonQtWrapper_SensorManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1466,6 +1088,8 @@ void delete_SensorManager(SensorManager* obj) { delete obj; }
    bool  allowMultipleAdditions(SensorManager* theWrappedObject, QString  arg__1);
    QString  createSystemName(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    void dispose(SensorManager* theWrappedObject) const;
+   Sensor*  getBySystemName(SensorManager* theWrappedObject, QString  arg__1);
+   Sensor*  getByUserName(SensorManager* theWrappedObject, QString  arg__1);
    long  getDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject);
    long  getDefaultSensorDebounceGoingInActive(SensorManager* theWrappedObject);
    QString  getNextValidAddress(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2);
@@ -1481,7 +1105,7 @@ void delete_SensorManager(SensorManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_ShutDownManager : public ShutDownManager
+class PythonQtShell_ShutDownManager : public ShutDownManager
 {
 public:
     PythonQtShell_ShutDownManager(QObject*  parent = 0):ShutDownManager(parent),_wrapper(NULL) {};
@@ -1499,13 +1123,13 @@ virtual void timerEvent(QTimerEvent*  arg__1);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_ShutDownManager : public ShutDownManager
+class PythonQtPublicPromoter_ShutDownManager : public ShutDownManager
 { public:
 inline bool  promoted_restart() { return this->restart(); }
 inline bool  promoted_shutdown() { return this->shutdown(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_ShutDownManager : public QObject
+class PythonQtWrapper_ShutDownManager : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1519,7 +1143,7 @@ void delete_ShutDownManager(ShutDownManager* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_Siglet : public Siglet
+class PythonQtShell_Siglet : public Siglet
 {
 public:
     PythonQtShell_Siglet(QObject*  parent = 0):Siglet(parent),_wrapper(NULL) {};
@@ -1540,7 +1164,7 @@ virtual void timerEvent(QTimerEvent*  arg__1);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_Siglet : public Siglet
+class PythonQtPublicPromoter_Siglet : public Siglet
 { public:
 inline void promoted_defineIO() { Siglet::defineIO(); }
 inline bool  promoted_handle() { return Siglet::handle(); }
@@ -1548,7 +1172,7 @@ inline void promoted_init() { Siglet::init(); }
 inline void promoted_setOutput() { Siglet::setOutput(); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_Siglet : public QObject
+class PythonQtWrapper_Siglet : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1569,7 +1193,7 @@ QVector<NamedBean* >  py_get_outputs(Siglet* theWrappedObject){ return theWrappe
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_SignalHead : public SignalHead
+class PythonQtShell_SignalHead : public SignalHead
 {
 public:
     PythonQtShell_SignalHead(QObject*  parent = 0):SignalHead(parent),_wrapper(NULL) {};
@@ -1617,7 +1241,7 @@ virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_SignalHead : public SignalHead
+class PythonQtPublicPromoter_SignalHead : public SignalHead
 { public:
 inline int  promoted_getAppearance() { return SignalHead::getAppearance(); }
 inline QString  promoted_getAppearanceName() { return SignalHead::getAppearanceName(); }
@@ -1631,7 +1255,7 @@ inline void promoted_setHeld(bool  arg__1) { SignalHead::setHeld(arg__1); }
 inline void promoted_setLit(bool  arg__1) { SignalHead::setLit(arg__1); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_SignalHead : public QObject
+class PythonQtWrapper_SignalHead : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -1653,7 +1277,7 @@ void delete_SignalHead(SignalHead* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_Throttle : public Throttle
+class PythonQtShell_Throttle : public Throttle
 {
 public:
     PythonQtShell_Throttle():Throttle(),_wrapper(NULL) {};
@@ -1793,7 +1417,7 @@ virtual void timerEvent(QTimerEvent*  arg__1);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_Throttle : public Throttle
+class PythonQtPublicPromoter_Throttle : public Throttle
 { public:
 inline void promoted_addPropertyChangeListener(PropertyChangeListener*  arg__1) { Throttle::addPropertyChangeListener(arg__1); }
 inline bool  promoted_getF0() { return Throttle::getF0(); }
@@ -1921,7 +1545,7 @@ inline void promoted_setIsForward(bool  arg__1) { Throttle::setIsForward(arg__1)
 inline void promoted_setSpeedSetting(float  arg__1) { Throttle::setSpeedSetting(arg__1); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_Throttle : public QObject
+class PythonQtWrapper_Throttle : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -2057,7 +1681,7 @@ void delete_Throttle(Throttle* obj) { delete obj; }
 
 
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_Turnout : public Turnout
+class PythonQtShell_Turnout : public Turnout
 {
 public:
     PythonQtShell_Turnout(QObject*  parent = 0):Turnout(parent),_wrapper(NULL) {};
@@ -2137,7 +1761,7 @@ virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_Turnout : public Turnout
+class PythonQtPublicPromoter_Turnout : public Turnout
 { public:
 inline bool  promoted_canInvert() const { return Turnout::canInvert(); }
 inline bool  promoted_canLock(int  arg__1) { return Turnout::canLock(arg__1); }
@@ -2181,7 +1805,7 @@ inline void promoted_setReportLocked(bool  arg__1) { Turnout::setReportLocked(ar
 inline void promoted_setStraightSpeed(QString  arg__1) const { Turnout::setStraightSpeed(arg__1); }
 };
 
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_Turnout : public QObject
+class PythonQtWrapper_Turnout : public QObject
 { Q_OBJECT
 public:
 public slots:
@@ -2229,47 +1853,6 @@ void delete_Turnout(Turnout* obj) { delete obj; }
    void setNumberOutputBits(Turnout* theWrappedObject, int  arg__1);
    void setReportLocked(Turnout* theWrappedObject, bool  arg__1);
    void setStraightSpeed(Turnout* theWrappedObject, QString  arg__1) const;
-};
-
-
-
-
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtShell_WindowListener : public WindowListener
-{
-public:
-    PythonQtShell_WindowListener():WindowListener(),_wrapper(NULL) {};
-
-   ~PythonQtShell_WindowListener();
-
-virtual void childEvent(QChildEvent*  arg__1);
-virtual void customEvent(QEvent*  arg__1);
-virtual bool  event(QEvent*  arg__1);
-virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual void timerEvent(QTimerEvent*  arg__1);
-virtual void windowClosing(QCloseEvent*  e);
-virtual void windowDeiconified(QResizeEvent*  arg__1);
-virtual void windowIconified(QResizeEvent*  arg__1);
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtPublicPromoter_WindowListener : public WindowListener
-{ public:
-inline void promoted_windowClosing(QCloseEvent*  e) { this->windowClosing(e); }
-inline void promoted_windowDeiconified(QResizeEvent*  arg__1) { WindowListener::windowDeiconified(arg__1); }
-inline void promoted_windowIconified(QResizeEvent*  arg__1) { WindowListener::windowIconified(arg__1); }
-};
-
-class LIBLAYOUTEDITORSHARED_EXPORT PythonQtWrapper_WindowListener : public QObject
-{ Q_OBJECT
-public:
-public slots:
-WindowListener* new_WindowListener();
-void delete_WindowListener(WindowListener* obj) { delete obj; } 
-   void windowClosing(WindowListener* theWrappedObject, QCloseEvent*  e);
-   void windowDeiconified(WindowListener* theWrappedObject, QResizeEvent*  arg__1);
-   void windowIconified(WindowListener* theWrappedObject, QResizeEvent*  arg__1);
 };
 
 

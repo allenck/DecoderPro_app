@@ -628,7 +628,7 @@ namespace Operations
         }
         return foundRoute;
     }
-#if 0
+#if 1
     /*
      * Note that "last" set of location/tracks was loaded by
      * setCarDestinationTwoTrains. The following code builds two additional sets
@@ -648,18 +648,18 @@ namespace Operations
         bool foundRoute = false;
         if (_lastLocationTracks.size() == 0) {
             if (useStaging)
-                addLine(_buildReport, SEVEN, tr("RouterCouldNotFindStaging"),
-                        car->getFinalDestinationName()}));
+                addLine(_buildReport, SEVEN, tr("Could not find an interim C/I, yard, or staging track that can service car to destination (%1)").arg(
+                        car->getFinalDestinationName()));
             else
-                addLine(_buildReport, SEVEN, tr("RouterCouldNotFind"),
-                        car->getFinalDestinationName()}));
+                addLine(_buildReport, SEVEN, tr("Could not find an interim C/I or yard track that can service car to destination (%1)").arg(
+                        car->getFinalDestinationName()));
             return false;
         }
 
-        Car* testCar* = clone(car); // reload
+        Car* testCar = clone(car); // reload
         // build the "next" and "other" location/tracks
         // start with interchanges
-        List<Track> tracks;
+        QList<Track*> tracks;
         if (!useStaging) {
             tracks = LocationManager::instance()->getTracksByMoves(Track::INTERCHANGE);
             loadTracks(car, testCar, tracks);
@@ -676,61 +676,61 @@ namespace Operations
         }
 
         if (_nextLocationTracks.size() == 0) {
-            addLine(_buildReport, SEVEN, tr("RouterCouldNotFindLoc"),
-                    car->getLocationName()}));
+            addLine(_buildReport, SEVEN, tr("Could not find an interim C/I or yard track that can service car from location (%1)").arg(
+                    car->getLocationName()));
             return false;
         }
 
         // state that routing begins using three trains
         if (_addtoReport)
             addLine(_buildReport, SEVEN, BLANK_LINE);
-        addLine(_buildReport, SEVEN, tr("RouterThreeTrains"), car
-                ->getFinalDestinationName()}));
+        addLine(_buildReport, SEVEN, tr("Routing using three trains destination (%1) begins").arg(car
+                ->getFinalDestinationName()));
 
         if (log->isDebugEnabled()) {
             // tracks that could be the very next destination for the car
-            for (Track* t : _nextLocationTracks) {
-                log->debug("Next location ({}, {}) can service car ({}) using train ({})", t->getLocation()->getName(),
-                        t->getName(), car->toString(), _nextLocationTrains->get(_nextLocationTracks.indexOf(t)));
+            foreach (Track* t, _nextLocationTracks) {
+                log->debug(tr("Next location (%1, %2) can service car (%3) using train (%4)").arg(t->getLocation()->getName()).arg(
+                        t->getName()).arg(car->toString()).arg(_nextLocationTrains.at(_nextLocationTracks.indexOf(t))->toString()));
             }
             // tracks that could be the next to last destination for the car
-            for (Track* t : _lastLocationTracks) {
-                log->debug("Last location ({}, {}) can service car ({}) using train ({})", t->getLocation()->getName(),
-                        t->getName(), car->toString(), _lastLocationTrains->get(_lastLocationTracks.indexOf(t)));
+            foreach (Track* t, _lastLocationTracks) {
+                log->debug(tr("Last location (%1, %2) can service car (%3) using train (%4)").arg(t->getLocation()->getName(),
+                        t->getName()).arg(car->toString()).arg(_lastLocationTrains.at(_lastLocationTracks.indexOf(t))->toString()));
             }
             // tracks that are not the next or the last list
-            for (Track* t : _otherLocationTracks) {
-                log->debug("Other location ({}, {}) may be needed to service car ({})", t->getLocation()->getName(), t
-                        ->getName(), car->toString());
+            foreach (Track* t, _otherLocationTracks) {
+                log->debug(tr("Other location (%1, %2) may be needed to service car (%3)").arg(t->getLocation()->getName()).arg(t
+                        ->getName()).arg(car->toString()));
             }
             log->debug("Try to find route using 3 trains");
         }
-        for (Track* nlt : _nextLocationTracks) {
+        foreach (Track* nlt, _nextLocationTracks) {
             testCar->setTrack(nlt); // set car to this location and track
-            for (Track* llt : _lastLocationTracks) {
+            foreach (Track* llt, _lastLocationTracks) {
                 testCar->setDestinationTrack(llt); // set car to this destination and track
                 // does a train service these two locations?
-                Train middleTrain = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
+                Train* middleTrain = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
                 if (middleTrain != NULL) {
-                    log->debug("Found 3 train route, setting car destination ({}, {})", testCar->getLocationName(),
-                            testCar->getTrackName());
+                    log->debug(tr("Found 3 train route, setting car destination (%1, %2)").arg(testCar->getLocationName(),
+                            testCar->getTrackName()));
                     foundRoute = true;
                     // show the route
                     if (_addtoReport) {
-                        addLine(_buildReport, SEVEN, tr("RouterRoute3TrainsForCar"),
-                                car->toString(), car->getLocationName(), car->getTrackName(),
-                                        _nextLocationTrains->get(_nextLocationTracks.indexOf(nlt))->getName(),
-                                        testCar->getLocationName(), testCar->getTrackName(),
-                                        middleTrain->getName(),
-                                        testCar->getDestinationName(), testCar->getDestinationTrackName(),
-                                        _lastLocationTrains->get(_lastLocationTracks.indexOf(llt))->getName(),
-                                        car->getFinalDestinationName(), car->getFinalDestinationTrackName()}));
+                        addLine(_buildReport, SEVEN, tr("Route for car (%1): (%2, %3)->(%4)->(%5, %6)->(%7)->(%8, %9)->(%10)->(%11, %12)").arg(
+                                car->toString()).arg(car->getLocationName()).arg(car->getTrackName()).arg(
+                                        _nextLocationTrains.at(_nextLocationTracks.indexOf(nlt))->getName()).arg(
+                                        testCar->getLocationName()).arg(testCar->getTrackName()).arg(
+                                        middleTrain->getName()).arg(
+                                        testCar->getDestinationName()).arg(testCar->getDestinationTrackName()).arg(
+                                        _lastLocationTrains.at(_lastLocationTracks.indexOf(llt))->getName()).arg(
+                                        car->getFinalDestinationName()).arg(car->getFinalDestinationTrackName()));
                     } else {
-                        addLine(_buildReport, SEVEN, tr("RouterRoute3ForCar"),
-                                car->toString(), car->getLocationName(), car->getTrackName(),
-                                        testCar->getLocationName(), testCar->getTrackName(), testCar->getDestinationName(),
-                                        testCar->getDestinationTrackName(), car->getFinalDestinationName(),
-                                        car->getFinalDestinationTrackName()}));
+                        addLine(_buildReport, SEVEN, tr("Route for car (%1): (%2, %3)->(%4, %5)->(%6, %7)->(%8, %9)").arg(
+                                car->toString()).arg(car->getLocationName()).arg(car->getTrackName()).arg(
+                                        testCar->getLocationName()).arg(testCar->getTrackName()).arg(testCar->getDestinationName()).arg(
+                                        testCar->getDestinationTrackName()).arg(car->getFinalDestinationName()).arg(
+                                        car->getFinalDestinationTrackName()));
                     }
                     if (finshSettingRouteFor(car, nlt)) {
                         return true; // done 3 train routing
@@ -742,52 +742,58 @@ namespace Operations
         if (foundRoute) {
             return foundRoute; // 3 train route, but there was an issue with the first stop in the route
         }
-        log->debug("Using 3 trains to route car to ({}) was unsuccessful", car->getFinalDestinationName());
-        addLine(_buildReport, SEVEN, tr("RouterFourTrains"), car
-                ->getFinalDestinationName()}));
-        for (Track* nlt : _nextLocationTracks) {
-            otherloop: for (Track* mlt : _otherLocationTracks) {
+        log->debug(tr("Using 3 trains to route car to (%1) was unsuccessful").arg(car->getFinalDestinationName()));
+        addLine(_buildReport, SEVEN, tr("Routing using four trains destination (%1) begins").arg(car
+                ->getFinalDestinationName()));
+        bool loopOk = true;
+        foreach (Track* nlt, _nextLocationTracks)
+        {
+         if(!loopOk)
+          break;
+            otherloop: foreach (Track* mlt, _otherLocationTracks) {
                 testCar->setTrack(nlt); // set car to this location and track
                 testCar->setDestinationTrack(mlt); // set car to this destination and track
                 // does a train service these two locations?
-                Train middleTrain2 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
+                Train* middleTrain2 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
                 if (middleTrain2 != NULL) {
                     if (debugFlag) {
-                        log->debug("Train 2 ({}) services car from ({}) to ({}, {})", middleTrain2->getName(), testCar
-                                ->getLocationName(), testCar->getDestinationName(), testCar->getDestinationTrackName());
+                        log->debug(tr("Train 2 (%1) services car from (%2) to (%3, %4)").arg(middleTrain2->getName()).arg(testCar
+                                ->getLocationName()).arg(testCar->getDestinationName()).arg(testCar->getDestinationTrackName()));
                     }
-                    for (Track* llt : _lastLocationTracks) {
+                    foreach (Track* llt, _lastLocationTracks) {
                         testCar->setTrack(mlt); // set car to this location and track
                         testCar->setDestinationTrack(llt); // set car to this destination and track
-                        Train middleTrain3 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to
+                        Train* middleTrain3 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to
                         // report
                         if (middleTrain3 != NULL) {
-                            log->debug("Found 4 train route, setting car destination ({}, {})", nlt->getLocation()
-                                    ->getName(), nlt->getName());
+                            log->debug(tr("Found 4 train route, setting car destination (%1, %2)").arg(nlt->getLocation()
+                                    ->getName()).arg(nlt->getName()));
                             foundRoute = true;
                             // show the route
                             if (_addtoReport) {
-                                addLine(_buildReport, SEVEN, tr("RouterRoute4TrainsForCar"),
-                                        car->toString(), car->getLocationName(), car->getTrackName(),
-                                                _nextLocationTrains->get(_nextLocationTracks.indexOf(nlt))->getName(),
-                                                nlt->getLocation(), nlt->getName(),
-                                                middleTrain2->getName(),
-                                                mlt->getLocation()->getName(), mlt->getName(),
-                                                middleTrain3->getName(),
-                                                llt->getLocation()->getName(), llt->getName(),
-                                                _lastLocationTrains->get(_lastLocationTracks.indexOf(llt))->getName(),
-                                                car->getFinalDestinationName(), car->getFinalDestinationTrackName()}));
+                                addLine(_buildReport, SEVEN, tr("Route for car ({0}): ({1}, {2})->({3})->({4}, {5})->({6})->({7}, {8})->({9})->({10}, {11})->({12})->({13}, {14})").arg(
+                                        car->toString()).arg(car->getLocationName()).arg(car->getTrackName()).arg(
+                                                _nextLocationTrains.at(_nextLocationTracks.indexOf(nlt))->getName()).arg(
+                                                nlt->getLocation()->toString()).arg(nlt->getName()).arg(
+                                                middleTrain2->getName()).arg(
+                                                mlt->getLocation()->getName()).arg(mlt->getName()).arg(
+                                                middleTrain3->getName()).arg(
+                                                llt->getLocation()->getName()).arg(llt->getName()).arg(
+                                                _lastLocationTrains.at(_lastLocationTracks.indexOf(llt))->getName()).arg(
+                                                car->getFinalDestinationName()).arg(car->getFinalDestinationTrackName()));
                             } else {
-                                addLine(_buildReport, SEVEN, tr("RouterRoute4ForCar"),
-                                        car->toString(), car->getLocationName(), car->getTrackName(),
-                                                nlt->getLocation(), nlt->getName(), mlt->getLocation()->getName(),
-                                                mlt->getName(), llt->getLocation()->getName(), llt->getName(),
-                                                car->getFinalDestinationName(), car->getFinalDestinationTrackName()}));
+                                addLine(_buildReport, SEVEN, tr("Route for car ({0}): ({1}, {2})->({3}, {4})->({5}, {6})->({7}, {8})->({9}, {10})").arg(
+                                        car->toString()).arg(car->getLocationName()).arg(car->getTrackName()).arg(
+                                                nlt->getLocation()->toString()).arg(nlt->getName()).arg(mlt->getLocation()->getName()).arg(
+                                                mlt->getName()).arg(llt->getLocation()->getName()).arg(llt->getName()).arg(
+                                                car->getFinalDestinationName()).arg(car->getFinalDestinationTrackName()));
                             }
                             if (finshSettingRouteFor(car, nlt)) {
                                 return true; // done 4 train routing
                             }
-                            break otherloop; // there was an issue with the first stop in the route
+                            //break otherloop; // there was an issue with the first stop in the route
+                            loopOk = false;
+                            break;
                         }
                     }
                 }
@@ -796,72 +802,77 @@ namespace Operations
         if (foundRoute) {
             return foundRoute; // 4 train route, but there was an issue with the first stop in the route
         }
-        log->debug("Using 4 trains to route car to ({}) was unsuccessful", car->getFinalDestinationName());
-        addLine(_buildReport, SEVEN, tr("RouterFiveTrains"), car
-                ->getFinalDestinationName()}));
-        for (Track* nlt : _nextLocationTracks) {
-            otherloop: for (Track* mlt1 : _otherLocationTracks) {
+        log->debug(tr("Using 4 trains to route car to (%1) was unsuccessful").arg(car->getFinalDestinationName()));
+        addLine(_buildReport, SEVEN, tr("Routing using five trains destination (%1) begins").arg(car
+                ->getFinalDestinationName()));
+        loopOk = true;
+        foreach (Track* nlt, _nextLocationTracks)
+        {
+         if(!loopOk)
+          break;
+            otherloop2: foreach (Track* mlt1, _otherLocationTracks) {
                 testCar->setTrack(nlt); // set car to this location and track
                 testCar->setDestinationTrack(mlt1); // set car to this destination and track
                 // does a train service these two locations?
-                Train middleTrain2 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
+                Train* middleTrain2 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
                 if (middleTrain2 != NULL) {
                     if (debugFlag) {
-                        log->debug("Train 2 ({}) services car from ({}) to ({}, {})", middleTrain2->getName(), testCar
-                                ->getLocationName(), testCar->getDestinationName(), testCar->getDestinationTrackName());
+                        log->debug(tr("Train 2 (%1) services car from (%2) to (%3, %4)").arg(middleTrain2->getName()).arg(testCar
+                                ->getLocationName()).arg(testCar->getDestinationName()).arg(testCar->getDestinationTrackName()));
                     }
-                    for (Track* mlt2 : _otherLocationTracks) {
+                    foreach (Track* mlt2, _otherLocationTracks) {
                         if (mlt1 == mlt2) {
                             continue;
                         }
                         testCar->setTrack(mlt1); // set car to this location and track
                         testCar->setDestinationTrack(mlt2); // set car to this destination and track
                         // does a train service these two locations?
-                        Train middleTrain3 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to
+                        Train* middleTrain3 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to
                         // report
                         if (middleTrain3 != NULL) {
                             if (debugFlag) {
-                                log->debug("Train 3 ({}) services car from ({}) to ({}, {})", middleTrain3->getName(),
-                                        testCar->getLocationName(), testCar->getDestinationName(), testCar
-                                                ->getDestinationTrackName());
+                                log->debug(tr("Train 3 (%1) services car from (%2) to (%3, %4)").arg(middleTrain3->getName()).arg(
+                                        testCar->getLocationName()).arg(testCar->getDestinationName()).arg(testCar
+                                                ->getDestinationTrackName()));
                             }
-                            for (Track* llt : _lastLocationTracks) {
+                            foreach (Track* llt, _lastLocationTracks) {
                                 testCar->setTrack(mlt2); // set car to this location and track
                                 testCar->setDestinationTrack(llt); // set car to this destination and track
                                 // does a train service these two locations?
-                                Train middleTrain4 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add
+                                Train* middleTrain4 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add
                                 // to report
                                 if (middleTrain4 != NULL) {
-                                    log->debug("Found 5 train route, setting car destination ({}, {})", nlt
-                                            ->getLocation()->getName(), nlt->getName());
+                                    log->debug(tr("Found 5 train route, setting car destination (%1, %2)").arg(nlt
+                                            ->getLocation()->getName()).arg(nlt->getName()));
                                     foundRoute = true;
                                     // show the car's route
                                     if (_addtoReport) {
-                                        addLine(_buildReport, SEVEN, tr("RouterRoute5TrainsForCar"),
-                                                car->toString(), car->getLocationName(), car->getTrackName(),
-                                                        _nextLocationTrains->get(_nextLocationTracks.indexOf(nlt))->getName(),
-                                                        nlt->getLocation()->getName(), nlt->getName(),
-                                                        middleTrain2->getName(),
-                                                        mlt1->getLocation()->getName(), mlt1->getName(),
-                                                        middleTrain3->getName(),
-                                                        mlt2->getLocation()->getName(), mlt2->getName(),
-                                                        middleTrain4->getName(),
-                                                        llt->getLocation()->getName(), llt->getName(),
-                                                        _lastLocationTrains->get(_lastLocationTracks.indexOf(llt))->getName(),
-                                                        car->getFinalDestinationName(), car->getFinalDestinationTrackName()}));
+                                        addLine(_buildReport, SEVEN, tr("Route for car ({0}): ({1}, {2})->({3})->({4}, {5})->({6})->({7}, {8})->({9})->({10}, {11})->({12})->({13}, {14})->({15})->({16}, {17})").arg(
+                                                car->toString()).arg(car->getLocationName()).arg(car->getTrackName()).arg( _nextLocationTrains.at(_nextLocationTracks.indexOf(nlt))->getName()).arg(
+                                                        nlt->getLocation()->getName()).arg(nlt->getName()).arg(
+                                                        middleTrain2->getName()).arg(
+                                                        mlt1->getLocation()->getName()).arg(mlt1->getName()).arg(
+                                                        middleTrain3->getName()).arg(
+                                                        mlt2->getLocation()->getName()).arg(mlt2->getName()).arg(
+                                                        middleTrain4->getName()).arg(
+                                                        llt->getLocation()->getName()).arg(llt->getName()).arg(
+                                                        _lastLocationTrains.at(_lastLocationTracks.indexOf(llt))->getName()).arg(
+                                                        car->getFinalDestinationName()).arg(car->getFinalDestinationTrackName()));
                                     } else {
-                                        addLine(_buildReport, SEVEN, tr("RouterRoute5ForCar"),
-                                                car->toString(), car->getLocationName(), car->getTrackName(), nlt->getLocation()->getName(),
-                                                        nlt->getName(), mlt1->getLocation()->getName(), mlt1->getName(),
-                                                        mlt2->getLocation()->getName(), mlt2->getName(), llt->getLocation()->getName(),
-                                                        llt->getName(), car->getFinalDestinationName(),
-                                                        car->getFinalDestinationTrackName()}));
+                                        addLine(_buildReport, SEVEN, tr("Route for car ({0}): ({1}, {2})->({3}, {4})->({5}, {6})->({7}, {8})->({9}, {10})->({11}, {12})").arg(
+                                                car->toString()).arg(car->getLocationName()).arg(car->getTrackName()).arg(nlt->getLocation()->getName()).arg(
+                                                        nlt->getName()).arg(mlt1->getLocation()->getName()).arg(mlt1->getName()).arg(
+                                                        mlt2->getLocation()->getName()).arg(mlt2->getName()).arg(llt->getLocation()->getName()).arg(
+                                                        llt->getName()).arg(car->getFinalDestinationName()).arg(
+                                                        car->getFinalDestinationTrackName()));
                                     }
                                     // only set car's destination if specific train can service car
                                     if (finshSettingRouteFor(car, nlt)) {
                                         return true; // done 5 train routing
                                     }
-                                    break otherloop; // there was an issue with the first stop in the route
+                                    //break otherloop; // there was an issue with the first stop in the route
+                                    loopOk = false;
+                                    break;
                                 }
                             }
                         }
@@ -869,24 +880,24 @@ namespace Operations
                 }
             }
         }
-     log->debug("Using 5 trains to route car to ({}) was unsuccessful", car->getFinalDestinationName());
+     log->debug(tr("Using 5 trains to route car to (%1) was unsuccessful").arg(car->getFinalDestinationName()));
         return foundRoute;
     }
 
-    /*private*/ bool finshSettingRouteFor(Car* car, Track* track) {
+    /*private*/ bool Router::finshSettingRouteFor(Car* car, Track* track) {
         // only set car's destination if specific train can service car
         Car* ts2 = clone(car);
-        ts2.setDestinationTrack(track);
-        String specific = canSpecificTrainService(ts2);
+        ts2->setDestinationTrack(track);
+        QString specific = canSpecificTrainService(ts2);
         if (specific==(NO)) {
-            addLine(_buildReport, SEVEN, tr("TrainDoesNotServiceCar"),
-                    _train->getName(), car->toString(), track->getLocation()->getName(), track->getName()}));
+            addLine(_buildReport, SEVEN, tr("Train ({0}) can't transport car ({1}) directly to ({2}, {3})").arg(
+                    _train->getName()).arg(car->toString()).arg(track->getLocation()->getName()).arg(track->getName()));
             _status = STATUS_NOT_THIS_TRAIN;
             return true;
         } else if (specific==(NOT_NOW)) {
-            addLine(_buildReport, SEVEN, tr("RouterTrainCanNotDueTo"),
-                    _train->getName(), car->toString(), track->getLocation()->getName(), track->getName(),
-                            _train->getServiceStatus()}));
+            addLine(_buildReport, SEVEN, tr("Train ({0}) can't transport car ({1}) to ({2}, {3}) due to {4}").arg(
+                    _train->getName()).arg(car->toString()).arg(track->getLocation()->getName()).arg(track->getName()).arg(
+                            _train->getServiceStatus()));
             return true; // the issue is route moves or train length
         }
         // check to see if track is staging
@@ -895,10 +906,10 @@ namespace Operations
         } else {
             _status = car->setDestination(track->getLocation(), track);
         }
-        if (!_status==(Track::OKAY)) {
-            addLine(_buildReport, SEVEN, tr("RouterCanNotDeliverCar"),
-                    car->toString(), track->getLocation()->getName(), track->getName(), _status,
-                            track->getTrackTypeName()}));
+        if (_status!=(Track::OKAY)) {
+            addLine(_buildReport, SEVEN, tr("Can''t use {4} ({1}, {2}) for ({0}) due to {3}").arg(
+                    car->toString()).arg(track->getLocation()->getName()).arg(track->getName()).arg(_status,
+                            track->getTrackTypeName()));
             if (_status.startsWith(Track::LENGTH)) {
                 return false;
             }

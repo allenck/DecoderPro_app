@@ -44,6 +44,7 @@ namespace Operations
   /*private*/ Car* clone(Car* car);
   /*private*/ bool setCarDestinationTwoTrains(Car* car, QString trackType);
   /*private*/ void loadTracks(Car* car, Car* testCar, QList<Track*> tracks);
+  /*private*/ bool finshSettingRouteFor(Car* car, Track* track);
 
  protected:
   /*protected*/ static /*final*/ QString STATUS_NOT_THIS_TRAIN;// = Bundle.getMessage("RouterTrain");

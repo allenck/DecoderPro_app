@@ -23,6 +23,7 @@ public:
     /*public*/ QString getProperty(QString key);
     /*public*/ bool containsKey(QString key);
     /*public*/ /*synchronized*/ void load(QTextStream* inStream); //throws IOException
+    /*public*/ QString getProperty(QString key, QString defaultValue);
 
 signals:
 
