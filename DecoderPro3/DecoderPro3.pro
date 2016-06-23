@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = DecoderPro3
 TEMPLATE = app
 
+win32:PREFIX = "C:/Program Files (x86)/local"
 unix:PREFIX = /usr/local
 
 SOURCES += main.cpp\
@@ -73,15 +74,19 @@ else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
 
+win32:exists($$PREFIX/lib/PythonQt.dll){
+ ENABLE_SCRIPTING = "Y"
+}
+
 unix:exists($$PREFIX/lib/libPythonQt.so){
  ENABLE_SCRIPTING = "Y"
 }
+
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
-    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/release/ -lPythonQt_d
-    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/debug/ -lPythonQt_d
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
     else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
 
     INCLUDEPATH += $$PREFIX/include/PythonQt

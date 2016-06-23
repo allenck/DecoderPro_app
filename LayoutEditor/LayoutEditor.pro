@@ -13,8 +13,12 @@ TEMPLATE = lib
 
 DEFINES += LIBLAYOUTEDITOR_LIBRARY
 
-PREFIX = /usr/lib
+unix:PREFIX = /usr/local
+win32:PREFIX = "C:/Program Files (x86)/local"
 
+win32:exists($$PREFIX/lib/PythonQt.dll){
+ENABLE_SCRIPTING = "Y"
+}
 unix:exists($$PREFIX/lib/libPythonQt.so){
 ENABLE_SCRIPTING = "Y"
 }
@@ -59,8 +63,7 @@ equals(ENABLE_SCRIPTING, "Y") {
 
     include(../python.prf)
 
-    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/release/ -lPythonQt_d
-    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/debug/ -lPythonQt_d
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib -lPythonQt
     else:unix: LIBS += -L/$$PREFIX/lib/ -lPythonQt
 
     INCLUDEPATH += $$PREFIX/include/PythonQt

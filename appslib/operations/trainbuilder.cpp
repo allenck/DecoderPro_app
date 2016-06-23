@@ -42,10 +42,10 @@ namespace Operations
 ///*public*/ class TrainBuilder extends TrainCommon {
 
  // report levels
- /*protected*/ /*static*/ /*final*/ QString TrainBuilder::ONE = Setup::BUILD_REPORT_MINIMAL;
- /*protected*/ /*static*/ /*final*/ QString TrainBuilder::THREE = Setup::BUILD_REPORT_NORMAL;
- /*protected*/ /*static*/ /*final*/ QString TrainBuilder::FIVE = Setup::BUILD_REPORT_DETAILED;
- /*protected*/ /*static*/ /*final*/ QString TrainBuilder::SEVEN = Setup::BUILD_REPORT_VERY_DETAILED;
+ /*protected*/ /*static*/ /*final*/ QString TrainBuilder::ONE = "1"; //Setup::BUILD_REPORT_MINIMAL;
+ /*protected*/ /*static*/ /*final*/ QString TrainBuilder::THREE = "3"; //Setup::BUILD_REPORT_NORMAL;
+ /*protected*/ /*static*/ /*final*/ QString TrainBuilder::FIVE = "5";//Setup::BUILD_REPORT_DETAILED;
+ /*protected*/ /*static*/ /*final*/ QString TrainBuilder::SEVEN = "7"; //Setup::BUILD_REPORT_VERY_DETAILED;
 
  /*private*/ /*static*/ /*final*/ int TrainBuilder::DISPLAY_CAR_LIMIT_50 = 50;
  /*private*/ /*static*/ /*final*/ int TrainBuilder::DISPLAY_CAR_LIMIT_100 = 100;

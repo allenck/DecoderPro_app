@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMap>
+#include "liblayouteditor_global.h"
 
 class Logger;
 class File;
@@ -11,7 +12,7 @@ class ScriptEngineManager;
 class ScriptEngine;
 class ScriptEngineFactory;
 class ScriptContext;
-class JmriScriptEngineManager : public QObject
+class LIBLAYOUTEDITORSHARED_EXPORT JmriScriptEngineManager : public QObject
 {
  Q_OBJECT
 public:

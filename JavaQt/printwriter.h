@@ -2,8 +2,9 @@
 #define PRINTWRITER_H
 
 #include "writer.h"
+#include "javaqt_global.h"
 
-class PrintWriter : public Writer
+class JAVAQTSHARED_EXPORT PrintWriter : public Writer
 {
 public:
  /*public*/ PrintWriter (Writer* out);

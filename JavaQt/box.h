@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <QBoxLayout>
-
-class Box : public QWidget
+#include "javaqt_global.h"
+class JAVAQTSHARED_EXPORT Box : public QWidget
 {
  Q_OBJECT
 public:

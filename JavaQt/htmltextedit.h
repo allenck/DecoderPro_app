@@ -3,9 +3,10 @@
 
 #include <QTextEdit>
 #include <QAction>
+#include "javaqt_global.h"
 
 //class Configuration;
-class HtmlTextEdit : public QTextEdit
+class JAVAQTSHARED_EXPORT HtmlTextEdit : public QTextEdit
 {
  Q_OBJECT
 public:

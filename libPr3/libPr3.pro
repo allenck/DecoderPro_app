@@ -1252,12 +1252,17 @@ INCLUDEPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet
 DEFINES += USE_THREAD
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/release/ -lquazip
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../quazip-0.7.2/quazip/debug/ -lquazipd
+win32:CONFIG(debug, debug|release): LIBS += -L"C:/Program Files (x86)/local/lib" -lquazip
 else:unix: LIBS += -L/usr/local/lib/ -lquazip
 
-INCLUDEPATH += $$PREFIX/quazip
-DEPENDPATH += $$PREFIX/quazip
+unix: {
+INCLUDEPATH += /usr/local/include/quazip
+DEPENDPATH += /usr/local/include/quazip
+}
+win32: {
+INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip"
+DEPENDPATH += "C:/Program Files (x86)/local/include/quazip"
+}
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
@@ -1279,7 +1284,7 @@ DEPENDPATH += $$PWD/../LocoIO
 
 
 
-win32:INCLUDEPATH += C:/Users/Allen/Downloads/zlib127/zlib-1.2.7/
+#win32:INCLUDEPATH += C:/Users/Allen/Downloads/zlib127/zlib-1.2.7/
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
@@ -1290,7 +1295,7 @@ DEPENDPATH += $$PWD/../JavaQt
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ -lLayoutEditor
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug -lLayoutEditor
 else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
 
 INCLUDEPATH += $$PWD/../LayoutEditor
@@ -1310,6 +1315,3 @@ else:unix: LIBS += -L$$PWD/../Tables/ -lTables
 INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
 
-
-INCLUDEPATH += $$PWD/../../../../quazip-0.7.2/quazip/debug
-DEPENDPATH += $$PWD/../../../../quazip-0.7.2/quazip/debug

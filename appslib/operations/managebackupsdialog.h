@@ -4,6 +4,7 @@
 #include "jdialog.h"
 #include <QList>
 #include <defaultlistmodel.h>
+#include "appslib_global.h"
 
 class ActionEvent;
 class JList;
@@ -14,7 +15,7 @@ namespace Operations
 {
  class AutoBackup;
  class BackupSet;
- class ManageBackupsDialog : public JDialog
+ class APPSLIBSHARED_EXPORT ManageBackupsDialog : public JDialog
  {
   Q_OBJECT
  public:

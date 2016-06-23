@@ -18,7 +18,7 @@ public:
   //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-class MyDelegate : public QItemDelegate
+class JAVAQTSHARED_EXPORT MyDelegate : public QItemDelegate
 {
     Q_OBJECT
 

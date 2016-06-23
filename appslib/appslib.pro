@@ -12,7 +12,13 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 QT += xml sql network
 
 DEFINES += APPSLIB_LIBRARY
-ENABLE_SCRIPTING = "Y"
+
+win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
+ ENABLE_SCRIPTING = "Y"
+}
+unix:exists(/usr/local/lib/libPythonQt.so) {
+ ENABLE_SCRIPTING = "Y"
+}
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
@@ -21,7 +27,9 @@ equals(ENABLE_SCRIPTING, "Y") {
 
 HEADERS +=     operations/trainscriptaction.h \
     operations/trainscriptframe.h
-
+ message("Appslib: scripting enabled")
+} else {
+ message("Appslib: scripting disabled")
 }
 
 SOURCES += appslib.cpp \

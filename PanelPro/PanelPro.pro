@@ -15,6 +15,7 @@ TEMPLATE = app
 
 
 unix:PREFIX = /usr/local
+win32:PREFIX = "C:/Program Files (x86)/local"
 
 SOURCES += \
     main.cpp \
@@ -77,15 +78,23 @@ else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
 
+win32:exists($$PREFIX/lib/PythonQt.dll){
+ ENABLE_SCRIPTING = "Y"
+ message($$PREFIX/lib/PythonQt.dll + "exists")
+} else {
+ message($$PREFIX/lib/PythonQt.dll + "not found")
+}
+
 unix:exists($$PREFIX/lib/libPythonQt.so){
  ENABLE_SCRIPTING = "Y"
+} else {
+ message($$PREFIX/lib/libPythonQt.so + "not found")
 }
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
-    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/release/ -lPythonQt_d
-    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../../usr/local/lib/debug/ -lPythonQt_d
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt_d -lPythonQt_QtAll
     else:unix: LIBS += -L/usr/local/lib/ -lPythonQt -lPythonQt_QtAll
 
     INCLUDEPATH += $$PREFIX/include/PythonQt

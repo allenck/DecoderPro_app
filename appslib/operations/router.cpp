@@ -54,7 +54,7 @@ namespace Operations
 
     /*private*/ /*static*/ bool Router::debugFlag = false; // developer debug flag
 
-    /*private*/ /*static*/ /*final*/ QString Router::SEVEN = Setup::BUILD_REPORT_VERY_DETAILED;
+    /*private*/ /*static*/ /*final*/ QString Router::SEVEN = "7"; //Setup::BUILD_REPORT_VERY_DETAILED;
     /**
      * record the single instance *
      */

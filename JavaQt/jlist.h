@@ -2,8 +2,8 @@
 #define JLIST_H
 
 #include <QListView>
-
-class JList : public QListView
+#include "javaqt_global.h"
+class JAVAQTSHARED_EXPORT JList : public QListView
 {
 public:
  JList( QWidget* parent = 0);

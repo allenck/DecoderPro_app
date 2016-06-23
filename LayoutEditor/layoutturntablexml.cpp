@@ -11,7 +11,7 @@
  */
 // /*public*/ class LayoutTurntableXml extends AbstractXmlAdapter {
 
-/*public*/ LayoutTurntableXml::LayoutTurntableXml() {
+/*public*/ LayoutTurntableXml::LayoutTurntableXml() : AbstractXmlAdapter() {
  log = new Logger("LayoutTurntable");
 }
 

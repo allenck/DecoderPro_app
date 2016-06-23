@@ -3,8 +3,9 @@
 
 #include <QTextStream>
 #include <QObject>
+#include "javaqt_global.h"
 
-class Writer : public QTextStream
+class JAVAQTSHARED_EXPORT Writer : public QTextStream
 {
 public:
     Writer();
