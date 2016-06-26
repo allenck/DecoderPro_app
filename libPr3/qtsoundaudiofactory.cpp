@@ -16,6 +16,7 @@ QtSoundAudioFactory::QtSoundAudioFactory(QObject *parent) :
   AbstractAudioFactory(parent)
 {
  log = new Logger("QtSoundAudioFactory");
+ _activeAudioListener = NULL;
 }
 #if 1
 /**

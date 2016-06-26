@@ -22,6 +22,7 @@
 #include "boosteroutputwidget.h"
 #include "boosterpanel.h"
 #include "sql.h"
+#include "locoio_global.h"
 
 namespace Ui {
 class LocoIODialog;
@@ -89,7 +90,7 @@ private:
 class DefaultUserMessagePreferences;
 class LocoIOModules;
 class LocoIOAddress;
-class LocoIODialog : public QDialog
+class LOCOIOSHARED_EXPORT LocoIODialog : public QDialog
 {
  Q_OBJECT
     

@@ -58,7 +58,6 @@ SOURCES += appslib.cpp \
     systemconsoleconfigpanel.cpp \
     systemconsoleaction.cpp \
     apps3.cpp \
-    system.cpp \
     jmenuutil.cpp \
     guiutilbase.cpp \
     jtoolbarutil.cpp \
@@ -333,7 +332,8 @@ SOURCES += appslib.cpp \
     operations/deletecarrosteraction.cpp \
     operations/resetcarmovesaction.cpp \
     operations/exporttrainrosteraction.cpp \
-    operations/exporttrains.cpp
+    operations/exporttrains.cpp \
+    operations/abstractoperationsserver.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -361,7 +361,6 @@ HEADERS += appslib.h\
     systemconsoleconfigpanel.h \
     systemconsoleaction.h \
     apps3.h \
-    system.h \
     jmenuutil.h \
     guiutilbase.h \
     jtoolbarutil.h \
@@ -637,7 +636,8 @@ HEADERS += appslib.h\
     operations/deletecarrosteraction.h \
     operations/resetcarmovesaction.h \
     operations/exporttrainrosteraction.h \
-    operations/exporttrains.h
+    operations/exporttrains.h \
+    operations/abstractoperationsserver.h
 
 unix:!symbian {
     maemo5 {

@@ -14,6 +14,7 @@
 #include <QWebHistory>
 #include "systemconsoleaction.h"
 #include "helpbroker.h"
+#include "xmlfilelocationaction.h"
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -95,9 +96,11 @@ HelpUtil::HelpUtil(QObject *parent) :
   license->setDisabled(true);
 
   QAction* directories = new QAction(tr("Locations..."),parent);
-  mapper->setMapping(directories, directories);
-//        directories.addActionListener(new jmri.jmrit.XmlFileLocationAction());
-  directories->setDisabled(true);
+  //mapper->setMapping(directories, directories);
+  //directories->addAction(new XmlFileLocationAction(parent));
+  QAction* xmlFileLocation = new XmlFileLocationAction(parent);
+  connect(directories, SIGNAL(triggered(bool)),xmlFileLocation, SLOT(actionPerformed()));
+  helpMenu->addAction(directories);
 
   QAction* context = new QAction(tr("Context..."),NULL);
   helpMenu->addAction(context);

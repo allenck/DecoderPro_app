@@ -72,6 +72,7 @@
 void QtSoundAudioListener::common()
 {
  log = new Logger("QtSoundAudioListener");
+ log->setDebugEnabled(true);
 }
 
 //@Override

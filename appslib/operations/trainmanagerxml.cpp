@@ -5,6 +5,7 @@
 #include "file.h"
 #include "trainmanager.h"
 #include "trainschedulemanager.h"
+#include "operationsmanager.h"
 
 //TrainManagerXml::TrainManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -43,6 +44,8 @@ namespace Operations
   fileTypeCsv = ").csv"; // NOI18N
   defaultCsvSwitchListDirectory = OperationsXml::getFileLocation()
           + OperationsXml::getOperationsDirectoryName() + File::separator + CSV_SWITCH_LISTS + File::separator;
+  defaultCsvManifestDirectory = OperationsXml::getFileLocation()
+          + OperationsXml::getOperationsDirectoryName() + File::separator + CSV_MANIFESTS + File::separator;
  }
 
  /**
@@ -188,39 +191,36 @@ namespace Operations
         return OperationsXml::getFileLocation() + OperationsXml::getOperationsDirectoryName() + File::separator + MANIFESTS
                 + File::separator + manifestFileName + name + fileType;// NOI18N
     }
-#if 0
-    /*public*/ File getTrainCsvManifestFile(String name) {
-        File file = new File(getDefaultCsvManifestFilename(name));
+
+    /*public*/ File* TrainManagerXml::getTrainCsvManifestFile(QString name) {
+        File* file = new File(getDefaultCsvManifestFilename(name));
         return file;
     }
 
-    /*public*/ File createTrainCsvManifestFile(String name) {
+    /*public*/ File* TrainManagerXml::createTrainCsvManifestFile(QString name) {
         return createFile(getDefaultCsvManifestFilename(name), false); // don't backup
     }
 
-    /*private*/ String getDefaultCsvManifestFilename(String name) {
+    /*private*/ QString TrainManagerXml::getDefaultCsvManifestFilename(QString name) {
         return defaultCsvManifestDirectory + manifestFileName + name + fileTypeCsv; // NOI18N
     }
 
-    /*private*/ String defaultCsvManifestDirectory = OperationsXml.getFileLocation()
-            + OperationsXml.getOperationsDirectoryName() + File.separator + CSV_MANIFESTS + File.separator;
-
-    /*public*/ void createDefaultCsvManifestDirectory() {
+    /*public*/ void TrainManagerXml::createDefaultCsvManifestDirectory() {
         createFile(defaultCsvManifestDirectory + " ", false); // don't backup
     }
 
-    /*public*/ File getManifestFile(String name, String ext) {
+    /*public*/ File* TrainManagerXml::getManifestFile(QString name, QString ext) {
         return new File(getDefaultManifestFilename(name, ext));
     }
 
-    /*public*/ File createManifestFile(String name, String ext) {
+    /*public*/ File* TrainManagerXml::createManifestFile(QString name, QString ext) {
         return createFile(getDefaultManifestFilename(name, ext), false); // don't backup
     }
 
-    /*private*/ String getDefaultManifestFilename(String name, String ext) {
-        return OperationsManager.getInstance().getPath(MANIFESTS) + File.separator + "train-" + name + "." + ext; // NOI18N
+    /*private*/ QString TrainManagerXml::getDefaultManifestFilename(QString name, QString ext) {
+        return OperationsManager::getInstance()->getPath(MANIFESTS) + File::separator + "train-" + name + "." + ext; // NOI18N
     }
-#endif
+
     /**
      * Store the switch list for a location
      */

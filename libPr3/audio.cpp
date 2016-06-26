@@ -37,7 +37,7 @@ const QChar Audio:: BUFFER    = 'B';
 /**
  * Definition of AudioListener NamedBean sub-type code
  */
-const QChar Audio::LISTENER  = 'L';
+const QChar Audio::LISTENER  = QChar('L');
 /**
  * State code for an AudioListener when positioned
  */

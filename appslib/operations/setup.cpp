@@ -6,12 +6,28 @@
 #include "logger.h"
 #include <QComboBox>
 #include "appslib_global.h"
+#include "autosave.h"
+#include "trainmanagerxml.h"
+#include "propertychangesupport.h"
+#include "abstractoperationsserver.h"
 
 namespace Operations
 {
  Setup::Setup(QObject *parent) :
    QObject(parent)
  {
+  pcs = new PropertyChangeSupport(this);
+ }
+
+ /*static*/ Setup* Setup::_instance = NULL;
+
+ /*static*/ Setup* Setup::instance()
+ {
+  if(_instance == NULL)
+  {
+   _instance = new Setup();
+  }
+  return _instance;
  }
 
  /**
@@ -348,7 +364,7 @@ namespace Operations
      autoSave = enabled;
      if (!old && enabled)
      {
- // TODO        new AutoSave();
+      new AutoSave();
      }
  }
 
@@ -538,7 +554,7 @@ namespace Operations
      bool old = generateCsvManifest;
      generateCsvManifest = enabled;
      if (enabled && !old) {
- // TODO:       TrainManagerXml::instance().createDefaultCsvManifestDirectory();
+     TrainManagerXml::instance()->createDefaultCsvManifestDirectory();
      }
      setDirtyAndFirePropertyChange(MANIFEST_CSV_PROPERTY_CHANGE, old, enabled);
  }
@@ -551,7 +567,7 @@ namespace Operations
      bool old = generateCsvSwitchList;
      generateCsvSwitchList = enabled;
      if (enabled && !old) {
- // TODO:        TrainManagerXml::instance().createDefaultCsvSwitchListDirectory();
+      TrainManagerXml::instance()->createDefaultCsvSwitchListDirectory();
      }
      setDirtyAndFirePropertyChange(SWITCH_LIST_CSV_PROPERTY_CHANGE, old, enabled);
  }
@@ -578,7 +594,7 @@ namespace Operations
      railroadName = name;
      setDirtyAndFirePropertyChange("Railroad Name Change", old, name); // NOI18N
  }
- #if 1
+
  /*public*//*static*/QString Setup::getHazardousMsg() {
      return hazardousMsg;
  }
@@ -683,7 +699,7 @@ namespace Operations
  /*public*//*static*/bool Setup::isTrainIconAppendEnabled() {
      return appendTrainIcon;
  }
- #endif
+
  /*public*//*static*/void Setup::setComment(QString comment) {
      setupComment = comment;
  }
@@ -691,7 +707,7 @@ namespace Operations
  /*public*//*static*/QString Setup::getComment() {
      return setupComment;
  }
- #if 1
+
  /*public*//*static*/void Setup::setBuildReportLevel(QString level) {
      buildReportLevel = level;
  }
@@ -1775,7 +1791,7 @@ namespace Operations
          return 0; // return unknown
      }
  }
- #endif
+
  // must synchronize changes with operation-config.dtd
  /*public*//*static*/QDomElement Setup::store()
  {
@@ -1991,12 +2007,12 @@ namespace Operations
          e.appendChild(values = doc.createElement(Xml::VSD));
          values.setAttribute(Xml::ENABLE_PHYSICAL_LOCATIONS, isVsdPhysicalLocationEnabled() ? Xml::_TRUE : Xml::_FALSE);
      }
-#if 0
+
      // Save CATS setting
      e.appendChild(values = doc.createElement(Xml::CATS));
-     values.setAttribute(Xml::EXACT_LOCATION_NAME, AbstractOperationsServer.isExactLoationNameEnabled() ? Xml::_TRUE
+     values.setAttribute(Xml::EXACT_LOCATION_NAME, AbstractOperationsServer::isExactLoationNameEnabled() ? Xml::_TRUE
              : Xml::_FALSE);
-#endif
+
      return e;
  }
 
@@ -2244,43 +2260,43 @@ namespace Operations
              setPrintHeadersEnabled(enable==(Xml::_TRUE));
          }
      }
- #if 0
-     if (operations.firstChildElement(Xml::PICKUP_ENG_FORMAT) != NULL) {
+ #if 1
+     if (operations.firstChildElement(Xml::PICKUP_ENG_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::PICKUP_ENG_FORMAT).attribute(Xml::PREFIX)) != NULL) {
              setPickupEnginePrefix(a);
          }
          if ((a = operations.firstChildElement(Xml::PICKUP_ENG_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
-                 log->debug("pickupEngFormat: %1").arg(setting);
+                 log->debug(tr("pickupEngFormat: %1").arg(setting));
              }
              QStringList keys = setting.split(",");
              keyToStringConversion(keys);
              setPickupEngineMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::DROP_ENG_FORMAT) != NULL) {
+     if (operations.firstChildElement(Xml::DROP_ENG_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::DROP_ENG_FORMAT).attribute(Xml::PREFIX)) != NULL) {
              setDropEnginePrefix(a);
          }
          if ((a = operations.firstChildElement(Xml::DROP_ENG_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
-                 log->debug("dropEngFormat: %1").arg(setting);
+                 log->debug(tr("dropEngFormat: %1").arg(setting));
              }
              QStringList keys = setting.split(",");
              keyToStringConversion(keys);
              setDropEngineMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::PICKUP_CAR_FORMAT) != NULL) {
+     if (operations.firstChildElement(Xml::PICKUP_CAR_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::PICKUP_CAR_FORMAT).attribute(Xml::PREFIX)) != NULL) {
              setPickupCarPrefix(a);
          }
          if ((a = operations.firstChildElement(Xml::PICKUP_CAR_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
-                 log->debug("pickupCarFormat: %1").arg(setting);
+                 log->debug(tr("pickupCarFormat: %1").arg(setting));
              }
              QStringList keys = setting.split(",");
              replaceOldFormat(keys);
@@ -2288,14 +2304,14 @@ namespace Operations
              setPickupManifestMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::DROP_CAR_FORMAT) != NULL) {
+     if (operations.firstChildElement(Xml::DROP_CAR_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::DROP_CAR_FORMAT).attribute(Xml::PREFIX)) != NULL) {
              setDropCarPrefix(a);
          }
          if ((a = operations.firstChildElement(Xml::DROP_CAR_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
-                 log->debug("dropCarFormat: %1").arg(setting);
+                 log->debug(tr("dropCarFormat: %1").arg(setting));
              }
              QStringList keys = setting.split(",");
              replaceOldFormat(keys);
@@ -2303,14 +2319,14 @@ namespace Operations
              setDropManifestMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::LOCAL_FORMAT) != NULL) {
+     if (operations.firstChildElement(Xml::LOCAL_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::LOCAL_FORMAT).attribute(Xml::PREFIX)) != NULL) {
              setLocalPrefix(a);
          }
          if ((a = operations.firstChildElement(Xml::LOCAL_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
-                 log->debug("localFormat: %1").arg(setting);
+                 log->debug(tr("localFormat: %1").arg(setting));
              }
              QStringList keys = setting.split(",");
              replaceOldFormat(keys);
@@ -2318,84 +2334,88 @@ namespace Operations
              setLocalManifestMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::MISSING_CAR_FORMAT) != NULL) {
+     if (operations.firstChildElement(Xml::MISSING_CAR_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::MISSING_CAR_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
-                 log->debug("missingCarFormat: %1").arg(setting);
+                 log->debug(tr("missingCarFormat: %1").arg(setting));
              }
              QStringList keys = setting.split(",");
              keyToStringConversion(keys);
              setMissingCarMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::SWITCH_LIST) != NULL) {
+     if (operations.firstChildElement(Xml::SWITCH_LIST) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST).attribute(Xml::SAME_AS_MANIFEST)) != NULL) {
-             QString Setup::b = a;
+             QString b = a;
              if (log->isDebugEnabled()) {
-                 log->debug("sameAsManifest: %1").arg(b);
+                 log->debug(tr("sameAsManifest: %1").arg(b));
              }
              setSwitchListFormatSameAsManifest(b==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST).attribute(Xml::REAL_TIME)) != NULL) {
-             QString Setup::b = a;
+             QString b = a;
              if (log->isDebugEnabled()) {
-                 log->debug("realTime: %1").arg(b);
+                 log->debug(tr("realTime: %1").arg(b));
              }
              switchListRealTime = b==(Xml::_TRUE);
          }
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST).attribute(Xml::ALL_TRAINS)) != NULL) {
-             QString Setup::b = a;
+             QString b = a;
              if (log->isDebugEnabled()) {
-                 log->debug("allTrains: %1").arg(b);
+                 log->debug(tr("allTrains: %1").arg(b));
              }
              switchListAllTrains = b==(Xml::_TRUE);
          }
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST).attribute(Xml::PAGE_FORMAT)) != NULL) {
-             switch (a) {
-                 case Xml::PAGE_NORMAL:
+             //switch (a) {
+                 //case Xml::PAGE_NORMAL:
+          if(a ==Xml::PAGE_NORMAL )
                      switchListPageFormat = PAGE_NORMAL;
-                     break;
-                 case Xml::PAGE_PER_TRAIN:
+//                     break;
+//                 case Xml::PAGE_PER_TRAIN:
+          else if(a == Xml::PAGE_PER_TRAIN)
                      switchListPageFormat = PAGE_PER_TRAIN;
-                     break;
-                 case Xml::PAGE_PER_VISIT:
+//                     break;
+//                 case Xml::PAGE_PER_VISIT:
+          else if(a == Xml::PAGE_PER_VISIT)
                      switchListPageFormat = PAGE_PER_VISIT;
-                     break;
-                 default:
-                     Logger::error("Unknown switch list page format %1").arg(a);
-             }
+//                     break;
+//                 default:
+          else
+                     Logger::error(tr("Unknown switch list page format %1").arg(a));
+//             }
          } // old way to save switch list page format pre 3.11
          else if ((a = operations.firstChildElement(Xml::SWITCH_LIST).attribute(Xml::PAGE_MODE)) != NULL) {
-             QString Setup::b = a;
+             QString b = a;
              if (log->isDebugEnabled()) {
-                 log->debug("old style pageMode: %1").arg(b);
+                 log->debug(tr("old style pageMode: %1").arg(b));
              }
              if (b==(Xml::_TRUE)) {
                  switchListPageFormat = PAGE_PER_TRAIN;
              }
          }
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST).attribute(Xml::PRINT_ROUTE_LOCATION)) != NULL) {
-             QString Setup::b = a;
+             QString b = a;
              if (log->isDebugEnabled()) {
-                 log->debug("print Setup::route location comment: %1").arg(b);
+                 log->debug(tr("print Setup::route location comment: %1").arg(b));
              }
              setSwitchListRouteLocationCommentEnabled(b==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST).attribute(Xml::TRACK_SUMMARY)) != NULL) {
-             QString Setup::b = a;
+             QString b = a;
              if (log->isDebugEnabled()) {
-                 log->debug("track summary: %1").arg(b);
+                 log->debug(tr("track summary: %1").arg(b));
              }
              setTrackSummaryEnabled(b==(Xml::_TRUE));
          }
      }
-     if (operations.firstChildElement(Xml::SWITCH_LIST_PICKUP_CAR_FORMAT) != NULL) {
+     if (operations.firstChildElement(Xml::SWITCH_LIST_PICKUP_CAR_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST_PICKUP_CAR_FORMAT).attribute(Xml::PREFIX)) != NULL) {
              setSwitchListPickupCarPrefix(a);
          }
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST_PICKUP_CAR_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
                  log->debug("switchListpickupCarFormat: " + setting);
              }
@@ -2405,14 +2425,14 @@ namespace Operations
              setPickupSwitchListMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::SWITCH_LIST_DROP_CAR_FORMAT) != NULL) {
+     if (operations.firstChildElement(Xml::SWITCH_LIST_DROP_CAR_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST_DROP_CAR_FORMAT).attribute(Xml::PREFIX)) != NULL) {
              setSwitchListDropCarPrefix(a);
          }
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST_DROP_CAR_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
-                 log->debug("switchListDropCarFormat: %1").arg(setting);
+                 log->debug(tr("switchListDropCarFormat: %1").arg(setting));
              }
              QStringList keys = setting.split(",");
              replaceOldFormat(keys);
@@ -2420,14 +2440,14 @@ namespace Operations
              setDropSwitchListMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::SWITCH_LIST_LOCAL_FORMAT) != NULL) {
+     if (operations.firstChildElement(Xml::SWITCH_LIST_LOCAL_FORMAT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST_LOCAL_FORMAT).attribute(Xml::PREFIX)) != NULL) {
              setSwitchListLocalPrefix(a);
          }
          if ((a = operations.firstChildElement(Xml::SWITCH_LIST_LOCAL_FORMAT).attribute(Xml::SETTING)) != NULL) {
-             QString Setup::setting = a;
+             QString setting = a;
              if (log->isDebugEnabled()) {
-                 log->debug("switchListLocalFormat: %1").arg(setting);
+                 log->debug(tr("switchListLocalFormat: %1").arg(setting));
              }
              QStringList keys = setting.split(",");
              replaceOldFormat(keys);
@@ -2435,249 +2455,253 @@ namespace Operations
              setLocalSwitchListMessageFormat(keys);
          }
      }
-     if (operations.firstChildElement(Xml::PANEL) != NULL) {
+     if (operations.firstChildElement(Xml::PANEL) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::PANEL).attribute(Xml::NAME)) != NULL) {
-             QString Setup::panel = a;
+             QString panel = a;
              if (log->isDebugEnabled()) {
-                 log->debug("panel: %1").arg(panel);
+                 log->debug(tr("panel: %1").arg(panel));
              }
              setPanelName(panel);
          }
          if ((a = operations.firstChildElement(Xml::PANEL).attribute(Xml::TRAIN_ICONXY)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("TrainIconXY: " + enable);
              }
              setTrainIconCordEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::PANEL).attribute(Xml::TRAIN_ICON_APPEND)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("TrainIconAppend: " + enable);
              }
              setTrainIconAppendEnabled(enable==(Xml::_TRUE));
          }
      }
-     if ((operations.firstChildElement(Xml::FONT_NAME) != NULL)
+     if ((operations.firstChildElement(Xml::FONT_NAME) != QDomElement())
              && (a = operations.firstChildElement(Xml::FONT_NAME).attribute(Xml::NAME)) != NULL) {
-         QString Setup::font = a;
+         QString font = a;
          if (log->isDebugEnabled()) {
              log->debug("fontName: " + font);
          }
          setFontName(font);
      }
-     if ((operations.firstChildElement(Xml::FONT_SIZE) != NULL)
+     if ((operations.firstChildElement(Xml::FONT_SIZE) != QDomElement())
              && (a = operations.firstChildElement(Xml::FONT_SIZE).attribute(Xml::SIZE)) != NULL) {
-         QString Setup::size = a;
+         QString size = a;
          if (log->isDebugEnabled()) {
              log->debug("fontsize: " + size);
          }
-         try {
-             setManifestFontSize(Integer.parseInt(size));
-         } catch (NumberFormatException ee) {
-             Logger::error("Manifest font size ({}) isn't a valid number", a);
+         bool ok;
+             setManifestFontSize(size.toInt(&ok));
+         if(!ok) {
+             Logger::error(tr("Manifest font size (%1) isn't a valid number").arg(a));
          }
      }
-     if ((operations.firstChildElement(Xml::PAGE_ORIENTATION) != NULL)) {
+     if ((operations.firstChildElement(Xml::PAGE_ORIENTATION) != QDomElement())) {
          if ((a = operations.firstChildElement(Xml::PAGE_ORIENTATION).attribute(Xml::MANIFEST)) != NULL) {
-             QString Setup::orientation = a;
+             QString orientation = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifestOrientation: " + orientation);
              }
              setManifestOrientation(orientation);
          }
          if ((a = operations.firstChildElement(Xml::PAGE_ORIENTATION).attribute(Xml::SWITCH_LIST)) != NULL) {
-             QString Setup::orientation = a;
+             QString orientation = a;
              if (log->isDebugEnabled()) {
                  log->debug("switchListOrientation: " + orientation);
              }
              setSwitchListOrientation(orientation);
          }
      }
-     if ((operations.firstChildElement(Xml::MANIFEST_COLORS) != NULL)) {
+     if ((operations.firstChildElement(Xml::MANIFEST_COLORS) != QDomElement())) {
          if ((a = operations.firstChildElement(Xml::MANIFEST_COLORS).attribute(Xml::DROP_COLOR)) != NULL) {
-             QString Setup::dropColor = a;
+             QString dropColor = a;
              if (log->isDebugEnabled()) {
                  log->debug("dropColor: " + dropColor);
              }
              setDropTextColor(dropColor);
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST_COLORS).attribute(Xml::PICKUP_COLOR)) != NULL) {
-             QString Setup::pickupColor = a;
+             QString pickupColor = a;
              if (log->isDebugEnabled()) {
                  log->debug("pickupColor: " + pickupColor);
              }
              setPickupTextColor(pickupColor);
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST_COLORS).attribute(Xml::LOCAL_COLOR)) != NULL) {
-             QString Setup::localColor = a;
+             QString localColor = a;
              if (log->isDebugEnabled()) {
                  log->debug("localColor: " + localColor);
              }
              setLocalTextColor(localColor);
          }
      }
-     if ((operations.firstChildElement(Xml::TAB) != NULL)) {
+     if ((operations.firstChildElement(Xml::TAB) != QDomElement())) {
          if ((a = operations.firstChildElement(Xml::TAB).attribute(Xml::ENABLED)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("tab: " + enable);
              }
              setTabEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::TAB).attribute(Xml::LENGTH)) != NULL) {
-             QString Setup::length = a;
+             QString length = a;
              if (log->isDebugEnabled()) {
                  log->debug("tab 1 length: " + length);
              }
-             try {
-                 setTab1length(Integer.parseInt(length));
-             } catch (NumberFormatException ee) {
-                 Logger::error("Tab 1 length ({}) isn't a valid number", a);
+             bool ok;
+                 setTab1length(length.toInt(&ok));
+             if(!ok) {
+                 Logger::error(tr("Tab 1 length (%1) isn't a valid number").arg(a));
              }
          }
          if ((a = operations.firstChildElement(Xml::TAB).attribute(Xml::TAB2_LENGTH)) != NULL) {
-             QString Setup::length = a;
+             QString length = a;
              if (log->isDebugEnabled()) {
                  log->debug("tab 2 length: " + length);
              }
-             try {
-                 setTab2length(Integer.parseInt(length));
-             } catch (NumberFormatException ee) {
-                 Logger::error("Tab 2 length ({}) isn't a valid number", a);
+             bool ok;
+                 setTab2length(length.toInt(&ok));
+             if(!ok) {
+                 Logger::error(tr("Tab 2 length (%1) isn't a valid number").arg(a));
              }
          }
          if ((a = operations.firstChildElement(Xml::TAB).attribute(Xml::TAB3_LENGTH)) != NULL) {
-             QString Setup::length = a;
+             QString length = a;
              if (log->isDebugEnabled()) {
                  log->debug("tab 3 length: " + length);
              }
-             try {
-                 setTab3length(Integer.parseInt(length));
-             } catch (NumberFormatException ee) {
-                 Logger::error("Tab 3 length ({}) isn't a valid number", a);
+             bool ok;
+                 setTab3length(length.toInt(&ok));
+             if(!ok) {
+                 Logger::error(tr("Tab 3 length (%1) isn't a valid number").arg(a));
              }
          }
      }
-     if ((operations.firstChildElement(Xml::MANIFEST) != NULL)) {
+     if ((operations.firstChildElement(Xml::MANIFEST) != QDomElement())) {
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::PRINT_LOC_COMMENTS)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest printLocComments: " + enable);
              }
              setPrintLocationCommentsEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::PRINT_ROUTE_COMMENTS)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest printRouteComments: " + enable);
              }
              setPrintRouteCommentsEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::PRINT_LOADS_EMPTIES)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest printLoadsEmpties: " + enable);
              }
              setPrintLoadsAndEmptiesEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::PRINT_TIMETABLE)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest printTimetable: " + enable);
              }
              setPrintTimetableNameEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::USE12HR_FORMAT)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest use12hrFormat: " + enable);
              }
              set12hrFormatEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::PRINT_VALID)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest printValid: " + enable);
              }
              setPrintValidEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::SORT_BY_TRACK)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest sortByTrack: " + enable);
              }
              setSortByTrackEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::PRINT_HEADERS)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest print Setup::headers: " + enable);
              }
              setPrintHeadersEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::TRUNCATE)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest truncate: " + enable);
              }
              setTruncateManifestEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::USE_DEPARTURE_TIME)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest use departure time: " + enable);
              }
              setUseDepartureTimeEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::USE_EDITOR)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest useEditor: " + enable);
              }
              setManifestEditorEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::PRINT_CABOOSE_LOAD)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest print Setup::caboose load: " + enable);
              }
              setPrintCabooseLoadEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::PRINT_PASSENGER_LOAD)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest print Setup::passenger load: " + enable);
              }
              setPrintPassengerLoadEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::MANIFEST).attribute(Xml::HAZARDOUS_MSG)) != NULL) {
-             QString Setup::message = a;
+             QString message = a;
              if (log->isDebugEnabled()) {
                  log->debug("manifest hazardousMsg: " + message);
              }
              setHazardousMsg(message);
          }
      }
-     if ((operations.firstChildElement(Xml::MANIFEST_FORMAT) != NULL)) {
+     if ((operations.firstChildElement(Xml::MANIFEST_FORMAT) != QDomElement())) {
          if ((a = operations.firstChildElement(Xml::MANIFEST_FORMAT).attribute(Xml::VALUE)) != NULL) {
-             switch (a) {
-                 case Xml::STANDARD:
+//             switch (a) {
+//                 case Xml::STANDARD:
+          if(a == Xml::STANDARD)
                      manifestFormat = STANDARD_FORMAT;
-                     break;
-                 case Xml::TWO_COLUMN:
+//                     break;
+//                 case Xml::TWO_COLUMN:
+          else if(a == Xml::TWO_COLUMN)
                      manifestFormat = TWO_COLUMN_FORMAT;
-                     break;
-                 case Xml::TWO_COLUMN_TRACK:
+//                     break;
+//                 case Xml::TWO_COLUMN_TRACK:
+          else if(a==Xml::TWO_COLUMN_TRACK)
                      manifestFormat = TWO_COLUMN_TRACK_FORMAT;
-                     break;
-                 default:
+//                     break;
+//                 default:
+          else
                      log->debug("Unknown manifest format");
-             }
+//             }
          }
-     } else if ((operations.firstChildElement(Xml::COLUMN_FORMAT) != NULL)) {
+     } else if ((operations.firstChildElement(Xml::COLUMN_FORMAT) != QDomElement())) {
          if ((a = operations.firstChildElement(Xml::COLUMN_FORMAT).attribute(Xml::TWO_COLUMNS)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("two columns: " + enable);
              }
@@ -2687,143 +2711,143 @@ namespace Operations
          }
      }
      // get manifest logo
-     if ((operations.firstChildElement(Xml::MANIFEST_LOGO) != NULL)) {
+     if ((operations.firstChildElement(Xml::MANIFEST_LOGO) != QDomElement())) {
          if ((a = operations.firstChildElement(Xml::MANIFEST_LOGO).attribute(Xml::NAME)) != NULL) {
              setManifestLogoURL(a);
          }
      }
-     if ((operations.firstChildElement(Xml::BUILD_OPTIONS) != NULL)) {
+     if ((operations.firstChildElement(Xml::BUILD_OPTIONS) != QDomElement())) {
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::AGGRESSIVE)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("aggressive: " + enable);
              }
              setBuildAggressive(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::NUMBER_PASSES)) != NULL) {
-             QString Setup::number = a;
+             QString number = a;
              if (log->isDebugEnabled()) {
-                 log->debug("number of passes: %1").arg(number);
+                 log->debug(tr("number of passes: %1").arg(number));
              }
-             try {
-                 setNumberPasses(Integer.parseInt(number));
-             } catch (NumberFormatException ne) {
+             bool ok;
+                 setNumberPasses(number.toInt(&ok));
+             if(!ok) {
                  log->debug("Number of passes isn't a number");
              }
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::ALLOW_LOCAL_INTERCHANGE)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("noLocalInterchange: " + enable);
              }
              setLocalInterchangeMovesEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::ALLOW_LOCAL_SPUR)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("noLocalSpur: " + enable);
              }
              setLocalSpurMovesEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::ALLOW_LOCAL_YARD)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("noLocalYard: " + enable);
              }
              setLocalYardMovesEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::STAGING_RESTRICTION_ENABLED)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("stagingRestrictionEnabled: " + enable);
              }
              setTrainIntoStagingCheckEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::STAGING_TRACK_AVAIL)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("stagingTrackAvail: " + enable);
              }
              setStagingTrackImmediatelyAvail(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::ALLOW_RETURN_STAGING)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("allowReturnStaging: " + enable);
              }
              setAllowReturnToStagingEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::PROMPT_STAGING_ENABLED)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("promptStagingEnabled: " + enable);
              }
              setPromptFromStagingEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::PROMPT_TO_STAGING_ENABLED)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("promptToStagingEnabled: " + enable);
              }
              setPromptToStagingEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::GENERATE_CSV_MANIFEST)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("generateCvsManifest: " + enable);
              }
              generateCsvManifest = enable==(Xml::_TRUE);
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::GENERATE_CSV_SWITCH_LIST)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("generateCvsSwitchList: " + enable);
              }
              generateCsvSwitchList = enable==(Xml::_TRUE);
          }
      }
-     if (operations.firstChildElement(Xml::BUILD_REPORT) != NULL) {
+     if (operations.firstChildElement(Xml::BUILD_REPORT) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::BUILD_REPORT).attribute(Xml::LEVEL)) != NULL) {
-             QString Setup::level = a;
+             QString level = a;
              if (log->isDebugEnabled()) {
                  log->debug("buildReportLevel: " + level);
              }
              setBuildReportLevel(level);
          }
          if ((a = operations.firstChildElement(Xml::BUILD_REPORT).attribute(Xml::ROUTER_LEVEL)) != NULL) {
-             QString Setup::level = a;
+             QString level = a;
              if (log->isDebugEnabled()) {
                  log->debug("routerBuildReportLevel: " + level);
              }
              setRouterBuildReportLevel(level);
          }
          if ((a = operations.firstChildElement(Xml::BUILD_REPORT).attribute(Xml::USE_EDITOR)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("build report useEditor: " + enable);
              }
              setBuildReportEditorEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_REPORT).attribute(Xml::INDENT)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("build report indent: " + enable);
              }
              setBuildReportIndentEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_REPORT).attribute(Xml::FONT_SIZE)) != NULL) {
-             QString Setup::size = a;
+             QString size = a;
              if (log->isDebugEnabled()) {
                  log->debug("build font size: " + size);
              }
-             try {
-                 setBuildReportFontSize(Integer.parseInt(size));
-             } catch (NumberFormatException ee) {
+             bool ok;
+                 setBuildReportFontSize(size.toInt(&ok));
+             if(!ok) {
                  Logger::error("Build report font size ({}) isn't a valid number", a);
              }
          }
          if ((a = operations.firstChildElement(Xml::BUILD_REPORT).attribute(Xml::ALWAYS_PREVIEW)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("build report always preview: " + enable);
              }
@@ -2831,74 +2855,74 @@ namespace Operations
          }
      }
 
-     if (operations.firstChildElement(Xml::ROUTER) != NULL) {
+     if (operations.firstChildElement(Xml::ROUTER) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::ROUTER).attribute(Xml::CAR_ROUTING_ENABLED)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("carRoutingEnabled: " + enable);
              }
              setCarRoutingEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::ROUTER).attribute(Xml::CAR_ROUTING_VIA_YARDS)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("carRoutingViaYards: " + enable);
              }
              setCarRoutingViaYardsEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::ROUTER).attribute(Xml::CAR_ROUTING_VIA_STAGING)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("carRoutingViaStaging: " + enable);
              }
              setCarRoutingViaStagingEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::ROUTER).attribute(Xml::FORWARD_TO_YARD)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("forwardToYard: " + enable);
              }
              setForwardToYardEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::ROUTER).attribute(Xml::ONLY_ACTIVE_TRAINS)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("onlyActiveTrains: " + enable);
              }
              setOnlyActiveTrainsEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::ROUTER).attribute(Xml::CHECK_CAR_DESTINATION)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("checkCarDestination: " + enable);
              }
              setCheckCarDestinationEnabled(enable==(Xml::_TRUE));
          }
-     } else if (operations.firstChildElement(Xml::SETTINGS) != NULL) {
+     } else if (operations.firstChildElement(Xml::SETTINGS) != QDomElement()) {
          // the next four items are for backwards compatibility
          if ((a = operations.firstChildElement(Xml::SETTINGS).attribute(Xml::CAR_ROUTING_ENABLED)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("carRoutingEnabled: " + enable);
              }
              setCarRoutingEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::SETTINGS).attribute(Xml::CAR_ROUTING_VIA_YARDS)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("carRoutingViaYards: " + enable);
              }
              setCarRoutingViaYardsEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::SETTINGS).attribute(Xml::CAR_ROUTING_VIA_STAGING)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("carRoutingViaStaging: " + enable);
              }
              setCarRoutingViaStagingEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::SETTINGS).attribute(Xml::FORWARD_TO_YARD)) != NULL) {
-             QString Setup::enable = a;
+             QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("forwardToYard: " + enable);
              }
@@ -2974,16 +2998,16 @@ namespace Operations
              setVsdPhysicalLocationEnabled(enable==(Xml::_TRUE));
          }
      }
- #if 0
-     if (operations.firstChildElement(Xml::CATS) != QVariant())
+
+     if (operations.firstChildElement(Xml::CATS) != QDomElement())
      {
          if ((a = operations.firstChildElement(Xml::CATS).attribute(Xml::EXACT_LOCATION_NAME)) != NULL)
          {
              QString enable = a;
-             AbstractOperationsServer.setExactLocationName(enable==(Xml::_TRUE));
+             AbstractOperationsServer::setExactLocationName(enable==(Xml::_TRUE));
          }
      }
- #endif
+
      if (operations.firstChildElement(Xml::SETTINGS) != QDomElement()) {
          if ((a = operations.firstChildElement(Xml::SETTINGS).attribute(Xml::AUTO_SAVE)) != NULL) {
              QString enabled = a;
@@ -3076,28 +3100,34 @@ namespace Operations
          }
      }
  }
- #if 0
+ #if 1
  /**
   * Converts the xml key to the proper locale text
   *
   * @param keys
   */
- /*private*//*static*/void keyToStringConversion(QStringList keys) {
-     for (int Setup::i = 0; i < keys.length; i++) {
+ /*private*//*static*/void Setup::keyToStringConversion(QStringList keys) {
+     for (int i = 0; i < keys.length(); i++) {
          if (keys[i]==(BLANK)) {
              continue;
          }
-         try {
-             keys[i] = tr(keys[i]);
-         } catch (Exception e) {
-             log->debug("Key {}: ({}) not found", i, keys[i]);
-         }
+         // TODO:
+//         try {
+//             keys[i] = tr(keys[i]);
+//         } catch (Exception e) {
+//             log->debug("Key {}: ({}) not found", i, keys[i]);
+//         }
+
      }
  }
 
- /*private*/  /*static final*/ QStringList attributtes = {"Road", "Number", "Type", "Model", "Length", "Load", "Color",
-         "Track", "Destination", "Dest&Track", "Final_Dest", "FD&Track", "Location", "Consist", "Kernel", "Kernel_Size", "Owner",
-         "RWE", "Comment", "SetOut_Msg", "PickUp_Msg", "Hazardous", "Tab"};
+ /*private*/  /*static final*/ QStringList attributtes = QStringList() << "Road" << "Number" << "Type" << "Model" << "Length" << "Load" << "Color" <<
+         "Track" << "Destination" << "Dest&Track" << "Final_Dest" << "FD&Track" << "Location" << "Consist" << "Kernel" << "Kernel_Size" << "Owner" <<
+         "RWE" << "Comment" << "SetOut_Msg" << "PickUp_Msg" << "Hazardous" << "Tab";
+// /*private*/  /*static final*/ QStringList trAttr = QStringList() << tr("Road ") << tr("Number ") << tr("Type ") << tr("Model ") << tr("Length ") << tr("Load ") << tr("Color") <<
+//         tr("Track ") << tr("Destination ") << tr("Dest&Track ") << tr("Final_Dest ") << tr("FD&Track ") << tr("Location ") << tr("Consist ") << tr("Kernel ") << tr("Kernel_Size ") << tr("Owner") <<
+//         tr("RWE ") << tr("Comment ") << tr("SetOut_Msg ") << tr("PickUp_Msg ") << tr("Hazardous ") << tr("Tab");
+
  #endif
  /**
   * Converts the strings into English tags for xml storage

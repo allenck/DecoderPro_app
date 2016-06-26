@@ -96,5 +96,7 @@ MyDelegate::MyDelegate(QObject *parent)
 
     }
    }
+   return true;
   }
+  return false;
  }

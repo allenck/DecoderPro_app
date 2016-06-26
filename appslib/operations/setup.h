@@ -389,12 +389,15 @@ namespace Operations
    G_SCALE =  11 // NMRA #1
   };
   /*public*/ static void setDoc(QDomDocument doc);
+  PropertyChangeSupport* pcs;
+  static Setup* instance();
 
  signals:
 
  public slots:
 
  private:
+  static Setup* _instance;
 
   // scale ratios from NMRA
   /*private*/ static /*final*/ int Z_RATIO;// 220;
@@ -592,7 +595,11 @@ namespace Operations
   //static PropertyChangeSupport* pcs;// = new PropertyChangeSupport("Setup");
   /*private*/ static void stringToKeyConversion(QStringList strings);
   /*private*/ static void replaceOldFormat(QStringList format);
-
+  /*private*/ static void keyToStringConversion(QStringList keys);
+  /*private*/  static /*final*/ QStringList attributtes;// = {"Road", "Number", "Type", "Model", "Length", "Load", "Color",
+//          "Track", "Destination", "Dest&Track", "Final_Dest", "FD&Track", "Location", "Consist", "Kernel", "Kernel_Size", "Owner",
+//          "RWE", "Comment", "SetOut_Msg", "PickUp_Msg", "Hazardous", "Tab"};
+///*private*/  /*static final*/ QStringList trAttr;
  protected:
   /*protected*/ static void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
 

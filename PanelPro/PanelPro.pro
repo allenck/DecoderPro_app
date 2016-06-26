@@ -3,13 +3,8 @@
 # Project created by QtCreator 2015-08-17T16:58:43
 #
 #-------------------------------------------------
+QT += widgets
 
-QT       += core
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets serialport gui webkitwidgets
-} else {
-QT       += gui
-}
 TARGET = PanelPro
 TEMPLATE = app
 
@@ -81,31 +76,27 @@ DEPENDPATH += $$PWD/../LocoIO
 win32:exists($$PREFIX/lib/PythonQt.dll){
  ENABLE_SCRIPTING = "Y"
  message($$PREFIX/lib/PythonQt.dll + "exists")
-} else {
+} else:win32: {
  message($$PREFIX/lib/PythonQt.dll + "not found")
 }
 
 unix:exists($$PREFIX/lib/libPythonQt.so){
  ENABLE_SCRIPTING = "Y"
-} else {
+} else:unix: {
  message($$PREFIX/lib/libPythonQt.so + "not found")
 }
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
-    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt_d -lPythonQt_QtAll
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
     else:unix: LIBS += -L/usr/local/lib/ -lPythonQt -lPythonQt_QtAll
 
     INCLUDEPATH += $$PREFIX/include/PythonQt
     DEPENDPATH += $$PREFIX/include/Python
 
 #    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
-#    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt
-#    else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_d
 
-#    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
-#    DEPENDPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
  include(../python.prf)
  message(PanelPro: python scripts are enabled)
 
@@ -122,3 +113,9 @@ TRANSLATIONS += \
 
 
 #win32: LIBS += -lpython27
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
+
+INCLUDEPATH += $$PWD/../../../../../Python27/include
+DEPENDPATH += $$PWD/../../../../../Python27/include

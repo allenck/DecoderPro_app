@@ -2,9 +2,10 @@
 #define PREFERENCESPANE_H
 #include <QWidget>
 #include "logger.h"
+#include "libpref_global.h"
 
 class GuiLafConfigPane;
-class PreferencesPane : public QWidget
+class LIBPREFSHARED_EXPORT PreferencesPane : public QWidget
 {
     Q_OBJECT
 public:

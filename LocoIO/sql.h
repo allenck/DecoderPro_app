@@ -5,8 +5,9 @@
 #include "locoiodata.h"
 #include <QSqlDatabase>
 #include <QSqlRecord>
+#include "locoio_global.h"
 
-class Sql : public QObject
+class LOCOIOSHARED_EXPORT Sql : public QObject
 {
  Q_OBJECT
 public:

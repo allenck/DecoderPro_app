@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets xml
+QT       += widgets xml gui
 
 TARGET = Pref
 TEMPLATE = lib

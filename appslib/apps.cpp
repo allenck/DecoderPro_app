@@ -970,6 +970,13 @@ void Apps::On_handleQuit()
 }
 
 /*protected*/ QString Apps::logo() {
+ qDebug() << "Supported formats:" << QImageReader::supportedImageFormats();
+
+ QImageReader reader(":resources/logo.gif");
+ qDebug() << "Can read file?:" << reader.canRead();
+
+ QImage image = reader.read();
+ qDebug() << reader.errorString();
     return ":resources/logo.gif";
 }
 

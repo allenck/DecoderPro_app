@@ -10,7 +10,7 @@ class LIBPREFSHARED_EXPORT ThrottlesPreferencesAction : public QAction
 public:
     explicit ThrottlesPreferencesAction(QObject *parent = 0);
     /*public*/ ThrottlesPreferencesAction(QString s, QObject *parent = 0);
-    /*public*/ ThrottlesPreferencesAction();
+    ///*public*/ ThrottlesPreferencesAction();
 public slots:
     /*public*/ void actionPerformed(ActionEvent* e = 0);
 

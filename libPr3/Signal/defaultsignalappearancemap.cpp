@@ -77,7 +77,7 @@
   if (!file->exists())
   {
     log->error("appearance file doesn't exist: "+file->fileName());
-            throw new IllegalArgumentException("appearance file doesn't exist: "+file->fileName());
+            //throw new IllegalArgumentException("appearance file doesn't exist: "+file->fileName());
   }
  }
  XmlFile* xf = new XmlFile();

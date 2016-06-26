@@ -8,7 +8,7 @@ class LIBPR3SHARED_EXPORT PaneOpsProgFrame : public PaneProgFrame
     Q_OBJECT
 public:
     //explicit PaneOpsProgFrame(QWidget *parent = 0);
-    /*public*/ LIBPR3SHARED_EXPORT PaneOpsProgFrame(DecoderFile* decoderFile, RosterEntry* r,
+    /*public*/ PaneOpsProgFrame(DecoderFile* decoderFile, RosterEntry* r,
                             QString name, QString file, Programmer* p, QWidget *parent = 0);
     void addHelp();
     /*public*/ void dispose();

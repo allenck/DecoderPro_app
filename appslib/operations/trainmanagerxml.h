@@ -30,6 +30,11 @@ namespace Operations
   /*public*/ void setOperationsFileName(QString name) ;
   /*public*/ QString getOperationsFileName();
   /*public*/ void dispose();
+  /*public*/ File* getTrainCsvManifestFile(QString name);
+  /*public*/ File* createTrainCsvManifestFile(QString name);
+  /*public*/ void createDefaultCsvManifestDirectory();
+  /*public*/ File* getManifestFile(QString name, QString ext);
+  /*public*/ File* createManifestFile(QString name, QString ext);
 
  signals:
 
@@ -55,6 +60,10 @@ namespace Operations
   /*private*/ QString getDefaultSwitchListName(QString name) ;
   /*private*/ QString defaultCsvSwitchListDirectory;// = OperationsXml.getFileLocation()
 //          + OperationsXml.getOperationsDirectoryName() + File.separator + CSV_SWITCH_LISTS + File.separator;
+  /*private*/ QString getDefaultCsvManifestFilename(QString name);
+  /*private*/ QString defaultCsvManifestDirectory;// = OperationsXml.getFileLocation()
+//          + OperationsXml::getOperationsDirectoryName() + File::separator + CSV_MANIFESTS + File.separator;
+  /*private*/ QString getDefaultManifestFilename(QString name, QString ext);
 
 
  };

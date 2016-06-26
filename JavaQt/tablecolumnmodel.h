@@ -83,7 +83,7 @@ public:
      * Returns an <code>Enumeration</code> of all the columns in the model.
      * @return an <code>Enumeration</code> of all the columns in the model
      */
-    virtual /*public*/ QListIterator<TableColumn*> getColumns() {}
+    virtual /*public*/ QListIterator<TableColumn*> getColumns() {return QList<TableColumn*>();}
 
     /**
      * Returns the index of the first column in the table

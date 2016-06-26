@@ -98,7 +98,7 @@ private:
  void saveWindowDetails();
  bool hideGroups;// = false;
  bool _hideRosterImage;// = false;
- QHash<QString, NoParm>* slotTable;
+ //QHash<QString, NoParm>* slotTable;
  bool checkIfEntrySelected();
 
 private slots:

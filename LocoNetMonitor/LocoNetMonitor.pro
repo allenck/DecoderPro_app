@@ -17,6 +17,9 @@ CONFIG += serialport
 TARGET = loconetmonitor
 TEMPLATE = app
 
+win32:PREFIX="c:/program files (x86)/local"
+unix:PREFIX=/usr/local
+
 unix{
  isEmpty(PREFIX): PREFIX_USR = /usr
  isEmpty(PREFIX): PREFIX_LOCAL = $${PREFIX_USR}/local
@@ -164,27 +167,45 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPre
 else:unix:!macx:!symbian: LIBS += -L$$PWD/../libPref/ -lPref
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_QtAll_d
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_QtAll_d
-else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_QtAll_d
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_QtAll_d
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_QtAll_d
+#else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_QtAll_d
 
-INCLUDEPATH += $$PWD/../../../../PythonQt3.0/src
-DEPENDPATH += $$PWD/../../../../PythonQt3.0/src
+#INCLUDEPATH += $$PWD/../../../../PythonQt3.0/src
+#DEPENDPATH += $$PWD/../../../../PythonQt3.0/src
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lpython2.7
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lpython2.7
-else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lpython2.7
+win32:exists($$PREFIX/lib/PythonQt.dll){
+ ENABLE_SCRIPTING = "Y"
+ message($$PREFIX/lib/PythonQt.dll + "exists")
+} else:win32: {
+ message($$PREFIX/lib/PythonQt.dll + "not found")
+}
 
-INCLUDEPATH += /usr/include/python2.7/
-DEPENDPATH += /usr/include/python2.7/
+unix:exists($$PREFIX/lib/libPythonQt.so){
+ ENABLE_SCRIPTING = "Y"
+} else {
+ message($$PREFIX/lib/libPythonQt.so + "not found")
+}
+#CONFIG += scripts
+equals(ENABLE_SCRIPTING, "Y") {
+    DEFINES += SCRIPTING_ENABLED
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_d
-else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_d
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
+    else:unix: LIBS += -L/usr/local/lib/ -lPythonQt -lPythonQt_QtAll
 
-INCLUDEPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
-DEPENDPATH += $$PWD/../../../../PythonQt3.0/extensions/PythonQt_QtAll
+    INCLUDEPATH += $$PREFIX/include/PythonQt
+    DEPENDPATH += $$PREFIX/include/Python
+
+#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
+
+ include(../python.prf)
+ message(LocoNetMonitor: python scripts are enabled)
+
+}
+else {
+ message(LocoNetMonitor::Python scripts will be disabled)
+}
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
@@ -203,7 +224,27 @@ else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
 
-unix|win32: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+#unix|win32: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+
+#INCLUDEPATH += $$PWD/../JavaQt
+#DEPENDPATH += $$PWD/../JavaQt
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
+else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
+else:unix: LIBS += -L$$PWD/../Tables/ -lTables
+
+INCLUDEPATH += $$PWD/../Tables
+DEPENDPATH += $$PWD/../Tables
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/release/ -lLocoIO
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/debug/ -lLocoIO
+else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
+
+INCLUDEPATH += $$PWD/../LocoIO
+DEPENDPATH += $$PWD/../LocoIO

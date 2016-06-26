@@ -3153,7 +3153,7 @@ if (roads.length() == 0) {
      // tell GUI that train has complete its move
      setDirtyAndFirePropertyChange(TRAIN_MOVE_COMPLETE_CHANGED_PROPERTY, VPtr<RouteLocation>::asQVariant(rl), VPtr<RouteLocation>::asQVariant(rlNext));
  }
-#if 0
+
  /**
   * Move train to a location in the train's route. Code checks to see if the
   * location requested is part of the train's route and if the train hasn't
@@ -3164,21 +3164,21 @@ if (roads.length() == 0) {
   * @param locationName The name of the location to move this train.
   * @return true if train was able to move to the named location.
   */
- /*public*/ bool move(QString locationName) {
+ /*public*/ bool Train::move(QString locationName) {
      log->info("Move train (" + getName() + ") to location (" + locationName + ")");
      if (getRoute() ==NULL|| getCurrentLocation() == NULL) {
          return false;
      }
-     List<RouteLocation> routeList = getRoute()->getLocationsBySequenceList();
-     for (int i = 0; i < routeList.size(); i++) {
-         RouteLocation* rl = routeList->get(i);
+     QList<RouteLocation*>* routeList = getRoute()->getLocationsBySequenceList();
+     for (int i = 0; i < routeList->size(); i++) {
+         RouteLocation* rl = routeList->at(i);
          if (getCurrentLocation() == rl) {
-             for (int j = i + 1; j < routeList.size(); j++) {
-                 rl = routeList->get(j);
+             for (int j = i + 1; j < routeList->size(); j++) {
+                 rl = routeList->at(j);
                  if (rl->getName()==(locationName)) {
                      log->debug("Found location (" + locationName + ") moving train to this location");
-                     for (j = i + 1; j < routeList.size(); j++) {
-                         rl = routeList->get(j);
+                     for (j = i + 1; j < routeList->size(); j++) {
+                         rl = routeList->at(j);
                          move();
                          if (rl->getName()==(locationName)) {
                              return true;
@@ -3199,14 +3199,14 @@ if (roads.length() == 0) {
   * @param locationName The next location name in the train's route.
   * @return true if successful.
   */
- /*public*/ bool moveToNextLocation(QString locationName) {
+ /*public*/ bool Train::moveToNextLocation(QString locationName) {
      if (getNextLocationName()==(locationName)) {
          move();
          return true;
      }
      return false;
  }
-#endif
+
 /*public*/ void Train::loadTrainIcon() {
  if (getCurrentLocation() != NULL) {
      moveTrainIcon(getCurrentLocation());

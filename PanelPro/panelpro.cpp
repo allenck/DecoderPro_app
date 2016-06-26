@@ -48,7 +48,14 @@ PanelPro::PanelPro(JFrame* p, QWidget *parent) :
 }
 
 /*protected*/ QString PanelPro::logo() {
- return ":/resources/PanelPro.gif";
+    qDebug() << "Supported formats:" << QImageReader::supportedImageFormats();
+
+    QImageReader reader(":/resources/PanelPro.gif");
+    qDebug() << "Can read file?:" << reader.canRead();
+
+    QImage image = reader.read();
+    qDebug() << reader.errorString();
+    return ":/resources/PanelPro.gif";
 }
 
 /*protected*/ QString PanelPro::mainWindowHelpID() {

@@ -14,6 +14,14 @@ void System::setProperty(QString key, QVariant value)
  settings.setValue(key,value);
  settings.endGroup();
 }
+QString System::getProperty(QString key, QString dft)
+{
+ QString val;
+ if((val =getProperty(key)) == "")
+  return dft;
+ return val;
+}
+
 QString System::getProperty(QString key)
 {
  QSettings settings;

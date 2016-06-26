@@ -1260,7 +1260,7 @@ INCLUDEPATH += /usr/local/include/quazip
 DEPENDPATH += /usr/local/include/quazip
 }
 win32: {
-INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip"
+INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip" "C:\Program Files (x86)\GnuWin32\include"
 DEPENDPATH += "C:/Program Files (x86)/local/include/quazip"
 }
 

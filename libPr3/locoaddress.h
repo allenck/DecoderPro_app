@@ -28,7 +28,8 @@ public:
                 MOTOROLA,  // NOI18N
                 MFX,       // NOI18N
                 M4,        // NOI18N
-                OPENLCB
+                OPENLCB,
+                LGB
     };
     //explicit LocoAddress(QObject *parent = 0);
     /**
@@ -67,7 +68,7 @@ public:
 //            MFX(        "mfx",      "ProtocolMFX"),       // NOI18N
 //            M4(         "m4",       "ProtocolM4"),        // NOI18N
 //            OPENLCB(    "openlcb",  "ProtocolOpenLCB");   // NOI18N
-
+//            LGB("lgb", "ProtocolLGB");   // NOI18N
 
 //            Protocol(QString shName, QString peopleKey) {
 //                this->shortName = shName;
@@ -85,6 +86,18 @@ public:
          return "dcc_long";
      case DCC:
          return "dcc";
+     case SELECTRIX:
+         return "selectrix";
+     case MOTOROLA:
+         return "motorola";
+     case MFX:
+         return "mfx";
+     case M4:
+         return "m4";
+     case OPENLCB:
+         return "openlcb";
+     case LGB:
+         return "lgb";
      default:
          return "";
      }
@@ -99,9 +112,22 @@ public:
          return tr("DCC Long");
      case DCC:
          return tr("DCC");
+     case SELECTRIX:
+         return tr("Selectrix");
+     case MOTOROLA:
+         return tr("Motorola");
+     case MFX:
+         return tr("MFX");
+     case M4:
+         return tr("M4");
+     case OPENLCB:
+         return tr("OpenLCB");
+     case LGB:
+         return tr("LGB");
      default:
-         return "";
+         break;
      }
+     return "";
  }
 
 
@@ -117,7 +143,18 @@ static Protocol getByShortName(QString shName) {
       return DCC_LONG;
     else if(shName == "dcc")
         return DCC;
-    // TODO: do the rest
+    else if(shName == "selectrix")
+        return SELECTRIX;
+    else if(shName == "motorola")
+        return MOTOROLA;
+    else if(shName == "mfx")
+        return MFX;
+    else if(shName == "m4")
+        return M4;
+    else if(shName == "openlcb")
+        return OPENLCB;
+    else if(shName == "lgb")
+        return LGB;
     return DCC_SHORT;
 }
 
@@ -135,7 +172,19 @@ static Protocol getByPeopleName(QString pName) {
     if(pName == tr("DCC"))
         return DCC;
     // TODO: do the rest
-
+    if(pName == tr("Selectrix"))
+        return SELECTRIX;
+    if(pName == tr("Motorola"))
+        return MOTOROLA;
+    if(pName == tr("MFX"))
+        return MFX;
+    if(pName == tr("M4"))
+        return M4;
+    if(pName == tr("OpenLCB"))
+        return OPENLCB;
+    if(pName == tr("LGB"))
+        return LGB;
+    return DCC_SHORT;
 }
 
 //        }

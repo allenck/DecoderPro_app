@@ -1,9 +1,10 @@
 #ifndef TURNOUTTABLETABACTION_H
 #define TURNOUTTABLETABACTION_H
 #include "abstracttabletabaction.h"
+#include "libtables_global.h"
 
 class Manager;
-class TurnoutTableTabAction : public AbstractTableTabAction
+class LIBTABLESSHARED_EXPORT TurnoutTableTabAction : public AbstractTableTabAction
 {
     Q_OBJECT
 public:

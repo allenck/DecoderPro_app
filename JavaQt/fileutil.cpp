@@ -5,6 +5,7 @@
 #include "file.h"
 #include "matcher.h"
 #include <QTextStream>
+#include "system.h"
 
 const QString FileUtil::PROGRAM = "program:"; // NOI18N
 const QString FileUtil::PREFERENCES = "preference:"; // NOI18N
@@ -670,10 +671,10 @@ FileUtil::FileUtil(QObject *parent) :
 /*static*/ /*public*/ QString FileUtil::getPreferencesPath()
 {
     // return jmri.prefsdir property if present
-//    QString jmriPrefsDir = System.getProperty("jmri.prefsdir", ""); // NOI18N
-//    if (!jmriPrefsDir.isEmpty()) {
-//        return jmriPrefsDir + QDir::separator();
-//    }
+    QString jmriPrefsDir = System::getProperty("jmri.prefsdir", ""); // NOI18N
+    if (!jmriPrefsDir.isEmpty()) {
+        return jmriPrefsDir + QDir::separator();
+    }
     QString result;
 //    switch (SystemType.getType()) {
 //        case SystemType.MACOSX:
@@ -697,7 +698,7 @@ FileUtil::FileUtil(QObject *parent) :
         case SystemType.WINDOWS:
         default:
 #endif
-#ifdef Q_OS_WINDOWS
+#ifdef  Q_OS_WIN
             // Could be Windows, other
             result = FileUtil::getHomePath() + "JMRI" + QDir::separator(); // NOI18N
 #endif

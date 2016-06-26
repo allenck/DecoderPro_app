@@ -414,7 +414,8 @@ SOURCES += \
     jmrijframeinterface.cpp \
     layouteditorfinditems.cpp \
     layoutturntablexml.cpp \
-    layouteditor.cpp
+    layouteditor.cpp \
+    xmlfilelocationaction.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -754,7 +755,8 @@ HEADERS += liblayouteditor_global.h \
     jmriabstractaction.h \
     layouteditorfinditems.h \
     layoutturntablexml.h \
-    layouteditor.h
+    layouteditor.h \
+    xmlfilelocationaction.h
 
 
 FORMS    += \
@@ -805,7 +807,7 @@ TRANSLATIONS += \
     languages/libLayoutEditor_en.ts
 
 win32_msvc: {
- QMAKE_CXXFLAGS += /wd4290Qt
+ QMAKE_CXXFLAGS += /wd4290
  QMAKE_CFLAGS_DEBUG += /wd4290
 }
 

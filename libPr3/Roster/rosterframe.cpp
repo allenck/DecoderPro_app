@@ -1211,8 +1211,8 @@ void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
 /*protected*/ void  RosterFrame::buildGUI(QString menubarFile, QString toolbarFile)
 {
     //configureFrame();
- slotTable = new QHash<QString, NoParm>();
- slotTable->insert("quit", (NoParm)&RosterFrame::On_Quit);
+// slotTable = new QHash<QString, NoParm>();
+// slotTable->insert("quit", (NoParm)&RosterFrame::On_Quit);
 
  addMainMenuBar(menubarFile );
  addMainToolBar(toolbarFile);

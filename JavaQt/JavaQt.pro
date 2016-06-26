@@ -4,10 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       -= gui
+#QT       -= gui
 QT += xml printsupport
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets
+    QT       += widgets gui
 }
 TARGET = JavaQt
 TEMPLATE = lib
@@ -87,7 +87,8 @@ SOURCES += javaqt.cpp \
     json.cpp \
     htmltextedit.cpp \
     jlist.cpp \
-    defaultlistmodela.cpp
+    defaultlistmodela.cpp \
+    system.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -174,7 +175,8 @@ HEADERS += javaqt.h\
     json.h \
     htmltextedit.h \
     jlist.h \
-    defaultlistmodela.h
+    defaultlistmodela.h \
+    system.h
 
 unix {
     target.path = /usr/lib

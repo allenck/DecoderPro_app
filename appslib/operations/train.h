@@ -52,6 +52,8 @@ namespace Operations
   /*public*/ void build();
   /*public*/ QString getServiceStatus();
   /*public*/ bool services(PrintWriter* buildReport, Car* car);
+  /*public*/ bool move(QString locationName);
+  /*public*/ bool moveToNextLocation(QString locationName);
 
   enum OPTIONS
   {
