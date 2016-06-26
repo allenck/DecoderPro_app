@@ -15,6 +15,7 @@
 #include "systemconsoleaction.h"
 #include "helpbroker.h"
 #include "xmlfilelocationaction.h"
+#include "reportcontextaction.h"
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -105,7 +106,8 @@ HelpUtil::HelpUtil(QObject *parent) :
   QAction* context = new QAction(tr("Context..."),NULL);
   helpMenu->addAction(context);
 //        context.addActionListener(new apps.ReportContextAction());
-  context->setDisabled(true);
+  ReportContextAction* reportContextAction = new ReportContextAction(parent);
+  connect(context, SIGNAL(triggered(bool)), reportContextAction, SLOT(actionPerformed()));
 
   QMenu* console = new QMenu(tr("System console..."));
   helpMenu->addMenu(console);

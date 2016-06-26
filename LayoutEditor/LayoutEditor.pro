@@ -415,7 +415,9 @@ SOURCES += \
     layouteditorfinditems.cpp \
     layoutturntablexml.cpp \
     layouteditor.cpp \
-    xmlfilelocationaction.cpp
+    xmlfilelocationaction.cpp \
+    reportcontext.cpp \
+    reportcontextaction.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -756,7 +758,9 @@ HEADERS += liblayouteditor_global.h \
     layouteditorfinditems.h \
     layoutturntablexml.h \
     layouteditor.h \
-    xmlfilelocationaction.h
+    xmlfilelocationaction.h \
+    reportcontext.h \
+    reportcontextaction.h
 
 
 FORMS    += \

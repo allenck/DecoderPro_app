@@ -89,16 +89,17 @@
             }
         }
     }
-
-    synchronized (list) {
-        list.add(this);
+#endif
+    /*synchronized (list)*/ {
+        frameList->append(this);
     }
     // Set the image for use when minimized
-    setIconImage(getToolkit().getImage("resources/jmri32x32.gif"));
+    //setIconImage(getToolkit().getImage("resources/jmri32x32.gif"));
+    setWindowIcon(QIcon(":/resources/jmri32x32.gif"));
     // set the close short cut
-    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-    addWindowCloseShortCut();
-#endif
+    setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
+// TODO:    addWindowCloseShortCut();
+
     windowFrameRef = metaObject()->className();
     if (metaObject()->className()!=("JmriJFrame"))
     {

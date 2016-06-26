@@ -49,6 +49,7 @@
     }
 
     JFrame* frame = new JmriJFrame();  // to ensure fits
+    frame->setTitle(tr("Locations"));
 
     QWidget* pane = new QWidget();
     pane->setLayout(new QVBoxLayout); //(pane, BoxLayout.Y_AXIS));
