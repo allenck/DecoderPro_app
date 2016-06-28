@@ -14,6 +14,7 @@ public:
  /*public*/ static QString getProperty(QString key);
  /*public*/ static void setProperty(QString key, QVariant value);
  /*public*/ static Properties* getProperties();
+ /*public*/ static QString checkDefault(QString key);
 
 signals:
 

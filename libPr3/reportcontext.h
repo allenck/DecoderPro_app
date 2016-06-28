@@ -16,10 +16,10 @@ signals:
 public slots:
 private:
  QString report;// = "";
- /*private*/ void addCommunicationPortInfo();
  void addString(QString val);
  void addProperty(QString prop);
  /*private*/ void addNetworkInfo();
+ /*private*/ void addCommunicationPortInfo();
 
 };
 

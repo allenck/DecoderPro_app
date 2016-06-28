@@ -416,7 +416,6 @@ SOURCES += \
     layoutturntablexml.cpp \
     layouteditor.cpp \
     xmlfilelocationaction.cpp \
-    reportcontext.cpp \
     reportcontextaction.cpp
 
 HEADERS += liblayouteditor_global.h \
@@ -759,7 +758,6 @@ HEADERS += liblayouteditor_global.h \
     layoutturntablexml.h \
     layouteditor.h \
     xmlfilelocationaction.h \
-    reportcontext.h \
     reportcontextaction.h
 
 

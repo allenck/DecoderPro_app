@@ -8,7 +8,8 @@
 #include <QPushButton>
 #include "flowlayout.h"
 #include "system.h"
-
+#include <QScrollArea>
+#include <QLabel>
 /**
  * Swing action to display the JMRI context for the user
  *
@@ -50,31 +51,51 @@ void ReportContextAction::common()
 
     frame = new JmriJFrame(tr("Context"));  // JmriJFrame to ensure fits on screen
     QVBoxLayout* frameLayout = (QVBoxLayout*)frame->getContentPane()->layout();
-
     ///*final*/ Clipboard clipboard = frame.getToolkit().getSystemClipboard();
-    QClipboard *clipboard = QApplication::clipboard();
 
-    pane = new QTextBrowser();
-    pane->append("\n"); // add a little space at top
+    pane = new QLabel();
+    //pane->("\n"); // add a little space at top
+    addString(""); // add a little space at top
+    //pane->setReadOnly(true);
+    pane->setWordWrap(true);
+    pane->setTextInteractionFlags(Qt::TextSelectableByMouse);
     //pane.setEditable(false);
     //pane->setLineWrap(true);
-    //pane.setWrapStyleWord(true);
+    //pane->setWrapStyleWord(true);
     //pane.setColumns(120);
-    pane->setLineWrapMode(QTextEdit::FixedColumnWidth);
-    pane->setLineWrapColumnOrWidth(800);
 
-//    JScrollPane scroll = new JScrollPane(pane);
-//    frame.add(scroll, BorderLayout.CENTER);
-    frameLayout->addWidget(pane,0, Qt::AlignCenter);
+    //QFont font = pane->document()->defaultFont();    //# or another font if you change it
+    QFont font = pane->font();
+    QFontMetrics fontMetrics = QFontMetrics(font);      //# a QFontMetrics based on our font
+    QSize textSize = fontMetrics.size(0, "M");
+
+    int textWidth = textSize.width() + 30;       //# constant may need to be tweaked
+    int textHeight = textSize.height() + 30;    // # constant may need to be tweaked
+
+    //pane->setMinimumSize(textWidth, textHeight);
+    pane->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    pane->sizePolicy().setHorizontalStretch(1);
+    pane->sizePolicy().setVerticalStretch(1);
+//    pane->setLineWrapMode(QTextEdit::FixedColumnWidth);
+//    pane->setLineWrapColumnOrWidth(800);
+    pane->setMaximumSize(16777215,16777215);
+
+    QScrollArea* scroll = new QScrollArea(/*pane*/);
+    frameLayout->addWidget(scroll, /*BorderLayout.CENTER*/0, Qt::AlignCenter);
+    frameLayout->addWidget(scroll,0, Qt::AlignCenter);
+    scroll->setWidget(pane);
+    scroll->setWidgetResizable(true);
 
     ReportContext* r = new ReportContext();
     addString(r->getReport(true));
 
-    pane->append("\n"); // add a little space at bottom
+    //pane->append("\n"); // add a little space at bottom
+    addString(""); // add a little space at top
 
-    // Add button to allow copy to clipboard
     QWidget* p = new QWidget();
     p->setLayout(new FlowLayout);
+#if 0
+    // Add button to allow copy to clipboard
     QPushButton* copy = new QPushButton(tr("Copy Clip"));
 //    copy.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent event) {
@@ -84,6 +105,7 @@ void ReportContextAction::common()
 //    });
     connect(copy, SIGNAL(clicked(bool)), this, SLOT(on_copyClicked()));
     p->layout()->addWidget(copy);
+#endif
     QPushButton* close = new QPushButton(tr("Close"));
 //    close.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent event) {
@@ -96,6 +118,7 @@ void ReportContextAction::common()
     //frame.add(p, BorderLayout.SOUTH);
     frameLayout->addWidget(p, 0, Qt::AlignBottom);
     frame->adjustSize();
+    QMetaObject::connectSlotsByName(frame);
 
     // start scrolled to top
 //    pane.setCaretPosition(0);
@@ -111,7 +134,11 @@ void ReportContextAction::common()
 {
 //    StringSelection text = new StringSelection(pane.getText());
 //    clipboard.setContents(text, text);
- pane->copy();
+ //pane->copy();
+ QClipboard* clipboard = QApplication::clipboard();
+ QString selected = pane->selectedText();
+ clipboard->setText(selected);
+
 }
 
 /*public*/ void ReportContextAction::on_closeClicked() {
@@ -120,7 +147,8 @@ void ReportContextAction::common()
 }
 
 void ReportContextAction::addString(QString val) {
-    pane->append(val + "\n");
+    //pane->append(val + "\n");
+ pane->setText(pane->text().append(val+ "\n"));
 }
 
 void ReportContextAction::addProperty(QString prop) {

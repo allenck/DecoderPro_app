@@ -16,13 +16,18 @@ ThrottlesTableCellRenderer::ThrottlesTableCellRenderer(QObject *parent) :
 {
 }
 // /*public*/ class ThrottlesTableCellRenderer implements TableCellRenderer {
-/*private*/ /*static*/ /*final*/ NamedIcon* ThrottlesTableCellRenderer::fwdIcon = new NamedIcon("program:resources/icons/throttles/up-green.png",":/resources/icons/throttles/up-green.png");
-/*private*/ /*static*/ /*final*/ NamedIcon* ThrottlesTableCellRenderer::bckIcon = new NamedIcon("program:resources/icons/throttles/down-green.png",":/resources/icons/throttles/down-green.png");
-/*private*/ /*static*/ /*final*/ NamedIcon* ThrottlesTableCellRenderer::estopIcon = new NamedIcon("program:resources/icons/throttles/estop24.png",":/resources/icons/throttles/estop24.png"); /*private*/ /*static*/ /*final*/ RosterIconFactory* ThrottlesTableCellRenderer::iconFactory =  new RosterIconFactory(32);
-/*final*/ /*static*/ int ThrottlesTableCellRenderer::height = 42;
+///*private*/ /*static*/ /*final*/ NamedIcon* ThrottlesTableCellRenderer::fwdIcon = new NamedIcon("program:resources/icons/throttles/up-green.png",":/resources/icons/throttles/up-green.png");
+///*private*/ /*static*/ /*final*/ NamedIcon* ThrottlesTableCellRenderer::bckIcon = new NamedIcon("program:resources/icons/throttles/down-green.png",":/resources/icons/throttles/down-green.png");
+///*private*/ /*static*/ /*final*/ NamedIcon* ThrottlesTableCellRenderer::estopIcon = new NamedIcon("program:resources/icons/throttles/estop24.png",":/resources/icons/throttles/estop24.png"); /*private*/ /*static*/ /*final*/ RosterIconFactory* ThrottlesTableCellRenderer::iconFactory =  new RosterIconFactory(32);
+///*final*/ /*static*/ int ThrottlesTableCellRenderer::height = 42;
 
 /*public*/ QWidget* ThrottlesTableCellRenderer::getTableCellRendererComponent(QTableView* jtable, QVariant value, bool bln, bool bln1, int i, int i1)
 {
+ fwdIcon = new NamedIcon("program:resources/icons/throttles/up-green.png",":/resources/icons/throttles/up-green.png");
+ bckIcon = new NamedIcon("program:resources/icons/throttles/down-green.png",":/resources/icons/throttles/down-green.png");
+ estopIcon = new NamedIcon("program:resources/icons/throttles/estop24.png",":/resources/icons/throttles/estop24.png"); /*private*/ /*static*/
+ iconFactory =  new RosterIconFactory(32);
+ height = 42;
  QFrame* retPanel = new QFrame();
  QVBoxLayout* retPanelLayout;
  retPanel->setLayout(retPanelLayout = new QVBoxLayout());

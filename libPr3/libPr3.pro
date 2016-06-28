@@ -564,7 +564,10 @@ SOURCES += \
      block.cpp \
      beansetting.cpp \
     blockmanager.cpp \
-    entrypoint.cpp
+    entrypoint.cpp \
+    reportcontext.cpp
+    #abstractpreferencesmanager.cpp \
+    #connectionconfigmanager.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1145,7 +1148,10 @@ HEADERS += \
     #sectionmanager.h \
     defaultinstanceinitializer.h \
     instanceinitializer.h \
-    entrypoint.h
+    entrypoint.h \
+    reportcontext.h
+    #abstractpreferencesmanager.h \
+    #connectionconfigmanager.h
  !contains(FTDI, 1) {
     HEADERS +=
  }

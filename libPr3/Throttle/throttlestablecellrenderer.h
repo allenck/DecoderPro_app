@@ -17,11 +17,11 @@ signals:
 
 public slots:
 private:
-    /*private*/ static /*final*/ NamedIcon* fwdIcon;// = new ImageIcon("resources/icons/throttles/up-green.png");
-    /*private*/ static /*final*/ NamedIcon* bckIcon;// = new ImageIcon("resources/icons/throttles/down-green.png");
-    /*private*/ static /*final*/ NamedIcon* estopIcon;// = new ImageIcon("resources/icons/throttles/estop24.png");
-    /*private*/ static /*final*/ RosterIconFactory* iconFactory;// =  new RosterIconFactory(32);
-    /*final*/ static int height;// = 42;
+    /*private*/ /*static*/ /*final*/ NamedIcon* fwdIcon;// = new ImageIcon("resources/icons/throttles/up-green.png");
+    /*private*/ /*static*/ /*final*/ NamedIcon* bckIcon;// = new ImageIcon("resources/icons/throttles/down-green.png");
+    /*private*/ /*static*/ /*final*/ NamedIcon* estopIcon;// = new ImageIcon("resources/icons/throttles/estop24.png");
+    /*private*/ /*static*/ /*final*/ RosterIconFactory* iconFactory;// =  new RosterIconFactory(32);
+    /*final*/ /*static*/ int height;// = 42;
 
 };
 

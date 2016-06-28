@@ -5,7 +5,7 @@
 
 class JmriPanel;
 class JFrame;
-class QTextBrowser;
+class QLabel;
 class WindowInterface;
 class ReportContextAction : public AbstractAction
 {
@@ -21,7 +21,7 @@ public slots:
  void on_closeClicked();
 private:
  void common();
- QTextBrowser* pane;
+ QLabel* pane;
  JFrame* frame;
  void addString(QString val);
  void addProperty(QString prop);
