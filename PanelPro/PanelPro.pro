@@ -9,7 +9,7 @@ TARGET = PanelPro
 TEMPLATE = app
 
 
-unix:PREFIX = /usr/local
+unix:PREFIX = /home/allen/Projects/PythonQt3.0
 win32:PREFIX = "C:/Program Files (x86)/local"
 
 SOURCES += \
@@ -90,11 +90,10 @@ equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
     win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
-    else:unix: LIBS += -L/usr/local/lib/ -lPythonQt -lPythonQt_QtAll
+    else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
 
-    INCLUDEPATH += $$PREFIX/include/PythonQt
-    DEPENDPATH += $$PREFIX/include/Python
-
+    INCLUDEPATH += /usr/local/include/PythonQt
+    DEPENDPATH += /usr/local/include/PythonQt
 #    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
 
  include(../python.prf)

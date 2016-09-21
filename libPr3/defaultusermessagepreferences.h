@@ -284,7 +284,7 @@ public:
     }
 
     QHash<QString, QVariant> parameters;// = NULL;
-
+ friend class JmriUserPreferencesManager;
 };
 
 /*static*/ class TableColumnPreferences{

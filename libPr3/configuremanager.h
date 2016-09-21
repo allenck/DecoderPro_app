@@ -5,11 +5,12 @@
 #include "file.h"
 #include <QUrl>
 #include "xmlfile.h"
+
 class ConfigureManager :  public XmlFile
 {
     //Q_OBJECT
 public:
-    //explicit ConfigureManager(QObject *parent = 0);
+    //explicit ConfigureManager(QObject *parent = 0) : XmlFile(parent) {}
     /**
      * Provide load/store capabilities for general configuration.
      * <P>

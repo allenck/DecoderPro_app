@@ -16,7 +16,8 @@ class LIBPREFSHARED_EXPORT ProfileManager : public QObject
     Q_OBJECT
 public:
     explicit ProfileManager(QObject *parent = 0);
-    /*public*/ static ProfileManager* defaultManager();
+    /*public*/  static ProfileManager* defaultManager();
+    /*public*/ static ProfileManager* getDefault();
     /*public*/ File* getConfigFile();
     /*public*/ void setConfigFile(File* configFile);
     /*public*/ static QString createUniqueId();
@@ -51,6 +52,14 @@ signals:
     void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
+    /*private*/ /*static*/ class ProfileManagerHolder
+    {
+     /**
+      * Default instance of the ProfileManager
+      */
+     /*public*/ static ProfileManager* manager;// = new ProfileManager();
+     friend class ProfileManager;
+    };
     /*private*/ /*final*/ QList<Profile*> profiles;// = new QList<Profile>();
     /*private*/ /*final*/ QList<File*> searchPaths;// = new QList<File>();
     /*private*/ Profile* activeProfile;// = NULL;

@@ -6,6 +6,7 @@
 #include "file.h"
 #include "jfilechooser.h"
 #include <QUrl>
+#include <QDataStream>
 
 QString XmlFile::dtdLocation = "/xml/DTD/";
 bool XmlFile::verify = false;

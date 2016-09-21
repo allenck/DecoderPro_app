@@ -60,15 +60,15 @@ QString System::checkDefault(QString key)
   setProperty("user.name",qgetenv("USERNAME"));
 #endif
 #ifdef Q_OS_UNIX
-  setProperty("os.name", QSysInfo::prettyProductName());
-  setProperty("os.arch", QSysInfo::currentCpuArchitecture());
-  setProperty("os.version", QSysInfo::kernelVersion());
+//  setProperty("os.name", QSysInfo::prettyProductName());
+//  setProperty("os.arch", QSysInfo::currentCpuArchitecture());
+//  setProperty("os.version", QSysInfo::kernelVersion());
   setProperty("file.separator", "/");
   setProperty("line.separator", "\n");
   setProperty("user.name",qgetenv("USER"));
   setProperty("user.home", QDir::homePath());
 #endif
-  return QSysInfo::prettyProductName();
+  //return QSysInfo::prettyProductName();
  }
  return "";
 }

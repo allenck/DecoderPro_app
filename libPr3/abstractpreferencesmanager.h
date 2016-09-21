@@ -1,10 +1,10 @@
 #ifndef ABSTRACTPREFERENCESMANAGER_H
 #define ABSTRACTPREFERENCESMANAGER_H
 
-#include <QObject>
+#include "bean.h"
 
 class Profile;
-class AbstractPreferencesManager : public QObject
+class AbstractPreferencesManager : public Bean
 {
  Q_OBJECT
 public:

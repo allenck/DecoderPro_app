@@ -87,7 +87,19 @@ ProfileManager* ProfileManager::instance = NULL;
  }
  return instance;
 }
-
+/**
+ * Get the default {@link ProfileManager}.
+ *
+ * The default ProfileManager needs to be loaded before the InstanceManager
+ * since user interaction with the ProfileManager may change how the
+ * InstanceManager is configured.
+ *
+ * @return the default ProfileManager.
+ * @since 3.11.8
+ */
+/*public*/ /*static*/ ProfileManager* ProfileManager::getDefault() {
+    return ProfileManagerHolder::manager;
+}
 /**
  * Get the {@link Profile} that is currently in use.
  *
@@ -899,4 +911,10 @@ void ProfileManager::profileNameChange(Profile* profile, QString oldName) {
     //this->firePropertyChange(new PropertyChangeEvent(profile, Profile::NAME, oldName, profile->getName()));
     emit propertyChange(new PropertyChangeEvent(profile, Profile::NAME, oldName, profile->getName()));
 }
+//private static class ProfileManagerHolder {
 
+        /**
+         * Default instance of the ProfileManager
+         */
+        /*public*/ /*static*/ ProfileManager* ProfileManager::ProfileManagerHolder::manager = new ProfileManager();
+    //};

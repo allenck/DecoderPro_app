@@ -6,6 +6,7 @@
 #include "matcher.h"
 #include <QTextStream>
 #include "system.h"
+#include "fileutilsupport.h"
 
 const QString FileUtil::PROGRAM = "program:"; // NOI18N
 const QString FileUtil::PREFERENCES = "preference:"; // NOI18N
@@ -1149,7 +1150,21 @@ FileUtil::FileUtil(QObject *parent) :
   }
  }
 }
-
+/**
+ * Create a directory if required. Any parent directories will also be
+ * created.
+ *
+ */
+/*public*/ /*static*/ void FileUtil::createDirectory(File* dir)
+{
+     Logger log("FileUtil");
+    if (!dir->exists()) {
+        log.info(tr("Creating directory: %1").arg(dir->toString()));
+        if (!dir->mkdirs()) {
+            log.error(tr("Failed to create directory: %1").arg(dir->toString()));
+        }
+    }
+}
 /**
  * Replaces most non-alphanumeric characters in name with an underscore.
  *
@@ -1293,3 +1308,12 @@ FileUtil::FileUtil(QObject *parent) :
     pw.close();
 }
 #endif
+/**
+ * Backup a file.
+ *
+ * @see jmri.util.FileUtilSupport#backup(java.io.File)
+ */
+/*public*/ /*static*/ void FileUtil::backup(File* file) //throws IOException
+    {
+    FileUtilSupport::getDefault()->backup(file);
+}

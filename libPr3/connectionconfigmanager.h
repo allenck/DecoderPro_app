@@ -5,6 +5,7 @@
 
 class Logger;
 class ConnectionConfig;
+class ConnectionTypeList;
 class ConnectionConfigManager : public AbstractPreferencesManager
 {
 public:
@@ -19,8 +20,8 @@ public:
 private:
  Logger* log;
  /*private*/ /*final*/ QList<ConnectionConfig*> connections;// = new ArrayList<>();
- /*private*/ /*final*/ QString NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/connections-2-9-6.xsd"; // NOI18N
- /*private*/ /*final*/ QString CONNECTIONS = "connections"; // NOI18N
+ /*private*/ /*final*/ QString NAMESPACE;// = "http://jmri.org/xml/schema/auxiliary-configuration/connections-2-9-6.xsd"; // NOI18N
+ /*private*/ /*final*/ QString CONNECTIONS;// = "connections"; // NOI18N
 };
 
 /*private*/ /*static*/ class ConnectionTypeManager

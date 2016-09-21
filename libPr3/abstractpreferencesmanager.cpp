@@ -9,7 +9,7 @@
  */
 ///*public*/ abstract class AbstractPreferencesManager extends Bean implements PreferencesManager {
 
-/*public*/ AbstractPreferencesManager::AbstractPreferencesManager(QObject *parent)
+/*public*/ AbstractPreferencesManager::AbstractPreferencesManager(QObject *parent) : Bean(parent)
 {
  initialized = QMap<Profile*, bool>();
 

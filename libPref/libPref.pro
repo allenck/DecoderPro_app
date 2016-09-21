@@ -47,7 +47,6 @@ SOURCES += libpref.cpp \
     profilefileview.cpp \
     fileview.cpp \
     profilefilefilter.cpp \
-    profilemanager.cpp \
     profilemanagerdialog.cpp \
     profilelistmodel.cpp \
     blockvaluefile.cpp \
@@ -108,7 +107,6 @@ HEADERS += libpref.h\
     profilefileview.h \
     fileview.h \
     profilefilefilter.h \
-    profilemanager.h \
     profilemanagerdialog.h \
     profilelistmodel.h \
     blockvaluefile.h \
@@ -126,7 +124,8 @@ HEADERS += libpref.h\
     nxframe.h \
     jmrixconfigpanexml.h \
     routefinder.h \
-    calibrater.h
+    calibrater.h \
+    sortorder.h
 
 
 unix:!symbian {

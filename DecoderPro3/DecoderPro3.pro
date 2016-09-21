@@ -12,7 +12,7 @@ TARGET = DecoderPro3
 TEMPLATE = app
 
 win32:PREFIX = "C:/Program Files (x86)/local"
-unix:PREFIX = /usr/local
+unix:PREFIX = /home/allen/Projects/PythonQt3.0
 
 SOURCES += main.cpp\
         mainwindow.cpp \

@@ -18,11 +18,18 @@
  * @author Randall Wood Copyright (C) 2013, 2014
  */
 // /*public*/ class Profile {
+    /*public*/ /*static final*/ QString Profile::PROFILE = "profile"; // NOI18N
     /*protected*/ /*static final */ QString Profile::ID = "id"; // NOI18N
     /*protected*/ /*static final */ QString Profile::NAME = "name"; // NOI18N
     /*protected*/ /*static final */ QString Profile::PATH = "path"; // NOI18N
-    /*protected*/ /*static final */ QString Profile::PROPERTIES = "profile.properties"; // NOI18N
+    /*public*/ /*static final */ QString Profile::PROPERTIES = "profile.properties"; // NOI18N
+/*public*/ /*static final*/ QString Profile::CONFIG = "profile.xml"; // NOI18N
+/*public*/ /*static final*/ QString Profile::SHARED_PROPERTIES = Profile::PROFILE + "/" + Profile::PROPERTIES; // NOI18N
+/*public*/ /*static final*/ QString Profile::SHARED_CONFIG = Profile::PROFILE + "/" + Profile::CONFIG; // NOI18N
     /*public*/ /*static final */ QString Profile::CONFIG_FILENAME = "ProfileConfig.xml"; // NOI18N
+/*public*/ /*static final*/ QString Profile::UI_CONFIG = "user-interface.xml"; // NOI18N
+/*public*/ /*static final*/ QString Profile::SHARED_UI_CONFIG = Profile::PROFILE + "/" + Profile::UI_CONFIG; // NOI18N
+/*public*/ /*static final*/ QString Profile::UI_CONFIG_FILENAME = "UserPrefsProfileConfig.xml"; // NOI18N
 
 /**
  * Create a Profile object given just a path to it. The Profile must exist

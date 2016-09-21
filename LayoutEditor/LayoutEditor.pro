@@ -13,7 +13,7 @@ TEMPLATE = lib
 
 DEFINES += LIBLAYOUTEDITOR_LIBRARY
 
-unix:PREFIX = /usr/local
+unix:PREFIX = /home/allen/Projects/PythonQt3.0
 win32:PREFIX = "C:/Program Files (x86)/local"
 
 win32:exists($$PREFIX/lib/PythonQt.dll){
@@ -66,8 +66,8 @@ equals(ENABLE_SCRIPTING, "Y") {
     win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib -lPythonQt
     else:unix: LIBS += -L/$$PREFIX/lib/ -lPythonQt
 
-    INCLUDEPATH += $$PREFIX/include/PythonQt
-    DEPENDPATH += $$PREFIX/include/PythonQt
+    INCLUDEPATH += /usr/local/include/PythonQt
+    DEPENDPATH += /usr/local/include/PythonQt
 
 #    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Qt/5.4/gcc/plugins/designer/release/ -lpyqt5
 #    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Qt/5.4/gcc/plugins/designer/debug/ -lpyqt5

@@ -88,7 +88,9 @@ SOURCES += javaqt.cpp \
     htmltextedit.cpp \
     jlist.cpp \
     defaultlistmodela.cpp \
-    system.cpp
+    system.cpp \
+    bean.cpp \
+    fileutilsupport.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -176,7 +178,9 @@ HEADERS += javaqt.h\
     htmltextedit.h \
     jlist.h \
     defaultlistmodela.h \
-    system.h
+    system.h \
+    bean.h \
+    fileutilsupport.h
 
 unix {
     target.path = /usr/lib

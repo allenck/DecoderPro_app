@@ -82,6 +82,7 @@
 #include "debugmenu.h"
 #include "properties.h"
 
+
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
 //{

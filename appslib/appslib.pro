@@ -16,7 +16,7 @@ DEFINES += APPSLIB_LIBRARY
 win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
  ENABLE_SCRIPTING = "Y"
 }
-unix:exists(/usr/local/lib/libPythonQt.so) {
+unix:exists(/home/allen/Projects/PythonQt3.0/lib/libPythonQt.so) {
  ENABLE_SCRIPTING = "Y"
 }
 #CONFIG += scripts
@@ -333,7 +333,18 @@ SOURCES += appslib.cpp \
     operations/resetcarmovesaction.cpp \
     operations/exporttrainrosteraction.cpp \
     operations/exporttrains.cpp \
-    operations/abstractoperationsserver.cpp
+    operations/abstractoperationsserver.cpp \
+    jmriuserpreferencesmanager.cpp \
+    profileutils.cpp \
+    jmriconfigurationprovider.cpp \
+    abstractconfigurationprovider.cpp \
+    nodeidentity.cpp \
+    jmriuserinterfaceconfigurationprovider.cpp \
+    jmriconfiguration.cpp
+#    jmriconfigurationmanager.cpp
+#    preferencesmanager.cpp
+#    serviceloader.cpp \
+#    class.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -637,7 +648,20 @@ HEADERS += appslib.h\
     operations/resetcarmovesaction.h \
     operations/exporttrainrosteraction.h \
     operations/exporttrains.h \
-    operations/abstractoperationsserver.h
+    operations/abstractoperationsserver.h \
+    jmriuserpreferencesmanager.h \
+    profileutils.h \
+    auxiliaryconfiguration.h \
+    jmriconfigurationprovider.h \
+    abstractconfigurationprovider.h \
+    nodeidentity.h \
+    jmriuserinterfaceconfigurationprovider.h \
+    jmriconfiguration.h \
+#    jmriconfigurationmanager.h \
+    jmriserviceproviderinterface.h
+#    preferencesmanager.h
+#    serviceloader.h \
+#    class.h
 
 unix:!symbian {
     maemo5 {

@@ -98,6 +98,7 @@ public:
     static /*public*/ QUrl findExternalFilename(QString path);
     static /*public*/ QString getHomePath();
     /*public*/ static void createDirectory(QString path);
+    /*public*/ static void createDirectory(File* dir);
     static /*public*/ void logFilePaths();
     /**
      * Set the path to python scripts.
@@ -112,6 +113,7 @@ public:
 
     /*public*/ static bool _delete(File* path);
     /*public*/ static void copy(File* source, File* dest) /*throws IOException*/;
+    /*public*/ static void backup(File* file);// //throws IOException
 
 
 signals:

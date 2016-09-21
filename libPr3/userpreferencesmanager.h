@@ -32,6 +32,7 @@ public:
     UserPreferencesManager(const UserPreferencesManager&) : QObject() {}
     /*public*/ virtual void setLoading() {}
     /*public*/ virtual void finishLoading() {}
+    /*public*/ static /*final*/ QString PREFERENCES_UPDATED;// = "PreferencesUpdated"; // NOI18N
 
     /**
      * Enquire as to the state of a user preference.

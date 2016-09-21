@@ -22,7 +22,7 @@ win32_msvc: {
 APPNAME = "LocoNetMonitor"
 APPVERSION = 0.1
 
-PREFIX = /usr/local
+PREFIX = /home/allen/Projects/PythonQt3.0
 
 #QT       -= gui
 QT       += core xml  gui printsupport   sql network webkitwidgets multimedia
@@ -565,7 +565,9 @@ SOURCES += \
      beansetting.cpp \
     blockmanager.cpp \
     entrypoint.cpp \
-    reportcontext.cpp
+    reportcontext.cpp \
+    userpreferencesmanager.cpp \
+    profilemanager.cpp
     #abstractpreferencesmanager.cpp \
     #connectionconfigmanager.cpp
 
@@ -1149,7 +1151,8 @@ HEADERS += \
     defaultinstanceinitializer.h \
     instanceinitializer.h \
     entrypoint.h \
-    reportcontext.h
+    reportcontext.h \
+    profilemanager.h
     #abstractpreferencesmanager.h \
     #connectionconfigmanager.h
  !contains(FTDI, 1) {
