@@ -22,7 +22,7 @@ LocoIOModules::LocoIOModules(QObject *parent) :
  data = new LocoIOData(0x51, 1,tc);
  menu = new QMenu("Configure LocoIO...");
  menu->addAction(tr("No LocoIO modules detected!"));
- sql = new Sql(data);
+ //sql = new Sql(data);
  log = new Logger("LocoIOModules");
  signalMapper = NULL;
  connect(data, SIGNAL(probeCompleted(QList<LocoIOAddress*>)), this, SLOT(onProbeCompleted(QList<LocoIOAddress*>)));

@@ -1,6 +1,7 @@
 #include "abstractxmladapter.h"
 
-AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent) //:    XmlAdapter(parent)
+AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
+ :    XmlAdapter()
 {
  this->parent = parent;
 }

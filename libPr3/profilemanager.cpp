@@ -463,6 +463,12 @@ ProfileManager* ProfileManager::instance = NULL;
  {
   QDomElement e = nodes.at(i).toElement();
   File* pp = FileUtil::getFile(e.attribute(Profile::PATH));
+  if(!pp->exists())
+  {
+   log->info(tr("Cataloged profile \"%1\" not in expected location\nSearching for it in %2").arg(e.attribute(Profile::ID)).arg(pp->getParentFile()->getName()));
+   this->findProfiles(pp->getParentFile());
+   reWrite = true;
+  }
   //try {
   Profile* p = new Profile(pp);
   this->addProfile(p);

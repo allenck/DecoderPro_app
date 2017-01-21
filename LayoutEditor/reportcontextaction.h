@@ -16,7 +16,7 @@ public:
  /*public*/ ReportContextAction(QString s, QIcon i, WindowInterface* wi);
  /*public*/ JmriPanel* makePanel();
 public slots:
- /*public*/ void actionPerformed(ActionEvent* ev);
+ /*public*/ void actionPerformed(ActionEvent* ev = 0);
  void on_copyClicked();
  void on_closeClicked();
 private:

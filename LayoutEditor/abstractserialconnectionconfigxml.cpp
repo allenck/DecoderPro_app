@@ -4,6 +4,7 @@
 AbstractSerialConnectionConfigXml::AbstractSerialConnectionConfigXml(QObject *parent) :
     AbstractConnectionConfigXml(parent)
 {
+ adapter = NULL;
 }
 /**
  * Abstract base (and partial implementation) for
@@ -43,7 +44,7 @@ AbstractSerialConnectionConfigXml::AbstractSerialConnectionConfigXml(QObject *pa
  storeCommon(e, adapter);
 
  if (adapter->getCurrentPortName()!=NULL)
-  e.setAttribute("port", adapter->getCurrentPortName());
+  e.setAttribute("port", adapter->getCurrentPortName().trimmed());
  else e.setAttribute("port", tr("(none selected)"));
 
  if (adapter->getCurrentBaudRate()!=NULL)

@@ -43,10 +43,10 @@
 
 void ReportContextAction::common()
 {
- connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed(ActionEvent*)));
+ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void ReportContextAction::actionPerformed(ActionEvent* ev)
+/*public*/ void ReportContextAction::actionPerformed(ActionEvent* )
 {
 
     frame = new JmriJFrame(tr("Context"));  // JmriJFrame to ensure fits on screen

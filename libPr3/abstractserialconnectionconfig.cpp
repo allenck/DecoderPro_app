@@ -15,6 +15,7 @@
 #include <QSerialPortInfo>
 #include <pr3adapter.h>
 #include "jmrixconfigpane.h"
+#include <QSignalMapper>
 
 //AbstractSerialConnectionConfig::AbstractSerialConnectionConfig(QObject *parent) :
 //    AbstractConnectionConfig(parent)
@@ -76,6 +77,8 @@ void AbstractSerialConnectionConfig::common()
  portBox = new QComboBox();
  baudBox = new QComboBox();
  invalidPort = "";
+ optionsMapper = new QSignalMapper();
+ connect(optionsMapper, SIGNAL(mapped(QString)), this, SLOT(On_optionBox_currentIndexChanged(QString)));
 }
 
 //@Override
@@ -165,7 +168,8 @@ void AbstractSerialConnectionConfig::common()
 //                }
 //            });
   QComboBox* box = (QComboBox*)options.value(i)->getComponent();
-  connect(box, SIGNAL(currentIndexChanged(QString)), this, SLOT(On_optionBox_currentIndexChanged(QString)));
+  optionsMapper->setMapping(box, i);
+  connect(box, SIGNAL(currentIndexChanged(int)), optionsMapper, SLOT(map()));
   }
  }
 
@@ -201,7 +205,8 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
 
  void AbstractSerialConnectionConfig::On_optionBox_currentIndexChanged(QString item)
  {
-  adapter->setOptionState(item, options.value(item)->getItem());
+  QComboBox* box = (QComboBox*)options.value(item)->getComponent();
+  adapter->setOptionState(item ,box->currentText());
  }
 
 //@Override

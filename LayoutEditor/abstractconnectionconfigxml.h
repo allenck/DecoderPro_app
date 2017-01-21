@@ -17,8 +17,8 @@ signals:
 
 public slots:
 protected:
-    /*abstract*/ /*protected*/ void getInstance();
-    /*abstract*/ /*protected*/ void _register();
+    /*abstract*/ /*protected*/ virtual void getInstance();
+    /*abstract*/ /*protected*/ void virtual _register();
     /*protected*/ void storeCommon(QDomElement e,  PortAdapter* adapter);
     /*protected*/ void extendElement(QDomElement e);
     /*protected*/ void loadCommon(QDomElement e, PortAdapter* adapter);

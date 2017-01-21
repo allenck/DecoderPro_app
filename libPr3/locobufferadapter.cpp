@@ -18,7 +18,8 @@
 // common();
 // adaptermemo = new LocoNetSystemConnectionMemo();
 //}
-LocoBufferAdapter::LocoBufferAdapter(LocoNetSystemConnectionMemo* memo, QObject *parent)  : LnPortController(memo, parent)
+LocoBufferAdapter::LocoBufferAdapter(LocoNetSystemConnectionMemo* memo, QObject *parent)
+ : LnPortController(memo, parent)
 {
  common();
  adaptermemo = memo;

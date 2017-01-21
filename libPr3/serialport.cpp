@@ -183,9 +183,16 @@ bool SerialPort::open(QString portName, QIODevice::OpenMode mode)
   serial->close();
  QSerialPortInfo info = QSerialPortInfo(portName);
  QList<QSerialPortInfo> list = QSerialPortInfo::availablePorts();
- if(list.count() > 0)
-  serial = new QSerialPort(list.at(0));
- else
+
+ log->info("Available ports:");
+ foreach (QSerialPortInfo info, list)
+ {
+  log->info(info.portName());
+ }
+
+// if(list.count() > 0)
+//  serial = new QSerialPort(list.at(0));
+// else
   serial = new QSerialPort(portName);
  connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this, SLOT(OnError()));
  //connect(serial, SIGNAL(readyRead()), this, SLOT(OnDataReady()));

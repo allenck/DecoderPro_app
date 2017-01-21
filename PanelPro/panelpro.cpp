@@ -45,6 +45,9 @@ PanelPro::PanelPro(JFrame* p, QWidget *parent) :
 {
  //super(p);
  initGui();
+
+ PPWindowListener* l = new PPWindowListener(p, this);
+ p->addWindowListener(l);
 }
 
 /*protected*/ QString PanelPro::logo() {
@@ -135,3 +138,13 @@ void PanelPro::handleQuit()
 //{
 // Apps::windowClosing(e);
 //}
+
+PPWindowListener::PPWindowListener(JFrame *p, PanelPro* pp)
+{
+ this->p = p;
+ this->pp = pp;
+}
+void PPWindowListener::windowClosing(QCloseEvent *)
+{
+ pp->handleQuit();
+}

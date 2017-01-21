@@ -21,7 +21,7 @@ protected:
     /*protected*/ SerialPortAdapter* adapter;
     virtual /*abstract*/ /*protected*/ void getInstance();
     virtual /*abstract*/ /*protected*/ void _register();
-    /*protected*/ void getInstance(QObject* object);
+    virtual /*protected*/ void getInstance(QObject* object);
     /*protected*/ void extendElement(QDomElement e);
     /*protected*/ void unpackElement(QDomElement e);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);

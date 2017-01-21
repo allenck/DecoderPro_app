@@ -68,6 +68,7 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
  mTurnoutNoRetry = false;
  mTurnoutExtraSpace = false;
  tm = NULL;
+ lnm = NULL;
 
  //setSlotManager(sm);
  this->sm = NULL;

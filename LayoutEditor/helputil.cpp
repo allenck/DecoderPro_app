@@ -107,7 +107,7 @@ HelpUtil::HelpUtil(QObject *parent) :
   helpMenu->addAction(context);
 //        context.addActionListener(new apps.ReportContextAction());
   ReportContextAction* reportContextAction = new ReportContextAction(parent);
-  connect(context, SIGNAL(triggered(bool)), reportContextAction, SLOT(actionPerformed()));
+  connect(context, SIGNAL(triggered()), reportContextAction, SLOT(actionPerformed()));
 
   QMenu* console = new QMenu(tr("System console..."));
   helpMenu->addMenu(console);

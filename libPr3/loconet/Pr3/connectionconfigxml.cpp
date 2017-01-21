@@ -6,6 +6,7 @@
 ConnectionConfigXml::ConnectionConfigXml(QObject *parent) :
     AbstractSerialConnectionConfigXml(parent)
 {
+ setObjectName("ConnectionConfigXml(Pr3)");
 }
 /**
  * Handle XML persistance of layout connections by persisting
@@ -30,6 +31,7 @@ ConnectionConfigXml::ConnectionConfigXml(QObject *parent) :
 {
  adapter = /*(SerialPortAdapter*)*/new PR3Adapter();
 }
+
 /*protected*/ void ConnectionConfigXml::getInstance(QObject* object)
 {
  adapter = (SerialPortAdapter*)((ConnectionConfig*)object)->getAdapter();

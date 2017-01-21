@@ -6,6 +6,7 @@
 #include <QStringList>
 #include "libPr3_global.h"
 
+class QSignalMapper;
 class PortNameMapper;
 class QComboBox;
 class UserPreferencesManager;
@@ -52,6 +53,7 @@ private:
     QVector<QString>*  originalList;
     QString invalidPort;//=NULL;
     QString value;
+    QSignalMapper* optionsMapper;
 
 protected:
     /*protected*/ SerialPortAdapter* adapter;// = NULL;

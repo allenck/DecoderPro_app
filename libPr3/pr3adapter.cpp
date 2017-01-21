@@ -8,6 +8,7 @@
 PR3Adapter::PR3Adapter(QObject* parent)
     : LocoBufferAdapter(new PR3SystemConnectionMemo(), parent)
 {
+ setObjectName("PR3Adapter");
  myParent = parent;
  log = new Logger("PR3Adapter");
 

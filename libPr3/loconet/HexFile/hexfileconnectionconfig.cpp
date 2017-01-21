@@ -4,6 +4,7 @@
 HexFileConnectionConfig::HexFileConnectionConfig(QObject *parent) :
     AbstractSimulatorConnectionConfig(parent)
 {
+ setObjectName("HexFileConnectionConfig");
 }
 /**
  * Definition of objects to handle configuring a layout connection

@@ -1,7 +1,8 @@
 #include "lnportcontroller.h"
 #include "dccmanufacturerlist.h"
 
-LnPortController::LnPortController(LocoNetSystemConnectionMemo* connectionMemo, QObject *parent) : AbstractSerialPortController(connectionMemo, parent)
+LnPortController::LnPortController(LocoNetSystemConnectionMemo* connectionMemo, QObject *parent)
+ : AbstractSerialPortController(connectionMemo, parent)
 {
  log = new Logger("LnPortController");
  setManufacturer(DCCManufacturerList::DIGITRAX);

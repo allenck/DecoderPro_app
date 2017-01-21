@@ -372,6 +372,7 @@ void JFrame::setMenuBar(QMenuBar *menubar)
 {
  QMainWindow::setMenuBar(menubar);
 }
+
 void JFrame::closeEvent(QCloseEvent* e)
 {
  foreach(WindowListener* l, *listeners)
@@ -384,13 +385,16 @@ void JFrame::closeEvent(QCloseEvent* e)
   l->windowClosing(e);
  }
 }
+
 /*public*/ void JFrame::windowClosing(QCloseEvent* /*e*/) {
     handleModified();
 }
+
 void JFrame::addWindowListener(WindowListener* l)
 {
  listeners->append(l);
 }
+
 void JFrame::setAlwaysOnTop(bool b)
 {
  Qt::WindowFlags flags = windowFlags();

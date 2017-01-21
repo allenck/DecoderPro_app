@@ -1,6 +1,7 @@
 #ifndef PANELPRO_H
 #define PANELPRO_H
 #include "apps.h"
+#include "windowlistener.h"
 
 class PanelPro : public Apps
 {
@@ -16,6 +17,7 @@ public slots:
     void handleQuit();
 private:
     Logger* log;
+
 protected:
     /*protected*/ QString logo();
     /*protected*/ QString mainWindowHelpID();
@@ -23,6 +25,18 @@ protected:
     /*protected*/ QString line2() ;
     /*protected*/ QWidget* statusPanel();
 //    /*protected*/ void windowClosing(QCloseEvent *);
+
+};
+
+class PPWindowListener : public WindowListener
+{
+ Q_OBJECT
+ JFrame* p;
+ PanelPro* pp;
+
+public:
+ PPWindowListener(JFrame* p, PanelPro* pp);
+ void windowClosing(QCloseEvent *e);
 
 };
 

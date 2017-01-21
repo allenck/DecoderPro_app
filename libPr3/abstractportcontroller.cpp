@@ -124,16 +124,18 @@ AbstractPortController::~AbstractPortController()
 /**
 * Get a list of all the options configured against this adapter.
 */
-/*public*/ QStringList AbstractPortController::getOptions(){
-    QStringList arr;
-    //Enumeration<String> en = options.keys();
-    QMapIterator<QString, Option*> en(options);
-    while (en.hasNext()) {
-        en.next();
-        arr << en.key();
-    }
-    // java.util.Arrays.sort(arr);
-    return arr;
+/*public*/ QStringList AbstractPortController::getOptions()
+{
+ QStringList arr;
+ //Enumeration<String> en = options.keys();
+ QMapIterator<QString, Option*> en(options);
+ while (en.hasNext())
+ {
+  en.next();
+  arr << en.key();
+ }
+ // java.util.Arrays.sort(arr);
+ return arr;
 }
 
 /**
