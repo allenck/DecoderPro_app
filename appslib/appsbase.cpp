@@ -328,12 +328,13 @@ AppsBase::AppsBase(QObject *parent) :
 
 //abstract protected void addToActionModel();
 /*private*/ bool AppsBase::doDeferredLoad(File* file) {
-    bool result;
+    bool result = false;
     if (log->isDebugEnabled()) {
         log->debug("start deferred load from config file " + file->getName());
     }
     try {
-        result = InstanceManager::configureManagerInstance()->loadDeferred(file);
+     ConfigureManager* mgr = InstanceManager::configureManagerInstance();
+     result = ((ConfigXmlManager*)mgr)->loadDeferred(file);
     } catch (JmriException e) {
         log->error("Unhandled problem loading deferred configuration: " + e.getMessage());
         result = false;

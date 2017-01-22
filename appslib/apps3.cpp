@@ -68,7 +68,7 @@
   AppsBase(applicationName, configFileDef, args, parent)
 {
  log = new Logger("Apps3");
- sp = NULL;
+ //sp = NULL;
  // pre-GUI work
  //super(applicationName, configFileDef, args);
 
@@ -138,8 +138,8 @@
     createMainFrame();
 
     //A Shutdown manager handles the quiting of the application
-//    mainFrame->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
-//    displayMainFrame(mainFrame->getMaximumSize());
+    mainFrame->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
+    displayMainFrame(mainFrame->getMaximumSize());
 }
 
 // /*abstract*/ /*protected*/ ResourceBundle getActionModelResourceBundle();

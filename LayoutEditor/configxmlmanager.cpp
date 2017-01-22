@@ -44,7 +44,12 @@
 #include "filehistoryxml.h"
 #include "filehistory.h"
 
-/*static*/ /*final*/const  /*public*/ QString ConfigXmlManager::schemaVersion = "-2-9-6";
+/**
+ * Define the current schema version string for the layout-config schema.
+ * See the <A HREF="package-summary.html#schema">Schema versioning
+ * discussion</a>. Also controls the stylesheet file version.
+ */
+ /*static*/ /*final*/const  /*public*/ QString ConfigXmlManager::schemaVersion = "-2-9-6";
 /*static*/ ErrorHandler* ConfigXmlManager::handler = new ErrorHandler();
 QString ConfigXmlManager::fileLocation = QString("layout")+QDir::separator();
 
@@ -345,7 +350,7 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
 //doc.appendChild(xmlProcessingInstruction);
  QDomElement root = doc.createElement("layout-config");
  root.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
- root.setAttribute("xsi:noNamespaceSchemaLocation","http://jmri.org/xml/schema/layout-2-9-6.xsd");
+ root.setAttribute("xsi:noNamespaceSchemaLocation","http://jmri.org/xml/schema/layout" + schemaVersion + ".xsd");
  return root;
 }
 /*protected*/ void ConfigXmlManager::addPrefsStore(QDomElement root)

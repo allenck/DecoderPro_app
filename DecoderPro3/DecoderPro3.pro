@@ -89,6 +89,7 @@ equals(ENABLE_SCRIPTING, "Y") {
     win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
     else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
 
+    PREFIX = /usr/local
     INCLUDEPATH += $$PREFIX/include/PythonQt
     DEPENDPATH += $$PREFIX/include/PythonQt
 

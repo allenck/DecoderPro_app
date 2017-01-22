@@ -40,7 +40,7 @@ protected:
  /*protected*/ void addToActionModel();
  /*protected*/ void setFloating(QToolBar* toolBar);
  /*protected*/ void displayMainFrame(QSize d);
- /*protected*/ void start();
+ virtual /*protected*/ void start();
  static /*protected*/ void splash(bool show);
  static /*protected*/ void splash(bool show, bool debug);
  static /*protected*/ QWidget* splashDebugMsg();

@@ -25,8 +25,8 @@ private:
 
 protected:
     /*protected*/ void createMainFrame();
-    /*protected*/ void start();
-    /*protected*/ void displayMainFrame(QSize d);
+    virtual /*protected*/ void start();
+    virtual /*protected*/ void displayMainFrame(QSize d);
 
 };
 
