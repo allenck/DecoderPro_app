@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 #QT       -= gui
-QT += xml printsupport
+QT += xml printsupport network
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT       += widgets gui
 }
@@ -90,7 +90,32 @@ SOURCES += javaqt.cpp \
     defaultlistmodela.cpp \
     system.cpp \
     bean.cpp \
-    fileutilsupport.cpp
+    fileutilsupport.cpp \
+    defaulttreemodel.cpp \
+    catalogtreenode.cpp \
+    treepath.cpp \
+    defaultmutabletreenode.cpp \
+    catalogtreeleaf.cpp \
+    abstractnamedbean.cpp \
+    namedbean.cpp \
+    namedbeanhandle.cpp \
+    treeselectionmodel.cpp \
+    treeselectionevent.cpp \
+    defaulttreeselectionmodel.cpp \
+    resizableimagepanel.cpp \
+    editableresizableimagepanel.cpp \
+    filedrop.cpp \
+    borderfactory.cpp \
+    matteborder.cpp \
+    emptyborder.cpp \
+    component.cpp \
+    droptargetcontext.cpp \
+    droptarget.cpp \
+    droptargetevent.cpp \
+    droptargetdropevent.cpp \
+    filedownloader.cpp \
+    xmlinclude.cpp \
+    catalogtree.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -180,7 +205,45 @@ HEADERS += javaqt.h\
     defaultlistmodela.h \
     system.h \
     bean.h \
-    fileutilsupport.h
+    fileutilsupport.h \
+    treemodel.h \
+    defaulttreemodel.h \
+    mutabletreenode.h \
+    catalogtreenode.h \
+    treepath.h \
+    treenode.h \
+    defaultmutabletreenode.h \
+    catalogtreeleaf.h \
+    abstractnamedbean.h \
+    namedbean.h \
+    namedbeanhandle.h \
+    manager.h \
+    treeselectionmodel.h \
+    treeselectionevent.h \
+    defaulttreeselectionmodel.h \
+    rowmapper.h \
+    treeselectionlistener.h \
+    resizableimagepanel.h \
+    editableresizableimagepanel.h \
+    filedrop.h \
+    border.h \
+    borderfactory.h \
+    matteborder.h \
+    emptyborder.h \
+    component.h \
+    droptargetlistener.h \
+    dndconstants.h \
+    droptargetcontext.h \
+    droptargetcontextpeer.h \
+    transferable.h \
+    droptarget.h \
+    droptargetevent.h \
+    droptargetpeer.h \
+    componentpeer.h \
+    droptargetdropevent.h \
+    filedownloader.h \
+    xmlinclude.h \
+    catalogtree.h
 
 unix {
     target.path = /usr/lib

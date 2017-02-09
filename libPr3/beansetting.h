@@ -4,6 +4,7 @@
 #include <QObject>
 #include "namedbean.h"
 #include "namedbeanhandle.h"
+#include "libPr3_global.h"
 
 class LIBPR3SHARED_EXPORT BeanSetting : public QObject
 {

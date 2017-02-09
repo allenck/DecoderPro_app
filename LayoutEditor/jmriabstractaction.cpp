@@ -40,7 +40,7 @@ JmriAbstractAction::JmriAbstractAction(QObject *parent) :
  this->wi = wi;
  if (wi == NULL)
  {
-  Logger::error("Cannot create action with NULL WindowInterface"/*, new Exception()*/);
+  Logger::error(tr("Cannot create '%1' action with NULL WindowInterface"/*, new Exception()*/).arg(s));
  }
 }
 

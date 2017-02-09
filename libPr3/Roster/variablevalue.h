@@ -86,6 +86,7 @@ protected:
  /*protected*/ int offsetVal(QString maskString);
  /*protected*/ int newValue(int oldCv, int newVal, QString maskString);
  friend class IndexedPairVariableValue;
+ friend class VariableTableModel;
 };
 
 #endif // VARIABLEVALUE_H

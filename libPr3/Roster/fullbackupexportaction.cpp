@@ -3,9 +3,7 @@
 #include "jmripanel.h"
 #include "roster.h"
 #include "file.h"
-//#include "../../../../../Projects/quazip-0.7/quazip/quazip.h"
 #include "quazip.h"
-//#include "../../../../../Projects/quazip-0.7/quazip/quazipfile.h"
 #include "quazipfile.h"
 
 //#include <QFileDialog>
@@ -35,12 +33,14 @@ FullBackupExportAction::FullBackupExportAction(QObject *parent)
 /*public*/ FullBackupExportAction::FullBackupExportAction(QString s, WindowInterface* wi) : JmriAbstractAction(s, wi)
 {
  //super(s, wi);
+ _parent = (QWidget*)wi;
  common();
 }
 
 /*public*/ FullBackupExportAction::FullBackupExportAction(QString s, QIcon i, WindowInterface* wi) : JmriAbstractAction(s, i, wi)
 {
  //super(s, i, wi);
+ _parent = (QWidget*)wi;
  common();
 }
 

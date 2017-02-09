@@ -440,6 +440,7 @@ PowerManager* InstanceManager::powerManagerInstance()
 {
  return (PowerManager*)getDefault("PowerManager");
 }
+
 void InstanceManager::setPowerManager(PowerManager* p)
 {
     //store(p, p->metaObject()->className());

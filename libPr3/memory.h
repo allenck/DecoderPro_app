@@ -2,7 +2,7 @@
 #define MEMORY_H
 #include <QObject>
 #include "abstractnamedbean.h"
-
+#include "libPr3_global.h"
 class LIBPR3SHARED_EXPORT Memory : public AbstractNamedBean
 {
 public:

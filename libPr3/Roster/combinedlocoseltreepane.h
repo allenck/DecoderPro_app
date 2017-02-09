@@ -1,15 +1,15 @@
 #ifndef COMBINEDLOCOSELTREEPANE_H
 #define COMBINEDLOCOSELTREEPANE_H
 #include "combinedlocoselpane.h"
-#include "../../LayoutEditor/defaultmutabletreenode.h"
-#include "../../LayoutEditor/defaulttreemodel.h"
+#include "defaultmutabletreenode.h"
+#include "defaulttreemodel.h"
 #include <QAbstractItemModel>
 #include <QDir>
 #include "libPr3_global.h"
 class TreePath;
 class DecoderFile;
 class QRadioButton;
-class TreeSelectionListener;
+class MyTreeSelectionListener;
 class DecoderTreeNode;
 class InvisibleTreeModel;
 class QTreeView;
@@ -43,7 +43,7 @@ private:
     bool bShowFiles;
 protected:
     /*protected*/ QTreeView* dTree;
-    /*protected*/ TreeSelectionListener* dListener;
+    /*protected*/ MyTreeSelectionListener* dListener;
 
     /*protected*/ QWidget* viewButtons;
     /**

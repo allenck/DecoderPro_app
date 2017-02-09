@@ -1,10 +1,10 @@
 #ifndef DEFAULTTABLEMODEL_H
 #define DEFAULTTABLEMODEL_H
 
-#include <QAbstractTableModel>
+#include "abstracttablemodel.h"
 #include <QVector>
 
-class DefaultTableModel : public QAbstractTableModel
+class DefaultTableModel : public AbstractTableModel
 {
  Q_OBJECT
 public:
@@ -18,6 +18,8 @@ public:
  int rowCount(const QModelIndex &parent) const;
  int columnCount(const QModelIndex &parent) const;
  QVariant data(const QModelIndex &index, int role) const;
+ /*public*/ void addColumn(QVariant columnName);
+
 signals:
 
 public slots:

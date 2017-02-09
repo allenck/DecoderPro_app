@@ -5,6 +5,7 @@
 #include <QMap>
 #include "libPr3_global.h"
 
+class ThrottlesListPanel;
 class QMainWindow;
 //class ThrottlesListPanel;
 class ListThrottles;
@@ -25,7 +26,7 @@ public:
     /*public*/ int getNumberThrottleWindows();
     /*public*/ ThrottleWindow* getCurrentThrottleFrame();
     /*public*/ ThrottlesPreferences* getThrottlesPreferences();
-    /*public*/ ListThrottles* getThrottlesListPanel();
+    /*public*/ ThrottlesListPanel* getThrottlesListPanel();
     /*public*/ void showThrottlesList();
     /*public*/ void showThrottlesPreferences();
     /*public*/ /*ThrottleFrame*/ ThrottleWindow* createThrottleFrame();
@@ -48,7 +49,7 @@ private:
     /*private*/ ThrottlesPreferences* throttlesPref;
     /*private*/ JmriJFrame* throttlePreferencesFrame;
     /*private*/ /*JmriJFrame*/ JmriJFrame* throttlesListFrame;
-    /*private*/ ListThrottles* throttlesListPanel;
+    /*private*/ ThrottlesListPanel* throttlesListPanel;
     /*private*/ ThrottleFrameManager(QObject *parent = 0); // can only be created by instance() => /*private*/
     /*private*/ void destroyThrottleWindow(ThrottleWindow* window);
     /*private*/ void requestFocusForNextFrame();

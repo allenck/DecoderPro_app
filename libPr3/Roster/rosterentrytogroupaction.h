@@ -26,6 +26,8 @@ private:
  Roster* roster;
  QString lastGroupSelect;// = "";
  Logger* log;
+
+private slots:
  void rosterEntryUpdate();
 
 };

@@ -69,7 +69,7 @@
 
 /*public*/ void MemoryIcon::displayState()
 {
- log->debug("displayState");
+ if(log->isDebugEnabled()) log->debug("displayState");
  if (getMemory() == NULL)
  {  // use default if not connected yet
   setText(defaultText);
@@ -530,6 +530,7 @@ void MemoryIcon::on_updateBlockItemAction_toggled(bool bState)
   setValue(VPtr<RosterEntry>::asQVariant(roster));
  }
 }
+
 // update icon as state of Memory changes
  /*public*/ void MemoryIcon::propertyChange(PropertyChangeEvent* e)
 {

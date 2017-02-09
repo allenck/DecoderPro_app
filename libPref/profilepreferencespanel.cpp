@@ -15,6 +15,13 @@
 #include "profilefileview.h"
 #include <QMouseEvent>
 #include <QHeaderView>
+#include <QMessageBox>
+#include "logger.h"
+#include "vptr.h"
+#include "jfilechooser.h"
+#include "roster.h"
+
+#include "filenamefilter.h"
 
 //ProfilePreferencesPanel::ProfilePreferencesPanel(QWidget *parent) :
 //    PreferencesPanel(parent)
@@ -38,9 +45,10 @@
 /*public*/ ProfilePreferencesPanel::ProfilePreferencesPanel(QWidget *parent)
     :  PreferencesPanel(parent)
 {
+ log= new Logger("ProfilePreferencesPanel");
  initComponents();
  this->chkStartWithActiveProfile->setChecked(ProfileManager::defaultManager()->isAutoStartActiveProfile());
- this->valueChanged(NULL);
+ this->valueChanged(QModelIndex());
  int index = ProfileManager::defaultManager()->getAllProfiles().indexOf(ProfileManager::defaultManager()->getActiveProfile());
  if (index != -1)
  {
@@ -83,7 +91,7 @@
  //            }
  //            return null;
  //        }};
- profilesTbl = new ProfilesTable();
+ profilesTbl = new QTableView();
  btnOpenExistingProfile = new QPushButton();
  btnDeleteProfile = new QPushButton();
  btnCreateNewProfile = new QPushButton();
@@ -138,8 +146,10 @@
  profilesTbl->horizontalHeader()->setStretchLastSection(true);
 
  //profilesTbl->getSelectionModel().addListSelectionListener(this);
- connect(profilesTbl, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
- profilesTbl->setSortingEnabled(true);
+ profilesTbl->setContextMenuPolicy(Qt::CustomContextMenu);
+ profilesTbl->setSelectionBehavior(QAbstractItemView::SelectRows);
+ connect(profilesTbl, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged(QModelIndex)));
+ //profilesTbl->setSortingEnabled(true);
  //jScrollPane1.setViewportView(profilesTbl);
 
  btnOpenExistingProfile->setText(tr("Add Existing...")); // NOI18N
@@ -332,17 +342,17 @@
 //        jTabbedPane1.getAccessibleContext().setAccessibleName(tr("ProfilePreferencesPanel.enabledPanel.TabConstraints.tabTitle")); // NOI18N
 }// </editor-fold>
 
-QString ProfilesTable::getToolTipText(QMouseEvent *e)
-{
- //try {
- //return getValueAt(rowAtPoint(e.getPoint()), -1).toString();
- return indexAt(e->pos()).data().toString();
+//QString ProfilesTable::getToolTipText(QMouseEvent *e)
+//{
+// //try {
+// //return getValueAt(rowAtPoint(e.getPoint()), -1).toString();
+// return indexAt(e->pos()).data().toString();
 
-//} catch (RuntimeException e1) {
-//    //catch null pointer exception if mouse is over an empty line
+////} catch (RuntimeException e1) {
+////    //catch null pointer exception if mouse is over an empty line
+////}
+////return null;
 //}
-//return null;
-}
 
 /*private*/ void ProfilePreferencesPanel::renameMIActionPerformed(ActionEvent* /*evt*/) {
     // TODO add your handling code here:
@@ -386,8 +396,8 @@ QString ProfilesTable::getToolTipText(QMouseEvent *e)
 
 /*private*/ void ProfilePreferencesPanel::btnRemoveSearchPathActionPerformed(ActionEvent* /*evt*/)
 {
-#if 0
- foreach (QVariant value, this->searchPaths->getSelectedValues())
+#if 1
+ foreach (QVariant value, this->searchPaths->selectionModel()->selectedRows())
  { // getSelectedValues is deprecated in Java 1.7
   File* path = new File(value.toString());
 //        try {
@@ -419,84 +429,98 @@ QString ProfilesTable::getToolTipText(QMouseEvent *e)
 
 /*private*/ void ProfilePreferencesPanel::btnExportProfileActionPerformed(ActionEvent* evt)
 {
-    Profile* p = ProfileManager::defaultManager()->getProfiles(profilesTbl->currentIndex().row());
-#if 0
-    JFileChooser chooser = new JFileChooser();
-    chooser.setFileFilter(new FileNameExtensionFilter("ZIP Archives", "zip"));
-    chooser.setFileView(new ProfileFileView());
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    chooser.setSelectedFile(new File(p.getName() + ".zip"));
+ Profile* p = ProfileManager::defaultManager()->getProfiles(profilesTbl->currentIndex().row());
+#if 1
+ JFileChooser* chooser = new JFileChooser();
+ chooser->setFileFilter("Zip Archives *.zip" ); //new FileNameExtensionFilter("ZIP Archives", "zip"));
+ //chooser->setFileView(new ProfileFileView());
+ chooser->setFileSelectionMode(JFileChooser::FILES_ONLY);
+ chooser->setSelectedFile(new File(p->getName() + ".zip"));
 
-    if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-        try {
-            if (chooser.getSelectedFile().exists()) {
-                int result = JOptionPane.showConfirmDialog(this,
-                        tr("ProfilePreferencesPanel.btnExportProfile.overwriteMessage",
-                                chooser.getSelectedFile().getName(),
-                                chooser.getSelectedFile().getParentFile().getName()),
-                        tr("ProfilePreferencesPanel.btnExportProfile.overwriteTitle"),
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
-                    chooser.getSelectedFile().delete();
-                } else {
-                    this->btnExportProfileActionPerformed(evt);
-                    return;
-                }
-            }
-            bool exportExternalUserFiles = false;
-            bool exportExternalRoster = false;
-            if (!(new File(FileUtil.getUserFilesPath())).getCanonicalPath().startsWith(p.getPath().getCanonicalPath())) {
-                int result = JOptionPane.showConfirmDialog(this,
-                        tr("ProfilePreferencesPanel.btnExportProfile.externalUserFilesMessage"),
-                        tr("ProfilePreferencesPanel.btnExportProfile.externalUserFilesTitle"),
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
-                    exportExternalUserFiles = true;
-                }
-            }
-            if (!(new File(Roster.getFileLocation())).getCanonicalPath().startsWith(p.getPath().getCanonicalPath())
-                    && !Roster.getFileLocation().startsWith(FileUtil.getUserFilesPath())) {
-                int result = JOptionPane.showConfirmDialog(this,
-                        tr("ProfilePreferencesPanel.btnExportProfile.externalRosterMessage"),
-                        tr("ProfilePreferencesPanel.btnExportProfile.externalRosterTitle"),
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
-                    exportExternalRoster = true;
-                }
-            }
-            if (ProfileManager::defaultManager().getActiveProfile() == p) {
-                // TODO: save roster, panels, operations if needed and safe to do so
-            }
-            ProfileManager::defaultManager().export(p, chooser.getSelectedFile(), exportExternalUserFiles, exportExternalRoster);
-            log.info("Profile \"{}\" exported to \"{}\"", p.getName(), chooser.getSelectedFile().getName());
-            JOptionPane.showMessageDialog(this,
-                    tr("ProfilePreferencesPanel.btnExportProfile.successMessage",
-                            p.getName(), chooser.getSelectedFile().getName()),
-                    tr("ProfilePreferencesPanel.btnExportProfile.successTitle"),
-                    JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException ex) {
-            log.warn("Unable to export profile \"{}\" to {}", p.getName(), chooser.getSelectedFile().getPath(), ex);
-            JOptionPane.showMessageDialog(this,
-                    tr("ProfilePreferencesPanel.btnExportProfile.errorMessage",
-                            p.getName(),
-                            chooser.getSelectedFile().getPath(),
-                            ex.getLocalizedMessage()),
-                    tr("ProfilePreferencesPanel.btnExportProfile.errorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
-        } catch (JDOMException ex) {
-            log.warn("Unable to export profile \"{}\" to {}", p.getName(), chooser.getSelectedFile().getPath(), ex);
-            JOptionPane.showMessageDialog(this,
-                    tr("ProfilePreferencesPanel.btnExportProfile.errorMessage",
-                            p.getName(),
-                            chooser.getSelectedFile().getPath(),
-                            ex.getLocalizedMessage()),
-                    tr("ProfilePreferencesPanel.btnExportProfile.errorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
-        }
+ if (chooser->showSaveDialog(this) == JFileChooser::APPROVE_OPTION)
+ {
+  try
+  {
+#if 0 // chooser does this check so not needed here.
+   if (chooser->getSelectedFile()->exists())
+   {
+//                int result = JOptionPane.showConfirmDialog(this,
+//                        tr("ProfilePreferencesPanel.btnExportProfile.overwriteMessage",
+//                                chooser->getSelectedFile()->getName(),
+//                                chooser->getSelectedFile()->getParentFile()->getName()),
+//                        tr("ProfilePreferencesPanel.btnExportProfile.overwriteTitle"),
+//                        JOptionPane.YES_NO_OPTION,
+//                        JOptionPane.WARNING_MESSAGE);
+//                if (result == JOptionPane.YES_OPTION) {
+    int result = QMessageBox::question(this, tr("Replace file?"), tr("\"%1\" already exists in the directory %2. Do you want to replace it?\nReplacing it will overwrite its current contents.").arg(chooser->getSelectedFile()->getName()).arg(                                                                chooser->getSelectedFile()->getParentFile()->getName()), QMessageBox::Yes | QMessageBox::No);
+    if(result == QMessageBox::Yes)
+    {
+     chooser->getSelectedFile()->_delete();
     }
+    else
+    {
+     this->btnExportProfileActionPerformed(evt);
+     return;
+    }
+   }
+#endif
+   bool exportExternalUserFiles = false;
+   bool exportExternalRoster = false;
+   if (!(new File(FileUtil::getUserFilesPath()))->getCanonicalPath().startsWith(p->getPath()->getCanonicalPath()))
+   {
+//                int result = JOptionPane.showConfirmDialog(this,
+//                        tr("ProfilePreferencesPanel.btnExportProfile.externalUserFilesMessage"),
+//                       externalUserFilesTitle tr("ProfilePreferencesPanel.btnExportProfile."),
+//                        JOptionPane.YES_NO_OPTION,
+//                        JOptionPane.QUESTION_MESSAGE);
+//                if (result == JOptionPane.YES_OPTION) {
+    int result = QMessageBox::question(this, tr("Export user files"), tr("Your JMRI user files are not in the profile directory.\nDo you want to include them in the exported profile?"), QMessageBox::Yes | QMessageBox::No);
+    if(result == QMessageBox::Yes)
+    {
+           exportExternalUserFiles = true;
+    }
+   }
+   if (!(new File(Roster::getFileLocation()))->getCanonicalPath().startsWith(p->getPath()->getCanonicalPath())
+           && !Roster::getFileLocation().startsWith(FileUtil::getUserFilesPath()))
+   {
+//                int result = JOptionPane.showConfirmDialog(this,
+//                        tr("ProfilePreferencesPanel.btnExportProfile.externalRosterMessage"),
+//                        tr("ProfilePreferencesPanel.btnExportProfile.externalRosterTitle"),
+//                        JOptionPane.YES_NO_OPTION,
+//                        JOptionPane.QUESTION_MESSAGE);
+//                if (result == JOptionPane.YES_OPTION) {
+       int result = QMessageBox::question(this, tr("Export roster"), tr("Your roster is not in the profile directory.\nDo you want to include it in the exported profile?"), QMessageBox::Yes | QMessageBox::No);
+       if(result == QMessageBox::Yes)
+       {
+        exportExternalRoster = true;
+       }
+      }
+      if (ProfileManager::defaultManager()->getActiveProfile() == p)
+      {
+          // TODO: save roster, panels, operations if needed and safe to do so
+      }
+      ProfileManager::defaultManager()->_export(p, chooser->getSelectedFile(), exportExternalUserFiles, exportExternalRoster);
+      log->info(tr("Profile \"%1\" exported to \"%2\"").arg(p->getName()).arg(chooser->getSelectedFile()->getName()));
+//            JOptionPane.showMessageDialog(this,
+//                    tr("ProfilePreferencesPanel.btnExportProfile.successMessage",
+//                            p->getName(), chooser->getSelectedFile()->getName()),
+//                    tr("ProfilePreferencesPanel.btnExportProfile.successTitle"),
+//                    JOptionPane.INFORMATION_MESSAGE);
+      QMessageBox::information(this, tr("Profile exported"), tr("Profile \"%1\" exported to %2.").arg(p->getName()).arg( chooser->getSelectedFile()->getName()));
+  }
+  catch (JDOMException ex)
+  {
+      log->warn(tr("Unable to export profile \"%1\" to %2").arg(p->getName()).arg(chooser->getSelectedFile()->getPath()/*, ex*/));
+//      JOptionPane.showMessageDialog(this,
+//              tr("ProfilePreferencesPanel.btnExportProfile.errorMessage",
+//                      p->getName(),
+//                      chooser->getSelectedFile()->getPath(),
+//                      ex.getLocalizedMessage()),
+//              tr("ProfilePreferencesPanel.btnExportProfile.errorTitle"),
+//              JOptionPane.ERROR_MESSAGE);
+      QMessageBox::critical(this, tr("Error exporting profile"), tr("Unable to export profile {0} to {1}.\n{2}\nSee logs for more details.").arg(p->getName()).arg(chooser->getSelectedFile()->getPath()).arg( ex.getLocalizedMessage()));
+  }
+ }
 #endif
 }
 
@@ -518,41 +542,53 @@ QString ProfilesTable::getToolTipText(QMouseEvent *e)
     apd.setLocationRelativeTo(this);
     apd.setVisible(true);
 #endif
+    AddProfileDialog* apd = new AddProfileDialog(this, true,true);
+    apd->setVisible(true);
 }
 
 /*private*/ void ProfilePreferencesPanel::btnDeleteProfileActionPerformed(ActionEvent* evt)
 {
-#if 0
- QModelIndexList mil = profilesTbl->selectedIndexes();
- QVector<Profile*> profiles =  QVector<Profile*>(this->profilesTbl.mil.count());
-    for (int row : this->profilesTbl.getSelectedRows()) {
-        profiles.add(ProfileManager::defaultManager().getAllProfiles().get(row));
-    }
-    for (Profile deletedProfile : profiles) {
-        int result = JOptionPane.showOptionDialog(this,
-                tr("ProfilePreferencesPanel.btnDeleteProfile.dlgMessage", deletedProfile.getName()), // NOI18N
-                tr("ProfilePreferencesPanel.btnDeleteProfile.dlgTitle", deletedProfile.getName()), // NOI18N
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null, // use default icon
-                new String[]{
-                    tr("ProfilePreferencesPanel.btnDeleteProfile.text"), // NOI18N
-                    tr("AddProfileDialog.btnCancel.text") // NOI18N
-                },
-                JOptionPane.CANCEL_OPTION
-        );
-        if (result == JOptionPane.OK_OPTION) {
-            if (!FileUtil.delete(deletedProfile.getPath())) {
-                log.warn("Unable to delete profile directory {}", deletedProfile.getPath());
-                JOptionPane.showMessageDialog(this,
-                        tr("ProfilePreferencesPanel.btnDeleteProfile.errorMessage", deletedProfile.getPath()),
-                        tr("ProfilePreferencesPanel.btnDeleteProfile.errorMessage"),
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            ProfileManager::defaultManager().removeProfile(deletedProfile);
-            log.info("Removed profile \"{}\" from {}", deletedProfile.getName(), deletedProfile.getPath());
-            profilesTbl.repaint();
-        }
+#if 1
+ QModelIndexList mil = profilesTbl->selectionModel()->selectedIndexes();
+
+
+ QVector<Profile*> profiles =  QVector<Profile*>(mil.count());
+ for (int i; i < mil.count(); i++)
+ {
+  Profile* profile = VPtr<Profile>::asPtr(mil.at(i).data(Qt::UserRole));
+        profiles.append(profile);
+ }
+ foreach (Profile* deletedProfile, profiles) {
+//        int result = JOptionPane.showOptionDialog(this,
+//                tr("ProfilePreferencesPanel.btnDeleteProfile.dlgMessage", deletedProfile.getName()), // NOI18N
+//                tr("ProfilePreferencesPanel.btnDeleteProfile.dlgTitle", deletedProfile.getName()), // NOI18N
+//                JOptionPane.OK_CANCEL_OPTION,
+//                JOptionPane.QUESTION_MESSAGE,
+//                null, // use default icon
+//                new String[]{
+//                    tr("ProfilePreferencesPanel.btnDeleteProfile.text"), // NOI18N
+//                    tr("AddProfileDialog.btnCancel.text") // NOI18N
+//                },
+//                JOptionPane.CANCEL_OPTION
+//        );
+//        if (result == JOptionPane.OK_OPTION) {
+     int result = QMessageBox::question(this, tr("Delete"),tr("Are you sure want to delete profile %1?\nThis will cause all profile contents to be lost." ).arg(deletedProfile->getName()),
+       QMessageBox::Ok | QMessageBox::Cancel);
+     if(result == QMessageBox::Cancel)
+     {
+       if (!FileUtil::_delete(deletedProfile->getPath()))
+       {
+        log->warn(tr("Unable to delete profile directory %1").arg( deletedProfile->getPath()->getPath()));
+//                JOptionPane.showMessageDialog(this,
+//                        tr("ProfilePreferencesPanel.btnDeleteProfile.errorMessage", deletedProfile.getPath()),
+//                        tr("ProfilePreferencesPanel.btnDeleteProfile.errorMessage"),
+//                        JOptionPane.ERROR_MESSAGE);
+        QMessageBox::critical(this, tr("Error"), tr("Unable to delete profile %1}.").arg(deletedProfile->getPath()->getPath()));
+       }
+       ProfileManager::defaultManager()->removeProfile(deletedProfile);
+       log->info(tr("Removed profile \"%1\" from %2").arg( deletedProfile->getName()).arg(deletedProfile->getPath()->getPath()));
+            //profilesTbl.repaint();
+      }
     }
 #endif
 }
@@ -596,13 +632,14 @@ QString ProfilesTable::getToolTipText(QMouseEvent *e)
 
 /*private*/ void ProfilePreferencesPanel::btnCopyProfileActionPerformed(ActionEvent* evt)
 {
-#if 0
-    QModelIndexList mil = profilesTbl->selectedIndexes();
+#if 1
+    QModelIndexList mil = profilesTbl->selectionModel()->selectedIndexes();
+    Profile* profile = VPtr<Profile>::asPtr(mil.at(0).data(Qt::UserRole));
 
-    AddProfileDialog apd = new AddProfileDialog((Frame) SwingUtilities.getWindowAncestor(this), true, true);
-    apd.setSourceProfile(ProfileManager::defaultManager().getAllProfiles().get(profilesTbl.mil.at(0).row()));
-    apd.setLocationRelativeTo(this);
-    apd.setVisible(true);
+    AddProfileDialog* apd = new AddProfileDialog(this, true, true);
+    apd->setSourceProfile(profile);
+    apd->setLocationRelativeTo(this);
+    apd->setVisible(true);
 #endif
 }
 
@@ -652,7 +689,7 @@ QString ProfilesTable::getToolTipText(QMouseEvent *e)
 }
 
 //@Override
-/*public*/ void ProfilePreferencesPanel::valueChanged(ListSelectionEvent* e)
+/*public*/ void ProfilePreferencesPanel::valueChanged(QModelIndex)
 {
  QItemSelectionModel* selectionModel = profilesTbl->selectionModel();
  QModelIndexList mil = selectionModel->selectedRows();
@@ -673,11 +710,11 @@ QString ProfilesTable::getToolTipText(QMouseEvent *e)
   this->btnExportProfile->setEnabled(true);
   }
   else if (mil.count() > 1)
- {
-  this->btnDeleteProfile->setEnabled(true);
-  //foreach (int row : this->profilesTbl->getSelectedRows())
-  for(int i = 0; i << mil.count(); i++)
   {
+   this->btnDeleteProfile->setEnabled(true);
+   //foreach (int row : this->profilesTbl->getSelectedRows())
+   for(int i = 0; i << mil.count(); i++)
+   {
    int row = mil.at(i).row();
    Profile* p = ProfileManager::defaultManager()->getAllProfiles().at(row);
    if (p==(ProfileManager::defaultManager()->getActiveProfile()))
@@ -694,9 +731,9 @@ QString ProfilesTable::getToolTipText(QMouseEvent *e)
  {
   this->btnDeleteProfile->setEnabled(false);
   this->btnCopyProfile->setEnabled(false);
-        this->btnExportProfile->setEnabled(false);
-        this->btnActivateProfile->setEnabled(false);
-    }
+  this->btnExportProfile->setEnabled(false);
+  this->btnActivateProfile->setEnabled(false);
+ }
 }
 
 //@Override

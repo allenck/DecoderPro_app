@@ -1,14 +1,14 @@
 #ifndef POWERMANAGERBUTTON_H
 #define POWERMANAGERBUTTON_H
 
-#include <QPushButton>
+#include <QToolButton>
 #include "logger.h"
 
 class PropertyChangeEvent;
 class NamedIcon;
 class PowerPane;
 class PowerManager;
-class PowerManagerButton : public QPushButton
+class PowerManagerButton : public QToolButton
 {
     Q_OBJECT
 public:
@@ -22,6 +22,7 @@ signals:
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
     void OnClicked();
+    void init();
 private:
     /*private*/ PowerPane* powerControl;// = new PowerPane();
     /*private*/ PowerManager* powerMgr;// = NULL;

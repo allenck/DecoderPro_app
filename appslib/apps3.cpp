@@ -68,7 +68,6 @@
   AppsBase(applicationName, configFileDef, args, parent)
 {
  log = new Logger("Apps3");
- //sp = NULL;
  // pre-GUI work
  //super(applicationName, configFileDef, args);
 

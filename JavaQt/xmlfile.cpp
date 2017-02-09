@@ -538,7 +538,7 @@ XmlFile::XmlFile(QObject *parent) :
  */
 /*static*/ /*public*/ QDomDocument XmlFile::newDocument(QDomElement root, QString dtd) {
     /*Document*/ doc = QDomDocument(root.tagName());
-    //doc.setDocType(new DocType(root.getName(), dtd));
+    //doc.setDocType(new DocType(root.tagName(), dtd));
     QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\"  encoding=\"UTF-8\"");
     doc.appendChild(xmlProcessingInstruction);
     xmlProcessingInstruction =  doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"/xml/XSLT/panelfile-2-9-6.xsl");

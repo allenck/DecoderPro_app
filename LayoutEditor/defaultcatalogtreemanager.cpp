@@ -90,16 +90,22 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
 
     // return existing if there is one
     CatalogTree* s;
-    if ( (userName!="") && ((s = getByUserName(userName)) != NULL)) {
+    if ( (userName!="") && ((s = getByUserName(userName)) != NULL))
+    {
+#if 1
         if (getBySystemName(systemName)!=s)
-            log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
+            //log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
+#endif
         return s;
     }
-    if ( (s = getBySystemName(systemName)) != NULL) {
+    if ( (s = getBySystemName(systemName)) != NULL)
+    {
+#if 1
         if ((s->getUserName() == NULL) && (userName != NULL))
             s->setUserName(userName);
         else if (userName != NULL) log->warn("Found memory via system name ("+systemName
                                 +") with non-NULL user name ("+userName+")");
+#endif
         return s;
     }
 
@@ -107,7 +113,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     s = createNewCatalogTree(systemName, userName);
 
     // save in the maps
-    Register(s);
+    Register((NamedBean*)s);
     return s;
 }
 
@@ -142,7 +148,9 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
         case CatalogTree::SOUND:
         case CatalogTree::SCRIPT:
         case CatalogTree::NOFILTER:
+#if 1
                 return (CatalogTree*)new CatalogTreeIndex(systemName, userName);
+#endif
             default:
                 log->error("Bad systemName: "+systemName+" (userName= "+userName+")");
         }
@@ -150,7 +158,9 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
 #if 1
     else if (systemName.at(1) == CatalogTree::FILESYS) {
         CatalogTreeFS* catTree = NULL;
-        switch (systemName.at(0).toLatin1() ) {
+        switch (systemName.at(0).toLatin1() )
+        {
+#if 1
             case CatalogTree::IMAGE:
                 catTree = new CatalogTreeFS(systemName, userName);
                 catTree->setFilter(CatalogTreeManager::IMAGE_FILTER);
@@ -165,6 +175,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
                 return (CatalogTree*)catTree;
             case CatalogTree::NOFILTER:
             return(CatalogTree*) new CatalogTreeFS(systemName, userName);
+#endif
             default:
                 log->error("Bad systemName: "+systemName+" (userName= "+userName+")");
         }

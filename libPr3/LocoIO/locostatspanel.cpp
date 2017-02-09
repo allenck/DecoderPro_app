@@ -111,7 +111,7 @@ LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
     pr2Panel = new QWidget();
     QHBoxLayout* pr2PanelLayout;
     pr2Panel->setLayout(pr2PanelLayout = new QHBoxLayout);//(pr2Panel, BoxLayout.X_AXIS));
-    pr2PanelLayout->addWidget(new QLabel(tr("LabelSerialNumber")));
+    pr2PanelLayout->addWidget(new QLabel(tr("Serial Number")));
     pr2PanelLayout->addWidget(serial);
     pr2PanelLayout->addWidget(new QLabel(" PR2 Status:"));
     pr2PanelLayout->addWidget(status);
@@ -125,11 +125,11 @@ LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
     ms100Panel = new QWidget();
     QHBoxLayout* ms100PanelLayout;
     ms100Panel->setLayout(ms100PanelLayout = new QHBoxLayout);//(ms100Panel //, BoxLayout.X_AXIS));
-    ms100PanelLayout->addWidget(new QLabel(tr("LabelGoodCnt")));
+    ms100PanelLayout->addWidget(new QLabel(tr("Good Cnt")));
     ms100PanelLayout->addWidget(goodMsgCnt);
-    ms100PanelLayout->addWidget(new QLabel(tr("LabelBadCnt")));
+    ms100PanelLayout->addWidget(new QLabel(tr("Bad Cnt")));
     ms100PanelLayout->addWidget(badMsgCnt);
-    ms100PanelLayout->addWidget(new QLabel(tr("LabelMS100Status")));
+    ms100PanelLayout->addWidget(new QLabel(tr("MS100 Status")));
     ms100PanelLayout->addWidget(ms100status);
 
     thisLayout->addWidget(rawPanel);
@@ -140,7 +140,7 @@ LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
     QWidget* panel = new QWidget();
     QHBoxLayout* panelLayout;
     panel->setLayout(panelLayout = new QHBoxLayout); //(panel, BoxLayout.X_AXIS));
-    thisLayout->addWidget(updateButton);
+    panelLayout->addWidget(updateButton, 0, Qt::AlignHCenter);
     thisLayout->addWidget(panel);
 
     // install "update" button handler
@@ -247,8 +247,7 @@ void LocoStatsPanel::report(QString msg) {
   updatePending = false;
 
  }
- else if (updatePending
-            && (msg->getOpCode() == LnConstants::OPC_PEER_XFER))
+ else if (updatePending && (msg->getOpCode() == LnConstants::OPC_PEER_XFER))
  {
   try
   {

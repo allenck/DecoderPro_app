@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
  log = new Logger("MainWindow");
  statusLabel = new QLabel("idle");
  //modePane = new ProgServiceModeComboBox();
- qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+ qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid pink; }");
 
  editor = NULL;
  panelEditor = NULL;

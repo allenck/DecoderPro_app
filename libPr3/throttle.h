@@ -412,7 +412,7 @@ public:
         virtual BasicRosterEntry* getRosterEntry()  {return NULL;}
 
 signals:
-    
+    void propertyChange(PropertyChangeEvent*);
 public slots:
     
 };

@@ -29,6 +29,7 @@ public:
     NamedIcon* getIcon();
     void setSelectedIcon(NamedIcon*);
     void setText(const QString &text);
+    /*public*/ QPoint getLocationOnScreen();
 
 signals:
 //    void selected(bool);

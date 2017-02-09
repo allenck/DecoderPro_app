@@ -5,6 +5,8 @@
 #include "throttlespreferences.h"
 #include "listthrottles.h"
 #include "throttlespreferencespane.h"
+#include "throttleslistpanel.h"
+#include <QBoxLayout>
 
 //ThrottleFrameManager::ThrottleFrameManager(QObject *parent) :
 //    QObject(parent)
@@ -34,6 +36,7 @@ QObject(parent) // can only be created by instance() => /*private*/
 {
 //    throttleCycler = new ThrottleCyclingKeyListener();
  throttlesListPanel = NULL;
+ throttlesListFrame = NULL;
  throttleWindows = new QList<ThrottleWindow*>(/*0*/);
 
  if(InstanceManager::getDefault("ThrottlesPreferences")==NULL)
@@ -184,30 +187,29 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
     }
 }
 #endif
-/*public*/ ListThrottles* ThrottleFrameManager::getThrottlesListPanel() {
+/*public*/ ThrottlesListPanel* ThrottleFrameManager::getThrottlesListPanel() {
     return throttlesListPanel ;
 }
 
 /*private*/ void ThrottleFrameManager::buildThrottlePreferencesFrame()
 {
 #if 1
- throttlePreferencesFrame = new JmriJFrame(tr("ThrottlePreferencesFrameTitle"));
+ throttlePreferencesFrame = new JmriJFrame(tr("Throttles preferences"));
  ThrottlesPreferencesPane* tpP = new ThrottlesPreferencesPane();
-//    throttlePreferencesFrame.add(tpP);
-//    tpP.setContainer(throttlePreferencesFrame);
- throttlePreferencesFrame->setCentralWidget(tpP);
+ QVBoxLayout* tpPLayout = new QVBoxLayout(tpP);
+ tpPLayout->addWidget(tpP);
+ tpP->setContainer(throttlePreferencesFrame);
  throttlePreferencesFrame->setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
+ throttlePreferencesFrame->setCentralWidget(tpP);
  throttlePreferencesFrame->pack();
 #endif
 }
 
 /*private*/ void ThrottleFrameManager::buildThrottleListFrame() {
-//    throttlesListFrame = new JmriJFrame(tr("ThrottleListFrameTile"));
-//    throttlesListPanel = new ThrottlesListPanel();
-//    throttlesListFrame->setContentPane(throttlesListPanel);
-//    throttlesListFrame = new ListThrottles();
-//    throttlesListFrame->pack();
-//    throttlesListFrame = new ListThrottles(); //causes loop! because listThrottle calls this!
+ throttlesListFrame = new JmriJFrame(tr("Local JMRI throttles"));
+ throttlesListPanel = new ThrottlesListPanel();
+ throttlesListFrame->setContentPane(throttlesListPanel);
+ throttlesListFrame->adjustSize();
 }
 
 /*public*/ void ThrottleFrameManager::showThrottlesList() {

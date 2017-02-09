@@ -96,7 +96,7 @@ void DeleteRosterGroupAction::common()
 //             null,
 //             Roster.instance().getRosterGroupList().toArray(),
 //             null);
-  QComboBox* box;
+  QComboBox* box = new QComboBox();
   box->addItems( Roster::instance()->getRosterGroupList().toList());
   InputDialog* dlg = new InputDialog("<html><b>Delete roster group</b><br>Roster entries in the group are not deleted.</html>", box, "Delete Roster Group");
   group = dlg->value();
@@ -125,7 +125,7 @@ void DeleteRosterGroupAction::common()
 bool DeleteRosterGroupAction::userOK(QString entry) {
  QStringList titles = QStringList() << "Delete" << "Cancel";
     // TODO: I18N
-    // TODO: replace "Are you sure..." string with JPanel containing string
+    // TODO: replace "Arefae you sure..." string with JPanel containing string
     //       and checkbox silencing this message in the future
 //    return (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(_who,
 //            "Are you sure you want to delete roster group \"" + entry + "\"?",

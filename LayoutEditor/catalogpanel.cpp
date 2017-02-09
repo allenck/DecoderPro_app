@@ -230,6 +230,7 @@ void CatalogPanel::common()
 */
 /*public*/ void CatalogPanel::addTree(CatalogTree* tree)
 {
+#if 0
  QString name = tree->getSystemName();
  for (int i=0; i<_branchModel->size(); i++)
  {
@@ -238,6 +239,7 @@ void CatalogPanel::common()
    return;
   }
  }
+#endif
 //    addTreeBranch((CatalogTreeNode*)((AbstractCatalogTree*)tree)->getRoot());
  _branchModel->append(tree);
     //_model->reload();

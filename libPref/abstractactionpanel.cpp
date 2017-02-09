@@ -8,7 +8,8 @@
 #include "abstractactionmodel.h"
 #include "jframe.h"
 #include "createbuttonmodel.h"
-
+#include <QLabel>
+#include <QTimer>
 
 //AbstractActionPanel::AbstractActionPanel(QWidget *parent) :
 //    PreferencesPanel(parent)
@@ -38,6 +39,13 @@
  dirty = false;
  log = new Logger("AbstractActionPanel");
  this->removeButtonKey = removeButtonKey;
+ this->addButtonKey = addButtonKey;
+
+ QTimer::singleShot(10, this, SLOT(init()));
+ }
+
+/*protected*/ void AbstractActionPanel::init()
+{
 
  //rb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
@@ -48,10 +56,11 @@
  // add existing items
  QPushButton* addButton = new QPushButton(/*tr*/(addButtonKey));
  QWidget* panel = new QWidget();  // button is a horizontal item too; expands to fill BoxLayout
- FlowLayout* panelLayout;
- panel->setLayout(panelLayout = new FlowLayout());
- panelLayout->addWidget(addButton);
- thisLayout->addWidget(panel);
+ QVBoxLayout* panelLayout;
+ panel->setLayout(panelLayout = new QVBoxLayout());
+ panelLayout->addWidget(new QLabel(getLabelKey()),0,Qt::AlignHCenter);
+ panelLayout->addWidget(addButton,0, Qt::AlignCenter);
+ thisLayout->addWidget(panel, 0, Qt::AlignTop);
 //    addButton.addActionListener((ActionEvent e) -> {
 //        addItem();
 //    });
@@ -86,7 +95,7 @@
 {
  /*synchronized (self) */
  {
-  thisLayout->addWidget(new Item(removeButtonKey, this));
+  thisLayout->addWidget(new Item(removeButtonKey, this), 0, Qt::AlignCenter);
   //validate();
   update();
   if (getTopLevelAncestor() != NULL)
@@ -96,6 +105,7 @@
   this->dirty = true;
  }
 }
+
 void AbstractActionPanel::propertyChange(PropertyChangeEvent* e)
 {
  if (e->getPropertyName()==("length"))
@@ -172,8 +182,8 @@ void Item::common(AbstractActionPanel* panel)
  log = new Logger("Item");
  //this->removeButtonKey = removeButtonKey;
  removeButton = new QPushButton((removeButtonKey));
- FlowLayout* thisLayout;
- setLayout(thisLayout = new FlowLayout());
+ QHBoxLayout* thisLayout;
+ setLayout(thisLayout = new QHBoxLayout());
  thisLayout->addWidget(removeButton);
  //removeButton->addActionListener(this);
  connect(removeButton, SIGNAL(clicked()), this, SLOT(actionPerformed()));
@@ -186,11 +196,13 @@ void Item::common(AbstractActionPanel* panel)
 //            dirty = true;
 //        }
 //    });
- connect(selections, SIGNAL(currentIndexChanged(QString)), this, SLOT(On_selections_currentIndexChanged(QString)));
+ connect(selections, SIGNAL(currentIndexChanged(int)), this, SLOT(On_selections_currentIndexChanged(int)));
 }
-void Item::On_selections_currentIndexChanged(QString)
+
+void Item::On_selections_currentIndexChanged(int selection)
 {
  //if (egetStateChange() == ItemEvent.SELECTED) {
+ QString classname = AbstractActionModel::classList().at(selection);
  panel->dirty = true;
 }
 
@@ -208,9 +220,12 @@ void Item::updateCombo()
  QString current = selections->currentText();
  selections->clear();
  QStringList items = AbstractActionModel::nameList();
+ QStringList classes = AbstractActionModel::classList();
+ int ix = 0;
  foreach (QString item, items)
  {
-  selections->addItem(item);
+  selections->addItem(item, classes.at(ix));
+  ix++;
  }
  //if (Arrays.asList(items).contains(current))
  if(items.contains(current))

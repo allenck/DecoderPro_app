@@ -1004,6 +1004,14 @@ void Apps::On_handleQuit()
  pane2Layout->addWidget(new QLabel(line2()),0,Qt::AlignLeft);
  pane2Layout->addWidget(new QLabel(line3()),0,Qt::AlignLeft);
 
+ if (ProfileManager::getDefault()!=NULL && ProfileManager::getDefault()->getActiveProfile() != NULL)
+ {
+  pane2Layout->addWidget(new QLabel(tr("Active Profile:").arg(ProfileManager::getDefault()->getActiveProfile()->getName())));
+ }
+ else
+ {
+  pane2Layout->addWidget(new QLabel(tr("Failed Profile:")));
+ }
  // add listerner for Com port updates
  //ConnectionStatus::instance().addPropertyChangeListener(this);
  connect(ConnectionStatus::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,  SLOT(propertyChange(PropertyChangeEvent*)));

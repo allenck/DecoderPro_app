@@ -8,6 +8,9 @@
 #include "addprofiledialog.h"
 #include "libpref_global.h"
 
+class QDir;
+class QuaZip;
+class QuaZipFile;
 class PropertyChangeEvent;
 class File;
 class Profile;
@@ -16,7 +19,7 @@ class LIBPREFSHARED_EXPORT ProfileManager : public QObject
     Q_OBJECT
 public:
     explicit ProfileManager(QObject *parent = 0);
-    /*public*/  static ProfileManager* defaultManager();
+    QT_DEPRECATED/*public*/  static ProfileManager* defaultManager();
     /*public*/ static ProfileManager* getDefault();
     /*public*/ File* getConfigFile();
     /*public*/ void setConfigFile(File* configFile);
@@ -31,6 +34,7 @@ public:
     /*public*/ Profile* getProfiles(int index);
     /*public*/ void setProfiles(Profile* profile, int index);
     /*public*/ bool migrateToProfiles(QString configFilename) /*throws IllegalArgumentException, IOException*/;
+    /*public*/ void _export(Profile* profile, File* target, bool exportExternalUserFiles, bool exportExternalRoster); //throws IOException, JDOMException
     /*public*/ void setAutoStartActiveProfile(bool autoStartActiveProfile);
     /*public*/ Profile* createDefaultProfile() /*throws IllegalArgumentException, IOException*/;
     /*public*/ Profile* migrateConfigToProfile(File* config, QString name) /*throws IllegalArgumentException, IOException*/;
@@ -79,10 +83,17 @@ private:
     /*private*/ void writeProfiles() /*throws IOException*/;
     /*private*/ void findProfiles();
     /*private*/ void findProfiles(File* searchPath);
+    QuaZip* zip;
+    /*private*/ bool exportDirectory(QuaZipFile* zip, File* source, QString root); //throws IOException
+    /*private*/ bool exportFile(QuaZipFile* zip, File* source, QString root); //throws IOException
+    /*private*/ QString relativeName(File* file, QString root);
+
     class FileFilter1 : public FileFilter
     {
+     File* pathname;
     public:
      /*public*/ bool accept(File* pathname);
+     /*public*/ QString getDescription();
 
      friend class ProfileManager;
     };

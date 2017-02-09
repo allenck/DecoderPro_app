@@ -2,6 +2,7 @@
 #define DEFAULTLOGIXMANAGER_H
 #include "abstractmanager.h"
 #include "logixmanager.h"
+#include "libPr3_global.h"
 
 class DecimalFormat;
 class Logix;

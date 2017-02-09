@@ -2,6 +2,7 @@
 #define SIGNALMASTLOGICMANAGER_H
 #include "manager.h"
 #include "exceptions.h"
+#include "libPr3_global.h"
 /**
  *
  * <hr>

@@ -16,6 +16,7 @@
 #include "indexedpairvariablevalue.h"
 #include "speedtablevarvalue.h"
 #include "qualifieradder.h"
+#include "xmlinclude.h"
 
 VariableTableModel::VariableTableModel(QObject *parent) :
     AbstractTableModel(parent)
@@ -290,6 +291,10 @@ _readButtons = new QVector<QPushButton*>();
  // decode and handle specific types
  QDomElement child;
  VariableValue* v = NULL;
+ if(!(child=e.firstChildElement("xi:include")).isNull())
+ {
+  e.replaceChild(XmlInclude::processInclude(child), child);
+ }
  if ( !(child = e.firstChildElement("decVal")).isNull())
  {
   v = processDecVal(child, name, comment, readOnly, infoOnly, writeOnly, opsOnly, CV, mask, item);
@@ -331,6 +336,7 @@ _readButtons = new QVector<QPushButton*>();
  }
  else
  {
+  log->error(tr("VariableTableModel: variable type %1 is not valid").arg(e.firstChild().toElement().tagName()));
   reportBogus();
   return;
  }
@@ -496,6 +502,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
 
     if (iv == NULL) {
        // trouble reporting
+     log->error("createIndexedVariableFromElement is null");
        reportBogus();
         return -1;
     }
@@ -570,16 +577,13 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
     return v;
 }
 
-/*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name,
-                                                                QString comment, bool readOnly, bool infoOnly,
-                                                                bool writeOnly, bool opsOnly, QString CV, QString mask,
-                                                                QString item) throw (NumberFormatException)
+#if 0 // old code
+/*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException)
 {
  VariableValue* v;
  //@SuppressWarnings("unchecked")
  QDomNodeList l = child.elementsByTagName("enumChoice");
- EnumVariableValue* v1 = new EnumVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly,
-                                                  CV, mask, 0, l.size() - 1, _cvModel->allCvMap(), _status, item);
+ EnumVariableValue* v1 = new EnumVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, 0, l.size() - 1, _cvModel->allCvMap(), _status, item);
 
  v = v1; // v1 is of EnunVariableValue type, so doesn't need casts
  v1->nItems(l.size());
@@ -603,6 +607,71 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
  v1->lastItem();
  return v;
 }
+#else
+/*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException)
+{
+ int count = 0;
+ //IteratorIterable<Content> iterator = child.getDescendants();
+ QDomNodeList nl = child.childNodes();
+ //while (iterator.hasNext())
+ for(int i = 0; i < nl.count(); i++)
+ {
+  //Object ex = iterator.next();
+  QDomNode node = nl.at(0);
+  //if (ex instanceof Element)
+  if(!node.toElement().isNull())
+  {
+   //if (((Element) ex).getName().equals("enumChoice"))
+   if(node.toElement().tagName() == "enumChoice")
+   {
+    count++;
+   }
+  }
+ }
+
+ VariableValue* v;
+ EnumVariableValue* v1 = new EnumVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, 0, count, _cvModel->allCvMap(), _status, item);
+ v = v1; // v1 is of EnunVariableValue type, so doesn't need casts
+
+ v1->nItems(count);
+ handleENumValChildren(child, v1);
+ v1->lastItem();
+ return v;
+}
+
+/**
+ * Recursively walk the child enumChoice elements, working through the
+ * enumChoiceGroup elements as needed.
+ */
+/*protected*/ void VariableTableModel::handleENumValChildren(QDomElement e, EnumVariableValue* var) {
+    //List<Element> local = e.getChildren();
+ QDomNodeList local = e.childNodes();
+    for (int k = 0; k < local.size(); k++) {
+        //Element el = local.get(k);
+     QDomElement el = local.at(k).toElement();
+        if (el.tagName()==("enumChoice")) {
+            QString valAttr = el.attribute("value");
+            if (valAttr == "")
+            {
+                //var->addItem(LocaleSelector.getAttribute(el, "choice"));
+             var->addItem(el.attribute("choice"));
+            }
+            else
+            {
+//                var->addItem(LocaleSelector.getAttribute(el, "choice"),
+//                        Integer.parseInt(valAttr.getValue()));
+             var->addItem(el.attribute("choice"),el.text().toInt());
+            }
+        } else if (el.tagName()==("enumChoiceGroup"))
+        {
+            //var->startGroup(LocaleSelector.getAttribute(el, "name"));
+         var->startGroup(el.attribute("name"));
+            handleENumValChildren(el, var);
+            var->endGroup();
+        }
+    }
+}
+#endif
 
 /*protected*/ VariableValue* VariableTableModel::processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) {
     VariableValue* v;
@@ -1071,6 +1140,20 @@ void VariableTableModel::reportBogus() {
         if (((rowVector->at(i)))->getState() == CvValue::EDITED ) return true;
     }
     return false;
+}
+
+/*public*/ void VariableTableModel::resetStatus(int newStatus)
+{
+ int len = rowVector->size();
+ for (int i=0; i< len; i++)
+ {
+  if (((rowVector->at(i)))->getState() == CvValue::EDITED )
+  {
+   rowVector->at(i)->setState(newStatus);
+  }
+ }
+ _cvModel->resetDecoderDirty(newStatus);
+
 }
 
 /*public*/ VariableValue* VariableTableModel::findVar(QString name) {

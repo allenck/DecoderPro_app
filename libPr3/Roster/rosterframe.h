@@ -11,15 +11,18 @@
 #include "instancemanager.h"
 #include <QLabel>
 #include "roster.h"
-#include "rostergroupspanel.h"
 #include "exportrosteritemaction.h"
 #include "copyrosteritemaction.h"
+//#include "twopanetbwindow.h"
 
 namespace Ui {
 class RosterFrame;
 }
 typedef void (*NoParm)();
 
+class RosterTableModel;
+class RosterGroupSelector;
+class RosterGroupsPanel;
 class DecoderFile;
 class UserPreferencesManager;
 class PropertyChangeEvent;
@@ -48,12 +51,19 @@ public:
     static QList<RosterFrame*> frameInstances;// = new ArrayList<RosterFrame>();
     /*public*/ QMenuBar* getMenu();
     /*public*/ void setAllowQuit(bool allowQuit);
+    void additionsToToolBar();
+    /*public*/ void hideBottomPane(bool hide);
+    QSignalMapper* currentMapper;
+    /*public*/ void hideGroupsPane(bool hide);
+    /*public*/ QString getSelectedRosterGroup();
+    /*public*/ QList<RosterEntry*>* getSelectedRosterEntries();
+
 
 public slots:
     void On_ConnectionStatusPropertyChange(PropertyChangeEvent*);
     void On_InstanceManagerPropertyChange(PropertyChangeEvent*);
     void On_newLoco_clicked();
-    /*public*/ Q_INVOKABLE /*virtual*/ void remoteCalls(QStringList args);
+    /*public*/ Q_INVOKABLE virtual void remoteCalls(QStringList args);
 
 private:
     Ui::RosterFrame *ui;
@@ -68,7 +78,7 @@ private:
     QComboBox* cbProgrammers;
     ProgModeSelector* modePanel;
     QComboBox* cbProgMode;
-    UserPreferencesManager* p;
+    UserPreferencesManager* prefsMgr;
 //    ConnectionConfig* serModeProCon;// = NULL;
 //    ConnectionConfig* opsModeProCon;// = NULL;
     QLabel* programmerStatusLabel;
@@ -81,8 +91,8 @@ private:
  Logger* log;
  bool inStartProgrammer;// = false;
  RosterEntryUpdateListener* rosterEntryUpdateListener;
- void updateRow(int row, RosterEntry* re);
- void updateDetails();
+// void updateRow(int row, RosterEntry* re);
+// void updateDetails();
  bool bUpdating;
  void updateInfo();
  ConnectionConfig* serModeProCon;// = null;
@@ -96,19 +106,29 @@ private:
  void closeEvent(QCloseEvent *);
  void handleQuit(QCloseEvent* e);
  void saveWindowDetails();
- bool hideGroups;// = false;
+ bool _hideGroups;// = false;
  bool _hideRosterImage;// = false;
  //QHash<QString, NoParm>* slotTable;
  bool checkIfEntrySelected();
+ QAction* newLocoAct;
+ RosterGroupSelector* rosterGroupSource;
+ RosterTableModel* model;
+ QSortFilterProxyModel* sorter;
+ QAction* contextService;
+ QAction* contextOps;
+ QAction* contextEdit;
+ QList<RosterEntry*>* selectedRosterEntries;
+ void editMediaButton();
 
 private slots:
-    void on_tableWidget_cellClicked(int row, int col);
+//    void on_tableWidget_cellClicked(int row, int col);
     void on_btnLabelsMedia_clicked();
     void on_btnThrottle_clicked();
 //    void on_menuWindow_aboutToShow();
     void on_btnProgram_clicked();
     void on_actionHide_Show_Summary_Panel_triggered();
     void on_actionHide_Show_Roster_Image_triggered();
+    void On_actionPreferences_triggered();
     void on_actionProgramming_Track_triggered();
     void on_actionProgramming_On_Main_triggered();
     void on_actionEdit_Only_triggered();
@@ -116,17 +136,24 @@ private slots:
     void on_actionNew_Throttle_triggered();
     void on_togglePower_clicked();
     void on_actionDelete_Loco_triggered();
-    void on_tableWidget_cellChanged(int, int);
+//    void on_tableWidget_cellChanged(int, int);
     void propertyChange(PropertyChangeEvent* e);
     void On_cbProgrammers_currentIndexChanged(QString);
     void updateProgMode();
     void On_splitterMoved(int, int);
+    void On_splitter2Moved(int, int);
     void On_Quit();
+    void on_currentMapped(QAction*);
+    void on_currentMapped(QObject*);
+    void on_groupChange(PropertyChangeEvent*);
+    void on_RosterChange(PropertyChangeEvent*);
+    void on_tableClicked(QModelIndex);
+    void actionPerformed(QObject*); // handles actions in popup menu;
+
 
 protected:
     /*protected*/ bool _allowQuit;// = true;
-    /*protected*/ /*final*/ void buildWindow();
-    /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+    /*protected*/ void firePropertyChange(QString prefsMgr, QVariant old, QVariant n);
     /*protected*/ QVector<RosterEntry*> selectRosterEntry(QString rosterGroup);
     /*protected*/ void buildGUI(QString menubarFile, QString toolbarFile);
     /*protected*/ void addMainMenuBar(QString menuFile);
@@ -135,7 +162,11 @@ protected:
     /*protected*/ void addMainStatusBar(); // from TwoPaneTbWindow
     /*protected*/ JmriAbstractAction* getNewWindowAction();
     /*protected*/ JmriAbstractAction* newWindowAction;
-     /*protected*/ bool hideBottomPane;// = false;
+    /*protected*/ bool _hideBottomPane;// = false;
+    /*protected*/ void enableRosterGroupMenuItems(bool enable);
+    /*protected*/ void helpMenu(QMenuBar* menuBar, /*final*/ JFrame* frame);
+    /*protected*/ void deleteLoco();
+
 protected slots:
     /*protected*/ void startIdentifyLoco();
     /*protected*/ void selectLoco(int dccAddress, bool isLong, int mfgId, int modelId);
@@ -148,6 +179,12 @@ protected slots:
     /*protected*/ void startProgrammer(DecoderFile* decoderFile, RosterEntry* re, QString filename);
     /*protected*/ void newWindow();
     /*protected*/ void newWindow(JmriAbstractAction* action);
+    /*protected*/ void hideSummary();
+    /*protected*/ void hideGroups();
+    /*protected*/ void hideRosterImage();
+    virtual /*protected*/ /*final*/ void buildWindow();
+    /*protected*/ void showPopup(QPoint pos);
+
 
  friend class PwrListener;
  friend class MyIdentifyLoco;
@@ -228,6 +265,7 @@ signals:
         //idloco.setSelected(false);
     }
 };
+#if 0
 class RosterEntryUpdateListener : public PropertyChangeListener
 {
  Q_OBJECT
@@ -240,7 +278,7 @@ private:
     RosterFrame* f;
 protected:
 };
-
+#endif
 /*static*/ class ExportRosterItem : public ExportRosterItemAction
 {
 

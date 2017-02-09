@@ -1,5 +1,6 @@
 #include "abstractcatalogtree.h"
 #include "catalogtreenode.h"
+#include "abstractnamedbean.h"
 
 //AbstractCatalogTree::AbstractCatalogTree(QObject *parent) :
 //    DefaultTreeModel(parent)
@@ -30,6 +31,8 @@
  log = new Logger("AbstractCatalogTree");
  mUserName = username;
  mSystemName = sysname.toUpper();
+ bean->setSysName(sysname);
+ bean->setUserName(username);
 }
 AbstractCatalogTree::~AbstractCatalogTree()
 {
@@ -79,6 +82,7 @@ AbstractCatalogTree::~AbstractCatalogTree()
  QString old = this->comment;
  this->comment = comment;
  emit propertyChange("Comment", old, comment);
+ emit(propertyChange(new PropertyChangeEvent((QObject*)this, "Comment", old, comment)));
 }
 
 /*public*/ QString AbstractCatalogTree::getDisplayName()
@@ -173,6 +177,7 @@ AbstractCatalogTree::~AbstractCatalogTree()
     mUserName = s;
     //firePropertyChange("UserName", old, s);
     emit propertyChange("UserName", QVariant(old), QVariant(s));
+    emit(propertyChange(new PropertyChangeEvent(this, "UserName", old, s)));
 }
 
 

@@ -9,6 +9,7 @@
 #include <QFileInfo>
 #include "file.h"
 
+
 AbstractRosterItemAction::AbstractRosterItemAction(QObject *parent) :
     JmriAbstractAction("<none>", parent)
 {

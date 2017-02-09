@@ -33,7 +33,7 @@
 PaneProgDp3Action::PaneProgDp3Action()
  : JmriAbstractAction("New Loco", (WindowInterface*)NULL)
 {
-
+ init();
 }
 
 PaneProgDp3Action::~PaneProgDp3Action(){}
@@ -89,6 +89,7 @@ PaneProgDp3Action::~PaneProgDp3Action(){}
 
 void PaneProgDp3Action::init()
 {
+ log = new Logger("PaneProgDp3Action");
  modePane = new ProgServiceModeComboBox();
  statusLabel = new QLabel(tr("Idle")); // NOI18N
  log = new Logger("PaneProgDp3Action");
@@ -114,6 +115,7 @@ void PaneProgDp3Action::init()
  extendAddr = NULL;
  addMode = NULL;
  teststatus = 0;
+ f = NULL;
 
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
@@ -173,18 +175,19 @@ void PaneProgDp3Action::init()
   QVBoxLayout* topPanelLayout = new QVBoxLayout(topPanel);
   topPanelLayout->addWidget(modePane);
   topPanelLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  ((BorderLayout*)f->getContentPane()->layout())->addWidget(topPanel, BorderLayout::North);
+  QLayout* l = f->getContentPane()->layout();
+  ((QVBoxLayout*)f->getContentPane()->layout())->addWidget(topPanel, /*BorderLayout::North*/0, Qt::AlignTop);
   //f.getContentPane().add(modePane);
   //f.getContentPane().add(new JSeparator(javax.swing.SwingConstants.HORIZONTAL));
 
 //  combinedLocoSelTree->setAlignmentX(JLabel.CENTER_ALIGNMENT);
-  ((BorderLayout*)f->getContentPane()->layout())->addWidget(combinedLocoSelTree, BorderLayout::Center);
+  ((QVBoxLayout*)f->getContentPane()->layout())->addWidget(combinedLocoSelTree, /*BorderLayout::Center*/0, Qt::AlignCenter);
 
   //f.getContentPane().add(new JSeparator(javax.swing.SwingConstants.HORIZONTAL));
   //basicRoster.setEnabled(false);
 //  statusLabel->setAlignmentX(JLabel.CENTER_ALIGNMENT);
   bottomPanelLayout->addWidget(statusLabel, BorderLayout::South);
-  ((BorderLayout*)f->getContentPane()->layout())->addWidget(bottomPanel, BorderLayout::South);
+  ((QVBoxLayout*)f->getContentPane()->layout())->addWidget(bottomPanel, /*BorderLayout::South*/0, Qt::AlignBottom);
 
   f->pack();
   if (log->isDebugEnabled()) log->debug("Tab-Programmer setup created"); // NOI18N

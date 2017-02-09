@@ -18,9 +18,7 @@
 ///*public*/ class DecVariableValue extends VariableValue
 //    implements ActionListener, PropertyChangeListener, FocusListener {
 
-/*public*/ DecVariableValue::DecVariableValue(QString name, QString comment, QString cvName, bool readOnly, bool infoOnly,
-                                              bool writeOnly, bool opsOnly, QString cvNum, QString mask, int minVal, int maxVal,
-                                              QMap<QString,CvValue*>* v, QLabel* status, QString stdname, QObject *parent)
+/*public*/ DecVariableValue::DecVariableValue(QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum, QString mask, int minVal, int maxVal, QMap<QString,CvValue*>* v, QLabel* status, QString stdname, QObject *parent)
     : VariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname)
 {
  //super(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname);
@@ -32,7 +30,7 @@
 
  _value->setObjectName("DecVar"+cvNum);
  log = new Logger("DecVariableValue");
- log->setDebugEnabled(true);
+ log->setDebugEnabled(false);
  oldContents = "";
  reps = new QList<QWidget*>();
  sliders = new QList<DecVarSlider*>();
@@ -238,6 +236,8 @@ else if (format==("hslider"))
  //try {
  oldVal = (_value->text()).toInt();
     //} catch (java.lang.NumberFormatException ex) { oldVal = -999; }
+ if (value < _minVal) value = _minVal;
+ if (value > _maxVal) value = _maxVal;
  if (log->isDebugEnabled()) log->debug("setValue with new value "+QString::number(value)+" old value "+QString::number(oldVal));
  if (oldVal != value)
  {
@@ -278,7 +278,7 @@ QColor DecVariableValue::getColor()
 }
 void DecVariableValue::setColor(QColor c)
 {
- log->debug(QString("set color: r(%1), g(%2), b(%3) CV=%4, state=%6, value= %5").arg(c.red()).arg(c.green()).arg(c.blue()).arg(getCvNum()).arg(getIntValue()).arg(_cvMap->value(getCvNum())->getState()));
+ if(log->isDebugEnabled()) log->debug(QString("set color: r(%1), g(%2), b(%3) CV=%4, state=%6, value= %5").arg(c.red()).arg(c.green()).arg(c.blue()).arg(getCvNum()).arg(getIntValue()).arg(_cvMap->value(getCvNum())->getState()));
  if (c.isValid())
  {
   _value->setBackground(c);
@@ -348,7 +348,7 @@ void DecVariableValue::setColor(QColor c)
   if (cv->getState() == STORED) setToWrite(false);
   if (cv->getState() == READ) setToRead(false);
   setState(cv->getState());
-  log->debug(cv->getStateColor());
+  if (log->isDebugEnabled()) log->debug(cv->getStateColor());
   //_value->setBackground(cv->getStateColor());
  }
  else if (e->getPropertyName()==("Value"))

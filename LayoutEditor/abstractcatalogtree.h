@@ -25,6 +25,7 @@ public:
     /*public*/ void setState(int s) throw (JmriException);
 signals:
    void propertyChange(QString propertyName, QVariant old, QVariant s);
+   void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
     /*private*/ QString mUserName;

@@ -3,11 +3,11 @@
 #include <QString>
 
 
-#define VER_BUILDNR 13479
-#define VER_DATE 20170119
-#define VER_HOUR 14
-#define VER_MINUTE 24
-#define VER_SECOND 28
+#define VER_BUILDNR 13481
+#define VER_DATE 20170122
+#define VER_HOUR 13
+#define VER_MINUTE 51
+#define VER_SECOND 15
 
 
 #endif  // LOCONETMONITOR_BUILD_NUMBER_H

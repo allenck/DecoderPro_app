@@ -54,21 +54,18 @@ void ConnectionsPreferencesPanel::common(TabbedPreferences* preferences)
  thisLayout->addWidget(tabWidget);
  log = new Logger("ConnectionPreferencesPanel");
  restartRequired = false;
- bDeleteFlag = false;
+  bDeleteFlag= false;
 
  configPanes = QList<JmrixConfigPane*>();
 
  this->preferences = preferences;
- deleteIconRollOver =  QIcon(
-            FileUtil::getExternalFilename("program:resources/icons/misc/gui3/Delete16x16.png"));
- deleteIcon =  QIcon(
-            FileUtil::getExternalFilename("program:resources/icons/misc/gui3/Delete-bw16x16.png"));
- ImageIcon* deleteImageIcon = new ImageIcon(FileUtil::getExternalFilename("program:resources/icons/misc/gui3/Delete-bw16x16.png"));
+ deleteIconRollOver =  QIcon(":/resources/icons/misc/gui3/Delete16x16.png");
+ deleteIcon =  QIcon(":/resources/icons/misc/gui3/Delete-bw16x16.png");
+ ImageIcon* deleteImageIcon = new ImageIcon(QImage(":/resources/icons/misc/gui3/Delete-bw16x16.png"));
  deleteButtonSize =  QSize(
             deleteImageIcon->getIconWidth() + 2,
             deleteImageIcon->getIconHeight() + 2);
- addIcon =  QIcon(
-            FileUtil::getExternalFilename("program:resources/icons/misc/gui3/Add16x16.png"));
+ addIcon =  QIcon(":/resources/icons/misc/gui3/Add16x16.png");
  if (this->preferences != NULL)
  {
   QObjectList connList = InstanceManager::configureManagerInstance()
@@ -80,16 +77,19 @@ void ConnectionsPreferencesPanel::common(TabbedPreferences* preferences)
     JmrixConfigPane* configPane = JmrixConfigPane::instance(x);
     addConnection(x, configPane);
    }
+   newConnectionTab(); // added ACK
   }
   else
   {
    addConnection(0, JmrixConfigPane::createNewPanel());
 
    //this->addChangeListener(addTabListener);
-   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(On_currentChanged(int)));
+   connect(tabWidget, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
    newConnectionTab();
    tabWidget->setCurrentIndex(0);
   }
+  connect(tabWidget, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
+
  }
 }
 
@@ -100,6 +100,7 @@ void ConnectionsPreferencesPanel::common(TabbedPreferences* preferences)
 }
 
 ///*transient*/ ChangeListener* addTabListener = (ChangeEvent evt) {
+
 void ConnectionsPreferencesPanel::On_currentChanged(int sel)
 {
     // This method is called whenever the selected tab changes
@@ -115,7 +116,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
    //QIcon icon = /*pane.getIconAt(sel);*/ tabIcon(sel);
    //if (icon == addIcon)
    QString _tabText = tabWidget->tabText(sel);
-   if(_tabText == "Add" && !bDeleteFlag)
+   if(_tabText == "" && !bDeleteFlag)
    {
     addConnectionTab();
     return;
@@ -124,6 +125,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  activeTab();
  bDeleteFlag = false;
 }
+
 /*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(const ConnectionsPreferencesPanel & other)
 {
  this->preferences = other.preferences;
@@ -219,6 +221,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  tabTitle->setLayout(tabTitleLayout);
  //tabTitle->setOpaque(false);
 // p->setName(title);
+ p->adjustSize();
 
  if (configPane->getDisabled())
  {
@@ -291,17 +294,21 @@ void CloseButtonListener::actionPerformed(ActionEvent *)
 
 void ConnectionsPreferencesPanel::addConnectionTab()
 {
- //this->removeTab(this->indexOfTab("Add"));
+ int curTab = this->indexOfTab("");
+
+ //this->removeTab(this->indexOfTab(""));
+ tabWidget->removeTab(curTab);
  addConnection(configPanes.size(), JmrixConfigPane::createNewPanel());
-// newConnectionTab();
+ newConnectionTab();
 
 }
 
 /*private*/ void ConnectionsPreferencesPanel::newConnectionTab()
 {
- int itab = tabWidget->addTab(new QWidget,  addIcon, tr("Add"));
+ int itab = tabWidget->addTab(new QWidget,  addIcon, "");
  tabWidget->setTabToolTip(itab, tr("Add New Connection"));
  tabWidget->setCurrentIndex(tabWidget->count() - 2);
+ log->debug(tr("Tab count = %1").arg(tabWidget->count()));
 }
 
 /*private*/ void ConnectionsPreferencesPanel::removeTab(/*ActionEvent* e, */int x)
@@ -319,10 +326,11 @@ void ConnectionsPreferencesPanel::addConnectionTab()
 //                JOptionPane.YES_NO_OPTION);
 //        if (n != JOptionPane.YES_OPTION) {
   bDeleteFlag = true;
-  if(tabWidget->tabText(x) != "Add")
+  if(tabWidget->tabText(x) != "")
   {
    if(QMessageBox::question(NULL, tr("Delete Connection"), tr("Do you really want to delete connection %1?").arg(tabWidget->tabText(i)),QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
    {
+    bDeleteFlag = false;
     return;
    }
   }

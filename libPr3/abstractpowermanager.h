@@ -13,13 +13,14 @@ public:
  QString getUserName();
  virtual void removePropertyChangeListener(PropertyChangeListener* l);
  virtual /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
+ PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+
 signals:
  //void propertyChange(QString p, QVariant old, QVariant n);
  void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
  QString userName;
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
  QMutex mutex;
 protected:
  void firePropertyChange(QString p, QVariant old, QVariant n);

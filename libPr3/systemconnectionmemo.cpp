@@ -59,6 +59,10 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
   }
  }
  addToActionList();
+ // reset to null so these get set by the first setPrefix/setUserName
+ // call after construction
+ this->prefixAsLoaded = "";
+ this->userNameAsLoaded = "";
 }
 
 /**
@@ -87,12 +91,10 @@ bool SystemConnectionMemo::addUserName(QString userName){
 //This should probably throwing an exception
 bool SystemConnectionMemo::addSystemPrefix(QString systemPrefix)
 {
-    if(sysPrefixes == NULL)
-        sysPrefixes = new QStringList();
-    if (sysPrefixes->contains(systemPrefix))
-        return false;
-    sysPrefixes->append(systemPrefix);
-    return true;
+ if (sysPrefixes->contains(systemPrefix))
+     return false;
+ sysPrefixes->append(systemPrefix);
+ return true;
 }
 
 void SystemConnectionMemo::removeUserName(QString userName){
@@ -135,18 +137,29 @@ QString SystemConnectionMemo::getSystemPrefix() { return prefix; }
 //This should probably throwing an exception
 bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
 {
+ if (systemPrefix == "")
+  throw new NullPointerException();
  if (systemPrefix == (prefix))
  {
+  if (this->prefixAsLoaded == "")
+  {
+   this->prefixAsLoaded = systemPrefix;
+  }
   return true;
  }
  QString oldPrefix = prefix;
  if(addSystemPrefix(systemPrefix))
  {
   prefix = systemPrefix;
+  if (this->prefixAsLoaded == "")
+  {
+   this->prefixAsLoaded = systemPrefix;
+  }
   removeSystemPrefix(oldPrefix);
   notifyPropertyChangeListener("ConnectionPrefixChanged", QVariant(oldPrefix), QVariant(systemPrefix));
   return true;
  }
+ log.debug(tr("setSystemPrefix false for \"%1\"").arg( systemPrefix));
  return false;
 }
 
@@ -158,12 +171,25 @@ QString SystemConnectionMemo::getUserName() { return userName; }
 //This should probably throwing an exception
 bool SystemConnectionMemo::setUserName(QString name)
 {
- if (name == userName)
+ if (name == "")
+  throw new NullPointerException();
+ if (name == (userName))
+ {
+  if (this->userNameAsLoaded == "")
+  {
+      this->userNameAsLoaded = name;
+  }
   return true;
+ }
+
  QString oldUserName = this->userName;
  if(addUserName(name))
  {
   this->userName = name;
+  if (this->userNameAsLoaded == "")
+  {
+      this->userNameAsLoaded = name;
+  }
   removeUserName(oldUserName);
   notifyPropertyChangeListener("ConnectionNameChanged", oldUserName, name);
   return true;
@@ -296,8 +322,8 @@ void SystemConnectionMemo::removeFromActionList()
 /*public*/ bool SystemConnectionMemo::isDirty()
 {
  return ((this->disabledAsLoaded == false || this->disabledAsLoaded != this->disabled)
-                || (this->prefixAsLoaded == NULL || this->prefixAsLoaded!=(this->prefix))
-                || (this->userNameAsLoaded == NULL || this->userNameAsLoaded!=(this->userName)));
+      || (this->prefixAsLoaded == NULL || this->prefixAsLoaded!=(this->prefix))
+      || (this->userNameAsLoaded == NULL || this->userNameAsLoaded!=(this->userName)));
 }
 
 /*public*/ bool SystemConnectionMemo::isRestartRequired()

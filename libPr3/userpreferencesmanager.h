@@ -406,7 +406,7 @@ public:
      * Retrieve the value associated with a key in a given class
      * If no value has been set for that key, returns null.
      */
-    /*public*/ virtual QVariant getProperty(QString /*strClass*/, QVariant /*key*/) {return QVariant();}
+    /*public*/ virtual QVariant getProperty(QString /*strClass*/, QString /*key*/) {return QVariant();}
 
     /**
      * Retrieve the complete current set of keys for a given class.

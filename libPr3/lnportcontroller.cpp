@@ -55,6 +55,9 @@ LnPortController::LnPortController(LocoNetSystemConnectionMemo* connectionMemo, 
 
 bool LnPortController::okToSend()
 {
+ QSerialPort* port = getSerialPort();
+ if(port == NULL)
+  return false;
  if(getSerialPort()->bytesToWrite() > 0)
   return false;
  return true;

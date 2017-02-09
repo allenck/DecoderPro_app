@@ -42,7 +42,7 @@ public:
     {
         if (AddressPanel->objectName().isEmpty())
             AddressPanel->setObjectName(QStringLiteral("AddressPanel"));
-        AddressPanel->resize(291, 196);
+        AddressPanel->resize(291, 179);
         QFont font;
         font.setPointSize(8);
         AddressPanel->setFont(font);

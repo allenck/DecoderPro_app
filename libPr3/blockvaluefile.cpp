@@ -10,6 +10,8 @@ BlockValueFile::BlockValueFile(QObject *parent) :
 {
  blockManager = InstanceManager::blockManagerInstance();
  log = new Logger("BlockValueFile");
+ QDomDocument doc = QDomDocument("block_values");
+ root = doc.createElement("block_values");
 }
 /**
  * Handle saving/restoring block value information to XML files.

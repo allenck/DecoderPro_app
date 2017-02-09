@@ -115,11 +115,27 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
  */
 /*public*/ QVariant RosterGroupTableModel::data(const QModelIndex &index, int role) const
 {
+ int row = index.row();
+ RosterEntry* re = Roster::instance()->getEntry(row);
+
+ if(role == Qt::CheckStateRole)
+ {
+  if(index.column() == ADDTOGROUPCOL)
+  {
+      if (group == NULL) {
+          return Qt::Unchecked;
+      } else {
+          if (re->getAttribute(group) != NULL) {
+              return Qt::Checked;
+          } else {
+              return Qt::Unchecked;
+          }
+      }
+  }
+ }
  if(role == Qt::DisplayRole)
  {
     // get roster entry for row
-  int row = index.row();
-    RosterEntry* re = Roster::instance()->getEntry(row);
     if (re == NULL)
     {
         log->debug("roster entry is NULL!");
@@ -137,18 +153,19 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
             return re->getMfg();
         case OWNERCOL:
             return re->getOwner();
-        case ADDTOGROUPCOL:
-            if (group == NULL) {
-                return false;
-            } else {
-                if (re->getAttribute(group) != NULL) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+//        case ADDTOGROUPCOL:
+//            if (group == NULL) {
+//                return false;
+//            } else {
+//                if (re->getAttribute(group) != NULL) {
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+//            }
         default:
-            return "<UNKNOWN>";
+            //return "<UNKNOWN>";
+     break;
     }
  }
  return QVariant();
@@ -179,23 +196,23 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
 
 /*public*/ bool RosterGroupTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
- if(role == Qt::EditRole)
+ if(role == Qt::CheckStateRole)
  {
   int row = index.row();
   int col = index.column();
   RosterEntry* re = Roster::instance()->getEntry(row);
-    if ((col == ADDTOGROUPCOL) && (group!=("RosterGroup:"))) {
-        if (value.toString()==("true")) {
-            re->putAttribute(group, "yes");
-        } else {
-            re->deleteAttribute(group);
-        }
-        re->updateFile();
-        Roster::writeRosterFile();
+  if ((col == ADDTOGROUPCOL) && (group!=("")))
+  {
+   if (value.toInt()== Qt::Checked)
+   {
+       re->putAttribute(group, "yes");
+   } else {
+       re->deleteAttribute(group);
+   }
+   re->updateFile();
+   Roster::writeRosterFile();
 
-    }
-    //re.updateFile();
-    //Roster.instance().writeRosterFile();
+  }
  }
  return false;
 }
@@ -206,4 +223,11 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
 
 /*public*/ void RosterGroupTableModel::getGroupEnabled(RosterEntry* re) {
 
+}
+
+/*public*/ Qt::ItemFlags RosterGroupTableModel::flags(const QModelIndex &index) const
+{
+ if(index.column() == ADDTOGROUPCOL && group != "")
+  return Qt::ItemIsUserCheckable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+ return Qt::ItemIsEditable | Qt::ItemIsEnabled;
 }

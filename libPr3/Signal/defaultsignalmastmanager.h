@@ -2,6 +2,7 @@
 #define DEFAULTSIGNALMASTMANAGER_H
 #include "abstractmanager.h"
 #include "exceptions.h"
+#include "libPr3_global.h"
 
 class SignalMastRepeater;
 class SignalMast;

@@ -26,7 +26,7 @@ class LIBPR3SHARED_EXPORT SystemConnectionMemo : public QObject
     Q_OBJECT
 public:
  //SystemConnectionMemo(QObject * parent = 0);
- explicit SystemConnectionMemo(QString Prefix= "L", QString userName= "LocoNet", QObject *parent = 0);
+ explicit SystemConnectionMemo(QString Prefix= "I", QString userName= "Internal", QObject *parent = 0);
     ~SystemConnectionMemo() {}
     SystemConnectionMemo(const SystemConnectionMemo&) {}
  /**

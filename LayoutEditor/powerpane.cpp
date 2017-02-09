@@ -149,7 +149,7 @@ void PowerPane::managerChanged() {
 
 /*public*/ void PowerPane::propertyChange(PropertyChangeEvent* ev)
 {
- log->debug("PropertyChange received ");
+ log->debug(tr("PropertyChange received %1 old = %2, new = %3").arg(ev->getPropertyName()).arg(ev->getOldValue().toString()).arg(ev->getNewValue().toString()));
 //    try {
  if (listening->getPower()==PowerManager::ON) onOffStatus->setText(tr("On"));
  else if (listening->getPower()==PowerManager::OFF) onOffStatus->setText(tr("Off"));

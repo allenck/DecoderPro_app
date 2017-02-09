@@ -27,6 +27,7 @@ LnPowerManager::LnPowerManager(LocoNetSystemConnectionMemo* memo, QObject *paren
 
 void LnPowerManager::setPower(int v) // throws JmriException
 {
+ int oldPower = power;
  power = UNKNOWN;
 
  checkTC();
@@ -44,7 +45,7 @@ void LnPowerManager::setPower(int v) // throws JmriException
   l->setOpCode(LnConstants::OPC_GPOFF);
   tc->sendLocoNetMessage(l);
  }
- firePropertyChange("Power", QVariant(), QVariant());
+ firePropertyChange("Power", oldPower, power);
 }
 
 int LnPowerManager::getPower() { return power;}
@@ -69,6 +70,7 @@ void LnPowerManager::checkTC() // throws JmriException
 // to listen for status changes from LocoNet
 void LnPowerManager::message(LocoNetMessage* m)
 {
+ int oldPower = power;
  if (m->getOpCode() == LnConstants::OPC_GPON)
  {
   power = ON;
@@ -92,7 +94,7 @@ void LnPowerManager::message(LocoNetMessage* m)
     // fire a property change only if slot status is DIFFERENT
     // from current local status
     power = slotTrackStatus; // update local track status from slot info
-    firePropertyChange("Power", QVariant(), QVariant());
+    firePropertyChange("Power", oldPower, power);
    }
   }\
  }

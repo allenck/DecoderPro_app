@@ -2,6 +2,7 @@
 #define DEFAULTSIGNALSYSTEMMANAGER_H
 #include "abstractmanager.h"
 #include "xmlfile.h"
+#include "libPr3_global.h"
 
 class XmlFile;
 class SignalSystem;

@@ -347,16 +347,32 @@ void CvTableModel::OnConfirmMapper(int row)
 /*public*/ bool CvTableModel::decoderDirty()
 {
  int len = _cvDisplayVector->size();
+ bool bDirty = false;
  for (int i=0; i< len; i++)
  {
   if (_cvDisplayVector->at(i)->getState() == CvValue::EDITED )
   {
    if (log->isDebugEnabled())
     log->debug("CV decoder dirty due to "+(_cvDisplayVector->at(i)->number()));
-   return true;
+   //return true;
+   bDirty = true;
   }
  }
-    return false;
+ return bDirty;
+}
+
+/*public*/ void CvTableModel::resetDecoderDirty(int newStatus)
+{
+ int len = _cvDisplayVector->size();
+
+ for(int i=0; i < len; i++)
+ {
+  if (_cvDisplayVector->at(i)->getState() == CvValue::EDITED )
+  {
+   _cvDisplayVector->at(i)->resetStatus(newStatus);
+   log->debug("CV  state reset decoder  "+(_cvDisplayVector->at(i)->number()));
+  }
+ }
 }
 
 /*public*/ void CvTableModel::dispose()

@@ -44,6 +44,26 @@ InputDialog::InputDialog(QString labelText, QComboBox *selections, QString title
 
 }
 
+InputDialog::InputDialog(QString labelText, QList<QWidget*> selections, QString title, QWidget *parent)
+ : QDialog(parent),
+   ui(new Ui::InputDialog)
+{
+ ui->setupUi(this);
+ ui->label->setText(labelText);
+ ui->lineEdit->setHidden(true);
+ //ui->verticalLayout->removeWidget(ui->comboBox);
+ ui->comboBox->setHidden(true);
+ //ui->verticalLayout->addWidget(selections);
+ foreach(QWidget* w, selections)
+ {
+  ui->verticalLayout->insertWidget(1,w);
+ }
+
+ //ui->comboBox = selections;
+ setWindowTitle(title);
+
+}
+
 InputDialog::~InputDialog()
 {
  delete ui;

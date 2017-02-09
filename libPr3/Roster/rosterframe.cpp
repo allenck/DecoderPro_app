@@ -44,6 +44,21 @@
 #include "activesystemsmenu.h"
 #include "windowmenu.h"
 #include "printrosterentry.h"
+#include "apps3.h"
+#include "largepowermanagerbutton.h"
+#include "rostergroupspanel.h"
+#include "defaultusermessagepreferences.h"
+#include "rostertablemodel.h"
+#include <QSortFilterProxyModel>
+#include "rostergroupselector.h"
+#include "imagedelegate.h"
+#include "helputil.h"
+#include "throttleframemanager.h"
+#include "throttlewindow.h"
+#include "addresspanel.h"
+#include "rosterentryselectorpanel.h"
+#include "deleterosteritemaction.h"
+#include "tabbedpreferencesaction.h"
 
 QList<RosterFrame*> RosterFrame::frameInstances =  QList<RosterFrame*>();
 
@@ -54,10 +69,12 @@ RosterFrame::RosterFrame( QWidget *parent) :
     ui(new Ui::RosterFrame)
 {
  common();
+ addHelpMenu("package.apps.gui3.dp3.DecoderPro3", true);
+
 }
 
 /*public*/ RosterFrame::RosterFrame(QString name, QWidget *parent) :
-  JmriJFrame(name,parent),
+  JmriJFrame(name, parent),
   ui(new Ui::RosterFrame)
 {
  common();
@@ -83,6 +100,31 @@ void RosterFrame::common()
  ui->setupUi(this);
  menuBar = new QMenuBar();
 
+ model = new RosterTableModel();
+ sorter = new QSortFilterProxyModel();
+ sorter->setSourceModel(model);
+ ui->rtable->setModel(sorter);
+ ui->rtable->setSortingEnabled(true);
+ ui->rtable->setContextMenuPolicy(Qt::CustomContextMenu);
+ ui->rtable->setSelectionBehavior(QAbstractItemView::SelectRows);
+ ui->rtable->resizeColumnsToContents();
+ ui->rtable->horizontalHeader()->setStretchLastSection(true);
+ connect(ui->rtable, SIGNAL(customContextMenuRequested(QPoint)),
+ SLOT(showPopup(QPoint)));
+ connect(ui->rtable, SIGNAL(clicked(QModelIndex)), this, SLOT(on_tableClicked(QModelIndex)));
+ rosterGroupSource = new RosterGroupSelector();
+ if (this->rosterGroupSource != NULL)
+ {
+     //this.rosterGroupSource.removePropertyChangeListener(SELECTED_ROSTER_GROUP, dataModel);
+  disconnect(rosterGroupSource, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ }
+ this->rosterGroupSource = rosterGroupSource;
+ if (this->rosterGroupSource != NULL) {
+     //this.rosterGroupSource.addPropertyChangeListener(SELECTED_ROSTER_GROUP, dataModel);
+  connect(rosterGroupSource, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ }
+ ui->rtable->setItemDelegateForColumn(RosterTableModel::ICONCOL, new ImageDelegate(this));
+
  progFrame = NULL;
  _allowQuit = false;
  serModeProCon = NULL;
@@ -93,11 +135,24 @@ void RosterFrame::common()
  inStartProgrammer = false;
  rosterEntry = NULL;
  bUpdating =false;
- hideBottomPane = false;
- hideGroups = false;
+ _hideBottomPane = false;
+ _hideGroups = false;
  _hideRosterImage = false;
- ui->verticalLayout->removeWidget(ui->summaryPanel);
- ui->splitter->addWidget(ui->summaryPanel);
+// ui->verticalLayout->removeWidget(ui->summaryPanel);
+// ui->splitter->addWidget(ui->summaryPanel);
+ //toolBar = ui->toolBar;
+ _hideBottomPane = false;
+ contextService = new QAction(tr("Programming Track"),this);
+ contextService->setCheckable(true);
+ contextService->setProperty("action", "setprogservice");
+ contextOps = new QAction(tr("Programming On Main"),this);
+ contextOps->setCheckable(true);
+ contextOps->setProperty("action", "setprogops");
+ contextEdit = new QAction(tr("Edit"),this);
+ contextEdit->setCheckable(true);
+ contextEdit->setProperty("action", "setprogedit");
+ selectedRosterEntries = NULL;
+
 
  QActionGroup* actionGroup = new QActionGroup(this);
  actionGroup->addAction(ui->actionProgramming_Track);
@@ -108,24 +163,29 @@ void RosterFrame::common()
  serviceModeProgrammerLabel = new QLabel(tr("Service Mode Programmer: idle"));
  operationsModeProgrammerLabel = new QLabel(tr("Ops Mode Programmer: idle"));
 
- rosterEntryUpdateListener = new RosterEntryUpdateListener(this);
+// rosterEntryUpdateListener = new RosterEntryUpdateListener(this);
+ currentMapper = new QSignalMapper();
+ connect(currentMapper, SIGNAL(mapped(QObject*)), this, SLOT(on_currentMapped(QObject*)));
 
  log = new Logger("RosterFrame");
- newLoco = new QToolButton(this);\
- newLoco->setIcon(QIcon(":/resources/icons/misc/gui3/NewLocoButton.png"));
- newLoco->setText(tr("New Loco"));
- newLoco->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
- connect(newLoco, SIGNAL(clicked()), this, SLOT(On_newLoco_clicked()));
- ui->toolBar->addWidget(newLoco);
+// newLoco = new QToolButton(this);\
+// newLoco->setIcon(QIcon(":/resources/icons/misc/gui3/NewLocoButton.png"));
+// newLoco->setText(tr("New Loco"));
+// newLoco->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+// connect(newLoco, SIGNAL(clicked()), this, SLOT(On_newLoco_clicked()));
+// ui->toolBar->addWidget(newLoco);
+ newLocoAct = ui->toolBar->addAction(QIcon(":/resources/icons/misc/gui3/NewLocoButton.png"), tr("New Loco"));
+ connect(newLocoAct, SIGNAL(triggered()), this, SLOT(On_newLoco_clicked()));
+
  identifyLoco = new QToolButton(this);
  identifyLoco->setIcon(QIcon(":/resources/icons/misc/gui3/IdentifyButton.png"));
  identifyLoco->setText(tr("Identify Loco"));
  identifyLoco->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
  ui->toolBar->addWidget(identifyLoco);
  connect(identifyLoco, SIGNAL(clicked()), this, SLOT(startIdentifyLoco()));
+
  LnPowerManager* pmgr = (LnPowerManager*) InstanceManager::powerManagerInstance();
  //pmgr->addPropertyChangeListener(new PwrListener(this));
-
  togglePower = new QToolButton( this);
  togglePower->setIcon(QIcon(":/resources/icons/throttles/power_yellow.png"));
  togglePower->setText(tr("Power unknown"));
@@ -144,6 +204,8 @@ void RosterFrame::common()
    togglePower->setIcon(QIcon(":/resources/icons/throttles/power_red.png"));
    togglePower->setText(tr("Power off"));
   }
+  else
+   log->warn("Power state unknown!");
  }
 // else
 // {
@@ -156,11 +218,6 @@ void RosterFrame::common()
  connect(togglePower, SIGNAL(clicked()), this, SLOT(on_togglePower_clicked()));
 
  modePanel = new ProgServiceModeComboBox();
- QHBoxLayout* modePanelLayout = new QHBoxLayout;
-// modePanel->setLayout(modePanelLayout);
-// modePanelLayout->addWidget(new QLabel(tr("Programming Mode")));
-// cbProgMode = new QComboBox();
-// modePanelLayout->addWidget(cbProgMode);
  programmerStatusLabel = new QLabel(tr("Programmer Status: "));
  statusField = new QLabel("Idle");
  QWidget* statusWidget = new QWidget();
@@ -169,7 +226,6 @@ void RosterFrame::common()
  statusWidgetLayout->addWidget(programmerStatusLabel);
  statusWidgetLayout->addWidget(statusField);
  ui->statusBar->addPermanentWidget(statusWidget);
-
  ui->statusBar->addWidget(serviceModeProgrammerLabel);
  ui->statusBar->addWidget(operationsModeProgrammerLabel);
  ui->toolBar->addWidget(modePanel);
@@ -192,14 +248,14 @@ void RosterFrame::common()
  connect(roster, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  list = roster->getEntriesMatchingCriteria("","","","","","","","");
- ui->tableWidget->setColumnCount(10);
- ui->tableWidget->setRowCount(list.count());
- for(int row=0; row < list.count(); row++)
- {
-  RosterEntry* re = list.at(row);
-  rows.append(re);
-  updateRow(row, re);
- }
+// ui->rtable->setColumnCount(10);
+// ui->rtable->setRowCount(list.count());
+// for(int row=0; row < list.count(); row++)
+// {
+//  RosterEntry* re = list.at(row);
+//  rows.append(re);
+//  updateRow(row, re);
+// }
  ui->btnLabelsMedia->setEnabled(false);
  ui->btnThrottle->setEnabled(false);
  ui->btnProgram->setEnabled(false);
@@ -221,7 +277,7 @@ void RosterFrame::common()
 // PanelMenu::instance()->addEditorPanel((Editor*)this);
 // connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
  connect(ui->actionProgram, SIGNAL(triggered()), this, SLOT(on_btnProgram_clicked()));
- buildWindow();
+ QTimer::singleShot(10, this, SLOT(buildWindow()));
 #endif
 // ConnectionStatus::instance().addPropertyChangeListener(new PropertyChangeListener()
 // {
@@ -234,6 +290,7 @@ void RosterFrame::common()
 // });
  ConnectionStatus* connectionStatus = ConnectionStatus::instance();
  connect(connectionStatus->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(On_ConnectionStatusPropertyChange(PropertyChangeEvent*)));
+ connect(ui->actionPreferences, SIGNAL(triggered(bool)), this, SLOT(On_actionPreferences_triggered()));
 
 // InstanceManager.addPropertyChangeListener(new PropertyChangeListener() {
 //     @Override
@@ -258,7 +315,6 @@ void RosterFrame::common()
  ui->menubar->insertMenu(ui->menuLocoNet->menuAction(),  LocoNetMenu::instance(connectionMemo, this));
  ui->menuLocoNet->clear();
  ui->menubar->removeAction(ui->menuLocoNet->menuAction());
-
 }
 
 void RosterFrame::On_ConnectionStatusPropertyChange(PropertyChangeEvent *e)
@@ -279,39 +335,40 @@ RosterFrame::~RosterFrame()
 {
  delete ui;
 }
+#if 0
 void RosterFrame::updateRow(int row, RosterEntry* re)
 {
  bUpdating= true;
  QTableWidgetItem* id = new QTableWidgetItem(re->getId());
- ui->tableWidget->setItem(row,0,id);
+ ui->rtable->setItem(row,0,id);
  QTableWidgetItem* dccAddr = new QTableWidgetItem(re->getDccAddress());
- ui->tableWidget->setItem(row,1,dccAddr);
+ ui->rtable->setItem(row,1,dccAddr);
  QTableWidgetItem* decoderModel = new QTableWidgetItem(re->getDecoderModel());
- ui->tableWidget->setItem(row, 3, decoderModel);
+ ui->rtable->setItem(row, 3, decoderModel);
  QTableWidgetItem* roadName = new QTableWidgetItem(re->getRoadName());
- ui->tableWidget->setItem(row, 4, roadName);
+ ui->rtable->setItem(row, 4, roadName);
  QTableWidgetItem* roadNumber = new QTableWidgetItem(re->getRoadNumber());
- ui->tableWidget->setItem(row, 5, roadNumber);
+ ui->rtable->setItem(row, 5, roadNumber);
  QTableWidgetItem* manufacturer = new QTableWidgetItem(re->getMfg());
- ui->tableWidget->setItem(row, 6, manufacturer);
+ ui->rtable->setItem(row, 6, manufacturer);
  QTableWidgetItem* model = new QTableWidgetItem(re->getModel());
- ui->tableWidget->setItem(row, 7, model);
+ ui->rtable->setItem(row, 7, model);
  QTableWidgetItem* owner = new QTableWidgetItem(re->getOwner());
- ui->tableWidget->setItem(row, 8, owner);
+ ui->rtable->setItem(row, 8, owner);
  QTableWidgetItem* dateModified = new QTableWidgetItem(re->getDateUpdated());
- ui->tableWidget->setItem(row, 9, dateModified);
+ ui->rtable->setItem(row, 9, dateModified);
  bUpdating = false;
  connect(re, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 void RosterFrame::updateDetails()
 {
- for(int row =0; row < ui->tableWidget->rowCount(); row++)
+ for(int row =0; row < ui->rtable->rowCount(); row++)
  {
-  if(ui->tableWidget->item(row,0)->text() == rosterEntry->getId())
+  if(ui->rtable->item(row,0)->text() == rosterEntry->getId())
   {
    updateRow(row, rosterEntry);
-   ui->tableWidget->selectRow(row);
+   ui->rtable->selectRow(row);
    on_tableWidget_cellClicked(row,0);
    break;
   }
@@ -323,6 +380,7 @@ void RosterFrame::on_tableWidget_cellClicked(int row, int /*col*/)
  rosterEntry = list.at(row);
  updateInfo();
 }
+#endif
 void RosterFrame::updateInfo()
 {
  ui->lblID->setText(rosterEntry->getId());
@@ -342,10 +400,10 @@ void RosterFrame::updateInfo()
  if(QFileInfo(rosterEntry->getImagePath()).exists())
  {
   QImage img(rosterEntry->getImagePath());
-  ui->lblImage->setPixmap(QPixmap::fromImage(img).scaledToWidth(ui->lblImage->width()));
+  ui->locoImage->setPixmap(QPixmap::fromImage(img).scaledToWidth(ui->locoImage->width()));
  }
  else
-  ui->lblImage->clear();
+  ui->locoImage->clear();
 
 }
 void RosterFrame::on_btnLabelsMedia_clicked()
@@ -443,12 +501,12 @@ QString RosterFrame::getTitle()
 void RosterFrame::on_actionHide_Show_Summary_Panel_triggered()
 {
  ui->summaryPanel->setVisible(!ui->summaryPanel->isVisible());
- hideBottomPane = !ui->summaryPanel->isVisible();
+ _hideBottomPane = !ui->summaryPanel->isVisible();
 }
 void RosterFrame::on_actionHide_Show_Roster_Image_triggered()
 {
- ui->lblImage->setVisible(!ui->lblImage->isVisible());
- _hideRosterImage = !ui->lblImage->isVisible();
+ ui->locoImage->setVisible(!ui->locoImage->isVisible());
+ _hideRosterImage = !ui->locoImage->isVisible();
 }
 void RosterFrame::on_actionProgramming_Track_triggered()
 {
@@ -459,6 +517,11 @@ void RosterFrame::on_actionProgramming_On_Main_triggered()
 {
  ui->ops->setChecked(true);
  ui->actionProgramming_On_Main->setChecked(true);
+}
+void RosterFrame::On_actionPreferences_triggered()
+{
+ TabbedPreferencesAction* p = new TabbedPreferencesAction();
+ p->actionPerformed();
 }
 void RosterFrame::on_actionEdit_Only_triggered()
 {
@@ -481,45 +544,90 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 /*protected*/ /*final*/ void RosterFrame::buildWindow()
 {
  //Additions to the toolbar need to be added first otherwise when trying to hide bits up during the initialisation they remain on screen
-// TODO:   additionsToToolBar();
+ //additionsToToolBar();
  frameInstances.append(this);
 
 #if 1
- p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ prefsMgr = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 //    getTop().add(createTop());
+ QVariant selectedRosterGroup = prefsMgr->getProperty(getWindowFrameRef(), RosterGroupsPanel::SELECTED_ROSTER_GROUP);
+ groups = new RosterGroupsPanel((selectedRosterGroup != QVariant()) ? selectedRosterGroup.toString() : "");
+ groups->setNewWindowMenuAction(this->getNewWindowAction());
+ setTitle(groups->getSelectedRosterGroup());
+ ui->groupsPlaceholder->hide();
+ ui->splitter_2->insertWidget(0, groups);
+// ui->groupsPlaceholder->layout()->addWidget(groups);
+// ui->groupsPlaceholder->show();
+
 //    getBottom().setMinimumSize(summaryPaneDim);
 //    getBottom().add(createBottom());
 //    statusBar();
 //    systemsMenu();
-//    helpMenu(getMenu(), this);
+ helpMenu(getMenu(), this);
  //Set all the sort and width details of the table first.
  QString rostertableref = getWindowFrameRef() + ":roster";
- for(int i=0; i < ui->tableWidget->columnCount(); i++)
+#if 0
+ for(int i=0; i < ui->rtable->columnCount(); i++)
  {
-  QString columnName = ui->tableWidget->horizontalHeader()->model()->headerData(i, Qt::Horizontal).toString();
-  int w = p->getTableColumnWidth(rostertableref, columnName);
+  QString columnName = ui->rtable->horizontalHeader()->model()->headerData(i, Qt::Horizontal).toString();
+  int w = prefsMgr->getTableColumnWidth(rostertableref, columnName);
   if(w > 0)
-   ui->tableWidget->setColumnWidth(i,w);
+   ui->rtable->setColumnWidth(i,w);
  }
-    if ((!p->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideGroups")) && !Roster::instance()->getRosterGroupList().isEmpty())
+#endif
+ // for debugging:
+ QVector<QString> rosterGroupList = Roster::instance()->getRosterGroupList();
+ bool bHide = prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className() ) + ".hideGroups");
+
+    if ((!prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className() ) + ".hideGroups")) && !Roster::instance()->getRosterGroupList().isEmpty())
     {
-//        hideGroupsPane(false);
-    } else {
-//        hideGroupsPane(true);
+     hideGroupsPane(false);
     }
-    if (p->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideSummary"))
+    else
     {
-        //We have to set it to display first, then we can hide it.
-//        hideBottomPane(false);
+     hideGroupsPane(true);
+    }
+    if (prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideSummary"))
+    {
+     //We have to set it to display first, then we can hide it.
+     hideBottomPane(false);
      ui->summaryPanel->setVisible(true);
-//        hideBottomPane(true);
+     hideBottomPane(true);
      ui->summaryPanel->setVisible(false);
-     hideBottomPane = true;
+     _hideBottomPane = true;
     }
-    if (p->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideRosterImage")) {
-     ui->lblImage->setVisible(false);
+    if (prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideRosterImage")) {
+     ui->locoImage->setVisible(false);
      _hideRosterImage = true;
     }
+    if (prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideRosterImage"))
+    {
+     ui->locoImage->setVisible(false);
+     _hideRosterImage = true;
+    }
+//    groups.addPropertyChangeListener(SELECTED_ROSTER_GROUP, new PropertyChangeListener() {
+//        @Override
+//        public void propertyChange(PropertyChangeEvent pce) {
+//            prefsMgr.setProperty(this.getClass().getName(), SELECTED_ROSTER_GROUP, pce.getNewValue());
+//            setTitle((String) pce.getNewValue());
+//        }
+//    });
+    connect(groups, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_groupChange(PropertyChangeEvent*)));
+
+//      Roster.instance().addPropertyChangeListener((PropertyChangeEvent e) -> {
+//                  if (e.getPropertyName() == ("RosterGroupAdded") && Roster.instance().getRosterGroupList().size() == 1) {
+//                      // if the pane is hidden, show it when 1st group is created
+//                      hideGroupsPane(false);
+//                      enableRosterGroupMenuItems(true);
+//                  } else if (!rtable.isVisible() && (e.getPropertyName() == ("saved"))) {
+//                      if (firstHelpLabel != null) {
+//                          firstHelpLabel.setVisible(false);
+//                      }
+//                      rtable.setVisible(true);
+//                      rtable.resetColumnWidths();
+//                  }
+//              });
+    connect(Roster::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_RosterChange(PropertyChangeEvent*)));
 #if 0
     PropertyChangeListener* propertyChangeListener = new PropertyChangeListener() {
         @Override
@@ -539,7 +647,36 @@ void RosterFrame::on_actionNew_Throttle_triggered()
         }
     };
 #endif
+    QVariant splitterSizes = prefsMgr->getProperty(QString(this->metaObject()->className()), "splitterSizes");
+    if(splitterSizes != QVariant())
+    {
+     QList<int> list = QList<int>();
+     QString str = splitterSizes.toString();
+     QStringList sl = str.split(",");
+     foreach (QString s, sl)
+     {
+      list.append(s.toInt());
+     }
+     ui->splitter->setSizes(list);
+    }
+    QVariant splitter2Sizes = prefsMgr->getProperty("DecoderPro3Window", "splitter2Sizes");
+    if(splitter2Sizes != QVariant())
+    {
+     QList<int> list = QList<int>();
+     QString str = splitter2Sizes.toString();
+     QStringList sl = str.split(",");
+     foreach (QString s, sl)
+     {
+      list.append(s.toInt());
+     }
+
+     ui->splitter_2->setSizes(list);
+    }
+
+
     connect(ui->splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(On_splitterMoved(int, int)));
+    connect(ui->splitter_2, SIGNAL(splitterMoved(int,int)), this, SLOT(On_splitter2Moved(int, int)));
+
 #endif
  updateProgrammerStatus();
 // ConnectionStatus::instance()->addPropertyChangeListener(new PropertyChangeListener());
@@ -570,7 +707,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 //  programmer1 = ProgDefault::getDefaultProgFile();
 // }
 
-// QString lastProg = (QString) p.getProperty(getWindowFrameRef(), "selectedProgrammer");
+ //QString lastProg = (QString) prefsMgr->getProperty(getWindowFrameRef(), "selectedProgrammer");
  QString lastProg =  cbProgrammers->currentText();
 
  if (lastProg != "")
@@ -832,7 +969,7 @@ void RosterFrame::updateProgMode() // SLOT
 
  if (rosterEntry != NULL)
  {
-  //We remove the propertychangelistener if we had a previoulsy selected entry;
+  //We remove the propertychangelistener if we had a previously selected entry;
 //  rosterEntry->removePropertyChangeListener(rosterEntryUpdateListener);
  }
  QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, QString::number(dccAddress), NULL, NULL, NULL, NULL);
@@ -898,10 +1035,14 @@ void RosterFrame::updateProgMode() // SLOT
    rosterEntry = l.at(0);
   }
 //  rosterEntry->addPropertyChangeListener(rosterEntryUpdateListener);
-  connect(rosterEntry, SIGNAL(propertyChange(PropertyChangeEvent*)), rosterEntryUpdateListener,SLOT(propertyChange(PropertyChangeEvent*)));
-  connect(rosterEntry->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), rosterEntryUpdateListener, SLOT(propertyChange(PropertyChangeEvent*)));
-  updateDetails();
+//  connect(rosterEntry, SIGNAL(propertyChange(PropertyChangeEvent*)), rosterEntryUpdateListener,SLOT(propertyChange(PropertyChangeEvent*)));
+//  connect(rosterEntry->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), rosterEntryUpdateListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  updateInfo();
   //rtable.moveTableViewToSelected();
+  int row = Roster::instance()->getGroupIndex(model->getRosterGroup(), rosterEntry);
+  QModelIndex index = model->index(row, 0, QModelIndex());
+  QModelIndex ixSort = sorter->mapFromSource(index);
+  ui->rtable->selectRow(ixSort.row());
  }
  else
  {
@@ -909,6 +1050,7 @@ void RosterFrame::updateProgMode() // SLOT
     QMessageBox::warning(this, "No roster entry found", "Address " + QString::number(dccAddress) + " was read from the decoder\nbut has not been found in the Roster"/*, JOptionPane.INFORMATION_MESSAGE*/);
  }
 }
+
 void RosterFrame::on_togglePower_clicked()
 {
  LnPowerManager* pmgr = ( LnPowerManager*)InstanceManager::powerManagerInstance();
@@ -1051,8 +1193,10 @@ void RosterFrame::on_actionDelete_Loco_triggered()
 //                                    entry),
 //                    JOptionPane.YES_NO_OPTION));
 //}
+
 void RosterFrame::propertyChange(PropertyChangeEvent *e)
 {
+#if 0
  if(e->getPropertyName() == "change")
  {
   QVariant pvOld =e->getOldValue();
@@ -1075,9 +1219,9 @@ void RosterFrame::propertyChange(PropertyChangeEvent *e)
   RosterEntry* re = VPtr<RosterEntry>::asPtr(e->getNewValue());
   for(int row =0; row < rows.count(); row++)
   {
-   if(re->getId() == ui->tableWidget->item(row, 0)->text())
+   if(re->getId() == ui->rtable->item(row, 0)->text())
    {
-    ui->tableWidget->removeRow(row);
+    ui->rtable->removeRow(row);
     rows.remove(row);
     return;
    }
@@ -1085,14 +1229,15 @@ void RosterFrame::propertyChange(PropertyChangeEvent *e)
  }
  if(e->getPropertyName() == "add")
  {
-  int row = ui->tableWidget->rowCount();
-  ui->tableWidget->setRowCount(row+1);
+  int row = ui->rtable->rowCount();
+  ui->rtable->setRowCount(row+1);
   RosterEntry* re = VPtr<RosterEntry>::asPtr(e->getNewValue());
   updateRow(row, re);
   rows.append(re);
   return;
  }
  else
+#endif
  if(e->getPropertyName() == "Power")
  {
   LnPowerManager* pmgr = (LnPowerManager*)InstanceManager::powerManagerInstance();
@@ -1120,10 +1265,40 @@ void RosterFrame::propertyChange(PropertyChangeEvent *e)
   updateProgrammerStatus();
  }
 }
+void RosterFrame::on_groupChange(PropertyChangeEvent * pce)
+{
+  prefsMgr->setProperty(this->metaObject()->className(), RosterGroupsPanel::SELECTED_ROSTER_GROUP, pce->getNewValue().toString());
+  setTitle( pce->getNewValue().toString());
+
+  // this is cheating ACK
+ if(pce->getNewValue().toString() == "ALL ENTRIES")
+  model->setRosterGroup("");
+ else
+  model->setRosterGroup(pce->getNewValue().toString());
+}
+
+void RosterFrame::on_RosterChange(PropertyChangeEvent * e)
+{
+ if (e->getPropertyName() == ("RosterGroupAdded") && Roster::instance()->getRosterGroupList().size() == 1)
+ {
+  // if the pane is hidden, show it when 1st group is created
+  hideGroupsPane(false);
+  enableRosterGroupMenuItems(true);
+ }
+ else if (!ui->rtable->isVisible() && (e->getPropertyName() == ("saved")))
+ {
+// TODO:    if (firstHelpLabel != NULL) {
+//         firstHelpLabel.setVisible(false);
+//     }
+     ui->rtable->setVisible(true);
+     //ui->rtable->resetColumnWidths();
+ }
+}
+#if 0
 void  RosterFrame::on_tableWidget_cellChanged(int row, int col)
 {
  if(bUpdating) return;
- QTableWidgetItem* item = ui->tableWidget->item(row, col);
+ QTableWidgetItem* item = ui->rtable->item(row, col);
  RosterEntry* re = rows.at(row);
  if(item == NULL) return;
  switch(col)
@@ -1154,6 +1329,15 @@ default:
 
  }
 }
+#endif
+void RosterFrame::on_tableClicked(QModelIndex index)
+{
+ QModelIndex ix = sorter->mapToSource(index);
+ int row = ix.row();
+ rosterEntry = Roster::instance()->getGroupEntry(model->getRosterGroup(), row);
+ updateInfo();
+}
+
 void RosterFrame::On_newLoco_clicked()
 {
  PaneNewProgAction* act = new PaneNewProgAction(this);
@@ -1166,18 +1350,19 @@ void RosterFrame::On_newLoco_clicked()
     this->newWindowAction = newWindowAction;
     this->groups->setNewWindowMenuAction(newWindowAction);
 }
-
+#if 0
 RosterEntryUpdateListener::RosterEntryUpdateListener(RosterFrame* f)
 {
  this->f = f;
  connect(Roster::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
+
 void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
 {
  if(e->getPropertyName() == "add")
  {
-  int row = f->ui->tableWidget->rowCount();
-  f->ui->tableWidget->setRowCount(row++);
+  int row = f->ui->rtable->rowCount();
+  f->ui->rtable->setRowCount(row++);
   RosterEntry* re = VPtr<RosterEntry>::asPtr(e->getNewValue());
   f->rows.append(re);
   f->updateRow(row, re);
@@ -1189,7 +1374,7 @@ void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
   {
    if(f->rows.at(i) == re)
    {
-    f->ui->tableWidget->removeRow(i);
+    f->ui->rtable->removeRow(i);
     f->rows.remove(i);
     break;
    }
@@ -1208,6 +1393,7 @@ void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
  }
  //f->updateDetails();
 }
+#endif
 /*protected*/ void  RosterFrame::buildGUI(QString menubarFile, QString toolbarFile)
 {
     //configureFrame();
@@ -1217,6 +1403,7 @@ void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
  addMainMenuBar(menubarFile );
  addMainToolBar(toolbarFile);
  addMainStatusBar();
+ additionsToToolBar();
 }
 
 /*protected*/ void  RosterFrame::addMainMenuBar(QString menuFile)
@@ -1255,7 +1442,11 @@ void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
   return;
  }
  QMainWindow::removeToolBar(ui->toolBar);
- QMainWindow::addToolBar(JToolBarUtil::loadToolBar(toolBarFile, (WindowInterface*)this, this));
+ ui->toolBar = NULL;
+ QMainWindow::addToolBar(ui->toolBar = JToolBarUtil::loadToolBar(toolBarFile, (WindowInterface*)this, this));
+
+
+ connect(ui->toolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(on_currentMapped(QAction*)));
 
     // this takes up space at the top until pulled to floating
 //    add(toolBar, BorderLayout.NORTH);
@@ -1270,6 +1461,21 @@ void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
 {
  allowQuit(_allowQuit);
 }
+
+void RosterFrame::additionsToToolBar()
+{
+    //This value may return null if the DP3 window has been called from a the traditional JMRI menu frame
+    if (Apps3::buttonSpace() != NULL)
+    {
+        //((QToolBar*)getToolBar())->addWidget(Apps3::buttonSpace());
+     ui->toolBar->addWidget(Apps3::buttonSpace());
+    }
+    //((QToolBar*)getToolBar())->addWidget(new LargePowerManagerButton(true));
+    ui->toolBar->addWidget(new LargePowerManagerButton(true));
+    //((QToolBar*)getToolBar())->addWidget(modePanel);
+    ui->toolBar->addWidget(modePanel = new ProgServiceModeComboBox());
+}
+
 /**
 * For use when the DP3 window is called from another JMRI instance, set
 * this to prevent the DP3 from shutting down JMRI when the window is
@@ -1313,12 +1519,25 @@ void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
     }
     return newWindowAction;
 }
+/*protected*/ void RosterFrame::helpMenu(QMenuBar* menuBar, /*final*/ JFrame* frame)
+{
+//    try {
+        // create menu and standard items
+        QMenu* helpMenu = HelpUtil::makeHelpMenu("package.apps.gui3.dp3.DecoderPro3", true,this);
+        // tell help to use default browser for external types
+        //SwingHelpUtilities.setContentViewerUI("jmri.util.ExternalLinkContentViewerUI");
+        // use as main help menu
+        menuBar->addMenu(helpMenu);
+//    } catch (Throwable e3) {
+//        log.error("Unexpected error creating help: " + e3);
+//    }
+}
 void RosterFrame::handleQuit(QCloseEvent* e)
 {
  if (e != NULL && frameInstances.size() == 1)
  {
   /*final*/ QString rememberWindowClose = QString(this->metaObject()->className()) + ".closeDP3prompt";
-  if (!p->getSimplePreferenceState(rememberWindowClose))
+  if (!prefsMgr->getSimplePreferenceState(rememberWindowClose))
   {
    QWidget* message = new QWidget();
    QLabel* question = new QLabel(tr("Closing this window will quit the program. Close?"));
@@ -1341,7 +1560,7 @@ void RosterFrame::handleQuit(QCloseEvent* e)
    int result = box->exec();
    if (remember->isChecked())
    {
-    p->setSimplePreferenceState(rememberWindowClose, true);
+    prefsMgr->setSimplePreferenceState(rememberWindowClose, true);
    }
    if (result == QMessageBox::Yes)
    {
@@ -1356,7 +1575,7 @@ void RosterFrame::handleQuit(QCloseEvent* e)
  else if (frameInstances.size() > 1)
  {
   /*final*/ QString rememberWindowClose = QString(this->metaObject()->className()) + ".closeMultipleDP3prompt";
-  if (!p->getSimplePreferenceState(rememberWindowClose))
+  if (!prefsMgr->getSimplePreferenceState(rememberWindowClose))
   {
    QWidget* message = new QWidget();
    QLabel* question = new QLabel(tr("You have Multiple Roster Windows Open. Are you sure that you want to quit?"));
@@ -1379,7 +1598,7 @@ void RosterFrame::handleQuit(QCloseEvent* e)
    int result = box->exec();
    if (remember->isChecked())
    {
-    p->setSimplePreferenceState(rememberWindowClose, true);
+    prefsMgr->setSimplePreferenceState(rememberWindowClose, true);
    }
    if (result == QMessageBox::Yes)
    {
@@ -1396,9 +1615,9 @@ void RosterFrame::handleQuit(QCloseEvent* e)
 
 void RosterFrame::saveWindowDetails()
 {
- p->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideSummary", hideBottomPane);
- p->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideGroups", hideGroups);
- p->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideRosterImage", _hideRosterImage);
+ prefsMgr->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideSummary", _hideBottomPane);
+ prefsMgr->setSimplePreferenceState(QString(this->metaObject()->className() ) + ".hideGroups", _hideGroups);
+ prefsMgr->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideRosterImage", _hideRosterImage);
 // p.setProperty(getWindowFrameRef(), "selectedRosterGroup", groups.getSelectedRosterGroup());
  QString selectedProgMode = "edit";
  if (ui->service->isChecked())
@@ -1408,7 +1627,7 @@ void RosterFrame::saveWindowDetails()
  if (ui->ops->isChecked()) {
      selectedProgMode = "ops";
  }
- p->setProperty(getWindowFrameRef(), "selectedProgrammer", selectedProgMode);
+ prefsMgr->setProperty(getWindowFrameRef(), "selectedProgrammer", selectedProgMode);
  //Method to save table sort, width and column order status
  QString rostertableref = getWindowFrameRef() + ":roster";
 #if 0 // TODO: ?? maybe implement XTableColumn model?
@@ -1425,13 +1644,11 @@ void RosterFrame::saveWindowDetails()
          log.warn("unable to store settings for table column " + tc.getHeaderValue(), e);
      }
  }
-#endif
- for(int index =0; index < ui->tableWidget->columnCount(); index++)
+ for(int index =0; index < ui->rtable->columnCount(); index++)
  {
-  QString columnName = ui->tableWidget->horizontalHeader()->model()->headerData(index,Qt::Horizontal).toString();
-  p->setTableColumnPreferences(rostertableref, columnName, index, ui->tableWidget->columnWidth(index),index, !ui->tableWidget->isColumnHidden(index));
+  QString columnName = ui->rtable->horizontalHeader()->model()->headerData(index,Qt::Horizontal).toString();
+  prefsMgr->setTableColumnPreferences(rostertableref, columnName, index, ui->rtable->columnWidth(index),index, !ui->rtable->isColumnHidden(index));
  }
-#if 0
  if (rosterGroupSplitPane.getDividerLocation() > 2) {
      p.setProperty(getWindowFrameRef(), "rosterGroupPaneDividerLocation", rosterGroupSplitPane.getDividerLocation());
  } else if (groupSplitPaneLocation > 2) {
@@ -1468,12 +1685,43 @@ void RosterFrame::On_splitterMoved(int pos, int)
  int current = /*sourceSplitPane.getDividerLocation() + sourceSplitPane.getDividerSize()*/pos;
  int panesize = /*(int) (sourceSplitPane.getSize().getHeight())*/ ui->splitter->size().height();
  if (panesize - current <= 1) {
-     hideBottomPane = true;
+     _hideBottomPane = true;
  } else {
-     hideBottomPane = false;
-     //p.setSimplePreferenceState(DecoderPro3Window.class.getName()+".hideSummary",hideSummary);
+     _hideBottomPane = false;
  }
+     //p.setSimplePreferenceState(DecoderPro3Window.class.getName()+".hideSummary",hideSummary);
+ QList<int> splitter2Sizes = ui->splitter->sizes();
+ QString str;
+ foreach (int i, splitter2Sizes) {
+  if(!str.isEmpty())
+   str.append(",");
+  str.append(QString::number(i));
+ }
+ prefsMgr->setProperty(this->metaObject()->className(), "splitterSizes", str);
 }
+
+void RosterFrame::On_splitter2Moved(int pos, int)
+{
+
+ int current = /*sourceSplitPane.getDividerLocation() + sourceSplitPane.getDividerSize()*/pos;
+ int panesize = /*(int) (sourceSplitPane.getSize().getHeight())*/ ui->splitter_2->size().height();
+ if (panesize - current <= 1) {
+     _hideGroups = true;
+ } else {
+     _hideGroups = false;
+ }
+     //p.setSimplePreferenceState(DecoderPro3Window.class.getName()+".hideSummary",hideSummary);
+ QList<int> splitter2Sizes = ui->splitter_2->sizes();
+ QString str;
+ foreach (int i, splitter2Sizes)
+ {
+  if(!str.isEmpty())
+   str.append(",");
+  str.append(QString::number(i));
+ }
+ ((DefaultUserMessagePreferences*)prefsMgr)->setProperty(this->metaObject()->className(), "splitter2Sizes", str);
+}
+
 /*protected*/ void RosterFrame::systemsMenu() {
     ActiveSystemsMenu::addItems(getMenu());
     getMenu()->addMenu(new WindowMenu(this));
@@ -1535,7 +1783,8 @@ void RosterFrame::On_Quit()
   {
    startProgrammer(NULL, rosterEntry, programmer2);
   }
- } else if (args.at(0)==("comprehensiveprogrammer"))
+ }
+ else if (args.at(0)==("comprehensiveprogrammer"))
  {
   if (checkIfEntrySelected())
   {
@@ -1594,7 +1843,7 @@ void RosterFrame::On_Quit()
  }
  else if (args.at(0)==("groupspane"))
  {
-//     hideGroups();
+  hideGroups();
  }
  else if (args.at(0)==("quit"))
  {
@@ -1615,18 +1864,46 @@ void RosterFrame::On_Quit()
  {
 //     rtable.resetColumnWidths();
  }
+ else if(args.at(0) == "labelsandmedia")
+ {
+  //editMediaButton();
+  FunctionLabelsMediaDlg* dlg = new FunctionLabelsMediaDlg(rosterEntry);
+  dlg->show();
+
+ }
+ else if(args.at(0) == "throttle")
+ {
+  ThrottleWindow* tf =ThrottleFrameManager::instance()->createThrottleFrame();
+  tf->toFront();
+  tf->getAddressPanel()->getRosterEntrySelector()->setSelectedRosterGroup(getSelectedRosterGroup());
+  tf->getAddressPanel()->setRosterEntry(rosterEntry);
+ }
+ else if(args.at(0) == "duplicate")
+ {
+  copyLoco();
+ }
+ else if(args.at(0) == "deletefromgroup")
+ {
+  deleteLoco();
+ }
+ else if(args.at(0) == "deletefromroster")
+ {
+  deleteLoco();
+ }
  else
  {
-  log->error("method " + args.at(0) + " not found");
+  log->error("remote calls method " + args.at(0) + " not found");
  }
 }
 
 bool RosterFrame::checkIfEntrySelected()
 {
- if(ui->tableWidget->selectedItems().isEmpty())
+ //if(ui->rtable->selectedItems().isEmpty())
+ if(ui->rtable->selectionModel()->selectedRows().isEmpty())
   return false;
  return true;
 }
+
 /*protected*/ void RosterFrame::startProgrammer(DecoderFile* decoderFile, RosterEntry* re, QString filename)
 {
  if (inStartProgrammer)
@@ -1700,4 +1977,265 @@ bool RosterFrame::checkIfEntrySelected()
  action->setWindowInterface((WindowInterface*)this);
  action->actionPerformed();
  firePropertyChange("closewindow", "setEnabled", true);
+}
+
+void RosterFrame::on_currentMapped(QObject *act)
+{
+ on_currentMapped((QAction*)act);
+}
+
+void RosterFrame::on_currentMapped(QAction *act) //SLOT[]
+{
+ QStringList l;
+ QString p = act->property("current").toString();
+ l << p;
+ if(!l.isEmpty())
+  remoteCalls(l);
+}
+
+/*protected*/ void RosterFrame::hideGroups() {
+        bool boo = !_hideGroups;
+        hideGroupsPane(boo);
+    }
+
+    /*public*/ void RosterFrame::hideGroupsPane(bool hide) {
+        if (_hideGroups == hide) {
+            return;
+        }
+        _hideGroups = hide;
+        if (hide) {
+//            groupSplitPaneLocation = rosterGroupSplitPane.getDividerLocation();
+//            rosterGroupSplitPane.setDividerLocation(1);
+//            rosterGroupSplitPane.getLeftComponent().setMinimumSize(new Dimension());
+//            if (Roster.instance().getRosterGroupList().isEmpty()) {
+//                rosterGroupSplitPane.setOneTouchExpandable(false);
+//                rosterGroupSplitPane.setDividerSize(0);
+//            }
+         //ui->groupsPlaceholder->hide();
+         groups->hide();
+        } else {
+//            rosterGroupSplitPane.setDividerSize(UIManager.getInt("SplitPane.dividerSize"));
+//            rosterGroupSplitPane.setOneTouchExpandable(true);
+//            if (groupSplitPaneLocation >= 2) {
+//                rosterGroupSplitPane.setDividerLocation(groupSplitPaneLocation);
+//            } else {
+//                rosterGroupSplitPane.resetToPreferredSizes();
+//            }
+         //ui->groupsPlaceholder->show();
+         groups->show();
+        }
+     prefsMgr->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideGroups", hide);
+    }
+
+/*protected*/ void RosterFrame::hideRosterImage() {
+    _hideRosterImage = !_hideRosterImage;
+    //p.setSimplePreferenceState(DecoderPro3Window.class.getName()+".hideRosterImage",hideRosterImage);
+    if (_hideRosterImage) {
+        ui->locoImage->setVisible(false);
+    } else {
+        ui->locoImage->setVisible(true);
+    }
+}
+
+/*protected*/ void RosterFrame::hideSummary()
+{
+ bool boo = !_hideBottomPane;
+ hideBottomPane(boo);
+}
+
+/*public*/ void RosterFrame::hideBottomPane(bool hide)
+{
+    if (_hideBottomPane == hide) {
+        return;
+    }
+    _hideBottomPane = hide;
+    if (hide) {
+//        upDownSplitPane.setDividerLocation(1.0d);
+     ui->summaryPanel->hide();
+    } else {
+//        resetTopToPreferredSizes();
+     ui->summaryPanel->show();
+    }
+}
+/*protected*/ void RosterFrame::enableRosterGroupMenuItems(bool enable) {
+    firePropertyChange("groupspane", "setEnabled", enable);
+    firePropertyChange("grouptable", "setEnabled", enable);
+    firePropertyChange("deletegroup", "setEnabled", enable);
+}
+
+/*protected*/ void RosterFrame::showPopup(QPoint pos)
+{
+ QModelIndex index=ui->rtable->indexAt(pos);
+
+//         if (!rtable.getTable().isRowSelected(row)) {
+//             rtable.getTable().changeSelection(row, 0, false, false);
+//         }
+ QModelIndexList list = ui->rtable->selectionModel()->selectedRows();
+ int row = ui->rtable->rowAt(pos.y());
+ bool bSelected = false;
+ QModelIndex selectedIndex = QModelIndex();
+ foreach (QModelIndex ix, list)
+ {
+  if(ix.row() == row)
+  {
+   bSelected = true;
+   selectedIndex = ix;
+   break;
+  }
+ }
+ if(!bSelected)
+ {
+  ui->rtable->selectRow(row);
+ }
+ {
+  QModelIndex ix = sorter->mapToSource(sorter->index(row,0));
+  int row = ix.row();
+  rosterEntry = Roster::instance()->getGroupEntry(model->getRosterGroup(), row);
+  updateInfo();
+}
+     QMenu* popupMenu = new QMenu();
+     QAction* menuItem = new QAction("Program", this);
+     QSignalMapper* mapper = new QSignalMapper();
+     connect(mapper, SIGNAL(mapped(QObject*)), this, SLOT(actionPerformed(QObject*)));
+
+//        menuItem.addActionListener((ActionEvent e1) -> {
+//            startProgrammer(null, re, programmer1);
+//        });
+     menuItem->setProperty("action", "comprehensiveprogrammer");
+     mapper->setMapping(menuItem, menuItem);
+     connect(menuItem, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+     if (rosterEntry == NULL) {
+         menuItem->setEnabled(false);
+     }
+     popupMenu->addAction(menuItem);
+
+     QActionGroup* group = new QActionGroup(this);
+     group->addAction(contextService);
+     group->addAction(contextOps);
+     group->addAction(contextEdit);
+     QMenu* progMenu = new QMenu("Programmer type");
+//        contextService.addActionListener((ActionEvent e1) -> {
+//            service.setSelected(true);
+//            updateProgMode();
+//        });
+     progMenu->addAction(contextService);
+     mapper->setMapping(contextService, contextService);
+     connect(contextService, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+//        contextOps.addActionListener((ActionEvent e1) -> {
+//            ops.setSelected(true);
+//            updateProgMode();
+//        });
+     progMenu->addAction(contextOps);
+     mapper->setMapping(contextOps, contextOps);
+     connect(contextOps, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+
+//        contextEdit.addActionListener((ActionEvent e1) -> {
+//            edit.setSelected(true);
+//            updateProgMode();
+//        });
+     if (ui->service->isChecked()) {
+         contextService->setChecked(true);
+     } else if (ui->ops->isChecked()) {
+         contextOps->setChecked(true);
+     } else {
+         contextEdit->setChecked(true);
+     }
+     progMenu->addAction(contextEdit);
+     mapper->setMapping(contextEdit, contextEdit);
+     connect(contextEdit, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+     popupMenu->addMenu(progMenu);
+     popupMenu->addSeparator();
+     menuItem = new QAction("Labels and Media",this);
+//        menuItem.addActionListener((ActionEvent e1) -> {
+//            editMediaButton();
+//        });
+     menuItem->setProperty("action", "labelsandmedia");
+     mapper->setMapping(menuItem, menuItem);
+     connect(menuItem, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+     if (rosterEntry == NULL) {
+         menuItem->setEnabled(false);
+     }
+     popupMenu->addAction(menuItem);
+     menuItem = new QAction("Throttle", this);
+     menuItem->setProperty("action", "throttle");
+     mapper->setMapping(menuItem, menuItem);
+     connect(menuItem, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+//        menuItem.addActionListener((ActionEvent e1) -> {
+//            ThrottleFrame tf = ThrottleFrameManager.instance().createThrottleFrame();
+//            tf.toFront();
+//            tf.getAddressPanel().getRosterEntrySelector().setSelectedRosterGroup(getSelectedRosterGroup());
+//            tf.getAddressPanel().setRosterEntry(re);
+//        });
+     if (rosterEntry == NULL) {
+         menuItem->setEnabled(false);
+     }
+     popupMenu->addAction(menuItem);
+     popupMenu->addSeparator();
+     menuItem = new QAction("Duplicate", this);
+//        menuItem.addActionListener((ActionEvent e1) -> {
+//            copyLoco();
+//        });
+     menuItem->setProperty("action", "duplicate");
+     mapper->setMapping(menuItem, menuItem);
+     connect(menuItem, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+     if (rosterEntry == NULL) {
+         menuItem->setEnabled(false);
+     }
+     popupMenu->addAction(menuItem);
+     menuItem = new QAction((this->getSelectedRosterGroup() != "" ? tr("Delete From Group") : tr("Delete From Roster")),this); // NOI18N
+//        menuItem.addActionListener((ActionEvent e1) -> {
+//            deleteLoco();
+//        });
+     mapper->setMapping(menuItem, menuItem);
+     popupMenu->addAction(menuItem);
+     menuItem->setEnabled(this->getSelectedRosterEntries()->length() > 0);
+     menuItem->setProperty("action", this->getSelectedRosterGroup() != "" ? "deletefromgroup" : "deletefromroster");
+     connect(menuItem, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+     popupMenu->exec(QCursor::pos());
+}
+
+void RosterFrame::actionPerformed(QObject* o)
+{
+ QAction* act = (QAction*)o;
+ QString action = act->property("action").toString();
+ Q_ASSERT(!action.isEmpty());
+ QStringList l = QStringList();
+ l << action;
+ remoteCalls(l);
+}
+
+/*public*/ QList<RosterEntry*>* RosterFrame::getSelectedRosterEntries()
+{
+ if (selectedRosterEntries == NULL)
+ {
+  //int[] rows = dataTable.getSelectedRows();
+  QModelIndexList rows = ui->rtable->selectionModel()->selectedRows();
+  selectedRosterEntries = new QList<RosterEntry*>(); //[rows.length()];
+  for (int idx = 0; idx < rows.length(); idx++)
+  {
+   QModelIndex sourceIx = sorter->mapToSource(rows.at(idx));
+   QModelIndex ix = model->index(sourceIx.row(), sourceIx.column());
+   selectedRosterEntries->append( Roster::instance()->getEntryForId(model->data(ix,Qt::DisplayRole).toString()));
+  }
+ }
+ return selectedRosterEntries;
+}
+/*public*/ QString RosterFrame::getSelectedRosterGroup()
+{
+    return groups->getSelectedRosterGroup();
+}
+
+void RosterFrame::editMediaButton() {
+    //Because of the way that programmers work, we need to use edit mode for displaying the media pane, so that the read/write buttons do not appear.
+    bool serviceSelected = ui->service->isChecked();
+    bool opsSelected = ui->ops->isChecked();
+    ui->edit->setChecked(true);
+    startProgrammer(NULL, rosterEntry, "dp3" + File::separator + "MediaPane");
+    ui->service->setChecked(serviceSelected);
+    ui->ops->setChecked(opsSelected);
+}
+
+/*protected*/ void RosterFrame::deleteLoco() {
+    DeleteRosterItemAction* act = new DeleteRosterItemAction("Delete", (WindowInterface*) this);
+    act->actionPerformed(0);
 }

@@ -235,7 +235,7 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
  {
   QModelIndex m = profiles->currentIndex();
   QString s = m.data().toString();
-  Profile* p = ProfileManager::defaultManager()->getProfiles().at(m.row());
+  Profile* p = ProfileManager::getDefault()->getProfiles().at(m.row());
   ProfileManager::defaultManager()->setActiveProfile(p);
   //dispose();
   close();

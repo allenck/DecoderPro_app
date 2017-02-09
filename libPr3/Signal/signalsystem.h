@@ -1,7 +1,7 @@
 #ifndef SIGNALSYSTEM_H
 #define SIGNALSYSTEM_H
 #include "abstractnamedbean.h"
-
+#include "libPr3_global.h"
 /**
  * A SignalSystem defines a signaling system by
  * representing the properties of various signal aspects it contains.

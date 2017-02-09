@@ -12,7 +12,8 @@ public:
     ~Exception() throw()
     {}
     QString msg;
-    QString getMessage();
+    virtual QString getMessage();
+    virtual QString getLocalizedMessage();
 };
 
 class JAVAQTSHARED_EXPORT LocoNetException : public Exception

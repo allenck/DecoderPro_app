@@ -174,6 +174,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
  int row = index.row();
  int col = index.column();
  LocoNetSlot* s = memo->getSlotManager()->slot(slotNum(row));
+
  if(role == Qt::DisplayRole)
  {
   QString      t;
@@ -248,7 +249,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
    case F5COLUMN:  //
 //        return (s->isF5() ? Qt::Checked: Qt::Unchecked);
    case F6COLUMN:  //
-        return (s->isF6() ? Qt::Checked: Qt::Unchecked);
+//        return (s->isF6() ? Qt::Checked: Qt::Unchecked);
    case F7COLUMN:  //
 //        return (s->isF7() ? Qt::Checked: Qt::Unchecked);
    case F8COLUMN:  //

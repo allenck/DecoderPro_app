@@ -25,9 +25,13 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
 
 /*public*/ QVariant ThrottlesTableModel::data(const QModelIndex &index, int role) const
 {
- if(role == Qt::DisplayRole)
+ if(role == Qt::UserRole)
  {
   return VPtr<ThrottleWindow>::asQVariant(throttleFrames.at(index.row()));
+ }
+ if(role == Qt::DisplayRole)
+ {
+  return throttleFrames.at(index.row())->getTitle();
  }
  return QVariant();
 }
@@ -38,16 +42,23 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
  return iter;
 }
 
-/*public*/ void ThrottlesTableModel::addThrottleFrame(ThrottleWindow* tf) {
-    throttleFrames.append(tf);
-    fireTableDataChanged();
+/*public*/ void ThrottlesTableModel::addThrottleFrame(ThrottleWindow* tf)
+{
+ beginInsertRows(QModelIndex(), throttleFrames.count(), throttleFrames.count());
+ throttleFrames.append(tf);
+ endInsertRows();
+    //fireTableDataChanged();
 }
 
-/*public*/ void ThrottlesTableModel::removeThrottleFrame(ThrottleWindow* tf, DccLocoAddress* la) {
-    throttleFrames.removeAt(throttleFrames.indexOf(tf));
-    if(la!=NULL)
+/*public*/ void ThrottlesTableModel::removeThrottleFrame(ThrottleWindow* tf, DccLocoAddress* la)
+{
+ int row = throttleFrames.indexOf(tf);
+ beginRemoveRows(QModelIndex(), row, row);
+ throttleFrames.removeAt(row);
+ endRemoveRows();
+ setPersistentButtons();
+ if(la!=NULL)
         ((AbstractThrottleManager*)InstanceManager::throttleManagerInstance())->removeListener(la, (PropertyChangeListener*)this);
-    fireTableDataChanged();
 }
 
 /*public*/ void ThrottlesTableModel::notifyAddressChosen(LocoAddress* la) {
@@ -61,7 +72,9 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
 
 /*public*/ void ThrottlesTableModel::notifyAddressThrottleFound(DccThrottle* throttle) {
     fireTableDataChanged();
-    throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+    //throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+    connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
 }
 
 /*public*/ void ThrottlesTableModel::notifyConsistAddressChosen(int /*newAddress*/, bool /*isLong*/) {

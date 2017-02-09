@@ -6,6 +6,7 @@
 #include "abstractnamedbean.h"
 #include "namedbeanhandle.h"
 #include "reporter.h"
+#include "libPr3_global.h"
 
 class LIBPR3SHARED_EXPORT Sensor : public AbstractNamedBean
 {

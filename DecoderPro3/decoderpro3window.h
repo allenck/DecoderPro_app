@@ -13,6 +13,8 @@ public:
 signals:
 
 public slots:
+private:
+    void buildWindow();
 
 };
 

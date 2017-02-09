@@ -2,7 +2,8 @@
 #include "actionevent.h"
 #include "comboonradiobutton.h"
 #include "combooffradiobutton.h"
-#include "../LayoutEditor/treepath.h"
+#include "treepath.h"
+#include <QApplication>
 
 //EnumVariableValue::EnumVariableValue(QObject *parent) :
 //    VariableValue(parent)
@@ -100,10 +101,9 @@
   treeNodes.last()->add(node);
  }
  QVector<TreeNode*>* path = node->getPath();
- QList<QObject*>* pathList = new QList<QObject*>();
- foreach(TreeNode* node, *path)
-  pathList->append(node);
- _pathArray->replace(_nstored, new TreePath( pathList ));
+ QList<QObject*>* ol = new QList<QObject*>();
+ foreach(TreeNode* n, *path) ol->append((QObject*)n);
+ _pathArray->replace(_nstored, new TreePath( /*path*/ ol));
  _itemArray->replace(_nstored++, s);
 }
 
@@ -132,6 +132,7 @@
  // connect to the JComboBox model and the CV so we'll see changes.
 //    _value->addActionListener(this);
  connect(_value, SIGNAL(currentIndexChanged(int)), this, SLOT(on_currentIndex_changed(int)));
+ qApp->processEvents(); // process any item selection signals.
  CvValue* cv = _cvMap->value(getCvNum());
  cv->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(cv, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -159,6 +160,7 @@
 
 void EnumVariableValue::on_currentIndex_changed(int i)
 {
+ if(_value->count() < 1) return;
     //ActionEvent* actionEvent = new ActionEvent(this, i, "xxx", i);
     if(_value != NULL &&_value->currentIndex() != i)
      _value->setCurrentIndex(i);
@@ -185,6 +187,7 @@ void EnumVariableValue::on_currentIndex_changed(int i)
  int _currentIndex = _value->currentIndex();
 
  if(_value->currentIndex() < 0) return;
+
  int oldVal = getIntValue();
 
  // called for new values - set the CV as needed
@@ -193,7 +196,7 @@ void EnumVariableValue::on_currentIndex_changed(int i)
  int oldCv = cv->getValue();
  int newVal = getIntValue();
  int newCv = newValue(oldCv, newVal, getMask());
- //if (newCv != oldCv)
+ if (newCv != oldCv)
  {
   cv->setValue(newCv);  // to prevent CV going EDITED during loading of decoder file
 
@@ -267,6 +270,7 @@ void EnumVariableValue::on_currentIndex_changed(int i)
                 +" for array length "+QString::number(_valueArray->count())+" in var "+label());
  if(_value->currentIndex() < 0)
      return 0;
+ if(_valueArray->count() == 0) return 0;
  return _valueArray->at(_value->currentIndex());
 }
 

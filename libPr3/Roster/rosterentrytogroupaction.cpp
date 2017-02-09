@@ -47,18 +47,22 @@
  rosterEntry = new QComboBox();
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  log = new Logger("RosterEntryToGroupAction");
+ lastGroupSelect = "";
 }
 
 
 /*public*/ void RosterEntryToGroupAction::actionPerformed(ActionEvent* event)
 {
-
  roster = Roster::instance();
 
  selections = new RosterGroupComboBox();
+ selections->setObjectName("selections");
  selections->setAllEntriesEnabled(false);
- if (lastGroupSelect != "") {
-     selections->setCurrentIndex(selections->findText(lastGroupSelect));
+ selections->setVisible(true);
+ selections->setEnabled(true);
+ if (lastGroupSelect != "")
+ {
+  selections->setCurrentIndex(selections->findText(lastGroupSelect));
  }
 
  rosterEntryUpdate();
@@ -72,12 +76,15 @@
 //         "Select the roster entry and the group to assign it to\nA Roster Entry can belong to multiple groups. ", "Add Roster Entry to Group",
 //         0, JOptionPane.INFORMATION_MESSAGE, null,
 //         new Object[]{"Cancel", "OK", selections, rosterEntry}, null);
- InputDialog* dlg = new InputDialog("Select the roster entry and the group to assign it to\nA Roster Entry can belong to multiple groups. ", rosterEntry, "Add Roster Entry to Group");
+ QList<QWidget*> list = QList<QWidget*>();
+ list << rosterEntry << (QComboBox*)selections;
+ InputDialog* dlg = new InputDialog("Select the roster entry and the group to assign it to\nA Roster Entry can belong to multiple groups. ", list, "Add Roster Entry to Group");
  int retval = dlg->exec();
 
  log->debug(tr("Dialog value ") + QString::number(retval) + " selected " + QString::number(selections->currentIndex()) + ":"
          + selections->currentText() + ", " + QString::number(rosterEntry->currentIndex()) + ":" + rosterEntry->currentText());
- if (retval != 1) {
+ if (retval != QDialog::Accepted)
+ {
      return;
  }
 

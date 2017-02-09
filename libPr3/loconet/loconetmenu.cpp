@@ -59,7 +59,7 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
  panelItems = QList<LocoNetMenuItem*>()
    << new LocoNetMenuItem(tr("Monitor LocoNet"), "jmri.jmrix.loconet.locomon.LocoMonPane")
    << new LocoNetMenuItem(tr("Monitor Slots"), "jmri.jmrix.loconet.slotmon.SlotMonPane")
-   << new LocoNetMenuItem(tr("MenuItemClockMon"), "jmri.jmrix.loconet.clockmon.ClockMonPane")
+   << new LocoNetMenuItem(tr("Clock Mononitor"), "jmri.jmrix.loconet.clockmon.ClockMonPane")
    << new LocoNetMenuItem(tr("Monitor LocoNet Stats"), "jmri.jmrix.loconet.locostats.LocoStatsPanel")
    << NULL
    << new LocoNetMenuItem(tr("Configure BDL16/BDL162/BDL168"), "jmri.jmrix.loconet.bdl16.BDL16Panel")

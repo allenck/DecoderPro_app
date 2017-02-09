@@ -41,6 +41,12 @@ AddressPanel::AddressPanel(QWidget *parent) :
  connect(ui->setButton, SIGNAL(clicked()), this, SLOT(OnSetButton_clicked()));
  connect(ui->rosterBox, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(rosterItemSelected()));
  //connect(ui->conRosterBox, SIGNAL(currentIndexChanged(int)), this, SLOT(consistRosterSelected()));
+
+ if (InstanceManager::throttleManagerInstance()->hasDispatchFunction()) {
+     ui->dispatchButton->setEnabled(true);
+ }
+ else
+  ui->dispatchButton->setEnabled(false);
  connect(ui->dispatchButton, SIGNAL(clicked()), this, SLOT(dispatchAddress()));
  connect(ui->releaseButton, SIGNAL(clicked()), this, SLOT(releaseAddress()));
  connect(ui->progButton, SIGNAL(clicked()),this, SLOT(openProgrammer()));
@@ -191,7 +197,8 @@ AddressPanel::~AddressPanel()
  ui->releaseButton->setEnabled(true);
  currentAddress = (DccLocoAddress*) t->getLocoAddress();
  addrSelector->setAddress(currentAddress);
- throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+ //throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+ connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  AbstractThrottle* at = (AbstractThrottle*)throttle;
  connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -203,7 +210,10 @@ AddressPanel::~AddressPanel()
  {
   QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, QString::number(addrSelector->getAddress()->getNumber()), NULL, NULL, NULL, NULL);
   if (l.size()>0)
+  {
    rosterEntry = l.at(0);
+   throttle->setRosterEntry(rosterEntry);
+  }
  }
 
  // update GUI
@@ -215,7 +225,7 @@ AddressPanel::~AddressPanel()
   ui->dispatchButton->setEnabled(true);
  // enable program button if programmer available
  // for ops-mode programming
- if ((rosterEntry!=NULL)/* && (ProgDefault::getDefaultProgFile() != NULL)*/ // TODO:
+ if ((rosterEntry!=NULL) && (ProgDefault::getDefaultProgFile() != "")
             && (InstanceManager::programmerManagerInstance()!=NULL) && (InstanceManager::programmerManagerInstance()->isAddressedModePossible()))
   ui->progButton->setEnabled(true);
 
@@ -242,10 +252,11 @@ AddressPanel::~AddressPanel()
     //javax.swing.JOptionPane.showMessageDialog(NULL,reason,Bundle.getMessage("FailedSetupRequestTitle"),javax.swing.JOptionPane.WARNING_MESSAGE);
         QMessageBox::warning(NULL,tr("Warning"), tr("Failed to create Throttle") );
 }
+
 void AddressPanel::OnSetButton_clicked()
 {
-    consistAddress = NULL;
-    changeOfAddress();
+ consistAddress = NULL;
+ changeOfAddress();
 }
 
 /**

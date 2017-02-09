@@ -475,6 +475,23 @@ void RosterEntry::init()
  QString old = functionImages.at(fn);
  functionImages.replace(fn, s);
 // firePropertyChange("functionImage"+QString::number(fn), old, s);
+
+ QString dropFolder = FileUtil::getUserFilesPath();
+ File* source = new File(s);
+ File* dest = new File(s);
+ if (dropFolder != NULL) {
+     dest = new File(dropFolder + File::separatorChar + source->getName());
+     if (source->getParent().compare(dest->getParent()) != 0) {
+         try {
+             FileUtil::createDirectory(dest->getParentFile()->getPath());
+             FileUtil::copy(source, dest);
+         } catch (IOException ex) {
+             log->error("filesDropped: error while copying new file, using original file");
+             dest = source;
+         }
+     }
+ }
+ functionImages.replace(fn, dest->getPath());
 }
 /*public*/ QString RosterEntry::getFunctionImage(int fn)
 {
@@ -495,7 +512,26 @@ void RosterEntry::init()
  QString old = functionSelectedImages.at(fn);
  functionSelectedImages.replace(fn,s);
 // firePropertyChange("functionSelectedImage"+QString::number(fn), old, s);
+ QString dropFolder = FileUtil::getUserFilesPath();
+ File* source = new File(s);
+ File* dest = new File(s);
+ if (dropFolder != NULL)
+ {
+  dest = new File(dropFolder + File::separatorChar + source->getName());
+  if (source->getParent().compare(dest->getParent()) != 0)
+  {
+   try {
+       FileUtil::createDirectory(dest->getParentFile()->getPath());
+       FileUtil::copy(source, dest);
+   } catch (IOException ex) {
+       log->error("filesDropped: error while copying new file, using original file");
+       dest = source;
+   }
+  }
+ }
+ functionSelectedImages.replace(fn, dest->getPath());
 }
+
 /*public*/ QString RosterEntry::getFunctionSelectedImage(int fn)
 {
  if ((!functionSelectedImages.isEmpty()) && (functionSelectedImages.at(fn) != ""))
@@ -605,8 +641,9 @@ void RosterEntry::init()
  e.setAttribute("comment",getComment());
  e.setAttribute("maxSpeed", getMaxSpeedPCT());
  // file path are saved without default xml config path
- e.setAttribute("imageFilePath", getImagePath().mid( FileUtil::getUserResourcePath().length() ));
- e.setAttribute("iconFilePath", getIconPath().mid( FileUtil::getUserResourcePath().length() ));
+ //e.setAttribute("imageFilePath", getImagePath().mid( FileUtil::getUserResourcePath().length() ));
+ e.setAttribute("imageFilePath", FileUtil::getPortableFilename(getImagePath(),false, false));
+ e.setAttribute("iconFilePath", FileUtil::getPortableFilename(getIconPath(),false, false));
  e.setAttribute("URL", getURL());
  e.setAttribute("IsShuntingOn", getShuntingFunction());
 
@@ -650,7 +687,7 @@ void RosterEntry::init()
     {
 //     try
 //     {
-      fne.setAttribute("functionImage", functionImages[i].mid( FileUtil::getUserResourcePath().length() ));
+      fne.setAttribute("functionImage", FileUtil::getPortableFilename(functionImages[i]));
 //     }
 //     catch (StringIndexOutOfBoundsException eob)
 //     {
@@ -661,7 +698,7 @@ void RosterEntry::init()
     {
 //     try
 //     {
-      fne.setAttribute("functionImageSelected", functionSelectedImages[i].mid( FileUtil::getUserResourcePath().length() ));
+      fne.setAttribute("functionImageSelected", FileUtil::getPortableFilename(functionSelectedImages[i]));
 //     }
 //     catch (QStringIndexOutOfBoundsException eob)
 //     {
@@ -1216,8 +1253,8 @@ if (!(_decoderFamily==("")))
   if ((a = e.attribute("dccAddress")) != "" )  _dccAddress = a;
 
   // file path were saved without default xml config path
-  if ((a = e.attribute("imageFilePath")) != "" )  _imageFilePath = FileUtil::getUserResourcePath()/*+"/.jmri/resources/"*/+a;
-  if ((a = e.attribute("iconFilePath")) != "" )  _iconFilePath = FileUtil::getUserResourcePath()+"/.jmri/resources/icons/"+a;
+  if ((a = e.attribute("imageFilePath")) != "" )  _imageFilePath = FileUtil::getAbsoluteFilename( a);
+  if ((a = e.attribute("iconFilePath")) != "" )  _iconFilePath = FileUtil::getAbsoluteFilename( a);
   if ((a = e.attribute("URL")) != "" )  _URL = a;
   if ((a = e.attribute("IsShuntingOn")) != "" )  _isShuntingOn = a;
   if ((a = e.attribute("maxSpeed")) != "" )
@@ -1327,9 +1364,9 @@ if (!(_decoderFamily==("")))
     this->setFunctionLockable(num, lock==("true"));
     QString a;
     if ((a = fn.attribute("functionImage")) != "")
-     this->setFunctionImage(num, FileUtil::getUserResourcePath()+a);
+     this->setFunctionImage(num, FileUtil::getAbsoluteFilename(a));
     if ((a = fn.attribute("functionImageSelected")) != "")
-     this->setFunctionSelectedImage(num, FileUtil::getUserResourcePath()+a);
+     this->setFunctionSelectedImage(num, FileUtil::getAbsoluteFilename(a));
    }
   }
  }
@@ -1390,7 +1427,7 @@ if (!(_decoderFamily==("")))
 
 /*public*/ void RosterEntry::deleteAttribute(QString key)
 {
- if (!attributePairs->isEmpty())
+ if (attributePairs!= NULL)
  {
   attributePairs->remove(key);
   firePropertyChange("attributeDeleted", key, 0);

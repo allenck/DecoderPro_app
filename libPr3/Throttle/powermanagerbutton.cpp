@@ -1,9 +1,10 @@
 #include "powermanagerbutton.h"
 #include "instancemanager.h"
 #include "../../LayoutEditor/powerpane.h"
+#include "abstractpowermanager.h"
 
 PowerManagerButton::PowerManagerButton(QWidget *parent) :
-    QPushButton(parent)
+    QToolButton(parent)
 {
  powerControl = new PowerPane();
  powerMgr = NULL;
@@ -32,9 +33,11 @@ PowerManagerButton::PowerManagerButton(QWidget *parent) :
  else
  {
    //powerMgr.addPropertyChangeListener(this);
-   connect(powerMgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  AbstractPowerManager* apm = (AbstractPowerManager*)powerMgr;
+   connect(apm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
- loadIcons();
+ //loadIcons(); // can't do this here
+ QTimer::singleShot(10,this, SLOT(init()));
 //  addActionListener(new ActionListener() {
 
 //        @Override
@@ -53,8 +56,15 @@ PowerManagerButton::PowerManagerButton(QWidget *parent) :
 //        }
 //    });
  connect(this, SIGNAL(clicked()), this, SLOT(OnClicked()));
+ //setPowerIcons();
+}
+
+void PowerManagerButton::init()
+{
+ loadIcons();
  setPowerIcons();
 }
+
 void PowerManagerButton::OnClicked()
 {
  try

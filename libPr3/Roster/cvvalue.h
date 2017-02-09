@@ -56,6 +56,8 @@ public:
     /*public*/ void dispose();
     QString getStateColor();
     void setProgrammer(Programmer* p);
+    void resetStatus(int newState);
+
 
 signals:
     void propertyChange(PropertyChangeEvent*);

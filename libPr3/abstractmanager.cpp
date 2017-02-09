@@ -3,7 +3,7 @@
 #include "instancemanager.h"
 #include "propertychangesupport.h"
 #include "../LayoutEditor/configxmlmanager.h"
-
+#include "abstractcatalogtree.h"
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -154,17 +154,33 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  */
 /*public*/ void AbstractManager::Register(NamedBean* s)
 {
- QString systemName = s->getSystemName();
+ QString systemName;
+ QString userName;
+ QString cName = QString(s->metaObject()->className());
+ if(qobject_cast<AbstractCatalogTree*>(s))
+ {
+  systemName = ((AbstractCatalogTree*)s)->getSystemName();
+  userName = ((AbstractCatalogTree*)s)->getUserName();
+ }
+ else
+ {
+ systemName = s->getSystemName();
  Q_ASSERT(!systemName.isEmpty());
  _tsys->insert(systemName, s);
- QString userName = s->getUserName();
+  userName = s->getUserName();
+ }
  if (userName != NULL) _tuser->insert(userName, s);
  firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
  // listen for name and state changes to forward
  s->addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
+ if(qobject_cast<TreeModel*>(s) != NULL)
+ {
+  connect((AbstractCatalogTree*)s, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+ }
+ else {
  AbstractNamedBean* ab = (AbstractNamedBean*)s;
  connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
-
+}
     emit beanCreated(s);
 }
 

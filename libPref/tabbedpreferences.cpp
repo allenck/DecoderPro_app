@@ -124,6 +124,7 @@
 int TabbedPreferences::startInit()
 {
  this->setInitalisationState(INITIALISING);
+ setWindowTitle(getTitle());
 
  list = new QListWidget();
 //    listScroller = new JScrollPane(list);
@@ -247,6 +248,24 @@ void TabbedPreferences::On_save_clicked()
 
 /*public*/ bool TabbedPreferences::isInitialised() {
     return (this->getInitialisationState() == INITIALISED);
+}
+
+// package only - for TabbedPreferencesFrame
+bool TabbedPreferences::isDirty()
+{
+    foreach (PreferencesPanel* panel, this->getPreferencesPanels()->values())
+    {
+        if (log->isDebugEnabled()) {
+            log->debug(tr("PreferencesPanel %1 (%2) is %3.").arg(
+                    panel->metaObject()->className()).arg(
+                    (panel->getTabbedPreferencesTitle() != "") ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText(),
+                    (panel->isDirty()) ? "dirty" : "clean"));
+        }
+        if (panel->isDirty()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /*private*/ bool TabbedPreferences::invokeSaveOptions()

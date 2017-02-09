@@ -51,6 +51,7 @@ public:
     ControlPanel* getControlPanel();
     FunctionPanel* getFunctionPanel();
     /*public*/ QString getLastUsedSaveFile();
+    /*public*/ void setFrameTitle();
 
 
 public slots:
@@ -81,6 +82,7 @@ private slots:
     void notifyChangedSlot(LocoNetSlot*);
     void removeThrottleFrame();
     void OnFileMenuLoad();
+    void on_address_released(LocoAddress*);
 
     private:
     Ui::ThrottleWindow *ui;
@@ -130,6 +132,7 @@ private slots:
     /*private*/ bool isEditMode;// = true;
     ThrottleWindow* currentThrottleFrame;
     QString lastUsedSaveFile;
+    void windowClosing(QCloseEvent *e);
 
 private slots:
     void propertyChange(PropertyChangeEvent* e);

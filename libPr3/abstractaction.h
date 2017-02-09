@@ -10,8 +10,8 @@ class AbstractAction : public Action
 {
  Q_OBJECT
 public:
- //explicit AbstractAction(QObject *parent = 0);
- /*public*/  AbstractAction(QObject *parent);
+ //explicit AbstractAction();
+ /*public*/  AbstractAction(QObject *parent =0);
  static bool shouldReconfigure(PropertyChangeEvent* e);
  static void setEnabledFromAction(QWidget* c, Action* a);
  static void setToolTipTextFromAction(QWidget* c, Action* a);

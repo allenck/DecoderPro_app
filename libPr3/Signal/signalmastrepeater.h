@@ -4,6 +4,7 @@
 #include <QObject>
 #include "logger.h"
 #include "namedbeanhandle.h"
+#include "libPr3_global.h"
 
 class NamedBeanHandleManager;
 class SignalMast;

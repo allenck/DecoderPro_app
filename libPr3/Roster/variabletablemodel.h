@@ -10,6 +10,7 @@
 #include "exceptions.h"
 #include "qualifieradder.h"
 
+class EnumVariableValue;
 class ActionEvent;
 class LIBPR3SHARED_EXPORT VariableTableModel : public AbstractTableModel
 {
@@ -60,6 +61,8 @@ public:
      */
     /*public*/ Programmer* getProgrammer() ;
     /*public*/ void setProgrammer(Programmer* p) ;
+    /*public*/ void resetStatus(int newStatus);
+
 signals:
 
 public slots:
@@ -93,6 +96,7 @@ private:
     /*protected*/ VariableValue* processSplitVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) throw (NumberFormatException) ;
     /*protected*/ void setButtonsReadWrite(bool readOnly, bool infoOnly, bool writeOnly, QPushButton* bw, QPushButton* br, int row);
     /*protected*/ void setToolTip(QDomElement e, VariableValue* v);
+    /*protected*/ void handleENumValChildren(QDomElement e, EnumVariableValue* var);
  Logger* log;
 };
 class VTQualifierAdder : public QualifierAdder
@@ -104,6 +108,7 @@ public:
 protected:
    /*protected*/ Qualifier* createQualifier(VariableValue* var, QString relation, QString value);
    /*protected*/ void addListener(PropertyChangeListener* qc) ;
+
 };
 
 #endif // VARIABLETABLEMODEL_H

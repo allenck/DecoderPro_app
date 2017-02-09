@@ -5,6 +5,7 @@
 #include <QBoxLayout>
 #include <QGroupBox>
 #include <QMenuBar>
+#include <QTimer>
 
 //RosterGroupTableFrame::RosterGroupTableFrame()
 //{
@@ -92,7 +93,7 @@ int RosterGroupTableFrame::topStrutWidth = 20;
  centralWidgetLayout->addWidget(bottomBox);
 
  // add extras, if desired by subclass
- extras();
+ QTimer::singleShot(10,this, SLOT(extras()));
 
  // set Viewport preferred size from size of table
  QSize dataTableSize = dataTable->sizeHint();

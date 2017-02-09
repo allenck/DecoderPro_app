@@ -72,7 +72,7 @@ common();
 {
  //this();
 common();
- log->debug(tr("New rolling stock (%1 %2)").arg(road).arg(number));
+ if(log->isDebugEnabled()) log->debug(tr("New rolling stock (%1 %2)").arg(road).arg(number));
  _road = road;
  _number = number;
  _id = createId(road, number);
@@ -208,7 +208,7 @@ if (_location != NULL && _trackLocation != NULL)
             - old.toInt());
     if (_destination != NULL && _trackDestination != NULL && !_lengthChange) {
         _lengthChange = true; // prevent recursive loop, and we want the "old" loco length
-        log->debug(tr("Rolling stock (%1) has destination (%2, %3)").arg(toString()).arg(_destination->getName()).arg(
+        if(log->isDebugEnabled()) log->debug(tr("Rolling stock (%1) has destination (%2, %3)").arg(toString()).arg(_destination->getName()).arg(
                 _trackDestination->getName()));
          _trackLocation->deletePickupRS(this);
         _trackDestination->deleteDropRS(this);
@@ -756,7 +756,7 @@ return getLength().toInt();
  /*public*/ void RollingStock::setRouteLocation(RouteLocation* routeLocation) {
      // a couple of error checks before setting the route location
      if (_location == NULL && routeLocation != NULL) {
-         log->debug(tr("WARNING rolling stock (%1) does not have an assigned location").arg(toString())); // NOI18N
+         if(log->isDebugEnabled()) log->debug(tr("WARNING rolling stock (%1) does not have an assigned location").arg(toString())); // NOI18N
      } else if (routeLocation != NULL && _location != NULL && routeLocation->getName()!=( _location->getName())) {
       log->error(tr("ERROR route location name(%1) not equal to location name (%2) for rolling stock (%3)").arg(
                  routeLocation->getName()).arg(_location->getName()).arg(toString())); // NOI18N
@@ -900,12 +900,12 @@ IdTagPropertyChangeListener::IdTagPropertyChangeListener(RollingStock* parent) {
 
      QString old = _rfid;
      _rfid = id;
-     log->debug(tr("Changing IdTag for %1 to %1").arg(toString()).arg(id));
+     if(log->isDebugEnabled()) log->debug(tr("Changing IdTag for %1 to %1").arg(toString()).arg(id));
      if (old!=(id))
          setDirtyAndFirePropertyChange("rolling stock rfid", old, id); // NOI18N
      try {
       IdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getIdTag(id.toUpper());
-         log->debug(tr("Tag %1 Found").arg(tag->toString()));
+         if(log->isDebugEnabled()) log->debug(tr("Tag %1 Found").arg(tag->toString()));
          setIdTag(tag);
      } catch (NullPointerException e) {
          log->error(tr("Tag %1 Not Found").arg(id));
@@ -1030,7 +1030,7 @@ return "";
      if (routeDestination != NULL && _destination != NULL
              && routeDestination->getName()!=(_destination->getName()))
      {
-      log->debug(tr("WARNING route destination name (%1) not equal to destination name (%2) for rolling stock (%3)").arg(
+      log->warn(tr("WARNING route destination name (%1) not equal to destination name (%2) for rolling stock (%3)").arg(
                  routeDestination->getName()).arg(_destination->getName()).arg(toString())); // NOI18N
      }
      RouteLocation* old = _routeDestination;
@@ -1148,7 +1148,7 @@ return "";
          // Arriving at destination?
          if (getRouteLocation() == getRouteDestination() || next == NULL) {
              if (getRouteLocation() == getRouteDestination()) {
-                 log->debug(tr("Rolling stock (%1) has arrived at destination (%2)").arg(toString()).arg(getDestination()->toString()));
+                 if(log->isDebugEnabled()) log->debug(tr("Rolling stock (%1) has arrived at destination (%2)").arg(toString()).arg(getDestination()->toString()));
              } else {
                  log->error(tr("Rolling stock (%1) has a NULL route location for next").arg(toString())); // NOI18N
              }
@@ -1156,7 +1156,7 @@ return "";
              setDestination(NULL, NULL); // this also clears the route locations
              setTrain(NULL); // this must come after setDestination (route id is set)
          } else {
-          log->debug(tr("Rolling stock (%1) is in train (%2) leaves location (%3) destination (%4)").arg(toString()).arg(
+          if(log->isDebugEnabled()) log->debug(tr("Rolling stock (%1) is in train (%2) leaves location (%3) destination (%4)").arg(toString()).arg(
                      getTrainName()).arg(old->getName()).arg(next->getName()));
              Location* nextLocation = locationManager->getLocationByName(next->getName());
              setLocation(nextLocation, NULL, true); // force RS to location
@@ -1199,9 +1199,9 @@ return "";
  {
      //this();
   common();
-  log->debug("e = "+ e.tagName());
+  if(log->isDebugEnabled()) log->debug("e = "+ e.tagName());
   QDomNamedNodeMap al = e.attributes();
-   log->debug("attributes = " + QString::number(al.count()));
+   if(log->isDebugEnabled()) log->debug("attributes = " + QString::number(al.count()));
      QString a ="";
      if ((a = e.attribute (Xml::ID)) != NULL) {
          _id = a;

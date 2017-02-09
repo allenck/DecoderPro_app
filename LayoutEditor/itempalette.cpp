@@ -93,7 +93,7 @@ void ItemPalette::changeEvent(QEvent * e)
  // discard old version
  if (tree != NULL)
  {
-  manager->deregister(tree);
+  manager->deregister((NamedBean*)tree);
  }
  tree = manager->newCatalogTree("NXPI", "Item Palette");
  CatalogTreeNode* root = (CatalogTreeNode*)tree->getRoot();

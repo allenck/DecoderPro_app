@@ -3,6 +3,8 @@
 #include "preferencespanel.h"
 #include <QTableView>
 #include "libpref_global.h"
+
+class Logger;
 class ProfilesTable;
 class File;
 class ListSelectionEvent;
@@ -37,7 +39,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void valueChanged(ListSelectionEvent* e = 0);
+    /*public*/ void valueChanged(QModelIndex);
 private:
     /*private*/ void initComponents();
     // Variables declaration - do not modify
@@ -58,12 +60,12 @@ private:
 //    /*private*/ JPopupMenu.Separator jSeparator1;
     /*private*/ QTabWidget* jTabbedPane1;
     /*private*/ QMenu* profilesPopupMenu;
-    /*private*/ ProfilesTable* profilesTbl;
+    /*private*/ QTableView* profilesTbl;
     /*private*/ QAction* renameMI;
     /*private*/ QListView* searchPaths;
     /*private*/ QWidget* searchPathsPanel;
     // End of variables declaration
-
+    Logger* log;
 private slots:
     /*private*/ void renameMIActionPerformed(ActionEvent* evt = 0);
     /*private*/ void chkStartWithActiveProfileActionPerformed(ActionEvent* evt = 0);
@@ -77,12 +79,13 @@ private slots:
     /*private*/ void btnRemoveSearchPathActionPerformed(ActionEvent* evt = 0);
     /*private*/ void btnAddSearchPathActionPerformed(ActionEvent* evt = 0);
 };
-class ProfilesTable : public QTableView
-{
- Q_OBJECT
- public:
-    ProfilesTable(QWidget* parent = 0) : QTableView(parent) {}
-    /*public*/ QString getToolTipText(QMouseEvent* e);
-};
+
+//class ProfilesTable : public QTableView
+//{
+// Q_OBJECT
+// public:
+//    ProfilesTable(QWidget* parent = 0) : QTableView(parent) {}
+//    /*public*/ QString getToolTipText(QMouseEvent* e);
+//};
 
 #endif // PROFILEPREFERENCESPANEL_H

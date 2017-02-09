@@ -38,7 +38,7 @@
     _tableEntry->setBackground(COLOR_UNKNOWN);
     _status = NULL;
     log = new Logger("CvValue");
-    log->setDebugEnabled(true);
+    log->setDebugEnabled(false);
     _value = 0;
     _decoderValue = 0;
     _state = 0;
@@ -132,6 +132,12 @@ QColor CvValue::getColor()
   _tableEntry->setText(QString::number(value));
   notifyValueChange(value);
  }
+}
+
+void CvValue::resetStatus(int newState)
+{
+ if(_state == EDITED)
+  setState(newState);
 }
 
 /**

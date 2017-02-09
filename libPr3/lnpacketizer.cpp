@@ -503,7 +503,11 @@ void XmtHandler::sendMessage(LocoNetMessage* m) // SLOT[]
     {
      //if( trafficController->xmtBuffer.count() > 0)
      {
-      if (!trafficController->controller->okToSend()) log.debug("LocoNet port not ready to receive");
+      if (!trafficController->controller->okToSend())
+      {
+       log.debug("LocoNet port not ready to receive");
+       return;
+      }
       //if (trafficController->debug) log.debug("start write to stream  : "+LnPacketizer::hexStringFromBytes(trafficController->xmtBuffer));
 //      trafficController->ostream->writeRawData(msg,1);
       QMutex mutex3;

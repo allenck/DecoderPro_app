@@ -134,9 +134,10 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
         CatalogTree* ct = ((DefaultCatalogTreeManager*)manager)->getBySystemName(sname);
         QDomElement elem = doc.createElement("catalogTree");
         elem.setAttribute("systemName", sname);
+#if 0
         QString uname = ct->getUserName();
         if (uname!="") elem.setAttribute("userName", uname);
-
+#endif
         storeNode(elem, (CatalogTreeNode*)ct->getRoot());
 
         if (log-> isDebugEnabled()) log-> debug("store CatalogTree "+sname);

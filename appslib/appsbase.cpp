@@ -46,7 +46,7 @@ AppsBase::AppsBase(QObject *parent) :
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "MS_PKGPROTECT",
 //            justification = "not a library pattern")
 //    static Logger log = LoggerFactory.getLogger(AppsBase.class.getName());
-/*private*/ /*final*/ /*static*/ QString AppsBase::configFilename = /*"/JmriConfig3.xml"*/ "ProfileConfig.xml";
+/*private*/ /*final*/ /*static*/ QString AppsBase::configFilename = "/JmriConfig3.xml";
 /*static*/ bool AppsBase::_preInit = false;
 
 
@@ -81,15 +81,13 @@ AppsBase::AppsBase(QObject *parent) :
   QObject(parent)
 {
  log = new Logger("AppsBase");
- if (!preInit)
+ if (!_preInit)
  {
   preInit(applicationName);
   setConfigFilename(configFileDef, args);
  }
-
 //    Log4JUtil.initLog4J();
-
- configureProfile();
+ QTimer::singleShot(10, this, SLOT(init())); // configureProfile() once constructor is finished.
 
  installConfigurationManager();
 
@@ -147,6 +145,11 @@ AppsBase::AppsBase(QObject *parent) :
 
 }
 
+void AppsBase::init()
+{
+ configureProfile();
+}
+
 /**
  * Configure the {@link jmri.profile.Profile} to use for this application.
  * <p>
@@ -173,21 +176,21 @@ AppsBase::AppsBase(QObject *parent) :
  {
   profileFile = new File(profileFilename);
  }
- ProfileManager::defaultManager()->setConfigFile(profileFile);
+ ProfileManager::getDefault()->setConfigFile(profileFile);
  // See if the profile to use has been specified on the command line as
  // a system property jmri.profile as a profile id.
 #if 1
  if (System::getProperties()->containsKey(ProfileManager::SYSTEM_PROPERTY))
  {
-  ProfileManager::defaultManager()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
+  ProfileManager::getDefault()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
  }
 #endif
  // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
- if (!ProfileManager::defaultManager()->getConfigFile()->exists())
+ if (!ProfileManager::getDefault()->getConfigFile()->exists())
  { // no profile config for this app
  try
   {
-   if (ProfileManager::defaultManager()->migrateToProfiles(getConfigFileName()))
+   if (ProfileManager::getDefault()->migrateToProfiles(getConfigFileName()))
    {// migration or first use
     // GUI should show message here
     log->info(tr("Please ensure that the User Files location and Roster location are correct."));
@@ -212,7 +215,7 @@ AppsBase::AppsBase(QObject *parent) :
    // Manually setting the configFilename property since calling
    // Apps.setConfigFilename() does not reset the system property
 //            System.setProperty("org.jmri.Apps.configFilename", Profile.CONFIG_FILENAME);
-   log->info(tr("Starting with profile %1").arg( ProfileManager::defaultManager()->getActiveProfile()->getId()));
+   log->info(tr("Starting with profile %1").arg( ProfileManager::getDefault()->getActiveProfile()->getId()));
   }
   else
   {
@@ -345,7 +348,9 @@ AppsBase::AppsBase(QObject *parent) :
     return result;
 }
 
-/*protected*/ void AppsBase::installShutDownManager() {
+/*protected*/ void AppsBase::installShutDownManager()
+{
+ if (InstanceManager::instance()->shutDownManagerInstance() == NULL)
     InstanceManager::setShutDownManager(
             new DefaultShutDownManager());
 #if 0
@@ -376,7 +381,7 @@ AppsBase::AppsBase(QObject *parent) :
     // as a special case, register a ShutDownTask to write out blocks
     InstanceManager::shutDownManagerInstance()->
       _register(new WriteBlocksShutDownTask("Writing Blocks", this));
-     #if 0 // TODO:
+     #if 0 // done
     {
 
                 /*public*/ bool execute() {
@@ -508,6 +513,7 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
  */
 /*static*/ /*public*/ bool AppsBase::handleQuit() {
     Logger* log  = new Logger("AppsBase");
+
     log->debug("Start handleQuit");
     try {
         return InstanceManager::shutDownManagerInstance()->shutdown();

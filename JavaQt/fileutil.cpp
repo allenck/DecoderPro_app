@@ -249,7 +249,7 @@ FileUtil::FileUtil(QObject *parent) :
  {
   // both relative and absolute are just returned
   QString currPath = QDir::currentPath();
-  programPath = currPath+QDir::separator()+ ".." +QDir::separator()+"jmri"+ QDir::separator();
+//  programPath = currPath+QDir::separator()+ ".." +QDir::separator()+"jmri"+ QDir::separator();
   QString path = programPath + pName.mid(PROGRAM.length()).replace(SEPARATOR, QDir::separator());
   return path;
  }
@@ -1288,6 +1288,9 @@ FileUtil::FileUtil(QObject *parent) :
 //    throw ex;
 //   }
 //  }
+  QFile f(dest->path);
+  if(f.exists())
+   f.remove();
   if(!QFile::copy(source->path, dest->path))
    Logger::error(tr("copy of %1 to %2 failed!").arg(source->path).arg(dest->path) );
  }

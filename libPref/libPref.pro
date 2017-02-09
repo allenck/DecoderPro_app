@@ -49,7 +49,6 @@ SOURCES += libpref.cpp \
     profilefilefilter.cpp \
     profilemanagerdialog.cpp \
     profilelistmodel.cpp \
-    blockvaluefile.cpp \
     performscriptpanel.cpp \
     addprofiledialog.cpp \
     warrantpreferencespanel.cpp \
@@ -109,7 +108,6 @@ HEADERS += libpref.h\
     profilefilefilter.h \
     profilemanagerdialog.h \
     profilelistmodel.h \
-    blockvaluefile.h \
     performscriptpanel.h \
     addprofiledialog.h \
     warrantpreferencespanel.h \

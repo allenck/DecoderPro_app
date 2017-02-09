@@ -15,7 +15,8 @@ class LIBPR3SHARED_EXPORT AbstractRosterItemAction : public JmriAbstractAction
 {
     Q_OBJECT
 public:
-    explicit AbstractRosterItemAction(QObject *parent = 0);
+    //explicit AbstractRosterItemAction();
+ AbstractRosterItemAction(QObject *parent = 0);
     /*public*/ AbstractRosterItemAction(QString pName, QWidget* pWho);
     /*public*/ AbstractRosterItemAction(QString s, WindowInterface* wi);
     /*public*/ AbstractRosterItemAction(QString s, QIcon i, WindowInterface* wi);

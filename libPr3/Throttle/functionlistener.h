@@ -7,6 +7,7 @@ class FunctionListener : public EventListener
     Q_OBJECT
 public:
     explicit FunctionListener(QObject *parent = 0) : EventListener(parent) {}
+public slots:
     /*public*/ virtual void notifyFunctionStateChanged(int /*functionNumber*/, bool /*isOn*/) {}
 
     /**

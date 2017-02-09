@@ -23,9 +23,9 @@
     /*protected*/ /*static final */ QString Profile::NAME = "name"; // NOI18N
     /*protected*/ /*static final */ QString Profile::PATH = "path"; // NOI18N
     /*public*/ /*static final */ QString Profile::PROPERTIES = "profile.properties"; // NOI18N
-/*public*/ /*static final*/ QString Profile::CONFIG = "profile.xml"; // NOI18N
-/*public*/ /*static final*/ QString Profile::SHARED_PROPERTIES = Profile::PROFILE + "/" + Profile::PROPERTIES; // NOI18N
-/*public*/ /*static final*/ QString Profile::SHARED_CONFIG = Profile::PROFILE + "/" + Profile::CONFIG; // NOI18N
+    /*public*/ /*static final*/ QString Profile::CONFIG = "profile.xml"; // NOI18N
+    /*public*/ /*static final*/ QString Profile::SHARED_PROPERTIES = Profile::PROFILE + "/" + Profile::PROPERTIES; // NOI18N
+    /*public*/ /*static final*/ QString Profile::SHARED_CONFIG = Profile::PROFILE + "/" + Profile::CONFIG; // NOI18N
     /*public*/ /*static final */ QString Profile::CONFIG_FILENAME = "ProfileConfig.xml"; // NOI18N
 /*public*/ /*static final*/ QString Profile::UI_CONFIG = "user-interface.xml"; // NOI18N
 /*public*/ /*static final*/ QString Profile::SHARED_UI_CONFIG = Profile::PROFILE + "/" + Profile::UI_CONFIG; // NOI18N
@@ -93,7 +93,7 @@
   Logger::error(path->toString() + " is within an existing profile.");
  }
  this->name = name;
- this->id = id + "." + ProfileManager::createUniqueId();
+ this->id = id + "." + ProfileManager::createUniqueId().mid(0,8);
  this->path = path;
  //path->mkdirs();
  QDir d = QDir();
@@ -196,7 +196,7 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
 {
  Properties* p = new Properties();
  File f =  File(this->path,  PROPERTIES);
-#if 1
+
  QTextStream* is = NULL;
 // try
 // {
@@ -218,7 +218,7 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
  }
  this->id = p->getProperty(ID);
  this->name = p->getProperty(NAME);
-#endif
+
 }
 
 //@Override
@@ -333,6 +333,12 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
 {
  if (path->isDirectory())
  {
+  // Version 2
+  if ((new File(path, SHARED_PROPERTIES))->canRead())
+  {
+   return true;
+  }
+  // Version 1
   if ((new File(path, PROPERTIES))->canRead())
   {
    return true;

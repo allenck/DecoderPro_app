@@ -29,12 +29,13 @@ private:
     static bool _preInit;// = false;
     Logger* log;
     /*private*/ bool doDeferredLoad(File* file);
-
+protected slots:
+    void init();
 protected:
     /*protected*/ bool configOK;
     /*protected*/ bool configDeferredLoadOK;
     /*protected*/ bool preferenceFileExists;
-    /*protected*/ void configureProfile();
+    virtual /*protected*/ void configureProfile();
     /*protected*/ void installConfigurationManager();
     /*protected*/ void installManagers();
     /*protected*/ void setAndLoadPreferenceFile() ;

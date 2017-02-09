@@ -1179,25 +1179,27 @@ return true;
 
 }
 
-/*protected*/ void WarrantRoute::clearRoute() {
-_orders = new QList <BlockOrder*>();
-clearFrames();
-clearFields();
-_focusedField = _origin;
-_routeModel->fireTableDataChanged();
+/*protected*/ void WarrantRoute::clearRoute()
+{
+ _orders = new QList <BlockOrder*>();
+ clearFrames();
+ clearFields();
+ _focusedField = _origin;
+ _routeModel->fireTableDataChanged();
 }
+
 /*private*/ void WarrantRoute::clearFrames()
 {
-if (_debugFrame!=NULL)
-{
-_debugFrame->dispose();
-_debugFrame = NULL;
-}
-if (_pickRouteDialog!=NULL)
-{
-_pickRouteDialog->close();
-_pickRouteDialog = NULL;
-}
+ if (_debugFrame!=NULL)
+ {
+ _debugFrame->dispose();
+ _debugFrame = NULL;
+ }
+ if (_pickRouteDialog!=NULL)
+ {
+ _pickRouteDialog->close();
+ _pickRouteDialog = NULL;
+ }
 }
 
 

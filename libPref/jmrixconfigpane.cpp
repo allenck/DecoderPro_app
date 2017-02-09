@@ -8,6 +8,8 @@
 #include "defaultusermessagepreferences.h"
 #include <QScrollArea>
 #include "jtitledseparator.h"
+#include <QGroupBox>
+#include "flowlayout.h"
 
 //JmrixConfigPane::JmrixConfigPane(QWidget *parent) :
 //    QWidget(parent)
@@ -307,37 +309,42 @@
 //        selection();
 //    });
  connect(modeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(On_modeBox_currentIndexChanged(int)));
- //QWidget* manufacturerPanel = new QWidget();
- QHBoxLayout* manufacturerPanelLayout= new QHBoxLayout;
- //manufacturerPanel->setLayout(manufLayout = new QHBoxLayout);
- manufacturerPanelLayout->addWidget(manuBox);
- //QWidget* connectionPanel = new QWidget();
- QHBoxLayout* connectionPanelLayout = new QHBoxLayout;
- //connectionPanel->setLayout(connectionPanelLayout = new QHBoxLayout);
- connectionPanelLayout->addWidget(modeBox);
+ QGroupBox* manufacturerPanel = new QGroupBox(tr("System Manufacturer"));
+ QVBoxLayout* manufacturerPanelLayout = new QVBoxLayout(manufacturerPanel);
+ manufacturerPanelLayout->addWidget(manuBox, 0, Qt::AlignCenter);
+ QGroupBox* connectionPanel = new QGroupBox(tr("System Connection"));
+ QVBoxLayout* connectionPanelLayout = new QVBoxLayout(connectionPanel);
+ connectionPanelLayout->addWidget(modeBox, 0, Qt::AlignCenter);
  //QWidget* initialPanel = new QWidget();
  QVBoxLayout* initialPanelLayout = new QVBoxLayout;
  initialPanelLayout->setAlignment(Qt::AlignTop);
  //initialPanel->setLayout(initialPanelLayout = new QVBoxLayout); //(initialPanel, BoxLayout.Y_AXIS));
- initialPanelLayout->addWidget(new JTitledSeparator(tr("System Manufacturer"))); // NOI18N
- initialPanelLayout->addLayout(manufacturerPanelLayout);
- initialPanelLayout->addWidget(new JTitledSeparator(tr("System Connection"))); // NOI18N
- initialPanelLayout->addLayout(connectionPanelLayout);
+ initialPanelLayout->addWidget(manufacturerPanel);
+
+ //initialPanelLayout->addWidget(new JTitledSeparator(tr("System Connection"))); // NOI18N
+ initialPanelLayout->addWidget(connectionPanel);
  layout->addLayout(initialPanelLayout,0); //, Qt::AlignTop);
- initialPanelLayout->addWidget(new JTitledSeparator(tr("Settings"))); // NOI18N
+ QGroupBox*settingsPanel = new QGroupBox(tr("Settings"));
+ QVBoxLayout* settingsPanelLayout =new QVBoxLayout(settingsPanel);
+
+ //initialPanelLayout->addWidget(new JTitledSeparator(tr("Settings"))); // NOI18N
  QScrollArea* scroll = new QScrollArea(/*details*/);
- scroll->setMinimumSize( 300, 200);
+ //scroll->setMinimumSize( 300, 200);
  scroll->setWidget(details);
  scroll->setWidgetResizable(true);
  QGridLayout* gbLayout;
  details->setLayout(gbLayout = new QGridLayout);
  gbLayout->setObjectName("detailsLayout");
  //scroll.setBorder(BorderFactory.createEmptyBorder());
- layout->addWidget(scroll, 0, Qt::AlignCenter);
+ //layout->addWidget(scroll, 0, Qt::AlignCenter);
+ settingsPanelLayout->addWidget(scroll);
+ layout->addWidget(settingsPanel);
 
  selection();  // first time through, pretend we've selected a value
  // to load the rest of the GUI
+ adjustSize();
 }
+
 void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
 {
  if (modeBox->currentText() != NULL)

@@ -9,6 +9,7 @@
 #include "defaultsignalmastmanager.h"
 #include "turnoutsignalmast.h"
 #include "virtualsignalmast.h"
+#include "blockvaluefile.h"
 
 LayoutBlockManager*LayoutBlockManager::_instance = NULL;
 
@@ -257,7 +258,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 //                rb.getQString("WarningTitle"),JOptionPane.ERROR_MESSAGE);
      QMessageBox::warning(0, tr("Warning"), QString::number(badBeanErrors)+" "+tr("Bean Settings needed for Block operation could not be created. Check that all turnouts have been assigned."));
  }
-#if 0 // TODO
+#if 1 // TODO
  try
  {
   BlockValueFile().readBlockValues();

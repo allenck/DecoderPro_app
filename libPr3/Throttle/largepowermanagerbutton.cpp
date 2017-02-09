@@ -16,6 +16,6 @@ LargePowerManagerButton::LargePowerManagerButton(QWidget *parent) :
 
 void LargePowerManagerButton::loadIcons() {
     powerOnIcon =  QIcon(":/resources/icons/throttles/power_green.png");
-    powerOffIcon =  QIcon("resources/icons/throttles/power_red.png");
-    powerXIcon =  QIcon("resources/icons/throttles/power_yellow.png");
+    powerOffIcon =  QIcon(":/resources/icons/throttles/power_red.png");
+    powerXIcon =  QIcon(":/resources/icons/throttles/power_yellow.png");
 }

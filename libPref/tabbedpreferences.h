@@ -114,8 +114,11 @@ private:
     int getCategoryIndexFromString(QString category);
     void updateJList();
 Logger* log;
+    bool isDirty();
+
 protected:
     /*protected*/ QStringList getChoices();
+friend class TabbedPreferencesFrame;
 };
 /*static*/ class PreferencesCatItems : QObject
 {

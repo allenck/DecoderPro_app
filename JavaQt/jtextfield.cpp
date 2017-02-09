@@ -1022,10 +1022,10 @@ void JTextField::setBackground(QColor c )
  QColor oldC = getBackground();
  if(oldC != c)
  {
-  log->debug("old stylesheet = " + styleSheet());
+  if (log->isDebugEnabled()) log->debug("old stylesheet = " + styleSheet());
   ss = QString("QLineEdit{ color: black; background-color: rgb(%1,%2,%3); selection-background-color: darkgray;} QLineEdit:read-only { background: lightblue;}").arg(c.red()).arg(c.green()).arg(c.blue());
   setStyleSheet(ss);
-  log->debug("new stylesheet = " + ss + " value = '"+ text() + "'");
+  if (log->isDebugEnabled())log->debug("new stylesheet = " + ss + " value = '"+ text() + "'");
   update();
  }
 }

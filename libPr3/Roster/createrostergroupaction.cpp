@@ -7,6 +7,9 @@
 CreateRosterGroupAction::CreateRosterGroupAction(QObject *parent) :
     JmriAbstractAction(tr("CreateRoster Group"),parent)
 {
+ rosterEntries = new QList<RosterEntry*>();
+ log = new Logger("CreateRosterGroupAction");
+ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 #if 1
 /**
@@ -34,11 +37,13 @@ CreateRosterGroupAction::CreateRosterGroupAction(QObject *parent) :
 /*public*/ CreateRosterGroupAction::CreateRosterGroupAction(QString s, /*WindowInterface* wi,*/ QWidget *parent) :JmriAbstractAction(s,parent){
     //super(s, wi);
     log = new Logger("CreateRosterGroupAction");
+    connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 
 /*public*/ CreateRosterGroupAction::CreateRosterGroupAction(QString s, QIcon i, /*WindowInterface wi,*/ QWidget *parent) : JmriAbstractAction(s, parent) {
     //super(s, i, wi);
     log = new Logger("CreateRosterGroupAction");
+    connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 /**
  * @param s Name of this action, e.g. in menus
@@ -63,18 +68,20 @@ CreateRosterGroupAction::CreateRosterGroupAction(QObject *parent) :
 //                                 NULL, // icon
 //                                 NULL, // initial values
 //                                 NULL);// preselected initial value
-    InputDialog* dlg = new InputDialog(tr("MenuGroupCreate")+"</b></html>","");
+    InputDialog* dlg = new InputDialog("<html><b>" + tr("Create Roster Group")+"</b></html>","Create Roster Group");
     dlg->exec();
     QString entry = dlg->value();
     if(entry == "" || entry==(Roster::ALLENTRIES)){
         return;
     }
-    if (rosterEntries != NULL) {
-        foreach (RosterEntry* re, *rosterEntries) {
-            log->debug("Adding RosterEntry " + re->getId() + " to new group " + entry);
-            re->putAttribute(Roster::instance()->getRosterGroupPrefix() + entry, "yes");
-            re->updateFile();
-        }
+    if (rosterEntries != NULL)
+    {
+     foreach (RosterEntry* re, *rosterEntries)
+     {
+      log->debug("Adding RosterEntry " + re->getId() + " to new group " + entry);
+      re->putAttribute(Roster::instance()->getRosterGroupPrefix() + entry, "yes");
+      re->updateFile();
+     }
     }
     Roster::instance()->addRosterGroupList(entry);
     Roster::writeRosterFile();

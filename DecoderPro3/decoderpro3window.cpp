@@ -37,7 +37,12 @@
 //    super(Application.getApplicationName(),
 //            menuFile,
 //            toolbarFile);
-    this->setNewWindowAction(new Decoder3Action("newWindow", (WindowInterface*)this));
+}
+
+void DecoderPro3Window::buildWindow()
+{
+ RosterFrame::buildWindow();
+ this->setNewWindowAction(new Decoder3Action("newWindow", (WindowInterface*)this));
  this->allowQuit(true);
 }
 
@@ -45,5 +50,5 @@
 //@Override
 /*public*/  void DecoderPro3Window::remoteCalls(QStringList args)
 {
-//    RosterFrame::remoteCalls(args);
+ RosterFrame::remoteCalls(args);
 }

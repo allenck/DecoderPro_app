@@ -101,6 +101,8 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
  else
   loadDecoderFromLoco(pRosterEntry);
 
+
+
  // save default values
  saveDefaults();
 
@@ -189,6 +191,7 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
                                        +", unconstrained size is "+/*super.getPreferredSize()*/QString::number(QMainWindow::size().height())+","+QString::number(QMainWindow::size().width())
                                      +", constrained to "+/*getPreferredSize());*/QString::number(getPreferredSize().height())+","+QString::number(getPreferredSize().width()));
 
+ resetStatus(CvValue::FROMFILE); // ACK reset any CvValues marked as EDITED to FROMFILE.
 
 }
 
@@ -334,7 +337,10 @@ PaneProgFrame::~PaneProgFrame()
   else
    decoderRoot = df->rootFromName(XmlFile::xmlDir()+DecoderFile::fileLocation+df->getFilename());
  }
- catch (Exception e) { log->error("Exception while loading decoder XML file: "+df->getFilename(), e.getMessage()); }
+ catch (Exception e)
+ {
+  log->error("Exception while loading decoder XML file: "+df->getFilename(), e.getMessage());
+ }
     // load variables from decoder tree
     df->getProductID();
     df->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel);
@@ -416,6 +422,12 @@ PaneProgFrame::~PaneProgFrame()
 {
  if (log->isDebugEnabled()) log->debug(tr("Checking decoder dirty status. CV: ")+(cvModel->decoderDirty()?"true":"false")+" variables:"+(variableModel->decoderDirty()?"true":"false"));
  return (getModePane()!= NULL && (cvModel->decoderDirty() || variableModel->decoderDirty()) );
+}
+
+/*protected*/ void PaneProgFrame::resetStatus(int newStatus)
+{
+ cvModel->resetDecoderDirty(newStatus);
+ variableModel->resetStatus(newStatus);
 }
 
 /**

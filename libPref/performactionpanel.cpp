@@ -29,6 +29,7 @@
  //super("ButtonActionAdd", "ButtonActionRemove");
  setObjectName("PerformActionPanel");
 }
+
 /*public*/ PerformActionPanel::PerformActionPanel(const PerformActionPanel & that)
     : AbstractActionPanel(tr("Add Action"), tr("Remove Action"))
 {

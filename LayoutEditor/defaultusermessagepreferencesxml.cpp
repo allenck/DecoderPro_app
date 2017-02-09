@@ -158,14 +158,15 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
     windowElement.appendChild(ret);
     foreach (QVariant key, s)
     {
-     QVariant value = p->getProperty(strClass, key);
+     QVariant value = p->getProperty(strClass, key.toString());
      QDomElement prop = doc.createElement("property");
      ret.appendChild(prop);
      QDomElement e;
      prop.appendChild(e = doc.createElement("key"));
      QString s_class;
      //e.setAttribute("class", key.getClass().getName());
-     if(key.toString() == "QString")
+     //if(key.toString() == "QString")
+     if(key.toString() != "")
       s_class = "java.lang.String";
      e.setAttribute("class", s_class);
      e.appendChild(doc.createTextNode(key.toString()));
@@ -418,7 +419,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
   #endif
       if(ptr != NULL)
       {
-       p->setProperty(strClass, keyText, valueText);
+       ((DefaultUserMessagePreferences*)p)->setProperty(strClass, keyText, valueText);
       }
      }
     }

@@ -16,8 +16,18 @@ RosterMediaPane::RosterMediaPane(RosterEntry* re, QWidget *parent) :
     log = new Logger("RosterMedia");
     // tab 2
     QImage img(re->getImagePath());
-    ui->lblMainImage->setPixmap(QPixmap::fromImage(img).scaledToWidth(ui->lblMainImage->width()));
+    ui->lblMainImage->setPixmap(QPixmap::fromImage(img).scaledToHeight(120));
     ui->lblMainImage->setContextMenuPolicy(Qt::CustomContextMenu);
+    if(re->getIconPath() != "")
+    {
+     QImage icon(re->getIconPath());
+     ui->lblIconImage->setPixmap(QPixmap::fromImage(icon).scaledToHeight(48));
+    }
+    else
+    {
+     QImage img(re->getImagePath());
+     ui->lblIconImage->setPixmap(QPixmap::fromImage(img).scaledToHeight(45));
+    }
     connect(ui->lblMainImage, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(on_customContexMenuRequest(QPoint)));
 }
 

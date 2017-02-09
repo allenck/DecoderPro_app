@@ -75,7 +75,7 @@ namespace Operations
  /*public*/ Location::Location(QString id, QString name,QObject *parent)
   : QObject(parent) {
   common();
-  log->debug(tr("New location (%1) id: %2").arg(name).arg(id));
+  if(log->isDebugEnabled()) log->debug(tr("New location (%1) id: %2").arg(name).arg(id));
   _name = name;
   _id = id;
 
@@ -1369,13 +1369,13 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
   {
    //@SuppressWarnings("unchecked")
    QDomNodeList eTracks = e.elementsByTagName(Xml::TRACK);
-   log->debug(tr("location (%1) has %2 tracks").arg(getName()).arg(eTracks.size()));
+   if(log->isDebugEnabled()) log->debug(tr("location (%1) has %2 tracks").arg(getName()).arg(eTracks.size()));
    //for (QDomElement eTrack : eTracks) {
-   log->debug("location %1 has tracks:");
+   if (log->isDebugEnabled()) log->debug(tr("location %1 has tracks:").arg(getName()));
    for(int i=0; i < eTracks.size(); i++)
    {
     QDomElement e = eTracks.at(i).toElement();
-    log->debug(tr("%1 id=%2, name =%3").arg(toString()).arg(e.attribute(Xml::ID)).arg(e.attribute(Xml::NAME)));
+    if(log->isDebugEnabled()) log->debug(tr("%1 id=%2, name =%3").arg(toString()).arg(e.attribute(Xml::ID)).arg(e.attribute(Xml::NAME)));
    }
    for(int i=0; i < eTracks.size(); i++)
    {
@@ -1559,7 +1559,7 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
 
  /*public*/ void Location::propertyChange(PropertyChangeEvent* e) {
      if (Control::showProperty) {
-        log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
+        if(log->isDebugEnabled()) log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
                  ->getNewValue().toString()));
      }
      // update length of tracks at this location if track length changes

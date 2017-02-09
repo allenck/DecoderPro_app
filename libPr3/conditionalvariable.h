@@ -4,6 +4,7 @@
 #include <QObject>
 #include "namedbeanhandle.h"
 #include "logger.h"
+#include "libPr3_global.h"
 
 class NamedBeanHandleManager;
 class Conditional;

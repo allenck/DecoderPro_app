@@ -1,6 +1,7 @@
 #ifndef DEFAULTLOGIX_H
 #define DEFAULTLOGIX_H
 #include "logix.h"
+#include "libPr3_global.h"
 
 class JmriSimplePropertyListener;
 class LIBPR3SHARED_EXPORT DefaultLogix : public Logix

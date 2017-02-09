@@ -168,6 +168,7 @@ protected:
     /*protected*/ QWidget* makeFunctionLabelPane(RosterEntry* r);
     /*protected*/ QWidget* makeMediaPane(RosterEntry* r);
     /*protected*/ virtual void pickProgrammerMode(/*@NonNull*/ QDomElement programming);
+    /*protected*/ void resetStatus(int newStatus);
 
 protected slots:
     /*protected*/ void installComponents();

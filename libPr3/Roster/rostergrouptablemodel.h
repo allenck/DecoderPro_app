@@ -32,6 +32,7 @@ public:
  /*synchronized*/ /*public*/ void dispose();
  /*public*/ void setGroup(QString grp);
  /*public*/ void getGroupEnabled(RosterEntry* re);
+ Qt::ItemFlags flags(const QModelIndex &index) const;
 
 signals:
 

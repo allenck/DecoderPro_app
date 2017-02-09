@@ -17,8 +17,8 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
 
  showAdvanced = new QCheckBox("Additional Connection Settings");
 
- systemPrefixLabel = new QLabel("Connection Prefix");
- connectionNameLabel = new QLabel("Connection Name");
+ systemPrefixLabel = new QLabel("Connection Prefix:");
+ connectionNameLabel = new QLabel("Connection Name:");
  systemPrefixField = new JTextField(10);
  connectionNameField = new JTextField(15);
  options = QHash<QString, Option*>();

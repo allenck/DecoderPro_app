@@ -15,6 +15,7 @@ public:
  /*public*/ static void setProperty(QString key, QVariant value);
  /*public*/ static Properties* getProperties();
  /*public*/ static QString checkDefault(QString key);
+ /*public*/ static /*native*/ long currentTimeMillis();
 
 signals:
 

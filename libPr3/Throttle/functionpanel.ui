@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>285</width>
+    <width>198</width>
     <height>300</height>
    </rect>
   </property>
@@ -14,6 +14,9 @@
    <font>
     <pointsize>8</pointsize>
    </font>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid pink; }</string>
   </property>
   <property name="windowTitle">
    <string>DockWidget</string>
@@ -24,8 +27,8 @@
      <widget class="FunctionButton" name="btnF1">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -37,8 +40,8 @@
      <widget class="FunctionButton" name="btnF2">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -50,8 +53,8 @@
      <widget class="FunctionButton" name="btnF3">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -63,8 +66,8 @@
      <widget class="QPushButton" name="btnHash">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -76,8 +79,8 @@
      <widget class="FunctionButton" name="btnF15">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -89,8 +92,8 @@
      <widget class="FunctionButton" name="btnF12">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -102,8 +105,8 @@
      <widget class="FunctionButton" name="btnF9">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -115,8 +118,8 @@
      <widget class="FunctionButton" name="btnF6">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -128,8 +131,8 @@
      <widget class="FunctionButton" name="btnF5">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -141,8 +144,8 @@
      <widget class="FunctionButton" name="btnF8">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -154,8 +157,8 @@
      <widget class="FunctionButton" name="btnLight">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -167,8 +170,8 @@
      <widget class="QPushButton" name="btnStar">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -180,8 +183,8 @@
      <widget class="FunctionButton" name="btnF13">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -193,8 +196,8 @@
      <widget class="FunctionButton" name="btnF10">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -206,8 +209,8 @@
      <widget class="FunctionButton" name="btnF7">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -219,8 +222,8 @@
      <widget class="FunctionButton" name="btnF4">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -232,8 +235,8 @@
      <widget class="FunctionButton" name="btnF11">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">
@@ -245,8 +248,8 @@
      <widget class="FunctionButton" name="btnF14">
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>16777215</height>
+        <width>56</width>
+        <height>30</height>
        </size>
       </property>
       <property name="text">

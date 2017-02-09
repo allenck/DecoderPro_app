@@ -155,7 +155,7 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
 /*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane, CvTableModel* cvModel, IndexedCvTableModel* icvModel, VariableTableModel* varModel, QDomElement  modelElem, RosterEntry* rosterEntry, QWidget *parent) : QWidget(parent)
 {
  log = new Logger("PaneProgPane");
- log->setDebugEnabled(true);
+ log->setDebugEnabled(false);
  varList = new QList<int>();
  cvList = new QList<int>();
  indexedCvList = new QList<int>();
@@ -1888,7 +1888,7 @@ void PaneProgPane::restartProgramming()
  }
     // add glue to the bottom to allow resize
 //    c.add(Box.createVerticalGlue());
- log->debug(tr("grid columns %1 vs  %2").arg(cs->gridx).arg(g->columnCount()));
+ if (log->isDebugEnabled()) log->debug(tr("grid columns %1 vs  %2").arg(cs->gridx).arg(g->columnCount()));
  Q_ASSERT(cs->gridx >=0);
  return c;
 }
@@ -2142,7 +2142,7 @@ void PaneProgPane::restartProgramming()
  }
     // add glue to the bottom to allow resize
 //    c.add(Box.createVerticalGlue());
- log->debug(tr("grid columns %1 vs  %2").arg(cs->gridx).arg(g->columnCount()));
+ if(log->isDebugEnabled()) log->debug(tr("grid columns %1 vs  %2").arg(cs->gridx).arg(g->columnCount()));
 
  Q_ASSERT(cs->gridx >=0);
  return c;
@@ -3362,23 +3362,23 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
 
  // note we want Short Address first, as it might change others
  iVar = _varModel->findVarIndex("Short Address");
-    if (iVar>=0) varList->append((iVar));
-    else log->debug("addDccAddressPanel did not find Short Address");
+ if (iVar>=0) varList->append((iVar));
+ else log->debug("addDccAddressPanel did not find Short Address");
 
-    iVar = _varModel->findVarIndex("Address Format");
-    if (iVar>=0) varList->append((iVar));
-    else log->debug("addDccAddressPanel did not find Address Format");
+ iVar = _varModel->findVarIndex("Address Format");
+ if (iVar>=0) varList->append((iVar));
+ else log->debug("addDccAddressPanel did not find Address Format");
 
-    iVar = _varModel->findVarIndex("Long Address");
-    if (iVar>=0) varList->append((iVar));
-    else log->debug("addDccAddressPanel did not find Long Address");
+ iVar = _varModel->findVarIndex("Long Address");
+ if (iVar>=0) varList->append((iVar));
+ else log->debug("addDccAddressPanel did not find Long Address");
 
-    // included here because CV1 can modify it, even if it doesn't show on pane;
-    iVar = _varModel->findVarIndex("Consist Address");
-    if (iVar>=0) varList->append((iVar));
-    else log->debug("addDccAddressPanel did not find CV19 Consist Address");
+ // included here because CV1 can modify it, even if it doesn't show on pane;
+ iVar = _varModel->findVarIndex("Consist Address");
+ if (iVar>=0) varList->append((iVar));
+ else log->debug("addDccAddressPanel did not find CV19 Consist Address");
 
-    return l;
+ return l;
 }
 
 void PaneProgPane::On_readChangesButton_clicked() // SLOT[]

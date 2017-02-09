@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QBoxLayout>
 #include "flowlayout.h"
+#include "pushbuttondelegate.h"
 
 SlotMonPane::SlotMonPane(QWidget *parent) :
   LnPanel(parent)
@@ -43,6 +44,8 @@ SlotMonPane::SlotMonPane(QWidget *parent) :
     //slotTable = JTableUtil.sortableDataModel(slotModel);
     slotTable = new JTable(slotModel);
     //slotScroll = new JScrollPane(slotTable);
+    slotTable->setItemDelegateForColumn(SlotMonDataModel::ESTOPCOLUMN, new PushButtonDelegate);
+    slotTable->setItemDelegateForColumn(SlotMonDataModel::DISPCOLUMN, new PushButtonDelegate);
 
     // configure items for GUI
     showAllCheckBox->setText(tr("Show unused slots"));

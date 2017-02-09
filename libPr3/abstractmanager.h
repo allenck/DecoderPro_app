@@ -4,6 +4,7 @@
 //#include "instancemanager.h"
 #include "manager.h"
 //#include "propertychangesupport.h"
+#include "javaqt_global.h"
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -17,7 +18,7 @@ class Manager;
 class PropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyChangeEvent;
-class LIBPR3SHARED_EXPORT AbstractManager : public  Manager
+class JAVAQTSHARED_EXPORT AbstractManager : public  Manager
 {
     Q_OBJECT
 public:

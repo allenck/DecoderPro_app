@@ -1,7 +1,7 @@
 #ifndef ABSTRACTREPORTER_H
 #define ABSTRACTREPORTER_H
 #include "abstractnamedbean.h"
-
+#include "libPr3_global.h"
 class LIBPR3SHARED_EXPORT AbstractReporter : public AbstractNamedBean
 {
  Q_OBJECT

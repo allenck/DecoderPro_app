@@ -2,6 +2,7 @@
 #include "catalogtreenode.h"
 #include <QHash>
 #include <QSet>
+
 //CatalogTreeIndex::CatalogTreeIndex(QObject *parent) :
 //    AbstractCatalogTree(parent)
 //{
@@ -23,6 +24,7 @@
     log = new Logger("CatalogTreeIndex");
         //super(sysName, userName);
     parameters = NULL;
+
     }
 CatalogTreeIndex::~CatalogTreeIndex()
 {

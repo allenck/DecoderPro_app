@@ -17,6 +17,7 @@ public:
  explicit InputDialog(QString labelText, QString currValue, QStringList* tList = 0, QWidget *parent = 0);
  InputDialog(QString labelText, QList<QVariant> list, int currIndex, QString title, QWidget* parent = 0);
  InputDialog(QString labelText, QComboBox* selections, QString title, QWidget* parent = 0);
+ InputDialog(QString labelText, QList<QWidget*>, QString title, QWidget* parent = 0);
 
  ~InputDialog();
  static QString showInputDialog(QString text, QWidget* parent);

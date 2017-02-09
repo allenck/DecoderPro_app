@@ -126,10 +126,8 @@ void VariableValue::updatedTextField() {
 //    abstract /*public*/ Object rangeVal();
 
 // methods implemented here:
-/*public*/ VariableValue::VariableValue(QString label, QString comment, QString cvName,
-                     bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
-                                        QString cvNum, QString mask, QMap<QString,
-                                        CvValue*>* v, QLabel* status, QString item, QObject *parent) : AbstractValue(parent)
+/*public*/ VariableValue::VariableValue(QString label, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum, QString mask, QMap<QString, CvValue*>* v, QLabel* status, QString item, QObject *parent)
+ : AbstractValue(parent)
 {
     _label = label;
     _comment = comment;

@@ -1,6 +1,7 @@
 #include "profiletablemodel.h"
 #include "profilemanager.h"
 #include "../libPr3/profile.h"
+#include "vptr.h"
 
 //ProfileTableModel::ProfileTableModel(QObject *parent) :
 //    AbstractTableModel(parent)
@@ -46,6 +47,8 @@
  {
      return QString("<html>Name: %1<br>Path: %2<br>Id: %3<br>%4</html>").arg(p->getName()).arg(p->getPath()->toString()).arg(p->getId()).arg(this->data(index(mindex.row(), 2),Qt::DisplayRole).toString());
  }
+ if(role == Qt::UserRole && mindex.column() == 0)
+  return VPtr<Profile>::asQVariant(p);
  if(role == Qt::DisplayRole)
  {
   switch (mindex.column())
@@ -114,9 +117,9 @@
 {
     switch (index.column()) {
         case 0:
-            return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+            return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
         default:
-            return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEnabled;
+            return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
 }
 

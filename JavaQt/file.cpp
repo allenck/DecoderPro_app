@@ -215,7 +215,7 @@ int File::getPrefixLength() {
 //    Q_ASSERT (parent->path != "");
 //    Q_ASSERT (parent->path != (""));
     //this->path = fs.resolve(parent.path, child);
-    this->path= QFileInfo(parent->path).absoluteFilePath() + /*QFileInfo(child).canonicalFilePath()*/child;
+    this->path= QFileInfo(parent->path).absoluteFilePath() + File::separator + child;
     this->prefixLength = parent->prefixLength;
 }
 
@@ -819,6 +819,9 @@ int File::getPrefixLength() {
 //        return false;
 //    }
 //    return ((fs.getBooleanAttributes(this) & FileSystem.BA_EXISTS) != 0);
+ QDir dir(path);
+  if(dir.exists())
+   return true;
  QFileInfo info(path);
  if(info.isDir())
   return true;
@@ -1243,7 +1246,9 @@ int File::getPrefixLength() {
     for (int i = 0; i < n; i++)
     {
      //   fs[i] = new File(ss[i], this);
-        fs.append(new File(ss.at(i)));
+     if(ss.at(i) == "." || ss.at(i) == "..")
+      continue;
+     fs.append(new File(path + File::separator, ss.at(i)));
     }
     return fs;
 }
@@ -1324,6 +1329,8 @@ int File::getPrefixLength() {
  QList<File*> files =  QList<File*>();
  foreach (QString s, ss)
  {
+  if(s == "." || s == "..")
+   continue;
   File* f = new File(s, this);
   if ((filter == NULL) || filter->accept(f))
    files.append(f);

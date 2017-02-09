@@ -48,7 +48,7 @@
  *  which is a table of zero columns and zero rows.
  */
 /*public*/ DefaultTableModel::DefaultTableModel(QObject *parent) :
-                             QAbstractTableModel(parent)
+                             AbstractTableModel(parent)
 {
  //this(0, 0);
  setDataVector(newVector(0), newVector(0));
@@ -71,7 +71,7 @@
  * @see #setValueAt
  */
 /*public*/ DefaultTableModel::DefaultTableModel(int rowCount, int columnCount, QObject *parent) :
-  QAbstractTableModel(parent)
+  AbstractTableModel(parent)
 {
   //this(newVector(columnCount), rowCount);
  setDataVector(newVector(rowCount), newVector(columnCount));
@@ -92,7 +92,7 @@
  * @see #setValueAt
  */
 /*public*/ DefaultTableModel::DefaultTableModel(QVector<QObject*> columnNames, int rowCount, QObject *parent) :
-  QAbstractTableModel(parent)
+  AbstractTableModel(parent)
 {
  setDataVector(newVector(rowCount), columnNames);
 }
@@ -495,7 +495,7 @@
     justifyRows(0, getRowCount());
     fireTableStructureChanged();
 }
-
+#endif
 /**
  *  Adds a column to the model.  The new column will have the
  *  identifier <code>columnName</code>, which may be null.  This method
@@ -506,10 +506,10 @@
  *
  * @param   columnName the identifier of the column being added
  */
-/*public*/ void addColumn(Object columnName) {
-    addColumn(columnName, (Vector)null);
+/*public*/ void DefaultTableModel::addColumn(QVariant columnName) {
+    //addColumn(columnName, NULL);
 }
-
+#if 0 // TODO:
 /**
  *  Adds a column to the model.  The new column will have the
  *  identifier <code>columnName</code>, which may be null.
@@ -523,7 +523,7 @@
  * @param   columnName the identifier of the column being added
  * @param   columnData       optional data of the column being added
  */
-/*public*/ void addColumn(Object columnName, Vector columnData) {
+/*public*/ void addColumn(QVariant columnName, Vector columnData) {
     columnIdentifiers.addElement(columnName);
     if (columnData != null) {
         int columnSize = columnData.size();

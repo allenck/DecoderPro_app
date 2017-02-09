@@ -48,11 +48,13 @@ private:
     Logger* log;
     /* virtual*/ /*abstract*/ QObjectList rememberedObjects() {return QObjectList();}
     QVBoxLayout* thisLayout;
+    QString addButtonKey;
 
 protected:
     /*protected*/ bool dirty;// = false;
 protected slots:
     /*protected*/ void addItem();
+    /*protected*/ void init();
 
  friend class Item;
  friend class PerformActionPanel;
@@ -73,7 +75,7 @@ public:
 public slots:
     virtual
     /*public*/ void actionPerformed(ActionEvent* e = 0);
-    void On_selections_currentIndexChanged(QString);
+    void On_selections_currentIndexChanged(int);
 private:
     void common(AbstractActionPanel* parent);
     Logger* log;

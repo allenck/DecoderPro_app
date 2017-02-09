@@ -91,9 +91,9 @@ SOURCES += \
     loconetthrottledtransmitter.cpp \
     lnprogrammermanager.cpp \
     defaultprogrammermanager.cpp \
-    namedbeanhandle.cpp \
+    #namedbeanhandle.cpp \
     abstractturnout.cpp \
-    abstractnamedbean.cpp \
+    #abstractnamedbean.cpp \
     turnout.cpp \
     namedbeanhandlemanager.cpp \
     turnoutoperation.cpp \
@@ -127,7 +127,7 @@ SOURCES += \
     defaultmemorymanager.cpp \
     abstractmemorymanager.cpp \
     defaultmemory.cpp \
-    namedbean.cpp \
+    #namedbean.cpp \
     internalreportermanager.cpp \
     Roster/roster.cpp \
     Roster/rosterentry.cpp \
@@ -567,7 +567,11 @@ SOURCES += \
     entrypoint.cpp \
     reportcontext.cpp \
     userpreferencesmanager.cpp \
-    profilemanager.cpp
+    profilemanager.cpp \
+    rostertablemodel.cpp \
+    rostergroupselector.cpp \
+    Roster/imagedelegate.cpp \
+    Throttle/functionbuttonpropertyeditor.cpp
     #abstractpreferencesmanager.cpp \
     #connectionconfigmanager.cpp
 
@@ -613,11 +617,10 @@ HEADERS += \
     lnprogrammermanager.h \
     defaultprogrammermanager.h \
     turnout.h \
-    namedbean.h \
-    manager.h \
+    #namedbean.h \
+    #manager.h \
     abstractturnout.h \
-    abstractnamedbean.h \
-    namedbeanhandle.h \
+    #namedbeanhandle.h \
     namedbeanhandlemanager.h \
     turnoutoperation.h \
     turnoutmanager.h \
@@ -824,10 +827,9 @@ HEADERS += \
     Signal/signalmastrepeater.h \
     userpreferencesmanager.h \
     defaultusermessagepreferences.h \
-    catalogtree.h \
     comparable.h \
     comparator.h \
-    actionlistener.h \
+    #actionlistener.h \
     logix.h \
     defaultlogix.h \
     conditional.h \
@@ -1152,7 +1154,12 @@ HEADERS += \
     instanceinitializer.h \
     entrypoint.h \
     reportcontext.h \
-    profilemanager.h
+    profilemanager.h \
+    namedbeanhandlemanager.h \
+    rostertablemodel.h \
+    rostergroupselector.h \
+    Roster/imagedelegate.h \
+    Throttle/functionbuttonpropertyeditor.h
     #abstractpreferencesmanager.h \
     #connectionconfigmanager.h
  !contains(FTDI, 1) {

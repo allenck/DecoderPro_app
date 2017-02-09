@@ -9,7 +9,7 @@
 #include "comboradiobuttons.h"
 #include "propertychangelistener.h"
 #include "combocheckbox.h"
-#include "../LayoutEditor/defaultmutabletreenode.h"
+#include "defaultmutabletreenode.h"
 
 
 /* Internal class extends a JComboBox so that its color is consistent with

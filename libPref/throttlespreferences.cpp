@@ -93,18 +93,18 @@ void ThrottlesPreferences::init()
     QDomDocument doc;
 
     QDomElement e = doc.createElement("throttlesPreferences");
-    e.setAttribute("isUsingExThrottle", isUsingExThrottle());
-    e.setAttribute("isUsingToolBar", isUsingToolBar() );
-    e.setAttribute("isUsingFunctionIcon", isUsingFunctionIcon() );
-    e.setAttribute("isResizingWindow", isResizingWindow() );
+    e.setAttribute("isUsingExThrottle", isUsingExThrottle()?"true":"false");
+    e.setAttribute("isUsingToolBar", isUsingToolBar()?"true":"false" );
+    e.setAttribute("isUsingFunctionIcon", isUsingFunctionIcon()?"true":"false" );
+    e.setAttribute("isResizingWindow", isResizingWindow()?"true":"false" );
     e.setAttribute("windowDimensionWidth", (int)getWindowDimension().width() );
     e.setAttribute("windowDimensionHeight", (int)getWindowDimension().height() );
-    e.setAttribute("isSavingThrottleOnLayoutSave", isSavingThrottleOnLayoutSave());
-    e.setAttribute("isUsingRosterImage", isUsingRosterImage());
-    e.setAttribute("isEnablingRosterSearch", isEnablingRosterSearch());
-    e.setAttribute("isAutoLoading", isAutoLoading());
-    e.setAttribute("isHidingUndefinedFunctionButtons", isHidingUndefinedFuncButt());
-    e.setAttribute("isIgnoringThrottlePosition", isIgnoringThrottlePosition());
+    e.setAttribute("isSavingThrottleOnLayoutSave", isSavingThrottleOnLayoutSave()?"true":"false");
+    e.setAttribute("isUsingRosterImage", isUsingRosterImage()?"true":"false");
+    e.setAttribute("isEnablingRosterSearch", isEnablingRosterSearch()?"true":"false");
+    e.setAttribute("isAutoLoading", isAutoLoading()?"true":"false");
+    e.setAttribute("isHidingUndefinedFunctionButtons", isHidingUndefinedFuncButt()?"true":"false");
+    e.setAttribute("isIgnoringThrottlePosition", isIgnoringThrottlePosition()?"true":"false");
     return e;
 }
 
@@ -170,9 +170,11 @@ void ThrottlesPreferences::init()
 
     try {
         //Element root = new Element("throttles-preferences");
+        QDomDocument doc("throttles-preferences SYSTEM \"/xml/DTD/throttles-preferences.dtd\"");
         QDomElement root;
-        root.setTagName("throttles-preferences");
-        QDomDocument doc = XmlFile::newDocument(root, XmlFile::dtdLocation+"throttles-preferences.dtd");
+        QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\"");
+        doc.appendChild(xmlProcessingInstruction);
+        //QDomDocument doc = XmlFile::newDocument(root, XmlFile::dtdLocation+"throttles-preferences.dtd");
         // add XSLT processing instruction
         // <?xml-stylesheet type="text/xsl" href="XSLT/throttle.xsl"?>
 /*TODO    		java.util.Map<String,String> m = new java.util.HashMap<String,String>();
@@ -180,6 +182,8 @@ void ThrottlesPreferences::init()
         m.put("href", jmri.jmrit.XmlFile.xsltLocation+"throttles-preferences.xsl");
         ProcessingInstruction p = new ProcessingInstruction("xml-stylesheet", m);
         doc.addContent(0,p);*/
+        root = doc.createElement("throttles-preferences");
+        doc.appendChild(root);
         root.appendChild( store() );
         xf->writeXML(file, doc);
     }
@@ -263,8 +267,9 @@ void ThrottlesPreferences::init()
     this->dirty = true;
 }
 /*public*/ bool ThrottlesPreferences::isSavingThrottleOnLayoutSave() {
-    return _saveThrottleOnLayoutSave;
+ return _saveThrottleOnLayoutSave;
 }
+
 #if 0
 /**
  * Add an AddressListener. AddressListeners are notified when the user

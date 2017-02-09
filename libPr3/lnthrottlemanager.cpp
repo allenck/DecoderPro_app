@@ -137,13 +137,13 @@ bool LnThrottleManager::singleUse() { return false; }
     AbstractThrottleManager::releaseThrottle(t, l);
 }
 
-/*public*/ void LnThrottleManager::releaseThrottle(DccThrottle* t, ThrottleListener* l){
-#if 1 // TODO> define LocoNetThrottle
+/*public*/ void LnThrottleManager::releaseThrottle(DccThrottle* t, ThrottleListener* l)
+{
+ if(t == NULL) return;
     LocoNetThrottle* lnt = (LocoNetThrottle*) t;
     LocoNetSlot* tSlot = lnt->getLocoNetSlot();
     if (tSlot != NULL)
         tc->sendLocoNetMessage(
                 tSlot->writeStatus(LnConstants::LOCO_COMMON));
-#endif
     AbstractThrottleManager::releaseThrottle(t, l);
 }

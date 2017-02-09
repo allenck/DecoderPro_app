@@ -24,7 +24,7 @@
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTableView>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -48,10 +48,13 @@ public:
     QAction *actionDelete_Loco;
     QAction *actionPreferences;
     QWidget *centralwidget;
+    QGridLayout *gridLayout_3;
+    QSplitter *splitter;
+    QSplitter *splitter_2;
+    QWidget *groupsPlaceholder;
     QVBoxLayout *verticalLayout_2;
     QVBoxLayout *verticalLayout;
-    QSplitter *splitter;
-    QTableWidget *tableWidget;
+    QTableView *rtable;
     QWidget *summaryPanel;
     QGridLayout *gridLayout_4;
     QVBoxLayout *verticalLayout_5;
@@ -62,7 +65,7 @@ public:
     QPushButton *btnThrottle;
     QPushButton *btnLabelsMedia;
     QPushButton *btnProgram;
-    QLabel *lblImage;
+    QLabel *locoImage;
     QFormLayout *formLayout;
     QLabel *label_11;
     QLabel *lblID;
@@ -134,47 +137,34 @@ public:
         actionPreferences->setObjectName(QStringLiteral("actionPreferences"));
         centralwidget = new QWidget(RosterFrame);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
-        verticalLayout_2 = new QVBoxLayout(centralwidget);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        gridLayout_3 = new QGridLayout(centralwidget);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
         splitter = new QSplitter(centralwidget);
         splitter->setObjectName(QStringLiteral("splitter"));
         splitter->setOrientation(Qt::Vertical);
-        tableWidget = new QTableWidget(splitter);
-        if (tableWidget->columnCount() < 20)
-            tableWidget->setColumnCount(20);
-        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
-        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
-        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(3, __qtablewidgetitem3);
-        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(4, __qtablewidgetitem4);
-        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(5, __qtablewidgetitem5);
-        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(6, __qtablewidgetitem6);
-        QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(7, __qtablewidgetitem7);
-        QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(8, __qtablewidgetitem8);
-        QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(9, __qtablewidgetitem9);
-        tableWidget->setObjectName(QStringLiteral("tableWidget"));
-        tableWidget->setColumnCount(20);
-        splitter->addWidget(tableWidget);
-        tableWidget->horizontalHeader()->setStretchLastSection(true);
-
-        verticalLayout->addWidget(splitter);
-
+        splitter_2 = new QSplitter(splitter);
+        splitter_2->setObjectName(QStringLiteral("splitter_2"));
+        splitter_2->setOrientation(Qt::Horizontal);
+        groupsPlaceholder = new QWidget(splitter_2);
+        groupsPlaceholder->setObjectName(QStringLiteral("groupsPlaceholder"));
+        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(groupsPlaceholder->sizePolicy().hasHeightForWidth());
+        groupsPlaceholder->setSizePolicy(sizePolicy);
+        verticalLayout_2 = new QVBoxLayout(groupsPlaceholder);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
 
         verticalLayout_2->addLayout(verticalLayout);
 
-        summaryPanel = new QWidget(centralwidget);
+        splitter_2->addWidget(groupsPlaceholder);
+        rtable = new QTableView(splitter_2);
+        rtable->setObjectName(QStringLiteral("rtable"));
+        splitter_2->addWidget(rtable);
+        splitter->addWidget(splitter_2);
+        summaryPanel = new QWidget(splitter);
         summaryPanel->setObjectName(QStringLiteral("summaryPanel"));
         gridLayout_4 = new QGridLayout(summaryPanel);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
@@ -219,10 +209,10 @@ public:
 
         gridLayout_4->addLayout(gridLayout, 1, 2, 1, 1);
 
-        lblImage = new QLabel(summaryPanel);
-        lblImage->setObjectName(QStringLiteral("lblImage"));
+        locoImage = new QLabel(summaryPanel);
+        locoImage->setObjectName(QStringLiteral("locoImage"));
 
-        gridLayout_4->addWidget(lblImage, 0, 0, 3, 1);
+        gridLayout_4->addWidget(locoImage, 0, 0, 3, 1);
 
         formLayout = new QFormLayout();
         formLayout->setObjectName(QStringLiteral("formLayout"));
@@ -351,8 +341,9 @@ public:
 
         gridLayout_4->addLayout(formLayout, 0, 1, 3, 1);
 
+        splitter->addWidget(summaryPanel);
 
-        verticalLayout_2->addWidget(summaryPanel);
+        gridLayout_3->addWidget(splitter, 0, 0, 1, 1);
 
         RosterFrame->setCentralWidget(centralwidget);
         menubar = new QMenuBar(RosterFrame);
@@ -423,33 +414,13 @@ public:
         actionDuplicate_Loco->setText(QApplication::translate("RosterFrame", "Duplicate Loco", 0));
         actionDelete_Loco->setText(QApplication::translate("RosterFrame", "Delete Loco", 0));
         actionPreferences->setText(QApplication::translate("RosterFrame", "Preferences", 0));
-        QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("RosterFrame", "ID", 0));
-        QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("RosterFrame", "DCC Address", 0));
-        QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("RosterFrame", "Icon", 0));
-        QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("RosterFrame", "Decoder Model", 0));
-        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(4);
-        ___qtablewidgetitem4->setText(QApplication::translate("RosterFrame", "Road Name", 0));
-        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->horizontalHeaderItem(5);
-        ___qtablewidgetitem5->setText(QApplication::translate("RosterFrame", "Road Number", 0));
-        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->horizontalHeaderItem(6);
-        ___qtablewidgetitem6->setText(QApplication::translate("RosterFrame", "Manufacturer", 0));
-        QTableWidgetItem *___qtablewidgetitem7 = tableWidget->horizontalHeaderItem(7);
-        ___qtablewidgetitem7->setText(QApplication::translate("RosterFrame", "Model", 0));
-        QTableWidgetItem *___qtablewidgetitem8 = tableWidget->horizontalHeaderItem(8);
-        ___qtablewidgetitem8->setText(QApplication::translate("RosterFrame", "Owner", 0));
-        QTableWidgetItem *___qtablewidgetitem9 = tableWidget->horizontalHeaderItem(9);
-        ___qtablewidgetitem9->setText(QApplication::translate("RosterFrame", "Date Modified", 0));
         service->setText(QApplication::translate("RosterFrame", "Programming Track", 0));
         ops->setText(QApplication::translate("RosterFrame", "Programming on Main", 0));
         edit->setText(QApplication::translate("RosterFrame", "Edit Only", 0));
         btnThrottle->setText(QApplication::translate("RosterFrame", "Throttle", 0));
         btnLabelsMedia->setText(QApplication::translate("RosterFrame", "Labels & Media", 0));
         btnProgram->setText(QApplication::translate("RosterFrame", "Program", 0));
-        lblImage->setText(QApplication::translate("RosterFrame", "Roster Image", 0));
+        locoImage->setText(QApplication::translate("RosterFrame", "Roster Image", 0));
         label_11->setText(QApplication::translate("RosterFrame", "ID:", 0));
         lblID->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
         label_12->setText(QApplication::translate("RosterFrame", "Road Name:", 0));

@@ -22,7 +22,7 @@ namespace Operations
  {
         //super(name);
   log = new Logger("Consist");
-  log->debug(tr("New Consist (%1)").arg(name));
+  //log->debug(tr("New Consist (%1)").arg(name));
   _consistNumber = 0;
 
   }

@@ -8,7 +8,8 @@ class LIBPR3SHARED_EXPORT ImportRosterItemAction : public AbstractRosterItemActi
 {
  Q_OBJECT
 public:
-Q_INVOKABLE  explicit ImportRosterItemAction(QObject *parent = 0);
+  //explicit ImportRosterItemAction();
+  Q_INVOKABLE ImportRosterItemAction(QObject *parent = 0);
  /*public*/ Q_INVOKABLE ImportRosterItemAction(QString s, WindowInterface* wi);
  /*public*/ Q_INVOKABLE ImportRosterItemAction(QString s, QIcon i, WindowInterface* wi);
  /*public*/ Q_INVOKABLE ImportRosterItemAction(QString pName, QWidget* pWho) ;

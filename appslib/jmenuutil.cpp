@@ -7,6 +7,7 @@
 #include <QActionGroup>
 #include "fileutil.h"
 #include "file.h"
+#include <QSignalMapper>
 
 //JMenuUtil::JMenuUtil(QObject *parent) :
 //  GuiUtilBase(parent)
@@ -110,8 +111,23 @@
      }
      QString leafName = child.attribute("name");
      Action* act = actionFromNode(child, wi, context);
-     log.debug(tr("create action item '%1' in '%2' menu").arg(act->text()).arg(name));
-     menu->addAction((QAction*)(menuItem = (QObject*)act));
+     if(act !=NULL)
+     {
+      log.debug(tr("create action item '%1' in '%2' menu").arg(act->text()).arg(name));
+      menu->addAction((QAction*)(menuItem = (QObject*)act));
+      if(!child.firstChildElement("type").isNull())
+      {
+       if(child.firstChildElement("type").text() == "checkbox")
+        act->setCheckable(true);
+      }
+      if (!child.firstChildElement("current").isNull())
+      {
+       //setMenuItemInterAction(context, child.firstChildElement("current").text(), menuItem);
+       QString current = act->data().toString();
+      ((RosterFrame*)wi)->currentMapper->setMapping(act,act);
+      connect(act, SIGNAL(triggered(bool)), ((RosterFrame*)wi)->currentMapper, SLOT(map()));
+      }
+     }
     }
    }
   }
@@ -186,9 +202,16 @@
   menuItem->setCheckable(true);
   group->addAction(menuItem);
   menu->addAction(menuItem);
+  if(!elem.firstChildElement("type").isNull())
+  {
+   if(elem.firstChildElement("type").text() == "checkbox")
+    menuItem->setCheckable(true);
+  }
   if (!elem.firstChildElement("current").isNull())
   {
    setMenuItemInterAction(context, elem.firstChildElement("current").text(), menuItem);
+  ((RosterFrame*)wi)->currentMapper->setMapping(act,act);
+  connect(act, SIGNAL(triggered(bool)), ((RosterFrame*)wi)->currentMapper, SLOT(map()));
   }
  }
 

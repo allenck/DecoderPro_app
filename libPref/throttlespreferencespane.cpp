@@ -204,6 +204,7 @@ void ThrottlesPreferencesPane::common()
 
  QGridLayout* g;
  setLayout(g = new QGridLayout());
+ g->setObjectName("QGridLayout");
 
  g->addWidget(cbUseExThrottle, gridBagConstraints1->gridy, gridBagConstraints1->gridx,gridBagConstraints1->rowSpan(),gridBagConstraints1->colSpan());
  g->addWidget(cbSaveThrottleOnLayoutSave, gridBagConstraints2->gridy, gridBagConstraints2->gridx,gridBagConstraints2->rowSpan(),gridBagConstraints2->colSpan());
@@ -226,14 +227,14 @@ void ThrottlesPreferencesPane::common()
  if (tp==NULL) return;
  cbSaveThrottleOnLayoutSave->setChecked( tp->isSavingThrottleOnLayoutSave() );
  cbResizeWinImg->setChecked( tp->isResizingWindow() );
-    cbUseToolBar->setChecked( tp->isUsingToolBar() );
-    cbUseFunctionIcon->setChecked( tp->isUsingFunctionIcon() );
-    cbUseRosterImage->setChecked( tp->isUsingRosterImage() );
-    cbUseExThrottle->setChecked( tp->isUsingExThrottle() );
-    cbEnableRosterSearch->setChecked( tp->isEnablingRosterSearch() );
-    cbEnableAutoLoad->setChecked( tp->isAutoLoading() );
-    cbHideUndefinedButtons->setChecked( tp->isHidingUndefinedFuncButt() );
-    cbIgnoreThrottlePosition->setChecked( tp->isIgnoringThrottlePosition() );
+ cbUseToolBar->setChecked( tp->isUsingToolBar() );
+ cbUseFunctionIcon->setChecked( tp->isUsingFunctionIcon() );
+ cbUseRosterImage->setChecked( tp->isUsingRosterImage() );
+ cbUseExThrottle->setChecked( tp->isUsingExThrottle() );
+ cbEnableRosterSearch->setChecked( tp->isEnablingRosterSearch() );
+ cbEnableAutoLoad->setChecked( tp->isAutoLoading() );
+ cbHideUndefinedButtons->setChecked( tp->isHidingUndefinedFuncButt() );
+ cbIgnoreThrottlePosition->setChecked( tp->isIgnoringThrottlePosition() );
 }
 
 /*private*/ ThrottlesPreferences* ThrottlesPreferencesPane::getThrottlesPreferences()

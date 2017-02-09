@@ -206,17 +206,30 @@ void DropJLabel::setIcon(NamedIcon *icon)
 {
  this->_icon = icon;
  QPixmap pixmap = QPixmap::fromImage(icon->getImage());
- setPixmap(pixmap);
+ setPixmap(pixmap.scaledToHeight(size().height()));
 }
 NamedIcon* DropJLabel::icon() {return _icon;}
 
 void DropJLabel::setIconFn(QString fileName, QSize sz)
 {
  if(fileName == "") return;
- NamedIcon* icon = new NamedIcon(fileName,fileName);
- icon->reduceTo(sz.width(), sz.height(), 24);
- if(icon != NULL)
-   setPixmap(QPixmap::fromImage( icon->getOriginalImage()));
+// NamedIcon* icon = new NamedIcon(fileName,fileName);
+// icon->reduceTo(sz.width(), sz.height(), 24);
+// if(icon != NULL)
+//   setPixmap(QPixmap::fromImage( icon->getOriginalImage()));
+
+
+ QImage img = QImage(fileName);
+ if(!img.isNull())
+ {
+  if(img.width() > 24)
+  {
+   QImage img1 = img.scaledToWidth(24);
+   setPixmap(QPixmap::fromImage(img1));
+   return;
+  }
+  setPixmap(QPixmap::fromImage(img));
+ }
 }
 void DropJLabel::mousePressEvent(QMouseEvent *ev)
 {

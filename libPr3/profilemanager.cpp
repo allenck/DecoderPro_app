@@ -9,6 +9,13 @@
 #include "rosterentry.h"
 #include <QApplication>
 #include "properties.h"
+#include "system.h"
+#include <QtXml>
+#include "roster.h"
+#include "quazip.h"
+#include "quazipfile.h"
+#include <QDataStream>
+#include "xmlfile.h"
 
 //ProfileManager::ProfileManager(QObject *parent) :
 //    QObject(parent)
@@ -81,11 +88,12 @@ ProfileManager* ProfileManager::instance = NULL;
  */
 /*public*/ /*static*/ ProfileManager* ProfileManager::defaultManager()
 {
- if (instance == NULL)
- {
-  instance = new ProfileManager();
- }
- return instance;
+// if (instance == NULL)
+// {
+//  instance = new ProfileManager();
+// }
+// return instance;
+ return ProfileManager::getDefault();
 }
 /**
  * Get the default {@link ProfileManager}.
@@ -244,7 +252,7 @@ ProfileManager* ProfileManager::instance = NULL;
  */
 /*public*/ void ProfileManager::readActiveProfile() /*throws IOException */
 {
-#if 1
+
  Properties* p = new Properties();
  QTextStream* is = NULL;
  if (this->configFile->exists())
@@ -270,7 +278,6 @@ ProfileManager* ProfileManager::instance = NULL;
    this->setAutoStartActiveProfile(p->getProperty(AUTO_START)== "true");
   }
  }
-#endif
 }
 
 /**
@@ -323,7 +330,27 @@ ProfileManager* ProfileManager::instance = NULL;
 
 /*protected*/ void ProfileManager::addProfile(Profile* profile)
 {
- if (!profiles.contains(profile))
+ // temp fix
+// foreach (Profile* p, profiles)
+// {
+//  if(p->getId() == profile->getId())
+//  {
+//   log->warn(tr("Attempt to store duplicate profile %1 ignored.").arg(profile->getId()));
+//   return;
+//  }
+// }
+ // end temp fix
+ //if (!profiles.contains(profile)) // ACK this is only comparing the pointers to the Profile class and not comparing the Profile name and Id.
+ bool bContains = false;
+ foreach (Profile* p, profiles)
+ {
+  if(p->getId() == profile->getId() )
+  {
+   bContains = true;
+   break;
+  }
+ }
+ if(!bContains) // if profiles doesn't have it, add it.
  {
   profiles.append(profile);
   if (!this->readingProfiles)
@@ -395,7 +422,17 @@ ProfileManager* ProfileManager::instance = NULL;
 
 /*protected*/ void ProfileManager::addSearchPath(File* path) /*throws IOException*/
 {
- if (!searchPaths.contains(path))
+ //if (!searchPaths.contains(path)) // ACK this is just comparing the pointer to the File class and not the actual path.
+ bool bContains = false;
+ foreach (File* f, searchPaths)
+ {
+  if(f->getCanonicalFile() == path->getCanonicalFile())
+  {
+   bContains = true;
+   break;
+  }
+ }
+ if(!bContains)
  {
   searchPaths.append(path);
   if (!this->readingProfiles)
@@ -462,13 +499,14 @@ ProfileManager* ProfileManager::instance = NULL;
  for(int i = 0; i < nodes.count(); i++)
  {
   QDomElement e = nodes.at(i).toElement();
+  QString path = e.attribute(Profile::PATH);
   File* pp = FileUtil::getFile(e.attribute(Profile::PATH));
-  if(!pp->exists())
-  {
-   log->info(tr("Cataloged profile \"%1\" not in expected location\nSearching for it in %2").arg(e.attribute(Profile::ID)).arg(pp->getParentFile()->getName()));
-   this->findProfiles(pp->getParentFile());
-   reWrite = true;
-  }
+//  if(!pp->exists())
+//  {
+//   log->info(tr("Cataloged profile \"%1\" not in expected location\nSearching for it in %2").arg(e.attribute(Profile::ID)).arg(pp->getParentFile()->getName()));
+//   this->findProfiles(pp->getParentFile());
+//   reWrite = true;
+//  }
   //try {
   Profile* p = new Profile(pp);
   this->addProfile(p);
@@ -594,7 +632,14 @@ ProfileManager* ProfileManager::instance = NULL;
 }
 bool ProfileManager::FileFilter1::accept(File* pathname)
 {
- return (pathname->isDirectory() && pathname->list().contains(Profile::PROPERTIES));
+// return (pathname->isDirectory() && pathname->list().contains(Profile::PROPERTIES));
+ //this->pathname = pathname;
+ return Profile::isProfile(pathname);
+}
+
+QString ProfileManager::FileFilter1::getDescription()
+{
+ return tr("%1 is not a profile").arg(pathname->getPath());
 }
 
 /**
@@ -772,7 +817,7 @@ bool ProfileManager::FileFilter1::accept(File* pathname)
  } // all other cases need no prep
  return didMigrate;
 }
-#if 0
+#if 1
 /**
  * Export the {@link jmri.profile.Profile} to a JAR file.
  *
@@ -785,90 +830,144 @@ bool ProfileManager::FileFilter1::accept(File* pathname)
  * @throws IOException
  * @throws org.jdom2.JDOMException
  */
-/*public*/ void export(Profile profile, File target, boolean exportExternalUserFiles, boolean exportExternalRoster) throws IOException, JDOMException {
-    if (!target.exists()) {
-        target.createNewFile();
+/*public*/ void ProfileManager::_export(Profile* profile, File* target, bool exportExternalUserFiles, bool exportExternalRoster) //throws IOException, JDOMException
+{
+    if (!target->exists())
+    {
+     target->createNewFile();
     }
-    String tempDirPath = System.getProperty("java.io.tmpdir") + File.separator + "JMRI" + System.currentTimeMillis(); // NOI18N
-    FileUtil.createDirectory(tempDirPath);
-    File tempDir = new File(tempDirPath);
-    File tempProfilePath = new File(tempDir, profile.getPath().getName());
-    FileUtil.copy(profile.getPath(), tempProfilePath);
-    File config = new File(tempProfilePath, "ProfileConfig.xml"); // NOI18N
-    Document doc = (new SAXBuilder()).build(config);
+    //QString tempDirPath = System::getProperty("java.io.tmpdir") + File::separator + "JMRI" + System::currentTimeMillis(); // NOI18N
+    QString tempDirPath = QTemporaryDir().path();
+    FileUtil::createDirectory(tempDirPath);
+    File* tempDir = new File(tempDirPath);
+    File* tempProfilePath = new File(tempDir, profile->getPath()->getName());
+    FileUtil::copy(profile->getPath(), tempProfilePath);
+    File* config = new File(tempProfilePath, "ProfileConfig.xml"); // NOI18N
+
+# if 1
+    //QDomDocument doc = (new SAXBuilder()).build(config);
+    XmlFile* xml = new XmlFile();
+    QDomDocument doc = xml->doc;
+    QDomElement root = xml->rootFromFile(config);
     if (exportExternalUserFiles) {
-        FileUtil.copy(new File(FileUtil.getUserFilesPath()), tempProfilePath);
-        QDomElement fileLocations = doc.getRootElement().getChild("fileLocations"); // NOI18N
-        for (Object fl : fileLocations.getChildren()) {
-            if (((Element) fl).getAttribute("defaultUserLocation") != NULL) { // NOI18N
-                ((Element) fl).setAttribute("defaultUserLocation", "profile:"); // NOI18N
+        FileUtil::copy(new File(FileUtil::getUserFilesPath()), tempProfilePath);
+        QDomElement fileLocations = doc.documentElement().firstChildElement("fileLocations"); // NOI18N
+        //for (Object fl : fileLocations.getChildren()) {
+        QDomNodeList fll = fileLocations.childNodes();
+        for(int i = 0; i < fll.count(); i++)
+        {
+         QDomElement fl = fll.at(i).toElement();
+            if (fl.attribute("defaultUserLocation") != NULL)
+            { // NOI18N
+                fl.setAttribute("defaultUserLocation", "profile:"); // NOI18N
             }
         }
     }
     if (exportExternalRoster) {
-        FileUtil.copy(new File(Roster.defaultRosterFilename()), new File(tempProfilePath, "roster.xml")); // NOI18N
-        FileUtil.copy(new File(Roster.getFileLocation(), "roster"), new File(tempProfilePath, "roster")); // NOI18N
-        QDomElement roster = doc.getRootElement().getChild("roster"); // NOI18N
+        FileUtil::copy(new File(Roster::defaultRosterFilename()), new File(tempProfilePath, "roster.xml")); // NOI18N
+        FileUtil::copy(new File(Roster::getFileLocation(), "roster"), new File(tempProfilePath, "roster")); // NOI18N
+        QDomElement roster = doc.documentElement().firstChildElement("roster"); // NOI18N
         roster.removeAttribute("directory"); // NOI18N
     }
-    if (exportExternalUserFiles || exportExternalRoster) {
-        FileWriter fw = new FileWriter(config);
-        XMLOutputter fmt = new XMLOutputter();
-        fmt.setFormat(Format.getPrettyFormat()
-                            .setLineSeparator(System.getProperty("line.separator"))
-                            .setTextMode(Format.TextMode.PRESERVE));
-        fmt.output(doc, fw);
-        fw.close();
+//    if (exportExternalUserFiles || exportExternalRoster) {
+//        FileWriter fw = new FileWriter(config);
+//        XMLOutputter fmt = new XMLOutputter();
+//        fmt.setFormat(Format.getPrettyFormat()
+//                            .setLineSeparator(System.getProperty("line.separator"))
+//                            .setTextMode(Format.TextMode.PRESERVE));
+//        fmt.output(doc, fw);
+//        fw.close();
+//    }
+    xml->writeXML(config, doc);
+# endif
+    //FileOutputStream out = new FileOutputStream(target);
+    //ZipOutputStream zip = new ZipOutputStream(out);
+    zip = new QuaZip(target->getAbsolutePath());
+    if(!zip->open(QuaZip::mdCreate))
+    {
+     log->error(tr("Can't create complete roster export file ") + target->getPath());
+     return;
     }
-    FileOutputStream out = new FileOutputStream(target);
-    ZipOutputStream zip = new ZipOutputStream(out);
-    this->exportDirectory(zip, tempProfilePath, tempProfilePath.getPath());
-    zip.close();
-    out.close();
-    FileUtil.delete(tempDir);
+    QuaZipFile* outFile = new QuaZipFile(zip);
+    this->exportDirectory(outFile, tempProfilePath, tempDir->getAbsolutePath());
+    zip->close();
+    //out.close();
+    FileUtil::_delete(tempDir);
 }
 
-/*private*/ void exportDirectory(ZipOutputStream zip, File source, String root) throws IOException {
-    for (File file : source.listFiles()) {
-        if (file.isDirectory()) {
-            if (!Profile.isProfile(file)) {
-                ZipEntry entry = new ZipEntry(this->relativeName(file, root));
-                entry.setTime(file.lastModified());
-                zip.putNextEntry(entry);
-                this->exportDirectory(zip, file, root);
-            }
-            continue;
-        }
-        this->exportFile(zip, file, root);
-    }
+/*private*/ bool ProfileManager::exportDirectory(QuaZipFile* outFile, File* source, QString root) //throws IOException
+{
+ foreach (File* file, source->listFiles())
+ {
+  if (file->isDirectory())
+  {
+   //QFile* fileInfo = new QFile(fileInfo->fileName();)
+   if (!Profile::isProfile(file))
+   {
+    exportDirectory(outFile, file, root);
+   }
+  }
+  else
+  {
+   exportFile(outFile, file, root);
+  }
+ }
 }
 
-/*private*/ void exportFile(ZipOutputStream zip, File source, String root) throws IOException {
-    byte[] buffer = new byte[1024];
-    int length;
+/*private*/ bool ProfileManager::exportFile(QuaZipFile* outFile, File* source, QString root) //throws IOException
+{
+ QFile* inFile = new QFile(source->getPath());
+ QFileInfo fileInfo = QFileInfo(source->getAbsolutePath());
+ //QString entryName;
+ char c;
 
-    FileInputStream input = new FileInputStream(source);
-    ZipEntry entry = new ZipEntry(this->relativeName(source, root));
-    entry.setTime(source.lastModified());
-    zip.putNextEntry(entry);
-    while ((length = input.read(buffer)) > 0) {
-        zip.write(buffer, 0, length);
-    }
-    zip.closeEntry();
-    input.close();
-}
+// if (root != "")
+// {
+//  entryName = root + "/" + fileInfo.fileName();
+// }
+// else
+// {
+//  entryName = fileInfo.fileName();
+// }
+ QString relName = relativeName(source, root);
 
-/*private*/ String relativeName(File file, String root) {
-    String path = file.getPath();
-    if (path.startsWith(root)) {
-        path = path.substring(root.length());
-    }
-    if (file.isDirectory() && !path.endsWith("/")) {
-        path = path + "/";
-    }
-    return path.replaceAll(File.separator, "/");
+ //ZipEntry zipEntry = new ZipEntry(entryName);
+ if(!inFile->open(QIODevice::ReadOnly))
+  return false;
+
+ if(!outFile->open(QIODevice::WriteOnly, QuaZipNewInfo(relName, fileInfo.filePath())))
+  return false;
+ while (inFile->getChar(&c) )
+     outFile->putChar(c);
+
+ if (outFile->getZipError() != ZIP_OK)
+ {
+  return false;
+ }
+
+ outFile->close();
+
+ if (outFile->getZipError() != ZIP_OK)
+ {
+     return false;
+ }
+
+ inFile->close();
+ return true;
 }
 #endif
+/*private*/ QString ProfileManager::relativeName(File* file, QString root)
+    {
+    QString path = file->getPath();
+    if (path.startsWith(root)) {
+        path = path.mid(root.length());
+    }
+    if (file->isDirectory() && !path.endsWith("/")) {
+        path = path + "/";
+    }
+    return path.replace(File::separator, "/");
+}
+
 /**
  * Get the active profile.
  *
@@ -881,16 +980,16 @@ bool ProfileManager::FileFilter1::accept(File* pathname)
  */
 /*public*/ /*static*/ Profile* ProfileManager::getStartingProfile() /*throws IOException*/
 {
- if (ProfileManager::defaultManager()->getActiveProfile() == NULL)
+ if (ProfileManager::getDefault()->getActiveProfile() == NULL)
  {
-  ProfileManager::defaultManager()->readActiveProfile();
+  ProfileManager::getDefault()->readActiveProfile();
   // Automatically start with only profile if only one profile
-  if (ProfileManager::defaultManager()->getProfiles().length() == 1)
+  if (ProfileManager::getDefault()->getProfiles().length() == 1)
   {
-   ProfileManager::defaultManager()->setActiveProfile(ProfileManager::defaultManager()->getProfiles(0));
+   ProfileManager::getDefault()->setActiveProfile(ProfileManager::getDefault()->getProfiles(0));
    // Display profile selector if user did not choose to auto start with last used profile
   }
-  else if (!ProfileManager::defaultManager()->isAutoStartActiveProfile())
+  else if (!ProfileManager::getDefault()->isAutoStartActiveProfile())
   {
    return NULL;
   }

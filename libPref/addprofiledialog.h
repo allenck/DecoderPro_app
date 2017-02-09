@@ -18,6 +18,7 @@ public:
  /*public*/ AddProfileDialog(QFrame* parent, bool modal, bool setNextProfile);
  AddProfileDialog(QWidget* parent, bool modal, bool setNextProfile);
  // <editor-fold defaultstate="collapsed" desc="Generated Code">
+ void setSourceProfile(Profile* profile);
 
 signals:
 
@@ -44,7 +45,6 @@ private:
  /*private*/ bool setNextProfile;// = false;
  /*private*/ Profile* source;// = null;
  /*private*/ void initComponents();
- void setSourceProfile(Profile* profile);
 
 private slots:
  /*private*/ void profileNameActionPerformed(ActionEvent* evt = 0);

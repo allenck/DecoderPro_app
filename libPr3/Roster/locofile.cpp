@@ -11,6 +11,7 @@ LocoFile::LocoFile(QObject *parent) :
     XmlFile(parent)
 {
  log = new Logger("LocoFile");
+ log->setDebugEnabled(true);
 }
 /**
  * Represents and manipulates a locomotive definition, both as a file and

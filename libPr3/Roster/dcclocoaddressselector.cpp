@@ -48,6 +48,7 @@
     : QWidget(parent)
 {
     //super();
+ init();
     this->box = box;
     this->text = text;
     locked = true;
@@ -67,15 +68,14 @@
      list << "DCC Short" << "DCC Long";
       configureBox(list);
     }
-
 }
-#if 1 // TODO:
+
 /*public*/ DccLocoAddressSelector::DccLocoAddressSelector(QStringList protocols, QWidget* parent) : QWidget(parent){
     //super();
  init();
  configureBox(protocols);
 }
-#endif
+
 void DccLocoAddressSelector::init()
 {
  box = NULL;
@@ -149,7 +149,7 @@ void DccLocoAddressSelector::configureBox(QStringList protocols)
   }
  }
 }
-#if 1
+
 /*public*/ void DccLocoAddressSelector::setVariableSize(bool s) { varFontSize = s; }
 bool varFontSize = false;
 
@@ -249,7 +249,7 @@ bool varFontSize = false;
     }
 #endif
 }
-#endif
+
 /*
  * Provide a common setEnable call for the GUI components in the
  * selector
@@ -262,7 +262,7 @@ bool varFontSize = false;
         text->setToolTip(tr("Enter the numeric address here"));
         box->setToolTip(tr("Select the type of address here"));
    } else {
-        text->setToolTip(tr("TooltipTextFieldDisabled"));
+        text->setToolTip(tr("This is the current numeric address; you can't update it here"));
         box->setToolTip(tr("This is the current address type; you can't update it here"));
    }
 }

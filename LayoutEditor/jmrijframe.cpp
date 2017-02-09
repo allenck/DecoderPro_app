@@ -175,6 +175,7 @@ void JmriJFrame::init()
  modifiedFlag = false;
  windowMenu = NULL;
  installEventFilter(this);
+ windowFrameRef = QString(this->metaObject()->className());
 }
 
 

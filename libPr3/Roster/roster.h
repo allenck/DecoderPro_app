@@ -90,6 +90,29 @@ public:
     /*public*/ Q_DECL_DEPRECATED void getRosterGroupList(int i);
     /*public*/ QVector<QString> getRosterGroupList();
     /**
+         * Name of the default roster index file. {@value #DEFAULT_ROSTER_INDEX}
+         */
+        /*public*/ static /*final*/ QString DEFAULT_ROSTER_INDEX; // = "roster.xml"; // NOI18N
+        /**
+         * Name for the property change fired when adding a roster entry.
+         * {@value #ADD}
+         */
+        /*public*/ static /*final*/ QString ADD; // = "add"; // NOI18N
+        /**
+         * Name for the property change fired when removing a roster entry.
+         * {@value #REMOVE}
+         */
+        /*public*/ static /*final*/ QString REMOVE;// = "remove"; // NOI18N
+        /**
+         * Name for the property change fired when changing the ID of a roster
+         * entry. {@value #CHANGE}
+         */
+        /*public*/ static /*final*/ QString CHANGE;// = "change"; // NOI18N
+        /**
+         * Property change event fired when saving the roster. {@value #SAVED}
+         */
+        /*public*/ static /*final*/ QString SAVED;// = "saved"; // NOI18N/**
+    /**
      * Property change fired when adding a roster group.
      * {@value #ROSTER_GROUP_ADDED}
      */
@@ -117,6 +140,7 @@ public:
     static const QString schemaVersion;// = "";
     /*public*/ QMap<QString, RosterGroup*> getRosterGroups();
     /*public*/ void rosterGroupRenamed(QString oldName, QString newName);
+    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
 
 signals:
     //void propertyChange(QString text, QObject* o, QObject* n);
@@ -138,7 +162,6 @@ private:
  QDomDocument doc;
  /*private*/ static QString rosterFileName;// = "roster.xml";
  /*private*/ static QString fileLocation;//  = FileUtil.getUserFilesPath();
-  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
   /*private*/ void addRosterGroupList(QString str, bool notify);
   /*private*/ void delRosterGroupList(QString rg, bool notify);
   static QStringList getAllFileNames();

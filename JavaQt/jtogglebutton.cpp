@@ -479,3 +479,21 @@ void JToggleButton::setText(const QString &text)
  QAbstractButton::setText(text);
  resize(minimumSize());
 }
+
+/**
+ * Gets the location of this component in the form of a point
+ * specifying the component's top-left corner in the screen's
+ * coordinate space.
+ * @return an instance of <code>Point</code> representing
+ *          the top-left corner of the component's bounds in the
+ *          coordinate space of the screen
+ * @throws IllegalComponentStateException if the
+ *          component is not showing on the screen
+ * @see #setLocation
+ * @see #getLocation
+ */
+/*public*/ QPoint JToggleButton::getLocationOnScreen() {
+//    synchronized (getTreeLock()) {
+//        return getLocationOnScreen_NoTreeLock();
+ return window()->pos();
+}

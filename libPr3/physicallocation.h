@@ -7,7 +7,7 @@
 #include "logger.h"
 #include <QVector3D>
 #include <QVector>
-
+#include "libPr3_global.h"
 class LIBPR3SHARED_EXPORT PhysicalLocation : public QObject
 {
  Q_OBJECT

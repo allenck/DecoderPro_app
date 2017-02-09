@@ -35,6 +35,8 @@ public:
     /*public*/ void dispose();
     void configureTable(JTable*);
     /*public*/ QMap<QString, CvValue*>* allCvMap();
+    /*public*/ void resetDecoderDirty(int newStatus);
+
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 //    /*public*/ void actionPerformed(QString) ;

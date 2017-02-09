@@ -3,7 +3,7 @@
 #include "manager.h"
 #include "abstractmanager.h"
 #include "logger.h"
-
+#include "libPr3_global.h"
 class LIBPR3SHARED_EXPORT AbstractProxyManager :  public AbstractManager
 {
     Q_OBJECT

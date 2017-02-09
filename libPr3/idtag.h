@@ -4,7 +4,7 @@
 #include "namedbean.h"
 #include "reporter.h"
 #include <QDomElement>
-
+#include "libPr3_global.h"
 /**
  * IdTag represents a tag that might be attached to a specific piece of
  * rolling stock to uniquely identify it.

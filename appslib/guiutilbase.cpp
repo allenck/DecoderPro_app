@@ -25,6 +25,9 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
  Logger log("Action");
  QString name = NULL;
  QIcon* icon = NULL;
+ Action* act = NULL;
+ QString helpUrl = "";
+ QString current = "";
 
  QHash<QString, QString> parameters =  QHash<QString, QString>();
  if (child.isNull())
@@ -38,8 +41,14 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
  if (!child.firstChildElement("icon").isNull())
  {
   //icon = new ImageIcon(FileUtil::findURL(child.firstChildElement("icon").text()));
-  icon = new QIcon(FileUtil::findURL(child.firstChildElement("icon").text()).toString());
+  QString iconPath = child.firstChildElement("icon").text();
+  //icon = new QIcon(FileUtil::findURL().toString());
+  icon = new QIcon(":/" +iconPath);
+  act = new Action(name, *icon, wi);
  }
+ else
+  act = new Action(name, wi);
+
  //This bit does not size very well, but it works for now.
  if (!child.firstChildElement("option").isNull())
  {
@@ -51,6 +60,29 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
    QString setMethod = ( item).text();
    parameters.insert(setMethod, setting);
   }
+ }
+
+ if (!child.firstChildElement("help").isNull())
+ {
+  helpUrl = child.firstChildElement("help").text();
+  QAction* helpAct = HelpUtil::makeHelpMenuItem(helpUrl);
+  helpAct->setIcon(*icon);
+  QSignalMapper* mapper = new QSignalMapper;
+  connect(helpAct, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+  mapper->setMapping(helpAct, helpAct);
+  connect(mapper, SIGNAL(mapped(QObject*)), HelpUtil::instance(), SLOT(On_mapped(QObject*)));
+  return (Action*)helpAct;
+ }
+
+ if (!child.firstChildElement("current").isNull())
+ {
+  current = child.firstChildElement("current").text();
+  if(act != NULL)
+  {
+   act->setProperty("current", current);
+  }
+  if (child.firstChildElement("adapter").isNull())
+   return act;
  }
 
  if (!child.firstChildElement("adapter").isNull())
@@ -124,12 +156,14 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
 
    const QMetaObject* metaObject = a->metaObject();
    constructorCount = metaObject->constructorCount();
-   for(int i = metaObject->methodOffset(); i < metaObject->constructorCount(); ++i)
+   //for(int i = metaObject->methodOffset(); i < metaObject->constructorCount(); ++i)
+   for(int i = 0; i < metaObject->constructorCount(); ++i)
    {
 #if QT_VERSION < 0x050000
     constructors << QString::fromLatin1(metaObject->method(i).signature());
 #else
-    constructors << QString::fromLatin1(metaObject->method(i).methodSignature());
+    //constructors << QString::fromLatin1(metaObject->method(i).methodSignature());
+    constructors << QString::fromLatin1(metaObject->constructor(i).methodSignature());
 #endif
    }
    if(icon == NULL)
@@ -184,8 +218,10 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
   }
   else
   {
-   return a;
+   //return act;
+   connect(act, SIGNAL(triggered()), a, SLOT(actionPerformed()));
   }
+  return act;
  }
  else if (!child.firstChildElement("panel").isNull())
  {

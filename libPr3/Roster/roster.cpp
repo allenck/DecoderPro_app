@@ -10,12 +10,34 @@
 #include "stringutil.h"
 #include "rostergroup.h"
 
-
 /** record the single instance of Roster **/
 Roster* Roster::_instance = NULL;
 /*private*/ /*static*/ QString Roster::rosterFileName = "roster.xml";
 //QString Roster::fileLocation = FileUtil::getUserFilesPath();
 QString Roster::fileLocation = QDir::homePath() + QDir::separator() + ".jmri" + QDir::separator();
+/**
+     * Name of the default roster index file. {@value #DEFAULT_ROSTER_INDEX}
+     */
+    /*public static final */ QString Roster::DEFAULT_ROSTER_INDEX = "roster.xml"; // NOI18N
+    /**
+     * Name for the property change fired when adding a roster entry.
+     * {@value #ADD}
+     */
+    /*public static final */ QString Roster::ADD = "add"; // NOI18N
+    /**
+     * Name for the property change fired when removing a roster entry.
+     * {@value #REMOVE}
+     */
+    /*public static final */ QString Roster::REMOVE = "remove"; // NOI18N
+    /**
+     * Name for the property change fired when changing the ID of a roster
+     * entry. {@value #CHANGE}
+     */
+    /*public static final */ QString Roster::CHANGE = "change"; // NOI18N
+    /**
+     * Property change event fired when saving the roster. {@value #SAVED}
+     */
+    /*public static final */ QString Roster::SAVED = "saved"; // NOI18N/**
 /**
  * Property change fired when adding a roster group.
  * {@value #ROSTER_GROUP_ADDED}
@@ -110,6 +132,12 @@ Roster::Roster(QObject *parent) :
     ALLENTRIES = tr("ALL ENTRIES");
 //schemaVersion = "";
  dirty = false;
+
+ // if the rosterFilename passed in is null, create a complete path
+ // to the default roster index before attempting to read
+ if (rosterFilename == "") {
+     rosterFilename = this->getRosterIndexPath();
+ }
  if(!this->readFile(rosterFilename))
  {
   log.error("Exception during roster reading: " + rosterFilename);
@@ -188,7 +216,7 @@ Roster::Roster(QObject *parent) :
  }
  _list->append( e);
  setDirty(true);
- firePropertyChange("add", QVariant(), VPtr<RosterEntry>::asQVariant(e));
+ firePropertyChange(ADD, QVariant(), VPtr<RosterEntry>::asQVariant(e));
 }
 
 /**
@@ -201,7 +229,7 @@ Roster::Roster(QObject *parent) :
  if (log.isDebugEnabled()) log.debug(tr("Remove entry ")+e->getId());
  _list->removeAt(_list->indexOf(e));
  setDirty(true);
- firePropertyChange("remove", QVariant(), VPtr<RosterEntry>::asQVariant(e));
+ firePropertyChange(REMOVE, QVariant(), VPtr<RosterEntry>::asQVariant(e));
 }
 
 /**
@@ -483,7 +511,7 @@ void Roster::writeFile(QString name) //throw (FileNotFoundException, IOException
 void Roster::writeFile (QFile* file) //throw (IOException)
 {
  // create root element
- QDomDocument doc;
+ QDomDocument doc = QDomDocument("roster-config");
  QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\"  encoding=\"UTF-8\"");
  doc.appendChild(xmlProcessingInstruction);
  xmlProcessingInstruction = doc.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"/xml/XSLT/roster2array.xsl\"");
@@ -659,7 +687,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
 
  // done - roster now stored, so can't be dirty
  setDirty(false);
- firePropertyChange("saved", QVariant(false), QVariant(true));
+ firePropertyChange(SAVED, QVariant(false), QVariant(true));
 }
 #endif
 /**
@@ -788,27 +816,25 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
 //     tempDecoderComment.mid(k, k + 1);
 //    }
 //   }
-   xmlDecoderComment = tempDecoderComment.replace("<?p?>", "\n");
+//   xmlDecoderComment = tempDecoderComment.replace("<?p?>", "\n");
 
    r->setDecoderComment(xmlDecoderComment);
   }
 #endif
-  return true;
  }
-
  else
  {
   log.error("Unrecognized roster file contents in file: "+name);
  }
-// if (!root.firstChildElement("rosterGroup").isNull())
-// {
-//  //List<Element> g = root.getChild("rosterGroup").getChildren("group");
-//  QDomNodeList g = root.firstChildElement("rosterGroup").childNodes();
-//  for (int i=0; i<g.size(); i++)
-//  {
-//   addRosterGroupList(g.at(i).text());
-//  }
-// }
+ if (!root.firstChildElement("rosterGroup").isNull())
+ {
+  //List<Element> g = root.getChild("rosterGroup").getChildren("group");
+  QDomNodeList g = root.firstChildElement("rosterGroup").childNodes();
+  for (int i=0; i<g.size(); i++)
+  {
+   addRosterGroupList(g.at(i).toElement().text());
+  }
+ }
  return true;
 }
 
@@ -1017,11 +1043,12 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
      iter.next();
      _list->append(iter.value());
     }
-    firePropertyChange("change", QVariant(), VPtr<RosterEntry>::asQVariant(r));
+    firePropertyChange(CHANGE, QVariant(), VPtr<RosterEntry>::asQVariant(r));
 #endif
 }
 
-/*public*/ /*static*/ QString Roster::getRosterGroupName(QString rosterGroup) {
+/*public*/ /*static*/ QString Roster::getRosterGroupName(QString rosterGroup)
+{
     if(rosterGroup == NULL)
         return ALLENTRIES;
     return rosterGroup;
@@ -1071,7 +1098,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
     // TODO: Collections.sort(_rosterGroupList);
     QString str1 = str;
     if (notify) {
-        firePropertyChange("RosterGroupAdded", QVariant(), QVariant(str));
+        firePropertyChange(ROSTER_GROUP_ADDED, QVariant(), QVariant(str));
      //emit propertyChange("RosterGroupAdded", NULL, (QObject*)&str);
     }
 }
@@ -1107,7 +1134,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
     QString rg1;
     if (notify)
     {
-     firePropertyChange("RosterGroupRemoved", QVariant(rg), QVariant());
+     firePropertyChange("ROSTER_GROUP_REMOVED", QVariant(rg), QVariant());
      //emit propertyChange("RosterGroupRemoved", (QObject*)&rg, NULL);
     }
 }
@@ -1163,7 +1190,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
     }
     addRosterGroupList(newName, false); // do not fire property change
     delRosterGroupList(oldName, false); // do not fire property change
-    firePropertyChange("RosterGroupRenamed", QVariant(oldName), QVariant(newName));
+    firePropertyChange(ROSTER_GROUP_RENAMED, QVariant(oldName), QVariant(newName));
       //emit propertyChange("RosterGroupRenamed", (QObject*)&oldName, (QObject*)&newName);
 }
 

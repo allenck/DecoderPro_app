@@ -78,7 +78,7 @@ void RosterFrameAction::common()
 //   mainFrame.setSelectedRosterGroup(((RosterGroupSelector)wi).getSelectedRosterGroup());
 // }
   mainFrame->setVisible(true);
-  //mainFrame->setAllowQuit(allowQuit);
+  mainFrame->setAllowQuit(allowQuit);
   mainFrame->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
 }
 

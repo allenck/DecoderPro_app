@@ -2,6 +2,7 @@
 #include "variabletablemodel.h"
 #include "resettablemodel.h"
 #include "fileutil.h"
+#include "xmlinclude.h"
 
 QString DecoderFile::fileLocation = tr("decoders")+QDir::separator();
 //QString DecoderFile::fileLocation = "/home/allen/NetBeansProjects/jmri/xml/decoders/";
@@ -205,7 +206,10 @@ DecoderFile::DecoderFile(QObject *parent) :
 
 /*public*/ QString DecoderFile::getModelComment() { return _element.attribute("comment"); }
 
-/*public*/ QString DecoderFile::getFamilyComment() { return ((QDomElement)_element.parentNode().toElement()).attribute("comment"); }
+/*public*/ QString DecoderFile::getFamilyComment()
+{
+ return ((QDomElement)_element.parentNode().toElement()).attribute("comment");
+}
 /*public*/ QString DecoderFile::getProductID() {
    _productID = _element.attribute("productID");
    return _productID;
@@ -290,18 +294,58 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
   processVariablesElement(decoderElement.firstChildElement("variables"), variableModel, "", "");
 
   variableModel->configDone();
+
  }
 /*public*/ void DecoderFile::processVariablesElement(QDomElement variablesElement,
                               VariableTableModel* variableModel, QString extraInclude, QString extraExclude)
 {
+ QDomNodeList nl = variablesElement.childNodes();
+ qDebug() << "root contains " << QString::number(nl.count()) << " nodes ";
+ for(int i=0; i < nl.count(); i++)
+ {
+  QDomElement e = nl.at(i).toElement();
+
+  if(e.tagName() == "xi:include")
+  {
+   QString href= e.attribute("href");
+   qDebug() << e.tagName() << " href= " << href;
+   QDomDocumentFragment frag = XmlInclude::processInclude(e);
+   QDomNodeList nl1 = frag.childNodes();
+   if(nl1.count() > 0)
+   {
+    qDebug() << "first node to be inserted " << nl1.at(0).toElement().tagName() << " of " << QString::number(nl1.count()) << " nodes.";
+    QDomElement var = frag.firstChildElement("variable");
+    if(!var.isNull())
+     qDebug() << " variable tag CV = " << var.attribute("CV") << " item= " << var.attribute("item");
+   }
+   variablesElement.replaceChild(frag, e);
+  }
+  else
+  {
+   qDebug() << e.tagName() << " CV=" << e.attribute("CV");
+   if(e.tagName() == "variable")
+   {
+    if(e.firstChild().toElement().tagName() == "xi:include")
+    {
+     QDomElement e2 = e.firstChild().toElement();
+     QString href= e2.attribute("href");
+     qDebug() << e2.tagName() << " href= " << href;
+     QDomDocumentFragment frag = XmlInclude::processInclude(e);
+
+     e.replaceChild(frag, e2);
+    }
+   }
+  }
+ }
+ nl = variablesElement.childNodes();
+ qDebug() << "root now contains " << QString::number(nl.count()) << " nodes ";
 
  // handle include, exclude on this element
- extraInclude = extraInclude
-            +(variablesElement.attribute("include")!="" ? ","+variablesElement.attribute("include") : "");
- extraExclude = extraExclude
-            +(variablesElement.attribute("exclude")!="" ? ","+variablesElement.attribute("exclude") : "");
-//    log->debug("extraInclude /{}/, extraExclude /{}/", extraInclude, extraExclude);
-    // load variables to table
+ extraInclude = extraInclude +(variablesElement.attribute("include")!="" ? ","+variablesElement.attribute("include") : "");
+ extraExclude = extraExclude +(variablesElement.attribute("exclude")!="" ? ","+variablesElement.attribute("exclude") : "");
+ log->debug(tr("extraInclude /%1/, extraExclude /%2/").arg(extraInclude).arg(extraExclude));
+
+// load variables to table
 //    Iterator<QDomElement> iter = decoderElement.firstChildElement("variables")
 //                                .getDescendants(new ElementFilter("variable"));
  QDomNodeList list = variablesElement.elementsByTagName("variable");
@@ -312,7 +356,7 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
  for(int i=0; i < list.size(); i++)
  {
   QDomElement e = list.at(i).toElement();
-
+  log->debug(tr("processing variable CV=%1, item='%2' ").arg(e.attribute("CV")).arg(e.attribute("item")));
         try {
             // if its associated with an inconsistent number of functions,
             // skip creating it
@@ -397,10 +441,23 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
         if (variableModel->setIndxRow(row, e, _productID) == row) {
             // if this one existed, we will not update the row count.
             row++;
-        } else {
-            if (log->isDebugEnabled()) log->debug("skipping entry for "+e.attribute("CVname"));
+        }
+        else
+        {
+            if (log->isDebugEnabled())
+            {
+             log->debug("skipping entry for "+e.attribute("CVname"));
+            }
   }
  }
+ //for (Element e : variablesElement.getChildren("variables")) {
+ QDomNodeList nl1 = variablesElement.elementsByTagName("variables");
+ for(int i=0; i < nl1.count(); i++)
+ {
+  QDomElement e = nl1.at(i).toElement();
+  processVariablesElement(e, variableModel, extraInclude, extraExclude);
+ }
+
  log->debug("iVarList done, now row = "+row);
  variableModel->configDone();
 }

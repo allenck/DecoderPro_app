@@ -10,6 +10,7 @@
 #include <QFont>
 #include "fileutil.h"
 #include "namedicon.h"
+#include "functionbuttonpropertyeditor.h"
 
 //FunctionButton::FunctionButton(QWidget *parent) :
 //    JToggleButton(parent)
@@ -45,7 +46,7 @@ void FunctionButton::init()
  log->setDebugEnabled(true);
  unSelectedIcon = NULL;
  selectedIcon = NULL;
-
+ setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid pink; }");
 }
 
 
@@ -72,13 +73,13 @@ void FunctionButton::init()
 
  QAction* propertiesItem = new QAction(tr("Properties"),this);
  //propertiesItem.addActionListener(this);
- connect(propertiesItem, SIGNAL(toggled(bool)), this, SLOT(actionPerformed()));
+ connect(propertiesItem, SIGNAL(triggered(bool)), this, SLOT(popactionPerformed()));
  popup->addAction(propertiesItem);
 
     //Add listener to components that can bring up popup menus.
 //    MouseListener popupListener = new PopupListener();
 //    addMouseListener(popupListener);
- setFont( QFont("Monospace", 12));
+ setFont( QFont("Monospace", 8));
 //    setMargin(new Insets(2,2,2,2));
 //    setRolloverEnabled(false);
  updateLnF();
@@ -281,14 +282,13 @@ void FunctionButton::init()
  * Handle the selection from the popup menu.
  * @param e The ActionEvent causing the action.
  */
-/*public*/ void FunctionButton::actionPerformed(ActionEvent* e)
+/*public*/ void FunctionButton::popactionPerformed(ActionEvent* e)
 {
-#if 0
-    FunctionButtonPropertyEditor editor = new FunctionButtonPropertyEditor();
-    editor.setFunctionButton(this);
-    editor.setLocation(this->getLocationOnScreen());
-    editor.setVisible(true);
-#endif
+    FunctionButtonPropertyEditor* editor = new FunctionButtonPropertyEditor();
+    editor->setFunctionButton(this);
+    editor->setLocation(this->getLocationOnScreen());
+    editor->setVisible(true);
+    editor->exec();
 }
 
 /**
@@ -322,7 +322,8 @@ void FunctionButton::init()
  * FunctionListener.notifyFunctionStateChanged.
  */
 /*public*/ void FunctionButton::setFunctionListener(FunctionListener* l) {
-    addFunctionListener(l);
+    //addFunctionListener(l);
+ connect(this, SIGNAL(notifyFunctionLockableChanged(int,bool)), l, SLOT(notifyFunctionLockableChanged(int,bool)));
 }
 
 /**
@@ -525,6 +526,7 @@ void FunctionButton::init()
      //setIcon(QIcon(/*FileUtil::getUserResourcePath()+ */fnImg));
         setSelectedIcon(unSelectedIcon);
      _isImageOK = true;
+
     }
     else
     {
@@ -536,7 +538,12 @@ void FunctionButton::init()
 
 /*public*/ QString FunctionButton::getIconPath() {
     if (iconPath == NULL)
-        return "";
+    {
+     if(unSelectedIcon != NULL)
+     {
+      iconPath = unSelectedIcon->getURL();
+     }
+    }
     return iconPath;
 }
 
@@ -571,6 +578,7 @@ void FunctionButton::init()
      selectedIcon->reduceTo(BUT_WDTH, BUT_HGHT, BUT_IMG_SIZE);
      //setIcon(new ImageIcon(fnImage.getScaledImage()));
      setSelectedIcon(selectedIcon);
+     selectedIconPath = fnImg;
      //setPressedIcon(new NamedIcon(FileUtil::getUserResourcePath()+ fnImg, fnImg));
      _isImageOK = true;
     }

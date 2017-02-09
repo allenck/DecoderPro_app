@@ -1127,13 +1127,13 @@ void AbstractThrottle::stopClock() {
  stopClock();
  QString currentDurationString = re->getAttribute("OperatingDuration");
  long currentDuration = 0;
- try
- {
+// try
+// {
   bool bOk = false;
   currentDuration = currentDurationString.toInt(&bOk);
-  if(!bOk) throw new Exception();
- }
- catch (Exception e)
+  if(!bOk) //throw new Exception();
+// }
+// catch (Exception e)
  {
   log->warn("current stored duration is not a valid number \"" + currentDurationString +" \"");
  }

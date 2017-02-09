@@ -26,6 +26,8 @@
 #include "../../LayoutEditor/warrantframe.h"
 #include "functionpanel.h"
 #include "loconetsystemconnectionmemo.h"
+#include "throttleslistpanel.h"
+#include "throttlestablemodel.h"
 
 ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *parent) :
     JmriJFrame(parent),
@@ -117,7 +119,10 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  bAltFunc = false;
  //addressPanel->addAddressListener((AddressListener*)this);
  connect(addressPanel, SIGNAL(notifyAddressThrottleFound(DccThrottle*)), this, SLOT(notifyAddressThrottleFound(DccThrottle*)));
+ connect(addressPanel, SIGNAL(notifyAddressReleased(LocoAddress*)), this, SLOT(on_address_released(LocoAddress*)));
  initializeMenu();
+
+ ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->addThrottleFrame(this);
 }
 
 ThrottleWindow::~ThrottleWindow()
@@ -313,7 +318,7 @@ ThrottleWindow::~ThrottleWindow()
  }
 
  // add help selection
- addHelpMenu("package.ThrottleFrame", true);
+ addHelpMenu("package.jmri.jmrit.throttle.ThrottleFrame", true);
 }
 void ThrottleWindow::OnEditMenuExportRoster()
 {
@@ -394,10 +399,13 @@ void ThrottleWindow::notifyThrottleFound(DccThrottle *t)
  controlPanel->notifyThrottleFound(t);
  functionPanel->setAddressPanel(addressPanel);
  functionPanel->notifyAddressThrottleFound(t);
- throttle->addPropertyChangeListener((PropertyChangeListener*)this);
- setWindowTitle(((RosterEntry*)throttle->getRosterEntry())->getId());
+ //throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+ connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //setWindowTitle(((RosterEntry*)throttle->getRosterEntry())->getId());
+ setFrameTitle();
 
  emit throttleWindowupdate(new PropertyChangeEvent(this, "throttleFound", QVariant(), VPtr<Throttle>::asQVariant(throttle)));
+ ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->notifyAddressThrottleFound(t);
 }
 
 void ThrottleWindow::saveSettings()
@@ -418,9 +426,11 @@ void ThrottleWindow::getSettings()
  restoreState(settings.value("windowState").toByteArray());
  settings.endGroup();
 }
+
 void ThrottleWindow::closeEvent(QCloseEvent *)
 {
  saveSettings();
+ dispose();
 }
 //void ThrottleWindow::on_btnDispatch_clicked()
 //{
@@ -721,6 +731,13 @@ void ThrottleWindow::OnFileMenuLoad()
  }
  updateGUI();
 }
+
+
+void ThrottleWindow::windowClosing(QCloseEvent *)
+{
+ dispose();
+}
+
 /**
  * Handle my own destruction.
  * <ol>
@@ -731,6 +748,7 @@ void ThrottleWindow::OnFileMenuLoad()
  */
 /*public*/ void ThrottleWindow::dispose()
 {
+#if 0 // why is this here?
  if ((throttleFrames!= NULL) && (! throttleFrames->isEmpty() ))
  {
   //for (Iterator<ThrottleFrame> tfi = throttleFrames.values().iterator(); tfi.hasNext(); )
@@ -740,9 +758,13 @@ void ThrottleWindow::OnFileMenuLoad()
   }
  }
  throttleFrames = NULL;
+#endif
  //throttlesPanel.removeAll();
 //    removeAll();
 //    super.dispose();
+ ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(this, addressPanel->getCurrentAddress());
+ addressPanel->destroy();
+
 }
 /*public*/ void ThrottleWindow::removeThrottleFrame(ThrottleWindow* tf)
 {
@@ -829,7 +851,40 @@ void ThrottleWindow::OnFileMenuLoad()
   }
  }
 }
+
 /*public*/ QString ThrottleWindow::getLastUsedSaveFile()
 {
     return lastUsedSaveFile;
+}
+
+/**
+ * setFrameTitle - set the frame title based on type, text and address
+ */
+/*public*/ void ThrottleWindow::setFrameTitle()
+{
+    QString addr = tr("Throttle");
+    if (addressPanel->getThrottle() != NULL) {
+        addr = addressPanel->getCurrentAddress()->toString();
+    }
+    if (getTitleTextType()==("address") == 0) {
+        setTitle(addr);
+    } else if (getTitleTextType() == ("text") ) {
+        setTitle(getTitleText());
+    } else if (getTitleTextType() == ("addressText") ) {
+        setTitle(addr + " " + getTitleText());
+    } else if (getTitleTextType() == ("textAddress") ) {
+        setTitle(getTitleText() + " " + addr);
+    } else if (getTitleTextType() == ("rosterID") ) {
+        if ((addressPanel->getRosterEntry() != NULL) && (addressPanel->getRosterEntry()->getId() != NULL)
+                && (addressPanel->getRosterEntry()->getId().length() > 0)) {
+            setTitle(addressPanel->getRosterEntry()->getId());
+        } else {
+            setTitle(addr);
+        }
+    }
+}
+
+void ThrottleWindow::on_address_released(LocoAddress *)
+{
+ setTitle(tr("Unassigned"));
 }

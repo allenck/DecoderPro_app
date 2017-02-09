@@ -11,8 +11,8 @@ public:
     /*public*/ void gotoPreferenceItem(QString item, QString sub);
     /*public*/ QString getTitle();
     /*public*/ bool isMultipleInstances() ;
+    /*public*/ void windowClosing(QCloseEvent *e);
 
-signals:
 
 public slots:
 private:

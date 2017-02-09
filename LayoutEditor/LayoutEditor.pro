@@ -236,17 +236,16 @@ SOURCES += \
     itempalette.cpp \
     itempanel.cpp \
     familyitempanel.cpp \
-    defaultmutabletreenode.cpp \
-    catalogtreenode.cpp \
-    catalogtreeleaf.cpp \
+    #defaultmutabletreenode.cpp \
+    #catalogtreenode.cpp \
     defaultcatalogtreemanager.cpp \
     signalheaditempanel.cpp \
     tableitempanel.cpp \
     imageindexeditor.cpp \
     catalogpanel.cpp \
-    defaulttreemodel.cpp \
+    #defaulttreemodel.cpp \
     catalogtreeindex.cpp \
-    treepath.cpp \
+    #treepath.cpp \
     abstractcatalogtree.cpp \
     clockitempanel.cpp \
     iconitempanel.cpp \
@@ -315,11 +314,6 @@ SOURCES += \
     analogclockframe.cpp \
     icondialog.cpp \
     itemdialog.cpp \
-    droptarget.cpp \
-    droptargetcontext.cpp \
-    droptargetevent.cpp \
-    droptargetdropevent.cpp \
-    component.cpp \
     slipiconadder.cpp \
     transferhandler.cpp \
     multisensoriconadder.cpp \
@@ -416,7 +410,8 @@ SOURCES += \
     layoutturntablexml.cpp \
     layouteditor.cpp \
     xmlfilelocationaction.cpp \
-    reportcontextaction.cpp
+    reportcontextaction.cpp \
+    twopanetbwindow.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -570,19 +565,12 @@ HEADERS += liblayouteditor_global.h \
     itempalette.h \
     itempanel.h \
     familyitempanel.h \
-    catalogtreenode.h \
-    treenode.h \
-    mutabletreenode.h \
-    defaultmutabletreenode.h \
-    catalogtreeleaf.h \
     defaultcatalogtreemanager.h \
     signalheaditempanel.h \
     tableitempanel.h \
     imageindexeditor.h \
     catalogpanel.h \
-    defaulttreemodel.h \
     catalogtreeindex.h \
-    treepath.h \
     abstractcatalogtree.h \
     clockitempanel.h \
     iconitempanel.h \
@@ -618,7 +606,6 @@ HEADERS += liblayouteditor_global.h \
     indicatorturnouticonxml.h \
     indicatortrackiconxml.h \
     backgrounditempanel.h \
-    treemodel.h \
     defaultcatalogtreemanagerxml.h \
     directorysearcher.h \
     previewdialog.h \
@@ -652,17 +639,7 @@ HEADERS += liblayouteditor_global.h \
     analogclockframe.h \
     icondialog.h \
     itemdialog.h \
-    droptarget.h \
-    droptargetlistener.h \
-    dndconstants.h \
-    droptargetcontext.h \
-    droptargetevent.h \
-    droptargetdropevent.h \
-    droptargetcontextpeer.h \
-    component.h \
     componentpeer.h \
-    droptargetpeer.h \
-    transferable.h \
     slipiconadder.h \
     transferhandler.h \
     multisensoriconadder.h \
@@ -758,7 +735,8 @@ HEADERS += liblayouteditor_global.h \
     layoutturntablexml.h \
     layouteditor.h \
     xmlfilelocationaction.h \
-    reportcontextaction.h
+    reportcontextaction.h \
+    twopanetbwindow.h
 
 
 FORMS    += \

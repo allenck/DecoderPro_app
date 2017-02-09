@@ -24,7 +24,8 @@ private:
  QGroupBox* topBox;		// panel at bottom for extra buttons etc
  int topBoxIndex;	// index to insert extra stuff
  static /*final*/ int topStrutWidth;// = 20;
- void extras();
+private slots:
+ virtual void extras();
 
 protected:
  /*protected*/ QGroupBox* getBottomBox();

@@ -6,6 +6,8 @@ Exception::Exception(QString msg)
 }
 QString Exception::getMessage() {return msg;}
 
+QString Exception::getLocalizedMessage() { return "default localized message!";}
+
 LocoNetException::LocoNetException(QString m/*, QObject *parent*/) /*:
     QObject(parent)*/
 {

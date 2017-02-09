@@ -14,11 +14,11 @@ public:
  explicit InstallDecoderFileAction(QObject *parent = 0);
     InstallDecoderFileAction(const InstallDecoderFileAction&) {}
     ~InstallDecoderFileAction() {}
- /*public*/ InstallDecoderFileAction(QString s, WindowInterface* wi);
- /*public*/ InstallDecoderFileAction(QString s, QIcon i, WindowInterface* wi);
- /*public*/ InstallDecoderFileAction(QString s, QWidget* who);
- /*public*/ JmriPanel* makePanel();
- /*public*/ InstallDecoderFileAction(QString s,QObject *parent);
+ Q_INVOKABLE /*public*/ InstallDecoderFileAction(QString s, WindowInterface* wi);
+ Q_INVOKABLE /*public*/ InstallDecoderFileAction(QString s, QIcon i, WindowInterface* wi);
+ Q_INVOKABLE /*public*/ InstallDecoderFileAction(QString s, QWidget* who);
+ Q_INVOKABLE /*public*/ JmriPanel* makePanel();
+ Q_INVOKABLE /*public*/ InstallDecoderFileAction(QString s,QObject *parent);
 
 signals:
 

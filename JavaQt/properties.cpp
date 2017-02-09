@@ -11,6 +11,7 @@ QHash<QString, QString> Properties::hash =  QHash<QString, QString>();
 Properties::Properties(QObject *parent) :
     QObject(parent)
 {
+ defaults = NULL;
 }
 
 /**
@@ -115,9 +116,7 @@ Properties::Properties(QObject *parent) :
 /*public*/Properties::Properties(Properties* defaults,QObject *parent) :
 QObject(parent)
 {
-hash = QHash<QString, QString>();
-
-    this->defaults = defaults;
+ this->defaults = defaults;
 }
 
 /**

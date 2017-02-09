@@ -39,7 +39,7 @@ namespace Operations
  /*public*/ /*static*/ /*synchronized*/ CarTypes* CarTypes::instance()
  {
   Logger* log = new Logger("CarTypes");
-  log->setDebugEnabled(true);
+  log->setDebugEnabled(false);
   if (_instance == NULL) {
       if (log->isDebugEnabled()) {
           log->debug("CarTypes creating instance");

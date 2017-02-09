@@ -62,8 +62,10 @@ public:
 signals:
     void notifyFunctionLockableChanged(int identity, bool isLockable);
     void notifyFunctionStateChanged(int identity, bool isOn);
+
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void popactionPerformed(ActionEvent* e = 0);
+
 private:
     /*private*/ QList<FunctionListener*> listeners;// = new QList<FunctionListener>();
     /*private*/ int identity; // F0, F1, etc?

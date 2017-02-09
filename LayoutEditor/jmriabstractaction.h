@@ -9,7 +9,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT JmriAbstractAction : public AbstractAction
 {
  Q_OBJECT
 public:
- explicit JmriAbstractAction(QObject *parent = 0);
+ //explicit JmriAbstractAction();
+ JmriAbstractAction(QObject *parent = 0);
  /*public*/  JmriAbstractAction(QString s, WindowInterface* wi);
  /*public*/  JmriAbstractAction(QString s, QIcon i, WindowInterface* wi);
  /*public*/  void setContext(QObject* context);

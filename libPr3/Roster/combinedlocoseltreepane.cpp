@@ -8,12 +8,12 @@
 #include "instancemanager.h"
 #include <QButtonGroup>
 #include "flowlayout.h"
-#include "../../LayoutEditor/treenode.h"
+#include "treenode.h"
 #include "rosterentry.h"
 #include "roster.h"
 #include "jtogglebutton.h"
 #include "fileutil.h"
-#include "../../LayoutEditor/treepath.h"
+#include "treepath.h"
 #include <QSizePolicy>
 #include "globalrosterentrycombobox.h"
 #include <QItemSelectionModel>

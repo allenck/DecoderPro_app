@@ -10,10 +10,10 @@ class APPSLIBSHARED_EXPORT InstallDecoderURLAction : public JmriAbstractAction
  Q_OBJECT
 public:
  explicit InstallDecoderURLAction(QObject *parent = 0);
- /*public*/ InstallDecoderURLAction(QString s, WindowInterface* wi);
- /*public*/ InstallDecoderURLAction(QString s, QIcon i, WindowInterface* wi);
- /*public*/ InstallDecoderURLAction(QString s, QObject* parent =0);
- /*public*/ InstallDecoderURLAction(QString s, QWidget* who);
+ Q_INVOKABLE /*public*/ InstallDecoderURLAction(QString s, WindowInterface* wi);
+ Q_INVOKABLE /*public*/ InstallDecoderURLAction(QString s, QIcon i, WindowInterface* wi);
+ Q_INVOKABLE /*public*/ InstallDecoderURLAction(QString s, QObject* parent =0);
+ Q_INVOKABLE /*public*/ InstallDecoderURLAction(QString s, QWidget* who);
  /*public*/ JmriPanel* makePanel();
 
 signals:

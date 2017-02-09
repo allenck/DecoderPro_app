@@ -5,7 +5,7 @@
 #include <QList>
 #include "namedbeanhandle.h"
 #include "exceptions.h"
-
+#include "libPr3_global.h"
 class Block;
 class SignalMast;
 class Turnout;

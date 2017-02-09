@@ -44,7 +44,7 @@ public:
      */
     EXIT_ON_CLOSE = 3
  };
-    /*public*/ void windowClosing(QCloseEvent* e);
+    virtual /*public*/ void windowClosing(QCloseEvent* e);
 
     explicit JFrame(QWidget *parent = 0);
     JFrame(QString _title, QWidget *parent = 0);
