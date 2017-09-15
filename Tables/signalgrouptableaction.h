@@ -30,7 +30,7 @@ class LIBTABLESSHARED_EXPORT SignalGroupTableAction : public AbstractTableAction
     Q_OBJECT
 public:
     explicit SignalGroupTableAction(QObject *parent = 0);
-    /*public*/ SignalGroupTableAction(QString s, QObject *parent = 0);
+    Q_INVOKABLE /*public*/ SignalGroupTableAction(QString s, QObject *parent = 0);
     ~SignalGroupTableAction() {}
     SignalGroupTableAction(const SignalGroupTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     /*public*/ QString getClassDescription();
@@ -148,7 +148,7 @@ private:
 
     /*private*/ QList <SignalMastAppearances*> _mastAppearancesList;        // array of all Sensorsy
     /*private*/ QList <SignalMastAppearances*> _includedMastAppearancesList;
- SGBeanTableDataModel* m;
+ //SGBeanTableDataModel* m;
  void setColumnToHoldButton(JTable* table, int column, QPushButton* sample);
  void initializeIncludedList();
  bool checkNewNamesOK();
@@ -177,6 +177,8 @@ protected slots:
  friend class SignalGroupOutputModel;
  friend class SignalGroupsWidget;
 };
+Q_DECLARE_METATYPE(SignalGroupTableAction)
+
 class SGBeanTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
@@ -184,10 +186,10 @@ class SGBeanTableDataModel : public BeanTableDataModel
 public:
  enum COLUMNS
  {
-  COMMENTCOL = 2,
-  DELETECOL = 3,
-  ENABLECOL = 4,
-  SETCOL = 5
+  COMMENTCOL = 2+1,
+  DELETECOL = 3+1,
+  ENABLECOL = 4+1,
+  SETCOL = 5+1
  };
  SGBeanTableDataModel(SignalGroupTableAction* act);
  /*public*/ int columnCount(const QModelIndex &parent) const;
@@ -205,7 +207,7 @@ public:
  /*public*/ int getDisplayDeleteMsg();
  /*public*/ void setDisplayDeleteMsg(int boo);
  /*public*/ void clickOn(NamedBean* t);
- /*public*/ QString getValue(QString s);
+ /*public*/ QString getValue(QString s) const;
  /*public*/ QPushButton* configureButton();
 
 private:
@@ -216,6 +218,7 @@ protected:
  /*protected*/ QString getMasterClassName();
  friend class WindowMaker;
 };
+
 /*public*/ class ATSignalMastAppearanceModel : public AbstractTableModel //implements PropertyChangeListener
 {
     Q_OBJECT

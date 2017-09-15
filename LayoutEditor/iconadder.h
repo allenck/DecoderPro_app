@@ -22,7 +22,7 @@ class PickListModel;
 class CatalogTreeNode;
 class JTextField;
 class Manager;
-class QTableView;
+class JTable;
 class CatalogPanel;
 class JFrame;
 class QPushButton;
@@ -98,7 +98,7 @@ private:
     bool              _userDefaults;
     JTextField*       _sysNametext;
     Manager*          _manager;
-    QTableView*       _table;
+    JTable*           _table;
     QPushButton*      _addButton;
     QPushButton*      _addTableButton;
     QPushButton*      _changeButton;

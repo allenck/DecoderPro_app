@@ -63,11 +63,12 @@
 void TransitSection::common()
 {
     log = new Logger("TransitSection");
+    temporary = false;
  // instance variables
  mSection = NULL;
  mSequence = 0;
  mDirection = 0;
- // mTransitSectionActionList = new ArrayList<TransitSectionAction>();
+ mTransitSectionActionList = new QList<TransitSectionAction*>();
  mAlternate = false;
 
  // temporary variables and method for delayed initialization of Section
@@ -88,6 +89,14 @@ void TransitSection::common()
     needsInitialization = false;
 }
 
+
+/*public*/ void TransitSection::setTemporary(bool boo) {
+    temporary = boo;
+}
+
+/*public*/ bool TransitSection::isTemporary() {
+    return temporary;
+}
 /**
  * Access methods
  */
@@ -107,20 +116,21 @@ void TransitSection::common()
 // Note: once TransitSection is created, Section and its sequence and direction may not be changed.
 /*public*/ int TransitSection::getDirection() { return mDirection; }
 /*public*/ int TransitSection::getSequenceNumber() { return mSequence; }
-// /*public*/ void addAction( TransitSectionAction act ) { mTransitSectionActionList.add(act); }
+/*public*/ void TransitSection::addAction( TransitSectionAction* act )
+{ mTransitSectionActionList->append(act); }
 /*public*/ bool TransitSection::isAlternate() { return mAlternate; }
 /*public*/ void TransitSection::setAlternate( bool alt )	{ mAlternate = alt; }
-#if 0 // TODO:
+
 /** 
  * Get a copy of this TransitSection's TransitSectionAction list
  */
-/*public*/ ArrayList<TransitSectionAction> getTransitSectionActionList() {
-    ArrayList<TransitSectionAction> list = new ArrayList<TransitSectionAction>();
-    for (int i = 0; i<mTransitSectionActionList.size(); i++)
-        list.add(mTransitSectionActionList.get(i));
+/*public*/ QList<TransitSectionAction*>* TransitSection::getTransitSectionActionList() {
+    QList<TransitSectionAction*>* list = new QList<TransitSectionAction*>();
+    for (int i = 0; i<mTransitSectionActionList->size(); i++)
+        list->append(mTransitSectionActionList->at(i));
     return list;
 }
-#endif
+
 
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TransitSection.class.getName());
 //}

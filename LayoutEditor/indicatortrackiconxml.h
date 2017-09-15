@@ -9,6 +9,8 @@ class IndicatorTrackIconXml : public PositionableLabelXml
     Q_OBJECT
 public:
     explicit IndicatorTrackIconXml(QObject *parent = 0);
+ ~IndicatorTrackIconXml() {}
+ IndicatorTrackIconXml(const IndicatorTrackIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o) ;
     template <class T>
     QDomElement storeNamedBean(QString elemName, NamedBeanHandle<T>* nb);
@@ -22,5 +24,5 @@ private:
     Logger* log;
     IndicatorTrackIcon* l;
 };
-
+Q_DECLARE_METATYPE(IndicatorTrackIconXml)
 #endif // INDICATORTRACKICONXML_H

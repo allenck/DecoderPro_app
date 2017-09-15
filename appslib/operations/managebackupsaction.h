@@ -10,7 +10,7 @@ namespace Operations
  public:
   ManageBackupsAction(QString s, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  };
 }

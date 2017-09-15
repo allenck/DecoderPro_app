@@ -5,7 +5,7 @@
 #include <QVector>
 
 class Turnout;
-class LIBPR3SHARED_EXPORT AbstractSignalHead : public AbstractNamedBean/*, public SignalHead*/
+class LIBPR3SHARED_EXPORT AbstractSignalHead :  public SignalHead
 {
     Q_OBJECT
 public:

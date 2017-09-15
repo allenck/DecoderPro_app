@@ -27,7 +27,7 @@ public:
     explicit LnReporterManager(LnTrafficController* tc, QString prefix, QObject *parent = 0);
     virtual QString getSystemPrefix();
     virtual void dispose();
-    virtual AbstractReporter* createNewReporter(QString systemName, QString userName);
+    virtual Reporter* createNewReporter(QString systemName, QString userName);
     // listen for transponder messages, creating Reporters as needed
 public slots:
     void message(LocoNetMessage* l);

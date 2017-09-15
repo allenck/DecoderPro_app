@@ -29,7 +29,7 @@ namespace Operations
  }
 
 
- /*public*/ void PrintSwitchListAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintSwitchListAction::actionPerformed(ActionEvent* /*e*/) {
      TrainSwitchLists* ts = new TrainSwitchLists();
      ts->buildSwitchList(location);
      ts->printSwitchList(location, isPreview);

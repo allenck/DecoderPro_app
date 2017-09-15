@@ -55,7 +55,7 @@ void ConsistToolAction::common()
  common();
 }
 
-/*public*/ void ConsistToolAction::actionPerformed(ActionEvent* e) {
+/*public*/ void ConsistToolAction::actionPerformed(ActionEvent* /*e*/) {
     ConsistToolFrame* f = new ConsistToolFrame();
     f->setVisible(true);
 }

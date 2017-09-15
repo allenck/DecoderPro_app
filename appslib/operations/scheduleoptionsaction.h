@@ -10,7 +10,7 @@ namespace Operations
  public:
   ScheduleOptionsAction(ScheduleEditFrame* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
  private:
   /*private*/ ScheduleEditFrame* _sef;
 

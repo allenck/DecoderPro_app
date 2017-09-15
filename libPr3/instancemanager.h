@@ -152,6 +152,8 @@ static void deregister(QObject* item, QString type);
 //@SuppressWarnings("unchecked")   // checked by construction
 // static public <T> T getDefault(Class<T> type) {
 static QObject* getDefault(QString type);
+static /*public*/ QObject* getNullableDefault(QString type);
+
 /**
  * Set an object of type T as the default for that type.
  *<p>

@@ -1,6 +1,7 @@
 #include "listedtableaction.h"
 #include "tablesframe.h"
 #include "libtables.h"
+#include "listedtableframe.h"
 
 //ListedTableAction::ListedTableAction(QObject *parent) :
 //  QAction(parent)
@@ -89,41 +90,43 @@ void ListedTableAction::common()
 
 /*public*/ void ListedTableAction::actionPerformed()
 {
+#if 1
     // create the JTable model, with changes for specific NamedBean
     /* create the frame in a seperate thread outside of swing so that we do not
      hog the swing thread which is also used for connection traffic */
 //    Runnable r = new Runnable() {
 //        /*public*/ void run() {
-//            f = new ListedTableFrame(title) {
-
+            f = new ListedTableFrame(title);
 //                /**
 //                 *
 //                 */
 //                private static final long serialVersionUID = -2029385586619585289L;
 //            };
-//            f.initComponents();
-//            addToFrame(f);
+            f->initComponents();
+            addToFrame(f);
 
-//            f.gotoListItem(gotoListItem);
-//            f.pack();
+            f->gotoListItem(gotoListItem);
+            f->adjustSize();
 
-//            f.setDividerLocation(dividerLocation);
-//            f.setVisible(true);
+            f->setDividerLocation(dividerLocation);
+            f->setVisible(true);
 //        }
 //    };
 //    Thread thr = new Thread(r, "Listed Table Generation");
 //    thr.start();
+#else
  if(libTables == NULL)
   libTables = new LibTables();
  libTables->show(text());
+#endif
 }
 
 ///*public*/ void actionPerformed(ActionEvent e) {
 //    actionPerformed();
 //}
 
-///*public*/ void addToFrame(ListedTableFrame f) {
-//}
+/*public*/ void ListedTableAction::addToFrame(ListedTableFrame* f) {
+}
 
 QString ListedTableAction::helpTarget() {
     return "package.jmri.jmrit.beantable.ListedTableAction";

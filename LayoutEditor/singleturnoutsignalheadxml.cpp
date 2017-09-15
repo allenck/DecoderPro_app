@@ -4,7 +4,7 @@
 #include "abstractturnoutmanager.h"
 #include "abstractsignalheadmanager.h"
 
-SingleTurnoutSignalHeadXML::SingleTurnoutSignalHeadXML(QObject *parent) :
+SingleTurnoutSignalHeadXml::SingleTurnoutSignalHeadXml(QObject *parent) :
     AbstractNamedBeanManagerConfigXML(parent)
 {
  log = new Logger("SingleTurnoutSingleTurnoutSignalHeadXML");
@@ -26,7 +26,7 @@ SingleTurnoutSignalHeadXML::SingleTurnoutSignalHeadXML(QObject *parent) :
  * @param o Object to store, of type TripleTurnoutSignalHead
  * @return QDomElement containing the complete info
  */
-/*public*/ QDomElement SingleTurnoutSignalHeadXML::store(QObject* o) {
+/*public*/ QDomElement SingleTurnoutSignalHeadXml::store(QObject* o) {
     SingleTurnoutSignalHead* p = (SingleTurnoutSignalHead*)o;
 
     QDomElement element = doc.createElement("signalhead");
@@ -58,7 +58,7 @@ SingleTurnoutSignalHeadXML::SingleTurnoutSignalHeadXML(QObject *parent) :
 
     return element;
 }
-/*private*/ QString SingleTurnoutSignalHeadXML::getSignalColour(int mAppearance){
+/*private*/ QString SingleTurnoutSignalHeadXml::getSignalColour(int mAppearance){
     switch(mAppearance){
         case SignalHead::RED:
                 return "red";
@@ -92,7 +92,7 @@ SingleTurnoutSignalHeadXML::SingleTurnoutSignalHeadXML(QObject *parent) :
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool SingleTurnoutSignalHeadXML::load(QDomElement element) throw (Exception){
+/*public*/ bool SingleTurnoutSignalHeadXml::load(QDomElement element) throw (Exception){
     QDomNodeList l = element.elementsByTagName("turnoutname");
     if (l.size() == 0) l = element.elementsByTagName("turnout");
     NamedBeanHandle<Turnout*>* lit = loadTurnout(l.at(0).toElement());
@@ -116,7 +116,7 @@ SingleTurnoutSignalHeadXML::SingleTurnoutSignalHeadXML(QObject *parent) :
     return true;
 }
 
-/*private*/ int SingleTurnoutSignalHeadXML::loadAppearance(QDomNodeList l, QString state){
+/*private*/ int SingleTurnoutSignalHeadXml::loadAppearance(QDomNodeList l, QString state){
     for (int i = 0; i <l.size(); i++){
         if(l.at(i).toElement().attribute("defines")==(state))
             return getIntFromColour(l.at(i).toElement().text());
@@ -129,7 +129,7 @@ SingleTurnoutSignalHeadXML::SingleTurnoutSignalHeadXML(QObject *parent) :
  *    turnoutname is new form
  *    turnout is old form
  */
-NamedBeanHandle<Turnout*>* SingleTurnoutSignalHeadXML::loadTurnout(/*QObject o*/QDomElement e)
+NamedBeanHandle<Turnout*>* SingleTurnoutSignalHeadXml::loadTurnout(/*QObject o*/QDomElement e)
 {
  //QDomElement e = (QDomElement)o;
 
@@ -138,11 +138,11 @@ NamedBeanHandle<Turnout*>* SingleTurnoutSignalHeadXML::loadTurnout(/*QObject o*/
     return ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, t);
 }
 
-/*public*/ void SingleTurnoutSignalHeadXML::load(QDomElement /*element*/, QObject* /*o*/)throw (Exception){
+/*public*/ void SingleTurnoutSignalHeadXml::load(QDomElement /*element*/, QObject* /*o*/)throw (Exception){
     log->error("Invalid method called");
 }
 
-/*private*/ int SingleTurnoutSignalHeadXML::getIntFromColour(QString colour){
+/*private*/ int SingleTurnoutSignalHeadXml::getIntFromColour(QString colour){
     QString c = colour.toLower();
     if (c==("red")) return SignalHead::RED;
     else if (c==("yellow")) return SignalHead::YELLOW;

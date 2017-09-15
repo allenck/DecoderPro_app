@@ -54,7 +54,7 @@ public slots:
 private:
  QObject *parent;
  Positionable* pl; 			// positional label tracked by this frame
- PositionableLabel* ps;
+ //PositionableLabel* ps;
  int oldX;
  int oldY;
  double oldD;

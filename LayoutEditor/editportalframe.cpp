@@ -10,6 +10,7 @@
 #include "portalicon.h"
 #include "portal.h"
 #include "indicatortrack.h"
+#include <QMessageBox>
 
 //EditPortalFrame::EditPortalFrame(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -46,8 +47,8 @@
         pi->setLevel(Editor::MARKERS);
         pi->setStatus(PortalIcon::VISIBLE);
         _parent->addPortalIcon(pi);
-        QList<Positionable*> list = _parent->getCircuitGroup();
-        QListIterator<Positionable*> iter(list);
+        QList<Positionable*>* list = _parent->getCircuitGroup();
+        QListIterator<Positionable*> iter(*list);
         while (iter.hasNext()) {
             Positionable* pos = iter.next();
             //f (pos instanceof IndicatorTrack)
@@ -277,17 +278,17 @@ void EditPortalFrame::common()
 
 /*private*/ void clearListSelection() {
     _portalList.clearSelection();
-    _portalName.setText(null);
-    _parent._editor.highlight(null);
+    _portalName.setText(NULL);
+    _parent._editor.highlight(NULL);
 }
 
 /*public*/ void valueChanged(ListSelectionEvent e) {
     Portal portal = (Portal)_portalList.getSelectedValue();
-    if (portal!=null) {
+    if (portal!=NULL) {
         _portalName.setText(portal.getName());
         _parent._editor.highlight(_parent.getPortalIconMap().get(portal.getName()));
     } else {
-        _portalName.setText(null);
+        _portalName.setText(NULL);
     }
 }
 
@@ -304,24 +305,27 @@ class PortalListModel extends AbstractListModel {
 }
 
 /************************* end setup **************************/
-
+#endif
 /**
 * Is location of icon reasonable? if so, add it
 */
-/*private*/ boolean checkPortalIcon(PortalIcon icon) {
-    String msg = testPortalIcon(icon);
-    if (msg!=null) {
-        JOptionPane.showMessageDialog(this, msg,
-                tr("makePortal"), JOptionPane.INFORMATION_MESSAGE);
-        _parent._editor.highlight(icon);
+/*private*/ bool EditPortalFrame::checkPortalIcon(PortalIcon* icon) {
+    QString msg = testPortalIcon(icon);
+    if (msg!="") {
+//        JOptionPane.showMessageDialog(this, msg,
+//                tr("makePortal"), JOptionPane.INFORMATION_MESSAGE);
+     QMessageBox::information(this, tr("Make Portal"), msg);
+        _parent->_editor->highlight(icon);
         return false;
     }
     return true;
 }
-/*private*/ String testPortalIcon(PortalIcon icon) {
-    java.util.List<Positionable> list = _parent.getCircuitIcons(_homeBlock);
-    String msg = null;
-    if (list==null || list.size()==0) {
+
+/*private*/ QString EditPortalFrame::testPortalIcon(PortalIcon* icon) {
+    QList<Positionable*>* list = _parent->getCircuitIcons(_homeBlock);
+    QString msg = NULL;
+#if 0
+    if (list==NULL || list.size()==0) {
         msg = tr("needIcons");
         return msg;
     }
@@ -329,8 +333,8 @@ class PortalListModel extends AbstractListModel {
     boolean ok = false;
     Rectangle homeRect = new Rectangle();
     Rectangle adjRect = new Rectangle();
-    Positionable comp = null;
-    _adjacentBlock = null;
+    Positionable comp = NULL;
+    _adjacentBlock = NULL;
     for (int i=0; i<list.size(); i++) {
         if (list.get(i) instanceof IndicatorTrack) {
             homeRect = list.get(i).getBounds(homeRect);
@@ -371,51 +375,54 @@ class PortalListModel extends AbstractListModel {
                                              icon.getNameString(), _homeBlock.getDisplayName());
         return msg;
     }
-    if (portal.getToBlock()!=null && !_adjacentBlock.equals(portal.getToBlock())
+    if (portal.getToBlock()!=NULL && !_adjacentBlock.equals(portal.getToBlock())
                      && !_adjacentBlock.equals(portal.getFromBlock()) ) {
         msg = java.text.MessageFormat.format(tr("iconNotOnBlocks"),
                                              icon.getNameString(), portal.getFromBlockName(),
                                              _adjacentBlock.getDisplayName());
         return msg;
     }
+#endif
     return msg;
 }
 
 /**
 * Called after click on portal icon
 */
-protected void checkPortalIconForUpdate(PortalIcon icon) {
+/*protected*/ void EditPortalFrame::checkPortalIconForUpdate(PortalIcon* icon, bool moved) {
     if (!checkPortalIcon(icon)) {
         return;
     }
-    Portal portal = icon.getPortal();
-    OBlock block = portal.getToBlock();
-    if (block==null) {
-        portal.setToBlock(_adjacentBlock, false);
+#if 0 // TODO:
+    Portal* portal = icon->getPortal();
+    OBlock* block = portal->getToBlock();
+    if (block==NULL) {
+        portal->setToBlock(_adjacentBlock, false);
     } else {
-        if (!block.equals(_homeBlock)) {
+        if (block != (_homeBlock)) {
             if (changeBlock(block)) {
-                portal.setToBlock(_adjacentBlock, true);
+                portal->setToBlock(_adjacentBlock, true);
             }
         } else {
-            block = portal.getFromBlock();
-            if (block==null) {
-                portal.setFromBlock(_adjacentBlock, false);
+            block = portal->getFromBlock();
+            if (block==NULL) {
+                portal->setFromBlock(_adjacentBlock, false);
             } else {
-                if (!block.equals(_homeBlock)) {
+                if (block != (_homeBlock)) {
                     if (changeBlock(block)) {
-                        portal.setFromBlock(_adjacentBlock, true);
+                        portal->setFromBlock(_adjacentBlock, true);
                     }
                 } else {
-                    log.error("Portal has Home block "+_homeBlock+" on both sides.");
+                    log->error("Portal has Home block "+_homeBlock+" on both sides.");
                 }
             }
         }
     }
-    _parent.getPortalIconMap().put(icon.getName(), icon);
-    _portalListModel.dataChange();
+    _parent->getPortalIconMap().insert(icon->getName(), icon);
+    _portalListModel->dataChange();
+#endif
 }
-
+#if 0
 /*private*/ boolean changeBlock(OBlock block) {
     if (block.equals(_adjacentBlock)) {
         return false;     // no change
@@ -441,7 +448,7 @@ protected void checkPortalIconForUpdate(PortalIcon icon) {
                                         iconMap.size()+" icons");
     for (int i=0; i<portals.size(); i++) {
         PortalIcon icon = iconMap.get(portals.get(i).getName());
-        if (icon==null) {
+        if (icon==NULL) {
             JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(
                     tr("noPortalIcon"), portals.get(i).getName()),
                     tr("makePortal"), JOptionPane.INFORMATION_MESSAGE);
@@ -457,7 +464,7 @@ protected void checkPortalIconForUpdate(PortalIcon icon) {
 * Called when EditPortalFrame is closed
 */
 static boolean portalIconOK(java.util.List<Positionable> list, PortalIcon icon) {
-    if (icon==null) {
+    if (icon==NULL) {
         return false;
     }
     Rectangle homeRect = new Rectangle();
@@ -482,14 +489,14 @@ static boolean iconIntersectsRect(Positionable icon, Rectangle rect) {
     Portal portal = (Portal)_portalList.getSelectedValue();
     String oldName = portal.getName();
     String name = _portalName.getText();
-    if (name==null || name.trim().length()==0 ) {
+    if (name==NULL || name.trim().length()==0 ) {
         JOptionPane.showMessageDialog(this, tr("changePortalName"),
                         tr("makePortal"), JOptionPane.INFORMATION_MESSAGE);
         return;
     }
     _parent.changePortalName(oldName, name);		// update maps
     String msg = portal.setName(name);
-    if (msg==null) {
+    if (msg==NULL) {
         _portalListModel.dataChange();
     } else {
         JOptionPane.showMessageDialog(this, msg,
@@ -500,7 +507,7 @@ static boolean iconIntersectsRect(Positionable icon, Rectangle rect) {
 /*private*/ void deletePortal() {
     String name = _portalName.getText();
     Portal portal = (Portal)_portalList.getSelectedValue();
-    if (portal !=null) {
+    if (portal !=NULL) {
         int result = JOptionPane.showConfirmDialog(this, java.text.MessageFormat.format(
                             tr("confirmPortalDelete"), portal.getName()),
                         tr("makePortal"), JOptionPane.YES_NO_OPTION,
@@ -511,7 +518,7 @@ static boolean iconIntersectsRect(Positionable icon, Rectangle rect) {
         }
     }
     PortalIcon icon = _parent.getPortalIconMap().get(name);
-    if (icon!=null) {
+    if (icon!=NULL) {
         deletePortalIcon(icon);
     }
 }
@@ -564,32 +571,32 @@ protected QWidget* makeDndIconPanel() {
     }
     /*public*/ Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException,IOException {
         if (!isDataFlavorSupported(flavor)) {
-            return null;
+            return NULL;
         }
         String name = _portalName.getText();
-        if (name==null || name.trim().length()==0) {
+        if (name==NULL || name.trim().length()==0) {
             JOptionPane.showMessageDialog(this, tr("needPortalName"),
                             tr("makePortal"), JOptionPane.INFORMATION_MESSAGE);
-            return null;
+            return NULL;
         } else {
             Portal p = _parent.getPortalByName(name);	// check all portals for name
-            if (p!=null && !(_homeBlock.equals(p.getFromBlock()) || _homeBlock.equals(p.getToBlock())) ) {
+            if (p!=NULL && !(_homeBlock.equals(p.getFromBlock()) || _homeBlock.equals(p.getToBlock())) ) {
                 JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(
                         tr("portalExists"), name, p.getFromBlockName(), p.getToBlockName()),
                         tr("makePortal"), JOptionPane.INFORMATION_MESSAGE);
-                return null;
+                return NULL;
             }
             PortalIcon pi = _parent.getPortalIconMap().get(name);
-            if (name.equals(_currentPortalName) || pi != null) {
+            if (name.equals(_currentPortalName) || pi != NULL) {
                 JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(
                                 tr("portalIconExists"), name),
                                 tr("makePortal"), JOptionPane.INFORMATION_MESSAGE);
                 _parent._editor.highlight(pi);
-                return null;
+                return NULL;
             } else {
                 Portal portal = _homeBlock.getPortalByName(name);
-                if (portal==null) {
-                    portal = new Portal(_homeBlock, name, null);
+                if (portal==NULL) {
+                    portal = new Portal(_homeBlock, name, NULL);
                     _portalListModel.dataChange();
                 }
                 pi = new PortalIcon(_parent._editor, portal);

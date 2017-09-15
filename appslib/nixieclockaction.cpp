@@ -34,7 +34,7 @@ void NixieClockAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void NixieClockAction::actionPerformed(ActionEvent* e) {
+/*public*/ void NixieClockAction::actionPerformed(ActionEvent* /*e*/) {
 
     NixieClockFrame* f = new NixieClockFrame();
     f->setVisible(true);

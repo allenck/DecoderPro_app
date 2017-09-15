@@ -25,7 +25,7 @@ namespace Operations
  }
 
 
- /*public*/ void TrainsScheduleAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrainsScheduleAction::actionPerformed(ActionEvent* /*e*/) {
      // create a frame
      if (f == NULL || !f->isVisible()) {
          f = new TrainsScheduleTableFrame();

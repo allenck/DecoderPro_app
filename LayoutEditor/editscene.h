@@ -13,6 +13,8 @@ class EditScene : public QGraphicsScene
 public:
     explicit EditScene(QObject *parent = 0);
     EditScene(QRectF, QObject* parent = 0);
+    void repaint();
+
 signals:
  void sceneMouseMove(QGraphicsSceneMouseEvent* e);
  void sceneMouseRelease(QGraphicsSceneMouseEvent* e);

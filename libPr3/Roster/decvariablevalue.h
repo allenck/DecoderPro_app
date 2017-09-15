@@ -117,7 +117,7 @@ private:
     QDomDocument doc;
     int col;
 
-    void thisActionPerformed(ActionEvent* e) {
+    void thisActionPerformed(ActionEvent* /*e*/) {
         // tell original
         if(qobject_cast<DecVariableValue*>(_var)!=NULL)
             ((DecVariableValue*)_var)->actionPerformed(e);

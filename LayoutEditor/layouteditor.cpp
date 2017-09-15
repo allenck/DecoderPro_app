@@ -74,6 +74,7 @@ LayoutEditor::~LayoutEditor()
 }
 void LayoutEditor::init()
 {
+ setObjectName("LayoutEditor");
  StoreXmlUserAction* savePanels = new StoreXmlUserAction(tr("Save Panels..."), this);
  ui->menuFile->insertAction(ui->actionSave_panels,savePanels);
  ui->menuFile->removeAction(ui->actionSave_panels); // remove the old one.
@@ -192,7 +193,7 @@ _contents = new QVector<Positionable*>();
  sideTrackWidth = 2.0F;
  main = true;
  trackWidth = sideTrackWidth;
- _selectionGroup = QList<Positionable*>();
+ _selectionGroup = NULL;
  turnoutCirclesWithoutEditMode = false;
  ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
  isDragging = false;
@@ -388,7 +389,7 @@ _contents = new QVector<Positionable*>();
  signalIconEditor->setIcon(8, "Lunar",":/resources/icons/smallschematics/searchlights/left-lunar-short-marker.gif");
  signalIconEditor->setIcon(9, "Flash Lunar",":/resources/icons/smallschematics/searchlights/left-flashlunar-short-marker.gif");
  signalIconEditor->complete();markerImage = new QVector<LocoIcon*>(); // marker images
- signalFrame = new JmriJFrame();
+ signalFrame = new JmriJFrame("<LayoutEditor>");
  QWidget* centralWidget = new QWidget();
  centralWidget->setLayout(new QFormLayout());
  signalFrame->setCentralWidget(centralWidget);
@@ -2814,7 +2815,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
   return NULL;
 }
 /*public*/ LayoutBlock* LayoutEditor::getAffectedBlock(QObject* o, int type) {
-  if (o==NULL) return NULL;
+  if (o==NULL)
+   return NULL;
   switch (type) {
       case TURNOUT_A:
           return ((LayoutTurnout*)o)->getLayoutBlock();
@@ -4309,7 +4311,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   }
   if (!_editable) {
 //      _highlightcomponent = NULL;
-             _selectionGroup = QList<Positionable*>();
+             _selectionGroup =new  QList<Positionable*>();
   }
 }
 /**
@@ -5672,11 +5674,11 @@ void LayoutEditor::addSensor(QString name)
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
  Q_ASSERT(pl != NULL);
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   ((PositionableLabel*)_selectionGroup.at(i))->setScale(s);
+   ((PositionableLabel*)_selectionGroup->at(i))->setScale(s);
   }
  }
  else
@@ -5689,11 +5691,11 @@ void LayoutEditor::addSensor(QString name)
 {
   PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
   Q_ASSERT(pl != NULL);
-  if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+  if (_selectionGroup!=NULL && _selectionGroup->contains(p))
   {
-   for (int i=0; i<_selectionGroup.size(); i++)
+   for (int i=0; i<_selectionGroup->size(); i++)
    {
-    ((PositionableLabel*)_selectionGroup.at(i))->rotate(k);
+    ((PositionableLabel*)_selectionGroup->at(i))->rotate(k);
    }
   } else
   {
@@ -5765,13 +5767,13 @@ void LayoutEditor::On_removeMenuAction_triggered()
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
  Q_ASSERT(pl != NULL);
 
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   ((PositionableLabel*)_selectionGroup.at(i))->remove();
+   ((PositionableLabel*)_selectionGroup->at(i))->remove();
   }
-  _selectionGroup = QList<Positionable*>();
+  _selectionGroup = new QList<Positionable*>();
  }
 }
 /*private*/ MultiSensorIcon* LayoutEditor::checkMultiSensors(QPointF loc)
@@ -6393,11 +6395,11 @@ void LayoutEditor::On_actionHidden_toggled(bool bState)
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
  Q_ASSERT(pl != NULL);
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   ((PositionableLabel*)_selectionGroup.at(i))->setHidden(enabled);
+   ((PositionableLabel*)_selectionGroup->at(i))->setHidden(enabled);
   }
  }
 }
@@ -6529,27 +6531,38 @@ void LayoutEditor::on_newSensor(QString name, int x, int y)
 
  addSensor(name);
 }
+#if 1
 void LayoutEditor::on_actionSave_triggered()
 {
+ if(layoutFile.isEmpty())
+ {
+  on_actionSave_as_triggered();
+ }
+ setCursor(Qt::WaitCursor);
  makeBackupFile(layoutFile);
 
 // SaveXml saveXml(this);
 // saveXml.store(layoutFile);
  bool results = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->storeUser(new File(layoutFile));
-
+ setCursor(Qt::ArrowCursor);
 }
 
 void LayoutEditor::on_actionSave_as_triggered()
 {
- setCursor(Qt::WaitCursor);
  QString path = QFileDialog::getSaveFileName(this,tr("Save file as"),layoutFile);
- setCursor(Qt::ArrowCursor);
- if(path.isEmpty()) return;
+ if(path.isEmpty()) 
+ {
+  QMessageBox::warning(this, tr("Warning"), tr("No file name specified"));
+  return;
+ }
+ setCursor(Qt::WaitCursor);
  SaveXml saveXml(this);
  saveXml.store(path);
  layoutFile = path;
-}
+ setCursor(Qt::ArrowCursor);
 
+}
+#endif
 void LayoutEditor::on_actionSnap_to_grid_when_adding_toggled(bool bState)
 {
  snapToGridOnAdd = bState;

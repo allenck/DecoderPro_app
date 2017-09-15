@@ -3,10 +3,10 @@
 #include "editor.h"
 
 
-//PositionableJComponent::PositionableJComponent(QWidget *parent) :
-//    QWidget(parent)
-//{
-//}
+PositionableJComponent::PositionableJComponent(QWidget *parent) :
+    Positionable(parent)
+{
+}
 /**
  * <p> <private>
  *
@@ -29,7 +29,8 @@
  _viewCoordinates = false;
  _controlling = true;
  _hidden = false;
- _itemGroup = NULL;
+ //_itemGroup = NULL;
+ _displayLevel = 0;
 
  _editor = editor;
  _scale = 1.0;
@@ -95,7 +96,7 @@
     int oldDisplayLevel = _displayLevel;
     _displayLevel = l;
     if (oldDisplayLevel!=l) {
-        log->debug("Changing label display level from "+QString("%1").arg(oldDisplayLevel)+" to "+_displayLevel);
+        log->debug("Changing label display level from "+QString("%1").arg(oldDisplayLevel)+" to "+QString::number(_displayLevel));
         _editor->displayLevelChange(this);
     }
 }
@@ -209,7 +210,7 @@
     // remove from persistance by flagging inactive
     active = false;
     //dispose();
-    deleteLater();
+    //deleteLater();
 
 }
 
@@ -231,13 +232,22 @@ void PositionableJComponent::cleanup() {}
 //}
 
 // JComponent stuff
-/*public*/ QRectF PositionableJComponent::getBounds()
+///*public*/ QRect PositionableJComponent::getBounds()
+//{
+//  return  QRect(getX(), getY(), getWidth(), getHeight());
+//}
+QRectF PositionableJComponent::getBounds(QRectF rv)
 {
-  return  QRectF(getX(), getY(), getWidth(), getHeight());
-}
-QRectF PositionableJComponent::getBounds(QRectF r)
-{
- return r;
+ if (rv.isNull())
+ {
+    return  QRectF(getX(), getY(), getWidth(), getHeight());
+ }
+ else
+ {
+    rv.setCoords(getX(), getY(), getWidth(), getHeight());
+    return rv;
+ }
+
 }
 
 bool PositionableJComponent::contains(int /*x*/, int /*y*/)
@@ -269,6 +279,8 @@ QPointF PositionableJComponent:: getLocation() { return _loc;}
 void PositionableJComponent::setSize(int width, int height)
 {
  _size = QSize(width, height);
+ _width = width;
+ _height = height;
 }
 QSize PositionableJComponent::getSize() {return _size;}
 
@@ -282,9 +294,19 @@ int PositionableJComponent::getWidth()
 {
  return _size.width();
 }
+void PositionableJComponent::setWidth(int width)
+{
+ _width = width;
+ _size = QSize(width, _height);
+}
 int PositionableJComponent::getHeight()
 {
  return _size.height();
+}
+void PositionableJComponent::setHeight(int height)
+{
+ _height = height;
+ _size = QSize(_width, height);
 }
 void PositionableJComponent::setOpaque(bool isOpaque)
 {

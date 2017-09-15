@@ -33,7 +33,7 @@ ReporterWidget::ReporterWidget(QWidget *parent) :
 
    foreach (QString sysName, list)
    {
-    AbstractReporter* r = (AbstractReporter*)rMgr->getBySystemName(sysName);
+    Reporter* r = (Reporter*)rMgr->getBySystemName(sysName);
     updateRow(row, r);
     rows.append(r);
     connect(r, SIGNAL(propertyChange(AbstractReporter*,QString,QObject*,QObject*)), this, SLOT(on_propertyChange(AbstractReporter*,QString,QObject*,QObject*)));
@@ -49,7 +49,7 @@ ReporterWidget::ReporterWidget(QWidget *parent) :
    connect(deleteMapper, SIGNAL(mapped(int)), this, SLOT(on_deleteMapper_signaled(int)));
   }
 }
-void ReporterWidget::updateRow(int row, AbstractReporter* r)
+void ReporterWidget::updateRow(int row, Reporter* r)
 {
  QTableWidgetItem* sn = new QTableWidgetItem(r->getSystemName());
  sn->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -90,7 +90,7 @@ ReporterWidget::~ReporterWidget()
 {
     delete ui;
 }
-void ReporterWidget::on_propertyChange(AbstractReporter *r, QString pName, QVariant /*o*/, QVariant /*n*/)
+void ReporterWidget::on_propertyChange(Reporter *r, QString pName, QVariant /*o*/, QVariant /*n*/)
 {
  if(rows.contains(r))
  {
@@ -122,9 +122,9 @@ void ReporterWidget::on_propertyChange(AbstractReporter *r, QString pName, QVari
 }
 void ReporterWidget::on_propertyChange(AbstractNamedBean *r, QString /*o*/, QString /*n*/)
 {
- if(rows.contains((AbstractReporter*)r))
+ if(rows.contains((Reporter*)r))
  {
-  int row = rows.indexOf((AbstractReporter*)r);
+  int row = rows.indexOf((Reporter*)r);
   QTableWidgetItem* sn = new QTableWidgetItem(r->getSystemName());
   ui->tableWidget->setItem(row, 0,sn);
   QTableWidgetItem* un = new QTableWidgetItem(r->getUserName());
@@ -134,7 +134,7 @@ void ReporterWidget::on_propertyChange(AbstractNamedBean *r, QString /*o*/, QStr
  }
 }
 
-void ReporterWidget::on_newReporterCreated(AbstractReporterManager *rMgr, AbstractReporter *r)
+void ReporterWidget::on_newReporterCreated(AbstractReporterManager *rMgr, Reporter *r)
 {
  QList<Manager*> mgrList = mgr->getManagerList();
  for(int i=0; i <mgrList.count(); i++)
@@ -180,7 +180,7 @@ void ReporterWidget::on_btnAdd_clicked()
 }
 void ReporterWidget::on_deleteMapper_signaled(int row)
 {
- AbstractReporter* r = rows.at(row);
+ Reporter* r = rows.at(row);
  ui->tableWidget->removeRow(row);
  rows.remove(row);
  mgr->deregister(r);

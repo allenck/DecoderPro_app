@@ -235,7 +235,6 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    }
   }
  }
-#if 1 // TODO: turntables
  // include LayoutTurntables
  num = p->turntableList->size();
  if (log->isDebugEnabled()) {
@@ -258,7 +257,6 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    }
   }
  }
-#endif
  return panel;
 }
 
@@ -669,7 +667,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  {
   if (element.attribute("openDispatcher") != NULL)
   {
-#if 0
+#if 0 // TODO:
    if (element.attribute("openDispatcher")==("yes"))
    {
     panel->setOpenDispatcherOnLoad(true);

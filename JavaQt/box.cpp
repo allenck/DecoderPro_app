@@ -70,7 +70,10 @@ Box::Box(QWidget *parent) :
     //super();
     //super.setLayout(new BoxLayout(this, axis));
  setContentsMargins(0,0,0,0);
- setLayout(new QBoxLayout(axis));
+ //setLayout(new QBoxLayout(axis));
+ QBoxLayout *l = new QBoxLayout(axis);
+ Q_ASSERT(l!=NULL);
+ QWidget::setLayout(l);
 }
 
 /**

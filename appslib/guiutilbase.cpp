@@ -424,7 +424,7 @@ GUAbstractAction::GUAbstractAction(QString name, QIcon* icon)
   setIcon(*icon);
  }
 }
-/*public*/  void GUAbstractAction::actionPerformed(ActionEvent* e) {
+/*public*/  void GUAbstractAction::actionPerformed(ActionEvent* /*e*/) {
 }
 
 /*public*/  QString GUAbstractAction::toString() {

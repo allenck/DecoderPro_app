@@ -398,7 +398,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
  p2xcLayout->addLayout(p21cLayout);
 
  _blockModel = new BlockModel(this);
- QTableView* manualBlockTable = new QTableView();
+ JTable* manualBlockTable = new JTable(_blockModel);
  QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
  sizePolicy.setHorizontalStretch(0);
  sizePolicy.setVerticalStretch(0);
@@ -411,7 +411,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
 //        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
 //        tmodel.setSortingStatus(BlockModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
 //    } catch (ClassCastException e3) {}  // if not a sortable table model
- manualBlockTable->setModel(_blockModel);
+ //manualBlockTable->setModel(_blockModel);
  manualBlockTable->setSelectionMode(QAbstractItemView::SingleSelection);
  manualBlockTable->setSelectionBehavior(QAbstractItemView::SelectRows);
  manualBlockTable->setEnabled(true);
@@ -423,7 +423,8 @@ QWidget* SignallingPanel::buildBlocksPanel()
 // stateCCombo->addItem(SET_TO_ANY);
  QStringList blockStates;
  blockStates << SET_TO_UNOCCUPIED << SET_TO_OCCUPIED << SET_TO_ANY;
- manualBlockTable->setItemDelegateForColumn(BlockModel::STATE_COLUMN, new SPComboBoxDelegate(blockStates));
+ //manualBlockTable->setItemDelegateForColumn(BlockModel::STATE_COLUMN, new SPComboBoxDelegate(blockStates));
+ _blockModel->setColumnToHoldDelegate(manualBlockTable, BlockModel::STATE_COLUMN, new SPComboBoxDelegate(blockStates));
 
 // TableColumnModel _manualBlockColumnModel = manualBlockTable.getColumnModel();
 // TableColumn includeColumnC = _manualBlockColumnModel.
@@ -663,10 +664,10 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     p2xtLayout->addLayout(p21cLayout);
 
     _turnoutModel = new TurnoutModel(this);
-    QTableView* manualTurnoutTable = new QTableView();
+    JTable* manualTurnoutTable = new JTable(_turnoutModel);
     manualTurnoutTable->setSizePolicy(sizePolicy());
     //jmri.util.JTableUtil.sortableDataModel(_turnoutModel);
-    manualTurnoutTable->setModel(_turnoutModel);
+    //manualTurnoutTable->setModel(_turnoutModel);
 //    try {
 //        jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)manualTurnoutTable.getModel());
 //        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
@@ -682,7 +683,8 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
 //    stateCCombo->addItem(SET_TO_ANY);
     QStringList statesList;
     statesList << SET_TO_THROWN <<SET_TO_CLOSED << SET_TO_ANY;
-    manualTurnoutTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate(statesList));
+    //manualTurnoutTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate(statesList));
+    _turnoutModel->setColumnToHoldDelegate(manualTurnoutTable, SPTableModel::STATE_COLUMN, new SPComboBoxDelegate(statesList));
 
 //    TableColumnModel _manualTurnoutColumnModel = manualTurnoutTable.getColumnModel();
 //    TableColumn includeColumnC = _manualTurnoutColumnModel.
@@ -803,13 +805,13 @@ QWidget* SignallingPanel::buildSensorPanel(){
     p2xsLayout->addLayout(p21cLayout);
 
     _sensorModel = new SensorModel(this);
-    QTableView* manualSensorTable = new QTableView();
+    JTable* manualSensorTable = new JTable(_sensorModel);
     QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth(manualSensorTable->sizePolicy().hasHeightForWidth());
     manualSensorTable->setSizePolicy(sizePolicy);
-    manualSensorTable->setModel(_sensorModel);
+    //manualSensorTable->setModel(_sensorModel);
             //jmri.util.JTableUtil.sortableDataModel(_sensorModel);
 //    try {
 //        jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)manualSensorTable.getModel());
@@ -825,7 +827,8 @@ QWidget* SignallingPanel::buildSensorPanel(){
 //    stateCCombo->addItem(SET_TO_ACTIVE);
     QStringList statesList;
     statesList << SET_TO_INACTIVE << SET_TO_ACTIVE;
-    manualSensorTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate( statesList));
+    //manualSensorTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate( statesList));
+    _sensorModel->setColumnToHoldDelegate(manualSensorTable, SPTableModel::STATE_COLUMN, new SPComboBoxDelegate( statesList) );
 
 //    TableColumnModel _manualSensorColumnModel = manualSensorTable.getColumnModel();
 //    TableColumn includeColumnC = _manualSensorColumnModel.
@@ -1222,7 +1225,6 @@ void SignallingPanel::initializeIncludedList()
 }
 // to free resources when no longer used
 /*public*/ void SignallingPanel::dispose(){
-
 }
 
 
@@ -1594,7 +1596,7 @@ void SignallingPanel::editDetails(){
       int c = index.column();
 
       if( c==INCLUDE_COLUMN)
-       return Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+       return  Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
       if(c==STATE_COLUMN )
        return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
       return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
@@ -1688,27 +1690,32 @@ void SignallingPanel::editDetails(){
     }
 
     /*public*/ bool BlockModel::setData(const QModelIndex &index, const QVariant &value, int role)
-      {
+    {
+        int c = index.column();
+        int r = index.row();
+        QList <ManualBlockList*> blockList = QList <ManualBlockList*> ();
        if(role == Qt::EditRole)
        {
-          QList <ManualBlockList*> blockList = QList <ManualBlockList*> ();
         if (self->showAll)
             blockList = self->_manualBlockList;
         else
             blockList = self->_includedManualBlockList;
-        int c = index.column();
-        int r = index.row();
         switch (c) {
-            case INCLUDE_COLUMN:
-                blockList.at(r)->setIncluded(value.toBool());
-                break;
             case STATE_COLUMN:
                 blockList.at(r)->setSetToState(value.toString());
                 break;
             default: break;
         }
        }
-       return true;
+       if(role == Qt::CheckStateRole)
+       {
+        if( c ==INCLUDE_COLUMN)
+        {
+               blockList.at(r)->setIncluded(value.toBool());
+               return true;
+        }
+      }
+      return false;
     }
 //    Qt::ItemFlags BlockModel::flags(const QModelIndex &index) const
 //    {
@@ -1773,11 +1780,11 @@ void SignallingPanel::editDetails(){
 
     /*public*/ bool TurnoutModel::setData(const QModelIndex &index, const QVariant &value, int role)
     {
+     int c = index.column();
+     int r = index.row();
+     QList <ManualTurnoutList*> turnoutList = QList <ManualTurnoutList*>();
      if(role == Qt::EditRole)
      {
-         int c = index.column();
-         int r = index.row();
-         QList <ManualTurnoutList*> turnoutList = QList <ManualTurnoutList*>();
         if (self->showAll) {
             turnoutList = self->_manualTurnoutList;
         }
@@ -1785,17 +1792,23 @@ void SignallingPanel::editDetails(){
             turnoutList = self->_includedManualTurnoutList;
         }
         switch (c) {
-            case INCLUDE_COLUMN:
-                turnoutList.at(r)->setIncluded(value.toBool());
-                break;
             case STATE_COLUMN:
                 turnoutList.at(r)->setSetToState(value.toString());
                 break;
             default: break;
         }
      }
-     return true;
+     if(role == Qt::CheckStateRole)
+     {
+      if(c == INCLUDE_COLUMN)
+      {
+       turnoutList.at(r)->setIncluded(value.toBool());
+       return true;
+      }
+     }
+     return false;
     }
+
     void TurnoutModel::propertyChange(PropertyChangeEvent *e)
     {
      SPTableModel::propertyChange(e);
@@ -1887,8 +1900,9 @@ void SignallingPanel::editDetails(){
             default: break;
         }
      }
-     return true;
+     return false;
     }
+
     void SensorModel::propertyChange(PropertyChangeEvent *e)
     {
      SPTableModel::propertyChange(e);
@@ -1963,12 +1977,12 @@ void SignallingPanel::editDetails(){
 
      /*public*/ bool  SignalMastModel::setData(const QModelIndex &index, const QVariant &value, int role)
      {
+     int c= index.column();
+     int r = index.row();
+     QList <ManualSignalMastList*> signalMastList = QList <ManualSignalMastList*>();
+
       if(role == Qt::EditRole)
       {
-       int c= index.column();
-       int r = index.row();
-       QList <ManualSignalMastList*> signalMastList = QList <ManualSignalMastList*>();
-
        if (self->showAll)
        {
         signalMastList = self->_manualSignalMastList;
@@ -1990,8 +2004,17 @@ void SignallingPanel::editDetails(){
             default: break;
         }
       }
-      return true;
+      if(role == Qt::CheckStateRole)
+      {
+       if(c == INCLUDE_COLUMN)
+       {
+           signalMastList.at(r)->setIncluded(value.toBool());
+           return true;
+       }
+      }
+      return false;
     }
+
     void SignalMastModel::fireTableRowsUpdated(int /*r1*/, int /*r2*/)
     {
      beginResetModel();
@@ -2127,8 +2150,9 @@ void SignallingPanel::editDetails(){
 
     /*public*/ Qt::ItemFlags AutoTableModel::flags(const QModelIndex &/*index*/) const
     {
-        return Qt::ItemIsSelectable;
+        return Qt::ItemIsEnabled;
     }
+
     void AutoTableModel::propertyChange(PropertyChangeEvent */*e*/)
     {
       fireTableDataChanged();
@@ -2187,10 +2211,10 @@ void SignallingPanel::editDetails(){
 
     /*public*/ QVariant AutoBlockModel::data(const QModelIndex &index, int role) const
     {
+        int c = index.column();
+        int r = index.row();
      if(role == Qt::DisplayRole || role == Qt::EditRole)
      {
-      int c = index.column();
-      int r = index.row();
         switch (c)
         {
             case SNAME_COLUMN:  // slot number
@@ -2201,13 +2225,18 @@ void SignallingPanel::editDetails(){
                 return self->_automaticBlockList->at(r)->getSetToState();
             case SPEED_COLUMN:
                 return self->_automaticBlockList->at(r)->getBlockSpeed();
-            case PERMISSIVE_COLUMN:
-                //return new Boolean(_automaticBlockList.get(r).getPermissiveWorking());
-                return self->_automaticBlockList->at(r)->getPermissiveWorking();
             default:
                 break;
         }
      }
+     if(role == Qt::CheckStateRole)
+     {
+      if( c == PERMISSIVE_COLUMN)
+      {
+             //return new Boolean(_automaticBlockList.get(r).getPermissiveWorking());
+             return self->_automaticBlockList->at(r)->getPermissiveWorking()?Qt::Checked:Qt::Unchecked;
+     }
+    }
      return QVariant();
     }
 
@@ -2215,8 +2244,9 @@ void SignallingPanel::editDetails(){
 
     /*public*/ Qt::ItemFlags AutoBlockModel::flags(const QModelIndex &index) const
     {
-        return Qt::ItemIsSelectable;
+        return Qt::ItemIsEnabled;
     }
+
     void AutoBlockModel::fireTableDataChanged()
     {
       beginResetModel();
@@ -2335,7 +2365,7 @@ void SignallingPanel::editDetails(){
     SPComboBoxDelegate::SPComboBoxDelegate(QStringList items, QObject *parent)
     :QItemDelegate(parent)
     {
-    items = items;
+     this->items = items;
     }
 
 

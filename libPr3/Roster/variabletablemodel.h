@@ -42,7 +42,7 @@ public:
     /*public*/ void setConstant(QDomElement e) ;
     /*public*/ void newDecVariableValue(QString name, QString CV, QString mask,
                                     bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly);
-    /*public*/ void actionPerformed(ActionEvent* e);
+    /*public*/ void actionPerformed(ActionEvent* /*e*/);
     /*public*/ void read(int i);
     /*public*/ void write(int i);
     /*public*/ void configDone() ;

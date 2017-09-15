@@ -6,6 +6,9 @@
 #include "namedbeanhandle.h"
 #include "exceptions.h"
 #include "libPr3_global.h"
+#include "propertychangesupport.h"
+#include "section.h"
+
 class Block;
 class SignalMast;
 class Turnout;
@@ -110,6 +113,10 @@ public:
      /*public*/ void virtual replaceDestinationMast(SignalMast* oldMast, SignalMast* newMast) = 0;
     
     /*public*/ void virtual dispose() = 0;
+
+    /*public*/ virtual Section* getAssociatedSection(SignalMast* destination) {return NULL;}
+
+    /*public*/ virtual void setAssociatedSection(Section* sec, SignalMast* destination) {}
 
     /*public*/ int virtual getAutoBlockState(Block* block, SignalMast* destination) = 0;
 
@@ -355,6 +362,6 @@ public:
     /*public*/ virtual LayoutBlock* getFacingBlock() = 0;
     
     /*public*/ virtual LayoutBlock* getProtectingBlock() = 0;
-    
+    PropertyChangeSupport* pcs = NULL;
 };
 #endif // SIGNALMASTLOGIC_H

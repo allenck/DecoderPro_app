@@ -1,6 +1,6 @@
 #ifndef IDTAGMANAGER_H
 #define IDTAGMANAGER_H
-#include "manager.h"
+#include "abstractmanager.h"
 #include "idtag.h"
 /**
  * Locate an IdTag object representing a specific IdTag.
@@ -41,8 +41,9 @@
  * @see         jmri.InstanceManager
  * @since       2.11.4
  */
-/*public*/ /*interface*/class IdTagManager : public Manager {
+/*public*/ /*interface*/class IdTagManager : public AbstractManager {
 public:
+     IdTagManager(QObject* parent = 0) : AbstractManager(parent) {}
     /**
      * Locate via tag ID, then user name, and finally
      * system name if needed.
@@ -58,7 +59,7 @@ public:
      * already exist and the manager cannot create the IdTag
      * due to e.g. an illegal name or name that can't be parsed.
      */
-    /*public*/ virtual IdTag* provideIdTag(QString name) = 0;
+    /*public*/ virtual IdTag* provideIdTag(QString name) {return NULL;}
 
     /**
      * Locate via tag ID, then by user name, and finally system name if needed.
@@ -120,10 +121,10 @@ public:
      */
     /*public*/ virtual IdTag* newIdTag(QString systemName, QString userName) {return NULL;}
 
-    /**
-     * Get a list of all IdTag's system names.
-     */
-    /*public*/ virtual QStringList getSystemNameList() = 0;
+//    /**
+//     * Get a list of all IdTag's system names.
+//     */
+//    /*public*/ virtual QStringList getSystemNameList() {return QStringList();}
 
     /**
      * Get a list of all IdTags seen by a specified Reporter within a specific
@@ -132,7 +133,7 @@ public:
      * @param threshold Time threshold (in ms)
      * @return List of matching IdTags
      */
-    /*public*/ virtual QList<IdTag*> getTagsForReporter(Reporter* reporter, long threshold) = 0;
+    /*public*/ virtual QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold) {return NULL;}
 
     /**
      * Define if the manager should persist details of when and where
@@ -145,32 +146,32 @@ public:
      * Determines if the state of known IdTags should be stored
      * @return True to store state; False to discard state
      */
-    /*public*/ virtual bool isStateStored() = 0;
+    /*public*/ virtual bool isStateStored() {return false;}
 
     /**
      * Define if the manager should use the fast clock when setting the
      * times when a given IdTag was last seen
      * @param fastClock True to use the fast clock; False to use the system clock
      */
-    /*public*/ virtual void setFastClockUsed(bool fastClock) = 0;
+    /*public*/ virtual void setFastClockUsed(bool fastClock) {}
 
     /**
      * Determines if fast clock times should be recorded for when a given
      * IdTag was last seen
      * @return True to use the fast clock; False to use the system clock
      */
-    /*public*/ virtual bool isFastClockUsed() = 0;
+    /*public*/ virtual bool isFastClockUsed() {return false;}
 
     /**
      * Perform initialisation
      */
-    /*public*/ virtual void init() = 0;
+    /*public*/ virtual void init() {}
 
     /**
      * Determines if the manager has been initialised
      * @return state of initialisation
      */
-    /*public*/ virtual bool isInitialised() = 0;
+    /*public*/ virtual bool isInitialised() {return false;}
  friend class IdTagManagerXml;
 };
 

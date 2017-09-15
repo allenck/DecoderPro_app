@@ -25,7 +25,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void PoolTrackAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PoolTrackAction::actionPerformed(ActionEvent* /*e*/) {
      if (_ptf != NULL) {
          _ptf->dispose();
      }

@@ -145,10 +145,9 @@ FileHistoryXml::FileHistoryXml(QObject *parent) :
 //                }
 //            };
 
-//    e.appendChild()
-//            operationElement(rev, 10)
+    e.appendChild(
+            operationElement(new MyOperationMemo, 10, doc));
 //    );
- MyOperationMemo* rev = new MyOperationMemo();
  // and return
  return e;
 }

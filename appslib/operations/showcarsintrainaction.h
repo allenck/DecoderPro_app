@@ -12,7 +12,7 @@ namespace Operations
  public:
   ShowCarsInTrainAction(QString s, Train* train,QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
  private:
   ShowCarsInTrainFrame* f;// = null;
   Train* train;

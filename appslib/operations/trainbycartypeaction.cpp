@@ -26,7 +26,7 @@ namespace Operations
  }
 
 
- /*public*/ void TrainByCarTypeAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrainByCarTypeAction::actionPerformed(ActionEvent* /*e*/) {
      // create frame
      TrainByCarTypeFrame* f = new TrainByCarTypeFrame();
      f->initComponents(_train);

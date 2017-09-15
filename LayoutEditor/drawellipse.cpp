@@ -24,8 +24,8 @@
     //super(which, title, parent);
 }
 
-/*protected*/ QWidget* DrawEllipse::makeParamsPanel() {
-    QWidget* panel = DrawFrame::makeParamsPanel();
+/*protected*/ QWidget* DrawEllipse::makeParamsPanel(PositionableShape* ps) {
+    QWidget* panel = DrawFrame::makeParamsPanel(ps);
     //panel->setLayout(new QVBoxLayout);
     QWidget* p = new QWidget();
     p->setLayout(new QVBoxLayout(p/*, BoxLayout.X_AXIS*/));
@@ -106,7 +106,7 @@
  * Set parameters on a new or updated PositionableShape
  */
 /*protected*/ void DrawEllipse::setPositionableParams(PositionableShape* p) {
-    DrawFrame::setPositionableParams(p);
+    DrawFrame::setDisplayParams(p);
     PositionableEllipse* pos = (PositionableEllipse*)p;
     pos->setWidth(_width);
     pos->setHeight(_height);

@@ -56,7 +56,7 @@ void VSDecoderCreationAction::common()
  *
  * @param e The event causing the action.
  */
-/*public*/ void VSDecoderCreationAction::actionPerformed(ActionEvent* e)
+/*public*/ void VSDecoderCreationAction::actionPerformed(ActionEvent* /*e*/)
 {
  QString fp = "", fn = "";
  JFrame* tf = NULL;

@@ -32,10 +32,16 @@ public:
      *	 for travel in the forward direction, or REVERSE - allocated for travel in
      *   the REVERSE direction.
      */
-    /*public*/ const static /*final*/ int UNKNOWN = 0x01;
-    /*public*/ const static /*final*/ int FREE = 0x02;
-    /*public*/ const static /*final*/ int FORWARD = 0x04;
-    /*public*/ const static /*final*/ int REVERSE = 0X08;
+    /*public*/ /*const*/ static /*final*/ int UNKNOWN;// = 0x01;
+    /*public*/ /*const*/ static /*final*/ int FREE;// = 0x02;
+    /*public*/ /*const*/ static /*final*/ int FORWARD;// = 0x04;*
+    /*public*/ /*const*/ static /*final*/ int REVERSE;// = 0X08;
+
+    /*final*/ /*public*/ static int USERDEFINED;// = 0x01; //Default Save all the information
+     /*final*/ /*public*/ static int SIGNALMASTLOGIC;// = 0x02; //Save only the name, blocks will be added by the signalmast logic
+     /*final*/ /*public*/ static int DYNAMICADHOC;// = 0x00;  //created on an as required basis, not to be saved.
+
+
 
     /**
      * Constants representing the occupancy of the Section.
@@ -237,7 +243,10 @@ public:
      *	text set above doesn't get wiped out.
      */
     /*public*/ void suppressNameUpdate(bool set);
-
+    /*public*/ void setSectionType(int type);
+    /*public*/ int getSectionType();
+    /*public*/ QString getBeanType() ;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt); //throws java.beans.PropertyVetoException;
 signals:
     
 public slots:
@@ -333,6 +342,7 @@ private:
 
  /*private*/ QVector<EntryPoint*>* getListOfForwardBlockEntryPoints(Block* b);
  /*private*/ bool connected(Block* b1, Block* b2);
+ int sectionType;// = USERDEFINED;
 
 protected:
  /*protected*/ NamedBeanHandleManager* nbhm;// = InstanceManager::getDefault(NamedBeanHandleManager.class);

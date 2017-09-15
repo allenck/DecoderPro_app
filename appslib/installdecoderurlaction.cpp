@@ -71,7 +71,7 @@ void InstallDecoderURLAction::common()
         return NULL;
     }
 
-    /*public*/ void InstallDecoderURLAction::actionPerformed(ActionEvent* e) {
+    /*public*/ void InstallDecoderURLAction::actionPerformed(ActionEvent* /*e*/) {
 //        if (rb == NULL) {
 //            rb = ResourceBundle.getBundle("jmri.jmrit.decoderdefn.DecoderFile");
 //        }

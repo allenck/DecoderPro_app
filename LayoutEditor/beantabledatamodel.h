@@ -50,7 +50,7 @@ public:
  /*public*/ void setDisplayDeleteMsg(int boo);
  virtual /*public*/ void configureTable(JTable* table);
  /*synchronized*/ /*public*/ void dispose();
- /*public*/ QPushButton* configureButton();
+ virtual /*public*/ QPushButton* configureButton();
  /*public*/ void saveTableColumnDetails(JTable* table);
  /*public*/ void saveTableColumnDetails(JTable* table, QString beantableref);
  void /*public*/ init();
@@ -105,7 +105,7 @@ protected:
 /*abstract*/ /*protected*/ virtual QString getBeanType();
 ///*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* sample = NULL);
 /*protected*/ virtual void configValueColumn(JTable* table);
-/*protected*/ void configDeleteColumn(JTable* table);
+ virtual /*protected*/ void configDeleteColumn(JTable* table);
  virtual /*abstract*/ /*protected*/ QString getMasterClassName();
  virtual /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
  /*protected*/ void printColumns(HardcopyWriter* w, QStringList columnStrings, int columnSize);
@@ -128,6 +128,8 @@ friend class WarrantTableModel;
 friend class WarrantTableFrame;
 friend class JInternalFrame;
 friend class TableFrames;
+friend class LTBeanTableDataModel;
+friend class LogixWidget;
 };
 
 #endif // BEANTABLEDATAMODEL_H

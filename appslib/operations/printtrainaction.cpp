@@ -28,7 +28,7 @@ namespace Operations
  }
 
 
- /*public*/ void PrintTrainAction::actionPerformed(ActionEvent* e)
+ /*public*/ void PrintTrainAction::actionPerformed(ActionEvent* /*e*/)
  {
      TrainEditFrame* f = (TrainEditFrame*) frame;
      Train* train = f->_train;

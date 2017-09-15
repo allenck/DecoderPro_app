@@ -28,7 +28,7 @@ namespace Operations
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ResetAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ResetAction::actionPerformed(ActionEvent* /*e*/) {
      // check to see if files are dirty
      if (OperationsXml::areFilesDirty()) {
 //         if (JOptionPane.showConfirmDialog(null, Bundle.getMessage("OperationsFilesModified"),

@@ -19,7 +19,7 @@ private:
     JTextField* _widthText;
     JTextField* _heightText;
 protected:
-    /*protected*/ QWidget* makeParamsPanel();
+    /*protected*/ QWidget* makeParamsPanel(PositionableShape* p);
     /*protected*/ void makeFigure();
     /*protected*/ void setPositionableParams(PositionableShape* p) ;
     /*protected*/ void setDisplayParams(PositionableShape* p);

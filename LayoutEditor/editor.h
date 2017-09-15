@@ -209,7 +209,8 @@ public:
     const /*public*/ static int SENSORS   = 10;
     const /*public*/ static int CLOCK     = 10;
     const /*public*/ static int MARKERS   = 10;
-    const /*public*/ static int NUM_LEVELS= 10;
+    const /*public*/ static int HANDLES   = 11;
+    const /*public*/ static int NUM_LEVELS= 11;
 
     const /*public*/ static int SCROLL_NONE       = 0;
     const /*public*/ static int SCROLL_BOTH       = 1;
@@ -219,6 +220,8 @@ public:
     const /*public*/ static int OPTION_CONTROLS = 2;
     const /*public*/ static int OPTION_HIDDEN = 3;
     const /*public*/ static int OPTION_TOOLTIP= 4;
+    /*final*/ /*public*/ static QColor HIGHLIGHT_COLOR;// =  QColor(204, 207, 88);
+
     //    const /*public*/ static int OPTION_COORDS = 5;
     /*public*/ void loadFailed();
     /*public*/ NamedIcon* loadFailed(QString msg, QString url);
@@ -291,7 +294,7 @@ public:
     /*public*/ void setSelectRectColor(QColor color);
     /*public*/ void setSelectRectStroke(Qt::PenStyle stroke);
     /*public*/ void setDefaultColors();
-    /*public*/ void paint(QGraphicsScene* g);
+    /*public*/ virtual void paint(QGraphicsScene* g);
     QString getName();
     void setName(QString name);
     QString getTitle();
@@ -337,7 +340,7 @@ private:
     QMap<QString, QString>* _urlMap;// = new QMap<QString, QString>();
     //ToolTipTimer* _tooltipTimer;
     QGraphicsView* editPanel;
-    QGraphicsScene* _targetPanel;
+    EditScene* _targetPanel;
     EditScene* editScene;
     QGraphicsItemGroup* _selectRectItemGroup;
     QString name;
@@ -360,7 +363,7 @@ private:
     QGraphicsSceneMouseEvent* saveEvent;
     SpinnerNumberModel* _spinCols;// = new SpinnerNumberModel(3,1,100,1);
     /*private*/ CircuitBuilder* _circuitBuilder;
-    /*private*/ QList<Positionable*> _secondSelectionGroup;
+//    /*private*/ QList<Positionable*> _secondSelectionGroup;
     /*private*/ bool panelMenuIsVisible;// = true;
 
 private slots:
@@ -385,7 +388,7 @@ private slots:
     /*protected*/ QRectF _selectRect;// = null;
     /*protected*/ QRectF _highlightcomponent;// = null;
     /*protected*/ bool _dragging;// = false;
-    /*protected*/ QList <Positionable*> _selectionGroup;// = NULL;  // items gathered inside fence
+    /*protected*/ QList <Positionable*>* _selectionGroup;// = NULL;  // items gathered inside fence
 
     /*protected*/ Positionable* _currentSelection;
     // Accessible to editor views
@@ -407,7 +410,7 @@ private slots:
     * An Editor may or may not choose to use 'this' as its frame or
     * the interior class 'TargetPane' for its targetPanel
     */
-    /*protected*/ void setTargetPanel(QGraphicsScene* targetPanel, JmriJFrame* frame);
+    /*protected*/ void setTargetPanel(EditScene* targetPanel, JmriJFrame* frame);
     /*protected*/ void setTargetPanelSize(int w, int h);
     /*protected*/ QSizeF getTargetPanelSize();
 
@@ -422,8 +425,8 @@ private slots:
   /*protected*/ PositionableLabel* addLabel(QString text);
   /*protected*/ void removeFromTarget(Positionable* l);
   /*protected*/ void moveItem(Positionable* p, int deltaX, int deltaY);
-  /*protected*/ QList <Positionable*> getSelectedItems(QGraphicsSceneMouseEvent* event);
-  /*protected*/ QList <Positionable*> getSelectedItems(QPointF pt);
+  /*protected*/ QList <Positionable*>* getSelectedItems(QGraphicsSceneMouseEvent* event);
+  /*protected*/ QList <Positionable*>* getSelectedItems(QPointF pt);
   /*protected*/ void makeSelectionGroup(QGraphicsSceneMouseEvent* event);
   /*protected*/ void modifySelectionGroup(Positionable* selection, QGraphicsSceneMouseEvent* event);
   /*protected*/ bool setTextAttributes(Positionable* p, QMenu* popup);
@@ -446,8 +449,9 @@ private slots:
   /*protected*/ void dockSelections(Positionable* p);
   /*protected*/ QHash <QString, JFrameItem*>* _iconEditorFrame;// = new QHash <QString, JFrameItem*>();
   /*protected*/ Editor* changeView(QString className);
-  /*protected*/ void setSecondSelectionGroup(QList<Positionable*> list);
-/*abstract*/ /*protected*/ virtual void init(QString name);
+//  /*protected*/ void setSecondSelectionGroup(QList<Positionable*> list);
+  /*abstract*/ /*protected*/ virtual void init(QString name);
+
   class SignalHeadActionListener : public ActionListener
   {
       Editor* editor;
@@ -523,6 +527,8 @@ protected slots:
   /*public*/ MultiSensorIcon* addMultiSensor();
   virtual /*abstract*/ /*protected*/ void setNextLocation(Positionable* /*obj*/){}
   /*protected*/ bool setSelectionsPositionable(bool enabled, Positionable* p);
+  virtual /*abstract*/ /*protected*/ void paintTargetPanel(QGraphicsScene* g);
+  /*protected*/ void deselectSelectionGroup();
 
 
   friend class CoordinateEdit;
@@ -554,6 +560,9 @@ protected slots:
   friend class PositionablePopupUtil;
   friend class PositionableShape;
   friend class LayoutEditorXml;
+  friend class PositionablePolygon;
+  friend class PolygonAction;
+
 public:
   class AddRightTOActionListener : public ActionListener
   {
@@ -668,6 +677,7 @@ public:
    parent->  putMemory();
   }
  };
+ friend class AddIconFrameWindowListener;
 };
 class TextAttributesActionListener : public QObject
 {
@@ -740,6 +750,15 @@ public:
  ShowToolTipActionListener(Positionable* pos, bool isChecked, Editor* editor);
 public slots:
  void actionPerformed(ActionEvent *e = 0);
+};
+
+class AddIconFrameWindowListener : public WindowListener
+{
+ Q_OBJECT
+ Editor* editor;
+public:
+ AddIconFrameWindowListener(Editor* editor);
+ void windowClosing(QCloseEvent *e);
 };
 
 #endif // EDITOR_H

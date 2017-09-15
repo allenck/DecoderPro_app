@@ -36,7 +36,7 @@ class LIBTABLESSHARED_EXPORT LRouteTableAction : public AbstractTableAction
     Q_OBJECT
 public:
     explicit LRouteTableAction(QObject *parent = 0);
-    /*public*/ LRouteTableAction(QString s, QObject *parent = 0);
+    Q_INVOKABLE /*public*/ LRouteTableAction(QString s, QObject *parent = 0);
     ~LRouteTableAction() {}
     LRouteTableAction(const LRouteTableAction&);
     /*public*/ void setEnabled(bool newValue);
@@ -58,7 +58,7 @@ public:
      CONDITIONAL_TYPE = 5,
      ALL_TYPE        = 6
     };
-    void setupEdit(ActionEvent* e);
+    void setupEdit(ActionEvent* /*e*/);
     void showMessage(QString msg);
     QFrame*  makeShowButtons(QRadioButton* allButton, QRadioButton* includeButton,
                        QRadioButton* extraButton, QString msg);
@@ -262,7 +262,7 @@ private:
  /*private*/ QStringList getOutputComboBoxItems(int type);
 
     protected:
- /*protected*/ LBeanTableDataModel* m;
+ ///*protected*/ LBeanTableDataModel* m;
  /*protected*/ QString getClassName();
 protected slots:
  /*protected*/ void addPressed(ActionEvent* e = 0);
@@ -286,6 +286,7 @@ protected slots:
     friend class LComboBoxDelegate;
     friend class AddFrameWindowListener;
 };
+Q_DECLARE_METATYPE(LRouteTableAction)
 
 class LBeanTableDataModel : public BeanTableDataModel
 {
@@ -308,7 +309,7 @@ public:
  /*public*/ void configureTable(JTable* table) ;
  // Not needed - here for interface compatibility
  /*public*/ void clickOn(NamedBean* t) ;
- /*public*/ QString getValue(QString s) ;
+ /*public*/ QString getValue(QString s) const;
  // ovewrdife to get right width
  void setupEdit(ActionEvent* e = 0);
  void finishUpdate() ;

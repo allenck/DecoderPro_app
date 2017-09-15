@@ -159,7 +159,8 @@ TransitManager::TransitManager(QObject *parent) :
         return list;
     }
 
-    /*static*/ /*public*/ TransitManager* TransitManager::instance() {
+    /*static*/ /*public*/ TransitManager* TransitManager::instance()
+    {
         if (_instance == NULL) {
             _instance = new TransitManager();
         }

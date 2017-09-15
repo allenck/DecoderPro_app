@@ -136,7 +136,7 @@
     adjustSize();
 }
 
-/*public*/ void SendPacketFrame::sendButtonActionPerformed(ActionEvent* e) {
+/*public*/ void SendPacketFrame::sendButtonActionPerformed(ActionEvent* /*e*/) {
     cs->sendPacket(createPacket(packetTextField->text()), 1);
 }
 
@@ -165,7 +165,7 @@
  *
  * @param e
  */
-/*public*/ void SendPacketFrame::runButtonActionPerformed(ActionEvent* e)
+/*public*/ void SendPacketFrame::runButtonActionPerformed(ActionEvent* /*e*/)
 {
     if (!mRunButton->isChecked()) {
         return;

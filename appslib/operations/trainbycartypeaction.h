@@ -11,7 +11,7 @@ namespace Operations
  public:
   TrainByCarTypeAction(QString s, Train* train,QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  private:
   Train* _train;

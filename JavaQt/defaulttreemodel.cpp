@@ -699,6 +699,7 @@ int DefaultTreeModel::columnCount(const QModelIndex &parent) const
 
 int DefaultTreeModel::rowCount(const QModelIndex &parent) const
 {
+ if(root->getChildCount() == 0) return 0;
  int rows =  root->getChildAt(0)->getChildCount();
  return rows;
 }

@@ -15,7 +15,7 @@ namespace Operations
  }
 
 
- /*public*/ void EditCarTypeAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void EditCarTypeAction::actionPerformed(ActionEvent* /*e*/) {
      // create a copy track frame
      if (f == NULL || !f->isVisible()) {
          f = new CarAttributeEditFrame();

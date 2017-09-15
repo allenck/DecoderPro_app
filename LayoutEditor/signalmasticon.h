@@ -16,8 +16,10 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalMastIcon : public PositionableIcon
 {
     Q_OBJECT
 public:
-    //explicit SignalMastIcon(QObject *parent = 0);
+    explicit SignalMastIcon(QObject *parent = 0);
     /*public*/ SignalMastIcon(Editor* editor, Positionable* parent = 0);
+ ~SignalMastIcon() {}
+ SignalMastIcon(const SignalMastIcon&) : PositionableIcon() {}
     /*public*/ void setShowAutoText(bool state);
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(Positionable* p);
@@ -99,5 +101,5 @@ protected slots:
     /*protected*/ void editItem();
 
 };
-
+Q_DECLARE_METATYPE(SignalMastIcon)
 #endif // SIGNALMASTICON_H

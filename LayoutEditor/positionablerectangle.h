@@ -10,24 +10,24 @@ class PositionableRectangle : public PositionableShape
 public:
     //explicit PositionableRectangle(QWidget *parent = 0);
     /*public*/ PositionableRectangle(Editor* editor, QWidget* parent = 0);
-    /*public*/ PositionableRectangle(Editor* editor, QGraphicsItem* shape, QWidget* parent = 0);
-    /*public*/ void setWidth(int w);
-    /*public*/ void setHeight(int h);
+    /*public*/ PositionableRectangle(Editor* editor, QGraphicsRectItem* shape, QWidget* parent = 0);
+//    /*public*/ void setWidth(int w);
+//    /*public*/ void setHeight(int h);
     /*public*/ void rotate(int deg);
     /*public*/ void makeShape();
 // Fix !!!TODO
     /*public*/ Positionable* finishClone(Positionable* p);
     /*public*/ bool setEditItemMenu(QMenu* popup);
     /*public*/ Positionable* deepClone();
-    /*public*/ bool updateScene();
+    ///*public*/ bool updateScene();
 signals:
 
 public slots:
     void editAction();
 
 private:
-    int _width;
-    int _height;
+//    int _width;
+//    int _height;
 friend class PositionableRoundRect;
 friend class Editor;
 };

@@ -39,7 +39,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void SetTrainIconRouteAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void SetTrainIconRouteAction::actionPerformed(ActionEvent* /*e*/) {
      // create a copy route frame
 
      if (f == NULL || !f->isVisible()) {

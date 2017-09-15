@@ -85,7 +85,7 @@ void InstallDecoderURLAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void InstallDecoderURLAction::actionPerformed(ActionEvent* e)
+/*public*/ void InstallDecoderURLAction::actionPerformed(ActionEvent* /*e*/)
 {
 //    if (rb == null) {
 //        rb = ResourceBundle.getBundle("jmri.jmrit.decoderdefn.DecoderFile");

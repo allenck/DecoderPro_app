@@ -70,7 +70,7 @@
  w->setFontWeight(QFont::Normal);
 }
 
-/*public*/ void PrintCvAction::actionPerformed(ActionEvent* e)
+/*public*/ void PrintCvAction::actionPerformed(ActionEvent* /*e*/)
 {
 
  // obtain a HardcopyWriter to do this

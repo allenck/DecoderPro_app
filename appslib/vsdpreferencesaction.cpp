@@ -52,7 +52,7 @@
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void VSDPreferencesAction::actionPerformed(ActionEvent* e)
+/*public*/ void VSDPreferencesAction::actionPerformed(ActionEvent* /*e*/)
 {
     JmriJFrame* f = new JmriJFrame(tr("Virtual Sound Decoder preferences"), false, false);
     VSDecoderPreferencesPane* tpP = new VSDecoderPreferencesPane(VSDecoderManager::instance()->getVSDecoderPreferences());

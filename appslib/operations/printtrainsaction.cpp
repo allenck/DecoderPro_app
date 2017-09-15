@@ -29,7 +29,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void PrintTrainsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintTrainsAction::actionPerformed(ActionEvent* /*e*/) {
 
      // obtain a HardcopyWriter to do this
      HardcopyWriter* writer = NULL;

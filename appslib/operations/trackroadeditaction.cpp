@@ -26,7 +26,7 @@ namespace Operations
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrackRoadEditAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrackRoadEditAction::actionPerformed(ActionEvent* /*e*/) {
      if (tref != NULL) {
          tref->dispose();
      }

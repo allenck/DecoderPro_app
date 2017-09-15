@@ -98,8 +98,8 @@ SectionTableAction::SectionTableAction(QObject *parent) :
     sysName = new JTextField(5);
     sysNameFixed = new QLabel("");
     userName = new JTextField(17);
-    sysNameLabel = new QLabel(tr("System Name"));
-    userNameLabel = new QLabel(tr("User Name"));
+    sysNameLabel = new QLabel(tr("System Name:"));
+    userNameLabel = new QLabel(tr("User Name:"));
     _autoSystemName = new QCheckBox(tr("Auto Sys Name"));
     create = NULL;
     update = NULL;
@@ -125,7 +125,6 @@ SectionTableAction::SectionTableAction(QObject *parent) :
   setEnabled(false);
  }
 }
-SectionTableAction::SectionTableAction(const SectionTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
 
 void SectionTableAction::setEnabled(bool b) { enabled = b;}
 
@@ -139,10 +138,11 @@ void SectionTableAction::setEnabled(bool b) { enabled = b;}
  * Create the JTable DataModel, along with the changes
  * for the specific case of Section objects
  */
-/*protected*/ void SectionTableAction::createModel() {
-    m = new SectionTableDataModel(this);
-
+/*protected*/ void SectionTableAction::createModel()
+{
+ m = new SectionTableDataModel(this);
 }
+
 SectionTableDataModel::SectionTableDataModel(SectionTableAction *act)
  : BeanTableDataModel(act)
 {
@@ -153,7 +153,8 @@ SectionTableDataModel::SectionTableDataModel(SectionTableAction *act)
  init();
 }
 
-/*public*/ QString SectionTableDataModel::getValue(QString /*name*/) {
+/*public*/ QString SectionTableDataModel::getValue(QString /*name*/) const
+{
     return "";
 }
 /*public*/ Manager* SectionTableDataModel::getManager() { return InstanceManager::sectionManagerInstance(); }
@@ -224,7 +225,7 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
 /*public*/ bool SectionTableDataModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
  int col = index.column();
- //int row = index.row();
+ int row = index.row();
  if(role == Qt::EditRole)
  {
   if ( (col==BEGINBLOCKCOL) || (col==ENDBLOCKCOL) )
@@ -239,8 +240,8 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
 //                row = r;
 //            }
 //            /*public*/ void run() {
-//                String sName = (String) getValueAt(row, SYSNAMECOL);
-//                editPressed(sName);
+                QString sName = data(this->index(row, SYSNAMECOL), Qt::DisplayRole).toString();
+                act->editPressed(sName);
 //            }
 //        };
 //        WindowMaker t = new WindowMaker(row);
@@ -282,7 +283,7 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
     if (col == BEGINBLOCKCOL) return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     if (col == ENDBLOCKCOL) return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     if (col == VALUECOL) return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    if (col == EDITCOL) return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    if (col == EDITCOL) return Qt::ItemIsEnabled |  Qt::ItemIsEditable;
     else return BeanTableDataModel::flags(index);
 }
 
@@ -300,6 +301,12 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
 
 /*public*/ void SectionTableDataModel::configValueColumn(JTable* /*table*/) {
     // value column isn't button, so config is NULL
+}
+
+/*public*/ void SectionTableDataModel::configureTable(JTable *table)
+{
+ setColumnToHoldButton(table, EDITCOL);
+ BeanTableDataModel::configureTable(table);
 }
 
 /*protected*/ bool SectionTableDataModel::matchPropertyName(PropertyChangeEvent* /*e*/) {
@@ -356,7 +363,7 @@ void SectionTableAction::addEditPressed()
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.SectionAddEdit", true);
   addFrame->resize(650,800);
   //addFrame.getContentPane().setLayout(new BoxLayout(addFrame.getContentPane(), BoxLayout.Y_AXIS));
-  QVBoxLayout* addFrameLayout = (QVBoxLayout*) addFrame->getContentPane()->layout();
+  QVBoxLayout* addFrameLayout = new QVBoxLayout(addFrame->getContentPane());
 //        JPanel p = new JPanel();
 //        p.setLayout(new FlowLayout());
   FlowLayout* pLayout = new FlowLayout;

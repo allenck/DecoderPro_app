@@ -1718,8 +1718,11 @@ inline Editor*  promoted_changeView(QString  className) { return Editor::changeV
 inline void promoted_dockSelections(Positionable*  p) { Editor::dockSelections(p); }
 inline int  promoted_getItemX(Positionable*  p, int  deltaX) { return Editor::getItemX(p, deltaX); }
 inline int  promoted_getItemY(Positionable*  p, int  deltaY) { return Editor::getItemY(p, deltaY); }
-inline QList<Positionable* >  promoted_getSelectedItems(QGraphicsSceneMouseEvent*  event) { return Editor::getSelectedItems(event); }
-inline QList<Positionable* >  promoted_getSelectedItems(QPointF  pt) { return Editor::getSelectedItems(pt); }
+inline QList<Positionable* >*  promoted_getSelectedItems(QGraphicsSceneMouseEvent*  event) { return Editor::getSelectedItems(event); }
+inline QList<Positionable* >*  promoted_getSelectedItems(QPointF  pt)
+{
+ return Editor::getSelectedItems(pt);
+}
 inline QSizeF  promoted_getTargetPanelSize() { return Editor::getTargetPanelSize(); }
 inline void promoted_init(QString  name) { Editor::init(name); }
 inline void promoted_locoMarkerFromInput() { Editor::locoMarkerFromInput(); }
@@ -1736,13 +1739,13 @@ inline void promoted_removeSelections(Positionable*  p) { Editor::removeSelectio
 inline void promoted_repaint() { Editor::repaint(); }
 inline void promoted_setNextLocation(Positionable*  arg__1) { Editor::setNextLocation(arg__1); }
 inline void promoted_setPaintScale(double  newScale) { Editor::setPaintScale(newScale); }
-inline void promoted_setSecondSelectionGroup(QList<Positionable* >  list) { Editor::setSecondSelectionGroup(list); }
+//inline void promoted_setSecondSelectionGroup(QList<Positionable* >  list) { Editor::setSecondSelectionGroup(list); }
 inline void promoted_setSelectionsDockingLocation(Positionable*  p) { Editor::setSelectionsDockingLocation(p); }
 inline void promoted_setSelectionsHidden(bool  enabled, Positionable*  p) { Editor::setSelectionsHidden(enabled, p); }
 inline bool  promoted_setSelectionsPositionable(bool  enabled, Positionable*  p) { return Editor::setSelectionsPositionable(enabled, p); }
 inline void promoted_setSelectionsRotation(int  k, Positionable*  p) { Editor::setSelectionsRotation(k, p); }
 inline void promoted_setSelectionsScale(double  s, Positionable*  p) { Editor::setSelectionsScale(s, p); }
-inline void promoted_setTargetPanel(QGraphicsScene*  targetPanel, JmriJFrame*  frame) { Editor::setTargetPanel(targetPanel, frame); }
+inline void promoted_setTargetPanel(EditScene*  targetPanel, JmriJFrame*  frame) { Editor::setTargetPanel(targetPanel, frame); }
 inline void promoted_setTargetPanelSize(int  w, int  h) { Editor::setTargetPanelSize(w, h); }
 inline bool  promoted_setTextAttributes(Positionable*  p, QMenu*  popup) { return Editor::setTextAttributes(p, popup); }
 inline void promoted_setTitle() { Editor::setTitle(); }
@@ -1783,8 +1786,8 @@ void delete_Editor(Editor* obj) { delete obj; }
    QString  getName(Editor* theWrappedObject);
    double  getPaintScale(Editor* theWrappedObject);
    QRectF  getSelectRect(Editor* theWrappedObject);
-   QList<Positionable* >  getSelectedItems(Editor* theWrappedObject, QGraphicsSceneMouseEvent*  event);
-   QList<Positionable* >  getSelectedItems(Editor* theWrappedObject, QPointF  pt);
+   QList<Positionable* >*  getSelectedItems(Editor* theWrappedObject, QGraphicsSceneMouseEvent*  event);
+   QList<Positionable* >*  getSelectedItems(Editor* theWrappedObject, QPointF  pt);
    JFrame*  getTargetFrame(Editor* theWrappedObject);
    QGraphicsScene*  getTargetPanel(Editor* theWrappedObject);
    QSizeF  getTargetPanelSize(Editor* theWrappedObject);
@@ -1822,7 +1825,7 @@ void delete_Editor(Editor* obj) { delete obj; }
    void setPanelMenuVisible(Editor* theWrappedObject, bool  state);
    void setPositionableMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
    void setRemoveMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
-   void setSecondSelectionGroup(Editor* theWrappedObject, QList<Positionable* >  list);
+   //void setSecondSelectionGroup(Editor* theWrappedObject, QList<Positionable* >  list);
    void setSelectGroupColor(Editor* theWrappedObject, QColor  color);
    void setSelectRectColor(Editor* theWrappedObject, QColor  color);
    void setSelectRectStroke(Editor* theWrappedObject, Qt::PenStyle  stroke);
@@ -1835,7 +1838,7 @@ void delete_Editor(Editor* obj) { delete obj; }
    bool  setShowCoordinatesMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
    void setShowHidden(Editor* theWrappedObject, bool  state);
    void setShowTooltipMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
-   void setTargetPanel(Editor* theWrappedObject, QGraphicsScene*  targetPanel, JmriJFrame*  frame);
+   void setTargetPanel(Editor* theWrappedObject, EditScene*  targetPanel, JmriJFrame*  frame);
    void setTargetPanelSize(Editor* theWrappedObject, int  w, int  h);
    bool  setTextAttributes(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
    void setTitle(Editor* theWrappedObject);

@@ -13,7 +13,7 @@ class AddNewBeanPanel : public JmriPanel
 public:
  //explicit AddNewBeanPanel(QWidget *parent = 0);
  /*public*/ AddNewBeanPanel(JTextField* sys, JTextField* userName, JTextField* endRange, QCheckBox* addRange, QCheckBox* autoSystem,
-         QString addButtonLabel, ActionListener* listener, QWidget *parent = 0);
+         QString addButtonLabel, ActionListener* listener, ActionListener* cancelListner, QWidget *parent = 0);
 
 signals:
 

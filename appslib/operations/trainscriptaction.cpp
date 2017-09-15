@@ -27,7 +27,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()),this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrainScriptAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrainScriptAction::actionPerformed(ActionEvent* /*e*/) {
      // create a train scripts frame
      if (f != NULL && f->isVisible()) {
          f->dispose();

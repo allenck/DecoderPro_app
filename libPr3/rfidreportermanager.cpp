@@ -28,9 +28,9 @@
 /*public*/ QString RfidReporterManager::getSystemPrefix() {
     return prefix;
 }
-AbstractReporter* RfidReporterManager::createNewReporter(QString systemName, QString userName)
+Reporter* RfidReporterManager::createNewReporter(QString systemName, QString userName)
 {
  RfidReporter* r = new RfidReporter(systemName, userName, this);
  r->AbstractNamedBean::setUserName(userName);
- return (AbstractReporter*)r;
+ return (Reporter*)r;
 }

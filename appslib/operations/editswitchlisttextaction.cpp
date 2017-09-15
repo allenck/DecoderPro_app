@@ -37,7 +37,7 @@ namespace Operations
 connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void EditSwitchListTextAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void EditSwitchListTextAction::actionPerformed(ActionEvent* /*e*/) {
      // create a settings frame
      if (f == NULL || !f->isVisible()) {
          f = new EditSwitchListTextFrame();

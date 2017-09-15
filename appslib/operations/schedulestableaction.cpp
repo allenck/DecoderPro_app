@@ -24,7 +24,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void SchedulesTableAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void SchedulesTableAction::actionPerformed(ActionEvent* /*e*/) {
      // create a schedule table frame
      if (f == NULL || !f->isVisible()) {
          f = new SchedulesTableFrame();

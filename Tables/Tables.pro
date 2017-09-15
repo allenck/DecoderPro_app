@@ -24,7 +24,6 @@ SOURCES += libtables.cpp \
     addeditdialog.cpp \
     routewidget.cpp \
     lightwidget.cpp \
-    lighttablewidget.cpp \
     addeditlightdialog.cpp \
     addeditlightcontroldialog.cpp \
     slotmonitor.cpp \
@@ -91,7 +90,24 @@ SOURCES += libtables.cpp \
     internalframeevent.cpp \
     pathturnouttablemodel.cpp \
     blockeditaction.cpp \
-    sensordebounceeditaction.cpp
+    sensordebounceeditaction.cpp \
+    sensortabletabaction.cpp \
+    lighttabletabaction.cpp \
+    lighttableaction.cpp \
+    lighttablewidget.cpp \
+    listedtableframe.cpp \
+    listedtableaction.cpp \
+    signalmasttableaction.cpp \
+    signalmastrepeaterjframe.cpp \
+    signalmastrepeaterpanel.cpp \
+    signalmasttabledatamodel.cpp \
+    addsignalmastjframe.cpp \
+    reportertableaction.cpp \
+    memorytableaction.cpp \
+    idtagtableaction.cpp \
+    signalmastlogictableaction.cpp \
+    transittableaction.cpp \
+    transitsectionaction.cpp
 
 HEADERS += libtables.h\
         libtables_global.h \
@@ -174,7 +190,23 @@ HEADERS += libtables.h\
     pathturnouttablemodel.h \
     internalframeevent.h \
     blockeditaction.h \
-    sensordebounceeditaction.h
+    sensordebounceeditaction.h \
+    listedtableframe.h \
+    sensortabletabaction.h \
+    lighttabletabaction.h \
+    lighttableaction.h \
+    listedtableaction.h \
+    signalmasttableaction.h \
+    signalmastrepeaterjframe.h \
+    signalmastrepeaterpanel.h \
+    signalmasttabledatamodel.h \
+    addsignalmastjframe.h \
+    reportertableaction.h \
+    memorytableaction.h \
+    idtagtableaction.h \
+    signalmastlogictableaction.h \
+    transittableaction.h \
+    transitsectionaction.h
 
 unix:!symbian {
     maemo5 {

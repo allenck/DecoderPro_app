@@ -27,7 +27,7 @@
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void AddEntryExitPairAction::actionPerformed(ActionEvent* e)
+/*public*/ void AddEntryExitPairAction::actionPerformed(ActionEvent* /*e*/)
 {
  AddEntryExitPairFrame* f = new AddEntryExitPairFrame();
  try

@@ -34,7 +34,7 @@ namespace Operations
   common();
  }
 
- /*public*/ void CarsTableAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void CarsTableAction::actionPerformed(ActionEvent* /*e*/) {
      // create a car table frame
      new CarsTableFrame(true, "", "");
  }

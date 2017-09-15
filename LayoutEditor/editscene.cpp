@@ -61,3 +61,8 @@ void EditScene::keyReleaseEvent(QKeyEvent *event)
  emit sceneKeyRelease(event);
  QGraphicsScene::keyReleaseEvent(event);
 }
+
+void EditScene::repaint()
+{
+ update();
+}

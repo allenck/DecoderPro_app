@@ -4,9 +4,10 @@
 #include "abstracttabletabaction.h"
 #include <QSortFilterProxyModel>
 #include "jtable.h"
+#include <qheaderview.h>
 #include <QPushButton>
 #include "beantabledatamodel.h"
-
+#include "systemnamecomparator.h"
 
 //AbstractTableAction::AbstractTableAction(QObject *parent) :
 //    QObject(parent)
@@ -64,14 +65,13 @@
 
 /*public*/ void AbstractTableAction::actionPerformed(ActionEvent* /*e*/)
 {
-#if 1
  // create the JTable model, with changes for specific NamedBean
  createModel();
  if(m != NULL)
  {
  //TableSorter sorter = new TableSorter(m);
- QSortFilterProxyModel* sorter = new QSortFilterProxyModel();
- sorter->setSourceModel((QAbstractItemModel*)m);
+ MySortFilterProxyModel* sorter = new MySortFilterProxyModel(m);
+ //sorter->setSourceModel((QAbstractItemModel*)m);
  dataTable = m->makeJTable(sorter);
  dataTable->setSortingEnabled(true);
  //sorter.setTableHeader(dataTable.getTableHeader());
@@ -106,15 +106,13 @@
  else
  {
   f= new ATABeanTableFrame(this);
-
  }
  buildMenus(f);
  setMenuBar(f);
  setTitle();
  addToFrame(f);
- f->pack();
+ f->adjustSize();
  f->setVisible(true);
-#endif
 }
 ATABeanTableFrame::ATABeanTableFrame(AbstractTableAction *act)
 {
@@ -136,6 +134,11 @@ void ATABeanTableFrame::extras()
 //        addPressed(e);
 //    }
 //  });
+  QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  sizePolicy.setHorizontalStretch(0);
+  sizePolicy.setVerticalStretch(0);
+  sizePolicy.setHeightForWidth(addButton->sizePolicy().hasHeightForWidth());
+  addButton->setSizePolicy(sizePolicy);
   connect(addButton, SIGNAL(clicked()),act, SLOT(addPressed()));
  }
 }
@@ -217,3 +220,21 @@ void ATABeanTableFrame::extras()
 
 /*protected*/ /*abstract*/ void AbstractTableAction::addPressed(ActionEvent* /*e*/) {}
 
+MySortFilterProxyModel::MySortFilterProxyModel(BeanTableDataModel * m )
+    : QSortFilterProxyModel()
+{
+ setSourceModel(m);
+}
+
+bool MySortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    QVariant leftData = sourceModel()->data(left);
+    QVariant rightData = sourceModel()->data(right);
+
+    if(left.column() == 0)
+    {
+     return SystemNameComparator::compare(leftData.toString(), rightData.toString());
+    }
+    QSortFilterProxyModel::lessThan(left, right);
+
+}

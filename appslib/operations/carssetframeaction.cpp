@@ -31,7 +31,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void CarsSetFrameAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void CarsSetFrameAction::actionPerformed(ActionEvent* /*e*/) {
      // create a car table frame
      CarsSetFrame* csf = new CarsSetFrame();
      csf->initComponents(_carsTable);

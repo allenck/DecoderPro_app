@@ -2,10 +2,11 @@
 #define LISTEDTABLEACTION_H
 
 #include <QAction>
-#include "appslib_global.h"
+#include "libtables_global.h"
 
+class ListedTableFrame;
 class LibTables;
-class APPSLIBSHARED_EXPORT ListedTableAction : public QAction
+class LIBTABLESSHARED_EXPORT ListedTableAction : public QAction
 {
  Q_OBJECT
 public:
@@ -14,6 +15,7 @@ public:
  /*public*/ ListedTableAction(QString s, QString selection, int divider, QObject *parent);
  /*public*/ ListedTableAction(QString s, int divider, QObject *parent);
  /*public*/ ListedTableAction(QString s,QObject *parent);
+ /*public*/ void addToFrame(ListedTableFrame* f);
 
 signals:
 
@@ -25,7 +27,7 @@ private:
  QString title;// = tr("Listed Table Access");
  void common();
  int dividerLocation;// = 0;
- //ListedTableFrame f;
+ ListedTableFrame* f;
  QString helpTarget();
  LibTables* libTables;
 };

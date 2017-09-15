@@ -13,7 +13,7 @@ class PositionableJComponent : public Positionable
 {
     Q_OBJECT
 public:
-    //explicit PositionableJComponent(QWidget *parent = 0);
+    explicit PositionableJComponent(QWidget *parent = 0);
     /*public*/ PositionableJComponent(Editor* editor,QObject *parent = 0);
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(Positionable* pos);
@@ -74,8 +74,8 @@ public:
     /*public*/ NamedBean* getNamedBean();
 
     // JComponent stuff
-    /*public*/ QRectF getBounds();
-    QRectF getBounds(QRectF r);
+    ///*public*/ QRect getBounds();
+    QRectF getBounds(QRectF r = QRectF());
     bool contains(int x, int y);
     int getX();
     int getY();
@@ -86,6 +86,8 @@ public:
     QSize getSize();
 //    void setVisible(bool b);
 //    bool isVisible();
+    void setWidth(int width);
+    void setHeight(int height);
     int getWidth();
     int getHeight();
     void setOpaque(bool isOpaque);
@@ -124,6 +126,7 @@ private:
   double _x, _y;
   QPointF _loc;
   QSize _size;
+  int _width, _height;
 //  bool _bVisible;
   bool _bOpaque;
   QColor _background, _foreground;
@@ -135,5 +138,7 @@ private:
   friend class PositionableEllipse;
   friend class PositionableRoundRect;
   friend class Editor;
+  friend class PositionablePolygon;
+  friend class DrawPolygon;
 };
 #endif // POSITIONABLEJCOMPONENT_H

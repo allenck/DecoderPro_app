@@ -189,7 +189,7 @@ void ProgServiceModePane::init()
  /**
   * Listen to buttons for mode changes
   */
- /*public*/ void ProgServiceModePane::actionPerformed(ActionEvent* e)
+ /*public*/ void ProgServiceModePane::actionPerformed(ActionEvent* /*e*/)
  {
   // find selected button
   //log->debug("Selected button: {}", e.getActionCommand());

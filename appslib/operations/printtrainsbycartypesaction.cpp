@@ -38,7 +38,7 @@ namespace Operations
 
  /*public*/ /*static*/ /*final*/ int PrintTrainsByCarTypesAction::MAX_NAME_LENGTH = 25;
 
- /*public*/ void PrintTrainsByCarTypesAction::actionPerformed(ActionEvent* e)
+ /*public*/ void PrintTrainsByCarTypesAction::actionPerformed(ActionEvent* /*e*/)
  {
   // obtain a HardcopyWriter
   //try {

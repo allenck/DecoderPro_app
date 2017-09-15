@@ -22,7 +22,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void SchedulesByLoadAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void SchedulesByLoadAction::actionPerformed(ActionEvent* /*e*/) {
      if (_slf != NULL) {
          _slf->dispose();
      }

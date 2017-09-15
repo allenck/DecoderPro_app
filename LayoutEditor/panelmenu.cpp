@@ -144,50 +144,73 @@
 //            }
 //        };
 //    JCheckBoxMenuItem r = new JCheckBoxMenuItem(panel.getTitle());
-    QAction* act;
-    QVariant var;
-    QString pName = panel->metaObject()->className();
-    if(pName == "ListThrottles")
-    {
-     ListThrottles* pt = (ListThrottles*)panel;
-     act = new QAction(pt->getTitle(), this);
-     var = VPtr<ListThrottles>::asQVariant(pt);
-    }
-    else
-    if(pName == "ThrottleWindow")
-    {
-     ThrottleWindow* pt = (ThrottleWindow*)panel;
-     act = new QAction(pt->getTitle(), this);
-     var = VPtr<ThrottleWindow>::asQVariant(pt);
-     emit newThrottleWindow();
-    }
-    else if(pName == "RosterFrame")
-    {
-     RosterFrame* pt = (RosterFrame*)panel;
-     act = new QAction(pt->getTitle(), this);
-     var = VPtr<RosterFrame>::asQVariant(pt);
-    }
-    else if(pName == "JmriJFrame")
-    {
-     JmriJFrame* pt = (JmriJFrame*)panel;
-     act = new QAction(pt->getTitle(), this);
-     var = VPtr<JmriJFrame>::asQVariant(pt);
-    }
-    else
-    {
-     act = new QAction(panel->getTitle(), this);
-     var = VPtr<Editor>::asQVariant(panel);
-    }
+//    QAction* act;
+//    QVariant var;
+//    QString pName = panel->metaObject()->className();
+//    if(pName == "ListThrottles")
+//    {
+//     ListThrottles* pt = (ListThrottles*)panel;
+//     act = new QAction(pt->getTitle(), this);
+//     var = VPtr<ListThrottles>::asQVariant(pt);
+//    }
+//    else
+//    if(pName == "ThrottleWindow")
+//    {
+//     ThrottleWindow* pt = (ThrottleWindow*)panel;
+//     act = new QAction(pt->getTitle(), this);
+//     var = VPtr<ThrottleWindow>::asQVariant(pt);
+//     emit newThrottleWindow();
+//    }
+//    else if(pName == "RosterFrame")
+//    {
+//     RosterFrame* pt = (RosterFrame*)panel;
+//     act = new QAction(pt->getTitle(), this);
+//     var = VPtr<RosterFrame>::asQVariant(pt);
+//    }
+//    else if(pName == "JmriJFrame")
+//    {
+//     JmriJFrame* pt = (JmriJFrame*)panel;
+//     act = new QAction(pt->getTitle(), this);
+//     var = VPtr<JmriJFrame>::asQVariant(pt);
+//    }
+//    else
+//    {
+//     act = new QAction(panel->getTitle(), this);
+//     var = VPtr<Editor>::asQVariant(panel);
+//    }
 
-    act->setCheckable(true);
-    act->setChecked(panel->isVisible());
-    actionGroup->addAction(act);
-    //var = VPtr<Editor>::asQVariant(panel);
-    act->setData(var);
+//    act->setCheckable(true);
+//    act->setChecked(panel->isVisible());
+//    actionGroup->addAction(act);
+//    //var = VPtr<Editor>::asQVariant(panel);
+//    act->setData(var);
 //    r.addActionListener(a);
-    panelsSubMenu->addAction(act);
+    PanelActionListener* a = new PanelActionListener(panel, this);
+    QAction* r = new QAction(panel->getTitle(), this);
+    r->setCheckable(true);
+    connect(r, SIGNAL(toggled(bool)), a, SLOT(actionPerformed()));
+    panelsSubMenu->addAction(r);
     updateEditorPanel (panel);
 }
+
+PanelActionListener::PanelActionListener(Editor *panel, PanelMenu* pm)
+{
+ this->panel = panel;
+ this->pm = pm;
+}
+/*public*/ void PanelActionListener::actionPerformed(ActionEvent* /*e*/)
+{
+    //if (panel instanceof LayoutEditor) {
+ if(qobject_cast<LayoutEditor*>(panel)!= NULL)
+ {
+        panel->setVisible(true);
+        panel->update();
+    } else {
+        panel->getTargetFrame()->setVisible(true);
+    }
+    pm->updateEditorPanel(panel);
+}
+
 void PanelMenu::on_panelSelected(QAction* act)
 {
  Editor* panel = VPtr<Editor>::asPtr(act->data());

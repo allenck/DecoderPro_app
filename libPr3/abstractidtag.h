@@ -3,11 +3,11 @@
 #include "abstractnamedbean.h"
 #include "idtag.h"
 
-class LIBPR3SHARED_EXPORT AbstractIdTag : public AbstractNamedBean //, public IdTag
+class LIBPR3SHARED_EXPORT AbstractIdTag : public IdTag
 {
     Q_OBJECT
 public:
-    //explicit AbstractIdTag(QObject *parent = 0);
+    explicit AbstractIdTag(QObject *parent = 0);
  /*public*/ AbstractIdTag(QString systemName, QObject *parent);
  /*public*/ AbstractIdTag(QString systemName, QString userName, QObject *parent);
  /*public*/ QString getTagID();

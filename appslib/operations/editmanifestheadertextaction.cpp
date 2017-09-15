@@ -35,7 +35,7 @@ namespace Operations
  }
 
 
- /*public*/ void EditManifestHeaderTextAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void EditManifestHeaderTextAction::actionPerformed(ActionEvent* /*e*/) {
      // create a settings frame
      if (f == NULL || !f->isVisible()) {
          f = new EditManifestHeaderTextFrame();

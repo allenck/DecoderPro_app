@@ -90,15 +90,15 @@
  ROW_HEIGHT = _table->rowHeight(0);
  QWidget* topPanel = new QWidget();
  //topPanel->setLayout(new BorderLayout());
- QVBoxLayout* topPanelLayout;
- topPanel->setLayout(topPanelLayout = new QVBoxLayout);
+ QGridLayout* topPanelLayout;
+ topPanel->setLayout(topPanelLayout = new QGridLayout);
 // topPanel->setMinimumHeight(60);
  //topPanel->resize(300,120);
     //((BorderLayout*)topPanelLayout)->addWidget(new QLabel(model->getName())/* SwingConstants.CENTER)*/, BorderLayout::North);
- topPanelLayout->addWidget(new QLabel(model->getName()));
+ topPanelLayout->addWidget(new QLabel(model->getName()),0,0);
     //_scrollPane = new JScrollPane(_table);
     //((BorderLayout*)topPanelLayout)->addWidget(_table, BorderLayout::Center);
- topPanelLayout->addWidget(_table);
+ topPanelLayout->addWidget(_table,1,0);
  topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the panel"));
 // QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 // sizePolicy.setHorizontalStretch(0);
@@ -157,8 +157,9 @@ void AddTableActionListener::actionPerformed(ActionEvent *e)
 //        };
 #if 1
     AddTableActionListener* listener = new AddTableActionListener(this);
+    AtCancelListener* cancelListener = new AtCancelListener(this);
     JmriPanel* addPanel = new AddNewDevicePanel(
-                _sysNametext, _userNametext, "addToTable", listener);
+                _sysNametext, _userNametext, "addToTable", listener, cancelListener);
     _addTableDialog->getContentPane()->layout()->addWidget(addPanel);
     _addTableDialog->pack();
     _addTableDialog->setSize(_paletteFrame->size().width()-20, _addTableDialog->sizeHint().height());
@@ -167,6 +168,14 @@ void AddTableActionListener::actionPerformed(ActionEvent *e)
     _addTableDialog->toFront();
     _addTableDialog->setVisible(true);
 #endif
+}
+AtCancelListener::AtCancelListener(TableItemPanel *self)
+{
+ this->self = self;
+}
+void AtCancelListener::actionPerformed()
+{
+ self->close();
 }
 
 /*protected*/ void TableItemPanel::addToTable()

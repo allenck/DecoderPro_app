@@ -37,7 +37,7 @@ namespace Operations
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void LocationTrackBlockingOrderAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void LocationTrackBlockingOrderAction::actionPerformed(ActionEvent* /*e*/) {
      // create a frame
      if (_frame == NULL || !_frame->isVisible()) {
          _frame = new LocationTrackBlockingOrderFrame();

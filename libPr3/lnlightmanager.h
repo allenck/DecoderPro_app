@@ -12,14 +12,14 @@ public:
     /**
      *  Returns the system letter for Loconet
      */
-    /*public*/ virtual QString getSystemPrefix();
+    /*public*/  QString getSystemPrefix();
     /**
      * Method to create a new Light based on the system name
      * Returns null if the system name is not in a valid format
      * Assumes calling method has checked that a Light with this
      *    system name does not already exist
      */
-    /*public*/ virtual Light* createNewLight(QString systemName, QString userName);
+    /*public*/ Light* createNewLight(QString systemName, QString userName);
     /**
      *  Get the bit address from the system name
      */
@@ -28,7 +28,7 @@ public:
      * Public method to validate system name format
      *   returns 'true' if system name has a valid format, else returns 'false'
      */
-    /*public*/ virtual bool validSystemNameFormat(QString systemName);
+    /*public*/ bool validSystemNameFormat(QString systemName);
     /**
      * Public method to validate system name for configuration
      *   returns 'true' if system name has a valid meaning in current configuration,

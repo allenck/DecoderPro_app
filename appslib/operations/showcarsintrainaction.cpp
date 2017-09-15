@@ -27,7 +27,7 @@ namespace Operations
  }
 
 
- /*public*/ void ShowCarsInTrainAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ShowCarsInTrainAction::actionPerformed(ActionEvent* /*e*/) {
      // create a copy train frame
      if (f == NULL || !f->isVisible()) {
          f = new ShowCarsInTrainFrame();

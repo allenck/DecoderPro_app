@@ -11,22 +11,24 @@ class TransitSection : public QObject
     Q_OBJECT
 public:
     //explicit TransitSection(QObject *parent = 0);
-    /*public*/ TransitSection(Section* s, int seq, int direction, QObject *parent);
-    /*public*/ TransitSection(Section* s, int seq, int direction, bool alt, QObject *parent);
-    /*public*/ TransitSection(QString secName, int seq, int direction, bool alt, QObject *parent);
+    /*public*/ TransitSection(Section* s, int seq, int direction, QObject *parent = 0);
+    /*public*/ TransitSection(Section* s, int seq, int direction, bool alt, QObject *parent = 0);
+    /*public*/ TransitSection(QString secName, int seq, int direction, bool alt, QObject *parent =0);
     /*public*/ Section* getSection();
     /*public*/ QString getSectionName();
     /*public*/ int getDirection();
     /*public*/ int getSequenceNumber();
-    // /*public*/ void addAction( TransitSectionAction act );
+    /*public*/ void addAction( TransitSectionAction* act );
     /*public*/ bool isAlternate();
     /*public*/ void setAlternate( bool alt );
-#if 0
+    /*public*/ void setTemporary(bool boo);
+    /*public*/ bool isTemporary();
+
     /** 
      * Get a copy of this TransitSection's TransitSectionAction list
      */
-    /*public*/ ArrayList<TransitSectionAction> getTransitSectionActionList() {
-#endif
+    /*public*/ QList<TransitSectionAction*>* getTransitSectionActionList();
+
 signals:
 
 public slots:
@@ -35,7 +37,7 @@ private:
     /*private*/ Section* mSection;// = null;
     /*private*/ int mSequence;// = 0;
     /*private*/ int mDirection;// = 0;
-    /*private*/ QList<TransitSectionAction>* mTransitSectionActionList;// = newQList<TransitSectionAction>();
+    /*private*/ QList<TransitSectionAction*>* mTransitSectionActionList;// = newQList<TransitSectionAction>();
     /*private*/ bool mAlternate;// = false;
     
     // temporary variables and method for delayed initialization of Section
@@ -44,6 +46,8 @@ private:
     /*private*/ void initialize();
     Logger* log;
     void common();
+    bool temporary;// = false;
+
 };
 
 #endif // TRANSITSECTION_H

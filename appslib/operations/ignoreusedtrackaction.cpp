@@ -26,7 +26,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void IgnoreUsedTrackAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void IgnoreUsedTrackAction::actionPerformed(ActionEvent* /*e*/) {
      if (_iutf != NULL) {
          _iutf->dispose();
      }

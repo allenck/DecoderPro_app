@@ -9,6 +9,8 @@
 #include "audiotablepanel.h"
 #include "audiotableaction.h"
 //#include "audiowidget.h"
+#include "turnouttabletabaction.h"
+#include "sensortabletabaction.h"
 
 TablesFrame::TablesFrame(QString type, QWidget *parent) :
     JmriJFrame(parent),
@@ -57,9 +59,10 @@ QMenuBar* TablesFrame::getMenuBar() {return ui->menubar;}
 
 void TablesFrame::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem */*previous*/)
 {
- menuBar()->clear();
+  menuBar()->clear();
 
  setupType(current->text());
+
 }
 void TablesFrame::setupType(QString type)
 {
@@ -73,24 +76,40 @@ void TablesFrame::setupType(QString type)
 
   if(toWidget == NULL)
   {
-   toWidget = new TurnoutWidget(this);
+   //toWidget = new TurnoutWidget(this);
+   ttact =  new TurnoutTableTabAction(this);
+//      act->createModel();
+    toWidget = ttact->getPane();
+
+    //ui->menubar->clear();
+    ttact->setCurrFrame((BeanTableFrame*)this);
+//    act->buildMenus((BeanTableFrame*)this);
+//    act->setMenuBar((BeanTableFrame*)this);
+    toWidget->setProperty("type", QVariant("BeanTableFrame"));
+
+//      act->setCurrFrame(toWidget);
+//      act->addToFrame(toWidget);
    ui->splitter->insertWidget(1,toWidget);
   }
-  fileMenu = new QMenu(tr("File"));
-  SaveMenu* saveMenu = new SaveMenu();
-  QMenu* opsMenu = new QMenu(tr("Automation"));
-  QAction* item = new QAction(tr("Edit..."), this);
-  connect(item, SIGNAL(triggered()), toWidget, SLOT(on_automation_triggered()));
-  opsMenu->addAction(item);
-  speedMenu = new QMenu(tr("Speeds"));
-  speedMenu->addAction(defaultsMenu);
-  connect(defaultsMenu, SIGNAL(triggered()), toWidget, SLOT(on_defaultSpeeds_triggered()));
-  fileMenu->addMenu(saveMenu);
-  ui->menubar->addMenu(fileMenu);
-  ui->menubar->addMenu(createViewMenu());
-  ui->menubar->addMenu(opsMenu);
-  ui->menubar->addMenu(speedMenu);
-  jFrame->addHelpMenu("package.jmri.jmrit.beantable.TurnoutTable", true);
+//  fileMenu = new QMenu(tr("File"));
+//  SaveMenu* saveMenu = new SaveMenu();
+//  QMenu* opsMenu = new QMenu(tr("Automation"));
+//  QAction* item = new QAction(tr("Edit..."), this);
+//  connect(item, SIGNAL(triggered()), toWidget, SLOT(on_automation_triggered()));
+//  opsMenu->addAction(item);
+//  speedMenu = new QMenu(tr("Speeds"));
+//  speedMenu->addAction(defaultsMenu);
+//  connect(defaultsMenu, SIGNAL(triggered()), toWidget, SLOT(on_defaultSpeeds_triggered()));
+//  fileMenu->addMenu(saveMenu);
+//  ui->menubar->addMenu(fileMenu);
+//  ui->menubar->addMenu(createViewMenu());
+//  ui->menubar->addMenu(opsMenu);
+//  ui->menubar->addMenu(speedMenu);
+//  jFrame->addHelpMenu("package.jmri.jmrit.beantable.TurnoutTable", true);
+  menuBar()->clear();
+  ttact->buildMenus((BeanTableFrame*)this);
+  ttact->setMenuBar((BeanTableFrame*)this);
+
   // TODO: speed menu and automation menu
   this->curType = type;
   toWidget->show();
@@ -104,8 +123,13 @@ void TablesFrame::setupType(QString type)
   if(sensorWidget == NULL)
   {
    sensorWidget = new SensorWidget(this);
+   //stAct =  new SensorTableTabAction(this);
+   //sensorWidget = stAct->getPane();
+   //stAct->setCurrFrame((BeanTableFrame*)this);
    ui->splitter->insertWidget(1, sensorWidget);
   }
+//  stAct->buildMenus((BeanTableFrame*)this);
+//  stAct->setMenuBar((BeanTableFrame*)this);
 
   fileMenu = new QMenu(tr("File"));
   QMenu* debounceMenu = new QMenu(tr("Debounce"));

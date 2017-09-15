@@ -26,9 +26,9 @@
  ControlPanelEditor* editor = parent->getEditor();
 }
 
-/*protected*/ QWidget* DrawRectangle::makeParamsPanel()
+/*protected*/ QWidget* DrawRectangle::makeParamsPanel(PositionableShape* ps)
 {
- QWidget* panel = DrawFrame::makeParamsPanel();
+ QWidget* panel = DrawFrame::makeParamsPanel(ps);
  QWidget* p = new QWidget();
  p->setLayout(new QVBoxLayout(p/*, BoxLayout.X_AXIS*/));
  QWidget* pp = new QWidget();
@@ -115,7 +115,7 @@ void DrawRectangle::heightEdited(QString t)
  ps->setHeight(_height);
  ps->setWidth(_width);
  ps->setDisplayLevel(ControlPanelEditor::MARKERS);
- setPositionableParams(ps);
+ setDisplayParams(ps);
  ps->updateSize();
  ed->putItem(ps);
 }
@@ -123,12 +123,12 @@ void DrawRectangle::heightEdited(QString t)
 /**
  * Set parameters on a new or updated PositionableShape
  */
-/*protected*/ void DrawRectangle::setPositionableParams(PositionableShape* p) {
-    DrawFrame::setPositionableParams(p);
-    PositionableRectangle* pos = (PositionableRectangle*)p;
-    pos->setWidth(_width);
-    pos->setHeight(_height);
-}
+///*protected*/ void DrawRectangle::setPositionableParams(PositionableShape* p) {
+//    DrawFrame::setPositionableParams(p);
+//    PositionableRectangle* pos = (PositionableRectangle*)p;
+//    pos->setWidth(_width);
+//    pos->setHeight(_height);
+//}
 
 /**
  * Set parameters on the popup that will edit the PositionableShape
@@ -143,9 +143,9 @@ void DrawRectangle::heightEdited(QString t)
 /**
  * Editing is done.  Update the existing PositionableShape
  */
-/*protected*/ void DrawRectangle::updateFigure(PositionableShape* p) {
-    PositionableRectangle* pos = (PositionableRectangle*)p;
-    setPositionableParams(pos);
-//		pos.makeShape();
-}
+///*protected*/ void DrawRectangle::updateFigure(PositionableShape* p) {
+//    PositionableRectangle* pos = (PositionableRectangle*)p;
+//    setPositionableParams(pos);
+////		pos.makeShape();
+//}
 

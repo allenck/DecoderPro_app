@@ -17129,12 +17129,12 @@ QRectF  PythonQtWrapper_Editor::getSelectRect(Editor* theWrappedObject)
   return ( theWrappedObject->getSelectRect());
 }
 
-QList<Positionable* >  PythonQtWrapper_Editor::getSelectedItems(Editor* theWrappedObject, QGraphicsSceneMouseEvent*  event)
+QList<Positionable* >*  PythonQtWrapper_Editor::getSelectedItems(Editor* theWrappedObject, QGraphicsSceneMouseEvent*  event)
 {
   return ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_getSelectedItems(event));
 }
 
-QList<Positionable* >  PythonQtWrapper_Editor::getSelectedItems(Editor* theWrappedObject, QPointF  pt)
+QList<Positionable* >*  PythonQtWrapper_Editor::getSelectedItems(Editor* theWrappedObject, QPointF  pt)
 {
   return ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_getSelectedItems(pt));
 }
@@ -17324,10 +17324,10 @@ void PythonQtWrapper_Editor::setRemoveMenu(Editor* theWrappedObject, Positionabl
   ( theWrappedObject->setRemoveMenu(p, popup));
 }
 
-void PythonQtWrapper_Editor::setSecondSelectionGroup(Editor* theWrappedObject, QList<Positionable* >  list)
-{
-  ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_setSecondSelectionGroup(list));
-}
+//void PythonQtWrapper_Editor::setSecondSelectionGroup(Editor* theWrappedObject, QList<Positionable* >  list)
+//{
+//  ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_setSecondSelectionGroup(list));
+//}
 
 void PythonQtWrapper_Editor::setSelectGroupColor(Editor* theWrappedObject, QColor  color)
 {
@@ -17389,7 +17389,7 @@ void PythonQtWrapper_Editor::setShowTooltipMenu(Editor* theWrappedObject, Positi
   ( theWrappedObject->setShowTooltipMenu(p, popup));
 }
 
-void PythonQtWrapper_Editor::setTargetPanel(Editor* theWrappedObject, QGraphicsScene*  targetPanel, JmriJFrame*  frame)
+void PythonQtWrapper_Editor::setTargetPanel(Editor* theWrappedObject, EditScene*  targetPanel, JmriJFrame*  frame)
 {
   ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_setTargetPanel(targetPanel, frame));
 }
@@ -17907,7 +17907,7 @@ void PythonQtWrapper_JmriJFrame::handleModified(JmriJFrame* theWrappedObject)
 
 void PythonQtWrapper_JmriJFrame::init(JmriJFrame* theWrappedObject)
 {
-  ( theWrappedObject->init());
+  ( theWrappedObject->init(true, true));
 }
 
 void PythonQtWrapper_JmriJFrame::initComponents(JmriJFrame* theWrappedObject)

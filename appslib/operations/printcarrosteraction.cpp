@@ -62,7 +62,7 @@ namespace Operations
  }
 
 
- /*public*/ void PrintCarRosterAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintCarRosterAction::actionPerformed(ActionEvent* /*e*/) {
      if (cpof == NULL) {
          cpof = new CarPrintOptionFrame(this);
      } else {

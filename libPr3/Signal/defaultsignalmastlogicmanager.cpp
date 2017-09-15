@@ -413,3 +413,60 @@
 
  firePropertyChange("autoGenerateComplete", QVariant(), QVariant());
 }
+
+/*public*/ void DefaultSignalMastLogicManager::generateSection()
+{
+    SectionManager* sm = InstanceManager::sectionManagerInstance();
+    foreach (NamedBean* nb, *sm->getNamedBeanList()) {
+        if (((Section*) nb)->getSectionType() == Section::SIGNALMASTLOGIC) {
+            nb->removeProperty("intermediateSection");
+        }
+        nb->removeProperty("forwardMast");
+    }
+    foreach (SignalMastLogic* sml, getSignalMastLogicList()) {
+        LayoutBlock* faceLBlock = sml->getFacingBlock();
+        if (faceLBlock != NULL) {
+            bool sourceIntermediate = false;
+            if (sml->getSourceMast()->getProperty("intermediateSignal") != QVariant()) {
+                sourceIntermediate = ( sml->getSourceMast()->getProperty("intermediateSignal")).toBool();
+            }
+            foreach (SignalMast* destMast, sml->getDestinationList()) {
+                if (sml->getAutoBlocksBetweenMasts(destMast).size() != 0) {
+                    Section* sec = sm->createNewSection(sml->getSourceMast()->getDisplayName() + ":" + destMast->getDisplayName());
+                    if (sec == NULL) {
+                        //A Section already exists, lets grab it and check that it is one used with the SML, if so carry on using that.
+                        sec = sm->getSection(sml->getSourceMast()->getDisplayName() + ":" + destMast->getDisplayName());
+                        if ( sec->getSectionType() != Section::SIGNALMASTLOGIC) {
+                            break;
+                        }
+                    } else {
+                         sec->setSectionType(Section::SIGNALMASTLOGIC);
+                        //Auto running requires forward/reverse sensors, but at this stage SML does not support that, so just create dummy internal ones for now.
+                        Sensor* sen = InstanceManager::sensorManagerInstance()->provideSensor("IS:" +  sec->getSystemName() + ":forward");
+                        sen->setUserName( sec->getSystemName() + ":forward");
+
+                        sen = InstanceManager::sensorManagerInstance()->provideSensor("IS:" +  sec->getSystemName() + ":reverse");
+                        sen->setUserName( sec->getSystemName() + ":reverse");
+                         sec->setForwardBlockingSensorName( sec->getSystemName() + ":forward");
+                         sec->setReverseBlockingSensorName( sec->getSystemName() + ":reverse");
+                    }
+                    sml->setAssociatedSection(sec, destMast);
+                     sec->setProperty("forwardMast", destMast->getDisplayName());
+                    bool destIntermediate = false;
+                    if (destMast->getProperty("intermediateSignal") != QVariant()) {
+                        destIntermediate = (destMast->getProperty("intermediateSignal")).toBool();
+                    }
+                    if (sourceIntermediate || destIntermediate) {
+                         sec->setProperty("intermediateSection", true);
+                    } else {
+                         sec->setProperty("intermediateSection", false);
+                    }
+                    //Not 100% sure about this for now so will comment out
+                    //sml.addSensor( sec->getSystemName()+":forward", Sensor.INACTIVE, destMast);
+                }
+            }
+        } else {
+            log->info("No facing block found " + sml->getSourceMast()->getDisplayName());
+        }
+    }
+}

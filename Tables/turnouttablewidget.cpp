@@ -80,6 +80,8 @@ void TurnoutTableWidget::fillTable(QStringList list)
  ui->tableWidget->setRowCount(row + list.count());
  ui->tableWidget->setAlternatingRowColors(true);
  ui->tableWidget->resizeColumnsToContents();
+ qSort(list.begin(), list.end(), SystemNameComparator::compare);
+
 
  foreach (QString sysName, list)
  {

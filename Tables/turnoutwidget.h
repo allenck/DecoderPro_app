@@ -81,6 +81,17 @@ public:
 public slots:
  void actionPerformed(ActionEvent *e = 0);
 };
+
+class CancelButtonActionListener : public ActionListener
+{
+ Q_OBJECT
+ TurnoutWidget* widget;
+public:
+ CancelButtonActionListener(TurnoutWidget* widget);
+public slots:
+ void actionPerformed(ActionEvent *e = 0);
+};
+
 class RangeActionListener : public ActionListener
 {
  Q_OBJECT

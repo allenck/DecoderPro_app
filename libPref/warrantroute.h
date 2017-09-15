@@ -46,7 +46,7 @@ public slots:
   /*public*/ /*abstract*/ virtual void propertyChange(PropertyChangeEvent* e);
  void on_dccNumBox();
  void on_rosterBoxCurrentIndexChanged(QString);
- /*public*/ void actionPerformed(ActionEvent* e); // actionEvent required!
+ /*public*/ void actionPerformed(ActionEvent* /*e*/); // actionEvent required!
 
 private:
  RouteLocation* _focusedField;

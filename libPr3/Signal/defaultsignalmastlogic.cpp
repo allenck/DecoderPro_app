@@ -16,6 +16,10 @@
 #include "signalheadsignalmast.h"
 #include "turnoutsignalmast.h"
 #include "virtualsignalmast.h"
+#include "path.h"
+#include "block.h"
+#include "entrypoint.h"
+
 class RunnableThis : public Runnable
 {
  public:
@@ -441,6 +445,20 @@ class RunnableThis : public Runnable
         return false;
     }
     return destList.value(destination)->useLayoutEditorBlocks();
+}
+
+/*public*/ Section* DefaultSignalMastLogic::getAssociatedSection(SignalMast* destination) {
+    if (!destList.contains(destination)) {
+        return NULL;
+    }
+    return destList.value(destination)->getAssociatedSection();
+}
+
+/*public*/ void DefaultSignalMastLogic::setAssociatedSection(Section* sec, SignalMast* destination) {
+    if (!destList.contains(destination)) {
+        return;
+    }
+    destList.value(destination)->setAssociatedSection(sec);
 }
 
 /**
@@ -1139,6 +1157,8 @@ DestinationMast::DestinationMast(SignalMast* destination, DefaultSignalMastLogic
  autoBlocks = QMap<Block*, int>();
 
  xingAutoBlocks =  QList<Block*>();
+ dblCrossOverAutoBlocks = QList<Block*>();
+
  active = false;
  destMastInit = false;
 
@@ -1177,6 +1197,12 @@ DestinationMast::DestinationMast(SignalMast* destination, DefaultSignalMastLogic
 
  if(((AbstractSignalMast*)destination)->getAspect()==NULL)
    ((AbstractSignalMast*)destination)->setAspect(((DefaultSignalAppearanceMap*)((AbstractSignalMast*)destination)->getAppearanceMap())->getSpecificAppearance(SignalAppearanceMap::DANGER));
+ associatedSection = NULL;
+ _useLayoutEditor = false;
+ _useLayoutEditorTurnouts = false;
+ _useLayoutEditorBlocks = false;
+ _lockTurnouts = false;
+
 }
     
 void DestinationMast::updateDestinationMast(SignalMast* newMast)
@@ -1186,9 +1212,9 @@ void DestinationMast::updateDestinationMast(SignalMast* newMast)
      ((AbstractSignalMast*)destination)->setAspect(destination->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER));
 }
     
-    /*LayoutBlock getProtectingBlock(){
+LayoutBlock* DestinationMast::getProtectingBlock(){
         return protectingBlock;
-    }*/
+    }
     
     
 QString DestinationMast::getComment(){
@@ -1239,6 +1265,52 @@ void DestinationMast::setStore(int store){
 
 int DestinationMast::getStoreState(){
     return store;
+}
+
+void DestinationMast::setAssociatedSection(Section* section)
+{
+    if (section != NULL && (!_useLayoutEditor || !_useLayoutEditorBlocks)) {
+        log->warn("This Logic " + dsml->source->getDisplayName() + " to " + destination->getDisplayName() + " is not using the layout editor or its blocks, the associated section will not be populated correctly");
+    }
+    if (section == NULL) {
+        associatedSection = NULL;
+        return;
+    }
+    associatedSection = ((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(section->getDisplayName(), section);
+    if (!autoBlocks.isEmpty() && associatedSection != NULL) {
+        createSectionDetails();
+    }
+}
+
+Section* DestinationMast::getAssociatedSection() {
+    if (associatedSection != NULL) {
+        return associatedSection->getBean();
+    }
+    return NULL;
+}
+
+void DestinationMast::createSectionDetails() {
+    getAssociatedSection()->removeAllBlocksFromSection();
+    foreach (Block* key, getAutoBlocksBetweenMasts()) {
+        getAssociatedSection()->addBlock(key);
+    }
+    QString dir = Path::decodeDirection(dsml->getFacingBlock()->getNeighbourDirection(getProtectingBlock()));
+    EntryPoint* ep = new EntryPoint(getProtectingBlock()->getBlock(), dsml->getFacingBlock()->getBlock(), dir);
+    ep->setTypeForward();
+    getAssociatedSection()->addToForwardList(ep);
+
+    LayoutBlock* proDestLBlock = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getProtectedBlockByNamedBean(destination, destinationBlock->getMaxConnectedPanel());
+    if (proDestLBlock != NULL) {
+        if (log->isDebugEnabled()) {
+            log->debug("Add protecting Block " + proDestLBlock->getDisplayName());
+        }
+        dir = Path::decodeDirection(proDestLBlock->getNeighbourDirection(destinationBlock));
+        ep = new EntryPoint(destinationBlock->getBlock(), proDestLBlock->getBlock(), dir);
+        ep->setTypeReverse();
+        getAssociatedSection()->addToReverseList(ep);
+    } else if (log->isDebugEnabled()) {
+        log->debug(" ### Protecting Block not found ### ");
+    }
 }
 
 bool DestinationMast::isTurnoutLockAllowed() { return _lockTurnouts; }
@@ -1538,7 +1610,27 @@ void DestinationMast::setTurnouts(QHash<NamedBeanHandle<Turnout*>*, int> turnout
         }
         return out;
     }
-    
+
+    QList<Block*> DestinationMast::getAutoBlocksBetweenMasts()
+    {
+        if (dsml->destList.value(destination)->xingAutoBlocks.size() == 0 && dsml->destList.value(destination)->dblCrossOverAutoBlocks.size() == 0) {
+            return getAutoBlocks();
+        }
+        QList<Block*> returnList = getAutoBlocks();
+        foreach (Block* blk, getAutoBlocks()) {
+            if (xingAutoBlocks.contains(blk)) {
+                returnList.removeOne(blk);
+            }
+        }
+        foreach (Block* blk, getAutoBlocks()) {
+            if (dblCrossOverAutoBlocks.contains(blk)) {
+                returnList.removeOne(blk);
+            }
+        }
+
+        return returnList;
+    }
+
     QList<Turnout*> DestinationMast::getTurnouts(){
         QList<Turnout*> out =  QList<Turnout*>();
         foreach(NamedBeanSetting* nbh, userSetTurnouts){

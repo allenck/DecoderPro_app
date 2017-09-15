@@ -69,8 +69,9 @@ void PickPanel::onRowClicked(QModelIndex index)
 //                addToTable();
 //            }
 //        };
+    PPCancelListener* cancelListener = new PPCancelListener(this);
  _addPanel = new AddNewDevicePanel(
-                 _sysNametext, _userNametext, "Add To Table", listener);
+                 _sysNametext, _userNametext, "Add To Table", listener, cancelListener);
  _cantAddPanel = new QWidget();
     _cantAddPanel->setLayout(/*new BorderLayout(5,5)*/new QVBoxLayout);
  _cantAddPanel->layout()->addWidget(new QLabel("Cannot add new items to this pick panel"/*, SwingConstants.CENTER), BorderLayout.NORTH*/));
@@ -91,6 +92,14 @@ ItActionListener::ItActionListener(PickPanel* self)
 void ItActionListener::actionPerformed(ActionEvent* a)
 {
   self->addToTable();
+}
+PPCancelListener::PPCancelListener(PickPanel *self)
+{
+ this->self = self;
+}
+void PPCancelListener::actionPerformed()
+{
+ self->close();
 }
 
 void PickPanel::addToTable() {

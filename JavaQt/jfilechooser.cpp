@@ -178,6 +178,9 @@ void JFileChooser::common()
 //        dialog.pack();
 //        dialog.setLocationRelativeTo(parent);
  dialog = new QFileDialog(parent);
+ dialog->showNormal();
+ dialog->activateWindow();
+ dialog->raise();
  if(dialogType == OPEN_DIALOG)
  {
   //dialog->setFileMode(QFileDialog::ExistingFile);

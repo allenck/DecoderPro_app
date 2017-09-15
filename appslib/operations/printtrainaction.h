@@ -14,7 +14,7 @@ namespace Operations
  public:
   /*public*/ PrintTrainAction(QString actionName, JFrame* mFrame, bool isPreview, JFrame* frame);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
  void on_PrintCancelled(QString);
 
  private:

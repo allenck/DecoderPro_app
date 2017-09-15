@@ -11,6 +11,7 @@
 #include "../LayoutEditor/layouteditor.h"
 #include "../LayoutEditor/connectivityutil.h"
 #include "../libPr3/Signal/abstractsignalheadmanager.h"
+#include "vptr.h"
 
 const /*static*/ /*final*/ int Section::UNOCCUPIED = 0x04;
 
@@ -103,6 +104,15 @@ Section::Section(QObject *parent) :
 //public class Section extends AbstractNamedBean
 //    implements  java.io.Serializable {
 
+/*public*/ /*const static*/ /*final*/ int Section::UNKNOWN = 0x01;
+/*public*/ /*const static*/ /*final*/ int Section::FREE = 0x02;
+/*public*/ /*const static*/ /*final*/ int Section::FORWARD = 0x04;
+/*public*/ /*const static*/ /*final*/ int Section::REVERSE = 0X08;
+
+/*final public static*/ int Section::USERDEFINED = 0x01; //Default Save all the information
+/*final public static*/ int Section::SIGNALMASTLOGIC = 0x02; //Save only the name, blocks will be added by the signalmast logic
+/*final public static*/ int Section::DYNAMICADHOC = 0x00;  //created on an as required basis, not to be saved.
+
 /*public*/ Section::Section(QString systemName, QString userName, QObject *parent)
     : AbstractNamedBean(systemName.toUpper(), userName, parent)
 {
@@ -133,6 +143,7 @@ Section::Section(QObject *parent) :
  mForwardStoppingNamedSensor = NULL;
  mReverseStoppingNamedSensor = NULL;
  mReverseBlockingNamedSensor = NULL;
+ sectionType = USERDEFINED;
 }
 
 ///*public*/ Section::Section(QString systemName) : AbstractNamedBean(systemName)
@@ -2263,5 +2274,52 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     }
 }
 #endif
+/*public*/ void Section::setSectionType(int type) {
+    sectionType = type;
+}
 
+/*public*/ int Section::getSectionType() {
+    return sectionType;
+}
+
+/*public*/ QString Section::getBeanType() {
+    return tr("Section");
+}
+
+/*public*/ void Section::vetoableChange(PropertyChangeEvent* evt) //throws java.beans.PropertyVetoException
+{
+    if ("CanDelete" == (evt->getPropertyName())) { //IN18N
+        NamedBean* nb = (NamedBean*) VPtr<NamedBean*>::asPtr( evt->getOldValue());
+        //if (nb instanceof Sensor) {
+        if(qobject_cast<Sensor*>(nb)!= NULL)
+        {
+            if (nb == (getForwardBlockingSensor())) {
+                PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Forward"), Bundle.getMessage("Blocking"), getDisplayName()), e); //IN18N
+            }
+            if (nb == (getForwardStoppingSensor())) {
+                PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Forward"), Bundle.getMessage("Stopping"), getDisplayName()), e);
+            }
+            if (nb == (getReverseBlockingSensor())) {
+             PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Reverse"), Bundle.getMessage("Blocking"), getDisplayName()), e);
+            }
+            if (nb == (getReverseStoppingSensor())) {
+                PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Reverse"), Bundle.getMessage("Stopping"), getDisplayName()), e);
+            }
+        }
+        //if (nb instanceof Block) {
+        if(qobject_cast<Block*>(nb) != NULL)
+        {
+            if (getBlockList()->contains((Block*)nb)) {
+                PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockInSection", getDisplayName()), e);
+            }
+        }
+    } else if ("DoDelete" == (evt->getPropertyName())) { //IN18N
+
+    }
+}
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger->atLogger(Section.class->atName());

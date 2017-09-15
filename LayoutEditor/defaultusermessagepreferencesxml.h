@@ -21,5 +21,5 @@ public slots:
 private:
     Logger* log;
 };
-
+Q_DECLARE_METATYPE(DefaultUserMessagePreferencesXml)
 #endif // DEFAULTUSERMESSAGEPREFERENCESXML_H

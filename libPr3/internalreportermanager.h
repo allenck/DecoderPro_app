@@ -19,9 +19,9 @@ public slots:
      * Create an internal (dummy) reporter object
      * @return new null
      */
-#if 1
-    /*protected*/ AbstractReporter* createNewReporter(QString systemName, QString userName);
-#endif
+
+    /*protected*/ Reporter* createNewReporter(QString systemName, QString userName);
+
 };
 
 #endif // INTERNALREPORTERMANAGER_H

@@ -21,7 +21,7 @@
 
 ///*public*/ class AddNewDevicePanel extends jmri.util.swing.JmriPanel {
 
-/*public*/ AddNewDevicePanel::AddNewDevicePanel(JTextField* sys, JTextField* userName,QString addButtonLabel, ActionListener* listener, QWidget *parent) : JmriPanel(parent)
+/*public*/ AddNewDevicePanel::AddNewDevicePanel(JTextField* sys, JTextField* userName,QString addButtonLabel, ActionListener* listener, ActionListener* cancelListener, QWidget *parent) : JmriPanel(parent)
 {
  sysNameLabel = new QLabel(tr("System Name:"));
  userNameLabel = new QLabel(tr("User Name:"));
@@ -59,6 +59,10 @@
  ok->setSizePolicy(sizePolicy);
 // ok.addActionListener(listener);
  connect(ok, SIGNAL(clicked()), listener, SLOT(actionPerformed()));
+ QPushButton* cancel = new QPushButton(tr("Cancel"));
+ cancel->setSizePolicy(sizePolicy);
+ layout()->addWidget(cancel);
+ connect(cancel, SIGNAL(clicked()), cancelListener, SLOT(actionPerformed()));
 // ok.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent a) {
 //            reset();

@@ -3,6 +3,7 @@
 #include "../LayoutEditor/jmrijframe.h"
 #include "liblayouteditor_global.h"
 
+class Box;
 class JTable;
 class BeanTableDataModel;
 class LIBLAYOUTEDITORSHARED_EXPORT BeanTableFrame : public JmriJFrame
@@ -34,6 +35,7 @@ friend class TurnoutTableAction;
 friend class AudioTableFrame;
 friend class BlockTableFrame;
 friend class BlockTableAction;
+friend class IdTagTableAction;
 };
 
 #endif // BEANTABLEFRAME_H

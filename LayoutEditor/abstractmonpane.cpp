@@ -576,7 +576,7 @@ void AMPRunnable::run()
 /*public*/ void AbstractMonPane::openFileChooserButtonActionPerformed(ActionEvent* e)
 {
  // start at current file, show dialog
-#if 0
+#if 0 // done
     int retVal = logFileChooser.showSaveDialog(this);
 
     // handle selection or cancel

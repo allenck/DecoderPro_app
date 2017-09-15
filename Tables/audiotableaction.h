@@ -1,7 +1,7 @@
 #ifndef AUDIOTABLEACTION_H
 #define AUDIOTABLEACTION_H
 
-#include <QAction>
+#include "abstracttableaction.h"
 #include "beantabledatamodel.h"
 #include <QThread>
 #include "libtables_global.h"
@@ -16,14 +16,14 @@ class AudioBufferFrame;
 class AudioListenerFrame;
 class AudioTableFrame;
 class AudioTablePanel;
-class LIBTABLESSHARED_EXPORT AudioTableAction : public QAction
+class LIBTABLESSHARED_EXPORT AudioTableAction : public AbstractTableAction
 {
  Q_OBJECT
 public:
  explicit AudioTableAction(QObject *parent = 0);
  ~AudioTableAction() {}
- AudioTableAction(const AudioTableAction&) : QAction(0) {}
- /*public*/ AudioTableAction(QString actionName,QObject *parent);
+ AudioTableAction(const AudioTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
+ Q_INVOKABLE /*public*/ AudioTableAction(QString actionName,QObject *parent);
  /*public*/ void addToFrame(BeanTableFrame* f);
  /*public*/ QWidget* getPanel();
  /*public*/ void setMenuBar(BeanTableFrame* f);
@@ -61,6 +61,7 @@ protected slots:
  friend class AudioTableDataModel;
  friend class AudioSourceTableDataModel;
 };
+Q_DECLARE_METATYPE(AudioTableAction)
 /**
  * Define abstract AudioTableDataModel
  */

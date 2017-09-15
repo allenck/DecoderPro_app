@@ -10,7 +10,7 @@ public:
     //explicit RfidReporterManager(QObject *parent = 0);
     /*public*/ RfidReporterManager(QString prefix, QObject *parent = 0);
     /*public*/ QString getSystemPrefix();
-    AbstractReporter* createNewReporter(QString systemName, QString userName);
+    Reporter* createNewReporter(QString systemName, QString userName);
 
 signals:
     

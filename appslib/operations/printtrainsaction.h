@@ -17,7 +17,7 @@ namespace Operations
   /*public*/ static /*final*/ int MAX_NAME_LENGTH;// = Control::max_len_string_train_name - 10;
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
  private:
   static /*final*/ QString NEW_LINE;// = "\n"; // NOI18N
   static /*final*/ QString TAB;// = "\t"; // NOI18N

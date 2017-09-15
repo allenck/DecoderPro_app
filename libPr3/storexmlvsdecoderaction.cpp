@@ -57,7 +57,7 @@ void StoreXmlVSDecoderAction::common()
      *
      * @param e The event causing the action.
      */
-    /*public*/ void StoreXmlVSDecoderAction::actionPerformed(ActionEvent* e) {
+    /*public*/ void StoreXmlVSDecoderAction::actionPerformed(ActionEvent* /*e*/) {
         JFileChooser* fileChooser = XmlFile::userFileChooser(tr("XML Files"), "xml");
         fileChooser->setDialogType(JFileChooser::SAVE_DIALOG);
         fileChooser->setCurrentDirectory(new File(VSDecoderPane::getDefaultVSDecoderFolder()));

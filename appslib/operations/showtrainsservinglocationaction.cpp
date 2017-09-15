@@ -26,7 +26,7 @@ namespace Operations
   }
 
 
-  /*public*/ void ShowTrainsServingLocationAction::actionPerformed(ActionEvent* e) {
+  /*public*/ void ShowTrainsServingLocationAction::actionPerformed(ActionEvent* /*e*/) {
       if (_frame != NULL) {
           _frame->dispose();
       }

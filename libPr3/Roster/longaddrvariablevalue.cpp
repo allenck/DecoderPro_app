@@ -111,7 +111,7 @@ void LongAddrVariableValue::updatedTextField() {
 }
 
 /** ActionListener implementations */
-/*public*/ void LongAddrVariableValue::actionPerformed(ActionEvent* e)
+/*public*/ void LongAddrVariableValue::actionPerformed(ActionEvent* /*e*/)
 {
  if (logit->isDebugEnabled()) logit->debug("actionPerformed");
  int newVal = (_value->text()).toInt();
@@ -375,7 +375,7 @@ void LongAddrVariableValue::setColor(QColor c)
 
     LongAddrVariableValue* _var;
 
-    void thisActionPerformed(ActionEvent* e) {
+    void thisActionPerformed(ActionEvent* /*e*/) {
         // tell original
         _var->actionPerformed(e);
     }

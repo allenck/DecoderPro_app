@@ -55,9 +55,9 @@ private:
     /*private*/ void addPath();
     /*private*/ OPath* getBlockPath(QString name);\
     Logger* log;
-    /*private*/ OPath* makeOPath(QString name, QList<Positionable*> pathGp, bool showMsg);
+    /*private*/ OPath* makeOPath(QString name, QList<Positionable*>* pathGp, bool showMsg);
     /*private*/ bool findErrors();
-    /*private*/ QList<Positionable*> makePathGroup(OPath* path);
+    /*private*/ QList<Positionable*>* makePathGroup(OPath* path);
     /*private*/ bool setPathLength(OPath* path);
     /*private*/ static bool pathsEqual(OPath* p1, OPath* p2);
     /*private*/ void changePathNameInIcons(QString name, OPath* path);
@@ -74,6 +74,8 @@ protected:
 protected slots:
     /*protected*/ void closingEvent();
 friend class PathListModel;
+friend class CircuitBuilder;
+
 };
 class PathListModel : public QAbstractListModel
 {

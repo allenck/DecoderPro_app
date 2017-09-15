@@ -25,8 +25,8 @@
     _radius = 40;
 }
 
-/*protected*/ QWidget* DrawRoundRect::makeParamsPanel() {
-   QWidget* panel = DrawRectangle::makeParamsPanel();
+/*protected*/ QWidget* DrawRoundRect::makeParamsPanel(PositionableShape* ps) {
+   QWidget* panel = DrawRectangle::makeParamsPanel(ps);
    QWidget* p = new QWidget();
    p->setLayout(new QVBoxLayout(p/*, BoxLayout.X_AXIS*/));
    QWidget* pp = new QWidget();
@@ -81,7 +81,7 @@
 
 
 /*protected*/ void DrawRoundRect::setPositionableParams(PositionableShape* p) {
-    DrawRectangle::setPositionableParams(p);
+    DrawRectangle::setDisplayParams(p);
        ((PositionableRoundRect*) p)->setCornerRadius(_radius);
 }
 

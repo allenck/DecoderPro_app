@@ -4,6 +4,7 @@
 #include <QListView>
 
 class Portal;
+class PortalIcon;
 class JTextField;
 class PortalListModel;
 class CircuitBuilder;
@@ -37,6 +38,12 @@ private:
     /*private*/ QWidget* MakeButtonPanel();
  Logger* log;
  /*private*/ QWidget* makePortalPanel(bool update);
+ /*private*/ bool checkPortalIcon(PortalIcon* icon);
+ /*private*/ QString testPortalIcon(PortalIcon* icon);
+
+protected:
+ /*protected*/ void checkPortalIconForUpdate(PortalIcon* icon, bool moved);
+ friend class CircuitBuilder;
 
 };
 

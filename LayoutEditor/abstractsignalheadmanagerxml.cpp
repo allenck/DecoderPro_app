@@ -136,7 +136,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
            }
            else if(adapterName == "jmri.implementation.configurexml.SingleTurnoutSignalHeadXml")
            {
-               SingleTurnoutSignalHeadXML* adapter = new SingleTurnoutSignalHeadXML();
+               SingleTurnoutSignalHeadXml* adapter = new SingleTurnoutSignalHeadXml();
                adapter->load(item);
            }
            else if(adapterName == "jmri.implementation.configurexml.SingleTurnoutSignalHeadXml")

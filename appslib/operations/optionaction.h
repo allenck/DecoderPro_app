@@ -10,7 +10,7 @@ namespace Operations
  public:
   /*public*/ OptionAction(QString s, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
  private:
   OptionFrame* f;// = null;
 

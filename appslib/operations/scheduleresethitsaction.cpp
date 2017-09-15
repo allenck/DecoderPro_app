@@ -23,7 +23,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ScheduleResetHitsAction::actionPerformed(ActionEvent* e)
+ /*public*/ void ScheduleResetHitsAction::actionPerformed(ActionEvent* /*e*/)
  {
   _schedule->resetHitCounts();
  }

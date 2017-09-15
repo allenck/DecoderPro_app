@@ -18,7 +18,7 @@ IdTagManagerXml* IdTagManagerXml::_instance = NULL;
 
 
 DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
-    AbstractManager(parent)
+    IdTagManager(parent)
 {
  log = new Logger(this->metaObject()->className());
  log->setDebugEnabled(true);
@@ -253,7 +253,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 /*public*/ QList<IdTag*>* DefaultIdTagManager::getTagsForReporter(Reporter* reporter, long threshold)
 {
  QList<IdTag*>* out = new QList<IdTag*>();
- QDateTime* lastWhenLastSeen = new QDateTime();
+ QDateTime lastWhenLastSeen = QDateTime();
 
  // First create a list of all tags seen by specified reporter
  // and record the time most recently seen
@@ -263,7 +263,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
   if (t->getWhereLastSeen() == reporter)
   {
    out->append(t);
-   if (t->getWhenLastSeen()->currentDateTime() >(lastWhenLastSeen->currentDateTime()))
+   if (t->getWhenLastSeen().currentDateTime() >(lastWhenLastSeen.currentDateTime()))
    {
     lastWhenLastSeen = t->getWhenLastSeen();
    }
@@ -273,7 +273,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  if (out->size()>0)
  {
   // Calculate the threshold time based on the most recently seen tag
-  QDateTime* thresholdTime = new QDateTime(lastWhenLastSeen->currentDateTime().addMSecs(-threshold));
+  QDateTime* thresholdTime = new QDateTime(lastWhenLastSeen.currentDateTime().addMSecs(-threshold));
 
   // Now remove from the list all tags seen prior to the threshold time
   //for (IdTag* t: out) {
@@ -471,7 +471,7 @@ doc.appendChild(root);
         return;
  }
 
- DefaultIdTagManager* manager = (DefaultIdTagManager*)InstanceManager::getDefault("DefaultIdTagManager");
+ DefaultIdTagManager* manager = (DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager");
 
  // First read configuration
  if (!root.firstChildElement("configuration").isNull())

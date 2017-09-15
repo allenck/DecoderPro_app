@@ -166,7 +166,8 @@ private:
 
     //Sensor getSecondSensor() = null;
     /*private*/ NamedBeanHandle<Sensor*>* _secondNamedSensor;
-Logger log;
+    Logger* log;
+
 protected:
     AbstractTurnout(QString systemName, QObject *parent=0);
     AbstractTurnout(QString systemName, QString userName, QObject *parent=0);

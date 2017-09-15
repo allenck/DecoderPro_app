@@ -79,11 +79,12 @@ public slots:
     void setAspectDisabled(bool);
 
 };
+
 class LIBPR3SHARED_EXPORT AddSignalMastPanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AddSignalMastPanel(QWidget *parent = 0);
+    explicit AddSignalMastPanel(QWidget* parent = 0);
     /*public*/ AddSignalMastPanel(SignalMast* mast, QWidget *parent = 0);
     static bool validateAspectId(QString strAspect);
 
@@ -159,5 +160,7 @@ protected slots:
     void refreshHeadComboBox();
     void okPressed(ActionEvent* e = 0);
     void sigSysBox_currentIndexChanged(int);
+
+    friend class AddSignalMastJFrame;
 };
 #endif // ADDSIGNALMASTPANEL_H

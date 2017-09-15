@@ -19,6 +19,8 @@ class LIBPR3SHARED_EXPORT DefaultSignalMastLogicManager : public SignalMastLogic
     Q_OBJECT
 public:
     explicit DefaultSignalMastLogicManager(QObject *parent = 0);
+    ~DefaultSignalMastLogicManager() {}
+    DefaultSignalMastLogicManager(const DefaultSignalMastLogicManager&) : SignalMastLogicManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ /*final*/ static SignalSpeedMap* getSpeedMap();
     /*public*/ SignalMastLogic* getSignalMastLogic(SignalMast* source);
@@ -50,6 +52,7 @@ public:
     /*public*/ void setSignalLogicDelay(long l);
     /*public*/ void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException);
     /*public*/ void automaticallyDiscoverSignallingPairs() throw (JmriException);
+    /*public*/ void generateSection();
 
 
 signals:
@@ -61,7 +64,7 @@ private:
     Logger* log;
     /*private*/ static SignalSpeedMap* _speedMap;// = SignalSpeedMap.getMap();
     QList<SignalMastLogic*> signalMastLogic;// = new QList<SignalMastLogic*>();
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    //PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     long signalLogicDelay;// = 500L;
     bool runWhenStablised;// = false;
     QMutex mutex;
@@ -72,6 +75,8 @@ protected:
     /*protected*/ PropertyBlockManagerListener* propertyBlockManagerListener;// = new PropertyBlockManagerListener();
  friend class PropertyBlockManagerListener;
 };
+Q_DECLARE_METATYPE(DefaultSignalMastLogicManager)
+
 class PropertyBlockManagerListener : public PropertyChangeListener
 {
 public:

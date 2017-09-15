@@ -37,7 +37,7 @@ namespace Operations
  /*static*/ RoutesTableFrame* RoutesTableAction::f = NULL;
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
- /*public*/ void RoutesTableAction::actionPerformed(ActionEvent* e)
+ /*public*/ void RoutesTableAction::actionPerformed(ActionEvent* /*e*/)
  {
 
   // create a route table frame

@@ -44,7 +44,7 @@ namespace Operations
  }
 
 
- /*public*/ void PrintLocationsByCarTypesAction::actionPerformed(ActionEvent* e)
+ /*public*/ void PrintLocationsByCarTypesAction::actionPerformed(ActionEvent* /*e*/)
  {
      // obtain a HardcopyWriter
      //try {

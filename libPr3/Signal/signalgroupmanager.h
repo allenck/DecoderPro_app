@@ -32,9 +32,11 @@
  */
 /*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalGroupManager : public AbstractManager
 {
+ Q_OBJECT
 public:
-    SignalGroupManager() {}
-
+    SignalGroupManager(QObject* parent = 0) : AbstractManager(parent) {}
+    ~SignalGroupManager() {}
+    SignalGroupManager(const SignalGroupManager&) : AbstractManager() {}
     /*public*/ virtual SignalGroup* getSignalGroup(QString /*name*/) {return NULL;}
 
     /*public*/ virtual SignalGroup* getBySystemName(QString name) {return (SignalGroup* ) AbstractManager::getBeanBySystemName(name);}
@@ -54,4 +56,5 @@ public:
 
     virtual void deleteSignalGroup(SignalGroup* /*s*/) {}
 };
+Q_DECLARE_METATYPE(SignalGroupManager)
 #endif // SIGNALGROUPMANAGER_H

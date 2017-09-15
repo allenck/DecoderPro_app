@@ -27,6 +27,7 @@ private:
  static int defaultDepth;// = 5;
 
 };
+
 class MyOperationMemo : public FileHistory::OperationMemo
 {
 public:

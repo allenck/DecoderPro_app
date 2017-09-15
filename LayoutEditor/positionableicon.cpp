@@ -4,10 +4,10 @@
 #include <QString>
 #include "editor.h"
 
-//PositionableIcon::PositionableIcon(QObject *parent) :
-//    PositionableLabel(parent)
-//{
-//}
+PositionableIcon::PositionableIcon(QObject *parent) :
+    PositionableLabel(parent)
+{
+}
 /**
  * Gather common methods for Turnouts, Semsors, SignalHeads, Masts, etc.
  *

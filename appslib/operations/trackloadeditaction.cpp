@@ -26,7 +26,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrackLoadEditAction::actionPerformed(ActionEvent* e)
+ /*public*/ void TrackLoadEditAction::actionPerformed(ActionEvent* /*e*/)
  {
   if (tlef != NULL)
   {

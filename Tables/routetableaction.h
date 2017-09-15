@@ -47,7 +47,7 @@ class LIBTABLESSHARED_EXPORT RouteTableAction : public AbstractTableAction
     Q_OBJECT
 public:
     explicit RouteTableAction(QObject *parent = 0);
-    /*public*/ RouteTableAction(QString s, QObject *parent = 0);
+    Q_INVOKABLE/*public*/ RouteTableAction(QString s, QObject *parent);
     ~RouteTableAction() {}
     RouteTableAction(const RouteTableAction&);
     /*public*/ /*final*/ static QString LOGIX_SYS_NAME;// = "RTX";
@@ -278,7 +278,7 @@ protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
 protected:
     /*protected*/ QString getClassName();
-    RouteTableDataModel* m;
+    //RouteTableDataModel* m;
     /*protected*/ void createModel();
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();
@@ -294,7 +294,9 @@ friend class RouteWidget;
 friend class ComboBoxDelegate;
 friend class AddFrameWindowListener2;
 friend class WindowMaker;
+friend class RouteTableDataModel;
 };
+Q_DECLARE_METATYPE(RouteTableAction)
 ///*public*/ /*abstract*/ class RouteOutputModel : public QAbstractTableModel //implements PropertyChangeListener
 
 //{
@@ -526,14 +528,14 @@ public:
  Qt::ItemFlags flags(const QModelIndex &index) const;
  QVariant data(const QModelIndex &index, int role) const;
  bool setData(const QModelIndex &index, const QVariant &value, int role);
- /*public*/ void configureTable(QTableView* table);
+ /*public*/ void configureTable(JTable* table);
  void doDelete(NamedBean* bean);
  /*public*/ Manager* getManager();
  /*public*/ Route* getBySystemName(QString name) const;
  /*public*/ Route* getByUserName(QString name) ;
  /*/*public*/ int getDisplayDeleteMsg();
  /*public*/ void clickOn(NamedBean* t);
- /*public*/ QString getValue(QString s);
+ /*public*/ QString getValue(QString s) const;
  /*public*/ QPushButton* configureButton();
  /*protected*/ QString getBeanType();
  /*protected*/ void showPopup(QMouseEvent* e);

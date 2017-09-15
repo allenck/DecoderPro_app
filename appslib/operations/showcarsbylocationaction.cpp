@@ -38,7 +38,7 @@ void ShowCarsByLocationAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
- /*public*/ void ShowCarsByLocationAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ShowCarsByLocationAction::actionPerformed(ActionEvent* /*e*/) {
      // create a car table frame
      new CarsTableFrame(showAllCars, locationName, trackName);
  }

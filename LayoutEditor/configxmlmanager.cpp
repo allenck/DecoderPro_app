@@ -2,47 +2,48 @@
 #include "fileutil.h"
 #include "errormemo.h"
 #include "version.h"
-#include "memoryiconxml.h"
-#include "analogclock2displayxml.h"
-#include "sensoriconxml.h"
-#include "lighticonxml.h"
-#include "locoiconxml.h"
+//#include "memoryiconxml.h"
+//#include "analogclock2displayxml.h"
+//#include "sensoriconxml.h"
+//#include "lighticonxml.h"
+//#include "locoiconxml.h"
 #include "reportericonxml.h"
-#include "turnouticonxml.h"
+//#include "turnouticonxml.h"
 #include "signalheadiconxml.h"
-#include "virtualsignalheadxml.h"
-#include "singleturnoutsignalheadxml.h"
-#include "doubleturnoutsignalheadxml.h"
-#include "signalmasticonxml.h"
-#include "virtualsignalmastxml.h"
-#include "turnoutsignalmastxml.h"
+//#include "virtualsignalheadxml.h"
+//#include "singleturnoutsignalheadxml.h"
+//#include "doubleturnoutsignalheadxml.h"
+//#include "signalmasticonxml.h"
+//#include "virtualsignalmastxml.h"
+//#include "turnoutsignalmastxml.h"
 #include "signalheadsignalmastxml.h"
-#include "slipturnouticonxml.h"
-#include "multisensoriconxml.h"
-#include "indicatortrackiconxml.h"
-#include "indicatorturnouticonxml.h"
-#include "positionablecirclexml.h"
-#include "positionableellipsexml.h"
-#include "positionablerectanglexml.h"
-#include "positionableroundrectxml.h"
-#include "memoryinputiconxml.h"
-#include "memoryspinnericonxml.h"
-#include "memorycomboiconxml.h"
+//#include "slipturnouticonxml.h"
+//#include "multisensoriconxml.h"
+//#include "indicatortrackiconxml.h"
+//#include "indicatorturnouticonxml.h"
+//#include "positionablecirclexml.h"
+//#include "positionableellipsexml.h"
+//#include "positionablerectanglexml.h"
+//#include "positionableroundrectxml.h"
+//#include "memoryinputiconxml.h"
+//#include "memoryspinnericonxml.h"
+//#include "memorycomboiconxml.h"
 #include "level.h"
 #include "defaultusermessagepreferencesxml.h"
 #include <QMap>
 #include "instancemanager.h"
 #include "layoutblockmanager.h"
 #include "defaultlogixmanager.h"
-#include "tripleturnoutsignalheadxml.h"
-#include "quadoutputsignalheadxml.h"
-#include "entryexitpairsxml.h"
-#include "controlpaneleditorxml.h"
+//#include "tripleturnoutsignalheadxml.h"
+//#include "quadoutputsignalheadxml.h"
+//#include "entryexitpairsxml.h"
+//#include "controlpaneleditorxml.h"
 #include "abstractconnectionconfig.h"
 #include <QMetaType>
 #include "defaultusermessagepreferences.h"
 #include "filehistoryxml.h"
 #include "filehistory.h"
+#include "defaultcatalogtreemanagerxml.h"
 
 /**
  * Define the current schema version string for the layout-config schema.
@@ -460,11 +461,9 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
 
 /*protected*/ void ConfigXmlManager::includeHistory(QDomElement root)
 {
-#if 1
  // add history to end of document
  if (InstanceManager::getDefault("FileHistory") != NULL)
   root.appendChild(FileHistoryXml::storeDirectly((FileHistory*)InstanceManager::getDefault("FileHistory"),doc));
-#endif
 }
 
 /*protected*/ bool ConfigXmlManager::finalStore(QDomElement root, File* file)
@@ -508,6 +507,7 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
  */
 /*public*/ bool ConfigXmlManager::storeAll(File* file)
 {
+
  bool result = true;
  QDomElement root = initStore();
  if(!addConfigStore(root))
@@ -656,84 +656,92 @@ File userPrefsFile;*/
 #else
   adapter = (QObject*)QMetaType::create(typeId);
 #endif
-  if(adapter != NULL && qobject_cast<XmlAdapter*>(adapter) != NULL)
+  if(adapter != NULL && qobject_cast<XmlAdapter*>(adapter) != NULL )
    return ((XmlAdapter*)adapter)->store(o);
+  if(adapter != NULL && qobject_cast<DefaultCatalogTreeManagerXml*>(adapter) != NULL)
+  {
+   return ((DefaultCatalogTreeManagerXml*)adapter)->store(o);
+  }
  }
 
  QString className = o->metaObject()->className();
 
- if(className == "MemoryIcon")
-     return  MemoryIconXml().store(o);
- else if (className == "AnalogClock2Display")
-     return AnalogClock2DisplayXml().store(o);
- else if (className == "LocoIcon")
-     return LocoIconXml().store(o);
- else if (className == "PositionableLabel")
-     return PositionableLabelXml().store(o);
- else if(className == "SensorIcon")
-     return SensorIconXml().store(o);
- else if(className == "LightIcon")
-     return LightIconXml().store(o);
- else if(className == "ReporterIcon")
-     return ReporterIconXml().store(o);
- else if(className == "TurnoutIcon")
-     return TurnoutIconXml().store(o);
- else if(className == "SignalHeadIcon")
-     return SignalHeadIconXml().store(o);
- else if(className == "VirtualSignalHead")
-     return VirtualSignalHeadXml().store(o);
- else if(className == "SingleTurnoutSignalHead")
-     return SingleTurnoutSignalHeadXML().store(o);
- else if(className == "DoubleTurnoutSignalHead")
-     return DoubleTurnoutSignalHeadXml().store(o);
- else if(className == "TripleTurnoutSignalHead")
-     return TripleTurnoutSignalHeadXml().store(o);
- else if(className == "QuadOutputSignalHeadXml")
-     return QuadOutputSignalHeadXml().store(o);
- else if(className == "SignalMastIcon")
-     return SignalMastIconXml().store(o);
- else if(className == "VirtualSignalMast")
-     return VirtualSignalMastXml().store(o);// if (adapter!=NULL)
- else if(className == "TurnoutSignalMast")
-     return TurnoutSignalMastXml().store(o);// {
- else if(className == "SignalHeadSignalMast")
-     return SignalHeadSignalMastXml().store(o);//  //return adapter->store(o);
- else if(className == "SlipTurnoutIcon")
-     return SlipTurnoutIconXml().store(o);
- else if(className == "MultiSensorIcon")
-     return MultiSensorIconXml().store(o);
- else if(className == "IndicatorTrackIcon")
-     return IndicatorTrackIconXml().store(o);
- else if(className == "IndicatorTurnoutIcon")
-     return IndicatorTurnoutIconXml().store(o);
- else if(className == "PositionableCircle")
-     return PositionableCircleXml().store(o);
- else if(className == "PositionableEllipse")
-     return PositionableEllipseXml().store(o);
- else if(className == "PositionableRectangle")
-     return PositionableRectangleXml().store(o);
- else if(className == "PositionableRoundRect")
-     return PositionableRoundRectXml().store(o);
- else if(className == "PositionableLabel")
-     return PositionableLabelXml().store(o);
- else if(className == "MemoryInputIcon")
-     return MemoryInputIconXml().store(o);
- else if(className == "MemorySpinnerIcon")
-     return MemorySpinnerIconXml().store(o);
- else if(className == "MemoryComboIcon")
-     return MemoryComboIconXml().store(o);
- else if(className == "PositionableIcon")
-     return PositionableLabelXml().store(o);
- else if(className == "EntryExitPairs")
-     return EntryExitPairsXml().store(o);
- else if(className == "ControlPanelEditor")
-     return ControlPanelEditorXml().store(o);
- else if(className == "DefaultUserMessagePreferences")
-  return DefaultUserMessagePreferencesXml().store(o);
+// if(className == "MemoryIcon")
+//     return  MemoryIconXml().store(o);
+// else if (className == "AnalogClock2Display")
+//     return AnalogClock2DisplayXml().store(o);
+// else
+// if (className == "LocoIcon")
+//     return LocoIconXml().store(o);
+ //else
+// if (className == "PositionableLabel")
+//     return PositionableLabelXml().store(o);
+// else if(className == "SensorIcon")
+//     return SensorIconXml().store(o);
+// else if(className == "LightIcon")
+//     return LightIconXml().store(o);
+// else
+//  if(className == "ReporterIcon")
+//     return ReporterIconXml().store(o);
+// else if(className == "TurnoutIcon")
+//     return TurnoutIconXml().store(o);
+// else if(className == "SignalHeadIcon")
+//     return SignalHeadIconXml().store(o);
+// else if(className == "VirtualSignalHead")
+//     return VirtualSignalHeadXml().store(o);
+// else if(className == "SingleTurnoutSignalHead")
+//     return SingleTurnoutSignalHeadXML().store(o);
+// else if(className == "DoubleTurnoutSignalHead")
+//     return DoubleTurnoutSignalHeadXml().store(o);
+// else
+// if(className == "TripleTurnoutSignalHead")
+//     return TripleTurnoutSignalHeadXml().store(o);
+// else if(className == "QuadOutputSignalHeadXml")
+//     return QuadOutputSignalHeadXml().store(o);
+// else if(className == "SignalMastIcon")
+//     return SignalMastIconXml().store(o);
+// else if(className == "VirtualSignalMast")
+//     return VirtualSignalMastXml().store(o);// if (adapter!=NULL)
+// else if(className == "TurnoutSignalMast")
+//     return TurnoutSignalMastXml().store(o);// {
+// else if(className == "SignalHeadSignalMast")
+//     return SignalHeadSignalMastXml().store(o);//  //return adapter->store(o);
+// else if(className == "SlipTurnoutIcon")
+//     return SlipTurnoutIconXml().store(o);
+// else if(className == "MultiSensorIcon")
+//     return MultiSensorIconXml().store(o);
+// else if(className == "IndicatorTrackIcon")
+//     return IndicatorTrackIconXml().store(o);
+// else if(className == "IndicatorTurnoutIcon")
+//     return IndicatorTurnoutIconXml().store(o);
+// else if(className == "PositionableCircle")
+//     return PositionableCircleXml().store(o);
+// else if(className == "PositionableEllipse")
+//     return PositionableEllipseXml().store(o);
+// else if(className == "PositionableRectangle")
+//     return PositionableRectangleXml().store(o);
+// else if(className == "PositionableRoundRect")
+//     return PositionableRoundRectXml().store(o);
+// else if(className == "PositionableLabel")
+//     return PositionableLabelXml().store(o);
+// else if(className == "MemoryInputIcon")
+//     return MemoryInputIconXml().store(o);
+// else if(className == "MemorySpinnerIcon")
+//     return MemorySpinnerIconXml().store(o);
+// else if(className == "MemoryComboIcon")
+//     return MemoryComboIconXml().store(o);
+// else if(className == "PositionableIcon")
+//     return PositionableLabelXml().store(o);
+// else if(className == "EntryExitPairs")
+//     return EntryExitPairsXml().store(o);
+// else if(className == "ControlPanelEditor")
+//     return ControlPanelEditorXml().store(o);
+// else if(className == "DefaultUserMessagePreferences")
+//  return DefaultUserMessagePreferencesXml().store(o);
 // }
 // else
  {
-  log.error(tr("Cannot store configuration for ")+o->metaObject()->className());
+  log.error(tr("Cannot store configuration for ")+className);
   return QDomElement();
  }
 }
@@ -1119,18 +1127,21 @@ File userPrefsFile;*/
 
     // loading complete, as far as it got, make history entry
  FileHistory* r = (FileHistory*)InstanceManager::getDefault("FileHistory");
-    if (r!=NULL) {
-        FileHistory* included = NULL;
-        if (!root.isNull()) {
-            QDomElement filehistory = root.firstChildElement("filehistory");
-            if (!filehistory.isNull()) {
-                included = FileHistoryXml::loadFileHistory(filehistory);
-            }
-        }
-        r->addOperation((result ? "Load OK":"Load with errors"), url.toString(), included);
-    } else {
-        log->info("Not recording file history");
-    }
+ if (r!=NULL)
+ {
+  FileHistory* included = NULL;
+  if (!root.isNull())
+  {
+   qDebug() << "root = " << root.tagName() << " file = " << url.path() << " " << root.firstChild().toElement().tagName();
+   QDomElement filehistory = root.firstChildElement("filehistory");
+   if (!filehistory.isNull()) {
+       included = FileHistoryXml::loadFileHistory(filehistory);
+   }
+  }
+  r->addOperation((result ? "Load OK":"Load with errors"), url.toString(), included);
+ } else {
+     log->info("Not recording file history");
+ }
 
  if (!result) return false;
 

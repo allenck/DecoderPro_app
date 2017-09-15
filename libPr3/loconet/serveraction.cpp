@@ -40,7 +40,7 @@
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void ServerAction::actionPerformed(ActionEvent* e)
+/*public*/ void ServerAction::actionPerformed(ActionEvent* /*e*/)
 {
  ServerFrame* f = ServerFrame::getInstance();
  f->setVisible(true);

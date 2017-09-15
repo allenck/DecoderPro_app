@@ -4,11 +4,13 @@
 #include "namedbeanhandle.h"
 
 class Turnout;
-class SingleTurnoutSignalHeadXML : public AbstractNamedBeanManagerConfigXML
+class SingleTurnoutSignalHeadXml : public AbstractNamedBeanManagerConfigXML
 {
     Q_OBJECT
 public:
-    explicit SingleTurnoutSignalHeadXML(QObject *parent = 0);
+    explicit SingleTurnoutSignalHeadXml(QObject *parent = 0);
+    ~SingleTurnoutSignalHeadXml() {}
+    SingleTurnoutSignalHeadXml(const SingleTurnoutSignalHeadXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ bool load(QDomElement element) throw (Exception);
     /*private*/ int loadAppearance(QDomNodeList l, QString state);
@@ -24,5 +26,5 @@ private:
     /*private*/ int getIntFromColour(QString colour);
     Logger* log;
 };
-
+Q_DECLARE_METATYPE(SingleTurnoutSignalHeadXml)
 #endif // SINGLETURNOUTSIGNALHEADXML_H

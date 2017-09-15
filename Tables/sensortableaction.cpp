@@ -19,11 +19,13 @@
 #include "../LayoutEditor/beantableframe.h"
 #include "jtable.h"
 #include <QLabel>
+#include "connectionnamefromsystemname.h"
+#include "abstracttabletabaction.h"
 
-//SensorTableAction::SensorTableAction(QObject *parent) :
-//    QObject(parent)
-//{
-//}
+SensorTableAction::SensorTableAction(QObject *parent) :
+    AbstractTableAction(tr("Sensor Table"), parent)
+{
+}
 /**
  * Swing action to create and register a
  * SensorTable GUI.
@@ -45,8 +47,8 @@
 {
     //super(actionName);
  addFrame = NULL;
- if(parent == NULL)
-  return;
+// if(parent == NULL)
+//  return;
 
  sysName = new JTextField(40);
  userName = new JTextField(40);
@@ -73,20 +75,20 @@
 
 /*public*/ void SensorTableAction::setManager(Manager* man)
 {
- senManager = (ProxySensorManager*)man;
- if (m!=NULL)
-  ((SensorTableDataModel*)m)->setManager((Manager*)senManager);
+ senManager = (SensorManager*)man;
+// if (m!=NULL)
+//  ((SensorTableDataModel*)m)->setManager((Manager*)senManager);
 }
 
 /**
  * Create the JTable DataModel, along with the changes
  * for the specific case of Sensors
  */
-/*protected*/ void SensorTableAction::createModel(JTable* table)
+/*protected*/ void SensorTableAction::createModel()
 {
  m = new SensorTableDataModel(senManager);
- ((SensorTableDataModel*)m)->table = table;
- table->setModel(m);
+// ((SensorTableDataModel*)m)->table = table;
+// table->setModel(m);
 }
 
 /*protected*/ void SensorTableAction::setTitle() {
@@ -127,6 +129,7 @@
 //                    canAddRange(e);
 //                }
 //            };
+  STCancelActionListener* cancelListener = new STCancelActionListener(this);
   STRangeActionListener* rangeListener = new STRangeActionListener(this);
   if (QString(InstanceManager::sensorManagerInstance()->metaObject()->className()).contains("ProxySensorManager"))
   {
@@ -155,7 +158,7 @@
   sysName->setObjectName("sysName");
   userName->setObjectName("userName");
   prefixBox->setObjectName("prefixBox");
-  addFrameLayout->addWidget(new AddNewHardwareDevicePanel(sysName, userName, prefixBox, numberToAdd, range, "OK", listener, rangeListener));
+  addFrameLayout->addWidget(new AddNewHardwareDevicePanel(sysName, userName, prefixBox, numberToAdd, range, "OK", listener, cancelListener, rangeListener));
   canAddRange();
  }
  addFrame->pack();
@@ -169,6 +172,12 @@ void STOkButtonActionListener::actionPerformed()
 {
  act->okPressed();
 }
+STCancelActionListener::STCancelActionListener(SensorTableAction *act) { this->act = act;}
+void STCancelActionListener::actionPerformed()
+{
+ act->cancelPressed();
+}
+
 STRangeActionListener::STRangeActionListener(SensorTableAction *act)
 {
  this->act = act;
@@ -176,6 +185,12 @@ STRangeActionListener::STRangeActionListener(SensorTableAction *act)
 void STRangeActionListener::actionPerformed()
 {
  act->canAddRange();
+}
+
+void SensorTableAction::cancelPressed(ActionEvent* /*e*/) {
+    addFrame->setVisible(false);
+    addFrame->dispose();
+    addFrame = NULL;
 }
 
 void SensorTableAction::okPressed()
@@ -266,8 +281,8 @@ void SensorTableAction::okPressed()
 {
  range->setEnabled(false);
  range->setChecked(false);
- if(senManager == NULL)
-     senManager = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
+// if(senManager == NULL)
+//     senManager = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
  //if (QString(senManager->metaObject()->className()).contains("ProxySensorManager"))
  if(qobject_cast<ProxySensorManager*>(senManager)!=NULL)
  {
@@ -447,23 +462,23 @@ void SensorTableAction::showDebounceChanged(bool bChecked)
 //            showDebounceChanged();
 //        }
 //    });
-    connect(showDebounceBox, SIGNAL(clicked()), this, SLOT(showDebounceChanged()) );
+    connect(showDebounceBox, SIGNAL(clicked(bool)), this, SLOT(showDebounceChanged(bool)) );
 }
-#if 0
-/*public*/ void addToPanel(AbstractTableTabAction f) {
-    String systemPrefix = ConnectionNameFromSystemName.getConnectionName(senManager.getSystemPrefix());
 
-    if (senManager.getClass().getName().contains("ProxySensorManager"))
+/*public*/ void SensorTableAction::addToPanel(AbstractTableTabAction* f) {
+    QString systemPrefix = ConnectionNameFromSystemName::getConnectionName(senManager->getSystemPrefix());
+
+    if (QString(senManager->metaObject()->className()).contains("ProxySensorManager"))
         systemPrefix = "All";
-    f.addToBottomBox(showDebounceBox, systemPrefix);
-    showDebounceBox.setToolTipText(tr("SensorDebounceToolTip"));
-    showDebounceBox.addActionListener(new ActionListener() {
-        /*public*/ void actionPerformed(ActionEvent e) {
-            showDebounceChanged();
-        }
-    });
+    f->addToBottomBox(showDebounceBox, systemPrefix);
+    showDebounceBox->setToolTip(tr("Show extra columns for configuring sensor debounce timers"));
+//    showDebounceBox.addActionListener(new ActionListener() {
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            showDebounceChanged();
+//        }
+//    });
+    connect(showDebounceBox, SIGNAL(clicked(bool)), this, SLOT(showDebounceChanged(bool)));
 }
-#endif
 
 /*public*/ void SensorTableAction::setMessagePreferencesDetails(){
     ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "duplicateUserName",  tr("Hide Duplicate User Name Warning Message"));

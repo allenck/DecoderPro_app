@@ -27,7 +27,7 @@ namespace Operations
  }
 
 
- /*public*/ void TrainRoadOptionsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrainRoadOptionsAction::actionPerformed(ActionEvent* /*e*/) {
      // create a train edit option frame
      if (f != NULL && f->isVisible()) {
          f->dispose();

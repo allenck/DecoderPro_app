@@ -118,6 +118,7 @@ PanelEditor::~PanelEditor()
 /*protected*/ void PanelEditor::init(QString /*name*/)
 {
  log = new Logger("PanelEditor");
+ setObjectName("PanelEditor");
  log->setDebugEnabled(false);
  _debug = log->isDebugEnabled();
  _multiItemCopyGroup = NULL;  // items gathered inside fence
@@ -214,10 +215,10 @@ PanelEditor::~PanelEditor()
 
     editPanel = new QGraphicsView(ui->centralwidget);
     ui->verticalLayout->removeWidget(ui->editPanel);
+    ui->editPanel->deleteLater();
     ui->verticalLayout->addWidget(editPanel);
     editPanel->setMouseTracking(true);
     editPanel->setRenderHint(QPainter::Antialiasing);
-
     panelWidth = 600;
     panelHeight =400;
     editScene = new EditScene(QRectF(0, 0, panelWidth, panelHeight), this);
@@ -596,20 +597,20 @@ protected void paintTargetPanel(Graphics g) {
  if (_debug) log->debug("mousePressed at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") _dragging="+(_dragging?"true":"false") + " right button="+(bRightButton?"Down":"up"));
  _lastX = _anchorX;
  _lastY = _anchorY;
- QList <Positionable*> selections = getSelectedItems(event);
+ QList <Positionable*>* selections = getSelectedItems(event);
  if (_dragging)
  {
   return;
  }
- if (selections.size() > 0)
+ if (selections->size() > 0)
  {
-  if (bShift && selections.size() > 1)
+  if (bShift && selections->size() > 1)
   {
-   _currentSelection = selections.at(1);
+   _currentSelection = selections->at(1);
   }
   else
   {
-   _currentSelection = selections.at(0);
+   _currentSelection = selections->at(0);
   }
   if (bRightButton) //isPopupTrigger()
   {
@@ -623,7 +624,7 @@ protected void paintTargetPanel(Graphics g) {
    else
    {
     // no possible conflict with moving, display the popup now
-    if (_selectionGroup!=QList<Positionable*>())
+    if (_selectionGroup!=NULL)
     {
      //Will show the copy option only
      showMultiSelectPopUp(event, _currentSelection);
@@ -675,7 +676,7 @@ protected void paintTargetPanel(Graphics g) {
     {
      pasteItemPopUp(event);
     }
-    else if (_selectionGroup!=QList<Positionable*>())
+    else if (_selectionGroup!=NULL)
     {
      showMultiSelectPopUp(event, _currentSelection);
     }
@@ -701,12 +702,12 @@ protected void paintTargetPanel(Graphics g) {
                 (!_selectRect.isNull() && !_selectRect.contains(_anchorX, _anchorY)))
  {
   _selectRect =  QRect(_anchorX, _anchorY, 0, 0);
-  _selectionGroup = QList<Positionable*>();
+  _selectionGroup = new  QList<Positionable*>();
  }
  else
  {
   _selectRect = QRect();
-  _selectionGroup = QList<Positionable*>();
+  _selectionGroup = new QList<Positionable*>();
  }
  //_targetPanel->repaint(); // needed for ToolTip
 }
@@ -726,7 +727,7 @@ protected void paintTargetPanel(Graphics g) {
  //setToolTip("NULL"); // ends tooltip if displayed
  if (_debug) log->debug("mouseReleased at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") dragging= "+(_dragging?"true":"false")
                           +" selectRect is "+(_selectRect.isNull()? "NULL":"not NULL"));
- QList <Positionable*> selections = getSelectedItems(event);
+ QList <Positionable*>* selections = getSelectedItems(event);
 
 // if (_dragging)
 // {
@@ -735,15 +736,15 @@ protected void paintTargetPanel(Graphics g) {
 //  _dragging = false;
 //  _selectRect = QRect();
 // }
- if (selections.size() > 0)
+ if (selections->size() > 0)
  {
-  if (bShift && selections.size() > 1)
+  if (bShift && selections->size() > 1)
   {
-   _currentSelection = selections.at(1);
+   _currentSelection = selections->at(1);
   }
   else
   {
-    _currentSelection = selections.at(0);
+    _currentSelection = selections->at(0);
   }
   if (_multiItemCopyGroup!=NULL && !_multiItemCopyGroup->contains(_currentSelection))
    _multiItemCopyGroup = NULL;
@@ -773,7 +774,7 @@ protected void paintTargetPanel(Graphics g) {
  if (( delayedPopupTrigger) && _currentSelection != NULL /*&& !_dragging*/)
  {
   _dragging = false;
-  if (_selectionGroup!=QList<Positionable*>())
+  if (_selectionGroup!=NULL)
   {
    //Will show the copy option only
     showMultiSelectPopUp(event, _currentSelection);
@@ -799,7 +800,7 @@ protected void paintTargetPanel(Graphics g) {
   _currentSelection = NULL; // Added to prevent calls to updateScene ACK 10-13-15
   if (allPositionable() && !_selectRect.isNull())
   {
-   if (_selectionGroup==QList<Positionable*>() && _dragging)
+   if (_selectionGroup==NULL && _dragging)
    {
     makeSelectionGroup(event);
    }
@@ -835,10 +836,10 @@ protected void paintTargetPanel(Graphics g) {
  {
   if (_currentSelection!=NULL)
   {
-   QList <Positionable*> selections = getSelectedItems(event);
-   if (selections.size() > 0)
+   QList <Positionable*>* selections = getSelectedItems(event);
+   if (selections->size() > 0)
    {
-    if (selections.at(0)!=_currentSelection)
+    if (selections->at(0)!=_currentSelection)
     {
      ((PositionableLabel*)_currentSelection)->doMouseReleased(event);
     }
@@ -858,12 +859,12 @@ protected void paintTargetPanel(Graphics g) {
   int deltaY = event->scenePos().y() - _lastY;
   int minX = getItemX(_currentSelection, deltaX);
   int minY = getItemY(_currentSelection, deltaY);
-  if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(_currentSelection))
+  if (_selectionGroup!=NULL && _selectionGroup->contains(_currentSelection))
   {
-   for (int i=0; i<_selectionGroup.size(); i++)
+   for (int i=0; i<_selectionGroup->size(); i++)
    {
-    minX = qMin(getItemX(_selectionGroup.at(i), deltaX), minX);
-    minY = qMin(getItemY(_selectionGroup.at(i), deltaY), minY);
+    minX = qMin(getItemX(_selectionGroup->at(i), deltaX), minX);
+    minY = qMin(getItemY(_selectionGroup->at(i), deltaY), minY);
    }
   }
   if (minX<0 || minY<0 || !bRightButton)
@@ -871,11 +872,11 @@ protected void paintTargetPanel(Graphics g) {
     //break moveIt;
     goto moveIt2;
   }
-  if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(_currentSelection))
+  if (_selectionGroup!=NULL && _selectionGroup->contains(_currentSelection))
   {
-   for (int i=0; i<_selectionGroup.size(); i++)
+   for (int i=0; i<_selectionGroup->size(); i++)
    {
-     moveItem(_selectionGroup.at(i), deltaX, deltaY);
+     moveItem(_selectionGroup->at(i), deltaX, deltaY);
    }
    _highlightcomponent = QRectF();
   }
@@ -901,7 +902,7 @@ protected void paintTargetPanel(Graphics g) {
  }
  else
  {
-  if (allPositionable() && _selectionGroup==QList<Positionable*>() && bRightButton)
+  if (allPositionable() && _selectionGroup==NULL && bRightButton)
   {
    drawSelectRect(event->scenePos().x(), event->scenePos().y());
    paint(_targetPanel);
@@ -937,17 +938,17 @@ protected void paintTargetPanel(Graphics g) {
  ui->statusbar->showMessage(tr("mouseMoved at (%1,%2)").arg(event->scenePos().x()).arg(event->scenePos().y()));
  if (_dragging || bRightButton) { return; }
 
- QList <Positionable*> selections = getSelectedItems(event);
+ QList <Positionable*>* selections = getSelectedItems(event);
  Positionable* selection = NULL;
- if (selections.size() > 0)
+ if (selections->size() > 0)
  {
-  if (bShift && selections.size() > 1)
+  if (bShift && selections->size() > 1)
   {
-    selection = selections.at(1);
+    selection = selections->at(1);
   }
   else
   {
-   selection = selections.at(0);
+   selection = selections->at(0);
   }
  }
  if (isEditable() && selection!=NULL && ((PositionableLabel*)selection)->getDisplayLevel()>BKG)
@@ -991,17 +992,17 @@ protected void paintTargetPanel(Graphics g) {
  bool bCtrl = ((event->modifiers())&Qt::ControlModifier) == Qt::ControlModifier;
  //setToolTip(NULL); // ends tooltip if displayed
  if (_debug) log->debug("mouseClicked at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") dragging= "+(_dragging?"true":"false") +" selectRect is "+(_selectRect.isNull()? "NULL":"not NULL"));
- QList <Positionable*> selections = getSelectedItems(event);
+ QList <Positionable*>* selections = getSelectedItems(event);
 
- if (selections.size() > 0)
+ if (selections->size() > 0)
  {
-  if (bShift && selections.size() > 1)
+  if (bShift && selections->size() > 1)
   {
-    _currentSelection = selections.at(1);
+    _currentSelection = selections->at(1);
   }
   else
   {
-   _currentSelection = selections.at(0);
+   _currentSelection = selections->at(0);
   }
  }
  else
@@ -1019,7 +1020,7 @@ protected void paintTargetPanel(Graphics g) {
  }
  if (bRightButton && _currentSelection != NULL && !_dragging)
  {
-  if (_selectionGroup!=QList<Positionable*>())
+  if (_selectionGroup!=NULL)
    showMultiSelectPopUp(event, _currentSelection);
   else
    showPopUp(_currentSelection, event);
@@ -1255,24 +1256,24 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
 /*private*/ void PanelEditor::amendSelectionGroup(Positionable* p)
 {
  if (p==NULL) return;
- if (_selectionGroup==QList<Positionable*>())
+ if (_selectionGroup==NULL)
  {
-   _selectionGroup = QList <Positionable*>();
+   _selectionGroup = new QList <Positionable*>();
  }
  bool removed = false;
- for(int i=0; i<_selectionGroup.size();i++)
+ for(int i=0; i<_selectionGroup->size();i++)
  {
-  if (_selectionGroup.at(i)==p)
+  if (_selectionGroup->at(i)==p)
   {
-   _selectionGroup.removeAt(i);
+   _selectionGroup->removeAt(i);
    removed = true;
    break;
   }
  }
  if(!removed)
-  _selectionGroup.append(p);
- else if (removed && _selectionGroup.isEmpty())
-  _selectionGroup=QList<Positionable*>();
+  _selectionGroup->append(p);
+ else if (removed && _selectionGroup->isEmpty())
+  _selectionGroup= new QList<Positionable*>();
 //_targetPanel.repaint();
 }
 
@@ -1325,7 +1326,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
             copied.setLocation(xOrig, yOrig);
 #endif
   }
-  _selectionGroup=QList<Positionable*>();
+  _selectionGroup=NULL;
  pasteItemFlag = false;
  //_targetPanel->repaint();
 }

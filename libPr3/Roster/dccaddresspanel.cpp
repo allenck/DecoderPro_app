@@ -166,7 +166,7 @@ void DccAddressPanel::focusLost()
   exitField();
 }
 
-//void DccAddressPanel::actionPerformed(ActionEvent* e)
+//void DccAddressPanel::actionPerformed(ActionEvent* /*e*/)
 void DccAddressPanel::actionPerformed()
 {
  new MyDccAddressVarHandler2(primaryAddr, extendAddr, addMode, val);

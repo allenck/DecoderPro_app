@@ -152,7 +152,7 @@ void SensorDebounceEditAction::on_sensorDebounceGlobalCheck_clicked()
 
 }
 
-/*protected*/ void SensorDebounceEditAction::saveDebounceItems(ActionEvent* e) {
+/*protected*/ void SensorDebounceEditAction::saveDebounceItems(ActionEvent* /*e*/) {
     if (bean == NULL) {
         return;
     }
@@ -168,7 +168,7 @@ void SensorDebounceEditAction::on_sensorDebounceGlobalCheck_clicked()
     sen->useDefaultTimerSettings(sensorDebounceGlobalCheck->isChecked());
 }
 
-/*protected*/ void SensorDebounceEditAction::resetDebounceItems(ActionEvent* e) {
+/*protected*/ void SensorDebounceEditAction::resetDebounceItems(ActionEvent* /*e*/) {
     if (bean == NULL) {
         enabled(false);
         return;

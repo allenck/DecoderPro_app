@@ -83,15 +83,16 @@ public:
      **/
     void registerSelf();
     /*public*/ QList<NamedBean*>* getNamedBeanList();
+    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
 
 signals:
     void beanDeleted(NamedBean* s);
     void beanCreated(NamedBean* s);
     void propertyChange(PropertyChangeEvent* e);
+
 public slots:
     virtual void on_propertyChange(PropertyChangeEvent* e);
 private:
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
 friend class SectionTableDataModel;
 friend class ReporterPickModel;
 friend class TurnoutTableDataModel;

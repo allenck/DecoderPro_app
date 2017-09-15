@@ -21,8 +21,8 @@ public:
 signals:
 
 public slots:
- /*public*/ void sendButtonActionPerformed(ActionEvent* e);
- /*public*/ void runButtonActionPerformed(ActionEvent* e);
+ /*public*/ void sendButtonActionPerformed(ActionEvent* /*e*/);
+ /*public*/ void runButtonActionPerformed(ActionEvent* /*e*/);
 
 private:
  // member declarations

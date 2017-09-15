@@ -194,8 +194,8 @@ void SensorTableDataModel::common()
 {
  int col = index.column();
  int row = index.row();
- if (col==INVERTCOL) return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
- if(col==USEGLOBALDELAY) return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+ if (col==INVERTCOL) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+ if(col==USEGLOBALDELAY) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
  //Need to do something here to make it disable
  if(col==ACTIVEDELAY||col==INACTIVEDELAY)
  {
@@ -345,9 +345,7 @@ void SensorTableDataModel::common()
 {
  this->table = table;
  showDebounce(false);
-// this->table->setItemDelegateForColumn(DELETECOL, new PushButtonDelegate(deleteMapper));
  BeanTableDataModel::configureTable(table);
-// connect(deleteMapper, SIGNAL(mapped(int)), this, SLOT(OnDelete(int)));
 }
 
 

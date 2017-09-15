@@ -4,6 +4,7 @@
 #include "propertychangesupport.h"
 #include "../LayoutEditor/configxmlmanager.h"
 #include "abstractcatalogtree.h"
+#include "systemnamecomparator.h"
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -237,13 +238,13 @@ QStringList AbstractManager::getSystemNameArray()
   i++;
  }
 //        java.util.Arrays.sort(arr
- arr.sort();
+ //arr.sort();
  return arr;
 }
 
 QStringList AbstractManager::getSystemNameList()
 {
-    QStringList arr;// = new QStringList();
+    QStringList arr; // =  QList<QString>();
     QStringList out;// = new QStringList();
 //    Enumeration<String> en = _tsys.keys();
     QHashIterator<QString, NamedBean*> en(*_tsys);
@@ -256,9 +257,12 @@ QStringList AbstractManager::getSystemNameList()
      i++;
     }
 // TODO;   make arr QMap //jmri.util.StringUtil.sort(arr);
-    for (i=0; i<arr.length(); i++) out.append(arr[i]);
+    qSort(arr.begin(), arr.end(), SystemNameComparator::compare);
+    for (i=0; i<arr.length(); i++)
+     out.append(arr[i]);
     return out;
 }
+
 /*public*/ QList<NamedBean*>* AbstractManager::getNamedBeanList() {
         return new QList<NamedBean*>(_tsys->values());
     }

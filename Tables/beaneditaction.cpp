@@ -229,7 +229,7 @@ PropertiesSetSaveActionListener::PropertiesSetSaveActionListener(BeanEditAction 
 {
  this->act = act;
 }
-/*public*/ void PropertiesSetSaveActionListener::actionPerformed(ActionEvent* e)
+/*public*/ void PropertiesSetSaveActionListener::actionPerformed(ActionEvent* /*e*/)
 {
  act->propertiesModel->setModel(act->bean);
 }
@@ -237,11 +237,11 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
 {
  this->act = act;
 }
-/*public*/ void PropertiesSetResetActionListener::actionPerformed(ActionEvent* e) {
+/*public*/ void PropertiesSetResetActionListener::actionPerformed(ActionEvent* /*e*/) {
  act->propertiesModel->setModel(act->bean);
 }
 
-/*protected*/ void BeanEditAction::saveBasicItems(ActionEvent* e)
+/*protected*/ void BeanEditAction::saveBasicItems(ActionEvent* /*e*/)
 {
  if (bean->getUserName() == NULL && userNameField->text()!=(""))
  {
@@ -261,7 +261,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
  bean->setComment(commentField->toPlainText());
 }
 
-/*protected*/ void BeanEditAction::resetBasicItems(ActionEvent* e) {
+/*protected*/ void BeanEditAction::resetBasicItems(ActionEvent* /*e*/) {
     userNameField->setText(bean->getUserName());
     commentField->setText(bean->getComment());
 }
@@ -274,7 +274,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
     selectedTab = c;
 }
 
-/*public*/ void BeanEditAction::actionPerformed(ActionEvent* e)
+/*public*/ void BeanEditAction::actionPerformed(ActionEvent* /*e*/)
 {
  if (bean == NULL)
  {

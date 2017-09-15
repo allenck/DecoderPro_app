@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "QActionGroup"
 #include "liblayouteditor_global.h"
+#include "actionlistener.h"
 
 class Editor;
 class LayoutEditor;
@@ -37,6 +38,16 @@ private:
     /*private*/ QList<Editor*>* panelsList;// = new QList<Editor*>();
     Logger* log;
     QActionGroup* actionGroup;
+};
+class PanelActionListener : public ActionListener
+{
+ Q_OBJECT
+ Editor* panel;
+ PanelMenu* pm;
+public:
+  PanelActionListener(Editor* panel, PanelMenu* pm);
+public slots:
+  void actionPerformed(ActionEvent* e = 0);
 };
 
 #endif // PANELMENU_H

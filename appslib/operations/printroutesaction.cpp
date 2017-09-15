@@ -30,7 +30,7 @@ namespace Operations
  //connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed())); not necessary, done by PrintRouteAction
  }
 
- /*public*/ void PrintRoutesAction::actionPerformed(ActionEvent* e)
+ /*public*/ void PrintRoutesAction::actionPerformed(ActionEvent* /*e*/)
  {
   log->debug("Print all routes");
   // obtain a HardcopyWriter to do this

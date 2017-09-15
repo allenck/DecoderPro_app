@@ -18,7 +18,7 @@ SensorTableWidget::SensorTableWidget(int iMgr, QWidget *parent) :
  //this->bInternal = bInternal;
  this->iMgr = iMgr;
  mgr = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
- action = new SensorTableAction("Sensor Table");
+ action = new SensorTableAction("Sensor Table", this);
  if(iMgr >= 0)
  {
   action->m = new SensorTableDataModel((SensorManager*)mgr->getMgr(iMgr),this);

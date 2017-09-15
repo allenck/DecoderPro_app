@@ -43,8 +43,8 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 
 /*protected*/ NamedBean* ProxyReporterManager::makeBean(int i, QString systemName, QString userName)
 {
- AbstractManager* mgr = getMgr(i);
- return ((InternalReporterManager*)getMgr(i))->newReporter(systemName, userName);
+ AbstractReporterManager* mgr = (AbstractReporterManager*)getMgr(i);
+ return mgr->newReporter(systemName, userName);
 }
 
 /*public*/ Reporter* ProxyReporterManager::provideReporter(QString sName)
@@ -118,23 +118,25 @@ return(retv);
  return (Reporter*) bean;
 }
 
-   /*public*/ bool ProxyReporterManager::allowMultipleAdditions(QString systemName) {
-        int i = matchTentative(systemName);
-        if (i >= 0)
-            return ((ReporterManager*)getMgr(i))->allowMultipleAdditions(systemName);
-        return ((ReporterManager*)getMgr(0))->allowMultipleAdditions(systemName);
-    }
+/*public*/ bool ProxyReporterManager::allowMultipleAdditions(QString systemName) {
+    int i = matchTentative(systemName);
+    if (i >= 0)
+        return ((ReporterManager*)getMgr(i))->allowMultipleAdditions(systemName);
+    return ((ReporterManager*)getMgr(0))->allowMultipleAdditions(systemName);
+}
 
-    /*public*/ QString ProxyReporterManager::getNextValidAddress(QString curAddress, QString prefix){
-        for (int i=0; i<nMgrs(); i++) {
-            if ( prefix == (
-                    ((ReporterManager*)getMgr(i))->getSystemPrefix()) ) {
-                //System.out.println((TurnoutManager)getMgr(i))
-                return ((ReporterManager*)getMgr(i))->getNextValidAddress(curAddress, prefix);
-            }
+/*public*/ QString ProxyReporterManager::getNextValidAddress(QString curAddress, QString prefix)
+{
+    for (int i=0; i<nMgrs(); i++)
+    {
+        if ( prefix == ( ((ProxyReporterManager*)getMgr(i))->getSystemPrefix()) )
+        {
+            //System.out.println((TurnoutManager)getMgr(i))
+            return ((ReporterManager*)getMgr(i))->getNextValidAddress(curAddress, prefix);
         }
-        return NULL;
     }
+    return NULL;
+}
 
     // initialize logging
     //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ProxyReporterManager.class.getName());

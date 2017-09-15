@@ -48,7 +48,7 @@ void DecoderIndexCreateAction::common()
 }
 
 //@Override
-/*public*/ void DecoderIndexCreateAction::actionPerformed(ActionEvent* e) {
+/*public*/ void DecoderIndexCreateAction::actionPerformed(ActionEvent* /*e*/) {
  DecoderIndexFile::forceCreationOfNewIndex(increment);
 }
 

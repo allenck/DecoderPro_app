@@ -19,7 +19,7 @@ public:
  explicit BlockTableAction(QObject *parent = NULL);
  ~BlockTableAction() {}
  BlockTableAction(const BlockTableAction& other) : AbstractTableAction(other.text(), other.parent()) {}
- /*public*/ BlockTableAction(QString actionName, QObject *parent);
+ Q_INVOKABLE/*public*/ BlockTableAction(QString actionName, QObject *parent);
  /*public*/ void addToFrame(BeanTableFrame* f);
 /*public*/ void setMenuBar(BeanTableFrame* f);
  /*public*/ void dispose();
@@ -33,6 +33,8 @@ public slots:
  void centimeterBoxChanged();
  void on_defaultSpeeds();
  void okPressed(ActionEvent* e = 0);
+ void cancelPressed(ActionEvent* e = 0);
+
 
 private:
  void common();
@@ -80,11 +82,12 @@ protected:
  /*protected*/ void setDefaultSpeeds(JFrame* _who);
  /*protected*/ QString helpTarget();
 protected slots:
- /*protected*/ void addPressed(ActionEvent* e);
+ /*protected*/ void addPressed(ActionEvent* /*e*/);
  /*protected*/ QString getClassName();
 
 friend class BlockTableDataModel;
 };
+Q_DECLARE_METATYPE(BlockTableAction)
 
 class BlockTableDataModel : public BeanTableDataModel
 {
@@ -92,7 +95,7 @@ class BlockTableDataModel : public BeanTableDataModel
  BlockTableAction* blockTableAction;
 public:
  //BlockTableDataModel(BlockTableAction*);
- BlockTableDataModel(QCheckBox* inchBox);
+ BlockTableDataModel(QCheckBox* inchBox, BlockTableAction* blockTableAction);
  /**
   *
   */
@@ -110,7 +113,7 @@ public:
   SPEEDCOL = PERMISCOL + 1\
  };
 
- /*public*/ QString getValue(QString name);
+ /*public*/ QString getValue(QString name) const;
  /*public*/ Manager* getManager();
  /*public*/ NamedBean* getBySystemName(QString name) const;
  /*public*/ NamedBean* getByUserName(QString name);
@@ -153,5 +156,14 @@ public:
 public slots:
  void actionPerformed(ActionEvent* = 0);
 };
-Q_DECLARE_METATYPE(BlockTableAction)
+class BTCancelListener : public ActionListener
+{
+ Q_OBJECT
+ BlockTableAction* blockTableAction;
+public:
+ BTCancelListener(BlockTableAction* blockTableAction);
+public slots:
+ void actionPerformed(ActionEvent* = 0);
+};
+
 #endif // BLOCKTABLEACTION_H

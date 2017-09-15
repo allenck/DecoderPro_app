@@ -13,7 +13,7 @@ namespace Operations
  public:
   /*public*/ TrackRoadEditAction(TrackEditFrame* frame);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
  private:
   /*private*/ TrackEditFrame* _frame;
   /*private*/ TrackRoadEditFrame* tref;// = null;

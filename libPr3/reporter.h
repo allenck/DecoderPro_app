@@ -2,13 +2,18 @@
 #define REPORTER_H
 
 #include <QObject>
-#include "namedbean.h"
+#include "abstractnamedbean.h"
+#include "propertychangesupport.h"
 
-class Reporter : /*virtual*/ public NamedBean
+class Reporter : /*virtual*/ public AbstractNamedBean
 {
     Q_OBJECT
 public:
     //explicit Reporter(QObject *parent = 0);
+    Reporter(QObject* parent =0) : AbstractNamedBean(parent) {}
+    Reporter(QString systemName, QObject* parent) : AbstractNamedBean(systemName, parent) {}
+    Reporter(QString systemName, QString userName, QObject* parent) : AbstractNamedBean(systemName, userName, parent) {}
+
     /**
      * Represent a device that can report identification information.
      * <P>
@@ -63,14 +68,15 @@ public:
          * current report will be equal.  If nothing has ever
          * been reported, this will return a null object.
          */
-        virtual QVariant getLastReport() const = 0;
+        virtual QVariant getLastReport() const {return QVariant();}
 
         /**
          * Query the current report.  If there is no current report
          * available (e.g. the reporting hardware says no information is
          * currently available) this will return a null object.
          */
-        virtual QVariant getCurrentReport() const = 0;
+        virtual QVariant getCurrentReport() const{return QVariant();}
+
         /**
          * Set the report to an arbitrary object.
          * <P>
@@ -80,15 +86,16 @@ public:
          * to set it from inside the program, e.g. debugging via entering
          * values in the Reporter Table.  Hence provision of this method.
          */
-        virtual void setReport(QVariant r) const = 0;
+        virtual void setReport(QVariant r) const {}
         /**
          * Provide an int form of the last report.
          *
          */
-        virtual int getState() const = 0;
+        virtual int getState() const {return 0;}
+ //PropertyChangeSupport* pcs;
 
 signals:
-    void propertyChange(PropertyChangeEvent*);
+    //void propertyChange(PropertyChangeEvent*);
 public slots:
     
 };

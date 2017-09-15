@@ -19,10 +19,10 @@ InternalReporterManager::InternalReporterManager(QObject *parent) :
      * @return new null
      */
 #if 1
-    /*protected*/ AbstractReporter* InternalReporterManager::createNewReporter(QString systemName, QString userName)
+    /*protected*/ Reporter* InternalReporterManager::createNewReporter(QString systemName, QString userName)
 {
- AbstractReporter* reporter = new AbstractReporter(systemName, userName);
- return (AbstractReporter*)reporter;
+ Reporter* reporter = (Reporter*)new AbstractReporter(systemName, userName);
+ return reporter;
 //        {
 //            public int getState() { return state; }
 //            public void setState(int s) { state = s; }

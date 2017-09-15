@@ -24,6 +24,9 @@
 #include "simplelightctrlaction.h"
 #include "speedometeraction.h"
 #include "sendpacketaction.h"
+#include "lighttabletabaction.h"
+#include "ds64panel.h"
+#include "dispatcheraction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -108,6 +111,8 @@ void ToolsMenu::common()
  tableMenu->addAction(new ListedTableAction(tr("Audio"), "jmri.jmrit.beantable.AudioTableAction",this));
  tableMenu->addAction(new ListedTableAction(tr("Id Tags"), "jmri.jmrit.beantable.IdTagTableAction",this));
  addMenu(tableMenu);
+ LightTableTabAction* ta = new LightTableTabAction(this);
+addAction(ta);
 
  QMenu* throttleMenu = new QMenu(tr("Throttles"));
  throttleMenu->addAction(new ThrottleCreationAction(tr("New Throttle"),(WindowInterface*)this));
@@ -159,8 +164,8 @@ void ToolsMenu::common()
  addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
  addAction(new SpeedometerAction(tr("Speedometer..."),this));
  addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
-#if 0
- addAction(new DispatcherAction(tr("Dispatcher...")));
+#if 1
+ addAction(new DispatcherAction(tr("Dispatcher..."),this));
 #endif
  addSeparator();
 
@@ -179,3 +184,5 @@ void ToolsMenu::common()
  addMenu(new jmri.web.server.WebServerAction());
 #endif
 }
+
+

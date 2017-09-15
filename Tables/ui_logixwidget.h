@@ -15,9 +15,9 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QTableView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include "jtable.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -25,7 +25,7 @@ class Ui_LogixWidget
 {
 public:
     QVBoxLayout *verticalLayout;
-    QTableView *tableView;
+    JTable *tableView;
     QPushButton *btnAdd;
 
     void setupUi(QWidget *LogixWidget)
@@ -38,7 +38,7 @@ public:
         LogixWidget->setFont(font);
         verticalLayout = new QVBoxLayout(LogixWidget);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        tableView = new QTableView(LogixWidget);
+        tableView = new JTable(LogixWidget);
         tableView->setObjectName(QStringLiteral("tableView"));
 
         verticalLayout->addWidget(tableView);

@@ -90,4 +90,4 @@
  * A method that determines if it is possible to add a range of lights in numerical
  * order eg 11 thru 18, primarily used to show/not show the add range box in the add Light window
  **/
-/*public*/ bool allowMultipleAdditions(QString /*systemName*/) { return true;  }
+/*public*/ bool LnLightManager::allowMultipleAdditions(QString /*systemName*/) { return true;  }

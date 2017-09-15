@@ -10,7 +10,8 @@ class LIBPR3SHARED_EXPORT SignalHead /*: public NamedBean*/ : public AbstractNam
  Q_OBJECT
 public:
  explicit SignalHead(QObject *parent = 0)  : AbstractNamedBean(parent) {}
-
+     SignalHead(QString systemName, QObject* parent) :AbstractNamedBean(systemName, parent) {}
+     SignalHead(QString systemName, QString userName, QObject* parent) : AbstractNamedBean(systemName, userName, parent) {}
     /**
      * Represent a single signal head. (Try saying that ten times fast!)
      * A signal may have more than one of these

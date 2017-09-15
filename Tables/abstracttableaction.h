@@ -6,6 +6,7 @@
 #include "beantableframe.h"
 #include "jtable.h"
 #include "libtables_global.h"
+#include <QSortFilterProxyModel>
 
 class AbstractTableTabAction;
 class ActionEvent;
@@ -57,7 +58,10 @@ protected:
 friend class TabbedTableItem;
 friend class ATABeanTableFrame;
 friend class AbstractTableTabAction;
+friend class SensorTableAction;
+friend class ListedTableFrame;
 };
+
 class ATABeanTableFrame : public BeanTableFrame
 {
  Q_OBJECT
@@ -67,6 +71,14 @@ public:
  ATABeanTableFrame(BeanTableDataModel* m, QString helpTarget, JTable* table, AbstractTableAction* act);
  void extras();
 
+};
+
+class MySortFilterProxyModel : public QSortFilterProxyModel
+{
+  Q_OBJECT
+public:
+    MySortFilterProxyModel(BeanTableDataModel* =0);
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 };
 
 #endif // ABSTRACTTABLEACTION_H

@@ -1857,14 +1857,18 @@ boundaryBetween = QVector<QString>(4);
     cLBlock = ((TrackSegment*)connectC)->getLayoutBlock();
     if(cLBlock!=block)
     {
-     try
-     {
+//     try
+//     {
+      if(cLBlock != NULL)
+      {
       boundaryBetween.replace(2,cLBlock->getDisplayName()+ " - " + block->getDisplayName());
-     }
-     catch (NullPointerException e)
+      }
+      else
+//     }
+//     catch (NullPointerException e)
      {
       //Can be considered normal if tracksegement hasn't yet been allocated a block
-      log->debug("TrackSegement at connection C doesn't contain a layout block");
+      log->debug("TrackSegment at connection C doesn't contain a layout block");
      }
     }
    }

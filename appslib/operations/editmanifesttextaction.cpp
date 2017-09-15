@@ -35,7 +35,7 @@ common();
  f = NULL;
 }
 
- /*public*/ void EditManifestTextAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void EditManifestTextAction::actionPerformed(ActionEvent* /*e*/) {
      // create a settings frame
      if (f == NULL || !f->isVisible()) {
          f = new EditManifestTextFrame();

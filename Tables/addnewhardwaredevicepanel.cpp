@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include "jtextfield.h"
+#include "flowlayout.h"
 
 //AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(QWidget *parent) :
 //    QWidget(parent)
@@ -15,7 +16,7 @@
 //}
 ///*public*/ class AddNewHardwareDevicePanel extends jmri.util.swing.JmriPanel {
 
-/*public*/ AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, QComboBox* prefixBox, JTextField* endRange, QCheckBox* addRange, QString addButtonLabel, ActionListener* listener, ActionListener* rangeListener, QWidget* parent) : QWidget(parent)
+/*public*/ AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, QComboBox* prefixBox, JTextField* endRange, QCheckBox* addRange, QString addButtonLabel, ActionListener* okListener, ActionListener* cancelListener, ActionListener* rangeListener, QWidget* parent) : QWidget(parent)
 {
  setObjectName("AddNewHardwareDevicePanel");
  sysNameLabel = new QLabel(tr("System:"));
@@ -65,11 +66,15 @@
  g->addWidget(userName,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
  //add(p);
  thisLayout->addLayout(g);
- QPushButton* ok;
+ QWidget* panelBottom = new QWidget();
+ FlowLayout* panelBottomLayout = new FlowLayout(panelBottom);
+QPushButton* ok;
+ panelBottomLayout->addWidget(cancel = new QPushButton(tr("Cancel")));
+ connect(cancel, SIGNAL(clicked(bool)), cancelListener, SLOT(actionPerformed()));
  thisLayout->addWidget(ok = new QPushButton(addButtonLabel),0,Qt::AlignHCenter);
 //        ok.addActionListener(listener);
- connect(ok, SIGNAL(clicked()), listener, SLOT(actionPerformed()));
-//        addRange.addItemListener(
+ connect(ok, SIGNAL(clicked()), okListener, SLOT(actionPerformed()));
+//        addRange .addItemListener(
  connect(addRange, SIGNAL(clicked()), this, SLOT(rangeState()));
 //        new ItemListener() {
 //            /*public*/ void itemStateChanged(ItemEvent e){

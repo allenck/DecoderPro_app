@@ -7,6 +7,8 @@
 #include <QCheckBox>
 #include "jtextfield.h"
 #include "actionlistener.h"
+#include "flowlayout.h"
+#include <QPushButton>
 
 //AddNewBeanPanel::AddNewBeanPanel(QWidget *parent) :
 //  JmriPanel(parent)
@@ -27,7 +29,7 @@
  //private static final long serialVersionUID = -7238135491102630527L;
 
  /*public*/ AddNewBeanPanel::AddNewBeanPanel(JTextField* sys, JTextField* userName, JTextField* endRange, QCheckBox* addRange, QCheckBox* autoSystem,
-         QString addButtonLabel, ActionListener* listener, QWidget *parent) :
+         QString addButtonLabel, ActionListener* listener, ActionListener* cancelListener , QWidget *parent) :
   JmriPanel(parent)
 {
  sysNameLabel = new QLabel(tr("System Name"));
@@ -81,9 +83,20 @@
      finishLabel->setEnabled(false);
      _endRange->setEnabled(false);
 
-     thisLayout->addWidget(ok = new QPushButton(addButtonLabel));
-     //ok.addActionListener(listener);
-     connect(ok, SIGNAL(clicked()), listener, SLOT(actionPerformed()));
+     // cancel + add buttons at bottom of window
+     QWidget* panelBottom = new QWidget();
+     panelBottom->setLayout(new FlowLayout(/*FlowLayout::TRAILING*/));
+     QPushButton* cancel;
+     panelBottom->layout()->addWidget(cancel = new QPushButton(tr("Cancel")));
+     //cancel.addActionListener(cancelListener);
+     connect(cancel, SIGNAL(clicked()), cancelListener, SLOT(actionPerformed()));
+
+     panelBottom->layout()->addWidget(ok = new QPushButton(addButtonLabel));
+     //ok.addActionListener(okListener);
+     connect(ok, SIGNAL(clicked(bool)), listener, SLOT(actionPerformed()));
+
+     layout()->addWidget(panelBottom);
+
 
 //     addRange.addItemListener(
 //             new ItemListener() {

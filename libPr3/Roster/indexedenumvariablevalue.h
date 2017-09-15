@@ -29,7 +29,7 @@ public:
     /*public*/ void lastItem();
     /*public*/ void setToolTipText(QString t);
     /*public*/ QVariant rangeVal();
-    /*public*/ void actionPerformed(ActionEvent* e);
+    /*public*/ void actionPerformed(ActionEvent* /*e*/);
     /*public*/ QString getValueString();
     /*public*/ void setIntValue(int i);
     /*public*/ QString getTextValue();

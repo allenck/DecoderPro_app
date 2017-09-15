@@ -38,7 +38,18 @@
  remoteAddress = newRemoteAddress;
  setObjectName("ClientRxHandler:" + QString(" #%1").arg(connectionNbr));
  //connect(clientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
- tc = ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo"))->getLnTrafficController();
+
+ //tc = ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo"))->getLnTrafficController();
+ QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
+ int i = 0;
+ foreach (QObject* memo, *list)
+ {
+  if(qobject_cast<LocoNetSystemConnectionMemo*>(memo) != NULL)
+  {
+   LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)memo;
+   tc = connectionMemo->getLnTrafficController();
+  }
+ }
  bIsInterrupted = false;
  log = new Logger(objectName());
  log->setDebugEnabled(true);
@@ -71,6 +82,7 @@
  connect(this, SIGNAL(lastMessageSent(LocoNetMessage*)),
          txHandler, SLOT(on_lastMessage(LocoNetMessage*)));
  connect(clientSocket, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
+ connect(clientSocket, SIGNAL(disconnected()), this, SLOT(quit()));
 
  exec();
 

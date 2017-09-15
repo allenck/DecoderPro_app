@@ -184,7 +184,7 @@ void LightIcon::propertyChange(QString propertyName, int old, int now)
  if (propertyName == ("KnownState"))
  {
 
-  ((AbstractLight*)light)->setState(now);
+  light->setState(now);
      displayState(lightState());
 //     _editor->addToTarget((Positionable*)this);
  }
@@ -194,8 +194,8 @@ void LightIcon::propertyChange(QString propertyName, int old, int now)
 {
  QString name;
  if (light == NULL) name = tr("<Not connected>");
- else if (((AbstractLight*)light)->getUserName()!=NULL)
-  name = ((AbstractLight*)light)->getUserName()+" ("+((AbstractLight*)light)->getSystemName()+")";
+ else if (light->getUserName()!=NULL)
+  name = light->getUserName()+" ("+light->getSystemName()+")";
  else
   name = light->getSystemName();
  return name;

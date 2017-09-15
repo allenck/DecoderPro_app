@@ -24,7 +24,7 @@
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void FactoryResetAction::actionPerformed(ActionEvent* e)
+/*public*/ void FactoryResetAction::actionPerformed(ActionEvent* /*e*/)
 {
  log->debug("start to display Factory Reset");
  //Object[] options;

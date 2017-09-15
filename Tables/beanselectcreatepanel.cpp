@@ -42,13 +42,13 @@
 //            update();
 //        }
 //    });
- connect(existingItem, SIGNAL(clicked()), this, SLOT(update()));
+ connect(existingItem, SIGNAL(toggled(bool)), this, SLOT(update()));
 //    newItem->addActionListener(new java.awt.event.ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //            update();
 //        }
 //    });
- connect(newItem, SIGNAL(clicked()), this, SLOT(update()));
+ connect(newItem, SIGNAL(toggled(bool)), this, SLOT(update()));
  selectcreate = new QButtonGroup();
  selectcreate->addButton(existingItem);
  selectcreate->addButton(newItem);

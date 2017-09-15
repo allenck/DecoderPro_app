@@ -5,12 +5,16 @@
 #include <QMenu>
 #include "savemenu.h"
 #include "jtable.h"
+#include "box.h"
 
 BeanTableFrame::BeanTableFrame(QWidget *parent) :
     JmriJFrame(parent)
 {
  //common();
-}
+ bottomBox =  Box::createHorizontalBox();
+ //bottomBox->setLayout(new QHBoxLayout);
+ //bottomBox.add(Box.createHorizontalGlue());	// stays at end of box
+ bottomBoxIndex = 0;}
 /**
  * Provide a JFrame to display a table of NamedBeans.
  * <P>
@@ -43,7 +47,10 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
 {
  //super(s);
  //common();
-}
+ bottomBox = Box::createHorizontalBox();
+ //bottomBox->setLayout(new QHBoxLayout);
+ //bottomBox.add(Box.createHorizontalGlue());	// stays at end of box
+ bottomBoxIndex = 0;}
 
 /*public*/ BeanTableFrame::BeanTableFrame(BeanTableDataModel* model, QString helpTarget, JTable* dataTab, QWidget *parent) : JmriJFrame(parent)
 {
@@ -69,6 +76,7 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
  QVBoxLayout* contentPaneLayout = new QVBoxLayout;
  getContentPane()->setLayout(contentPaneLayout);
+ getContentPane()->resize(671,300);
 
  // add save menu item
  QMenuBar* menuBar = new QMenuBar();
@@ -136,7 +144,7 @@ void BeanTableFrame::extras() {}
 //      justification="param c is required in the listedtableframe")
 /*protected*/ void BeanTableFrame::addToBottomBox(QWidget* comp, QString c)
 {
-    QHBoxLayout* bottomBoxLayout;
+    QHBoxLayout* bottomBoxLayout = NULL;
     if(bottomBox->layout() == NULL)
      bottomBox->setLayout(bottomBoxLayout = new QHBoxLayout);
     else
@@ -157,6 +165,6 @@ void BeanTableFrame::extras() {}
     dataModel = NULL;
     dataTable = NULL;
 //    dataScroll = NULL;
-    //super.dispose();
-    close();
+    JmriJFrame::dispose();
+    //close();
 }

@@ -65,6 +65,8 @@ public:
     /*public*/ QWidget* getTopLevelAncestor();
     void setMenuBar(QMenuBar *menubar);
     void addWindowListener(WindowListener* l);
+    /*public*/ /*synchronized*/ void removeWindowListener(WindowListener* l);
+
     void setAlwaysOnTop(bool checked);
 #if QT_VERSION >= 0x050000
     void virtual languageChange() {}
@@ -81,6 +83,8 @@ private:
  QString _title;
  int defaultCloseOperation;
  void closeEvent(QCloseEvent *);
+ void resizeEvent(QResizeEvent *);
+ void hideEvent(QHideEvent *);
 
 protected:
     /*protected*/ void frameInit();

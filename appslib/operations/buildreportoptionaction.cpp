@@ -34,7 +34,7 @@ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
 
- /*public*/ void BuildReportOptionAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void BuildReportOptionAction::actionPerformed(ActionEvent* /*e*/) {
      // create a settings frame
      if (f == NULL || !f->isVisible()) {
          f = new BuildReportOptionFrame();

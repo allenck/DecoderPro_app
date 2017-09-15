@@ -31,7 +31,7 @@ SignalHeadWidget::SignalHeadWidget(QWidget *parent) :
  //connect(mgr, SIGNAL(newSignalHeadCreated(AbstractSignalHead*)), this, SLOT(on_newSignalHeadCreated(AbstractSignalHead*)));
  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  fillTable();
- signalHeadTableAction = new SignalHeadTableAction(tr("SignalTable"));
+ signalHeadTableAction = new SignalHeadTableAction(tr("SignalTable"), this);
  ui->tableWidget->resizeColumnsToContents();
 
 }

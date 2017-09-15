@@ -6,7 +6,7 @@
 #include "abstractreportermanager.h"
 #include "proxyreportermanager.h"
 #include <QSignalMapper>
-
+#include "abstractnamedbean.h"
 namespace Ui {
 class ReporterWidget;
 }
@@ -22,13 +22,13 @@ public:
 private:
     Ui::ReporterWidget *ui;
     ProxyReporterManager* mgr;
-    QVector<AbstractReporter*> rows;
-    void updateRow(int row, AbstractReporter* r);
+    QVector<Reporter*> rows;
+    void updateRow(int row, Reporter* r);
     QSignalMapper* deleteMapper;
 private slots:
-    void on_propertyChange(AbstractReporter*,QString,QVariant,QVariant);
+    void on_propertyChange(Reporter*,QString,QVariant,QVariant);
     void on_propertyChange(AbstractNamedBean* bean, QString o, QString n);
-    void on_newReporterCreated(AbstractReporterManager*,AbstractReporter*);
+    void on_newReporterCreated(AbstractReporterManager*,Reporter*);
     void on_btnAdd_clicked();
     void on_deleteMapper_signaled(int);
 };

@@ -12,6 +12,8 @@ class IndicatorTurnoutIconXml : public PositionableLabelXml
     Q_OBJECT
 public:
     explicit IndicatorTurnoutIconXml(QObject *parent = 0);
+ ~IndicatorTurnoutIconXml() {}
+ IndicatorTurnoutIconXml(const IndicatorTurnoutIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);
     template< class T>
     QDomElement storeNamedBean(QString elemName, NamedBeanHandle<T>* nb);
@@ -26,5 +28,5 @@ private:
     Logger* log;
     IndicatorTurnoutIcon* l;
 };
-
+Q_DECLARE_METATYPE(IndicatorTurnoutIconXml)
 #endif // INDICATORTURNOUTICONXML_H

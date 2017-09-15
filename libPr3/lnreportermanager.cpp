@@ -54,12 +54,12 @@ void LnReporterManager::dispose()
 //super.dispose();
 }
 
-AbstractReporter* LnReporterManager::createNewReporter(QString systemName, QString userName)
+Reporter* LnReporterManager::createNewReporter(QString systemName, QString userName)
 {
- AbstractReporter* t;
+ Reporter* t;
 //        int addr = Integer.valueOf(systemName.substring(prefix.length()+1)).intValue();
  int addr = QString(systemName.mid(prefix.length()+1)).toInt();
- t = (AbstractReporter*)(new LnReporter(addr, tc, prefix, this));
+ t = (Reporter*)(new LnReporter(addr, tc, prefix, this));
  t->setUserName(userName);
  t->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(on_propertyChange(PropertyChangeEvent*)));

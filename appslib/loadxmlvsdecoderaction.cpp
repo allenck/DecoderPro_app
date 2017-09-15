@@ -59,7 +59,7 @@ void LoadXmlVSDecoderAction::common()
  *
  * @param e The event causing the action.
  */
-/*public*/ void LoadXmlVSDecoderAction::actionPerformed(ActionEvent* e) {
+/*public*/ void LoadXmlVSDecoderAction::actionPerformed(ActionEvent* /*e*/) {
     if (fileChooser == NULL) {
         fileChooser = XmlFile::userFileChooser(tr("XML Files"), "xml");
         fileChooser->setDialogType(JFileChooser::OPEN_DIALOG);

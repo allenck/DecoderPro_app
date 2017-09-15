@@ -10,6 +10,8 @@ class LIBPR3SHARED_EXPORT DefaultRouteManager : public RouteManager //, public R
     Q_OBJECT
 public:
     explicit DefaultRouteManager(QObject *parent = 0);
+    ~DefaultRouteManager() {}
+    DefaultRouteManager(const DefaultRouteManager&) : RouteManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
     /*public*/ char typeLetter();
@@ -48,5 +50,5 @@ private:
  QObject *parent;
  Logger* log;
 };
-
+Q_DECLARE_METATYPE(DefaultRouteManager)
 #endif // DEFAULTROUTEMANAGER_H

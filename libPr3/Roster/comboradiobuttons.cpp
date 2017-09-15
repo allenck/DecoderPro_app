@@ -136,7 +136,7 @@ void ComboRadioButtons::thisActionPerformed(ActionEvent* e)
  }
 }
 
-void ComboRadioButtons::originalActionPerformed(ActionEvent* e) {
+void ComboRadioButtons::originalActionPerformed(ActionEvent* /*e*/) {
     // update this state to original state if there's a button
     // that corresponds
     while (_box->currentIndex()+1>=v->size()) {

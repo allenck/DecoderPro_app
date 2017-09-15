@@ -86,6 +86,16 @@ QString AbstractNamedBean::getDisplayName()
  }
 }
 
+//@Override
+/*public*/ QString AbstractNamedBean::getFullyFormattedDisplayName() {
+    QString name = getUserName();
+    if (name != "" && name.length() > 0 && name != (getSystemName())) {
+        name = getSystemName() + "(" + name + ")";
+    } else {
+        name = getSystemName();
+    }
+    return name;
+}
 
 
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l, const QString beanRef, QString listenerRef)
@@ -211,5 +221,14 @@ QString AbstractNamedBean::getDisplayName()
     return parameters->keys();
 }
 
+/*public*/ void AbstractNamedBean::removeProperty(QString key) {
+    if (parameters == NULL || key == NULL) {
+        return;
+    }
+    parameters->remove(key);
+}
+/*public*/ void vetoableChange(PropertyChangeEvent* evt) //throws java.beans.PropertyVetoException
+{
+}
 
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractNamedBean.class.getName());

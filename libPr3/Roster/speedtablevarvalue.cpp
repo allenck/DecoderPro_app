@@ -437,7 +437,7 @@ void SpeedTableVarValue::setColor(QColor c) {
  layout->addWidget(b = new  QPushButton(tr("ButtonForceStraight"),k));
  b->setToolTip(tr("TooltipForceStraight"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent* e) {
+//            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doForceStraight(e);
 //            }
 //        });
@@ -445,7 +445,7 @@ void SpeedTableVarValue::setColor(QColor c) {
  layout->addWidget(b = new QPushButton(tr("ButtonMatchEnds"),k));
  b->setToolTip(tr("TooltipMatchEnds"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent* e) {
+//            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doMatchEnds(e);
 //            }
 //        });
@@ -453,7 +453,7 @@ void SpeedTableVarValue::setColor(QColor c) {
  layout->addWidget(b = new QPushButton(tr("ButtonConstantRatio"),k));
  b->setToolTip(tr("TooltipConstantRatio"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent* e) {
+//            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doRatioCurve(e);
 //            }
 //        });
@@ -461,7 +461,7 @@ void SpeedTableVarValue::setColor(QColor c) {
  layout->addWidget(b = new QPushButton(tr("ButtonLogCurve"),k));
  b->setToolTip(tr("TooltipLogCurve"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent* e) {
+//            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doLogCurve(e);
 //            }
 //        });
@@ -469,7 +469,7 @@ void SpeedTableVarValue::setColor(QColor c) {
  layout->addWidget(b = new QPushButton(tr("ButtonShiftLeft"),k));
  b->setToolTip(tr("TooltipShiftLeft"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent* e) {
+//            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doShiftLeft(e);
 //            }
 //        });
@@ -477,7 +477,7 @@ void SpeedTableVarValue::setColor(QColor c) {
  layout->addWidget(b = new QPushButton(tr("ButtonShiftRight"),k));
  b->setToolTip(tr("TooltipShiftRight"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent* e) {
+//            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doShiftRight(e);
 //            }
 //        });
@@ -583,7 +583,7 @@ void SpeedTableVarValue::doForceStraight(ActionEvent* e) {
 /**
  * Set the values to a straight line from existing ends
  */
-void SpeedTableVarValue::doMatchEnds(ActionEvent* e) {
+void SpeedTableVarValue::doMatchEnds(ActionEvent* /*e*/) {
     int first = _cvMap->value(cvList->at(0))->getValue();
     int last = _cvMap->value(cvList->at(nValues-1))->getValue();
     logit->debug(" first="+QString::number(first)+" last="+QString::number(last));
@@ -601,7 +601,7 @@ void SpeedTableVarValue::doMatchEnds(ActionEvent* e) {
 /**
  * Set a constant ratio curve
  */
-void SpeedTableVarValue::doRatioCurve(ActionEvent* e) {
+void SpeedTableVarValue::doRatioCurve(ActionEvent* /*e*/) {
     double first = _cvMap->value(cvList->at(0))->getValue();
     if (first<1.) first=1.;
     double last = _cvMap->value(cvList->at(nValues-1))->getValue();
@@ -622,7 +622,7 @@ void SpeedTableVarValue::doRatioCurve(ActionEvent* e) {
 /**
  * Set a log curve
  */
-void SpeedTableVarValue::doLogCurve(ActionEvent* e) {
+void SpeedTableVarValue::doLogCurve(ActionEvent* /*e*/) {
     double first = _cvMap->value(cvList->at(0))->getValue();
     double last = _cvMap->value(cvList->at(nValues-1))->getValue();
     if (last<first+1.) last = first+1.;
@@ -645,7 +645,7 @@ void SpeedTableVarValue::doLogCurve(ActionEvent* e) {
 /**
  * Shift the curve one CV to left.  The last entry is left unchanged.
  */
-void SpeedTableVarValue::doShiftLeft(ActionEvent* e) {
+void SpeedTableVarValue::doShiftLeft(ActionEvent* /*e*/) {
     for (int i = 0; i<nValues-1; i++) {
         int value = _cvMap->value(cvList->at(i)+1)->getValue();
         _cvMap->value(cvList->at(i))->setValue(value);
@@ -656,7 +656,7 @@ void SpeedTableVarValue::doShiftLeft(ActionEvent* e) {
 /**
  * Shift the curve one CV to right.  The first entry is left unchanged.
  */
-void SpeedTableVarValue::doShiftRight(ActionEvent* e)
+void SpeedTableVarValue::doShiftRight(ActionEvent* /*e*/)
 {
  for (int i = nValues-1; i>0; i--)
  {

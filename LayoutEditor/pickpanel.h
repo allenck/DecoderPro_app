@@ -53,5 +53,14 @@ public:
 public slots:
   /*public*/ void actionPerformed(ActionEvent* a = 0) ;
 };
+class PPCancelListener : public ActionListener
+{
+  PickPanel* self;
+  Q_OBJECT
+public:
+  PPCancelListener(PickPanel* self);
+public slots:
+  /*public*/ void actionPerformed() ;
+};
 
 #endif // PICKPANEL_H

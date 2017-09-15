@@ -1353,7 +1353,7 @@ QWidget* DCCAspectPanel::getPanel()
 //        });
     //            disabledCheck->addActionListener(new ActionListener()
     //            {
-    //                /*public*/ void actionPerformed(ActionEvent* e) {
+    //                /*public*/ void actionPerformed(ActionEvent* /*e*/) {
     //                    setAspectDisabled(disabledCheck->isChecked());
     //                }
     //            });

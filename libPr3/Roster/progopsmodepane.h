@@ -34,7 +34,7 @@ signals:
 public slots:
     void programmerSelected();
     /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public*/ void actionPerformed(ActionEvent* e);
+    /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
 private:
     QButtonGroup* mModeGroup;

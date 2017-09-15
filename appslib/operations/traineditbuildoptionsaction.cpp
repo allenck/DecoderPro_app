@@ -27,7 +27,7 @@ namespace Operations
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrainEditBuildOptionsAction::actionPerformed(ActionEvent* e)
+ /*public*/ void TrainEditBuildOptionsAction::actionPerformed(ActionEvent* /*e*/)
  {
      // create a train edit option frame
      if (f != NULL && f->isVisible()) {

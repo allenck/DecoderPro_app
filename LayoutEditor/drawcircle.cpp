@@ -28,16 +28,16 @@
 /**
  * Create a new PositionableShape
  */
-/*protected*/ QWidget* DrawCircle::makeParamsPanel()
+/*protected*/ QWidget* DrawCircle::makeParamsPanel(PositionableShape* ps)
 {
-   QWidget* panel = DrawFrame::makeParamsPanel();
+   QWidget* panel = DrawFrame::makeParamsPanel(ps);
 
    QWidget* p = new QWidget();
    p->setLayout(new QVBoxLayout(p/*, BoxLayout.Y_AXIS*/));
    p->layout()->addWidget(new QLabel(tr("Circle")));
    QWidget* pp = new QWidget();
    pp->setLayout(new QVBoxLayout);
-   _radiusText = new JTextField(6);
+   _diameterText = new JTextField(6);
 //   _radiusText.addKeyListener(new KeyListener() {
 //       public void keyTyped(KeyEvent E) { }
 //       public void keyPressed(KeyEvent E){ }
@@ -49,9 +49,9 @@
 //         }
 //       }
 //    });
-   _radiusText->setText(QString::number(_radius));
-   _radiusText->setAlignment(Qt::AlignRight);
-   pp->layout()->addWidget(_radiusText);
+   _diameterText->setText(QString::number(_radius));
+   _diameterText->setAlignment(Qt::AlignRight);
+   pp->layout()->addWidget(_diameterText);
    pp->layout()->addWidget(new QLabel(tr("Circle Radius")));
    p->layout()->addWidget(pp);
    panel->layout()->addWidget(p);
@@ -77,34 +77,44 @@
 //    ps->setHeight(_height);
 //    ps->setWidth(_width);
     ps->setDisplayLevel(ControlPanelEditor::MARKERS);
-    setPositionableParams(ps);
+    setDisplayParams(ps);
     ps->updateSize();
     ed->putItem(ps);
-    DrawFrame::closingEvent();
+    DrawFrame::closingEvent(true);
 }
 
 /**
  * Set parameters on a new or updated PositionableShape
  */
-/*protected*/ void DrawCircle::setPositionableParams(PositionableShape* p) {
-    DrawFrame::setPositionableParams(p);
-   ((PositionableCircle*) p)->setRadius(_radius);
-}
+///*protected*/ void DrawCircle::setPositionableParams(PositionableShape* p) {
+//    DrawFrame::setDisplayParams(p);
+//   ((PositionableCircle*) p)->setRadius(_radius);
+//}
 
 /**
  * Set parameters on the popup that will edit the PositionableShape
  */
-/*protected*/ void DrawCircle::setDisplayParams(PositionableShape* p) {
-    DrawFrame::setDisplayParams(p);
-    PositionableCircle* pos = (PositionableCircle*)p;
-    _radius = pos->getRadius();
-}
+///*protected*/ void DrawCircle::setDisplayParams(PositionableShape* p) {
+//    DrawFrame::setDisplayParams(p);
+//    PositionableCircle* pos = (PositionableCircle*)p;
+//    _radius = pos->getRadius();
+//}
 
 /**
  * Editing is done.  Update the existing PositionableShape
  */
-/*protected*/ void DrawCircle::updateFigure(PositionableShape* p) {
-    PositionableCircle* pos = (PositionableCircle*)p;
-    setPositionableParams(pos);
-//		pos.makeShape();
+///*protected*/ void DrawCircle::updateFigure(PositionableShape* p) {
+//    PositionableCircle* pos = (PositionableCircle*)p;
+//    setPositionableParams(pos);
+////		pos.makeShape();
+//}
+
+//@Override
+void DrawCircle::setDisplayWidth(int w) {
+    _diameterText->setText(QString::number(w));
+}
+
+//@Override
+void DrawCircle::setDisplayHeight(int h) {
+    _diameterText->setText(QString::number(h));
 }

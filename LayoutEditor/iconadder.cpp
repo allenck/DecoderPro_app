@@ -287,6 +287,8 @@ void IconAdder::pack() {
  if (_iconPanel != NULL)
  {
   thisLayout->removeWidget(_iconPanel);
+  _iconPanel->deleteLater();
+  _iconPanel = NULL;
  }
  _iconPanel = new QWidget();
  //_iconPanel->setLayout(new QVBoxLayout(_iconPanel/*, BoxLayout.Y_AXIS*/));
@@ -373,9 +375,9 @@ void IconAdder::pack() {
 {
  tableModel->init();
  _pickListModel = tableModel;
- _table = new QTableView(/*tableModel*/);
+ _table = new JTable(tableModel);
  _table->setModel(tableModel);
-//        _pickListModel.makeSorter(_table);
+ _pickListModel->makeSorter(_table);
 
 //        _table.setRowSelectionAllowed(true);
 //        _table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -441,7 +443,7 @@ void IconAdder::pack() {
  {
   _addButton->setEnabled(true);
   _addButton->setToolTip(NULL);
-  if (_type!=NULL && _type==("SignalHead"))
+  if (_type!=NULL && _type==("Signal Head"))
   {
    makeIconMap(_pickListModel->getBeanAt(row));
    clearIconPanel();
@@ -734,7 +736,7 @@ void IconAdder::checkIconSizes()
  {
  //            _table->getSelectionModel().addListSelectionListener(this);
  }
- adjustSize();
+ pack();
 }
 
 /*protected*/ void IconAdder::addAdditionalButtons(QWidget* /*p*/) {}
@@ -794,7 +796,7 @@ this.add(new JSeparator());
 //            _pickTablePane.setVisible(false);
 //        }
  if(_table != NULL) _table->setVisible(false);
- adjustSize();
+ pack();
 }
 
 void IconAdder::closeCatalog()
@@ -939,8 +941,11 @@ void DropButton::dragEnterEvent(QDragEnterEvent *event)
  QString data = event->mimeData()->text();
  if(data.startsWith("DataFlavor["))
      event->acceptProposedAction();
+ if(event->mimeData()->hasFormat("text/uri-list")) // external file
+  event->acceptProposedAction();
 
 }
+
 #if 0
 /*public*/ void dragOver(DropTargetDragEvent dtde) {
     //if (log->isDebugEnabled()) log->debug("DropJLabel.dragOver ");
@@ -950,6 +955,7 @@ void DropButton::dragEnterEvent(QDragEnterEvent *event)
 }
 /*public*/ void drop(DropTargetDropEvent e) {
 #endif
+
 void DropButton::dropEvent(QDropEvent *e)
 {
 // try
@@ -1024,6 +1030,78 @@ void DropButton::dropEvent(QDropEvent *e)
 //        if (log->isDebugEnabled()) log->debug("DropJLabel.drop REJECTED!");
 //        e.rejectDrop();
 //    }
+ if (e->mimeData()->hasFormat("text/uri-list"))
+ {
+         //event->acceptProposedAction();
+
+         // Say we'll take it.
+         //evt.acceptDrop ( java.awt.dnd.DnDConstants.ACTION_COPY_OR_MOVE );
+         //evt.acceptDrop(java.awt.dnd.DnDConstants.ACTION_COPY);
+ e->accept();
+         //log(out, "FileDrop: file list accepted.");
+         log->info("FileDrop: file list accepted.");
+
+         // Get a useful list
+//            List<File> fileList = (List<File>) tr.getTransferData(java.awt.datatransfer.DataFlavor.javaFileListFlavor);
+         QString text = e->mimeData()->text();
+         text.replace("\r\n", "");
+         QStringList sl = text.split(",");
+         QList<File*> fileList = QList<File*>();
+         foreach (QString s, sl)
+         {
+          fileList.append(new File(s.mid(7)));
+         }
+
+         // Convert list to array
+         QVector<File*> filesTemp = QVector<File*>(fileList.size());
+         for(int i = 0; i < fileList.count(); i++) {
+          filesTemp.replace(i, fileList.at(i));
+         }
+         //fileList.toArray(filesTemp);
+         QList<File*> files = filesTemp.toList();
+
+         // Alert listener to drop.
+//            if (fileDrop->listener != NULL) {
+//                fileDrop->listener->filesDropped(files);
+//            }
+//         emit fileDrop->dropFiles(files);
+         File* file = files.at(0);
+         NamedIcon* newIcon = new NamedIcon(file->getPath(),file->getPath());
+         if (newIcon !=NULL)
+         {
+          //e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+          //DropTarget target = (DropTarget)e.getSource();
+          //IconButton iconButton = (IconButton)target.getComponent();
+          IconAdder::IconButton* iconButton= (IconAdder::IconButton*)this;
+          QString key = iconButton->getKey();
+          JToggleButton* button = parent->_iconMap->value(key);
+          button->setContentsMargins(0,0,0,0);
+          NamedIcon* oldIcon = button->getIcon();
+          button->setSelectedIcon(newIcon);
+          if (newIcon->getIconWidth()<1 || newIcon->getIconHeight()<1)
+          {
+           button->setText(tr("invisibleIcon"));
+      //     button->setForeground(QColor(Qt::lightGray);
+          }
+          else
+          {
+           button->setText("");
+          }
+          parent->_iconMap->insert(key, button);
+          if (!parent->_update)
+          {
+      //     _defaultIcons.deleteLeaf(key, oldIcon.getURL());
+      //     _defaultIcons.addLeaf(key, newIcon.getURL());
+      // TODO:    parent->updateCatalogTree();
+          }
+          //e.dropComplete(true);
+          e->accept();
+         // Mark that drop is completed.
+//            evt.getDropTargetContext().dropComplete(true);
+         //log(out, "FileDrop: drop complete.");
+         log->info("FileDrop: drop complete.");
+     }
+ }
 }
 
 //    };

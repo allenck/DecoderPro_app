@@ -18,7 +18,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()),this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrackDestinationEditAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrackDestinationEditAction::actionPerformed(ActionEvent* /*e*/) {
      if (tdef != NULL) {
          tdef->dispose();
      }

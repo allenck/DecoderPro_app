@@ -10,7 +10,7 @@ namespace Operations
  public:
   /*public*/ PrintSwitchListAction(QString actionName, Location* location, bool isPreview, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  private:
   Location* location;

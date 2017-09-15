@@ -52,11 +52,11 @@ AddEditLightDialog::AddEditLightDialog(AbstractLight* light, QWidget *parent) :
   inEditMode = true;
   }
 
- lightControlTableModel = new LightControlTableModel(this);
+ lightControlTableModel = new AELLightControlTableModel(this);
  ui->tableView->setModel(lightControlTableModel);
  ui->tableView->resizeColumnsToContents();
- ui->tableView->setItemDelegateForColumn(LightControlTableModel::EDIT_COLUMN, new PushButtonDelegate(this));
- ui->tableView->setItemDelegateForColumn(LightControlTableModel::REMOVE_COLUMN, new PushButtonDelegate( this));
+ ui->tableView->setItemDelegateForColumn(AELLightControlTableModel::EDIT_COLUMN, new PushButtonDelegate(this));
+ ui->tableView->setItemDelegateForColumn(AELLightControlTableModel::REMOVE_COLUMN, new PushButtonDelegate( this));
 
  lightControlChanged = false;
  inEditControlMode = false;
@@ -441,14 +441,14 @@ void AddEditLightDialog::setLight(AbstractLight* l)
 //    public static final int EDIT_COLUMN = 2;
 //    public static final int REMOVE_COLUMN = 3;
 
-/*public*/ LightControlTableModel::LightControlTableModel(AddEditLightDialog* dlg) {
+/*public*/ AELLightControlTableModel::AELLightControlTableModel(AddEditLightDialog* dlg) {
     //super();
     this->dlg = dlg;
     this->controlList = dlg->controlList;
 
 }
 
-/*public*/ void LightControlTableModel::propertyChange(PropertyChangeEvent* e) {
+/*public*/ void AELLightControlTableModel::propertyChange(PropertyChangeEvent* e) {
     if (e->getPropertyName()==("length")) {
         // a new LightControl item is available in the manager
         fireTableDataChanged();
@@ -463,17 +463,17 @@ void AddEditLightDialog::setLight(AbstractLight* l)
 //    return String.class;
 //}
 
-/*public*/ int LightControlTableModel::columnCount(const QModelIndex &/*parent*/) const
+/*public*/ int AELLightControlTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return REMOVE_COLUMN+1;
 }
 
-/*public*/ int LightControlTableModel::rowCount(const QModelIndex &/*parent*/) const
+/*public*/ int AELLightControlTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
     return (controlList->size());
 }
 
-/*public*/ Qt::ItemFlags LightControlTableModel::flags(const QModelIndex &index) const
+/*public*/ Qt::ItemFlags AELLightControlTableModel::flags(const QModelIndex &index) const
 {
  int c = index.column();
     if ( c==TYPE_COLUMN ) return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -483,7 +483,7 @@ void AddEditLightDialog::setLight(AbstractLight* l)
     return Qt::NoItemFlags;
 }
 
-/*public*/ QVariant LightControlTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+/*public*/ QVariant AELLightControlTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
  if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
  {
@@ -496,7 +496,7 @@ void AddEditLightDialog::setLight(AbstractLight* l)
  return QVariant();
 }
 
-/*public*/ int LightControlTableModel::getPreferredWidth(int col)
+/*public*/ int AELLightControlTableModel::getPreferredWidth(int col)
 {
  switch (col)
  {
@@ -512,7 +512,7 @@ void AddEditLightDialog::setLight(AbstractLight* l)
  return  JTextField(8).getPreferredSize().width();
 }
 
-/*public*/ QVariant LightControlTableModel::data(const QModelIndex &index, int role) const
+/*public*/ QVariant AELLightControlTableModel::data(const QModelIndex &index, int role) const
 {
  if(role == Qt::DisplayRole)
  {
@@ -539,7 +539,7 @@ void AddEditLightDialog::setLight(AbstractLight* l)
  return QVariant();
 }
 
-/*public*/ bool LightControlTableModel::setData(const QModelIndex &index, const QVariant &/*value*/, int role)
+/*public*/ bool AELLightControlTableModel::setData(const QModelIndex &index, const QVariant &/*value*/, int role)
 {
  if(role == Qt::EditRole)
  {

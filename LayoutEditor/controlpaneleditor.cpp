@@ -64,6 +64,10 @@
 #include "helputil.h"
 #include "helpbroker.h"
 #include "portalicon.h"
+#include "positionableshape.h"
+#include "positionablepolygon.h"
+#include "indicatortrack.h"
+#include <QKeyEvent>
 
 ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
     Editor(parent)
@@ -147,15 +151,15 @@ ControlPanelEditor::~ControlPanelEditor()
  showTooltipBox->setCheckable(true);
  _regular = true;	// true when TO_ARROW shows entry into ToBlock
  _hide = false;	// true when arrow should NOT show entry into ToBlock
-_disablePortalSelection = true;		// only select PortalIcon in CircuitBuilder
-
+ _disablePortalSelection = true;		// only select PortalIcon in CircuitBuilder
+ _secondSelectionGroup = NULL;
  setVisible(false);
  _debug = log->isDebugEnabled();
 //    java.awt.Container contentPane = this.getContentPane();
 //    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
- QWidget* contentPane = new QWidget();
+ QWidget* contentPane = getContentPane();
  contentPane->setLayout(new QVBoxLayout());
- this->setCentralWidget(contentPane);
+ //this->setCentralWidget(contentPane);
 
  // make menus
  setGlobalSetsLocalFlag(false);
@@ -187,6 +191,7 @@ _disablePortalSelection = true;		// only select PortalIcon in CircuitBuilder
  connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)), this, SLOT(mouseReleased(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(mouseMoved(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)), this, SLOT(mouseClicked(QGraphicsSceneMouseEvent*)));
+ //connect(editScene, SIGNAL(sceneMouseDoubleClick(QGraphicsSceneMouseEvent*)), this, SLOT(mouseDoubleClicked(QGraphicsSceneMouseEvent*)));
 // makeDataFlavors();
     // set scrollbar initial state
 //    setScroll(SCROLL_BOTH);
@@ -248,11 +253,12 @@ void ControlPanelEditor::onItemTableList()
   //_menuBar.revalidate();
  }
 }
-/*protected*/ void ControlPanelEditor::makeDrawMenu() {
-    if (_drawMenu==NULL) {
-        _drawMenu = _shapeDrawer->makeMenu();
-    }
-    _drawMenu->addAction(disableShapeSelect);
+/*protected*/ void ControlPanelEditor::makeDrawMenu()
+{
+ if (_drawMenu==NULL)
+ {
+  _drawMenu = _shapeDrawer->makeMenu();
+  _drawMenu->addAction(disableShapeSelect);
 //    disableShapeSelect.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent event) {
@@ -260,7 +266,8 @@ void ControlPanelEditor::onItemTableList()
 //        }
 //    });
     connect(disableShapeSelect, SIGNAL(triggered(bool)), this, SLOT(on_disableShapeSelect(bool)));
-    _menuBar->addMenu(_drawMenu/*, 0*/);
+ }
+ _menuBar->addMenu(_drawMenu/*, 0*/);
 }
 
 void ControlPanelEditor::on_disableShapeSelect(bool)
@@ -425,7 +432,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
 //    });
  connect(showTooltipBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setAllShowTooltip(bool)));
  showTooltipBox->setChecked(showTooltip());
-#if 0
+#if 0  // QGraphicsView already has scrollbars
     // Show/Hide Scroll Bars
     QMenu* scrollMenu = new JMenu(Bundle.getMessage("ComboBoxScrollable"));
     _optionMenu.add(scrollMenu);
@@ -624,7 +631,7 @@ Tutorial recommended method not satisfactory.
     menuItem.setMnemonic(KeyEvent.VK_P);
     _editMenu.add(menuItem);
     */
-#if 1
+
     QAction* menuItem = new QAction(tr("Cut"),this);
 //    menuItem.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent event) {
@@ -673,7 +680,7 @@ Tutorial recommended method not satisfactory.
 //      KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
     _editMenu->addAction(menuItem);
     connect(menuItem, SIGNAL(triggered()), this, SLOT(selectAllAction()));
-#endif
+
 }
 void ControlPanelEditor::actionCut()
 {
@@ -682,7 +689,8 @@ void ControlPanelEditor::actionCut()
 }
 void ControlPanelEditor::selectAllAction()
 {
- QList <Positionable*> list = _contents->toList();
+  QList <Positionable*> l = _contents->toList();
+ QList <Positionable*>* list = &l;
  _selectionGroup = list;
  //_targetPanel->repaint();
 
@@ -733,7 +741,7 @@ void ControlPanelEditor::selectAllAction()
                         putItem(pos);
                         pos.updateSize();
                         pos.setVisible(true);
-                        _selectionGroup.add(pos);
+                        _selectionGroup->add(pos);
                         if (pos instanceof PositionableIcon) {
                             jmri.NamedBean bean = pos.getNamedBean();
                             if (bean!=NULL) {
@@ -759,15 +767,15 @@ void ControlPanelEditor::selectAllAction()
 * the list of positionables (_clipGroup) for pasting
 */
 /*private*/ void ControlPanelEditor::copyToClipboard() {
-    if (_selectionGroup!=QList<Positionable*>()) {
+    if (_selectionGroup!=NULL) {
         QList <Positionable*>* dragGroup = new QList <Positionable*>();
 
-        for (int i=0; i<_selectionGroup.size(); i++) {
-            Positionable* pos = _selectionGroup.at(i)->deepClone();
+        for (int i=0; i<_selectionGroup->size(); i++) {
+            Positionable* pos = _selectionGroup->at(i)->deepClone();
             dragGroup->append(pos);
             removeFromTarget(pos);   // cloned item gets added to _targetPane during cloning
         }
-        if (_debug) log->debug("copyToClipboard: cloned _selectionGroup, size= "+_selectionGroup.size());
+        if (_debug) log->debug("copyToClipboard: cloned _selectionGroup, size= "+_selectionGroup->size());
 //            abortPasteItems(dragGroup);
         _clipGroup = dragGroup;
 
@@ -776,7 +784,7 @@ void ControlPanelEditor::selectAllAction()
 //        // workaround to recognize CCP
 //        getPanelScrollPane().getUI().installUI(getPanelScrollPane());
 //            clipboard.setContents(new PositionableListDnD(dragGroup), NULL);
-        if (_debug) log->debug("copyToClipboard: setContents _selectionGroup, size= "+_selectionGroup.size());
+        if (_debug) log->debug("copyToClipboard: setContents _selectionGroup, size= "+_selectionGroup->size());
 
     } else {
         _clipGroup = NULL;
@@ -1057,7 +1065,7 @@ void ControlPanelEditor::selectAllAction()
                           ", frameWidth= "+frame.getWidth()+", frameHeight= "+frame.getHeight());
 #endif
 }
-#if 1
+
 /*public*/ void ControlPanelEditor::setTitle()
 {
  QString name = getName();
@@ -1081,7 +1089,7 @@ void ControlPanelEditor::selectAllAction()
 // all content loaded from file.
 /*public*/ void loadComplete() {
 }
-#endif
+
 /**
  * After construction, initialize all the widgets to their saved config settings.
  */
@@ -1114,26 +1122,26 @@ void ControlPanelEditor::selectAllAction()
     if (_pastePending) {
         return getCopySelection(event);
     }
-    QList <Positionable*> selections = getSelectedItems(event);
+    QList <Positionable*>* selections = getSelectedItems(event);
     Positionable* selection = NULL;
-    if (selections.size() > 0)
+    if (selections->size() > 0)
     {
-        //if (event.isShiftDown() && selections.size() > 1)
-        if((event->modifiers()& Qt::ShiftModifier)  && (selections.size() > 1))
+        //if (event.isShiftDown() && selections->size() > 1)
+        if((event->modifiers()& Qt::ShiftModifier)  && (selections->size() > 1))
         {
-            selection = selections.at(1);
+            selection = selections->at(1);
         } else {
-            selection = selections.at(0);
+            selection = selections->at(0);
         }
         //if (event.isControlDown())
         if((event->modifiers()& Qt::ControlModifier))
         {
             // select bottom-most item over the background, otherwise take the background item
-            selection = selections.at(selections.size()-1);
-            if (((PositionableLabel*)selection)->getDisplayLevel()<=BKG && selections.size() > 1) {
-                selection = selections.at(selections.size()-2);
+            selection = selections->at(selections->size()-1);
+            if (((PositionableLabel*)selection)->getDisplayLevel()<=BKG && selections->size() > 1) {
+                selection = selections->at(selections->size()-2);
             }
-        } else if (((PositionableLabel*)selection)->getDisplayLevel()<=BKG)
+        } else if (selection->getDisplayLevel()<=BKG)
         {
             selection = NULL;
         }
@@ -1142,14 +1150,14 @@ void ControlPanelEditor::selectAllAction()
 }
 
 /*protected*/ Positionable* ControlPanelEditor::getCopySelection(QGraphicsSceneMouseEvent* event) {
-    if (_selectionGroup==QList<Positionable*>()) {
+    if (_selectionGroup==NULL) {
         return NULL;
     }
     double x = event->scenePos().x();
     double y = event->scenePos().y();
 
-    for (int i=0; i<_selectionGroup.size(); i++) {
-        Positionable* p = _selectionGroup.at(i);
+    for (int i=0; i<_selectionGroup->size(); i++) {
+        Positionable* p = _selectionGroup->at(i);
         QRect rect2D =  QRect(((PositionableLabel*)p)->getX()*_paintScale,
                                                            ((PositionableLabel*)p)->getY()*_paintScale,
                                                            ((PositionableLabel*)p)->maxWidth()*_paintScale,
@@ -1164,114 +1172,122 @@ void ControlPanelEditor::selectAllAction()
 /*********** KeyListener *********/
 /*public*/ void keyTyped(KeyEvent e) {
 }
-/*public*/ void keyPressed(KeyEvent e) {
-    if (_selectionGroup==NULL) {
-        return;
-    }
-    int x = 0;
-    int y = 0;
-    switch (e.getKeyCode()){
-        case KeyEvent.VK_UP:
-        case KeyEvent.VK_KP_UP:
-            y=-1;
-            break;
-        case KeyEvent.VK_DOWN:
-        case KeyEvent.VK_KP_DOWN:
-            y=1;
-            break;
-        case KeyEvent.VK_LEFT:
-        case KeyEvent.VK_KP_LEFT:
-            x=-1;
-            break;
-        case KeyEvent.VK_RIGHT:
-        case KeyEvent.VK_KP_RIGHT:
-            x=1;
-            break;
-    }
-    for (int i=0; i<_selectionGroup.size(); i++){
-        moveItem(_selectionGroup.get(i), x, y);
-    }
-    repaint();
+#endif
+/*public*/ void ControlPanelEditor::keyPressEvent(QKeyEvent* e)
+{
+ if (_selectionGroup==NULL) {
+     return;
+ }
+ int x = 0;
+ int y = 0;
+ switch (e->key())
+ {
+  case Qt::Key_Up:
+  case Qt::Key_Up | Qt::KeypadModifier:
+  case Qt::Key_8 | Qt::KeypadModifier:
+      y = -1;
+      break;
+  case Qt::Key_Down:
+ case Qt::Key_Down | Qt::KeypadModifier:
+  case Qt::Key_2 | Qt::KeypadModifier:
+      y = 1;
+      break;
+  case Qt::Key_Left:
+ case Qt::Key_Left | Qt::KeypadModifier:
+  case Qt::Key_4 | Qt::KeypadModifier:
+      x = -1;
+      break;
+  case Qt::Key_Right:
+ case Qt::Key_Right | Qt::KeypadModifier:
+  case Qt::Key_6 | Qt::KeypadModifier:
+      x = 1;
+      break;
+  case Qt::Key_D:
+  case Qt::Key_Delete:
+  case Qt::Key_Minus:
+      _shapeDrawer->_delete();
+      break;
+  case Qt::Key_A:
+  case Qt::Key_Insert:
+  case Qt::Key_Plus:
+      _shapeDrawer->add(e->modifiers()&Qt::ShiftModifier);
+      break;
+ default:
+  QWidget::keyPressEvent(e);
+  return;
+ }
+ for (int i=0; i<_selectionGroup->size(); i++){
+     moveItem(_selectionGroup->at(i), x, y);
+ }
+ repaint();
 }
-/*public*/ void keyReleased(KeyEvent e) {}
+
+/*public*/ void ControlPanelEditor::keyReleaseEvent(QKeyEvent* e) {}
 
 /*********** Mouse ***************/
-#endif
-#if 1
+
 /*public*/ void ControlPanelEditor::mousePressed(QGraphicsSceneMouseEvent* event)
 {
  bPopupTrigger = event->buttons()& Qt::RightButton;
 
  //setToolTip(NULL); // ends tooltip if displayed
- if (_debug) log->debug("mousePressed at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+") _dragging="+(_dragging?"yes":"no"));
- //  " _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup.size()));
- //    _circuitBuilder.saveSelectionGroup(_selectionGroup);
+ if (_debug)
+  log->debug("mousePressed at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+") _dragging="+(_dragging?"yes":"no"));
+ //  " _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup->size()));
+ bool circuitBuilder =  _circuitBuilder->saveSelectionGroup(_selectionGroup);
  _anchorX = event->scenePos().x();
  _anchorY = event->scenePos().y();
  _lastX = _anchorX;
  _lastY = _anchorY;
 
-//    if (_shapeDrawer.doMousePressed(event)) {
-//        _selectionGroup = NULL;
-//        _currentSelection = NULL;
-//        return;
-//    }
  _currentSelection = getCurrentSelection(event);
 
  if(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL)
  {
-     ((PositionableJPanel*)_currentSelection)->widget->mousePressEvent(event);
-     return;
+  ((PositionableJPanel*)_currentSelection)->widget->mousePressEvent(event);
+  return;
  }
 
- //if (!event.isPopupTrigger()&& !event.isMetaDown() && !event.isAltDown())
- if(!(event->buttons()&Qt::RightButton) && !(event->modifiers()&Qt::MetaModifier) && !(event->modifiers()&Qt::AltModifier))
+ // if (!event.isPopupTrigger() && !event.isMetaDown() && !event.isAltDown() && !circuitBuilder) {
+ if (!(event->buttons()&Qt::RightButton) && !(event->modifiers()&Qt::MetaModifier) && !(event->modifiers()&Qt::AltModifier) && !circuitBuilder)
  {
-  if((event->buttons()&Qt::LeftButton))
-   dragPos = event->scenePos();
-  /*  if (!event.isControlDown()) */
+  _shapeDrawer->doMousePressed(event, _currentSelection);
+  if (_currentSelection != NULL)
   {
-   if (_currentSelection!=NULL)
+   _currentSelection->doMousePressed(event);
+   if (isEditable())
    {
-    //if (!event.isControlDown() && !event.isShiftDown())
-    if(!(event->modifiers()& Qt::ControlModifier)  && !(event->modifiers()& Qt::ShiftModifier) )
+    if (!event->modifiers()&Qt::ControlModifier
+            && (_selectionGroup != NULL && !_selectionGroup->contains(_currentSelection)))
     {
-     ((PositionableLabel*)_currentSelection)->doMousePressed(event);
-    }
-    if (isEditable())
-    {
-     if ( !/*event.isControlDown()*/ !(event->modifiers()& Qt::ControlModifier) &&
-             (_selectionGroup!=QList<Positionable*>() && !_selectionGroup.contains(_currentSelection)) )
+     if (_pastePending)
      {
-      if (_pastePending)
-      {
-       abortPasteItems();
-      }
-      _selectionGroup = QList<Positionable*>();
+      abortPasteItems();
      }
+     deselectSelectionGroup();
     }
-   }
-   else
-   {
-    _highlightcomponent = QRectF();
-    if (_pastePending) {
-        abortPasteItems();
-    }
-    _selectionGroup = QList<Positionable*>();
    }
   }
- }
- else
- {
-  if (_currentSelection==NULL || (_selectionGroup!=QList<Positionable*>() && !_selectionGroup.contains(_currentSelection)) )
+  else
   {
-   _selectionGroup = QList<Positionable*>();
+   _highlightcomponent = QRectF();
+   if (_pastePending)
+   {
+    abortPasteItems();
+   }
+   deselectSelectionGroup();
   }
  }
-//    _circuitBuilder.doMousePressed(event);
-//    _targetPanel->repaint(); // needed for ToolTip
+ else if (_currentSelection == NULL || (_selectionGroup != NULL && !_selectionGroup->contains(_currentSelection)))
+ {
+  deselectSelectionGroup();
+ }
+ _circuitBuilder->doMousePressed(event, _currentSelection);
+
+ _targetPanel->repaint(); // needed for ToolTip
+// paint(editScene);
 }
-#endif
+
 /*public*/ void ControlPanelEditor::mouseReleased(QGraphicsSceneMouseEvent* event)
 {
  bool bMetaDown =event->modifiers()&Qt::MetaModifier;
@@ -1279,10 +1295,10 @@ void ControlPanelEditor::selectAllAction()
  bool bAltDown = event->modifiers() & Qt::AltModifier;
  bool bShiftDown = event->modifiers()& Qt::ShiftModifier;
 
- setToolTip(NULL); // ends tooltip if displayed
+ //setToolTip(NULL); // ends tooltip if displayed
  if (_debug) log->debug("mouseReleased at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+") dragging= "+(_dragging?"yes":"no")
                            +" pastePending= "+(_pastePending?"yes":"no")+" selectRect "+(_selectRect==QRectF()?"=":"!")+"= NULL");
- //" _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup.size()));
+ //" _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup->size()));
  dragPos = QPointF();
  if (_dragging)
  {
@@ -1298,23 +1314,27 @@ void ControlPanelEditor::selectAllAction()
    //_highlightcomponent = QRectF();
    if(qobject_cast<MemoryInputIcon*>(selection) != NULL ||qobject_cast<MemorySpinnerIcon*>(selection) != NULL|| qobject_cast<MemoryComboIcon*>(selection)!= NULL )
    {
-    _highlightcomponent =
-    ((PositionableJPanel*)selection)->getBounds();
+    _highlightcomponent = selection->getBounds(QRectF());
     //((PositionableLabel*)selection)->_itemGroup->setFocus();
     ((PositionableLabel*)selection)->widget->mouseReleaseEvent(event);
+//    if(_highlightcomponent.width() > 1000)
+//     qDebug() << tr("_highlightcomponent width = %1").arg(_highlightcomponent.width());
 //   }
 //   else
     if(qobject_cast<PositionableJPanel*>(selection)!=NULL)
     {
-     _highlightcomponent =
-        ((PositionableJComponent*)selection)->getBounds();
+     _highlightcomponent = selection->getBounds(QRectF());
+//     if(_highlightcomponent.width() > 1000)
+//      qDebug() << tr("_highlightcomponent width = %1").arg(_highlightcomponent.width());
      if(event->button()&Qt::RightButton)
       showPopUp(selection, event);
     }
    }
    else
    {
-    _highlightcomponent = ((PositionableLabel*)selection)->_itemGroup->boundingRect();
+    _highlightcomponent = selection->getBounds(QRectF());
+//    if(_highlightcomponent.width() > 1000)
+//     qDebug() << tr("_highlightcomponent width = %1").arg(_highlightcomponent.width());
     if(event->button()&Qt::RightButton)
      showPopUp(selection, event);
 //   else
@@ -1323,7 +1343,7 @@ void ControlPanelEditor::selectAllAction()
   }
   else if (!_selectRect.isNull())
   {
-   emit selectionRect(_selectRect);
+   emit selectionRect(_selectRect, event);
    makeSelectionGroup(event);
   }
  }
@@ -1334,23 +1354,30 @@ void ControlPanelEditor::selectAllAction()
    //if (!event.isControlDown() && !event.isShiftDown())
    if(!(event->modifiers()&Qt::ControlModifier) && !(event->modifiers()& Qt::ShiftModifier))
    {
-    ((PositionableLabel*)selection)->doMouseReleased(event);
+    selection->doMouseReleased(event);
    }
   }
   // when dragging, don't change selection group
+  if (_pastePending && _dragging)
+  {
+      pasteItems();
+  }
   if (isEditable())
   {
-//            if (_shapeDrawer.doMouseReleased(selection, event)) {
-//                _selectRect = NULL;
-//            }
-//            if (selection!=NULL && !_circuitBuilder.doMouseReleased(selection, event)) {
-//                if (!_dragging) {
-//                    modifySelectionGroup(selection, event);
-//                }
-//            }
+   if (_shapeDrawer->doMouseReleased(selection, event))
+   {
+    _selectRect = QRectF();
+   }
+   if (selection!=NULL && !_circuitBuilder->doMouseReleased(selection, event))
+   {
+    if (!_dragging)
+    {
+     modifySelectionGroup(selection, event);
+    }
+   }
    if (!_selectRect.isNull())
    {
-       emit selectionRect(_selectRect);
+    emit selectionRect(_selectRect,event);
     makeSelectionGroup(event);
    }
   }
@@ -1367,10 +1394,10 @@ void ControlPanelEditor::selectAllAction()
  mouseClicked(event);
 
  _dragging = false;
-//    _targetPanel.repaint(); // needed for ToolTip
- paint(editScene);
+ _targetPanel->repaint(); // needed for ToolTip
+ //paint(editScene);
 //        if (_debug) log.debug("mouseReleased at ("+event.getX()+","+event.getY()+
-//        " _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup.size()));
+//        " _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup->size()));
 }
 
 /*public*/ void ControlPanelEditor::mouseClicked(QGraphicsSceneMouseEvent* event)
@@ -1388,13 +1415,16 @@ void ControlPanelEditor::selectAllAction()
   _clickTime = time;
  }
 
- setToolTip(NULL); // ends tooltip if displayed
+ //setToolTip(NULL); // ends tooltip if displayed
  if (_debug) log->debug("mouseClicked at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+")");
 
  Positionable* selection = getCurrentSelection(event);
-// if (_shapeDrawer.doMouseClicked(selection, event)) {
-//        return;
-// }
+ if (_shapeDrawer->doMouseClicked(event))
+ {
+  paint(editScene);
+
+  return;
+ }
 
  //if (event.isPopupTrigger() || event.isMetaDown() || event.isAltDown())
  if((event->buttons()&Qt::RightButton)!=0 || (event->modifiers()&Qt::MetaModifier)!= 0 ||(event->modifiers()&Qt::AltModifier)!=0)
@@ -1405,34 +1435,40 @@ void ControlPanelEditor::selectAllAction()
    showPopUp(selection, event);
   }
  }
- else
+ else if (selection!=NULL)
  {
-  if (selection!=NULL)
-  {
    //if (!_circuitBuilder.doMouseClicked(selection, event) &&
 //                    !event.isControlDown() && !event.isShiftDown() )
-   if(/*!_circuitBuilder->doMouseClicked(selection, event) &&*/ !bControlDown && !bShiftDown)
+   if(!_circuitBuilder->doMouseClicked(getSelectedItems(event), event) )
    {
     selection->doMouseClicked(event);
    }
+   if (qobject_cast<IndicatorTrack*>(selection))
+   {
+    WarrantTableAction::mouseClickedOnBlock(((IndicatorTrack*) selection)->getOccBlock());
+   }
   }
- }
+  if(!isEditable())
+  {
+   deselectSelectionGroup();
+   _currentSelection = NULL;
+   _highlightcomponent = QRectF();
+  }
  //_targetPanel->repaint(); // needed for ToolTip
- paint(editScene);
 
+ paint(editScene);
 }
 
 /*public*/ void ControlPanelEditor::mouseDragged(QGraphicsSceneMouseEvent* event)
 {
     //if (_debug) log.debug("mouseDragged at ("+event.getX()+","+event.getY()+")");
- //    setToolTip(NULL); // ends tooltip if displayed
+ setToolTip(NULL); // ends tooltip if displayed
 
- //    if (_circuitBuilder.doMouseDragged(_currentSelection, event) ) {
- //        return;
- //    }
+ if (_circuitBuilder->doMouseDragged(_currentSelection, event) ) {  // is  preventing dragging! ACK
+     return;
+ }
  //if (!event.isPopupTrigger() && !event.isMetaDown() && !event.isAltDown() && (isEditable() || _currentSelection instanceof LocoIcon))
-  QList<Positionable*> selections = getSelectedItems(event);
- if(!(event->buttons()& Qt::RightButton)  && !(event->modifiers()& Qt::MetaModifier) && !(event->modifiers()& Qt::AltModifier) && (isEditable() || qobject_cast<LocoIcon*>(_currentSelection)!=0))
+ if(!(event->buttons()& Qt::RightButton)  && !(event->modifiers()& Qt::MetaModifier) && !(event->modifiers()& Qt::AltModifier) && !_shapeDrawer->doMouseDragged(event) && (isEditable() || qobject_cast<LocoIcon*>(_currentSelection)!=0))
  {
   moveIt:
   if (_currentSelection!=NULL && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable()))
@@ -1441,12 +1477,12 @@ void ControlPanelEditor::selectAllAction()
    int deltaY = event->scenePos().y() - _lastY;
    int minX = getItemX(_currentSelection, deltaX);
    int minY = getItemY(_currentSelection, deltaY);
-   if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(_currentSelection))
+   if (_selectionGroup!=NULL && _selectionGroup->contains(_currentSelection))
    {
-    for (int i=0; i<_selectionGroup.size(); i++)
+    for (int i=0; i<_selectionGroup->size(); i++)
     {
-     minX = qMin(getItemX(_selectionGroup.at(i), deltaX), minX);
-     minY = qMin(getItemY(_selectionGroup.at(i), deltaY), minY);
+     minX = qMin(getItemX(_selectionGroup->at(i), deltaX), minX);
+     minY = qMin(getItemY(_selectionGroup->at(i), deltaY), minY);
     }
    }
    if (minX<0 || minY<0)
@@ -1458,7 +1494,7 @@ void ControlPanelEditor::selectAllAction()
 //        // or use this choice:
 //        // Expand the panel to the left or top as needed by the move
 //        // Probably not the preferred solution - use the above break
-//        if (_selectionGroup!=NULL && _selectionGroup.contains(_currentSelection)) {
+//        if (_selectionGroup!=NULL && _selectionGroup->contains(_currentSelection)) {
 //            QList <Positionable*> allItems = getContents();
 //            for (int i=0; i<allItems.size(); i++){
 //                moveItem(allItems.at(i), -deltaX, -deltaY);
@@ -1468,90 +1504,132 @@ void ControlPanelEditor::selectAllAction()
 //        }
 
     }
-    if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(_currentSelection))
+    if (_selectionGroup!=NULL && _selectionGroup->contains(_currentSelection))
     {
-     for (int i=0; i<_selectionGroup.size(); i++)
+     for (int i=0; i<_selectionGroup->size(); i++)
      {
-      moveItem(_selectionGroup.at(i), deltaX, deltaY);
+      moveItem(_selectionGroup->at(i), deltaX, deltaY);
      }
      _highlightcomponent = QRectF();
     }
     else
     {
-      moveItem(_currentSelection, deltaX, deltaY);
-      // don't highlight LocoIcon in edit mode
-      if (isEditable())
-      {
-       //_highlightcomponent = QRectF(((PositionableLabel*)_currentSelection)->getX(), ((PositionableLabel*)_currentSelection)->getY(),((PositionableLabel*)_currentSelection)->maxWidth(), ((PositionableLabel*)_currentSelection)->maxHeight());
-          if(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL || qobject_cast<MemorySpinnerIcon*>(_currentSelection)!= NULL || qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL)
-              _highlightcomponent = ((PositionableJPanel*)_currentSelection)->getBounds();
-          else
-       _highlightcomponent =((PositionableLabel*)_currentSelection)->_itemGroup->boundingRect();
-//       if(_highlightcomponent.x() == 0 && _highlightcomponent.y()  == 0 )
-//       {
-//        _highlightcomponent.setTopLeft(event->scenePos());
-//       }
-      }
+     if(qobject_cast<PositionablePolygon*>(_currentSelection))
+     {
+
      }
+      moveItem(_currentSelection, deltaX, deltaY);
     }
-    else
-    {
-    if ((isEditable() && _selectionGroup==QList<Positionable*>()) /*|| _shapeDrawer.doMouseDragged(_currentSelection, event)*/)
+      // don't highlight LocoIcon in edit mode
+//      if (isEditable())
+//      {
+//       //_highlightcomponent = QRectF(((PositionableLabel*)_currentSelection)->getX(), ((PositionableLabel*)_currentSelection)->getY(),((PositionableLabel*)_currentSelection)->maxWidth(), ((PositionableLabel*)_currentSelection)->maxHeight());
+//          if(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL || qobject_cast<MemorySpinnerIcon*>(_currentSelection)!= NULL || qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL)
+//              _highlightcomponent = _currentSelection->getBounds(QRectF());
+//          else
+//       _highlightcomponent =((PositionableLabel*)_currentSelection)->_itemGroup->boundingRect();
+////          if(_highlightcomponent.width() > 1000)
+////           qDebug() << tr("_highlightcomponent width = %1").arg(_highlightcomponent.width());
+////       if(_highlightcomponent.x() == 0 && _highlightcomponent.y()  == 0 )
+////       {
+////        _highlightcomponent.setTopLeft(event->scenePos());
+////       }
+//      }
+//     }
+//    }
+//    else
+//    {
+    }
+    else if ((isEditable() && _selectionGroup==NULL))
     {
      drawSelectRect(event->scenePos().x(), event->scenePos().y());
     }
    }
-  }
   _dragging = true;
   _lastX = event->scenePos().x();
   _lastY = event->scenePos().y();
-  //_targetPanel.repaint(); // needed for ToolTip
-  paint(editScene);
+  _targetPanel->repaint(); // needed for ToolTip
+  //paint(editScene);
 
 }
 
-/*public*/ void ControlPanelEditor::mouseMoved(QGraphicsSceneMouseEvent* event) {
+//@Override
+/*public*/ void ControlPanelEditor::mouseMoved(QGraphicsSceneMouseEvent* event)
+{
     //if (_debug) log.debug("mouseMoved at ("+event.getX()+","+event.getY()+")");
     //if (_dragging || event.isPopupTrigger() || event.isMetaDown() || event.isAltDown())
  dLoc = event->scenePos();
- if(_dragging || (event->buttons()& Qt::LeftButton) || (event->modifiers()& Qt::MetaModifier) || (event->modifiers()&Qt::AltModifier))
+ if(/*_dragging*/ (event->buttons()&Qt::LeftButton)|| (event->buttons()& Qt::RightButton) || (event->modifiers()& Qt::MetaModifier) || (event->modifiers()&Qt::AltModifier))
  {
   mouseDragged(event);
   return;
  }
 
- if((event->buttons()&Qt::RightButton) && event->scenePos() != dragPos)
-  mouseDragged(event);
+ //if (!(event.isShiftDown() && event.isControlDown()) && !_shapeDrawer.doMouseMoved(event))
+ if(!((event->modifiers()&Qt::ShiftModifier) && (event->modifiers()&Qt::ControlModifier)) &&!(_shapeDrawer->doMouseMoved(event)))
+ {
+  Positionable* selection = getCurrentSelection(event);
+  if (selection != NULL && selection->getDisplayLevel() > BKG && selection->showTooltip()) {
+      //showToolTip(selection, event);
+      //selection.highlightlabel(true);
+  } else {
+     // setToolTip("");
+  }
+ }
+ paint(_targetPanel);
+ _targetPanel->repaint();
+ //paint(editScene);
+
+}
+
+//@Override
+/*public*/ void ControlPanelEditor::mouseEntered(QGraphicsSceneMouseEvent * event) {
+    _targetPanel->repaint();
+}
+
+//@Override
+/*public*/ void ControlPanelEditor::mouseExited(QGraphicsSceneMouseEvent * event) {
+    //setToolTip("");
+    _targetPanel->repaint();  // needed for ToolTip
+}
+#if 0
+/*public*/ void ControlPanelEditor::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+ //setToolTip(""); // ends tooltip if displayed
+ log->debug(tr("mouseClicked at (%1,%2)").arg(event->screenPos().x()).arg(event->screenPos().y()));
 
  Positionable* selection = getCurrentSelection(event);
- if(selection != NULL)
-     _highlightcomponent = ((PositionableLabel*)selection)->getBounds();
- if (selection!=NULL && selection->getDisplayLevel()>BKG /*&& selection->showTooltip()*/)
- {
-        //showToolTip(selection, event);
-        //selection->highlightlabel(true);
-//        selection->setFocus();
-//        event->accept();
-  if(qobject_cast<MemoryInputIcon*>(selection) != NULL ||qobject_cast<MemorySpinnerIcon*>(selection) != NULL|| qobject_cast<MemoryComboIcon*>(selection)!= NULL)
-  {
-   _currentSelection = selection;
-   ((PositionableJPanel*)selection)->widget->mouseMoveEvent(event);
-   _highlightcomponent = ((PositionableJPanel*)selection)->getBounds();
+ if (_shapeDrawer->doMouseClicked(event)) {
+    return;
+ }
 
-  }
-  else
+ //if (event.isPopupTrigger() || event.isMetaDown() || event.isAltDown()) {
+ if((event->buttons()&Qt::RightButton) || (event->modifiers()& Qt::MetaModifier) || (event->modifiers()&Qt::AltModifier))
+ {
+  if (selection != NULL)
   {
-    _highlightcomponent = ((PositionableLabel*)selection)->getBounds();
+      _highlightcomponent = QRectF();
+      showPopUp(selection, event);
   }
  }
  else
- {
-  setToolTip(NULL);
+  if (selection != NULL)
+  {
+    if (!_circuitBuilder->doMouseClicked(getSelectedItems(event), event)) {
+        selection->doMouseClicked(event);
+    }
+    if (qobject_cast<IndicatorTrack*>(selection)) {
+        WarrantTableAction::mouseClickedOnBlock(((IndicatorTrack*) selection)->getOccBlock());
+    }
  }
- //_targetPanel.repaint();
- paint(editScene);
-
+ if (!isEditable())
+ {
+  deselectSelectionGroup();
+  _currentSelection = NULL;
+  _highlightcomponent = QRectF();
+ }
 }
+#endif
 #if 0
 /*public*/ void mouseEntered(MouseEvent event) {
 }
@@ -1592,33 +1670,33 @@ void ControlPanelEditor::selectAllAction()
 * a new location.
 */
 /*protected*/ void ControlPanelEditor::copyItem(Positionable* p) {
-    if (_debug) log->debug("Enter copyItem: _selectionGroup "+(_selectionGroup!=QList<Positionable*>() ?
-                                              "size= "+QString::number(_selectionGroup.size()) : "NULL"));
+    if (_debug) log->debug("Enter copyItem: _selectionGroup "+(_selectionGroup!=NULL ?
+                                              "size= "+QString::number(_selectionGroup->size()) : "NULL"));
     // If popup menu hit again, Paste selections and make another copy
     if (_pastePending) {
         pasteItems();
     }
-    if (_selectionGroup!=QList<Positionable*>() && !_selectionGroup.contains(p)) {
-        _selectionGroup = QList<Positionable*>();
+    if (_selectionGroup!=NULL && !_selectionGroup->contains(p)) {
+        _selectionGroup = new QList<Positionable*>();
     }
-    if (_selectionGroup==QList<Positionable*>()) {
-        _selectionGroup = QList <Positionable*>();
-        _selectionGroup.append(p);
+    if (_selectionGroup==NULL) {
+        _selectionGroup = new QList <Positionable*>();
+        _selectionGroup->append(p);
     }
-    QList<Positionable*> selectionGroup =  QList<Positionable*>();
-    for (int i=0; i<_selectionGroup.size(); i++) {
-        Positionable* pos = _selectionGroup.at(i)->deepClone();
-        selectionGroup.append(pos);
+    QList<Positionable*>* selectionGroup =  new QList<Positionable*>();
+    for (int i=0; i<_selectionGroup->size(); i++) {
+        Positionable* pos = _selectionGroup->at(i)->deepClone();
+        selectionGroup->append(pos);
     }
     _selectionGroup = selectionGroup;  // group is now disconnected
     _pastePending = true;
-//        if (_debug) log.debug("Exit copyItem: _selectionGroup.size()= "+_selectionGroup.size());
+//        if (_debug) log.debug("Exit copyItem: _selectionGroup->size()= "+_selectionGroup->size());
 }
 
 void ControlPanelEditor::pasteItems() {
-    if (_selectionGroup!=QList<Positionable*>()) {
-        for (int i=0; i<_selectionGroup.size(); i++) {
-            Positionable* pos = _selectionGroup.at(i);
+    if (_selectionGroup!=NULL) {
+        for (int i=0; i<_selectionGroup->size(); i++) {
+            Positionable* pos = _selectionGroup->at(i);
             //if (pos instanceof PositionableIcon)
             if(qobject_cast<PositionableIcon*>(pos)!=NULL)
             {
@@ -1628,7 +1706,7 @@ void ControlPanelEditor::pasteItems() {
                 }
             }
             putItem(pos);
-            if (_debug) log->debug("Add "+((PositionableLabel*)_selectionGroup.at(i))->getNameString());
+            if (_debug) log->debug("Add "+((PositionableLabel*)_selectionGroup->at(i))->getNameString());
         }
     }
     _pastePending = false;
@@ -1641,14 +1719,14 @@ void ControlPanelEditor::pasteItems() {
 */
 void ControlPanelEditor::abortPasteItems() {
     if (_debug) log->debug("abortPasteItems: _selectionGroup"+
-                          (_selectionGroup==QList<Positionable*>()?"=NULL":(".size="+QString::number(_selectionGroup.size()))));
-    if (_selectionGroup!=QList<Positionable*>()) {
-        for (int i=0; i<_selectionGroup.size(); i++) {
-            _selectionGroup.at(i)->setVisible(false);
-            _selectionGroup.at(i)->remove();
+                          (_selectionGroup==NULL?"=NULL":(".size="+QString::number(_selectionGroup->size()))));
+    if (_selectionGroup!=NULL) {
+        for (int i=0; i<_selectionGroup->size(); i++) {
+            _selectionGroup->at(i)->setVisible(false);
+            _selectionGroup->at(i)->remove();
         }
     }
-    _selectionGroup = QList<Positionable*>();
+    _selectionGroup = new QList<Positionable*>();
     _pastePending = false;
 }
 
@@ -1805,7 +1883,8 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
     _highlightcomponent = QRectF();
 //    TargetPane targetPane = (TargetPane)getTargetPanel();
 //    targetPane.setDefaultColors();
-    setSelectionGroup(QList<Positionable*>());
+    setSelectionGroup(NULL);
+    _disablePortalSelection = true;
 }
 
 /*protected*/ void ControlPanelEditor::highlight(Positionable* pos) {
@@ -1818,14 +1897,14 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
     repaint();
 }
 
-/*public*/ void ControlPanelEditor::setSelectionGroup(QList<Positionable*> group) {
+/*public*/ void ControlPanelEditor::setSelectionGroup(QList<Positionable*>* group) {
     _highlightcomponent = QRectF();
 //        _currentSelection = NULL;		need non-NULL for Portal dragging in CircuitBuilder
     _selectionGroup = group;
     //repaint();
 }
 
-/*protected*/ QList<Positionable*> ControlPanelEditor::getSelectionGroup() {
+/*protected*/ QList<Positionable*>* ControlPanelEditor::getSelectionGroup() {
     return _selectionGroup;
 }
 
@@ -2339,29 +2418,68 @@ void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
  qDebug("scene changed");
 }
 
-void ControlPanelEditor::keyPressEvent(QKeyEvent * event)
-{
- QList<Positionable*> l = getSelectedItems(QPointF(_lastX, _lastY));
- if(l.size() > 0)
-     _currentSelection = l.at(0);
- if(_currentSelection != NULL &&(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL))
-    {
-     editScene->setFocusItem(((PositionableJPanel*)_currentSelection)->widget);
-       ((PositionableJPanel*)_currentSelection)->widget->keyPressEvent(event);
-     event->setAccepted(true);
-        return;
-    }
-}
-void ControlPanelEditor::keyReleaseEvent(QKeyEvent * event)
-{
-    QList<Positionable*> l = getSelectedItems(QPointF(_lastX, _lastY));
-    if(l.size() > 0)
-        _currentSelection = l.at(0);
+//void ControlPanelEditor::keyPressEvent(QKeyEvent * event)
+//{
+// QList<Positionable*>* l = getSelectedItems(QPointF(_lastX, _lastY));
+// if(l->size() > 0)
+//     _currentSelection = l->at(0);
+// if(_currentSelection != NULL &&(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL))
+//    {
+//     editScene->setFocusItem(((PositionableJPanel*)_currentSelection)->widget);
+//       ((PositionableJPanel*)_currentSelection)->widget->keyPressEvent(event);
+//     event->setAccepted(true);
+//        return;
+//    }
+//}
+//void ControlPanelEditor::keyReleaseEvent(QKeyEvent * event)
+//{
+//    QList<Positionable*>* l = getSelectedItems(QPointF(_lastX, _lastY));
+//    if(l->size() > 0)
+//        _currentSelection = l->at(0);
 
-    if(_currentSelection != NULL &&(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL))
-    {
-        ((PositionableJPanel*)_currentSelection)->widget->keyReleaseEvent(event);
-        event->setAccepted(true);
-        return;
+//    if(_currentSelection != NULL &&(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL))
+//    {
+//        ((PositionableJPanel*)_currentSelection)->widget->keyReleaseEvent(event);
+//        event->setAccepted(true);
+//        return;
+//    }
+//}
+
+/*protected*/ void ControlPanelEditor::setSecondSelectionGroup(QList<Positionable*>* list) {
+        _secondSelectionGroup = list;
     }
+
+//@Override
+/*protected*/ void ControlPanelEditor::paintTargetPanel(QGraphicsScene* g)
+{
+  // needed to create PositionablePolygon
+  _shapeDrawer->paint(g);
+//  foreach (Positionable* p, *_contents) {
+//   if(qobject_cast<PositionablePolygon*>(p) != NULL)
+//    p->paint(g);
+//  }
+
+
+#if 1
+  if (_secondSelectionGroup != NULL)
+  {
+//        Graphics2D g2d = (Graphics2D) g;
+//        g2d.setColor(new Color(150, 150, 255));
+//        g2d.setStroke(new java.awt.BasicStroke(2.0f));
+  foreach (Positionable* p, *_secondSelectionGroup)
+  {
+      //if (!(p instanceof jmri.jmrit.display.controlPanelEditor.shape.PositionableShape)) {
+   if(qobject_cast<PositionableShape*>(p) == NULL)
+   {
+    QGraphicsRectItem* item = new QGraphicsRectItem(p->getX(), p->getY(), p->maxWidth(), p->maxHeight());
+    item->setPen(QPen(QColor(150, 150, 255),2));
+    g->addItem(item);
+   }
+   else
+   {
+    ((PositionableShape*)p)->paint(g);
+   }
+  }
+ }
+#endif
 }

@@ -188,7 +188,7 @@ PSPItem::PSPItem(PerformScriptModel* m, QWidget* parent) : QWidget(parent)
 }
 
 //@Override
-/*public*/ void PSPItem::actionPerformed(ActionEvent* e)
+/*public*/ void PSPItem::actionPerformed(ActionEvent* /*e*/)
 {
  /*synchronized (self)*/
  {

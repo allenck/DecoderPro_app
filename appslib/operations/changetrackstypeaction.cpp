@@ -15,7 +15,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ChangeTracksTypeAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ChangeTracksTypeAction::actionPerformed(ActionEvent* /*e*/) {
      new ChangeTracksFrame(_lef);
  }
 }

@@ -60,6 +60,7 @@
  startAtTime =  /*QDateTime()*/QDateTime::currentDateTime();
  startClockOption = Timebase::NONE;	// request start of a clock at start up
  notInitialized = true;  // true before initialization received from start up
+ pauseTime = QDateTime();
 
 //    SimpleDateFormat timeStorageFormat = NULL;
 

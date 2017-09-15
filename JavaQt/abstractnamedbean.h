@@ -23,6 +23,8 @@ public:
      */
     void setComment(QString comment);
     QString getDisplayName();
+    /*public*/ QString getFullyFormattedDisplayName();
+
     /*public synchronized*/ virtual void addPropertyChangeListener(PropertyChangeListener* l, QString beanRef, const QString listenerRef);
     /*public synchronized*/ virtual void addPropertyChangeListener(PropertyChangeListener* l);
     /*public synchronized*/ virtual void removePropertyChangeListener(PropertyChangeListener* l);
@@ -47,11 +49,13 @@ public:
 
     /*public java.util.*/QList<QString> getPropertyKeys();
     PropertyChangeSupport* pcs;
+    /*public*/ void removeProperty(QString key);
 
 signals:
 //    void propertyChange(AbstractNamedBean* bean, QString propertyName, QString o, QString n);
 //    void propertyChange( QString propertyName, QVariant o, QVariant n);
     void propertyChange(PropertyChangeEvent*);
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt); //throws java.beans.PropertyVetoException
 
 public slots:
 private:

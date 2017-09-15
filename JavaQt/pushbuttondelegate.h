@@ -21,9 +21,10 @@ public:
 class JAVAQTSHARED_EXPORT MyDelegate : public QItemDelegate
 {
     Q_OBJECT
-
+QString buttonText;
 public:
     MyDelegate(QObject *parent = 0);
+    void setText(QString text);
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 };

@@ -118,8 +118,9 @@ void LRouteTableAction::common()
  * Create the JTable DataModel, along with the changes
  * for the specific case of Road Condtionals
  */
-/*protected*/ void LRouteTableAction::createModel() {
-    m = new LBeanTableDataModel(this);
+/*protected*/ void LRouteTableAction::createModel()
+{
+ m = new LBeanTableDataModel(this);
 }
 
 //class LBeanTableDataModel :  BeanTableDataModel
@@ -221,7 +222,7 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
  if (index.column() == EDITCOL)
   return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
  if (index.column() == ENABLECOL)
-  return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
+  return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
  else
   return BeanTableDataModel::flags(index);
 }
@@ -252,7 +253,6 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
    return ((DefaultLogix*)x)->getEnabled()?Qt::Checked:Qt::Unchecked;
   }
  }
-
  return QVariant();
 }
 
@@ -348,10 +348,11 @@ public void setDisplayDeleteMsg(int boo) { InstanceManager.getDefault(jmri.UserP
 /*public*/ void LBeanTableDataModel::clickOn(NamedBean* /*t*/) {
 }
 
-/*public*/ QString LBeanTableDataModel::getValue(QString /*s*/) {
+/*public*/ QString LBeanTableDataModel::getValue(QString /*s*/) const
+{
     return "";
 }
-#if 1
+
 // ovewrdife to get right width
 /*protected*/ void LBeanTableDataModel::configDeleteColumn(JTable* table) {
  // have the delete column hold a button
@@ -379,8 +380,6 @@ public void setDisplayDeleteMsg(int boo) { InstanceManager.getDefault(jmri.UserP
 ///////////////////////////////////// Edit window //////////////////////////////
 
 
-#endif
-#if 1
 bool systemNameComparator(LRouteElement* e1, LRouteElement* e2)
 {
  QString o1 = e1->getSysName();
@@ -470,7 +469,6 @@ bool systemNameComparator(LRouteElement* e1, LRouteElement* e2)
   }
  }
 }
-#endif
 void LRouteTableAction::buildLists()
 {
  //TreeSet <RouteInputElement>inputTS = new TreeSet<RouteInputElement>(new RouteElementComparator());
@@ -1049,7 +1047,7 @@ if (c != NULL) {
 /**
 * Responds to the Cancel button
 */
-void LRouteTableAction::cancelPressed(ActionEvent* e)
+void LRouteTableAction::cancelPressed(ActionEvent* /*e*/)
 {
  Logix* logix = checkNamesOK();
  if (logix != NULL)

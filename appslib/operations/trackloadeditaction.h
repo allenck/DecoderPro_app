@@ -12,7 +12,7 @@ namespace Operations
  public:
   TrackLoadEditAction(TrackEditFrame* frame);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  private:
   /*private*/ TrackEditFrame* _frame;

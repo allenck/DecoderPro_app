@@ -33,7 +33,7 @@ PositionableCircleXml::PositionableCircleXml(QObject *parent) :
     storeCommonAttributes(p, element);
 
     QDomElement elem = doc.createElement("size");
-    elem.setAttribute("radius", p->getRadius());
+    elem.setAttribute("radius", p->getWidth()); // actually diameter
     element.appendChild(elem);
 
     element.setAttribute("class", "jmri.jmrit.display.controlPanelEditor.shape.configurexml.PositionableCircleXml");
@@ -57,7 +57,7 @@ PositionableCircleXml::PositionableCircleXml(QObject *parent) :
     PositionableCircle* ps = new PositionableCircle(ed);
 
     QDomElement elem = element.firstChildElement("size");
-    ps->setRadius(getInt(elem, "radius"));
+    ps->setWidth(getInt(elem, "radius")); // actually diameter - too late to change name
 
     // get object class and determine editor being used
     Editor* editor = (Editor*)o;

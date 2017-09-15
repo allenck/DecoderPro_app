@@ -37,7 +37,7 @@ void LcdClockAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void LcdClockAction::actionPerformed(ActionEvent* e) {
+/*public*/ void LcdClockAction::actionPerformed(ActionEvent* /*e*/) {
 
     LcdClockFrame* f = new LcdClockFrame();
     f->setVisible(true);

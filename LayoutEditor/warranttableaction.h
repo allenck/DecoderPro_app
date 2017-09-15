@@ -123,7 +123,7 @@ public:
 //         myListener(java.awt.Window w) {
 //             _w = w;
 //         }  */
- /*public*/ void actionPerformed(ActionEvent* e)
+ /*public*/ void actionPerformed(ActionEvent* /*e*/)
  {
      WarrantTableAction::getInstance()->_hasErrors = false;
      WarrantTableAction::getInstance()->_textArea = NULL;

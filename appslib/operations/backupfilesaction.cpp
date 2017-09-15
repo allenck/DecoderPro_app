@@ -33,7 +33,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void BackupFilesAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void BackupFilesAction::actionPerformed(ActionEvent* /*e*/) {
      backUp();
  }
 

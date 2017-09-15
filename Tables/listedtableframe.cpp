@@ -1,0 +1,767 @@
+#include "listedtableframe.h"
+#include "userpreferencesmanager.h"
+#include "instancemanager.h"
+#include <QLabel>
+#include "box.h"
+#include "abstracttableaction.h"
+#include "beantabledatamodel.h"
+#include <QMenu>
+#include <QStackedLayout>
+#include <QSplitter>
+#include <QMouseEvent>
+#include "listedtableaction.h"
+#include "jlist.h"
+#include <QMenu>
+#include <QMenuBar>
+#include "savemenu.h"
+#include <QPushButton>
+#include <QStatusBar>
+#include <QGridLayout>
+
+//ListedTableFrame::ListedTableFrame()
+//{
+
+//}
+/**
+ * Provide access to the various tables via a listed pane. Based upon the
+ * apps.gui3.TabbedPreferences.java by Bob Jacoben
+ * <P>
+ * @author	Kevin Dickerson Copyright 2010
+ * @author	Bob Jacobsen Copyright 2010
+ */
+///*public*/ class ListedTableFrame extends BeanTableFrame {
+
+
+/*public*/ bool ListedTableFrame::isMultipleInstances() {
+ return true;
+}
+
+/*static*/ QList<TabbedTableItemListArray*>* ListedTableFrame::tabbedTableItemListArrayArray = new QList<TabbedTableItemListArray*>();
+/*static*/ bool ListedTableFrame::init = false;
+/*static*/ int ListedTableFrame::lastdivider = 0;
+
+/*public*/ ListedTableFrame::ListedTableFrame(QWidget* parent)
+ : BeanTableFrame(tr("Listed Table"), parent)
+{
+//this(tr("TitleListedTable"));
+ common();
+}
+void ListedTableFrame::common()
+{
+ setObjectName("ListedTableFrame");
+ pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ itemBeingAdded = NULL;
+ log = new Logger("ListedTableFrame");
+ lastSelectedItem = NULL;
+ thisLayout = new QVBoxLayout(getContentPane());
+ statusBar()->show();
+}
+
+/*public*/ ListedTableFrame::ListedTableFrame(QString s, QWidget* parent)
+ : BeanTableFrame(s, parent)
+{
+//super(s);
+common();
+if (InstanceManager::getDefault("ListedTableFrame") == NULL) {
+    //We add this to the instanceManager so that other components can add to the table
+    InstanceManager::store(this, "ListedTableFrame");
+}
+if (!init) {
+    /*Add the default tables to the static list array, this should only be done
+     once when first loaded*/
+    addTable("jmri.jmrit.beantable.TurnoutTableTabAction", tr("Turnout Table"), false);
+    addTable("jmri.jmrit.beantable.SensorTableTabAction", tr("Sensor Table"), false);
+    addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
+    addTable("jmri.jmrit.beantable.SignalHeadTableAction", tr("Signal Table"), true);
+    addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
+    addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);
+#if 1
+    addTable("jmri.jmrit.beantable.SignalMastLogicTableAction", tr("Signal MastLogic Table"), true);
+#endif
+    addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
+    addTable("jmri.jmrit.beantable.MemoryTableAction", tr("Memory Table"), true);
+    addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
+    addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
+    addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
+    addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
+    addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
+    addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
+    addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
+    addTable("jmri.jmrit.beantable.IdTagTableAction", tr("IdTag Table"), true);
+    init = true;
+ }
+}
+
+/*public*/ void ListedTableFrame::initComponents()
+{
+ actionList = new ActionJList(this);
+
+ detailpanel = new QStackedWidget();
+ detailpanel->setObjectName("detailPanel");
+ detailpanel->resize(600,600);
+ QVBoxLayout* detailPanelLayout;
+ //detailpanel->setLayout(detailPanelLayout = new QVBoxLayout()); // Java CardLayout
+ //QVBoxLayout* detailPanelLayout = new QVBoxLayout(detailpanel);
+ tabbedTableArray = new QList<LTFTabbedTableItem*>(); //(TabbedTableItemListArrayArray->size());
+ QList<TabbedTableItemListArray*>* removeItem = new QList<TabbedTableItemListArray*>(/*5*/);
+ for (int x = 0; x < tabbedTableItemListArrayArray->size(); x++)
+ {
+  /* Here we add all the tables into the panel*/
+  TabbedTableItemListArray* item = tabbedTableItemListArrayArray->value(x);
+  try {
+  LTFTabbedTableItem* itemModel = new LTFTabbedTableItem(item->getClassAsString(), item->getItemString(), item->getStandardTableModel(), this);
+  itemBeingAdded = itemModel;
+  //detailpanel->add(itemModel->getPanel(), itemModel->getClassAsString());
+  //detailPanelLayout->addWidget(itemModel->getPanel());
+  detailpanel->addWidget(itemModel->getPanel());
+  tabbedTableArray->append(itemModel);
+  itemBeingAdded->getAAClass()->addToFrame(this);
+  } catch (Exception ex) {
+ //detailpanel->layout()->addWidget(errorPanel(item->getItemString()), item->getClassAsString());
+  //detailPanelLayout->addWidget(errorPanel(item->getItemString()));
+  log->error("Error when adding " + item->getClassAsString() + " to display\n" /*+ ex*/);
+ //ex.printStackTrace();
+  removeItem->append(item);
+  }
+  detailpanel->adjustSize();
+ }
+
+ foreach (TabbedTableItemListArray* dead, *removeItem) {
+    tabbedTableItemListArrayArray->removeOne(dead);
+ }
+
+ list = new JList(getChoices());
+//listScroller = new JScrollPane(list);
+
+//    list->setSelectionMode(ListSelectionModel::SINGLE_INTERVAL_SELECTION);
+//    list->setLayoutOrientation(JList.VERTICAL);
+//    list->addMouseListener(actionList);
+ connect(list, SIGNAL(pressed(QModelIndex)), this, SLOT(On_listSelection(QModelIndex)));
+
+
+ buttonpanel = new QWidget();
+ buttonpanel->setLayout(new QVBoxLayout); //BorderLayout(5, 0));
+ buttonpanel->setLayout(new QVBoxLayout); //BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
+ buttonpanel->layout()->addWidget(/*listScroller*/list);
+
+ buildMenus(tabbedTableArray->at(0));
+ setTitle(tabbedTableArray->value(0)->getItemString());
+
+ cardHolder = new QSplitter(Qt::Horizontal); //JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+ //            buttonpanel, detailpanel);
+ cardHolder->addWidget(buttonpanel);
+ cardHolder->addWidget(detailpanel);
+
+
+//cardHolder->setDividerSize(8);
+//    if (lastdivider != 0) {
+//        cardHolder->setDividerLocation(lastdivider);
+//    } else { //Else if no specific size has been given we set it to the lists preferred width
+//        cardHolder->setDividerLocation(listScroller.getPreferredSize().width);
+//    }
+#if 0
+    cardHolder.addPropertyChangeListener(new PropertyChangeListener() {
+        //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
+                justification = "We only intend to use/save the last position of the Split frame")
+        /*public*/ void propertyChange(PropertyChangeEvent e) {
+            if (e.getPropertyName().equals("dividerLocation")) {
+                lastdivider = (Integer) e.getNewValue();
+            }
+        }
+    });
+#endif
+ //    cardHolder->setOneTouchExpandable(true);
+ getContentPane()->layout()->addWidget(cardHolder);
+ adjustSize();
+ actionList->selectListItem(0);
+}
+
+QWidget* ListedTableFrame::errorPanel(QString text)
+{
+    QWidget* error = new QWidget();
+    error->layout()->addWidget(new QLabel(tr("Sorry, an Error occurred and we are unable to display table for %1").arg( text)));
+    return error;
+}
+
+/* Method allows for the table to goto a specific list item */
+/*public*/ void ListedTableFrame::gotoListItem(QString selection) {
+for (int x = 0; x < tabbedTableArray->size(); x++)
+{
+    try {
+        if (tabbedTableArray->value(x)->getClassAsString()==(selection)) {
+            actionList->selectListItem(x);
+            return;
+        }
+    } catch (Exception ex) {
+        log->error("An error occurred in the goto list for " + selection);
+    }
+ }
+}
+
+/*public*/ void ListedTableFrame::addTable(QString aaClass, QString choice, bool stdModel)
+{
+    TabbedTableItemListArray* itemBeingAdded = NULL;
+    for (int x = 0; x < tabbedTableItemListArrayArray->size(); x++)
+    {
+        if (tabbedTableItemListArrayArray->value(x)->getClassAsString()==(aaClass))
+        {
+            log->info("Class " + aaClass + " is already added");
+            itemBeingAdded = tabbedTableItemListArrayArray->value(x);
+            break;
+        }
+    }
+    if (itemBeingAdded == NULL)
+    {
+        itemBeingAdded = new TabbedTableItemListArray(aaClass, choice, stdModel);
+        tabbedTableItemListArrayArray->append(itemBeingAdded);
+    }
+}
+
+/*public*/ void ListedTableFrame::dispose() {
+for (int x = 0; x < tabbedTableArray->size(); x++) {
+    tabbedTableArray->value(x)->dispose();
+}
+//if (list->getListSelectionListeners().length() > 0) {
+//    list->removeListSelectionListener(list->getListSelectionListeners()[0]);
+//}
+//super.dispose();
+BeanTableFrame::dispose();
+}
+
+void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
+{
+    QMenuBar* menuBar = new QMenuBar();
+    //ResourceBundle rb = ResourceBundle.getBundle("apps.AppsBundle");
+    QMenu* fileMenu = new QMenu(tr("File"));
+    menuBar->addMenu(fileMenu);
+
+    QAction* newItem = new QAction(tr("New Window"), this);
+    fileMenu->addAction(newItem);
+//    newItem.addActionListener(new ActionListener() {
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            actionList.openNewTableWindow(list.getSelectedIndex());
+//        }
+//    });
+    connect(newItem, SIGNAL(triggered(bool)), this, SLOT(On_newItem_triggered()));
+
+    fileMenu->addMenu(new SaveMenu());
+
+    QAction* printItem = new QAction(tr("Print Table"),this);
+    fileMenu->addAction(printItem);
+#if 0
+    printItem.addActionListener(new ActionListener() {
+        /*public*/ void actionPerformed(ActionEvent e) {
+            try {
+                // MessageFormat headerFormat = new MessageFormat(getTitle());  // not used below
+                MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
+                if (item.getStandardTableModel()) {
+                    item.getDataTable().print(JTable.PrintMode.FIT_WIDTH, NULL, footerFormat);
+                } else {
+                    item.getAAClass().print(JTable.PrintMode.FIT_WIDTH, NULL, footerFormat);
+                }
+            } catch (java.awt.print.PrinterException e1) {
+                log->warn("error printing: " + e1, e1);
+            } catch (NullPointerException ex) {
+                log->error("Trying to print returned a NPE error");
+            }
+        }
+    });
+#endif
+    QMenu* viewMenu = new QMenu(tr("View"));
+    menuBar->addMenu(viewMenu);
+    QSignalMapper* mapper = new QSignalMapper();
+    connect(mapper, SIGNAL(mapped(QObject*)), this, SLOT(On_viewMenu_triggered(QObject*)));
+    for (int i = 0; i < tabbedTableItemListArrayArray->size(); i++) {
+        /*final*/ TabbedTableItemListArray* itemList = tabbedTableItemListArrayArray->at(i);
+        QAction* viewItem = new QAction(itemList->getItemString(), this);
+        viewMenu->addAction(viewItem);
+//        viewItem.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                gotoListItem(itemList.getClassAsString());
+//            }
+//        });
+        mapper->setMapping(viewItem, (QObject*)itemList);
+        connect(viewItem, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+    }
+
+    this->setMenuBar(menuBar);
+    try {
+        item->getAAClass()->setMenuBar(this);
+        this->addHelpMenu(item->getAAClass()->helpTarget(), true);
+    } catch (Exception ex) {
+        log->error("Error when trying to set menu bar for " + item->getClassAsString() + "\n" /*+ ex*/);
+    }
+    this->update();
+}
+
+void ListedTableFrame::On_newItem_triggered()
+{
+ actionList->openNewTableWindow(list->getSelectedIndex());
+}
+
+void ListedTableFrame::On_viewMenu_triggered(QObject* obj)
+{
+    TabbedTableItemListArray* itemList = (TabbedTableItemListArray*)obj;
+    gotoListItem(itemList->getClassAsString());
+}
+
+/* This is a bit of a bodge to add the contents to the bottom box and keep
+* it backwardly compatable with the original views, if the original views
+* are depreciated then this can be re-written
+*/
+//@TODO Sort out the procedure to add to bottom box
+/*protected*/ void ListedTableFrame::addToBottomBox(QWidget* comp, QString c)
+{
+    for (int x = 0; x < tabbedTableArray->size(); x++) {
+        if (tabbedTableArray->at(x)->getClassAsString()==(c)) {
+            tabbedTableArray->at(x)->addToBottomBox(comp);
+            return;
+        }
+    }
+}
+
+/*protected*/ /*static*/ QList<QString> ListedTableFrame::getChoices()
+{
+ QList<QString> choices = QList<QString>();
+ for (int x = 0; x < tabbedTableItemListArrayArray->size(); x++)
+ {
+    choices.append(tabbedTableItemListArrayArray->at(x)->getItemString());
+ }
+ return choices;
+}
+
+//@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
+//    justification = "We only intend to use/save the last position of the Split frame")
+/*public*/ void ListedTableFrame::setDividerLocation(int loc)
+{
+ if (loc == 0) {
+    return;
+ }
+ //cardHolder.setDividerLocation(loc);
+ //cardHolder->moveSplitter(loc,0);
+ lastdivider = loc;
+}
+
+/*public*/ int ListedTableFrame::getDividerLocation()
+{
+ return lastdivider;
+}
+
+//static class TabbedTableItem {
+
+//AbstractTableAction tableAction;
+//String className;
+//String itemText;
+//BeanTableDataModel dataModel;
+//JTable dataTable;
+//JScrollPane dataScroll;
+//Box bottomBox;
+//int bottomBoxIndex;	// index to insert extra stuff
+/*static*/ /*final*/ int LTFTabbedTableItem::bottomStrutWidth = 20;
+
+//bool TabbedTableItem::standardModel = true;
+
+
+LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool stdModel, ListedTableFrame* frame)
+{
+    this->frame = frame;
+    dataPanel = new QWidget();
+    dataPanel->setObjectName("dataPanel");
+    dataPanel->resize(800,600);
+    dataPanel->setMinimumSize(300,300);
+    log = new Logger("LTFTabbedTableItem");
+
+    className = aaClass;
+    itemText = choice;
+    standardModel = stdModel;
+    tableAction = NULL;
+
+    bottomBox = Box::createHorizontalBox();
+    //QHBoxLayout* bottomBoxLayout = new QHBoxLayout(bottomBox);
+    bottomBox->layout()->addWidget(Box::createHorizontalGlue());
+    bottomBoxIndex = 0;
+#if 0 // TODO:
+    try {
+        //Class<?> cl = Class.forName(aaClass);
+        java.lang.reflect.Constructor<?> co = cl.getConstructor(new Class[]{String.class});
+        tableAction = (AbstractTableAction) co.newInstance(choice);
+    } catch (ClassNotFoundException e1) {
+        log->error("Not a valid class : " + aaClass);
+        return;
+    } catch (NoSuchMethodException e2) {
+        log->error("Not such method : " + aaClass);
+        return;
+    } catch (InstantiationException e3) {
+        log->error("Not a valid class : " + aaClass);
+        return;
+    } catch (ClassCastException e4) {
+        log->error("Not part of the abstractTableActions : " + aaClass);
+        return;
+    } catch (Exception e) {
+        log->error("Exception " + e.toString());
+        return;
+    }
+#endif
+    QString classname = aaClass.mid(aaClass.lastIndexOf(".")+1);
+    QObject* classPtr = NULL;
+    int id = QMetaType::type(classname.toLocal8Bit());
+    if(id != 0)
+    {
+  #if QT_VERSION < 0x050000
+     classPtr = (QObject*)QMetaType::construct(id);
+  #else
+     classPtr = (QObject*)QMetaType::create(id);
+#endif
+    }
+    else
+    {
+      log->error("Not a valid class : " + aaClass);
+      return;
+    }
+    const QMetaObject* metaObject = classPtr->metaObject();
+    int constructorCount = metaObject->constructorCount();
+    //for(int i = metaObject->methodOffset(); i < metaObject->constructorCount(); ++i)
+    QStringList constructors = QStringList();
+    for(int i = 0; i < metaObject->constructorCount(); ++i)
+    {
+ #if QT_VERSION < 0x050000
+     constructors << QString::fromLatin1(metaObject->method(i).signature());
+ #else
+     //constructors << QString::fromLatin1(metaObject->method(i).methodSignature());
+     constructors << QString::fromLatin1(metaObject->constructor(i).methodSignature());
+ #endif
+    }
+
+     tableAction = (AbstractTableAction*)metaObject->newInstance(Q_ARG(QString, itemText),Q_ARG(QObject*, this));
+     tableAction->setText(itemText);
+
+    //If a panel model is used, it should really add to the bottom box
+    //but it can be done this way if required.
+    dataPanel->setLayout(dataPanelLayout = new /*BorderLayout()*/QGridLayout);
+
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(dataPanel->sizePolicy().hasHeightForWidth());
+    dataPanel->setSizePolicy(sizePolicy);
+    if (stdModel) {
+        createDataModel();
+    } else {
+        addPanelModel();
+    }
+}
+
+void LTFTabbedTableItem::createDataModel() {
+    dataModel = tableAction->getTableDataModel();
+    MySortFilterProxyModel* sorter = new MySortFilterProxyModel(dataModel);
+    dataTable = dataModel->makeJTable(sorter);
+//    sorter->setTableHeader(dataTable->getTableHeader());
+    //dataScroll = new JScrollPane(dataTable);
+
+//    try {
+//    QSortFilterProxyModel* tmodel = ((QSortFilterProxyModel*) dataTable->getModel());
+//        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
+//        tmodel.setSortingStatus(BeanTableDataModel.SYSNAMECOL, TableSorter.ASCENDING);
+//    } catch (java.lang.ClassCastException e) {
+//    }  // happens if not sortable table
+    dataModel->configureTable(dataTable);
+
+    dataTable->setMinimumSize(300,300);
+    QSize dataTableSize = dataTable->sizeHint();
+    // width is right, but if table is empty, it's not high
+    // enough to reserve much space.
+    dataTableSize.setHeight(qMax(dataTableSize.height(), 400));
+    //dataTable->resize(dataTableSize);
+
+    // set preferred scrolling options
+//    dataScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+//    dataScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(dataTable->sizePolicy().hasHeightForWidth());
+    dataTable->setSizePolicy(sizePolicy);
+
+    //dataPanel.add(dataScroll, BorderLayout.CENTER);
+    dataPanelLayout->addWidget(dataTable,0,0); //,0, Qt::AlignHCenter);
+
+    //dataPanel.add(bottomBox, BorderLayout.SOUTH);
+    dataPanelLayout->addWidget(bottomBox, 1, 0); //, 0, Qt::AlignBottom);
+
+    if (tableAction->includeAddButton())
+    {
+     QPushButton* addButton = new QPushButton(tr("Add"));
+     addToBottomBox(addButton);
+//        addButton.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                tableAction.addPressed(e);
+//            }
+//        });
+     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+     sizePolicy.setHorizontalStretch(0);
+     sizePolicy.setVerticalStretch(0);
+     sizePolicy.setHeightForWidth(addButton->sizePolicy().hasHeightForWidth());
+     addButton->setSizePolicy(sizePolicy);
+     connect(addButton, SIGNAL(clicked()), tableAction, SLOT(addPressed()));
+    }
+    dataPanel->adjustSize();
+
+    dataModel->loadTableColumnDetails(dataTable);
+}
+
+void LTFTabbedTableItem::addPanelModel() {
+//    try {
+        //dataPanel.add(tableAction.getPanel(), BorderLayout.CENTER);
+     dataPanelLayout->addWidget(tableAction->getPanel(), 0,0); //, 0, Qt::AlignHCenter);
+        //dataPanel.add(bottomBox, BorderLayout.SOUTH);
+     dataPanelLayout->addWidget(bottomBox, 1,0); //, 0, Qt::AlignBottom);
+//    } catch (NullPointerException e) {
+//        log->error("An error occured while trying to create the table for " + itemText + " " + e.toString());
+//        e.printStackTrace();
+//    }
+     dataPanel->adjustSize();
+
+}
+
+bool LTFTabbedTableItem::getStandardTableModel() {
+    return standardModel;
+}
+
+QString LTFTabbedTableItem::getClassAsString() {
+    return className;
+}
+
+QString LTFTabbedTableItem::getItemString() {
+    return itemText;
+}
+
+AbstractTableAction* LTFTabbedTableItem::getAAClass() {
+    return tableAction;
+}
+
+QWidget* LTFTabbedTableItem::getPanel() {
+    return dataPanel;
+}
+
+JTable* LTFTabbedTableItem::getDataTable() {
+    return dataTable;
+}
+
+/*protected*/ void LTFTabbedTableItem::addToBottomBox(QWidget* comp) {
+    ((QHBoxLayout*)bottomBox->layout())->insertWidget(bottomBoxIndex,  Box::createHorizontalStrut( bottomStrutWidth) );
+    ++bottomBoxIndex;
+    ((QVBoxLayout*)bottomBox->layout())->insertWidget( bottomBoxIndex, comp);
+    ++bottomBoxIndex;
+}
+
+void LTFTabbedTableItem::dispose() {
+    if (dataModel != NULL) {
+        dataModel->saveTableColumnDetails(dataTable);
+        dataModel->dispose();
+    }
+    if (tableAction != NULL) {
+        tableAction->dispose();
+    }
+    dataModel = NULL;
+    dataTable = NULL;
+    //dataScroll = NULL;
+}
+//};
+
+//static class TabbedTableItemListArray {
+
+//String className;
+//String itemText;
+//boolean standardModel = true;
+
+TabbedTableItemListArray::TabbedTableItemListArray(QString aaClass, QString choice, bool stdModel) {
+    className = aaClass;
+    itemText = choice;
+    standardModel = stdModel;
+}
+
+bool TabbedTableItemListArray::getStandardTableModel() {
+    return standardModel;
+}
+
+QString TabbedTableItemListArray::getClassAsString() {
+    return className;
+}
+
+QString TabbedTableItemListArray::getItemString() {
+    return itemText;
+}
+
+//}
+
+/**
+* ActionJList This deals with handling non-default mouse operations on the
+* List panel and allows for right click popups and double click to open new
+* windows of over the items we are hovering over.
+*/
+//class ActionJList extends MouseAdapter {
+
+//JPopupMenu popUp;
+//JMenuItem menuItem;
+
+//protected BeanTableFrame frame;
+
+
+ActionJList::ActionJList(BeanTableFrame* f) {
+   clickDelay = 500;
+   currentItemSelected = -1;
+   clickTimer = NULL;
+   log = new Logger("ActionJList");
+   currentWidget = NULL;
+    frame = f;
+    popUp = new QMenu();
+    menuItem = new QAction(tr("Open in New Window"), this);
+    popUp->addAction(menuItem);
+//    menuItem.addActionListener(new ActionListener() {
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            openNewTableWindow(mouseItem);
+//        }
+//    });
+    connect(menuItem, SIGNAL(triggered(bool)), this, SLOT(openNewTableWindow(int)));
+#if 0
+    try {
+        Object p2 = Toolkit.getDefaultToolkit().getDesktopProperty("awt_multiclick_time");
+        if (p2 != NULL) {
+            clickDelay = ((Integer) p2).intValue();
+        }
+    } catch (Exception e2) {
+        log->error("Error parsing DesktopProperty awt_multiclick_time to set double click interval ", e2.toString());
+    }
+    try {
+        Object p2 = Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+        if (p2 != NULL) {
+            clickDelay = ((Integer) p2).intValue();
+        }
+    } catch (Exception e1) {
+        log->error("Error parsing DesktopProperty awt.multiClickInterval to set double click interval ", e1.toString());
+    }
+#endif
+    currentItemSelected = 0;
+}
+
+//int clickDelay = 500;
+//int currentItemSelected = -1;
+
+/*public*/ void ActionJList::mousePressed(QMouseEvent* e)
+{
+    //if (e.isPopupTrigger()) {
+ if(e->buttons() & Qt::RightButton)
+ {
+        showPopUp(e);
+    }
+}
+
+/*public*/ void ActionJList::mouseReleased(QMouseEvent* e) {
+    //if (e.isPopupTrigger()) {
+ if(e->buttons() & Qt::RightButton)
+ {
+  showPopUp(e);
+ }
+}
+
+//javax.swing.Timer clickTimer = NULL;
+
+//Records the item index that the mouse is currenlty over
+//int mouseItem;
+
+void ActionJList::showPopUp(QMouseEvent* e) {
+    //popUp.show(e.getComponent(), e.getX(), e.getY());
+   popUp->exec(QCursor::pos());
+    mouseItem = ((ListedTableFrame*)frame)->list->locationToIndex(e->pos()).row();
+}
+
+void ActionJList::setCurrentItem(int current) {
+    currentItemSelected = current;
+}
+
+/*public*/ void ActionJList::mouseClicked(QMouseEvent* e) {
+
+    mouseItem = ((ListedTableFrame*)frame)->list->locationToIndex(e->pos()).row();
+    if (popUp->isVisible()) {
+        return;
+    }
+    //if (e.isPopupTrigger()) {
+    if(e->buttons() & Qt::RightButton)
+    {
+        showPopUp(e);
+        return;
+    }
+ #if 0
+    if (clickTimer == NULL)
+    {
+        clickTimer = new Timer(clickDelay, new ActionListener() {
+            /*public*/ void actionPerformed(ActionEvent e) {
+                selectListItem(mouseItem);
+            }
+        });
+     clickTimer.setRepeats(false);
+    }
+    if (e.getClickCount() == 1) {
+        clickTimer.start();
+    } else if (e.getClickCount() == 2) {
+        clickTimer.stop();
+        openNewTableWindow(mouseItem);
+        list.setSelectedIndex(currentItemSelected);
+    }
+#endif
+}
+
+void ActionJList::openNewTableWindow(int index) {
+    LTFTabbedTableItem* item = ((ListedTableFrame*)frame)->tabbedTableArray->at(index);
+//    class WindowMaker implements Runnable {
+
+//        TabbedTableItem* item;
+
+//        WindowMaker(TabbedTableItem tItem) {
+//            item = tItem;
+//        }
+
+//        /*public*/ void run() {
+            ListedTableAction* tmp = new ListedTableAction(item->getItemString(), item->getClassAsString(), 0/*((ListedTableFrame*)frame)->cardHolder->getDividerLocation()*/);
+            tmp->actionPerformed();
+//        }
+//    }
+//    WindowMaker t = new WindowMaker(item);
+//    javax.swing.SwingUtilities.invokeLater(t);
+}
+
+void ActionJList::selectListItem(int index) {
+    currentItemSelected = index;
+    LTFTabbedTableItem* item = ((ListedTableFrame*)frame)->tabbedTableArray->at(index);
+    QStackedLayout* cl = (QStackedLayout*) (((ListedTableFrame*)frame)->detailpanel->layout());
+    //cl->show(detailpanel, item->getClassAsString());
+    cl->setCurrentIndex(currentItemSelected);
+//    if(currentWidget != NULL)
+//        currentWidget->hide();
+//    if(((ListedTableFrame*)frame)->cardHolder->indexOf(item->getPanel()) < 1)
+//    {
+//     ((ListedTableFrame*)frame)->cardHolder->addWidget(item->getPanel());
+//    }
+//    else
+//    {
+//     item->getPanel()->show();
+//    }
+//    currentWidget= item->getPanel();
+    frame->setTitle(item->getItemString());
+    frame->generateWindowRef();
+    try {
+        item->getAAClass()->setFrame(frame);
+        ((ListedTableFrame*)frame)->buildMenus(item);
+    } catch (Exception ex) {
+        log->error(ex.getLocalizedMessage()/*, ex*/);
+    }
+//    ((ListedTableFrame*)frame)->list->ensureIndexIsVisible(index);
+//    ((ListedTableFrame*)frame)->list->setSelectedIndex(index);
+}
+//}
+
+void ListedTableFrame::On_listSelection(QModelIndex ix)
+{
+ int row = ix.row();
+ actionList->selectListItem(row);
+}

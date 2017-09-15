@@ -178,6 +178,7 @@ void TurnoutWidget::on_chkAuto_toggled(bool bState)
 //                    canAddRange(e);
 //                }
 //            };
+   CancelButtonActionListener* cancelListener = new CancelButtonActionListener(this);
    RangeActionListener* rangeListener = new RangeActionListener(this);
         /* We use the proxy manager in this instance so that we can deal with
         duplicate usernames in multiple classes */
@@ -205,7 +206,7 @@ void TurnoutWidget::on_chkAuto_toggled(bool bState)
         sysName->setObjectName("sysName");
         userName->setObjectName("userName");
         prefixBox->setObjectName("prefixBox");
-        contentFrameLayout->addWidget(new AddNewHardwareDevicePanel(sysName, userName, prefixBox, numberToAdd, range, tr("OK"), listener, rangeListener));
+        contentFrameLayout->addWidget(new AddNewHardwareDevicePanel(sysName, userName, prefixBox, numberToAdd, range, tr("OK"), listener, cancelListener, rangeListener));
         canAddRange(NULL);
     }
     addFrame->pack();
@@ -219,6 +220,15 @@ void OkButtonActionListener::actionPerformed(ActionEvent* /*e*/)
 {
  widget->okPressed();
 }
+CancelButtonActionListener::CancelButtonActionListener(TurnoutWidget *widget)
+{
+ this->widget = widget;
+}
+void CancelButtonActionListener::actionPerformed(ActionEvent *e)
+{
+ // TODO:
+}
+
 RangeActionListener::RangeActionListener(TurnoutWidget *widget)
 {
  this->widget = widget;

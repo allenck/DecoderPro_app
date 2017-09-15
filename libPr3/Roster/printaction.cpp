@@ -31,6 +31,6 @@
 }
 
 
-/*public*/ void PrintAction::actionPerformed(ActionEvent* e) {
+/*public*/ void PrintAction::actionPerformed(ActionEvent* /*e*/) {
  mFrame->printPanes(isPreview);
 }

@@ -9,18 +9,19 @@ class LIBTABLESSHARED_EXPORT TurnoutTableTabAction : public AbstractTableTabActi
     Q_OBJECT
 public:
     explicit TurnoutTableTabAction(QObject *parent = 0);
-    /*public*/ TurnoutTableTabAction(QString s, QObject *parent);
+    Q_INVOKABLE TurnoutTableTabAction(QString s, QObject *parent);
     ~TurnoutTableTabAction() {}
-    TurnoutTableTabAction(const TurnoutTableTabAction& that) : AbstractTableTabAction(that.text(), that.parent()) {}
+    Q_INVOKABLE TurnoutTableTabAction(const TurnoutTableTabAction& that) : AbstractTableTabAction(that.text(), that.parent()) {}
     BeanTableFrame* currFrame();
     void setCurrFrame(BeanTableFrame *frame);
+    static BeanTableFrame* frame;
+    QWidget* getPane();
 
 signals:
 
 public slots:
 private:
     void common();
-    static BeanTableFrame* frame;
 protected:
     /*protected*/ Manager* getManager();
     /*protected*/ QString getClassName() ;
@@ -28,5 +29,5 @@ protected:
     /*protected*/ QString helpTarget();
 
 };
-
+Q_DECLARE_METATYPE(TurnoutTableTabAction)
 #endif // TURNOUTTABLETABACTION_H

@@ -39,7 +39,7 @@ namespace Operations
  }
 
 
- /*public*/ void PrintRouteAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintRouteAction::actionPerformed(ActionEvent* /*e*/) {
      if (route == NULL) {
          return;
      }

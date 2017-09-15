@@ -20,21 +20,25 @@
 /*public*/ PositionableRectangle::PositionableRectangle(Editor* editor, QWidget* parent) : PositionableShape(editor, parent){
     //super(editor);
     _itemGroup = new QGraphicsItemGroup();
+    _shape = new JShape();
+    setObjectName("PositionableRectangle");
 }
 
-/*public*/ PositionableRectangle::PositionableRectangle(Editor* editor, QGraphicsItem* shape, QWidget* parent) : PositionableShape(editor, shape, parent)
+/*public*/ PositionableRectangle::PositionableRectangle(Editor* editor, QGraphicsRectItem* shape, QWidget* parent) : PositionableShape(editor, (JShape*)shape, parent)
 {
     //super(editor, shape);
     _itemGroup = new QGraphicsItemGroup();
     _itemGroup->addToGroup(shape);
+    _shape = new JShape();
+    setObjectName("PositionableRectangle");
 }
 
-/*public*/ void PositionableRectangle::setWidth(int w) {
-    _width = w;
-}
-/*public*/ void PositionableRectangle::setHeight(int h) {
-    _height = h;
-}
+///*public*/ void PositionableRectangle::setWidth(int w) {
+//    _width = w;
+//}
+///*public*/ void PositionableRectangle::setHeight(int h) {
+//    _height = h;
+//}
 /**
  * Rotate shape
  */
@@ -60,12 +64,12 @@
 /*public*/ void PositionableRectangle::makeShape() {
    // _shape = new Rectangle2D.Double(0, 0, _width, _height);
 
-   _shape  = new QGraphicsRectItem( QRectF(0, 0, _width, _height));
-   ((QGraphicsRectItem*)_shape)->setBrush(QBrush(_fillColor));
-   ((QGraphicsRectItem*)_shape)->setPen(QPen(QBrush(_lineColor),_lineWidth));
+   _shape->item  = new QGraphicsRectItem( QRectF(0, 0, _width, _height));
+   ((QGraphicsRectItem*)_shape->item)->setBrush(QBrush(_fillColor));
+   ((QGraphicsRectItem*)_shape->item)->setPen(QPen(QBrush(_lineColor),_lineWidth));
+   _shape->item->setPos(getX(), getY());
 
-   _itemGroup->addToGroup(_shape);
-   _itemGroup->setPos(getX(), getY());
+   _itemGroup->addToGroup(_shape->item);
 }
 
 /*public*/ Positionable* PositionableRectangle::deepClone() {
@@ -100,43 +104,43 @@ void PositionableRectangle::editAction()
 
 }
 
-/*public*/ bool PositionableRectangle::updateScene() // TODO: this function not in Java
-{
- QGraphicsRectItem* item = NULL;
+///*public*/ bool PositionableRectangle::updateScene() // TODO: this function not in Java
+//{
+// QGraphicsRectItem* item = NULL;
 
- if(_itemGroup != NULL)
- {
-  QList<QGraphicsItem*> itemList = _itemGroup->childItems();
-  foreach(QGraphicsItem* it, itemList)
-  {
-   if(qgraphicsitem_cast<QGraphicsRectItem*>(it) != NULL)
-   {
-    item = qgraphicsitem_cast<QGraphicsRectItem*>(it);
-   }
-  }
- }
- else
-  _itemGroup = new QGraphicsItemGroup();
+// if(_itemGroup != NULL)
+// {
+//  QList<QGraphicsItem*> itemList = _itemGroup->childItems();
+//  foreach(QGraphicsItem* it, itemList)
+//  {
+//   if(qgraphicsitem_cast<QGraphicsRectItem*>(it) != NULL)
+//   {
+//    item = qgraphicsitem_cast<QGraphicsRectItem*>(it);
+//   }
+//  }
+// }
+// else
+//  _itemGroup = new QGraphicsItemGroup();
 
- if(item != NULL)
- {
-  item->setRect(QRectF(0, 0, _width, _height));
- }
- else
-  item = new QGraphicsRectItem(0, 0, _width, _height, _itemGroup);
- if(showTooltip()) item->setToolTip(getTooltip());
- item->setPos(getX(), getY());
- item->setBrush(QBrush(_fillColor));
- item->setPen(QPen(QBrush(_lineColor),_lineWidth));
+// if(item != NULL)
+// {
+//  item->setRect(QRectF(0, 0, _width, _height));
+// }
+// else
+//  item = new QGraphicsRectItem(0, 0, _width, _height, _itemGroup);
+// if(showTooltip()) item->setToolTip(getTooltip());
+// item->setPos(getX(), getY());
+// item->setBrush(QBrush(_fillColor));
+// item->setPen(QPen(QBrush(_lineColor),_lineWidth));
 
- if((getDegrees()) != 0)
- {
-  QRectF bnd = item->boundingRect();
-  QPointF center = bnd.center();
-  item->setTransformOriginPoint(center);
-  item->setRotation(item->rotation()+ (qreal) getDegrees());
- }
- _itemGroup->setZValue(getDisplayLevel());
- _itemGroup->update();
- return true;
-}
+// if((getDegrees()) != 0)
+// {
+//  QRectF bnd = item->boundingRect();
+//  QPointF center = bnd.center();
+//  item->setTransformOriginPoint(center);
+//  item->setRotation(item->rotation()+ (qreal) getDegrees());
+// }
+// _itemGroup->setZValue(getDisplayLevel());
+// _itemGroup->update();
+// return true;
+//}

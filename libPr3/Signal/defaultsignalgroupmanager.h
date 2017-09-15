@@ -8,6 +8,8 @@ class LIBPR3SHARED_EXPORT DefaultSignalGroupManager : public SignalGroupManager
     Q_OBJECT
 public:
     explicit DefaultSignalGroupManager(QObject *parent = 0);
+    ~DefaultSignalGroupManager() {}
+    DefaultSignalGroupManager(const DefaultSignalGroupManager&) : SignalGroupManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
     /*public*/ char typeLetter();
@@ -27,5 +29,5 @@ public slots:
 private:
     Logger* log;
 };
-
+Q_DECLARE_METATYPE(DefaultSignalGroupManager)
 #endif // DEFAULTSIGNALGROUPMANAGER_H

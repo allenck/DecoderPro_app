@@ -25,7 +25,7 @@ public:
  ComboRadioButtons(QComboBox* box, EnumVariableValue* var, QWidget *parent = 0);
  ComboRadioButtons(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent = 0);
  virtual void addToPanel(QRadioButton* b, int i);
- void thisActionPerformed(ActionEvent* e);
+ void thisActionPerformed(ActionEvent* /*e*/);
  /*public*/ void setToolTipText(QString t);
  /*public*/ void dispose();
  QColor getBackground(QRadioButton* box);

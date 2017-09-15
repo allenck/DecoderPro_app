@@ -21,11 +21,11 @@ private:
     JTextField* _widthText;
     JTextField* _heightText;
 protected:
-    /*protected*/ virtual QWidget* makeParamsPanel();
+    /*protected*/ virtual QWidget* makeParamsPanel(PositionableShape* ps);
     /*protected*/ virtual void makeFigure();
-    /*protected*/ void setPositionableParams(PositionableShape* p);
+    ///*protected*/ void setPositionableParams(PositionableShape* p);
     /*protected*/ virtual void setDisplayParams(PositionableShape* p);
-    /*protected*/ virtual void updateFigure(PositionableShape* p);
+    ///*protected*/ virtual void updateFigure(PositionableShape* p);
 friend class DrawRoundRect;
 };
 

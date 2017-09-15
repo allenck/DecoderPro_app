@@ -142,7 +142,7 @@ protected:
    IndexedVariableValue* _var;
    int _col;
 
-   void thisActionPerformed(ActionEvent* e) {
+   void thisActionPerformed(ActionEvent* /*e*/) {
        // tell original
        _var->actionPerformed(e);
    }

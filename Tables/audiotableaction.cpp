@@ -60,7 +60,7 @@
  * @param actionName
  */
 /*public*/ AudioTableAction::AudioTableAction(QString actionName,QObject *parent) :
-  QAction(actionName, parent)
+  AbstractTableAction(actionName, parent)
 {
  //super(actionName);
  common();
@@ -76,7 +76,7 @@
  * Default constructor
  */
 /*public*/ AudioTableAction::AudioTableAction(QObject *parent) :
-  QAction("Audio Table", parent)
+  AbstractTableAction("Audio Table", parent)
 {
  //this(tr("Audio Table"), parent);
  common();

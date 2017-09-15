@@ -392,7 +392,7 @@ rosterItemSelectAction(NULL);
 //
 // ActionEventListener function for rosterSelector
 // Chooses a RosterEntry from the list and loads its relevant info.
-/*private*/ void VSDConfigPanel::rosterItemSelectAction(ActionEvent* e) {
+/*private*/ void VSDConfigPanel::rosterItemSelectAction(ActionEvent* /*e*/) {
 if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
         log->debug("Roster Entry selected...");
         setRosterEntry(rosterSelector->getSelectedRosterEntries()->at(0));
@@ -404,7 +404,7 @@ if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
 //
 // ActionEventListener method for rosterSaveButton
 // Writes VSDecoder info to the RosterEntry.
-/*private*/ void VSDConfigPanel::rosterSaveButtonAction(ActionEvent* e) {
+/*private*/ void VSDConfigPanel::rosterSaveButtonAction(ActionEvent* /*e*/) {
     log->debug("rosterSaveButton pressed");
     if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
         RosterEntry* r = rosterSelector->getSelectedRosterEntries()->at(0);

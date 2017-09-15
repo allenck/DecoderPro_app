@@ -60,7 +60,7 @@ void DualDecoderToolAction::common()
  common();
 }
 
-/*public*/ void DualDecoderToolAction::actionPerformed(ActionEvent* e)
+/*public*/ void DualDecoderToolAction::actionPerformed(ActionEvent* /*e*/)
 {
  (new DualDecoderSelectFrame())->setVisible(true);
 }

@@ -1,8 +1,8 @@
 #ifndef ABSTRACTREPORTER_H
 #define ABSTRACTREPORTER_H
-#include "abstractnamedbean.h"
+#include "reporter.h"
 #include "libPr3_global.h"
-class LIBPR3SHARED_EXPORT AbstractReporter : public AbstractNamedBean
+class LIBPR3SHARED_EXPORT AbstractReporter : public Reporter
 {
  Q_OBJECT
 public:
@@ -20,6 +20,7 @@ public:
 
 signals:
     void propertyChange(AbstractReporter*, QString pName, QVariant o, QVariant n);
+
 public slots:
  private:
     // internal data members

@@ -8,7 +8,9 @@
 #include <QMutex>
 #include "exceptions.h"
 #include "liblayouteditor_global.h"
+#include "windowlistener.h"
 
+class UserPreferencesManager;
 class AbstractAction;
 class AbstractShutDownTask;
 class LIBLAYOUTEDITORSHARED_EXPORT JmriJFrame : public JFrame
@@ -31,10 +33,10 @@ public:
     /*public*/ bool getModifiedFlag();
     /*final*/ static QString WINDOW_MODIFIED;// = "windowModified";
     /*public*/ void markWindowModified(bool yes);
-    /*public*/ void dispose();
+    /*public*/ virtual void dispose();
     /*public*/ virtual void addHelpMenu(QString ref, bool direct);
     /*public*/ static QList<JmriJFrame*>* getFrameList();
-    void init();
+    void init(bool saveSize, bool savePosition);
     void setLocation(int x, int y);
     /*public*/ QString getName();
     /*public*/ void setName(QString name);
@@ -50,6 +52,9 @@ public:
     /*public*/ void setEscapeKeyClosesWindow(bool closesWindow);
     /*public*/ bool getEscapeKeyClosesWindow();
     bool eventFilter(QObject *target, QEvent *event);
+    /*public*/ void componentMoved(QMoveEvent* e);
+    /*public*/ void componentResized(QResizeEvent* e);
+
 
 signals:
 
@@ -69,6 +74,8 @@ private:
  QMenu* windowMenu;
  /*private*/ static QString escapeKeyAction;// = "escapeKeyAction";
  /*private*/ bool escapeKeyActionClosesWindow;// = false;
+ //void closeEvent(QCloseEvent *);
+ /*private*/ void saveWindowSize(UserPreferencesManager* p);
 
 protected:
     /*protected*/ bool allowInFrameServlet;// = true;
@@ -98,6 +105,7 @@ protected:
     friend class EditCircuitFrame;
     friend class SlipTurnoutTextEdit;
     friend class RosterFrame;
+    friend class JmriJFrameWindowListener;
 };
 class MyAbstractShutDownTask : public AbstractShutDownTask
 {
@@ -109,6 +117,15 @@ public:
  private:
     JmriJFrame* frame;
     QString windowTitle;
+};
+
+class JmriJFrameWindowListener : public WindowListener
+{
+ Q_OBJECT
+ JmriJFrame* frame;
+public:
+ JmriJFrameWindowListener(JmriJFrame* frame);
+ void windowClosing(QCloseEvent*);
 };
 
 #endif // JMRIJFRAME_H

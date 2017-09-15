@@ -164,6 +164,12 @@ void CatalogPanel::common()
   _dTree->setRootIsDecorated(true);
   _dTree->setSelectionMode(QAbstractItemView::SingleSelection);
   connect(_dTree, SIGNAL(clicked(QModelIndex)), this, SLOT(on_tree_clicked(QModelIndex)));
+  _dTree->setMaximumHeight(120);
+  QSizePolicy sp = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+  sp.setHorizontalStretch(0);
+  sp.setVerticalStretch(0);
+  sp.setHeightForWidth(_dTree->hasHeightForWidth());
+  _dTree->setSizePolicy(sp);
 
 #if 0
     DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
@@ -456,8 +462,8 @@ void CatalogPanel::common()
  previewPanel->setObjectName("previewPanel");
  QVBoxLayout* previewPanelLayout;
  previewPanel->setLayout(previewPanelLayout = new QVBoxLayout(previewPanel/*, BoxLayout.Y_AXIS*/));
- previewPanelLayout->setMargin(0);
- previewPanel->setContentsMargins(0,0,0,0);
+ //previewPanelLayout->setMargin(0);
+ //previewPanel->setContentsMargins(0,0,0,0);
 // QWidget* p = new QWidget();
 // p->setObjectName("p");
 // p->setLayout(new QHBoxLayout(p/*, BoxLayout.X_AXIS*/));
@@ -468,9 +474,16 @@ void CatalogPanel::common()
  _preview->setObjectName("preview");
  QScrollArea* js = new QScrollArea;
  _preview->setMinimumSize(300,200);
+ QSizePolicy spPreview(QSizePolicy::Expanding, QSizePolicy::Expanding);
+ spPreview.setHorizontalStretch(1);
+ spPreview.setVerticalStretch(1);
+ spPreview.setHeightForWidth(_preview->sizePolicy().hasHeightForWidth());
+ _preview->setSizePolicy(spPreview);
+
  js->setToolTip(tr("Drag an icon from the Preview to replace an icon in the item group"));
  js->setBackgroundRole(QPalette::Dark);
  js->setWidget(_preview);
+ js->setWidgetResizable(true);
  previewPanelLayout->addWidget(js);
 // previewPanel->layout()->addWidget(_preview);
 // _preview->setMinimumSize( QSize(250, 200));
@@ -737,7 +750,7 @@ _preview->setLayout(new QVBoxLayout);
 //    nameLabel->setBackground(_currentBackground);
   nameLabel->setIcon(icon);
   nameLabel->setVisible(true);
-  nameLabel->setToolTip(icon->getURL());
+  nameLabel->setToolTip(QFileInfo(icon->getURL()).fileName());
 
   QWidget* p = new QWidget();
   QVBoxLayout* pl;
@@ -749,7 +762,8 @@ _preview->setLayout(new QVBoxLayout);
   pl->addWidget(nameLabel,0,Qt::AlignTop | Qt::AlignHCenter);
   QLabel* label = new QLabel(tr("scale %1:1").arg(printDbl(scale,2)));
   pl->addWidget(label,0,Qt::AlignBottom);
-  p->setMinimumHeight(h+20);
+  p->setMinimumHeight(h+60 + label->sizeHint().height());
+  p->setMinimumWidth(label->sizeHint().width());
 //    if (_noDrag) {
 //     p.addMouseListener(this);
 //    }
@@ -759,7 +773,7 @@ _preview->setLayout(new QVBoxLayout);
 //  if(h+20 > hRow)
   maxRowHeight = qMax(maxRowHeight, h);
   if(h+20 > maxRowHeight)
-   gridbag->setRowMinimumHeight(c.gridy, h+20);
+   gridbag->setRowMinimumHeight(c.gridy, /*h+20*/h+60 + label->sizeHint().height());
   if (_noMemory)
   {
    continue;

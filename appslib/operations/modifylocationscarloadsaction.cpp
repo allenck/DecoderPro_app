@@ -36,7 +36,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ModifyLocationsCarLoadsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ModifyLocationsCarLoadsAction::actionPerformed(ActionEvent* /*e*/) {
      // create a frame
      if (f == NULL || !f->isVisible()) {
          f = new LocationsByCarLoadFrame();

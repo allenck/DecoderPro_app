@@ -10,6 +10,7 @@
 //#include "editor.h"
 #include <QLabel>
 
+class QGraphicsScene;
 class QGraphicsTextItem;
 class QGraphicsItem;
 class QGraphicsItemGroup;
@@ -185,16 +186,18 @@ public:
     QGraphicsItem* getItem();
     void setItem(QGraphicsTextItem* item);
     QGraphicsItemGroup* _itemGroup;
+    QGraphicsItemGroup* _handleGroup;
 #if QT_VERSION >= 0x050000
     virtual void languageChange() {}
 #endif
     virtual bool updateScene() { return false;}
+    virtual void setLevel(int level) {}
+    virtual void paint(QGraphicsScene*) {}
 signals:
     
 public slots:
 private:
     bool _bVisible;
-    
 };
 
 #endif // POSITIONABLE_H

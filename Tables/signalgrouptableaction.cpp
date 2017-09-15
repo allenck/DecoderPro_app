@@ -150,7 +150,8 @@ void SignalGroupTableAction::setEnabled(bool b) { bEnabled = b;}
  */
 /*protected*/ void SignalGroupTableAction::createModel()
 {
- m = new SGBeanTableDataModel(this);
+ SGBeanTableDataModel* mm = new SGBeanTableDataModel(this);
+ m = (BeanTableDataModel*)mm;
 }
 
 SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
@@ -185,6 +186,7 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
 //    if (col==COMMENTCOL) return String.class;
 //    else return super.getColumnClass(col);
 //}
+
 /*public*/ int SGBeanTableDataModel::getPreferredWidth(int col) {
     if (col==SETCOL) return  JTextField(6).getPreferredSize().width();
     if (col==ENABLECOL) return  JTextField(6).getPreferredSize().width();
@@ -192,15 +194,17 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
     if (col==DELETECOL) return  JTextField(22).getPreferredSize().width();
     else return BeanTableDataModel::getPreferredWidth(col);
 }
+
 /*public*/ Qt::ItemFlags SGBeanTableDataModel::flags(const QModelIndex &index) const
 {
  int col = index.column();
     if (col==COMMENTCOL) return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     if (col==SETCOL) return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-    if (col==ENABLECOL) return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    if (col==ENABLECOL) return  Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
     if (col==DELETECOL) return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     else return BeanTableDataModel::flags(index);
 }
+
 /*public*/ QVariant SGBeanTableDataModel::data(const QModelIndex &mindex, int role) const
 {
  int col = mindex.column();
@@ -241,10 +245,21 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
 
 /*public*/ bool SGBeanTableDataModel::setData(const QModelIndex &mindex, const QVariant &value, int role)
 {
+ int col = mindex.column();
+ int row = mindex.row();
+ if(role == Qt::CheckStateRole)
+ {
+   if (col==ENABLECOL)
+   {
+     // alternate
+     SignalGroup* r = (SignalGroup*)getBySystemName(data(index(row, SYSNAMECOL),Qt::DisplayRole).toString());
+     bool v = r->getEnabled();
+     r->setEnabled(!v);
+     return true;
+   }
+ }
  if(role == Qt::EditRole)
  {
-  int col = mindex.column();
-  int row = mindex.row();
   if (col==SETCOL)
   {
    // set up to edit. Use separate Thread so window is created on top
@@ -269,12 +284,6 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
 //        /*javax.swing.SwingUtilities.*/invokeLater(t);
         t->start();
     }
-    else if (col==ENABLECOL) {
-        // alternate
-        SignalGroup* r = (SignalGroup*)getBySystemName(data(index(row, SYSNAMECOL),Qt::DisplayRole).toString());
-        bool v = r->getEnabled();
-        r->setEnabled(!v);
-    }
     else if (col==COMMENTCOL) {
         getBySystemName(sysNameList.at(row))->setComment(
                  value.toString());
@@ -284,6 +293,7 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
         // button fired, delete Bean
         deleteBean(row, col);
     }
+  return true;
  }
  BeanTableDataModel::setData(mindex,value, role);
 }
@@ -293,13 +303,18 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
 //      table.setDefaultRenderer(Boolean.class, new EnablingCheckboxRenderer());
 //      table.setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
 //      table.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
+    setColumnToHoldButton(table, SETCOL);
+    //setColumnToHoldButton(table, DELETECOL);
+    table->hideColumn(VALUECOL);
+    setColumnToHoldButton(table, DELETECOL, new QPushButton(tr("Delete")));
  BeanTableDataModel::configureTable(table);
 }
 
 /*protected*/ void SGBeanTableDataModel::configDeleteColumn(JTable* table)
 {
  // have the delete column hold a button
- act->setColumnToHoldButton(table, DELETECOL, new QPushButton(tr("Delete")));
+ //act->setColumnToHoldButton(table, DELETECOL, new QPushButton(tr("Delete")));
+
 }
 
 /**
@@ -335,7 +350,7 @@ void SGBeanTableDataModel::doDelete(NamedBean* bean) {
 /*public*/ void SGBeanTableDataModel::clickOn(NamedBean* /*t*/) {
    //((SignalGroup)t).setSignalGroup();
 }
-/*public*/ QString SGBeanTableDataModel::getValue(QString /*s*/) {
+/*public*/ QString SGBeanTableDataModel::getValue(QString /*s*/) const{
     return "Set";
 }
 /*public*/ QPushButton* SGBeanTableDataModel::configureButton() {
@@ -1233,7 +1248,7 @@ SignalGroupSignalModel::SignalGroupSignalModel(SignalGroupTableAction *act) : Si
  return SignalGroupOutputModel::flags(index);
 }
 
-/*public*/ int SignalGroupSignalModel::columnCount(const QModelIndex &/*parent*/) const {return 6;}
+/*public*/ int SignalGroupSignalModel::columnCount(const QModelIndex &/*parent*/) const {return 6+1;}
 
 
 //    /*public*/ Class<?> getColumnClass(int c) {
@@ -1620,7 +1635,7 @@ void SignalGroupTableAction::on_updateButton_clicked()
 {
     updatePressed(NULL, false, true);
 }
-SGBeanTableDataModel* SignalGroupTableAction::model() {return m;}
+SGBeanTableDataModel* SignalGroupTableAction::model() {return (SGBeanTableDataModel*) m;}
 void SignalGroupTableAction::On_mainSignal_currentIndexChanged()
 {
  if(curSignalGroup==NULL)

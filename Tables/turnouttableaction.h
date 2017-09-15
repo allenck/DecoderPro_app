@@ -24,27 +24,10 @@ class LIBTABLESSHARED_EXPORT TurnoutTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    enum COLUMNS
-    {
-     INVERTCOL = BeanTableDataModel::NUMCOLUMN,
-     LOCKCOL = INVERTCOL+1,
-     EDITCOL = LOCKCOL+1,
-     KNOWNCOL = EDITCOL+1,
-     MODECOL = KNOWNCOL+1,
-     SENSOR1COL = MODECOL+1,
-     SENSOR2COL = SENSOR1COL+1,
-     OPSONOFFCOL = SENSOR2COL+1,
-     OPSEDITCOL = OPSONOFFCOL+1,
-     LOCKOPRCOL = OPSEDITCOL+1,
-     LOCKDECCOL = LOCKOPRCOL+1,
-     STRAIGHTCOL = LOCKDECCOL+1,
-     DIVERGCOL = STRAIGHTCOL+1
-    };
-
     explicit TurnoutTableAction(QObject *parent = 0);
-    /*public*/ TurnoutTableAction(QString actionName, QObject *parent);
+    /*public*/ Q_INVOKABLE TurnoutTableAction(QString actionName, QObject *parent);
     ~TurnoutTableAction() {}
-    TurnoutTableAction(const TurnoutTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
+    Q_INVOKABLE TurnoutTableAction(const TurnoutTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     /*public*/ void setManager(Manager* man);
     /*public*/ QString getClassDescription();
     static QString getName();
@@ -57,6 +40,7 @@ signals:
 
 public slots:
     void okPressed(ActionEvent* e = 0);
+    void cancelPressed(ActionEvent* e = 0);
     void showFeedbackChanged();
     void showLockChanged();
     /*public*/ void showTurnoutSpeedChanged();
@@ -141,6 +125,17 @@ public:
 public slots:
     void actionPerformed(ActionEvent *e = 0);
 };
+
+class ToCancelActionListener : public ActionListener
+{
+    Q_OBJECT
+    TurnoutTableAction* self;
+public:
+    ToCancelActionListener(TurnoutTableAction* self);
+public slots:
+    void actionPerformed(ActionEvent *e = 0);
+};
+
 class RangeListener : public ActionListener
 {
     Q_OBJECT
@@ -154,9 +149,25 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
     TurnoutTableAction* self;
-    JTable* table;
+    //JTable* table;
 
  public:
+    enum COLUMNS
+    {
+     INVERTCOL = BeanTableDataModel::NUMCOLUMN,
+     LOCKCOL = INVERTCOL+1,
+     EDITCOL = LOCKCOL+1,
+     KNOWNCOL = EDITCOL+1,
+     MODECOL = KNOWNCOL+1,
+     SENSOR1COL = MODECOL+1,
+     SENSOR2COL = SENSOR1COL+1,
+     OPSONOFFCOL = SENSOR2COL+1,
+     OPSEDITCOL = OPSONOFFCOL+1,
+     LOCKOPRCOL = OPSEDITCOL+1,
+     LOCKDECCOL = LOCKOPRCOL+1,
+     STRAIGHTCOL = LOCKDECCOL+1,
+     DIVERGCOL = STRAIGHTCOL+1
+    };
     TurnoutTableDataModel(TurnoutTableAction* self);
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;

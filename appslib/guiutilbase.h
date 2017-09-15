@@ -58,7 +58,7 @@ class GUAbstractAction : public AbstractAction
 {
  Q_OBJECT
 public slots:
- /*public*/  void actionPerformed(ActionEvent* e) ;
+ /*public*/  void actionPerformed(ActionEvent* /*e*/) ;
 public:
  GUAbstractAction(QString name, QIcon* icon = NULL);
  /*public*/  QString toString();

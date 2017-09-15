@@ -69,7 +69,12 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
         element.appendChild(elem);
     }
     element.setAttribute("lineWidth", p->getLineWidth());
-    element.setAttribute("alpha", p->getAlpha());
+    NamedBeanHandle<Sensor*>* handle = p->getControlSensorHandle();
+    if (handle != NULL) {
+        element.setAttribute("controlSensor", handle->getName());
+    }
+    element.setAttribute("hideOnSensor", p->isHideOnSensor() ? "true" : "false");
+    element.setAttribute("changeLevelOnSensor", (p->getChangeLevel()?"true":"false"));
 }
 
 /*public*/ QDomElement PositionableShapeXml::storeColor(QString name, QColor c) {
@@ -80,6 +85,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
     elem.setAttribute("red", c.red());
     elem.setAttribute("green", c.green());
     elem.setAttribute("blue", c.blue());
+    elem.setAttribute("alpha", c.alpha());
     return elem;
 }
 
@@ -106,76 +112,139 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
     loadCommonAttributes(ps, Editor::MARKERS, element);
 }
 
-/*public*/ void PositionableShapeXml::loadCommonAttributes(PositionableShape* ps, int /*defaultLevel*/, QDomElement element) {
-    // find coordinates
-    int x = getInt(element, "x");
-    int y = getInt(element, "y");
-    ps->setLocation(x,y);
+/*public*/ void PositionableShapeXml::loadCommonAttributes(PositionableShape* ps, int /*defaultLevel*/, QDomElement element)
+{
+ // find coordinates
+ int x = getInt(element, "x");
+ int y = getInt(element, "y");
+ ps->setLocation(x,y);
 
-    // find display psevel
-    ps->setLevel(getInt(element, "level"));
+ // find display psevel
+ ps->setLevel(getInt(element, "level"));
 
-    QString a = element.attribute("hidden");
-    if ( (a!="") && a==("yes")){
-        ps->setHidden(true);
-        ps->setVisible(false);
-    }
-    a = element.attribute("positionable");
-    if ( (a!="") && a==("true"))
-        ps->setPositionable(true);
-    else
-        ps->setPositionable(false);
+ QString a = element.attribute("hidden");
+ if ( (a!="") && a==("yes")){
+     ps->setHidden(true);
+     ps->setVisible(false);
+ }
+ a = element.attribute("positionable");
+ if ( (a!="") && a==("true"))
+     ps->setPositionable(true);
+ else
+     ps->setPositionable(false);
 
-    a = element.attribute("showtooltip");
-    if ( (a!="") && a==("true"))
-        ps->setShowTooltip(true);
-    else
-        ps->setShowTooltip(false);
+ a = element.attribute("showtooltip");
+ if ( (a!="") && a==("true"))
+     ps->setShowTooltip(true);
+ else
+     ps->setShowTooltip(false);
 
-    a = element.attribute("editable");
-    if ( (a!="") && a==("true"))
-        ps->setEditable(true);
-    else
-        ps->setEditable(false);
+ a = element.attribute("editable");
+ if ( (a!="") && a==("true"))
+     ps->setEditable(true);
+ else
+     ps->setEditable(false);
 
-    QDomElement elem = element.firstChildElement("toolTip");
-    if (!elem.isNull()) {
-        QString tip = ps->getTooltip();
-        if (tip!="") {
-            tip=(elem.text());
-        }
-    }
-    ps->setLineWidth(getInt(element, "lineWidth"));
-    ps->setAlpha(getInt(element, "alpha"));
-    ps->setLineColor(getColor(element, "lineColor"));
-    ps->setFillColor(getColor(element, "fillColor"));
+ QDomElement elem = element.firstChildElement("toolTip");
+ if (!elem.isNull()) {
+     QString tip = ps->getTooltip();
+     if (tip!="") {
+         tip=(elem.text());
+     }
+ }
+ ps->setLineWidth(getInt(element, "lineWidth"));
+ int alpha = -1;
+ bool bOk;
+ a = element.attribute("alpha");
+ if (a != "")
+ {
+  alpha = a.toInt(&bOk);
+ }
+ if(!bOk)
+ {
+  log->warn("invalid 'alpha' value (non integer)");
+ }
+ ps->setLineColor(getColor(element, "lineColor", alpha));
+ ps->setFillColor(getColor(element, "fillColor", alpha));
 
-    ps->setLocation(x,y);
-    ps->makeShape();
-    ps->_itemGroup->setPos(x,y);
-    ps->updateSize();
+ ps->makeShape();
+ ps->rotate(getInt(element, "degrees"));
+
+ a = element.attribute("hideOnSensor");
+ bool hide = false;
+ if (a != "") {
+     hide = (a == "true");
+ }
+ int changeLevel = -1;
+ //try {
+     changeLevel = getInt(element, "changeLevelOnSensor");
+// } catch (Exception e) {
+//     log.error("failed to get changeLevel attribute ex= " + e);
+// }
+// try {
+     QString attr = element.attribute("controlSensor");
+     if (attr != "") {
+         ps->setControlSensor(attr, hide, changeLevel);
+     }
+ if(ps == NULL)
+ {
+     log->error("incorrect information for controlSensor of PositionableShape");
+ }
+ ps->updateSize();
 }
 
-/*public*/ QColor PositionableShapeXml::getColor(QDomElement element, QString name) {
+/*public*/ QColor PositionableShapeXml::getColor(QDomElement element, QString name, int alpha)
+{
     QDomElement elem = element.firstChildElement(name);
-    try {
-        int red = elem.attribute("red").toInt();
-        int blue = elem.attribute("blue").toInt();
-        int green = elem.attribute("green").toInt();
-        return  QColor(red, green, blue);
-    } catch (Exception e) {
-        log->warn("failed to convert color attribute for "+name+" - "+e.getMessage());
+    bool bOk = true, ok1;
+    int red = elem.attribute("red").toInt(&ok1);
+    if(!ok1) bOk = false;
+    int blue = elem.attribute("blue").toInt(&ok1);
+    if(!ok1) bOk = false;
+    int green = elem.attribute("green").toInt(&ok1);
+    if(!ok1) bOk = false;
+    if (alpha == -1)
+    {
+     alpha = elem.attribute("alpha").toInt(&ok1);
+     if(!ok1) bOk = false;
+     return QColor(red, green, blue, alpha);
+    }
+    else if (name == ("lineColor"))
+    {
+     return QColor(red, green, blue);
+    }
+    else
+    {
+     return QColor(red, green, blue, alpha);
+    }
+    if(!bOk)
+    {
+     log->warn("failed to convert color attribute for "+name+" - "/*+e.getMessage()*/);
     }
     return QColor();
 }
 
 /*public*/ int PositionableShapeXml::getInt(QDomElement element, QString name) {
-    try {
-        int num  = element.attribute(name).toInt();
+    bool ok;
+        int num  = element.attribute(name).toInt(&ok);
         return num;
 
-    } catch (Exception e) {
-        log->error("failed to convert integer attribute for "+name+" - "+e.getMessage());
+    if(!ok) {
+        log->error("failed to convert integer attribute for "+name+" - "/*+e.getMessage()*/);
+    }
+    return 0;
+}
+
+/*public*/ float PositionableShapeXml::getFloat(QDomElement element, QString name)
+{
+    bool bok;
+        QString attr = element.attribute(name);
+        if (attr != "") {
+            float num = attr.toFloat(&bok);
+            return num;
+        }
+    if(!bok) {
+        log->error("failed to convert integer attribute for " + name + " - " /*+ e*/);
     }
     return 0;
 }

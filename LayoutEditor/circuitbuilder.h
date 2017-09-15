@@ -7,6 +7,7 @@
 #include "actionlistener.h"
 #include "jmrijframe.h"
 
+class QGraphicsSceneMouseEvent;
 class EditPortalDirection;
 class JDialog;
 class EditCircuitPaths;
@@ -33,6 +34,10 @@ public:
     /*public*/ /*final*/ static QColor _pathColor;// = Color.green;
     /*public*/ /*final*/ static QColor _highlightColor;// = new Color(255, 100, 200);
     /*public*/ QList<PortalIcon*>* getPortalIcons();
+ /*public*/ bool doMouseReleased(Positionable* selection, bool dragging);
+ /*public*/ bool doMouseDragged(Positionable* selection, QGraphicsSceneMouseEvent* event);
+ /*public*/ bool dragPortal();
+ /*public*/ bool doMouseReleased(Positionable* selection, QGraphicsSceneMouseEvent* event);
 
 signals:
 
@@ -50,7 +55,7 @@ private:
     /*private*/ QHash<Positionable*, OBlock*>* _iconMap;// = new QHash<Positionable*, OBlock*>();
 
     // map OBlock to List of icons that represent it
-    /*private*/ QHash<OBlock*, QList<Positionable*> > _circuitMap;
+    /*private*/ QHash<OBlock*, QList<Positionable*>*>* _circuitMap;
 
     // list of track icons not belonging to an OBlock
     /*private*/ QList<Positionable*> _darkTrack;
@@ -83,7 +88,7 @@ private:
     /*private*/ EditCircuitPaths* _editPathsFrame;
 
     // list of icons making a circuit - used by editing frames to indicate block(s) being worked on
-    /*private*/ QList<Positionable*> _circuitIcons;      // Dark Blue
+    /*private*/ QList<Positionable*>* _circuitIcons;      // Dark Blue
 
     /*private*/ JTextField* _sysNameBox;// = new JTextField();
     /*private*/ JTextField* _userNameBox;// = new JTextField();
@@ -100,7 +105,7 @@ private:
     JmriJFrame* _convertFrame;     // must be modal dialog to halt convetIcons loop
     QDialog* _convertDialog;     // must be modal dialog to halt convetIcons loop
     /*private*/ bool editingOK();
-    /*private*/ QList<Positionable*> makeSelectionGroup(OBlock* block, bool showPort);
+    /*private*/ QList<Positionable*>* makeSelectionGroup(OBlock* block, bool showPort);
     /*private*/ void editCircuitDialog(QString title);
     /*private*/ QWidget* makeDoneButtonPanel(bool add);
     /*private*/ void addCircuitDialog();
@@ -112,12 +117,18 @@ private:
     /*private*/ void convertIcon(Positionable* pos);
     /*private*/ void makePalettteFrame(QString title);
     /*private*/ void convertTO();
-    /*private*/ void setIconGroup(OBlock* block, QList<Positionable*> selections);
+    /*private*/ void setIconGroup(OBlock* block, QList<Positionable*>* selections);
     /*private*/ void finishConvert(Positionable* pos);
 
     /*private*/ void convertSeg();
     /*private*/ void setPortalsPositionable(OBlock* block, bool set);
     EditPortalDirection* _editDirectionFrame;
+    QList<Positionable*>* _saveSelectionGroup;
+    /*private*/ void handleSelection(Positionable* selection, QGraphicsSceneMouseEvent* event);
+    /*private*/ bool okPath(Positionable* pos, OBlock* block);
+    /*private*/ bool okToAdd(Positionable* pos, OBlock* editBlock);
+    /*private*/ Positionable* getSelection(QList<Positionable*>* tracks);
+
 
 private slots:
     /*private*/ void errorCheck();
@@ -133,7 +144,13 @@ protected:
     /*protected*/ ControlPanelEditor* _editor;
     /*protected*/ QMenu* makeMenu();
     /*protected*/ void addPortalIcon(PortalIcon* icon);
-protected slots:
+    /*protected*/ QList<Positionable*>* getCircuitIcons(OBlock* block);
+    /*protected*/ bool doMouseClicked(QList<Positionable*>* selections, QGraphicsSceneMouseEvent* event);
+    /*protected*/ bool saveSelectionGroup(QList<Positionable*>* selectionGroup);
+    /*protected*/ void doMousePressed(QGraphicsSceneMouseEvent* event, Positionable* selection);
+    /*protected*/ OBlock* getBlock(Positionable* pos);
+
+     protected slots:
     /*protected*/ void editCircuit(QString title);
     /*protected*/ static QWidget* makeTextBoxPanel(bool vertical, JTextField* textField, QString label,
                                              bool editable, QString tooltip);
@@ -146,15 +163,16 @@ protected slots:
     /*protected*/ void closePortalDirection(OBlock* block) ;
     /*private*/ bool iconsConverted(OBlock* block);
     /*private*/ void queryConvertIcons(OBlock* block);
-    /*protected*/ void convertIcons(QList<Positionable*> iconList);
+    /*protected*/ void convertIcons(QList<Positionable*>* iconList);
     /*protected*/ void closePathFrame(OBlock* block);
     /*protected*/ void closePortalFrame(OBlock* block);
-    /*protected*/ QList<Positionable*> getCircuitGroup();
+    /*protected*/ QList<Positionable*>* getCircuitGroup();
     /*protected*/ void editPortalDirection(QString title);
     /*protected*/ QHash<QString, PortalIcon*> getPortalIconMap() ;
     /*protected*/ Portal* getPortalByName(QString name);
     /*protected*/ void changePortalName(QString oldName, QString newName);
     /*protected*/ void removePortal(QString name);
+    /*protected*/ bool isTrack(Positionable* pos);
 
 protected slots:
     /*protected*/ void newCircuit();

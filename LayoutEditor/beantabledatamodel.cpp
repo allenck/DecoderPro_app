@@ -134,7 +134,8 @@ void BeanTableDataModel::setManager(Manager *) {}
    int row = sysNameList.indexOf(name);
    try
    {
-    fireTableRowsUpdated(row, row);
+    //fireTableRowsUpdated(row, row);
+    fireTableDataChanged();
    }
    catch (Exception ex)
    {
@@ -151,8 +152,10 @@ void BeanTableDataModel::setManager(Manager *) {}
  */
 /*protected*/ bool BeanTableDataModel::matchPropertyName(PropertyChangeEvent* e)
 {
- return (e->getPropertyName().indexOf("State")>=0 || e->getPropertyName().indexOf("Appearance")>=0
-            || e->getPropertyName().indexOf("Comment")>=0) || e->getPropertyName().indexOf("UserName")>=0;
+ return (e->getPropertyName().indexOf("State")>=0
+         || e->getPropertyName().indexOf("Appearance")>=0
+         || e->getPropertyName().indexOf("Comment")>=0)
+         || e->getPropertyName().indexOf("UserName")>=0;
 }
 
 /*public*/ int BeanTableDataModel::rowCount(const QModelIndex &/*parent*/) const
@@ -271,13 +274,9 @@ void BeanTableDataModel::setManager(Manager *) {}
 
 /*abstract*/ /*protected*/ NamedBean* BeanTableDataModel::getBySystemName(QString /*name*/) const
 {
-//    if(qobject_cast<ProxySensorManager*>(senManager) != NULL)
-//        return ((ProxySensorManager*)senManager)->getBeanBySystemName(name);
-//       else
-//        return ((AbstractSensorManager*)senManager)->getBySystemName(name);
-
  return NULL;
 }
+
 /*abstract*/ /*protected*/ NamedBean* BeanTableDataModel::getByUserName(QString /*name*/){return NULL;}
 //abstract protected void clickOn(NamedBean t);
 
@@ -287,9 +286,9 @@ void BeanTableDataModel::setManager(Manager *) {}
 //    return QMessageBox::question(NULL, tr("Question"), tr("Are you sure you want to delete %1?").arg("??"), QMessageBox::Yes|QMessageBox::No);
 }
 
-/*public*/ void BeanTableDataModel::setDisplayDeleteMsg(int /*boo*/)
+/*public*/ void BeanTableDataModel::setDisplayDeleteMsg(int boo)
 {
-//    InstanceManager::getDefault("UserPreferencesManager")->setMultipleChoiceOption(getMasterClassName(), "deleteInUse", boo);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption(getMasterClassName(), "deleteInUse", boo);
 }
 
 /*abstract*/ /*protected*/ QString BeanTableDataModel::getMasterClassName() {return "";}
@@ -510,10 +509,13 @@ void BeanTableDataModel::on_yesButton_clicked()
  {
   setDisplayDeleteMsg(0x02);
  }
- beginRemoveRows(QModelIndex(), row, row);
+ row = sysNameList.indexOf(t->getSystemName());
+
+ //beginRemoveRows(parent, row, row);
  doDelete(t);
- endRemoveRows();
+ //endRemoveRows();
  dialog->close();
+ fireTableDataChanged();
 }
 
 
@@ -553,6 +555,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
  //table.sizeColumnsToFit(-1);
  table->resizeColumnsToContents();
  table->resizeRowsToContents();
+ table->setRowHeight(0, QPushButton().sizeHint().height());
 
  configValueColumn(table);
  configDeleteColumn(table);
@@ -568,7 +571,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
 
 /*protected*/ void BeanTableDataModel::configValueColumn(JTable* table) {
     // have the value column hold a button
-    //setColumnToHoldButton(table, VALUECOL, configureButton());
+ setColumnToHoldButton(table, VALUECOL, configureButton());
  connect(table, SIGNAL(clicked(QModelIndex)),this, SLOT(On_itemClicked(QModelIndex)));
 }
 void BeanTableDataModel::On_itemClicked(QModelIndex index)
@@ -776,10 +779,12 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
   { log->warn("error during printing: "+e.getMessage());}
  }
 }
-#if 1
+
 /*public*/ JTable* BeanTableDataModel::makeJTable(QSortFilterProxyModel* sorter)
 {
  JTable* table = new JTable(sorter);
+ table->setObjectName(this->metaObject()->className());
+
 // {
 //  /*public*/ boolean editCellAt(int row, int column, java.util.EventObject e) {
 //      boolean res = super.editCellAt(row, column, e);
@@ -797,7 +802,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 // addMouseListenerToHeader(table);
  return table;
 }
-#endif
+
 /*abstract*/ /*protected*/ QString BeanTableDataModel::getBeanType()
 {
     return "Bean";

@@ -7,6 +7,8 @@
 #include "drawcircle.h"
 #include "drawellipse.h"
 #include "drawroundrect.h"
+#include "drawpolygon.h"
+#include "positionableshape.h"
 
 //ShapeDrawer::ShapeDrawer(QObject *parent) :
 //    QObject(parent)
@@ -29,6 +31,8 @@ QWidget(parent)
 {
     _editor = ed;
     _creatingNewShape = false;
+    _drawFrame = NULL;
+    _currentSelection = NULL;
 }
 
 /*public*/ QMenu* ShapeDrawer::makeMenu() {
@@ -52,15 +56,16 @@ QWidget(parent)
 //        });
     connect(shapeItem, SIGNAL(triggered()), this, SLOT(newRoundRectangle()));
 
-    /*
+    shapeItem = new QAction(tr("Draw Polygon"), this);
+    drawMenu->addAction(shapeItem);
+//    shapeItem.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent event) {
+//                newPolygon();
+//            }
+//        });
+    connect(shapeItem, SIGNAL(triggered()), this, SLOT(newPolygon()));
 
-    shapeItem = new JMenuItem(tr("Draw Polygon"));
-    drawMenu.add(shapeItem);
-    shapeItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                newPolygon();
-            }
-        });
+    /*
     shapeItem = new JMenuItem(tr("Draw Line"));
     drawMenu.add(shapeItem);
     shapeItem.addActionListener(new ActionListener() {
@@ -94,9 +99,6 @@ QWidget(parent)
  if (_drawFrame==NULL)
  {
   _drawFrame = new DrawRectangle(tr("New %1 Shape"), "Rectangle", this);
-  QWidget* params = _drawFrame->makeParamsPanel();
-        //((QVBoxLayout*)_drawFrame->centralWidget()->layout())->insertWidget(0, params, 0, Qt::AlignTop);
-  _drawFrame->panelLayout->insertWidget(0, params, 0, Qt::AlignTop);
  }
  else
  {
@@ -109,10 +111,17 @@ QWidget(parent)
  if (_drawFrame==NULL)
  {
   _drawFrame = new DrawRoundRect(tr("New %1 Shape"), "Round Rect", this);
-  QWidget* params = _drawFrame->makeParamsPanel();
-        //((QVBoxLayout*)_drawFrame->centralWidget()->layout())->insertWidget(0,params, 0, Qt::AlignTop);
-  _drawFrame->panelLayout->insertWidget(0,params, 0, Qt::AlignTop);
-
+ }
+ else
+ {
+  _drawFrame->toFront();
+ }
+}
+/*private*/ void ShapeDrawer::newPolygon()
+{
+ if (_drawFrame == NULL)
+ {
+  _drawFrame = new DrawPolygon("newShape", "Polygon", this);
  }
  else
  {
@@ -120,8 +129,6 @@ QWidget(parent)
  }
 }
 #if 0
-private void newPolygon() {
-}
 private void newLine() {
 }
 #endif
@@ -130,9 +137,6 @@ private void newLine() {
  if (_drawFrame==NULL)
  {
   _drawFrame = new DrawCircle(tr("New %1 Shape"), "Circle", this);
-  QWidget* params = _drawFrame->makeParamsPanel();
-  //((QVBoxLayout*)_drawFrame->centralWidget()->layout())->insertWidget(0,params, 0, Qt::AlignTop);
-  _drawFrame->panelLayout->insertWidget(0,params, 0, Qt::AlignTop);
  }
  else
  {
@@ -142,15 +146,17 @@ private void newLine() {
 /*private*/ void ShapeDrawer::newEllipse() {
     if (_drawFrame==NULL) {
         _drawFrame = new DrawEllipse(tr("New %1 Shape"), "Ellipse", this);
-        QWidget* params = _drawFrame->makeParamsPanel();
-        //((QVBoxLayout*)_drawFrame->centralWidget()->layout())->insertWidget(0,params, 0, Qt::AlignTop);
-        _drawFrame->panelLayout->insertWidget(0,params, 0, Qt::AlignTop);
     } else {
         _drawFrame->toFront();
     }
 }
 
-/*protected*/ void ShapeDrawer::closeDrawFrame(DrawFrame* /*f*/) {
+/*protected*/ void ShapeDrawer::setDrawFrame(DrawFrame* f) {
+        _drawFrame = f;
+    }
+
+/*protected*/ void ShapeDrawer::closeDrawFrame(DrawFrame* /*f*/)
+{
     _drawFrame = NULL;
 }
 
@@ -158,57 +164,119 @@ private void newLine() {
  return _editor;
 }
 
+/*public*/ void ShapeDrawer::paint(QGraphicsScene* g)
+{
+   //if (_drawFrame instanceof DrawPolygon) {
+ if(qobject_cast<DrawPolygon*>(_drawFrame) != NULL)
+ {
+  ((DrawPolygon*) _drawFrame)->drawShape(g);
+ }
+}
 /**************************** Mouse *************************/
 
 /**
 * Keep selections when editing.  Restore what super NULLs
 */
-/*public*/ void ShapeDrawer::saveSelectionGroup(QList<Positionable*>* selectionGroup) {
- _saveSelectionGroup = selectionGroup;
+///*public*/ void ShapeDrawer::saveSelectionGroup(QList<Positionable*>* selectionGroup) {
+// _saveSelectionGroup = selectionGroup;
+//}
+
+/*public*/ bool ShapeDrawer::doMousePressed(QGraphicsSceneMouseEvent* event, Positionable* pos)
+{
+ //if (_drawFrame instanceof DrawPolygon) {
+ if(qobject_cast<DrawPolygon*>(_drawFrame))
+ {
+  DrawPolygon* f = (DrawPolygon*) _drawFrame;
+  f->anchorPoint(event->screenPos().x(), event->screenPos().y());
+ }
+ //if (pos instanceof PositionableShape && _editor.isEditable()) {
+ if(qobject_cast<PositionableShape*>(pos) != NULL && _editor->isEditable())
+ {
+  if (pos != _currentSelection)
+  {
+   if (_currentSelection != NULL)
+   {
+    _currentSelection->removeHandles();
+   }
+   _currentSelection = (PositionableShape*) pos;
+   _currentSelection->drawHandles();
+  }
+  return true;
+ }
+ if (_currentSelection != NULL) {
+     _currentSelection->removeHandles();
+     _currentSelection = NULL;
+ }
+ return false;
 }
 
-/*public*/ bool ShapeDrawer::doMousePressed(QGraphicsSceneMouseEvent* /*event*/)
+/*public*/ bool ShapeDrawer::doMouseReleased(Positionable* /*selection*/, QGraphicsSceneMouseEvent* event)
 {
- if (_drawFrame!=NULL)
+ if (_drawFrame != NULL && _drawFrame->_shape == NULL)
  {
-  _editor->setSelectionGroup(QList<Positionable*>());
-  _drawFrame->setDrawParams();
+  if (_drawFrame->makeFigure(event))
+   _editor->resetEditor();
   return true;
  }
  return false;
 }
 
-/*public*/ bool ShapeDrawer::doMouseReleased(Positionable* /*selection*/, QGraphicsSceneMouseEvent* /*event*/)
+/*public*/ bool ShapeDrawer::doMouseClicked(QGraphicsSceneMouseEvent* event) // double click event
 {
- if (_drawFrame!=NULL)
+ if (_drawFrame != NULL)
  {
-  _drawFrame->makeFigure();
-  _drawFrame->closingEvent();
-  _editor->resetEditor();
-  return true;
- }
- return false;
+//  if(qobject_cast<DrawPolygon*>(_drawFrame)/* && event->getClickCount()>1) */)
+//  {
+//   ((DrawPolygon*)_drawFrame)->setEditing(true);
+//  }
+//  return true;
 }
-
-/*public*/ bool ShapeDrawer::doMouseClicked(Positionable* /*selection*/, QGraphicsSceneMouseEvent* /*event*/) {
-    if (_drawFrame!=NULL) {
-        return true;
-    }
-    return false;
-}
+return false;}
 
 /**
 * No dragging when editing
 */
-/*public*/ bool ShapeDrawer::doMouseDragged(Positionable* /*selection*/, QGraphicsSceneMouseEvent* event)
+/*public*/ bool ShapeDrawer::doMouseDragged(QGraphicsSceneMouseEvent* event)
 {
- if (_drawFrame!=NULL)
+// if (_drawFrame instanceof DrawPolygon && _currentSelection == null) {
+ if(qobject_cast<DrawPolygon*>(_drawFrame) && _currentSelection == NULL)
  {
-  _editor->drawSelectRect(event->scenePos().x(), event->scenePos().y());
+  ((DrawPolygon*) _drawFrame)->moveTo(event->screenPos().x(), event->screenPos().y());
+  return true;		// no select rect
+ }
+ else if (_currentSelection != NULL)
+ {
+
+  return _currentSelection->doHandleMove(event);
+ }
+ return false;
+}
+
+/*
+ * Make rubber band line
+ */
+/*public*/ bool ShapeDrawer::doMouseMoved(QGraphicsSceneMouseEvent* event) {
+ if(qobject_cast<DrawPolygon*>(_drawFrame))
+ {
+  ((DrawPolygon*) _drawFrame)->moveTo(event->screenPos().x(), event->screenPos().y());
   return true;     // no dragging when editing
  }
  return false;
 }
+
+/*public*/ void ShapeDrawer::add(bool up)
+{
+ if(qobject_cast<DrawPolygon*>(_drawFrame)) {
+     ((DrawPolygon*) _drawFrame)->addVertex(up);
+ }
+}
+
+/*public*/ void ShapeDrawer::_delete() {
+    if(qobject_cast<DrawPolygon*>(_drawFrame)) {
+        ((DrawPolygon*) _drawFrame)->deleteVertex();
+    }
+}
+
 void ShapeDrawer::closeEvent(QCloseEvent *)
 {
  closeDrawFrame(_drawFrame);

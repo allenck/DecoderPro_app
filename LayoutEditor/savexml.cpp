@@ -60,6 +60,8 @@
 #include "lnlightmanager.h"
 #include "defaultroutemanagerxml.h"
 #include "defaultmemorymanagerxml.h"
+#include "layoutslipxml.h"
+#include "layoutturntablexml.h"
 
 SaveXml::SaveXml(QObject *parent) :
     QObject(parent)
@@ -358,36 +360,42 @@ if (num>0)
   }
  }
 }
-#if 0
+
 // include LayoutSlips
-num = p->slipList.size();
-if (log.isDebugEnabled()) log.debug("N layoutSlip elements: "+num);
-if (num>0) {
-    for (int i=0; i<num; i++) {
-        Object sub = p->slipList.get(i);
-        try {
-            Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(sub);
-            if (e!=NULL) panel.addContent(e);
-        } catch (Exception e) {
-            log.error("Error storing panel layoutSlip element: "+e);
-        }
-    }
+num = p->slipList->size();
+if (log.isDebugEnabled()) log.debug("N layoutSlip elements: "+QString("%1").arg(num));
+if (num>0)
+{
+ for (int i=0; i<num; i++)
+ {
+  QObject* sub = p->slipList->at(i);
+  try {
+      //Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(sub);
+   QDomElement e = storeSlipTurnouts((LayoutSlip*)sub);
+      if (!e.isNull()) panel.appendChild(e);
+  } catch (Exception e) {
+      log.error("Error storing panel layoutSlip element: "/*+e*/);
+  }
+ }
 }
 // include LayoutTurntables
-num = p->turntableList.size();
-if (log.isDebugEnabled()) log.debug("N turntable elements: "+num);
-if (num>0) {
-    for (int i=0; i<num; i++) {
-        Object sub = p->turntableList.get(i);
-        try {
-            Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(sub);
-            if (e!=NULL) panel.addContent(e);
-        } catch (Exception e) {
-            log.error("Error storing panel turntable element: "+e);
-        }
-    }
+num = p->turntableList->size();
+if (log.isDebugEnabled()) log.debug("N turntable elements: "+QString("%1").arg(num));
+if (num>0)
+{
+ for (int i=0; i<num; i++)
+ {
+  QObject* sub = (QObject*)p->turntableList->at(i);
+  try {
+      //Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(sub);
+   QDomElement e = storeTurntables(sub);
+      if (!e.isNull()) panel.appendChild(e);
+  } catch (Exception e) {
+      log.error("Error storing panel turntable element: "/*+e*/);
+  }
+ }
 }
-#endif
+
  PanelMenu* pMenu = PanelMenu::instance();
  QList<Editor*>* eList = pMenu->getEditorPanelList();
  for(int i=0; i < eList->count(); i++)
@@ -1629,5 +1637,15 @@ QDomElement SaveXml::storeSignalGroups(QObject *m)
 QDomElement SaveXml::storeSections(QObject *m)
 {
  SectionManagerXml* xml = new SectionManagerXml();
+ return xml->store(m);
+}
+QDomElement SaveXml::storeSlipTurnouts(QObject *m)
+{
+ LayoutSlipXml* xml = new LayoutSlipXml();
+ return xml->store(m);
+}
+QDomElement SaveXml::storeTurntables(QObject *m)
+{
+ LayoutTurntableXml* xml = new LayoutTurntableXml();
  return xml->store(m);
 }

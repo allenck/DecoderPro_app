@@ -14,7 +14,7 @@ class LIBPR3SHARED_EXPORT VarTextField : public JTextField
 public:
     //explicit VarTextField(QWidget *parent = 0);
  VarTextField(Document* doc, QString text, int col, VariableValue* var, QWidget* parent = 0);
- // void thisActionPerformed(ActionEvent* e);
+ // void thisActionPerformed(ActionEvent* /*e*/);
  void originalPropertyChanged(PropertyChangeEvent* e);
  Document* getDocument();
 signals:

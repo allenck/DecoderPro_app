@@ -99,6 +99,7 @@ void TurnoutTableAction::common()
  log = new Logger("TurnoutTableAction");
 
  showFeedbackBox = new QCheckBox("Show feedback information");
+ showFeedbackBox->setObjectName("showFeedbackBox");
  showLockBox = new QCheckBox("Show lock information");
  showTurnoutSpeedBox = new QCheckBox("Show Turnout Speed Details");
  doAutomationBox = new QCheckBox("Automatic retry");
@@ -140,6 +141,7 @@ void TurnoutTableAction::common()
   }
  }
 }
+
 //@Override
 /*public*/ void TurnoutTableAction::setManager(Manager* man)
 {
@@ -193,7 +195,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //@Override
 /*public*/ int TurnoutTableDataModel::columnCount(const QModelIndex &/*parent*/) const
 {
-    return TurnoutTableAction::DIVERGCOL+1;
+    return DIVERGCOL+1;
 }
 
 //@Override
@@ -204,20 +206,20 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  {
   switch (section)
   {
-    case TurnoutTableAction::INVERTCOL: return "Inverted";
-    case TurnoutTableAction::LOCKCOL: return "Locked";
-    case TurnoutTableAction::KNOWNCOL: return "Feedback";
-    case TurnoutTableAction::MODECOL: return "Mode";
-    case TurnoutTableAction::SENSOR1COL: return "Sensor 1";
-    case TurnoutTableAction::SENSOR2COL: return "Sensor 2";
-    case TurnoutTableAction::OPSONOFFCOL: return "Automate";
-    case TurnoutTableAction::OPSEDITCOL: return "";
-    case TurnoutTableAction::LOCKOPRCOL: return "Lock Mode";
-    case TurnoutTableAction::LOCKDECCOL: return "Decoder";
-    case TurnoutTableAction::DIVERGCOL: return "Thrown Speed";
-    case TurnoutTableAction::STRAIGHTCOL: return "Closed Speed";
+    case INVERTCOL: return "Inverted";
+    case LOCKCOL: return "Locked";
+    case KNOWNCOL: return "Feedback";
+    case MODECOL: return "Mode";
+    case SENSOR1COL: return "Sensor 1";
+    case SENSOR2COL: return "Sensor 2";
+    case OPSONOFFCOL: return "Automate";
+    case OPSEDITCOL: return "";
+    case LOCKOPRCOL: return "Lock Mode";
+    case LOCKDECCOL: return "Decoder";
+    case DIVERGCOL: return "Thrown Speed";
+    case STRAIGHTCOL: return "Closed Speed";
     case BeanTableDataModel::VALUECOL: return "Cmd";  // override default title
-    case TurnoutTableAction::EDITCOL: return "";
+    case EDITCOL: return "";
     default:
       break;
   }
@@ -249,19 +251,19 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 {
  switch(col)
  {
-  case TurnoutTableAction::INVERTCOL  : return  JTextField(6).getPreferredSize().width();
-  case TurnoutTableAction::LOCKCOL    : return  JTextField(6).getPreferredSize().width();
-  case TurnoutTableAction::LOCKOPRCOL : return  JTextField(10).getPreferredSize().width();
-  case TurnoutTableAction::LOCKDECCOL : return  JTextField(10).getPreferredSize().width();
-  case TurnoutTableAction::KNOWNCOL : return  JTextField(10).getPreferredSize().width();
-  case TurnoutTableAction::MODECOL : return  JTextField(10).getPreferredSize().width();
-  case TurnoutTableAction::SENSOR1COL : return  JTextField(5).getPreferredSize().width();
-  case TurnoutTableAction::SENSOR2COL : return  JTextField(5).getPreferredSize().width();
-  case TurnoutTableAction::OPSONOFFCOL : return  JTextField(14).getPreferredSize().width();
-  case TurnoutTableAction::OPSEDITCOL : return  JTextField(7).getPreferredSize().width();
-  case TurnoutTableAction::EDITCOL : return  JTextField(7).getPreferredSize().width();
-  case TurnoutTableAction::DIVERGCOL : return  JTextField(14).getPreferredSize().width();
-  case TurnoutTableAction::STRAIGHTCOL : return  JTextField(14).getPreferredSize().width();
+  case INVERTCOL  : return  JTextField(6).getPreferredSize().width();
+  case LOCKCOL    : return  JTextField(6).getPreferredSize().width();
+  case LOCKOPRCOL : return  JTextField(10).getPreferredSize().width();
+  case LOCKDECCOL : return  JTextField(10).getPreferredSize().width();
+  case KNOWNCOL : return  JTextField(10).getPreferredSize().width();
+  case MODECOL : return  JTextField(10).getPreferredSize().width();
+  case SENSOR1COL : return  JTextField(5).getPreferredSize().width();
+  case SENSOR2COL : return  JTextField(5).getPreferredSize().width();
+  case OPSONOFFCOL : return  JTextField(14).getPreferredSize().width();
+  case OPSEDITCOL : return  JTextField(7).getPreferredSize().width();
+  case EDITCOL : return  JTextField(7).getPreferredSize().width();
+  case DIVERGCOL : return  JTextField(14).getPreferredSize().width();
+  case STRAIGHTCOL : return  JTextField(14).getPreferredSize().width();
   default:
    break;
  }
@@ -286,25 +288,23 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 
  switch(col)
  {
-  case TurnoutTableAction::INVERTCOL: return t->canInvert()?editable|Qt::ItemIsUserCheckable:Qt::NoItemFlags;
-  case TurnoutTableAction::TurnoutTableAction::LOCKCOL:
-     return t->canLock(Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT)?editable|Qt::ItemIsUserCheckable:Qt::NoItemFlags;
-    case TurnoutTableAction::KNOWNCOL: return noteditable;
-    case TurnoutTableAction::MODECOL: return editable;
-    case TurnoutTableAction::SENSOR1COL: return editable;
-    case TurnoutTableAction::SENSOR2COL: return editable;
-    case TurnoutTableAction::OPSONOFFCOL: return editable;
-    case TurnoutTableAction::OPSEDITCOL: return (t->getTurnoutOperation()!=NULL)?editable:noteditable;
-  case TurnoutTableAction::LOCKOPRCOL:
-    return editable;
-  case TurnoutTableAction::LOCKDECCOL:
-   return editable;
-    case TurnoutTableAction::DIVERGCOL: return editable;
-    case TurnoutTableAction::STRAIGHTCOL: return editable;
-    case TurnoutTableAction::EDITCOL: return editable;
-    default:
+  case INVERTCOL: return t->canInvert()?editable|Qt::ItemIsUserCheckable:Qt::NoItemFlags;
+  case LOCKCOL:
+     return t->canLock(Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT)?Qt::ItemIsEnabled|Qt::ItemIsUserCheckable:Qt::NoItemFlags;
+  case KNOWNCOL: return noteditable;
+  case MODECOL: return editable;
+  case SENSOR1COL: return editable;
+  case SENSOR2COL: return editable;
+  case OPSONOFFCOL: return editable;
+  case OPSEDITCOL: return (t->getTurnoutOperation()!=NULL)?editable:noteditable;
+  case LOCKOPRCOL:   return editable;
+  case LOCKDECCOL:   return editable;
+  case DIVERGCOL: return editable;
+  case STRAIGHTCOL: return editable;
+  case EDITCOL: return editable;
+  default:
      return BeanTableDataModel::flags(index);
-    }
+ }
 }
 
 //@Override
@@ -329,9 +329,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  {
   switch (index.column())
   {
-   case TurnoutTableAction::INVERTCOL:
+   case INVERTCOL:
     return t->getInverted()?Qt::Checked:Qt::Unchecked;
-   case TurnoutTableAction::LOCKCOL:
+   case LOCKCOL:
     return t->getLocked(Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT)?Qt::Checked:Qt::Unchecked;
   }
  }
@@ -345,24 +345,24 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   }
   switch (index.column())
   {
-//   case TurnoutTableAction::INVERTCOL:
+//   case INVERTCOL:
 //   {
 //    bool val = t->getInverted();
 //    return (val);
 //   }
-//   case TurnoutTableAction::LOCKCOL:
+//   case LOCKCOL:
 //   {
 //    bool val = t->getLocked(Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT);
 //    return (val);
 //   }
-   case TurnoutTableAction::KNOWNCOL:
+   case KNOWNCOL:
    {
     if (t->getKnownState()==Turnout::CLOSED) return self->closedText;
     if (t->getKnownState()==Turnout::THROWN) return self->thrownText;
     if (t->getKnownState()==Turnout::INCONSISTENT) return "Inconsistent";
     else return "Unknown";
    }
-   case TurnoutTableAction::MODECOL:
+   case MODECOL:
    {
 
 //    QComboBox* c = new QComboBox();
@@ -378,19 +378,19 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
      modeColDelegate->setItems( t->getValidFeedbackNames(), t->getFeedbackModeName());
      return t->getFeedbackModeName();
     }
-    case TurnoutTableAction::SENSOR1COL:
+    case SENSOR1COL:
     {
      if(t->getFirstSensor() != NULL)
       return ((AbstractSensor*)t->getFirstSensor())->getDisplayName();
      break;
     }
-    case TurnoutTableAction::SENSOR2COL:
+    case SENSOR2COL:
     {
      if(t->getSecondNamedSensor() != NULL)
       return ((AbstractSensor*)t->getSecondSensor())->getDisplayName();
      break;
     }
-    case TurnoutTableAction::OPSONOFFCOL:
+    case OPSONOFFCOL:
     {
      //return self->makeAutomationBox(t);
      QStringList* automationList = self->makeAutomationBox(t);
@@ -415,15 +415,15 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
      opsOnOffColDelegate->setItems(*automationList, currValue);
      return currValue;
     }
-    case TurnoutTableAction::OPSEDITCOL:
+    case OPSEDITCOL:
     {
      return tr("Edit Ops");
     }
-    case TurnoutTableAction::EDITCOL:
+    case EDITCOL:
     {
      return tr("Edit");
     }
-    case  TurnoutTableAction::LOCKDECCOL:
+    case  LOCKDECCOL:
     {
 //        QComboBox* c = new QComboBox();
 //        c->addItems(t->getValidDecoderNames());
@@ -437,7 +437,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
       lockDecColDelegate->setItems(t->getValidDecoderNames(), t->getDecoderName());
       return t->getDecoderName();
     }
-    case  TurnoutTableAction:: LOCKOPRCOL:
+    case   LOCKOPRCOL:
     {
 //        QComboBox* c = new QComboBox();
 //        c->addItems(self->lockOperations);
@@ -468,7 +468,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //        });
 //        return c;
    }
-   case TurnoutTableAction::STRAIGHTCOL:
+   case STRAIGHTCOL:
   {
 
 //        QString speed = t->getStraightSpeed();
@@ -483,7 +483,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //        return c;
       return t->getStraightSpeed();
    }
-   case TurnoutTableAction::DIVERGCOL:
+   case DIVERGCOL:
    {
 
 //        QString speed = t->getDivergingSpeed();
@@ -522,7 +522,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  {
   switch(index.column())
   {
-   case TurnoutTableAction::INVERTCOL:
+   case INVERTCOL:
    {
     if (t->canInvert())
     {
@@ -534,7 +534,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     return true;
 
    }
-   case TurnoutTableAction::LOCKCOL:
+   case LOCKCOL:
    {
     bool b = value.toBool();
     t->setLocked(Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT,	b);
@@ -553,14 +553,14 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     fireTableRowsUpdated(row, row);
     return true;
    }
-   case TurnoutTableAction::MODECOL:
+   case MODECOL:
    {
 //    QString modeName = ((QComboBox*)value)->currentText();
     t->setFeedbackMode(value.toString());
     fireTableRowsUpdated(row,row);
     return true;
    }
-   case TurnoutTableAction::SENSOR1COL:
+   case SENSOR1COL:
    {
     try
     {
@@ -574,7 +574,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     fireTableRowsUpdated(row, row);
     return true;
    }
-   case TurnoutTableAction::SENSOR2COL:
+   case SENSOR2COL:
    {
     try
     {
@@ -588,12 +588,12 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
    fireTableRowsUpdated(row,row);
    return true;
    }
-   case TurnoutTableAction::OPSONOFFCOL:
+   case OPSONOFFCOL:
    {
     // do nothing as this is handled by the combo box listener
     break;
    }
-   case TurnoutTableAction::OPSEDITCOL :
+   case OPSEDITCOL :
    {
     t->setInhibitOperation(false);
 //    //@SuppressWarnings("unchecked") // cast to QComboBox* required in OPSEDITCOL
@@ -604,7 +604,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
    return true;
 
    }
-   case TurnoutTableAction::EDITCOL :
+   case EDITCOL :
    {
 #if 0
         class WindowMaker : public Runnable
@@ -624,7 +624,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
         fireTableRowsUpdated(row,row);
         return true;
     }
-    case TurnoutTableAction::LOCKOPRCOL:
+    case LOCKOPRCOL:
     {
 //     QString lockOpName =  ((QComboBox*) value)
 //            ->getSelectedItem();
@@ -646,7 +646,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
      fireTableRowsUpdated(row,row);
      return true;
     }
-    case TurnoutTableAction::LOCKDECCOL:
+    case LOCKDECCOL:
     {
 //        QString decoderName = ((QComboBox*)value)->currentText();
 //        t->setDecoderName(decoderName);
@@ -654,7 +654,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
      fireTableRowsUpdated(row,row);
      return true;
     }
-    case TurnoutTableAction::STRAIGHTCOL:
+    case STRAIGHTCOL:
     {
 //        QString speed = ((QComboBox*)value)->currentText();
 //        try {
@@ -673,7 +673,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
      fireTableRowsUpdated(row,row);
      return true;
     }
-    case TurnoutTableAction::DIVERGCOL:
+    case DIVERGCOL:
     {
 
 //    QString speed = ((QComboBox*)value)->currentText();
@@ -751,7 +751,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 
 //@Override
 /*public*/ void TurnoutTableDataModel::configureTable(JTable* tbl) {
-    table = tbl;
+    table = tbl; //??
+    self->table = tbl;
 
 //    table.setDefaultRenderer(bool.class, new EnablingCheckboxRenderer());
 //    table.setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
@@ -762,37 +763,37 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
     table->createDefaultColumnsFromModel();
 #if 1
-    TableColumn* column  = columnModel->getColumnByModelIndex(TurnoutTableAction::STRAIGHTCOL);
+    TableColumn* column  = columnModel->getColumnByModelIndex(STRAIGHTCOL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::DIVERGCOL);
+    column  = columnModel->getColumnByModelIndex(DIVERGCOL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::KNOWNCOL);
+    column  = columnModel->getColumnByModelIndex(KNOWNCOL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::MODECOL);
+    column  = columnModel->getColumnByModelIndex(MODECOL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::SENSOR1COL);
+    column  = columnModel->getColumnByModelIndex(SENSOR1COL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::SENSOR2COL);
+    column  = columnModel->getColumnByModelIndex(SENSOR2COL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::OPSONOFFCOL);
+    column  = columnModel->getColumnByModelIndex(OPSONOFFCOL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::OPSEDITCOL);
+    column  = columnModel->getColumnByModelIndex(OPSEDITCOL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::LOCKOPRCOL);
+    column  = columnModel->getColumnByModelIndex(LOCKOPRCOL);
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableAction::LOCKDECCOL);
+    column  = columnModel->getColumnByModelIndex(LOCKDECCOL);
     columnModel->setColumnVisible(column, false);
 #endif
-    table->setItemDelegateForColumn(TurnoutTableAction::EDITCOL, new PushButtonDelegate());
-    table->setItemDelegateForColumn(TurnoutTableAction::MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), self));
-    table->setItemDelegateForColumn(TurnoutTableAction::SENSOR1COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
-    table->setItemDelegateForColumn(TurnoutTableAction::SENSOR2COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
-    table->setItemDelegateForColumn(TurnoutTableAction::OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), self));
-    table->setItemDelegateForColumn(TurnoutTableAction::LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), self));
-    table->setItemDelegateForColumn(TurnoutTableAction::LOCKOPRCOL, new TTComboBoxDelegate(self->lockOperations, self));
-    table->setItemDelegateForColumn(TurnoutTableAction::STRAIGHTCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self,true));
-    table->setItemDelegateForColumn(TurnoutTableAction::DIVERGCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self, true));
-    table->setItemDelegateForColumn(TurnoutTableAction::OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),self));
+    setColumnToHoldButton(table, EDITCOL);
+    setColumnToHoldDelegate(table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), self));
+    setColumnToHoldDelegate(table, SENSOR1COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
+    setColumnToHoldDelegate(table, SENSOR2COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
+    setColumnToHoldDelegate(table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), self));
+    setColumnToHoldDelegate(table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), self));
+    setColumnToHoldDelegate(table, LOCKOPRCOL, new TTComboBoxDelegate(self->lockOperations, self));
+    setColumnToHoldDelegate(table, STRAIGHTCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self,true));
+    setColumnToHoldDelegate(table, DIVERGCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self, true));
+    setColumnToHoldDelegate(table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),self));
   self->showFeedbackChanged();
   self->showLockChanged();
   self->showTurnoutSpeedChanged();
@@ -972,6 +973,7 @@ TableSorter sorter;
   addFrame = new JmriJFrame(tr("Add Turnout"), false, true);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.TurnoutAddEdit", true);
   QWidget* centralWidget = new QWidget;
+  centralWidget->resize(600,300);
   QVBoxLayout* centralWidgetLayout = new QVBoxLayout;
   centralWidget->setLayout(centralWidgetLayout);
   addFrame->setCentralWidget(centralWidget);
@@ -982,7 +984,7 @@ TableSorter sorter;
 //                }
 //            };
   OkListener* listener = new OkListener(this);
-
+  ToCancelActionListener* cancelListener = new ToCancelActionListener(this);
 
 //        ActionListener rangeListener = new ActionListener() {
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -1021,10 +1023,10 @@ TableSorter sorter;
   sysName->setName("sysName");
   userName->setName("userName");
   prefixBox->setObjectName("prefixBox");
-  centralWidgetLayout->addWidget(new AddNewHardwareDevicePanel(sysName, userName, prefixBox, numberToAdd, range, "OK", listener, rangeListener));
+  centralWidgetLayout->addWidget(new AddNewHardwareDevicePanel(sysName, userName, prefixBox, numberToAdd, range, "OK", listener, cancelListener, rangeListener));
   canAddRange(NULL);
  }
- addFrame->pack();
+ addFrame->adjustSize();
  addFrame->setVisible(true);
 }
 
@@ -1036,6 +1038,12 @@ void OkListener::actionPerformed(ActionEvent */*e*/)
 {
  self->okPressed();
 }
+ToCancelActionListener::ToCancelActionListener(TurnoutTableAction *self) { this->self = self;}
+void ToCancelActionListener::actionPerformed(ActionEvent *e)
+{
+ self->cancelPressed();
+}
+
 RangeListener::RangeListener(TurnoutTableAction *self)
 {
  this->self = self;
@@ -1315,7 +1323,7 @@ TurnoutOperationEditor::TurnoutOperationEditor(TurnoutTableAction* tta, JFrame* 
   setLayout(thisLayout = new QVBoxLayout);
   thisLayout->addWidget(outerBox);
  }
- pack();
+ adjustSize();
 }
 /*private*/ void TurnoutOperationEditor::setTitle()
 {
@@ -1527,22 +1535,22 @@ void TurnoutTableAction::showFeedbackChanged()
 {
  bool showFeedback = showFeedbackBox->isChecked();
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
-    TableColumn* column  = columnModel->getColumnByModelIndex(KNOWNCOL);
+    TableColumn* column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::KNOWNCOL);
 //    columnModel->setColumnVisible(column, showFeedback);
 //    column  = columnModel->getColumnByModelIndex(MODECOL);
- table->setColumnHidden(MODECOL, !showFeedback);
+ table->setColumnHidden(TurnoutTableDataModel::MODECOL, !showFeedback);
 //    columnModel->setColumnVisible(column, showFeedback);
 //    column  = columnModel->getColumnByModelIndex(SENSOR1COL);
- table->setColumnHidden(SENSOR1COL, !showFeedback);
+ table->setColumnHidden(TurnoutTableDataModel::SENSOR1COL, !showFeedback);
 //    columnModel->setColumnVisible(column, showFeedback);
 //    column  = columnModel->getColumnByModelIndex(SENSOR2COL);
- table->setColumnHidden(SENSOR2COL, !showFeedback);
+ table->setColumnHidden(TurnoutTableDataModel::SENSOR2COL, !showFeedback);
 //    columnModel->setColumnVisible(column, showFeedback);
 //    column  = columnModel->getColumnByModelIndex(OPSONOFFCOL);
- table->setColumnHidden(OPSONOFFCOL, !showFeedback);
+ table->setColumnHidden(TurnoutTableDataModel::OPSONOFFCOL, !showFeedback);
 //    columnModel->setColumnVisible(column, showFeedback);
 //    column  = columnModel->getColumnByModelIndex(OPSEDITCOL);
- table->setColumnHidden(OPSEDITCOL, !showFeedback);
+ table->setColumnHidden(TurnoutTableDataModel::OPSEDITCOL, !showFeedback);
 //    columnModel->setColumnVisible(column, showFeedback);
 }
 
@@ -1550,11 +1558,11 @@ void TurnoutTableAction::showLockChanged()
 {
  bool showLock = showLockBox->isChecked();
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
-    TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(LOCKDECCOL);
-    table->setColumnHidden(LOCKDECCOL, !showLock);
+    TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(TurnoutTableDataModel::LOCKDECCOL);
+    table->setColumnHidden(TurnoutTableDataModel::LOCKDECCOL, !showLock);
 //    columnModel->setColumnVisible(column, showLock);
 //    column  = columnModel->getColumnByModelIndex(LOCKOPRCOL);
-    table->setColumnHidden(LOCKOPRCOL, !showLock);
+    table->setColumnHidden(TurnoutTableDataModel::LOCKOPRCOL, !showLock);
 //    columnModel->setColumnVisible(column, showLock);
 }
 
@@ -1563,11 +1571,11 @@ void TurnoutTableAction::showLockChanged()
 {
     bool showTurnoutSpeed = showTurnoutSpeedBox->isChecked();
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
-    TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(STRAIGHTCOL);
-    table->setColumnHidden(STRAIGHTCOL, !showTurnoutSpeed);
+    TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(TurnoutTableDataModel::STRAIGHTCOL);
+    table->setColumnHidden(TurnoutTableDataModel::STRAIGHTCOL, !showTurnoutSpeed);
 //    columnModel->setColumnVisible(column, showTurnoutSpeed);
 //    column  = columnModel->getColumnByModelIndex(DIVERGCOL);
-    table->setColumnHidden(DIVERGCOL, !showTurnoutSpeed);
+    table->setColumnHidden(TurnoutTableDataModel::DIVERGCOL, !showTurnoutSpeed);
 //    columnModel->setColumnVisible(column, showTurnoutSpeed);
 }
 
@@ -1628,10 +1636,12 @@ void TurnoutTableAction::showLockChanged()
  ItemListener2* itemListener2 = new ItemListener2(F,this);
  connect(item, SIGNAL(triggered()), itemListener2, SLOT(actionPerformed()));
 }
+
 ItemListener1::ItemListener1(JmriJFrame *F)
 {
  this->F = F;
 }
+
 void ItemListener1::actionPerformed(ActionEvent *e)
 {
    new TurnoutOperationFrame(/*final*/F);
@@ -1644,6 +1654,12 @@ ItemListener2::ItemListener2(JmriJFrame *F, TurnoutTableAction* self)
 void ItemListener2::actionPerformed(ActionEvent *e)
 {
  self->setDefaultSpeeds(/*final*/F);
+}
+
+void TurnoutTableAction::cancelPressed(ActionEvent* /*e*/) {
+    addFrame->setVisible(false);
+    addFrame->dispose();
+    addFrame = NULL;
 }
 
 void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
@@ -1686,7 +1702,7 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
  {
   try
   {
-   curAddress = InstanceManager::turnoutManagerInstance()->getNextValidAddress(curAddress, prefix);
+   curAddress = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getNextValidAddress(curAddress, prefix);
   }
   catch (JmriException ex)
   {
@@ -1702,7 +1718,7 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
   //We have found another turnout with the same address, therefore we need to go onto the next address.
   sName=prefix+InstanceManager::turnoutManagerInstance()->typeLetter()+curAddress;
   QString testSN = prefix+"L"+curAddress;
-  Light* testLight = InstanceManager::lightManagerInstance()->
+  Light* testLight = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->
           getBySystemName(testSN);
   if (testLight != NULL)
   {
@@ -1732,8 +1748,8 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
 
   if(!useLastBit)
   {
-   iNum = InstanceManager::turnoutManagerInstance()->askNumControlBits(sName);
-   if((InstanceManager::turnoutManagerInstance()->isNumControlBitsSupported(sName)) && (range->isChecked()))
+   iNum = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->askNumControlBits(sName);
+   if((((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->isNumControlBitsSupported(sName)) && (range->isChecked()))
    {
 //                if(JOptionPane.showConfirmDialog(addFrame,
 //                                             "Do you want to use the last setting for all turnouts in this range? ","Use Setting",
@@ -1759,7 +1775,7 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
    Turnout* t;
    try
    {
-    t = InstanceManager::turnoutManagerInstance()->provideTurnout(sName);
+    t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(sName);
    }
    catch (IllegalArgumentException ex)
    {
@@ -1773,9 +1789,9 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
     QString user = userName->text();
     if ((x!=0) && user != NULL && user!=(""))
      user = user+":"+x;
-    if (user != NULL && user!=("") && (InstanceManager::turnoutManagerInstance()->getByUserName(user)==NULL)) t->setUserName(user);
+    if (user != NULL && user!=("") && (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getByUserName(user)==NULL)) t->setUserName(user);
 
-    else if (InstanceManager::turnoutManagerInstance()->getByUserName(user)!=NULL && !p->getPreferenceState(getClassName(), "duplicateUserName"))
+    else if (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getByUserName(user)!=NULL && !p->getPreferenceState(getClassName(), "duplicateUserName"))
     {
      ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
      showErrorMessage("Duplicate UserName","The username " + user + " specified is already in use and therefore will not be set", getClassName(), "duplicateUserName", false, true);
@@ -1785,8 +1801,8 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
     // Ask about the type of turnout control if appropriate
     if(!useLastType)
     {
-     iType = InstanceManager::turnoutManagerInstance()->askControlType(sName);
-     if((InstanceManager::turnoutManagerInstance()->isControlTypeSupported(sName)) && (range->isChecked()))
+     iType = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->askControlType(sName);
+     if((((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->isControlTypeSupported(sName)) && (range->isChecked()))
      {
 //                        if (JOptionPane.showConfirmDialog(addFrame,
 //                                             "Do you want to use the last setting for all turnouts in this range? ","Use Setting",

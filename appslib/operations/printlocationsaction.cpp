@@ -87,7 +87,7 @@ namespace Operations
 
  }
 
- /*public*/ void PrintLocationsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintLocationsAction::actionPerformed(ActionEvent* /*e*/) {
      if (lpof == NULL) {
          lpof = new LocationPrintOptionFrame(this);
      } else {

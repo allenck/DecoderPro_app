@@ -510,7 +510,7 @@
  signalMastLevelXingPanel = new QWidget();
 
  // operational variables for Set Signals at 3-Way Turnout tool
- /*private*/ JmriJFrame setSignalsAt3WayFrame = NULL;
+ /*private*/ JmriJFrame* setSignalsAt3WayFrame = NULL;
  /*private*/ bool setSignalsAt3WayOpen = false;
  turnoutANameField = new JTextField(16);
  turnoutBNameField = new JTextField(16);
@@ -1139,7 +1139,7 @@ else if (throatDivergingHead==NULL)
   }
   else if ( (turnout->getUserName()==NULL) || (turnout->getUserName()==("")) || turnout->getUserName()!=(str) )
   {
-   str = str.toUpper();
+//   str = str.toUpper();
    if (!crossover)
     turnoutNameField->setText(str);
    else
@@ -1732,13 +1732,13 @@ else if (throatDivergingHead==NULL)
 //                java.text.MessageFormat.format(tr("SignalsError4"),
 //                    new Object[]{str}), tr("Error"),
 //                        JOptionPane.ERROR_MESSAGE);
-  QMessageBox::critical(0, tr("Error"), tr("Error - Signal head \"%1\" does not exist. Please correct name\n                                                 or enter this Signal Head in the Signal Table, and try again.").arg(str));
+  QMessageBox::critical(0, tr("Error"), tr("Error - Signal head \"%1\" does not exist. Please correct name\nor enter this Signal Head in the Signal Table, and try again.").arg(str));
   return NULL ;
  }
  else if ( (head->getUserName()==NULL) || (head->getUserName()==("")) ||
                                 head->getUserName()!=(str) )
  {
-  str = str.toUpper();
+//  str = str.toUpper();
   signalName->setText(str);
  }
  return (head);
@@ -1757,28 +1757,30 @@ else if (throatDivergingHead==NULL)
  * Places a signal head icon on the panel after rotation at the designated place, with all
  *		with all icons taken care of.
  */
-/*public*/ void LayoutEditorTools::setSignalHeadOnPanel(int rotation, QString headName,
-                int xLoc, int yLoc) {
-    SignalHeadIcon* l = new SignalHeadIcon(layoutEditor);
-    l->setSignalHead(headName);
-    l->setIcon(tr("Red"), signalIconEditor->getIcon(0));
-    l->setIcon(tr("Flashing Red"), signalIconEditor->getIcon(1));
-    l->setIcon(tr("Yellow"), signalIconEditor->getIcon(2));
-    l->setIcon(tr("Flashing Yellow"), signalIconEditor->getIcon(3));
-    l->setIcon(tr("Green"), signalIconEditor->getIcon(4));
-    l->setIcon(tr("Flashing Green"), signalIconEditor->getIcon(5));
-    l->setIcon(tr("Dark"), signalIconEditor->getIcon(6));
-    l->setIcon(tr("Held"), signalIconEditor->getIcon(7));
-    l->setIcon(tr("Lunar"), signalIconEditor->getIcon(8));
-    l->setIcon(tr("FlashingLunar"), signalIconEditor->getIcon(9));
-    l->setLocation(xLoc,yLoc);
-    if (rotation>0) {
-        QStringListIterator e( l->getIconStateNames());
-        while (e.hasNext()) {
-            l->getIcon(e.next())->setRotation(rotation,l);
-        }
-    }
-    layoutEditor->putSignal(l);
+/*public*/ void LayoutEditorTools::setSignalHeadOnPanel(int rotation, QString headName,int xLoc, int yLoc)
+{
+ SignalHeadIcon* l = new SignalHeadIcon(layoutEditor);
+ l->setSignalHead(headName);
+ l->setIcon(tr("Red"), signalIconEditor->getIcon(0));
+ l->setIcon(tr("Flashing Red"), signalIconEditor->getIcon(1));
+ l->setIcon(tr("Yellow"), signalIconEditor->getIcon(2));
+ l->setIcon(tr("Flashing Yellow"), signalIconEditor->getIcon(3));
+ l->setIcon(tr("Green"), signalIconEditor->getIcon(4));
+ l->setIcon(tr("Flashing Green"), signalIconEditor->getIcon(5));
+ l->setIcon(tr("Dark"), signalIconEditor->getIcon(6));
+ l->setIcon(tr("Held"), signalIconEditor->getIcon(7));
+ l->setIcon(tr("Lunar"), signalIconEditor->getIcon(8));
+ l->setIcon(tr("FlashingLunar"), signalIconEditor->getIcon(9));
+ l->setLocation(xLoc,yLoc);
+ if (rotation>0)
+ {
+  QStringListIterator e( l->getIconStateNames());
+  while (e.hasNext())
+  {
+   l->getIcon(e.next())->setRotation(rotation,l);
+  }
+ }
+ layoutEditor->putSignal(l);
 }
 
 /**
@@ -2489,7 +2491,7 @@ else if (throatDivergingHead==NULL)
 //                    getSavedAnchorSignals(e);
 //                }
 //            });
-  connect(getAnchorSavedSignalHeads, SIGNAL(clicked()), this, SLOT(getSavedAnchorSignals(ActionEvent* e)));
+  connect(getAnchorSavedSignalHeads, SIGNAL(clicked()), this, SLOT(getSavedAnchorSignals(ActionEvent* /*e*/)));
   getAnchorSavedSignalHeads->setToolTip( tr("Click to retrieve signal heads previously stored.") );
   centralWidgetLayout->addWidget(panel2);
   QWidget* panel21 = new QWidget();
@@ -2851,7 +2853,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
 //                java.text.MessageFormat.format(tr("SignalsError10"),
 //                    new Object[]{str}), tr("Error"),
 //                        JOptionPane.ERROR_MESSAGE);
-     QMessageBox::critical(0, tr("Error"), tr("Error - Block \"%1\" does not exist. Please correct name\n                                                or assign this block to track on the panel.").arg(str));
+     QMessageBox::critical(0, tr("Error"), tr("Error - Block \"%1\" does not exist. Please correct name\nor assign this block to track on the panel.").arg(str));
         return NULL ;
     }
     if ( !block->isOnPanel(layoutEditor) ) {
@@ -5317,7 +5319,7 @@ signalFrame->setVisible(true);
      }
      if ( (turnout2->getUserName()==NULL) || (turnout2->getUserName()==("")) ||
                              turnout2->getUserName()!=(str) ) {
-         str = str.toUpper();
+//         str = str.toUpper();
          turnout2NameField->setText(str);
      }
      layoutTurnout2 = getLayoutTurnoutFromTurnout(turnout2,false,str,setSignalsAtTToTFrame);
@@ -5373,7 +5375,7 @@ signalFrame->setVisible(true);
      }
      if ( (turnout1->getUserName()==NULL) || (turnout1->getUserName()==("")) ||
                              turnout1->getUserName()!=(str) ) {
-         str = str.toUpper();
+//         str = str.toUpper();
          turnout1NameField->setText(str);
      }
      // have turnout 1 - get corresponding layoutTurnout
@@ -5433,7 +5435,7 @@ signalFrame->setVisible(true);
          }
          if ( (turnout2->getUserName()==NULL) || (turnout2->getUserName()==("")) ||
                              turnout2->getUserName()!=(str) ) {
-             str = str.toUpper();
+//             str = str.toUpper();
              turnout2NameField->setText(str);
          }
          layoutTurnout2 = getLayoutTurnoutFromTurnout(turnout2,false,str,setSignalsAtTToTFrame);
@@ -5496,6 +5498,7 @@ signalFrame->setVisible(true);
     }
     return true;
 }
+
 /*private*/ void LayoutEditorTools::setTToTSignalsDonePressed (ActionEvent* /*a*/) {
     if ( !getTToTTurnoutInformation() ) return;
     if ( !getTToTSignalHeadInformation() ) return;
@@ -6874,7 +6877,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
         }
         if ( (turnoutB->getUserName()==NULL) || (turnoutB->getUserName()==("")) ||
                                 turnoutB->getUserName()!=(str) ) {
-            str = str.toUpper();
+//            str = str.toUpper();
             turnoutBNameField->setText(str);
         }
         layoutTurnoutB = getLayoutTurnoutFromTurnout(turnoutB,false,str,setSignalsAt3WayFrame);
@@ -6929,7 +6932,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
         }
         if ( (turnoutA->getUserName()==NULL) || (turnoutA->getUserName()==("")) ||
                                 turnoutA->getUserName()!=(str) ) {
-            str = str.toUpper();
+//            str = str.toUpper();
             turnoutANameField->setText(str);
         }
         // have turnout A - get corresponding layoutTurnout
@@ -6989,7 +6992,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
             }
             if ( (turnoutB->getUserName()==NULL) || (turnoutB->getUserName()==("")) ||
                                 turnoutB->getUserName()!=(str) ) {
-                str = str.toUpper();
+//                str = str.toUpper();
                 turnoutBNameField->setText(str);
             }
             layoutTurnoutB = getLayoutTurnoutFromTurnout(turnoutB,false,str,setSignalsAt3WayFrame);
@@ -8686,7 +8689,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
 //                java.text.MessageFormat.format(tr("SignalMastsError4"),
 //                    new Object[]{str}), tr("Error"),
 //                        JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(setSignalMastsAtBoundaryFrame, tr("Error"), tr("Error - SignalMast \"%1\" does not exist. Please correct name\n                                                                             or enter this SignalMast in the SignalMast Table, and try again.").arg(str));
+        QMessageBox::critical(setSignalMastsAtBoundaryFrame, tr("Error"), tr("Error - SignalMast \"%1\" does not exist. Please correct name\nor enter this SignalMast in the SignalMast Table, and try again.").arg(str));
         return NULL ;
     }
     return (head);

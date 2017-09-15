@@ -158,6 +158,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
      log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
      result = false;
  }
+
  ControlPanelEditor* panel = new ControlPanelEditor(name);
  PanelMenu::instance()->addEditorPanel(panel);
  panel->getTargetFrame()->move(x,y);
@@ -212,10 +213,10 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  panel->setShapeSelect(value);
 
  if ((a = element.attribute("state"))!=NULL) {
-  try {
-      int xState = a.toInt();
+  bool bOk;
+      int xState = a.toInt(&bOk);
 //            panel->setExtendedState(xState);
-  } catch ( DataConversionException e) {
+  if(!bOk) {
       log->error("failed to convert ControlPanelEditor's extended State");
       result = false;
   }
@@ -239,16 +240,17 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
      log->warn("Could not parse color attributes!");
   } /*catch ( NullPointerException e) {  // considered normal if the attributes are not present
  }*/
+
  QDomElement icons = element.firstChildElement("icons");
  if (icons != QDomElement())
  {
-  QHash<QString, NamedIcon*> portalIconMap = QHash<QString, NamedIcon*>();
-  portalIconMap.insert(PortalIcon::VISIBLE, loadIcon("visible", icons, panel));
-  portalIconMap.insert(PortalIcon::PATH, loadIcon("path_edit", icons, panel));
-  portalIconMap.insert(PortalIcon::HIDDEN, loadIcon("hidden", icons, panel));
-  portalIconMap.insert(PortalIcon::TO_ARROW, loadIcon("to_arrow", icons, panel));
-  portalIconMap.insert(PortalIcon::FROM_ARROW, loadIcon("from_arrow", icons, panel));
-  panel->setDefaultPortalIcons(&portalIconMap);
+  QHash<QString, NamedIcon*>* portalIconMap = new QHash<QString, NamedIcon*>();
+  portalIconMap->insert(PortalIcon::VISIBLE, loadIcon("visible", icons, panel));
+  portalIconMap->insert(PortalIcon::PATH, loadIcon("path_edit", icons, panel));
+  portalIconMap->insert(PortalIcon::HIDDEN, loadIcon("hidden", icons, panel));
+  portalIconMap->insert(PortalIcon::TO_ARROW, loadIcon("to_arrow", icons, panel));
+  portalIconMap->insert(PortalIcon::FROM_ARROW, loadIcon("from_arrow", icons, panel));
+  panel->setDefaultPortalIcons(portalIconMap);
  }
  //element.removeAttribute("icons");
  element.removeChild(icons);
@@ -338,6 +340,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
    //e.printStackTrace();
   }
  }
+
  panel->disposeLoadData();     // dispose of url correction data
 
  // display the results, with the editor in back

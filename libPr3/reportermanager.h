@@ -1,14 +1,15 @@
 #ifndef REPORTERMANAGER_H
 #define REPORTERMANAGER_H
-#include "manager.h"
+#include "abstractmanager.h"
 #include "reporter.h"
 #include "libPr3_global.h"
 
-class LIBPR3SHARED_EXPORT ReporterManager : public Manager
+class LIBPR3SHARED_EXPORT ReporterManager : public AbstractManager
 {
     Q_OBJECT
 public:
     //explicit ReporterManager(QObject *parent = 0);
+    ReporterManager(QObject* parent =0) : AbstractManager(parent) {}
     /**
      * Locate a Reporter object representing some specific device on the layout.
      *<P>
@@ -125,7 +126,7 @@ public:
         /**
          * Get a list of all Reporter's system names.
          */
- virtual QStringList getSystemNameList() const {return QStringList();}
+        virtual QStringList getSystemNameList() const {return QStringList();}
 
        /**
         * A method that determines if it is possible to add a range

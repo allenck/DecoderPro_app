@@ -47,7 +47,7 @@ void OBlockTableAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void OBlockTableAction::actionPerformed(ActionEvent* e)
+/*public*/ void OBlockTableAction::actionPerformed(ActionEvent* /*e*/)
 {
  TableFrames* f = new TableFrames();
  f->initComponents();

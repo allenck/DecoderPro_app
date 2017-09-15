@@ -13,10 +13,10 @@
 #include "itempalette.h"
 #include "iconadder.h"
 
-//PositionalLabel::PositionalLabel(QObject *parent) :
-//    QLabel(parent)
-//{
-//}
+PositionableLabel::PositionableLabel(QObject *parent) :
+    JLabel()
+{
+}
 /**
  * PositionableLabel is a JLabel that can be dragged around the
  * inside of the enclosing Container using a right-drag.
@@ -1294,15 +1294,15 @@ QColor PositionableLabel::getBackground()
 {
  return _background;
 }
-/*public*/ QRectF PositionableLabel::getBounds()
+/*public*/ QRectF PositionableLabel::getBounds(QRectF r)
 {
- QRectF r1 = QRectF(getX(), getY(), getWidth(), getHeight());
-// if(_itemGroup != NULL)
-// {
-//  QRectF r = _itemGroup->boundingRect();
-//  return r;
-// }
- return  r1;
+ if(r.isNull())
+  return QRectF(getX(), getY(), getWidth(), getHeight());
+ else
+ {
+  r.setCoords(getX(), getY(), getWidth(), getHeight());
+  return  r;
+ }
 }
 /* public*/ void PositionableLabel::setStyleSheet()
 {

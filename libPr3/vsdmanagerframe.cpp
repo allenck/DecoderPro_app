@@ -244,7 +244,7 @@
 /**
  * Handle "Close" button press
  */
-/*protected*/ void VSDManagerFrame::closeButtonPressed(ActionEvent* e) {
+/*protected*/ void VSDManagerFrame::closeButtonPressed(ActionEvent* /*e*/) {
  firePropertyChange(CLOSE_WINDOW, QVariant(), QVariant());
     dispose();
 }
@@ -261,7 +261,7 @@
 /**
  * Handle "Add" button press
  */
-/*protected*/ void VSDManagerFrame::addButtonPressed(ActionEvent* e) {
+/*protected*/ void VSDManagerFrame::addButtonPressed(ActionEvent* /*e*/) {
     log->debug("Add button pressed");
     config = new VSDConfig(); // Create a new Config for the new VSDecoder.
     // Do something here.  Create a new VSDecoder and add it to the window.

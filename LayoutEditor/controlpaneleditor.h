@@ -28,7 +28,7 @@ public:
     //    /*public*/ static final String POSITIONABLE_LIST_FLAVOR = java.awt.datatransfer.DataFlavor.javaJVMLocalObjectMimeType +
     //               ";class=jmri.jmrit.display.controlPanelEditor.ControlPanelEditor";
     /*public*/ void initView();
-    /*public*/ void setSelectionGroup(QList<Positionable*> group);
+    /*public*/ void setSelectionGroup(QList<Positionable*>* group);
     /*public*/ void resetEditor();
     /*public*/ QList <Positionable*>* getClipGroup();
     /*public*/ void setTitle();
@@ -38,9 +38,13 @@ public:
     /*public*/ void setShapeSelect(bool set) ;
     /*public*/ ShapeDrawer* getShapeDrawer();
  /*public*/ CircuitBuilder* getCircuitBuilder();
+ /*public*/ void mouseEntered(QGraphicsSceneMouseEvent * event);
+ /*public*/ void mouseExited(QGraphicsSceneMouseEvent * event);
+ /*public*/ void keyPressEvent(QKeyEvent* e);
+ /*public*/ void keyReleaseEvent(QKeyEvent* e);
 
 signals:
-    void selectionRect(QRectF);
+    void selectionRect(QRectF, QGraphicsSceneMouseEvent*);
 
 public slots:
  /*public*/ void setUseGlobalFlag(bool set); // SLOT
@@ -51,6 +55,7 @@ public slots:
     /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event);
     /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event);
     /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);
+    ///*public*/ void mouseDoubleClicked(QGraphicsSceneMouseEvent* event);
     /*public*/ void setAllEditable(bool edit);
 
 private:
@@ -60,26 +65,25 @@ private:
  /*private*/ QMenu* _circuitMenu;
  /*private*/ QMenu* _drawMenu;
  /*private*/ CircuitBuilder* _circuitBuilder;
+ /*private*/ QList<Positionable*>* _secondSelectionGroup;
  /*private*/ ShapeDrawer* _shapeDrawer;
-/*private*/ ItemPalette* _itemPalette;
-    /*private*/ bool _disableShapeSelection;
-    /*private*/ bool _disablePortalSelection;// = true;		// only select PortalIcon in CircuitBuilder
-
+ /*private*/ ItemPalette* _itemPalette;
+ /*private*/ bool _disableShapeSelection;
+ /*private*/ bool _disablePortalSelection;// = true;		// only select PortalIcon in CircuitBuilder
  /*private*/ QAction* useGlobalFlagBox;// = new QAction(tr("Override individual Position & Control settings "));
-////    /*private*/ JCheckBoxMenuItem editableBox = new JCheckBoxMenuItem(Bundle.getMessage("CloseEditor"));
  /*private*/ QAction* positionableBox;// = new QAction(tr("All panel items can be repositioned"),this);
  /*private*/ QAction* controllingBox;// = new QAction(tr("Panel items control layout"));
  /*private*/ QAction* showTooltipBox;// = new QAction(tr("Show tooltips for all items"),this);
  /*private*/ QAction* hiddenBox;// = new QAction(tr("Show all hidden items"), this);
-//    /*private*/ JRadioButtonMenuItem scrollBoth = new JRadioButtonMenuItem(Bundle.getMessage("ScrollBoth"));
-//    /*private*/ JRadioButtonMenuItem scrollNone = new JRadioButtonMenuItem(Bundle.getMessage("ScrollNone"));
-//    /*private*/ JRadioButtonMenuItem scrollHorizontal = new JRadioButtonMenuItem(Bundle.getMessage("ScrollHorizontal"));
-//    /*private*/ JRadioButtonMenuItem scrollVertical = new JRadioButtonMenuItem(Bundle.getMessage("ScrollVertical"));
-    /*private*/ QAction* disableShapeSelect;// = new JCheckBoxMenuItem(Bundle.getMessage("disableShapeSelect"));
+ /*private*/ QAction* disableShapeSelect;// = new JCheckBoxMenuItem(Bundle.getMessage("disableShapeSelect"));
       Logger* log;
  int _fitX;// = 0;
  int _fitY;// = 0;
  /*private*/ void makeFileMenu();
+ /*private*/ QHash<QString, NamedIcon*>* _portalIconMap;
+ /*private*/ void makePortalIconMap();
+ /*private*/ bool _regular;// = true;	// true when TO_ARROW shows entry into ToBlock
+ /*private*/ bool _hide;// = false;	// true when arrow should NOT show entry into ToBlock
  void dragEnterEvent(QDragEnterEvent *);
  //void dropEvent(QDropEvent *);
  void dragMoveEvent(QDragMoveEvent *);
@@ -93,10 +97,6 @@ private:
  DataFlavor* _positionableDataFlavor;
  DataFlavor* _positionableListDataFlavor;
  DataFlavor* _namedIconDataFlavor;
- /*private*/ QHash<QString, NamedIcon*>* _portalIconMap;
- /*private*/ void makePortalIconMap();
- /*private*/ bool _regular;// = true;	// true when TO_ARROW shows entry into ToBlock
- /*private*/ bool _hide;// = false;	// true when arrow should NOT show entry into ToBlock
 
 
 
@@ -105,8 +105,6 @@ private slots:
  /*private*/ void zoomToFit();
  void dropEvent(QGraphicsSceneDragDropEvent* e);
 void on_itemPallette();
-void keyPressEvent(QKeyEvent *);
-void keyReleaseEvent(QKeyEvent *);
 /*private*/ void copyToClipboard();
 /*private*/ void pasteFromClipboard();
 void selectAllAction();
@@ -139,17 +137,20 @@ protected:
 /*protected*/ void makeCircuitMenu();
 /*protected*/ void makeCircuitMenu(bool edit);
 /*protected*/ void disableMenus();
-/*protected*/ QList<Positionable*> getSelectionGroup();
+/*protected*/ QList<Positionable*>* getSelectionGroup();
 /*protected*/ void highlight(Positionable* pos);
 /*protected*/ void copyItem(Positionable* p);
 /*protected*/ void makeDataFlavors();
 /*protected*/ NamedIcon* getPortalIcon(QString name);
+/*protected*/ void paintTargetPanel(QGraphicsScene* g);
+/*protected*/ void setSecondSelectionGroup(QList<Positionable*>* list);
 
 
 friend class CircuitBuilder;
 friend class EditCircuitFrame;
 friend class DuplicateActionListener;
 friend class EditPortalDirection;
+friend class EditPortalFrame;
 };
 Q_DECLARE_METATYPE(ControlPanelEditor)
 

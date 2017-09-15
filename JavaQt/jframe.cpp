@@ -10,7 +10,7 @@
 //#include "apps.h"
 #include "windowlistener.h"
 #include <QDesktopWidget>
-
+#include <QDebug>
 
 
 JFrame::JFrame(QWidget *parent) :
@@ -40,11 +40,12 @@ JFrame::~JFrame()
 /*public*/ void JFrame::pack()
 {
  // work around for Linux, sometimes the stored window size is too small
- if (this->getPreferredSize().width() < 100 || this->size().height() < 100)
- {
-  this->setMinimumSize(QSize(100,20)); // try without the preferred size
- }
+// if (this->getPreferredSize().width() < 100 || this->size().height() < 100)
+// {
+//  this->setMinimumSize(QSize(100,20)); // try without the preferred size
+// }
  //super.pack();
+ adjustSize();
  reSizeToFitOnScreen();
 }
 /**
@@ -205,10 +206,13 @@ void JFrame::setLocation(int x, int y)
 {
     move(x, y);
 }
+
 void JFrame::dispose()
 {
- //close();
+ close();
+ deleteLater();
 }
+
 QWidget* JFrame:: getContentPane()
 {
  if(centralWidget() == NULL)
@@ -394,6 +398,24 @@ void JFrame::addWindowListener(WindowListener* l)
 {
  listeners->append(l);
 }
+/**
+ * Removes the specified window listener so that it no longer
+ * receives window events from this window.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param   l the window listener
+ * @see #addWindowListener
+ * @see #getWindowListeners
+ */
+/*public*/ /*synchronized*/ void JFrame::removeWindowListener(WindowListener* l) {
+    if (l == NULL) {
+        return;
+    }
+    //windowListener = AWTEventMulticaster.remove(windowListener, l);
+    listeners->removeOne(l);
+}
 
 void JFrame::setAlwaysOnTop(bool b)
 {
@@ -409,4 +431,13 @@ void JFrame::setAlwaysOnTop(bool b)
   setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
   show();
  }
+}
+void JFrame::resizeEvent(QResizeEvent *)
+{
+ //qDebug() << "resized";
+}
+
+void JFrame::hideEvent(QHideEvent *)
+{
+ //qDebug() << "hide";
 }

@@ -37,7 +37,7 @@ namespace Operations
 
 
 
- /*public*/ void ModifyLocationsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ModifyLocationsAction::actionPerformed(ActionEvent* /*e*/) {
      // create a frame
      if (f == NULL || !f->isVisible()) {
          f = new LocationsByCarTypeFrame();

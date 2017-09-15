@@ -558,7 +558,7 @@ void SignalHeadIcon::updateItem()
 
 /*protected*/ void SignalHeadIcon::edit()
 {
- makeIconEditorFrame(this, "SignalHead", true, NULL);
+ makeIconEditorFrame(this, "Signal Head", true, NULL);
  _iconEditor->setPickList(PickListModel::signalHeadPickModelInstance());
  QStringListIterator e(_iconMap->keys());
  int i=0;

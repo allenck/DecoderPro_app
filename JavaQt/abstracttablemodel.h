@@ -5,7 +5,7 @@
 #include <QVariant>
 #include "javaqt_global.h"
 
-
+class QItemDelegate;
 class QPushButton;
 class JTable;
 class TableModelListener;
@@ -52,12 +52,17 @@ protected:
     //protected EventListenerList* listenerList = new EventListenerList();
     QList<EventListener*>* listenerList;
     /*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/= 0);
+    void setColumnToHoldDelegate(JTable *table, int column, QItemDelegate *delegate);
 
     friend class CvTableModel;
     friend class BeanTableDataModel;
     friend class WarrantTableFrame;
     friend class TableFrames;
     friend class BlockTableDataModel;
+    friend class TurnoutTableDataModel;
+    friend class LightTableAction;
+    friend class SignalMastTableAction;
+    friend class SignallingPanel;
 };
 
 #endif // ABSTRACTTABLEMODEL_H

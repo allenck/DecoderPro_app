@@ -28,7 +28,7 @@ namespace Operations
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ManageBackupsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ManageBackupsAction::actionPerformed(ActionEvent* /*e*/) {
      ManageBackupsDialog* dlg = new ManageBackupsDialog();
      //dlg->setLocationRelativeTo(null);
      dlg->setVisible(true);

@@ -51,7 +51,7 @@ void UpdateDecoderDefinitionAction::common()
 }
 
 //@Override
-/*public*/ void UpdateDecoderDefinitionAction::actionPerformed(ActionEvent* e)
+/*public*/ void UpdateDecoderDefinitionAction::actionPerformed(ActionEvent* /*e*/)
 {
  QList<RosterEntry*> list = Roster::getDefault()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 

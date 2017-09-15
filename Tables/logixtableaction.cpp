@@ -190,7 +190,6 @@ LogixTableModel::LogixTableModel(LogixTableAction *self)
 {
  this->self = self;
  enabledString = tr("Enabled");
- //updateNameList();
  init();
 }
 
@@ -235,7 +234,7 @@ LogixTableModel::LogixTableModel(LogixTableAction *self)
  if (index.column() == EDITCOL)
   return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
  if (index.column() == ENABLECOL)
-  return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+  return  Qt::ItemIsEnabled |  Qt::ItemIsUserCheckable;
  else
   return BeanTableDataModel::flags(index);
 }
@@ -383,12 +382,13 @@ void LogixTableModel::doDelete(NamedBean* bean)
 /*public*/ void LogixTableModel::clickOn(NamedBean* /*t*/) {
 }
 
-/*public*/ QString LogixTableModel::getValue(QString /*s*/) {
+/*public*/ QString LogixTableModel::getValue(QString /*s*/) const
+{
     return "";
 }
 
 /*protected*/ QString LogixTableModel::getBeanType(){
-    return tr("BeanNameLogix");
+    return tr("Logix");
 }
 //    };
 //}
@@ -587,7 +587,7 @@ ActionTypeListener::ActionTypeListener(LogixTableAction *self)
 {
  this->self = self;
 }
-/*public*/ void ActionTypeListener::actionPerformed(ActionEvent* e) {
+/*public*/ void ActionTypeListener::actionPerformed(ActionEvent* /*e*/) {
     int select1 = self->_actionItemTypeBox->currentIndex();
     int select2 = self->_actionTypeBox->currentIndex()-1;
     if (self->log->isDebugEnabled()) self->log->debug("ActionTypeListener: actionItemType= "+QString::number(select1)+", _itemType= "
@@ -5823,6 +5823,7 @@ void ConditionalTableModel::fireTableRowsDeleted(int /*r1*/, int /*r2*/)
 LVariableTableModel::LVariableTableModel(QObject* parent) : QAbstractTableModel(parent)
 {
   self = (LogixTableAction*) parent;
+
 }
 
 //    /*public*/ Class<?> getColumnClass(int c) {

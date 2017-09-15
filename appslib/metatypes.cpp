@@ -24,7 +24,7 @@
 #include "sensoriconxml.h"
 #include "turnouticonxml.h"
 #include "locoiconxml.h"
-#include "signalheadiconxml.h"
+//#include "signalheadiconxml.h"
 #include "multisensoriconxml.h"
 #include "positionablelabelxml.h"
 #include "activesystemsmenu.h"
@@ -78,6 +78,7 @@
 #include "lroutetableaction.h"
 #include "sectiontableaction.h"
 #include "sensortableaction.h"
+#include "sensortabletabaction.h"
 #include "signalgrouptableaction.h"
 #include "defaultshutdownmanager.h"
 #include "connectionspreferencespanel.h"
@@ -97,6 +98,7 @@
 #include "profilepreferencespanel.h"
 #include "signalheadtableaction.h"
 #include "turnouttableaction.h"
+#include "turnouttabletabaction.h"
 #include "performscriptpanel.h"
 #include "createrostergroupaction.h"
 #include "powerpanelaction.h"
@@ -173,6 +175,38 @@
 #include "layoutturntablexml.h"
 #include "filehistory.h"
 #include "defaultusermessagepreferences.h"
+#include "listedtableframe.h"
+#include "lighttabletabaction.h"
+#include "signalmasttableaction.h"
+#include "../libPr3/Signal/signalgroupmanager.h"
+#include "reportertableaction.h"
+#include "memorytableaction.h"
+#include "idtagtableaction.h"
+#include "../libPr3/Signal/defaultsignalgroupmanager.h"
+#include "../libPr3/Signal/defaultsignalsystemmanager.h"
+#include "../libPr3/Signal/defaultsignalmastlogicmanager.h"
+#include "defaultroutemanager.h"
+#include "../libPr3/Signal/defaultsignalmastmanager.h"
+#include "signalmastlogictableaction.h"
+#include "transittableaction.h"
+#include "positionablepolygonxml.h"
+#include "positionableshape.h"
+#include "doubleturnoutsignalheadxml.h"
+#include "singleturnoutsignalheadxml.h"
+#include "virtualsignalmastxml.h"
+#include "memoryiconxml.h"
+#include "analogclock2displayxml.h"
+#include "lighticonxml.h"
+#include "slipturnouticonxml.h"
+#include "indicatorturnouticonxml.h"
+#include "indicatortrackiconxml.h"
+#include "reportericonxml.h"
+#include "signalmasticon.h"
+#include "signalheadiconxml.h"
+#include "tripleturnoutsignalheadxml.h"
+#include "quadoutputsignalheadxml.h"
+#include "signalheadsignalmastxml.h"
+#include "transitmanagerxml.h"
 
 bool Metatypes::done = false;
 
@@ -261,6 +295,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LRouteTableAction>("LRouteTableAction");
  qRegisterMetaType<SectionTableAction>("SectionTableAction");
  qRegisterMetaType<SensorTableAction>("SensorTableAction");
+ qRegisterMetaType<SensorTableTabAction>("SensorTableTabAction");
  qRegisterMetaType<SignalGroupTableAction>("SignalGroupTableAction");
  qRegisterMetaType<DefaultShutDownManager>("DefaultShutDownManager");
  qRegisterMetaType<ConnectionsPreferencesPanel>("ConnectionsPreferencesPanel");
@@ -280,6 +315,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<ProfilePreferencesPanel>("ProfilePreferencesPanel");
  qRegisterMetaType<SignalHeadTableAction>("SignalHeadTableAction");
  qRegisterMetaType<TurnoutTableAction>("TurnoutTableAction");
+ qRegisterMetaType<TurnoutTableTabAction>("TurnoutTableTabAction");
  qRegisterMetaType<PerformScriptPanel>("PerformScriptPanel");
  qRegisterMetaType<CreateRosterGroupAction>("CreateRosterGroupAction");
  qRegisterMetaType<PowerPanelAction>("PowerPanelAction");
@@ -359,6 +395,38 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LayoutTurntableXml>("LayoutTurntableXml");
  qRegisterMetaType<FileHistory>("FileHistory");
  qRegisterMetaType<DefaultUserMessagePreferences>("DefaultUserMessagePreferences");
+ qRegisterMetaType<ListedTableFrame>("ListedTableFrame");
+ qRegisterMetaType<LightTableTabAction>("LightTableTabAction");
+ qRegisterMetaType<SignalMastTableAction>("SignalMastTableAction");
+ qRegisterMetaType<SignalGroupManager>("SignalGroupManager");
+ qRegisterMetaType<ReporterTableAction>("ReporterTableAction");
+ qRegisterMetaType<MemoryTableAction>("MemoryTableAction");
+ qRegisterMetaType<IdTagTableAction>("IdTagTableAction");
+ qRegisterMetaType<DefaultSignalGroupManager>("DefaultSignalGroupManager");
+ qRegisterMetaType<DefaultSignalSystemManager>("DefaultSignalSystemManager");
+ qRegisterMetaType<DefaultSignalMastLogicManager>("DefaultSignalMastLogicManager");
+ qRegisterMetaType<DefaultRouteManager>("DefaultRouteManager");
+ qRegisterMetaType<DefaultSignalMastManager>("DefaultSignalMastManager");
+ qRegisterMetaType<SignalMastLogicTableAction>("SignalMastLogicTableAction");
+ qRegisterMetaType<TransitTableAction>("TransitTableAction");
+ qRegisterMetaType<PositionablePolygonXml>("PositionablePolygonXml");
+ qRegisterMetaType<PositionableShapeXml>("PositionableShapeXml");
+ qRegisterMetaType<DoubleTurnoutSignalHeadXml>("DoubleTurnoutSignalHeadXml");
+ qRegisterMetaType<SingleTurnoutSignalHeadXml>("SingleTurnoutSignalHeadXml");
+ qRegisterMetaType<VirtualSignalMastXml>("VirtualSignalMastXml");
+ qRegisterMetaType<MemoryIconXml>("MemoryIconXml");
+ qRegisterMetaType<AnalogClock2DisplayXml>("AnalogClock2DisplayXml");
+ qRegisterMetaType<LightIconXml>("LightIconXml");
+ qRegisterMetaType<TurnoutIconXml>("TurnoutIconXml");
+ qRegisterMetaType<SlipTurnoutIconXml>("SlipTurnoutIconXml");
+ qRegisterMetaType<IndicatorTurnoutIconXml>("IndicatorTurnoutIconXml");
+ qRegisterMetaType<IndicatorTrackIconXml>("IndicatorTrackIconXml");
+ qRegisterMetaType<ReporterIconXml>("ReporterIconXml");
+ qRegisterMetaType<SignalMastIcon>("SignalMastIcon");
+ qRegisterMetaType<TripleTurnoutSignalHeadXml>("TripleTurnoutSignalHeadXml");
+ qRegisterMetaType<QuadOutputSignalHeadXml>("QuadOutputSignalHeadXml");
+ qRegisterMetaType<SignalHeadSignalMastXml>("SignalHeadSignalMastXml");
+ qRegisterMetaType<TransitManagerXml>("TransitManagerXml");
 
  Metatypes::done = true;
 }

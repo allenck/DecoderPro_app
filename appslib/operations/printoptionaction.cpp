@@ -30,7 +30,7 @@ namespace Operations
  }
 
 
- /*public*/ void PrintOptionAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintOptionAction::actionPerformed(ActionEvent* /*e*/) {
      if (f == NULL || !f->isVisible()) {
          f = new PrintOptionFrame();
          f->initComponents();

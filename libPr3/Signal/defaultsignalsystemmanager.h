@@ -14,6 +14,8 @@ class LIBPR3SHARED_EXPORT DefaultSignalSystemManager : public AbstractManager
 public:
     //explicit DefaultSignalSystemManager(QObject *parent = 0);
     /*public*/ DefaultSignalSystemManager(QObject *parent = 0);
+    ~DefaultSignalSystemManager() {}
+    DefaultSignalSystemManager(const DefaultSignalSystemManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder();
     QString getSystemPrefix() ;
     /*public*/ char typeLetter() ;
@@ -41,5 +43,5 @@ public:
     };
 
 };
-
+Q_DECLARE_METATYPE(DefaultSignalSystemManager)
 #endif // DEFAULTSIGNALSYSTEMMANAGER_H

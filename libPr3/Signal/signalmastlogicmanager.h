@@ -3,6 +3,8 @@
 #include "manager.h"
 #include "exceptions.h"
 #include "libPr3_global.h"
+#include "propertychangesupport.h"
+
 /**
  *
  * <hr>
@@ -27,7 +29,7 @@ class LayoutEditor;
 class SignalMastLogic;
 /*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogicManager : public Manager {
 public:
- SignalMastLogicManager(QObject* parent) : Manager(parent) {}
+ SignalMastLogicManager(QObject* parent=0) : Manager(parent) {}
     /*public void addDestinationMastToLogic(SignalMastLogic src, SignalMast destination) = 0;*/
 
     /**
@@ -112,6 +114,7 @@ public:
     /*public*/ virtual bool isSignalMastUsed(SignalMast* mast) = 0;
 
     /*public*/ virtual void setSignalLogicDelay(long l) = 0;
+    PropertyChangeSupport* pcs;
  friend class RunnableThis;
  friend class DestinationMast;
  friend class LevelXing;

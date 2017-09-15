@@ -28,7 +28,7 @@ namespace Operations
  }
 
 
- /*public*/ void TrainsByCarTypeAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrainsByCarTypeAction::actionPerformed(ActionEvent* /*e*/) {
      // create a frame
      if (f == NULL || !f->isVisible()) {
          f = new TrainsByCarTypeFrame();

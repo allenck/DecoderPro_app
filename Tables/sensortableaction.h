@@ -25,8 +25,8 @@ class LIBTABLESSHARED_EXPORT SensorTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    //explicit SensorTableAction(QObject *parent = 0);
-    /*public*/ SensorTableAction(QString actionName = tr("Sensor Table"), QObject *parent = 0);
+    explicit SensorTableAction(QObject *parent = 0);
+    /*public*/ SensorTableAction(QString actionName, QObject *parent);
     ~SensorTableAction() {}
     SensorTableAction(const SensorTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     /*public*/ void setManager(Manager* man);
@@ -36,6 +36,8 @@ public:
     /*public*/ void setMessagePreferencesDetails();
     /*public*/ QString getClassDescription();
     static QString getName();
+    /*public*/ void addToPanel(AbstractTableTabAction* f);
+
 signals:
     void propertyChange(PropertyChangeEvent*);
 public slots:
@@ -56,7 +58,7 @@ private:
     DefaultUserMessagePreferences* p;
     void handleCreateException(QString sysName);
     BeanTableFrame* f;
-    BeanTableDataModel* m;
+    //BeanTableDataModel* m;
     QCheckBox* showDebounceBox;// = new JCheckBox(tr("SensorDebounceCheckBox"));
     bool enabled;
 
@@ -66,8 +68,8 @@ private slots:
     void showDebounceChanged(bool);
 
 protected:
-    /*protected*/ ProxySensorManager* senManager;// = jmri.InstanceManager.sensorManagerInstance();
-    /*protected*/ void createModel(JTable* );
+    /*protected*/ SensorManager* senManager;// = jmri.InstanceManager.sensorManagerInstance();
+    /*protected*/ void createModel();
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();
     /*protected*/ void setDefaultDebounce(JFrame* _who);
@@ -77,8 +79,11 @@ protected:
 protected slots:
     /*protected*/ void addPressed();
     void okPressed();
+    void cancelPressed(ActionEvent* e = 0);
+
 
 friend class STOkButtonActionListener;
+friend class STCancelActionListener;
 friend class STRangeActionListener;
 friend class DebounceActionListener;
 friend class SensorWidget;
@@ -95,6 +100,16 @@ public:
 public slots:
  void actionPerformed();
 
+};
+
+class STCancelActionListener : public ActionListener
+{
+ Q_OBJECT
+ SensorTableAction* act;
+public:
+ STCancelActionListener(SensorTableAction* act);
+public slots:
+ void actionPerformed();
 };
 
 class STRangeActionListener : public ActionListener

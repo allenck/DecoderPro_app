@@ -17,7 +17,7 @@ private:
     JTextField*	_radiusText;
     int 		_radius;			// corner radius
 protected:
-    /*protected*/ virtual QWidget* makeParamsPanel();
+    /*protected*/ virtual QWidget* makeParamsPanel(PositionableShape* p);
     /*protected*/ void makeFigure();
     /*protected*/ void setPositionableParams(PositionableShape* p);
     /*protected*/ virtual void setDisplayParams(PositionableShape* p) ;

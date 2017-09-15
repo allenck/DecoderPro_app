@@ -74,5 +74,14 @@ public:
     AddTableActionListener(TableItemPanel* parent);
     void actionPerformed(ActionEvent *e = 0);
 };
+class AtCancelListener : public ActionListener
+{
+  TableItemPanel* self;
+  Q_OBJECT
+public:
+  AtCancelListener(TableItemPanel* self);
+public slots:
+  /*public*/ void actionPerformed() ;
+};
 
 #endif // TABLEITEMPANEL_H

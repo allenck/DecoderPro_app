@@ -53,7 +53,8 @@
 #include "positionableellipse.h"
 #include "trainicon.h"
 #include "metatypes.h"
-
+#include <QStatusBar>
+#include "positionable.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -119,6 +120,8 @@
 /*static*/ const int Editor::DELTA = 20;
 /*public*/ /*static*/ /*final*/ QString Editor::POSITIONABLE_FLAVOR = /*java.awt.datatransfer.DataFlavor.javaJVMLocalObjectMimeType */ QString("text/plain")+
                ";class=jmri.jmrit.display.Positionable";
+/*final*/ /*public*/ /*static*/ QColor Editor::HIGHLIGHT_COLOR =  QColor(204, 207, 88);
+
 
 /*public*/ Editor::Editor(QWidget* parent) : JmriJFrame( parent)
 {
@@ -145,7 +148,7 @@ void Editor::commonInit()
  _selectRectItemGroup = NULL;
  _highlightcomponent = QRect();
  _dragging = false;
- _selectionGroup = QList<Positionable*>();  // items gathered inside fence
+ _selectionGroup = new QList<Positionable*>();  // items gathered inside fence
 
  xLoc = 0;     // x coord of selected Positionable
  yLoc = 0;     // y coord of selected Positionable
@@ -167,7 +170,7 @@ void Editor::commonInit()
   panelMenuIsVisible = true;
 }
 
-/*public*/ Editor::Editor(QString name, bool saveSize, bool savePosition, QWidget* parent) : JmriJFrame(parent)
+/*public*/ Editor::Editor(QString name, bool saveSize, bool savePosition, QWidget* parent) : JmriJFrame("<Editor>", parent)
 {
  //super(name, saveSize, savePosition);
  //setName(name);
@@ -181,7 +184,7 @@ void Editor::commonInit()
  setVisible(false);
 }
 
-/*public*/ Editor::Editor(QString name, QWidget* parent) : JmriJFrame( parent)
+/*public*/ Editor::Editor(QString name, QWidget* parent) : JmriJFrame(name, parent)
 {
  commonInit();
  _debug = false;
@@ -261,7 +264,7 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 * An Editor may or may not choose to use 'this' as its frame or
 * the interior class 'TargetPane' for its targetPanel
 */
-/*protected*/ void Editor::setTargetPanel(QGraphicsScene* targetPanel, JmriJFrame* frame) {
+/*protected*/ void Editor::setTargetPanel(EditScene* targetPanel, JmriJFrame* frame) {
     if (targetPanel == NULL){
        // _targetPanel = new TargetPane();
         _targetPanel = editScene = new EditScene();
@@ -438,8 +441,25 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
  if (!_editable)
  {
   _highlightcomponent = QRect();
-  _selectionGroup = QList<Positionable*>();
+  _selectionGroup = new QList<Positionable*>();
  }
+}
+/*protected*/ void Editor::deselectSelectionGroup()
+{
+ if (_selectionGroup == NULL)
+ {
+  return;
+ }
+
+ foreach (Positionable* p, *_selectionGroup)
+ {
+     if (qobject_cast<PositionableShape*>(p)) {
+         PositionableShape* s
+                 = (PositionableShape*) p;
+         s->removeHandles();
+     }
+ }
+ _selectionGroup = new QList<Positionable*>();
 }
 
 // accessor routines for persistent information
@@ -476,7 +496,7 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
   case OPTION_HIDDEN:
    return _showHidden;
   case OPTION_TOOLTIP:
-        return _showTooltip;
+   return _showTooltip;
 //                case OPTION_COORDS:
 //                    return _showCoordinates;
   }
@@ -752,9 +772,16 @@ void Editor::closeEvent(QCloseEvent */*e*/)
   }
  }
 }
-/*protected*/ void Editor::setSecondSelectionGroup(QList<Positionable*> list) {
-    _secondSelectionGroup = list;
-}
+/**
+ * Called from TargetPanel's paint method for additional drawing by editor
+ * view
+ *
+ */
+/*abstract*/ /*protected*/ void Editor::paintTargetPanel(QGraphicsScene* g) {}
+
+///*protected*/ void Editor::setSecondSelectionGroup(QList<Positionable*> list) {
+//    _secondSelectionGroup = list;
+//}
 
 /*protected*/ Editor* Editor::changeView(QString className)
 {
@@ -2670,13 +2697,13 @@ void Editor::putBackground() {
  setWindowTitle(name);
  #endif
 }
-#if 1
+
 /*protected*/ JFrameItem* Editor::makeAddIconFrame(QString name, bool add, bool table, IconAdder* editor)
 {
  if (_debug) log->debug("makeAddIconFrame for "+name+", add= "+add+", table= "+table);
  QString txt;
  JFrameItem* frame = new JFrameItem(name, editor);
- frame->setMinimumSize(200, 500);
+ frame->setMinimumSize(300, 600);
 #if 1
  if (editor != NULL)
  {
@@ -2798,6 +2825,7 @@ void Editor::putBackground() {
 //                        if (_debug) log->debug("windowClosing: HIDE "+toQString());
 //                    }
 //            });
+   frame->addWindowListener(new AddIconFrameWindowListener(this));
   }
  }
  else
@@ -2813,12 +2841,24 @@ void Editor::putBackground() {
  {
   txt = tr("Edit %1 Icon").arg(name);
  }
-#endif
+
  frame->setWindowTitle(txt+" ("+getTitle()+")");
- frame->adjustSize();
- //QTimer::singleShot(50, frame, SLOT(pack()));
+ frame->pack();
  return frame;
 }
+
+AddIconFrameWindowListener::AddIconFrameWindowListener(Editor *editor)
+{
+ this->editor = editor;
+}
+
+/*public*/ void AddIconFrameWindowListener::windowClosing(QCloseEvent*)
+{
+    ImageIndexEditor::checkImageIndex();
+    editor->setDefaultCloseOperation(JmriJFrame::HIDE_ON_CLOSE);
+    if (editor->log->isDebugEnabled()) editor->log->debug("windowClosing: HIDE "+editor->title());
+}
+
 void SearchItemActionListener::actionPerformed(ActionEvent */*e*/)
 {
     QDir* dir = DirectorySearcher::instance()->searchFS();
@@ -2858,6 +2898,9 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 #endif
  if(l->_itemGroup != NULL && l->_itemGroup->scene()!= NULL)
  editScene->removeItem(l->_itemGroup);
+ if(l->_handleGroup != NULL && l->_handleGroup)
+  editScene->removeItem(l->_handleGroup);
+ _currentSelection = NULL; // added ACK
 }
 
 /*public*/ bool Editor::removeFromContents(Positionable* l)
@@ -2866,7 +2909,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
     //todo check that parent == _targetPanel
     //Container parent = this.getParent();
     // force redisplay
-  _contents->remove(_contents->indexOf(l));
+  _contents->removeOne(l);
   return true;
 }
 
@@ -3035,8 +3078,8 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
   // don't allow negative placement, icon can become unreachable
   if (xObj < 0) xObj = 0;
   if (yObj < 0) yObj = 0;
-  if(qobject_cast<PositionableLabel*>(p) != NULL)
-   ((PositionableLabel*)p)->setLocation(xObj, yObj);
+  if(qobject_cast<Positionable*>(p) != NULL)
+   ((Positionable*)p)->setLocation(xObj, yObj);
   else p->setLocation((double)xObj, (double)yObj);
   // and show!
  }
@@ -3050,12 +3093,14 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 * Return a List of all items whose bounding rectangle contain the mouse position.
 * ordered from top level to bottom
 */
-/*protected*/ QList <Positionable*> Editor::getSelectedItems(QGraphicsSceneMouseEvent* event)
+/*protected*/ QList <Positionable*>* Editor::getSelectedItems(QGraphicsSceneMouseEvent* event)
 {
  double x = event->scenePos().x();
  double y = event->scenePos().y();
  return getSelectedItems(QPointF(x,y));
 }
+
+#if 0
 /*protected*/ QList <Positionable*> Editor::getSelectedItems(QPointF pt)
 {
  double x = pt.x();
@@ -3207,6 +3252,57 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
  //if (_debug)  log->debug("getSelectedItems at ("+x+","+y+") "+selections.size()+" found,");
  return selections->toList();
 }
+#else
+/*protected*/ QList <Positionable*>* Editor::getSelectedItems(QPointF pt)
+{
+ double x = pt.x();
+ double y = pt.y();
+ QRectF rect;
+ int level;
+ QList<Positionable*>* selections = new QList<Positionable*>();
+ for (int i=0; i<_contents->size(); i++)
+ {
+  Positionable* p = _contents->at(i);
+  rect = p->getBounds(QRectF());
+  if(rect.isEmpty()) continue;
+  if(rect.x() == 0 && rect.y() == 0)
+   rect = QRectF(p->pos().x(), p->pos().y(), p->size().width(), p->size().height());
+  level = p->getDisplayLevel();
+  QRectF rect2D(rect.x()*_paintScale, rect.y()*_paintScale, rect.width()*_paintScale,                                                        rect.height()*_paintScale);
+  if (rect2D.contains(x, y) && (level > BKG /*|| event->modifiers()&Qt::ControlModifier*/))
+  {
+      //qDebug() << tr("rect %1,%2,%3,%4 contains %5,%6").arg(rect2D.x()).arg(rect2D.y()).arg(rect2D.width()).arg(rect2D.height()).arg(x).arg(y);
+   bool added =false;
+      //int level = ((PositionableLabel*)p)->getDisplayLevel();
+   for (int k=0; k<selections->size(); k++)
+   {
+    int selLevel;
+//    if(qobject_cast<PositionableJComponent*>(selections->at(k))!= NULL)
+//    {
+//     selLevel = ((PositionableJComponent*)selections->at(k))->getDisplayLevel();
+//    }
+//    else
+    {
+     selLevel = selections->at(k)->getDisplayLevel();
+    }
+
+    if (level >= selLevel)
+    {
+     selections->insert(k, p);
+     added = true;       // OK to lie in the case of background icon
+     break;
+    }
+   }
+   if (!added)
+   {
+    selections->append(p);
+    statusBar()->showMessage( tr("select %1 x=%2,y=%3, w=%4, h= %5").arg(p->metaObject()->className()).arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
+   }
+  }
+ }
+ return selections;
+}
+#endif
 
 /*
 * Gather all items inside _selectRect
@@ -3214,10 +3310,9 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 */
 /*protected*/ void Editor::makeSelectionGroup(QGraphicsSceneMouseEvent* event)
 {
-#if 1
- if (!(event->modifiers()&Qt::ControlModifier) || _selectionGroup==QList<Positionable*>())
+ if (!(event->modifiers()&Qt::ControlModifier) || _selectionGroup==NULL)
  {
-  _selectionGroup = QList <Positionable*>();
+  _selectionGroup = new QList<Positionable*>();
  }
  //QRect test =  QRect();
  QList <Positionable*> list = getContents();
@@ -3233,7 +3328,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
    if (_selectRect.intersects(((PositionableLabel*)comp)->getBounds(/*test*/)) &&
                             (event->modifiers()&Qt::ControlModifier || ((PositionableLabel*)comp)->getDisplayLevel()>BKG))
    {
-     _selectionGroup.append(comp);
+     _selectionGroup->append(comp);
               /*  if (_debug) {
                     log->debug("makeSelectionGroup: selection: "+ comp.getNameQString()+
                                 ", class= "+comp.getClass().getName());
@@ -3252,7 +3347,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
    if (_selectRect.contains(((PositionableLabel*)comp)->getBounds()) &&
                             (event->modifiers()&Qt::ControlModifier || ((PositionableLabel*)comp)->getDisplayLevel()>BKG))
    {
-    _selectionGroup.append(comp);
+    _selectionGroup->append(comp);
               /*  if (_debug) {
                     log->debug("makeSelectionGroup: selection: "+ comp.getNameQString()+
                                 ", class= "+comp.getClass().getName());
@@ -3260,17 +3355,16 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
    }
   }
  }
- if (_debug) log->debug("makeSelectionGroup: "+QString("%1").arg(_selectionGroup.size())+" selected.");
- if (_selectionGroup.size() < 1)
+ if (_debug) log->debug("makeSelectionGroup: "+QString("%1").arg(_selectionGroup->size())+" selected.");
+ if (_selectionGroup->size() < 1)
  {
    _selectRect = QRectF();
-  _selectionGroup = QList<Positionable*>();
+  _selectionGroup = new QList<Positionable*>();
  }
-#endif
 }
 
 /*
-* For the param, selection, Add to or delete from _selectionGroup.
+* For the param, selection, Add to or delete from _selectionGroup->
 * If not there, add.
 * If there, delete.
 * make new group if Cntl key is not held down
@@ -3278,29 +3372,29 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 /*protected*/ void Editor::modifySelectionGroup(Positionable* selection, QGraphicsSceneMouseEvent* event)
 {
 #if 1
- if (!event->modifiers()&Qt::ControlModifier || _selectionGroup==QList<Positionable*>())
+ if (!event->modifiers()&Qt::ControlModifier || _selectionGroup==NULL)
  {
-  _selectionGroup = QList <Positionable*>();
+  _selectionGroup = new QList<Positionable*>();
  }
  bool removed = false;
  if (((PositionableLabel*)selection)->getDisplayLevel()>BKG || event->modifiers()&Qt::ControlModifier)
  {
-  if (_selectionGroup.contains(selection))
+  if (_selectionGroup->contains(selection))
   {
-   /*removed =*/ _selectionGroup.removeOne(selection);
+   /*removed =*/ _selectionGroup->removeOne(selection);
    removed = true;
   }
   else
   {
    if (event->modifiers()&Qt::ShiftModifier /*|| !(selection instanceof PositionableShape)*/)
    {
-    _selectionGroup.append(selection);
+    _selectionGroup->append(selection);
    }
   }
  }
  if (_debug)
  {
-  log->debug("modifySelectionGroup: size= "+QString("%1").arg(_selectionGroup.size())+", selection "+
+  log->debug("modifySelectionGroup: size= "+QString("%1").arg(_selectionGroup->size())+", selection "+
                   (removed ? "removed" : "added"));
  }
 #endif
@@ -3400,7 +3494,7 @@ void TextAttrDialog::doneButton_clicked()
 {
  PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
  _decorator->getText(_pos);
- if (editor->_selectionGroup==QList<Positionable*>())
+ if (editor->_selectionGroup==NULL)
  {
   editor->setAttributes(util, _pos, _decorator->isOpaque());
  }
@@ -3474,9 +3568,9 @@ void TextAttrDialog::doneButton_clicked()
 }
 
 /*protected*/ void Editor::setSelectionsAttributes(PositionablePopupUtil* util, Positionable* pos, bool isOpaque) {
-    if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(pos)) {
-        for (int i=0; i<_selectionGroup.size(); i++) {
-            Positionable* p = _selectionGroup.at(i);
+    if (_selectionGroup!=NULL && _selectionGroup->contains(pos)) {
+        for (int i=0; i<_selectionGroup->size(); i++) {
+            Positionable* p = _selectionGroup->at(i);
             //if ( p instanceof PositionableLabel )
             if(qobject_cast<PositionableLabel*>(p)!= NULL)
             {
@@ -3489,21 +3583,21 @@ void TextAttrDialog::doneButton_clicked()
 /*protected*/ void Editor::setSelectionsHidden(bool enabled, Positionable* p)
 
 {
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++) {
-      ((PositionableLabel*)_selectionGroup.at(i))->setHidden(enabled);
+  for (int i=0; i<_selectionGroup->size(); i++) {
+      ((PositionableLabel*)_selectionGroup->at(i))->setHidden(enabled);
   }
  }
 }
 #if 1
 /*protected*/ bool Editor::setSelectionsPositionable(bool enabled, Positionable* p)
 {
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   _selectionGroup.at(i)->setPositionable(enabled);
+   _selectionGroup->at(i)->setPositionable(enabled);
   }
   return true;
  }
@@ -3515,11 +3609,11 @@ void TextAttrDialog::doneButton_clicked()
 #endif
 /*protected*/ void Editor::removeSelections(Positionable* p)
 {
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   Positionable* p = _selectionGroup.at(i);
+   Positionable* p = _selectionGroup->at(i);
    if(qobject_cast<PositionableLabel*>(p) != NULL)
     ((PositionableLabel*)p)->remove();
    if(qobject_cast<PositionableJComponent*>(p) != NULL)
@@ -3528,17 +3622,17 @@ void TextAttrDialog::doneButton_clicked()
     ((PositionableJComponent*)p)->remove();
    }
   }
-  _selectionGroup = QList<Positionable*>();
+  _selectionGroup = new QList<Positionable*>();
  }
 }
 
 /*protected*/ void Editor::setSelectionsScale(double s, Positionable* p)
 {
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   _selectionGroup.at(i)->setScale(s);
+   _selectionGroup->at(i)->setScale(s);
   }
  }
  else
@@ -3549,13 +3643,13 @@ void TextAttrDialog::doneButton_clicked()
 
 /*protected*/ void Editor::setSelectionsRotation(int k, Positionable* p)
 {
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   ((PositionableLabel*) _selectionGroup.at(i))->rotate(k);
-   //addToTarget(_selectionGroup.at(i));
-   _selectionGroup.at(i)->updateScene();
+   ((PositionableLabel*) _selectionGroup->at(i))->rotate(k);
+   //addToTarget(_selectionGroup->at(i));
+   _selectionGroup->at(i)->updateScene();
   }
  }
  else
@@ -3568,11 +3662,11 @@ void TextAttrDialog::doneButton_clicked()
 
 /*protected*/ void Editor::setSelectionsDockingLocation(Positionable* p)
 {
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   Positionable* pos = _selectionGroup.at(i);
+   Positionable* pos = _selectionGroup->at(i);
    //if (pos instanceof LocoIcon)
    if(qobject_cast<LocoIcon*>(pos) != NULL)
    {
@@ -3590,11 +3684,11 @@ void TextAttrDialog::doneButton_clicked()
 
 /*protected*/ void Editor::dockSelections(Positionable* p)
 {
- if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p))
+ if (_selectionGroup!=NULL && _selectionGroup->contains(p))
  {
-  for (int i=0; i<_selectionGroup.size(); i++)
+  for (int i=0; i<_selectionGroup->size(); i++)
   {
-   Positionable* pos = _selectionGroup.at(i);
+   Positionable* pos = _selectionGroup->at(i);
    //if (pos instanceof LocoIcon)
    if(qobject_cast<LocoIcon*>(pos) != NULL)
    {
@@ -3610,7 +3704,7 @@ void TextAttrDialog::doneButton_clicked()
 }
 
 /*protected*/ bool Editor::showAlignPopup(Positionable* p) {
-    if (_selectionGroup!=QList<Positionable*>() && _selectionGroup.contains(p)) {
+    if (_selectionGroup!=NULL && _selectionGroup->contains(p)) {
         return true;
     } else {
         return false;
@@ -3625,8 +3719,8 @@ void TextAttrDialog::doneButton_clicked()
     int cnt = 0;
     int ave = 0;
 
-    for (int i=0; i<_selectionGroup.size(); i++) {
-        Positionable comp = _selectionGroup.get(i);
+    for (int i=0; i<_selectionGroup->size(); i++) {
+        Positionable comp = _selectionGroup->get(i);
         if (!getFlag(OPTION_POSITION, comp.isPositionable()))  { continue; }
         if (alignToFirstSelected) {
             if (alignX) {
@@ -3649,8 +3743,8 @@ void TextAttrDialog::doneButton_clicked()
         ave = Math.round((float) sum / cnt);
     }
 
-    for (int i=0; i<_selectionGroup.size(); i++) {
-        Positionable comp = _selectionGroup.get(i);
+    for (int i=0; i<_selectionGroup->size(); i++) {
+        Positionable comp = _selectionGroup->get(i);
         if (!getFlag(OPTION_POSITION, comp.isPositionable()))  { continue; }
         if (alignX) {
             comp.setLocation(ave, comp.getY());
@@ -3660,9 +3754,6 @@ void TextAttrDialog::doneButton_clicked()
     }
 }
 
-/*public*/ Rectangle getSelectRect() {
-    return _selectRect;
-}
 #endif
 /*public*/ void Editor::drawSelectRect(int x, int y)
 {
@@ -3681,7 +3772,7 @@ void TextAttrDialog::doneButton_clicked()
         aY = y;
         h = -h;
     }
-    _selectRect = QRect(aX, aY, w, h);
+    _selectRect = QRectF(aX, aY, w, h);
     QGraphicsRectItem* selectRectItem = new QGraphicsRectItem(_selectRect);
     selectRectItem->setPos(aX, aY);
     selectRectItem->setPen(QPen(QBrush(QColor(_selectRectColor)),1,Qt::DashLine));
@@ -3719,8 +3810,8 @@ void TextAttrDialog::doneButton_clicked()
         y=y*5;
         x=x*5;
     }
-    for (int i=0; i<_selectionGroup.size(); i++) {
-        moveItem(_selectionGroup.get(i), x, y);
+    for (int i=0; i<_selectionGroup->size(); i++) {
+        moveItem(_selectionGroup->get(i), x, y);
     }
     _targetPanel.repaint();
 }
@@ -3803,14 +3894,19 @@ abstract /*protected*/ void copyItem(Positionable p);
     //Graphics2D g2d = (Graphics2D)g;
 //    g2d.scale(_paintScale, _paintScale);
 //    super.paint(g);
-//    paintTargetPanel(g);
+    paintTargetPanel(g2d);
 //    java.awt.Stroke stroke = g2d.getStroke();
 //    Color color = g2d.getColor();
     if(_selectRectItemGroup != NULL && _selectRectItemGroup->scene() != 0)
     {
-     g2d->removeItem(_selectRectItemGroup);
-     //_selectRectItemGroup = NULL;
-     _selectRectItemGroup = new QGraphicsItemGroup();
+//     g2d->removeItem(_selectRectItemGroup);
+//     //_selectRectItemGroup = NULL;
+//     _selectRectItemGroup = new QGraphicsItemGroup();
+     QList<QGraphicsItem*> list = _selectRectItemGroup->childItems();
+     foreach (QGraphicsItem* it, list)
+     {
+      _selectRectItemGroup->removeFromGroup(it);
+     }
     }
     if (!_selectRect.isNull())
     {
@@ -3821,18 +3917,28 @@ abstract /*protected*/ void copyItem(Positionable p);
      QGraphicsRectItem* selectRectItem = new QGraphicsRectItem(_selectRect);
      selectRectItem->setPen(QPen(QBrush(_selectRectColor),1,_selectRectStroke));
      _selectRectItemGroup->addToGroup(selectRectItem);
+     statusBar()->showMessage(tr("select x = %1, y = %2, w = %3, h = %4").arg(_selectRect.x()).arg(_selectRect.y()).arg(_selectRect.width()).arg(_selectRect.height()));
+
     }
-    if (_selectionGroup!=QList<Positionable*>())
+    if (_selectionGroup!=NULL)
     {
 //        g2d.setColor(_selectGroupColor);
 //        g2d.setStroke(new java.awt.BasicStroke(2.0f));
-     for(int i=0; i<_selectionGroup.size();i++)
+     foreach (Positionable* p, *_selectionGroup)
      {
-//       g.drawRect(_selectionGroup.get(i).getX(), _selectionGroup.get(i).getY(),
-//                           _selectionGroup.get(i).maxWidth(), _selectionGroup.get(i).maxHeight());
-      QGraphicsRectItem* selectRectItem = new QGraphicsRectItem(_selectRect);
-      selectRectItem->setPen(QPen(QBrush(_selectGroupColor),1,Qt::SolidLine));
-      _selectRectItemGroup->addToGroup(selectRectItem);
+      if (qobject_cast<PositionableShape*>(p) ==NULL)
+      {
+//       g.drawRect(_selectionGroup->get(i).getX(), _selectionGroup->get(i).getY(),
+//                           _selectionGroup->get(i).maxWidth(), _selectionGroup->get(i).maxHeight());
+       QGraphicsRectItem* selectRectItem = new QGraphicsRectItem(_selectRect);
+       selectRectItem->setPen(QPen(QBrush(_selectGroupColor),1,Qt::SolidLine));
+       _selectRectItemGroup->addToGroup(selectRectItem);
+      }
+      else
+      {
+       PositionableShape* s = (PositionableShape*) p;
+       s->drawHandles();
+      }
      }
     }
     //Draws a border around the highlighted component
@@ -3845,7 +3951,10 @@ abstract /*protected*/ void copyItem(Positionable p);
      QGraphicsRectItem* selectRectItem = new QGraphicsRectItem(_highlightcomponent);
      selectRectItem->setPen(QPen(QBrush(_highlightColor),1,Qt::SolidLine));
      _selectRectItemGroup->addToGroup(selectRectItem);
+     statusBar()->showMessage(tr("highlight x = %1, y = %2, w = %3, h = %4").arg(_highlightcomponent.x()).arg(_highlightcomponent.y()).arg(_highlightcomponent.width()).arg(_highlightcomponent.height()));
     }
+    if(_highlightcomponent.isNull() && _selectRect.isNull())
+     statusBar()->clearMessage();
 //    g2d.setColor(color);
 //    g2d.setStroke(stroke);
 //    if (_tooltip != null) {
@@ -3853,6 +3962,7 @@ abstract /*protected*/ void copyItem(Positionable p);
 //    }
  g2d->addItem(_selectRectItemGroup);
 }
+
 void Editor::setName(QString name)
 {
  this->name = name;
@@ -3892,6 +4002,32 @@ JFrameItem::JFrameItem (QString name, IconAdder* editor, QWidget* parent): JmriJ
   selectLoco(rosterBox->getSelectedRosterEntries()->at(0));
  }
 }
+/*
+ * ********************* Abstract Methods ***********************
+ */
+#if 0
+@Override
+abstract public void mousePressed(MouseEvent event);
+
+@Override
+abstract public void mouseReleased(MouseEvent event);
+
+@Override
+abstract public void mouseClicked(MouseEvent event);
+
+@Override
+abstract public void mouseDragged(MouseEvent event);
+
+@Override
+abstract public void mouseMoved(MouseEvent event);
+
+@Override
+abstract public void mouseEntered(MouseEvent event);
+
+@Override
+abstract public void mouseExited(MouseEvent event);
+#endif
+
 /*
  * set up target panel, frame etc.
  */

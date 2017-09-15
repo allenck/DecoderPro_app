@@ -96,7 +96,7 @@ void RunJythonScript::common()
  *
  * @param e
  */
-/*public*/ void RunJythonScript::actionPerformed(ActionEvent* e)
+/*public*/ void RunJythonScript::actionPerformed(ActionEvent* /*e*/)
 {
  File* thisFile;
  if (configuredFile != NULL)

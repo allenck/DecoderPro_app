@@ -41,7 +41,7 @@ void SensorGroupAction::common()
  common();
 }
 
-/*public*/ void SensorGroupAction::actionPerformed(ActionEvent* e)
+/*public*/ void SensorGroupAction::actionPerformed(ActionEvent* /*e*/)
 {
  SensorGroupFrame* f = new SensorGroupFrame();
  f->initComponents();

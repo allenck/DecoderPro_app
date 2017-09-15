@@ -29,7 +29,7 @@ namespace Operations
  }
 
 
- /*public*/ void PrintTrainBuildReportAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintTrainBuildReportAction::actionPerformed(ActionEvent* /*e*/) {
      TrainEditFrame* f = (TrainEditFrame*) frame;
      Train* train = f->_train;
      if (train == NULL) {

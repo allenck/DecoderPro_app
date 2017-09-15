@@ -14,14 +14,18 @@ signals:
 
 public slots:
 private:
-    JTextField*	_radiusText;
+    //JTextField*	_radiusText;
     int 		_radius;			// corner radius
+    void setDisplayWidth(int w);
+    void setDisplayHeight(int h);
+    JTextField* _diameterText;
+
 protected:
-    /*protected*/ virtual QWidget* makeParamsPanel();
+    /*protected*/ virtual QWidget* makeParamsPanel(PositionableShape* ps);
     /*protected*/ void makeFigure() ;
-    /*protected*/ void setPositionableParams(PositionableShape* p);
-    /*protected*/ void setDisplayParams(PositionableShape* p);
-    /*protected*/ void updateFigure(PositionableShape* p);
+    ///*protected*/ void setPositionableParams(PositionableShape* p);
+    ///*protected*/ void setDisplayParams(PositionableShape* p);
+    ///*protected*/ void updateFigure(PositionableShape* p);
 
 };
 

@@ -40,7 +40,7 @@ namespace Operations
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ShowCheckboxesCarsTableAction::actionPerformed(ActionEvent* e)
+ /*public*/ void ShowCheckboxesCarsTableAction::actionPerformed(ActionEvent* /*e*/)
  {
   _carsTableModel->toggleSelectVisible();
  }

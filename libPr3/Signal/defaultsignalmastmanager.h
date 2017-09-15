@@ -1,6 +1,6 @@
 #ifndef DEFAULTSIGNALMASTMANAGER_H
 #define DEFAULTSIGNALMASTMANAGER_H
-#include "abstractmanager.h"
+#include "signalmastmanager.h"
 #include "exceptions.h"
 #include "libPr3_global.h"
 
@@ -9,12 +9,13 @@ class SignalMast;
 class SignalHeadSignalMast;
 class AbstractSignalMast;
 class SignalMastRepeater;
-class LIBPR3SHARED_EXPORT DefaultSignalMastManager : public AbstractManager
+class LIBPR3SHARED_EXPORT DefaultSignalMastManager : public SignalMastManager
 {
     Q_OBJECT
 public:
     explicit DefaultSignalMastManager(QObject *parent = 0);
-
+    ~DefaultSignalMastManager() {}
+    DefaultSignalMastManager(const DefaultSignalMastManager&) : SignalMastManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix() ;
     /*public*/ char typeLetter();
@@ -42,5 +43,5 @@ private:
     Logger* log;
     friend class PropertyChangeSupport;
 };
-
+Q_DECLARE_METATYPE(DefaultSignalMastManager)
 #endif // DEFAULTSIGNALMASTMANAGER_H

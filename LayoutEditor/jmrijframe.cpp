@@ -69,44 +69,7 @@
 /*public*/ JmriJFrame::JmriJFrame(bool saveSize, bool savePosition, QWidget *parent) : JFrame(parent)
 {
 //super();
-    init();
-
-    reuseFrameSavedPosition=savePosition;
-    reuseFrameSavedSized=saveSize;
-#if 0
-    addWindowListener(this);
-    addComponentListener(this);
-    windowInterface = new JmriJFrameInterface();
-
-    /* This ensures that different jframes do not get placed directly on top
-    of each other, but offset by the top inset.  However a saved preferences
-    can over ride this */
-    for(int i = 0; i<list.size();i++){
-        JmriJFrame* j = list.get(i);
-        if((j->getExtendedState()!=ICONIFIED) && (j->isVisible())){
-            if ((j->getX()==this->getX()) && (j->getY()==this->getY())){
-                offSetFrameOnScreen(j);
-            }
-        }
-    }
-#endif
-    /*synchronized (list)*/ {
-        frameList->append(this);
-    }
-    // Set the image for use when minimized
-    //setIconImage(getToolkit().getImage("resources/jmri32x32.gif"));
-    setWindowIcon(QIcon(":/resources/jmri32x32.gif"));
-    // set the close short cut
-    setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
-// TODO:    addWindowCloseShortCut();
-
-    windowFrameRef = metaObject()->className();
-    if (metaObject()->className()!=("JmriJFrame"))
-    {
-        generateWindowRef();
-        setFrameLocation();
-    }
-
+    init(saveSize, savePosition);
 }
 
 /**
@@ -115,9 +78,9 @@
  */
 /*public*/ JmriJFrame::JmriJFrame(QWidget *parent) : JFrame(parent)  {
     //this(true, true);
-    init();
-    reuseFrameSavedPosition=true;
-    reuseFrameSavedSized=true;
+    init(true, true);
+//    reuseFrameSavedPosition=true;
+//    reuseFrameSavedSized=true;
 }
 
 /**
@@ -126,13 +89,21 @@
  * @param name - Title of the JFrame
  */
 /*public*/ JmriJFrame::JmriJFrame(QString name, QWidget *parent)
-    : JFrame(parent)
+    : JFrame(name, parent)
 {
  setWindowTitle(name);
- init();
+ init(true, true);
  //this(name, true, true);
- reuseFrameSavedPosition=true;
- reuseFrameSavedSized=true;
+// reuseFrameSavedPosition=true;
+// reuseFrameSavedSized=true;
+ generateWindowRef();
+ if (metaObject()->className()==("JmriJFrame"))
+ {
+  if ((this->windowTitle() == "") || (this->windowTitle() == (""))) {
+      return;
+  }
+ }
+ setFrameLocation();
 }
 
 /**
@@ -145,9 +116,9 @@
 /*public*/ JmriJFrame::JmriJFrame(QString name, bool saveSize, bool savePosition, QWidget *parent) : JFrame(parent)
 {
  //this(saveSize, savePosition);
- init();
- reuseFrameSavedPosition=savePosition;
- reuseFrameSavedSized=saveSize;
+ init(saveSize, savePosition);
+ //reuseFrameSavedPosition=savePosition;
+ //reuseFrameSavedSized=saveSize;
 
  setWindowTitle(name);
 #if 1
@@ -160,11 +131,11 @@
 #endif
 }
 
-void JmriJFrame::init()
+void JmriJFrame::init(bool saveSize, bool savePosition)
 {
  log = new Logger("JmriJFrame");
- reuseFrameSavedPosition = true;
- reuseFrameSavedSized = true;
+ //reuseFrameSavedPosition = true;
+ //reuseFrameSavedSized = true;
 
  allowInFrameServlet = true;
  properties = new QMap<QString, QObject>();
@@ -176,6 +147,48 @@ void JmriJFrame::init()
  windowMenu = NULL;
  installEventFilter(this);
  windowFrameRef = QString(this->metaObject()->className());
+
+ reuseFrameSavedPosition=savePosition;
+ reuseFrameSavedSized=saveSize;
+
+ addWindowListener(new JmriJFrameWindowListener(this));
+#if 0
+ addComponentListener(this);
+ windowInterface = new JmriJFrameInterface();
+
+ /* This ensures that different jframes do not get placed directly on top
+ of each other, but offset by the top inset.  However a saved preferences
+ can over ride this */
+ for(int i = 0; i<list.size();i++){
+     JmriJFrame* j = list.get(i);
+     if((j->getExtendedState()!=ICONIFIED) && (j->isVisible())){
+         if ((j->getX()==this->getX()) && (j->getY()==this->getY())){
+             offSetFrameOnScreen(j);
+         }
+     }
+ }
+#endif
+ /*synchronized (list)*/ {
+  QPointer<JmriJFrame> frame = this;
+     frameList->append(frame);
+  if(frameList->size() >= 78)
+  {
+   qDebug() << tr("frameList size = %1").arg(frameList->size());
+  }
+ }
+ // Set the image for use when minimized
+ //setIconImage(getToolkit().getImage("resources/jmri32x32.gif"));
+ setWindowIcon(QIcon(":/resources/jmri32x32.gif"));
+ // set the close short cut
+ setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
+// TODO:    addWindowCloseShortCut();
+
+ windowFrameRef = metaObject()->className();
+ if (metaObject()->className()!=("JmriJFrame"))
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
 }
 
 
@@ -241,27 +254,32 @@ void JmriJFrame::setFrameLocation()
  * Regenerates the window frame ref that is used for saving and setting
  * frame size and position against.
  */
-/*public*/ void JmriJFrame::generateWindowRef(){
-    QString initref = metaObject()->className();
-    if(this->windowTitle()!=(""))
-    {
-        if (initref==("JmriJFrame")){
-            initref=this->windowTitle();
-        } else {
-            initref = initref + ":" + this->windowTitle();
-        }
-    }
-    int refNo = 1;
-    QString ref = initref;
-    for(int i = 0; i<frameList->size();i++){
-        JmriJFrame* j = frameList->at(i);
-        if(j!=this && j->getWindowFrameRef()==(ref)){
-            ref = initref+":"+refNo;
-            refNo++;
-        }
-    }
-    windowFrameRef = ref;
-
+/*public*/ void JmriJFrame::generateWindowRef()
+{
+ QString initref = metaObject()->className();
+ if(this->windowTitle()!=(""))
+ {
+  if (initref==("JmriJFrame"))
+  {
+      initref=this->windowTitle();
+  } else {
+      initref = initref + ":" + this->windowTitle();
+  }
+ }
+ int refNo = 1;
+ QString ref = initref;
+ for(int i = 0; i<frameList->size();i++)
+ {
+  JmriJFrame* j = frameList->at(i);
+  if(j == NULL)
+   continue;
+  if(j!=this && j->getWindowFrameRef()==(ref))
+  {
+      ref = initref+":"+QString::number(refNo);
+      refNo++;
+  }
+ }
+ windowFrameRef = ref;
 }
 
 //@Override
@@ -341,27 +359,30 @@ void JmriJFrame::reSizeToFitOnScreen()
   log->debug("reSizeToFitOnScreen sets height "+QString::number(height)+" width "+QString::number(width));
 }
 
-void JmriJFrame::offSetFrameOnScreen(JmriJFrame* /*f*/)
+void JmriJFrame::offSetFrameOnScreen(JmriJFrame* f)
 {
-#if 0
+#if 1
 /* We use the frame that we are moving away from insets, as at this point
 our own insets have not been correctly built and always return a size of zero */
-    int frameOffSetx = this->pos().x()+f.getInsets().top;
-    int frameOffSety = this->pos().y()+f.getInsets().top;
-    Dimension dim = getMaximumSize();
+//    int frameOffSetx = this->pos().x()+f->getInsets().top;
+//    int frameOffSety = this->pos().y()+f->getInsets().top;
+ int frameOffSetx = this->pos().x()+20;
+ int frameOffSety = this->pos().y()+20;
 
-    if (frameOffSetx>=(dim.getWidth()*0.75)){
+    QSize dim = maximumSize();
+
+    if (frameOffSetx>=(dim.width()*0.75)){
         frameOffSety = 0;
-        frameOffSetx = (f.getInsets().top)*2;
+        frameOffSetx = (/*f.getInsets().top*/20)*2;
     }
-    if (frameOffSety>=(dim.getHeight()*0.75)){
+    if (frameOffSety>=(dim.height()*0.75)){
         frameOffSety = 0;
-        frameOffSetx = (f.getInsets().top)*2;
+        frameOffSetx = (/*f.getInsets().top*/20)*2;
     }
     /* If we end up with our off Set of X being greater than the width of the
     screen we start back at the beginning but with a half offset */
-    if (frameOffSetx>=dim.getWidth())
-        frameOffSetx=f.getInsets().top/2;
+    if (frameOffSetx>=dim.width())
+        frameOffSetx=/*f.getInsets().top*/20/2;
     this->move(frameOffSetx, frameOffSety);
 #endif
 }
@@ -813,28 +834,9 @@ private bool mShown = false;
 /*public*/ void componentHidden(java.awt.event.ComponentEvent e) {}
 #endif
 // /*public*/ void componentMoved(java.awt.event.ComponentEvent e)
-/*public*/ void JmriJFrame::moveEvent(QMoveEvent* /*e*/)
-{
-    DefaultUserMessagePreferences* p = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
-    if ((p != NULL) && (reuseFrameSavedPosition) && isVisible()) {
-        p->setWindowLocation(windowFrameRef, this->pos());
-    }
-}
+
 
 // /*public*/ void componentResized(java.awt.event.ComponentEvent e)
-/*public*/ void JmriJFrame::resizeEvent(QResizeEvent* /*e*/)
-{
- DefaultUserMessagePreferences* p = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
- if ((p != NULL) && (reuseFrameSavedSized) && isVisible())
- {
-  //Windows sets the size parameter when resizing a frame, while Unix uses the preferredsize
-#ifdef W_OS_WIN32  //if (!SystemType.isLinux())
-   p->setWindowSize(windowFrameRef, size());
-#else //else
-   p->setWindowSize(windowFrameRef, size());
-#endif
- }
-}
 
 // /*public*/ void componentShown(java.awt.event.ComponentEvent e) { }
 
@@ -904,8 +906,8 @@ bool MyAbstractShutDownTask::execute()
   //QMutexLocker locker(&mutex);
   frameList->removeAt(frameList->indexOf(this));
  }
- //super.dispose();
- close();
+ JFrame::dispose();
+ //close();
 }
 #if 0
 /*
@@ -1062,6 +1064,7 @@ QWidget* JmriJFrame::getContentPane()
  if(centralWidget() == NULL)
  {
   QWidget* centralWidget = new QWidget();
+  centralWidget->resize(300,300);
   //centralWidget()->setLayout(new QVBoxLayout);
   setCentralWidget(centralWidget);
  }
@@ -1188,3 +1191,56 @@ bool JmriJFrame::eventFilter(QObject *target, QEvent *event)
 // return this;
 //}
 
+JmriJFrameWindowListener::JmriJFrameWindowListener(JmriJFrame *frame) { this->frame = frame;}
+void JmriJFrameWindowListener::windowClosing(QCloseEvent *)
+{
+ frame->handleModified();
+ frame->dispose();
+}
+void JmriJFrame::resizeEvent(QResizeEvent *e) { componentResized(e);}
+void JmriJFrame::moveEvent(QMoveEvent *e) { componentMoved(e);}
+/*public*/ void JmriJFrame::componentMoved(QMoveEvent* /*e*/)
+{
+    UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+    if ((p != NULL) && (reuseFrameSavedPosition) && isVisible()) {
+        p->setWindowLocation(windowFrameRef, this->pos());
+    }
+}
+
+/*public*/ void JmriJFrame::componentResized(QResizeEvent* /*e*/) {
+    UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+    if ((p != NULL) && (reuseFrameSavedSized) && isVisible()) {
+        saveWindowSize(p);
+    }
+}
+
+/*
+     * Daniel Boudreau 3/19/2014. There is a problem with saving the correct window size on a Linux OS. The testing was
+     * done using Oracle Java JRE 1.7.0_51 and Debian (Wheezy) Linux on a PC. One issue is that the window size returned
+     * by getSize() is slightly smaller than the actual window size. If we use getSize() to save the window size the
+     * window will shrink each time the window is closed and reopened. The previous workaround was to use
+     * getPreferredSize(), that returns whatever we've set in setPreferredSize() which keeps the window size constant
+     * when we save the data to the user preference file. However, if the user resizes the window, getPreferredSize()
+     * doesn't change, only getSize() changes when the user resizes the window. So we need to try and detect when the
+     * window size was modified by the user. Testing has shown that the window width is short by 4 pixels and the height
+     * is short by 3. This code will save the window size if the width or height was changed by at least 5 pixels. Sorry
+     * for this kludge.
+     */
+    /*private*/ void JmriJFrame::saveWindowSize(UserPreferencesManager* p) {
+//        if (SystemType.isLinux()) {
+//            // try to determine if user has resized the window
+//            log.debug("getSize() width: {}, height: {}", super.getSize().getWidth(), super.getSize().getHeight());
+//            log.debug("getPreferredSize() width: {}, height: {}", super.getPreferredSize().getWidth(), super.getPreferredSize().getHeight());
+//            if (Math.abs(super.getPreferredSize().getWidth() - (super.getSize().getWidth() + 4)) > 5
+//                    || Math.abs(super.getPreferredSize().getHeight() - (super.getSize().getHeight() + 3)) > 5) {
+//                // adjust the new window size to be slight wider and higher than actually returned
+//                Dimension size = new Dimension((int) super.getSize().getWidth() + 4, (int) super.getSize().getHeight() + 3);
+//                log.debug("setting new window size {}", size);
+//                p.setWindowSize(windowFrameRef, size);
+//            } else {
+//                p.setWindowSize(windowFrameRef, super.getPreferredSize());
+//            }
+//        } else {
+            p->setWindowSize(windowFrameRef, /*super.getSize()*/size());
+//        }
+    }

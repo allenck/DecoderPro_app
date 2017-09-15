@@ -685,6 +685,7 @@ void BlockBossLogic::turnoutChange(PropertyChangeEvent */*e*/)
     // avoid a loop, or avoid somebody changing appearance
     // manually and having it instantly recomputed & changed back
     DefaultSignalHead* head = (DefaultSignalHead*)driveSignal->getBean();
+    if(head == NULL) return;
     connect(head->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //    driveSignal->getBean()->addPropertyChangeListener( (PropertyChangeListener*)this);
 //    {

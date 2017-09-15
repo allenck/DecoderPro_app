@@ -12,7 +12,7 @@ namespace Operations
  public:
   SchedulesTableAction(QString s, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  private:
   SchedulesTableFrame* f;// = null;

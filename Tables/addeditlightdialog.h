@@ -15,7 +15,7 @@ class JTextField;
 class QLabel;
 class QComboBox;
 class JmriJFrame;
-class LightControlTableModel;
+class AELLightControlTableModel;
 class LightControl;
 class AbstractLight;
 class AddEditLightDialog : public JmriJFrame
@@ -47,7 +47,7 @@ private:
     /*public*/ QString getDescriptionText(LightControl* lc, int type);
     /*private*/ QString getControlSensorSenseText (LightControl* lc) ;
     /*private*/ QString getControlTurnoutStateText (LightControl* lc);
-    LightControlTableModel* lightControlTableModel;
+    AELLightControlTableModel* lightControlTableModel;
     QString formatTime (int hour,int minute);
     bool lightControlChanged;
     bool inEditMode;
@@ -107,13 +107,13 @@ protected slots:
     /*protected*/ void editControlAction(int row);
     /*protected*/ void deleteControlAction(int row);
 
-    friend class LightControlTableModel;
+    friend class AELLightControlTableModel;
 
 };
 /**
  * Table model for Light Controls in the Add/Edit Light window
  */
-/*public*/ class LightControlTableModel : public AbstractTableModel //implements
+/*public*/ class AELLightControlTableModel : public AbstractTableModel //implements
 //java.beans.PropertyChangeListener
 {
  Q_OBJECT
@@ -128,7 +128,7 @@ public:
     };
 
 
-    /*public*/ LightControlTableModel(AddEditLightDialog* dlg);
+    /*public*/ AELLightControlTableModel(AddEditLightDialog* dlg);
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;

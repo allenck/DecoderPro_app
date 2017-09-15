@@ -25,7 +25,7 @@ namespace Operations
 
 
  //@Override
- /*public*/ void SetTrainIconPositionAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void SetTrainIconPositionAction::actionPerformed(ActionEvent* /*e*/) {
      // create a copy route frame
      if (f == NULL || !f->isVisible()) {
          f = new SetTrainIconPositionFrame();

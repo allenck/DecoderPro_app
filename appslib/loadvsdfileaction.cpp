@@ -56,7 +56,7 @@ void LoadVSDFileAction::common()
  *
  * @param e The event causing the action.
  */
-/*public*/ void LoadVSDFileAction::actionPerformed(ActionEvent* e)
+/*public*/ void LoadVSDFileAction::actionPerformed(ActionEvent* /*e*/)
 {
  if (fileChooser == NULL)
  {

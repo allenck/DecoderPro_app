@@ -91,9 +91,9 @@ public:
     bool isOpaque();
     QString getName();
 //    void setLocation(int x, int y);
-    /*public*/ QRect getBounds(QRect rv);
+//    /*public*/ QRect getBounds(QRect rv);
     //QGraphicsProxyWidget* widget;
-    QRectF getBounds();
+    QRectF getBounds(QRectF);
     /*public*/ bool updateScene();
 signals:
 

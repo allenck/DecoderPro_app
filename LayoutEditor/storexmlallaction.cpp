@@ -39,7 +39,7 @@
  log = new Logger("StoreXmlAllAction");
 }
 
-/*public*/ void StoreXmlAllAction::actionPerformed(ActionEvent* e)
+/*public*/ void StoreXmlAllAction::actionPerformed(ActionEvent* /*e*/)
 {
  File* file = StoreXmlConfigAction::getFileName(this->getAllFileChooser());
  if (file == NULL)

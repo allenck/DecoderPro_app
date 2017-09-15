@@ -45,7 +45,6 @@ SOURCES += appslib.cpp \
     simpleturnoutctrlaction.cpp \
     simpleclockaction.cpp \
     analogclockaction.cpp \
-    listedtableaction.cpp \
     nixieclockaction.cpp \
     consisttoolaction.cpp \
     lcdclockaction.cpp \
@@ -340,7 +339,19 @@ SOURCES += appslib.cpp \
     abstractconfigurationprovider.cpp \
     nodeidentity.cpp \
     jmriuserinterfaceconfigurationprovider.cpp \
-    jmriconfiguration.cpp
+    jmriconfiguration.cpp \
+    operations/activetrain.cpp \
+    operations/dispatcherframe.cpp \
+    operations/autoactivetrain.cpp \
+    operations/autotrainaction.cpp \
+    operations/dispatcheraction.cpp \
+    operations/allocationrequest.cpp \
+    operations/allocatedsection.cpp \
+    operations/autoturnouts.cpp \
+    operations/autoallocate.cpp \
+    operations/activatetrainframe.cpp \
+    operations/traininfofile.cpp \
+    operations/traininfo.cpp
 #    jmriconfigurationmanager.cpp
 #    preferencesmanager.cpp
 #    serviceloader.cpp \
@@ -359,7 +370,6 @@ HEADERS += appslib.h\
     simpleturnoutctrlaction.h \
     simpleclockaction.h \
     analogclockaction.h \
-    listedtableaction.h \
     nixieclockaction.h \
     consisttoolaction.h \
     lcdclockaction.h \
@@ -658,7 +668,19 @@ HEADERS += appslib.h\
     jmriuserinterfaceconfigurationprovider.h \
     jmriconfiguration.h \
 #    jmriconfigurationmanager.h \
-    jmriserviceproviderinterface.h
+    jmriserviceproviderinterface.h \
+    operations/activetrain.h \
+    operations/dispatcherframe.h \
+    operations/autoactivetrain.h \
+    operations/autotrainaction.h \
+    operations/dispatcheraction.h \
+    operations/allocationrequest.h \
+    operations/allocatedsection.h \
+    operations/autoturnouts.h \
+    operations/autoallocate.h \
+    operations/activatetrainframe.h \
+    operations/traininfofile.h \
+    operations/traininfo.h
 #    preferencesmanager.h
 #    serviceloader.h \
 #    class.h
@@ -726,3 +748,11 @@ else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
+else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
+
+INCLUDEPATH += $$PWD/../libPr3/Signal
+DEPENDPATH += $$PWD/../libPr3/Signal

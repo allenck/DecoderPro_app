@@ -9,6 +9,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AnalogClock2DisplayXml : public AbstractXmlAd
 public:
     explicit AnalogClock2DisplayXml(QObject *parent = 0);
     ~AnalogClock2DisplayXml();
+ AnalogClock2DisplayXml(const AnalogClock2DisplayXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ bool load(QDomElement element) throw (Exception);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);

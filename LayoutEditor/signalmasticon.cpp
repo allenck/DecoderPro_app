@@ -17,10 +17,10 @@
 #include "picklistmodel.h"
 #include "tableitempanel.h"
 
-//SignalMastIcon::SignalMastIcon(QObject *parent) :
-//    PositionableIcon(parent)
-//{
-//}
+SignalMastIcon::SignalMastIcon(QObject *parent) :
+    PositionableIcon(parent)
+{
+}
 /**
  * An icon to display a status of a SignalMast.
  * <P>

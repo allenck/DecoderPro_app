@@ -7,6 +7,7 @@
 #include <QQueue>
 #include "javaqt_global.h"
 
+class Logger;
 class CatalogTreeNode;
 //class QQueue<QObject*>;
 //class QNode;
@@ -76,6 +77,7 @@ signals:
 
 public slots:
 private:
+    Logger* log;
     void common();
 //    /*private*/ void writeObject(ObjectOutputStream s) throw (IOException) ;
 //    /*private*/ void readObject(ObjectInputStream s) throw (IOException), (ClassNotFoundException);

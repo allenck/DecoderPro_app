@@ -1,9 +1,9 @@
 #include "abstractreportermanager.h"
 #include <QMessageBox>
-#include "abstractreporter.h"
+#include "reportermanager.h"
 
 AbstractReporterManager::AbstractReporterManager(QObject *parent) :
-    AbstractManager(parent)
+    ReporterManager(parent)
 {
  log = new Logger("AbstractReporterManager");
  registerSelf();
@@ -21,10 +21,10 @@ int AbstractReporterManager::getXMLOrder(){
     return Manager::REPORTERS;
 }
 
-char AbstractReporterManager::typeLetter() { return 'R'; }
+char AbstractReporterManager::typeLetter() const  { return 'R'; }
 
-AbstractReporter* AbstractReporterManager::provideReporter(QString sName) {
-    AbstractReporter* t = getReporter(sName);
+Reporter* AbstractReporterManager::provideReporter(QString sName) {
+    Reporter* t = getReporter(sName);
     if (t!=NULL) return t;
     if (sName.startsWith(getSystemPrefix()+typeLetter()))
         return newReporter(sName, NULL);
@@ -32,25 +32,26 @@ AbstractReporter* AbstractReporterManager::provideReporter(QString sName) {
         return newReporter(makeSystemName(sName), NULL);
 }
 
-AbstractReporter* AbstractReporterManager::getReporter(QString name) {
-    AbstractReporter* t = getByUserName(name);
+Reporter* AbstractReporterManager::getReporter(QString name) {
+    Reporter* t = getByUserName(name);
     if (t!=NULL) return t;
 
     return getBySystemName(name);
 }
 
-AbstractReporter* AbstractReporterManager::getBySystemName(QString name) {
-    return (AbstractReporter*)_tsys->value(name);
+Reporter* AbstractReporterManager::getBySystemName(QString name) const
+{
+    return (Reporter*)_tsys->value(name);
 }
 
-AbstractReporter* AbstractReporterManager::getByUserName(QString key) {
-    return (AbstractReporter*)_tuser->value(key);
+Reporter* AbstractReporterManager::getByUserName(QString key) {
+    return (Reporter*)_tuser->value(key);
 }
 
-AbstractReporter* AbstractReporterManager::getByDisplayName(QString key) {
+Reporter* AbstractReporterManager::getByDisplayName(QString key) {
 // First try to find it in the user list.
 // If that fails, look it up in the system list
-AbstractReporter* retv = this->getByUserName(key);
+Reporter* retv = this->getByUserName(key);
 if (retv == NULL) {
     retv = this->getBySystemName(key);
 }
@@ -58,7 +59,7 @@ if (retv == NULL) {
 return(retv);
 }
 
-AbstractReporter* AbstractReporterManager::newReporter(QString systemName, QString userName) throw(IllegalArgumentException) {
+Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName) throw(IllegalArgumentException) {
  if (log->isDebugEnabled()) log->debug(tr("new Reporter:")
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
@@ -69,7 +70,7 @@ AbstractReporter* AbstractReporterManager::newReporter(QString systemName, QStri
                 +( (userName==NULL) ? "NULL" : userName));
     }
     // return existing if there is one
-    AbstractReporter* r;
+    Reporter* r;
     if ( (userName!=NULL) && ((r = getByUserName(userName)) != NULL)) {
         if (getBySystemName(systemName)!=r)
             log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+r->getSystemName()+")");
@@ -111,11 +112,11 @@ AbstractReporter* AbstractReporterManager::newReporter(QString systemName, QStri
 
 bool AbstractReporterManager::allowMultipleAdditions(QString systemName) { return false;  }
 
-QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix)
+QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix) const
 {
  //If the hardware address past does not already exist then this can
  //be considered the next valid address.
- AbstractReporter* r = getBySystemName(prefix+typeLetter()+curAddress);
+ Reporter* r = getBySystemName(prefix+typeLetter()+curAddress);
  if(r==NULL)
  {
   return curAddress;
@@ -161,13 +162,13 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
 }
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractReporterManager.class.getName());
 // Utility method to create a concrete AbstractReporter
-/*private*/ AbstractReporter* AbstractReporterManager::createNewReporter(QString systemName, QString userName)
-{
- AbstractReporter* reporter = new AbstractReporter(systemName, userName);
- return (AbstractReporter*)reporter;
+///*private*/ Reporter* AbstractReporterManager::createNewReporter(QString systemName, QString userName)
+//{
+// Reporter* reporter = new Reporter(systemName, userName);
+// return (Reporter*)reporter;
 //  {
 //            public int getState() { return state; }
 //            public void setState(int s) { state = s; }
 //            int state = 0;
 //        };
-}
+//}

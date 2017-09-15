@@ -33,7 +33,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PositionableLabel : public JLabel
 {
  Q_OBJECT
 public:
-    //explicit PositionalLabel(QObject *parent = 0);
+    explicit PositionableLabel(QObject *parent = 0);
 /*public*/ PositionableLabel(QString s, Editor* editor, Positionable *parent=0);
 /*public*/ PositionableLabel(NamedIcon* s, Editor* editor, Positionable *parent=0) ;
 /*public*/ /*final*/ bool isIcon();
@@ -156,7 +156,7 @@ QString getToolTip();
  /*public*/ virtual bool setTextEditMenu(QMenu* popup);
  /*public*/ QString getTooltip();
  /*public*/ virtual bool setDisableControlMenu(QMenu* popup);
- /*public*/ QRectF getBounds();
+ /*public*/ QRectF getBounds(QRectF = QRectF());
  /*public*/ virtual void setBackground(QColor bg);
  MyGraphicsProxyWidget* widget;
  /* public*/ void setStyleSheet();

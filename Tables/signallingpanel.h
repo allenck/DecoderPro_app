@@ -9,7 +9,7 @@
 #include <QScrollArea>
 #include <QRadioButton>
 #include <QButtonGroup>
-#include <QAbstractTableModel>
+#include "abstracttablemodel.h"
 #include <QItemDelegate>
 #include "libtables_global.h"
 
@@ -162,6 +162,7 @@ friend class AutoMastModel;
 friend class SignalMastModel;
 friend class SignalMastComboBoxDelegate;
 };
+
 /*private*/ /*abstract*/ class SignalMastElement : public QObject
 {
  Q_OBJECT
@@ -188,6 +189,7 @@ private:
     friend class ManualTurnoutList;
     friend class ManualSensorList;
 };
+
 /*private*/ class ManualBlockList : public SignalMastElement
 {
  Q_OBJECT
@@ -203,6 +205,7 @@ private:
     Block* block;
 
 };
+
 /*private*/ class AutoBlockList : public ManualBlockList
 {
     Q_OBJECT
@@ -211,7 +214,7 @@ private:
     void setSetToState(QString state);
 };
 
-/*abstract*/ class SPTableModel : public  QAbstractTableModel //implements PropertyChangeListener
+/*abstract*/ class SPTableModel : public  AbstractTableModel //implements PropertyChangeListener
 {
     Q_OBJECT
  public:
@@ -259,7 +262,8 @@ public slots:
      void propertyChange(PropertyChangeEvent *e);
  private:
 };
-/*abstract*/ class AutoTableModel : public QAbstractTableModel // implements PropertyChangeListener
+
+/*abstract*/ class AutoTableModel : public AbstractTableModel // implements PropertyChangeListener
 {
     Q_OBJECT
  public:
@@ -308,6 +312,7 @@ public slots:
     void fireTableDataChanged();
 private:
 };
+
 class TurnoutModel : public SPTableModel
 {
  Q_OBJECT
@@ -328,6 +333,7 @@ public:
     void setSetToState(QString state);
 
 };
+
 /*private*/ class AutoTurnoutList : public ManualTurnoutList
 {
  Q_OBJECT
@@ -336,6 +342,7 @@ public:
     void setSetToState(QString state);
 
 };
+
 /*private*/ class ManualSensorList : public SignalMastElement
 {
  Q_OBJECT
@@ -345,6 +352,7 @@ public:
     void setSetToState(QString state);
 
 };
+
 /*private*/ class ManualSignalMastList : public SignalMastElement
 {
     Q_OBJECT
@@ -362,6 +370,7 @@ private:
     SignalMast* mast;
     friend class AutoSignalMastList;
 };
+
 /*private*/ class AutoSignalMastList : public ManualSignalMastList
 {
     Q_OBJECT
@@ -380,6 +389,7 @@ public:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     QVariant data(const QModelIndex &index, int role) const;
 };
+
 class AutoMastModel : public AutoTableModel
 {
   Q_OBJECT
@@ -390,6 +400,7 @@ class AutoMastModel : public AutoTableModel
     QVariant data(const QModelIndex &index, int role) const;
 
 };
+
 class SensorModel : public SPTableModel
 {
     Q_OBJECT
@@ -403,6 +414,7 @@ public slots:
 private:
     Logger* log;
 };
+
 class SignalMastModel : public SPTableModel
 {
     Q_OBJECT
@@ -418,6 +430,7 @@ public slots:
      void propertyChange(PropertyChangeEvent *e);
 
 };
+
 class SPComboBoxDelegate : public QItemDelegate
 {
 Q_OBJECT
@@ -434,6 +447,7 @@ private:
   QStringList items;
 
 };
+
 class SignalMastComboBoxDelegate : public QItemDelegate
 {
 Q_OBJECT

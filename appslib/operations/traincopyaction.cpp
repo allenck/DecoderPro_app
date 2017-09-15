@@ -40,7 +40,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrainCopyAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrainCopyAction::actionPerformed(ActionEvent* /*e*/) {
      // create a copy train frame
      if (f == NULL || !f->isVisible()) {
          f = new TrainCopyFrame(_train);

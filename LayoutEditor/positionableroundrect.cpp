@@ -20,13 +20,18 @@
 {
     //super(editor);
     _radius = 10;
+    _shape = new JShape();
+    setObjectName("PositionableRoundRect");
 }
 
-/*public*/ PositionableRoundRect::PositionableRoundRect(Editor* editor, QGraphicsItem* shape, QWidget *parent) : PositionableRectangle(editor, shape, parent)
+/*public*/ PositionableRoundRect::PositionableRoundRect(Editor* editor, QGraphicsRoundRectItem* shape, QWidget *parent) : PositionableRectangle(editor, shape, parent)
 {
  //super(editor, shape);
  _radius = 10;
  _itemGroup = new QGraphicsItemGroup();
+ _shape = new JShape();
+ setObjectName("PositionableRoundRect");
+
 }
 
 /*public*/ void PositionableRoundRect::setCornerRadius(int r) {
@@ -41,12 +46,12 @@
  */
 /*public*/ void PositionableRoundRect::makeShape() {
    //_shape = new RoundRectangle2D.Double(0, 0, _width, _height, _radius, _radius);
- _shape = new QGraphicsRoundRectItem(0, 0, _width, _height, _radius, _radius);
- ((QGraphicsRoundRectItem*)_shape)->setBrush(QBrush(_fillColor));
- ((QGraphicsRoundRectItem*)_shape)->setPen(QPen(QBrush(_lineColor),_lineWidth));
+ _shape->item = new QGraphicsRoundRectItem(0, 0, _width, _height, _radius, _radius);
+ ((QGraphicsRoundRectItem*)_shape->item)->setBrush(QBrush(_fillColor));
+ ((QGraphicsRoundRectItem*)_shape->item)->setPen(QPen(QBrush(_lineColor),_lineWidth));
+ _shape->item->setPos(getX(), getY());
 
- _itemGroup->addToGroup(_shape);
- _itemGroup->setPos(getX(), getY());
+ _itemGroup->addToGroup(_shape->item);
 }
 
 /*public*/ Positionable* PositionableRoundRect::deepClone()
@@ -80,43 +85,43 @@ void PositionableRoundRect::onEditAct()
  setEditParams();
 }
 
-/*public*/ bool PositionableRoundRect::updateScene() // TODO: this function not in Java
-{
- QGraphicsRoundRectItem* item = NULL;
+///*public*/ bool PositionableRoundRect::updateScene() // TODO: this function not in Java
+//{
+// QGraphicsRoundRectItem* item = NULL;
 
- if(_itemGroup != NULL)
- {
-  QList<QGraphicsItem*> itemList = _itemGroup->childItems();
-  foreach(QGraphicsItem* it, itemList)
-  {
-   if(qgraphicsitem_cast<QGraphicsRoundRectItem*>(it) != NULL)
-   {
-    item = qgraphicsitem_cast<QGraphicsRoundRectItem*>(it);
-   }
-  }
- }
- else
-  _itemGroup = new QGraphicsItemGroup();
+// if(_itemGroup != NULL)
+// {
+//  QList<QGraphicsItem*> itemList = _itemGroup->childItems();
+//  foreach(QGraphicsItem* it, itemList)
+//  {
+//   if(qgraphicsitem_cast<QGraphicsRoundRectItem*>(it) != NULL)
+//   {
+//    item = qgraphicsitem_cast<QGraphicsRoundRectItem*>(it);
+//   }
+//  }
+// }
+// else
+//  _itemGroup = new QGraphicsItemGroup();
 
- if(item != NULL)
- {
-  item->setRect(0, 0, _width, _height,_radius, _radius);
- }
- else
-  item = new QGraphicsRoundRectItem(0, 0, _width, _height, _radius, _radius,_itemGroup);
- if(showTooltip()) item->setToolTip(getTooltip());
- item->setPos(getX(), getY());
- item->setBrush(QBrush(_fillColor));
- item->setPen(QPen(QBrush(_lineColor),_lineWidth));
+// if(item != NULL)
+// {
+//  item->setRect(0, 0, _width, _height,_radius, _radius);
+// }
+// else
+//  item = new QGraphicsRoundRectItem(0, 0, _width, _height, _radius, _radius,_itemGroup);
+// if(showTooltip()) item->setToolTip(getTooltip());
+// item->setPos(getX(), getY());
+// item->setBrush(QBrush(_fillColor));
+// item->setPen(QPen(QBrush(_lineColor),_lineWidth));
 
- if((getDegrees()) != 0)
- {
-  QRectF bnd = item->boundingRect();
-  QPointF center = bnd.center();
-  item->setTransformOriginPoint(center);
-  item->setRotation(item->rotation()+ (qreal) getDegrees());
- }
- _itemGroup->setZValue(getDisplayLevel());
- _itemGroup->update();
- return true;
-}
+// if((getDegrees()) != 0)
+// {
+//  QRectF bnd = item->boundingRect();
+//  QPointF center = bnd.center();
+//  item->setTransformOriginPoint(center);
+//  item->setRotation(item->rotation()+ (qreal) getDegrees());
+// }
+// _itemGroup->setZValue(getDisplayLevel());
+// _itemGroup->update();
+// return true;
+//}

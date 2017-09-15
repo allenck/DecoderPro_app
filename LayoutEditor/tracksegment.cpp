@@ -493,7 +493,7 @@ TrackSegment::getConnectName(QObject* o,int type)
 TSAbstractAction::TSAbstractAction(QString name, QObject *parent)
  : AbstractAction(name, parent) {}
 
-/*public*/ void TSAbstractAction::actionPerformed(ActionEvent* e)
+/*public*/ void TSAbstractAction::actionPerformed(ActionEvent* /*e*/)
 {
  AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction("ViewRouting", ((TrackSegment*)parent())->getLayoutBlock());
  routeTableAction->actionPerformed();

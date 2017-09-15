@@ -179,12 +179,9 @@ bool systemNameComparator(QString o1, QString o2)
  //super(s);
  // disable ourself if there is no primary Route manager available
  if (InstanceManager::routeManagerInstance()==NULL) 
- {
-//  setEnabled(false);
-     init();
+  setEnabled(false);
+ init();
 
- }
-    
  // check a constraint required by this implementation,
  // because we assume that the codes are the same as the index
  // in a JComboBox
@@ -192,22 +189,24 @@ bool systemNameComparator(QString o1, QString o2)
         || Route::VETOACTIVE != 2 || Route::VETOINACTIVE !=3 )
         log->error("assumption invalid in RouteTable implementation");
 }
+
 /*public*/ RouteTableAction::RouteTableAction(QObject *parent) : AbstractTableAction(tr("RouteTable"), parent)
 { 
   //this(tr("Route Table"));
-    init();
+ init();
 
  }
 RouteTableAction::RouteTableAction(const RouteTableAction & that)
     : AbstractTableAction(that.text(), that.parent())
 {
-
+ init();
 }
 
 void RouteTableAction::init()
 {
  log = new Logger("RouteTableAction");
- if(parent() == NULL) return;
+ if(parent() == NULL)
+     return;
  _systemName = new JTextField(12);
  _userName = new JTextField(22);
  _autoSystemName = new QCheckBox(tr("Automatically Generate System Name"));
@@ -219,9 +218,6 @@ void RouteTableAction::init()
  
  soundFile = new JTextField(20);
  scriptFile = new JTextField(20);
- JmriBeanComboBox* turnoutsAlignedSensor;
- 
- JmriBeanComboBox* sensor1;
  
  QFont f;
  f.setPointSize(9);
@@ -279,9 +275,7 @@ void RouteTableAction::init()
 {
  m = new RouteTableDataModel(this);
 }
-//        static /*public*/ final int ENABLECOL = NUMCOLUMN;
-//        static /*public*/ final int LOCKCOL = ENABLECOL+1;
-//        static /*public*/ final int SETCOL = ENABLECOL+2;
+
 RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
  : BeanTableDataModel(parent)
 {
@@ -323,17 +317,18 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
  Qt::ItemFlags def = BeanTableDataModel::flags(mindex);
  if (col==USERNAMECOL) return  def | Qt::ItemIsEditable;
  if (col==SETCOL) return def | Qt::ItemIsEditable;
- if (col==ENABLECOL) return def | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+ if (col==ENABLECOL) return def | Qt::ItemIsUserCheckable;
  // Route lock is available if turnouts are lockable
  if (col==LOCKCOL)
  {
   Route* r;
   QString name = data(index(mindex.row(), (int)SYSNAMECOL),Qt::DisplayRole).toString();
   r = getBySystemName(name);
-  return r->canLock()? def | Qt::ItemIsEditable | Qt::ItemIsUserCheckable: def;
+  return r->canLock()? def | Qt::ItemIsUserCheckable: Qt::NoItemFlags;
  }
  else return BeanTableDataModel::flags(mindex);
 }
+
 /*public*/ QVariant RouteTableDataModel::data(const QModelIndex &mindex, int role) const
 {
  int col = mindex.column();
@@ -352,6 +347,8 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
 //   if(((Route*)getBySystemName(data(createIndex(row, SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled())
    if(r->getEnabled())
     return Qt::Checked;
+   else
+    return Qt::Unchecked;
   }
   else if (col==LOCKCOL)
   {
@@ -360,6 +357,8 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
    {
     if( r->getLocked())
         return Qt::Checked;
+    else
+     return Qt::Unchecked;
    }
    else
    {
@@ -368,10 +367,10 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
     return /*Boolean.valueOf (false)*/0;
    }
   }
-  else return  BeanTableDataModel::data(mindex,role);
  }
- return QVariant();
+ return  BeanTableDataModel::data(mindex,role);
 }
+
 /*public*/ bool  RouteTableDataModel::setData(const QModelIndex &mindex, const QVariant &value, int role)
 {
  int col = mindex.column();
@@ -384,6 +383,7 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
    Route* r = (Route*)getBySystemName(data(index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString());
    bool v = r->getEnabled();
    r->setEnabled(!v);
+   return true;
   }
   else if (col==LOCKCOL)
   {
@@ -391,8 +391,8 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
        Route* r = (Route*)getBySystemName(data(index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString());
    bool v = r->getLocked();
    r->setLocked(!v);
+   return true;
   }
-  return true;
  }
  if(role == Qt::EditRole)
  {
@@ -430,12 +430,12 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
 //            }
 //            /*public*/ void run() {
 //                    //Thread.yield();
-//                    addPressed(NULL);
-//                    _systemName->setText((String)getValueAt(row, SYSNAMECOL));
-//                    editPressed(NULL); // don't really want to stop Route w/o user action
+                    action->addPressed(NULL);
+                    action->_systemName->setText(data(this->index(row, SYSNAMECOL),Qt::DisplayRole).toString());
+        action->editPressed(); // don't really want to stop Route w/o user action
 //                }
 //            };
-        WindowMaker* t = new WindowMaker(row, action);
+//        WindowMaker* t = new WindowMaker(row, action);
 //        javax.swin((DefaultRoute*)g)->SwingUtilities.invokeLater(t);
     }
     else BeanTableDataModel::setData(mindex,value, role);
@@ -443,11 +443,13 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
  return false;
 }
 
-  /*public*/ void RouteTableDataModel::configureTable(QTableView* /*table*/) {
+  /*public*/ void RouteTableDataModel::configureTable(JTable* table) {
 //      table.setDefaultRenderer(Boolean.class, new EnablingCheckboxRenderer());
 //      table.setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicpro((DefaultRoute*)g)->ValueRenderer());
 //      table.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicpro((DefaultRoute*)g)->ValueEditor());
 //      super.configureTable(table);
+   setColumnToHoldButton(table, SETCOL);
+   BeanTableDataModel::configureTable(table);
   }
 
 /**
@@ -483,7 +485,8 @@ void RouteTableDataModel::doDelete(NamedBean* bean)
 /*public*/ void RouteTableDataModel::clickOn(NamedBean* t) {
    ((Route*)t)->setRoute();
 }
-/*public*/QString RouteTableDataModel::getValue(QString /*s*/) {
+/*public*/QString RouteTableDataModel::getValue(QString /*s*/) const
+{
     return "Set";
 }
 /*public*/ QPushButton* RouteTableDataModel::configureButton() {
@@ -1059,11 +1062,11 @@ centralWidget->layout()->addWidget(pb);
    addFrame->setObjectName(QString::fromUtf8("addFrame"));
   addFrame->resize(461,721);
   QDesktopWidget* screen = new QDesktopWidget();
-  //addFrame->setMaximumHeight(screen->height()-100);
+  addFrame->setMaximumHeight(screen->height()-100);
   QFont font;
   font.setPointSize(9);
   addFrame->setFont(font);
-  centralWidget = new QWidget(addFrame);
+  centralWidget = new QWidget(/*addFrame*/);
   centralWidget->setFont(font);
   centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
   verticalLayout_6 = new QVBoxLayout(centralWidget);
@@ -1076,7 +1079,7 @@ centralWidget->layout()->addWidget(pb);
 
   horizontalLayout_systemName->addWidget(label);
 
-  //_systemName = new JTextField(centralWidget);
+  _systemName = new JTextField(centralWidget);
   _systemName->setObjectName(QString::fromUtf8("_systemName"));
   QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   sizePolicy.setHorizontalStretch(0);

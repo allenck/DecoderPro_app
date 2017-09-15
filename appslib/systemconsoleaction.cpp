@@ -55,7 +55,7 @@ void SystemConsoleAction::common()
 }
 
 //@Override
-/*public*/  void SystemConsoleAction::actionPerformed(ActionEvent* e) {
+/*public*/  void SystemConsoleAction::actionPerformed(ActionEvent* /*e*/) {
     // Show system console
     SystemConsole::getConsole()->setVisible(true);
 }

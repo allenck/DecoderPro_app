@@ -51,10 +51,10 @@ private slots:
 protected:
     /*protected*/ void updateContentPanel();
     /*protected*/ OBlock* getBlock();
-    /*protected*/ void updateIconList(QList<Positionable*> icons);
+    /*protected*/ void updateIconList(QList<Positionable*>* icons);
 protected slots:
     /*protected*/ void closingEvent();
-
+friend class CircuitBuilder;
 };
 
 #endif // EDITCIRCUITFRAME_H

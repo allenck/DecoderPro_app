@@ -47,7 +47,7 @@ MyDelegate::MyDelegate(QObject *parent)
      : QItemDelegate(parent)
  {
  }
-
+void MyDelegate::setText(QString text) {buttonText = text;}
 
  void MyDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
  {
@@ -62,7 +62,10 @@ MyDelegate::MyDelegate(QObject *parent)
      h = 30;//button height
      button.rect = QRect(x,y,w,h);
      //button.text = "=^.^=";
-     button.text = index.model()->data(index).toString();
+//     if(buttonText != "")
+//      button.text = buttonText;
+//     else
+      button.text = index.model()->data(index).toString();
      button.state = QStyle::State_Enabled;
 
      QApplication::style()->drawControl( QStyle::CE_PushButton, &button, painter);

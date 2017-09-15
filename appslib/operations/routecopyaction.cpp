@@ -40,7 +40,7 @@ void RouteCopyAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
- /*public*/ void RouteCopyAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void RouteCopyAction::actionPerformed(ActionEvent* /*e*/) {
      // create a copy route frame
 
      if (f == NULL || !f->isVisible()) {

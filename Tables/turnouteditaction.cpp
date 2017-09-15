@@ -542,7 +542,7 @@ LockResetItemListener::LockResetItemListener(TurnoutEditAction *act)
  this->act = act;
 }
 
-/*public*/ void LockResetItemListener::actionPerformed(ActionEvent* e)
+/*public*/ void LockResetItemListener::actionPerformed(ActionEvent* /*e*/)
 {
  Turnout* t = (Turnout*) act->bean;
  act->lockBox->setCurrentIndex(act->lockBox->findText(t->getDecoderName()));

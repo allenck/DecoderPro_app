@@ -37,6 +37,7 @@ AbstractTurnout::AbstractTurnout(QObject *parent) :
  _firstNamedSensor = NULL;
  _secondNamedSensor = NULL;
  myTurnoutOperation = NULL;
+ log = new Logger("AbstractTurnout");
 }
 /**
  * Abstract base for the Turnout interface.
@@ -100,6 +101,7 @@ _decoderName = PushbuttonPacket::unknown;
   _secondNamedSensor = NULL;
  setObjectName(systemName);
  myTurnoutOperation = NULL;
+ log = new Logger("AbstractTurnout");
 }
 
 AbstractTurnout::AbstractTurnout(QString systemName, QString userName, QObject *parent) :
@@ -137,6 +139,7 @@ _reportLocked = true;
  _secondNamedSensor = NULL;
  setObjectName(systemName);
  myTurnoutOperation = NULL;
+ log = new Logger("AbstractTurnout");
 }
 
 /**
@@ -189,7 +192,7 @@ _reportLocked = true;
  */
 /*public*/ void AbstractTurnout::setCommandedState(int s)
 {
- log.debug("set commanded state for turnout " + getSystemName() + " to " + QString("%1").arg(s));
+ log->debug("set commanded state for turnout " + getSystemName() + " to " + QString("%1").arg(s));
  newCommandedState(s);
 
  myOperator = getTurnoutOperator(); // MUST set myOperator before starting the thread
@@ -356,12 +359,12 @@ void AbstractTurnout::setKnownStateToCommanded()
 {
  for (int i = 0; i < _validFeedbackNames.length(); i++)
  {
-        if (_activeFeedbackType == _validFeedbackModes.at(i)) {
-            return _validFeedbackNames.at(i);
-        }
-    }
-    throw new IllegalArgumentException("Unexpected internal mode: "
-            + _activeFeedbackType);
+  if (_activeFeedbackType == _validFeedbackModes.at(i)) {
+      return _validFeedbackNames.at(i);
+  }
+ }
+ log->error("Unexpected internal mode: "
+         + QString::number(_activeFeedbackType));
 }
 
 /*public*/ void AbstractTurnout::setInverted(bool inverted)
@@ -618,14 +621,14 @@ void AbstractTurnout::setKnownStateToCommanded()
    }
    else
    {
-    log.error("Sensor '"+pName+"' not available");
+    log->error("Sensor '"+pName+"' not available");
                 throw new JmriException("Sensor '"+pName+"' not available");
    }
   }
  }
  else
  {
-  log.error("No SensorManager for this protocol");
+  log->error("No SensorManager for this protocol");
   throw new JmriException("No Sensor Manager Found");
  }
 }
@@ -680,14 +683,14 @@ void AbstractTurnout::setKnownStateToCommanded()
    }
    else
    {
-    log.error("Sensor '"+pName+"' not available");
+    log->error("Sensor '"+pName+"' not available");
     throw new JmriException("Sensor '"+pName+"' not available");
    }
   }
  }
  else
  {
-  log.error("No SensorManager for this protocol");
+  log->error("No SensorManager for this protocol");
   throw new JmriException("No Sensor Manager Found");
  }
 }
@@ -742,7 +745,7 @@ void AbstractTurnout::setKnownStateToCommanded()
    }
   else
   {
-   log.warn("expected Sensor 1 not defined - " + getSystemName());
+   log->warn("expected Sensor 1 not defined - " + getSystemName());
    newKnownState(UNKNOWN);
   }
  }
@@ -755,13 +758,13 @@ void AbstractTurnout::setKnownStateToCommanded()
    s1State = ((AbstractSensor*)getFirstSensor())->getKnownState();
   else
   {
-   log.warn("expected Sensor 1 not defined - " + getSystemName());
+   log->warn("expected Sensor 1 not defined - " + getSystemName());
   }
   if (getSecondSensor() != NULL)
    s2State = ((AbstractSensor*)getSecondSensor())->getKnownState();
   else
   {
-   log.warn("expected Sensor 2 not defined - " + getSystemName());
+   log->warn("expected Sensor 2 not defined - " + getSystemName());
   }
   // set Turnout state according to sensors
   if ((s1State == Sensor::ACTIVE) && (s2State == Sensor::INACTIVE))
@@ -817,7 +820,7 @@ void AbstractTurnout::setKnownStateToCommanded()
   else
   {
    // unexected mismatch
-   log.warn("expected sensor " + getFirstNamedSensor()->getName()
+   log->warn("expected sensor " + getFirstNamedSensor()->getName()
                     + " was " + ((Sensor*) evt->getSource())->getSystemName());
   }
         // end ONESENSOR block

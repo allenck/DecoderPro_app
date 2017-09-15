@@ -60,7 +60,7 @@ PrintRosterAction::PrintRosterAction(QObject *parent) :
 void PrintRosterAction::common()
 {
  log = new Logger("PrintRosterAction");
- mFrame = new JmriJFrame();
+ mFrame = new JmriJFrame("PrintRosterAction");
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
@@ -70,7 +70,7 @@ void PrintRosterAction::common()
 }
 
 
-/*public*/ void PrintRosterAction::actionPerformed(ActionEvent* e)
+/*public*/ void PrintRosterAction::actionPerformed(ActionEvent* /*e*/)
 {
  // obtain a HardcopyWriter to do this
  Roster* r = Roster::instance();

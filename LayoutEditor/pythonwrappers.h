@@ -381,17 +381,17 @@ class JButton_Wrapper : public QObject
  Q_OBJECT
 public Q_SLOTS:
  JButton* new_JButton(QString text) { return new JButton(text);}
- bool emitActionPerformed(ActionEvent* e) { emit actionPerformed(e); return true; }
+ bool emitActionPerformed(ActionEvent* /*e*/) { emit actionPerformed(e); return true; }
 //signals:
  Q_SIGNALS:
- void actionPerformed(ActionEvent* e);
+ void actionPerformed(ActionEvent* /*e*/);
 };
 
 class ActionEvent_Wrapper : public QObject
 {
  Q_OBJECT
 public Q_SLOTS:
- QString getActionCommand(ActionEvent* e) { return e->getActionCommand();}
+ QString getActionCommand(ActionEvent* /*e*/) { return e->getActionCommand();}
 };
 
 class AudioManager_Wrapper : public QObject

@@ -41,7 +41,7 @@ void SendPacketAction::common()
  common();
 }
 
-/*public*/ void SendPacketAction::actionPerformed(ActionEvent* e) {
+/*public*/ void SendPacketAction::actionPerformed(ActionEvent* /*e*/) {
     // create a SendPacketFrame
     SendPacketFrame* f = new SendPacketFrame();
     try {

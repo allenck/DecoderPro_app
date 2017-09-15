@@ -11,6 +11,7 @@
 #include "sensor.h"
 #include "turnout.h"
 #include "block.h"
+#include "section.h"
 
 class SignalMastLogic;
 class SignalMast;
@@ -106,6 +107,8 @@ public:
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ int getNumPropertyChangeListeners();
     /*public*/ void dispose();
+    /*public*/ Section* getAssociatedSection(SignalMast* destination);
+    /*public*/ void setAssociatedSection(Section* sec, SignalMast* destination);
 
 signals:
     void propertyChange(PropertyChangeEvent*);
@@ -126,11 +129,12 @@ private:
 
     bool disposing;// = false;
     Logger*log;
-    PropertyChangeSupport* pcs;// = new jPropertyChangeSupport(this);
+    //PropertyChangeSupport* pcs;// = new jPropertyChangeSupport(this);
     /*volatile*/ bool inWait;// = false;
     QThread* thr;// = NULL;
     /*synchronized*/ void setSignalAppearance();
     QMutex mutex;
+
 protected:
     /*protected*/ PropertyDestinationMastListener*  propertyDestinationMastListener;// = new PropertyDestinationMastListener();
     /*protected*/ PropertySourceMastListener* propertySourceMastListener;// = new PropertySourceMastListener();
@@ -146,6 +150,7 @@ friend class RunnableThis;
 friend class DestinationMast;
 friend class SignalMastLogicWidget;
 };
+
 //This is the listener on the destination signalMast
 class PropertyDestinationMastListener : public PropertyChangeListener
 {
@@ -220,6 +225,7 @@ class DestinationMast : public QObject
       void addSensor(NamedBeanHandle<Sensor*>* sen, int state);
       void removeSensor(NamedBeanHandle<Sensor*>* sen);
 
+
       QList<Block*> getBlocks();
       QList<Block*> getAutoBlocks();
       QList<Turnout*> getTurnouts();
@@ -261,6 +267,11 @@ class DestinationMast : public QObject
       void dispose();
       void lockTurnouts();
       void clearTurnoutLock();
+      bool _useLayoutEditor = false;
+      bool _useLayoutEditorTurnouts ;//= false;
+      bool _useLayoutEditorBlocks;// = false;
+      bool _lockTurnouts;// = false;
+      NamedBeanHandle<Section*>* associatedSection;// = null;
 
  private:
     LayoutBlock* destinationBlock;// = NULL;
@@ -286,6 +297,8 @@ class DestinationMast : public QObject
     QMap<Block*, int> autoBlocks;// = new LinkedHashMap<Block, Integer>(0);
 
     QList<Block*> xingAutoBlocks;// = new QList<Block>(0);
+    QList<Block*> dblCrossOverAutoBlocks;// = new ArrayList<Block>(0);
+
     //SignalMast* source;
     SignalMast* destination;
     bool active;// = false;
@@ -293,16 +306,16 @@ class DestinationMast : public QObject
 
     float minimumBlockSpeed;// = 0.0f;
 
-    bool _useLayoutEditor;// = false;
-    bool _useLayoutEditorTurnouts;// = false;
-    bool _useLayoutEditorBlocks;// = false;
-    bool _lockTurnouts;// = false;
     QString comment;
     bool enable;// = true;
     Logger* log;
     bool inWait;// = false;
     QThread* thr;// = NULL;
-
+    void setAssociatedSection(Section* section);
+    Section* getAssociatedSection() ;
+    void createSectionDetails() ;
+    LayoutBlock* getProtectingBlock();
+    QList<Block*> getAutoBlocksBetweenMasts();
 
     protected:
     /*protected*/ void calculateSpeed();

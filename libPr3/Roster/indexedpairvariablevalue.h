@@ -53,7 +53,7 @@ signals:
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /** ActionListener implementations */
-    /*public*/ void actionPerformed(ActionEvent* e);
+    /*public*/ void actionPerformed(ActionEvent* /*e*/);
     /*public*/ void focusGained(/*FocusEvent*/QEvent* e);
     /*public*/ void focusLost(/*FocusEvent*/ QEvent* e);
  private:

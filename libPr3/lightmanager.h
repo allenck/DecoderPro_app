@@ -150,7 +150,26 @@ public:
          *    any activation.  The activateLight method in AbstractLight.java
          *    determines what needs to be done for each Light.
          */
+ /**
+      * Activate the control mechanism for each Light controlled by this
+      * LightManager. Note that some Lights don't require any activation. The
+      * activateLight method in AbstractLight.java determines what needs to be
+      * done for each Light.
+      */
+     /*public*/ virtual void activateAllLights() {}
 
+     /**
+      * Returns 'true' if the System can potentially support variable Lights
+      */
+     /*public*/ virtual bool supportsVariableLights(QString systemName) {return false;}
+
+     /**
+      * A method that determines if it is possible to add a range of lights in
+      * numerical order eg 11 thru 18, primarily used to show/not show the add
+      * range box in the add Light window
+      *
+      */
+     /*public*/ virtual bool allowMultipleAdditions(QString systemName) { return false;}
 signals:
     
 public slots:

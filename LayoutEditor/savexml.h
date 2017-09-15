@@ -57,7 +57,8 @@ public:
  QDomElement storeSignalGroups(QObject *m);
  QDomElement storeSections(QObject *m);
  QDomElement storeAudio(DefaultAudioManager *m);
-
+ QDomElement storeSlipTurnouts(QObject *m);
+ QDomElement storeTurntables(QObject* m);
 
  /**
   * Subclass provides implementation to create the correct top

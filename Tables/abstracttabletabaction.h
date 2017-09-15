@@ -3,6 +3,7 @@
 #include "abstracttableaction.h"
 #include "libtables_global.h"
 
+class QGridLayout;
 class QFrame;
 class QVBoxLayout;
 class QTableView;
@@ -48,8 +49,12 @@ protected:
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
     void On_printAction_triggered();
-
+friend class TablesFrame;
+friend class TurnoutTableTabAction;
+friend class SensorTableTabAction;
+friend class LightTableTabAction;
 };
+
 /*protected*/ /*static*/ class TabbedTableItem : public QObject
 {
  Q_OBJECT
@@ -69,7 +74,9 @@ protected slots:
     bool standardModel;// = true;
 
     /*final*/ QWidget* dataPanel;// = new JPanel();
-    public:
+    QGridLayout* dataPanelLayout;
+
+public:
     /*public*/ TabbedTableItem(QString choice, bool stdModel, Manager* manager, AbstractTableAction* tableAction);
     void createDataModel();
     void addPanelModel();
@@ -84,6 +91,9 @@ protected:
     /*protected*/ void addToBottomBox(QWidget* comp);
     /*protected*/ void dispose();
     friend class AbstractTableTabAction;
+    friend class TurnoutTableTabAction;
+    friend class SensorTableTabAction;
+    friend class LightTableTabAction;
 };
 
 #endif // ABSTRACTTABLETABACTION_H

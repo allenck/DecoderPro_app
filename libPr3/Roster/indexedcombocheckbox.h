@@ -14,8 +14,8 @@ class LIBPR3SHARED_EXPORT IndexedComboCheckBox : public QCheckBox
 public:
     //explicit IndexedComboCheckBox(QWidget *parent = 0);
     IndexedComboCheckBox(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent = 0);
-//    void thisActionPerformed(ActionEvent* e);
-//    void originalActionPerformed(ActionEvent* e) ;
+//    void thisActionPerformed(ActionEvent* /*e*/);
+//    void originalActionPerformed(ActionEvent* /*e*/) ;
     void originalPropertyChanged(PropertyChangeEvent* e);
     /*public*/ void dispose();
     QColor getBackground();

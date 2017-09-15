@@ -16,8 +16,8 @@ class LIBPR3SHARED_EXPORT ComboCheckBox : public QCheckBox
 public:
     //explicit ComboCheckBox(QObject *parent = 0);
     ComboCheckBox(QComboBox* box, EnumVariableValue* var);
-    //void thisActionPerformed(ActionEvent* e);
-    //void originalActionPerformed(ActionEvent* e);
+    //void thisActionPerformed(ActionEvent* /*e*/);
+    //void originalActionPerformed(ActionEvent* /*e*/);
     void originalPropertyChanged(PropertyChangeEvent* e);
     /*public*/ void dispose();
     QColor getBackground();

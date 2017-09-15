@@ -47,7 +47,7 @@ void PaneNewProgAction::init()
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void PaneNewProgAction::actionPerformed(ActionEvent* e)
+/*public*/ void PaneNewProgAction::actionPerformed(ActionEvent* /*e*/)
 {
  if (log->isDebugEnabled()) log->debug("New roster entry programmer requested");
 

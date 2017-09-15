@@ -169,7 +169,7 @@ class ButtonActionListener : public ActionListener
  public:
  ButtonActionListener* init(QRadioButton* b, int num, WarrantPreferencesPanel* panel);
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e) ;
+ /*public*/ void actionPerformed(ActionEvent* /*e*/) ;
 };
 
 /************************* Throttle Step Increment Table ******************************/

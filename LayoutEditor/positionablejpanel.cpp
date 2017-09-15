@@ -363,6 +363,7 @@ void PositionableJPanel::cleanup() {}
 void PositionableJPanel::setSize(int w, int h)
 {
  resize(w, h);
+
 }
 void PositionableJPanel::setName(QString name){ this->name = name;}
 QString PositionableJPanel::getName() {return name;}
@@ -373,33 +374,36 @@ QString PositionableJPanel::getName() {return name;}
 //}
 bool PositionableJPanel::isOpaque() {return _bOpaque;}
 /**
-     * Stores the bounds of this component into "return value"
-     * <code>rv</code> and returns <code>rv</code>.
-     * If <code>rv</code> is <code>null</code> a new <code>Rectangle</code>
-     * is allocated.  This version of <code>getBounds</code> is useful
-     * if the caller wants to avoid allocating a new <code>Rectangle</code>
-     * object on the heap.
-     *
-     * @param rv the return value, modified to the component's bounds
-     * @return <code>rv</code>; if <code>rv</code> is <code>null</code>
-     *          return a newly created <code>Rectangle</code> with this
-     *          component's bounds
-     */
-    /*public*/ QRect PositionableJPanel::getBounds(QRect rv) {
-        if (rv.isNull()) {
-            return  QRect(_x, _y, size().width(), size().height());
-        }
-//        else {
-//            rv.setBounds(_x, _y, size().width(), size().height());
-//            return rv;
-//        }
-    }
-QRectF PositionableJPanel::getBounds()
+ * Stores the bounds of this component into "return value"
+ * <code>rv</code> and returns <code>rv</code>.
+ * If <code>rv</code> is <code>null</code> a new <code>Rectangle</code>
+ * is allocated.  This version of <code>getBounds</code> is useful
+ * if the caller wants to avoid allocating a new <code>Rectangle</code>
+ * object on the heap.
+ *
+ * @param rv the return value, modified to the component's bounds
+ * @return <code>rv</code>; if <code>rv</code> is <code>null</code>
+ *          return a newly created <code>Rectangle</code> with this
+ *          component's bounds
+ */
+///*public*/ QRect PositionableJPanel::getBounds(QRect rv) {
+//    if (rv.isNull()) {
+//        return  QRect(_x, _y, size().width(), size().height());
+//    }
+//    else {
+//        rv.setCoords(_x, _y, size().width(), size().height());
+//        return rv;
+//    }
+//}
+
+QRectF PositionableJPanel::getBounds(QRectF r)
 {
-//    if(_itemGroup !=NULL)
-//     return _itemGroup->boundingRect();
-//    return QRectF(getX(), getY(), getWidth(), getHeight());
-    return QRectF(getX(), getY(), _itemGroup->boundingRect().width(), _itemGroup->boundingRect().height());
+ if(r.isNull())
+  return QRectF(getX(), getY(), /*getWidth()*/_itemGroup->boundingRect().width(), /*getHeight()*/_itemGroup->boundingRect().height());
+    //return QRectF(getX(), getY(), _itemGroup->boundingRect().width(), _itemGroup->boundingRect().height());
+
+ r.setCoords(getX(), getY(), getWidth(), getHeight());
+ return r;
 }
 
 bool PositionableJPanel::updateScene() // TODO: this function not in Java

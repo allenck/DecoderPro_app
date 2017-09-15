@@ -321,12 +321,12 @@ void EditCircuitPaths::on_doneClicked()
  Portal* toPortal = path->getToPortal();
  QString name = path->getName();
 
- QList<Positionable*> list = _parent->getCircuitGroup();
- if (log->isDebugEnabled()) log->debug("showPath for "+name+" CircuitGroup size= "+QString::number(list.size()));
+ QList<Positionable*>* list = _parent->getCircuitGroup();
+ if (log->isDebugEnabled()) log->debug("showPath for "+name+" CircuitGroup size= "+QString::number(list->size()));
  _pathGroup = new QList<Positionable*>();
- for (int i=0; i<list.size(); i++)
+ for (int i=0; i<list->size(); i++)
  {
-  Positionable* pos = list.at(i);
+  Positionable* pos = list->at(i);
   //if (pos instanceof IndicatorTrack)
   if(qobject_cast<IndicatorTrack*>(pos)!= NULL)
   {
@@ -362,20 +362,20 @@ void EditCircuitPaths::on_doneClicked()
  *
  * @param path
  */
-/*private*/ QList<Positionable*> EditCircuitPaths::makePathGroup(OPath* path)
+/*private*/ QList<Positionable*>* EditCircuitPaths::makePathGroup(OPath* path)
 {
  Portal* fromPortal = path->getFromPortal();
  Portal* toPortal = path->getToPortal();
  QString name = path->getName();
 
- QList<Positionable*> list = _parent->getCircuitGroup();
+ QList<Positionable*>* list = _parent->getCircuitGroup();
  if (log->isDebugEnabled()) {
-     log->debug("makePathGroup for " + name + " CircuitGroup size= " + list.size());
+     log->debug("makePathGroup for " + name + " CircuitGroup size= " + list->size());
  }
- QList<Positionable*> pathGroup =  QList<Positionable*>();
- for (int i = 0; i < list.size(); i++)
+ QList<Positionable*>* pathGroup =  new QList<Positionable*>();
+ for (int i = 0; i < list->size(); i++)
  {
-  Positionable* pos = list.at(i);
+  Positionable* pos = list->at(i);
   if (qobject_cast<IndicatorTrack*>(pos) != NULL)
   {
    QList<QString>* paths = ((IndicatorTrack*) pos)->getPaths();
@@ -386,7 +386,7 @@ void EditCircuitPaths::on_doneClicked()
      if (name==(paths->at(j)))
      {
       ((IndicatorTrack*) pos)->setControlling(true);
-      pathGroup.append(pos);
+      pathGroup->append(pos);
      }
     }
    }
@@ -397,11 +397,11 @@ void EditCircuitPaths::on_doneClicked()
    Portal* portal = icon->getPortal();
    if (portal==(fromPortal))
    {
-       pathGroup.append(icon);
+       pathGroup->append(icon);
    }
    else if (portal==toPortal)
    {
-       pathGroup.append(icon);
+       pathGroup->append(icon);
    }
   }
  }
@@ -458,8 +458,8 @@ void EditCircuitPaths::on_doneClicked()
   for (int i = 0; i < list->size(); i++)
   {
       OPath* path = (OPath*) list->at(i);
-      QList<Positionable*> pathGp = makePathGroup(path);
-      if (pathGp.size() == 0) {
+      QList<Positionable*>* pathGp = makePathGroup(path);
+      if (pathGp->size() == 0) {
           error = true;
           break;
       }
@@ -565,9 +565,9 @@ void EditCircuitPaths::on_doneClicked()
 /**
  * Make the OPath from the icons in the Iterator
  */
-/*private*/ OPath* EditCircuitPaths::makeOPath(QString name, QList<Positionable*> pathGp, bool showMsg)
+/*private*/ OPath* EditCircuitPaths::makeOPath(QString name, QList<Positionable*>* pathGp, bool showMsg)
 {
- if (pathGp.size() == 0)
+ if (pathGp->size() == 0)
  {
   if (showMsg) {
 //      JOptionPane.showMessageDialog(this, Bundle.getMessage("noPathIcons"),
@@ -576,7 +576,7 @@ void EditCircuitPaths::on_doneClicked()
   }
   return NULL;
  }
- QListIterator<Positionable*> it( pathGp);
+ QListIterator<Positionable*> it( *pathGp);
  QList<BeanSetting*> settings =  QList<BeanSetting*>();
  Portal* fromPortal = NULL;
  Portal* toPortal = NULL;
@@ -654,7 +654,7 @@ void EditCircuitPaths::on_doneClicked()
 
 /*private*/ void EditCircuitPaths::changePathNameInIcons(QString name, OPath* path) {
     // add or remove path name from IndicatorTrack icons
-    QListIterator<Positionable*> iter(_parent->getCircuitGroup());
+    QListIterator<Positionable*> iter(*_parent->getCircuitGroup());
     while (iter.hasNext()) {
         Positionable* pos = iter.next();
         if (_pathGroup->contains(pos)) {
@@ -721,7 +721,7 @@ void EditCircuitPaths::on_doneClicked()
    return;
   }
  }
- OPath* path = makeOPath(name, *_pathGroup, true);
+ OPath* path = makeOPath(name, _pathGroup, true);
  if (path == NULL)
  {
   return;		// proper OPath cannot be made
@@ -883,15 +883,15 @@ void EditCircuitPaths::on_doneClicked()
  }
  path->setName(name);
 
- QList<Positionable*> list = _parent->getCircuitGroup();
+ QList<Positionable*>* list = _parent->getCircuitGroup();
  // cannot do remove/add path on the fly due to conncurrent access with Iterator
  QList<IndicatorTrack*>* changeGroup = new QList<IndicatorTrack*>();
- for (int i=0; i<list.size(); i++)
+ for (int i=0; i<list->size(); i++)
  {
   //if (list.get(i) instanceof IndicatorTrack)
-  if(qobject_cast<IndicatorTrack*>(list.at(i))!= NULL)
+  if(qobject_cast<IndicatorTrack*>(list->at(i))!= NULL)
   {
-   IndicatorTrack* icon = (IndicatorTrack*)list.at(i);
+   IndicatorTrack* icon = (IndicatorTrack*)list->at(i);
    QStringList* paths = icon->getPaths();
    if (paths!=NULL)
    {

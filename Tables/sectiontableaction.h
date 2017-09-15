@@ -32,9 +32,9 @@ class LIBTABLESSHARED_EXPORT SectionTableAction : public AbstractTableAction
     Q_OBJECT
 public:
     explicit SectionTableAction(QObject *parent = 0);
-    /*public*/ SectionTableAction(QString actionName, QObject *parent = 0);
+    Q_INVOKABLE /*public*/ SectionTableAction(QString actionName, QObject *parent = 0);
     ~SectionTableAction() {}
-    SectionTableAction(const SectionTableAction& );
+    SectionTableAction(const SectionTableAction& that) : AbstractTableAction(that.text(), that.parent()){}
     /*public*/ QString getClassDescription();
     /*public*/ void setMenuBar(BeanTableFrame* f);
     /*public*/ QMenu* createToolsMenu();
@@ -45,7 +45,8 @@ public slots:
 private:
     void setEnabled(bool);
     bool enabled;
-    BeanTableDataModel* m;
+    //BeanTableDataModel* m;
+
     // instance variables
     QList<Block*> blockList;// = new ArrayList<Block>();
     BlockTableModel* blockTableModel;// = NULL;
@@ -140,6 +141,8 @@ friend class SectionTableDataModel;
 friend class EntryPointTableModel;
 friend class BlockTableModel;
 };
+Q_DECLARE_METATYPE(SectionTableAction)
+
 class SectionTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
@@ -153,7 +156,8 @@ public:
      EDITCOL = ENDBLOCKCOL+1
     };
     SectionTableDataModel(SectionTableAction* act);
-    /*public*/ QString getValue(QString name) ;
+
+    /*public*/ QString getValue(QString name) const;
     /*public*/ Manager* getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name);
@@ -165,6 +169,7 @@ public:
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ int getPreferredWidth(int col);
     /*public*/ void configValueColumn(JTable* table);
+    /*public*/ void configureTable(JTable *table);
 protected:
     QString getBeanType();
     /*protected*/ void createModel();

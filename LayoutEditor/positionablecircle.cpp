@@ -16,35 +16,50 @@
 // /*public*/ class PositionableCircle extends PositionableShape {
 
 
-/*public*/ PositionableCircle::PositionableCircle(Editor* editor, QWidget* parent) : PositionableShape(editor, parent) {
+/*public*/ PositionableCircle::PositionableCircle(Editor* editor, QWidget* parent) : PositionableShape(editor, parent)
+{
  //super(editor);
- _radius = 100;
+ //_radius = 100;
+ _height = 100;
  _itemGroup = new QGraphicsItemGroup();
+ _shape = new JShape();
+ setObjectName("PositionableCircle");
 }
 
-/*public*/ PositionableCircle::PositionableCircle(Editor* editor, QGraphicsItem* shape, QWidget* parent) : PositionableShape(editor, shape, parent) {
-        //super(editor, shape);
-     _radius = 100;
-    }
+/*public*/ PositionableCircle::PositionableCircle(Editor* editor, QGraphicsEllipseItem* shape, QWidget* parent) : PositionableShape(editor, (JShape*)shape, parent)
+{
+ //super(editor, shape);
+ //_radius = 100;
+ _height = 100;
+ _shape = new JShape();
+ setObjectName("PositionableCircle");
+}
 
-/*public*/ void PositionableCircle::setRadius(int r) {
-    _radius = r;
+///*public*/ void PositionableCircle::setRadius(int r) {
+//    _radius = r;
+//    _width =r;
+//    _height = r;
+//}
+//@Override
+/*public*/ void PositionableCircle::setHeight(int h) {
+    PositionableShape::setHeight(h);
+    _width = _height;
 }
-/*public*/ int PositionableCircle::getRadius() {
-    return _radius;
-}
+///*public*/ int PositionableCircle::getRadius() {
+//    return _radius;
+//}
 /**
  * this class must be overridden by its subclasses and executed
  *  only after its parameters have been set
  */
 /*public*/ void PositionableCircle::makeShape() {
    // _shape = new Ellipse2D.Double(0, 0, _radius, _radius);
- _shape = new QGraphicsEllipseItem(0, 0, _radius, _radius);
- ((QGraphicsEllipseItem*)_shape)->setBrush(QBrush(_fillColor));
- ((QGraphicsEllipseItem*)_shape)->setPen(QPen(QBrush(_lineColor),_lineWidth));
+ _shape->item = new QGraphicsEllipseItem(0, 0, _width, _width);
+ ((QGraphicsEllipseItem*)_shape->item)->setBrush(QBrush(_fillColor));
+ ((QGraphicsEllipseItem*)_shape->item)->setPen(QPen(QBrush(_lineColor),_lineWidth));
+ _shape->item->setPos(getX(), getY());
 
- _itemGroup->addToGroup(_shape);
- _itemGroup->setPos(getX(), getY());
+ _itemGroup->addToGroup(_shape->item);
 }
 
 /*public*/ Positionable* PositionableCircle::deepClone() {
@@ -54,7 +69,8 @@
 
 /*public*/ Positionable* PositionableCircle::finishClone(Positionable* p) {
     PositionableCircle* pos = (PositionableCircle*)p;
-    pos->_radius = _radius;
+    pos->_width = _width;
+    pos->_height = _height;
     return PositionableShape::finishClone(pos);
 }
 
@@ -85,48 +101,49 @@ void PositionableCircle::onEditAct()
 
 }
 
-/*public*/ bool PositionableCircle::updateScene() // TODO: this function not in Java
-{
- QGraphicsEllipseItem* item = NULL;
+///*public*/ bool PositionableCircle::updateScene() // TODO: this function not in Java
+//{
+// QGraphicsEllipseItem* item = NULL;
 
- if(_itemGroup != NULL)
- {
-  QList<QGraphicsItem*> itemList = _itemGroup->childItems();
-  foreach(QGraphicsItem* it, itemList)
-  {
-   if(qgraphicsitem_cast<QGraphicsEllipseItem*>(it) != NULL)
-   {
-    item = qgraphicsitem_cast<QGraphicsEllipseItem*>(it);
-   }
-  }
- }
- else
-  _itemGroup = new QGraphicsItemGroup();
+// if(_itemGroup != NULL)
+// {
+//  QList<QGraphicsItem*> itemList = _itemGroup->childItems();
+//  foreach(QGraphicsItem* it, itemList)
+//  {
+//   if(qgraphicsitem_cast<QGraphicsEllipseItem*>(it) != NULL)
+//   {
+//    item = qgraphicsitem_cast<QGraphicsEllipseItem*>(it);
+//   }
+//  }
+// }
+// else
+//  _itemGroup = new QGraphicsItemGroup();
 
- if(item != NULL)
- {
-  item->setRect(QRectF(0, 0, _radius, _radius));
- }
- else
-  item = new QGraphicsEllipseItem(QRectF(0, 0, _radius, _radius),_itemGroup);
- //item->setPos(getX(), getY());
- if(showTooltip()) item->setToolTip(getTooltip());
- //_itemGroup->addToGroup(item);
- item->setPos(getX(), getY());
- item->setBrush(QBrush(_fillColor));
- item->setPen(QPen(QBrush(_lineColor),_lineWidth));
+// if(item != NULL)
+// {
+//  item->setRect(QRectF(0, 0, _radius, _radius));
+// }
+// else
+//  item = new QGraphicsEllipseItem(QRectF(0, 0, _radius, _radius),_itemGroup);
+// //item->setPos(getX(), getY());
+// if(showTooltip()) item->setToolTip(getTooltip());
+// //_itemGroup->addToGroup(item);
+// item->setPos(getX(), getY());
+// item->setBrush(QBrush(_fillColor));
+// item->setPen(QPen(QBrush(_lineColor),_lineWidth));
+// _handleGroup->setPos(getX(), getY());
 
- //if(showTooltip()) _itemGroup->setToolTip(getTooltip());
- //int degrees = getDegrees() + getIcon()->getRotation();
- if((getDegrees()) != 0)
- {
-  //l->item->rotate(l->getDegrees());
-  QRectF bnd = _itemGroup->boundingRect();
-  QPointF center = bnd.center();
-  _itemGroup->setTransformOriginPoint(center);
-  _itemGroup->setRotation(item->rotation());
- }
- _itemGroup->setZValue(getDisplayLevel());
- _itemGroup->update();
- return true;
-}
+// //if(showTooltip()) _itemGroup->setToolTip(getTooltip());
+// //int degrees = getDegrees() + getIcon()->getRotation();
+// if((getDegrees()) != 0)
+// {
+//  //l->item->rotate(l->getDegrees());
+//  QRectF bnd = _itemGroup->boundingRect();
+//  QPointF center = bnd.center();
+//  _itemGroup->setTransformOriginPoint(center);
+//  _itemGroup->setRotation(item->rotation());
+// }
+// _itemGroup->setZValue(getDisplayLevel());
+// _itemGroup->update();
+// return true;
+//}

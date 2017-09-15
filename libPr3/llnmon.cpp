@@ -2848,7 +2848,7 @@ case LnConstants::OPC_LONG_ACK: {
                             QString("%1").arg((l.getElement(5)&0x1F)*128 + l.getElement(6) +1);
 
                      try {
-                         AbstractReporter* reporter = reporterManager->getBySystemName(reporterSystemName);
+                         Reporter* reporter = reporterManager->getBySystemName(reporterSystemName);
                          if ((reporter != NULL) && (reporter->getUserName().length() > 0))
                              reporterUserName = "(" + reporter->getUserName() + ")";
                          else

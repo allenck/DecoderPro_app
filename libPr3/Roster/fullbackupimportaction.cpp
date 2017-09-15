@@ -68,7 +68,7 @@ void FullBackupImportAction::common()
  log = new Logger("FullBackupImportAction");
 }
 
-/*public*/ void FullBackupImportAction::actionPerformed(ActionEvent* e)
+/*public*/ void FullBackupImportAction::actionPerformed(ActionEvent* /*e*/)
 {
 
  // ensure preferences will be found for read

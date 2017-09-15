@@ -13,7 +13,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AddNewDevicePanel : public JmriPanel
     Q_OBJECT
 public:
     //explicit AddDevicePanel(QWidget *parent = 0);
-    /*public*/ AddNewDevicePanel(JTextField* sys, JTextField* userName,QString addButtonLabel, ActionListener* listener, QWidget *parent = 0);
+    /*public*/ AddNewDevicePanel(JTextField* sys, JTextField* userName,QString addButtonLabel, ActionListener* listener, ActionListener* cancelListener, QWidget *parent = 0);
     /*public*/ void addLabels(QString labelSystemName, QString labelUserName);
 
 signals:

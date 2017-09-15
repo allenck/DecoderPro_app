@@ -35,7 +35,7 @@ namespace Operations
  /*static*/ LocationsTableFrame* LocationsTableAction::f = NULL;
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
- /*NULL*/ void LocationsTableAction::actionPerformed(ActionEvent* e) {
+ /*NULL*/ void LocationsTableAction::actionPerformed(ActionEvent* /*e*/) {
      // create a location table frame
 
      if (f == NULL || !f->isVisible()) {

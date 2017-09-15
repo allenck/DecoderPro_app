@@ -4,7 +4,7 @@
 #include <QGraphicsItemGroup>
 
 //JLabel::JLabel(QObject *parent) :
-//    QObject(parent)
+//    Positionable(parent)
 //{
 //}
 QString JLabel::uiClassID = "LabelUI";

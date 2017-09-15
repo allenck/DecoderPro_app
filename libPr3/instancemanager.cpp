@@ -224,7 +224,7 @@ QObject* InstanceManager::getDefault(QString type)
    l->append(new BlockManager());
    return (BlockManager*)l->at(l->size()-1);
   }
-  if(type == "DefaultIdTagManager")
+  if(type == "IdTagManager")
   {
    l->append(new DefaultIdTagManager());
    return (DefaultIdTagManager*)l->at(l->size()-1);
@@ -381,6 +381,65 @@ QObject* InstanceManager::getDefault(QString type)
   return l->last();
  return NULL;
 }
+/**
+ * Retrieve the last object of type T that was registered with
+ * {@link #store(java.lang.Object, java.lang.Class) }.
+ * <p>
+ * Unless specifically set, the default is the last object stored, see the
+ * {@link #setDefault(java.lang.Class, java.lang.Object) } method.
+ * <p>
+ * In some cases, InstanceManager can create the object the first time it's
+ * requested. For more on that, see the class comment.
+ * <p>
+ * In most cases, system configuration assures the existence of a default
+ * object, but this method also handles the case where one doesn't exist.
+ * Use {@link #getDefault(java.lang.Class)} when the object is guaranteed to
+ * exist.
+ *
+ * @param <T>  The type of the class
+ * @param type The class Object for the item's type.
+ * @return The default object for type.
+ * @see #getOptionalDefault(java.lang.Class)
+ */
+//@CheckForNull
+//static /*public*/ <T> T getNullableDefault(@Nonnull Class<T> type) {
+/*static*/ /*public*/ QObject* InstanceManager::getNullableDefault(QString type)
+{
+ Logger* log = new Logger("(nstanceManager");
+    //log.trace("getOptionalDefault of type {}", type.getName());
+    //ArrayList<T> l = (ArrayList<T>) getList(type);
+ QObjectList* l = getList(type);
+ if (l->isEmpty())
+ {
+  // see if can autocreate
+  log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
+#if 0
+        if (InstanceManagerAutoDefault.class.isAssignableFrom(type)) {
+            try {
+                l.add(type.getConstructor((Class[]) null).newInstance((Object[]) null));
+                log.debug("      auto-created default of {}", type.getName());
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                log.error("Exception creating auto-default object", e); // unexpected
+                return null;
+            }
+            return l.get(l.size() - 1);
+        }
+#endif
+        // see if initializer can handle
+        log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
+        //@SuppressWarnings("unchecked")
+        QObject* obj = initializer->getDefault(type);
+        if (obj != NULL) {
+            log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
+            l->append(obj);
+            return l->at(l->size() - 1);
+        }
+
+        // don't have, can't make
+        return NULL;
+    }
+    return l->at(l->size() - 1);
+}
 
 /**
  * Set an object of type T as the default for that type.
@@ -528,7 +587,7 @@ void InstanceManager::setSignalSystemManager(SignalSystemManager* p) {
 }
 
 SignalGroupManager* InstanceManager::signalGroupManagerInstance()  {
- SignalGroupManager* m = (SignalGroupManager*)getDefault("SignalGroupManager");
+ SignalGroupManager* m = (SignalGroupManager*)getDefault("DefaultSignalGroupManager");
  if (m == NULL) {
      m = (SignalGroupManager*)initializer->getDefault("SignalGroupManager");
      setSignalGroupManager(m);

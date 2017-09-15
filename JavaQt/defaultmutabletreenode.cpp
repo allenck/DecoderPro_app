@@ -1,5 +1,6 @@
 #include "defaultmutabletreenode.h"
 #include "exceptions.h"
+#include "logger.h"
 
 /**NULL
  * A <code>DefaultMutableTreeNode</code> is a general-purpose node in a tree data
@@ -113,6 +114,7 @@ DefaultMutableTreeNode::DefaultMutableTreeNode(QObject *oparent)
 
 void DefaultMutableTreeNode::common()
 {
+ log = new Logger("DefaultMutableTreeNode");
  setObjectName("DefaultMutableTreeNode");
  _children = NULL;
  parent=NULL;
@@ -223,7 +225,9 @@ void DefaultMutableTreeNode::common()
 {
  if (_children == NULL)
  {
-  throw new ArrayIndexOutOfBoundsException("node has no children");
+  //throw new ArrayIndexOutOfBoundsException("node has no children");
+  log->error("node has no children");
+  return NULL;
  }
  return (TreeNode*)_children->at(index);
 }

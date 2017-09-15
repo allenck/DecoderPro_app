@@ -28,10 +28,10 @@
 #include "../LayoutEditor/jmrijframe.h"
 #include <QPushButton>
 
-//SignalHeadTableAction::SignalHeadTableAction(QObject *parent) :
-//    QObject(parent)
-//{
-//}
+SignalHeadTableAction::SignalHeadTableAction(QObject *parent) :
+    AbstractTableAction(tr("Signal Head"), parent)
+{
+}
 /**
  * Swing action to create and register a
  * SignalHeadTable GUI.
@@ -76,6 +76,7 @@
  systemNameLabel = new QLabel("");
  userNameLabel = new QLabel("");
  systemName = new JTextField(5);
+ systemName->setMaxLength(10);
  userName = new JTextField(10);
  ato1 = new JTextField(5);
  _curSignal = NULL;
@@ -199,151 +200,219 @@
  emsaBox = new QComboBox(/*ukSignalAspects*/);
  emsaBox->addItems(ukSignalAspects);
 }
-#if 0
+
 /**
  * Create the JTable DataModel, along with the changes
  * for the specific case of SignalHeads
  */
-protected void createModel() {
-    m = new BeanTableDataModel() {
-        static /*public*/ final int LITCOL = NUMCOLUMN;
-        static /*public*/ final int HELDCOL = LITCOL+1;
-        static /*public*/ final int EDITCOL = HELDCOL+1;
-        /*public*/ int getColumnCount( ){ return NUMCOLUMN+3;}
-        /*public*/ String getColumnName(int col) {
-            if (col==LITCOL) return tr("ColumnHeadLit");
-            else if (col==HELDCOL) return tr("ColumnHeadHeld");
-            else if (col==EDITCOL) return ""; // no heading on "Edit"
-            else return super.getColumnName(col);
-        }
-        /*public*/ Class<?> getColumnClass(int col) {
-            if (col==LITCOL) return Boolean.class;
-            else if (col==HELDCOL) return Boolean.class;
-            else if (col==EDITCOL) return JButton.class;
-            else return super.getColumnClass(col);
-        }
-        /*public*/ int getPreferredWidth(int col) {
-            if (col==LITCOL) return new JTextField(4).getPreferredSize().width;
-            else if (col==HELDCOL) return new JTextField(4).getPreferredSize().width;
-            else if (col==EDITCOL) return new JTextField(7).getPreferredSize().width;
-            else return super.getPreferredWidth(col);
-        }
-        /*public*/ boolean isCellEditable(int row, int col) {
-            if (col==LITCOL) return true;
-            else if (col==HELDCOL) return true;
-            else if (col==EDITCOL) return true;
-            else return super.isCellEditable(row,col);
-        }
-        /*public*/ Object getValueAt(int row, int col) {
-            // some error checking
-            if (row >= sysNameList.size()){
-                log->debug("row is greater than name list");
-                return "error";
-            }
-            String name = sysNameList.get(row);
-            SignalHead s = InstanceManager::signalHeadManagerInstance().getBySystemName(name);
-            if (s==NULL) return Boolean.valueOf(false); // if due to race condition, the device is going away
-            if (col==LITCOL) {
-                boolean val = s.getLit();
-                return Boolean.valueOf(val);
-            }
-            else if (col==HELDCOL) {
-                boolean val = s.getHeld();
-                return Boolean.valueOf(val);
-            }
-            else if (col==EDITCOL) return tr("ButtonEdit");
-            else return super.getValueAt(row, col);
-        }
-        /*public*/ void setValueAt(Object value, int row, int col) {
-            String name = sysNameList.get(row);
-            SignalHead s = InstanceManager::signalHeadManagerInstance().getBySystemName(name);
-            if (s==NULL) return;  // device is going away anyway
-            if (col==LITCOL) {
-                boolean b = ((Boolean)value).booleanValue();
-                s.setLit(b);
-            }
-            else if (col==HELDCOL) {
-                boolean b = ((Boolean)value).booleanValue();
-                s.setHeld(b);
-            }
-            else if (col==EDITCOL) {
-                // button clicked - edit
-                editSignal(row);
-            }
-            else super.setValueAt(value, row, col);
-        }
-
-        /*public*/ String getValue(String name) {
-            SignalHead s = InstanceManager::signalHeadManagerInstance().getBySystemName(name);
-            if (s==NULL) return "<lost>"; // if due to race condition, the device is going away
-            String val = NULL;
-            try {
-                val = s.getAppearanceName();
-            } catch (java.lang.ArrayIndexOutOfBoundsException e) {
-                log->error(e);
-            }
-            if (val != NULL) return val;
-            else return "Unexpected NULL value"
-        }
-        /*public*/ Manager getManager() { return InstanceManager::signalHeadManagerInstance(); }
-        /*public*/ NamedBean getBySystemName(String name) { return InstanceManager::signalHeadManagerInstance().getBySystemName(name);}
-        /*public*/ NamedBean getByUserName(String name) { return InstanceManager::signalHeadManagerInstance().getByUserName(name);}
-        /*/*public*/ int getDisplayDeleteMsg() { return InstanceManager::getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
-        /*public*/ void setDisplayDeleteMsg(int boo) { InstanceManager::getDefault(jmri.UserPreferencesManager.class).setMultipleChoiceOption(getClassName(), "delete", boo); }*/
-        protected String getMasterClassName() { return getClassName(); }
-
-
-        /*public*/ void clickOn(NamedBean t) {
-            int oldState = ((SignalHead)t).getAppearance();
-            int newState = 99;
-            int[] stateList = ((SignalHead)t).getValidStates();
-            for (int i = 0; i < stateList.length; i++) {
-                if (oldState == stateList[i] ) {
-                    if (i < stateList.length-1) {
-                        newState = stateList[i+1];
-                        break;
-                    } else {
-                        newState = stateList[0];
-                        break;
-                    }
-                }
-            }
-            if (newState==99){
-
-                if (stateList.length==0){
-                    newState=SignalHead::DARK;
-                    log->warn("New signal state not found so setting to Dark " + t->getDisplayName());
-                }
-                else{
-                    newState=stateList[0];
-                    log->warn("New signal state not found so setting to the first available " + t->getDisplayName());
-                }
-            }
-            log->debug("was "+oldState+" becomes "+newState);
-           ((SignalHead)t).setAppearance(newState);
-        }
-        /*public*/ JButton configureButton() {
-            return new JButton(rbean.getString("SignalHeadStateYellow"));
-        }
-        /*public*/ boolean matchPropertyName(java.beans.PropertyChangeEvent e) {
-            if (e.getPropertyName().indexOf("Lit")>=0 || e.getPropertyName().indexOf("Held")>=0 || e.getPropertyName().indexOf("ValidStatesChanged")>=0) return true;
-            else return super.matchPropertyName(e);
-        }
-
-        protected String getBeanType(){
-            return AbstractTableAction.rbean.getString("BeanNameSignalHead");
-        }
-    };
+/*protected*/ void SignalHeadTableAction::createModel()
+{
+ m = new SHBeanTableDataModel(this);
 }
 
-protected void setTitle() {
-    f.setTitle(f.tr("TitleSignalTable"));
+SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTableDataModel()
+{
+ this->self = self;
+ log = new Logger("SHBeanTableDataModel");
+ init();
 }
 
-protected String helpTarget() {
+/*public*/ int SHBeanTableDataModel::columnCount(const QModelIndex &parent) const
+{return NUMCOLUMN+3;}
+/*public*/ QVariant SHBeanTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+ if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
+ {
+  int col = section;
+    if (col==LITCOL) return tr("Head Lit");
+    else if (col==HELDCOL) return tr("Head Held");
+    else if (col==EDITCOL) return ""; // no heading on "Edit"
+ }
+ return BeanTableDataModel::headerData(section, orientation, role);
+}
+///*public*/ Class<?> getColumnClass(int col) {
+//    if (col==LITCOL) return Boolean.class;
+//    else if (col==HELDCOL) return Boolean.class;
+//    else if (col==EDITCOL) return JButton.class;
+//    else return super.getColumnClass(col);
+//}
+/*public*/ void SHBeanTableDataModel::configureTable(JTable *table)
+{
+ setColumnToHoldButton(table, EDITCOL);
+ BeanTableDataModel::configureTable(table);
+}
+
+/*public*/ int SHBeanTableDataModel::getPreferredWidth(int col) {
+    if (col==LITCOL) return  JTextField(4).sizeHint().width();
+    else if (col==HELDCOL) return  JTextField(4).sizeHint().width();
+    else if (col==EDITCOL) return  JTextField(7).sizeHint().width();
+
+    else return BeanTableDataModel::getPreferredWidth(col);
+}
+/*public*/ Qt::ItemFlags SHBeanTableDataModel::flags(const QModelIndex &index) const
+{
+    int col = index.column();
+    if (col==LITCOL) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    else if (col==HELDCOL) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    else if (col==EDITCOL) return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    else return BeanTableDataModel::flags(index);
+}
+
+/*public*/ QVariant SHBeanTableDataModel::data(const QModelIndex &index, int role) const
+{
+ int col = index.column();
+ int row = index.row();
+ QString name = sysNameList.at(row);
+ SignalHead* s = InstanceManager::signalHeadManagerInstance()->getBySystemName(name);
+
+ if(role == Qt::DisplayRole)
+ {
+    // some error checking
+    if (row >= sysNameList.size()){
+        log->debug("row is greater than name list");
+        return "error";
+    }
+    if (s==NULL) return (false); // if due to race condition, the device is going away
+     if (col==EDITCOL) return tr("Edit");
+ }
+ if(role == Qt::CheckStateRole)
+ {
+  if (col==LITCOL)
+  {
+   bool val = s->getLit();
+   return val?Qt::Checked:Qt::Unchecked;
+  }
+  if (col==HELDCOL)
+  {
+    bool val = s->getHeld();
+    return val?Qt::Checked:Qt::Unchecked;
+  }
+
+ }
+ return BeanTableDataModel::data(index, role);
+}
+
+/*public*/ bool SHBeanTableDataModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+ int col = index.column();
+ int row = index.row();
+ QString name = sysNameList.at(row);
+ SignalHead* s = InstanceManager::signalHeadManagerInstance()->getBySystemName(name);
+ if (s==NULL) return false;  // device is going away anyway
+ if(role == Qt::CheckStateRole)
+ {
+  if (col==LITCOL)
+  {
+    bool b = value.toBool();
+    s->setLit(b);
+    return true;
+  }
+  else if (col==HELDCOL)
+  {
+    bool b = value.toBool();
+    s->setHeld(b);
+    return true;
+  }
+ }
+ if(role == Qt::EditRole)
+ {
+  if (col==EDITCOL)
+  {
+    // button clicked - edit
+    self->editSignal(/*row*/s);
+    return true;
+  }
+ }
+ return  BeanTableDataModel::setData(index, value,role);
+}
+
+/*public*/ QString SHBeanTableDataModel::getValue(QString name) const
+{
+    SignalHead* s = InstanceManager::signalHeadManagerInstance()->getBySystemName(name);
+    if (s==NULL) return "<lost>"; // if due to race condition, the device is going away
+    QString val = NULL;
+    //try {
+        val = s->getAppearanceName();
+//    } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+//        log->error(e);
+//    }
+
+    if (val != NULL) return val;
+    else return "Unexpected NULL value";
+
+}
+/*public*/ Manager* SHBeanTableDataModel::getManager() { return InstanceManager::signalHeadManagerInstance(); }
+
+/*public*/ NamedBean* SHBeanTableDataModel::getBySystemName(QString name) const
+{ return InstanceManager::signalHeadManagerInstance()->getBySystemName(name);}
+
+/*public*/ NamedBean* SHBeanTableDataModel::getByUserName(QString name) { return InstanceManager::signalHeadManagerInstance()->getByUserName(name);}
+
+/*public int SHBeanTableDataModel::getDisplayDeleteMsg() { return InstanceManager::getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
+public void SHBeanTableDataModel::setDisplayDeleteMsg(int boo) { InstanceManager::getDefault(jmri.UserPreferencesManager.class).setMultipleChoiceOption(getClassName(), "delete", boo); }*/
+/*protected*/ QString SHBeanTableDataModel::getMasterClassName() { return /*getClassName();*/ "SHBeanTableDataModel";}
+
+
+/*public*/ void SHBeanTableDataModel::clickOn(NamedBean* t) {
+    int oldState = ((SignalHead*)t)->getAppearance();
+    int newState = 99;
+    QVector<int> stateList = ((SignalHead*)t)->getValidStates();
+    for (int i = 0; i < stateList.length(); i++) {
+        if (oldState == stateList[i] ) {
+            if (i < stateList.length()-1) {
+                newState = stateList[i+1];
+                break;
+            } else {
+                newState = stateList[0];
+                break;
+            }
+        }
+    }
+    if (newState==99){
+
+        if (stateList.length()==0){
+            newState=SignalHead::DARK;
+            log->warn("New signal state not found so setting to Dark " + t->getDisplayName());
+        }
+        else{
+            newState=stateList[0];
+            log->warn("New signal state not found so setting to the first available " + t->getDisplayName());
+        }
+    }
+    log->debug("was "+QString::number(oldState) +" becomes "+QString::number(newState));
+   ((SignalHead*)t)->setAppearance(newState);
+    fireTableDataChanged();
+
+}
+
+/*public*/ QPushButton* SHBeanTableDataModel::configureButton() {
+    return new QPushButton(tr("Yellow"));
+}
+
+/*public*/ bool SHBeanTableDataModel::matchPropertyName(PropertyChangeEvent* e)
+{
+    if (e->getPropertyName().indexOf("Lit")>=0
+        || e->getPropertyName().indexOf("Held")>=0
+        || e->getPropertyName().indexOf("ValidStatesChanged")>=0)
+     return true;
+    else return BeanTableDataModel::matchPropertyName(e);
+}
+
+/*protected*/ QString SHBeanTableDataModel::getBeanType(){
+    return tr("BeanNameSignalHead");
+}
+//    };
+
+
+
+/*protected*/ void SignalHeadTableAction::setTitle() {
+    f->setTitle(f->tr("Signal Table"));
+}
+
+/*protected*/ QString SignalHeadTableAction::helpTarget() {
     return "package.jmri.jmrit.beantable.SignalHeadTable";
 }
-
+#if 0
 final int[] signalStatesValues = new int[]{
    SignalHead::DARK,
    SignalHead::RED,
@@ -593,7 +662,7 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
   addFrame->setMenuBar(menuBar);
   menuBar->addMenu(addWindowMenu);
   connect(addWindowMenu, SIGNAL(aboutToShow()), this, SLOT(on_addMenuWindow_aboutToShow()));
-  PanelMenu::instance()->addEditorPanel((Editor*)this);
+  //PanelMenu::instance()->addEditorPanel((Editor*)this);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.SignalAddEdit", true);
   //addFrame->getContentPane().setLayout(new BorderLayout());
   QWidget* centralWidget = new QWidget();
@@ -747,7 +816,7 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
   centralWidget->layout()->addWidget(scrollArea);
 
   QWidget* panelBottom = new QWidget();
-  panelBottom->setLayout(new QVBoxLayout(panelBottom/*, BoxLayout.Y_AXIS*/));
+  panelBottom->setLayout(new FlowLayout(panelBottom/*, BoxLayout.Y_AXIS*/));
 
   QPushButton* ok;
   panelBottom->layout()->addWidget(ok = new QPushButton(tr("OK")));
@@ -1661,7 +1730,8 @@ void SignalHeadTableAction::makeEditSignalWindow()
     //ev7Panel->setBorder(ev7Border);
     panelCentreVLayout->addWidget(ev7Panel);
 
-    p = new QWidget(); p->setLayout(defaultFlow);
+    p = new QWidget();
+    p->setLayout(defaultFlow);
     p->layout()->addWidget(evtLabel);
     p->layout()->addWidget(etot);
     p->layout()->addWidget(estBox);

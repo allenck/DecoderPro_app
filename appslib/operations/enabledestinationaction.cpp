@@ -25,7 +25,7 @@ namespace Operations
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void EnableDestinationAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void EnableDestinationAction::actionPerformed(ActionEvent* /*e*/) {
      _csFrame->setDestinationEnabled(true);
  }
 }

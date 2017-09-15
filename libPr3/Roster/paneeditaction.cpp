@@ -45,7 +45,7 @@ void PaneEditAction::init()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void PaneEditAction::actionPerformed(ActionEvent* e)
+/*public*/ void PaneEditAction::actionPerformed(ActionEvent* /*e*/)
 {
 
  if (log->isDebugEnabled()) log->debug("Pane programmer requested");

@@ -1,7 +1,7 @@
 #ifndef IDTAG_H
 #define IDTAG_H
 #include <QDateTime>
-#include "namedbean.h"
+#include "abstractnamedbean.h"
 #include "reporter.h"
 #include <QDomElement>
 #include "libPr3_global.h"
@@ -29,11 +29,13 @@
  * @since       2.11.4
  */
 
-class LIBPR3SHARED_EXPORT IdTag : public NamedBean
+class LIBPR3SHARED_EXPORT IdTag : public AbstractNamedBean
 {
     Q_OBJECT
 public:
-    //explicit IdTag(QObject *parent = 0);
+    explicit IdTag(QObject *parent = 0) : AbstractNamedBean(parent) {}
+    IdTag(QString systemName, QObject *parent) : AbstractNamedBean(systemName, parent) {}
+    IdTag(QString systemName, QString userName, QObject *parent) : AbstractNamedBean(systemName, userName, parent) {}
     /**
      * Constant representing an "unseen" state, indicating that the
      * ID tag has not yet been seen.
@@ -81,7 +83,7 @@ public:
      * Return the Date/Time when this tag was last seen, or null if not yet seen
      * @return Date object when last seen, or null
      */
-    /*public*/ virtual QDateTime* getWhenLastSeen() {return NULL;}
+    /*public*/ virtual QDateTime getWhenLastSeen() {return QDateTime();}
 
     /**
      * Store the contents of this IdTag object as an XML element

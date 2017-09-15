@@ -1,8 +1,11 @@
 #include "abstractreporter.h"
 
 AbstractReporter::AbstractReporter(QObject *parent) :
-    AbstractNamedBean(parent)
+    Reporter(parent)
 {
+ _lastReport = QVariant();
+ _currentReport = QVariant();
+state = 0;
 }
 /**
  * Abstract base for the Reporter interface.
@@ -20,16 +23,17 @@ AbstractReporter::AbstractReporter(QObject *parent) :
 //public abstract class AbstractReporter extends AbstractNamedBean implements Reporter, java.io.Serializable {
 
 AbstractReporter::AbstractReporter(QString systemName, QObject* parent)
-    : AbstractNamedBean(systemName.toUpper(), parent)
+    : Reporter(systemName.toUpper(), parent)
 {
  //super(systemName.toUpper());
     _lastReport = QVariant();
     _currentReport = QVariant();
  state = 0;
+
 }
 
 AbstractReporter::AbstractReporter(QString systemName, QString userName, QObject* parent)
-    : AbstractNamedBean(systemName.toUpper(), userName, parent)
+    : Reporter(systemName.toUpper(), userName, parent)
 {
  //super(systemName.toUpper(), userName);
  _lastReport = QVariant();

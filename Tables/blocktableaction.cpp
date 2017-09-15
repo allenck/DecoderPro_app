@@ -17,6 +17,7 @@
 #include "addnewbeanpanel.h"
 #include "oblocktablemodel.h"
 #include "blockeditaction.h"
+#include "systemnamecomparator.h"
 
 BlockTableAction::BlockTableAction(QObject *parent) :
   AbstractTableAction(tr("Block Table"), parent)
@@ -119,10 +120,10 @@ void BlockTableAction::common()
  */
 /*protected*/ void BlockTableAction::createModel()
 {
- m = new BlockTableDataModel(inchBox);
+ m = new BlockTableDataModel(inchBox, this);
 }
 
-/*public*/ BlockTableDataModel::BlockTableDataModel(QCheckBox* inchBox)
+/*public*/ BlockTableDataModel::BlockTableDataModel(QCheckBox* inchBox, BlockTableAction* blockTableAction)
 {
  this->blockTableAction = blockTableAction;
  log = new Logger("BlockTableDataModel");
@@ -133,7 +134,7 @@ void BlockTableAction::common()
  updateNameList();
 }
 
-/*public*/ QString BlockTableDataModel::getValue(QString name)
+/*public*/ QString BlockTableDataModel::getValue(QString name) const
 {
  if (name == NULL)
  {
@@ -317,11 +318,28 @@ void BlockTableAction::common()
 
 /*public*/ bool BlockTableDataModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+ int row = index.row();
+ Block* b = (Block*) getBySystemName(sysNameList.at(row));
+ int col = index.column();
+ if(role == Qt::CheckStateRole)
+ {
+  if (col == PERMISCOL)
+  {
+   bool boo =  value.toBool();
+   b->setPermissiveWorking(boo);
+   fireTableRowsUpdated(row, row);
+   return true;
+  }
+  else if (col == CURRENTREPCOL)
+  {
+   bool boo =  value.toBool();
+   b->setReportingCurrent(boo);
+   fireTableRowsUpdated(row, row);
+   return true;
+  }
+ }
  if(role == Qt::EditRole)
  {
-  int row = index.row();
-  Block* b = (Block*) getBySystemName(sysNameList.at(row));
-  int col = index.column();
   if (col == VALUECOL)
   {
    b->setValue(value);
@@ -369,12 +387,7 @@ void BlockTableAction::common()
    }
    fireTableRowsUpdated(row, row);
   }
-  else if (col == PERMISCOL)
-  {
-   bool boo =  value.toBool();
-   b->setPermissiveWorking(boo);
-   fireTableRowsUpdated(row, row);
-  }
+
   else if (col == SPEEDCOL)
   {
    //@SuppressWarnings("unchecked")
@@ -409,12 +422,6 @@ void BlockTableAction::common()
    QString strSensor = value.toString();
    b->setSensor(strSensor);
    return true;
-  }
-  else if (col == CURRENTREPCOL)
-  {
-   bool boo =  value.toBool();
-   b->setReportingCurrent(boo);
-   fireTableRowsUpdated(row, row);
   }
   else if (col == EDITCOL)
   {
@@ -579,7 +586,7 @@ void BlockTableAction::common()
  }
  else if (col == PERMISCOL)
  {
-  return editable | Qt::ItemIsUserCheckable;
+  return  Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
  }
  else if (col == SPEEDCOL)
  {
@@ -599,7 +606,7 @@ void BlockTableAction::common()
  }
  else if (col == CURRENTREPCOL)
  {
-  return editable | Qt::ItemIsUserCheckable;
+  return  Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
  }
  else if (col == EDITCOL)
  {
@@ -639,6 +646,7 @@ void BlockTableAction::common()
  buttonMap.append(SPEEDCOL);
 
  QStringList nameList = InstanceManager::sensorManagerInstance()->getSystemNameArray();
+
  QVector<QString> displayList = QVector<QString>(nameList.length());
  for (int i = 0; i < nameList.length(); i++)
  {
@@ -648,6 +656,8 @@ void BlockTableAction::common()
   }
  }
  //java.util.Arrays.sort(displayList);
+ qSort(displayList.begin(), displayList.end(), SystemNameComparator::compare);
+
  QVector<QString> sensorList = QVector<QString>(displayList.size() + 1);
  sensorList.replace(0,"");
  int i = 1;
@@ -661,6 +671,7 @@ void BlockTableAction::common()
  buttonMap.append(SENSORCOL);
 
  setColumnToHoldButton(table, EDITCOL);
+ setColumnToHoldButton(table, DELETECOL);
 
  //InstanceManager::sensorManagerInstance().addPropertyChangeListener(this);
  connect(InstanceManager::sensorManagerInstance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -862,7 +873,7 @@ void BlockTableAction::on_defaultSpeeds()
 }
 
 
-/*protected*/ void BlockTableAction::addPressed(ActionEvent* e)
+/*protected*/ void BlockTableAction::addPressed(ActionEvent* /*e*/)
 {
  pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  if (addFrame == NULL)
@@ -879,7 +890,8 @@ void BlockTableAction::on_defaultSpeeds()
 //                okPressed(e);
 //            }
 //        };
-  centralWidgetLayout->addWidget(new AddNewBeanPanel(sysName, userName, numberToAdd, range, _autoSystemName, "OK", listener));
+  BTCancelListener* cancelListener = new BTCancelListener(this);
+  centralWidgetLayout->addWidget(new AddNewBeanPanel(sysName, userName, numberToAdd, range, _autoSystemName, "OK", listener, cancelListener));
  }
  if (pref->getSimplePreferenceState(systemNameAuto))
  {
@@ -895,6 +907,14 @@ BTActionListener::BTActionListener(BlockTableAction *blockTableAction)
 void BTActionListener::actionPerformed(ActionEvent *)
 {
  blockTableAction->okPressed();
+}
+BTCancelListener::BTCancelListener(BlockTableAction *blockTableAction)
+{
+ this->blockTableAction = blockTableAction;
+}
+void BTCancelListener::actionPerformed(ActionEvent *)
+{
+ blockTableAction->cancelPressed();
 }
 
 QWidget* BlockTableAction::additionalAddOption()
@@ -957,7 +977,13 @@ bool BlockTableAction::validateNumericalInput(QString text)
  return bOk;
 }
 
-void BlockTableAction::okPressed(ActionEvent* e)
+void BlockTableAction::cancelPressed(ActionEvent* /*e*/) {
+                addFrame->setVisible(false);
+                addFrame->dispose();
+                addFrame = NULL;
+    }
+
+void BlockTableAction::okPressed(ActionEvent* /*e*/)
 {
  int intNumberToAdd = 1;
  if (range->isChecked())

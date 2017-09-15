@@ -25,7 +25,7 @@ BlockWidget::BlockWidget(QWidget *parent) :
 // chkUseCurrentMapper = new QSignalMapper(this);
 // chkPermissiveMapper = new QSignalMapper(this);
 // speedMapper = new QSignalMapper(this);
- BlockTableDataModel* model = new BlockTableDataModel(ui->chkInches);
+ BlockTableDataModel* model = new BlockTableDataModel(ui->chkInches,NULL);
  QSortFilterProxyModel* sorter = new QSortFilterProxyModel();
  sorter->setSourceModel(model);
  ui->tableView->setModel(sorter);

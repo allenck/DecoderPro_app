@@ -32,7 +32,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()),this, SLOT(actionPerformed()));
  }
 
- /*public*/ void PrintMoreOptionAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintMoreOptionAction::actionPerformed(ActionEvent* /*e*/) {
      if (f == NULL || !f->isVisible()) {
          f = new PrintMoreOptionFrame();
          f->initComponents();

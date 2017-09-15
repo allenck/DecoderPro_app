@@ -81,6 +81,8 @@ public:
         * return user name if it exists, otherwise return System name
         */
         virtual QString getDisplayName();
+        virtual /*public*/ QString getFullyFormattedDisplayName() {return "";}
+
 
         /**
          * Request a call-back when a bound property changes.
@@ -197,10 +199,16 @@ public:
          */
         virtual QVariant getProperty(QString key);
 
+    /**
+     * Remove the key/value pair against the NamedBean.
+     */
+    /*public*/ virtual void removeProperty(/*@Nonnull*/ QString key) {}
         /**
          * Retrieve the complete current set of keys.
          */
         virtual QList<QString> getPropertyKeys()  {return QList<QString>();}
+    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) {}//throws java.beans.PropertyVetoException;
+
 
         virtual bool hashCode() {return false;}
 signals:

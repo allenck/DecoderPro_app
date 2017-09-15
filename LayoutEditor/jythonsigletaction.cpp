@@ -27,7 +27,7 @@
 }
 
 
-/*public*/ void JythonSigletAction::actionPerformed(ActionEvent* e) {
+/*public*/ void JythonSigletAction::actionPerformed(ActionEvent* /*e*/) {
     // create a SampleAutomaton
 //    JFileChooser fci = jmri.jmrit.XmlFile.userFileChooser("Python script files", "py");
 //    fci.setDialogTitle("Find desired script file");

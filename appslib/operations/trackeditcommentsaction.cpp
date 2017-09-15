@@ -24,7 +24,7 @@ namespace Operations
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrackEditCommentsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrackEditCommentsAction::actionPerformed(ActionEvent* /*e*/) {
      new TrackEditCommentsFrame(_tef->_track);
  }
 }

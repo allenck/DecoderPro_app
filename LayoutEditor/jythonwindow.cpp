@@ -69,7 +69,7 @@ void JythonWindow::common()
  *
  * @param e
  */
-/*public*/ void JythonWindow::actionPerformed(ActionEvent* e)
+/*public*/ void JythonWindow::actionPerformed(ActionEvent* /*e*/)
 {
  pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  //PythonInterp.getPythonInterpreter();

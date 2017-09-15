@@ -46,4 +46,6 @@ private:
 
 };
 Q_DECLARE_METATYPE(FileHistory)
+
+
 #endif // FILEHISTORY_H

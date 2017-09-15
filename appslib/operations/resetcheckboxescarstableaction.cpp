@@ -40,7 +40,7 @@ namespace Operations
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ResetCheckboxesCarsTableAction::actionPerformed(ActionEvent* e)
+ /*public*/ void ResetCheckboxesCarsTableAction::actionPerformed(ActionEvent* /*e*/)
  {
   _carsTableModel->resetCheckboxes();
  }

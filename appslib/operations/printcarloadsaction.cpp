@@ -47,7 +47,7 @@ namespace Operations
   * Frame hosting the printing
   */
 
- /*public*/ void PrintCarLoadsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void PrintCarLoadsAction::actionPerformed(ActionEvent* /*e*/) {
      new CarLoadPrintOption(this);
  }
 

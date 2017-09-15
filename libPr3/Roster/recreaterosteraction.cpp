@@ -53,7 +53,7 @@ void RecreateRosterAction::common()
 }
 
 //@Override
-/*public*/ void RecreateRosterAction::actionPerformed(ActionEvent* e)
+/*public*/ void RecreateRosterAction::actionPerformed(ActionEvent* /*e*/)
 {
  Roster::getDefault()->reindex();
 }

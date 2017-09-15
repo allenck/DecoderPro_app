@@ -1,6 +1,6 @@
 #ifndef DEFAULTIDTAGMANAGER_H
 #define DEFAULTIDTAGMANAGER_H
-#include "abstractmanager.h"
+#include "idtagmanager.h"
 #include "idtag.h"
 #include "exceptions.h"
 #include <QList>
@@ -12,15 +12,11 @@
 #include "instancemanager.h"
 #include "abstractshutdowntask.h"
 
-class LIBPR3SHARED_EXPORT DefaultIdTagManager : public AbstractManager
+class LIBPR3SHARED_EXPORT DefaultIdTagManager : public IdTagManager
 {
     Q_OBJECT
 public:
     explicit DefaultIdTagManager(QObject *parent = 0);
-    /*private*/ static bool _initialised;// = false;
-    /*private*/ static bool _loading;// = false;
-    /*private*/ static bool _storeState;// = false;
-    /*private*/ static bool _useFastClock;// = false;
     /*public*/ int getXMLOrder();
     /*public*/ bool isInitialised();
     /*public*/ void init();
@@ -48,6 +44,11 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 private:
  Logger* log;
+ /*private*/ static bool _initialised;// = false;
+ /*private*/ static bool _loading;// = false;
+ /*private*/ static bool _storeState;// = false;
+ /*private*/ static bool _useFastClock;// = false;
+
  protected:
  /*protected*/ void registerSelf();
  /*protected*/ IdTag* createNewIdTag(QString systemName, QString userName);
@@ -106,7 +107,7 @@ class DefaultIdTagShutdownTask : public AbstractShutDownTask
      log.debug("Start writing IdTag details...");
 //     try
 //     {
-      ((DefaultIdTagManager*)InstanceManager::getDefault("DefaultIdTagManager"))->writeIdTagDetails();
+      ((DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager"))->writeIdTagDetails();
       //new jmri.managers.DefaultIdTagManager().writeIdTagDetails();
 //     }
 //     catch (IOException ioe)

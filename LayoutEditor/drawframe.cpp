@@ -9,11 +9,17 @@
 #include "positionableshape.h"
 #include "controlpaneleditor.h"
 #include <QTimer>
+#include "jtextfield.h"
+#include <QMessageBox>
+#include <QRadioButton>
+#include <QComboBox>
+#include "box.h"
 
-//DrawFrame::DrawFrame(QWidget *parent) :
-//    JmriJFrame(parent)
-//{
-//}
+
+DrawFrame::DrawFrame(QWidget *parent) :
+    JmriJFrame(parent)
+{
+}
 /**
  * <P>
  * @author  Pete Cressman Copyright: Copyright (c) 2012
@@ -25,16 +31,21 @@
 
 /*static*/ int DrawFrame::STRUT_SIZE = 10;
 /*static*/ QPoint DrawFrame::_loc = QPoint(100,100);
-/*static*/ QSize DrawFrame::_dim =  QSize(500,500);
+/*static*/ QSize DrawFrame::_dim =  QSize(500,700);
 
 //    /*public*/ static final java.util.ResourceBundle rbcp = ControlPanelEditor.rbcp;
 
 /*public*/ DrawFrame::DrawFrame(QString which, QString title, ShapeDrawer* parent) : JmriJFrame(title, false, false, (QWidget*)parent)
 {
  //super(title, false, false);
- resize(400,500);
+ _sensorName = new JTextField(30);
+ _shape = NULL;
+ _originalShape = NULL;
+
+ resize(400,700);
  _parent = parent;
- setTitle(QString(which).arg(title));
+ //_editing = (_parent == NULL);        // i.e. constructor called from editItem popup
+ setTitle(QString("New %1 Shape").arg(title));
  QScrollArea* scrollArea = new QScrollArea;
 
  _lineWidth = 1;
@@ -45,67 +56,86 @@
  //panel.setLayout(new BorderLayout(10,10));
  panel->setLayout(panelLayout = new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
 
- if (which==("New %1 Shape"))
+ QWidget* p = new QWidget();
+ QLabel* l = new QLabel();
+ //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+ QVBoxLayout* pLayout = new QVBoxLayout(p);
+ l->setWordWrap(true);
+ pLayout->addWidget(l,0,Qt::AlignLeft);
+ if (which==("newShape"))
  {
-  //panel.add(Box.createVerticalStrut(STRUT_SIZE));
-  panelLayout->addStrut(STRUT_SIZE);
-//  QWidget* p = new QWidget();
-//  p->setLayout(new QVBoxLayout); //(p/*, BoxLayout.Y_AXIS*/));
-  QVBoxLayout* pLayout = new QVBoxLayout;
-  QLabel* l = new QLabel(tr("Set the attributes for the shape.  Then make a "));
-  l->setAlignment(Qt::AlignLeft);
-  pLayout->addWidget(l);
-  l = new QLabel(tr("\"selection rectangle\" in the panel to hold the shape."));
-  l->setAlignment(Qt::AlignLeft);
-  pLayout->addWidget(l);
-//  QWidget* pp = new QWidget();
-//  pp->setLayout(new QVBoxLayout);
-  QVBoxLayout* ppLayout = new QVBoxLayout;
-  ppLayout->addLayout(pLayout);
-  QWidget* params = makeParamsPanel();
-  ppLayout->addWidget(params);
-  panelLayout->addLayout(ppLayout);
-  editor = parent->getEditor();
-  connect(editor, SIGNAL(selectionRect(QRectF)), this, SLOT(onSelectionRect(QRectF)));
+  //panelLayout->addWidget(Box.createVerticalStrut(STRUT_SIZE));
+  //panelLayout->addStrut(STRUT_SIZE);
+  l->setText(tr("Set the attributes for the shape.  Then make "));
+  //l->setAlignment(Qt::AlignLeft);
+  if (title==("Polygon"))
+  {
+   //l = new QLabel(tr("mouse clicks to create the vertices of the polygon."));
+//   l->setAlignment(Qt::AlignLeft);
+//   pLayout->addWidget(l);
+//   l = new QLabel(tr("Double click on a vertex to complete the polygon."));
+   l->setText(l->text() + tr("mouse clicks to create the vertices of the polygon. ") + tr("Double click on a vertex to complete the polygon.\n"));
+  }
+  else
+  {
+   //l = new QLabel(tr("a \"selection rectangle\" to hold the shape."));
+   l->setText(l->text() + tr("a \"selection rectangle\" to hold the shape.\n"));
+  }
+//  l->setAlignment(Qt::AlignLeft);
+//  pLayout->addWidget(l);
  }
- //panel.add(Box.createVerticalStrut(STRUT_SIZE));
- panelLayout->addStrut(STRUT_SIZE);
+ //panelLayout->addStrut(STRUT_SIZE);
+ //QLabel* l = new QLabel(tr("(Optional) To control the visibility of the shape,"));
+ //l.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+ //pLayout->addWidget(l,0,Qt::AlignLeft);
+ l->setText(l->text() + tr("(Optional) To control the visibility of the shape,") + tr("enter the name of a sensor in the [%1] field below.").arg("Visibility or Level Control"));
+ //l = new QLabel(tr("enter the name of a sensor in the [%1] field below.").arg(("Visibility or Level Control")));
+ //l.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+
+ QWidget* pp = new QWidget();
+ QVBoxLayout* ppLayout = new QVBoxLayout(pp);
+ ppLayout->addWidget(p);
+ panelLayout->addWidget(pp);
+
  panelLayout->addWidget(makePanel());
- //panel.add(Box.createVerticalStrut(STRUT_SIZE));
- panelLayout->addStrut(STRUT_SIZE);
+ // PositionableShape adds buttons at the bottom
+ //panelLayout->addStrut(STRUT_SIZE);
+ panelLayout->addWidget(makeSensorPanel());
+// panelLayout->addStrut(STRUT_SIZE);
 
  //setContentPane(panel);
- setCentralWidget(scrollArea);
  scrollArea->setWidget(panel);
- scrollArea->setWidgetResizable(true);
+ setCentralWidget(scrollArea);
 
-//    addWindowListener(new java.awt.event.WindowAdapter() {
-//          /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//              closingEvent();
-//          }
-//    });
- DFWindowListener* listener = new DFWindowListener(this);
- addWindowListener(listener);
+// addWindowListener(new java.awt.event.WindowAdapter() {
+//     @Override
+//     public void windowClosing(java.awt.event.WindowEvent e) {
+//         closingEvent(true);
+//     }
+// });
+ addWindowListener(listener = new DFWindowListener(this));
  pack();
- setLocation(_loc.x(), _loc.y());
+ move(_loc.x(), _loc.y());
  setVisible(true);
- QTimer::singleShot(50, this, SLOT(pack()));
+ setAlwaysOnTop(true);
 }
+
 DFWindowListener::DFWindowListener(DrawFrame *frame)
 {
  this->frame = frame;
 }
+
 void DFWindowListener::windowClosing(QCloseEvent *e)
 {
- frame->closingEvent();
+ frame->closingEvent(true);
 }
 
-void DrawFrame::onSelectionRect(QRectF)
-{
- makeFigure();
- closingEvent();
- editor->resetEditor();
-}
+//void DrawFrame::onSelectionRect(QRectF rect, QGraphicsSceneMouseEvent* event)
+//{
+// makeFigure(event);
+// closingEvent(true);
+// //editor->resetEditor();
+//}
 
 /*protected*/ QWidget* DrawFrame::makePanel()
 {
@@ -113,8 +143,8 @@ void DrawFrame::onSelectionRect(QRectF)
  QVBoxLayout* panelLayout;
  panel->setLayout(panelLayout = new QVBoxLayout); //(panel/*, BoxLayout.Y_AXIS*/));
  QWidget* p = new QWidget();
- p->setLayout(new QVBoxLayout);//(p/*, BoxLayout.Y_AXIS*/));
- p->layout()->addWidget(new QLabel(tr("Line Width")));
+ p->setLayout(new QHBoxLayout);//(p/*, BoxLayout.Y_AXIS*/));
+ p->layout()->addWidget(new QLabel(tr("Line Width: ")));
  QWidget* pp = new QWidget();
  pp->setLayout(new QHBoxLayout);
  pp->layout()->addWidget(new QLabel(tr("Thin")));
@@ -123,6 +153,7 @@ void DrawFrame::onSelectionRect(QRectF)
  _lineSlider->setMaximum(30);
  _lineSlider->setValue(_lineWidth);
  _lineSlider->setOrientation(Qt::Horizontal);
+ connect(_lineSlider, SIGNAL(valueChanged(int)), this, SLOT(widthChange()));
  pp->layout()->addWidget(_lineSlider);
  pp->layout()->addWidget(new QLabel(tr("Thick")));
  p->layout()->addWidget(pp);
@@ -145,36 +176,178 @@ void DrawFrame::onSelectionRect(QRectF)
 //    _chooser->setColor(QColor(Qt::green));
 //    _chooser.getSelectionModel().addChangeListener(this);
 //    _chooser->setPreviewPanel(new QWidget());
- _chooser->setOption(QColorDialog::NoButtons, true);
- _chooser->setOption(QColorDialog::ShowAlphaChannel,true);
+ _chooser->setWindowFlags(Qt::SubWindow);
+ _chooser->setOptions( QColorDialog::DontUseNativeDialog /*| QColorDialog::ShowAlphaChannel */| QColorDialog::NoButtons );
+
  connect(_chooser, SIGNAL(currentColorChanged(QColor)), this, SLOT(stateChanged(QColor)));
  panelLayout->addWidget(_chooser);
+ panelLayout->addStrut(STRUT_SIZE);
+
  p = new QWidget();
- p->setLayout(new QVBoxLayout(p/*, BoxLayout.Y_AXIS*/));
- p->layout()->addWidget(new QLabel(tr("Transparency")));
+ p->setLayout(new QHBoxLayout(p/*, BoxLayout.Y_AXIS*/));
+ p->layout()->addWidget(new QLabel(tr("Transparency: ")));
  pp = new QWidget();
  pp->setLayout(new QHBoxLayout);
  pp->layout()->addWidget(new QLabel(tr("Transparent")));
- _fillSlider = new QSlider(/*SwingConstants.HORIZONTAL, 0, 255, _alpha*/);
- _fillSlider->setMinimum(0);
- _fillSlider->setMaximum(255);
- _fillSlider->setOrientation(Qt::Horizontal);
- _fillSlider->setValue(_alpha);
- pp->layout()->addWidget(_fillSlider);
+ _alphaSlider = new QSlider(Qt::Horizontal);
+ _alphaSlider->setRange(0,255);
+ _alphaSlider->setValue(_lineColor.alpha());
+ pp->layout()->addWidget(_alphaSlider);
+ connect(_alphaSlider, SIGNAL(valueChanged(int)), this, SLOT(On_alphaSlider_valueChanged(int)));
+// _fillSlider = new QSlider(/*SwingConstants.HORIZONTAL, 0, 255, _alpha*/);
+// _fillSlider->setMinimum(0);
+// _fillSlider->setMaximum(255);
+// _fillSlider->setOrientation(Qt::Horizontal);
+// _fillSlider->setValue(_alpha);
+// pp->layout()->addWidget(_fillSlider);
  pp->layout()->addWidget(new QLabel(tr("Opaque")));
  p->layout()->addWidget(pp);
  panelLayout->addWidget(p);
- //panel.add(Box.createVerticalStrut(STRUT_SIZE));
- panelLayout->addStrut(STRUT_SIZE);
+ //panelLayout->addWidget(Box.createVerticalStrut(STRUT_SIZE));
+ //panelLayout->addStrut(STRUT_SIZE);
+
  return panel;
 }
 
-/*protected*/ QWidget* DrawFrame::makeParamsPanel()
+void DrawFrame::On_alphaSlider_valueChanged(int)
+{
+ alphaChange();
+}
+
+/*protected*/ QWidget* DrawFrame::makeSensorPanel()
+{
+ QWidget* panel = new QWidget();
+ //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+ QVBoxLayout* panelLayout = new QVBoxLayout(panel);
+ QWidget* p = new QWidget();
+ QHBoxLayout* pLayout = new QHBoxLayout(p);
+ QWidget* p0 = new QWidget();
+ QVBoxLayout* p0Layout = new QVBoxLayout(p0);
+ p0Layout->addWidget(new QLabel(tr("An Active Sensor can either hide the shape or change its display level")));
+ panelLayout->addWidget(p0);
+ pLayout->addWidget(new QLabel(tr("Visibility or Level Control") + ":"));
+ pLayout->addWidget(_sensorName);
+// _sensorName.addActionListener( new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         String msg =_shape.setControlSensor(_sensorName.getText(), _hideShape.isSelected(), _shape.getChangeLevel());
+//         if (msg != null) {
+//             JOptionPane.showMessageDialog(null, msg, tr("MakeLabel", tr("ErrorSensor")), JOptionPane.INFORMATION_MESSAGE); // NOI18N
+//             _sensorName.setText("");
+//         }
+//     }
+// });
+ connect(_sensorName, SIGNAL(editingFinished()), this, SLOT(On_sensorName_editingFinished()));
+#if 0 // TODO:
+ _sensorName.addMouseMotionListener( new MouseMotionListener() {
+     @Override
+     public void mouseDragged( MouseEvent e) {
+         updateShape();
+     }
+     @Override
+     public void mouseMoved(MouseEvent e) {
+         QString msg =_shape.setControlSensor(_sensorName.getText(), _hideShape.isSelected(), _shape.getChangeLevel());
+         if (msg != null) {
+//             JOptionPane.showMessageDialog(null, msg, tr("MakeLabel", tr("ErrorSensor")), JOptionPane.INFORMATION_MESSAGE); // NOI18N
+          QMessageBox::information(NULL, tr(""), tr("Error Sensor"));
+             _sensorName.setText("");
+         }
+     }
+ });
+#endif
+ panelLayout->addWidget(p);
+
+ QWidget* p1 = new QWidget();
+ //p1.setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));
+ QHBoxLayout* p1Layout = new QHBoxLayout(p1);
+ _hideShape = new QRadioButton(tr("Hide Shape"));
+ _changeLevel = new QRadioButton(tr("Change Level"));
+ QButtonGroup* bg = new QButtonGroup();
+ bg->addButton(_hideShape);
+ bg->addButton(_changeLevel);
+ _levelComboBox = new QComboBox();
+ _levelComboBox->addItem(tr("Same Level"));
+ for (int i = 1; i < 11; i++)
+ {
+  _levelComboBox->addItem(tr("Level") + " " + QString::number(i));
+ }
+// _levelComboBox.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent evt) {
+//         int level = _levelComboBox.getSelectedIndex();
+//         _shape.setChangeLevel(level);
+//     }
+
+// });
+ connect(_levelComboBox, SIGNAL(currentIndexChanged(int)), _shape, SLOT(setChangeLevel(int)));
+// _hideShape.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent a) {
+//         _levelComboBox.setEnabled(false);
+//     }
+// });
+ connect(_hideShape, SIGNAL(toggled(bool)), this, SLOT(On_hideShape()));
+// _changeLevel.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent a) {
+//         _levelComboBox.setEnabled(true);
+//     }
+// });
+ connect(_changeLevel, SIGNAL(toggled(bool)), this, SLOT(On_changeLevel()));
+ p1Layout->addWidget(_hideShape);
+ p1Layout->addWidget(_changeLevel);
+
+ QWidget* p2 = new QWidget();
+ //p2.setLayout(new BoxLayout(p2, BoxLayout.Y_AXIS));
+ QVBoxLayout* p2Layout = new QVBoxLayout(p2);
+ QWidget* p3 = new QWidget();
+ QVBoxLayout* p3Layout = new QVBoxLayout(p3);
+//        p3.add(Box.createRigidArea(_levelComboBox.getPreferredSize()));
+ p2Layout->addWidget(p3);
+ QWidget* p4 = new QWidget();
+ QVBoxLayout* p4Layout = new QVBoxLayout(p4);
+ p4Layout->addWidget(_levelComboBox);
+ p2Layout->addWidget(p4);
+
+ p0 = new QWidget();
+ {
+ //p0.setLayout(new BoxLayout(p0, BoxLayout.X_AXIS));
+ QHBoxLayout* p0Layout = new QHBoxLayout(p0);
+ //p0Layout->addWidget(Box.createHorizontalGlue());
+ p0Layout->addWidget(p1);
+ p0Layout->addWidget(p2);
+ //p0Layout->addWidget(Box.createHorizontalGlue());
+ panelLayout->addWidget(p0);
+ }
+ return panel;
+}
+
+void DrawFrame::On_hideShape()
+{
+  _levelComboBox->setEnabled(false);
+}
+
+void DrawFrame::On_changeLevel()
+{
+  _levelComboBox->setEnabled(true);
+}
+
+void DrawFrame::On_sensorName_editingFinished()
+{
+ QString msg =_shape->setControlSensor(_sensorName->text(), _hideShape->isChecked(), _shape->getChangeLevel());
+ if (msg != "") {
+//     JOptionPane.showMessageDialog(null, msg, tr("MakeLabel", tr("ErrorSensor")), JOptionPane.INFORMATION_MESSAGE); // NOI18N
+  QMessageBox::information(NULL, tr("MakeLabel %1").arg(tr("Error Sensor")), msg);
+  _sensorName->setText("");
+ }
+}
+
+/*protected*/ QWidget* DrawFrame::makeParamsPanel(PositionableShape* ps)
 {
  QWidget* panel = new QWidget();
  QVBoxLayout* panelLayout;
  panel->setLayout(panelLayout = new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
- //panel.add(Box.createVerticalStrut(STRUT_SIZE));
+ //panelLayout->addWidget(Box.createVerticalStrut(STRUT_SIZE));
  panelLayout->addStrut(STRUT_SIZE);
  return panel;
 }
@@ -182,20 +355,96 @@ void DrawFrame::onSelectionRect(QRectF)
 /**
  * Set parameters on the popup that will edit the PositionableShape
  */
-/*protected*/ void DrawFrame::setDisplayParams(PositionableShape* ps) {
-    _alpha = ps->getAlpha();
-    _fillSlider->setValue(_alpha);
-    _lineWidth = ps->getLineWidth();
-    _lineSlider->setValue(_lineWidth);
-    _lineColor = ps->getLineColor();
-    _fillColor = ps->getFillColor();
+/*protected*/ void DrawFrame::setDisplayParams(PositionableShape* ps)
+{
+ _shape = ps;
+ _lineWidth = _shape->getLineWidth();
+ _lineSlider->setValue(_lineWidth);
+ _lineColor = _shape->getLineColor();
+ _fillColor = _shape->getFillColor();
+ if (_lineColor.alpha() > _fillColor.alpha()) {
+     _alphaSlider->setValue(_lineColor.alpha());
+     _lineColorButton->setChecked(true);
+ } else {
+     _alphaSlider->setValue(_fillColor.alpha());
+     _fillColorButton->setChecked(true);
+ }
+ _sensorName->setText(_shape->getSensorName());
+ _levelComboBox->setCurrentIndex(ps->getChangeLevel());
+ if (ps->isHideOnSensor()) {
+     _hideShape->setChecked(true);
+     _levelComboBox->setEnabled(false);
+ } else {
+     _changeLevel->setChecked(true);
+ }
+
+ panelLayout->addWidget(makeParamsPanel(_shape));
+ panelLayout->addWidget(makeDoneButtonPanel());
+ pack();
 }
 
-/*protected*/ void DrawFrame::setPositionableParams(PositionableShape* ps) {
-    ps->setAlpha(_fillSlider->value());		//set before setting colors
-    ps->setLineColor(_lineColor);
-    ps->setFillColor(_fillColor);
-    ps->setLineWidth(_lineSlider->value());
+/**
+ * Editing an existing shape (only make copy for cancel of edits)
+ * @param ps shape
+ */
+/*protected*/ void DrawFrame::makeCopy(PositionableShape* ps) {
+    // make a copy, but keep it out of editor's content
+    _originalShape = (PositionableShape*)ps->deepClone();
+    // cloning adds to editor's targetPane - (fix needed in editor)
+    _originalShape->remove();
+}
+
+void DrawFrame::On_doneButton()
+{
+ closingEvent(false);
+}
+
+void DrawFrame::On_cancelButton()
+{
+ closingEvent(true);
+}
+
+/*private*/ QWidget* DrawFrame::makeDoneButtonPanel()
+{
+    QWidget* panel0 = new QWidget();
+    //panel0.setLayout(new FlowLayout());
+    FlowLayout* panel0Layout = new FlowLayout(panel0);
+    QPushButton* doneButton = new QPushButton(tr("Done"));
+//    doneButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            closingEvent(false);
+//        }
+//    });
+    connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(On_doneButton()));
+    panel0Layout->addWidget(doneButton);
+
+    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+//    cancelButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            closingEvent(true);
+//        }
+//    });
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(On_cancelButton()));
+    panel0Layout->addWidget(cancelButton);
+    return panel0;
+}
+
+/*private*/ void DrawFrame::alphaChange()
+{
+    if (_shape==NULL) {
+        return;
+    }
+    int alpha = _alphaSlider->value();
+    if (_lineColorButton->isChecked()) {
+        _lineColor = QColor(_lineColor.red(), _lineColor.green(), _lineColor.blue(), alpha);
+        _shape->setLineColor(_lineColor);
+    } else if (_fillColorButton->isChecked() && _fillColor!=QColor()) {
+        _fillColor = QColor(_fillColor.red(), _fillColor.green(), _fillColor.blue(), alpha);
+        _shape->setFillColor(_fillColor);
+    }
+    updateShape();
 }
 
 /*protected*/ void DrawFrame::setDrawParams() {
@@ -207,31 +456,62 @@ void DrawFrame::onSelectionRect(QRectF)
 #endif
 }
 
-/*protected*/ void DrawFrame::closingEvent()
+/*protected*/ void DrawFrame::closingEvent(bool cancel)
 {
- if (_parent!=NULL)
- {
-  _parent->closeDrawFrame(this);
-  _parent->getEditor()->resetEditor();
- }
+ removeWindowListener(listener);
  _loc = getLocation(_loc);
  _dim = getSize(_dim);
- //disconnect(editor, SIGNAL(selectionRect(QRectF)), this, SLOT(onSelectionRect(QRectF)));
+ if (_shape!=NULL)
+ {
+  if (cancel)
+  {
+   _shape->remove();
+   if (_originalShape!=NULL) {
+       _originalShape->getEditor()->putItem(_originalShape);
+   }
+  }
+  _shape->closeEditFrame();
+ }
+ if (_parent != NULL) {
+     _parent->closeDrawFrame(this);
+ }
 
- close();
  dispose();
 }
 
 /*public*/ void DrawFrame::stateChanged(/*ChangeEvent* e*/QColor color)
 {
+ QColor c = color;
+ c.setAlpha(_alphaSlider->value());
  if (_lineColorButton->isChecked())
  {
-  _lineColor = color;
+  _lineColor = c;
  }
  else if (_fillColorButton->isChecked())
  {
-  _fillColor = color;
+  _fillColor = c;
  }
+
+ if (_shape==NULL)
+ {
+     return;
+ }
+ if (_lineColorButton->isChecked()) {
+     //Color c = _chooser.getColor();
+     _lineColor = QColor(c.red(), c.green(), c.blue(), _alphaSlider->value());
+     _shape->setLineColor(_lineColor);
+ } else {
+    // Color c = _chooser.getColor();
+     int alpha;
+     if (!_fillColor.isValid()) {
+         alpha = _fillColor.alpha();
+     } else {
+         alpha = _alphaSlider->value();
+     }
+     _fillColor =QColor(c.red(), c.green(), c.blue(), alpha);
+     _shape->setFillColor(_fillColor);
+ }
+ updateShape();
 }
 
 // /*abstract*/ /*protected*/ void DrawFrame::makeFigure(){}
@@ -283,6 +563,16 @@ void DrawFrame::onSelectionRect(QRectF)
   return rv;
  }
 }
+/*private*/ void DrawFrame::widthChange()
+{
+    if (_shape==NULL) {
+        return;
+    }
+    _lineWidth = _lineSlider->value();
+    _shape->setLineWidth(_lineWidth);
+    updateShape();
+}
+
 void DrawFrame::onLineColor()
 {
  if(_lineColorButton->isChecked())
@@ -292,4 +582,21 @@ void DrawFrame::onFillColor()
 {
  if(_fillColorButton->isChecked())
   _chooser->setCurrentColor(_fillColor);
+}
+
+/*protected*/ void DrawFrame::updateShape() {
+    _shape->removeHandles();
+    _shape->makeShape();
+    _shape->drawHandles();
+    _shape->updateSize();
+    //_shape->getEditor().getTargetPanel().repaint();
+    _shape->_itemGroup->update();
+;
+}
+
+// these 2 methods update the JTextfields when mouse moves handles
+void DrawFrame::setDisplayWidth(int w) {
+}
+
+void DrawFrame::setDisplayHeight(int h) {
 }

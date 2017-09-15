@@ -12,7 +12,7 @@ namespace Operations
  public:
   LocationCopyAction(QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
  private:
   LocationCopyFrame* f;// = null;
 

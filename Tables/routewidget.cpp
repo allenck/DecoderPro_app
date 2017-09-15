@@ -29,7 +29,7 @@ RouteWidget::RouteWidget(QWidget *parent) :
  ui->tableWidget->setColumnCount(8);
  ui->tableWidget->setAlternatingRowColors(true);
  ui->tableWidget->resizeColumnsToContents();
- act = new RouteTableAction();
+ act = new RouteTableAction(this);
  bLoading = true;
  foreach (QString sysName, list)
  {

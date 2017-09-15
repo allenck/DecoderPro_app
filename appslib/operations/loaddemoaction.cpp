@@ -32,7 +32,7 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void LoadDemoAction::actionPerformed(ActionEvent* e)
+ /*public*/ void LoadDemoAction::actionPerformed(ActionEvent* /*e*/)
  {
      // check to see if files are dirty
   if (OperationsXml::areFilesDirty())

@@ -13,6 +13,7 @@
 #include <QMenu>
 #include "abstracttableaction.h"
 #include "libtables_global.h"
+#include "beantabledatamodel.h"
 
 class PropertyChangeEvent;
 class ActionEvent;
@@ -27,8 +28,8 @@ class LIBTABLESSHARED_EXPORT SignalHeadTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    //explicit SignalHeadTableAction(QObject *parent = 0);
-    /*public*/ SignalHeadTableAction(QString s="Signal Table", QObject *parent = 0);
+    explicit SignalHeadTableAction(QObject *parent = 0);
+    Q_INVOKABLE /*public*/ SignalHeadTableAction(QString s, QObject *parent);
     ~SignalHeadTableAction() {}
     SignalHeadTableAction(const SignalHeadTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     /*protected*/ void addPressed(ActionEvent* e=0);
@@ -214,7 +215,50 @@ protected:
     /*protected*/ Turnout* getTurnoutFromPanel(BeanSelectCreatePanel* bp, QString reference);
      /*protected*/ Turnout* updateTurnoutFromPanel(BeanSelectCreatePanel* bp, QString reference, Turnout* oldTurnout, QString title);
      /*protected*/ QString getClassName();
+ /*protected*/ void setTitle();
+ /*protected*/ QString helpTarget();
+ /*protected*/ void createModel();
+
+
 friend class SignalHeadWidget;
+friend class SHBeanTableDataModel;
 };
+Q_DECLARE_METATYPE(SignalHeadTableAction)
+
+class SHBeanTableDataModel : public BeanTableDataModel
+{
+ Q_OBJECT
+    SignalHeadTableAction* self;
+public:
+    SHBeanTableDataModel(SignalHeadTableAction* self);
+    enum COLUMNS
+    {
+     LITCOL = NUMCOLUMN,
+     HELDCOL = LITCOL+1,
+     EDITCOL = HELDCOL+1
+    };
+    /*public*/ int columnCount(const QModelIndex &parent) const;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ int getPreferredWidth(int col);
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ QString getValue(QString name) const;
+    /*public*/ Manager* getManager();
+    /*public*/ NamedBean* getBySystemName(QString name) const;
+    /*public*/ NamedBean* getByUserName(QString name);
+    /*public*/ void clickOn(NamedBean* t);
+    /*public*/ QPushButton* configureButton();
+    /*public*/ void configureTable(JTable *table);
+    /*public*/ bool matchPropertyName(PropertyChangeEvent* e);
+
+private:
+    Logger* log;
+protected:
+    /*protected*/ QString getMasterClassName();
+    /*protected*/ QString getBeanType();
+};
+
+
 
 #endif // SIGNALHEADTABLEACTION_H

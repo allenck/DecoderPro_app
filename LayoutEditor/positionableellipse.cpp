@@ -20,19 +20,23 @@
 /*public*/ PositionableEllipse::PositionableEllipse(Editor* editor,QWidget *parent) : PositionableShape(editor, parent) {
  //super(editor);
  _itemGroup = new QGraphicsItemGroup();
+ _shape = new JShape();
+ setObjectName("PositionableEllipse");
 }
 
-/*public*/ PositionableEllipse::PositionableEllipse(Editor* editor, QGraphicsItem* shape,QWidget *parent) : PositionableShape(editor, shape,parent)
+/*public*/ PositionableEllipse::PositionableEllipse(Editor* editor, QGraphicsEllipseItem* shape,QWidget *parent) : PositionableShape(editor, (JShape*)shape,parent)
 {
-        //super(editor, shape);
-    }
+ //super(editor, shape);
+ _shape = new JShape();
+ setObjectName("PositionableEllipse");
+}
 
-    /*public*/ void PositionableEllipse::setWidth(int w) {
-        _width = w;
-    }
-    /*public*/ void PositionableEllipse::setHeight(int h) {
-        _height = h;
-    }
+//    /*public*/ void PositionableEllipse::setWidth(int w) {
+//        _width = w;
+//    }
+//    /*public*/ void PositionableEllipse::setHeight(int h) {
+//        _height = h;
+//    }
     /**
      * Rotate shape
      */
@@ -48,7 +52,7 @@
             _transform.translate(-_width/2, -_height/2);
         }
 #endif
-        _shape->setRotation(deg);
+        _shape->item->setRotation(deg);
         updateSize();
     }
 
@@ -59,25 +63,25 @@
 /*public*/ void PositionableEllipse::makeShape()
 {
  //_shape = new Ellipse2D.Double(0, 0, _width, _height);
- _shape = new QGraphicsEllipseItem(0, 0, _width, _height);
- ((QGraphicsEllipseItem*)_shape)->setBrush(QBrush(_fillColor));
- ((QGraphicsEllipseItem*)_shape)->setPen(QPen(QBrush(_lineColor),_lineWidth));
+ _shape->item = new QGraphicsEllipseItem(0, 0, _width, _height);
+ ((QGraphicsEllipseItem*)_shape->item)->setBrush(QBrush(_fillColor));
+ ((QGraphicsEllipseItem*)_shape->item)->setPen(QPen(QBrush(_lineColor),_lineWidth));
+ _shape->item->setPos(getX(), getY());
 
- _itemGroup->addToGroup(_shape);
- _itemGroup->setPos(getX(), getY());
+ _itemGroup->addToGroup(_shape->item);
 }
 
-    /*public*/ Positionable* PositionableEllipse::deepClone() {
-        PositionableEllipse* pos = new PositionableEllipse(_editor);
-        return finishClone(pos);
-    }
+/*public*/ Positionable* PositionableEllipse::deepClone() {
+    PositionableEllipse* pos = new PositionableEllipse(_editor);
+    return finishClone(pos);
+}
 
-    /*public*/ Positionable* PositionableEllipse::finishClone(Positionable* p) {
-        PositionableEllipse* pos = (PositionableEllipse*)p;
-        pos->_width = _width;
-        pos->_height = _height;
-        return PositionableShape::finishClone(pos);
-    }
+/*public*/ Positionable* PositionableEllipse::finishClone(Positionable* p) {
+    PositionableEllipse* pos = (PositionableEllipse*)p;
+    pos->_width = _width;
+    pos->_height = _height;
+    return PositionableShape::finishClone(pos);
+}
 
     /*public*/ bool PositionableEllipse::setEditItemMenu(QMenu*  popup)
 {
@@ -100,43 +104,43 @@ void PositionableEllipse::onEditAct()
  setEditParams();
 }
 
-/*public*/ bool PositionableEllipse::updateScene() // TODO: this function not in Java
-{
- QGraphicsEllipseItem* item = NULL;
+///*public*/ bool PositionableEllipse::updateScene() // TODO: this function not in Java
+//{
+// QGraphicsEllipseItem* item = NULL;
 
- if(_itemGroup != NULL)
- {
-  QList<QGraphicsItem*> itemList = _itemGroup->childItems();
-  foreach(QGraphicsItem* it, itemList)
-  {
-   if(qgraphicsitem_cast<QGraphicsEllipseItem*>(it) != NULL)
-   {
-    item = qgraphicsitem_cast<QGraphicsEllipseItem*>(it);
-   }
-  }
- }
- else
-  _itemGroup = new QGraphicsItemGroup();
+// if(_itemGroup != NULL)
+// {
+//  QList<QGraphicsItem*> itemList = _itemGroup->childItems();
+//  foreach(QGraphicsItem* it, itemList)
+//  {
+//   if(qgraphicsitem_cast<QGraphicsEllipseItem*>(it) != NULL)
+//   {
+//    item = qgraphicsitem_cast<QGraphicsEllipseItem*>(it);
+//   }
+//  }
+// }
+// else
+//  _itemGroup = new QGraphicsItemGroup();
 
- if(item != NULL)
- {
-  item->setRect(QRectF(0, 0, _width, _height));
- }
- else
-  item = new QGraphicsEllipseItem(QRectF(0, 0, _width, _height),_itemGroup);
- if(showTooltip()) item->setToolTip(getTooltip());
- item->setPos(getX(), getY());
- item->setBrush(QBrush(_fillColor));
- item->setPen(QPen(QBrush(_lineColor),_lineWidth));
+// if(item != NULL)
+// {
+//  item->setRect(QRectF(0, 0, _width, _height));
+// }
+// else
+//  item = new QGraphicsEllipseItem(QRectF(0, 0, _width, _height),_itemGroup);
+// if(showTooltip()) item->setToolTip(getTooltip());
+// item->setPos(getX(), getY());
+// item->setBrush(QBrush(_fillColor));
+// item->setPen(QPen(QBrush(_lineColor),_lineWidth));
 
- //if((getDegrees()) != 0)
- {
-  QRectF bnd = item->boundingRect();
-  QPointF center = bnd.center();
-  item->setTransformOriginPoint(center);
-  item->setRotation(/*item->rotation() + */(qreal) getDegrees());
- }
- _itemGroup->setZValue(getDisplayLevel());
- _itemGroup->update();
- return true;
-}
+// //if((getDegrees()) != 0)
+// {
+//  QRectF bnd = item->boundingRect();
+//  QPointF center = bnd.center();
+//  item->setTransformOriginPoint(center);
+//  item->setRotation(/*item->rotation() + */(qreal) getDegrees());
+// }
+// _itemGroup->setZValue(getDisplayLevel());
+// _itemGroup->update();
+// return true;
+//}

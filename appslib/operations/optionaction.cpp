@@ -26,7 +26,7 @@ namespace Operations
  }
 
 
- /*public*/ void OptionAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void OptionAction::actionPerformed(ActionEvent* /*e*/) {
      if (f == NULL || !f->isVisible()) {
          f = new OptionFrame();
          f->initComponents();

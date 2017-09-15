@@ -11,7 +11,7 @@ namespace Operations
   /*public*/ ShowCarsByLocationAction(QString s, QObject* parent);
   /*public*/ ShowCarsByLocationAction(bool showAllCars, QString locationName, QString trackName, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  private:
   void common();

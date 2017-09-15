@@ -194,6 +194,7 @@ void LcdClockFrame::update()
 
 /*public*/ void LcdClockFrame::dispose() {
     //QWidget::dispose();
+ JmriJFrame::dispose();
 }
 
 /**

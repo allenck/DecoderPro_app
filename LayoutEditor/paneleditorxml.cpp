@@ -276,6 +276,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
       result = false;
       //e.printStackTrace();
      }
+     qApp->processEvents();
     }
     panel->disposeLoadData();     // dispose of url correction data
 

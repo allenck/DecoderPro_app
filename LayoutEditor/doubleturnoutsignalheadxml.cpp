@@ -31,7 +31,7 @@
     DoubleTurnoutSignalHead* p = (DoubleTurnoutSignalHead*)o;
 
     QDomElement element = doc.createElement("signalhead");
-    element.setAttribute("class", "DoubleTurnoutSignalHead");
+    element.setAttribute("class", "jmri.implementation.configurexml.DoubleTurnoutSignalHeadXml");
 
     // include contents
     element.setAttribute("systemName", p->getSystemName());

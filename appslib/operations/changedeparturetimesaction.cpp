@@ -26,7 +26,7 @@ namespace Operations
  }
 
 
- /*public*/ void ChangeDepartureTimesAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ChangeDepartureTimesAction::actionPerformed(ActionEvent* /*e*/) {
      // create a copy train frame
      if (f == NULL || !f->isVisible()) {
          f = new ChangeDepartureTimesFrame();

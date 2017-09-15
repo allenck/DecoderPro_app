@@ -3,6 +3,7 @@
 #include "jtable.h"
 #include "pushbuttondelegate.h"
 #include "buttoncolumndelegate.h"
+#include <QPushButton>
 
 AbstractTableModel::AbstractTableModel(QObject *parent) :
     TableModel(parent)
@@ -370,7 +371,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
     return listenerList.getListeners(listenerType);
 }
 #endif
-/*protected*/ void AbstractTableModel::setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/)
+/*protected*/ void AbstractTableModel::setColumnToHoldButton(JTable* table, int column, QPushButton* sample)
 { // TODO:
  // install a button renderer & editor
 //    ButtonRenderer buttonRenderer = new ButtonRenderer();
@@ -382,13 +383,24 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
 //    table.getColumnModel().getColumn(column)
 //        .setPreferredWidth((sample.getPreferredSize().width)+4);
  this->table = table;
- table->setItemDelegateForColumn(column, new MyDelegate());
+ MyDelegate* delegate;
+ table->setItemDelegateForColumn(column, delegate = new MyDelegate());
+ if(sample != NULL)
+  delegate->setText(sample->text());
  if(!buttonMap.contains(column))
   buttonMap.append(column);
 // setHeaderData(column, Qt::Horizontal, 1, Qt::UserRole);
 // ButtonColumnDelegate* delegate = new ButtonColumnDelegate(table);
 // table->setItemDelegate(delegate);
  //setPersistentButtons();
+}
+
+void AbstractTableModel::setColumnToHoldDelegate(JTable *table, int column, QItemDelegate *delegate)
+{
+ this->table = table;
+ table->setItemDelegateForColumn(column, delegate);
+ if(!buttonMap.contains(column))
+  buttonMap.append(column);
 }
 
 void AbstractTableModel::setPersistentButtons()

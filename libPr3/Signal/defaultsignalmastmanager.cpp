@@ -4,7 +4,7 @@
 #include "signalmastrepeater.h"
 
 DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
-    AbstractManager(parent)
+    SignalMastManager(parent)
 {
  setObjectName("DefaultSignalMastManager");
  log = new Logger("DefaultSignalMastManager");

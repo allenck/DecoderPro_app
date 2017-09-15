@@ -29,6 +29,8 @@ namespace Ui {
 class TablesFrame;
 }
 
+class SensorTableTabAction;
+class TurnoutTableTabAction;
 //class JmriJFrame;
 class AudioTableAction;
 class LIBTABLESSHARED_EXPORT TablesFrame : public JmriJFrame
@@ -53,10 +55,12 @@ private slots:
     void on_openPickListTables();
 private:
     Ui::TablesFrame *ui;
-    TurnoutWidget* toWidget;
+    QWidget* toWidget;
+    TurnoutTableTabAction* ttact;
     QString curType;
     QWidget* currWidget;
-    SensorWidget* sensorWidget;
+    QWidget* sensorWidget;
+    SensorTableTabAction* stAct;
     ReporterWidget* reporterWidget;
     MemoryWidget* memoryWidget;
     BlockWidget* blockWidget;

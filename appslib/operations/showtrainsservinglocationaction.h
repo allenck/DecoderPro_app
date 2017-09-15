@@ -13,7 +13,7 @@ namespace Operations
  public:
   /*public*/ ShowTrainsServingLocationAction(QString title, Location* location, Track* track, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  private:
   Location* _location;

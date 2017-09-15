@@ -411,7 +411,15 @@ SOURCES += \
     layouteditor.cpp \
     xmlfilelocationaction.cpp \
     reportcontextaction.cpp \
-    twopanetbwindow.cpp
+    twopanetbwindow.cpp \
+    drawpolygon.cpp \
+    positionablepolygon.cpp \
+    polygon.cpp \
+    affinetransform.cpp \
+    positionablepolygonxml.cpp \
+    generalpath.cpp \
+    path2d.cpp \
+    transitmanagerxml.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -639,7 +647,7 @@ HEADERS += liblayouteditor_global.h \
     analogclockframe.h \
     icondialog.h \
     itemdialog.h \
-    componentpeer.h \
+    #componentpeer.h \
     slipiconadder.h \
     transferhandler.h \
     multisensoriconadder.h \
@@ -736,7 +744,17 @@ HEADERS += liblayouteditor_global.h \
     layouteditor.h \
     xmlfilelocationaction.h \
     reportcontextaction.h \
-    twopanetbwindow.h
+    twopanetbwindow.h \
+    drawpolygon.h \
+    positionablepolygon.h \
+    pathiterator.h \
+    polygon.h \
+    shape.h \
+    affinetransform.h \
+    positionablepolygonxml.h \
+    generalpath.h \
+    path2d.h \
+    transitmanagerxml.h
 
 
 FORMS    += \

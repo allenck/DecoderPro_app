@@ -36,6 +36,7 @@
  log = new Logger("AbstractTableTabAction");
  currTab = 0;
 }
+
 AbstractTableTabAction::~AbstractTableTabAction()
 {
  dispose();
@@ -44,19 +45,22 @@ AbstractTableTabAction::~AbstractTableTabAction()
 /*protected*/ void AbstractTableTabAction::createModel()
 {
  dataPanel = new QWidget();
- dataPanel->setMinimumSize(400, 300);
+ dataPanel->setMinimumSize(300, 300);
+ dataPanel->resize(825, 300);
 
  dataTabs = new QTabWidget();
  dataTabs->setMinimumSize(400,300);
+ dataTabs->resize(800,600);
 
 
- QVBoxLayout* dataPanelLayout;
- dataPanel->setLayout(dataPanelLayout = new QVBoxLayout());
+ QGridLayout* dataPanelLayout;
+ dataPanel->setLayout(dataPanelLayout = new QGridLayout());
  //if (getManager() instanceof jmri.managers.AbstractProxyManager)
  if(qobject_cast<AbstractProxyManager*>(getManager())!= NULL)
  {
   AbstractProxyManager* proxy = (AbstractProxyManager*) getManager();
   QList<Manager*> managerList = proxy->getManagerList();
+  AbstractTableAction* a = getNewTableAction("All");
   tabbedTableArray.append(new TabbedTableItem("All", true, getManager(), getNewTableAction("All")));
   for(int x = 0; x<managerList.size(); x++)
   {
@@ -75,7 +79,7 @@ AbstractTableTabAction::~AbstractTableTabAction()
   AbstractTableAction* table = tabbedTableArray.at(x)->getAAClass();
   table->addToPanel(this);
   //dataTabs->addTab(tabbedTableArray.at(x).getItemString(),NULL, tabbedTableArray.at(x).getPanel(),NULL);
-  dataTabs->addTab(tabbedTableArray.at(x)->/*getPanel()*/dataTable, tabbedTableArray.at(x)->getItemString());
+  dataTabs->addTab(tabbedTableArray.at(x)->getPanel(), tabbedTableArray.at(x)->getItemString());
  }
 // dataTabs.addChangeListener(new ChangeListener() {
 //        /*public*/ void stateChanged(ChangeEvent evt) {
@@ -83,7 +87,7 @@ AbstractTableTabAction::~AbstractTableTabAction()
 //        }
 //    });
  connect(dataTabs, SIGNAL(currentChanged(int)), this, SLOT(On_dataTabs_currentChanged(int)));
- dataPanelLayout->addWidget(dataTabs,/* BorderLayout.CENTER*/0, Qt::AlignCenter);
+ dataPanelLayout->addWidget(dataTabs,0,0); //,/* BorderLayout.CENTER*/0, Qt::AlignCenter);
  init = true;
 }
 
@@ -181,7 +185,7 @@ void AbstractTableTabAction::actionPerformed(ActionEvent *e)
 
 /*public*/ void AbstractTableTabAction::print(JTable::PrintMode mode, QString headerFormat, QString footerFormat)
 {
-#if 1
+
  try
  {
   tabbedTableArray.at(dataTabs->currentIndex())->getDataTable()->print(mode, headerFormat, footerFormat);
@@ -194,7 +198,6 @@ void AbstractTableTabAction::actionPerformed(ActionEvent *e)
  {
   log->error("Trying to print returned a NPE error");
  }
-#endif
 }
 
 /*public*/ void AbstractTableTabAction::dispose()
@@ -214,6 +217,7 @@ void AbstractTableTabAction::actionPerformed(ActionEvent *e)
  AddToFrameRan = false;
  standardModel = true;
  dataPanel = new QWidget();
+ dataPanel->resize(600,300);
 
  this->tableAction = tableAction;
  itemText = choice;
@@ -226,11 +230,11 @@ void AbstractTableTabAction::actionPerformed(ActionEvent *e)
  bottomBox->setObjectName("bottomBox");
  //bottomBox.add(Box.createHorizontalGlue());
  bottomBoxIndex = 0;
- QVBoxLayout* dataPanelLayout;
- if(dataPanel->layout() != NULL)
-  dataPanelLayout = (QVBoxLayout*)dataPanel->layout();
- else
-  dataPanel->setLayout(dataPanelLayout = new QVBoxLayout);
+
+// if(dataPanel->layout() != NULL)
+//  dataPanelLayout = (QVBoxLayout*)dataPanel->layout();
+// else
+  dataPanel->setLayout(dataPanelLayout = new QGridLayout);
  if (stdModel)
   createDataModel();
  else
@@ -241,14 +245,15 @@ void TabbedTableItem::createDataModel()
 {
  if (manager!=NULL)
   tableAction->setManager(manager);
- dataModel = tableAction->getTableDataModel();
+ dataModel = (BeanTableDataModel*)tableAction->getTableDataModel();
  //        dataModel->updateNameList();
 //        TableSorter sorter = new TableSorter(dataModel);
- QSortFilterProxyModel* sorter = new QSortFilterProxyModel();
+ MySortFilterProxyModel* sorter = new MySortFilterProxyModel();
  sorter->setSourceModel(dataModel);
  dataTable = dataModel->makeJTable(sorter);
  tableAction->table = dataTable;
  sorter->setSourceModel(dataModel);
+ dataTable->setSortingEnabled(true);
  //sorter.setTableHeader(dataTable.getTableHeader());
  //dataScroll	= new JScrollPane(dataTable);
 
@@ -259,7 +264,7 @@ void TabbedTableItem::createDataModel()
 //        } catch (java.lang.ClassCastException e) {}  // happens if not sortable table
 
  dataModel->configureTable(dataTable);
-//    dataModel->loadTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
+ dataModel->loadTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
 
  QSize dataTableSize = dataTable->sizeHint();
  // width is right, but if table is empty, it's not high
@@ -272,15 +277,16 @@ void TabbedTableItem::createDataModel()
  //dataScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
  //dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
- QVBoxLayout* dataPanelLayout;
- if(dataPanel->layout() != NULL)
-  dataPanelLayout = (QVBoxLayout*)dataPanel->layout();
- else
-  dataPanel->setLayout(dataPanelLayout= new QVBoxLayout);
+ dataPanel->resize(600,290);
+ //QGridLayout* dataPanelLayout;
+// if(dataPanel->layout() != NULL)
+//  dataPanelLayout = (QGridLayout*)dataPanel->layout();
+// else
+  //dataPanel->setLayout(dataPanelLayout= new QGridLayout);
  //dataPanel.add(dataScroll, BorderLayout.CENTER);
- dataPanelLayout->addWidget(dataTable, 0, Qt::AlignCenter);
+ dataPanelLayout->addWidget(dataTable,0,0); //, 0, Qt::AlignCenter);
 
- dataPanelLayout->addWidget(bottomBox, /*BorderLayout.SOUTH*/0, Qt::AlignBottom);
+ dataPanelLayout->addWidget(bottomBox,1,0); //, /*BorderLayout.SOUTH*/0, Qt::AlignBottom);
  if(tableAction->includeAddButton())
  {
   QPushButton* addButton = new QPushButton(tr("Add"));
@@ -290,14 +296,19 @@ void TabbedTableItem::createDataModel()
 //                    tableAction.addPressed(e);
 //                }
 //            });
+  QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  sizePolicy.setHorizontalStretch(0);
+  sizePolicy.setVerticalStretch(0);
+  sizePolicy.setHeightForWidth(addButton->sizePolicy().hasHeightForWidth());
+  addButton->setSizePolicy(sizePolicy);
   connect(addButton, SIGNAL(clicked()), tableAction, SLOT(addPressed()));
  }
 }
 
 void TabbedTableItem::addPanelModel()
 {
- ((QVBoxLayout*)dataPanel->layout())->addWidget(tableAction->getPanel(), /*BorderLayout.CENTER*/0, Qt::AlignCenter);
- ((QVBoxLayout*)dataPanel->layout())->addWidget(bottomBox, /*BorderLayout.SOUTH*/0, Qt::AlignBottom);
+ ((QGridLayout*)dataPanel->layout())->addWidget(tableAction->getPanel(),0,0); //, /*BorderLayout.CENTER*/0, Qt::AlignCenter);
+ ((QGridLayout*)dataPanel->layout())->addWidget(bottomBox,1,0); //, /*BorderLayout.SOUTH*/0, Qt::AlignBottom);
 }
 
 /*public*/ bool TabbedTableItem::getStandardTableModel(){ return standardModel; }

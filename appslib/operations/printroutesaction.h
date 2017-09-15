@@ -11,7 +11,7 @@ namespace Operations
  public:
   /*public*/ PrintRoutesAction(QString actionName, bool preview, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  private:
   /*private*/ static /*final*/ char FORM_FEED;// = '\f';

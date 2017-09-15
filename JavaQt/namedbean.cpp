@@ -89,3 +89,7 @@ QVariant NamedBean::getProperty(QString /*key*/)
 {
  return QVariant();
 }
+/**
+ * Remove the key/value pair against the NamedBean.
+ */
+/*public*/ void removeProperty(/*@Nonnull*/ QString key) {}

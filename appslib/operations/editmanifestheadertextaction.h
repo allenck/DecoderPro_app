@@ -13,7 +13,7 @@ namespace Operations
   /*public*/ EditManifestHeaderTextAction(QString s, QObject* parent);
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
  private:
   EditManifestHeaderTextFrame* f;// = null;

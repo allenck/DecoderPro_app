@@ -91,7 +91,7 @@
     if (debug) {
         QSize d= spinner->size();
         if (debug) log->debug("spinner width= "+QString::number(d.width())+", height= "+QString::number(d.height()));
-        QRect rect= getBounds(QRect());
+        QRectF rect= getBounds(QRectF());
         if (debug) log->debug("Bounds rect= ("+QString::number(rect.x())+","+QString::number(rect.y())+
                               ") width= "+QString::number(rect.width())+", height= "+QString::number(rect.height()));
         d= PositionableJPanel::size();

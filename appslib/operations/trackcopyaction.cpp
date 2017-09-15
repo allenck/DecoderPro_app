@@ -18,7 +18,7 @@ namespace Operations
  }
 
 
- /*public*/ void TrackCopyAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void TrackCopyAction::actionPerformed(ActionEvent* /*e*/) {
      // create a copy track frame
      if (f == NULL || !f->isVisible()) {
          f = new TrackCopyFrame(_lef);

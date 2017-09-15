@@ -166,7 +166,7 @@ void IndexedPairVariableValue::updatedTextField() {
 }
 
 /** ActionListener implementations */
-/*public*/ void IndexedPairVariableValue::actionPerformed(ActionEvent* e) {
+/*public*/ void IndexedPairVariableValue::actionPerformed(ActionEvent* /*e*/) {
     if (log->isDebugEnabled()) log->debug("CV "+getCvNum()+","+(getSecondCvNum())+" actionPerformed");
     int newVal = ((_value->text().toInt())-mOffset)/mFactor;
     updatedTextField();

@@ -41,7 +41,7 @@ tr("Flashing Lunar");
 //    implements SignalHead, java.io.Serializable {
 
 /*public*/ AbstractSignalHead::AbstractSignalHead(QString systemName, QString userName, QObject *parent)
-    : AbstractNamedBean(systemName, userName, parent)
+    : SignalHead(systemName, userName, parent)
 {
  //super(systemName, userName);
     mAppearance = SignalHead::DARK;
@@ -49,7 +49,7 @@ tr("Flashing Lunar");
     mHeld = false;
 }
 
-/*public*/ AbstractSignalHead::AbstractSignalHead(QString systemName, QObject *parent)  : AbstractNamedBean(systemName, parent)
+/*public*/ AbstractSignalHead::AbstractSignalHead(QString systemName, QObject *parent)  : SignalHead(systemName, parent)
 {
  //super(systemName);
  //validStates <<  SignalHead::DARK <<

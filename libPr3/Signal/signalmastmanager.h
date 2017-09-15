@@ -1,7 +1,7 @@
 #ifndef SIGNALMASTMANAGER_H
 #define SIGNALMASTMANAGER_H
 #include "signalmast.h"
-#include "manager.h"
+#include "abstractmanager.h"
 
 /**
  * Interface for obtaining signal masts.
@@ -26,12 +26,13 @@
  * @author      Bob Jacobsen Copyright (C) 2009
  * @version	$Revision: 19910 $
  */
-/*public*/ /*interface*/ class LIBPR3SHARED_EXPORT SignalMastManager : public Manager
+/*public*/ /*interface*/ class LIBPR3SHARED_EXPORT SignalMastManager : public AbstractManager
 {
   Q_OBJECT
 public:
+ SignalMastManager(QObject* parent = 0) : AbstractManager(parent) {}
     // to free resources when no longer used
-    /*public*/ void dispose() = 0;
+    /*public*/ void dispose() {}
 
     /**
      * Locate via user name, then system name if needed.
@@ -40,7 +41,7 @@ public:
      * @param name
      * @return null if no match found
      */
-    /*public*/ virtual SignalMast* getSignalMast(QString name) = 0;
+    /*public*/ virtual SignalMast* getSignalMast(QString name) {return NULL;}
 
     /**
      * Locate via user name, then system name if needed.
@@ -55,17 +56,17 @@ public:
      */
     /*public*/ virtual SignalMast* provideSignalMast(QString ){return NULL;}
 
-    /*public*/ virtual SignalMast* provideSignalMast(QString prefix, // nominally IF$shsm
-                                        QString signalSystem,
-                                        QString mastName,
-                                        QStringList heads) = 0;
+    /*public*/ virtual SignalMast* provideSignalMast(QString /*prefix*/, // nominally IF$shsm
+                                        QString /*signalSystem*/,
+                                        QString /*mastName*/,
+                                        QStringList /*heads*/) {return NULL;}
 
-    /*public*/ virtual SignalMast* getByUserName(QString s) = 0;
-    /*public*/ virtual SignalMast* getBySystemName(QString s) = 0;
+    /*public*/ virtual SignalMast* getBySystemName(QString /*s*/) {return NULL;}
+    /*public*/ virtual SignalMast* getByUserName(QString /*s*/) {return NULL;}
     /**
      * Get a list of all SignalMast system names.
      */
-    /*public*/ virtual QStringList getSystemNameList() = 0;
+ ///*public*/ virtual QStringList getSystemNameList()  {return QStringList();}
 friend class SignalMastIcon;
 friend class LayoutBlockManager;
 friend class MyLayoutEditpr;

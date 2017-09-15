@@ -9,7 +9,7 @@
 Positionable* CoordinateEdit::pos = NULL;
 QString CoordinateEdit::title = "";
 
-CoordinateEdit::CoordinateEdit(QWidget *parent) : JmriJFrame(parent)
+CoordinateEdit::CoordinateEdit(QWidget *parent) : JmriJFrame("<CoordinateEdit>", false,false, parent)
 {
  this->parent = parent;
  nameText = new QLabel();
@@ -109,7 +109,7 @@ void CoordinateEdit::on_levelEditAction_triggered()
 {
  return new TooltipEditAction(pos, tr("Set Tooltip"), (CoordinateEdit*)parent);
 // {
-//            /*public*/ void actionPerformed(ActionEvent* e) {
+//            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                CoordinateEdit f = new CoordinateEdit();
 //                f.addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
 //                f.init(Bundle.getMessage("SetTooltip"), pos, true);
@@ -359,7 +359,7 @@ void CoordinateEdit::on_getTextEditAction_triggered()
 /*public*/ void CoordinateEdit::init(QString title, Positionable* pos, bool showName)
 {
  pl = pos;
- ps = qobject_cast<PositionableLabel*>(pos);
+ //ps = qobject_cast<PositionableLabel*>(pos);
  if (showName)
  {
   //nameText->setText(/*java.text.MessageFormat.format(Bundle.getMessage("namelabel"),*/ ((PositionableLabel*)pos)->getNameString());
@@ -387,13 +387,13 @@ void CoordinateEdit::on_getTextEditAction_triggered()
  textX = new QLabel(this);
  textY = new QLabel(this);
 
- if(ps != NULL)
+ if(pl != NULL)
  {
-  oldX = ps->getX();
-  oldY = ps->getY();
+  oldX = pl->getX();
+  oldY = pl->getY();
 
-  textX->setText("x= " + QString("%1").arg(ps->getX()));
-  textY->setText("y= " + QString("%1").arg(ps->getY()));
+  textX->setText("x= " + QString("%1").arg(pl->getX()));
+  textY->setText("y= " + QString("%1").arg(pl->getY()));
  }
  textX->setVisible(true);
  textY->setVisible(true);
@@ -412,7 +412,7 @@ void CoordinateEdit::on_getTextEditAction_triggered()
  spinX = new QSpinBox(/*model*/);
  spinX->setMinimum(-1000);
  spinX->setMaximum(1000);
- spinX->setValue((ps->getX()));
+ spinX->setValue((pl->getX()));
  spinX->setToolTip(tr("Enter x coordinate"));
  spinX->setMaximumSize(QSize(spinX->maximumSize().width(), spinX->maximumSize().height()));
  //spinX.addChangeListener(listener);
@@ -420,7 +420,7 @@ void CoordinateEdit::on_getTextEditAction_triggered()
  spinY = new QSpinBox(/*model*/);
  spinY->setMinimum(-1000);
  spinY->setMaximum(1000);
- spinY->setValue((ps->getY()));
+ spinY->setValue((pl->getY()));
  spinY->setToolTip("Enter y coordinate");
  spinY->setMaximumSize(spinY->maximumSize().width(), spinY->maximumSize().height());
  //spinY->addChangeListener(listener);
@@ -461,11 +461,11 @@ void CoordinateEdit::on_setXYOkButton_clicked()
 //    int y = ((Number)spinY.getValue()).intValue();
  int x = spinX->value();
  int y = spinY->value();
- if(ps != NULL)
+ if(pl != NULL)
  {
-  ps->setLocation(x, y);
-  textX->setText("x= " + QString("%1").arg(ps->getX()));
-  textY->setText("y= " + QString("%1").arg(ps->getY()));
+  pl->setLocation(x, y);
+  textX->setText("x= " + QString("%1").arg(pl->getX()));
+  textY->setText("y= " + QString("%1").arg(pl->getY()));
  }
  //accept();
  //dispose();
@@ -473,8 +473,8 @@ void CoordinateEdit::on_setXYOkButton_clicked()
 }
 void CoordinateEdit::on_setXYCancelButton_clicked()
 {
- if(ps != NULL)
-  ps->setLocation(oldX, oldY);
+ if(pl != NULL)
+  pl->setLocation(oldX, oldY);
 
  //reject();
  //dispose();
@@ -484,11 +484,11 @@ void CoordinateEdit::on_setXYSpinnerValues_changed()
 {
  int x = spinX->value();
  int y = spinY->value();
- if(ps != NULL)
+ if(pl != NULL)
  {
-  ps->setLocation(x, y);
-  textX->setText("x= " + QString("%1").arg(ps->getX()));
-  textY->setText("y= " + QString("%1").arg(ps->getY()));
+  pl->setLocation(x, y);
+  textX->setText("x= " + QString("%1").arg(pl->getX()));
+  textY->setText("y= " + QString("%1").arg(pl->getY()));
  }
 }
 
@@ -497,10 +497,10 @@ void CoordinateEdit::on_setXYSpinnerValues_changed()
 {
  textX = new QLabel();
  textX->setText(tr("Display level"));
- if(ps != NULL)
+ if(pl != NULL)
  {
-  oldX = ps->getDisplayLevel();
-  textX->setText("level= " +QString::number(ps->getDisplayLevel()));
+  oldX = pl->getDisplayLevel();
+  textX->setText("level= " +QString::number(pl->getDisplayLevel()));
  }
  textX->setVisible(true);
 
@@ -508,7 +508,7 @@ void CoordinateEdit::on_setXYSpinnerValues_changed()
  spinX = new QSpinBox(/*model*/);
  spinX->setMinimum(0);
  spinX->setMaximum(10);
- spinX->setValue(ps->getDisplayLevel());
+ spinX->setValue(pl->getDisplayLevel());
  spinX->setToolTip("Enter display level");
  spinX->setMaximumSize(QSize(spinX->maximumSize().width(), spinX->maximumSize().height()));
 
@@ -539,18 +539,18 @@ void CoordinateEdit::on_setXYSpinnerValues_changed()
 }
 void CoordinateEdit::on_setLevelOkButton_clicked()
 {
- if(ps != NULL)
+ if(pl != NULL)
  {
-  ps->setLevel(spinX->value());
+  pl->setLevel(spinX->value());
  }
  //accept();
  close();
 }
 void CoordinateEdit::on_setLevelCancelButton_clicked()
 {
- if(ps != NULL)
+ if(pl != NULL)
  {
-  ps->setLevel(oldX);
+  pl->setLevel(oldX);
  }
  //reject();
  close();
@@ -617,8 +617,8 @@ void CoordinateEdit::on_cancel()
  pl = CoordinateEdit::pos;
  Q_ASSERT(pl != NULL);
 
- ps = (PositionableLabel*)pos;
- PositionablePopupUtil* util = ps->getPopupUtility();
+ //ps = (PositionableLabel*)pos;
+ PositionablePopupUtil* util = pl->getPopupUtility();
  oldX = util->getBorderSize();
 
  textX = new QLabel();

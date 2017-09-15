@@ -52,7 +52,7 @@ class LIBTABLESSHARED_EXPORT LogixTableAction : public AbstractTableAction
     Q_OBJECT
 public:
     //explicit LogixTableAction(QObject *parent = 0);
-    /*public*/ LogixTableAction(QString s = "Logix Table", QObject *parent = 0);
+    Q_INVOKABLE /*public*/ LogixTableAction(QString s = "Logix Table", QObject *parent = 0);
     ~LogixTableAction() {}
     LogixTableAction(const LogixTableAction&);
     /*public*/ static QString formatTime(int hour, int minute);
@@ -286,7 +286,7 @@ void showSaveReminder();
 QCheckBox* remember;
 Logix* x;
 QDialog* dialog ;
- LogixTableModel* m;
+ //LogixTableModel* m;
 protected:
 /*protected*/ QString getClassName();
 /*protected*/ void createModel();
@@ -304,6 +304,8 @@ protected slots:
     friend class ActionSignalHeadNameListener;
     friend class EditLogixFrameWindowListener;
 };
+Q_DECLARE_METATYPE(LogixTableAction)
+
 class LIBTABLESSHARED_EXPORT RefDialog : public JDialog
 {
  Q_OBJECT
@@ -336,7 +338,7 @@ public:
  /*public*/ int getDisplayDeleteMsg();
  /*public*/ void setDisplayDeleteMsg(int boo);
  /*public*/ void configureTable(JTable* table);
- /*public*/ QString getValue(QString s);
+ /*public*/ QString getValue(QString s) const;
  // Not needed - here for interface compatibility
  /*public*/ void clickOn(NamedBean* t) ;
 

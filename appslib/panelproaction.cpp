@@ -58,7 +58,7 @@ void PanelProAction::common()
  *
  * @param e The event causing the action.
  */
-/*public*/ void PanelProAction::actionPerformed(ActionEvent* e) {
+/*public*/ void PanelProAction::actionPerformed(ActionEvent* /*e*/) {
     if (frame == NULL) {
         frame = new AppsLaunchFrame(new PanelProPane(), "PanelPro");
     }

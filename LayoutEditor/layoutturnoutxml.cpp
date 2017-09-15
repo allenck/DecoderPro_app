@@ -179,13 +179,15 @@ LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
     }
 
     int version = 1;
-    try {
-        version = element.attribute("ver").toInt();
-    } catch (DataConversionException e) {
+    bool bOk;
+        version = element.attribute("ver").toInt(&bOk);
+    if(!bOk) {
         Logger::error("failed to convert layoutturnout b coords attribute");
-    } catch (NullPointerException e) {
-        //can be ignored as panel file may not support method
+
     }
+//    } catch (NullPointerException e) {
+//        //can be ignored as panel file may not support method
+//    }
 
     // create the new LayoutTurnout
     LayoutTurnout* l = new LayoutTurnout(name, tType,
@@ -271,18 +273,18 @@ LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
     a = element.attribute("linkedturnoutname");
     if (a != NULL) {
         l->linkedTurnoutName = a;
-        try {
-            l->linkType = element.attribute("linktype").toInt();
-        } catch (DataConversionException e) {
+        bool bOk;
+            l->linkType = element.attribute("linktype").toInt(&bOk);
+        if(!bOk) {
             Logger::error("failed to convert linked layout turnout type");
         }
     }
     a = element.attribute("continuing");
     if (a != NULL) {
         int continuing = Turnout::CLOSED;
-        try {
-            continuing = element.attribute("continuing").toInt();
-        } catch (DataConversionException e) {
+        bool bOk;
+            continuing = element.attribute("continuing").toInt(&bOk);
+        if(!bOk) {
             Logger::error("failed to convert continuingsense attribute");
         }
         l->setContinuingSense(continuing);

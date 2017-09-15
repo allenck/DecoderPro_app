@@ -23,7 +23,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ScheduleOptionsAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void ScheduleOptionsAction::actionPerformed(ActionEvent* /*e*/) {
      new ScheduleOptionsFrame(_sef);
  }
 }

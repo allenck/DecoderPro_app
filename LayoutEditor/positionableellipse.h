@@ -11,23 +11,23 @@ class PositionableEllipse : public PositionableShape
 public:
     //explicit PositionableEllipse(QWidget *parent = 0);
     /*public*/ PositionableEllipse(Editor* editor,QWidget *parent = 0);
-    /*public*/ PositionableEllipse(Editor* editor, QGraphicsItem* shape,QWidget *parent = 0);
-    /*public*/ void setWidth(int w);
-    /*public*/ void setHeight(int h) ;
+    /*public*/ PositionableEllipse(Editor* editor, QGraphicsEllipseItem* shape,QWidget *parent = 0);
+//    /*public*/ void setWidth(int w);
+//    /*public*/ void setHeight(int h) ;
     /*public*/ void rotate(int deg);
     /*public*/ void makeShape();
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(Positionable* p);
     /*public*/ bool setEditItemMenu(QMenu*  popup);
- /*public*/ bool updateScene();
+ ///*public*/ bool updateScene();
 
 signals:
 
 public slots:
     void onEditAct();
 private:
-    int _width;
-    int _height;
+//    int _width;
+//    int _height;
 friend class Editor;
 };
 

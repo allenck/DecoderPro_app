@@ -343,7 +343,7 @@
  * ActionEventListener function for rosterSelector Chooses a RosterEntry
  * from the list and loads its relevant info.
  */
-/*private*/ void VSDConfigDialog::rosterItemSelectAction(ActionEvent* e)
+/*private*/ void VSDConfigDialog::rosterItemSelectAction(ActionEvent* /*e*/)
 {
  if (rosterSelector->getSelectedRosterEntries()->length() != 0)
  {
@@ -368,7 +368,7 @@
  * ActionEventListener method for rosterSaveButton Writes VSDecoder info to
  * the RosterEntry.
  */
-/*private*/ void VSDConfigDialog::rosterSaveButtonAction(ActionEvent* e) {
+/*private*/ void VSDConfigDialog::rosterSaveButtonAction(ActionEvent* /*e*/) {
     log->debug("rosterSaveButton pressed");
     if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
         RosterEntry* r = rosterSelector->getSelectedRosterEntries()->at(0);

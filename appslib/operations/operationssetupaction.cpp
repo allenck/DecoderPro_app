@@ -40,7 +40,7 @@
  /*static*/ Operations::OperationsSetupFrame* OperationsSetupAction::f = NULL;
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
- /*public*/ void OperationsSetupAction::actionPerformed(ActionEvent* e) {
+ /*public*/ void OperationsSetupAction::actionPerformed(ActionEvent* /*e*/) {
      // create a settings frame
      if (f == NULL || !f->isVisible())
      {

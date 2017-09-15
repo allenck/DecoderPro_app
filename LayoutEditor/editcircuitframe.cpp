@@ -463,14 +463,14 @@ void EditCircuitFrame::closePickList() {
     return _block;
 }
 
-/*protected*/ void EditCircuitFrame::updateIconList(QList<Positionable*> icons) {
+/*protected*/ void EditCircuitFrame::updateIconList(QList<Positionable*>* icons) {
     //if (log.isDebugEnabled()) log.debug(
     int segments = 0;
     int turnouts = 0;
-    if (icons!=QList<Positionable*>()) {
-        if (log->isDebugEnabled()) log->debug("updateIconList: icons.size()= "+QString::number(icons.size()));
-        for (int i=0; i<icons.size(); i++) {
-            Positionable* pos = icons.at(i);
+    if (icons!=NULL) {
+        if (log->isDebugEnabled()) log->debug("updateIconList: icons.size()= "+QString::number(icons->size()));
+        for (int i=0; i<icons->size(); i++) {
+            Positionable* pos = icons->at(i);
             //if (pos instanceof IndicatorTurnoutIcon)
 //            if(qobject_cast<IndicatorTurnoutIcon*>(pos) != NULL)
 //            {
