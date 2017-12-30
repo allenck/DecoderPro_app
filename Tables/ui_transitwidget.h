@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'transitwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -58,8 +58,8 @@ public:
 
     void retranslateUi(QWidget *TransitWidget)
     {
-        TransitWidget->setWindowTitle(QApplication::translate("TransitWidget", "Form", 0));
-        pushButton->setText(QApplication::translate("TransitWidget", "Add", 0));
+        TransitWidget->setWindowTitle(QApplication::translate("TransitWidget", "Form", Q_NULLPTR));
+        pushButton->setText(QApplication::translate("TransitWidget", "Add", Q_NULLPTR));
     } // retranslateUi
 
 };

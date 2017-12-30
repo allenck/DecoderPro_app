@@ -9,9 +9,11 @@ class LIBPR3SHARED_EXPORT AbstractNetworkConnectionConfigXml : public AbstractCo
  Q_OBJECT
 public:
  explicit AbstractNetworkConnectionConfigXml(QObject *parent = 0);
- /*public*/ QDomElement store(QObject* o) throw (Exception);
- /*public*/ bool load(QDomElement e) throw (Exception);
+ /*public*/ QDomElement store(QObject* o, bool shared);
+ /*public*/ QDomElement store(QObject* o); //throw (Exception);
+ // *public*/ bool load(QDomElement e) throw (Exception);
  /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+ /*public*/ bool load(QDomElement shared, QDomElement perNode); //throws Exception
 
 signals:
 
@@ -26,7 +28,7 @@ protected:
 
  /*protected*/ virtual void getInstance(QObject* object);
  /*protected*/ void extendElement(QDomElement e);
- /*protected*/ void unpackElement(QDomElement e);
+ // /*protected*/ void unpackElement(QDomElement e);
 
 };
 

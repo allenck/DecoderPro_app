@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'multisensoriconwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -192,22 +192,22 @@ public:
 
     void retranslateUi(QWidget *MultiSensorIconWidget)
     {
-        MultiSensorIconWidget->setWindowTitle(QApplication::translate("MultiSensorIconWidget", "Form", 0));
+        MultiSensorIconWidget->setWindowTitle(QApplication::translate("MultiSensorIconWidget", "Form", Q_NULLPTR));
         label->setText(QApplication::translate("MultiSensorIconWidget", "To add a MultiSensor to the Panel,\n"
-"drag Sensors from table into the red boxes, then press Add to Panel.", 0));
-        label_2->setText(QApplication::translate("MultiSensorIconWidget", "Inconsistent", 0));
+"drag Sensors from table into the red boxes, then press Add to Panel.", Q_NULLPTR));
+        label_2->setText(QApplication::translate("MultiSensorIconWidget", "Inconsistent", Q_NULLPTR));
         pbInconsistent->setText(QString());
-        label_3->setText(QApplication::translate("MultiSensorIconWidget", "Unknown", 0));
+        label_3->setText(QApplication::translate("MultiSensorIconWidget", "Unknown", Q_NULLPTR));
         pbUnknown->setText(QString());
-        label_4->setText(QApplication::translate("MultiSensorIconWidget", "Inactive", 0));
+        label_4->setText(QApplication::translate("MultiSensorIconWidget", "Inactive", Q_NULLPTR));
         pbInactive->setText(QString());
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("MultiSensorIconWidget", "System Name", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("MultiSensorIconWidget", "System Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("MultiSensorIconWidget", "User Name", 0));
-        rbUpDown->setText(QApplication::translate("MultiSensorIconWidget", "Up - Down", 0));
-        rbRightLeft->setText(QApplication::translate("MultiSensorIconWidget", "Right - Left", 0));
-        pbAddIcon->setText(QApplication::translate("MultiSensorIconWidget", "Add Another Icon", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("MultiSensorIconWidget", "User Name", Q_NULLPTR));
+        rbUpDown->setText(QApplication::translate("MultiSensorIconWidget", "Up - Down", Q_NULLPTR));
+        rbRightLeft->setText(QApplication::translate("MultiSensorIconWidget", "Right - Left", Q_NULLPTR));
+        pbAddIcon->setText(QApplication::translate("MultiSensorIconWidget", "Add Another Icon", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -1,8 +1,7 @@
 #include "debugthrottlemanager.h"
 #include "debugthrottle.h"
 
-DebugThrottleManager::DebugThrottleManager(QObject *parent) :
-    AbstractThrottleManager(parent)
+DebugThrottleManager::DebugThrottleManager(QObject *parent) : AbstractThrottleManager(parent)
 {
     log = new  Logger("DebugThrottleManager");
 }
@@ -20,8 +19,7 @@ DebugThrottleManager::DebugThrottleManager(QObject *parent) :
 /**
  * Constructor.
  */
-/*public*/ DebugThrottleManager::DebugThrottleManager(SystemConnectionMemo* memo,QObject *parent) :
-    AbstractThrottleManager(memo, parent)
+/*public*/ DebugThrottleManager::DebugThrottleManager(SystemConnectionMemo* memo, QObject *parent) :  AbstractThrottleManager(memo, parent)
 {
     //super(memo);
     log = new  Logger("DebugThrottleManager");

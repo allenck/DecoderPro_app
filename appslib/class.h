@@ -1,9 +1,10 @@
 #ifndef CLASS_H
 #define CLASS_H
 #include <QObject>
+#include "exceptions.h"
 
 class ClassLoader;
-template<class T>
+
 class Class
 {
  Q_OBJECT
@@ -11,7 +12,11 @@ public:
  Class();
  /*public*/ QString toString();
  /*public*/ QString toGenericString();
- /*public*/ static T* forName(QString className);
+ /*public*/ static Class* forName(QString className);
+ /*public*/ bool isInstance(QObject* obj);
+ /*public*/ QString getCanonicalName();
+ /*public*/ Class* newInstance() throw (InstantiationException, IllegalAccessException);
+ /*public*/ /*native*/ bool isAssignableFrom(QString cls);
 
 private:
  /*private*/ static /*final*/ int ANNOTATION;//= 0x00002000;

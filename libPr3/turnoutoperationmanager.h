@@ -22,7 +22,7 @@ public:
  *
  * @return	the TurnoutOperationManager
  */
- static TurnoutOperationManager* getInstance();
+ QT_DEPRECATED static TurnoutOperationManager* getInstance();
  bool doOperations;			// global on/off switch
  /*public*/ void dispose();
  /*public*/ QList<TurnoutOperation*> getTurnoutOperations();
@@ -64,6 +64,7 @@ private:
  QMutex mutex;
  /*private*/ void updateTypes(TurnoutOperation* op);
  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ static TurnoutOperationManager* getDefault();
 
 protected:
  /*protected*/ void addOperation(TurnoutOperation* op);

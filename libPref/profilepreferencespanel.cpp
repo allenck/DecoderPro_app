@@ -6,7 +6,7 @@
 #include <QCheckBox>
 #include <QBoxLayout>
 #include <QListView>
-#include "../libPr3/profile.h"
+#include "profile.h"
 #include "profiletablemodel.h"
 #include "flowlayout.h"
 #include "searchpathslistmodel.h"
@@ -48,7 +48,7 @@
  log= new Logger("ProfilePreferencesPanel");
  initComponents();
  this->chkStartWithActiveProfile->setChecked(ProfileManager::defaultManager()->isAutoStartActiveProfile());
- this->valueChanged(QModelIndex());
+ this->valueChanged(QItemSelection(), QItemSelection());
  int index = ProfileManager::defaultManager()->getAllProfiles().indexOf(ProfileManager::defaultManager()->getActiveProfile());
  if (index != -1)
  {
@@ -148,7 +148,8 @@
  //profilesTbl->getSelectionModel().addListSelectionListener(this);
  profilesTbl->setContextMenuPolicy(Qt::CustomContextMenu);
  profilesTbl->setSelectionBehavior(QAbstractItemView::SelectRows);
- connect(profilesTbl, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged(QModelIndex)));
+ //connect(profilesTbl, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged(QModelIndex)));
+ connect(profilesTbl->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(valueChanged(QItemSelection, QItemSelection)));
  //profilesTbl->setSortingEnabled(true);
  //jScrollPane1.setViewportView(profilesTbl);
 
@@ -634,13 +635,15 @@
 {
 #if 1
     QModelIndexList mil = profilesTbl->selectionModel()->selectedIndexes();
+    if(mil.size() == 0)
+     return; // must select a profile.
     Profile* profile = VPtr<Profile>::asPtr(mil.at(0).data(Qt::UserRole));
-
+#endif
     AddProfileDialog* apd = new AddProfileDialog(this, true, true);
     apd->setSourceProfile(profile);
     apd->setLocationRelativeTo(this);
     apd->setVisible(true);
-#endif
+
 }
 
 
@@ -689,10 +692,15 @@
 }
 
 //@Override
-/*public*/ void ProfilePreferencesPanel::valueChanged(QModelIndex)
+/*public*/ void ProfilePreferencesPanel::valueChanged(QItemSelection, QItemSelection)
 {
  QItemSelectionModel* selectionModel = profilesTbl->selectionModel();
  QModelIndexList mil = selectionModel->selectedRows();
+ if(mil.size()== 0)
+ {
+  this->btnCopyProfile->setEnabled(false);
+  this->btnExportProfile->setEnabled(false);
+ }
 
  if (mil.count() == 1 && mil.at(0).row() < ProfileManager::defaultManager()->getAllProfiles().size())
  {

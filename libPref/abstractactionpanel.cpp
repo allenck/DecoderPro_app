@@ -87,7 +87,7 @@
 //    });
 
  CreateButtonModel* createButtonModel = (CreateButtonModel*)InstanceManager::getDefault("CreateButtonModel");
- connect(createButtonModel->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+// connect(createButtonModel->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 // /*abstract*/ List<?> rememberedObjects();
 
@@ -189,7 +189,7 @@ void Item::common(AbstractActionPanel* panel)
  connect(removeButton, SIGNAL(clicked()), this, SLOT(actionPerformed()));
  // create the list of possibilities
  selections = new QComboBox();
- selections->addItems(AbstractActionModel::nameList());
+ //selections->addItems(AbstractActionModel::nameList());
  thisLayout->addWidget(selections);
 //    selections.addItemListener((ItemEvent e) -> {
 //        if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -202,7 +202,7 @@ void Item::common(AbstractActionPanel* panel)
 void Item::On_selections_currentIndexChanged(int selection)
 {
  //if (egetStateChange() == ItemEvent.SELECTED) {
- QString classname = AbstractActionModel::classList().at(selection);
+ //QString classname = AbstractActionModel::classList().at(selection);
  panel->dirty = true;
 }
 
@@ -219,8 +219,8 @@ void Item::updateCombo()
 {
  QString current = selections->currentText();
  selections->clear();
- QStringList items = AbstractActionModel::nameList();
- QStringList classes = AbstractActionModel::classList();
+// QStringList items = AbstractActionModel::nameList();
+// QStringList classes = AbstractActionModel::classList();
  int ix = 0;
  foreach (QString item, items)
  {

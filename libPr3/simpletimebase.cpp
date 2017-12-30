@@ -144,7 +144,7 @@ SimpleTimebase::~SimpleTimebase()
   // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
   if (InstanceManager::clockControlInstance()!=hardwareTimeSource)
   {
-   ((DefaultClockControl*)InstanceManager::clockControlInstance())->setTime(d);
+   ((ClockControl*)InstanceManager::getDefault("ClockControl"))->setTime(d);
   }
  }
  if (!pauseTime.isNull())

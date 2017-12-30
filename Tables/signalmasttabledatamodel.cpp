@@ -403,9 +403,9 @@ void SignalMastTableDataModel::editMast(int row, int col) {
 }
 
 /*protected*/ QString SignalMastTableDataModel::getClassName() {
-    return "SignalMastTableAction";
+    return "jmri.jmrit.beantable.SignalMastTableAction";
 }
 
 /*public*/ QString SignalMastTableDataModel::getClassDescription() {
-    return tr("TitleSignalMastTable");
+    return tr("Signal Mast Table");
 }

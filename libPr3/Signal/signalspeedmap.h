@@ -45,6 +45,7 @@ public:
     /*public*/ float getStepIncrement();
     /*public*/ QStringListIterator getAppearanceIterator();
     /*public*/ QStringListIterator getSpeedIterator();
+    /*public*/ bool isAssignableFromType() {return true;}
 
     signals:
 

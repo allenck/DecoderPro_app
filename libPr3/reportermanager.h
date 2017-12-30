@@ -134,7 +134,7 @@ public:
         * where as if the address format is 1b23 this will return false.
         **/
 
- virtual bool allowMultipleAdditions(QString systemName) const {return false;}
+ virtual bool allowMultipleAdditions(QString /*systemName*/) const {return false;}
 
        /**
         * Determine if the address supplied is valid and free, if not then it shall
@@ -144,7 +144,7 @@ public:
         * @param curAddress - The hardware address of the turnout we which to check.
         */
 
- virtual QString getNextValidAddress(QString curAddress, QString prefix) const {return "";}
+ virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) const {return "";}
 
 signals:
     

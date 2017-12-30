@@ -18,6 +18,7 @@ public:
  /*public*/ ScriptEngine* getEngineByName(QString shortName);
  /*public*/ void setBindings(Bindings* bindings);
  /*public*/ Bindings* getBindings();
+ /*public*/ QList<ScriptEngineFactory*> getEngineFactories();
 
 signals:
 

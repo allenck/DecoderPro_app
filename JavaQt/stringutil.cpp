@@ -1,4 +1,6 @@
 #include "stringutil.h"
+#include <QLocale>
+#include <QApplication>
 
 StringUtil::StringUtil()
 {
@@ -445,14 +447,15 @@ static /*public*/ java.util.List<String> splitParens(String in) {
     }
     return result;
 }
+#endif
 /**
  * Return String after replacing various special characters with their "escaped" counterpart, to facilitate use with web servers.
  *
  * @param  s String to escape
  * @return String with escaped values
  */
-static /*public*/ String escapeString(String s) {
-    return s.replaceAll(" ","%20").replaceAll("#","%23").replaceAll("&","%26").replaceAll("'","%27").replaceAll("\"","%22").replaceAll("<","%3C").replaceAll(">","%3E");
+/*static*/ /*public*/ QString StringUtil::escapeString(QString s) {
+    return s.replace(" ","%20").replace("#","%23").replace("&","%26").replace("'","%27").replace("\"","%22").replace("<","%3C").replace(">","%3E");
 }
 
 /**
@@ -461,8 +464,14 @@ static /*public*/ String escapeString(String s) {
  * @param s String to unescape
  * @return String with escaped values replaced with regular values
  */
-static /*public*/ String unescapeString(String s) {
-    return s.replaceAll("%20"," ").replaceAll("%23","#").replaceAll("%26","&").replaceAll("%27","'").replaceAll("%22","\"").replaceAll("%3C","<").replaceAll("%3E",">");
+/*static*/ /*public*/ QString StringUtil::unescapeString(QString s) {
+    return s.replace("%20"," ").replace("%23","#").replace("%26","&").replace("%27","'").replace("%22","\"").replace("%3C","<").replace("%3E",">");
 }
 
-#endif
+
+/*private*/ /*static*/ QTranslator* StringUtil::translator = new QTranslator();
+/*public*/ /*static*/ QString StringUtil::stringFormat(QLocale /*locale*/,  QString in)
+{
+ // Doesn't really do anything yet. Placeholder for actual translator to be done later.
+ return in;
+}

@@ -29,7 +29,7 @@
 
  rate = (int) ((SimpleTimebase*)clock)->userGetRate();
 
- init();
+ common();
 }
 AnalogClock2Display::~AnalogClock2Display()
 {
@@ -59,7 +59,7 @@ AnalogClock2Display::~AnalogClock2Display()
  return PositionableLabel::finishClone((Positionable*)pos);
 }
 
-void AnalogClock2Display::init()
+void AnalogClock2Display::common()
 {
  hourX << -12 << -11 << -25 << -10 << -10 << 0 << 10 << 10 << 25 << 11 << 12;
  hourY << -31 << -163 << -170 << -211 << -276 << -285 << -276 << -211 << -170 << -163 << -31;
@@ -168,7 +168,7 @@ void AnalogClock2Display::actActivated() // SLOT[]
 
 /*public*/ void AnalogClock2Display::setScale(double scale) {
     if (scale==1.0) {
-        init();
+        common();
         return;
     }
     //AffineTransform t = AffineTransform.getScaleInstance(scale, scale);
@@ -236,7 +236,8 @@ void AnalogClock2Display::rateChange(int rate) // SLOT[]
  {
   g->removeItem(_itemGroup);
  }
- _itemGroup = new QGraphicsItemGroup();
+ _itemGroup = new MyGraphicsItemGroup();
+ _itemGroup->setName("analogClock");
 
  QPointF locHands = QPointF(getLocation().x() + clockFace.width()/2, getLocation().y()+ clockFace.height()/2);
 

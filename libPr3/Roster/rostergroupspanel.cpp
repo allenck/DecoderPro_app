@@ -347,7 +347,7 @@ void RosterGroupsPanel::on_actButton_Clicked()
   if (_tree->getSelectionPath() != NULL)
   {
 #if 1
-//   if (_tree->getSelectionPath()->getLastPathComponent().toString()==(Roster::ALLENTRIES))
+//   if (_tree->getSelectionPath()->getLastPathComponent().toString()==(Roster::_ALLENTRIES))
    if(_tree->getSelectionPath()->toString() ==(Roster::ALLENTRIES))
    {
 //    allEntriesMenu->show((JComponent) ie.getSource(), actGroupBtn.getX() - actGroupBtn.getWidth(), actGroupBtn.getY() - allEntriesMenu.getPreferredSize().height);

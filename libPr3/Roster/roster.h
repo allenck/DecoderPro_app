@@ -40,6 +40,7 @@ public:
     /*public*/ QString getRosterIndexFileName() ;
     /*public*/ QString getRosterIndexPath();
     /*public*/ Q_DECL_DEPRECATED static QString defaultRosterFilename();
+    /*public*/ void setRosterLocation(QString f);
     /*public*/ QString getRosterLocation();
     /*public*/ Q_DECL_DEPRECATED static void setFileLocation(QString f);
     /*public*/ Q_DECL_DEPRECATED static QString getFileLocation();
@@ -49,6 +50,7 @@ public:
     /*public*/ RosterEntry* entryFromTitle(QString title );
     /*public*/ RosterEntry* getEntryForId(QString id);
     /*public*/ RosterEntry* getEntry(int i );
+    /*public*/ static QString _AllEntries(QLocale locale);
     /*public*/ QString getSelectedRosterGroup();
     /**
      * @return the defaultRosterGroup
@@ -89,6 +91,8 @@ public:
     /*public*/ void renameRosterGroupList(QString oldName, QString newName);
     /*public*/ Q_DECL_DEPRECATED void getRosterGroupList(int i);
     /*public*/ QVector<QString> getRosterGroupList();
+    /*public*/ static QString AllEntries(QLocale /*locale*/);
+
     /**
          * Name of the default roster index file. {@value #DEFAULT_ROSTER_INDEX}
          */
@@ -136,7 +140,7 @@ public:
      * Title of the "All Entries" roster group. As this varies by locale, do not
      * rely on being able to store this value.
      */
-    /*public*/ /*final*/ static QString ALLENTRIES;// = ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ALLENTRIES");
+    /*public*/ /*final*/ static QString ALLENTRIES;// = ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getString("ALLENTRIES");
     static const QString schemaVersion;// = "";
     /*public*/ QMap<QString, RosterGroup*> getRosterGroups();
     /*public*/ void rosterGroupRenamed(QString oldName, QString newName);
@@ -148,7 +152,7 @@ signals:
 
 public slots:
 private:
- Logger log;
+ Logger* log;
  ///*private*/ UserPreferencesManager preferences;
  /*private*/ QString defaultRosterGroup;// = NULL;
  bool readFile(QString name);

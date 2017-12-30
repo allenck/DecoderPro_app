@@ -23,8 +23,11 @@ ManagerDefaultsConfigPaneXml::ManagerDefaultsConfigPaneXml(QObject *parent) :
  * @param o Object to store, ignored
  * @return NULL after others arranged
  */
-/*public*/ QDomElement ManagerDefaultsConfigPaneXml::store(QObject* o) {
-    InstanceManager::configureManagerInstance()->registerPref(ManagerDefaultSelector::instance);
+/*public*/ QDomElement ManagerDefaultsConfigPaneXml::store(QObject* /*o*/) {
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+         if (cm != NULL) {
+             cm->registerPref(InstanceManager::getDefault("ManagerDefaultSelector"));
+         }
     return QDomElement();
 }
 
@@ -32,7 +35,7 @@ ManagerDefaultsConfigPaneXml::ManagerDefaultsConfigPaneXml(QObject *parent) :
  * Create object from XML file
  * @param e Top level QDomElement to unpack.
   */
-/*public*/ bool ManagerDefaultsConfigPaneXml::load(QDomElement e) throw (Exception)
+/*public*/ bool ManagerDefaultsConfigPaneXml::load(QDomElement /*e*/) throw (Exception)
 {
     Logger::error("load(QDomElement) should not have been invoked");
     return false;
@@ -43,7 +46,7 @@ ManagerDefaultsConfigPaneXml::ManagerDefaultsConfigPaneXml(QObject *parent) :
  * @param QDomElement Top level QDomElement to unpack.
  * @param o  ignored
  */
-/*public*/ void ManagerDefaultsConfigPaneXml::load(QDomElement e, QObject* o) throw (Exception){
+/*public*/ void ManagerDefaultsConfigPaneXml::load(QDomElement /*e*/, QObject* /*o*/) throw (Exception){
     Logger::error("Unexpected call of load(QDomElement, Object)");
 }
 // initialize logging

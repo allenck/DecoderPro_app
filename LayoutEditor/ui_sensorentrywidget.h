@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sensorentrywidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -96,12 +96,12 @@ public:
 
     void retranslateUi(QWidget *SensorEntryWidget)
     {
-        SensorEntryWidget->setWindowTitle(QApplication::translate("SensorEntryWidget", "Form", 0));
-        label->setText(QApplication::translate("SensorEntryWidget", "Sensor", 0));
-        edSensor->setText(QApplication::translate("SensorEntryWidget", "undefined", 0));
-        btnDelete->setText(QApplication::translate("SensorEntryWidget", "Delete", 0));
+        SensorEntryWidget->setWindowTitle(QApplication::translate("SensorEntryWidget", "Form", Q_NULLPTR));
+        label->setText(QApplication::translate("SensorEntryWidget", "Sensor", Q_NULLPTR));
+        edSensor->setText(QApplication::translate("SensorEntryWidget", "undefined", Q_NULLPTR));
+        btnDelete->setText(QApplication::translate("SensorEntryWidget", "Delete", Q_NULLPTR));
         iconButton->setText(QString());
-        labelPosition->setText(QApplication::translate("SensorEntryWidget", "Position x", 0));
+        labelPosition->setText(QApplication::translate("SensorEntryWidget", "Position x", Q_NULLPTR));
     } // retranslateUi
 
 };

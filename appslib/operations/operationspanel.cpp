@@ -20,6 +20,10 @@
 #include <gridbaglayout.h>
 #include "htmltextedit.h"
 #include "jtextarea.h"
+#include "tablerowsorter.h"
+#include "optional.h"
+#include "instancemanager.h"
+#include "jtablepersistencemanager.h"
 
 //OperationsPanel::OperationsPanel(QWidget *parent) :
 //  QWidget(parent)
@@ -375,7 +379,7 @@ namespace Operations
          }
      }
  }
-
+#endif
  /**
   * Loads the table's width, position, and sorting status from the user
   * preferences file.
@@ -383,46 +387,47 @@ namespace Operations
   * @param table The table to be adjusted.
   * @return true if table has been adjusted by saved xml file.
   */
- /*public*/ boolean loadTableDetails(JTable table) {
-     UserPreferencesManager p = InstanceManager.getDefault(UserPreferencesManager.class);
-     TableSorter sorter = NULL;
-     String tableref = getWindowFrameRef() + ":table"; // NOI18N
-     if (p == NULL || p.getTablesColumnList(tableref).isEmpty()) {
-         return false;
-     }
-     try {
-         sorter = (TableSorter) table.getModel();
-     } catch (Exception e) {
-         log->debug("table " + tableref + " doesn't use sorter");
-     }
-     // bubble sort
-     int count = 0;
-     while (!sortTable(table, p, tableref) && count < 10) {
-         count++;
-         log->debug("bubble sort pass {}:", count);
-     }
-     // Some tables have more than one name, so use the current one for size
-     for (int i = 0; i < table.getColumnCount(); i++) {
-         String columnName = table.getColumnName(i);
-         int sort = p.getTableColumnSort(tableref, columnName);
-         if (sorter != NULL) {
-             sorter.setSortingStatus(i, sort);
-         }
-         int width = p.getTableColumnWidth(tableref, columnName);
-         if (width != -1) {
-             table.getColumnModel().getColumn(i).setPreferredWidth(width);
-         } else {
-             // name not found so use one that exists
-             String name = p.getTableColumnAtNum(tableref, i);
-             if (name != NULL) {
-                 width = p.getTableColumnWidth(tableref, name);
-                 table.getColumnModel().getColumn(i).setPreferredWidth(width);
-             }
-         }
-     }
+ /*public*/ bool OperationsPanel::loadTableDetails(JTable* table) {
+ if (table->getRowSorter() == NULL)
+ {
+  TableRowSorter/*<? extends TableModel>*/* sorter = new TableRowSorter(table->getModel());
+  table->setRowSorter(sorter);
+  // only sort on columns that are String or Integer
+  for (int i =0; i < table->getColumnCount(); i++)
+  {
+   // TODO: if (table.getColumnClass(i) == String.class || table.getColumnClass(i) == Integer.class)
+   {
+    continue; // allow sorting
+   }
+   sorter->setSortable(i, false);
+  }
+ }
+ // set row height
+ table->setRowHeight( QComboBox().sizeHint().height());
+ // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
+ table->setAutoResizeMode(JTable::AUTO_RESIZE_OFF);
+ // give each cell a bit of space between the vertical lines and text
+ table->setIntercellSpacing(QSize(3,1));
+ // table must have a name
+ table->setName(getWindowFrameRef() + ":table"); // NOI18N
+#if 0
+ Optional<JTablePersistenceManager*>* manager = (Optional<JTablePersistenceManager*>*) InstanceManager::getOptionalDefault("JTablePersistenceManager");
+ if (manager->isPresent()) {
+     manager->get()->resetState(table);
+     manager->get()->persist(table);
      return true;
  }
-
+#else
+ JTablePersistenceManager* manager = (JTablePersistenceManager*) InstanceManager::getOptionalDefault("JTablePersistenceManager");
+ if (manager != NULL) {
+     manager->resetState(table);
+     manager->persist(table);
+     return true;
+ }
+#endif
+ return false;
+}
+#if 0
  private boolean sortTable(JTable table, UserPreferencesManager p, String tableref) {
      boolean sortDone = true;
      for (int i = 0; i < table.getColumnCount(); i++) {
@@ -552,12 +557,14 @@ namespace Operations
          }
      }
  }
-
- /*protected*/ QString getWindowFrameRef() {
-     if (this.getTopLevelAncestor() instanceof JmriJFrame) {
-         return ((JmriJFrame) this.getTopLevelAncestor()).getWindowFrameRef();
-     }
-     return NULL;
- }
 #endif
+ /*protected*/ QString OperationsPanel::getWindowFrameRef() {
+     //if (this.getTopLevelAncestor() instanceof JmriJFrame)
+ if(qobject_cast<JmriJFrame*>(this->window()))
+  {
+      return ((JmriJFrame*) this->window())->getWindowFrameRef();
+  }
+  return NULL;
+ }
+
 }

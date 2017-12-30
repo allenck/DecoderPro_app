@@ -9,6 +9,22 @@
 #include <QMenu>
 //#include "editor.h"
 #include <QLabel>
+#include <QGraphicsItemGroup>
+#include "exceptions.h"
+
+class MyGraphicsItemGroup : public QGraphicsItemGroup
+{
+ QString _name;
+public:
+ enum { Type = 65536 + 1 };
+ int type() const
+ {
+  // Enable the use of qgraphicsitem_cast with this item.
+  return Type;
+ }
+ void setName(QString name) { this->_name = name;}
+ QString name() { return _name;}
+};
 
 class QGraphicsScene;
 class QGraphicsTextItem;
@@ -146,7 +162,7 @@ public:
         */
         /*public*/ virtual PositionablePopupUtil* getPopupUtility() {return NULL;}
         /*public*/ virtual void setPopupUtility(PositionablePopupUtil* /*tu*/) {}
-        /*public*/ virtual NamedBean* getNamedBean() {return NULL;}
+        /*public*/ virtual NamedBean* getNamedBean() {throw NullPointerException();}
         // Mouse-handling events.  See
         // Editor class for more information on how these are used.
         /*public*/ virtual void doMousePressed(QGraphicsSceneMouseEvent* /*event*/) {}
@@ -185,13 +201,15 @@ public:
         /*public*/ virtual bool requestFocusInWindow() {return false;}
     QGraphicsItem* getItem();
     void setItem(QGraphicsTextItem* item);
-    QGraphicsItemGroup* _itemGroup;
-    QGraphicsItemGroup* _handleGroup;
+    MyGraphicsItemGroup* _itemGroup;
+    MyGraphicsItemGroup* _handleGroup;
+    virtual QString getGroupName() { return "Positionable";}
+
 #if QT_VERSION >= 0x050000
     virtual void languageChange() {}
 #endif
     virtual bool updateScene() { return false;}
-    virtual void setLevel(int level) {}
+    virtual void setLevel(int /*level*/) {}
     virtual void paint(QGraphicsScene*) {}
 signals:
     

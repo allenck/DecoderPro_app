@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addeditlightcontroldialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -255,38 +255,38 @@ public:
 
     void retranslateUi(QDialog *AddEditLightControlDialog)
     {
-        AddEditLightControlDialog->setWindowTitle(QApplication::translate("AddEditLightControlDialog", "Dialog", 0));
-        label->setText(QApplication::translate("AddEditLightControlDialog", "Control Type:", 0));
+        AddEditLightControlDialog->setWindowTitle(QApplication::translate("AddEditLightControlDialog", "Dialog", Q_NULLPTR));
+        label->setText(QApplication::translate("AddEditLightControlDialog", "Control Type:", Q_NULLPTR));
         comboBox->clear();
         comboBox->insertItems(0, QStringList()
-         << QApplication::translate("AddEditLightControlDialog", "None", 0)
-         << QApplication::translate("AddEditLightControlDialog", "By Sensor", 0)
-         << QApplication::translate("AddEditLightControlDialog", "By Fast Clock", 0)
-         << QApplication::translate("AddEditLightControlDialog", "By Turnout Status", 0)
-         << QApplication::translate("AddEditLightControlDialog", "By Timed On", 0)
-         << QApplication::translate("AddEditLightControlDialog", "By Two Sensors", 0)
+         << QApplication::translate("AddEditLightControlDialog", "None", Q_NULLPTR)
+         << QApplication::translate("AddEditLightControlDialog", "By Sensor", Q_NULLPTR)
+         << QApplication::translate("AddEditLightControlDialog", "By Fast Clock", Q_NULLPTR)
+         << QApplication::translate("AddEditLightControlDialog", "By Turnout Status", Q_NULLPTR)
+         << QApplication::translate("AddEditLightControlDialog", "By Timed On", Q_NULLPTR)
+         << QApplication::translate("AddEditLightControlDialog", "By Two Sensors", Q_NULLPTR)
         );
-        lblNoControl->setText(QApplication::translate("AddEditLightControlDialog", "No Automated Control Selected", 0));
-        lblSensor->setText(QApplication::translate("AddEditLightControlDialog", "Sensor Name:", 0));
-        lblSensorState->setText(QApplication::translate("AddEditLightControlDialog", "Sense for ON", 0));
+        lblNoControl->setText(QApplication::translate("AddEditLightControlDialog", "No Automated Control Selected", Q_NULLPTR));
+        lblSensor->setText(QApplication::translate("AddEditLightControlDialog", "Sensor Name:", Q_NULLPTR));
+        lblSensorState->setText(QApplication::translate("AddEditLightControlDialog", "Sense for ON", Q_NULLPTR));
         cbSensorState->clear();
         cbSensorState->insertItems(0, QStringList()
-         << QApplication::translate("AddEditLightControlDialog", "Active", 0)
-         << QApplication::translate("AddEditLightControlDialog", "Inactive", 0)
+         << QApplication::translate("AddEditLightControlDialog", "Active", Q_NULLPTR)
+         << QApplication::translate("AddEditLightControlDialog", "Inactive", Q_NULLPTR)
         );
-        lblTimeOn->setText(QApplication::translate("AddEditLightControlDialog", "Time on (hh:mm)", 0));
-        lblTimeOff->setText(QApplication::translate("AddEditLightControlDialog", "Time off (hh:mm)", 0));
-        lblTurnoutName->setText(QApplication::translate("AddEditLightControlDialog", "Turnout Name", 0));
-        lblStatusTurnout->setText(QApplication::translate("AddEditLightControlDialog", "Status for ON", 0));
+        lblTimeOn->setText(QApplication::translate("AddEditLightControlDialog", "Time on (hh:mm)", Q_NULLPTR));
+        lblTimeOff->setText(QApplication::translate("AddEditLightControlDialog", "Time off (hh:mm)", Q_NULLPTR));
+        lblTurnoutName->setText(QApplication::translate("AddEditLightControlDialog", "Turnout Name", Q_NULLPTR));
+        lblStatusTurnout->setText(QApplication::translate("AddEditLightControlDialog", "Status for ON", Q_NULLPTR));
         cbStatusTurnout->clear();
         cbStatusTurnout->insertItems(0, QStringList()
-         << QApplication::translate("AddEditLightControlDialog", "Closed", 0)
-         << QApplication::translate("AddEditLightControlDialog", "Thrown", 0)
+         << QApplication::translate("AddEditLightControlDialog", "Closed", Q_NULLPTR)
+         << QApplication::translate("AddEditLightControlDialog", "Thrown", Q_NULLPTR)
         );
-        lblTriggerSensor->setText(QApplication::translate("AddEditLightControlDialog", "Trigger Sensor Name", 0));
-        lblDuration->setText(QApplication::translate("AddEditLightControlDialog", "Duration ON (msec)", 0));
-        btnCreate->setText(QApplication::translate("AddEditLightControlDialog", "Create", 0));
-        btnCancel->setText(QApplication::translate("AddEditLightControlDialog", "Cancel", 0));
+        lblTriggerSensor->setText(QApplication::translate("AddEditLightControlDialog", "Trigger Sensor Name", Q_NULLPTR));
+        lblDuration->setText(QApplication::translate("AddEditLightControlDialog", "Duration ON (msec)", Q_NULLPTR));
+        btnCreate->setText(QApplication::translate("AddEditLightControlDialog", "Create", Q_NULLPTR));
+        btnCancel->setText(QApplication::translate("AddEditLightControlDialog", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

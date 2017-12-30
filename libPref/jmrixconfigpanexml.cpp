@@ -3,6 +3,7 @@
 
 #include "metatypes.h"
 #include "progdefault.h"
+#include "class.h"
 
 JmrixConfigPaneXml::JmrixConfigPaneXml(QObject *parent) :
   AbstractXmlAdapter(parent)

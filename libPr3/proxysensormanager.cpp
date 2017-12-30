@@ -1,4 +1,6 @@
 #include "proxysensormanager.h"
+#include "internalsystemconnectionmemo.h"
+#include "instancemanager.h"
 
 ProxySensorManager::ProxySensorManager()
 {
@@ -21,8 +23,9 @@ ProxySensorManager::ProxySensorManager()
 //        super();
 //    }
 
-/*protected*/ AbstractManager* ProxySensorManager::makeInternalManager() {
-    return new InternalSensorManager();
+/*protected*/ Manager* ProxySensorManager::makeInternalManager() const
+{
+  return ((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
 }
 
 /**
@@ -198,12 +201,12 @@ ProxySensorManager::ProxySensorManager()
 //}
 
 /* @(#)ProxySensorManager.java */
-/*private*/ AbstractManager* ProxySensorManager::getInternal()
-{
- if (internalManager == NULL)
-  internalManager = makeInternalManager();
- return internalManager;
-}
+///*private*/ AbstractManager* ProxySensorManager::getInternal()
+//{
+// if (internalManager == NULL)
+//  internalManager = makeInternalManager();
+// return internalManager;
+//}
 QCompleter* ProxySensorManager::getCompleter(QString text)
 {
  if(text.length()>0)

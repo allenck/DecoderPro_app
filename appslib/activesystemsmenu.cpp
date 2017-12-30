@@ -4,6 +4,8 @@
 #include "activeflag.h"
 #include "loconetmenu.h"
 #include "loconetsystemconnectionmemo.h"
+#include "class.h"
+
 //ActiveSystemsMenu::ActiveSystemsMenu(QWidget *parent) :
 //  QMenu(parent)
 //{
@@ -143,7 +145,7 @@ void ActiveSystemsMenu::common()
 #endif
  if(ActiveFlag::isActive())
  {
-  m->addMenu(LocoNetMenu::instance((LocoNetSystemConnectionMemo*)InstanceManager::instance()->getDefault("SystemConnectionMemo"),(QWidget*)m->parent()));
+  m->addMenu(LocoNetMenu::instance((LocoNetSystemConnectionMemo*)InstanceManager::instance()->getDefault("LocoNetSystemConnectionMemo"),(QWidget*)m->parent()));
  }
 }
 
@@ -151,7 +153,7 @@ void ActiveSystemsMenu::common()
  * Add active systems as submenus inside a single menu entry. Only used in
  * JmriDemo, which has a huge number of menus
  */
-/*static*/ /*public*/ void ActiveSystemsMenu::addItems(QMenu* m) {
+/*static*/ /*public*/ void ActiveSystemsMenu::addItems(QMenu* /*m*/) {
     //ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrix.JmrixSystemsBundle");
 #if 0
     // the following is somewhat brute-force!
@@ -219,12 +221,12 @@ void ActiveSystemsMenu::common()
 
 /*static*/ QMenu* ActiveSystemsMenu::getMenu(QString className)
 {
-#if 0
+#if 1
     try {
-        return (JMenu) Class.forName(className).newInstance();
+        return (QMenu*) Class::forName(className)->newInstance();
     } catch (Exception e) {
-        log.error("Could not load class " + className, e);
-        return null;
+        Logger::error("Could not load class " + className, e.getMessage());
+        return NULL;
     }
 #endif
 }

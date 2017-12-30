@@ -27,6 +27,7 @@
 #include "lighttabletabaction.h"
 #include "ds64panel.h"
 #include "dispatcheraction.h"
+#include "withrottlecreationaction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -126,9 +127,9 @@ addAction(ta);
  throttleMenu.add(new LoadDefaultXmlThrottlesLayoutAction(tr("MenuItemLoadDefaultThrottleLayout")));
  //throttleMenu.addSeparator();
  //throttleMenu.add(new jmri.jmrit.throttle.ThrottlesPreferencesAction(tr("MenuItemThrottlesPreferences"))); // now in tabbed preferences
- throttleMenu.add(new JSeparator());
- throttleMenu.add(new jmri.jmrit.withrottle.WiThrottleCreationAction(tr("MenuItemStartWiThrottle")));
 #endif
+ throttleMenu->addSeparator();
+ throttleMenu->addAction(new WiThrottleCreationAction(tr("Start WiThrottle"),this));
  addMenu(throttleMenu);
 
 

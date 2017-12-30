@@ -3,11 +3,13 @@
 LargePowerManagerButton::LargePowerManagerButton(QWidget *parent) :
     PowerManagerButton(parent)
 {
+ loadIcons();
 }
 // /*public*/ class LargePowerManagerButton extends PowerManagerButton {
 
 /*public*/ LargePowerManagerButton::LargePowerManagerButton(bool fullText, QWidget* parent) : PowerManagerButton(fullText, parent){
     //super(fullText);
+ loadIcons();
 }
 
 ///*public*/ LargePowerManagerButton() {

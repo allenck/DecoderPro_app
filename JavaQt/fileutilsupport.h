@@ -2,6 +2,8 @@
 #define FILEUTILSUPPORT_H
 
 #include "bean.h"
+#include "exceptions.h"
+#include <QDir>
 
 class Logger;
 class File;
@@ -9,10 +11,39 @@ class FileUtilSupport : public Bean
 {
 public:
  FileUtilSupport();
+ /*public*/ File* getFile(QString path) throw (FileNotFoundException);
+ /*public*/ QUrl* getURL(QString path) throw (FileNotFoundException);
+ /*public*/ QString getExternalFilename(QString pName);
+ /*public*/ QString getAbsoluteFilename(QString path);
+ /*public*/ QString getPortableFilename(File* file);
+ /*public*/ QString getPortableFilename(File* file, bool ignoreUserFilesPath, bool ignoreProfilePath);
+ /*public*/ QString getPortableFilename(QString filename);
+ /*public*/ QString getPortableFilename(QString filename, bool ignoreUserFilesPath, bool ignoreProfilePath);
+ /*public*/ bool isPortableFilename(QString filename);
  /*public*/ QString getHomePath();
+ /*public*/ QString getUserFilesPath() ;
+ /*public*/ void setUserFilesPath(QString path) ;
+ /*public*/ QString getProfilePath();
+ /*public*/ void setProfilePath(QString path);
+ /*public*/ QString getPreferencesPath();
+ /*public*/ QString getProgramPath();
+ /*public*/ void setProgramPath(QString path);
+ /*public*/ void setProgramPath(File* path);
+ /*public*/ QString getUserResourcePath();
+ /*public*/ void logFilePaths();
+  /*public*/ QString getScriptsPath();
+  /*public*/ void setScriptsPath(QString path);
+
  /*public*/ void backup(File* file); //throws IOException
  /*public*/ void rotate(/*@NonNULL*/ File* file, int max, QString extension);// //throws IOException
  /*public*/ static FileUtilSupport* getDefault();
+ /*public*/ QStringList* findProgramPath();
+ /*public*/ QString readURL(QUrl url) throw (IOException);
+ /*public*/ QString sanitizeFilename(QString name);
+ /*public*/ void createDirectory(QString path);
+ /*public*/ void createDirectory(File* dir);
+ /*public*/ bool _delete(File* path);
+ /*public*/ void copy(File* source, File* dest) throw (IOException);
 
 private:
  /*private*/ static /*final*/ QString homePath;// = System.getProperty("user.home") + File.separator; // NOI18N
@@ -34,6 +65,8 @@ private:
  Logger* log;
  // default instance
  /*volatile*/ /*private*/ static FileUtilSupport* defaultInstance;// = null;
+ /*private*/ QString pathFromPortablePath(/*@Nonnull*/ QString path);
+ /*private*/ void scanDir(QDir start, QStringList *paths, int depth);
 
 
 };

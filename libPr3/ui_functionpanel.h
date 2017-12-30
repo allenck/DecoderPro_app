@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'functionpanel.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -176,25 +176,25 @@ public:
 
     void retranslateUi(QDockWidget *FunctionPanel)
     {
-        FunctionPanel->setWindowTitle(QApplication::translate("FunctionPanel", "DockWidget", 0));
-        btnF1->setText(QApplication::translate("FunctionPanel", "F1", 0));
-        btnF2->setText(QApplication::translate("FunctionPanel", "F2", 0));
-        btnF3->setText(QApplication::translate("FunctionPanel", "F3", 0));
-        btnHash->setText(QApplication::translate("FunctionPanel", "#", 0));
-        btnF15->setText(QApplication::translate("FunctionPanel", "F15", 0));
-        btnF12->setText(QApplication::translate("FunctionPanel", "F12", 0));
-        btnF9->setText(QApplication::translate("FunctionPanel", "F9", 0));
-        btnF6->setText(QApplication::translate("FunctionPanel", "F6", 0));
-        btnF5->setText(QApplication::translate("FunctionPanel", "F5", 0));
-        btnF8->setText(QApplication::translate("FunctionPanel", "F8", 0));
-        btnLight->setText(QApplication::translate("FunctionPanel", "Light", 0));
-        btnStar->setText(QApplication::translate("FunctionPanel", "*", 0));
-        btnF13->setText(QApplication::translate("FunctionPanel", "F13", 0));
-        btnF10->setText(QApplication::translate("FunctionPanel", "F10", 0));
-        btnF7->setText(QApplication::translate("FunctionPanel", "F7", 0));
-        btnF4->setText(QApplication::translate("FunctionPanel", "F4", 0));
-        btnF11->setText(QApplication::translate("FunctionPanel", "F11", 0));
-        btnF14->setText(QApplication::translate("FunctionPanel", "F14", 0));
+        FunctionPanel->setWindowTitle(QApplication::translate("FunctionPanel", "DockWidget", Q_NULLPTR));
+        btnF1->setText(QApplication::translate("FunctionPanel", "F1", Q_NULLPTR));
+        btnF2->setText(QApplication::translate("FunctionPanel", "F2", Q_NULLPTR));
+        btnF3->setText(QApplication::translate("FunctionPanel", "F3", Q_NULLPTR));
+        btnHash->setText(QApplication::translate("FunctionPanel", "#", Q_NULLPTR));
+        btnF15->setText(QApplication::translate("FunctionPanel", "F15", Q_NULLPTR));
+        btnF12->setText(QApplication::translate("FunctionPanel", "F12", Q_NULLPTR));
+        btnF9->setText(QApplication::translate("FunctionPanel", "F9", Q_NULLPTR));
+        btnF6->setText(QApplication::translate("FunctionPanel", "F6", Q_NULLPTR));
+        btnF5->setText(QApplication::translate("FunctionPanel", "F5", Q_NULLPTR));
+        btnF8->setText(QApplication::translate("FunctionPanel", "F8", Q_NULLPTR));
+        btnLight->setText(QApplication::translate("FunctionPanel", "Light", Q_NULLPTR));
+        btnStar->setText(QApplication::translate("FunctionPanel", "*", Q_NULLPTR));
+        btnF13->setText(QApplication::translate("FunctionPanel", "F13", Q_NULLPTR));
+        btnF10->setText(QApplication::translate("FunctionPanel", "F10", Q_NULLPTR));
+        btnF7->setText(QApplication::translate("FunctionPanel", "F7", Q_NULLPTR));
+        btnF4->setText(QApplication::translate("FunctionPanel", "F4", Q_NULLPTR));
+        btnF11->setText(QApplication::translate("FunctionPanel", "F11", Q_NULLPTR));
+        btnF14->setText(QApplication::translate("FunctionPanel", "F14", Q_NULLPTR));
     } // retranslateUi
 
 };

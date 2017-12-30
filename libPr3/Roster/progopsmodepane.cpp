@@ -205,7 +205,7 @@ void ProgOpsModePane::programmerSelected()
    buttonPool.append(button);
    modeGroup->addButton(button);
    //button.addActionListener(this);
-   connect(button, SIGNAL(clicked()), this, SLOT(actionPerformed(ActionEvent*)));
+   connect(button, SIGNAL(clicked()), this, SLOT(actionPerformed()));
    layout->addWidget(button); // add to GUI
   }
   // configure next button in pool

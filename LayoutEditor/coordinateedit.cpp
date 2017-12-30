@@ -9,15 +9,7 @@
 Positionable* CoordinateEdit::pos = NULL;
 QString CoordinateEdit::title = "";
 
-CoordinateEdit::CoordinateEdit(QWidget *parent) : JmriJFrame("<CoordinateEdit>", false,false, parent)
-{
- this->parent = parent;
- nameText = new QLabel();
- okButton = new QPushButton();
- cancelButton = new QPushButton();
- setMinimumSize(200,100);
- log = new Logger("CoordinateEdit");
-}
+
 /**
  * Displays and allows user to modify x & y coordinates of
  * positionable labels
@@ -69,8 +61,8 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : JmriJFrame("<CoordinateEdit>",
 void CoordinateEdit::on_setXYAction_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
- //f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("SetXY"), pos, true);
+ f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+ f->init(tr("Set x & y%1").arg(""), pos, true);
  f->initSetXY();
  f->setVisible(true);
  //f->setLocationRelativeTo((Component)pos);
@@ -98,7 +90,7 @@ void CoordinateEdit::on_levelEditAction_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("Change display level"),pos,true);
+ f->init(tr("Set Level%1").arg(""), pos,true);
  f->initSetLevel();
  f->setVisible(true);
  //                f.setLocationRelativeTo((Component)pos);
@@ -128,7 +120,7 @@ void TooltipEditAction::actionPerformed(ActionEvent *)
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("Set Tooltip"), pos, true);
+ f->init(tr("Set Tooltip%1").arg(""),pos, true);
  f->initSetTip();
  f->setVisible(true);
 // f->setLocationRelativeTo((QObject*)pos);
@@ -164,7 +156,7 @@ void SetBorderSizeActionListener::actionPerformed(ActionEvent */*e*/)
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("Set Border Size"), CoordinateEdit::pos, true);
+ f->init(tr("Set Border Size%1").arg(""),CoordinateEdit::pos, true);
  f-> initBorder();
  f->setVisible(true);
 }
@@ -191,8 +183,8 @@ void PositionablePopupUtil::on_actionMarginEdit_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
 
- //f.addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("SetMarginSize"), CoordinateEdit::pos, true);
+ f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+ f->init(tr("Set Margin Size%1").arg(""), CoordinateEdit::pos, true);
  f->initMargin();
  f->setVisible(true);
  //                f.setLocationRelativeTo((Component)pos);
@@ -221,8 +213,8 @@ void PositionablePopupUtil::on_actionMarginEdit_triggered()
 void PositionablePopupUtil::on_actionGetFixedSizeEdit_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
- //f.addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("SetFixedSize"), CoordinateEdit::pos, true);
+ f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+ f->init(tr("Set Fixed Size%1").arg(""), CoordinateEdit::pos, true);
  f->initFixedSize();
  f->setVisible(true);
     //                f.setLocationRelativeTo((Component)pos);
@@ -280,7 +272,7 @@ void CoordinateEdit::on_getScaleEditAction_triggered()
 {
     CoordinateEdit* f = new CoordinateEdit();
     //f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
-    f->init(tr("scale"), pos, true);
+    f->init(tr("Scale percentage: %1").arg(""), pos, true);
     f->initScale();
     f->setVisible(true);
     //f.setLocationRelativeTo((Component)pos);
@@ -347,11 +339,16 @@ void CoordinateEdit::on_getTextEditAction_triggered()
 //    f->setLocationRelativeTo(pos->getEditor()->getTargetPanel());
 }
     //////////////////////////////////////////////////////////////
+CoordinateEdit::CoordinateEdit(QWidget *parent) : JmriJFrame("<CoordinateEdit>", false,false, parent)
+{
+ this->parent = parent;
+ nameText = new QLabel();
+ okButton = new QPushButton();
+ cancelButton = new QPushButton();
+ setMinimumSize(200,100);
+ log = new Logger("CoordinateEdit");
+}
 #if 0
-    /*public*/ CoordinateEdit() {
-        super(false, false);
-    }
-
     /*public*/ void windowClosed(java.awt.event.WindowEvent e) {
         super.windowClosed(e);
     }
@@ -363,7 +360,7 @@ void CoordinateEdit::on_getTextEditAction_triggered()
  if (showName)
  {
   //nameText->setText(/*java.text.MessageFormat.format(Bundle.getMessage("namelabel"),*/ ((PositionableLabel*)pos)->getNameString());
-  nameText->setText(QString("Name: ")+ ((PositionableLabel *)pos)->getNameString());
+  nameText->setText(QString("Name: %1").arg(((PositionableLabel *)pos)->getNameString()));
   nameText->setVisible(true);
  }
  okButton->setText(tr("Set"));

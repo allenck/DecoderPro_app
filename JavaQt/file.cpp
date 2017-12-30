@@ -146,7 +146,13 @@
     }
     return status == INVALID;
 #else
-    return false;
+ QFileInfo info(path);
+ if(info.exists())
+  return false;
+ QDir d(info.absolutePath());
+ if(d.exists())
+  return false;
+ return true;
 #endif
 }
 
@@ -212,8 +218,8 @@ int File::getPrefixLength() {
 /*private*/ File::File(QString child, File* parent, QObject* oparent)
     : QObject(oparent)
 {
-//    Q_ASSERT (parent->path != "");
-//    Q_ASSERT (parent->path != (""));
+  Q_ASSERT (!parent->path.isNull());
+  Q_ASSERT (parent->path != (""));
     //this->path = fs.resolve(parent.path, child);
     this->path= QFileInfo(parent->path).absoluteFilePath() + File::separator + child;
     this->prefixLength = parent->prefixLength;
@@ -232,17 +238,12 @@ int File::getPrefixLength() {
     : QObject(parent)
 {
  Logger log("File");
- QString pathname(inpathname);
- if (pathname == "")
+ if (inpathname.isNull())
  {
-  //throw new NullPointerException();
-  log.warn(QString("Cannot convert %1 into a usable filename.").arg(path));
+  throw new NullPointerException();
  }
- this->path = /*fs.normalize(pathname);*/ QFileInfo(pathname).canonicalFilePath();
- if(path == "")
-  path = pathname;
- this->prefixLength = /*fs.prefixLength(this.path);*/ QFileInfo(pathname).canonicalPath().length();
- if (log.isDebugEnabled()) log.debug("path set to: " + path);
+ this->path = inpathname; //fs.normalize(pathname);
+ this->prefixLength = getParent().length(); /*fs.prefixLength(this.path);*/
 }
 
 /* Note: The two-argument File constructors do not interpret an empty
@@ -280,7 +281,7 @@ int File::getPrefixLength() {
 /*public*/ File::File(QString parent, QString child, QObject* obj)
     : QObject(obj)
 {
- if (child == "")
+ if (child.isNull())
  {
   throw new NullPointerException();
  }
@@ -335,7 +336,7 @@ int File::getPrefixLength() {
 /*public*/ File::File(File* parent, QString child, QObject* obj)
     : QObject(obj)
 {
- if (child == "")
+ if (child.isNull())
  {
   throw new NullPointerException();
  }
@@ -610,11 +611,12 @@ int File::getPrefixLength() {
  */
 /*public*/ QString File::getCanonicalPath() /*throws IOException*/
 {
-//    if (isInvalid()) {
-//        throw new IOException("Invalid file path");
-//    }
+    if (isInvalid()) {
+        throw new IOException("Invalid file path");
+    }
 //    return fs.canonicalize(fs.resolve(this));
-    return QFileInfo(path).canonicalFilePath();
+ QString p = QFileInfo(path).canonicalFilePath();
+ return p;
 }
 
 /**

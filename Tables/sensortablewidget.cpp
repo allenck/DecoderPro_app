@@ -4,9 +4,9 @@
 #include "instancemanager.h"
 #include "abstractsensor.h"
 #include "lnsensor.h"
-#include "../LayoutEditor/systemnamecomparator.h"
+#include "systemnamecomparator.h"
 #include "sensortableaction.h"
-#include "../LayoutEditor/sensortabledatamodel.h"
+#include "sensortabledatamodel.h"
 #include <QSortFilterProxyModel>
 #include "xtablecolumnmodel.h"
 

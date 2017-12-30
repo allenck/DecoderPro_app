@@ -2,16 +2,16 @@
 #include <QStringList>
 #include "exceptions.h"
 #include "instancemanager.h"
+#include "loggerfactory.h"
 
 AbstractTurnoutManager::AbstractTurnoutManager(QObject *parent) :
     TurnoutManager(parent)
 {
- log = new Logger("AbstractTurnoutManager");
- registerSelf();
- TurnoutOperationManager::getInstance();		// force creation of an instance
  defaultClosedSpeed = "Normal";
  defaultThrownSpeed = "Restricted";
- //turnoutMap.clear();
+ registerSelf(); //??
+ TurnoutOperationManager::getInstance();		// force creation of an instance
+ // TODO: ((SensorManager*)InstanceManager::sensorManagerInstance())->addVetoableChangeListener(this);
 }
 /**
  * Abstract partial implementation of a TurnoutManager.
@@ -30,7 +30,8 @@ AbstractTurnoutManager::AbstractTurnoutManager(QObject *parent) :
 int AbstractTurnoutManager::getXMLOrder(){
     return Manager::TURNOUTS;
 }
-    //protected int xmlorder = 20;
+
+//protected int xmlorder = 20;
 char AbstractTurnoutManager::typeLetter() { return 'T'; }
 
 Turnout* AbstractTurnoutManager::provideTurnout(QString name)
@@ -357,4 +358,4 @@ QString AbstractTurnoutManager::getDefaultClosedSpeed(){
     return defaultClosedSpeed;
 }
 
-    //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractTurnoutManager.class.getName());
+/*private*/ /*final*/ /*static*/ Logger* AbstractTurnoutManager::log = LoggerFactory::getLogger("AbstractTurnoutManager");

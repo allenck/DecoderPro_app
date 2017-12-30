@@ -155,14 +155,21 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 /*public*/ void AppConfigBase::saveContents()
 {
  // remove old prefs that are registered in ConfigManager
- InstanceManager::configureManagerInstance()->removePrefItems();
- // put the new GUI items on the persistance list
- foreach (PreferencesPanel* panel, getPreferencesPanels()->values())
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if (cm != NULL)
  {
-  //InstanceManager::configureManagerInstance()->registerPref((QObject*)item);
-  registerWithConfigureManager(panel);
+  cm->removePrefItems();
  }
- InstanceManager::configureManagerInstance()->storePrefs();
+ // put the new GUI managedPreferences on the persistance list
+ //this->getPreferencesPanels()->values().stream().forEach((panel) ->
+ foreach(PreferencesPanel* panel, this->getPreferencesPanels()->values())
+ {
+  this->registerWithConfigureManager(panel);
+ }//);
+ if (cm != NULL)
+ {
+  cm->storePrefs();
+ }
 }
 
 /*private*/ void AppConfigBase::registerWithConfigureManager(PreferencesPanel* panel)

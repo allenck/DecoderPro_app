@@ -2,6 +2,7 @@
 #define LISTSELECTIONMODEL_H
 #include <QObject>
 #include "javaqt_global.h"
+#include <QAbstractItemView>
 /**
  * This interface represents the current state of the
  * selection for any of the components that display a
@@ -30,7 +31,7 @@
      *
      * @see #setSelectionMode
      */
-     SINGLE_SELECTION = 0,
+     SINGLE_SELECTION = QAbstractItemView::SingleSelection,
 
     /**
      * A value for the selectionMode property: select one contiguous
@@ -38,7 +39,7 @@
      *
      * @see #setSelectionMode
      */
-     SINGLE_INTERVAL_SELECTION = 1,
+     SINGLE_INTERVAL_SELECTION = QAbstractItemView::MultiSelection,
 
     /**
      * A value for the selectionMode property: select one or more
@@ -46,7 +47,7 @@
      *
      * @see #setSelectionMode
      */
-     MULTIPLE_INTERVAL_SELECTION = 2
+     MULTIPLE_INTERVAL_SELECTION = QAbstractItemView::ContiguousSelection
     };
 
     /**

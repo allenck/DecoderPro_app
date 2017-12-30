@@ -265,7 +265,7 @@ void IdTagBeanTableDataModel::configureTable(JTable *table)
 
 //@Override
 /*protected*/ QString IdTagBeanTableDataModel::getMasterClassName() {
-    return act->getClassName();
+    return /*act->getClassName();*/ "jmri.jmrit.beantable.IdTagTableAction";
 }
 
 //@Override
@@ -421,5 +421,5 @@ void FastClockUsedActionListener::actionPerformed()
 
 //@Override
 /*protected*/ QString IdTagTableAction::getClassName() {
-    return "IdTagTableAction";
+    return "jmri.jmrit.beantable.IdTagTableAction";
 }

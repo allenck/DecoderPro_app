@@ -2,7 +2,9 @@
 #define FILELOCATIONPANE_H
 #include "preferencespanel.h"
 #include "libpref_global.h"
+#include "abstractaction.h"
 
+class JFileChooser;
 class JTextField;
 class LIBPREFSHARED_EXPORT FileLocationPane : public PreferencesPanel
 {
@@ -36,14 +38,31 @@ signals:
 
 public slots:
     void On_fileSelected(QString file);
+    /*private*/ void programLocationChange(QString loc);
 
 private:
     /*private*/ bool restartRequired;// = false;
     /*private*/ /*final*/ JTextField* scriptLocation;// = new JTextField();
     /*private*/ /*final*/ JTextField* userLocation;// = new JTextField();
+    /*private*/ /*final*/ JTextField* programLocation;// = new JTextField();
+
     /*private*/ QWidget* PrefLocation();
     /*private*/ void common();
+    /*private*/ QWidget* ScriptsLocation();
+    /*final*/ JFileChooser* fcScript;
+    /*private*/ QWidget* ProgramLocation();
 
+};
+
+/*private*/ class OpenAction : public AbstractAction {
+ Q_OBJECT
+    JFileChooser* chooser;
+    JTextField* field;
+    FileLocationPane* pane;
+public:
+    OpenAction(JFileChooser* chooser, JTextField* field, FileLocationPane* pane);
+public slots:
+    /*public*/ void actionPerformed(ActionEvent* e = 0);
 };
 
 #endif // FILELOCATIONPANE_H

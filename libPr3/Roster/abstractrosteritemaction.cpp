@@ -213,5 +213,5 @@ void AbstractRosterItemAction::addToEntryToRoster()
 
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* AbstractRosterItemAction::makePanel() {
-    throw new IllegalArgumentException("Should not be invoked");
+    throw IllegalArgumentException("Should not be invoked");
 }

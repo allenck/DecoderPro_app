@@ -22,6 +22,7 @@ private:
     /*private*/ void storeLocation(QDomElement locations, QString attr, QString value);
     /*private*/ void storeUserFilesLocation(QDomElement locations, QString value);
     /*private*/ QString loadUserLocations(QDomElement messages, QString attr);
+    /*private*/ void storeProgramFilesLocation(QDomElement locations, QString value);
 
 };
 Q_DECLARE_METATYPE(FileLocationPaneXml)

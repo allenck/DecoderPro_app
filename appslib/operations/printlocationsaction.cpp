@@ -962,7 +962,7 @@ namespace Operations
 
      }
 
-     /*public*/ void LocationPrintOptionFrame::buttonActionPerformed(QWidget* ae) {
+     /*public*/ void LocationPrintOptionFrame::buttonActionPerformed(QWidget* /*ae*/) {
          setVisible(false);
          pla->printLocations();
      }

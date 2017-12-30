@@ -2,7 +2,17 @@
 #define AUTOACTIVETRAIN_H
 
 #include <QObject>
+#include "runnable.h"
 
+class PropertyChangeEvent;
+class DccLocoAddress;
+class Logger;
+class Sensor;
+class PropertyChangeListener;
+class Block;
+class Section;
+class SignalHead;
+class SignalMast;
 class RosterEntry;
 class LayoutBlockManager;
 class AutoEngineer;
@@ -74,12 +84,18 @@ public:
  /*public*/ void setSoundDecoder(bool set);
  /*public*/ float getMaxTrainLength();
  /*public*/ void setMaxTrainLength(float length);
+ /*public*/ static int getRampRateFromName(QString rampRate);
+ /*public*/ bool initialize();
 
 signals:
 
 public slots:
+ /*public*/ void notifyThrottleFound(DccThrottle* t);
+ /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
+ /*public*/ void on_sensorChange(PropertyChangeEvent* e);
 
 private:
+ Logger * log;
  // operational instance variables
  /*private*/ ActiveTrain* _activeTrain;// = null;
  /*private*/ AutoTrainAction* _autoTrainAction;// = null;
@@ -110,10 +126,106 @@ private:
   RosterEntry* re;// = NULL;
   bool useSpeedProfile;// = false;
 
+  /*private*/ bool _initialized; // =  false;
+  /*private*/ Section* _nextSection; // =  NULL;	                     // train has not reached this Section yet
+  /*private*/ /*volatile*/ AllocatedSection* _currentAllocatedSection; // =  NULL;    // head of the train is in this Section
+  /*private*/ /*volatile*/ AllocatedSection* _previousAllocatedSection; // =  NULL;   // previous Section - part of train could still be in this section
+  /*private*/ SignalHead* _controllingSignal; // =  NULL;
+  /*private*/ SignalMast* _controllingSignalMast; // =  NULL;
+  /*private*/ PropertyChangeListener* _conSignalListener; // =  NULL;
+  /*private*/ PropertyChangeListener* _conSignalMastListener; // =  NULL;
+  /*private*/ Block* _conSignalProtectedBlock; // =  NULL;
+  /*private*/ /*volatile*/ Block* _currentBlock; // =  NULL;
+  /*private*/ Block* _nextBlock; // =  NULL;
+  /*private*/ /*volatile*/ Block* _previousBlock; // =  NULL;
+  /*private*/ bool _stoppingBySensor; // =  false;
+  /*private*/ Sensor* _stopSensor; // =  NULL;
+  /*private*/ PropertyChangeListener* _stopSensorListener; // =  NULL;
+  /*private*/ bool _stoppingForStopSignal; // =  false;		  // if true, stopping because of signal appearance
+  /*private*/ bool _stoppingByBlockOccupancy; // =  false;    // if true, stop when _stoppingBlock goes UNOCCUPIED
+  /*private*/ bool _stoppingUsingSpeedProfile; // =  false;     // if true, using the speed profile against the roster entry to bring the loco to a stop in a specific distance
+  /*private*/ /*volatile*/ Block* _stoppingBlock; // =  NULL;
+  /*private*/ bool _resumingAutomatic; // =  false;  // if true, resuming automatic mode after WORKING session
+  /*private*/ bool _needSetSpeed; // =  false;  // if true, train will set speed according to signal instead of stopping
+
+  // keeps track of and restores previous speed
+  /*private*/ float _savedSpeed; // =  0.0f;
+  // keeps track of number of horn execution threads that are active
+  /*private*/ int _activeHornThreads;// = 0;
+  float prevSpeed;// = -1.0f;
+  /*private*/ bool isInAllocatedList(AllocatedSection* as);
+  /*private*/ void addAllocatedSection(AllocatedSection* as);
+  /*private*/ void setNewCurrentSection(AllocatedSection* as);
+  /*private*/ Block* getNextBlock(Block* b, AllocatedSection* as);
+  /*private*/ bool isStopping();
+  /*private*/ bool isSectionInAllocatedList(Section* s);
+  /*private*/ void removeCurrentSignal();
+  /*private*/ /*synchronized*/ void stopInCurrentSection(int task);
+  /*private*/ /*synchronized*/ void setTargetSpeedState(int speedState);
+  /*private*/ /*synchronized*/ void setTargetSpeedValue(float speed);
+  /*private*/ int getBlockLength(Block* b);
+  /*private*/ /*synchronized*/ void setStopNow();
+  /*private*/ void setStopByBlockOccupancy();
+
+private slots:
+  /*private*/ /*synchronized*/ void handleStopSensorChange();
+
+
 protected:
  /*protected*/ /*synchronized*/ void setupNewCurrentSignal(AllocatedSection* as);
+  /*protected*/ DccThrottle* getThrottle();
+  /*protected*/ Section* getLastAllocatedSection();
+  /*protected*/ void saveSpeed() ;
+  /*protected*/ void restoreSavedSpeed() ;
+
+  /*protected*/ void decrementHornExecution();
+  /*protected*/ void incrementHornExecution() ;
+  /*protected*/ void setEngineDirection();
+  /*protected*/ AllocatedSection* getCurrentAllocatedSection();
+  /*protected*/ void allocateAFresh();
+  /*protected*/ /*synchronized*/ void setSpeedBySignal();
+  /*protected*/ void waitUntilStopped();
+  /*protected*/ void resumeAutomaticRunning();
+  /*protected*/ void initiateWorking();
+
+protected slots:
+  /*protected*/ void handleSectionStateChange(AllocatedSection* as) ;
+  /*protected*/ void handleSectionOccupancyChange(AllocatedSection* as);
 
  friend class ActiveTrain;
+ friend class AutoEngineer;
+ friend class AutoTrainAction;
+};
+
+class AutoEngineer : public  Runnable
+{
+public:
+    AutoEngineer(AutoActiveTrain* aat);
+
+ private:
+    Logger* log;
+    AutoActiveTrain* aat;
+    // operational instance variables and flags
+//        private float _minSpeedStep = 1.0f;
+    /*private*/ bool _abort;// = false;
+    /*private*/ volatile bool _halt;// = false;  // halt/resume from user's control
+    /*private*/ bool _halted;// = false; // true if previously halted
+    /*private*/ bool _slowToStop;// = false;
+    /*private*/ float _currentSpeed;// = 0.0f;
+    /*private*/ Block* _lastBlock;// = NULL;
+    /*private*/ float _speedIncrement;// = 0.0f  ; //will be recalculated
+public:
+    //@Override
+    /*public*/ void run();
+    /*public*/ /*synchronized*/ void slowToStop(bool toStop);
+    /*public*/ /*synchronized*/ void setHalt(bool halt);
+    /*public*/ /*synchronized*/ void setSpeedImmediate(float speed);
+    /*public*/ /*synchronized*/ bool isStopped();
+    /*public*/ /*synchronized*/ bool isAtSpeed();
+    /*public*/ void abort();
+protected:
+    /*protected*/ void setFunction(int cmdNum, bool isSet);
+    friend class AutoTrainAction;
 };
 
 #endif // AUTOACTIVETRAIN_H

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'inputdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -80,10 +80,10 @@ public:
 
     void retranslateUi(QDialog *InputDialog)
     {
-        InputDialog->setWindowTitle(QApplication::translate("InputDialog", "Dialog", 0));
-        label->setText(QApplication::translate("InputDialog", "TextLabel", 0));
-        okButton->setText(QApplication::translate("InputDialog", "OK", 0));
-        cancelButton->setText(QApplication::translate("InputDialog", "Cancel", 0));
+        InputDialog->setWindowTitle(QApplication::translate("InputDialog", "Dialog", Q_NULLPTR));
+        label->setText(QApplication::translate("InputDialog", "TextLabel", Q_NULLPTR));
+        okButton->setText(QApplication::translate("InputDialog", "OK", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("InputDialog", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

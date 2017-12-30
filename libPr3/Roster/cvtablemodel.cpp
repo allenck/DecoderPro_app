@@ -252,14 +252,14 @@
  int i = _cvDisplayVector->indexOf(val);
  //emit modelChange(val, i);
  QModelIndex m = index(i, 1);
- if(table == NULL) return;
- if(qobject_cast<QSortFilterProxyModel*>(table->model()) != NULL)
+ if(_table == NULL) return;
+ if(qobject_cast<QSortFilterProxyModel*>(_table->model()) != NULL)
  {
-  QAbstractItemModel * model = (QSortFilterProxyModel*)table->model();
-  table->scrollTo(((QSortFilterProxyModel*)model)->mapFromSource(m));
+  QAbstractItemModel * model = (QSortFilterProxyModel*)_table->model();
+  _table->scrollTo(((QSortFilterProxyModel*)model)->mapFromSource(m));
  }
  else
-  table->scrollTo(m);
+  _table->scrollTo(m);
 }
 
 /*public*/ void CvTableModel::addCV(QString s, bool readOnly, bool infoOnly, bool writeOnly)
@@ -289,8 +289,8 @@
 
 void CvTableModel::configureTable(JTable *cvTable)
 {
- if(table == NULL)
-  table = cvTable;
+ if(_table == NULL)
+  _table = cvTable;
  //QSignalMapper* readMapper = new QSignalMapper(this);
  //cvTable->setItemDelegateForColumn(CvTableModel::READCOLUMN, new PushButtonDelegate());
  setColumnToHoldButton(cvTable,READCOLUMN);
@@ -317,7 +317,7 @@ int CvTableModel::mapRow(int row)
  int newRow = row;
  QString cv;
  QString dCv;
- QAbstractItemModel * model = (QSortFilterProxyModel*)table->model();
+ QAbstractItemModel * model = (QSortFilterProxyModel*)_table->model();
  if(model != NULL)
  {
   QModelIndex m = model->index(row, 0);

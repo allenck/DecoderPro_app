@@ -245,6 +245,11 @@ bool systemNameComparator(QString o1, QString o2)
   OBlockManager* mgr = (OBlockManager*)m;
   connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
+ else if(qobject_cast<EntryExitPairs*>(m) != NULL)
+ {
+  EntryExitPairs* mgr = (EntryExitPairs*)m;
+  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ }
  else
  {
   log->error(tr("no PickListModel manager for %1").arg(m->metaObject()->className()));

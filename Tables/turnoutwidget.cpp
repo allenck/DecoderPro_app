@@ -6,13 +6,13 @@
 #include <QMessageBox>
 #include "signalspeedmap.h"
 #include "../LayoutEditor/turnoutoperationframe.h"
-#include "defaultusermessagepreferences.h"
+//#include "defaultusermessagepreferences.h"
 #include "connectionnamefromsystemname.h"
 #include "jtextfield.h"
 #include "addnewhardwaredevicepanel.h"
 #include "../LayoutEditor/jmrijframe.h"
 #include <QLabel>
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 
 TurnoutWidget::TurnoutWidget(QWidget *parent) :
     QWidget(parent),
@@ -39,7 +39,7 @@ _speedMap = SignalSpeedMap::getMap()->getValidSpeedNames();
    speedListThrown->append(_speedMap.at(i));
   }
  }
- p = (DefaultUserMessagePreferences*) InstanceManager::getDefault("UserPreferencesManager");
+ p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
 
  tableWidget1 = new TurnoutTableWidget(-1, this); // ALL
  ui->tabWidget->addTab(tableWidget1,tr("All"));
@@ -224,7 +224,7 @@ CancelButtonActionListener::CancelButtonActionListener(TurnoutWidget *widget)
 {
  this->widget = widget;
 }
-void CancelButtonActionListener::actionPerformed(ActionEvent *e)
+void CancelButtonActionListener::actionPerformed(ActionEvent */*e*/)
 {
  // TODO:
 }
@@ -348,7 +348,7 @@ void TurnoutWidget::okPressed(ActionEvent* /*e*/)
   if(!bOk)
   {
    log->error("Unable to convert " + numberToAdd->text() + " to a number");
-   ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->
+   ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
                         showInfoMessage("Error","Number to turnouts to Add must be a number!",""/*+ex*/, "",true, false, Level::_ERROR);
    return;
   }
@@ -378,7 +378,7 @@ void TurnoutWidget::okPressed(ActionEvent* /*e*/)
   }
   catch (JmriException ex)
   {
-   ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->
+   ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
                     showInfoMessage("Error","Unable to convert '" + curAddress + "' to a valid Hardware Address",""/*+ex*/, "",true, false, Level::_ERROR);
    return;
   }
@@ -461,7 +461,7 @@ else {
 
      else if (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getByUserName(user)!=NULL && !p->getPreferenceState("TurnoutWidget", "duplicateUserName"))
      {
-      ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->
+      ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
                  showInfoMessage("Duplicate UserName","The username " + user + " specified is already in use and therefore will not be set", "TurnoutWidget", "duplicateUserName", false, true, Level::_ERROR);
             //p.showInfoMessage("Duplicate UserName", "The username " + user + " specified is already in use and therefore will not be set", userNameError, "", false, true, org.apache.log4j.Level.ERROR);
      }

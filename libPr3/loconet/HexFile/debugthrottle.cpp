@@ -15,7 +15,7 @@
 /**
  * Constructor
  */
-/*public*/ DebugThrottle::DebugThrottle(DccLocoAddress* address, SystemConnectionMemo* memo,QObject *parent) :
+/*public*/ DebugThrottle::DebugThrottle(DccLocoAddress* address, SystemConnectionMemo* memo, QObject *parent) :
     AbstractThrottle(memo, parent)
 {
     //super(memo);

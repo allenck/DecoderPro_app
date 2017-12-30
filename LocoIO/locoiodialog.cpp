@@ -9,10 +9,10 @@
 #include <QMenu>
 #include "commentsdialog.h"
 #include "locoiomodules.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"
 
-LocoIODialog::LocoIODialog(LocoIOAddress* address, LnTrafficController* tc, bool bHex, Sql* sql, QWidget *parent) :
+LocoIODialog::LocoIODialog(LocoIOAddress* address, LnTrafficController* tc, bool /*bHex*/, Sql* sql, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::LocoIODialog)
 {
@@ -46,7 +46,7 @@ LocoIODialog::LocoIODialog(LocoIOAddress* address, LnTrafficController* tc, bool
  this->sql = sql;
  _address = address;
  locoIOModules = LocoIOModules::instance();
- p = (DefaultUserMessagePreferences*) InstanceManager::getDefault("UserPreferencesManager");
+ p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
  displayHexCheck = QString(this->metaObject()->className())+".HexCheck";
  allowEdits = QString(this->metaObject()->className())+".AllowEdit";
 
@@ -161,7 +161,7 @@ void LocoIODialog::setupTable()
     connect(rw, SIGNAL(name(int,QString)), servoWidget, SLOT(setName(int,QString)));
    }
   }
-  on_chk4PosServo_toggled(cfg & 0x12 == 0x12);
+  on_chk4PosServo_toggled((cfg & 0x12) == 0x12);
  }
  if(bIsBooster)
   ui->tableWidget->setColumnCount(9);
@@ -465,7 +465,7 @@ void LocoIODialog::on_btnChangeAddress_clicked()
   newAddr    = 0x0100 | (newAddr&0x07F);  // range is [1..79, 81..127]
   newSubAddr = newSubAddr & 0x07F;	// range is [1..126]
   ui->btnChangeAddress->setEnabled(false);
-  if(oldAddr & 0xFF == 0)
+  if((oldAddr & 0xFF) == 0)
   {
    switch(QMessageBox::warning(this, tr("Warning"), tr("This will set the address of all attached LocoIO, LocoServo and LocoBooster boards"),QMessageBox::Ok | QMessageBox::Cancel))
    {
@@ -1211,7 +1211,7 @@ void LocoIODialog::retranslate_Controls(/*QString s_locale*/)
 void LocoIODialog::onOptionByte(int cv, int val)
 {
  log->debug(QString("option byte %1, value %2").arg(cv).arg(val));
- on_chk4PosServo_toggled(val & 0x04 == 0x04);
+ on_chk4PosServo_toggled((val & 0x04) == 0x04);
 
  setupTable();
  OutPortDefinitionWidget* opdw;

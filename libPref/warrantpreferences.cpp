@@ -5,9 +5,12 @@
 #include <QVector>
 #include "nxframe.h"
 #include <QDir>
+#include "instancemanager.h"
+#include "profilemanager.h"
+#include "fileutil.h"
 
 WarrantPreferences::WarrantPreferences(QObject *parent) :
-  QObject(parent)
+  AbstractPreferencesManager(parent)
 {
  _scale = 87.1f;
  _searchDepth = 20;
@@ -23,7 +26,7 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
 ///*public*/ class WarrantPreferences  {
 
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::layoutParams = "layoutParams";   // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::LayoutScale = "layoutScale";     // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::LAYOUT_SCALE = "layoutScale";    // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SearchDepth = "searchDepth";     // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SpeedMapParams = "speedMapParams"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::RampPrefs = "rampPrefs";         // NOI18N
@@ -37,7 +40,7 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
 
 
 WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
-  QObject(parent) {
+  AbstractPreferencesManager(parent) {
  _scale = 87.1f;
  _searchDepth = 20;
   _throttleScale = 0.5f;
@@ -48,7 +51,27 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
  _msIncrTime = 1000;         // time in milliseconds between speed changes ramping up or down
   _throttleIncr = 0.04f;    // throttle increment for each ramp speed change
 
- openFile(fileName);
+ //openFile(fileName);
+}
+
+/**
+ * Get the default instance.
+ *
+ * @return the default instance, creating it if necessary
+ */
+/*public*/ /*static*/ WarrantPreferences* WarrantPreferences::getDefault()
+{
+ WarrantPreferences* preferences = (WarrantPreferences*)InstanceManager::getOptionalDefault("WarrantPreferences"); //.orElseGet(() -> {
+ if(preferences == NULL)
+ {
+   preferences = (WarrantPreferences*)InstanceManager::setDefault("WarrantPreferences", new WarrantPreferences());
+  try {
+      preferences->initialize(ProfileManager::getDefault()->getActiveProfile());
+  } catch (InitializationException ex) {
+      Logger::error("Error initializing default WarrantPreferences", ex.getMessage());
+  }
+ }//);
+ return preferences;
 }
 
 /*public*/ void WarrantPreferences::openFile(QString name)
@@ -94,7 +117,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   return;
  }
  QString a;
- if ((a = child.attribute(LayoutScale)) != NULL)
+ if ((a = child.attribute(LAYOUT_SCALE)) != NULL)
  {
   bool bok;
   setScale(a.toFloat(&bok));
@@ -257,11 +280,16 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
 
  try
  {
-  QDomElement root = xmlFile->doc.createElement("warrantPreferences");
   //Document doc = XmlFile.newDocument(root);
+  doc  = QDomDocument("warrantPreferences");
+  QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\"");
+  doc.appendChild(xmlProcessingInstruction);
+  QDomElement root = doc.createElement("warrantPreferences");
+  doc.appendChild(root);
+
   if (store(root))
   {
-   xmlFile->writeXML(file, xmlFile->doc);
+   xmlFile->writeXML(file, doc);
   }
  }
  catch (Exception eb)
@@ -272,21 +300,21 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
 
 /*public*/ bool WarrantPreferences::store(QDomElement root)
 {
- QDomElement prefs = xmlFile->doc.createElement(layoutParams);
+ QDomElement prefs = doc.createElement(layoutParams);
  try
  {
-  prefs.setAttribute(LayoutScale, QString::number(getScale()));
+  prefs.setAttribute(LAYOUT_SCALE, QString::number(getScale()));
   prefs.setAttribute(SearchDepth, QString::number(getSearchDepth()));
   root.appendChild(prefs);
 
-  prefs = xmlFile->doc.createElement(SpeedMapParams);
-  QDomElement rampPrefs = xmlFile->doc.createElement(StepIncrements);
+  prefs = doc.createElement(SpeedMapParams);
+  QDomElement rampPrefs = doc.createElement(StepIncrements);
   rampPrefs.setAttribute(TimeIncrement, QString::number(getTimeIncre()));
   rampPrefs.setAttribute(RampIncrement, QString::number(getThrottleIncre()));
   rampPrefs.setAttribute(ThrottleScale, QString::number(getThrottleScale()));
   prefs.appendChild(rampPrefs);
 
-  rampPrefs = xmlFile->doc.createElement(SpeedNamePrefs);
+  rampPrefs = doc.createElement(SpeedNamePrefs);
   rampPrefs.setAttribute(Interpretation, QString::number(getInterpretation()));
 
   QMapIterator<QString, float>  it = getSpeedNameEntryIterator();
@@ -294,36 +322,36 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   {
      // Entry<QString, float> ent = it.next();
    it.next();
-      QDomElement step =  xmlFile->doc.createElement(it.key());
-      step.appendChild(xmlFile->doc.createTextNode(QString::number(it.value())));
+      QDomElement step =  doc.createElement(it.key());
+      step.appendChild(doc.createTextNode(QString::number(it.value())));
       rampPrefs.appendChild(step);
   }
   prefs.appendChild(rampPrefs);
 
-  rampPrefs = xmlFile->doc.createElement(AppearancePrefs);
-  QDomElement step =  xmlFile->doc.createElement("SignalHeadStateRed");
-  step.appendChild(xmlFile->doc.createTextNode(_headAppearances.value(tr("Red"))));
+  rampPrefs = doc.createElement(AppearancePrefs);
+  QDomElement step =  doc.createElement("SignalHeadStateRed");
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Red"))));
   rampPrefs.appendChild(step);
-  step =  xmlFile->doc.createElement("SignalHeadStateFlashingRed");
-  step.appendChild(xmlFile->doc.createTextNode(_headAppearances.value(tr("Flashing Red"))));
+  step =  doc.createElement("SignalHeadStateFlashingRed");
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Flashing Red"))));
   rampPrefs.appendChild(step);
-  step =  xmlFile->doc.createElement("SignalHeadStateGreen");
-  step.appendChild(xmlFile->doc.createTextNode(_headAppearances.value(tr("Green"))));
+  step =  doc.createElement("SignalHeadStateGreen");
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Green"))));
   rampPrefs.appendChild(step);
-  step =  xmlFile->doc.createElement("SignalHeadStateFlashingGreen");
-  step.appendChild(xmlFile->doc.createTextNode(_headAppearances.value(tr("Flashing Green"))));
+  step =  doc.createElement("SignalHeadStateFlashingGreen");
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Flashing Green"))));
   rampPrefs.appendChild(step);
-  step =  xmlFile->doc.createElement("SignalHeadStateYellow");
-  step.appendChild(xmlFile->doc.createTextNode(_headAppearances.value(tr("Yellow"))));
+  step =  doc.createElement("SignalHeadStateYellow");
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Yellow"))));
   rampPrefs.appendChild(step);
-  step =  xmlFile->doc.createElement("SignalHeadStateFlashingYellow");
-  step.appendChild(xmlFile->doc.createTextNode(_headAppearances.value(tr("Flashing Yellow"))));
+  step =  doc.createElement("SignalHeadStateFlashingYellow");
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Flashing Yellow"))));
   rampPrefs.appendChild(step);
-  step =  xmlFile->doc.createElement("SignalHeadStateLunar");
-  step.appendChild(xmlFile->doc.createTextNode(_headAppearances.value(tr("Lunar"))));
+  step =  doc.createElement("SignalHeadStateLunar");
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Lunar"))));
   rampPrefs.appendChild(step);
-  step =  xmlFile->doc.createElement("SignalHeadStateFlashingLunar");
-  step.appendChild(xmlFile->doc.createTextNode(_headAppearances.value(tr("Flashing Lunar"))));
+  step =  doc.createElement("SignalHeadStateFlashingLunar");
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Flashing Lunar"))));
   rampPrefs.appendChild(step);
   prefs.appendChild(rampPrefs);
  }
@@ -338,11 +366,13 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
 }
 
 /**
- * Apply to classes that use this data
+ * @deprecated since 4.7.2 without replacement. Classes interested in
+ * changes to the warrant preferences listen for those changes.
  */
+//@Deprecated
 /*public*/ void WarrantPreferences::apply() {
-    setSpeedMap();
-    setNXFrame();
+//    setSpeedMap();
+//    setNXFrame();
 }
 /*private*/ void WarrantPreferences::setNXFrame() {
 
@@ -364,11 +394,40 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
     map->setMap(map);
 }
 
+/**
+ * @return the scale
+ * @deprecated since 4.7.1; use {@link #getLayoutScale()} instead
+ */
+//@Deprecated
 float WarrantPreferences::getScale() {
-    return _scale;
+    return this->getLayoutScale();
 }
+/**
+ * @param s the scale
+ * @deprecated since 4.7.1; use {@link #setLayoutScale(float)} instead
+ */
+//@Deprecated
 void WarrantPreferences::setScale(float s) {
     _scale = s;
+}
+/**
+ * Get the layout scale.
+ *
+ * @return the scale
+ */
+/*public*/ float WarrantPreferences::getLayoutScale() {
+    return _scale;
+}
+
+/**
+ * Set the layout scale.
+ *
+ * @param scale the scale
+ */
+/*public*/ void WarrantPreferences::setLayoutScale(float scale) {
+    float oldScale = this->_scale;
+    _scale = scale;
+    this->firePropertyChange(LAYOUT_SCALE, oldScale, scale);
 }
 
 /*public*/ float WarrantPreferences::getThrottleScale() {
@@ -397,6 +456,19 @@ float WarrantPreferences::getThrottleIncre() {
 }
 void WarrantPreferences::setThrottleIncre(float ti) {
     _throttleIncr = ti;
+}
+//@Override
+/*public*/ void WarrantPreferences::initialize(Profile* profile) throw (InitializationException)
+{
+    if (!this->isInitialized(profile) && !this->isInitializing(profile)) {
+        this->setInitializing(profile, true);
+        this->openFile(FileUtil::getUserFilesPath() + "signal" + File::separator + "WarrantPreferences.xml");
+        this->setInitialized(profile, true);
+    }
+}
+//@Override
+/*public*/ void WarrantPreferences::savePreferences(Profile* profile) {
+    this->save();
 }
 
 QMapIterator<QString, float> WarrantPreferences::getSpeedNameEntryIterator()

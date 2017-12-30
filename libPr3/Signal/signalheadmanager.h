@@ -57,5 +57,4 @@ signals:
 public slots:
     
 };
-
 #endif // SIGNALHEADMANAGER_H

@@ -18,6 +18,7 @@ public:
     /*public*/ void deregister(ShutDownTask* s);
     /*public*/ bool shutdown();
     /*public*/ bool restart();
+    /*public*/ bool isShuttingDown();
 
 signals:
     
@@ -26,6 +27,9 @@ private:
     Logger log;
     QVector<ShutDownTask*>* tasks;// = new QVector<ShutDownTask*>();
     static bool shuttingDown;// = false;
+    /*private*/ bool runShutDownTasks(bool isParallel);
+    /*private*/ static void setShuttingDown(bool state);
+
 protected:
     /*protected*/ bool shutdown(int status, bool exit);
 

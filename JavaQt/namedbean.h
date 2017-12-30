@@ -202,12 +202,12 @@ public:
     /**
      * Remove the key/value pair against the NamedBean.
      */
-    /*public*/ virtual void removeProperty(/*@Nonnull*/ QString key) {}
+    /*public*/ virtual void removeProperty(/*@Nonnull*/ QString /*key*/) {}
         /**
          * Retrieve the complete current set of keys.
          */
         virtual QList<QString> getPropertyKeys()  {return QList<QString>();}
-    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) {}//throws java.beans.PropertyVetoException;
+    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* /*evt*/) {}//throws java.beans.PropertyVetoException;
 
 
         virtual bool hashCode() {return false;}

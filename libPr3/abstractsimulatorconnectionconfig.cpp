@@ -329,4 +329,5 @@ void ASCCActionListener::actionPerformed(ActionEvent */*e*/)
         adapter->dispose();
         adapter=NULL;
     }
+    AbstractConnectionConfig::dispose();
 }

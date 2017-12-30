@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'boosterinputwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -128,10 +128,10 @@ public:
 
     void retranslateUi(QWidget *BoosterInputWidget)
     {
-        BoosterInputWidget->setWindowTitle(QApplication::translate("BoosterInputWidget", "Form", 0));
+        BoosterInputWidget->setWindowTitle(QApplication::translate("BoosterInputWidget", "Form", Q_NULLPTR));
         lblfiller->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbBlockDetectionActiveLow->setToolTip(QApplication::translate("BoosterInputWidget", "<html><head/><body><p>Block detection active high.  Generate an OPC_INPUT_REP (0xB2) message.</p></body></html>", 0));
+        rbBlockDetectionActiveLow->setToolTip(QApplication::translate("BoosterInputWidget", "<html><head/><body><p>Block detection active high.  Generate an OPC_INPUT_REP (0xB2) message.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbBlockDetectionActiveLow->setText(QString());
         lblfiller_2->setText(QString());

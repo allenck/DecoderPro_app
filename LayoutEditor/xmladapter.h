@@ -27,7 +27,21 @@ public:
      * @return true if successful
      */
     /*public*/ virtual bool load(QDomElement /*e*/) throw (Exception) { return false;}
+
     /**
+      * Create a set of configured objects from their XML description.
+      *
+      * @param shared  Top-level XML element containing the common, multi-node
+      *                elements of the description
+      * @param perNode Top-level XML element containing the private, single-node
+      *                elements of the description
+      * @throws Exception when a error prevents creating the objects as as
+      *                   required by the input XML.
+      * @return true if successful
+      */
+     /*public*/ virtual bool load(QDomElement /*shared*/, QDomElement /*perNode*/)  {return false;} //throws Exception;
+
+ /**
      * Determine if this set of configured objects should
      * be loaded after basic GUI construction is completed
      * @return true to defer loading
@@ -49,16 +63,54 @@ public:
      */
     /*public*/ virtual void load(QDomElement /*e*/, QObject* /*o*/) throw (Exception) {}
 
-    /**
+ /**
+      * Create a set of configured objects from their XML description, using an
+      * auxiliary object.
+      * <P>
+      * For example, the auxilary object o might be a manager or GUI of some type
+      * that needs to be informed as each object is created.
+      *
+      * @param shared  Top-level XML element containing the common description
+      * @param perNode Top-level XML element containing the per-node description
+      * @param o       Implementation-specific Object needed for the conversion
+      * @throws Exception when a error prevents creating the objects as as
+      *                   required by the input XML.
+      */
+     /*public*/ virtual void load(QDomElement /*shared*/, QDomElement /*perNode*/, QObject* /*o*/) {} //throws Exception;
+
+ /**
      * Store the
      * @param o The object to be recorded.  Specific XmlAdapter
      *          implementations will require this to be of a specific
      *          type; that binding is done in ConfigXmlManager.
      * @return The XML representation QDomElement
      */
-    /*public*/ virtual QDomElement store(QObject* /*o*/) {return QDomElement();}
+    /*public*/ virtual QDomElement store(QObject* o)
+    {
+     Q_UNUSED(o)
+     return QDomElement();
+    }
 
-    /*public*/ virtual int loadOrder() { return 0;}
+/**
+  * Store the object in XML
+  *
+  * @param o      The object to be recorded. Specific XmlAdapter
+  *               implementations will require this to be of a specific type;
+  *               that binding is done in ConfigXmlManager.
+  * @param shared true if the returned element should be the common XML and
+  *               false if the returned element should be per-node.
+  * @return The XML representation Element
+  */
+ /*public*/ virtual QDomElement store(QObject* o, bool shared)
+ {
+  if (shared)
+  {
+     return store(o);
+  }
+  return QDomElement();
+ }
+
+ /*public*/ virtual int loadOrder() { return 0;}
 
     /**
      * Invoke common handling of errors that

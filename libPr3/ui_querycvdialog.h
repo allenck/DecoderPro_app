@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'querycvdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -99,12 +99,12 @@ public:
 
     void retranslateUi(QWidget *QueryCvDialog)
     {
-        QueryCvDialog->setWindowTitle(QApplication::translate("QueryCvDialog", "Query Cv", 0));
-        lblUnitAddr->setText(QApplication::translate("QueryCvDialog", "Address:", 0));
-        label_2->setText(QApplication::translate("QueryCvDialog", "CV:", 0));
-        btnOK->setText(QApplication::translate("QueryCvDialog", "OK", 0));
-        btnCancel->setText(QApplication::translate("QueryCvDialog", "Cancel", 0));
-        chkHex->setText(QApplication::translate("QueryCvDialog", "Display Hex", 0));
+        QueryCvDialog->setWindowTitle(QApplication::translate("QueryCvDialog", "Query Cv", Q_NULLPTR));
+        lblUnitAddr->setText(QApplication::translate("QueryCvDialog", "Address:", Q_NULLPTR));
+        label_2->setText(QApplication::translate("QueryCvDialog", "CV:", Q_NULLPTR));
+        btnOK->setText(QApplication::translate("QueryCvDialog", "OK", Q_NULLPTR));
+        btnCancel->setText(QApplication::translate("QueryCvDialog", "Cancel", Q_NULLPTR));
+        chkHex->setText(QApplication::translate("QueryCvDialog", "Display Hex", Q_NULLPTR));
     } // retranslateUi
 
 };

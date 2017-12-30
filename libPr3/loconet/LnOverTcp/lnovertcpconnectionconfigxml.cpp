@@ -2,6 +2,7 @@
 #include "instancemanager.h"
 #include "lnovertcpconnectionconfig.h"
 #include "../lntcpdriveradapter.h"
+#include "connectionconfigmanager.h"
 
 LnOverTcpConnectionConfigXml::LnOverTcpConnectionConfigXml(QObject *parent) :
   AbstractNetworkConnectionConfigXml(parent)
@@ -39,5 +40,18 @@ LnOverTcpConnectionConfigXml::LnOverTcpConnectionConfigXml(QObject *parent) :
 
 /*protected*/ void LnOverTcpConnectionConfigXml::_register()
 {
- InstanceManager::configureManagerInstance()->registerPref(new LnOverTcpConnectionConfig(adapter));
+ // begin dups fix to prevent connection from being duplicated.
+  ConnectionConfigManager* ccm = (ConnectionConfigManager*)InstanceManager::getNullableDefault("ConnectionConfigManager");
+  foreach (ConnectionConfig* c, *ccm->getConnections())
+  {
+   if(qobject_cast<LnOverTcpConnectionConfig*>(c) != NULL)
+   {
+    NetworkPortAdapter* adapter1 = ((NetworkPortAdapter*)((LnOverTcpConnectionConfig*)c)->getAdapter());
+    if(adapter->getHostName() == adapter1->getHostName()  && adapter ->getCurrentPortName() == adapter1->getCurrentPortName())
+     return;  //already is registered.
+   }
+  }
+  //end dups fix
+ ConnectionConfig* c = (ConnectionConfig*)new LnOverTcpConnectionConfig(adapter);
+ AbstractConnectionConfigXml::_register(c);
 }

@@ -1,10 +1,12 @@
 #include "defaultshutdownmanager.h"
 #include "Roster/paneprogframe.h"
 #include "defaultidtagmanager.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "apps.h"
 #include "defaultaudiomanager.h"
 #include "appsbase.h"
+#include <QGuiApplication>
+#include <QWindow>
 
 /*static*/ bool DefaultShutDownManager::shuttingDown = false;
 
@@ -113,67 +115,130 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
 
 
 /**
- * Run the shutdown tasks, and
- * then terminate the program if not aborted.
- * Does not return under normal circumstances.
- * Does return if the shutdown was aborted by the user,
- * in which case the program should continue to operate.
+ * Run the shutdown tasks, and then terminate the program if not aborted.
+ * Does not return under normal circumstances. Does return if the shutdown
+ * was aborted by the user, in which case the program should continue to
+ * operate.
+ * <p>
+ * Executes all registered {@link jmri.ShutDownTask}s before closing any
+ * displayable windows.
  *
  * @param status Integer status returned on program exit
+ * @param exit   True if System.exit() should be called if all tasks are
+ *               executed correctly.
+ * @return false if shutdown or restart failed.
  */
-//@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="DM_EXIT") // OK to directly exit standalone main
-/*protected*/ bool DefaultShutDownManager::shutdown(int status, bool _exit)
-{
- if (!shuttingDown)
- {
-  shuttingDown = true;
-  for (int i = tasks->size() - 1; i >= 0; i--)
-  {
-   try
-   {
-    ShutDownTask* t = tasks->at(i);
-//    if(qobject_cast<FileDirtyTask*>(t)!= NULL)
-//     shuttingDown = ((FileDirtyTask*)t)->execute();
-//    else if(qobject_cast<DecoderDirtyTask*>(t)!= NULL)
-//     shuttingDown = ((DecoderDirtyTask*)t)->execute();
-//    else if(qobject_cast<DefaultIdTagShutdownTask*>(t)!= NULL)
-//     shuttingDown = ((DefaultIdTagShutdownTask*)t)->execute();
-//    else if(qobject_cast<UserPreferencesShutDownTask*>(t)!= NULL)
-//     shuttingDown = ((UserPreferencesShutDownTask*)t)->execute();
-//    else if(qobject_cast<WriteBlocksShutdownTask*>(t)!= NULL)
-//     shuttingDown = ((WriteBlocksShutdownTask*)t)->execute();
-//    else if(qobject_cast<AudioShutDownTask*>(t)!= NULL)
-//     shuttingDown = ((AudioShutDownTask*)t)->execute();
-//    else if(qobject_cast<WriteBlocksShutDownTask*>(t)!= NULL)
-//     shuttingDown = ((WriteBlocksShutDownTask*)t)->execute();
-//    else
-//    {
-//     log.error(tr("Missing cast: ")+t->metaObject()->className());
-//     Q_ASSERT(false);
-//      //shuttingDown = t->execute(); // if a task aborts the shutdown, stop shutting down
-//    }
-    shuttingDown= t->execute();
-    if (!shuttingDown)
-    {
-     log.info("Program termination aborted by " + t->name());
-     return false;  // abort early
-    }
-   }
-   catch (Throwable e)
-   {
-    log.error(tr("Error during processing of ShutDownTask ") + i + ": " + e.getMessage());
-   }
-  }
+//@SuppressFBWarnings(value = "DM_EXIT", justification = "OK to directly exit standalone main")
+/*protected*/ bool DefaultShutDownManager::shutdown(int status, bool _exit) {
+    if (!shuttingDown) {
+        QDateTime start =  QDateTime::currentDateTime();
+        long timeout = 30; // all shut down tasks must complete within n seconds
+        setShuttingDown(true);
+        // trigger parallel tasks (see jmri.ShutDownTask#isParallel())
+        if (!this->runShutDownTasks(true)) {
+            return false;
+        }
+        log.debug(tr("parallel tasks completed executing %1 milliseconds after starting shutdown").arg( /*QDateTime::currentDateTime() - start.getTime()*/start.msecsTo(QDateTime::currentDateTime())));
+        // trigger non-parallel tasks
+        if (!this->runShutDownTasks(false)) {
+            return false;
+        }
+        log.debug(tr("sequential tasks completed executing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
 
-  // success
-  log.info("Normal termination complete");
-  // and now terminate forcefully
-  if(_exit)
-   exit(status);
- }
- return false;
+        // close any open windows by triggering a closing event
+        // this gives open windows a final chance to perform any cleanup
+//        if (!GraphicsEnvironment.isHeadless())
+//        {
+//            Arrays.asList(Frame.getFrames()).stream().forEach((frame) ->
+         foreach(QWindow* frame, QGuiApplication::allWindows())
+            {
+                // do not run on thread, or in parallel, as System.exit()
+                // will get called before windows can close
+                if (frame->isActive())
+                { // dispose() has not been called
+                    log.debug(tr("Closing frame \"%1\", title: \"%2\"").arg(frame->metaObject()->className(), frame->title()));
+                    QDateTime timer = QDateTime::currentDateTime();
+                    //frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                    frame->close();
+                    log.debug(tr("Frame \"%1\" took %2 milliseconds to close").arg(frame->metaObject()->className()).arg(timer.msecsTo(QDateTime::currentDateTime()))); // new Date().getTime() - timer.getTime());
+                }
+            } //);
+//        }
+
+        log.debug(tr("windows completed closing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
+#if 0
+        // wait for parallel tasks to complete
+        /*synchronized (start)*/ {
+            while (new ArrayList<>(this.tasks).stream().anyMatch((task) -> (task.isParallel() && !task.isComplete())))
+            {
+                try {
+                    start.wait(100);
+                } catch (InterruptedException ex) {
+                    // do nothing
+                }
+                if ((new Date().getTime() - start.getTime()) > (timeout * 1000)) { // milliseconds
+                    log.warn("Terminating without waiting for all tasks to complete");
+                    break;
+                }
+            }
+        }
+#endif
+        // success
+        log.debug(tr("Shutdown took %1 milliseconds.").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
+        log.info("Normal termination complete");
+        // and now terminate forcefully
+        if (_exit) {
+            exit(status);
+        }
+    }
+    return false;
 }
 
+/*private*/ bool DefaultShutDownManager::runShutDownTasks(bool isParallel) {
+    // can't return out of a stream or forEach loop
+    foreach (ShutDownTask* task,  QVector<ShutDownTask*>(*tasks))
+    {
+        if (task->isParallel() == isParallel) {
+            log.debug(tr("Calling task \"%1\"").arg(task->getName()));
+            QDateTime timer = QDateTime::currentDateTime();
+            try {
+                setShuttingDown(task->execute()); // if a task aborts the shutdown, stop shutting down
+                if (!shuttingDown) {
+                    log.info(tr("Program termination aborted by \"%1\"").arg(task->getName()));
+                    return false;  // abort early
+                }
+            } catch (Exception e) {
+                log.error(tr("Error during processing of ShutDownTask \"%1\"").arg(task->getName()+ e.getMessage()));
+            } catch (Throwable e) {
+                // try logging the error
+                log.error("Unrecoverable error during processing of ShutDownTask \"{}\"", task->getName() + e.getMessage());
+                log.error("Terminating abnormally");
+                // also dump error directly to System.err in hopes its more observable
+#if 0
+                System.err.println("Unrecoverable error during processing of ShutDownTask \"" + task.getName() + "\"");
+                System.err.println(e);
+                System.err.println("Terminating abnormally");
+                // forcably halt, do not restart, even if requested
+#endif
+                exit(1);
+            }
+            log.debug(tr("Task \"%1\" took %2 milliseconds to execute").arg(task->getName()).arg(timer.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - timer.getTime());
+        }
+    }
+    return true;
+}
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultShutDownManager.class.getName());
-//}
+//@Override
+/*public*/ bool DefaultShutDownManager::isShuttingDown() {
+    return shuttingDown;
+}
+
+/**
+ * This method is static so that if multiple DefaultShutDownManagers are
+ * registered, they are all aware of this state.
+ *
+ */
+/*private*/ /*static*/ void DefaultShutDownManager::setShuttingDown(bool state) {
+    shuttingDown = state;
+}
+

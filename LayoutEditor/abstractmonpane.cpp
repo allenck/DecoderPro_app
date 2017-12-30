@@ -1,12 +1,12 @@
 #include "abstractmonpane.h"
 #include "instancemanager.h"
-#include "defaultusermessagepreferences.h"
+//#include "defaultusermessagepreferences.h"
 #include "jtogglebutton.h"
 #include "jtextarea.h"
 #include "jtextfield.h"
 #include <QCheckBox>
 #include <QPushButton>
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include <QFileDialog>
@@ -29,7 +29,6 @@
 
 // template functions to fill in
 //@Override
-// /*public*/ /*abstract*/ QString getTitle();    // provide the title for the frame
 
 /*static*/ /*private*/ int AbstractMonPane::MAX_LINES = 500 ;
 
@@ -104,7 +103,7 @@ AbstractMonPane::~AbstractMonPane()
 //@Override
 /*public*/ void AbstractMonPane::initComponents() throw (Exception)
 {
- p = (DefaultUserMessagePreferences*) InstanceManager::getDefault("UserPreferencesManager");
+ p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
  // the following code sets the frame's initial state
 
  clearButton->setText("Clear screen");

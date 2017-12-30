@@ -96,7 +96,7 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
    if(item->load == "jmri.jmrix.loconet.locomon.LocoMonPane")
    {
     act->trigger();
-    wi->hide();
+//    wi->hide();
    }
    if(item->load == "jmri.jmrix.loconet.locoio.LocoIOPanel")
    {

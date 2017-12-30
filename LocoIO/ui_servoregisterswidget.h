@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'servoregisterswidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -48,7 +48,7 @@ public:
 
     void retranslateUi(QWidget *ServoRegistersWidget)
     {
-        ServoRegistersWidget->setWindowTitle(QApplication::translate("ServoRegistersWidget", "Form", 0));
+        ServoRegistersWidget->setWindowTitle(QApplication::translate("ServoRegistersWidget", "Form", Q_NULLPTR));
     } // retranslateUi
 
 };

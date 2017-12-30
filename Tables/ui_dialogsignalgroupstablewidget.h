@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dialogsignalgroupstablewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -67,16 +67,16 @@ public:
 
     void retranslateUi(QDialog *DialogSignalGroupsTableWIdget)
     {
-        DialogSignalGroupsTableWIdget->setWindowTitle(QApplication::translate("DialogSignalGroupsTableWIdget", "Dialog", 0));
-        btnAdd->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "PushButton", 0));
+        DialogSignalGroupsTableWIdget->setWindowTitle(QApplication::translate("DialogSignalGroupsTableWIdget", "Dialog", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "PushButton", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "System Names", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "System Names", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "User Name", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "User Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "Comment", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "Comment", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(4);
-        ___qtablewidgetitem3->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "Enabled", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "Enabled", Q_NULLPTR));
     } // retranslateUi
 
 };

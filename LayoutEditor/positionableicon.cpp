@@ -27,18 +27,19 @@ PositionableIcon::PositionableIcon(QObject *parent) :
 /*public*/ PositionableIcon::PositionableIcon(Editor* editor, Positionable *parent)
     : PositionableLabel(new NamedIcon(":/resources/icons/misc/X-red.gif","resources/icons/misc/X-red.gif"), editor,parent)
 {
- init(editor, parent);
+ common(editor, parent);
  // super ctor call to make sure this is an icon label
  //super(new NamedIcon("resources/icons/misc/X-red.gif","resources/icons/misc/X-red.gif"), editor);
  _control = true;
 //    setPopupUtility(NULL);
+ setObjectName("PositionableIcon");
 }
 
 /*public*/ PositionableIcon::PositionableIcon(NamedIcon* s, Editor* editor, Positionable *parent) : PositionableLabel(s,editor,parent)
 {
  // super ctor call to make sure this is an icon label
  //super(s, editor);
- init(editor,parent);
+ common(editor,parent);
  _control = true;
 //    setPopupUtility(NULL);
 }
@@ -47,11 +48,11 @@ PositionableIcon::PositionableIcon(QObject *parent) :
 {
  // super ctor call to make sure this is an icon label
  //super(s, editor);
- init(editor, parent);
+ common(editor, parent);
  _control = true;
 //    setPopupUtility(NULL);
 }
-void PositionableIcon::init(Editor* editor, Positionable* parent)
+void PositionableIcon::common(Editor* editor, Positionable* parent)
 {
  _scale = 1.0;			// getScale, come from net result found in one of the icons
  _rotate = 0;
@@ -257,4 +258,9 @@ void PositionableIcon::invalidate()
 {
  //_editor->addToTarget(this);
  updateScene();
+ if(getGroupName() != "")
+  _itemGroup->setName(getGroupName() );
+ else
+  _itemGroup->setName("PositionableIcon");
 }
+

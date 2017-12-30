@@ -10,6 +10,8 @@ class LIBPR3SHARED_EXPORT InternalSensorManager : public AbstractSensorManager
  Q_OBJECT
 public:
     InternalSensorManager();
+    /*public*/ InternalSensorManager(QString prefix);
+
 private:
  Logger log;
 protected:

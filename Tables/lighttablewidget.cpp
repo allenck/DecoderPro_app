@@ -4,7 +4,7 @@
 #include "abstractlightmanager.h"
 #include "abstractlight.h"
 #include "addeditlightdialog.h"
-#include "../LayoutEditor/systemnamecomparator.h"
+#include "systemnamecomparator.h"
 
 
 LightTableWidget::LightTableWidget(bool bInternal, QWidget *parent) :

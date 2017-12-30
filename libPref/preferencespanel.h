@@ -16,11 +16,11 @@
  */
 /*public*/ /*interface*/ class LIBPREFSHARED_EXPORT PreferencesPanel : public QWidget
 {
-    Q_OBJECT
+ Q_OBJECT
 public:
  PreferencesPanel(QWidget* parent = 0) : QWidget(parent) {}
  ~PreferencesPanel() {}
- PreferencesPanel(const PreferencesPanel&) {}
+ PreferencesPanel(const PreferencesPanel&) : QWidget() {}
     /**
      * Get the Preferences Item identifier.
      *
@@ -101,7 +101,7 @@ public:
      *
      * @return true if preferences need to be saved, false otherwise
      */
-    virtual /*public abstract*/ bool isDirty() {return false;}
+    virtual /*public abstract*/ bool isDirty() {return true;}
 
     /**
      * Indicate that the preferences will not take effect until restarted.

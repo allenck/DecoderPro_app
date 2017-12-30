@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'rosterentrypane.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -246,56 +246,56 @@ public:
 
     void retranslateUi(QWidget *RosterEntryPane)
     {
-        RosterEntryPane->setWindowTitle(QApplication::translate("RosterEntryPane", "Form", 0));
+        RosterEntryPane->setWindowTitle(QApplication::translate("RosterEntryPane", "Form", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        edID->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>Identifies this locomotive in the roster</p></body></html>", 0));
+        edID->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>Identifies this locomotive in the roster</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_2->setText(QApplication::translate("RosterEntryPane", "Road Name:", 0));
+        label_2->setText(QApplication::translate("RosterEntryPane", "Road Name:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        edRoadName->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p><br/></p></body></html>", 0));
+        edRoadName->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p><br/></p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_3->setText(QApplication::translate("RosterEntryPane", "Road Number:", 0));
+        label_3->setText(QApplication::translate("RosterEntryPane", "Road Number:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        edRoadNumber->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p><br/></p></body></html>", 0));
+        edRoadNumber->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p><br/></p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_4->setText(QApplication::translate("RosterEntryPane", "Manufacturer:", 0));
+        label_4->setText(QApplication::translate("RosterEntryPane", "Manufacturer:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        edManufacturer->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p><br/></p></body></html>", 0));
+        edManufacturer->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p><br/></p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_5->setText(QApplication::translate("RosterEntryPane", "Owner: ", 0));
-        label_6->setText(QApplication::translate("RosterEntryPane", "Model:", 0));
-        label_7->setText(QApplication::translate("RosterEntryPane", "DCC Address:", 0));
+        label_5->setText(QApplication::translate("RosterEntryPane", "Owner: ", Q_NULLPTR));
+        label_6->setText(QApplication::translate("RosterEntryPane", "Model:", Q_NULLPTR));
+        label_7->setText(QApplication::translate("RosterEntryPane", "DCC Address:", Q_NULLPTR));
         cbDCCAddr->clear();
         cbDCCAddr->insertItems(0, QStringList()
-         << QApplication::translate("RosterEntryPane", "DCC Short", 0)
-         << QApplication::translate("RosterEntryPane", "DCC Long", 0)
+         << QApplication::translate("RosterEntryPane", "DCC Short", Q_NULLPTR)
+         << QApplication::translate("RosterEntryPane", "DCC Long", Q_NULLPTR)
         );
 #ifndef QT_NO_TOOLTIP
-        cbDCCAddr->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>This is the current address type; you can't update it here. </p></body></html>", 0));
+        cbDCCAddr->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>This is the current address type; you can't update it here. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_9->setText(QApplication::translate("RosterEntryPane", "Throttle Speed Limit (%):", 0));
-        label_10->setText(QApplication::translate("RosterEntryPane", "Comment:", 0));
-        label_11->setText(QApplication::translate("RosterEntryPane", "Decoder Family:", 0));
+        label_9->setText(QApplication::translate("RosterEntryPane", "Throttle Speed Limit (%):", Q_NULLPTR));
+        label_10->setText(QApplication::translate("RosterEntryPane", "Comment:", Q_NULLPTR));
+        label_11->setText(QApplication::translate("RosterEntryPane", "Decoder Family:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        lblDecoderFamily->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>This is filled in automatically by your earlier selections</p></body></html>", 0));
+        lblDecoderFamily->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>This is filled in automatically by your earlier selections</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        lblDecoderFamily->setText(QApplication::translate("RosterEntryPane", "Family", 0));
-        label_13->setText(QApplication::translate("RosterEntryPane", "Decoder Model:", 0));
+        lblDecoderFamily->setText(QApplication::translate("RosterEntryPane", "Family", Q_NULLPTR));
+        label_13->setText(QApplication::translate("RosterEntryPane", "Decoder Model:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        lblDecoderModel->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>This is filled in automatically by your earlier selections</p></body></html>", 0));
+        lblDecoderModel->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>This is filled in automatically by your earlier selections</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        lblDecoderModel->setText(QApplication::translate("RosterEntryPane", "dec model", 0));
-        label_15->setText(QApplication::translate("RosterEntryPane", "Decoder Comment: ", 0));
-        label_16->setText(QApplication::translate("RosterEntryPane", "Filename:", 0));
+        lblDecoderModel->setText(QApplication::translate("RosterEntryPane", "dec model", Q_NULLPTR));
+        label_15->setText(QApplication::translate("RosterEntryPane", "Decoder Comment: ", Q_NULLPTR));
+        label_16->setText(QApplication::translate("RosterEntryPane", "Filename:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        lblFilename->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>This is filled in automatically by the program</p></body></html>", 0));
+        lblFilename->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>This is filled in automatically by the program</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        lblFilename->setText(QApplication::translate("RosterEntryPane", "xxx.xml", 0));
-        label_18->setText(QApplication::translate("RosterEntryPane", "Date modified:", 0));
+        lblFilename->setText(QApplication::translate("RosterEntryPane", "xxx.xml", Q_NULLPTR));
+        label_18->setText(QApplication::translate("RosterEntryPane", "Date modified:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        lblDateModified->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>The time and date this entry last stored</p></body></html>", 0));
+        lblDateModified->setToolTip(QApplication::translate("RosterEntryPane", "<html><head/><body><p>The time and date this entry last stored</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        lblDateModified->setText(QApplication::translate("RosterEntryPane", "Jan 22, 2014 8:27:01 AM", 0));
+        lblDateModified->setText(QApplication::translate("RosterEntryPane", "Jan 22, 2014 8:27:01 AM", Q_NULLPTR));
         label_21->setText(QString());
     } // retranslateUi
 

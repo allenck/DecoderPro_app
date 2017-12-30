@@ -5,7 +5,7 @@ win32:{
 QTSERIALPORT_PROJECT_ROOT =C:/Users/Allen/Projects/qt-qtserialport-stable/qt-qtserialport
 }
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets serialport gui webkitwidgets
+    QT       += widgets serialport gui #webkitwidgets
 } else {
     include($$QTSERIALPORT_PROJECT_ROOT/src/serialport/qt4support/serialport.prf)
 }
@@ -214,7 +214,6 @@ else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
 
 INCLUDEPATH += $$PWD/../appslib
 DEPENDPATH += $$PWD/../appslib
-
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/release/ -lLocoIO

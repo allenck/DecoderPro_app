@@ -172,6 +172,9 @@ _reportLocked = true;
  */
 /*protected*/ void AbstractTurnout::newCommandedState(int s)
 {
+ if(s < UNKNOWN || s > INCONSISTENT)
+  s= UNKNOWN;
+
  if (_commandedState != s)
  {
   int oldState = _commandedState;
@@ -237,6 +240,8 @@ _reportLocked = true;
  */
 /*protected*/ void AbstractTurnout::newKnownState(int s)
 {
+ if(s < UNKNOWN || s > INCONSISTENT)
+  s= UNKNOWN;
  if (_knownState != s)
  {
   int oldState = _knownState;

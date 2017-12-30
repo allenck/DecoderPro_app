@@ -12,6 +12,7 @@
 #include "slipturnouticon.h"
 #include "itempalette.h"
 #include "iconadder.h"
+#include "loggerfactory.h"
 
 PositionableLabel::PositionableLabel(QObject *parent) :
     JLabel()
@@ -35,7 +36,7 @@ PositionableLabel::PositionableLabel(QObject *parent) :
 
 /*public*/ PositionableLabel::PositionableLabel(QString s, Editor* editor, Positionable* parent) : JLabel(s)
 {
- init(parent);
+ common(parent);
  //super(s);
  _editor = editor;
  //if(editor != NULL)
@@ -49,12 +50,14 @@ PositionableLabel::PositionableLabel(QObject *parent) :
  setVerticalAlignment(JLabel::CENTER);
  setPopupUtility(new PositionablePopupUtil((Positionable*)this, this));
  setToolTip("Positionable Label");
+ setObjectName("positionableLabel");
+
 }
 /*public*/ PositionableLabel::PositionableLabel(NamedIcon* s, Editor* editor, Positionable *parent)
  : JLabel("",s,0)
 {
  //super(s);
- init(parent);
+ common(parent);
  _editor = editor;
  if(editor != NULL)
   Q_ASSERT(qobject_cast<Editor*>(editor)!= NULL);
@@ -67,7 +70,8 @@ PositionableLabel::PositionableLabel(QObject *parent) :
  setPopupUtility(new PositionablePopupUtil((Positionable*)this->parent, this));
  setToolTip("Positionable Label");
 }
-void PositionableLabel::init(Positionable* parent)
+
+void PositionableLabel::common(Positionable* parent)
 {
  if(parent == NULL)
   this->parent = (Positionable*)this;
@@ -81,7 +85,7 @@ void PositionableLabel::init(Positionable* parent)
  _foreground = QColor(Qt::white);
  _background = QColor(Qt::transparent);
  _preferredSize = QSize(10,20);  // TODO:
- _itemGroup = new QGraphicsItemGroup();
+ _itemGroup = new MyGraphicsItemGroup();
  _tooltip = "";
  _showTooltip =true;
   _editable = true;
@@ -105,10 +109,8 @@ void PositionableLabel::init(Positionable* parent)
  IS_OPAQUE = false;
  needsRotate = false;
  _degrees = 0;
- cEdit = new CoordinateEdit(this);
- log = new Logger("PositionableLabel");
-
 }
+
 /*public*/ /*final*/ bool PositionableLabel::isIcon() { return _icon; }
 /*public*/ /*final*/ bool PositionableLabel::isText() { return _text; }
 /*public*/ /*final*/ bool PositionableLabel::isControl() { return _control; }
@@ -618,6 +620,7 @@ void IEFWindowListener::windowClosing(QCloseEvent */*e*/)
  _iconEditor = NULL;
 // invalidate();
  updateScene();
+ _itemGroup->setName(getGroupName());
 }
 
 
@@ -648,7 +651,7 @@ void IEFWindowListener::windowClosing(QCloseEvent */*e*/)
  if (_displayLevel > Editor::BKG)
  {
   //CoordinateEdit edit;
-  QAction* act = cEdit->getRotateEditAction((Positionable*)this, cEdit);
+  QAction* act = CoordinateEdit::getRotateEditAction((Positionable*)this, (CoordinateEdit*)this);
   popup->addAction(act);
   return true;
  }
@@ -1161,7 +1164,8 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
  }
  else
  {
-  _itemGroup = new QGraphicsItemGroup();
+  _itemGroup = new MyGraphicsItemGroup();
+  _itemGroup->setName(getGroupName());
   currRotation = 0;
  }
  if(isIcon())
@@ -1178,7 +1182,8 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
   if(showTooltip()) item->setToolTip(getTooltip());
   //_itemGroup->addToGroup(item);
   _itemGroup->setPos(getX(), getY());
-  //if(showTooltip()) _itemGroup->setToolTip(getTooltip());
+  if(_itemGroup->name() == "")
+   _itemGroup->setName(getGroupName());
   //int degrees = getDegrees() + getIcon()->getRotation();
   currRotation = getIcon()->getRotation()*90;/*getDegrees();*/
   //if((getDegrees()+ currRotation) != 0)
@@ -1217,6 +1222,8 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
   //rItem->setPos(getX(), getY());
   _itemGroup->addToGroup(itemText);
   _itemGroup->setPos(getX(), getY());
+  if(_itemGroup->name() == "")
+   _itemGroup->setName(getGroupName());
   if(getDegrees() != 0)
   {
    //l->item->rotate(l->getDegrees());
@@ -1346,3 +1353,5 @@ QColor PositionableLabel::getBackground()
 #endif
     setBackgroundColor(bg);
 }
+
+/*private*/ /*final*/ /*static*/ Logger* PositionableLabel::log = LoggerFactory::getLogger("PositionableLabel");

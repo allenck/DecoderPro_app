@@ -41,7 +41,7 @@ public:
      * @param name
      * @return null if no match found
      */
-    /*public*/ virtual SignalMast* getSignalMast(QString name) {return NULL;}
+    /*public*/ virtual SignalMast* getSignalMast(QString /*name*/) {return NULL;}
 
     /**
      * Locate via user name, then system name if needed.

@@ -6,6 +6,10 @@
 #include "fileutil.h"
 #include <QFileDialog>
 #include "jframe.h"
+#include "jfilechooser.h"
+#include "file.h"
+#include <QComboBox>
+#include "fileutilsupport.h"
 
 //FileLocationPane::FileLocationPane(QWidget *parent) :
 //    PreferencesPanel(parent)
@@ -43,13 +47,17 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
  setObjectName("FileLocationPane");
  restartRequired = false;
  scriptLocation = new JTextField();
+ scriptLocation->setToolTip(tr("Location of user scripts. If not specified, user files location will be used."));
  userLocation = new JTextField();
-
+ userLocation->setToolTip(tr("Specify directory path where user files are stored. If not present, the Profile path will be used!"));
+ programLocation = new JTextField();
+ programLocation->setToolTip(tr("Select location of Java program resources to be used by this program. Requires either a Java version of JMRO or the JMRI source."));
  QVBoxLayout* thisLayout;
  setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.Y_AXIS));
 
  thisLayout->addWidget(PrefLocation());
-// thisLayout->addWidget(ScriptsLocation());
+ thisLayout->addWidget(ScriptsLocation());
+ thisLayout->addWidget(ProgramLocation());
 
     /*p = new JPanel();
      JLabel throttle = new JLabel("Default Throttle Location");
@@ -59,46 +67,53 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
      throttleLocation.setText(jmri.jmrit.throttle.ThrottleFrame.getDefaultThrottleFolder());
      add(p);*/
 }
-#if 0
-private JPanel ScriptsLocation() {
-    JButton bScript = new JButton(tr("ButtonSetDots"));
-    final JFileChooser fcScript;
-    fcScript = new JFileChooser(FileUtil.getScriptsPath());
 
-    fcScript.setDialogTitle(tr("MessageSelectDirectory"));
-    fcScript.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    fcScript.setAcceptAllFileFilterUsed(false);
-    bScript.addActionListener(new AbstractAction() {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 6381324878582255448L;
+/*private*/ QWidget* FileLocationPane::ScriptsLocation() {
+    QPushButton* bScript = new QPushButton(tr("Set..."));
+    fcScript = new JFileChooser(FileUtil::getScriptsPath());
 
-        //@Override
-        /*public*/ void actionPerformed(ActionEvent e) {
-            // get the file
-            fcScript.showOpenDialog(null);
-            if (fcScript.getSelectedFile() == null) {
-                return; // cancelled
-            }
-            scriptLocation.setText(fcScript.getSelectedFile() + File.separator);
-            validate();
-            if (getTopLevelAncestor() != null) {
-                ((JFrame) getTopLevelAncestor()).pack();
-            }
-        }
-    });
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    JPanel p = new JPanel();
-    JLabel scripts = new JLabel(tr("ScriptDir"));
-    p.add(scripts);
-    p.add(scriptLocation);
-    p.add(bScript);
-    scriptLocation.setColumns(30);
-    scriptLocation.setText(FileUtil.getScriptsPath());
+    fcScript->setDialogTitle(tr("Select Directory"));
+    fcScript->setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY);
+//    fcScript->setAcceptAllFileFilterUsed(false);
+    OpenAction* act = new OpenAction(fcScript, scriptLocation, this);
+    //bScript.addActionListener(new OpenAction(fcScript, scriptLocation));
+    connect(bScript, SIGNAL(clicked(bool)), act, SLOT(actionPerformed()));
+    QVBoxLayout* thisLayout;
+    setLayout(thisLayout = new QVBoxLayout()); //this, BoxLayout.Y_AXIS));
+    QWidget* p = new QWidget();
+    QHBoxLayout* pLayout = new QHBoxLayout(p);
+    QLabel* scripts = new QLabel(tr("Script Dir"));
+    pLayout->addWidget(scripts);
+    pLayout->addWidget(scriptLocation);
+    pLayout->addWidget(bScript);
+    scriptLocation->setColumns(30);
+    scriptLocation->setText(FileUtil::getScriptsPath());
     return p;
 }
-#endif
+
+/*private*/ QWidget* FileLocationPane::ProgramLocation() {
+    QComboBox* cbProgram = new QComboBox();
+    cbProgram->addItems(*FileUtil::findProgramPath());
+    cbProgram->findText(FileUtil::getProgramPath());
+    programLocation->setText(cbProgram->currentText());
+    connect(cbProgram, SIGNAL(currentIndexChanged(QString)), this, SLOT(programLocationChange(QString)));
+    QVBoxLayout* thisLayout;
+    setLayout(thisLayout = new QVBoxLayout()); //this, BoxLayout.Y_AXIS));
+    QWidget* p = new QWidget();
+    QHBoxLayout* pLayout = new QHBoxLayout(p);
+    QLabel* label = new QLabel(tr("Program Dir"));
+    pLayout->addWidget(label);
+    pLayout->addWidget(programLocation);
+    pLayout->addWidget(cbProgram);
+    scriptLocation->setColumns(30);
+    return p;
+}
+
+/*private*/ void FileLocationPane::programLocationChange(QString loc)
+{
+ programLocation->setText(loc);
+}
+
 /*private*/ QWidget* FileLocationPane::PrefLocation() {
     QWidget* p = new QWidget();
     QHBoxLayout* pLayout = new QHBoxLayout;
@@ -213,3 +228,27 @@ void FileLocationPane::On_fileSelected(QString file)
     return this->restartRequired;
 }
 
+///*private*/ class OpenAction extends AbstractAction {
+//    JFileChooser chooser;
+//    JTextField field;
+    OpenAction::OpenAction(JFileChooser* chooser, JTextField* field, FileLocationPane* pane) {
+        this->chooser = chooser;
+        this->field = field;
+     this->pane = pane;
+    }
+//    @Override
+//    @SuppressFBWarnings(value="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification="protected by if instanceof")
+/*public*/ void OpenAction::actionPerformed(ActionEvent* e) {
+    // get the file
+    chooser->showOpenDialog(NULL);
+    if (chooser->getSelectedFile() == NULL) {
+        return; // cancelled
+    }
+    field->setText(chooser->getSelectedFile()->getPath() + File::separator);
+//        validate();
+    if (pane->getTopLevelAncestor() != NULL && qobject_cast<JFrame*>(pane->getTopLevelAncestor()) != NULL) {
+        ((JFrame*)pane->getTopLevelAncestor())->adjustSize();
+
+    }
+}
+//}

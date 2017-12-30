@@ -5,7 +5,7 @@
 #include "PythonQt.h"
 //#include "PythonQt_QtAll.h"
 #include "jmrijframe.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"
 #include "userpreferencesmanager.h"
 

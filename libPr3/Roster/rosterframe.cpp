@@ -47,7 +47,7 @@
 #include "apps3.h"
 #include "largepowermanagerbutton.h"
 #include "rostergroupspanel.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "rostertablemodel.h"
 #include <QSortFilterProxyModel>
 #include "rostergroupselector.h"
@@ -311,7 +311,7 @@ void RosterFrame::common()
  connect(ui->edit, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
  connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(updateProgMode()));
 
- LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo");
+ LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
  ui->menubar->insertMenu(ui->menuLocoNet->menuAction(),  LocoNetMenu::instance(connectionMemo, this));
  ui->menuLocoNet->clear();
  ui->menubar->removeAction(ui->menuLocoNet->menuAction());
@@ -1719,7 +1719,7 @@ void RosterFrame::On_splitter2Moved(int pos, int)
    str.append(",");
   str.append(QString::number(i));
  }
- ((DefaultUserMessagePreferences*)prefsMgr)->setProperty(this->metaObject()->className(), "splitter2Sizes", str);
+ ((UserPreferencesManager*)prefsMgr)->setProperty(this->metaObject()->className(), "splitter2Sizes", str);
 }
 
 /*protected*/ void RosterFrame::systemsMenu() {

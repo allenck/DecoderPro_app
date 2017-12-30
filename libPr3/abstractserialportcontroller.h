@@ -28,7 +28,7 @@ public:
  /*public*/ QString handlePortNotFound(NoSuchPortException p,
                          QString portName,
                          Logger* log);
-    /*public*/ void _connect() throw( Exception);
+    /*public*/ void _connect(); // throw( Exception);
  /*public*/ void setPort(QString port);
     /*public*/  QString getCurrentPortName();
  /*public*/ QVector<QString> getPortNames();

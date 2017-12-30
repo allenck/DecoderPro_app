@@ -114,11 +114,11 @@ public:
     
     /*public*/ void virtual dispose() = 0;
 
-    /*public*/ virtual Section* getAssociatedSection(SignalMast* destination) {return NULL;}
+    /*public*/ virtual Section* getAssociatedSection(SignalMast* /*destination*/) {return NULL;}
 
-    /*public*/ virtual void setAssociatedSection(Section* sec, SignalMast* destination) {}
+    /*public*/ virtual void setAssociatedSection(Section* /*sec*/, SignalMast* /*destination*/) {}
 
-    /*public*/ int virtual getAutoBlockState(Block* block, SignalMast* destination) = 0;
+    /*public*/ int virtual getAutoBlockState(Block* /*block*/, SignalMast* /*destination*/) {return 0;}
 
     /**
     * returns all the blocks that have been detected as being in use for this logic,
@@ -188,6 +188,14 @@ public:
      * Query if the signalmast logic to the destination signal mast is active.
      */
     /*public*/ virtual bool isActive(SignalMast* dest) = 0;
+
+    /**
+     * Get the active destination Signal Mast for this Signal Mast Logic.
+     *
+     * @return the active signal mast or null if none
+     */
+    //@CheckForNull
+    /*public*/virtual SignalMast* getActiveDestination() {return NULL;}
 
     /*public*/ virtual bool isBlockIncluded(Block* block, SignalMast* destination) = 0;
 

@@ -39,7 +39,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void valueChanged(QModelIndex);
+    /*public*/ void valueChanged(QItemSelection, QItemSelection);
 private:
     /*private*/ void initComponents();
     // Variables declaration - do not modify
@@ -66,6 +66,7 @@ private:
     /*private*/ QWidget* searchPathsPanel;
     // End of variables declaration
     Logger* log;
+
 private slots:
     /*private*/ void renameMIActionPerformed(ActionEvent* evt = 0);
     /*private*/ void chkStartWithActiveProfileActionPerformed(ActionEvent* evt = 0);

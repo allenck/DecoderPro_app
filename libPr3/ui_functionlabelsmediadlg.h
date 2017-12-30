@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'functionlabelsmediadlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -97,12 +97,12 @@ public:
 
     void retranslateUi(QMainWindow *FunctionLabelsMediaDlg)
     {
-        FunctionLabelsMediaDlg->setWindowTitle(QApplication::translate("FunctionLabelsMediaDlg", "MainWindow", 0));
-        actionFacttory_Reset->setText(QApplication::translate("FunctionLabelsMediaDlg", "Facttory Reset", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("FunctionLabelsMediaDlg", "Function Labels", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("FunctionLabelsMediaDlg", "Roster Media", 0));
-        menuFile->setTitle(QApplication::translate("FunctionLabelsMediaDlg", "File", 0));
-        menuReset->setTitle(QApplication::translate("FunctionLabelsMediaDlg", "Reset", 0));
+        FunctionLabelsMediaDlg->setWindowTitle(QApplication::translate("FunctionLabelsMediaDlg", "MainWindow", Q_NULLPTR));
+        actionFacttory_Reset->setText(QApplication::translate("FunctionLabelsMediaDlg", "Facttory Reset", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("FunctionLabelsMediaDlg", "Function Labels", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("FunctionLabelsMediaDlg", "Roster Media", Q_NULLPTR));
+        menuFile->setTitle(QApplication::translate("FunctionLabelsMediaDlg", "File", Q_NULLPTR));
+        menuReset->setTitle(QApplication::translate("FunctionLabelsMediaDlg", "Reset", Q_NULLPTR));
     } // retranslateUi
 
 };

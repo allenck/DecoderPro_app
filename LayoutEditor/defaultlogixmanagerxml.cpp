@@ -119,7 +119,7 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
 /*public*/ void DefaultLogixManagerXml::loadLogixs(QDomElement logixs) {
     QDomNodeList logixList = logixs.elementsByTagName("logix");
     if (log->isDebugEnabled()) log->debug("Found "+QString::number(logixList.size())+" logixs");
-    LogixManager* tm = InstanceManager::logixManagerInstance();
+    LogixManager* tm = (LogixManager*)InstanceManager::getDefault("LogixManager");
 
     for (int i=0; i<logixList.size(); i++)
     {

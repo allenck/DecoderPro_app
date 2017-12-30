@@ -1,6 +1,7 @@
 #include "jbutton.h"
 #include "action.h"
 #include "actionevent.h"
+#include "vptr.h"
 
 //JButton::JButton(QObject *parent) :
 //  QPushButton(parent)

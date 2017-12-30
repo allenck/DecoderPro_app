@@ -78,7 +78,8 @@ signals:
     
 public slots:
  private:
-  Logger* log;
+      /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractTurnoutManager");
+
   QString defaultClosedSpeed;
   QString defaultThrownSpeed;
 

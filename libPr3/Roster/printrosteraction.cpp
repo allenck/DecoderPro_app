@@ -54,13 +54,15 @@ PrintRosterAction::PrintRosterAction(QObject *parent) :
  //super(actionName);
  common();
  mFrame = frame;
+ //mFrame->setVisible(false);
  isPreview = preview;
 }
 
 void PrintRosterAction::common()
 {
  log = new Logger("PrintRosterAction");
- mFrame = new JmriJFrame("PrintRosterAction");
+ mFrame = NULL; //new JmriJFrame("Print Roster");
+ //mFrame->setVisible(false);
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 

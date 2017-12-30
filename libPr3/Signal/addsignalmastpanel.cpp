@@ -23,7 +23,7 @@
 #include "stringutil.h"
 #include "decimalformat.h"
 #include "actionevent.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 
 //AddSignalMastPanel::AddSignalMastPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -209,7 +209,7 @@ void AddSignalMastPanel::init()
     QStringList l1 = QStringList();
     l1 <<  tr("Signal Head Controlled Mast")<< tr("Turnout Controlled Mast")<< tr("Virtual Mast");
     signalMastDriver->addItems(l1);
-    prefs = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+    prefs = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     signalHeadPanel = new QGroupBox();
     turnoutMastPanel = new QWidget();
     dccMastPanel = new QWidget();

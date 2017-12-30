@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settrackwidthdlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -100,11 +100,11 @@ public:
 
     void retranslateUi(QDialog *SetTrackWidthDlg)
     {
-        SetTrackWidthDlg->setWindowTitle(QApplication::translate("SetTrackWidthDlg", "Dialog", 0));
-        label->setText(QApplication::translate("SetTrackWidthDlg", "Side track width", 0));
-        label_2->setText(QApplication::translate("SetTrackWidthDlg", "Mainline track width", 0));
-        okButton->setText(QApplication::translate("SetTrackWidthDlg", "Done", 0));
-        cancelButton->setText(QApplication::translate("SetTrackWidthDlg", "Cancel", 0));
+        SetTrackWidthDlg->setWindowTitle(QApplication::translate("SetTrackWidthDlg", "Dialog", Q_NULLPTR));
+        label->setText(QApplication::translate("SetTrackWidthDlg", "Side track width", Q_NULLPTR));
+        label_2->setText(QApplication::translate("SetTrackWidthDlg", "Mainline track width", Q_NULLPTR));
+        okButton->setText(QApplication::translate("SetTrackWidthDlg", "Done", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("SetTrackWidthDlg", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

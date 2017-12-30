@@ -1,7 +1,7 @@
 #include "dialogerrorhandler.h"
 #include "errormemo.h"
 #include "instancemanager.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 
 DialogErrorHandler::DialogErrorHandler(QObject *parent) :
     ErrorHandler(parent)
@@ -50,7 +50,7 @@ DialogErrorHandler::DialogErrorHandler(QObject *parent) :
   }
   m += "</html>";
 
-  ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->
+  ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
             showErrorMessage("Error during " + e->title, m, e->description, "", true, false);
 } catch (HeadlessException ex)
  {

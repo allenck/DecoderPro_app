@@ -96,7 +96,7 @@ private:
     int centreX;
     int centreY;
  Logger* log;
- void init();
+ void common();
 
  QActionGroup* rateButtonGroup;// = null;
  QSignalMapper* mapper;

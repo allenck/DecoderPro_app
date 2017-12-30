@@ -5,6 +5,7 @@
 #include "file.h"
 #include <QUrl>
 #include "xmlfile.h"
+#include "exceptions.h"
 
 class ConfigureManager :  public XmlFile
 {
@@ -55,7 +56,7 @@ public:
      * @see jmri.configurexml.ConfigXmlManager
      */
 //    public interface ConfigureManager {
-    ConfigureManager(QObject* parent =0) : XmlFile(parent) {}
+    ConfigureManager(QObject* parent = 0) : XmlFile(parent) {}
     ~ConfigureManager() {}
     ConfigureManager(const ConfigureManager&) : XmlFile() {}
         virtual void registerPref(QObject* /*o*/) {}
@@ -115,20 +116,20 @@ public:
         /**
          * Stores just user preferences information.
          */
-        virtual void storeUserPrefs(File* /*file*/) const {}
+        virtual void storeUserPrefs(File* /*file*/) /*const*/ {}
 
         /**
          * Stores just configuration information.
          * @param file Output file
          */
-        virtual bool storeConfig(File* /*file*/) const {return false;}
+        virtual bool storeConfig(File* /*file*/) /*const*/ {return false;}
 
         /**
          * Stores just user information.
          * @param file Output file
          * @return true if succeeded
          */
-        virtual bool storeUser(File* /*file*/) const {return false;}
+        virtual bool storeUser(File* /*file*/) /*const*/ {return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -136,10 +137,9 @@ public:
          * @param file Input file
          * @return true if succeeded
          */
-        virtual bool load(File* /*file*/) const {return false;}// throws JmriException;
+        virtual bool load(File* /*file*/) throw (JmriException) {return false;}
 
-        virtual bool load(QFile* /*file*/) const {return false;}// throws JmriException;
-
+        virtual bool load(QFile* /*file*/)  throw (JmriException){return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -147,7 +147,7 @@ public:
          * @param file Input URL
          * @return true if succeeded
          */
-        virtual bool load(QUrl /*file*/) const {return false;} // throws JmriException;
+        virtual bool load(QUrl /*file*/) throw (JmriException) {return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -158,7 +158,7 @@ public:
          * @throws JmriException
          * @since 2.11.2
          */
-    virtual bool load(File* /*file*/, bool /*registerDeferred*/) const { return false;} // throws JmriException;
+    virtual bool load(File* /*file*/, bool /*registerDeferred*/)  throw (JmriException) { return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -169,7 +169,7 @@ public:
          * @throws JmriException
          * @since 2.11.2
          */
-        virtual bool load(QUrl /*file*/, bool /*registerDeferred*/) const { return false;}  // throws JmriException;
+        virtual bool load(QUrl /*file*/, bool /*registerDeferred*/)  { return false;}  // throws JmriException;
 
         /**
          * Create the objects defined in a particular configuration
@@ -181,7 +181,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-        virtual bool loadDeferred(File* /*file*/) const { return false;} // throws JmriException;
+        virtual bool loadDeferred(File* /*file*/)  { return false;} // throws JmriException;
 
         /**
          * Create the objects defined in a particular configuration
@@ -193,7 +193,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-        virtual bool loadDeferred(QUrl /*file*/) const { return false;} // throws JmriException;
+        virtual bool loadDeferred(QUrl /*file*/)  { return false;} // throws JmriException;
 
         /**
          * Provide a method-specific way of locating a file to be

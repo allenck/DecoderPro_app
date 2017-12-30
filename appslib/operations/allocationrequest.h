@@ -59,6 +59,7 @@ protected:
 
  friend class DispatcherFrame;
  friend class AllocationRequestTableModel;
+ friend class AutoAllocate;
 };
 
 #endif // ALLOCATIONREQUEST_H

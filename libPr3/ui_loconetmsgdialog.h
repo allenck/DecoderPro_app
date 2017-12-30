@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'loconetmsgdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -79,10 +79,10 @@ public:
 
     void retranslateUi(JmriPanel *LocoNetMsgDialog)
     {
-        LocoNetMsgDialog->setWindowTitle(QApplication::translate("LocoNetMsgDialog", "Send LocoNet Packet", 0));
-        label->setText(QApplication::translate("LocoNetMsgDialog", "OpCode:", 0));
-        label_2->setText(QApplication::translate("LocoNetMsgDialog", "Data:", 0));
-        btnOk->setText(QApplication::translate("LocoNetMsgDialog", "OK", 0));
+        LocoNetMsgDialog->setWindowTitle(QApplication::translate("LocoNetMsgDialog", "Send LocoNet Packet", Q_NULLPTR));
+        label->setText(QApplication::translate("LocoNetMsgDialog", "OpCode:", Q_NULLPTR));
+        label_2->setText(QApplication::translate("LocoNetMsgDialog", "Data:", Q_NULLPTR));
+        btnOk->setText(QApplication::translate("LocoNetMsgDialog", "OK", Q_NULLPTR));
         lblMsg->setText(QString());
     } // retranslateUi
 

@@ -3,7 +3,17 @@
 #include "layoutblockmanager.h"
 #include "instancemanager.h"
 #include "autotrainaction.h"
-
+#include "logger.h"
+#include "qmessagebox.h"
+#include "dispatcherframe.h"
+#include "allocatedsection.h"
+#include "section.h"
+#include "signalmast.h"
+#include "sensor.h"
+#include "signalmastlogicmanager.h"
+#include "signalmastlogic.h"
+#include "signalspeedmap.h"
+#include "allocatedsection.h"
 
 //AutoActiveTrain::AutoActiveTrain(QObject *parent) : QObject(parent)
 //{
@@ -41,6 +51,7 @@
  * Main constructor method
  */
 /*public*/ AutoActiveTrain::AutoActiveTrain(ActiveTrain* at, QObject* parent) : QObject(parent) {
+ log = new Logger("AutoActiveTrain");
  // operational instance variables
  _activeTrain = NULL;
  _autoTrainAction = NULL;
@@ -71,6 +82,36 @@
 
  re = NULL;
  useSpeedProfile = false;
+
+ _initialized = false;
+ _nextSection = NULL;	                     // train has not reached this Section yet
+ _currentAllocatedSection = NULL;    // head of the train is in this Section
+ _previousAllocatedSection = NULL;   // previous Section - part of train could still be in this section
+ _controllingSignal = NULL;
+ _controllingSignalMast = NULL;
+ _conSignalListener = NULL;
+ _conSignalMastListener = NULL;
+ _conSignalProtectedBlock = NULL;
+ _currentBlock = NULL;
+ _nextBlock = NULL;
+ _previousBlock = NULL;
+ _stoppingBySensor = false;
+ _stopSensor = NULL;
+ _stopSensorListener = NULL;
+ _stoppingForStopSignal = false;		  // if true, stopping because of signal appearance
+ _stoppingByBlockOccupancy = false;    // if true, stop when _stoppingBlock goes UNOCCUPIED
+ _stoppingUsingSpeedProfile = false;     // if true, using the speed profile against the roster entry to bring the loco to a stop in a specific distance
+ _stoppingBlock = NULL;
+ _resumingAutomatic = false;  // if true, resuming automatic mode after WORKING session
+ _needSetSpeed = false;  // if true, train will set speed according to signal instead of stopping
+
+ // keeps track of and restores previous speed
+ _savedSpeed = 0.0;
+
+ // keeps track of number of horn execution threads that are active
+ _activeHornThreads = 0;
+ prevSpeed = -1.0;
+
 
     _activeTrain = at;
     at->setAutoActiveTrain(this);
@@ -116,7 +157,7 @@ static final ResourceBundle rb = ResourceBundle
     _targetSpeed = speed;
 #if 0
     if (speed > 0.002) {
-        _autoEngineer.slowToStop(false);
+        _autoEngineer->slowToStop(false);
     }
 #endif
 }
@@ -194,13 +235,13 @@ static final ResourceBundle rb = ResourceBundle
 /*public*/ void AutoActiveTrain::setMaxTrainLength(float length) {
     _maxTrainLength = length;
 }
-#if 0
+
 
 /**
  * Initialize new Auto Active Train or get a new throttle after WORKING Sets
  * up the DCC address and initiates creation of a throttle to run the train.
  */
-/*public*/ bool initialize() {
+/*public*/ bool AutoActiveTrain::initialize() {
     //clear all flags
     _pausingActive = false;
     _stoppingBySensor = false;
@@ -210,128 +251,104 @@ static final ResourceBundle rb = ResourceBundle
 
     // get decoder address
     try {
-        _address = Integer.valueOf(_activeTrain.getDccAddress()).intValue();
+        _address = (_activeTrain->getDccAddress()).toInt();
     } catch (NumberFormatException ex) {
-        log.warn("invalid dcc address '{}' for {}", _activeTrain.getDccAddress(), _activeTrain.getTrainName());
+       log->warn(tr("invalid dcc address '%1' for %2").arg(_activeTrain->getDccAddress()).arg(_activeTrain->getTrainName()));
         return false;
     }
     if ((_address < 1) || (_address > 9999)) {
-        log.warn("invalid dcc address '{}' for {}", _activeTrain.getDccAddress(), _activeTrain.getTrainName());
+       log->warn(tr("invalid dcc address '%1' for %2").arg(_activeTrain->getDccAddress()).arg(_activeTrain->getTrainName()));
         return false;
     }
     // request a throttle for automatic operation, throttle returned via callback below
-    log.debug("{}: requesting throttle address={}", _activeTrain.getTrainName(), _address);
+   log->debug(tr("%1: requesting throttle address=%2").arg(_activeTrain->getTrainName()).arg(_address));
     bool ok = true;
-    if (_activeTrain.getTrainSource() == ActiveTrain.ROSTER) {
-        if (_activeTrain.getRosterEntry() != NULL) {
-            re = _activeTrain.getRosterEntry();
-            ok = InstanceManager.throttleManagerInstance().requestThrottle(_activeTrain.getRosterEntry(), this);
-            if (re.getSpeedProfile() != NULL) {
-                log.debug("{}: using speed profile from roster entry {}", _activeTrain.getTrainName(), re.getId());
+    if (_activeTrain->getTrainSource() == ActiveTrain::ROSTER) {
+        if (_activeTrain->getRosterEntry() != NULL) {
+            re = _activeTrain->getRosterEntry();
+            ok = InstanceManager::throttleManagerInstance()->requestThrottle(_activeTrain->getRosterEntry(), (ThrottleListener*)this);
+            if (re->getSpeedProfile() != NULL) {
+               log->debug(tr("%1: using speed profile from roster entry %2").arg(_activeTrain->getTrainName()).arg( re->getId()));
                 useSpeedProfile = true;
             }
         } else {
-            ok = InstanceManager.throttleManagerInstance().requestThrottle(_address, this);
+            ok = InstanceManager::throttleManagerInstance()->requestThrottle(_address, (ThrottleListener*)this);
         }
     } else {
-        ok = InstanceManager.throttleManagerInstance().requestThrottle(_address, this);
+        ok = InstanceManager::throttleManagerInstance()->requestThrottle(_address, (ThrottleListener*)this);
     }
     if (!ok) {
-        log.warn("Throttle for locomotive address " + _address + " could not be setup.");
-        _activeTrain.setMode(ActiveTrain.DISPATCHED);
+       log->warn("Throttle for locomotive address " + QString::number(_address) + " could not be setup.");
+        _activeTrain->setMode(ActiveTrain::DISPATCHED);
         return false;
     }
     return true;
 }
 
 // Throttle feedback method - Initiates running AutoEngineer with the new throttle
-@Override
-/*public*/ void notifyThrottleFound(DccThrottle t) {
+//@Override
+/*public*/ void AutoActiveTrain::notifyThrottleFound(DccThrottle* t) {
     _throttle = t;
     if (_throttle == NULL) {
-        javax.swing.JOptionPane.showMessageDialog(NULL, java.text.MessageFormat.format(rb.getString(
-                "Error28"), new Object[]{_activeTrain.getTrainName()}), rb.getString("InformationTitle"),
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        log.warn("NULL throttle returned for train  " + _activeTrain.getTrainName() + "during automatic initialization.");
-        _activeTrain.setMode(ActiveTrain.DISPATCHED);
+//        javax.swing.JOptionPane.showMessageDialog(NULL, java.text.MessageFormat.format(tr(
+//                "Error28"), new Object[]{_activeTrain->getTrainName()}), tr("InformationTitle"),
+//                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+     QMessageBox::information(NULL, tr("Information"), tr("Could not start a throttle to run train \"%1\"\nautomatically, changing to manual running.").arg(_activeTrain->getTrainName()));
+       log->warn("NULL throttle returned for train  " + _activeTrain->getTrainName() + "during automatic initialization.");
+        _activeTrain->setMode(ActiveTrain::DISPATCHED);
         return;
     }
-    log.debug("{}: New AutoEngineer, address={}, length={}, factor={}",
-            _activeTrain.getTrainName(),
-            _throttle.getLocoAddress().toString(),
-            getMaxTrainLength(), _speedFactor);
+   log->debug(tr("%1: New AutoEngineer, address=%2, length=%3, factor=%4").arg(
+            _activeTrain->getTrainName()).arg(
+            _throttle->getLocoAddress()->toString()).arg(
+            getMaxTrainLength()).arg( _speedFactor));
+#if 0
     _autoEngineer = new AutoEngineer();
     new Thread(_autoEngineer, "Auto Engineer " + _address).start();
-    _activeTrain.setMode(ActiveTrain.AUTOMATIC);
+#endif
+    _activeTrain->setMode(ActiveTrain::AUTOMATIC);
     if (_resumingAutomatic) {
         _resumingAutomatic = false;
-        _activeTrain.setStatus(ActiveTrain.RUNNING);
+        _activeTrain->setStatus(ActiveTrain::RUNNING);
         setEngineDirection();
         setSpeedBySignal();
-    } else if (DispatcherFrame.instance().getAutoAllocate()) {
+    } else if (DispatcherFrame::instance()->getAutoAllocate()) {
         // starting for the first time with automatic allocation of Sections
         setSpeedBySignal();
     }
 }
 
-protected DccThrottle getThrottle() {
+/*protected*/ DccThrottle* AutoActiveTrain::getThrottle() {
     return _throttle;
 }
 
-@Override
-/*public*/ void notifyFailedThrottleRequest(jmri.DccLocoAddress address, String reason) {
-    log.error("Throttle request failed for " + address + " because " + reason);
+//@Override
+/*public*/ void AutoActiveTrain::notifyFailedThrottleRequest(DccLocoAddress* address, QString reason) {
+   log->error("Throttle request failed for " + address->toString() + " because " + reason);
 }
 
 
-protected Section getLastAllocatedSection() {
-    AllocatedSection as = _allocatedSectionList.get(_allocatedSectionList.size() - 1);
+/*protected*/ Section* AutoActiveTrain::getLastAllocatedSection() {
+    AllocatedSection* as = _allocatedSectionList->at(_allocatedSectionList->size() - 1);
     if (as != NULL) {
-        return as.getSection();
+        return as->getSection();
     }
     return NULL;
 }
-private bool _initialized = false;
-private Section _nextSection = NULL;	                     // train has not reached this Section yet
-private volatile AllocatedSection _currentAllocatedSection = NULL;    // head of the train is in this Section
-private volatile AllocatedSection _previousAllocatedSection = NULL;   // previous Section - part of train could still be in this section
-private SignalHead _controllingSignal = NULL;
-private SignalMast _controllingSignalMast = NULL;
-private PropertyChangeListener _conSignalListener = NULL;
-private PropertyChangeListener _conSignalMastListener = NULL;
-private Block _conSignalProtectedBlock = NULL;
-private volatile Block _currentBlock = NULL;
-private Block _nextBlock = NULL;
-private volatile Block _previousBlock = NULL;
-private bool _stoppingBySensor = false;
-private Sensor _stopSensor = NULL;
-private PropertyChangeListener _stopSensorListener = NULL;
-private bool _stoppingForStopSignal = false;		  // if true, stopping because of signal appearance
-private bool _stoppingByBlockOccupancy = false;    // if true, stop when _stoppingBlock goes UNOCCUPIED
-private bool _stoppingUsingSpeedProfile = false;     // if true, using the speed profile against the roster entry to bring the loco to a stop in a specific distance
-private volatile Block _stoppingBlock = NULL;
-private bool _resumingAutomatic = false;  // if true, resuming automatic mode after WORKING session
-private bool _needSetSpeed = false;  // if true, train will set speed according to signal instead of stopping
 
-// keeps track of and restores previous speed
-private float _savedSpeed = 0.0f;
-
-protected void saveSpeed() {
+/*protected*/ void AutoActiveTrain::saveSpeed() {
     _savedSpeed = _targetSpeed;
 }
 
-protected void restoreSavedSpeed() {
+/*protected*/ void AutoActiveTrain::restoreSavedSpeed() {
     _targetSpeed = _savedSpeed;
 }
 
-// keeps track of number of horn execution threads that are active
-private int _activeHornThreads = 0;
-
-protected void decrementHornExecution() {
+/*protected*/ void AutoActiveTrain::decrementHornExecution() {
     _activeHornThreads--;
 }
 
-protected void incrementHornExecution() {
+/*protected*/ void AutoActiveTrain::incrementHornExecution() {
     _activeHornThreads++;
 }
 
@@ -339,62 +356,62 @@ protected void incrementHornExecution() {
  * Notification methods Handle notification of change in state and occupancy
  * of Sections and Blocks to track the train around the Transit
  */
-protected void handleSectionStateChange(AllocatedSection as) {
+/*protected*/ void AutoActiveTrain::handleSectionStateChange(AllocatedSection* as) {
     if (!isInAllocatedList(as)) {
         addAllocatedSection(as);
     }
 }
 
-protected void handleSectionOccupancyChange(AllocatedSection as) {
+/*protected*/ void AutoActiveTrain::handleSectionOccupancyChange(AllocatedSection* as) {
     if (!isInAllocatedList(as)) {
-        if (log.isDebugEnabled()) {
-            log.debug("Unexpected occupancy change notification - Section " + as.getSection().getSystemName());
+        if (log->isDebugEnabled()) {
+           log->debug("Unexpected occupancy change notification - Section " + as->getSection()->getSystemName());
         }
         return;
     }
-    if (as.getSection().getOccupancy() == Section.OCCUPIED) {
+    if (as->getSection()->getOccupancy() == Section::OCCUPIED) {
         // Section changed to OCCUPIED - process if expected next Section
-        if (as.getSection() == _nextSection) {
+        if (as->getSection() == _nextSection) {
             setNewCurrentSection(as);
         }
-    } else if (as.getSection().getOccupancy() == Section.UNOCCUPIED) {
-        jmri.TransitSection ts = as.getTransitSection();
+    } else if (as->getSection()->getOccupancy() == Section::UNOCCUPIED) {
+        TransitSection* ts = as->getTransitSection();
         if (ts != NULL) {
-            _autoTrainAction.removeTransitSection(ts);
+            _autoTrainAction->removeTransitSection(ts);
         }
     }
 }
-
+#if 0
 @SuppressFBWarnings(value = "IS2_INCONSISTENT_SYNC",
         justification = "OK to not sync here, no conflict expected")
-protected void handleBlockStateChange(AllocatedSection as, Block b) {
-    if (b.getState() == Block.OCCUPIED) {
+/*protected*/ void handleBlockStateChange(AllocatedSection as, Block b) {
+    if (b.getState() == Block::OCCUPIED) {
         // Block changed to OCCUPIED - train has entered this block
-        log.trace("{}: handleBlockStateChange to OCCUPIED section {}, block {}, length {}", _activeTrain.getTrainName(),
-                as.getSection().getSystemName(),
+       log->trace("{}: handleBlockStateChange to OCCUPIED section {}, block {}, length {}", _activeTrain->getTrainName(),
+                as->getSection().getSystemName(),
                 b.getUserName(), getBlockLength(b));
         if (b == _nextBlock) {
             _previousBlock = _currentBlock;
             _currentBlock = _nextBlock;
             _nextBlock = getNextBlock(b, as);
             if (_nextBlock != NULL) {
-                if ((_currentBlock == _activeTrain.getEndBlock()) && _activeTrain.getReverseAtEnd()
-                        && (as.getSequence() == _activeTrain.getEndBlockSectionSequenceNumber())) {
+                if ((_currentBlock == _activeTrain->getEndBlock()) && _activeTrain->getReverseAtEnd()
+                        && (as->getSequence() == _activeTrain->getEndBlockSectionSequenceNumber())) {
                     // entered last block of Transit, must stop and reverse
                     stopInCurrentSection(END_REVERSAL);
-                    _activeTrain.setRestart();
-                } else if ((_currentBlock == _activeTrain.getStartBlock())
-                        && _activeTrain.getResetWhenDone() && _activeTrain.isTransitReversed()
-                        && (as.getSequence() == _activeTrain.getStartBlockSectionSequenceNumber())) {
+                    _activeTrain->setRestart();
+                } else if ((_currentBlock == _activeTrain->getStartBlock())
+                        && _activeTrain->getResetWhenDone() && _activeTrain->isTransitReversed()
+                        && (as->getSequence() == _activeTrain->getStartBlockSectionSequenceNumber())) {
                     // entered start block of Transit, must stop and reset for continuing
                     stopInCurrentSection(BEGINNING_RESET);
-                    _activeTrain.setRestart();
-                } else if ((_currentBlock == _activeTrain.getEndBlock())
-                        && _activeTrain.getResetWhenDone() && _activeTrain.getDelayedRestart() != ActiveTrain.NODELAY
-                        && (as.getSequence() == _activeTrain.getEndBlockSectionSequenceNumber())) {
+                    _activeTrain->setRestart();
+                } else if ((_currentBlock == _activeTrain->getEndBlock())
+                        && _activeTrain->getResetWhenDone() && _activeTrain->getDelayedRestart() != ActiveTrain::NODELAY
+                        && (as->getSequence() == _activeTrain->getEndBlockSectionSequenceNumber())) {
                     // entered start block of Transit, must stop and reset for continuing
                     stopInCurrentSection(BEGINNING_RESET);
-                    _activeTrain.setRestart();
+                    _activeTrain->setRestart();
                     removeCurrentSignal();
                 } else {
                     setupNewCurrentSignal(as);
@@ -402,18 +419,18 @@ protected void handleBlockStateChange(AllocatedSection as, Block b) {
             } else {
                 // reached last block in this transit
                 removeCurrentSignal();
-                log.trace("{}: block occupied stop in Current Section, Block= {}", _activeTrain.getTrainName(), b.getUserName());
+               log->trace("{}: block occupied stop in Current Section, Block= {}", _activeTrain->getTrainName(), b.getUserName());
                 stopInCurrentSection(NO_TASK);
             }
         } else if (b != _currentBlock) {
-            log.trace("{}: block going occupied {} is not _nextBlock or _currentBlock - ignored.", _activeTrain.getTrainName(), b.getUserName());
+           log->trace("{}: block going occupied {} is not _nextBlock or _currentBlock - ignored.", _activeTrain->getTrainName(), b.getUserName());
             return;
         }
-    } else if (b.getState() == Block.UNOCCUPIED) {
-        log.trace("{}: handleBlockStateChange to UNOCCUPIED - Section {}, Block {}, speed {}", _activeTrain.getTrainName(),
-                as.getSection().getSystemName(), b.getUserName(), _targetSpeed);
+    } else if (b.getState() == Block::UNOCCUPIED) {
+       log->trace("{}: handleBlockStateChange to UNOCCUPIED - Section {}, Block {}, speed {}", _activeTrain->getTrainName(),
+                as->getSection().getSystemName(), b.getUserName(), _targetSpeed);
         if (_stoppingByBlockOccupancy && (b == _stoppingBlock)) {
-            log.trace("{}: setStopNow by block occupancy from Block unoccupied, Block= {}",_activeTrain.getTrainName(), b.getSystemName());
+           log->trace("{}: setStopNow by block occupancy from Block unoccupied, Block= {}",_activeTrain->getTrainName(), b.getSystemName());
             _stoppingByBlockOccupancy = false;
             _stoppingBlock = NULL;
 // djd may need more code here
@@ -428,19 +445,19 @@ protected void handleBlockStateChange(AllocatedSection as, Block b) {
     _autoTrainAction.handleBlockStateChange(as, b);
 }
 
-
+#endif
 /**
  * support methods
  */
-protected void setEngineDirection() {
+/*protected*/ void AutoActiveTrain::setEngineDirection() {
     if (_runInReverse) {
-        if (_activeTrain.isTransitReversed()) {
+        if (_activeTrain->isTransitReversed()) {
             _forward = true;
         } else {
             _forward = false;
         }
     } else {
-        if (_activeTrain.isTransitReversed()) {
+        if (_activeTrain->isTransitReversed()) {
             _forward = false;
         } else {
             _forward = true;
@@ -448,33 +465,33 @@ protected void setEngineDirection() {
     }
 }
 
-protected AllocatedSection getCurrentAllocatedSection() {
+/*protected*/ AllocatedSection* AutoActiveTrain::getCurrentAllocatedSection() {
     return _currentAllocatedSection;
 }
 
-protected void allocateAFresh() {
+/*protected*/ void AutoActiveTrain::allocateAFresh() {
     //Reset initialized flag
     _initialized = false;
 }
 
-private void addAllocatedSection(AllocatedSection as) {
-    _allocatedSectionList.add(as);
+/*private*/ void AutoActiveTrain::addAllocatedSection(AllocatedSection* as) {
+    _allocatedSectionList->append(as);
     if (!_initialized) {
         // this is first allocated section, get things started
         _initialized = true;
-        _nextSection = as.getSection();
-        _currentBlock = _activeTrain.getStartBlock();
-        if (as.getSection().containsBlock(_currentBlock)) {
+        _nextSection = as->getSection();
+        _currentBlock = _activeTrain->getStartBlock();
+        if (as->getSection()->containsBlock(_currentBlock)) {
             // starting Block is in this allocated section - find next Block
             setNewCurrentSection(as);
             _nextBlock = getNextBlock(_currentBlock, as);
-        } else if (as.getSection().connectsToBlock(_currentBlock)) {
+        } else if (as->getSection()->connectsToBlock(_currentBlock)) {
             // starting Block is connected to a Block in this allocated section
-            EntryPoint ep = as.getSection().getEntryPointFromBlock(_currentBlock, as.getDirection());
+            EntryPoint* ep = as->getSection()->getEntryPointFromBlock(_currentBlock, as->getDirection());
             if (ep != NULL) {
-                _nextBlock = ep.getBlock();
+                _nextBlock = ep->getBlock();
             } else {
-                log.error("failure to get entry point to Transit from Block " + _currentBlock.getSystemName());
+               log->error(tr("failure to get entry point to Transit from Block ") + _currentBlock->getSystemName());
             }
         }
         if (_nextBlock != NULL) {
@@ -484,77 +501,77 @@ private void addAllocatedSection(AllocatedSection as) {
     }
     // if train is stopping for lack of an allocation, set flag to restart it
     if (!_pausingActive && (_lastAllocatedSection == _currentAllocatedSection)
-            && isStopping() && (_activeTrain.getStatus() == ActiveTrain.RUNNING)) {
+            && isStopping() && (_activeTrain->getStatus() == ActiveTrain::RUNNING)) {
         _needSetSpeed = true;
     }
     // request next allocation if appropriate--Dispatcher must decide whether to allocate it and when
-    if ((!DispatcherFrame.instance().getAutoAllocate()) && ((_lastAllocatedSection == NULL)
-            || (_lastAllocatedSection.getNextSection() == as.getSection()))) {
-        // if AutoAllocate, this is now done in DispatcherFrame.java for all trains
+    if ((!DispatcherFrame::instance()->getAutoAllocate()) && ((_lastAllocatedSection == NULL)
+            || (_lastAllocatedSection->getNextSection() == as->getSection()))) {
+        // if AutoAllocate, this is now done in DispatcherFrame::java for all trains
         _lastAllocatedSection = as;
-        if (as.getNextSection() != NULL) {
-            Section nSection = as.getNextSection();
-            int nextSeq = as.getNextSectionSequence();
-            int nextDir = _activeTrain.getAllocationDirectionFromSectionAndSeq(nSection, nextSeq);
-            DispatcherFrame.instance().requestAllocation(_activeTrain, nSection, nextDir, nextSeq, true, NULL);
+        if (as->getNextSection() != NULL) {
+            Section* nSection = as->getNextSection();
+            int nextSeq = as->getNextSectionSequence();
+            int nextDir = _activeTrain->getAllocationDirectionFromSectionAndSeq(nSection, nextSeq);
+            DispatcherFrame::instance()->requestAllocation(_activeTrain, nSection, nextDir, nextSeq, true, NULL);
         }
     }
 }
-
-protected void removeAllocatedSection(AllocatedSection as) {
+#if 0
+/*protected*/ void removeAllocatedSection(AllocatedSection as) {
     int index = -1;
     for (int i = _allocatedSectionList.size(); i > 0; i--) {
-        if (_allocatedSectionList.get(i - 1) == as) {
+        if (_allocatedSectionList->at(i - 1) == as) {
             index = i - 1;
         }
     }
     if (index >= 0) {
         _allocatedSectionList.remove(index);
     } else {
-        log.warn("unexpected call to removeAllocatedSection - Section " + as.getSection().getSystemName());
+       log->warn("unexpected call to removeAllocatedSection - Section " + as->getSection().getSystemName());
     }
 }
-
-private bool isStopping() {
+#endif
+/*private*/ bool AutoActiveTrain::isStopping() {
     // here add indicator for new stopping methods, if any are added
     return (_stoppingBySensor || _stoppingByBlockOccupancy || _stoppingUsingSpeedProfile);
 }
 
-private bool isInAllocatedList(AllocatedSection as) {
-    for (int i = 0; i < _allocatedSectionList.size(); i++) {
-        if (_allocatedSectionList.get(i) == as) {
+/*private*/ bool AutoActiveTrain::isInAllocatedList(AllocatedSection* as) {
+    for (int i = 0; i < _allocatedSectionList->size(); i++) {
+        if (_allocatedSectionList->at(i) == as) {
             return true;
         }
     }
     return false;
 }
 
-private bool isSectionInAllocatedList(Section s) {
-    for (int i = 0; i < _allocatedSectionList.size(); i++) {
-        if ((_allocatedSectionList.get(i)).getSection() == s) {
+/*private*/ bool AutoActiveTrain::isSectionInAllocatedList(Section* s) {
+    for (int i = 0; i < _allocatedSectionList->size(); i++) {
+        if ((_allocatedSectionList->at(i))->getSection() == s) {
             return true;
         }
     }
     return false;
 }
 
-private void removeCurrentSignal() {
+/*private*/ void AutoActiveTrain::removeCurrentSignal() {
     if (_conSignalListener != NULL) {
-        _controllingSignal.removePropertyChangeListener(_conSignalListener);
+//        _controllingSignal.removePropertyChangeListener(_conSignalListener);
         _conSignalListener = NULL;
     }
     _controllingSignal = NULL;
     if (_conSignalMastListener != NULL) {
-        _controllingSignalMast.removePropertyChangeListener(_conSignalMastListener);
+//        _controllingSignalMast->removePropertyChangeListener(_conSignalMastListener);
         _conSignalMastListener = NULL;
     }
     _controllingSignalMast = NULL;
 }
-#endif
-/*protected*/ /*synchronized*/ void setupNewCurrentSignal(AllocatedSection* as) {
+
+/*protected*/ /*synchronized*/ void AutoActiveTrain::setupNewCurrentSignal(AllocatedSection* as) {
 #if 0
     removeCurrentSignal();
-    if (DispatcherFrame.instance().getSignalType() == DispatcherFrame.SIGNALHEAD) {
+    if (DispatcherFrame::instance().getSignalType() == DispatcherFrame::SIGNALHEAD) {
         SignalHead sh = _lbManager.getFacingSignalHead(_currentBlock, _nextBlock);
         if (sh != NULL) {
             _controllingSignal = sh;
@@ -562,7 +579,7 @@ private void removeCurrentSignal() {
             sh.addPropertyChangeListener(_conSignalListener = new PropertyChangeListener() {
                 @Override
                 /*public*/ void propertyChange(PropertyChangeEvent e) {
-                    if (e.getPropertyName().equals("Appearance")) {
+                    if (e.getPropertyName() == ("Appearance")) {
                         // controlling signal has changed appearance
                         setSpeedBySignal();
                         if (_stoppingForStopSignal && (_targetSpeed > 0.0)) {
@@ -572,13 +589,13 @@ private void removeCurrentSignal() {
                     }
                 }
             });
-            if (log.isDebugEnabled()) {
-                log.debug("new current signal = " + sh.getSystemName());
+            if (log->isDebugEnabled()) {
+               log->debug("new current signal = " + sh.getSystemName());
             }
             setSpeedBySignal();
         } // Note: NULL signal head will result when exiting throat-to-throat blocks.
-        else if (log.isDebugEnabled()) {
-            log.debug("new current signal is NULL - sometimes OK");
+        else if (log->isDebugEnabled()) {
+           log->debug("new current signal is NULL - sometimes OK");
         }
     } else {
         //SignalMast
@@ -589,7 +606,7 @@ private void removeCurrentSignal() {
             as = _currentAllocatedSection;
         }
         // Find the signal mast at the end of the section by making sure that cB is within as and nB is not.
-        //while (as != NULL && as.getSection().containsBlock(nB) && nB != NULL) {
+        //while (as != NULL && as->getSection().containsBlock(nB) && nB != NULL) {
         //    cB = nB;
         //    nB = getNextBlock(nB, as);
         //}
@@ -606,14 +623,14 @@ private void removeCurrentSignal() {
             sm.addPropertyChangeListener(_conSignalMastListener = new PropertyChangeListener() {
                 @Override
                 /*public*/ void propertyChange(PropertyChangeEvent e) {
-                    if (e.getPropertyName().equals("Aspect")) {
+                    if (e.getPropertyName() == ("Aspect")) {
                         // controlling signal has changed appearance
                         if (_stoppingForStopSignal && (_targetSpeed > 0.0)) {
                             cancelStopInCurrentSection();
                             _stoppingForStopSignal = false;
                         }
                         setSpeedBySignal();
-                    } else if (e.getPropertyName().equals("Held")) {
+                    } else if (e.getPropertyName() == ("Held")) {
                         if (!((Boolean) e.getNewValue()).boolValue()) {
                             cancelStopInCurrentSection();
                             _stoppingForStopSignal = false;
@@ -622,54 +639,54 @@ private void removeCurrentSignal() {
                     }
                 }
             });
-            log.debug("{}: new current signalmast {}({}) for section {}", _activeTrain.getTrainName(), sm.getDisplayName(),
-              sm.getAspect(), as.getSectionName());
+           log->debug("{}: new current signalmast {}({}) for section {}", _activeTrain->getTrainName(), sm.getDisplayName(),
+              sm.getAspect(), as->getSectionName());
             setSpeedBySignal();
         } // Note: NULL signal head will result when exiting throat-to-throat blocks.
         else {
-            log.debug("{}: new current signalmast is NULL for section {} - sometimes OK", _activeTrain.getTrainName(),
-              as.getSectionName());
+           log->debug("{}: new current signalmast is NULL for section {} - sometimes OK", _activeTrain->getTrainName(),
+              as->getSectionName());
         }
     }
 #endif
 }
-#if 0
-private Block getNextBlock(Block b, AllocatedSection as) {
-    if (((_currentBlock == _activeTrain.getEndBlock()) && _activeTrain.getReverseAtEnd()
-            && (as.getSequence() == _activeTrain.getEndBlockSectionSequenceNumber()))) {
+
+/*private*/ Block* AutoActiveTrain::getNextBlock(Block* b, AllocatedSection* as) {
+    if (((_currentBlock == _activeTrain->getEndBlock()) && _activeTrain->getReverseAtEnd()
+            && (as->getSequence() == _activeTrain->getEndBlockSectionSequenceNumber()))) {
         return _previousBlock;
     }
-    if ((_currentBlock == _activeTrain.getStartBlock())
-            && _activeTrain.getResetWhenDone() && _activeTrain.isTransitReversed()
-            && (as.getSequence() == _activeTrain.getStartBlockSectionSequenceNumber())) {
+    if ((_currentBlock == _activeTrain->getStartBlock())
+            && _activeTrain->getResetWhenDone() && _activeTrain->isTransitReversed()
+            && (as->getSequence() == _activeTrain->getStartBlockSectionSequenceNumber())) {
         return _previousBlock;
     }
-    if (as.getNextSection() != NULL) {
-        EntryPoint ep = as.getSection().getExitPointToSection(_nextSection, as.getDirection());
-        if ((ep != NULL) && (ep.getBlock() == b)) {
+    if (as->getNextSection() != NULL) {
+        EntryPoint* ep = as->getSection()->getExitPointToSection(_nextSection, as->getDirection());
+        if ((ep != NULL) && (ep->getBlock() == b)) {
             // this block is connected to a block in the next section
-            return ep.getFromBlock();
+            return ep->getFromBlock();
         }
     }
     // this allocated section has multiple blocks _or_ there is no next Section
-    Block blk = as.getSection().getEntryBlock();
+    Block* blk = as->getSection()->getEntryBlock();
     while (blk != NULL) {
         if (b == blk) {
-            return as.getSection().getNextBlock();
+            return as->getSection()->getNextBlock();
         }
-        blk = as.getSection().getNextBlock();
+        blk = as->getSection()->getNextBlock();
     }
     return NULL;
 }
 
-private void setNewCurrentSection(AllocatedSection as) {
-    if (as.getSection() == _nextSection) {
+/*private*/ void AutoActiveTrain::setNewCurrentSection(AllocatedSection* as) {
+    if (as->getSection() == _nextSection) {
         _previousAllocatedSection = _currentAllocatedSection;
         _currentAllocatedSection = as;
-        _nextSection = as.getNextSection();
-        jmri.TransitSection ts = as.getTransitSection();
+        _nextSection = as->getNextSection();
+        TransitSection* ts = as->getTransitSection();
         if (ts != NULL) {
-            _autoTrainAction.addTransitSection(ts);
+            _autoTrainAction->addTransitSection(ts);
         }
         // check if new next Section exists but is not allocated to this train
         if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
@@ -681,94 +698,96 @@ private void setNewCurrentSection(AllocatedSection as) {
 }
 
 // called by above or when resuming after stopped action
-protected synchronized void setSpeedBySignal() {
-    if (_pausingActive || ((_activeTrain.getStatus() != ActiveTrain.RUNNING)
-            && (_activeTrain.getStatus() != ActiveTrain.WAITING)) || ((_controllingSignal == NULL)
-            && DispatcherFrame.instance().getSignalType() == DispatcherFrame.SIGNALHEAD)
-            || (DispatcherFrame.instance().getSignalType() == DispatcherFrame.SIGNALMAST && (_controllingSignalMast == NULL
-            || (_activeTrain.getStatus() == ActiveTrain.WAITING && !_activeTrain.getStarted())))
-            || (_activeTrain.getMode() != ActiveTrain.AUTOMATIC)) {
+/*protected*/ /*synchronized*/ void AutoActiveTrain::setSpeedBySignal() {
+    if (_pausingActive || ((_activeTrain->getStatus() != ActiveTrain::RUNNING)
+            && (_activeTrain->getStatus() != ActiveTrain::WAITING)) || ((_controllingSignal == NULL)
+            && DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD)
+            || (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALMAST && (_controllingSignalMast == NULL
+            || (_activeTrain->getStatus() == ActiveTrain::WAITING && !_activeTrain->getStarted())))
+            || (_activeTrain->getMode() != ActiveTrain::AUTOMATIC)) {
         // train is pausing or not RUNNING or WAITING in AUTOMATIC mode, or no controlling signal,
         //			don't set speed based on controlling signal
         return;
     }
-    if (DispatcherFrame.instance().getSignalType() == DispatcherFrame.SIGNALHEAD) {
+    if (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD) {
      //set speed using signalHeads
-        switch (_controllingSignal.getAppearance()) {
-            case SignalHead.DARK:
-            case SignalHead.RED:
-            case SignalHead.FLASHRED:
+        switch (_controllingSignal->getAppearance()) {
+            case SignalHead::DARK:
+            case SignalHead::RED:
+            case SignalHead::FLASHRED:
                 // May get here from signal changing before Block knows it is occupied, so must
                 //      check Block occupancy sensor, which must change before signal.
-                if (_conSignalProtectedBlock.getSensor().getState() == Block.OCCUPIED) {
+                if (_conSignalProtectedBlock->getSensor()->getState() == Block::OCCUPIED) {
                     // Train has just passed this signal - ignore this signal
                 } else {
                     stopInCurrentSection(NO_TASK);
                     _stoppingForStopSignal = true;
                 }
                 break;
-            case SignalHead.YELLOW:
-            case SignalHead.FLASHYELLOW:
+            case SignalHead::YELLOW:
+            case SignalHead::FLASHYELLOW:
                 setTargetSpeedState(SLOW_SPEED);
-                _activeTrain.setStatus(ActiveTrain.RUNNING);
+                _activeTrain->setStatus(ActiveTrain::RUNNING);
                 break;
-            case SignalHead.GREEN:
-            case SignalHead.FLASHGREEN:
+            case SignalHead::GREEN:
+            case SignalHead::FLASHGREEN:
                 setTargetSpeedState(NORMAL_SPEED);
-                _activeTrain.setStatus(ActiveTrain.RUNNING);
+                _activeTrain->setStatus(ActiveTrain::RUNNING);
                 break;
-            case SignalHead.LUNAR:
-            case SignalHead.FLASHLUNAR:
+            case SignalHead::LUNAR:
+            case SignalHead::FLASHLUNAR:
                 setTargetSpeedState(RESTRICTED_SPEED);
-                _activeTrain.setStatus(ActiveTrain.RUNNING);
+                _activeTrain->setStatus(ActiveTrain::RUNNING);
                 break;
         }
     } else {
         //Set speed using SignalMasts;
-        String displayedAspect = _controllingSignalMast.getAspect();
-        if (log.isTraceEnabled()) {
-            log.trace("{}: Controlling mast {} ({})", _activeTrain.getTrainName(), _controllingSignalMast.getDisplayName(), displayedAspect);
+        QString displayedAspect = _controllingSignalMast->getAspect();
+#if  0
+        if (log->isTraceEnabled()) {
+           log->trace("{}: Controlling mast {} ({})", _activeTrain->getTrainName(), _controllingSignalMast->getDisplayName(), displayedAspect);
             if (_conSignalProtectedBlock == NULL) {
-                log.trace("{}: Protected block is NULL", _activeTrain.getTrainName());
+               log->trace("{}: Protected block is NULL", _activeTrain->getTrainName());
             } else {
-                log.trace("{}: Protected block: {} state: {} speed: {}", _activeTrain.getTrainName(),
-                        _conSignalProtectedBlock.getSensor().getDisplayName(),
-                        (_conSignalProtectedBlock.getSensor().getState()==Block.OCCUPIED ? "OCCUPIED" : "NOT OCCUPIED"),
-                        _conSignalProtectedBlock.getBlockSpeed());
+               log->trace("{}: Protected block: {} state: {} speed: {}", _activeTrain->getTrainName(),
+                        _conSignalProtectedBlock::getSensor().getDisplayName(),
+                        (_conSignalProtectedBlock::getSensor().getState()==Block::OCCUPIED ? "OCCUPIED" : "NOT OCCUPIED"),
+                        _conSignalProtectedBlock::getBlockSpeed());
             }
         }
-        if ((_controllingSignalMast.getAppearanceMap().getSpecificAppearance(jmri.SignalAppearanceMap.DANGER).equals(displayedAspect))
-                || !_controllingSignalMast.getLit() || _controllingSignalMast.getHeld()) {
-            if (_conSignalProtectedBlock.getSensor().getState() == Block.OCCUPIED) {
+#endif
+        if ((_controllingSignalMast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER) == (displayedAspect))
+                || !_controllingSignalMast->getLit() || _controllingSignalMast->getHeld()) {
+            if (_conSignalProtectedBlock->getSensor()->getState() == Block::OCCUPIED) {
                 // Train has just passed this signal - ignore this signal
-                log.debug("{}: _conSignalProtectedBlock is the block just past so ignore {}", _activeTrain.getTrainName(), _conSignalProtectedBlock.getDisplayName());
+               log->debug(tr("%1: _conSignalProtectedBlock is the block just past so ignore %2").arg(_activeTrain->getTrainName()).arg(_conSignalProtectedBlock->getDisplayName()));
             } else {
-                log.debug("{}: Signal {} at Held or Danger so Stop",_activeTrain.getTrainName(), _controllingSignalMast.getDisplayName());
+               log->debug(tr("%1: Signal %2 at Held or Danger so Stop").arg(_activeTrain->getTrainName()).arg( _controllingSignalMast->getDisplayName()));
                 stopInCurrentSection(NO_TASK);
                 _stoppingForStopSignal = true;
             }
-        } else if (_controllingSignalMast.getAppearanceMap().getSpecificAppearance(jmri.SignalAppearanceMap.PERMISSIVE) != NULL
-                && _controllingSignalMast.getAppearanceMap().getSpecificAppearance(jmri.SignalAppearanceMap.PERMISSIVE).equals(displayedAspect)) {
+        } else if (_controllingSignalMast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::PERMISSIVE) != NULL
+                && _controllingSignalMast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::PERMISSIVE) == (displayedAspect)) {
             setTargetSpeedState(RESTRICTED_SPEED);
-            _activeTrain.setStatus(ActiveTrain.RUNNING);
+            _activeTrain->setStatus(ActiveTrain::RUNNING);
         } else {
 
             //if using signalmasts, set speed to lesser of aspect speed and signalmastlogic speed
             //  (minimum speed on the path to next signal, using turnout and block speeds)
 
-            String aspectSpeedStr = (String) _controllingSignalMast.getSignalSystem().getProperty(displayedAspect, "speed");
-            log.trace("{}: Signal {} speed {} for aspect {}", _activeTrain.getTrainName(), _controllingSignalMast.getDisplayName(), aspectSpeedStr, displayedAspect);
+            QString aspectSpeedStr =  _controllingSignalMast->getSignalSystem()->getProperty(displayedAspect, "speed").toString();
+//           log->trace("{}: Signal {} speed {} for aspect {}", _activeTrain->getTrainName(), _controllingSignalMast->getDisplayName(), aspectSpeedStr, displayedAspect);
             float speed = -1.0f;
             if (aspectSpeedStr != NULL) {
                 try {
-                    speed = Float.valueOf(aspectSpeedStr);
+                    speed = aspectSpeedStr.toFloat();
                 } catch (NumberFormatException nx) {
                     try {
-                        speed = jmri.InstanceManager.getDefault(SignalSpeedMap.class).getSpeed(aspectSpeedStr);
-                        log.trace("{}: Signal {} speed from map for {} is {}", _activeTrain.getTrainName(), _controllingSignalMast.getDisplayName(), aspectSpeedStr, speed);
+                        speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(aspectSpeedStr);
+//                       log->trace("{}: Signal {} speed from map for {} is {}", _activeTrain->getTrainName(), _controllingSignalMast->getDisplayName(), aspectSpeedStr, speed);
                     } catch (Exception ex) {
                         //Considered Normal if the speed does not appear in the map
-                        log.trace("{}: Speed not found {}", _activeTrain.getTrainName(), aspectSpeedStr);
+//                       log->trace("{}: Speed not found {}", _activeTrain->getTrainName(), aspectSpeedStr);
                     }
                 }
             }
@@ -776,13 +795,13 @@ protected synchronized void setSpeedBySignal() {
 
             //get maximum speed for the route between current and next signalmasts
             float smLogicSpeed = -1.0f;
-            String smDestinationName = "unknown";
-            jmri.SignalMastLogic smLogic = InstanceManager.getDefault(jmri.SignalMastLogicManager.class).getSignalMastLogic(_controllingSignalMast);
+            QString smDestinationName = "unknown";
+            SignalMastLogic* smLogic = ((SignalMastLogicManager*) InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(_controllingSignalMast);
             if (smLogic != NULL) {
-                SignalMast smDestination = smLogic.getActiveDestination();
+                SignalMast* smDestination = smLogic->getActiveDestination();
                 if (smDestination != NULL) {
-                    smDestinationName = smDestination.getDisplayName();
-                    smLogicSpeed = (int) smLogic.getMaximumSpeed(smDestination);
+                    smDestinationName = smDestination->getDisplayName();
+                    smLogicSpeed = (int) smLogic->getMaximumSpeed(smDestination);
                 }
             }
 
@@ -791,47 +810,45 @@ protected synchronized void setSpeedBySignal() {
                 speed = smLogicSpeed;
             }
 
-            log.debug("{}: {}({}) {}({}), Dest: {}, path max: {}",
-                    _activeTrain.getTrainName(),
-                    _controllingSignalMast.getDisplayName(), displayedAspect, aspectSpeedStr, aspectSpeed,
-                    smDestinationName, (int) smLogicSpeed);
+           log->debug(tr("%1: %2(%3) %4(%5), Dest: %6, path max: %7").arg(
+                    _activeTrain->getTrainName()).arg(
+                    _controllingSignalMast->getDisplayName()).arg( displayedAspect).arg( aspectSpeedStr).arg( aspectSpeed).arg(
+                    smDestinationName).arg( (int) smLogicSpeed));
 
             if (speed > -1.0f) {
-//                    float mls = _controllingSignalMast.getSignalSystem().getMaximumLineSpeed();
+//                    float mls = _controllingSignalMast->getSignalSystem().getMaximumLineSpeed();
 //                    float increment = mls / 7f;
-//                    log.trace("{}: MaximumLineSpeed is {}, speed is {}", _activeTrain.getTrainName(), mls, speed);
+//                   log->trace("{}: MaximumLineSpeed is {}, speed is {}", _activeTrain->getTrainName(), mls, speed);
 //                    int speedState = (int) Math.ceil(speed / increment);
 //                    if (speedState <= 1) {
 //                        speedState = 2;
 //                    }
-//                    log.trace("{}: SpeedState is {}", _activeTrain.getTrainName(), speedState);
+//                   log->trace("{}: SpeedState is {}", _activeTrain->getTrainName(), speedState);
                 /* We should work on the basis that the speed required in the current block/section is governed by the signalmast
                  that we have passed and not the one we are approaching when we are accelerating.
                  However when we are decelerating we should be aiming to meet the speed required by the approaching signalmast
                  whether that is to slow down or come to a complete stand still.
                  */
                 if (prevSpeed == -1 || speed < prevSpeed) {
-                    log.debug("{}: Signal {} setting speed to {} for next", _activeTrain.getTrainName(),
-                            _controllingSignalMast.getDisplayName(), speed);
+                   log->debug(tr("%1: Signal %2 setting speed to {%3 for next").arg( _activeTrain->getTrainName()).arg(
+                            _controllingSignalMast->getDisplayName()).arg( speed));
                     setTargetSpeedValue(speed);
                 } else {
-                    log.debug("{}: Signal {} setting speed to {} for previous", _activeTrain.getTrainName(),
-                            _controllingSignalMast.getDisplayName(), speed);
+                   log->debug(tr("%1: Signal %2 setting speed to %3 for previous").arg( _activeTrain->getTrainName()));
                     setTargetSpeedValue(prevSpeed);
                 }
                 prevSpeed = speed;
-                _activeTrain.setStatus(ActiveTrain.RUNNING);
+                _activeTrain->setStatus(ActiveTrain::RUNNING);
 
             } else {
-                log.warn("{}: No specific speeds found so will use the default", _activeTrain.getTrainName());
+               log->warn(tr("%1: No specific speeds found so will use the default").arg( _activeTrain->getTrainName()));
                 setTargetSpeedState(NORMAL_SPEED);
-                _activeTrain.setStatus(ActiveTrain.RUNNING);
+                _activeTrain->setStatus(ActiveTrain::RUNNING);
             }
         }
     }
 }
-
-float prevSpeed = -1.0f;
+#if 0
 
 // called to cancel a stopping action that is in progress
 private synchronized void cancelStopInCurrentSection() {
@@ -847,62 +864,63 @@ private synchronized void cancelStopInCurrentSection() {
         } else if (_stoppingUsingSpeedProfile) {
             _stoppingUsingSpeedProfile = false;
             _stoppingBlock = NULL;
-            _autoEngineer.slowToStop(false);
+            _autoEngineer->slowToStop(false);
         }
         // here add other stopping methods if any are added
     }
 }
-
-private synchronized void stopInCurrentSection(int task) {
+#endif
+/*private*/ /*synchronized*/ void AutoActiveTrain::stopInCurrentSection(int task) {
     if (_currentAllocatedSection == NULL) {
-        log.error("{}: Current allocated section NULL on entry to stopInCurrentSection", _activeTrain.getTrainName());
+       log->error(tr("%1: Current allocated section NULL on entry to stopInCurrentSection").arg( _activeTrain->getTrainName()));
         setStopNow();
         return;
     }
-    log.debug("{}: StopInCurrentSection called for {}", _activeTrain.getTrainName(), _currentAllocatedSection.getSectionName());
+   log->debug(tr("%1: StopInCurrentSection called for %2").arg(_activeTrain->getTrainName()).arg( _currentAllocatedSection->getSectionName()));
     if ((_targetSpeed == 0.0f) || isStopping()) {
-        log.debug("{}: train is already stopped or stopping.", _activeTrain.getTrainName());
+       log->debug(tr("%1: train is already stopped or stopping.").arg( _activeTrain->getTrainName()));
         // ignore if train is already stopped or if stopping is in progress
         return;
     }
     // if Section has stopping sensors, use them
-    if (_currentAllocatedSection.getSection().getState() == Section.FORWARD) {
-        _stopSensor = _currentAllocatedSection.getSection().getForwardStoppingSensor();
+    if (_currentAllocatedSection->getSection()->getState() == Section::FORWARD) {
+        _stopSensor = _currentAllocatedSection->getSection()->getForwardStoppingSensor();
     } else {
-        _stopSensor = _currentAllocatedSection.getSection().getReverseStoppingSensor();
+        _stopSensor = _currentAllocatedSection->getSection()->getReverseStoppingSensor();
     }
     if (_stopSensor != NULL) {
-        if (_stopSensor.getKnownState() == Sensor.ACTIVE) {
+        if (_stopSensor->getKnownState() == Sensor::ACTIVE) {
             // stop sensor is already active, stop now
             setStopNow();
         } else {
-            if (useSpeedProfile && _currentAllocatedSection.getSection().getActualLength() > 0) {
+            if (useSpeedProfile && _currentAllocatedSection->getSection()->getActualLength() > 0) {
                 _stoppingUsingSpeedProfile = true;
             } else {
                 // sensor is not active
                 setTargetSpeedState(RESTRICTED_SPEED);
             }
-            _stopSensor.addPropertyChangeListener(_stopSensorListener
-                    = new java.beans.PropertyChangeListener() {
-                        @Override
-                        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-                            if (e.getPropertyName().equals("KnownState")) {
-                                handleStopSensorChange();
-                            }
-                        }
-                    });
+//            _stopSensor::addPropertyChangeListener(_stopSensorListener
+//                    = new java.beans.PropertyChangeListener() {
+//                        @Override
+//                        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
+//                            if (e.getPropertyName() == ("KnownState")) {
+//                                handleStopSensorChange();
+//                            }
+//                        }
+//                    });
+            connect(_stopSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_stopSensor(PropertyChangeEvent*)));
             _stoppingBySensor = true;
         }
-    } else if (_currentAllocatedSection.getLength() < _maxTrainLength) {
+    } else if (_currentAllocatedSection->getLength() < _maxTrainLength) {
         // train will not fit comfortably in the Section, stop it immediately
         setStopNow();
     } else if (_resistanceWheels) {
         // train will fit in current allocated Section and has resistance wheels
         // try to stop by watching Section Block occupancy
-        if (_currentAllocatedSection.getSection().getNumBlocks() == 1) {
+        if (_currentAllocatedSection->getSection()->getNumBlocks() == 1) {
             if (_previousAllocatedSection != NULL) {
-                Block tBlock = _previousAllocatedSection.getSection().getLastBlock();
-                if ((tBlock != NULL) && (tBlock.getState() == Block.OCCUPIED)) {
+                Block* tBlock = _previousAllocatedSection->getSection()->getLastBlock();
+                if ((tBlock != NULL) && (tBlock->getState() == Block::OCCUPIED)) {
                     _stoppingBlock = tBlock;
                     setStopByBlockOccupancy();
                 } else {
@@ -913,25 +931,25 @@ private synchronized void stopInCurrentSection(int task) {
             }
         } else {
             // Section has multiple blocks
-            Block exitBlock = _currentAllocatedSection.getExitBlock();
-            Block enterBlock = _currentAllocatedSection.getEnterBlock(_previousAllocatedSection);
+            Block* exitBlock = _currentAllocatedSection->getExitBlock();
+            Block* enterBlock = _currentAllocatedSection->getEnterBlock(_previousAllocatedSection);
             if (exitBlock == NULL) {
                 // this is the final Section of the Transit
-                Block testBlock = _currentAllocatedSection.getSection().getEntryBlock();
+                Block* testBlock = _currentAllocatedSection->getSection()->getEntryBlock();
                 // skip over unused leading blocks, if any
                 while ((testBlock != NULL) && (testBlock != enterBlock)) {
-                    testBlock = _currentAllocatedSection.getSection().getNextBlock();
+                    testBlock = _currentAllocatedSection->getSection()->getNextBlock();
                 }
                 // is there room in the remaining blocks to hold the train?
                 int testLength = getBlockLength(testBlock);
                 while (testBlock != NULL) {
-                    testBlock = _currentAllocatedSection.getSection().getNextBlock();
+                    testBlock = _currentAllocatedSection->getSection()->getNextBlock();
                     if (testBlock != NULL) {
                         testLength += getBlockLength(testBlock);
                     }
                 }
                 if ((testLength > _maxTrainLength) && (_previousBlock != NULL)
-                        && (_previousBlock.getState() == Block.OCCUPIED)) {
+                        && (_previousBlock->getState() == Block::OCCUPIED)) {
                     // fits, pull train entirely into the last Section
                     _stoppingBlock = _previousBlock;
                     setStopByBlockOccupancy();
@@ -943,7 +961,7 @@ private synchronized void stopInCurrentSection(int task) {
                 setStopNow();
             } else if (exitBlock == enterBlock) {
                 // entry and exit are from the same Block
-                if ((_previousBlock != NULL) && (_previousBlock.getState() == Block.OCCUPIED)
+                if ((_previousBlock != NULL) && (_previousBlock->getState() == Block::OCCUPIED)
                         && (getBlockLength(exitBlock) > _maxTrainLength)) {
                     _stoppingBlock = _previousBlock;
                     setStopByBlockOccupancy();
@@ -953,14 +971,14 @@ private synchronized void stopInCurrentSection(int task) {
             } else {
                 // try to move train as far into the Section as it will comfortably fit
                 int tstLength = getBlockLength(exitBlock);
-                Block tstBlock = exitBlock;
-                int tstBlockSeq = _currentAllocatedSection.getSection().getBlockSequenceNumber(tstBlock);
+                Block* tstBlock = exitBlock;
+                int tstBlockSeq = _currentAllocatedSection->getSection()->getBlockSequenceNumber(tstBlock);
                 while ((tstLength < _maxTrainLength) && (tstBlock != enterBlock)) {
                     int newSeqNumber = tstBlockSeq - 1;
-                    if (_currentAllocatedSection.getDirection() == Section.REVERSE) {
+                    if (_currentAllocatedSection->getDirection() == Section::REVERSE) {
                         newSeqNumber = tstBlockSeq + 1;
                     }
-                    tstBlock = _currentAllocatedSection.getSection().getBlockBySequenceNumber(newSeqNumber);
+                    tstBlock = _currentAllocatedSection->getSection()->getBlockBySequenceNumber(newSeqNumber);
                     tstBlockSeq = newSeqNumber;
                     tstLength += getBlockLength(tstBlock);
                 }
@@ -968,7 +986,7 @@ private synchronized void stopInCurrentSection(int task) {
                     setStopNow();
                 } else if (tstBlock == enterBlock) {
                     // train fits, but needs all available Blocks
-                    if ((_previousBlock != NULL) && (_previousBlock.getState() == Block.OCCUPIED)) {
+                    if ((_previousBlock != NULL) && (_previousBlock->getState() == Block::OCCUPIED)) {
                         _stoppingBlock = _previousBlock;
                         setStopByBlockOccupancy();
                     } else {
@@ -977,10 +995,10 @@ private synchronized void stopInCurrentSection(int task) {
                 } else {
                     // train fits, and doesn't need all available Blocks
                     int xSeqNumber = tstBlockSeq - 1;
-                    if (_currentAllocatedSection.getDirection() == Section.REVERSE) {
+                    if (_currentAllocatedSection->getDirection() == Section::REVERSE) {
                         xSeqNumber = tstBlockSeq + 1;
                     }
-                    _stoppingBlock = _currentAllocatedSection.getSection().
+                    _stoppingBlock = _currentAllocatedSection->getSection()->
                             getBlockBySequenceNumber(xSeqNumber);
                     setStopByBlockOccupancy();
                 }
@@ -991,12 +1009,23 @@ private synchronized void stopInCurrentSection(int task) {
         setStopNow();
     }
     if (task > NO_TASK) {
-        Runnable waitForStop = new WaitForTrainToStop(task);
+#if 0
+        Runnable* waitForStop = new WaitForTrainToStop(task);
         Thread tWait = new Thread(waitForStop, "Wait for stop " + getActiveTrain().getActiveTrainName());
         tWait.start();
+#endif
     }
 }
 
+/*public*/ void AutoActiveTrain::on_sensorChange(PropertyChangeEvent* e)
+{
+ if (e->getPropertyName() == ("KnownState"))
+ {
+   handleStopSensorChange();
+ }
+}
+
+#if 0
 protected synchronized void executeStopTasks(int task) {
     if (task <= 0) {
         return;
@@ -1007,42 +1036,42 @@ protected synchronized void executeStopTasks(int task) {
             to stop the loco in the correct block
              if the first block we come to has a stopped or held signal */
             _previousBlock = _currentBlock;
-            _activeTrain.setTransitReversed(true);
-            AllocatedSection aSec = _activeTrain.reverseAllAllocatedSections();
+            _activeTrain->setTransitReversed(true);
+            AllocatedSection aSec = _activeTrain->reverseAllAllocatedSections();
             setEngineDirection();
             if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                DispatcherFrame.instance().forceScanOfAllocation();
+                DispatcherFrame::instance().forceScanOfAllocation();
                 break;
             }
             setupNewCurrentSignal(aSec);
             setSpeedBySignal();
             break;
         case BEGINNING_RESET:
-            if (_activeTrain.getResetWhenDone()) {
-                if (_activeTrain.getReverseAtEnd()) {
+            if (_activeTrain->getResetWhenDone()) {
+                if (_activeTrain->getReverseAtEnd()) {
                     /* Reset _previousBlock to be the _currentBlock if we do a continious
                     reverse otherwise the stop in block method fails  to stop the loco in the correct block
                      if the first block we come to has a stopped or held signal */
                     _previousBlock = _currentBlock;
                 }
-                if (_activeTrain.getDelayedRestart() == ActiveTrain.NODELAY) {
-                    _activeTrain.setTransitReversed(false);
-                    _activeTrain.resetAllAllocatedSections();
+                if (_activeTrain->getDelayedRestart() == ActiveTrain::NODELAY) {
+                    _activeTrain->setTransitReversed(false);
+                    _activeTrain->resetAllAllocatedSections();
                     setEngineDirection();
                     if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                        DispatcherFrame.instance().forceScanOfAllocation();
+                        DispatcherFrame::instance().forceScanOfAllocation();
                         break;
                     }
                     setupNewCurrentSignal(NULL);
                     setSpeedBySignal();
                 } else {
                     // then active train is delayed
-                    _activeTrain.setTransitReversed(false);
-                    _activeTrain.resetAllAllocatedSections();
+                    _activeTrain->setTransitReversed(false);
+                    _activeTrain->resetAllAllocatedSections();
                     setEngineDirection();
-                    _activeTrain.setRestart();
+                    _activeTrain->setRestart();
                     if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                        DispatcherFrame.instance().forceScanOfAllocation();
+                        DispatcherFrame::instance().forceScanOfAllocation();
                         break;
                     }
                     setupNewCurrentSignal(NULL);
@@ -1055,14 +1084,14 @@ protected synchronized void executeStopTasks(int task) {
             }
             break;
         default:
-            log.error("Request to execute unknown stop train task - " + task);
+           log->error("Request to execute unknown stop train task - " + task);
             break;
     }
 }
-
-private synchronized void handleStopSensorChange() {
-    if (_stopSensor.getState() == Sensor.ACTIVE) {
-        _stopSensor.removePropertyChangeListener(_stopSensorListener);
+#endif
+/*private*/ /*synchronized*/ void AutoActiveTrain::handleStopSensorChange() {
+    if (_stopSensor->getState() == Sensor::ACTIVE) {
+        _stopSensor->removePropertyChangeListener(_stopSensorListener);
         _stoppingBySensor = false;
         _stopSensorListener = NULL;
         _stopSensor = NULL;
@@ -1075,23 +1104,23 @@ private synchronized void handleStopSensorChange() {
     }
 }
 
-private synchronized void setStopNow() {
+/*private*/ /*synchronized*/ void AutoActiveTrain::setStopNow() {
     setTargetSpeedState(STOP_SPEED);
     if (_currentAllocatedSection == NULL) {  // this may occur if the train is not in the selected block when initially created and the signal is held.
-        _activeTrain.setStatus(ActiveTrain.WAITING);
-    } else if (_currentAllocatedSection.getNextSection() == NULL) {
+        _activeTrain->setStatus(ActiveTrain::WAITING);
+    } else if (_currentAllocatedSection->getNextSection() == NULL) {
         // wait for train to stop - this lets action items complete in a timely fashion
         waitUntilStopped();
-        _activeTrain.setStatus(ActiveTrain.DONE);
+        _activeTrain->setStatus(ActiveTrain::DONE);
     } else {
-        _activeTrain.setStatus(ActiveTrain.WAITING);
+        _activeTrain->setStatus(ActiveTrain::WAITING);
     }
 }
 
-private void setStopByBlockOccupancy() {
+/*private*/ void AutoActiveTrain::setStopByBlockOccupancy() {
     // note: _stoppingBlock must be set before invoking this method
     //  verify that _stoppingBlock is actually occupied, if not stop immed
-    if (_stoppingBlock.getState() == Block.OCCUPIED) {
+    if (_stoppingBlock->getState() == Block::OCCUPIED) {
         _stoppingByBlockOccupancy = true;
         setTargetSpeedState(RESTRICTED_SPEED);
     } else {
@@ -1099,8 +1128,9 @@ private void setStopByBlockOccupancy() {
     }
 }
 
-private synchronized void setTargetSpeedState(int speedState) {
-    _autoEngineer.slowToStop(false);
+/*private*/ /*synchronized*/ void AutoActiveTrain::setTargetSpeedState(int speedState) {
+#if 0
+    _autoEngineer->slowToStop(false);
     if (speedState > STOP_SPEED) {
         float speed = _speedRatio[speedState];
         if (speed > _maxSpeed) {
@@ -1110,17 +1140,17 @@ private synchronized void setTargetSpeedState(int speedState) {
     } else if (useSpeedProfile) {
         _targetSpeed = _speedRatio[speedState];
         _stoppingUsingSpeedProfile = true;
-        _autoEngineer.slowToStop(true);
+        _autoEngineer->slowToStop(true);
     } else {
         _targetSpeed = _speedRatio[speedState];
-        _autoEngineer.setHalt(true);
+        _autoEngineer->setHalt(true);
     }
+#endif
 }
-
 //pass in speed as shown on dialogs, and convert to decimal speed needed by throttle
-private synchronized void setTargetSpeedValue(float speed) {
-    _autoEngineer.slowToStop(false);
-  float mls = _controllingSignalMast.getSignalSystem().getMaximumLineSpeed();
+/*private*/ /*synchronized*/ void AutoActiveTrain::setTargetSpeedValue(float speed) {
+    _autoEngineer->slowToStop(false);
+  float mls = _controllingSignalMast->getSignalSystem()->getMaximumLineSpeed();
   float decSpeed = (speed / mls);
     if (decSpeed > 0.0f) {
         if (decSpeed > _maxSpeed) {
@@ -1130,19 +1160,18 @@ private synchronized void setTargetSpeedValue(float speed) {
     } else if (useSpeedProfile) {
         _targetSpeed = decSpeed;
         _stoppingUsingSpeedProfile = true;
-        _autoEngineer.slowToStop(true);
+        _autoEngineer->slowToStop(true);
     } else {
         _targetSpeed = 0.0f;
-        _autoEngineer.setHalt(true);
+        _autoEngineer->setHalt(true);
     }
 }
-
-private int getBlockLength(Block b) {
+/*private*/ int AutoActiveTrain::getBlockLength(Block* b) {
     if (b == NULL) {
         return (0);
     }
-    float fLength = b.getLengthMm() / (float) (jmri.Scale.getScaleFactor(DispatcherFrame.instance().getScale()));
-    if (DispatcherFrame.instance().getUseScaleMeters()) {
+    float fLength = b->getLengthMm() / (float) (Scale::getScaleFactor(DispatcherFrame::instance()->getScale()));
+    if (DispatcherFrame::instance()->getUseScaleMeters()) {
         return (int) (fLength * 0.001f);
     }
     return (int) (fLength * 0.00328084f);
@@ -1153,18 +1182,18 @@ private int getBlockLength(Block b) {
  * triggered by an action in the Transit The throttle in use for automatic
  * operation is dispatched
  */
-protected void initiateWorking() {
-    if (_activeTrain.getStatus() != ActiveTrain.WORKING) {
+/*protected*/ void AutoActiveTrain::initiateWorking() {
+    if (_activeTrain->getStatus() != ActiveTrain::WORKING) {
         if (_autoEngineer != NULL) {
-            _autoEngineer.setHalt(true);
+            _autoEngineer->setHalt(true);
             waitUntilStopped();
-            _autoEngineer.abort();
-            InstanceManager.throttleManagerInstance().releaseThrottle(_throttle, this);
+            _autoEngineer->abort();
+            InstanceManager::throttleManagerInstance()->releaseThrottle(_throttle, (ThrottleListener*)this);
             _autoEngineer = NULL;
             _throttle = NULL;
         }
-        _activeTrain.setMode(ActiveTrain.MANUAL);
-        _activeTrain.setStatus(ActiveTrain.WORKING);
+        _activeTrain->setMode(ActiveTrain::MANUAL);
+        _activeTrain->setStatus(ActiveTrain::WORKING);
     }
 }
 
@@ -1172,17 +1201,18 @@ protected void initiateWorking() {
  * Returns when train is stopped Note: Provides for _autoEngineer becoming
  * NULL during wait Ties up the current autoActiveTrain thread
  */
-protected void waitUntilStopped() {
+/*protected*/ void AutoActiveTrain::waitUntilStopped() {
     bool doneWaiting = false;
     while (!doneWaiting) {
         if (_autoEngineer != NULL) {
-            doneWaiting = _autoEngineer.isStopped();
+            doneWaiting = _autoEngineer->isStopped();
         } else {
             doneWaiting = true;
         }
         if (!doneWaiting) {
             try {
-                Thread.sleep(50);
+                //Thread.sleep(50);
+          SleeperThread::msleep(50);
             } catch (InterruptedException e) {
                 // ignore this exception
             }
@@ -1196,18 +1226,18 @@ protected void waitUntilStopped() {
  * Auto Running" button A new throttle is acquired to allow automatic
  * running to resume
  */
-protected void resumeAutomaticRunning() {
-    if ((_activeTrain.getStatus() == ActiveTrain.WORKING)
-            || (_activeTrain.getStatus() == ActiveTrain.READY)) {
-        _autoTrainAction.cancelDoneSensor();
+/*protected*/ void AutoActiveTrain::resumeAutomaticRunning() {
+    if ((_activeTrain->getStatus() == ActiveTrain::WORKING)
+            || (_activeTrain->getStatus() == ActiveTrain::READY)) {
+        _autoTrainAction->cancelDoneSensor();
         if (initialize()) {
             _resumingAutomatic = true;
         } else {
-            log.error("Failed to initialize throttle when resuming automatic mode.");
+           log->error("Failed to initialize throttle when resuming automatic mode.");
         }
     }
 }
-
+#if 0
 /**
  * Pauses the auto active train for a specified number of fast clock minutes
  * Pausing operation is performed in a separate thread
@@ -1218,7 +1248,7 @@ protected void resumeAutomaticRunning() {
         return (NULL);
     }
     Runnable pauseTrain = new PauseTrain(fastMinutes);
-    Thread tPause = new Thread(pauseTrain, "pause train " + _activeTrain.getTrainName());
+    Thread tPause = new Thread(pauseTrain, "pause train " + _activeTrain->getTrainName());
     tPause.start();
     return tPause;
 }
@@ -1234,21 +1264,21 @@ protected void resumeAutomaticRunning() {
     }
     _autoTrainAction.clearRemainingActions();
     if (_autoEngineer != NULL) {
-        _autoEngineer.setHalt(true);
+        _autoEngineer->setHalt(true);
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
             // ignore this exception
         }
         waitUntilStopped();
-        _autoEngineer.abort();
+        _autoEngineer->abort();
         InstanceManager.throttleManagerInstance().releaseThrottle(_throttle, this);
     }
 }
 
 /*public*/ void dispose() {
     if (_controllingSignalMast != NULL && _conSignalMastListener != NULL) {
-        _controllingSignalMast.removePropertyChangeListener(_conSignalMastListener);
+        _controllingSignalMast->removePropertyChangeListener(_conSignalMastListener);
     }
     _controllingSignalMast = NULL;
     _conSignalMastListener = NULL;
@@ -1310,19 +1340,19 @@ class PauseTrain implements Runnable {
             try {
                 Thread.sleep(101);
                 if (_autoEngineer != NULL) {
-                    if (_autoEngineer.isStopped()) {
+                    if (_autoEngineer->isStopped()) {
                         waitNow = false;
                     }
                 } else {
                     waitNow = false;
                 }
             } catch (InterruptedException e) {
-                log.error("InterruptedException while watiting to stop for pause - " + e);
+               log->error("InterruptedException while watiting to stop for pause - " + e);
                 waitNow = false;
                 keepGoing = false;
             }
         }
-        _activeTrain.setStatus(ActiveTrain.PAUSED);
+        _activeTrain->setStatus(ActiveTrain::PAUSED);
         if (keepGoing) {
             // wait for specified fast clock time
             Timebase _clock = InstanceManager.getDefault(jmri.Timebase.class);
@@ -1343,7 +1373,7 @@ class PauseTrain implements Runnable {
                         waitNow = false;
                     }
                 } catch (InterruptedException e) {
-                    log.error("InterruptedException while waiting when paused - " + e);
+                   log->error("InterruptedException while waiting when paused - " + e);
                     keepGoing = false;
                 }
             }
@@ -1355,7 +1385,7 @@ class PauseTrain implements Runnable {
             //   resume running - restore speed, status, and ramp rate
             setCurrentRampRate(_savedRampRate);
             setTargetSpeed(_savedTargetSpeed);
-            _activeTrain.setStatus(ActiveTrain.RUNNING);
+            _activeTrain->setStatus(ActiveTrain::RUNNING);
             setSpeedBySignal();
         }
     }
@@ -1363,51 +1393,47 @@ class PauseTrain implements Runnable {
     private float _savedTargetSpeed = 0.0f;
     private int _savedRampRate = RAMP_NONE;
 }
-
+#endif
 // _________________________________________________________________________________________
 // This class runs a throttle to control the train in a separate thread.
 // (This class started from code by Pete Cressman contained in Warrant.java.)
-class AutoEngineer implements Runnable {
+//class AutoEngineer implements Runnable {
 
-    AutoEngineer() {
-    }
+    AutoEngineer::AutoEngineer(AutoActiveTrain* aat) {
+ log = new Logger("AutoEngineer");
+ this->aat = aat;
+ // operational instance variables and flags
+ _abort = false;
+ _halt = false;  // halt/resume from user's control
+ _halted = false; // true if previously halted
+ _slowToStop = false;
+ _currentSpeed = 0.0f;
+ _lastBlock = NULL;
+ _speedIncrement = 0.0f  ; //will be recalculated
+}
 
-    // operational instance variables and flags
-//        private float _minSpeedStep = 1.0f;
-    private bool _abort = false;
-    private volatile bool _halt = false;  // halt/resume from user's control
-    private bool _halted = false; // true if previously halted
-    private bool _slowToStop = false;
-//        private bool _ramping = false;  // true if ramping speed to _targetSpeed;
-    private float _currentSpeed = 0.0f;
-//        private int _targetCount[] = {0, 1, 2, 3, 4};
-//        private int _rampTargetCount = 0;
-//        private int _rampCount = 0;
-    private Block _lastBlock = NULL;
-//        private int _minInterval = 250;
-//        private int _fullRampTime = 8000;
-    private float _speedIncrement = 0.0f  ; //will be recalculated
 
-    @Override
-    /*public*/ void run() {
+    //@Override
+    /*public*/ void AutoEngineer::run() {
         _abort = false;
         setHalt(false);
         slowToStop(false);
 
         //calculate speed increment to use in each minInterval time
-        _speedIncrement = (100.0f / (DispatcherFrame.instance().getFullRampTime() / DispatcherFrame.instance().getMinThrottleInterval())
-                / _currentRampRate) / 100.0f;
-        log.debug("{}: _speedIncrement={}",  _activeTrain.getTrainName(), _speedIncrement);
+        _speedIncrement = (100.0f / (DispatcherFrame::instance()->getFullRampTime() / DispatcherFrame::instance()->getMinThrottleInterval())
+                / aat->_currentRampRate) / 100.0f;
+       log->debug(tr("%1: _speedIncrement=%2").arg(  aat->_activeTrain->getTrainName()).arg( _speedIncrement));
 
         // send direction to train
-        log.debug("{}: AutoEngineer.setIsForward({})", _activeTrain.getTrainName(), _forward);
-        _throttle.setIsForward(_forward);
+       log->debug(tr("%1: AutoEngineer.setIsForward(%2)").arg( aat->_activeTrain->getTrainName()).arg(aat-> _forward));
+        aat->_throttle->setIsForward(aat->_forward);
 
         // Give command station a chance to handle direction command
-        try { Thread.sleep(DispatcherFrame.instance().getMinThrottleInterval() * 2); } catch(Exception ex) {}
+        //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval() * 2); } catch(Exception ex) {}
+        SleeperThread::sleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
 
-//            setSpeedStep(_throttle.getSpeedStepMode());
-        _throttle.setSpeedSetting(_currentSpeed);
+//            setSpeedStep(aat->_throttle->getSpeedStepMode());
+        aat->_throttle->setSpeedSetting(_currentSpeed);
 //            _ramping = false;
         // this is the running loop, which adjusts speeds, including stop
         while (!_abort) {
@@ -1415,38 +1441,39 @@ class AutoEngineer implements Runnable {
 //                    if (useSpeedProfile) {
 //                        re.getSpeedProfile().cancelSpeedChange();
 //                    }
-                _throttle.setSpeedSetting(0.0f);
+                aat->_throttle->setSpeedSetting(0.0f);
                 _currentSpeed = 0.0f;
                 _halted = true;
             } else if (_slowToStop) {
 //                    re.getSpeedProfile().setExtraInitialDelay(1500f);
 //                    re.getSpeedProfile().changeLocoSpeed(_throttle, _currentBlock, _targetSpeed);
-                _currentSpeed = _throttle.getSpeedSetting();
-                if (_currentBlock != _lastBlock) {
-                    _lastBlock = _currentBlock;
+                _currentSpeed = aat->_throttle->getSpeedSetting();
+                if (aat->_currentBlock != _lastBlock) {
+                    _lastBlock = aat->_currentBlock;
 //                        re.getSpeedProfile().setExtraInitialDelay(1500f);
 //                        re.getSpeedProfile().changeLocoSpeed(_throttle, _currentBlock, _targetSpeed);
                 } else {
-                    if (_currentSpeed <= _targetSpeed) {
+                    if (_currentSpeed <= aat->_targetSpeed) {
                         _halted = true;
                         _slowToStop = false;
                     }
                 }
             } else if (!_halt) {
                 // change direction if needed
-                if (_throttle.getIsForward() != _forward) {
-                    log.debug("AutoEngineer.setIsForward({}), was {} for {}",_forward, _throttle.getIsForward(), _throttle.getLocoAddress());
-                    _throttle.setIsForward(_forward);
+                if (aat->_throttle->getIsForward() != aat->_forward) {
+                   log->debug(tr("(AutoEngineer.setIsForward(%1), was %2 for %3").arg(aat->_forward).arg( aat->_throttle->getIsForward()).arg( aat->_throttle->getLocoAddress()->toString()));
+                    aat->_throttle->setIsForward(aat->_forward);
 
                     // Give command station a chance to handle reversing.
-                    try { Thread.sleep(DispatcherFrame.instance().getMinThrottleInterval() * 2); } catch(Exception ex) {}
+                    //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval() * 2); } catch(Exception ex) {}
+                SleeperThread::msleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
                 }
                 // test if need to change speed
-                if (java.lang.Math.abs(_currentSpeed - _targetSpeed) > 0.001) {
-                    if (_currentRampRate == RAMP_NONE) {
+                if (qAbs(_currentSpeed - aat->_targetSpeed) > 0.001) {
+                    if (aat->_currentRampRate == aat->RAMP_NONE) {
                         // set speed immediately
-                        _currentSpeed = _targetSpeed;
-                        _throttle.setSpeedSetting(_currentSpeed);
+                        _currentSpeed = aat->_targetSpeed;
+                        aat->_throttle->setSpeedSetting(_currentSpeed);
                         //                        } else if (!_ramping) {
                         //                            // initialize ramping
                         //                            _ramping = true;
@@ -1457,38 +1484,38 @@ class AutoEngineer implements Runnable {
                         //                            _rampCount++;
                         //                            if (_rampCount > _rampTargetCount) {
                         // step up the speed
-                        if (_currentSpeed < _targetSpeed) {
+                        if (_currentSpeed < aat->_targetSpeed) {
                             //                                    if (useSpeedProfile) {
                             //                                        re.getSpeedProfile().cancelSpeedChange();
                             //                                    }
                             // ramp up
                             _currentSpeed += _speedIncrement;
-                            if (_currentSpeed >= _targetSpeed) {
-                                _currentSpeed = _targetSpeed;
+                            if (_currentSpeed >= aat->_targetSpeed) {
+                                _currentSpeed = aat->_targetSpeed;
                                 //                                        _ramping = false;
                                 //                                    } else {
                                 //                                        _rampCount = 0;
                             }
-//                                _throttle.setSpeedSetting(_currentSpeed);
+//                                aat->_throttle->setSpeedSetting(_currentSpeed);
                         } else {
                             // step down the speed
                             //                                    if (useSpeedProfile) {
-                            //                                        re.getSpeedProfile().changeLocoSpeed(_throttle, _currentAllocatedSection.getSection(), _targetSpeed);
+                            //                                        re.getSpeedProfile().changeLocoSpeed(_throttle, _currentAllocatedSection->getSection(), _targetSpeed);
                             //                                        _currentSpeed = _targetSpeed;
                             //                                    } else {
                             // ramp down
                             _currentSpeed -= _speedIncrement;
-                            if (_currentSpeed <= _targetSpeed) {
-                                _currentSpeed = _targetSpeed;
+                            if (_currentSpeed <= aat->_targetSpeed) {
+                                _currentSpeed = aat->_targetSpeed;
                                 //                                            _ramping = false;
                                 //                                        } else {
                                 //                                            _rampCount = 0;
                             }
-//                                _throttle.setSpeedSetting(_currentSpeed);
+//                                aat->_throttle->setSpeedSetting(_currentSpeed);
                             //                                    } // if useSpeedProfile
                         }
                         //                            } // if rampcount
-                        _throttle.setSpeedSetting(_currentSpeed);
+                        aat->_throttle->setSpeedSetting(_currentSpeed);
                     } //ramping
                 } //if currentSpeed != targetSpeed
             }
@@ -1496,14 +1523,15 @@ class AutoEngineer implements Runnable {
 //                    _lastAllocatedSection = _currentAllocatedSection;
 //                }
             // Give other threads a chance to work
-            try { Thread.sleep(DispatcherFrame.instance().getMinThrottleInterval()); } catch(Exception ex) {}
+            //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval()); } catch(Exception ex) {}
+ SleeperThread::msleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
 
         } //while !abort
         // shut down
     }
 
 
-    /*public*/ synchronized void slowToStop(bool toStop) {
+    /*public*/ /*synchronized*/ void AutoEngineer::slowToStop(bool toStop) {
         _slowToStop = toStop;
         if (!toStop) {
             setHalt(toStop);
@@ -1513,7 +1541,7 @@ class AutoEngineer implements Runnable {
     /**
      * Flag from user's control Note: Halt here invokes immediate stop.
      */
-    /*public*/ synchronized void setHalt(bool halt) {
+    /*public*/ /*synchronized*/ void AutoEngineer::setHalt(bool halt) {
         _halt = halt;
         if (!_halt) {
             _halted = false;
@@ -1524,17 +1552,17 @@ class AutoEngineer implements Runnable {
      * set the train speed directly, bypassing ramping,
      * Input is float speed (0.0 - 1.0)
      */
-    /*public*/ synchronized void setSpeedImmediate(float speed) {
-        log.trace("{}: setting speed directly to {}%", _activeTrain.getTrainName(), (int) (speed * 100));
-        _targetSpeed = speed;
+    /*public*/ /*synchronized*/ void AutoEngineer::setSpeedImmediate(float speed) {
+//       log->trace(tr("%1: setting speed directly to %2%").arg( aat->_activeTrain->getTrainName()).arg( (int) (speed * 100)));
+        aat->_targetSpeed = speed;
         _currentSpeed = speed + _speedIncrement; // close enough to force change, but skip ramping
-//            _throttle.setSpeedSetting(_currentSpeed);
+//            aat->_throttle->setSpeedSetting(_currentSpeed);
     }
 
     /**
      * Allow user to test if train is moving or stopped
      */
-    /*public*/ synchronized bool isStopped() {
+    /*public*/ /*synchronized*/ bool AutoEngineer::isStopped() {
         if (_currentSpeed > 0.01f) {
             return false;
         }
@@ -1544,8 +1572,8 @@ class AutoEngineer implements Runnable {
     /**
      * Allow user to test if train is moving at its current requested speed
      */
-    /*public*/ synchronized bool isAtSpeed() {
-        if (java.lang.Math.abs(_currentSpeed - _targetSpeed) > 0.01) {
+    /*public*/ /*synchronized*/ bool AutoEngineer::isAtSpeed() {
+        if (qAbs(_currentSpeed - aat->_targetSpeed) > 0.01) {
             return false;
         }
         return true;
@@ -1554,119 +1582,118 @@ class AutoEngineer implements Runnable {
     /**
      * Flag from user to end run
      */
-    /*public*/ void abort() {
+    /*public*/ void AutoEngineer::abort() {
         _abort = true;
     }
 
-    protected void setFunction(int cmdNum, bool isSet) {
+    /*protected*/ void AutoEngineer::setFunction(int cmdNum, bool isSet) {
         switch (cmdNum) {
             case 0:
-                _throttle.setF0(isSet);
+                aat->_throttle->setF0(isSet);
                 break;
             case 1:
-                _throttle.setF1(isSet);
+                aat->_throttle->setF1(isSet);
                 break;
             case 2:
-                _throttle.setF2(isSet);
+                aat->_throttle->setF2(isSet);
                 break;
             case 3:
-                _throttle.setF3(isSet);
+                aat->_throttle->setF3(isSet);
                 break;
             case 4:
-                _throttle.setF4(isSet);
+                aat->_throttle->setF4(isSet);
                 break;
             case 5:
-                _throttle.setF5(isSet);
+                aat->_throttle->setF5(isSet);
                 break;
             case 6:
-                _throttle.setF6(isSet);
+                aat->_throttle->setF6(isSet);
                 break;
             case 7:
-                _throttle.setF7(isSet);
+                aat->_throttle->setF7(isSet);
                 break;
             case 8:
-                _throttle.setF8(isSet);
+                aat->_throttle->setF8(isSet);
                 break;
             case 9:
-                _throttle.setF9(isSet);
+                aat->_throttle->setF9(isSet);
                 break;
             case 10:
-                _throttle.setF10(isSet);
+                aat->_throttle->setF10(isSet);
                 break;
             case 11:
-                _throttle.setF11(isSet);
+                aat->_throttle->setF11(isSet);
                 break;
             case 12:
-                _throttle.setF12(isSet);
+                aat->_throttle->setF12(isSet);
                 break;
             case 13:
-                _throttle.setF13(isSet);
+                aat->_throttle->setF13(isSet);
                 break;
             case 14:
-                _throttle.setF14(isSet);
+                aat->_throttle->setF14(isSet);
                 break;
             case 15:
-                _throttle.setF15(isSet);
+                aat->_throttle->setF15(isSet);
                 break;
             case 16:
-                _throttle.setF16(isSet);
+                aat->_throttle->setF16(isSet);
                 break;
             case 17:
-                _throttle.setF17(isSet);
+                aat->_throttle->setF17(isSet);
                 break;
             case 18:
-                _throttle.setF18(isSet);
+                aat->_throttle->setF18(isSet);
                 break;
             case 19:
-                _throttle.setF19(isSet);
+                aat->_throttle->setF19(isSet);
                 break;
             case 20:
-                _throttle.setF20(isSet);
+                aat->_throttle->setF20(isSet);
                 break;
             case 21:
-                _throttle.setF21(isSet);
+                aat->_throttle->setF21(isSet);
                 break;
             case 22:
-                _throttle.setF22(isSet);
+                aat->_throttle->setF22(isSet);
                 break;
             case 23:
-                _throttle.setF23(isSet);
+                aat->_throttle->setF23(isSet);
                 break;
             case 24:
-                _throttle.setF24(isSet);
+                aat->_throttle->setF24(isSet);
                 break;
             case 25:
-                _throttle.setF25(isSet);
+                aat->_throttle->setF25(isSet);
                 break;
             case 26:
-                _throttle.setF26(isSet);
+                aat->_throttle->setF26(isSet);
                 break;
             case 27:
-                _throttle.setF27(isSet);
+                aat->_throttle->setF27(isSet);
                 break;
             case 28:
-                _throttle.setF28(isSet);
+                aat->_throttle->setF28(isSet);
                 break;
         }
     }
-}
-
+//};
 /** routine to convert ramp rate name, stored as a string into the constant value assigned
  *
  * @param rampRate - name of ramp rate, such as "RAMP_FAST"
  * @return integer representing a ramprate constant value
  */
 
-/*public*/ static int getRampRateFromName(String rampRate) {
-    if (rampRate.equals(rb.getString("RAMP_FAST"))) {
+/*public*/ /*static*/ int AutoActiveTrain::getRampRateFromName(QString rampRate) {
+    if (rampRate==(tr("RAMP_FAST"))) {
         return RAMP_FAST;
-    } else if (rampRate.equals(rb.getString("RAMP_MEDIUM"))) {
+    } else if (rampRate == (tr("RAMP_MEDIUM"))) {
         return RAMP_MEDIUM;
-    } else if (rampRate.equals(rb.getString("RAMP_MED_SLOW"))) {
+    } else if (rampRate == (tr("RAMP_MED_SLOW"))) {
         return RAMP_MED_SLOW;
-    } else if (rampRate.equals(rb.getString("RAMP_SLOW"))) {
+    } else if (rampRate == (tr("RAMP_SLOW"))) {
         return RAMP_SLOW;
     }
     return RAMP_NONE;
 }
-#endif
+

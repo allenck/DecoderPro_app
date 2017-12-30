@@ -29,6 +29,7 @@ class PositionablePopupUtil;
 class CoordinateEdit;
 class AddPanelIconDialog;
 class JmriJFrame;
+
 class LIBLAYOUTEDITORSHARED_EXPORT PositionableLabel : public JLabel
 {
  Q_OBJECT
@@ -166,9 +167,8 @@ public slots:
 private:
 /*private*/ int _degrees;
 //QFont _font;
-void init(Positionable* parent);
-Logger* log;
-/*private*/ bool needsRotate;
+void common(Positionable* parent);
+/*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("PositionableLabel");/*private*/ bool needsRotate;
 QColor _foreground;
 QColor _background;
 QSize _preferredSize, _size;
@@ -186,10 +186,10 @@ IconAdder* _iconEditor;
 QString _tooltip;
 Positionable* parent;
 bool _bVisible;
-CoordinateEdit* cEdit;
 JmriJFrame* _paletteFrame;
 QFont _font;
 int currRotation;
+bool needsRotate;
 
 class AddIconActionListener : public ActionListener
 {

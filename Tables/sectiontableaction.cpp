@@ -1,33 +1,31 @@
 #include "sectiontableaction.h"
 #include "instancemanager.h"
-#include "../LayoutEditor/sectionmanager.h"
-#include "defaultusermessagepreferences.h"
+#include "sectionmanager.h"
+#include "jmriuserpreferencesmanager.h"
 #include "jtextfield.h"
 #include <namedbean.h>
-#include "../LayoutEditor/sectionmanager.h"
 #include <QComboBox>
 #include <QRadioButton>
 #include <QButtonGroup>
 #include <QCheckBox>
-#include "../LayoutEditor/beantableframe.h"
+#include "beantableframe.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include "flowlayout.h"
 #include <QTableView>
 #include "abstractsensor.h"
-#include "../LayoutEditor/panelmenu.h"
-#include "../LayoutEditor/layouteditor.h"
+#include "panelmenu.h"
+#include "layouteditor.h"
 #include "entrypoint.h"
-#include "../LayoutEditor/systemnamecomparator.h"
+#include "systemnamecomparator.h"
 #include "logixtableaction.h"
-#include "../LayoutEditor/transit.h"
-#include "../LayoutEditor/transitmanager.h"
+#include "transit.h"
+#include "transitmanager.h"
 #include "jdialog.h"
 #include "borderlayout.h"
 #include <QMenuBar>
 #include <QMenu>
-#include "../LayoutEditor/layouteditor.h"
-#include "../LayoutEditor/inputdialog.h"
+#include "inputdialog.h"
 #include "logixwidget.h"
 #include "actionevent.h"
 
@@ -356,7 +354,7 @@ void SectionTableAction::editPressed(QString sName) {
 }
 void SectionTableAction::addEditPressed()
 {
- pref = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+ pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  if (addFrame==NULL)
  {
   addFrame = new JmriJFrame(tr("Add Section"));
@@ -1101,7 +1099,7 @@ void SectionTableAction::addBlockPressed() {
  {
   fullName = fullName+"("+s->getUserName()+")";
  }
- QList<Transit*>* affectedTransits = InstanceManager::transitManagerInstance()->getListUsingSection(s);
+ QList<Transit*>* affectedTransits = ((TransitManager*)InstanceManager::getNullableDefault("transitManger"))->getListUsingSection(s);
  /*final*/ JDialog* dialog = new JDialog();
  QString msg = "";
  dialog->setTitle(tr("Warning Title"));

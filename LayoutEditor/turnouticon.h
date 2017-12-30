@@ -42,6 +42,7 @@ public:
  /*public*/ bool setEditIconMenu(QMenu* popup);
  /*public*/ bool getMomentary();
  /*public*/ bool getDirectControl();
+ /*public*/ QString getGroupName();
 
 signals:
 

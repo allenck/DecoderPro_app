@@ -6,10 +6,12 @@
 #include "logger.h"
 #include "exceptions.h"
 #include "libpref_global.h"
+#include "startupmodel.h"
+#include "action.h"
 
 class PropertyChangeListener;
 class PropertyChangeSupport;
-class LIBPREFSHARED_EXPORT AbstractActionModel : public QObject
+class LIBPREFSHARED_EXPORT AbstractActionModel : public StartupModel
 {
     Q_OBJECT
 public:
@@ -18,25 +20,29 @@ public:
     /*public*/ QString getName();
     /*public*/ void setName(QString n);
     /*public*/ void setClassName(QString n);
-    static /*public*/ QStringList nameList();
-    static /*public*/ QStringList classList();
-    /*public*/ void addAction(QString strClass, QString name) throw (ClassNotFoundException);
-    /*public*/ void removeAction(QString strClass) throw (ClassNotFoundException);
-    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+    /*public*/ QString getSystemPrefix();
+    /*public*/ void setSystemPrefix(/*@Nullable*/ QString prefix);
+    /*public*/ bool isSystemConnectionAction();
+    /*public*/ bool isValid();
+    /*public*/ QString toString();
+ /*public*/ void performAction() throw (JmriException);
+ /*public*/ QList<Exception>* getExceptions();
+ /*public*/ void addException(Exception exception);
+
 
 signals:
 
 public slots:
 private:
-    static /*private*/ QMap<QString, QString> _classList;// = NULL;
     //TODO At some point this class might need to consider which system connection memo is being against certain system specific items
-    QString className;
-    static /*private*/ void loadArrays();
-    PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
-    Logger* log;
+    /*private*/ QString systemPrefix;// = ""; // NOI18N
+    /*private*/ QString className;// = ""; // NOI18N
+    /*private*/ /*final*/ QList<Exception>* exceptions;// = new ArrayList<>();
+
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(AbstractActionModel.class);
+
 protected:
-    /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+    /*protected*/ /*abstract*/ virtual void performAction(Action* action) throw (JmriException);
  friend class AbstractActionPanel;
 };
 #if 0

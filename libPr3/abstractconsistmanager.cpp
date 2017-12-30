@@ -119,7 +119,12 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
  * Notify the registered Consist List Listener objects that the
  * Consist List has changed.
  */
-/*public*/ void AbstractConsistManager::notifyConsistListChanged(){
+/*public*/ void AbstractConsistManager::notifyConsistListChanged()
+{
+#if 0
    foreach(ConsistListListener* l ,*ChangeListeners)
        l->notifyConsistListChanged();
+#else
+ emit consistListChanged();
+#endif
 }

@@ -210,6 +210,7 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
  throttlesListPanel = new ThrottlesListPanel();
  throttlesListFrame->setContentPane(throttlesListPanel);
  throttlesListFrame->adjustSize();
+ throttlesListFrame->setVisible(false);
 }
 
 /*public*/ void ThrottleFrameManager::showThrottlesList() {

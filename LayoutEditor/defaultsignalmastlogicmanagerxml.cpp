@@ -241,8 +241,8 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
  QDomNodeList logicList = signalMastLogic.elementsByTagName("signalmastlogic");
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(logicList.size())+" signal mast logics");
 
- DefaultSignalMastManager* sm = (DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance();
- SignalMastLogicManager* sml = InstanceManager::signalMastLogicManagerInstance();
+ SignalMastManager* sm = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
+ SignalMastLogicManager* sml = (SignalMastLogicManager*) InstanceManager::getDefault("SignalMastLogicManager");
  try {
      QString logicDelay = signalMastLogic.firstChildElement("logicDelay").text();
      ((DefaultSignalMastLogicManager*)sml)->setSignalLogicDelay((logicDelay.toLong()));

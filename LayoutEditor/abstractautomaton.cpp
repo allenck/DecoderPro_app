@@ -17,7 +17,7 @@
 #include <QPushButton>
 #include "propertychangelistener.h"
 #include "lnthrottlemanager.h"
-#include "throttlelistener.h"
+#include "Throttle/throttlelistener.h"
 #include "abstractsensor.h"
 #include "addressedprogrammermanager.h"
 #include <QThread>

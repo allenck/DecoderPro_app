@@ -17,7 +17,7 @@ class Manager;
 class SensorManager;
 class QLabel;
 class QCheckBox;
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class QComboBox;
 class JmriJFrame;
 class JTextField;
@@ -55,7 +55,7 @@ private:
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
     QString userNameError;// = this.getClass().getName()+".DuplicateUserName";
-    DefaultUserMessagePreferences* p;
+    UserPreferencesManager* p;
     void handleCreateException(QString sysName);
     BeanTableFrame* f;
     //BeanTableDataModel* m;

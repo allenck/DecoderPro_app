@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'rosterframe.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -400,54 +400,54 @@ public:
 
     void retranslateUi(QMainWindow *RosterFrame)
     {
-        RosterFrame->setWindowTitle(QApplication::translate("RosterFrame", "Roster: All Entries", 0));
-        actionNew_Roster_Window->setText(QApplication::translate("RosterFrame", "New Roster Window", 0));
-        actionClose_Window->setText(QApplication::translate("RosterFrame", "Close Window", 0));
-        actionProgram->setText(QApplication::translate("RosterFrame", "Program", 0));
-        actionLabels_and_Media->setText(QApplication::translate("RosterFrame", "Labels && Media", 0));
-        actionNew_Throttle->setText(QApplication::translate("RosterFrame", "New Throttle", 0));
-        actionHide_Show_Summary_Panel->setText(QApplication::translate("RosterFrame", "Hide/Show Summary Panel", 0));
-        actionHide_Show_Roster_Image->setText(QApplication::translate("RosterFrame", "Hide/Show Roster Image", 0));
-        actionProgramming_Track->setText(QApplication::translate("RosterFrame", "Programming Track", 0));
-        actionProgramming_On_Main->setText(QApplication::translate("RosterFrame", "Programming On Main", 0));
-        actionEdit_Only->setText(QApplication::translate("RosterFrame", "Edit Only", 0));
-        actionDuplicate_Loco->setText(QApplication::translate("RosterFrame", "Duplicate Loco", 0));
-        actionDelete_Loco->setText(QApplication::translate("RosterFrame", "Delete Loco", 0));
-        actionPreferences->setText(QApplication::translate("RosterFrame", "Preferences", 0));
-        service->setText(QApplication::translate("RosterFrame", "Programming Track", 0));
-        ops->setText(QApplication::translate("RosterFrame", "Programming on Main", 0));
-        edit->setText(QApplication::translate("RosterFrame", "Edit Only", 0));
-        btnThrottle->setText(QApplication::translate("RosterFrame", "Throttle", 0));
-        btnLabelsMedia->setText(QApplication::translate("RosterFrame", "Labels & Media", 0));
-        btnProgram->setText(QApplication::translate("RosterFrame", "Program", 0));
-        locoImage->setText(QApplication::translate("RosterFrame", "Roster Image", 0));
-        label_11->setText(QApplication::translate("RosterFrame", "ID:", 0));
-        lblID->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_12->setText(QApplication::translate("RosterFrame", "Road Name:", 0));
-        lblRoadName->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_13->setText(QApplication::translate("RosterFrame", "Road Number:", 0));
-        lblRoadNumber->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_14->setText(QApplication::translate("RosterFrame", "Manufacturer:", 0));
-        lblManufacturer->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_15->setText(QApplication::translate("RosterFrame", "Owner:", 0));
-        lblOwner->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_16->setText(QApplication::translate("RosterFrame", "Model:", 0));
-        lblModel->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_17->setText(QApplication::translate("RosterFrame", "DCC Address:", 0));
-        lblDCCAddress->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_18->setText(QApplication::translate("RosterFrame", "Decoder Family:", 0));
-        lblDecoderFamily->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_19->setText(QApplication::translate("RosterFrame", "Decoder Model:", 0));
-        lblDecoderModel->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        label_20->setText(QApplication::translate("RosterFrame", "File Name:", 0));
-        lblFileName->setText(QApplication::translate("RosterFrame", "TextLabel", 0));
-        menuFile->setTitle(QApplication::translate("RosterFrame", "File", 0));
-        menuEdit->setTitle(QApplication::translate("RosterFrame", "Edit", 0));
-        menuSettings->setTitle(QApplication::translate("RosterFrame", "Settings", 0));
-        menuProgramming->setTitle(QApplication::translate("RosterFrame", "Programming", 0));
-        menuActions->setTitle(QApplication::translate("RosterFrame", "Actions", 0));
-        menuLocoNet->setTitle(QApplication::translate("RosterFrame", "LocoNet", 0));
-        toolBar->setWindowTitle(QApplication::translate("RosterFrame", "toolBar", 0));
+        RosterFrame->setWindowTitle(QApplication::translate("RosterFrame", "Roster: All Entries", Q_NULLPTR));
+        actionNew_Roster_Window->setText(QApplication::translate("RosterFrame", "New Roster Window", Q_NULLPTR));
+        actionClose_Window->setText(QApplication::translate("RosterFrame", "Close Window", Q_NULLPTR));
+        actionProgram->setText(QApplication::translate("RosterFrame", "Program", Q_NULLPTR));
+        actionLabels_and_Media->setText(QApplication::translate("RosterFrame", "Labels && Media", Q_NULLPTR));
+        actionNew_Throttle->setText(QApplication::translate("RosterFrame", "New Throttle", Q_NULLPTR));
+        actionHide_Show_Summary_Panel->setText(QApplication::translate("RosterFrame", "Hide/Show Summary Panel", Q_NULLPTR));
+        actionHide_Show_Roster_Image->setText(QApplication::translate("RosterFrame", "Hide/Show Roster Image", Q_NULLPTR));
+        actionProgramming_Track->setText(QApplication::translate("RosterFrame", "Programming Track", Q_NULLPTR));
+        actionProgramming_On_Main->setText(QApplication::translate("RosterFrame", "Programming On Main", Q_NULLPTR));
+        actionEdit_Only->setText(QApplication::translate("RosterFrame", "Edit Only", Q_NULLPTR));
+        actionDuplicate_Loco->setText(QApplication::translate("RosterFrame", "Duplicate Loco", Q_NULLPTR));
+        actionDelete_Loco->setText(QApplication::translate("RosterFrame", "Delete Loco", Q_NULLPTR));
+        actionPreferences->setText(QApplication::translate("RosterFrame", "Preferences", Q_NULLPTR));
+        service->setText(QApplication::translate("RosterFrame", "Programming Track", Q_NULLPTR));
+        ops->setText(QApplication::translate("RosterFrame", "Programming on Main", Q_NULLPTR));
+        edit->setText(QApplication::translate("RosterFrame", "Edit Only", Q_NULLPTR));
+        btnThrottle->setText(QApplication::translate("RosterFrame", "Throttle", Q_NULLPTR));
+        btnLabelsMedia->setText(QApplication::translate("RosterFrame", "Labels & Media", Q_NULLPTR));
+        btnProgram->setText(QApplication::translate("RosterFrame", "Program", Q_NULLPTR));
+        locoImage->setText(QApplication::translate("RosterFrame", "Roster Image", Q_NULLPTR));
+        label_11->setText(QApplication::translate("RosterFrame", "ID:", Q_NULLPTR));
+        lblID->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_12->setText(QApplication::translate("RosterFrame", "Road Name:", Q_NULLPTR));
+        lblRoadName->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_13->setText(QApplication::translate("RosterFrame", "Road Number:", Q_NULLPTR));
+        lblRoadNumber->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_14->setText(QApplication::translate("RosterFrame", "Manufacturer:", Q_NULLPTR));
+        lblManufacturer->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_15->setText(QApplication::translate("RosterFrame", "Owner:", Q_NULLPTR));
+        lblOwner->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_16->setText(QApplication::translate("RosterFrame", "Model:", Q_NULLPTR));
+        lblModel->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_17->setText(QApplication::translate("RosterFrame", "DCC Address:", Q_NULLPTR));
+        lblDCCAddress->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_18->setText(QApplication::translate("RosterFrame", "Decoder Family:", Q_NULLPTR));
+        lblDecoderFamily->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_19->setText(QApplication::translate("RosterFrame", "Decoder Model:", Q_NULLPTR));
+        lblDecoderModel->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        label_20->setText(QApplication::translate("RosterFrame", "File Name:", Q_NULLPTR));
+        lblFileName->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
+        menuFile->setTitle(QApplication::translate("RosterFrame", "File", Q_NULLPTR));
+        menuEdit->setTitle(QApplication::translate("RosterFrame", "Edit", Q_NULLPTR));
+        menuSettings->setTitle(QApplication::translate("RosterFrame", "Settings", Q_NULLPTR));
+        menuProgramming->setTitle(QApplication::translate("RosterFrame", "Programming", Q_NULLPTR));
+        menuActions->setTitle(QApplication::translate("RosterFrame", "Actions", Q_NULLPTR));
+        menuLocoNet->setTitle(QApplication::translate("RosterFrame", "LocoNet", Q_NULLPTR));
+        toolBar->setWindowTitle(QApplication::translate("RosterFrame", "toolBar", Q_NULLPTR));
     } // retranslateUi
 
 };

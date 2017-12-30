@@ -364,7 +364,7 @@ void SensorTableDataModel::common()
  table->setColumnHidden(INACTIVEDELAY, !show);
 }
 
-/*protected*/ QString SensorTableDataModel::getClassName() { return "SensorTableAction"; }
+/*protected*/ QString SensorTableDataModel::getClassName() { return "jmri.jmrit.beantable.SensorTableAction"; }
 
 // /*public*/ static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.beantable.BeanTableBundle");
 /*public*/ QString SensorTableDataModel::getClassDescription() { return tr("Sensor Table"); }

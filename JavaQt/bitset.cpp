@@ -125,7 +125,7 @@ void BitSet::common()
  common();
     // nbits can't be negative; size 0 is OK
     if (nbits < 0)
-        throw new NegativeArraySizeException("nbits < 0: " + QString::number(nbits));
+        throw  NegativeArraySizeException("nbits < 0: " + QString::number(nbits));
 
     initWords(nbits);
     sizeIsSticky = true;
@@ -330,11 +330,11 @@ void BitSet::common()
  */
 /*private*/ /*static*/ void BitSet::checkRange(int fromIndex, int toIndex) {
     if (fromIndex < 0)
-        throw new IndexOutOfBoundsException("fromIndex < 0: " + QString::number(fromIndex));
+        throw  IndexOutOfBoundsException("fromIndex < 0: " + QString::number(fromIndex));
     if (toIndex < 0)
-        throw new IndexOutOfBoundsException("toIndex < 0: " + QString::number(toIndex));
+        throw  IndexOutOfBoundsException("toIndex < 0: " + QString::number(toIndex));
     if (fromIndex > toIndex)
-        throw new IndexOutOfBoundsException("fromIndex: " + QString::number(fromIndex) +
+        throw  IndexOutOfBoundsException("fromIndex: " + QString::number(fromIndex) +
                                             " > toIndex: " + QString::number(toIndex));
 }
 #if 0
@@ -348,7 +348,7 @@ void BitSet::common()
  */
  /*public*/ void flip(int bitIndex) {
     if (bitIndex < 0)
-        throw new IndexOutOfBoundsException("bitIndex < 0: " + bitIndex);
+        throw  IndexOutOfBoundsException("bitIndex < 0: " + bitIndex);
 
     int wordIndex = wordIndex(bitIndex);
     expandTo(wordIndex);
@@ -595,7 +595,7 @@ void BitSet::common()
  */
  /*public*/ bool BitSet::get(int bitIndex) {
     if (bitIndex < 0)
-        throw new IndexOutOfBoundsException("bitIndex < 0: " + bitIndex);
+        throw IndexOutOfBoundsException("bitIndex < 0: " + bitIndex);
 
     checkInvariants();
 
@@ -681,7 +681,7 @@ void BitSet::common()
  */
  /*public*/ int BitSet::nextSetBit(int fromIndex) {
     if (fromIndex < 0)
-        throw new IndexOutOfBoundsException("fromIndex < 0: " + fromIndex);
+        throw  IndexOutOfBoundsException("fromIndex < 0: " + fromIndex);
 
     checkInvariants();
 
@@ -770,7 +770,7 @@ void BitSet::common()
     if (fromIndex < 0) {
         if (fromIndex == -1)
             return -1;
-        throw new IndexOutOfBoundsException(
+        throw  IndexOutOfBoundsException(
             "fromIndex < -1: " + fromIndex);
     }
 
@@ -808,7 +808,7 @@ void BitSet::common()
     if (fromIndex < 0) {
         if (fromIndex == -1)
             return -1;
-        throw new IndexOutOfBoundsException(
+        throw  IndexOutOfBoundsException(
             "fromIndex < -1: " + fromIndex);
     }
 
@@ -1113,7 +1113,7 @@ void BitSet::common()
         result.checkInvariants();
         return result;
     } catch (CloneNotSupportedException e) {
-        throw new InternalError();
+        throw  InternalError();
     }
 }
 

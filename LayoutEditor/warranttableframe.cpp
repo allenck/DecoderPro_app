@@ -126,7 +126,7 @@
  table->createDefaultColumnsFromModel();
  _model->addHeaderListener(table);
  //_model->configureTable(table);
- _model->table = table;
+ _model->_table = table;
  //_model->updateNameList();
 // table.setDefaultRenderer(Boolean.class, new ButtonRenderer());
 // table.setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
@@ -174,7 +174,7 @@
 //  table->openPersistentEditor( _model->index(i, WarrantTableModel::DELETE_COLUMN, QModelIndex()) );
 // }
  _model->setPersistentButtons();
- _rowHeight = /*box.getPreferredSize().height;*/ table->rowHeight(0);
+ _rowHeight = /*box.getPreferredSize().height;*/ table->getRowHeight();
 // table->setRowHeight(_rowHeight);
  table->setDragEnabled(true);
 // table.setTransferHandler(new jmri.util.DnDTableExportHandler());

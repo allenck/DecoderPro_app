@@ -9,6 +9,7 @@
 #include "file.h"
 #include "jframe.h"
 #include "jmrijframe.h"
+#include "joptionpane.h"
 
 //EditorPane::EditorPane(QWidget *parent) :
 //  LnPanel(parent)
@@ -129,13 +130,13 @@ void EditorPane::selectSaveFile() {
  QString fName = QFileDialog::getSaveFileName(this, tr("Select save file name"), FileUtil::getUserFilesPath(), tr("Sound files (*.spj)"));
  if(fName == "") return;
  // success, open the file
- //try {
+ try {
      saveFile(fName);
-// } catch (IOException e) {
-//     // failed, warn user
-//     JOptionPane.showMessageDialog(this, "Error during save: " + e,
-//             "Save failed!", JOptionPane.WARNING_MESSAGE);
-// }
+ } catch (IOException e) {
+     // failed, warn user
+     JOptionPane::showMessageDialog(this, "Error during save: " + e.getMessage(),
+             "Save failed!", JOptionPane::WARNING_MESSAGE);
+ }
 }
 
 void EditorPane::addFile(File name)

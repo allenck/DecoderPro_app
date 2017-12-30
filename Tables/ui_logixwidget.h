@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'logixwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -61,8 +61,8 @@ public:
 
     void retranslateUi(QWidget *LogixWidget)
     {
-        LogixWidget->setWindowTitle(QApplication::translate("LogixWidget", "Form", 0));
-        btnAdd->setText(QApplication::translate("LogixWidget", "Add", 0));
+        LogixWidget->setWindowTitle(QApplication::translate("LogixWidget", "Form", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("LogixWidget", "Add", Q_NULLPTR));
     } // retranslateUi
 
 };

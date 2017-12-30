@@ -11,7 +11,9 @@
 #include <QStatusBar>
 #include <QUrl>
 #include <QIcon>
-#include <QWebHistory>
+#include <QWebEngineHistory>
+#include <QWebEnginePage>
+#include <QWebEngineSettings>
 #include "systemconsoleaction.h"
 #include "helpbroker.h"
 #include "xmlfilelocationaction.h"
@@ -278,9 +280,12 @@ HelpFrame::HelpFrame(QString ref)
  QWidget* centralWidget = new QWidget;
  centralWidget->setLayout(new QVBoxLayout);
  setCentralWidget(centralWidget);
+ setMinimumSize(500,400);
  view = new MyWebView;
- view->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
- view->page()->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
+#if 0 // TODO:
+ view->page()->setLinkDelegationPolicy(QWebEnginePage::DelegateAllLinks);
+ view->page()->settings()->setAttribute(QWebEnginePage::PluginsEnabled, true);
+#endif
  connect(view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
  connect(view, SIGNAL(statusBarMessage(QString)), this, SLOT(statusBarMessage(QString)));
  centralWidget->layout()->addWidget(view);
@@ -308,10 +313,11 @@ HelpFrame::HelpFrame(QString ref)
    view->setHtml(html, QUrl::fromLocalFile(info.path()+QDir::separator()));
  else
    view->setUrl(url);
+  resize(800,600);
   view->show();
   statusBar()->showMessage("file://" +path);
-  pack();
   show();
+  adjustSize();
   view->addHistory(url);
 
 // }
@@ -360,6 +366,7 @@ void HelpFrame::setUrl(QString ref)
   view->show();
   toFront();
   show();
+  adjustSize();
   view->addHistory(QUrl::fromLocalFile(path));
  }
 }
@@ -437,7 +444,7 @@ void HelpFrame::linkHovered(const QString &link, const QString &/*title*/, const
  statusBar()->showMessage(link);
 }
 
-MyWebView::MyWebView(QWidget *parent) : QWebView(parent)
+MyWebView::MyWebView(QWidget *parent) : QWebEngineView(parent)
 {
  historyList = QList<WebHistoryItem>();
  currHistoryItem = 0;

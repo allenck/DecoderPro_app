@@ -156,7 +156,7 @@ PFItem::PFItem(PerformFilePanel* self)
     self->fc->showOpenDialog(NULL);
 
     selected = new QLabel(self->fc->getSelectedFile()->getAbsolutePath());
-                model->setFileName(self->fc->getSelectedFile()->getAbsolutePath());
+    model->setFileName(self->fc->getSelectedFile()->getAbsolutePath());
     thisLayout->addWidget(selected);
 }
 

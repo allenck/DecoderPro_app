@@ -125,8 +125,24 @@ public:
              *                between 1 and 254 for other locomotives in the consist
              */
             virtual int getPosition(DccLocoAddress* /*address*/) const {return 0;}
+        /**
+         * Set the roster entry of a locomotive within the consist
+         *
+         * @param address  is the Locomotive address
+         * @param rosterId is the roster Identifer of the associated roster entry.
+         */
+            /*public*/ virtual void setRosterId(DccLocoAddress* /*address*/, QString /*rosterId*/) {}
 
-        /*
+        /**
+         * Get the rosterId of a locomotive within the consist
+         *
+         * @param address is the Locomotive address of interest
+         * @return string roster Identifier associated with the given address
+         *         in the consist.  Returns null if no roster entry is associated
+         *         with this entry.
+         */
+        /*public*/ virtual QString getRosterId(DccLocoAddress* /*address*/) {return "";}
+/*
          * Add a Listener for consist events
          * @param Listener is a consistListener object
              */

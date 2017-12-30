@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'reporterwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -75,19 +75,19 @@ public:
 
     void retranslateUi(QWidget *ReporterWidget)
     {
-        ReporterWidget->setWindowTitle(QApplication::translate("ReporterWidget", "Form", 0));
+        ReporterWidget->setWindowTitle(QApplication::translate("ReporterWidget", "Form", Q_NULLPTR));
         label->setText(QString());
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("ReporterWidget", "System Name", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("ReporterWidget", "System Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("ReporterWidget", "UserName", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("ReporterWidget", "UserName", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("ReporterWidget", "Report", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("ReporterWidget", "Report", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("ReporterWidget", "Comment", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("ReporterWidget", "Comment", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(5);
-        ___qtablewidgetitem4->setText(QApplication::translate("ReporterWidget", "Last Report", 0));
-        btnAdd->setText(QApplication::translate("ReporterWidget", "Add", 0));
+        ___qtablewidgetitem4->setText(QApplication::translate("ReporterWidget", "Last Report", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("ReporterWidget", "Add", Q_NULLPTR));
     } // retranslateUi
 
 };

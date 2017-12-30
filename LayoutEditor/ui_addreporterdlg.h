@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addreporterdlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -122,12 +122,12 @@ public:
 
     void retranslateUi(QDialog *AddReporterDlg)
     {
-        AddReporterDlg->setWindowTitle(QApplication::translate("AddReporterDlg", "Dialog", 0));
-        label->setText(QApplication::translate("AddReporterDlg", "Reporter Name", 0));
-        label_2->setText(QApplication::translate("AddReporterDlg", "Location:  x", 0));
-        label_3->setText(QApplication::translate("AddReporterDlg", ", y", 0));
-        okButton->setText(QApplication::translate("AddReporterDlg", "Add new label", 0));
-        cancelButton->setText(QApplication::translate("AddReporterDlg", "Cancel", 0));
+        AddReporterDlg->setWindowTitle(QApplication::translate("AddReporterDlg", "Dialog", Q_NULLPTR));
+        label->setText(QApplication::translate("AddReporterDlg", "Reporter Name", Q_NULLPTR));
+        label_2->setText(QApplication::translate("AddReporterDlg", "Location:  x", Q_NULLPTR));
+        label_3->setText(QApplication::translate("AddReporterDlg", ", y", Q_NULLPTR));
+        okButton->setText(QApplication::translate("AddReporterDlg", "Add new label", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("AddReporterDlg", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

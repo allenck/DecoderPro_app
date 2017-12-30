@@ -419,7 +419,7 @@ void delete_Positionable(Positionable* obj) { delete obj; }
    bool  storeItem(Positionable* theWrappedObject);
    bool  updateScene(Positionable* theWrappedObject);
    void updateSize(Positionable* theWrappedObject);
-void py_set__itemGroup(Positionable* theWrappedObject, QGraphicsItemGroup*  _itemGroup){ theWrappedObject->_itemGroup = _itemGroup; }
+void py_set__itemGroup(Positionable* theWrappedObject, MyGraphicsItemGroup*  _itemGroup){ theWrappedObject->_itemGroup = _itemGroup; }
 QGraphicsItemGroup*  py_get__itemGroup(Positionable* theWrappedObject){ return theWrappedObject->_itemGroup; }
 };
 
@@ -544,7 +544,7 @@ virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
 virtual NamedBean*  makeBean(int  i, QString  systemName, QString  userName);
-virtual AbstractManager*  makeInternalManager();
+virtual Manager*  makeInternalManager();
 virtual QString  makeSystemName(QString  s);
 virtual void on_propertyChange(PropertyChangeEvent*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
@@ -558,7 +558,7 @@ class PythonQtPublicPromoter_ProxyLightManager : public ProxyLightManager
 { public:
 inline int  promoted_getXMLOrder() { return ProxyLightManager::getXMLOrder(); }
 inline NamedBean*  promoted_makeBean(int  i, QString  systemName, QString  userName) { return ProxyLightManager::makeBean(i, systemName, userName); }
-inline AbstractManager*  promoted_makeInternalManager() { return ProxyLightManager::makeInternalManager(); }
+inline Manager*  promoted_makeInternalManager() { return ProxyLightManager::makeInternalManager(); }
 };
 
 class PythonQtWrapper_ProxyLightManager : public QObject
@@ -575,7 +575,7 @@ void delete_ProxyLightManager(ProxyLightManager* obj) { delete obj; }
    Light*  getLight(ProxyLightManager* theWrappedObject, QString  name);
    int  getXMLOrder(ProxyLightManager* theWrappedObject);
    NamedBean*  makeBean(ProxyLightManager* theWrappedObject, int  i, QString  systemName, QString  userName);
-   AbstractManager*  makeInternalManager(ProxyLightManager* theWrappedObject);
+   Manager*  makeInternalManager(ProxyLightManager* theWrappedObject);
    Light*  newLight(ProxyLightManager* theWrappedObject, QString  systemName, QString  userName);
    NamedBean*  newNamedBean(ProxyLightManager* theWrappedObject, QString  systemName, QString  userName);
    QString  normalizeSystemName(ProxyLightManager* theWrappedObject, QString  systemName);
@@ -606,7 +606,7 @@ virtual bool  event(QEvent*  arg__1);
 virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual AbstractManager*  getInternal();
+//virtual AbstractManager*  getInternal();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QList<NamedBean* >*  getNamedBeanList();
 virtual QStringList  getSystemNameArray();
@@ -614,7 +614,7 @@ virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
 virtual Sensor*  makeBean(int  i, QString  systemName, QString  userName);
-virtual AbstractManager*  makeInternalManager();
+virtual Manager*  makeInternalManager();
 virtual QString  makeSystemName(QString  s);
 virtual void on_propertyChange(PropertyChangeEvent*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
@@ -626,10 +626,10 @@ virtual char  typeLetter();
 
 class PythonQtPublicPromoter_ProxySensorManager : public ProxySensorManager
 { public:
-inline AbstractManager*  promoted_getInternal() { return ProxySensorManager::getInternal(); }
+//inline AbstractManager*  promoted_getInternal() { return ProxySensorManager::getInternal(); }
 inline int  promoted_getXMLOrder() { return ProxySensorManager::getXMLOrder(); }
 inline Sensor*  promoted_makeBean(int  i, QString  systemName, QString  userName) { return ProxySensorManager::makeBean(i, systemName, userName); }
-inline AbstractManager*  promoted_makeInternalManager() { return ProxySensorManager::makeInternalManager(); }
+inline Manager*  promoted_makeInternalManager() { return ProxySensorManager::makeInternalManager(); }
 inline NamedBean*  promoted_newNamedBean(QString  systemName, QString  userName) { return ProxySensorManager::newNamedBean(systemName, userName); }
 inline NamedBean*  promoted_provideNamedBean(QString  name) { return ProxySensorManager::provideNamedBean(name); }
 };
@@ -647,12 +647,12 @@ void delete_ProxySensorManager(ProxySensorManager* obj) { delete obj; }
    QCompleter*  getCompleter(ProxySensorManager* theWrappedObject, QString  text);
    long  getDefaultSensorDebounceGoingActive(ProxySensorManager* theWrappedObject);
    long  getDefaultSensorDebounceGoingInActive(ProxySensorManager* theWrappedObject);
-   AbstractManager*  getInternal(ProxySensorManager* theWrappedObject);
+   //AbstractManager*  getInternal(ProxySensorManager* theWrappedObject);
    QString  getNextValidAddress(ProxySensorManager* theWrappedObject, QString  curAddress, QString  prefix) throw (JmriException);
    Sensor*  getSensor(ProxySensorManager* theWrappedObject, QString  name);
    int  getXMLOrder(ProxySensorManager* theWrappedObject);
    Sensor*  makeBean(ProxySensorManager* theWrappedObject, int  i, QString  systemName, QString  userName);
-   AbstractManager*  makeInternalManager(ProxySensorManager* theWrappedObject);
+   Manager*  makeInternalManager(ProxySensorManager* theWrappedObject);
    NamedBean*  newNamedBean(ProxySensorManager* theWrappedObject, QString  systemName, QString  userName);
    Sensor*  newSensor(ProxySensorManager* theWrappedObject, QString  systemName, QString  userName);
    NamedBean*  provideNamedBean(ProxySensorManager* theWrappedObject, QString  name);
@@ -690,7 +690,7 @@ virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
 virtual NamedBean*  makeBean(int  i, QString  systemName, QString  userName);
-virtual AbstractManager*  makeInternalManager();
+virtual Manager*  makeInternalManager();
 virtual QString  makeSystemName(QString  s);
 virtual void on_propertyChange(PropertyChangeEvent*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
@@ -704,7 +704,7 @@ class PythonQtPublicPromoter_ProxyTurnoutManager : public ProxyTurnoutManager
 { public:
 inline int  promoted_getXMLOrder() { return ProxyTurnoutManager::getXMLOrder(); }
 inline NamedBean*  promoted_makeBean(int  i, QString  systemName, QString  userName) { return ProxyTurnoutManager::makeBean(i, systemName, userName); }
-inline AbstractManager*  promoted_makeInternalManager() { return ProxyTurnoutManager::makeInternalManager(); }
+inline Manager*  promoted_makeInternalManager() { return ProxyTurnoutManager::makeInternalManager(); }
 inline NamedBean*  promoted_newNamedBean(QString  systemName, QString  userName) { return ProxyTurnoutManager::newNamedBean(systemName, userName); }
 };
 
@@ -733,7 +733,7 @@ void delete_ProxyTurnoutManager(ProxyTurnoutManager* obj) { delete obj; }
    bool  isControlTypeSupported(ProxyTurnoutManager* theWrappedObject, QString  systemName);
    bool  isNumControlBitsSupported(ProxyTurnoutManager* theWrappedObject, QString  systemName);
    NamedBean*  makeBean(ProxyTurnoutManager* theWrappedObject, int  i, QString  systemName, QString  userName);
-   AbstractManager*  makeInternalManager(ProxyTurnoutManager* theWrappedObject);
+   Manager*  makeInternalManager(ProxyTurnoutManager* theWrappedObject);
    NamedBean*  newNamedBean(ProxyTurnoutManager* theWrappedObject, QString  systemName, QString  userName);
    Turnout*  newTurnout(ProxyTurnoutManager* theWrappedObject, QString  systemName, QString  userName);
    void setDefaultClosedSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) throw (JmriException);

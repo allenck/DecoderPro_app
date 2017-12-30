@@ -104,7 +104,7 @@ LnCommandStationType::LnCommandStationType(QString name, bool canRead, bool prog
  {
   if (p->name==(name)) return p;
  }
- throw new IllegalArgumentException("argument value ["+name+"] not valid");
+ throw IllegalArgumentException("argument value ["+name+"] not valid");
 }
 
 /*static*/ /*public*/ LnCommandStationType* LnCommandStationType::getByType(LnCommandStationTypes type)
@@ -130,7 +130,7 @@ LnCommandStationType::LnCommandStationType(QString name, bool canRead, bool prog
  {
   if (p->type==(type)) return p;
  }
- throw new IllegalArgumentException("argument value ["+QString::number((int)type)+"] not valid");
+ throw IllegalArgumentException("argument value ["+QString::number((int)type)+"] not valid");
 }
 /**
  * Get a new ThrottleManager of the right type for this command station.

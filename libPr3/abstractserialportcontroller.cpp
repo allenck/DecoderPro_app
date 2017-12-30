@@ -185,7 +185,8 @@ QString AbstractSerialPortController::getOptionState(QString option)
             return portName+" not found";
 }
 
-/*public*/ void AbstractSerialPortController::_connect() throw( Exception){
+/*public*/ void AbstractSerialPortController::_connect() //throw( Exception)
+{
 //    openPort(mPort, "JMRI app");
 }
 

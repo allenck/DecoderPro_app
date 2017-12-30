@@ -1,6 +1,6 @@
 #include "profiletablemodel.h"
 #include "profilemanager.h"
-#include "../libPr3/profile.h"
+#include "profile.h"
 #include "vptr.h"
 
 //ProfileTableModel::ProfileTableModel(QObject *parent) :

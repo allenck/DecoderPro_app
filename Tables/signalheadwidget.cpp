@@ -9,8 +9,8 @@
 #include "virtualsignalhead.h"
 #include "singleturnoutsignalhead.h"
 #include "doubleturnoutsignalhead.h"
-#include "../LayoutEditor/beantabledatamodel.h"
-#include "../LayoutEditor/systemnamecomparator.h"
+#include "beantabledatamodel.h"
+#include "systemnamecomparator.h"
 
 SignalHeadWidget::SignalHeadWidget(QWidget *parent) :
     QDialog(parent),

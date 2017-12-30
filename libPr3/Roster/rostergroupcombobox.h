@@ -25,6 +25,7 @@ public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* pce);
 
 private:
+ void common(Roster* roster, QString selection);
     /*private*/ Roster* _roster;
     /*private*/ bool allEntriesEnabled;// = true;
     QWidget *parent;

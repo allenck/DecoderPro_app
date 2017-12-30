@@ -7,6 +7,9 @@
 #include "abstracttablemodel.h"
 #include "timebase.h"
 
+class Block;
+class HeldMastDetails;
+class SignalMast;
 class Section;
 class QCheckBox;
 class QPushButton;
@@ -44,6 +47,15 @@ public:
  /*public*/ ActivateTrainFrame* getActiveTrainFrame();
  /*public*/  bool getNewTrainActive();
  /*public*/ void setNewTrainActive( bool boo);
+ /*public*/  bool isMastHeldByDispatcher(SignalMast* sm, ActiveTrain* at);
+ /*public*/ AutoTrainsFrame* getAutoTrainsFrame();
+ /*public*/ ActiveTrain* createActiveTrain(QString transitID, QString trainID, int tSource, QString startBlockName,
+         int startBlockSectionSequenceNumber, QString endBlockName, int endBlockSectionSequenceNumber,
+          bool autoRun, QString dccAddress, int priority,  bool resetWhenDone,  bool reverseAtEnd,  bool allocateAllTheWay,
+          bool showErrorMessages, JmriJFrame* frame);
+ /*public*/ void allocateNewActiveTrain(ActiveTrain* at);
+ /*public*/ void newTrainDone(ActiveTrain* at);
+
 
 private:
  Logger* log;
@@ -78,7 +90,7 @@ private:
  /*private*/ TransitManager* transitManager;// = InstanceManager.getDefault(jmri.TransitManager.class);
  /*private*/ QList<AllocationRequest*>* allocationRequests;// = new ArrayList<AllocationRequest>();  // List of AllocatedRequest objects
  /*private*/ QList<AllocatedSection*>* allocatedSections;// = new ArrayList<AllocatedSection>();  // List of AllocatedSection objects
- /*private*/ bool optionsRead = false;
+ /*private*/ bool optionsRead;// = false;
  /*private*/ AutoTurnouts* autoTurnouts;// = NULL;
  /*private*/ AutoAllocate* autoAllocate;// = NULL;
  /*private*/ OptionsMenu* optionsMenu;// = NULL;
@@ -111,12 +123,17 @@ private:
  void releaseAllocatedSectionFromTable(int index);
  /*private*/ void checkAutoRelease();
  bool newTrainActive;// = false;
+ QList<HeldMastDetails*>* heldMasts;// = new QList<HeldMastDetails*>();
+ /*private*/ void removeHeldMast(SignalMast* sm, ActiveTrain* at);
+ /*private*/ bool isInAllocatedSection(Block* b);
+ /*private*/ void fastClockWarn( bool wMess);
 
 private slots:
  void on_addTrainButton();
  void on_cancelRestartButton();
  void on_terminateTrainButton();
  void minuteChange(PropertyChangeEvent*);
+ /*private*/ void handleActiveTrainChange(PropertyChangeEvent* e);
 
 protected:
  /*protected*/ int getSignalType();
@@ -135,6 +152,41 @@ protected:
  /*protected*/  bool getUseConnectivity();
  /*protected*/ void setUseConnectivity( bool set);
  /*protected*/ void setSignalType(int type);
+ /*protected*/  bool getShortNameInBlock() ;
+ /*protected*/ void setShortNameInBlock( bool set) ;
+ /*protected*/  bool getRosterEntryInBlock() ;
+ /*protected*/ void setRosterEntryInBlock( bool set);
+ /*protected*/  bool getExtraColorForAllocated();
+ /*protected*/ void setExtraColorForAllocated( bool set);
+ /*protected*/  bool getNameInAllocatedBlock();
+ /*protected*/ void setNameInAllocatedBlock( bool set);
+ /*protected*/ int getScale();
+ /*protected*/ void setScale(int sc);
+ /*protected*/ void removeDelayedTrain(ActiveTrain* at);
+ /*protected*/  bool getTrainsFromRoster();
+ /*protected*/ void setTrainsFromRoster( bool set);
+ /*protected*/  bool getTrainsFromTrains();
+ /*protected*/ void setTrainsFromTrains( bool set);
+ /*protected*/  bool getTrainsFromUser();
+ /*protected*/ void setTrainsFromUser( bool set) ;
+ /*protected*/  bool getAutoAllocate();
+ /*protected*/ void setAutoAllocate( bool set) ;
+ /*protected*/  bool getAutoTurnouts() ;
+ /*protected*/ void setAutoTurnouts( bool set) ;
+ /*protected*/  bool getTrustKnownTurnouts();
+ /*protected*/ void setTrustKnownTurnouts( bool set);
+ /*protected*/ int getMinThrottleInterval();
+ /*protected*/ void setMinThrottleInterval(int set);
+ /*protected*/ int getFullRampTime() ;
+ /*protected*/ void setFullRampTime(int set);
+ /*protected*/  bool getHasOccupancyDetection() ;
+ /*protected*/ void setHasOccupancyDetection( bool set);
+ /*protected*/  bool getUseScaleMeters();
+ /*protected*/ void setUseScaleMeters( bool set);
+ /*protected*/  bool getShortActiveTrainNames();
+ /*protected*/ void setShortActiveTrainNames( bool set);
+ /*protected*/  bool getSupportVSDecoder();
+ /*protected*/ void setSupportVSDecoder( bool set);
 
  friend class ActiveTrain;
  friend class ActiveTrainsTableModel;
@@ -143,6 +195,9 @@ protected:
  friend class AllocationRequest;
  friend class AutoTurnouts;
  friend class AutoAllocate;
+ friend class AutoActiveTrain;
+ friend class AutoEngineer;
+ friend class AllocatedSection;
 };
 
 /**
@@ -240,4 +295,15 @@ public slots:
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
+
+/*static*/ class HeldMastDetails  {
+
+    SignalMast* mast;// = NULL;
+    ActiveTrain* at;// = NULL;
+public:
+    HeldMastDetails(SignalMast* sm, ActiveTrain* a);
+    ActiveTrain* getActiveTrain() ;
+    SignalMast* getMast();
+};
+
 #endif // DISPATCHERFRAME_H

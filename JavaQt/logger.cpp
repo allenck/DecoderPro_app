@@ -3,6 +3,7 @@
 #include <QString>
 #include "consoleinterface.h"
 //#include "systemconsole.h"
+#include "loggerbase.h"
 
 //QString Logger::name;
 Logger::Logger(QString name, QObject *parent) :
@@ -10,6 +11,7 @@ Logger::Logger(QString name, QObject *parent) :
 {
  bDebugEnabled = false;
  bInfoEnabled = true;
+ bTraceEnabled =false;
  this->name = name;
  this->parent = parent;
 }
@@ -21,8 +23,7 @@ Logger::Logger(const Logger & other) : QObject()
 }
 /*static*/ void Logger::error(QString s, QVariant ex)
 {
- qDebug() << tr("Error: ") << s << ex.toString();
- ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s);
+ LoggerBase::error(s, ex);
 }
 bool Logger::isDebugEnabled()
 { return bDebugEnabled;}
@@ -30,21 +31,28 @@ bool Logger::isDebugEnabled()
 bool Logger::isInfoEnabled()
 { return bInfoEnabled;}
 
+bool Logger::isTraceEnabled()
+{ return bTraceEnabled;}
+
+
 void Logger::debug(QString s)
 {
- qDebug() << tr("%1: Debug: %2").arg(name).arg(s);
+ LoggerBase::debug(name, s);
 }
 
 void Logger::warn(QString s)
 {
- qDebug() << tr("%1: Warning: %2").arg(name).arg(s);
- ConsoleInterface::instance()->sendMessage(tr("Warning: ")+ s);
+ LoggerBase::warn(name, s);
 }
 
 void Logger::info(QString s)
 {
- qDebug() << tr("%1: Info: %2").arg(name).arg(s);
- ConsoleInterface::instance()->sendMessage(tr("Info: ")+ s);
+ LoggerBase::info(name, s);
+}
+
+void Logger::trace(QString s)
+{
+ LoggerBase::trace(name, s);
 }
 
 void Logger::setDebugEnabled(bool bState) { bDebugEnabled = bState;}

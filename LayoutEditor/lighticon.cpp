@@ -384,7 +384,8 @@ NamedIcon* LightIcon::getIcon(QString sState)
    _itemGroup->removeFromGroup(item);
  }
  else
-   _itemGroup = new QGraphicsItemGroup;
+   _itemGroup = new MyGraphicsItemGroup;
+ _itemGroup->setName("LightIcon");
 
  if(getLight() != NULL)
  {

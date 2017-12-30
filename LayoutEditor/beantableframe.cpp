@@ -6,11 +6,15 @@
 #include "savemenu.h"
 #include "jtable.h"
 #include "box.h"
+#include "mysortfilterproxymodel.h"
 
 BeanTableFrame::BeanTableFrame(QWidget *parent) :
     JmriJFrame(parent)
 {
  //common();
+ dataTable = NULL;
+ dataModel = NULL;
+
  bottomBox =  Box::createHorizontalBox();
  //bottomBox->setLayout(new QHBoxLayout);
  //bottomBox.add(Box.createHorizontalGlue());	// stays at end of box
@@ -47,6 +51,9 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
 {
  //super(s);
  //common();
+ dataTable = NULL;
+ dataModel = NULL;
+
  bottomBox = Box::createHorizontalBox();
  //bottomBox->setLayout(new QHBoxLayout);
  //bottomBox.add(Box.createHorizontalGlue());	// stays at end of box
@@ -68,6 +75,9 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
 //        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
 //        tmodel.setSortingStatus(BeanTableDataModel.SYSNAMECOL, TableSorter.ASCENDING);
 //    } catch (java.lang.ClassCastException e) {}  // happens if not sortable table
+ QAbstractItemModel* sorter = new MySortFilterProxyModel(dataModel);
+ this->dataTable->setModel(sorter);
+ this->dataTable->setSortingEnabled(true);
 
  // configure items for GUI
  dataModel->configureTable(dataTable);
@@ -160,6 +170,7 @@ void BeanTableFrame::extras() {}
 /*public*/ void BeanTableFrame::dispose() {
     if (dataModel != NULL){
 //        dataModel->saveTableColumnDetails(dataTable);
+     dataModel->stopPersistingTable(dataTable);
         dataModel->dispose();
     }
     dataModel = NULL;

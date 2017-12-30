@@ -22,13 +22,21 @@
 #include "autoturnouts.h"
 #include <QDateTime>
 #include "activatetrainframe.h"
+#include "signalmast.h"
+#include "autotrainsframe.h"
+#include "traininfofile.h"
+#include "traininfo.h"
+#include "layoutblockmanager.h"
+#include "transit.h"
+#include "autoactivetrain.h"
+#include "transitmanager.h"
 
 //DispatcherFrame::DispatcherFrame()
 //{
 
 //}
 /**
- * Dispatcher functionality, working with Sections, Transits and ActiveTrain.
+ * Dispatcher functionality, working with Sections, Transits and ActiveTrain::
  *
  * <P>
  * Dispatcher serves as the manager for ActiveTrains. All allocation of Sections
@@ -154,87 +162,87 @@
 
 /*public*/ void DispatcherFrame::loadAtStartup() {
     log->debug("Loading saved trains flagged as LoadAtStartup");
-#if 0
-    TrainInfoFile tif = new TrainInfoFile();
-    String[] names = tif.getTrainInfoFileNames();
+    TrainInfoFile* tif = new TrainInfoFile();
+    QStringList names = tif->getTrainInfoFileNames();
      bool pathsInited = false;
-    if (names.length > 0) {
-        for (int i = 0; i < names.length; i++) {
+#if 1
+    if (names.length() > 0) {
+        for (int i = 0; i < names.length(); i++) {
             //read xml data from selected filename and move it into the new train dialog box
-            TrainInfo info = NULL;
-            try {
-                info = tif.readTrainInfo(names[i]);
-            } catch (java.io.IOException ioe) {
-                log->error("IO Exception when reading train info file {}: {}", names[i], ioe);
-            } catch (org.jdom2.JDOMException jde) {
-                log->error("JDOM Exception when reading train info file {}: {}", names[i], jde);
-            }
-            if (info != NULL && info.getLoadAtStartup()) {
-                log->debug("restoring train:{}, startblockname:{}, destinationBlockName:{}", info.getTrainName(),
-                        info.getStartBlockName(), info.getDestinationBlockName());
+            TrainInfo* info = NULL;
+            //try {
+                info = tif->readTrainInfo(names[i]);
+//            } catch (java.io.IOException ioe) {
+//                log->error("IO Exception when reading train info file {}: {}", names[i], ioe);
+//            } catch (org.jdom2.JDOMException jde) {
+//                log->error("JDOM Exception when reading train info file {}: {}", names[i], jde);
+//            }
+            if (info != NULL && info->getLoadAtStartup()) {
+                log->debug(tr("restoring train:%1, startblockname:%2, destinationBlockName:%3").arg(info->getTrainName()).arg(info->getStartBlockName()).arg(info->getDestinationBlockName()));
                 // create a new Active Train
-                int tSource = ActiveTrain.ROSTER;
-                if (info.getTrainFromTrains()) {
-                    tSource = ActiveTrain.OPERATIONS;
-                } else if (info.getTrainFromUser()) {
-                    tSource = ActiveTrain.USER;
+                int tSource = ActiveTrain::ROSTER;
+                if (info->getTrainFromTrains()) {
+                    tSource = ActiveTrain::OPERATIONS;
+                } else if (info->getTrainFromUser()) {
+                    tSource = ActiveTrain::USER;
                 }
                 //block and seq are stored together, split out for use here
-                String startBlock = info.getStartBlockName().split("-")[0];
-                int startBlockSeq = Integer.parseInt(info.getStartBlockName().split("-")[1]);
-                String destinationBlock = info.getDestinationBlockName().split("-")[0];
-                int destinationBlockSeq = Integer.parseInt(info.getDestinationBlockName().split("-")[1]);
+                QString startBlock = info->getStartBlockName().split("-")[0];
+                int startBlockSeq = info->getStartBlockName().split("-")[1].toInt();
+                QString destinationBlock = info->getDestinationBlockName().split("-")[0];
+                int destinationBlockSeq = info->getDestinationBlockName().split("-")[1].toInt();
 
                 if (!pathsInited) { //only init the layoutblockpaths once here
                     log->debug("initializing block paths early"); //TODO: figure out how to prevent the "regular" init
-                    InstanceManager.getDefault(jmri.jmrit.display.layoutEditor.LayoutBlockManager.class).initializeLayoutBlockPaths();
+                    ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
                 }
 
-                ActiveTrain at = createActiveTrain(info.getTransitName(), info.getTrainName(), tSource,
+                ActiveTrain* at = createActiveTrain(info->getTransitName(), info->getTrainName(), tSource,
                         startBlock, startBlockSeq, destinationBlock, destinationBlockSeq,
-                        info.getAutoRun(), info.getDCCAddress(), info.getPriority(),
-                        info.getResetWhenDone(), info.getReverseAtEnd(), info.getAllocateAllTheWay(), true, NULL);
+                        info->getAutoRun(), info->getDCCAddress(), info->getPriority(),
+                        info->getResetWhenDone(), info->getReverseAtEnd(), info->getAllocateAllTheWay(), true, NULL);
                 if (at != NULL) {
-                    if (tSource == ActiveTrain.ROSTER) {
-                        RosterEntry re = Roster.getDefault().getEntryForId(info.getTrainName());
+                    if (tSource == ActiveTrain::ROSTER) {
+                        RosterEntry* re = Roster::getDefault()->getEntryForId(info->getTrainName());
                         at->setRosterEntry(re);
-                        at->setDccAddress(re.getDccAddress());
+                        at->setDccAddress(re->getDccAddress());
                     }
-                    at->setDelayedStart(info.getDelayedStart()); //this is a code: NODELAY, TIMEDDELAY, SENSORDELAY
-                    at->setDepartureTimeHr(info.getDepartureTimeHr()); // hour of day (fast-clock) to start this train
-                    at->setDepartureTimeMin(info.getDepartureTimeMin()); //minute of hour to start this train
-                    at->setDelayedReStart(info.getDelayedRestart()); //this is a code: NODELAY, TIMEDDELAY, SENSORDELAY
-                    at->setRestartDelay(info.getRestartDelayMin());  //this is number of minutes to delay between runs
-                    at->setDelaySensor(info.getDelaySensor());
-                    if ((isFastClockTimeGE(at->getDepartureTimeHr(), at->getDepartureTimeMin()) && info.getDelayedStart() != ActiveTrain.SENSORDELAY) ||
-                            info.getDelayedStart()==ActiveTrain.NODELAY) {
+                    at->setDelayedStart(info->getDelayedStart()); //this is a code: NODELAY, TIMEDDELAY, SENSORDELAY
+                    at->setDepartureTimeHr(info->getDepartureTimeHr()); // hour of day (fast-clock) to start this train
+                    at->setDepartureTimeMin(info->getDepartureTimeMin()); //minute of hour to start this train
+                    at->setDelayedReStart(info->getDelayedRestart()); //this is a code: NODELAY, TIMEDDELAY, SENSORDELAY
+                    at->setRestartDelay(info->getRestartDelayMin());  //this is number of minutes to delay between runs
+                    at->setDelaySensor(info->getDelaySensor());
+                    if ((isFastClockTimeGE(at->getDepartureTimeHr(), at->getDepartureTimeMin()) && info->getDelayedStart() != ActiveTrain::SENSORDELAY) ||
+                            info->getDelayedStart()==ActiveTrain::NODELAY) {
                         at->setStarted();
                     }
-                    at->setRestartSensor(info.getRestartSensor());
-                    at->setTrainType(info.getTrainType());
-                    at->setTerminateWhenDone(info.getTerminateWhenDone());
-                    if (info.getAutoRun()) {
-                        AutoActiveTrain aat = new AutoActiveTrain(at);
-                        aat->setSpeedFactor(info.getSpeedFactor());
-                        aat->setMaxSpeed(info.getMaxSpeed());
-                        aat->setRampRate(AutoActiveTrain.getRampRateFromName(info.getRampRate()));
-                        aat->setResistanceWheels(info.getResistanceWheels());
-                        aat->setRunInReverse(info.getRunInReverse());
-                        aat->setSoundDecoder(info.getSoundDecoder());
-                        aat->setMaxTrainLength(info.getMaxTrainLength());
+                    at->setRestartSensor(info->getRestartSensor());
+                    at->setTrainType(info->getTrainType());
+                    at->setTerminateWhenDone(info->getTerminateWhenDone());
+                    if (info->getAutoRun()) {
+                        AutoActiveTrain* aat = new AutoActiveTrain(at);
+                        aat->setSpeedFactor(info->getSpeedFactor());
+                        aat->setMaxSpeed(info->getMaxSpeed());
+                        aat->setRampRate(AutoActiveTrain::getRampRateFromName(info->getRampRate()));
+                        aat->setResistanceWheels(info->getResistanceWheels());
+                        aat->setRunInReverse(info->getRunInReverse());
+                        aat->setSoundDecoder(info->getSoundDecoder());
+                        aat->setMaxTrainLength(info->getMaxTrainLength());
                         if (!aat->initialize()) {
                             log->error("ERROR initializing autorunning for train {}", at->getTrainName());
-                            JOptionPane.showMessageDialog(dispatcherFrame, Bundle.getMessage(
-                                    "Error27", at->getTrainName()), Bundle.getMessage("InformationTitle"),
-                                    JOptionPane.INFORMATION_MESSAGE);
+//                            JOptionPane.showMessageDialog(dispatcherFrame, Bundle.getMessage(
+//                                    "Error27", at->getTrainName()), Bundle.getMessage("InformationTitle"),
+//                                    JOptionPane.INFORMATION_MESSAGE);
+                            QMessageBox::critical(dispatcherFrame, tr("Error"), tr("Could not initialize automatic running of train \"%1\", changing to manual running.").arg(at->getTrainName()));
                         }
-                        getAutoTrainsFrame().addAutoActiveTrain(aat);
+                        getAutoTrainsFrame()->addAutoActiveTrain(aat);
                     }
                     allocateNewActiveTrain(at);
                     newTrainDone(at);
 
                 } else {
-                    log->warn("failed to create create Active Train {}", info.getTrainName());
+                    log->warn(tr("failed to create create Active Train %1").arg(info->getTrainName()));
                 }
             }
 
@@ -610,7 +618,7 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
 /*private*/ Container extraPane = NULL;
 /*private*/ JComboBox<String> atSelectBox = new JComboBox<String>();
 /*private*/ JComboBox<String> extraBox = new JComboBox<String>();
-/*private*/ ArrayList<Section> extraBoxList = new ArrayList<Section>();
+/*private*/ QList<Section> extraBoxList = new QList<Section>();
 /*private*/ int atSelectedIndex = -1;
 
 /*public*/ void allocateExtraSection(ActionEvent e, ActiveTrain at) {
@@ -732,8 +740,8 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
     }
     ActiveTrain at = activeTrainsList.get(atSelectedIndex);
     //Transit t = at->getTransit();
-    ArrayList<AllocatedSection> allocatedSectionList = at->getAllocatedSectionList();
-    ArrayList<String> allSections = (ArrayList<String>) InstanceManager.getDefault(jmri.SectionManager.class).getSystemNameList();
+    QList<AllocatedSection> allocatedSectionList = at->getAllocatedSectionList();
+    QList<String> allSections = (QList<String>) InstanceManager.getDefault(jmri.SectionManager.class).getSystemNameList();
     for (int j = 0; j < allSections.size(); j++) {
         Section s = InstanceManager.getDefault(jmri.SectionManager.class).getSection(allSections.get(j));
         if (s.getState() == Section.FREE) {
@@ -758,8 +766,8 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
 
 connected(Section s1, Section s2) {
     if ((s1 != NULL) && (s2 != NULL)) {
-        ArrayList<EntryPoint> s1Entries = (ArrayList<EntryPoint>) s1.getEntryPointList();
-        ArrayList<EntryPoint> s2Entries = (ArrayList<EntryPoint>) s2.getEntryPointList();
+        QList<EntryPoint> s1Entries = (QList<EntryPoint>) s1.getEntryPointList();
+        QList<EntryPoint> s2Entries = (QList<EntryPoint>) s2.getEntryPointList();
         for (int i = 0; i < s1Entries.size(); i++) {
             Block b = s1Entries.get(i).getFromBlock();
             for (int j = 0; j < s2Entries.size(); j++) {
@@ -807,7 +815,7 @@ connected(Section s1, Section s2) {
         } else {
             // requesting allocation of a section in the Transit, but not the next Section
             int seq = -99;
-            ArrayList<Integer> seqList = t.getSeqListBySection(s);
+            QList<Integer> seqList = t.getSeqListBySection(s);
             if (seqList.size() > 0) {
                 seq = seqList.get(0).intValue();
             }
@@ -983,14 +991,14 @@ void DispatcherFrame::allocateNextRequested(int index) {
         allocateSection(ar, NULL);
     }
 }
-#if 0
+
 /**
  * Creates a new ActiveTrain, and registers it with Dispatcher
  * <P>
  * Required input entries:
  * transitID - system or user name of a Transit in the Transit Table
  * trainID - any text that identifies the train
- * tSource - either ROSTER, OPERATIONS, or USER (see ActiveTrain.java)
+ * tSource - either ROSTER, OPERATIONS, or USER (see ActiveTrain::java)
  * startBlockName - system or user name of Block where train currently resides
  * startBlockSectionSequenceNumber - sequence number in the Transit of the
  *   Section containing the startBlock (if the startBlock is within the
@@ -1005,7 +1013,7 @@ void DispatcherFrame::allocateNextRequested(int index) {
  *   allocation request conflicts
  * resetWhenDone - set to "true" if the Active Train is capable of continuous running
  *   and the user has requested that it be automatically reset for another run thru its
- *   Transit each time it completes running through its Transit.
+ *   Transit each time it completes running through its Transit::
  * allocateAllTheWay - set to "true" to allow Auto Allocate to allocate as many sections
  *   as possible between the start section and the end section. Set to false Auto Allocate
  *   allocates no more than three sections ahead.
@@ -1015,126 +1023,139 @@ void DispatcherFrame::allocateNextRequested(int index) {
  * <P>
  * Returns an ActiveTrain object if successful, returns "NULL" otherwise
  */
-/*public*/ ActiveTrain createActiveTrain(String transitID, String trainID, int tSource, String startBlockName,
-        int startBlockSectionSequenceNumber, String endBlockName, int endBlockSectionSequenceNumber,
-         bool autoRun, String dccAddress, int priority,  bool resetWhenDone,  bool reverseAtEnd,  bool allocateAllTheWay,
-         bool showErrorMessages, JmriJFrame frame) {
+/*public*/ ActiveTrain* DispatcherFrame::createActiveTrain(QString transitID, QString trainID, int tSource, QString startBlockName,
+        int startBlockSectionSequenceNumber, QString endBlockName, int endBlockSectionSequenceNumber,
+         bool autoRun, QString dccAddress, int priority,  bool resetWhenDone,  bool reverseAtEnd,  bool allocateAllTheWay,
+         bool showErrorMessages, JmriJFrame* frame) {
 //        log->debug("trainID:{}, tSource:{}, startBlockName:{}, startBlockSectionSequenceNumber:{}, endBlockName:{}, endBlockSectionSequenceNumber:{}",
 //                trainID,tSource,startBlockName,startBlockSectionSequenceNumber,endBlockName,endBlockSectionSequenceNumber);
     // validate input
-    Transit t = transitManager.getTransit(transitID);
+    Transit* t = transitManager->getTransit(transitID);
     if (t == NULL) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error1"), new Object[]{transitID}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                    "Error1"), new Object[]{transitID}), Bundle.getMessage("ErrorTitle"),
+//                    JOptionPane.ERROR_MESSAGE);
+         QMessageBox:: critical(frame, tr("Error"), tr("The name \"{%1\" does not match an existing Transit:: Please correct or create as required, and try again.").arg(transitID));
         }
         log->error("Bad Transit name '" + transitID + "' when attempting to create an Active Train");
         return NULL;
     }
-    if (t.getState() != Transit.IDLE) {
+    if (t->getState() != Transit::IDLE) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error2"), new Object[]{transitID}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, java.text->MessageFormat->format(tr(
+//                    "Error2"), new Object[]{transitID}), Bundle.getMessage("ErrorTitle"),
+//                    JOptionPane.ERROR_MESSAGE);
+         QMessageBox:: critical(frame, tr("Error"), tr("Transit \"%1\" is in use with another Active Train. Please wait until it''s IDLE, or use a duplicate.").arg(transitID));
         }
         log->error("Transit '" + transitID + "' not IDLE, cannot create an Active Train");
         return NULL;
     }
     if ((trainID == NULL) || trainID  == ("")) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, tr("Error3"),
-                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        }
+//            JOptionPane.showMessageDialog(frame, tr("Error3"),
+//                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+
+        }QMessageBox:: critical(frame, tr("Error"), tr("TrainID is missing from request to create an Active Train. Please add trainID and try again."));
         log->error("TrainID string not provided, cannot create an Active Train");
         return NULL;
     }
-    if ((tSource != ActiveTrain.ROSTER) && (tSource != ActiveTrain.OPERATIONS)
-            && (tSource != ActiveTrain.USER)) {
+    if ((tSource != ActiveTrain::ROSTER) && (tSource != ActiveTrain::OPERATIONS)
+            && (tSource != ActiveTrain::USER)) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, tr("Error21"),
-                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        }
-        log->error("Train source is invalid - " + tSource + " - cannot create an Active Train");
+//            JOptionPane.showMessageDialog(frame, tr("Error21"),
+//                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+       QMessageBox:: critical(frame, tr("Error"), tr("Illegal train source identifier provided. Please correct the train source identifier and try again."));
+       }
+        log->error("Train source is invalid - " + QString::number(tSource) + " - cannot create an Active Train");
         return NULL;
     }
-    Block startBlock = InstanceManager.getDefault(jmri.BlockManager.class).getBlock(startBlockName);
+    Block* startBlock = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(startBlockName);
     if (startBlock == NULL) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error4"), new Object[]{startBlockName}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                    "Error4"), new Object[]{startBlockName}), Bundle.getMessage("ErrorTitle"),
+//                    JOptionPane.ERROR_MESSAGE);
+         QMessageBox::critical(frame, tr("Error"), tr("The name \"%1\" does not match an allowed starting block. Please correct and try again.").arg(startBlockName));
         }
         log->error("Bad startBlockName '" + startBlockName + "' when attempting to create an Active Train");
         return NULL;
     }
     if (isInAllocatedSection(startBlock)) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error5"), new Object[]{startBlock.getDisplayName()}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                    "Error5"), new Object[]{startBlock.getDisplayName()}), Bundle.getMessage("ErrorTitle"),
+//                    JOptionPane.ERROR_MESSAGE);
+         QMessageBox:: critical(frame, tr("Error"), tr("Requested starting block \"%1\" is a Section allocated to a different Active Train. Please correct and try again.").arg(startBlock->getDisplayName()));
         }
         log->error("Start block '" + startBlockName + "' in allocated Section, cannot create an Active Train");
         return NULL;
     }
-    if (_HasOccupancyDetection && (!(startBlock.getState() == Block.OCCUPIED))) {
+    if (_HasOccupancyDetection && (!(startBlock->getState() == Block::OCCUPIED))) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error6"), new Object[]{startBlock.getDisplayName()}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                    "Error6"), new Object[]{startBlock.getDisplayName()}), Bundle.getMessage("ErrorTitle"),
+//                    JOptionPane.ERROR_MESSAGE);
+         QMessageBox:: critical(frame, tr("Error"), tr("No train detected in requested starting block \"%1\". Please correct and try again.").arg(startBlock->getDisplayName()));
         }
         log->error("No train in start block '" + startBlockName + "', cannot create an Active Train");
         return NULL;
     }
     if (startBlockSectionSequenceNumber <= 0) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, tr("Error12"),
-                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, tr("Error12"),
+//                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE); sequence number was provided. Please correct, and try again."));
         }
-    } else if (startBlockSectionSequenceNumber > t.getMaxSequence()) {
+    } else if (startBlockSectionSequenceNumber > t->getMaxSequence()) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error13"), new Object[]{"" + startBlockSectionSequenceNumber}),
-                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        }
-        log->error("Invalid sequence number '" + startBlockSectionSequenceNumber + "' when attempting to create an Active Train");
+//            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                    "Error13"), new Object[]{"" + startBlockSectionSequenceNumber}),
+//                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+       QMessageBox:: critical(frame, tr("Error"), tr("Invalid start Block Section sequence number \"%1\". Please correct and try again.").arg(startBlockSectionSequenceNumber));
+       }
+        log->error("Invalid sequence number '" + QString::number(startBlockSectionSequenceNumber) + "' when attempting to create an Active Train");
         return NULL;
     }
-    Block endBlock = InstanceManager.getDefault(jmri.BlockManager.class).getBlock(endBlockName);
-    if ((endBlock == NULL) || (!t.containsBlock(endBlock))) {
+    Block* endBlock = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(endBlockName);
+    if ((endBlock == NULL) || (!t->containsBlock(endBlock))) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error7"), new Object[]{endBlockName}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                    "Error7"), new Object[]{endBlockName}), Bundle.getMessage("ErrorTitle"),
+//                    JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("The name \"%1\" does not match an existing Block in the requested Transit. Please correct, and try again.").arg(endBlockName));
         }
         log->error("Bad endBlockName '" + endBlockName + "' when attempting to create an Active Train");
         return NULL;
     }
-    if ((endBlockSectionSequenceNumber <= 0) && (t.getBlockCount(endBlock) > 1)) {
-        JOptionPane.showMessageDialog(frame, tr("Error8"),
-                Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-    } else if (endBlockSectionSequenceNumber > t.getMaxSequence()) {
+    if ((endBlockSectionSequenceNumber <= 0) && (t->getBlockCount(endBlock) > 1)) {
+//        JOptionPane.showMessageDialog(frame, tr("Error8"),
+//                Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("End Block is in requested Transit, but no Sectionsequence number was provided. Please correct, and try again."));
+    } else if (endBlockSectionSequenceNumber > t->getMaxSequence()) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error9"), new Object[]{"" + endBlockSectionSequenceNumber}),
-                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                    "Error9"), new Object[]{"" + endBlockSectionSequenceNumber}),
+//                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("Invalid end Block Section sequence number \"%1\". Please correct and try again."));
         }
-        log->error("Invalid sequence number '" + endBlockSectionSequenceNumber + "' when attempting to create an Active Train");
+        log->error("Invalid sequence number '" + QString::number(endBlockSectionSequenceNumber) + "' when attempting to create an Active Train");
         return NULL;
     }
-    if ((!reverseAtEnd) && resetWhenDone && (!t.canBeResetWhenDone())) {
+    if ((!reverseAtEnd) && resetWhenDone && (!t->canBeResetWhenDone())) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error26"), new Object[]{(t.getSystemName() + "(" + t.getUserName() + ")")}),
-                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                    "Error26"), new Object[]{(t->getSystemName() + "(" + t->getUserName() + ")")}),
+//                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("Request for Reset When Done, but Transit, \"%1\",  is not set up correctly. Cannot create a new Active Train. "));
         }
         log->error("Incompatible Transit set up and request to Reset When Done when attempting to create an Active Train");
         return NULL;
     }
     if (autoRun && ((dccAddress == NULL) || dccAddress  == (""))) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, tr("Error10"),
-                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(frame, tr("Error10"),
+//                    Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("Automatic running requested, but no dcc address was provided. Please provide dcc address and try again."));
         }
         log->error("AutoRun requested without a dccAddress when attempting to create an Active Train");
         return NULL;
@@ -1145,16 +1166,18 @@ void DispatcherFrame::allocateNextRequested(int index) {
             //   for automatic running.  First check for layout editor panel
             if (!_UseConnectivity || (_LE == NULL)) {
                 if (showErrorMessages) {
-                    JOptionPane.showMessageDialog(frame, tr("Error33"),
-                            Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//                    JOptionPane.showMessageDialog(frame, tr("Error33"),
+//                            Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("Automatic running requested, but no Layout Editor panel was specified in the Options window. Please try again."));
                     log->error("AutoRun requested without a LayoutEditor panel for connectivity.");
                     return NULL;
                 }
             }
             if (!_HasOccupancyDetection) {
                 if (showErrorMessages) {
-                    JOptionPane.showMessageDialog(frame, tr("Error35"),
-                            Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//                    JOptionPane.showMessageDialog(frame, tr("Error35"),
+//                            Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("Automatic running requested, but occupancy detection   was not specified in the Options window. Please try again."));
                     log->error("AutoRun requested without occupancy detection.");
                     return NULL;
                 }
@@ -1162,26 +1185,28 @@ void DispatcherFrame::allocateNextRequested(int index) {
         }
         // check/set Transit specific items for automatic running
         // validate connectivity for all Sections in this transit
-        int numErrors = t.validateConnectivity(_LE);
+        int numErrors = t->validateConnectivity(_LE);
         if (numErrors != 0) {
             if (showErrorMessages) {
-                JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                        "Error34"), new Object[]{("" + numErrors)}),
-                        Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                        "Error34"), new Object[]{("" + numErrors)}),
+//                        Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("\"%1\" errors found when checking connectivity of Sections  in this Transit. Check message log for details.").arg(numErrors));
             }
             return NULL;
         }
-        // check/set direction sensors in signal logic for all Sections in this Transit.
+        // check/set direction sensors in signal logic for all Sections in this Transit::
         if (getSignalType() == SIGNALHEAD) {
-            numErrors = t.checkSignals(_LE);
+            numErrors = t->checkSignals(_LE);
             if (numErrors == 0) {
-                t.initializeBlockingSensors();
+                t->initializeBlockingSensors();
             }
             if (numErrors != 0) {
                 if (showErrorMessages) {
-                    JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                            "Error36"), new Object[]{("" + numErrors)}),
-                            Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//                    JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                            "Error36"), new Object[]{("" + numErrors)}),
+//                            Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("\"%1\" errors found when checking/setting direction sensors in  signal logic for this Transit. Check message log for details.").arg(numErrors));
                 }
                 return NULL;
             }
@@ -1191,27 +1216,28 @@ void DispatcherFrame::allocateNextRequested(int index) {
         if (_autoTrainsFrame == NULL) {
             _autoTrainsFrame = new AutoTrainsFrame(_instance);
         } else {
-            _autoTrainsFrame.setVisible(true);
+            _autoTrainsFrame->setVisible(true);
         }
     } else if (_UseConnectivity && (_LE != NULL)) {
         // not auto run, set up direction sensors in signals since use connectivity was requested
         if (getSignalType() == SIGNALHEAD) {
-            int numErrors = t.checkSignals(_LE);
+            int numErrors = t->checkSignals(_LE);
             if (numErrors == 0) {
-                t.initializeBlockingSensors();
+                t->initializeBlockingSensors();
             }
             if (numErrors != 0) {
                 if (showErrorMessages) {
-                    JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                            "Error36"), new Object[]{("" + numErrors)}),
-                            Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//                    JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
+//                            "Error36"), new Object[]{("" + numErrors)}),
+//                            Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox:: critical(frame, tr("Error"), tr("\"%1\" errors found when checking/setting direction sensors in signal logic for this Transit. Check message log for details.").arg(numErrors));
                 }
                 return NULL;
             }
         }
     }
     // all information checks out - create
-    ActiveTrain at = new ActiveTrain(t, trainID, tSource);
+    ActiveTrain* at = new ActiveTrain(t, trainID, tSource);
     //if (at==NULL) {
     //	if (showErrorMessages) {
     //		JOptionPane.showMessageDialog(frame,java.text.MessageFormat->format(tr(
@@ -1221,24 +1247,25 @@ void DispatcherFrame::allocateNextRequested(int index) {
     //	log->error("Creating Active Train failed, Transit - "+transitID+", train - "+trainID);
     //	return NULL;
     //}
-    activeTrainsList.add(at);
-    PropertyChangeListener listener = NULL;
-    at->addPropertyChangeListener(listener = new PropertyChangeListener() {
-        @Override
-        /*public*/ void propertyChange(PropertyChangeEvent e) {
-            handleActiveTrainChange(e);
-        }
-    });
-    _atListeners.add(listener);
-    t.setState(Transit.ASSIGNED);
+    activeTrainsList->append(at);
+//    PropertyChangeListener* listener = NULL;
+//    at->addPropertyChangeListener(listener = new PropertyChangeListener() {
+//        @Override
+//        /*public*/ void propertyChange(PropertyChangeEvent e) {
+//            handleActiveTrainChange(e);
+//        }
+//    });
+//    _atListeners.add(listener);
+    connect(at->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleActiveTrainChange()));
+    t->setState(Transit::ASSIGNED);
     at->setStartBlock(startBlock);
     at->setStartBlockSectionSequenceNumber(startBlockSectionSequenceNumber);
     at->setEndBlock(endBlock);
-    at->setEndBlockSection(t.getSectionFromBlockAndSeq(endBlock, endBlockSectionSequenceNumber));
+    at->setEndBlockSection(t->getSectionFromBlockAndSeq(endBlock, endBlockSectionSequenceNumber));
     at->setEndBlockSectionSequenceNumber(endBlockSectionSequenceNumber);
     at->setResetWhenDone(resetWhenDone);
     if (resetWhenDone) {
-        restartingTrainsList.add(at);
+        restartingTrainsList->append(at);
     }
     at->setReverseAtEnd(reverseAtEnd);
     at->setAllocateAllTheWay(allocateAllTheWay);
@@ -1248,42 +1275,42 @@ void DispatcherFrame::allocateNextRequested(int index) {
     return at;
 }
 
-/*public*/ void allocateNewActiveTrain(ActiveTrain at) {
-    if (at->getDelayedStart() == ActiveTrain.SENSORDELAY && at->getDelaySensor() != NULL) {
-        if (at->getDelaySensor().getState() != jmri.Sensor.ACTIVE) {
+/*public*/ void DispatcherFrame::allocateNewActiveTrain(ActiveTrain* at) {
+    if (at->getDelayedStart() == ActiveTrain::SENSORDELAY && at->getDelaySensor() != NULL) {
+        if (at->getDelaySensor()->getState() != Sensor::ACTIVE) {
             at->initializeDelaySensor();
         }
     }
-    AllocationRequest ar = at->initializeFirstAllocation();
+    AllocationRequest* ar = at->initializeFirstAllocation();
     if (ar != NULL) {
-        if (( ar->getSection()).containsBlock(at->getStartBlock())) {
+        if (( ar->getSection())->containsBlock(at->getStartBlock())) {
             // Active Train is in the first Section, go ahead and allocate it
-            AllocatedSection als = allocateSection(ar, NULL);
+            AllocatedSection* als = allocateSection(ar, NULL);
             if (als == NULL) {
                 log->error("Problem allocating the first Section of the Active Train - " + at->getActiveTrainName());
             }
         }
     }
-    activeTrainsTableModel.fireTableDataChanged();
+    activeTrainsTableModel->fireTableDataChanged();
     if (allocatedSectionTableModel != NULL) {
-        allocatedSectionTableModel.fireTableDataChanged();
+        allocatedSectionTableModel->fireTableDataChanged();
     }
 }
 
-/*private*/ void handleActiveTrainChange(PropertyChangeEvent e) {
-    activeTrainsTableModel.fireTableDataChanged();
+/*private*/ void DispatcherFrame::handleActiveTrainChange(PropertyChangeEvent* /*e*/) {
+    activeTrainsTableModel->fireTableDataChanged();
 }
 
-isInAllocatedSection(jmri.Block b) {
-    for (int i = 0; i < allocatedSections.size(); i++) {
-        Section s = allocatedSections.get(i).getSection();
-        if (s.containsBlock(b)) {
+/*private*/ bool DispatcherFrame::isInAllocatedSection(Block* b) {
+    for (int i = 0; i < allocatedSections->size(); i++) {
+        Section* s = allocatedSections->at(i)->getSection();
+        if (s->containsBlock(b)) {
             return true;
         }
     }
     return false;
 }
-#endif
+
 /**
  * Terminates an Active Train and removes it from the Dispatcher The
  * ActiveTrain object should not be used again after this method is called
@@ -1350,14 +1377,14 @@ isInAllocatedSection(jmri.Block b) {
  * Required input entries: activeTrain - ActiveTrain requesting the
  * allocation section - Section to be allocated direction - direction of
  * travel in the allocated Section seqNumber - sequence number of the
- * Section in the Transit of the ActiveTrain. If the requested Section is
+ * Section in the Transit of the ActiveTrain:: If the requested Section is
  * not in the Transit, a sequence number of -99 should be entered.
  * showErrorMessages - "true" if error message dialogs are to be displayed
  * for detected errors Set to "false" to suppress error message dialogs from
  * this method. frame - window request is from, or "NULL" if not from a
  * window
  */
-/*protected*/ bool DispatcherFrame::requestAllocation(ActiveTrain* activeTrain, Section* section, int direction,
+/*protected*/ bool DispatcherFrame::requestAllocation(ActiveTrain* activeTrain, Section* /*section*/, int /*direction*/,
         int seqNumber, bool showErrorMessages, JmriJFrame* frame) {
     // check input entries
     if (activeTrain == NULL) {
@@ -1463,10 +1490,10 @@ isInAllocatedSection(jmri.Block b) {
  * NULL should be entered for ns. Null should also be entered for ns if
  * allocating an Extra Section that is not the Next Section.
  */
-/*public*/ AllocatedSection* DispatcherFrame::allocateSection(AllocationRequest* ar, Section* ns) {
+/*public*/ AllocatedSection* DispatcherFrame::allocateSection(AllocationRequest* ar, Section* /*ns*/) {
     AllocatedSection* as = NULL;
-    Section* nextSection = NULL;
-    int nextSectionSeqNo = 0;
+//    Section* nextSection = NULL;
+//    int nextSectionSeqNo = 0;
     if (ar != NULL) {
         ActiveTrain* at =  ar->getActiveTrain();
         if (at->holdAllocation() || at->reachedRestartPoint()) {
@@ -1477,8 +1504,8 @@ isInAllocatedSection(jmri.Block b) {
             return NULL;
         }
         // skip occupancy check if this is the first allocation and the train is occupying the Section
-         bool checkOccupancy = true;
-#if 0
+//         bool checkOccupancy = true;
+#if 0 // TODO:
         if ((at->getLastAllocatedSection() == NULL) && (s->containsBlock(at->getStartBlock()))) {
             checkOccupancy = false;
         }
@@ -1496,7 +1523,7 @@ isInAllocatedSection(jmri.Block b) {
             }
         }
         // check if train has reached its start time if delayed start
-        if (checkOccupancy && (!at->getStarted()) && at->getDelayedStart() != ActiveTrain.NODELAY) {
+        if (checkOccupancy && (!at->getStarted()) && at->getDelayedStart() != ActiveTrain::NODELAY) {
             if (_AutoAllocate) {
                 return NULL;  // autoAllocate never overrides start time
             }
@@ -1534,7 +1561,7 @@ isInAllocatedSection(jmri.Block b) {
             } else {
                 seqNum += 1;
             }
-            ArrayList<Section> secList = at->getTransit().getSectionListBySeq(seqNum);
+            QList<Section> secList = at->getTransit().getSectionListBySeq(seqNum);
             if (secList.size() == 1) {
                 nextSection = secList.get(0);
 
@@ -1551,7 +1578,7 @@ isInAllocatedSection(jmri.Block b) {
             // need to reverse Transit direction when train is in the last Section, set next section.
             nextSectionSeqNo = at->getEndBlockSectionSequenceNumber() - 1;
             at->setAllocationReversed(true);
-            ArrayList<Section> secList = at->getTransit().getSectionListBySeq(nextSectionSeqNo);
+            QList<Section> secList = at->getTransit().getSectionListBySeq(nextSectionSeqNo);
             if (secList.size() == 1) {
                 nextSection = secList.get(0);
             } else if (secList.size() > 1) {
@@ -1567,7 +1594,7 @@ isInAllocatedSection(jmri.Block b) {
             // request to allocate the last block in the Transit, or the Transit is reversed and
             //      has reached the beginning of the Transit--check for automatic restart
             if (at->getResetWhenDone()) {
-                if (at->getDelayedRestart() != ActiveTrain.NODELAY) {
+                if (at->getDelayedRestart() != ActiveTrain::NODELAY) {
                     at->holdAllocation(true);
                 }
                 nextSection = at->getSecondAllocatedSection();
@@ -1578,7 +1605,7 @@ isInAllocatedSection(jmri.Block b) {
 
         //This might be the location to check to see if we have an intermediate section that we then need to perform extra checks on.
         //Working on the basis that if the nextsection is not NULL, then we are not at the end of the transit.
-        ArrayList<Section> intermediateSections = new ArrayList<Section>();
+        QList<Section> intermediateSections = new QList<Section>();
         Section mastHeldAtSection = NULL;
         if (nextSection != NULL &&  ar->getSection().getProperty("intermediateSection") != NULL && ((Boolean)  ar->getSection().getProperty("intermediateSection")). boolValue()) {
             String property = "forwardMast";
@@ -1593,7 +1620,7 @@ isInAllocatedSection(jmri.Block b) {
                     }
                 }
             }
-            ArrayList<TransitSection> tsList =  ar->getActiveTrain().getTransit().getTransitSectionList();
+            QList<TransitSection> tsList =  ar->getActiveTrain().getTransit().getTransitSectionList();
              bool found = false;
             if (at->isAllocationReversed()) {
                 for (int i = tsList.size() - 1; i > 0; i--) {
@@ -1656,7 +1683,7 @@ isInAllocatedSection(jmri.Block b) {
             }
             //If the intermediate sections are already occupied or allocated then we clear the intermediate list and only allocate the original request.
             if (intermediatesOccupied) {
-                intermediateSections = new ArrayList<Section>();
+                intermediateSections = new QList<Section>();
             }
         }
 
@@ -1816,60 +1843,61 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     return true;
 }
 
-ArrayList<HeldMastDetails> heldMasts = new ArrayList<HeldMastDetails>();
+#endif
+//static class HeldMastDetails {
 
-static class HeldMastDetails {
+//    SignalMast* mast = NULL;
+//    ActiveTrain* at = NULL;
 
-    SignalMast mast = NULL;
-    ActiveTrain at = NULL;
-
-    HeldMastDetails(SignalMast sm, ActiveTrain a) {
+    HeldMastDetails::HeldMastDetails(SignalMast* sm, ActiveTrain* a) {
         mast = sm;
         at = a;
     }
 
-    ActiveTrain getActiveTrain() {
+    ActiveTrain* HeldMastDetails::getActiveTrain() {
         return at;
     }
 
-    SignalMast getMast() {
+    SignalMast* HeldMastDetails::getMast() {
         return mast;
     }
-}
+//};
 
-/*public*/  bool isMastHeldByDispatcher(SignalMast sm, ActiveTrain at) {
-    for (HeldMastDetails hmd : heldMasts) {
-        if (hmd.getMast() == sm && hmd.getActiveTrain() == at) {
+/*public*/  bool DispatcherFrame::isMastHeldByDispatcher(SignalMast* sm, ActiveTrain* at) {
+
+    foreach (HeldMastDetails* hmd, *heldMasts) {
+        if (hmd->getMast() == sm && hmd->getActiveTrain() == at) {
             return true;
         }
     }
+
     return false;
 }
 
-/*private*/ void removeHeldMast(SignalMast sm, ActiveTrain at) {
-    ArrayList<HeldMastDetails> toRemove = new ArrayList<HeldMastDetails>();
-    for (HeldMastDetails hmd : heldMasts) {
-        if (hmd.getActiveTrain() == at) {
+/*private*/ void DispatcherFrame::removeHeldMast(SignalMast* sm, ActiveTrain* at) {
+    QList<HeldMastDetails*>* toRemove = new QList<HeldMastDetails*>();
+    foreach (HeldMastDetails* hmd, *heldMasts) {
+        if (hmd->getActiveTrain() == at) {
             if (sm == NULL) {
-                toRemove.add(hmd);
-            } else if (sm == hmd.getMast()) {
-                toRemove.add(hmd);
+                toRemove->append(hmd);
+            } else if (sm == hmd->getMast()) {
+                toRemove->append(hmd);
             }
         }
     }
-    for (HeldMastDetails hmd : toRemove) {
-        hmd.getMast().setHeld(false);
-        heldMasts.remove(hmd);
+    foreach (HeldMastDetails* hmd, *toRemove) {
+        hmd->getMast()->setHeld(false);
+        heldMasts->removeOne(hmd);
     }
 }
-
+#if 0
 /*
  * This is used to determine if the blocks in a section we want to allocate are already allocated to a section, or if they are now free.
  */
 /*protected*/ Section checkBlocksNotInAllocatedSection(Section s, AllocationRequest ar) {
     for (AllocatedSection as : allocatedSections) {
         if (as.getSection() != s) {
-            ArrayList<Block> blas = as.getSection().getBlockList();
+            QList<Block> blas = as.getSection().getBlockList();
             for (Block b : s.getBlockList()) {
                 if (blas.contains(b)) {
                     if (as.getSection().getOccupancy() == Block.OCCUPIED) {
@@ -1913,7 +1941,7 @@ static class HeldMastDetails {
 }
 
 // automatically make a choice of next section
-/*private*/ Section autoChoice(ArrayList<Section> sList, AllocationRequest ar) {
+/*private*/ Section autoChoice(QList<Section> sList, AllocationRequest ar) {
     Section tSection = autoAllocate.autoNextSectionChoice(sList, ar);
     if (tSection != NULL) {
         return tSection;
@@ -1923,7 +1951,7 @@ static class HeldMastDetails {
 }
 
 // manually make a choice of next section
-/*private*/ Section dispatcherChoice(ArrayList<Section> sList, AllocationRequest ar) {
+/*private*/ Section dispatcherChoice(QList<Section> sList, AllocationRequest ar) {
     Object choices[] = new Object[sList.size()];
     for (int i = 0; i < sList.size(); i++) {
         Section s = sList.get(i);
@@ -2005,10 +2033,10 @@ static class HeldMastDetails {
                                     nas = allocatedSections.get(k);
                                 }
                             }
-                            if ((nas == NULL) || (at->getStatus() == ActiveTrain.WORKING)
-                                    || (at->getStatus() == ActiveTrain.STOPPED)
-                                    || (at->getStatus() == ActiveTrain.READY)
-                                    || (at->getMode() == ActiveTrain.MANUAL)) {
+                            if ((nas == NULL) || (at->getStatus() == ActiveTrain::WORKING)
+                                    || (at->getStatus() == ActiveTrain::STOPPED)
+                                    || (at->getStatus() == ActiveTrain::READY)
+                                    || (at->getMode() == ActiveTrain::MANUAL)) {
                                 // do not autorelease allocated sections from an Active Train that is
                                 //    STOPPED, READY, or WORKING, or is in MANUAL mode.
                                 foundOne = false;
@@ -2174,152 +2202,153 @@ static class HeldMastDetails {
 /*protected*/ int DispatcherFrame::getSignalType() {
     return _SignalType;
 }
-#if 0
-/*protected*/  bool getTrainsFromRoster() {
+
+/*protected*/  bool DispatcherFrame::getTrainsFromRoster() {
     return _TrainsFromRoster;
 }
 
-/*protected*/ void setTrainsFromRoster( bool set) {
+/*protected*/ void DispatcherFrame::setTrainsFromRoster( bool set) {
     _TrainsFromRoster = set;
 }
 
-/*protected*/  bool getTrainsFromTrains() {
+/*protected*/  bool DispatcherFrame::getTrainsFromTrains() {
     return _TrainsFromTrains;
 }
 
-/*protected*/ void setTrainsFromTrains( bool set) {
+/*protected*/ void DispatcherFrame::setTrainsFromTrains( bool set) {
     _TrainsFromTrains = set;
 }
 
-/*protected*/  bool getTrainsFromUser() {
+/*protected*/  bool DispatcherFrame::getTrainsFromUser() {
     return _TrainsFromUser;
 }
 
-/*protected*/ void setTrainsFromUser( bool set) {
+/*protected*/ void DispatcherFrame::setTrainsFromUser( bool set) {
     _TrainsFromUser = set;
 }
 
-/*protected*/  bool getAutoAllocate() {
+/*protected*/  bool DispatcherFrame::getAutoAllocate() {
     return _AutoAllocate;
 }
 
-/*protected*/ void setAutoAllocate( bool set) {
+/*protected*/ void DispatcherFrame::setAutoAllocate( bool set) {
     if (set && (autoAllocate == NULL)) {
         if (_LE != NULL) {
             autoAllocate = new AutoAllocate(this);
         } else {
-            JOptionPane.showMessageDialog(dispatcherFrame, tr("Error39"),
-                    tr("MessageTitle"), JOptionPane.INFORMATION_MESSAGE);
+//            JOptionPane.showMessageDialog(dispatcherFrame, tr("Error39"),
+//                    tr("MessageTitle"), JOptionPane.INFORMATION_MESSAGE);
+         QMessageBox::information(dispatcherFrame, tr("Information"), tr("AutoAllocate requires a Layout Editor panel. Please select\na Layout Editor panel in Options window and try again."));
             _AutoAllocate = false;
             if (autoAllocateBox != NULL) {
-                autoAllocateBox.setSelected(_AutoAllocate);
+                autoAllocateBox->setChecked(_AutoAllocate);
             }
             return;
         }
     }
     _AutoAllocate = set;
     if ((!_AutoAllocate) && (autoAllocate != NULL)) {
-        autoAllocate.clearAllocationPlans();
+        autoAllocate->clearAllocationPlans();
     }
     if (autoAllocateBox != NULL) {
-        autoAllocateBox.setSelected(_AutoAllocate);
+        autoAllocateBox->setChecked(_AutoAllocate);
     }
 }
 
-/*protected*/  bool getAutoTurnouts() {
+/*protected*/  bool DispatcherFrame::getAutoTurnouts() {
     return _AutoTurnouts;
 }
-/*protected*/ void setAutoTurnouts( bool set) {
+/*protected*/ void DispatcherFrame::setAutoTurnouts( bool set) {
     _AutoTurnouts = set;
 }
 
-/*protected*/  bool getTrustKnownTurnouts() {
+/*protected*/  bool DispatcherFrame::getTrustKnownTurnouts() {
     return _TrustKnownTurnouts;
 }
-/*protected*/ void setTrustKnownTurnouts( bool set) {
+/*protected*/ void DispatcherFrame::setTrustKnownTurnouts( bool set) {
     _TrustKnownTurnouts = set;
 }
 
-/*protected*/ int getMinThrottleInterval() {
+/*protected*/ int DispatcherFrame::getMinThrottleInterval() {
     return _MinThrottleInterval;
 }
-/*protected*/ void setMinThrottleInterval(int set) {
+/*protected*/ void DispatcherFrame::setMinThrottleInterval(int set) {
     _MinThrottleInterval = set;
 }
 
-/*protected*/ int getFullRampTime() {
+/*protected*/ int DispatcherFrame::getFullRampTime() {
     return _FullRampTime;
 }
-/*protected*/ void setFullRampTime(int set) {
+/*protected*/ void DispatcherFrame::setFullRampTime(int set) {
     _FullRampTime = set;
 }
 
-/*protected*/  bool getHasOccupancyDetection() {
+/*protected*/  bool DispatcherFrame::getHasOccupancyDetection() {
     return _HasOccupancyDetection;
 }
-/*protected*/ void setHasOccupancyDetection( bool set) {
+/*protected*/ void DispatcherFrame::setHasOccupancyDetection( bool set) {
     _HasOccupancyDetection = set;
 }
 
-/*protected*/  bool getUseScaleMeters() {
+/*protected*/  bool DispatcherFrame::getUseScaleMeters() {
     return _UseScaleMeters;
 }
-/*protected*/ void setUseScaleMeters( bool set) {
+/*protected*/ void DispatcherFrame::setUseScaleMeters( bool set) {
     _UseScaleMeters = set;
 }
 
-/*protected*/  bool getShortActiveTrainNames() {
+/*protected*/  bool DispatcherFrame::getShortActiveTrainNames() {
     return _ShortActiveTrainNames;
 }
-/*protected*/ void setShortActiveTrainNames( bool set) {
+/*protected*/ void DispatcherFrame::setShortActiveTrainNames( bool set) {
     _ShortActiveTrainNames = set;
     if (allocatedSectionTableModel != NULL) {
-        allocatedSectionTableModel.fireTableDataChanged();
+        allocatedSectionTableModel->fireTableDataChanged();
     }
     if (allocationRequestTableModel != NULL) {
-        allocationRequestTableModel.fireTableDataChanged();
+        allocationRequestTableModel->fireTableDataChanged();
     }
 }
 
-/*protected*/  bool getShortNameInBlock() {
+/*protected*/  bool DispatcherFrame::getShortNameInBlock() {
     return _ShortNameInBlock;
 }
-/*protected*/ void setShortNameInBlock( bool set) {
+/*protected*/ void DispatcherFrame::setShortNameInBlock( bool set) {
     _ShortNameInBlock = set;
 }
 
-/*protected*/  bool getRosterEntryInBlock() {
+/*protected*/  bool DispatcherFrame::getRosterEntryInBlock() {
     return _RosterEntryInBlock;
 }
-/*protected*/ void setRosterEntryInBlock( bool set) {
+/*protected*/ void DispatcherFrame::setRosterEntryInBlock( bool set) {
     _RosterEntryInBlock = set;
 }
 
-/*protected*/  bool getExtraColorForAllocated() {
+/*protected*/  bool DispatcherFrame::getExtraColorForAllocated() {
     return _ExtraColorForAllocated;
 }
-/*protected*/ void setExtraColorForAllocated( bool set) {
+/*protected*/ void DispatcherFrame::setExtraColorForAllocated( bool set) {
     _ExtraColorForAllocated = set;
 }
 
-/*protected*/  bool getNameInAllocatedBlock() {
+/*protected*/  bool DispatcherFrame::getNameInAllocatedBlock() {
     return _NameInAllocatedBlock;
 }
-/*protected*/ void setNameInAllocatedBlock( bool set) {
+/*protected*/ void DispatcherFrame::setNameInAllocatedBlock( bool set) {
     _NameInAllocatedBlock = set;
 }
 
-/*protected*/ int getScale() {
+/*protected*/ int DispatcherFrame::getScale() {
     return _LayoutScale;
 }
-/*protected*/ void setScale(int sc) {
+/*protected*/ void DispatcherFrame::setScale(int sc) {
     _LayoutScale = sc;
 }
-
-/*public*/ ArrayList<ActiveTrain> getActiveTrainsList() {
+#if 0
+/*public*/ QList<ActiveTrain> getActiveTrainsList() {
     return activeTrainsList;
 }
-/*protected*/ ArrayList<AllocatedSection> getAllocatedSectionsList() {
+/*protected*/ QList<AllocatedSection> getAllocatedSectionsList() {
     return allocatedSections;
 }
 
@@ -2335,69 +2364,72 @@ static class HeldMastDetails {
     return NULL;
 
 }
-
-/*protected*/  bool getSupportVSDecoder() {
+#endif
+/*protected*/  bool DispatcherFrame::getSupportVSDecoder() {
     return _SupportVSDecoder;
 }
-/*protected*/ void setSupportVSDecoder( bool set) {
+/*protected*/ void DispatcherFrame::setSupportVSDecoder( bool set) {
     _SupportVSDecoder = set;
 }
 
 // called by ActivateTrainFrame after a new train is all set up
 //      Dispatcher side of activating a new train should be completed here
 // Jay Janzen protection changed to /*public*/ for access via scripting
-/*public*/ void newTrainDone(ActiveTrain at) {
+/*public*/ void DispatcherFrame::newTrainDone(ActiveTrain* at) {
     if (at != NULL) {
         // a new active train was created, check for delayed start
-        if (at->getDelayedStart() != ActiveTrain.NODELAY && (!at->getStarted())) {
-            delayedTrains.add(at);
+        if (at->getDelayedStart() != ActiveTrain::NODELAY && (!at->getStarted())) {
+            delayedTrains->append(at);
             fastClockWarn(true);
         }
 // djd needs work here
         // check for delayed restart
-        else if (at->getDelayedRestart() == ActiveTrain.TIMEDDELAY) {
+        else if (at->getDelayedRestart() == ActiveTrain::TIMEDDELAY) {
             fastClockWarn(false);
         }
     }
     newTrainActive = false;
 }
 
-/*protected*/ void removeDelayedTrain(ActiveTrain at) {
-    delayedTrains.remove(at);
+/*protected*/ void DispatcherFrame::removeDelayedTrain(ActiveTrain* at) {
+    delayedTrains->removeOne(at);
 }
 
-/*private*/ void fastClockWarn( bool wMess) {
-    if (fastClockSensor.getState() == Sensor.ACTIVE) {
+/*private*/ void DispatcherFrame::fastClockWarn( bool wMess) {
+    if (fastClockSensor->getState() == Sensor::ACTIVE) {
         return;
     }
     // warn that the fast clock is not running
-    String mess = "";
+    QString mess = "";
     if (wMess) {
-        mess = tr("FastClockWarn");
+        mess = tr("At least one Active Train is waiting \non the fast clock, but it is not running. \n Do you want to start the fast clock?");
     }
     else {
-        mess = tr("FastClockWarn2");
+        mess = tr("At least one Active Train needs the \nfast clock for restart, but it is not running. \nDo you want to start the fast clock?");
     }
-    int selectedValue = JOptionPane.showOptionDialog(dispatcherFrame,
-            mess, Bundle.getMessage("WarningTitle"),
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, NULL,
-            new Object[]{tr("ButtonYesStart"), tr("ButtonNo")},
-            tr("ButtonNo"));
-    if (selectedValue == 0) {
-        try {
-            fastClockSensor.setState(Sensor.ACTIVE);
-        } catch (jmri.JmriException reason) {
-            log->error("Exception when setting fast clock sensor");
-        }
+//    int selectedValue = JOptionPane.showOptionDialog(dispatcherFrame,
+//            mess, Bundle.getMessage("WarningTitle"),
+//            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, NULL,
+//            new Object[]{tr("ButtonYesStart"), tr("ButtonNo")},
+//            tr("ButtonNo"));
+//    if (selectedValue == 0) {
+    int selectedValue = QMessageBox::question(dispatcherFrame, tr("Warning"), mess, QMessageBox::Yes | QMessageBox::No);
+    if(selectedValue = QMessageBox::Yes)
+    {
+//        try {
+            fastClockSensor->setState(Sensor::ACTIVE);
+//        } catch (jmri.JmriException reason) {
+//            log->error("Exception when setting fast clock sensor");
+//        }
     }
 }
 
 // Jay Janzen
 // Protection changed to /*public*/ to allow access via scripting
-/*public*/ AutoTrainsFrame getAutoTrainsFrame() {
+/*public*/ AutoTrainsFrame* DispatcherFrame::getAutoTrainsFrame() {
     return _autoTrainsFrame;
 }
-#endif
+
 /*static*/ DispatcherFrame* DispatcherFrame::_instance = NULL;
 
 /*static*/ /*public*/ DispatcherFrame* DispatcherFrame::instance() {
@@ -2719,8 +2751,10 @@ static class HeldMastDetails {
     }
 
     //@Override
-    /*public*/ bool AllocationRequestTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+    /*public*/ bool AllocationRequestTableModel::setData(const QModelIndex &index, const QVariant &/*value*/, int role)
     {
+     if(role == Qt::EditRole)
+     {
  int col = index.column();
  int row = index.row();
         if (col == ALLOCATEBUTTON_COLUMN) {
@@ -2731,6 +2765,7 @@ static class HeldMastDetails {
             // open an allocate window
             frame->cancelAllocationRequest(row);
         }
+     }
     }
 //}
 
@@ -2768,13 +2803,13 @@ static class HeldMastDetails {
 //    }
 
     //@Override
-    /*public*/ int AllocatedSectionTableModel::columnCount(const QModelIndex &parent) const
+    /*public*/ int AllocatedSectionTableModel::columnCount(const QModelIndex &/*parent*/) const
     {
         return RELEASEBUTTON_COLUMN + 1;
     }
 
     //@Override
-    /*public*/ int AllocatedSectionTableModel::rowCount(const QModelIndex &parent) const
+    /*public*/ int AllocatedSectionTableModel::rowCount(const QModelIndex &/*parent*/) const
     {
         return (frame->allocatedSections->size());
     }

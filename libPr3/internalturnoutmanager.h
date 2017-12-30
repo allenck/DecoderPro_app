@@ -7,6 +7,7 @@ class InternalTurnoutManager : public AbstractTurnoutManager
  Q_OBJECT
 public:
  InternalTurnoutManager();
+ /*public*/ InternalTurnoutManager(QString prefix);
  /*public*/ QString getSystemPrefix();
  /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
  /*public*/ QStringList getValidOperationTypes();

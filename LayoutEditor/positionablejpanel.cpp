@@ -422,7 +422,8 @@ bool PositionableJPanel::updateScene() // TODO: this function not in Java
   }
  }
  else
-  _itemGroup = new QGraphicsItemGroup();
+  _itemGroup = new MyGraphicsItemGroup();
+ _itemGroup->setName("PositionablJPanel");
 
  if(item == NULL)
  {

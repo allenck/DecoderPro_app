@@ -59,6 +59,7 @@ public:
          NamedBeanHandle<Sensor*>* namedSensor;
          NamedIcon* icon;
     };
+ /*public*/ QString getGroupName();
 
 public slots:
     // update icon as state of turnout changes

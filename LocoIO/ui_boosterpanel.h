@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'boosterpanel.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -63,10 +63,10 @@ public:
 
     void retranslateUi(QWidget *BoosterPanel)
     {
-        BoosterPanel->setWindowTitle(QApplication::translate("BoosterPanel", "Form", 0));
-        label->setText(QApplication::translate("BoosterPanel", "5 = Feedback of Booster input", 0));
-        label_2->setText(QApplication::translate("BoosterPanel", "6 = Feedback of Booster output", 0));
-        label_3->setText(QApplication::translate("BoosterPanel", "7 = On-Off Booster output", 0));
+        BoosterPanel->setWindowTitle(QApplication::translate("BoosterPanel", "Form", Q_NULLPTR));
+        label->setText(QApplication::translate("BoosterPanel", "5 = Feedback of Booster input", Q_NULLPTR));
+        label_2->setText(QApplication::translate("BoosterPanel", "6 = Feedback of Booster output", Q_NULLPTR));
+        label_3->setText(QApplication::translate("BoosterPanel", "7 = On-Off Booster output", Q_NULLPTR));
     } // retranslateUi
 
 };

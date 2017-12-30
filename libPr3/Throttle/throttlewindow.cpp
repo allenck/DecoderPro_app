@@ -28,6 +28,7 @@
 #include "loconetsystemconnectionmemo.h"
 #include "throttleslistpanel.h"
 #include "throttlestablemodel.h"
+#include "withrottlecreationaction.h"
 
 ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *parent) :
     JmriJFrame(parent),
@@ -173,9 +174,10 @@ ThrottleWindow::~ThrottleWindow()
  fileMenu.addSeparator();
  fileMenu.add(new LoadDefaultXmlThrottlesLayoutAction(tr("MenuItemLoadDefaultThrottleLayout" )));
  fileMenu.add(new StoreDefaultXmlThrottlesLayoutAction(tr("MenuItemSaveAsDefaultThrottleLayout" )));
- fileMenu.addSeparator();
- fileMenu.add(new jmri.jmrit.withrottle.WiThrottleCreationAction(tr("MenuItemStartWiThrottle")));
 #endif
+ fileMenu->addSeparator();
+ fileMenu->addAction(new WiThrottleCreationAction(tr("Start WiThrottle"),this));
+
  QMenu* viewMenu = new QMenu(tr("View"));
  viewAddressPanel = new QAction(tr("Address Panel"),this);
  viewAddressPanel->setCheckable(true);
@@ -339,7 +341,7 @@ void ThrottleWindow::on_emergencyStop_clicked()
 {
  LocoNetMessage* msg = new LocoNetMessage(2);
  msg->setOpCode(LnConstants::OPC_IDLE);
- ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo"))->getLnTrafficController()->sendLocoNetMessage(msg);
+ ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo"))->getLnTrafficController()->sendLocoNetMessage(msg);
 }
 
 void ThrottleWindow::on_togglePower_clicked()

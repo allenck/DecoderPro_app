@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addeditlightdialog1.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -283,52 +283,52 @@ public:
 
     void retranslateUi(QMainWindow *AddEditLightDialog1)
     {
-        AddEditLightDialog1->setWindowTitle(QApplication::translate("AddEditLightDialog1", "MainWindow", 0));
-        label_7->setText(QApplication::translate("AddEditLightDialog1", "System:", 0));
+        AddEditLightDialog1->setWindowTitle(QApplication::translate("AddEditLightDialog1", "MainWindow", Q_NULLPTR));
+        label_7->setText(QApplication::translate("AddEditLightDialog1", "System:", Q_NULLPTR));
         prefixBox->clear();
         prefixBox->insertItems(0, QStringList()
-         << QApplication::translate("AddEditLightDialog1", "Internal", 0)
+         << QApplication::translate("AddEditLightDialog1", "Internal", Q_NULLPTR)
         );
 #ifndef QT_NO_TOOLTIP
-        prefixBox->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Select a system for the new light.</p></body></html>", 0));
+        prefixBox->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Select a system for the new light.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
 #ifndef QT_NO_TOOLTIP
-        addRangeBox->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Check to add more than one Light with sequential addresses.</p></body></html>", 0));
+        addRangeBox->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Check to add more than one Light with sequential addresses.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        addRangeBox->setText(QApplication::translate("AddEditLightDialog1", "Add a sequential range", 0));
-        label_5->setText(QApplication::translate("AddEditLightDialog1", "Hardware Address:", 0));
+        addRangeBox->setText(QApplication::translate("AddEditLightDialog1", "Add a sequential range", Q_NULLPTR));
+        label_5->setText(QApplication::translate("AddEditLightDialog1", "Hardware Address:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        fieldHardwareAddress->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Enter a hardware address for a new Light; e.g. 13</p></body></html>", 0));
+        fieldHardwareAddress->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Enter a hardware address for a new Light; e.g. 13</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        lblNbrToAdd->setText(QApplication::translate("AddEditLightDialog1", "Number to add:", 0));
-        label_6->setText(QApplication::translate("AddEditLightDialog1", "User Name:", 0));
+        lblNbrToAdd->setText(QApplication::translate("AddEditLightDialog1", "Number to add:", Q_NULLPTR));
+        label_6->setText(QApplication::translate("AddEditLightDialog1", "User Name:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        userName->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Enter user name for new Light, e.g. Jones House.</p></body></html>", 0));
+        userName->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Enter user name for new Light, e.g. Jones House.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        groupBox->setTitle(QApplication::translate("AddEditLightDialog1", "Variable Intensity", 0));
-        label_2->setText(QApplication::translate("AddEditLightDialog1", "Minimum Intensity", 0));
+        groupBox->setTitle(QApplication::translate("AddEditLightDialog1", "Variable Intensity", Q_NULLPTR));
+        label_2->setText(QApplication::translate("AddEditLightDialog1", "Minimum Intensity", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        fieldMinIntensity->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>0 to 100%. Must be less than Max.</p></body></html>", 0));
+        fieldMinIntensity->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>0 to 100%. Must be less than Max.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_3->setText(QApplication::translate("AddEditLightDialog1", "Maximum Intensity", 0));
+        label_3->setText(QApplication::translate("AddEditLightDialog1", "Maximum Intensity", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        fieldMaxIntensity->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>0 to 100%. Must be equal to or greater than min. </p></body></html>", 0));
+        fieldMaxIntensity->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>0 to 100%. Must be equal to or greater than min. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_4->setText(QApplication::translate("AddEditLightDialog1", "Transition Time", 0));
+        label_4->setText(QApplication::translate("AddEditLightDialog1", "Transition Time", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        fieldTransitionTime->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Time in fast minutes to go from 0 to 100%</p></body></html>", 0));
+        fieldTransitionTime->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Time in fast minutes to go from 0 to 100%</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        groupBox_2->setTitle(QApplication::translate("AddEditLightDialog1", "Light Control", 0));
+        groupBox_2->setTitle(QApplication::translate("AddEditLightDialog1", "Light Control", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        addControl->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Press to add a Light control to this light.</p></body></html>", 0));
+        addControl->setToolTip(QApplication::translate("AddEditLightDialog1", "<html><head/><body><p>Press to add a Light control to this light.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        addControl->setText(QApplication::translate("AddEditLightDialog1", "Add Control", 0));
-        status1->setText(QApplication::translate("AddEditLightDialog1", "Select or enter data, then press Create for a new light , or press Cancel.", 0));
-        status2->setText(QApplication::translate("AddEditLightDialog1", "TextLabel", 0));
-        btnCreate->setText(QApplication::translate("AddEditLightDialog1", "Create", 0));
-        btnUpdate->setText(QApplication::translate("AddEditLightDialog1", "Update", 0));
-        btnCancel->setText(QApplication::translate("AddEditLightDialog1", "Cancel", 0));
-        toolBar->setWindowTitle(QApplication::translate("AddEditLightDialog1", "toolBar", 0));
+        addControl->setText(QApplication::translate("AddEditLightDialog1", "Add Control", Q_NULLPTR));
+        status1->setText(QApplication::translate("AddEditLightDialog1", "Select or enter data, then press Create for a new light , or press Cancel.", Q_NULLPTR));
+        status2->setText(QApplication::translate("AddEditLightDialog1", "TextLabel", Q_NULLPTR));
+        btnCreate->setText(QApplication::translate("AddEditLightDialog1", "Create", Q_NULLPTR));
+        btnUpdate->setText(QApplication::translate("AddEditLightDialog1", "Update", Q_NULLPTR));
+        btnCancel->setText(QApplication::translate("AddEditLightDialog1", "Cancel", Q_NULLPTR));
+        toolBar->setWindowTitle(QApplication::translate("AddEditLightDialog1", "toolBar", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -4,6 +4,9 @@
 #include "logger.h"
 #include "exceptions.h"
 #include "liblayouteditor_global.h"
+
+class PropertyChangeEvent;
+class NamedBean;
 class CatalogTreeNode;
 class LIBLAYOUTEDITORSHARED_EXPORT AbstractCatalogTree : public DefaultTreeModel
 {
@@ -30,6 +33,7 @@ public slots:
 private:
     /*private*/ QString mUserName;
     /*private*/ QString mSystemName;
+   NamedBean* bean;
  Logger* log;
  QString comment;
 };

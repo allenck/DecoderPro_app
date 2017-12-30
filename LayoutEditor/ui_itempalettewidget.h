@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'itempalettewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -422,33 +422,33 @@ public:
 
     void retranslateUi(QWidget *ItemPaletteWidget)
     {
-        ItemPaletteWidget->setWindowTitle(QApplication::translate("ItemPaletteWidget", "Form", 0));
-        label_2->setText(QApplication::translate("ItemPaletteWidget", "Memory Table", 0));
-        pushButton_3->setText(QApplication::translate("ItemPaletteWidget", "Add New Table Item ", 0));
-        pushButton_4->setText(QApplication::translate("ItemPaletteWidget", "Clear Table Selections", 0));
-        _tabPane->setTabText(_tabPane->indexOf(tab), QApplication::translate("ItemPaletteWidget", "Turnout 1", 0));
-        label->setText(QApplication::translate("ItemPaletteWidget", "Memory Table", 0));
-        pushButton->setText(QApplication::translate("ItemPaletteWidget", "Add New Table Item ", 0));
-        pushButton_2->setText(QApplication::translate("ItemPaletteWidget", "Clear Table Selections", 0));
-        blurb1->setText(QApplication::translate("ItemPaletteWidget", "To Add an Icon to your control panel:", 0));
-        blurb2->setText(QApplication::translate("ItemPaletteWidget", "--drag and icon from the display panel below to your control panel", 0));
+        ItemPaletteWidget->setWindowTitle(QApplication::translate("ItemPaletteWidget", "Form", Q_NULLPTR));
+        label_2->setText(QApplication::translate("ItemPaletteWidget", "Memory Table", Q_NULLPTR));
+        pushButton_3->setText(QApplication::translate("ItemPaletteWidget", "Add New Table Item ", Q_NULLPTR));
+        pushButton_4->setText(QApplication::translate("ItemPaletteWidget", "Clear Table Selections", Q_NULLPTR));
+        _tabPane->setTabText(_tabPane->indexOf(tab), QApplication::translate("ItemPaletteWidget", "Turnout 1", Q_NULLPTR));
+        label->setText(QApplication::translate("ItemPaletteWidget", "Memory Table", Q_NULLPTR));
+        pushButton->setText(QApplication::translate("ItemPaletteWidget", "Add New Table Item ", Q_NULLPTR));
+        pushButton_2->setText(QApplication::translate("ItemPaletteWidget", "Clear Table Selections", Q_NULLPTR));
+        blurb1->setText(QApplication::translate("ItemPaletteWidget", "To Add an Icon to your control panel:", Q_NULLPTR));
+        blurb2->setText(QApplication::translate("ItemPaletteWidget", "--drag and icon from the display panel below to your control panel", Q_NULLPTR));
         blurb3Icon->setText(QString());
-        blurb3Text->setText(QApplication::translate("ItemPaletteWidget", "is displayed for the Display Memory Icon when Memory is null.", 0));
-        blurb4->setText(QApplication::translate("ItemPaletteWidget", "When memory is and empty string i.e. \"\", the display memory icon is blank.", 0));
-        blurb5->setText(QApplication::translate("ItemPaletteWidget", "When blank, enter a value in the other memory icons to view and drag it. ", 0));
-        blurb6->setText(QApplication::translate("ItemPaletteWidget", "The ComboBox Memory Icon sets a memory by selecting and item from the ComboBox.", 0));
-        blurb7->setText(QApplication::translate("ItemPaletteWidget", "Use the \"Edit Memory Icon\" popup to add or delete items.", 0));
-        gbInputBox->setTitle(QApplication::translate("ItemPaletteWidget", "Drag to Panel", 0));
-        gbDisplayMemory->setTitle(QApplication::translate("ItemPaletteWidget", "Drag to Panel", 0));
+        blurb3Text->setText(QApplication::translate("ItemPaletteWidget", "is displayed for the Display Memory Icon when Memory is null.", Q_NULLPTR));
+        blurb4->setText(QApplication::translate("ItemPaletteWidget", "When memory is and empty string i.e. \"\", the display memory icon is blank.", Q_NULLPTR));
+        blurb5->setText(QApplication::translate("ItemPaletteWidget", "When blank, enter a value in the other memory icons to view and drag it. ", Q_NULLPTR));
+        blurb6->setText(QApplication::translate("ItemPaletteWidget", "The ComboBox Memory Icon sets a memory by selecting and item from the ComboBox.", Q_NULLPTR));
+        blurb7->setText(QApplication::translate("ItemPaletteWidget", "Use the \"Edit Memory Icon\" popup to add or delete items.", Q_NULLPTR));
+        gbInputBox->setTitle(QApplication::translate("ItemPaletteWidget", "Drag to Panel", Q_NULLPTR));
+        gbDisplayMemory->setTitle(QApplication::translate("ItemPaletteWidget", "Drag to Panel", Q_NULLPTR));
         label_20->setText(QString());
-        gbSpinnerMemory->setTitle(QApplication::translate("ItemPaletteWidget", "Drag to Panel", 0));
-        lbColWidth->setText(QApplication::translate("ItemPaletteWidget", "Col Width", 0));
-        lbComboBoxMemory->setText(QApplication::translate("ItemPaletteWidget", "ComboBox Memory", 0));
-        lbInputBoxMemory->setText(QApplication::translate("ItemPaletteWidget", "Input Box Memory", 0));
-        lbSpinnerMemory->setText(QApplication::translate("ItemPaletteWidget", "Spinner Memory", 0));
-        lbDisplayMemory->setText(QApplication::translate("ItemPaletteWidget", "Display Memory", 0));
-        gbComboBoxMemory->setTitle(QApplication::translate("ItemPaletteWidget", "Drag to Panel", 0));
-        _tabPane->setTabText(_tabPane->indexOf(MemoryTab), QApplication::translate("ItemPaletteWidget", "Memory", 0));
+        gbSpinnerMemory->setTitle(QApplication::translate("ItemPaletteWidget", "Drag to Panel", Q_NULLPTR));
+        lbColWidth->setText(QApplication::translate("ItemPaletteWidget", "Col Width", Q_NULLPTR));
+        lbComboBoxMemory->setText(QApplication::translate("ItemPaletteWidget", "ComboBox Memory", Q_NULLPTR));
+        lbInputBoxMemory->setText(QApplication::translate("ItemPaletteWidget", "Input Box Memory", Q_NULLPTR));
+        lbSpinnerMemory->setText(QApplication::translate("ItemPaletteWidget", "Spinner Memory", Q_NULLPTR));
+        lbDisplayMemory->setText(QApplication::translate("ItemPaletteWidget", "Display Memory", Q_NULLPTR));
+        gbComboBoxMemory->setTitle(QApplication::translate("ItemPaletteWidget", "Drag to Panel", Q_NULLPTR));
+        _tabPane->setTabText(_tabPane->indexOf(MemoryTab), QApplication::translate("ItemPaletteWidget", "Memory", Q_NULLPTR));
     } // retranslateUi
 
 };

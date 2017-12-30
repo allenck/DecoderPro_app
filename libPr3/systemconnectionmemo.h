@@ -23,12 +23,12 @@ class ResourceBundle;
 class Manager;
 class LIBPR3SHARED_EXPORT SystemConnectionMemo : public QObject
 {
-    Q_OBJECT
+ Q_OBJECT
 public:
  //SystemConnectionMemo(QObject * parent = 0);
  explicit SystemConnectionMemo(QString Prefix= "I", QString userName= "Internal", QObject *parent = 0);
     ~SystemConnectionMemo() {}
-    SystemConnectionMemo(const SystemConnectionMemo&) {}
+    SystemConnectionMemo(const SystemConnectionMemo&) : QObject() {}
  /**
   * Store in InstanceManager with
   * proper ID for later retrieval as a
@@ -52,13 +52,14 @@ public:
  /**
   * Does this connection provide a manager of this type?
   */
- virtual Manager* get(QString T);
+ virtual QObject* get(QString T);
  void dispose();
  bool getDisabled();
  void setDisabled(bool disabled);
  //static void removePropertyChangeListener(PropertyChangeListener* l);
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired();
+ static SystemConnectionMemo* instance();
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -72,7 +73,7 @@ private:
  /*static*/ QString userName;
  /*private*/ QString userNameAsLoaded;
 
- Logger log;
+ /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("SystemConnectionMemo");
  const static bool initialised = false;
  /**
   * Provides a method to reserve System Names and prefixes at creation
@@ -86,6 +87,7 @@ private:
  // data members to hold contact with the property listeners
  ///*static*/ QVector<PropertyChangeListener*>* listeners;
  //static void addPropertyChangeListener(PropertyChangeListener* l);
+ static SystemConnectionMemo* _instance;
 
 protected:
  static QStringList* userNames; // = new ArrayList<String>();

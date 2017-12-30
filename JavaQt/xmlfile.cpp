@@ -236,7 +236,7 @@ XmlFile::XmlFile(QObject *parent) :
 //    }
  stream.setCodec("UTF-8");
  QString sXml = doc.toString();
- doc.save(stream,2);
+ doc.save(stream, 2);
 }
 
 /**
@@ -537,13 +537,15 @@ XmlFile::XmlFile(QObject *parent) :
  * @return new Document, with root installed
  */
 /*static*/ /*public*/ QDomDocument XmlFile::newDocument(QDomElement root, QString dtd) {
-    /*Document*/ doc = QDomDocument(root.tagName());
+    /*Document*/ doc = QDomDocument(/*root.tagName()*/);
     //doc.setDocType(new DocType(root.tagName(), dtd));
     QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\"  encoding=\"UTF-8\"");
     doc.appendChild(xmlProcessingInstruction);
-    xmlProcessingInstruction =  doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"/xml/XSLT/panelfile-2-9-6.xsl");
+//    xmlProcessingInstruction =  doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"/xml/XSLT/panelfile-2-9-6.xsl\"");
+    xmlProcessingInstruction = doc.createProcessingInstruction(root.tagName(), dtd);
     doc.appendChild(xmlProcessingInstruction);
     addDefaultInfo(root);
+    doc.appendChild(root);
     return doc;
 }
 

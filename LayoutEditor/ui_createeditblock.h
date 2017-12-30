@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'createeditblock.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -330,73 +330,73 @@ public:
 
     void retranslateUi(QMainWindow *CreateEditBlock)
     {
-        CreateEditBlock->setWindowTitle(QApplication::translate("CreateEditBlock", "MainWindow", 0));
-        label->setText(QApplication::translate("CreateEditBlock", "Name:", 0));
-        blockNameLabel->setText(QApplication::translate("CreateEditBlock", "Block x", 0));
-        label_2->setText(QApplication::translate("CreateEditBlock", "Current use count : ", 0));
-        blockUseLabel->setText(QApplication::translate("CreateEditBlock", "0", 0));
-        label_3->setText(QApplication::translate("CreateEditBlock", "Occupancy Sensor:", 0));
+        CreateEditBlock->setWindowTitle(QApplication::translate("CreateEditBlock", "MainWindow", Q_NULLPTR));
+        label->setText(QApplication::translate("CreateEditBlock", "Name:", Q_NULLPTR));
+        blockNameLabel->setText(QApplication::translate("CreateEditBlock", "Block x", Q_NULLPTR));
+        label_2->setText(QApplication::translate("CreateEditBlock", "Current use count : ", Q_NULLPTR));
+        blockUseLabel->setText(QApplication::translate("CreateEditBlock", "0", Q_NULLPTR));
+        label_3->setText(QApplication::translate("CreateEditBlock", "Occupancy Sensor:", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        sensorNameField->setToolTip(QApplication::translate("CreateEditBlock", "<html><head/><body><p>Enter a sensor number, System name or user name of a sensor. </p></body></html>", 0));
+        sensorNameField->setToolTip(QApplication::translate("CreateEditBlock", "<html><head/><body><p>Enter a sensor number, System name or user name of a sensor. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_4->setText(QApplication::translate("CreateEditBlock", "Occupied sense:", 0));
-        sensorDebounceGlobalCheck->setText(QApplication::translate("CreateEditBlock", "SensorDebounce", 0));
-        label_9->setText(QApplication::translate("CreateEditBlock", "Inactive", 0));
-        label_10->setText(QApplication::translate("CreateEditBlock", "Active", 0));
-        label_6->setText(QApplication::translate("CreateEditBlock", "Track color:", 0));
+        label_4->setText(QApplication::translate("CreateEditBlock", "Occupied sense:", Q_NULLPTR));
+        sensorDebounceGlobalCheck->setText(QApplication::translate("CreateEditBlock", "SensorDebounce", Q_NULLPTR));
+        label_9->setText(QApplication::translate("CreateEditBlock", "Inactive", Q_NULLPTR));
+        label_10->setText(QApplication::translate("CreateEditBlock", "Active", Q_NULLPTR));
+        label_6->setText(QApplication::translate("CreateEditBlock", "Track color:", Q_NULLPTR));
         trackColorBox->clear();
         trackColorBox->insertItems(0, QStringList()
-         << QApplication::translate("CreateEditBlock", "Black", 0)
-         << QApplication::translate("CreateEditBlock", "Dark Gray", 0)
-         << QApplication::translate("CreateEditBlock", "Gray", 0)
-         << QApplication::translate("CreateEditBlock", "Light Gray", 0)
-         << QApplication::translate("CreateEditBlock", "White", 0)
-         << QApplication::translate("CreateEditBlock", "Red", 0)
-         << QApplication::translate("CreateEditBlock", "Pink", 0)
-         << QApplication::translate("CreateEditBlock", "Orange", 0)
+         << QApplication::translate("CreateEditBlock", "Black", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Dark Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Light Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "White", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Red", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Pink", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Orange", Q_NULLPTR)
         );
-        label_7->setText(QApplication::translate("CreateEditBlock", "Occupied Track color:", 0));
+        label_7->setText(QApplication::translate("CreateEditBlock", "Occupied Track color:", Q_NULLPTR));
         occupiedColorBox->clear();
         occupiedColorBox->insertItems(0, QStringList()
-         << QApplication::translate("CreateEditBlock", "Black", 0)
-         << QApplication::translate("CreateEditBlock", "Dark Gray", 0)
-         << QApplication::translate("CreateEditBlock", "Gray", 0)
-         << QApplication::translate("CreateEditBlock", "Light Gray", 0)
-         << QApplication::translate("CreateEditBlock", "White", 0)
-         << QApplication::translate("CreateEditBlock", "Red", 0)
-         << QApplication::translate("CreateEditBlock", "Pink", 0)
-         << QApplication::translate("CreateEditBlock", "Orange", 0)
+         << QApplication::translate("CreateEditBlock", "Black", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Dark Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Light Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "White", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Red", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Pink", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Orange", Q_NULLPTR)
         );
-        label_8->setText(QApplication::translate("CreateEditBlock", "Alternate track color:", 0));
+        label_8->setText(QApplication::translate("CreateEditBlock", "Alternate track color:", Q_NULLPTR));
         extraColorBox->clear();
         extraColorBox->insertItems(0, QStringList()
-         << QApplication::translate("CreateEditBlock", "Black", 0)
-         << QApplication::translate("CreateEditBlock", "Dark Gray", 0)
-         << QApplication::translate("CreateEditBlock", "Gray", 0)
-         << QApplication::translate("CreateEditBlock", "Light Gray", 0)
-         << QApplication::translate("CreateEditBlock", "White", 0)
-         << QApplication::translate("CreateEditBlock", "Red", 0)
-         << QApplication::translate("CreateEditBlock", "Pink", 0)
-         << QApplication::translate("CreateEditBlock", "Orange", 0)
+         << QApplication::translate("CreateEditBlock", "Black", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Dark Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Light Gray", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "White", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Red", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Pink", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Orange", Q_NULLPTR)
         );
-        label_5->setText(QApplication::translate("CreateEditBlock", "Memory Variable Name: ", 0));
-        label_11->setText(QApplication::translate("CreateEditBlock", "Block Metric", 0));
+        label_5->setText(QApplication::translate("CreateEditBlock", "Memory Variable Name: ", Q_NULLPTR));
+        label_11->setText(QApplication::translate("CreateEditBlock", "Block Metric", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        metricField->setToolTip(QApplication::translate("CreateEditBlock", "<html><head/><body><p>set the cost for going over this block</p></body></html>", 0));
+        metricField->setToolTip(QApplication::translate("CreateEditBlock", "<html><head/><body><p>set the cost for going over this block</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
 #ifndef QT_NO_TOOLTIP
-        permissiveCheck->setToolTip(QApplication::translate("CreateEditBlock", "<html><head/><body><p>&quot;Is another train allowed to enter the block when it is already occupied&quot;</p></body></html>", 0));
+        permissiveCheck->setToolTip(QApplication::translate("CreateEditBlock", "<html><head/><body><p>&quot;Is another train allowed to enter the block when it is already occupied&quot;</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        permissiveCheck->setText(QApplication::translate("CreateEditBlock", "Permissive Working Allowed", 0));
-        blockEditDone->setText(QApplication::translate("CreateEditBlock", "Done", 0));
-        blockEditCancel->setText(QApplication::translate("CreateEditBlock", "Cancel", 0));
+        permissiveCheck->setText(QApplication::translate("CreateEditBlock", "Permissive Working Allowed", Q_NULLPTR));
+        blockEditDone->setText(QApplication::translate("CreateEditBlock", "Done", Q_NULLPTR));
+        blockEditCancel->setText(QApplication::translate("CreateEditBlock", "Cancel", Q_NULLPTR));
         senseBox->clear();
         senseBox->insertItems(0, QStringList()
-         << QApplication::translate("CreateEditBlock", "Active", 0)
-         << QApplication::translate("CreateEditBlock", "Inactive", 0)
+         << QApplication::translate("CreateEditBlock", "Active", Q_NULLPTR)
+         << QApplication::translate("CreateEditBlock", "Inactive", Q_NULLPTR)
         );
-        menuWindow->setTitle(QApplication::translate("CreateEditBlock", "Window", 0));
-        menuHelp->setTitle(QApplication::translate("CreateEditBlock", "Help", 0));
+        menuWindow->setTitle(QApplication::translate("CreateEditBlock", "Window", Q_NULLPTR));
+        menuHelp->setTitle(QApplication::translate("CreateEditBlock", "Help", Q_NULLPTR));
     } // retranslateUi
 
 };

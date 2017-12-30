@@ -13,22 +13,22 @@ class LIBPR3SHARED_EXPORT AbstractNetworkPortController : public AbstractPortCon
  Q_OBJECT
 public:
  //explicit AbstractNetworkPortController(QObject *parent = 0);
- /*public*/ virtual void setHostName(QString s);
- /*public*/ virtual QString getHostName();
- /*public*/ virtual bool getMdnsConfigure();
- /*public*/ virtual void _connect(QString host, int port) throw (Exception);
-// /*public*/ virtual void _connect(); //throws Exception
- /*public*/ virtual bool status();
- /*public*/ virtual void setPort(int p);
- /*public*/ virtual void setPort(QString p);
- /*public*/ virtual int getPort();
+ /*public*/ void setHostName(QString s);
+ /*public*/ QString getHostName();
+ /*public*/ bool getMdnsConfigure();
+ /*public*/ void _connect(QString host, int port) throw (Exception);
+ ///*public*/ void _connect(); //throws Exception
+ /*public*/  bool status();
+ /*public*/  void setPort(int p);
+ /*public*/  void setPort(QString p);
+ /*public*/  int getPort();
  /*public*/ QString getCurrentPortName();
- /*public*/ virtual void setMdnsConfigure(bool autoconfig);
- /*public*/ virtual void autoConfigure();
- /*public*/ virtual void setAdvertisementName(QString AdName);
- /*public*/ virtual QString getAdvertisementName();
- /*public*/ virtual void setServiceType(QString ServiceType);
- /*public*/ virtual QString getServiceType();
+ /*public*/  void setMdnsConfigure(bool autoconfig);
+ /*public*/  void autoConfigure();
+ /*public*/  void setAdvertisementName(QString AdName);
+ /*public*/  QString getAdvertisementName();
+ /*public*/  void setServiceType(QString ServiceType);
+ /*public*/  QString getServiceType();
  /*public*/ QDataStream* getInputStream();
  /*public*/ QDataStream* getOutputStream();
  /*public*/ void dispose();
@@ -39,7 +39,7 @@ public:
 signals:
 
 public slots:
- /*public*/ virtual void _connect(); //throws Exception
+ /*public*/ void _connect(); //throws Exception
 
 private:
  /*private*/ QString m_HostAddress;// = "";  // Internal IP address for  ZeroConf

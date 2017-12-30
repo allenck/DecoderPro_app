@@ -28,7 +28,7 @@
 #include "conditionalvariable.h"
 #include "defaultconditionalaction.h"
 #include "defaultlogixmanager.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 //#include "../LayoutEditor/systemnamecomparator.h"
 #include <QPushButton>
 #include <QLabel>
@@ -89,6 +89,7 @@ void LRouteTableAction::common()
  _systemName = new JTextField(15);
   _userName = new JTextField(25);
 
+
   _addFrame = NULL;
   _newRouteType = true;
   _initialize = false;
@@ -103,8 +104,8 @@ void LRouteTableAction::common()
 
   routeDirty = false;  // true to fire reminder to save work
   soundChooser = NULL;
-  _logixManager = InstanceManager::logixManagerInstance();
-  _conditionalManager = InstanceManager::conditionalManagerInstance();
+  _logixManager = (LogixManager*)InstanceManager::getNullableDefault("LogixManager");
+  _conditionalManager = (ConditionalManager*)InstanceManager::getNullableDefault("ConditionalManager");
   // disable ourself if there is no Logix manager or no Conditional manager available
   if ((_logixManager == NULL) || (_conditionalManager == NULL))
   {
@@ -134,6 +135,7 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
  enabledString = tr("Enabled");
  log = new Logger("LBeanTableDataModel");
  self = (LRouteTableAction*)parent;
+ sysNameList = QStringList();
  //updateNameList();
  AbstractManager* abstractManager= (AbstractManager*)self->_logixManager;
  connect(abstractManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -333,7 +335,11 @@ void LBeanTableDataModel::doDelete(NamedBean* bean)
 /*public int getDisplayDeleteMsg() { return InstanceManager.getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
 public void setDisplayDeleteMsg(int boo) { InstanceManager.getDefault(jmri.UserPreferencesManager.class).setMultipleChoiceOption(getClassName(), "delete", boo); }*/
 
-/*protected*/ QString  LBeanTableDataModel::getMasterClassName() { return /*getClassName();*/ metaObject()->className();}
+/*protected*/ QString  LBeanTableDataModel::getMasterClassName()
+{
+ //return /*getClassName();*/ metaObject()->className();
+ return "jmri.jmrit.beantable.LRouteTableAction";
+}
 
 #if 1
 /*public*/ void LBeanTableDataModel::configureTable(JTable* table)
@@ -1447,7 +1453,7 @@ void AddFrameWindowListener::windowClosing(QCloseEvent */*e*/)
  // remind to save, if Route was created or edited
  if (self->routeDirty)
  {
-  ((DefaultUserMessagePreferences*)  InstanceManager::getDefault("UserPreferencesManager"))->
+  ((UserPreferencesManager*)  InstanceManager::getDefault("UserPreferencesManager"))->
         showInfoMessage("Reminder","Remember to save your LRoute information.",self->getClassName(), "remindSaveRoute");
   self->routeDirty = false;
  }
@@ -3339,7 +3345,7 @@ void LAlignElement::setAlignType(QString state) {
 
 /*public*/ void LRouteTableAction::setMessagePreferencesDetails()
 {
- ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveRoute", tr("Hide Save Message Reminder"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveRoute", tr("Hide Save Message Reminder"));
 AbstractTableAction::setMessagePreferencesDetails();
 }
 

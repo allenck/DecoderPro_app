@@ -165,6 +165,7 @@ static class ToolTipTimer : QTimer {
 };
 #endif
 
+class Class;
 class CircuitBuilder;
 class TrainIcon;
 class JDialog;
@@ -307,6 +308,10 @@ public:
     /*public*/ QRectF getSelectRect();
     /*public*/ IconAdder* getIconEditor(QString name);
     /*public*/ void setShowTooltipMenu(Positionable* p, QMenu* popup);
+    /*synchronized*/ /*public*/ static QVector<Editor*> getEditors();
+    //template<class T>
+    /*synchronized*/ /*public*/ static /*<T extends Editor>*/ QList<Editor*> getEditors(/*@Nonnull*/ QString type);
+    /*public*/ static Editor* getEditor(QString name);
 
 signals:
     
@@ -365,6 +370,7 @@ private:
     /*private*/ CircuitBuilder* _circuitBuilder;
 //    /*private*/ QList<Positionable*> _secondSelectionGroup;
     /*private*/ bool panelMenuIsVisible;// = true;
+    /*private*/ static /*volatile*/ QVector<Editor*>* editors;// = new ArrayList<Editor>();
 
 private slots:
   void On_lockItemAction_toggled(bool);

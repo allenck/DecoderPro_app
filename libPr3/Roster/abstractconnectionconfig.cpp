@@ -1,6 +1,6 @@
 #include "abstractconnectionconfig.h"
 #include "instancemanager.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "portadapter.h"
 #include <QLabel>
 #include <QComboBox>
@@ -8,11 +8,12 @@
 #include <QGridLayout>
 #include "gridbagconstraints.h"
 #include <QCheckBox>
+#include "connectionconfigmanager.h"
 
 AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
     ConnectionConfig(parent)
 {
- pref = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+ pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  NUMOPTIONS = 2;
 
  showAdvanced = new QCheckBox("Additional Connection Settings");
@@ -214,3 +215,27 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
 
 //@Override
 /*abstract*/ /*public*/ void AbstractConnectionConfig::setDisabled(bool /*disable*/) {}
+
+/**
+ * Register the ConnectionConfig with the running JMRI process. It is
+ * strongly recommended that overriding implementations call
+ * super.register() since this implementation performs all required
+ * registration tasks.
+ */
+//@Override
+/*public*/ void AbstractConnectionConfig::_register() {
+    this->setInstance();
+    ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref(this);
+    ConnectionConfigManager* ccm = (ConnectionConfigManager*)InstanceManager::getNullableDefault("ConnectionConfigManager");
+    if (ccm != NULL) {
+        ccm->add(this);
+    }
+}
+
+//@Override
+/*public*/ void AbstractConnectionConfig::dispose() {
+    ConnectionConfigManager* ccm = (ConnectionConfigManager*)InstanceManager::getNullableDefault("ConnectionConfigManager");
+    if (ccm != NULL) {
+        ccm->remove(this);
+    }
+}

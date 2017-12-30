@@ -12,7 +12,7 @@ public:
        * Returns the length of the list.
        * @return the length of the list
        */
-      virtual int getSize() = 0;
+      virtual int getSize() {return 0;}
 
       /**
        * Returns the value at the specified index.

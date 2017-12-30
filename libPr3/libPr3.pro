@@ -10,10 +10,11 @@ win32:{
 QTSERIALPORT_PROJECT_ROOT =C:/Users/Allen/Projects/qt-qtserialport-stable/qt-qtserialport
 }
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets  gui webkitwidgets serialport multimedia
+    QT       += widgets gui serialport multimedia websockets testlib #webkitwidgets
 } else {
     include($$QTSERIALPORT_PROJECT_ROOT/src/serialport/qt4support/serialport.prf)
 }
+
 win32_msvc: {
  QMAKE_CXXFLAGS += /wd4290
  QMAKE_CFLAGS_DEBUG += /wd4290
@@ -25,7 +26,7 @@ APPVERSION = 0.1
 PREFIX = /home/allen/Projects/PythonQt3.0
 
 #QT       -= gui
-QT       += core xml  gui printsupport   sql network webkitwidgets multimedia
+QT       += core xml  gui printsupport   sql network  multimedia #webkitwidgets
 
 TARGET = Pr3
 TEMPLATE = lib
@@ -36,7 +37,12 @@ unix{
  exists($$PWD/../ftdilib/libftdilib.so) {
   isEmpty(FTDI): FTDI = 1
   DEFINES += HAVE_FTDI
-  message("ftdilib.dll found!")
+  message("ftdilib found!")
+ }
+ exists(/home/allen/Projects/QtWebApp-master/QtWebApp/libQtWebAppd.so) {
+ isEmpty(WEBAPP): WEBAPP = 1
+  DEFINES += QTWEBAPP
+  message("libQtWebAppd found!")
  }
 }
 win32{
@@ -86,7 +92,6 @@ SOURCES += \
     systemconnectionmemo.cpp \
     loconetsystemconnectionmemo.cpp \
     abstractpowermanager.cpp \
-    powermanager.cpp \
     lnpowermanager.cpp \
     loconetthrottledtransmitter.cpp \
     lnprogrammermanager.cpp \
@@ -115,7 +120,6 @@ SOURCES += \
     timebase.cpp \
     abstractproxymanager.cpp \
     pr3systemconnectionmemo.cpp \
-    instancemanager.cpp \
     proxyreportermanager.cpp \
     proxysensormanager.cpp \
     proxyturnoutmanager.cpp \
@@ -178,7 +182,6 @@ SOURCES += \
     defaultclockcontrol.cpp \
     abstractconsistmanager.cpp \
     abstractvariablelight.cpp \
-    configuremanager.cpp \
     simpletimebase.cpp \
     loconetthrottle.cpp \
     Throttle/throttlewindow.cpp \
@@ -262,7 +265,6 @@ SOURCES += \
     Signal/addsignalmastpanel.cpp \
     sensorturnoutoperator.cpp \
     Signal/signalmastrepeater.cpp \
-    defaultusermessagepreferences.cpp \
     defaultlogix.cpp \
     jmrisimplepropertylistener.cpp \
     defaultlogixmanager.cpp \
@@ -386,7 +388,9 @@ SOURCES += \
     loconet/HexFile/hexfileconnectionconfigxml.cpp \
     loconet/HexFile/hexfileconnectionconfig.cpp \
     abstractsimulatorconnectionconfig.cpp \
-    profile.cpp \
+    jmriuserpreferencesmanager.cpp \
+    preferencesmanager.cpp \
+    abstractpreferencesmanager.cpp \
     audiocommand.cpp \
     abstractaudiothread.cpp \
     defaultaudiomanager.cpp \
@@ -439,7 +443,6 @@ SOURCES += \
     loconet/serverframe.cpp \
     loconet/jmriserver.cpp \
     loconet/clientrxhandler.cpp \
-    Roster/stringtokenizer.cpp \
     loconet/LnOverTcp/lnovertcpconnectionconfig.cpp \
     abstractnetworkconnectionconfig.cpp \
     abstractnetworkconnectionconfigxml.cpp \
@@ -506,7 +509,6 @@ SOURCES += \
     loconet/loconetmsgdialog.cpp \
     loconet/querycvdialog.cpp \
     loconet/loconetmenu.cpp \
-    defaultinstanceinitializer.cpp \
     Throttle/throttleslistaction.cpp \
     Roster/rostergroupspanel.cpp \
     Roster/decoderindexcreateaction.cpp \
@@ -561,19 +563,147 @@ SOURCES += \
     managerdefaultselector.cpp \
     managerdefaultselectorxml.cpp \
     path.cpp \
-     block.cpp \
-     beansetting.cpp \
+    block.cpp \
+    beansetting.cpp \
     blockmanager.cpp \
     entrypoint.cpp \
     reportcontext.cpp \
     userpreferencesmanager.cpp \
-    profilemanager.cpp \
     rostertablemodel.cpp \
     rostergroupselector.cpp \
     Roster/imagedelegate.cpp \
-    Throttle/functionbuttonpropertyeditor.cpp
-    #abstractpreferencesmanager.cpp \
-    #connectionconfigmanager.cpp
+    Throttle/functionbuttonpropertyeditor.cpp \
+    internalsystemconnectionmemo.cpp \
+    defaultpowermanager.cpp \
+    Roster/namecheckaction.cpp \
+    Roster/progcheckaction.cpp \
+    Roster/namefile.cpp \
+    Throttle/stopallbutton.cpp \
+    Throttle/serversocket.cpp \
+    Json/jsonserverpreferences.cpp \
+    Json/jsonserverpreferencespanel.cpp \
+    WiThrottle/abstractcontroller.cpp \
+    WiThrottle/abstractwithrottlepreferences.cpp \
+    WiThrottle/consistcontroller.cpp \
+    WiThrottle/consistfunctioncontroller.cpp \
+    WiThrottle/controllerfilteraction.cpp \
+    WiThrottle/controllerfilterframe.cpp \
+    WiThrottle/deviceserver.cpp \
+    WiThrottle/multithrottle.cpp \
+    WiThrottle/multithrottlecontroller.cpp \
+    WiThrottle/routecontroller.cpp \
+    WiThrottle/throttlecontroller.cpp \
+    WiThrottle/trackpowercontroller.cpp \
+    WiThrottle/turnoutcontroller.cpp \
+    WiThrottle/userinterface.cpp \
+    WiThrottle/wificonsist.cpp \
+    WiThrottle/wificonsistfile.cpp \
+    WiThrottle/wificonsistmanager.cpp \
+    WiThrottle/withrottlecreationaction.cpp \
+    WiThrottle/withrottlemanager.cpp \
+    WiThrottle/withrottlepreferences.cpp \
+    WiThrottle/withrottleprefspanel.cpp \
+    WiThrottle/withrottleslistmodel.cpp \
+    Throttle/consistfile.cpp \
+    Json/jsonthrottle.cpp \
+    Json/jsonthrottlemanager.cpp \
+    Json/jsonthrottlesocketservice.cpp \
+    Json/jsonqt.cpp \
+    Web/jmriconnection.cpp \
+    Json/jsonconnection.cpp \
+    Json/jsonexception.cpp \
+    Json/jsonsensorsocketservice.cpp \
+    Json/jsonsensorhttpservice.cpp \
+    Json/jsonnamedbeanhttpservice.cpp \
+    Json/jsonsensor.cpp \
+    Json/jsonclienthandler.cpp \
+    Json/jsonthrottleservicefactory.cpp \
+    Json/jsonsensorservicefactory.cpp \
+    Json/jsonutilservicefactory.cpp \
+    Json/jsonutilsocketservice.cpp \
+    Json/jsonutilhttpservice.cpp \
+    Json/jsonpowerhttpservice.cpp \
+    Json/jsonpowersocketservice.cpp \
+    Json/jsonturnouthttpservice.cpp \
+    Json/jsonturnoutsocketservice.cpp \
+    Json/jsonturnoutservicefactory.cpp \
+    Json/jsonpowerservicefactory.cpp \
+    Json/jsontimeservicefactory.cpp \
+    Json/jsontimesocketservice.cpp \
+    Json/jsontimehttpservice.cpp \
+    Json/jsonrosterhttpservice.cpp \
+    Json/jsonroster.cpp \
+    Json/jsonrosterservicefactory.cpp \
+    Json/jsonrostersocketservice.cpp \
+    Web/webserver.cpp \
+    Web/webserveraction.cpp \
+#    Web/controller/dumpcontroller.cpp \
+#    Web/controller/fileuploadcontroller.cpp \
+#    Web/controller/formcontroller.cpp \
+#    Web/controller/sessioncontroller.cpp \
+#    Web/controller/templatecontroller.cpp \
+#    Web/requestmapper.cpp \
+    Web/requesthandler.cpp \
+    Web/httpservlet.cpp \
+    Web/genericservlet.cpp \
+    Web/servletexception.cpp \
+    Json/jsonwebsocket.cpp \
+    Web/httpservletrequest.cpp \
+    Web/servletoutputstream.cpp \
+    Web/servletcontext.cpp \
+    Web/rosterservlet.cpp \
+    Web/servletutil.cpp \
+#    Web/controller/servletcontroller.cpp \
+    Web/httpservletresponse.cpp \
+    Web/servletrequest.cpp \
+    Web/configservlet.cpp \
+    Web/jmrijframeservlet.cpp \
+    Web/homeservlet.cpp \
+    Web/denialservlet.cpp \
+    Web/redirectionservlet.cpp \
+    Web/abstractpanelservlet.cpp \
+    Web/panelservlet.cpp \
+    Web/controlpanelservlet.cpp \
+    Web/layoutpanelservlet.cpp \
+    Web/directoryhandler.cpp \
+    Web/directoryresource.cpp \
+    Web/resource.cpp \
+    Web/resourcehandler.cpp \
+    Web/uriutil.cpp \
+    Json/jsonblock.cpp \
+    Json/jsonblockhttpservice.cpp \
+    Json/jsonblockservicefactory.cpp \
+    Json/jsonblocksocketservice.cpp \
+    Json/jsonservlet.cpp \
+    Web/websocketservlet.cpp \
+    Web/messagedigest.cpp \
+    Web/messagedigestspi.cpp \
+    Web/websocketservletfactory.cpp \
+    Json/jsonlightservicefactory.cpp \
+    Json/jsonlightsocketservice.cpp \
+    Json/jsonlighthttpservice.cpp \
+    Json/jsonlayoutblock.cpp \
+    Json/jsonlayoutblockhttpservice.cpp \
+    Json/jsonlayoutblockservicefactory.cpp \
+    Json/jsonlayoutblocksocketservice.cpp \
+    Json/jsonmemory.cpp \
+    Json/jsonmemoryhttpservice.cpp \
+    Json/jsonmemorysocketservice.cpp \
+    Json/jsonmemoryservicefactory.cpp \
+    Json/jsonsignalhead.cpp \
+    Json/jsonsignalheadhttpservice.cpp \
+    Json/jsonsignalheadservicefactory.cpp \
+    Json/jsonsignalheadsocketservice.cpp \
+    Json/jsonsignalmast.cpp \
+    Json/jsonsignalmasthttpservice.cpp \
+    Json/jsonsignalmastservicefactory.cpp \
+    Json/jsonsignalmastsocketservice.cpp \
+    Json/jsonreporter.cpp \
+    Json/jsonreporterhttpservice.cpp \
+    Json/jsonreportersocketservice.cpp \
+    Json/jsonreporterservicefactory.cpp \
+    Json/jsonserver.cpp \
+    Json/jsonserveraction.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -644,7 +774,6 @@ HEADERS += \
     timebase.h \
     abstractproxymanager.h \
     pr3systemconnectionmemo.h \
-    instancemanager.h \
     proxyreportermanager.h \
     proxysensormanager.h \
     proxyturnoutmanager.h \
@@ -782,7 +911,6 @@ HEADERS += \
     Roster/paneprogframe.h \
     Roster/paneopsprogframe.h \
     Roster/rosterframe.h \
-    connectionconfiginterface.h \
     connectionstatus.h \
     Roster/abstractidentify.h \
     Roster/identifyloco.h \
@@ -826,9 +954,6 @@ HEADERS += \
     sensorturnoutoperator.h \
     Signal/signalmastrepeater.h \
     userpreferencesmanager.h \
-    defaultusermessagepreferences.h \
-    comparable.h \
-    comparator.h \
     #actionlistener.h \
     logix.h \
     defaultlogix.h \
@@ -960,7 +1085,6 @@ HEADERS += \
     loconet/HexFile/hexfileconnectionconfigxml.h \
     loconet/HexFile/hexfileconnectionconfig.h \
     abstractsimulatorconnectionconfig.h \
-    profile.h \
     audiocommand.h \
     audio.h \
     audiobuffer.h \
@@ -1021,7 +1145,6 @@ HEADERS += \
     loconet/serverframe.h \
     loconet/jmriserver.h \
     loconet/clientrxhandler.h \
-    Roster/stringtokenizer.h \
     loconet/LnOverTcp/lnovertcpconnectionconfig.h \
     abstractnetworkconnectionconfig.h \
     abstractnetworkconnectionconfigxml.h \
@@ -1150,16 +1273,159 @@ HEADERS += \
      beansetting.h\
     blockmanager.h \
     #sectionmanager.h \
-    defaultinstanceinitializer.h \
-    instanceinitializer.h \
     entrypoint.h \
     reportcontext.h \
-    profilemanager.h \
     namedbeanhandlemanager.h \
     rostertablemodel.h \
     rostergroupselector.h \
     Roster/imagedelegate.h \
-    Throttle/functionbuttonpropertyeditor.h
+    Throttle/functionbuttonpropertyeditor.h \
+    jmriuserpreferencesmanager.h \
+    preferencesmanager.h \
+    abstractpreferencesmanager.h \
+    internalsystemconnectionmemo.h \
+    defaultpowermanager.h \
+    Roster/namecheckaction.h \
+    Roster/progcheckaction.h \
+    Roster/namefile.h \
+    Throttle/stopallbutton.h \
+    Throttle/serversocket.h \
+    Throttle/consistfile.h \
+    Throttle/throttlelistener.h \
+    Json/jsonserverpreferences.h \
+    Json/jsonserverpreferencespanel.h \
+    WiThrottle/abstractcontroller.h \
+    WiThrottle/abstractwithrottlepreferences.h \
+    WiThrottle/consistcontroller.h \
+    WiThrottle/consistfunctioncontroller.h \
+    WiThrottle/controllerfilteraction.h \
+    WiThrottle/controllerfilterframe.h \
+    WiThrottle/controllerinterface.h \
+    WiThrottle/devicelistener.h \
+    WiThrottle/devicemanager.h \
+    WiThrottle/deviceserver.h \
+    WiThrottle/multithrottle.h \
+    WiThrottle/multithrottlecontroller.h \
+    WiThrottle/routecontroller.h \
+    WiThrottle/throttlecontroller.h \
+    WiThrottle/throttlecontrollerlistener.h \
+    WiThrottle/trackpowercontroller.h \
+    WiThrottle/turnoutcontroller.h \
+    WiThrottle/userinterface.h \
+    WiThrottle/wificonsist.h \
+    WiThrottle/wificonsistfile.h \
+    WiThrottle/wificonsistmanager.h \
+    WiThrottle/withrottlecreationaction.h \
+    WiThrottle/withrottlemanager.h \
+    WiThrottle/withrottlepreferences.h \
+    WiThrottle/withrottleprefspanel.h \
+    WiThrottle/withrottleslistmodel.h \
+    Json/jsonthrottle.h \
+    Json/jsonthrottlemanager.h \
+    Json/jsonthrottlesocketservice.h \
+    Json/jsonqt.h \
+    Web/jmriconnection.h \
+    Web/httpservletresponse.h \
+    Json/jsonconnection.h \
+    Json/jsonexception.h \
+    Json/jsonsocketservice.h \
+    Json/jsonsensor.h \
+    Json/jsonsensorsocketservice.h \
+    Json/jsonsensorhttpservice.h \
+    Json/jsonnamedbeanhttpservice.h \
+    Json/jsonhttpservice.h \
+    Json/jsonservicefactory.h \
+    Json/jsonclienthandler.h \
+    Json/jsonthrottleservicefactory.h \
+    Json/jsonsensorservicefactory.h \
+    Json/jsonutilservicefactory.h \
+    Json/jsonutilsocketservice.h \
+    Json/jsonutilhttpservice.h \
+    Json/jsonpowerhttpservice.h \
+    Json/jsonpowersocketservice.h \
+    Json/jsonturnouthttpservice.h \
+    Json/jsonturnoutsocketservice.h \
+    Json/jsonturnoutservicefactory.h \
+    Json/jsonpowerservicefactory.h \
+    Json/jsontimeservicefactory.h \
+    Json/jsontimesocketservice.h \
+    Json/jsontimehttpservice.h \
+    Json/jsonrosterhttpservice.h \
+    Json/jsonroster.h \
+    Json/jsonrosterservicefactory.h \
+    Json/jsonrostersocketservice.h \
+    Web/webserver.h \
+    Web/webserveraction.h \
+#    Web/controller/dumpcontroller.h \
+#    Web/controller/fileuploadcontroller.h \
+#    Web/controller/formcontroller.h \
+#    Web/controller/sessioncontroller.h \
+#    Web/controller/templatecontroller.h \
+#    Web/requestmapper.h \
+    Web/requesthandler.h \
+    Web/httpservlet.h \
+    Web/genericservlet.h \
+    Web/servlet.h \
+    Web/servletexception.h \
+    Web/servletrequest.h \
+    Web/servletresponse.h \
+    Json/jsonwebsocket.h \
+    Web/httpservletrequest.h \
+    Web/servletconfig.h \
+    Web/servletoutputstream.h \
+    Web/servletcontext.h \
+    Web/rosterservlet.h \
+    Web/servletutil.h \
+    Web/configservlet.h \
+    Web/jmrijframeservlet.h \
+    Web/homeservlet.h \
+    Web/denialservlet.h \
+    Web/redirectionservlet.h \
+    Web/abstractpanelservlet.h \
+    Web/panelservlet.h \
+    Web/controlpanelservlet.h \
+    Web/layoutpanelservlet.h \
+    Web/handlercontainer.h \
+    Web/directoryhandler.h \
+    Web/directoryresource.h \
+    Web/resource.h \
+    Web/resourcehandler.h \
+    Web/uriutil.h \
+    Json/jsonblock.h \
+    Json/jsonblockhttpservice.h \
+    Json/jsonblockservicefactory.h \
+    Json/jsonblocksocketservice.h \
+    Json/jsonservlet.h \
+    Web/websocketservlet.h \
+    Web/messagedigest.h \
+    Web/messagedigestspi.h \
+    Web/websocketservletfactory.h \
+    Json/jsonlightservicefactory.h \
+    Json/jsonlightsocketservice.h \
+    Json/jsonlighthttpservice.h \
+    Json/jsonlayoutblock.h \
+    Json/jsonlayoutblockhttpservice.h \
+    Json/jsonlayoutblockservicefactory.h \
+    Json/jsonlayoutblocksocketservice.h \
+    Json/jsonmemory.h \
+    Json/jsonmemoryhttpservice.h \
+    Json/jsonmemorysocketservice.h \
+    Json/jsonmemoryservicefactory.h \
+    Json/jsonsignalhead.h \
+    Json/jsonsignalheadhttpservice.h \
+    Json/jsonsignalheadservicefactory.h \
+    Json/jsonsignalheadsocketservice.h \
+    Json/jsonsignalmast.h \
+    Json/jsonsignalmasthttpservice.h \
+    Json/jsonsignalmastservicefactory.h \
+    Json/jsonsignalmastsocketservice.h \
+    Json/jsonreporter.h \
+    Json/jsonreporterhttpservice.h \
+    Json/jsonreportersocketservice.h \
+    Json/jsonreporterservicefactory.h \
+    Json/jsonserver.h \
+    Json/jsonserveraction.h
+#    Web/controller/servletcontroller.h
     #abstractpreferencesmanager.h \
     #connectionconfigmanager.h
  !contains(FTDI, 1) {
@@ -1262,8 +1528,8 @@ OTHER_FILES += \
     turnouts.sip \
     configure.py
 
-DEPENDPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet
-INCLUDEPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet
+DEPENDPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web
+INCLUDEPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web
 
 DEFINES += USE_THREAD
 
@@ -1330,4 +1596,16 @@ else:unix: LIBS += -L$$PWD/../Tables/ -lTables
 
 INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
+
+DISTFILES += \
+    WiThrottle/abstractwithrottlepreferences.o \
+    WiThrottle/withrottleprefspanel.o
+
+contains(WEBAPP, 1) {
+
+unix:!macx: LIBS += -L/home/allen/Projects/QtWebApp-master/QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += /home/allen/Projects/QtWebApp-master/QtWebApp /home/allen/Projects/QtWebApp-master/QtWebApp/httpserver/
+DEPENDPATH += /home/allen/Projects/QtWebApp-master/QtWebApp /home/allen/Projects/QtWebApp-master/QtWebApp/httpserver/
+}
 

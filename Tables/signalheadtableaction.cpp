@@ -350,7 +350,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
 
 /*public int SHBeanTableDataModel::getDisplayDeleteMsg() { return InstanceManager::getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
 public void SHBeanTableDataModel::setDisplayDeleteMsg(int boo) { InstanceManager::getDefault(jmri.UserPreferencesManager.class).setMultipleChoiceOption(getClassName(), "delete", boo); }*/
-/*protected*/ QString SHBeanTableDataModel::getMasterClassName() { return /*getClassName();*/ "SHBeanTableDataModel";}
+/*protected*/ QString SHBeanTableDataModel::getMasterClassName() { return /*getClassName();*/ "jmri.jmrit.beantable.SHBeanTableDataModel";}
 
 
 /*public*/ void SHBeanTableDataModel::clickOn(NamedBean* t) {

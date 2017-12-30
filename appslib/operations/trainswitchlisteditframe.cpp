@@ -539,7 +539,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      new TrainSwitchListCommentFrame(l);
  }
 
- /*protected*/ void TrainSwitchListEditFrame::comboBoxActionPerformed(QWidget* ae) {
+ /*protected*/ void TrainSwitchListEditFrame::comboBoxActionPerformed(QWidget* /*ae*/) {
      log->debug("combo box action");
      enableSaveButton(true);
  }

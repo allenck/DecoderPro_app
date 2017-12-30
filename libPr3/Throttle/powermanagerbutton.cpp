@@ -6,10 +6,7 @@
 PowerManagerButton::PowerManagerButton(QWidget *parent) :
     QToolButton(parent)
 {
- powerControl = new PowerPane();
- powerMgr = NULL;
- fullText = false;
- log = new Logger("PowerManagerButton");
+ common(true);
 }
 // /*public*/ abstract class PowerManagerButton extends JButton implements PropertyChangeListener {
 
@@ -21,14 +18,19 @@ PowerManagerButton::PowerManagerButton(QWidget *parent) :
 
 /*public*/ PowerManagerButton::PowerManagerButton(bool fullText, QWidget */*parent*/)
 {
+ common(fullText);
+}
+
+void PowerManagerButton::common(bool fullText)
+{
  powerControl = new PowerPane();
  powerMgr = NULL;
  this->fullText = fullText;
- log = new Logger("PowerManagerButton");
- powerMgr = InstanceManager::powerManagerInstance();
+ powerMgr = (PowerManager*)InstanceManager::getNullableDefault("PowerManager");
  if (powerMgr == NULL)
  {
   log->info("No power manager instance found, panel not active");
+  setEnabled(false);
  }
  else
  {
@@ -146,3 +148,5 @@ void PowerManagerButton::OnClicked()
   }
  }
 }
+
+/*private*/ /*final*/ /*static*/ Logger* PowerManagerButton::log = LoggerFactory::getLogger("PowerManagerButton");

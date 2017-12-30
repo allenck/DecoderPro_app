@@ -5,12 +5,13 @@
 #include <QHash>
 #include "exceptions.h"
 #include "javaqt_global.h"
+#include <QVariant>
 
 class LineReader;
 class QTextStream;
 class JAVAQTSHARED_EXPORT Properties : public QObject
 {
-    Q_OBJECT
+   // Q_OBJECT
 public:
     explicit Properties(QObject *parent = 0);
     /*public*/ Properties(Properties* defaults,QObject *parent = 0);
@@ -18,17 +19,29 @@ public:
     /*public*/ void storeToXML(QTextStream* os, QString comment);
     /*public*/ void storeToXML(QTextStream* os, QString comment, QString encoding)
     throw (IOException);
-    QHash<QString, QString> getHash();
+    QMap<QString, QVariant> getHash();
     /*public*/ /*synchronized*/ void loadFromXML(QTextStream* in);
     /*public*/ QString getProperty(QString key);
     /*public*/ bool containsKey(QString key);
     /*public*/ /*synchronized*/ void load(QTextStream* inStream); //throws IOException
     /*public*/ QString getProperty(QString key, QString defaultValue);
+    void put(QVariant key, QVariant value);
+    QVariant get(QVariant key);
+    /*public*/ void remove(QString);
+    /*public*/ QStringListIterator propertyNames();
+    /*public*/ void store(QTextStream* writer, QString comments) throw (IOException);
+    /*private*/ static void writeComments(QTextStream* bw, QString comments) throw (IOException);
+    /*private*/ QString saveConvert(QString theString,
+                                    bool escapeSpace,
+                                    bool escapeUnicode);
 
 signals:
 
 public slots:
 private:
+    static QMap<QString, QVariant> _hashTable;
+    /*private*/ /*synchronized*/ void enumerate(QMap<QString,QVariant>* h);
+
     /*private*/ /*static*/ class XmlSupport
     {
 #if 0
@@ -45,6 +58,7 @@ private:
     };
     /*private*/ void load0 (LineReader* lr); //throws IOException
     /*private*/ QString loadConvert (QByteArray in, int off, int len, QByteArray convtBuf);
+    /*private*/ void store0(QTextStream* bw, QString comments, bool escUnicode)throw (IOException);
 
 protected:
     /**
@@ -54,9 +68,10 @@ protected:
      * @serial
      */
     /*protected*/ Properties* defaults;
-    static QHash<QString, QString> hash;
+//    static QHash<QString, QString> hash;
+    friend class Preferences;
 };
-#if 1
+
 //class Reader;
 class LineReader : public QObject
 {
@@ -81,6 +96,5 @@ public:
  void common();
 
 };
-#endif
 
 #endif // PROPERTIES_H

@@ -5,7 +5,7 @@
 #include "routetableaction.h"
 #include "jtextfield.h"
 #include <QMessageBox>
-#include "../LayoutEditor/systemnamecomparator.h"
+#include "systemnamecomparator.h"
 
 
 RouteWidget::RouteWidget(QWidget *parent) :

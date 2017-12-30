@@ -17,7 +17,7 @@ class File;
 class AWTEventListener;
 class SplashWindow;
 class AppConfigBase;
-class APPSLIBSHARED_EXPORT Apps : public JmriJFrame
+class APPSLIBSHARED_EXPORT Apps : public QWidget
 {
     Q_OBJECT
 public:
@@ -35,6 +35,7 @@ static /*public*/ bool handleRestart();
 static /*public*/ QString getConfigFileName();
 /*public*/ void windowClosing(QCloseEvent* e);
 void initGui();
+//void init();  // call init after constructor is complete
 
 signals:
 
@@ -44,6 +45,8 @@ void On_handleQuit();
 
 private:
     Logger* log;
+    JFrame* _frame;
+    qint64 start;
     class MyShutdownTask : public AbstractShutDownTask
     {
      public:
@@ -85,7 +88,7 @@ private:
     /*public*/ void doPreferences();
 
 protected:
-    /*protected*/ /*final*/ void addToActionModel();
+    QT_DEPRECATED /*protected*/ /*final*/ void addToActionModel();
     /*protected*/ static bool configOK;
     static bool configDeferredLoadOK;
     /*protected*/ void setButtonSpace();
@@ -109,7 +112,7 @@ protected:
     /*protected*/ QString line8() ;
     /*protected*/ QString line9() ;
     /*protected*/ virtual QString logo();
-    static /*protected*/ void createFrame(Apps* containedPane, JFrame* frame);
+    /*static*/ /*protected*/ void createFrame(Apps* containedPane, JFrame* frame);
     /*protected*/ void createMenus(QMenuBar* menuBar, WindowInterface* wi);
     /*protected*/ void fileMenu(QMenuBar* menuBar, WindowInterface* wi);
     /*protected*/ void setPrefsFrameHelp(JmriJFrame* frame, QString location);

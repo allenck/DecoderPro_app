@@ -20,7 +20,7 @@
 /*public*/ GlobalRosterEntryComboBox::GlobalRosterEntryComboBox(QWidget *parent) :
         RosterEntryComboBox(Roster::instance(), Roster::ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL, parent)
 {
-    //super(Roster::instance(), Roster::ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+    //super(Roster::instance(), Roster::_ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /**
@@ -29,7 +29,7 @@
  */
 /*public*/ GlobalRosterEntryComboBox::GlobalRosterEntryComboBox(Roster* roster, QWidget *parent) : RosterEntryComboBox(roster, Roster::ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL, parent)
 {
-    //super(roster, Roster::ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+    //super(roster, Roster::_ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /**

@@ -29,7 +29,7 @@
 /*protected*/ QWidget* SignalHeadItemPanel::initTablePanel(PickListModel* model, Editor* editor)
 {
  _table = model->makePickTable();
- ROW_HEIGHT = _table->rowHeight(0);
+ ROW_HEIGHT = _table->getRowHeight();
  QWidget* topPanel = new QWidget();
  //topPanel->setLayout(new BorderLayout);
  topPanel->setLayout(new QVBoxLayout);

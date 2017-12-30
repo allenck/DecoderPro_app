@@ -58,7 +58,7 @@
 {
  if (_instance == NULL)
  {
-     _instance = new NXFrame();
+  _instance = new NXFrame();
  }
  if (!_instance->isVisible())
  {
@@ -496,6 +496,7 @@ void NXFrame::on_runManual()
 /*protected*/ void NXFrame::closeFrame()
 {
  clearTempWarrant();
+ _instance = NULL;
  dispose();
 }
 

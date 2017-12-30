@@ -268,11 +268,11 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  QString userName = getUserName(element);
  if (log->isDebugEnabled()) log->debug("defined Block: ("+sysName+")("+(userName==NULL?"<NULL>":userName)+")");
 
- Block* block = InstanceManager::blockManagerInstance()->getBlock(sysName);
+ Block* block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(sysName);
  if (block==NULL)
  { // create it if doesn't exist
-    InstanceManager::blockManagerInstance()->createNewBlock(sysName, userName);
-    block = InstanceManager::blockManagerInstance()->getBlock(sysName);
+    ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(sysName, userName);
+    block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(sysName);
  }
  if (block==NULL){
     log->error("Unable to load block with system name " + sysName + " and username of " +(userName==NULL?"<NULL>":userName));

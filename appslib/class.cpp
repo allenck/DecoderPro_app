@@ -1,6 +1,6 @@
 #include "class.h"
 #include "classloader.h"
-
+#include "exceptions.h"
 /**
  * Instances of the class {@code Class} represent classes and
  * interfaces in a running Java application.  An enum is a kind of
@@ -59,7 +59,7 @@
     static {
         registerNatives();
     }
-#endif
+
     /*
      * Private constructor. Only the Java Virtual Machine creates Class objects.
      * This constructor is not used and prevents the default constructor being
@@ -156,7 +156,7 @@
             return sb.toString();
         }
     }
-
+#endif
     /**
      * Returns the {@code Class} object associated with the class or
      * interface with the given string name.  Invoking this method is
@@ -189,8 +189,8 @@
      * @exception ClassNotFoundException if the class cannot be located
      */
     //@CallerSensitive
-    template <class T>
-    /*public*/ static T* Class::forName(QString className)
+    //template <class T>
+    /*public*/ /*static*/ Class* Class::forName(QString className)
                 //throws ClassNotFoundException
     {
 //        Class<?> caller = Reflection.getCallerClass();
@@ -204,6 +204,10 @@
    #else
       obj = (QObject*)QMetaType::create(id);
    #endif
+      return (Class*)obj;
+    }
+     else
+      throw(ClassNotFoundException(className));
     }
 #if 0
 
@@ -295,7 +299,7 @@
                                             ClassLoader loader,
                                             Class<?> caller)
         throws ClassNotFoundException;
-
+#endif
     /**
      * Creates a new instance of the class represented by this {@code Class}
      * object.  The class is instantiated as if by a {@code new}
@@ -331,10 +335,12 @@
      *          s.checkPackageAccess()} denies access to the package
      *          of this class.
      */
-    @CallerSensitive
-    /*public*/ T newInstance()
-        throws InstantiationException, IllegalAccessException
+    //@CallerSensitive
+    //template<class T>
+    /*public*/ Class* Class::newInstance()
+        throw (InstantiationException, IllegalAccessException)
     {
+#if 0
         if (System.getSecurityManager() != null) {
             checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), false);
         }
@@ -358,7 +364,7 @@
                 // security check to work)
                 java.security.AccessController.doPrivileged(
                     new java.security.PrivilegedAction<Void>() {
-                        /*public*/ Void run() {
+                        public Void run() {
                                 c.setAccessible(true);
                                 return null;
                             }
@@ -387,10 +393,14 @@
             // Not reached
             return null;
         }
+#endif
+        Class* clazz = (Class*)this->metaObject()->newInstance();
+        return clazz;
     }
+#if 0
     /*private*/ volatile transient Constructor<T> cachedConstructor;
     /*private*/ volatile transient Class<?>       newInstanceCallerCache;
-
+#endif
 
     /**
      * Determines if the specified {@code Object} is assignment-compatible
@@ -422,7 +432,22 @@
      *
      * @since JDK1.1
      */
-    /*public*/ native boolean isInstance(Object obj);
+    /*public*/ /*native*/ bool Class::isInstance(QObject* obj)
+     {
+      if(this->metaObject()->superClass() ==  NULL)
+       return false;
+      if(this->metaObject()->className() == obj->metaObject()->className())
+       return true;
+      if(this->metaObject()->superClass()->className() == this->metaObject()->className())
+       return true;
+      else
+      {
+       const QMetaObject* meta = this->metaObject();
+       if(meta != NULL)
+        return ((Class*)this->metaObject()->superClass())->isInstance(obj);
+       else return false;
+      }
+     }
 
 
     /**
@@ -449,9 +474,29 @@
      *            null.
      * @since JDK1.1
      */
-    /*public*/ native boolean isAssignableFrom(Class<?> cls);
+    /*public*/ /*native*/ bool Class::isAssignableFrom(QString cls)
+    {
+     try
+     {
+      Class* clazz = Class::forName(cls);
+      if(clazz->metaObject()->className() == cls)
+       return true;
+      if(clazz->metaObject()->superClass() != NULL)
+      {
+       if(clazz->metaObject()->superClass()->className() == cls)
+        return true;
+       else
+        return((Class*)clazz->metaObject()->superClass())->isAssignableFrom(cls);
+      }
+     }
+     catch(ClassNotFoundException)
+     {
+      return false;
+     }
 
+    }
 
+#if 0
     /**
      * Determines if the specified {@code Class} object represents an
      * interface type.
@@ -483,7 +528,7 @@
      * {@code char}, {@code short}, {@code int},
      * {@code long}, {@code float}, and {@code double}.
      *
-     * <p> These objects may only be accessed via the following /*public*/ static
+     * <p> These objects may only be accessed via the following public static
      * final variables, and are the only {@code Class} objects for which
      * this method returns {@code true}.
      *
@@ -872,16 +917,16 @@
     /**
      * Returns the Java language modifiers for this class or interface, encoded
      * in an integer. The modifiers consist of the Java Virtual Machine's
-     * constants for {@code /*public*/}, {@code protected},
+     * constants for {@code public}, {@code protected},
      * {@code /*private*/}, {@code final}, {@code static},
      * {@code abstract} and {@code interface}; they should be decoded
      * using the methods of class {@code Modifier}.
      *
      * <p> If the underlying class is an array class, then its
-     * {@code /*public*/}, {@code /*private*/} and {@code protected}
+     * {@code public}, {@code /*private*/} and {@code protected}
      * modifiers are the same as those of its component type.  If this
      * {@code Class} represents a primitive type or void, its
-     * {@code /*public*/} modifier is always {@code true}, and its
+     * {@code public} modifier is always {@code true}, and its
      * {@code protected} and {@code /*private*/} modifiers are always
      * {@code false}. If this object represents an array class, a
      * primitive type or void, then its {@code final} modifier is always
@@ -1310,7 +1355,7 @@
     /*private*/ static boolean isAsciiDigit(char c) {
         return '0' <= c && c <= '9';
     }
-
+#endif
     /**
      * Returns the canonical name of the underlying class as
      * defined by the Java Language Specification.  Returns null if
@@ -1321,7 +1366,9 @@
      * {@code null} otherwise.
      * @since 1.5
      */
-    /*public*/ String getCanonicalName() {
+    /*public*/ QString Class::getCanonicalName()
+    {
+#if 0
         if (isArray()) {
             String canonicalName = getComponentType().getCanonicalName();
             if (canonicalName != null)
@@ -1340,8 +1387,10 @@
                 return null;
             return enclosingName + "." + getSimpleName();
         }
+#endif
+        return "";
     }
-
+#if 0
     /**
      * Returns {@code true} if and only if the underlying class
      * is an anonymous class.
@@ -1406,11 +1455,11 @@
 
     /**
      * Returns an array containing {@code Class} objects representing all
-     * the /*public*/ classes and interfaces that are members of the class
-     * represented by this {@code Class} object.  This includes /*public*/
-     * class and interface members inherited from superclasses and /*public*/ class
+     * the public classes and interfaces that are members of the class
+     * represented by this {@code Class} object.  This includes public
+     * class and interface members inherited from superclasses and public class
      * and interface members declared by the class.  This method returns an
-     * array of length 0 if this {@code Class} object has no /*public*/ member
+     * array of length 0 if this {@code Class} object has no public member
      * classes or interfaces.  This method also returns an array of length 0 if
      * this {@code Class} object represents a primitive type, an array
      * class, or void.
@@ -1459,15 +1508,15 @@
 
     /**
      * Returns an array containing {@code Field} objects reflecting all
-     * the accessible /*public*/ fields of the class or interface represented by
+     * the accessible public fields of the class or interface represented by
      * this {@code Class} object.
      *
      * <p> If this {@code Class} object represents a class or interface with no
-     * no accessible /*public*/ fields, then this method returns an array of length
+     * no accessible public fields, then this method returns an array of length
      * 0.
      *
      * <p> If this {@code Class} object represents a class, then this method
-     * returns the /*public*/ fields of the class and of all its superclasses.
+     * returns the public fields of the class and of all its superclasses.
      *
      * <p> If this {@code Class} object represents an interface, then this
      * method returns the fields of the interface and of all its
@@ -1502,12 +1551,12 @@
 
     /**
      * Returns an array containing {@code Method} objects reflecting all the
-     * /*public*/ methods of the class or interface represented by this {@code
+     * public methods of the class or interface represented by this {@code
      * Class} object, including those declared by the class or interface and
      * those inherited from superclasses and superinterfaces.
      *
      * <p> If this {@code Class} object represents a type that has multiple
-     * /*public*/ methods with the same name and parameter types, but different
+     * public methods with the same name and parameter types, but different
      * return types, then the returned array has a {@code Method} object for
      * each such method.
      *
@@ -1516,7 +1565,7 @@
      * <em>not</em> have a corresponding {@code Method} object.
      *
      * <p> If this {@code Class} object represents an array type, then the
-     * returned array has a {@code Method} object for each of the /*public*/
+     * returned array has a {@code Method} object for each of the public
      * methods inherited by the array type from {@code Object}. It does not
      * contain a {@code Method} object for {@code clone()}.
      *
@@ -1525,7 +1574,7 @@
      * {@code Object}. Therefore, if no methods are explicitly declared in
      * this interface or any of its superinterfaces then the returned array
      * has length 0. (Note that a {@code Class} object which represents a class
-     * always has /*public*/ methods, inherited from {@code Object}.)
+     * always has public methods, inherited from {@code Object}.)
      *
      * <p> If this {@code Class} object represents a primitive type or void,
      * then the returned array has length 0.
@@ -1538,7 +1587,7 @@
      * particular order.
      *
      * @return the array of {@code Method} objects representing the
-     *         /*public*/ methods of this class
+     *         public methods of this class
      * @throws SecurityException
      *         If a security manager, <i>s</i>, is present and
      *         the caller's class loader is not the same as or an
@@ -1560,9 +1609,9 @@
 
     /**
      * Returns an array containing {@code Constructor} objects reflecting
-     * all the /*public*/ constructors of the class represented by this
+     * all the public constructors of the class represented by this
      * {@code Class} object.  An array of length 0 is returned if the
-     * class has no /*public*/ constructors, or if the class is an array class, or
+     * class has no public constructors, or if the class is an array class, or
      * if the class reflects a primitive type or void.
      *
      * Note that while this method returns an array of {@code
@@ -1576,7 +1625,7 @@
      * {@code Constructor<T>[]}.
      *
      * @return the array of {@code Constructor} objects representing the
-     *         /*public*/ constructors of this class
+     *         public constructors of this class
      * @throws SecurityException
      *         If a security manager, <i>s</i>, is present and
      *         the caller's class loader is not the same as or an
@@ -1595,7 +1644,7 @@
 
 
     /**
-     * Returns a {@code Field} object that reflects the specified /*public*/ member
+     * Returns a {@code Field} object that reflects the specified public member
      * field of the class or interface represented by this {@code Class}
      * object. The {@code name} parameter is a {@code String} specifying the
      * simple name of the desired field.
@@ -1604,7 +1653,7 @@
      * follows.  Let C be the class or interface represented by this object:
      *
      * <OL>
-     * <LI> If C declares a /*public*/ field with the name specified, that is the
+     * <LI> If C declares a public field with the name specified, that is the
      *      field to be reflected.</LI>
      * <LI> If no field was found in step 1 above, this algorithm is applied
      *      recursively to each direct superinterface of C. The direct
@@ -1649,7 +1698,7 @@
 
 
     /**
-     * Returns a {@code Method} object that reflects the specified /*public*/
+     * Returns a {@code Method} object that reflects the specified public
      * member method of the class or interface represented by this
      * {@code Class} object. The {@code name} parameter is a
      * {@code String} specifying the simple name of the desired method. The
@@ -1676,7 +1725,7 @@
      * </OL>
      *
      * <p> To find a matching method in a class or interface C:&nbsp; If C
-     * declares exactly one /*public*/ method with the specified name and exactly
+     * declares exactly one public method with the specified name and exactly
      * the same formal parameter types, that is the method reflected. If more
      * than one such method is found in C, and one of these methods has a
      * return type that is more specific than any of the others, that method is
@@ -1733,7 +1782,7 @@
 
     /**
      * Returns a {@code Constructor} object that reflects the specified
-     * /*public*/ constructor of the class represented by this {@code Class}
+     * public constructor of the class represented by this {@code Class}
      * object. The {@code parameterTypes} parameter is an array of
      * {@code Class} objects that identify the constructor's formal
      * parameter types, in declared order.
@@ -1742,12 +1791,12 @@
      * declared in a non-static context, the formal parameter types
      * include the explicit enclosing instance as the first parameter.
      *
-     * <p> The constructor to reflect is the /*public*/ constructor of the class
+     * <p> The constructor to reflect is the public constructor of the class
      * represented by this {@code Class} object whose formal parameter
      * types match those specified by {@code parameterTypes}.
      *
      * @param parameterTypes the parameter array
-     * @return the {@code Constructor} object of the /*public*/ constructor that
+     * @return the {@code Constructor} object of the public constructor that
      *         matches the specified {@code parameterTypes}
      * @throws NoSuchMethodException if a matching method is not found.
      * @throws SecurityException
@@ -1771,7 +1820,7 @@
     /**
      * Returns an array of {@code Class} objects reflecting all the
      * classes and interfaces declared as members of the class represented by
-     * this {@code Class} object. This includes /*public*/, protected, default
+     * this {@code Class} object. This includes public, protected, default
      * (package) access, and /*private*/ classes and interfaces declared by the
      * class, but excludes inherited classes and interfaces.  This method
      * returns an array of length 0 if the class declares no classes or
@@ -1813,7 +1862,7 @@
     /**
      * Returns an array of {@code Field} objects reflecting all the fields
      * declared by the class or interface represented by this
-     * {@code Class} object. This includes /*public*/, protected, default
+     * {@code Class} object. This includes public, protected, default
      * (package) access, and /*private*/ fields, but excludes inherited fields.
      *
      * <p> If this {@code Class} object represents a class or interface with no
@@ -1863,7 +1912,7 @@
      *
      * Returns an array containing {@code Method} objects reflecting all the
      * declared methods of the class or interface represented by this {@code
-     * Class} object, including /*public*/, protected, default (package)
+     * Class} object, including public, protected, default (package)
      * access, and /*private*/ methods, but excluding inherited methods.
      *
      * <p> If this {@code Class} object represents a type that has multiple
@@ -1921,8 +1970,8 @@
     /**
      * Returns an array of {@code Constructor} objects reflecting all the
      * constructors declared by the class represented by this
-     * {@code Class} object. These are /*public*/, protected, default
-     * (package) access, and /*private*/ constructors.  The elements in the array
+     * {@code Class} object. These are public, protected, default
+     * (package) access, and private constructors.  The elements in the array
      * returned are not sorted and are not in any particular order.  If the
      * class has a default constructor, it is included in the returned array.
      * This method returns an array of length 0 if this {@code Class}
@@ -2405,11 +2454,11 @@
     // reflection data that might get invalidated when JVM TI RedefineClasses() is called
     /*private*/ static class ReflectionData<T> {
         volatile Field[] declaredFields;
-        volatile Field[] /*public*/Fields;
+        volatile Field[] publicFields;
         volatile Method[] declaredMethods;
-        volatile Method[] /*public*/Methods;
+        volatile Method[] publicMethods;
         volatile Constructor<T>[] declaredConstructors;
-        volatile Constructor<T>[] /*public*/Constructors;
+        volatile Constructor<T>[] publicConstructors;
         // Intermediate results for getFields and getMethods
         volatile Field[] declaredPublicFields;
         volatile Method[] declaredPublicMethods;
@@ -2513,18 +2562,18 @@
     // Returns an array of "root" fields. These Field objects must NOT
     // be propagated to the outside world, but must instead be copied
     // via ReflectionFactory.copyField.
-    /*private*/ Field[] /*private*/GetDeclaredFields(boolean /*public*/Only) {
+    /*private*/ Field[] /*private*/GetDeclaredFields(boolean publicOnly) {
         checkInitted();
         Field[] res;
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
-            res = /*public*/Only ? rd.declaredPublicFields : rd.declaredFields;
+            res = publicOnly ? rd.declaredPublicFields : rd.declaredFields;
             if (res != null) return res;
         }
         // No cached value available; request value from VM
-        res = Reflection.filterFields(this, getDeclaredFields0(/*public*/Only));
+        res = Reflection.filterFields(this, getDeclaredFields0(publicOnly));
         if (rd != null) {
-            if (/*public*/Only) {
+            if (publicOnly) {
                 rd.declaredPublicFields = res;
             } else {
                 rd.declaredFields = res;
@@ -2541,7 +2590,7 @@
         Field[] res;
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
-            res = rd./*public*/Fields;
+            res = rd.publicFields;
             if (res != null) return res;
         }
 
@@ -2575,7 +2624,7 @@
         res = new Field[fields.size()];
         fields.toArray(res);
         if (rd != null) {
-            rd./*public*/Fields = res;
+            rd.publicFields = res;
         }
         return res;
     }
@@ -2596,12 +2645,12 @@
     // Returns an array of "root" constructors. These Constructor
     // objects must NOT be propagated to the outside world, but must
     // instead be copied via ReflectionFactory.copyConstructor.
-    /*private*/ Constructor<T>[] /*private*/GetDeclaredConstructors(boolean /*public*/Only) {
+    /*private*/ Constructor<T>[] /*private*/GetDeclaredConstructors(boolean publicOnly) {
         checkInitted();
         Constructor<T>[] res;
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
-            res = /*public*/Only ? rd./*public*/Constructors : rd.declaredConstructors;
+            res = publicOnly ? rd.publicConstructors : rd.declaredConstructors;
             if (res != null) return res;
         }
         // No cached value available; request value from VM
@@ -2610,11 +2659,11 @@
             Constructor<T>[] temporaryRes = (Constructor<T>[]) new Constructor<?>[0];
             res = temporaryRes;
         } else {
-            res = getDeclaredConstructors0(/*public*/Only);
+            res = getDeclaredConstructors0(publicOnly);
         }
         if (rd != null) {
-            if (/*public*/Only) {
-                rd./*public*/Constructors = res;
+            if (publicOnly) {
+                rd.publicConstructors = res;
             } else {
                 rd.declaredConstructors = res;
             }
@@ -2631,18 +2680,18 @@
     // Returns an array of "root" methods. These Method objects must NOT
     // be propagated to the outside world, but must instead be copied
     // via ReflectionFactory.copyMethod.
-    /*private*/ Method[] /*private*/GetDeclaredMethods(boolean /*public*/Only) {
+    /*private*/ Method[] /*private*/GetDeclaredMethods(boolean publicOnly) {
         checkInitted();
         Method[] res;
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
-            res = /*public*/Only ? rd.declaredPublicMethods : rd.declaredMethods;
+            res = publicOnly ? rd.declaredPublicMethods : rd.declaredMethods;
             if (res != null) return res;
         }
         // No cached value available; request value from VM
-        res = Reflection.filterMethods(this, getDeclaredMethods0(/*public*/Only));
+        res = Reflection.filterMethods(this, getDeclaredMethods0(publicOnly));
         if (rd != null) {
-            if (/*public*/Only) {
+            if (publicOnly) {
                 rd.declaredPublicMethods = res;
             } else {
                 rd.declaredMethods = res;
@@ -2833,12 +2882,12 @@
         Method[] res;
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
-            res = rd./*public*/Methods;
+            res = rd.publicMethods;
             if (res != null) return res;
         }
 
         // No cached value available; compute value recursively.
-        // Start by fetching /*public*/ declared methods
+        // Start by fetching public declared methods
         MethodArray methods = new MethodArray();
         {
             Method[] tmp = /*private*/GetDeclaredMethods(true);
@@ -2884,7 +2933,7 @@
         methods.compactAndTrim();
         res = methods.getArray();
         if (rd != null) {
-            rd./*public*/Methods = res;
+            rd.publicMethods = res;
         }
         return res;
     }
@@ -2908,12 +2957,12 @@
         // Note: the intent is that the search algorithm this routine
         // uses be equivalent to the ordering imposed by
         // /*private*/GetPublicFields(). It fetches only the declared
-        // /*public*/ fields for each class, however, to reduce the number
+        // public fields for each class, however, to reduce the number
         // of Field objects which have to be created for the common
         // case where the field being requested is declared in the
         // class which is being queried.
         Field res;
-        // Search declared /*public*/ fields
+        // Search declared public fields
         if ((res = searchFields(/*private*/GetDeclaredFields(true), name)) != null) {
             return res;
         }
@@ -2973,7 +3022,7 @@
         // Note: the intent is that the search algorithm this routine
         // uses be equivalent to the ordering imposed by
         // /*private*/GetPublicMethods(). It fetches only the declared
-        // /*public*/ methods for each class, however, to reduce the
+        // public methods for each class, however, to reduce the
         // number of Method objects which have to be created for the
         // common case where the method being requested is declared in
         // the class which is being queried.
@@ -2986,7 +3035,7 @@
 
         // Must _not_ return root methods
         Method res;
-        // Search declared /*public*/ methods
+        // Search declared public methods
         if ((res = searchMethods(/*private*/GetDeclaredMethods(true),
                                  name,
                                  parameterTypes)) != null) {
@@ -3077,9 +3126,9 @@
         return out;
     }
 
-    /*private*/ native Field[]       getDeclaredFields0(boolean /*public*/Only);
-    /*private*/ native Method[]      getDeclaredMethods0(boolean /*public*/Only);
-    /*private*/ native Constructor<T>[] getDeclaredConstructors0(boolean /*public*/Only);
+    /*private*/ native Field[]       getDeclaredFields0(boolean publicOnly);
+    /*private*/ native Method[]      getDeclaredMethods0(boolean publicOnly);
+    /*private*/ native Constructor<T>[] getDeclaredConstructors0(boolean publicOnly);
     /*private*/ native Class<?>[]   getDeclaredClasses0();
 
     /*private*/ static String        argumentTypesToString(Class<?>[] argTypes) {
@@ -3197,7 +3246,7 @@
     /*private*/ static void checkInitted() {
         if (initted) return;
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                /*public*/ Void run() {
+                public Void run() {
                     // Tests to ensure the system properties table is fully
                     // initialized. This is needed because reflection code is
                     // called very early in the initialization process (before
@@ -3253,7 +3302,7 @@
                 final Method values = getMethod("values");
                 java.security.AccessController.doPrivileged(
                     new java.security.PrivilegedAction<Void>() {
-                        /*public*/ Void run() {
+                        public Void run() {
                                 values.setAccessible(true);
                                 return null;
                             }
@@ -3272,9 +3321,9 @@
     /*private*/ volatile transient T[] enumConstants = null;
 
     /**
-     * Returns a map from simple name to enum constant.  This package-/*private*/
+     * Returns a map from simple name to enum constant.  This package-private
      * method is used internally by Enum to implement
-     * {@code /*public*/ static <T extends Enum<T>> T valueOf(Class<T>, String)}
+     * {@code public static <T extends Enum<T>> T valueOf(Class<T>, String)}
      * efficiently.  Note that the map is returned by this method is
      * created lazily on first use.  Typically it won't ever get created.
      */

@@ -43,10 +43,11 @@ public:
     /*public*/ bool storeUser(File* file) ;
     /*public*/ bool makeBackup(File* file);
     static /*public*/ QDomElement elementFromObject(QObject* o);
-    /*public*/ bool load(File* fi) throw (JmriConfigureXmlException) ;
-    /*public*/ bool load(QUrl url) throw (JmriConfigureXmlException);
-    /*public*/ bool load(File* fi, bool registerDeferred) throw (JmriConfigureXmlException) ;
-    /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException) ;
+    static /*public*/ QDomElement elementFromObject(QObject* object, bool shared);
+    /*public*/ bool load(File* fi) throw (JmriException) ;
+    /*public*/ bool load(QUrl url) throw (JmriException);
+    /*public*/ bool load(File* fi, bool registerDeferred) throw (JmriException) ;
+    /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriException) ;
     /*public*/ bool loadDeferred(File* fi);
     /*public*/ bool loadDeferred(QUrl url);
     /*public*/ QUrl find(QString f);
@@ -73,6 +74,7 @@ signals:
 
 public slots:
 private:
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ConfigXmlManager");
     QList<QObject*>  plist;// = new QList<QObject*> ();
     //Hashtable<Object, Integer> clist = new Hashtable<Object, Integer>();
     //QHash<QObject*, int> clist;// = Collections.synchronizedMap(new LinkedHashMap<Object, Integer>());
@@ -87,7 +89,6 @@ private:
     /*private*/ static /*final*/ QString fileLocation;// = "layout"+File.separator;
     static ErrorHandler* handler;// = new ErrorHandler();
     static /*public*/ void setErrorHandler(ErrorHandler* handler);
-    Logger* log;
     QMap<QString, QString> configXmlMap;
 //    /*private*/ void loadVersion(QDomElement root, XmlAdapter* adapter) ;
 
@@ -101,6 +102,8 @@ protected:
     /*protected*/ void addUserPrefsStore(QDomElement root);
     /*protected*/ void includeHistory(QDomElement root);
     /*protected*/ bool finalStore(QDomElement root, File* file);
+    /*protected*/ QList<QDomElement> getLoadDeferredList();
+
 friend class Apps;
 friend class AppsBase;
 };

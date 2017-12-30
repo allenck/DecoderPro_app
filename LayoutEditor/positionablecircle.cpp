@@ -21,7 +21,9 @@
  //super(editor);
  //_radius = 100;
  _height = 100;
- _itemGroup = new QGraphicsItemGroup();
+ _itemGroup = new MyGraphicsItemGroup();
+ _itemGroup->setName("PositionableCircle");
+
  _shape = new JShape();
  setObjectName("PositionableCircle");
 }

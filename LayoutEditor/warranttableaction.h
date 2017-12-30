@@ -218,7 +218,7 @@ public:
 
 
 public slots:
- void actionPerformed(ActionEvent *e = 0)
+ void actionPerformed(ActionEvent */*e*/ = 0)
  {
   WarrantTableAction::_log = OpSessionLog::getInstance();
    if (!WarrantTableAction::_log->showFileChooser(WarrantTableFrame::getInstance()))
@@ -226,7 +226,7 @@ public slots:
     WarrantTableAction::_log = NULL;
     return;
    }
-#if 0 // TODO:
+#if 0  // TODO:
    if (WarrantTableAction::_shutDownTask == NULL) {
        WarrantTableAction::_shutDownTask = new SwingShutDownTask("PanelPro Save default icon check",
                NULL, NULL, NULL)
@@ -240,6 +240,10 @@ public slots:
        jmri.InstanceManager.shutDownManagerInstance().register(_shutDownTask);
    }
 #endif
+   if(WarrantTableAction::_shutDownTask == NULL)
+    WarrantTableAction::_shutDownTask = new WTAShutDownTask("PanelPro Save default icon check",
+            NULL, NULL, NULL);
+
    WarrantTableAction::updateWarrantMenu(NULL);
   }
 };
@@ -252,7 +256,7 @@ public:
  StopLogActionListener() {}
 
 public slots:
- void actionPerformed(ActionEvent *e = 0)
+ void actionPerformed(ActionEvent */*e*/ = 0)
  {
   WarrantTableAction::_log->close();
   InstanceManager::shutDownManagerInstance()->deregister(WarrantTableAction::_shutDownTask);
@@ -270,7 +274,7 @@ class CreateNXWarrantActionListener : public ActionListener
 public:
 
 public slots:
- void actionPerformed(ActionEvent *e = 0)
+ void actionPerformed(ActionEvent */*e */= 0)
  {
   WarrantTableFrame::nxAction();
  }

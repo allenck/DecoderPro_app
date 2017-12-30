@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'lroutewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -60,8 +60,8 @@ public:
 
     void retranslateUi(QWidget *LRouteWidget)
     {
-        LRouteWidget->setWindowTitle(QApplication::translate("LRouteWidget", "Form", 0));
-        btnAdd->setText(QApplication::translate("LRouteWidget", "Add", 0));
+        LRouteWidget->setWindowTitle(QApplication::translate("LRouteWidget", "Form", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("LRouteWidget", "Add", Q_NULLPTR));
     } // retranslateUi
 
 };

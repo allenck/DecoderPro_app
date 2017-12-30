@@ -27,7 +27,6 @@ LnOverTcpConnectionConfig::LnOverTcpConnectionConfig(QObject *parent) :
 {
  //super(p);
  setObjectName("LnOverTcpConnectionConfig");
-
 }
 
 /**

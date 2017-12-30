@@ -4,7 +4,7 @@
 #include <QObject>
 #include "basicrosterentry.h"
 #include "dccthrottle.h"
-#include "throttlelistener.h"
+#include "Throttle/throttlelistener.h"
 #include "logger.h"
 
 class AbstractThrottleManager;

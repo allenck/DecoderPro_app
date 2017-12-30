@@ -1,10 +1,20 @@
 #include "performactionmodel.h"
+#include "actionevent.h"
 
 PerformActionModel::PerformActionModel(QObject *parent) :
     AbstractActionModel(parent)
 {
  setObjectName("PerformActionModel");
  l = QList<PerformActionModel*>();
+}
+
+//@Override
+/*protected*/ void PerformActionModel::performAction(Action* action) throw (JmriException)
+{
+ QString prefs = QString("prefs");
+ ActionEvent* event = new ActionEvent((QObject*)&prefs, 0, ""); // TODO:
+ //action->actionPerformed(event);
+ emit actionPerformed(event);
 }
 /**
  * Invokes a Swing Action

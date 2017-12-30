@@ -73,7 +73,7 @@ JmriAbstractAction::JmriAbstractAction(QObject *parent) :
 
 void JmriAbstractAction::common()
 {
- hint = WindowInterface::DEFAULT;
+ //hint = WindowInterface::DEFAULT;
  context = NULL;
  cache = NULL;
  //connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
@@ -93,10 +93,10 @@ void JmriAbstractAction::common()
  return Action::NAME;
 }
 
-/*public*/  JmriAbstractAction* JmriAbstractAction::setHint(WindowInterface::Hint hint) {
-    this->hint = hint;
-    return this;
-}
+///*public*/  JmriAbstractAction* JmriAbstractAction::setHint(WindowInterface::Hint hint) {
+//    this->hint = hint;
+//    return this;
+//}
 
 //@Override
 /*public*/  void JmriAbstractAction::actionPerformed(ActionEvent* /*e*/)
@@ -123,7 +123,10 @@ Logger::error("Exception creating panel: " + ex.getMessage());
   }
  }
 
- wi->show(cache, this, hint);  // no real context, this is new content
+ if(static_cast<JmriJFrameInterface*>(wi) != NULL)
+  ((JmriJFrameInterface*)wi)->show(cache, this, WindowInterface::DEFAULT);  // no real context, this is new content
+
+ wi->show(cache, this, WindowInterface::DEFAULT);  // no real context, this is new content
 }
 
 /*public*/  void JmriAbstractAction::dispose()
@@ -136,14 +139,14 @@ Logger::error("Exception creating panel: " + ex.getMessage());
 }
 
 //A crude method to set a parameter in a given window when loading from the xml file
-/*public*/  void JmriAbstractAction::setParameter(QString parameter, QString value) {
+/*public*/  void JmriAbstractAction::setParameter(QString /*parameter*/, QString /*value*/) {
 }
 
 // A method to allow named parameters to be passed in
 // Note that if value is a String, setParameter(String, String) needs to be
 // implemented (for reasons I do not understand jmri.util.swing.GuiUtilBase
 // will not call this method with a String parameter for value)
-/*public*/  void JmriAbstractAction::setParameter(QString parameter, QObject* value) {
+/*public*/  void JmriAbstractAction::setParameter(QString /*parameter*/, QObject* /*value*/) {
 }
 
 /*public*/  JmriPanel* JmriAbstractAction::makePanel() {

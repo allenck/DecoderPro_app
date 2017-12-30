@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'lightwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -77,10 +77,10 @@ public:
 
     void retranslateUi(QDialog *LightWidget)
     {
-        LightWidget->setWindowTitle(QApplication::translate("LightWidget", "Dialog", 0));
-        btnAdd->setText(QApplication::translate("LightWidget", "Add", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("LightWidget", "All", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("LightWidget", "Internal", 0));
+        LightWidget->setWindowTitle(QApplication::translate("LightWidget", "Dialog", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("LightWidget", "Add", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("LightWidget", "All", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("LightWidget", "Internal", Q_NULLPTR));
         label->setText(QString());
     } // retranslateUi
 

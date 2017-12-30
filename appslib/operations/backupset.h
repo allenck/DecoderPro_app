@@ -13,10 +13,10 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  explicit BackupSet(QObject *parent = 0) {}
+  explicit BackupSet(QObject *parent = 0) : QObject(parent) {}
   /*public*/ BackupSet(File* dir, QObject *parent = 0);
   ~BackupSet() {}
-  BackupSet(const BackupSet&) {}
+  BackupSet(const BackupSet&) : QObject() {}
   /*public*/ void _delete();
   /*public*/ QString getSetName();
   /*public*/ QString toString();

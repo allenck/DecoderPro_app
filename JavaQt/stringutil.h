@@ -4,6 +4,8 @@
 #include <QString>
 #include <QStringList>
 #include "javaqt_global.h"
+#include <QTranslator>
+
 
 class JAVAQTSHARED_EXPORT StringUtil
 {
@@ -21,6 +23,12 @@ public:
     static /*public*/ void sort(QStringList values);
     static /*public*/ QByteArray bytesFromHexString(QString s);
     static /*public*/ void numberSort(QStringList values);// //throws NumberFormatException
+    /*public*/ static QString stringFormat(QLocale locale, QString in );
+    static /*public*/ QString escapeString(QString s);
+    static /*public*/ QString unescapeString(QString s);
+
+private:
+    /*private*/ static QTranslator* translator;// = QTranslator();
 
 };
 

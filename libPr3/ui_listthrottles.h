@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'listthrottles.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -72,8 +72,8 @@ public:
 
     void retranslateUi(QMainWindow *ListThrottles)
     {
-        ListThrottles->setWindowTitle(QApplication::translate("ListThrottles", "Local Throttles", 0));
-        toolBar->setWindowTitle(QApplication::translate("ListThrottles", "toolBar", 0));
+        ListThrottles->setWindowTitle(QApplication::translate("ListThrottles", "Local Throttles", Q_NULLPTR));
+        toolBar->setWindowTitle(QApplication::translate("ListThrottles", "toolBar", Q_NULLPTR));
     } // retranslateUi
 
 };

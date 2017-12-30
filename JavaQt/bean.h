@@ -22,7 +22,9 @@ protected:
  /*protected*/ /*final*/ PropertyChangeSupport* propertyChangeSupport;// = new PropertyChangeSupport(this);
  /*protected*/ void firePropertyChange(QString key, int oldValue, int value);
  /*protected*/ void firePropertyChange(QString key, QVariant oldValue, QVariant value);
-
+ /*protected*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue);
+friend class ManagerDefaultsConfigPane;
+friend class SATableModel;
 };
 
 #endif // BEAN_H

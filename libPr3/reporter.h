@@ -86,7 +86,7 @@ public:
          * to set it from inside the program, e.g. debugging via entering
          * values in the Reporter Table.  Hence provision of this method.
          */
-        virtual void setReport(QVariant r) const {}
+        virtual void setReport(QVariant /*r*/) const {}
         /**
          * Provide an int form of the last report.
          *

@@ -2257,7 +2257,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return AbstractProxyManager::makeBean(arg__1, systemName1, userName2);
 }
-AbstractManager*  PythonQtShell_AbstractProxyManager::makeInternalManager() const
+Manager*  PythonQtShell_AbstractProxyManager::makeInternalManager() const
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("makeInternalManager");
@@ -2448,7 +2448,7 @@ QList<Manager* >  PythonQtWrapper_AbstractProxyManager::getManagerList(AbstractP
   return ( theWrappedObject->getManagerList());
 }
 
-AbstractManager*  PythonQtWrapper_AbstractProxyManager::getMgr(AbstractProxyManager* theWrappedObject, int  index)
+Manager*  PythonQtWrapper_AbstractProxyManager::getMgr(AbstractProxyManager* theWrappedObject, int  index)
 {
   return ( ((PythonQtPublicPromoter_AbstractProxyManager*)theWrappedObject)->promoted_getMgr(index));
 }
@@ -2483,7 +2483,7 @@ NamedBean*  PythonQtWrapper_AbstractProxyManager::makeBean(AbstractProxyManager*
   return ( ((PythonQtPublicPromoter_AbstractProxyManager*)theWrappedObject)->promoted_makeBean(arg__1, systemName, userName));
 }
 
-AbstractManager*  PythonQtWrapper_AbstractProxyManager::makeInternalManager(AbstractProxyManager* theWrappedObject) const
+Manager*  PythonQtWrapper_AbstractProxyManager::makeInternalManager(AbstractProxyManager* theWrappedObject) const
 {
   return ( ((PythonQtPublicPromoter_AbstractProxyManager*)theWrappedObject)->promoted_makeInternalManager());
 }
@@ -17583,17 +17583,17 @@ return new PythonQtShell_InstanceManager(parent); }
 
 void PythonQtWrapper_InstanceManager::static_InstanceManager_addPropertyChangeListener(PropertyChangeListener*  l)
 {
-  (PythonQtPublicPromoter_InstanceManager::promoted_addPropertyChangeListener(l));
+  //(PythonQtPublicPromoter_InstanceManager::promoted_addPropertyChangeListener(l));
 }
 
 void PythonQtWrapper_InstanceManager::addReporterManager(InstanceManager* theWrappedObject, ReporterManager*  p)
 {
-  ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addReporterManager(p));
+ // ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addReporterManager(p));
 }
 
 void PythonQtWrapper_InstanceManager::addSensorManager(InstanceManager* theWrappedObject, SensorManager*  p)
 {
-  ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addSensorManager(p));
+  //( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addSensorManager(p));
 }
 
 void PythonQtWrapper_InstanceManager::addShutdownManager(InstanceManager* theWrappedObject, ShutDownManager*  p)

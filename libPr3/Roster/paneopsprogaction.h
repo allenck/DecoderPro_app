@@ -1,13 +1,13 @@
 #ifndef PANEOPSPROGACTION_H
 #define PANEOPSPROGACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
 #include "logger.h"
 #include "knownlocoselpane.h"
 #include "libPr3_global.h"
 
 class QLabel;
-class LIBPR3SHARED_EXPORT PaneOpsProgAction : public QAction
+class LIBPR3SHARED_EXPORT PaneOpsProgAction : public AbstractAction
 {
     Q_OBJECT
 public:
@@ -17,7 +17,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed();
 
 private:
     QLabel* statusLabel;

@@ -513,6 +513,8 @@ protected:
     friend class LayoutBlockRouteTableModel;
     friend class LayoutTurnout;
     friend class LBWindowListener;
+    friend class JsonLayoutBlockSocketService;
+    friend class LayoutBlockListener;
 }; // end class LayoutBlock
 
 class Routes : public QObject

@@ -9,7 +9,7 @@ class LIBPR3SHARED_EXPORT LnTurnoutManager : public AbstractTurnoutManager
 {
  Q_OBJECT
 public:
-    LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry);
+    LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry, QObject* parent = 0);
     virtual QString getSystemPrefix();
     virtual void dispose();
     virtual Turnout* createNewTurnout(QString systemName, QString userName);

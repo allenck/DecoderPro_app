@@ -27,7 +27,7 @@
 
 /*protected*/ QWidget* MultiSensorItemPanel::initTablePanel(PickListModel* model, Editor* /*editor*/) {
     _table = model->makePickTable();
-    ROW_HEIGHT = _table->rowHeight(0);
+    ROW_HEIGHT = _table->getRowHeight();
 //    TableColumn column = new TableColumn(PickListModel::POSITION_COL);
 //    column.setHeaderValue("Position");
 //    _table.addColumn(column);

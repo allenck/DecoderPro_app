@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'routewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -79,19 +79,19 @@ public:
 
     void retranslateUi(QDialog *RouteWidget)
     {
-        RouteWidget->setWindowTitle(QApplication::translate("RouteWidget", "Dialog", 0));
-        btnAdd->setText(QApplication::translate("RouteWidget", "Add", 0));
+        RouteWidget->setWindowTitle(QApplication::translate("RouteWidget", "Dialog", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("RouteWidget", "Add", Q_NULLPTR));
         label->setText(QString());
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("RouteWidget", "System Name", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("RouteWidget", "System Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("RouteWidget", "User Name", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("RouteWidget", "User Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem2->setText(QApplication::translate("RouteWidget", "Comment", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("RouteWidget", "Comment", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(5);
-        ___qtablewidgetitem3->setText(QApplication::translate("RouteWidget", "Enabled", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("RouteWidget", "Enabled", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(6);
-        ___qtablewidgetitem4->setText(QApplication::translate("RouteWidget", "Locked", 0));
+        ___qtablewidgetitem4->setText(QApplication::translate("RouteWidget", "Locked", Q_NULLPTR));
     } // retranslateUi
 
 };

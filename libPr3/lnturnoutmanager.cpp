@@ -4,7 +4,7 @@
 #include "exceptions.h"
 #include "locobufferadapter.h"
 
-LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry)
+LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry, QObject* parent) : AbstractTurnoutManager(parent)
 
 {
  setObjectName("LnTurnoutManager");

@@ -40,19 +40,19 @@
  _isDirty = false;
  _interpretation = SignalSpeedMap::PERCENT_NORMAL;
 
- if (InstanceManager::getDefault("WarrantPreferences") == NULL)
- {
-  InstanceManager::store(new WarrantPreferences(FileUtil::getProfilePath() + "signal" + File::separator + "WarrantPreferences.xml"), "WarrantPreferences");
- }
- else
- {
-  ((WarrantPreferences*)InstanceManager::getDefault("WarrantPreferences"))->openFile(FileUtil::getProfilePath() + "signal" + File::separator + "WarrantPreferences.xml");
- }
- _preferences = (WarrantPreferences*)InstanceManager::getDefault("WarrantPreferences");
+// if (InstanceManager::getDefault("WarrantPreferences") == NULL)
+// {
+//  InstanceManager::store(new WarrantPreferences(FileUtil::getProfilePath() + "signal" + File::separator + "WarrantPreferences.xml"), "WarrantPreferences");
+// }
+// else
+// {
+//  ((WarrantPreferences*)InstanceManager::getDefault("WarrantPreferences"))->openFile(FileUtil::getProfilePath() + "signal" + File::separator + "WarrantPreferences.xml");
+// }
+// _preferences = (WarrantPreferences*)InstanceManager::getDefault("WarrantPreferences");
  //  set local prefs to match instance prefs
  //preferences.apply(WiThrottleManager.withrottlePreferencesInstance());
  initGUI();
- setGUI();
+// setGUI();
 }
 /*private*/ void WarrantPreferencesPanel::initGUI()
 {
@@ -84,10 +84,10 @@
  thisLayout->addWidget(applyPanel());
 }
 
-/*private*/ void WarrantPreferencesPanel::setGUI()
-{
- _preferences->apply();
-}
+///*private*/ void WarrantPreferencesPanel::setGUI()
+//{
+// _preferences->apply();
+//}
 
 /*private*/ QWidget* WarrantPreferencesPanel::layoutScalePanel()
 {
@@ -105,7 +105,7 @@
     _layoutScales->addItem("N", VPtr<ScaleData>::asQVariant(new ScaleData("N", 160)));
     _layoutScales->addItem("Z", VPtr<ScaleData>::asQVariant(new ScaleData("Z", 220)));
     _layoutScales->addItem("T", VPtr<ScaleData>::asQVariant(new ScaleData("T", 480)));
-    ScaleData* sc = makeCustomItem(_preferences->getScale());
+    ScaleData* sc = makeCustomItem(WarrantPreferences::getDefault()->getScale());
     _layoutScales->addItem(sc->toString(), VPtr<ScaleData>::asQVariant(sc));
     if (_layoutScales->currentIndex()<0) {
         _layoutScales->setCurrentIndex(_layoutScales->findData(VPtr<ScaleData>::asQVariant( sc)));
@@ -146,6 +146,8 @@
 
 /*public*/ void WarrantPreferencesPanel::itemStateChanged(/*ItemEvent e*/int item)
 {
+ WarrantPreferences* _preferences = WarrantPreferences::getDefault();
+
 // if (e.getStateChange()==ItemEvent.SELECTED)
 // {
  ScaleData* sd = VPtr<ScaleData>::asPtr(_layoutScales->itemData(item));
@@ -233,7 +235,7 @@
 /*private*/ QWidget* WarrantPreferencesPanel::searchDepthPanel(bool vertical)
  {
   _searchDepth =  new JTextField(5);
-  _searchDepth->setText(QString::number(_preferences->getSearchDepth()));
+  _searchDepth->setText(QString::number(WarrantPreferences::getDefault()->getSearchDepth()));
   QWidget* p = new QWidget();
   FlowLayout* pLayout = new FlowLayout(p);
   pLayout->addWidget(WarrantRoute::makeTextBoxPanel(vertical, _searchDepth, "Max Number of Blocks in Route", "Upper limit for the number of OBlocks in a warrant route"));
@@ -244,7 +246,7 @@
 /*private*/ QWidget* WarrantPreferencesPanel::throttleScalePanel(bool vertical)
  {
   _throttleScale =  new JTextField(5);
-  _throttleScale->setText(QString::number(_preferences->getThrottleScale()));
+  _throttleScale->setText(QString::number(WarrantPreferences::getDefault()->getThrottleScale()));
   QWidget* p = new QWidget();
   QVBoxLayout* pLayout = new QVBoxLayout(p);
   pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, _throttleScale, tr("Throttle Setting/Speed Factor"), "Ratio that calibrates the throttle setting to run trains at scale speed. (default value 0.7)"));
@@ -265,7 +267,7 @@
 //    panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
  _speedNameMap =  QList<QPair<QString, float>* >();
- QMapIterator<QString, float> it = _preferences->getSpeedNameEntryIterator();
+ QMapIterator<QString, float> it = WarrantPreferences::getDefault()->getSpeedNameEntryIterator();
  while (it.hasNext())
  {
   it.next();
@@ -327,7 +329,7 @@
 
   _appearanceMap = QList<QPair<QString, QString>* >();
   //Iterator<Entry<String, String>> it = _preferences->getAppearanceEntryIterator();
-  QMapIterator<QString, QString> it = _preferences->getAppearanceEntryIterator();
+  QMapIterator<QString, QString> it = WarrantPreferences::getDefault()->getAppearanceEntryIterator();
   while (it.hasNext())
   {
    //Entry<String, String> ent = it.next();
@@ -414,7 +416,7 @@
 
 /*private*/ QWidget* WarrantPreferencesPanel::interpretationPanel()
  {
- _interpretation = _preferences->getInterpretation();
+ _interpretation = WarrantPreferences::getDefault()->getInterpretation();
  //QWidget* buttonPanel = new QWidget();
 FlowLayout* buttonPanelLayout = new FlowLayout;
 //buttonPanel->setLayout(buttonPanelLayout =new FlowLayout);//(buttonPanel, BoxLayout.LINE_AXIS));
@@ -484,7 +486,7 @@ void ButtonActionListener::actionPerformed(ActionEvent *e)
 /*private*/ QWidget* WarrantPreferencesPanel::timeIncrementPanel(bool vertical)
 {
  _timeIncre =  new JTextField(5);
- _timeIncre->setText(QString::number(_preferences->getTimeIncre()));
+ _timeIncre->setText(QString::number(WarrantPreferences::getDefault()->getTimeIncre()));
  QWidget* p = new QWidget();
  QVBoxLayout* pLayout = new QVBoxLayout(p);
  pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, _timeIncre, tr("Ramp Step Time (milliseconds)"), "Length of time in milliseconds between each speed change when ramping speed"));
@@ -494,7 +496,7 @@ void ButtonActionListener::actionPerformed(ActionEvent *e)
 
 /*private*/ QWidget* WarrantPreferencesPanel::throttleIncrementPanel(bool vertical) {
     _rampIncre =  new JTextField(5);
-    _rampIncre->setText(QString::number(_preferences->getThrottleIncre()));
+    _rampIncre->setText(QString::number(WarrantPreferences::getDefault()->getThrottleIncre()));
     QWidget* p = new QWidget();
     QVBoxLayout* pLayout = new QVBoxLayout(p);
     pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, _rampIncre, tr("Ramp Step throttle increment"),"Throttle setting increment for each speed change when ramping speed"));
@@ -562,6 +564,7 @@ private QWidget* throttleIncrementPanel(bool vertical) {
  */
 /*private*/ void WarrantPreferencesPanel::setValues()
 {
+ WarrantPreferences* _preferences = WarrantPreferences::getDefault();
  int depth = _preferences->getSearchDepth();
  bool bok;
  depth =_searchDepth->text().toInt(&bok);
@@ -665,20 +668,22 @@ private QWidget* throttleIncrementPanel(bool vertical) {
   }
   else
   {
-        for (int i=0; i<_appearanceMap.size(); i++)
-        {
-         QPair<QString, QString>* dp = _appearanceMap.at(i);
-         QString name = dp->first;
-         if (_preferences->getAppearanceValue(name)==NULL || _preferences->getAppearanceValue(name)!= dp->second)
-         {
-          different = true;
-          break;
-         }
-        }
-    } if (different) {
-        _preferences->setAppearances(_appearanceMap);
-        _isDirty = true;
+   for (int i=0; i<_appearanceMap.size(); i++)
+   {
+    QPair<QString, QString>* dp = _appearanceMap.at(i);
+    QString name = dp->first;
+    if (_preferences->getAppearanceValue(name)==NULL || _preferences->getAppearanceValue(name)!= dp->second)
+    {
+     different = true;
+     break;
     }
+   }
+ }
+ if (different)
+ {
+    _preferences->setAppearances(_appearanceMap);
+    _isDirty = true;
+ }
 }
 
 /*private*/ QWidget* WarrantPreferencesPanel::applyPanel()
@@ -706,7 +711,7 @@ void WarrantPreferencesPanel::on_applyB_clicked()
  setValues();
  if (_isDirty)
  {
-     _preferences->apply();
+  WarrantPreferences::getDefault()->apply();
  }
 }
 
@@ -804,8 +809,8 @@ void WarrantPreferencesPanel::on_applyB_clicked()
  setValues();
  if (_isDirty)
  {
-  _preferences->apply();
-  _preferences->save();
+  WarrantPreferences::getDefault()->apply();
+  WarrantPreferences::getDefault()->save();
   _isDirty = false;
  }
 }

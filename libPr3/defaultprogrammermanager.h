@@ -92,7 +92,7 @@ public:
     /*public*/ DefaultProgrammerManager(Programmer* pProgrammer, SystemConnectionMemo* memo,QObject* parent = 0);
     /*public*/ QString getUserName();
     /*public*/ Programmer* getGlobalProgrammer();
-    /*public*/ virtual Programmer* getAddressedProgrammer(bool pLongAddress, int pAddress);
+    /*public*/ virtual AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress);
     /*public*/ Programmer* reserveGlobalProgrammer();
     /*public*/ void releaseGlobalProgrammer(Programmer* p);
     /*public*/ AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress);

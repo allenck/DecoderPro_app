@@ -6526,8 +6526,7 @@ signalFrame->setVisible(true);
  * Note: If there is any problem, a string of "" is returned, and a warning
  *		message is issued.
  */
-/*private*/ QString LayoutEditorTools::setupNearLogix(LayoutTurnout* nearTurnout, bool continuing,
-                SignalHead* head) {
+/*private*/ QString LayoutEditorTools::setupNearLogix(LayoutTurnout* nearTurnout, bool continuing, SignalHead* head) {
     QString turnoutName = nearTurnout->getTurnout()->getSystemName();
     QString namer = turnoutName+"_T_"+head->getSystemName();
     if (!continuing) namer = turnoutName+"_C_"+head->getSystemName();
@@ -6538,15 +6537,16 @@ signalFrame->setVisible(true);
         log->error("Trouble creating sensor "+sensorName+" while setting up Logix->");
         return "";
     }
-    if (InstanceManager::logixManagerInstance()->getBySystemName(logixName)==NULL) {
+    if (((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName)==NULL)
+    {
         // Logix does not exist, create it
-        Logix* x = InstanceManager::logixManagerInstance()->createNewLogix(logixName,"");
+        Logix* x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->createNewLogix(logixName,"");
         if (x==NULL) {
             log->error("Trouble creating logix "+logixName+" while setting up signal logic->");
             return "";
         }
-        QString cName = x->getSystemName()+"C1";
-        Conditional* c = InstanceManager::conditionalManagerInstance()->
+        QString cName = x->getSystemName() + "C1";
+        Conditional* c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->
                                             createNewConditional(cName,"");
         if (c==NULL) {
             log->error("Trouble creating conditional "+cName+" while setting up Logix->");
@@ -14261,47 +14261,59 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
      return "";
  }
  bool newConditional = false;
- Logix* x = InstanceManager::logixManagerInstance()->getBySystemName(logixName);
- if(x==NULL)
+ Logix* x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName);
+ if(x == NULL)
  {
-  x = InstanceManager::logixManagerInstance()->createNewLogix(logixName, "");
-  newConditional = true;
-  if(x==NULL){
-      log->error("Trouble creating logix "+logixName+" while setting up signal logic->");
-      return "";
+  // Logix does not exist, create it
+  x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->createNewLogix(logixName, "");
+  if(x==NULL)
+  {
+   log->error("Trouble creating logix "+logixName+" while setting up signal logic->");
+   return "";
   }
   x->setComment("Layout Slip, Signalhead logic");
  }
  x->deActivateLogix();
- QString cName = logixName+"C"+number;
+ QString cName = logixName+"C" + QString::number(number);
 
- Conditional* c = InstanceManager::conditionalManagerInstance()->getBySystemName(cName);
- if(c==NULL)
+ Conditional* c = ((ConditionalManager*) InstanceManager::getDefault("ConditionalManager"))->getBySystemName(cName);
+ if (c == NULL)
  {
-  c = InstanceManager::conditionalManagerInstance()->createNewConditional(cName,"");
+  c = ((ConditionalManager*) InstanceManager::getDefault("ConditionalManager"))->
+                     createNewConditional(cName, "");
   newConditional = true;
-  if (c==NULL)
+  if (c == NULL)
   {
-   log->error("Trouble creating conditional "+cName+" while setting up Logix->");
-   return "";
+   log->error("Trouble creating conditional " + cName + " while setting up Logix.");
+                 return "";
   }
  }
  int type = Conditional::TYPE_TURNOUT_THROWN;
- if(nearState==Turnout::CLOSED) type = Conditional::TYPE_TURNOUT_CLOSED;
- QList <ConditionalVariable*>* variableList = new QList <ConditionalVariable*> ();
- variableList->append(new ConditionalVariable(false, Conditional::OPERATOR_AND, type, turnoutName, true));
+ if (nearState == Turnout::CLOSED) {
+     type = Conditional::TYPE_TURNOUT_CLOSED;
+ }
+
+ QList<ConditionalVariable*>* variableList = new QList<ConditionalVariable*>();
+ variableList->append(new ConditionalVariable(false, Conditional::OPERATOR_AND,
+         type, turnoutName, true));
 
  type = Conditional::TYPE_TURNOUT_THROWN;
- if (farState==Turnout::CLOSED) type = Conditional::TYPE_TURNOUT_CLOSED;
- variableList->append(new ConditionalVariable(false, Conditional::OPERATOR_AND, type, farTurnoutName, true));
+ if (farState == Turnout::CLOSED) {
+     type = Conditional::TYPE_TURNOUT_CLOSED;
+ }
+ variableList->append(new ConditionalVariable(false, Conditional::OPERATOR_AND,
+         type, farTurnoutName, true));
  c->setStateVariables(variableList);
- QList <ConditionalAction*>* actionList = new QList <ConditionalAction*> ();
- actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE, Conditional::ACTION_SET_SENSOR, sensorName, Sensor::INACTIVE, ""));
- actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_FALSE, Conditional::ACTION_SET_SENSOR, sensorName, Sensor::ACTIVE, ""));
+ QList<ConditionalAction*>* actionList = new QList<ConditionalAction*>();
+ actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE,
+         Conditional::ACTION_SET_SENSOR, sensorName,
+         Sensor::INACTIVE, ""));
+ actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_FALSE,
+         Conditional::ACTION_SET_SENSOR, sensorName,
+         Sensor::ACTIVE, ""));
  c->setAction(actionList);        // string data
- if(newConditional)
- {
-  x->addConditional(cName,-1);
+ if (newConditional) {
+     x->addConditional(cName, -1);
  }
  x->activateLogix();
  return sensorName;

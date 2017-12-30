@@ -11,6 +11,7 @@
 #include "memory.h"
 #include "liblayouteditor_global.h"
 
+
 class JmriJFrame;
 class SignalHead;
 class TrackNode;
@@ -247,6 +248,8 @@ public:
     /*public*/ int getSectionType();
     /*public*/ QString getBeanType() ;
     /*public*/ void vetoableChange(PropertyChangeEvent* evt); //throws java.beans.PropertyVetoException;
+ /*public*/ Block* getLastBlock();
+
 signals:
     
 public slots:

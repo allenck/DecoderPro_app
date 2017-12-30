@@ -5,6 +5,7 @@
 AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
     SignalHeadManager(parent)
 {
+ setObjectName("AbstractSignalHeadManager");
     registerSelf();
 }
 /**

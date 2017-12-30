@@ -11,19 +11,23 @@ public:
     explicit AbstractSerialConnectionConfigXml(QObject *parent = 0);
     ~AbstractSerialConnectionConfigXml() {}
     AbstractSerialConnectionConfigXml(const AbstractSerialConnectionConfigXml&) : AbstractConnectionConfigXml() {}
+    QDomElement store(QObject* o, bool shared);
     /*public*/ QDomElement store(QObject* object);
-    /*public*/ bool load(QDomElement e) throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode);// //throws Exception
 
 signals:
 
 public slots:
+
+private:
+    Logger* log;
 protected:
     /*protected*/ SerialPortAdapter* adapter;
     virtual /*abstract*/ /*protected*/ void getInstance();
     virtual /*abstract*/ /*protected*/ void _register();
     virtual /*protected*/ void getInstance(QObject* object);
     /*protected*/ void extendElement(QDomElement e);
-    /*protected*/ void unpackElement(QDomElement e);
+//    /*protected*/ void unpackElement(QDomElement e);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
 };
 

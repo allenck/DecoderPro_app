@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'editlevelxingdlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -110,25 +110,25 @@ public:
 
     void retranslateUi(QDialog *EditLevelXingDlg)
     {
-        EditLevelXingDlg->setWindowTitle(QApplication::translate("EditLevelXingDlg", "Edit Level Crossing", 0));
-        label->setText(QApplication::translate("EditLevelXingDlg", "Block 1", 0));
+        EditLevelXingDlg->setWindowTitle(QApplication::translate("EditLevelXingDlg", "Edit Level Crossing", Q_NULLPTR));
+        label->setText(QApplication::translate("EditLevelXingDlg", "Block 1", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        block1Name->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Edit block name to change the linked block. If new name, block will be created. </p></body></html>", 0));
+        block1Name->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Edit block name to change the linked block. If new name, block will be created. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        label_2->setText(QApplication::translate("EditLevelXingDlg", "Block 2 ", 0));
+        label_2->setText(QApplication::translate("EditLevelXingDlg", "Block 2 ", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        block2Name->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Edit block name to change the linked block. If new name, block will be created. </p></body></html>", 0));
+        block2Name->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Edit block name to change the linked block. If new name, block will be created. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
 #ifndef QT_NO_TOOLTIP
-        xingEdit1Block->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Click here to create/edit information for the block shown above. </p></body></html>", 0));
+        xingEdit1Block->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Click here to create/edit information for the block shown above. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        xingEdit1Block->setText(QApplication::translate("EditLevelXingDlg", "Create/Edit Block 1", 0));
+        xingEdit1Block->setText(QApplication::translate("EditLevelXingDlg", "Create/Edit Block 1", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        xingEdit2Block->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Click here to create/edit information for the block shown above. </p></body></html>", 0));
+        xingEdit2Block->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Click here to create/edit information for the block shown above. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        xingEdit2Block->setText(QApplication::translate("EditLevelXingDlg", "Create/Edit Block 2", 0));
-        xingEditDone->setText(QApplication::translate("EditLevelXingDlg", "Done", 0));
-        xingEditCancel->setText(QApplication::translate("EditLevelXingDlg", "Cancel", 0));
+        xingEdit2Block->setText(QApplication::translate("EditLevelXingDlg", "Create/Edit Block 2", Q_NULLPTR));
+        xingEditDone->setText(QApplication::translate("EditLevelXingDlg", "Done", Q_NULLPTR));
+        xingEditCancel->setText(QApplication::translate("EditLevelXingDlg", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

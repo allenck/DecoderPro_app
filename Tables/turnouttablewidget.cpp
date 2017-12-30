@@ -8,7 +8,7 @@
 #include "lnturnout.h"
 #include "turnoutoperation.h"
 #include "turnoutwidget.h"
-#include "../LayoutEditor/systemnamecomparator.h"
+#include "systemnamecomparator.h"
 #include "rosterentry.h"
 
 TurnoutTableWidget::TurnoutTableWidget(int mgrIndex, QWidget *parent) :
@@ -404,7 +404,7 @@ QComboBox* TurnoutTableWidget::cbSensor(AbstractTurnout* t, int index)
   sensor2Mapper->setMapping(cbSensor, t);
  }
 
- if((mode == Turnout::ONESENSOR && index == 0 || mode == Turnout::TWOSENSOR && index == 1)|| mode == Turnout::INDIRECT)
+ if((mode == Turnout::ONESENSOR && index == 0) || (mode == Turnout::TWOSENSOR && index == 1)|| mode == Turnout::INDIRECT)
  {
   if(sensor != NULL)
    cbSensor->setCurrentIndex(cbSensor->findText(((AbstractSensor*)sensor)->getSystemName()));

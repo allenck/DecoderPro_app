@@ -96,7 +96,7 @@ public:
      * Load contents of IdTag object from an XML element
      * @param e Element containing IdTag details
      */
-    /*public*/ virtual void load(QDomElement e) {}
+    /*public*/ virtual void load(QDomElement /*e*/) {}
  /*public*/ virtual QString  toString() {return "";}
 signals:
     

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'turnouttablewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -83,37 +83,37 @@ public:
 
     void retranslateUi(QWidget *TurnoutTableWidget)
     {
-        TurnoutTableWidget->setWindowTitle(QApplication::translate("TurnoutTableWidget", "Form", 0));
+        TurnoutTableWidget->setWindowTitle(QApplication::translate("TurnoutTableWidget", "Form", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("TurnoutTableWidget", "System Name", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("TurnoutTableWidget", "System Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("TurnoutTableWidget", "User Name", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("TurnoutTableWidget", "User Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("TurnoutTableWidget", "Cmd", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("TurnoutTableWidget", "Cmd", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("TurnoutTableWidget", "Comment", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("TurnoutTableWidget", "Comment", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(5);
-        ___qtablewidgetitem4->setText(QApplication::translate("TurnoutTableWidget", "Inverted", 0));
+        ___qtablewidgetitem4->setText(QApplication::translate("TurnoutTableWidget", "Inverted", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem5 = tableWidget->horizontalHeaderItem(6);
-        ___qtablewidgetitem5->setText(QApplication::translate("TurnoutTableWidget", "Locked", 0));
+        ___qtablewidgetitem5->setText(QApplication::translate("TurnoutTableWidget", "Locked", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem6 = tableWidget->horizontalHeaderItem(7);
-        ___qtablewidgetitem6->setText(QApplication::translate("TurnoutTableWidget", "Feedback", 0));
+        ___qtablewidgetitem6->setText(QApplication::translate("TurnoutTableWidget", "Feedback", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem7 = tableWidget->horizontalHeaderItem(8);
-        ___qtablewidgetitem7->setText(QApplication::translate("TurnoutTableWidget", "Mode", 0));
+        ___qtablewidgetitem7->setText(QApplication::translate("TurnoutTableWidget", "Mode", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem8 = tableWidget->horizontalHeaderItem(9);
-        ___qtablewidgetitem8->setText(QApplication::translate("TurnoutTableWidget", "Sensor1", 0));
+        ___qtablewidgetitem8->setText(QApplication::translate("TurnoutTableWidget", "Sensor1", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem9 = tableWidget->horizontalHeaderItem(10);
-        ___qtablewidgetitem9->setText(QApplication::translate("TurnoutTableWidget", "Sensor2", 0));
+        ___qtablewidgetitem9->setText(QApplication::translate("TurnoutTableWidget", "Sensor2", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem10 = tableWidget->horizontalHeaderItem(11);
-        ___qtablewidgetitem10->setText(QApplication::translate("TurnoutTableWidget", "Automate", 0));
+        ___qtablewidgetitem10->setText(QApplication::translate("TurnoutTableWidget", "Automate", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem11 = tableWidget->horizontalHeaderItem(13);
-        ___qtablewidgetitem11->setText(QApplication::translate("TurnoutTableWidget", "Lock Mode", 0));
+        ___qtablewidgetitem11->setText(QApplication::translate("TurnoutTableWidget", "Lock Mode", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem12 = tableWidget->horizontalHeaderItem(14);
-        ___qtablewidgetitem12->setText(QApplication::translate("TurnoutTableWidget", "Decoder", 0));
+        ___qtablewidgetitem12->setText(QApplication::translate("TurnoutTableWidget", "Decoder", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem13 = tableWidget->horizontalHeaderItem(15);
-        ___qtablewidgetitem13->setText(QApplication::translate("TurnoutTableWidget", "Closed Speed", 0));
+        ___qtablewidgetitem13->setText(QApplication::translate("TurnoutTableWidget", "Closed Speed", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem14 = tableWidget->horizontalHeaderItem(16);
-        ___qtablewidgetitem14->setText(QApplication::translate("TurnoutTableWidget", "Thrown Speed", 0));
+        ___qtablewidgetitem14->setText(QApplication::translate("TurnoutTableWidget", "Thrown Speed", Q_NULLPTR));
     } // retranslateUi
 
 };

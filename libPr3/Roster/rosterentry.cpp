@@ -11,11 +11,37 @@
 #include "hardcopywriter.h"
 #include "../../LayoutEditor/jlabel.h"
 #include "rosterspeedprofile.h"
+#include "rostergroup.h"
 
 QString RosterEntry::_defaultOwner = "";
-/*public*/ /*static*/ /*final*/ QString RosterEntry::SOUND_LABEL = "soundlabel"; // NOI18N
-/*public*/ /*final*/ /*static*/ int RosterEntry::MAXSOUNDNUM = 32;
-/*public*/ /*static*/ /*final*/ QString RosterEntry::SPEED_PROFILE = "speedprofile"; // NOI18N
+/*public*/ /*static*/ /*final*/ QString RosterEntry::ID = "id"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::FILENAME = "filename"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::ROADNAME = "roadname"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::MFG = "mfg"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::MODEL = "model"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::OWNER = "owner"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DCC_ADDRESS = "dccaddress"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::LONG_ADDRESS = "longaddress"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::PROTOCOL = "protocol"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::COMMENT = "comment"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_MODEL = "decodermodel"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_FAMILY = "decoderfamily"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_COMMENT = "decodercomment"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::IMAGE_FILE_PATH = "imagefilepath"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::ICON_FILE_PATH = "iconfilepath"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::URL = "url"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DATE_UPDATED = "dateupdated"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::FUNCTION_IMAGE = "functionImage"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::FUNCTION_LABEL = "functionlabel"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::FUNCTION_LOCKABLE = "functionLockable"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::FUNCTION_SELECTED_IMAGE = "functionSelectedImage"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::ATTRIBUTE_UPDATED = "attributeUpdated:"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::ATTRIBUTE_DELETED = "attributeDeleted"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::MAX_SPEED = "maxSpeed"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::SHUNTING_FUNCTION = "IsShuntingOn"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::SPEED_PROFILE = "speedprofile"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::SOUND_LABEL = "soundlabel"; // NOI18N
+    /*public*/ /*final*/ /*static*/ int RosterEntry::MAXSOUNDNUM = 32;
 
 RosterEntry::RosterEntry(QObject *parent) :
     BasicRosterEntry(parent)
@@ -56,6 +82,7 @@ RosterEntry::RosterEntry(QObject *parent) :
 void RosterEntry::init()
 {
  log = new Logger("RosterEntry");
+ log->setDebugEnabled(true);
  pcs = new PropertyChangeSupport(this);
   _fileName = "";
 
@@ -377,10 +404,46 @@ void RosterEntry::init()
 }
 /*public*/ QString RosterEntry::getURL() { return _URL; }
 
-/*public*/ void RosterEntry::setDateUpdated(QString s) {
-    QString old = _dateUpdated;
-    _dateUpdated = s;
-    firePropertyChange("dateupdated", old, s);
+/**
+ * Set the date modified given a string representing a date.
+ * <p>
+ * Tries ISO 8601 and the current Java defaults as formats for parsing a date.
+ *
+ * @param date the string to parse into a date
+ * @throws ParseException if the date cannot be parsed
+ */
+/*public*/ void RosterEntry::setDateModified(/*@Nonnull*/ QString date) throw (ParseException) {
+    try {
+        // parse using ISO 8601 date format(s)
+        this->setDateModified(QDateTime::fromString(date, Qt::ISODate).toString(Qt::ISODate));
+    } catch (IllegalArgumentException /*| ParseException*/ ex) {
+        // IllegalArgumentException for Jackson 2.0.6
+        // ParseException for Jackson 2.8.5
+        // evaluating Jackson upgrade under separate branch
+        // parse using defaults since thats how it was saved if saved
+        // by earlier versions of JMRI
+        this->setDateModified(QDateTime::fromString(date).toString(Qt::ISODate));
+    }
+}
+
+//@CheckForNull
+/*public*/ QDateTime RosterEntry::getDateModified() {
+    return this->dateModified;
+}
+
+/*public*/ void RosterEntry::setDateUpdated(QString s)
+{
+ QString old = _dateUpdated;
+ _dateUpdated = s;
+ try
+ {
+  this->setDateModified(s);
+ }
+ catch (ParseException ex) {
+     log->warn(tr("Unable to parse \"%1\" as a date in roster entry \"%2\".").arg(s).arg(getId()));
+     // property change is fired by setDateModified if s parses as a date
+     firePropertyChange(RosterEntry::DATE_UPDATED, old, s);
+ }
 }
 /*public*/ QString RosterEntry::getDateUpdated() { return _dateUpdated; }
 
@@ -428,9 +491,10 @@ void RosterEntry::init()
 //        throw new IllegalArgumentException("number out of range: "+fn);
 //    return functionLabels[fn];
   if(functionLabels.isEmpty()) return "";
-  if(fn <= MAXFNNUM)
-   return functionLabels.at(fn);
-  return "";
+  if (fn < 0 || fn > MAXFNNUM) {
+   throw new IllegalArgumentException("number out of range: " + fn);
+  }
+  return functionLabels.at(fn);
 }
 /**
  * Define label for a specific sound
@@ -478,9 +542,13 @@ void RosterEntry::init()
 
  QString dropFolder = FileUtil::getUserFilesPath();
  File* source = new File(s);
+ if(!source->exists())
+ {
+  log->error(tr("file %s does not exist").arg(source->getPath()));
+ }
  File* dest = new File(s);
  if (dropFolder != NULL) {
-     dest = new File(dropFolder + File::separatorChar + source->getName());
+     dest = new File(dropFolder + /*File::separatorChar +*/ source->getName());
      if (source->getParent().compare(dest->getParent()) != 0) {
          try {
              FileUtil::createDirectory(dest->getParentFile()->getPath());
@@ -515,9 +583,9 @@ void RosterEntry::init()
  QString dropFolder = FileUtil::getUserFilesPath();
  File* source = new File(s);
  File* dest = new File(s);
- if (dropFolder != NULL)
+ if (dropFolder != NULL && source->getPath() != "")
  {
-  dest = new File(dropFolder + File::separatorChar + source->getName());
+  dest = new File(dropFolder + /*File::separatorChar +*/ source->getName());
   if (source->getParent().compare(dest->getParent()) != 0)
   {
    try {
@@ -604,6 +672,41 @@ void RosterEntry::init()
  QStringList newList;
  if (attributePairs->isEmpty()) return newList;
     return attributePairs->keys(); //.toArray(new QString[attributePairs->size()]);
+}
+/**
+ * List the roster groups this entry is a member of, returning existing
+ * {@link jmri.jmrit.roster.rostergroup.RosterGroup}s from the default
+ * {@link jmri.jmrit.roster.Roster} if they exist.
+ *
+ * @return list of roster groups
+ */
+/*public*/ QList<RosterGroup*> RosterEntry::getGroups() {
+    return this->getGroups(Roster::getDefault());
+}
+
+/**
+ * List the roster groups this entry is a member of, returning existing
+ * {@link jmri.jmrit.roster.rostergroup.RosterGroup}s from the specified
+ * {@link jmri.jmrit.roster.Roster} if they exist.
+ *
+ * @param roster the roster to get matching groups from
+ * @return list of roster groups
+ */
+/*public*/ QList<RosterGroup*> RosterEntry::getGroups(Roster* roster) {
+    QList<RosterGroup*> groups = QList<RosterGroup*>();
+    if (!this->getAttributes().isEmpty()) {
+        foreach (QString attribute, this->getAttributes()) {
+            if (attribute.startsWith(Roster::ROSTER_GROUP_PREFIX)) {
+                QString name = attribute.mid(Roster::ROSTER_GROUP_PREFIX.length());
+                if (roster->getRosterGroups().contains(name)) {
+                    groups.append(roster->getRosterGroups().value(name));
+                } else {
+                    groups.append(new RosterGroup(name));
+                }
+            }
+        }
+    }
+    return groups;
 }
 
 /*public*/ int RosterEntry::getMaxSpeedPCT() {

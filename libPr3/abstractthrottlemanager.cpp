@@ -6,6 +6,7 @@
 #include "addresspanel.h"
 #include "speedprofilepanel.h"
 #include "abstractautomaton.h"
+#include "jsonthrottle.h"
 
 /**
  * Abstract implementation of a ThrottleManager.
@@ -376,6 +377,8 @@ list << "dcc" <<"dcc_short" << "dcc_long";
     ((SpeedProfilePanel*)l)->notifyThrottleFound(throttle);
    else if(qobject_cast<AbstractAutomaton*>(l) != NULL)
     ((AbstractAutomaton*)l)->notifyThrottleFound(throttle);
+   else if(qobject_cast<JsonThrottle*>(l) != NULL)
+    ((JsonThrottle*)l)->notifyThrottleFound(throttle);
    else
    {
     log->error(tr("unknown Throttle listener %1").arg(l->metaObject()->className()));

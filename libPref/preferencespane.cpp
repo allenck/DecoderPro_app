@@ -7,8 +7,8 @@
 #include "instancemanager.h"
 #include "fileutil.h"
 #include "configxmlmanager.h"
-#include "performactionpanel.h"
-#include "createbuttonpanel.h"
+//#include "performactionpanel.h"
+//#include "createbuttonpanel.h"
 #include "guilafconfigpane.h"
 
 PreferencesPane::PreferencesPane(QWidget *parent) :
@@ -30,8 +30,8 @@ PreferencesPane::PreferencesPane(QWidget *parent) :
  p->addTab( JmrixConfigPane::instance(1), "Connection 1");
  p->addTab(guiPrefs = new GuiLafConfigPane(),"GUI");
  p->addTab(new ProgrammerConfigPane(),"Programmer");
- p->addTab(new PerformActionPanel(), "Actions");
- p->addTab( new CreateButtonPanel(),"Buttons");
+ //p->addTab(new PerformActionPanel(), "Actions");
+ //p->addTab( new CreateButtonPanel(),"Buttons");
 //    p.add("Files", new apps.PerformFilePanel());
 //    p.add("Scripts", new apps.PerformScriptPanel());
 //    p.add("Roster", new jmri.jmrit.roster.RosterConfigPane());

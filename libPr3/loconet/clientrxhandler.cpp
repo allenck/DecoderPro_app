@@ -41,13 +41,13 @@
 
  //tc = ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo"))->getLnTrafficController();
  QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
- int i = 0;
  foreach (QObject* memo, *list)
  {
   if(qobject_cast<LocoNetSystemConnectionMemo*>(memo) != NULL)
   {
    LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)memo;
    tc = connectionMemo->getLnTrafficController();
+   break;
   }
  }
  bIsInterrupted = false;
@@ -353,7 +353,7 @@ void ClientTxHandler::sendMessage(LocoNetMessage * msg)
    outBuf.clear();
    outBuf.append("RECEIVE ");
    outBuf.append(msg->toString());
-   log->debug("ClientTxHandler: Send: " + outBuf);
+   //log->debug("ClientTxHandler: Send: " + outBuf);
    outBuf.append("\r\n");
    // See if we are waiting for an echo of a sent message
    // and if it is append the Ack to the client

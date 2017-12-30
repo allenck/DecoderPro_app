@@ -1,6 +1,8 @@
 ﻿#include "proxyreportermanager.h"
 #include "reportermanager.h"
 #include "internalreportermanager.h"
+#include "instancemanager.h"
+#include "internalsystemconnectionmemo.h"
 
 ProxyReporterManager::ProxyReporterManager(QObject *parent) :
     AbstractProxyManager(parent)
@@ -22,8 +24,9 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 //    public ProxyReporterManager() {
 //    	super();
 //    }
-    /*protected*/ AbstractManager* ProxyReporterManager::makeInternalManager() {
-        return new InternalReporterManager();
+    /*protected*/ Manager* ProxyReporterManager::makeInternalManager() const
+{
+        return ((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getReporterManager();
     }
     /*public*/ int ProxyReporterManager::getXMLOrder(){
         return Manager::REPORTERS;

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sectionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -58,8 +58,8 @@ public:
 
     void retranslateUi(QWidget *SectionWidget)
     {
-        SectionWidget->setWindowTitle(QApplication::translate("SectionWidget", "Form", 0));
-        btnAdd->setText(QApplication::translate("SectionWidget", "Add", 0));
+        SectionWidget->setWindowTitle(QApplication::translate("SectionWidget", "Form", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("SectionWidget", "Add", Q_NULLPTR));
     } // retranslateUi
 
 };

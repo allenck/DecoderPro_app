@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'positionablepropertiesutil.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -338,37 +338,37 @@ public:
 
     void retranslateUi(QDialog *PositionablePropertiesUtil)
     {
-        PositionablePropertiesUtil->setWindowTitle(QApplication::translate("PositionablePropertiesUtil", "Dialog", 0));
-        cancel->setText(QApplication::translate("PositionablePropertiesUtil", "Cancel", 0));
-        applyButton->setText(QApplication::translate("PositionablePropertiesUtil", "Apply", 0));
-        okButton->setText(QApplication::translate("PositionablePropertiesUtil", "OK", 0));
-        label_9->setText(QApplication::translate("PositionablePropertiesUtil", "Justification", 0));
+        PositionablePropertiesUtil->setWindowTitle(QApplication::translate("PositionablePropertiesUtil", "Dialog", Q_NULLPTR));
+        cancel->setText(QApplication::translate("PositionablePropertiesUtil", "Cancel", Q_NULLPTR));
+        applyButton->setText(QApplication::translate("PositionablePropertiesUtil", "Apply", Q_NULLPTR));
+        okButton->setText(QApplication::translate("PositionablePropertiesUtil", "OK", Q_NULLPTR));
+        label_9->setText(QApplication::translate("PositionablePropertiesUtil", "Justification", Q_NULLPTR));
         _justificationCombo->clear();
         _justificationCombo->insertItems(0, QStringList()
-         << QApplication::translate("PositionablePropertiesUtil", "Left", 0)
-         << QApplication::translate("PositionablePropertiesUtil", "Right", 0)
-         << QApplication::translate("PositionablePropertiesUtil", "Center", 0)
+         << QApplication::translate("PositionablePropertiesUtil", "Left", Q_NULLPTR)
+         << QApplication::translate("PositionablePropertiesUtil", "Right", Q_NULLPTR)
+         << QApplication::translate("PositionablePropertiesUtil", "Center", Q_NULLPTR)
         );
-        bold->setText(QApplication::translate("PositionablePropertiesUtil", "Bold", 0));
-        italic->setText(QApplication::translate("PositionablePropertiesUtil", "Italic", 0));
+        bold->setText(QApplication::translate("PositionablePropertiesUtil", "Bold", Q_NULLPTR));
+        italic->setText(QApplication::translate("PositionablePropertiesUtil", "Italic", Q_NULLPTR));
         label_10->setText(QString());
-        groupBox_2->setTitle(QApplication::translate("PositionablePropertiesUtil", "GroupBox", 0));
-        lbFontColor->setText(QApplication::translate("PositionablePropertiesUtil", "Font Color", 0));
-        lbBackgroundColor->setText(QApplication::translate("PositionablePropertiesUtil", "Background Color", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("PositionablePropertiesUtil", "Font", 0));
-        label_4->setText(QApplication::translate("PositionablePropertiesUtil", "Text Value", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("PositionablePropertiesUtil", "Edit Text", 0));
-        label->setText(QApplication::translate("PositionablePropertiesUtil", "Border Color", 0));
-        label_2->setText(QApplication::translate("PositionablePropertiesUtil", "Border Size", 0));
-        label_3->setText(QApplication::translate("PositionablePropertiesUtil", "Margin Size", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("PositionablePropertiesUtil", "Border", 0));
-        label_7->setText(QApplication::translate("PositionablePropertiesUtil", "Width = ", 0));
-        label_5->setText(QApplication::translate("PositionablePropertiesUtil", "x = ", 0));
-        label_6->setText(QApplication::translate("PositionablePropertiesUtil", "y= ", 0));
-        label_8->setText(QApplication::translate("PositionablePropertiesUtil", "Height = ", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("PositionablePropertiesUtil", "Size and Position", 0));
-        groupBox->setTitle(QApplication::translate("PositionablePropertiesUtil", "Preview", 0));
-        tmp->setText(QApplication::translate("PositionablePropertiesUtil", "TextLabel", 0));
+        groupBox_2->setTitle(QApplication::translate("PositionablePropertiesUtil", "GroupBox", Q_NULLPTR));
+        lbFontColor->setText(QApplication::translate("PositionablePropertiesUtil", "Font Color", Q_NULLPTR));
+        lbBackgroundColor->setText(QApplication::translate("PositionablePropertiesUtil", "Background Color", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("PositionablePropertiesUtil", "Font", Q_NULLPTR));
+        label_4->setText(QApplication::translate("PositionablePropertiesUtil", "Text Value", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("PositionablePropertiesUtil", "Edit Text", Q_NULLPTR));
+        label->setText(QApplication::translate("PositionablePropertiesUtil", "Border Color", Q_NULLPTR));
+        label_2->setText(QApplication::translate("PositionablePropertiesUtil", "Border Size", Q_NULLPTR));
+        label_3->setText(QApplication::translate("PositionablePropertiesUtil", "Margin Size", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("PositionablePropertiesUtil", "Border", Q_NULLPTR));
+        label_7->setText(QApplication::translate("PositionablePropertiesUtil", "Width = ", Q_NULLPTR));
+        label_5->setText(QApplication::translate("PositionablePropertiesUtil", "x = ", Q_NULLPTR));
+        label_6->setText(QApplication::translate("PositionablePropertiesUtil", "y= ", Q_NULLPTR));
+        label_8->setText(QApplication::translate("PositionablePropertiesUtil", "Height = ", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("PositionablePropertiesUtil", "Size and Position", Q_NULLPTR));
+        groupBox->setTitle(QApplication::translate("PositionablePropertiesUtil", "Preview", Q_NULLPTR));
+        tmp->setText(QApplication::translate("PositionablePropertiesUtil", "TextLabel", Q_NULLPTR));
     } // retranslateUi
 
 };

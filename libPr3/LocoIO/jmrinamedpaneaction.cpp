@@ -111,7 +111,7 @@ void JmriNamedPaneAction::common()
   p->resize(100,80);
   p->initComponents();
   if(context == NULL)
-   context = (LocoNetSystemConnectionMemo*) InstanceManager::getDefault("SystemConnectionMemo");
+   context = (LocoNetSystemConnectionMemo*) InstanceManager::getDefault("LocoNetSystemConnectionMemo");
   p->initContext(context);
   p->setVisible(true);
   //p->pack();

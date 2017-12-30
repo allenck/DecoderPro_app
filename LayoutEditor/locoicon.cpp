@@ -405,7 +405,7 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
    }
   }
   else
-   _itemGroup = new QGraphicsItemGroup();
+   _itemGroup = new MyGraphicsItemGroup();
   if(item != NULL)
    item->setPixmap(pixmap);
   else
@@ -434,7 +434,8 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
    }
   }
   else
-   _itemGroup = new QGraphicsItemGroup();
+   _itemGroup = new MyGraphicsItemGroup();
+  _itemGroup->setName("LocoIcon");
 
   QGraphicsTextItem* item = new QGraphicsTextItem(getUnRotatedText(),_itemGroup);
   //item->setPos(getX(), getY());

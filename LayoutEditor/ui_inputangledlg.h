@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'inputangledlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -75,10 +75,10 @@ public:
 
     void retranslateUi(QDialog *inputAngleDlg)
     {
-        inputAngleDlg->setWindowTitle(QApplication::translate("inputAngleDlg", "Enter Angle", 0));
-        textX->setText(QApplication::translate("inputAngleDlg", "TextLabel", 0));
-        okButton->setText(QApplication::translate("inputAngleDlg", "OK", 0));
-        cancelButton->setText(QApplication::translate("inputAngleDlg", "Cancel", 0));
+        inputAngleDlg->setWindowTitle(QApplication::translate("inputAngleDlg", "Enter Angle", Q_NULLPTR));
+        textX->setText(QApplication::translate("inputAngleDlg", "TextLabel", Q_NULLPTR));
+        okButton->setText(QApplication::translate("inputAngleDlg", "OK", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("inputAngleDlg", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

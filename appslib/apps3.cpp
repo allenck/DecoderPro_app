@@ -19,6 +19,7 @@
 #include "profile.h"
 #include "system.h"
 #include "properties.h"
+#include <QToolBar>
 
 //Apps3::Apps3(QObject *parent) :
 //  AppsBase(parent)
@@ -70,7 +71,7 @@
  log = new Logger("Apps3");
  // pre-GUI work
  //super(applicationName, configFileDef, args);
-
+ AppsBase::init();
  // Prepare font lists
  prepareFontLists();
 
@@ -167,6 +168,9 @@
     //((javax.swing.plaf.basic.BasicToolBarUI) toolBar.getUI()).setFloatingLocation(100,100);
 #if 0 // TODO:
     ((javax.swing.plaf.basic.BasicToolBarUI) toolBar.getUI()).setFloating(true, new Point(500, 500));
+#else
+ toolBar->setFloatable(true);
+ toolBar->move(500,500);
 #endif
 }
 
@@ -325,8 +329,8 @@
     ProfileManager::defaultManager()->setConfigFile(profileFile);
     // See if the profile to use has been specified on the command line as
     // a system property jmri.profile as a profile id.
-    if (System::getProperties()->containsKey(ProfileManager::SYSTEM_PROPERTY)) {
-        ProfileManager::defaultManager()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
+    if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile")) {
+        ProfileManager::defaultManager()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
     }
     // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
     if (!ProfileManager::defaultManager()->getConfigFile()->exists()) { // no profile config for this app
@@ -359,7 +363,7 @@
         ProfileManagerDialog::getStartingProfile(sp);
         // Manually setting the configFilename property since calling
         // Apps.setConfigFilename() does not reset the system property
-        System::setProperty("org.jmri.Apps.configFilename", Profile::CONFIG_FILENAME);
+        System::setProperty("org.jmri.Apps.configFilename", /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml");
         log->info(tr("Starting with profile %1").arg( ProfileManager::defaultManager()->getActiveProfile()->getId()));
     } catch (IOException ex) {
         log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg( ex.getMessage()));

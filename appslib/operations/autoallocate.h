@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+class ActiveTrain;
 class ConnectivityUtil;
 class Logger;
 class DispatcherFrame;
@@ -27,9 +28,14 @@ private:
  /*private*/ QList<AllocationPlan*>* _planList;// = new ArrayList<AllocationPlan>();
  /*private*/ int nextPlanNum;// = 1;
  /*private*/ QList<AllocationRequest*>* orderedRequests;// = new ArrayList<AllocationRequest>();
+ /*private*/ void copyAndSortARs(QList<AllocationRequest*>* list);
+ /*private*/ void removeCompletePlans();
+ /*private*/ bool isSignalHeldAtStartOfSection(AllocationRequest* ar);
+ /*private*/ AllocationPlan* getPlanThisTrain(ActiveTrain* at);
 
 protected:
  /*protected*/ void scanAllocationRequestList(QList<AllocationRequest*>* list);
+ /*protected*/ void clearAllocationPlans();
 
  friend class DispatcherFrame;
 };

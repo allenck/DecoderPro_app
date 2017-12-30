@@ -9,6 +9,7 @@
 #include <file.h>
 #include "stringutil.h"
 #include "rostergroup.h"
+#include "rosterconfigmanager.h"
 
 /** record the single instance of Roster **/
 Roster* Roster::_instance = NULL;
@@ -58,10 +59,9 @@ QString Roster::fileLocation = QDir::homePath() + QDir::separator() + ".jmri" + 
  * {@value #ROSTER_GROUP_PREFIX}
  */
 /*public*/ /*static*/ /*final*/ QString Roster::ROSTER_GROUP_PREFIX = "RosterGroup:"; // NOI18N
-QString Roster::ALLENTRIES = ("ALL ENTRIES");
+/*public*/ /*final*/ /*static*/ QString Roster::ALLENTRIES = "All Entries";
 QString Roster::_rosterGroupPrefix = "RosterGroup:";
 /*static final*/ /*public*/ const QString Roster::schemaVersion = "";
-
 
 Roster::Roster(QObject *parent) :
     XmlFile(parent)
@@ -123,24 +123,31 @@ Roster::Roster(QObject *parent) :
 /*public*/ Roster::Roster(QString rosterFilename)
 {
  //this();
+
+ QString filename = rosterFilename;
+ log = new Logger("Roster");
     _list = new QList<RosterEntry*>();
     pcs = new PropertyChangeSupport(this);
     defaultRosterGroup = "";
     rosterGroups = QMap<QString, RosterGroup*>();
 
     _rosterGroupPrefix = "RosterGroup:";
-    ALLENTRIES = tr("ALL ENTRIES");
+    ALLENTRIES = tr("All Entries");
 //schemaVersion = "";
  dirty = false;
-
+try
+ {
  // if the rosterFilename passed in is null, create a complete path
  // to the default roster index before attempting to read
- if (rosterFilename == "") {
+ if (filename.isNull() || filename.isEmpty()) {
      rosterFilename = this->getRosterIndexPath();
  }
- if(!this->readFile(rosterFilename))
+ this->readFile(filename);
+ }
+ //catch (IOException | JDOMException e) {{
+ catch (FileNotFoundException ex)
  {
-  log.error("Exception during roster reading: " + rosterFilename);
+  log->error("Exception during roster reading: " + rosterFilename);
 //        try {
 //            JOptionPane.showMessageDialog(NULL,
 //                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorReadingText")+"\n"+e.getMessage(),
@@ -178,14 +185,14 @@ Roster::Roster(QObject *parent) :
 {
  if (_instance == NULL)
  {
-//        if (log.isDebugEnabled()) {
-//            log.debug("Roster creating instance");
+//        if (log->isDebugEnabled()) {
+//            log->debug("Roster creating instance");
 //        }
   // create and load
   _instance = new Roster(defaultRosterFilename());
  }
-//    if (log.isDebugEnabled()) {
-//        log.debug("Roster returns instance " + _instance);
+//    if (log->isDebugEnabled()) {
+//        log->debug("Roster returns instance " + _instance);
 //    }
  return _instance;
 }
@@ -205,7 +212,7 @@ Roster::Roster(QObject *parent) :
  */
 /*public*/ void Roster::addEntry(RosterEntry* e)
 {
- if (log.isDebugEnabled()) log.debug("Add entry "+e->getFileName());
+ if (log->isDebugEnabled()) log->debug("Add entry "+e->getFileName());
  int i = _list->size()-1;// Last valid index
  while (i>=0)
  {
@@ -226,7 +233,7 @@ Roster::Roster(QObject *parent) :
  */
 /*public*/ void Roster::removeEntry(RosterEntry* e)
 {
- if (log.isDebugEnabled()) log.debug(tr("Remove entry ")+e->getId());
+ if (log->isDebugEnabled()) log->debug(tr("Remove entry ")+e->getId());
  _list->removeAt(_list->indexOf(e));
  setDirty(true);
  firePropertyChange(REMOVE, QVariant(), VPtr<RosterEntry>::asQVariant(e));
@@ -410,7 +417,7 @@ Roster::Roster(QObject *parent) :
  * information. The list may have NULL contents if there are no matches.
  */
 /*public*/ QList<RosterEntry*> Roster::getEntriesMatchingCriteria(QString roadName, QString roadNumber, QString dccAddress,
-        QString mfg, QString decoderMfgID, QString decoderVersionID, QString id, QString group) {
+        QString mfg, QString decoderMfgID, QString /*decoderVersionID*/, QString id, QString group) {
     QList<RosterEntry*> l;// = new ArrayList<RosterEntry>();
     for (int i = 0; i < this->numEntries(); i++) {
         if (this->checkEntry(i, roadName, roadNumber, dccAddress, mfg, decoderMfgID, decoderMfgID, id, group)) {
@@ -486,7 +493,7 @@ Roster::Roster(QObject *parent) :
  */
 void Roster::writeFile(QString name) //throw (FileNotFoundException, IOException)
 {
-    if (log.isDebugEnabled()) log.debug("writeFile "+name);
+    if (log->isDebugEnabled()) log->debug("writeFile "+name);
     // This is taken in large part from "Java and XML" page 368
     QFile* file = findFile(name);
     if (file == NULL) {
@@ -595,7 +602,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
   }
   else
   {
-   log.info("skip unsaved roster entry with default name " + r->getId());
+   log->info("skip unsaved roster entry with default name " + r->getId());
   }
  }
  //All Comments and Decoder Comment line feeds have been changed to processor directives
@@ -613,7 +620,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
   }
   else
   {
-   log.info("skip unsaved roster entry with default name " + _list->at(i)->getId());
+   log->info("skip unsaved roster entry with default name " + _list->at(i)->getId());
   }
  }
 
@@ -681,7 +688,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
   }
   else
   {
-   log.info("skip unsaved roster entry with default name " + r->getId());
+   log->info("skip unsaved roster entry with default name " + r->getId());
   }
  }
 
@@ -732,7 +739,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  // roster exists?
  if (!(file.exists()))
  {
-  log.debug("no roster file found; this is normal if you haven't put decoders in your roster yet");
+  log->debug("no roster file found; this is normal if you haven't put decoders in your roster yet");
   return false;
  }
  doc = QDomDocument("roster");
@@ -751,17 +758,17 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  qDebug() << tr("rootElement = %1").arg(root.tagName());
  if (root.isNull())
  {
-  log.error("Roster file exists, but could not be read; roster not available");
+  log->error("Roster file exists, but could not be read; roster not available");
   return false;
  }
- //if (log.isDebugEnabled()) XmlFile.dumpElement(root);
+ //if (log->isDebugEnabled()) XmlFile.dumpElement(root);
 
  // decode type, invoke proper processing routine if a decoder file
  if (!root.firstChildElement("roster").isNull())
  {
   //List<Element> l = root.getChild("roster").getChildren("locomotive");
   QDomNodeList l = root.firstChildElement("roster").childNodes();
-  if (log.isDebugEnabled()) log.debug("readFile sees "+QString("%1").arg(l.size())+" children");
+  if (log->isDebugEnabled()) log->debug("readFile sees "+QString("%1").arg(l.size())+" children");
   for (int i=0; i<l.size(); i++)
   {
    addEntry(new RosterEntry(l.at(i).toElement()));
@@ -824,7 +831,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  }
  else
  {
-  log.error("Unrecognized roster file contents in file: "+name);
+  log->error("Unrecognized roster file contents in file: "+name);
  }
  if (!root.firstChildElement("rosterGroup").isNull())
  {
@@ -840,8 +847,8 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
 
 
 /*public*/ void Roster::dispose() {
-    if (log.isDebugEnabled()) log.debug("dispose");
-    if (dirty) log.error("Dispose invoked on dirty Roster");
+    if (log->isDebugEnabled()) log->debug("dispose");
+    if (dirty) log->error("Dispose invoked on dirty Roster");
 }
 #if 1
 /**
@@ -890,7 +897,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
           roster->addEntry(re);
       }
   } catch (JDOMException /*| IOException*/ ex) {
-   log.error(tr("Exception while loading loco XML file: %1 execption: %2").arg(fileName).arg(ex.getMessage()));
+   log->error(tr("Exception while loading loco XML file: %1 execption: %2").arg(fileName).arg(ex.getMessage()));
   }
  }
 
@@ -898,10 +905,10 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  try {
      roster->writeFile(this->getRosterIndexPath());
  } catch (IOException ex) {
-     log.error(tr("Exception while writing the new roster file, may not be complete: %1").arg(ex.getMessage()));
+     log->error(tr("Exception while writing the new roster file, may not be complete: %1").arg(ex.getMessage()));
  }
  this->reloadRosterFile();
- log.info(tr("Roster rebuilt, stored in %1").arg(this->getRosterIndexPath()));
+ log->info(tr("Roster rebuilt, stored in %1").arg(this->getRosterIndexPath()));
 }
 /**
  * Update the in-memory Roster to be consistent with
@@ -918,7 +925,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  }
  catch (Exception e)
  {
-  log.error("Exception during roster reading: "+e.getMessage());
+  log->error("Exception during roster reading: "+e.getMessage());
   QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred  while trying to read the roster index file: %1").arg( defaultRosterFilename()));
  }
 }
@@ -939,6 +946,45 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  * This is here to allow easy override in tests.
  */
 /*public*/ /*static*/ QString Roster::defaultRosterFilename() { return getFileLocation()+rosterFileName;}
+
+/**
+ * Set the default location for the Roster file, and all individual
+ * locomotive files.
+ *
+ * @param f Absolute pathname to use. A null or "" argument flags a return
+ *          to the original default in the user's files directory. This
+ *          parameter must be a potentially valid path on the system.
+ */
+/*public*/ void Roster::setRosterLocation(QString f)
+{
+ QString oldRosterLocation = this->rosterLocation;
+ QString p = f;
+ if (p != "") {
+     if (p.isEmpty()) {
+         p = "";
+     } else {
+         p = FileUtil::getAbsoluteFilename(p);
+         if (p == "") {
+             throw new IllegalArgumentException(tr("\"%1\" is not a valid path").arg(f)); // NOI18N
+         }
+         if (!p.endsWith(File::separator)) {
+             p = p + File::separator;
+         }
+     }
+ }
+ if (p == "") {
+     p = FileUtil::getUserFilesPath();
+ }
+ this->rosterLocation = p;
+ log->debug(tr("Setting roster location from %1 to %2").arg(oldRosterLocation).arg(this->rosterLocation));
+ if (this->rosterLocation == (FileUtil::getUserFilesPath())) {
+     log->debug("Roster location reset to default");
+ }
+ if (this->rosterLocation != (oldRosterLocation)) {
+     this->firePropertyChange(RosterConfigManager::DIRECTORY, oldRosterLocation, this->rosterLocation);
+ }
+ this->reloadRosterFile();
+}
 
 /**
  * Absolute path to roster file location.
@@ -1024,7 +1070,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  * Roster per se, but triggers recreation.
  */
 /*public*/ void Roster::entryIdChanged(RosterEntry* r) {
-    log.debug("EntryIdChanged");
+    log->debug("EntryIdChanged");
 #if 1 // TODO:
     // order may be wrong! Sort
     //RosterEntry[] rarray = new RosterEntry[_list.size()];
@@ -1212,10 +1258,27 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
     return QVector<QString>(_rosterGroupList);
 }
 
-
+/**
+  * Get the identifier for all entries in the roster.
+  *
+  * @param locale - The desired locale
+  * @return "All Entries" in the specified locale
+  */
+ /*public*/ /*static*/ QString Roster::AllEntries(QLocale /*locale*/) {
+     return tr("All Entries"); // NOI18N
+ }
 //    // initialize logging
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Roster.class.getName());
-
+/**
+ * Get the identifier for all entries in the roster.
+ *
+ * @param locale - The desired locale
+ * @return "All Entries" in the specified locale
+ */
+/*public*/ /*static*/ QString Roster::_AllEntries(QLocale /*locale*/) {
+ // NOTE: A QTranslator class for the locale needs to be loaded!
+    return tr( "All Entries"); // NOI18N
+}
 /**
  * Get the default roster group.
  *

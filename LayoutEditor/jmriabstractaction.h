@@ -4,6 +4,7 @@
 #include "abstractaction.h"
 #include "windowinterface.h"
 #include "liblayouteditor_global.h"
+#include "jmripanel.h"
 
 class LIBLAYOUTEDITORSHARED_EXPORT JmriAbstractAction : public AbstractAction
 {
@@ -17,7 +18,7 @@ public:
  /*public*/  JmriAbstractAction(QString s,QObject *parent);
  /*public*/  void setWindowInterface(WindowInterface* wi);
  /*public*/  void setName(QString name);
- /*public*/  JmriAbstractAction* setHint(WindowInterface::Hint hint);
+ ///*public*/  JmriAbstractAction* setHint(WindowInterface::Hint hint);
  /*public*/  void dispose();
  /*public*/  virtual JmriPanel* makePanel();
  /*public*/  virtual void setParameter(QString parameter, QString value) ;
@@ -34,7 +35,7 @@ private:
  JmriPanel* cache;// = NULL;
 
 protected:
- /*protected*/ WindowInterface::Hint hint;// = WindowInterface::Hint.DEFAULT;
+ ///*protected*/ WindowInterface::Hint hint;// = WindowInterface::Hint.DEFAULT;
  /*protected*/ WindowInterface* wi;
  /*protected*/ QObject* context;// = null;
 

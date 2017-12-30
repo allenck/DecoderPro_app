@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'saverestoredialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -146,15 +146,15 @@ public:
 
     void retranslateUi(QDialog *SaveRestoreDialog)
     {
-        SaveRestoreDialog->setWindowTitle(QApplication::translate("SaveRestoreDialog", "Dialog", 0));
-        label->setText(QApplication::translate("SaveRestoreDialog", "Unit addr:", 0));
-        label_2->setText(QApplication::translate("SaveRestoreDialog", "SubUnit Addr:", 0));
-        label_3->setText(QApplication::translate("SaveRestoreDialog", "Description:", 0));
-        label_4->setText(QApplication::translate("SaveRestoreDialog", "Module:", 0));
-        btnDelete->setText(QApplication::translate("SaveRestoreDialog", "Delete", 0));
-        btnCancel->setText(QApplication::translate("SaveRestoreDialog", "Cancel", 0));
-        btnOK->setText(QApplication::translate("SaveRestoreDialog", "OK", 0));
-        lblHelp->setText(QApplication::translate("SaveRestoreDialog", "TextLabel", 0));
+        SaveRestoreDialog->setWindowTitle(QApplication::translate("SaveRestoreDialog", "Dialog", Q_NULLPTR));
+        label->setText(QApplication::translate("SaveRestoreDialog", "Unit addr:", Q_NULLPTR));
+        label_2->setText(QApplication::translate("SaveRestoreDialog", "SubUnit Addr:", Q_NULLPTR));
+        label_3->setText(QApplication::translate("SaveRestoreDialog", "Description:", Q_NULLPTR));
+        label_4->setText(QApplication::translate("SaveRestoreDialog", "Module:", Q_NULLPTR));
+        btnDelete->setText(QApplication::translate("SaveRestoreDialog", "Delete", Q_NULLPTR));
+        btnCancel->setText(QApplication::translate("SaveRestoreDialog", "Cancel", Q_NULLPTR));
+        btnOK->setText(QApplication::translate("SaveRestoreDialog", "OK", Q_NULLPTR));
+        lblHelp->setText(QApplication::translate("SaveRestoreDialog", "TextLabel", Q_NULLPTR));
     } // retranslateUi
 
 };

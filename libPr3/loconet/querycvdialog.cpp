@@ -6,7 +6,7 @@ QueryCvDialog::QueryCvDialog(QWidget* parent) : QWidget(parent),
   ui(new Ui::QueryCvDialog)
 {
  ui->setupUi(this);
- LocoNetSystemConnectionMemo* memo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo");
+ LocoNetSystemConnectionMemo* memo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
  this->data = new LocoIOData(0x51,1, memo->getLnTrafficController());
  //this->locobufferadapter = memo->getLnTrafficController();
  this->bHex = true;

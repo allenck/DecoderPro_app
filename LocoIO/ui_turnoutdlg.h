@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'turnoutdlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -183,20 +183,20 @@ public:
 
     void retranslateUi(QDialog *TurnoutDlg)
     {
-        TurnoutDlg->setWindowTitle(QApplication::translate("TurnoutDlg", "Dialog", 0));
-        label->setText(QApplication::translate("TurnoutDlg", "Val 1: ", 0));
-        label_2->setText(QApplication::translate("TurnoutDlg", "Val 2:", 0));
-        gbB1Mode->setTitle(QApplication::translate("TurnoutDlg", "B1 mode", 0));
-        rbB1Input->setText(QApplication::translate("TurnoutDlg", "Input", 0));
-        rbB1Output->setText(QApplication::translate("TurnoutDlg", "Output", 0));
-        chkDS54Aux->setText(QApplication::translate("TurnoutDlg", "DS54 Aux Input", 0));
-        chkClosedOn->setText(QApplication::translate("TurnoutDlg", "Closed ON", 0));
-        chkOutputOn->setText(QApplication::translate("TurnoutDlg", "Output ON", 0));
-        lblAddr->setText(QApplication::translate("TurnoutDlg", "Address:", 0));
-        chkInputHigh->setText(QApplication::translate("TurnoutDlg", "Input High (> +6V)", 0));
-        lblHelp->setText(QApplication::translate("TurnoutDlg", "TextLabel", 0));
-        btnCancel->setText(QApplication::translate("TurnoutDlg", "Cancel", 0));
-        btnOK->setText(QApplication::translate("TurnoutDlg", "OK", 0));
+        TurnoutDlg->setWindowTitle(QApplication::translate("TurnoutDlg", "Dialog", Q_NULLPTR));
+        label->setText(QApplication::translate("TurnoutDlg", "Val 1: ", Q_NULLPTR));
+        label_2->setText(QApplication::translate("TurnoutDlg", "Val 2:", Q_NULLPTR));
+        gbB1Mode->setTitle(QApplication::translate("TurnoutDlg", "B1 mode", Q_NULLPTR));
+        rbB1Input->setText(QApplication::translate("TurnoutDlg", "Input", Q_NULLPTR));
+        rbB1Output->setText(QApplication::translate("TurnoutDlg", "Output", Q_NULLPTR));
+        chkDS54Aux->setText(QApplication::translate("TurnoutDlg", "DS54 Aux Input", Q_NULLPTR));
+        chkClosedOn->setText(QApplication::translate("TurnoutDlg", "Closed ON", Q_NULLPTR));
+        chkOutputOn->setText(QApplication::translate("TurnoutDlg", "Output ON", Q_NULLPTR));
+        lblAddr->setText(QApplication::translate("TurnoutDlg", "Address:", Q_NULLPTR));
+        chkInputHigh->setText(QApplication::translate("TurnoutDlg", "Input High (> +6V)", Q_NULLPTR));
+        lblHelp->setText(QApplication::translate("TurnoutDlg", "TextLabel", Q_NULLPTR));
+        btnCancel->setText(QApplication::translate("TurnoutDlg", "Cancel", Q_NULLPTR));
+        btnOK->setText(QApplication::translate("TurnoutDlg", "OK", Q_NULLPTR));
     } // retranslateUi
 
 };

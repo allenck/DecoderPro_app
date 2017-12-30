@@ -324,11 +324,13 @@ common();
   */
  /*public*/ bool OperationsFrame::loadTableDetails(JTable* table)
  {
-  UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-  QSortFilterProxyModel* sorter = NULL;
-  QString tableref = getWindowFrameRef() + ":table"; // NOI18N
-  if (p == NULL || p->getTablesColumnList(tableref).isEmpty()) {
-      return false;
+//  UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+//  QSortFilterProxyModel* sorter = NULL;
+//  QString tableref = getWindowFrameRef() + ":table"; // NOI18N
+//  if (p == NULL || p->getTablesColumnList(tableref).isEmpty()) {
+//      return false;
+  return ((OperationsPanel*) this->getContentPane())->loadTableDetails(table);
+
   }
 #if 0
   try
@@ -363,9 +365,10 @@ common();
        }
    }
   }
-#endif
+
         return true;
  }
+#endif
 #if 0
  /*private*/ boolean sortTable(JTable table, UserPreferencesManager p, String tableref) {
      boolean sortDone = true;

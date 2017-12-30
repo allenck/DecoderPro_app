@@ -392,7 +392,7 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
 
 //@Override
 /*protected*/ QString AudioTableDataModel::getMasterClassName() {
- return "AudioTableDataModel";
+ return "jmri.jmrit.beantable.AudioTableDataModel";
 }
 
 //@Override

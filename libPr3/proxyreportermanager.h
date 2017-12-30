@@ -70,7 +70,7 @@ public slots:
 private:
  Logger log;
 protected:
- virtual /*protected*/ AbstractManager* makeInternalManager();
+ virtual /*protected*/ Manager* makeInternalManager() const;
  virtual /*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName);
 
 };

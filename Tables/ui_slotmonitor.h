@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'slotmonitor.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -101,18 +101,18 @@ public:
 
     void retranslateUi(QMainWindow *SlotMonitor)
     {
-        SlotMonitor->setWindowTitle(QApplication::translate("SlotMonitor", "LocoNet Slot Monitor", 0));
+        SlotMonitor->setWindowTitle(QApplication::translate("SlotMonitor", "LocoNet Slot Monitor", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        chkShowUnusedSlots->setToolTip(QApplication::translate("SlotMonitor", "if checked, even empty/idle slots will appear", 0));
+        chkShowUnusedSlots->setToolTip(QApplication::translate("SlotMonitor", "if checked, even empty/idle slots will appear", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        chkShowUnusedSlots->setText(QApplication::translate("SlotMonitor", "Show Unused slots", 0));
+        chkShowUnusedSlots->setText(QApplication::translate("SlotMonitor", "Show Unused slots", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        chkShowSystemSlots->setToolTip(QApplication::translate("SlotMonitor", "if checked, slots reserved for system use will be shown", 0));
+        chkShowSystemSlots->setToolTip(QApplication::translate("SlotMonitor", "if checked, slots reserved for system use will be shown", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        chkShowSystemSlots->setText(QApplication::translate("SlotMonitor", "Show System Slots", 0));
-        estopAllButton->setText(QApplication::translate("SlotMonitor", "estop All", 0));
-        menuWindows->setTitle(QApplication::translate("SlotMonitor", "Window", 0));
-        menuHelp->setTitle(QApplication::translate("SlotMonitor", "Help", 0));
+        chkShowSystemSlots->setText(QApplication::translate("SlotMonitor", "Show System Slots", Q_NULLPTR));
+        estopAllButton->setText(QApplication::translate("SlotMonitor", "estop All", Q_NULLPTR));
+        menuWindows->setTitle(QApplication::translate("SlotMonitor", "Window", Q_NULLPTR));
+        menuHelp->setTitle(QApplication::translate("SlotMonitor", "Help", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'registerswidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -125,11 +125,11 @@ public:
 
     void retranslateUi(QWidget *RegistersWidget)
     {
-        RegistersWidget->setWindowTitle(QApplication::translate("RegistersWidget", "Form", 0));
-        edAddr->setText(QApplication::translate("RegistersWidget", "0x000", 0));
-        btnRead->setText(QApplication::translate("RegistersWidget", "R", 0));
-        btnWrite->setText(QApplication::translate("RegistersWidget", "W", 0));
-        btnEditVal->setText(QApplication::translate("RegistersWidget", "Edit", 0));
+        RegistersWidget->setWindowTitle(QApplication::translate("RegistersWidget", "Form", Q_NULLPTR));
+        edAddr->setText(QApplication::translate("RegistersWidget", "0x000", Q_NULLPTR));
+        btnRead->setText(QApplication::translate("RegistersWidget", "R", Q_NULLPTR));
+        btnWrite->setText(QApplication::translate("RegistersWidget", "W", Q_NULLPTR));
+        btnEditVal->setText(QApplication::translate("RegistersWidget", "Edit", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -654,7 +654,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->editScene->setSceneRect(0,0,panelWidth, panelHeight);
 
  panel->pack();
-// TODO:    panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
+ panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
  panel->setVisible(true);    // always show the panel
  panel->resetDirty();
 
@@ -663,7 +663,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
  // register the resulting panel for later configuration
  InstanceManager::configureManagerInstance()->registerUser(panel);
- if (InstanceManager::transitManagerInstance()->getSystemNameList().size() > 0)
+ //if (InstanceManager::transitManagerInstance()->getSystemNameList().size() > 0)
+ if(((TransitManager*)InstanceManager::getNullableDefault("TransitManager")))
  {
   if (element.attribute("openDispatcher") != NULL)
   {

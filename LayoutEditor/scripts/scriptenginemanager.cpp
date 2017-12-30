@@ -336,20 +336,22 @@
     }
     return NULL;
 }
-
+#endif
 /**
  * Returns a list whose elements are instances of all the <code>ScriptEngineFactory</code> classes
  * found by the discovery mechanism.
  * @return List of all discovered <code>ScriptEngineFactory</code>s.
  */
-/*public*/ List<ScriptEngineFactory> getEngineFactories() {
-    List<ScriptEngineFactory> res = new ArrayList<ScriptEngineFactory>(engineSpis.size());
-    for (ScriptEngineFactory spi : engineSpis) {
-        res.add(spi);
+/*public*/ QList<ScriptEngineFactory*> ScriptEngineManager::getEngineFactories() {
+    QList<ScriptEngineFactory*> res = QList<ScriptEngineFactory*>(/*engineSpis.size()*/);
+    res.reserve(engineSpis.size());
+    foreach (ScriptEngineFactory* spi, engineSpis) {
+        res.append(spi);
     }
-    return Collections.unmodifiableList(res);
+    //return Collections.unmodifiableList(res);
+    return res;
 }
-
+#if 0
 /**
  * Registers a <code>ScriptEngineFactory</code> to handle a language
  * name.  Overrides any such association found using the Discovery mechanism.

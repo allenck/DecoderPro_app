@@ -8,7 +8,9 @@ class LIBPR3SHARED_EXPORT DccThrottle : public Throttle
 {
     Q_OBJECT
 public:
-    //explicit DccThrottle(QObject *parent = 0);
+    explicit DccThrottle(QObject *parent = 0) : Throttle(parent) {}
+    ~DccThrottle() {}
+    DccThrottle(const DccThrottle&) : Throttle() {}
     /**
      * Provide DCC-specific extensions to Throttle interface.
      *
@@ -68,5 +70,5 @@ signals:
 public slots:
     
 };
-
+Q_DECLARE_METATYPE(DccThrottle)
 #endif // DCCTHROTTLE_H

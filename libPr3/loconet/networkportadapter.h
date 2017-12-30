@@ -22,7 +22,7 @@ public:
  /**
   * Connects to the end device using a hostname/ip address and port
   */
- /*public*/ virtual void _connect(QString /*host*/, int /*port*/) throw (Exception) {}
+ /*public*/ virtual void _connect(QString /*host*/, int /*port*/) {} // throw (Exception)
 
  /**
   * Configure all of the other jmrix widgets needed to work with this adapter

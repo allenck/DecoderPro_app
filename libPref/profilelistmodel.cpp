@@ -1,7 +1,7 @@
 #include "profilelistmodel.h"
 #include "profilemanager.h"
 #include "indexedpropertychangeevent.h"
-#include "../libPr3/profile.h"
+#include "profile.h"
 
 //ProfileListModel::ProfileListModel(QObject *parent) :
 //    AbstractListModel(parent)
@@ -36,23 +36,27 @@
 //            }
 //        }
 //    });
-    connect(ProfileManager::defaultManager(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)),this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
+ connect(ProfileManager::getDefault(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)),this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
 }
+
 /*public*/ void ProfileListModel::propertyChange(IndexedPropertyChangeEvent* evt)
 {
  //if (evt instanceof IndexedPropertyChangeEvent
- if(qobject_cast<IndexedPropertyChangeEvent*>(evt) != NULL
-            && evt->getSource()==(ProfileManager::defaultManager()))
+ if(evt->getPropertyName() == ProfileManager::PROFILES)
  {
-  if (evt->getOldValue() == QVariant())
+  if(qobject_cast<IndexedPropertyChangeEvent*>(evt) != NULL
+             && evt->getSource()==(ProfileManager::getDefault()))
   {
-   fireIntervalAdded(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
+   if (evt->getOldValue() == QVariant())
+   {
+    fireIntervalAdded(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
+   }
+   else if (evt->getNewValue() == QVariant())
+   {
+    fireIntervalRemoved(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
+   }
+   fireContentsChanged(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
   }
-  else if (evt->getNewValue() == QVariant())
-  {
-   fireIntervalRemoved(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
-  }
-  fireContentsChanged(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
  }
 }
 //@Override

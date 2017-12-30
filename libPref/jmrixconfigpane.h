@@ -13,8 +13,10 @@ class LIBPREFSHARED_EXPORT JmrixConfigPane : public QWidget
     Q_OBJECT
 public:
     //explicit JmrixConfigPane(QWidget *parent = 0);
+ ~JmrixConfigPane() {}
     /*public*/ static JmrixConfigPane* instance(int index);
     /*public*/ static JmrixConfigPane* instance(ConnectionConfig* config);
+    /*public*/ static /*synchronized*/ JmrixConfigPane* createPanel(ConnectionConfig* c);
     /*public*/ static JmrixConfigPane* createNewPanel();
     /*public*/ static int getNumberOfInstances() ;
     /*public*/ static void dispose(int index);
@@ -53,8 +55,9 @@ public slots:
     /*public*/ void updateComboConnection();
     void On_modeBox_currentIndexChanged(int);
 private:
-   Logger* log;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("JmrixConfigPane");
    /*private*/ static /*synchronized*/ JmrixConfigPane* createPanel(int index);
+   /*private*/ bool _isDirty;// = false;
    QComboBox* modeBox;// = new JComboBox<>();
    QComboBox* manuBox;// = new JComboBox<>();
 

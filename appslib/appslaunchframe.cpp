@@ -16,6 +16,10 @@
 #include "activesystemsmenu.h"
 #include "appslaunchpane.h"
 #include <QApplication>
+#include "withrottlecreationaction.h"
+#include "operationsmenu.h"
+#include "debugmenu.h"
+#include "webserveraction.h"
 
 //AppsLaunchFrame::AppsLaunchFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -105,7 +109,7 @@
     log->debug("end building menus");
 }
 
-/*protected*/ void AppsLaunchFrame::fileMenu(QMenuBar* menuBar, WindowInterface* wi) {
+/*protected*/ void AppsLaunchFrame::fileMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
     QMenu* fileMenu = new QMenu(tr("MenuFile"));
     menuBar->addMenu(fileMenu);
 
@@ -119,12 +123,12 @@
  * Made a separate method so if can be overridden for application specific
  * preferences help
  */
-/*protected*/ void AppsLaunchFrame::setPrefsFrameHelp(JmriJFrame *f, QString l) {
+/*protected*/ void AppsLaunchFrame::setPrefsFrameHelp(JmriJFrame */*f*/, QString /*l*/) {
 //    f->addHelpMenu(l, true);
 }
 
 
-/*protected*/ void AppsLaunchFrame::editMenu(QMenuBar* menuBar, WindowInterface* wi) {
+/*protected*/ void AppsLaunchFrame::editMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
 
     QMenu* editMenu = new QMenu(tr("Edit"));
     menuBar->addMenu(editMenu);
@@ -160,19 +164,19 @@
 
 }
 
-/*protected*/ void AppsLaunchFrame::toolsMenu(QMenuBar* menuBar, WindowInterface* wi) {
+/*protected*/ void AppsLaunchFrame::toolsMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
     menuBar->addMenu(new ToolsMenu(tr("MenuTools"),this));
 }
 
-/*protected*/ void AppsLaunchFrame::operationsMenu(QMenuBar* menuBar, WindowInterface* wi) {
-//    menuBar->addMenu(new OperationsMenu());
+/*protected*/ void AppsLaunchFrame::operationsMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
+ menuBar->addMenu(new OperationsMenu());
 }
 
-/*protected*/ void AppsLaunchFrame::rosterMenu(QMenuBar* menuBar, WindowInterface* wi) {
+/*protected*/ void AppsLaunchFrame::rosterMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
     menuBar->addMenu(new RosterMenu(tr("Roster"), RosterMenu::MAINMENU, this));
 }
 
-/*protected*/ void AppsLaunchFrame::panelMenu(QMenuBar* menuBar, WindowInterface* wi) {
+/*protected*/ void AppsLaunchFrame::panelMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
     menuBar->addMenu(PanelMenu::instance());
 }
 
@@ -187,15 +191,15 @@
  * @param menuBar
  * @param wi
  */
-/*protected*/ void AppsLaunchFrame::systemsMenu(QMenuBar* menuBar, WindowInterface* wi) {
+/*protected*/ void AppsLaunchFrame::systemsMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
     ActiveSystemsMenu::addItems(menuBar);
 }
 
-/*protected*/ void AppsLaunchFrame::debugMenu(QMenuBar* menuBar, WindowInterface* wi, AppsLaunchPane* pane)
+/*protected*/ void AppsLaunchFrame::debugMenu(QMenuBar* menuBar, WindowInterface* /*wi*/, AppsLaunchPane* pane)
 {
-#if 0
-    QMenu d = new DebugMenu(pane);
 
+    QMenu* d = new DebugMenu(pane);
+#if 0
     // also add some tentative items from jmrix
     d.add(new JSeparator());
     d.add(new jmri.jmrix.pricom.PricomMenu());
@@ -213,18 +217,17 @@
         i.setEnabled(false);
         d.add(i);
     }
-
-    // also add some tentative items from webserver
-    d.add(new JSeparator());
-    d.add(new WebServerAction());
-
-    d.add(new JSeparator());
-    d.add(new WiThrottleCreationAction());
-    menuBar.add(d);
 #endif
+    // also add some tentative items from webserver
+    d->addSeparator();
+    d->addAction(new WebServerAction(this));
+
+    d->addSeparator();
+    d->addAction(new WiThrottleCreationAction(this));
+    menuBar->addMenu(d);
 }
 
-/*protected*/ void AppsLaunchFrame::scriptMenu(QMenuBar* menuBar, WindowInterface* wi) {
+/*protected*/ void AppsLaunchFrame::scriptMenu(QMenuBar* /*menuBar*/, WindowInterface* /*wi*/) {
     // temporarily remove Scripts menu; note that "Run Script"
     // has been added to the Panels menu
     // QMenu menu = new QMenu("Scripts");
@@ -234,9 +237,10 @@
 }
 
 /*protected*/ void developmentMenu(QMenuBar* menuBar, WindowInterface* wi) {
+
+    QMenu* devMenu = new QMenu("Development");
+    menuBar->addMenu(devMenu);
 #if 0
-    QMenu devMenu = new QMenu("Development");
-    menuBar.add(devMenu);
     devMenu.add(new jmri.jmrit.symbolicprog.autospeed.AutoSpeedAction("Auto-speed tool"));
     devMenu.add(new JSeparator());
     devMenu.add(new jmri.jmrit.automat.SampleAutomatonAction("Sample automaton 1"));

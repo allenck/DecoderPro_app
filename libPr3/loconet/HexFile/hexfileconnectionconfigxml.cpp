@@ -38,28 +38,30 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
  * @param o
  * @return Formatted element containing no attributes except the class name
  */
+//@Override
 /*public*/ QDomElement HexFileConnectionConfigXml::store(QObject* o)
 {
  getInstance(o);
-
+ doc = QDomDocument("JmriXml");
  QDomElement e = doc.createElement("connection");
- if (adapter->getSystemConnectionMemo()!=NULL){
-        e.setAttribute("userName", adapter->getSystemConnectionMemo()->getUserName());
-        e.setAttribute("systemPrefix", adapter->getSystemConnectionMemo()->getSystemPrefix());
-    }
-    if (adapter->getManufacturer()!="")
-        e.setAttribute("manufacturer", adapter->getManufacturer());
-    saveOptions(e, adapter);
+ if (adapter->getSystemConnectionMemo()!=NULL)
+ {
+  e.setAttribute("userName", adapter->getSystemConnectionMemo()->getUserName());
+  e.setAttribute("systemPrefix", adapter->getSystemConnectionMemo()->getSystemPrefix());
+ }
+ if (adapter->getManufacturer()!="")
+     e.setAttribute("manufacturer", adapter->getManufacturer());
+ saveOptions(e, adapter);
 
-    if (adapter->getDisabled())
-        e.setAttribute("disabled", "yes");
-    else e.setAttribute("disabled", "no");
+ if (adapter->getDisabled())
+     e.setAttribute("disabled", "yes");
+ else e.setAttribute("disabled", "no");
 
-    e.setAttribute("class", /*this.getClass().getName()*/ "jmri.jmrix.loconet/hexfile/ConnectionConfigXml");
+ e.setAttribute("class", /*this.getClass().getName()*/ "jmri.jmrix.loconet.hexfile.ConnectionConfigXml");
 
-    return e;
+ return e;
 }
-
+#if 0
 /**
  * Update instance data from XML file
  * @param e Top level QDomElement to unpack.
@@ -166,7 +168,93 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
 //    }
  return true;
 }
+#endif
+//@Override
+/*public*/ bool HexFileConnectionConfigXml::load(QDomElement shared, QDomElement perNode) {
+    HexFileFrame* f = NULL;
+    HexFileServer* hfs = NULL;
 
+    getInstance();
+    // hex file has no options in the XML
+
+//    GraphicsEnvironment::getLocalGraphicsEnvironment();
+    // create GUI, unless running in headless mode
+//    if (!GraphicsEnvironment.isHeadless())
+//    {
+        f = new HexFileFrame();
+        f->setAdapter((LnHexFilePort*) adapter);
+        try {
+            f->initComponents();
+        } catch (Exception ex) {
+            //log.error("starting HexFileFrame exception: "+ex.toString());
+        }
+        f->pack();
+        f->setVisible(true);
+//    } else {  // create and configure the headless server
+//        hfs = new jmri.jmrix.loconet.hexfile.HexFileServer();
+//        hfs.setAdapter((LnHexFilePort) adapter);
+//    }
+
+    if (shared.attribute("option1") != NULL) { // NOI18N
+        QString option1Setting = shared.attribute("option1"); // NOI18N
+        adapter->configureOption1(option1Setting);
+    }
+    if (shared.attribute("option2") != NULL) { // NOI18N
+        QString option2Setting = shared.attribute("option2"); // NOI18N
+        adapter->configureOption2(option2Setting);
+    }
+    if (shared.attribute("option3") != NULL) { // NOI18N
+        QString option3Setting = shared.attribute("option3"); // NOI18N
+        adapter->configureOption3(option3Setting);
+    }
+    if (shared.attribute("option4") != NULL) { // NOI18N
+        QString option4Setting = shared.attribute("option4"); // NOI18N
+        adapter->configureOption4(option4Setting);
+    }
+    loadOptions(shared.firstChildElement("options"), perNode.firstChildElement("options"), adapter); // NOI18N
+    QString manufacturer;
+    try {
+        manufacturer = shared.attribute("manufacturer"); // NOI18N
+        adapter->setManufacturer(manufacturer);
+    } catch (NullPointerException ex) { //Considered normal if not present
+
+    }
+    if (adapter->getSystemConnectionMemo() != NULL) {
+        if (shared.attribute("userName") != NULL) { // NOI18N
+            adapter->getSystemConnectionMemo()->setUserName(shared.attribute("userName")); // NOI18N
+        }
+
+        if (shared.attribute("systemPrefix") != NULL) { // NOI18N
+            adapter->getSystemConnectionMemo()->setSystemPrefix(shared.attribute("systemPrefix")); // NOI18N
+        }
+    }
+    if (shared.attribute("disabled") != NULL) { // NOI18N
+        QString yesno = shared.attribute("disabled"); // NOI18N
+        if ((yesno != NULL) && (yesno != (""))) {
+            if (yesno == ("no")) { // NOI18N
+                adapter->setDisabled(false);
+            } else if (yesno == ("yes")) { // NOI18N
+                adapter->setDisabled(true);
+            }
+        }
+    }
+
+    // register, so can be picked up
+    _register();
+
+    if (adapter->getDisabled()) {
+//        if (!GraphicsEnvironment.isHeadless() && f != NULL) {
+            f->setVisible(false);
+//        }
+        return true;
+    }
+//    if (!GraphicsEnvironment.isHeadless() && f != NULL) {
+        f->configure();
+//    } else if (hfs != NULL) {
+//        hfs.configure();
+//    }
+    return true;
+}
 
 /*protected*/ void HexFileConnectionConfigXml::getInstance(QObject* object) {
     adapter = (SerialPortAdapter*)((ConnectionConfig*)object)->getAdapter();
@@ -177,5 +265,6 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
 }
 
 /*protected*/ void HexFileConnectionConfigXml::_register() {
-    InstanceManager::configureManagerInstance()->registerPref(new HexFileConnectionConfig(adapter,NULL));
+    //InstanceManager::configureManagerInstance()->_register(new HexFileConnectionConfig(adapter,NULL));
+ AbstractConnectionConfigXml::_register((ConnectionConfig*)new HexFileConnectionConfig(adapter,NULL));
 }

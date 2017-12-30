@@ -6,7 +6,7 @@
 #include "profilemanager.h"
 #include "configxmlmanager.h"
 #include "filehistory.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "createbuttonmodel.h"
 #include "file.h"
 #include "defaultshutdownmanager.h"
@@ -18,6 +18,8 @@
 #include "system.h"
 #include "metatypes.h"
 #include "properties.h"
+#include "jmriconfigurationmanager.h"
+#include "jmriuserpreferencesmanager.h"
 
 AppsBase::AppsBase(QObject *parent) :
     QObject(parent)
@@ -87,7 +89,11 @@ AppsBase::AppsBase(QObject *parent) :
   setConfigFilename(configFileDef, args);
  }
 //    Log4JUtil.initLog4J();
- QTimer::singleShot(10, this, SLOT(init())); // configureProfile() once constructor is finished.
+ //QTimer::singleShot(10, this, SLOT(init())); // configureProfile() once constructor is finished.
+}
+void AppsBase::init()
+{
+ configureProfile();
 
  installConfigurationManager();
 
@@ -139,16 +145,16 @@ AppsBase::AppsBase(QObject *parent) :
     }
 #endif
  // all loaded, initialize objects as necessary
- InstanceManager::logixManagerInstance()->activateAllLogixs();
+ ((LogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
  ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
  (new DefaultCatalogTreeManagerXml())->readCatalogTrees();
 
 }
 
-void AppsBase::init()
-{
- configureProfile();
-}
+//void AppsBase::init()
+//{
+// configureProfile();
+//}
 
 /**
  * Configure the {@link jmri.profile.Profile} to use for this application.
@@ -180,9 +186,9 @@ void AppsBase::init()
  // See if the profile to use has been specified on the command line as
  // a system property jmri.profile as a profile id.
 #if 1
- if (System::getProperties()->containsKey(ProfileManager::SYSTEM_PROPERTY))
+ if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"))
  {
-  ProfileManager::getDefault()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
+  ProfileManager::getDefault()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
  }
 #endif
  // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
@@ -232,14 +238,17 @@ void AppsBase::init()
 
 /*protected*/ void AppsBase::installConfigurationManager()
 {
- ConfigXmlManager* cm = new ConfigXmlManager();
+ ConfigureManager* cm = new JmriConfigurationManager();
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
- InstanceManager::setConfigureManager(cm);
- QString cfgName;
- cm->setPrefsLocation(new File(cfgName = getConfigFileName()));
- log->debug(tr("config manager installed (%1)").arg(cfgName));
- // Install Config Manager error handler
- ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
+// InstanceManager::setConfigureManager(cm);
+// QString cfgName;
+// cm->setPrefsLocation(new File(cfgName = getConfigFileName()));
+// log->debug(tr("config manager installed (%1)").arg(cfgName));
+// // Install Config Manager error handler
+// ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
+ InstanceManager::store(cm, "ConfigureManager");
+ InstanceManager::setDefault("ConfigureManager", cm);
+ log->debug("config manager installed");
 }
 
 /*protected*/ void AppsBase::installManagers() {
@@ -249,7 +258,7 @@ void AppsBase::init()
  ((FileHistory*)InstanceManager::getDefault("FileHistory"))->addOperation("app", QApplication::applicationName(), NULL);
 
     // Install a user preferences manager
- InstanceManager::store(DefaultUserMessagePreferences::getInstance(), "UserPreferencesManager");
+ InstanceManager::store((QObject*)JmriUserPreferencesManager::getDefault(), "UserPreferencesManager");
 
     // install the abstract action model that allows items to be added to the, both
     // CreateButton and Perform Action Model use a common Abstract class
@@ -296,9 +305,12 @@ void AppsBase::init()
  preferenceFileExists = true;
  try
  {
-  ((ConfigXmlManager*) InstanceManager::configureManagerInstance())->setPrefsLocation(file);
-  ConfigureManager* mgr = InstanceManager::configureManagerInstance();
-  configOK = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->load(file);
+  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  if (cm != NULL) {
+      configOK = ((JmriConfigurationManager*)cm)->load(file); // ACK force  cast, virtual not working!
+  } else {
+      configOK = false;
+  }
   if (log->isDebugEnabled())
   {
    log->debug(tr("end load config file ") + file->getName() + ", OK=" + (configOK?"true":"false"));

@@ -29,7 +29,7 @@
 //#include "memoryspinnericonxml.h"
 //#include "memorycomboiconxml.h"
 #include "level.h"
-#include "defaultusermessagepreferencesxml.h"
+//#include "defaultusermessagepreferencesxml.h"
 #include <QMap>
 #include "instancemanager.h"
 #include "layoutblockmanager.h"
@@ -40,10 +40,12 @@
 //#include "controlpaneleditorxml.h"
 #include "abstractconnectionconfig.h"
 #include <QMetaType>
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "filehistoryxml.h"
 #include "filehistory.h"
 #include "defaultcatalogtreemanagerxml.h"
+#include "loggerfactory.h"
+#include "abstractxmladapter.h"
 
 /**
  * Define the current schema version string for the layout-config schema.
@@ -59,8 +61,7 @@ ConfigXmlManager::ConfigXmlManager(QObject *parent) :
     ConfigureManager(parent)
 {
  setObjectName("ConfigXmlManager");
- log = new Logger("ConfigXmlManager");
- log->setDebugEnabled(false);
+ log->setDebugEnabled(true);
  plist =  QList<QObject*> ();
  //clist =  QHash<QObject*, int>();
  //clist = Collections.synchronizedMap(new QHash<QObject*, int>());
@@ -628,6 +629,17 @@ File userPrefsFile;*/
 
 /*static*/ /*public*/ QDomElement ConfigXmlManager::elementFromObject(QObject* o)
 {
+ return ConfigXmlManager::elementFromObject(o, true);
+}
+
+/**
+*
+* @param object The object to get an XML representation of
+* @param shared true if the XML should be shared, false if the XML should
+*               be per-node
+* @return An XML element representing object
+*/
+/*static*/ /*public*/ QDomElement ConfigXmlManager::elementFromObject(QObject* o, bool shared) {
  Logger log("ConfigXmlManager");
  QString aName = adapterName(o);
  log.debug("store using "+aName);
@@ -657,7 +669,7 @@ File userPrefsFile;*/
   adapter = (QObject*)QMetaType::create(typeId);
 #endif
   if(adapter != NULL && qobject_cast<XmlAdapter*>(adapter) != NULL )
-   return ((XmlAdapter*)adapter)->store(o);
+   return ((XmlAdapter*)adapter)->store(o, shared);
   if(adapter != NULL && qobject_cast<DefaultCatalogTreeManagerXml*>(adapter) != NULL)
   {
    return ((DefaultCatalogTreeManagerXml*)adapter)->store(o);
@@ -666,80 +678,6 @@ File userPrefsFile;*/
 
  QString className = o->metaObject()->className();
 
-// if(className == "MemoryIcon")
-//     return  MemoryIconXml().store(o);
-// else if (className == "AnalogClock2Display")
-//     return AnalogClock2DisplayXml().store(o);
-// else
-// if (className == "LocoIcon")
-//     return LocoIconXml().store(o);
- //else
-// if (className == "PositionableLabel")
-//     return PositionableLabelXml().store(o);
-// else if(className == "SensorIcon")
-//     return SensorIconXml().store(o);
-// else if(className == "LightIcon")
-//     return LightIconXml().store(o);
-// else
-//  if(className == "ReporterIcon")
-//     return ReporterIconXml().store(o);
-// else if(className == "TurnoutIcon")
-//     return TurnoutIconXml().store(o);
-// else if(className == "SignalHeadIcon")
-//     return SignalHeadIconXml().store(o);
-// else if(className == "VirtualSignalHead")
-//     return VirtualSignalHeadXml().store(o);
-// else if(className == "SingleTurnoutSignalHead")
-//     return SingleTurnoutSignalHeadXML().store(o);
-// else if(className == "DoubleTurnoutSignalHead")
-//     return DoubleTurnoutSignalHeadXml().store(o);
-// else
-// if(className == "TripleTurnoutSignalHead")
-//     return TripleTurnoutSignalHeadXml().store(o);
-// else if(className == "QuadOutputSignalHeadXml")
-//     return QuadOutputSignalHeadXml().store(o);
-// else if(className == "SignalMastIcon")
-//     return SignalMastIconXml().store(o);
-// else if(className == "VirtualSignalMast")
-//     return VirtualSignalMastXml().store(o);// if (adapter!=NULL)
-// else if(className == "TurnoutSignalMast")
-//     return TurnoutSignalMastXml().store(o);// {
-// else if(className == "SignalHeadSignalMast")
-//     return SignalHeadSignalMastXml().store(o);//  //return adapter->store(o);
-// else if(className == "SlipTurnoutIcon")
-//     return SlipTurnoutIconXml().store(o);
-// else if(className == "MultiSensorIcon")
-//     return MultiSensorIconXml().store(o);
-// else if(className == "IndicatorTrackIcon")
-//     return IndicatorTrackIconXml().store(o);
-// else if(className == "IndicatorTurnoutIcon")
-//     return IndicatorTurnoutIconXml().store(o);
-// else if(className == "PositionableCircle")
-//     return PositionableCircleXml().store(o);
-// else if(className == "PositionableEllipse")
-//     return PositionableEllipseXml().store(o);
-// else if(className == "PositionableRectangle")
-//     return PositionableRectangleXml().store(o);
-// else if(className == "PositionableRoundRect")
-//     return PositionableRoundRectXml().store(o);
-// else if(className == "PositionableLabel")
-//     return PositionableLabelXml().store(o);
-// else if(className == "MemoryInputIcon")
-//     return MemoryInputIconXml().store(o);
-// else if(className == "MemorySpinnerIcon")
-//     return MemorySpinnerIconXml().store(o);
-// else if(className == "MemoryComboIcon")
-//     return MemoryComboIconXml().store(o);
-// else if(className == "PositionableIcon")
-//     return PositionableLabelXml().store(o);
-// else if(className == "EntryExitPairs")
-//     return EntryExitPairsXml().store(o);
-// else if(className == "ControlPanelEditor")
-//     return ControlPanelEditorXml().store(o);
-// else if(className == "DefaultUserMessagePreferences")
-//  return DefaultUserMessagePreferencesXml().store(o);
-// }
-// else
  {
   log.error(tr("Cannot store configuration for ")+className);
   return QDomElement();
@@ -797,10 +735,12 @@ File userPrefsFile;*/
  * method.
  * @return true if no problems during the load
  */
-/*public*/ bool ConfigXmlManager::load(File* fi) throw (JmriConfigureXmlException) {
+/*public*/ bool ConfigXmlManager::load(File* fi) throw (JmriException)
+{
     return load(fi, false);
 }
-/*public*/ bool ConfigXmlManager::load(QUrl url) throw (JmriConfigureXmlException) {
+/*public*/ bool ConfigXmlManager::load(QUrl url) throw (JmriException)
+{
     return load(url, false);
 }
 
@@ -816,7 +756,7 @@ File userPrefsFile;*/
  * @since 2.11.2
  */
 //@Override
-/*public*/ bool ConfigXmlManager::load(File* fi, bool registerDeferred) throw (JmriConfigureXmlException)
+/*public*/ bool ConfigXmlManager::load(File* fi, bool registerDeferred) throw (JmriException)
 {
  return this->load(FileUtil::fileToURL(fi), registerDeferred);
 }
@@ -834,7 +774,7 @@ File userPrefsFile;*/
  */
 //@SuppressWarnings("unchecked")
 //@Override
-/*public*/ bool ConfigXmlManager::load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException)
+/*public*/ bool ConfigXmlManager::load(QUrl url, bool registerDeferred) throw (JmriException)
 {
  bool result = true;
  if(log->isDebugEnabled()) log->debug("opening "+url.path());
@@ -855,8 +795,11 @@ File userPrefsFile;*/
  //QMap<QDomElement, int> loadlist = Collections.synchronizedMap(new LinkedHashMap<QDomElement, int>());
  //QMap<QDomElement, int> loadlist = QMap<QDomElement, int>();
  QMap<int, QDomElement> loadlist_s = QMap<int, QDomElement>();
+
+ bool verify = XmlFile::getVerify();
  //try{
  //root = super.rootFromURL(url);
+ XmlFile::setVerify(true);
  root = doc.documentElement(); // get the root element of the document
  // get the objects to load
  QDomNodeList items = root.childNodes();
@@ -875,9 +818,9 @@ File userPrefsFile;*/
   XmlAdapter* adapter = NULL;
 
 //  adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
-  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
-   adapter = new DefaultUserMessagePreferencesXml();
-  else
+//  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
+//   adapter = new DefaultUserMessagePreferencesXml();
+//  else
   {
    QString classname;
    if(configXmlMap.contains(adapterName))
@@ -923,6 +866,7 @@ File userPrefsFile;*/
   //QDomElement item = l.get(i).getKey();
   QDomElement item = iter.value();
   QString adapterName = item.attribute("class");
+  log->debug(tr("load adapter: %1").arg(adapterName));
   QString className = adapterName.mid(adapterName.lastIndexOf(".")+1);
   if(className == "ConnectionConfigXml")
   {
@@ -951,9 +895,9 @@ File userPrefsFile;*/
   XmlAdapter* adapter = NULL;
   //try {
   //adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
-  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
-   adapter = new DefaultUserMessagePreferencesXml();
-  else
+//  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
+//   adapter = new DefaultUserMessagePreferencesXml();
+//  else
   {
    QString classname;
    if(configXmlMap.contains(adapterName))
@@ -1012,7 +956,7 @@ File userPrefsFile;*/
   }
   else
   {
-   bool loadStatus = adapter->load(item);
+   bool loadStatus = adapter->load(item, item);
    if (log->isDebugEnabled()) log->debug("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
 
    // if any adaptor load fails, then the entire load has failed
@@ -1056,6 +1000,9 @@ File userPrefsFile;*/
 //        // no matter what, close error reporting
 //        handler.done();
 //    }
+ // no matter what, close error reporting
+ XmlFile::setVerify(verify);
+ handler->done();
 
 
     /*try {
@@ -1142,13 +1089,17 @@ File userPrefsFile;*/
  } else {
      log->info("Not recording file history");
  }
+ XmlFile::setVerify(verify);
 
+#if 0
  if (!result) return false;
 
  // all loaded, initialize objects as necessary
  ((DefaultLogixManager*)InstanceManager::logixManagerInstance())->activateAllLogixs();
- InstanceManager::layoutBlockManagerInstance()->initializeLayoutBlockPaths();
+ //InstanceManager::layoutBlockManagerInstance()->initializeLayoutBlockPaths();
+ ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
 //    new DefaultCatalogTreeManagerXml().readCatalogTrees();
+#endif
  return result;
 }
 
@@ -1332,5 +1283,11 @@ void ConfigXmlManager::locateFileFailed(QString f) {
 /*static*/ /*public*/ void ConfigXmlManager::setErrorHandler(ErrorHandler* handler) { ConfigXmlManager::handler = handler; }
 
 // initialize logging
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ConfigXmlManager.class.getName());
-//}
+/*private*/ /*final*/ /*static*/ Logger* ConfigXmlManager::log = LoggerFactory::getLogger("ConfigXmlManager");
+
+/**
+ * @return the loadDeferredList
+ */
+/*protected*/ QList<QDomElement> ConfigXmlManager::getLoadDeferredList() {
+    return loadDeferredList.values();
+}

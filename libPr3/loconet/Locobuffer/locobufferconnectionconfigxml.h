@@ -8,7 +8,8 @@ class LIBPR3SHARED_EXPORT LocobufferConnectionConfigXml : public AbstractSerialC
     Q_OBJECT
 public:
     explicit LocobufferConnectionConfigXml(QObject *parent = 0);
-
+    ~LocobufferConnectionConfigXml() {}
+ LocobufferConnectionConfigXml(const LocobufferConnectionConfigXml&) : AbstractSerialConnectionConfigXml() {}
 signals:
 
 public slots:
@@ -17,5 +18,5 @@ protected:
     /*protected*/ void getInstance(QObject* object);
     /*protected*/ void _register();
 };
-
+Q_DECLARE_METATYPE(AbstractSerialConnectionConfigXml)
 #endif // LOCOBUFFERCONNECTIONCONFIGXML_H

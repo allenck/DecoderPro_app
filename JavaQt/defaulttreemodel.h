@@ -2,17 +2,17 @@
 #define DEFAULTTREEMODEL_H
 #include "treemodel.h"
 #include "javaqt_global.h"
-#include "catalogtree.h"
 
 class TreeNode;
 //class EventListenerList;
 class MutableTreeNode;
-class JAVAQTSHARED_EXPORT DefaultTreeModel : public CatalogTree//TreeModel
+class JAVAQTSHARED_EXPORT DefaultTreeModel : public TreeModel
 {
     Q_OBJECT
 public:
-    //explicit DefaultTreeModel(QObject *parent = 0);
-    /*public*/ DefaultTreeModel(TreeNode* root, bool asksAllowsChildren = false, QObject *parent = 0);
+    explicit DefaultTreeModel(QObject *parent = 0);
+    /*public*/ DefaultTreeModel(TreeNode* root, QObject *parent = 0);
+    /*public*/ DefaultTreeModel(TreeNode* root, bool asksAllowsChildren, QObject *parent = 0);
     /*public*/ void setAsksAllowsChildren(bool newValue);
     /*public*/ bool asksAllowsChildren();
     /*public*/ void setRoot(TreeNode* root);

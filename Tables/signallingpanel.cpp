@@ -453,7 +453,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
  blockPanelLayout->addWidget(p2xc);
  p2xc->setVisible(true);
 
- ROW_HEIGHT = manualBlockTable->rowHeight(0);
+ ROW_HEIGHT = manualBlockTable->getRowHeight();
  p2xcSpace->setVisible(false);
 
 
@@ -711,7 +711,7 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     turnoutPanel->layout()->addWidget(p2xt);
     p2xt->setVisible(true);
 
-    ROW_HEIGHT = manualTurnoutTable->rowHeight(0);
+    ROW_HEIGHT = manualTurnoutTable->getRowHeight();
     p2xcSpace->setVisible(false);
 
 
@@ -855,7 +855,7 @@ QWidget* SignallingPanel::buildSensorPanel(){
     sensorPanel->layout()->addWidget(p2xs);
     p2xs->setVisible(true);
 
-    ROW_HEIGHT = manualSensorTable->rowHeight(0);
+    ROW_HEIGHT = manualSensorTable->getRowHeight();
     p2xsSpace->setVisible(false);
 
     return sensorPanel;

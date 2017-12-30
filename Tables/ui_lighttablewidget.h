@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'lighttablewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -65,19 +65,19 @@ public:
 
     void retranslateUi(QDialog *LightTableWidget)
     {
-        LightTableWidget->setWindowTitle(QApplication::translate("LightTableWidget", "Dialog", 0));
+        LightTableWidget->setWindowTitle(QApplication::translate("LightTableWidget", "Dialog", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("LightTableWidget", "System Name", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("LightTableWidget", "System Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("LightTableWidget", "User Name", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("LightTableWidget", "User Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("LightTableWidget", "State", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("LightTableWidget", "State", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("LightTableWidget", "Comment", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("LightTableWidget", "Comment", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(5);
-        ___qtablewidgetitem4->setText(QApplication::translate("LightTableWidget", "Enabled", 0));
+        ___qtablewidgetitem4->setText(QApplication::translate("LightTableWidget", "Enabled", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem5 = tableWidget->horizontalHeaderItem(6);
-        ___qtablewidgetitem5->setText(QApplication::translate("LightTableWidget", "Intensity", 0));
+        ___qtablewidgetitem5->setText(QApplication::translate("LightTableWidget", "Intensity", Q_NULLPTR));
     } // retranslateUi
 
 };

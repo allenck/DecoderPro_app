@@ -13,7 +13,7 @@ class TurnoutWidget;
 class UserPreferencesManager;
 class JTextField;
 class JmriJFrame;
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class ActionEvent;
 class LIBTABLESSHARED_EXPORT TurnoutWidget : public QWidget
 {
@@ -48,7 +48,7 @@ private:
     QVector<QString>* speedListClosed;
     QVector<QString>* speedListThrown;
     QVector<QString> _speedMap;
-    DefaultUserMessagePreferences* p;
+    UserPreferencesManager* p;
     JmriJFrame* addFrame;
     QComboBox* prefixBox;
     JTextField* sysName;// = new JTextField(40);

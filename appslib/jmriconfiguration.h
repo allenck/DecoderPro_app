@@ -15,6 +15,7 @@ public:
 private:
  Logger* log;
  /*private*/ void backup(bool shared);
+ QDomDocument doc;
 
 protected:
  /*protected*/ /*abstract*/ virtual File* getConfigurationFile(bool shared);

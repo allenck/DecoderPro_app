@@ -2,7 +2,7 @@
 #include "properties.h"
 #include "fileutil.h"
 #include "serverlistner.h"
-#include <QThread>
+//#include <QThread>
 #include <QTextStream>
 #include "clientrxhandler.h"
 #include <QTcpSocket>
@@ -73,7 +73,8 @@ Server* Server::self = NULL;
   //try {
   log->debug("Server: opening settings file " + settingsFileName);
 //      java.io.InputStream settingsStream = new FileInputStream(settingsFileName);
-//      try {
+  try
+  {
   QFile settingsFile(settingsFileName);
   if(!settingsFile.exists())
    return;
@@ -81,6 +82,11 @@ Server* Server::self = NULL;
   {
    QTextStream settingsStream(&settingsFile);
    settings->load(&settingsStream);
+  }
+  else
+  {
+   throw FileNotFoundException(settingsFileName);
+  }
 //      } finally {
    settingsFile.close();
 
@@ -88,12 +94,14 @@ Server* Server::self = NULL;
    autoStart = (val==("1"));
    val = settings->getProperty(PORT_NUMBER_KEY/*, "1234"*/);
    portNumber = val.toInt(0, 10);
-//  } catch (FileNotFoundException ex) {
-//      log->debug("Server: loadSettings file not found");
-//  } catch (IOException ex) {
+  }
+  catch (FileNotFoundException ex) {
+      log->debug("Server: loadSettings file not found");
+  }
+//      catch (IOException ex) {
 //      log->debug("Server: loadSettings exception: ", ex);
 //  }
-  }
+//  }
   updateServerStateListener();
  }
 }
@@ -101,24 +109,35 @@ Server* Server::self = NULL;
 
 /*public*/ void Server::saveSettings()
 {
-#if 0 // TODO:
+#if 1 // TODO:
     // we can't use the store capabilities of java.util.Properties, as
     // they are not present in Java 1.1.8
-    QString settingsFileName = FileUtil.getUserFilesPath() + SETTINGS_FILE_NAME;
+    QString settingsFileName = FileUtil::getUserFilesPath() + SETTINGS_FILE_NAME;
     log->debug("Server: saving settings file " + settingsFileName);
 
     try {
-        OutputStream outStream = new FileOutputStream(settingsFileName);
-        PrintStream settingsStream = new PrintStream(outStream);
-        settingsStream.println("# LocoNetOverTcp Configuration Settings");
-        settingsStream.println(AUTO_START_KEY + " = " + (autoStart ? "1" : "0"));
-        settingsStream.println(PORT_NUMBER_KEY + " = " + portNumber);
-
-        settingsStream.flush();
-        settingsStream.close();
+//        OutputStream outStream = new FileOutputStream(settingsFileName);
+//        PrintStream settingsStream = new PrintStream(outStream);
+     QFile f(settingsFileName);
+     if(f.open(QIODevice::WriteOnly))
+     {
+      QTextStream stream(&f);
+        //settingsStream.println("# LocoNetOverTcp Configuration Settings");
+      stream << "# LocoNetOverTcp Configuration Settings" << "\n";
+//        settingsStream.println(AUTO_START_KEY + " = " + (autoStart ? "1" : "0"));
+      stream << AUTO_START_KEY + " = " + (autoStart ? "1" : "0") << "\n";
+//        settingsStream.println(PORT_NUMBER_KEY + " = " + portNumber);
+      stream << PORT_NUMBER_KEY + " = " + QString::number(portNumber) << "\n";
+//        settingsStream.flush();
+      stream.flush();
+//        settingsStream.close();
+      f.close();
         settingsChanged = false;
+     }
+     else
+      throw FileNotFoundException(settingsFileName);
     } catch (FileNotFoundException ex) {
-        log->warn("Server: saveSettings exception: ", ex);
+        log->warn("Server: saveSettings exception: "+ ex.getMessage());
     }
 #endif
  updateServerStateListener();

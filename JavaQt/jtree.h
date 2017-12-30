@@ -28,6 +28,7 @@ public:
  /*public*/ void setSelectionPath(TreePath* path);
  /*public*/ void addTreeSelectionListener(TreeSelectionListener* tsl);
  /*public*/ void removeTreeSelectionListener(TreeSelectionListener* tsl);
+ /*public*/ bool isSelectionEmpty();
 
 signals:
 

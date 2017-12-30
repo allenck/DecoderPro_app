@@ -22,7 +22,7 @@
 }
 
 
-/*public*/ QString AbstractShutDownTask::name()
+/*public*/ QString AbstractShutDownTask::getName()
 {
  return mName;
 }

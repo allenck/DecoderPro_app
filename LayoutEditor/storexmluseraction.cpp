@@ -55,9 +55,10 @@
  if (selectedFile == "") return;
 
  // make a backup file
- ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->makeBackup(new File(selectedFile));
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ cm->makeBackup(new File(selectedFile));
  // and finally store
- bool results = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->storeUser(new File(selectedFile));
+ bool results = cm->storeUser(new File(selectedFile));
  log->debug(results?"store was successful":"store failed");
  if (!results)
  {

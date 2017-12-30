@@ -99,6 +99,7 @@ static /*public*/ LayoutBlockManager* instance();
  /*public*/ Sensor* getFacingSensor (Block* facingBlock, Block* protectedBlock, LayoutEditor* panel);
  /*public*/ QObject* getFacingSignalObject(Block* facingBlock, Block* protectedBlock);
  QCompleter* getCompleter(QString text, bool bIncludeUserNames = false);
+ /*public*/ bool isAssignableFromType() {return true;}
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

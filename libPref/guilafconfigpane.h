@@ -15,7 +15,7 @@ class LIBPREFSHARED_EXPORT GuiLafConfigPane : public PreferencesPanel
 public:
     explicit GuiLafConfigPane(QWidget *parent = 0);
     ~GuiLafConfigPane() {}
-    GuiLafConfigPane(const GuiLafConfigPane&) {}
+    GuiLafConfigPane(const GuiLafConfigPane&) : PreferencesPanel() {}
     /*public*/ QWidget* doLocale();
     /*public*/ void setLocale(QString loc);
     virtual

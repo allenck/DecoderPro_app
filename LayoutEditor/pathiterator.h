@@ -171,7 +171,7 @@ public:
      * @see #SEG_CUBICTO
      * @see #SEG_CLOSE
      */
-    /*public*/ virtual int currentSegment(QVector<float>* coords) { return 0;}
+    /*public*/ virtual int currentSegment(QVector<float>* /*coords*/) { return 0;}
 
     /**
      * Returns the coordinates and type of the current path segment in
@@ -194,6 +194,6 @@ public:
      * @see #SEG_CUBICTO
      * @see #SEG_CLOSE
      */
-    /*public*/ virtual int currentSegment(QVector<double>* coords) { return 0;}
+    /*public*/ virtual int currentSegment(QVector<double>* /*coords*/) { return 0;}
 };
 #endif // PATHITERATOR_H

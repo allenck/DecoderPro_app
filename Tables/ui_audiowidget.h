@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'audiowidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -72,9 +72,9 @@ public:
 
     void retranslateUi(QWidget *AudioWidget)
     {
-        AudioWidget->setWindowTitle(QApplication::translate("AudioWidget", "Form", 0));
-        addSource->setText(QApplication::translate("AudioWidget", "Add Source...", 0));
-        addBuffer->setText(QApplication::translate("AudioWidget", "Add Buffer...", 0));
+        AudioWidget->setWindowTitle(QApplication::translate("AudioWidget", "Form", Q_NULLPTR));
+        addSource->setText(QApplication::translate("AudioWidget", "Add Source...", Q_NULLPTR));
+        addBuffer->setText(QApplication::translate("AudioWidget", "Add Buffer...", Q_NULLPTR));
     } // retranslateUi
 
 };

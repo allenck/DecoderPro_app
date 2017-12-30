@@ -322,11 +322,11 @@ QObject(parent) {
 }
 
 // VSDecoderManager Events
-/*public*/ void VSDecoderManager::addEventListener(VSDManagerListener* listener) {
+/*public*/ void VSDecoderManager::addEventListener(VSDManagerListener* /*listener*/) {
   //listenerList->add("VSDManagerListener", listener);
 }
 
-/*public*/ void VSDecoderManager::removeEventListener(VSDManagerListener* listener) {
+/*public*/ void VSDecoderManager::removeEventListener(VSDManagerListener* /*listener*/) {
  //listenerList->remove("VSDManagerListener", listener);
 }
 

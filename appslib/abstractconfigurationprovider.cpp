@@ -26,20 +26,24 @@
  */
 /*protected*/ /*abstract*/ AuxiliaryConfiguration* AbstractConfigurationProvider::getConfiguration() {return NULL;}
 
-/*protected*/ /*abstract*/ File* AbstractConfigurationProvider::getConfigurationFile(bool shared) {return NULL;}
+/*protected*/ /*abstract*/ File* AbstractConfigurationProvider::getConfigurationFile(bool /*shared*/) {return NULL;}
 
-/*public*/ File* AbstractConfigurationProvider::getConfigurationDirectory(bool shared) {
-    File* dir;
-    if (this->project == NULL) {
-        dir = new File(FileUtil::getPreferencesPath(), "preferences"); // NOI18N
-    } else {
-        dir = new File(this->project->getPath(), Profile::PROFILE);
-        if (!shared) {
-            dir = new File(dir, NodeIdentity::identity());
-        }
-    }
-    FileUtil::createDirectory(dir);
-    return dir;
+/*public*/ File* AbstractConfigurationProvider::getConfigurationDirectory(bool shared)
+{
+ File* dir;
+ if (this->project == NULL)
+ {
+  dir = new File(FileUtil::getPreferencesPath(), "preferences"); // NOI18N
+ }
+ else
+ {
+  dir = new File(this->project->getPath(), /*Profile::PROFILE*/"profile");
+  if (!shared) {
+      dir = new File(dir, NodeIdentity::identity());
+  }
+ }
+ FileUtil::createDirectory(dir);
+ return dir;
 }
 
 /**

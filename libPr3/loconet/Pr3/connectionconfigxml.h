@@ -19,5 +19,5 @@ protected:
     /*protected*/ void _register();
 
 };
-
+Q_DECLARE_METATYPE(ConnectionConfigXml)
 #endif // CONNECTIONCONFIGXML_H

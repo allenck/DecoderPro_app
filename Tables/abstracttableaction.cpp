@@ -1,13 +1,13 @@
 #include "abstracttableaction.h"
 #include "instancemanager.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "abstracttabletabaction.h"
 #include <QSortFilterProxyModel>
 #include "jtable.h"
 #include <qheaderview.h>
 #include <QPushButton>
 #include "beantabledatamodel.h"
-#include "systemnamecomparator.h"
+#include "mysortfilterproxymodel.h"
 
 //AbstractTableAction::AbstractTableAction(QObject *parent) :
 //    QObject(parent)
@@ -72,7 +72,7 @@
  //TableSorter sorter = new TableSorter(m);
  MySortFilterProxyModel* sorter = new MySortFilterProxyModel(m);
  //sorter->setSourceModel((QAbstractItemModel*)m);
- dataTable = m->makeJTable(sorter);
+ dataTable = m->makeJTable(m->getMasterClassName(), m, sorter);
  dataTable->setSortingEnabled(true);
  //sorter.setTableHeader(dataTable.getTableHeader());
 
@@ -203,7 +203,7 @@ void ATABeanTableFrame::extras()
  options.insert(0x00, tr("Always Ask"));
  options.insert(0x01, tr("Never Delete"));
  options.insert(0x02, tr("Delete Without Prompting"));
- ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "deleteInUse", tr("When Deleting an item that is in use"), options, 0x00);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "deleteInUse", tr("When Deleting an item that is in use"), options, 0x00);
 }
 
 /*protected*/ /*abstract*/ QString AbstractTableAction::getClassName() {return "";}
@@ -220,21 +220,4 @@ void ATABeanTableFrame::extras()
 
 /*protected*/ /*abstract*/ void AbstractTableAction::addPressed(ActionEvent* /*e*/) {}
 
-MySortFilterProxyModel::MySortFilterProxyModel(BeanTableDataModel * m )
-    : QSortFilterProxyModel()
-{
- setSourceModel(m);
-}
 
-bool MySortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
-{
-    QVariant leftData = sourceModel()->data(left);
-    QVariant rightData = sourceModel()->data(right);
-
-    if(left.column() == 0)
-    {
-     return SystemNameComparator::compare(leftData.toString(), rightData.toString());
-    }
-    QSortFilterProxyModel::lessThan(left, right);
-
-}

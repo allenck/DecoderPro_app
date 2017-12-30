@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'editconditionalframe.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -291,31 +291,31 @@ public:
 
     void retranslateUi(QWidget *editConditionalFrame)
     {
-        editConditionalFrame->setWindowTitle(QApplication::translate("editConditionalFrame", "Form", 0));
-        label->setText(QApplication::translate("editConditionalFrame", "Conditional System Name ", 0));
-        label_2->setText(QApplication::translate("editConditionalFrame", "IX:AUTO:0001C3", 0));
-        label_3->setText(QApplication::translate("editConditionalFrame", "Conditional User Name", 0));
+        editConditionalFrame->setWindowTitle(QApplication::translate("editConditionalFrame", "Form", Q_NULLPTR));
+        label->setText(QApplication::translate("editConditionalFrame", "Conditional System Name ", Q_NULLPTR));
+        label_2->setText(QApplication::translate("editConditionalFrame", "IX:AUTO:0001C3", Q_NULLPTR));
+        label_3->setText(QApplication::translate("editConditionalFrame", "Conditional User Name", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        conditionalUserName->setToolTip(QApplication::translate("editConditionalFrame", "<html><head/><body><p><span style=\" color:#008000;\">Enter</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">user</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">name</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">for</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">Conditional,</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">e.g.</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">Signal</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">2</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">Red</span></p></body></html>", 0));
+        conditionalUserName->setToolTip(QApplication::translate("editConditionalFrame", "<html><head/><body><p><span style=\" color:#008000;\">Enter</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">user</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">name</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">for</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">Conditional,</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">e.g.</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">Signal</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">2</span><span style=\" color:#c0c0c0;\"/><span style=\" color:#008000;\">Red</span></p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        logicPanel->setTitle(QApplication::translate("editConditionalFrame", "Logical Expression", 0));
-        label_4->setText(QApplication::translate("editConditionalFrame", "Antecedent Variables (the 'if' part)", 0));
-        pushButton->setText(QApplication::translate("editConditionalFrame", "Add State Variable", 0));
-        pushButton_2->setText(QApplication::translate("editConditionalFrame", "Check State Variables", 0));
-        label_5->setText(QApplication::translate("editConditionalFrame", "Logic Operator", 0));
+        logicPanel->setTitle(QApplication::translate("editConditionalFrame", "Logical Expression", Q_NULLPTR));
+        label_4->setText(QApplication::translate("editConditionalFrame", "Antecedent Variables (the 'if' part)", Q_NULLPTR));
+        pushButton->setText(QApplication::translate("editConditionalFrame", "Add State Variable", Q_NULLPTR));
+        pushButton_2->setText(QApplication::translate("editConditionalFrame", "Check State Variables", Q_NULLPTR));
+        label_5->setText(QApplication::translate("editConditionalFrame", "Logic Operator", Q_NULLPTR));
         comboBox->clear();
         comboBox->insertItems(0, QStringList()
-         << QApplication::translate("editConditionalFrame", "AND", 0)
-         << QApplication::translate("editConditionalFrame", "OR", 0)
-         << QApplication::translate("editConditionalFrame", "Mixed", 0)
+         << QApplication::translate("editConditionalFrame", "AND", Q_NULLPTR)
+         << QApplication::translate("editConditionalFrame", "OR", Q_NULLPTR)
+         << QApplication::translate("editConditionalFrame", "Mixed", Q_NULLPTR)
         );
-        actionPanel->setTitle(QApplication::translate("editConditionalFrame", "Actions", 0));
-        label_6->setText(QApplication::translate("editConditionalFrame", "Consequent Actions (the 'then' part)", 0));
-        pushButton_3->setText(QApplication::translate("editConditionalFrame", "Add Action", 0));
-        pushButton_4->setText(QApplication::translate("editConditionalFrame", "Reorder", 0));
-        pushButton_5->setText(QApplication::translate("editConditionalFrame", "Update Conditional", 0));
-        pushButton_6->setText(QApplication::translate("editConditionalFrame", "Cancel", 0));
-        pushButton_7->setText(QApplication::translate("editConditionalFrame", "Delete Conditional", 0));
+        actionPanel->setTitle(QApplication::translate("editConditionalFrame", "Actions", Q_NULLPTR));
+        label_6->setText(QApplication::translate("editConditionalFrame", "Consequent Actions (the 'then' part)", Q_NULLPTR));
+        pushButton_3->setText(QApplication::translate("editConditionalFrame", "Add Action", Q_NULLPTR));
+        pushButton_4->setText(QApplication::translate("editConditionalFrame", "Reorder", Q_NULLPTR));
+        pushButton_5->setText(QApplication::translate("editConditionalFrame", "Update Conditional", Q_NULLPTR));
+        pushButton_6->setText(QApplication::translate("editConditionalFrame", "Cancel", Q_NULLPTR));
+        pushButton_7->setText(QApplication::translate("editConditionalFrame", "Delete Conditional", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -2,7 +2,7 @@
 #define POWERMANAGERBUTTON_H
 
 #include <QToolButton>
-#include "logger.h"
+#include "loggerfactory.h"
 
 class PropertyChangeEvent;
 class NamedIcon;
@@ -24,13 +24,15 @@ public slots:
     void OnClicked();
     void init();
 private:
+    void common(bool fullText);
     /*private*/ PowerPane* powerControl;// = new PowerPane();
     /*private*/ PowerManager* powerMgr;// = NULL;
     /*private*/ bool fullText;// = false;
     /*protected*/ QIcon powerXIcon;
     /*protected*/ QIcon powerOffIcon;
     /*protected*/ QIcon powerOnIcon;
- Logger* log;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("PowerManagerButton");
+
 protected:
  /*protected*/ void setPowerIcons();
 friend class SmallPowerManagerButton;

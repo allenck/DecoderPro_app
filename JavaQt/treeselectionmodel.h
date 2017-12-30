@@ -177,12 +177,12 @@ public:
       * selection.
       */
     boolean isPathSelected(TreePath path);
-
+#endif
     /**
       * Returns true if the selection is currently empty.
       */
-    boolean isSelectionEmpty();
-
+    virtual bool isSelectionEmpty() {return false;}
+#if 0
     /**
       * Empties the current selection.  If this represents a change in the
       * current selection, the selection listeners are notified.

@@ -15,7 +15,7 @@ class ActionEvent;
 class JFrame;
 class QScrollArea;
 class QLabel;
-class QListView;
+class JList;
 class LIBPREFSHARED_EXPORT ProfileManagerDialog : public JDialog
 {
     Q_OBJECT
@@ -39,7 +39,7 @@ private:
     /*private*/ QLabel* countDownLbl;
 //    /*private*/ QScrollArea* jScrollPane1;
     /*private*/ QLabel* listLabel;
-    /*private*/ QListView* profiles;
+    /*private*/ JList* profiles;
     // End of variables declaration
     /*private*/ void initComponents();
     Logger* log;

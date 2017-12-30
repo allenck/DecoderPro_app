@@ -23,7 +23,7 @@ class Turnout;
 class BeanSelectCreatePanel;
 class DecimalFormat;
 class ActionEvent;
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class LIBPR3SHARED_EXPORT TurnoutAspectPanel : public QObject
 {
     Q_OBJECT
@@ -92,7 +92,7 @@ signals:
 
 public slots:
 private:
-    DefaultUserMessagePreferences* prefs;// = ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+    UserPreferencesManager* prefs;// = ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     QString systemSelectionCombo;// = this.getClass().getName()+".SignallingSystemSelected";
     QString mastSelectionCombo;// = this.getClass().getName()+".SignallingMastSelected";
     QString driverSelectionCombo;// = this.getClass().getName()+".SignallingDriverSelected";

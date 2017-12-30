@@ -1,6 +1,6 @@
 #include "abstractnetworkconnectionconfig.h"
 #include "loconet/networkportadapter.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"
 #include <QCheckBox>
 #include "jtextfield.h"
@@ -740,4 +740,5 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
         ((AbstractNetworkPortController*)adapter)->dispose();
         adapter = NULL;
     }
+    AbstractConnectionConfig::dispose();
 }

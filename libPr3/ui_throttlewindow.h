@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'throttlewindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -184,33 +184,33 @@ public:
 
     void retranslateUi(QMainWindow *ThrottleWindow)
     {
-        ThrottleWindow->setWindowTitle(QApplication::translate("ThrottleWindow", "MainWindow", 0));
-        actionPower_On->setText(QApplication::translate("ThrottleWindow", "Power On", 0));
-        actionPower_Off->setText(QApplication::translate("ThrottleWindow", "Power Off", 0));
-        actionAddress_Panel->setText(QApplication::translate("ThrottleWindow", "Address Panel", 0));
-        actionControl_Panel->setText(QApplication::translate("ThrottleWindow", "Control Panel", 0));
-        actionFunction_Panel->setText(QApplication::translate("ThrottleWindow", "Function Panel", 0));
-        actionReset_function_buttons->setText(QApplication::translate("ThrottleWindow", "Reset function buttons", 0));
-        actionGet_all_throttle_components_in_bounds->setText(QApplication::translate("ThrottleWindow", "Get all throttle components in bounds", 0));
-        actionSwitch_throttle_frame_view_mode->setText(QApplication::translate("ThrottleWindow", "Switch throttle frame view mode", 0));
-        actionSHow_Hide_throttles_list_window->setText(QApplication::translate("ThrottleWindow", "Show/Hide throttles list window", 0));
-        actionNew_Throttle->setText(QApplication::translate("ThrottleWindow", "New Throttle", 0));
-        actionOpenthrottle->setText(QApplication::translate("ThrottleWindow", "openthrottle", 0));
-        actionSave_current_throttle->setText(QApplication::translate("ThrottleWindow", "Save current throttle", 0));
-        actionSave_current_throttle_as->setText(QApplication::translate("ThrottleWindow", "Save current throttle as...", 0));
-        actionOpen_throttles_layout->setText(QApplication::translate("ThrottleWindow", "Open throttles layout...", 0));
-        actionSave_throttles_layout->setText(QApplication::translate("ThrottleWindow", "Save throttles layout...", 0));
-        actionLoad_default_throttles_layout->setText(QApplication::translate("ThrottleWindow", "Load default throttles layout", 0));
-        actionSave_as_defautl_throttles_layout->setText(QApplication::translate("ThrottleWindow", "Save as defautl throttles layout", 0));
+        ThrottleWindow->setWindowTitle(QApplication::translate("ThrottleWindow", "MainWindow", Q_NULLPTR));
+        actionPower_On->setText(QApplication::translate("ThrottleWindow", "Power On", Q_NULLPTR));
+        actionPower_Off->setText(QApplication::translate("ThrottleWindow", "Power Off", Q_NULLPTR));
+        actionAddress_Panel->setText(QApplication::translate("ThrottleWindow", "Address Panel", Q_NULLPTR));
+        actionControl_Panel->setText(QApplication::translate("ThrottleWindow", "Control Panel", Q_NULLPTR));
+        actionFunction_Panel->setText(QApplication::translate("ThrottleWindow", "Function Panel", Q_NULLPTR));
+        actionReset_function_buttons->setText(QApplication::translate("ThrottleWindow", "Reset function buttons", Q_NULLPTR));
+        actionGet_all_throttle_components_in_bounds->setText(QApplication::translate("ThrottleWindow", "Get all throttle components in bounds", Q_NULLPTR));
+        actionSwitch_throttle_frame_view_mode->setText(QApplication::translate("ThrottleWindow", "Switch throttle frame view mode", Q_NULLPTR));
+        actionSHow_Hide_throttles_list_window->setText(QApplication::translate("ThrottleWindow", "Show/Hide throttles list window", Q_NULLPTR));
+        actionNew_Throttle->setText(QApplication::translate("ThrottleWindow", "New Throttle", Q_NULLPTR));
+        actionOpenthrottle->setText(QApplication::translate("ThrottleWindow", "openthrottle", Q_NULLPTR));
+        actionSave_current_throttle->setText(QApplication::translate("ThrottleWindow", "Save current throttle", Q_NULLPTR));
+        actionSave_current_throttle_as->setText(QApplication::translate("ThrottleWindow", "Save current throttle as...", Q_NULLPTR));
+        actionOpen_throttles_layout->setText(QApplication::translate("ThrottleWindow", "Open throttles layout...", Q_NULLPTR));
+        actionSave_throttles_layout->setText(QApplication::translate("ThrottleWindow", "Save throttles layout...", Q_NULLPTR));
+        actionLoad_default_throttles_layout->setText(QApplication::translate("ThrottleWindow", "Load default throttles layout", Q_NULLPTR));
+        actionSave_as_defautl_throttles_layout->setText(QApplication::translate("ThrottleWindow", "Save as defautl throttles layout", Q_NULLPTR));
         label->setText(QString());
         label_2->setText(QString());
-        menuFile->setTitle(QApplication::translate("ThrottleWindow", "File", 0));
-        menuEdit->setTitle(QApplication::translate("ThrottleWindow", "Edit", 0));
-        menuView->setTitle(QApplication::translate("ThrottleWindow", "View", 0));
-        menuPower->setTitle(QApplication::translate("ThrottleWindow", "Power", 0));
-        menuWindow->setTitle(QApplication::translate("ThrottleWindow", "Window", 0));
-        menuHelp->setTitle(QApplication::translate("ThrottleWindow", "Help", 0));
-        toolBar->setWindowTitle(QApplication::translate("ThrottleWindow", "toolBar", 0));
+        menuFile->setTitle(QApplication::translate("ThrottleWindow", "File", Q_NULLPTR));
+        menuEdit->setTitle(QApplication::translate("ThrottleWindow", "Edit", Q_NULLPTR));
+        menuView->setTitle(QApplication::translate("ThrottleWindow", "View", Q_NULLPTR));
+        menuPower->setTitle(QApplication::translate("ThrottleWindow", "Power", Q_NULLPTR));
+        menuWindow->setTitle(QApplication::translate("ThrottleWindow", "Window", Q_NULLPTR));
+        menuHelp->setTitle(QApplication::translate("ThrottleWindow", "Help", Q_NULLPTR));
+        toolBar->setWindowTitle(QApplication::translate("ThrottleWindow", "toolBar", Q_NULLPTR));
     } // retranslateUi
 
 };

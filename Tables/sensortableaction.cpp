@@ -7,7 +7,7 @@
 #include "instancemanager.h"
 #include <QVBoxLayout>
 #include "connectionnamefromsystemname.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "userpreferencesmanager.h"
 #include <QMessageBox>
 #include "jframe.h"
@@ -102,7 +102,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
 /*protected*/ void SensorTableAction::addPressed()
 {
- p = (DefaultUserMessagePreferences*) InstanceManager::getDefault("UserPreferencesManager");
+ p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
 
  if (addFrame==NULL)
  {
@@ -481,7 +481,7 @@ void SensorTableAction::showDebounceChanged(bool bChecked)
 }
 
 /*public*/ void SensorTableAction::setMessagePreferencesDetails(){
-    ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "duplicateUserName",  tr("Hide Duplicate User Name Warning Message"));
+    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "duplicateUserName",  tr("Hide Duplicate User Name Warning Message"));
 AbstractTableAction::setMessagePreferencesDetails();
 }
 

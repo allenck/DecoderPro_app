@@ -25,7 +25,7 @@
 #include "Throttle/listthrottles.h"
 #include "Roster/rosterframe.h"
 #include "connectionstatus.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "controlpaneleditor.h"
 #include "simpleclockframe.h"
 #include "nixieclockframe.h"
@@ -179,7 +179,7 @@ MainWindow::MainWindow(QWidget *parent) :
 // ui->menuLocoNet->addAction(lnNpA);
 
  if(connectionMemo == NULL)
-  connectionMemo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo");
+  connectionMemo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
  ui->menubar->insertMenu(ui->menuLocoNet->menuAction(),  LocoNetMenu::instance(connectionMemo, this));
  ui->menuLocoNet->clear();
  ui->menubar->removeAction(ui->menuLocoNet->menuAction());
@@ -368,7 +368,7 @@ void MainWindow::On_newConnection(PropertyChangeEvent* /*e*/)
  lnMon->setLocoNetReporterManager(connectionMemo->getReporterManager());
 
 InstanceManager::setShutDownManager(new DefaultShutDownManager(this));
-((DefaultShutDownManager*)InstanceManager::shutDownManagerInstance())->_register(((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->getShutDownTask());
+((DefaultShutDownManager*)InstanceManager::shutDownManagerInstance())->_register(((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getShutDownTask());
 
  connect(data, SIGNAL(probeCompleted(QList<ProbedAddress>)), this, SLOT(onProbeCompleted(QList<ProbedAddress>)));
  saveSettings();

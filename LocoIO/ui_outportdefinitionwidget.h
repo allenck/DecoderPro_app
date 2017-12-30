@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'outportdefinitionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -259,20 +259,20 @@ public:
 
     void retranslateUi(QWidget *OutPortDefinitionWidget)
     {
-        OutPortDefinitionWidget->setWindowTitle(QApplication::translate("OutPortDefinitionWidget", "Form", 0));
-        label->setText(QApplication::translate("OutPortDefinitionWidget", "Output", 0));
-        label_2->setText(QApplication::translate("OutPortDefinitionWidget", "Block Occupancy", 0));
-        label_3->setText(QApplication::translate("OutPortDefinitionWidget", "Blinking", 0));
-        label_13->setText(QApplication::translate("OutPortDefinitionWidget", "Frequency", 0));
-        label_4->setText(QApplication::translate("OutPortDefinitionWidget", "1 - On", 0));
-        label_5->setText(QApplication::translate("OutPortDefinitionWidget", "1 - Off             Fixed Contact", 0));
-        label_6->setText(QApplication::translate("OutPortDefinitionWidget", "2 - On", 0));
-        label_7->setText(QApplication::translate("OutPortDefinitionWidget", "2- Off", 0));
-        label_8->setText(QApplication::translate("OutPortDefinitionWidget", "4 Way Port ", 0));
-        label_9->setText(QApplication::translate("OutPortDefinitionWidget", "1 - Soft  Reset ", 0));
-        label_10->setText(QApplication::translate("OutPortDefinitionWidget", "1 Hard Reset ", 0));
-        label_11->setText(QApplication::translate("OutPortDefinitionWidget", "2 Soft Reset  Pulse Contact", 0));
-        label_12->setText(QApplication::translate("OutPortDefinitionWidget", "2 Hard Reset", 0));
+        OutPortDefinitionWidget->setWindowTitle(QApplication::translate("OutPortDefinitionWidget", "Form", Q_NULLPTR));
+        label->setText(QApplication::translate("OutPortDefinitionWidget", "Output", Q_NULLPTR));
+        label_2->setText(QApplication::translate("OutPortDefinitionWidget", "Block Occupancy", Q_NULLPTR));
+        label_3->setText(QApplication::translate("OutPortDefinitionWidget", "Blinking", Q_NULLPTR));
+        label_13->setText(QApplication::translate("OutPortDefinitionWidget", "Frequency", Q_NULLPTR));
+        label_4->setText(QApplication::translate("OutPortDefinitionWidget", "1 - On", Q_NULLPTR));
+        label_5->setText(QApplication::translate("OutPortDefinitionWidget", "1 - Off             Fixed Contact", Q_NULLPTR));
+        label_6->setText(QApplication::translate("OutPortDefinitionWidget", "2 - On", Q_NULLPTR));
+        label_7->setText(QApplication::translate("OutPortDefinitionWidget", "2- Off", Q_NULLPTR));
+        label_8->setText(QApplication::translate("OutPortDefinitionWidget", "4 Way Port ", Q_NULLPTR));
+        label_9->setText(QApplication::translate("OutPortDefinitionWidget", "1 - Soft  Reset ", Q_NULLPTR));
+        label_10->setText(QApplication::translate("OutPortDefinitionWidget", "1 Hard Reset ", Q_NULLPTR));
+        label_11->setText(QApplication::translate("OutPortDefinitionWidget", "2 Soft Reset  Pulse Contact", Q_NULLPTR));
+        label_12->setText(QApplication::translate("OutPortDefinitionWidget", "2 Hard Reset", Q_NULLPTR));
     } // retranslateUi
 
 };

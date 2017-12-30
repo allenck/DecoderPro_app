@@ -1,5 +1,7 @@
 #include "proxyturnoutmanager.h"
 #include <QCompleter>
+#include "internalsystemconnectionmemo.h"
+#include "instancemanager.h"
 
 ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     : AbstractProxyManager(parent)
@@ -20,8 +22,10 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 //        super();
 //    }
 
-/*protected*/ AbstractManager* ProxyTurnoutManager::makeInternalManager() {
-    return new InternalTurnoutManager();
+/*protected*/ Manager* ProxyTurnoutManager::makeInternalManager() const
+{
+ return ((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getTurnoutManager();
+
 }
 
 /**

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'signalheadwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -76,20 +76,20 @@ public:
 
     void retranslateUi(QDialog *SignalHeadWidget)
     {
-        SignalHeadWidget->setWindowTitle(QApplication::translate("SignalHeadWidget", "Dialog", 0));
+        SignalHeadWidget->setWindowTitle(QApplication::translate("SignalHeadWidget", "Dialog", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("SignalHeadWidget", "System Name", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("SignalHeadWidget", "System Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("SignalHeadWidget", "User Name", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("SignalHeadWidget", "User Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("SignalHeadWidget", "State", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("SignalHeadWidget", "State", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("SignalHeadWidget", "Comment", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("SignalHeadWidget", "Comment", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(5);
-        ___qtablewidgetitem4->setText(QApplication::translate("SignalHeadWidget", "Lit", 0));
+        ___qtablewidgetitem4->setText(QApplication::translate("SignalHeadWidget", "Lit", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem5 = tableWidget->horizontalHeaderItem(6);
-        ___qtablewidgetitem5->setText(QApplication::translate("SignalHeadWidget", "Held", 0));
-        btnAdd->setText(QApplication::translate("SignalHeadWidget", "Add", 0));
+        ___qtablewidgetitem5->setText(QApplication::translate("SignalHeadWidget", "Held", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("SignalHeadWidget", "Add", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -611,6 +611,8 @@ void DisplayMemoryIcon::on_editMemoryValueAction_triggered()
  }
  //_editor->addToTarget((Positionable*)this);
  updateScene();
+ if(getGroupName() != "")
+  _itemGroup->setName(getGroupName());
 }
 
 
@@ -777,6 +779,12 @@ void DisplayMemoryIcon::AddIconActionListener::actionPerformed(ActionEvent */*e*
     {
         getMemory()->setValue(val);
     }
+
+/*public*/ QString DisplayMemoryIcon::getGroupName()
+{
+ return "DisplayMemoryIcon";
+}
+
 #if 0
     class TransferHandler extends javax.swing.TransferHandler {
 

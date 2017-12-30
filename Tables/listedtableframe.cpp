@@ -17,6 +17,7 @@
 #include <QPushButton>
 #include <QStatusBar>
 #include <QGridLayout>
+#include "mysortfilterproxymodel.h"
 
 //ListedTableFrame::ListedTableFrame()
 //{
@@ -60,35 +61,34 @@ void ListedTableFrame::common()
 /*public*/ ListedTableFrame::ListedTableFrame(QString s, QWidget* parent)
  : BeanTableFrame(s, parent)
 {
-//super(s);
-common();
-if (InstanceManager::getDefault("ListedTableFrame") == NULL) {
+ //super(s);
+ common();
+ if (InstanceManager::getDefault("ListedTableFrame") == NULL) {
     //We add this to the instanceManager so that other components can add to the table
     InstanceManager::store(this, "ListedTableFrame");
-}
-if (!init) {
-    /*Add the default tables to the static list array, this should only be done
-     once when first loaded*/
-    addTable("jmri.jmrit.beantable.TurnoutTableTabAction", tr("Turnout Table"), false);
-    addTable("jmri.jmrit.beantable.SensorTableTabAction", tr("Sensor Table"), false);
-    addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
-    addTable("jmri.jmrit.beantable.SignalHeadTableAction", tr("Signal Table"), true);
-    addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
-    addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);
-#if 1
-    addTable("jmri.jmrit.beantable.SignalMastLogicTableAction", tr("Signal MastLogic Table"), true);
-#endif
-    addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
-    addTable("jmri.jmrit.beantable.MemoryTableAction", tr("Memory Table"), true);
-    addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
-    addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
-    addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
-    addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
-    addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
-    addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
-    addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
-    addTable("jmri.jmrit.beantable.IdTagTableAction", tr("IdTag Table"), true);
-    init = true;
+ }
+ if (!init)
+ {
+  /*Add the default tables to the static list array, this should only be done
+   once when first loaded*/
+  addTable("jmri.jmrit.beantable.TurnoutTableTabAction", tr("Turnout Table"), false);
+  addTable("jmri.jmrit.beantable.SensorTableTabAction", tr("Sensor Table"), false);
+  addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
+  addTable("jmri.jmrit.beantable.SignalHeadTableAction", tr("Signal Table"), true);
+  addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
+  addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);
+  addTable("jmri.jmrit.beantable.SignalMastLogicTableAction", tr("Signal MastLogic Table"), true);
+  addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
+  addTable("jmri.jmrit.beantable.MemoryTableAction", tr("Memory Table"), true);
+  addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
+  addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
+  addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
+  addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
+  addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
+  addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
+  addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
+  addTable("jmri.jmrit.beantable.IdTagTableAction", tr("IdTag Table"), true);
+  init = true;
  }
 }
 
@@ -200,32 +200,33 @@ for (int x = 0; x < tabbedTableArray->size(); x++)
 
 /*public*/ void ListedTableFrame::addTable(QString aaClass, QString choice, bool stdModel)
 {
-    TabbedTableItemListArray* itemBeingAdded = NULL;
-    for (int x = 0; x < tabbedTableItemListArrayArray->size(); x++)
-    {
-        if (tabbedTableItemListArrayArray->value(x)->getClassAsString()==(aaClass))
-        {
-            log->info("Class " + aaClass + " is already added");
-            itemBeingAdded = tabbedTableItemListArrayArray->value(x);
-            break;
-        }
-    }
-    if (itemBeingAdded == NULL)
-    {
-        itemBeingAdded = new TabbedTableItemListArray(aaClass, choice, stdModel);
-        tabbedTableItemListArrayArray->append(itemBeingAdded);
-    }
+ TabbedTableItemListArray* itemBeingAdded = NULL;
+ for (int x = 0; x < tabbedTableItemListArrayArray->size(); x++)
+ {
+  if (tabbedTableItemListArrayArray->value(x)->getClassAsString()==(aaClass))
+  {
+   log->info("Class " + aaClass + " is already added");
+   itemBeingAdded = tabbedTableItemListArrayArray->value(x);
+   break;
+  }
+ }
+ if (itemBeingAdded == NULL)
+ {
+  itemBeingAdded = new TabbedTableItemListArray(aaClass, choice, stdModel);
+  tabbedTableItemListArrayArray->append(itemBeingAdded);
+ }
 }
 
 /*public*/ void ListedTableFrame::dispose() {
-for (int x = 0; x < tabbedTableArray->size(); x++) {
-    tabbedTableArray->value(x)->dispose();
-}
-//if (list->getListSelectionListeners().length() > 0) {
-//    list->removeListSelectionListener(list->getListSelectionListeners()[0]);
-//}
-//super.dispose();
-BeanTableFrame::dispose();
+ for (int x = 0; x < tabbedTableArray->size(); x++)
+ {
+  tabbedTableArray->value(x)->dispose();
+ }
+ //if (list->getListSelectionListeners().length() > 0) {
+ //    list->removeListSelectionListener(list->getListSelectionListeners()[0]);
+ //}
+ //super.dispose();
+ BeanTableFrame::dispose();
 }
 
 void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
@@ -365,6 +366,8 @@ void ListedTableFrame::On_viewMenu_triggered(QObject* obj)
 LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool stdModel, ListedTableFrame* frame)
 {
     this->frame = frame;
+ dataModel = NULL;
+ dataTable = NULL;
     dataPanel = new QWidget();
     dataPanel->setObjectName("dataPanel");
     dataPanel->resize(800,600);
@@ -454,7 +457,7 @@ LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool std
 void LTFTabbedTableItem::createDataModel() {
     dataModel = tableAction->getTableDataModel();
     MySortFilterProxyModel* sorter = new MySortFilterProxyModel(dataModel);
-    dataTable = dataModel->makeJTable(sorter);
+    dataTable = dataModel->makeJTable(dataModel->getMasterClassName() + ":" + getItemString(), dataModel, sorter);
 //    sorter->setTableHeader(dataTable->getTableHeader());
     //dataScroll = new JScrollPane(dataTable);
 

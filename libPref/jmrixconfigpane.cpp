@@ -5,11 +5,13 @@
 #include <QComboBox>
 #include "dccmanufacturerlist.h"
 #include <QVector>
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include <QScrollArea>
 #include "jtitledseparator.h"
 #include <QGroupBox>
 #include "flowlayout.h"
+#include "connectionconfigmanager.h"
+#include "loggerfactory.h"
 
 //JmrixConfigPane::JmrixConfigPane(QWidget *parent) :
 //    QWidget(parent)
@@ -42,6 +44,7 @@
 //    private static final long serialVersionUID = -6184977238513337292L;
 //    private static final ResourceBundle acb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
+
 /**
  * Get access to a pane describing existing configuration information, or
  * create one if needed.
@@ -65,14 +68,7 @@
 
 /*public*/ /*static*/ JmrixConfigPane* JmrixConfigPane::instance(ConnectionConfig* config)
 {
- foreach (int key, configPaneTable.keys())
- {
-  if (configPaneTable.value(key)->ccCurrent == config)
-  {
-   return configPaneTable.value(key);
-  }
- }
- return NULL;
+ return createPanel(config);
 }
 
 /*
@@ -82,21 +78,29 @@
  */
 /*private*/ /*static*/ /*synchronized*/ JmrixConfigPane* JmrixConfigPane::createPanel(int index)
 {
- Logger log("JmrixConfigPane");
- JmrixConfigPane* retval = configPaneTable.value((index));
- if (retval != NULL)
- {
-  return retval;
+ ConnectionConfig* c = NULL;
+ try {
+     c = ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections(index);
+     log->debug(tr("connection %1 is %2").arg(index).arg(c->metaObject()->className()));
+ } catch (IndexOutOfBoundsException ex) {
+     log->debug(tr("connection %1 is null, creating new one").arg(index));
  }
- ConfigureManager* mgr = InstanceManager::configureManagerInstance();
- QObject* c = mgr->findInstance("ConnectionConfig", index);
- if(c == NULL)
-  log.debug("findInstance returned  NULL");
- else
-  log.debug("findInstance returned " + QString(c->metaObject()->className()));
- retval = new JmrixConfigPane((ConnectionConfig*) c);
- configPaneTable.insert(index, retval);
- return retval;
+ return createPanel(c);
+
+}
+
+/**
+ * Create a new configuration panel for the given connection.
+ *
+ * @param c the connection; if null, the panel is ready for a new connection
+ * @return the new panel
+ */
+/*public*/ /*static*/ /*synchronized*/ JmrixConfigPane* JmrixConfigPane::createPanel(ConnectionConfig* c) {
+    JmrixConfigPane* pane = new JmrixConfigPane(c);
+    if (c == NULL) {
+        pane->_isDirty = true;
+    }
+    return pane;
 }
 
 /**
@@ -106,22 +110,7 @@
  */
 /*public*/ /*static*/ JmrixConfigPane* JmrixConfigPane::createNewPanel()
 {
- int lastIndex = -1;
- QObjectList conlist = InstanceManager::configureManagerInstance()->getInstanceList("ConnectionConfig");
-
- if (!conlist.isEmpty())
- {
-  lastIndex = conlist.size();
- }
- foreach (int key, configPaneTable.keys())
- {
-  if (key > lastIndex)
-  {
-   lastIndex = key;
-  }
- }
- lastIndex++;
- return createPanel(lastIndex);
+ return createPanel((ConnectionConfig*)NULL);
 }
 
 /*public*/ /*static*/ int JmrixConfigPane::getNumberOfInstances() {
@@ -130,11 +119,10 @@
 
 /*public*/ /*static*/ void JmrixConfigPane::dispose(int index)
 {
- Logger log("JmrixConfigPane");
  JmrixConfigPane* retval = configPaneTable.value((index));
  if (retval == NULL)
  {
-  log.debug("no instance found therefore can not dispose of it!");
+  log->debug("no instance found therefore can not dispose of it!");
   return;
  }
  dispose(retval);
@@ -142,10 +130,8 @@
 
 /*public*/ /*static*/ void JmrixConfigPane::dispose(JmrixConfigPane* confPane)
 {
- Logger log("JmrixConfigPane");
-
     if (confPane == NULL) {
-        log.debug("no instance found therefore can not dispose of it!");
+        log->debug("no instance found therefore can not dispose of it!");
         return;
     }
 
@@ -153,13 +139,15 @@
         try {
             confPane->ccCurrent->dispose();
         } catch (Exception ex) {
-            log.error("Error Occured while disposing connection "+ ex.getMessage());
+            log->error("Error Occured while disposing connection "+ ex.getMessage());
         }
     }
-    InstanceManager::configureManagerInstance()->deregister(confPane);
-    InstanceManager::configureManagerInstance()->deregister(confPane->ccCurrent);
-
-    configPaneTable.remove(getInstanceNumber(confPane));
+    ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+            if (cmOD != NULL) {
+                cmOD->deregister(confPane);
+                cmOD->deregister(confPane->ccCurrent);
+            }
+            ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->remove(confPane->ccCurrent);
 }
 
 /*public*/ /*static*/ int JmrixConfigPane::getInstanceNumber(JmrixConfigPane* confPane)
@@ -195,9 +183,9 @@
  */
 /*private*/ JmrixConfigPane::JmrixConfigPane(ConnectionConfig* original, QWidget* parent) : QWidget(parent)
 {
- log = new  Logger("JmrixConfigPane");
  setObjectName("JmrixConfigPane");
 
+ _isDirty = false;
  modeBox = new QComboBox();
  manuBox = new QComboBox();
  details = new QWidget();
@@ -292,7 +280,7 @@
     }
 //    catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
 //    {
-//     log.debug("Attempt to load {} failed: {}.", className, e);
+//     log->debug("Attempt to load {} failed: {}.", className, e);
 //    }
    }
    if ((modeBox->currentIndex() == 0) && (p->getComboBoxLastSelection( manuBox->currentText()) != NULL))
@@ -408,7 +396,7 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
 //      }
 //      catch (NullPointerException | ClassNotFoundException | InstantiationException | IllegalAccessException e)
 //      {
-//        log.warn("Attempt to load {} failed: {}", classConnectionNameList1, e);
+//        log->warn("Attempt to load {} failed: {}", classConnectionNameList1, e);
 //      }
   }
   if (p->getComboBoxLastSelection(manuBox->currentText()) != NULL)
@@ -427,8 +415,7 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
 
 void JmrixConfigPane::selection()
 {
- Logger log("JmrixConfigPane");
-
+ ConnectionConfig* old = this->ccCurrent;
  int current = modeBox->currentIndex();
  //details.removeAll();
  if(details->layout() != NULL)
@@ -447,7 +434,7 @@ void JmrixConfigPane::selection()
   }
  }
  // first choice is -no- protocol chosen
- log.debug("new selection is  "+ QString::number(current)+ " " + modeBox->currentText());
+ log->debug("new selection is  "+ QString::number(current)+ " " + modeBox->currentText());
  if ((current != 0) && (current != -1))
  {
   if ((ccCurrent != NULL) && (ccCurrent != classConnectionList[current]))
@@ -462,8 +449,13 @@ void JmrixConfigPane::selection()
  {
   if (ccCurrent != NULL)
   {
+
    ccCurrent->dispose();
   }
+ }
+ if (old != this->ccCurrent)
+ {
+  this->ccCurrent->_register();
  }
  //validate();
 
@@ -528,7 +520,7 @@ void JmrixConfigPane::selection()
 }
 
 // initialize logging
-//static Logger log = LoggerFactory.getLogger(JmrixConfigPane.class);
+/*private*/ /*final*/ /*static*/ Logger* JmrixConfigPane::log = LoggerFactory::getLogger("JmrixConfigPane");
 
 //@Override
 /*public*/ QString JmrixConfigPane::getPreferencesItem() {
@@ -581,12 +573,17 @@ void JmrixConfigPane::selection()
 
 //@Override
 /*public*/ bool JmrixConfigPane::isDirty() {
-    return this->ccCurrent->isDirty();
+ if (log->isDebugEnabled()) {
+     log->debug(tr("Connection \"%1\" is %2.").arg(
+             this->getConnectionName()).arg(
+             (this->_isDirty || ((this->ccCurrent != NULL) ? this->ccCurrent->isDirty() : true) ? "dirty" : "clean")));
+ }
+ return this->_isDirty || ((this->ccCurrent != NULL) ? this->ccCurrent->isDirty() : true);
 }
 
 //@Override
 /*public*/ bool JmrixConfigPane::isRestartRequired() {
-    return this->ccCurrent->isRestartRequired();
+ return (this->ccCurrent != NULL) ? this->ccCurrent->isRestartRequired() : this->isDirty();
 }
 
 //@Override

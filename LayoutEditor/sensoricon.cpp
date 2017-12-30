@@ -30,7 +30,7 @@
 /*public*/ SensorIcon::SensorIcon(Editor* editor) : PositionableIcon(editor, (Positionable*)this)
 {
     this->editor = editor;
-    init();
+    common();
     // super ctor call to make sure this is an icon label
     setIcon("none", new NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
                         ":/resources/icons/smallschematics/tracksegments/circuit-error.gif"));
@@ -42,7 +42,7 @@
 {
     // super ctor call to make sure this is an icon label
     //super(s, editor);
-    init();
+    common();
     PositionableIcon::parent = (Positionable*)this;
     setOpaque(false);
     this->editor = editor;
@@ -57,13 +57,13 @@
 {
     //super(s, editor);
     this->editor = editor;
-    init();
+    common();
     _control = true;
     debug = log->isDebugEnabled();
     displayState(sensorState());
     setPopupUtility(new SensorPopupUtil((Positionable*)this, this));
 }
-void SensorIcon::init()
+void SensorIcon::common()
 {
  log = new Logger("SensorIcon", this);
  debug = false;
@@ -1227,7 +1227,7 @@ void SensorIcon::on_setSensorTextAction()
   }
  }
  else
-  _itemGroup = new QGraphicsItemGroup();
+  _itemGroup = new MyGraphicsItemGroup();
 
  QPixmap pixmap = QPixmap::fromImage(getIcon(iState)->getImage());
  if(item != NULL)

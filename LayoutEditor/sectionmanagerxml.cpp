@@ -210,11 +210,10 @@ SectionManagerXml::SectionManagerXml(QObject *parent) :
                     fromBlockDirection = elem.attribute("fromblockdirection");
                 EntryPoint* ep = new EntryPoint(blockName, fromBlockName, fromBlockDirection);
                 //if (ep!=NULL) {
-                    try {
-                        ep->setDirection(elem.attribute("direction").toInt());
-                    }
-                    catch (Exception e) {
-                        log->error("Data Conversion Exception when loading direction of entry point - "+e.getMessage());
+                    bool ok;
+                        ep->setDirection(elem.attribute("direction").toInt(&ok));
+                    if(!ok) {
+                        log->error("Data Conversion Exception when loading direction of entry point - "+sysName);
                     }
                     bool fixed = true;
                     if (elem.attribute("fixed")==("no")) fixed = false;

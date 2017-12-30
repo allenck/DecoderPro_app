@@ -1,12 +1,12 @@
 #ifndef CATALOGTREE_H
 #define CATALOGTREE_H
 #include "namedbean.h"
-#include "treemodel.h"
+#include "catalogtreemodel.h"
 #include "javaqt_global.h"
 
 class AbstractNamedBean;
 class CatalogTreeNode;
-class JAVAQTSHARED_EXPORT CatalogTree :  /*public TreeModel,*/ public TreeModel
+class JAVAQTSHARED_EXPORT CatalogTree :  /*public TreeModel,*/ public CatalogTreeModel
 {
     Q_OBJECT
 public:
@@ -29,13 +29,13 @@ public:
      * @param pParent Node for the parent of the resource to be scanned, e.g.
      *              where in the tree to insert it.
      */
-    /*public*/ virtual void insertNodes(QString pName, QString pPath, CatalogTreeNode* pParent) {}
+    /*public*/ virtual void insertNodes(QString /*pName*/, QString /*pPath*/, CatalogTreeNode* /*pParent*/) {}
 
     /**
      * Starting point to recursively add nodes to the tree by scanning a file directory
      * @param pathToRoot Path to Directory to be scanned
      */
-    /*public*/ virtual void insertNodes(QString pathToRoot) {}
+    /*public*/ virtual void insertNodes(QString /*pathToRoot*/) {}
     QString getComment();
     void setComment(QString comment);
     QString getDisplayName();

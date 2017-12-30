@@ -5,13 +5,15 @@
 #include <QtXml>
 #include "limits.h"
 
-QHash<QString, QString> Properties::hash =  QHash<QString, QString>();
+//QHash<QString, QString> Properties::hash =  QHash<QString, QString>();
+QMap<QString, QVariant> Properties::_hashTable =  QMap<QString, QVariant>();
 
 
 Properties::Properties(QObject *parent) :
     QObject(parent)
 {
  defaults = NULL;
+ _hashTable = QMap<QString, QVariant>();
 }
 
 /**
@@ -133,11 +135,14 @@ QObject(parent)
  * @since    1.2
  */
 /*public*/ /*synchronized*/ void Properties::setProperty(QString key, QString value) {
-     hash.insert(key, value);
+     //hash.insert(key, value);
+ _hashTable.insert(key, value);
+
 }
 /*public*/ bool Properties::containsKey(QString key)
 {
- return hash.contains(key);
+ //return hash.contains(key);
+ return _hashTable.contains(key);
 }
 
 #if 0
@@ -292,7 +297,7 @@ QObject(parent)
     load0(new LineReader(reader));
 }
 #endif
-#if 1
+
 /**
  * Reads a property list (key and element pairs) from the input
  * byte stream. The input stream is in a simple line-oriented
@@ -381,11 +386,12 @@ QByteArray convtBuf;
   }
   QString key = loadConvert(lr->lineBuf, 0, keyLen, convtBuf);
   QString value = loadConvert(lr->lineBuf, valueStart, limit - valueStart, convtBuf);
-  hash.insert(key, value);
+  //hash.insert(key, value);
+  _hashTable.insert(key,value);
  }
  return;
 }
-#endif
+
 #if 1
 /* Read in a "logical line" from an InputStream/Reader, skip all comment
  * and blank lines and filter out those leading whitespace characters
@@ -641,23 +647,26 @@ int LineReader::readLine() //throws IOException
  return QString(out);
 }
 #endif
-#if 0
+#if 1
 /*
  * Converts unicodes to encoded &#92;uxxxx and escapes
  * special characters with a preceding slash
  */
-private String saveConvert(String theString,
+/*private*/ QString Properties::saveConvert(QString theString,
                            bool escapeSpace,
-                           bool escapeUnicode) {
+                           bool escapeUnicode)
+{
+#if 0
     int len = theString.length();
-    int bufLen = len * 2;
-    if (bufLen < 0) {
-        bufLen = Integer.MAX_VALUE;
-    }
-    StringBuffer outBuffer = new StringBuffer(bufLen);
+//    int bufLen = len * 2;
+//    if (bufLen < 0) {
+//        bufLen = Integer.MAX_VALUE;
+//    }
+//    StringBuffer outBuffer = new StringBuffer(bufLen);
+    QString outBuffer;
 
     for(int x=0; x<len; x++) {
-        char aChar = theString.charAt(x);
+        char aChar = theString.at(x);
         // Handle common case first, selecting largest block that
         // avoids the specials below
         if ((aChar > 61) && (aChar < 127)) {
@@ -702,11 +711,17 @@ private String saveConvert(String theString,
         }
     }
     return outBuffer.toString();
+#endif
+  return theString;
 }
+#endif
+/*private*/ /*static*/ void Properties::writeComments(QTextStream* bw, QString comments)
+    throw (IOException)
+{
 
-private static void writeComments(BufferedWriter bw, String comments)
-    throws IOException {
-    bw.write("#");
+    //bw.write("#");
+    *bw << "#";
+#if 0  // TODO::
     int len = comments.length();
     int current = 0;
     int last = 0;
@@ -714,37 +729,46 @@ private static void writeComments(BufferedWriter bw, String comments)
     uu[0] = '\\';
     uu[1] = 'u';
     while (current < len) {
-        char c = comments.charAt(current);
+        char c = comments.at(current);
         if (c > '\u00ff' || c == '\n' || c == '\r') {
             if (last != current)
-                bw.write(comments.substring(last, current));
+                //bw.write(comments.substring(last, current));
+             *bw << comments.mid(last, current);
             if (c > '\u00ff') {
                 uu[2] = toHex((c >> 12) & 0xf);
                 uu[3] = toHex((c >>  8) & 0xf);
                 uu[4] = toHex((c >>  4) & 0xf);
                 uu[5] = toHex( c        & 0xf);
-                bw.write(new String(uu));
+                //bw.write(new QString(uu));
+                *bw << QString(uu);
             } else {
-                bw.newLine();
+                //bw.newLine();
+             *bw << "\n";
                 if (c == '\r' &&
                     current != len - 1 &&
-                    comments.charAt(current + 1) == '\n') {
+                    comments.at(current + 1) == '\n') {
                     current++;
                 }
                 if (current == len - 1 ||
                     (comments.charAt(current + 1) != '#' &&
                     comments.charAt(current + 1) != '!'))
-                    bw.write("#");
+                    //bw.write("#");
+                 *bw << "#";
             }
             last = current + 1;
         }
         current++;
     }
     if (last != current)
-        bw.write(comments.substring(last, current));
-    bw.newLine();
+        //bw.write(comments.substring(last, current));
+     *bw << comments.mid(last, current);
+    //bw.newLine();
+    *bw << "\n";
+#else
+ *bw << comments << "\n";
+#endif
 }
-
+#if 0
 /**
  * Calls the {@code store(OutputStream out, String comments)} method
  * and suppresses IOExceptions that were thrown.
@@ -817,15 +841,15 @@ private static void writeComments(BufferedWriter bw, String comments)
  * @exception  NULLPointerException  if {@code writer} is NULL.
  * @since 1.6
  */
-/*public*/ void store(Writer writer, String comments)
-    throws IOException
+/*public*/ void Properties::store(Writer writer, QString comments)
+    //throws IOException
 {
     store0((writer instanceof BufferedWriter)?(BufferedWriter)writer
                                              : new BufferedWriter(writer),
            comments,
            false);
 }
-
+#endif
 /**
  * Writes this property list (key and element pairs) in this
  * {@code Properties} table to the output stream in a format suitable
@@ -864,36 +888,48 @@ private static void writeComments(BufferedWriter bw, String comments)
  * @exception  NULLPointerException  if {@code out} is NULL.
  * @since 1.2
  */
-/*public*/ void store(OutputStream out, String comments)
-    throws IOException
+/*public*/ void Properties::store(QTextStream* out, QString comments)
+    throw (IOException)
 {
+#if 0
     store0(new BufferedWriter(new OutputStreamWriter(out, "8859_1")),
            comments,
            true);
+#endif
+    store0(out, comments, true);
 }
-
-private void store0(BufferedWriter bw, String comments, bool escUnicode)
-    throws IOException
+#if 1
+/*private*/ void Properties::store0(QTextStream* bw, QString comments, bool escUnicode)
+    throw (IOException)
 {
-    if (comments != NULL) {
-        writeComments(bw, comments);
-    }
-    bw.write("#" + new Date().toString());
-    bw.newLine();
-    synchronized (this) {
-        for (Enumeration<?> e = keys(); e.hasMoreElements();) {
-            String key = (String)e.nextElement();
-            String val = (String)get(key);
-            key = saveConvert(key, true, escUnicode);
-            /* No need to escape embedded and trailing spaces for value, hence
-             * pass false to flag.
-             */
-            val = saveConvert(val, false, escUnicode);
-            bw.write(key + "=" + val);
-            bw.newLine();
-        }
-    }
-    bw.flush();
+ if (comments != NULL)
+ {
+  writeComments(bw, comments);
+ }
+ //bw.write("#" + new Date().toString());
+ *bw << "#" + QDateTime::currentDateTime().toString();
+ //bw.newLine();
+ *bw << "\n";
+//    synchronized (this) {
+//        for (Enumeration<?> e = keys(); e.hasMoreElements();)
+ QListIterator<QString> e(_hashTable.keys());
+ while(e.hasNext())
+ {
+   QString key = e.next();
+   QString val = _hashTable.value(key).toString();
+   key = saveConvert(key, true, escUnicode);
+   /* No need to escape embedded and trailing spaces for value, hence
+    * pass false to flag.
+    */
+   val = saveConvert(val, false, escUnicode);
+   //bw.write(key + "=" + val);
+   *bw << key + "=" + val;
+   //bw.newLine();
+   *bw  << "\n";
+ }
+//    }
+  //bw.flush();
+ bw->flush();
 }
 #endif
 /**
@@ -1020,7 +1056,8 @@ throw (IOException)
 //    Object oval = super.get(key);
 //    String sval = (oval instanceof String) ? (String)oval : NULL;
 //    return ((sval == NULL) && (defaults != NULL)) ? defaults.getProperty(key) : sval;
-    return hash.value(key);
+    //return hash.value(key);
+ return _hashTable.value(key).toString();
 }
 
 /**
@@ -1040,7 +1077,24 @@ throw (IOException)
     QString val = getProperty(key);
     return (val == NULL) ? defaultValue : val;
 }
-#if 0
+
+/*public*/ void Properties::put(QVariant key, QVariant value)
+{
+ if(key.toString()== "ThrottleManager" && value.toString() == "Internal")
+  qDebug() << "test breakpoint";
+ _hashTable.insert(key.toString(), value);
+}
+
+/*public*/ QVariant Properties::get(QVariant key)
+{
+ return _hashTable.value(key.toString());
+}
+
+/*public*/ void Properties::remove(QString key)
+{
+ _hashTable.remove(key);
+}
+
 /**
  * Returns an enumeration of all the keys in this property list,
  * including distinct keys in the default property list if a key
@@ -1055,12 +1109,12 @@ throw (IOException)
  * @see     java.util.Properties#defaults
  * @see     #stringPropertyNames
  */
-/*public*/ Enumeration<?> propertyNames() {
-    Hashtable<String,Object> h = new Hashtable<>();
+/*public*/ QStringListIterator Properties::propertyNames() {
+    QMap<QString,QVariant>* h = new QMap<QString,QVariant>();
     enumerate(h);
-    return h.keys();
+    return h->keys();
 }
-
+#if 0
 /**
  * Returns a set of keys in this property list where
  * the key and its corresponding value are strings,
@@ -1134,23 +1188,25 @@ throw (IOException)
         out.println(key + "=" + val);
     }
 }
-
+#endif
 /**
  * Enumerates all key/value pairs in the specified hashtable.
  * @param h the hashtable
  * @throws ClassCastException if any of the property keys
  *         is not of String type.
  */
-private synchronized void enumerate(Hashtable<String,Object> h) {
+/*private*/ /*synchronized*/ void Properties::enumerate(QMap<QString,QVariant>* h) {
     if (defaults != NULL) {
-        defaults.enumerate(h);
+        defaults->enumerate(h);
     }
-    for (Enumeration<?> e = keys() ; e.hasMoreElements() ;) {
-        String key = (String)e.nextElement();
-        h.put(key, get(key));
+    //for (Enumeration<?> e = keys() ; e.hasMoreElements() ;) {
+    foreach(QString key, _hashTable.keys())
+    {
+        //String key = (String)e.nextElement();
+        h->insert(key, _hashTable.value(key));
     }
 }
-
+#if 0
 /**
  * Enumerates all key/value pairs in the specified hashtable
  * and omits the property if the key or value is not a string.
@@ -1182,9 +1238,10 @@ private static final char[] hexDigit = {
     '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
 };
 #endif
-QHash<QString, QString> Properties::getHash()
+QMap<QString, QVariant> Properties::getHash()
 {
- return hash;
+ //return hash;
+ return _hashTable;
 }
 
 /**
@@ -1261,15 +1318,16 @@ private static XmlPropertiesProvider loadProvider() {
  doc.setContent(content);
  QDomElement root = doc.documentElement();
  QDomNodeList list = root.childNodes();
- Properties::hash.clear();
+// Properties::hash.clear();
+ Properties::_hashTable.clear();
  for(int i = 0; i < list.count(); i++)
  {
   QDomElement e = list.at(i).toElement();
   if(e.tagName() == "entry")
   {
-      QString key = e.attribute("key");
-      QString value = e.text();
-      props->setProperty(key, value);
+   QString key = e.attribute("key");
+   QString value = e.text();
+   props->setProperty(key, value);
   }
  }
 }
@@ -1281,17 +1339,18 @@ private static XmlPropertiesProvider loadProvider() {
  QDomDocument doc;
  QDomElement root = doc.createElement("properties");
  doc.appendChild(root);
- QHash<QString, QString> hash = props->getHash();
+ QMap<QString, QVariant> hash = props->getHash();
  QDomElement cmt = doc.createElement("comment");
  cmt.appendChild(doc.createTextNode(comment));
  root.appendChild(cmt);
- QHashIterator<QString, QString> iter(hash);
+// QHashIterator<QString, QString> iter(hash);
+ QMapIterator<QString, QVariant> iter(_hashTable);
  while(iter.hasNext())
  {
   iter.next();
   QDomElement entry = doc.createElement("entry");
   entry.setAttribute("key", iter.key());
-  entry.appendChild(doc.createTextNode(iter.value()));
+  entry.appendChild(doc.createTextNode(iter.value().toString()));
   root.appendChild(entry);
  }
  os->setCodec(encoding.toLocal8Bit());

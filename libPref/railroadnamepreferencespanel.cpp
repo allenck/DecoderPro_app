@@ -6,6 +6,7 @@
 #include "jframe.h"
 #include "flowlayout.h"
 #include "QLabel"
+#include "webserverpreferences.h"
 
 //RailroadNamePreferencesPanel::RailroadNamePreferencesPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -22,7 +23,7 @@
 /*public*/ RailroadNamePreferencesPanel::RailroadNamePreferencesPanel(QWidget *parent) : PreferencesPanel(parent)
 {
  parentFrame = (JFrame*)parent;
-//    preferences = WebServerManager.getWebServerPreferences();
+ preferences = WebServerPreferences::getDefault();
  initGUI();
  setGUI();
 }
@@ -83,8 +84,7 @@
  */
 /*private*/ bool RailroadNamePreferencesPanel::setValues() {
     bool didSet = true;
-//    preferences.setRailRoadName(railroadName.getText());
-//    Setup.setRailroadName(railroadName.getText()); // Also change the railroad name in operations
+    preferences->setRailRoadName(railroadName->text());
     return didSet;
 }
 
@@ -92,7 +92,7 @@
 {
  if (setValues())
  {
-//  preferences.save();
+  preferences->save();
 
   if (parentFrame != NULL)
   {
@@ -109,7 +109,7 @@
 {
  if (setValues())
  {
-  //preferences.setIsDirty(true);
+  preferences->setIsDirty(true);
  }
 }
 
@@ -126,7 +126,7 @@
  QWidget* panel = new QWidget();
  FlowLayout* panelLayout = new FlowLayout;
  panel->setLayout(panelLayout);
- railroadName = new JTextField(/*preferences.getRailRoadName()*/);
+ railroadName = new JTextField(preferences->getRailRoadName());
  railroadName->setToolTip(tr("Used by various JMRI network services."));
  railroadName->setColumns(30);
  panelLayout->addWidget(new QLabel(tr("Railroad Name")));
@@ -176,7 +176,7 @@
 
 //@Override
 /*public*/ bool RailroadNamePreferencesPanel::isDirty() {
-    return /*this->preferences.isDirty()*/ false;
+    return this->preferences->isDirty();
 }
 
 //@Override

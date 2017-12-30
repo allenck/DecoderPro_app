@@ -7,12 +7,17 @@
  * @version			$Revision: 18178 $
  */
 //public class InternalTurnoutManager extends AbstractTurnoutManager {
-InternalTurnoutManager::InternalTurnoutManager()
+InternalTurnoutManager::InternalTurnoutManager() : AbstractTurnoutManager()
 {
  setObjectName("InternalTurnoutManager");
  prefix = "I";
 }
-
+/*public*/ InternalTurnoutManager::InternalTurnoutManager(QString prefix) : AbstractTurnoutManager()
+ {
+ setObjectName("InternalTurnoutManager");
+        //super();
+ this->prefix = prefix;
+}
 /**
  * Create and return an internal (no layout connection) turnout
  */

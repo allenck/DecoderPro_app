@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'extraopcodewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -149,8 +149,8 @@ public:
 
     void retranslateUi(QWidget *ExtraOpcodeWidget)
     {
-        ExtraOpcodeWidget->setWindowTitle(QApplication::translate("ExtraOpcodeWidget", "Form", 0));
-        lblBigRedX->setText(QApplication::translate("ExtraOpcodeWidget", "X", 0));
+        ExtraOpcodeWidget->setWindowTitle(QApplication::translate("ExtraOpcodeWidget", "Form", Q_NULLPTR));
+        lblBigRedX->setText(QApplication::translate("ExtraOpcodeWidget", "X", Q_NULLPTR));
         rbOff->setText(QString());
         rbDirect->setText(QString());
         rbIndirect->setText(QString());

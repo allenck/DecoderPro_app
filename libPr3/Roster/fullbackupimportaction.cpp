@@ -1,4 +1,4 @@
-#include "fullbackupimportaction.h"
+﻿#include "fullbackupimportaction.h"
 //#include "../../../../../Projects/quazip-0.7/quazip/quazip.h"
 #include "quazip.h"
 //#include "../../../../../Projects/quazip-0.7/quazip/quazipfile.h"
@@ -12,6 +12,8 @@
 #include "logger.h"
 #include <QMessageBox>
 #include "importrosteritemaction.h"
+#include "jfilechooser.h"
+#include "joptionpane.h"
 
 FullBackupImportAction::FullBackupImportAction(QObject *parent) :
   ImportRosterItemAction("Import Roster Backup", (WindowInterface*)parent)
@@ -83,23 +85,24 @@ void FullBackupImportAction::common()
  //FileInputStream inputfile = NULL;
  QuaZipFile* inputFile = NULL;
 
-// try
-// {
+ try
+ {
+  JFileChooser* chooser = new JFileChooser();
 
-//  JFileChooser chooser = new JFileChooser();
-
-//  String roster_filename_extension = "roster";
+  QString roster_filename_extension = "roster";
 //  FileNameExtensionFilter filter = new FileNameExtensionFilter(
 //          "JMRI full roster files", roster_filename_extension);
-//  chooser.addChoosableFileFilter(filter);
+  chooser->setFileFilter("JMRI full roster files *.roster" );
+  //chooser->addChoosableFileFilter(filter);
+  //chooser->setCurrentDirectory(new File(FileUtil::getPreferencesPath()));
 
-//  int returnVal = chooser.showOpenDialog(mParent);
-//  if (returnVal != JFileChooser.APPROVE_OPTION) {
-//      return;
-//  }
+  int returnVal = chooser->showOpenDialog(mParent);
+  if (returnVal != JFileChooser::APPROVE_OPTION)
+  {
+      return;
+  }
 
-//  String filename = chooser.getSelectedFile().getAbsolutePath();
-  QString filename = QFileDialog::getOpenFileName(_parent, tr("Select Jmri Roster backup file"), FileUtil::getUserFilesPath(), "JMRI full roster files (*.roster)");
+  QString filename = chooser->getSelectedFile()->getAbsolutePath();
 
 //  inputfile = new FileInputStream(filename);
 //  zipper = new ZipInputStream(inputfile) {
@@ -126,8 +129,8 @@ void FullBackupImportAction::common()
       // Once we get the entry from the stream, the stream is
       // positioned read to read the raw data, and we keep
       // reading until read returns 0 or less.
-//   try
-//   {
+   try
+   {
    LocoFile* xfile = new LocoFile();   // need a dummy object to do this operation in next line
    inputFile->open(QIODevice::ReadOnly);
 
@@ -142,27 +145,36 @@ void FullBackupImportAction::common()
    mToID = lroot.firstChildElement("locomotive").attribute("id");
 
     // see if user wants to do it
-//    int retval = JOptionPane.showOptionDialog(mParent,
-//            Bundle.getMessage("ConfirmImportID", mToID),
-//            Bundle.getMessage("ConfirmImport"),
-//            0,
-//            JOptionPane.INFORMATION_MESSAGE,
-//            NULL,
-//            new Object[]{Bundle.getMessage("CancelImports"),
-//                Bundle.getMessage("Skip"),
-//                Bundle.getMessage("OK")},
-//            NULL);
-    int retval = QMessageBox::question(_parent, tr("Confirm Import"), tr("Import locomotive ID: \"%1\"").arg(mToID), QMessageBox::Yes  | QMessageBox::No);
-//    if (retval == QMessageBox::Yes)
+   QList<QVariant> vl = QList<QVariant>();
+   vl << tr("Cancel Imports") <<
+     tr("Skip") <<
+     tr("OK");
+    int retval = JOptionPane::showOptionDialog(mParent,
+            tr("Import locomotive ID: \"%1\"").arg(mToID),
+            tr("Confirm Import"),
+            0,
+            JOptionPane::INFORMATION_MESSAGE,
+            QIcon(),
+            vl,
+            QVariant());
+   if (retval == 0)  // cancel
+   {
+    f = false;
+    break;
+   }
+   if (retval == 1) // skip
+   {
+    inputFile->close();
+    f = zipper->goToNextFile();  // that's the roster file
+    continue;
+   }
+//    int retval = QMessageBox::question(_parent, tr("Confirm Import"), tr("Import locomotive ID: \"%1\"").arg(mToID), QMessageBox::Yes  | QMessageBox::No);
+//    if (retval == QMessageBox::No)
 //    {
-//     break;
+//     inputFile->close();
+//     f = zipper->goToNextFile();  // that's the roster file
+//     continue;
 //    }
-    if (retval == QMessageBox::No)
-    {
-     inputFile->close();
-     f = zipper->goToNextFile();  // that's the roster file
-     continue;
-    }
 
     // see if duplicate
     RosterEntry* currentEntry = Roster::instance()->getEntryForId(mToID);
@@ -204,18 +216,19 @@ void FullBackupImportAction::common()
 
     // use the new roster
     Roster::instance()->reloadRosterFile();
-//   }
-//   catch (JDOMException ex) {
-//       //ex.printStackTrace();
-//   }
+   }
+   catch (JDOMException ex) {
+       //ex.printStackTrace();
+   }
     inputFile->close();
+    f = zipper->goToNextFile();
   }
 
-// } catch (FileNotFoundException ex) {
-//     //ex.printStackTrace();
-// } catch (IOException ex) {
-//     //ex.printStackTrace();
-// }
+ } catch (FileNotFoundException ex) {
+     //ex.printStackTrace();
+ } catch (IOException ex) {
+     //ex.printStackTrace();
+ }
 // finally {
 //     if (inputfile != NULL) {
 //         try {

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'paneleditor.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -100,16 +100,16 @@ public:
 
     void retranslateUi(QMainWindow *PanelEditor)
     {
-        PanelEditor->setWindowTitle(QApplication::translate("PanelEditor", "MainWindow", 0));
-        actionOpenEditor->setText(QApplication::translate("PanelEditor", "Change view to Control Panel Editor", 0));
-        actionDelete_this_panel->setText(QApplication::translate("PanelEditor", "Delete this panel", 0));
-        actionAdd_loco->setText(QApplication::translate("PanelEditor", "Add Loco", 0));
-        actionAdd_Loco_from_roster->setText(QApplication::translate("PanelEditor", "Add Loco from roster", 0));
-        actionRemove_markers->setText(QApplication::translate("PanelEditor", "Remove markers", 0));
-        menuEdit->setTitle(QApplication::translate("PanelEditor", "Edit", 0));
-        menuMarker->setTitle(QApplication::translate("PanelEditor", "Marker", 0));
-        menuWindow->setTitle(QApplication::translate("PanelEditor", "Window", 0));
-        menuFile->setTitle(QApplication::translate("PanelEditor", "File", 0));
+        PanelEditor->setWindowTitle(QApplication::translate("PanelEditor", "MainWindow", Q_NULLPTR));
+        actionOpenEditor->setText(QApplication::translate("PanelEditor", "Change view to Control Panel Editor", Q_NULLPTR));
+        actionDelete_this_panel->setText(QApplication::translate("PanelEditor", "Delete this panel", Q_NULLPTR));
+        actionAdd_loco->setText(QApplication::translate("PanelEditor", "Add Loco", Q_NULLPTR));
+        actionAdd_Loco_from_roster->setText(QApplication::translate("PanelEditor", "Add Loco from roster", Q_NULLPTR));
+        actionRemove_markers->setText(QApplication::translate("PanelEditor", "Remove markers", Q_NULLPTR));
+        menuEdit->setTitle(QApplication::translate("PanelEditor", "Edit", Q_NULLPTR));
+        menuMarker->setTitle(QApplication::translate("PanelEditor", "Marker", Q_NULLPTR));
+        menuWindow->setTitle(QApplication::translate("PanelEditor", "Window", Q_NULLPTR));
+        menuFile->setTitle(QApplication::translate("PanelEditor", "File", Q_NULLPTR));
     } // retranslateUi
 
 };

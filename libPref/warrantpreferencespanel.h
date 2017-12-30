@@ -45,7 +45,7 @@ public slots:
 private:
  static int STRUT_SIZE;// = 10;
 
- /*private*/ WarrantPreferences* _preferences;
+ ///*private*/ WarrantPreferences* _preferences;
  /*private*/ bool _isDirty;// = false;
 
  /*private*/ QComboBox* _layoutScales;
@@ -62,7 +62,7 @@ private:
  /*private*/ JTable*  _appearanceTable;
  /*private*/ QList<QPair<QString, int>* > _stepIncrementMap;
  /*private*/ void initGUI();
- /*private*/ void setGUI();
+// /*private*/ void setGUI();
  /*private*/ QWidget* layoutScalePanel();
  /*private*/ ScaleData* makeCustomItem(float scale);
  /*private*/ QWidget* searchDepthPanel(bool vertical);

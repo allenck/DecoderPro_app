@@ -1,8 +1,8 @@
 #ifndef ADDRESSEDPROGRAMMERMANAGER_H
 #define ADDRESSEDPROGRAMMERMANAGER_H
 
-#include "programmermanager.h"
 #include "libPr3_global.h"
+#include "globalprogrammermanager.h"
 
 /**
  * Get access to available {@link Programmer} objects.
@@ -40,11 +40,11 @@
  */
 class ProgrammingMode;
 class AddressedProgrammer;
-/*public*/ class LIBPR3SHARED_EXPORT AddressedProgrammerManager  : public ProgrammerManager
+/*public*/ class LIBPR3SHARED_EXPORT AddressedProgrammerManager  : public GlobalProgrammerManager
 {
     Q_OBJECT
 public:
-    AddressedProgrammerManager(QObject* parent= 0) : ProgrammerManager(parent) {}
+    AddressedProgrammerManager(QObject* parent= 0) : GlobalProgrammerManager(parent) {}
 
     /**
      * Gain access to a Addressed Mode Programmer without reservation.

@@ -1,5 +1,5 @@
 #include "profilefileview.h"
-#include "../libPr3/profile.h"
+#include "profile.h"
 #include "fileutil.h"
 #include <QUrl>
 #include "imageicon.h"

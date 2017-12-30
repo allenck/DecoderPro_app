@@ -45,7 +45,7 @@ private:
 
 
 protected:
- /*protected*/ /*final*/ void addToActionModel();
+ QT_DEPRECATED /*protected*/ /*final*/ void addToActionModel();
  /*protected*/ void setButtonSpace();
  /*protected*/ void setJynstrumentSpace();
  /*protected*/ virtual QString line1();

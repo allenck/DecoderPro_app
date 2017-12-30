@@ -68,7 +68,7 @@ public:
      * signal system definition.
      * @throws IllegalArgumentException if not a valid aspect name
      */
-    /*public*/ virtual void setAspect(QString aspect) {}
+    /*public*/ virtual void setAspect(QString /*aspect*/) {}
 
     /**
      * Get current aspect name. This is a bound property.
@@ -88,7 +88,7 @@ public:
      * whether the signal head's lamps are lit or left dark.
      */
     /*public*/ virtual bool getLit() {return false;}
-    /*public*/ virtual void setLit(bool newLit) {}
+    /*public*/ virtual void setLit(bool /*newLit*/) {}
 
     /**
      * Held is a bound parameter. It controls
@@ -96,9 +96,9 @@ public:
      * The actual semantics are defined by those external mechanisms.
      */
     /*public*/ virtual bool getHeld() {return false;}
-    /*public*/ virtual void setHeld(bool newHeld) {}
+    /*public*/ virtual void setHeld(bool /*newHeld*/) {}
 
-    /*public*/ virtual bool isAspectDisabled(QString aspect) {return false;}
+    /*public*/ virtual bool isAspectDisabled(QString /*aspect*/) {return false;}
     friend class SignalMastIcon;
     friend class DefaultSignalMastLogic;
     friend class DestinationMast;

@@ -15,11 +15,5 @@ signals:
 public slots:
 
 };
-class APPSLIBSHARED_EXPORT Class : public QObject
-{
- Q_OBJECT
-public:
- /*public*/ static QObject* forName(QString);
-};
 
 #endif // METATYPES_H

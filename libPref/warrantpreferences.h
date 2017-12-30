@@ -1,18 +1,19 @@
 #ifndef WARRANTPREFERENCES_H
 #define WARRANTPREFERENCES_H
 
-#include <QObject>
+#include "abstractpreferencesmanager.h"
 #include <QMap>
 #include "xmlfile.h"
 #include "libpref_global.h"
 
-class LIBPREFSHARED_EXPORT WarrantPreferences : public QObject
+class Profile;
+class LIBPREFSHARED_EXPORT WarrantPreferences : public AbstractPreferencesManager
 {
  Q_OBJECT
 public:
  explicit WarrantPreferences(QObject *parent = 0);
  /*public*/ static /*final*/ QString layoutParams;// = "layoutParams";   // NOI18N
- /*public*/ static /*final*/ QString LayoutScale;// = "layoutScale";     // NOI18N
+ /*public*/ static /*final*/ QString LAYOUT_SCALE;// = "layoutScale";     // NOI18N
  /*public*/ static /*final*/ QString SearchDepth;// = "searchDepth";     // NOI18N
  /*public*/ static /*final*/ QString SpeedMapParams;// = "speedMapParams"; // NOI18N
  /*public*/ static /*final*/ QString RampPrefs;// = "rampPrefs";         // NOI18N
@@ -23,16 +24,20 @@ public:
  /*public*/ static /*final*/ QString SpeedNamePrefs;// = "speedNames";   // NOI18N
  /*public*/ static /*final*/ QString Interpretation;// = "interpretation"; // NOI18N
  /*public*/ static /*final*/ QString AppearancePrefs;// = "appearancePrefs"; // NOI18N
+ /*public*/ void savePreferences(Profile* profile);
+
  WarrantPreferences(QString fileName, QObject *parent = 0);
  ~WarrantPreferences() {}
- WarrantPreferences(const WarrantPreferences&) : QObject() {}
+ WarrantPreferences(const WarrantPreferences&)  {}
+ /*public*/ static WarrantPreferences* getDefault();
  /*public*/ void openFile(QString name);
  /*public*/ void loadLayoutParams(QDomElement child);
  /*public*/ bool loadSpeedMap(QDomElement child);
  /*public*/ void save();
  /*public*/ bool store(QDomElement root);
- /*public*/ void apply();
+ QT_DEPRECATED /*public*/ void apply();
  /*public*/ float getThrottleScale();
+ /*public*/ void initialize(Profile* profile) throw (InitializationException);
 
 signals:
 
@@ -52,8 +57,10 @@ private:
  /*private*/ void loadSpeedMapFromOldXml();
  /*private*/ void setNXFrame() ;
  /*private*/ void setSpeedMap();
- float getScale();
- void setScale(float s);
+ QT_DEPRECATED float getScale();
+ QT_DEPRECATED void setScale(float s);
+ /*public*/ float getLayoutScale();
+ /*public*/ void setLayoutScale(float scale);
  void setThrottleScale(float f);
  int getSearchDepth();
  void setSearchDepth(int d) ;
@@ -73,6 +80,7 @@ private:
  void setInterpretation(int interp);
  Logger* log;
  XmlFile* xmlFile;
+ QDomDocument doc;
 
 friend class WarrantPreferencesPanel;
 };

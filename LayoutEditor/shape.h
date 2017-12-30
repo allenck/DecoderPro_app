@@ -157,7 +157,7 @@ class AffineTransform;
      *         otherwise.
      * @since 1.2
      */
-    /*public*/ virtual bool contains(double x, double y) {return false;}
+    /*public*/ virtual bool contains(double /*x*/, double /*y*/) {return false;}
 
     /**
      * Tests if a specified {@link Point2D} is inside the boundary
@@ -170,7 +170,7 @@ class AffineTransform;
      *          <code>false</code> otherwise.
      * @since 1.2
      */
-    /*public*/ virtual bool contains(QPointF p) {return false;}
+    /*public*/ virtual bool contains(QPointF /*p*/) {return false;}
 
     /**
      * Tests if the interior of the <code>Shape</code> intersects the
@@ -210,7 +210,7 @@ class AffineTransform;
      * @see java.awt.geom.Area
      * @since 1.2
      */
-    /*public*/ virtual bool intersects(double x, double y, double w, double h) {return false;}
+    /*public*/ virtual bool intersects(double /*x*/, double /*y*/, double /*w*/, double /*h*/) {return false;}
 
     /**
      * Tests if the interior of the <code>Shape</code> intersects the
@@ -242,7 +242,7 @@ class AffineTransform;
      * @see #intersects(double, double, double, double)
      * @since 1.2
      */
-    /*public*/ virtual bool intersects(QRectF r) {return false;}
+    /*public*/ virtual bool intersects(QRectF /*r*/) {return false;}
 
     /**
      * Tests if the interior of the <code>Shape</code> entirely contains
@@ -286,7 +286,7 @@ class AffineTransform;
      * @see #intersects
      * @since 1.2
      */
-    /*public*/ virtual bool contains(double x, double y, double w, double h) {return false;}
+    /*public*/ virtual bool contains(double /*x*/, double /*y*/, double /*w*/, double /*h*/) {return false;}
 
     /**
      * Tests if the interior of the <code>Shape</code> entirely contains the
@@ -320,7 +320,7 @@ class AffineTransform;
      * @see #contains(double, double, double, double)
      * @since 1.2
      */
-    /*public*/ virtual bool contains(QRectF r) {return false;}
+    /*public*/ virtual bool contains(QRectF /*r*/) {return false;}
 
     /**
      * Returns an iterator object that iterates along the
@@ -346,7 +346,7 @@ class AffineTransform;
      *          traverses the geometry of the <code>Shape</code>.
      * @since 1.2
      */
-    /*public*/ virtual PathIterator* getPathIterator(AffineTransform* at) { return NULL;}
+    /*public*/ virtual PathIterator* getPathIterator(AffineTransform* /*at*/) { return NULL;}
 
     /**
      * Returns an iterator object that iterates along the <code>Shape</code>
@@ -389,7 +389,7 @@ class AffineTransform;
      *         a flattened view of the geometry of the  <code>Shape</code>.
      * @since 1.2
      */
-    /*public*/ virtual PathIterator* getPathIterator(AffineTransform* at, double flatness) {return NULL;}
+    /*public*/ virtual PathIterator* getPathIterator(AffineTransform* /*at*/, double /*flatness*/) {return NULL;}
 };
 #endif // SHAPE_H
 

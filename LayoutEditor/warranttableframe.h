@@ -79,7 +79,7 @@ class WTWindowListener : public WindowListener
  Q_OBJECT
  WarrantTableFrame* frame;
  WTWindowListener(WarrantTableFrame* frame) { this->frame = frame;}
- void windowClosing(QCloseEvent *e) { frame->dispose();}
+ void windowClosing(QCloseEvent */*e*/) { frame->dispose();}
  friend class WarrantTableFrame;
 };
 

@@ -91,7 +91,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
    // create the master object
    replaceSignalHeadManager();
 
-   // load individuahl turnouts
+   // load individual turnouts
    loadSignalHeads(signalheads);
    return true;
 }
@@ -110,7 +110,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
 //@SuppressWarnings("unchecked")
 /*public*/ void AbstractSignalHeadManagerXml::loadSignalHeads(QDomElement signalheads)
 {
-   InstanceManager::signalHeadManagerInstance();
+   InstanceManager::getDefault("SignalHeadManager");
 
    // load the contents
    QDomNodeList items = signalheads.childNodes();
@@ -168,15 +168,26 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
 */
 /*protected*/ void AbstractSignalHeadManagerXml::replaceSignalHeadManager()
 {
- if (InstanceManager::signalHeadManagerInstance() != NULL && QString(InstanceManager::signalHeadManagerInstance()->metaObject()->className())
-           ==("AbstractSignalHeadManager"))
-  return;
+// if (InstanceManager::signalHeadManagerInstance() != NULL && QString(InstanceManager::signalHeadManagerInstance()->metaObject()->className())
+//           ==("AbstractSignalHeadManager"))
+//  return;
+ QObject* o = InstanceManager::getDefault("SignalHeadManager");
+ QString type;
+ if ((type = o->metaObject()->className())
+         == ("AbstractSignalHeadManager")) {
+     return;
+ }
+
  // if old manager exists, remove it from configuration process
- if (InstanceManager::signalHeadManagerInstance() != NULL)
+// if (InstanceManager::signalHeadManagerInstance() != NULL)
+// {
+//  if(InstanceManager::configureManagerInstance() == NULL)
+//      InstanceManager::setConfigureManager((ConfigureManager*)new ConfigXmlManager);
+//  ((ConfigXmlManager*) InstanceManager::configureManagerInstance())->deregister(InstanceManager::signalHeadManagerInstance() );
+// }
+ if (InstanceManager::getNullableDefault("SignalHeadManager") != NULL)
  {
-  if(InstanceManager::configureManagerInstance() == NULL)
-      InstanceManager::setConfigureManager((ConfigureManager*)new ConfigXmlManager);
-  ((ConfigXmlManager*) InstanceManager::configureManagerInstance())->deregister(InstanceManager::signalHeadManagerInstance() );
+    ((ConfigureManager*) InstanceManager::getDefault("ConfigureManager"))->deregister(InstanceManager::getDefault("SignalHeadManager"));
  }
 
  // register new one with InstanceManager

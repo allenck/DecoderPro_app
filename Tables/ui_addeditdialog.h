@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addeditdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -121,19 +121,19 @@ public:
 
     void retranslateUi(QDialog *AddEditDialog)
     {
-        AddEditDialog->setWindowTitle(QApplication::translate("AddEditDialog", "Dialog", 0));
-        lbSystemName->setText(QApplication::translate("AddEditDialog", "System Name:", 0));
-        lbUser->setText(QApplication::translate("AddEditDialog", "User Name:", 0));
-        btnOK->setText(QApplication::translate("AddEditDialog", "OK", 0));
-        chkAdd->setText(QApplication::translate("AddEditDialog", "Add a range", 0));
-        lbSystem->setText(QApplication::translate("AddEditDialog", "System", 0));
-        lbNumToAdd->setText(QApplication::translate("AddEditDialog", "Num to add", 0));
+        AddEditDialog->setWindowTitle(QApplication::translate("AddEditDialog", "Dialog", Q_NULLPTR));
+        lbSystemName->setText(QApplication::translate("AddEditDialog", "System Name:", Q_NULLPTR));
+        lbUser->setText(QApplication::translate("AddEditDialog", "User Name:", Q_NULLPTR));
+        btnOK->setText(QApplication::translate("AddEditDialog", "OK", Q_NULLPTR));
+        chkAdd->setText(QApplication::translate("AddEditDialog", "Add a range", Q_NULLPTR));
+        lbSystem->setText(QApplication::translate("AddEditDialog", "System", Q_NULLPTR));
+        lbNumToAdd->setText(QApplication::translate("AddEditDialog", "Num to add", Q_NULLPTR));
         cbSystem->clear();
         cbSystem->insertItems(0, QStringList()
-         << QApplication::translate("AddEditDialog", "Internal", 0)
-         << QApplication::translate("AddEditDialog", "LocoNet", 0)
+         << QApplication::translate("AddEditDialog", "Internal", Q_NULLPTR)
+         << QApplication::translate("AddEditDialog", "LocoNet", Q_NULLPTR)
         );
-        chkAutoGen->setText(QApplication::translate("AddEditDialog", "Automatically Generate System Name", 0));
+        chkAutoGen->setText(QApplication::translate("AddEditDialog", "Automatically Generate System Name", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -108,7 +108,7 @@ void SignalGroupTableAction::common()
  signalEditFrame = NULL;
 
  // disable ourself if there is no primary SignalGroup manager available
- if (InstanceManager::signalGroupManagerInstance()==NULL)
+ if (InstanceManager::getDefault("SignalGroupManager")==NULL)
  {
   setEnabled(false);
  }
@@ -334,13 +334,18 @@ void SGBeanTableDataModel::doDelete(NamedBean* bean) {
     else return BeanTableDataModel::matchPropertyName(e);
 }
 
-/*public*/ Manager* SGBeanTableDataModel::getManager() { return InstanceManager::signalGroupManagerInstance(); }
+/*public*/ Manager* SGBeanTableDataModel::getManager()
+{
+ //return InstanceManager::signalGroupManagerInstance();
+ return (Manager*)InstanceManager::getNullableDefault("SignalGroupManager");
+}
+
 /*public*/ NamedBean* SGBeanTableDataModel::getBySystemName(QString name) const
 {
- return InstanceManager::signalGroupManagerInstance()->getBySystemName(name);
+ return ((SignalGroupManager*)InstanceManager::getNullableDefault("SignalGroupManager"))->getBySystemName(name);
 }
 /*public*/ NamedBean* SGBeanTableDataModel::getByUserName(QString name) {
-    return InstanceManager::signalGroupManagerInstance()->getByUserName(name);
+    return ((SignalGroupManager*)InstanceManager::getNullableDefault("SignalGroupManager"))->getByUserName(name);
 }
 
 /*public*/ int SGBeanTableDataModel::getDisplayDeleteMsg() { return 0x00;/*return InstanceManager.getDefault(jmri.UserPreferencesManager.class).getWarnDeleteSignalGroup();*/ }

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'memorywidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -73,16 +73,16 @@ public:
 
     void retranslateUi(QWidget *MemoryWidget)
     {
-        MemoryWidget->setWindowTitle(QApplication::translate("MemoryWidget", "Form", 0));
+        MemoryWidget->setWindowTitle(QApplication::translate("MemoryWidget", "Form", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("MemoryWidget", "System Name", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("MemoryWidget", "System Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("MemoryWidget", "User Name", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("MemoryWidget", "User Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("MemoryWidget", "Current Value", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("MemoryWidget", "Current Value", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("MemoryWidget", "Comment", 0));
-        btnAdd->setText(QApplication::translate("MemoryWidget", "Add...", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("MemoryWidget", "Comment", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("MemoryWidget", "Add...", Q_NULLPTR));
         label->setText(QString());
     } // retranslateUi
 

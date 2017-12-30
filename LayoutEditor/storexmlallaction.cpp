@@ -48,10 +48,16 @@
  }
 
  // and finally store
- bool results = InstanceManager::configureManagerInstance()->storeAll(file);
- log->debug(results ? "store was successful" : "store failed");
- if (!results)
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if (cm == NULL) {
+     log->error("Failed to get default configure manager");
+ }
+ else
  {
+  bool results =cm->storeAll(file);
+  log->debug(results ? "store was successful" : "store failed");
+  if (!results)
+  {
 //     JOptionPane.showMessageDialog(NULL,
 //             rb.getString("PanelStoreHasErrors") + "\n"
 //             + rb.getString("PanelStoreIncomplete") + "\n"
@@ -60,6 +66,6 @@
   QMessageBox::information(NULL,   tr("Errors experienced during store."),
              tr("The storing of your information is incomplete and may result in missing items")+"\n"
              +tr("The console window contains error details."));
-
+  }
  }
 }

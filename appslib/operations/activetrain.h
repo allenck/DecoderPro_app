@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "namedbeanhandle.h"
 
+class AllocationRequest;
 class PropertyChangeSupport;
 class Transit;
 class RosterEntry;
@@ -150,6 +151,10 @@ public:
  /*public*/ void setEndBlockSection(Section* eSection);
  /*public*/ int getEndBlockSectionSequenceNumber();
  /*public*/ void setEndBlockSectionSequenceNumber(int eBlockSeqNum);
+ /*public*/ QList<AllocatedSection*>* getAllocatedSectionList();
+ /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+ /*public*/ AllocationRequest* initializeFirstAllocation();
+
 signals:
 
 public slots:
@@ -180,7 +185,7 @@ private:
  /*private*/ int mEndBlockSectionSequenceNumber;// = 0;
  /*private*/ int mPriority;// = 0;
  /*private*/ bool mAutoRun;// = false;
- /*private*/ QString mDccAddress = "";
+ /*private*/ QString mDccAddress;// = "";
  /*private*/ bool mResetWhenDone;// = true;
  /*private*/ bool mReverseAtEnd;// = false;
  /*private*/ bool mAllocateAllTheWay;// = false;

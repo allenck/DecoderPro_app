@@ -4,6 +4,8 @@
 #include <QVector>
 #include <tablecolumn.h>
 #include "javaqt_global.h"
+
+class TableColumnModelEvent;
 class PropertyChangeEvent;
 class JAVAQTSHARED_EXPORT DefaultTableColumnModel : public TableColumnModel
 {
@@ -58,6 +60,9 @@ protected:
      /*protected*/ int totalColumnWidth;
  /*protected*/ ListSelectionModel* createSelectionModel();
  /*protected*/ void fireColumnMarginChanged();
+ /*protected*/ void fireColumnAdded(TableColumnModelEvent* e);
+ /*protected*/ void fireColumnRemoved(TableColumnModelEvent* e);
+ /*protected*/ void fireColumnMoved(TableColumnModelEvent* e);
 
 };
 

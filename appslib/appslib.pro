@@ -7,9 +7,9 @@
 TARGET = appslib
 TEMPLATE = lib
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets serialport gui webkitwidgets
+    QT       += widgets serialport gui #webkitwidgets
 }
-QT += xml sql network
+QT += xml sql network websockets
 
 DEFINES += APPSLIB_LIBRARY
 
@@ -34,11 +34,20 @@ HEADERS +=     operations/trainscriptaction.h \
 
 SOURCES += appslib.cpp \
     apps.cpp \
+    apps3.cpp \
+    appsbase.cpp \
+    metatypes.cpp \
+    jlist.cpp \
+    defaultinstanceinitializer.cpp \
+    jmripreferencesprovider.cpp \
+    instancemanager.cpp \
+    nodeidentity.cpp \
+    profilemanager.cpp \
+    profile.cpp \
     myapplication.cpp \
     operations/trainmanifesttext.cpp \
-    createbuttonpanel.cpp \
     createbuttonmodel.cpp \
-    createbuttonpanelxml.cpp \
+    #createbuttonpanelxml.cpp \
     splashwindow.cpp \
     toolsmenu.cpp \
     powerpanelaction.cpp \
@@ -56,13 +65,10 @@ SOURCES += appslib.cpp \
     systemconsoleconfigpanelxml.cpp \
     systemconsoleconfigpanel.cpp \
     systemconsoleaction.cpp \
-    apps3.cpp \
     jmenuutil.cpp \
     guiutilbase.cpp \
     jtoolbarutil.cpp \
     appconfigbase.cpp \
-    appsbase.cpp \
-    metatypes.cpp \
     panelproaction.cpp \
     appslaunchframe.cpp \
     appslaunchpane.cpp \
@@ -333,11 +339,9 @@ SOURCES += appslib.cpp \
     operations/exporttrainrosteraction.cpp \
     operations/exporttrains.cpp \
     operations/abstractoperationsserver.cpp \
-    jmriuserpreferencesmanager.cpp \
     profileutils.cpp \
     jmriconfigurationprovider.cpp \
     abstractconfigurationprovider.cpp \
-    nodeidentity.cpp \
     jmriuserinterfaceconfigurationprovider.cpp \
     jmriconfiguration.cpp \
     operations/activetrain.cpp \
@@ -351,18 +355,69 @@ SOURCES += appslib.cpp \
     operations/autoallocate.cpp \
     operations/activatetrainframe.cpp \
     operations/traininfofile.cpp \
-    operations/traininfo.cpp
-#    jmriconfigurationmanager.cpp
-#    preferencesmanager.cpp
-#    serviceloader.cpp \
-#    class.cpp
+    operations/traininfo.cpp \
+    operations/allocationplan.cpp \
+    operations/autotrainsframe.cpp \
+    jmriconfigurationmanager.cpp \
+    jmrijtablepersistencemanager.cpp \
+    startupactionsmanager.cpp \
+    connectionconfigmanager.cpp \
+    filelocationspreferences.cpp \
+    abstractpreferences.cpp \
+    version.cpp \
+    addprofiledialog.cpp \
+    systemconsolepreferencesmanager.cpp \
+    programmerconfigmanager.cpp \
+    rosterconfigmanager.cpp \
+    nodechangeevent.cpp \
+    preferencechangeevent.cpp \
+    xmlsupport.cpp \
+    preferences.cpp \
+    guilafpreferencesmanager.cpp \
+    jtable.cpp \
+    abstracttablemodel.cpp \
+    dndjtable.cpp \
+    defaulttablemodel.cpp \
+    mysortfilterproxymodel.cpp \
+    xmlfilevalidateaction.cpp \
+    logixloadaction.cpp \
+    logframe.cpp \
+    logpanel.cpp \
+    logaction.cpp \
+    zeroconfservice.cpp \
+    profileproperties.cpp \
+    transformerfactory.cpp \
+    outputkeys.cpp \
+    abstractactionmodelfactory.cpp \
+    performactionmodelfactory.cpp \
+    startupactionmodelutil.cpp \
+    class.cpp \
+    metadata.cpp \
+    startuppausefactory.cpp \
+    startuppausemodel.cpp \
+    abstractstartupmodel.cpp \
+    createbuttonmodelfactory.cpp \
+    triggerroutemodelfactory.cpp \
+    scriptbuttonmodelfactory.cpp \
+    abstractfilemodelfactory.cpp \
+    performfilemodelfactory.cpp \
+    triggerroutemodel.cpp \
+    scriptbuttonmodel.cpp \
+    scriptbuttonpanel.cpp \
+    performscriptmodelfactory.cpp \
+    createbuttommodelxml.cpp \
+    performactionmodelxml.cpp \
+    startuppausemodelxml.cpp \
+    performfilemodelxml.cpp \
+    performscriptmodelxml.cpp \
+    triggerroutemodexml.cpp \
+    abstractstartupactionfactory.cpp \
+    restartstartupactionfactory.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
     apps.h \
     myapplication.h \
-    createbuttonpanelxml.h \
-    createbuttonpanel.h \
     createbuttonmodel.h \
     splashwindow.h \
     toolsmenu.h \
@@ -659,7 +714,6 @@ HEADERS += appslib.h\
     operations/exporttrainrosteraction.h \
     operations/exporttrains.h \
     operations/abstractoperationsserver.h \
-    jmriuserpreferencesmanager.h \
     profileutils.h \
     auxiliaryconfiguration.h \
     jmriconfigurationprovider.h \
@@ -667,8 +721,6 @@ HEADERS += appslib.h\
     nodeidentity.h \
     jmriuserinterfaceconfigurationprovider.h \
     jmriconfiguration.h \
-#    jmriconfigurationmanager.h \
-    jmriserviceproviderinterface.h \
     operations/activetrain.h \
     operations/dispatcherframe.h \
     operations/autoactivetrain.h \
@@ -680,10 +732,78 @@ HEADERS += appslib.h\
     operations/autoallocate.h \
     operations/activatetrainframe.h \
     operations/traininfofile.h \
-    operations/traininfo.h
-#    preferencesmanager.h
-#    serviceloader.h \
-#    class.h
+    operations/traininfo.h \
+    operations/allocationplan.h \
+    operations/autotrainsframe.h \
+    jmriconfigurationmanager.h \
+    profilemanager.h \
+    jmrijtablepersistencemanager.h \
+    startupactionsmanager.h \
+    connectionconfigmanager.h \
+    filelocationspreferences.h \
+    abstractpreferences.h \
+    profile.h \
+    version.h \
+    addprofiledialog.h \
+    jmripreferencesprovider.h \
+    systemconsolepreferencesmanager.h \
+    programmerconfigmanager.h \
+    rosterconfigmanager.h \
+    nodechangeevent.h \
+    preferencechangeevent.h \
+    xmlsupport.h \
+    preferences.h \
+    guilafpreferencesmanager.h \
+    jtable.h \
+    abstracttablemodel.h \
+    dndjtable.h \
+    defaulttablemodel.h \
+    jlist.h \
+    jtablepersistencemanager.h \
+    instancemanager.h \
+    defaultinstanceinitializer.h \
+    instanceinitializer.h \
+    mysortfilterproxymodel.h \
+    xmlfilevalidateaction.h \
+    logixloadaction.h \
+    logframe.h \
+    logpanel.h \
+    logaction.h \
+    startupmodel.h \
+    zeroconfservice.h \
+    auxiliaryproperties.h \
+    profileproperties.h \
+    transformerfactory.h \
+    outputkeys.h \
+    startupmodelfactory.h \
+    abstractactionmodelfactory.h \
+    performactionmodelfactory.h \
+    startupactionmodelutil.h \
+    startupactionfactory.h \
+    systemconnectionaction.h \
+    metadata.h \
+    instancemanagerautodefault.h \
+    startuppausefactory.h \
+    startuppausemodel.h \
+    abstractstartupmodel.h \
+    createbuttonmodelfactory.h \
+    triggerroutemodelfactory.h \
+    scriptbuttonmodelfactory.h \
+    abstractfilemodelfactory.h \
+    performfilemodelfactory.h \
+    triggerroutemodel.h \
+    scriptbuttonmodel.h \
+    scriptbuttonpanel.h \
+    performscriptmodelfactory.h \
+    createbuttommodelxml.h \
+    performactionmodelxml.h \
+    startuppausemodelxml.h \
+    performfilemodelxml.h \
+    performscriptmodelxml.h \
+    triggerroutemodexml.h \
+    abstractstartupactionfactory.h \
+    restartstartupactionfactory.h \
+    systemconnectionaction.h
 
 unix:!symbian {
     maemo5 {
@@ -701,8 +821,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
 else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
 
-INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO
-DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO
+INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web
+DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
@@ -756,3 +876,15 @@ else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
 
 INCLUDEPATH += $$PWD/../libPr3/Signal
 DEPENDPATH += $$PWD/../libPr3/Signal
+
+win32:CONFIG(debug, debug|release): LIBS += -L"C:/Program Files (x86)/local/lib" -lquazip
+else:unix: LIBS += -L/usr/local/lib/ -lquazip
+
+unix: {
+INCLUDEPATH += /usr/local/include/quazip
+DEPENDPATH += /usr/local/include/quazip
+}
+win32: {
+INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip" "C:\Program Files (x86)\GnuWin32\include"
+DEPENDPATH += "C:/Program Files (x86)/local/include/quazip"
+}

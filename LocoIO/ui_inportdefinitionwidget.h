@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'inportdefinitionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -268,21 +268,21 @@ public:
 
     void retranslateUi(QWidget *InPortDefinitionWidget)
     {
-        InPortDefinitionWidget->setWindowTitle(QApplication::translate("InPortDefinitionWidget", "Form", 0));
-        label->setText(QApplication::translate("InPortDefinitionWidget", "Port not used", 0));
-        label_2->setText(QApplication::translate("InPortDefinitionWidget", "Input", 0));
-        label_3->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Active Low", 0));
-        label_4->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Active High", 0));
-        label_5->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Delay", 0));
-        label_6->setText(QApplication::translate("InPortDefinitionWidget", "Toggle Switch", 0));
-        label_7->setText(QApplication::translate("InPortDefinitionWidget", "Push Button Active Low", 0));
-        label_8->setText(QApplication::translate("InPortDefinitionWidget", "Push Button Active High", 0));
-        checkBox->setText(QApplication::translate("InPortDefinitionWidget", "Direct", 0));
-        checkBox_2->setText(QApplication::translate("InPortDefinitionWidget", "Indirect", 0));
-        label_9->setText(QApplication::translate("InPortDefinitionWidget", "Switch Point Feedback ", 0));
-        label_10->setText(QApplication::translate("InPortDefinitionWidget", "Contact 1 Point Feedback", 0));
-        label_11->setText(QApplication::translate("InPortDefinitionWidget", "Contact 2 Point Feedback", 0));
-        lblDoubleInput->setText(QApplication::translate("InPortDefinitionWidget", "Double Input", 0));
+        InPortDefinitionWidget->setWindowTitle(QApplication::translate("InPortDefinitionWidget", "Form", Q_NULLPTR));
+        label->setText(QApplication::translate("InPortDefinitionWidget", "Port not used", Q_NULLPTR));
+        label_2->setText(QApplication::translate("InPortDefinitionWidget", "Input", Q_NULLPTR));
+        label_3->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Active Low", Q_NULLPTR));
+        label_4->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Active High", Q_NULLPTR));
+        label_5->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Delay", Q_NULLPTR));
+        label_6->setText(QApplication::translate("InPortDefinitionWidget", "Toggle Switch", Q_NULLPTR));
+        label_7->setText(QApplication::translate("InPortDefinitionWidget", "Push Button Active Low", Q_NULLPTR));
+        label_8->setText(QApplication::translate("InPortDefinitionWidget", "Push Button Active High", Q_NULLPTR));
+        checkBox->setText(QApplication::translate("InPortDefinitionWidget", "Direct", Q_NULLPTR));
+        checkBox_2->setText(QApplication::translate("InPortDefinitionWidget", "Indirect", Q_NULLPTR));
+        label_9->setText(QApplication::translate("InPortDefinitionWidget", "Switch Point Feedback ", Q_NULLPTR));
+        label_10->setText(QApplication::translate("InPortDefinitionWidget", "Contact 1 Point Feedback", Q_NULLPTR));
+        label_11->setText(QApplication::translate("InPortDefinitionWidget", "Contact 2 Point Feedback", Q_NULLPTR));
+        lblDoubleInput->setText(QApplication::translate("InPortDefinitionWidget", "Double Input", Q_NULLPTR));
     } // retranslateUi
 
 };

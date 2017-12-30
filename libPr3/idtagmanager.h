@@ -59,7 +59,7 @@ public:
      * already exist and the manager cannot create the IdTag
      * due to e.g. an illegal name or name that can't be parsed.
      */
-    /*public*/ virtual IdTag* provideIdTag(QString name) {return NULL;}
+    /*public*/ virtual IdTag* provideIdTag(QString /*name*/) {return NULL;}
 
     /**
      * Locate via tag ID, then by user name, and finally system name if needed.
@@ -119,7 +119,7 @@ public:
      * @throws IllegalArgumentException if cannot create the IdTag
      * due to e.g. an illegal name or name that can't be parsed.
      */
-    /*public*/ virtual IdTag* newIdTag(QString systemName, QString userName) {return NULL;}
+    /*public*/ virtual IdTag* newIdTag(QString /*systemName*/, QString /*userName*/) {return NULL;}
 
 //    /**
 //     * Get a list of all IdTag's system names.
@@ -133,14 +133,14 @@ public:
      * @param threshold Time threshold (in ms)
      * @return List of matching IdTags
      */
-    /*public*/ virtual QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold) {return NULL;}
+    /*public*/ virtual QList<IdTag*>* getTagsForReporter(Reporter* /*reporter*/, long /*threshold*/) {return NULL;}
 
     /**
      * Define if the manager should persist details of when and where
      * all known IdTags were seen
      * @param state True to store; False to omit
      */
- /*public*/ virtual void setStateStored(bool state) {}
+ /*public*/ virtual void setStateStored(bool /*state*/) {}
 
     /**
      * Determines if the state of known IdTags should be stored
@@ -153,7 +153,7 @@ public:
      * times when a given IdTag was last seen
      * @param fastClock True to use the fast clock; False to use the system clock
      */
-    /*public*/ virtual void setFastClockUsed(bool fastClock) {}
+    /*public*/ virtual void setFastClockUsed(bool /*fastClock*/) {}
 
     /**
      * Determines if fast clock times should be recorded for when a given

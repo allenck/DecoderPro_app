@@ -2,6 +2,7 @@
 #define PR3SYSTEMCONNECTIONMEMO_H
 
 #include "loconetsystemconnectionmemo.h"
+#include "quietshutdowntask.h"
 
 class PR3SystemConnectionMemo : public LocoNetSystemConnectionMemo
 {
@@ -24,7 +25,18 @@ private:
  int MS100MODE;
 
  int mode;
+ /*private*/ ShutDownTask* restoreToLocoNetInterfaceModeTask;
  Logger* log;
+ friend class Pr3ShutDownTask;
+};
+
+class Pr3ShutDownTask : public QuietShutDownTask
+{
+ PR3SystemConnectionMemo* pr3SystemConnectionMemo;
+ Logger* log;
+public:
+ Pr3ShutDownTask(QString text, PR3SystemConnectionMemo* pr3SystemConnectionMemo);
+ /*public*/ bool execute();
 };
 
 #endif // PR3SYSTEMCONNECTIONMEMO_H

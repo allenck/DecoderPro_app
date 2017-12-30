@@ -8,14 +8,17 @@
 
 class LIBPR3SHARED_EXPORT PowerManager : public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
  public:
-    explicit PowerManager(QObject *parent = 0);
+    inline explicit PowerManager(QObject *parent = 0) : QObject(parent) {}
  ~PowerManager() {}
  PowerManager(const PowerManager&) :QObject() {}
-    const static int UNKNOWN; //= 0;
-    const static int ON; //     = 2;
-    const static int OFF; //     = 4;
+ enum STATES
+ {
+    UNKNOWN = 0,
+    ON     = 2,
+    OFF    = 4
+ };
 
     virtual void 	setPower(int /*v*/) {} // 	throws JmriException;
     virtual int	 	getPower() {return 0;} //  	throws JmriException;
@@ -29,8 +32,9 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
 
     virtual QString getUserName() {return "";}
  signals:
-    void propertyChange(PropertyChangeEvent*);
  public slots:
+ inline void virtual propertyChange(PropertyChangeEvent*) {}
+
 private:
     
 };

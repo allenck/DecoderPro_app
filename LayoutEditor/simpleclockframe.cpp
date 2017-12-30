@@ -124,8 +124,8 @@ SimpleClockFrame::~SimpleClockFrame()
  timeSourceBox = new QComboBox();
  panel11->layout()->addWidget(timeSourceBox);
  timeSourceBox->addItem(tr("Internal Computer Clock"));
- ClockControl* cc = InstanceManager::clockControlInstance();
- hardwareName = cc->getHardwareClockName();
+
+ hardwareName = ((ClockControl*)InstanceManager::getDefault("ClockControl"))->getHardwareClockName();
  if (hardwareName!=NULL) timeSourceBox->addItem(hardwareName);
  timeSourceBox->setToolTip(tr("Select time source for the fast clock."));
 //    timeSourceBox.addActionListener(new java.awt.event.ActionListener() {
@@ -156,7 +156,7 @@ SimpleClockFrame::~SimpleClockFrame()
   connect(synchronizeCheckBox, SIGNAL(toggled(bool)), this, SLOT(synchronizeChanged()));
   panel11x->layout()->addWidget(synchronizeCheckBox);
   l->addWidget(panel11x);
-  if (((DefaultClockControl*)InstanceManager::clockControlInstance())->canCorrectHardwareClock())
+  if (((ClockControl*)InstanceManager::getDefault("ClockControl"))->canCorrectHardwareClock())
   {
    QWidget* panel11y = new QWidget();
    QHBoxLayout* lh3;
@@ -176,7 +176,7 @@ SimpleClockFrame::~SimpleClockFrame()
    panel11y->layout()->addWidget(correctCheckBox);
    l->addWidget(panel11y);
   }
-  if (((DefaultClockControl*)InstanceManager::clockControlInstance())->canSet12Or24HourClock())
+  if (((ClockControl*)InstanceManager::getDefault("ClockControl"))->canSet12Or24HourClock())
   {
    QWidget* panel11z = new QWidget();
    QHBoxLayout* lh4;
@@ -464,7 +464,7 @@ void SimpleClockFrame::updateRunningButton()
         factorField->setText(threeDigits->format(clock->userGetRate()));
         return;
     }
-    if (((DefaultClockControl*)InstanceManager::clockControlInstance())->requiresIntegerRate()) {
+    if (((ClockControl*)InstanceManager::getDefault("ClockControl"))->requiresIntegerRate()) {
         double frac = rate-(int)rate;
         if (frac > 0.001) {
 //            JOptionPane.showMessageDialog(this,tr("NonIntegerError"),

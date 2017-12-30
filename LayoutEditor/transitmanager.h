@@ -12,7 +12,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TransitManager : public AbstractManager
 public:
     explicit TransitManager(QObject *parent = 0);
     ~TransitManager() {}
-    TransitManager(const TransitManager&) {}
+    TransitManager(const TransitManager&) : AbstractManager() {}
     int getXMLOrder();
     QString getSystemPrefix();
     char typeLetter();

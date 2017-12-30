@@ -93,6 +93,10 @@ public:
   * {@value #STATUS_CODE}
   */
  /*public*/ static /*final*/ QString STATUS_CODE;//= "statusCode"; // NOI18N
+ /**
+   * {@value #PROPERTIES}
+   */
+  /*public*/ static /*final*/ QString PROPERTIES;// = "properties"; // NOI18N
 
  /* JSON error */
  /**
@@ -813,24 +817,26 @@ public:
   * Note that this value deliberately differs from
   * {@link jmri.NamedBean#UNKNOWN}.
   */
- /*public*/ static /*final*/ int UNKNOWN;//= 0x00;
+ enum TSTATES
+ {
+  UNKNOWN = 0x00,
 
  /* Light and PowerManager state */
  /**
   * {@value #ON}
   */
- /*public*/ static /*final*/ int ON;//= 0x02;
+  ON = 0x02,
  /**
   * {@value #OFF}
   */
- /*public*/ static /*final*/ int OFF;//= 0x04;
+  OFF= 0x04,
 
  /* NamedBean state */
  /**
   * {@value #INCONSISTENT}
   */
- /*public*/ static /*final*/ int INCONSISTENT;//= 0x08;
-
+  INCONSISTENT= 0x08
+};
  /* Route state */
  /**
   * {@value #TOGGLE}

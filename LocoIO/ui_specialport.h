@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'specialport.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -117,12 +117,12 @@ public:
 
     void retranslateUi(QWidget *SpecialPort)
     {
-        SpecialPort->setWindowTitle(QApplication::translate("SpecialPort", "Form", 0));
+        SpecialPort->setWindowTitle(QApplication::translate("SpecialPort", "Form", Q_NULLPTR));
         lblInput->setText(QApplication::translate("SpecialPort", "I\n"
 "D\n"
 "L\n"
 "E\n"
-"", 0));
+"", Q_NULLPTR));
         rbInput->setText(QString());
         lblFiller->setText(QString());
         rbOutput->setText(QString());
@@ -132,7 +132,7 @@ public:
 "T\n"
 "U\n"
 "S\n"
-"", 0));
+"", Q_NULLPTR));
     } // retranslateUi
 
 };

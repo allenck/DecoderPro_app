@@ -1,44 +1,47 @@
 #ifndef MANAGERDEFAULTSELECTOR_H
 #define MANAGERDEFAULTSELECTOR_H
 
-#include <QObject>
+#include "abstractpreferencesmanager.h"
 #include "propertychangelistener.h"
 #include "logger.h"
 #include "libPr3_global.h"
+#include <QList>
 //class Item;
-class LIBPR3SHARED_EXPORT ManagerDefaultSelector : public QObject
+
+class Class;
+class LIBPR3SHARED_EXPORT ManagerDefaultSelector : public AbstractPreferencesManager
 {
     Q_OBJECT
 public:
     explicit ManagerDefaultSelector(QObject *parent = 0);
-    /*public*/ static /*final*/ ManagerDefaultSelector* instance;// = new ManagerDefaultSelector();
-    /*public*/ /*static*/ class Item
-    {
-    public:
-        /*public*/ QString typeName;
-        /*public*/ QString managerClass;
-        /*public*/ bool proxy;
-     Item(QString typeName,QString managerClass);
-    };
-    /*final*/ /*public*/ QList<Item*> knownManagers;// = new QList<Item*>();
-    /*public*/ QString getDefault(QString managerClass);
-    /*public*/ void setDefault(QString managerClass, QString userName);
-    /*public*/ void configure();
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
+ ~ManagerDefaultSelector() {}
+ ManagerDefaultSelector(const ManagerDefaultSelector&) : AbstractPreferencesManager() {}
+ /*public*/ /*final*/ QHash<QString, QString> defaults;// = new Hashtable<>();
+ /*public*/ QString getDefault(QString managerClass);
+ /*public*/ void setDefault(QString managerClass, QString userName);
+ /*public*/ InitializationException* configure();
+ /*public*/ void initialize(Profile* profile) throw (InitializationException);
+ /*public*/ void savePreferences(Profile* profile);
 
-signals:
-    void notifyPropertyChange(PropertyChangeEvent*);
+ /*public*/ /*static*/ class Item1 {
+ public:
+
+     /*public*/ QString typeName;
+     /*public*/ QString managerClass;
+     Item1(QString typeName,QString managerClass);
+ private:
+ };
+ /*final*/ /*public*/ QList<Item1> knownManagers;
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent *);
 
 private:
-  Logger* log;
-  /*public*/ QMap<QString, QString> defaults;// = new QMap<QString, QString>();
-  // data members to hold contact with the property listeners
-  /*final*/ /*private*/ static QVector<PropertyChangeListener*> listeners;// = new QVector<PropertyChangeListener*>();
-protected:
-  /*protected*/ void notifyPropertyChangeListener(QString property, QVariant oldValue, QVariant newValue);
-friend class ManagerDefaultSelectorXml;
+ /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ManagerDefaultSelector");
+ void removeConnectionAsDefault(QString removedName);
+ /*private*/ QString nameForClass(/*@Non NULL */QString cls);
+ /*private*/ QString classForName(/*@Non NULL*/ QString name);
+
 };
+
+Q_DECLARE_METATYPE(ManagerDefaultSelector)
 #endif // MANAGERDEFAULTSELECTOR_H

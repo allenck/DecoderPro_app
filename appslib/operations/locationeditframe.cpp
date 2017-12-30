@@ -609,7 +609,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   readerSelector->setEnabled(enabled && Setup::isRfidEnabled());
  }
 
- /*public*/ void LocationEditFrame::radioButtonActionPerformed(QWidget* ae)
+ /*public*/ void LocationEditFrame::radioButtonActionPerformed(QWidget* /*ae*/)
  {
   setLocationOps();
   setVisibleLocations();

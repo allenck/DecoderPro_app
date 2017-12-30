@@ -1,15 +1,17 @@
 #ifndef PANEPROGACTION_H
 #define PANEPROGACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
 #include "logger.h"
 #include "combinedlocoseltreepane.h"
 #include "libPr3_global.h"
+#include "windowlistener.h"
 
+class JFrame;
 class JmriJFrame;
 class ProgModeSelector;
 class QLabel;
-class LIBPR3SHARED_EXPORT PaneProgAction : public QAction
+class LIBPR3SHARED_EXPORT PaneProgAction : public AbstractAction
 {
     Q_OBJECT
 public:
@@ -19,7 +21,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed();
 
 private:
     //Object o1, o2, o3, o4;
@@ -39,5 +41,17 @@ private:
     };
     //friend class PaneProgAction;
 };
+#if 0
+class PPAWindowListener : public WindowListener
+{
+ Q_OBJECT
+ JFrame* p;
+ PaneProgAction* ppa;
 
+public:
+ PPAWindowListener(JFrame* p, PaneProgAction* ppa);
+ void windowClosing(QCloseEvent *e);
+
+};
+#endif
 #endif // PANEPROGACTION_H

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'boosteroutputwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -143,25 +143,25 @@ public:
 
     void retranslateUi(QWidget *BoosterOutputWidget)
     {
-        BoosterOutputWidget->setWindowTitle(QApplication::translate("BoosterOutputWidget", "Form", 0));
+        BoosterOutputWidget->setWindowTitle(QApplication::translate("BoosterOutputWidget", "Form", Q_NULLPTR));
         label->setText(QString());
         label_2->setText(QString());
-        tbPower->setText(QApplication::translate("BoosterOutputWidget", "On", 0));
+        tbPower->setText(QApplication::translate("BoosterOutputWidget", "On", Q_NULLPTR));
         label_3->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb1On->setToolTip(QApplication::translate("BoosterOutputWidget", "<html><head/><body><p>Push button on at power up.</p></body></html>", 0));
+        rb1On->setToolTip(QApplication::translate("BoosterOutputWidget", "<html><head/><body><p>Push button on at power up.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb1On->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb1Off->setToolTip(QApplication::translate("BoosterOutputWidget", "<html><head/><body><p>Push button off at power up.</p></body></html>", 0));
+        rb1Off->setToolTip(QApplication::translate("BoosterOutputWidget", "<html><head/><body><p>Push button off at power up.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb1Off->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb2On->setToolTip(QApplication::translate("BoosterOutputWidget", "<html><head/><body><p>Second output on at power up.</p></body></html>", 0));
+        rb2On->setToolTip(QApplication::translate("BoosterOutputWidget", "<html><head/><body><p>Second output on at power up.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb2On->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb2Off->setToolTip(QApplication::translate("BoosterOutputWidget", "<html><head/><body><p>Second output off at power up. </p></body></html>", 0));
+        rb2Off->setToolTip(QApplication::translate("BoosterOutputWidget", "<html><head/><body><p>Second output off at power up. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb2Off->setText(QString());
         label_4->setText(QString());

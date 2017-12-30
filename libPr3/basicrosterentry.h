@@ -50,7 +50,7 @@ public:
         virtual bool isOpen() = 0;
 
         virtual void putAttribute(QString key, QString value) = 0;
-        virtual QString getAttribute(QString key) {return "";}
+        virtual QString getAttribute(QString /*key*/) {return "";}
 
         virtual void deleteAttribute(QString key) = 0;
 

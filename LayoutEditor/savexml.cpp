@@ -428,7 +428,7 @@ if (num>0)
  {
   QTextStream stream(&file);
   stream.setCodec("UTF-8");
-  doc.save(stream,2);
+  doc.save(stream, 2);
   return true;
  }
  return false;
@@ -1023,7 +1023,7 @@ void SaveXml::storeSensors(SensorManager *o)
  ProxySensorManager* pt = (ProxySensorManager*)o;
  for(int i = 0; i < pt->nMgrs(); i++)
  {
-  AbstractManager* sMgr = pt->getMgr(i);
+  Manager* sMgr = pt->getMgr(i);
   if(qobject_cast<LnSensorManager*>(sMgr) != NULL)
   {
    LnSensorManagerXml* xml = new LnSensorManagerXml(this);
@@ -1116,7 +1116,7 @@ void SaveXml::storeReporters(ReporterManager* o)
 //  }
  for(int i=0; i < tm->nMgrs(); i++)
  {
-  AbstractManager* sMgr = tm->getMgr(i);
+  Manager* sMgr = tm->getMgr(i);
   if(qobject_cast<LnReporterManager*>(sMgr)!= NULL)
   {
    LnReporterManagerXml* xml = new LnReporterManagerXml(this);
@@ -1547,7 +1547,7 @@ void SaveXml::storeLights(LightManager *l)
  ProxyLightManager* pt = (ProxyLightManager*)l;
  for(int i = 0; i < pt->nMgrs(); i++)
  {
-  AbstractManager* sMgr = pt->getMgr(i);
+  Manager* sMgr = pt->getMgr(i);
   if(qobject_cast<LnLightManager*>(sMgr) != NULL)
   {
    LnLightManagerXml* xml = new LnLightManagerXml(this);

@@ -2,6 +2,14 @@
 #include "vsdecodercreationaction.h"
 #include "vsdpreferencesaction.h"
 #include "installdecoderfileaction.h"
+#include "decoderindexcreateaction.h"
+#include "recreaterosteraction.h"
+#include "updatedecoderdefinitionaction.h"
+#include "xmlfilevalidateaction.h"
+#include "namecheckaction.h"
+#include "progcheckaction.h"
+#include "logixloadaction.h"
+#include "logaction.h"
 
 //DebugMenu::DebugMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -43,18 +51,19 @@ void DebugMenu::common(QWidget* panel)
         add(new JSeparator());
 #endif
         addAction(new InstallDecoderFileAction(tr("Import Decoder File"), panel));
-        addAction(new InstallDecoderURLAction(tr("Import Decoder URL"), (WindowInterface*)panel));
+        addAction(new InstallDecoderURLAction(tr("Import Decoder URL"), panel));
+        addAction(new DecoderIndexCreateAction(tr("MenuItemRecreateDecoderIndex"),panel));
+        addAction(new RecreateRosterAction(tr("MenuItemRecreateRoster"),panel));
+        addAction(new UpdateDecoderDefinitionAction(tr("Update Decoder Definitions"),panel));
+        addSeparator();
+        addAction(new XmlFileValidateAction(tr("MenuItemValidateXMLFile"), panel));
+
+        addAction(new NameCheckAction(tr("Check Decoder Names"), panel));
+        addAction(new ProgCheckAction(tr("Check Programmer Names"), panel));
+        addSeparator();
+        addAction(new LogixLoadAction(tr("Load Logix Disabled"), panel));
+        addAction(new LogAction(tr("Log Message")));
 #if 0
-        add(new decoderdefn.DecoderIndexCreateAction(tr("MenuItemRecreateDecoderIndex")));
-        add(new roster.RecreateRosterAction(tr("MenuItemRecreateRoster")));
-        add(new roster.UpdateDecoderDefinitionAction(tr("MenuItemUpdateDecoderDefinition")));
-        add(new JSeparator());
-        add(new XmlFileValidateAction(tr("MenuItemValidateXMLFile"), panel));
-        add(new decoderdefn.NameCheckAction(tr("MenuItemCheckDecoderNames"), panel));
-        add(new symbolicprog.tabbedframe.ProgCheckAction(tr("MenuItemCheckProgrammerNames"), panel));
-        add(new JSeparator());
-        add(new LogixLoadAction(tr("MenuItemLogixDisabled"), panel));
-        add(new log.LogAction(tr("MenuItemLogAction")));
         add(new log.LogOutputWindowAction(tr("MenuItemLogOutputWindowAction")));
         add(new jmri.util.swing.JmriNamedPaneAction(tr("MenuItemLogTreeAction"),
                 new jmri.util.swing.sdi.JmriJFrameInterface(),

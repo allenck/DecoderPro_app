@@ -6,6 +6,7 @@
 #include "signalmastrepeaterjframe.h"
 #include "signalmasttabledatamodel.h"
 #include "addsignalmastjframe.h"
+#include "mysortfilterproxymodel.h"
 
 SignalMastTableAction::SignalMastTableAction(QObject*parent)
     : AbstractTableAction(tr("Signal Mast Table"), parent)

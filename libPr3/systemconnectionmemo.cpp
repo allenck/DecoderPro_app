@@ -4,6 +4,9 @@
 #include "instancemanager.h"
 #include "createbuttonmodel.h"
 #include "resourcebundle.h"
+#include "internalsystemconnectionmemo.h"
+#include "loggerfactory.h"
+#include "startupactionmodelutil.h"
 
 /**
  * Lightweight abstract class to denote that a system is active,
@@ -21,6 +24,8 @@ QStringList* SystemConnectionMemo::userNames = new QStringList();
 QStringList* SystemConnectionMemo::sysPrefixes = new QStringList();
 //QString SystemConnectionMemo::userName = "";
 //QString SystemConnectionMemo::prefix = "";
+SystemConnectionMemo* SystemConnectionMemo::_instance = NULL;
+SystemConnectionMemo* SystemConnectionMemo::instance() {return _instance;}
 
 //SystemConnectionMemo::SystemConnectionMemo(QObject *parent) : QObject(parent)
 //{
@@ -34,8 +39,10 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
 {
  disabled = false;
  disabledAsLoaded = /*null*/ false; // Boolean can be true, false, or null
+ _instance = this;
 
-// userNames = new QStringList();
+
+ log->debug(tr("SystemConnectionMemo created for prefix \"%1\" user name \"%2\"").arg(prefix).arg(userName));
  initialise();
  if(!setSystemPrefix(prefix))
  {
@@ -69,8 +76,7 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
  * Provides a method to reserve System Names and prefixes at creation
  */
 void SystemConnectionMemo::initialise(){
-    Logger log("SystemConnectionMemo");
-    log.debug("initialise called");
+    log->debug("initialise called");
 //    if (!initialised){
 //        addUserName("Internal");
 //        addSystemPrefix("I");
@@ -124,7 +130,24 @@ void SystemConnectionMemo::removeSystemPrefix(QString systemPrefix){
  */
 void SystemConnectionMemo::Register()
 {
- InstanceManager::store(this, "SystemConnectionMemo");
+ log->debug(tr("register as SystemConnectionMemo, really of type %1").arg(this->metaObject()->className()));
+
+ // check for special case
+ QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
+ if ((list->size() > 0) && (qobject_cast<InternalSystemConnectionMemo*>(list->at(list->size()-1)) != NULL))
+ {
+     // last is internal, so insert before that one
+     log->debug("   putting one before end");
+//     SystemConnectionMemo* old = (SystemConnectionMemo*)list->at(list->size()-1);
+//     InstanceManager::deregister(old, "SystemConnectionMemo");
+//     InstanceManager::store(this, "SystemConnectionMemo");
+//     InstanceManager::store(old, "SystemConnectionMemo");
+     InstanceManager::storeBefore(list->size()-1, this,"SystemConnectionMemo");
+ } else {
+     // just add on end
+     InstanceManager::store(this, "SystemConnectionMemo");
+ }
+
  notifyPropertyChangeListener("ConnectionAdded", QVariant(), QVariant());
 }
 
@@ -159,7 +182,7 @@ bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
   notifyPropertyChangeListener("ConnectionPrefixChanged", QVariant(oldPrefix), QVariant(systemPrefix));
   return true;
  }
- log.debug(tr("setSystemPrefix false for \"%1\"").arg( systemPrefix));
+ log->debug(tr("setSystemPrefix false for \"%1\"").arg( systemPrefix));
  return false;
 }
 
@@ -168,6 +191,7 @@ bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
  * This was previously fixed at configuration time.
  */
 QString SystemConnectionMemo::getUserName() { return userName; }
+
 //This should probably throwing an exception
 bool SystemConnectionMemo::setUserName(QString name)
 {
@@ -208,7 +232,7 @@ bool SystemConnectionMemo::provides(QString c) {
 /**
  * Does this connection provide a manager of this type?
  */
-Manager* SystemConnectionMemo::get(QString T) {
+QObject* SystemConnectionMemo::get(QString T) {
  Q_UNUSED(T)
     return NULL; // nothing, by default
 }
@@ -278,9 +302,10 @@ void SystemConnectionMemo::notifyPropertyChangeListener(QString property, QVaria
 void SystemConnectionMemo::addToActionList()
 {
 #if 1
- CreateButtonModel* bm = (CreateButtonModel*)InstanceManager::getDefault("CreateButtonModel");
+// CreateButtonModel* bm = (CreateButtonModel*)InstanceManager::getDefault("CreateButtonModel");
+ StartupActionModelUtil* util = StartupActionModelUtil::getDefault();
  ResourceBundle* rb = getActionModelResourceBundle();
- if (rb==NULL || bm==NULL)
+ if (rb==NULL )
    return;
  QStringListIterator e = rb->keys();
  while (e.hasNext())
@@ -288,11 +313,11 @@ void SystemConnectionMemo::addToActionList()
   QString key = e.next();
   try
   {
-   bm->addAction(key, rb->getString(key));
+   util->addAction(key, rb->getString(key));
   }
   catch (ClassNotFoundException ex)
   {
-   log.error("Did not find class "+key);
+   log->error("Did not find class "+key);
   }
  }
 #endif
@@ -300,9 +325,10 @@ void SystemConnectionMemo::addToActionList()
 
 void SystemConnectionMemo::removeFromActionList()
 {
- CreateButtonModel* bm = (CreateButtonModel*)InstanceManager::getDefault("CreateButtonModel");
+// CreateButtonModel* bm = (CreateButtonModel*)InstanceManager::getDefault("CreateButtonModel");
+ StartupActionModelUtil* util = StartupActionModelUtil::getDefault();
  ResourceBundle* rb = getActionModelResourceBundle();
- if (rb==NULL || bm==NULL)
+ if (rb==NULL)
   return;
  QStringListIterator  e(rb->keys());
  while (e.hasNext())
@@ -310,11 +336,11 @@ void SystemConnectionMemo::removeFromActionList()
   QString key = e.next();
   try
   {
-   bm->removeAction(key);
+   util->removeAction(key);
   }
   catch (ClassNotFoundException ex)
   {
-   log.error("Did not find class "+key);
+   log->error("Did not find class "+key);
   }
  }
 }
@@ -332,5 +358,4 @@ void SystemConnectionMemo::removeFromActionList()
 }
 
 
-
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SystemConnectionMemo.class.getName());
+/*private*/ /*final*/ /*static*/ Logger* SystemConnectionMemo::log = LoggerFactory::getLogger("SystemConnectionMemo");

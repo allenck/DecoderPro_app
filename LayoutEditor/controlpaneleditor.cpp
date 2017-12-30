@@ -158,6 +158,7 @@ ControlPanelEditor::~ControlPanelEditor()
 //    java.awt.Container contentPane = this.getContentPane();
 //    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
  QWidget* contentPane = getContentPane();
+ contentPane->setObjectName("contentPane");
  contentPane->setLayout(new QVBoxLayout());
  //this->setCentralWidget(contentPane);
 
@@ -183,9 +184,11 @@ ControlPanelEditor::~ControlPanelEditor()
  Editor::setTargetPanel(NULL, NULL);
  Editor::setTargetPanelSize(300, 300);
  editScene = (EditScene*)Editor::getTargetPanel();
+ editScene->setObjectName("editScene");
  _itemPalette = new ItemPalette(tr("Item Palette"), this);
  editPanel->setDragMode(QGraphicsView::NoDrag);
  editPanel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+ editPanel->setObjectName("editPanel");
  connect(editScene, SIGNAL(sceneDropEvent(QGraphicsSceneDragDropEvent*)), this, SLOT(dropEvent(QGraphicsSceneDragDropEvent*)));
  connect(editScene, SIGNAL(sceneMousePress(QGraphicsSceneMouseEvent*)), this, SLOT(mousePressed(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)), this, SLOT(mouseReleased(QGraphicsSceneMouseEvent*)));

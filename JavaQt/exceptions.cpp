@@ -1,12 +1,12 @@
 #include "exceptions.h"
 
-Exception::Exception(QString msg)
-{
- this->msg = msg;
-}
-QString Exception::getMessage() {return msg;}
+//Exception::Exception(QString msg)
+//{
+// this->msg = msg;
+//}
+//QString Exception::getMessage() {return msg;}
 
-QString Exception::getLocalizedMessage() { return "default localized message!";}
+//QString Exception::getLocalizedMessage() { return "default localized message!";}
 
 LocoNetException::LocoNetException(QString m/*, QObject *parent*/) /*:
     QObject(parent)*/
@@ -92,7 +92,7 @@ TurnoutOperatorException::TurnoutOperatorException(QString s)
 {
  msg = s;
 }
-Throwable::Throwable(QString s) {msg = s;}
+//Throwable::Throwable(QString s) {msg = s;}
 JDOMException::JDOMException(QString s){msg = s;}
 FileNotFoundException::FileNotFoundException(QString s){msg=s;}
 ParseException::ParseException(QString s){msg=s;}
@@ -118,3 +118,10 @@ HeadlessException::HeadlessException(QString s) {msg = s;}
 TooManyListenersException::TooManyListenersException(QString s) {msg = s;}
 PrinterException::PrinterException(QString s) {msg = s;}
 AudioException::AudioException(QString s) {msg = s;}
+SAXException::SAXException(QString s) {msg = s;}
+UnsatisfiedLinkError::UnsatisfiedLinkError(QString s) {msg = s;}
+BackingStoreException::BackingStoreException(QString s) {msg = s;}
+NoSuchMethodException::NoSuchMethodException(QString s) {msg = s;}
+InvocationTargetException::InvocationTargetException(QString s) {msg = s;}
+TransformerFactoryConfigurationError::TransformerFactoryConfigurationError(QString s) {msg = s;}
+

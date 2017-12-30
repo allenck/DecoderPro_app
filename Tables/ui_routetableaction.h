@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'routetableaction.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -638,51 +638,51 @@ public:
 
     void retranslateUi(QMainWindow *addFrame)
     {
-        addFrame->setWindowTitle(QApplication::translate("addFrame", "MainWindow", 0));
-        label->setText(QApplication::translate("addFrame", "Route SystemName:", 0));
-        _systemName->setText(QApplication::translate("addFrame", "xxxxxxxxxxxx", 0));
-        fixedSystemName->setText(QApplication::translate("addFrame", "TextLabel", 0));
-        _autoSystemName->setText(QApplication::translate("addFrame", "Automatically generate System Name", 0));
-        label_2->setText(QApplication::translate("addFrame", "Route User Name:", 0));
-        _userName->setText(QApplication::translate("addFrame", "xxxxxxxxxxxxxxxxxxxx", 0));
-        label_3->setText(QApplication::translate("addFrame", "Show", 0));
-        allButton->setText(QApplication::translate("addFrame", "All", 0));
-        includedButton->setText(QApplication::translate("addFrame", "Included", 0));
-        label_4->setText(QApplication::translate("addFrame", "Turnouts and Sensors", 0));
-        p2xtSpace->setText(QApplication::translate("addFrame", "TextLabel", 0));
+        addFrame->setWindowTitle(QApplication::translate("addFrame", "MainWindow", Q_NULLPTR));
+        label->setText(QApplication::translate("addFrame", "Route SystemName:", Q_NULLPTR));
+        _systemName->setText(QApplication::translate("addFrame", "xxxxxxxxxxxx", Q_NULLPTR));
+        fixedSystemName->setText(QApplication::translate("addFrame", "TextLabel", Q_NULLPTR));
+        _autoSystemName->setText(QApplication::translate("addFrame", "Automatically generate System Name", Q_NULLPTR));
+        label_2->setText(QApplication::translate("addFrame", "Route User Name:", Q_NULLPTR));
+        _userName->setText(QApplication::translate("addFrame", "xxxxxxxxxxxxxxxxxxxx", Q_NULLPTR));
+        label_3->setText(QApplication::translate("addFrame", "Show", Q_NULLPTR));
+        allButton->setText(QApplication::translate("addFrame", "All", Q_NULLPTR));
+        includedButton->setText(QApplication::translate("addFrame", "Included", Q_NULLPTR));
+        label_4->setText(QApplication::translate("addFrame", "Turnouts and Sensors", Q_NULLPTR));
+        p2xtSpace->setText(QApplication::translate("addFrame", "TextLabel", Q_NULLPTR));
         label_9->setText(QString());
-        label_5->setText(QApplication::translate("addFrame", "Please select", 0));
-        label_6->setText(QApplication::translate("addFrame", "Turnouts to", 0));
-        label_7->setText(QApplication::translate("addFrame", "be included ", 0));
-        label_8->setText(QApplication::translate("addFrame", "In this route", 0));
-        p2xsSpace->setText(QApplication::translate("addFrame", "TextLabel", 0));
+        label_5->setText(QApplication::translate("addFrame", "Please select", Q_NULLPTR));
+        label_6->setText(QApplication::translate("addFrame", "Turnouts to", Q_NULLPTR));
+        label_7->setText(QApplication::translate("addFrame", "be included ", Q_NULLPTR));
+        label_8->setText(QApplication::translate("addFrame", "In this route", Q_NULLPTR));
+        p2xsSpace->setText(QApplication::translate("addFrame", "TextLabel", Q_NULLPTR));
         label_10->setText(QString());
-        label_11->setText(QApplication::translate("addFrame", "Please select", 0));
-        label_12->setText(QApplication::translate("addFrame", "Sensors to", 0));
-        label_13->setText(QApplication::translate("addFrame", "be included ", 0));
-        label_14->setText(QApplication::translate("addFrame", "In this route", 0));
-        label_15->setText(QApplication::translate("addFrame", "Play sound file :", 0));
-        setSound->setText(QApplication::translate("addFrame", "Set", 0));
-        label_16->setText(QApplication::translate("addFrame", "Run script:", 0));
-        setScript->setText(QApplication::translate("addFrame", "Set", 0));
-        sensorThatActivates->setText(QApplication::translate("addFrame", "Enter Sensor that Activates when Route Turnouts are correctly aligned (optional).", 0));
-        sensorsThatTrigger->setText(QApplication::translate("addFrame", "Enter Sensors that trigger this Route (optional)", 0));
-        label_19->setText(QApplication::translate("addFrame", "Sensors:", 0));
-        label_20->setText(QApplication::translate("addFrame", "Enter a Turnout that triggers this Route (optional).", 0));
-        label_21->setText(QApplication::translate("addFrame", "Turnout:", 0));
-        label_22->setText(QApplication::translate("addFrame", "Condition:", 0));
-        label_23->setText(QApplication::translate("addFrame", "Enter additional delay between Turnout Commands(optiona), added delay:", 0));
-        label_17->setText(QApplication::translate("addFrame", "Enter a Turnout that controls the lock for this Route (optional).", 0));
-        label_18->setText(QApplication::translate("addFrame", "Turnout:", 0));
-        label_24->setText(QApplication::translate("addFrame", "Conditon:", 0));
-        status1->setText(QApplication::translate("addFrame", "To change this Route, make changes above, then click 'Update Route'.", 0));
-        status2->setText(QApplication::translate("addFrame", "To leave Edit mode, without changing this Route, click 'Cancel',", 0));
-        createButton->setText(QApplication::translate("addFrame", "Add Route", 0));
-        editButton->setText(QApplication::translate("addFrame", "Edit Route", 0));
-        deleteButton->setText(QApplication::translate("addFrame", "Delete", 0));
-        updateButton->setText(QApplication::translate("addFrame", "Update", 0));
-        cancelButton->setText(QApplication::translate("addFrame", "Cancel", 0));
-        exportBUtton->setText(QApplication::translate("addFrame", "Export to Logix", 0));
+        label_11->setText(QApplication::translate("addFrame", "Please select", Q_NULLPTR));
+        label_12->setText(QApplication::translate("addFrame", "Sensors to", Q_NULLPTR));
+        label_13->setText(QApplication::translate("addFrame", "be included ", Q_NULLPTR));
+        label_14->setText(QApplication::translate("addFrame", "In this route", Q_NULLPTR));
+        label_15->setText(QApplication::translate("addFrame", "Play sound file :", Q_NULLPTR));
+        setSound->setText(QApplication::translate("addFrame", "Set", Q_NULLPTR));
+        label_16->setText(QApplication::translate("addFrame", "Run script:", Q_NULLPTR));
+        setScript->setText(QApplication::translate("addFrame", "Set", Q_NULLPTR));
+        sensorThatActivates->setText(QApplication::translate("addFrame", "Enter Sensor that Activates when Route Turnouts are correctly aligned (optional).", Q_NULLPTR));
+        sensorsThatTrigger->setText(QApplication::translate("addFrame", "Enter Sensors that trigger this Route (optional)", Q_NULLPTR));
+        label_19->setText(QApplication::translate("addFrame", "Sensors:", Q_NULLPTR));
+        label_20->setText(QApplication::translate("addFrame", "Enter a Turnout that triggers this Route (optional).", Q_NULLPTR));
+        label_21->setText(QApplication::translate("addFrame", "Turnout:", Q_NULLPTR));
+        label_22->setText(QApplication::translate("addFrame", "Condition:", Q_NULLPTR));
+        label_23->setText(QApplication::translate("addFrame", "Enter additional delay between Turnout Commands(optiona), added delay:", Q_NULLPTR));
+        label_17->setText(QApplication::translate("addFrame", "Enter a Turnout that controls the lock for this Route (optional).", Q_NULLPTR));
+        label_18->setText(QApplication::translate("addFrame", "Turnout:", Q_NULLPTR));
+        label_24->setText(QApplication::translate("addFrame", "Conditon:", Q_NULLPTR));
+        status1->setText(QApplication::translate("addFrame", "To change this Route, make changes above, then click 'Update Route'.", Q_NULLPTR));
+        status2->setText(QApplication::translate("addFrame", "To leave Edit mode, without changing this Route, click 'Cancel',", Q_NULLPTR));
+        createButton->setText(QApplication::translate("addFrame", "Add Route", Q_NULLPTR));
+        editButton->setText(QApplication::translate("addFrame", "Edit Route", Q_NULLPTR));
+        deleteButton->setText(QApplication::translate("addFrame", "Delete", Q_NULLPTR));
+        updateButton->setText(QApplication::translate("addFrame", "Update", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("addFrame", "Cancel", Q_NULLPTR));
+        exportBUtton->setText(QApplication::translate("addFrame", "Export to Logix", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -11,7 +11,7 @@ public:
     ~HexFileConnectionConfigXml() {}
     HexFileConnectionConfigXml(const HexFileConnectionConfigXml&) : AbstractSerialConnectionConfigXml() {}
     /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement e) throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode);
 
 signals:
 
@@ -20,7 +20,6 @@ protected:
     /*protected*/ void getInstance(QObject* object);
     /*protected*/ void getInstance();
     /*protected*/ void _register();
-
 };
 
 #endif // HEXFILECONNECTIONCONFIGXML_H

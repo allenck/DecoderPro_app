@@ -3,6 +3,8 @@
 #include "auxiliaryconfiguration.h"
 #include "jmriuserinterfaceconfigurationprovider.h"
 #include "jmriconfigurationprovider.h"
+#include "preferences.h"
+#include "jmripreferencesprovider.h"
 
 /**
  * Utility methods to get information about {@link jmri.profile.Profile}s.
@@ -20,7 +22,7 @@
 /*public*/ /*static*/ AuxiliaryConfiguration* ProfileUtils::getAuxiliaryConfiguration(Profile* project) {
     return JmriConfigurationProvider::getConfiguration(project);
 }
-#if 0
+
 /**
  * Get the preferences needed by a class for a given configuration profile.
  *
@@ -31,10 +33,10 @@
  *                this node.
  * @return The preferences.
  */
-/*public*/ static Preferences getPreferences(Profile project, QString clazz, bool shared) {
-    return JmriPreferencesProvider.getPreferences(project, clazz, shared);
+/*public*/ /*static*/ Preferences* ProfileUtils::getPreferences(Profile* project, QString clazz, bool shared) {
+    return JmriPreferencesProvider::getPreferences(project, clazz, shared);
 }
-#endif
+
 /**
  * Get the XMl configuration container for a given configuration profile's
  * user interface state.

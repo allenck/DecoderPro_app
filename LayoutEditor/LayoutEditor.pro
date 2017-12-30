@@ -4,16 +4,16 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml webkit webkitwidgets printsupport
+QT       += core gui xml   printsupport dbus webenginewidgets #webkitwidgets webkit
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport webkit printsupport webkitwidgets gui
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport  printsupport  gui  #webkitwidgets webkit
 
 TARGET = LayoutEditor
 TEMPLATE = lib
 
 DEFINES += LIBLAYOUTEDITOR_LIBRARY
 
-unix:PREFIX = /home/allen/Projects/PythonQt3.0
+unix:PREFIX = /home/allen/Projects/PythonQt-master
 win32:PREFIX = "C:/Program Files (x86)/local"
 
 win32:exists($$PREFIX/lib/PythonQt.dll){
@@ -37,7 +37,6 @@ equals(ENABLE_SCRIPTING, "Y") {
     pythonwrappers.cpp  \
     scripts/jmriscriptenginemanager.cpp \
     scripts/scriptenginemanager.cpp \
-    scripts/classloader.cpp \
     scripts/simplebindings.cpp \
     scripts/scriptengine.cpp \
     scripts/pythoninterpreter.cpp \
@@ -53,7 +52,6 @@ equals(ENABLE_SCRIPTING, "Y") {
     pythonwrappers.h \
     scripts/jmriscriptenginemanager.h \
     scripts/scriptenginemanager.h \
-    scripts/classloader.h \
     scripts/scriptenginefactory.h \
     scripts/simplebindings.h \
     scripts/bindings.h \
@@ -64,7 +62,7 @@ equals(ENABLE_SCRIPTING, "Y") {
     include(../python.prf)
 
     win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib -lPythonQt
-    else:unix: LIBS += -L/$$PREFIX/lib/ -lPythonQt
+    else:unix: LIBS += -L/$$PREFIX/lib/ -lPythonQt_d
 
     INCLUDEPATH += /usr/local/include/PythonQt
     DEPENDPATH += /usr/local/include/PythonQt
@@ -139,7 +137,6 @@ SOURCES += \
     configxmlmanager.cpp \
     errorhandler.cpp \
     errormemo.cpp \
-    version.cpp \
     locoiconxml.cpp \
     positionablelabelxml.cpp \
     editor.cpp \
@@ -164,7 +161,6 @@ SOURCES += \
     signalmasticon.cpp \
     connectivityutil.cpp \
     catalogpane.cpp \
-    catalogtreemodel.cpp \
     automatsummary.cpp \
     abstractautomaton.cpp \
     siglet.cpp \
@@ -194,7 +190,6 @@ SOURCES += \
     maintenance.cpp \
     picklistmodel.cpp \
     pickpanel.cpp \
-    systemnamecomparator.cpp \
     treeset.cpp \
     addnewdevicepanel.cpp \
     beantabledatamodel.cpp \
@@ -308,7 +303,6 @@ SOURCES += \
     commonturnoutoperationconfig.cpp \
     rawturnoutoperationconfig.cpp \
     sensorturnoutoperationconfig.cpp \
-    defaultusermessagepreferencesxml.cpp \
     rfidsensormanagerxml.cpp \
     simpleclockframe.cpp \
     analogclockframe.cpp \
@@ -326,7 +320,6 @@ SOURCES += \
     slipturnouttextedit.cpp \
     quadoutputsignalheadxml.cpp \
     tripleturnoutsignalheadxml.cpp \
-    helputil.cpp \
     defaultsignalgroupmanagerxml.cpp \
     sensortabledatamodel.cpp \
     beantableframe.cpp \
@@ -419,7 +412,31 @@ SOURCES += \
     positionablepolygonxml.cpp \
     generalpath.cpp \
     path2d.cpp \
-    transitmanagerxml.cpp
+    transitmanagerxml.cpp \
+    jframe.cpp \
+    hardcopywriter.cpp \
+    jframeinterface.cpp \
+    treeframe.cpp \
+    treeaction.cpp \
+    jmrijframeaction.cpp \
+    treepanel.cpp \
+    usbnode.cpp \
+    controller.cpp \
+    usbtreemodel0.cpp \
+    abstractcontroller.cpp \
+    linuxabstractcontroller.cpp \
+    keyboard.cpp \
+    linuxeventdevice.cpp \
+    linuxinputid.cpp \
+    usb_bus.cpp \
+    usb_device.cpp \
+    usbtreemodel.cpp \
+    usbview.cpp \
+    usbviewaction.cpp \
+    clientif.cpp \
+    helputil.cpp \
+    rpspositionicon.cpp \
+    scriptfilechooser.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -474,7 +491,6 @@ HEADERS += liblayouteditor_global.h \
     errorhandler.h \
     errormemo.h \
     xmladapter.h \
-    version.h \
     locoiconxml.h \
     positionablelabelxml.h \
     editor.h \
@@ -499,7 +515,6 @@ HEADERS += liblayouteditor_global.h \
     signalmasticon.h \
     connectivityutil.h \
     catalogpane.h \
-    catalogtreemodel.h \
     automatsummary.h \
     abstractautomaton.h \
     siglet.h \
@@ -529,7 +544,6 @@ HEADERS += liblayouteditor_global.h \
     maintenance.h \
     picklistmodel.h \
     pickpanel.h \
-    systemnamecomparator.h \
     treeset.h \
     navigablemap.h \
     addnewdevicepanel.h \
@@ -641,7 +655,6 @@ HEADERS += liblayouteditor_global.h \
     commonturnoutoperationconfig.h \
     rawturnoutoperationconfig.h \
     sensorturnoutoperationconfig.h \
-    defaultusermessagepreferencesxml.h \
     rfidsensormanagerxml.h \
     simpleclockframe.h \
     analogclockframe.h \
@@ -660,7 +673,6 @@ HEADERS += liblayouteditor_global.h \
     slipturnouttextedit.h \
     quadoutputsignalheadxml.h \
     tripleturnoutsignalheadxml.h \
-    helputil.h \
     defaultsignalgroupmanagerxml.h \
     sensortabledatamodel.h \
     beantableframe.h \
@@ -754,7 +766,34 @@ HEADERS += liblayouteditor_global.h \
     positionablepolygonxml.h \
     generalpath.h \
     path2d.h \
-    transitmanagerxml.h
+    transitmanagerxml.h \
+    jframe.h \
+    windowinterface.h \
+    hardcopywriter.h \
+    jframeinterface.h \
+    treeframe.h \
+    treeaction.h \
+    jmrijframeaction.h \
+    treepanel.h \
+    usbnode.h \
+    controller.h \
+    usbviewaction.h \
+    usbview.h \
+    usbtreemodel0.h \
+    abstractcontroller.h \
+    linuxabstractcontroller.h \
+    keyboard.h \
+    linuxdevice.h \
+    linuxeventdevice.h \
+    linuxinputid.h \
+    rumbler.h \
+    usbtreemodel.h \
+    usb_bus.h \
+    usb_device.h \
+    clientif.h \
+    helputil.h \
+    rpspositionicon.h \
+    scriptfilechooser.h
 
 
 FORMS    += \

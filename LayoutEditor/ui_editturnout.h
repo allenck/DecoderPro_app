@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'editturnout.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -47,7 +47,7 @@ public:
 
     void retranslateUi(QMainWindow *EditTurnout)
     {
-        EditTurnout->setWindowTitle(QApplication::translate("EditTurnout", "Edit Turnout", 0));
+        EditTurnout->setWindowTitle(QApplication::translate("EditTurnout", "Edit Turnout", Q_NULLPTR));
     } // retranslateUi
 
 };

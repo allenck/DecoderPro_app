@@ -6,6 +6,7 @@
 #include "helputil.h"
 #include <QMenuBar>
 #include "jmrijframe.h"
+#include <QImageReader>
 
 //PanelPro::PanelPro(QObject *parent) :
 //    Apps(parent)
@@ -44,10 +45,14 @@ PanelPro::PanelPro(JFrame* p, QWidget *parent) :
     Apps(p, parent)
 {
  //super(p);
- initGui();
+// init();
+ //initGui();
 
- PPWindowListener* l = new PPWindowListener(p, this);
- p->addWindowListener(l);
+ JmriJFrame* frame = new JmriJFrame("PanelPro");
+ createFrame(this, frame);
+
+ PPWindowListener* l = new PPWindowListener(frame, this);
+ frame->addWindowListener(l);
 }
 
 /*protected*/ QString PanelPro::logo() {
@@ -127,8 +132,10 @@ void PanelPro::handleQuit()
  Apps::setStartupInfo("PanelPro");
 
  setConfigFilename("PanelProConfig2.xml", args);
- JmriJFrame* f = new JmriJFrame("PanelPro");
- createFrame(new PanelPro(f), f);
+ JmriJFrame* f = NULL; //new JmriJFrame("PanelPro");
+ //f->setVisible(false);
+ //createFrame(new PanelPro(f), f);
+ new PanelPro(f);
 
  log.debug("main initialization done");
  splash(false);

@@ -383,7 +383,7 @@ void IconAdder::pack() {
 //        _table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
  _table->setSelectionBehavior(QAbstractItemView::SelectRows);
  _table->setSelectionMode(QAbstractItemView::SingleSelection);
- ROW_HEIGHT = _table->rowHeight(0);
+ ROW_HEIGHT = _table->getRowHeight();
 //        _table.setPreferredScrollableViewportSize(new java.awt.Dimension(200,7*ROW_HEIGHT));
  _table->setMinimumSize(200,5*ROW_HEIGHT);
 //        _table.setDragEnabled(true);

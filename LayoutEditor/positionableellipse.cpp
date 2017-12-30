@@ -19,7 +19,9 @@
 
 /*public*/ PositionableEllipse::PositionableEllipse(Editor* editor,QWidget *parent) : PositionableShape(editor, parent) {
  //super(editor);
- _itemGroup = new QGraphicsItemGroup();
+ _itemGroup = new MyGraphicsItemGroup();
+ _itemGroup->setName("PositionableEllipse");
+
  _shape = new JShape();
  setObjectName("PositionableEllipse");
 }

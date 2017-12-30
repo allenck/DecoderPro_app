@@ -145,7 +145,17 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
 #endif
  operationTypes = newTypes;
 }
-
+ /*static*/ TurnoutOperationManager* TurnoutOperationManager::getDefault() {
+//        return InstanceManager::getOptionalDefault("TurnoutOperationManager").orElseGet(() -> {
+//            return InstanceManager.setDefault(TurnoutOperationManager.class, new TurnoutOperationManager());
+//        });
+ TurnoutOperationManager* tom = (TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager");
+ if(tom == NULL)
+ {
+  InstanceManager::setDefault("TurnoutOperationManager", new TurnoutOperationManager());
+ }
+ return tom;
+}
 /**
  * get the one-and-only instance of this class, if necessary creating it first.
  * At creation also preload the known TurnoutOperator subclasses (done here
@@ -159,17 +169,18 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  */
 /*static*/ TurnoutOperationManager* TurnoutOperationManager::getInstance()
 {
- if (theInstance==NULL)
- {
+// if (theInstance==NULL)
+// {
 
-  // and make available
-  theInstance = new TurnoutOperationManager();
+//  // and make available
+//  theInstance = new TurnoutOperationManager();
 
-  // create the default instances of each of the known operation types
-  theInstance->loadOperationTypes();
+//  // create the default instances of each of the known operation types
+//  theInstance->loadOperationTypes();
 
- }
- return theInstance;
+// }
+// return theInstance;
+ return getDefault();
 }
 
 /**

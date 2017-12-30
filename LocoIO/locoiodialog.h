@@ -87,7 +87,7 @@ private:
  bool bRelax;
 };
 
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class LocoIOModules;
 class LocoIOAddress;
 class LOCOIOSHARED_EXPORT LocoIODialog : public QDialog
@@ -145,7 +145,7 @@ private:
  Sql* sql;
  int cfg;
  LocoIOModules* locoIOModules;
- DefaultUserMessagePreferences* p;
+ UserPreferencesManager* p;
  QString displayHexCheck;// = this.getClass().getName()+".displayHexCheck";
  QString allowEdits;
 

@@ -37,7 +37,7 @@ protected:
     /*protected*/ void addFamilySet();
     /*protected*/ void deleteFamilySet();
     /*protected*/ void makeDoneButtonPanel(QWidget* buttonPanel);
-    /*protected*/ void makeCreateButtonPanel(QWidget* buttonPanel);
+//    /*protected*/ void makeCreateButtonPanel(QWidget* buttonPanel);
     /*protected*/ QWidget* makeIconPanel(QHash<QString, NamedIcon*>* iconMap);
     void checkIconSizes();
     /*protected*/ QHash<QString, NamedIcon*>* clone(QHash<QString, NamedIcon*>* map);

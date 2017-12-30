@@ -80,9 +80,9 @@
     //@Override
     /*protected*/ File* JmriUserInterfaceConfigurationProvider::getConfigurationFile(bool shared) {
         if (this->project == NULL) {
-            return new File(this->getConfigurationDirectory(shared), Profile::UI_CONFIG); // NOI18N
+            return new File(this->getConfigurationDirectory(shared), /*Profile::UI_CONFIG*/"user-interface.xml"); // NOI18N
         } else {
-            return new File(this->getConfigurationDirectory(shared), Profile::UI_CONFIG); // NOI18N
+            return new File(this->getConfigurationDirectory(shared), /*Profile::UI_CONFIG*/"user-interface.xml"); // NOI18N
         }
     }
 

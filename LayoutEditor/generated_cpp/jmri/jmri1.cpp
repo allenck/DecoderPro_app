@@ -4472,7 +4472,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return ProxyLightManager::makeBean(i0, systemName1, userName2);
 }
-AbstractManager*  PythonQtShell_ProxyLightManager::makeInternalManager()
+Manager*  PythonQtShell_ProxyLightManager::makeInternalManager()
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("makeInternalManager");
@@ -4663,7 +4663,7 @@ NamedBean*  PythonQtWrapper_ProxyLightManager::makeBean(ProxyLightManager* theWr
   return ( ((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->promoted_makeBean(i, systemName, userName));
 }
 
-AbstractManager*  PythonQtWrapper_ProxyLightManager::makeInternalManager(ProxyLightManager* theWrappedObject)
+Manager*  PythonQtWrapper_ProxyLightManager::makeInternalManager(ProxyLightManager* theWrappedObject)
 {
   return ( ((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->promoted_makeInternalManager());
 }
@@ -4943,36 +4943,36 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return ProxySensorManager::getBeanByUserName(userName0);
 }
-AbstractManager*  PythonQtShell_ProxySensorManager::getInternal()
-{
-if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
-  static PyObject* name = PyString_FromString("getInternal");
-  PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-  if (obj) {
-    static const char* argumentList[] ={"AbstractManager*"};
-    static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      AbstractManager* returnValue;
-    void* args[1] = {NULL};
-    PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-    if (result) {
-      args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-      if (args[0]!=&returnValue) {
-        if (args[0]==NULL) {
-          PythonQt::priv()->handleVirtualOverloadReturnError("getInternal", methodInfo, result);
-        } else {
-          returnValue = *((AbstractManager**)args[0]);
-        }
-      }
-    }
-    if (result) { Py_DECREF(result); } 
-    Py_DECREF(obj);
-    return returnValue;
-  } else {
-    PyErr_Clear();
-  }
-}
-  return ProxySensorManager::getInternal();
-}
+//AbstractManager*  PythonQtShell_ProxySensorManager::getInternal()
+//{
+//if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
+//  static PyObject* name = PyString_FromString("getInternal");
+//  PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+//  if (obj) {
+//    static const char* argumentList[] ={"AbstractManager*"};
+//    static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+//      AbstractManager* returnValue;
+//    void* args[1] = {NULL};
+//    PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+//    if (result) {
+//      args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+//      if (args[0]!=&returnValue) {
+//        if (args[0]==NULL) {
+//          PythonQt::priv()->handleVirtualOverloadReturnError("getInternal", methodInfo, result);
+//        } else {
+//          returnValue = *((AbstractManager**)args[0]);
+//        }
+//      }
+//    }
+//    if (result) { Py_DECREF(result); }
+//    Py_DECREF(obj);
+//    return returnValue;
+//  } else {
+//    PyErr_Clear();
+//  }
+//}
+//  return ProxySensorManager::getInternal();
+//}
 NamedBean*  PythonQtShell_ProxySensorManager::getNamedBean(QString  name0)
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
@@ -5183,7 +5183,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return ProxySensorManager::makeBean(i0, systemName1, userName2);
 }
-AbstractManager*  PythonQtShell_ProxySensorManager::makeInternalManager()
+Manager*  PythonQtShell_ProxySensorManager::makeInternalManager()
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("makeInternalManager");
@@ -5369,10 +5369,10 @@ long  PythonQtWrapper_ProxySensorManager::getDefaultSensorDebounceGoingInActive(
   return ( theWrappedObject->getDefaultSensorDebounceGoingInActive());
 }
 
-AbstractManager*  PythonQtWrapper_ProxySensorManager::getInternal(ProxySensorManager* theWrappedObject)
-{
-  return ( ((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->promoted_getInternal());
-}
+//AbstractManager*  PythonQtWrapper_ProxySensorManager::getInternal(ProxySensorManager* theWrappedObject)
+//{
+//  return ( ((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->promoted_getInternal());
+//}
 
 QString  PythonQtWrapper_ProxySensorManager::getNextValidAddress(ProxySensorManager* theWrappedObject, QString  curAddress, QString  prefix) throw (JmriException)
 {
@@ -5394,7 +5394,7 @@ Sensor*  PythonQtWrapper_ProxySensorManager::makeBean(ProxySensorManager* theWra
   return ( ((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->promoted_makeBean(i, systemName, userName));
 }
 
-AbstractManager*  PythonQtWrapper_ProxySensorManager::makeInternalManager(ProxySensorManager* theWrappedObject)
+Manager*  PythonQtWrapper_ProxySensorManager::makeInternalManager(ProxySensorManager* theWrappedObject)
 {
   return ( ((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->promoted_makeInternalManager());
 }
@@ -5884,7 +5884,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return ProxyTurnoutManager::makeBean(i0, systemName1, userName2);
 }
-AbstractManager*  PythonQtShell_ProxyTurnoutManager::makeInternalManager()
+Manager*  PythonQtShell_ProxyTurnoutManager::makeInternalManager()
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("makeInternalManager");
@@ -6130,7 +6130,7 @@ NamedBean*  PythonQtWrapper_ProxyTurnoutManager::makeBean(ProxyTurnoutManager* t
   return ( ((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->promoted_makeBean(i, systemName, userName));
 }
 
-AbstractManager*  PythonQtWrapper_ProxyTurnoutManager::makeInternalManager(ProxyTurnoutManager* theWrappedObject)
+Manager*  PythonQtWrapper_ProxyTurnoutManager::makeInternalManager(ProxyTurnoutManager* theWrappedObject)
 {
   return ( ((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->promoted_makeInternalManager());
 }

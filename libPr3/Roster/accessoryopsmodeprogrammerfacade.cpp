@@ -102,7 +102,7 @@
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
         if (log->isInfoEnabled()) log->info("programmer already in use by "+QString(_usingProgrammer->metaObject()->className()));
-        throw new ProgrammerException("programmer in use");
+        throw ProgrammerException("programmer in use");
     }
     else {
         _usingProgrammer = p;

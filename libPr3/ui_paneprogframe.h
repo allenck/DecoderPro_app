@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'paneprogframe.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -104,12 +104,12 @@ public:
 
     void retranslateUi(QMainWindow *PaneProgFrame)
     {
-        PaneProgFrame->setWindowTitle(QApplication::translate("PaneProgFrame", "MainWindow", 0));
-        actionSave->setText(QApplication::translate("PaneProgFrame", "Save", 0));
-        actionFactory_reset->setText(QApplication::translate("PaneProgFrame", "Factory reset", 0));
-        tabWidget->setTabText(tabWidget->indexOf(rosterEntryTab), QApplication::translate("PaneProgFrame", "Roster Entry", 0));
-        menuFile->setTitle(QApplication::translate("PaneProgFrame", "File", 0));
-        menuReset->setTitle(QApplication::translate("PaneProgFrame", "Reset", 0));
+        PaneProgFrame->setWindowTitle(QApplication::translate("PaneProgFrame", "MainWindow", Q_NULLPTR));
+        actionSave->setText(QApplication::translate("PaneProgFrame", "Save", Q_NULLPTR));
+        actionFactory_reset->setText(QApplication::translate("PaneProgFrame", "Factory reset", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(rosterEntryTab), QApplication::translate("PaneProgFrame", "Roster Entry", Q_NULLPTR));
+        menuFile->setTitle(QApplication::translate("PaneProgFrame", "File", Q_NULLPTR));
+        menuReset->setTitle(QApplication::translate("PaneProgFrame", "Reset", Q_NULLPTR));
     } // retranslateUi
 
 };

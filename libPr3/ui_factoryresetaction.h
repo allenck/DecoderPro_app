@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'factoryresetaction.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -73,10 +73,10 @@ public:
 
     void retranslateUi(QDialog *FactoryResetAction)
     {
-        FactoryResetAction->setWindowTitle(QApplication::translate("FactoryResetAction", "Dialog", 0));
-        label->setText(QApplication::translate("FactoryResetAction", "Factory Reset", 0));
-        btnOK->setText(QApplication::translate("FactoryResetAction", "OK", 0));
-        btnCancel->setText(QApplication::translate("FactoryResetAction", "Cancel", 0));
+        FactoryResetAction->setWindowTitle(QApplication::translate("FactoryResetAction", "Dialog", Q_NULLPTR));
+        label->setText(QApplication::translate("FactoryResetAction", "Factory Reset", Q_NULLPTR));
+        btnOK->setText(QApplication::translate("FactoryResetAction", "OK", Q_NULLPTR));
+        btnCancel->setText(QApplication::translate("FactoryResetAction", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -28,6 +28,7 @@
 #include <QComboBox>
 #include "pushbuttondelegate.h"
 #include "buttoncolumndelegate.h"
+#include "jtablepersistencemanager.h"
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -53,6 +54,7 @@
  noWarnDelete = false;
  buttonMap = QList<int>();
  nbMan = (NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager");
+ _table = NULL;
 }
 
 void /*public*/ BeanTableDataModel::init()
@@ -538,7 +540,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
  */
 /*public*/ void BeanTableDataModel::configureTable(JTable* table)
 {
- this->table = table;
+ this->_table = table;
  // allow reordering of the columns
 //    table.getTableHeader().setReorderingAllowed(true);
 
@@ -563,7 +565,9 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
 //    MouseListener popupListener = new PopupListener();
 //    table.addMouseListener(popupListener);
 
- loadTableColumnDetails(table);
+ this->persistTable(table);
+
+// loadTableColumnDetails(table);
  table->setContextMenuPolicy(Qt::CustomContextMenu);
  connect(table, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showPopup(QPoint)));
  setPersistentButtons();
@@ -780,6 +784,31 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
  }
 }
 
+/**
+ * Create and configure a new table using the given model and row sorter.
+ *
+ * @param name   the name of the table
+ * @param model  the data model for the table
+ * @param sorter the row sorter for the table; if null, the table will not
+ *               be sortable
+ * @return the table
+ * @throws NullPointerException if name or model are null
+ */
+/*public*/ JTable* BeanTableDataModel::makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* model, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter) {
+//    Objects.requireNonNull(name, "the table name must be nonnull");
+//    Objects.requireNonNull(model, "the table model must be nonnull");
+    JTable* table = new JTable((QAbstractItemModel*)sorter);
+    table->setName(name);
+    table->setSortingEnabled(true);
+//    table->setRowSorter(sorter);
+    table->horizontalHeader()->sectionsMovable(); //table->getTableHeader().setReorderingAllowed(true);
+    table->setColumnModel(new XTableColumnModel());
+    table->createDefaultColumnsFromModel();
+
+//    addMouseListenerToHeader(table);
+    return table;
+}
+
 /*public*/ JTable* BeanTableDataModel::makeJTable(QSortFilterProxyModel* sorter)
 {
  JTable* table = new JTable(sorter);
@@ -822,7 +851,7 @@ class PopupListener extends MouseAdapter {
 #endif
 /*protected*/ void BeanTableDataModel::showPopup(QPoint p)
 {
- QModelIndex index= table->indexAt(p);
+ QModelIndex index= _table->indexAt(p);
  row = index.row();
 // JTable* source = (JTable)e.getSource();
 //    TableSorter tmodel = ((TableSorter)source.getModel());
@@ -877,7 +906,7 @@ class PopupListener extends MouseAdapter {
  connect(menuItem, SIGNAL(triggered()), this, SLOT(On_deleteBean_triggered()));
  popupMenu->addAction(menuItem);
  addToPopUp(popupMenu);
- popupMenu->popup(table->viewport()->mapToGlobal(p));
+ popupMenu->popup(_table->viewport()->mapToGlobal(p));
 }
 
 void BeanTableDataModel::addToPopUp(QMenu *popup) {}
@@ -1188,14 +1217,61 @@ class TableHeaderListener extends MouseAdapter {
  }
 #endif
 }
+/**
+ * Persist the state of the table after first setting the table to the last
+ * persisted state.
+ *
+ * @param table the table to persist
+ * @throws NullPointerException if the name of the table is null
+ */
+/*public*/ void BeanTableDataModel::persistTable(/*@Nonnull*/ JTable* table) //throws NullPointerException
+{
+    JTablePersistenceManager* manager = (JTablePersistenceManager*) InstanceManager::getNullableDefault("JTablePersistenceManager");
+    if (manager != NULL) {
+        manager->resetState(table); // throws NPE if table name is null
+        manager->persist(table);
+    }
+}
+
+/**
+ * Stop persisting the state of the table.
+ *
+ * @param table the table to stop persisting
+ * @throws NullPointerException if the name of the table is null
+ */
+/*public*/ void BeanTableDataModel::stopPersistingTable(/*@Nonnull*/ JTable* table) //throws NullPointerException
+{
+    JTablePersistenceManager* manager = (JTablePersistenceManager*) InstanceManager::getNullableDefault("JTablePersistenceManager");
+    if (manager != NULL) {
+        manager->stopPersisting(table); // throws NPE if table name is null
+    }
+}
+
+/**
+ * Load table column settings from persistent storage.
+ *
+ * @param table the table
+ * @deprecated since 4.5.4; use {@link #persistTable(javax.swing.JTable)}
+ * instead.
+ */
+//@Deprecated
 /*public*/ void BeanTableDataModel::loadTableColumnDetails(JTable* table)
 {
  loadTableColumnDetails(table, getMasterClassName());
 }
 
+/**
+ * Load table column settings from persistent storage.
+ *
+ * @param table        the table
+ * @param beantableref name of the table
+ * @deprecated since 4.5.4; use {@link #persistTable(javax.swing.JTable)}
+ * instead.
+ */
+//@Deprecated
 /*public*/ void BeanTableDataModel::loadTableColumnDetails(JTable* table, QString beantableref)
 {
- UserPreferencesManager* p = (UserPreferencesManager*)  InstanceManager::getDefault("UserPreferencesManager");
+// UserPreferencesManager* p = (UserPreferencesManager*)  InstanceManager::getDefault("UserPreferencesManager");
  //Set all the sort and width details of the table first.
 
 #if 0
@@ -1216,6 +1292,7 @@ class TableHeaderListener extends MouseAdapter {
         }
     }
 #endif
+#if 0
  //Set column widths, sort order and hidden status
     table->createDefaultColumnsFromModel();
  XTableColumnModel* tcm = (XTableColumnModel*)table->getColumnModel();
@@ -1244,6 +1321,12 @@ class TableHeaderListener extends MouseAdapter {
    }
   }
  }
+#else
+    if (table->getName() == "") {
+        table->setName(beantableref);
+    }
+    this->persistTable(table);
+#endif
 }
 
 //void BeanTableDataModel::fireTableDataChanged()

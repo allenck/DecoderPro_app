@@ -28,7 +28,7 @@
 }
 
 //@Override
-/*public*/ void JFrameInterface::show(JmriPanel* child, QAction* action, Hint hint) {
+/*public*/ void JFrameInterface::show(JmriPanel* child, QAction* action, WindowInterface::Hint hint) {
     //throw new UnsupportedOperationException("Not supported yet.");
 }
 
@@ -44,4 +44,5 @@
 
 //@Override
 /*public*/ void JFrameInterface::dispose() {
+
 }

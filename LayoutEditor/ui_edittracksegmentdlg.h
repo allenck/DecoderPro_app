@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'edittracksegmentdlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -143,25 +143,25 @@ public:
 
     void retranslateUi(QMainWindow *EditTrackSegmentDlg)
     {
-        EditTrackSegmentDlg->setWindowTitle(QApplication::translate("EditTrackSegmentDlg", "MainWindow", 0));
-        label->setText(QApplication::translate("EditTrackSegmentDlg", "Style:", 0));
+        EditTrackSegmentDlg->setWindowTitle(QApplication::translate("EditTrackSegmentDlg", "MainWindow", Q_NULLPTR));
+        label->setText(QApplication::translate("EditTrackSegmentDlg", "Style:", Q_NULLPTR));
         cbStyle->clear();
         cbStyle->insertItems(0, QStringList()
-         << QApplication::translate("EditTrackSegmentDlg", "Solid", 0)
-         << QApplication::translate("EditTrackSegmentDlg", "Dashed", 0)
+         << QApplication::translate("EditTrackSegmentDlg", "Solid", Q_NULLPTR)
+         << QApplication::translate("EditTrackSegmentDlg", "Dashed", Q_NULLPTR)
         );
         cbTrackType->clear();
         cbTrackType->insertItems(0, QStringList()
-         << QApplication::translate("EditTrackSegmentDlg", "Side Track", 0)
-         << QApplication::translate("EditTrackSegmentDlg", "Mainline Track", 0)
+         << QApplication::translate("EditTrackSegmentDlg", "Side Track", Q_NULLPTR)
+         << QApplication::translate("EditTrackSegmentDlg", "Mainline Track", Q_NULLPTR)
         );
-        chkHide->setText(QApplication::translate("EditTrackSegmentDlg", "Hide Track", 0));
-        label_2->setText(QApplication::translate("EditTrackSegmentDlg", "Block Name: ", 0));
-        pbEditBlock->setText(QApplication::translate("EditTrackSegmentDlg", "Create/Edit Block", 0));
-        pbDone->setText(QApplication::translate("EditTrackSegmentDlg", "Done", 0));
-        pbCancel->setText(QApplication::translate("EditTrackSegmentDlg", "Cancel", 0));
-        menuWindow->setTitle(QApplication::translate("EditTrackSegmentDlg", "Window", 0));
-        menuHelp->setTitle(QApplication::translate("EditTrackSegmentDlg", "Help", 0));
+        chkHide->setText(QApplication::translate("EditTrackSegmentDlg", "Hide Track", Q_NULLPTR));
+        label_2->setText(QApplication::translate("EditTrackSegmentDlg", "Block Name: ", Q_NULLPTR));
+        pbEditBlock->setText(QApplication::translate("EditTrackSegmentDlg", "Create/Edit Block", Q_NULLPTR));
+        pbDone->setText(QApplication::translate("EditTrackSegmentDlg", "Done", Q_NULLPTR));
+        pbCancel->setText(QApplication::translate("EditTrackSegmentDlg", "Cancel", Q_NULLPTR));
+        menuWindow->setTitle(QApplication::translate("EditTrackSegmentDlg", "Window", Q_NULLPTR));
+        menuHelp->setTitle(QApplication::translate("EditTrackSegmentDlg", "Help", Q_NULLPTR));
     } // retranslateUi
 
 };

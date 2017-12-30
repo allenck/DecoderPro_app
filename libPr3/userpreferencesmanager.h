@@ -10,6 +10,7 @@
 #include <QVariant>
 #include <QSet>
 #include "libPr3_global.h"
+#include "bean.h"
 
 /**
  * Interface for the User Preferences Manager.
@@ -23,13 +24,13 @@
  * @version	$Revision: 20527 $
  */
 class PropertyChangeListener;
-/*public interface*/ class LIBPR3SHARED_EXPORT UserPreferencesManager : public QObject
+/*public interface*/ class LIBPR3SHARED_EXPORT UserPreferencesManager : public Bean
 {
  Q_OBJECT
 public:
-    UserPreferencesManager(QObject* parent = 0) : QObject(parent) {}
+    UserPreferencesManager(QObject* parent = 0) : Bean(parent) {}
     ~UserPreferencesManager() {}
-    UserPreferencesManager(const UserPreferencesManager&) : QObject() {}
+    UserPreferencesManager(const UserPreferencesManager&) : Bean() {}
     /*public*/ virtual void setLoading() {}
     /*public*/ virtual void finishLoading() {}
     /*public*/ static /*final*/ QString PREFERENCES_UPDATED;// = "PreferencesUpdated"; // NOI18N
@@ -581,4 +582,5 @@ public:
         }
         */
 };
+Q_DECLARE_METATYPE(UserPreferencesManager)
 #endif // USERPREFERENCESMANAGER_H

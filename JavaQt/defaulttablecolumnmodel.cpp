@@ -3,6 +3,7 @@
 #include "exceptions.h"
 #include "propertychangeevent.h"
 #include "defaultlistselectionmodel.h"
+#include "tablecolumnmodelevent.h"
 
 //DefaultTableColumnModel::DefaultTableColumnModel(QObject *parent) :
 //  TableColumnModel(parent)
@@ -75,7 +76,7 @@ TableColumnModel(parent)
  invalidateWidthCache();
 
  // Post columnAdded event notification
-// fireColumnAdded(new TableColumnModelEvent(this, 0, getColumnCount() - 1));
+ fireColumnAdded(new TableColumnModelEvent(this, 0, getColumnCount() - 1));
 }
 
 /**
@@ -466,7 +467,7 @@ TableColumnModel(parent)
 /*public*/ TableColumnModelListener[] getColumnModelListeners() {
     return listenerList.getListeners(TableColumnModelListener.class);
 }
-
+#endif
 //
 //   Event firing methods
 //
@@ -479,20 +480,21 @@ TableColumnModel(parent)
  * @param e  the event received
  * @see EventListenerList
  */
-/*protected*/ void fireColumnAdded(TableColumnModelEvent e) {
+/*protected*/ void DefaultTableColumnModel::fireColumnAdded(TableColumnModelEvent* e) {
     // Guaranteed to return a non-NULL array
-    Object[] listeners = listenerList.getListenerList();
-    // Process the listeners last to first, notifying
-    // those that are interested in this event
-    for (int i = listeners.length-2; i>=0; i-=2) {
-        if (listeners[i]==TableColumnModelListener.class) {
-            // Lazily create the event:
-            // if (e == NULL)
-            //  e = new ChangeEvent(this);
-            ((TableColumnModelListener)listeners[i+1]).
-                columnAdded(e);
-        }
-    }
+//    Object[] listeners = listenerList.getListenerList();
+//    // Process the listeners last to first, notifying
+//    // those that are interested in this event
+//    for (int i = listeners.length-2; i>=0; i-=2) {
+//        if (listeners[i]==TableColumnModelListener.class) {
+//            // Lazily create the event:
+//            // if (e == NULL)
+//            //  e = new ChangeEvent(this);
+//            ((TableColumnModelListener)listeners[i+1]).
+//                columnAdded(e);
+//        }
+//    }
+  emit notifycolumnadded(e);
 }
 
 /**
@@ -503,20 +505,22 @@ TableColumnModel(parent)
  * @param  e  the event received
  * @see EventListenerList
  */
-/*protected*/ void fireColumnRemoved(TableColumnModelEvent e) {
+/*protected*/ void DefaultTableColumnModel::fireColumnRemoved(TableColumnModelEvent* e) {
     // Guaranteed to return a non-NULL array
-    Object[] listeners = listenerList.getListenerList();
-    // Process the listeners last to first, notifying
-    // those that are interested in this event
-    for (int i = listeners.length-2; i>=0; i-=2) {
-        if (listeners[i]==TableColumnModelListener.class) {
-            // Lazily create the event:
-            // if (e == NULL)
-            //  e = new ChangeEvent(this);
-            ((TableColumnModelListener)listeners[i+1]).
-                columnRemoved(e);
-        }
-    }
+//    Object[] listeners = listenerList.getListenerList();
+//    // Process the listeners last to first, notifying
+//    // those that are interested in this event
+//    for (int i = listeners.length-2; i>=0; i-=2) {
+//        if (listeners[i]==TableColumnModelListener.class) {
+//            // Lazily create the event:
+//            // if (e == NULL)
+//            //  e = new ChangeEvent(this);
+//            ((TableColumnModelListener)listeners[i+1]).
+//                columnRemoved(e);
+//        }
+//    }
+ emit notifycolumnremoved(e);
+
 }
 
 /**
@@ -527,22 +531,24 @@ TableColumnModel(parent)
  * @param  e the event received
  * @see EventListenerList
  */
-/*protected*/ void fireColumnMoved(TableColumnModelEvent e) {
+/*protected*/ void DefaultTableColumnModel::fireColumnMoved(TableColumnModelEvent* e) {
     // Guaranteed to return a non-NULL array
-    Object[] listeners = listenerList.getListenerList();
-    // Process the listeners last to first, notifying
-    // those that are interested in this event
-    for (int i = listeners.length-2; i>=0; i-=2) {
-        if (listeners[i]==TableColumnModelListener.class) {
-            // Lazily create the event:
-            // if (e == NULL)
-            //  e = new ChangeEvent(this);
-            ((TableColumnModelListener)listeners[i+1]).
-                columnMoved(e);
-        }
-    }
-}
+//    Object[] listeners = listenerList.getListenerList();
+//    // Process the listeners last to first, notifying
+//    // those that are interested in this event
+//    for (int i = listeners.length-2; i>=0; i-=2) {
+//        if (listeners[i]==TableColumnModelListener.class) {
+//            // Lazily create the event:
+//            // if (e == NULL)
+//            //  e = new ChangeEvent(this);
+//            ((TableColumnModelListener)listeners[i+1]).
+//                columnMoved(e);
+//        }
+//    }
+ emit notifycolumnmoved(e);
 
+}
+#if 0
 /**
  * Notifies all listeners that have registered interest for
  * notification on this event type.  The event instance

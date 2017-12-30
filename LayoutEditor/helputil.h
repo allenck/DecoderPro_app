@@ -9,9 +9,7 @@
 #if QT_VERSION < 0x050000
 #include <QtWebKit/QWebView>
 #else
-//#include <QtWebkitWidgets/QtWebKitWidgets>
-#include <QtWebKit/QtWebKit>
-#include <QtWebKitWidgets/QWebView>
+#include <QtWebEngineWidgets/QWebEngineView>
 #endif
 #include "abstractaction.h"
 #include "liblayouteditor_global.h"
@@ -65,7 +63,7 @@ public slots:
     void actionPerformed();
 };
 
-class MyWebView : public QWebView
+class MyWebView : public QWebEngineView
 {
  Q_OBJECT
 public:

@@ -29,6 +29,7 @@
  log->debug(tr("MemoryIcon ctor= ") + this->metaObject()->className());
  lBlock = NULL;
  setBackground(panel->getBackgroundColor());
+
 }
 /*public*/ MemoryIcon::MemoryIcon(NamedIcon* s, Editor* editor, QObject* parent): DisplayMemoryIcon(s,editor,parent)
 {
@@ -642,3 +643,7 @@ void MemoryIcon::on_updateBlockItemAction_toggled(bool bState)
  return true;
 }
 #endif
+/*public*/ QString MemoryIcon::getGroupName()
+{
+ return "MemoryIcon";
+}

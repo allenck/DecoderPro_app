@@ -10,6 +10,7 @@
 #include "liblayouteditor_global.h"
 #include "windowlistener.h"
 
+class WindowInterface;
 class UserPreferencesManager;
 class AbstractAction;
 class AbstractShutDownTask;
@@ -33,7 +34,7 @@ public:
     /*public*/ bool getModifiedFlag();
     /*final*/ static QString WINDOW_MODIFIED;// = "windowModified";
     /*public*/ void markWindowModified(bool yes);
-    /*public*/ virtual void dispose();
+    /*public*/ void dispose();
     /*public*/ virtual void addHelpMenu(QString ref, bool direct);
     /*public*/ static QList<JmriJFrame*>* getFrameList();
     void init(bool saveSize, bool savePosition);
@@ -54,6 +55,13 @@ public:
     bool eventFilter(QObject *target, QEvent *event);
     /*public*/ void componentMoved(QMoveEvent* e);
     /*public*/ void componentResized(QResizeEvent* e);
+    /*public*/ void setSavePosition(bool save);
+    /*public*/ void setSaveSize(bool save);
+    /*public*/ bool getSavePosition();
+    /*public*/ bool getSaveSize();
+    /*public*/ void setAllowInFrameServlet(bool allow) ;
+    /*public*/ bool getAllowInFrameServlet();
+    /*public*/ static JmriJFrame* getFrame(QString name);
 
 
 signals:
@@ -76,12 +84,13 @@ private:
  /*private*/ bool escapeKeyActionClosesWindow;// = false;
  //void closeEvent(QCloseEvent *);
  /*private*/ void saveWindowSize(UserPreferencesManager* p);
+ /*private*/ bool mShown;// = false;
 
 protected:
     /*protected*/ bool allowInFrameServlet;// = true;
     /*protected*/ bool reuseFrameSavedPosition;// = true;
     /*protected*/ bool reuseFrameSavedSized;// = true;
-
+ /*protected*/ WindowInterface* windowInterface;
     /*
      * This field contains a list of properties that do not correspond to the
      * JavaBeans properties coding pattern, or known properties that do correspond

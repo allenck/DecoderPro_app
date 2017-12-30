@@ -169,7 +169,7 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
 {
  QDomNodeList conditionalList = conditionals.elementsByTagName("conditional");
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(conditionalList.size())+" conditionals");
- ConditionalManager* tm = InstanceManager::conditionalManagerInstance();
+ ConditionalManager* tm = (ConditionalManager*)InstanceManager::getDefault("ConditionalManager");
 
  for (int i=0; i<conditionalList.size(); i++)
  {
@@ -392,20 +392,20 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
  */
 /*protected*/ void DefaultConditionalManagerXml::replaceConditionalManager()
 {
- if (InstanceManager::conditionalManagerInstance()->metaObject()->className()
-         == ("DefaultConditionalManager"))
+ if (((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->metaObject()->className() == ("DefaultConditionalManager"))
   return;
  // if old manager exists, remove it from configuration process
- if (InstanceManager::conditionalManagerInstance() != NULL)
-     ((ConfigXmlManager*) InstanceManager::configureManagerInstance())->deregister(
-            InstanceManager::conditionalManagerInstance() );
+ if ((ConditionalManager*)InstanceManager::getNullableDefault("ConditionalManager") != NULL)
+     ((ConfigureManager*) InstanceManager::getDefault("ConfigureManager"))->deregister(
+            (ConditionalManager*)InstanceManager::getDefault("ConditionalManager") );
     // register new one with InstanceManager
     DefaultConditionalManager* pManager = DefaultConditionalManager::instance();
-    InstanceManager::setConditionalManager((ConditionalManager*)pManager);
+    InstanceManager::store(pManager, "ConditionalManager");
+    InstanceManager::setDefault("ConditionalManager", pManager);
     // register new one for configuration
-    ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerConfig(pManager, Manager::CONDITIONALS);
+    ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(pManager, Manager::CONDITIONALS);
 }
 
 /*public*/ int DefaultConditionalManagerXml::loadOrder(){
-    return ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->getXMLOrder();
+    return ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getXMLOrder();
 }

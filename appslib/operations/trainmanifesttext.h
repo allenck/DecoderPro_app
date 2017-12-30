@@ -13,7 +13,7 @@ namespace Operations
  public:
   TrainManifestText() {}
   ~TrainManifestText() {}
-  TrainManifestText(const TrainManifestText&){}
+  TrainManifestText(const TrainManifestText&) : QObject() {}
   /*public*/ static QString getStringManifestForTrain();
   /*public*/ static void setStringManifestForTrain(QString s);
   /*public*/ static QString getStringValid();

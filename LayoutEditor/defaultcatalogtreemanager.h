@@ -10,7 +10,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultCatalogTreeManager : public CatalogTre
 public:
     explicit DefaultCatalogTreeManager(QObject *parent = 0);
     ~DefaultCatalogTreeManager(){}
-    DefaultCatalogTreeManager(const DefaultCatalogTreeManager&) {}
+    DefaultCatalogTreeManager(const DefaultCatalogTreeManager&) : CatalogTreeManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix() ;
     /*public*/ char typeLetter();

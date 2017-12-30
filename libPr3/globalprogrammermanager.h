@@ -1,8 +1,8 @@
 #ifndef GLOBALPROGRAMMERMANAGER_H
 #define GLOBALPROGRAMMERMANAGER_H
 
-#include "programmermanager.h"
-
+#include <QObject>
+#include "programmer.h"
 /**
  * Get access to available {@link Programmer} objects.
  * <P>
@@ -37,10 +37,11 @@
  */
 #include <QObject>
 
-/*public*/ class GlobalProgrammerManager : public ProgrammerManager {
+/*public*/ class GlobalProgrammerManager : public QObject
+{
     Q_OBJECT
 public:
-    GlobalProgrammerManager(QObject* parent = 0) : ProgrammerManager(parent) {}
+    GlobalProgrammerManager(QObject* parent = 0) : QObject(parent) {}
     /**
      * Gain access to the Global Mode Programmer without reservation.
      * @return null only if there isn't a Global Mode Programmer available

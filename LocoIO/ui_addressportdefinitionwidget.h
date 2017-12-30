@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addressportdefinitionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -141,14 +141,14 @@ public:
 
     void retranslateUi(QWidget *AddressPortDefinitionWidget)
     {
-        AddressPortDefinitionWidget->setWindowTitle(QApplication::translate("AddressPortDefinitionWidget", "Form", 0));
-        label->setText(QApplication::translate("AddressPortDefinitionWidget", "Address", 0));
-        label_2->setText(QApplication::translate("AddressPortDefinitionWidget", "Configuration", 0));
-        label_3->setText(QApplication::translate("AddressPortDefinitionWidget", "Value 1", 0));
-        label_4->setText(QApplication::translate("AddressPortDefinitionWidget", "Value 2", 0));
-        label_5->setText(QApplication::translate("AddressPortDefinitionWidget", "Read", 0));
-        label_6->setText(QApplication::translate("AddressPortDefinitionWidget", "Write", 0));
-        label_7->setText(QApplication::translate("AddressPortDefinitionWidget", "Edit Value 2", 0));
+        AddressPortDefinitionWidget->setWindowTitle(QApplication::translate("AddressPortDefinitionWidget", "Form", Q_NULLPTR));
+        label->setText(QApplication::translate("AddressPortDefinitionWidget", "Address", Q_NULLPTR));
+        label_2->setText(QApplication::translate("AddressPortDefinitionWidget", "Configuration", Q_NULLPTR));
+        label_3->setText(QApplication::translate("AddressPortDefinitionWidget", "Value 1", Q_NULLPTR));
+        label_4->setText(QApplication::translate("AddressPortDefinitionWidget", "Value 2", Q_NULLPTR));
+        label_5->setText(QApplication::translate("AddressPortDefinitionWidget", "Read", Q_NULLPTR));
+        label_6->setText(QApplication::translate("AddressPortDefinitionWidget", "Write", Q_NULLPTR));
+        label_7->setText(QApplication::translate("AddressPortDefinitionWidget", "Edit Value 2", Q_NULLPTR));
     } // retranslateUi
 
 };

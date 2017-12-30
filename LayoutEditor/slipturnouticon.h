@@ -68,7 +68,7 @@ public:
  /*public*/ void slipTurnoutTextEdit(QString name);
  /*public*/ void dispose();
  /*public*/ bool setEditIconMenu(QMenu* popup);
-
+ /*public*/ QString getGroupName();
 signals:
 
 public slots:

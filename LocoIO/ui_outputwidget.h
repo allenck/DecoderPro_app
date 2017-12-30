@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'outputwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -131,53 +131,53 @@ public:
 
     void retranslateUi(QWidget *OutputWidget)
     {
-        OutputWidget->setWindowTitle(QApplication::translate("OutputWidget", "Form", 0));
+        OutputWidget->setWindowTitle(QApplication::translate("OutputWidget", "Form", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnTest->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Generate test message.</p></body></html>", 0));
+        btnTest->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Generate test message.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnTest->setText(QApplication::translate("OutputWidget", "On", 0));
+        btnTest->setText(QApplication::translate("OutputWidget", "On", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        rbBlockOccupancy->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Block occupancy.</p></body></html>", 0));
+        rbBlockOccupancy->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Block occupancy.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbBlockOccupancy->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        chkBlinking->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Check to make output blink at blink rate.</p></body></html>", 0));
+        chkBlinking->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Check to make output blink at blink rate.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         chkBlinking->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb1On->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Push button on at power up.</p></body></html>", 0));
+        rb1On->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Push button on at power up.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb1On->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb1Off->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Push button off at power up.</p></body></html>", 0));
+        rb1Off->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Push button off at power up.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb1Off->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb2On->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Second output on at power up.</p></body></html>", 0));
+        rb2On->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Second output on at power up.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb2On->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb2Off->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Second output off at power up. </p></body></html>", 0));
+        rb2Off->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Second output off at power up. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb2Off->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        chk4WayPort->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Check for 4 way output.</p></body></html>", 0));
+        chk4WayPort->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Check for 4 way output.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         chk4WayPort->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb1SoftReset->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Software pulse output.</p></body></html>", 0));
+        rb1SoftReset->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Software pulse output.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb1SoftReset->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb1HardReset->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Hardware controlled pulse output. </p></body></html>", 0));
+        rb1HardReset->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Hardware controlled pulse output. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb1HardReset->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb2SoftReset->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Paired software controlled pulse output.</p></body></html>", 0));
+        rb2SoftReset->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Paired software controlled pulse output.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb2SoftReset->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rb2HardReset->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Paired hardware controlled pulse output. </p></body></html>", 0));
+        rb2HardReset->setToolTip(QApplication::translate("OutputWidget", "<html><head/><body><p>Paired hardware controlled pulse output. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rb2HardReset->setText(QString());
     } // retranslateUi

@@ -3,6 +3,9 @@
 #include "activetrain.h"
 #include "dispatcherframe.h"
 #include "logger.h"
+#include "transitsection.h"
+#include "transit.h"
+#include "eventlistenerlist.h"
 
 //AllocatedSection::AllocatedSection(QObject *parent) : QObject(parent)
 //{
@@ -215,28 +218,28 @@
         mReverseStoppingSensor = mSection.getForwardStoppingSensor();
     }
 }
-
- /*protected*/ jmri.TransitSection getTransitSection() {
-    return (mActiveTrain.getTransit().getTransitSectionFromSectionAndSeq(mSection, mSequence));
+#endif
+ /*protected*/ TransitSection* AllocatedSection::getTransitSection() {
+    return (mActiveTrain->getTransit()->getTransitSectionFromSectionAndSeq(mSection, mSequence));
 }
 
-/*public*/ int getDirection() {
-    return mSection.getState();
+/*public*/ int AllocatedSection::getDirection() {
+    return mSection->getState();
 }
 
-/*public*/ int getLength() {
-    return mSection.getLengthI(DispatcherFrame.instance().getUseScaleMeters(),
-            DispatcherFrame.instance().getScale());
+/*public*/ int AllocatedSection::getLength() {
+    return mSection->getLengthI(DispatcherFrame::instance()->getUseScaleMeters(),
+            DispatcherFrame::instance()->getScale());
 }
 
-/*public*/ void reset() {
+/*public*/ void AllocatedSection::reset() {
     mExited = false;
     mEntered = false;
-    if (mSection.getOccupancy() == jmri.Section.OCCUPIED) {
+    if (mSection->getOccupancy() == Section::OCCUPIED) {
         mEntered = true;
     }
 }
-
+#if 0
 /*private*/ synchronized void handleSectionChange(java.beans.PropertyChangeEvent e) {
     if (mSection.getOccupancy() == jmri.Section.OCCUPIED) {
         mEntered = true;
@@ -284,71 +287,73 @@
     }
 #endif
 }
-#if 0
-/*private*/ synchronized void handleBlockChange(int index, java.beans.PropertyChangeEvent e) {
-    if (e.getPropertyName().equals("state")) {
+
+/*private*/ /*synchronized*/ void AllocatedSection::handleBlockChange(int index, PropertyChangeEvent* e) {
+    if (e->getPropertyName()==("state")) {
         if (mBlockList == NULL) {
-            mBlockList = mSection.getBlockList();
+            mBlockList = mSection->getBlockList();
         }
 
-        jmri.Block b = mBlockList.get(index);
+        Block* b = mBlockList->at(index);
         if (!isInActiveBlockList(b)) {
-            int occ = b.getState();
+            int occ = b->getState();
+#if 0
             Runnable handleBlockChange = new RespondToBlockStateChange(b, occ, this);
             Thread tBlockChange = new Thread(handleBlockChange, "Allocated Section Block Change on " + b.getDisplayName());
             tBlockChange.start();
+#endif
             addToActiveBlockList(b);
-            if (DispatcherFrame.instance().getSupportVSDecoder()) {
-                firePropertyChangeEvent("BlockStateChange", NULL, b.getSystemName()); // NOI18N
+            if (DispatcherFrame::instance()->getSupportVSDecoder()) {
+                firePropertyChangeEvent("BlockStateChange", QVariant(), b->getSystemName()); // NOI18N
             }
         }
     }
 }
 
- /*protected*/ jmri.Block getExitBlock() {
+ /*protected*/ Block* AllocatedSection::getExitBlock() {
     if (mNextSection == NULL) {
         return NULL;
     }
-    jmri.EntryPoint ep = mSection.getExitPointToSection(mNextSection, mSection.getState());
+    EntryPoint* ep = mSection->getExitPointToSection(mNextSection, mSection->getState());
     if (ep != NULL) {
-        return ep.getBlock();
+        return ep->getBlock();
     }
     return NULL;
 }
 
- /*protected*/ jmri.Block getEnterBlock(AllocatedSection previousAllocatedSection) {
+ /*protected*/ Block* AllocatedSection::getEnterBlock(AllocatedSection* previousAllocatedSection) {
     if (previousAllocatedSection == NULL) {
         return NULL;
     }
-    jmri.Section sPrev = previousAllocatedSection.getSection();
-    jmri.EntryPoint ep = mSection.getEntryPointFromSection(sPrev, mSection.getState());
+    Section* sPrev = previousAllocatedSection->getSection();
+    EntryPoint* ep = mSection->getEntryPointFromSection(sPrev, mSection->getState());
     if (ep != NULL) {
-        return ep.getBlock();
+        return ep->getBlock();
     }
     return NULL;
 }
 
- /*protected*/ synchronized void addToActiveBlockList(jmri.Block b) {
+ /*protected*/ /*synchronized*/ void AllocatedSection::addToActiveBlockList(Block* b) {
     if (b != NULL) {
-        mActiveBlockList.add(b);
+        mActiveBlockList->append(b);
     }
 }
 
- /*protected*/ synchronized void removeFromActiveBlockList(jmri.Block b) {
+ /*protected*/ /*synchronized*/ void AllocatedSection::removeFromActiveBlockList(Block* b) {
     if (b != NULL) {
-        for (int i = 0; i < mActiveBlockList.size(); i++) {
-            if (b == mActiveBlockList.get(i)) {
-                mActiveBlockList.remove(i);
+        for (int i = 0; i < mActiveBlockList->size(); i++) {
+            if (b == mActiveBlockList->at(i)) {
+                mActiveBlockList->removeAt(i);
                 return;
             }
         }
     }
 }
 
- /*protected*/ synchronized bool isInActiveBlockList(jmri.Block b) {
+ /*protected*/ /*synchronized*/ bool AllocatedSection::isInActiveBlockList(Block* b) {
     if (b != NULL) {
-        for (int i = 0; i < mActiveBlockList.size(); i++) {
-            if (b == mActiveBlockList.get(i)) {
+        for (int i = 0; i < mActiveBlockList->size(); i++) {
+            if (b == mActiveBlockList->at(i)) {
                 return true;
             }
         }
@@ -356,17 +361,17 @@
     return false;
 }
 
-/*public*/ synchronized void dispose() {
+/*public*/ /*synchronized*/ void AllocatedSection::dispose() {
     if ((mSectionListener != NULL) && (mSection != NULL)) {
-        mSection.removePropertyChangeListener(mSectionListener);
+        mSection->removePropertyChangeListener(mSectionListener);
     }
     mSectionListener = NULL;
-    for (int i = mBlockListeners.size(); i > 0; i--) {
-        jmri.Block b = mBlockList.get(i - 1);
-        b.removePropertyChangeListener(mBlockListeners.get(i - 1));
+    for (int i = mBlockListeners->size(); i > 0; i--) {
+        Block* b = mBlockList->at(i - 1);
+        b->removePropertyChangeListener(mBlockListeners->at(i - 1));
     }
-
-
+}
+#if 0
 // _________________________________________________________________________________________
 // This class responds to Block state change in a separate thread
 class RespondToBlockStateChange implements Runnable {
@@ -418,17 +423,17 @@ class RespondToBlockStateChange implements Runnable {
 /*public*/ void removePropertyChangeListener(PropertyChangeListener listener) {
     listenerList.remove(PropertyChangeListener.class, listener);
 }
-
- /*protected*/ void firePropertyChangeEvent(PropertyChangeEvent evt) {
+#endif
+ /*protected*/ void AllocatedSection::firePropertyChangeEvent(PropertyChangeEvent* evt) {
     //Object[] listeners = listenerList.getListenerList();
 
-    for (PropertyChangeListener l : listenerList.getListeners(PropertyChangeListener.class)) {
-        l.propertyChange(evt);
-    }
+//    foreach (PropertyChangeListener* l, listenerList->getListeners("PropertyChangeListener")) {
+//        l->propertyChange(evt);
+//    }
 }
 
- /*protected*/ void firePropertyChangeEvent(String name, Object oldVal, Object newVal) {
-    log.debug("Firing property change: " + name + " " + newVal.toString());
+ /*protected*/ void AllocatedSection::firePropertyChangeEvent(QString name, QVariant oldVal, QVariant newVal) {
+    log->debug("Firing property change: " + name + " " + newVal.toString());
     firePropertyChangeEvent(new PropertyChangeEvent(this, name, oldVal, newVal));
 }
-#endif
+

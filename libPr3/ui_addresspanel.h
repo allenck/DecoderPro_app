@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addresspanel.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -118,12 +118,12 @@ public:
 
     void retranslateUi(QDockWidget *AddressPanel)
     {
-        AddressPanel->setWindowTitle(QApplication::translate("AddressPanel", "AddressPanel", 0));
-        edAddress->setText(QApplication::translate("AddressPanel", "0000", 0));
-        setButton->setText(QApplication::translate("AddressPanel", "Set", 0));
-        dispatchButton->setText(QApplication::translate("AddressPanel", "Dispatch", 0));
-        releaseButton->setText(QApplication::translate("AddressPanel", "Release", 0));
-        progButton->setText(QApplication::translate("AddressPanel", "Program", 0));
+        AddressPanel->setWindowTitle(QApplication::translate("AddressPanel", "AddressPanel", Q_NULLPTR));
+        edAddress->setText(QApplication::translate("AddressPanel", "0000", Q_NULLPTR));
+        setButton->setText(QApplication::translate("AddressPanel", "Set", Q_NULLPTR));
+        dispatchButton->setText(QApplication::translate("AddressPanel", "Dispatch", Q_NULLPTR));
+        releaseButton->setText(QApplication::translate("AddressPanel", "Release", Q_NULLPTR));
+        progButton->setText(QApplication::translate("AddressPanel", "Program", Q_NULLPTR));
     } // retranslateUi
 
 };

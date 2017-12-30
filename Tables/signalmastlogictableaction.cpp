@@ -636,7 +636,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
 }
 #endif
  /*protected*/ QString SignalMastLogicTableAction::getClassName() {
-     return "SignalMastLogicTableAction";
+     return "jmri.jmrit.beantable.SignalMastLogicTableAction";
  }
 
 

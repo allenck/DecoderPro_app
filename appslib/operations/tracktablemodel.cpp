@@ -86,7 +86,7 @@ namespace Operations
 //     table.setAutoResizeMode(JTable::AUTO_RESIZE_OFF);
   updateList();
   fireTableDataChanged();
-  table->setMinimumHeight(table->rowHeight(0)*5);
+//  table->setMinimumHeight(table->rowHeight(0)*5);
 
  }
 

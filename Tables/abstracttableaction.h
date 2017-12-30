@@ -73,12 +73,6 @@ public:
 
 };
 
-class MySortFilterProxyModel : public QSortFilterProxyModel
-{
-  Q_OBJECT
-public:
-    MySortFilterProxyModel(BeanTableDataModel* =0);
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
-};
+
 
 #endif // ABSTRACTTABLEACTION_H

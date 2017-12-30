@@ -19,7 +19,7 @@
 #include <QComboBox>
 #include <QButtonGroup>
 #include <QFont>
-#include "defaultusermessagepreferences.h"
+//#include "defaultusermessagepreferences.h"
 #include <QCheckBox>
 #include "gridbagconstraints.h"
 #include "../LayoutEditor/inputdialog.h"
@@ -41,7 +41,7 @@
 #include "defaultlogixmanager.h"
 #include "abstractsignalheadmanager.h"
 #include "proxylightmanager.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "oblock.h"
 #include <QLabel>
 #include "pushbuttondelegate.h" // for PushButtonItemDelegate
@@ -150,8 +150,8 @@
  // set up managers - no need to use InstanceManager since both managers are
  // Default only (internal). We use InstanceManager to get managers for
  // compatibility with other facilities.
- _logixManager = InstanceManager::logixManagerInstance();
- _conditionalManager = InstanceManager::conditionalManagerInstance();
+ _logixManager = (LogixManager*)InstanceManager::getNullableDefault("LogixManager");
+ _conditionalManager = (ConditionalManager*)InstanceManager::getNullableDefault("ConditionalManager");
  // disable ourself if there is no Logix manager or no Conditional manager available
  if ((_logixManager == NULL) || (_conditionalManager == NULL))
  {
@@ -345,11 +345,11 @@ void LogixTableModel::doDelete(NamedBean* bean)
 }
 /*public*/ int LogixTableModel::getDisplayDeleteMsg()
 {
- return ((DefaultUserMessagePreferences*)  InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption(self->getClassName(),"deleteInUse");
+ return ((UserPreferencesManager*)  InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption(self->getClassName(),"deleteInUse");
 }
 /*public*/ void LogixTableModel::setDisplayDeleteMsg(int boo)
 {
- ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption(self-> getClassName(), "deleteInUse", boo);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption(self-> getClassName(), "deleteInUse", boo);
 }
 /*protected*/ QString LogixTableModel::getMasterClassName() { return self->getClassName(); }
 
@@ -686,7 +686,7 @@ static final int STRUT = 10;
  addLogixFrame->adjustSize();
  addLogixFrame->setVisible(true);
  _autoSystemName->setChecked(false);
- if(((DefaultUserMessagePreferences*) prefMgr)->getSimplePreferenceState(systemNameAuto))
+ if(((UserPreferencesManager*) prefMgr)->getSimplePreferenceState(systemNameAuto))
  _autoSystemName->setChecked(true);
 }
 
@@ -845,7 +845,7 @@ void LogixTableAction::copyPressed(QString sName)
  addLogixFrame->adjustSize();
  addLogixFrame->setVisible(true);
  _autoSystemName->setChecked(false);
- if(((DefaultUserMessagePreferences*)prefMgr)->getSimplePreferenceState(systemNameAuto))
+ if(((UserPreferencesManager*)prefMgr)->getSimplePreferenceState(systemNameAuto))
  _autoSystemName->setChecked(true);
 //                }
 //            };
@@ -869,7 +869,7 @@ void LogixTableAction::copyLogixPressed(ActionEvent* /*e*/)
  {
   if (!checkLogixUserName(uName))
    return;
-  targetLogix = ((DefaultLogixManager*)_logixManager)->createNewLogix(uName);
+  targetLogix = _logixManager->createNewLogix(uName);
  }
  else
  {
@@ -1095,7 +1095,7 @@ void LogixTableAction::createPressed(ActionEvent* /*e*/)
   {
    return;
   }
-  _curLogix = ((DefaultLogixManager*)_logixManager)->createNewLogix(uName);
+  _curLogix = _logixManager->createNewLogix(uName);
  }
  else
  {
@@ -1131,7 +1131,7 @@ void LogixTableAction::createPressed(ActionEvent* /*e*/)
  cancelAddPressed(NULL);
  // create the Edit Logix Window
  makeEditLogixWindow();
- ((DefaultUserMessagePreferences*) prefMgr)->setSimplePreferenceState(systemNameAuto, _autoSystemName->isChecked());
+ ((UserPreferencesManager*) prefMgr)->setSimplePreferenceState(systemNameAuto, _autoSystemName->isChecked());
 }
 
 // *********** Methods for Edit Logix Window ********************
@@ -1389,7 +1389,7 @@ void LogixTableAction::showSaveReminder() {
     }*/
     if (_showReminder){
         if (InstanceManager::getDefault("UserPreferencesManager") != NULL)
-            ((DefaultUserMessagePreferences*) InstanceManager::getDefault("UserPreferencesManager"))->
+            ((UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager"))->
                 showInfoMessage(tr("ReminderTitle"),tr("Reminder1"),getClassName(), "remindSaveLogix");
     }
 }
@@ -1533,8 +1533,8 @@ void LogixTableAction::finishDone()
  options.insert(0x00, tr("Always Ask"));
  options.insert(0x01, tr("Never Delete"));
  options.insert(0x02, tr("Delete Without Prompting"));
- ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "delete", tr("When Deleting the logix"), options, 0x00);
- ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveLogix", tr("Suppress Save Reminders"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "delete", tr("When Deleting the logix"), options, 0x00);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveLogix", tr("Suppress Save Reminders"));
  AbstractTableAction::setMessagePreferencesDetails();
 }
 
@@ -1548,8 +1548,8 @@ void LogixTableAction::deletePressed(QString sName)
   return;
  }
  /*final*/ x = ((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
- ///*final*/ DefaultUserMessagePreferences* p;
- p = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+ ///*final*/ UserPreferencesManager* p;
+ p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  if (p != NULL && p->getMultipleChoiceOption(getClassName(), "delete")==0x02)
  {
   if (x != NULL)
@@ -1812,6 +1812,7 @@ void LogixTableAction::makeEditConditionalWindow()
   editConditionalFrame = new JmriJFrame(tr("Edit Conditional"), false, false);
   editConditionalFrame->addHelpMenu(
         "package.jmri.jmrit.beantable.ConditionalAddEdit", true);
+  editConditionalFrame->resize(400,600);
   if(editConditionalFrame->centralWidget() == NULL)
   {
    QWidget* centralWidget = new QWidget();
@@ -1832,7 +1833,7 @@ void LogixTableAction::makeEditConditionalWindow()
   verticalLayout1->addLayout(p1HBoxLayout1);
   QHBoxLayout* p1HBoxLayout2 = new QHBoxLayout();
   p1HBoxLayout2->setObjectName(QString::fromUtf8("p1HBoxLayout2"));
-  p1HBoxLayout2->addWidget(new QLabel(tr("ConditionalUserName")));
+  p1HBoxLayout2->addWidget(new QLabel(tr("Conditional User Name")));
   p1HBoxLayout2->addWidget(conditionalUserName);
   conditionalUserName->setToolTip(tr("Enter user name for Conditional, e.g. Signal 2 Red"));
   verticalLayout1->addLayout(p1HBoxLayout2);
@@ -2112,7 +2113,7 @@ JScrollPane actionTableScrollPane = new JScrollPane(actionTable);
   addActionButton->setToolTip(tr("Press to add a new row to Action Table"));
   consequentPanel->layout()->addWidget(panel43);
   //  - Reorder action button
-  QPushButton* reorderButton = new QPushButton(tr("ReorderButton"));
+  QPushButton* reorderButton = new QPushButton(tr("Reorder"));
   reorderButton->setSizePolicy(sizePolicy);
   panel43->layout()->addWidget(reorderButton);
 //  reorderButton->layout()->addActionListener(new ActionListener() {
@@ -2136,7 +2137,7 @@ JScrollPane actionTableScrollPane = new JScrollPane(actionTable);
   // Bottom Buttons - Update Conditional
   QWidget* panel5 = new QWidget();
   panel5->setLayout(new QHBoxLayout());
-  QPushButton* updateConditional = new QPushButton(tr("UpdateConditionalButton"));
+  QPushButton* updateConditional = new QPushButton(tr("Update Conditional"));
   panel5->layout()->addWidget(updateConditional);
 //  updateConditional->layout()->addActionListener(new ActionListener() {
 //    /*public*/ void actionPerformed(ActionEvent e) {
@@ -2146,7 +2147,7 @@ JScrollPane actionTableScrollPane = new JScrollPane(actionTable);
   connect(updateConditional, SIGNAL(clicked()), this, SLOT(updateConditionalPressed()));
   updateConditional->setToolTip(tr("Press to keep changes and return to Edit Logix"));
   // Cancel
-  QPushButton* cancelConditional = new QPushButton(tr("CancelButton"));
+  QPushButton* cancelConditional = new QPushButton(tr("Cancel"));
   panel5->layout()->addWidget(cancelConditional);
 //  cancelConditional->layout()->addActionListener(new ActionListener() {
 //    /*public*/ void actionPerformed(ActionEvent e) {
@@ -2156,7 +2157,7 @@ JScrollPane actionTableScrollPane = new JScrollPane(actionTable);
   connect(cancelConditional, SIGNAL(clicked()), this, SLOT(cancelConditionalPressed()));
   cancelConditional->setToolTip(tr("Press to return to Edit Logix without any changes"));
   // Delete Conditional
-  QPushButton* deleteConditional = new QPushButton(tr("DeleteConditionalButton"));
+  QPushButton* deleteConditional = new QPushButton(tr("Delete Conditional"));
   panel5->layout()->addWidget(deleteConditional);
 //  deleteConditional->layout()->addActionListener(new ActionListener() {
 //    /*public*/ void actionPerformed(ActionEvent e) {
@@ -2175,6 +2176,7 @@ JScrollPane actionTableScrollPane = new JScrollPane(actionTable);
 //                    cancelConditionalPressed(NULL);
 //                }
 //            });
+ editConditionalFrame->addWindowListener(new ECFWindowListener(this));
  // initialize state variable table
  _variableTableModel->fireTableDataChanged();
  // initialize action variables
@@ -2184,6 +2186,16 @@ JScrollPane actionTableScrollPane = new JScrollPane(actionTable);
  inEditConditionalMode = true;
  checkVariablePressed(NULL);     // update variables to their current states
 }   /* makeEditConditionalWindow */
+
+ECFWindowListener::ECFWindowListener(LogixTableAction *self)
+{
+ this->self = self;
+}
+void ECFWindowListener::windowClosing(QCloseEvent *e)
+{
+ self->cancelConditionalPressed();
+}
+
 #if 1
 /**
  * Responds to the Add State Variable Button in the Edit Conditional window
@@ -2931,7 +2943,7 @@ void LogixTableAction::makeEditActionWindow(int row)
     //panel2->layout()->addWidget(Box.createHorizontalStrut(5));
 
     _longActionString = new JTextField(50);
-    _textPanel = makeEditPanel(_longActionString, "LabelActionText", NULL);
+    _textPanel = makeEditPanel(_longActionString, "Action Text", NULL);
     _textPanel->setMaximumSize(
                  QSize(80, _textPanel->size().height()));
     //_textPanel->layout()->addWidget(Box.createVerticalGlue());
@@ -3799,7 +3811,7 @@ void LogixTableAction::actionItemChanged(int type)
      {
       QWidget* p = (QWidget*)_actionPanel->children().at(1);
       QLabel* l = (QLabel*)p->children().at(1);
-      l->setText(tr("LabelActionSignal"));
+      l->setText(tr("Action Signal"));
 
       loadJComboBoxWithSignalAspects(_actionBox,_actionNameField->text().trimmed());
 
@@ -3824,7 +3836,7 @@ void LogixTableAction::actionItemChanged(int type)
      {
       QWidget* p = (QWidget*)_actionPanel->children().at(1);
       QLabel* l = (QLabel*)p->children().at(1);
-      l->setText(tr("LabelSignalAspect"));
+      l->setText(tr("Signal Aspect"));
 
       loadJComboBoxWithMastAspects(_actionBox,_actionNameField->text().trimmed());
 
@@ -3846,7 +3858,7 @@ void LogixTableAction::actionItemChanged(int type)
      {
       QWidget* p = (QWidget*)_shortTextPanel->children().at(1);
       QLabel* l = (QLabel*)p->children().at(1);
-      l->setText(tr("LabelLightIntensity"));
+      l->setText(tr("Light Intensity"));
      _shortTextPanel->setToolTip(tr("Enter intensity percentage as an integer 0 to 100."));
        _shortTextPanel->setVisible(true);
      }
@@ -3869,7 +3881,7 @@ void LogixTableAction::actionItemChanged(int type)
       _actionPanel->setToolTip(tr("Select On or Off depending upon how Light is to be set"));
       _actionPanel->setVisible(true);
      }
-     _namePanel->setToolTip(tr("NameHintLight"));
+     _namePanel->setToolTip(tr("Enter Name (system or user) for Light (e.g. CL21)"));
      _namePanel->setVisible(true);
      break;
     }
@@ -3922,13 +3934,13 @@ void LogixTableAction::actionItemChanged(int type)
             _namePanel->setVisible(true);
             break;
     }
-#if 0
+#if 0 // TODO:
         case Conditional::ITEM_TYPE_WARRANT:
             for(int i=0; i<Conditional::ITEM_TO_WARRANT_ACTION.length(); i++) {
                 _actionTypeBox->addItem(
                     DefaultConditionalAction::getActionTypeString(Conditional::ITEM_TO_WARRANT_ACTION.at(i)));
             }
-            _namePanel->setToolTip(tr("NameHintWarrant"));
+            _namePanel->setToolTip(tr("Enter name (system or user) of Warrant"));
             _namePanel->setVisible(true);
             if (actionType==Conditional::ACTION_CONTROL_TRAIN) {
                 p = (JPanel)_actionPanel.getComponent(0);
@@ -3936,7 +3948,7 @@ void LogixTableAction::actionItemChanged(int type)
                 _actionBox->layout()->addWidget(new QLabel("WarrantHalt"));
                 _actionBox->layout()->addWidget(new QLabel("WarrantResume"));
                 _actionBox->layout()->addWidget(new QLabel("WarrantAbort"));
-                l->setText(tr("LabelControlTrain"));
+                l->setText(tr("Control Train"));
                _actionPanel->setVisible(true);
             } else if (actionType==Conditional::ACTION_SET_TRAIN_ID ||
                             actionType==Conditional::ACTION_SET_TRAIN_NAME ||
@@ -3944,14 +3956,14 @@ void LogixTableAction::actionItemChanged(int type)
                 p = (JPanel)_shortTextPanel.getComponent(0);
                 l = (JLabel)p.getComponent(0);
                 if (actionType==Conditional::ACTION_SET_TRAIN_ID) {
-                    _shortTextPanel->setToolTip(tr("DataHintTrainId"));
-                    l->setText(tr("LabelTrainId"));
+                    _shortTextPanel->setToolTip(tr("Enter a train ID from the Roster - or enter a DCC address indicating long or short e.g. 1234(L) or 10(S)"));
+                    l->setText(tr("Train Id"));
                 } else if (actionType==Conditional::ACTION_SET_TRAIN_NAME) {
-                    _shortTextPanel->setToolTip(tr("DataHintTrainName"));
-                    l->setText(tr("LabelTrainName"));
+                    _shortTextPanel->setToolTip(tr("Enter a name for the train"));
+                    l->setText(tr("Train Name"));
                 } else if (actionType==Conditional::ACTION_THROTTLE_FACTOR) {
-                    _shortTextPanel->setToolTip(tr("DataHintThrottleFactor"));
-                    l->setText(tr("LabelThrottleFactor"));
+                    _shortTextPanel->setToolTip(tr("Enter a decimal number for the throttle setting ratio."));
+                    l->setText(tr("Throttle Factor"));
                 }
                 _shortTextPanel->setVisible(true);
             }
@@ -3963,18 +3975,18 @@ void LogixTableAction::actionItemChanged(int type)
                 _actionTypeBox->addItem(
                     DefaultConditionalAction::getActionTypeString(Conditional::ITEM_TO_OBLOCK_ACTION.at(i)));
             }
-            _namePanel->setToolTip(tr("NameHintOBlock"));
+            _namePanel->setToolTip(tr("Enter name (system or user) of OBlock"));
             _namePanel->setVisible(true);
 /*
             if (actionType==Conditional::ACTION_ALLOCATE_BLOCK_PATH ||
                     actionType==Conditional::ACTION_SET_BLOCK_PATH_TURNOUTS) {
                 p = (JPanel)_actionPanel.getComponent(0);
                 l = (JLabel)p.getComponent(0);
-                l->setText(tr("LabelBlockPaths"));
+                l->setText(tr("Block Path"));
 
                 loadJComboBoxWithBlockPaths(_actionBox,_actionNameField->text().trimmed());
 
-                _actionPanel->setToolTip(tr("BlockPathsSetHint"));
+                _actionPanel->setToolTip(tr("Select the path to use"));
                 _actionPanel->setVisible(true);
             } else {
             }
@@ -3988,14 +4000,14 @@ void LogixTableAction::actionItemChanged(int type)
             if (actionType==Conditional::ACTION_PLAY_SOUND) {
                 p = (JPanel)_textPanel.getComponent(0);
                 l = (JLabel)p.getComponent(0);
-                l->setText(tr("LabelSetFile"));
-                _textPanel->setToolTip(tr("SetHintSound"));
+                l->setText(tr("Set File"));
+                _textPanel->setToolTip(tr("Click for a file selection dialog for choosing a sound file"));
                 _textPanel->setVisible(true);
                 _setPanel->setVisible(true);
             } else if (actionType==Conditional::ACTION_CONTROL_AUDIO) {
                 p = (JPanel)_actionPanel.getComponent(0);
                 l = (JLabel)p.getComponent(0);
-                l->setText(tr("LabelActionAudio"));
+                l->setText(tr("Action Audio"));
                 _actionBox->layout()->addWidget(new QLabel("AudioSourcePlay"));
                 _actionBox->layout()->addWidget(new QLabel("AudioSourceStop"));
                 _actionBox->layout()->addWidget(new QLabel("AudioSourcePlayToggle"));
@@ -4006,9 +4018,9 @@ void LogixTableAction::actionItemChanged(int type)
                 _actionBox->layout()->addWidget(new QLabel("AudioSourceFadeIn"));
                 _actionBox->layout()->addWidget(new QLabel("AudioSourceFadeOut"));
                 _actionBox->layout()->addWidget(new QLabel("AudioResetPosition"));
-                _actionPanel->setToolTip(tr("SetHintAudio"));
+                _actionPanel->setToolTip(tr("Select action to perform"));
                 _actionPanel->setVisible(true);
-                _namePanel->setToolTip(tr("NameHintAudio"));
+                _namePanel->setToolTip(tr("Enter Name (system or user) for AudioSource (e.g. IAS2)"));
                 _namePanel->setVisible(true);
             }
             break;
@@ -4020,15 +4032,15 @@ void LogixTableAction::actionItemChanged(int type)
             if (actionType==Conditional::ACTION_RUN_SCRIPT) {
                 p = (JPanel)_textPanel.getComponent(0);
                 l = (JLabel)p.getComponent(0);
-                l->setText(tr("LabelSetFile"));
-                _textPanel->setToolTip(tr("SetHintScript"));
+                l->setText(tr("Set File"));
+                _textPanel->setToolTip(tr("Click for a file selection dialog for choosing a script file"));
                 _textPanel->setVisible(true);
                 _setPanel->setVisible(true);
             } else if (actionType==Conditional::ACTION_JYTHON_COMMAND) {
                 p = (JPanel)_shortTextPanel.getComponent(0);
                 l = (JLabel)p.getComponent(0);
-                l->setText(tr("LabelScriptCommand"));
-                _shortTextPanel->setToolTip(tr("SetHintJythonCmd"));
+                l->setText(tr("Script Command"));
+                _shortTextPanel->setToolTip(tr("Enter Jython command text"));
                 _shortTextPanel->setVisible(true);
             }
             break;
@@ -4330,7 +4342,7 @@ void loadJComboBoxWithBlockPaths(JComboBox box, String blockName) {
   }
   case Conditional::ITEM_TYPE_CONDITIONAL:
   {
-   _variableNamePanel->setToolTip(tr("NameHintConditional"));
+   _variableNamePanel->setToolTip(tr("Enter System Name for Conditional (or User Name if in this Logix)"));
    for (int i=0; i<Conditional::ITEM_TO_CONDITIONAL_TEST.length(); i++)
    {
     _variableStateBox->addItem(
@@ -4355,7 +4367,7 @@ void loadJComboBoxWithBlockPaths(JComboBox box, String blockName) {
   {
    QWidget*p = (QWidget*)_variableData1Panel->children().at(1);
    QLabel* l = (QLabel*)p->children().at(1);
-   l->setText(tr("LabelStartTime"));
+   l->setText(tr("Start Time"));
    _variableData1Panel->setToolTip(tr("Enter time (hh:mm) for a 24-hour clock"));
    _variableData1Panel->setVisible(true);
    _variableData2Panel->setVisible(true);

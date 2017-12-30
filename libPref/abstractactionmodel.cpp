@@ -7,6 +7,11 @@
 #include <QTextStream>
 #include "resourcebundle.h"
 #include "libpref_global.h"
+#include "loggerfactory.h"
+#include "startupactionmodelutil.h"
+#include "class.h"
+#include "connectionnamefromsystemname.h"
+#include "systemconnectionaction.h"
 
 //AbstractActionModel::AbstractActionModel(QObject *parent) :
 //    QObject(parent)
@@ -25,13 +30,15 @@
  * @see PerformActionPanel
  */
 // /*public*/ abstract class AbstractActionModel{
+/*private*/ /*final*/ /*static*/ Logger* AbstractActionModel::log = LoggerFactory::getLogger("AbstractActionModel");
+
 
 /*public*/ LIBPREFSHARED_EXPORT AbstractActionModel::AbstractActionModel(QObject *parent) :
-    QObject(parent)
+    StartupModel(parent)
 {
  className="";
- pcs = new PropertyChangeSupport(this);
- log = new Logger("AbstractActionModel");
+ systemPrefix = "";
+ exceptions = new QList<Exception>();
 }
 
 /*public*/ QString AbstractActionModel::getClassName() {
@@ -40,171 +47,123 @@
 
 /*public*/ QString AbstractActionModel::getName()
 {
- //Iterator<Class<?>> iterator = classList.keySet().iterator();
- QStringListIterator iterator(_classList.keys());
- while (iterator.hasNext())
+ if (className != "")
  {
-  QString key = iterator.next();
-  if(key==(className))
-   return _classList.value(key);
+  return StartupActionModelUtil::getDefault()->getActionName(className);
  }
  return "";
 }
 
 /*public*/ void AbstractActionModel::setName(QString n)
 {
- //Iterator<Class<?>> iterator = classList.keySet().iterator();
- QStringListIterator iterator(_classList.keys());
- while (iterator.hasNext())
- {
-  QString key = iterator.next();
-  if(_classList.value(key)==(n))
-  {
-   className = key;
-   return;
-  }
- }
+ // can set className to NULL if no class found for n
+ this->className = StartupActionModelUtil::getDefault()->getClassName(n);
 }
 
 /*public*/ void AbstractActionModel::setClassName(QString n) {
-    className = n;
+ //Objects.requireNonNull(n, "Class name cannot be NULL");
+ className = n;
 }
 
-//@edu.umd.cs.findbugs.annotations.SuppressWarnings({"EI_EXPOSE_REP", "MS_EXPOSE_REP"}) // OK until Java 1.6 allows return of cheap array copy
-/*static*/ /*public*/ QStringList AbstractActionModel::nameList()
-{
- if (_classList.isEmpty()) loadArrays();
- QStringList names = _classList.values();//.toArray(new String[classList.size()]);
- //StringUtil::sort(names);
- return names;
+//@NonNULL
+/*public*/ QString AbstractActionModel::getSystemPrefix() {
+    return this->systemPrefix;
 }
 
-//@edu.umd.cs.findbugs.annotations.SuppressWarnings({"EI_EXPOSE_REP", "MS_EXPOSE_REP"}) // OK until Java 1.6 allows return of cheap array copy
-/*static*/ /*public*/ QStringList AbstractActionModel::classList()
-{
- if (_classList.isEmpty()) loadArrays();
- return _classList.keys();//.toArray(new Class<?>[classList.size()]);
-}
-
-/*static*/ /*private*/ void AbstractActionModel::loadArrays()
-{
- //ResourceBundle rb = ResourceBundle.getBundle("apps.ActionListCoreBundle");
-    ResourceBundle* rb = new ResourceBundle();
- rb->getBundle("src/apps/ActionListCoreBundle.properties");
- // count entries (not entirely efficiently!)
- _classList = QMap<QString, QString>();
- //Enumeration<String> e = rb.getKeys();
- QStringListIterator e(rb->keys());
- while (e.hasNext())
- {
-  QString classes;
-  QString key = e.next();
-  if (key!=(""))
-  { // ignoring empty lines in file
-   try
-   {
-    classes = key;//Class.forName(key);
-    _classList.insert(classes, rb->getString(key));
-   }
-   catch (ClassNotFoundException ex)
-   {
-    Logger::error("Did not find class ["+key+"]");
-   }
-  }
- }
-}
-
-/*public*/ void AbstractActionModel::addAction(QString strClass, QString name) throw (ClassNotFoundException)
-{
- if(_classList.isEmpty()) loadArrays();
- QString classes;
- try
- {
-  classes= strClass /*Class.forName(strClass)*/;
- }
- catch (ClassNotFoundException ex)
- {
-    log->error("Did not find class "+strClass);
-        throw ex;
+/*public*/ void AbstractActionModel::setSystemPrefix(/*@Nullable*/ QString prefix) {
+    if (prefix == "") {
+        this->systemPrefix = ""; // NOI18N
+    } else {
+        this->systemPrefix = prefix;
     }
-    _classList.insert(classes, name);
-    firePropertyChange("length","","");
 }
 
-/*public*/ void AbstractActionModel::removeAction(QString strClass) throw (ClassNotFoundException)
+/*public*/ bool AbstractActionModel::isSystemConnectionAction() {
+    QString name = this->getName();
+    if (name != "") {
+        return StartupActionModelUtil::getDefault()->isSystemConnectionAction(name);
+    }
+    return false;
+}
+
+//@Override
+/*public*/ bool AbstractActionModel::isValid()
 {
- if(_classList.isEmpty()) return;
- QString classes;
- try
+ if (this->className != "" && !this->className.isEmpty())
  {
-  classes= strClass /*Class.forName(strClass)*/;
- } catch (ClassNotFoundException ex)
- {
-  log->error("Did not find class "+strClass);
-  throw ex;
- }
- _classList.remove(classes);
- firePropertyChange("length","","");
-}
-
-/*static*/ /*private*/ QMap<QString, QString> AbstractActionModel::_classList = QMap<QString, QString>();
-
-/*public*/ /*synchronized*/ void AbstractActionModel::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
-}
-/*public*/ /*synchronized*/ void AbstractActionModel::removePropertyChangeListener(PropertyChangeListener* l) {
-    pcs->removePropertyChangeListener(l);
-}
-/*protected*/ void AbstractActionModel::firePropertyChange(QString p, QVariant old, QVariant n)
-{ pcs->firePropertyChange(p,old,n);}
-
-#if 0
-/*static*/ QMap<QString, QString> ResourceBundle::bundleMap = QMap<QString, QString>();
-
-void ResourceBundle::getBundle(QString filename)
-{
- QString path = FileUtil::getProgramPath() + "java" + QDir::separator() + filename;
- QFileInfo info(path);
- if(!info.exists())
- {
-  Logger::error(QString("Can't find %1").arg(path));
-  return;
- }
- QFile file(path);
- if(file.open(QIODevice::ReadOnly| QIODevice::Text))
- {
-  bundleMap.clear();
-  while (!file.atEnd())
+  try
   {
-   QTextStream in(&file);
-   while (!in.atEnd())
-   {
-    QString line = in.readLine();
-    if(line.startsWith("#"))
-        continue;
-    if(!line.contains("="))
-        continue;
-    QStringList sl = line.split("=");
-    QString left = sl.at(0).trimmed();
-    QString key;
-    QString value;
-    int i = left.lastIndexOf(".");
-    if(i == -1)
-     key = left;
-    else
-     key = left.mid(i+1);
-    value = sl.at(1).trimmed();
-    bundleMap.insert(key, value);
-   }
+   // don't need return value, just want to know if exception is triggered
+   Class::forName(className);
+   return true;
+  }
+  catch (ClassNotFoundException ex)
+  {
+   return false;
   }
  }
+ return false;
 }
-QString ResourceBundle::getString(QString key)
+
+//@Override
+/*public*/ QString AbstractActionModel::toString()
 {
- return bundleMap.value(key);
+ QString name = this->getName();
+ if (name != "")
+ {
+  if (!this->systemPrefix.isEmpty()) {
+      return tr("<html>%1<br>on connection %2</html>").arg(name).arg( ConnectionNameFromSystemName::getConnectionName(this->systemPrefix)); // NOI18N
+  }
+  return name;
+ }
+ if (this->className != "" && this->isValid()) {
+     return tr("Create instance of class %1").arg(this->className);
+ } else if (this->className != "" && !this->className.isEmpty()) {
+     return tr("Unable to find class %1").arg(this->className);
+ }
+ return tr("Action %1 is invalid").arg(toString());
 }
-QStringList ResourceBundle::keys()
+
+//@Override
+/*public*/ void AbstractActionModel::performAction() throw (JmriException)
 {
- return bundleMap.keys();
+ log->debug(tr("Invoke Action from %1").arg(className));
+ try
+ {
+  Action* action = (Action*) Class::forName(className)->newInstance();
+  //if (SystemConnectionAction.class.isAssignableFrom(action->getClass()))
+  if(((Class*)action)->isAssignableFrom("SystemConnectionAction"))
+  {
+   SystemConnectionMemo* memo = ConnectionNameFromSystemName::getSystemConnectionMemoFromSystemPrefix(this->getSystemPrefix());
+   if (memo != NULL) {
+       ((SystemConnectionAction*) action)->setSystemConnectionMemo(memo);
+   } else {
+       log->warn(tr("Connection \"%1\" does not exist and cannot be assigned to action %2\nThis warning can be silenced by configuring the connection associated with the startup action.").arg(this->getSystemPrefix()).arg(className));
+   }
+  }
+  this->performAction(action);
+ } catch (ClassNotFoundException ex) {
+     log->error(tr("Could not find specified class: %1").arg(className));
+ } catch (IllegalAccessException ex) {
+     log->error(tr("Unexpected access exception for class: %1").arg(className), ex.getMessage());
+     throw JmriException(ex.getMessage());
+ } catch (InstantiationException ex) {
+     log->error(tr("Could not instantiate specified class: %1").arg(className), ex.getMessage());
+     throw JmriException(ex.getMessage());
+ } catch (Exception ex) {
+     log->error(tr("Error while performing startup action for class: %1").arg(className), ex.getMessage());
+     throw JmriException(ex.getMessage());
+ }
 }
-#endif
+
+//@Override
+/*public*/ QList<Exception>* AbstractActionModel::getExceptions() {
+    return new QList<Exception>(*this->exceptions);
+}
+
+//@Override
+/*public*/ void AbstractActionModel::addException(Exception exception) {
+    this->exceptions->append(exception);
+}
+
+/*protected*/ /*abstract*/ void AbstractActionModel::performAction(Action* action) throw (JmriException) {}

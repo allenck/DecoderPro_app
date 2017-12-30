@@ -79,7 +79,7 @@
  }
 }
 
-/*public*/ void LnHexFilePort::_connect() throw (Exception)
+/*public*/ void LnHexFilePort::_connect() //throw (Exception)
 {
  HexFileFrame* f = new HexFileFrame();
 

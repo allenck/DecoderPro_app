@@ -2,7 +2,7 @@
 #include "exceptions.h"
 #include "abstractsensor.h"
 #include "instancemanager.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 
 /**
  * Implementation of the InternalSensorManager interface.
@@ -16,6 +16,14 @@ InternalSensorManager::InternalSensorManager()
  prefix = "I";
  registerSelf(); // Added by ACK
 }
+/*public*/ InternalSensorManager::InternalSensorManager(QString prefix) {
+    //super();
+ setObjectName("InternalSensorManager");
+ this->prefix = prefix;
+ registerSelf(); // Added by ACK
+
+}
+
 /*public*/ bool InternalSensorManager::allowMultipleAdditions(QString /*systemName*/) { return true;  }
 /**
  * Create an internal (dummy) sensor object
@@ -55,7 +63,7 @@ InternalSensorManager::InternalSensorManager()
         iName = curAddress.toInt();
     } catch (NumberFormatException ex) {
         log.error("Unable to convert " + curAddress + " Hardware Address to a number");
-        ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",ex.getMessage(), "",true, false, Level::_ERROR);
+        ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",ex.getMessage(), "",true, false, Level::_ERROR);
         return NULL;
     }
     //Check to determine if the systemName is in use, return null if it is,

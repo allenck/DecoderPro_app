@@ -18,51 +18,64 @@
 
 /**
  * Locates the connected systems name from a given prefix.
- * @param prefix
- * @return The Connection System Name
+ *
+ * @param prefix the system prefix
+ * @return The Connection System Name or null if no connection has the given
+ *         prefix
  */
-/*static*/ /*public*/ QString ConnectionNameFromSystemName::getConnectionName(QString prefix)
-{
- QObjectList* list
-            = InstanceManager::getList("SystemConnectionMemo");
- if (list != NULL)
- {
-   foreach (QObject* memo, *list)
-   {
-    if (((SystemConnectionMemo*)memo)->getSystemPrefix()==(prefix))
-     return ((SystemConnectionMemo*)memo)->getUserName();
-   }
-  }
-  //Fall through if the system isn't using the new SystemConnectionMemo registration
-  return DCCManufacturerList::getDCCSystemFromType(prefix.at(0));
+//@CheckForNull
+/*static*/ /*public*/ QString ConnectionNameFromSystemName::getConnectionName(/*@Nonnull*/ QString prefix) {
+    SystemConnectionMemo* memo = getSystemConnectionMemoFromSystemPrefix(prefix);
+    if (memo != NULL) {
+        return memo->getUserName();
+    }
+    return NULL;
 }
-/*
- *  Returns the System prefix of a connection given the system name.
- */
+
 /**
  * Locates the connected systems prefix from a given System name.
- * @param name
- * @return The system prefix
+ *
+ * @param name The user name
+ * @return The system prefix or null if no connection has the given name
  */
-/*static*/ /*public*/ QString ConnectionNameFromSystemName::getPrefixFromName(QString name)
-{
- if (name==NULL)
-        return NULL;
- QObjectList* list
-            = InstanceManager::getList("SystemConnectionMemo");
- if (list != NULL)
- {
+//@CheckForNull
+/*static*/ /*public*/ QString ConnectionNameFromSystemName::getPrefixFromName(/*@Nonnull*/ QString name) {
+    SystemConnectionMemo* memo = getSystemConnectionMemoFromUserName(name);
+    if (memo != NULL) {
+        return memo->getSystemPrefix();
+    }
+    return NULL;
+}
 
-  foreach (QObject* memo, *list)
-  {
-   if (((SystemConnectionMemo*)memo)->getUserName()==(name))
-   {
-    return ((SystemConnectionMemo*)memo)->getSystemPrefix();
-   }
-  }
- }
- QString prefix = QString(DCCManufacturerList::getTypeFromDCCSystem(name));
-    //Fall through if the system isn't using the new SystemConnectionMemo registration
- return prefix;
+/**
+ * Get the {@link jmri.jmrix.SystemConnectionMemo} for a given system
+ * prefix.
+ *
+ * @param systemPrefix the system prefix
+ * @return the SystemConnectionMemo or null if no memo exists
+ */
+//@CheckForNull
+/*static*/ /*public*/ SystemConnectionMemo* ConnectionNameFromSystemName::getSystemConnectionMemoFromSystemPrefix(/*@Nonnull */QString systemPrefix) {
+    foreach (QObject* memo,  *InstanceManager::getList("SystemConnectionMemo")) {
+        if (((SystemConnectionMemo*)memo)->getSystemPrefix()==(systemPrefix)) {
+            return (SystemConnectionMemo*)memo;
+        }
+    }
+    return NULL;
+}
 
+/**
+ * Get the {@link jmri.jmrix.SystemConnectionMemo} for a given user name.
+ *
+ * @param userName the user name
+ * @return the SystemConnectionMemo or null if no memo exists
+ */
+//@CheckForNull
+/*static*/ /*public*/ SystemConnectionMemo* ConnectionNameFromSystemName::getSystemConnectionMemoFromUserName(/*@Nonnull*/ QString userName) {
+    foreach (QObject* memo, *InstanceManager::getList("SystemConnectionMemo")) {
+        if (((SystemConnectionMemo*)memo)->getUserName() == (userName)) {
+            return (SystemConnectionMemo*)memo;
+        }
+    }
+    return NULL;
 }

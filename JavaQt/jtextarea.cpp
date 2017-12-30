@@ -146,7 +146,7 @@ void JTextArea::common()
  * @exception IllegalArgumentException if the rows or columns
  *  arguments are negative.
  */
-/*public*/ JTextArea::JTextArea(int row, int columns, QWidget * parent)
+/*public*/ JTextArea::JTextArea(int rows, int columns, QWidget * parent)
  : QTextEdit(parent)
 {
     //this(NULL, NULL, rows, columns);

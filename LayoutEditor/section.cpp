@@ -12,6 +12,7 @@
 #include "../LayoutEditor/connectivityutil.h"
 #include "../libPr3/Signal/abstractsignalheadmanager.h"
 #include "vptr.h"
+#include "jmrijframe.h"
 
 const /*static*/ /*final*/ int Section::UNOCCUPIED = 0x04;
 
@@ -337,6 +338,9 @@ Section::Section(QObject *parent) :
     }
     return NULL;
 }
+/*public*/ Block* Section::getLastBlock() {
+    return mLastBlock;
+}
 
 /*private*/ Sensor* Section::validateSensor() {
     // check if anything entered
@@ -493,20 +497,22 @@ connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockC
 }
 /*private*/ void Section::initializeBlocks()
 {
- for (int i = 0; i<blockNameList->size(); i++) {
-        Block* b = InstanceManager::blockManagerInstance()->getBlock(blockNameList->at(i));
-        if (b==NULL) {
-            log.error("Missing Block - "+blockNameList->at(i)+" - when initializing Section - "+
-                                getSystemName());
-        }
-        else {
-            if (mBlockEntries->size()==0) {
-                mFirstBlock = b;
-            }
-            mBlockEntries->append(b);
-            mLastBlock = b;
-            PropertyChangeListener* listener = NULL;
-            //b->addPropertyChangeListener(listener = new PropertyChangeListener() );//{
+ for (int i = 0; i<blockNameList->size(); i++)
+ {
+  Block* b = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(blockNameList->at(i));
+  if (b==NULL)
+  {
+   log.error("Missing Block - "+blockNameList->at(i)+" - when initializing Section - "+
+                       getSystemName());
+  }
+  else {
+      if (mBlockEntries->size()==0) {
+          mFirstBlock = b;
+      }
+      mBlockEntries->append(b);
+      mLastBlock = b;
+      PropertyChangeListener* listener = NULL;
+      //b->addPropertyChangeListener(listener = new PropertyChangeListener() );//{
 //#if 0
 //                    // TODO::
 

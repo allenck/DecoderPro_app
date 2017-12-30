@@ -25,6 +25,7 @@
 /*public*/ DeferringProgrammerManager::DeferringProgrammerManager(QObject *parent) :
 ProgrammerManager(parent)
 {
+ setObjectName("DeferringProgrammerManager");
  userName = "<Default>";
  log = new Logger("DeferringProgrammerManager");
 }
@@ -81,16 +82,18 @@ ProgrammerManager(parent)
  *
  * @return false if there's no chance of getting one
  */
-/*public*/ bool DeferringProgrammerManager::isGlobalProgrammerAvailable() {
- GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
-    if (gp == NULL) {
-        return false;
-    }
-    return ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable();
+/*public*/ bool DeferringProgrammerManager::isGlobalProgrammerAvailable()
+{
+ GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
+ if (gp == NULL)
+ {
+  return false;
+ }
+ return ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable();
 }
 
-/*public*/ AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress) {
- AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
+/*public*/ AddressedProgrammer* DeferringProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
+ AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getNullableDefault("AddressedProgrammerManager");
     if (ap == NULL) {
         return NULL;
     }
@@ -105,7 +108,7 @@ ProgrammerManager(parent)
     return ap->reserveAddressedProgrammer(pLongAddress, pAddress);
 }
 
-/*public*/ void releaseAddressedProgrammer(AddressedProgrammer* p) {
+/*public*/ void DeferringProgrammerManager::releaseAddressedProgrammer(AddressedProgrammer* p) {
  AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
     if (ap == NULL) {
         return;

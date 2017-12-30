@@ -1,8 +1,8 @@
 #include "usermessagepreferencespane.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"
 #include <QBoxLayout>
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include <QLabel>
 #include <QComboBox>
 #include <QCheckBox>
@@ -47,14 +47,14 @@
 
 
   //super();
-  p = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 //    p->addPropertyChangeListener((PropertyChangeEvent e) -> {
 //        if (e.getPropertyName()==("PreferencesUpdated")) {
 //            refreshOptions();
 //        }
 //    });
 
-  DefaultUserMessagePreferences* dp =(DefaultUserMessagePreferences*)p;
+  UserPreferencesManager* dp =(UserPreferencesManager*)p;
   connect(dp, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   QVBoxLayout* thisLayout;
   setLayout(thisLayout = new QVBoxLayout);//(this, BoxLayout.Y_AXIS));

@@ -319,6 +319,6 @@ void MemoryTableAction::handleCreateException(QString sysName) {
 }
 #endif
 /*protected*/ QString MemoryTableAction::getClassName() {
-    return "MemoryTableAction";
+    return "jmri.jmrit.beantable.MemoryTableAction";
 }
 

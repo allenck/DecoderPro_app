@@ -166,3 +166,12 @@ void JTree::on_clicked(QModelIndex index)
  disconnect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(on_clicked(QModelIndex)));
 }
 
+/**
+ * Returns true if the selection is currently empty.
+ *
+ * @return true if the selection is currently empty
+ */
+/*public*/ bool JTree::isSelectionEmpty() {
+    return getSelectionModel()->isSelectionEmpty();
+}
+

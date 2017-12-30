@@ -336,7 +336,7 @@ virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
 virtual NamedBean*  makeBean(int  arg__1, QString  systemName, QString  userName);
-virtual AbstractManager*  makeInternalManager() const;
+virtual Manager*  makeInternalManager() const;
 virtual QString  makeSystemName(QString  s);
 virtual void on_propertyChange(PropertyChangeEvent*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
@@ -354,13 +354,13 @@ inline void promoted_deregister(NamedBean*  s) { AbstractProxyManager::deregiste
 inline void promoted_dispose() { AbstractProxyManager::dispose(); }
 inline NamedBean*  promoted_getBeanBySystemName(QString  systemName) { return AbstractProxyManager::getBeanBySystemName(systemName); }
 inline NamedBean*  promoted_getBeanByUserName(QString  userName) { return AbstractProxyManager::getBeanByUserName(userName); }
-inline AbstractManager*  promoted_getMgr(int  index) { return AbstractProxyManager::getMgr(index); }
+inline Manager*  promoted_getMgr(int  index) { return AbstractProxyManager::getMgr(index); }
 inline NamedBean*  promoted_getNamedBean(QString  name) { return AbstractProxyManager::getNamedBean(name); }
 inline QStringList  promoted_getSystemNameArray() { return AbstractProxyManager::getSystemNameArray(); }
 inline QStringList  promoted_getSystemNameList() { return AbstractProxyManager::getSystemNameList(); }
 inline QString  promoted_getSystemPrefix() { return AbstractProxyManager::getSystemPrefix(); }
 inline NamedBean*  promoted_makeBean(int  arg__1, QString  systemName, QString  userName) { return AbstractProxyManager::makeBean(arg__1, systemName, userName); }
-inline AbstractManager*  promoted_makeInternalManager() const { return AbstractProxyManager::makeInternalManager(); }
+inline Manager*  promoted_makeInternalManager() const { return AbstractProxyManager::makeInternalManager(); }
 inline QString  promoted_makeSystemName(QString  s) { return AbstractProxyManager::makeSystemName(s); }
 inline int  promoted_match(QString  systemname) { return AbstractProxyManager::match(systemname); }
 inline int  promoted_matchTentative(QString  systemname) { return AbstractProxyManager::matchTentative(systemname); }
@@ -385,14 +385,14 @@ void delete_AbstractProxyManager(AbstractProxyManager* obj) { delete obj; }
    NamedBean*  getBeanBySystemName(AbstractProxyManager* theWrappedObject, QString  systemName);
    NamedBean*  getBeanByUserName(AbstractProxyManager* theWrappedObject, QString  userName);
    QList<Manager* >  getManagerList(AbstractProxyManager* theWrappedObject);
-   AbstractManager*  getMgr(AbstractProxyManager* theWrappedObject, int  index);
+   Manager*  getMgr(AbstractProxyManager* theWrappedObject, int  index);
    NamedBean*  getNamedBean(AbstractProxyManager* theWrappedObject, QString  name);
    QStringList  getSystemNameArray(AbstractProxyManager* theWrappedObject);
    QStringList  getSystemNameList(AbstractProxyManager* theWrappedObject);
    QString  getSystemPrefix(AbstractProxyManager* theWrappedObject);
    QStringList  getUserNameList(AbstractProxyManager* theWrappedObject);
    NamedBean*  makeBean(AbstractProxyManager* theWrappedObject, int  arg__1, QString  systemName, QString  userName);
-   AbstractManager*  makeInternalManager(AbstractProxyManager* theWrappedObject) const;
+   Manager*  makeInternalManager(AbstractProxyManager* theWrappedObject) const;
    QString  makeSystemName(AbstractProxyManager* theWrappedObject, QString  s);
    int  match(AbstractProxyManager* theWrappedObject, QString  systemname);
    int  matchTentative(AbstractProxyManager* theWrappedObject, QString  systemname);
@@ -402,8 +402,8 @@ void delete_AbstractProxyManager(AbstractProxyManager* obj) { delete obj; }
    NamedBean*  provideNamedBean(AbstractProxyManager* theWrappedObject, QString  name);
    void removePropertyChangeListener(AbstractProxyManager* theWrappedObject, PropertyChangeListener*  l);
    char  typeLetter(AbstractProxyManager* theWrappedObject);
-void py_set_mgrs(AbstractProxyManager* theWrappedObject, QList<AbstractManager* >*  mgrs){ theWrappedObject->mgrs = mgrs; }
-QList<AbstractManager* >*  py_get_mgrs(AbstractProxyManager* theWrappedObject){ return theWrappedObject->mgrs; }
+void py_set_mgrs(AbstractProxyManager* theWrappedObject, QList<Manager* >*  mgrs){ theWrappedObject->mgrs = mgrs; }
+QList<Manager* >*  py_get_mgrs(AbstractProxyManager* theWrappedObject){ return theWrappedObject->mgrs; }
 };
 
 
@@ -1879,9 +1879,9 @@ virtual void timerEvent(QTimerEvent*  arg__1);
 
 class PythonQtPublicPromoter_InstanceManager : public InstanceManager
 { public:
-static inline void promoted_addPropertyChangeListener(PropertyChangeListener*  l) { InstanceManager::addPropertyChangeListener(l); }
-inline void promoted_addReporterManager(ReporterManager*  p) { InstanceManager::addReporterManager(p); }
-inline void promoted_addSensorManager(SensorManager*  p) { InstanceManager::addSensorManager(p); }
+//static inline void promoted_addPropertyChangeListener(PropertyChangeListener*  l) { InstanceManager::addPropertyChangeListener(l); }
+//inline void promoted_addReporterManager(ReporterManager*  p) { InstanceManager::addReporterManager(p); }
+//inline void promoted_addSensorManager(SensorManager*  p) { InstanceManager::addSensorManager(p); }
 inline void promoted_addShutdownManager(ShutDownManager*  p) { InstanceManager::addShutdownManager(p); }
 inline void promoted_addSignalHeadManager(SignalHeadManager*  p) { InstanceManager::addSignalHeadManager(p); }
 inline void promoted_init() { InstanceManager::init(); }

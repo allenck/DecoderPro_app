@@ -87,7 +87,7 @@
  font.setPointSize(8);
  _table->setFont(font);
 //    _table->getSelectionModel().addListSelectionListener(this);
- ROW_HEIGHT = _table->rowHeight(0);
+ ROW_HEIGHT = _table->getRowHeight(0);
  QWidget* topPanel = new QWidget();
  //topPanel->setLayout(new BorderLayout());
  QGridLayout* topPanelLayout;

@@ -13,9 +13,9 @@ public:
      * @return true
      */
     /*public*/ virtual bool isAddressedModePossible();
-    /*public*/ virtual Programmer* getAddressedProgrammer(bool pLongAddress, int pAddress);
+    /*public*/ virtual AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress);
     /*public*/ virtual AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress);
-    /*public*/ QList<ProgrammingMode*>* getDefaultModes();
+    /*public*/ QList<ProgrammingMode*> getDefaultModes();
 
 private:
     SlotManager* mSlotManager;

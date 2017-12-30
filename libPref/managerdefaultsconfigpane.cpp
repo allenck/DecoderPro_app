@@ -8,6 +8,7 @@
 #include <QGridLayout>
 #include <QRadioButton>
 #include "instancemanager.h"
+#include "loggerfactory.h"
 
 //ManagerDefaultsPane::ManagerDefaultsPane(QWidget *parent) :
 //    PreferencesPanel(parent)
@@ -41,13 +42,13 @@
  matrix->setObjectName("matrix");
  matrixLayout = NULL;
  thisLayout->addWidget(matrix);
-// ManagerDefaultSelector::instance.addPropertyChangeListener((PropertyChangeEvent e) -> {
+//  manager.addPropertyChangeListener((PropertyChangeEvent e) -> {
 //        if (e.getPropertyName().equals("Updated")) {
 //            update();
 //        }
 //    });
- ManagerDefaultSelector* mgr = ManagerDefaultSelector::instance;
- connect(mgr, SIGNAL(notifyPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ ManagerDefaultSelector* mgr =(ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
+ connect(mgr->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  update();
 }
 
@@ -98,6 +99,8 @@ void ManagerDefaultsConfigPane::propertyChange(PropertyChangeEvent * e)
 
 void ManagerDefaultsConfigPane::reloadConnections(QList<SystemConnectionMemo*>* connList)
 {
+ log->debug(" reloadConnections");
+ ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
  int row = 0;
  int col = 0;
  if(matrixLayout == NULL)
@@ -105,14 +108,14 @@ void ManagerDefaultsConfigPane::reloadConnections(QList<SystemConnectionMemo*>* 
  matrixLayout->addWidget(new QLabel(""), row, col++);
 
 
- foreach (ManagerDefaultSelector::Item* item, ManagerDefaultSelector::instance->knownManagers)
+ foreach (ManagerDefaultSelector::Item1 item, manager->knownManagers)
  {
-  matrixLayout->addWidget(new QLabel(item->typeName), row, col++);
+  matrixLayout->addWidget(new QLabel(item.typeName), row, col++);
  }
  row++;
  col = 1;
- groups = QVector<QButtonGroup*>(ManagerDefaultSelector::instance->knownManagers.length());
- for (int i = 0; i < ManagerDefaultSelector::instance->knownManagers.length(); i++)
+ groups = QVector<QButtonGroup*>(manager->knownManagers.length());
+ for (int i = 0; i <  manager->knownManagers.length(); i++)
  {
   groups.replace(i, new QButtonGroup());
  }
@@ -122,14 +125,14 @@ void ManagerDefaultsConfigPane::reloadConnections(QList<SystemConnectionMemo*>* 
   QString name = memo->getUserName();
   matrixLayout->addWidget(new QLabel(name));
   int i = 0;
-  foreach (ManagerDefaultSelector::Item* item, ManagerDefaultSelector::instance->knownManagers)
+  foreach (ManagerDefaultSelector::Item1 item, manager->knownManagers)
   {
-   if (memo->provides(item->managerClass))
+   if (memo->provides(item.managerClass))
    {
-    QRadioButton* r = new SelectionButton(name, item->managerClass, this);
+    QRadioButton* r = new SelectionButton(name, item.managerClass, this);
     matrixLayout->addWidget(r, row, col++);
     groups[i]->addButton(r);
-    if (x == connList->size() - 1 && ManagerDefaultSelector::instance->getDefault(item->managerClass) == NULL) {
+    if (x == connList->size() - 1 && manager->getDefault(item.managerClass) == NULL) {
      r->setChecked(true);
     }
    }
@@ -217,8 +220,8 @@ void ManagerDefaultsConfigPane::reloadConnections(QList<SystemConnectionMemo*>* 
      this->managerClass = managerClass;
      this->name = name;
      this->pane = pane;
-
-     if (name == (ManagerDefaultSelector::instance->getDefault(managerClass)))
+ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
+     if (name == ( manager->getDefault(managerClass)))
      {
       QRadioButton::setChecked(true);
      }
@@ -235,16 +238,19 @@ void ManagerDefaultsConfigPane::reloadConnections(QList<SystemConnectionMemo*>* 
     //@Override
     /*public*/ void SelectionButton::setSelected(bool t) {
         QRadioButton::setChecked(t);
-        if (t) {
-            ManagerDefaultSelector::instance->setDefault(this->managerClass, this->name);
+        ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");if (t) {
+             manager->setDefault(this->managerClass, this->name);
         }
     }
     void SelectionButton::On_toggled(bool t)
     {
      if (t)
      {
-      ManagerDefaultSelector::instance->setDefault(this->managerClass, this->name);
+      ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
+       manager->setDefault(this->managerClass, this->name);
       pane->dirty = true;
      }
     }
 //};
+    /*private*/ /*final*/ /*static*/ Logger* ManagerDefaultsConfigPane::log = LoggerFactory::getLogger("ManagerDefaultsConfigPane");
+

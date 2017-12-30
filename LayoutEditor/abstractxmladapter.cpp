@@ -4,6 +4,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
  :    XmlAdapter()
 {
  this->parent = parent;
+ doc = QDomDocument();
 }
 /**
  * Abstract class to provide basic error handling for XmlAdapter
@@ -44,6 +45,24 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
     );
 }
 
+//@Override
+/*public*/ bool AbstractXmlAdapter::load(QDomElement /*e*/) throw (Exception)
+{
+    throw new UnsupportedOperationException("Either load(one of the other load methods must be implemented.");
+}
+
+//@Override
+/*public*/ bool AbstractXmlAdapter::load(QDomElement shared, QDomElement /*perNode*/) //throws Exception
+{
+    return this->load(shared);
+}
+
+//@Override
+/*public*/ void AbstractXmlAdapter::load(QDomElement shared, QDomElement /*perNode*/, QObject* o) //throws Exception
+{
+//    this->load(shared, o);
+}
+
 /**
  * Determine if this set of configured objects should
  * be loaded after basic GUI construction is completed.
@@ -71,6 +90,8 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
 /*public*/ void AbstractXmlAdapter::setConfigXmlManager(ConfigXmlManager* c) { this->c = c; }
 
 /*protected*/ ConfigXmlManager* AbstractXmlAdapter::getConfigXmlManager() { return c; }
+
+
 
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractXmlAdapter.class.getName());
 //}

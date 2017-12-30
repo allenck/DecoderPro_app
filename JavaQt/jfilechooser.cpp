@@ -27,11 +27,28 @@ void JFileChooser::common()
  currentDirectory =  new File(QDir::currentPath());
 }
 
-/*public*/ JFileChooser::JFileChooser(QString currentDirectoryPath)
+/*public*/ JFileChooser::JFileChooser(QString currentDirectoryPath, QObject *parent) : QObject(parent)
 {
  common();
  //this(currentDirectoryPath, (FileSystemView) NULL);
  this->currentDirectoryPath = currentDirectoryPath;
+}
+
+/**
+ * Constructs a <code>JFileChooser</code> using the given <code>File</code>
+ * as the path. Passing in a <code>null</code> file
+ * causes the file chooser to point to the user's default directory.
+ * This default depends on the operating system. It is
+ * typically the "My Documents" folder on Windows, and the user's
+ * home directory on Unix.
+ *
+ * @param currentDirectory  a <code>File</code> object specifying
+ *                          the path to a file or directory
+ */
+/*public*/ JFileChooser::JFileChooser(File* currentDirectory, QObject* parent) : QObject(parent)
+{
+ //this(currentDirectory, (FileSystemView) null);
+ this->currentDirectoryPath = currentDirectory->getPath();
 }
 
 /**
@@ -245,6 +262,7 @@ void JFileChooser::common()
   return selectedFile;
  }
  selectedFile = new File("");
+ return selectedFile;
 }
 /*public*/ void JFileChooser::setDialogTitle(QString title)
 {

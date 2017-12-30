@@ -59,154 +59,11 @@ FileUtil::FileUtil(QObject *parent) :
  * @see #getURI(java.lang.String)
  * @see #getURL(java.lang.String)
  */
-/*static*/ /*public*/ File* FileUtil::getFile(QString path) /*throws FileNotFoundException */
+/*static*/ /*public*/ File* FileUtil::getFile(QString path) //throw (FileNotFoundException)
 {
-//        try {
- return new File(FileUtil::pathFromPortablePath(path));
-//        } catch (NullPointerException ex) {
-//            throw new FileNotFoundException("Cannot find file at " + path);
-//        }
+ return FileUtilSupport::getDefault()->getFile(path);
 }
-/*
- * Get the canonical path for a portable path. There are nine cases:
- * <ul>
- * <li>Starts with "resource:", treat the rest as a pathname relative to the
- * program directory (deprecated; see "program:" below)</li>
- * <li>Starts with "program:", treat the rest as a relative pathname below
- * the program directory</li>
- * <li>Starts with "preference:", treat the rest as a relative path below
- * the user's files directory</li>
- * <li>Starts with "settings:", treat the rest as a relative path below the
- * JMRI system preferences directory</li>
- * <li>Starts with "home:", treat the rest as a relative path below the
- * user.home directory</li>
- * <li>Starts with "file:", treat the rest as a relative path below the
- * resource directory in the preferences directory (deprecated; see
- * "preference:" above)</li>
- * <li>Starts with "profile:", treat the rest as a relative path below the
- * profile directory as specified in the
- * active{@link jmri.profile.Profile}</li>
- * <li>Starts with "scripts:", treat the rest as a relative path below the
- * scripts directory</li>
- * <li>Otherwise, treat the name as a relative path below the program
- * directory</li>
- * </ul>
- * In any case, absolute pathnames will work.
- *
- * @param path The name string, possibly starting with file:, home:,
- * profile:, program:, preference:, scripts:, settings, or resource:
- * @return Canonical path to use, or null if one cannot be found.
- * @since 2.7.2
- */
-/*static*/ /*private*/ QString FileUtil::pathFromPortablePath(/*@NonNull*/ QString path)
-{
- //Q_ASSERT(path != "");
-    if(path == "") return "";
-    Logger log("FileUtil");
- if (path.startsWith(PROGRAM))
- {
-  if ( File(path.mid(PROGRAM.length())).isAbsolute())
-  {
-   path = path.mid(PROGRAM.length());
 
-  }
-  else
-  {
-   path = path.replace(PROGRAM, Matcher::quoteReplacement(FileUtil::getProgramPath()));
-  }
- }
- else if (path.startsWith(PREFERENCES))
- {
-  if ( File(path.mid(PREFERENCES.length())).isAbsolute())
-  {
-   path = path.mid(PREFERENCES.length());
-  }
-  else
-  {
-   path = path.replace(PREFERENCES, Matcher::quoteReplacement(FileUtil::getUserFilesPath()));
-  }
- }
- else if (path.startsWith(PROFILE))
- {
-  if ( File(path.mid(PROFILE.length())).isAbsolute())
-  {
-   path = path.mid(PROFILE.length());
-  }
-  else
-  {
-   path = path.replace(PROFILE, Matcher::quoteReplacement(FileUtil::getProfilePath()));
-  }
- }
- else if (path.startsWith(SCRIPTS))
- {
-  if ( File(path.mid(SCRIPTS.length())).isAbsolute())
-  {
-   path = path.mid(SCRIPTS.length());
-  }
-  else
-  {
-   path = path.replace(SCRIPTS, Matcher::quoteReplacement(FileUtil::getScriptsPath()));
-  }
- }
- else if (path.startsWith(SETTINGS))
- {
-  if ( File(path.mid(SETTINGS.length())).isAbsolute())
-  {
-   path = path.mid(SETTINGS.length());
-  }
-  else
-  {
-   path = path.replace(SETTINGS, Matcher::quoteReplacement(FileUtil::getPreferencesPath()));
-  }
- }
- else if (path.startsWith(HOME))
- {
-  if ( File(path.mid(HOME.length())).isAbsolute())
-  {
-   path = path.mid(HOME.length());
-  }
-  else
-  {
-      path = path.replace(HOME, Matcher::quoteReplacement(FileUtil::getHomePath()));
-  }
- }
- else if (path.startsWith(RESOURCE))
- {
-  if ( File(path.mid(RESOURCE.length())).isAbsolute())
-  {
-   path = path.mid(RESOURCE.length());
-  }
-  else
-  {
-   path = path.replace(RESOURCE, Matcher::quoteReplacement(FileUtil::getProgramPath()));
-  }
- }
- else if (path.startsWith(FILE))
- {
-  if ( File(path.mid(FILE.length())).isAbsolute())
-  {
-   path = path.mid(FILE.length());
-  }
-  else
-  {
-   path = path.replace(FILE, Matcher::quoteReplacement(FileUtil::getUserFilesPath()));
-  }
- }
- else if(path.startsWith("resources"))
-  return FileUtil::getProgramPath() + path;
- else if (! File(path).isAbsolute())
- {
- return "";
- }
-//    try {
-        // if path cannot be converted into a canonical path, return null
- log.debug(QString("Using %1").arg( path));
- return File(path.replace(QString(SEPARATOR), File::separatorChar)).getCanonicalPath();
-//    } catch (IOException ex) {
-//        log.warn("Cannot convert {} into a usable filename.", path, ex);
-//        return NULL;
-//    }
-}
 /**
  * Get the resource file corresponding to a name. There are five cases: <UL>
  * <LI> Starts with "resource:", treat the rest as a pathname relative to
@@ -227,118 +84,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QString FileUtil::getExternalFilename(QString pName)
 {
- Logger log("FileUtil");
- if (pName == NULL || pName.length() == 0)
- {
-  return NULL;
- }
- if (pName.startsWith(RESOURCE))
- {
-  // convert to relative filename
-  QString temp = pName.mid(RESOURCE.length());
-  if ((QFileInfo(temp)).isAbsolute())
-  {
-   return temp.replace(SEPARATOR, QDir::separator());
-  }
-  else
-  {
-   return getProgramPath() + temp.replace(SEPARATOR, QDir::separator());
-  }
- }
- else if (pName.startsWith(PROGRAM))
- {
-  // both relative and absolute are just returned
-  QString currPath = QDir::currentPath();
-//  programPath = currPath+QDir::separator()+ ".." +QDir::separator()+"jmri"+ QDir::separator();
-  QString path = programPath + pName.mid(PROGRAM.length()).replace(SEPARATOR, QDir::separator());
-  return path;
- }
- else if (pName.startsWith(PREFERENCES))
- {
-  QString filename = pName.mid(PREFERENCES.length());
-
-  // Check for absolute path name
-  if (QFileInfo(filename).isAbsolute())
-  {
-   Logger log;
-   if (_debug)
-   {
-    log.debug("Load from absolute path: " + filename);
-   }
-   return filename.replace(SEPARATOR, QDir::separator());
-  }
-  // assume this is a relative path from the
-  // preferences directory
-  filename = FileUtil::getUserFilesPath() + filename;
-  if (_debug)
-  {
-   log.debug("load from user preferences file: " + filename);
-  }
-  return filename.replace(SEPARATOR, QDir::separator());
- }
- else if (pName.startsWith(FILE))
- {
-  QString filename = pName.mid(FILE.length());
-
-  // historically, absolute path names could be stored
-  // in the 'file' format.  Check for those, and
-  // accept them if present
-  if ((QFileInfo(filename)).isAbsolute())
-  {
-   if (_debug)
-   {
-    log.debug("Load from absolute path: " + filename);
-   }
-   return filename.replace(SEPARATOR, QDir::separator());
-  }
-  // assume this is a relative path from the
-  // preferences directory
-  filename = FileUtil::getUserFilesPath() + "resources" + QDir::separator() + filename; // NOI18N
-//  if (log.isDebugEnabled())
-//  {
-//   log.debug("load from user preferences file: " + filename);
-//  }
-  return filename.replace(SEPARATOR, QDir::separator());
- }
- else if (pName.startsWith(HOME))
- {
-  QString filename = pName.mid(HOME.length());
-
-  // Check for absolute path name
-  if ((QFileInfo(filename)).isAbsolute())
-  {
-   if (_debug)
-   {
-    log.debug("Load from absolute path: " + filename);
-   }
-   return filename.replace(SEPARATOR, QDir::separator());
-  }
-  // assume this is a relative path from the
-  // user.home directory
-  QString saveFN = filename;
-  filename = FileUtil::getHomePath() + filename;
-  if (_debug)
-  {
-   log.debug("load from user preferences file: " + filename);
-  }
-  QFileInfo info(filename);
-  if(!info.exists())
-      filename = FileUtil::getProgramPath() + saveFN.mid(saveFN.indexOf("resources"));
-  return filename.replace(SEPARATOR, QDir::separator());
- }
- else
- {
-  // must just be a (hopefully) valid name
-  QString temp1 =  pName.replace(SEPARATOR, QDir::separator());
-  if(QFile(temp1).exists())
-  {
-   return temp1;
-  }
-  File temp2 =  File(HOME + QString(SEPARATOR)+ temp1);
-  if(temp2.exists())
-   return temp2.getPath();
- }
- return pName;
+ return FileUtilSupport::getDefault()->getExternalFilename(pName);
 }
 
 /**
@@ -349,74 +95,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QString FileUtil::getAbsoluteFilename(QString path)
 {
- Logger log("FileUtil");
- if (path == NULL || path.length() == 0)
- {
-  return "";
- }
- if (path.startsWith(PROGRAM))
- {
-  if (QFileInfo(path.mid(PROGRAM.length())).isAbsolute())
-  {
-   path = path.mid(PROGRAM.length());
-  }
-  else
-  {
-   path = path.replace(PROGRAM, /*Matcher::quoteReplacement*/(FileUtil::getProgramPath()));
-  }
-  return path;
- }
- else if (path.startsWith(PREFERENCES))
- {
-  if (QFileInfo(path.mid(PREFERENCES.length())).isAbsolute())
-  {
-   path = path.mid(PREFERENCES.length());
-  }
-  else
-  {
-   path = path.replace(PREFERENCES, /*Matcher::quoteReplacement*/(FileUtil::getUserFilesPath()));
-  }
-  return path;
- }
- else if (path.startsWith(HOME))
- {
-  if (QFileInfo(path.mid(HOME.length())).isAbsolute())
-  {
-   path = path.mid(HOME.length());
-  }
-  else
-  {
-   path = path.replace(HOME, /*Matcher::quoteReplacement*/(FileUtil::getHomePath()));
-  }
-  return path;
- }
- else if(path.startsWith("resources"))
- {
-  return FileUtil::getProgramPath() + path;
- }
- else if (path.startsWith(RESOURCE) || path.startsWith(FILE))
- {
-  return getAbsoluteFilename(getPortableFilename(getExternalFilename(path)));
- }
- else if (! QFileInfo(path).isAbsolute())
- {
-  return NULL;
- }
- try
- {
-  // if path cannot be converted into a canonical path, return NULL
-  if (_debug)
-  {
-   log.debug("Using " + path);
-  }
-  QString fn =  File(path.replace(SEPARATOR, QDir::separator())).getPath();
-  return fn;
- }
- catch (IOException ex)
- {
-  log.warn(tr("Can not convert ") + path + tr(" into a usable filename.")+ ex.getMessage());
-  return NULL;
- }
+ return FileUtilSupport::getDefault()->getAbsoluteFilename(path);
 }
 
 /**
@@ -470,73 +149,9 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QString FileUtil::getPortableFilename(File* file, bool ignoreUserFilesPath, bool ignoreProfilePath)
 {
- // compare full path name to see if same as preferences
- QString filename = file->getAbsolutePath();
-
- // append separator if file is a directory
- if (file->isDirectory())
- {
-  filename = filename + File::separator;
- }
-
- // compare full path name to see if same as preferences
- if (!ignoreUserFilesPath)
- {
-  if (filename.startsWith(getUserFilesPath()))
-  {
-   return PREFERENCES + filename.mid(getUserFilesPath().length(), filename.length()).replace(File::separatorChar, QString(SEPARATOR));
-  }
- }
-
- if (!ignoreProfilePath)
- {
-  // compare full path name to see if same as profile
-  if (filename.startsWith(getProfilePath()))
-  {
-   return PROFILE + filename.mid(getProfilePath().length(), filename.length()).replace(File::separatorChar, QString(SEPARATOR));
-  }
- }
-
- // compare full path name to see if same as settings
- if (filename.startsWith(getPreferencesPath()))
- {
-  return SETTINGS + filename.mid(getPreferencesPath().length(), filename.length()).replace(File::separatorChar, QString(SEPARATOR));
- }
-
- if (!ignoreUserFilesPath)
- {
-  /*
-   * The tests for any portatable path that could be within the
-   * UserFiles locations needs to be within this block. This prevents
-   * the UserFiles or Profile path from being set to another portable
-   * path that is user settable.
-   *
-   * Note that this test should be after the UserFiles, Profile, and
-   * Preferences tests.
-   */
-  // check for relative to scripts dir
-  if (filename.startsWith(getScriptsPath()) && filename!=(getScriptsPath()))
-  {
-   return SCRIPTS + filename.mid(getScriptsPath().length(),   filename.length()).replace(File::separatorChar, QString(SEPARATOR));
-  }
- }
-
- // now check for relative to program dir
- if (filename.startsWith(getProgramPath()))
- {
-  return PROGRAM + filename.mid(getProgramPath().length(), filename.length()).replace(File::separatorChar, QString(SEPARATOR));
- }
-
- // compare full path name to see if same as home directory
- // do this last, in case preferences or program dir are in home directory
- if (filename.startsWith(getHomePath()))
- {
-  QString temp =  HOME + filename.mid(getHomePath().length(), filename.length());
-  return temp; //.replace(File::separatorChar.at(0), QString(SEPARATOR));
- }
-
- return filename.replace(File::separatorChar, QString(SEPARATOR));   // absolute, and doesn't match; not really portable...
+ return FileUtilSupport::getDefault()->getPortableFilename(file, ignoreUserFilesPath, ignoreProfilePath);
 }
+
 /**
  * Convert a filename string to our preferred storage form.
  *
@@ -561,14 +176,9 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QString FileUtil::getPortableFilename(QString filename, bool ignoreUserFilesPath, bool ignoreProfilePath)
 {
-    if (FileUtil::isPortableFilename(filename)) {
-        // if this already contains prefix, run through conversion to normalize
-        return getPortableFilename(getExternalFilename(filename), ignoreUserFilesPath, ignoreProfilePath);
-    } else {
-        // treat as pure filename
-        return getPortableFilename( new File(filename), ignoreUserFilesPath, ignoreProfilePath);
-    }
+ return FileUtilSupport::getDefault()->getPortableFilename(filename, ignoreUserFilesPath, ignoreProfilePath);
 }
+
 /**
  * Test if the given filename is a portable filename.
  *
@@ -607,15 +217,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QString FileUtil::getUserFilesPath()
 {
- //QString path = (FileUtil::userFilesPath != "") ? FileUtil::userFilesPath : FileUtil::getPreferencesPath();
- QString path = QDir::homePath() + QDir::separator()+".jmri"+ QDir::separator();
- QFileInfo  info(path);
- if(!info.exists())
- {
-  QDir* dir= new QDir();
-  dir->mkpath(path);
- }
- return path;
+ return FileUtilSupport::getDefault()->getUserFilesPath();
 }
 
 /**
@@ -626,11 +228,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ void FileUtil::setUserFilesPath(QString path)
 {
- if (!path.endsWith(QDir::separator()))
- {
-  path = path + QDir::separator();
- }
- FileUtil::userFilesPath = path;
+ FileUtilSupport::getDefault()->setUserFilesPath(path);
 }
 /**
  * Get the profile directory. If not set, this is the same as the
@@ -641,7 +239,8 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QString FileUtil::getProfilePath()
 {
- return (FileUtil::profilePath != "") ? FileUtil::profilePath : FileUtil::getPreferencesPath();
+ return FileUtilSupport::getDefault()->getProfilePath();
+
 }
 /**
  * Set the profile directory.
@@ -650,10 +249,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @param path The path to the profile directory
  */
 /*static*/ /*public*/ void FileUtil::setProfilePath(QString path) {
-    if (path != "" && !path.endsWith(File::separator)) {
-        path = path + File::separator;
-    }
-    FileUtil::profilePath = path;
+ FileUtilSupport::getDefault()->setProfilePath(path);
 }
 
 /**
@@ -671,46 +267,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QString FileUtil::getPreferencesPath()
 {
-    // return jmri.prefsdir property if present
-    QString jmriPrefsDir = System::getProperty("jmri.prefsdir", ""); // NOI18N
-    if (!jmriPrefsDir.isEmpty()) {
-        return jmriPrefsDir + QDir::separator();
-    }
-    QString result;
-//    switch (SystemType.getType()) {
-//        case SystemType.MACOSX:
-            // Mac OS X
-#ifdef Q_OS_MAC
-
-            result = FileUtil.getHomePath() + "Library" + QDir::separator() + "Preferences" + File.separator + "JMRI" + File.separator; // NOI18N
-#endif
-#if 0
-            break;
-        case SystemType.LINUX:
-        case SystemType.UNIX:
-#endif
-#ifdef Q_OS_LINUX || Q_OS_UNIX
-
-            // Linux, so use an invisible file
-            result = FileUtil::getHomePath() + ".jmri" + QDir::separator(); // NOI18N
-#endif
-#if 0
-            break;
-        case SystemType.WINDOWS:
-        default:
-#endif
-#ifdef  Q_OS_WIN
-            // Could be Windows, other
-            result = FileUtil::getHomePath() + "JMRI" + QDir::separator(); // NOI18N
-#endif
-#if 0
-            break;
-    }
-    if (log.isDebugEnabled()) {
-        log.debug("preferencesPath defined as \"" + result + "\" based on os.name=\"" + SystemType.getOSName() + "\"");
-    }
-#endif
-    return result;
+ return FileUtilSupport::getDefault()->getPreferencesPath();
 }
 
 /**
@@ -737,7 +294,8 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ void FileUtil::setProgramPath(QString path)
 {
- FileUtil::setProgramPath(QDir(path));
+ FileUtilSupport::getDefault()->setProgramPath(new File(path));
+
 }
 
 /**
@@ -750,16 +308,9 @@ FileUtil::FileUtil(QObject *parent) :
  *
  * @param path
  */
-/*static*/ /*public*/ void FileUtil::setProgramPath(QDir path)
+/*static*/ /*public*/ void FileUtil::setProgramPath(File* path)
 {
- try
- {
-  programPath = (path).canonicalPath() + QDir::separator();
- }
- catch (IOException ex)
- {
-  Logger::error("Unable to get JMRI program directory.", ex.getMessage());
- }
+ FileUtilSupport::getDefault()->setProgramPath(path);
 }
 
 /**
@@ -1129,9 +680,32 @@ FileUtil::FileUtil(QObject *parent) :
  * @param path the scriptsPath to set
  */
 /*public*/ /*static*/ void FileUtil::setScriptsPath(QString path) {
-    scriptsPath = path;
+     FileUtilSupport::getDefault()->setScriptsPath(path);
 }
 
+/**
+  * Read a text file into a String.
+  *
+  * @param file The text file.
+  * @return The contents of the file.
+  * @throws java.io.IOException if the file cannot be read
+  */
+ /*public*/ /*static*/ QString FileUtil::readFile(File* file) //throw (IOException)
+    {
+     return FileUtil::readURL(FileUtil::fileToURL(file));
+ }
+/**
+  * Read a text URL into a String. Would be significantly simpler with Java
+  * 7. File is assumed to be encoded using UTF-8
+  *
+  * @param url The text URL.
+  * @return The contents of the file.
+  * @throws java.io.IOException if the URL cannot be read
+  */
+ /*public*/ /*static*/ QString FileUtil::readURL(QUrl url) //throw (IOException)
+    {
+     return FileUtilSupport::getDefault()->readURL(url);
+ }
 /**
  * Create a directory if required. Any parent directories will also be
  * created.
@@ -1140,15 +714,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*public*/ /*static*/ void FileUtil::createDirectory(QString path)
 {
- QDir* dir = new QDir(path);
- if (!dir->exists())
- {
-  //log.warn("Creating directory: " + path);
-  if (!dir->mkpath(path))
-  {
-   Logger::error("Failed to create directory: " + path);
-  }
- }
+ FileUtilSupport::getDefault()->createDirectory(path);
 }
 /**
  * Create a directory if required. Any parent directories will also be
@@ -1157,13 +723,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*public*/ /*static*/ void FileUtil::createDirectory(File* dir)
 {
-     Logger log("FileUtil");
-    if (!dir->exists()) {
-        log.info(tr("Creating directory: %1").arg(dir->toString()));
-        if (!dir->mkdirs()) {
-            log.error(tr("Failed to create directory: %1").arg(dir->toString()));
-        }
-    }
+ FileUtilSupport::getDefault()->createDirectory(dir);
 }
 /**
  * Replaces most non-alphanumeric characters in name with an underscore.
@@ -1172,15 +732,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @return The sanitized filename.
  */
 /*public*/ /*static*/ QString FileUtil::sanitizeFilename(QString name) {
-    name = name.trimmed().replace(" ", "_").replace("[.]+", ".");
-//    QString filename = new QString();
-//    for (char c : name.toCharArray()) {
-//        if (c == '.' || Character.isJavaIdentifierPart(c)) {
-//            filename.append(c);
-//        }
-//    }
-//    return filename.toString();
-    return name;
+     return FileUtilSupport::getDefault()->sanitizeFilename(name);
 }
 
 /**
@@ -1191,13 +743,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*public*/ /*static*/ bool FileUtil::_delete(File* path)
 {
- if (path->isDirectory())
- {
-   foreach (File* file, path->listFiles()) {
-            FileUtil::_delete(file);
-        }
-    }
-    return path->_delete();
+ return FileUtilSupport::getDefault()->_delete(path);
 }
 
 /**
@@ -1209,91 +755,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*public*/ /*static*/ void FileUtil::copy(File* source, File* dest) /*throws IOException*/
 {
- if (!source->exists())
- {
-  Logger::error(tr("Attempting to copy non-existant file: %1").arg(source->getPath()));
-  return;
- }
- if (!dest->exists())
- {
-  if (source->isDirectory())
-  {
-   bool ok = dest->mkdirs();
-   if (!ok)
-   {
-    Logger::error("Could not use mkdirs to create destination directory");
-    throw new IOException("Could not use mkdirs to create destination directory");
-   }
-  }
-  else
-  {
-   bool ok = dest->createNewFile();
-   if (!ok)
-   {
-    throw new IOException("Could not create destination file");
-   }
-  }
- }
- if (source->isDirectory())
- {
-  foreach (File* file, source->listFiles())
-  {
-   FileUtil::copy(file, new File(dest, file->getName()));
-  }
- }
- else
- {
-//  FileInputStream sourceIS = null;
-//  FileChannel sourceChannel = null;
-//  FileOutputStream destIS = null;
-//  FileChannel destChannel = null;
-//  try
-//  {
-//   sourceIS = new FileInputStream(source);
-//   sourceChannel = sourceIS.getChannel();
-//   destIS = new FileOutputStream(dest);
-//   destChannel = destIS.getChannel();
-//   if (destChannel != null && sourceChannel != null)
-//   {
-//    destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-//   }
-//  }
-//  catch (IOException ex)
-//  {
-//   throw ex;
-//  }
-//  finally
-//  {
-//   try
-//   {
-//    if (sourceChannel != null)
-//    {
-//     sourceChannel.close();
-//    }
-//    if (destChannel != null)
-//    {
-//     destChannel.close();
-//    }
-//    if (sourceIS != null)
-//    {
-//     sourceIS.close();
-//    }
-//    if (destIS != null)
-//    {
-//     destIS.close();
-//    }
-//   }
-//   catch (IOException ex)
-//   {
-//    throw ex;
-//   }
-//  }
-  QFile f(dest->path);
-  if(f.exists())
-   f.remove();
-  if(!QFile::copy(source->path, dest->path))
-   Logger::error(tr("copy of %1 to %2 failed!").arg(source->path).arg(dest->path) );
- }
+ FileUtilSupport::getDefault()->copy(source, dest);
 }
 #if 0
 /**
@@ -1317,6 +779,11 @@ FileUtil::FileUtil(QObject *parent) :
  * @see jmri.util.FileUtilSupport#backup(java.io.File)
  */
 /*public*/ /*static*/ void FileUtil::backup(File* file) //throws IOException
-    {
-    FileUtilSupport::getDefault()->backup(file);
+{
+  FileUtilSupport::getDefault()->backup(file);
+}
+
+/*public*/ /*static*/ QStringList* FileUtil::findProgramPath()
+{
+ return FileUtilSupport::getDefault()->findProgramPath();
 }

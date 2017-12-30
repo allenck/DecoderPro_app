@@ -25,7 +25,7 @@ public:
     explicit CoordinateEdit(QWidget* parent = 0);
     /*public*/ static QAction* getTextEditAction(/*const*/ Positionable* pos, const QString title, CoordinateEdit* parent);
     /*public*/ static QAction* getLevelEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent);
-    /*public*/ static QAction* getCoordinateEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent);
+    /*public*/ static QAction* getCoordinateEditAction(/*final*/ Positionable* pos, CoordinateEdit *parent);
     /*public*/ void init(QString title, Positionable* pos, bool showName);
     /*public*/ void initSetXY();
     /*public*/ void initSetLevel();

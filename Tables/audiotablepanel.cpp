@@ -8,6 +8,9 @@
 #include <QGroupBox>
 #include "flowlayout.h"
 #include <QTableView>
+#include "tablerowsorter.h"
+#include "rowsorterutil.h"
+#include "systemnamecomparator.h"
 
 //AudioTablePanel::AudioTablePanel(QWidget *parent) :
 //  QWidget(parent)
@@ -55,22 +58,32 @@
  this->helpTarget = helpTarget;
  listenerDataModel = listenerModel;
  //listenerDataTable = JTableUtil.sortableDataModel(listenerDataModel);
- listenerDataTable = new JTable(listenerDataModel);
+ //listenerDataTable = new JTable(listenerDataModel);
+ TableRowSorter* sorter = new TableRowSorter(listenerDataModel);
+ sorter->setComparator(AudioTableDataModel::SYSNAMECOL, new SystemNameComparator() );
+ RowSorterUtil::setSortOrder(sorter, AudioTableDataModel::SYSNAMECOL, ASCENDING);
+ listenerDataTable = listenerDataModel->makeJTable(listenerDataModel->getMasterClassName(), listenerDataModel, sorter);
  //listenerDataScroll = new JScrollPane(listenerDataTable);
  listenerDataTable->setColumnModel(new XTableColumnModel());
  listenerDataTable->createDefaultColumnsFromModel();
 
  bufferDataModel = bufferModel;
  //bufferDataTable = JTableUtil.sortableDataModel(bufferDataModel);
+ sorter = new TableRowSorter(bufferDataModel);
+ sorter->setComparator(AudioTableDataModel::SYSNAMECOL, new SystemNameComparator());
+ RowSorterUtil::setSortOrder(sorter, AudioTableDataModel::SYSNAMECOL, ASCENDING);
  bufferDataTable = new JTable(bufferDataModel);
- //bufferDataScroll = new JScrollPane(bufferDataTable);
+ bufferDataTable = bufferDataModel->makeJTable(bufferDataModel->getMasterClassName(), bufferDataModel, sorter);//bufferDataScroll = new JScrollPane(bufferDataTable);
  bufferDataTable->setColumnModel(new XTableColumnModel());
  bufferDataTable->createDefaultColumnsFromModel();
 
  sourceDataModel = sourceModel;
  //sourceDataTable = JTableUtil.sortableDataModel(sourceDataModel);
- sourceDataTable = new JTable(sourceDataModel);
- //sourceDataScroll = new JScrollPane(sourceDataTable);
+ //sourceDataTable = new JTable(sourceDataModel);
+ sorter = new TableRowSorter(sourceDataModel);
+ sorter->setComparator(AudioTableDataModel::SYSNAMECOL, new SystemNameComparator());
+ RowSorterUtil::setSortOrder(sorter, AudioTableDataModel::SYSNAMECOL, ASCENDING);
+ sourceDataTable = sourceDataModel->makeJTable(sourceDataModel->getMasterClassName(), sourceDataModel, sorter);//sourceDataScroll = new JScrollPane(sourceDataTable);
  sourceDataTable->setColumnModel(new XTableColumnModel());
  sourceDataTable->createDefaultColumnsFromModel();
  sourceDataTable->resizeColumnsToContents();
@@ -97,10 +110,13 @@
  // configure items for GUI
  listenerDataModel->configureTable(listenerDataTable);
  listenerDataModel->configEditColumn(listenerDataTable);
+ listenerDataModel->persistTable(listenerDataTable);
  bufferDataModel->configureTable(bufferDataTable);
  bufferDataModel->configEditColumn(bufferDataTable);
+ bufferDataModel->persistTable(bufferDataTable);
  sourceDataModel->configureTable(sourceDataTable);
  sourceDataModel->configEditColumn(sourceDataTable);
+ sourceDataModel->persistTable(sourceDataTable);
 
  // general GUI config
  resize(800, 400);

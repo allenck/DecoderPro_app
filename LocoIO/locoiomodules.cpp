@@ -16,7 +16,7 @@ LocoIOModules::LocoIOModules(QObject *parent) :
   QObject(parent)
 {
  tc = NULL;
- memo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo");
+ memo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
  if(qobject_cast<LocoNetSystemConnectionMemo*>(memo) != NULL)
   tc = memo->getLnTrafficController();
  data = new LocoIOData(0x51, 1,tc);

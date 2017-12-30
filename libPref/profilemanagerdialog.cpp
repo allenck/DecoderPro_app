@@ -1,10 +1,10 @@
 #include "profilemanagerdialog.h"
 #include "jframe.h"
 #include "profilemanager.h"
-#include "../libPr3/profile.h"
+#include "profile.h"
 #include <QCloseEvent>
 #include <QTimer>
-#include <QListWidget>
+#include "jlist.h"
 #include <QLabel>
 #include "QFileDialog"
 #include <QBoxLayout>
@@ -89,7 +89,7 @@ ProfileManager::defaultManager()->addPropertyChangeListener(ProfileManager::ACTI
  QList<Profile*> list = ProfileManager::defaultManager()->getProfiles();
  listLabel = new QLabel();
  //jScrollPane1 = new QScrollArea();
- profiles = new QListView();
+ profiles = new JList();
  btnSelect = new QPushButton();
  btnCreate = new QPushButton();
  btnUseExisting = new QPushButton();
@@ -247,7 +247,8 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
  countDownLbl->setVisible(false);
  AddProfileDialog* apd = new AddProfileDialog(this, true, false);
  apd->setLocationRelativeTo(this);
- apd->setVisible(true);
+ //apd->setVisible(true);
+ apd->exec();
 }
 
 /*private*/ void ProfileManagerDialog::btnUseExistingActionPerformed(ActionEvent* /*evt*/)
@@ -346,8 +347,7 @@ void ProfileManagerDialog::timeout()
 /*public*/ /*static*/ Profile* ProfileManagerDialog::getStartingProfile(JFrame* f) throw (IOException)
 {
  if (ProfileManager::getStartingProfile() == NULL
-  || (System::getProperty(ProfileManager::SYSTEM_PROPERTY) == NULL
-            && !ProfileManager::defaultManager()->isAutoStartActiveProfile()))
+  || (System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile") == NULL && !ProfileManager::defaultManager()->isAutoStartActiveProfile()))
  {
   ProfileManagerDialog* pmd = new ProfileManagerDialog(f, true);
   //pmd->setLocationRelativeTo(f);
@@ -400,7 +400,7 @@ void ProfileManagerDialog::timeout()
 /*public*/ void ProfileManagerDialog::propertyChange(IndexedPropertyChangeEvent* evt) {
  // TODO: profiles->setSelectedValue(ProfileManager::defaultManager()->getActiveProfile(), true);
  //profiles.repaint();
- if (QString(evt->getSource()->metaObject()->className()) ==("Profile") && evt->getPropertyName()==(Profile::NAME))
+ if (QString(evt->getSource()->metaObject()->className()) ==("Profile") && evt->getPropertyName()==(/*Profile::NAME*/"name"))
  {
   profileNameChanged(((Profile*) evt->getSource()));
  }

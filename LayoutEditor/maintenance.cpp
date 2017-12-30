@@ -908,7 +908,8 @@ Maintenance::Maintenance(QObject *parent) :
     tempText = QString();
     found = false;
     empty = true;
-    TransitManager* transitManager = InstanceManager::transitManagerInstance();
+    TransitManager*     transitManager = (TransitManager*)InstanceManager::getNullableDefault("TransitManager");
+
     iter1 = QStringListIterator(transitManager->getSystemNameList());
     while (iter1.hasNext())
     {
@@ -1009,7 +1010,7 @@ Maintenance::Maintenance(QObject *parent) :
     SectionManager* sectionManager = InstanceManager::sectionManagerInstance();
     QStringList sysNameList = sectionManager->getSystemNameList();
 
-    transitManager = InstanceManager::transitManagerInstance();
+    transitManager = (TransitManager*)InstanceManager::getNullableDefault("TransitManager");
     iter1 = QStringListIterator(transitManager->getSystemNameList());
     while (iter1.hasNext()) {
         // get the next Logix

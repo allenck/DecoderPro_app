@@ -57,26 +57,28 @@
 /**
 * Create a new PositionableShape*
 */
-/*protected*/ void DrawRoundRect::makeFigure() {
-    ControlPanelEditor* ed = _parent->getEditor();
-    QRectF r = ed->getSelectRect();
-    if (!r.isValid()) {
-       return;
-    }
-    //RoundRectangle2D.Double rr = new RoundRectangle2D.Double(0, 0, r.width, r.height, _radius, _radius);
-    QGraphicsRoundRectItem* rr = new QGraphicsRoundRectItem(0, 0, r.width(), r.height(), _radius, _radius);
-    rr->setBrush(QBrush(_fillColor));
-    rr->setPen(QPen(QBrush(_lineColor),_lineWidth));
-    PositionableRoundRect* ps = new PositionableRoundRect(ed, rr);
-    ps->_itemGroup = new QGraphicsItemGroup();
-    ps->_itemGroup->addToGroup(rr);
-    ps->setLocation(r.x(), r.y());
-    ps->setHeight(_height);
-    ps->setWidth(_width);
-    ps->setDisplayLevel(ControlPanelEditor::MARKERS);
-    setPositionableParams(ps);
-    ps->updateSize();
-    ed->putItem(ps);
+/*protected*/ void DrawRoundRect::makeFigure()
+{
+ ControlPanelEditor* ed = _parent->getEditor();
+ QRectF r = ed->getSelectRect();
+ if (!r.isValid()) {
+    return;
+ }
+ //RoundRectangle2D.Double rr = new RoundRectangle2D.Double(0, 0, r.width, r.height, _radius, _radius);
+ QGraphicsRoundRectItem* rr = new QGraphicsRoundRectItem(0, 0, r.width(), r.height(), _radius, _radius);
+ rr->setBrush(QBrush(_fillColor));
+ rr->setPen(QPen(QBrush(_lineColor),_lineWidth));
+ PositionableRoundRect* ps = new PositionableRoundRect(ed, rr);
+ ps->_itemGroup = new MyGraphicsItemGroup();
+ ps->_itemGroup->setName("PositionableRoundRect");
+ ps->_itemGroup->addToGroup(rr);
+ ps->setLocation(r.x(), r.y());
+ ps->setHeight(_height);
+ ps->setWidth(_width);
+ ps->setDisplayLevel(ControlPanelEditor::MARKERS);
+ setPositionableParams(ps);
+ ps->updateSize();
+ ed->putItem(ps);
 }
 
 

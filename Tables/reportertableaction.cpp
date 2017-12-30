@@ -394,7 +394,7 @@ void ReporterTableAction::handleCreateException(QString sysName) {
 }
 
 /*protected*/ QString ReporterTableAction::getClassName() {
-    return "ReporterTableAction";
+    return "jmri.jmrit.beantable.ReporterTableAction";
 }
 
 /*public*/ QString  ReporterTableAction::getClassDescription() {

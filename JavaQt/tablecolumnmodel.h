@@ -1,6 +1,8 @@
 #ifndef TABLECOLUMNMODEL_H
 #define TABLECOLUMNMODEL_H
 #include <QObject>
+#include "tablecolumnmodelevent.h"
+
 /**
  * Defines the requirements for a table column model object suitable for
  * use with <code>JTable</code>.
@@ -14,6 +16,7 @@ class ListSelectionModel;
 class TableColumn;
 /*public*/ /*interface*/ class TableColumnModel : public QObject
 {
+ Q_OBJECT
 //
 // Modifying the model
 //
@@ -99,7 +102,7 @@ public:
      *                          <code>identifier</code>
      * @see             #getColumn
      */
-    virtual /*public*/ int getColumnIndex(QObject* columnIdentifier) {return 0;}
+    virtual /*public*/ int getColumnIndex(QObject* /*columnIdentifier*/) {return 0;}
 
     /**
      * Returns the <code>TableColumn</code> object for the column at
@@ -156,7 +159,7 @@ public:
      * @param flag   true if columns may be selected; otherwise false
      * @see #getColumnSelectionAllowed
      */
-    virtual /*public*/ void setColumnSelectionAllowed(bool flag) {}
+    virtual /*public*/ void setColumnSelectionAllowed(bool /*flag*/) {}
 
     /**
      * Returns true if columns may be selected.
@@ -185,7 +188,7 @@ public:
      * @param newModel  a <code>ListSelectionModel</code> object
      * @see #getSelectionModel
      */
-    virtual /*public*/ void setSelectionModel(ListSelectionModel* newModel) {}
+    virtual /*public*/ void setSelectionModel(ListSelectionModel* /*newModel*/) {}
 
     /**
      * Returns the current selection model.
@@ -204,14 +207,19 @@ public:
      *
      * @param x  a <code>TableColumnModelListener</code> object
      */
-    virtual /*public*/ void addColumnModelListener(TableColumnModelListener* x) {}
+    virtual /*public*/ void addColumnModelListener(TableColumnModelListener* /*x*/) {}
 
     /**
      * Removes a listener for table column model events.
      *
      * @param x  a <code>TableColumnModelListener</code> object
      */
-    virtual /*public*/ void removeColumnModelListener(TableColumnModelListener* x) {}
+    virtual /*public*/ void removeColumnModelListener(TableColumnModelListener* /*x*/) {}
+
+signals:
+ void notifycolumnadded(TableColumnModelEvent*);
+ void notifycolumnremoved(TableColumnModelEvent*);
+ void notifycolumnmoved(TableColumnModelEvent*);
 
 
 };

@@ -142,7 +142,9 @@ LnMessageManager* LocoNetSystemConnectionMemo::getLnMessageManager()
 
 ProgrammerManager* LocoNetSystemConnectionMemo::getProgrammerManager() {
     if (programmerManager == NULL)
+    {
         programmerManager = new LnProgrammerManager(getSlotManager(), this);
+    }
     return programmerManager;
 }
 void LocoNetSystemConnectionMemo::setProgrammerManager(ProgrammerManager* p) {

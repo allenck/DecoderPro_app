@@ -67,11 +67,11 @@
   }
   makeDoneButtonPanel(buttonPanel);
  }
- else
- {
-  _iconMap = ItemPanel::makeNewIconMap(type);
-  makeCreateButtonPanel(buttonPanel);
- }
+// else
+// {
+//  _iconMap = ItemPanel::makeNewIconMap(type);
+//  makeCreateButtonPanel(buttonPanel);
+// }
 
  _iconPanel = makeIconPanel(_iconMap);
  pl->addWidget(_iconPanel);	// put icons above buttons
@@ -227,7 +227,7 @@ void IconDialog::doneAction()
   close();
  }
 }
-
+#if 0
 /*protected*/ void IconDialog::makeCreateButtonPanel(QWidget* buttonPanel)
 {
  QWidget* panel = new QWidget();
@@ -256,7 +256,7 @@ void IconDialog::doneAction()
  buttonPanel->layout()->addWidget(panel);
  fl->addWidget(cancelButton);
 }
-
+#endif
 /*protected*/ QWidget* IconDialog::makeIconPanel(QHash<QString, NamedIcon*>* iconMap)
 {
  if (iconMap==NULL)

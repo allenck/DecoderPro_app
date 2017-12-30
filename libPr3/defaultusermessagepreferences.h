@@ -13,17 +13,6 @@
 #include <QSet>
 #include "libPr3_global.h"
 
-class DefaultUserMessagePreferences;
-class LIBPR3SHARED_EXPORT UserPreferencesShutDownTask : public QuietShutDownTask
-{
- Q_OBJECT
-  public:
-    explicit UserPreferencesShutDownTask(QString name, DefaultUserMessagePreferences *parent);
-    /*public*/  /*public*/ bool doAction();
-private:
-    Logger* log;
-    DefaultUserMessagePreferences *parent;
-};
 /*static*/ class MultipleChoice{
 
     QMap<int, QString> options;
@@ -142,7 +131,6 @@ public:
     }
 
 };
-
 /**
  * Holds details about the specific class.
  */
@@ -150,19 +138,19 @@ public:
 {
     QString classDescription;
 
-    QList<MultipleChoice*>* multipleChoiceList;// = new QList<MultipleChoice*>();
-    QList<PreferenceList*>* preferenceList;// = new QList<PreferenceList*>();
+    QList<MultipleChoice*>* multipleChoiceList = new QList<MultipleChoice*>();
+    QList<PreferenceList*>* preferenceList = new QList<PreferenceList*>();
 public:
     ClassPreferences()
     {
-     multipleChoiceList =  new QList<MultipleChoice*>();
-     preferenceList =  new QList<PreferenceList*>();
+//     multipleChoiceList =  new QList<MultipleChoice*>();
+//     preferenceList =  new QList<PreferenceList*>();
     }
 
     ClassPreferences(QString classDescription)
     {
-     multipleChoiceList =  new QList<MultipleChoice*>();
-     preferenceList =  new QList<PreferenceList*>();
+//     multipleChoiceList =  new QList<MultipleChoice*>();
+//     preferenceList =  new QList<PreferenceList*>();
      this->classDescription = classDescription;
     }
 
@@ -322,8 +310,6 @@ class ComboBoxLastSelection;
 class PropertyChangeListener;
 //class WindowLocations;
 //class ClassPreferences;
-class MultipleChoice;
-class TableColumnPreferences;
 class LIBPR3SHARED_EXPORT DefaultUserMessagePreferences : public UserPreferencesManager
 {
     Q_OBJECT
@@ -450,6 +436,19 @@ public:
     QString getComboBoxName() {return comboBoxName; }
 
 };
+
+class DefaultUserMessagePreferences;
+class LIBPR3SHARED_EXPORT UserPreferencesShutDownTask : public QuietShutDownTask
+{
+ Q_OBJECT
+  public:
+    explicit UserPreferencesShutDownTask(QString name, DefaultUserMessagePreferences *parent);
+    /*public*/  /*public*/ bool doAction();
+private:
+    Logger* log;
+    DefaultUserMessagePreferences *parent;
+};
+
 
 
 #endif // DEFAULTUSERMESSAGEPREFERENCES_H

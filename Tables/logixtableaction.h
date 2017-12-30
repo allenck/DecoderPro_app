@@ -28,7 +28,7 @@ class LogixTableModel;
 class QTableView;
 class UserPreferencesManager;
 class QCheckBox;
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class QPushButton;
 class ConditionalAction;
 class ConditionalVariable;
@@ -243,7 +243,7 @@ private:
     /*private*/ QList <ConditionalAction*>* _actionList;
     /*private*/ ConditionalAction* _curAction;
     /*private*/ int _curActionRowNumber;
-     DefaultUserMessagePreferences* p;
+     UserPreferencesManager* p;
      void appendToAntecedent(ConditionalVariable* variable);
      bool validateAntecedent();
      void initializeStateVariables();
@@ -514,6 +514,14 @@ class EditActionFrameWindowListener : public WindowListener
    void windowClosing(QCloseEvent *e);
    void windowDeiconified(QResizeEvent *){}
    void windowIconified(QResizeEvent *){}
+};
+class ECFWindowListener : public WindowListener
+{
+ Q_OBJECT
+ LogixTableAction* self;
+public:
+ ECFWindowListener(LogixTableAction* self);
+ void windowClosing(QCloseEvent *e);
 };
 
 #endif // LOGIXTABLEACTION_H

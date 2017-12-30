@@ -12,7 +12,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SectionManager : public AbstractManager
 public:
     explicit SectionManager(QObject *parent = 0);
     ~SectionManager() {}
-    SectionManager(const SectionManager&) {}
+    SectionManager(const SectionManager&) : AbstractManager() {}
     int getXMLOrder();
     QString getSystemPrefix();
     char typeLetter();

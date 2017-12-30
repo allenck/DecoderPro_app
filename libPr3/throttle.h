@@ -4,7 +4,7 @@
 #include <QObject>
 #include "basicrosterentry.h"
 #include "propertychangelistener.h"
-#include "throttlelistener.h"
+#include "Throttle/throttlelistener.h"
 #include "libPr3_global.h"
 
 class ThrottleListener;
@@ -12,7 +12,7 @@ class LIBPR3SHARED_EXPORT Throttle : public QObject
 {
     Q_OBJECT
 public:
-    //explicit Throttle(QObject *parent = 0);
+    explicit Throttle(QObject *parent = 0) : QObject(parent) {}
     /**
      * A Throttle object can be manipulated to change the speed, direction
      * and functions of a single locomotive.

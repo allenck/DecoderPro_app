@@ -63,18 +63,18 @@ protected void fireIndexedPropertyChange(String propertyName, int index, int old
         propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
     });
 }
-
+#endif
 /**
  * Fire an indexed property change on the Event dispatch (Swing) thread. Use
  * {@link java.beans.PropertyChangeSupport#fireIndexedPropertyChange(java.lang.String, int, java.lang.Object, java.lang.Object)}
  * directly to fire this notification on another thread.
  */
-protected void fireIndexedPropertyChange(String propertyName, int index, Object oldValue, Object newValue) {
-    ThreadingUtil.runOnGUIEventually(() -> {
-        propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
-    });
+/*protected*/ void Bean::fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue) {
+//    ThreadingUtil.runOnGUIEventually(() -> {
+        propertyChangeSupport->fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
+//    });
 }
-
+#if 0
 /**
  * Fire an indexed property change on the Event dispatch (Swing) thread. Use
  * {@link java.beans.PropertyChangeSupport#firePropertyChange(java.lang.String, boolean, boolean)}

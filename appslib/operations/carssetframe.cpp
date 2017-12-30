@@ -76,10 +76,10 @@ namespace Operations
      ignoreFinalDestinationCheckBox->setChecked(ignoreFinalDestinationCheckBoxSelected);
      ignoreTrainCheckBox->setChecked(ignoreTrainCheckBoxSelected);
 
-     QList<int> rows = _carsTable->getSelectedRows();
-     if (rows.length() > 0)
+     QVector<int>* rows = _carsTable->getSelectedRows();
+     if (rows->length() > 0)
      {
-      QModelIndex src = _sorter->mapFromSource(_sorter->index(rows[0],0));
+      QModelIndex src = _sorter->mapFromSource(_sorter->index(rows->at(0),0));
          Car* car = _carsTableModel->getCarAtIndex(/*_sorter->modelIndex(rows[0])*/src.row());
          CarSetFrame::loadCar(car);
      }
@@ -119,8 +119,8 @@ namespace Operations
      ignoreFinalDestinationCheckBoxSelected = ignoreFinalDestinationCheckBox->isChecked();
      ignoreTrainCheckBoxSelected = ignoreTrainCheckBox->isChecked();
 
-     QList<int> rows = _carsTable->getSelectedRows();
-     if (rows.length() == 0) {
+     QVector<int>* rows = _carsTable->getSelectedRows();
+     if (rows->length() == 0) {
 //         JOptionPane.showMessageDialog(this, tr("selectCars"), Bundle
 //                 .getMessage("carNoneSelected"), JOptionPane.WARNING_MESSAGE);
       QMessageBox::warning(this, tr("No cars selected!"), tr("You need to select the cars you want to change!"));
@@ -128,9 +128,9 @@ namespace Operations
 
      askKernelChange = true;
 
-     for (int i = 0; i < rows.length(); i++)
+     for (int i = 0; i < rows->length(); i++)
      {
-      QModelIndex src = _sorter->mapFromSource(_sorter->index(rows[0],0));
+      QModelIndex src = _sorter->mapFromSource(_sorter->index(rows->at(0),0));
          Car* car = _carsTableModel->getCarAtIndex(/*_sorter->modelIndex(rows[i]*/src.row());
          if (_car == NULL) {
              CarSetFrame::loadCar(car);

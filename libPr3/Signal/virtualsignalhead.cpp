@@ -19,9 +19,10 @@
 //    saveAppearance = SignalHead::DARK;
 }
 
-///*public*/ VirtualSignalHead(QString sys) {
-//    super(sys);
-//}
+/*public*/ VirtualSignalHead::VirtualSignalHead(QString sys, QObject *parent) : DefaultSignalHead(sys, "", parent)
+{
+    //super(sys);
+}
 
 /*protected*/ void VirtualSignalHead::updateOutput()
 {

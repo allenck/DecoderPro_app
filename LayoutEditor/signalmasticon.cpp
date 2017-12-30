@@ -619,7 +619,8 @@ default:
   }
  }
  else
-  _itemGroup = new QGraphicsItemGroup();
+  _itemGroup = new MyGraphicsItemGroup();
+ _itemGroup->setName("signaMastIcon");
 
 
  QString aspect = ((AbstractSignalMast*)getSignalMast())->getAspect();

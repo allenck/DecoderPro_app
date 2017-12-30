@@ -2,6 +2,10 @@
 #include "logger.h"
 #include "dispatcherframe.h"
 #include "layouteditor.h"
+#include "activetrain.h"
+#include "allocationrequest.h"
+#include "allocationplan.h"
+#include "signalmast.h"
 
 //AutoAllocate::AutoAllocate(QObject *parent) : QObject(parent)
 //{
@@ -96,37 +100,42 @@
     if (list->size() <= 0) {
         return;
     }
-#if 0
+
     // copy AllocationRequests in order of priority of ActiveTrain.
     copyAndSortARs(list);
     removeCompletePlans();
-    for (int i = 0; i < orderedRequests.size(); i++) {
-        try {
-            AllocationRequest ar = orderedRequests.get(i);
+
+    for (int i = 0; i < orderedRequests->size(); i++) {
+
+        //try {
+            AllocationRequest* ar = orderedRequests->at(i);
             if (ar == NULL) {
-                log.error("error in allocation request list - AllocationRequest is NULL");
+                log->error("error in allocation request list - AllocationRequest is NULL");
                 return;
             }
-            if (DispatcherFrame.instance().getSignalType() == DispatcherFrame.SIGNALMAST && isSignalHeldAtStartOfSection(ar)) {
+            if (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALMAST && isSignalHeldAtStartOfSection(ar)) {
                 return;
             }
-            if (getPlanThisTrain(ar.getActiveTrain()) != NULL) {
+#if 0
+            if (getPlanThisTrain(ar->getActiveTrain()) != NULL) {
                 // this train is in an active Allocation Plan, anything to do now?
-                if (willAllocatingFollowPlan(ar, getPlanThisTrain(ar.getActiveTrain()))) {
+                if (willAllocatingFollowPlan(ar, getPlanThisTrain(ar->getActiveTrain()))) {
                     if (allocateIfLessThanThreeAhead(ar)) {
                         return;
                     }
                 }
-            } else if (!waitingForStartTime(ar)) {
+            }
+            else if (!waitingForStartTime(ar))
+            {
                 // train isn't waiting, continue only if requested Section is currently free and not occupied
-                if ((ar.getSection().getState() == Section.FREE)
-                        && (ar.getSection().getOccupancy() != Section.OCCUPIED)
-                        && (_dispatcher.getSignalType() == DispatcherFrame.SIGNALHEAD
-                        || (_dispatcher.getSignalType() == DispatcherFrame.SIGNALMAST
-                        && _dispatcher.checkBlocksNotInAllocatedSection(ar.getSection(), ar) == NULL))) {
+                if ((ar->getSection().getState() == Section::FREE)
+                        && (ar->getSection()->getOccupancy() != Section::OCCUPIED)
+                        && (_dispatcher->getSignalType() == DispatcherFrame::SIGNALHEAD
+                        || (_dispatcher->getSignalType() == DispatcherFrame::SIGNALMAST
+                        && _dispatcher->checkBlocksNotInAllocatedSection(ar->getSection(), ar) == NULL))) {
                     // requested Section is currently free and not occupied
-                    ArrayList<ActiveTrain> activeTrainsList = _dispatcher.getActiveTrainsList();
-                    if (activeTrainsList.size() == 1) {
+                    QList<ActiveTrain*>* activeTrainsList = _dispatcher->getActiveTrainsList();
+                    if (activeTrainsList->size() == 1) {
                     // this is the only ActiveTrain
                         if (allocateIfLessThanThreeAhead(ar)) {
                             return;
@@ -134,10 +143,10 @@
                     } else {
                         //check if any other ActiveTrain will need this Section or its alternates, if any
                         bool okToAllocate = true;
-                        ArrayList<ActiveTrain> neededByTrainList = new ArrayList<ActiveTrain>();
-                        for (int j = 0; j < activeTrainsList.size(); j++) {
-                            ActiveTrain at = activeTrainsList.get(j);
-                                if (at != ar.getActiveTrain()) {
+                        QList<ActiveTrain*>* neededByTrainList = new QList<ActiveTrain>();
+                        for (int j = 0; j < activeTrainsList->size(); j++) {
+                            ActiveTrain* at = activeTrainsList->at(j);
+                                if (at != ar->getActiveTrain()) {
                                     if (sectionNeeded(ar, at)) {
                                         neededByTrainList.add(at);
                                     }
@@ -145,12 +154,12 @@
                         }
                         if (neededByTrainList.size() <= 0) {
                             // no other ActiveTrain needs this Section, any LevelXings?
-                            if (containsLevelXing(ar.getSection())) {
+                            if (containsLevelXing(ar->getSection())) {
                                 // check if allocating this Section might block a higher priority train
                                 for (int j = 0; j < activeTrainsList.size(); j++) {
-                                    ActiveTrain at = activeTrainsList.get(j);
-                                    if ((at != ar.getActiveTrain())
-                                            && (at.getPriority() > ar.getActiveTrain().getPriority())) {
+                                    ActiveTrain* at = activeTrainsList->at(j);
+                                    if ((at != ar->getActiveTrain())
+                                            && (at->getPriority() > ar->getActiveTrain()->getPriority())) {
                                         if (willLevelXingsBlockTrain(at)) {
                                             okToAllocate = false;
                                         }
@@ -161,17 +170,17 @@
                             // requested Section (or alternate) is needed by other active Active Train(s)
                             for (int k = 0; k < neededByTrainList.size(); k++) {
                                 // section is also needed by this active train
-                                ActiveTrain nt = neededByTrainList.get(k);
+                                ActiveTrain* nt = neededByTrainList->at(k);
                                 // are trains moving in same direction through the requested Section?
                                 if (sameDirection(ar, nt)) {
                                     // trains will move in the same direction thru requested section
-                                    if (firstTrainLeadsSecond(ar.getActiveTrain(), nt)
-                                            && (nt.getPriority() > ar.getActiveTrain().getPriority())) {
+                                    if (firstTrainLeadsSecond(ar->getActiveTrain(), nt)
+                                            && (nt->getPriority() > ar->getActiveTrain().getPriority())) {
                                         // a higher priority train is trailing this train, can we let it pass?
                                         if (checkForPassingPlan(ar, nt, neededByTrainList)) {
                                             // PASSING_MEET plan created
                                             if (!willAllocatingFollowPlan(ar,
-                                                    getPlanThisTrain(ar.getActiveTrain()))) {
+                                                    getPlanThisTrain(ar->getActiveTrain()))) {
                                                 okToAllocate = false;
                                             }
                                         }
@@ -179,11 +188,11 @@
                                 } else {
                                     // trains will move in opposite directions thru requested section
                                     //   explore possibility of an XING_MEET to avoid gridlock
-                                    if (willTrainsCross(ar.getActiveTrain(), nt)) {
+                                    if (willTrainsCross(ar->getActiveTrain(), nt)) {
                                         if (checkForXingPlan(ar, nt, neededByTrainList)) {
                                             // XING_MEET plan created
                                             if (!willAllocatingFollowPlan(ar,
-                                                    getPlanThisTrain(ar.getActiveTrain()))) {
+                                                    getPlanThisTrain(ar->getActiveTrain()))) {
                                                 okToAllocate = false;
                                             }
                                         }
@@ -200,12 +209,13 @@
                     }
                 }
             }
-        } catch (Exception e) {
-            log.warn("scanAllocationRequestList - maybe the allocationrequest was removed due to a terminating train??"+e.toString());
-            continue;
-        }
-    }
 #endif
+//        } catch (Exception e) {
+//            log->warn("scanAllocationRequestList - maybe the allocationrequest was removed due to a terminating train??"+e.toString());
+//            continue;
+//        }
+    }
+
 }
 #if 0
 /**
@@ -214,20 +224,20 @@
  * sList contains the possible next Sections, and ar is the section being
  * allocated when a choice is needed.
  */
-protected Section autoNextSectionChoice(ArrayList<Section> sList, AllocationRequest ar) {
+/*protected*/ Section autoNextSectionChoice(QList<Section> sList, AllocationRequest ar) {
     // check if AutoAllocate has prepared for this question
     if ((savedAR != NULL) && (savedAR == ar)) {
         for (int j = 0; j < sList.size(); j++) {
-            if (savedSection == sList.get(j)) {
+            if (savedSection == sList->at(j)) {
                 return savedSection;
             }
         }
-        log.warn("Failure of prepared choice of next Section in AutoAllocate");
+        log->warn("Failure of prepared choice of next Section in AutoAllocate");
     }
     // Jay Janzen
     // If there is an AP check to see if the AP's target is on the list of choices
     // and if so, return that.
-    ActiveTrain at = ar.getActiveTrain();
+    ActiveTrain at = ar->getActiveTrain();
     AllocationPlan ap = getPlanThisTrain(at);
     Section as = NULL;
     if (ap != NULL) {
@@ -241,7 +251,7 @@ protected Section autoNextSectionChoice(ArrayList<Section> sList, AllocationRequ
             return NULL;
         }
         for (int i = 0; i < sList.size(); i++) {
-            if (as != NULL && as == sList.get(i)) return as;
+            if (as != NULL && as == sList->at(i)) return as;
         }
     }
     // If our end block section is on the list of choices
@@ -250,30 +260,30 @@ protected Section autoNextSectionChoice(ArrayList<Section> sList, AllocationRequ
     // primary is unoccupied, the search will select the primary and
     // we wind up skipping right over our end section.
     for (int i = 0; i < sList.size(); i++) {
-        if (at.getEndBlockSection().getSystemName().equals(sList.get(i).getSystemName())) {
-            return sList.get(i);
+        if (at.getEndBlockSection().getSystemName().equals(sList->at(i).getSystemName())) {
+            return sList->at(i);
         }
     }
     // no prepared choice, or prepared choice failed, is there an unoccupied Section available
     for (int i = 0; i < sList.size(); i++) {
-        if ((sList.get(i).getOccupancy() == Section.UNOCCUPIED)
-                && (sList.get(i).getState() == Section.FREE)
+        if ((sList->at(i).getOccupancy() == Section.UNOCCUPIED)
+                && (sList->at(i).getState() == Section.FREE)
                 && (_dispatcher.getSignalType() == DispatcherFrame.SIGNALHEAD
                 || (_dispatcher.getSignalType() == DispatcherFrame.SIGNALMAST
-                && _dispatcher.checkBlocksNotInAllocatedSection(sList.get(i), ar) == NULL))) {
-            return sList.get(i);
+                && _dispatcher.checkBlocksNotInAllocatedSection(sList->at(i), ar) == NULL))) {
+            return sList->at(i);
         }
     }
     // no unoccupied Section available, check for Section allocated in same direction as this request
-    int dir = ar.getSectionDirection();
-    ArrayList<AllocatedSection> allocatedSections = _dispatcher.getAllocatedSectionsList();
+    int dir = ar->getSectionDirection();
+    QList<AllocatedSection> allocatedSections = _dispatcher.getAllocatedSectionsList();
     for (int m = 0; m < sList.size(); m++) {
         bool notFound = true;
         for (int k = 0; (k < allocatedSections.size()) && notFound; k++) {
-            if (sList.get(m) == allocatedSections.get(k).getSection()) {
+            if (sList->at(m) == allocatedSections->at(k).getSection()) {
                 notFound = false;
-                if (allocatedSections.get(k).getSection().getState() == dir) {
-                    return sList.get(m);
+                if (allocatedSections->at(k).getSection().getState() == dir) {
+                    return sList->at(m);
                 }
             }
         }
@@ -283,34 +293,34 @@ protected Section autoNextSectionChoice(ArrayList<Section> sList, AllocationRequ
 }
 /*private*/ AllocationRequest savedAR = NULL;
 /*private*/ Section savedSection = NULL;
-
+#endif
 // /*private*/ implementation methods
-/*private*/ void copyAndSortARs(ArrayList<AllocationRequest> list) {
-    orderedRequests.clear();
+/*private*/ void AutoAllocate::copyAndSortARs(QList<AllocationRequest*>* list) {
+    orderedRequests->clear();
     // find highest priority train
     int priority = 0;
-    for (int i = 0; i < list.size(); i++) {
-        ActiveTrain at = list.get(i).getActiveTrain();
-        if (at.getPriority() > priority) {
-            priority = at.getPriority();
+    for (int i = 0; i < list->size(); i++) {
+        ActiveTrain* at = list->at(i)->getActiveTrain();
+        if (at->getPriority() > priority) {
+            priority = at->getPriority();
         }
     }
-    while ((list.size() > orderedRequests.size()) && (priority > 0)) {
-        for (int i = 0; i < list.size(); i++) {
-            ActiveTrain at = list.get(i).getActiveTrain();
-            if (at.getPriority() == priority) {
-                orderedRequests.add(list.get(i));
+    while ((list->size() > orderedRequests->size()) && (priority > 0)) {
+        for (int i = 0; i < list->size(); i++) {
+            ActiveTrain* at = list->at(i)->getActiveTrain();
+            if (at->getPriority() == priority) {
+                orderedRequests->append(list->at(i));
             }
         }
         priority--;
     }
 }
 
-/*private*/ AllocationPlan getPlanThisTrain(ActiveTrain at) {
-    for (int i = 0; i < _planList.size(); i++) {
-        AllocationPlan ap = _planList.get(i);
+/*private*/ AllocationPlan* AutoAllocate::getPlanThisTrain(ActiveTrain* at) {
+    for (int i = 0; i < _planList->size(); i++) {
+        AllocationPlan* ap = _planList->at(i);
         for (int j = 1; j < 3; j++) {
-            if (ap.getActiveTrain(j) == at) {
+            if (ap->getActiveTrain(j) == at) {
                 return ap;
             }
         }
@@ -318,79 +328,79 @@ protected Section autoNextSectionChoice(ArrayList<Section> sList, AllocationRequ
     // train not in an AllocationPlan
     return NULL;
 }
-
+#if 0
 /*private*/ bool willAllocatingFollowPlan(AllocationRequest ar, AllocationPlan ap) {
     // return 'true' if this AllocationRequest is consistent with specified plan,
     //     returns 'false' otherwise
-    ActiveTrain at = ar.getActiveTrain();
+    ActiveTrain at = ar->getActiveTrain();
     int cTrainNum = 0;
     if (ap.getActiveTrain(1) == at) {
         cTrainNum = 1;
     } else if (ap.getActiveTrain(2) == at) {
         cTrainNum = 2;
     } else {
-        log.error("Requesting train not in Allocation Plan");
+        log->error("Requesting train not in Allocation Plan");
         return false;
     }
     if (!at.isAllocationReversed()) {
-        if (ap.getTargetSectionSequenceNum(cTrainNum) >= ar.getSectionSeqNumber()) {
-            if ((ar.getSection().getState() == Section.FREE)
-                    && (ar.getSection().getOccupancy() != Section.OCCUPIED)) {
+        if (ap.getTargetSectionSequenceNum(cTrainNum) >= ar->getSectionSeqNumber()) {
+            if ((ar->getSection().getState() == Section.FREE)
+                    && (ar->getSection().getOccupancy() != Section.OCCUPIED)) {
                 return true;
             }
         }
     } else {
-        if (ap.getTargetSectionSequenceNum(cTrainNum) <= ar.getSectionSeqNumber()) {
-            if ((ar.getSection().getState() == Section.FREE)
-                    && (ar.getSection().getOccupancy() != Section.OCCUPIED)) {
+        if (ap.getTargetSectionSequenceNum(cTrainNum) <= ar->getSectionSeqNumber()) {
+            if ((ar->getSection().getState() == Section.FREE)
+                    && (ar->getSection().getOccupancy() != Section.OCCUPIED)) {
                 return true;
             }
         }
     }
     return false;
 }
-
-/*private*/ void removeCompletePlans() {
+#endif
+/*private*/ void AutoAllocate::removeCompletePlans() {
     bool foundCompletePlan = true;
     while (foundCompletePlan) {
         foundCompletePlan = false;
-        for (int i = 0; (!foundCompletePlan) && (i < _planList.size()); i++) {
+        for (int i = 0; (!foundCompletePlan) && (i < _planList->size()); i++) {
             // remove if all planned allocations have been made
-            foundCompletePlan = _planList.get(i).isComplete();
+            foundCompletePlan = _planList->at(i)->isComplete();
             if (foundCompletePlan) {
-                _planList.get(i).dispose();
-                _planList.remove(i);
+                _planList->at(i)->dispose();
+                _planList->removeAt(i);
             }
         }
     }
 }
 
-protected void clearAllocationPlans() {
-    for (int i = _planList.size() - 1; i >= 0; i--) {
-        AllocationPlan ap = _planList.get(i);
-        _planList.remove(i);
-        ap.dispose();
+/*protected*/ void AutoAllocate::clearAllocationPlans() {
+    for (int i = _planList->size() - 1; i >= 0; i--) {
+        AllocationPlan* ap = _planList->at(i);
+        _planList->removeAt(i);
+        ap->dispose();
     }
 }
-
+#if 0
 // test to see how far ahead allocations have already been made
 // and go no farther than three unless the "all the way" attribute
 // for the train is true then always allocate the request
 /*private*/ bool allocateIfLessThanThreeAhead(AllocationRequest ar) {
-    if (ar.getActiveTrain().getAllocateAllTheWay()) {
+    if (ar->getActiveTrain().getAllocateAllTheWay()) {
         _dispatcher.allocateSection(ar, NULL);
         return true;
     }
     // test how far ahead of occupied track this requested section is
-    ArrayList<AllocatedSection> aSectionList = ar.getActiveTrain().getAllocatedSectionList();
+    QList<AllocatedSection> aSectionList = ar->getActiveTrain().getAllocatedSectionList();
     if (aSectionList.size() >= 4) {
-        int curSeq = ar.getSectionSeqNumber() - 1;
-        if ((curSeq == 1) && ar.getActiveTrain().getResetWhenDone()) {
-            curSeq = ar.getActiveTrain().getTransit().getMaxSequence();
+        int curSeq = ar->getSectionSeqNumber() - 1;
+        if ((curSeq == 1) && ar->getActiveTrain().getResetWhenDone()) {
+            curSeq = ar->getActiveTrain().getTransit().getMaxSequence();
         }
         AllocatedSection curAS = NULL;
         for (int i = aSectionList.size() - 1; i >= 0; i--) {
-            AllocatedSection as = aSectionList.get(i);
+            AllocatedSection as = aSectionList->at(i);
             if ((as != NULL) && (as.getSequence() == curSeq)) {
                 curAS = as;
             }
@@ -398,12 +408,12 @@ protected void clearAllocationPlans() {
         if ((curAS != NULL) && (curAS.getSection().getOccupancy() != jmri.Section.OCCUPIED)) {
             //last allocated section exists and is not occupied, test previous one
             curSeq = curSeq - 1;
-            if ((curSeq == 1) && ar.getActiveTrain().getResetWhenDone()) {
-                curSeq = ar.getActiveTrain().getTransit().getMaxSequence();
+            if ((curSeq == 1) && ar->getActiveTrain().getResetWhenDone()) {
+                curSeq = ar->getActiveTrain().getTransit().getMaxSequence();
             }
             curAS = NULL;
             for (int i = aSectionList.size() - 1; i >= 0; i--) {
-                AllocatedSection as = aSectionList.get(i);
+                AllocatedSection as = aSectionList->at(i);
                 if ((as != NULL) && (as.getSequence() == curSeq)) {
                     curAS = as;
                 }
@@ -411,12 +421,12 @@ protected void clearAllocationPlans() {
             if ((curAS != NULL) && (curAS.getSection().getOccupancy() != jmri.Section.OCCUPIED)) {
                 //previous allocated section exists and is not occupied, test previous one
                 curSeq = curSeq - 1;
-                if ((curSeq == 1) && ar.getActiveTrain().getResetWhenDone()) {
-                    curSeq = ar.getActiveTrain().getTransit().getMaxSequence();
+                if ((curSeq == 1) && ar->getActiveTrain().getResetWhenDone()) {
+                    curSeq = ar->getActiveTrain().getTransit().getMaxSequence();
                 }
                 curAS = NULL;
                 for (int i = aSectionList.size() - 1; i >= 0; i--) {
-                    AllocatedSection as = aSectionList.get(i);
+                    AllocatedSection as = aSectionList->at(i);
                     if ((as != NULL) && (as.getSequence() == curSeq)) {
                         curAS = as;
                     }
@@ -428,20 +438,20 @@ protected void clearAllocationPlans() {
             }
         }
     }
-    log.debug("{}: auto allocating Section {}", ar.getActiveTrain().getTrainName(),
-            ar.getSectionName());
+    log->debug("{}: auto allocating Section {}", ar->getActiveTrain().getTrainName(),
+            ar->getSectionName());
     _dispatcher.allocateSection(ar, NULL);
     return true;
 }
 
 /*private*/ bool checkForXingPlan(AllocationRequest ar, ActiveTrain nt,
-        ArrayList<ActiveTrain> neededByTrainList) {
+        QList<ActiveTrain> neededByTrainList) {
     // returns 'true' if an AllocationPlan has been set up, returns 'false' otherwise
     Section nSec = NULL;
     Section aSec = NULL;
     int nSecSeq = 0;
     int aSecSeq = 0;
-    ActiveTrain at = ar.getActiveTrain();
+    ActiveTrain at = ar->getActiveTrain();
     AllocationPlan apx = getPlanThisTrain(nt);
     if (apx != NULL) {
         if (apx.getPlanType() != AllocationPlan.XING_MEET) {
@@ -455,7 +465,7 @@ protected void clearAllocationPlans() {
             nSecSeq = apx.getTargetSectionSequenceNum(2);
             nSec = apx.getTargetSection(2);
         }
-        ArrayList<Section> nSections = nt.getTransit().getSectionListBySeq(nSecSeq);
+        QList<Section> nSections = nt.getTransit().getSectionListBySeq(nSecSeq);
         if (nSections.size() <= 1) {
             return false;
         }
@@ -470,7 +480,7 @@ protected void clearAllocationPlans() {
         }
     } else {
         // neither train is in an AllocationPlan currently, check for suitable passing siding
-        int aSeq = ar.getSectionSeqNumber();
+        int aSeq = ar->getSectionSeqNumber();
         // is an alternate Section available here or ahead
         aSecSeq = findPassingSection(at, aSeq);
         if (aSecSeq == 0) {
@@ -479,11 +489,11 @@ protected void clearAllocationPlans() {
             nSecSeq = findPassingSection(nt, nCurrentSeq);
             if (nSecSeq > 0) {
                 // has passing section ahead, will this train traverse a Section in it
-                ArrayList<Section> nSections = nt.getTransit().getSectionListBySeq(nSecSeq);
+                QList<Section> nSections = nt.getTransit().getSectionListBySeq(nSecSeq);
                 for (int i = 0; (i < nSections.size()) && (aSec == NULL); i++) {
-                    aSecSeq = willTraverse(nSections.get(i), at, aSeq);
+                    aSecSeq = willTraverse(nSections->at(i), at, aSeq);
                     if (aSecSeq > 0) {
-                        aSec = at.getTransit().getSectionListBySeq(aSecSeq).get(0);
+                        aSec = at.getTransit().getSectionListBySeq(aSecSeq)->at(0);
                     }
                 }
                 if (aSec != NULL) {
@@ -493,12 +503,12 @@ protected void clearAllocationPlans() {
             }
         } else {
             // will other train go through any of these alternate sections
-            ArrayList<Section> aSections = at.getTransit().getSectionListBySeq(aSecSeq);
+            QList<Section> aSections = at.getTransit().getSectionListBySeq(aSecSeq);
             int nCurrentSeq = getCurrentSequenceNumber(nt);
             for (int i = 0; (i < aSections.size()) && (aSec == NULL); i++) {
-                nSecSeq = willTraverse(aSections.get(i), nt, nCurrentSeq);
+                nSecSeq = willTraverse(aSections->at(i), nt, nCurrentSeq);
                 if (nSecSeq > 0) {
-                    nSec = aSections.get(i);
+                    nSec = aSections->at(i);
                     aSec = getBestOtherSection(aSections, nSec);
                 }
             }
@@ -532,13 +542,13 @@ protected void clearAllocationPlans() {
 }
 
 /*private*/ bool checkForPassingPlan(AllocationRequest ar, ActiveTrain nt,
-        ArrayList<ActiveTrain> neededByTrainList) {
+        QList<ActiveTrain> neededByTrainList) {
     // returns 'true' if an AllocationPlan has been set up, returns 'false' otherwise
     Section nSec = NULL;
     Section aSec = NULL;
     int nSecSeq = 0;
     int aSecSeq = 0;
-    ActiveTrain at = ar.getActiveTrain();
+    ActiveTrain at = ar->getActiveTrain();
     AllocationPlan apx = getPlanThisTrain(nt);
     if (apx != NULL) {
         if (apx.getPlanType() != AllocationPlan.PASSING_MEET) {
@@ -577,25 +587,25 @@ protected void clearAllocationPlans() {
 //                    }
 //                }
 //            }
-        ArrayList<Section> nSections = nt.getTransit().getSectionListBySeq(nSecSeq);
+        QList<Section> nSections = nt.getTransit().getSectionListBySeq(nSecSeq);
         if (nSections.size() <= 1) {
             return false;
         }
         // is a passing siding, find a suitable track
         for (int i = 0; (i < nSections.size()) && (aSec == NULL); i++) {
-            if (nSections.get(i) == oSection) {
-                aSecSeq = willTraverse(nSections.get(i), at, aCurrentSeq);
+            if (nSections->at(i) == oSection) {
+                aSecSeq = willTraverse(nSections->at(i), at, aCurrentSeq);
                 if (aSecSeq > 0) {
-                    aSec = nSections.get(i);
+                    aSec = nSections->at(i);
                 }
             }
         }
         if (aSec == NULL) {
             for (int i = 0; (i < nSections.size()) && (aSec == NULL); i++) {
-                if (nSections.get(i) != nSec) {
-                    aSecSeq = willTraverse(nSections.get(i), at, aCurrentSeq);
+                if (nSections->at(i) != nSec) {
+                    aSecSeq = willTraverse(nSections->at(i), at, aCurrentSeq);
                     if (aSecSeq > 0) {
-                        aSec = nSections.get(i);
+                        aSec = nSections->at(i);
                     }
                 }
             }
@@ -605,7 +615,7 @@ protected void clearAllocationPlans() {
         }
     } else {
         // both trains are not in Allocation plans
-        int aSeq = ar.getSectionSeqNumber();
+        int aSeq = ar->getSectionSeqNumber();
         // is an alternate Section available here or ahead
         aSecSeq = findPassingSection(at, aSeq);
         if (aSecSeq == 0) {
@@ -614,11 +624,11 @@ protected void clearAllocationPlans() {
             nSecSeq = findPassingSection(nt, nCurrentSeq);
             if (nSecSeq > 0) {
                 // has passing section ahead, will this train traverse a Section in it
-                ArrayList<Section> nSections = nt.getTransit().getSectionListBySeq(nSecSeq);
+                QList<Section> nSections = nt.getTransit().getSectionListBySeq(nSecSeq);
                 for (int i = 0; (i < nSections.size()) && (aSec == NULL); i++) {
-                    aSecSeq = willTraverse(nSections.get(i), at, aSeq);
+                    aSecSeq = willTraverse(nSections->at(i), at, aSeq);
                     if (aSecSeq > 0) {
-                        aSec = at.getTransit().getSectionListBySeq(aSecSeq).get(0);
+                        aSec = at.getTransit().getSectionListBySeq(aSecSeq)->at(0);
                     }
                 }
                 if (aSec != NULL) {
@@ -628,12 +638,12 @@ protected void clearAllocationPlans() {
             }
         } else {
             // will the higher priority train go through any of these alternate sections
-            ArrayList<Section> aSections = at.getTransit().getSectionListBySeq(aSecSeq);
+            QList<Section> aSections = at.getTransit().getSectionListBySeq(aSecSeq);
             int nCurrentSeq = getCurrentSequenceNumber(nt);
             for (int i = 0; (i < aSections.size()) && (aSec == NULL); i++) {
-                nSecSeq = willTraverse(aSections.get(i), nt, nCurrentSeq);
+                nSecSeq = willTraverse(aSections->at(i), nt, nCurrentSeq);
                 if (nSecSeq > 0) {
-                    nSec = aSections.get(i);
+                    nSec = aSections->at(i);
                     aSec = getBestOtherSection(aSections, nSec);
                 }
             }
@@ -646,12 +656,12 @@ protected void clearAllocationPlans() {
         if (!nt.isAllocationReversed()) {
             if (nSecSeq < nt.getTransit().getMaxSequence()) {
                 nSecSeq++;
-                nSec = nt.getTransit().getSectionListBySeq(nSecSeq).get(0);
+                nSec = nt.getTransit().getSectionListBySeq(nSecSeq)->at(0);
             }
         } else {
             if (nSecSeq > 1) {
                 nSecSeq--;
-                nSec = nt.getTransit().getSectionListBySeq(nSecSeq).get(0);
+                nSec = nt.getTransit().getSectionListBySeq(nSecSeq)->at(0);
             }
         }
     }
@@ -690,7 +700,7 @@ protected void clearAllocationPlans() {
         return false;
     }
     for (int i = 0; i < _planList.size(); i++) {
-        AllocationPlan ap = _planList.get(i);
+        AllocationPlan ap = _planList->at(i);
         // check if this plan involves the second train (it'll never involve the first)
         int trainNum = 0;
         if (ap.getActiveTrain(1) == nt) {
@@ -706,10 +716,10 @@ protected void clearAllocationPlans() {
             }
         } else {
             // different trains, does this plan use the same Passing Section?
-            ArrayList<Section> aSections = at.getTransit().getSectionListBySeq(aSecSeq);
+            QList<Section> aSections = at.getTransit().getSectionListBySeq(aSecSeq);
             for (int j = 0; j < aSections.size(); j++) {
-                if ((aSections.get(j) == ap.getTargetSection(1))
-                        || (aSections.get(j) == ap.getTargetSection(2))) {
+                if ((aSections->at(j) == ap.getTargetSection(1))
+                        || (aSections->at(j) == ap.getTargetSection(2))) {
                     return true;
                 }
             }
@@ -719,22 +729,22 @@ protected void clearAllocationPlans() {
     return false;
 }
 
-/*private*/ Section getBestOtherSection(ArrayList<Section> sList, Section aSec) {
+/*private*/ Section getBestOtherSection(QList<Section> sList, Section aSec) {
     // returns the best Section from the list that is not aSec, or else return NULL
     for (int i = 0; i < sList.size(); i++) {
-        if ((sList.get(i) != aSec) && (sList.get(i).getState() == Section.FREE)
-                && (sList.get(i).getOccupancy() != Section.OCCUPIED)) {
-            return sList.get(i);
+        if ((sList->at(i) != aSec) && (sList->at(i).getState() == Section.FREE)
+                && (sList->at(i).getOccupancy() != Section.OCCUPIED)) {
+            return sList->at(i);
         }
     }
     for (int i = 0; i < sList.size(); i++) {
-        if ((sList.get(i) != aSec) && (sList.get(i).getOccupancy() != Section.OCCUPIED)) {
-            return sList.get(i);
+        if ((sList->at(i) != aSec) && (sList->at(i).getOccupancy() != Section.OCCUPIED)) {
+            return sList->at(i);
         }
     }
     for (int i = 0; i < sList.size(); i++) {
-        if (sList.get(i) != aSec) {
-            return sList.get(i);
+        if (sList->at(i) != aSec) {
+            return sList->at(i);
         }
     }
     return NULL;
@@ -764,7 +774,7 @@ protected void clearAllocationPlans() {
     if (!at.isTransitReversed()) {
         for (int i = seq; i <= t.getMaxSequence(); i++) {
             for (int j = 0; j < t.getSectionListBySeq(i).size(); j++) {
-                if (t.getSectionListBySeq(i).get(j) == s) {
+                if (t.getSectionListBySeq(i)->at(j) == s) {
                     return i;
                 }
             }
@@ -772,7 +782,7 @@ protected void clearAllocationPlans() {
     } else {
         for (int i = seq; i >= 0; i--) {
             for (int j = 0; j < t.getSectionListBySeq(i).size(); j++) {
-                if (t.getSectionListBySeq(i).get(j) == s) {
+                if (t.getSectionListBySeq(i)->at(j) == s) {
                     return i;
                 }
             }
@@ -784,14 +794,14 @@ protected void clearAllocationPlans() {
 /*private*/ bool sectionNeeded(AllocationRequest ar, ActiveTrain at) {
     // returns 'true' if request section, or its alternates, will be needed by specified train
     if ((ar == NULL) || (at == NULL)) {
-        log.error("NULL argument on entry to 'sectionNeeded'");
+        log->error("NULL argument on entry to 'sectionNeeded'");
         return false;
     }
-    ArrayList<Section> aSectionList = ar.getActiveTrain().getTransit().getSectionListBySeq(
-            ar.getSectionSeqNumber());
+    QList<Section> aSectionList = ar->getActiveTrain().getTransit().getSectionListBySeq(
+            ar->getSectionSeqNumber());
     bool found = false;
     for (int i = 0; i < aSectionList.size(); i++) {
-        if (!(at.getTransit().containsSection(aSectionList.get(i)))) {
+        if (!(at.getTransit().containsSection(aSectionList->at(i)))) {
             found = true;
         }
     }
@@ -802,13 +812,13 @@ protected void clearAllocationPlans() {
         return true;
     }
     // this train may need this Section, has it already passed this Section?
-    ArrayList<TransitSection> tsList = at.getTransit().getTransitSectionList();
+    QList<TransitSection> tsList = at.getTransit().getTransitSectionList();
     int curSeq = getCurrentSequenceNumber(at);
     if (!at.isAllocationReversed()) {
         for (int i = 0; i < tsList.size(); i++) {
-            if (tsList.get(i).getSequenceNumber() > curSeq) {
+            if (tsList->at(i).getSequenceNumber() > curSeq) {
                 for (int j = 0; j < aSectionList.size(); j++) {
-                    if (tsList.get(i).getSection() == aSectionList.get(j)) {
+                    if (tsList->at(i).getSection() == aSectionList->at(j)) {
                         return true;
                     }
                 }
@@ -816,9 +826,9 @@ protected void clearAllocationPlans() {
         }
     } else {
         for (int i = tsList.size() - 1; i >= 0; i--) {
-            if (tsList.get(i).getSequenceNumber() < curSeq) {
+            if (tsList->at(i).getSequenceNumber() < curSeq) {
                 for (int j = 0; j < aSectionList.size(); j++) {
-                    if (tsList.get(i).getSection() == aSectionList.get(j)) {
+                    if (tsList->at(i).getSection() == aSectionList->at(j)) {
                         return true;
                     }
                 }
@@ -828,9 +838,9 @@ protected void clearAllocationPlans() {
     if (DispatcherFrame.instance().getSignalType() == DispatcherFrame.SIGNALMAST) {
         if (!at.isAllocationReversed()) {
             for (int i = 0; i < tsList.size(); i++) {
-                if (tsList.get(i).getSequenceNumber() > curSeq) {
+                if (tsList->at(i).getSequenceNumber() > curSeq) {
                     for (int j = 0; j < aSectionList.size(); j++) {
-                        if (tsList.get(i).getSection() == aSectionList.get(j)) {
+                        if (tsList->at(i).getSection() == aSectionList->at(j)) {
                             return true;
                         }
                     }
@@ -838,9 +848,9 @@ protected void clearAllocationPlans() {
             }
         } else {
             for (int i = tsList.size() - 1; i >= 0; i--) {
-                if (tsList.get(i).getSequenceNumber() < curSeq) {
+                if (tsList->at(i).getSequenceNumber() < curSeq) {
                     for (int j = 0; j < aSectionList.size(); j++) {
-                        if (tsList.get(i).getSection() == aSectionList.get(j)) {
+                        if (tsList->at(i).getSection() == aSectionList->at(j)) {
                             return true;
                         }
                     }
@@ -854,19 +864,19 @@ protected void clearAllocationPlans() {
 /*private*/ bool sameDirection(AllocationRequest ar, ActiveTrain at) {
     // returns 'true' if both trains will move thru the requested section in the same direction
     if ((ar == NULL) || (at == NULL)) {
-        log.error("NULL argument on entry to 'sameDirection'");
+        log->error("NULL argument on entry to 'sameDirection'");
         return false;
     }
-    ArrayList<TransitSection> tsList = at.getTransit().getTransitSectionList();
-    ArrayList<TransitSection> rtsList = ar.getActiveTrain().getTransit().getTransitSectionListBySeq(
-            ar.getSectionSeqNumber());
+    QList<TransitSection> tsList = at.getTransit().getTransitSectionList();
+    QList<TransitSection> rtsList = ar->getActiveTrain().getTransit().getTransitSectionListBySeq(
+            ar->getSectionSeqNumber());
     int curSeq = getCurrentSequenceNumber(at);
     if (!at.isAllocationReversed()) {
         for (int i = 0; i < tsList.size(); i++) {
-            if (tsList.get(i).getSequenceNumber() > curSeq) {
+            if (tsList->at(i).getSequenceNumber() > curSeq) {
                 for (int k = 0; k < rtsList.size(); k++) {
-                    if ((tsList.get(i).getSection() == rtsList.get(k).getSection())
-                            && (tsList.get(i).getDirection() == rtsList.get(k).getDirection())) {
+                    if ((tsList->at(i).getSection() == rtsList->at(k).getSection())
+                            && (tsList->at(i).getDirection() == rtsList->at(k).getDirection())) {
                         return true;
                     }
                 }
@@ -874,10 +884,10 @@ protected void clearAllocationPlans() {
         }
     } else {
         for (int i = tsList.size() - 1; i >= 0; i--) {
-            if (tsList.get(i).getSequenceNumber() < curSeq) {
+            if (tsList->at(i).getSequenceNumber() < curSeq) {
                 for (int k = 0; k < rtsList.size(); k++) {
-                    if ((tsList.get(i).getSection() == rtsList.get(k).getSection())
-                            && (tsList.get(i).getDirection() == rtsList.get(k).getDirection())) {
+                    if ((tsList->at(i).getSection() == rtsList->at(k).getSection())
+                            && (tsList->at(i).getDirection() == rtsList->at(k).getDirection())) {
                         return true;
                     }
                 }
@@ -892,11 +902,11 @@ protected void clearAllocationPlans() {
     Section aSec = getCurSection();
     int nSeq = getCurrentSequenceNumber(nt);
     Section nSec = getCurSection();
-    ArrayList<TransitSection> atsList = at.getTransit().getTransitSectionList();
+    QList<TransitSection> atsList = at.getTransit().getTransitSectionList();
     if (!at.isTransitReversed()) {
         for (int i = 0; i < atsList.size(); i++) {
-            if (atsList.get(i).getSequenceNumber() > aSeq) {
-                if (atsList.get(i).getSection() == nSec) {
+            if (atsList->at(i).getSequenceNumber() > aSeq) {
+                if (atsList->at(i).getSection() == nSec) {
                     // first train has not yet reached second train position
                     return false;
                 }
@@ -904,19 +914,19 @@ protected void clearAllocationPlans() {
         }
     } else {
         for (int i = atsList.size() - 1; i <= 0; i--) {
-            if (atsList.get(i).getSequenceNumber() < aSeq) {
-                if (atsList.get(i).getSection() == nSec) {
+            if (atsList->at(i).getSequenceNumber() < aSeq) {
+                if (atsList->at(i).getSection() == nSec) {
                     // first train has not yet reached second train position
                     return false;
                 }
             }
         }
     }
-    ArrayList<TransitSection> ntsList = nt.getTransit().getTransitSectionList();
+    QList<TransitSection> ntsList = nt.getTransit().getTransitSectionList();
     if (!nt.isTransitReversed()) {
         for (int i = 0; i < ntsList.size(); i++) {
-            if (ntsList.get(i).getSequenceNumber() > nSeq) {
-                if (ntsList.get(i).getSection() == aSec) {
+            if (ntsList->at(i).getSequenceNumber() > nSeq) {
+                if (ntsList->at(i).getSection() == aSec) {
                     // second train has found first train in its on coming Sections
                     return true;
                 }
@@ -924,8 +934,8 @@ protected void clearAllocationPlans() {
         }
     } else {
         for (int i = ntsList.size() - 1; i <= 0; i--) {
-            if (ntsList.get(i).getSequenceNumber() < nSeq) {
-                if (ntsList.get(i).getSection() == aSec) {
+            if (ntsList->at(i).getSequenceNumber() < nSeq) {
+                if (ntsList->at(i).getSection() == aSec) {
                     // second train has found first train in its on coming Sections
                     return true;
                 }
@@ -941,12 +951,12 @@ protected void clearAllocationPlans() {
     Section aSec = getCurSection();
     int nSeq = getCurrentSequenceNumber(nt);
     Section nSec = getCurSection();
-    ArrayList<TransitSection> atsList = at.getTransit().getTransitSectionList();
+    QList<TransitSection> atsList = at.getTransit().getTransitSectionList();
     bool found = false;
     if (!at.isTransitReversed()) {
         for (int i = 0; (i < atsList.size()) && (!found); i++) {
-            if (atsList.get(i).getSequenceNumber() > aSeq) {
-                if (atsList.get(i).getSection() == nSec) {
+            if (atsList->at(i).getSequenceNumber() > aSeq) {
+                if (atsList->at(i).getSection() == nSec) {
                     // first train has reached second train position
                     found = true;
                 }
@@ -954,8 +964,8 @@ protected void clearAllocationPlans() {
         }
     } else {
         for (int i = atsList.size() - 1; (i <= 0) && (!found); i--) {
-            if (atsList.get(i).getSequenceNumber() < aSeq) {
-                if (atsList.get(i).getSection() == nSec) {
+            if (atsList->at(i).getSequenceNumber() < aSeq) {
+                if (atsList->at(i).getSection() == nSec) {
                     // first train has reached second train position
                     found = true;
                 }
@@ -965,11 +975,11 @@ protected void clearAllocationPlans() {
     if (!found) {
         return false;
     }
-    ArrayList<TransitSection> ntsList = nt.getTransit().getTransitSectionList();
+    QList<TransitSection> ntsList = nt.getTransit().getTransitSectionList();
     if (!nt.isTransitReversed()) {
         for (int i = 0; i < ntsList.size(); i++) {
-            if (ntsList.get(i).getSequenceNumber() > nSeq) {
-                if (ntsList.get(i).getSection() == aSec) {
+            if (ntsList->at(i).getSequenceNumber() > nSeq) {
+                if (ntsList->at(i).getSection() == aSec) {
                     // second train has found first train in its on coming Sections
                     return true;
                 }
@@ -977,8 +987,8 @@ protected void clearAllocationPlans() {
         }
     } else {
         for (int i = ntsList.size() - 1; i <= 0; i--) {
-            if (ntsList.get(i).getSequenceNumber() < nSeq) {
-                if (ntsList.get(i).getSection() == aSec) {
+            if (ntsList->at(i).getSequenceNumber() < nSeq) {
+                if (ntsList->at(i).getSection() == aSec) {
                     // second train has found first train in its on coming Sections
                     return true;
                 }
@@ -991,24 +1001,24 @@ protected void clearAllocationPlans() {
 /*private*/ bool areTrainsAdjacent(ActiveTrain at, ActiveTrain nt) {
     // returns 'false' if a different ActiveTrain has allocated track between the
     //      two trains, returns 'true' otherwise
-    ArrayList<AllocatedSection> allocatedSections = _dispatcher.getAllocatedSectionsList();
-    ArrayList<TransitSection> atsList = at.getTransit().getTransitSectionList();
+    QList<AllocatedSection> allocatedSections = _dispatcher.getAllocatedSectionsList();
+    QList<TransitSection> atsList = at.getTransit().getTransitSectionList();
     int aSeq = getCurrentSequenceNumber(at);
     Section nSec = getCurSection();
     if (willTraverse(nSec, at, aSeq) != 0) {
         // at is moving toward nt
         if (!at.isTransitReversed()) {
             for (int i = 0; i < atsList.size(); i++) {
-                if (atsList.get(i).getSequenceNumber() > aSeq) {
-                    Section tSec = atsList.get(i).getSection();
+                if (atsList->at(i).getSequenceNumber() > aSeq) {
+                    Section tSec = atsList->at(i).getSection();
                     if (tSec == nSec) {
                         // reached second train position, no train in between
                         return true;
                     } else {
                         for (int j = 0; j < allocatedSections.size(); j++) {
-                            if (allocatedSections.get(j).getSection() == tSec) {
-                                if ((allocatedSections.get(j).getActiveTrain() != at)
-                                        && (allocatedSections.get(j).getActiveTrain() != nt)) {
+                            if (allocatedSections->at(j).getSection() == tSec) {
+                                if ((allocatedSections->at(j).getActiveTrain() != at)
+                                        && (allocatedSections->at(j).getActiveTrain() != nt)) {
                                     // allocated to a third train, trains not adjacent
                                     return false;
                                 }
@@ -1019,16 +1029,16 @@ protected void clearAllocationPlans() {
             }
         } else {
             for (int i = atsList.size() - 1; i <= 0; i--) {
-                if (atsList.get(i).getSequenceNumber() < aSeq) {
-                    Section tSec = atsList.get(i).getSection();
+                if (atsList->at(i).getSequenceNumber() < aSeq) {
+                    Section tSec = atsList->at(i).getSection();
                     if (tSec == nSec) {
                         // reached second train position, no train in between
                         return true;
                     } else {
                         for (int j = 0; j < allocatedSections.size(); j++) {
-                            if (allocatedSections.get(j).getSection() == tSec) {
-                                if ((allocatedSections.get(j).getActiveTrain() != at)
-                                        && (allocatedSections.get(j).getActiveTrain() != nt)) {
+                            if (allocatedSections->at(j).getSection() == tSec) {
+                                if ((allocatedSections->at(j).getActiveTrain() != at)
+                                        && (allocatedSections->at(j).getActiveTrain() != nt)) {
                                     // allocated to a third train, trains not adjacent
                                     return false;
                                 }
@@ -1042,16 +1052,16 @@ protected void clearAllocationPlans() {
         // at is moving away from nt, so backtrack
         if (at.isTransitReversed()) {
             for (int i = 0; i < atsList.size(); i++) {
-                if (atsList.get(i).getSequenceNumber() > aSeq) {
-                    Section tSec = atsList.get(i).getSection();
+                if (atsList->at(i).getSequenceNumber() > aSeq) {
+                    Section tSec = atsList->at(i).getSection();
                     if (tSec == nSec) {
                         // reached second train position, no train in between
                         return true;
                     } else {
                         for (int j = 0; j < allocatedSections.size(); j++) {
-                            if (allocatedSections.get(j).getSection() == tSec) {
-                                if ((allocatedSections.get(j).getActiveTrain() != at)
-                                        && (allocatedSections.get(j).getActiveTrain() != nt)) {
+                            if (allocatedSections->at(j).getSection() == tSec) {
+                                if ((allocatedSections->at(j).getActiveTrain() != at)
+                                        && (allocatedSections->at(j).getActiveTrain() != nt)) {
                                     // allocated to a third train, trains not adjacent
                                     return false;
                                 }
@@ -1062,16 +1072,16 @@ protected void clearAllocationPlans() {
             }
         } else {
             for (int i = atsList.size() - 1; i <= 0; i--) {
-                if (atsList.get(i).getSequenceNumber() < aSeq) {
-                    Section tSec = atsList.get(i).getSection();
+                if (atsList->at(i).getSequenceNumber() < aSeq) {
+                    Section tSec = atsList->at(i).getSection();
                     if (tSec == nSec) {
                         // reached second train position, no train in between
                         return true;
                     } else {
                         for (int j = 0; j < allocatedSections.size(); j++) {
-                            if (allocatedSections.get(j).getSection() == tSec) {
-                                if ((allocatedSections.get(j).getActiveTrain() != at)
-                                        && (allocatedSections.get(j).getActiveTrain() != nt)) {
+                            if (allocatedSections->at(j).getSection() == tSec) {
+                                if ((allocatedSections->at(j).getActiveTrain() != at)
+                                        && (allocatedSections->at(j).getActiveTrain() != nt)) {
                                     // allocated to a third train, trains not adjacent
                                     return false;
                                 }
@@ -1091,19 +1101,19 @@ protected void clearAllocationPlans() {
     int seq = 0;
     curSection = NULL;
     if (at == NULL) {
-        log.error("NULL argument on entry to 'getCurrentSeqNumber'");
+        log->error("NULL argument on entry to 'getCurrentSeqNumber'");
         return seq;
     }
     Section temSection = NULL;
-    ArrayList<TransitSection> tsList = at.getTransit().getTransitSectionList();
+    QList<TransitSection> tsList = at.getTransit().getTransitSectionList();
     if (!at.isTransitReversed()) {
         // find the highest numbered occupied section
         for (int i = 0; i < tsList.size(); i++) {
-            if ((tsList.get(i).getSection().getOccupancy() == Section.OCCUPIED)
-                    && isSectionAllocatedToTrain(tsList.get(i).getSection(),
-                            tsList.get(i).getSequenceNumber(), at)) {
-                seq = tsList.get(i).getSequenceNumber();
-                temSection = tsList.get(i).getSection();
+            if ((tsList->at(i).getSection().getOccupancy() == Section.OCCUPIED)
+                    && isSectionAllocatedToTrain(tsList->at(i).getSection(),
+                            tsList->at(i).getSequenceNumber(), at)) {
+                seq = tsList->at(i).getSequenceNumber();
+                temSection = tsList->at(i).getSection();
             }
         }
         if (seq == at.getTransit().getMaxSequence()) {
@@ -1111,11 +1121,11 @@ protected void clearAllocationPlans() {
                 // train may have passed the last Section during continuous running
                 bool further = true;
                 for (int j = 0; (j < tsList.size()) && further; j++) {
-                    if ((tsList.get(j).getSection().getOccupancy() == Section.OCCUPIED)
-                            && isSectionAllocatedToTrain(tsList.get(j).getSection(),
-                                    tsList.get(j).getSequenceNumber(), at)) {
-                        seq = tsList.get(j).getSequenceNumber();
-                        temSection = tsList.get(j).getSection();
+                    if ((tsList->at(j).getSection().getOccupancy() == Section.OCCUPIED)
+                            && isSectionAllocatedToTrain(tsList->at(j).getSection(),
+                                    tsList->at(j).getSequenceNumber(), at)) {
+                        seq = tsList->at(j).getSequenceNumber();
+                        temSection = tsList->at(j).getSection();
                     } else {
                         further = false;
                     }
@@ -1125,20 +1135,20 @@ protected void clearAllocationPlans() {
     } else {
         // transit is running in reverse
         for (int i = tsList.size() - 1; i >= 0; i--) {
-            if ((tsList.get(i).getSection().getOccupancy() == Section.OCCUPIED)
-                    && isSectionAllocatedToTrain(tsList.get(i).getSection(),
-                            tsList.get(i).getSequenceNumber(), at)) {
-                seq = tsList.get(i).getSequenceNumber();
-                temSection = tsList.get(i).getSection();
+            if ((tsList->at(i).getSection().getOccupancy() == Section.OCCUPIED)
+                    && isSectionAllocatedToTrain(tsList->at(i).getSection(),
+                            tsList->at(i).getSequenceNumber(), at)) {
+                seq = tsList->at(i).getSequenceNumber();
+                temSection = tsList->at(i).getSection();
             }
         }
     }
     if (seq == 0) {
         if (at.getMode() != ActiveTrain.MANUAL) {
-            log.error("{}: ActiveTrain has no occupied Section. Halting immediately to avoid runaway.", at.getTrainName());
+            log->error("{}: ActiveTrain has no occupied Section. Halting immediately to avoid runaway.", at.getTrainName());
             at.getAutoActiveTrain().getAutoEngineer().setHalt(true);
         } else {
-            log.debug("{}: ActiveTrain has no occupied Section, running in Manual mode.", at.getTrainName());
+            log->debug("{}: ActiveTrain has no occupied Section, running in Manual mode.", at.getTrainName());
         }
     } else {
         curSection = temSection;
@@ -1154,12 +1164,12 @@ Section curSection = NULL;
 
 /*private*/ bool isSectionAllocatedToTrain(Section s, int seq, ActiveTrain at) {
     if ((s == NULL) || (at == NULL)) {
-        log.error("NULL argument to isSectionAllocatedToTrain");
+        log->error("NULL argument to isSectionAllocatedToTrain");
         return false;
     }
-    ArrayList<AllocatedSection> asList = at.getAllocatedSectionList();
+    QList<AllocatedSection> asList = at.getAllocatedSectionList();
     for (int i = 0; i < asList.size(); i++) {
-        if ((asList.get(i).getSection() == s) && asList.get(i).getSequence() == seq) {
+        if ((asList->at(i).getSection() == s) && asList->at(i).getSequence() == seq) {
             return true;
         }
     }
@@ -1168,7 +1178,7 @@ Section curSection = NULL;
 
 /*private*/ bool waitingForStartTime(AllocationRequest ar) {
     if (ar != NULL) {
-        ActiveTrain at = ar.getActiveTrain();
+        ActiveTrain at = ar->getActiveTrain();
         if (at == NULL) {
             return false;
         }
@@ -1182,14 +1192,14 @@ Section curSection = NULL;
 /*private*/ bool willLevelXingsBlockTrain(ActiveTrain at) {
     // returns true if any LevelXings in _levelXingList will block the specified train
     if (at == NULL) {
-        log.error("NULL argument on entry to 'willLevelXingsBlockTrain'");
+        log->error("NULL argument on entry to 'willLevelXingsBlockTrain'");
         return true;  // returns true to be safe
     }
     if (_levelXingList.size() <= 0) {
         return false;
     }
     for (int i = 0; i < _levelXingList.size(); i++) {
-        LevelXing lx = _levelXingList.get(i);
+        LevelXing lx = _levelXingList->at(i);
         Block bAC = lx.getLayoutBlockAC().getBlock();
         Block bBD = lx.getLayoutBlockBD().getBlock();
         if (at.getTransit().containsBlock(bAC) || at.getTransit().containsBlock(bBD)) {
@@ -1204,16 +1214,16 @@ Section curSection = NULL;
     // NOTE: changes _levelXingList!
     _levelXingList.clear();
     if (s == NULL) {
-        log.error("NULL argument to 'containsLevelCrossing'");
+        log->error("NULL argument to 'containsLevelCrossing'");
         return false;
     }
-    ArrayList<LevelXing> temLevelXingList = NULL;
-    ArrayList<Block> blockList = s.getBlockList();
+    QList<LevelXing> temLevelXingList = NULL;
+    QList<Block> blockList = s.getBlockList();
     for (int i = 0; i < blockList.size(); i++) {
-        temLevelXingList = _conUtil.getLevelCrossingsThisBlock(blockList.get(i));
+        temLevelXingList = _conUtil.getLevelCrossingsThisBlock(blockList->at(i));
         if (temLevelXingList.size() > 0) {
             for (int j = 0; j < temLevelXingList.size(); j++) {
-                _levelXingList.add(temLevelXingList.get(j));
+                _levelXingList.add(temLevelXingList->at(j));
             }
         }
     }
@@ -1222,55 +1232,55 @@ Section curSection = NULL;
     }
     return false;
 }
-ArrayList<LevelXing> _levelXingList = new ArrayList<LevelXing>();
-
-/*private*/ bool isSignalHeldAtStartOfSection(AllocationRequest ar) {
+QList<LevelXing> _levelXingList = new QList<LevelXing>();
+#endif
+/*private*/ bool AutoAllocate::isSignalHeldAtStartOfSection(AllocationRequest* ar) {
 
     if (ar == NULL) {
         return false;
     }
 
-    Section sec = ar.getSection();
-    ActiveTrain mActiveTrain = ar.getActiveTrain();
+    Section* sec = ar->getSection();
+    ActiveTrain* mActiveTrain = ar->getActiveTrain();
 
     if (sec == NULL || mActiveTrain == NULL) {
         return false;
     }
 
-    Section lastSec = mActiveTrain.getLastAllocatedSection();
+    Section* lastSec = mActiveTrain->getLastAllocatedSection();
 
     if (lastSec == NULL) {
         return false;
     }
 
-    if (!sec.equals(mActiveTrain.getNextSectionToAllocate())) {
-        log.error("Allocation request section does not match active train next section to allocate");
-        log.error("Section to allocate " + sec.getDisplayName());
-        if (mActiveTrain.getNextSectionToAllocate() != NULL) {
-            log.error("Active Train expected " + mActiveTrain.getNextSectionToAllocate().getDisplayName());
+    if (sec!=(mActiveTrain->getNextSectionToAllocate())) {
+        log->error("Allocation request section does not match active train next section to allocate");
+        log->error("Section to allocate " + sec->getDisplayName());
+        if (mActiveTrain->getNextSectionToAllocate() != NULL) {
+            log->error("Active Train expected " + mActiveTrain->getNextSectionToAllocate()->getDisplayName());
         }
         return false;
     }
 
-    Block facingBlock;
-    Block protectingBlock;
-    if (ar.getSectionDirection() == jmri.Section.FORWARD) {
-        protectingBlock = sec.getBlockBySequenceNumber(0);
-        facingBlock = lastSec.getBlockBySequenceNumber(lastSec.getNumBlocks() - 1);
+    Block* facingBlock;
+    Block* protectingBlock;
+    if (ar->getSectionDirection() == Section::FORWARD) {
+        protectingBlock = sec->getBlockBySequenceNumber(0);
+        facingBlock = lastSec->getBlockBySequenceNumber(lastSec->getNumBlocks() - 1);
     } else {
         //Reverse
-        protectingBlock = sec.getBlockBySequenceNumber(sec.getNumBlocks() - 1);
-        facingBlock = lastSec.getBlockBySequenceNumber(0);
+        protectingBlock = sec->getBlockBySequenceNumber(sec->getNumBlocks() - 1);
+        facingBlock = lastSec->getBlockBySequenceNumber(0);
     }
     if (protectingBlock == NULL || facingBlock == NULL) {
         return false;
     }
 
-    jmri.SignalMast sm = jmri.InstanceManager.getDefault(jmri.jmrit.display.layoutEditor.LayoutBlockManager.class).getFacingSignalMast(facingBlock, protectingBlock);
-    if (sm != NULL && sm.getHeld() && !_dispatcher.isMastHeldByDispatcher(sm, mActiveTrain)) {
-        ar.setWaitingForSignalMast(sm);
+    SignalMast* sm =  ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getFacingSignalMast(facingBlock, protectingBlock);
+    if (sm != NULL && sm->getHeld() && !_dispatcher->isMastHeldByDispatcher(sm, mActiveTrain)) {
+        ar->setWaitingForSignalMast(sm);
         return true;
     }
     return false;
 }
-#endif
+

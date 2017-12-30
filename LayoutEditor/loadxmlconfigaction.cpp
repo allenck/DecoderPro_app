@@ -5,6 +5,7 @@
 #include "defaultcatalogtreemanagerxml.h"
 #include "logger.h"
 #include "configxmlmanager.h"
+#include "jmriconfigurationmanager.h"
 
 //LoadXmlConfigAction::LoadXmlConfigAction(QObject *parent) :
 //  LoadStoreBaseAction(parent)
@@ -65,8 +66,14 @@ void LoadXmlConfigAction::common()
  if (file != NULL)
  {
 //  try {
-  ConfigureManager* cm = InstanceManager::configureManagerInstance();
-  results = ((ConfigXmlManager*)cm)->load(file);
+  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  if (cm == NULL)
+  {
+      log->error("Failed to get default configure manager");
+  }
+  else
+  {
+   results = cm->load(file);
    if (results)
    {
     // insure logix etc fire up
@@ -74,6 +81,7 @@ void LoadXmlConfigAction::common()
     ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
     (new DefaultCatalogTreeManagerXml())->readCatalogTrees();
    }
+  }
 //     } catch (JmriException e) {
 //         log.error("Unhandled problem in loadFile: " + e);
 //     }

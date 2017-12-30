@@ -20,11 +20,13 @@
 
 /*public*/ DispatcherAction::DispatcherAction(QString s, QObject* parent) : AbstractAction(s, parent){
     //super(s);
+ f=NULL;
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 
 /*public*/DispatcherAction:: DispatcherAction(QObject* parent) : AbstractAction(tr("Dispatcher"), parent)
 {
+ f= NULL;
     //this(rb.getString("TitleDispatcher"));
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }

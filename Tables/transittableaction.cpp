@@ -56,7 +56,7 @@
     //super(actionName);
     common();
     // set manager - no need to use InstanceManager here
-    transitManager = InstanceManager::transitManagerInstance();
+    transitManager = (TransitManager*)InstanceManager::getNullableDefault("TransitManager");
     // disable ourself if there is no Transit manager available
     if (sectionManager == NULL) {
         setEnabled(false);
@@ -187,7 +187,7 @@ TransitTableDataModel::TransitTableDataModel(TransitTableAction* act)
         log->warn("requested getValue(NULL)");
         return "(no name)";
     }
-    Transit* z = InstanceManager::transitManagerInstance()->getBySystemName(name);
+    Transit* z = ((TransitManager*)InstanceManager::getNullableDefault("TransitManager"))->getBySystemName(name);
     if (z == NULL) {
         log->debug("requested getValue(\"" + name + "\"), Transit doesn't exist");
         return "(no Transit)";
@@ -196,15 +196,15 @@ TransitTableDataModel::TransitTableDataModel(TransitTableAction* act)
 }
 
 /*public*/ Manager* TransitTableDataModel::getManager() {
-    return InstanceManager::transitManagerInstance();
+    return ((Manager*)InstanceManager::getNullableDefault("TransitManager"));
 }
 
 /*public*/ NamedBean* TransitTableDataModel::getBySystemName(QString name) const {
-    return InstanceManager::transitManagerInstance()->getBySystemName(name);
+    return ((TransitManager*)InstanceManager::getNullableDefault("TransitManager"))->getBySystemName(name);
 }
 
 /*public*/ NamedBean* TransitTableDataModel::getByUserName(QString name) {
-    return InstanceManager::transitManagerInstance()->getByUserName(name);
+    return ((TransitManager*)InstanceManager::getNullableDefault("TransitManager"))->getByUserName(name);
 }
 /*public int getDisplayDeleteMsg() { return InstanceManager::getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
  public void setDisplayDeleteMsg(int boo) { InstanceManager::getDefault(jmri.UserPreferencesManager.class).setMultipleChoiceOption(getClassName(), "delete", boo); }*/
@@ -2773,10 +2773,10 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 
 
 /*protected*/ QString TransitTableAction::getClassName() {
-    return "TransitTableAction";
+    return "jmri.jmrit.beantable.TransitTableAction";
 }
 
 /*public*/ QString TransitTableAction::getClassDescription() {
-    return tr("TitleTransitTable");
+    return tr("Transit Table");
 }
 

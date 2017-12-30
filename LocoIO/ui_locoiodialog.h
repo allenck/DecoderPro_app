@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'locoiodialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -332,59 +332,59 @@ public:
 
     void retranslateUi(QDialog *LocoIODialog)
     {
-        LocoIODialog->setWindowTitle(QApplication::translate("LocoIODialog", "Dialog", 0));
-        lblCurrentAddress->setText(QApplication::translate("LocoIODialog", "Current address: 0x51/1", 0));
-        gbExtraOpCodes->setTitle(QApplication::translate("LocoIODialog", "Extra Op Codes", 0));
-        chkExtra1->setText(QApplication::translate("LocoIODialog", "1", 0));
-        chkExtra2->setText(QApplication::translate("LocoIODialog", "2", 0));
-        chkSpecialPorts->setText(QApplication::translate("LocoIODialog", "Special Ports", 0));
-        chkModule->setText(QApplication::translate("LocoIODialog", "Servo", 0));
-        chk4PosServo->setText(QApplication::translate("LocoIODialog", "4 Position Servo", 0));
-        label_3->setText(QApplication::translate("LocoIODialog", "Firmware:", 0));
-        lblFirmware->setText(QApplication::translate("LocoIODialog", "<unknown>", 0));
-        label_4->setText(QApplication::translate("LocoIODialog", "<html><head/><body><p>LocoBuffer:</p></body></html>", 0));
-        lblLocoBuffer->setText(QApplication::translate("LocoIODialog", "<unknown>", 0));
+        LocoIODialog->setWindowTitle(QApplication::translate("LocoIODialog", "Dialog", Q_NULLPTR));
+        lblCurrentAddress->setText(QApplication::translate("LocoIODialog", "Current address: 0x51/1", Q_NULLPTR));
+        gbExtraOpCodes->setTitle(QApplication::translate("LocoIODialog", "Extra Op Codes", Q_NULLPTR));
+        chkExtra1->setText(QApplication::translate("LocoIODialog", "1", Q_NULLPTR));
+        chkExtra2->setText(QApplication::translate("LocoIODialog", "2", Q_NULLPTR));
+        chkSpecialPorts->setText(QApplication::translate("LocoIODialog", "Special Ports", Q_NULLPTR));
+        chkModule->setText(QApplication::translate("LocoIODialog", "Servo", Q_NULLPTR));
+        chk4PosServo->setText(QApplication::translate("LocoIODialog", "4 Position Servo", Q_NULLPTR));
+        label_3->setText(QApplication::translate("LocoIODialog", "Firmware:", Q_NULLPTR));
+        lblFirmware->setText(QApplication::translate("LocoIODialog", "<unknown>", Q_NULLPTR));
+        label_4->setText(QApplication::translate("LocoIODialog", "<html><head/><body><p>LocoBuffer:</p></body></html>", Q_NULLPTR));
+        lblLocoBuffer->setText(QApplication::translate("LocoIODialog", "<unknown>", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnProbe->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Find the addresses of all LocoIo, LocoBooster and LocoServo modules currently connected to LocoNet.</p></body></html>", 0));
+        btnProbe->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Find the addresses of all LocoIo, LocoBooster and LocoServo modules currently connected to LocoNet.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnProbe->setText(QApplication::translate("LocoIODialog", "Probe", 0));
+        btnProbe->setText(QApplication::translate("LocoIODialog", "Probe", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnReadAll->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Read all the configuration variables for the selected module address. </p></body></html>", 0));
+        btnReadAll->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Read all the configuration variables for the selected module address. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnReadAll->setText(QApplication::translate("LocoIODialog", "Read All", 0));
-        btnCapture->setText(QApplication::translate("LocoIODialog", "Capture", 0));
+        btnReadAll->setText(QApplication::translate("LocoIODialog", "Read All", Q_NULLPTR));
+        btnCapture->setText(QApplication::translate("LocoIODialog", "Capture", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnSave->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Save all configuration settings for a module.</p></body></html>", 0));
+        btnSave->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Save all configuration settings for a module.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnSave->setText(QApplication::translate("LocoIODialog", "Save Module", 0));
-        chkInputStatus->setText(QApplication::translate("LocoIODialog", "inputStatus by Power ON and GPON", 0));
-        rbCheckAll->setText(QApplication::translate("LocoIODialog", "Check All Inputs", 0));
-        rbCheckBlockAndPoints->setText(QApplication::translate("LocoIODialog", "Check Block and Point Feedbacks", 0));
-        rbCheckBlock->setText(QApplication::translate("LocoIODialog", "Check Block Feedbacks", 0));
-        lblJP1->setText(QApplication::translate("LocoIODialog", "Set jumper JP1 for this module", 0));
-        rbFixCodeForPBs->setText(QApplication::translate("LocoIODialog", "Fix code for PBs", 0));
-        rbAltCodeForPBs->setText(QApplication::translate("LocoIODialog", "Alt code for PBs", 0));
-        chkHex->setText(QApplication::translate("LocoIODialog", "Display values in hex", 0));
+        btnSave->setText(QApplication::translate("LocoIODialog", "Save Module", Q_NULLPTR));
+        chkInputStatus->setText(QApplication::translate("LocoIODialog", "inputStatus by Power ON and GPON", Q_NULLPTR));
+        rbCheckAll->setText(QApplication::translate("LocoIODialog", "Check All Inputs", Q_NULLPTR));
+        rbCheckBlockAndPoints->setText(QApplication::translate("LocoIODialog", "Check Block and Point Feedbacks", Q_NULLPTR));
+        rbCheckBlock->setText(QApplication::translate("LocoIODialog", "Check Block Feedbacks", Q_NULLPTR));
+        lblJP1->setText(QApplication::translate("LocoIODialog", "Set jumper JP1 for this module", Q_NULLPTR));
+        rbFixCodeForPBs->setText(QApplication::translate("LocoIODialog", "Fix code for PBs", Q_NULLPTR));
+        rbAltCodeForPBs->setText(QApplication::translate("LocoIODialog", "Alt code for PBs", Q_NULLPTR));
+        chkHex->setText(QApplication::translate("LocoIODialog", "Display values in hex", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        chkAllowEdit->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Check to allow editing of configuration, Value 1 and Value 2 CVs.</p></body></html>", 0));
+        chkAllowEdit->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Check to allow editing of configuration, Value 1 and Value 2 CVs.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        chkAllowEdit->setText(QApplication::translate("LocoIODialog", "Allow edits", 0));
+        chkAllowEdit->setText(QApplication::translate("LocoIODialog", "Allow edits", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnSetDefaults->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Set default values for all the CV's in the module. </p></body></html>", 0));
+        btnSetDefaults->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Set default values for all the CV's in the module. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnSetDefaults->setText(QApplication::translate("LocoIODialog", "Set Defaults", 0));
-        btnWriteAll->setText(QApplication::translate("LocoIODialog", "Write all", 0));
+        btnSetDefaults->setText(QApplication::translate("LocoIODialog", "Set Defaults", Q_NULLPTR));
+        btnWriteAll->setText(QApplication::translate("LocoIODialog", "Write all", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnRestore->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Restore a previously saved set of configuration settings for a module.</p></body></html>", 0));
+        btnRestore->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Restore a previously saved set of configuration settings for a module.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnRestore->setText(QApplication::translate("LocoIODialog", "Restore module", 0));
+        btnRestore->setText(QApplication::translate("LocoIODialog", "Restore module", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnChangeAddress->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p><span style=\" font-weight:400; font-style:normal;\">Change the address of a module. </span><span style=\" font-style:normal;\">Warning! If the old address is 00/00, this command will set the address of all LocoIO, LocoBooster and LocoServo modules currently connected to the Loconet!</span></p></body></html>", 0));
+        btnChangeAddress->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p><span style=\" font-weight:400; font-style:normal;\">Change the address of a module. </span><span style=\" font-style:normal;\">Warning! If the old address is 00/00, this command will set the address of all LocoIO, LocoBooster and LocoServo modules currently connected to the Loconet!</span></p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnChangeAddress->setText(QApplication::translate("LocoIODialog", "Change Address", 0));
-        btnHide->setText(QApplication::translate("LocoIODialog", "Hide", 0));
-        lblStatus->setText(QApplication::translate("LocoIODialog", "status", 0));
-        lblUnitAddr->setText(QApplication::translate("LocoIODialog", "New Unit Address:", 0));
+        btnChangeAddress->setText(QApplication::translate("LocoIODialog", "Change Address", Q_NULLPTR));
+        btnHide->setText(QApplication::translate("LocoIODialog", "Hide", Q_NULLPTR));
+        lblStatus->setText(QApplication::translate("LocoIODialog", "status", Q_NULLPTR));
+        lblUnitAddr->setText(QApplication::translate("LocoIODialog", "New Unit Address:", Q_NULLPTR));
     } // retranslateUi
 
 };

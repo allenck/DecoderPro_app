@@ -515,155 +515,157 @@
  }
 }
 
-    /**
-     * Reports a bound indexed property update to listeners
-     * that have been registered to track updates of
-     * all properties or a property with the specified name.
-     * <p>
-     * No event is fired if old and new values are equal and non-NULL.
-     * <p>
-     * This is merely a convenience wrapper around the more general
-     * {@link #firePropertyChange(PropertyChangeEvent)} method.
-     *
-     * @param propertyName  the programmatic name of the property that was changed
-     * @param index         the index of the property element that was changed
-     * @param oldValue      the old value of the property
-     * @param newValue      the new value of the property
-     * @since 1.5
-     */
-    /*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue) {
-    if (oldValue == QVariant() || newValue == QVariant() || !(oldValue == newValue)) {
-            firePropertyChange(new IndexedPropertyChangeEvent(source, propertyName, oldValue, newValue, index));
-        }
-    }
+/**
+ * Reports a bound indexed property update to listeners
+ * that have been registered to track updates of
+ * all properties or a property with the specified name.
+ * <p>
+ * No event is fired if old and new values are equal and non-NULL.
+ * <p>
+ * This is merely a convenience wrapper around the more general
+ * {@link #firePropertyChange(PropertyChangeEvent)} method.
+ *
+ * @param propertyName  the programmatic name of the property that was changed
+ * @param index         the index of the property element that was changed
+ * @param oldValue      the old value of the property
+ * @param newValue      the new value of the property
+ * @since 1.5
+ */
+/*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue)
+{
+ if (oldValue == QVariant() || newValue == QVariant() || !(oldValue == newValue))
+ {
+  firePropertyChange(new IndexedPropertyChangeEvent(source, propertyName, oldValue, newValue, index));
+ }
+}
 
-    /**
-     * Reports an integer bound indexed property update to listeners
-     * that have been registered to track updates of
-     * all properties or a property with the specified name.
-     * <p>
-     * No event is fired if old and new values are equal.
-     * <p>
-     * This is merely a convenience wrapper around the more general
-     * {@link #fireIndexedPropertyChange(String, int, Object, Object)} method.
-     *
-     * @param propertyName  the programmatic name of the property that was changed
-     * @param index         the index of the property element that was changed
-     * @param oldValue      the old value of the property
-     * @param newValue      the new value of the property
-     * @since 1.5
-     */
-    /*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, int oldValue, int newValue) {
-        if (oldValue != newValue) {
-            fireIndexedPropertyChange(propertyName, index, /*Integer.valueOf*/(oldValue), /*Integer.valueOf*/(newValue));
-        }
+/**
+ * Reports an integer bound indexed property update to listeners
+ * that have been registered to track updates of
+ * all properties or a property with the specified name.
+ * <p>
+ * No event is fired if old and new values are equal.
+ * <p>
+ * This is merely a convenience wrapper around the more general
+ * {@link #fireIndexedPropertyChange(String, int, Object, Object)} method.
+ *
+ * @param propertyName  the programmatic name of the property that was changed
+ * @param index         the index of the property element that was changed
+ * @param oldValue      the old value of the property
+ * @param newValue      the new value of the property
+ * @since 1.5
+ */
+/*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, int oldValue, int newValue) {
+    if (oldValue != newValue) {
+        fireIndexedPropertyChange(propertyName, index, /*Integer.valueOf*/(oldValue), /*Integer.valueOf*/(newValue));
     }
+}
 
-    /**
-     * Reports a boolean bound indexed property update to listeners
-     * that have been registered to track updates of
-     * all properties or a property with the specified name.
-     * <p>
-     * No event is fired if old and new values are equal.
-     * <p>
-     * This is merely a convenience wrapper around the more general
-     * {@link #fireIndexedPropertyChange(String, int, Object, Object)} method.
-     *
-     * @param propertyName  the programmatic name of the property that was changed
-     * @param index         the index of the property element that was changed
-     * @param oldValue      the old value of the property
-     * @param newValue      the new value of the property
-     * @since 1.5
-     */
-    /*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, bool oldValue, bool newValue) {
-        if (oldValue != newValue) {
-            fireIndexedPropertyChange(propertyName, index, /*Boolean.valueOf*/(oldValue), /*Boolean.valueOf*/(newValue));
-        }
+/**
+ * Reports a boolean bound indexed property update to listeners
+ * that have been registered to track updates of
+ * all properties or a property with the specified name.
+ * <p>
+ * No event is fired if old and new values are equal.
+ * <p>
+ * This is merely a convenience wrapper around the more general
+ * {@link #fireIndexedPropertyChange(String, int, Object, Object)} method.
+ *
+ * @param propertyName  the programmatic name of the property that was changed
+ * @param index         the index of the property element that was changed
+ * @param oldValue      the old value of the property
+ * @param newValue      the new value of the property
+ * @since 1.5
+ */
+/*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, bool oldValue, bool newValue) {
+    if (oldValue != newValue) {
+        fireIndexedPropertyChange(propertyName, index, /*Boolean.valueOf*/(oldValue), /*Boolean.valueOf*/(newValue));
     }
+}
 
-    /**
-     * Check if there are any listeners for a specific property, including
-     * those registered on all properties.  If <code>propertyName</code>
-     * is NULL, only check for listeners registered on all properties.
-     *
-     * @param propertyName  the property name.
-     * @return true if there are one or more listeners for the given property
-     */
-    /*public*/ bool PropertyChangeSupport::hasListeners(QString propertyName) {
-        return this->map->hasListeners(propertyName);
-    }
+/**
+ * Check if there are any listeners for a specific property, including
+ * those registered on all properties.  If <code>propertyName</code>
+ * is NULL, only check for listeners registered on all properties.
+ *
+ * @param propertyName  the property name.
+ * @return true if there are one or more listeners for the given property
+ */
+/*public*/ bool PropertyChangeSupport::hasListeners(QString propertyName) {
+    return this->map->hasListeners(propertyName);
+}
 #if 0
-    /**
-     * @serialData Null terminated list of <code>PropertyChangeListeners</code>.
-     * <p>
-     * At serialization time we skip non-serializable listeners and
-     * only serialize the serializable listeners.
-     */
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        Hashtable<String, PropertyChangeSupport> children = NULL;
-        PropertyChangeListener[] listeners = NULL;
-        synchronized (this.map) {
-            for (Entry<String, PropertyChangeListener[]> entry : this.map.getEntries()) {
-                String property = entry.getKey();
-                if (property == NULL) {
-                    listeners = entry.getValue();
-                } else {
-                    if (children == NULL) {
-                        children = new Hashtable<String, PropertyChangeSupport>();
-                    }
-                    PropertyChangeSupport pcs = new PropertyChangeSupport(this.source);
-                    pcs.map.set(NULL, entry.getValue());
-                    children.put(property, pcs);
+/**
+ * @serialData Null terminated list of <code>PropertyChangeListeners</code>.
+ * <p>
+ * At serialization time we skip non-serializable listeners and
+ * only serialize the serializable listeners.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    Hashtable<String, PropertyChangeSupport> children = NULL;
+    PropertyChangeListener[] listeners = NULL;
+    synchronized (this.map) {
+        for (Entry<String, PropertyChangeListener[]> entry : this.map.getEntries()) {
+            String property = entry.getKey();
+            if (property == NULL) {
+                listeners = entry.getValue();
+            } else {
+                if (children == NULL) {
+                    children = new Hashtable<String, PropertyChangeSupport>();
                 }
-            }
-        }
-        ObjectOutputStream.PutField fields = s.putFields();
-        fields.put("children", children);
-        fields.put("source", this.source);
-        fields.put("propertyChangeSupportSerializedDataVersion", 2);
-        s.writeFields();
-
-        if (listeners != NULL) {
-            for (PropertyChangeListener l : listeners) {
-                if (l instanceof Serializable) {
-                    s.writeObject(l);
-                }
-            }
-        }
-        s.writeObject(NULL);
-    }
-
-    private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
-        this.map = new PropertyChangeListenerMap();
-
-        ObjectInputStream.GetField fields = s.readFields();
-
-        Hashtable<String, PropertyChangeSupport> children = (Hashtable<String, PropertyChangeSupport>) fields.get("children", NULL);
-        this.source = fields.get("source", NULL);
-        fields.get("propertyChangeSupportSerializedDataVersion", 2);
-
-        Object listenerOrNull;
-        while (NULL != (listenerOrNull = s.readObject())) {
-            this.map.add(NULL, (PropertyChangeListener)listenerOrNull);
-        }
-        if (children != NULL) {
-            for (Entry<String, PropertyChangeSupport> entry : children.entrySet()) {
-                for (PropertyChangeListener listener : entry.getValue().getPropertyChangeListeners()) {
-                    this.map.add(entry.getKey(), listener);
-                }
+                PropertyChangeSupport pcs = new PropertyChangeSupport(this.source);
+                pcs.map.set(NULL, entry.getValue());
+                children.put(property, pcs);
             }
         }
     }
+    ObjectOutputStream.PutField fields = s.putFields();
+    fields.put("children", children);
+    fields.put("source", this.source);
+    fields.put("propertyChangeSupportSerializedDataVersion", 2);
+    s.writeFields();
+
+    if (listeners != NULL) {
+        for (PropertyChangeListener l : listeners) {
+            if (l instanceof Serializable) {
+                s.writeObject(l);
+            }
+        }
+    }
+    s.writeObject(NULL);
+}
+
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    this.map = new PropertyChangeListenerMap();
+
+    ObjectInputStream.GetField fields = s.readFields();
+
+    Hashtable<String, PropertyChangeSupport> children = (Hashtable<String, PropertyChangeSupport>) fields.get("children", NULL);
+    this.source = fields.get("source", NULL);
+    fields.get("propertyChangeSupportSerializedDataVersion", 2);
+
+    Object listenerOrNull;
+    while (NULL != (listenerOrNull = s.readObject())) {
+        this.map.add(NULL, (PropertyChangeListener)listenerOrNull);
+    }
+    if (children != NULL) {
+        for (Entry<String, PropertyChangeSupport> entry : children.entrySet()) {
+            for (PropertyChangeListener listener : entry.getValue().getPropertyChangeListeners()) {
+                this.map.add(entry.getKey(), listener);
+            }
+        }
+    }
+}
 
 
-    /**
-     * @serialField children                                   Hashtable
-     * @serialField source                                     Object
-     * @serialField propertyChangeSupportSerializedDataVersion int
-     */
-    private static final ObjectStreamField[] serialPersistentFields = {
-            new ObjectStreamField("children", Hashtable.class),
-            new ObjectStreamField("source", Object.class),
-            new ObjectStreamField("propertyChangeSupportSerializedDataVersion", Integer.TYPE)
-    };
+/**
+ * @serialField children                                   Hashtable
+ * @serialField source                                     Object
+ * @serialField propertyChangeSupportSerializedDataVersion int
+ */
+private static final ObjectStreamField[] serialPersistentFields = {
+        new ObjectStreamField("children", Hashtable.class),
+        new ObjectStreamField("source", Object.class),
+        new ObjectStreamField("propertyChangeSupportSerializedDataVersion", Integer.TYPE)
+};
 #endif

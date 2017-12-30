@@ -25,6 +25,7 @@
 #include "sectiontableaction.h"
 #include "sensortableaction.h"
 #include "signalgrouptableaction.h"
+#include "metatypes.h"
 
 //DefaultUserMessagePreferences::DefaultUserMessagePreferences(QObject *parent) :
 //    UserPrefeerencesManager(parent)
@@ -67,12 +68,15 @@ DefaultUserMessagePreferences::DefaultUserMessagePreferences(QObject* parent) : 
  tableColumnPrefs =  QHash<QString, QHash<QString,TableColumnPreferences*> >();
  userPreferencesShutDownTask = NULL;
  file = NULL;
+ new Metatypes();
  // Make  sure that InstanceManager is registered!
  InstanceManager* instanceManger = InstanceManager::instance();
 
  // register this object to be stored as part of preferences
- if (InstanceManager::configureManagerInstance() != NULL)
-    ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerUserPrefs(this);
+ if (InstanceManager::getNullableDefault("JmriConfigurationManager") != NULL)
+ {
+   ((ConfigureManager*)InstanceManager::getDefault("JmriConfigurationManager"))->registerUserPrefs(this);
+ }
  if (InstanceManager::getDefault("UserPreferencesManager")==NULL)
  {
     //We add this to the instanceManager so that other components can access the preferences
@@ -318,7 +322,9 @@ public:
   classPreferenceList.insert(strClass, new ClassPreferences());
  }
  QList<PreferenceList*>* a = classPreferenceList.value(strClass)->getPreferenceList();
- for(int i = 0; i<a->size(); i++)
+ if(a == NULL) return;
+ if((long)a < 1000) return;
+ for(int i = 0; i < a->size(); i++)
  {
   if (a->value(i)->getItem()==(item))
   {
@@ -1354,7 +1360,8 @@ public:
 /*public*/ QString DefaultUserMessagePreferences::getClassDescription()
 { return "Preference Manager"; }
 
-/*protected*/ QString DefaultUserMessagePreferences::getClassName() { return "jmri.managers.DefaultUserMessagePreferences"; }
+/*protected*/ QString DefaultUserMessagePreferences::getClassName()
+{ return "jmri.managers.DefaultUserMessagePreferences"; }
 
 /**
 * returns the combined size of both types of items registered.

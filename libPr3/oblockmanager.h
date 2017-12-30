@@ -9,6 +9,8 @@ class LIBPR3SHARED_EXPORT OBlockManager : public AbstractManager
     Q_OBJECT
 public:
     explicit OBlockManager(QObject *parent = 0);
+    ~OBlockManager(){}
+    OBlockManager(const OBlockManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
     /*public*/ char typeLetter();
@@ -19,11 +21,12 @@ public:
     /*public*/ OBlock* provideOBlock(QString name);
     static OBlockManager* _instance;// = NULL;
     static /*public*/ OBlockManager* instance();
+    /*public*/ bool isAssignableFromType() {return true;}
 
 signals:
  void propertyChange(PropertyChangeEvent *e);
 public slots:
 
 };
-
+Q_DECLARE_METATYPE(OBlockManager)
 #endif // OBLOCKMANAGER_H

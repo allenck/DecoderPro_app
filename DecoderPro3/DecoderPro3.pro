@@ -3,7 +3,8 @@
 # Project created by QtCreator 2015-08-23T00:11:05
 #
 #-------------------------------------------------
-
+APPNAME = "DecoderPro3"
+APPVERSION = 0.1
 QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -12,7 +13,7 @@ TARGET = DecoderPro3
 TEMPLATE = app
 
 win32:PREFIX = "C:/Program Files (x86)/local"
-unix:PREFIX = /home/allen/Projects/PythonQt3.0
+unix:PREFIX = /home/allen/Projects/PythonQt3.0x
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -41,7 +42,6 @@ else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
 
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster
 DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster
-
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
@@ -111,3 +111,4 @@ else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
+

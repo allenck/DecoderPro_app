@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'catalogpane.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -83,8 +83,8 @@ public:
 
     void retranslateUi(QWidget *CatalogPane)
     {
-        CatalogPane->setWindowTitle(QApplication::translate("CatalogPane", "Form", 0));
-        label->setText(QApplication::translate("CatalogPane", "File Preview:   ", 0));
+        CatalogPane->setWindowTitle(QApplication::translate("CatalogPane", "Form", Q_NULLPTR));
+        label->setText(QApplication::translate("CatalogPane", "File Preview:   ", Q_NULLPTR));
     } // retranslateUi
 
 };

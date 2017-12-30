@@ -37,7 +37,7 @@
      *         found.
      */
     //@CheckForNull
-    virtual QDomElement  getConfigurationFragment(/*@Nonnull*/ QString elementName, /*@Nonnull*/ QString _namespace, bool shared) {return QDomElement();}
+    virtual QDomElement  getConfigurationFragment(/*@Nonnull*/ QString /*elementName*/, /*@Nonnull*/ QString /*_namespace*/, bool /*shared*/) {return QDomElement();}
 
     /**
      * Store a configuration fragement as an XML element.
@@ -58,7 +58,7 @@
      *                 profile, false if the fragment is for just the current
      *                 computer.
      */
-    virtual void putConfigurationFragment(/*@Nonnull*/ QDomElement fragment, /*@Nonnull*/ bool shared) {}
+    virtual void putConfigurationFragment(/*@Nonnull*/ QDomElement /*fragment*/, /*@Nonnull*/ bool /*shared*/) {}
 
     /**
      * Remove a configuration fragment from the configuration.
@@ -75,6 +75,6 @@
      *                    computer.
      * @return true if the fragment could be removed, false otherwise.
      */
-    virtual bool removeConfigurationFragment(QString elementName, QString _namespace, bool shared) {return false;}
+    virtual bool removeConfigurationFragment(QString /*elementName*/, QString /*_namespace*/, bool /*shared*/) {return false;}
 };
 #endif // AUXILIARYCONFIGURATION_H

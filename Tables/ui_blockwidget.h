@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'blockwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -66,10 +66,10 @@ public:
 
     void retranslateUi(QWidget *BlockWidget)
     {
-        BlockWidget->setWindowTitle(QApplication::translate("BlockWidget", "Form", 0));
-        btnAdd->setText(QApplication::translate("BlockWidget", "Add...", 0));
-        chkInches->setText(QApplication::translate("BlockWidget", "Length in Inches", 0));
-        chlCentimeters->setText(QApplication::translate("BlockWidget", "Length in Centimeters", 0));
+        BlockWidget->setWindowTitle(QApplication::translate("BlockWidget", "Form", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("BlockWidget", "Add...", Q_NULLPTR));
+        chkInches->setText(QApplication::translate("BlockWidget", "Length in Inches", Q_NULLPTR));
+        chlCentimeters->setText(QApplication::translate("BlockWidget", "Length in Centimeters", Q_NULLPTR));
     } // retranslateUi
 
 };

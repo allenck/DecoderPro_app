@@ -7,9 +7,9 @@
 #include "exceptions.h"
 #include <QDir>
 #include "javaqt_global.h"
+#include "file.h"
 
 class QTextStream;
-class File;
 class JAVAQTSHARED_EXPORT FileUtil : public QObject
 {
     Q_OBJECT
@@ -19,8 +19,7 @@ public:
 
         INSTALLED, USER, ALL, NONE
     };
-    static /*private*/ QString pathFromPortablePath(/*@NonNull*/ QString path);
-    static /*public*/ File* getFile(QString path) /*throws FileNotFoundException */;
+    static /*public*/ File* getFile(QString path); //throw (FileNotFoundException);
     static /*public*/ QString getExternalFilename(QString pName);
     static /*public*/ QString getPortableFilename(File* file);
     static /*public*/ QString getPortableFilename(QString filename);
@@ -94,7 +93,7 @@ public:
     /*public*/ static QString getScriptsPath();
     static /*public*/ QString getProgramPath();
     static /*public*/ void setProgramPath(QString path);
-    static /*public*/ void setProgramPath(QDir path);
+    static /*public*/ void setProgramPath(File* path);
     static /*public*/ QUrl findExternalFilename(QString path);
     static /*public*/ QString getHomePath();
     /*public*/ static void createDirectory(QString path);
@@ -106,14 +105,16 @@ public:
      * @param path the scriptsPath to set
      */
     /*public*/ static void setScriptsPath(QString path);
+    /*public*/ static QString readFile(File* file); // throw (IOException);
     static /*public*/ QString getAbsoluteFilename(QString path);
+    /*public*/ static QString readURL(QUrl url); // throw (IOException);
     /* path to the current profile */
-    static /*private*/ QString profilePath;// = null;
-    /*public*/ static QString sanitizeFilename(QString name);
 
     /*public*/ static bool _delete(File* path);
     /*public*/ static void copy(File* source, File* dest) /*throws IOException*/;
     /*public*/ static void backup(File* file);// //throws IOException
+    /*public*/ static QString sanitizeFilename(QString name);
+    /*public*/ static QStringList* findProgramPath();
 
 
 signals:
@@ -135,6 +136,8 @@ private:
     static /*private*/ QString scriptsPath;// = NULL;
     /* path to the user's files directory */
     static /*private*/ QString userFilesPath;// = NULL;
+    static /*private*/ QString profilePath;// = null;
+
 //Logger log;
  static bool _debug;
 };

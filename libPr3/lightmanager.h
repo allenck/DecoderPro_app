@@ -161,7 +161,7 @@ public:
      /**
       * Returns 'true' if the System can potentially support variable Lights
       */
-     /*public*/ virtual bool supportsVariableLights(QString systemName) {return false;}
+     /*public*/ virtual bool supportsVariableLights(QString /*systemName*/) {return false;}
 
      /**
       * A method that determines if it is possible to add a range of lights in
@@ -169,7 +169,7 @@ public:
       * range box in the add Light window
       *
       */
-     /*public*/ virtual bool allowMultipleAdditions(QString systemName) { return false;}
+     /*public*/ virtual bool allowMultipleAdditions(QString /*systemName*/) { return false;}
 signals:
     
 public slots:

@@ -25,5 +25,5 @@ protected:
 
 
 };
-
+Q_DECLARE_METATYPE(LocobufferUsbConnectionConfig)
 #endif // LOCOBUFFERUSBCONNECTIONCONFIG_H

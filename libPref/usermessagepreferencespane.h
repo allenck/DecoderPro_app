@@ -5,7 +5,7 @@
 
 class QComboBox;
 class QCheckBox;
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class LIBPREFSHARED_EXPORT UserMessagePreferencesPane : public PreferencesPanel
 {
     Q_OBJECT
@@ -30,7 +30,7 @@ signals:
 public slots:
     void propertyChange(PropertyChangeEvent* e);
 private:
-    DefaultUserMessagePreferences* p;
+    UserPreferencesManager* p;
     QTabWidget* tab;// = new QTabWidget();
 
     /*static*/ class ListItems

@@ -15,6 +15,8 @@
 #include "Roster/indexedcvtablemodel.h"
 #include "basicrosterentry.h"
 
+class Roster;
+class RosterGroup;
 class RosterSpeedProfile;
 class HardcopyWriter;
 class PropertyChangeEvent;
@@ -25,10 +27,37 @@ class LIBPR3SHARED_EXPORT RosterEntry : public BasicRosterEntry
 {
     Q_OBJECT
 public:
- /*public*/ static /*final*/ QString SPEED_PROFILE;// = "speedprofile"; // NOI18N
-    /*public*/ static /*final*/ QString SOUND_LABEL;// = "soundlabel"; // NOI18N
-    /*public*/ /*final*/ static int MAXSOUNDNUM;// = 32;
+ /*public*/ static /*final*/ QString ID;// = "id"; // NOI18N
+     /*public*/ static /*final*/ QString FILENAME;// = "filename"; // NOI18N
+     /*public*/ static /*final*/ QString ROADNAME;// = "roadname"; // NOI18N
+     /*public*/ static /*final*/ QString MFG;// = "mfg"; // NOI18N
+     /*public*/ static /*final*/ QString MODEL;// = "model"; // NOI18N
+     /*public*/ static /*final*/ QString OWNER;// = "owner"; // NOI18N
+     /*public*/ static /*final*/ QString DCC_ADDRESS;// = "dccaddress"; // NOI18N
+     /*public*/ static /*final*/ QString LONG_ADDRESS;// = "longaddress"; // NOI18N
+     /*public*/ static /*final*/ QString PROTOCOL;// = "protocol"; // NOI18N
+     /*public*/ static /*final*/ QString COMMENT;// = "comment"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_MODEL;// = "decodermodel"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_FAMILY;// = "decoderfamily"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_COMMENT;// = "decodercomment"; // NOI18N
+     /*public*/ static /*final*/ QString IMAGE_FILE_PATH;// = "imagefilepath"; // NOI18N
+     /*public*/ static /*final*/ QString ICON_FILE_PATH;// = "iconfilepath"; // NOI18N
+     /*public*/ static /*final*/ QString URL;// = "url"; // NOI18N
+     /*public*/ static /*final*/ QString DATE_UPDATED;// = "dateupdated"; // NOI18N
+     /*public*/ static /*final*/ QString FUNCTION_IMAGE;// = "functionImage"; // NOI18N
+     /*public*/ static /*final*/ QString FUNCTION_LABEL;// = "functionlabel"; // NOI18N
+     /*public*/ static /*final*/ QString FUNCTION_LOCKABLE;// = "functionLockable"; // NOI18N
+     /*public*/ static /*final*/ QString FUNCTION_SELECTED_IMAGE;// = "functionSelectedImage"; // NOI18N
+     /*public*/ static /*final*/ QString ATTRIBUTE_UPDATED;// = "attributeUpdated:"; // NOI18N
+     /*public*/ static /*final*/ QString ATTRIBUTE_DELETED;// = "attributeDeleted"; // NOI18N
+     /*public*/ static /*final*/ QString MAX_SPEED;// = "maxSpeed"; // NOI18N
+     /*public*/ static /*final*/ QString SHUNTING_FUNCTION;// = "IsShuntingOn"; // NOI18N
+     /*public*/ static /*final*/ QString SPEED_PROFILE;// = "speedprofile"; // NOI18N
+     /*public*/ static /*final*/ QString SOUND_LABEL;// = "soundlabel"; // NOI18N
+     /*public*/ /*final*/ static int MAXSOUNDNUM;// = 32;
     explicit RosterEntry(QObject *parent = 0);
+    ~RosterEntry() {}
+    RosterEntry(const RosterEntry& /*e*/ ) : BasicRosterEntry() {}
     /*final*/const static int MAXFNNUM = 28;
     /*public*/ int getMAXFNNUM() { return MAXFNNUM; }
     /**
@@ -104,7 +133,9 @@ public:
     /*public*/ QString getShuntingFunction();
     /*public*/ void setURL(QString s);
     /*public*/ QString getURL();
-    /*public*/ void setDateUpdated(QString s);
+    /*public*/ void setDateModified(/*@Nonnull*/ QString date) throw (ParseException) ;
+    /*public*/ QDateTime getDateModified();
+    QT_DEPRECATED /*public*/ void setDateUpdated(QString s);
     /*public*/ QString getDateUpdated();
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*protected*/ /*synchronized*/ void firePropertyChange(QString p, QVariant old, QVariant n);
@@ -132,6 +163,8 @@ public:
     /*public*/ QVector<QString> wrapComment(QString comment, int textSpace);
     /*public*/ static QString getDefaultOwner() ;
     /*public*/ static void setDefaultOwner(QString n);
+    /*public*/ QList<RosterGroup*> getGroups();
+    /*public*/ QList<RosterGroup*> getGroups(Roster* roster);
 
 
 signals:
@@ -158,6 +191,7 @@ private:
     int indentWidth;// = indent.length();
     QString newLine;// = "\n";
     /*private*/ int writeWrappedComment(HardcopyWriter* w, QString text, QString title, int textSpace);
+    QDateTime dateModified;
 
 protected:
     // members to remember all the info
@@ -195,7 +229,10 @@ protected:
     /*protected*/ RosterSpeedProfile* _sp;// = NULL;
     QDomElement createTextElement(QDomDocument doc, QString tagName, QString text);
  friend class RosterFrame;
+ friend class JsonRosterSocketService;
 };
+Q_DECLARE_METATYPE(RosterEntry)
+
 #ifndef VPTR_H
 #define VPTR_H
 template <class T> class VPtr

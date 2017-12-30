@@ -14,7 +14,7 @@ class BeanTableFrame;
 class QButtonGroup;
 class QRadioButton;
 class QComboBox;
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class QLabel;
 class JTextField;
 class JmriJFrame;
@@ -76,7 +76,7 @@ private:
     QLabel* sysNameLabel;// = new JLabel(rb.getString("LabelSystemName"));
     QLabel* userNameLabel;// = new JLabel(rb.getString("LabelUserName"));
     QCheckBox* _autoSystemName;// = new JCheckBox(rb.getString("LabelAutoSysName"));
-    DefaultUserMessagePreferences* pref;
+    UserPreferencesManager* pref;
     QPushButton* create;// = NULL;
     QPushButton* update;// = NULL;
     QComboBox* blockBox;// = new JComboBox();

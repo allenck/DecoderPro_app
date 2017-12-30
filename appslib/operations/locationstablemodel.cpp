@@ -105,7 +105,7 @@ namespace Operations
      table->getColumnModel()->getColumn(ACTIONCOLUMN)->setPreferredWidth(
              qMax(80, QLabel(tr("Yardmaster")).sizeHint().width() + 40));
      table->getColumnModel()->getColumn(EDITCOLUMN)->setPreferredWidth(80);
-     table->setMinimumHeight(table->rowHeight(0)*5);
+//     table->setMinimumHeight(table->rowHeight*5);
      // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
 #if 0
      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

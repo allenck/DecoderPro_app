@@ -27,10 +27,34 @@
 /*public*/ RosterGroupComboBox::RosterGroupComboBox(Roster* roster, QWidget *parent)
 : QComboBox(parent)
 {
+ common(roster, "");
+}
+
+void RosterGroupComboBox::common(Roster* roster, QString selection)
+{
  //RosterGroupComboBox(roster, roster->getDefaultRosterGroup(), parent);
  _roster = roster;
  this->parent = parent;
- update("");
+ allEntriesEnabled = true;
+ update(selection);
+ //    roster->addPropertyChangeListener(new PropertyChangeListener()
+ //    {
+
+ //        @Override
+ //        /*public*/ void propertyChange(PropertyChangeEvent pce) {
+ //            if (pce.getPropertyName()==("RosterGroupAdded")) {
+ //                update();
+ //            } else if (pce.getPropertyName()==("RosterGroupRemoved")
+ //                || pce.getPropertyName()==("RosterGroupRenamed")) {
+ //                if (getSelectedItem()==(pce.getOldValue())) {
+ //                    update((String)pce.getNewValue());
+ //                } else {
+ //                    update();
+ //                }
+ //            }
+ //        }
+ //    });
+  connect(_roster, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }
 
@@ -41,7 +65,7 @@
  */
 /*public*/ RosterGroupComboBox::RosterGroupComboBox(QString selection, QWidget *parent) : QComboBox(parent)
 {
-  RosterGroupComboBox(Roster::instance(), selection, parent);
+  common(Roster::instance(), selection);
 }
 
 /**
@@ -52,27 +76,7 @@
  */
 /*public*/ RosterGroupComboBox::RosterGroupComboBox(Roster* roster, QString selection, QWidget *parent) : QComboBox(parent)
 {
- //super();
- _roster = roster;
- update(selection);
-//    roster->addPropertyChangeListener(new PropertyChangeListener()
-//    {
-
-//        @Override
-//        /*public*/ void propertyChange(PropertyChangeEvent pce) {
-//            if (pce.getPropertyName()==("RosterGroupAdded")) {
-//                update();
-//            } else if (pce.getPropertyName()==("RosterGroupRemoved")
-//                || pce.getPropertyName()==("RosterGroupRenamed")) {
-//                if (getSelectedItem()==(pce.getOldValue())) {
-//                    update((String)pce.getNewValue());
-//                } else {
-//                    update();
-//                }
-//            }
-//        }
-//    });
- connect(_roster, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  common( roster, selection);
 }
 
 /**
@@ -82,10 +86,7 @@
 /*public*/ RosterGroupComboBox::RosterGroupComboBox(QWidget *parent)
  : QComboBox(parent)
 {
- //RosterGroupComboBox(Roster::instance(), Roster::instance()->getDefaultRosterGroup(), parent);
- _roster = Roster::instance();
- //this->parent = parent;
- update(Roster::instance()->getDefaultRosterGroup());
+ common(Roster::instance(), Roster::instance()->getDefaultRosterGroup());
 }
 
 /**

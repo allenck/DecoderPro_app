@@ -400,6 +400,7 @@ QHash<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::cloneMaps(Indicat
 // if(_editor != NULL)
 //  _editor->addToTarget(this);
  updateScene();
+ _itemGroup->setName(getGroupName());
 }
 
 /*public*/ QString IndicatorTurnoutIcon::getNameString()

@@ -32,7 +32,8 @@ public:
  /*public*/ int showDialog(QWidget* parent, QString approveButtonText);
  /*public*/ File* getSelectedFile();
  /*public*/void setDialogTitle(QString title);
- /*public*/ JFileChooser(QString currentDirectoryPath);
+ /*public*/ JFileChooser(QString currentDirectoryPath, QObject *parent = 0);
+ /*public*/ JFileChooser(File* currentDirectory, QObject* parent = 0);
  /*public*/void setFileFilter(QString fileFilter);
  /*public*/ void setDialogType(int);
  /*public*/ void setApproveButtonText(QString text);

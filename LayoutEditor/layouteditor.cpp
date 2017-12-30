@@ -41,12 +41,14 @@
 #include "addentryexitpairaction.h"
 #include "jtextfield.h"
 #include "layouteditorfinditems.h"
+#include "jmriconfigurationmanager.h"
+#include "userpreferencesmanager.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
 
 LayoutEditor::LayoutEditor(QString name, bool bTest, QWidget *parent) :
-    Editor(name, parent),
+    PanelEditor(name, parent),
     ui(new Ui::LayoutEditor)
 {
  ui->setupUi(this);
@@ -57,7 +59,7 @@ LayoutEditor::LayoutEditor(QString name, bool bTest, QWidget *parent) :
 }
 
 LayoutEditor::LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name,  bool bTest, QWidget *parent) :
-    Editor(name, parent),
+    PanelEditor(name, parent),
     ui(new Ui::LayoutEditor)
 {
  setObjectName("LayoutEditor");
@@ -393,7 +395,11 @@ _contents = new QVector<Positionable*>();
  QWidget* centralWidget = new QWidget();
  centralWidget->setLayout(new QFormLayout());
  signalFrame->setCentralWidget(centralWidget);
+ centralWidget->layout()->addWidget(new QLabel("</html>Select new image from file,<br>then click an upper preview icon to change it.</html>"));
  centralWidget->layout()->addWidget(signalIconEditor);
+ signalFrame->setAllowInFrameServlet(false);
+ signalFrame->adjustSize();
+ signalFrame->setVisible(false);
  autoAssignBlocks = true;
  tooltipsInEditMode = false;
  tooltipsWithoutEditMode = false;
@@ -407,7 +413,12 @@ _contents = new QVector<Positionable*>();
  ui->menuOptions->addMenu( setupTurnoutSubMenu());
 
 // register the resulting panel for later configuration
- InstanceManager::configureManagerInstance()->registerUser(this);
+ JmriConfigurationManager* cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+
+ if (cm != NULL) {
+     cm->registerUser(this);
+ }
+
  // confirm that panel hasn't already been loaded
  if (PanelMenu::instance()->isPanelNameUsed(name))
  {
@@ -3741,7 +3752,8 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
     g2->removeItem(l->_itemGroup);
     l->_itemGroup = NULL;
    }
-   l->_itemGroup = new QGraphicsItemGroup();
+   l->_itemGroup = new MyGraphicsItemGroup();
+   l->_itemGroup->setName("drawMemoryRects");
    //g2.draw(new Rectangle2D.Double (l.x(), l.y(), l.getSize().width, l.getSize().height));
    //g2->addRect(QRectF(l->getX(), l->getY(), l->getSize().width(), l->getSize().height()),QPen(color, 1));
    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(l->getX(), l->getY(), l->getSize().width(), l->getSize().height()));
@@ -6543,7 +6555,7 @@ void LayoutEditor::on_actionSave_triggered()
 
 // SaveXml saveXml(this);
 // saveXml.store(layoutFile);
- bool results = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->storeUser(new File(layoutFile));
+ bool results = ((JmriConfigurationManager*)InstanceManager::getNullableDefault("JmriConfigurationManager"))->storeUser(new File(layoutFile));
  setCursor(Qt::ArrowCursor);
 }
 
@@ -6556,7 +6568,7 @@ void LayoutEditor::on_actionSave_as_triggered()
   return;
  }
  setCursor(Qt::WaitCursor);
- SaveXml saveXml(this);
+ SaveXml saveXml(this);  // TODO: get rid of this; use Jmri code to save
  saveXml.store(path);
  layoutFile = path;
  setCursor(Qt::ArrowCursor);
@@ -7136,6 +7148,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
   }
  }
 }
+
 /*public*/ void LayoutEditor::setCurrentPositionAndSize()
 {
  // save current panel location and size
@@ -7150,6 +7163,41 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  QPoint pt = getLocationOnScreen();
  upperLeftX = pt.x();
  upperLeftY = pt.y();
+
+ UserPreferencesManager* prefsMgr =(UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+ if(prefsMgr != NULL)
+ {
+  QString windowFrameRef = getWindowFrameRef();
+  //the restore code for this isn't working…
+  prefsMgr->setWindowLocation(windowFrameRef, QPoint(upperLeftX, upperLeftY));
+  prefsMgr->setWindowSize(windowFrameRef, QSize(windowWidth, windowHeight));
+
+  if (true)
+  {
+   QPoint prefsWindowLocation = prefsMgr->getWindowLocation(windowFrameRef);
+
+   if ((prefsWindowLocation.x() != upperLeftX) || (prefsWindowLocation.y() != upperLeftY))
+   {
+    log.error("setWindowLocation failure.");
+   }
+   QSize prefsWindowSize = prefsMgr->getWindowSize(windowFrameRef);
+
+   if ((prefsWindowSize.width() != windowWidth) || (prefsWindowSize.height() != windowHeight)) {
+       log.error("setWindowSize failure.");
+   }
+  }
+
+  //we're going to use this instead
+  if (true)
+  { //(Nope, it's not working ether)
+    //save it in the user preferences for the window
+   QRectF windowRectangle2D =  QRectF(upperLeftX, upperLeftY, windowWidth, windowHeight);
+   prefsMgr->setProperty(windowFrameRef, "windowRectangle2D", windowRectangle2D);
+   QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "windowRectangle2D");
+   log.info(tr("testing prefsProp: ") + prefsProp.toString());
+  }
+ } //);
+
  log.debug("setCurrentPositionAndSize Position - " + QString::number(upperLeftX) + "," + QString::number(upperLeftY) + " WindowSize - " + QString::number(windowWidth) + "," + QString::number(windowHeight) + " PanelSize - " + QString::number(panelWidth) + "," + QString::number(panelHeight));
  setDirty(true);
 }
@@ -7169,6 +7217,21 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 /*public*/ bool LayoutEditor::getDirectTurnoutControl() {
     return useDirectTurnoutControl;
 }
+
+/*public*/ void LayoutEditor::setLayoutDimensions(int windowW, int windowH, int x, int y, int panelW, int panelH) {
+    upperLeftX = x;
+    upperLeftY = y;
+    windowWidth = windowW;
+    windowHeight = windowH;
+    panelWidth = panelW;
+    panelHeight = panelH;
+    setTargetPanelSize(panelWidth, panelHeight);
+    setLocation(upperLeftX, upperLeftY);
+    setSize(windowWidth, windowHeight);
+    log.debug(
+        "setLayoutDimensions Position - " + QString::number(upperLeftX) + "," + QString::number(upperLeftY) + " windowSize - " + QString::number(windowWidth) + "," + QString::number(windowHeight) + " panelSize - " + QString::number(panelWidth) + "," +
+        QString::number(panelHeight));
+}   //setLayoutDimensions
 
 /*public*/ void LayoutEditor::setMainlineTrackWidth(int w) {
     mainlineTrackWidth = w;

@@ -11,6 +11,7 @@
 #include "defaultconditionalmanagerxml.h"
 #include "blockmanagerxml.h"
 #include "oblockmanagerxml.h"
+#include "oblockmanager.h"
 #include "layoutblockmanagerxml.h"
 #include "sectionmanagerxml.h"
 #include "blockbosslogicxml.h"
@@ -84,8 +85,8 @@
 #include "connectionspreferencespanel.h"
 #include "programmerconfigpane.h"
 #include "performactionmodel.h"
-#include "createbuttonpanel.h"
-#include "performactionpanel.h"
+//#include "createbuttonpanel.h"
+//#include "performactionpanel.h"
 #include "managerdefaultsconfigpane.h"
 #include "filelocationpane.h"
 #include "guilafconfigpane.h"
@@ -154,9 +155,9 @@
 #include "memoryinputiconxml.h"
 #include "dccsignalmastxml.h"
 #include "managerdefaultsconfigpanexml.h"
-#include "createbuttonpanelxml.h"
+//#include "createbuttonpanelxml.h"
 #include "performscriptpanelxml.h"
-#include "performactionpanelxml.h"
+//#include "performactionpanelxml.h"
 #include "performfilepanelxml.h"
 #include "warrantpreferencespanel.h"
 #include "jmrixconfigpanexml.h"
@@ -174,7 +175,7 @@
 #include "trainmanifesttext.h"
 #include "layoutturntablexml.h"
 #include "filehistory.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "listedtableframe.h"
 #include "lighttabletabaction.h"
 #include "signalmasttableaction.h"
@@ -207,14 +208,46 @@
 #include "quadoutputsignalheadxml.h"
 #include "signalheadsignalmastxml.h"
 #include "transitmanagerxml.h"
+#include "rosterentry.h"
+#include "jmriconfigurationmanager.h"
+#include "warrantmanager.h"
+#include "jmriuserpreferencesmanager.h"
+#include "jmrijtablepersistencemanager.h"
+#include "startupactionsmanager.h"
+#include "managerdefaultselector.h"
+#include "connectionconfigmanager.h"
+#include "systemconsolepreferencesmanager.h"
+#include "programmerconfigmanager.h"
+#include "rosterconfigmanager.h"
+#include "treeframe.h"
+#include "dccthrottle.h"
+#include "withrottleprefspanel.h"
+#include "webserverpreferencespanel.h"
+#include "jsonserverpreferencespanel.h"
+#include "startupactionspreferencespanel.h"
+//#include "servletutil.h"
+#include "Locobuffer/locobufferconnectionconfigxml.h"
+#include "LocobufferUsb/locobufferusbconnectionconfigxml.h"
+#include "entryexitpairs.h"
+#include "entryexitpairsxml.h"
+#include "paneleditor.h"
+#include "performactionmodelfactory.h"
+#include "createbuttonmodelfactory.h"
+#include "triggerroutemodelfactory.h"
+#include "scriptbuttonmodelfactory.h"
+#include "performfilemodelfactory.h"
+#include "webserveraction.h"
+#include "restartstartupactionfactory.h"
+#include "systemconnectionaction.h"
 
 bool Metatypes::done = false;
 
 Metatypes::Metatypes(QObject *parent) :
     QObject(parent)
 {
+ if(done) return;
  qRegisterMetaType<CreateButtonModel>("CreateButtonModel");
- qRegisterMetaType<DefaultUserMessagePreferencesXml>("DefaultUserMessagePreferencesXml");
+ //qRegisterMetaType<DefaultUserMessagePreferencesXml>("DefaultUserMessagePreferencesXml");
  qRegisterMetaType<ConnectionConfigXml>("ConnectionConfigXml");
  qRegisterMetaType<HexFileConnectionConfigXml>("HexFileConnectionConfigXml");
  qRegisterMetaType<ProgrammerConfigPaneXml>("ProgrammerConfigPaneXml");
@@ -223,7 +256,9 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<ManagerDefaultSelectorXml>("ManagerDefaultSelectorXml");
  qRegisterMetaType<Pr3ConnectionConfig>("Pr3ConnectionConfig");
  qRegisterMetaType<LocobufferConnectionConfig>("LocobufferConnectionConfig");
+ qRegisterMetaType<LocobufferConnectionConfig>("LocobufferConnectionConfig");
  qRegisterMetaType<LocobufferUsbConnectionConfig>("LocobufferUsbConnectionConfig");
+ qRegisterMetaType<LocobufferUsbConnectionConfigXml>("LocobufferUsbConnectionConfigXml");
  qRegisterMetaType<HexFileConnectionConfig>("HexFileConnectionConfig");
  qRegisterMetaType<HexFileConnectionConfigXml>("HexFileConnectionConfigXml");
  qRegisterMetaType<LnOverTcpConnectionConfig>("LnOverTcpConnectionConfig");
@@ -300,8 +335,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<DefaultShutDownManager>("DefaultShutDownManager");
  qRegisterMetaType<ConnectionsPreferencesPanel>("ConnectionsPreferencesPanel");
  qRegisterMetaType<ProgrammerConfigPane>("ProgrammerConfigPane");
- qRegisterMetaType<CreateButtonPanel>("CreateButtonPanel");
- qRegisterMetaType<PerformActionPanel>("PerformActionPanel");
+ //qRegisterMetaType<CreateButtonPanel>("CreateButtonPanel");
+ //qRegisterMetaType<PerformActionPanel>("PerformActionPanel");
  qRegisterMetaType<PerformActionModel>("PerformActionModel");
  qRegisterMetaType<ManagerDefaultsConfigPane>("ManagerDefaultsConfigPane");
  qRegisterMetaType<FileLocationPane>("FileLocationPane");
@@ -372,15 +407,15 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<MemoryInputIconXml>("MemoryInputIconXml");
  qRegisterMetaType<DccSignalMastXml>("DccSignalMastXml");
  qRegisterMetaType<ManagerDefaultsConfigPaneXml>("ManagerDefaultsConfigPaneXml");
- qRegisterMetaType<CreateButtonPanelXml>("CreateButtonPanelXml");
+ //qRegisterMetaType<CreateButtonPanelXml>("CreateButtonPanelXml");
  qRegisterMetaType<PerformScriptPanelXml>("PerformScriptPanelXml");
- qRegisterMetaType<PerformActionPanelXml>("PerformActionPanelXml");
+ //qRegisterMetaType<PerformActionPanelXml>("PerformActionPanelXml");
  qRegisterMetaType<PerformFilePanelXml>("PerformFilePanelXml");
  qRegisterMetaType<WarrantPreferencesPanel>("WarrantPreferencesPanel");
  qRegisterMetaType<JmrixConfigPaneXml>("JmrixConfigPaneXml");
  qRegisterMetaType<WarrantTableAction>("WarrantTableAction");
  qRegisterMetaType<PortalManager>("PortalManager");
- qRegisterMetaType<ControlPanelEditor>("ControlPanelEditor");
+ qRegisterMetaType<ControlPanelEditor>("");
  qRegisterMetaType<WarrantPreferences>("WarrantPreferences");
  qRegisterMetaType<VSDecoderManager>("VSDecoderManager");
  qRegisterMetaType<DefaultAudioManager>("DefaultAudioManager");
@@ -394,7 +429,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<Operations::TrainManifestText>("TrainManifestText");
  qRegisterMetaType<LayoutTurntableXml>("LayoutTurntableXml");
  qRegisterMetaType<FileHistory>("FileHistory");
- qRegisterMetaType<DefaultUserMessagePreferences>("DefaultUserMessagePreferences");
+ qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");
  qRegisterMetaType<ListedTableFrame>("ListedTableFrame");
  qRegisterMetaType<LightTableTabAction>("LightTableTabAction");
  qRegisterMetaType<SignalMastTableAction>("SignalMastTableAction");
@@ -427,22 +462,37 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<QuadOutputSignalHeadXml>("QuadOutputSignalHeadXml");
  qRegisterMetaType<SignalHeadSignalMastXml>("SignalHeadSignalMastXml");
  qRegisterMetaType<TransitManagerXml>("TransitManagerXml");
+ qRegisterMetaType<RosterEntry>("RosterEntry");
+ qRegisterMetaType<JmriConfigurationManager>("JmriConfigurationManager");
+ qRegisterMetaType<WarrantManager>("WarrantManager");
+ qRegisterMetaType<OBlockManager>("OBlockManager");
+ qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");
+ qRegisterMetaType<JmriJTablePersistenceManager>("JmriJTablePersistenceManager");
+ qRegisterMetaType<StartupActionsManager>("StartupActionsManager");
+ qRegisterMetaType<ManagerDefaultSelector>("ManagerDefaultSelector");
+ qRegisterMetaType<ConnectionConfigManager>("ConnectionConfigManager");
+ qRegisterMetaType<SystemConsolePreferencesManager>("SystemConsolePreferencesManager");
+ qRegisterMetaType<ProgrammerConfigManager>("ProgrammerConfigManager");
+ qRegisterMetaType<RosterConfigManager>("RosterConfigManager");
+ qRegisterMetaType<TreeFrame>("TreeFrame");
+ qRegisterMetaType<DccThrottle>("DccThrottle");
+ qRegisterMetaType<WiThrottlePrefsPanel>("WiThrottlePrefsPanel");
+ qRegisterMetaType<WebServerPreferencesPanel>("WebServerPreferencesPanel");
+ qRegisterMetaType<JsonServerPreferencesPanel>("JsonServerPreferencesPanel");
+ qRegisterMetaType<StartupActionsPreferencesPanel>("StartupActionsPreferencesPanel");
+ //qRegisterMetaType<ServletUtil>("ServletUtil");
+ qRegisterMetaType<EntryExitPairs>("EntryExitPairs");
+ qRegisterMetaType<EntryExitPairsXml>("EntryExitPairsXml");
+ qRegisterMetaType<PanelEditor>("PanelEditor");
+ qRegisterMetaType<LayoutEditor>("LayoutEditor");
+ qRegisterMetaType<PerformActionModelFactory>("PerformActionModelFactory");
+ qRegisterMetaType<CreateButtonModelFactory>("CreateButtonModelFactory");
+ qRegisterMetaType<TriggerRouteModelFactory>("TriggerRouteModelFactory");
+ qRegisterMetaType<ScriptButtonModelFactory>("ScriptButtonModelFactory");
+ qRegisterMetaType<PerformFileModelFactory>("PerformFileModelFactory");
+ qRegisterMetaType<WebServerAction>("WebServerAction");
+ qRegisterMetaType<RestartStartupActionFactory>("RestartStartupActionFactory");
+ qRegisterMetaType<SystemConnectionAction>("SystemConnectionAction");
 
  Metatypes::done = true;
-}
-
-QObject* Class::forName(QString adapterName)
-{
- QObject* adapter = NULL;
- QString aName = adapterName.mid(adapterName.lastIndexOf(".") +1);
- int typeId = QMetaType::type(aName.toLocal8Bit());
- if(typeId > 0)
- {
-#if QT_VERSION < 0x050000
-  adapter = (QObject*)QMetaType::construct(typeId);
-#else
-  adapter = (QObject*)QMetaType::create(typeId);
-#endif
- }
- return adapter;
 }

@@ -18,6 +18,8 @@ class LIBPR3SHARED_EXPORT EntryExitPairs : public Manager
     Q_OBJECT
 public:
     explicit EntryExitPairs(QObject *parent = 0);
+ ~EntryExitPairs() {}
+ EntryExitPairs(const EntryExitPairs&) : Manager() {}
     /*public*/ int routingMethod;// = LayoutBlockConnectivityTools.METRIC;
     //Method to get delay between issuing Turnout commands
     /*public*/ int turnoutSetDelay;// = 0;
@@ -128,6 +130,7 @@ public:
     /*public*/ bool useDifferentColorWhenSetting();
     /*public*/ QColor getSettingRouteColor();
     /*public*/ void setSettingRouteColor(QColor col);
+    /*public*/ bool isAssignableFromType() {return true;}
 
 signals:
     void propertyChange(PropertyChangeEvent*);
@@ -150,5 +153,5 @@ private:
     bool allocateToDispatcher;// = false;
 
 };
-
+Q_DECLARE_METATYPE(EntryExitPairs)
 #endif // ENTRYEXITPAIRS_H

@@ -2,7 +2,7 @@
 #define ABSTRACTTHROTTLEMANAGER_H
 #include "throttlemanager.h"
 #include "systemconnectionmemo.h"
-#include "throttlelistener.h"
+#include "Throttle/throttlelistener.h"
 #include "basicrosterentry.h"
 #include "dccthrottle.h"
 #include "abstractthrottle.h"

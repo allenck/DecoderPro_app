@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'tablesframe.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -89,44 +89,44 @@ public:
 
     void retranslateUi(QMainWindow *TablesFrame)
     {
-        TablesFrame->setWindowTitle(QApplication::translate("TablesFrame", "MainWindow", 0));
+        TablesFrame->setWindowTitle(QApplication::translate("TablesFrame", "MainWindow", Q_NULLPTR));
 
         const bool __sortingEnabled = listWidget->isSortingEnabled();
         listWidget->setSortingEnabled(false);
         QListWidgetItem *___qlistwidgetitem = listWidget->item(0);
-        ___qlistwidgetitem->setText(QApplication::translate("TablesFrame", "Turnouts", 0));
+        ___qlistwidgetitem->setText(QApplication::translate("TablesFrame", "Turnouts", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem1 = listWidget->item(1);
-        ___qlistwidgetitem1->setText(QApplication::translate("TablesFrame", "Sensors", 0));
+        ___qlistwidgetitem1->setText(QApplication::translate("TablesFrame", "Sensors", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem2 = listWidget->item(2);
-        ___qlistwidgetitem2->setText(QApplication::translate("TablesFrame", "Lights", 0));
+        ___qlistwidgetitem2->setText(QApplication::translate("TablesFrame", "Lights", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem3 = listWidget->item(3);
-        ___qlistwidgetitem3->setText(QApplication::translate("TablesFrame", "Signal Heads", 0));
+        ___qlistwidgetitem3->setText(QApplication::translate("TablesFrame", "Signal Heads", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem4 = listWidget->item(4);
-        ___qlistwidgetitem4->setText(QApplication::translate("TablesFrame", "Signal Masts", 0));
+        ___qlistwidgetitem4->setText(QApplication::translate("TablesFrame", "Signal Masts", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem5 = listWidget->item(5);
-        ___qlistwidgetitem5->setText(QApplication::translate("TablesFrame", "Signal Groups", 0));
+        ___qlistwidgetitem5->setText(QApplication::translate("TablesFrame", "Signal Groups", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem6 = listWidget->item(6);
-        ___qlistwidgetitem6->setText(QApplication::translate("TablesFrame", "Signal Mast Logic", 0));
+        ___qlistwidgetitem6->setText(QApplication::translate("TablesFrame", "Signal Mast Logic", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem7 = listWidget->item(7);
-        ___qlistwidgetitem7->setText(QApplication::translate("TablesFrame", "Reporters", 0));
+        ___qlistwidgetitem7->setText(QApplication::translate("TablesFrame", "Reporters", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem8 = listWidget->item(8);
-        ___qlistwidgetitem8->setText(QApplication::translate("TablesFrame", "Memory Variables", 0));
+        ___qlistwidgetitem8->setText(QApplication::translate("TablesFrame", "Memory Variables", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem9 = listWidget->item(9);
-        ___qlistwidgetitem9->setText(QApplication::translate("TablesFrame", "Routes", 0));
+        ___qlistwidgetitem9->setText(QApplication::translate("TablesFrame", "Routes", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem10 = listWidget->item(10);
-        ___qlistwidgetitem10->setText(QApplication::translate("TablesFrame", "LRoutes", 0));
+        ___qlistwidgetitem10->setText(QApplication::translate("TablesFrame", "LRoutes", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem11 = listWidget->item(11);
-        ___qlistwidgetitem11->setText(QApplication::translate("TablesFrame", "Logix", 0));
+        ___qlistwidgetitem11->setText(QApplication::translate("TablesFrame", "Logix", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem12 = listWidget->item(12);
-        ___qlistwidgetitem12->setText(QApplication::translate("TablesFrame", "Blocks", 0));
+        ___qlistwidgetitem12->setText(QApplication::translate("TablesFrame", "Blocks", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem13 = listWidget->item(13);
-        ___qlistwidgetitem13->setText(QApplication::translate("TablesFrame", "Sections", 0));
+        ___qlistwidgetitem13->setText(QApplication::translate("TablesFrame", "Sections", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem14 = listWidget->item(14);
-        ___qlistwidgetitem14->setText(QApplication::translate("TablesFrame", "Transits", 0));
+        ___qlistwidgetitem14->setText(QApplication::translate("TablesFrame", "Transits", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem15 = listWidget->item(15);
-        ___qlistwidgetitem15->setText(QApplication::translate("TablesFrame", "Audio", 0));
+        ___qlistwidgetitem15->setText(QApplication::translate("TablesFrame", "Audio", Q_NULLPTR));
         QListWidgetItem *___qlistwidgetitem16 = listWidget->item(16);
-        ___qlistwidgetitem16->setText(QApplication::translate("TablesFrame", "Id Tags", 0));
+        ___qlistwidgetitem16->setText(QApplication::translate("TablesFrame", "Id Tags", Q_NULLPTR));
         listWidget->setSortingEnabled(__sortingEnabled);
 
     } // retranslateUi

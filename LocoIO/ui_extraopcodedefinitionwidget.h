@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'extraopcodedefinitionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -207,17 +207,17 @@ public:
 
     void retranslateUi(QWidget *ExtraOpcodeDefinitionWidget)
     {
-        ExtraOpcodeDefinitionWidget->setWindowTitle(QApplication::translate("ExtraOpcodeDefinitionWidget", "Form", 0));
-        label->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Off", 0));
-        lblHeading->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Extra Opcode x", 0));
-        label_2->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Direct Code", 0));
-        label_3->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Indirect Code", 0));
-        label_4->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 1", 0));
-        label_5->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 2", 0));
-        label_6->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Address", 0));
-        label_7->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<OPC>", 0));
-        label_8->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 1>", 0));
-        label_9->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 2>", 0));
+        ExtraOpcodeDefinitionWidget->setWindowTitle(QApplication::translate("ExtraOpcodeDefinitionWidget", "Form", Q_NULLPTR));
+        label->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Off", Q_NULLPTR));
+        lblHeading->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Extra Opcode x", Q_NULLPTR));
+        label_2->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Direct Code", Q_NULLPTR));
+        label_3->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Indirect Code", Q_NULLPTR));
+        label_4->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 1", Q_NULLPTR));
+        label_5->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 2", Q_NULLPTR));
+        label_6->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Address", Q_NULLPTR));
+        label_7->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<OPC>", Q_NULLPTR));
+        label_8->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 1>", Q_NULLPTR));
+        label_9->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 2>", Q_NULLPTR));
     } // retranslateUi
 
 };

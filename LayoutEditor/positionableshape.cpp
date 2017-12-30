@@ -212,7 +212,8 @@ void PositionableShape::init()
  }
  else
  {
-  _handleGroup = new QGraphicsItemGroup;
+  _handleGroup = new MyGraphicsItemGroup;
+  _handleGroup->setName("PositionableShape");
   g->addItem(_handleGroup);
  }
 
@@ -752,7 +753,8 @@ void PositionableShape::OnCancel_clicked()
   }
  }
  else
-  _itemGroup = new QGraphicsItemGroup();
+  _itemGroup = new MyGraphicsItemGroup();
+ _itemGroup->setName("PositionableShape");
 
  makeShape();
  //_itemGroup->setPos(getX(), getY());

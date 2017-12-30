@@ -267,7 +267,7 @@ class DestinationMast : public QObject
       void dispose();
       void lockTurnouts();
       void clearTurnoutLock();
-      bool _useLayoutEditor = false;
+      bool _useLayoutEditor;// = false;
       bool _useLayoutEditorTurnouts ;//= false;
       bool _useLayoutEditorBlocks;// = false;
       bool _lockTurnouts;// = false;

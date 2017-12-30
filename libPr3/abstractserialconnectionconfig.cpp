@@ -3,7 +3,7 @@
 #include "serialportadapter.h"
 #include "instancemanager.h"
 #include <QComboBox>
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "jtextfield.h"
 #include "systemconnectionmemo.h"
 #include <QMessageBox>
@@ -73,7 +73,7 @@ void AbstractSerialConnectionConfig::common()
  init = false;
  adapter = NULL;
  log = new Logger("AbstractSerialConnectionConfig");
- p = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+ p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  portBox = new QComboBox();
  baudBox = new QComboBox();
  invalidPort = "";
@@ -675,6 +675,7 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
   adapter=NULL;
  }
  removeFromActionList();
+ AbstractConnectionConfig::dispose();
 }
 #if 0
 class ComboBoxRenderer extends JLabel

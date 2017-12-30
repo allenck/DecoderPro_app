@@ -2058,5 +2058,5 @@ QString LightTableAction::formatTime(int hour, int minute) {
 }
 
 /*protected*/ QString LightTableAction::getClassName() {
-    return "LightTableAction";
+    return "jmri.jmrit.beantable.LightTableAction";
 }

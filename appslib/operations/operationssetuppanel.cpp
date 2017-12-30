@@ -29,6 +29,8 @@
 #include "cartypes.h"
 #include "backupdialog.h"
 #include "restoredialog.h"
+#include "webserverpreferences.h"
+#include "joptionpane.h"
 
 //OperationsSetupPanel::OperationsSetupPanel(QWidget *parent) :
 //  OperationsPreferencesPanel(parent)
@@ -469,238 +471,237 @@ OperationsPreferencesPanel(parent)
  }
 
   // Save, Delete, Add buttons
- // @Override
- /*public*/ void OperationsSetupPanel::buttonActionPerformed(QWidget* ae)
+// @Override
+/*public*/ void OperationsSetupPanel::buttonActionPerformed(QWidget* ae)
+{
+ QPushButton* source = (QPushButton*)ae;
+
+ if (source == backupButton)
  {
-  QPushButton* source = (QPushButton*)ae;
-
-  if (source == backupButton)
-  {
-   // Backup and Restore dialogs are now modal. so no need to check for an existing instance
-   BackupDialog* bd = new BackupDialog();
-   bd->adjustSize();
+  // Backup and Restore dialogs are now modal. so no need to check for an existing instance
+  BackupDialog* bd = new BackupDialog();
+  bd->adjustSize();
 //          bd.setLocationRelativeTo(null);
-   bd->setVisible(true);
-   bd->exec();
-  }
-
-  if (source == restoreButton)
-  {
-   RestoreDialog* rd = new RestoreDialog();
-   rd->adjustSize();
-//          rd.setLocationRelativeTo(null);
-   rd->setVisible(true);
-  }
-
-  if (source == saveButton)
-  {
-   save();
-  }
+  bd->setVisible(true);
+  bd->exec();
  }
 
- /*private*/ void OperationsSetupPanel::save()
+ if (source == restoreButton)
  {
-      // check input fields
-      int maxTrainLength;
-      //try {
-      bool ok;
-          maxTrainLength = maxLengthTextField->text().toInt(&ok);
-          if(!ok) {
-          //JOptionPane.showMessageDialog(this, tr("MaxLength"),
-//                  tr("CanNotAcceptNumber"), JOptionPane.ERROR_MESSAGE);
-           QMessageBox::critical(this, tr("Maximum Train Length"), tr("Can not accept number") );
-          return;
-      }
+  RestoreDialog* rd = new RestoreDialog();
+  rd->adjustSize();
+//          rd.setLocationRelativeTo(null);
+  rd->setVisible(true);
+ }
 
-      //try {
-          maxEngineSizeTextField->text().toInt(&ok);
-          if(!ok) {
+ if (source == saveButton)
+ {
+  save();
+ }
+}
+
+/*private*/ void OperationsSetupPanel::save()
+{
+ // check input fields
+ int maxTrainLength;
+ //try {
+ bool ok;
+     maxTrainLength = maxLengthTextField->text().toInt(&ok);
+     if(!ok) {
+     //JOptionPane.showMessageDialog(this, tr("MaxLength"),
+//                  tr("CanNotAcceptNumber"), JOptionPane.ERROR_MESSAGE);
+      QMessageBox::critical(this, tr("Maximum Train Length"), tr("Can not accept number") );
+     return;
+ }
+
+ //try {
+     maxEngineSizeTextField->text().toInt(&ok);
+     if(!ok) {
 //          JOptionPane.showMessageDialog(this, tr("MaxEngine"),
 //                  tr("CanNotAcceptNumber"), JOptionPane.ERROR_MESSAGE);
-           QMessageBox::critical(this, tr("Max Locos per Train"), tr("Can not accept number") );
-          return;
-      }
+      QMessageBox::critical(this, tr("Max Locos per Train"), tr("Can not accept number") );
+     return;
+ }
 
-      //try {
-          hptTextField->text().toInt(&ok);
-          if(!ok)
-          {
+ //try {
+     hptTextField->text().toInt(&ok);
+     if(!ok)
+     {
 //          JOptionPane.showMessageDialog(this, tr("HPT"), tr("CanNotAcceptNumber"),
 //                  JOptionPane.ERROR_MESSAGE);
-           QMessageBox::critical(this, tr("Horsepower per Ton"), tr("Can not accept number"));
+      QMessageBox::critical(this, tr("Horsepower per Ton"), tr("Can not accept number"));
 
-          return;
-      }
+     return;
+ }
 
-      //try {
-          switchTimeTextField->text().toInt(&ok);
-          if(!ok) {
+ //try {
+     switchTimeTextField->text().toInt(&ok);
+     if(!ok) {
 //          JOptionPane.showMessageDialog(this, tr("MoveTime"), tr("CanNotAcceptNumber"),
 //                  JOptionPane.ERROR_MESSAGE);
-           QMessageBox::critical(this, tr("Switch Time (minutes)"), tr("Can not accept number"));
-          return;
-      }
+      QMessageBox::critical(this, tr("Switch Time (minutes)"), tr("Can not accept number"));
+     return;
+ }
 
-      //try {
-          travelTimeTextField->text().toInt(&ok);
-      if(!ok)
-      {
+ //try {
+     travelTimeTextField->text().toInt(&ok);
+ if(!ok)
+ {
 //          JOptionPane.showMessageDialog(this, tr("TravelTime"), Bundle
 //                  .getMessage("CanNotAcceptNumber"), JOptionPane.ERROR_MESSAGE);
-         QMessageBox::critical(this, tr("Travel Time (minutes)"), tr("CanNotAcceptNumber"));
-          return;
-      }
+    QMessageBox::critical(this, tr("Travel Time (minutes)"), tr("CanNotAcceptNumber"));
+     return;
+ }
 
-      //try {
-          if (yearTextField->text().trimmed()!=(""))
-          {
-           yearTextField->text().trimmed().toInt(&ok);
-          }
-      if(!ok) {
+ //try {
+     if (yearTextField->text().trimmed()!=(""))
+     {
+      yearTextField->text().trimmed().toInt(&ok);
+     }
+ if(!ok) {
 //          JOptionPane.showMessageDialog(this, tr("BorderLayoutYearModeled"), Bundle
 //                  .getMessage("CanNotAcceptNumber"), JOptionPane.ERROR_MESSAGE);
-         QMessageBox::critical(this, tr("Optional Year Modeled"), tr("Can not accept number"));
-          return;
-      }
+    QMessageBox::critical(this, tr("Optional Year Modeled"), tr("Can not accept number"));
+     return;
+ }
 
-      // if max train length has changed, check routes
-      checkRoutes();
+ // if max train length has changed, check routes
+ checkRoutes();
 
-      // set car types
-      if (typeDesc->isChecked() && Setup::getCarTypes()!=(Setup::DESCRIPTIVE) || typeAAR->isChecked()
-              && Setup::getCarTypes()!=(Setup::AAR)) {
+ // set car types
+ if (typeDesc->isChecked() && Setup::getCarTypes()!=(Setup::DESCRIPTIVE) || typeAAR->isChecked()
+         && Setup::getCarTypes()!=(Setup::AAR)) {
 
-          // backup files before changing car type descriptions
-          AutoBackup* backup = new AutoBackup();
-          //try {
-              backup->autoBackup();
+     // backup files before changing car type descriptions
+     AutoBackup* backup = new AutoBackup();
+     //try {
+         backup->autoBackup();
 //          } catch (Exception ex) {
 //              UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,
 //                      "Auto backup before changing Car types"); // NOI18N
 //              new ExceptionDisplayFrame(context);
 //          }
 
-          if (typeDesc->isChecked()) {
-              CarTypes::instance()->changeDefaultNames(Setup::DESCRIPTIVE);
-              Setup::setCarTypes(Setup::DESCRIPTIVE);
-          } else {
-              CarTypes::instance()->changeDefaultNames(Setup::AAR);
-              Setup::setCarTypes(Setup::AAR);
-          }
+     if (typeDesc->isChecked()) {
+         CarTypes::instance()->changeDefaultNames(Setup::DESCRIPTIVE);
+         Setup::setCarTypes(Setup::DESCRIPTIVE);
+     } else {
+         CarTypes::instance()->changeDefaultNames(Setup::AAR);
+         Setup::setCarTypes(Setup::AAR);
+     }
 
-          // save all the modified files
-          OperationsXml::save();
-      }
-      // main menu enabled?
-      Setup::setMainMenuEnabled(mainMenuCheckBox->isChecked());
-      Setup::setCloseWindowOnSaveEnabled(closeOnSaveCheckBox->isChecked());
-      Setup::setAutoSaveEnabled(autoSaveCheckBox->isChecked());
-      Setup::setAutoBackupEnabled(autoBackupCheckBox->isChecked());
+     // save all the modified files
+     OperationsXml::save();
+ }
+ // main menu enabled?
+ Setup::setMainMenuEnabled(mainMenuCheckBox->isChecked());
+ Setup::setCloseWindowOnSaveEnabled(closeOnSaveCheckBox->isChecked());
+ Setup::setAutoSaveEnabled(autoSaveCheckBox->isChecked());
+ Setup::setAutoBackupEnabled(autoBackupCheckBox->isChecked());
 
-      // add panel name to setup
-      Setup::setPanelName(panelTextField->text());
+ // add panel name to setup
+ Setup::setPanelName(panelTextField->text());
 
-      // train Icon X&Y
-      Setup::setTrainIconCordEnabled(iconCheckBox->isChecked());
-      Setup::setTrainIconAppendEnabled(appendCheckBox->isChecked());
+ // train Icon X&Y
+ Setup::setTrainIconCordEnabled(iconCheckBox->isChecked());
+ Setup::setTrainIconAppendEnabled(appendCheckBox->isChecked());
 
-      // save train icon colors
-      Setup::setTrainIconColorNorth( northComboBox->currentText());
-      Setup::setTrainIconColorSouth( southComboBox->currentText());
-      Setup::setTrainIconColorEast( eastComboBox->currentText());
-      Setup::setTrainIconColorWest( westComboBox->currentText());
-      Setup::setTrainIconColorLocal( localComboBox->currentText());
-      Setup::setTrainIconColorTerminate( terminateComboBox->currentText());
-      // set train direction
-      int direction = 0;
-      if (eastCheckBox->isChecked()) {
-          direction = Setup::EAST + Setup::WEST;
-      }
-      if (northCheckBox->isChecked()) {
-          direction += Setup::NORTH + Setup::SOUTH;
-      }
-      Setup::setTrainDirection(direction);
-      Setup::setMaxNumberEngines(maxEngineSizeTextField->text().toInt());
-      Setup::setHorsePowerPerTon(hptTextField->text().toInt());
-      // set switch time
-      Setup::setSwitchTime(switchTimeTextField->text().toInt());
-      // set travel time
-      Setup::setTravelTime(travelTimeTextField->text().toInt());
-      // set scale
-      if (scaleZ->isChecked()) {
-          Setup::setScale(Setup::Z_SCALE);
-      }
-      if (scaleN->isChecked()) {
-          Setup::setScale(Setup::N_SCALE);
-      }
-      if (scaleTT->isChecked()) {
-          Setup::setScale(Setup::TT_SCALE);
-      }
-      if (scaleOO->isChecked()) {
-          Setup::setScale(Setup::OO_SCALE);
-      }
-      if (scaleHOn3->isChecked()) {
-          Setup::setScale(Setup::HOn3_SCALE);
-      }
-      if (scaleHO->isChecked()) {
-          Setup::setScale(Setup::HO_SCALE);
-      }
-      if (scaleSn3->isChecked()) {
-          Setup::setScale(Setup::Sn3_SCALE);
-      }
-      if (scaleS->isChecked()) {
-          Setup::setScale(Setup::S_SCALE);
-      }
-      if (scaleOn3->isChecked()) {
-          Setup::setScale(Setup::On3_SCALE);
-      }
-      if (scaleO->isChecked()) {
-          Setup::setScale(Setup::O_SCALE);
-      }
-      if (scaleG->isChecked()) {
-          Setup::setScale(Setup::G_SCALE);
-      }
-      Setup::setRailroadName(railroadNameTextField->text());
-#if 0
-      if (!Setup::getRailroadName()==(WebServerManager.getWebServerPreferences().getRailRoadName())) {
-          int results = JOptionPane.showConfirmDialog(this, MessageFormat.format(Bundle
-                  .getMessage("ChangeRailroadName"), new Object[]{
-                      WebServerManager.getWebServerPreferences().getRailRoadName(), Setup::getRailroadName()}), Bundle
-                  .getMessage("ChangeJMRIRailroadName"), JOptionPane.YES_NO_OPTION);
-          if (results == JOptionPane.OK_OPTION) {
-              WebServerManager.getWebServerPreferences().setRailRoadName(Setup::getRailroadName());
-              WebServerManager.getWebServerPreferences().save();
-          }
-      }
+ // save train icon colors
+ Setup::setTrainIconColorNorth( northComboBox->currentText());
+ Setup::setTrainIconColorSouth( southComboBox->currentText());
+ Setup::setTrainIconColorEast( eastComboBox->currentText());
+ Setup::setTrainIconColorWest( westComboBox->currentText());
+ Setup::setTrainIconColorLocal( localComboBox->currentText());
+ Setup::setTrainIconColorTerminate( terminateComboBox->currentText());
+ // set train direction
+ int direction = 0;
+ if (eastCheckBox->isChecked()) {
+     direction = Setup::EAST + Setup::WEST;
+ }
+ if (northCheckBox->isChecked()) {
+     direction += Setup::NORTH + Setup::SOUTH;
+ }
+ Setup::setTrainDirection(direction);
+ Setup::setMaxNumberEngines(maxEngineSizeTextField->text().toInt());
+ Setup::setHorsePowerPerTon(hptTextField->text().toInt());
+ // set switch time
+ Setup::setSwitchTime(switchTimeTextField->text().toInt());
+ // set travel time
+ Setup::setTravelTime(travelTimeTextField->text().toInt());
+ // set scale
+ if (scaleZ->isChecked()) {
+     Setup::setScale(Setup::Z_SCALE);
+ }
+ if (scaleN->isChecked()) {
+     Setup::setScale(Setup::N_SCALE);
+ }
+ if (scaleTT->isChecked()) {
+     Setup::setScale(Setup::TT_SCALE);
+ }
+ if (scaleOO->isChecked()) {
+     Setup::setScale(Setup::OO_SCALE);
+ }
+ if (scaleHOn3->isChecked()) {
+     Setup::setScale(Setup::HOn3_SCALE);
+ }
+ if (scaleHO->isChecked()) {
+     Setup::setScale(Setup::HO_SCALE);
+ }
+ if (scaleSn3->isChecked()) {
+     Setup::setScale(Setup::Sn3_SCALE);
+ }
+ if (scaleS->isChecked()) {
+     Setup::setScale(Setup::S_SCALE);
+ }
+ if (scaleOn3->isChecked()) {
+     Setup::setScale(Setup::On3_SCALE);
+ }
+ if (scaleO->isChecked()) {
+     Setup::setScale(Setup::O_SCALE);
+ }
+ if (scaleG->isChecked()) {
+     Setup::setScale(Setup::G_SCALE);
+ }
+ Setup::setRailroadName(railroadNameTextField->text());
+#if 1
+ if (Setup::getRailroadName() != (WebServerPreferences::getDefault()->getRailRoadName()))
+ {
+  Setup::setRailroadName(railroadNameTextField->text());
+  int results = JOptionPane::showConfirmDialog(this, tr("Do you want the change your railroad name from \"%1\" to \"%2\"?").arg(           WebServerPreferences::getDefault()->getRailRoadName()).arg( Setup::getRailroadName()), tr("Change your JMRI railroad name?"), JOptionPane::YES_NO_OPTION);
+  if (results == JOptionPane::OK_OPTION)
+  {
+      WebServerPreferences::getDefault()->setRailRoadName(Setup::getRailroadName());
+      WebServerPreferences::getDefault()->save();
+  }
+}
 #endif
-      // Set Unit of Length
-      if (feetUnit->isChecked()) {
-          Setup::setLengthUnit(Setup::FEET);
-      }
-      if (meterUnit->isChecked()) {
-          Setup::setLengthUnit(Setup::METER);
-      }
-      Setup::setYearModeled(yearTextField->text().trimmed());
-      // warn about train length being too short
-      if (maxTrainLength != Setup::getMaxTrainLength()) {
-          if (maxTrainLength < 500 && Setup::getLengthUnit()==(Setup::FEET) || maxTrainLength < 160
-                  && Setup::getLengthUnit()==(Setup::METER)) {
+ // Set Unit of Length
+ if (feetUnit->isChecked()) {
+     Setup::setLengthUnit(Setup::FEET);
+ }
+ if (meterUnit->isChecked()) {
+     Setup::setLengthUnit(Setup::METER);
+ }
+ Setup::setYearModeled(yearTextField->text().trimmed());
+ // warn about train length being too short
+ if (maxTrainLength != Setup::getMaxTrainLength()) {
+     if (maxTrainLength < 500 && Setup::getLengthUnit()==(Setup::FEET) || maxTrainLength < 160
+             && Setup::getLengthUnit()==(Setup::METER)) {
 //              JOptionPane.showMessageDialog(this, MessageFormat.format(tr("LimitTrainLength"),
 //                      new Object[]{maxTrainLength, Setup::getLengthUnit().toLowerCase()}), Bundle
 //                      .getMessage("WarningTooShort"), JOptionPane.WARNING_MESSAGE);
-           QMessageBox::warning(this, tr("Warning train length might be too short!"), tr("Are you sure that you want to limit your trains to %1 scale %2?").arg(maxTrainLength).arg(Setup::getLengthUnit().toLower()));
-          }
-      }
-      // set max train length
-      Setup::setMaxTrainLength(maxLengthTextField->text().toInt());
-      Setup::setComment(commentTextArea->toHtml());
+      QMessageBox::warning(this, tr("Warning train length might be too short!"), tr("Are you sure that you want to limit your trains to %1 scale %2?").arg(maxTrainLength).arg(Setup::getLengthUnit().toLower()));
+     }
+ }
+ // set max train length
+ Setup::setMaxTrainLength(maxLengthTextField->text().toInt());
+ Setup::setComment(commentTextArea->toHtml());
 
-      OperationsSetupXml::instance()->writeOperationsFile();
-      if (Setup::isCloseWindowOnSaveEnabled() && qobject_cast<OperationsSetupFrame*>(this->getTopLevelAncestor()) ) {
-          ((OperationsSetupFrame*) this->getTopLevelAncestor())->dispose();
-      }
-
-  }
+ OperationsSetupXml::instance()->writeOperationsFile();
+ if (Setup::isCloseWindowOnSaveEnabled() && qobject_cast<OperationsSetupFrame*>(this->getTopLevelAncestor()) ) {
+     ((OperationsSetupFrame*) this->getTopLevelAncestor())->dispose();
+ }
+}
 
  // if max train length has changed, check routes
  /*private*/ void OperationsSetupPanel::checkRoutes()

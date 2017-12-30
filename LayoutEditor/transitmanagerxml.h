@@ -13,6 +13,7 @@ public:
  /*public*/ void setStoreElementClass(QDomElement  transits);
  /*public*/ void load(QDomElement  element, QObject* o) throw (Exception);
  /*public*/ bool load(QDomElement  sharedTransits, QDomElement  perNodeTransits);
+ /*public*/ bool load(QDomElement  sharedTransits) throw (Exception);
  /*public*/ void loadTransits(QDomElement  sharedTransits, QDomElement  perNodeTransits);
  /*public*/ int loadOrder();
 

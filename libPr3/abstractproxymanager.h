@@ -87,19 +87,19 @@ public:
     /**
      * Get a list of all system names.
      */
-    /*public*/ QStringList getSystemNameList();
-    /*public*/ QStringList getUserNameList();
-    /*private java.util.ArrayList*/QList<AbstractManager*>* mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
+    /*public*/ virtual QStringList getSystemNameList();
+    /*public*/ virtual QStringList getUserNameList();
+    /*private java.util.ArrayList*/QList<Manager*>* mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
 
 signals:
-    void propertyChange(PropertyChangeEvent *e);
+    virtual void propertyChange(PropertyChangeEvent *e);
 public slots:
-    void on_propertyChange(PropertyChangeEvent *e);
+    virtual void on_propertyChange(PropertyChangeEvent *e);
 
 private:
     Logger log;
-    /*private*/ virtual AbstractManager* getInternal();
-    /*private*/ AbstractManager* internalManager; //= null;
+    /*private*/ Manager* initInternal();
+    /*private*/ Manager* internalManager; //= null;
 
 protected:
     /**
@@ -107,9 +107,9 @@ protected:
      * getManager(i) and getManagerList(),
      * including the Internal manager
      */
-    /*protected*/ int nMgrs();
-    /*protected*/ AbstractManager* getMgr(int index);
-    virtual /*abstract protected*/ AbstractManager* makeInternalManager() const /*=0*/;
+    /*protected*/ virtual int nMgrs();
+    /*protected*/ virtual Manager* getMgr(int index);
+    virtual /*abstract protected*/ Manager* makeInternalManager() const /*=0*/;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new NamedBean: If the name
@@ -122,24 +122,24 @@ protected:
      * @param name
      * @return Never null under normal circumstances
      */
-    /*protected*/ NamedBean* provideNamedBean(QString name);
+    /*protected*/ virtual NamedBean* provideNamedBean(QString name);
     /**
      * Defer creation of the proper type to the subclass
      * @param index Which manager to invoke
      */
-    virtual/*abstract protected*/ NamedBean* makeBean(int, QString systemName, QString userName) /*const*/ /*=0*/;
+    virtual/*abstract protected*/ NamedBean* makeBean(int, QString /*systemName*/, QString /*userName*/) /*const*/ /*=0*/;
     /**
      * Find the index of a matching manager.
      * Returns -1 if there is no match, which is not considered an
      * error
      */
-    /*protected*/ int matchTentative(QString systemname);
+    /*protected*/ virtual int matchTentative(QString /*systemname*/);
     /**
      * Find the index of a matching manager.
      * Throws IllegalArgumentException if there is no match,
      * here considered to be an error that must be reported.
      */
-    /*protected*/ int match(QString systemname);
+    /*protected*/ virtual int match(QString systemname);
 
  friend class ProxyReporterManager;
  friend class ProxySensorManager;

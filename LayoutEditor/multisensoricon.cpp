@@ -159,6 +159,7 @@ MultiSensorIconEntry::MultiSensorIconEntry(NamedIcon *icon, NamedBeanHandle<Sens
   //_editor.repaint();
   //_editor->addToTarget((Positionable*)this);
   updateScene();
+  _itemGroup->setName("MultiSensorItem");
  }
 }
 
@@ -520,3 +521,7 @@ bool MultiSensorIcon::buttonLive() {
     PositionableLabel::dispose();
 }
 
+/*public*/ QString MultiSensorIcon::getGroupName()
+{
+ return "MultiSensorItem";
+}

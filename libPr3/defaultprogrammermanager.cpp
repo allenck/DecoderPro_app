@@ -1,8 +1,10 @@
 #include "defaultprogrammermanager.h"
 #include "programmingmode.h"
+#include "programmer.h"
 
 DefaultProgrammerManager::DefaultProgrammerManager(QObject* parent) :ProgrammerManager(parent)
 {
+ setObjectName("DefaultProgrammerManager");
  mProgrammer = NULL;
 }
 /**
@@ -104,10 +106,10 @@ DefaultProgrammerManager::DefaultProgrammerManager(QObject* parent) :ProgrammerM
 
 /*public*/ Programmer* DefaultProgrammerManager::getGlobalProgrammer()
 {
- if (log.isDebugEnabled()) log.debug("return default service-mode programmer");
+ if (log.isDebugEnabled()) log.debug(tr("return default service-mode programmer of type %1").arg(mProgrammer != NULL ? mProgrammer->metaObject()->className() : "(null)"));
   return mProgrammer;
 }
-/*public*/ Programmer* DefaultProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
+/*public*/ AddressedProgrammer* DefaultProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
 Q_UNUSED(pLongAddress)
 Q_UNUSED(pAddress)
     return NULL;

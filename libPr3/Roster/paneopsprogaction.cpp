@@ -41,7 +41,7 @@
 //        this("DecoderPro ops-mode programmer");
 //    }
 
-/*public*/ PaneOpsProgAction::PaneOpsProgAction(QString s, QObject* parent ) : QAction(s, parent)
+/*public*/ PaneOpsProgAction::PaneOpsProgAction(QString s, QObject* parent ) : AbstractAction(s, parent)
 {
  //super(s);
  log = new Logger("PaneOpsProgAction");
@@ -60,7 +60,7 @@
  connect(this, SIGNAL(triggered()),this, SLOT(actionPerformed()));
 }
 
-/*public*/ void PaneOpsProgAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void PaneOpsProgAction::actionPerformed()
 {
 
  if (log->isDebugEnabled()) log->debug("Pane programmer requested");

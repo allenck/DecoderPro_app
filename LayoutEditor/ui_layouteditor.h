@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'layouteditor.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -699,121 +699,121 @@ public:
 
     void retranslateUi(QMainWindow *LayoutEditor)
     {
-        LayoutEditor->setWindowTitle(QApplication::translate("LayoutEditor", "MyLayoutEditor", 0));
-        actionSave_panels->setText(QApplication::translate("LayoutEditor", "Save panels ...", 0));
-        actionDelete_this_panel->setText(QApplication::translate("LayoutEditor", "Delete this panel ...", 0));
-        actionEdit_mode->setText(QApplication::translate("LayoutEditor", "Edit mode", 0));
-        actionAllow_repositioning->setText(QApplication::translate("LayoutEditor", "Allow repositioning", 0));
-        actionAllow_layout_control->setText(QApplication::translate("LayoutEditor", "Allow layout control", 0));
-        actionAllow_turnout_animation->setText(QApplication::translate("LayoutEditor", "Allow turnout animation", 0));
-        actionShow_help_bar_in_edit_mode->setText(QApplication::translate("LayoutEditor", "Show help bar in edit mode", 0));
-        actionShow_grid_in_edit_mode->setText(QApplication::translate("LayoutEditor", "Show grid in edit mode", 0));
-        actionSnap_to_grid_when_adding->setText(QApplication::translate("LayoutEditor", "Snap to grid when adding", 0));
-        actionSnap_to_grid_when_moving->setText(QApplication::translate("LayoutEditor", "Snap to grid when moving", 0));
-        actionBoth_scrollbars->setText(QApplication::translate("LayoutEditor", "Both scrollbars", 0));
-        actionNo_scrollbars->setText(QApplication::translate("LayoutEditor", "No scrollbars", 0));
-        actionHorizontal_only->setText(QApplication::translate("LayoutEditor", "Horizontal only", 0));
-        actionVertical_only->setText(QApplication::translate("LayoutEditor", "Vertical only", 0));
-        actionNever->setText(QApplication::translate("LayoutEditor", "Never", 0));
-        actionAlways->setText(QApplication::translate("LayoutEditor", "Always", 0));
-        actionIn_edit_mode_only->setText(QApplication::translate("LayoutEditor", "In edit mode only", 0));
-        actionNot_in_edit_mode_only->setText(QApplication::translate("LayoutEditor", "Not in edit mode only", 0));
-        actionShow_turnout_circles->setText(QApplication::translate("LayoutEditor", "Show turnout circles", 0));
-        actionEnable_antialiasing_smoother_lines->setText(QApplication::translate("LayoutEditor", "Enable antialiasing (smoother lines)", 0));
-        actionNew_title->setText(QApplication::translate("LayoutEditor", "New title ...", 0));
-        actionNo_zoom->setText(QApplication::translate("LayoutEditor", "No zoom", 0));
-        actionX_1_5->setText(QApplication::translate("LayoutEditor", "x 1.5", 0));
-        actionX_2_0->setText(QApplication::translate("LayoutEditor", "x 2.0", 0));
-        actionX_3_0->setText(QApplication::translate("LayoutEditor", "x 3.0", 0));
-        actionX_4_0->setText(QApplication::translate("LayoutEditor", "x 4.0", 0));
-        actionAdd_loco->setText(QApplication::translate("LayoutEditor", "Add loco...", 0));
-        actionAdd_loco_from_roster->setText(QApplication::translate("LayoutEditor", "Add loco from roster...", 0));
-        actionRemove_markers->setText(QApplication::translate("LayoutEditor", "Remove markers", 0));
-        actionEdit_track_width->setText(QApplication::translate("LayoutEditor", "Edit track width", 0));
-        actionAdd_reporter_label->setText(QApplication::translate("LayoutEditor", "Add reporter label", 0));
-        actionPlaceholder->setText(QApplication::translate("LayoutEditor", "placeholder", 0));
-        actionPlaceholder_2->setText(QApplication::translate("LayoutEditor", "Placeholder", 0));
-        actionAdd_background_image_2->setText(QApplication::translate("LayoutEditor", "Add background image", 0));
-        actionLoad_xl->setText(QApplication::translate("LayoutEditor", "Load XML", 0));
-        actionLoad_XML->setText(QApplication::translate("LayoutEditor", "Load XML", 0));
-        actionPlaceholder_3->setText(QApplication::translate("LayoutEditor", "placeholder", 0));
-        actionPlaceholder_4->setText(QApplication::translate("LayoutEditor", "placeholder", 0));
-        actionLoad_Other_Xml->setText(QApplication::translate("LayoutEditor", "Load Other XML", 0));
-        actionLoad_Other_XML->setText(QApplication::translate("LayoutEditor", "Load Other XML", 0));
-        actionSave->setText(QApplication::translate("LayoutEditor", "Save", 0));
-        actionSave_as->setText(QApplication::translate("LayoutEditor", "Save as...", 0));
-        actionScale_Translate_track_diagram->setText(QApplication::translate("LayoutEditor", "Scale/Translate Track Diagram...", 0));
-        actionTranslate_Selection->setText(QApplication::translate("LayoutEditor", "Translate Selection", 0));
-        actionUndo_Translate_Selection->setText(QApplication::translate("LayoutEditor", "Undo Translate Selection", 0));
-        actionUse_Program_Default_Turnout_size->setText(QApplication::translate("LayoutEditor", "Use Program Default Turnout size", 0));
-        actionSkip_unsignalled_Internal_Turnouts->setText(QApplication::translate("LayoutEditor", "Skip Unsignalled Internal Turnouts", 0));
-        actionSet_Signals_at_Turnout->setText(QApplication::translate("LayoutEditor", "Set Signals at Turnout...", 0));
-        actionSet_Signals_at_Block_Boundary->setText(QApplication::translate("LayoutEditor", "Set Signals at Block Boundary...", 0));
-        actionSet_Signals_at_Crossover->setText(QApplication::translate("LayoutEditor", "Set Signals at Crossover...", 0));
-        actionSet_Signals_at_Level_Crossing->setText(QApplication::translate("LayoutEditor", "Set Signals at Level Crossing...", 0));
-        actionSet_SIgnals_at_Throat_to_Throat_Turnouts->setText(QApplication::translate("LayoutEditor", "Set SIgnals at Throat to Throat Turnouts...", 0));
-        actionSet_Signals_at_Three_Way_Turnout->setText(QApplication::translate("LayoutEditor", "Set Signals at 3-Way Turnout...", 0));
-        actionSet_Signals_at_a_Slip->setText(QApplication::translate("LayoutEditor", "Set Signals at a Slip...", 0));
-        actionEntry_Exit->setText(QApplication::translate("LayoutEditor", "Entry Exit...", 0));
-        actionAdd_Fast_Clock->setText(QApplication::translate("LayoutEditor", "Add Fast Clock", 0));
-        actionInit->setText(QApplication::translate("LayoutEditor", "Init", 0));
-        actionMoveLayout->setText(QApplication::translate("LayoutEditor", "MoveLayout", 0));
-        actionAdd_Turntable->setText(QApplication::translate("LayoutEditor", "Add Turntable", 0));
-        label->setText(QApplication::translate("LayoutEditor", "Location -x: ", 0));
-        label_2->setText(QApplication::translate("LayoutEditor", "y:", 0));
-        label_3->setText(QApplication::translate("LayoutEditor", "Turnout: Name", 0));
-        label_11->setText(QApplication::translate("LayoutEditor", "Additional Name", 0));
-        label_4->setText(QApplication::translate("LayoutEditor", "Type", 0));
-        chkRH->setText(QApplication::translate("LayoutEditor", "RH", 0));
-        chkLH->setText(QApplication::translate("LayoutEditor", "LH", 0));
-        chkWYE->setText(QApplication::translate("LayoutEditor", "WYE", 0));
-        chkDoubleXover->setText(QApplication::translate("LayoutEditor", "Double Xover", 0));
-        chkRHXover->setText(QApplication::translate("LayoutEditor", "RH Xover", 0));
-        chkLHXover->setText(QApplication::translate("LayoutEditor", "LH Xover", 0));
-        chkSingleSlip->setText(QApplication::translate("LayoutEditor", "Single Slip", 0));
-        chkDoubleSlip->setText(QApplication::translate("LayoutEditor", "DoubleSlip", 0));
-        label_5->setText(QApplication::translate("LayoutEditor", "Rotation", 0));
-        label_6->setText(QApplication::translate("LayoutEditor", "Block: Name", 0));
-        label_7->setText(QApplication::translate("LayoutEditor", "Occupancy Sensor", 0));
-        label_8->setText(QApplication::translate("LayoutEditor", "Track:", 0));
-        chkLevelCrossing->setText(QApplication::translate("LayoutEditor", "Level Crossing", 0));
-        chkTrackSegment->setText(QApplication::translate("LayoutEditor", "Track Segment", 0));
-        chkDashed->setText(QApplication::translate("LayoutEditor", "Dashed", 0));
-        chkMainline->setText(QApplication::translate("LayoutEditor", "Mainline", 0));
-        label_9->setText(QApplication::translate("LayoutEditor", "Track Nodes:", 0));
-        chkEndBumper->setText(QApplication::translate("LayoutEditor", "End Bumper", 0));
-        chkAnchorPoint->setText(QApplication::translate("LayoutEditor", "Anchor Point", 0));
-        label_10->setText(QApplication::translate("LayoutEditor", "Labels: ", 0));
-        chkTextLabel->setText(QApplication::translate("LayoutEditor", "Text Label", 0));
-        chkMemoryLabel->setText(QApplication::translate("LayoutEditor", "Memory Label", 0));
-        chkMultisensor->setText(QApplication::translate("LayoutEditor", "Multi-sensor", 0));
+        LayoutEditor->setWindowTitle(QApplication::translate("LayoutEditor", "MyLayoutEditor", Q_NULLPTR));
+        actionSave_panels->setText(QApplication::translate("LayoutEditor", "Save panels ...", Q_NULLPTR));
+        actionDelete_this_panel->setText(QApplication::translate("LayoutEditor", "Delete this panel ...", Q_NULLPTR));
+        actionEdit_mode->setText(QApplication::translate("LayoutEditor", "Edit mode", Q_NULLPTR));
+        actionAllow_repositioning->setText(QApplication::translate("LayoutEditor", "Allow repositioning", Q_NULLPTR));
+        actionAllow_layout_control->setText(QApplication::translate("LayoutEditor", "Allow layout control", Q_NULLPTR));
+        actionAllow_turnout_animation->setText(QApplication::translate("LayoutEditor", "Allow turnout animation", Q_NULLPTR));
+        actionShow_help_bar_in_edit_mode->setText(QApplication::translate("LayoutEditor", "Show help bar in edit mode", Q_NULLPTR));
+        actionShow_grid_in_edit_mode->setText(QApplication::translate("LayoutEditor", "Show grid in edit mode", Q_NULLPTR));
+        actionSnap_to_grid_when_adding->setText(QApplication::translate("LayoutEditor", "Snap to grid when adding", Q_NULLPTR));
+        actionSnap_to_grid_when_moving->setText(QApplication::translate("LayoutEditor", "Snap to grid when moving", Q_NULLPTR));
+        actionBoth_scrollbars->setText(QApplication::translate("LayoutEditor", "Both scrollbars", Q_NULLPTR));
+        actionNo_scrollbars->setText(QApplication::translate("LayoutEditor", "No scrollbars", Q_NULLPTR));
+        actionHorizontal_only->setText(QApplication::translate("LayoutEditor", "Horizontal only", Q_NULLPTR));
+        actionVertical_only->setText(QApplication::translate("LayoutEditor", "Vertical only", Q_NULLPTR));
+        actionNever->setText(QApplication::translate("LayoutEditor", "Never", Q_NULLPTR));
+        actionAlways->setText(QApplication::translate("LayoutEditor", "Always", Q_NULLPTR));
+        actionIn_edit_mode_only->setText(QApplication::translate("LayoutEditor", "In edit mode only", Q_NULLPTR));
+        actionNot_in_edit_mode_only->setText(QApplication::translate("LayoutEditor", "Not in edit mode only", Q_NULLPTR));
+        actionShow_turnout_circles->setText(QApplication::translate("LayoutEditor", "Show turnout circles", Q_NULLPTR));
+        actionEnable_antialiasing_smoother_lines->setText(QApplication::translate("LayoutEditor", "Enable antialiasing (smoother lines)", Q_NULLPTR));
+        actionNew_title->setText(QApplication::translate("LayoutEditor", "New title ...", Q_NULLPTR));
+        actionNo_zoom->setText(QApplication::translate("LayoutEditor", "No zoom", Q_NULLPTR));
+        actionX_1_5->setText(QApplication::translate("LayoutEditor", "x 1.5", Q_NULLPTR));
+        actionX_2_0->setText(QApplication::translate("LayoutEditor", "x 2.0", Q_NULLPTR));
+        actionX_3_0->setText(QApplication::translate("LayoutEditor", "x 3.0", Q_NULLPTR));
+        actionX_4_0->setText(QApplication::translate("LayoutEditor", "x 4.0", Q_NULLPTR));
+        actionAdd_loco->setText(QApplication::translate("LayoutEditor", "Add loco...", Q_NULLPTR));
+        actionAdd_loco_from_roster->setText(QApplication::translate("LayoutEditor", "Add loco from roster...", Q_NULLPTR));
+        actionRemove_markers->setText(QApplication::translate("LayoutEditor", "Remove markers", Q_NULLPTR));
+        actionEdit_track_width->setText(QApplication::translate("LayoutEditor", "Edit track width", Q_NULLPTR));
+        actionAdd_reporter_label->setText(QApplication::translate("LayoutEditor", "Add reporter label", Q_NULLPTR));
+        actionPlaceholder->setText(QApplication::translate("LayoutEditor", "placeholder", Q_NULLPTR));
+        actionPlaceholder_2->setText(QApplication::translate("LayoutEditor", "Placeholder", Q_NULLPTR));
+        actionAdd_background_image_2->setText(QApplication::translate("LayoutEditor", "Add background image", Q_NULLPTR));
+        actionLoad_xl->setText(QApplication::translate("LayoutEditor", "Load XML", Q_NULLPTR));
+        actionLoad_XML->setText(QApplication::translate("LayoutEditor", "Load XML", Q_NULLPTR));
+        actionPlaceholder_3->setText(QApplication::translate("LayoutEditor", "placeholder", Q_NULLPTR));
+        actionPlaceholder_4->setText(QApplication::translate("LayoutEditor", "placeholder", Q_NULLPTR));
+        actionLoad_Other_Xml->setText(QApplication::translate("LayoutEditor", "Load Other XML", Q_NULLPTR));
+        actionLoad_Other_XML->setText(QApplication::translate("LayoutEditor", "Load Other XML", Q_NULLPTR));
+        actionSave->setText(QApplication::translate("LayoutEditor", "Save", Q_NULLPTR));
+        actionSave_as->setText(QApplication::translate("LayoutEditor", "Save as...", Q_NULLPTR));
+        actionScale_Translate_track_diagram->setText(QApplication::translate("LayoutEditor", "Scale/Translate Track Diagram...", Q_NULLPTR));
+        actionTranslate_Selection->setText(QApplication::translate("LayoutEditor", "Translate Selection", Q_NULLPTR));
+        actionUndo_Translate_Selection->setText(QApplication::translate("LayoutEditor", "Undo Translate Selection", Q_NULLPTR));
+        actionUse_Program_Default_Turnout_size->setText(QApplication::translate("LayoutEditor", "Use Program Default Turnout size", Q_NULLPTR));
+        actionSkip_unsignalled_Internal_Turnouts->setText(QApplication::translate("LayoutEditor", "Skip Unsignalled Internal Turnouts", Q_NULLPTR));
+        actionSet_Signals_at_Turnout->setText(QApplication::translate("LayoutEditor", "Set Signals at Turnout...", Q_NULLPTR));
+        actionSet_Signals_at_Block_Boundary->setText(QApplication::translate("LayoutEditor", "Set Signals at Block Boundary...", Q_NULLPTR));
+        actionSet_Signals_at_Crossover->setText(QApplication::translate("LayoutEditor", "Set Signals at Crossover...", Q_NULLPTR));
+        actionSet_Signals_at_Level_Crossing->setText(QApplication::translate("LayoutEditor", "Set Signals at Level Crossing...", Q_NULLPTR));
+        actionSet_SIgnals_at_Throat_to_Throat_Turnouts->setText(QApplication::translate("LayoutEditor", "Set SIgnals at Throat to Throat Turnouts...", Q_NULLPTR));
+        actionSet_Signals_at_Three_Way_Turnout->setText(QApplication::translate("LayoutEditor", "Set Signals at 3-Way Turnout...", Q_NULLPTR));
+        actionSet_Signals_at_a_Slip->setText(QApplication::translate("LayoutEditor", "Set Signals at a Slip...", Q_NULLPTR));
+        actionEntry_Exit->setText(QApplication::translate("LayoutEditor", "Entry Exit...", Q_NULLPTR));
+        actionAdd_Fast_Clock->setText(QApplication::translate("LayoutEditor", "Add Fast Clock", Q_NULLPTR));
+        actionInit->setText(QApplication::translate("LayoutEditor", "Init", Q_NULLPTR));
+        actionMoveLayout->setText(QApplication::translate("LayoutEditor", "MoveLayout", Q_NULLPTR));
+        actionAdd_Turntable->setText(QApplication::translate("LayoutEditor", "Add Turntable", Q_NULLPTR));
+        label->setText(QApplication::translate("LayoutEditor", "Location -x: ", Q_NULLPTR));
+        label_2->setText(QApplication::translate("LayoutEditor", "y:", Q_NULLPTR));
+        label_3->setText(QApplication::translate("LayoutEditor", "Turnout: Name", Q_NULLPTR));
+        label_11->setText(QApplication::translate("LayoutEditor", "Additional Name", Q_NULLPTR));
+        label_4->setText(QApplication::translate("LayoutEditor", "Type", Q_NULLPTR));
+        chkRH->setText(QApplication::translate("LayoutEditor", "RH", Q_NULLPTR));
+        chkLH->setText(QApplication::translate("LayoutEditor", "LH", Q_NULLPTR));
+        chkWYE->setText(QApplication::translate("LayoutEditor", "WYE", Q_NULLPTR));
+        chkDoubleXover->setText(QApplication::translate("LayoutEditor", "Double Xover", Q_NULLPTR));
+        chkRHXover->setText(QApplication::translate("LayoutEditor", "RH Xover", Q_NULLPTR));
+        chkLHXover->setText(QApplication::translate("LayoutEditor", "LH Xover", Q_NULLPTR));
+        chkSingleSlip->setText(QApplication::translate("LayoutEditor", "Single Slip", Q_NULLPTR));
+        chkDoubleSlip->setText(QApplication::translate("LayoutEditor", "DoubleSlip", Q_NULLPTR));
+        label_5->setText(QApplication::translate("LayoutEditor", "Rotation", Q_NULLPTR));
+        label_6->setText(QApplication::translate("LayoutEditor", "Block: Name", Q_NULLPTR));
+        label_7->setText(QApplication::translate("LayoutEditor", "Occupancy Sensor", Q_NULLPTR));
+        label_8->setText(QApplication::translate("LayoutEditor", "Track:", Q_NULLPTR));
+        chkLevelCrossing->setText(QApplication::translate("LayoutEditor", "Level Crossing", Q_NULLPTR));
+        chkTrackSegment->setText(QApplication::translate("LayoutEditor", "Track Segment", Q_NULLPTR));
+        chkDashed->setText(QApplication::translate("LayoutEditor", "Dashed", Q_NULLPTR));
+        chkMainline->setText(QApplication::translate("LayoutEditor", "Mainline", Q_NULLPTR));
+        label_9->setText(QApplication::translate("LayoutEditor", "Track Nodes:", Q_NULLPTR));
+        chkEndBumper->setText(QApplication::translate("LayoutEditor", "End Bumper", Q_NULLPTR));
+        chkAnchorPoint->setText(QApplication::translate("LayoutEditor", "Anchor Point", Q_NULLPTR));
+        label_10->setText(QApplication::translate("LayoutEditor", "Labels: ", Q_NULLPTR));
+        chkTextLabel->setText(QApplication::translate("LayoutEditor", "Text Label", Q_NULLPTR));
+        chkMemoryLabel->setText(QApplication::translate("LayoutEditor", "Memory Label", Q_NULLPTR));
+        chkMultisensor->setText(QApplication::translate("LayoutEditor", "Multi-sensor", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnChange->setToolTip(QApplication::translate("LayoutEditor", "<html><head/><body><p>Click to change icons used to represent sensors, signal head or label (whichever is checked at the right).</p></body></html>", 0));
+        btnChange->setToolTip(QApplication::translate("LayoutEditor", "<html><head/><body><p>Click to change icons used to represent sensors, signal head or label (whichever is checked at the right).</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnChange->setText(QApplication::translate("LayoutEditor", "Change Icons...", 0));
-        chkSensorIcon->setText(QApplication::translate("LayoutEditor", "Sensor Icon", 0));
-        chkSignalHeadIcon->setText(QApplication::translate("LayoutEditor", "Signal Head Icon", 0));
-        chkSignalMastIcon->setText(QApplication::translate("LayoutEditor", "SignalMast Icon", 0));
+        btnChange->setText(QApplication::translate("LayoutEditor", "Change Icons...", Q_NULLPTR));
+        chkSensorIcon->setText(QApplication::translate("LayoutEditor", "Sensor Icon", Q_NULLPTR));
+        chkSignalHeadIcon->setText(QApplication::translate("LayoutEditor", "Signal Head Icon", Q_NULLPTR));
+        chkSignalMastIcon->setText(QApplication::translate("LayoutEditor", "SignalMast Icon", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        edSignalMastIcon->setToolTip(QApplication::translate("LayoutEditor", "<html><head/><body><p>Select to add a signal mast icon when next clicking with shift down.</p></body></html>", 0));
+        edSignalMastIcon->setToolTip(QApplication::translate("LayoutEditor", "<html><head/><body><p>Select to add a signal mast icon when next clicking with shift down.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        chkIconLabel->setText(QApplication::translate("LayoutEditor", "Icon Label", 0));
+        chkIconLabel->setText(QApplication::translate("LayoutEditor", "Icon Label", Q_NULLPTR));
         textEdit->setHtml(QApplication::translate("LayoutEditor", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", 0));
-        menuFile->setTitle(QApplication::translate("LayoutEditor", "File", 0));
-        menuOptions->setTitle(QApplication::translate("LayoutEditor", "Options", 0));
-        menuShow_scrollbars->setTitle(QApplication::translate("LayoutEditor", "Show scrollbars", 0));
-        menuShow_icon_tooltips->setTitle(QApplication::translate("LayoutEditor", "Show icon tooltips", 0));
-        menuSet_Background_color->setTitle(QApplication::translate("LayoutEditor", "Set Background color", 0));
-        menuSet_default_track_color->setTitle(QApplication::translate("LayoutEditor", "Set default track color", 0));
-        menuSet_default_text_color->setTitle(QApplication::translate("LayoutEditor", "Set default text color", 0));
-        menuTools->setTitle(QApplication::translate("LayoutEditor", "Tools", 0));
-        menuZoom->setTitle(QApplication::translate("LayoutEditor", "Zoom", 0));
-        menuMarker->setTitle(QApplication::translate("LayoutEditor", "Marker", 0));
-        menuWindow->setTitle(QApplication::translate("LayoutEditor", "Window", 0));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", Q_NULLPTR));
+        menuFile->setTitle(QApplication::translate("LayoutEditor", "File", Q_NULLPTR));
+        menuOptions->setTitle(QApplication::translate("LayoutEditor", "Options", Q_NULLPTR));
+        menuShow_scrollbars->setTitle(QApplication::translate("LayoutEditor", "Show scrollbars", Q_NULLPTR));
+        menuShow_icon_tooltips->setTitle(QApplication::translate("LayoutEditor", "Show icon tooltips", Q_NULLPTR));
+        menuSet_Background_color->setTitle(QApplication::translate("LayoutEditor", "Set Background color", Q_NULLPTR));
+        menuSet_default_track_color->setTitle(QApplication::translate("LayoutEditor", "Set default track color", Q_NULLPTR));
+        menuSet_default_text_color->setTitle(QApplication::translate("LayoutEditor", "Set default text color", Q_NULLPTR));
+        menuTools->setTitle(QApplication::translate("LayoutEditor", "Tools", Q_NULLPTR));
+        menuZoom->setTitle(QApplication::translate("LayoutEditor", "Zoom", Q_NULLPTR));
+        menuMarker->setTitle(QApplication::translate("LayoutEditor", "Marker", Q_NULLPTR));
+        menuWindow->setTitle(QApplication::translate("LayoutEditor", "Window", Q_NULLPTR));
     } // retranslateUi
 
 };

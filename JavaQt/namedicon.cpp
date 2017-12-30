@@ -81,7 +81,7 @@
   log->warn("Could not load image from " + pUrl + " (file does not exist)");
  }
 
- mURL = FileUtil::getPortableFilename(pUrl);
+ mURL = /*FileUtil::getPortableFilename(pUrl);*/ u.path();
  mDefaultImage = getImage();
  if (mDefaultImage.isNull())
  {

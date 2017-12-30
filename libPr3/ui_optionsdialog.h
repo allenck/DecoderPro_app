@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'optionsdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -54,10 +54,10 @@ public:
 
     void retranslateUi(QDialog *OptionsDialog)
     {
-        OptionsDialog->setWindowTitle(QApplication::translate("OptionsDialog", "Dialog", 0));
-        label->setText(QApplication::translate("OptionsDialog", "TextLabel", 0));
-        btnOK->setText(QApplication::translate("OptionsDialog", "OK", 0));
-        btnCancel->setText(QApplication::translate("OptionsDialog", "Cancel", 0));
+        OptionsDialog->setWindowTitle(QApplication::translate("OptionsDialog", "Dialog", Q_NULLPTR));
+        label->setText(QApplication::translate("OptionsDialog", "TextLabel", Q_NULLPTR));
+        btnOK->setText(QApplication::translate("OptionsDialog", "OK", Q_NULLPTR));
+        btnCancel->setText(QApplication::translate("OptionsDialog", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -21,7 +21,6 @@ SOURCES += libpref.cpp \
     programmerconfigpane.cpp \
     performfilepanel.cpp \
     performfilemodel.cpp \
-    performactionpanel.cpp \
     performactionmodel.cpp \
     rosterconfigpane.cpp \
     managerdefaultsconfigpanexml.cpp \
@@ -29,7 +28,6 @@ SOURCES += libpref.cpp \
     connectionconfigframe.cpp \
     guilocalepreferencespanel.cpp \
     guilafconfigpane.cpp \
-    abstractactionpanel.cpp \
     abstractactionmodel.cpp \
     filelocationpane.cpp \
     jmrixconfigpane.cpp \
@@ -50,20 +48,20 @@ SOURCES += libpref.cpp \
     profilemanagerdialog.cpp \
     profilelistmodel.cpp \
     performscriptpanel.cpp \
-    addprofiledialog.cpp \
     warrantpreferencespanel.cpp \
-    performactionpanelxml.cpp \
     performfilepanelxml.cpp \
     performscriptpanelxml.cpp \
     connectionspreferencespanel.cpp \
     managingpreferencespanel.cpp \
-    abstractwithrottlepreferences.cpp \
     warrantpreferences.cpp \
     warrantroute.cpp \
     nxframe.cpp \
     jmrixconfigpanexml.cpp \
     routefinder.cpp \
-    calibrater.cpp
+    calibrater.cpp \
+    webserverpreferences.cpp \
+    webserverpreferencespanel.cpp \
+    startupactionspreferencespanel.cpp
 
 
 HEADERS += libpref.h\
@@ -79,12 +77,10 @@ HEADERS += libpref.h\
     programmerconfigpane.h \
     performfilepanel.h \
     performfilemodel.h \
-    performactionpanel.h \
     performactionmodel.h \
     managerdefaultsconfigpanexml.h \
     managerdefaultsconfigpane.h \
     connectionconfigframe.h \
-    abstractactionpanel.h \
     abstractactionmodel.h \
     guilocalepreferencespanel.h \
     guilafconfigpane.h \
@@ -109,21 +105,20 @@ HEADERS += libpref.h\
     profilemanagerdialog.h \
     profilelistmodel.h \
     performscriptpanel.h \
-    addprofiledialog.h \
     warrantpreferencespanel.h \
-    performactionpanelxml.h \
     performfilepanelxml.h \
     performscriptpanelxml.h \
     connectionspreferencespanel.h \
     managingpreferencespanel.h \
-    abstractwithrottlepreferences.h \
     warrantpreferences.h \
     warrantroute.h \
     nxframe.h \
     jmrixconfigpanexml.h \
     routefinder.h \
     calibrater.h \
-    sortorder.h
+    webserverpreferences.h \
+    webserverpreferencespanel.h \
+    startupactionspreferencespanel.h
 
 
 unix:!symbian {
@@ -149,8 +144,8 @@ DEPENDPATH += $$PWD/../ftdilib
 INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
 
-INCLUDEPATH += $$PWD/../LocoNetMonitor
-DEPENDPATH += $$PWD/../LocoNetMonitor
+#INCLUDEPATH += $$PWD/../LocoNetMonitor
+#DEPENDPATH += $$PWD/../LocoNetMonitor
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3

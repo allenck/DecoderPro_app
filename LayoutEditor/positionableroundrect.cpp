@@ -28,7 +28,8 @@
 {
  //super(editor, shape);
  _radius = 10;
- _itemGroup = new QGraphicsItemGroup();
+ _itemGroup = new MyGraphicsItemGroup();
+ _itemGroup->setName("PositionableRoundRect");
  _shape = new JShape();
  setObjectName("PositionableRoundRect");
 

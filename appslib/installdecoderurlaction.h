@@ -4,6 +4,7 @@
 #include "jmriabstractaction.h"
 #include "appslib_global.h"
 
+class QDomElement;
 class File;
 class APPSLIBSHARED_EXPORT InstallDecoderURLAction : public JmriAbstractAction
 {
@@ -14,6 +15,7 @@ public:
  Q_INVOKABLE /*public*/ InstallDecoderURLAction(QString s, QIcon i, WindowInterface* wi);
  Q_INVOKABLE /*public*/ InstallDecoderURLAction(QString s, QObject* parent =0);
  Q_INVOKABLE /*public*/ InstallDecoderURLAction(QString s, QWidget* who);
+ QDomElement readFile(QUrl* url); /*throw (JDOMException, IOException)*/
  /*public*/ JmriPanel* makePanel();
 
 signals:
@@ -28,7 +30,7 @@ private:
  void copyAndInstall(QUrl* from, QWidget* who);
  bool copyfile(QUrl* from, File* toFile, QWidget* who);
  bool checkFile(QUrl* url, QWidget* who);
- QUrl* pickURL(QWidget* who);
+ virtual QUrl* pickURL(QWidget* who);
 
 };
 

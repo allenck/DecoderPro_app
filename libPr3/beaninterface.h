@@ -38,7 +38,7 @@ public:
      * @param index index of the property element to change
      * @param value the value to set the property to
      */
-    /*public*/ virtual  void setIndexedProperty(QString /*key*/, int /*index*/, QObject* value) {}
+    /*public*/ virtual  void setIndexedProperty(QString /*key*/, int /*index*/, QObject* /*value*/) {}
 
     /**
      * Get the value of an element in an indexed property.

@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+class PropertyChangeEvent;
+class TransitSection;
 class Logger;
 class Block;
 class EventListenerList;
@@ -27,6 +29,11 @@ public:
  /*public*/ void setNextSectionSequence(int i);
  /*public*/ bool getEntered();
  /*public*/ bool getExited();
+ /*public*/ int getDirection();
+ /*public*/ int getLength();
+ /*public*/ void reset();
+ /*public*/ /*synchronized*/ void dispose();
+
 signals:
 
 public slots:
@@ -48,15 +55,28 @@ private:
 
 
  // instance variables used with automatic running of trains
- /*private*/ int mIndex = 0;
+ /*private*/ int mIndex;// = 0;
  /*private*/ PropertyChangeListener* mExitSignalListener;// = NULL;
  /*private*/ QList<PropertyChangeListener*>* mBlockListeners;// = new QList<PropertyChangeListener*>();
  /*private*/ QVector<Block*>* mBlockList;// = NULL;
  /*private*/ QList<Block*>* mActiveBlockList;// = new ArrayList<jmri.Block>();
 
+private slots:
+ /*private*/ /*synchronized*/ void handleBlockChange(int index, PropertyChangeEvent* e);
+
+
 protected:
  /*protected*/ bool setNextSection(Section* sec, int i);
+ /*protected*/ TransitSection* getTransitSection();
+ /*protected*/ Block* getExitBlock();
+ /*protected*/ Block* getEnterBlock(AllocatedSection* previousAllocatedSection);
+ /*protected*/ /*synchronized*/ void addToActiveBlockList(Block* b);
+ /*protected*/ /*synchronized*/ void removeFromActiveBlockList(Block* b) ;
+ /*protected*/ /*synchronized*/ bool isInActiveBlockList(Block* b);
+ /*protected*/ void firePropertyChangeEvent(PropertyChangeEvent* evt);
+ /*protected*/ void firePropertyChangeEvent(QString name, QVariant oldVal, QVariant newVal);
 
+ friend class AutoActiveTrain;
 };
 
 #endif // ALLOCATEDSECTION_H

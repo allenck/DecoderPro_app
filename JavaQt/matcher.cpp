@@ -1,9 +1,12 @@
 #include "matcher.h"
 #include <QString>
+#include "exceptions.h"
+//#include "pattern.h"
+#include <QMap>
 
-Matcher::Matcher()
-{
-}
+//Matcher::Matcher()
+//{
+//}
 #if 0
 /**
  * An engine that performs match operations on a {@linkplain java.lang.CharSequence
@@ -82,131 +85,47 @@ Matcher::Matcher()
 
 //public final class Matcher implements MatchResult {
 
-/**
- * The Pattern object that created this Matcher.
- */
-Pattern parentPattern;
-
-/**
- * The storage used by groups. They may contain invalid values if
- * a group was skipped during the matching.
- */
-int[] groups;
-
-/**
- * The range within the sequence that is to be matched. Anchors
- * will match at these "hard" boundaries. Changing the region
- * changes these values.
- */
-int from, to;
-
-/**
- * Lookbehind uses this value to ensure that the subexpression
- * match ends at the point where the lookbehind was encountered.
- */
-int lookbehindTo;
-
-/**
- * The original string being matched.
- */
-CharSequence text;
-
+#endif
+#if 0
 /**
  * Matcher state used by the last node. NOANCHOR is used when a
  * match does not have to consume all of the input. ENDANCHOR is
  * the mode used for matching all the input.
  */
-static final int ENDANCHOR = 1;
-static final int NOANCHOR = 0;
-int acceptMode = NOANCHOR;
+/*static*/ /*final*/ int Matcher::ENDANCHOR = 1;
+/*static*/ /*final*/ int Matcher::NOANCHOR = 0;
 
-/**
- * The range of string that last matched the pattern. If the last
- * match failed then first is -1; last initially holds 0 then it
- * holds the index of the end of the last match (which is where the
- * next search starts).
- */
-int first = -1, last = 0;
-
-/**
- * The end index of what matched in the last match operation.
- */
-int oldLast = -1;
-
-/**
- * The index of the last position appended in a substitution.
- */
-int lastAppendPosition = 0;
-
-/**
- * Storage used by nodes to tell what repetition they are on in
- * a pattern, and where groups begin. The nodes themselves are stateless,
- * so they rely on this field to hold state during a match.
- */
-int[] locals;
-
-/**
- * Boolean indicating whether or not more input could change
- * the results of the last match.
- *
- * If hitEnd is true, and a match was found, then more input
- * might cause a different match to be found.
- * If hitEnd is true and a match was not found, then more
- * input could cause a match to be found.
- * If hitEnd is false and a match was found, then more input
- * will not change the match.
- * If hitEnd is false and a match was not found, then more
- * input will not cause a match to be found.
- */
-boolean hitEnd;
-
-/**
- * Boolean indicating whether or not more input could change
- * a positive match into a negative one.
- *
- * If requireEnd is true, and a match was found, then more
- * input could cause the match to be lost.
- * If requireEnd is false and a match was found, then more
- * input might change the match but the match won't be lost.
- * If a match was not found, then requireEnd has no meaning.
- */
-boolean requireEnd;
-
-/**
- * If transparentBounds is true then the boundaries of this
- * matcher's region are transparent to lookahead, lookbehind,
- * and boundary matching constructs that try to see beyond them.
- */
-boolean transparentBounds = false;
-
-/**
- * If anchoringBounds is true then the boundaries of this
- * matcher's region match anchors such as ^ and $.
- */
-boolean anchoringBounds = true;
 
 /**
  * No default constructor.
  */
-Matcher() {
+Matcher::Matcher() {
 }
 
 /**
  * All matchers have the state used by Pattern during a match.
  */
-Matcher(Pattern parent, CharSequence text) {
-    this.parentPattern = parent;
-    this.text = text;
+Matcher::Matcher(Pattern* parent, CharSequence* text)
+{
+ first = -1,
+ last = 0;
+ oldLast = -1;
+ lastAppendPosition = 0;
+ transparentBounds = false;
+ anchoringBounds = true;
+
+    this->parentPattern = parent;
+    this->text = text;
 
     // Allocate state storage
-    int parentGroupCount = Math.max(parent.capturingGroupCount, 10);
-    groups = new int[parentGroupCount * 2];
-    locals = new int[parent.localCount];
+    int parentGroupCount = qMax(parent->capturingGroupCount, 10);
+    groups = new QVector<int>(parentGroupCount * 2);
+    locals = new QVector<int>(parent->localCount);
 
     // Put fields into initial states
     reset();
 }
-
+#if 0
 /**
  * Returns the pattern that is interpreted by this matcher.
  *
@@ -225,10 +144,10 @@ public Pattern pattern() {
  * @since 1.5
  */
 public MatchResult toMatchResult() {
-    Matcher result = new Matcher(this.parentPattern, text.toString());
-    result.first = this.first;
-    result.last = this.last;
-    result.groups = this.groups.clone();
+    Matcher result = new Matcher(this->parentPattern, text.toString());
+    result.first = this->first;
+    result.last = this->last;
+    result.groups = this->groups.clone();
     return result;
 }
 
@@ -263,7 +182,7 @@ public Matcher usePattern(Pattern newPattern) {
         locals[i] = -1;
     return this;
 }
-
+#endif
 /**
  * Resets this matcher.
  *
@@ -274,20 +193,20 @@ public Matcher usePattern(Pattern newPattern) {
  *
  * @return  This matcher
  */
-public Matcher reset() {
+/*public*/ Matcher* Matcher::reset() {
     first = -1;
     last = 0;
     oldLast = -1;
-    for(int i=0; i<groups.length; i++)
-        groups[i] = -1;
-    for(int i=0; i<locals.length; i++)
-        locals[i] = -1;
+    for(int i=0; i<groups->length(); i++)
+        groups->replace(i, -1);
+    for(int i=0; i<locals->length(); i++)
+        locals->replace(i,-1);
     lastAppendPosition = 0;
     from = 0;
     to = getTextLength();
     return this;
 }
-
+#if 0
 /**
  * Resets this matcher with a new input sequence.
  *
@@ -306,7 +225,7 @@ public Matcher reset(CharSequence input) {
     text = input;
     return reset();
 }
-
+#endif
 /**
  * Returns the start index of the previous match.
  *
@@ -316,7 +235,7 @@ public Matcher reset(CharSequence input) {
  *          If no match has yet been attempted,
  *          or if the previous match operation failed
  */
-public int start() {
+/*public*/ int Matcher::start() {
     if (first < 0)
         throw new IllegalStateException("No match available");
     return first;
@@ -346,12 +265,12 @@ public int start() {
  *          If there is no capturing group in the pattern
  *          with the given index
  */
-public int start(int group) {
+/*public*/ int Matcher::start(int group) {
     if (first < 0)
         throw new IllegalStateException("No match available");
     if (group < 0 || group > groupCount())
         throw new IndexOutOfBoundsException("No group " + group);
-    return groups[group * 2];
+    return groups->at(group * 2);
 }
 
 /**
@@ -375,8 +294,8 @@ public int start(int group) {
  *          with the given name
  * @since 1.8
  */
-public int start(String name) {
-    return groups[getMatchedGroupIndex(name) * 2];
+/*public*/ int Matcher::start(QString name) {
+    return groups->at(getMatchedGroupIndex(name) * 2);
 }
 
 /**
@@ -388,7 +307,7 @@ public int start(String name) {
  *          If no match has yet been attempted,
  *          or if the previous match operation failed
  */
-public int end() {
+/*public*/ int Matcher::end() {
     if (first < 0)
         throw new IllegalStateException("No match available");
     return last;
@@ -418,12 +337,12 @@ public int end() {
  *          If there is no capturing group in the pattern
  *          with the given index
  */
-public int end(int group) {
+/*public*/ int Matcher::end(int group) {
     if (first < 0)
         throw new IllegalStateException("No match available");
     if (group < 0 || group > groupCount())
         throw new IndexOutOfBoundsException("No group " + group);
-    return groups[group * 2 + 1];
+    return groups->at(group * 2 + 1);
 }
 
 /**
@@ -447,10 +366,10 @@ public int end(int group) {
  *          with the given name
  * @since 1.8
  */
-public int end(String name) {
-    return groups[getMatchedGroupIndex(name) * 2 + 1];
+/*public*/ int Matcher::end(QString name) {
+    return groups->at(getMatchedGroupIndex(name) * 2 + 1);
 }
-
+#if 0
 /**
  * Returns the input subsequence matched by the previous match.
  *
@@ -552,7 +471,7 @@ public String group(String name) {
         return null;
     return getSubSequence(groups[group * 2], groups[group * 2 + 1]).toString();
 }
-
+#endif
 /**
  * Returns the number of capturing groups in this matcher's pattern.
  *
@@ -565,8 +484,8 @@ public String group(String name) {
  *
  * @return The number of capturing groups in this matcher's pattern
  */
-public int groupCount() {
-    return parentPattern.capturingGroupCount - 1;
+/*public*/ int Matcher::groupCount() {
+    return parentPattern->capturingGroupCount - 1;
 }
 
 /**
@@ -578,7 +497,7 @@ public int groupCount() {
  * @return  <tt>true</tt> if, and only if, the entire region sequence
  *          matches this matcher's pattern
  */
-public boolean matches() {
+/*public*/ bool Matcher::matches() {
     return match(from, ENDANCHOR);
 }
 
@@ -597,7 +516,7 @@ public boolean matches() {
  * @return  <tt>true</tt> if, and only if, a subsequence of the input
  *          sequence matches this matcher's pattern
  */
-public boolean find() {
+/*public*/ bool Matcher::find() {
     int nextSearchIndex = last;
     if (nextSearchIndex == first)
         nextSearchIndex++;
@@ -608,8 +527,8 @@ public boolean find() {
 
     // If next search starts beyond region then it fails
     if (nextSearchIndex > to) {
-        for (int i = 0; i < groups.length; i++)
-            groups[i] = -1;
+        for (int i = 0; i < groups->length(); i++)
+            groups->replace(i, -1);
         return false;
     }
     return search(nextSearchIndex);
@@ -634,7 +553,7 @@ public boolean find() {
  *          sequence starting at the given index matches this matcher's
  *          pattern
  */
-public boolean find(int start) {
+/*public*/ bool Matcher::find(int start) {
     int limit = getTextLength();
     if ((start < 0) || (start > limit))
         throw new IndexOutOfBoundsException("Illegal start index");
@@ -656,7 +575,7 @@ public boolean find(int start) {
  * @return  <tt>true</tt> if, and only if, a prefix of the input
  *          sequence matches this matcher's pattern
  */
-public boolean lookingAt() {
+/*public*/ bool Matcher::lookingAt() {
     return match(from, NOANCHOR);
 }
 #endif
@@ -691,6 +610,7 @@ public boolean lookingAt() {
  }
  return sb/*.toString()*/;
 }
+#if 0
 #if 0
 /**
  * Implements a non-terminal append-and-replace step.
@@ -1203,7 +1123,7 @@ public boolean hitEnd() {
 public boolean requireEnd() {
     return requireEnd;
 }
-
+#endif
 /**
  * Initiates a search to find a Pattern within the given bounds.
  * The groups are filled with default values and the match of the root
@@ -1217,19 +1137,19 @@ public boolean requireEnd() {
  * calls to the search methods start at a new "soft" boundary which is
  * the end of the previous match.
  */
-boolean search(int from) {
-    this.hitEnd = false;
-    this.requireEnd = false;
+bool Matcher::search(int from) {
+    this->hitEnd = false;
+    this->requireEnd = false;
     from        = from < 0 ? 0 : from;
-    this.first  = from;
-    this.oldLast = oldLast < 0 ? from : oldLast;
-    for (int i = 0; i < groups.length; i++)
-        groups[i] = -1;
+    this->first  = from;
+    this->oldLast = oldLast < 0 ? from : oldLast;
+    for (int i = 0; i < groups->length(); i++)
+        groups->replace(i, -1);
     acceptMode = NOANCHOR;
-    boolean result = parentPattern.root.match(this, from, text);
+    bool result = parentPattern->root->match(this, from, text);
     if (!result)
-        this.first = -1;
-    this.oldLast = this.last;
+        this->first = -1;
+    this->oldLast = this->last;
     return result;
 }
 
@@ -1239,19 +1159,19 @@ boolean search(int from) {
  * root of the state machine is called. The state machine will hold the
  * state of the match as it proceeds in this matcher.
  */
-boolean match(int from, int anchor) {
-    this.hitEnd = false;
-    this.requireEnd = false;
+bool Matcher::match(int from, int anchor) {
+    this->hitEnd = false;
+    this->requireEnd = false;
     from        = from < 0 ? 0 : from;
-    this.first  = from;
-    this.oldLast = oldLast < 0 ? from : oldLast;
-    for (int i = 0; i < groups.length; i++)
-        groups[i] = -1;
+    this->first  = from;
+    this->oldLast = oldLast < 0 ? from : oldLast;
+    for (int i = 0; i < groups->length(); i++)
+        groups->replace(i, -1);
     acceptMode = anchor;
-    boolean result = parentPattern.matchRoot.match(this, from, text);
+    bool result = parentPattern->matchRoot->match(this, from, text);
     if (!result)
-        this.first = -1;
-    this.oldLast = this.last;
+        this->first = -1;
+    this->oldLast = this->last;
     return result;
 }
 
@@ -1260,10 +1180,10 @@ boolean match(int from, int anchor) {
  *
  * @return the index after the last character in the text
  */
-int getTextLength() {
-    return text.length();
+int Matcher::getTextLength() {
+    return text->length();
 }
-
+#if 0
 /**
  * Generates a String from this Matcher's input in the specified range.
  *
@@ -1283,19 +1203,20 @@ CharSequence getSubSequence(int beginIndex, int endIndex) {
 char charAt(int i) {
     return text.charAt(i);
 }
-
+#endif
 /**
  * Returns the group index of the matched capturing group.
  *
  * @return the index of the named-capturing group
  */
-int getMatchedGroupIndex(String name) {
-    Objects.requireNonNull(name, "Group name");
+int Matcher::getMatchedGroupIndex(QString name) {
+    //Objects.requireNonNull(name, "Group name");
     if (first < 0)
         throw new IllegalStateException("No match found");
-    if (!parentPattern.namedGroups().containsKey(name))
+    if (!parentPattern->namedGroups.contains(name))
         throw new IllegalArgumentException("No group with name <" + name + ">");
-    return parentPattern.namedGroups().get(name);
+    return parentPattern->namedGroups.value(name);
 }
 //}
+
 #endif

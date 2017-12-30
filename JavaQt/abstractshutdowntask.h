@@ -8,7 +8,7 @@ class JAVAQTSHARED_EXPORT AbstractShutDownTask : public ShutDownTask
 public:
     //explicit AbstractShutDownTask(QObject *parent = 0);
     /*public*/ AbstractShutDownTask(QString name,QObject *parent = 0);
-    /*public*/ QString name();
+    /*public*/ QString getName();
 
 signals:
     

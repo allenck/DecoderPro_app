@@ -23,6 +23,7 @@ public:
     /*public*/ PanelEditor(QString name, QWidget *parent=0);
 
     ~PanelEditor();
+ PanelEditor(const PanelEditor&) :Editor() {}
     /*public*/ bool _debug;
 public slots:
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
@@ -111,5 +112,5 @@ protected:
 
  friend class PositionableLabel;
 };
-
+Q_DECLARE_METATYPE(PanelEditor)
 #endif // PANELEDITOR_H

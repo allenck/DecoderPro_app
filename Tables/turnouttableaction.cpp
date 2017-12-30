@@ -751,7 +751,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 
 //@Override
 /*public*/ void TurnoutTableDataModel::configureTable(JTable* tbl) {
-    table = tbl; //??
+    _table = tbl; //??
     self->table = tbl;
 
 //    table.setDefaultRenderer(bool.class, new EnablingCheckboxRenderer());
@@ -760,8 +760,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //    setColumnToHoldButton(table,TurnoutTableAction::OPSEDITCOL,editButton());
 //    setColumnToHoldButton(table,TurnoutTableAction::EDITCOL,editButton());
     //Hide the following columns by default
-    XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
-    table->createDefaultColumnsFromModel();
+    XTableColumnModel* columnModel = (XTableColumnModel*)_table->getColumnModel();
+    _table->createDefaultColumnsFromModel();
 #if 1
     TableColumn* column  = columnModel->getColumnByModelIndex(STRAIGHTCOL);
     columnModel->setColumnVisible(column, false);
@@ -784,22 +784,22 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     column  = columnModel->getColumnByModelIndex(LOCKDECCOL);
     columnModel->setColumnVisible(column, false);
 #endif
-    setColumnToHoldButton(table, EDITCOL);
-    setColumnToHoldDelegate(table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), self));
-    setColumnToHoldDelegate(table, SENSOR1COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
-    setColumnToHoldDelegate(table, SENSOR2COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
-    setColumnToHoldDelegate(table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), self));
-    setColumnToHoldDelegate(table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), self));
-    setColumnToHoldDelegate(table, LOCKOPRCOL, new TTComboBoxDelegate(self->lockOperations, self));
-    setColumnToHoldDelegate(table, STRAIGHTCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self,true));
-    setColumnToHoldDelegate(table, DIVERGCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self, true));
-    setColumnToHoldDelegate(table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),self));
+    setColumnToHoldButton(_table, EDITCOL);
+    setColumnToHoldDelegate(_table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), self));
+    setColumnToHoldDelegate(_table, SENSOR1COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
+    setColumnToHoldDelegate(_table, SENSOR2COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
+    setColumnToHoldDelegate(_table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), self));
+    setColumnToHoldDelegate(_table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), self));
+    setColumnToHoldDelegate(_table, LOCKOPRCOL, new TTComboBoxDelegate(self->lockOperations, self));
+    setColumnToHoldDelegate(_table, STRAIGHTCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self,true));
+    setColumnToHoldDelegate(_table, DIVERGCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self, true));
+    setColumnToHoldDelegate(_table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),self));
   self->showFeedbackChanged();
   self->showLockChanged();
   self->showTurnoutSpeedChanged();
   self->On_doAutomationBox_toggled(false);
 
-  BeanTableDataModel::configureTable(table);
+  BeanTableDataModel::configureTable(_table);
 }
 
 // update table if turnout lock or feedback changes
@@ -1528,7 +1528,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 }
 void TurnoutTableAction::On_doAutomationBox_toggled(bool b)
 {
- TurnoutOperationManager::getInstance()->setDoOperations(b);
+ TurnoutOperationManager::getInstance()->setDoOperations(doAutomationBox->isChecked());
 }
 
 void TurnoutTableAction::showFeedbackChanged()

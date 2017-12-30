@@ -198,7 +198,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
 
   if (s==NULL)
   {
-   creationErrorEncountered (Level::WARNING,
+   creationErrorEncountered (Level::_ERROR,
                                   "Could not create sensor",
                                   sysName,userName,NULL);
    result = false;

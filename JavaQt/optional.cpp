@@ -1,4 +1,6 @@
 #include "optional.h"
+#include "exceptions.h"
+#include "consumer.h"
 
 //Optional::Optional(QObject *parent) : QObject(parent)
 //{
@@ -27,7 +29,8 @@
 /**
  * Common instance for {@code empty()}.
  */
-/*private*/ /*static*/ /*final*/ Optional* Optional::EMPTY = new Optional();
+template<class T>
+/*private*/ /*static*/ /*final*/ Optional<T>* Optional<T>::EMPTY = new Optional();
 
 
 /**
@@ -36,7 +39,8 @@
  * @implNote Generally only one empty instance, {@link Optional#EMPTY},
  * should exist per VM.
  */
-/*private*/ Optional::Optional(QObject* parent) : QObject(parent) {
+template<class T>
+/*private*/ Optional<T>::Optional(QObject* parent) : QObject(parent) {
     this->value = NULL;
 }
 
@@ -53,7 +57,7 @@
  * @return an empty {@code Optional}
  */
  template <class T>
-/*public*/ /*static<T>*/ Optional::Optional<T> empty() {
+/*public*/ /*static<T>*/ Optional<T> Optional<T>::empty() {
    // @SuppressWarnings("unchecked")
     Optional<T> t = (Optional<T>) Optional::EMPTY;
     return t;
@@ -66,7 +70,7 @@
  * @throws NullPointerException if value is NULL
  */
  template <class T>
-/*private*/ Optional::Optional(T value) {
+/*private*/ Optional<T>::Optional(T* value) {
     this->value = /*Objects.requireNonNull*/(value);
 }
 #if 0
@@ -94,7 +98,7 @@
 /*public*/ static <T> Optional<T> ofNullable(T value) {
     return value == NULL ? empty() : of(value);
 }
-
+#endif
 /**
  * If a value is present in this {@code Optional}, returns the value,
  * otherwise throws {@code NoSuchElementException}.
@@ -104,7 +108,8 @@
  *
  * @see Optional#isPresent()
  */
-/*public*/ T get() {
+template<class T>
+/*public*/ T Optional<T>::get() {
     if (value == NULL) {
         throw new NoSuchElementException("No value present");
     }
@@ -116,7 +121,8 @@
  *
  * @return {@code true} if there is a value present, otherwise {@code false}
  */
-/*public*/ boolean isPresent() {
+template<class T>
+/*public*/ bool Optional<T>::isPresent() {
     return value != NULL;
 }
 
@@ -128,11 +134,12 @@
  * @throws NullPointerException if value is present and {@code consumer} is
  * NULL
  */
-/*public*/ void ifPresent(Consumer<? super T> consumer) {
+template<class T>
+/*public*/ void Optional<T>::ifPresent(Consumer</*? super*/ T>* consumer) {
     if (value != NULL)
-        consumer.accept(value);
+        consumer->accept(value);
 }
-
+#if 0
 /**
  * If a value is present, and the value matches the given predicate,
  * return an {@code Optional} describing the value, otherwise return an

@@ -1282,5 +1282,12 @@ void SlipTurnoutIcon::on_slipTurnoutTextEdit()
     s->setSlipNotBusy();
 }
 
+/*public*/ QString SlipTurnoutIcon::getGroupName()
+{
+ return "SlipTurnoutIcon";
+}
+
+
+
 //static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SetSlipThread.class.getName());
 

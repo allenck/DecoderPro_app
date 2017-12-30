@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'idtagswidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -89,24 +89,24 @@ public:
 
     void retranslateUi(QWidget *IdTagsWidget)
     {
-        IdTagsWidget->setWindowTitle(QApplication::translate("IdTagsWidget", "Form", 0));
-        btnAdd->setText(QApplication::translate("IdTagsWidget", "Add...", 0));
-        chkSaveWhen->setText(QApplication::translate("IdTagsWidget", "Save when and where last seen", 0));
-        chkFastClock->setText(QApplication::translate("IdTagsWidget", "Use Fast Clock Time", 0));
+        IdTagsWidget->setWindowTitle(QApplication::translate("IdTagsWidget", "Form", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("IdTagsWidget", "Add...", Q_NULLPTR));
+        chkSaveWhen->setText(QApplication::translate("IdTagsWidget", "Save when and where last seen", Q_NULLPTR));
+        chkFastClock->setText(QApplication::translate("IdTagsWidget", "Use Fast Clock Time", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("IdTagsWidget", "System Name", 0));
+        ___qtablewidgetitem->setText(QApplication::translate("IdTagsWidget", "System Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("IdTagsWidget", "User Name", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("IdTagsWidget", "User Name", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("IdTagsWidget", "Tag ID", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("IdTagsWidget", "Tag ID", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("IdTagsWidget", "Comment", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("IdTagsWidget", "Comment", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(5);
-        ___qtablewidgetitem4->setText(QApplication::translate("IdTagsWidget", "Where seen", 0));
+        ___qtablewidgetitem4->setText(QApplication::translate("IdTagsWidget", "Where seen", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem5 = tableWidget->horizontalHeaderItem(6);
-        ___qtablewidgetitem5->setText(QApplication::translate("IdTagsWidget", "When seen", 0));
+        ___qtablewidgetitem5->setText(QApplication::translate("IdTagsWidget", "When seen", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem6 = tableWidget->horizontalHeaderItem(8);
-        ___qtablewidgetitem6->setText(QApplication::translate("IdTagsWidget", "Roster Id", 0));
+        ___qtablewidgetitem6->setText(QApplication::translate("IdTagsWidget", "Roster Id", Q_NULLPTR));
     } // retranslateUi
 
 };

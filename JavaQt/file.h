@@ -108,6 +108,8 @@ private:
     /*private*/ File(QString child, File* parent, QObject* oparent = 0);
 
 friend class FileUtil;
+friend class FileUtilSupport;
+
 };
 
 #endif // FILE_H

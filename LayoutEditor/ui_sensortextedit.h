@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sensortextedit.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -114,19 +114,19 @@ public:
 
     void retranslateUi(QDialog *SensorTextEdit)
     {
-        SensorTextEdit->setWindowTitle(QApplication::translate("SensorTextEdit", "Set Text for Sensor States", 0));
-        labelName->setText(QApplication::translate("SensorTextEdit", "Name:", 0));
-        nameText->setText(QApplication::translate("SensorTextEdit", "xxxxx", 0));
-        textInact->setText(QApplication::translate("SensorTextEdit", "Inactive = Inactive", 0));
-        inactTextField->setText(QApplication::translate("SensorTextEdit", "Inactive", 0));
-        textAct->setText(QApplication::translate("SensorTextEdit", "Active = Active", 0));
-        actTextField->setText(QApplication::translate("SensorTextEdit", "Active", 0));
-        textIncon->setText(QApplication::translate("SensorTextEdit", "Inconsistent - <inconsistent>", 0));
-        inconTextField->setText(QApplication::translate("SensorTextEdit", "<inconsistent>", 0));
-        textUnknown->setText(QApplication::translate("SensorTextEdit", "Unknown= <unknown>", 0));
-        unknownTextField->setText(QApplication::translate("SensorTextEdit", "<unknown>", 0));
-        cancelButton->setText(QApplication::translate("SensorTextEdit", "Cancel", 0));
-        okButton->setText(QApplication::translate("SensorTextEdit", "Set", 0));
+        SensorTextEdit->setWindowTitle(QApplication::translate("SensorTextEdit", "Set Text for Sensor States", Q_NULLPTR));
+        labelName->setText(QApplication::translate("SensorTextEdit", "Name:", Q_NULLPTR));
+        nameText->setText(QApplication::translate("SensorTextEdit", "xxxxx", Q_NULLPTR));
+        textInact->setText(QApplication::translate("SensorTextEdit", "Inactive = Inactive", Q_NULLPTR));
+        inactTextField->setText(QApplication::translate("SensorTextEdit", "Inactive", Q_NULLPTR));
+        textAct->setText(QApplication::translate("SensorTextEdit", "Active = Active", Q_NULLPTR));
+        actTextField->setText(QApplication::translate("SensorTextEdit", "Active", Q_NULLPTR));
+        textIncon->setText(QApplication::translate("SensorTextEdit", "Inconsistent - <inconsistent>", Q_NULLPTR));
+        inconTextField->setText(QApplication::translate("SensorTextEdit", "<inconsistent>", Q_NULLPTR));
+        textUnknown->setText(QApplication::translate("SensorTextEdit", "Unknown= <unknown>", Q_NULLPTR));
+        unknownTextField->setText(QApplication::translate("SensorTextEdit", "<unknown>", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("SensorTextEdit", "Cancel", Q_NULLPTR));
+        okButton->setText(QApplication::translate("SensorTextEdit", "Set", Q_NULLPTR));
     } // retranslateUi
 
 };

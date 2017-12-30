@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addpaneleditordialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -223,48 +223,48 @@ public:
 
     void retranslateUi(QMainWindow *AddPanelEditorDialog)
     {
-        AddPanelEditorDialog->setWindowTitle(QApplication::translate("AddPanelEditorDialog", "Panel Editor", 0));
-        label->setText(QApplication::translate("AddPanelEditorDialog", "x:", 0));
-        label_2->setText(QApplication::translate("AddPanelEditorDialog", "y:", 0));
-        btnSetName->setText(QApplication::translate("AddPanelEditorDialog", "Set Panel Name", 0));
+        AddPanelEditorDialog->setWindowTitle(QApplication::translate("AddPanelEditorDialog", "Panel Editor", Q_NULLPTR));
+        label->setText(QApplication::translate("AddPanelEditorDialog", "x:", Q_NULLPTR));
+        label_2->setText(QApplication::translate("AddPanelEditorDialog", "y:", Q_NULLPTR));
+        btnSetName->setText(QApplication::translate("AddPanelEditorDialog", "Set Panel Name", Q_NULLPTR));
         label_3->setText(QString());
-        btnAddText->setText(QApplication::translate("AddPanelEditorDialog", "Add Text", 0));
-        label_4->setText(QApplication::translate("AddPanelEditorDialog", "Select the type of icon to add to panel", 0));
+        btnAddText->setText(QApplication::translate("AddPanelEditorDialog", "Add Text", Q_NULLPTR));
+        label_4->setText(QApplication::translate("AddPanelEditorDialog", "Select the type of icon to add to panel", Q_NULLPTR));
         cbType->clear();
         cbType->insertItems(0, QStringList()
          << QString()
-         << QApplication::translate("AddPanelEditorDialog", "Right Hand Turnout", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Left hand Turnout", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Slip/3-Way Turnout/Scissors", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Sensor", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Signal Head", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Signal Mast", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Memory", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Reporter", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Light", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Background", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Multisensor", 0)
-         << QApplication::translate("AddPanelEditorDialog", "RPS Reporter", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Fast Clock", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Icon", 0)
+         << QApplication::translate("AddPanelEditorDialog", "Right Hand Turnout", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Left hand Turnout", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Slip/3-Way Turnout/Scissors", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Sensor", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Signal Head", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Signal Mast", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Memory", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Reporter", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Light", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Background", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Multisensor", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "RPS Reporter", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Fast Clock", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Icon", Q_NULLPTR)
         );
-        chkPopup->setText(QApplication::translate("AddPanelEditorDialog", "Panel items popup menus active", 0));
-        chkReposition->setText(QApplication::translate("AddPanelEditorDialog", "All panel items can be repositioned", 0));
-        chkControlLayout->setText(QApplication::translate("AddPanelEditorDialog", "Panel items control layout", 0));
-        chkShowHidden->setText(QApplication::translate("AddPanelEditorDialog", "Show all hidden items ", 0));
-        chkShowTooltips->setText(QApplication::translate("AddPanelEditorDialog", "Show tooltips for all items", 0));
-        chkHasMenu->setText(QApplication::translate("AddPanelEditorDialog", "Panel has menu", 0));
-        label_5->setText(QApplication::translate("AddPanelEditorDialog", "Panel scrollbars", 0));
+        chkPopup->setText(QApplication::translate("AddPanelEditorDialog", "Panel items popup menus active", Q_NULLPTR));
+        chkReposition->setText(QApplication::translate("AddPanelEditorDialog", "All panel items can be repositioned", Q_NULLPTR));
+        chkControlLayout->setText(QApplication::translate("AddPanelEditorDialog", "Panel items control layout", Q_NULLPTR));
+        chkShowHidden->setText(QApplication::translate("AddPanelEditorDialog", "Show all hidden items ", Q_NULLPTR));
+        chkShowTooltips->setText(QApplication::translate("AddPanelEditorDialog", "Show tooltips for all items", Q_NULLPTR));
+        chkHasMenu->setText(QApplication::translate("AddPanelEditorDialog", "Panel has menu", Q_NULLPTR));
+        label_5->setText(QApplication::translate("AddPanelEditorDialog", "Panel scrollbars", Q_NULLPTR));
         cbScrollBars->clear();
         cbScrollBars->insertItems(0, QStringList()
-         << QApplication::translate("AddPanelEditorDialog", "No Scrollbars", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Both scrollbars", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Horizontal only", 0)
-         << QApplication::translate("AddPanelEditorDialog", "Vertical only", 0)
+         << QApplication::translate("AddPanelEditorDialog", "No Scrollbars", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Both scrollbars", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Horizontal only", Q_NULLPTR)
+         << QApplication::translate("AddPanelEditorDialog", "Vertical only", Q_NULLPTR)
         );
-        menuFile->setTitle(QApplication::translate("AddPanelEditorDialog", "File", 0));
-        menuWindow->setTitle(QApplication::translate("AddPanelEditorDialog", "Window", 0));
-        menuHelp->setTitle(QApplication::translate("AddPanelEditorDialog", "Help", 0));
+        menuFile->setTitle(QApplication::translate("AddPanelEditorDialog", "File", Q_NULLPTR));
+        menuWindow->setTitle(QApplication::translate("AddPanelEditorDialog", "Window", Q_NULLPTR));
+        menuHelp->setTitle(QApplication::translate("AddPanelEditorDialog", "Help", Q_NULLPTR));
     } // retranslateUi
 
 };

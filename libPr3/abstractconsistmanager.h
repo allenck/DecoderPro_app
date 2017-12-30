@@ -4,7 +4,7 @@
 #include <QHash>
 #include "libPr3_global.h"
 
-class LIBPR3SHARED_EXPORT AbstractConsistManager : public virtual ConsistManager
+class LIBPR3SHARED_EXPORT AbstractConsistManager : public ConsistManager
 {
     Q_OBJECT
 public:
@@ -56,7 +56,7 @@ public:
     /*public*/ virtual void notifyConsistListChanged();
 
 signals:
-    
+    void consistListChanged();
 public slots:
 private:
     /*private*/ QList<ConsistListListener*>* ChangeListeners ;

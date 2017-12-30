@@ -216,7 +216,7 @@ void RegistersWidget::on_edAddr_editingFinished()
   }
  }
  //ui->edAddr->setPalette(*data->pWhite);
- int currV2 = data->getV2(channel);
+ /*int currV2 =*/ data->getV2(channel);
 // int currCfg = data->getSV(channel);
  //data->setAddr(channel,val,data->ssWhite);
  LocoIOMode* lim = data->getLIM(channel);
@@ -256,7 +256,7 @@ void RegistersWidget::on_edAddr_editingFinished()
  data->setV2(channel,lim,newAddr, data->ssWhite);
  data->setAddr(channel,newAddr,data->ssWhite);
 
- exit: return;
+ /*exit:*/ return;
 }
 void RegistersWidget::on_edCfg_editingFinished()
 {
@@ -351,7 +351,7 @@ void RegistersWidget::labelCheck(int channel)
  LocoIOMode* mode = modelist->getLocoIOModeFor(data->getSV(channel), data->getV1(channel), data->getV2(channel));
  if(mode != NULL && (mode->getOpcode() == LnConstants::OPC_INPUT_REP))
  {
-  AbstractManager* mgr = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->mgrs->at(0);
+  Manager* mgr = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->mgrs->at(0);
   QStringList l = mgr->getSystemNameList();
   QString heading = QString::number(port);
   foreach (QString s, l)
@@ -367,9 +367,9 @@ void RegistersWidget::labelCheck(int channel)
  }
  else if(mode != NULL && (mode->getOpcode() == LnConstants::OPC_SW_REQ))
  {
-  AbstractManager* mgr = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->mgrs->at(0);
+  Manager* mgr = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->mgrs->at(0);
   QStringList l = mgr->getSystemNameList();
-  AbstractManager* mgr2 = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->mgrs->at(0);
+  Manager* mgr2 = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->mgrs->at(0);
   QStringList l2 = mgr2->getSystemNameList();
   foreach (QString s, l2)
   {

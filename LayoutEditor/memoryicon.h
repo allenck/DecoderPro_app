@@ -24,6 +24,7 @@ public:
     /*public*/ bool showPopUp(QMenu* popup);
     /*public*/ QString getNameString();
 //    /*public*/ bool updateScene();
+    /*public*/ QString getGroupName();
 
 signals:
 

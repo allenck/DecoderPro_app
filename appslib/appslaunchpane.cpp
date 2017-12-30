@@ -77,21 +77,14 @@
 
 }
 
-/*protected*/ /*final*/ void AppsLaunchPane::addToActionModel()
-{
- CreateButtonModel* bm = (CreateButtonModel*)InstanceManager::getDefault("CreateButtonModel");
- ResourceBundle* actionList = new ResourceBundle; actionList->getBundle("src/apps/ActionListBundle.properties");
- QStringListIterator e(actionList->keys());
- while (e.hasNext())
- {
-   QString key = e.next();
-   try {
-       bm->addAction(key, actionList->getString(key));
-   } catch (ClassNotFoundException ex) {
-    log->error(QString("Did not find class %1").arg(key));
-   }
- }
+/**
+ * @deprecated since 4.5.1
+ */
+//@Deprecated
+/*protected*/ /*final*/ void AppsLaunchPane::addToActionModel() {
+    // StartupActionModelUtil populates itself, so do nothing
 }
+
 QWidget* AppsLaunchPane::_buttonSpace = NULL;
 /**
  * Prepare the JPanel to contain buttons in the startup GUI. Since it's
@@ -126,7 +119,7 @@ QWidget* AppsLaunchPane::_buttonSpace = NULL;
 #endif
 }
 
-/*public*/ /*static*/ void AppsLaunchPane::ynstrument(QString path) {
+/*public*/ /*static*/ void AppsLaunchPane::ynstrument(QString /*path*/) {
 #if 0
     Jynstrument it = JynstrumentFactory.createInstrument(path, _jynstrumentSpace);
     if (it == NULL) {

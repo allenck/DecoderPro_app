@@ -5,7 +5,7 @@
 #include "defaultidtag.h"
 #include "lnreporter.h"
 #include "addeditdialog.h"
-#include "../LayoutEditor/systemnamecomparator.h"
+#include "systemnamecomparator.h"
 #include "rosterentry.h"
 
 ReporterWidget::ReporterWidget(QWidget *parent) :

@@ -10,24 +10,24 @@ class LIBLAYOUTEDITORSHARED_EXPORT CatalogTreeManager : public AbstractManager
 public:
     explicit CatalogTreeManager(QObject *parent = 0);
     ~CatalogTreeManager() {}
-    CatalogTreeManager(const CatalogTreeManager&) {}
+    CatalogTreeManager(const CatalogTreeManager&) : AbstractManager() {}
     static /*final*/ QStringList IMAGE_FILTER;// = {"gif", "jpg", "jpeg", "png"};
     static /*final*/ QStringList SOUND_FILTER;// = {"wav"};
     static /*final*/ QStringList SCRIPT_FILTER;// = {"py", "scpt"};
-    /*public*/ virtual CatalogTree* getCatalogTree(QString name) {return NULL;}
+    /*public*/ virtual CatalogTree* getCatalogTree(QString /*name*/) {return NULL;}
 
     /**
      * Locate an instance based on a system name.  Returns null if no
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ virtual CatalogTree* getBySystemName(QString systemName) {return NULL;}
+    /*public*/ virtual CatalogTree* getBySystemName(QString /*systemName*/) {return NULL;}
     /**
      * Locate an instance based on a user name.  Returns null if no
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ virtual CatalogTree* getByUserName(QString userName) {return NULL;}
+    /*public*/ virtual CatalogTree* getByUserName(QString /*userName*/) {return NULL;}
 
     /**
      * Return an instance with the specified system and user names.
@@ -52,7 +52,7 @@ public:
      * be looking them up.
      * @return requested CatalogTree object (never null)
      */
-    /*public*/ virtual CatalogTree* newCatalogTree(QString systemName, QString userName) {return NULL;}
+    /*public*/ virtual CatalogTree* newCatalogTree(QString /*systemName*/, QString /*userName*/) {return NULL;}
 
     /**
      * Get a list of all CatalogTree objects' system names.

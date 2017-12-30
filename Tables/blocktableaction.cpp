@@ -175,7 +175,8 @@ void BlockTableAction::common()
 
 /*protected*/ QString BlockTableDataModel::getMasterClassName()
 {
- return QString(this->metaObject()->className());
+ //return QString(this->metaObject()->className());
+ return "jmri.jmrit.beantable.BlockTableAction";
 }
 
 /*public*/ void BlockTableDataModel::clickOn(NamedBean* t)

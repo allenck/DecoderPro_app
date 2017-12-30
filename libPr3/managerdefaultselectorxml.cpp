@@ -33,9 +33,9 @@ ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
 {
  QDomElement e = doc.createElement("managerdefaults");
  e.setAttribute("class", /*getClass().getName()*/"jmri.managers.configurexml.ManagerDefaultSelectorXml");
- foreach (QString c, ManagerDefaultSelector::instance->defaults.keys())
+ foreach (QString c, ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector:"))->defaults.keys())
  {
-  QString n = ManagerDefaultSelector::instance->defaults.value(c);
+  QString n = ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector:"))->defaults.value(c);
   QDomElement p = doc.createElement("setting");
   QDomElement key = doc.createElement("key");
   key.appendChild(doc.createTextNode(c));
@@ -68,12 +68,12 @@ ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
 //        }
     int typeId = QMetaType::type(className.toLocal8Bit());
     if(typeId > 0)
-     ManagerDefaultSelector::instance->setDefault(c,name);
+     ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector:"))->setDefault(c,name);
 
     }
     // put into effect
-    ManagerDefaultSelector::instance->configure();
-    InstanceManager::configureManagerInstance()->registerPref(ManagerDefaultSelector::instance);
+    ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector:"))->configure();
+    InstanceManager::configureManagerInstance()->registerPref((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector:"));
     return true;
 }
 
@@ -82,6 +82,6 @@ ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
  * @param element Top level Element to unpack.
  * @param o  PanelEditor as an Object
  */
-/*public*/ void ManagerDefaultSelectorXml::load(QDomElement element, QObject* o) throw (Exception)
+/*public*/ void ManagerDefaultSelectorXml::load(QDomElement /*element*/, QObject* o) throw (Exception)
 {
 }

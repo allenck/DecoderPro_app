@@ -23,6 +23,7 @@ public:
  /*public*/ Portal* providePortal(QString name);
  static /*public*/ PortalManager* instance();
  /*public*/ QString getBeanTypeHandled();
+ /*public*/ bool isAssignableFromType() {return true;}
 
 signals:
 

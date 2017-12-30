@@ -98,7 +98,8 @@
     speedProfileAction->setEnabled(false);
 #if 1
     // Need a frame here, but are not passed one
-    JmriJFrame* newFrame = new JmriJFrame("<RosterMenu>");
+    JmriJFrame* newFrame = NULL;// new JmriJFrame("<RosterMenu>");
+    //newFrame->setVisible(false);
     QAction* printAction = new PrintRosterAction(tr("Print Summary..."), newFrame, false,this);
     printAction->setEnabled(false);
     QAction* previewAction = new PrintRosterAction(tr("Print Preview Summary..."), newFrame, true, this);

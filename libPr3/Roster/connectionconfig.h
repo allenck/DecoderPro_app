@@ -34,6 +34,11 @@ public:
 
     /*public*/ virtual void setManufacturer(QString /*Manufacturer*/) {}
 
+    /**
+     * Register the ConnectionConfig with the running JMRI process.
+     */
+    /*public*/ virtual void _register() {}
+
     /*public*/ virtual void dispose() {}
 
     /*public*/ virtual bool getDisabled() {return false;}

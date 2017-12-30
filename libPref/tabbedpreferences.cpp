@@ -17,8 +17,8 @@
 #include <QMetaType>
 #include "connectionspreferencespanel.h"
 #include "programmerconfigpane.h"
-#include "createbuttonpanel.h"
-#include "performactionpanel.h"
+//#include "createbuttonpanel.h"
+//#include "performactionpanel.h"
 #include "createbuttonmodel.h"
 #include "performactionmodel.h"
 #include "managerdefaultsconfigpane.h"
@@ -34,6 +34,7 @@
 #include "signalheadtableaction.h"
 #include "turnouttableaction.h"
 #include "metatypes.h"
+#include "loggerfactory.h"
 
 //TabbedPreferences::TabbedPreferences(QObject *parent) :
 //    AppConfigBase(parent)
@@ -83,7 +84,8 @@
  detailpanel->resize(300, 400);
  preferencesArray = QList<PreferencesCatItems*>();
  initialisationState = 0x00;
- log = new Logger("TabbedPreferences");
+ log->setDebugEnabled(true);
+
  /*
   * Adds the place holders for the menu items so that any items add by
   * third party code is added to the end
@@ -160,10 +162,11 @@ int TabbedPreferences::startInit()
 //                new TypeReference<List<String>>() {
 //                });
 #if 0
- [ "jmri.jmrix.swing.ConnectionsPreferencesPanel", "apps.ManagerDefaultsConfigPane", "apps.FileLocationPane", "apps.PerformActionPanel", "apps.CreateButtonPanel", "apps.PerformFilePanel", "apps.PerformScriptPanel", "apps.GuiLafConfigPane", "apps.GuiLocalePreferencesPanel", "apps.SystemConsoleConfigPanel", "jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane", "jmri.jmrit.symbolicprog.ProgrammerConfigPane", "jmri.jmrit.roster.RosterConfigPane", "jmri.jmrit.throttle.ThrottlesPreferencesPane", "jmri.jmrit.withrottle.WiThrottlePrefsPanel", "jmri.profile.ProfilePreferencesPanel", "jmri.jmris.json.JsonServerPreferencesPanel", "jmri.web.server.RailroadNamePreferencesPanel", "jmri.web.server.WebServerPreferencesPanel", "jmri.jmrit.logix.WarrantPreferencesPanel" ]
+ [ "jmri.jmrix.swing.ConnectionsPreferencesPanel", "apps.ManagerDefaultsConfigPane", "apps.FileLocationPane", "apps.PerformActionPanel", /*"apps.CreateButtonPanel",*/ "apps.PerformFilePanel", "apps.PerformScriptPanel", "apps.GuiLafConfigPane", "apps.GuiLocalePreferencesPanel", "apps.SystemConsoleConfigPanel", "jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane", "jmri.jmrit.symbolicprog.ProgrammerConfigPane", "jmri.jmrit.roster.RosterConfigPane", "jmri.jmrit.throttle.ThrottlesPreferencesPane", "jmri.jmrit.withrottle.WiThrottlePrefsPanel", "jmri.profile.ProfilePreferencesPanel", "jmri.jmris.json.JsonServerPreferencesPanel", "jmri.web.server.RailroadNamePreferencesPanel", "jmri.web.server.WebServerPreferencesPanel", "jmri.jmrit.logix.WarrantPreferencesPanel" ]
 #endif
  QStringList classNames = QStringList()
-  << QString("ConnectionsPreferencesPanel") << QString( "ManagerDefaultsConfigPane") << QString( "FileLocationPane" ) << QString( "PerformActionPanel") << QString("CreateButtonPanel") << QString( "PerformFilePanel") << QString("GuiLafConfigPane") << QString("GuiLocalePreferencesPanel") << QString( "SystemConsoleConfigPanel") << QString("UserMessagePreferencesPane") << QString( "ProgrammerConfigPane") << QString("RosterConfigPane") << QString( "ThrottlesPreferencesPane") << QString("WiThrottlePrefsPanel") << QString( "ProfilePreferencesPanel") << QString("JsonServerPreferencesPanel") << QString( "RailroadNamePreferencesPanel") << QString("WebServerPreferencesPanel") << QString("WarrantPreferencesPanel");
+  << QString("ConnectionsPreferencesPanel") << QString( "ManagerDefaultsConfigPane") << QString( "FileLocationPane" ) /*<< QString( "PerformActionPanel")*/ /*<< QString("CreateButtonPanel")*/ << QString( "PerformFilePanel") << QString("GuiLafConfigPane") << QString("GuiLocalePreferencesPanel") << QString( "SystemConsoleConfigPanel") << QString("UserMessagePreferencesPane") << QString( "ProgrammerConfigPane") << QString("RosterConfigPane") << QString( "ThrottlesPreferencesPane") << QString("WiThrottlePrefsPanel") << QString( "ProfilePreferencesPanel") << QString("JsonServerPreferencesPanel") << QString( "RailroadNamePreferencesPanel") << QString("WebServerPreferencesPanel") << QString("WarrantPreferencesPanel") <<
+     QString("StartupActionsPreferencesPanel");
  foreach (QString className,classNames)
  {
 //      try
@@ -253,19 +256,20 @@ void TabbedPreferences::On_save_clicked()
 // package only - for TabbedPreferencesFrame
 bool TabbedPreferences::isDirty()
 {
-    foreach (PreferencesPanel* panel, this->getPreferencesPanels()->values())
-    {
-        if (log->isDebugEnabled()) {
-            log->debug(tr("PreferencesPanel %1 (%2) is %3.").arg(
-                    panel->metaObject()->className()).arg(
-                    (panel->getTabbedPreferencesTitle() != "") ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText(),
-                    (panel->isDirty()) ? "dirty" : "clean"));
-        }
-        if (panel->isDirty()) {
-            return true;
-        }
-    }
-    return false;
+ foreach (PreferencesPanel* panel, this->getPreferencesPanels()->values())
+ {
+  if (log->isDebugEnabled())
+  {
+   log->debug(tr("PreferencesPanel %1 (%2) is %3.").arg(
+           panel->metaObject()->className()).arg(
+           (panel->getTabbedPreferencesTitle() != "") ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
+           (panel->isDirty() ? "dirty" : "clean")));
+  }
+  if (panel->isDirty()) {
+      return true;
+  }
+ }
+ return false;
 }
 
 /*private*/ bool TabbedPreferences::invokeSaveOptions()
@@ -876,3 +880,4 @@ QWidget* TabbedPreferences::PreferencesCatItems::TabDetails::getItem() {
 
 //        }
 //    }
+/*private*/ /*final*/ /*static*/ Logger* TabbedPreferences::log = LoggerFactory::getLogger("TabbedPreferences");

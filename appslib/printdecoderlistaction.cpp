@@ -35,6 +35,7 @@
 {
    //super(actionName);
     mFrame = frame;
+    //mFrame->setVisible(false);
     isPreview = preview;
     log = new Logger("PrintDecoderListAction");
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));

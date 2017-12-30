@@ -215,8 +215,8 @@ bool SerialPort::open(QString portName, QIODevice::OpenMode mode)
  istream = new QDataStream(serial);
 
  // now do the output
- //ostream = new QDataStream(serial);
- ostream = istream;
+ ostream = new QDataStream(serial);
+ //ostream = istream;
  serial->clear();
 
  return true;

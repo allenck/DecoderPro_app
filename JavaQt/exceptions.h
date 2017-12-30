@@ -3,17 +3,74 @@
 
 #include <QObject>
 #include <QString>
+#include <QException>
 #include "javaqt_global.h"
+#include <QLocale>
 
-class JAVAQTSHARED_EXPORT Exception : public std::exception
+class JAVAQTSHARED_EXPORT Throwable : public QException
+{
+ //Q_OBJECT
+public:
+ void raise() const { throw *this; }
+   Throwable *clone() const { return new Throwable(*this); }
+
+    Throwable(QString msg, QString localMsg, Throwable* cause)
+    {
+     this->msg = msg;
+     this->localMsg = localMsg;
+     this->cause = cause;
+    }
+
+    Throwable(QString msg, QString localMsg)
+    {
+     this->msg = msg;
+     this->localMsg = localMsg;
+     this->cause = NULL;
+    }
+
+    Throwable(QString msg, Throwable* cause)
+    {
+     this->msg = msg;
+     this->localMsg = "";
+     this->cause = cause;
+    }
+    Throwable(QString msg)
+    {
+     this->msg = msg;
+     this->localMsg = "";
+     this->cause = cause;
+    }
+
+
+    Throwable(Throwable* cause)
+    {
+     this->cause = cause;
+     this->msg = cause->msg;
+     this->localMsg = cause->getLocalizedMessage();
+    }
+    Throwable()
+    {
+     this->cause = NULL;
+     this->msg = "";
+     this->localMsg = "";
+    }
+    ~Throwable() throw(){}
+    QString msg;
+    QString localMsg;
+    virtual QString getMessage() {return msg;}
+    virtual QString getLocalizedMessage() {return localMsg;}
+    Throwable* cause;
+};
+class Exception : public Throwable
 {
 public:
-    Exception(QString msg = "");
-    ~Exception() throw()
-    {}
-    QString msg;
-    virtual QString getMessage();
-    virtual QString getLocalizedMessage();
+ Exception() : Throwable() {}
+ Exception(QString msg) : Throwable(msg) {}
+ Exception(QString msg, Throwable* throwable) : Throwable(msg, throwable) {}
+ Exception(QString msg, QString localMsg) : Throwable(msg, localMsg) {}
+ Exception(QString msg, QString localMsg, Exception* exception) : Throwable(msg, localMsg, exception)
+ {}
+ Exception(Exception* exception) : Throwable(exception) {}
 };
 
 class JAVAQTSHARED_EXPORT LocoNetException : public Exception
@@ -92,6 +149,7 @@ class JAVAQTSHARED_EXPORT JmriException : public Exception
 public:
     ~JmriException() throw() {}
     JmriException(QString s);
+    JmriException(Exception ex) : Exception(ex) {}
     QString toString();
 };
 class JAVAQTSHARED_EXPORT IllegalArgumentException : public Exception
@@ -149,12 +207,12 @@ class JAVAQTSHARED_EXPORT DataConversionException : public Exception
     DataConversionException(QString s ="");
     ~DataConversionException() throw() {}
 };
-class JAVAQTSHARED_EXPORT Throwable : public Exception
-{
- public:
-    Throwable(QString s ="");
-    ~Throwable() throw() {}
-};
+//class JAVAQTSHARED_EXPORT Throwable : public Exception
+//{
+// public:
+//    Throwable(QString s ="");
+//    ~Throwable() throw() {}
+//};
 class JAVAQTSHARED_EXPORT JDOMException : public Exception
 {
  public:
@@ -297,6 +355,60 @@ public:
    AudioException(QString s = "");
    ~AudioException() throw() {}
 
+};
+
+class JAVAQTSHARED_EXPORT InitializationException : public Exception
+{
+ //Q_OBJECT
+public:
+ void raise() const { throw *this; }
+ InitializationException *clone() const { return new InitializationException(*this); }
+
+ InitializationException(QString msg, QString localMsg) : Exception(msg, localMsg) {}
+ InitializationException(QString msg, QString localMsg, Exception* ex =0) : Exception(msg, localMsg, ex) {}
+ InitializationException(Exception* cause) : Exception(cause)
+ {
+  //super(cause);
+  this->localMsg = cause->getLocalizedMessage();
+ }
+
+ ~InitializationException() throw() {}
+};
+class JAVAQTSHARED_EXPORT SAXException : public Exception
+{
+public:
+   SAXException(QString s = "");
+   ~SAXException() throw() {}
+};
+class JAVAQTSHARED_EXPORT UnsatisfiedLinkError : public Exception
+{
+public:
+   UnsatisfiedLinkError(QString s = "");
+   ~UnsatisfiedLinkError() throw() {}
+};
+class JAVAQTSHARED_EXPORT BackingStoreException : public Exception
+{
+public:
+   BackingStoreException(QString s = "");
+   ~BackingStoreException() throw() {}
+};
+class JAVAQTSHARED_EXPORT NoSuchMethodException : public Exception
+{
+public:
+   NoSuchMethodException(QString s = "");
+   ~NoSuchMethodException() throw() {}
+};
+class JAVAQTSHARED_EXPORT InvocationTargetException : public Exception
+{
+public:
+   InvocationTargetException(QString s = "");
+   ~InvocationTargetException() throw() {}
+};
+class JAVAQTSHARED_EXPORT TransformerFactoryConfigurationError : public Exception
+{
+public:
+   TransformerFactoryConfigurationError(QString s = "");
+   ~TransformerFactoryConfigurationError() throw() {}
 };
 
 #endif // EXCEPTIONS_H

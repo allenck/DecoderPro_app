@@ -34,6 +34,8 @@ public:
     /*public*/ void setConsistID(QString ID);
     /*public*/ QString getConsistID();
     /*public*/ void reverse();
+ /*public*/ void setRosterId(DccLocoAddress* address, QString rosterId);
+ /*public*/ QString getRosterId(DccLocoAddress* address);
 
 signals:
 
@@ -65,6 +67,7 @@ protected:
  /*protected*/ void addToAdvancedConsist(DccLocoAddress* LocoAddress, bool directionNormal);
  /*protected*/ void removeFromAdvancedConsist(DccLocoAddress* LocoAddress);
  /*protected*/ void notifyConsistListeners(DccLocoAddress*  LocoAddress, int ErrorCode);
+ QMap<DccLocoAddress*, QString>* consistRoster;
 
 };
 

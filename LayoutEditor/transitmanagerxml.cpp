@@ -129,6 +129,11 @@ TransitManagerXml::TransitManagerXml()
     loadTransits(sharedTransits, perNodeTransits);
     return true;
 }
+/*public*/ bool TransitManagerXml::load(QDomElement  sharedTransits) throw (Exception){
+    // load individual Transits
+    loadTransits(sharedTransits, sharedTransits);
+    return true;
+}
 
 /**
  * Utility method to load the individual Transit objects. If there's no
@@ -146,7 +151,8 @@ TransitManagerXml::TransitManagerXml()
     if (log->isDebugEnabled()) {
         log->debug("Found " + QString::number(transitList.size()) + " transits");
     }
-    TransitManager* tm = InstanceManager::transitManagerInstance();
+    TransitManager* tm = (TransitManager*)InstanceManager::getNullableDefault("TransitManager");
+
 
     for (int i = 0; i < transitList.size(); i++) {
         if (transitList.at(i).toElement().attribute("systemName") == NULL) {
@@ -219,5 +225,5 @@ TransitManagerXml::TransitManagerXml()
 }
 
 /*public*/ int TransitManagerXml::loadOrder() {
-    return InstanceManager::transitManagerInstance()->getXMLOrder();
+    return ((TransitManager*)InstanceManager::getNullableDefault("TransitManager"))->getXMLOrder();
 }

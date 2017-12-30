@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'turnoutwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -90,23 +90,23 @@ public:
 
     void retranslateUi(QWidget *TurnoutWidget)
     {
-        TurnoutWidget->setWindowTitle(QApplication::translate("TurnoutWidget", "Form", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab1), QApplication::translate("TurnoutWidget", "All", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab2), QApplication::translate("TurnoutWidget", "Internal", 0));
-        btnAdd->setText(QApplication::translate("TurnoutWidget", "Add", 0));
+        TurnoutWidget->setWindowTitle(QApplication::translate("TurnoutWidget", "Form", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab1), QApplication::translate("TurnoutWidget", "All", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab2), QApplication::translate("TurnoutWidget", "Internal", Q_NULLPTR));
+        btnAdd->setText(QApplication::translate("TurnoutWidget", "Add", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        chkFeedback->setToolTip(QApplication::translate("TurnoutWidget", "<html><head/><body><p>Show extra columns for configuring turnout feedback?</p></body></html>", 0));
+        chkFeedback->setToolTip(QApplication::translate("TurnoutWidget", "<html><head/><body><p>Show extra columns for configuring turnout feedback?</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        chkFeedback->setText(QApplication::translate("TurnoutWidget", "Show feedback information", 0));
+        chkFeedback->setText(QApplication::translate("TurnoutWidget", "Show feedback information", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        chkLockInfo->setToolTip(QApplication::translate("TurnoutWidget", "<html><head/><body><p>Show extra columns for configuring turnout lock?</p></body></html>", 0));
+        chkLockInfo->setToolTip(QApplication::translate("TurnoutWidget", "<html><head/><body><p>Show extra columns for configuring turnout lock?</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        chkLockInfo->setText(QApplication::translate("TurnoutWidget", "Show lock information", 0));
-        chkAuto->setText(QApplication::translate("TurnoutWidget", "Automatic retry", 0));
+        chkLockInfo->setText(QApplication::translate("TurnoutWidget", "Show lock information", Q_NULLPTR));
+        chkAuto->setText(QApplication::translate("TurnoutWidget", "Automatic retry", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        chkSpeedDetails->setToolTip(QApplication::translate("TurnoutWidget", "<html><head/><body><p>Show extra columns for configuring turnout Speeds, when used with Signalling?</p></body></html>", 0));
+        chkSpeedDetails->setToolTip(QApplication::translate("TurnoutWidget", "<html><head/><body><p>Show extra columns for configuring turnout Speeds, when used with Signalling?</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        chkSpeedDetails->setText(QApplication::translate("TurnoutWidget", "Show speed details", 0));
+        chkSpeedDetails->setText(QApplication::translate("TurnoutWidget", "Show speed details", Q_NULLPTR));
     } // retranslateUi
 
 };

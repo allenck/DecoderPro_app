@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'inputwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -146,56 +146,56 @@ public:
 
     void retranslateUi(QWidget *InputWidget)
     {
-        InputWidget->setWindowTitle(QApplication::translate("InputWidget", "Form", 0));
+        InputWidget->setWindowTitle(QApplication::translate("InputWidget", "Form", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        InputWidget->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>&lt;none&gt;</p></body></html>", 0));
+        InputWidget->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>&lt;none&gt;</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
 #ifndef QT_NO_TOOLTIP
-        rbNotUsed->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Not used.</p></body></html>", 0));
+        rbNotUsed->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Not used.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbNotUsed->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbBlockDetectionActiveLow->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Block detection active high.  Generate an OPC_INPUT_REP (0xB2) message.</p></body></html>", 0));
+        rbBlockDetectionActiveLow->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Block detection active high.  Generate an OPC_INPUT_REP (0xB2) message.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbBlockDetectionActiveLow->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbBlockDetectionActiveHigh->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Block detection active low.  Generate an OPC_INPUT_REP (0xB2) message.</p></body></html>", 0));
+        rbBlockDetectionActiveHigh->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Block detection active low.  Generate an OPC_INPUT_REP (0xB2) message.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbBlockDetectionActiveHigh->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        chkBlockDetectionDelay->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Delay the block detection message if checked. </p></body></html>", 0));
+        chkBlockDetectionDelay->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Delay the block detection message if checked. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         chkBlockDetectionDelay->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbToggleSwitch->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Toggle switch. Generate an OPC_SW_REQ (0xB0) message to set a turnout. </p></body></html>", 0));
+        rbToggleSwitch->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Toggle switch. Generate an OPC_SW_REQ (0xB0) message to set a turnout. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbToggleSwitch->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbPushButtonActiveLow->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Push button, active low. Generate an OPC_SW_REQ (0xB0) message to set a turnout. </p></body></html>", 0));
+        rbPushButtonActiveLow->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Push button, active low. Generate an OPC_SW_REQ (0xB0) message to set a turnout. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbPushButtonActiveLow->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbPushButtonActiveHigh->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Push button, active high. Generate an OPC_SW_REQ (0xB0) message to set a turnout. </p></body></html>", 0));
+        rbPushButtonActiveHigh->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Push button, active high. Generate an OPC_SW_REQ (0xB0) message to set a turnout. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbPushButtonActiveHigh->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        chkDirectControl->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Directly control the turnout if checked.</p></body></html>", 0));
+        chkDirectControl->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Directly control the turnout if checked.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         chkDirectControl->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbSwitchPointFeedback->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Switch point feedback.</p></body></html>", 0));
+        rbSwitchPointFeedback->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Switch point feedback.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbSwitchPointFeedback->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbContact1PointFeedback->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Contact 1 point feedback.</p></body></html>", 0));
+        rbContact1PointFeedback->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Contact 1 point feedback.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbContact1PointFeedback->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbContact2PointFeedback->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Contact 2 point feedback.</p></body></html>", 0));
+        rbContact2PointFeedback->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Contact 2 point feedback.</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbContact2PointFeedback->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        rbDoubleInput->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Double input,  paired with previous port. </p></body></html>", 0));
+        rbDoubleInput->setToolTip(QApplication::translate("InputWidget", "<html><head/><body><p>Double input,  paired with previous port. </p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         rbDoubleInput->setText(QString());
         lblDoubleInputDisabled->setText(QString());

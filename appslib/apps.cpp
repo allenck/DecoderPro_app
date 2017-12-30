@@ -7,7 +7,7 @@
 #include <QFileInfo>
 #include "profilemanager.h"
 #include "configxmlmanager.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "entryexitpairs.h"
 #include "createbuttonmodel.h"
 #include "resourcebundle.h"
@@ -27,7 +27,7 @@
 #include "dialogerrorhandler.h"
 #include "appsbase.h"
 #include "profilemanagerdialog.h"
-#include "../libPr3/profile.h"
+#include "profile.h"
 #include "configxmlmanager.h"
 #include "defaultusermessagepreferencesxml.h"
 #include "../libPr3/loconet/Pr3/connectionconfigxml.h"
@@ -81,7 +81,15 @@
 #include "system.h"
 #include "debugmenu.h"
 #include "properties.h"
-
+#include "jmriconfigurationmanager.h"
+#include "jmriuserpreferencesmanager.h"
+#include "treeaction.h"
+#include "usbviewaction.h"
+#include "withrottlecreationaction.h"
+#include "joptionpane.h"
+#include "webserveraction.h"
+#include <QImageReader>
+#include "startupactionsmanager.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -110,11 +118,13 @@ bool Apps::configDeferredLoadOK = false;
 /*static*/ QString Apps::nameString = "JMRI program";
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "SC_START_IN_CTOR"})//"only one application at a time. The thread is only called to help improve user experiance when opening the preferences, it is not critical for it to be run at this stage"
 /*public*/ Apps::Apps(JFrame* frame, QWidget *parent) :
-    JmriJFrame(frame, parent)
+    QWidget(parent)
 {
+ setObjectName("Apps");
+ //frame->setVisible(false);
  //super(true);
  //long start = System.nanoTime();
- qint64 start = QDateTime::currentMSecsSinceEpoch();
+ start = QDateTime::currentMSecsSinceEpoch();
  log = new Logger("Apps");
  _buttonSpace = NULL;
  cs4 = new QLabel("?", this);
@@ -124,12 +134,17 @@ bool Apps::configDeferredLoadOK = false;
  cs7 = new QLabel();
  connection = QVector<ConnectionConfig*>(4,NULL);
 
-
  new Metatypes();
-#if 1
+
+ _frame = frame;
+//}
+//void Apps::init()  // call init after constructor is complete
+//{
+// JFrame* frame = _frame;
+//#if 1
  splash(false);
  splash(true, true);
-#endif
+//#endif
  setButtonSpace();
 #if 0
     setJynstrumentSpace();
@@ -174,6 +189,7 @@ bool Apps::configDeferredLoadOK = false;
  // Needs to be declared final as we might need to
  // refer to this on the Swing thread
  /*final*/ File* profileFile;
+ Q_ASSERT(configFilename.endsWith(".xml"));
  profileFilename = configFilename.replace(".xml", ".properties");
  // decide whether name is absolute or relative
  File* info = new File(profileFilename);
@@ -187,19 +203,19 @@ bool Apps::configDeferredLoadOK = false;
  {
   profileFile = new File(profileFilename);
  }
- ProfileManager::defaultManager()->setConfigFile(profileFile);
+ ProfileManager::getDefault()->setConfigFile(profileFile);
  // See if the profile to use has been specified on the command line as
  // a system property jmri.profile as a profile id.
- if (System::getProperties()->containsKey(ProfileManager::SYSTEM_PROPERTY))
+ if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY)*/"org.jmri.profile"))
  {
-  ProfileManager::defaultManager()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
+  ProfileManager::getDefault()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
  }
  // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
- if (!ProfileManager::defaultManager()->getConfigFile()->exists())
+ if (!ProfileManager::getDefault()->getConfigFile()->exists())
  { // no profile config for this app
 //  try
 //  {
- if (ProfileManager::defaultManager()->migrateToProfiles(configFilename))
+ if (ProfileManager::getDefault()->migrateToProfiles(configFilename))
  { // migration or first use
    // notify user of change only if migration occured
    // TODO: a real migration message
@@ -230,11 +246,11 @@ bool Apps::configDeferredLoadOK = false;
   ProfileManagerDialog::getStartingProfile(sp);
   // Manually setting the configFilename property since calling
   // Apps.setConfigFilename() does not reset the system property
-  configFilename = FileUtil::getProfilePath() +   Profile::CONFIG_FILENAME;
-  System::setProperty("org.jmri.Apps.configFilename", Profile::CONFIG_FILENAME);
-  if(ProfileManager::defaultManager()->getActiveProfile() != NULL)
+  configFilename = FileUtil::getProfilePath() +   /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml";
+  System::setProperty("org.jmri.Apps.configFilename", /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml");
+  if(ProfileManager::getDefault()->getActiveProfile() != NULL)
   {
-   log->info(tr("Starting with profile %1").arg(  ProfileManager::defaultManager()->getActiveProfile()->getId()));
+   log->info(tr("Starting with profile %1").arg(  ProfileManager::getDefault()->getActiveProfile()->getId()));
 //  }
 //  catch (IOException ex)
   }
@@ -242,13 +258,15 @@ bool Apps::configDeferredLoadOK = false;
   {
    log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex.getMessage()*/);
   }
-  ConfigXmlManager* cm;
+//  ConfigXmlManager* cm;
   // Install configuration manager and Swing error handler
-  if((cm =(ConfigXmlManager*)InstanceManager::configureManagerInstance()) == NULL)
-  {
-   ConfigXmlManager* cm = new ConfigXmlManager();
-   InstanceManager::setConfigureManager(cm);
-  }
+//  if((cm =(ConfigXmlManager*)InstanceManager::configureManagerInstance()) == NULL)
+//  {
+//   ConfigXmlManager* cm = new ConfigXmlManager();
+//   InstanceManager::setConfigureManager(cm);
+//  }
+  ConfigureManager* cm = (JmriConfigurationManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
+
   ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
   //InstanceManager::setConfigureManager(cm);
 
@@ -258,7 +276,7 @@ bool Apps::configDeferredLoadOK = false;
   ((FileHistory*)InstanceManager::getDefault("FileHistory"))->addOperation("app", nameString, NULL);
 
   // Install a user preferences manager
-  InstanceManager::store(DefaultUserMessagePreferences::getInstance(), "UserPreferencesManager");
+  InstanceManager::store(JmriUserPreferencesManager::getDefault(), "UserPreferencesManager");
   InstanceManager::store(new NamedBeanHandleManager(), "NamedBeanHandleManager");
   // Install an IdTag manager
   InstanceManager::store(new DefaultIdTagManager(), "IdTagManager");
@@ -275,54 +293,72 @@ bool Apps::configDeferredLoadOK = false;
   // Needs to be declared final as we might need to
   // refer to this on the Swing thread
   File* file;
+  File* singleConfig;
+  File* sharedConfig = NULL;
   // decide whether name is absolute or relative
-  info = new File(configFilename);
-  if (!info->isAbsolute())
+  if (!(new File(configFilename))->isAbsolute())
   {
    // must be relative, but we want it to
    // be relative to the preferences directory
-   file = new File(FileUtil::getUserFilesPath() + configFilename);
+   singleConfig = new File(FileUtil::getUserFilesPath() + configFilename);
+   }
+  else
+  {
+   singleConfig = new File(configFilename);
+  }
+  try
+  {
+   // get preferences file
+   sharedConfig = FileUtil::getFile(FileUtil::PROFILE + Profile::SHARED_CONFIG);
+   if (!sharedConfig->canRead())
+   {
+    sharedConfig = NULL;
+   }
+  }
+  catch (FileNotFoundException ex) {
+   // ignore - sharedConfig will remain null in this case
+  }
+  // load config file if it exists
+  if (sharedConfig != NULL)
+  {
+   file = sharedConfig;
   }
   else
   {
-   file = new File(configFilename);
+   file = singleConfig;
   }
-  cm->setPrefsLocation(file);
-  // load config file if it exists
+  log->debug(tr("Using config file(s) %1").arg(file->getPath()));
   if (file->exists())
   {
-   if (log->isDebugEnabled())
-   {
-    log->debug("start load config file "+ info->toString());
-   }
+   log->debug(tr("start load config file %1").arg(file->getPath()));
    try
    {
-    configOK = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->load(file, true);
+    configOK = cm->load(file, true);
    }
    catch (JmriException e)
    {
     log->error("Unhandled problem loading configuration", e.getMessage());
     configOK = false;
    }
-   log->debug(tr("end load config file, OK=")+ (configOK?"yes":"no"));
-  }
-  else
-  {
-   log->info("No saved preferences, will open preferences window.  Searched for "+ info->toString());
+   log->debug(tr("end load config file, OK=%1").arg(configOK?"yes":"No"));
+   }
+   else
+   {
+   log->info(tr("No saved preferences, will open preferences window.  Searched for %1").arg( file->getPath()));
    configOK = false;
   }
 
-  // Add actions to abstractActionModel
-  // Done here as initial non-GUI initialisation is completed
-  // and UI L&F has been set
+  //Install Entry Exit Pairs Manager
+  //   Done after load config file so that connection-system-specific Managers are defined and usable
+  InstanceManager::store(new EntryExitPairs(), "EntryExitPairs");
 
-  addToActionModel();
+
   // populate GUI
   log->debug("Start UI");
- #if 1
+ #if 0
   setLayout(new QVBoxLayout); //(this, BoxLayout.Y_AXIS));
   // Create a WindowInterface object based on the passed-in Frame
-  JFrameInterface* wi = new JFrameInterface((JFrame*)this);
+  JFrameInterface* wi = new JFrameInterface(frame);
   // Create a menu bar
   menuBar = new QMenuBar();
   menuBar->setObjectName("AppsMenuBar");
@@ -408,7 +444,29 @@ bool Apps::configDeferredLoadOK = false;
  {
   configDeferredLoadOK = false;
  }
-
+ // If preferences need to be migrated, do it now
+ if (sharedConfig == NULL && configOK == true && configDeferredLoadOK == true)
+ {
+  log->info("Migrating preferences to new format...");
+  // migrate preferences
+  TabbedPreferences* tp = (TabbedPreferences*)InstanceManager::getOptionalDefault("TabbedPreferences");
+  if(tp != NULL)
+  {
+      tp->init();
+      tp->saveContents();
+      cm->storePrefs();
+  } //);
+  // notify user of change
+  log->info("Preferences have been migrated to new format.");
+  log->info("New preferences format will be used after JMRI is restarted.");
+//  if (!GraphicsEnvironment.isHeadless())
+  {
+      JOptionPane::showMessageDialog(sp,
+              tr("%1 has been updated to a new storage format. The new storage format will be used next time this profile is used.").arg(ProfileManager::getDefault()->getActiveProfile()->getName()),
+              QApplication::applicationName(),
+              JOptionPane::INFORMATION_MESSAGE);
+  }
+ }
     /*Once all the preferences have been loaded we can initial the preferences
      doing it in a thread at this stage means we can let it work in the background*/
 //    Runnable r = new Runnable() {
@@ -464,22 +522,32 @@ bool Apps::configDeferredLoadOK = false;
 //        doPreferences();
  }
  log->debug("Done with doPreferences, start statusPanel");
-}
 
+ // do final activation
+ ((LogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
+ ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
+ DefaultCatalogTreeManagerXml().readCatalogTrees();
+
+ StartupActionsManager* mgr = (StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager");
+ QTimer::singleShot(100, (StartupActionsManager*)mgr, SLOT(loadFactories()));
+
+ log->debug("End constructor");
+}
+#if 0
 void Apps::initGui() // must be called after Constructor is complete!
 {
 
- if(centralWidget() == NULL)
+ if(_frame->centralWidget() == NULL)
  {
   QWidget* centralWidget = new QWidget;
   QVBoxLayout* centralWidgetLayout = new QVBoxLayout;
   centralWidget->setLayout(centralWidgetLayout);
-  setCentralWidget(centralWidget);
+  _frame->setCentralWidget(centralWidget);
  }
- centralWidget()->layout()->addWidget(statusPanel());
+ _frame->centralWidget()->layout()->addWidget(statusPanel());
  log->debug("Done with statusPanel, start buttonSpace");
 
- centralWidget()->layout()->addWidget(buttonSpace());
+ _frame->centralWidget()->layout()->addWidget(buttonSpace());
 
 #if 0
     add(_jynstrumentSpace);
@@ -512,14 +580,9 @@ void Apps::initGui() // must be called after Constructor is complete!
         }
     }, eventMask);
 #endif
- // do final activation
- InstanceManager::logixManagerInstance()->activateAllLogixs();
- ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
- DefaultCatalogTreeManagerXml().readCatalogTrees();
 
- log->debug("End constructor");
 }
-
+#endif
 /*public*/ void Apps::Run1::run() {
     try {
         InstanceManager::tabbedPreferencesInstance()->init();
@@ -546,7 +609,13 @@ void Apps::initGui() // must be called after Constructor is complete!
  log->debug("start deferred load from config file " + file->getPath());
  try
  {
-  result = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->loadDeferred(file);
+  JmriConfigurationManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  if (cmOD != NULL) {
+      result = cmOD->loadDeferred(file);
+  } else {
+      log->error("Failed to get default configure manager");
+      result = false;
+  }
  }
  catch (JmriException e)
  {
@@ -558,23 +627,12 @@ void Apps::initGui() // must be called after Constructor is complete!
 #endif
 }
 
-/*protected*/ /*final*/ void Apps::addToActionModel()
-{
- CreateButtonModel* bm = (CreateButtonModel*)InstanceManager::getDefault("CreateButtonModel");
- ResourceBundle* actionList = new ResourceBundle; actionList->getBundle("src/apps/ActionListBundle.properties");
- QStringListIterator e(actionList->keys());
- while (e.hasNext())
- {
-  QString key = e.next();
-  try
-  {
-   bm->addAction(key, actionList->getString(key));
-  }
-  catch (ClassNotFoundException ex)
-  {
-   log->error("Did not find class {}", key);
-  }
- }
+/**
+ * @deprecated since 4.5.1
+ */
+//@Deprecated
+/*protected*/ /*final*/ void Apps::addToActionModel() {
+    // StartupActionModelUtil populates itself, so do nothing
 }
 /**
  * Prepare the JPanel to contain buttons in the startup GUI. Since it's
@@ -713,7 +771,7 @@ void Apps::On_handleQuit()
  */
 /*protected*/ void Apps::setPrefsFrameHelp(JmriJFrame* frame, QString location)
 {
- //frame->addHelpMenu(location, true);
+ frame->addHelpMenu(location, true);
 }
 
 /*protected*/ void Apps::editMenu(QMenuBar* menuBar, WindowInterface* wi)
@@ -755,9 +813,9 @@ void Apps::On_handleQuit()
  }
 }
 
-/*protected*/ void Apps::toolsMenu(QMenuBar* menuBar, WindowInterface* wi)
+/*protected*/ void Apps::toolsMenu(QMenuBar* menuBar, WindowInterface* /*wi*/)
 {
- menuBar->addMenu(new ToolsMenu(tr("Tools"),wi));
+ menuBar->addMenu(new ToolsMenu(tr("Tools")/*,wi*/));
 }
 
 /*protected*/ void Apps::operationsMenu(QMenuBar* menuBar, WindowInterface* /*wi*/)
@@ -792,26 +850,24 @@ void Apps::On_handleQuit()
 }
 #if 1
 /*protected*/ void Apps::debugMenu(QMenuBar* menuBar, WindowInterface* wi) {
-    QMenu* d = new DebugMenu(wi);
+    QMenu* d = new DebugMenu(wi->getFrame());
 #if 0
     // also add some tentative items from jmrix
     d.add(new JSeparator());
     d.add(new jmri.jmrix.pricom.PricomMenu());
-    d.add(new JSeparator());
-
-    d.add(new jmri.jmrix.jinput.treecontrol.TreeAction());
-    d.add(new jmri.jmrix.libusb.UsbViewAction());
-
-    d.add(new JSeparator());
-    d.add(new RunJythonScript("RailDriver Throttle", new File("jython/RailDriver.py")));
+#endif
+    d->addSeparator();
+    d->addAction(new TreeAction(this));
+    d->addAction(new UsbViewAction(this));
+    d->addSeparator();
+    d->addAction(new RunJythonScript("RailDriver Throttle", new File("jython/RailDriver.py"),this));
 
     // also add some tentative items from webserver
-    d.add(new JSeparator());
-    d.add(new WebServerAction());
+    d->addSeparator();
+    d->addAction(new WebServerAction(this));
 
-    d.add(new JSeparator());
-    d.add(new WiThrottleCreationAction());
-#endif
+    d->addSeparator();
+    d->addAction(new WiThrottleCreationAction(this));
     menuBar->addMenu(d);
 
 }
@@ -1006,7 +1062,7 @@ void Apps::On_handleQuit()
 
  if (ProfileManager::getDefault()!=NULL && ProfileManager::getDefault()->getActiveProfile() != NULL)
  {
-  pane2Layout->addWidget(new QLabel(tr("Active Profile:").arg(ProfileManager::getDefault()->getActiveProfile()->getName())));
+  pane2Layout->addWidget(new QLabel(tr("Active Profile: %1").arg(ProfileManager::getDefault()->getActiveProfile()->getName())));
  }
  else
  {
@@ -1251,7 +1307,7 @@ static /*protected*/ void initLog4J() {
 }
 void Apps::keyPressEvent(QKeyEvent *e)
 {
- if(debugListener != NULL)
+ if(debugListener )
  {
   if (!debugFired)
   {
@@ -1356,10 +1412,10 @@ void Apps::keyPressEvent(QKeyEvent *e)
   args++;
  }
 #if 1 // TODO:
- if (sl.length() >= 1 && sl.at(0) != NULL && !(sl.at(0).contains("=")))
+ if (sl.length() > 1 && sl.at(1) != NULL && !(sl.at(1).contains("=")))
  {
-  def = sl.at(0);
-  log.debug("Config file was specified as: "+ QString(args[0]));
+  def = sl.at(1);
+  log.debug("Config file was specified as: "+ QString(args[1]));
  }
  foreach (QString arg, sl)
  {
@@ -1395,7 +1451,22 @@ void Apps::keyPressEvent(QKeyEvent *e)
   centralWidget->setLayout(centralWidgetLayout);
   frame->setCentralWidget(centralWidget);
  }
- ((QVBoxLayout*)frame->centralWidget()->layout())->addWidget(containedPane);
+ //((QVBoxLayout*)frame->centralWidget()->layout())->addWidget(containedPane);
+ frame->centralWidget()->layout()->addWidget(statusPanel());
+ log->debug("Done with statusPanel, start buttonSpace");
+
+ frame->centralWidget()->layout()->addWidget(buttonSpace());
+
+ // Create a WindowInterface object based on the passed-in Frame
+ JFrameInterface* wi = new JFrameInterface(frame);
+ // Create a menu bar
+ menuBar = new QMenuBar();
+ menuBar->setObjectName("AppsMenuBar");
+ if(frame != NULL)
+  frame->setMenuBar(menuBar);
+
+// Create menu categories and add to the menu bar, add actions to menus
+createMenus(menuBar, wi);
 
  // handle window close
  frame->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
@@ -1492,7 +1563,7 @@ static /*protected*/ void loadFile(String name) {
 }
 #endif
 //@Override
-/*public*/ void Apps::propertyChange(PropertyChangeEvent* ev)
+/*public*/ void Apps::propertyChange(PropertyChangeEvent* /*ev*/)
 {
  if (log->isDebugEnabled())
  {
@@ -1553,7 +1624,7 @@ bool WriteBlocksShutdownTask::execute()
  } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: {}", jde); }
  catch (IOException ioe)
  {
-  log->error("Exception writing blocks: {}", ioe.getMessage());
+  log->error(tr("Exception writing blocks: %1").arg(ioe.getMessage()));
  }
 
 // continue shutdown

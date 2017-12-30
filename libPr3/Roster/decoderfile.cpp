@@ -390,14 +390,17 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
         try {
             // if its associated with an inconsistent number of functions,
             // skip creating it
+      bool bOk;
             if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
-                && getNumFunctions() < (e.attribute("minFn")).toInt() )
+                && getNumFunctions() < (e.attribute("minFn")).toInt(&bOk) )
                 continue;
+            if(!bOk) throw Exception();
             // if its associated with an inconsistent number of outputs,
             // skip creating it
             if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
-                && getNumOutputs() < (e.attribute("minOut")).toInt() )
+                && getNumOutputs() < (e.attribute("minOut")).toInt(&bOk) )
                 continue;
+            if(!bOk) throw Exception();
             // if not correct productID, skip
             if (!isProductIDok(e, extraInclude, extraExclude)) continue;
         } catch (Exception ex) {
@@ -421,17 +424,21 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
             if (log->isDebugEnabled()) log->debug("process iVar "+e.attribute("CVname"));
             // if its associated with an inconsistent number of functions,
             // skip creating it
+            bool bOk;
             if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
-                && getNumFunctions() < (e.attribute("minFn")).toInt() ) {
+                && getNumFunctions() < (e.attribute("minFn")).toInt(&bOk) )
+            {
                 log->debug("skip due to num functions");
                 continue;
             }
+            if(!bOk) throw Exception();
             // if its associated with an inconsistent number of outputs,
             // skip creating it
             if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
-                && getNumOutputs() < (e.attribute("minOut")).toInt() ) {
+                && getNumOutputs() < (e.attribute("minOut")).toInt(&bOk) ) {
                 log->debug("skip due to num outputs");
                 continue;
+                if(!bOk) throw Exception();
             }
         } catch (Exception ex) {
             log->warn("Problem parsing minFn or minOut in decoder file, variable "

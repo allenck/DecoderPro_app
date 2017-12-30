@@ -2,9 +2,10 @@
 #include <QStringList>
 #include "instancemanager.h"
 #include "propertychangesupport.h"
-#include "../LayoutEditor/configxmlmanager.h"
+#include "configxmlmanager.h"
 #include "abstractcatalogtree.h"
 #include "systemnamecomparator.h"
+#include "jmriconfigurationmanager.h"
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -17,7 +18,7 @@
 AbstractManager::AbstractManager(QObject *parent)
 {
   Q_UNUSED(parent);
- log = new Logger("AbstractManager");
+  log = new Logger("AbstractManager");
  _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
  _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
 
@@ -46,11 +47,18 @@ AbstractManager::AbstractManager(QObject *parent)
  **/
 void AbstractManager::registerSelf()
 {
- if (InstanceManager::configureManagerInstance()!=NULL)
- {
-  ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerConfig((QObject*)this, getXMLOrder());
-  //log->debug(tr("register for config %1").arg(metaObject()->className()));
- }
+  log->debug(tr("registerSelf for config of type %1").arg(this->metaObject()->className()));
+  ConfigureManager* cm;
+  try
+  {
+   cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  }
+  catch(ClassNotFoundException ex) { cm = NULL;}
+  if (cm != NULL) {
+      cm->registerConfig(this, getXMLOrder());
+      log->debug(tr("registering for config of type %1").arg(this->metaObject()->className()));
+  }
+
 }
 
 ///*abstract*/ /*public*/ int AbstractManager::getXMLOrder() { return 0;}

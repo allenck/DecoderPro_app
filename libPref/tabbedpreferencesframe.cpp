@@ -51,27 +51,27 @@
 }
 
 //@Override
-/*public*/ void TabbedPreferencesFrame::windowClosing(QCloseEvent* e)
+/*public*/ void TabbedPreferencesFrame::windowClosing(QCloseEvent* /*e*/)
 {
  if (InstanceManager::tabbedPreferencesInstance()->isDirty())
  {
-//     switch (JOptionPane.showConfirmDialog(this,
-//             Bundle.getMessage("UnsavedChangesMessage", InstanceManager.tabbedPreferencesInstance().getTitle()), // NOI18N
-//             Bundle.getMessage("UnsavedChangesTitle"), // NOI18N
-//             JOptionPane.YES_NO_CANCEL_OPTION,
-//             JOptionPane.QUESTION_MESSAGE)) {
-//         case JOptionPane.YES_OPTION:
-//             // save preferences
-//             InstanceManager.tabbedPreferencesInstance().savePressed(InstanceManager.tabbedPreferencesInstance().invokeSaveOptions());
-//             break;
-//         case JOptionPane.NO_OPTION:
-//             // do nothing
-//             break;
-//         case JOptionPane.CANCEL_OPTION:
-//         default:
-//             // abort window closing
-//             return;
-//     }
+  //     switch (JOptionPane.showConfirmDialog(this,
+  //             Bundle.getMessage("UnsavedChangesMessage", InstanceManager.tabbedPreferencesInstance().getTitle()), // NOI18N
+  //             Bundle.getMessage("UnsavedChangesTitle"), // NOI18N
+  //             JOptionPane.YES_NO_CANCEL_OPTION,
+  //             JOptionPane.QUESTION_MESSAGE)) {
+  //         case JOptionPane.YES_OPTION:
+  //             // save preferences
+  //             InstanceManager.tabbedPreferencesInstance().savePressed(InstanceManager.tabbedPreferencesInstance().invokeSaveOptions());
+  //             break;
+  //         case JOptionPane.NO_OPTION:
+  //             // do nothing
+  //             break;
+  //         case JOptionPane.CANCEL_OPTION:
+  //         default:
+  //             // abort window closing
+  //             return;
+  //     }
   switch(QMessageBox::question(this, tr("Unsaved Changes"), tr("There are unsaved changes to this panel. Do you wish to cloase?"), QMessageBox::Yes |QMessageBox::No | QMessageBox::Cancel))
   {
    case QMessageBox::Yes:

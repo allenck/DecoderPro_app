@@ -9,7 +9,7 @@ class APPSLIBSHARED_EXPORT ToolsMenu : public QMenu
  Q_OBJECT
 public:
  explicit ToolsMenu(QWidget *parent = 0);
- /*public*/ ToolsMenu(QString name, QWidget *parent) ;
+ /*public*/ ToolsMenu(QString name, QWidget *parent =0) ;
 
 signals:
 

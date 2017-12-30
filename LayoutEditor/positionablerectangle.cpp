@@ -19,7 +19,8 @@
 
 /*public*/ PositionableRectangle::PositionableRectangle(Editor* editor, QWidget* parent) : PositionableShape(editor, parent){
     //super(editor);
-    _itemGroup = new QGraphicsItemGroup();
+    _itemGroup = new MyGraphicsItemGroup();
+    _itemGroup->setName("PositionableRectangle");
     _shape = new JShape();
     setObjectName("PositionableRectangle");
 }
@@ -27,7 +28,9 @@
 /*public*/ PositionableRectangle::PositionableRectangle(Editor* editor, QGraphicsRectItem* shape, QWidget* parent) : PositionableShape(editor, (JShape*)shape, parent)
 {
     //super(editor, shape);
-    _itemGroup = new QGraphicsItemGroup();
+    _itemGroup = new MyGraphicsItemGroup();
+    _itemGroup->setName("PositionableRectangle");
+
     _itemGroup->addToGroup(shape);
     _shape = new JShape();
     setObjectName("PositionableRectangle");

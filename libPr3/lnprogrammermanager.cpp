@@ -5,6 +5,7 @@
 LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSystemConnectionMemo* memo):
     DefaultProgrammerManager(pSlotManager, memo)
 {
+ setObjectName("LnProgrammerManager");
  //super(pSlotManager, memo);
  mSlotManager = pSlotManager;
  this->memo = memo;
@@ -32,7 +33,7 @@ LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSyste
  */
 /*public*/ bool LnProgrammerManager::isAddressedModePossible() {return true;}
 
-/*public*/ Programmer* LnProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
+/*public*/ AddressedProgrammer* LnProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
     return new LnOpsModeProgrammer(mSlotManager, memo, pAddress, pLongAddress);
 }
 
@@ -51,11 +52,11 @@ LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSyste
  * Types implemented here.
  */
 // @Override
-/*public*/ QList<ProgrammingMode*>* LnProgrammerManager::getDefaultModes()
+/*public*/ QList<ProgrammingMode*> LnProgrammerManager::getDefaultModes()
 {
- QList<ProgrammingMode*>* ret = new QList<ProgrammingMode*>();
- ret->append(DefaultProgrammerManager::OPSBYTEMODE);
- ret->append(LOCONETSV2MODE);
- ret->append(LOCONETSV1MODE); // the show in interface in order listed here
+ QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
+ ret.append(DefaultProgrammerManager::OPSBYTEMODE);
+ ret.append(LOCONETSV2MODE);
+ ret.append(LOCONETSV1MODE); // the show in interface in order listed here
  return ret;
 }

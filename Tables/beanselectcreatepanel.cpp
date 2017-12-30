@@ -9,7 +9,7 @@
 #include "blockmanager.h"
 #include "jmribeancombobox.h"
 #include "flowlayout.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "connectionnamefromsystemname.h"
 
 //BeanSelectCreatePanel::BeanSelectCreatePanel(QWidget *parent) :

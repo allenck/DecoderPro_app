@@ -36,8 +36,8 @@
  */
 //private static final long serialVersionUID = 1271269633621702533L;
 // GUI member declarations
-/*static ResourceBundle res = ResourceBundle.getBundle("jmri.jmrix.loconet.sdfeditor.Editor");
-static ResourceBundle exp = ResourceBundle.getBundle("jmri.jmrix.loconet.sdfeditor.Explanations");
+//static ResourceBundle res = ResourceBundle.getBundle("jmri.jmrix.loconet.sdfeditor.Editor");
+//static ResourceBundle exp = ResourceBundle.getBundle("jmri.jmrix.loconet.sdfeditor.Explanations");
 
 /*public*/ SdfEditorPane::SdfEditorPane(QWidget *parent) :
   QWidget(parent)

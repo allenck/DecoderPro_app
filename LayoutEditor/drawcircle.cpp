@@ -71,7 +71,9 @@
     rr->setBrush(QBrush(_fillColor));
     rr->setPen(QPen(QBrush(_lineColor),_lineWidth));
     PositionableCircle* ps = new PositionableCircle(ed, rr);
-    ps->_itemGroup = new QGraphicsItemGroup();
+    ps->_itemGroup = new MyGraphicsItemGroup();
+    ps->_itemGroup->setName("PositionableCircle");
+
     ps->_itemGroup->addToGroup(rr);
     ps->setLocation(r.x(), r.y());
 //    ps->setHeight(_height);

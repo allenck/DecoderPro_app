@@ -24,6 +24,7 @@
 #include "fileutil.h"
 #include "liblayouteditor_global.h"
 #include "signalheadicon.h"
+#include "paneleditor.h"
 
 namespace Ui {
 class LayoutEditor;
@@ -49,7 +50,7 @@ class SignalHeadIcon;
 class SignalMastIcon;
 class AnalogClock2Display;
 class JmriJFrame;
-class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditor : public Editor
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditor : public PanelEditor
 {
  Q_OBJECT
     friend class LayoutTurnout;
@@ -60,7 +61,7 @@ public:
  explicit LayoutEditor(QString name = "My Layout", bool bTest = true, QWidget *parent = 0);
     LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name = "My Layout", bool bTest = false, QWidget *parent=0);
  ~LayoutEditor();
-    LayoutEditor(const LayoutEditor&) : Editor() {}
+    LayoutEditor(const LayoutEditor&) : PanelEditor() {}
     // connection types
     static const  int NONE = 0;
     static const  int POS_POINT = 1;
@@ -242,10 +243,8 @@ public:
     /*public*/ void setRemoveMenu(Positionable* p, QMenu* popup);
     /*public*/ QVector<LocoIcon*>* markerImage;// = new QVector<LocoIcon*>(); // marker images
     /*public*/ void setAllPositionable(bool state);
-    /**
-    * Remove marker icons from panel
-    */
-    /*protected*/ void removeMarkers();
+    /*public*/ void setLayoutDimensions(int windowW, int windowH, int x, int y, int panelW, int panelH);
+
 //    /*public*/ void superPutLocoIcon(LocoIcon* l, QString name);
     /**
     * Add a memory label to the Draw Panel
@@ -723,6 +722,10 @@ protected:
 // /*protected*/ LocoIcon* selectLoco(RosterEntry* entry);
  /*protected*/ bool skipIncludedTurnout;// = false;
  /*protected*/ void targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* e);
+ /**
+ * Remove marker icons from panel
+ */
+ /*protected*/ void removeMarkers();
 
 friend class TrackSegment;
 friend class EditLevelXingDlg;

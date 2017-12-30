@@ -3,13 +3,16 @@
 # Project created by QtCreator 2015-08-17T16:58:43
 #
 #-------------------------------------------------
+APPNAME = "PanelPro"
+APPVERSION = 0.1
+
 QT += widgets
 
 TARGET = PanelPro
 TEMPLATE = app
 
 
-unix:PREFIX = /home/allen/Projects/PythonQt3.0
+unix:PREFIX = /home/allen/Projects/PythonQt-master
 win32:PREFIX = "C:/Program Files (x86)/local"
 
 SOURCES += \
@@ -80,7 +83,7 @@ win32:exists($$PREFIX/lib/PythonQt.dll){
  message($$PREFIX/lib/PythonQt.dll + "not found")
 }
 
-unix:exists($$PREFIX/lib/libPythonQt.so){
+unix:exists($$PREFIX/lib/libPythonQt_d.so){
  ENABLE_SCRIPTING = "Y"
 } else:unix: {
  message($$PREFIX/lib/libPythonQt.so + "not found")

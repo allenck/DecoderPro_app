@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'servowidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -738,76 +738,76 @@ public:
 
     void retranslateUi(QWidget *ServoWidget)
     {
-        ServoWidget->setWindowTitle(QApplication::translate("ServoWidget", "Form", 0));
-        rbNotUsed1->setText(QApplication::translate("ServoWidget", "1", 0));
-        rbNotUsed2->setText(QApplication::translate("ServoWidget", "2", 0));
-        rbNotUsed3->setText(QApplication::translate("ServoWidget", "3", 0));
-        rbNotUsed4->setText(QApplication::translate("ServoWidget", "4", 0));
-        rbNotUsed5->setText(QApplication::translate("ServoWidget", "5", 0));
-        rbNotUsed6->setText(QApplication::translate("ServoWidget", "6", 0));
-        rbNotUsed7->setText(QApplication::translate("ServoWidget", "7", 0));
-        rbNotUsed8->setText(QApplication::translate("ServoWidget", "8", 0));
-        gbServo->setTitle(QApplication::translate("ServoWidget", "Servo", 0));
-        label_2->setText(QApplication::translate("ServoWidget", "Test", 0));
-        btnTest1->setText(QApplication::translate("ServoWidget", "P", 0));
+        ServoWidget->setWindowTitle(QApplication::translate("ServoWidget", "Form", Q_NULLPTR));
+        rbNotUsed1->setText(QApplication::translate("ServoWidget", "1", Q_NULLPTR));
+        rbNotUsed2->setText(QApplication::translate("ServoWidget", "2", Q_NULLPTR));
+        rbNotUsed3->setText(QApplication::translate("ServoWidget", "3", Q_NULLPTR));
+        rbNotUsed4->setText(QApplication::translate("ServoWidget", "4", Q_NULLPTR));
+        rbNotUsed5->setText(QApplication::translate("ServoWidget", "5", Q_NULLPTR));
+        rbNotUsed6->setText(QApplication::translate("ServoWidget", "6", Q_NULLPTR));
+        rbNotUsed7->setText(QApplication::translate("ServoWidget", "7", Q_NULLPTR));
+        rbNotUsed8->setText(QApplication::translate("ServoWidget", "8", Q_NULLPTR));
+        gbServo->setTitle(QApplication::translate("ServoWidget", "Servo", Q_NULLPTR));
+        label_2->setText(QApplication::translate("ServoWidget", "Test", Q_NULLPTR));
+        btnTest1->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnCenter1->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", 0));
+        btnCenter1->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnCenter1->setText(QApplication::translate("ServoWidget", "C", 0));
-        btnTest2->setText(QApplication::translate("ServoWidget", "P", 0));
+        btnCenter1->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
+        btnTest2->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnCenter2->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", 0));
+        btnCenter2->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnCenter2->setText(QApplication::translate("ServoWidget", "C", 0));
-        btnTest3->setText(QApplication::translate("ServoWidget", "P", 0));
+        btnCenter2->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
+        btnTest3->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnCenter3->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", 0));
+        btnCenter3->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnCenter3->setText(QApplication::translate("ServoWidget", "C", 0));
-        btnTest4->setText(QApplication::translate("ServoWidget", "P", 0));
+        btnCenter3->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
+        btnTest4->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnCenter4->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", 0));
+        btnCenter4->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnCenter4->setText(QApplication::translate("ServoWidget", "C", 0));
-        btnTest5->setText(QApplication::translate("ServoWidget", "P", 0));
+        btnCenter4->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
+        btnTest5->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnCenter5->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", 0));
+        btnCenter5->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnCenter5->setText(QApplication::translate("ServoWidget", "C", 0));
-        btnTest6->setText(QApplication::translate("ServoWidget", "P", 0));
+        btnCenter5->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
+        btnTest6->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnCenter6->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", 0));
+        btnCenter6->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnCenter6->setText(QApplication::translate("ServoWidget", "C", 0));
-        btnTest7->setText(QApplication::translate("ServoWidget", "P", 0));
+        btnCenter6->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
+        btnTest7->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnCenter7->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", 0));
+        btnCenter7->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnCenter7->setText(QApplication::translate("ServoWidget", "C", 0));
-        btnTest8->setText(QApplication::translate("ServoWidget", "P", 0));
+        btnCenter7->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
+        btnTest8->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnCenter8->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", 0));
+        btnCenter8->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnCenter8->setText(QApplication::translate("ServoWidget", "C", 0));
-        lblServo1->setText(QApplication::translate("ServoWidget", "Position 1", 0));
-        lbl11->setText(QApplication::translate("ServoWidget", "Pos1", 0));
-        lbl12->setText(QApplication::translate("ServoWidget", "Pos3", 0));
-        lbl13->setText(QApplication::translate("ServoWidget", "Pos1", 0));
-        lbl14->setText(QApplication::translate("ServoWidget", "Pos3", 0));
-        lbl15->setText(QApplication::translate("ServoWidget", "Pos1", 0));
-        lbl16->setText(QApplication::translate("ServoWidget", "Pos3", 0));
-        lbl17->setText(QApplication::translate("ServoWidget", "Pos1", 0));
-        lbl18->setText(QApplication::translate("ServoWidget", "Pos3", 0));
-        lblServo2->setText(QApplication::translate("ServoWidget", "Position 2", 0));
-        lbl21->setText(QApplication::translate("ServoWidget", "Pos2", 0));
-        lbl22->setText(QApplication::translate("ServoWidget", "Pos4", 0));
-        lbl23->setText(QApplication::translate("ServoWidget", "Pos2", 0));
-        lbl24->setText(QApplication::translate("ServoWidget", "Pos4", 0));
-        lbl25->setText(QApplication::translate("ServoWidget", "Pos2", 0));
-        lbl26->setText(QApplication::translate("ServoWidget", "Pos4", 0));
-        lbl27->setText(QApplication::translate("ServoWidget", "Pos2", 0));
-        lbl28->setText(QApplication::translate("ServoWidget", "Pos4", 0));
-        lblServoSpeed->setText(QApplication::translate("ServoWidget", "Speed", 0));
+        btnCenter8->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
+        lblServo1->setText(QApplication::translate("ServoWidget", "Position 1", Q_NULLPTR));
+        lbl11->setText(QApplication::translate("ServoWidget", "Pos1", Q_NULLPTR));
+        lbl12->setText(QApplication::translate("ServoWidget", "Pos3", Q_NULLPTR));
+        lbl13->setText(QApplication::translate("ServoWidget", "Pos1", Q_NULLPTR));
+        lbl14->setText(QApplication::translate("ServoWidget", "Pos3", Q_NULLPTR));
+        lbl15->setText(QApplication::translate("ServoWidget", "Pos1", Q_NULLPTR));
+        lbl16->setText(QApplication::translate("ServoWidget", "Pos3", Q_NULLPTR));
+        lbl17->setText(QApplication::translate("ServoWidget", "Pos1", Q_NULLPTR));
+        lbl18->setText(QApplication::translate("ServoWidget", "Pos3", Q_NULLPTR));
+        lblServo2->setText(QApplication::translate("ServoWidget", "Position 2", Q_NULLPTR));
+        lbl21->setText(QApplication::translate("ServoWidget", "Pos2", Q_NULLPTR));
+        lbl22->setText(QApplication::translate("ServoWidget", "Pos4", Q_NULLPTR));
+        lbl23->setText(QApplication::translate("ServoWidget", "Pos2", Q_NULLPTR));
+        lbl24->setText(QApplication::translate("ServoWidget", "Pos4", Q_NULLPTR));
+        lbl25->setText(QApplication::translate("ServoWidget", "Pos2", Q_NULLPTR));
+        lbl26->setText(QApplication::translate("ServoWidget", "Pos4", Q_NULLPTR));
+        lbl27->setText(QApplication::translate("ServoWidget", "Pos2", Q_NULLPTR));
+        lbl28->setText(QApplication::translate("ServoWidget", "Pos4", Q_NULLPTR));
+        lblServoSpeed->setText(QApplication::translate("ServoWidget", "Speed", Q_NULLPTR));
         rbS1->setText(QString());
         rbS2->setText(QString());
         rbS3->setText(QString());

@@ -9,7 +9,7 @@
 #include "pushbuttondelegate.h" // for PushButtonItemDelegate
 #include <QSignalMapper>
 #include "connectionnamefromsystemname.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include <QMessageBox>
 
 AddEditLightDialog::AddEditLightDialog(AbstractLight* light, QWidget *parent) :
@@ -1487,7 +1487,7 @@ void AddEditLightDialog::on_btnCancel_clicked()
  // remind to save, if Light was created or edited
  if (lightCreatedOrUpdated)
  {
-  ((DefaultUserMessagePreferences*) InstanceManager::getDefault("UserPreferencesManager"))->
+  ((UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager"))->
                 showInfoMessage("Reminder","Remember to save your Light information.","LightTableAction", "remindSaveLight");
  }
  lightCreatedOrUpdated = false;

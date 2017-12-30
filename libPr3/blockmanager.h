@@ -12,7 +12,7 @@ class LIBPR3SHARED_EXPORT BlockManager : public AbstractManager
 public:
     explicit BlockManager(QObject *parent = 0);
  ~BlockManager() {}
- BlockManager(const BlockManager&) {}
+ BlockManager(const BlockManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
     /*public*/ char typeLetter();

@@ -114,6 +114,9 @@ protected:
  /*protected*/ bool getSoundDecoder();
  /*protected*/ void setMaxTrainLength(float f) ;
  /*protected*/ float getMaxTrainLength();
+
+ friend class TrainInfoFile;
+ friend class DispatcherFrame;
 };
 
 #endif // TRAININFO_H

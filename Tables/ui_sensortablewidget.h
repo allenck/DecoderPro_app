@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sensortablewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -46,7 +46,7 @@ public:
 
     void retranslateUi(QWidget *SensorTableWidget)
     {
-        SensorTableWidget->setWindowTitle(QApplication::translate("SensorTableWidget", "Form", 0));
+        SensorTableWidget->setWindowTitle(QApplication::translate("SensorTableWidget", "Form", Q_NULLPTR));
     } // retranslateUi
 
 };

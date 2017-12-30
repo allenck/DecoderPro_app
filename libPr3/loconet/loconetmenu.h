@@ -13,6 +13,8 @@ public:
     QString name;
     QString load;
 };
+
+
 class LIBPR3SHARED_EXPORT LocoNetMenu : public QMenu
 {
  Q_OBJECT

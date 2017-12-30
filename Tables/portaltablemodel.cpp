@@ -92,7 +92,7 @@ void PortalTableModel::initTempRow()
 
 //@Override
 /*protected*/ QString PortalTableModel::getMasterClassName() {
- return "PortalTableModel";
+ return "jmri.jmrit.beantable.PortalTableModel";
 }
 
 //@Override

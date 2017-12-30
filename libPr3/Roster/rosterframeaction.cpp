@@ -1,5 +1,5 @@
 #include "rosterframeaction.h"
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"
 #include "rosterframe.h"
 //#include "rostergroupselector.h"
@@ -66,7 +66,7 @@ void RosterFrameAction::common()
 //@Override
 /*public*/ void RosterFrameAction::actionPerformed(ActionEvent* /*event*/) {
  mainFrame = new RosterFrame();
- DefaultUserMessagePreferences* p = (DefaultUserMessagePreferences*) InstanceManager::getDefault("UserPreferencesManager");
+ UserPreferencesManager* p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
  if(!p->isWindowPositionSaved(mainFrame->getWindowFrameRef()))
  {
   mainFrame->resize( QSize(1024, 600));

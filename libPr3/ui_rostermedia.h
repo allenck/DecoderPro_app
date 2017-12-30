@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'rostermedia.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -88,13 +88,13 @@ public:
 
     void retranslateUi(QWidget *RosterMediaPane)
     {
-        RosterMediaPane->setWindowTitle(QApplication::translate("RosterMediaPane", "Form", 0));
-        lblIconImage->setText(QApplication::translate("RosterMediaPane", "image icon", 0));
-        label_27->setText(QApplication::translate("RosterMediaPane", "Use this tab to add various media to your roster", 0));
-        label_30->setText(QApplication::translate("RosterMediaPane", "Web reference:", 0));
-        label_29->setText(QApplication::translate("RosterMediaPane", "Image to be used as an icon for that locomotive; head to the right:", 0));
-        label_28->setText(QApplication::translate("RosterMediaPane", "Image to be used as main image for this locomotive ", 0));
-        lblMainImage->setText(QApplication::translate("RosterMediaPane", "Image", 0));
+        RosterMediaPane->setWindowTitle(QApplication::translate("RosterMediaPane", "Form", Q_NULLPTR));
+        lblIconImage->setText(QApplication::translate("RosterMediaPane", "image icon", Q_NULLPTR));
+        label_27->setText(QApplication::translate("RosterMediaPane", "Use this tab to add various media to your roster", Q_NULLPTR));
+        label_30->setText(QApplication::translate("RosterMediaPane", "Web reference:", Q_NULLPTR));
+        label_29->setText(QApplication::translate("RosterMediaPane", "Image to be used as an icon for that locomotive; head to the right:", Q_NULLPTR));
+        label_28->setText(QApplication::translate("RosterMediaPane", "Image to be used as main image for this locomotive ", Q_NULLPTR));
+        lblMainImage->setText(QApplication::translate("RosterMediaPane", "Image", Q_NULLPTR));
     } // retranslateUi
 
 };

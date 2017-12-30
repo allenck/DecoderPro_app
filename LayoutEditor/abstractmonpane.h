@@ -11,7 +11,7 @@ class QFileDialog;
 class QTextStream;
 class ActionEvent;
 class QScrollArea;
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class JTextField;
 class QCheckBox;
 class JTextArea;
@@ -47,7 +47,7 @@ private:
     QString alwaysOnTopCheck;// = this.getClass().getName()+".alwaysOnTop";
     QString autoScrollCheck;// = this.getClass().getName()+".AutoScroll";
     QString filterFieldCheck;// = this.getClass().getName()+".FilterField";
-    DefaultUserMessagePreferences* p;
+    UserPreferencesManager* p;
 
     // for locking
     AbstractMonPane* self;

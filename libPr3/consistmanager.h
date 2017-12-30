@@ -38,7 +38,7 @@ public:
          *    Find a Consist with this consist address, and return it.
              *    if the Consist doesn't exit, create it.
          **/
-        virtual Consist* getConsist(DccLocoAddress* address) {return NULL;}
+        virtual Consist* getConsist(DccLocoAddress* /*address*/) {return NULL;}
 
         /**
          *    Remove an old Consist

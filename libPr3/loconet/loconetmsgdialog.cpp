@@ -94,7 +94,7 @@ void LocoNetMsgDialog::on_btnOk_clicked()
  if(buildMsg())
  {
   //accept();
-  LocoNetSystemConnectionMemo* memo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo");
+  LocoNetSystemConnectionMemo* memo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
   memo->getLnTrafficController()->sendLocoNetMessage(msg);
   close();
  }

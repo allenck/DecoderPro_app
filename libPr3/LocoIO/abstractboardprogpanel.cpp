@@ -416,7 +416,7 @@ bool AbstractBoardProgPanel::setAddress(int maxValid) /*throws Exception*/
 //                "Error", JOptionPane.ERROR_MESSAGE);
   QMessageBox::critical(this, tr("Error"), tr("Address out of range, must be") +" 1 " + tr("to") + " " + QString::number(maxValid));
   log->error("Invalid address value");
-  //throw new jmri.JmriException(tr("ERROR_INVALID_ADDRESS") + " " + address);
+  throw JmriException(tr("ERROR_INVALID_ADDRESS") + " " + QString::number(address));
   return false;
  }
  return true;  // OK

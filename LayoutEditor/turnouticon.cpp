@@ -60,6 +60,7 @@
  momentaryItem->setCheckable(true);
  directControlItem = new QAction(tr("Direct control"), this);
  directControlItem->setCheckable(true);
+
 }
 
 /*public*/ Positionable* TurnoutIcon::deepClone()
@@ -418,6 +419,7 @@ void TurnoutIcon::on_tristateItem_toggled(bool bState)
 //    _itemGroup->addToGroup(new QGraphicsPixmapItem(QPixmap::fromImage(icon->getImage()),0));
     PositionableLabel::setIcon(icon);
     updateScene();
+    _itemGroup->setName("TurnoutIcon");
    }
   }
  }
@@ -425,6 +427,7 @@ void TurnoutIcon::on_tristateItem_toggled(bool bState)
  _itemGroup->update();
 }
 
+/*public*/ QString TurnoutIcon() { return "TurnoutIcon";}
 
 /*public*/ bool TurnoutIcon::setEditItemMenu(QMenu* popup)
 {
@@ -666,3 +669,8 @@ void TurnoutIcon::alternateOnClick()
 //}
 void TurnoutIcon::setType(int type) { _type = type;}
 int TurnoutIcon::getType() { return _type;}
+
+/*public*/ QString TurnoutIcon::getGroupName()
+{
+ return "TurnoutIcon";
+}

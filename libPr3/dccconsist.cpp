@@ -12,6 +12,7 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
  ConsistDir = new QHash<DccLocoAddress*, bool>();
  ConsistList = new QList<DccLocoAddress*>();
  ConsistPosition = new QHash<DccLocoAddress*, int>();
+ consistRoster = new QMap<DccLocoAddress*, QString>();
  ConsistID = consistAddress->toString();
  log =new Logger("DccConsist");
  listeners = new QVector<ConsistListener*>();
@@ -214,7 +215,7 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
      */
 /*protected*/ void DccConsist::addToAdvancedConsist(DccLocoAddress* LocoAddress, bool directionNormal)
 {
- Programmer* opsProg = ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->getAddressedProgrammer(LocoAddress->isLongAddress(), LocoAddress->getNumber());
+ AddressedProgrammer* opsProg = ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->getAddressedProgrammer(LocoAddress->isLongAddress(), LocoAddress->getNumber());
  if(directionNormal)
  {
   try
@@ -237,7 +238,8 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
    // Don't do anything with this yet
   }
  }
- InstanceManager::programmerManagerInstance()->releaseAddressedProgrammer(opsProg);
+ ((ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager"))
+                 ->releaseAddressedProgrammer(opsProg);
 }
 
     /*
@@ -245,46 +247,72 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
  *  @param address is the Locomotive address to remove from the consist
      */
 /*protected*/ void DccConsist::removeFromAdvancedConsist(DccLocoAddress* LocoAddress) {
-    Programmer* opsProg = ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->getAddressedProgrammer(LocoAddress->isLongAddress(),
+    AddressedProgrammer* opsProg = ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->getAddressedProgrammer(LocoAddress->isLongAddress(),
                         LocoAddress->getNumber());
     try {
         opsProg->writeCV(19,0,(ProgListener*)this);
     } catch(ProgrammerException e) {
         // Don't do anything with this yet
     }
-    InstanceManager::programmerManagerInstance()->releaseAddressedProgrammer(opsProg);
+    ((ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager"))->releaseAddressedProgrammer(opsProg);
 }
 
-    /*
-     *  Set the position of a locomotive within the consist
-     *  @param address is the Locomotive address
-     *  @param position is a constant representing the position within
-     *         the consist.
-     */
-    /*public*/ void DccConsist::setPosition(DccLocoAddress* address,int position){
-            ConsistPosition->insert(address,(position));
+/*
+ *  Set the position of a locomotive within the consist
+ *  @param address is the Locomotive address
+ *  @param position is a constant representing the position within
+ *         the consist.
+ */
+/*public*/ void DccConsist::setPosition(DccLocoAddress* address,int position){
+        ConsistPosition->insert(address,(position));
+}
+
+/*
+ * Get the position of a locomotive within the consist
+ * @param address is the Locomotive address of interest
+ */
+/*public*/ int DccConsist::getPosition(DccLocoAddress* address){
+    if(ConsistPosition->contains(address))
+        return(ConsistPosition->value(address));
+    // if the consist order hasn't been set, we'll use default
+    // positioning based on index in the arraylist.  Lead locomotive
+    // is position 0 in the list and the trail is the last locomtoive
+    // in the list.
+    int index=ConsistList->indexOf(address);
+    if(index==0)
+        return(Consist::POSITION_LEAD);
+    else if(index==(ConsistList->size()-1))
+        return(Consist::POSITION_TRAIL);
+    else return index;
+}
+
+/**
+ * Set the roster entry of a locomotive within the consist
+ *
+ * @param address  is the Locomotive address
+ * @param rosterId is the roster Identifer of the associated roster entry.
+ */
+//@Override
+/*public*/ void DccConsist::setRosterId(DccLocoAddress* address, QString rosterId) {
+    consistRoster->insert(address, rosterId);
+}
+
+/**
+ * Get the rosterId of a locomotive within the consist
+ *
+ * @param address is the Locomotive address of interest
+ * @return string roster Identifier associated with the given address
+ *         in the consist.  Returns null if no roster entry is associated
+ *         with this entry.
+ */
+//@Override
+/*public*/ QString DccConsist::getRosterId(DccLocoAddress* address) {
+    if (consistRoster->contains(address)) {
+        return (consistRoster->value(address));
+    } else {
+        return NULL;
     }
-
-    /*
-     * Get the position of a locomotive within the consist
-     * @param address is the Locomotive address of interest
-     */
-    /*public*/ int DccConsist::getPosition(DccLocoAddress* address){
-        if(ConsistPosition->contains(address))
-            return(ConsistPosition->value(address));
-        // if the consist order hasn't been set, we'll use default
-        // positioning based on index in the arraylist.  Lead locomotive
-        // is position 0 in the list and the trail is the last locomtoive
-        // in the list.
-        int index=ConsistList->indexOf(address);
-        if(index==0)
-            return(Consist::POSITION_LEAD);
-        else if(index==(ConsistList->size()-1))
-            return(Consist::POSITION_TRAIL);
-        else return index;
-    }
-
-
+}
 
 /*
      * Add a Listener for consist events

@@ -44,7 +44,7 @@
 //    }
 
 /*public*/ PaneProgAction::PaneProgAction(QString s, QObject* parent)
-    : QAction(s,parent)
+    : AbstractAction(s,parent)
 {
  //super(s);
  log = new Logger("PaneProgAction");
@@ -53,9 +53,8 @@
  statusLabel = new QLabel(tr("idle"));
 
  // disable ourself if programming is not possible
- ProgrammerManager* mgr = InstanceManager::programmerManagerInstance();
- if (mgr==NULL ||
-        ((LnProgrammerManager*)mgr)->isGlobalProgrammerAvailable()== false)
+ if (InstanceManager::getNullableDefault("ProgrammerManager") == NULL
+                 || !((ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager"))->isGlobalProgrammerAvailable())
  {
   setEnabled(false);
   // This needs to return, so we don't start the xmlThread
@@ -65,7 +64,7 @@
 }
 
 
-/*public*/ void PaneProgAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void PaneProgAction::actionPerformed()
 {
  if (log->isDebugEnabled()) log->debug("Pane programmer requested");
 
@@ -82,8 +81,10 @@
 //        /*public*/ void windowClosing(WindowEvent we){
 //            statusLabel.setText(rbt.getString("StateIdle"));
 //            f.windowClosing(we);}});
- f->addWindowListener((WindowListener*)this);
-
+#if 0
+ PPAWindowListener* listener = new PPAWindowListener(f, this);
+ f->addWindowListener(listener);
+#endif
  // add the Roster menu
  QMenuBar* menuBar = new QMenuBar();
  // menuBar.setBorder(new BevelBorder(BevelBorder.RAISED));
@@ -148,10 +149,20 @@ void PaneProgAction::MyCombinedLocoSelTreePane::startProgrammer(DecoderFile* dec
     // f.setVisible(false);
     // f.dispose();
 }
+#if 0
 void PaneProgAction::windowClosing(QCloseEvent *we)
 {
  statusLabel->setText(tr("Idle"));
  f->windowClosing(we);
 }
 
-
+PPAWindowListener::PPAWindowListener(JFrame *p, PaneProgAction* ppa)
+{
+ this->p = p;
+ this->ppa = ppa;
+}
+void PPAWindowListener::windowClosing(QCloseEvent *)
+{
+ //ppa->handleQuit();
+}
+#endif

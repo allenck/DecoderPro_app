@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'commentsdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -185,22 +185,22 @@ public:
 
     void retranslateUi(QDialog *CommentsDialog)
     {
-        CommentsDialog->setWindowTitle(QApplication::translate("CommentsDialog", "Update Comments", 0));
-        lblUnitAddress->setText(QApplication::translate("CommentsDialog", "unitAddress:", 0));
-        lblDisplayUnitAddress->setText(QApplication::translate("CommentsDialog", "0x00/00", 0));
-        lblDisplayType->setText(QApplication::translate("CommentsDialog", "LocoServo", 0));
-        lblDisplayOutput->setText(QApplication::translate("CommentsDialog", "Output", 0));
-        lblPort->setText(QApplication::translate("CommentsDialog", "Port:", 0));
-        lblDisplayPort->setText(QApplication::translate("CommentsDialog", "1", 0));
-        label_2->setText(QApplication::translate("CommentsDialog", "Mode:", 0));
-        lblDisplayMode->setText(QApplication::translate("CommentsDialog", "mode ....", 0));
-        label_3->setText(QApplication::translate("CommentsDialog", "Address:", 0));
-        lblDisplayAddress->setText(QApplication::translate("CommentsDialog", "0", 0));
-        label_4->setText(QApplication::translate("CommentsDialog", "Title", 0));
-        label_5->setText(QApplication::translate("CommentsDialog", "Description:", 0));
-        btnUpdate->setText(QApplication::translate("CommentsDialog", "Update", 0));
-        btnDelete->setText(QApplication::translate("CommentsDialog", "Delete", 0));
-        btnCancel->setText(QApplication::translate("CommentsDialog", "Cancel", 0));
+        CommentsDialog->setWindowTitle(QApplication::translate("CommentsDialog", "Update Comments", Q_NULLPTR));
+        lblUnitAddress->setText(QApplication::translate("CommentsDialog", "unitAddress:", Q_NULLPTR));
+        lblDisplayUnitAddress->setText(QApplication::translate("CommentsDialog", "0x00/00", Q_NULLPTR));
+        lblDisplayType->setText(QApplication::translate("CommentsDialog", "LocoServo", Q_NULLPTR));
+        lblDisplayOutput->setText(QApplication::translate("CommentsDialog", "Output", Q_NULLPTR));
+        lblPort->setText(QApplication::translate("CommentsDialog", "Port:", Q_NULLPTR));
+        lblDisplayPort->setText(QApplication::translate("CommentsDialog", "1", Q_NULLPTR));
+        label_2->setText(QApplication::translate("CommentsDialog", "Mode:", Q_NULLPTR));
+        lblDisplayMode->setText(QApplication::translate("CommentsDialog", "mode ....", Q_NULLPTR));
+        label_3->setText(QApplication::translate("CommentsDialog", "Address:", Q_NULLPTR));
+        lblDisplayAddress->setText(QApplication::translate("CommentsDialog", "0", Q_NULLPTR));
+        label_4->setText(QApplication::translate("CommentsDialog", "Title", Q_NULLPTR));
+        label_5->setText(QApplication::translate("CommentsDialog", "Description:", Q_NULLPTR));
+        btnUpdate->setText(QApplication::translate("CommentsDialog", "Update", Q_NULLPTR));
+        btnDelete->setText(QApplication::translate("CommentsDialog", "Delete", Q_NULLPTR));
+        btnCancel->setText(QApplication::translate("CommentsDialog", "Cancel", Q_NULLPTR));
     } // retranslateUi
 
 };

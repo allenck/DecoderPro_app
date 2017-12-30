@@ -55,6 +55,10 @@
 #include "metatypes.h"
 #include <QStatusBar>
 #include "positionable.h"
+#include "class.h"
+#include "layouteditor.h"
+#include "controlpaneleditor.h"
+#include "paneleditor.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -121,6 +125,7 @@
 /*public*/ /*static*/ /*final*/ QString Editor::POSITIONABLE_FLAVOR = /*java.awt.datatransfer.DataFlavor.javaJVMLocalObjectMimeType */ QString("text/plain")+
                ";class=jmri.jmrit.display.Positionable";
 /*final*/ /*public*/ /*static*/ QColor Editor::HIGHLIGHT_COLOR =  QColor(204, 207, 88);
+/*private*/ /*static*/ /*volatile*/ QVector<Editor*>* Editor::editors = new QVector<Editor*>();
 
 
 /*public*/ Editor::Editor(QWidget* parent) : JmriJFrame( parent)
@@ -168,6 +173,7 @@ void Editor::commonInit()
  _iconEditorFrame = new QHash <QString, JFrameItem*>();
  _spinCols = new SpinnerNumberModel(3,1,100,1);
   panelMenuIsVisible = true;
+  editors->append(this);
 }
 
 /*public*/ Editor::Editor(QString name, bool saveSize, bool savePosition, QWidget* parent) : JmriJFrame("<Editor>", parent)
@@ -271,6 +277,7 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
     } else {
         _targetPanel = targetPanel;
     }
+    _targetPanel->setObjectName("editScene");
     if (frame == NULL) {
         _targetFrame = this;
     } else {
@@ -288,6 +295,8 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
         centralWidget->setLayout(new QVBoxLayout());
     }
     editPanel = new QGraphicsView(_targetFrame->centralWidget());
+    editPanel->setObjectName("graphicsView");
+    _targetFrame->centralWidget()->setObjectName("centralWidget");
     _targetFrame->centralWidget()->layout()->addWidget(editPanel);
     editPanel->setMouseTracking(true);
     editPanel->setRenderHint(QPainter::Antialiasing);
@@ -891,8 +900,8 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
   MemoryIcon* pm = (MemoryIcon*) p;
   edit->addAction(new QAction("x= " + QString("%1").arg(pm->getOriginalX()),this));
   edit->addAction(new QAction("y= " + QString("%1").arg(pm->getOriginalY()), this));
-
-  edit->addAction(((MemoryIconCoordinateEdit*) pm->cEdit)->getCoordinateEditAction(pm,this));
+  CoordinateEdit* ce = new CoordinateEdit();
+  edit->addAction(CoordinateEdit::getCoordinateEditAction(pm,ce));
  }
  else
  {
@@ -1437,405 +1446,15 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  }
  editScene->addItem(pl->_itemGroup);
 #else
-// if(pl->_itemGroup != NULL && pl->_itemGroup->scene() != NULL)
-// {
-//  Q_ASSERT(pl->_itemGroup->scene()!=0);
-//  editScene->removeItem(pl->_itemGroup);
-//  if(qobject_cast<MemoryInputIcon*>(pl) == NULL && qobject_cast<MemorySpinnerIcon*>(pl) == NULL && qobject_cast<MemoryComboIcon*>(pl) == NULL)
-//   pl->_itemGroup = new QGraphicsItemGroup();
-// }
-// else
-//  pl->_itemGroup = new QGraphicsItemGroup();
- //pl->_itemGroup->setZValue(pl->getDisplayLevel());
-#if 0
- if(!pl->isIcon())
- {
-  //color = defaultTextColor;
 
-//   if(pl->item != NULL)
-//   {
-//    g2->removeItem(pl->item);
-//    pl->item = NULL;
-//   }
-  if(pl->getUnRotatedText()=="crap")
-  {
-      log->debug("crap found");
-  }
-  QGraphicsTextItem*  item = new QGraphicsTextItem(pl->getUnRotatedText());
-  item->setFont(pl->getFont());
-  item->setPos(pl->getX(), pl->getY());
-  item->setDefaultTextColor(pl->getForeground());
-  //if(pl->isOpaque())
-  {
-   QRectF ir = item->boundingRect();
-   int margin = pl->getPopupUtility()->getMargin();
-   QRectF r = QRectF(ir.x()-margin,ir.y()-margin,ir.right()+margin*2,ir.bottom()+margin*2);
-   QGraphicsRectItem* rItem = new QGraphicsRectItem(r);
-   if(pl->isOpaque())
-    rItem->setBrush( QBrush(pl->getBackground()));
-   if(pl->getPopupUtility()->getBorderSize() == 0)
-    rItem->setPen(Qt::NoPen);
-   else
-    rItem->setPen(QPen(QBrush(pl->getPopupUtility()->getBorderColor()),pl->getPopupUtility()->getBorderSize()));
-   rItem->setPos(pl->getX(), pl->getY());
-
-   if(pl->_itemGroup == NULL) pl->_itemGroup = new QGraphicsItemGroup;
-   pl->_itemGroup->addToGroup(rItem);
-  }
-  if(pl->showTooltip()) item->setToolTip(pl->getTooltip());
-  pl->_itemGroup->addToGroup(item);
-  editScene->addItem(pl->_itemGroup);
-  bAdded = true;
-  if(pl->getDegrees() != 0)
-   //pl->item->rotate(pl->getDegrees());
-  {
-   QPointF center = item->boundingRect().center();
-   pl->_itemGroup->setTransformOriginPoint(center);
-   pl->_itemGroup->setRotation(pl->_itemGroup->rotation()+ pl->getDegrees());
-  }
- }
- else
- {
-  QString state = "BeanStateUnknown";
-
-  QPixmap pixmap;
-  if(qobject_cast<SensorIcon*>(l) != NULL)
-  {
-   int iState = 0;
-   if(((SensorIcon*)l)->getSensor() != NULL)
-    iState=((AbstractSensor*)((SensorIcon*)l)->getSensor())->getKnownState();
-   state = ((SensorIcon*)l)->_state2nameMap->value(iState);
-//    if(pl->item != NULL)
-//    {
-//     g2->removeItem(pl->item);
-//     pl->item = NULL;
-//    }
-//    if(((SensorIcon*)l)->_state2nameMap->contains(istate))
-//     state = ((SensorIcon*)l)->_state2nameMap->value(istate);
-   pixmap = QPixmap::fromImage(((SensorIcon*)l)->getIcon(iState)->getImage());
-   if(pixmap.isNull())
-   {
-    log->warn("Sensor icon invalid pixmap, state = "+ state);
-   }
-   QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap);
-   item->setPos(pl->getX(), pl->getY());
-   if(pl->showTooltip()) item->setToolTip(pl->getTooltip());
-   pl->_itemGroup->addToGroup(item);
-   editScene->addItem(pl->_itemGroup);
-   bAdded = true;
-  }
-  else
-  if(qobject_cast<AnalogClock2Display*>(l) != NULL)
-  {
-   ((AnalogClock2Display*)l)->update();
-   bAdded = true;
-  }
-  else
-  if(qobject_cast<LcdClockFrame*>(l) != NULL)
-  {
-   ((LcdClockFrame*)l)->update();
-  }
-  else
-  if(qobject_cast<NixieClockFrame*>(l) != NULL)
-  {
-   ((NixieClockFrame*)l)->update();
-  }
-  else
-  if(qobject_cast<LocoIcon*>(l) != NULL)
-  {
-   if(pl->isIcon())
-   {
-    pixmap = QPixmap::fromImage(((JLabel*)l)->getIcon()->getOriginalImage());
-    if(pixmap.isNull())
-     log->debug(QString("LocoIcon null pixmap: %1").arg(((JLabel*)l)->getIcon()->getURL()));
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap);
-    item->setPos(pl->getX(), pl->getY());
-    if(pl->showTooltip()) item->setToolTip(pl->getTooltip());
-    if(pl->getDegrees() != 0)
-    {
-     QPointF center = item->boundingRect().center();
-     pl->_itemGroup->setTransformOriginPoint(center);
-     item->setRotation(item->rotation()+ pl->getDegrees());
-    }
-    pl->_itemGroup->addToGroup( item);
-    //g2->addItem(pl->item);
-   }
-   else
-   {
-    QGraphicsTextItem* item = new QGraphicsTextItem(pl->getUnRotatedText());
-    item->setPos(pl->getX(), pl->getY());
-    if(pl->showTooltip()) item->setToolTip(pl->getTooltip());
-    pl->_itemGroup->addToGroup(item);
-    if(pl->getDegrees() != 0)
-    {
-     QPointF center = item->boundingRect().center();
-     pl->_itemGroup->setTransformOriginPoint(center);
-     item->setRotation(item->rotation()+ pl->getDegrees());
-    }
-   }
-   editScene->addItem(pl->_itemGroup);
-   bAdded = true;
-
-  }
-
-  else
-  if(qobject_cast<MemoryIcon*>(l) != NULL)
-  {
-   MemoryIcon* m = (MemoryIcon*)l;
-//    if(m->item != NULL)
-//    {
-//     g2->removeItem(m->item);
-//     m->item = NULL;
-//    }
-   if(m->isIcon())
-   {
-    pixmap = QPixmap::fromImage(((PositionableLabel*)l)->getIcon()->getImage());
-    //QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
-            QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap, 0);
-    item->setPos(pl->getX(), pl->getY());
-    if(pl->showTooltip()) item->setToolTip(pl->getTooltip());
-    if(pixmap.isNull())
-     qDebug() << "No pixmap";
-    if(m->_itemGroup== NULL)
-      m->_itemGroup = new QGraphicsItemGroup;
-    m->_itemGroup->addToGroup(item);
-   }
-   else
-   {
-
-    //m->item = g2->addText("????");
-//     m->_item = new QGraphicsTextItem("????");
-//     m->_item->setPos(l->getX(), l->getY());
-    QGraphicsTextItem* item = new QGraphicsTextItem("????");
-    m->_itemGroup->addToGroup(item);
-    if(pl->showTooltip()) item->setToolTip(pl->getTooltip());
-    item->setPos(pl->getX(),pl->getY());
-    if(m->getDegrees() != 0)
-    {
-     //m->item->rotate(l->getDegrees());
-     QPointF center = item->boundingRect().center();
-     pl->_itemGroup->setTransformOriginPoint(center);
-     item->setRotation(item->rotation()+ m->getDegrees());
-    }
-   }
-   editScene->addItem(m->_itemGroup);
-   bAdded = true;
-
-  }
-  else
-  if(qobject_cast<LightIcon*>(l)!= NULL)
-  {
-    if(((LightIcon*)l)->getLight() != NULL)
-    {
-     int iState = ((AbstractLight*)((LightIcon*)l)->getLight())->getState();
-     pixmap = QPixmap::fromImage(((LightIcon*)l)->getIcon(iState)->getImage());
-     //   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
-     QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,0);
-     item->setPos(((LightIcon*)l)->getX(),((LightIcon*)l)->getY());
-     if(pl->showTooltip()) item->setToolTip(((LightIcon*)l)->getTooltip());
-     if(pixmap.isNull())
-      qDebug() << "No pixmap";
-     //   else
-     //    qDebug() << tr("pixmap h = %1, w = %2").arg(pixmap.height()).arg(pixmap.width());
-     pl->_itemGroup->addToGroup(item);
-     editScene->addItem(pl->_itemGroup);
-     bAdded = true;
-    }
-    else
-     log->debug(tr("Light icon '%1' missing light").arg(((LightIcon*)l)->getName()));
-  }
-
-  else
-  if(qobject_cast<SignalHeadIcon*>(l)!= NULL && ((SignalHeadIcon*)l)->getSignalHead() != NULL)
-  {
-    //int iState = ((SignalHeadIcon*)l)->getSignalHead()->getState();
-    QString appearance;
-    if(((SignalHeadIcon*)l)->getSignalHead() != NULL)
-     appearance = ((AbstractSignalHead*)((SignalHeadIcon*)l)->getSignalHead())->getAppearanceName();
-    else
-        Q_ASSERT(false);
-    pixmap = QPixmap::fromImage(((SignalHeadIcon*)l)->getIcon(appearance)->getImage());
-    //   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,0);
-    item->setPos(((SignalHeadIcon*)l)->getX(),((SignalHeadIcon*)l)->getY());
-    if(pl->showTooltip()) item->setToolTip(((SignalHeadIcon*)l)->getTooltip());
-    if(pixmap.isNull())
-     qDebug() << "No pixmap";
-    //   else
-    //    qDebug() << tr("pixmap h = %1, w = %2").arg(pixmap.height()).arg(pixmap.width());
-    if(pl->getDegrees() != 0)
-    {
-     QPointF center = item->boundingRect().center();
-     pl->_itemGroup->setTransformOriginPoint(center);
-     pl->_itemGroup->setRotation(item->rotation()+ pl->getDegrees());
-    }
-    pl->_itemGroup->addToGroup(item);
-    editScene->addItem(pl->_itemGroup);
-    bAdded = true;
-  }
-  else
-  if(qobject_cast<SignalMastIcon*>(l)!= NULL)
-  {
-   //int iState = ((SignalMastIcon*)l)->getSignalMast()->getState();
-   if(((SignalMastIcon*)l)->getSignalMast() != NULL)
-   {
-    QString aspect = ((AbstractSignalMast*)((SignalMastIcon*)l)->getSignalMast())->getAspect();
-    pixmap = QPixmap::fromImage(((SignalMastIcon*)l)->getIcon(aspect)->getImage());
-    //   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,0);
-    item->setPos(((SignalMastIcon*)l)->getX(),((SignalMastIcon*)l)->getY());
-    if(pl->showTooltip()) item->setToolTip(((SignalMastIcon*)l)->getTooltip());
-    if(pixmap.isNull())
-     qDebug() << "No pixmap";
-    //   else
-    //    qDebug() << tr("pixmap h = %1, w = %2").arg(pixmap.height()).arg(pixmap.width());
-    if(pl->getDegrees() != 0)
-     item->setRotation(item->rotation()+ pl->getDegrees());
-    pl->_itemGroup->addToGroup(item);
-    editScene->addItem(pl->_itemGroup);
-    bAdded = true;
-   }
-   else
-    log->debug("SignalMastIcon not added");
-  }
-  else
-  if(qobject_cast<MultiSensorIcon*>(l)!= NULL)
-  {
-    pixmap = QPixmap::fromImage(((MultiSensorIcon*)l)->getIcon()->getImage());
-    //   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,0);
-    item->setPos(((MultiSensorIcon*)l)->getX(),((MultiSensorIcon*)l)->getY());
-    if(pl->showTooltip()) item->setToolTip(((MultiSensorIcon*)l)->getTooltip());
-    if(pixmap.isNull())
-     qDebug() << "No pixmap";
-    //   else
-    //    qDebug() << tr("pixmap h = %1, w = %2").arg(pixmap.height()).arg(pixmap.width());
-    if(pl->getDegrees() != 0)
-     item->setRotation(item->rotation()+ pl->getDegrees());
-    pl->_itemGroup->addToGroup(item);
-    editScene->addItem(pl->_itemGroup);
-    bAdded = true;
-  }
-  else if(qobject_cast<MemoryInputIcon*>(l)!= NULL)
-  {
-   MemoryInputIcon* icon = (MemoryInputIcon*)l;
-//   if(icon->_itemGroup != NULL)
-//   {
-//    //icon->_itemGroup->addToGroup(new QGraphicsTextItem("MemoryInputItem"));
-//    int x = icon->getX();
-//    int y = icon->getY();
-//    icon->_itemGroup->setPos(x,y);
-//    editScene->addItem(icon->_itemGroup);
-//   }
-//   else
-   {
-//    icon->_itemGroup = new QGraphicsItemGroup();
-//    icon-> widget = new MyGraphicsProxyWidget();
-//    QLineEdit* edit = new QLineEdit("???");
-//    edit->resize(icon->_textBox->size());
-//    icon->widget->setWidget(edit);
-       icon->widget->setFlag(QGraphicsItem::ItemIsFocusable,true) ;
-       icon->widget->setFlag(QGraphicsItem::ItemIsMovable, true);
-       icon->widget->setFlag(QGraphicsItem::ItemIsSelectable, true);
-       icon->_textBox->setEnabled(true);
-       if(icon->_itemGroup == NULL) icon->_itemGroup = new QGraphicsItemGroup;
-       icon->_itemGroup->addToGroup(icon->widget);
-       icon->_itemGroup->setZValue(icon->getDisplayLevel());
-     int x = icon->getX();
-     int y = icon->getY();
-     icon->_itemGroup->setPos(x,y);
-     editScene->addItem(icon->_itemGroup);
-     bAdded = true;
-   }
-  }
-  else if(qobject_cast<MemorySpinnerIcon*>(l)!= NULL)
-  {
-   MemorySpinnerIcon* icon = (MemorySpinnerIcon*)l;
-//   if(icon->_itemGroup != NULL)
-//   {
-//    icon->_itemGroup->addToGroup(new QGraphicsTextItem("MemorySpinnerItem"));
-//    icon->_itemGroup->setPos(icon->getX(), icon->getY());
-//    editScene->addItem(icon->_itemGroup);
-//   }
-//   else
-   {
-       //icon->_itemGroup = new QGraphicsItemGroup();
-   //    icon->widget = new MyGraphicsProxyWidget();
-   //    QSpinBox* edit = new QSpinBox();
-   //    edit->resize(icon->spinner->size());
-   //    icon->widget->setWidget(edit);
-       icon->widget->setFlag(QGraphicsItem::ItemIsFocusable,true) ;
-       if(icon->_itemGroup == NULL) icon->_itemGroup = new QGraphicsItemGroup;
-        icon->_itemGroup->addToGroup(icon->widget);
-        icon->_itemGroup->setZValue(icon->getDisplayLevel());
-        int x = icon->getX();
-        int y = icon->getY();
-        icon->_itemGroup->setPos(x,y);
-        editScene->addItem(icon->_itemGroup);
-        bAdded = true;
-   }
-
-  }
-  else if(qobject_cast<MemoryComboIcon*>(l)!= NULL)
-  {
-   MemoryComboIcon* icon = (MemoryComboIcon*)l;
-//   if(icon->_itemGroup != NULL)
-//   {
-//    icon->_itemGroup->addToGroup(new QGraphicsTextItem("MemoryComboItem"));
-//    icon->_itemGroup->setPos(icon->getX(), icon->getY());
-//    editScene->addItem(icon->_itemGroup);
-//   }
-//   else
-   {
-       //icon->_itemGroup = new QGraphicsItemGroup();
-   //    icon-> widget = new MyGraphicsProxyWidget();
-   //    QComboBox* edit = new QComboBox();
-   //    edit->resize(icon->_comboBox->size());
-   //    icon->widget->setWidget(edit);
-    if(icon->_itemGroup == NULL) icon->_itemGroup = new QGraphicsItemGroup;
-        icon->_itemGroup->addToGroup(icon->widget);
-        icon->widget->setFlag(QGraphicsItem::ItemIsFocusable,true) ;
-        icon->_itemGroup->setZValue(icon->getDisplayLevel());
-        int x = icon->getX();
-        int y = icon->getY();
-        icon->_itemGroup->setPos(x,y);
-        editScene->addItem(icon->_itemGroup);
-        bAdded = true;
-   }
-
-  }
-  if(((PositionableLabel*)l)->getIcon(/*state*/)!=NULL)
-  {
-   pixmap = QPixmap::fromImage(((PositionableLabel*)l)->getIcon(/*state*/)->getImage());
-//   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
-   QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,0);
-  item->setPos(pl->getX(), pl->getY());
-  if(pl->showTooltip()) item->setToolTip(pl->getTooltip());
-  if(pixmap.isNull())
-   qDebug() << "No pixmap";
-//   else
-//    qDebug() << tr("pixmap h = %1, w = %2").arg(pixmap.height()).arg(pixmap.width());
-   pl->_itemGroup->addToGroup(item);
-   editScene->addItem(pl->_itemGroup);
-   bAdded = true;
-   //if(pl->getDegrees() != 0)
-   {
-    //l->item->rotate(l->getDegrees());
-    QRectF bnd = pl->_itemGroup->boundingRect();
-    QPointF center = bnd.center();
-    pl->_itemGroup->setTransformOriginPoint(center);
-    pl->_itemGroup->setRotation(item->rotation()+ pl->getDegrees()+pl->getIcon()->getRotation());
-    pl->currRotation = pl->getIcon()->getRotation();
-   }
-  }
-  else
-#endif
    if(l != NULL)
    {
     bAdded = l->updateScene();
     if(l->_itemGroup != NULL && l->_itemGroup->parentObject() != NULL)
      log->debug(tr("Item already has a parent %1 ").arg(l->getNameString()));
     editScene->addItem(l->_itemGroup);
+    if(l->_itemGroup != NULL && l->_itemGroup->name() == "")
+     l->_itemGroup->setName(l->getGroupName());
    }
    else
     log->error("updateScene failed!");
@@ -2946,6 +2565,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
  // delete panel - deregister the panel for saving
  ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->deregister(this);
  PanelMenu::instance()->deletePanel(this);
+ editors->removeOne(this);
  setVisible(false);
  if (clear)
  {
@@ -4032,3 +3652,84 @@ abstract public void mouseExited(MouseEvent event);
  * set up target panel, frame etc.
  */
 /*abstract*/ /*protected*/ void Editor::init(QString name) {}
+/**
+ * Get a List of the currently-existing Editor objects. The returned list is
+ * a copy made at the time of the call, so it can be manipulated as needed
+ * by the caller.
+ *
+ * @return a List of Editors
+ */
+/*synchronized*/ /*public*/ /*static*/ QVector<Editor*> Editor::getEditors() {
+    return  QVector<Editor*>(*editors);
+}
+
+/**
+ * Get a list of currently-existing Editor objects that are specific
+ * sub-classes of Editor.
+ *
+ * The returned list is a copy made at the time of the call, so it can be
+ * manipulated as needed by the caller.
+ *
+ * @param <T>  the Class the list should be limited to.
+ * @param type the Class the list should be limited to.
+ * @return a List of Editors.
+ */
+//@SuppressWarnings("unchecked")
+//template<class T>
+/*synchronized*/ /*public*/ /*static*/ /*<T extends Editor>*/ QList<Editor*> Editor::getEditors(/*@Nonnull*/ QString type)
+{
+ QList<Editor*> result =  QList<Editor*>();
+
+ foreach (Editor* e, Editor::getEditors())
+ {
+#if 0
+  Class* clazz;
+  try
+  {
+   clazz = Class::forName(type);
+  }
+  catch(ClassNotFoundException ex)
+  {
+   continue;
+  }
+
+  if (clazz->isInstance(e)) {
+      result.append( e);
+  }
+#else
+  // this is cheating. Should be able to figure out how to access metadata
+  if(type == "ControlPanelEditor")
+  {
+   if(qobject_cast<ControlPanelEditor*>(e) != NULL)
+    result.append(e);
+  }
+  if(type == "PanelEditor")
+  {
+   if(qobject_cast<PanelEditor*>(e) != NULL)
+    result.append(e);
+  }
+//  if(type == "LayoutEditor")
+//  {
+//   if(qobject_cast<LayoutEditor*>(e) != NULL)
+//    result.append(e);
+//  }
+ }
+#endif
+ return result;
+
+}
+
+/**
+ * Get an Editor of a particular name. If more than one exists, there's no
+ * guarantee as to which is returned.
+ *
+ * @return an Editor or null if no matching Editor could be found
+ */
+/*public*/ /*static*/ Editor* Editor::getEditor(QString name) {
+    foreach (Editor* e, Editor::getEditors()) {
+        if (e->title()==(name)) {
+            return e;
+        }
+    }
+    return NULL;
+}

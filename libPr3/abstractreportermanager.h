@@ -33,7 +33,7 @@ public slots:
 private:
     Logger* log;
 protected:
-    virtual Reporter* createNewReporter(QString systemName, QString userName) {return NULL;}
+    virtual Reporter* createNewReporter(QString /*systemName*/, QString /*userName*/) {return NULL;}
  friend class ProxyReporterManager;
 };
 

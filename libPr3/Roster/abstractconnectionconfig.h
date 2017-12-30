@@ -13,7 +13,7 @@ class Option;
 class QCheckBox;
 class QLabel;
 class JTextField;
-class DefaultUserMessagePreferences;
+class UserPreferencesManager;
 class LIBPR3SHARED_EXPORT AbstractConnectionConfig : public ConnectionConfig
 {
     Q_OBJECT
@@ -45,6 +45,9 @@ public:
         /*protected*/ void setAdvanced(bool boo);
         /*public*/ QString getItem();
     };
+ /*public*/ void _register();
+ /*public*/ void dispose();
+
 signals:
 
 public slots:
@@ -53,7 +56,7 @@ private:
     /*abstract*/ virtual void showAdvancedItems();
 
 protected:
-    /*protected*/ /*final*/ DefaultUserMessagePreferences* pref;// = InstanceManager.getDefault(UserPreferencesManager.class);
+    /*protected*/ /*final*/ UserPreferencesManager* pref;// = InstanceManager.getDefault(UserPreferencesManager.class);
      /*protected*/ int NUMOPTIONS;// = 2;
     /*protected*/ QCheckBox* showAdvanced;// = new JCheckBox("Additional Connection Settings");
 

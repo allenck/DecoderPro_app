@@ -84,7 +84,6 @@ SOURCES += libtables.cpp \
     signaltablemodel.cpp \
     jinternalframe.cpp \
     jdesktoppane.cpp \
-    jrootpane.cpp \
     portaltablemodel.cpp \
     blockpathtablemodel.cpp \
     internalframeevent.cpp \
@@ -183,7 +182,6 @@ HEADERS += libtables.h\
     signaltablemodel.h \
     jinternalframe.h \
     jdesktoppane.h \
-    jrootpane.h \
     portaltablemodel.h \
     internalframelistener.h \
     blockpathtablemodel.h \
@@ -271,3 +269,10 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ 
 
 INCLUDEPATH += $$PWD/../LayoutEditor/debug
 DEPENDPATH += $$PWD/../LayoutEditor/debug
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
+else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+
+INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib
+DEPENDPATH += $$PWD/../appslib $$PWD/../appslib

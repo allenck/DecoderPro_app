@@ -6,6 +6,7 @@
 #include "xmlfile.h"
 #include <QTextStream>
 #include "file.h"
+#include <QDataStream>
 
 VSDFile::VSDFile(QObject *parent) :
   ZipFile(parent)

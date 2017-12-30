@@ -113,7 +113,7 @@ private:
     /*private*/ void addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, bool store, QString tooltip);
     int getCategoryIndexFromString(QString category);
     void updateJList();
-Logger* log;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("TabbedPreferences");
     bool isDirty();
 
 protected:

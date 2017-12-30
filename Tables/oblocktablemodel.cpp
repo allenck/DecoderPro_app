@@ -106,7 +106,7 @@ void OBlockTableModel::initTempRow()
 
 //@Override
 /*protected*/ QString OBlockTableModel::getMasterClassName() {
- return "OBlockTableModel"/*.class.getName()*/;
+ return "jmri.jmrit.beantable.OBlockTableModel"/*.class.getName()*/;
 }
 
 /*protected*/ QList<NamedBean*> OBlockTableModel::getBeanList() {

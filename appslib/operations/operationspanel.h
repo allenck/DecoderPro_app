@@ -29,6 +29,7 @@ namespace Operations
   /*public*/ void initMinimumSize() ;
   /*public*/ void initMinimumSize(QSize dimension) ;
   /*public*/ void dispose();
+  /*public*/ bool loadTableDetails(JTable* table);
 
  signals:
 
@@ -72,6 +73,7 @@ namespace Operations
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, HtmlTextEdit* textArea);
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, JTextArea* textArea, QSize size);
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, HtmlTextEdit* textArea, QSize size);
+  /*protected*/ QString getWindowFrameRef();
 
  friend class OperationsFrame;
  };

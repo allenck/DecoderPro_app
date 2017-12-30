@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'panelpro.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.4.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.7.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'panelpro.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.4.0. It"
+#error "This file was generated using the moc from 5.7.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,11 +20,11 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_PanelPro_t {
     QByteArrayData data[3];
-    char stringdata[21];
+    char stringdata0[21];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_PanelPro_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_PanelPro_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_PanelPro_t qt_meta_stringdata_PanelPro = {
@@ -64,6 +64,7 @@ void PanelPro::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         PanelPro *_t = static_cast<PanelPro *>(_o);
+        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->handleQuit(); break;
         default: ;
@@ -86,7 +87,7 @@ const QMetaObject *PanelPro::metaObject() const
 void *PanelPro::qt_metacast(const char *_clname)
 {
     if (!_clname) return Q_NULLPTR;
-    if (!strcmp(_clname, qt_meta_stringdata_PanelPro.stringdata))
+    if (!strcmp(_clname, qt_meta_stringdata_PanelPro.stringdata0))
         return static_cast<void*>(const_cast< PanelPro*>(this));
     return Apps::qt_metacast(_clname);
 }
@@ -109,11 +110,11 @@ int PanelPro::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 struct qt_meta_stringdata_PPWindowListener_t {
     QByteArrayData data[1];
-    char stringdata[17];
+    char stringdata0[17];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_PPWindowListener_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_PPWindowListener_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_PPWindowListener_t qt_meta_stringdata_PPWindowListener = {
@@ -163,7 +164,7 @@ const QMetaObject *PPWindowListener::metaObject() const
 void *PPWindowListener::qt_metacast(const char *_clname)
 {
     if (!_clname) return Q_NULLPTR;
-    if (!strcmp(_clname, qt_meta_stringdata_PPWindowListener.stringdata))
+    if (!strcmp(_clname, qt_meta_stringdata_PPWindowListener.stringdata0))
         return static_cast<void*>(const_cast< PPWindowListener*>(this));
     return WindowListener::qt_metacast(_clname);
 }

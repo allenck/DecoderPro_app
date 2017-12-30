@@ -40,7 +40,7 @@ public:
      */
     virtual void _connect()  {} // throws Exception;
 
-virtual QString getCurrentPortName()  {return "";}
+    virtual QString getCurrentPortName()  {return "";}
 
     // returns the InputStream from the port
     virtual /*DataInputStream*/QDataStream* getInputStream()  {return NULL;}

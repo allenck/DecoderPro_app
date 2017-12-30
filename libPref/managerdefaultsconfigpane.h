@@ -50,6 +50,8 @@ private:
     QVector<QButtonGroup*> groups;
     QVBoxLayout* thisLayout;
     QGridLayout* matrixLayout;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ManagerDefaultsConfigPane");
+
 friend class SelectionButton;
 };
 /**

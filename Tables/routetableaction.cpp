@@ -21,7 +21,7 @@
 #include "../LayoutEditor/panelmenu.h"
 #include <QApplication>
 #include <QDesktopWidget>
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "logix.h"
 #include "conditionalaction.h"
 #include "defaultconditionalaction.h"
@@ -29,7 +29,6 @@
 #include "defaultconditionalmanager.h"
 #include "defaultroutemanager.h"
 #include <QMessageBox>
-#include "../LayoutEditor/systemnamecomparator.h"
 #include "systemnamecomparator.h"
 
 //RouteTableAction::RouteTableAction(QObject *parent) :
@@ -479,7 +478,11 @@ void RouteTableDataModel::doDelete(NamedBean* bean)
     return InstanceManager::routeManagerInstance()->getByUserName(name);
 }
 
-/*protected*/ QString RouteTableDataModel::getMasterClassName() { return /*getClassName()*/metaObject()->className(); }
+/*protected*/ QString RouteTableDataModel::getMasterClassName()
+{
+ //return /*getClassName()*/metaObject()->className();
+ return "jmri.jmrit.beantable.RouteTableAction";
+}
 
 
 /*public*/ void RouteTableDataModel::clickOn(NamedBean* t) {
@@ -1662,7 +1665,7 @@ void AddFrameWindowListener2::windowClosing(QCloseEvent */*e*/)
  // remind to save, if Route was created or edited
  if (self->routeDirty)
  {
-  ((DefaultUserMessagePreferences*)      InstanceManager::getDefault("UserPreferencesManager"))->
+  ((UserPreferencesManager*)      InstanceManager::getDefault("UserPreferencesManager"))->
         showInfoMessage("Reminder","Remember to save your Route information.",self->getClassName(), "remindSaveRoute");
     self->routeDirty = false;
  }
@@ -1800,7 +1803,7 @@ void RouteTableAction::createPressed(/*ActionEvent e*/) {
     }
     updatePressed(true);
     status2->setText(editInst);
-    ((DefaultUserMessagePreferences*)pref)->setSimplePreferenceState(systemNameAuto, _autoSystemName->isChecked());
+    ((UserPreferencesManager*)pref)->setSimplePreferenceState(systemNameAuto, _autoSystemName->isChecked());
     // activate the route
 }
 
@@ -3066,13 +3069,13 @@ void RouteSensorModel::reset()
 /*public*/ void RouteTableAction::setMessagePreferencesDetails()
 {
 #if 1
- ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveRoute", tr("Hide Save Message Reminder"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveRoute", tr("Hide Save Message Reminder"));
  AbstractTableAction::setMessagePreferencesDetails();
  QMap< int,QString> options =  QMap< int,QString>();
  options.insert(0x00, tr("Always Ask"));
  options.insert(0x01, tr("Never Delete"));
  options.insert(0x02, tr("Delete Without Prompting"));
- ((DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "deleteInUse", tr("When Deleting an item that is in use"), options, 0x00);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "deleteInUse", tr("When Deleting an item that is in use"), options, 0x00);
 #endif
 }
 

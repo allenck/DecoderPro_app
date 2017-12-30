@@ -12,6 +12,7 @@
 #include <QMenuBar>
 #include <QMenu>
 #include "savemenu.h"
+#include "mysortfilterproxymodel.h"
 
 //AbstractTableTabAction::AbstractTableTabAction(QObject *parent) :
 //    AbstractTableAction(parent)
@@ -250,9 +251,10 @@ void TabbedTableItem::createDataModel()
 //        TableSorter sorter = new TableSorter(dataModel);
  MySortFilterProxyModel* sorter = new MySortFilterProxyModel();
  sorter->setSourceModel(dataModel);
- dataTable = dataModel->makeJTable(sorter);
+ dataTable = dataModel->makeJTable(dataModel->getMasterClassName() + ":" + getItemString(), dataModel, sorter);
+
  tableAction->table = dataTable;
- sorter->setSourceModel(dataModel);
+ //sorter->setSourceModel(dataModel);
  dataTable->setSortingEnabled(true);
  //sorter.setTableHeader(dataTable.getTableHeader());
  //dataScroll	= new JScrollPane(dataTable);
@@ -361,7 +363,8 @@ void TabbedTableItem::addPanelModel()
 {
  if (dataModel != NULL)
  {
-  dataModel->saveTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
+//  dataModel->saveTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
+  dataModel->stopPersistingTable(dataTable);
   dataModel->dispose();
  }
  dataModel = NULL;
@@ -400,9 +403,9 @@ void AbstractTableTabAction::buildMenus(BeanTableFrame* f)
 //                // MessageFormat headerFormat = new MessageFormat(getTitle());  // not used below
 //                MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
 //                if (item.getStandardTableModel()) {
-//                    item.getDataTable().print(JTable.PrintMode.FIT_WIDTH, null, footerFormat);
+//                    item.getDataTable().print(JTable.PrintMode.FIT_WIDTH, NULL, footerFormat);
 //                } else {
-//                    item.getAAClass().print(JTable.PrintMode.FIT_WIDTH, null, footerFormat);
+//                    item.getAAClass().print(JTable.PrintMode.FIT_WIDTH, NULL, footerFormat);
 //                }
 //            } catch (java.awt.print.PrinterException e1) {
 //                log.warn("error printing: " + e1, e1);

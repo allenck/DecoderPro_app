@@ -111,7 +111,10 @@
  * {@value #STATUS_CODE}
  */
 /*public*/ /*static final*/ QString JSON::STATUS_CODE = "statusCode"; // NOI18N
-
+/**
+  * {@value #PROPERTIES}
+  */
+ /*public*/ /*static*/ /*final*/ QString JSON::PROPERTIES = "properties"; // NOI18N
 /* JSON error */
 /**
  * {@value #ERROR}
@@ -825,97 +828,97 @@
  */
 
 /* Common state */
-/**
- * {@value #UNKNOWN}
- * <p>
- * Note that this value deliberately differs from
- * {@link jmri.NamedBean#UNKNOWN}.
- */
-/*public*/ static /*final*/ int UNKNOWN = 0x00;
+///**
+// * {@value #UNKNOWN}
+// * <p>
+// * Note that this value deliberately differs from
+// * {@link jmri.NamedBean#UNKNOWN}.
+// */
+///*public*/ /*static*/ /*final*/ int JSON::UNKNOWN = 0x00;
 
-/* Light and PowerManager state */
-/**
- * {@value #ON}
- */
-/*public*/ static /*final*/ int ON = 0x02;
-/**
- * {@value #OFF}
- */
-/*public*/ static /*final*/ int OFF = 0x04;
+///* Light and PowerManager state */
+///**
+// * {@value #ON}
+// */
+///*public*/ /*static*/ /*final*/ int JSON::ON = 0x02;
+///**
+// * {@value #OFF}
+// */
+///*public*/ /*static*/ /*final*/ int JSON::OFF = 0x04;
 
-/* NamedBean state */
-/**
- * {@value #INCONSISTENT}
- */
-/*public*/ static /*final*/ int INCONSISTENT = 0x08;
+///* NamedBean state */
+///**
+// * {@value #INCONSISTENT}
+// */
+///*public*/ /*static*/ /*final*/ int JSON::INCONSISTENT = 0x08;
 
 /* Route state */
 /**
  * {@value #TOGGLE}
  */
-/*public*/ static /*final*/ int TOGGLE = 0x08;
+/*public*/ /*static*/ /*final*/ int JSON::TOGGLE = 0x08;
 
 /* Sensor state */
 /**
  * {@value #ACTIVE}
  */
-/*public*/ static /*final*/ int ACTIVE = 0x02;
+/*public*/ /*static*/ /*final*/ int JSON::ACTIVE = 0x02;
 /**
  * {@value #INACTIVE}
  */
-/*public*/ static /*final*/ int INACTIVE = 0x04;
+/*public*/ /*static*/ /*final*/ int JSON::INACTIVE = 0x04;
 
 /* SignalHead state */
 /**
  * {@value #STATE_DARK}
  */
-/*public*/ static /*final*/ int STATE_DARK = 0x00;
+/*public*/ /*static*/ /*final*/ int JSON::STATE_DARK = 0x00;
 /**
  * {@value #RED}
  */
-/*public*/ static /*final*/ int RED = 0x01;
+/*public*/ /*static*/ /*final*/ int JSON::RED = 0x01;
 /**
  * {@value #FLASHRED}
  */
-/*public*/ static /*final*/ int FLASHRED = 0x02;
+/*public*/ /*static*/ /*final*/ int JSON::FLASHRED = 0x02;
 /**
  * {@value #YELLOW}
  */
-/*public*/ static /*final*/ int YELLOW = 0x04;
+/*public*/ /*static*/ /*final*/ int JSON::YELLOW = 0x04;
 /**
  * {@value #FLASHYELLOW}
  */
-/*public*/ static /*final*/ int FLASHYELLOW = 0x08;
+/*public*/ /*static*/ /*final*/ int JSON::FLASHYELLOW = 0x08;
 /**
  * {@value #GREEN}
  */
-/*public*/ static /*final*/ int GREEN = 0x10;
+/*public*/ /*static*/ /*final*/ int JSON::GREEN = 0x10;
 /**
  * {@value #FLASHGREEN}
  */
-/*public*/ static /*final*/ int FLASHGREEN = 0x20;
+/*public*/ /*static*/ /*final*/ int JSON::FLASHGREEN = 0x20;
 /**
  * {@value #LUNAR}
  */
-/*public*/ static /*final*/ int LUNAR = 0x40;
+/*public*/ /*static*/ /*final*/ int JSON::LUNAR = 0x40;
 /**
  * {@value #FLASHLUNAR}
  */
-/*public*/ static /*final*/ int FLASHLUNAR = 0x80;
+/*public*/ /*static*/ /*final*/ int JSON::FLASHLUNAR = 0x80;
 /**
  * {@value #STATE_HELD}
  */
-/*public*/ static /*final*/ int STATE_HELD = 0x100;
+/*public*/ /*static*/ /*final*/ int JSON::STATE_HELD = 0x100;
 
 /* Turnout state */
 /**
  * {@value #CLOSED}
  */
-/*public*/ static /*final*/ int CLOSED = 0x02;
+/*public*/ /*static*/ /*final*/ int JSON::CLOSED = 0x02;
 /**
  * {@value #THROWN}
  */
-/*public*/ static /*final*/ int THROWN = 0x04;
+/*public*/ /*static*/ /*final*/ int JSON::THROWN = 0x04;
 /**
  * {@value #UNIT}
  *

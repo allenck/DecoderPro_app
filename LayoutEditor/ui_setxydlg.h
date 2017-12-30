@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'setxydlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -84,12 +84,12 @@ public:
 
     void retranslateUi(QDialog *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", "Dialog", 0));
-        nameText->setText(QApplication::translate("Dialog", "Name: XXXXXX", 0));
-        textX->setText(QApplication::translate("Dialog", "x= xxxx", 0));
-        textY->setText(QApplication::translate("Dialog", "y = xxxx", 0));
-        cancelButton->setText(QApplication::translate("Dialog", "Cancel", 0));
-        okButton->setText(QApplication::translate("Dialog", "Set", 0));
+        Dialog->setWindowTitle(QApplication::translate("Dialog", "Dialog", Q_NULLPTR));
+        nameText->setText(QApplication::translate("Dialog", "Name: XXXXXX", Q_NULLPTR));
+        textX->setText(QApplication::translate("Dialog", "x= xxxx", Q_NULLPTR));
+        textY->setText(QApplication::translate("Dialog", "y = xxxx", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("Dialog", "Cancel", Q_NULLPTR));
+        okButton->setText(QApplication::translate("Dialog", "Set", Q_NULLPTR));
     } // retranslateUi
 
 };

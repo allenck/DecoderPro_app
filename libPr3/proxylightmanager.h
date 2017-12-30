@@ -29,7 +29,7 @@ public slots:
 private:
  Logger* log;
 protected:
- /*protected*/ AbstractManager* makeInternalManager();
+ /*protected*/ Manager* makeInternalManager() const;
  /*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) ;
  friend class AbstractProxyManager;
 };

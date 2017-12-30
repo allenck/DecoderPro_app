@@ -6,12 +6,13 @@
 #include <QMenuBar>
 #include <QToolBar>
 #include <QStatusBar>
-#include "defaultusermessagepreferences.h"
+#include "jmriuserpreferencesmanager.h"
 #include "abstractshutdowntask.h"
 #include <QMessageBox>
 #include "windowmenu.h"
 #include "helputil.h"
 #include "panelmenu.h"
+#include "jmrijframeinterface.h"
 
 //JmriJFrame::JmriJFrame(QWidget *parent) :
 //    QMainWindow(parent)
@@ -78,6 +79,8 @@
  */
 /*public*/ JmriJFrame::JmriJFrame(QWidget *parent) : JFrame(parent)  {
     //this(true, true);
+ //if(qobject_cast<JFrame*>(parent) != NULL)
+
     init(true, true);
 //    reuseFrameSavedPosition=true;
 //    reuseFrameSavedSized=true;
@@ -134,6 +137,7 @@
 void JmriJFrame::init(bool saveSize, bool savePosition)
 {
  log = new Logger("JmriJFrame");
+ setVisible(true);
  //reuseFrameSavedPosition = true;
  //reuseFrameSavedSized = true;
 
@@ -147,15 +151,16 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  windowMenu = NULL;
  installEventFilter(this);
  windowFrameRef = QString(this->metaObject()->className());
+ mShown = false;
 
  reuseFrameSavedPosition=savePosition;
  reuseFrameSavedSized=saveSize;
 
  addWindowListener(new JmriJFrameWindowListener(this));
-#if 0
- addComponentListener(this);
- windowInterface = new JmriJFrameInterface();
 
+// TODO: addComponentListener(this);
+ windowInterface = new JmriJFrameInterface();
+#if 0  // TODO:
  /* This ensures that different jframes do not get placed directly on top
  of each other, but offset by the top inset.  However a saved preferences
  can over ride this */
@@ -206,7 +211,7 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
 #endif
 void JmriJFrame::setFrameLocation()
 {
- DefaultUserMessagePreferences* prefsMgr = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+ UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  if ((prefsMgr != NULL) && (prefsMgr->isWindowPositionSaved(windowFrameRef)))
  {
   //QSize screen = getToolkit().getScreenSize();
@@ -682,24 +687,23 @@ private bool escapeKeyActionClosesWindow = false;
     }
     return result;
 }
-
+#endif
 /**
  * Get a JmriJFrame of a particular name.
  * If more than one exists, there's no guarantee
  * as to which is returned.
  */
-/*public*/ static JmriJFrame getFrame(String name) {
-    java.util.List<JmriJFrame> list = getFrameList();  // needed to get synch copy
-    for (int i=0; i<list.size(); i++) {
-        JmriJFrame j = list.get(i);
-        if (j.windowTitle()==(name)) return j;
+/*public*/ /*static*/ JmriJFrame* JmriJFrame::getFrame(QString name) {
+    QList<JmriJFrame*>* list = getFrameList();  // needed to get synch copy
+    for (int i=0; i<list->size(); i++) {
+        JmriJFrame* j = list->at(i);
+        if (j->title()==(name)) return j;
     }
     return NULL;
 }
-
+#if 0
 
 // handle resizing when first shown
-private bool mShown = false;
 /*public*/ void addNotify() {
     super.addNotify();
     // log->debug("addNotify window ("+windowTitle()+")");
@@ -715,18 +719,15 @@ private bool mShown = false;
     }
     mShown = true;
 }
-
+#endif
 /**
  * Set whether the frame Position is saved or not after it has been created.
  */
-/*public*/ void setSavePosition(bool save){
+/*public*/ void JmriJFrame::setSavePosition(bool save){
     reuseFrameSavedPosition=save;
-    jmri.UserPreferencesManager prefsMgr = jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class);
-    if (prefsMgr == NULL) {
-        prefsMgr = jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class);
-    }
+    UserPreferencesManager* prefsMgr = (UserPreferencesManager* )InstanceManager::getDefault("UserPreferencesManager");
     if (prefsMgr != NULL) {
-        prefsMgr.setSaveWindowLocation(windowFrameRef, save);
+        prefsMgr->setSaveWindowLocation(windowFrameRef, save);
     } else {
         log->warn("setSavePosition() UserPreferencesManager() not initialised" );
     }
@@ -735,14 +736,11 @@ private bool mShown = false;
 /**
  * Set whether the frame Size is saved or not after it has been created
  */
-/*public*/ void setSaveSize(bool save){
+/*public*/ void JmriJFrame::setSaveSize(bool save){
     reuseFrameSavedSized=save;
-    jmri.UserPreferencesManager prefsMgr = jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class);
-    if (prefsMgr == NULL) {
-        prefsMgr = jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class);
-    }
+    UserPreferencesManager* prefsMgr = (UserPreferencesManager* )InstanceManager::getDefault("UserPreferencesManager");
     if (prefsMgr != NULL) {
-        prefsMgr.setSaveWindowSize(windowFrameRef, save);
+        prefsMgr->setSaveWindowSize(windowFrameRef, save);
     } else {
         log->warn("setSaveSize() UserPreferencesManager() not initialised" );
     }
@@ -751,17 +749,17 @@ private bool mShown = false;
 /**
  * Returns if the frame Position is saved or not
  */
-/*public*/ bool getSavePosition(){
+/*public*/ bool JmriJFrame::getSavePosition(){
     return reuseFrameSavedPosition;
 }
 
 /**
  * Returns if the frame Size is saved or not
  */
-/*public*/ bool getSaveSize(){
+/*public*/ bool JmriJFrame::getSaveSize(){
     return reuseFrameSavedSized;
 }
-#endif
+
 
 /**
  * A frame is considered "modified" if it has changes
@@ -876,7 +874,7 @@ bool MyAbstractShutDownTask::execute()
  */
 /*public*/ void JmriJFrame::dispose()
 {
- DefaultUserMessagePreferences* p = (DefaultUserMessagePreferences*)InstanceManager::getDefault("UserPreferencesManager");
+ UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  if (p != NULL)
  {
   if (reuseFrameSavedPosition)
@@ -891,11 +889,11 @@ bool MyAbstractShutDownTask::execute()
 #endif
   }
  }
- log->debug("dispose "+windowTitle());
-// if (windowInterface != NULL)
-// {
-//  windowInterface.dispose();
-// }
+ //log->debug("dispose "+windowTitle());
+ if (windowInterface != NULL)
+ {
+  windowInterface->dispose();
+ }
  if (task != NULL)
  {
   InstanceManager::shutDownManagerInstance()->deregister(task);
@@ -1055,6 +1053,7 @@ void JmriJFrame::setWindowTitle(const QString &title)
 void JmriJFrame::setTitle(QString name)
 {
  this->name = name;
+ JFrame::setTitle(name);
  QMainWindow::setWindowTitle(name);
 }
 QString JmriJFrame::getTitle() { return windowTitle();}
@@ -1207,7 +1206,8 @@ void JmriJFrame::moveEvent(QMoveEvent *e) { componentMoved(e);}
     }
 }
 
-/*public*/ void JmriJFrame::componentResized(QResizeEvent* /*e*/) {
+/*public*/ void JmriJFrame::componentResized(QResizeEvent* /*e*/)
+{
     UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if ((p != NULL) && (reuseFrameSavedSized) && isVisible()) {
         saveWindowSize(p);
@@ -1244,3 +1244,10 @@ void JmriJFrame::moveEvent(QMoveEvent *e) { componentMoved(e);}
             p->setWindowSize(windowFrameRef, /*super.getSize()*/size());
 //        }
     }
+/*public*/ void JmriJFrame::setAllowInFrameServlet(bool allow) {
+        allowInFrameServlet = allow;
+}
+
+/*public*/ bool JmriJFrame::getAllowInFrameServlet() {
+    return allowInFrameServlet;
+}

@@ -73,8 +73,8 @@ signals:
 private:
  Logger log;
 protected:
- /*private*/ AbstractManager* getInternal();
- virtual /*protected*/ AbstractManager* makeInternalManager();
+ ///*private*/ AbstractManager* getInternal();
+ virtual /*protected*/ Manager* makeInternalManager() const;
  virtual /*protected*/ Sensor* makeBean(int i, QString systemName, QString userName);
  /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
  /*protected*/ NamedBean* provideNamedBean(QString name);

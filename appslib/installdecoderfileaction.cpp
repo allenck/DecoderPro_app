@@ -46,42 +46,46 @@
     }
 
     /*public*/ InstallDecoderFileAction::InstallDecoderFileAction(QString s, QWidget* who)
- : InstallDecoderURLAction(s)
+ : InstallDecoderURLAction(s, who)
  {
         //super(s);
  common();
+
     }
 
 void InstallDecoderFileAction::common()
 {
  log = new Logger("InstallDecoderFileAction");
+ fci = NULL;
 }
-    QUrl* InstallDecoderFileAction::pickURL(QWidget* who) {
-        if (fci == NULL) {
-            fci = XmlFile::userFileChooser("XML files", "xml");
+
+QUrl* InstallDecoderFileAction::pickURL(QWidget* who)
+{
+    if (fci == NULL) {
+        fci = XmlFile::userFileChooser("XML files", "xml");
+    }
+    // request the filename from an open dialog
+    //fci->rescanCurrentDirectory();
+    int retVal = fci->showOpenDialog(who);
+    // handle selection or cancel
+    if (retVal == JFileChooser::APPROVE_OPTION) {
+        File* file = fci->getSelectedFile();
+        if (log->isDebugEnabled()) {
+            log->debug("located file " + file->getPath() + " for XML processing");
         }
-        // request the filename from an open dialog
-        //fci->rescanCurrentDirectory();
-        int retVal = fci->showOpenDialog(who);
-        // handle selection or cancel
-        if (retVal == JFileChooser::APPROVE_OPTION) {
-            File* file = fci->getSelectedFile();
-            if (log->isDebugEnabled()) {
-                log->debug("located file " + file->getPath() + " for XML processing");
-            }
-            try {
-                return new QUrl("file:" + file->getCanonicalPath());
-            } catch (Exception e) {
-                log->error("Unexpected exception in new URL: " /*+ e*/);
-                return NULL;
-            }
-        } else {
-            log->debug("cancelled in open dialog");
+        try {
+            return new QUrl("file:" + file->getCanonicalPath());
+        } catch (Exception e) {
+            log->error("Unexpected exception in new URL: " /*+ e*/);
             return NULL;
         }
+    } else {
+        log->debug("cancelled in open dialog");
+        return NULL;
     }
+}
 
-    // never invoked, because we overrode actionPerformed above
-    /*public*/ JmriPanel* InstallDecoderFileAction::makePanel() {
-        throw new IllegalArgumentException("Should not be invoked");
-    }
+// never invoked, because we overrode actionPerformed above
+/*public*/ JmriPanel* InstallDecoderFileAction::makePanel() {
+    throw new IllegalArgumentException("Should not be invoked");
+}

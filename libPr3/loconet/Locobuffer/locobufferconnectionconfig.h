@@ -23,5 +23,5 @@ signals:
 public slots:
 
 };
-//Q_DECLARE_METATYPE(LocoBufferConnectionConfig*)
+Q_DECLARE_METATYPE(LocobufferConnectionConfig)
 #endif // LOCOBUFFER_H

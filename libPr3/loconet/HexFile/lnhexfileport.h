@@ -11,7 +11,7 @@ class LIBPR3SHARED_EXPORT LnHexFilePort : public LnPortController
 public:
     explicit LnHexFilePort(QObject *parent = 0);
     /*public*/ void load(QFile* file);
-    /*public*/ void _connect() throw (Exception);
+    /*public*/ void _connect(); // throw (Exception);
     /*public*/ void run(); // invoked in a new thread
     /*public*/ void setDelay(int newDelay);
     /*public*/ /*DataInputStream*/QDataStream* getInputStream();

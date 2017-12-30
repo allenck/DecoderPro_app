@@ -12,7 +12,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT WindowMenu : public QMenu
     Q_OBJECT
 public:
     explicit WindowMenu(QWidget *parent = 0);
-    /*public*/ WindowMenu(WindowInterface* wi, QWidget *parent);
+    /*public*/ WindowMenu(WindowInterface* wi, QWidget *parent=0);
 
 signals:
 

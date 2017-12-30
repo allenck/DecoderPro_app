@@ -1,6 +1,7 @@
 #include "proxylightmanager.h"
 #include "lightmanager.h"
 #include "internallightmanager.h"
+#include "internalsystemconnectionmemo.h"
 
 ProxyLightManager::ProxyLightManager(QObject *parent) :
     AbstractProxyManager(parent)
@@ -29,9 +30,9 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
     return Manager::LIGHTS;
 }
 
-/*protected*/ AbstractManager* ProxyLightManager::makeInternalManager()
+/*protected*/ Manager* ProxyLightManager::makeInternalManager() const
 {
- return (AbstractManager*)new InternalLightManager();
+ return ((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getLightManager();
 }
 
 /**

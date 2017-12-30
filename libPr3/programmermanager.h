@@ -5,12 +5,15 @@
 #include "programmer.h"
 #include "addressedprogrammer.h"
 #include "libPr3_global.h"
+#include "addressedprogrammermanager.h"
+#include "globalprogrammermanager.h"
 
-class LIBPR3SHARED_EXPORT ProgrammerManager : public QObject
+class LIBPR3SHARED_EXPORT ProgrammerManager : public AddressedProgrammerManager
 {
     Q_OBJECT
 public:
-    explicit ProgrammerManager(QObject *parent = 0) : QObject(parent) {}
+    explicit ProgrammerManager(QObject *parent = 0) : AddressedProgrammerManager(parent) {}
+#if 0 //@Deprecated
     /**
      * Gain access to the Global Mode Programmer without reservation.
      * @return null only if there isn't a Global Mode Programmer available
@@ -66,7 +69,7 @@ public:
 signals:
     
 public slots:
-    
+#endif
 };
 
 #endif // PROGRAMMERMANAGER_H

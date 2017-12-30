@@ -5,10 +5,10 @@
 #include <QVector>
 #include "vptr.h"
 
-//DefaultTreeModel::DefaultTreeModel(QObject *parent) :
-//    TreeModel(parent)
-//{
-//}
+DefaultTreeModel::DefaultTreeModel(QObject *parent) :
+    TreeModel(parent)
+{
+}
 /**
  * A simple tree data model that uses TreeNodes.
  * For further information and examples that use DefaultTreeModel,
@@ -38,9 +38,13 @@
   * @see #DefaultTreeModel(TreeNode, boolean)
   */
 // //@ConstructorProperties({"root"})
-// /*public*/ DefaultTreeModel(TreeNode* root) {
-//    this(root, false);
-//}
+ /*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* root, QObject *parent) : TreeModel(parent)
+{
+    //this(root, false);
+ this->root = root;
+ this->_asksAllowsChildren = false;
+
+}
 
 /**
   * Creates a tree specifying whether any node can have children,
@@ -52,7 +56,7 @@
   *        it can have children
   * @see #asksAllowsChildren
   */
-/*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* root, bool asksAllowsChildren, QObject *parent) : CatalogTree(parent){
+/*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* root, bool asksAllowsChildren, QObject *parent) : TreeModel(parent){
     //super();
 //    listenerList = new EventListenerList();
     this->root = root;
@@ -349,40 +353,43 @@
  * @return an array of TreeNodes giving the path from the root to the
  *         specified node
  */
-/*protected*/ QList<TreeNode*>* DefaultTreeModel::getPathToRoot(TreeNode* aNode, int depth) {
-    QList<TreeNode*>*            retNodes;
-    // This method recurses, traversing towards the root in order
-    // size the array. On the way back, it fills in the nodes,
-    // starting from the root and working back to the original node.
+/*protected*/ QList<TreeNode*>* DefaultTreeModel::getPathToRoot(TreeNode* aNode, int depth)
+{
+  QList<TreeNode*>*            retNodes;
+  // This method recurses, traversing towards the root in order
+  // size the array. On the way back, it fills in the nodes,
+  // starting from the root and working back to the original node.
 
-    /* Check for NULL, in case someone passed in a NULL node, or
-       they passed in an element that isn't rooted at root. */
-    if(aNode == NULL) {
-        if(depth == 0)
-            return NULL;
-        else
-        {
-            //retNodes = new QVector<TreeNode*>(depth);
-            retNodes = new QList<TreeNode*>();
-            for(int i=0; i < depth; i++)
-             retNodes->append(NULL);
-        }
-    }
-    else {
-        depth++;
-        if(aNode == root)
-        {
-            //retNodes = new QVector<TreeNode*>(depth);
-            retNodes = new QList<TreeNode*>();
-            for(int i=0; i < depth; i++)
-             retNodes->append(NULL);
-        }
+  /* Check for NULL, in case someone passed in a NULL node, or
+     they passed in an element that isn't rooted at root. */
+  if(aNode == NULL)
+  {
+      if(depth == 0)
+          return NULL;
+      else
+      {
+          //retNodes = new QVector<TreeNode*>(depth);
+          retNodes = new QList<TreeNode*>();
+          for(int i=0; i < depth; i++)
+           retNodes->append(NULL);
+      }
+  }
+  else
+  {
+      depth++;
+      if(aNode == root)
+      {
+          //retNodes = new QVector<TreeNode*>(depth);
+          retNodes = new QList<TreeNode*>();
+          for(int i=0; i < depth; i++)
+           retNodes->append(NULL);
+      }
 
-        else
-            retNodes = getPathToRoot(aNode->getParent(), depth);
-        retNodes->replace(retNodes->size() - depth, aNode);
-    }
-    return retNodes;
+      else
+          retNodes = getPathToRoot(aNode->getParent(), depth);
+      retNodes->replace(retNodes->size() - depth, aNode);
+  }
+  return retNodes;
 }
 
 //
@@ -682,13 +689,14 @@ QModelIndex DefaultTreeModel::index(int row, int column, const QModelIndex &pare
  else
   return QModelIndex();
 }
+
 QModelIndex DefaultTreeModel::parent(const QModelIndex &index) const
 {
  if (!index.isValid())
   return QModelIndex();
  DefaultMutableTreeNode *childItem = static_cast<DefaultMutableTreeNode*>(index.internalPointer());
  DefaultMutableTreeNode* parentItem = (DefaultMutableTreeNode*)childItem->getParent();
- if (parentItem->isRoot() )
+ if (parentItem == root )
   return QModelIndex();
  return createIndex(index.row(),0,parentItem);
 }

@@ -300,7 +300,7 @@ void LocoBufferAdapter::common()
 /*public*/ void LocoBufferAdapter::configure()
 {
 
- // setCommandStationType(getOptionState(option2Name));
+ setCommandStationType(getOptionState(option2Name));
  setTurnoutHandling(getOptionState(option3Name));
  // connect to a packetizing traffic controller
 //    LnPacketizer* packets = new LnPacketizer();

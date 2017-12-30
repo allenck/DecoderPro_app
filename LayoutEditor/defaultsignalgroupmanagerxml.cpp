@@ -143,7 +143,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
  // loop over contained signalgroup elements
  QDomNodeList list = element.elementsByTagName("signalgroup");
 
- DefaultSignalGroupManager* sgm = (DefaultSignalGroupManager*)InstanceManager::signalGroupManagerInstance();
+ SignalGroupManager* sgm = (SignalGroupManager*)InstanceManager::getDefault("SignalGroupManager");
 
  for (int i = 0; i < list.size(); i++)
  {
@@ -263,5 +263,5 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
 }
 
 /*public*/ int DefaultSignalGroupManagerXml::loadOrder(){
-    return InstanceManager::signalGroupManagerInstance()->getXMLOrder();
+    return ((SignalGroupManager*)InstanceManager::getDefault("SignalGroupManager"))->getXMLOrder();
 }

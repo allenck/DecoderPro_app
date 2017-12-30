@@ -122,7 +122,7 @@ BeanTableDataModel(parent)
 
 //@Override
 /*protected*/ QString WarrantTableModel::getMasterClassName() {
- return this->metaObject()->className();
+ return "jmri.jmrit.logix.WarrantTableModel";
 }
 
 /**

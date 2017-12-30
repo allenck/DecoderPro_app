@@ -87,7 +87,8 @@ JmriJFrameInterface::JmriJFrameInterface(QWidget *parent) :   WindowInterface(pa
  PanelMenu::instance()->addEditorPanel((Editor*)frame);
  // pack and show
  frame->setVisible(true);
- frame->pack();
+ frame->setLocation(10, 100);
+ frame->adjustSize();
 }
 FIWindowListener::FIWindowListener(JmriPanel* c, JmriJFrameInterface * _interface)
 {

@@ -1,6 +1,7 @@
 #include "abstractconnectionconfigxml.h"
 #include "portadapter.h"
 #include "systemconnectionmemo.h"
+#include "connectionconfig.h"
 
 AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : AbstractXmlAdapter(parent)
 {
@@ -21,14 +22,29 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
 //    java.util.ResourceBundle.getBundle("jmri.jmrix.JmrixBundle");
 
 /*abstract*/ /*protected*/ void AbstractConnectionConfigXml::getInstance() {}
-/*abstract*/ /*protected*/ void AbstractConnectionConfigXml::AbstractConnectionConfigXml::_register() {}
+/*abstract*/ /*protected*/ void AbstractConnectionConfigXml::_register() {}
 
+/*protected*/ void AbstractConnectionConfigXml::_register(ConnectionConfig* c)
+{
+ c->_register();
+}
+
+#if 0
 /**
  * Default implementation for storing the static contents of the serial port implementation
  * @param o Object to store, of type PositionableLabel
  * @return QDomElement containing the complete info
  */
 /*abstract*/ /*public*/ QDomElement AbstractConnectionConfigXml::store(QObject* o) {}
+#endif
+
+//@Override
+/*public*/ QDomElement AbstractConnectionConfigXml::store(QObject* o, bool shared)
+{
+ Q_UNUSED (shared);
+   //this->store(o);
+ Q_ASSERT(false); // this doesn't work.
+}
 
 /*protected*/ void AbstractConnectionConfigXml::storeCommon(QDomElement e,  PortAdapter* adapter)
 {
@@ -61,59 +77,54 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
   */
 /*abstract*/ /*public*/ bool AbstractConnectionConfigXml::load(QDomElement e) throw (Exception) {}
 
-/*protected*/ void AbstractConnectionConfigXml::loadCommon(QDomElement e, PortAdapter* adapter)
+/*protected*/ void AbstractConnectionConfigXml::loadCommon(QDomElement shared, QDomElement perNode, PortAdapter* adapter)
 {
- if (e.attribute("option1")!=NULL)
- {
-  QString option1Setting = e.attribute("option1");
-  adapter->configureOption1(option1Setting);
- }
- if (e.attribute("option2")!=NULL)
- {
-  QString option2Setting = e.attribute("option2");
-  adapter->configureOption2(option2Setting);
- }
- if (e.attribute("option3")!=NULL)
- {
-  QString option3Setting = e.attribute("option3");
-  adapter->configureOption3(option3Setting);
- }
- if (e.attribute("option4")!=NULL)
- {
-  QString option4Setting = e.attribute("option4");
-  adapter->configureOption4(option4Setting);
- }
+    if (perNode.attribute("option1") != "") {
+        QString option1Setting = perNode.attribute("option1");
+        adapter->configureOption1(option1Setting);
+    }
+    if (perNode.attribute("option2") != "") {
+        QString option2Setting = perNode.attribute("option2");
+        adapter->configureOption2(option2Setting);
+    }
+    if (perNode.attribute("option3") != "") {
+        QString option3Setting = perNode.attribute("option3");
+        adapter->configureOption3(option3Setting);
+    }
+    if (perNode.attribute("option4") != "") {
+        QString option4Setting = perNode.attribute("option4");
+        adapter->configureOption4(option4Setting);
+    }
 
- loadOptions(e.firstChildElement("options"), adapter);
+    loadOptions(perNode.firstChildElement("options"), perNode.firstChildElement("options"), adapter);
 
-// try {
- adapter->setManufacturer(e.attribute("manufacturer"));
-//    } catch ( NullPointerException ex) { //Considered normal if not present
+    try {
+        adapter->setManufacturer(perNode.attribute("manufacturer"));
+    } catch (NullPointerException ex) { //Considered normal if not present
 
-//    }
+    }
 
- if (adapter->getSystemConnectionMemo()!=NULL)
- {
-  if (e.attribute("userName")!=NULL)
-  {
-   adapter->getSystemConnectionMemo()->setUserName(e.attribute("userName"));
-  }
+    if (adapter->getSystemConnectionMemo() != NULL) {
+        if (shared.attribute("userName") != "") {
+            adapter->getSystemConnectionMemo()->setUserName(shared.attribute("userName"));
+        }
 
-  if (e.attribute("systemPrefix")!=NULL)
-  {
-   adapter->getSystemConnectionMemo()->setSystemPrefix(e.attribute("systemPrefix"));
-  }
- }
+        if (shared.attribute("systemPrefix") != NULL) {
+            adapter->getSystemConnectionMemo()->setSystemPrefix(shared.attribute("systemPrefix"));
+        }
+    }
 
- if (e.attribute("disabled")!=NULL)
- {
-  QString yesno = e.attribute("disabled");
-  if ( (yesno!=NULL) && (yesno!=("")) )
-  {
-   if (yesno==("no")) adapter->setDisabled(false);
-   else if (yesno==("yes")) adapter->setDisabled(true);
-  }
- }
+    if (shared.attribute("disabled") != "") {
+        QString yesno = shared.attribute("disabled");
+        if ((yesno != NULL) && (!yesno.isEmpty())) {
+            if (yesno == ("no")) {
+                adapter->setDisabled(false);
+            } else if (yesno == ("yes")) {
+                adapter->setDisabled(true);
+            }
+        }
+    }
+
 }
 
 /*protected*/ void AbstractConnectionConfigXml::saveOptions(QDomElement e, PortAdapter* adapter)
@@ -137,29 +148,39 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
  e.appendChild(element);
 }
 
-/*protected*/ void AbstractConnectionConfigXml::loadOptions(QDomElement e, PortAdapter* adapter)
-{
- if(e.isNull())
-  return;
- QDomNodeList optionList = e.elementsByTagName("option");
- //for (QDomElement so : optionList)
+/*protected*/ void AbstractConnectionConfigXml::loadOptions(QDomElement shared, QDomElement perNode, PortAdapter* adapter) {
+ if (perNode == QDomElement()) {
+     return;
+ }
+ QDomNodeList optionList = perNode.elementsByTagName("option");
  for(int i = 0; i < optionList.size(); i++)
  {
   QDomElement so = optionList.at(i).toElement();
-  adapter->setOptionState(so.firstChildElement("name").text(), so.firstChildElement("value").text());
+     adapter->setOptionState(so.firstChildElement("name").text(), so.firstChildElement("value").text());
  }
 }
+
 /**
  * Customizable method if you need to add anything more
  * @param e QDomElement being created, update as needed
  */
-/*protected*/ void AbstractConnectionConfigXml::unpackElement(QDomElement e) {}
+///*protected*/ void AbstractConnectionConfigXml::unpackElement(QDomElement /*e*/) {}
+
+/**
+ * Method to unpack additional XML structures after connection creation, but
+ * before connection is usable.
+ *
+ * @param shared  connection information common to all nodes
+ * @param perNode connection information unique to this node
+ */
+/*protected*/ void AbstractConnectionConfigXml::unpackElement(QDomElement /*shared*/, QDomElement /*perNode*/) {
+}
 
 /**
  * Update static data from XML file
  * @param element Top level QDomElement to unpack.
   */
-/*public*/ void AbstractConnectionConfigXml::load(QDomElement element, QObject* o) throw (Exception)
+/*public*/ void AbstractConnectionConfigXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
 {
  Logger::error("method with two args invoked");
 }

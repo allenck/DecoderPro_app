@@ -14,8 +14,10 @@ public:
  static void error(QString s, QVariant ex = QVariant());
  void warn(QString s);
  void info(QString s);
+ void trace(QString s);
  bool isDebugEnabled();
  bool isInfoEnabled();
+ bool isTraceEnabled();
  void debug(QString s);
  void setDebugEnabled(bool bState);
  void setInfoEnabled(bool bState);
@@ -28,6 +30,7 @@ public slots:
 private:
  bool bDebugEnabled;
  bool bInfoEnabled;
+ bool bTraceEnabled;
  QString name;
  QObject *parent;
 };

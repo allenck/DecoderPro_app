@@ -7,6 +7,7 @@
 #include "liblayouteditor_global.h"
 #include <QItemDelegate>
 
+class RowSorter;
 class QMenu;
 class QTableView;
 class QSortFilterProxyModel;
@@ -52,17 +53,21 @@ public:
  /*synchronized*/ /*public*/ void dispose();
  virtual /*public*/ QPushButton* configureButton();
  /*public*/ void saveTableColumnDetails(JTable* table);
- /*public*/ void saveTableColumnDetails(JTable* table, QString beantableref);
+ QT_DEPRECATED/*public*/ void saveTableColumnDetails(JTable* table, QString beantableref);
  void /*public*/ init();
+ /*public*/ void persistTable(/*@Nonnull*/ JTable* table);// throws NullPointerException
+ /*public*/ void stopPersistingTable(/*@Nonnull*/ JTable* table); //throws NullPointerException  QT_DEPRECATED
  /*public*/ void loadTableColumnDetails(JTable* table);
- /*public*/ void loadTableColumnDetails(JTable* table, QString beantableref);
+ QT_DEPRECATED/*public*/ void loadTableColumnDetails(JTable* table, QString beantableref);
  /*public*/ void printTable(HardcopyWriter* w);
- /*public*/ JTable* makeJTable(QSortFilterProxyModel* sorter);
+ /*public*/ JTable* makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* model, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter);
+ QT_DEPRECATED/*public*/ JTable* makeJTable(QSortFilterProxyModel* sorter);
  /*public*/ void copyName(int);
  /*public*/ void renameBean(int);
  /*public*/ void removeName(int);
  /*public*/ void moveBean(int);
  virtual /*public*/ void addToPopUp(QMenu* popup);
+ //Jable* table();
 
 signals:
  void buttonClicked(QModelIndex*, QString);
@@ -87,7 +92,7 @@ private:
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault("NamedBeanHandleManager");
  NamedBean* t;
  //QList<int> buttonMap;
- //QTableView* table;
+ JTable* _table;
  int row;
  //void setPersistentButtons();
 
@@ -130,6 +135,9 @@ friend class JInternalFrame;
 friend class TableFrames;
 friend class LTBeanTableDataModel;
 friend class LogixWidget;
+friend class LTFTabbedTableItem;
+friend class AbstractTableAction;
+friend class TurnoutTableDataModel;
 };
 
 #endif // BEANTABLEDATAMODEL_H

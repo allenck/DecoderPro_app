@@ -2,7 +2,7 @@
 #include "abstractnamedbean.h"
 
 CatalogTree::CatalogTree(QObject *parent) :
-    TreeModel(parent)
+    CatalogTreeModel(parent)
 {
 //    IMAGE    = 'I';    // letter to filter for images/icons
 //    SOUND    = 'S';    // letter to filter for sounds
@@ -48,7 +48,7 @@ CatalogTree::CatalogTree(QObject *parent) :
 
 QString CatalogTree::getComment()
 {
- bean->getComment();
+ return bean->getComment();
 }
 
 void CatalogTree::setComment(QString comment)
@@ -58,7 +58,7 @@ void CatalogTree::setComment(QString comment)
 
 QString CatalogTree::getDisplayName()
 {
- bean->getDisplayName();
+ return bean->getDisplayName();
 }
 
 void CatalogTree::addPropertyChangeListener(PropertyChangeListener* l, const QString beanRef, QString listenerRef)

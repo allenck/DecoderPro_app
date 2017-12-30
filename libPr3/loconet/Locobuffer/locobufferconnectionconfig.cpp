@@ -31,7 +31,7 @@ LocobufferConnectionConfig::LocobufferConnectionConfig(QObject *parent) :
 ///*public*/ ConnectionConfig() {
 //    super();
 //}
-LocobufferConnectionConfig::LocobufferConnectionConfig(const LocobufferConnectionConfig &other)
+LocobufferConnectionConfig::LocobufferConnectionConfig(const LocobufferConnectionConfig &other) : AbstractSerialConnectionConfig()
 {
  this->p = other.p;
 }

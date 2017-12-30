@@ -1513,7 +1513,7 @@ void PanelEditor::drawLabelImages(EditScene* g2)
    Q_ASSERT(l->_itemGroup->scene()!=0);
    g2->removeItem(l->_itemGroup);
   }
-  l->_itemGroup = new QGraphicsItemGroup();
+  l->_itemGroup = new MyGraphicsItemGroup();
   if(!l->isIcon())
   {
    color = defaultTextColor;

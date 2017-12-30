@@ -2,6 +2,7 @@
 #include "catalogtreenode.h"
 #include "abstractnamedbean.h"
 
+
 //AbstractCatalogTree::AbstractCatalogTree(QObject *parent) :
 //    DefaultTreeModel(parent)
 //{
@@ -31,8 +32,8 @@
  log = new Logger("AbstractCatalogTree");
  mUserName = username;
  mSystemName = sysname.toUpper();
- bean->setSysName(sysname);
- bean->setUserName(username);
+// bean->setSysName(sysname);
+// bean->setUserName(username);
 }
 AbstractCatalogTree::~AbstractCatalogTree()
 {

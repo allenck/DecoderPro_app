@@ -33,6 +33,7 @@ FileLocationPaneXml::FileLocationPaneXml(QObject* parent) :
     /*e.setAttribute("defaultScriptLocation", FileUtil.getPythonScriptsPath());
      e.setAttribute("defaultUserLocation", FileUtil.getUserFilesPath());
      e.setAttribute("defaultThrottleLocation", jmri.jmrit.throttle.ThrottleFrame.getDefaultThrottleFolder());*/
+    storeProgramFilesLocation(e, FileUtil::getProgramPath());
     storeLocation(e, "defaultScriptLocation", FileUtil::getScriptsPath());
     storeUserFilesLocation(e, FileUtil::getUserFilesPath());
     e.setAttribute("class", /*this.getClass().getName()*/ "aps.configurexml.FileLocationPaneXml");
@@ -48,6 +49,12 @@ FileLocationPaneXml::FileLocationPaneXml(QObject* parent) :
 /*private*/ void FileLocationPaneXml::storeUserFilesLocation(QDomElement locations, QString value) {
     QDomElement userLocation = doc.createElement("fileLocation");
     userLocation.setAttribute("defaultUserLocation", FileUtil::getPortableFilename(value, true, false));
+    locations.appendChild(userLocation);
+}
+
+/*private*/ void FileLocationPaneXml::storeProgramFilesLocation(QDomElement locations, QString value) {
+    QDomElement userLocation = doc.createElement("fileLocation");
+    userLocation.setAttribute("defaultProgramLocation", FileUtil::getPortableFilename(value, true, false));
     locations.appendChild(userLocation);
 }
 
@@ -67,7 +74,12 @@ FileLocationPaneXml::FileLocationPaneXml(QObject* parent) :
     /*Attribute userLocation = e.getAttribute("defaultUserLocation");
      if (userLocation!=null)
      FileUtil.setUserFilesPath(userLocation.getValue());*/
- QString value = loadUserLocations(e, "defaultUserLocation");
+ QString value = loadUserLocations(e, "defaultProgramLocation");
+ if (value != "")
+ {
+  FileUtil::setProgramPath(value);
+ }
+ value = loadUserLocations(e, "defaultUserLocation");
  if (value != "")
  {
   FileUtil::setUserFilesPath(value);

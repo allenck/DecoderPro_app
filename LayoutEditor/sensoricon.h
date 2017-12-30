@@ -130,7 +130,7 @@ public slots:
 
 private:
  Logger* log;
- void init();
+ void common();
  // the associated Sensor object
  /*private*/ NamedBeanHandle<Sensor*>* namedSensor;
  /*private*/ void setAttributes();

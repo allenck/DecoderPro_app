@@ -37,7 +37,7 @@ public slots:
     
 private:
  Logger log;
- void init(Editor* editor, Positionable* parent);
+ void common(Editor* editor, Positionable* parent);
 protected:
  /*protected*/ QHash<QString, NamedIcon*>* _iconMap;
  /*protected*/ QString  _iconFamily;

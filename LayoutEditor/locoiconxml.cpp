@@ -146,7 +146,7 @@ LocoIconXml::LocoIconXml(QObject* parent) :
   loadTextInfo((Positionable*)l, element);
   ed->putLocoIcon(l, textName);
 
-  l->init();		// to detect "background" color for use in Tracker, examine icon file
+  l->common();		// to detect "background" color for use in Tracker, examine icon file
 
  }
 

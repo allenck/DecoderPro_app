@@ -35,5 +35,6 @@ LocobufferUsbConnectionConfigXml::LocobufferUsbConnectionConfigXml(QObject *pare
 
 /*protected*/ void LocobufferUsbConnectionConfigXml::_register()
 {
- InstanceManager::configureManagerInstance()->registerPref(new LocobufferUsbConnectionConfig(adapter));
+ //InstanceManager::configureManagerInstance()->registerPref(new LocobufferUsbConnectionConfig(adapter));
+ AbstractConnectionConfigXml::_register((ConnectionConfig*)new LocobufferUsbConnectionConfig(adapter));
 }

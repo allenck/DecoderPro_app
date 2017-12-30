@@ -934,7 +934,8 @@ void DefaultMutableTreeNode::common()
  */
 /*public*/ TreeNode* DefaultMutableTreeNode::getFirstChild() {
     if (getChildCount() == 0) {
-        throw new NoSuchElementException("node has no children");
+        //throw new NoSuchElementException("node has no children");
+     return NULL;
     }
     return getChildAt(0);
 }

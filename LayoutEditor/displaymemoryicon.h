@@ -67,6 +67,7 @@ public:
     /*public*/ QString getNameString();
     /*public*/ bool setEditIconMenu(QMenu* popup);
     /*public*/ void dispose();
+    /*public*/ QString getGroupName();
 
 signals:
     
