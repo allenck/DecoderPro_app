@@ -52,7 +52,7 @@
  }
  bIsInterrupted = false;
  log = new Logger(objectName());
- log->setDebugEnabled(true);
+ log->setDebugEnabled(false);
  //lastSentMessage = NULL;
  log->debug(tr("started, connected to ") + newRemoteAddress);
 

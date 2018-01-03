@@ -44,9 +44,14 @@ CreateButtonModel::CreateButtonModel(QObject *parent) :
  }
  AbstractAction* act = (AbstractAction*)action;
  connect(act, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
 }
 
 void CreateButtonModel::propertyChange(PropertyChangeEvent* evt)
 {
- b->setText(action->text());
+ if(evt->getPropertyName() == "Name")
+ {
+  b->setText(evt->getNewValue().toString());
+  b->update();
+ }
 }

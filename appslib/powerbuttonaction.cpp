@@ -12,8 +12,6 @@
 /*public*/ PowerButtonAction::PowerButtonAction(QString title, QObject* parent) : AbstractAction(title, parent) {
  //super(title);
 common();
- checkManager();
- updateLabel();
 }
 
 /*public*/ PowerButtonAction::PowerButtonAction(QObject* parent) : AbstractAction(tr("Power On/Off"), parent){
@@ -23,14 +21,18 @@ common();
 
 void PowerButtonAction::common()
 {
+ checkManager();
+ updateLabel();
+
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
 void PowerButtonAction::checkManager()
 {
  // disable ourself if there is no power Manager
- if (InstanceManager::getNullableDefault("PowerManager") == NULL) {
-     setEnabled(false);
+ if (InstanceManager::getNullableDefault("PowerManager") == NULL)
+ {
+  setEnabled(false);
  }
  else
  {
@@ -58,8 +60,9 @@ void PowerButtonAction::updateLabel()
 }
 
 //@Override
-/*public*/ void PowerButtonAction::propertyChange(PropertyChangeEvent* /*ev*/) {
-    updateLabel();
+/*public*/ void PowerButtonAction::propertyChange(PropertyChangeEvent* /*ev*/)
+{
+ updateLabel();
 }
 
 //@Override
