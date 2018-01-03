@@ -21,7 +21,7 @@
     QDomElement element = doc.createElement("perform"); // NOI18N
     element.setAttribute("name", "Pause");
     element.setAttribute("type", "Pause");
-    element.setAttribute("class", "apps.StartupPauseModel");
+    element.setAttribute("class", "apps.StartupPauseModelXml");
     QDomElement property = doc.createElement("property"); // NOI18N
     property.setAttribute("name", "delay"); // NOI18N
     property.setAttribute("value", (((StartupPauseModel*) o)->getDelay()));

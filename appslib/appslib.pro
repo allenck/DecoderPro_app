@@ -410,9 +410,11 @@ SOURCES += appslib.cpp \
     startuppausemodelxml.cpp \
     performfilemodelxml.cpp \
     performscriptmodelxml.cpp \
-    triggerroutemodexml.cpp \
     abstractstartupactionfactory.cpp \
-    restartstartupactionfactory.cpp
+    restartstartupactionfactory.cpp \
+    restartaction.cpp \
+    triggerroutemodelxml.cpp \
+    powerbuttonaction.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -800,10 +802,12 @@ HEADERS += appslib.h\
     startuppausemodelxml.h \
     performfilemodelxml.h \
     performscriptmodelxml.h \
-    triggerroutemodexml.h \
     abstractstartupactionfactory.h \
     restartstartupactionfactory.h \
-    systemconnectionaction.h
+    systemconnectionaction.h \
+    restartaction.h \
+    triggerroutemodelxml.h \
+    powerbuttonaction.h
 
 unix:!symbian {
     maemo5 {

@@ -8,6 +8,7 @@ class Logger;
 class File;
 class ScriptButtonModel : public AbstractStartupModel
 {
+ Q_OBJECT
 public:
  ScriptButtonModel();
  /*public*/ File* getScript();

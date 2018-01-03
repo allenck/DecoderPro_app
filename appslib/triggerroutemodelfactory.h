@@ -5,6 +5,7 @@
 class Logger;
 class TriggerRouteModelFactory : public StartupModelFactory
 {
+ Q_OBJECT
 public:
  TriggerRouteModelFactory();
  ~TriggerRouteModelFactory() {}

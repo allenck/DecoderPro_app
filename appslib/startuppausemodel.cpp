@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "sleeperthread.h"
 
-StartupPauseModel::StartupPauseModel()
+StartupPauseModel::StartupPauseModel(QObject* parent) :AbstractStartupModel(parent)
 {
  delay = -1; // default to invalid duration
 

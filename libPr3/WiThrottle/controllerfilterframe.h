@@ -7,6 +7,7 @@ class JTable;
 class Logger;
 class ControllerFilterFrame : public JmriJFrame
 {
+ Q_OBJECT
 public:
  ControllerFilterFrame(QWidget* parent = 0);
  /*public*/ void initComponents() throw (Exception);

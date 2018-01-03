@@ -1,7 +1,7 @@
 #ifndef ABSTRACTTABLEACTION_H
 #define ABSTRACTTABLEACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
 #include "logger.h"
 #include "beantableframe.h"
 #include "jtable.h"
@@ -15,14 +15,14 @@ class MessageFormat;
 class Manager;
 class BeanTableFrame;
 class BeanTableDataModel;
-class LIBTABLESSHARED_EXPORT AbstractTableAction : public QAction
+class LIBTABLESSHARED_EXPORT AbstractTableAction : public AbstractAction
 {
     Q_OBJECT
 public:
-    //explicit AbstractTableAction(QObject *parent = 0);
+    explicit AbstractTableAction(QObject *parent = 0);
     /*public*/ AbstractTableAction(QString actionName, QObject *parent);
     ~AbstractTableAction() {}
-    AbstractTableAction(const AbstractTableAction& that) : QAction(that.text(), that.parent()) {}
+    AbstractTableAction(const AbstractTableAction& that) : AbstractAction(that.text(), that.parent()) {}
     /*public*/ BeanTableDataModel* getTableDataModel();
     virtual /*public*/ void setFrame(BeanTableFrame* frame);
     virtual /*public*/ void addToFrame(BeanTableFrame* f);

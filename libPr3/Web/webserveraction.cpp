@@ -40,6 +40,7 @@ common();
 void WebServerAction::common()
 {
  //serverThread = NULL;
+ setObjectName("WebServerAction");
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 

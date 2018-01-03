@@ -6,6 +6,7 @@ namespace Operations
 {
  class ChangeDepartureTimesFrame : public OperationsFrame
  {
+  Q_OBJECT
  public:
   ChangeDepartureTimesFrame(QWidget* parent = 0);
  public slots:

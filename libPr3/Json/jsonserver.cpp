@@ -102,7 +102,7 @@ bool JSShutDownTask::eventFilter(QObject *watched, QEvent *event)
 }
 //@Override
 /*public*/ void JsonServer::start() {
-    log->info(tr("Starting JSON Server on port ").arg(this->port));
+    log->info(tr("Starting JSON Server on port %1").arg(this->port));
     //JmriServer::start();
     listen(QHostAddress::Any, port);
     connect(this, SIGNAL(newConnection()), this, SLOT(on_newConnection()));

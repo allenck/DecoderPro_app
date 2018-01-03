@@ -7,6 +7,7 @@
 class Logger;
 class TriggerRouteModel : public AbstractStartupModel
 {
+ Q_OBJECT
 public:
  TriggerRouteModel();
  /*public*/ QString getUserName();

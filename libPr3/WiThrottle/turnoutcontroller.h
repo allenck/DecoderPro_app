@@ -8,6 +8,7 @@ class Logger;
 class ProxyTurnoutManager;
 class TurnoutController : public AbstractController
 {
+ Q_OBJECT
 public:
  TurnoutController();
  /*public*/ void filterList();

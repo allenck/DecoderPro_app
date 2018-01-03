@@ -3,10 +3,10 @@
 #include "class.h"
 #include "logger.h"
 
-//JmriJFrameAction::JmriJFrameAction()
-//{
+JmriJFrameAction::JmriJFrameAction(QObject* parent) : AbstractAction(parent)
+{
 
-//}
+}
 /**
  * Default form of action to create an object that's from a child class of
  * JmriJFrame. By using reflection, this cuts the loader dependency on the

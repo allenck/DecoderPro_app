@@ -19,13 +19,13 @@
 //private static final long serialVersionUID = -5653182277242573672L;
 
 /*public*/ NixieClockAction::NixieClockAction(QObject *parent) :
-  QAction(tr("Nixie Clock"), parent) {
+  AbstractAction(tr("Nixie Clock"), parent) {
     //this("Nixie Clock");
  common();
 }
 
 /*public*/ NixieClockAction::NixieClockAction(QString s, QObject *parent) :
-  QAction(s, parent) {
+  AbstractAction(s, parent) {
   //super(s);
  common();
 }

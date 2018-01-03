@@ -7,6 +7,8 @@ class PerformFileModelXml : public AbstractXmlAdapter
 {
 public:
  PerformFileModelXml(QObject* parent = 0);
+ ~PerformFileModelXml() {}
+ PerformFileModelXml(const PerformFileModelXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);
  /*public*/ bool loadDeferred();
  /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriException);

@@ -6,6 +6,7 @@ class ScriptButtonModel;
 class ScriptFileChooser;
 class ScriptButtonModelFactory : public StartupModelFactory
 {
+ Q_OBJECT
 public:
  ScriptButtonModelFactory();
  ~ScriptButtonModelFactory() {}

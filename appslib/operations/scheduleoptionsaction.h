@@ -7,6 +7,7 @@ namespace Operations
  class ScheduleEditFrame;
  class ScheduleOptionsAction : public AbstractAction
  {
+  Q_OBJECT
  public:
   ScheduleOptionsAction(ScheduleEditFrame* parent);
  public slots:

@@ -5,6 +5,7 @@
 class CreateButtonModel;
 class CreateButtonModelFactory : public AbstractActionModelFactory
 {
+ Q_OBJECT
 public:
  CreateButtonModelFactory();
  ~CreateButtonModelFactory() {}

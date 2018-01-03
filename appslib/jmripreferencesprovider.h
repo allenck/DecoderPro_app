@@ -50,6 +50,7 @@ protected:
 
 /*private*/ class JmriPreferences : public AbstractPreferences
 {
+ Q_OBJECT
     /*private*/ /*final*/static  Logger* log;// = LoggerFactory.getLogger(JmriPreferences.class);
 
     /*private*/ QMap<QString, QString>* root;

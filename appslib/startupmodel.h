@@ -65,7 +65,7 @@ public:
 
  /*public*/ virtual QString toString() {return QString(this->metaObject()->className());}
 
- /*public*/ virtual QString getDescription() {return "";}
+ /*public*/ virtual QString getDescription() {return "";} // ACK added
 
 };
 #endif // STARTUPMODEL_H

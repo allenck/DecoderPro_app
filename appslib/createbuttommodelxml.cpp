@@ -28,7 +28,7 @@
 
     element.setAttribute("name", g->getClassName());
     element.setAttribute("type", "Button");
-    element.setAttribute("class", "apps.CreateButtonModel");
+    element.setAttribute("class", "apps.CreateButtonModelXml");
     QDomElement property = doc.createElement("property"); // NOI18N
     property.setAttribute("name", "systemPrefix"); // NOI18N
     property.setAttribute("value", g->getSystemPrefix());

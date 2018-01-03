@@ -20,8 +20,10 @@ class LightTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    LightTableAction(QObject* parent);
+    LightTableAction(QObject* parent =0);
     /*public*/ LightTableAction(QString s, QObject* parent);
+    ~LightTableAction() {}
+    LightTableAction(const LightTableAction&) : AbstractTableAction() {}
     /*public*/ void setManager(Manager* man);
     /*public*/ QString getClassDescription();
     /*public*/ QString getControlTypeText(int type);
@@ -156,6 +158,7 @@ protected slots:
  friend class LTAWindowListener;
  friend class ACFWindowListener;
 };
+Q_DECLARE_METATYPE(LightTableAction)
 
 class LTBeanTableDataModel : public BeanTableDataModel
 {

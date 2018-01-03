@@ -173,15 +173,15 @@
 //@SuppressWarnings("deprecation")
 void NixieClockFrame::update()
 {
-  QDateTime now = clock->getTime();
-    int hours = now.time().hour();
-    int minutes = now.time().minute();
+ QDateTime now = clock->getTime();
+ int hours = now.time().hour();
+ int minutes = now.time().minute();
 
-    h1->setIcon(tubes[hours/10]);
-    h2->setIcon(tubes[hours-(hours/10)*10]);
-    m1->setIcon(tubes[minutes/10]);
-    m2->setIcon(tubes[minutes-(minutes/10)*10]);
-
+ h1->setIcon(tubes[hours/10]);
+ h2->setIcon(tubes[hours-(hours/10)*10]);
+ m1->setIcon(tubes[minutes/10]);
+ m2->setIcon(tubes[minutes-(minutes/10)*10]);
+ JmriJFrame::update();
 }
 //void NixieClockFrame::paint(QGraphicsScene* g)
 //{

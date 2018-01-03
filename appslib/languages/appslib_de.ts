@@ -2,11 +2,389 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name>AbstractActionModelFactory</name>
+    <message>
+        <location filename="../abstractactionmodelfactory.cpp" line="38"/>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AbstractActionModelFactory::AbstractActionModelFactory</name>
+    <message>
+        <location filename="../abstractactionmodelfactory.cpp" line="112"/>
+        <source>&lt;html&gt;Set the connection for this action.&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AbstractFileModelFactory</name>
+    <message>
+        <location filename="../abstractfilemodelfactory.cpp" line="38"/>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../abstractfilemodelfactory.cpp" line="59"/>
+        <source>File %1 does not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ActivateTrainFrame</name>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="61"/>
+        <location filename="../operations/activatetrainframe.cpp" line="64"/>
+        <source>Train</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="66"/>
+        <source>DCC Address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="68"/>
+        <source>TrainInTransit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="79"/>
+        <source>AutoRun</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="80"/>
+        <source>LoadAtStartup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="81"/>
+        <source>AllocateAllTheWay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="82"/>
+        <source>TerminateWhenDone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="84"/>
+        <source>ResetWhenDone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="85"/>
+        <source>ReverseAtEnd</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="87"/>
+        <source>No Delay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="87"/>
+        <source>Timed Delay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="87"/>
+        <source>Sensor Delay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="90"/>
+        <source>Add Delay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="91"/>
+        <source>Restart on Sensor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="99"/>
+        <source>Departure Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activatetrainframe.cpp" line="103"/>
+        <source>Time in Minutes to wait</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ActiveSystemsMenu</name>
     <message>
-        <location filename="../activesystemsmenu.cpp" line="40"/>
-        <location filename="../activesystemsmenu.cpp" line="45"/>
+        <location filename="../activesystemsmenu.cpp" line="42"/>
+        <location filename="../activesystemsmenu.cpp" line="47"/>
         <source>Systems</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ActiveTrain</name>
+    <message>
+        <location filename="../operations/activetrain.cpp" line="269"/>
+        <location filename="../operations/activetrain.cpp" line="281"/>
+        <source>Sensor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/activetrain.cpp" line="773"/>
+        <location filename="../operations/activetrain.cpp" line="788"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ActiveTrainsTableModel</name>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2495"/>
+        <source>Transit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2497"/>
+        <source>Train</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2499"/>
+        <source>Train Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2501"/>
+        <source>Train Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2503"/>
+        <source>Train Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2505"/>
+        <source>Allocated Sectione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2507"/>
+        <source>Next Section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2565"/>
+        <source>Allocate Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AddProfileDialog</name>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="73"/>
+        <source>New Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="79"/>
+        <source>Name and Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="112"/>
+        <source>Profile Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="114"/>
+        <source>Profile Location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="145"/>
+        <source>Browse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="153"/>
+        <source>Profile Folder:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="155"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="163"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="323"/>
+        <source>Created profile &quot;%1&quot; by copying profile &quot;%2&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="327"/>
+        <source>Created new profile &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addprofiledialog.cpp" line="365"/>
+        <source>Copy Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AllocatedSectionTableModel</name>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2833"/>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2835"/>
+        <source>Allocated Section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2837"/>
+        <source>Occupancy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2839"/>
+        <source>Use Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2885"/>
+        <source>UNKNOWN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2888"/>
+        <source>OCCUPIED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2890"/>
+        <source>UNOCCUPIED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2893"/>
+        <source>Not Entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2896"/>
+        <source>Exited</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2898"/>
+        <source>Entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2900"/>
+        <source>Release</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AllocationRequest</name>
+    <message>
+        <location filename="../operations/allocationrequest.cpp" line="117"/>
+        <source>FORWARD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/allocationrequest.cpp" line="120"/>
+        <source>REVERSE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/allocationrequest.cpp" line="122"/>
+        <source>UNKNOWN</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AllocationRequestTableModel</name>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2657"/>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2659"/>
+        <source>Priority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2661"/>
+        <source>Train Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2663"/>
+        <source>Section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2665"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2667"/>
+        <source>Occupancy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2669"/>
+        <source>Section Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2729"/>
+        <source>FREE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2731"/>
+        <source>ALLOCATED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2734"/>
+        <source>UNKNOWN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2737"/>
+        <source>OCCUPIED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2739"/>
+        <source>UNOCCUPIED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2743"/>
+        <source>Allocate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2745"/>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -31,67 +409,67 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="177"/>
+        <location filename="../appconfigbase.cpp" line="184"/>
         <source>Iterating over managed panels within %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="181"/>
+        <location filename="../appconfigbase.cpp" line="188"/>
         <source>Registering %1 with the ConfigureManager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="204"/>
+        <location filename="../appconfigbase.cpp" line="211"/>
         <source>Duplicates, save anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="204"/>
+        <location filename="../appconfigbase.cpp" line="211"/>
         <source>You have duplicates in ports or connections. This can cause problems. Do you want to save anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="218"/>
+        <location filename="../appconfigbase.cpp" line="225"/>
         <source>&lt;html&gt;&lt;b&gt;You must restart %1.&lt;/b&gt;&lt;br&gt;Your new settings will not take affect until you restart this application.&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="219"/>
+        <location filename="../appconfigbase.cpp" line="226"/>
         <source>Remember this setting for next time?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="236"/>
+        <location filename="../appconfigbase.cpp" line="243"/>
         <source>Restart %1?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="236"/>
+        <location filename="../appconfigbase.cpp" line="243"/>
         <source>Restart now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="276"/>
+        <location filename="../appconfigbase.cpp" line="283"/>
         <source>Application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="282"/>
+        <location filename="../appconfigbase.cpp" line="289"/>
         <source>Always Ask</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="283"/>
+        <location filename="../appconfigbase.cpp" line="290"/>
         <source>Never Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="284"/>
+        <location filename="../appconfigbase.cpp" line="291"/>
         <source>Always Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appconfigbase.cpp" line="285"/>
+        <location filename="../appconfigbase.cpp" line="292"/>
         <source>Quit after saving preferences</source>
         <translation type="unfinished"></translation>
     </message>
@@ -99,122 +477,152 @@
 <context>
     <name>Apps</name>
     <message>
-        <location filename="../apps.cpp" line="208"/>
+        <location filename="../apps.cpp" line="226"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="208"/>
+        <location filename="../apps.cpp" line="226"/>
         <source>Please ensure that the User Files location and Roster location are correct.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="235"/>
+        <location filename="../apps.cpp" line="253"/>
         <source>Starting with profile %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="305"/>
-        <source>end load config file, OK=</source>
+        <location filename="../apps.cpp" line="330"/>
+        <source>Using config file(s) %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="672"/>
-        <source>File</source>
+        <location filename="../apps.cpp" line="333"/>
+        <source>start load config file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="674"/>
-        <source>Print decoder definitions...</source>
+        <location filename="../apps.cpp" line="343"/>
+        <source>end load config file, OK=%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="675"/>
-        <source>Print Preview decoder definitions...</source>
+        <location filename="../apps.cpp" line="347"/>
+        <source>No saved preferences, will open preferences window.  Searched for %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="681"/>
-        <source>Quit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apps.cpp" line="720"/>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apps.cpp" line="726"/>
-        <source>MenuItemCut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apps.cpp" line="729"/>
-        <source>MenuItemCopy</source>
+        <location filename="../apps.cpp" line="465"/>
+        <source>%1 has been updated to a new storage format. The new storage format will be used next time this profile is used.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../apps.cpp" line="732"/>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="734"/>
+        <source>Print decoder definitions...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="735"/>
+        <source>Print Preview decoder definitions...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="741"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="780"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="786"/>
+        <source>MenuItemCut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="789"/>
+        <source>MenuItemCopy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="792"/>
         <source>MenuItemPaste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="736"/>
+        <location filename="../apps.cpp" line="796"/>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="758"/>
+        <location filename="../apps.cpp" line="818"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="768"/>
+        <location filename="../apps.cpp" line="828"/>
         <source>Roster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="872"/>
+        <location filename="../apps.cpp" line="930"/>
         <source>%1, part of the JMRI project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="944"/>
+        <location filename="../apps.cpp" line="1002"/>
         <source>%1: using %2 on %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="950"/>
+        <location filename="../apps.cpp" line="1008"/>
         <source>ConnectionFailed = %1: ERROR %2 using %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="968"/>
+        <location filename="../apps.cpp" line="1026"/>
         <source>Qt version %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="985"/>
+        <location filename="../apps.cpp" line="1050"/>
         <source>Fetch main logo: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="1046"/>
+        <location filename="../apps.cpp" line="1065"/>
+        <source>Active Profile: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="1069"/>
+        <source>Failed Profile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apps.cpp" line="1119"/>
         <source>Quit?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="1046"/>
+        <location filename="../apps.cpp" line="1119"/>
         <source>Closing this window will quit the program. Close?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="1286"/>
+        <location filename="../apps.cpp" line="1359"/>
         <source>Start Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps.cpp" line="1286"/>
+        <location filename="../apps.cpp" line="1359"/>
         <source>Start JMRI with Logix enabled or disabled?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -222,17 +630,17 @@
 <context>
     <name>Apps3</name>
     <message>
-        <location filename="../apps3.cpp" line="341"/>
+        <location filename="../apps3.cpp" line="345"/>
         <source>Please ensure that the User Files location and Roster location are correct.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps3.cpp" line="363"/>
+        <location filename="../apps3.cpp" line="367"/>
         <source>Starting with profile %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apps3.cpp" line="365"/>
+        <location filename="../apps3.cpp" line="369"/>
         <source>Profiles not configurable. Using fallback per-application configuration. Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -240,27 +648,22 @@
 <context>
     <name>AppsBase</name>
     <message>
-        <location filename="../appsbase.cpp" line="192"/>
+        <location filename="../appsbase.cpp" line="202"/>
         <source>Please ensure that the User Files location and Roster location are correct.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appsbase.cpp" line="214"/>
+        <location filename="../appsbase.cpp" line="224"/>
         <source>Starting with profile %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appsbase.cpp" line="225"/>
+        <location filename="../appsbase.cpp" line="235"/>
         <source>Profiles not configurable. Using fallback per-application configuration. Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appsbase.cpp" line="236"/>
-        <source>config manager installed (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../appsbase.cpp" line="300"/>
+        <location filename="../appsbase.cpp" line="316"/>
         <source>end load config file </source>
         <translation type="unfinished"></translation>
     </message>
@@ -268,42 +671,42 @@
 <context>
     <name>AppsLaunchFrame</name>
     <message>
-        <location filename="../appslaunchframe.cpp" line="109"/>
+        <location filename="../appslaunchframe.cpp" line="113"/>
         <source>MenuFile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchframe.cpp" line="129"/>
+        <location filename="../appslaunchframe.cpp" line="133"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchframe.cpp" line="135"/>
+        <location filename="../appslaunchframe.cpp" line="139"/>
         <source>MenuItemCut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchframe.cpp" line="138"/>
+        <location filename="../appslaunchframe.cpp" line="142"/>
         <source>MenuItemCopy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchframe.cpp" line="141"/>
+        <location filename="../appslaunchframe.cpp" line="145"/>
         <source>MenuItemPaste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchframe.cpp" line="145"/>
+        <location filename="../appslaunchframe.cpp" line="149"/>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchframe.cpp" line="164"/>
+        <location filename="../appslaunchframe.cpp" line="168"/>
         <source>MenuTools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchframe.cpp" line="172"/>
+        <location filename="../appslaunchframe.cpp" line="176"/>
         <source>Roster</source>
         <translation type="unfinished"></translation>
     </message>
@@ -311,38 +714,252 @@
 <context>
     <name>AppsLaunchPane</name>
     <message>
-        <location filename="../appslaunchpane.cpp" line="145"/>
+        <location filename="../appslaunchpane.cpp" line="138"/>
         <source>Qt versiom %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchpane.cpp" line="204"/>
+        <location filename="../appslaunchpane.cpp" line="197"/>
         <source>%1: using %2 on %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchpane.cpp" line="209"/>
+        <location filename="../appslaunchpane.cpp" line="202"/>
         <source>ConnectionFailed = %1: ERROR %2 using %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchpane.cpp" line="225"/>
+        <location filename="../appslaunchpane.cpp" line="218"/>
         <source>Qt version %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchpane.cpp" line="241"/>
+        <location filename="../appslaunchpane.cpp" line="234"/>
         <source>Fetch main logo: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchpane.cpp" line="292"/>
+        <location filename="../appslaunchpane.cpp" line="285"/>
         <source>JMRI property %1 already set to %2, skipping reset to %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../appslaunchpane.cpp" line="295"/>
+        <location filename="../appslaunchpane.cpp" line="288"/>
         <source>Unable to set JMRI property %1 to %2 due to exception %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AutoActiveTrain</name>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="256"/>
+        <location filename="../operations/autoactivetrain.cpp" line="260"/>
+        <source>invalid dcc address &apos;%1&apos; for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="264"/>
+        <source>%1: requesting throttle address=%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="271"/>
+        <source>%1: using speed profile from roster entry %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="296"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="296"/>
+        <source>Could not start a throttle to run train &quot;%1&quot;
+automatically, changing to manual running.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="301"/>
+        <source>%1: New AutoEngineer, address=%2, length=%3, factor=%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="494"/>
+        <source>failure to get entry point to Transit from Block </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="763"/>
+        <source>%1: _conSignalProtectedBlock is the block just past so ignore %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="765"/>
+        <source>%1: Signal %2 at Held or Danger so Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="813"/>
+        <source>%1: %2(%3) %4(%5), Dest: %6, path max: %7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="833"/>
+        <source>%1: Signal %2 setting speed to {%3 for next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="837"/>
+        <source>%1: Signal %2 setting speed to %3 for previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="844"/>
+        <source>%1: No specific speeds found so will use the default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="875"/>
+        <source>%1: Current allocated section NULL on entry to stopInCurrentSection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="879"/>
+        <source>%1: StopInCurrentSection called for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="881"/>
+        <source>%1: train is already stopped or stopping.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="1688"/>
+        <source>RAMP_FAST</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="1690"/>
+        <source>RAMP_MEDIUM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="1692"/>
+        <source>RAMP_MED_SLOW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="1694"/>
+        <source>RAMP_SLOW</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AutoEngineer</name>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="1425"/>
+        <source>%1: _speedIncrement=%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="1428"/>
+        <source>%1: AutoEngineer.setIsForward(%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoactivetrain.cpp" line="1464"/>
+        <source>(AutoEngineer.setIsForward(%1), was %2 for %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AutoTrainAction</name>
+    <message>
+        <location filename="../operations/autotrainaction.cpp" line="401"/>
+        <source>%1: setting light (F0) to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autotrainaction.cpp" line="415"/>
+        <source>%1: starting bell (F1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autotrainaction.cpp" line="423"/>
+        <source>%1: stopping bell (F1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autotrainaction.cpp" line="433"/>
+        <source>%1: sounding horn as specified in action</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AutoTurnouts</name>
+    <message>
+        <location filename="../operations/autoturnouts.cpp" line="200"/>
+        <source>%1: setting turnout %2 to %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoturnouts.cpp" line="212"/>
+        <source>%1: turnout %2 commanded to %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/autoturnouts.cpp" line="224"/>
+        <source>%1: turnout %2 already %3, skipping</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ConnectionConfigManager</name>
+    <message>
+        <location filename="../connectionconfigmanager.cpp" line="73"/>
+        <source>Read shared connection %1:%2 (%3) class %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../connectionconfigmanager.cpp" line="87"/>
+        <source>Read perNode connection %1:%2 (%3) class %4}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../connectionconfigmanager.cpp" line="93"/>
+        <source>Creating connection %1:%2 (%3) class %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../connectionconfigmanager.cpp" line="120"/>
+        <source>Unable to create %1 for %2, load returned false</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../connectionconfigmanager.cpp" line="122"/>
+        <location filename="../connectionconfigmanager.cpp" line="124"/>
+        <location filename="../connectionconfigmanager.cpp" line="132"/>
+        <location filename="../connectionconfigmanager.cpp" line="133"/>
+        <location filename="../connectionconfigmanager.cpp" line="142"/>
+        <location filename="../connectionconfigmanager.cpp" line="143"/>
+        <location filename="../connectionconfigmanager.cpp" line="166"/>
+        <location filename="../connectionconfigmanager.cpp" line="167"/>
+        <source>Unable to create connection &quot;%1&quot; (%2).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../connectionconfigmanager.cpp" line="131"/>
+        <source>Unable to create %1 for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../connectionconfigmanager.cpp" line="139"/>
+        <source>Unable to load %1 into %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../connectionconfigmanager.cpp" line="199"/>
+        <source>Saving connection %1 (%2)...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -355,115 +972,452 @@
     </message>
 </context>
 <context>
-    <name>CreateButtonPanel</name>
+    <name>CreateButtonModelFactory</name>
     <message>
-        <location filename="../createbuttonpanel.cpp" line="27"/>
-        <location filename="../createbuttonpanel.cpp" line="33"/>
-        <source>Add Button</source>
+        <location filename="../createbuttonmodelfactory.cpp" line="26"/>
+        <source>&lt;html&gt;Select a button to add to the main window.&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../createbuttonpanel.cpp" line="27"/>
-        <location filename="../createbuttonpanel.cpp" line="33"/>
-        <source>Remove Button</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../createbuttonpanel.cpp" line="52"/>
-        <source>Buttons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../createbuttonpanel.cpp" line="57"/>
-        <source>Select any buttons you&apos;d like to have appear on the main screen.</source>
+        <location filename="../createbuttonmodelfactory.cpp" line="31"/>
+        <source>Add button to main window</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DebugMenu</name>
     <message>
-        <location filename="../debugmenu.cpp" line="36"/>
+        <location filename="../debugmenu.cpp" line="44"/>
         <source>Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="42"/>
+        <location filename="../debugmenu.cpp" line="50"/>
         <source>MenuItemMemoryUsageMonitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="45"/>
+        <location filename="../debugmenu.cpp" line="53"/>
         <source>Import Decoder File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="46"/>
+        <location filename="../debugmenu.cpp" line="54"/>
         <source>Import Decoder URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="48"/>
+        <location filename="../debugmenu.cpp" line="55"/>
         <source>MenuItemRecreateDecoderIndex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="49"/>
+        <location filename="../debugmenu.cpp" line="56"/>
         <source>MenuItemRecreateRoster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="50"/>
-        <source>MenuItemUpdateDecoderDefinition</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../debugmenu.cpp" line="52"/>
-        <source>MenuItemValidateXMLFile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../debugmenu.cpp" line="53"/>
-        <source>MenuItemCheckDecoderNames</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../debugmenu.cpp" line="54"/>
-        <source>MenuItemCheckProgrammerNames</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../debugmenu.cpp" line="56"/>
-        <source>MenuItemLogixDisabled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../debugmenu.cpp" line="57"/>
-        <source>MenuItemLogAction</source>
+        <source>Update Decoder Definitions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="58"/>
-        <source>MenuItemLogOutputWindowAction</source>
+        <location filename="../debugmenu.cpp" line="61"/>
+        <source>Check Decoder Names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="59"/>
-        <source>MenuItemLogTreeAction</source>
+        <location filename="../debugmenu.cpp" line="62"/>
+        <source>Check Programmer Names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../debugmenu.cpp" line="64"/>
+        <source>Load Logix Disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../debugmenu.cpp" line="65"/>
-        <source>Virtual Sound Decoder</source>
+        <source>Log Message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../debugmenu.cpp" line="66"/>
-        <source>VSDecoder Manager</source>
+        <location filename="../debugmenu.cpp" line="59"/>
+        <source>MenuItemValidateXMLFile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../debugmenu.cpp" line="67"/>
+        <source>MenuItemLogOutputWindowAction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../debugmenu.cpp" line="68"/>
+        <source>MenuItemLogTreeAction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../debugmenu.cpp" line="74"/>
+        <source>Virtual Sound Decoder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../debugmenu.cpp" line="75"/>
+        <source>VSDecoder Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../debugmenu.cpp" line="77"/>
         <source>VSDecoder Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DispatcherAction</name>
+    <message>
+        <location filename="../operations/dispatcheraction.cpp" line="27"/>
+        <source>Dispatcher</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcheraction.cpp" line="42"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcheraction.cpp" line="42"/>
+        <source>No Transits found - cannot open Dispatcher. Please add Transits and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DispatcherFrame</name>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="181"/>
+        <source>restoring train:%1, startblockname:%2, destinationBlockName:%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="237"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1039"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1049"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1059"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1068"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1079"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1089"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1099"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1114"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1125"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1133"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1139"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1149"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1158"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1171"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1180"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1194"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1209"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1233"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1394"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="237"/>
+        <source>Could not initialize automatic running of train &quot;%1&quot;, changing to manual running.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="245"/>
+        <source>failed to create create Active Train %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="295"/>
+        <source>Dispatcher</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="311"/>
+        <source>Active Trains</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="358"/>
+        <source>Allocate Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="367"/>
+        <source>New Train</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="380"/>
+        <source>Press to bring up a window for starting up a new train.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="383"/>
+        <source>Allocate Extra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="391"/>
+        <source>Press to bring up a window allowing allocation of an extra Section to an Active Train.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="393"/>
+        <source>Cancel Auto Restart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="409"/>
+        <source>Press to bring up a window to cancel automatic restart of an Active Train.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="411"/>
+        <source>Terminate Train</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="427"/>
+        <source>Press to bring up a window for terminating an Active Train.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="434"/>
+        <source>Requested Allocations waiting for Dispatch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="479"/>
+        <source>AllocateButton</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="497"/>
+        <source>Allocated Sections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="498"/>
+        <source>Auto Release</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="500"/>
+        <source>Check to automatically release allocated sections that show exited.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="509"/>
+        <source>Auto Allocate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="511"/>
+        <source>Check if computer is to automatically allocated requested sections. Uncheck for manual allocation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="552"/>
+        <source>ReleaseButton</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="583"/>
+        <source>Message2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="584"/>
+        <location filename="../operations/dispatcherframe.cpp" line="599"/>
+        <source>MessageTitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="598"/>
+        <source>Message1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1039"/>
+        <source>The name &quot;{%1&quot; does not match an existing Transit:: Please correct or create as required, and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1049"/>
+        <source>Transit &quot;%1&quot; is in use with another Active Train. Please wait until it&apos;&apos;s IDLE, or use a duplicate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1059"/>
+        <source>TrainID is missing from request to create an Active Train. Please add trainID and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1068"/>
+        <source>Illegal train source identifier provided. Please correct the train source identifier and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1079"/>
+        <source>The name &quot;%1&quot; does not match an allowed starting block. Please correct and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1089"/>
+        <source>Requested starting block &quot;%1&quot; is a Section allocated to a different Active Train. Please correct and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1099"/>
+        <source>No train detected in requested starting block &quot;%1&quot;. Please correct and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1114"/>
+        <source>Invalid start Block Section sequence number &quot;%1&quot;. Please correct and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1125"/>
+        <source>The name &quot;%1&quot; does not match an existing Block in the requested Transit. Please correct, and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1133"/>
+        <source>End Block is in requested Transit, but no Sectionsequence number was provided. Please correct, and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1139"/>
+        <source>Invalid end Block Section sequence number &quot;%1&quot;. Please correct and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1149"/>
+        <source>Request for Reset When Done, but Transit, &quot;%1&quot;,  is not set up correctly. Cannot create a new Active Train. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1158"/>
+        <source>Automatic running requested, but no dcc address was provided. Please provide dcc address and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1171"/>
+        <source>Automatic running requested, but no Layout Editor panel was specified in the Options window. Please try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1180"/>
+        <source>Automatic running requested, but occupancy detection   was not specified in the Options window. Please try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1194"/>
+        <source>&quot;%1&quot; errors found when checking connectivity of Sections  in this Transit. Check message log for details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1209"/>
+        <source>&quot;%1&quot; errors found when checking/setting direction sensors in  signal logic for this Transit. Check message log for details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1233"/>
+        <source>&quot;%1&quot; errors found when checking/setting direction sensors in signal logic for this Transit. Check message log for details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1394"/>
+        <source>No ActiveTrain specified in request for allocation of a section. Cannot process the request.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1402"/>
+        <source>Error17</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1411"/>
+        <source>Error19</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1420"/>
+        <source>Error18</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1518"/>
+        <source>Question1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1520"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1533"/>
+        <source>ButtonYes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1520"/>
+        <location filename="../operations/dispatcherframe.cpp" line="1533"/>
+        <source>ButtonNo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="1531"/>
+        <source>Question4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2094"/>
+        <source>Question5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2096"/>
+        <source>ButtonYesX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2096"/>
+        <location filename="../operations/dispatcherframe.cpp" line="2097"/>
+        <source>ButtonNoX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2241"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2241"/>
+        <source>AutoAllocate requires a Layout Editor panel. Please select
+a Layout Editor panel in Options window and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2405"/>
+        <source>At least one Active Train is waiting 
+on the fast clock, but it is not running. 
+ Do you want to start the fast clock?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2408"/>
+        <source>At least one Active Train needs the 
+fast clock for restart, but it is not running. 
+Do you want to start the fast clock?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/dispatcherframe.cpp" line="2416"/>
+        <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -492,9 +1446,32 @@
     </message>
 </context>
 <context>
+    <name>FileLocationsPreferences</name>
+    <message>
+        <location filename="../filelocationspreferences.cpp" line="44"/>
+        <source>User files location &quot;%1&quot; is not a directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../filelocationspreferences.cpp" line="49"/>
+        <source>User files location &quot;%1&quot; does not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../filelocationspreferences.cpp" line="57"/>
+        <source>Scripts location &quot;%1&quot; is not a directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../filelocationspreferences.cpp" line="62"/>
+        <source>Scripts location &quot;%1&quot; does not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>GuiUtilBase</name>
     <message>
-        <location filename="../guiutilbase.cpp" line="150"/>
+        <location filename="../guiutilbase.cpp" line="184"/>
         <source>class &apos;%1&apos; has no methods</source>
         <translation type="unfinished"></translation>
     </message>
@@ -502,21 +1479,298 @@
 <context>
     <name>InstallDecoderURLAction</name>
     <message>
-        <location filename="../installdecoderurlaction.cpp" line="125"/>
-        <source>Information</source>
+        <location filename="../installdecoderurlaction.cpp" line="76"/>
+        <source>URL to import:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../installdecoderurlaction.cpp" line="125"/>
+        <location filename="../installdecoderurlaction.cpp" line="88"/>
+        <source>That URL isn&apos;t in a valid format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="151"/>
         <source>Completed OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="151"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="170"/>
+        <location filename="../installdecoderurlaction.cpp" line="246"/>
+        <source>File not found: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="179"/>
+        <source>output file = &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="191"/>
+        <source>write error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="199"/>
+        <location filename="../installdecoderurlaction.cpp" line="206"/>
+        <location filename="../installdecoderurlaction.cpp" line="272"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="199"/>
+        <source>File couldn&apos;t be copied</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="206"/>
+        <source>Error while copying file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="263"/>
+        <source>File &quot;%1&quot; does not contain a decoder definition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../installdecoderurlaction.cpp" line="272"/>
+        <source>The file doesn&apos;t contain valid XML.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>InstanceManager</name>
+    <message>
+        <location filename="../instancemanager.cpp" line="137"/>
+        <location filename="../instancemanager.cpp" line="155"/>
+        <source>Should not store null value of type %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../instancemanager.cpp" line="152"/>
+        <source>Store item of type %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../instancemanager.cpp" line="271"/>
+        <source>getOptionalDefault of type %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../instancemanager.cpp" line="278"/>
+        <source>    attempt auto-create of %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../instancemanager.cpp" line="295"/>
+        <source>      auto-created default of %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../instancemanager.cpp" line="304"/>
+        <source>    attempt initializer create of %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../instancemanager.cpp" line="308"/>
+        <source>      initializer created default of %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>JMenuUtil</name>
     <message>
-        <location filename="../jmenuutil.cpp" line="113"/>
+        <location filename="../jmenuutil.cpp" line="116"/>
         <source>create action item &apos;%1&apos; in &apos;%2&apos; menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>JTableListener</name>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="652"/>
+        <source>Got propertyChange %1 for table %2 (&quot;%3&quot; -&gt; &quot;%4&quot;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="670"/>
+        <source>Got propertyChange %1 for column %2 (&quot;%3&quot; -&gt; &quot;%4&quot;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="679"/>
+        <source>Sort order changed for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="686"/>
+        <source>Got columnAdded for %1 (%2 -&gt; %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="693"/>
+        <source>Got columnRemoved for %1 (%2 -&gt; %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="701"/>
+        <source>Got columnMoved for %1 (%2 -&gt; %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="708"/>
+        <source>Got columnMarginChanged for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="714"/>
+        <source>Got columnSelectionChanged for %1 (%2 -&gt; %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>JmriConfiguration</name>
+    <message>
+        <location filename="../jmriconfiguration.cpp" line="57"/>
+        <source>first element = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfiguration.cpp" line="61"/>
+        <source>selected element = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfiguration.cpp" line="158"/>
+        <source>Cannot write %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfiguration.cpp" line="207"/>
+        <source>Unable to delete %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfiguration.cpp" line="214"/>
+        <source>Cannot remove %1 from %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfiguration.cpp" line="226"/>
+        <source>Backing up %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfiguration.cpp" line="236"/>
+        <source>Error backing up %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>JmriConfigurationManager</name>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="154"/>
+        <source>Saving preferences for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="206"/>
+        <source>loading %1 ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="257"/>
+        <source>Error initializing %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="257"/>
+        <source>Please check the logs for more details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="257"/>
+        <source>The Preferences window will open so this can be fixed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="277"/>
+        <source>Unable to get File* for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="310"/>
+        <source>Initializing provider %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="333"/>
+        <source>Exception initializing %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="336"/>
+        <source>Additional exception initializing %1: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmriconfigurationmanager.cpp" line="340"/>
+        <source>Initialized provider %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>JmriJTablePersistenceManager</name>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="146"/>
+        <source>Column %1 (model index %2) is %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="317"/>
+        <source>Table %1 column %2 is sorted %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="344"/>
+        <source>Unable to parse column &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmrijtablepersistencemanager.cpp" line="366"/>
+        <source>Saving preferences (dirty=%1)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>JmriPreferences</name>
+    <message>
+        <location filename="../jmripreferencesprovider.cpp" line="304"/>
+        <source>Instantiating node &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmripreferencesprovider.cpp" line="315"/>
+        <source>Unable to sync on creation of node %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmripreferencesprovider.cpp" line="328"/>
+        <source>Unable to flush after putting %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmripreferencesprovider.cpp" line="346"/>
+        <source>Unable to flush after removing %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../jmripreferencesprovider.cpp" line="517"/>
+        <source>Backing up %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -525,15 +1779,6 @@
     <message>
         <location filename="../lcdclockaction.cpp" line="25"/>
         <source>LCD Clock</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ListedTableAction</name>
-    <message>
-        <location filename="../listedtableaction.cpp" line="77"/>
-        <location filename="../listedtableaction.cpp" line="84"/>
-        <source>Listed Table Access</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -564,10 +1809,47 @@
     </message>
 </context>
 <context>
+    <name>LogixLoadAction</name>
+    <message>
+        <location filename="../logixloadaction.cpp" line="34"/>
+        <source>Do you wish to disable Logix, when they are loaded using the Panels menu?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../logixloadaction.cpp" line="34"/>
+        <source>Debug Option</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>NixieClockAction</name>
     <message>
         <location filename="../nixieclockaction.cpp" line="22"/>
         <source>Nixie Clock</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NodeIdentity</name>
+    <message>
+        <location filename="../nodeidentity.cpp" line="74"/>
+        <source>Node identity %1 is invalid. Generating new node identity.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../nodeidentity.cpp" line="106"/>
+        <location filename="../nodeidentity.cpp" line="120"/>
+        <source>Using %1 as the JMRI Node identity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../nodeidentity.cpp" line="234"/>
+        <source>Retaining former node identity %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../nodeidentity.cpp" line="272"/>
+        <source>%02</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -584,7 +1866,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="873"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="874"/>
         <source>TitleOperationsSetup</source>
         <translation type="unfinished"></translation>
     </message>
@@ -729,6 +2011,11 @@
     <message>
         <location filename="../operations/trainbuilder.cpp" line="820"/>
         <source>buildUserSelectedDeparture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/operationsframe.cpp" line="346"/>
+        <source>bubble sort pass %1:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3003,14 +4290,6 @@
     </message>
 </context>
 <context>
-    <name>Operations::Consist</name>
-    <message>
-        <location filename="../operations/consist.cpp" line="25"/>
-        <source>New Consist (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Operations::Control</name>
     <message>
         <location filename="../operations/control.cpp" line="217"/>
@@ -4948,6 +6227,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../operations/location.cpp" line="1374"/>
+        <source>location %1 has tracks:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../operations/location.cpp" line="1378"/>
         <source>%1 id=%2, name =%3</source>
         <translation type="unfinished"></translation>
@@ -5940,17 +7224,12 @@
         <source>Sort column count: %1 table column count: %1 XTableColumnModel in use</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../operations/operationsframe.cpp" line="344"/>
-        <source>bubble sort pass %1:</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Operations::OperationsPanel</name>
     <message>
-        <location filename="../operations/operationspanel.cpp" line="298"/>
-        <location filename="../operations/operationspanel.cpp" line="310"/>
+        <location filename="../operations/operationspanel.cpp" line="302"/>
+        <location filename="../operations/operationspanel.cpp" line="319"/>
         <source>Increasing text area character width to %1 columns</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6009,303 +7288,313 @@
 <context>
     <name>Operations::OperationsSetupPanel</name>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="58"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="60"/>
         <source>Northbound Train Icon Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="59"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="61"/>
         <source>Southbound Train Icon Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="60"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="62"/>
         <source>Eastbound Train Icon Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="61"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="63"/>
         <source>Westbound Train Icon Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="62"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="64"/>
         <source>Switcher Icon Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="63"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="65"/>
         <source>Terminated Train Icon Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="67"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="69"/>
         <source>Backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="68"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="70"/>
         <source>Restore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="69"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="71"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="84"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="86"/>
         <source>Descriptive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="85"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="87"/>
         <source>AAR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="87"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="89"/>
         <source>Feet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="88"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="90"/>
         <source>Meter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="91"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="93"/>
         <source>East/West</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="92"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="94"/>
         <source>North/South</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="93"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="95"/>
         <source>Add Operations Menu to Main Menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="94"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="96"/>
         <source>Close Windows on Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="95"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="97"/>
         <source>Auto Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="96"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="98"/>
         <source>Auto Backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="97"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="99"/>
         <source>Enable Icon SetX&amp;Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="98"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="100"/>
         <source>Append Loco Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="151"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="153"/>
         <source>Creates operations backup files </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="152"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="154"/>
         <source>Restores operations files using backup files </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="153"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="155"/>
         <source>Writes this window&apos;s settings to file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="154"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="156"/>
         <source>Enter the panel&apos;s name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="155"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="157"/>
         <source>Optionally enter four digits representing the year that your are modeling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="156"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="158"/>
         <source>When selected, operations files are automatically saved after a change is made</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="157"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="159"/>
         <source>When selected, a backup copy of your operation files is created at startup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="158"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="160"/>
         <source>Enter the maximum scale length of your trains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="159"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="161"/>
         <source>Enter the maximum number of locos that can be assigned to a train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="160"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="162"/>
         <source>HPperTonTip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="161"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="163"/>
         <source>Enter in minutes the average time it takes to pull or spot a car</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="162"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="164"/>
         <source>Enter in minutes the average time it takes to travel between locations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="163"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="165"/>
         <source>To change the railroad name, go to Edit-&gt;Preferences-&gt;Railroad Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="164"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="166"/>
         <source>Comment for backup and restoring files. Also shown on train build reports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="192"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="194"/>
         <source>Railroad Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="201"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="203"/>
         <source>direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="218"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="511"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="220"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="513"/>
         <source>Maximum Train Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="227"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="520"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="229"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="522"/>
         <source>Max Locos per Train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="236"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="530"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="238"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="532"/>
         <source>Horsepower per Ton</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="244"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="540"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="246"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="542"/>
         <source>Switch Time (minutes)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="252"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="550"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="254"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="552"/>
         <source>Travel Time (minutes)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="262"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="264"/>
         <source>Scale)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="301"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="327"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="562"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="303"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="329"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="564"/>
         <source>Optional Year Modeled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="337"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="339"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="367"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="369"/>
         <source>Panel Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="375"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="377"/>
         <source>Icon Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="386"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="388"/>
         <source>Icon Colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="421"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="423"/>
         <source>Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="511"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="520"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="530"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="540"/>
-        <location filename="../operations/operationssetuppanel.cpp" line="562"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="513"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="522"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="532"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="542"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="564"/>
         <source>Can not accept number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="550"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="552"/>
         <source>CanNotAcceptNumber</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="691"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="670"/>
+        <source>Do you want the change your railroad name from &quot;%1&quot; to &quot;%2&quot;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/operationssetuppanel.cpp" line="670"/>
+        <source>Change your JMRI railroad name?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/operationssetuppanel.cpp" line="693"/>
         <source>Warning train length might be too short!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="691"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="693"/>
         <source>Are you sure that you want to limit your trains to %1 scale %2?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="713"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="714"/>
         <source>You&apos;&apos;re increased the maximum train length to %1 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="713"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="714"/>
         <source>You need to manually edit your train&apos;s routes if you want to use the longer length!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="727"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="728"/>
         <source>Route (%1) has a location (%2) with a maximum departure train length (%3) that exceeds the new maximum length (%4)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="737"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="738"/>
         <source>More</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/operationssetuppanel.cpp" line="745"/>
+        <location filename="../operations/operationssetuppanel.cpp" line="746"/>
         <source>You need to adjust your routes! (You can also view this warning message using the JMRI system console) </source>
         <translation type="unfinished"></translation>
     </message>
@@ -9163,12 +10452,153 @@
     </message>
     <message>
         <location filename="../operations/router.cpp" line="651"/>
-        <source>RouterCouldNotFindStaging</source>
+        <source>Could not find an interim C/I, yard, or staging track that can service car to destination (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../operations/router.cpp" line="654"/>
-        <source>RouterCouldNotFind</source>
+        <source>Could not find an interim C/I or yard track that can service car to destination (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="679"/>
+        <source>Could not find an interim C/I or yard track that can service car from location (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="687"/>
+        <source>Routing using three trains destination (%1) begins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="693"/>
+        <source>Next location (%1, %2) can service car (%3) using train (%4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="698"/>
+        <source>Last location (%1, %2) can service car (%3) using train (%4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="703"/>
+        <source>Other location (%1, %2) may be needed to service car (%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="715"/>
+        <source>Found 3 train route, setting car destination (%1, %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="720"/>
+        <source>Route for car (%1): (%2, %3)-&gt;(%4)-&gt;(%5, %6)-&gt;(%7)-&gt;(%8, %9)-&gt;(%10)-&gt;(%11, %12)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="729"/>
+        <source>Route for car (%1): (%2, %3)-&gt;(%4, %5)-&gt;(%6, %7)-&gt;(%8, %9)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="745"/>
+        <source>Using 3 trains to route car to (%1) was unsuccessful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="746"/>
+        <source>Routing using four trains destination (%1) begins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="760"/>
+        <location filename="../operations/router.cpp" line="820"/>
+        <source>Train 2 (%1) services car from (%2) to (%3, %4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="769"/>
+        <source>Found 4 train route, setting car destination (%1, %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="774"/>
+        <source>Route for car ({0}): ({1}, {2})-&gt;({3})-&gt;({4}, {5})-&gt;({6})-&gt;({7}, {8})-&gt;({9})-&gt;({10}, {11})-&gt;({12})-&gt;({13}, {14})</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="785"/>
+        <source>Route for car ({0}): ({1}, {2})-&gt;({3}, {4})-&gt;({5}, {6})-&gt;({7}, {8})-&gt;({9}, {10})</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="805"/>
+        <source>Using 4 trains to route car to (%1) was unsuccessful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="806"/>
+        <source>Routing using five trains destination (%1) begins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="834"/>
+        <source>Train 3 (%1) services car from (%2) to (%3, %4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="845"/>
+        <source>Found 5 train route, setting car destination (%1, %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="850"/>
+        <source>Route for car ({0}): ({1}, {2})-&gt;({3})-&gt;({4}, {5})-&gt;({6})-&gt;({7}, {8})-&gt;({9})-&gt;({10}, {11})-&gt;({12})-&gt;({13}, {14})-&gt;({15})-&gt;({16}, {17})</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="862"/>
+        <source>Route for car ({0}): ({1}, {2})-&gt;({3}, {4})-&gt;({5}, {6})-&gt;({7}, {8})-&gt;({9}, {10})-&gt;({11}, {12})</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="883"/>
+        <source>Using 5 trains to route car to (%1) was unsuccessful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="893"/>
+        <source>Train ({0}) can&apos;t transport car ({1}) directly to ({2}, {3})</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="898"/>
+        <source>Train ({0}) can&apos;t transport car ({1}) to ({2}, {3}) due to {4}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="910"/>
+        <source>Can&apos;&apos;t use {4} ({1}, {2}) for ({0}) due to {3}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="952"/>
+        <source>Found %1 track (%2) %3) for car (%4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="971"/>
+        <source>Option to service all cars with a final destination enabled, ignoring train (%1) ability to service car (%2) to (%3), %4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="977"/>
+        <source>Train (%1) can service car (%2) from %3 (%4, %5) to final destination (%6,%7)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/router.cpp" line="986"/>
+        <source>Adding location (%1, %2) to other locations</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10137,474 +11567,579 @@
 <context>
     <name>Operations::Setup</name>
     <message>
-        <location filename="../operations/setup.cpp" line="93"/>
+        <location filename="../operations/setup.cpp" line="109"/>
         <source>East</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="94"/>
+        <location filename="../operations/setup.cpp" line="110"/>
         <source>West</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="95"/>
+        <location filename="../operations/setup.cpp" line="111"/>
         <source>North</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="96"/>
+        <location filename="../operations/setup.cpp" line="112"/>
         <source>South</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="98"/>
+        <location filename="../operations/setup.cpp" line="114"/>
         <source>Descriptive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="99"/>
+        <location filename="../operations/setup.cpp" line="115"/>
         <source>ArrCodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="101"/>
+        <location filename="../operations/setup.cpp" line="117"/>
         <source>Monospace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="103"/>
+        <location filename="../operations/setup.cpp" line="119"/>
         <source>StandardFormat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="104"/>
+        <location filename="../operations/setup.cpp" line="120"/>
         <source>TwoColumnFormat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="105"/>
+        <location filename="../operations/setup.cpp" line="121"/>
         <source>TwoColumnTrackFormat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="107"/>
+        <location filename="../operations/setup.cpp" line="123"/>
         <source>Portrait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="108"/>
+        <location filename="../operations/setup.cpp" line="124"/>
         <source>Landscape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="109"/>
+        <location filename="../operations/setup.cpp" line="125"/>
         <source>HalfPage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="110"/>
+        <location filename="../operations/setup.cpp" line="126"/>
         <source>HandHeld</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="112"/>
+        <location filename="../operations/setup.cpp" line="128"/>
         <source>PageNormal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="113"/>
+        <location filename="../operations/setup.cpp" line="129"/>
         <source>PagePerTrain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="114"/>
+        <location filename="../operations/setup.cpp" line="130"/>
         <source>PagePerVisit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="116"/>
+        <location filename="../operations/setup.cpp" line="132"/>
         <source>&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="123"/>
+        <location filename="../operations/setup.cpp" line="139"/>
         <source>Road</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="124"/>
+        <location filename="../operations/setup.cpp" line="140"/>
         <source>Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="125"/>
+        <location filename="../operations/setup.cpp" line="141"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="126"/>
+        <location filename="../operations/setup.cpp" line="142"/>
         <source>Model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="127"/>
+        <location filename="../operations/setup.cpp" line="143"/>
         <source>Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="128"/>
+        <location filename="../operations/setup.cpp" line="144"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="129"/>
+        <location filename="../operations/setup.cpp" line="145"/>
         <source>Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="130"/>
+        <location filename="../operations/setup.cpp" line="146"/>
         <source>Track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="131"/>
+        <location filename="../operations/setup.cpp" line="147"/>
         <source>Destination</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="132"/>
+        <location filename="../operations/setup.cpp" line="148"/>
         <source>Dest&amp;Track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="133"/>
+        <location filename="../operations/setup.cpp" line="149"/>
         <source>Final_Dest</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="134"/>
+        <location filename="../operations/setup.cpp" line="150"/>
         <source>FD&amp;Track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="135"/>
+        <location filename="../operations/setup.cpp" line="151"/>
         <source>Location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="136"/>
+        <location filename="../operations/setup.cpp" line="152"/>
         <source>Consist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="137"/>
+        <location filename="../operations/setup.cpp" line="153"/>
         <source>Kernel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="138"/>
+        <location filename="../operations/setup.cpp" line="154"/>
         <source>Kernel_Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="139"/>
+        <location filename="../operations/setup.cpp" line="155"/>
         <source>Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="140"/>
+        <location filename="../operations/setup.cpp" line="156"/>
         <source>RWE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="141"/>
+        <location filename="../operations/setup.cpp" line="157"/>
         <source>Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="142"/>
+        <location filename="../operations/setup.cpp" line="158"/>
         <source>SetOut_Msg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="143"/>
+        <location filename="../operations/setup.cpp" line="159"/>
         <source>PickUp_Msg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="144"/>
-        <location filename="../operations/setup.cpp" line="228"/>
+        <location filename="../operations/setup.cpp" line="160"/>
+        <location filename="../operations/setup.cpp" line="244"/>
         <source>Hazardous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="146"/>
+        <location filename="../operations/setup.cpp" line="162"/>
         <source>Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="147"/>
+        <location filename="../operations/setup.cpp" line="163"/>
         <source>Tab2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="148"/>
+        <location filename="../operations/setup.cpp" line="164"/>
         <source>Tab3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="163"/>
+        <location filename="../operations/setup.cpp" line="179"/>
         <source>Black</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="164"/>
+        <location filename="../operations/setup.cpp" line="180"/>
         <source>Red</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="165"/>
+        <location filename="../operations/setup.cpp" line="181"/>
         <source>Orange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="166"/>
+        <location filename="../operations/setup.cpp" line="182"/>
         <source>Yellow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="167"/>
+        <location filename="../operations/setup.cpp" line="183"/>
         <source>Green</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="168"/>
+        <location filename="../operations/setup.cpp" line="184"/>
         <source>Blue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="169"/>
+        <location filename="../operations/setup.cpp" line="185"/>
         <source>Gray</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="170"/>
+        <location filename="../operations/setup.cpp" line="186"/>
         <source>Pink</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="171"/>
+        <location filename="../operations/setup.cpp" line="187"/>
         <source>Cyan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="172"/>
+        <location filename="../operations/setup.cpp" line="188"/>
         <source>Magenta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="175"/>
+        <location filename="../operations/setup.cpp" line="191"/>
         <source>Feet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="176"/>
+        <location filename="../operations/setup.cpp" line="192"/>
         <source>Meter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="219"/>
-        <location filename="../operations/setup.cpp" line="221"/>
-        <location filename="../operations/setup.cpp" line="224"/>
+        <location filename="../operations/setup.cpp" line="235"/>
+        <location filename="../operations/setup.cpp" line="237"/>
+        <location filename="../operations/setup.cpp" line="240"/>
         <source>Pick up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="220"/>
-        <location filename="../operations/setup.cpp" line="222"/>
-        <location filename="../operations/setup.cpp" line="225"/>
+        <location filename="../operations/setup.cpp" line="236"/>
+        <location filename="../operations/setup.cpp" line="238"/>
+        <location filename="../operations/setup.cpp" line="241"/>
         <source>Set out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="223"/>
-        <location filename="../operations/setup.cpp" line="226"/>
+        <location filename="../operations/setup.cpp" line="239"/>
+        <location filename="../operations/setup.cpp" line="242"/>
         <source>Move</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="227"/>
+        <location filename="../operations/setup.cpp" line="243"/>
         <source>The following cars are currently misplaced, please contact the dispatcher if found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="275"/>
+        <location filename="../operations/setup.cpp" line="291"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="277"/>
+        <location filename="../operations/setup.cpp" line="293"/>
         <source>RFID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="648"/>
+        <location filename="../operations/setup.cpp" line="664"/>
         <source>feet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2030"/>
+        <location filename="../operations/setup.cpp" line="2046"/>
         <source>railroadName: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2039"/>
+        <location filename="../operations/setup.cpp" line="2055"/>
         <source>setup comment: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2048"/>
+        <location filename="../operations/setup.cpp" line="2064"/>
         <source>mainMenu: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2055"/>
+        <location filename="../operations/setup.cpp" line="2071"/>
         <source>closeOnSave: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2062"/>
+        <location filename="../operations/setup.cpp" line="2078"/>
         <source>direction: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2067"/>
+        <location filename="../operations/setup.cpp" line="2083"/>
         <source>Train direction (%1) isn&apos;t a valid number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2073"/>
+        <location filename="../operations/setup.cpp" line="2089"/>
         <source>Max train length: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2078"/>
+        <location filename="../operations/setup.cpp" line="2094"/>
         <source>Train maximum length (%1) isn&apos;t a valid number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2084"/>
+        <location filename="../operations/setup.cpp" line="2100"/>
         <source>Max number of engines: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2090"/>
+        <location filename="../operations/setup.cpp" line="2106"/>
         <source>Maximum number of engines (%1) isn&apos;t a valid number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2096"/>
+        <location filename="../operations/setup.cpp" line="2112"/>
         <source>HPT: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2102"/>
+        <location filename="../operations/setup.cpp" line="2118"/>
         <source>Train HPT (%1) isn&apos;t a valid number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2114"/>
+        <location filename="../operations/setup.cpp" line="2130"/>
         <source>Scale (%1) isn&apos;t a valid number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2127"/>
+        <location filename="../operations/setup.cpp" line="2143"/>
         <source>switchTime: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2132"/>
+        <location filename="../operations/setup.cpp" line="2148"/>
         <source>Switch time (%1) isn&apos;t a valid number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2138"/>
+        <location filename="../operations/setup.cpp" line="2154"/>
         <source>travelTime: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2143"/>
+        <location filename="../operations/setup.cpp" line="2159"/>
         <source>Travel time (%1) isn&apos;t a valid number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2149"/>
+        <location filename="../operations/setup.cpp" line="2165"/>
         <source>showValue: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2156"/>
+        <location filename="../operations/setup.cpp" line="2172"/>
         <source>valueLabel: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2163"/>
+        <location filename="../operations/setup.cpp" line="2179"/>
         <source>showRfid: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2170"/>
+        <location filename="../operations/setup.cpp" line="2186"/>
         <source>rfidLabel: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2177"/>
+        <location filename="../operations/setup.cpp" line="2193"/>
         <source>lengthUnit: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2184"/>
+        <location filename="../operations/setup.cpp" line="2200"/>
         <source>yearModeled: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2192"/>
+        <location filename="../operations/setup.cpp" line="2208"/>
         <source>printLocComments: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2199"/>
+        <location filename="../operations/setup.cpp" line="2215"/>
         <source>printRouteComments: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2207"/>
+        <location filename="../operations/setup.cpp" line="2223"/>
         <source>printLoadsEmpties: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2214"/>
+        <location filename="../operations/setup.cpp" line="2230"/>
         <source>printTimetable: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2221"/>
+        <location filename="../operations/setup.cpp" line="2237"/>
         <source>use12hrFormat: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2228"/>
+        <location filename="../operations/setup.cpp" line="2244"/>
         <source>printValid: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2235"/>
+        <location filename="../operations/setup.cpp" line="2251"/>
         <source>sortByTrack: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/setup.cpp" line="2242"/>
+        <location filename="../operations/setup.cpp" line="2258"/>
         <source>printHeaders: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2271"/>
+        <source>pickupEngFormat: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2285"/>
+        <source>dropEngFormat: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2299"/>
+        <source>pickupCarFormat: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2314"/>
+        <source>dropCarFormat: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2329"/>
+        <source>localFormat: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2341"/>
+        <source>missingCarFormat: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2352"/>
+        <source>sameAsManifest: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2359"/>
+        <source>realTime: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2366"/>
+        <source>allTrains: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2386"/>
+        <source>Unknown switch list page format %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2392"/>
+        <source>old style pageMode: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2401"/>
+        <source>print Setup::route location comment: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2408"/>
+        <source>track summary: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2435"/>
+        <source>switchListDropCarFormat: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2450"/>
+        <source>switchListLocalFormat: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2462"/>
+        <source>panel: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2498"/>
+        <source>Manifest font size (%1) isn&apos;t a valid number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2556"/>
+        <source>Tab 1 length (%1) isn&apos;t a valid number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2567"/>
+        <source>Tab 2 length (%1) isn&apos;t a valid number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2578"/>
+        <source>Tab 3 length (%1) isn&apos;t a valid number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../operations/setup.cpp" line="2730"/>
+        <source>number of passes: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13744,13 +15279,13 @@
 <context>
     <name>Operations::TrainManagerXml</name>
     <message>
-        <location filename="../operations/trainmanagerxml.cpp" line="39"/>
         <location filename="../operations/trainmanagerxml.cpp" line="40"/>
+        <location filename="../operations/trainmanagerxml.cpp" line="41"/>
         <source>train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainmanagerxml.cpp" line="41"/>
+        <location filename="../operations/trainmanagerxml.cpp" line="42"/>
         <source>location</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14127,85 +15662,85 @@
 <context>
     <name>Operations::TrainScriptFrame</name>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="40"/>
+        <location filename="../operations/trainscriptframe.cpp" line="41"/>
         <source>Python Script Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="55"/>
         <location filename="../operations/trainscriptframe.cpp" line="56"/>
         <location filename="../operations/trainscriptframe.cpp" line="57"/>
         <location filename="../operations/trainscriptframe.cpp" line="58"/>
+        <location filename="../operations/trainscriptframe.cpp" line="59"/>
         <source>Add Script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="60"/>
         <location filename="../operations/trainscriptframe.cpp" line="61"/>
         <location filename="../operations/trainscriptframe.cpp" line="62"/>
         <location filename="../operations/trainscriptframe.cpp" line="63"/>
+        <location filename="../operations/trainscriptframe.cpp" line="64"/>
         <source>Run Scripts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="65"/>
+        <location filename="../operations/trainscriptframe.cpp" line="66"/>
         <source>Save Train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="78"/>
+        <location filename="../operations/trainscriptframe.cpp" line="79"/>
         <source>Run the following scripts before building this train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="89"/>
+        <location filename="../operations/trainscriptframe.cpp" line="90"/>
         <source>Run the following scripts after building this train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="99"/>
+        <location filename="../operations/trainscriptframe.cpp" line="100"/>
         <source>Run the following scripts after this train is moved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="110"/>
+        <location filename="../operations/trainscriptframe.cpp" line="111"/>
         <source>Run the following scripts after this train terminates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="132"/>
+        <location filename="../operations/trainscriptframe.cpp" line="133"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="140"/>
+        <location filename="../operations/trainscriptframe.cpp" line="141"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="225"/>
-        <location filename="../operations/trainscriptframe.cpp" line="309"/>
+        <location filename="../operations/trainscriptframe.cpp" line="226"/>
+        <location filename="../operations/trainscriptframe.cpp" line="310"/>
         <source>Remove Script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="267"/>
-        <location filename="../operations/trainscriptframe.cpp" line="353"/>
+        <location filename="../operations/trainscriptframe.cpp" line="268"/>
+        <location filename="../operations/trainscriptframe.cpp" line="354"/>
         <source>RemoveScript</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="484"/>
+        <location filename="../operations/trainscriptframe.cpp" line="483"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="484"/>
+        <location filename="../operations/trainscriptframe.cpp" line="483"/>
         <source>Script file not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainscriptframe.cpp" line="494"/>
+        <location filename="../operations/trainscriptframe.cpp" line="493"/>
         <source>FindDesiredScriptFile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14948,289 +16483,289 @@
 <context>
     <name>Operations::TrainsTableFrame</name>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="65"/>
+        <location filename="../operations/trainstableframe.cpp" line="68"/>
         <source>Move</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="66"/>
-        <location filename="../operations/trainstableframe.cpp" line="103"/>
+        <location filename="../operations/trainstableframe.cpp" line="69"/>
+        <location filename="../operations/trainstableframe.cpp" line="106"/>
         <source>Terminate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="67"/>
+        <location filename="../operations/trainstableframe.cpp" line="70"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="68"/>
+        <location filename="../operations/trainstableframe.cpp" line="71"/>
         <source>Conductor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="84"/>
+        <location filename="../operations/trainstableframe.cpp" line="87"/>
         <source>Trains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="88"/>
+        <location filename="../operations/trainstableframe.cpp" line="91"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="89"/>
+        <location filename="../operations/trainstableframe.cpp" line="92"/>
         <source>Id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="97"/>
+        <location filename="../operations/trainstableframe.cpp" line="100"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="98"/>
+        <location filename="../operations/trainstableframe.cpp" line="101"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="99"/>
-        <location filename="../operations/trainstableframe.cpp" line="315"/>
-        <location filename="../operations/trainstableframe.cpp" line="518"/>
+        <location filename="../operations/trainstableframe.cpp" line="102"/>
+        <location filename="../operations/trainstableframe.cpp" line="320"/>
+        <location filename="../operations/trainstableframe.cpp" line="522"/>
         <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="100"/>
-        <location filename="../operations/trainstableframe.cpp" line="110"/>
+        <location filename="../operations/trainstableframe.cpp" line="103"/>
+        <location filename="../operations/trainstableframe.cpp" line="113"/>
         <source>OpenFile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="101"/>
-        <location filename="../operations/trainstableframe.cpp" line="111"/>
+        <location filename="../operations/trainstableframe.cpp" line="104"/>
+        <location filename="../operations/trainstableframe.cpp" line="114"/>
         <source>RunFile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="102"/>
+        <location filename="../operations/trainstableframe.cpp" line="105"/>
         <source>SwitchLists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="104"/>
+        <location filename="../operations/trainstableframe.cpp" line="107"/>
         <source>SaveBuilds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="107"/>
+        <location filename="../operations/trainstableframe.cpp" line="110"/>
         <source>BuildMessages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="108"/>
+        <location filename="../operations/trainstableframe.cpp" line="111"/>
         <source>BuildReport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="109"/>
-        <location filename="../operations/trainstableframe.cpp" line="514"/>
+        <location filename="../operations/trainstableframe.cpp" line="112"/>
+        <location filename="../operations/trainstableframe.cpp" line="518"/>
         <source>Preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="112"/>
+        <location filename="../operations/trainstableframe.cpp" line="115"/>
         <source>ShowAllTrains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="147"/>
+        <location filename="../operations/trainstableframe.cpp" line="150"/>
         <source>Click to sort</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="157"/>
-        <location filename="../operations/trainstableframe.cpp" line="301"/>
+        <location filename="../operations/trainstableframe.cpp" line="160"/>
+        <location filename="../operations/trainstableframe.cpp" line="304"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="169"/>
+        <location filename="../operations/trainstableframe.cpp" line="172"/>
         <source>Action</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="180"/>
+        <location filename="../operations/trainstableframe.cpp" line="183"/>
         <source>Add Train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="181"/>
+        <location filename="../operations/trainstableframe.cpp" line="184"/>
         <source>Build selected trains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="182"/>
+        <location filename="../operations/trainstableframe.cpp" line="185"/>
         <source>Preview or Print Switch Lists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="184"/>
+        <location filename="../operations/trainstableframe.cpp" line="187"/>
         <source>Terminate selected trains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="185"/>
+        <location filename="../operations/trainstableframe.cpp" line="188"/>
         <source>Save train, car, locomotive and location files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="186"/>
+        <location filename="../operations/trainstableframe.cpp" line="189"/>
         <source>OpeOpen CSV manifest files for selected trainsnFileButtonTip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="187"/>
+        <location filename="../operations/trainstableframe.cpp" line="190"/>
         <source>Run Excel program (Manifest Creator) for selected trains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="188"/>
+        <location filename="../operations/trainstableframe.cpp" line="191"/>
         <source>When selected, show a message when a problem occurs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="189"/>
+        <location filename="../operations/trainstableframe.cpp" line="192"/>
         <source>When selected, preview the manifest and build reports for a train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="190"/>
+        <location filename="../operations/trainstableframe.cpp" line="193"/>
         <source>When selected, open the CSV manifest file for a train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="191"/>
+        <location filename="../operations/trainstableframe.cpp" line="194"/>
         <source>When selected, run Excel program (Manifest Creator) for a train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="192"/>
+        <location filename="../operations/trainstableframe.cpp" line="195"/>
         <source>When selected show all trains, unselected only show trains to build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="194"/>
+        <location filename="../operations/trainstableframe.cpp" line="197"/>
         <source>When selected, show Move button for train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="195"/>
+        <location filename="../operations/trainstableframe.cpp" line="198"/>
         <source>When selected, show Terminate button for train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="196"/>
+        <location filename="../operations/trainstableframe.cpp" line="199"/>
         <source>When selected, show Reset button for train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="299"/>
+        <location filename="../operations/trainstableframe.cpp" line="302"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="304"/>
+        <location filename="../operations/trainstableframe.cpp" line="307"/>
         <source>Modify Trains by Car Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="305"/>
+        <location filename="../operations/trainstableframe.cpp" line="308"/>
         <source>Show Car Types</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="306"/>
+        <location filename="../operations/trainstableframe.cpp" line="309"/>
         <source>Change Departure Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="308"/>
+        <location filename="../operations/trainstableframe.cpp" line="311"/>
         <source>TimeTable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="309"/>
+        <location filename="../operations/trainstableframe.cpp" line="312"/>
         <source>Copy Train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="310"/>
+        <location filename="../operations/trainstableframe.cpp" line="314"/>
         <source>Scripts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="312"/>
+        <location filename="../operations/trainstableframe.cpp" line="317"/>
         <source>MenuItemSetupExcelProgram</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="316"/>
+        <location filename="../operations/trainstableframe.cpp" line="321"/>
         <source>Print Preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="404"/>
+        <location filename="../operations/trainstableframe.cpp" line="408"/>
         <source>Can not %1 train!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="404"/>
-        <location filename="../operations/trainstableframe.cpp" line="405"/>
-        <location filename="../operations/trainstableframe.cpp" line="432"/>
-        <location filename="../operations/trainstableframe.cpp" line="435"/>
+        <location filename="../operations/trainstableframe.cpp" line="408"/>
+        <location filename="../operations/trainstableframe.cpp" line="409"/>
+        <location filename="../operations/trainstableframe.cpp" line="436"/>
+        <location filename="../operations/trainstableframe.cpp" line="439"/>
         <source>preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="404"/>
-        <location filename="../operations/trainstableframe.cpp" line="405"/>
-        <location filename="../operations/trainstableframe.cpp" line="436"/>
+        <location filename="../operations/trainstableframe.cpp" line="408"/>
+        <location filename="../operations/trainstableframe.cpp" line="409"/>
+        <location filename="../operations/trainstableframe.cpp" line="440"/>
         <source>print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="405"/>
+        <location filename="../operations/trainstableframe.cpp" line="409"/>
         <source>Need to build train (%1) before you can %2 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="420"/>
+        <location filename="../operations/trainstableframe.cpp" line="424"/>
         <source>LoadDirectoryNameFileName</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="515"/>
+        <location filename="../operations/trainstableframe.cpp" line="519"/>
         <source>Preview manifests for selected trains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="516"/>
+        <location filename="../operations/trainstableframe.cpp" line="520"/>
         <source>When selected, preview the build report for a train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="519"/>
+        <location filename="../operations/trainstableframe.cpp" line="523"/>
         <source>Print manifests for selected trains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="520"/>
+        <location filename="../operations/trainstableframe.cpp" line="524"/>
         <source>When selected, print the build report for a train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="559"/>
+        <location filename="../operations/trainstableframe.cpp" line="563"/>
         <source>Trains Table</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15605,6 +17140,53 @@
     </message>
 </context>
 <context>
+    <name>PerformActionModelFactory</name>
+    <message>
+        <location filename="../performactionmodelfactory.cpp" line="26"/>
+        <source>&lt;html&gt;Select an action to perform when the application starts.&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../performactionmodelfactory.cpp" line="30"/>
+        <source>Perform action</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PerformFileModelFactory</name>
+    <message>
+        <location filename="../performfilemodelfactory.cpp" line="33"/>
+        <source>Open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PerformScriptModelFactory</name>
+    <message>
+        <location filename="../performscriptmodelfactory.cpp" line="30"/>
+        <source>Run script</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PowerButtonAction</name>
+    <message>
+        <location filename="../powerbuttonaction.cpp" line="19"/>
+        <source>Power On/Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../powerbuttonaction.cpp" line="49"/>
+        <source>Set Power On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../powerbuttonaction.cpp" line="51"/>
+        <source>Set Power Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PowerPanelAction</name>
     <message>
         <location filename="../powerpanelaction.cpp" line="42"/>
@@ -15614,25 +17196,145 @@
     </message>
 </context>
 <context>
-    <name>Router</name>
+    <name>Profile</name>
     <message>
-        <location filename="../operations/router.cpp" line="941"/>
-        <source>Found %1 track (%2) %3) for car (%4)</source>
+        <location filename="../profile.cpp" line="230"/>
+        <source>File not found: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ProfileManager</name>
+    <message>
+        <location filename="../profilemanager.cpp" line="171"/>
+        <source>Unable to set active profile. No profile with id %1 could be found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/router.cpp" line="960"/>
-        <source>Option to service all cars with a final destination enabled, ignoring train (%1) ability to service car (%2) to (%3), %4)</source>
+        <location filename="../profilemanager.cpp" line="390"/>
+        <source>Unable to write profiles while adding profile %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/router.cpp" line="966"/>
-        <source>Train (%1) can service car (%2) from %3 (%4, %5) to final destination (%6,%7)</source>
+        <location filename="../profilemanager.cpp" line="546"/>
+        <source>Cataloged profile &quot;%1&quot; not in expected location
+Searching for it in %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/router.cpp" line="975"/>
-        <source>Adding location (%1, %2) to other locations</source>
+        <location filename="../profilemanager.cpp" line="685"/>
+        <source>%1 is not a profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../profilemanager.cpp" line="741"/>
+        <source>My JMRI Railroad</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../profilemanager.cpp" line="931"/>
+        <source>Can&apos;t create complete roster export file </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ProgrammerConfigManager</name>
+    <message>
+        <location filename="../programmerconfigmanager.cpp" line="61"/>
+        <source>ProgammerConfigManager provides %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RestartAction</name>
+    <message>
+        <location filename="../restartaction.cpp" line="36"/>
+        <source>Restart Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RestartStartupActionFactory</name>
+    <message>
+        <location filename="../restartstartupactionfactory.cpp" line="19"/>
+        <source>RestartAction</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RosterConfigManager</name>
+    <message>
+        <location filename="../rosterconfigmanager.cpp" line="36"/>
+        <source>Roster is %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../rosterconfigmanager.cpp" line="48"/>
+        <source>UserFiles changed from %1 to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../rosterconfigmanager.cpp" line="73"/>
+        <location filename="../rosterconfigmanager.cpp" line="148"/>
+        <location filename="../rosterconfigmanager.cpp" line="153"/>
+        <source>&quot;%1&quot; is not a valid path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../rosterconfigmanager.cpp" line="162"/>
+        <source>Roster changed from %1 to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ScriptButtonAction</name>
+    <message>
+        <location filename="../scriptbuttonmodel.cpp" line="60"/>
+        <source>Unable to run script %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ScriptButtonModel</name>
+    <message>
+        <location filename="../scriptbuttonmodel.cpp" line="32"/>
+        <source>&lt;html&gt;%1&lt;br&gt;%2&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ScriptButtonModelFactory</name>
+    <message>
+        <location filename="../scriptbuttonmodelfactory.cpp" line="35"/>
+        <source>Add script to button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../scriptbuttonmodelfactory.cpp" line="40"/>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ScriptButtonPanel</name>
+    <message>
+        <location filename="../scriptbuttonpanel.cpp" line="47"/>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../scriptbuttonpanel.cpp" line="49"/>
+        <source>Script:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../scriptbuttonpanel.cpp" line="53"/>
+        <source>Browse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../scriptbuttonpanel.cpp" line="111"/>
+        <source>File %1 does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15657,6 +17359,128 @@
     <message>
         <location filename="../simpleturnoutctrlaction.cpp" line="56"/>
         <source>Turnouts</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StartupActionModelUtil</name>
+    <message>
+        <location filename="../startupactionmodelutil.cpp" line="68"/>
+        <location filename="../startupactionmodelutil.cpp" line="88"/>
+        <location filename="../startupactionmodelutil.cpp" line="151"/>
+        <location filename="../startupactionmodelutil.cpp" line="267"/>
+        <location filename="../startupactionmodelutil.cpp" line="287"/>
+        <source>Did not find class &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StartupActionsManager</name>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="72"/>
+        <location filename="../startupactionsmanager.cpp" line="216"/>
+        <location filename="../startupactionsmanager.cpp" line="243"/>
+        <source>Class %1 does not have default initializer. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="86"/>
+        <location filename="../startupactionsmanager.cpp" line="257"/>
+        <source>Class %s does not have default initializer. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="109"/>
+        <source>Unable to run startup actions due to earlier failures.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="138"/>
+        <source>Overridding startup action class %1 with %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="139"/>
+        <location filename="../startupactionsmanager.cpp" line="140"/>
+        <source>&lt;html&gt;Startup action class %1 has been updated to %2.&lt;br&gt;Please save preferences to make this permanent.&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="144"/>
+        <source>Read %1 %2 adapter %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="147"/>
+        <source>Creating %1 %2 adapter %3...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="152"/>
+        <source>Unable to create %1 for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="153"/>
+        <location filename="../startupactionsmanager.cpp" line="154"/>
+        <source>Unable to create loader &quot;%1&quot; for Startup Action class &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="158"/>
+        <source>Unable to load %1 into %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="159"/>
+        <source>Unable to load Startup action &quot;%1&quot; using &quot;%3&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="160"/>
+        <source>Unable to load Startup action &quot;%2&quot; using &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="193"/>
+        <location filename="../startupactionsmanager.cpp" line="194"/>
+        <source>There are multiple errors running Startup Actions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startupactionsmanager.cpp" line="280"/>
+        <source>model is %1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StartupPauseFactory</name>
+    <message>
+        <location filename="../startuppausefactory.cpp" line="39"/>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startuppausefactory.cpp" line="80"/>
+        <source>Pause for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startuppausefactory.cpp" line="82"/>
+        <source>seconds before starting the following action.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StartupPauseModel</name>
+    <message>
+        <location filename="../startuppausemodel.cpp" line="23"/>
+        <source>Pause for %1 seconds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../startuppausemodel.cpp" line="57"/>
+        <source>Pausing startup actions processing for %1 seconds.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15876,232 +17700,232 @@
 <context>
     <name>ToolsMenu</name>
     <message>
-        <location filename="../toolsmenu.cpp" line="64"/>
+        <location filename="../toolsmenu.cpp" line="68"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="76"/>
+        <location filename="../toolsmenu.cpp" line="80"/>
         <source>Programmers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="78"/>
+        <location filename="../toolsmenu.cpp" line="82"/>
         <source>Service-Mode Programmer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="79"/>
+        <location filename="../toolsmenu.cpp" line="83"/>
         <source>Ops-Mode Programmer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="88"/>
+        <location filename="../toolsmenu.cpp" line="92"/>
         <source>Tables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="90"/>
+        <location filename="../toolsmenu.cpp" line="94"/>
         <source>Turnouts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="91"/>
+        <location filename="../toolsmenu.cpp" line="95"/>
         <source>Sensors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="92"/>
+        <location filename="../toolsmenu.cpp" line="96"/>
         <source>Lights</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="93"/>
+        <location filename="../toolsmenu.cpp" line="97"/>
         <source>Signals</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="94"/>
+        <location filename="../toolsmenu.cpp" line="98"/>
         <source>Signal Heads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="95"/>
+        <location filename="../toolsmenu.cpp" line="99"/>
         <source>Signal Masts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="96"/>
+        <location filename="../toolsmenu.cpp" line="100"/>
         <source>Signal Groups</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="97"/>
+        <location filename="../toolsmenu.cpp" line="101"/>
         <source>Signal Mast Logic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="99"/>
+        <location filename="../toolsmenu.cpp" line="103"/>
         <source>Reporters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="100"/>
+        <location filename="../toolsmenu.cpp" line="104"/>
         <source>Memory Variables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="101"/>
+        <location filename="../toolsmenu.cpp" line="105"/>
         <source>Routes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="102"/>
+        <location filename="../toolsmenu.cpp" line="106"/>
         <source>LRoutes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="103"/>
+        <location filename="../toolsmenu.cpp" line="107"/>
         <source>Logix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="104"/>
+        <location filename="../toolsmenu.cpp" line="108"/>
         <source>Occupancy Blocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="105"/>
+        <location filename="../toolsmenu.cpp" line="109"/>
         <source>Blocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="106"/>
+        <location filename="../toolsmenu.cpp" line="110"/>
         <source>Sections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="107"/>
+        <location filename="../toolsmenu.cpp" line="111"/>
         <source>Transits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="108"/>
+        <location filename="../toolsmenu.cpp" line="112"/>
         <source>Audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="109"/>
+        <location filename="../toolsmenu.cpp" line="113"/>
         <source>Id Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="112"/>
+        <location filename="../toolsmenu.cpp" line="118"/>
         <source>Throttles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="113"/>
+        <location filename="../toolsmenu.cpp" line="119"/>
         <source>New Throttle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="114"/>
+        <location filename="../toolsmenu.cpp" line="120"/>
         <source>Throttles List Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="117"/>
+        <location filename="../toolsmenu.cpp" line="123"/>
         <source>MenuItemSaveThrottleLayout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="118"/>
+        <location filename="../toolsmenu.cpp" line="124"/>
         <source>MenuItemLoadThrottleLayout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="120"/>
+        <location filename="../toolsmenu.cpp" line="126"/>
         <source>MenuItemSaveAsDefaultThrottleLayout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="121"/>
+        <location filename="../toolsmenu.cpp" line="127"/>
         <source>MenuItemLoadDefaultThrottleLayout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="125"/>
-        <source>MenuItemStartWiThrottle</source>
+        <location filename="../toolsmenu.cpp" line="132"/>
+        <source>Start WiThrottle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="136"/>
+        <location filename="../toolsmenu.cpp" line="142"/>
         <source>Consisting Tool...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="146"/>
+        <location filename="../toolsmenu.cpp" line="152"/>
         <source>Clocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="147"/>
+        <location filename="../toolsmenu.cpp" line="153"/>
         <source>Setup Fast Clock...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="148"/>
+        <location filename="../toolsmenu.cpp" line="154"/>
         <source>Nixie Clock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="149"/>
+        <location filename="../toolsmenu.cpp" line="155"/>
         <source>Lcd Clock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="150"/>
+        <location filename="../toolsmenu.cpp" line="156"/>
         <source>Analog Clock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="156"/>
+        <location filename="../toolsmenu.cpp" line="162"/>
         <source>Power Control...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="157"/>
+        <location filename="../toolsmenu.cpp" line="163"/>
         <source>Turnout Control...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="158"/>
+        <location filename="../toolsmenu.cpp" line="164"/>
         <source>Simple Signal Logic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="159"/>
+        <location filename="../toolsmenu.cpp" line="165"/>
         <source>Sensor Groups...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="160"/>
+        <location filename="../toolsmenu.cpp" line="166"/>
         <source>Speedometer...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="161"/>
+        <location filename="../toolsmenu.cpp" line="167"/>
         <source>Light Control...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="163"/>
+        <location filename="../toolsmenu.cpp" line="169"/>
         <source>Dispatcher...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../toolsmenu.cpp" line="167"/>
+        <location filename="../toolsmenu.cpp" line="173"/>
         <source>Send DCC Packet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17864,20 +19688,77 @@
     </message>
 </context>
 <context>
+    <name>TrainInfo</name>
+    <message>
+        <location filename="../operations/traininfo.cpp" line="55"/>
+        <source>RAMP_NONE</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TrainInfoFile</name>
+    <message>
+        <location filename="../operations/traininfofile.cpp" line="64"/>
+        <source>entered readTrainInfo for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TrainsTableFrame</name>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="631"/>
+        <location filename="../operations/trainstableframe.cpp" line="635"/>
         <source>WARNING Operation files not saved!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="631"/>
+        <location filename="../operations/trainstableframe.cpp" line="635"/>
         <source>Save?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../operations/trainstableframe.cpp" line="647"/>
+        <location filename="../operations/trainstableframe.cpp" line="651"/>
         <source>Property change: (%1) old: (%2) new: (%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TriggerRouteModel</name>
+    <message>
+        <location filename="../triggerroutemodel.cpp" line="48"/>
+        <source>Setting route &quot;%1&quot; at startup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../triggerroutemodel.cpp" line="53"/>
+        <source>Unable to set route &quot;%1&quot;; it has not been defined. Is it&apos;s panel loaded?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../triggerroutemodel.cpp" line="56"/>
+        <source>Unable to set route &quot;%1&quot;. Route not defined.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TriggerRouteModelFactory</name>
+    <message>
+        <location filename="../triggerroutemodelfactory.cpp" line="31"/>
+        <source>Set route</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../triggerroutemodelfactory.cpp" line="36"/>
+        <source>%1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../triggerroutemodelfactory.cpp" line="62"/>
+        <source>Failed to get route %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../triggerroutemodelfactory.cpp" line="70"/>
+        <source>&lt;html&gt;&lt;strong&gt;Select a route to set when the application starts.&lt;/strong&gt;&lt;br&gt;&lt;br&gt;Ensure the panel containing the route is loaded before the route is set.&lt;br&gt;Only routes with user names can be automatically set.&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17976,6 +19857,35 @@
     <message>
         <location filename="../vsdecoderpreferencespane.cpp" line="390"/>
         <source>VSDecoderPrefsCancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WriteBlocksShutdownTask</name>
+    <message>
+        <location filename="../apps.cpp" line="1627"/>
+        <source>Exception writing blocks: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>XmlFileValidateAction</name>
+    <message>
+        <location filename="../xmlfilevalidateaction.cpp" line="40"/>
+        <source>Xml File Validate Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xmlfilevalidateaction.cpp" line="93"/>
+        <source>%1 not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>XmlSupport</name>
+    <message>
+        <location filename="../xmlsupport.cpp" line="180"/>
+        <source>error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -1,12 +1,12 @@
 #ifndef LISTEDTABLEACTION_H
 #define LISTEDTABLEACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
 #include "libtables_global.h"
 
 class ListedTableFrame;
 class LibTables;
-class LIBTABLESSHARED_EXPORT ListedTableAction : public QAction
+class LIBTABLESSHARED_EXPORT ListedTableAction : public AbstractAction
 {
  Q_OBJECT
 public:
@@ -15,6 +15,8 @@ public:
  /*public*/ ListedTableAction(QString s, QString selection, int divider, QObject *parent);
  /*public*/ ListedTableAction(QString s, int divider, QObject *parent);
  /*public*/ ListedTableAction(QString s,QObject *parent);
+ ~ListedTableAction() {}
+ ListedTableAction(const ListedTableAction&) : AbstractAction() {}
  /*public*/ void addToFrame(ListedTableFrame* f);
 
 signals:

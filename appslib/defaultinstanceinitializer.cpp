@@ -51,6 +51,9 @@
 #include "performfilemodelfactory.h"
 #include "scriptbuttonmodelfactory.h"
 #include "startupactionmodelutil.h"
+#include "restartstartupactionfactory.h"
+#include "throttlespreferences.h"
+#include "jsonserverpreferences.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -363,6 +366,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   InstanceManager::store(wtp,type);
   return wtp;
  }
+ if(type == "ThrottlesPreferences")
+ {
+  ThrottlesPreferences* wtp = new ThrottlesPreferences();
+  InstanceManager::store(wtp,type);
+  return wtp;
+ }
 
  if(type == "WebServerPreferences")
  {
@@ -418,11 +427,23 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   InstanceManager::store(supf,type);
   return supf;
  }
- if(type == "StartupActionModelUtil")
+// if(type == "StartupActionModelUtil")
+// {
+//  StartupActionModelUtil* supf = new StartupActionModelUtil();
+//  InstanceManager::store(supf,type);
+//  return supf;
+// }
+ if(type == "RestartStartupActionFactory")
  {
-  StartupActionModelUtil* supf = new StartupActionModelUtil();
-  InstanceManager::store(supf,type);
-  return supf;
+  RestartStartupActionFactory* rsaf = new RestartStartupActionFactory();
+  InstanceManager::store(rsaf,type);
+  return rsaf;
+ }
+ if(type == "JsonServerPreferences")
+ {
+  JsonServerPreferences* jsp = new JsonServerPreferences();
+  InstanceManager::store(jsp,type);
+  return jsp;
  }
 // if(type == "GlobalProgrammerManager")
 // {

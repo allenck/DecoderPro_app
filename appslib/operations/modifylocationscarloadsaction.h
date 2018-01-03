@@ -9,6 +9,7 @@ namespace Operations
  class Location;
  class ModifyLocationsCarLoadsAction : public AbstractAction
  {
+  Q_OBJECT
  public:
   /*public*/ ModifyLocationsCarLoadsAction(Location* location, QObject* parent);
   ModifyLocationsCarLoadsAction(QObject* parent);

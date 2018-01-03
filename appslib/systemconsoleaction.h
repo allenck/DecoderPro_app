@@ -1,18 +1,19 @@
 #ifndef SYSTEMCONSOLEACTION_H
 #define SYSTEMCONSOLEACTION_H
 
-#include <QAction>
+#include "jmriabstractaction.h"
 #include "appslib_global.h"
 
 class WindowInterface;
-class APPSLIBSHARED_EXPORT SystemConsoleAction : public QAction
+class APPSLIBSHARED_EXPORT SystemConsoleAction : public JmriAbstractAction
 {
  Q_OBJECT
 public:
  explicit SystemConsoleAction(QObject *parent = 0);
  /*public*/  SystemConsoleAction(QString s, WindowInterface* wi);
  /*public*/  SystemConsoleAction(QString s, QIcon i, WindowInterface* wi);
-
+ ~SystemConsoleAction() {}
+ SystemConsoleAction(const SystemConsoleAction&) : JmriAbstractAction() {}
 signals:
 
 public slots:
@@ -21,5 +22,5 @@ public slots:
 private:
  void common();
 };
-
+Q_DECLARE_METATYPE(JmriAbstractAction)
 #endif // SYSTEMCONSOLEACTION_H

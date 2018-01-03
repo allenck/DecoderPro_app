@@ -7,6 +7,7 @@ namespace Operations
 {
  class APPSLIBSHARED_EXPORT InterchangeTableModel : public TrackTableModel
  {
+  Q_OBJECT
  public:
   InterchangeTableModel(QObject* parent = 0);
   /*public*/ void initTable(JTable* table, Location* location);

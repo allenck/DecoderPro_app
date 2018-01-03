@@ -6,6 +6,7 @@ namespace Operations
 {
  class BuildReportOptionFrame : public OperationsFrame
  {
+  Q_OBJECT
  public:
   BuildReportOptionFrame(QWidget* parent = 0);
   /*public*/ void initComponents();

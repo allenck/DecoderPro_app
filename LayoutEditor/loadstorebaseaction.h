@@ -9,7 +9,7 @@ class LoadStoreBaseAction : public AbstractAction
 {
     Q_OBJECT
 public:
-    //explicit LoadStoreBaseAction(QObject *parent = 0);
+    explicit LoadStoreBaseAction(QObject *parent = 0);
     /*public*/ LoadStoreBaseAction(QString s, QObject *parent = 0);
     QString s;
 

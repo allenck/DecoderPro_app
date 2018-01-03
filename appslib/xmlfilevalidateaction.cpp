@@ -1,13 +1,12 @@
 #include "xmlfilevalidateaction.h"
 #include "jfilechooser.h"
-#include "exceptions.h"
 #include "file.h"
 #include "xmlfile.h"
 #include "logger.h"
 #include "joptionpane.h"
 #include <QTextStream>
 
-//XmlFileValidateAction::XmlFileValidateAction()
+//XmlFileValidateAction::XmlFileValidateAction(QObject* parent) : JmriAbstractAction(parent)
 //{
 
 //}
@@ -158,7 +157,7 @@ void XmlFileValidateAction::common()
 /**
  * Ask SAX to read and verify a file
  */
-void XmlFileValidateAction::readFile(File* file) throw (JDOMException, IOException)
+void XmlFileValidateAction::readFile(File* file) //throw (JDOMException, IOException)
 {
     XmlFile* xf = new XmlFile();
 //    {

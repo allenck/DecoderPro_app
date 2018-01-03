@@ -8,7 +8,7 @@ class JmriJFrameAction : public AbstractAction
  Q_OBJECT
 
 public:
- //JmriJFrameAction(QObject* parent);
+ JmriJFrameAction(QObject* parent = 0);
  /*public*/ JmriJFrameAction(QString s, QObject* parent);
  /*public*/ virtual QString getName();
  public slots:

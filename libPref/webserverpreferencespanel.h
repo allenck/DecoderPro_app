@@ -30,7 +30,7 @@ public:
 
 public slots:
  void on_readonlyPower_checked(bool);
- void on_webSeverStartupOption();
+ void on_webSeverStartupOption( bool checked);
 
 
 private:

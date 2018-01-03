@@ -6,6 +6,7 @@ namespace Operations
 {
  class ExportCars : public XmlFile
  {
+  Q_OBJECT
  public:
   ExportCars();
   /*public*/ void setDeliminter(QString delimiter);

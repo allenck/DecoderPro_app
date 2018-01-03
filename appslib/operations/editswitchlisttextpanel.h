@@ -7,6 +7,7 @@ namespace Operations
 {
  class EditSwitchListTextPanel : public OperationsPreferencesPanel
  {
+  Q_OBJECT
  public:
   EditSwitchListTextPanel(QWidget* parent = 0);
   /*public*/ QString getTabbedPreferencesTitle();

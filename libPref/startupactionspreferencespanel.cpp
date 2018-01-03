@@ -11,6 +11,7 @@
 #include "profilemanager.h"
 #include "listselectionmodel.h"
 #include "vptr.h"
+#include <QHeaderView>
 
 /**
  * Preferences panel to configure optional actions taken at startup.
@@ -32,7 +33,7 @@
 //        this->downBtn.setEnabled(row != this->actionsTbl.getRowCount() - 1 && row != -1);
 //        this->removeBtn.setEnabled(row != -1);
 //    });
- connect(this->actionsTbl, SIGNAL(activated(QModelIndex)), this, SLOT(on_listSelected(/*ListSelectionEvent*)*/QModelIndex)));
+ connect(this->actionsTbl, SIGNAL(clicked(QModelIndex)), this, SLOT(on_listSelected(/*ListSelectionEvent*)*/QModelIndex)));
  QList<QAction*> items = QList<QAction*>();
 //    InstanceManager::getDefault("StartupActionsManager").getFactories().values().stream().forEach((factory) ->
  QSignalMapper* mapper = new QSignalMapper();
@@ -115,6 +116,8 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
     actionsTbl->setSelectionMode(QAbstractItemView::SingleSelection);
 //    actionsTbl.getTableHeader().setReorderingAllowed(false);
     //jScrollPane1.setViewportView(actionsTbl);
+    actionsTbl->setColumnWidth(0, 200);
+    actionsTbl->horizontalHeader()->setStretchLastSection(true);
 //    actionsTbl.getColumnModel().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 //    ResourceBundle bundle = ResourceBundle.getBundle("apps/startup/Bundle"); // NOI18N
@@ -218,7 +221,7 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
 /*private*/ void StartupActionsPreferencesPanel::addBtnActionPerformed(ActionEvent* /*evt*/) {
     //Component c = (Component) evt.getSource();
 //    this->actionsMenu->show(c, 0 - 1, c.getHeight());
- this->actionsMenu->exec();
+ this->actionsMenu->exec(QCursor::pos());
 }
 
 /*private*/ void StartupActionsPreferencesPanel::removeBtnActionPerformed(ActionEvent* /*evt*/) {
@@ -339,16 +342,22 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
  }
  if(role == Qt::DisplayRole)
  {
-    switch (index.column()) {
+  switch (index.column())
+  {
 //        case -1: // tooltip
 //            return model->/*toString()*/metaObject()->className();
-        case 0:
-            return model->metaObject()->className();
-        case 1:
-            return model->getDescription();
-        default:
-            return QVariant();
-    }
+   case 0:
+       return model->metaObject()->className();
+   case 1:
+  {
+   QString className = QString(model->metaObject()->className());
+   StartupModelFactory* factory = this->manager->getFactories(className);
+   QString descr = factory->getDescription();
+   return descr;
+  }
+   default:
+       return QVariant();
+  }
  }
  return QVariant();
 }

@@ -6,6 +6,7 @@ class PerformFileModel;
 class JFileChooser;
 class PerformFileModelFactory : public AbstractFileModelFactory
 {
+ Q_OBJECT
 public:
  PerformFileModelFactory();
  ~PerformFileModelFactory() {}

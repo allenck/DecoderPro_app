@@ -6,10 +6,12 @@ class TreeAction : public JmriJFrameAction
 {
  Q_OBJECT
 public:
- TreeAction(QObject* parent);
+ TreeAction(QObject* parent = 0);
  /*public*/ TreeAction(QString s, QObject* parent);
+ ~TreeAction() {}
+ TreeAction(const TreeAction&) : JmriJFrameAction() {}
  /*public*/ QString getName();
 
 };
-
+Q_DECLARE_METATYPE(TreeAction)
 #endif // TREEACTION_H

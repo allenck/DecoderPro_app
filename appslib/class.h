@@ -17,12 +17,13 @@ public:
  /*public*/ QString getCanonicalName();
  /*public*/ Class* newInstance() throw (InstantiationException, IllegalAccessException);
  /*public*/ /*native*/ bool isAssignableFrom(QString cls);
-
+ ///*pubic*/ QString className();
 private:
  /*private*/ static /*final*/ int ANNOTATION;//= 0x00002000;
  /*private*/ static /*final*/ int ENUM      ;//= 0x00004000;
  /*private*/ static /*final*/ int SYNTHETIC ;//= 0x00001000;
-
+// QString _name;
+// void setName(QString);
  /*private*/ static /*native*/ void registerNatives();
  /*private*/ Class(ClassLoader* loader);
  ClassLoader* classLoader;

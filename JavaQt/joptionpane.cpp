@@ -482,7 +482,7 @@
     if (value == UNINITIALIZED_VALUE) {
         return QVariant();
     }
-    return value;
+    return rslt;
 }
 
 /**
@@ -776,6 +776,8 @@ if(options.count() >0)
 
  if(selectedValue == QVariant())
      return CLOSED_OPTION;
+ if(selectedValue == "uninitializedValue")
+  return rslt;
  if(options == QList<QVariant>())
  {
      //if(selectedValue instanceof Integer)
@@ -2398,7 +2400,8 @@ void JOptionPane::handleTextInput()
 }
 void JOptionPane::handleOk()
 {
- _dialog->accept();
+ //_dialog->accept();
+ _dialog->done(OK_OPTION);
 }
 void JOptionPane::handleOptionButton(int i)
 {
@@ -2406,18 +2409,18 @@ void JOptionPane::handleOptionButton(int i)
 }
 void JOptionPane::handleCancel()
 {
- setValue(CANCEL_OPTION);
- _dialog->reject();
+ //setValue(CANCEL_OPTION);
+ _dialog->done(CANCEL_OPTION);
 }
 void JOptionPane::handleYes()
 {
  setValue(YES_OPTION);
- _dialog->accept();
+ _dialog->done(YES_OPTION);
 }
 void JOptionPane::handleNo()
 {
- setValue(NO_OPTION);
- _dialog->accept();
+ //setValue(NO_OPTION);
+ _dialog->done(NO_OPTION);
 }
 
 #if 0

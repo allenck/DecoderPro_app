@@ -355,3 +355,10 @@ void AbstractAction::common()
     }
 }
 #endif
+
+/*pubic*/ void AbstractAction::setClassname(QString classname)
+{
+ _class = classname;
+}
+
+/*public*/ QString AbstractAction::getClassname() { return _class;}

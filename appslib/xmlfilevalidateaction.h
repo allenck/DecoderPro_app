@@ -1,6 +1,7 @@
 #ifndef XMLFILEVALIDATEACTION_H
 #define XMLFILEVALIDATEACTION_H
 #include "jmriabstractaction.h"
+#include "exceptions.h"
 
 class File;
 class JFileChooser;
@@ -8,9 +9,11 @@ class XmlFileValidateAction : public JmriAbstractAction
 {
  Q_OBJECT
 public:
- XmlFileValidateAction(QObject* parent);
+ XmlFileValidateAction(QObject* parent = 0);
  /*public*/ XmlFileValidateAction(QString s, QWidget* who);
  /*public*/ XmlFileValidateAction(QString s, WindowInterface* wi);
+ ~XmlFileValidateAction() {}
+ XmlFileValidateAction(const XmlFileValidateAction&) : JmriAbstractAction() {}
  /*public*/ JmriPanel* makePanel();
 // static /*public*/ void main(QStringList args);
 
@@ -21,7 +24,7 @@ private:
  JFileChooser* fci;
  QWidget* _who;
  void common();
- void readFile(File* file) throw (JDOMException, IOException);
+ void readFile(File* file) ;//throw (JDOMException, IOException);
  Logger* log;
 
 protected:
@@ -30,5 +33,5 @@ protected:
  /*protected*/ void showFailResults(QWidget* who, QString  text);
 
 };
-
+Q_DECLARE_METATYPE(XmlFileValidateAction)
 #endif // XMLFILEVALIDATEACTION_H

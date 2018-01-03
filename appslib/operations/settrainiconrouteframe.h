@@ -13,6 +13,7 @@ namespace Operations
  class RouteLocation;
  class APPSLIBSHARED_EXPORT SetTrainIconRouteFrame : public OperationsFrame
  {
+  Q_OBJECT
  public:
   SetTrainIconRouteFrame(QString routeName, QWidget* parent = 0);
 

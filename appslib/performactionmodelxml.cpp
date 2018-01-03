@@ -28,7 +28,7 @@
 
     element.setAttribute("name", g->getClassName());
     element.setAttribute("type", "Action");
-    element.setAttribute("class", "apps.PerformActionModel");
+    element.setAttribute("class", "apps.PerformActionModelXml");
     QDomElement property = doc.createElement("property"); // NOI18N
     property.setAttribute("name", "systemPrefix"); // NOI18N
     property.setAttribute("value", g->getSystemPrefix());
@@ -49,27 +49,29 @@
 }
 
 //@Override
-/*public*/ bool PerformActionModelXml::load(QDomElement shared, QDomElement perNode) throw (Exception) {
-    bool result = true;
-    QString className = shared.attribute("name");
-    PerformActionModel* model = new PerformActionModel();
-    Exception* exception = NULL;
-    model->setClassName(className);
-    //for (QDomElement child : shared.getChildren("property"))
-    QDomNodeList children = shared.elementsByTagName("property");
-    for(int i = 0; i < children.count(); i++)
-    { // NOI18N
-     QDomElement child = children.at(i).toElement();
-        if (child.attribute("name")==("systemPrefix") // NOI18N
-                && child.attribute("value") != "") { // NOI18N
-            model->setSystemPrefix(child.attribute("value")); // NOI18N
-        }
-    }
-    ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);
-    if (exception != NULL) {
-        throw *exception;
-    }
-    return result;
+/*public*/ bool PerformActionModelXml::load(QDomElement shared, QDomElement perNode) throw (Exception)
+{
+ bool result = true;
+ QString className = shared.attribute("name");
+ PerformActionModel* model = new PerformActionModel();
+ Exception* exception = NULL;
+ model->setClassName(className);
+ //for (QDomElement child : shared.getChildren("property"))
+ QDomNodeList children = shared.elementsByTagName("property");
+ for(int i = 0; i < children.count(); i++)
+ { // NOI18N
+  QDomElement child = children.at(i).toElement();
+  if (child.attribute("name")==("systemPrefix") // NOI18N
+          && child.attribute("value") != "")
+  { // NOI18N
+   model->setSystemPrefix(child.attribute("value")); // NOI18N
+  }
+ }
+ ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);
+ if (exception != NULL) {
+     throw *exception;
+ }
+ return result;
 }
 
 /**

@@ -1,4 +1,4 @@
-#include "triggerroutemodexml.h"
+#include "triggerroutemodelxml.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "startupactionsmanager.h"
@@ -31,7 +31,7 @@
     QDomElement e = doc.createElement("perform"); // NOI18N
     e.setAttribute("name", ((TriggerRouteModel*) o)->getName());
     e.setAttribute("type", "Action");
-    e.setAttribute("class", "apps.TriggerRouteModel");
+    e.setAttribute("class", "apps.TriggerRouteModelXml");
     return e;
 }
 

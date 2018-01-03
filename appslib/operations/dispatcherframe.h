@@ -30,6 +30,7 @@ class ActiveTrain;
 class LayoutEditor;
 class DispatcherFrame : public JmriJFrame
 {
+ Q_OBJECT
 public:
  static DispatcherFrame* _instance;// = NULL;
 
@@ -206,6 +207,7 @@ protected:
 /*public*/ class ActiveTrainsTableModel : public AbstractTableModel // implements
 //        java.beans.PropertyChangeListener
 {
+ Q_OBJECT
  DispatcherFrame* frame;
 public:
  enum COLUMNS
@@ -240,6 +242,7 @@ public:
 /*public*/ class AllocationRequestTableModel : public AbstractTableModel //implements
         //java.beans.PropertyChangeListener
 {
+ Q_OBJECT
  DispatcherFrame* frame;
  public:
  enum COLUMNS
@@ -272,6 +275,7 @@ public slots:
 /*public*/ class AllocatedSectionTableModel : public AbstractTableModel //implements
         //java.beans.PropertyChangeListener {
 {
+ Q_OBJECT
  DispatcherFrame* frame;
 public:
  enum COLUMNS

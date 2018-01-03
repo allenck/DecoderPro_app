@@ -8,6 +8,7 @@ namespace Operations
 {
  class APPSLIBSHARED_EXPORT CarsTableAction : public AbstractAction
  {
+  Q_OBJECT
   public:
   /*public*/ CarsTableAction(QString s, QObject* parent);
   /*public*/ CarsTableAction(QObject* parent);

@@ -73,7 +73,7 @@
     //        this->startup.addItemListener(this->startupItemListener);
     //    };
     //this->startup->addItemListener(this->startupItemListener);
-    connect(startup, SIGNAL(toggled(bool)), this, SLOT(on_webSeverStartupOption()));
+    connect(startup, SIGNAL(toggled(bool)), this, SLOT(on_webSeverStartupOption(bool)));
 #endif
 #if 0
     GroupLayout layout = new GroupLayout(this);
@@ -118,14 +118,15 @@
 #endif
 }
 
-void WebServerPreferencesPanel::on_webSeverStartupOption()
+void WebServerPreferencesPanel::on_webSeverStartupOption(bool bChecked)
 {
  //this->startup->removeItemListener(this->startupItemListener);
- disconnect(startup, SIGNAL(clicked(bool)), this, SLOT(on_webSeverStartupOption()));
+ //disconnect(startup, SIGNAL(clicked(bool)), this, SLOT(on_webSeverStartupOption(bool)));
  StartupActionsManager* manager =(StartupActionsManager*) InstanceManager::getDefault("StartupActionsManager");
  if (this->startup->isChecked())
  {
-  PerformActionModel* model = new PerformActionModel(); model->setName("WebServerAction");
+  PerformActionModel* model = new PerformActionModel();
+  //model->setName("WebServerAction");
   model->setClassName("jmri.web.server.WebServerAction");
   if (this->startupActionPosition == -1 || this->startupActionPosition >= manager->getActions()->length())
   {
@@ -146,7 +147,7 @@ void WebServerPreferencesPanel::on_webSeverStartupOption()
   }
  }
  //this->startup.addItemListener(this->startupItemListener);
- connect(startup, SIGNAL(toggled(bool)), this, SLOT(on_webSeverStartupOption()));
+ //connect(startup, SIGNAL(toggled(bool)), this, SLOT(on_webSeverStartupOption(bool)));
 }
 
 void WebServerPreferencesPanel::on_readonlyPower_checked(bool b)

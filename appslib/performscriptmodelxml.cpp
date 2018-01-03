@@ -30,7 +30,7 @@
 
     e.setAttribute("name", FileUtil::getPortableFilename(g->getFileName()));
     e.setAttribute("type", "ScriptFile");
-    e.setAttribute("class", "apps.PerformScriptModel");
+    e.setAttribute("class", "apps.PerformScriptModelXml");
     return e;
 }
 

@@ -8,6 +8,7 @@ class ObjectMapper;
 class Logger;
 class AbstractPanelServlet : public HttpServlet
 {
+ Q_OBJECT
 public:
  AbstractPanelServlet();
  /*public*/ void init() throw (ServletException);

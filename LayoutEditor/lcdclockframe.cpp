@@ -190,6 +190,7 @@ void LcdClockFrame::update()
  m1->setIcon(tubes[minutes/10]);
  m2->setIcon(tubes[minutes-(minutes/10)*10]);
  //log->debug(tr("LcdClock Width = %1, height = %2").arg(_itemGroup->boundingRect().width()).arg(_itemGroup->boundingRect().height()));
+ JmriJFrame::update();
 }
 
 /*public*/ void LcdClockFrame::dispose() {

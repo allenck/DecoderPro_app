@@ -32,20 +32,20 @@
 //private static final long serialVersionUID = -5843920804488337948L;
 
 /*public*/  SystemConsoleAction::SystemConsoleAction(QString s, WindowInterface* wi)
- : QAction(s, (QObject*)wi)
+ : JmriAbstractAction(s, (QObject*)wi)
 {
     //super(s, wi);
  common();
 }
 
 /*public*/  SystemConsoleAction::SystemConsoleAction(QString s, QIcon i, WindowInterface* wi)
- : QAction(i, s, (QObject*)wi){
+ : JmriAbstractAction(s, i, wi){
     //super(s, i, wi);
     common();
 }
 
 /*public*/  SystemConsoleAction::SystemConsoleAction(QObject *parent) :
-  QAction(tr("JMRI System console"), parent){
+  JmriAbstractAction(tr("JMRI System console"), parent){
     //super(tr("TitleConsole"));
  common();
 }

@@ -4,8 +4,9 @@
 #include "class.h"
 #include "startupactionfactory.h"
 #include "startupmodelfactory.h"
+#include "abstractaction.h"
 
-StartupActionModelUtil::StartupActionModelUtil()
+StartupActionModelUtil::StartupActionModelUtil(QObject* parent) : Bean(parent)
 {
  actions = NULL;
  overrides = NULL;
@@ -37,7 +38,10 @@ StartupActionModelUtil::StartupActionModelUtil()
  //        });
  StartupActionModelUtil* util = (StartupActionModelUtil*)InstanceManager::getOptionalDefault("StartupActionModelUtil");
  if(util == NULL)
+ {
   util = new StartupActionModelUtil();
+  InstanceManager::setDefault("StartupActionModelUtil", util);
+ }
  return util;
 }
 
@@ -45,7 +49,7 @@ StartupActionModelUtil::StartupActionModelUtil()
 /*public*/ QString StartupActionModelUtil::getActionName(/*@NonNULL Class<?>*/Class* clazz)
 {
  this->prepareActionsHashMap();
- ActionAttributes* attrs = this->actions->value(QString(clazz->metaObject()->className()));
+ ActionAttributes* attrs = this->actions->value(clazz);
  return attrs != NULL ? attrs->name : NULL;
 }
 
@@ -56,7 +60,8 @@ StartupActionModelUtil::StartupActionModelUtil()
  {
   try
   {
-   return this->getActionName(Class::forName(className.mid(className.lastIndexOf(".")+1)));
+   //return this->getActionName(Class::forName(className));
+   return className;
   }
   catch (ClassNotFoundException ex)
   {
@@ -69,8 +74,8 @@ StartupActionModelUtil::StartupActionModelUtil()
 /*public*/ bool StartupActionModelUtil::isSystemConnectionAction(/*@NonNULL*/ Class* clazz)
 {
  this->prepareActionsHashMap();
- if (this->actions->contains(clazz->metaObject()->className())) {
-     return this->actions->value(clazz->metaObject()->className())->isSystemConnectionAction;
+ if (this->actions->contains(clazz)) {
+     return this->actions->value(clazz)->isSystemConnectionAction;
  }
  return false;
 }
@@ -80,7 +85,7 @@ StartupActionModelUtil::StartupActionModelUtil()
         try {
             return this->isSystemConnectionAction(Class::forName(className));
         } catch (ClassNotFoundException ex) {
-            log->error("Did not find class \"{}\"", className);
+            log->error(tr("Did not find class \"%1\"").arg(className));
         }
     }
     return false;
@@ -93,13 +98,16 @@ StartupActionModelUtil::StartupActionModelUtil()
  if (!name.isEmpty())
  {
   //for (Entry<Class<?>, ActionAttributes> entry : this->actions.entrySet())
-  QMapIterator<QString, ActionAttributes*>entry(*this->actions);
+  QMapIterator<Class*, ActionAttributes*>entry(*this->actions);
   while(entry.hasNext())
   {
 entry.next();
    if (entry.value()->name==(name))
    {
-    return entry.key();
+    if(qobject_cast<AbstractAction*>((QObject*)entry.key())!= NULL)
+     return ((AbstractAction*)entry.key())->getClassname();
+    else
+    return entry.key()->metaObject()->className();
    }
   }
  }
@@ -113,6 +121,7 @@ entry.next();
  if (this->actionNames == NULL)
  {
   this->actionNames = new QList<QString>();
+
 //        this->actions.values().stream().forEach((attrs) ->
   foreach(ActionAttributes* attrs, this->actions->values())
   {
@@ -125,7 +134,7 @@ entry.next();
 }
 
 //@NonNULL
-/*public*/ QVector<QString> StartupActionModelUtil::getClasses() {
+/*public*/ QVector<Class*> StartupActionModelUtil::getClasses() {
     this->prepareActionsHashMap();
    // return actions->keys().toArray(new Class<?>[actions.size()]);
  return actions->keys().toVector();
@@ -143,7 +152,7 @@ entry.next();
      throw ex;
  }
  ActionAttributes* attrs =  new ActionAttributes(name, clazz);
- actions->insert(strClass, attrs);
+ actions->insert(clazz, attrs);
  this->firePropertyChange("length", NULL, NULL);
 }
 
@@ -158,7 +167,7 @@ entry.next();
      log->error("Did not find class \"{}\"", strClass);
      throw ex;
  }
- actions->remove(strClass);
+ actions->remove(clazz);
  this->firePropertyChange("length", QVariant(), QVariant());
 }
 
@@ -166,7 +175,7 @@ entry.next();
 {
  if (this->actions == NULL)
  {
-  this->actions = new QMap<QString, ActionAttributes*>();
+  this->actions = new QMap<Class*, ActionAttributes*>();
   this->overrides = new QMap<QString, Class*>();
 
 //        ResourceBundle rb = ResourceBundle.getBundle("apps.ActionListBundle");
@@ -179,7 +188,86 @@ entry.next();
 //             log->error(tr{"Did not find class \"%1\"").arg(key));
 //         }
 //     });
+  // NOTE: For these actions to become available, they must be able to be loaded via Class::forName() and must return the original java class name for the getClassName function.
+  actionListBundle = QMap<QString, QString>();
+  actionListBundle.insert("apps.CheckForUpdateAction", "Check for Updates");
+  actionListBundle.insert("apps.RestartAction", "Restart JMRI");
+  actionListBundle.insert("apps.SystemConsoleAction", "Open JMRI System console");
+  actionListBundle.insert("apps.gui3.TabbedPreferencesAction", "Preferences...");
+  actionListBundle.insert("apps.gui3.TabbedPreferencesProfileAction", "Profiles...");
+  actionListBundle.insert("jmri.configurexml.LoadXmlConfigAction", "Open Panel File...");
+  actionListBundle.insert("jmri.jmris.json.JsonServerAction", "Start JMRI JSON Server");
+  actionListBundle.insert("jmri.jmris.simpleserver.SimpleServerAction", "Start Simple JMRI Server");
+  actionListBundle.insert("jmri.jmris.srcp.JmriSRCPServerAction", "Start JMRI SRCP Server");
+  actionListBundle.insert("jmri.jmrit.MemoryFrameAction", "Open Memory Monitor");
+  actionListBundle.insert("jmri.jmrit.XmlFileValidateAction", "Validate XML File");
+  actionListBundle.insert("jmri.jmrit.analogclock.AnalogClockAction", "Open Analog Clock");
+  actionListBundle.insert("jmri.jmrit.automat.monitor.AutomatTableAction", "Open Thread Monitor");
+  actionListBundle.insert("jmri.jmrit.beantable.AudioTableAction", "Open Audio Table");
+  actionListBundle.insert("jmri.jmrit.beantable.BlockTableAction", "Open Block Table");
+  actionListBundle.insert("jmri.jmrit.beantable.IdTagTableAction", "Open ID Tag Table");
+  actionListBundle.insert("jmri.jmrit.beantable.LightTableAction", "Open Light Table");
+  actionListBundle.insert("jmri.jmrit.beantable.ListedTableAction", "Open Tables");
+  actionListBundle.insert("jmri.jmrit.beantable.LogixTableAction", "Open Logix Table");
+  actionListBundle.insert("jmri.jmrit.beantable.MemoryTableAction", "Open Memory Table");
+  actionListBundle.insert("jmri.jmrit.beantable.OBlockTableAction", "Open OBlock Table");
+  actionListBundle.insert("jmri.jmrit.beantable.ReporterTableAction", "Open Reporter Table");
+  actionListBundle.insert("jmri.jmrit.beantable.RouteTableAction", "Open Route Table");
+  actionListBundle.insert("jmri.jmrit.beantable.SectionTableAction", "Open Section Table");
+  actionListBundle.insert("jmri.jmrit.beantable.SensorTableAction", "Open Sensor Table");
+  actionListBundle.insert("jmri.jmrit.beantable.SignalGroupTableAction", "Open Signal Group Table");
+  actionListBundle.insert("jmri.jmrit.beantable.SignalHeadTableAction", "Open Signal Head Table");
+  actionListBundle.insert("jmri.jmrit.beantable.SignalMastTableAction", "Open Signal Mast Table");
+  actionListBundle.insert("jmri.jmrit.beantable.TransitTableAction", "Open Transit Table");
+  actionListBundle.insert("jmri.jmrit.blockboss.BlockBossAction", "Open SSL Tool");
+  actionListBundle.insert("jmri.jmrit.consisttool.ConsistToolAction", "Open Consisting Tool");
+  actionListBundle.insert("jmri.jmrit.dispatcher.DispatcherAction", "Open Dispatcher");
+  actionListBundle.insert("jmri.jmrit.display.panelEditor.PanelEditorAction", "New Panel");
+  actionListBundle.insert("jmri.jmrit.dualdecoder.DualDecoderToolAction", "Open Multi-Decoder Control");
+  actionListBundle.insert("jmri.jmrit.jython.InputWindowAction", "Open Script Entry Window");
+  actionListBundle.insert("jmri.jmrit.jython.JythonWindow", "Open Script Output Window");
+  actionListBundle.insert("jmri.jmrit.lcdclock.LcdClockAction", "Open LCD Clock");
+  actionListBundle.insert("jmri.jmrit.nixieclock.NixieClockAction", "Open Nixie Clock");
+  actionListBundle.insert("jmri.jmrit.operations.automation.AutomationsTableFrameAction", "Open Operations Automations Window");
+  actionListBundle.insert("jmri.jmrit.operations.locations.LocationsTableAction", "Open Operations Locations Window");
+  actionListBundle.insert("jmri.jmrit.operations.rollingstock.cars.CarsTableAction", "Open Operations Cars Window");
+  actionListBundle.insert("jmri.jmrit.operations.rollingstock.engines.EnginesTableAction", "Open Operations Engines Window");
+  actionListBundle.insert("jmri.jmrit.operations.routes.RoutesTableAction", "Open Operations Routes Window");
+  actionListBundle.insert("jmri.jmrit.operations.setup.OperationsSetupAction", "Open Operations Setup Window");
+  actionListBundle.insert("jmri.jmrit.operations.trains.TrainsTableAction", "Open Operations Trains Window");
+  actionListBundle.insert("jmri.jmrit.powerpanel.PowerButtonAction", "Power Button");
+  actionListBundle.insert("jmri.jmrit.powerpanel.PowerPanelAction", "Open Power Control");
+  actionListBundle.insert("jmri.jmrit.roster.RecreateRosterAction", "Rebuild Roster");
+  actionListBundle.insert("jmri.jmrit.roster.swing.RosterFrameAction", "Open Roster");
+  actionListBundle.insert("jmri.jmrit.sendpacket.SendPacketAction", "Open DCC Packet Tool");
+  actionListBundle.insert("jmri.jmrit.simpleclock.SimpleClockAction", "Open Fast Clock Configuration");
+  actionListBundle.insert("jmri.jmrit.simplelightctrl.SimpleLightCtrlAction", "Open Light Control");
+  actionListBundle.insert("jmri.jmrit.simpleprog.SimpleProgAction", "Open Single CV Programmer");
+  actionListBundle.insert("jmri.jmrit.simpleturnoutctrl.SimpleTurnoutCtrlAction", "Open Turnout Control");
+  actionListBundle.insert("jmri.jmrit.speedometer.SpeedometerAction", "Open Speedometer");
+  actionListBundle.insert("jmri.jmrit.symbolicprog.tabbedframe.PaneOpsProgAction", "Open DecoderPro Operations Mode");
+  actionListBundle.insert("jmri.jmrit.symbolicprog.tabbedframe.PaneProgAction", "Open DecoderPro Service Mode");
+  actionListBundle.insert("jmri.jmrit.throttle.LoadDefaultXmlThrottlesLayoutAction", "Load Default Throttle Layout");
+  actionListBundle.insert("jmri.jmrit.throttle.ThrottleCreationAction", "Open Throttle");
+  actionListBundle.insert("jmri.jmrit.withrottle.WiThrottleCreationAction", "Start WiThrottle Server");
+  actionListBundle.insert("jmri.jmrix.jinput.treecontrol.TreeAction", "Open USB Input Control");
+  actionListBundle.insert("jmri.jmrix.libusb.UsbViewAction", "Open USB Device Viewer");
+  actionListBundle.insert("jmri.jmrix.loconet.locormi.LnMessageServerAction", "Start LocoNet Server");
+  actionListBundle.insert("jmri.web.server.WebServerAction", "Start Web Server");
 
+  foreach(QString key, actionListBundle.keys())
+  {
+   try
+   {
+    Class* clazz  = Class::forName(key);
+    ((AbstractAction*)clazz)->setClassname(key);
+    ActionAttributes* attrs = new ActionAttributes(actionListBundle.value(key), clazz);
+    actions->insert(clazz, attrs);
+   } catch (ClassNotFoundException ex) {
+    log->error(tr("Did not find class \"%1\"").arg(key));
+   }
+  }
+#if 0
    QStringList factoryList = QStringList();
    factoryList << "PerformActionModelFactory" << "StartupPauseFactory" <<
                   "CreateButtonModelFactory" << "TriggerRouteModelFactory" <<
@@ -199,7 +287,7 @@ entry.next();
      log->error(tr("Did not find class \"%1\"").arg(clazz));
     }
    }
-
+#endif
 
 //     ServiceLoader<StartupActionFactory> loader = ServiceLoader.load(StartupActionFactory.class);
 //     loader.forEach(factory -> {
@@ -232,7 +320,9 @@ entry.next();
 
     ActionAttributes::ActionAttributes(QString name, Class* clazz) {
         this->name = name;
-     Class* cls = Class::forName("SystemConnectionAction");
-        this->isSystemConnectionAction = cls->isAssignableFrom(clazz->metaObject()->className());
+     this->clazz = clazz;
+//     Class* cls = Class::forName("SystemConnectionAction");
+//        this->isSystemConnectionAction = cls->isAssignableFrom(QString(((QObject*)clazz)->metaObject()->className()));
+     this->isSystemConnectionAction = clazz->isAssignableFrom("SystemConnectionAction");
     }
 //}

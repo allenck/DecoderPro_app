@@ -40,7 +40,7 @@
  * @param s
  */
 /*public*/ ListedTableAction::ListedTableAction(QString s, QString selection, QObject *parent) :
-  QAction(s,parent) {
+  AbstractAction(s,parent) {
  //super(s);
  common();
   title = s;
@@ -48,7 +48,7 @@
 }
 
 /*public*/ ListedTableAction::ListedTableAction(QString s, QString selection, int divider, QObject *parent) :
-  QAction(s,parent)
+  AbstractAction(s,parent)
 {
  //super(s);
  common();
@@ -58,7 +58,7 @@
 }
 
 /*public*/ ListedTableAction::ListedTableAction(QString s, int divider, QObject *parent) :
-  QAction(s, parent)
+  AbstractAction(s, parent)
 {
  //super(s);
  common();
@@ -67,7 +67,7 @@
 }
 
 /*public*/ListedTableAction:: ListedTableAction(QString s,QObject *parent) :
-  QAction(s, parent)
+  AbstractAction(s, parent)
 {
 //super(s);
  common();
@@ -75,11 +75,12 @@
 }
 
 /*public*/ ListedTableAction::ListedTableAction(QObject *parent) :
-  QAction(tr("Listed Table Access"), parent)
+  AbstractAction(tr("Listed Table Access"), parent)
 {
  //this(rbean.getString("TitleListedTable"));
  common();
 }
+
 void ListedTableAction::common()
 {
  title = tr("Listed Table Access");

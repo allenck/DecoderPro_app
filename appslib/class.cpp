@@ -157,45 +157,48 @@
         }
     }
 #endif
-    /**
-     * Returns the {@code Class} object associated with the class or
-     * interface with the given string name.  Invoking this method is
-     * equivalent to:
-     *
-     * <blockquote>
-     *  {@code Class.forName(className, true, currentLoader)}
-     * </blockquote>
-     *
-     * where {@code currentLoader} denotes the defining class loader of
-     * the current class.
-     *
-     * <p> For example, the following code fragment returns the
-     * runtime {@code Class} descriptor for the class named
-     * {@code java.lang.Thread}:
-     *
-     * <blockquote>
-     *   {@code Class t = Class.forName("java.lang.Thread")}
-     * </blockquote>
-     * <p>
-     * A call to {@code forName("X")} causes the class named
-     * {@code X} to be initialized.
-     *
-     * @param      className   the fully qualified name of the desired class.
-     * @return     the {@code Class} object for the class with the
-     *             specified name.
-     * @exception LinkageError if the linkage fails
-     * @exception ExceptionInInitializerError if the initialization provoked
-     *            by this method fails
-     * @exception ClassNotFoundException if the class cannot be located
-     */
-    //@CallerSensitive
-    //template <class T>
-    /*public*/ /*static*/ Class* Class::forName(QString className)
-                //throws ClassNotFoundException
-    {
+/**
+ * Returns the {@code Class} object associated with the class or
+ * interface with the given string name.  Invoking this method is
+ * equivalent to:
+ *
+ * <blockquote>
+ *  {@code Class.forName(className, true, currentLoader)}
+ * </blockquote>
+ *
+ * where {@code currentLoader} denotes the defining class loader of
+ * the current class.
+ *
+ * <p> For example, the following code fragment returns the
+ * runtime {@code Class} descriptor for the class named
+ * {@code java.lang.Thread}:
+ *
+ * <blockquote>
+ *   {@code Class t = Class.forName("java.lang.Thread")}
+ * </blockquote>
+ * <p>
+ * A call to {@code forName("X")} causes the class named
+ * {@code X} to be initialized.
+ *
+ * @param      className   the fully qualified name of the desired class.
+ * @return     the {@code Class} object for the class with the
+ *             specified name.
+ * @exception LinkageError if the linkage fails
+ * @exception ExceptionInInitializerError if the initialization provoked
+ *            by this method fails
+ * @exception ClassNotFoundException if the class cannot be located
+ */
+//@CallerSensitive
+//template <class T>
+/*public*/ /*static*/ Class* Class::forName(QString className)
+            //throws ClassNotFoundException
+{
 //        Class<?> caller = Reflection.getCallerClass();
 //        return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
-     int id = QMetaType::type(className.toLocal8Bit());
+     QString clazz = className;
+     if(className.contains("."))
+      clazz = className.mid(className.lastIndexOf(".")+1);
+     int id = QMetaType::type(clazz.toLocal8Bit());
      QObject* obj;
      if(id != 0)
      {
@@ -209,6 +212,7 @@
      else
       throw(ClassNotFoundException(className));
     }
+
 #if 0
 
     /**
@@ -394,7 +398,7 @@
             return null;
         }
 #endif
-        Class* clazz = (Class*)this->metaObject()->newInstance();
+        Class* clazz = (Class*)((QObject*)this)->metaObject()->newInstance();
         return clazz;
     }
 #if 0
@@ -476,23 +480,31 @@
      */
     /*public*/ /*native*/ bool Class::isAssignableFrom(QString cls)
     {
+
      try
      {
-      Class* clazz = Class::forName(cls);
-      if(clazz->metaObject()->className() == cls)
+      QString thisClassName =QString(((QObject*)this)->metaObject()->className());
+      if((thisClassName ) == cls)
        return true;
-      if(clazz->metaObject()->superClass() != NULL)
+      const QMetaObject* metaObject = this->metaObject();
+      if(metaObject == NULL)
+       return false;
+      do
       {
-       if(clazz->metaObject()->superClass()->className() == cls)
+       QString superClassName = QString(metaObject->superClass()->className());
+       if(superClassName == cls)
         return true;
-       else
-        return((Class*)clazz->metaObject()->superClass())->isAssignableFrom(cls);
-      }
+       if(superClassName == "QObject")
+        return false;
+       metaObject = metaObject->superClass();
+      } while( metaObject != NULL);
+      return false;
      }
      catch(ClassNotFoundException)
      {
       return false;
      }
+
 
     }
 
@@ -918,16 +930,16 @@
      * Returns the Java language modifiers for this class or interface, encoded
      * in an integer. The modifiers consist of the Java Virtual Machine's
      * constants for {@code public}, {@code protected},
-     * {@code /*private*/}, {@code final}, {@code static},
+     * {@code private}, {@code final}, {@code static},
      * {@code abstract} and {@code interface}; they should be decoded
      * using the methods of class {@code Modifier}.
      *
      * <p> If the underlying class is an array class, then its
-     * {@code public}, {@code /*private*/} and {@code protected}
+     * {@code public}, {@code private} and {@code protected}
      * modifiers are the same as those of its component type.  If this
      * {@code Class} represents a primitive type or void, its
      * {@code public} modifier is always {@code true}, and its
-     * {@code protected} and {@code /*private*/} modifiers are always
+     * {@code protected} and {@code private} modifiers are always
      * {@code false}. If this object represents an array class, a
      * primitive type or void, then its {@code final} modifier is always
      * {@code true} and its interface modifier is always
@@ -1464,7 +1476,7 @@
      * this {@code Class} object represents a primitive type, an array
      * class, or void.
      *
-     * @return the array of {@code Class} objects representing the /*public*/
+     * @return the array of {@code Class} objects representing the public
      *         members of this class
      * @throws SecurityException
      *         If a security manager, <i>s</i>, is present and
@@ -1529,7 +1541,7 @@
      * particular order.
      *
      * @return the array of {@code Field} objects representing the
-     *         /*public*/ fields
+     *         public fields
      * @throws SecurityException
      *         If a security manager, <i>s</i>, is present and
      *         the caller's class loader is not the same as or an
@@ -1821,7 +1833,7 @@
      * Returns an array of {@code Class} objects reflecting all the
      * classes and interfaces declared as members of the class represented by
      * this {@code Class} object. This includes public, protected, default
-     * (package) access, and /*private*/ classes and interfaces declared by the
+     * (package) access, and private classes and interfaces declared by the
      * class, but excludes inherited classes and interfaces.  This method
      * returns an array of length 0 if the class declares no classes or
      * interfaces as members, or if this {@code Class} object represents a
@@ -1863,7 +1875,7 @@
      * Returns an array of {@code Field} objects reflecting all the fields
      * declared by the class or interface represented by this
      * {@code Class} object. This includes public, protected, default
-     * (package) access, and /*private*/ fields, but excludes inherited fields.
+     * (package) access, and private fields, but excludes inherited fields.
      *
      * <p> If this {@code Class} object represents a class or interface with no
      * declared fields, then this method returns an array of length 0.
@@ -1913,7 +1925,7 @@
      * Returns an array containing {@code Method} objects reflecting all the
      * declared methods of the class or interface represented by this {@code
      * Class} object, including public, protected, default (package)
-     * access, and /*private*/ methods, but excluding inherited methods.
+     * access, and private methods, but excluding inherited methods.
      *
      * <p> If this {@code Class} object represents a type that has multiple
      * declared methods with the same name and parameter types, but different

@@ -5,6 +5,7 @@
 
 class DefaultProgrammerManager : public ProgrammerManager
 {
+ Q_OBJECT
 public:
     /**
      * NMRA "Paged" mode

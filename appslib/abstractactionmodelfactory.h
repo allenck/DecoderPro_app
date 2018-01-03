@@ -10,6 +10,7 @@ class StartupModel;
 class Logger;
 class AbstractActionModelFactory : public StartupModelFactory
 {
+ Q_OBJECT
 public:
  AbstractActionModelFactory();
  /*public*/ QString getDescription();
@@ -26,7 +27,7 @@ private:
  JList* actions;
 
 private slots:
- void on_selected(ListSelectionEvent* = 0);
+ void on_selected(/*ListSelectionEvent* = 0*/QModelIndex index);
 };
 
 #endif // ABSTRACTACTIONMODELFACTORY_H

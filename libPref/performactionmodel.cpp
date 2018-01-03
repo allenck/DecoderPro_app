@@ -14,6 +14,7 @@ PerformActionModel::PerformActionModel(QObject *parent) :
  QString prefs = QString("prefs");
  ActionEvent* event = new ActionEvent((QObject*)&prefs, 0, ""); // TODO:
  //action->actionPerformed(event);
+ connect(this, SIGNAL(actionPerformed(ActionEvent*)), action, SLOT(actionPerformed(ActionEvent*)));
  emit actionPerformed(event);
 }
 /**

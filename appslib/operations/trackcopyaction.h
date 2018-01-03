@@ -9,6 +9,7 @@ namespace Operations
  class TrackCopyFrame;
  class TrackCopyAction : public AbstractAction
  {
+  Q_OBJECT
  public:
   TrackCopyAction(LocationEditFrame* parent);
  public slots:

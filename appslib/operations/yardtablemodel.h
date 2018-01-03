@@ -7,6 +7,7 @@ namespace Operations
 {
  class APPSLIBSHARED_EXPORT YardTableModel : public TrackTableModel
  {
+  Q_OBJECT
  public:
   /*public*/ YardTableModel(QObject* parent = 0);
   /*public*/ void initTable(JTable* table, Location* location);

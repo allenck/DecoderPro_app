@@ -5,6 +5,7 @@
 class Logger;
 class ControlPanelServlet : public AbstractPanelServlet
 {
+ Q_OBJECT
 public:
  ControlPanelServlet();
 

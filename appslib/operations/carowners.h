@@ -7,6 +7,7 @@ namespace Operations
 {
  class APPSLIBSHARED_EXPORT CarOwners : public RollingStockAttribute
  {
+  Q_OBJECT
  public:
   CarOwners(QObject* parent = 0);
   /*public*/ static /*final*/ QString CAROWNERS_NAME_CHANGED_PROPERTY;// = "CarOwners Name"; // NOI18N

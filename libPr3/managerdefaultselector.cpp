@@ -26,10 +26,12 @@
  */
 ///*public*/ class ManagerDefaultSelector extends AbstractPreferencesManager {
 
+/*private*/ /*final*/ /*static*/ Logger* ManagerDefaultSelector::log = LoggerFactory::getLogger("ManagerDefaultSelector");
 
-/*public*/ ManagerDefaultSelector::ManagerDefaultSelector(QObject *parent)
+
+/*public*/ ManagerDefaultSelector::ManagerDefaultSelector(QObject *parent) : AbstractPreferencesManager(parent)
 {
- defaults = QHash<QString, QString>();
+ defaults = QMap<QString, QString>();
  // Define set of items that we remember defaults for, manually maintained because
  // there are lots of JMRI-internal types of no interest to the user and/or not system-specific.
  // This grows if you add something to the SystemConnectionMemo system
@@ -40,6 +42,11 @@
       Item1("<html>Service<br>Programmer</html>", "GlobalProgrammerManager") <<
       Item1("<html>Ops Mode<br>Programmer</html>",  "AddressedProgrammerManager") <<
       Item1("Consists ", "ConsistManager");
+ if(log == NULL)
+  log = LoggerFactory::getLogger("ManagerDefaultSelector");
+
+ SystemConnectionMemo::addPropertyChangeListener((PropertyChangeListener*)this);
+ connect(SystemConnectionMemo::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 //    SystemConnectionMemo::addPropertyChangeListener((PropertyChangeEvent e) ->
@@ -53,65 +60,67 @@
   //defaults.keySet().stream().forEach((c) ->
   foreach(QString c, defaults.keys())
   {
-      QString connectionName = this->defaults.value(c);
-      if (connectionName == (oldName))
-      {
-        this->defaults.insert(c, newName);
-      }
+   QString connectionName = this->defaults.value(c);
+   if (connectionName == (oldName))
+   {
+    this->defaults.insert(c, newName);
+   }
   }
  }
  else if (e->getPropertyName()=="ConnectionDisabled")
  {
-   bool newState = e->getNewValue().toBool();
+  bool newState = e->getNewValue().toBool();
   if (newState)
   {
-      SystemConnectionMemo* memo = (SystemConnectionMemo*) e->getSource();
-      QString disabledName = memo->getUserName();
-      log->debug(tr("ConnectionDisabled true: \"%1\"").arg(disabledName));
-      removeConnectionAsDefault(disabledName);
+   SystemConnectionMemo* memo = (SystemConnectionMemo*) e->getSource();
+   QString disabledName = memo->getUserName();
+   log->debug(tr("ConnectionDisabled true: \"%1\"").arg(disabledName));
+   removeConnectionAsDefault(disabledName);
   }
  }
-  else if (e->getPropertyName()== "ConnectionRemoved")
-  {
-   QString removedName =  e->getOldValue().toString();
-   log->debug(tr("ConnectionRemoved for \"%1\"").arg(removedName));
-   removeConnectionAsDefault(removedName);
-  }
-  else if (e->getPropertyName()=="ConnectionAdded")
+ else if (e->getPropertyName()== "ConnectionRemoved")
+ {
+  QString removedName =  e->getOldValue().toString();
+  log->debug(tr("ConnectionRemoved for \"%1\"").arg(removedName));
+  removeConnectionAsDefault(removedName);
+ }
+ else if (e->getPropertyName()=="ConnectionAdded")
  {
   // check for special case of anything else then Internal
   QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
-  if (list->size() == 2 && qobject_cast<InternalSystemConnectionMemo*>(list->at(1)) != 0 )
+  if (list->size() == 2 && qobject_cast<InternalSystemConnectionMemo*>(list->at(0)) != 0 ) // ACK change from 1 to 0; Internal is last!
   {
-      log->debug("First real system added, reset defaults");
-      QString name = ((SystemConnectionMemo*)list->at(1))->getUserName();
-      removeConnectionAsDefault(name);
-   }
+   log->debug("First real system added, reset defaults");
+   QString name = ((SystemConnectionMemo*)list->at(1))->getUserName();
+   removeConnectionAsDefault(name);
   }
-  else
-  {
+ }
+ else
+ {
   log->debug(tr("ignoring notification of \"%1\"").arg(e->getPropertyName()));
-  }
+ }
  this->firePropertyChange("Updated", QVariant(), QVariant());
 }
 
 // remove connection's record
-void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName) {
-   QVector<QString> tmpArray = QVector<QString>();
-    //defaults.keys().stream().forEach((c) ->
-   foreach(QString c, defaults.keys())
-    {
-        QString connectionName = this->defaults.value(c);
-        if (connectionName==(removedName)) {
-            log->debug("Connection " + removedName + " has been removed as the default for " + c);
-            tmpArray.append(c);
-        }
-    }//);
-    //tmpArray.stream().forEach((tmpArray1) ->
-   foreach(QString tmpArray1, tmpArray)
-    {
-        this->defaults.remove(tmpArray1);
-    }//);
+void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
+{
+ QVector<QString> tmpArray = QVector<QString>();
+  //defaults.keys().stream().forEach((c) ->
+ foreach(QString c, defaults.keys())
+ {
+  QString connectionName = this->defaults.value(c);
+  if (connectionName==(removedName))
+  {
+   log->debug("Connection " + removedName + " has been removed as the default for " + c);
+   tmpArray.append(c);
+  }
+ }//);
+  //tmpArray.stream().forEach((tmpArray1) ->
+ foreach(QString tmpArray1, tmpArray)
+ {
+  this->defaults.remove(tmpArray1);
+ }//);
 }
 
 /**
@@ -138,15 +147,18 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName) {
  *                     default system is desired
  * @param userName     of the system, or  NULL if none set
  */
-/*public*/ void ManagerDefaultSelector::setDefault(QString managerClass, QString userName) {
-    foreach (Item1 item, knownManagers) {
-        if (item.managerClass == (managerClass)) {
-            log->debug(tr("   setting default for \"%1\" to \"%2\" by request").arg( managerClass).arg(userName));
-            defaults.insert(managerClass, userName);
-            return;
-        }
-    }
-    log->warn(tr("Ignoring preference for class %1 with name %2").arg(managerClass).arg(userName));
+/*public*/ void ManagerDefaultSelector::setDefault(QString managerClass, QString userName)
+{
+ foreach (Item1 item, knownManagers)
+ {
+  if (item.managerClass == (managerClass))
+  {
+   log->debug(tr("   setting default for \"%1\" to \"%2\" by request").arg( managerClass).arg(userName));
+   defaults.insert(managerClass, userName);
+   return;
+  }
+ }
+ log->warn(tr("Ignoring preference for class %1 with name %2").arg(managerClass).arg(userName));
 }
 
 /**
@@ -158,9 +170,6 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName) {
 //@CheckForNull
 /*public*/ InitializationException* ManagerDefaultSelector::configure()
 {
- SystemConnectionMemo* memo = SystemConnectionMemo::instance();
- connect(memo, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
  InitializationException* error =  NULL;
  QObjectList* connList = InstanceManager::getList("SystemConnectionMemo");
  log->debug(tr("configure defaults into InstanceManager from %1 memos, %2 defaults").arg(connList->size()).arg(defaults.keys().size()));
@@ -207,15 +216,19 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName) {
       log->debug("!found, so resetting");
       QString currentName =  NULL;
       if (c == "ThrottleManager" && InstanceManager::getNullableDefault("ThrottleManager") !=  NULL) {
-          currentName = ((ThrottleManager*)InstanceManager::throttleManagerInstance())->getUserName();
-      } else if (c == "PowerManager" && InstanceManager::getNullableDefault("PowerManager") !=  NULL) {
-          currentName =((PowerManager*) InstanceManager::getDefault("PowerManager"))->getUserName();
-      } else if (c == "ProgrammerManager" && InstanceManager::getNullableDefault("ProgrammerManager") !=  NULL) {
-          currentName = ((ProgrammerManager*) InstanceManager::getDefault("ProgrammerManager"))->getUserName();
+       currentName = ((ThrottleManager*)InstanceManager::throttleManagerInstance())->getUserName();
       }
-      if (currentName !=  NULL) {
-          log->warn("The configured " + connectionName + " for " + c + " can not be found so will use the default " + currentName);
-          this->defaults.insert(c, currentName);
+      else if (c == "PowerManager" && InstanceManager::getNullableDefault("PowerManager") !=  NULL) {
+       currentName =((PowerManager*) InstanceManager::getDefault("PowerManager"))->getUserName();
+      }
+      else if (c == "ProgrammerManager" && InstanceManager::getNullableDefault("ProgrammerManager") !=  NULL)
+      {
+       currentName = ((ProgrammerManager*) InstanceManager::getDefault("ProgrammerManager"))->getUserName();
+      }
+      if (currentName !=  NULL)
+      {
+       log->warn("The configured " + connectionName + " for " + c + " can not be found so will use the default " + currentName);
+       this->defaults.insert(c, currentName);
       }
   }
  }
@@ -224,32 +237,37 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName) {
 
 
 //@Override
-/*public*/ void ManagerDefaultSelector::initialize(Profile* profile) throw (InitializationException) {
-    if (!this->isInitialized(profile)) {
-        Preferences* settings = ProfileUtils::getPreferences(profile, "jmri/managers/ManagerDefaultSelector", true)->node("defaults"); // NOI18N
-        try {
-            foreach (QString name, settings->keys()) {
-                QString connection = settings->get(name,  NULL);
-                QString cls = this->classForName(name);
-                log->debug(tr("Loading default %1 for %2").arg(connection).arg(name));
-                if (cls !=  NULL) {
-                    this->defaults.insert(cls, connection);
-                    log->debug(tr("Loaded default %1 for %2").arg(connection).arg(cls));
-                }
-            }
-        } catch (BackingStoreException ex) {
-            log->info("Unable to read preferences for Default Selector.");
-        }
-        InitializationException* ex = this->configure();
-        ConfigureManager* manager =(ConfigureManager*) InstanceManager::getNullableDefault("ConfigureManager");
-        if (manager !=  NULL) {
-            manager->registerPref(this); // allow ProfileConfig.xml to be written correctly
-        }
-        this->setInitialized(profile, true);
-        if (ex !=  NULL) {
-            throw ex;
-        }
+/*public*/ void ManagerDefaultSelector::initialize(Profile* profile) throw (InitializationException)
+{
+ if (!this->isInitialized(profile))
+ {
+  Preferences* settings = ProfileUtils::getPreferences(profile, "jmri/managers/ManagerDefaultSelector", true)->node("defaults"); // NOI18N
+  try
+  {
+   foreach (QString name, settings->keys())
+   {
+    QString connection = settings->get(name,  NULL);
+    QString cls = this->classForName(name);
+    log->debug(tr("Loading default %1 for %2").arg(connection).arg(name));
+    if (cls !=  NULL)
+    {
+     this->defaults.insert(cls, connection);
+     log->debug(tr("Loaded default %1 for %2").arg(connection).arg(cls));
     }
+   }
+  } catch (BackingStoreException ex) {
+      log->info("Unable to read preferences for Default Selector.");
+  }
+  InitializationException* ex = this->configure();
+  ConfigureManager* manager =(ConfigureManager*) InstanceManager::getNullableDefault("ConfigureManager");
+  if (manager !=  NULL) {
+      manager->registerPref(this); // allow ProfileConfig.xml to be written correctly
+  }
+  this->setInitialized(profile, true);
+  if (ex !=  NULL) {
+      throw ex;
+  }
+ }
 }
 
 //@Override
@@ -282,17 +300,21 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName) {
     }
 //}
 
-/*private*/ QString ManagerDefaultSelector::nameForClass(/*@Non NULL*/ QString cls) {
-    return cls; //.getCanonicalName().replace('.', '-');
+/*private*/ QString ManagerDefaultSelector::nameForClass(/*@Non NULL*/ QString cls)
+{
+ return cls; //.getCanonicalName().replace('.', '-');
 }
 
-/*private*/ QString ManagerDefaultSelector::classForName(/*@Non NULL*/ QString name) {
-    try {
-        return Class::forName(name/*.replace('-', '.')*/)->metaObject()->className();
-    } catch (ClassNotFoundException ex) {
-        log->error(tr("Could not find class for %1").arg(name));
-        return  NULL;
-    }
+/*private*/ QString ManagerDefaultSelector::classForName(/*@Non NULL*/ QString name)
+{
+ try
+ {
+  return Class::forName(name/*.replace('-', '.')*/)->metaObject()->className();
+ }
+ catch (ClassNotFoundException ex)
+ {
+  log->error(tr("Could not find class for %1").arg(name));
+  return  NULL;
+ }
 }
 
-/*private*/ /*final*/ /*static*/ Logger* ManagerDefaultSelector::log = LoggerFactory::getLogger("ManagerDefaultSelector");

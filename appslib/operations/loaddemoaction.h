@@ -8,6 +8,7 @@ namespace Operations
  class AutoBackup;
  class LoadDemoAction : public AbstractAction
  {
+  Q_OBJECT
  public:
   LoadDemoAction(QString s, QObject* parent);
  public slots:

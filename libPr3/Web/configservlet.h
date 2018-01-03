@@ -4,6 +4,7 @@
 
 class ConfigServlet : public HttpServlet
 {
+ Q_OBJECT
 public:
  ConfigServlet();
  /*public*/ QString getServletInfo();

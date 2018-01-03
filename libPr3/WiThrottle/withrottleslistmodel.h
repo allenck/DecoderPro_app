@@ -8,6 +8,7 @@ class WiThrottlesListModel;
 class DeviceServer;
 class WiThrottlesListModel : public AbstractListModel
 {
+ Q_OBJECT
 public:
  //WiThrottleListModel();
  WiThrottlesListModel(QVector<WiDevice*>* deviceList);

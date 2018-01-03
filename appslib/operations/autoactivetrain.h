@@ -199,6 +199,7 @@ protected slots:
 
 class AutoEngineer : public  Runnable
 {
+ Q_OBJECT
 public:
     AutoEngineer(AutoActiveTrain* aat);
 

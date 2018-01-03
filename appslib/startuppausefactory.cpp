@@ -20,7 +20,7 @@ StartupPauseFactory::StartupPauseFactory()
 
 //@Override
 /*public*/ QString /*Class<? extends StartupModel>*/ StartupPauseFactory::getModelClass() {
-    return "StartupPauseModel";
+ return "StartupPauseModel";
 }
 
 //@Override
@@ -40,31 +40,33 @@ StartupPauseFactory::StartupPauseFactory()
 }
 
 //@Override
-/*public*/ void StartupPauseFactory::editModel(StartupModel* model, QWidget* parent) {
-    if (Class::forName(this->getModelClass())->isInstance(model)) {
-        int delay = ((StartupPauseModel*) model)->getDelay();
+/*public*/ void StartupPauseFactory::editModel(StartupModel* model, QWidget* parent)
+{
+ if (Class::forName(this->getModelClass())->isInstance(model))
+ {
+  int delay = ((StartupPauseModel*) model)->getDelay();
 //        SpinnerNumberModel snm = new SpinnerNumberModel(
 //                delay >= 0 ? delay : StartupPauseModel.DEFAULT_DELAY,
 //                0,
 //                600,
 //                1);
 //        JSpinner spinner = new JSpinner(snm);
-        QSpinBox* spinner = new QSpinBox();
-        spinner->setMaximum(600);
-        spinner->setMinimum(0);
-        spinner->setSingleStep(1);
-        spinner->setValue(delay >= 0 ? delay : StartupPauseModel::DEFAULT_DELAY);
-        int result = JOptionPane::showConfirmDialog(parent,
-                VPtr<QWidget>::asQVariant(this->getDialogMessage(spinner)),
-                this->getDescription(),
-                JOptionPane::OK_CANCEL_OPTION,
-                JOptionPane::PLAIN_MESSAGE);
-        if (result == JOptionPane::OK_OPTION && delay != /*snm.getNumber().intValue()*/spinner->value())
-        {
-            ((StartupPauseModel*) model)->setDelay(/*snm.getNumber().intValue()*/spinner->value());
-            ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->setRestartRequired();
-        }
-    }
+  QSpinBox* spinner = new QSpinBox();
+  spinner->setMaximum(600);
+  spinner->setMinimum(0);
+  spinner->setSingleStep(1);
+  spinner->setValue(delay >= 0 ? delay : StartupPauseModel::DEFAULT_DELAY);
+  int result = JOptionPane::showConfirmDialog(parent,
+          VPtr<QWidget>::asQVariant(this->getDialogMessage(spinner)),
+          this->getDescription(),
+          JOptionPane::OK_CANCEL_OPTION,
+          JOptionPane::PLAIN_MESSAGE);
+  if (result == JOptionPane::OK_OPTION && delay != /*snm.getNumber().intValue()*/spinner->value())
+  {
+      ((StartupPauseModel*) model)->setDelay(/*snm.getNumber().intValue()*/spinner->value());
+      ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->setRestartRequired();
+  }
+ }
 }
 
 //@Override

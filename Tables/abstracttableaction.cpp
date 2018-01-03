@@ -9,10 +9,10 @@
 #include "beantabledatamodel.h"
 #include "mysortfilterproxymodel.h"
 
-//AbstractTableAction::AbstractTableAction(QObject *parent) :
-//    QObject(parent)
-//{
-//}
+AbstractTableAction::AbstractTableAction(QObject *parent) :
+    AbstractAction(parent)
+{
+}
 /**
  * Swing action to create and register a
  * SignalHeadTable GUI
@@ -29,7 +29,7 @@
 // /*private*/ static final long serialVersionUID = -7910901479004827844L;
 
 /*public*/ AbstractTableAction::AbstractTableAction(QString actionName,QObject *parent) :
-    QAction(actionName, parent)
+    AbstractAction(actionName, parent)
 {
  //super(actionName);
  _includeAddButton = true;

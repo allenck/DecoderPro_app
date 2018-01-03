@@ -140,7 +140,7 @@ AbstractActionModelFactory::AbstractActionModelFactory()
 //            }
 //        }
 //    });
-    connect(actions, SIGNAL(clicked(QModelIndex)), this, SLOT(on_selected(ListSelectionEvent*)));
+    connect(actions, SIGNAL(clicked(QModelIndex)), this, SLOT(on_selected(/*ListSelectionEvent**/QModelIndex)));
     connections->setEnabled(false);
     connectionsLabel->setEnabled(false);
     QWidget* panel = new QWidget();
@@ -153,14 +153,14 @@ AbstractActionModelFactory::AbstractActionModelFactory()
     return panel;
 }
 
-void AbstractActionModelFactory::on_selected(ListSelectionEvent* e)
+void AbstractActionModelFactory::on_selected(/*ListSelectionEvent* e*/QModelIndex index)
 {
- if (!e->getValueIsAdjusting())
+// if (!e->getValueIsAdjusting())
  {
   connections->clear();
   connections->setEnabled(false);
   connectionsLabel->setEnabled(false);
-  QString name = actions->getSelectedValue().toString();
+  QString name = actions->model()->data(index).toString(); //actions->getSelectedValue().toString();
   if (name != NULL)
   {
    QString className = StartupActionModelUtil::getDefault()->getClassName(name);

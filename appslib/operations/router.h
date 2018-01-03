@@ -8,6 +8,7 @@ namespace Operations
  class Train;
  class Router : public TrainCommon
  {
+  Q_OBJECT
  public:
   Router(QObject* parent = 0);
   /*public*/ static /*synchronized*/ Router* instance();

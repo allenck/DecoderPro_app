@@ -16,7 +16,7 @@ public:
     explicit ManagerDefaultSelector(QObject *parent = 0);
  ~ManagerDefaultSelector() {}
  ManagerDefaultSelector(const ManagerDefaultSelector&) : AbstractPreferencesManager() {}
- /*public*/ /*final*/ QHash<QString, QString> defaults;// = new Hashtable<>();
+ /*public*/ /*final*/ QMap<QString, QString> defaults;// = new Hashtable<>();
  /*public*/ QString getDefault(QString managerClass);
  /*public*/ void setDefault(QString managerClass, QString userName);
  /*public*/ InitializationException* configure();

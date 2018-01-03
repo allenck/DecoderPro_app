@@ -5,6 +5,7 @@
 class PerformScriptModel;
 class PerformScriptModelFactory : public AbstractFileModelFactory
 {
+ Q_OBJECT
 public:
  /*public*/ PerformScriptModelFactory();
  /*public*/ /*Class<? extends StartupModel>*/QString getModelClass();

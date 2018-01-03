@@ -6,6 +6,7 @@
 
 class PerformActionModelFactory : public AbstractActionModelFactory
 {
+ Q_OBJECT
 public:
  /*public*/ PerformActionModelFactory() ;
  ~PerformActionModelFactory() {}

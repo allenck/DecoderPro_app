@@ -287,6 +287,6 @@ QDomElement InstallDecoderURLAction::readFile(QUrl* url) /*throw (JDOMException,
 }
 
 // never invoked, because we overrode actionPerformed above
-/*public*/ JmriPanel* makePanel() {
+/*public*/ JmriPanel* InstallDecoderURLAction::makePanel() {
     throw new IllegalArgumentException("Should not be invoked");
 }

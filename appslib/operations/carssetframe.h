@@ -9,6 +9,7 @@ namespace Operations
  class CarsTableModel;
  class CarsSetFrame : public CarSetFrame
  {
+  Q_OBJECT
  public:
   CarsSetFrame(QWidget* parent = 0);
   /*public*/ void initComponents(JTable* carsTable);

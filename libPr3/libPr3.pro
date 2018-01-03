@@ -1598,8 +1598,7 @@ INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
 
 DISTFILES += \
-    WiThrottle/abstractwithrottlepreferences.o \
-    WiThrottle/withrottleprefspanel.o
+    WiThrottle/abstractwithrottlepreferences.o
 
 contains(WEBAPP, 1) {
 

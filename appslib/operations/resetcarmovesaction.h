@@ -8,6 +8,7 @@ namespace Operations
  class CarManager;
  class ResetCarMovesAction : public AbstractAction
  {
+  Q_OBJECT
  public:
   ResetCarMovesAction(QString actionName, QWidget* frame);
  public slots:

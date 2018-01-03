@@ -794,7 +794,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   connect(b, SIGNAL(clicked(bool)), chkBoxMapper, SLOT(map()));
  }
 
- /*private*/ void LocationEditFrame::checkBoxActionTrainPerformed(QWidget* ae) {
+ /*private*/ void LocationEditFrame::checkBoxActionTrainPerformed(QWidget* /*ae*/) {
      // save train directions serviced by this location
      if (_location == NULL) {
          return;

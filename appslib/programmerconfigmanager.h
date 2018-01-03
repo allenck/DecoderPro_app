@@ -5,6 +5,7 @@
 class Logger;
 class ProgrammerConfigManager : public AbstractPreferencesManager
 {
+ Q_OBJECT
 public:
  ProgrammerConfigManager();
  ~ProgrammerConfigManager() {}

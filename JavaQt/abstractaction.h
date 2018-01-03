@@ -12,7 +12,7 @@ class JAVAQTSHARED_EXPORT AbstractAction : public Action
  Q_OBJECT
 public:
  //explicit AbstractAction(QObject *parent = 0);
- /*public*/  AbstractAction(QObject *parent);
+ /*public*/  AbstractAction(QObject *parent = 0);
  static bool shouldReconfigure(PropertyChangeEvent* e);
  static void setEnabledFromAction(QWidget* c, Action* a);
  static void setToolTipTextFromAction(QWidget* c, Action* a);
@@ -27,6 +27,8 @@ public:
  /*public*/  QStringList  getKeys();
  /*public*/  /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* listener);
  /*public*/  /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener);
+ Q_INVOKABLE /*public*/ void setClassname(QString);
+ /*public*/ QString getClassname();
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -46,6 +48,7 @@ private:
   */
 // /*protected*/  SwingPropertyChangeSupport* changeSupport;
  void common();
+ QString _class;
 
 protected:
  /**

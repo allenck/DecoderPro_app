@@ -67,6 +67,7 @@ public:
     //@Nonnull
     virtual QStringList getOverriddenClasses(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) throw (IllegalArgumentException) {return QStringList();}
 
+ virtual void initialize() {}
 };
 
 #endif // STARTUPACTIONFACTORY_H

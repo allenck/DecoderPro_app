@@ -10,6 +10,8 @@ class LIBTABLESSHARED_EXPORT OBlockTableAction : public AbstractAction
 public:
  explicit OBlockTableAction(QObject *parent = 0);
  /*public*/ OBlockTableAction(QString actionName, QObject *parent);
+ ~OBlockTableAction() {}
+ OBlockTableAction(const OBlockTableAction&) : AbstractAction() {}
 
 signals:
 
@@ -19,5 +21,5 @@ public slots:
 private:
  void common();
 };
-
+Q_DECLARE_METATYPE(OBlockTableAction)
 #endif // OBLOCKTABLEACTION_H

@@ -111,15 +111,19 @@
  QString name = this->getName();
  if (name != "")
  {
-  if (!this->systemPrefix.isEmpty()) {
+  if (!this->systemPrefix.isEmpty())
+  {
       return tr("<html>%1<br>on connection %2</html>").arg(name).arg( ConnectionNameFromSystemName::getConnectionName(this->systemPrefix)); // NOI18N
   }
   return name;
  }
- if (this->className != "" && this->isValid()) {
-     return tr("Create instance of class %1").arg(this->className);
- } else if (this->className != "" && !this->className.isEmpty()) {
-     return tr("Unable to find class %1").arg(this->className);
+ if (this->className != "" && this->isValid())
+ {
+  return tr("Create instance of class %1").arg(this->className);
+ }
+ else if (this->className != "" && !this->className.isEmpty())
+ {
+  return tr("Unable to find class %1").arg(this->className);
  }
  return tr("Action %1 is invalid").arg(toString());
 }
@@ -130,7 +134,7 @@
  log->debug(tr("Invoke Action from %1").arg(className));
  try
  {
-  Action* action = (Action*) Class::forName(className)->newInstance();
+  Action* action = (Action*) Class::forName(className)/*->newInstance()*/;
   //if (SystemConnectionAction.class.isAssignableFrom(action->getClass()))
   if(((Class*)action)->isAssignableFrom("SystemConnectionAction"))
   {

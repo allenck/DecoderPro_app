@@ -5,8 +5,11 @@
 class Logger;
 class StartupPauseModel : public AbstractStartupModel
 {
+ Q_OBJECT
 public:
- StartupPauseModel();
+ StartupPauseModel(QObject* parent = 0);
+ ~StartupPauseModel() {}
+ StartupPauseModel(const StartupPauseModel&) :AbstractStartupModel() {}
  /*public*/ static /*final*/ int DEFAULT_DELAY;// = 10;
  /*public*/ QString getName();
  /*public*/ bool isValid();
@@ -19,5 +22,5 @@ private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("StartupPauseModel");
 
 };
-
+Q_DECLARE_METATYPE(StartupPauseModel)
 #endif // STARTUPPAUSEMODEL_H

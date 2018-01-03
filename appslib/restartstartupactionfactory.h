@@ -4,6 +4,7 @@
 
 class RestartStartupActionFactory : public AbstractStartupActionFactory
 {
+ Q_OBJECT
 public:
  RestartStartupActionFactory(QObject* parent = 0);
  ~RestartStartupActionFactory() {}

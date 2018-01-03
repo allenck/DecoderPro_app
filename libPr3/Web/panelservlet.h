@@ -4,6 +4,7 @@
 
 class PanelServlet : public AbstractPanelServlet
 {
+ Q_OBJECT
 public:
  PanelServlet();
 

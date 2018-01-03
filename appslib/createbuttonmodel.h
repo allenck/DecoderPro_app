@@ -2,7 +2,9 @@
 #define CREATEBUTTONMODEL_H
 #include "abstractactionmodel.h"
 #include "appslib_global.h"
+#include "propertychangeevent.h"
 
+class QPushButton;
 class APPSLIBSHARED_EXPORT CreateButtonModel : public AbstractActionModel
 {
     Q_OBJECT
@@ -11,12 +13,14 @@ public:
     ~CreateButtonModel() {}
     CreateButtonModel(const CreateButtonModel&)
         : AbstractActionModel() {}
-    static /*public*/ void rememberObject(CreateButtonModel* m) ;
-    static /*public*/ QList<CreateButtonModel*> rememberedObjects();
-    static QList<CreateButtonModel*> l;// = new QList<CreateButtonModel>();
 signals:
+private:
+    QPushButton* b;
+    Action* action;
 
-public slots:
+protected slots:
+    /*protected*/ void performAction(Action* action) throw (JmriException);
+    void propertyChange(PropertyChangeEvent*);
 };
 Q_DECLARE_METATYPE(CreateButtonModel)
 #endif // CREATEBUTTONMODEL_H

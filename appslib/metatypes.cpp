@@ -239,6 +239,29 @@
 #include "webserveraction.h"
 #include "restartstartupactionfactory.h"
 #include "systemconnectionaction.h"
+#include "restartaction.h"
+#include "jsonserveraction.h"
+#include "jmriabstractaction.h"
+#include "loadxmlconfigaction.h"
+#include "analogclockaction.h"
+#include "automattableaction.h"
+#include "withrottlecreationaction.h"
+#include "performactionmodelxml.h"
+#include "performfilemodelxml.h"
+#include "createbuttonmodelxml.h"
+#include "startuppausemodelxml.h"
+#include "performscriptmodelxml.h"
+#include "triggerroutemodelxml.h"
+#include "usbviewaction.h"
+#include "treeaction.h"
+#include "oblocktableaction.h"
+#include "listedtableaction.h"
+#include "lighttableaction.h"
+#include "xmlfilevalidateaction.h"
+#include "startuppausemodel.h"
+#include "nixieclockaction.h"
+#include "lcdclockaction.h"
+#include "powerbuttonaction.h"
 
 bool Metatypes::done = false;
 
@@ -493,6 +516,29 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<WebServerAction>("WebServerAction");
  qRegisterMetaType<RestartStartupActionFactory>("RestartStartupActionFactory");
  qRegisterMetaType<SystemConnectionAction>("SystemConnectionAction");
+ qRegisterMetaType<RestartAction>("RestartAction");
+ qRegisterMetaType<JsonServerAction>("JsonServerAction");
+ qRegisterMetaType<JmriAbstractAction>("JmriAbstractAction");
+ qRegisterMetaType<LoadXmlConfigAction>("LoadXmlConfigAction");
+ qRegisterMetaType<AnalogClockAction>("AnalogClockAction");
+ qRegisterMetaType<AutomatTableAction>("AutomatTableAction");
+ qRegisterMetaType<WiThrottleCreationAction>("WiThrottleCreationAction");
+ qRegisterMetaType<PerformActionModelXml>("PerformActionModelXml");
+ qRegisterMetaType<PerformFileModelXml>("PerformFileModelXml");
+ qRegisterMetaType<CreateButtonModelXml>("CreateButtonModelXml");
+ qRegisterMetaType<StartupPauseModelXml>("StartupPauseModelXml");
+ qRegisterMetaType<PerformScriptModelXml>("PerformScriptModelXml");
+ qRegisterMetaType<TriggerRouteModelXml>("TriggerRouteModelXml");
+ qRegisterMetaType<UsbViewAction>("UsbViewAction");
+ qRegisterMetaType<TreeAction>("TreeAction");
+ qRegisterMetaType<ListedTableAction>("ListedTableAction");
+ qRegisterMetaType<OBlockTableAction>("OBlockTableAction");
+ qRegisterMetaType<LightTableAction>("LightTableAction");
+ qRegisterMetaType<XmlFileValidateAction>("XmlFileValidateAction");
+ qRegisterMetaType<StartupPauseModel>("StartupPauseModel");
+ qRegisterMetaType<NixieClockAction>("NixieClockAction");
+ qRegisterMetaType<LcdClockAction>("LcdClockAction");
+ qRegisterMetaType<PowerButtonAction>("PowerButtonAction");
 
  Metatypes::done = true;
 }

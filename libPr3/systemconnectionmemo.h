@@ -56,10 +56,11 @@ public:
  void dispose();
  bool getDisabled();
  void setDisabled(bool disabled);
- //static void removePropertyChangeListener(PropertyChangeListener* l);
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired();
  static SystemConnectionMemo* instance();
+ static void addPropertyChangeListener(PropertyChangeListener* l);
+ static void removePropertyChangeListener(PropertyChangeListener* l);
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -85,8 +86,7 @@ private:
  static void removeSystemPrefix(QString systemPrefix);
  //bool mDisabled;
  // data members to hold contact with the property listeners
- ///*static*/ QVector<PropertyChangeListener*>* listeners;
- //static void addPropertyChangeListener(PropertyChangeListener* l);
+ static QVector<PropertyChangeListener*>* listeners;
  static SystemConnectionMemo* _instance;
 
 protected:

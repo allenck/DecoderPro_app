@@ -8,6 +8,7 @@ namespace Operations
  class TrackEditFrame;
  class IgnoreUsedTrackFrame : public OperationsFrame
  {
+  Q_OBJECT
  public:
   IgnoreUsedTrackFrame(TrackEditFrame* tef);
  public slots:

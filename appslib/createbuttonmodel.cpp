@@ -1,11 +1,14 @@
 #include "createbuttonmodel.h"
-
+#include <QPushButton>
+#include "apps.h"
+#include "apps3.h"
+#include <QBoxLayout>
+#include "abstractaction.h"
 
 CreateButtonModel::CreateButtonModel(QObject *parent) :
     AbstractActionModel(parent)
 {
  setObjectName("CreateButtonModel");
- //l = QList<CreateButtonModel*>();
 }
 /**
  * Creates a button
@@ -27,10 +30,23 @@ CreateButtonModel::CreateButtonModel(QObject *parent) :
 //    super();
 //}
 
-/*static*/ /*public*/ void CreateButtonModel::rememberObject(CreateButtonModel* m) {
-    l.append(m);
+//@Override
+/*protected*/ void CreateButtonModel::performAction(Action* action) throw (JmriException)
+{
+ this->action = action;
+ b = new QPushButton(action->text());
+ connect(b, SIGNAL(clicked()), action, SLOT(actionPerformed()));
+ b->setToolTip(this->toString());
+ if (Apps::buttonSpace() != NULL) {
+     Apps::buttonSpace()->layout()->addWidget(b);
+ } else if (Apps3::buttonSpace() != NULL) {
+     Apps3::buttonSpace()->layout()->addWidget(b);
+ }
+ AbstractAction* act = (AbstractAction*)action;
+ connect(act, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
-/*static*/ /*public*/ QList<CreateButtonModel*> CreateButtonModel::rememberedObjects() {
-    return l;
+
+void CreateButtonModel::propertyChange(PropertyChangeEvent* evt)
+{
+ b->setText(action->text());
 }
-/*static*/ QList<CreateButtonModel*> CreateButtonModel::l = QList<CreateButtonModel*>();

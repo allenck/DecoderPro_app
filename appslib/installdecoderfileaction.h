@@ -12,7 +12,7 @@ class APPSLIBSHARED_EXPORT InstallDecoderFileAction : public InstallDecoderURLAc
  Q_OBJECT
 public:
  explicit InstallDecoderFileAction(QObject *parent = 0);
-    InstallDecoderFileAction(const InstallDecoderFileAction&) {}
+    InstallDecoderFileAction(const InstallDecoderFileAction&) : InstallDecoderURLAction() {}
     ~InstallDecoderFileAction() {}
  Q_INVOKABLE /*public*/ InstallDecoderFileAction(QString s, WindowInterface* wi);
  Q_INVOKABLE /*public*/ InstallDecoderFileAction(QString s, QIcon i, WindowInterface* wi);

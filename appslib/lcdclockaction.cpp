@@ -22,13 +22,13 @@
 //private static final long serialVersionUID = -2354784468892156228L;
 
 /*public*/ LcdClockAction::LcdClockAction(QObject *parent) :
-  QAction(tr("LCD Clock"),parent) {
+  AbstractAction(tr("LCD Clock"),parent) {
  //this("LCD Clock");
  common();
 }
 
 /*public*/ LcdClockAction::LcdClockAction(QString s, QObject *parent) :
-  QAction(s,parent){
+  AbstractAction(s,parent){
     //super(s);
  common();
 }

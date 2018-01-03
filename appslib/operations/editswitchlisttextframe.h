@@ -6,6 +6,7 @@ namespace Operations
 {
  class EditSwitchListTextFrame : public OperationsFrame
  {
+  Q_OBJECT
  public:
   EditSwitchListTextFrame(QWidget* parent = 0);
   /*public*/ void initComponents();

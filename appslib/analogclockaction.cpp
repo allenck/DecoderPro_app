@@ -20,13 +20,13 @@
 //private static final long serialVersionUID = 4819621738581568597L;
 
 /*public*/ AnalogClockAction::AnalogClockAction(QObject *parent) :
-  QAction(tr("Analog Clock"), parent) {
+  AbstractAction(tr("Analog Clock"), parent) {
     //this("Analog Clock");
  common();
 }
 
 /*public*/ AnalogClockAction::AnalogClockAction(QString s, QObject *parent) :
-  QAction(s, parent) {
+  AbstractAction(s, parent) {
     //super(s);
  common();
 }

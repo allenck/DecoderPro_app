@@ -104,52 +104,67 @@
  if (!this->isInitialized(profile))
  {
   bool perform = true;
-  try {
-      this->requiresNoInitializedWithExceptions(profile, tr("Unable to run startup actions due to earlier failures."));
-  } catch (InitializationException ex) {
-      perform = false;
+  try
+  {
+   this->requiresNoInitializedWithExceptions(profile, tr("Unable to run startup actions due to earlier failures."));
   }
-  try {
-      QDomElement startup;
-      try {
-          startup = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(STARTUP, NAMESPACE, true));
-      } catch (NullPointerException ex) {
-          log->debug("Reading element from version 2.9.6 namespace...");
-          startup = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(STARTUP, NAMESPACE_OLD, true));
-      }
-      //for (Element action : startup.getChildren())
-      QDomNodeList nl = startup.childNodes();
-      for(int i=0; i < nl.size(); i++)
-      {
-       QDomElement action = nl.at(i).toElement();
-          QString adapter = action.attribute("class"); // NOI18N
-          QString name = action.attribute("name"); // NOI18N
-          QString override = StartupActionModelUtil::getDefault()->getOverride(name);
-          if (override != "") {
-              action.setAttribute("name", override);
-              log->info(tr("Overridding startup action class %1 with %2").arg(name).arg(override));
-              this->addInitializationException(profile, new InitializationException(tr(/*QLocale::English,*/ "<html>Startup action class %1 has been updated to %2.<br>Please save preferences to make this permanent.</html>").arg(name).arg(override),
-                      tr(/*Locale.ENGLISH,*/ "<html>Startup action class %1 has been updated to %2.<br>Please save preferences to make this permanent.</html>").arg(name).arg(override), NULL));
-              name = override; // after logging difference and creating error message
-          }
-          QString type = action.attribute("type"); // NOI18N
-          log->debug(tr("Read %1 %2 adapter %3").arg(type).arg(name).arg(adapter));
-          try {
-              log->debug(tr("Creating %1 %2 adapter %3...").arg(type).arg(name).arg(adapter));
-              ((XmlAdapter*) Class::forName(adapter/*)newInstance()*/))->load(action, NULL); // no perNode preferences
-          } catch (ClassNotFoundException /*| InstantiationException | IllegalAccessException*/ ex) {
-              log->error(tr("Unable to create %1 for %2").arg(adapter).arg(action.tagName()) + ex.getMessage());
-              this->addInitializationException(profile, new InitializationException(tr(/*Locale.ENGLISH, */"Unable to create loader \"%1\" for Startup Action class \"%2\".").arg(adapter).arg(name),
-                      tr("Unable to create loader \"%1\" for Startup Action class \"%2\".").arg(adapter).arg(name),NULL)); // NOI18N
-          } catch (Exception ex) {
-              log->error(tr("Unable to load %1 into %2").arg(action.tagName()).arg(adapter) + ex.getMessage());
-              this->addInitializationException(profile, new InitializationException(tr(/*Locale.ENGLISH, */"Unable to load Startup action \"%1\" using \"%3\".").arg(adapter).arg(name),
-                      tr("Unable to load Startup action \"%2\" using \"%1\".").arg(adapter).arg(name),NULL)); // NOI18N
-          }
-      }
-  } catch (NullPointerException ex) {
-      // ignore - this indicates migration has not occured
-      log->debug("No element to read");
+  catch (InitializationException ex)
+  {
+   perform = false;
+  }
+  try
+  {
+   QDomElement startup;
+   try
+   {
+    startup = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(STARTUP, NAMESPACE, true));
+   }
+   catch (NullPointerException ex)
+   {
+    log->debug("Reading element from version 2.9.6 namespace...");
+    startup = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(STARTUP, NAMESPACE_OLD, true));
+   }
+   //for (Element action : startup.getChildren())
+   QDomNodeList nl = startup.childNodes();
+   for(int i=0; i < nl.size(); i++)
+   {
+    QDomElement action = nl.at(i).toElement();
+    QString adapter = action.attribute("class"); // NOI18N
+    QString name = action.attribute("name"); // NOI18N
+    QString override = StartupActionModelUtil::getDefault()->getOverride(name);
+    if (override != "")
+    {
+     action.setAttribute("name", override);
+     log->info(tr("Overridding startup action class %1 with %2").arg(name).arg(override));
+     this->addInitializationException(profile, new InitializationException(tr(/*QLocale::English,*/ "<html>Startup action class %1 has been updated to %2.<br>Please save preferences to make this permanent.</html>").arg(name).arg(override),
+             tr(/*Locale.ENGLISH,*/ "<html>Startup action class %1 has been updated to %2.<br>Please save preferences to make this permanent.</html>").arg(name).arg(override), NULL));
+     name = override; // after logging difference and creating error message
+    }
+    QString type = action.attribute("type"); // NOI18N
+    log->debug(tr("Read %1 %2 adapter %3").arg(type).arg(name).arg(adapter));
+    try
+    {
+     log->debug(tr("Creating %1 %2 adapter %3...").arg(type).arg(name).arg(adapter));
+     ((XmlAdapter*) Class::forName(adapter/*)newInstance()*/))->load(action, QDomElement()); // no perNode preferences
+    }
+    catch (ClassNotFoundException /*| InstantiationException | IllegalAccessException*/ ex)
+    {
+     log->error(tr("Unable to create %1 for %2").arg(adapter).arg(action.tagName()) + ex.getMessage());
+     this->addInitializationException(profile, new InitializationException(tr(/*Locale.ENGLISH, */"Unable to create loader \"%1\" for Startup Action class \"%2\".").arg(adapter).arg(name),
+             tr("Unable to create loader \"%1\" for Startup Action class \"%2\".").arg(adapter).arg(name),NULL)); // NOI18N
+    }
+    catch (Exception ex)
+    {
+     log->error(tr("Unable to load %1 into %2").arg(action.tagName()).arg(adapter) + ex.getMessage());
+     this->addInitializationException(profile, new InitializationException(tr(/*Locale.ENGLISH, */"Unable to load Startup action \"%1\" using \"%3\".").arg(adapter).arg(name),
+             tr("Unable to load Startup action \"%2\" using \"%1\".").arg(adapter).arg(name),NULL)); // NOI18N
+    }
+   }
+  }
+  catch (NullPointerException ex)
+  {
+   // ignore - this indicates migration has not occured
+   log->debug("No element to read");
   }
   if (perform)
   {
@@ -158,9 +173,11 @@
    {
     try
     {
-        action->performAction();
-    } catch (JmriException ex) {
-        this->addInitializationException(profile, &ex);
+     action->performAction();
+    }
+    catch (JmriException ex)
+    {
+     this->addInitializationException(profile, &ex);
     }
    }//);
   }
@@ -184,8 +201,8 @@
  QStringList factoryList = QStringList();
  factoryList << "PerformActionModelFactory" << "StartupPauseFactory" <<
                 "CreateButtonModelFactory" << "TriggerRouteModelFactory" <<
-                "ScriptButtonModelFactory" << "PerformFileModelFactory" <<
-                "RestartStartupActionFactory";
+                "ScriptButtonModelFactory" << "PerformFileModelFactory";
+//                "RestartStartupActionFactory";
 
  foreach (QString clazz, factoryList)
  {
@@ -256,16 +273,17 @@ void StartupActionsManager::loadPreferencesmanagers()
 /*public*/ /*synchronized*/ void StartupActionsManager::savePreferences(Profile* profile)
 {
  QDomDocument doc = QDomDocument();
- QDomElement element = doc.createElementNS(STARTUP, NAMESPACE);
+ QDomElement element = doc.createElementNS(NAMESPACE, STARTUP);
  //actions.stream().forEach((action) ->
  foreach(StartupModel* action, *actions)
  {
-//        log->debug(tr("model is %1 (%2)").arg(action->getName()).arg(action));
+  log->debug(tr("model is %1 (%2)").arg(action->getName()).arg(action->toString()));
   if (action->getName() != NULL)
   {
    QDomElement e = ConfigXmlManager::elementFromObject((QObject*)action, true);
-   if (e != QDomElement()) {
-       element.appendChild(e);
+   if (e != QDomElement())
+   {
+    element.appendChild(e);
    }
   }
   else
@@ -315,8 +333,9 @@ void StartupActionsManager::loadPreferencesmanagers()
  * @param index The position where the model will be inserted
  * @param model The model to be inserted
  */
-/*public*/ void StartupActionsManager::setActions(int index, StartupModel* model) {
-    this->setActions(index, model, true);
+/*public*/ void StartupActionsManager::setActions(int index, StartupModel* model)
+{
+ this->setActions(index, model, true);
 }
 
 /*private*/ void StartupActionsManager::setActions(int index, StartupModel* model, bool fireChange)
@@ -325,7 +344,8 @@ void StartupActionsManager::loadPreferencesmanagers()
  {
   this->actions->insert(index, model);
   this->setRestartRequired();
-  if (fireChange) {
+  if (fireChange)
+  {
 //   this->fireIndexedPropertyChange(STARTUP, index, QVariant(), VPtr<StartupModel>::asQVariant(model));
    emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  QVariant(), VPtr<StartupModel>::asQVariant(model),index)));
   }
@@ -340,15 +360,18 @@ void StartupActionsManager::loadPreferencesmanagers()
  * @param start the original position
  * @param end   the new position
  */
-/*public*/ void StartupActionsManager::moveAction(int start, int end) {
-    StartupModel* model = this->getActions(start);
-    this->removeAction(model, false);
-    this->setActions(end, model, false);
-    this->fireIndexedPropertyChange(STARTUP, end, start, VPtr<StartupModel>::asQVariant(model));
+/*public*/ void StartupActionsManager::moveAction(int start, int end)
+{
+ StartupModel* model = this->getActions(start);
+ this->removeAction(model, false);
+ this->setActions(end, model, false);
+ //this->fireIndexedPropertyChange(STARTUP, end, start, VPtr<StartupModel>::asQVariant(model));
+ emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this,STARTUP, start, VPtr<StartupModel>::asQVariant(model), end)));
 }
 
-/*public*/ void StartupActionsManager::addAction(StartupModel* model) {
-    this->setActions(this->actions->size(), model);
+/*public*/ void StartupActionsManager::addAction(StartupModel* model)
+{
+ this->setActions(this->actions->size(), model);
 }
 
 /**
@@ -363,13 +386,16 @@ void StartupActionsManager::loadPreferencesmanagers()
     this->removeAction(model, true);
 }
 
-/*private*/ void StartupActionsManager::removeAction(StartupModel* model, bool fireChange) {
-    int index = this->actions->indexOf(model);
-    this->actions->removeOne(model);
-    this->setRestartRequired();
-    if (fireChange) {
-        this->fireIndexedPropertyChange(STARTUP, index, VPtr<StartupModel>::asQVariant(model), QVariant());
-    }
+/*private*/ void StartupActionsManager::removeAction(StartupModel* model, bool fireChange)
+{
+ int index = this->actions->indexOf(model);
+ this->actions->removeOne(model);
+ this->setRestartRequired();
+ if (fireChange)
+ {
+  //this->fireIndexedPropertyChange(STARTUP, index, VPtr<StartupModel>::asQVariant(model), QVariant());
+  emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  VPtr<StartupModel>::asQVariant(model), QVariant(), index)));
+ }
 }
 
 /*public*/ QMap</*Class<? extends StartupModel>*/QString, StartupModelFactory*>* StartupActionsManager::getFactories() {

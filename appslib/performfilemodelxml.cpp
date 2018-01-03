@@ -30,7 +30,7 @@
 
     e.setAttribute("name", FileUtil::getPortableFilename(g->getFileName()));
     e.setAttribute("type", "XmlFile");
-    e.setAttribute("class", "apps.PerformFileModel");
+    e.setAttribute("class", "apps.PerformFileModelXml");
     return e;
 }
 

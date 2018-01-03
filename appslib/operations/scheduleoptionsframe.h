@@ -10,6 +10,7 @@ namespace Operations
  class ScheduleEditFrame;
  class ScheduleOptionsFrame : public OperationsFrame
  {
+  Q_OBJECT
  public:
   ScheduleOptionsFrame(ScheduleEditFrame* parent = 0);
  public slots:

@@ -9,6 +9,7 @@ class QRadioButton;
 class QCheckBox;
 class WiThrottlePrefsPanel : public PreferencesPanel
 {
+ Q_OBJECT
 public:
  WiThrottlePrefsPanel(QWidget* parent = 0);
  ~WiThrottlePrefsPanel() {}

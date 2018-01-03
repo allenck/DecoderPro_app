@@ -7,7 +7,7 @@ class Logger;
 class WebServerAction : public JmriAbstractAction
 {
 public:
- /*public*/ WebServerAction(QObject* parent = 0);
+ Q_INVOKABLE /*public*/ WebServerAction(QObject* parent = 0);
  /*public*/ WebServerAction(QString s, WindowInterface* wi);
  /*public*/ WebServerAction(QString s, QIcon i, WindowInterface* wi);
  ~WebServerAction() {}

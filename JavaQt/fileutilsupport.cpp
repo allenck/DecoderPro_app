@@ -222,7 +222,7 @@ public URL getURL(URI uri) {
     QString filename = file->getAbsolutePath();
 
     // append separator if file is a directory
-    if (file->isDirectory()) {
+    if (file->isDirectory() && !file->getPath().endsWith(File::separator)) {
         filename = filename + File::separator;
     }
 

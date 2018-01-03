@@ -19,7 +19,7 @@
  * @author		Bob Jacobsen  Copyright (C) 2010
  * @version             $Revision: 18843 $
  */
-//QVector<PropertyChangeListener*> SystemConnectionMemo::listeners =QVector<PropertyChangeListener*>();
+QVector<PropertyChangeListener*>* SystemConnectionMemo::listeners = new QVector<PropertyChangeListener*>();
 QStringList* SystemConnectionMemo::userNames = new QStringList();
 QStringList* SystemConnectionMemo::sysPrefixes = new QStringList();
 //QString SystemConnectionMemo::userName = "";
@@ -259,21 +259,21 @@ void SystemConnectionMemo::setDisabled(bool disabled)
  notifyPropertyChangeListener("ConnectionDisabled", oldDisabled, disabled);
 }
 
-///*static*/void SystemConnectionMemo::removePropertyChangeListener(PropertyChangeListener* l)
-//{
-// if (listeners.contains(l))
-// {
-//  int i = listeners.indexOf(l);
-//  listeners.remove(i);
-// }
-//}
+/*static*/void SystemConnectionMemo::removePropertyChangeListener(PropertyChangeListener* l)
+{
+ if (listeners->contains(l))
+ {
+  int i = listeners->indexOf(l);
+  listeners->remove(i);
+ }
+}
 
-///*static*/ void SystemConnectionMemo::addPropertyChangeListener(PropertyChangeListener* l) {
-//    // add only if not already registered
-//    if (!listeners.contains(l)) {
-//        listeners.append(l);
-//    }
-//}
+/*static*/ void SystemConnectionMemo::addPropertyChangeListener(PropertyChangeListener* l) {
+    // add only if not already registered
+    if (!listeners->contains(l)) {
+        listeners->append(l);
+    }
+}
 
 /**
  * Trigger the notification of all PropertyChangeListeners
@@ -295,6 +295,9 @@ void SystemConnectionMemo::notifyPropertyChangeListener(QString property, QVaria
 //        PropertyChangeListener* client = v->at(i);
 //        client->propertyChange( new PropertyChangeEvent(this, property, oldValue, newValue));
 //    }
+ foreach (PropertyChangeListener* listener, *listeners) {
+  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+ }
     emit propertyChange(new PropertyChangeEvent(this,  property, oldValue, newValue));
 }
 

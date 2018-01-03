@@ -8,7 +8,7 @@
 
 class LIBPR3SHARED_EXPORT PowerManager : public QObject
 {
-    //Q_OBJECT
+ //Q_OBJECT
  public:
     inline explicit PowerManager(QObject *parent = 0) : QObject(parent) {}
  ~PowerManager() {}

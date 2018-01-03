@@ -9,9 +9,10 @@ class LIBLAYOUTEDITORSHARED_EXPORT AutomatTableAction : public AbstractAction
 {
  Q_OBJECT
 public:
- explicit AutomatTableAction(QObject *parent);
+ explicit AutomatTableAction(QObject *parent = 0);
  /*public*/ AutomatTableAction(QString actionName, QObject *parent);
-
+ ~AutomatTableAction() {}
+ AutomatTableAction(const AutomatTableAction&) : AbstractAction() {}
 signals:
 
 public slots:
@@ -23,5 +24,5 @@ private:
  AutomatTableFrame* f;
  void common();
 };
-
+Q_DECLARE_METATYPE(AutomatTableAction)
 #endif // AUTOMATTABLEACTION_H

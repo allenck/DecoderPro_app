@@ -11,6 +11,7 @@ namespace Operations
  class LocationManager;
  class LocationCopyFrame : public OperationsFrame
  {
+  Q_OBJECT
  public:
   LocationCopyFrame(QWidget* parent = 0);
   /*public*/ void dispose();

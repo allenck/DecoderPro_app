@@ -37,11 +37,11 @@ public:
  /*public*/  virtual void addPropertyChangeListener(PropertyChangeListener* listener);
  /*public*/  virtual void removePropertyChangeListener(PropertyChangeListener* listener);
  /*public*/ virtual QVariant getValue(QString /*key*/) {return QVariant();}
- virtual void  actionPerformed(ActionEvent*) {}
 
 signals:
 
 public slots:
+ virtual void  actionPerformed(ActionEvent*) {}
 
 private:
 

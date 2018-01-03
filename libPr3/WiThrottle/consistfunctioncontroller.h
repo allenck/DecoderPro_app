@@ -7,6 +7,7 @@ class RosterEntry;
 class ThrottleController;
 class ConsistFunctionController : public ThrottleListener
 {
+ Q_OBJECT
 public:
  /*public*/ ConsistFunctionController(ThrottleController* tc) ;
  /*public*/ ConsistFunctionController(ThrottleController* tc, RosterEntry* re);

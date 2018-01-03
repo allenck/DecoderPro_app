@@ -291,7 +291,7 @@ template<class T>
    {
 //      try {
           //l.add(type.getConstructor((Class[]) null).newInstance((Object[]) null));
-    l->append(obj1);
+    l->append((QObject*)obj1);
     log->debug(tr("      auto-created default of %1").arg(type/*.getName()*/));
 //      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
 //          log.error("Exception creating auto-default object", e); // unexpected

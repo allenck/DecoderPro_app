@@ -4,10 +4,10 @@
 #include "fileutil.h"
 #include "jfilechooser.h"
 
-//LoadStoreBaseAction::LoadStoreBaseAction(QObject *parent) :
-//    QObject(parent)
-//{
-//}
+LoadStoreBaseAction::LoadStoreBaseAction(QObject *parent) :
+    AbstractAction(parent)
+{
+}
 /**
  * Base implementation for the load and store actions.
  * <P>
