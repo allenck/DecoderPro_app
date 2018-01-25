@@ -423,7 +423,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      locationPanelCheckBoxes->update();
      adjustSize();
-     repaint();
+     update();
  }
 
  /*private*/ void TrainSwitchListEditFrame::runCustomSwitchLists(bool isChanged) {

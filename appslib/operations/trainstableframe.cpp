@@ -48,6 +48,7 @@
 #include "trainsscriptaction.h"
 #endif
 #include "exporttrainrosteraction.h"
+#include "setupexcelprogramframeaction.h"
 
 namespace Operations
 {
@@ -117,7 +118,6 @@ namespace Operations
   _status = 0; //TableSorter.ASCENDING;
   setStatusBar(new QStatusBar());
   statusBar()->setSizeGripEnabled(true);
-
 
   updateTitle();
 
@@ -313,9 +313,7 @@ namespace Operations
 #ifdef SCRIPTING_ENABLED
   toolMenu->addAction(new TrainsScriptAction(tr("Scripts"), this));
 #endif
-#if 0
-  toolMenu.add(new SetupExcelProgramFrameAction(tr("MenuItemSetupExcelProgram")));
-#endif
+  toolMenu->addAction(new SetupExcelProgramFrameAction(tr("Setup Excel Program"),this));
   toolMenu->addAction(new ExportTrainRosterAction(this));
   toolMenu->addAction(new PrintTrainsAction(tr("Print"), new JFrame(), false, this));
   toolMenu->addAction(new PrintTrainsAction(tr("Print Preview"), new JFrame(), true, this));
@@ -328,6 +326,7 @@ namespace Operations
   addHelpMenu("package.jmri.jmrit.operations.Operations_Trains", true); // NOI18N
 
   initMinimumSize();
+  setFrameRef("jmri.jmrit.operations.trains.TrainsTableFrame");
 
   //addHorizontalScrollBarKludgeFix(controlPane, controlPanel);
 

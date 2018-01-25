@@ -703,7 +703,27 @@ SOURCES += \
     Json/jsonreportersocketservice.cpp \
     Json/jsonreporterservicefactory.cpp \
     Json/jsonserver.cpp \
-    Json/jsonserveraction.cpp
+    Json/jsonserveraction.cpp \
+    Web/operationsservlet.cpp \
+    Json/jsonoperations.cpp \
+    Json/jsonutil.cpp \
+    Json/jsonoperationsservicefactory.cpp \
+    Json/jsonoperationssocketservice.cpp \
+    Json/jsonoperationshttpservice.cpp \
+    Web/htmltraincommon.cpp \
+    Web/htmlmanifest.cpp \
+    Json/jsonmanifest.cpp \
+    Web/htmlconductor.cpp \
+    Json/jsonconsisthttpservice.cpp \
+    Json/jsonconsistmanager.cpp \
+    Json/jsonconsistservicefactory.cpp \
+    Json/jsonconsistsocketservice.cpp \
+    Web/defaultservletcontext.cpp \
+    Web/defaultservletconfig.cpp \
+    consistlistlistener.cpp \
+    Web/stringescapeutils.cpp \
+    Throttle/windowpreferences.cpp \
+    Throttle/locoaddressxml.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1424,7 +1444,27 @@ HEADERS += \
     Json/jsonreportersocketservice.h \
     Json/jsonreporterservicefactory.h \
     Json/jsonserver.h \
-    Json/jsonserveraction.h
+    Json/jsonserveraction.h \
+    Web/operationsservlet.h \
+    Json/jsonoperations.h \
+    Json/jsonutil.h \
+    Json/jsonoperationsservicefactory.h \
+    Json/jsonoperationssocketservice.h \
+    Json/jsonoperationshttpservice.h \
+    Web/htmltraincommon.h \
+    Web/htmlmanifest.h \
+    Json/jsonmanifest.h \
+    Web/htmlconductor.h \
+    Json/jsonconsisthttpservice.h \
+    Json/jsonconsistmanager.h \
+    Json/jsonconsistservicefactory.h \
+    Json/jsonconsistsocketservice.h \
+    Web/defaultservletcontext.h \
+    Web/defaultservletconfig.h \
+    consistlistlistener.h \
+    Web/stringescapeutils.h \
+    Throttle/windowpreferences.h \
+    Throttle/locoaddressxml.h
 #    Web/controller/servletcontroller.h
     #abstractpreferencesmanager.h \
     #connectionconfigmanager.h

@@ -32,7 +32,10 @@ TripleTurnoutSignalHeadXml::TripleTurnoutSignalHeadXml(QObject *parent) :
 
     // include contents
     element.setAttribute("systemName", p->getSystemName());
-    element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+    //element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+    QDomElement systemname = doc.createElement("systemName");
+    systemname.appendChild(doc.createTextNode(p->getSystemName()));
+    element.appendChild(systemname);
 
     storeCommon(p, element);
 

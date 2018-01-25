@@ -436,7 +436,8 @@ SOURCES += \
     clientif.cpp \
     helputil.cpp \
     rpspositionicon.cpp \
-    scriptfilechooser.cpp
+    scriptfilechooser.cpp \
+    layouttrack.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -793,7 +794,8 @@ HEADERS += liblayouteditor_global.h \
     clientif.h \
     helputil.h \
     rpspositionicon.h \
-    scriptfilechooser.h
+    scriptfilechooser.h \
+    layouttrack.h
 
 
 FORMS    += \

@@ -26,33 +26,39 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
  */
 /*public*/ QDomElement TrackSegmentXml::store(QObject* o) {
 
-    TrackSegment* p = (TrackSegment*) o;
+ TrackSegment* p = (TrackSegment*) o;
 
-    QDomElement element = doc.createElement("tracksegment");
+ QDomElement element = doc.createElement("tracksegment");
 
-    // include attributes
-    element.setAttribute("ident", p->getID());
-    if (p->getBlockName().length() > 0) {
-        element.setAttribute("blockname", p->getBlockName());
-    }
-    element.setAttribute("connect1name", p->getConnect1Name());
-    element.setAttribute("type1",  p->getType1());
-    element.setAttribute("connect2name", p->getConnect2Name());
-    element.setAttribute("type2",  p->getType2());
-    element.setAttribute("dashed",  (p->getDashed() ? "yes" : "no"));
-    element.setAttribute("mainline",  (p->getMainline() ? "yes" : "no"));
-    element.setAttribute("hidden",  (p->getHidden() ? "yes" : "no"));
-    element.setAttribute("arc",  (p->getArc() ? "yes" : "no"));
-    if (p->getArc()) {
-        element.setAttribute("flip",  (p->getFlip() ? "yes" : "no"));
-        element.setAttribute("circle",  (p->getCircle() ? "yes" : "no"));
-        if ((p->getCircle()) && (p->getAngle() != 0.0D)) {
-            element.setAttribute("angle",  (p->getAngle()));
-            element.setAttribute("hideConLines",  (p->hideConstructionLines() ? "yes" : "no"));
-        }
-    }
-    element.setAttribute("class", "jmri.jmrit.display.configurexml.TrackSegmentXml");
-    return element;
+ // include attributes
+ element.setAttribute("ident", p->getID());
+ if (p->getBlockName().length() > 0)
+ {
+     element.setAttribute("blockname", p->getBlockName());
+ }
+ element.setAttribute("connect1name", p->getConnect1Name());
+ element.setAttribute("type1",  p->getType1());
+ element.setAttribute("connect2name", p->getConnect2Name());
+ element.setAttribute("type2",  p->getType2());
+ element.setAttribute("dashed",  (p->getDashed() ? "yes" : "no"));
+ element.setAttribute("mainline",  (p->getMainline() ? "yes" : "no"));
+ element.setAttribute("hidden",  (p->getHidden() ? "yes" : "no"));
+ element.setAttribute("arc",  (p->getArc() ? "yes" : "no"));
+ if (p->getArc())
+ {
+  element.setAttribute("flip",  (p->getFlip() ? "yes" : "no"));
+  element.setAttribute("circle",  (p->getCircle() ? "yes" : "no"));
+  if ((p->getCircle()) && (p->getAngle() != 0.0))
+  {
+   element.setAttribute("angle",  (p->getAngle()));
+   element.setAttribute("hideConLines",  (p->hideConstructionLines() ? "yes" : "no"));
+  }
+  else
+   element.setAttribute("angle",  (p->getTmpAngle())); // ACK add this
+
+ }
+ element.setAttribute("class", "jmri.jmrit.display.configurexml.TrackSegmentXml");
+ return element;
 }
 
 /*public*/ bool TrackSegmentXml::load(QDomElement /*element*/) throw (Exception){

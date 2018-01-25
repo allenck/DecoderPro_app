@@ -43,8 +43,10 @@ RosterServlet::RosterServlet() : HttpServlet()
     /*private*/ /*final*/ /*static*/ Logger* RosterServlet::log = LoggerFactory::getLogger("RosterServlet");
 
  //@Override
-/*public*/ void RosterServlet::init() throw (ServletException) {
- if (this->getServletContext()->getContextPath() == ("/roster")) { // NOI18N
+/*public*/ void RosterServlet::init() throw (ServletException)
+{
+ if (this->getServletContext()->getContextPath() == ("/roster"))
+ { // NOI18N
      //this->mapper = new ObjectMapper();
  }
 }
@@ -355,7 +357,7 @@ RosterServlet::RosterServlet() : HttpServlet()
 {
  ServletUtil::getInstance()->setNonCachingHeaders(response);
 //    log->debug(tr("Getting roster with filter %1").arg(QJsonDocument(filter).toJson()));
- QString group = (!filter.value(JSON::GROUP).isNull()) ? filter.value(JSON::GROUP).toString() : NULL;
+ QString group = (!filter.value(JSON::GROUP).isUndefined()) ? filter.value(JSON::GROUP).toString() : NULL;
  log->debug(tr("Group %1 was in filter").arg(group));
 
  QString format =  request->getParameter(JSON::FORMAT);
@@ -410,12 +412,12 @@ RosterServlet::RosterServlet() : HttpServlet()
   }
   QList<RosterEntry*> entries = Roster::getDefault()->getEntriesMatchingCriteria(
           (!filter.value(JSON::ROAD).isNull()) ? filter.value(JSON::ROAD).toString() : "",
-          (!filter.value(JSON::NUMBER).isNull()) ? filter.value(JSON::NUMBER).toString() : "",
-          (!filter.value(JSON::ADDRESS).isNull()) ? filter.value(JSON::ADDRESS).toString() : NULL,
-          (!filter.value(JSON::MFG).isNull()) ? filter.value(JSON::MFG).toString() : NULL,
-          (!filter.value(JSON::DECODER_MODEL).isNull()) ? filter.value(JSON::DECODER_MODEL).toString() : "",
-          (!filter.value(JSON::DECODER_FAMILY).isNull()) ? filter.value(JSON::DECODER_FAMILY).toString() : "",
-          (!filter.value(JSON::NAME).isNull()) ? filter.value(JSON::NAME).toString() : NULL,
+          (!filter.value(JSON::NUMBER).isUndefined()) ? filter.value(JSON::NUMBER).toString() : "",
+          (!filter.value(JSON::ADDRESS).isUndefined()) ? filter.value(JSON::ADDRESS).toString() : NULL,
+          (!filter.value(JSON::MFG).isUndefined()) ? filter.value(JSON::MFG).toString() : NULL,
+          (!filter.value(JSON::DECODER_MODEL).isUndefined()) ? filter.value(JSON::DECODER_MODEL).toString() : "",
+          (!filter.value(JSON::DECODER_FAMILY).isUndefined()) ? filter.value(JSON::DECODER_FAMILY).toString() : "",
+          (!filter.value(JSON::NAME).isUndefined()) ? filter.value(JSON::NAME).toString() : NULL,
           group
   );
   //entries.stream().forEach((entry) ->

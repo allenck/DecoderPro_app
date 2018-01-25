@@ -43,6 +43,8 @@
 #include "layouteditorfinditems.h"
 #include "jmriconfigurationmanager.h"
 #include "userpreferencesmanager.h"
+#include "positionablejcomponent.h"
+#include "colorutil.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -354,6 +356,7 @@ _contents = new QVector<Positionable*>();
  }
  editPanel->setMouseTracking(true);
  editPanel->setScene(editScene);
+ _turnoutSelection = NULL;
 
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(OnScenePos(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)),this, SLOT(mouseClicked(QGraphicsSceneMouseEvent*)));
@@ -1053,6 +1056,376 @@ double LayoutEditor::getPaintScale()
  return;
 }
 
+/*private*/ void LayoutEditor::checkPointOfPositionable(PositionablePoint* p)
+{
+ TrackSegment* t = p->getConnect1();
+
+ if (t == NULL) {
+     t = p->getConnect2();
+ }
+
+ //Nothing connected to this bit of track so ignore
+ if (t == NULL) {
+     return;
+ }
+ beginObject = p;
+ beginPointType = LayoutTrack::POS_POINT;
+ QPointF loc = p->getCoords();
+
+ if (checkSelect(loc, true, p))
+ {
+  switch (foundPointType)
+  {
+   case LayoutTrack::POS_POINT:
+   {
+    PositionablePoint* p2 = (PositionablePoint*) foundObject;
+
+    if ((p2->getType() == PositionablePoint::ANCHOR) && p2->setTrackConnection(t))
+    {
+     if (t->getConnect1() == p)
+     {
+        t->setNewConnect1(p2, LayoutTrack::POS_POINT);
+     } else {
+        t->setNewConnect2(p2, LayoutTrack::POS_POINT);
+     }
+     p->removeTrackConnection(t);
+
+     if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL))
+     {
+        removePositionablePoint(p);
+     }
+    }
+    break;
+   }
+
+   case LayoutTrack::TURNOUT_A:
+   case LayoutTrack::TURNOUT_B:
+   case LayoutTrack::TURNOUT_C:
+   case LayoutTrack::TURNOUT_D:
+   {
+    LayoutTurnout* lt = (LayoutTurnout*) foundObject;
+    try
+    {
+     if (lt->getConnection(foundPointType) == NULL)
+     {
+      lt->setConnection(foundPointType, t, LayoutTrack::TRACK);
+
+      if (t->getConnect1() == p) {
+          t->setNewConnect1(lt, foundPointType);
+      } else {
+          t->setNewConnect2(lt, foundPointType);
+      }
+      p->removeTrackConnection(t);
+
+      if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL))
+      {
+          removePositionablePoint(p);
+      }
+     }
+    } catch (JmriException e) {
+       log.debug("Unable to set location");
+    }
+    break;
+   }
+
+   case LayoutTrack::LEVEL_XING_A:
+   case LayoutTrack::LEVEL_XING_B:
+   case LayoutTrack::LEVEL_XING_C:
+   case LayoutTrack::LEVEL_XING_D:
+   {
+    LevelXing* lx = (LevelXing*) foundObject;
+    try
+    {
+     if (lx->getConnection(foundPointType) == NULL)
+     {
+      lx->setConnection(foundPointType, t, LayoutTrack::TRACK);
+
+      if (t->getConnect1() == p) {
+          t->setNewConnect1(lx, foundPointType);
+      } else {
+          t->setNewConnect2(lx, foundPointType);
+      }
+      p->removeTrackConnection(t);
+
+      if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL)) {
+          removePositionablePoint(p);
+      }
+     }
+    }
+    catch (JmriException e) {
+       log.debug("Unable to set location");
+    }
+    break;
+   }
+
+   case LayoutTrack::SLIP_A:
+   case LayoutTrack::SLIP_B:
+   case LayoutTrack::SLIP_C:
+   case LayoutTrack::SLIP_D:
+   {
+    LayoutSlip* ls = (LayoutSlip*) foundObject;
+    try
+    {
+     if (ls->getConnection(foundPointType) == NULL)
+     {
+      ls->setConnection(foundPointType, t, LayoutTrack::TRACK);
+
+      if (t->getConnect1() == p) {
+          t->setNewConnect1(ls, foundPointType);
+      } else {
+          t->setNewConnect2(ls, foundPointType);
+      }
+      p->removeTrackConnection(t);
+
+      if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL)) {
+          removePositionablePoint(p);
+      }
+     }
+    } catch (JmriException e) {
+       log.debug("Unable to set location");
+   }
+   break;
+  }
+
+  default:
+
+   if (foundPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET)
+   {
+    LayoutTurntable* tt = (LayoutTurntable*) foundObject;
+    int ray = foundPointType - LayoutTrack::TURNTABLE_RAY_OFFSET;
+
+    if (tt->getRayConnectIndexed(ray) == NULL)
+    {
+     tt->setRayConnect(t, ray);
+
+     if (t->getConnect1() == p) {
+         t->setNewConnect1(tt, foundPointType);
+     } else {
+         t->setNewConnect2(tt, foundPointType);
+     }
+     p->removeTrackConnection(t);
+
+     if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL)) {
+         removePositionablePoint(p);
+     }
+    }
+   }
+   else
+   {
+    log.debug("No valid point, so will quit");
+    return;
+   }
+  }   //switch
+  update();
+
+  if (t->getLayoutBlock() != NULL)
+  {
+   auxTools->setBlockConnectivityChanged();
+  }
+ }
+ beginObject = NULL;
+ foundObject = NULL;
+}   //checkPointOfPositionable
+
+/*private*/ void LayoutEditor::checkPointsOfTurnout(LayoutTurnout* lt)
+{
+ beginObject = lt;
+
+ if (lt->getConnectA() == NULL) {
+     beginPointType = LayoutTrack::TURNOUT_A;
+     dLoc = lt->getCoordsA();
+     checkPointsOfTurnoutSub(lt->getCoordsA());
+ }
+
+ if (lt->getConnectB() == NULL) {
+     beginPointType = LayoutTrack::TURNOUT_B;
+     dLoc = lt->getCoordsB();
+     checkPointsOfTurnoutSub(lt->getCoordsB());
+ }
+
+ if (lt->getConnectC() == NULL) {
+     beginPointType = LayoutTrack::TURNOUT_C;
+     dLoc = lt->getCoordsC();
+     checkPointsOfTurnoutSub(lt->getCoordsC());
+ }
+
+ if ((lt->getConnectD() == NULL) && ((lt->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER) ||
+                                    (lt->getTurnoutType() == LayoutTurnout::LH_XOVER) ||
+                                    (lt->getTurnoutType() == LayoutTurnout::RH_XOVER))) {
+     beginPointType = LayoutTrack::TURNOUT_D;
+     dLoc = lt->getCoordsD();
+     checkPointsOfTurnoutSub(lt->getCoordsD());
+ }
+ beginObject = NULL;
+ foundObject = NULL;
+}   //checkPointsOfTurnout
+
+/*private*/ void LayoutEditor::checkPointsOfTurnoutSub(QPointF dLoc)
+{
+ if (checkSelect(dLoc, true))
+ {
+  switch (foundPointType)
+  {
+   case LayoutTrack::POS_POINT:
+   {
+    PositionablePoint* p2 = (PositionablePoint*) foundObject;
+
+    if (((p2->getConnect1() == NULL) && (p2->getConnect2() != NULL)) ||
+        ((p2->getConnect1() != NULL) && (p2->getConnect2() == NULL)))
+    {
+     TrackSegment* t = p2->getConnect1();
+
+     if (t == NULL) {
+         t = p2->getConnect2();
+     }
+
+     if (t == NULL) {
+         return;
+     }
+     LayoutTurnout* lt = (LayoutTurnout*) beginObject;
+     try
+     {
+      if (lt->getConnection(beginPointType) == NULL)
+      {
+       lt->setConnection(beginPointType, t, LayoutTrack::TRACK);
+       p2->removeTrackConnection(t);
+
+       if (t->getConnect1() == p2) {
+           t->setNewConnect1(lt, beginPointType);
+       } else {
+           t->setNewConnect2(lt, beginPointType);
+       }
+       removePositionablePoint(p2);
+      }
+
+      if (t->getLayoutBlock() != NULL) {
+          auxTools->setBlockConnectivityChanged();
+      }
+     } catch (JmriException e) {
+         log.debug("Unable to set location");
+     }
+    }
+    break;
+   }
+
+   case LayoutTrack::TURNOUT_A:
+   case LayoutTrack::TURNOUT_B:
+   case LayoutTrack::TURNOUT_C:
+   case LayoutTrack::TURNOUT_D: {
+       LayoutTurnout* ft = (LayoutTurnout*) foundObject;
+       addTrackSegment();
+
+       if ((ft->getTurnoutType() == LayoutTurnout::RH_TURNOUT) || (ft->getTurnoutType() == LayoutTurnout::LH_TURNOUT)) {
+           rotateTurnout(ft);
+       }
+       break;
+   }
+
+   default: {
+       log.warn(tr("Unexpected foundPointType %1  in checkPointsOfTurnoutSub").arg(foundPointType));
+       break;
+   }
+  }   //switch
+ }
+}   //checkPointsOfTurnoutSub
+
+/*private*/ void LayoutEditor::rotateTurnout(LayoutTurnout* t) {
+    LayoutTurnout* be = (LayoutTurnout*) beginObject;
+
+    if (((beginPointType == LayoutTrack::TURNOUT_A) && ((be->getConnectB() != NULL) || (be->getConnectC() != NULL))) ||
+        ((beginPointType == LayoutTrack::TURNOUT_B) && ((be->getConnectA() != NULL) || (be->getConnectC() != NULL))) ||
+        ((beginPointType == LayoutTrack::TURNOUT_C) && ((be->getConnectB() != NULL) || (be->getConnectA() != NULL)))) {
+        return;
+    }
+
+    if ((be->getTurnoutType() != LayoutTurnout::RH_TURNOUT) && (be->getTurnoutType() != LayoutTurnout::LH_TURNOUT)) {
+        return;
+    }
+
+    double x2;
+    double y2;
+
+    QPointF c;
+    QPointF diverg;
+
+    if ((foundPointType == LayoutTrack::TURNOUT_C) && (beginPointType == LayoutTrack::TURNOUT_C)) {
+        c = t->getCoordsA();
+        diverg = t->getCoordsB();
+        x2 = be->getCoordsA().x() - be->getCoordsB().x();
+        y2 = be->getCoordsA().y() - be->getCoordsB().y();
+    } else if ((foundPointType == LayoutTrack::TURNOUT_C) &&
+               ((beginPointType == LayoutTrack::TURNOUT_A) || (beginPointType == LayoutTrack::TURNOUT_B))) {
+        c = t->getCoordsCenter();
+        diverg = t->getCoordsC();
+
+        if (beginPointType == LayoutTrack::TURNOUT_A) {
+            x2 = be->getCoordsB().x() - be->getCoordsA().x();
+            y2 = be->getCoordsB().y() - be->getCoordsA().y();
+        } else {
+            x2 = be->getCoordsA().x() - be->getCoordsB().x();
+            y2 = be->getCoordsA().y() - be->getCoordsB().y();
+        }
+    } else if (foundPointType == LayoutTrack::TURNOUT_B) {
+        c = t->getCoordsA();
+        diverg = t->getCoordsB();
+
+        if (beginPointType == LayoutTrack::TURNOUT_B) {
+            x2 = be->getCoordsA().x() - be->getCoordsB().x();
+            y2 = be->getCoordsA().y() - be->getCoordsB().y();
+        } else if (beginPointType == LayoutTrack::TURNOUT_A) {
+            x2 = be->getCoordsB().x() - be->getCoordsA().x();
+            y2 = be->getCoordsB().y() - be->getCoordsA().y();
+        } else {    //(beginPointType==TURNOUT_C){
+            x2 = be->getCoordsCenter().x() - be->getCoordsC().x();
+            y2 = be->getCoordsCenter().y() - be->getCoordsC().y();
+        }
+    } else if (foundPointType == LayoutTrack::TURNOUT_A) {
+        c = t->getCoordsA();
+        diverg = t->getCoordsB();
+
+        if (beginPointType == LayoutTrack::TURNOUT_A) {
+            x2 = be->getCoordsA().x() - be->getCoordsB().x();
+            y2 = be->getCoordsA().y() - be->getCoordsB().y();
+        } else if (beginPointType == LayoutTrack::TURNOUT_B) {
+            x2 = be->getCoordsB().x() - be->getCoordsA().x();
+            y2 = be->getCoordsB().y() - be->getCoordsA().y();
+        } else {    //(beginPointType==TURNOUT_C){
+            x2 = be->getCoordsC().x() - be->getCoordsCenter().x();
+            y2 = be->getCoordsC().y() - be->getCoordsCenter().y();
+        }
+    } else {
+        return;
+    }
+    double x = diverg.x() - c.x();
+    double y = diverg.y() - c.y();
+    double radius = toDegrees(qAtan2(y, x));
+    double eRadius = toDegrees(qAtan2(y2, x2));
+    be->rotateCoords(radius - eRadius);
+
+    QPointF conCord = be->getCoordsA();
+    QPointF tCord = t->getCoordsC();
+
+    if (foundPointType == LayoutTrack::TURNOUT_B) {
+        tCord = t->getCoordsB();
+    }
+
+    if (foundPointType == LayoutTrack::TURNOUT_A) {
+        tCord = t->getCoordsA();
+    }
+
+    if (beginPointType == LayoutTrack::TURNOUT_B) {
+        conCord = be->getCoordsB();
+    } else if (beginPointType == LayoutTrack::TURNOUT_C) {
+        conCord = be->getCoordsC();
+    } else if (beginPointType == LayoutTrack::TURNOUT_A) {
+        conCord = be->getCoordsA();
+    }
+    x = conCord.x() - tCord.x();
+    y = conCord.y() - tCord.y();
+    QPointF offset = QPointF(be->getCoordsCenter().x() - x, be->getCoordsCenter().y() - y);
+    be->setCoordsCenter(offset);
+}   //rotateTurnout
+
 /*public*/ void LayoutEditor::mouseReleased(QGraphicsSceneMouseEvent* event)
 {
  //super.setToolTip(NULL);
@@ -1188,34 +1561,53 @@ double LayoutEditor::getPaintScale()
    delayedPopupTrigger = false;
   }
    // check if controlling turnouts
-   else if ( ( selectedObject!=NULL) && (selectedPointType==TURNOUT_CENTER)
+  else if ( ( selectedObject!=NULL) && (selectedPointType==TURNOUT_CENTER)
              && allControlling() /*&& (!(event->modifiers()&Qt::ControlModifier))*/ /*&& (!(event->modifiers()&Qt::AltModifier)) *//*&& (!event.isPopupTrigger())*/
              && (!(event->modifiers()&Qt::ShiftModifier))
              && (!(event->modifiers()&Qt::ControlModifier)) )
-   {
-    // controlling layout, in edit mode
-    LayoutTurnout* t = (LayoutTurnout*)selectedObject;
-    t->toggleTurnout();
-   }
-   else if ( ( selectedObject!=NULL) && (selectedPointType==SLIP_CENTER)/* &&
-                allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
-                    (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
-   {
-    // controlling layout, in edit mode
-    LayoutSlip* t = (LayoutSlip*)selectedObject;
-    t->toggleState();
-   }
-#if 1 // TODO:
+  {
+   // controlling layout, in edit mode
+   LayoutTurnout* t = (LayoutTurnout*)selectedObject;
+   t->toggleTurnout();
+  }
+  else if ( ( selectedObject!=NULL) && ((selectedPointType == LayoutTrack::SLIP_CENTER) ||
+                                        (selectedPointType == LayoutTrack::SLIP_LEFT) ||
+                                        (selectedPointType == LayoutTrack::SLIP_RIGHT))/* &&
+               allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
+                   (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
+  {
+   // controlling layout, in edit mode
+   LayoutSlip* t = (LayoutSlip*)selectedObject;
+   t->toggleState(selectedPointType);
+  }
+  else if ( ( selectedObject!=NULL) && (selectedPointType>=TURNTABLE_RAY_OFFSET) /*&&
+               allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
+                   (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
+  {
+   // controlling layout, in edit mode
+   LayoutTurntable* t =  (LayoutTurntable*)selectedObject;
+   t->setPosition(selectedPointType-TURNTABLE_RAY_OFFSET);
+  }
+  else if ((selectedObject != NULL) && (selectedPointType == LayoutTrack::TURNOUT_CENTER) /*&&
+                         allControlling() && (event.isMetaDown()) && (!event.isAltDown()) &&
+                         (!event.isShiftDown()) && (!event.isControlDown()) && isDragging)*/
+           && (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) && isDragging)
+  {
+        //controlling layout, in edit mode
+        checkPointsOfTurnout((LayoutTurnout*) selectedObject);
+  }
+  else if ((selectedObject != NULL) && (selectedPointType == LayoutTrack::POS_POINT) /*&&
+               allControlling() && (event.isMetaDown()) && (!event.isAltDown()) &&
+               (!event.isShiftDown()) && (!event.isControlDown()) && isDragging) */
+           && (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) && isDragging)
+  {
+    PositionablePoint* p = (PositionablePoint*) selectedObject;
 
-   else if ( ( selectedObject!=NULL) && (selectedPointType>=TURNTABLE_RAY_OFFSET) /*&&
-                allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
-                    (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
-   {
-    // controlling layout, in edit mode
-    LayoutTurntable* t =  (LayoutTurntable*)selectedObject;
-    t->setPosition(selectedPointType-TURNTABLE_RAY_OFFSET);
+    if ((p->getConnect1() == NULL) || (p->getConnect2() == NULL)) {
+        checkPointOfPositionable(p);
+    }
    }
-#endif
+
    if ( (ui->chkTrackSegment->isChecked()) && (beginObject!=NULL) && (foundObject!=NULL) )
    {
     // user let up shift key before releasing the mouse when creating a track segment
@@ -1238,13 +1630,15 @@ double LayoutEditor::getPaintScale()
    t->toggleTurnout();
   }
     // check if controlling turnouts out of edit mode
-    else if ( ( selectedObject!=NULL) && (selectedPointType==SLIP_CENTER) /*&&
+    else if ( ( selectedObject!=NULL) && ((selectedPointType == LayoutTrack::SLIP_CENTER) ||
+                                          (selectedPointType == LayoutTrack::SLIP_LEFT) ||
+                                          (selectedPointType == LayoutTrack::SLIP_RIGHT)) /*&&
             allControlling() && (!event.isMetaDown())*/ && (!(event->modifiers()&Qt::AltModifier))/* && (!event.isPopupTrigger())*/ &&
                 (!(event->modifiers()&Qt::ShiftModifier)) && (!delayedPopupTrigger) )
   {
    // controlling layout, not in edit mode
    LayoutSlip* t = (LayoutSlip*)selectedObject;
-   t->toggleState();
+   t->toggleState(selectedPointType);
   }
 #if 1
   else if ( ( selectedObject!=NULL) && (selectedPointType>=TURNTABLE_RAY_OFFSET)/* &&
@@ -1255,54 +1649,54 @@ double LayoutEditor::getPaintScale()
    t->setPosition(selectedPointType-TURNTABLE_RAY_OFFSET);
   }
 #endif
-    // check if requesting marker popup out of edit mode
-    else if ( (/*event.isPopupTrigger() ||*/ delayedPopupTrigger) && (!isDragging) )
+   // check if requesting marker popup out of edit mode
+   else if ( (/*event.isPopupTrigger() ||*/ delayedPopupTrigger) && (!isDragging) )
+   {
+    LocoIcon* lo = checkMarkers(dLoc);
+    if (lo!=NULL) showPopUp((Positionable*)lo, event);
+    else
     {
-     LocoIcon* lo = checkMarkers(dLoc);
-     if (lo!=NULL) showPopUp((Positionable*)lo, event);
+     if (checkSelect(dLoc, false))
+     {
+      // show popup menu
+      switch (foundPointType)
+      {
+       case TURNOUT_CENTER:
+        ((LayoutTurnout*)foundObject)->showPopUp(event, isEditable());
+        break;
+       case LEVEL_XING_CENTER:
+        ((LevelXing*)foundObject)->showPopUp(event, isEditable());
+        break;
+       case SLIP_CENTER:
+        ((LayoutSlip*)foundObject)->showPopUp(event, isEditable());
+        break;
+       default: break;
+      }
+     }
+
+     AnalogClock2Display* c = checkClocks(dLoc);
+     if (c!=NULL)
+     {
+       showPopUp((Positionable*)c, event);
+     }
      else
      {
-      if (checkSelect(dLoc, false))
+      SignalMastIcon* sm = checkSignalMastIcons(dLoc);
+      if (sm!=NULL)
       {
-       // show popup menu
-       switch (foundPointType)
-       {
-        case TURNOUT_CENTER:
-         ((LayoutTurnout*)foundObject)->showPopUp(event, isEditable());
-         break;
-        case LEVEL_XING_CENTER:
-         ((LevelXing*)foundObject)->showPopUp(event, isEditable());
-         break;
-        case SLIP_CENTER:
-         ((LayoutSlip*)foundObject)->showPopUp(event, isEditable());
-         break;
-        default: break;
-       }
-      }
-
-      AnalogClock2Display* c = checkClocks(dLoc);
-      if (c!=NULL)
-      {
-        showPopUp((Positionable*)c, event);
+       showPopUp((Positionable*)sm, event);
       }
       else
       {
-       SignalMastIcon* sm = checkSignalMastIcons(dLoc);
-       if (sm!=NULL)
+       PositionableLabel* im = checkLabelImages(dLoc);
+       if(im!=NULL)
        {
-        showPopUp((Positionable*)sm, event);
+        showPopUp((Positionable*)im, event);
        }
-       else
-       {
-        PositionableLabel* im = checkLabelImages(dLoc);
-        if(im!=NULL)
-        {
-         showPopUp((Positionable*)im, event);
-        }
 //       }
 //      }
-     }
     }
+   }
 
    if (/*!event.isPopupTrigger() && */ !isDragging)
    {
@@ -1637,19 +2031,21 @@ double LayoutEditor::getPaintScale()
       }
       break;
      }
-#if 0
+#if 1
      case LAYOUT_POS_JCOMP:
-      PositionableJComponent c = (PositionableJComponent)selectedObject;
-      if (c.isPositionable()) {
+     {
+      PositionableJComponent* c = (PositionableJComponent*)selectedObject;
+      if (c->isPositionable()) {
           int xint = (int)newPos.x();
           int yint = (int)newPos.y();
           // don't allow negative placement, object could become unreachable
           if (xint<0) xint = 0;
           if (yint<0) yint = 0;
-          c.setLocation(xint, yint);
+          c->setLocation(xint, yint);
           isDragging = true;
       }
       break;
+     }
 #endif
      case MULTI_SENSOR:
      {
@@ -2771,8 +3167,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
   xOverShort = xOverShortDefault;
   setDirty(true);
 }
+
 /*public*/ double LayoutEditor::getXScale() {return xScale;}
+
 /*public*/ double LayoutEditor::getYScale() {return yScale;}
+
+
 /**
 * Return a layout block with the given name if one exists.
 * Registers this LayoutEditor with the layout block.
@@ -3846,27 +4246,34 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 }
 #endif
 
-/*private*/ bool LayoutEditor::checkSelect(QPointF loc, bool requireUnconnected)
+/*private*/ bool LayoutEditor::checkSelect(QPointF loc, bool requireUnconnected) {
+    return checkSelect(loc, requireUnconnected, NULL);
+}
+
+/*private*/ bool LayoutEditor::checkSelect(QPointF loc, bool requireUnconnected, QObject* avoid)
 {
  // check positionable points, if any
  for (int i = 0; i<pointList->size();i++)
  {
   PositionablePoint* p = pointList->at(i);
-  if ( (p!=selectedObject) && !requireUnconnected ||
-              (p->getConnect1()==NULL) ||
-              ((p->getType()!=PositionablePoint::END_BUMPER) &&
-                                          (p->getConnect2()==NULL)) )
+  if(p != avoid)
   {
-   QPointF pt = p->getCoords();
-   QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-   if (r.contains(loc))
+   if ( (p!=selectedObject) && !requireUnconnected ||
+               (p->getConnect1()==NULL) ||
+               ((p->getType()!=PositionablePoint::END_BUMPER) &&
+                                           (p->getConnect2()==NULL)) )
    {
-    // mouse was pressed on this connection point
-    foundLocation = pt;
-    foundObject = p;
-    foundPointType = POS_POINT;
-    foundNeedsConnect = ((p->getConnect1()==NULL)||(p->getConnect2()==NULL));
-    return true;
+    QPointF pt = p->getCoords();
+    QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
+    if (r.contains(loc))
+    {
+     // mouse was pressed on this connection point
+     foundLocation = pt;
+     foundObject = p;
+     foundPointType = POS_POINT;
+     foundNeedsConnect = ((p->getConnect1()==NULL)||(p->getConnect2()==NULL));
+     return true;
+    }
    }
   }
  }
@@ -4316,14 +4723,17 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 *  (which are the primary way that items are edited).
 * @param state true for editable.
 */
-/*public*/ void LayoutEditor::setAllEditable(bool state) {
+/*public*/ void LayoutEditor::setAllEditable(bool state)
+{
   _editable = state;
-  for (int i = 0; i<_contents->size(); i++) {
-      _contents->at(i)->setEditable(state);
+  for (int i = 0; i<_contents->size(); i++)
+  {
+   _contents->at(i)->setEditable(state);
   }
-  if (!_editable) {
+  if (!_editable)
+  {
 //      _highlightcomponent = NULL;
-             _selectionGroup =new  QList<Positionable*>();
+   _selectionGroup =new  QList<Positionable*>();
   }
 }
 /**
@@ -5186,6 +5596,40 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
      if (sh == NULL) log.warn("did not find a SignalHead named "+name);
      return sh;
  }
+
+ /*public*/ bool LayoutEditor::containsSignalHead(SignalHead* head) {
+    for (SignalHeadIcon* h : *signalList) {
+        if (h->getSignalHead() == head) {
+            return true;
+        }
+    }
+    return false;
+}   //containsSignalHead
+
+/*public*/ void LayoutEditor::removeSignalHead(SignalHead* head) {
+    SignalHeadIcon* h = NULL;
+    int index = -1;
+
+    for (int i = 0; (i < signalList->size()) && (index == -1); i++) {
+        h = signalList->at(i);
+
+        if (h->getSignalHead() == head) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index != (-1)) {
+        signalList->remove(index);
+
+        if (h != NULL) {
+            h->remove();
+            h->dispose();
+        }
+        setDirty(true);
+        repaint();
+    }
+}   //removeSignalHead
 
  void LayoutEditor::addSignalMast() {
      // check for valid signal head entry
@@ -6456,6 +6900,242 @@ void LayoutEditor::on_actionEdit_track_width_triggered()
 
 // connect(buttonGrp, SIGNAL(triggered(QAction*)), this,SLOT(on_colorBackgroundMenuItemSelected(QAction*)));
 //}
+#if 0
+void LayoutEditor::addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
+    ActionListener a = new ActionListener() {
+        /*final*/ QColor desiredColor = color;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!defaultTrackColor.equals(desiredColor)) {
+                LayoutTrack.setDefaultTrackColor(desiredColor);
+                defaultTrackColor = desiredColor;
+                setDirty(true);
+                repaint();
+            }
+        }   //actionPerformed
+    };
+    //JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+    QAction* r = new QAction(name, this);
+    r->setCheckable(true);
+
+    r.addActionListener(a);
+    trackColorButtonGroup.add(r);
+
+    if (defaultTrackColor == (color)) {
+        r->setChecked(true);
+    } else {
+        r->setChecked(false);
+    }
+    menu->addAction(r);
+    trackColorMenuItems[trackColorCount] = r;
+    trackColors[trackColorCount] = color;
+    trackColorCount++;
+}   //addTrackColorMenuEntry
+
+void addTrackOccupiedColorMenuEntry(JMenu menu, final String name, final Color color) {
+    ActionListener a = new ActionListener() {
+        //final String desiredName = name;
+        final Color desiredColor = color;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!defaultOccupiedTrackColor.equals(desiredColor)) {
+                defaultOccupiedTrackColor = desiredColor;
+                setDirty(true);
+                repaint();
+            }
+        }   //actionPerformed
+    };
+    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+
+    r.addActionListener(a);
+    trackOccupiedColorButtonGroup.add(r);
+
+    if (defaultOccupiedTrackColor.equals(color)) {
+        r.setSelected(true);
+    } else {
+        r.setSelected(false);
+    }
+    menu.add(r);
+    trackOccupiedColorMenuItems[trackOccupiedColorCount] = r;
+    trackOccupiedColors[trackOccupiedColorCount] = color;
+    trackOccupiedColorCount++;
+}   //addTrackOccupiedColorMenuEntry
+
+void addTrackAlternativeColorMenuEntry(JMenu menu, final String name, final Color color) {
+    ActionListener a = new ActionListener() {
+        //final String desiredName = name;
+        final Color desiredColor = color;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!defaultAlternativeTrackColor.equals(desiredColor)) {
+                defaultAlternativeTrackColor = desiredColor;
+                setDirty(true);
+                repaint();
+            }
+        }   //actionPerformed
+    };
+    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+
+    r.addActionListener(a);
+    trackAlternativeColorButtonGroup.add(r);
+
+    if (defaultAlternativeTrackColor.equals(color)) {
+        r.setSelected(true);
+    } else {
+        r.setSelected(false);
+    }
+    menu.add(r);
+    trackAlternativeColorMenuItems[trackAlternativeColorCount] = r;
+    trackAlternativeColors[trackAlternativeColorCount] = color;
+    trackAlternativeColorCount++;
+}   //addTrackAlternativeColorMenuEntry
+
+protected void setOptionMenuTrackColor() {
+    for (int i = 0; i < trackColorCount; i++) {
+        trackColorMenuItems[i].setSelected(trackColors[i].equals(defaultTrackColor));
+    }
+
+    for (int i = 0; i < trackOccupiedColorCount; i++) {
+        trackOccupiedColorMenuItems[i].setSelected(trackOccupiedColors[i].equals(defaultOccupiedTrackColor));
+    }
+
+    for (int i = 0; i < trackAlternativeColorCount; i++) {
+        trackAlternativeColorMenuItems[i].setSelected(trackAlternativeColors[i].equals(defaultAlternativeTrackColor));
+    }
+}   //setOptionMenuTrackColor
+
+void addTextColorMenuEntry(JMenu menu, final String name, final Color color) {
+    ActionListener a = new ActionListener() {
+        //final String desiredName = name;
+        final Color desiredColor = color;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!defaultTextColor.equals(desiredColor)) {
+                defaultTextColor = desiredColor;
+                setDirty(true);
+                repaint();
+            }
+        }   //actionPerformed
+    };
+    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+
+    r.addActionListener(a);
+    textColorButtonGroup.add(r);
+
+    if (defaultTextColor.equals(color)) {
+        r.setSelected(true);
+    } else {
+        r.setSelected(false);
+    }
+    menu.add(r);
+    textColorMenuItems[textColorCount] = r;
+    textColors[textColorCount] = color;
+    textColorCount++;
+}   //addTextColorMenuEntry
+
+void addTurnoutCircleColorMenuEntry(JMenu menu, final String name, final Color color) {
+    ActionListener a = new ActionListener() {
+        final Color desiredColor = color;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setTurnoutCircleColor(ColorUtil.colorToString(desiredColor));
+            setDirty(true);
+            repaint();
+        }   //actionPerformed
+    };
+
+    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+
+    r.addActionListener(a);
+    turnoutCircleColorButtonGroup.add(r);
+
+    if (turnoutCircleColor.equals(color)) {
+        r.setSelected(true);
+    } else {
+        r.setSelected(false);
+    }
+    menu.add(r);
+    turnoutCircleColorMenuItems[turnoutCircleColorCount] = r;
+    turnoutCircleColors[turnoutCircleColorCount] = color;
+    turnoutCircleColorCount++;
+}   //addTurnoutCircleColorMenuEntry
+
+void addTurnoutCircleSizeMenuEntry(JMenu menu, final String name, final int size) {
+    ActionListener a = new ActionListener() {
+        final int desiredSize = size;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (getTurnoutCircleSize() != desiredSize) {
+                setTurnoutCircleSize(desiredSize);
+                setDirty(true);
+                repaint();
+            }
+        }   //actionPerformed
+    };
+    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+
+    r.addActionListener(a);
+    turnoutCircleSizeButtonGroup.add(r);
+
+    if (getTurnoutCircleSize() == size) {
+        r.setSelected(true);
+    } else {
+        r.setSelected(false);
+    }
+    menu.add(r);
+    turnoutCircleSizeMenuItems[turnoutCircleSizeCount] = r;
+    turnoutCircleSizes[turnoutCircleSizeCount] = size;
+    turnoutCircleSizeCount++;
+}   //addTurnoutCircleSizeMenuEntry
+
+protected void setOptionMenuTurnoutCircleColor() {
+    for (int i = 0; i < turnoutCircleColorCount; i++) {
+        if ((turnoutCircleColors[i] == null) && (turnoutCircleColor == null)) {
+            turnoutCircleColorMenuItems[i].setSelected(true);
+        } else if ((turnoutCircleColors[i] != null) && turnoutCircleColors[i].equals(turnoutCircleColor)) {
+            turnoutCircleColorMenuItems[i].setSelected(true);
+        } else {
+            turnoutCircleColorMenuItems[i].setSelected(false);
+        }
+    }
+}   //setOptionMenuTurnoutCircleColor
+
+protected void setOptionMenuTurnoutCircleSize() {
+    for (int i = 0; i < turnoutCircleSizeCount; i++) {
+        if (turnoutCircleSizes[i] == getTurnoutCircleSize()) {
+            turnoutCircleSizeMenuItems[i].setSelected(true);
+        } else {
+            turnoutCircleSizeMenuItems[i].setSelected(false);
+        }
+    }
+}   //setOptionMenuTurnoutCircleSize
+
+protected void setOptionMenuTextColor() {
+    for (int i = 0; i < textColorCount; i++) {
+        if (textColors[i].equals(defaultTextColor)) {
+            textColorMenuItems[i].setSelected(true);
+        } else {
+            textColorMenuItems[i].setSelected(false);
+        }
+    }
+}   //setOptionMenuTextColor
+
+protected void setOptionMenuBackgroundColor() {
+    for (int i = 0; i < backgroundColorCount; i++) {
+        if (backgroundColors[i].equals(defaultBackgroundColor)) {
+            backgroundColorMenuItems[i].setSelected(true);
+        } else {
+            backgroundColorMenuItems[i].setSelected(false);
+        }
+    }
+}   //setOptionMenuBackgroundColor
+#endif
 void LayoutEditor::on_colorBackgroundMenuItemSelected(QAction* act)
 {
  QColor color = act->data().value<QColor>();
@@ -6555,7 +7235,11 @@ void LayoutEditor::on_actionSave_triggered()
 
 // SaveXml saveXml(this);
 // saveXml.store(layoutFile);
+ try
+ {
  bool results = ((JmriConfigurationManager*)InstanceManager::getNullableDefault("JmriConfigurationManager"))->storeUser(new File(layoutFile));
+ } catch (NullPointerException ex)
+ {}
  setCursor(Qt::ArrowCursor);
 }
 

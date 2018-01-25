@@ -4,6 +4,7 @@
 #include <QDockWidget>
 #include "logger.h"
 #include <QTime>
+#include <QtXml>
 
 class QButtonGroup;
 class ButtonFrame;
@@ -31,6 +32,17 @@ public:
     /*public*/ void accelerate10();
     /*public*/ void decelerate1();
     /*public*/ void decelerate10();
+ /*public*/ QDomElement getXml();
+ /*public*/ void setXml(QDomElement e);
+ enum SPEEDS
+ {
+  /* Constants for speed selection method */
+   SLIDERDISPLAY = 0,
+   STEPDISPLAY = 1,
+   SLIDERDISPLAYCONTINUOUS = 2
+ };
+ /*public*/ QString getSwitchSliderFunction();
+ /*public*/ void setSwitchSliderFunction(QString fn);
 
 signals:
 
@@ -55,14 +67,10 @@ private:
     ButtonFrame* buttonFrame;
 
     /*private*/ bool _displaySlider;// = true;
-    /*private*/ bool speedControllerEnable;
     /*private*/ bool _emergencyStop;// = false;
 
     /*private*/ DccThrottle* _throttle;
     /*private*/ bool internalAdjust;// = false;
-
-    /*private*/ long trackSliderMinInterval;// = 500;          // milliseconds
-    /*private*/ QTime lastTrackedSliderMovementTime;// = 0;
 
     // LocoNet really only has 126 speed steps i.e. 0..127 - 1 for em stop
     /*private*/ int MAX_SPEED;// = 126;
@@ -70,6 +78,25 @@ private:
     /*private*/ void initGUI();
     /*private*/ void speedSetting(float speed);
     /*private*/ void configureAvailableSpeedStepModes();
+
+    /*private*/ bool trackSlider;// = false;
+    /*private*/ bool trackSliderDefault;// = false;
+    /*private*/ long trackSliderMinInterval;// = 200;         // milliseconds
+    /*private*/ long trackSliderMinIntervalDefault;// = 200;  // milliseconds
+    /*private*/ long trackSliderMinIntervalMin;// = 50;       // milliseconds
+    /*private*/ long trackSliderMinIntervalMax;// = 1000;     // milliseconds
+    /*private*/ long lastTrackedSliderMovementTime;// = 0;
+    // LocoNet really only has 126 speed steps i.e. 0..127 - 1 for em stop
+    /*private*/ int intSpeedSteps;// = 126;
+
+    /*private*/ int maxSpeed;// = 126; //The maximum permissible speed
+
+    /*private*/ bool speedControllerEnable;// = false;
+
+    // Switch to continuous slider on function...
+    /*private*/ QString switchSliderFunction = "Fxx";
+    /*private*/ QString prevShuntingFn = "";
+
 private slots:
     void OnSliderChanged(int);
     void OnSpinnerChanged(int);

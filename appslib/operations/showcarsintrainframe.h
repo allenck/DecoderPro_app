@@ -46,14 +46,16 @@ namespace Operations
   /*private*/ QString getStatus(RouteLocation* rl);
   /*private*/ void packFrame();
 
+  friend class SCITFWorker;
  };
-#if 0
+#if 1
  class SCITFWorker : public QObject
  {
   Q_OBJECT
+  ShowCarsInTrainFrame* scitf;
  public:
 
-  SCITFWorker();
+  SCITFWorker(ShowCarsInTrainFrame* scitf);
  public slots:
   void process();
  signals:

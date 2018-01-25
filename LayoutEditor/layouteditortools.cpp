@@ -7936,8 +7936,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 //The following is for placement of sensors and signal masts at points around the layout
 //
 
-/*public*/ void LayoutEditorTools::setSensorsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor,
-                QFrame* theFrame) {
+/*public*/ void LayoutEditorTools::setSensorsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JFrame* theFrame) {
     boundaryFromMenu = true;
     boundary = p;
     block1NameField->setText(boundary->getConnect1()->getLayoutBlock()->getID());
@@ -7949,7 +7948,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     return;
 }
 
-/*public*/ void LayoutEditorTools::setSensorsAtBlockBoundary( MultiIconEditor* theEditor, QFrame* theFrame)
+/*public*/ void LayoutEditorTools::setSensorsAtBlockBoundary( MultiIconEditor* theEditor, JFrame* theFrame)
 {
  sensorIconEditor = theEditor;
  sensorFrame = theFrame;
@@ -7964,20 +7963,20 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   westBoundSensor = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
   eastBoundSensor = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
 
-  setSensorsAtBoundaryFrame = new JmriJFrame( tr("SensorsAtBoundary"), false, true );
+  setSensorsAtBoundaryFrame = new JmriJFrame( tr("Set Sensors at Block Boundary"), false, true );
   setSensorsAtBoundaryFrame->addHelpMenu("package.jmri.jmrit.display.SetSensorsAtBoundary", true);
   setSensorsAtBoundaryFrame->setLocation(70,30);
-  if(setSensorsAtBoundaryFrame->centralWidget() == NULL)
-  {
-   QWidget* centralWidget = new QWidget();
-   QVBoxLayout* centralWidgetLayout = new QVBoxLayout;
-   centralWidget->setLayout(centralWidgetLayout);
-   setSensorsAtBoundaryFrame->setCentralWidget(centralWidget);
-  }
+//  if(setSensorsAtBoundaryFrame->centralWidget() == NULL)
+//  {
+//   QWidget* centralWidget = new QWidget();
+//   QVBoxLayout* centralWidgetLayout = new QVBoxLayout;
+//   centralWidget->setLayout(centralWidgetLayout);
+//   setSensorsAtBoundaryFrame->setCentralWidget(centralWidget);
+//  }
   QWidget* theContentPane = setSensorsAtBoundaryFrame->getContentPane();
-  BorderLayout* centralWidgetLayout;
-  theContentPane->setLayout(centralWidgetLayout = new BorderLayout());
-  QWidget*header = new QWidget();
+  QVBoxLayout* centralWidgetLayout;
+  theContentPane->setLayout(centralWidgetLayout = new QVBoxLayout());
+  QWidget* header = new QWidget();
   header->setLayout(new QVBoxLayout); //(header, BoxLayout.Y_AXIS));
   QWidget* panel11 = new QWidget();
   panel11->setLayout(new QHBoxLayout());
@@ -8014,7 +8013,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   }
   header->layout()->addWidget(panel12);
   header->layout()->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  centralWidgetLayout->addWidget(header, BorderLayout::North);
+  centralWidgetLayout->addWidget(header,0, Qt::AlignTop);// BorderLayout::North);
   QWidget* panel2 = new QWidget();
 
   QWidget*main = new QWidget();
@@ -8083,18 +8082,18 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
    }
   }
   main->layout()->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  ((BorderLayout*)centralWidgetLayout)->addWidget(main, BorderLayout::Center);
+  centralWidgetLayout->addWidget(main, 0, Qt::AlignCenter); //BorderLayout::Center);
 
   QWidget* panel6 = new QWidget();
   panel6->setLayout(new QHBoxLayout());
-  panel6->layout()->addWidget(changeSensorAtBoundaryIcon = new QPushButton(tr("ChangeSensorIcon")));
+  panel6->layout()->addWidget(changeSensorAtBoundaryIcon = new QPushButton(tr("Change Sensor Icon")));
 //        changeSensorAtBoundaryIcon->layout()->addWidgetActionListener(new ActionListener() {
 //                /*public*/ void actionPerformed(ActionEvent e) {
 //                    sensorFrame->setVisible(true);
 //                }
 //            });
   connect(changeSensorAtBoundaryIcon, SIGNAL(clicked()), this, SLOT(On_changeSensorAtBoundaryIcon_clicked()));
-  changeSensorAtBoundaryIcon->setToolTip( tr("ChangeSensorIconHint") );
+  changeSensorAtBoundaryIcon->setToolTip( tr("Click to change icons used to represent sensors.") );
   panel6->layout()->addWidget(new QLabel("  "));
   panel6->layout()->addWidget(setSensorsAtBoundaryDone = new QPushButton(tr("Done")));
 //        setSensorsAtBoundaryDone->layout()->addWidgetActionListener(new ActionListener() {
@@ -8112,7 +8111,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 //        });
   connect(setSensorsAtBoundaryCancel, SIGNAL(clicked()), this, SLOT(setSensorsAtBoundaryCancelPressed()));
   setSensorsAtBoundaryCancel->setToolTip( tr("Click Cancel to dismiss this dialog without making changes.") );
-  ((BorderLayout*)centralWidgetLayout)->addWidget(panel6, BorderLayout::South);
+  centralWidgetLayout->addWidget(panel6, 0, Qt::AlignBottom); //BorderLayout::South);
 //        setSensorsAtBoundaryFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
 //                setSensorsAtBoundaryCancelPressed(NULL);
@@ -8126,10 +8125,11 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   if (boundaryFromMenu) getSavedAnchorSensors(NULL);
  }
  //setSensorsAtBoundaryFrame->setPreferredSize(NULL);
- setSensorsAtBoundaryFrame->pack();
+ setSensorsAtBoundaryFrame->adjustSize();
  setSensorsAtBoundaryFrame->setVisible(true);
  setSensorsAtBoundaryOpen = true;
 }
+
 void LayoutEditorTools::On_changeSensorAtBoundaryIcon_clicked()
 {
  sensorFrame->setVisible(true);
@@ -12109,7 +12109,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
   //          }
   //      });
   connect(changeSensorXingIcon, SIGNAL(clicked()), this, SLOT(on_changeSensorXingIcon()));
-  changeSensorXingIcon->setToolTip( tr("ChangeSensorIconHint") );
+  changeSensorXingIcon->setToolTip( tr("Click to change icons used to represent sensors.") );
 
   panel6->layout()->addWidget(new QLabel("  "));
   panel6->layout()->addWidget(setXingSensorsDone = new QPushButton(tr("Done")));

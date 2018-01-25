@@ -7,6 +7,7 @@
 #include "jtable.h"
 #include "box.h"
 #include "mysortfilterproxymodel.h"
+#include <QPushButton>
 
 BeanTableFrame::BeanTableFrame(QWidget *parent) :
     JmriJFrame(parent)
@@ -78,6 +79,7 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  QAbstractItemModel* sorter = new MySortFilterProxyModel(dataModel);
  this->dataTable->setModel(sorter);
  this->dataTable->setSortingEnabled(true);
+ this->dataTable->setRowHeight(QPushButton().height());
 
  // configure items for GUI
  dataModel->configureTable(dataTable);

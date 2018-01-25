@@ -59,7 +59,7 @@ public:
     /**
      * Setup and remove connections to track
      */
-    /*public*/ void setTrackConnection (TrackSegment* track);
+    /*public*/ bool setTrackConnection (TrackSegment* track);
     // initialization instance variables (used when loading a LayoutEditor)
     /*public*/ QString trackSegment1Name;// = "";
     /*public*/ QString trackSegment2Name;// = "";
@@ -90,6 +90,7 @@ public:
     /*public*/ QString getLinkedPointId();
     /*public*/ void setLinkedPoint(PositionablePoint* p);
     /*public*/ LayoutEditor* getLinkedEditor();
+    /*public*/ QWidget* getLinkPanel();
 
 signals:
     
@@ -97,6 +98,8 @@ public slots:
     void On_setSignals();
     void On_setSensors();
     void On_setSignalMasts();
+    /*public*/ void updateLink();
+
 private:
     /*private*/ PositionablePoint* instance; //null;
     /*private*/ LayoutEditor* layoutEditor; //null;
@@ -125,14 +128,21 @@ private:
     int yClick;// = 0;
     /*private*/ NamedBeanHandle<SignalMast*>* getEastBoundSignalMastNamed();
     /*private*/ NamedBeanHandle<SignalMast*>* getWestBoundSignalMastNamed();
+    QComboBox* linkPointsBox;
+    QComboBox* editorCombo; // Stores with LayoutEditor or "None"
 
  Logger log;
  QMenu* popup;// = NULL;
  QGraphicsItem* item;
  /*private*/ PositionablePoint* linkedPoint;
+ JDialog* editLink;// = null;
+ QList<PositionablePoint*>* pointList;
 
 private slots:
  void on_actRemove_triggered();
+ void setLink();
+ void updatePointBox();
+
 protected:
 /**
  * For editing: only provides remove

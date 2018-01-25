@@ -60,6 +60,7 @@ protected:
   /*protected*/ void saveTableDetails(JTable* table);
   /*protected*/ void addItem(QWidget* c, int x, int y);
   QString gbStyleSheet;
+  /*protected*/ void storeValues();
 
   protected slots:
   /*protected*/ virtual void comboBoxActionPerformed(QWidget* ae);

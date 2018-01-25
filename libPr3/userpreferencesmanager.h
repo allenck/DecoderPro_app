@@ -206,7 +206,7 @@ public:
      * start with the package name (package.Class) for the
      * primary using class, followed by an identifier for the combobox
      */
-    /*public*/ virtual void addComboBoxLastSelection(QString /*comboBoxName*/, QString /*lastValue*/) {}
+    QT_DEPRECATED /*public*/ virtual void addComboBoxLastSelection(QString /*comboBoxName*/, QString /*lastValue*/) {}
 
     /**
     * returns the last selected value in a given combobox
@@ -239,8 +239,8 @@ public:
 
     /*public*/ virtual QSize getScreen() {return QSize();}
 
-    /*public*/ virtual void allowSave() {}
-    /*public*/ virtual void disallowSave() {}
+    QT_DEPRECATED /*public*/ virtual void allowSave() {}
+    QT_DEPRECATED /*public*/ virtual void disallowSave() {}
 
     /*public*/ virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) {}
 
@@ -279,7 +279,7 @@ public:
     * @param msgNumber The references number against which the Description is refering too.
     * @param defaultOption The default option for the given item.
     */
-    /*public*/ virtual void messageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QStringList /*msgOption*/, QList<int> /*msgNumber*/, int /*defaultOption*/) {}
+    QT_DEPRECATED /*public*/ virtual void messageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QStringList /*msgOption*/, QList<int> /*msgNumber*/, int /*defaultOption*/) {}
 
     /**
     * Add descriptive details about a specific message box, so that if it needs
@@ -291,7 +291,7 @@ public:
     * @param options A map of the integer value of the option against a meaningful description.
     * @param defaultOption The default option for the given item.
     */
-    /*public*/ virtual void messageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QMap<int, QString> /*options*/, int /*defaultOption*/) {}
+    QT_DEPRECATED /*public*/ virtual void messageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QMap<int, QString> /*options*/, int /*defaultOption*/) {}
 
     /**
     * Returns a map of the value against description of the different items in a
@@ -384,7 +384,17 @@ public:
      * @param strClass
      * @return true if the window position details are stored, false if not.
      */
-    /*public*/ virtual bool isWindowPositionSaved(QString /*strClass*/) {return false;}
+    QT_DEPRECATED /*public*/ virtual bool isWindowPositionSaved(QString strClass)
+    {
+     return this->hasProperties(strClass);
+    }
+    /**
+     * Check if there are properties for the given class
+     *
+     * @param strClass class to check
+     * @return true if properties for strClass are maintained; false otherwise
+     */
+    /*public*/ virtual bool hasProperties(QString /*strClass*/) {return false;}
 
     /*public*/ virtual bool getSaveWindowSize(QString /*strClass*/) {return false;}
 
@@ -424,7 +434,7 @@ public:
      * @param sort The sort order of the column
      * @param hidden Should the column be hidden
      */
-    /*public*/ virtual void setTableColumnPreferences(QString /*table*/, QString /*column*/, int /*order*/, int /*width*/, int /*sort*/, bool /*hidden*/) {}
+    QT_DEPRECATED /*public*/ virtual void setTableColumnPreferences(QString /*table*/, QString /*column*/, int /*order*/, int /*width*/, int /*sort*/, bool /*hidden*/) {}
 
     /**
      * Get the stored position of the column for a given table
@@ -432,7 +442,7 @@ public:
      * @param column The column name
      * @return -1 if not found
      */
-    /*public*/ virtual int getTableColumnOrder(QString /*table*/, QString /*column*/) {return 0;}
+    QT_DEPRECATED /*public*/ virtual int getTableColumnOrder(QString /*table*/, QString /*column*/) {return 0;}
 
     /**
      * Get the stored column width for a given table
@@ -440,7 +450,7 @@ public:
      * @param column The column name
      * @return -1 if not found
      */
-    /*public*/ virtual int getTableColumnWidth(QString /*table*/, QString /*column*/) {return 0;}
+    QT_DEPRECATED /*public*/ virtual int getTableColumnWidth(QString /*table*/, QString /*column*/) {return 0;}
 
     /**
      * Get the stored column sort order for a given table
@@ -448,7 +458,7 @@ public:
      * @param column The column name
      * @return 0 if not found
      */
-    /*public*/ virtual int getTableColumnSort(QString /*table*/, QString /*column*/) {return 0;}
+    QT_DEPRECATED /*public*/ virtual int getTableColumnSort(QString /*table*/, QString /*column*/) {return 0;}
 
     /**
      * Get the stored column hidden state for a given table
@@ -456,7 +466,7 @@ public:
      * @param column The column name
      * @return 0 if not found
      */
-    /*public*/ virtual bool getTableColumnHidden(QString /*table*/, QString /*column*/) {return false;}
+    QT_DEPRECATED /*public*/ virtual bool getTableColumnHidden(QString /*table*/, QString /*column*/) {return false;}
 
     /**
      * Get a name for a column at index i
@@ -464,20 +474,20 @@ public:
      * @param i The column index
      * returns null if not found, otherwise the column name
      */
-    /*public*/ virtual QString getTableColumnAtNum(QString /*table*/, int /*i*/) {return "";}
+    QT_DEPRECATED /*public*/ virtual QString getTableColumnAtNum(QString /*table*/, int /*i*/) {return "";}
 
     /**
      * Get a list of all the table preferences stored
      * @return a List of all the tables, if no tables exist then an empty list is returned
      */
-    /*public*/ virtual QStringList getTablesList() {return QStringList();}
+    QT_DEPRECATED /*public*/ virtual QStringList getTablesList() {return QStringList();}
 
     /**
      * Get a list of all the column settings for a specific table
      * @param table
      * @return a List of all the columns in a table, if the table is not valid an empty list is returned
      */
-    /*public*/ virtual QStringList getTablesColumnList(QString /*table*/) {return QStringList();}
+    QT_DEPRECATED /*public*/ virtual QStringList getTablesColumnList(QString /*table*/) {return QStringList();}
     /*
         Example informational message dialog box.
 

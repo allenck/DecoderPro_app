@@ -85,8 +85,8 @@ QString headName, JmriJFrame* frame);
     /*public*/ void setThroatToThroatFromMenu( LayoutTurnout* to, QString linkedTurnoutName, MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void setSignalsAtTToTTurnouts( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ LayoutTurnout* getLayoutTurnoutFromTurnout(Turnout* turnout, bool requireDoubleXover, QString str, JFrame* theFrame);
-    /*public*/ void setSensorsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, QFrame* theFrame);
-    /*public*/ void setSensorsAtBlockBoundary( MultiIconEditor* theEditor, QFrame* theFrame);
+    /*public*/ void setSensorsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JFrame* theFrame);
+    /*public*/ void setSensorsAtBlockBoundary( MultiIconEditor* theEditor, JFrame* theFrame);
     /*public*/ void setSignalMastsAtBlockBoundaryFromMenu(PositionablePoint* p);
     /*public*/ void setSignalMastsAtBlockBoundary();
     /*public*/ void setSensorsAtSlipFromMenu (LayoutSlip* slip, QVector<QString> blocks, MultiIconEditor* theEditor,
@@ -305,7 +305,7 @@ private:
     /*private*/ bool setSensorsAtBoundaryOpen;// = false;
     /*private*/ JmriJFrame* setSensorsAtBoundaryFrame;// = NULL;
 
-    /*private*/ QFrame* sensorFrame;// = NULL;
+    /*private*/ JFrame* sensorFrame;// = NULL;
 
     /*private*/ QPushButton* getAnchorSavedSignalMasts;// = NULL;
     /*private*/ QPushButton* setSignalMastsAtBoundaryDone;// = NULL;

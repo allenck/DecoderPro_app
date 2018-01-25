@@ -19,6 +19,8 @@
 #include"jsonsignalmastservicefactory.h"
 #include "jsonsignalheadservicefactory.h"
 #include "jsonreporterservicefactory.h"
+#include "jsonoperationsservicefactory.h"
+#include "jsonconsistservicefactory.h"
 
 /**
  * When used as a parameter to {@link #onMessage(java.lang.String)}, will
@@ -45,7 +47,8 @@
       << new JsonRosterServiceFactory() << new JsonBlockServiceFactory()
       << new JsonLightServiceFactory() << new JsonLayoutBlockServiceFactory()
       << new JsonMemoryServiceFactory() << new JsonSignalHeadServiceFactory()
-      << new JsonSignalMastServiceFactory() << new JsonReporterServiceFactory();
+      << new JsonSignalMastServiceFactory() << new JsonReporterServiceFactory()
+      << new JsonOperationsServiceFactory() << new JsonConsistServiceFactory();
 
  foreach(JsonServiceFactory* factory, list)
  {
@@ -136,8 +139,7 @@
  {
   //QString type = root.path(JSON::TYPE).asText();
 QString type = root.value(JSON::TYPE).toString();
-  //if (root.path(JSON::TYPE).isMissingNode() && root.path(JSON::LIST).isValueNode())
-  if(root.value(JSON::TYPE).toObject().isEmpty() && root.value(JSON::LIST).isString())
+  if (!root.contains(JSON::TYPE) && root.value(JSON::LIST).isString())
   {
       type = JSON::LIST;
   }
@@ -146,7 +148,7 @@ QString type = root.value(JSON::TYPE).toString();
   QJsonObject data = root.value(JSON::DATA).toObject();
 
 //        if (data.path(JSON::METHOD).isMissingNode() && root.path(JSON::METHOD).isValueNode())
-  if(data.value(JSON::METHOD).isNull() && data.value(JSON::METHOD).isObject())
+  if(data.value(JSON::METHOD).toString().isEmpty() && root.value(JSON::METHOD).isString())
   {
    //((ObjectNode) data).put(JSON::METHOD, root.path(JSON::METHOD).asText());
    data.insert(JSON::METHOD, root.value(JSON::METHOD).toString());
@@ -167,7 +169,7 @@ QString type = root.value(JSON::TYPE).toString();
       // so create one if the message did not contain one to avoid
       // special casing later
       data = this->connection->getObjectMapper().createObjectNode();
-      data.insert("","null");
+      data.insert("",/*"null"*/QJsonValue());
   }
   if(type == JSON::POWER && data.isEmpty())
   {
@@ -181,19 +183,22 @@ QString type = root.value(JSON::TYPE).toString();
   else
   if (type == (JSON::LIST) )
   {
-      QString list = root.value(JSON::LIST).toString();
-      if (this->services->value(list) != NULL)
-      {
-          foreach (JsonSocketService* service, *this->services->value(list)) {
-           QLocale locale = this->connection->getLocale();
-              service->onList(list, data, locale);
-          }
-          return;
-      } else {
-          log->warn(tr("Requested list type '%1' unknown.").arg(list));
-          this->sendErrorMessage(404, tr("Unknown object type %1 was requested.").arg(list));
-          return;
-      }
+   QString list = root.value(JSON::LIST).toString();
+   if (this->services->value(list) != NULL)
+   {
+    foreach (JsonSocketService* service, *this->services->value(list))
+    {
+     QLocale locale = this->connection->getLocale();
+     service->onList(list, data, locale);
+    }
+    return;
+   }
+   else
+   {
+    log->warn(tr("Requested list type '%1' unknown.").arg(list));
+    this->sendErrorMessage(404, tr("Unknown object type %1 was requested.").arg(list));
+    return;
+   }
   }
 #if 1
   else if (!data.isEmpty())
@@ -201,7 +206,7 @@ QString type = root.value(JSON::TYPE).toString();
    //switch (type) {
    if(type == JSON::HELLO || type == JSON::LOCALE )
    {
-    if (!data.value(JSON::LOCALE).isNull())
+    if (!data.value(JSON::LOCALE).isUndefined())
     {
         this->connection->setLocale(QLocale(data.value(JSON::LOCALE).toString()));
     }

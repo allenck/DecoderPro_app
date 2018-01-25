@@ -7,9 +7,10 @@
 ///*public*/ class JsonUtilSocketService extends JsonSocketService {
 
 
-/*public*/ JsonUtilSocketService::JsonUtilSocketService(JsonConnection* connection, QObject* parent) : JsonSocketService(connection, parent) {
-    //super(connection);
-    this->service = new JsonUtilHttpService(connection->getObjectMapper());
+/*public*/ JsonUtilSocketService::JsonUtilSocketService(JsonConnection* connection, QObject* parent) : JsonSocketService(connection, parent)
+{
+ //super(connection);
+ this->service = new JsonUtilHttpService(connection->getObjectMapper());
 }
 
 //@Override

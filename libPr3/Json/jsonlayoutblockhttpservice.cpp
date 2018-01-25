@@ -44,7 +44,7 @@
 /*public*/ QJsonObject JsonLayoutBlockHttpService::doPost(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
     LayoutBlock* layoutBlock = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(name);
     if (layoutBlock == NULL) {
-        throw  JsonException(404, tr(/*locale,*/ "Unable to access %1 {%2.").arg( JsonLayoutBlock::LAYOUTBLOCK).arg(name));
+        throw  JsonException(404, tr(/*locale,*/ "Unable to access %1 %2.").arg( JsonLayoutBlock::LAYOUTBLOCK).arg(name));
     }
     if (data.value(JSON::USERNAME).isString()) {
         layoutBlock->setUserName(data.value(JSON::USERNAME).toString());
@@ -53,14 +53,14 @@
         layoutBlock->setComment(data.value(JSON::COMMENT).toString());
     }
     //layoutBlock->state is a bogus construct, so don't expect valid results from this
-    if (!data.value(JSON::STATE).isNull()) {
+    if (!data.value(JSON::STATE).isUndefined()) {
         layoutBlock->setState(data.value(JSON::STATE).toInt());
     }
     return this->doGet(type, name, locale).toObject();
 }
 
 //@Override
-/*public*/ QJsonValue JsonLayoutBlockHttpService::doGetList(QString type, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonLayoutBlockHttpService::doGetList(QString /*type*/, QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray(); //this.mapper.createArrayNode();
     foreach (QString name, ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getSystemNameList()) {
         root.append(this->doGet(JsonLayoutBlock::LAYOUTBLOCK, name, locale));

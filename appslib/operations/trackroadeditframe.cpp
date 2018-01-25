@@ -301,7 +301,7 @@ namespace Operations
   {
    roadNameAll->setChecked(true);
   }
-  panelRoads->repaint();
+  //panelRoads->repaint();
   panelRoads->update();
  }
 

@@ -1,6 +1,6 @@
 #include "rostergroupselector.h"
 
-RosterGroupSelector::RosterGroupSelector(QObject *parent) : QObject(parent)
+RosterGroupSelector::RosterGroupSelector(QWidget* parent) : QComboBox(parent)
 {
 
 }

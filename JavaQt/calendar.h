@@ -255,6 +255,8 @@ enum STAMPVALS
 /*public*/ void set(int field, int value);
 /*public*/ /*final*/ void set(int year, int month, int date);
 /*public*/ /*final*/ void set(int year, int month, int date, int hourOfDay, int minute);
+/*public*/ /*final*/ QDateTime getTime();
+/*public*/ /*final*/ void setTime(QDateTime date);
 
 
 signals:

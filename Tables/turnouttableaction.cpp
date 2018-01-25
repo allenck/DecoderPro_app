@@ -93,7 +93,7 @@ void TurnoutTableAction::common()
  numberToAdd = new JTextField(5);
  range = new QCheckBox("Add a range");
  sysNameLabel = new QLabel("Hardware Address");
- userNameLabel = new QLabel(tr("LabelUserName"));
+ userNameLabel = new QLabel(tr("User Name"));
  systemSelectionCombo = this->getName()+".SystemSelected";
  userNameError = this->getName()+".DuplicateUserName";
  log = new Logger("TurnoutTableAction");

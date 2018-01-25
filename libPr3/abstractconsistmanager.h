@@ -22,12 +22,12 @@ public:
     /**
      *    Does this implementation support a command station consist?
      **/
-    /*abstract public*/ virtual bool isCommandStationConsistPossible() = 0;
+ /*abstract public*/ virtual bool isCommandStationConsistPossible() {return false;}
     /**
      *    Does a CS consist require a seperate consist address?
     *    (or is the lead loco to be used for the consist address)
      **/
-    /*abstract public*/ virtual bool csConsistNeedsSeperateAddress() = 0;
+    /*abstract public*/ virtual bool csConsistNeedsSeperateAddress() {return false;}
     /**
     *  Return the list of consists we know about.
     **/
@@ -53,13 +53,13 @@ public:
      * Notify the registered Consist List Listener objects that the
      * Consist List has changed.
      */
-    /*public*/ virtual void notifyConsistListChanged();
 
 signals:
-    void consistListChanged();
+
 public slots:
+    /*public*/ virtual void notifyConsistListChanged();
 private:
-    /*private*/ QList<ConsistListListener*>* ChangeListeners ;
+    /*private*/ QList<ConsistListListener*>* changeListeners ;
 
 protected:
     /*protected*/ QHash<DccLocoAddress*,Consist*>* consistTable;

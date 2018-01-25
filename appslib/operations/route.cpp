@@ -290,21 +290,26 @@ return out;
 *
 * @return list of RouteLocations ordered by sequence
 */
-/*public*/ QList<RouteLocation*>* Route::getLocationsBySequenceList() {
-// now re-sort
-QList<RouteLocation*>* out = new QList<RouteLocation*>();
-foreach (RouteLocation* rl, getLocationsByIdList()) {
-    for (int j = 0; j < out->size(); j++) {
-        if (rl->getSequenceId() < out->value(j)->getSequenceId()) {
-            out->insert(j, rl);
-            break;
-        }
-    }
-    if (!out->contains(rl)) {
-        out->append(rl);
-    }
-}
-return out;
+/*public*/ QList<RouteLocation*>* Route::getLocationsBySequenceList()
+{
+ // now re-sort
+ QList<RouteLocation*>* out = new QList<RouteLocation*>();
+ foreach (RouteLocation* rl, getLocationsByIdList())
+ {
+  for (int j = 0; j < out->size(); j++)
+  {
+   if (rl->getSequenceId() < out->value(j)->getSequenceId())
+   {
+    out->insert(j, rl);
+    break;
+   }
+  }
+  if (!out->contains(rl))
+  {
+    out->append(rl);
+  }
+ }
+ return out;
 }
 
  /**

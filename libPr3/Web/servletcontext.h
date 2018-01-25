@@ -12,7 +12,29 @@ public:
 
     /*public*/ virtual  QString getContextPath() {return "";}
 
-    /*public*/ virtual  ServletContext* getContext(QString /*string*/) {return NULL;}
+ /**
+      * Returns a <code>ServletContext</code> object that
+      * corresponds to a specified URL on the server.
+      *
+      * <p>This method allows servlets to gain
+      * access to the context for various parts of the server, and as
+      * needed obtain {@link RequestDispatcher} objects from the context.
+      * The given path must be begin with "/", is interpreted relative
+      * to the server's document root and is matched against the context roots of
+      * other web applications hosted on this container.
+      *
+      * <p>In a security conscious environment, the servlet container may
+      * return <code>null</code> for a given URL.
+      *
+      * @param uripath a <code>String</code> specifying the context path of
+      * another web application in the container.
+      * @return the <code>ServletContext</code> object that
+      * corresponds to the named URL, or null if either none exists or the
+      * container wishes to restrict this access.
+      *
+      * @see RequestDispatcher
+      */
+      /*public*/ virtual  ServletContext* getContext(QString /*string*/) {return NULL;}
 
     /*public*/ virtual  int getMajorVersion() {return 0;}
 

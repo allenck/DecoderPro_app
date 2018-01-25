@@ -25,7 +25,7 @@ namespace Operations
   Q_OBJECT
  public:
   explicit TrainCommon(QObject *parent = 0);
-  /*public*/ static QString getDate(QDate date);
+  /*public*/ static QString getDate(QDateTime date);
   /*public*/ static QString getDate(bool isModelYear);
   /*public*/ static bool isThereWorkAtLocation(Train* train, Location* location);
   /*public*/ static QString splitString(QString name);
@@ -34,8 +34,8 @@ namespace Operations
   /*public*/ QString getPickupCarHeader(bool isManifest, bool isTwoColumnTrack);
   /*public*/ QString getDropCarHeader(bool isManifest, bool isTwoColumnTrack);
   /*public*/ static /*final*/ QString LENGTHABV;// = Setup.LENGTHABV; // Length symbol
-  /*public*/ QString pickupEngine(Engine* engine);
-  /*public*/ QString dropEngine(Engine* engine);
+  /*public*/ virtual QString pickupEngine(Engine* engine);
+  /*public*/ virtual QString dropEngine(Engine* engine);
   /*public*/ static QString padString(QString s, int fieldSize);
   /*public*/ static /*final*/ bool LOCAL;//= true;
   /*public*/ static /*final*/ bool IS_TWO_COLUMN_TRACK;//= true;
@@ -62,6 +62,7 @@ namespace Operations
   /*public*/ void printCarHeader(PrintWriter* file, bool isManifest, bool isTwoColumnTrack);
   /*public*/ QString setoutUtilityCars(QList<Car*>* carList, Car* car, bool isLocal, bool isManifest);
   /*public*/ int countSetoutUtilityCars(QList<Car*>* carList, Car* car, bool isLocal, bool isManifest);
+  /*public*/ static QString getISO8601Date(bool isModelYear);
 
  signals:
 
@@ -161,6 +162,8 @@ protected:
  friend class TrainSwitchLists;
  friend class Train;
  friend class TrainManager;
+ friend class HtmlTrainCommon;
+ friend class JsonManifest;
  };
 }
 #endif // TRAINCOMMON_H

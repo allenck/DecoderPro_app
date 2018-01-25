@@ -595,7 +595,7 @@ public:
         LayoutEditor->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(LayoutEditor);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1240, 22));
+        menuBar->setGeometry(QRect(0, 0, 1240, 19));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuOptions = new QMenu(menuBar);

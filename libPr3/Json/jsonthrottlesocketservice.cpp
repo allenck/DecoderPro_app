@@ -14,7 +14,7 @@
 
 /*public*/ JsonThrottleSocketService::JsonThrottleSocketService(JsonConnection* connection, QObject* parent) : JsonSocketService(connection, parent)
 {
-   // super(connection);
+ // super(connection);
  throttles = new QMap<QString, JsonThrottle*>();
  throttleIds = new QMap<JsonThrottle*, QString>();
 }

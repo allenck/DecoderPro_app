@@ -13,6 +13,7 @@
 #include "helputil.h"
 #include "panelmenu.h"
 #include "jmrijframeinterface.h"
+#include "rostergroupselector.h"
 
 //JmriJFrame::JmriJFrame(QWidget *parent) :
 //    QMainWindow(parent)
@@ -70,7 +71,7 @@
 /*public*/ JmriJFrame::JmriJFrame(bool saveSize, bool savePosition, QWidget *parent) : JFrame(parent)
 {
 //super();
-    init(saveSize, savePosition);
+ init(saveSize, savePosition);
 }
 
 /**
@@ -79,11 +80,7 @@
  */
 /*public*/ JmriJFrame::JmriJFrame(QWidget *parent) : JFrame(parent)  {
     //this(true, true);
- //if(qobject_cast<JFrame*>(parent) != NULL)
-
-    init(true, true);
-//    reuseFrameSavedPosition=true;
-//    reuseFrameSavedSized=true;
+ init(true, true);
 }
 
 /**
@@ -97,8 +94,6 @@
  setWindowTitle(name);
  init(true, true);
  //this(name, true, true);
-// reuseFrameSavedPosition=true;
-// reuseFrameSavedSized=true;
  generateWindowRef();
  if (metaObject()->className()==("JmriJFrame"))
  {
@@ -120,8 +115,6 @@
 {
  //this(saveSize, savePosition);
  init(saveSize, savePosition);
- //reuseFrameSavedPosition=savePosition;
- //reuseFrameSavedSized=saveSize;
 
  setWindowTitle(name);
 #if 1
@@ -142,7 +135,7 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  //reuseFrameSavedSized = true;
 
  allowInFrameServlet = true;
- properties = new QMap<QString, QObject>();
+ properties = new QMap<QString, QVariant>();
  QDesktopWidget* w = QApplication::desktop();
  //setMinimumSize(100,20); // already done in JFrame!
  setMaximumHeight(w->height() - 100);
@@ -195,8 +188,36 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
      setFrameLocation();
  }
 }
+/**
+  * This function does not exist in the original JMRI Java code. Because C++ subclasses
+  * are not yet constructed when JmriJFrame is the superclass, the classname that is
+  * returned while performing the constructor does not refelect the ultimate classname.
+  * Therefore, this function should be called preferably with the original java class
+  * name for the subclass. That way, preferences will refer to the correct class when
+  * JRMI (java version) uses these preferences.
+  *
+  * This function will insure that size and location are saved for the subclass in
+  * the preferences.
+  * /
+/*public*/ void JmriJFrame::setFrameRef(QString initref)
+{
+ int refNo = 1;
+ QString ref = initref;
 
-
+ for(int i = 0; i<frameList->size();i++)
+ {
+  JmriJFrame* j = frameList->at(i);
+  if(j == NULL)
+   continue;
+  if(j!=this && j->getWindowFrameRef()==(ref))
+  {
+      ref = initref+":"+QString::number(refNo);
+      refNo++;
+  }
+ }
+ this->windowFrameRef = ref;
+ setFrameLocation();
+}
 
 #if 0
 /**
@@ -211,7 +232,7 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
 #endif
 void JmriJFrame::setFrameLocation()
 {
- UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
  if ((prefsMgr != NULL) && (prefsMgr->isWindowPositionSaved(windowFrameRef)))
  {
   //QSize screen = getToolkit().getScreenSize();
@@ -220,7 +241,7 @@ void JmriJFrame::setFrameLocation()
   if ((reuseFrameSavedPosition) && (!((prefsMgr->getWindowLocation(windowFrameRef).x()>=screen.width()) ||
             (prefsMgr->getWindowLocation(windowFrameRef).y()>=screen.height()))))
   {
-      if (log->isDebugEnabled()) log->debug("setFrameLocation 1st clause sets location to "+QString::number(prefsMgr->getWindowLocation(windowFrameRef).x()) + ","+QString::number(prefsMgr->getWindowLocation(windowFrameRef).y()));
+   if (log->isDebugEnabled()) log->debug("setFrameLocation 1st clause sets location to "+QString::number(prefsMgr->getWindowLocation(windowFrameRef).x()) + ","+QString::number(prefsMgr->getWindowLocation(windowFrameRef).y()));
             this->move(prefsMgr->getWindowLocation(windowFrameRef));
   }
   /* Simple case that if either height or width are zero, then we should
@@ -238,21 +259,24 @@ void JmriJFrame::setFrameLocation()
 #endif
   }
 
-        /* We just check to make sure that having set the location
-        that we do not have anther frame with the same class name and title
-        in the same location, if it is we offset */
-        for(int i = 0; i<frameList->size();i++){
-            JmriJFrame* j = frameList->at(i);
-            if(j->metaObject()->className()==(this->metaObject()->className())
-                && (j->isMinimized()) && (j->isVisible())
-                    && j->windowTitle()==(windowTitle())) {
-                if ((j->pos().x()==this->pos().x()) && (j->pos().y()==this->pos().y())){
-                    if (log->isDebugEnabled()) log->debug("setFrameLocation 3rd clause calls offSetFrameOnScreen("+j->windowTitle()+")");
-                    offSetFrameOnScreen(j);
-                }
-            }
-        }
+  /* We just check to make sure that having set the location
+  that we do not have anther frame with the same class name and title
+  in the same location, if it is we offset */
+  for(int i = 0; i<frameList->size();i++)
+  {
+   JmriJFrame* j = frameList->at(i);
+   if(j->metaObject()->className()==(this->metaObject()->className())
+       && (j->isMinimized()) && (j->isVisible())
+           && j->windowTitle()==(windowTitle()))
+   {
+    if ((j->pos().x()==this->pos().x()) && (j->pos().y()==this->pos().y()))
+    {
+     if (log->isDebugEnabled()) log->debug("setFrameLocation 3rd clause calls offSetFrameOnScreen("+j->windowTitle()+")");
+     offSetFrameOnScreen(j);
     }
+   }
+  }
+ }
 }
 
 /**
@@ -1057,6 +1081,16 @@ void JmriJFrame::setTitle(QString name)
  QMainWindow::setWindowTitle(name);
 }
 QString JmriJFrame::getTitle() { return windowTitle();}
+
+//@Override
+/*public*/ QVariant JmriJFrame::getProperty(QString key)
+{
+ if (properties->contains(key)) {
+     return properties->value(key);
+ }
+ //return Beans.getIntrospectedProperty(this, key);
+ return QVariant();
+}
 
 QWidget* JmriJFrame::getContentPane()
 {

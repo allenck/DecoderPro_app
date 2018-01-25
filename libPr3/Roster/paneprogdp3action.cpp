@@ -311,9 +311,9 @@ if (p == NULL) {
   rosterPanel->layout()->removeWidget(progPane);
   progPane = NULL;
 //  rosterPanel->revalidate();
-  f->getContentPane()->repaint();
-  f->repaint();
-  f->pack();
+  //f->getContentPane()->repaint();
+  f->update();
+  f->adjustSize();
  }
  if (InstanceManager::programmerManagerInstance() != NULL &&
     InstanceManager::programmerManagerInstance()->isGlobalProgrammerAvailable()){

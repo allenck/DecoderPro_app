@@ -157,6 +157,7 @@ static QObject* getDefault(QString type);
 //static <T> T getDefault(class<T> type);
 static /*public*/ QObject* getNullableDefault(QString type);
 static /*public*/ QObject* getOptionalDefault(QString type);
+/*public*/ static QString getDefaultsPropertyName(QString clazz);
 
 /**
  * Set an object of type T as the default for that type.

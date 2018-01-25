@@ -1,10 +1,10 @@
 #ifndef ROSTERGROUPCOMBOBOX_H
 #define ROSTERGROUPCOMBOBOX_H
 
-#include <QComboBox>
+#include "rostergroupselector.h"
 #include "roster.h"
 
-class LIBPR3SHARED_EXPORT RosterGroupComboBox : public QComboBox
+class LIBPR3SHARED_EXPORT RosterGroupComboBox : public RosterGroupSelector
 {
     Q_OBJECT
 public:

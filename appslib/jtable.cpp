@@ -3633,7 +3633,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
 //    newModel.addListSelectionListener(this);
 
   firePropertyChange("selectionModel", VPtr<ListSelectionModel>::asQVariant(oldModel), VPtr<ListSelectionModel>::asQVariant(newModel));
-  repaint();
+  update();
  }
 }
 
@@ -4103,7 +4103,7 @@ private void repaintSortedRows(ModelChange change) {
     else {
         // Repositioning handled in BasicTableUI
         this->editingRow = editingRow;
-        repaint();
+        update();
     }
 }
 
@@ -5483,7 +5483,7 @@ static class BooleanEditor extends DefaultCellEditor {
  */
 /*protected*/ void JTable::resizeAndRepaint() {
     //revalidate();
-    repaint();
+    update();
 }
 #if 0
 /**

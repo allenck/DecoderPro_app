@@ -1088,7 +1088,7 @@ if (!anyDrops->isChecked())
       anyPickups->setChecked(true);
   }
   pickupPanel->update();
-  pickupPanel->repaint();
+  //pickupPanel->repaint();
   update();
  }
 

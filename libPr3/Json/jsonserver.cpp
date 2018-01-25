@@ -68,7 +68,7 @@ void JsonServer::common()
 //        }
 //    };
     settings = JsonServerPreferences::getDefault();
-    port = settings->getHeartbeatInterval();
+    port = settings->getPort();
     timeout = settings->getHeartbeatInterval();
     clients = new QLinkedList<JsonClientRxHandler*>();
 }

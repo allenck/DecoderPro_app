@@ -52,35 +52,41 @@ _identity = "";
  File* identityFile = this->identityFile();
  if (identityFile->exists())
  {
-//        try {
-  QDomDocument doc;// = (new SAXBuilder()).build(identityFile);
-  QFile* f = new QFile(identityFile->getPath());
-  if(f->open(QIODevice::ReadOnly))
+  try
   {
-   doc.setContent(f);
+   QDomDocument doc;// = (new SAXBuilder()).build(identityFile);
+   QFile* f = new QFile(identityFile->getPath());
+   if(f->open(QIODevice::ReadOnly))
+   {
+    doc.setContent(f);
+   }
+   else throw IOException(identityFile->getPath());
+   QString id = doc.documentElement().firstChildElement(NODE_IDENTITY).attribute(NODE_IDENTITY);
+   this->_formerIdentities->clear();
+  //            doc.getRootElement().getChild(FORMER_IDENTITIES).getChildren().stream().forEach((e) -> {
+  //                this->formerIdentities.add(e.getAttributeValue(NODE_IDENTITY));
+  //            });
+   QDomNodeList nl = doc.documentElement().firstChildElement(FORMER_IDENTITIES).childNodes();
+   for(int i = 0; i < nl.size(); i++)
+   {
+    QDomElement e = nl.at(i).toElement();
+    this->_formerIdentities->append(e.attribute(NODE_IDENTITY));
+   }
+   if (!this->validateIdentity(id))
+   {
+    log->debug(tr("Node identity %1 is invalid. Generating new node identity.").arg(id));
+    this->_formerIdentities->append(id);
+    this->getIdentity(true);
+   }
+   else
+   {
+    this->getIdentity(true);
+   }
   }
-  QString id = doc.documentElement().firstChildElement(NODE_IDENTITY).attribute(NODE_IDENTITY);
-  this->_formerIdentities->clear();
- //            doc.getRootElement().getChild(FORMER_IDENTITIES).getChildren().stream().forEach((e) -> {
- //                this->formerIdentities.add(e.getAttributeValue(NODE_IDENTITY));
- //            });
-  QDomNodeList nl = doc.documentElement().firstChildElement(FORMER_IDENTITIES).childNodes();
-  for(int i = 0; i < nl.size(); i++)
-  {
-   QDomElement e = nl.at(i).toElement();
-   this->_formerIdentities->append(e.attribute(NODE_IDENTITY));
-  }
-  if (!this->validateIdentity(id)) {
-      log->debug(tr("Node identity %1 is invalid. Generating new node identity.").arg(id));
-      this->_formerIdentities->append(id);
+  catch (/*JDOMException |*/ IOException ex) {
+      log->error(tr("Unable to read node identities: %1").arg( ex.getLocalizedMessage()));
       this->getIdentity(true);
-  } else {
-      this->getIdentity(true);
   }
-//        } catch (JDOMException | IOException ex) {
-//            log->error("Unable to read node identities: {}", ex.getLocalizedMessage());
-//            this->getIdentity(true);
-//        }
  } else {
      this->getIdentity(true);
  }
@@ -229,12 +235,16 @@ _identity = "";
     }
     identityElement.setAttribute(NODE_IDENTITY, this->_identity);
    // this->formerIdentities.stream().forEach((formerIdentity) -> {
+    QString oldIdentity;
     foreach(QString formerIdentity, *this->_formerIdentities)
     {
-        log->debug(tr("Retaining former node identity %1").arg(formerIdentity));
-        QDomElement e = doc.createElement(NODE_IDENTITY);
-        e.setAttribute(NODE_IDENTITY, formerIdentity);
-        formerIdentitiesElement.appendChild(e);
+     if(oldIdentity == formerIdentity)
+      continue;
+     log->debug(tr("Retaining former node identity %1").arg(formerIdentity));
+     QDomElement e = doc.createElement(NODE_IDENTITY);
+     e.setAttribute(NODE_IDENTITY, formerIdentity);
+     formerIdentitiesElement.appendChild(e);
+     oldIdentity = formerIdentity;
     } //);
     root.appendChild(identityElement);
     root.appendChild(formerIdentitiesElement);

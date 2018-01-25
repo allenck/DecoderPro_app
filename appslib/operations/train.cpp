@@ -39,6 +39,11 @@
 #include "trainprintutilities.h"
 #include "trainbuilder.h"
 #include "kernel.h"
+#include "jsonmanifest.h"
+#include "traincsvmanifest.h"
+#include <QTextEdit>
+#include "traincustommanifest.h"
+#include "joptionpane.h"
 
 //Train::Train(QObject *parent) :
 //  QObject(parent)
@@ -99,16 +104,16 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Train::TRAIN_IN_ROUTE = tr("TrainInRoute");
  /*public*/ /*static*/ /*final*/ QString Train::TERMINATED = tr("Terminated");
 
- // Train status codes
- /*public*/ /*static*/ /*final*/ int Train::CODE_TRAIN_RESET = 0;
- /*public*/ /*static*/ /*final*/ int Train::CODE_RUN_SCRIPTS = 0x100;
- /*public*/ /*static*/ /*final*/ int Train::CODE_BUILDING = 0x01;
- /*public*/ /*static*/ /*final*/ int Train::CODE_BUILD_FAILED = 0x02;
- /*public*/ /*static*/ /*final*/ int Train::CODE_BUILT = 0x10;
- /*public*/ /*static*/ /*final*/ int Train::CODE_PARTIAL_BUILT = CODE_BUILT + 0x04;
- /*public*/ /*static*/ /*final*/ int Train::CODE_TRAIN_EN_ROUTE = CODE_BUILT + 0x08;
- /*public*/ /*static*/ /*final*/ int Train::CODE_TERMINATED = 0x80;
- /*public*/ /*static*/ /*final*/ int Train::CODE_UNKNOWN = 0xFFFF;
+// // Train status codes
+// /*public*/ /*static*/ /*final*/ int Train::CODE_TRAIN_RESET = 0;
+// /*public*/ /*static*/ /*final*/ int Train::CODE_RUN_SCRIPTS = 0x100;
+// /*public*/ /*static*/ /*final*/ int Train::CODE_BUILDING = 0x01;
+// /*public*/ /*static*/ /*final*/ int Train::CODE_BUILD_FAILED = 0x02;
+// /*public*/ /*static*/ /*final*/ int Train::CODE_BUILT = 0x10;
+// /*public*/ /*static*/ /*final*/ int Train::CODE_PARTIAL_BUILT = CODE_BUILT + 0x04;
+// /*public*/ /*static*/ /*final*/ int Train::CODE_TRAIN_EN_ROUTE = CODE_BUILT + 0x08;
+// /*public*/ /*static*/ /*final*/ int Train::CODE_TERMINATED = 0x80;
+// /*public*/ /*static*/ /*final*/ int Train::CODE_UNKNOWN = 0xFFFF;
 
  // train requirements
  /*public*/ /*static*/ /*final*/ int Train::NO_CABOOSE_OR_FRED = 0; // default
@@ -827,17 +832,16 @@ _roadList = QStringList();
   * @return Human-readable status
   */
  /*public*/ QString Train::getStatus() {
-     // TODO:return this->getStatus(Locale->getDefault());
-return "??";
+   return this->getStatus(QLocale());
  }
-#if 0
+
  /**
   * Get train's status in the specified locale.
   *
   * @param locale
   * @return Human-readable status
   */
- /*public*/ QString getStatus(Locale locale) {
+ /*public*/ QString Train::getStatus(QLocale locale) {
      return this->getStatus(locale, this->getStatusCode());
  }
 
@@ -848,34 +852,35 @@ return "??";
   * @param code requested status
   * @return Human-readable status
   */
- /*public*/ QString getStatus(Locale locale, int code) {
-     switch (code) {
-         case CODE_RUN_SCRIPTS:
-             return RUN_SCRIPTS;
-         case CODE_BUILDING:
-             return BUILDING;
-         case CODE_BUILD_FAILED:
-             return BUILD_FAILED;
-         case CODE_BUILT:
-             // getNumberCarsWorked() is assumed to be constant if status is "built" or "partially built"
-             return tr(locale, "StatusBuilt", this->getNumberCarsWorked()); // NOI18N
-         case CODE_PARTIAL_BUILT:
-             // 0 should be number of cars requested to be worked
-             return tr(locale, "StatusPartialBuilt", this->getNumberCarsWorked(), this
-                     ->getNumberCarsRequested()); // NOI18N
-         case CODE_TERMINATED:
-             return tr(locale, "StatusTerminated", this->getTerminationDate()); // NOI18N
-         case CODE_TRAIN_EN_ROUTE:
-             return tr(locale, "StatusEnRoute", this->getNumberCarsInTrain(), this->getTrainLength(), Setup
-                     ->getLengthUnit().toLower(), this->getTrainWeight()); // NOI18N
-         case CODE_TRAIN_RESET:
-             return TRAIN_RESET;
-         case CODE_UNKNOWN:
-         default:
-             return UNKNOWN;
-     }
+ /*public*/ QString Train::getStatus(QLocale /*locale*/, int code)
+{
+  switch (code) {
+      case CODE_RUN_SCRIPTS:
+          return RUN_SCRIPTS;
+      case CODE_BUILDING:
+          return BUILDING;
+      case CODE_BUILD_FAILED:
+          return BUILD_FAILED;
+      case CODE_BUILT:
+          // getNumberCarsWorked() is assumed to be constant if status is "built" or "partially built"
+          return tr(/*locale,*/ "Built %1 cars").arg(this->getNumberCarsWorked()); // NOI18N
+      case CODE_PARTIAL_BUILT:
+          // 0 should be number of cars requested to be worked
+          return tr(/*locale,*/ "Partial %1/%2 cars").arg(this->getNumberCarsWorked()).arg(this
+                  ->getNumberCarsRequested()); // NOI18N
+      case CODE_TERMINATED:
+          return tr(/*locale,*/ "Terminated %1").arg(this->getTerminationDate()); // NOI18N
+      case CODE_TRAIN_EN_ROUTE:
+          return tr(/*locale,*/ "Train en route %1 cars, %2 %3, %4 tons").arg(this->getNumberCarsInTrain()).arg(this->getTrainLength()).arg(Setup
+                  ::getLengthUnit().toLower()).arg(this->getTrainWeight()); // NOI18N
+      case CODE_TRAIN_RESET:
+          return TRAIN_RESET;
+      case CODE_UNKNOWN:
+      default:
+          return UNKNOWN;
+  }
  }
-
+#if 0
  /*public*/ QString getMRStatus() {
      switch (this._statusCode) {
          case CODE_PARTIAL_BUILT:
@@ -1533,8 +1538,7 @@ if (roads.length() == 0) {
   * @return true if this train can service the car->
   */
  /*public*/ bool Train::services(Car* car) {
-    // return services(NULL, car);
-  return true; // TODO:
+    return services(NULL, car);
  }
 
  /*protected*/ /*static*/ /*final*/ QString Train::SEVEN = "7"; //Setup::BUILD_REPORT_VERY_DETAILED;
@@ -2468,9 +2472,18 @@ if (roads.length() == 0) {
      }
  }
 
- /*public*/ QString Train ::getComment() {
-     return _comment;
+/*public*/ QString Train ::getComment(bool asText)
+{
+ if(asText)
+ {
+  QTextEdit* edit = new QTextEdit(_comment);
+  return edit->toPlainText();
  }
+ return _comment;
+}
+// /*public*/ QString Train ::getComment() {
+//     return _comment;
+// }
 
  /**
   * Add a script to run before a train is built
@@ -2979,16 +2992,16 @@ if (roads.length() == 0) {
   if (isModified())
   {
    new TrainManifest(this);
-#if 0
+
    try {
-       new JsonManifest(this).build();
+       (new JsonManifest(this))->build();
    } catch (IOException ex) {
-       log->error("Unable to create JSON manifest {}", ex->getLocalizedMessage());
+       log->error(tr("Unable to create JSON manifest %1").arg(ex.getLocalizedMessage()));
    }
    if (Setup::isGenerateCsvManifestEnabled()) {
        new TrainCsvManifest(this);
    }
-#endif
+
   }
   File* file = TrainManagerXml::instance()->getTrainManifestFile(getName());
   if (!file->exists())
@@ -3026,57 +3039,57 @@ if (roads.length() == 0) {
  }
 
  /*public*/ bool Train::openFile() {
-#if 0
      File* file = createCSVManifestFile();
-     if (file ==NULL|| !file.exists()) {
-         log->warn("CSV manifest file missing for train {}", getName());
+     if (file ==NULL|| !file->exists()) {
+         log->warn(tr("CSV manifest file missing for train %1").arg(getName()));
          return false;
      }
-     TrainUtilities.openDesktop(file);
+#if 0 // TODO:
+     TrainUtilities::openDesktop(file);
 #endif
      return true;
  }
-#if 0
-/*public*/ bool runFile() {
-     File file = createCSVManifestFile();
-     if (file ==NULL|| !file.exists()) {
-         log->warn("CSV manifest file missing for train {}", getName());
-         return false;
-     }
-     // Set up to process the CSV file by the external Manifest program
-     TrainCustomManifest.addCVSFile(file);
-     if (!TrainCustomManifest.process()) {
-         if (!TrainCustomManifest.manifestCreatorFileExists()) {
-             JOptionPane.showMessageDialog(NULL,
-                     tr("LoadDirectoryNameFileName").arg(
-                             TrainCustomManifest->getDirectoryName(), TrainCustomManifest->getFileName()}), Bundle
-                     ->getMessage("ManifestCreatorNotFound"), JOptionPane.ERROR_MESSAGE);
-         }
-         return false;
-     }
-     return true;
+
+/*public*/ bool Train::runFile()
+ {
+  File* file = createCSVManifestFile();
+  if (file ==NULL|| !file->exists()) {
+      log->warn(tr("CSV manifest file missing for train %1").arg(getName()));
+      return false;
+  }
+  // Set up to process the CSV file by the external Manifest program
+  TrainCustomManifest::instance()->addCVSFile(file);
+  if (!TrainCustomManifest::instance()->process())
+  {
+   if (!TrainCustomManifest::instance()->excelFileExists())
+   {
+       JOptionPane::showMessageDialog(NULL, tr(" Excel File that you want to run. Directory name: %1, File name: %2").arg(TrainCustomManifest::instance()->getDirectoryName()).arg(TrainCustomManifest::instance()->getFileName()), tr("Manifest Creator Excel file not found!"), JOptionPane::ERROR_MESSAGE);
+   }
+   return false;
+  }
+  return true;
  }
 
- /*public*/ File createCSVManifestFile() {
+ /*public*/ File* Train::createCSVManifestFile() {
      if (isModified()) {
          new TrainManifest(this);
          try {
-             new JsonManifest(this).build();
+             (new JsonManifest(this))->build();
          } catch (IOException ex) {
-             log->error("Unable to create JSON manifest {}", ex->getLocalizedMessage());
+             log->error(tr("Unable to create JSON manifest %1").arg(ex.getLocalizedMessage()));
          }
          if (Setup::isGenerateCsvManifestEnabled()) {
              new TrainCsvManifest(this);
          }
      }
-     File file = TrainManagerXml::instance()->getTrainCsvManifestFile(getName());
-     if (!file.exists()) {
+     File* file = TrainManagerXml::instance()->getTrainCsvManifestFile(getName());
+     if (!file->exists()) {
          log->warn("CSV manifest file was not created for train " + getName());
          return NULL;
      }
      return file;
  }
-#endif
+
  /*private*/ void Train::setPrinted(bool printed) {
      bool old = _printed;
      _printed = printed;
@@ -3105,7 +3118,7 @@ if (roads.length() == 0) {
  /*public*/ bool getPrinted() {
      return _printed;
  }
-
+#endif
 
  /**
   * Sets the panel position for the train icon for the current route
@@ -3113,7 +3126,7 @@ if (roads.length() == 0) {
   *
   * @return true if train coordinates can be set
   */
- /*public*/ bool setTrainIconCoordinates() {
+ /*public*/ bool Train::setTrainIconCoordinates() {
      if (Setup::isTrainIconCordEnabled()) {
          _trainIconRl->setTrainIconX(_trainIcon->getX());
          _trainIconRl->setTrainIconY(_trainIcon->getY());
@@ -3121,7 +3134,7 @@ if (roads.length() == 0) {
      }
      return false;
  }
-#endif
+
  /**
   * Terminate train.
   */

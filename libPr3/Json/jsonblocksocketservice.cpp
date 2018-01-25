@@ -15,11 +15,11 @@
 ///*public*/ class JsonBlockSocketService extends JsonSocketService {
 
 
-/*public*/ JsonBlockSocketService::JsonBlockSocketService(JsonConnection* connection, QObject* parent) : JsonSocketService(connection, parent){
+/*public*/ JsonBlockSocketService::JsonBlockSocketService(JsonConnection* connection, QObject* parent) : JsonSocketService(connection, parent)
+{
    //super(connection);
-blocks = new QMap<QString, BlockListener*>();
-
-    this->service = new JsonBlockHttpService(connection->getObjectMapper());
+ blocks = new QMap<QString, BlockListener*>();
+ this->service = new JsonBlockHttpService(connection->getObjectMapper());
 }
 
 //@Override

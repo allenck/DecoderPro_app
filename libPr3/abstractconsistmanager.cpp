@@ -5,7 +5,7 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
 {
     consistTable = new QHash<DccLocoAddress*,Consist*>();
     consistList = new QList<DccLocoAddress*>();
-    ChangeListeners = new QList<ConsistListListener*>();
+    changeListeners = new QList<ConsistListListener*>();
 
 }
 /**
@@ -103,7 +103,7 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
  * @param listener a Consist List Listener object.
  */
 /*public*/ void AbstractConsistManager::addConsistListListener(ConsistListListener* l){
-   ChangeListeners->append(l);
+   changeListeners->append(l);
 }
 
 /*
@@ -112,7 +112,7 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
  * @param listener a Consist List Listener object.
  */
 /*public*/ void AbstractConsistManager::removeConsistListListener(ConsistListListener* l){
-   ChangeListeners->removeAt(ChangeListeners->indexOf(l));
+   changeListeners->removeAt(changeListeners->indexOf(l));
 }
 
 /*

@@ -87,6 +87,7 @@ namespace Operations
 
   /*public*/ static int reportFontSize; //=10;
   /*public*/ static QString reportFontName; //=""; // use default
+  /*public*/ static int excelWaitTime;// = 120; // in seconds
 
   /*public*/ static QDomElement store();
   /*public*/ static void load(QDomElement e);

@@ -296,7 +296,7 @@ namespace Operations
   log->debug(tr("deleted %3items added %1 locations, %2 tracks").arg(i1).arg(i2).arg(i0));
   locationPane->update();
   pLocations->update();
-  repaint();
+  update();
  }
 
  /*private*/ void LocationsByCarTypeFrame::updateComboBox() {

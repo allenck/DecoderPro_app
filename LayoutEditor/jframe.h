@@ -56,7 +56,7 @@ public:
     virtual void dispose();
     QWidget* getContentPane();
     void toFront();
-    /*public*/ void setTitle(QString _title);
+    virtual /*public*/ void setTitle(QString _title);
     /*public*/ QString title();
     /*public*/ void setDefaultCloseOperation(int operation);
     QPoint getLocationOnScreen();

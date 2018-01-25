@@ -11,6 +11,7 @@
 #include "consist.h"
 #include "appslib_global.h"
 
+class File;
 class PrintWriter;
 class Calendar;
 class InstanceManager;
@@ -95,16 +96,18 @@ namespace Operations
   /*public*/ static /*final*/ QString TERMINATED ; //Bundle.getMessage("Terminated");
 
   // Train status codes
-  /*public*/ static /*final*/ int CODE_TRAIN_RESET ; //0;
-  /*public*/ static /*final*/ int CODE_RUN_SCRIPTS ; //0x100;
-  /*public*/ static /*final*/ int CODE_BUILDING ; //0x01;
-  /*public*/ static /*final*/ int CODE_BUILD_FAILED ; //0x02;
-  /*public*/ static /*final*/ int CODE_BUILT ; //0x10;
-  /*public*/ static /*final*/ int CODE_PARTIAL_BUILT ; //CODE_BUILT + 0x04;
-  /*public*/ static /*final*/ int CODE_TRAIN_EN_ROUTE ; //CODE_BUILT + 0x08;
-  /*public*/ static /*final*/ int CODE_TERMINATED ; //0x80;
-  /*public*/ static /*final*/ int CODE_UNKNOWN ; //0xFFFF;
-
+  enum STATUSCODES
+  {
+   CODE_TRAIN_RESET  = 0,
+   CODE_RUN_SCRIPTS  = 0x100,
+   CODE_BUILDING  = 0x01,
+   CODE_BUILD_FAILED  = 0x02,
+   CODE_BUILT  = 0x10,
+   CODE_PARTIAL_BUILT  = CODE_BUILT + 0x04,
+   CODE_TRAIN_EN_ROUTE  = CODE_BUILT + 0x08,
+   CODE_TERMINATED  = 0x80,
+   CODE_UNKNOWN = 0xFFFF
+};
   // train requirements
   /*public*/ static /*final*/ int NO_CABOOSE_OR_FRED ; //0; // default
   /*public*/ static /*final*/ int CABOOSE ; //1;
@@ -198,7 +201,8 @@ namespace Operations
   /*public*/ void setThirdLegOptions(int options) ;
   /*public*/ int getThirdLegOptions();
   /*public*/ void setComment(QString comment);
-  /*public*/ QString getComment();
+  /*public*/ QString getComment(bool asText = true);
+//  /*public*/ QString getComment();
   /*public*/ QString getRoadOption();
   /*public*/ void setRoadOption(QString option);
   /*public*/ QStringList getRoadNames();
@@ -307,6 +311,11 @@ namespace Operations
   /*public*/ bool printBuildReport(bool isPreview);
   /*public*/ int getNumberCarsWorked();
   /*public*/ int getTrainHorsePower(RouteLocation* routeLocation);
+  /*public*/ QString getStatus(QLocale locale);
+  /*public*/ QString getStatus(QLocale locale, int code);
+  /*public*/ bool setTrainIconCoordinates();
+  /*public*/ File* createCSVManifestFile();
+  /*public*/ bool runFile();
 
  signals:
   void error(QString, QString);

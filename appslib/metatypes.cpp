@@ -262,6 +262,7 @@
 #include "nixieclockaction.h"
 #include "lcdclockaction.h"
 #include "powerbuttonaction.h"
+#include "locoaddressxml.h"
 
 bool Metatypes::done = false;
 
@@ -503,7 +504,6 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<WebServerPreferencesPanel>("WebServerPreferencesPanel");
  qRegisterMetaType<JsonServerPreferencesPanel>("JsonServerPreferencesPanel");
  qRegisterMetaType<StartupActionsPreferencesPanel>("StartupActionsPreferencesPanel");
- //qRegisterMetaType<ServletUtil>("ServletUtil");
  qRegisterMetaType<EntryExitPairs>("EntryExitPairs");
  qRegisterMetaType<EntryExitPairsXml>("EntryExitPairsXml");
  qRegisterMetaType<PanelEditor>("PanelEditor");
@@ -539,6 +539,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<NixieClockAction>("NixieClockAction");
  qRegisterMetaType<LcdClockAction>("LcdClockAction");
  qRegisterMetaType<PowerButtonAction>("PowerButtonAction");
+ qRegisterMetaType<LocoAddressXml>("LocoAddressXml");
 
  Metatypes::done = true;
 }

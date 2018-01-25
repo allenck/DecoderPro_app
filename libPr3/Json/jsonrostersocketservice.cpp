@@ -20,10 +20,10 @@
 
 /*public*/ JsonRosterSocketService::JsonRosterSocketService(JsonConnection* connection, QObject* parent): JsonSocketService(connection, parent)
 {
-    //super(connection);
-    rosterListener = new JsonRosterListener(this);
-    rosterEntryListener = new JsonRosterEntryListener(this);
-    this->service = new JsonRosterHttpService(connection->getObjectMapper());
+ //super(connection);
+ rosterListener = new JsonRosterListener(this);
+ rosterEntryListener = new JsonRosterEntryListener(this);
+ this->service = new JsonRosterHttpService(connection->getObjectMapper());
 }
 
 /*public*/ void JsonRosterSocketService::listen()
@@ -69,7 +69,7 @@
    this->connection->sendMessage(this->service->getRosterGroups(locale));}
   else
   {
-   throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Unknown object type {0} was requested.").arg(type));
+   throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Unknown object type %1 was requested.").arg(type));
   }
  }
  this->listen();

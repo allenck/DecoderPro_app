@@ -17,7 +17,7 @@ class HttpServlet : public GenericServlet
 {
  Q_OBJECT
 public:
- HttpServlet();
+ HttpServlet(QObject* parent = 0);
 
 private:
  /*private*/ static /*final*/ QString METHOD_DELETE;// = "DELETE";
@@ -55,6 +55,10 @@ throw (ServletException, IOException);
  throw (ServletException, IOException);
  /*protected*/ virtual void doList(HttpServletRequest* req, HttpServletResponse* resp)
  throw (ServletException, IOException);
+ /*protected*/ void service(HttpServletRequest* req, HttpServletResponse* resp)
+ throw (ServletException, IOException);
+
+
 friend class RequestHandler;
 friend class ServletController;
 };

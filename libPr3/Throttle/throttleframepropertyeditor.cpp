@@ -181,15 +181,15 @@ tr("Roster Id");
  */
 /*private*/ void ThrottleFramePropertyEditor::saveProperties()
 {
-#if 0
+#if 1
  if (isDataValid())
  {
-  int bSize = Integer.parseInt(tr("FrameSize"));
-        JInternalFrame myFrame;
-        frame.setTitleText( titleField.getText() );
-        frame.setTitleTextType( titleTextTypes[titleType.getSelectedIndex()] );
-        frame.getCurrentThrottleFrame().setFrameTitle();
-
+  int bSize = (tr(/*"FrameSize"*/"23").toInt());
+        ThrottleWindow* myFrame;
+        frame->setTitleText( titleField->text() );
+        frame->setTitleTextType( titleTextTypes.at(titleType->currentIndex().row()) );
+        frame->getCurrentThrottleFrame()->setFrameTitle();
+# if 0
         if (((javax.swing.plaf.basic.BasicInternalFrameUI)frame.getCurrentThrottleFrame().getControlPanel().getUI()).getNorthPane()!=null) {
             if (borderOff.isSelected()) bSize = 0;
             myFrame = frame.getCurrentThrottleFrame().getControlPanel();
@@ -211,6 +211,7 @@ tr("Roster Id");
                 myFrame.setVisible(true);
             }
         }
+# endif
         finishEdit();
     }
 #endif

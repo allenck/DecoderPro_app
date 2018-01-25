@@ -63,10 +63,10 @@ ColorUtil::ColorUtil()
             return Qt::white;
      else if(string == "red")
             return Qt::red;
-//     else if(string == "pink")
-//            return Qt::pink;
-//     else if(string == "orange")
-//            return Qt::orange;
+     else if(string == "pink")
+            return QColor(255,233,236);
+     else if(string == "orange")
+            return QColor(255,170,0);
      else if(string == "yellow")
             return Qt::yellow;
      else if(string == "green")
@@ -122,12 +122,14 @@ ColorUtil::ColorUtil()
     } else if (color== Qt::red) {
         return "red";
     }
-//    else if (color.equals(Color.pink)) {
-//        return "pink";
-//    }
-//    else if (color.equals(Color.orange)) {
-//        return "orange";
-//    }
+    else if (color == (QColor(255,233,236)))
+    {
+     return "pink";
+    }
+    else if (color == (QColor(255,170,0)))
+    {
+        return "orange";
+    }
     else if (color== Qt::yellow) {
         return "yellow";
     } else if (color== Qt::green) {

@@ -25,6 +25,8 @@
 #include "jsonservlet.h"
 #include "layoutpanelservlet.h"
 #include "denialservlet.h"
+#include "operationsservlet.h"
+#include "defaultservletconfig.h"
 
 /** Logger class */
 //extern FileLogger* logger;
@@ -38,7 +40,7 @@ RequestHandler::RequestHandler(QObject* parent)
  qDebug("RequestHandler: created");
  docRootSettings = new QSettings(QApplication::organizationName(), QApplication::applicationName());
  docRootSettings->beginGroup("docroot");
- docRootSettings->setValue("path", FileUtil::getProgramPath()+ "web" + File::separator);
+ docRootSettings->setValue("path", FileUtil::getProgramPath() + "web" /*+ File::separator*/);
  staticFileController = new stefanfrings::StaticFileController(docRootSettings);
 
 }
@@ -68,6 +70,7 @@ void RequestHandler::service(stefanfrings::HttpRequest& request, stefanfrings::H
 //    qDebug("RequestHandler: finished request");
  HttpServletRequest* req = new HttpServletRequest(httpRequest);
  HttpServletResponse* resp = new HttpServletResponse(httpResponse);
+ //Q_ASSERT(!path.startsWith("/prefs"));
  //@WebServlet(name = "HomeServlet",
  //        urlPatterns = {
  //            "/", // default
@@ -116,6 +119,7 @@ void RequestHandler::service(stefanfrings::HttpRequest& request, stefanfrings::H
  if(path.startsWith("/json"))
  {
   JsonServlet* servlet = new JsonServlet();
+  servlet->init();
   servlet->doGet(req,resp);
   return;
  }
@@ -123,6 +127,7 @@ void RequestHandler::service(stefanfrings::HttpRequest& request, stefanfrings::H
  {
   DenialServlet* servlet = new DenialServlet();
   servlet->doGet(req, resp);
+  return;
  }
  if(path.startsWith("/panel/ControlPanel"))
  {
@@ -137,9 +142,12 @@ void RequestHandler::service(stefanfrings::HttpRequest& request, stefanfrings::H
   return;
  }
 
- if(path == "/panel" || path == "/panel/" || path.startsWith("/panel/Panel") || path.startsWith("/panel/Layout") || path == "/panel/panel" || path ==   "/web/showPanel.html") // redirect to /panel/ since ~ 19 Jan 2014
+ if(path == "/panel" || path == "/panel/" || path.startsWith("/panel/Panel") )//|| path.startsWith("/panel/Layout") || path == "/panel/panel" || path ==   "/web/showPanel.html") // redirect to /panel/ since ~ 19 Jan 2014
  {
+  ServletConfig*  config = new DefaultServletConfig("PanelServlet", req);
   servlet = new PanelServlet();
+  servlet->init(config);
+  servlet->init();
   ((PanelServlet*)servlet)->doGet(req, resp);
   return;
  }
@@ -151,7 +159,6 @@ void RequestHandler::service(stefanfrings::HttpRequest& request, stefanfrings::H
    ((JmriJFrameServlet*)servlet)->doList(req,resp);
   else
    ((JmriJFrameServlet*)servlet)->doGet(req,resp);
-
   return;
  }
 
@@ -188,20 +195,36 @@ void RequestHandler::service(stefanfrings::HttpRequest& request, stefanfrings::H
   else
   {
    if( prefix == "config")
+   {
     servlet = new ConfigServlet();
    ((ConfigServlet*)servlet)->processRequest(req,resp);
+    return;
+   }
   }
  }
  else  if(path.startsWith("/roster" ))
  {
   servlet = new RosterServlet();
-  ((RosterServlet*)servlet)->doGet(req, resp);
+  ServletConfig*  config = new DefaultServletConfig("RosterServlet", req);
+  servlet->init(config);
+  servlet->init();
+  return;
+ }
+ else if(path.startsWith("/operations" ))
+ {
+  servlet = new OperationsServlet();
+  ServletConfig*  config = new DefaultServletConfig("OperationsServlet", req);
+  servlet->init(config);
+  servlet->init();
+  ((OperationsServlet*)servlet)->doGet(req, resp);
   return;
  }
  else
  {
-  if(path.startsWith("/json") || path.startsWith("/panel"))
+  if(path.endsWith("panel.js") )
+  {
    qDebug() << "calling staticFileController " << path;
+  }
   staticFileController->service(request, response);
  }
 

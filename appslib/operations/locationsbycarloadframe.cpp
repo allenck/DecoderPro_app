@@ -280,7 +280,7 @@ namespace Operations
          }
      }
      pLocations->update();
-     repaint();
+     update();
  }
 
  /*private*/ void LocationsByCarLoadFrame::updateTypeComboBox() {

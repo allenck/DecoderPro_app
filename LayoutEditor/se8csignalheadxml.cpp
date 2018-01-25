@@ -30,7 +30,10 @@ SE8cSignalHeadXml::SE8cSignalHeadXml(QObject *parent) :
 
     QDomElement element = doc.createElement("signalhead");
     element.setAttribute("class", "jmri.jmrix.loconet.configurexml.SE8cSignalHeadXml");
-    element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+    //element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+    QDomElement systemname = doc.createElement("systemName");
+    systemname.appendChild(doc.createTextNode(p->getSystemName()));
+    element.appendChild(systemname);
 
     // include contents
     element.setAttribute("systemName", p->getSystemName());

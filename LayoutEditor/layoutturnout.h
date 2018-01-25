@@ -1,7 +1,7 @@
 #ifndef LAYOUTTURNOUT_H
 #define LAYOUTTURNOUT_H
 
-#include <QObject>
+#include "layouttrack.h"
 //#include "layoutblock.h"
 //#include "mylayouteditor.h"
 #include "turnout.h"
@@ -17,6 +17,7 @@
 #include <QPointF>
 #include <QVector>
 #include "windowlistener.h"
+#include "exceptions.h"
 
 class QCloseEvent;
 class JmriJFrame;
@@ -40,29 +41,48 @@ class QMenuItem;
 class LayoutEditor;
 class LayoutBlock;
 class LayoutEditorTools;
-class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurnout : public QObject
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurnout : public LayoutTrack
 {
     Q_OBJECT
 public:
     //explicit LayoutTurnout(QObject *parent = 0);
     // defined constants - turnout types
-    /*public*/ static /*final*/const  int RH_TURNOUT = 1;
-    /*public*/ static /*final*/const  int LH_TURNOUT = 2;
-    /*public*/ static /*final*/const  int WYE_TURNOUT = 3;
-    /*public*/ static /*final*/const  int DOUBLE_XOVER = 4;
-    /*public*/ static /*final*/const  int RH_XOVER = 5;
-    /*public*/ static /*final*/const  int LH_XOVER = 6;
-    /*public*/ static /*final*/const  int SINGLE_SLIP = 7; //used in LayoutSlip which extends this class
-    /*public*/ static /*final*/const  int DOUBLE_SLIP = 8; //used in LayoutSlip which extends this class
+ enum TURNOUTTYPES
+ {
+    RH_TURNOUT = 1,
+    LH_TURNOUT = 2,
+    WYE_TURNOUT = 3,
+    DOUBLE_XOVER = 4,
+    RH_XOVER = 5,
+    LH_XOVER = 6,
+    SINGLE_SLIP = 7, //used in LayoutSlip which extends this class
+    DOUBLE_SLIP = 8 //used in LayoutSlip which extends this class
+     };
     // defined constants - link types
-    /*public*/ static /*final*/const  int NO_LINK = 0;
-    /*public*/ static /*final*/const  int FIRST_3_WAY = 1;       // this turnout is the first turnout of a 3-way
+ enum LINKTYPES
+ {
+   NO_LINK = 0,
+   FIRST_3_WAY = 1,       // this turnout is the first turnout of a 3-way
                                                     // turnout pair (closest to the throat)
-    /*public*/ static /*final*/const  int SECOND_3_WAY = 2;      // this turnout is the second turnout of a 3-way
+   SECOND_3_WAY = 2,      // this turnout is the second turnout of a 3-way
                                                     // turnout pair (furthest from the throat)
-    /*public*/ static /*final*/const  int THROAT_TO_THROAT = 3;  // this turnout is one of two throat-to-throat
-                                                    // turnouts - no signals at throat
-    // persistent instances variables (saved between sessions)
+   THROAT_TO_THROAT = 3  // this turnout is one of two throat-to-throat
+ };                                   // turnouts - no signals at throat
+ // operational instance variables (not saved between sessions)
+     /*public*/ static /*final*/ int UNKNOWN;// = Turnout.UNKNOWN;
+     /*public*/ static /*final*/ int STATE_AC;// = 0x02;
+     /*public*/ static /*final*/ int STATE_BD;// = 0x04;
+     /*public*/ static /*final*/ int STATE_AD;// = 0x06;
+     /*public*/ static /*final*/ int STATE_BC;// = 0x08;
+
+     // program default turnout size parameters
+     /*public*/ static /*final*/ double turnoutBXDefault;// = 20.0;  // RH, LH, WYE
+     /*public*/ static /*final*/ double turnoutCXDefault;// = 20.0;
+     /*public*/ static /*final*/ double turnoutWidDefault;// = 10.0;
+     /*public*/ static /*final*/ double xOverLongDefault;// = 30.0;   // DOUBLE_XOVER, RH_XOVER, LH_XOVER
+     /*public*/ static /*final*/ double xOverHWidDefault;// = 10.0;
+     /*public*/ static /*final*/ double xOverShortDefault;// = 10.0;
+
     /*public*/ QString ident;   // name of this layout turnout (hidden from user)
     /*public*/ QString turnoutName;// = "";   // should be the name (system or user) of
                                 //	an existing physical turnout
@@ -283,6 +303,8 @@ public:
  void drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2);
  /*public*/ int getVersion() ;
  /*public*/ void setVersion(int v);
+ virtual /*public*/ QObject* getConnection(int location) throw (JmriException);
+ virtual /*public*/ void setConnection(int location, QObject* o, int type) throw (JmriException);
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -398,17 +420,18 @@ protected:
     /*protected*/ LayoutEditor* layoutEditor;// = NULL;
     /*protected*/ LayoutTurnout() {}
     /*protected*/ void rotateCoords(double rot);
-/*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
+    /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
+
  friend class LayoutEditor;
  friend class EditTurnout;
 /*protected*/ JmriJFrame* editLayoutTurnoutFrame;// = NULL;
 /*protected*/ JTextField* blockNameField;// = new QLineEdit(16);
 /*protected*/ bool needRedraw;// = false;
 /*protected*/ bool needsBlockUpdate;// = false;
- /*protected*/ NamedBeanHandle<SignalMast*>* signalAMastNamed;// = null; // Throat
- /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = null; // Continuing
- /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = null; // diverging
- /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = null; // single or double crossover only
+ /*protected*/ NamedBeanHandle<SignalMast*>* signalAMastNamed;// = NULL; // Throat
+ /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // Continuing
+ /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // diverging
+ /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // single or double crossover only
  /*protected*/ QPointF rotatePoint(QPointF p, double sineAng, double cosineAng);
 
 /**

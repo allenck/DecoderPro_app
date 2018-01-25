@@ -483,7 +483,7 @@ namespace Operations
    loadNameAll->setChecked(true);
   }
   panelLoads->update();
-  panelLoads->repaint();
+  //panelLoads->repaint();
  }
 
  /*private*/ void TrackLoadEditFrame::updateShipLoadNames() {
@@ -523,7 +523,7 @@ namespace Operations
      } else {
          shipLoadNameAll->setChecked(true);
      }
-     panelShipLoads->repaint();
+     //panelShipLoads->repaint();
      panelShipLoads->update();
  }
 

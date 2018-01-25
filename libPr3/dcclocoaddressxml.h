@@ -11,7 +11,7 @@ class DccLocoAddressXml : public QObject
     Q_OBJECT
 public:
     explicit DccLocoAddressXml(QObject *parent = 0);
-    /*public*/ QDomElement store(QDomDocument doc, QObject* o);
+    /*public*/ QDomElement store(QObject* o);
     /*public*/ bool load(QDomElement element);
     /*public*/ DccLocoAddress* getAddress(QDomElement element);
     /*public*/ void load(QDomElement element, QObject* o);

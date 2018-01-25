@@ -29,7 +29,7 @@
     data.insert(JSON::USERNAME, block->getUserName());
     data.insert(JSON::COMMENT, block->getComment());
     if (block->getValue() == QVariant()) {
-        data.insert(JSON::VALUE, "null");
+        data.insert(JSON::VALUE, /*"null"*/QJsonValue());
     } else {
         data.insert(JSON::VALUE, block->getValue().toString());
     }
@@ -49,7 +49,7 @@
     if (data.value(JSON::COMMENT).toBool()) {
         block->setComment(data.value(JSON::COMMENT).toString());
     }
-    if (!data.value(JSON::VALUE).isNull()) {
+    if (!data.value(JSON::VALUE).isUndefined()) {
         if (data.value(JSON::VALUE).isNull()) {
             block->setValue(QVariant());
         } else {

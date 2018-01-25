@@ -704,18 +704,14 @@ static JComponent _jynstrumentSpace = NULL;
  toolsMenu(menuBar, wi);
  rosterMenu(menuBar, wi);
  panelMenu(menuBar, wi);
-#if 1 // TODO:
  // check to see if operations in main menu
  if (Operations::Setup::isMainMenuEnabled())
  {
   operationsMenu(menuBar, wi);
  }
-#endif
  systemsMenu(menuBar, wi);
  scriptMenu(menuBar, wi);
-#if 1
  debugMenu(menuBar, wi);
-#endif
  menuBar->addMenu(new WindowMenu(wi)); // * GT 28-AUG-2008 Added window menu
  helpMenu(menuBar, wi);
  log->debug("end building menus");

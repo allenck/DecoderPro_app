@@ -22,10 +22,10 @@
 #include "jsonsignalheadservicefactory.h"
 #include "jsonsignalmastservicefactory.h"
 #include "jsonreporterservicefactory.h"
+#include "jsonoperationsservicefactory.h"
 
 JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
 {
-
 }
 /**
  * Provide JSON formatted responses for requests to requests for information
@@ -55,34 +55,38 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
 /*private*/ /*static*/ /*final*/ Logger* JsonServlet::log = LoggerFactory::getLogger("JsonServlet");
 
 //@Override
-/*public*/ void JsonServlet::init() throw (ServletException)  {
-    WebSocketServlet::init();
+/*public*/ void JsonServlet::init() throw (ServletException)
+{
+ WebSocketServlet::init();
 
-    this->mapper =  ObjectMapper();
-    QList<JsonServiceFactory*> factories = QList<JsonServiceFactory*>();
-    factories << new JsonLightServiceFactory() << new JsonBlockServiceFactory() <<
-                 new JsonPowerServiceFactory() << new JsonRosterServiceFactory() <<
-                 new JsonSensorServiceFactory() <<
-                 new JsonThrottleServiceFactory() << new JsonTimeServiceFactory() <<
-                 new JsonTurnoutServiceFactory() << new JsonUtilServiceFactory() <<
-                 new JsonMemoryServiceFactory() << new JsonSignalHeadServiceFactory() <<
-                 new JsonSignalMastServiceFactory() << new JsonReporterServiceFactory();
+ this->mapper =  ObjectMapper();
+ QList<JsonServiceFactory*> factories = QList<JsonServiceFactory*>();
+ factories << new JsonLightServiceFactory() << new JsonBlockServiceFactory() <<
+              new JsonPowerServiceFactory() << new JsonRosterServiceFactory() <<
+              new JsonSensorServiceFactory() << new JsonOperationsServiceFactory() <<
+              new JsonThrottleServiceFactory() << new JsonTimeServiceFactory() <<
+              new JsonTurnoutServiceFactory() << new JsonUtilServiceFactory() <<
+              new JsonMemoryServiceFactory() << new JsonSignalHeadServiceFactory() <<
+              new JsonSignalMastServiceFactory() << new JsonReporterServiceFactory();
 #if 1
-    //foreach (JsonServiceFactory* factory, ServiceLoader.load(JsonServiceFactory.class))
-    foreach(JsonServiceFactory* factory,  factories)
+ //foreach (JsonServiceFactory* factory, ServiceLoader.load(JsonServiceFactory.class))
+ foreach(JsonServiceFactory* factory,  factories)
+ {
+  JsonHttpService* service = factory->getHttpService(this->mapper);
+  if (service != NULL)
+  {
+   foreach (QString type, factory->getTypes())
+   {
+    QSet<JsonHttpService*>* set = this->services->value(type);
+    if (set == NULL)
     {
-        JsonHttpService* service = factory->getHttpService(this->mapper);
-        if (service != NULL) {
-            foreach (QString type, factory->getTypes()) {
-                QSet<JsonHttpService*>* set = this->services->value(type);
-                if (set == NULL) {
-                    this->services->insert(type, new QSet<JsonHttpService*>());
-                    set = this->services->value(type);
-                }
-                set->insert(factory->getHttpService(this->mapper));
-            }
-        }
+     this->services->insert(type, new QSet<JsonHttpService*>());
+     set = this->services->value(type);
     }
+    set->insert(factory->getHttpService(this->mapper));
+   }
+  }
+ }
 #endif
 }
 
@@ -136,9 +140,9 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
   }
   return;
  }
-
+ QString path = request->req->getPath();
  QStringList rest = request->getPathInfo().split("/"); // NOI18N
- QString type = (rest.length() > 1) ? rest[1] : NULL;
+ QString type = (rest.length() > 2) ? rest[1] : NULL;  //ACK changed from 1 to 2
  if (type != NULL)
  {
   response->setContentType(ServletUtil::UTF8_APPLICATION_JSON);
@@ -260,7 +264,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
   ));
 #endif
   QString html = FileUtil::readURL(FileUtil::findURL(tr(/*request->getLocale(),*/ "web/servlet/json/Json.html")));
-  QString title = tr("%2$s | %1$s");
+  QString title = "%2$s | %1$s";
   title= title.replace( "%1$s", ServletUtil::getInstance()->getRailroadName(false));
   title.replace("%2$s", tr("Json Console"));
   html = html.replace("%1$s", title);
@@ -290,18 +294,22 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
   {
    //data = this->mapper.readTree(request->getReader());
    data =  QJsonDocument::fromJson(request->req->getBody()).object();  //QJsonDocument::fromJson(string.toUtf8());
-   data = data.value(JSON::DATA).toObject();
+   if (!data.value(JSON::DATA).isUndefined())
+   {
+    data = data.value(JSON::DATA).toObject();
+   }
   }
-  else {
-      data = QJsonObject(); //this->mapper.createObjectNode();
-      if (request->getParameter(JSON::STATE) != NULL) {
-          ( data).insert(JSON::STATE, (request->getParameter(JSON::STATE).toInt()));
-      } else if (request->getParameter(JSON::LOCATION) != NULL) {
-          ( data).insert(JSON::LOCATION, request->getParameter(JSON::LOCATION));
-      } else if (request->getParameter(JSON::VALUE) != NULL) {
-          // values other than Strings should be sent in a JSON object
-          ( data).insert(JSON::VALUE, request->getParameter(JSON::VALUE));
-      }
+  else
+  {
+   data = QJsonObject(); //this->mapper.createObjectNode();
+   if (request->getParameter(JSON::STATE) != NULL) {
+       ( data).insert(JSON::STATE, (request->getParameter(JSON::STATE).toInt()));
+   } else if (request->getParameter(JSON::LOCATION) != NULL) {
+       ( data).insert(JSON::LOCATION, request->getParameter(JSON::LOCATION));
+   } else if (request->getParameter(JSON::VALUE) != NULL) {
+       // values other than Strings should be sent in a JSON object
+       ( data).insert(JSON::VALUE, request->getParameter(JSON::VALUE));
+   }
   }
   if (type != NULL) {
       // for historical reasons, set the name to POWER on a power request
@@ -379,7 +387,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
     try {
         if (request->getContentType().contains(ServletUtil::APPLICATION_JSON)) {
             data =  QJsonDocument::fromJson(request->req->getBody()).object();  //this->mapper->readTree(request->getReader());
-            if (!data.value(JSON::DATA).isNull()) {
+            if (!data.value(JSON::DATA).isUndefined()) {
                 data = data.value(JSON::DATA).toObject();
             }
         } else {

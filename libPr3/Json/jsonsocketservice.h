@@ -83,5 +83,7 @@ public:
  friend class BlockListener;
  friend class LightListener;
  friend class LayoutBlockListener;
+ friend class TrainListener;
+ friend class JsonConsistListener;
 };
 #endif // JSONSOCKETSERVICE_H

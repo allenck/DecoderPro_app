@@ -49,11 +49,13 @@ ServletUtil::ServletUtil(QObject *parent) : QObject(parent)
  * @return an HTML footer
  * @throws IOException if template cannot be located
  */
-/*public*/ QString ServletUtil::getFooter(QLocale locale, QString context) throw (IOException) {
+/*public*/ QString ServletUtil::getFooter(QLocale locale, QString context) throw (IOException)
+{
     // Should return a built NavBar with li class for current context set to "active"
+ QString format = QString("-->") + FileUtil::readURL(FileUtil::findURL(StringUtil::stringFormat(locale, "web/servlet/Footer.html"))) + "<!--";
     QString footer = StringUtil::stringFormat(locale,
-            QString("-->") + FileUtil::readURL(FileUtil::findURL(StringUtil::stringFormat(locale, "web/servlet/Footer.html"))) + "<!--").arg( // NOI18N
-            this->getRailroadName(true));
+            QString("-->") + FileUtil::readURL(FileUtil::findURL(StringUtil::stringFormat(locale, "web/servlet/Footer.html"))) + "<!--");//.arg( // NOI18N
+//            this->getRailroadName(true));
     QString clazz = "context" + context.replace("/", "-"); // NOI18N
     // replace class "context-<this-context>-only" with class "show"
     footer = footer.replace(clazz + "-only", "show"); // NOI18N

@@ -14,7 +14,7 @@ private:
 protected:
  /*protected*/  QString getPanelType();
  /*protected*/  QString getJsonPanel(QString name);
- /*protected*/  QString getXmlPanel(QString name);
+ /*protected*/  QByteArray getXmlPanel(QString name);
 
 };
 

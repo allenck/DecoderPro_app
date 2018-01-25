@@ -10,7 +10,7 @@ class AbstractPanelServlet : public HttpServlet
 {
  Q_OBJECT
 public:
- AbstractPanelServlet();
+ AbstractPanelServlet(QObject* parent = 0);
  /*public*/ void init() throw (ServletException);
 
 private:
@@ -24,9 +24,9 @@ protected:
  /*protected*/  void listPanels(HttpServletRequest* request, HttpServletResponse* response) throw (ServletException, IOException);
  /*protected*/  QByteArray getPanelImage(QString name);
  /*protected*/  QWidget* getPanel(QString name);
- /*protected*/  QString getPanelText(QString name, bool useXML);
+ /*protected*/  QByteArray getPanelText(QString name, bool useXML);
  /*abstract*/ virtual /*protected*/  QString getJsonPanel(QString name);
- /*abstract*/ virtual /*protected*/  QString getXmlPanel(QString name);
+ /*abstract*/ virtual /*protected*/  QByteArray getXmlPanel(QString name);
  /*protected*/  Editor* getEditor(QString name);
  /*protected*/  void parsePortableURIs(QDomElement element);
 friend class PanelServlet;

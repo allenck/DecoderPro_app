@@ -10,7 +10,7 @@ class ConsistManager : public QObject
 {
     Q_OBJECT
 public:
-    //explicit ConsistManager(QObject *parent = 0);
+ explicit ConsistManager(QObject *parent = 0) : QObject(parent) {}
 
     /**
      * Interface for Consist Manager objects, which provide access to
@@ -85,13 +85,13 @@ public:
          * @param listener a Consist List Listener object.
          */
         virtual void removeConsistListListener(ConsistListListener* l)  = 0;
-
+signals:
         /*
          * Notify the registered Consist List Listener objects that the
          * Consist List has changed.
          */
-        virtual void notifyConsistListChanged()  = 0;
-signals:
+         void consistListChanged();
+
     
 public slots:
     

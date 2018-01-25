@@ -291,6 +291,46 @@
     }
 }
 
+/*public*/ QObject* LevelXing::getConnection(int location) throw (JmriException)
+{
+    switch (location) {
+        case LEVEL_XING_A:
+            return connectA;
+        case LEVEL_XING_B:
+            return connectB;
+        case LEVEL_XING_C:
+            return connectC;
+        case LEVEL_XING_D:
+            return connectD;
+    }
+    log.error("Invalid Point Type " + QString::number(location)); //I18IN
+    throw JmriException("Invalid Point");
+}
+
+/*public*/ void LevelXing::setConnection(int location, QObject* o, int type) throw (JmriException) {
+    if ((type != TRACK) && (type != NONE)) {
+        log.error("unexpected type of connection to layoutturnout - " + QString::number(type));
+        throw JmriException("unexpected type of connection to layoutturnout - " + QString::number(type));
+    }
+    switch (location) {
+        case LEVEL_XING_A:
+            connectA = o;
+            break;
+        case LEVEL_XING_B:
+            connectB = o;
+            break;
+        case LEVEL_XING_C:
+            connectC = o;
+            break;
+        case LEVEL_XING_D:
+            connectD = o;
+            break;
+        default:
+            log.error("Invalid Point Type " + QString::number(location)); //I18IN
+            throw JmriException("Invalid Point");
+    }
+}
+
 /*public*/ void LevelXing::setConnectA(QObject* o,int type) {
     connectA = o;
     if ( (connectA!=NULL) && (type!=LayoutEditor::TRACK) ) {

@@ -33,6 +33,7 @@ public:
 signals:
 
 public slots:
+ void on_socketDisconnected();
 
 private:
  void common();

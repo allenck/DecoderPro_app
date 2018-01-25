@@ -47,7 +47,7 @@ public:
     {
      QString path = req->getPath();
      QStringList sl = path.mid(1).split("/");
-     if(sl.size() >3)
+     if(sl.size() >=2)
      {
       QString pathInfo = path.mid(sl.at(0).length() + 1);
       return pathInfo;
@@ -132,5 +132,7 @@ private:
  friend class RosterServlet;
  friend class JmriJFrameServlet;
  friend class JsonServlet;
+ friend class OperationsServlet;
+ friend class DefaultServletContext;
 };
 #endif // HTTPSERVLETREQUEST_H

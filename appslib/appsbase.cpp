@@ -72,6 +72,7 @@ AppsBase::AppsBase(QObject *parent) :
 //    log->info(Log4JUtil.startupInfo(applicationName));
 
     _preInit = true;
+    qsrand(QTime::currentTime().msec());
 }
 
 /**

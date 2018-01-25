@@ -209,7 +209,7 @@ namespace Operations
          addItemLeft(pTrains, description, 1, x++);
      }
      pTrains->update();
-     repaint();
+     update();
  }
 
  /*private*/ void TrainsByCarTypeFrame::updateComboBox() {

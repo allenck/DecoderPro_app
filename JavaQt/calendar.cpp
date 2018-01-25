@@ -1477,7 +1477,7 @@
          * @see #computeTime()
          */
         /*protected*/ /*abstract*/ void Calendar::computeFields() {}
-#if 0
+
         /**
          * Returns a <code>Date</code> object representing this
          * <code>Calendar</code>'s time value (millisecond offset from the <a
@@ -1487,8 +1487,9 @@
          * @see #setTime(Date)
          * @see #getTimeInMillis()
          */
-        /*public*/ /*final*/ Date getTime() {
-            return new Date(getTimeInMillis());
+        /*public*/ /*final*/ QDateTime Calendar::getTime() {
+            //return new Date(getTimeInMillis());
+         return QDateTime::currentDateTime();
         }
 
         /**
@@ -1502,10 +1503,10 @@
          * @see #getTime()
          * @see #setTimeInMillis(long)
          */
-        /*public*/ /*final*/ void setTime(Date date) {
-            setTimeInMillis(date.getTime());
+        /*public*/ /*final*/ void Calendar::setTime(QDateTime date) {
+            //setTimeInMillis(date.getTime());
         }
-
+#if 0
         /**
          * Returns this Calendar's time value in milliseconds.
          *

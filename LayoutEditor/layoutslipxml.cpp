@@ -59,35 +59,59 @@ LayoutSlipXml::LayoutSlipXml(QObject *parent) :
  }
  if (p->getSignalA1Name().length() > 0)
  {
-  element.appendChild(doc.createElement("signala1name").appendChild(doc.createTextNode(p->getSignalA1Name())));
+  //element.appendChild(doc.createElement("signala1name").appendChild(doc.createTextNode(p->getSignalA1Name())));
+  QDomElement signalname = doc.createElement("signala1name");
+  signalname.appendChild(doc.createTextNode(p->getSignalA1Name()));
+  element.appendChild(signalname);
  }
  if (p->getSignalB1Name().length() > 0)
  {
-  element.appendChild(doc.createElement("signalb1name").appendChild(doc.createTextNode(p->getSignalB1Name())));
+  //element.appendChild(doc.createElement("signalb1name").appendChild(doc.createTextNode(p->getSignalB1Name())));
+  QDomElement signalname = doc.createElement("signalb1name");
+  signalname.appendChild(doc.createTextNode(p->getSignalB1Name()));
+  element.appendChild(signalname);
  }
  if (p->getSignalC1Name().length() > 0)
  {
-  element.appendChild(doc.createElement("signalc1name").appendChild(doc.createTextNode(p->getSignalC1Name())));
+  //element.appendChild(doc.createElement("signalc1name").appendChild(doc.createTextNode(p->getSignalC1Name())));
+  QDomElement signalname = doc.createElement("signalc1name");
+  signalname.appendChild(doc.createTextNode(p->getSignalC1Name()));
+  element.appendChild(signalname);
  }
  if (p->getSignalD1Name().length() > 0)
  {
-  element.appendChild(doc.createElement("signald1name").appendChild(doc.createTextNode(p->getSignalD1Name())));
+  //element.appendChild(doc.createElement("signald1name").appendChild(doc.createTextNode(p->getSignalD1Name())));
+  QDomElement signalname = doc.createElement("signald1name");
+  signalname.appendChild(doc.createTextNode(p->getSignalD1Name()));
+  element.appendChild(signalname);
  }
  if (p->getSignalA2Name().length() > 0)
  {
-  element.appendChild(doc.createElement("signala2name").appendChild(doc.createTextNode(p->getSignalA2Name())));
+  //element.appendChild(doc.createElement("signala2name").appendChild(doc.createTextNode(p->getSignalA2Name())));
+  QDomElement signalname = doc.createElement("signala2name");
+  signalname.appendChild(doc.createTextNode(p->getSignalA2Name()));
+  element.appendChild(signalname);
  }
  if (p->getSignalB2Name().length() > 0)
  {
-  element.appendChild(doc.createElement("signalb2name").appendChild(doc.createTextNode(p->getSignalB2Name())));
+  //element.appendChild(doc.createElement("signalb2name").appendChild(doc.createTextNode(p->getSignalB2Name())));
+  QDomElement signalname = doc.createElement("signalb2name");
+  signalname.appendChild(doc.createTextNode(p->getSignalB2Name()));
+  element.appendChild(signalname);
  }
  if (p->getSignalC2Name().length() > 0)
  {
-  element.appendChild(doc.createElement("signalc2name").appendChild(doc.createTextNode(p->getSignalC2Name())));
+  //element.appendChild(doc.createElement("signalc2name").appendChild(doc.createTextNode(p->getSignalC2Name())));
+  QDomElement signalname = doc.createElement("signalc2name");
+  signalname.appendChild(doc.createTextNode(p->getSignalC2Name()));
+  element.appendChild(signalname);
  }
  if (p->getSignalD2Name().length() > 0)
  {
-  element.appendChild(doc.createElement("signald2name").appendChild(doc.createTextNode(p->getSignalD2Name())));
+  //element.appendChild(doc.createElement("signald2name").appendChild(doc.createTextNode(p->getSignalD2Name())));
+  QDomElement signalname = doc.createElement("signald2name");
+  signalname.appendChild(doc.createTextNode(p->getSignalD2Name()));
+  element.appendChild(signalname);
  }
  QPointF coords = p->getCoordsCenter();
  element.setAttribute("xcen", coords.x());
@@ -101,70 +125,123 @@ LayoutSlipXml::LayoutSlipXml(QObject *parent) :
 
  if (p->getSignalAMastName().length() > 0)
  {
-  element.appendChild(doc.createElement("signalAMast").appendChild(doc.createTextNode(p->getSignalAMastName())));
+  //element.appendChild(doc.createElement("signalAMast").appendChild(doc.createTextNode(p->getSignalAMastName())));
+  QDomElement signalMast = doc.createElement("signalAMast");
+  signalMast.appendChild(doc.createTextNode(p->getSignalAMastName()));
+  element.appendChild(signalMast);
  }
 
  if (p->getSignalBMastName().length() > 0)
  {
-  element.appendChild(doc.createElement("signalBMast").appendChild(doc.createTextNode(p->getSignalBMastName())));
+//  element.appendChild(doc.createElement("signalBMast").appendChild(doc.createTextNode(p->getSignalBMastName())));
+  QDomElement signalMast = doc.createElement("signalBMast");
+  signalMast.appendChild(doc.createTextNode(p->getSignalBMastName()));
+  element.appendChild(signalMast);
  }
  if (p->getSignalCMastName().length() > 0)
  {
-  element.appendChild(doc.createElement("signalCMast").appendChild(doc.createTextNode(p->getSignalCMastName())));
+//  element.appendChild(doc.createElement("signalCMast").appendChild(doc.createTextNode(p->getSignalCMastName())));
+  QDomElement signalMast = doc.createElement("signalCMast");
+  signalMast.appendChild(doc.createTextNode(p->getSignalCMastName()));
+  element.appendChild(signalMast);
  }
  if (p->getSignalDMastName().length() > 0)
  {
-  element.appendChild(doc.createElement("signalDMast").appendChild(doc.createTextNode(p->getSignalDMastName())));
+//  element.appendChild(doc.createElement("signalDMast").appendChild(doc.createTextNode(p->getSignalDMastName())));
+  QDomElement signalMast = doc.createElement("signalDMast");
+  signalMast.appendChild(doc.createTextNode(p->getSignalDMastName()));
+  element.appendChild(signalMast);
  }
 
  if (p->getSensorAName().length() > 0)
  {
-  element.appendChild(doc.createElement("sensorA").appendChild(doc.createTextNode(p->getSensorAName())));
+//  element.appendChild(doc.createElement("sensorA").appendChild(doc.createTextNode(p->getSensorAName())));
+  QDomElement sensor = doc.createElement("sensorA");
+  sensor.appendChild(doc.createTextNode(p->getSensorAName()));
+  element.appendChild(sensor);
  }
 
  if (p->getSensorBName().length() > 0)
  {
-  element.appendChild(doc.createElement("sensorB").appendChild(doc.createTextNode(p->getSensorBName())));
+//  element.appendChild(doc.createElement("sensorB").appendChild(doc.createTextNode(p->getSensorBName())));
+  QDomElement sensor = doc.createElement("sensorB");
+  sensor.appendChild(doc.createTextNode(p->getSensorBName()));
+  element.appendChild(sensor);
  }
  if (p->getSensorCName().length() > 0)
  {
-  element.appendChild(doc.createElement("sensorC").appendChild(doc.createTextNode(p->getSensorCName())));
+//  element.appendChild(doc.createElement("sensorC").appendChild(doc.createTextNode(p->getSensorCName())));
+  QDomElement sensor = doc.createElement("sensorC");
+  sensor.appendChild(doc.createTextNode(p->getSensorCName()));
+  element.appendChild(sensor);
  }
  if (p->getSensorDName().length() > 0)
  {
-  element.appendChild(doc.createElement("sensorD").appendChild(doc.createTextNode(p->getSensorDName())));
+//  element.appendChild(doc.createElement("sensorD").appendChild(doc.createTextNode(p->getSensorDName())));
+  QDomElement sensor = doc.createElement("sensorD");
+  sensor.appendChild(doc.createTextNode(p->getSensorDName()));
+  element.appendChild(sensor);
  }
 
  if (p->getTurnoutName().length() > 0)
  {
-  element.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(p->getTurnoutName())));
+  QDomElement turnout = doc.createElement("turnout");
+  turnout.appendChild(doc.createTextNode(p->getTurnoutName()));
+  element.appendChild(turnout);
  }
 
  if (p->getTurnoutBName().length() > 0)
  {
-  element.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(p->getTurnoutBName())));
+  QDomElement turnout = doc.createElement("turnoutB");
+  turnout.appendChild(doc.createTextNode(p->getTurnoutBName()));
+  element.appendChild(turnout);
+
  }
  QDomElement states = doc.createElement("states");
  QDomElement state = doc.createElement("A-C");
- state.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_AC)))));
- state.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_AC)))));
+ //state.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_AC)))));
+ QDomElement turnout = doc.createElement("turnout");
+ turnout.appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_AC))));
+ state.appendChild(turnout);
+// state.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_AC)))));
+ QDomElement turnoutB = doc.createElement("turnoutB");
+ turnoutB.appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_AC))));
+ state.appendChild(turnoutB);
  states.appendChild(state);
 
  state = doc.createElement("A-D");
- state.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_AD)))));
- state.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_AD)))));
+ //state.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_AD)))));
+ turnout = doc.createElement("turnout");
+ turnout.appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_AD))));
+ state.appendChild(turnout);
+ //state.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_AD)))));
+ turnoutB = doc.createElement("turnoutB");
+ turnoutB.appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_AD))));
+ state.appendChild(turnoutB);
  states.appendChild(state);
 
  state = doc.createElement("B-D");
- state.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_BD)))));
- state.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_BD)))));
+ //state.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_BD)))));
+ turnout = doc.createElement("turnout");
+ turnout.appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_BD))));
+ state.appendChild(turnout);
+ //state.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_BD)))));
+ turnoutB = doc.createElement("turnoutB");
+ turnoutB.appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_BD))));
+ state.appendChild(turnoutB);
  states.appendChild(state);
 
  if (p->getSlipType() == LayoutSlip::DOUBLE_SLIP)
  {
   state = doc.createElement("B-C");
-  state.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_BC)))));
-  state.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_BC)))));
+  //state.appendChild(doc.createElement("turnout").appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_BC)))));
+  QDomElement turnout = doc.createElement("turnout");
+  turnout.appendChild(doc.createTextNode(QString::number(p->getTurnoutState(LayoutSlip::STATE_BC))));
+  state.appendChild(turnout);
+  //state.appendChild(doc.createElement("turnoutB").appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_BC)))));
+  QDomElement turnoutB = doc.createElement("turnoutB");
+  turnoutB.appendChild(doc.createTextNode(QString::number(p->getTurnoutBState(LayoutSlip::STATE_BC))));
+  state.appendChild(turnoutB);
   states.appendChild(state);
  }
  element.appendChild(states);

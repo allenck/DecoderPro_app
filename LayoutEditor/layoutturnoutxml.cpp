@@ -98,33 +98,59 @@ LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
         element.setAttribute("linktype",  p->getLinkType());
     }
 
-    if (p->getSignalAMastName().length() > 0) {
-        element.appendChild(doc.createElement("signalAMast").appendChild(doc.createTextNode(p->getSignalAMastName())));
+    if (p->getSignalAMastName().length() > 0)
+    {
+      //element.appendChild(doc.createElement("signalAMast").appendChild(doc.createTextNode(p->getSignalAMastName())));
+     QDomElement signalMast = doc.createElement("signalAMast");
+     signalMast.appendChild(doc.createTextNode(p->getSignalAMastName()));
+     element.appendChild(signalMast);
     }
 
     if (p->getSignalBMastName().length() > 0) {
-        element.appendChild(doc.createElement("signalBMast").appendChild(doc.createTextNode(p->getSignalBMastName())));
+        //element.appendChild(doc.createElement("signalBMast").appendChild(doc.createTextNode(p->getSignalBMastName())));
+     QDomElement signalMast = doc.createElement("signalBMast");
+     signalMast.appendChild(doc.createTextNode(p->getSignalBMastName()));
+     element.appendChild(signalMast);
     }
     if (p->getSignalCMastName().length() > 0) {
-        element.appendChild(doc.createElement("signalCMast").appendChild(doc.createTextNode(p->getSignalCMastName())));
+        //element.appendChild(doc.createElement("signalCMast").appendChild(doc.createTextNode(p->getSignalCMastName())));
+     QDomElement signalMast = doc.createElement("signalCMast");
+     signalMast.appendChild(doc.createTextNode(p->getSignalCMastName()));
+     element.appendChild(signalMast);
     }
     if (p->getSignalDMastName().length() > 0) {
-        element.appendChild(doc.createElement("signalDMast").appendChild(doc.createTextNode(p->getSignalDMastName())));
+       // element.appendChild(doc.createElement("signalDMast").appendChild(doc.createTextNode(p->getSignalDMastName())));
+     QDomElement signalMast = doc.createElement("signalDMast");
+     signalMast.appendChild(doc.createTextNode(p->getSignalDMastName()));
+     element.appendChild(signalMast);
 
     }
 
-    if (p->getSensorAName().length() > 0) {
-        element.appendChild(doc.createElement("sensorA").appendChild(doc.createTextNode(p->getSensorAName())));
+    if (p->getSensorAName().length() > 0)
+    {
+     //element.appendChild(doc.createElement("sensorA").appendChild(doc.createTextNode(p->getSensorAName())));
+     QDomElement sensor = doc.createElement("sensorA");
+     sensor.appendChild(doc.createTextNode(p->getSensorAName()));
+     element.appendChild(sensor);
     }
 
     if (p->getSensorBName().length() > 0) {
-        element.appendChild(doc.createElement("sensorB").appendChild(doc.createTextNode(p->getSensorBName())));
+        //element.appendChild(doc.createElement("sensorB").appendChild(doc.createTextNode(p->getSensorBName())));
+     QDomElement sensor = doc.createElement("sensorB");
+     sensor.appendChild(doc.createTextNode(p->getSensorBName()));
+     element.appendChild(sensor);
     }
     if (p->getSensorCName().length() > 0) {
-        element.appendChild(doc.createElement("sensorC").appendChild(doc.createTextNode(p->getSensorCName())));
+        //element.appendChild(doc.createElement("sensorC").appendChild(doc.createTextNode(p->getSensorCName())));
+     QDomElement sensor = doc.createElement("sensorC");
+     sensor.appendChild(doc.createTextNode(p->getSensorCName()));
+     element.appendChild(sensor);
     }
     if (p->getSensorDName().length() > 0) {
-        element.appendChild(doc.createElement("sensorD").appendChild(doc.createTextNode(p->getSensorDName())));
+        //element.appendChild(doc.createElement("sensorD").appendChild(doc.createTextNode(p->getSensorDName())));
+     QDomElement sensor = doc.createElement("sensorD");
+     sensor.appendChild(doc.createTextNode(p->getSensorDName()));
+     element.appendChild(sensor);
     }
 
     element.setAttribute("continuing",  p->getContinuingSense());

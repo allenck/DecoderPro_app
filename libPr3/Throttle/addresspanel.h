@@ -3,6 +3,7 @@
 
 #include <QDockWidget>
 #include "logger.h"
+#include <QtXml>
 
 namespace Ui {
 class AddressPanel;
@@ -47,6 +48,8 @@ public:
     /*public*/ void setAddress(int consistNumber, bool b);
     /*public*/ DccLocoAddress* getConsistAddress();
     /*public*/ void setConsistAddress(DccLocoAddress* consistAddress);
+ /*public*/ QDomElement getXml();
+ /*public*/ void setXml(QDomElement e);
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);

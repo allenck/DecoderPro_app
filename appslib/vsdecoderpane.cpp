@@ -388,7 +388,7 @@ void VSDecoderPane::firePropertyChange(PropertyChangeEvent* evt) {
         soundsPanel = new VSDSoundsPanel(decoder_id, this);
         tabbedPane->addTab( soundsPanel, "Sounds");
         tabbedPane->update();
-        tabbedPane->repaint();
+        //tabbedPane->repaint();
 #endif
     }
 

@@ -112,6 +112,7 @@ public:
 
     /*public*/ static bool _delete(File* path);
     /*public*/ static void copy(File* source, File* dest) /*throws IOException*/;
+    /*public*/ static void appendTextToFile(File* file, QString text);// throw (IOException);
     /*public*/ static void backup(File* file);// //throws IOException
     /*public*/ static QString sanitizeFilename(QString name);
     /*public*/ static QStringList* findProgramPath();

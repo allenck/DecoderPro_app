@@ -68,56 +68,53 @@
  pcMinutes = new PropertyChangeSupport(this);
  oldMinutes = 0;
  pcs = new PropertyChangeSupport(this);
-
  // initialize time-containing memory
- clockMemory = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory("IMCURRENTTIME");
- if (clockMemory==NULL)
+ try
  {
-  log->warn("Unable to create IMCURRENTTIME time memory variable");
+  clockMemory = InstanceManager::memoryManagerInstance()->provideMemory("IMCURRENTTIME");
+  clockMemory->setValue("--");
+  clockMemory->setObjectName("clockMemory");
  }
- else
- {
-  ((AbstractMemory*)clockMemory)->setValue(QVariant("--"));
+ catch (IllegalArgumentException ex) {
+  log->warn("Unable to create IMCURRENTTIME time memory variable");
  }
  // set to start counting from now
  setTime( QDateTime::currentDateTime());
  pauseTime = QDateTime();
  // initialize start/stop sensor for time running
- clockSensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor("ISCLOCKRUNNING");
- if (clockSensor!=NULL)
+ try
  {
-  try
-  {
-   ((AbstractSensor*)clockSensor)->setKnownState(Sensor::ACTIVE);
-  }
-  catch (JmriException e)
-  {
-   log->warn("Exception setting ISCLOCKRUNNING sensor ACTIVE: "+e.getMessage());
-  }
-//  ((AbstractSensor*)clockSensor)->addPropertyChangeListener( (PropertyChangeListener*)this);
-//        {
-//            /*public*/ void propertyChange(PropertyChangeEvent e) {
-//                clockSensorChanged();
-//            }
-//        });
-  AbstractSensor* s = (AbstractSensor*)clockSensor;
-  connect(s->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+  clockSensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor("ISCLOCKRUNNING");
+  clockSensor->setKnownState(Sensor::ACTIVE);
+//     clockSensor.addPropertyChangeListener(
+//             new PropertyChangeListener() {
+//                 @Override
+//                 public void propertyChange(PropertyChangeEvent e) {
+//                     clockSensorChanged();
+//                 }
+//             });
+  connect(clockSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+ }
+ catch (JmriException e)
+ {
+  log->warn("Exception setting ISCLOCKRUNNING sensor ACTIVE: " + e.getMessage());
  }
  // initialize rate factor-containing memory
- if (InstanceManager::memoryManagerInstance() != NULL)
+ if (InstanceManager::getNullableDefault("MemoryManager") != NULL)
  {
   // only try to create memory if memories are supported
-  factorMemory = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory("IMRATEFACTOR");
-  if (factorMemory==NULL)
+  try
+  {
+   factorMemory = InstanceManager::memoryManagerInstance()->provideMemory("IMRATEFACTOR");
+   factorMemory->setValue(userGetRate());
+  }
+  catch (IllegalArgumentException ex)
   {
    log->warn("Unable to create IMRATEFACTOR time memory variable");
   }
-  else
-  {
-   ((AbstractMemory*)factorMemory)->setValue(QVariant(userGetRate()));
-  }
  }
 }
+
 SimpleTimebase::~SimpleTimebase()
 {
  delete log;
@@ -142,7 +139,7 @@ SimpleTimebase::~SimpleTimebase()
  {
   // send new time to all hardware clocks, except the hardware time source if there is one
   // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-  if (InstanceManager::clockControlInstance()!=hardwareTimeSource)
+  if (((ClockControl*)InstanceManager::getDefault("ClockControl"))!=hardwareTimeSource)
   {
    ((ClockControl*)InstanceManager::getDefault("ClockControl"))->setTime(d);
   }
@@ -160,7 +157,7 @@ SimpleTimebase::~SimpleTimebase()
  {
   // send new time to all hardware clocks, including the hardware time source if there is one
   // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-  InstanceManager::clockControlInstance()->setTime(d);
+  ((ClockControl*)InstanceManager::getDefault("ClockControl"))->setTime(d);
  }
  else if (!internalMaster && (hardwareTimeSource!=NULL))
  {
@@ -182,7 +179,7 @@ SimpleTimebase::~SimpleTimebase()
   if (synchronizeWithHardware)
   {
    // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-   InstanceManager::clockControlInstance()->startHardwareClock(getTime());
+   ((ClockControl*)InstanceManager::getDefault("ClockControl"))->startHardwareClock(getTime());
   }
   else if (!internalMaster && hardwareTimeSource!=NULL)
   {
@@ -208,7 +205,7 @@ SimpleTimebase::~SimpleTimebase()
   if (synchronizeWithHardware)
   {
    // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-            InstanceManager::clockControlInstance()->stopHardwareClock();
+            ((ClockControl*)InstanceManager::getDefault("ClockControl"))->stopHardwareClock();
         }
         else if (!internalMaster && hardwareTimeSource!=NULL) {
             hardwareTimeSource->stopHardwareClock();
@@ -245,9 +242,9 @@ SimpleTimebase::~SimpleTimebase()
     {
         // send new rate to all hardware clocks, except the hardware time source if there is one
         // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-  if (InstanceManager::clockControlInstance()!=hardwareTimeSource)
+  if (((ClockControl*)InstanceManager::getDefault("ClockControl"))!=hardwareTimeSource)
   {
-   InstanceManager::clockControlInstance()->setRate(factor);
+   ((ClockControl*)InstanceManager::getDefault("ClockControl"))->setRate(factor);
   }
  }
  // make sure time is right with new rate
@@ -259,6 +256,7 @@ SimpleTimebase::~SimpleTimebase()
  }
  handleAlarm();
 }
+
 /*public*/ void SimpleTimebase::userSetRate(double factor)
 {
  // this call is used when user changes fast clock rate either in Setup Fast Clock or via a ClockControl
@@ -277,7 +275,7 @@ SimpleTimebase::~SimpleTimebase()
     {
         // send new rate to all hardware clocks, including the hardware time source if there is one
         // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-        InstanceManager::clockControlInstance()->setRate(factor);
+        ((ClockControl*)InstanceManager::getDefault("ClockControl"))->setRate(factor);
     }
     else if (!internalMaster  && (hardwareTimeSource!=NULL)) {
         // if not synchronizing, send to the hardware time source if there is one
@@ -309,13 +307,13 @@ SimpleTimebase::~SimpleTimebase()
    if (update)
    {
     // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-    InstanceManager::clockControlInstance()->initializeHardwareClock(mFactor, getTime(), false);
+    ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(mFactor, getTime(), false);
    }
   }
   else if (update)
   {
    // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-   InstanceManager::clockControlInstance()->initializeHardwareClock(hardwareFactor, getTime(), false);
+   ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(hardwareFactor, getTime(), false);
   }
 
   if (internalMaster)
@@ -327,7 +325,7 @@ SimpleTimebase::~SimpleTimebase()
   {
    // Note if there are multiple hardware clocks, this should be changed to correctly
    //    identify which hardware clock has been chosen-currently assumes only one
-   hardwareTimeSource = InstanceManager::clockControlInstance();
+   hardwareTimeSource = ((ClockControl*)InstanceManager::getDefault("ClockControl"));
    masterName = hardwareTimeSource->getHardwareClockName();
   }
  }
@@ -341,7 +339,7 @@ SimpleTimebase::~SimpleTimebase()
         masterName = name;
         // if multiple clocks, this must be replaced by a loop over all hardware clocks to identify
         // the one that is the hardware time source
-        hardwareTimeSource = InstanceManager::clockControlInstance();
+        hardwareTimeSource = ((ClockControl*)InstanceManager::getDefault("ClockControl"));
     }
     else {
         masterName = "";
@@ -360,13 +358,13 @@ SimpleTimebase::~SimpleTimebase()
    if (internalMaster)
    {
     // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-    InstanceManager::clockControlInstance()->initializeHardwareClock(mFactor,
+    ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(mFactor,
                                                 getTime(), false);
    }
    else
    {
     // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-    InstanceManager::clockControlInstance()->initializeHardwareClock(hardwareFactor,
+    ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(hardwareFactor,
                                                 getTime(), false);
    }
   }
@@ -380,12 +378,11 @@ SimpleTimebase::~SimpleTimebase()
         if (update) {
             if (internalMaster) {
                 // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-                InstanceManager::clockControlInstance()->initializeHardwareClock(mFactor,
-                                              getTime(), false);
+                ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(mFactor, getTime(), false);
             }
             else {
                 // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-                InstanceManager::clockControlInstance()->initializeHardwareClock(hardwareFactor,
+                ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(hardwareFactor,
                                                 getTime(), false);
             }
         }
@@ -399,12 +396,12 @@ SimpleTimebase::~SimpleTimebase()
         if (update) {
             if (internalMaster) {
                 // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-                InstanceManager::clockControlInstance()->initializeHardwareClock(mFactor,
+                ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(mFactor,
                                                 getTime(), false);
             }
             else {
                 // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-                InstanceManager::clockControlInstance()->initializeHardwareClock(hardwareFactor,
+                ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(hardwareFactor,
                                                 getTime(), false);
             }
         }
@@ -459,12 +456,12 @@ SimpleTimebase::~SimpleTimebase()
     if (synchronizeWithHardware || correctHardware) {
         if (startStopped) {
             // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-            InstanceManager::clockControlInstance()->initializeHardwareClock(0,
+            ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(0,
                     getTime(),(!internalMaster && !startSetTime));
         }
         else {
             // Note if there are multiple hardware clocks, this should be a loop over all hardware clocks
-            InstanceManager::clockControlInstance()->initializeHardwareClock(mFactor,
+            ((ClockControl*)InstanceManager::getDefault("ClockControl"))->initializeHardwareClock(mFactor,
                     getTime(),(!internalMaster && !startSetTime));
         }
     }
@@ -572,7 +569,7 @@ void SimpleTimebase::handleAlarm()
 
  // and notify the others
  int minutes = date.time().minute();
- if (minutes!=oldMinutes)
+ if (minutes != oldMinutes)
  {
   // update memory
   updateMemory(date);
@@ -595,7 +592,7 @@ void SimpleTimebase::updateMemory(QDateTime date)
 //        }
 //    }
 //    clockMemory->setValue(timeStorageFormat.format(date));
-    ((AbstractMemory*)clockMemory)->setValue(QVariant(date));
+    ((AbstractMemory*)clockMemory)->setValue(date);
 }
 
 void SimpleTimebase::updateMemory(double factor) {
@@ -607,6 +604,7 @@ void SimpleTimebase::updateMemory(double factor) {
  */
 /*public*/ void SimpleTimebase::addMinuteChangeListener(PropertyChangeListener* l) {
     pcMinutes->addPropertyChangeListener(l);
+    connect(this, SIGNAL(minuteTick()), l, SLOT(propertyChange(PropertyChangeEvent*)));
     startAlarm();
 }
 
@@ -615,6 +613,7 @@ void SimpleTimebase::updateMemory(double factor) {
  */
 /*public*/ void SimpleTimebase::removeMinuteChangeListener(PropertyChangeListener* l) {
     pcMinutes->removePropertyChangeListener(l);
+    disconnect(this, SIGNAL(minuteTick()), l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void SimpleTimebase::setState(int s) throw (JmriException){}

@@ -444,6 +444,8 @@ int LineReader::readLine() //throws IOException
 //   inLimit = (inStream==NULL)?reader->read(inCharBuf)
 //                             :inStream->read(inByteBuf);
    line = inStream->readLine();
+   if(!inStream->atEnd() && line == "")
+    line = " ";
    inByteBuf = line.toLatin1();
    if(!line.length() == 0)
     inByteBuf.append('\n');

@@ -1,7 +1,7 @@
 #ifndef LAYOUTTURNTABLE_H
 #define LAYOUTTURNTABLE_H
 
-#include <QObject>
+#include "layouttrack.h"
 #include <QPointF>
 #include "namedbeanhandle.h"
 
@@ -79,7 +79,7 @@ public slots:
  friend class LayoutTurntable;
 };
 
-class LayoutTurntable : public QObject
+class LayoutTurntable : public LayoutTrack
 {
  Q_OBJECT
 public:

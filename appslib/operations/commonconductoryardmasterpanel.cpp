@@ -332,11 +332,11 @@ namespace Operations
  }
 
  /*protected*/ void CommonConductorYardmasterPanel::updateComplete() {
-     pPickupLocos->repaint();
-     pSetoutLocos->repaint();
-     pPickups->repaint();
-     pSetouts->repaint();
-     pMoves->repaint();
+//     pPickupLocos->repaint();
+//     pSetoutLocos->repaint();
+//     pPickups->repaint();
+//     pSetouts->repaint();
+//     pMoves->repaint();
 
      pPickupLocos->update();
      pSetoutLocos->update();

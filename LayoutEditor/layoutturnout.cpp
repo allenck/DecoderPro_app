@@ -93,6 +93,19 @@
 
     // Defined text resource
 //    ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.display.layoutEditor.LayoutEditorBundle");
+/*public*/ /*static*/ /*final*/ int LayoutTurnout::UNKNOWN = Turnout::UNKNOWN;
+/*public*/ /*static*/ /*final*/ int LayoutTurnout::STATE_AC = 0x02;
+/*public*/ /*static*/ /*final*/ int LayoutTurnout::STATE_BD = 0x04;
+/*public*/ /*static*/ /*final*/ int LayoutTurnout::STATE_AD = 0x06;
+/*public*/ /*static*/ /*final*/ int LayoutTurnout::STATE_BC = 0x08;
+
+// program default turnout size parameters
+/*public*/ /*static*/ /*final*/ double LayoutTurnout::turnoutBXDefault = 20.0;  // RH, LH, WYE
+/*public*/ /*static*/ /*final*/ double LayoutTurnout::turnoutCXDefault = 20.0;
+/*public*/ /*static*/ /*final*/ double LayoutTurnout::turnoutWidDefault = 10.0;
+/*public*/ /*static*/ /*final*/ double LayoutTurnout::xOverLongDefault = 30.0;   // DOUBLE_XOVER, RH_XOVER, LH_XOVER
+/*public*/ /*static*/ /*final*/ double LayoutTurnout::xOverHWidDefault = 10.0;
+/*public*/ /*static*/ /*final*/ double LayoutTurnout::xOverShortDefault = 10.0;
 
 /**
  * constructor method
@@ -628,6 +641,49 @@
 
 /*public*/ void LayoutTurnout::setDisableWhenOccupied(bool state) {disableWhenOccupied = state;}
 /*public*/ bool LayoutTurnout::isDisabledWhenOccupied() {return disableWhenOccupied;}
+
+/*public*/ QObject* LayoutTurnout::getConnection(int location) throw (JmriException)
+{
+ switch (location)
+ {
+     case TURNOUT_A:
+         return connectA;
+     case TURNOUT_B:
+         return connectB;
+     case TURNOUT_C:
+         return connectC;
+     case TURNOUT_D:
+         return connectD;
+ }
+ log->error("Invalid Point Type " + QString::number(location)); //I18IN
+ throw new JmriException("Invalid Point");
+}
+
+/*public*/ void LayoutTurnout::setConnection(int location, QObject* o, int type) throw (JmriException)
+{
+    if ((type != TRACK) && (type != NONE)) {
+        log->error("unexpected type of connection to layoutturnout - " + QString::number(type));
+        throw JmriException("unexpected type of connection to layoutturnout - " + QString::number(type));
+    }
+    switch (location) {
+        case TURNOUT_A:
+            connectA = o;
+            break;
+        case TURNOUT_B:
+            connectB = o;
+            break;
+        case TURNOUT_C:
+            connectC = o;
+            break;
+        case TURNOUT_D:
+            connectD = o;
+            break;
+        default:
+            log->error("Invalid Point Type " + QString::number(location)); //I18IN
+            throw JmriException("Invalid Point");
+    }
+}
+
 /*public*/ void LayoutTurnout::setConnectA(QObject* o,int type)
 {
  connectA = o;

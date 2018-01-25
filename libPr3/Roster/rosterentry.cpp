@@ -1553,7 +1553,7 @@ QDomElement RosterEntry::storeLocoAddress(QDomDocument doc, LocoAddress* p)
  // include contents, we shall also store the old format for backward compatability
  DccLocoAddressXml* adapter = new DccLocoAddressXml();
 
- element.appendChild(adapter->store(doc,p));
+ element.appendChild(adapter->store(p));
 
  if (p!=NULL)
  {

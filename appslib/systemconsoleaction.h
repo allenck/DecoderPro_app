@@ -22,5 +22,5 @@ public slots:
 private:
  void common();
 };
-Q_DECLARE_METATYPE(JmriAbstractAction)
+Q_DECLARE_METATYPE(SystemConsoleAction)
 #endif // SYSTEMCONSOLEACTION_H

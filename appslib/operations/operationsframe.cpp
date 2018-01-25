@@ -180,7 +180,7 @@ common();
   radioButtonActionPerformed(b);
  }
 
- /*protected*/ void OperationsFrame::radioButtonActionPerformed(QWidget* b)
+ /*protected*/ void OperationsFrame::radioButtonActionPerformed(QWidget* /*b*/)
  {
   Q_ASSERT(false); // must be overridden!
  }
@@ -196,7 +196,7 @@ common();
   checkBoxActionPerformed(b);
  }
 
- /*protected*/ void OperationsFrame::checkBoxActionPerformed(QWidget* b)
+ /*protected*/ void OperationsFrame::checkBoxActionPerformed(QWidget* /*b*/)
  {
   Q_ASSERT(false); // must be overridden!
  }
@@ -211,7 +211,7 @@ common();
   spinnerChangeEvent(ae);
  }
 
- /*protected*/ void OperationsFrame::spinnerChangeEvent(QWidget* ae) {
+ /*protected*/ void OperationsFrame::spinnerChangeEvent(QWidget* /*ae*/) {
   Q_ASSERT(false); // must be overridden!
  }
 
@@ -226,7 +226,7 @@ common();
   comboBoxActionPerformed(ae);
  }
 
- /*protected*/ void OperationsFrame::comboBoxActionPerformed(QWidget* ae)
+ /*protected*/ void OperationsFrame::comboBoxActionPerformed(QWidget* /*ae*/)
  {
   Q_ASSERT(false); // should be overridden!
  }
@@ -402,12 +402,12 @@ common();
   ((OperationsPanel*) this->getContentPane())->dispose();
   JmriJFrame::dispose();
  }
-#if 0
- @Override
- /*protected*/ void storeValues() {
-     ((OperationsPanel) this->getContentPane()).storeValues();
- }
 
+ //@Override
+ /*protected*/ void OperationsFrame::storeValues() {
+     ((OperationsPanel*) this->getContentPane())->storeValues();
+ }
+#if 0
  /*protected*/ String lineWrap(String s) {
      return ((OperationsPanel) this->getContentPane()).lineWrap(s, this->getPreferredSize());
  }

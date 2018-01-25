@@ -8,7 +8,7 @@
 
 class LayoutBlock;
 class LayoutEditor;
-class LIBLAYOUTEDITORSHARED_EXPORT TrackSegment : public QObject
+class LIBLAYOUTEDITORSHARED_EXPORT TrackSegment : public LayoutTrack
 {
     Q_OBJECT
 public:

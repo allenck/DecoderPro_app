@@ -532,7 +532,7 @@ OperationsPreferencesPanel(parent)
       QMessageBox::critical(this, tr("Horsepower per Ton"), tr("Can not accept number"));
 
      return;
- }
+     }
 
  //try {
      switchTimeTextField->text().toInt(&ok);
@@ -558,7 +558,8 @@ OperationsPreferencesPanel(parent)
      {
       yearTextField->text().trimmed().toInt(&ok);
      }
- if(!ok) {
+ if(!ok)
+ {
 //          JOptionPane.showMessageDialog(this, tr("BorderLayoutYearModeled"), Bundle
 //                  .getMessage("CanNotAcceptNumber"), JOptionPane.ERROR_MESSAGE);
     QMessageBox::critical(this, tr("Optional Year Modeled"), tr("Can not accept number"));
@@ -570,28 +571,29 @@ OperationsPreferencesPanel(parent)
 
  // set car types
  if (typeDesc->isChecked() && Setup::getCarTypes()!=(Setup::DESCRIPTIVE) || typeAAR->isChecked()
-         && Setup::getCarTypes()!=(Setup::AAR)) {
+         && Setup::getCarTypes()!=(Setup::AAR))
+ {
 
-     // backup files before changing car type descriptions
-     AutoBackup* backup = new AutoBackup();
-     //try {
-         backup->autoBackup();
+  // backup files before changing car type descriptions
+  AutoBackup* backup = new AutoBackup();
+  //try {
+      backup->autoBackup();
 //          } catch (Exception ex) {
 //              UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,
 //                      "Auto backup before changing Car types"); // NOI18N
 //              new ExceptionDisplayFrame(context);
 //          }
 
-     if (typeDesc->isChecked()) {
-         CarTypes::instance()->changeDefaultNames(Setup::DESCRIPTIVE);
-         Setup::setCarTypes(Setup::DESCRIPTIVE);
-     } else {
-         CarTypes::instance()->changeDefaultNames(Setup::AAR);
-         Setup::setCarTypes(Setup::AAR);
-     }
+  if (typeDesc->isChecked()) {
+      CarTypes::instance()->changeDefaultNames(Setup::DESCRIPTIVE);
+      Setup::setCarTypes(Setup::DESCRIPTIVE);
+  } else {
+      CarTypes::instance()->changeDefaultNames(Setup::AAR);
+      Setup::setCarTypes(Setup::AAR);
+  }
 
-     // save all the modified files
-     OperationsXml::save();
+  // save all the modified files
+  OperationsXml::save();
  }
  // main menu enabled?
  Setup::setMainMenuEnabled(mainMenuCheckBox->isChecked());
@@ -663,18 +665,18 @@ OperationsPreferencesPanel(parent)
      Setup::setScale(Setup::G_SCALE);
  }
  Setup::setRailroadName(railroadNameTextField->text());
-#if 1
+
  if (Setup::getRailroadName() != (WebServerPreferences::getDefault()->getRailRoadName()))
  {
   Setup::setRailroadName(railroadNameTextField->text());
   int results = JOptionPane::showConfirmDialog(this, tr("Do you want the change your railroad name from \"%1\" to \"%2\"?").arg(           WebServerPreferences::getDefault()->getRailRoadName()).arg( Setup::getRailroadName()), tr("Change your JMRI railroad name?"), JOptionPane::YES_NO_OPTION);
   if (results == JOptionPane::OK_OPTION)
   {
-      WebServerPreferences::getDefault()->setRailRoadName(Setup::getRailroadName());
-      WebServerPreferences::getDefault()->save();
+   WebServerPreferences::getDefault()->setRailRoadName(Setup::getRailroadName());
+   WebServerPreferences::getDefault()->save();
   }
-}
-#endif
+ }
+
  // Set Unit of Length
  if (feetUnit->isChecked()) {
      Setup::setLengthUnit(Setup::FEET);
@@ -684,14 +686,16 @@ OperationsPreferencesPanel(parent)
  }
  Setup::setYearModeled(yearTextField->text().trimmed());
  // warn about train length being too short
- if (maxTrainLength != Setup::getMaxTrainLength()) {
-     if (maxTrainLength < 500 && Setup::getLengthUnit()==(Setup::FEET) || maxTrainLength < 160
-             && Setup::getLengthUnit()==(Setup::METER)) {
+ if (maxTrainLength != Setup::getMaxTrainLength())
+ {
+  if (maxTrainLength < 500 && Setup::getLengthUnit()==(Setup::FEET) || maxTrainLength < 160
+          && Setup::getLengthUnit()==(Setup::METER))
+  {
 //              JOptionPane.showMessageDialog(this, MessageFormat.format(tr("LimitTrainLength"),
 //                      new Object[]{maxTrainLength, Setup::getLengthUnit().toLowerCase()}), Bundle
 //                      .getMessage("WarningTooShort"), JOptionPane.WARNING_MESSAGE);
-      QMessageBox::warning(this, tr("Warning train length might be too short!"), tr("Are you sure that you want to limit your trains to %1 scale %2?").arg(maxTrainLength).arg(Setup::getLengthUnit().toLower()));
-     }
+   QMessageBox::warning(this, tr("Warning train length might be too short!"), tr("Are you sure that you want to limit your trains to %1 scale %2?").arg(maxTrainLength).arg(Setup::getLengthUnit().toLower()));
+  }
  }
  // set max train length
  Setup::setMaxTrainLength(maxLengthTextField->text().toInt());
@@ -703,9 +707,9 @@ OperationsPreferencesPanel(parent)
  }
 }
 
- // if max train length has changed, check routes
- /*private*/ void OperationsSetupPanel::checkRoutes()
- {
+// if max train length has changed, check routes
+/*private*/ void OperationsSetupPanel::checkRoutes()
+{
   int maxLength = maxLengthTextField->text().toInt();
   if (maxLength > Setup::getMaxTrainLength()) {
 //          JOptionPane.showMessageDialog(this, tr("RouteLengthNotModified"), MessageFormat.format(

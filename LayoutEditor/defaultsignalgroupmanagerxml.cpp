@@ -177,7 +177,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
    for (int y = 0; y<signalHeadList.size(); y++)
    {
     QString head = signalHeadList.at(y).toElement().attribute("name");
-    SignalHead* sigHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(head);
+    SignalHead* sigHead = ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(head);
     m->addSignalHead(sigHead);
     yesno = signalHeadList.at(y).toElement().attribute("sensorTurnoutLogic");
     inverse = false;

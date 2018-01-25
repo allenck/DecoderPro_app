@@ -71,7 +71,7 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
    << new LocoNetMenuItem(tr("Configure LocoNet ID"), "jmri.jmrix.loconet.locoid.LocoIdPanel")
    << new LocoNetMenuItem(tr("Configure Duplex Group"), "jmri.jmrix.loconet.duplexgroup.swing.DuplexGroupTabbedPanel")
    //new Item("Start LocoNet Server",  "jmri.jmrix.loconet.locormi.LnMessageServerPanel"),
-//   << new LocoNetMenuItem("Start LocoNetOverTCP Server","jmri.jmrix.loconet.loconetovertcp.ServerPanel")
+   //<< new LocoNetMenuItem("Start LocoNetOverTCP Server","jmri.jmrix.loconet.loconetovertcp.ServerPanel")
    << NULL
    << new LocoNetMenuItem(tr("Send Throttle Messages"), "jmri.jmrix.loconet.swing.throttlemsg.MessagePanel")
    //<< new LocoNetMenuItem(tr("Send LocoNet Packet"), "jmri.jmrix.loconet.locogen.LocoGenPanel")

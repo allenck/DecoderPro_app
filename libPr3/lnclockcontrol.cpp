@@ -30,7 +30,7 @@ LnClockControl::LnClockControl(SlotManager* sm, LnTrafficController* tc, QObject
     readInProgress = false;
 
     // Get internal timebase
-    clock = InstanceManager::timebaseInstance();
+    clock = (Timebase*)InstanceManager::getDefault("Timebase");
     // Create a Timebase listener for Minute change events from the internal clock
 #if 0 // DONE:
     minuteChangeListener = new PropertyChangeListener() {

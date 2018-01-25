@@ -54,6 +54,7 @@
 #include "restartstartupactionfactory.h"
 #include "throttlespreferences.h"
 #include "jsonserverpreferences.h"
+#include "loconetconsistmanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -231,7 +232,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
  if (type == "SignalHeadManager")
  {
    AbstractSignalHeadManager* o =  new AbstractSignalHeadManager();
-   InstanceManager::store(o, "type");
+   InstanceManager::store(o, type);
    return o;
  }
 
@@ -249,12 +250,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   return jtpm;
  }
 
- if (type == "SignalMastManager") {
-        // ensure signal head manager exists first
-        InstanceManager::getDefault("SignalHeadManager");
-        QObject* o =  new DefaultSignalMastManager();
-        InstanceManager::store(o, "SignalMastManager");
-        return o;
+ if (type == "SignalMastManager")
+ {
+   // ensure signal head manager exists first
+   InstanceManager::getDefault("SignalHeadManager");
+   QObject* o =  new DefaultSignalMastManager();
+   InstanceManager::store(o, "SignalMastManager");
+   return o;
  }
 
  if (type == "SignalSystemManager") {
@@ -445,6 +447,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   InstanceManager::store(jsp,type);
   return jsp;
  }
+
 // if(type == "GlobalProgrammerManager")
 // {
 //  DefaultProgrammerManager* dpm = new DefaultProgrammerManager();

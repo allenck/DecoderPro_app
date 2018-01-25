@@ -15,29 +15,30 @@
 /*public*/ JsonLayoutBlockSocketService::JsonLayoutBlockSocketService(JsonConnection* connection, QObject* parent) : JsonSocketService(connection, parent){
     //super(connection);
 layoutBlocks = new QMap<QString, LayoutBlockListener*>();
-    this->service = new JsonLayoutBlockHttpService(connection->getObjectMapper());
+ this->service = new JsonLayoutBlockHttpService(connection->getObjectMapper());
 }
 
 //@Override
-/*public*/ void JsonLayoutBlockSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
-    this->locale = locale;
-    QString name = data.value(JSON::NAME).toString();
-    if (data.value(JSON::METHOD).toString() == (JSON::PUT)) {
-        this->connection->sendMessage(this->service->doPut(type, name, data, locale));
-    } else {
-        this->connection->sendMessage(this->service->doPost(type, name, data, locale));
-    }
-    if (!this->layoutBlocks->contains(name)) {
-        LayoutBlock* layoutblock = ((LayoutBlockManager*) InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(name);
-        LayoutBlockListener* listener = new LayoutBlockListener(layoutblock,this);
-        //layoutblock.addPropertyChangeListener(listener);
-        connect(layoutblock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-        this->layoutBlocks->insert(name, listener);
-    }
+/*public*/ void JsonLayoutBlockSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)
+{
+ this->locale = locale;
+ QString name = data.value(JSON::NAME).toString();
+ if (data.value(JSON::METHOD).toString() == (JSON::PUT)) {
+     this->connection->sendMessage(this->service->doPut(type, name, data, locale));
+ } else {
+     this->connection->sendMessage(this->service->doPost(type, name, data, locale));
+ }
+ if (!this->layoutBlocks->contains(name)) {
+     LayoutBlock* layoutblock = ((LayoutBlockManager*) InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(name);
+     LayoutBlockListener* listener = new LayoutBlockListener(layoutblock,this);
+     //layoutblock.addPropertyChangeListener(listener);
+     connect(layoutblock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+     this->layoutBlocks->insert(name, listener);
+ }
 }
 
 //@Override
-/*public*/ void JsonLayoutBlockSocketService::onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonLayoutBlockSocketService::onList(QString type, QJsonObject /*data*/, QLocale locale) throw (IOException, JmriException, JsonException) {
     this->locale = locale;
     this->connection->sendMessage(this->service->doGetList(type, locale));
 }

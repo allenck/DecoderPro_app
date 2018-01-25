@@ -184,7 +184,7 @@ namespace Operations
     }
    }
   }
-  pTrains->repaint();
+  //pTrains->repaint();
   pTrains->update();
  }
 

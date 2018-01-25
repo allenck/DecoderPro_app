@@ -182,7 +182,8 @@ void LayoutSlip::init()
 
 /*public*/ void LayoutSlip::setTurnoutB(QString tName)
 {
- if (namedTurnoutB!=NULL) deactivateTurnout();
+ if (namedTurnoutB!=NULL)
+  deactivateTurnout();
  turnoutBName = tName;
  Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
                      getTurnout(turnoutBName);
@@ -196,6 +197,47 @@ void LayoutSlip::init()
   turnoutBName = "";
   namedTurnoutB = NULL;
  }
+}
+
+//@Override
+/*public*/ QObject* LayoutSlip::getConnection(int location) throw (JmriException) {
+    switch (location) {
+        case SLIP_A:
+            return connectA;
+        case SLIP_B:
+            return connectB;
+        case SLIP_C:
+            return connectC;
+        case SLIP_D:
+            return connectD;
+    }
+    log.error("Invalid Point Type " + QString::number(location)); //I18IN
+    throw new JmriException("Invalid Point");
+}
+
+//@Override
+/*public*/ void LayoutSlip::setConnection(int location, QObject* o, int type) throw (JmriException) {
+    if ((type != TRACK) && (type != NONE)) {
+        log.error("unexpected type of connection to layoutturnout - " + QString::number(type));
+        throw JmriException("unexpected type of connection to layoutturnout - " + QString::number(type));
+    }
+    switch (location) {
+        case SLIP_A:
+            connectA = o;
+            break;
+        case SLIP_B:
+            connectB = o;
+            break;
+        case SLIP_C:
+            connectC = o;
+            break;
+        case SLIP_D:
+            connectD = o;
+            break;
+        default:
+            log.error("Invalid Point Type " + location); //I18IN
+            throw JmriException("Invalid Point");
+    }
 }
 
 /*public*/ QString LayoutSlip::getDisplayName()
@@ -218,47 +260,96 @@ void LayoutSlip::init()
  * Toggle slip states if clicked on, physical turnout exists, and
  *    not disabled
  */
-/*public*/ void LayoutSlip::toggleState()
+/*public*/ void LayoutSlip::toggleState(int selectedPointType)
 {
- switch(currentState)
- {
-  case STATE_AC :
-   if(singleSlipStraightEqual())
-   {
-    setTurnoutState(turnoutStates->value(STATE_AD));
-    currentState = STATE_AD;
-   }
-   else
-   {
-    setTurnoutState(turnoutStates->value(STATE_BD));
-    currentState = STATE_BD;
-   }
-   break;
-  case STATE_BD :
-   setTurnoutState(turnoutStates->value(STATE_AD));
-   currentState = STATE_AD;
-   break;
-  case STATE_AD :
-  if(type==SINGLE_SLIP)
-  {
-      setTurnoutState(turnoutStates->value(STATE_AC));
-      currentState = STATE_AC;
-  }
-  else
-  {
-      setTurnoutState(turnoutStates->value(STATE_BC));
-      currentState = STATE_BC;
-  }
-  break;
-  case STATE_BC :
-   setTurnoutState(turnoutStates->value(STATE_AC));
-   currentState = STATE_AC;
-   break;
-  default       :
-   setTurnoutState(turnoutStates->value(STATE_BD));
-   currentState = STATE_BD;
-   break;
+ switch (selectedPointType) {
+     case SLIP_LEFT: {
+         switch (currentState) {
+             case STATE_AC: {
+                 if (type == SINGLE_SLIP) {
+                     currentState = STATE_BD;
+                 } else {
+                     currentState = STATE_BC;
+                 }
+                 break;
+             }
+             case STATE_BD: {
+                 currentState = STATE_AD;
+                 break;
+             }
+             case STATE_AD: {
+                 currentState = STATE_BD;
+                 break;
+             }
+             case STATE_BC:
+             default: {
+                 currentState = STATE_AC;
+                 break;
+             }
+         }
+         break;
+     }
+     case SLIP_RIGHT: {
+         switch (currentState) {
+             case STATE_AC: {
+                 currentState = STATE_AD;
+                 break;
+             }
+             case STATE_BD: {
+                 if (type == SINGLE_SLIP) {
+                     currentState = STATE_AC;
+                 } else {
+                     currentState = STATE_BC;
+                 }
+                 break;
+             }
+             case STATE_AD: {
+                 currentState = STATE_AC;
+                 break;
+             }
+             case STATE_BC:
+             default: {
+                 currentState = STATE_BD;
+                 break;
+             }
+         }
+         break;
+     }
+     case SLIP_CENTER:   //note: this should "go away"
+     //(since SLIP_CENTER should have been replaced by SLIP_LEFT & SLIP_RIGHT everywhere)
+     default:
+     {
+         switch (currentState) {
+             case STATE_AC: {
+                 if (singleSlipStraightEqual()) {
+                     currentState = STATE_BD;
+                 } else {
+                     currentState = STATE_BC;
+                 }
+                 break;
+             }
+
+             case STATE_BD: {
+                 currentState = STATE_AD;
+                 break;
+             }
+
+             case STATE_AD: {
+                 currentState = STATE_AC;
+                 break;
+             }
+
+             case STATE_BC:
+             default: {
+                 currentState = STATE_BD;
+                 break;
+             }
+         }
+         break;
+     }
  }
+ setTurnoutState(turnoutStates->value(currentState));
+
 }
 
 void LayoutSlip::setTurnoutState(TurnoutState* ts)
@@ -284,7 +375,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 //            }
 //        }, namedTurnoutgetName(), "Layout Editor Slip");
      AbstractTurnout* t = (AbstractTurnout* )namedTurnout->getBean();
-     connect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
+     connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
     }
     if (namedTurnoutB!=NULL)
     {
@@ -296,7 +387,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 //            }
 //        }, namedTurnoutB.getName(), "Layout Editor Slip");
         AbstractTurnout* t = (AbstractTurnout*)namedTurnoutB->getBean();
-        connect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
+        connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
 
     }
 }

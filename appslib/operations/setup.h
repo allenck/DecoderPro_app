@@ -369,7 +369,7 @@ namespace Operations
   /*public*/ static QString getRailroadName();
   /*public*/ static void setRailroadName(QString name);
   /*public*/ static void setComment(QString comment);
-  /*public*/ static QString getComment();
+  /*public*/ static QString getComment(bool asText = true);
   /*public*/ static /*final*/ QString SWITCH_LIST_CSV_PROPERTY_CHANGE;// = "setupSwitchListCSVChange"; //  NOI18N
   /*public*/ static /*final*/ QString MANIFEST_CSV_PROPERTY_CHANGE;// = "setupManifestCSVChange"; //  NOI18N
   /*public*/ static /*final*/ QString REAL_TIME_PROPERTY_CHANGE;// = "setupSwitchListRealTime"; //  NOI18N

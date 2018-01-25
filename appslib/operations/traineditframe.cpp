@@ -398,7 +398,7 @@ namespace Operations
       trainDescriptionTextField->setText(_train->getRawDescription());
       routeBox->setCurrentIndex(routeBox->findData(VPtr<Route>::asQVariant(_train->getRoute())));
       modelEngineBox->setCurrentIndex(modelEngineBox->findText(_train->getEngineModel()));
-      commentTextArea->setText(_train->getComment());
+      commentTextArea->setText(_train->getComment(false));
       cabooseRadioButton->setChecked((_train->getRequirements() & Train::CABOOSE) > 0);
       fredRadioButton->setChecked((_train->getRequirements() & Train::FRED) > 0);
       updateDepartureTime();
@@ -853,7 +853,7 @@ namespace Operations
   loadCarTypes();
   enableCheckboxes(_train != NULL);
   typeCarPanelCheckBoxes->update();
-  repaint();
+  update();
  }
 
  /*private*/ void TrainEditFrame::loadCarTypes()
@@ -903,7 +903,7 @@ namespace Operations
   loadEngineTypes();
   enableCheckboxes(_train != NULL);
   typeEnginePanelCheckBoxes->update();
-  repaint();
+  update();
  }
 
  /*private*/ void TrainEditFrame::loadEngineTypes()

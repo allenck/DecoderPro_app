@@ -92,25 +92,30 @@
  DccLocoAddress* address = NULL;
  QLocale locale = server->getConnection()->getLocale();
  JsonThrottleManager* manager = JsonThrottleManager::getDefault();
- if (!data.value(ADDRESS).isNull())
+ if (!data.value(ADDRESS).isUndefined())
  {
   if (manager->canBeLongAddress(data.value(ADDRESS).toInt())
           || manager->canBeShortAddress(data.value(ADDRESS).toInt()))
   {
       address = new DccLocoAddress(data.value(ADDRESS).toInt(),
               data.value(JSON::IS_LONG_ADDRESS).toBool(!manager->canBeShortAddress(data.value(ADDRESS).toInt())));
-  } else {
+  }
+  else
+  {
       log->warn(tr("Address \"%1\" is not a valid address.").arg( data.value(ADDRESS).toInt()));
       throw JsonException(HttpServletResponse::SC_BAD_REQUEST, tr(/*locale,*/ "The address %1 is invalid.").arg(data.value(ADDRESS).toInt())); // NOI18N
   }
-} else if (!data.value(JSON::ID).isNull()) {
+ }
+ else if (!data.value(JSON::ID).isUndefined())
+ {
   try {
       address = Roster::getDefault()->getEntryForId(data.value(JSON::ID).toString())->getDccLocoAddress();
   } catch (NullPointerException ex) {
       log->warn(tr("Roster entry \"%1\" does not exist.").arg(data.value(JSON::ID).toString()));
       throw JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*locale,*/ "Unable to create throttle for roster entry %1. Perhaps it does not exist?").arg( data.value(JSON::ID).toString())); // NOI18N
   }
- } else {
+ }
+ else {
      log->warn("No address specified");
      throw JsonException(HttpServletResponse::SC_BAD_REQUEST, tr(/*locale,*/ "Throttles must be requested with an address.")); // NOI18N
  }
@@ -157,7 +162,7 @@
         if (notifyClient) {
 //            this->sendMessage(mapper.createObjectNode().insert(RELEASE, "null"), server);
          QJsonObject obj;
-         obj.insert(RELEASE, "null");
+         obj.insert(RELEASE, /*"null"*/QJsonValue());
          this->sendMessage(obj, server);
         }
     }

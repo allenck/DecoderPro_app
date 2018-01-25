@@ -21,10 +21,10 @@ DccLocoAddressXml::DccLocoAddressXml(QObject *parent) :
  * @param o Object to store, of type DccLocoAddress
  * @return Element containing the complete info
  */
-/*public*/ QDomElement DccLocoAddressXml::store(QDomDocument doc, QObject* o)
+/*public*/ QDomElement DccLocoAddressXml::store(QObject* o)
 {
  DccLocoAddress* p = (DccLocoAddress*)o;
-
+ QDomDocument doc = QDomDocument();
  QDomElement element = doc.createElement("dcclocoaddress");
 
  // include contents

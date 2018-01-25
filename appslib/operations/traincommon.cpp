@@ -28,6 +28,8 @@
 #include "carload.h"
 #include "train.h"
 #include "route.h"
+#include "calendar.h"
+#include "instancemanager.h"
 
 //TrainCommon::TrainCommon(QObject *parent) :
 //  QObject(parent)
@@ -56,7 +58,7 @@ namespace Operations {
  /*public*/ /*static*/ /*final*/ bool TrainCommon::LOCAL = true;
  /*protected*/ /*static*/ /*final*/ bool TrainCommon::ENGINE = true;
  /*public*/ /*static*/ /*final*/ bool TrainCommon::IS_TWO_COLUMN_TRACK = true;
- TrainCommon::TrainCommon(QObject *parent)
+ TrainCommon::TrainCommon(QObject *parent) : QObject(parent)
  {
   carManager = CarManager::instance();
   engineManager = EngineManager::instance();
@@ -114,19 +116,22 @@ namespace Operations {
      }
  }
 
- /*private*/ void TrainCommon::pickupEngine(PrintWriter* file, Engine* engine, bool isManifest) {
-     QString buf = QString(padAndTruncateString(Setup::getPickupEnginePrefix(), isManifest ? Setup
-             ::getManifestPrefixLength() : Setup::getSwitchListPrefixLength()));
-     QStringList format = Setup::getPickupEngineMessageFormat();
-     foreach (QString attribute, format) {
-         QString s = getEngineAttribute(engine, attribute, PICKUP);
-         if (!checkStringLength(buf/*.toString()*/ + s, isManifest)) {
-             addLine(file, buf/*.toString()*/);
-             buf =  QString(TAB);
-         }
-         buf.append(s);
-     }
-     addLine(file, buf/*.toString()*/);
+ /*private*/ void TrainCommon::pickupEngine(PrintWriter* file, Engine* engine, bool isManifest)
+ {
+  QString buf = QString(padAndTruncateString(Setup::getPickupEnginePrefix(), isManifest ? Setup::getManifestPrefixLength() : Setup::getSwitchListPrefixLength()));
+  QStringList format = Setup::getPickupEngineMessageFormat();
+  foreach (QString attribute, format)
+  {
+   if(attribute.isEmpty())
+    continue;
+   QString s = getEngineAttribute(engine, attribute, PICKUP);
+   if (!checkStringLength(buf/*.toString()*/ + s, isManifest)) {
+       addLine(file, buf/*.toString()*/);
+       buf =  QString(TAB);
+   }
+   buf.append(s);
+  }
+  addLine(file, buf/*.toString()*/);
  }
 
  /**
@@ -137,32 +142,39 @@ namespace Operations {
   * @param rl
   * @param isManifest
   */
- /*protected*/ void TrainCommon::dropEngines(PrintWriter* file, QList<Engine*>* engineList, RouteLocation* rl, bool isManifest) {
-     bool printHeader = Setup::isPrintHeadersEnabled();
-     foreach (Engine* engine, *engineList) {
-         if (engine->getRouteDestination() == rl) {
-             if (printHeader) {
-                 printDropEngineHeader(file, isManifest);
-                 printHeader = false;
-             }
-             dropEngine(file, engine, isManifest);
-         }
-     }
+ /*protected*/ void TrainCommon::dropEngines(PrintWriter* file, QList<Engine*>* engineList, RouteLocation* rl, bool isManifest)
+ {
+  bool printHeader = Setup::isPrintHeadersEnabled();
+  foreach (Engine* engine, *engineList)
+  {
+   if (engine->getRouteDestination() == rl)
+   {
+    if (printHeader) {
+        printDropEngineHeader(file, isManifest);
+        printHeader = false;
+    }
+    dropEngine(file, engine, isManifest);
+   }
+  }
  }
 
- /*private*/ void TrainCommon::dropEngine(PrintWriter* file, Engine* engine, bool isManifest) {
-     QString buf =  QString(padAndTruncateString(Setup::getDropEnginePrefix(), isManifest ? Setup
-             ::getManifestPrefixLength() : Setup::getSwitchListPrefixLength()));
-     QStringList format = Setup::getDropEngineMessageFormat();
-     foreach (QString attribute, format) {
-         QString s = getEngineAttribute(engine, attribute, !PICKUP);
-         if (!checkStringLength(buf/*.toString()*/ + s, isManifest)) {
-             addLine(file, buf/*.toString()*/);
-             buf =  QString(TAB);
-         }
-         buf.append(s);
-     }
-     addLine(file, buf/*.toString()*/);
+ /*private*/ void TrainCommon::dropEngine(PrintWriter* file, Engine* engine, bool isManifest)
+ {
+  QString buf =  QString(padAndTruncateString(Setup::getDropEnginePrefix(), isManifest ? Setup::getManifestPrefixLength() : Setup::getSwitchListPrefixLength()));
+  QStringList format = Setup::getDropEngineMessageFormat();
+  foreach (QString attribute, format)
+  {
+   if(attribute.isEmpty())
+    continue;
+   QString s = getEngineAttribute(engine, attribute, !PICKUP);
+   if (!checkStringLength(buf/*.toString()*/ + s, isManifest))
+   {
+    addLine(file, buf/*.toString()*/);
+    buf =  QString(TAB);
+   }
+   buf.append(s);
+  }
+  addLine(file, buf/*.toString()*/);
  }
 
  /**
@@ -187,12 +199,13 @@ namespace Operations {
   * @param engine
   * @return engine drop string
   */
- /*public*/ QString TrainCommon::dropEngine(Engine* engine) {
-     QString builder = ""; //new StringBuilder();
-     foreach (QString attribute, Setup::getDropEngineMessageFormat()) {
-         builder.append(getEngineAttribute(engine, attribute, !PICKUP));
-     }
-     return builder/*.toString()*/;
+ /*public*/ QString TrainCommon::dropEngine(Engine* engine)
+ {
+  QString builder = ""; //new StringBuilder();
+  foreach (QString attribute, Setup::getDropEngineMessageFormat()) {
+      builder.append(getEngineAttribute(engine, attribute, !PICKUP));
+  }
+  return builder/*.toString()*/;
  }
 
 
@@ -200,204 +213,206 @@ namespace Operations {
   * Block cars by track, then pick up and set out for each location in a
   * train's route.
   */
- /*protected*/ void TrainCommon::blockCarsByTrack(PrintWriter* file, Train* train, QList<Car*>* carList, QList<RouteLocation*>* routeList,
-         RouteLocation* rl, bool printHeader, bool isManifest) {
-     if (printHeader) {
-         printPickupHeader = true;
-         printSetoutHeader = true;
-         printLocalMoveHeader = true;
-     }
-     QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
-     QStringList trackNames = QStringList();
-     clearUtilityCarTypes(); // list utility cars by quantity
-     foreach (Track* track, tracks) {
-         if (trackNames.contains(splitString(track->getName()))) {
-             continue;
-         }
-         trackNames.append(splitString(track->getName())); // use a track name once
-         // block pick up cars by destination
-         bool found = false; // begin blocking at rl
-         foreach (RouteLocation* rld, *routeList) {
-             if (rld != rl && !found) {
-                 continue;
-             }
-             found = true;
-             foreach (Car* car, *carList) {
-                 if (Setup::isSortByTrackEnabled()
-                         && splitString(track->getName())!=(splitString(car->getTrackName()))) {
-                     continue;
-                 }
-                 // note that a car in train doesn't have a track assignment
-                 if (car->getRouteLocation() == rl && car->getTrack() != NULL && car->getRouteDestination() == rld) {
-                     // determine if header is to be printed
-                     if (printPickupHeader && !isLocalMove(car)) {
-                         printPickupCarHeader(file, isManifest, !IS_TWO_COLUMN_TRACK);
-                         printPickupHeader = false;
-                         // check to see if set out header is needed
-                         if (getPickupCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(
-                                 getDropCarHeader(isManifest, !IS_TWO_COLUMN_TRACK))) {
-                             printSetoutHeader = false;
-                         }
-                         if (getPickupCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(
-                                 getLocalMoveHeader(isManifest))) {
-                             printLocalMoveHeader = false;
-                         }
-                     }
-                     if (car->isUtility()) {
-                         pickupUtilityCars(file, carList, car, isManifest);
-                     } // use truncated format if there's a switch list
-                     else if (isManifest && Setup::isTruncateManifestEnabled()
-                             && rl->getLocation()->isSwitchListEnabled()) {
-                         pickUpCarTruncated(file, car, isManifest);
-                     } else {
-                         pickUpCar(file, car, isManifest);
-                     }
-                     pickupCars = true;
-                     cars++;
-                     if (car->getLoadType()==(CarLoad::LOAD_TYPE_EMPTY)) {
-                         emptyCars++;
-                     }
-                 }
-             }
-         }
-         // now do set outs and local moves
-         foreach (Car* car, *carList) {
-             if (Setup::isSortByTrackEnabled() && car->getRouteLocation() != NULL && car->getRouteDestination() == rl) {
-                 // sort local moves by the car's current track name
-                 if (isLocalMove(car)) {
-                     if (splitString(track->getName())!=(splitString(car->getTrackName()))) {
-                         continue;
-                     }
-                 } else if (splitString(track->getName())!=(splitString(car->getDestinationTrackName()))) {
-                     continue;
-                 }
-             }
-             if (car->getRouteDestination() == rl && car->getDestinationTrack() != NULL) {
-                 if (printSetoutHeader && !isLocalMove(car)) {
-                     printDropCarHeader(file, isManifest, !IS_TWO_COLUMN_TRACK);
-                     printSetoutHeader = false;
-                     if (getPickupCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(
-                             getDropCarHeader(isManifest, !IS_TWO_COLUMN_TRACK))) {
-                         printPickupHeader = false;
-                     }
-                     if (getDropCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(getLocalMoveHeader(isManifest))) {
-                         printLocalMoveHeader = false;
-                     }
-                 }
-                 if (printLocalMoveHeader && isLocalMove(car)) {
-                     printLocalCarMoveHeader(file, isManifest);
-                     printLocalMoveHeader = false;
-                     if (getPickupCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(getLocalMoveHeader(isManifest))) {
-                         printPickupHeader = false;
-                     }
-                     if (getDropCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(getLocalMoveHeader(isManifest))) {
-                         printSetoutHeader = false;
-                     }
-                 }
+ /*protected*/ void TrainCommon::blockCarsByTrack(PrintWriter* file, Train* /*train*/, QList<Car*>* carList, QList<RouteLocation*>* routeList,
+         RouteLocation* rl, bool printHeader, bool isManifest)
+ {
+  if (printHeader) {
+      printPickupHeader = true;
+      printSetoutHeader = true;
+      printLocalMoveHeader = true;
+  }
+  QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
+  QStringList trackNames = QStringList();
+  clearUtilityCarTypes(); // list utility cars by quantity
+  foreach (Track* track, tracks) {
+      if (trackNames.contains(splitString(track->getName()))) {
+          continue;
+      }
+      trackNames.append(splitString(track->getName())); // use a track name once
+      // block pick up cars by destination
+      bool found = false; // begin blocking at rl
+      foreach (RouteLocation* rld, *routeList) {
+          if (rld != rl && !found) {
+              continue;
+          }
+          found = true;
+          foreach (Car* car, *carList) {
+              if (Setup::isSortByTrackEnabled()
+                      && splitString(track->getName())!=(splitString(car->getTrackName()))) {
+                  continue;
+              }
+              // note that a car in train doesn't have a track assignment
+              if (car->getRouteLocation() == rl && car->getTrack() != NULL && car->getRouteDestination() == rld) {
+                  // determine if header is to be printed
+                  if (printPickupHeader && !isLocalMove(car)) {
+                      printPickupCarHeader(file, isManifest, !IS_TWO_COLUMN_TRACK);
+                      printPickupHeader = false;
+                      // check to see if set out header is needed
+                      if (getPickupCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(
+                              getDropCarHeader(isManifest, !IS_TWO_COLUMN_TRACK))) {
+                          printSetoutHeader = false;
+                      }
+                      if (getPickupCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(
+                              getLocalMoveHeader(isManifest))) {
+                          printLocalMoveHeader = false;
+                      }
+                  }
+                  if (car->isUtility()) {
+                      pickupUtilityCars(file, carList, car, isManifest);
+                  } // use truncated format if there's a switch list
+                  else if (isManifest && Setup::isTruncateManifestEnabled()
+                          && rl->getLocation()->isSwitchListEnabled()) {
+                      pickUpCarTruncated(file, car, isManifest);
+                  } else {
+                      pickUpCar(file, car, isManifest);
+                  }
+                  pickupCars = true;
+                  cars++;
+                  if (car->getLoadType()==(CarLoad::LOAD_TYPE_EMPTY)) {
+                      emptyCars++;
+                  }
+              }
+          }
+      }
+      // now do set outs and local moves
+      foreach (Car* car, *carList) {
+          if (Setup::isSortByTrackEnabled() && car->getRouteLocation() != NULL && car->getRouteDestination() == rl) {
+              // sort local moves by the car's current track name
+              if (isLocalMove(car)) {
+                  if (splitString(track->getName())!=(splitString(car->getTrackName()))) {
+                      continue;
+                  }
+              } else if (splitString(track->getName())!=(splitString(car->getDestinationTrackName()))) {
+                  continue;
+              }
+          }
+          if (car->getRouteDestination() == rl && car->getDestinationTrack() != NULL) {
+              if (printSetoutHeader && !isLocalMove(car)) {
+                  printDropCarHeader(file, isManifest, !IS_TWO_COLUMN_TRACK);
+                  printSetoutHeader = false;
+                  if (getPickupCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(
+                          getDropCarHeader(isManifest, !IS_TWO_COLUMN_TRACK))) {
+                      printPickupHeader = false;
+                  }
+                  if (getDropCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(getLocalMoveHeader(isManifest))) {
+                      printLocalMoveHeader = false;
+                  }
+              }
+              if (printLocalMoveHeader && isLocalMove(car)) {
+                  printLocalCarMoveHeader(file, isManifest);
+                  printLocalMoveHeader = false;
+                  if (getPickupCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(getLocalMoveHeader(isManifest))) {
+                      printPickupHeader = false;
+                  }
+                  if (getDropCarHeader(isManifest, !IS_TWO_COLUMN_TRACK)==(getLocalMoveHeader(isManifest))) {
+                      printSetoutHeader = false;
+                  }
+              }
 
-                 if (car->isUtility()) {
-                     setoutUtilityCars(file, carList, car, isManifest);
-                 } // use truncated format if there's a switch list
-                 else if (isManifest && Setup::isTruncateManifestEnabled() && rl->getLocation()->isSwitchListEnabled()) {
-                     truncatedDropCar(file, car, isManifest);
-                 } else {
-                     dropCar(file, car, isManifest);
-                 }
-                 dropCars = true;
-                 cars--;
-                 if (CarLoads::instance()->getLoadType(car->getTypeName(), car->getLoadName())==(
-                         CarLoad::LOAD_TYPE_EMPTY)) {
-                     emptyCars--;
-                 }
-             }
-         }
-         if (!Setup::isSortByTrackEnabled()) {
-             break; // done
-         }
-     }
+              if (car->isUtility()) {
+                  setoutUtilityCars(file, carList, car, isManifest);
+              } // use truncated format if there's a switch list
+              else if (isManifest && Setup::isTruncateManifestEnabled() && rl->getLocation()->isSwitchListEnabled()) {
+                  truncatedDropCar(file, car, isManifest);
+              } else {
+                  dropCar(file, car, isManifest);
+              }
+              dropCars = true;
+              cars--;
+              if (CarLoads::instance()->getLoadType(car->getTypeName(), car->getLoadName())==(
+                      CarLoad::LOAD_TYPE_EMPTY)) {
+                  emptyCars--;
+              }
+          }
+      }
+      if (!Setup::isSortByTrackEnabled()) {
+          break; // done
+      }
+  }
  }
 
  /**
   * Produces a two column format for car pick ups and set outs. Sorted by
   * track and then by destination.
   */
- /*protected*/ void TrainCommon::blockCarsByTrackTwoColumn(PrintWriter* file, Train* train, QList<Car*>* carList,
-         QList<RouteLocation*>* routeList, RouteLocation* rl, bool printHeader, bool isManifest) {
-     index = 0;
-     int lineLength = getLineLength(isManifest);
-     QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
-     QStringList trackNames = QStringList();
-     clearUtilityCarTypes(); // list utility cars by quantity
-     if (printHeader) {
-         printCarHeader(file, isManifest, !IS_TWO_COLUMN_TRACK);
-     }
-     foreach (Track* track, tracks) {
-         if (trackNames.contains(splitString(track->getName()))) {
-             continue;
-         }
-         trackNames.append(splitString(track->getName())); // use a track name once
-         // block car pick ups by destination
-         bool found = false; // begin blocking at rl
-         foreach (RouteLocation* rld, *routeList) {
-             if (rld != rl && !found) {
-                 continue;
-             }
-             found = true;
-             for (int k = 0; k < carList->size(); k++) {
-                 Car* car = carList->at(k);
-                 if (car->getRouteLocation() == rl && car->getTrackName()!=(Car::NONE)
-                         && car->getRouteDestination() == rld) {
-                     if (Setup::isSortByTrackEnabled()
-                             && splitString(track->getName())!=(splitString(car->getTrackName()))) {
-                         continue;
-                     }
-                     pickupCars = true;
-                     cars++;
-                     if (car->getLoadType()==(CarLoad::LOAD_TYPE_EMPTY)) {
-                         emptyCars++;
-                     }
-                     QString s;
-                     if (car->isUtility()) {
-                         s = pickupUtilityCars(carList, car, isManifest, !IS_TWO_COLUMN_TRACK);
-                         if (s == NULL) {
-                             continue;
-                         }
-                         s = s.trimmed();
-                     } else {
-                         s = pickupCar(car, isManifest, !IS_TWO_COLUMN_TRACK).trimmed();
-                     }
-                     s = padAndTruncateString(s, lineLength / 2, true);
-                     if (isLocalMove(car)) {
-                         QString sl = appendSetoutString(s, carList, car->getRouteDestination(), car, isManifest,
-                                 !IS_TWO_COLUMN_TRACK);
-                         // check for utility car, and local route with two or more locations
-                         if (sl!=(s)) {
-                             s = sl;
-                             carList->removeOne(car); // done with this car, remove from list
-                             k--;
-                         } else {
-                             s = padAndTruncateString(s + VERTICAL_LINE_CHAR, getLineLength(isManifest), true);
-                         }
-                     } else {
-                         s = appendSetoutString(s, carList, rl, true, isManifest, !IS_TWO_COLUMN_TRACK);
-                     }
-                     addLine(file, s);
-                 }
-             }
-         }
-         if (!Setup::isSortByTrackEnabled()) {
-             break; // done
-         }
-     }
-     while (index < carList->size()) {
-         QString s = padString("", lineLength / 2);
-         s = appendSetoutString(s, carList, rl, false, isManifest, !IS_TWO_COLUMN_TRACK);
-         QString test = s.trimmed();
-         if (test.length() > 1) // NULL line contains |
-         {
-             addLine(file, s);
-         }
-     }
+ /*protected*/ void TrainCommon::blockCarsByTrackTwoColumn(PrintWriter* file, Train* /*train*/, QList<Car*>* carList,
+         QList<RouteLocation*>* routeList, RouteLocation* rl, bool printHeader, bool isManifest)
+ {
+  index = 0;
+  int lineLength = getLineLength(isManifest);
+  QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
+  QStringList trackNames = QStringList();
+  clearUtilityCarTypes(); // list utility cars by quantity
+  if (printHeader) {
+      printCarHeader(file, isManifest, !IS_TWO_COLUMN_TRACK);
+  }
+  foreach (Track* track, tracks) {
+      if (trackNames.contains(splitString(track->getName()))) {
+          continue;
+      }
+      trackNames.append(splitString(track->getName())); // use a track name once
+      // block car pick ups by destination
+      bool found = false; // begin blocking at rl
+      foreach (RouteLocation* rld, *routeList) {
+          if (rld != rl && !found) {
+              continue;
+          }
+          found = true;
+          for (int k = 0; k < carList->size(); k++) {
+              Car* car = carList->at(k);
+              if (car->getRouteLocation() == rl && car->getTrackName()!=(Car::NONE)
+                      && car->getRouteDestination() == rld) {
+                  if (Setup::isSortByTrackEnabled()
+                          && splitString(track->getName())!=(splitString(car->getTrackName()))) {
+                      continue;
+                  }
+                  pickupCars = true;
+                  cars++;
+                  if (car->getLoadType()==(CarLoad::LOAD_TYPE_EMPTY)) {
+                      emptyCars++;
+                  }
+                  QString s;
+                  if (car->isUtility()) {
+                      s = pickupUtilityCars(carList, car, isManifest, !IS_TWO_COLUMN_TRACK);
+                      if (s == NULL) {
+                          continue;
+                      }
+                      s = s.trimmed();
+                  } else {
+                      s = pickupCar(car, isManifest, !IS_TWO_COLUMN_TRACK).trimmed();
+                  }
+                  s = padAndTruncateString(s, lineLength / 2, true);
+                  if (isLocalMove(car)) {
+                      QString sl = appendSetoutString(s, carList, car->getRouteDestination(), car, isManifest,
+                              !IS_TWO_COLUMN_TRACK);
+                      // check for utility car, and local route with two or more locations
+                      if (sl!=(s)) {
+                          s = sl;
+                          carList->removeOne(car); // done with this car, remove from list
+                          k--;
+                      } else {
+                          s = padAndTruncateString(s + VERTICAL_LINE_CHAR, getLineLength(isManifest), true);
+                      }
+                  } else {
+                      s = appendSetoutString(s, carList, rl, true, isManifest, !IS_TWO_COLUMN_TRACK);
+                  }
+                  addLine(file, s);
+              }
+          }
+      }
+      if (!Setup::isSortByTrackEnabled()) {
+          break; // done
+      }
+  }
+  while (index < carList->size()) {
+      QString s = padString("", lineLength / 2);
+      s = appendSetoutString(s, carList, rl, false, isManifest, !IS_TWO_COLUMN_TRACK);
+      QString test = s.trimmed();
+      if (test.length() > 1) // NULL line contains |
+      {
+          addLine(file, s);
+      }
+  }
  }
 
 
@@ -406,7 +421,7 @@ namespace Operations {
   * track and then by destination. Track name in header format, track name
   * removed from format.
   */
- /*protected*/ void TrainCommon::blockCarsByTrackNameTwoColumn(PrintWriter* file, Train* train, QList<Car*>* carList,
+ /*protected*/ void TrainCommon::blockCarsByTrackNameTwoColumn(PrintWriter* file, Train* /*train*/, QList<Car*>* carList,
          QList<RouteLocation*>* routeList, RouteLocation* rl, bool printHeader, bool isManifest) {
      index = 0;
      int lineLength = getLineLength(isManifest);
@@ -1264,7 +1279,7 @@ namespace Operations {
      return false;
  }
 
- /*private*/ /*static*/ bool TrainCommon::isThereWorkAtLocation(Train* train, Location* location, QList<RollingStock*>* list) {
+ /*private*/ /*static*/ bool TrainCommon::isThereWorkAtLocation(Train* /*train*/, Location* location, QList<RollingStock*>* list) {
      foreach (RollingStock* rs, *list) {
          if ((rs->getRouteLocation() != NULL && rs->getTrack() != NULL && TrainCommon::splitString(
                  rs->getRouteLocation()->getName())==(TrainCommon::splitString(location->getName())))
@@ -1289,13 +1304,17 @@ namespace Operations {
      }
  }
 
- /*private*/ void TrainCommon::addSearchForCar(PrintWriter* file, Car* car) {
-     QString buf = ""; //QString();
-     QStringList format = Setup::getMissingCarMessageFormat();
-     foreach (QString attribute, format) {
-         buf.append(getCarAttribute(car, attribute, false, false));
-     }
-     addLine(file, buf/*.toString()*/);
+ /*private*/ void TrainCommon::addSearchForCar(PrintWriter* file, Car* car)
+ {
+  QString buf = ""; //QString();
+  QStringList format = Setup::getMissingCarMessageFormat();
+  foreach (QString attribute, format)
+  {
+   if(attribute.isEmpty())
+    continue;
+   buf.append(getCarAttribute(car, attribute, false, false));
+  }
+  addLine(file, buf/*.toString()*/);
  }
 
  // @param isPickup true when rolling stock is being picked up
@@ -1309,62 +1328,71 @@ namespace Operations {
      return getRollingStockAttribute(engine, attribute, isPickup, false);
  }
 
- /*private*/ QString TrainCommon::getCarAttribute(Car* car, QString attribute, bool isPickup, bool isLocal) {
-     if (attribute==(Setup::LOAD)) {
-         return ((car->isCaboose() && !Setup::isPrintCabooseLoadEnabled()) || (car->isPassenger() && !Setup::isPrintPassengerLoadEnabled()))
-                 ? padAndTruncateString("", CarLoads::instance()->getMaxNameLength() + 1) : " "
-                         + padAndTruncateString(car->getLoadName(), CarLoads::instance()->getMaxNameLength());
-     } else if (attribute==(Setup::HAZARDOUS)) {
-         return (car->isHazardous() ? " " + Setup::getHazardousMsg() : padAndTruncateString("", Setup
-                 ::getHazardousMsg().length() + 1));
-     } else if (attribute==(Setup::DROP_COMMENT)) {
-         return " " + car->getDropComment();
-     } else if (attribute==(Setup::PICKUP_COMMENT)) {
-         return " " + car->getPickupComment();
-     } else if (attribute==(Setup::KERNEL)) {
-         return " " + padAndTruncateString(car->getKernelName(), carManager->getKernelMaxNameLength());
-     } else if (attribute==(Setup::KERNEL_SIZE)) {
-         if (car->getKernel() != NULL && car->getKernel()->isLead(car)) {
-             return " " + padAndTruncateString(QString::number(car->getKernel()->getSize()), 2);
-         } else {
-             return "   "; // assumes that kernel size is 99 or less
-         }
-     } else if (attribute==(Setup::RWE)) {
-         if (car->getReturnWhenEmptyDestName()!=(Car::NONE)) {
-             return " "
-                     + padAndTruncateString(TrainManifestHeaderText::getStringHeader_RWE() + " "
-                             + splitString(car->getReturnWhenEmptyDestinationName()) + " ,"
-                             + splitString(car->getReturnWhenEmptyDestTrackName()), locationManager
-                             ->getMaxLocationAndTrackNameLength()
-                             + TrainManifestHeaderText::getStringHeader_RWE().length() + 3);
-         }
-         return "";
-     } else if (attribute==(Setup::FINAL_DEST)) {
-         if (car->getFinalDestinationName()!=(Car::NONE)) {
-             return Setup::isPrintHeadersEnabled() ? " "
-                     + padAndTruncateString(splitString(car->getFinalDestinationName()), locationManager
-                             ->getMaxLocationNameLength()) : " "
-                     + padAndTruncateString(TrainManifestText::getStringFinalDestination() + " "
-                             + splitString(car->getFinalDestinationName()), locationManager
-                             ->getMaxLocationNameLength()
-                             + TrainManifestText::getStringFinalDestination().length() + 1);
-         }
-         return "";
-     } else if (attribute==(Setup::FINAL_DEST_TRACK)) {
-         if (car->getFinalDestinationName()!=(Car::NONE)) {
-             return Setup::isPrintHeadersEnabled() ? " "
-                     + padAndTruncateString(splitString(car->getFinalDestinationName()) + ", "
-                             + splitString(car->getFinalDestinationTrackName()), locationManager
-                             ->getMaxLocationAndTrackNameLength() + 2) : " "
-                     + padAndTruncateString(TrainManifestText::getStringFinalDestination() + " "
-                             + splitString(car->getFinalDestinationName()) + ", "
-                             + splitString(car->getFinalDestinationTrackName()), locationManager
-                             ->getMaxLocationAndTrackNameLength()
-                             + TrainManifestText::getStringFinalDestination().length() + 3);
-         }
-         return "";
-     }
-     return getRollingStockAttribute(car, attribute, isPickup, isLocal);
+ /*private*/ QString TrainCommon::getCarAttribute(Car* car, QString attribute, bool isPickup, bool isLocal)
+ {
+  if (attribute==(Setup::LOAD)) {
+      return ((car->isCaboose() && !Setup::isPrintCabooseLoadEnabled()) || (car->isPassenger() && !Setup::isPrintPassengerLoadEnabled()))
+              ? padAndTruncateString("", CarLoads::instance()->getMaxNameLength() + 1) : " "
+                      + padAndTruncateString(car->getLoadName(), CarLoads::instance()->getMaxNameLength());
+  } else if (attribute==(Setup::HAZARDOUS)) {
+      return (car->isHazardous() ? " " + Setup::getHazardousMsg() : padAndTruncateString("", Setup
+              ::getHazardousMsg().length() + 1));
+  } else if (attribute==(Setup::DROP_COMMENT)) {
+      return " " + car->getDropComment();
+  } else if (attribute==(Setup::PICKUP_COMMENT)) {
+      return " " + car->getPickupComment();
+  } else if (attribute==(Setup::KERNEL)) {
+      return " " + padAndTruncateString(car->getKernelName(), carManager->getKernelMaxNameLength());
+  } else if (attribute==(Setup::KERNEL_SIZE)) {
+      if (car->getKernel() != NULL && car->getKernel()->isLead(car)) {
+          return " " + padAndTruncateString(QString::number(car->getKernel()->getSize()), 2);
+      } else {
+          return "   "; // assumes that kernel size is 99 or less
+      }
+  }
+  else if (attribute==(Setup::RWE))
+  {
+   if (car->getReturnWhenEmptyDestName()!=(Car::NONE)) {
+       return " "
+               + padAndTruncateString(TrainManifestHeaderText::getStringHeader_RWE() + " "
+                       + splitString(car->getReturnWhenEmptyDestinationName()) + " ,"
+                       + splitString(car->getReturnWhenEmptyDestTrackName()), locationManager
+                       ->getMaxLocationAndTrackNameLength()
+                       + TrainManifestHeaderText::getStringHeader_RWE().length() + 3);
+   }
+   return "";
+  }
+  else if (attribute==(Setup::FINAL_DEST))
+  {
+   if (car->getFinalDestinationName()!=(Car::NONE))
+   {
+    return Setup::isPrintHeadersEnabled() ? " "
+            + padAndTruncateString(splitString(car->getFinalDestinationName()), locationManager
+                    ->getMaxLocationNameLength()) : " "
+            + padAndTruncateString(TrainManifestText::getStringFinalDestination() + " "
+                    + splitString(car->getFinalDestinationName()), locationManager
+                    ->getMaxLocationNameLength()
+                    + TrainManifestText::getStringFinalDestination().length() + 1);
+   }
+   return "";
+  }
+  else if (attribute==(Setup::FINAL_DEST_TRACK))
+  {
+   if (car->getFinalDestinationName()!=(Car::NONE))
+   {
+    return Setup::isPrintHeadersEnabled() ? " "
+            + padAndTruncateString(splitString(car->getFinalDestinationName()) + ", "
+                    + splitString(car->getFinalDestinationTrackName()), locationManager
+                    ->getMaxLocationAndTrackNameLength() + 2) : " "
+            + padAndTruncateString(TrainManifestText::getStringFinalDestination() + " "
+                    + splitString(car->getFinalDestinationName()) + ", "
+                    + splitString(car->getFinalDestinationTrackName()), locationManager
+                    ->getMaxLocationAndTrackNameLength()
+                    + TrainManifestText::getStringFinalDestination().length() + 3);
+   }
+   return "";
+  }
+  return getRollingStockAttribute(car, attribute, isPickup, isLocal);
  }
 
  /*private*/ QString TrainCommon::getRollingStockAttribute(RollingStock* rs, QString attribute, bool isPickup, bool isLocal)
@@ -1641,112 +1669,114 @@ namespace Operations {
      }
  }
 
- /*private*/ QString TrainCommon::getHeader(QStringList format, bool isPickup, bool isLocal, bool isEngine) {
+ /*private*/ QString TrainCommon::getHeader(QStringList format, bool isPickup, bool isLocal, bool isEngine)
+ {
+  QString buf = ""; //QString();
 
-     QString buf = ""; //QString();
-
-     foreach (QString attribute, format) {
-         if (attribute==(Setup::BLANK)) {
-             continue;
-         }
-         if (attribute==(Setup::ROAD)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Road(), CarRoads::instance()
-                     ->getMaxNameLength())
-                     + " ");
-         } else if (attribute==(Setup::NUMBER) && !isEngine) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Number(),
-                     Control::max_len_string_print_road_number)
-                     + " ");
-         } else if (attribute==(Setup::NUMBER) && isEngine) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_EngineNumber(),
-                     Control::max_len_string_print_road_number)
-                     + " ");
-         } else if (attribute==(Setup::TYPE)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Type(), CarTypes::instance()
-                     ->getMaxNameLength())
-                     + " ");
-         } else if (attribute==(Setup::MODEL)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Model(), EngineModels
-                     ::instance()->getMaxNameLength())
-                     + " ");
-         } else if (attribute==(Setup::CONSIST)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Consist(), engineManager
-                     ->getConsistMaxNameLength())
-                     + " ");
-         } else if (attribute==(Setup::KERNEL)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Kernel(), carManager
-                     ->getKernelMaxNameLength())
-                     + " ");
-         } else if (attribute==(Setup::KERNEL_SIZE)) {
-             buf.append("   "); // assume kernel size is 99 or less
-         } else if (attribute==(Setup::LOAD)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Load(), CarLoads::instance()
-                     ->getMaxNameLength())
-                     + " ");
-         } else if (attribute==(Setup::COLOR)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Color(), CarColors::instance()
-                     ->getMaxNameLength())
-                     + " ");
-         } else if (attribute==(Setup::OWNER)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Owner(), CarOwners::instance()
-                     ->getMaxNameLength())
-                     + " ");
-         } else if (attribute==(Setup::LENGTH)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Length(),
-                     Control::max_len_string_length_name)
-                     + " ");
-         } else if (attribute==(Setup::TRACK)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Track(), locationManager
-                     ->getMaxTrackNameLength())
-                     + " ");
-         } else if (attribute==(Setup::LOCATION) && (isPickup || isLocal)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Location(), locationManager
-                     ->getMaxTrackNameLength())
-                     + " ");
-         } else if (attribute==(Setup::LOCATION) && !isPickup) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Location(), locationManager
-                     ->getMaxLocationNameLength())
-                     + " ");
-         } else if (attribute==(Setup::DESTINATION) && !isPickup) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Destination(), locationManager
-                     ->getMaxTrackNameLength())
-                     + " ");
-         } else if (attribute==(Setup::DESTINATION) && isPickup) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Destination(), locationManager
-                     ->getMaxLocationNameLength())
-                     + " ");
-         } else if (attribute==(Setup::DEST_TRACK)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Dest_Track(), locationManager
-                     ->getMaxLocationAndTrackNameLength() + 2)
-                     + " ");
-         } else if (attribute==(Setup::FINAL_DEST)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Final_Dest(), locationManager
-                     ->getMaxLocationNameLength())
-                     + " ");
-         } else if (attribute==(Setup::FINAL_DEST_TRACK)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Final_Dest_Track(),
-                     locationManager->getMaxLocationAndTrackNameLength() + 2)
-                     + " ");
-         } else if (attribute==(Setup::HAZARDOUS)) {
-             buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Hazardous(), Setup
-                     ::getHazardousMsg().length())
-                     + " ");
-         } else if (attribute==(Setup::RWE)) {
-             buf.append(TrainManifestHeaderText::getStringHeader_RWE() + " ");
-         } else if (attribute==(Setup::COMMENT)) {
-             buf.append(TrainManifestHeaderText::getStringHeader_Comment() + " ");
-         } else if (attribute==(Setup::TAB)) {
-             buf.append(tabString("", Setup::getTab1Length()));
-         } else if (attribute==(Setup::TAB2)) {
-             buf.append(tabString("", Setup::getTab2Length()));
-         } else if (attribute==(Setup::TAB3)) {
-             buf.append(tabString("", Setup::getTab3Length()));
-         } else {
-             buf.append(attribute + " ");
-         }
-     }
-
-     return buf/*.toString()*/;
+  foreach (QString attribute, format)
+  {
+   if(attribute.isEmpty())
+    continue;
+   if (attribute==(Setup::BLANK)) {
+       continue;
+   }
+   if (attribute==(Setup::ROAD)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Road(), CarRoads::instance()
+               ->getMaxNameLength())
+               + " ");
+   } else if (attribute==(Setup::NUMBER) && !isEngine) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Number(),
+               Control::max_len_string_print_road_number)
+               + " ");
+   } else if (attribute==(Setup::NUMBER) && isEngine) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_EngineNumber(),
+               Control::max_len_string_print_road_number)
+               + " ");
+   } else if (attribute==(Setup::TYPE)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Type(), CarTypes::instance()
+               ->getMaxNameLength())
+               + " ");
+   } else if (attribute==(Setup::MODEL)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Model(), EngineModels
+               ::instance()->getMaxNameLength())
+               + " ");
+   } else if (attribute==(Setup::CONSIST)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Consist(), engineManager
+               ->getConsistMaxNameLength())
+               + " ");
+   } else if (attribute==(Setup::KERNEL)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Kernel(), carManager
+               ->getKernelMaxNameLength())
+               + " ");
+   } else if (attribute==(Setup::KERNEL_SIZE)) {
+       buf.append("   "); // assume kernel size is 99 or less
+   } else if (attribute==(Setup::LOAD)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Load(), CarLoads::instance()
+               ->getMaxNameLength())
+               + " ");
+   } else if (attribute==(Setup::COLOR)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Color(), CarColors::instance()
+               ->getMaxNameLength())
+               + " ");
+   } else if (attribute==(Setup::OWNER)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Owner(), CarOwners::instance()
+               ->getMaxNameLength())
+               + " ");
+   } else if (attribute==(Setup::LENGTH)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Length(),
+               Control::max_len_string_length_name)
+               + " ");
+   } else if (attribute==(Setup::TRACK)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Track(), locationManager
+               ->getMaxTrackNameLength())
+               + " ");
+   } else if (attribute==(Setup::LOCATION) && (isPickup || isLocal)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Location(), locationManager
+               ->getMaxTrackNameLength())
+               + " ");
+   } else if (attribute==(Setup::LOCATION) && !isPickup) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Location(), locationManager
+               ->getMaxLocationNameLength())
+               + " ");
+   } else if (attribute==(Setup::DESTINATION) && !isPickup) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Destination(), locationManager
+               ->getMaxTrackNameLength())
+               + " ");
+   } else if (attribute==(Setup::DESTINATION) && isPickup) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Destination(), locationManager
+               ->getMaxLocationNameLength())
+               + " ");
+   } else if (attribute==(Setup::DEST_TRACK)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Dest_Track(), locationManager
+               ->getMaxLocationAndTrackNameLength() + 2)
+               + " ");
+   } else if (attribute==(Setup::FINAL_DEST)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Final_Dest(), locationManager
+               ->getMaxLocationNameLength())
+               + " ");
+   } else if (attribute==(Setup::FINAL_DEST_TRACK)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Final_Dest_Track(),
+               locationManager->getMaxLocationAndTrackNameLength() + 2)
+               + " ");
+   } else if (attribute==(Setup::HAZARDOUS)) {
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Hazardous(), Setup
+               ::getHazardousMsg().length())
+               + " ");
+   } else if (attribute==(Setup::RWE)) {
+       buf.append(TrainManifestHeaderText::getStringHeader_RWE() + " ");
+   } else if (attribute==(Setup::COMMENT)) {
+       buf.append(TrainManifestHeaderText::getStringHeader_Comment() + " ");
+   } else if (attribute==(Setup::TAB)) {
+       buf.append(tabString("", Setup::getTab1Length()));
+   } else if (attribute==(Setup::TAB2)) {
+       buf.append(tabString("", Setup::getTab2Length()));
+   } else if (attribute==(Setup::TAB3)) {
+       buf.append(tabString("", Setup::getTab3Length()));
+   } else {
+       buf.append(attribute + " ");
+   }
+  }
+  return buf/*.toString()*/;
  }
 
  /*protected*/ void TrainCommon::printTrackNameHeader(PrintWriter* file, QString trackName, bool isManifest) {
@@ -1780,61 +1810,64 @@ namespace Operations {
      }
      addLine(file, sb/*.toString()*/);
  }
-#if 0
- /*public*/ static String getISO8601Date(bool isModelYear) {
-     Calendar calendar = Calendar.getInstance();
+
+ /*public*/ /*static*/ QString TrainCommon::getISO8601Date(bool isModelYear) {
+     Calendar* calendar = Calendar::getInstance();
      // use the JMRI timebase (which may be a fast clock).
-     calendar.setTime(jmri.InstanceManager.timebaseinstance()->getTime());
+     calendar->setTime(((Timebase*)InstanceManager::getDefault("Timebase"))->getTime());
      if (isModelYear && !Setup::getYearModeled().isEmpty()) {
          try {
-             calendar.set(Calendar.YEAR, Integer.parseInt(Setup::getYearModeled().trimmed()));
+       bool bok;
+             calendar->set(Calendar::YEAR, (Setup::getYearModeled().trimmed()).toInt(&bok));
+             if(!bok) throw NumberFormatException();
          } catch (NumberFormatException e) {
              return Setup::getYearModeled();
          }
      }
-     return (new ISO8601DateFormat()).format(calendar.getTime());
+     //return (new ISO8601DateFormat()).format(calendar.getTime());
+     return calendar->getTime().toString(Qt::ISODate);
  }
-#endif
-/*public*/ /*static*/ QString TrainCommon::getDate(QDate date) {
-#if 0
-  Calendar calendar = Calendar.getInstance();
-  calendar.setTime(date);
 
-  QString year = QString::number(calendar.get(Calendar.YEAR));
+/*public*/ /*static*/ QString TrainCommon::getDate(QDateTime date) {
+#if 1
+  Calendar* calendar = Calendar::getInstance();
+  calendar->setTime(date);
+
+  QString year = QString::number(calendar->get(Calendar::YEAR));
   year = year.trimmed();
 
   // Use 24 hour clock
-  int hour = calendar.get(Calendar.HOUR_OF_DAY);
+  int hour = calendar->get(Calendar::HOUR_OF_DAY);
 
   if (Setup::is12hrFormatEnabled()) {
-      hour = calendar.get(Calendar.HOUR);
+      hour = calendar->get(Calendar::HOUR);
       if (hour == 0) {
           hour = 12;
       }
   }
 
-  String h = QString::number(hour);
+  QString h = QString::number(hour);
   if (hour < 10) {
       h = "0" + QString::number(hour);
   }
 
-  int minute = calendar.get(Calendar.MINUTE);
-  String m = QString::number(minute);
+  int minute = calendar->get(Calendar::MINUTE);
+  QString m = QString::number(minute);
   if (minute < 10) {
       m = "0" + QString::number(minute);
   }
 
   // AM_PM field
-  String AM_PM = "";
+  QString AM_PM = "";
   if (Setup::is12hrFormatEnabled()) {
-      AM_PM = (calendar.get(Calendar.AM_PM) == Calendar.AM) ? Bundle.getMessage("AM") : Bundle.getMessage("PM");
+      AM_PM = (calendar->get(Calendar::AM_PM) == Calendar::AM) ? tr("AM") : tr("PM");
   }
 
   // Java 1.6 methods calendar.getDisplayName(Calendar.MONTH,
   // Calendar.LONG, Locale.getDefault()
   // Java 1.6 methods calendar.getDisplayName(Calendar.AM_PM,
   // Calendar.LONG, Locale.getDefault())
-  return calendar.get(Calendar.MONTH) + 1 + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + year + " " + h
+  return QString::number(calendar->get(Calendar::MONTH) + 1) + "/" + QString::number(calendar->get(Calendar::DAY_OF_MONTH)) + "/" + year + " " + h
           + ":" + m + " " + AM_PM;
 #endif
 }

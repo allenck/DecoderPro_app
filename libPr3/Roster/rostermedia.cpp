@@ -11,77 +11,154 @@ RosterMediaPane::RosterMediaPane(RosterEntry* re, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RosterMediaPane)
 {
-    ui->setupUi(this);
-    this->re = re;
-    log = new Logger("RosterMedia");
-    // tab 2
-    QImage img(re->getImagePath());
-    ui->lblMainImage->setPixmap(QPixmap::fromImage(img).scaledToHeight(120));
-    ui->lblMainImage->setContextMenuPolicy(Qt::CustomContextMenu);
-    if(re->getIconPath() != "")
-    {
-     QImage icon(re->getIconPath());
-     ui->lblIconImage->setPixmap(QPixmap::fromImage(icon).scaledToHeight(48));
-    }
-    else
-    {
-     QImage img(re->getImagePath());
-     ui->lblIconImage->setPixmap(QPixmap::fromImage(img).scaledToHeight(45));
-    }
-    connect(ui->lblMainImage, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(on_customContexMenuRequest(QPoint)));
+ ui->setupUi(this);
+ this->re = re;
+ log = new Logger("RosterMedia");
+ ui->lblMainImage->setContextMenuPolicy(Qt::CustomContextMenu);
+
+ // tab 2
+ QImage img(re->getImagePath());
+ if(!img.isNull())
+ {
+  ui->lblMainImage->setPixmap(QPixmap::fromImage(img).scaledToHeight(200));
+  ui->btnRemoveImage->setVisible(true);
+  connect(ui->btnRemoveImage, SIGNAL(clicked()), this, SLOT(on_btnRemoveImage_clicked()));
+ }
+ else
+  ui->btnRemoveImage->setVisible(false);
+ connect(ui->lblMainImage, SIGNAL(fileNameChanged(QString)), this, SLOT(dropImage(QString)));
+
+ if(re->getIconPath() != "")
+ {
+  QImage icon(re->getIconPath());
+  if(!icon.isNull())
+  {
+   ui->lblIconImage->setPixmap(QPixmap::fromImage(icon).scaledToHeight(100));
+   ui->btnRemoveIcon->setVisible(true);
+   connect(ui->btnRemoveIcon, SIGNAL(clicked()), this, SLOT(on_btnRemoveIcon_clicked()));
+  }
+  else
+   ui->btnRemoveIcon->setVisible(false);
+ }
+ else
+ {
+  QImage img(re->getImagePath());
+  ui->lblIconImage->setPixmap(QPixmap::fromImage(img).scaledToHeight(45));
+ }
+ connect(ui->lblIconImage, SIGNAL(fileNameChanged(QString)), this, SLOT(dropIcon(QString)));
+
+ connect(ui->lblMainImage, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(on_customContexMenuRequest(QPoint)));
+
+ ui->edWebReference->setText(re->getURL());
+ connect(ui->edWebReference, SIGNAL(textEdited(QString)),this, SLOT(on_edWebReference_textEdited(QString)));
 }
 
 RosterMediaPane::~RosterMediaPane()
 {
-    delete ui;
+ delete ui;
 }
+
 void RosterMediaPane::on_customContexMenuRequest(QPoint)
 {
-    QMenu* menu = new QMenu();
-    if(re->getImagePath() != "")
-    {
-     QAction* removeAction = new QAction(tr("Remove"), this);
-     menu->addAction(removeAction);
-     connect(removeAction, SIGNAL(triggered()), this, SLOT(on_removeAction_triggered()));
-    }
-    QAction* newImageAction = new QAction(tr("Add image"), this);
-    connect(newImageAction, SIGNAL(triggered()), this, SLOT(on_addImageAction_triggered()));
-    menu->addAction(newImageAction);
-    menu->exec(QCursor::pos());
+ QMenu* menu = new QMenu();
+ if(re->getImagePath() != "")
+ {
+  QAction* removeAction = new QAction(tr("Remove"), this);
+  menu->addAction(removeAction);
+  connect(removeAction, SIGNAL(triggered()), this, SLOT(on_removeAction_triggered()));
+ }
+ QAction* newImageAction = new QAction(tr("Add image"), this);
+ connect(newImageAction, SIGNAL(triggered()), this, SLOT(on_removeIcon_triggered()));
+ menu->addAction(newImageAction);
+ menu->exec(QCursor::pos());
 }
+
 void RosterMediaPane::on_removeAction_triggered()
 {
     re->setImagePath("");
     ui->lblMainImage->setPixmap(QPixmap());
+    ui->btnRemoveImage->setVisible(false);
 }
+
+void RosterMediaPane::on_removeIcon_triggered()
+{
+    re->setIconPath("");
+    ui->lblIconImage->setPixmap(QPixmap());
+    ui->btnRemoveIcon->setVisible(false);
+}
+
 void RosterMediaPane::on_addImageAction_triggered()
 {
  setCursor(Qt::WaitCursor);
- QString fileName = QFileDialog::getOpenFileName(this,tr("Add or replace image"), FileUtil::getUserResourcePath(),tr("Image Files (*.png *.jpg *.bmp"));
+ fileName = QFileDialog::getOpenFileName(this,tr("Add or replace image"), FileUtil::getUserResourcePath(),tr("Image Files (*.png *.jpg *.bmp"));
  setCursor(Qt::ArrowCursor);
- QFileInfo info(fileName);
-    if(info.absolutePath()+QDir::separator() != FileUtil::getUserResourcePath())
-    {
-     log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(FileUtil::getUserResourcePath()));
-     if(QFile::exists(FileUtil::getUserResourcePath()+ info.fileName()))
-     {
-      switch(QMessageBox::question(this, tr("File already exists"), tr("The file already exists. Do you want to replace it?"), QMessageBox::Yes | QMessageBox::No))
-      {
-      case QMessageBox::Yes:
-       break;
-      default:
-      case QMessageBox::No:
-       return;
-      }
-     }
-     QFile::copy(fileName, FileUtil::getUserResourcePath()+ info.fileName());
-     fileName= FileUtil::getUserResourcePath()+ info.fileName();
-    }
-    re->setImagePath(fileName);
-    QImage img(re->getImagePath());
-    ui->lblMainImage->setPixmap(QPixmap::fromImage(img).scaledToWidth(ui->lblMainImage->width()));
+ dropImage(fileName);
+ re->setImagePath(fileName);
+ QImage img(re->getImagePath());
+ ui->lblMainImage->setPixmap(QPixmap::fromImage(img).scaledToWidth(ui->lblMainImage->width()));
 }
-void RosterMediaPane::on_btnSave_clicked()
-{
 
+void RosterMediaPane::on_addIconAction_triggered()
+{
+ setCursor(Qt::WaitCursor);
+ fileName = QFileDialog::getOpenFileName(this,tr("Add or replace image"), FileUtil::getUserResourcePath(),tr("Image Files (*.png *.jpg *.bmp"));
+ setCursor(Qt::ArrowCursor);
+ dropIcon(fileName);
+ re->setIconPath(fileName);
+ QImage img(re->getIconPath());
+ ui->lblIconImage->setPixmap(QPixmap::fromImage(img).scaledToWidth(ui->lblIconImage->width()));
+}
+
+void RosterMediaPane::dropImage(QString fileName)
+{
+ ui->btnRemoveImage->setVisible(true);
+ connect(ui->btnRemoveImage, SIGNAL(clicked()), this, SLOT(on_removeAction_triggered()));
+
+ QFileInfo info(fileName);
+ if(info.absolutePath()+QDir::separator() != FileUtil::getUserResourcePath())
+ {
+  log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(FileUtil::getUserResourcePath()));
+  if(QFile::exists(FileUtil::getUserResourcePath()+ info.fileName()))
+  {
+   switch(QMessageBox::question(this, tr("File already exists"), tr("The file already exists. Do you want to replace it?"), QMessageBox::Yes | QMessageBox::No))
+   {
+   case QMessageBox::Yes:
+    break;
+   default:
+   case QMessageBox::No:
+    return;
+   }
+  }
+  QFile::copy(fileName, FileUtil::getUserResourcePath()+ info.fileName());
+  fileName= FileUtil::getUserResourcePath()+ info.fileName();
+ }
+}
+void RosterMediaPane::dropIcon(QString fileName)
+{
+ ui->btnRemoveIcon->setVisible(true);
+ connect(ui->btnRemoveIcon, SIGNAL(clicked()), this, SLOT(on_removeIcon_triggered()));
+
+ QFileInfo info(fileName);
+ if(info.absolutePath()+QDir::separator() != FileUtil::getUserResourcePath())
+ {
+  log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(FileUtil::getUserResourcePath()));
+  if(QFile::exists(FileUtil::getUserResourcePath()+ info.fileName()))
+  {
+   switch(QMessageBox::question(this, tr("File already exists"), tr("The file already exists. Do you want to replace it?"), QMessageBox::Yes | QMessageBox::No))
+   {
+   case QMessageBox::Yes:
+    break;
+   default:
+   case QMessageBox::No:
+    return;
+   }
+  }
+  QFile::copy(fileName, FileUtil::getUserResourcePath()+ info.fileName());
+  fileName= FileUtil::getUserResourcePath()+ info.fileName();
+ }
+}
+
+void RosterMediaPane::on_edWebReference_textEdited(QString text)
+{
+ re->setURL(text);
 }

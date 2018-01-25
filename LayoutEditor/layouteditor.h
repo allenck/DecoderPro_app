@@ -30,6 +30,7 @@ namespace Ui {
 class LayoutEditor;
 }
 
+class TurnoutSelection;
 class LayoutEditorFindItems;
 class LayoutTurntable;
 class ConnectivityUtil;
@@ -354,6 +355,9 @@ public:
     /*public*/ void addTurntable(QPointF pt);
     /*public*/ QT_DEPRECATED LayoutTurntable* findLayoutTurntableByName(QString name);
     /*public*/ QMenu* setupTurnoutSubMenu();
+    /*public*/ bool containsSignalHead(SignalHead* head) ;
+    /*public*/ void removeSignalHead(SignalHead* head);
+
 
 private:
  Ui::LayoutEditor *ui;
@@ -451,6 +455,7 @@ private:
  /*private*/ void drawTurntables(EditScene* g2);
 // /*private*/ void drawMemoryRects(EditScene* editScene);
  /*private*/ bool checkSelect(QPointF loc, bool requireUnconnected);
+ /*private*/ bool checkSelect(QPointF loc, bool requireUnconnected, QObject* avoid);
  /*private*/ void amendSelectionGroup(Positionable* p);
  /*private*/ void amendSelectionGroup(LayoutTurnout* p);
  /*private*/ void amendSelectionGroup(PositionablePoint* p);
@@ -591,6 +596,11 @@ void addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*
 QActionGroup* turnoutCircleColorButtonGroup;
 QActionGroup* turnoutCircleSizeButtonGroup;
 QAction* turnoutDrawUnselectedLegItem;
+/*private*/ void checkPointOfPositionable(PositionablePoint* p);
+/*private*/ void checkPointsOfTurnout(LayoutTurnout* lt);
+/*private*/ void checkPointsOfTurnoutSub(QPointF dLoc);
+/*private*/ void rotateTurnout(LayoutTurnout* t);
+//void addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
 
 private slots:
  void OnScenePos(QGraphicsSceneMouseEvent*);
@@ -741,4 +751,46 @@ friend class LayoutEditorXml;
 friend class LayoutTurntable;
 };
 Q_DECLARE_METATYPE(LayoutEditor)
+
+/*static*/ class TurnoutSelection
+{
+    bool pointA = false;
+    bool pointB = false;
+    bool pointC = false;
+    bool pointD = false;
+public:
+    TurnoutSelection() {}
+
+    void setPointA(bool boo) {
+        pointA = boo;
+    }
+
+    void setPointB(bool boo) {
+        pointB = boo;
+    }
+
+    void setPointC(bool boo) {
+        pointC = boo;
+    }
+
+    void setPointD(bool boo) {
+        pointD = boo;
+    }
+
+    bool getPointA() {
+        return pointA;
+    }
+
+    bool getPointB() {
+        return pointB;
+    }
+
+    bool getPointC() {
+        return pointC;
+    }
+
+    bool getPointD() {
+        return pointD;
+    }
+};
 #endif // LAYOUTEDITOR_H

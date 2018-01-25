@@ -12,9 +12,10 @@
 ///*public*/ class JsonLightSocketService extends JsonSocketService {
 
 
-/*public*/ JsonLightSocketService::JsonLightSocketService(JsonConnection* connection, QObject *parent) : JsonSocketService(connection, parent) {
-    //super(connection);
-    this->service = new JsonLightHttpService(connection->getObjectMapper());
+/*public*/ JsonLightSocketService::JsonLightSocketService(JsonConnection* connection, QObject *parent) : JsonSocketService(connection, parent)
+{
+ //super(connection);
+ this->service = new JsonLightHttpService(connection->getObjectMapper());
  lights = new QMap<QString, LightListener*>();
 }
 

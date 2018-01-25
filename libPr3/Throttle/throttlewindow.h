@@ -52,7 +52,13 @@ public:
     FunctionPanel* getFunctionPanel();
     /*public*/ QString getLastUsedSaveFile();
     /*public*/ void setFrameTitle();
-
+    /*public*/ QDomElement getXml();
+    /*public*/ QDomElement getXml(ThrottleWindow*);
+    /*public*/ QDomElement getXmlFile();
+    /*public*/ void setXml(QDomElement e);
+    /*public*/ static QString getDefaultThrottleFolder();
+    /*public*/ static QString getDefaultThrottleFilename();
+    /*public*/ void setLastUsedSaveFile(QString lusf);
 
 public slots:
     /*public*/ void saveThrottle();
@@ -133,12 +139,15 @@ private slots:
     ThrottleWindow* currentThrottleFrame;
     QString lastUsedSaveFile;
     void windowClosing(QCloseEvent *e);
+    /*private*/ static QString DefaultThrottleFileName;// = "JMRI_ThrottlePreference.xml";
+    QDomDocument doc;
 
 private slots:
     void propertyChange(PropertyChangeEvent* e);
     /*private*/ void editPreferences();
     /*private*/ void switchMode();
     void OnEditMenuExportRoster();
+
 friend class PropertyChangeSupport;
 friend class LocoNetSlot;
 friend class AbstractThrottle;

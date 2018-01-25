@@ -95,6 +95,8 @@ namespace Operations
 
     /*public*/ /*static*/ QString Control::reportFontName = ""; // use default
 
+    /*public*/ /*static*/ int Control::excelWaitTime = 120; // in seconds
+
     // must synchronize changes with operation-config.dtd
     /*public*/ /*static*/ QDomElement Control::store() {
         QDomElement values;

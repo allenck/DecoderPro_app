@@ -235,7 +235,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      }
      locationsPanel->update();
      update();
-     repaint();
+     //repaint();
  }
 
  /*public*/ void SchedulesByLoadFrame::dispose() {

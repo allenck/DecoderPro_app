@@ -660,7 +660,7 @@ QComboBox* source = (QComboBox*)ae;
   ownerNameAll->setChecked(true);
  }
  panelOwnerNames->update();
- panelOwnerNames->repaint();
+ //panelOwnerNames->repaint();
  update();
 }
 

@@ -23,7 +23,7 @@
         Timebase* manager = (Timebase*)InstanceManager::getDefault("Timebase");
         manager->addMinuteChangeListener((PropertyChangeListener*)this);
         //manager.addPropertyChangeListener(this);
-        connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         this->listening = true;
     }
     this->service->doPost(type, NULL, data, locale);
@@ -40,7 +40,7 @@
      Timebase* manager = (Timebase*)InstanceManager::getDefault("Timebase");
         manager->removeMinuteChangeListener((PropertyChangeListener*)this);
         //manager.removePropertyChangeListener(this);
-        disconnect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        disconnect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 }
 

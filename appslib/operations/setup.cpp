@@ -10,7 +10,7 @@
 #include "trainmanagerxml.h"
 #include "propertychangesupport.h"
 #include "abstractoperationsserver.h"
-
+#include <QTextEdit>
 namespace Operations
 {
  Setup::Setup(QObject *parent) :
@@ -191,10 +191,18 @@ namespace Operations
  /*public*/  /*static final*/ QString Setup::FEET = tr("Feet");
  /*public*/  /*static final*/ QString Setup::METER = tr("Meter");
 
- /*private*/  /*static final*/ QStringList Setup::carAttributes = QStringList() << Setup::ROAD << Setup::NUMBER << Setup::TYPE << Setup::LENGTH << Setup::LOAD << Setup::HAZARDOUS << Setup::COLOR << Setup::KERNEL << Setup::KERNEL_SIZE << Setup::OWNER <<
-         Setup::TRACK << Setup::LOCATION << Setup::DESTINATION << Setup::DEST_TRACK << Setup::FINAL_DEST << Setup::FINAL_DEST_TRACK << Setup:: COMMENT << Setup:: DROP_COMMENT << Setup::PICKUP_COMMENT << Setup:: RWE;
- /*private*/  /*static final*/ QStringList Setup::engineAttributes =  QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: MODEL << Setup:: LENGTH << Setup:: CONSIST << Setup:: OWNER << Setup:: TRACK << Setup::
-         LOCATION << Setup:: DESTINATION << Setup:: COMMENT;
+ /*private*/  /*static final*/ QStringList Setup::carAttributes = QStringList()
+   << Setup::ROAD << Setup::NUMBER << Setup::TYPE << Setup::LENGTH
+   << Setup::LOAD << Setup::HAZARDOUS << Setup::COLOR << Setup::KERNEL
+   << Setup::KERNEL_SIZE << Setup::OWNER << Setup::TRACK << Setup::LOCATION
+   << Setup::DESTINATION << Setup::DEST_TRACK << Setup::FINAL_DEST
+   << Setup::FINAL_DEST_TRACK << Setup:: COMMENT << Setup:: DROP_COMMENT
+   << Setup::PICKUP_COMMENT << Setup:: RWE;
+
+ /*private*/  /*static final*/ QStringList Setup::engineAttributes =  QStringList()
+   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: MODEL
+   << Setup:: LENGTH << Setup:: CONSIST << Setup:: OWNER << Setup:: TRACK
+   << Setup::LOCATION << Setup:: DESTINATION << Setup:: COMMENT;
 
  /*private*//*static*/int Setup::scale = Setup::HO_SCALE; // Default scale
  /*private*//*static*/int Setup::ratio = Setup::HO_RATIO;
@@ -217,20 +225,32 @@ namespace Operations
  /*private*//*static*/QString Setup::pickupColor = Setup::BLACK;
  /*private*//*static*/QString Setup::dropColor = Setup::BLACK;
  /*private*//*static*/QString Setup::localColor = Setup::BLACK;
- /*private*//*static*/QStringList Setup::pickupEngineMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: BLANK << Setup:: MODEL << Setup:: BLANK << Setup:: BLANK << Setup:: LOCATION << Setup:: COMMENT;
+ /*private*//*static*/QStringList Setup::pickupEngineMessageFormat = QStringList()
+   << Setup::ROAD << Setup:: NUMBER << Setup:: BLANK << Setup:: MODEL
+   << Setup:: BLANK << Setup:: BLANK << Setup:: LOCATION << Setup:: COMMENT;
  /*private*//*static*/QStringList Setup::dropEngineMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: BLANK << Setup:: MODEL << Setup:: BLANK << Setup:: BLANK << Setup:: DESTINATION << Setup:: COMMENT;
- /*private*//*static*/QStringList Setup::pickupManifestMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: LOCATION << Setup::
-         COMMENT << Setup:: PICKUP_COMMENT;
- /*private*//*static*/QStringList Setup::dropManifestMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: DESTINATION << Setup::
-         COMMENT << Setup:: DROP_COMMENT;
- /*private*//*static*/QStringList Setup::localManifestMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: LOCATION << Setup::
-         DESTINATION << Setup:: COMMENT;
- /*private*//*static*/QStringList Setup::pickupSwitchListMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup::
-         LOCATION << Setup:: COMMENT << Setup:: PICKUP_COMMENT;
- /*private*//*static*/QStringList Setup::dropSwitchListMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup::
-         DESTINATION << Setup:: COMMENT << Setup:: DROP_COMMENT;
- /*private*//*static*/QStringList Setup::localSwitchListMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup::
-         LOCATION << Setup:: DESTINATION << Setup:: COMMENT;
+ /*private*//*static*/QStringList Setup::pickupManifestMessageFormat = QStringList()
+   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
+   << Setup::COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: LOCATION
+   << Setup::COMMENT << Setup:: PICKUP_COMMENT;
+ /*private*//*static*/QStringList Setup::dropManifestMessageFormat = QStringList()
+   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
+   << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: DESTINATION
+   << Setup::COMMENT << Setup:: DROP_COMMENT;
+ /*private*//*static*/QStringList Setup::localManifestMessageFormat = QStringList()
+   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
+   << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: LOCATION << Setup:: DESTINATION << Setup:: COMMENT;
+ /*private*//*static*/QStringList Setup::pickupSwitchListMessageFormat = QStringList()
+   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
+   << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup::LOCATION
+   << Setup:: COMMENT << Setup:: PICKUP_COMMENT;
+ /*private*//*static*/QStringList Setup::dropSwitchListMessageFormat = QStringList()
+   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
+   << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup::DESTINATION
+   << Setup:: COMMENT << Setup:: DROP_COMMENT;
+ /*private*//*static*/QStringList Setup::localSwitchListMessageFormat = QStringList()
+   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
+   << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup::LOCATION << Setup:: DESTINATION << Setup:: COMMENT;
  /*private*//*static*/QStringList Setup::missingCarMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH << Setup:: COLOR << Setup:: COMMENT;
  /*private*//*static*/QString Setup::pickupEnginePrefix = Setup::BOX + tr("Pick up");
  /*private*//*static*/QString Setup::dropEnginePrefix = Setup::BOX + tr("Set out");
@@ -704,8 +724,14 @@ namespace Operations
      setupComment = comment;
  }
 
- /*public*//*static*/QString Setup::getComment() {
-     return setupComment;
+ /*public*//*static*/QString Setup::getComment(bool asText)
+ {
+  if(asText)
+  {
+   QTextEdit te(setupComment);
+   return te.toPlainText();
+  }
+  return setupComment;
  }
 
  /*public*//*static*/void Setup::setBuildReportLevel(QString level) {

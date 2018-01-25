@@ -13,7 +13,7 @@
 #include "servletcontext.h"
 #include "webserver.h"
 
-AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
+AbstractPanelServlet::AbstractPanelServlet(QObject* parent) : HttpServlet(parent)
 {
 
 }
@@ -69,7 +69,7 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
 //@Override
 /*protected*/  void AbstractPanelServlet::doGet(HttpServletRequest* request, HttpServletResponse* response) throw (ServletException, IOException)
 {
-  log->debug(tr("Handling GET request for %1").arg(request->getRequestURI()));
+ log->debug(tr("Handling GET request for %1").arg(request->getRequestURI()));
  if (request->getRequestURI() == ("/web/showPanel.html"))
  { // NOI18N
   response->sendRedirect("/panel/"); // NOI18N
@@ -84,7 +84,8 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
       response->sendRedirect("/panel/"); // NOI18N
   }
  }
- else if (request->getRequestURI().endsWith("/")) { // NOI18N
+ else if (request->getRequestURI().endsWith("/"))
+ { // NOI18N
      listPanels(request, response);
  }
  else
@@ -113,14 +114,15 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
        response->resp->write(panel,true);
    }
   }
-  else if ("html" == (request->getParameter("format")) || NULL == request->getParameter("format")) {
-      this->listPanels(request, response);
+  else if (("html" == request->getParameter("format")) || (NULL == request->getParameter("format")))
+  {
+   this->listPanels(request, response);
   }
   else
   {
    bool useXML = (JSON::_JSON != (request->getParameter("format")));
    response->setContentType(ServletUtil::UTF8_APPLICATION_JSON);
-   QString panel = getPanelText(panelName, useXML);
+   QByteArray panel = getPanelText(panelName, useXML);
    if (panel == NULL)
    {
     response->sendError(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, "See the JMRI console for details.");
@@ -134,7 +136,7 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
     response->setStatus(HttpServletResponse::SC_OK);
     //response->setContentLength(panel.toUtf8().length());
     //response->getOutputStream().print(panel);
-    response->resp->write(panel.toUtf8(),true);
+    response->resp->write(panel, true);
    }
   }
  }
@@ -158,9 +160,9 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
 //        response->getWriter()->print(String.format(request->getLocale(),
 //                FileUtil::readURL(FileUtil::findURL(tr(request->getLocale(), "Panel.html"))),
 //                String.format(request->getLocale(),
-//                        tr(/*request->getLocale(),*/ "%2$s | %1$s"),
+//                        tr(/*request->getLocale(),*/ "HtmlTitle"),
 //                        ServletUtil::getInstance()->getRailroadName(false),
-//                        tr(/*request->getLocale(),*/ "Panels")
+//                        tr(/*request->getLocale(),*/ "PanelsTitle")
 //                ),
 //                ServletUtil::getInstance()->getNavBar(request->getLocale(), "/panel"),
 //                ServletUtil::getInstance()->getRailroadName(false),
@@ -173,6 +175,8 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
   out = out.replace("%2$s", ServletUtil::getInstance()->getNavBar( request->getLocale(),  contextPath));
   out = out.replace("%4$s", ServletUtil::getInstance()->getFooter( request->getLocale(),  contextPath));
   out = out.replace("%3$s", ServletUtil::getInstance()->getRailroadName(false));
+  //out = out.replace("%5$s","20");
+  //qDebug() << out;
   response->resp->write(out.toLocal8Bit(),true);
  }
 }
@@ -205,7 +209,7 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
     return NULL;
 }
 
-/*protected*/  QString AbstractPanelServlet::getPanelText(QString name, bool useXML)
+/*protected*/  QByteArray AbstractPanelServlet::getPanelText(QString name, bool useXML)
 {
  if (useXML)
  {
@@ -213,13 +217,13 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
  }
  else
  {
-  return getJsonPanel(name);
+  return getJsonPanel(name).toLatin1();
  }
 }
 
 /*abstract*/ /*protected*/  QString AbstractPanelServlet::getJsonPanel(QString /*name*/) {return "";}
 
-/*abstract*/ /*protected*/  QString AbstractPanelServlet::getXmlPanel(QString /*name*/){return "";}
+/*abstract*/ /*protected*/  QByteArray AbstractPanelServlet::getXmlPanel(QString /*name*/){return "";}
 
 
 //@CheckForNull
@@ -276,42 +280,44 @@ AbstractPanelServlet::AbstractPanelServlet() : HttpServlet()
 QDomElement AbstractPanelServlet::getSignalMastIconsElement(QString name)
 {
  QDomDocument doc;
-    QDomElement icons = doc.createElement("icons");
-    SignalMast* signalMast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(name);
-    foreach (QString aspect, signalMast->getValidAspects()) {
-        QDomElement ea = doc.createElement(aspect.replace("[ ()]", "")); //create element for aspect after removing invalid chars
-        QString url = signalMast->getAppearanceMap()->getImageLink(aspect, "default");  //TODO: use correct imageset
-        if (!url.contains("preference:")) {
-            url = "program:" + url.mid(url.indexOf("resources"));
-        }
-        ea.setAttribute(JSON::ASPECT, aspect);
-        ea.setAttribute("url", url);
-        icons.appendChild(ea);
-    }
-   QString url = signalMast->getAppearanceMap()->getImageLink("$held", "default");  //add "Held" aspect if defined
-    if (!url.isEmpty()) {
-        if (!url.contains("preference:")) {
-            url = "program:" + url.mid(url.indexOf("resources"));
-        }
-        QDomElement ea = doc.createElement(JSON::ASPECT_HELD);
-        ea.setAttribute(JSON::ASPECT, JSON::ASPECT_HELD);
-        ea.setAttribute("url", url);
-        icons.appendChild(ea);
-    }
-    url = signalMast->getAppearanceMap()->getImageLink("$dark", "default");  //add "Dark" aspect if defined
-    if (!url.isEmpty()) {
-        if (!url.contains("preference:")) {
-            url = "program:" + url.mid(url.indexOf("resources"));
-        }
-        QDomElement ea = doc.createElement(JSON::ASPECT_DARK);
-        ea.setAttribute(JSON::ASPECT, JSON::ASPECT_DARK);
-        ea.setAttribute("url", url);
-        icons.appendChild(ea);
-    }
-    QDomElement ea = doc.createElement(JSON::ASPECT_UNKNOWN);
-    ea.setAttribute(JSON::ASPECT, JSON::ASPECT_UNKNOWN);
-    ea.setAttribute("url", "program:resources/icons/misc/X-red.gif");  //add icon for unknown state
-    icons.appendChild(ea);
+ QDomElement icons = doc.createElement("icons");
+ SignalMast* signalMast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(name);
+ foreach (QString aspect, signalMast->getValidAspects())
+ {
+  QString tagname = aspect.replace(" ", "").replace("[", "").replace("]", "").replace("(", "").replace(")", "");
+ QDomElement ea = doc.createElement(/*aspect.replace("[ ()]", "")*/tagname); //create element for aspect after removing invalid chars
+  QString url = signalMast->getAppearanceMap()->getImageLink(aspect, "default");  //TODO: use correct imageset
+  if (!url.contains("preference:")) {
+      url = "program:" + url.mid(url.indexOf("resources"));
+  }
+  ea.setAttribute(JSON::ASPECT, aspect);
+  ea.setAttribute("url", url);
+  icons.appendChild(ea);
+ }
+QString url = signalMast->getAppearanceMap()->getImageLink("$held", "default");  //add "Held" aspect if defined
+ if (!url.isEmpty()) {
+     if (!url.contains("preference:")) {
+         url = "program:" + url.mid(url.indexOf("resources"));
+     }
+     QDomElement ea = doc.createElement(JSON::ASPECT_HELD);
+     ea.setAttribute(JSON::ASPECT, JSON::ASPECT_HELD);
+     ea.setAttribute("url", url);
+     icons.appendChild(ea);
+ }
+ url = signalMast->getAppearanceMap()->getImageLink("$dark", "default");  //add "Dark" aspect if defined
+ if (!url.isEmpty()) {
+     if (!url.contains("preference:")) {
+         url = "program:" + url.mid(url.indexOf("resources"));
+     }
+     QDomElement ea = doc.createElement(JSON::ASPECT_DARK);
+     ea.setAttribute(JSON::ASPECT, JSON::ASPECT_DARK);
+     ea.setAttribute("url", url);
+     icons.appendChild(ea);
+ }
+ QDomElement ea = doc.createElement(JSON::ASPECT_UNKNOWN);
+ ea.setAttribute(JSON::ASPECT, JSON::ASPECT_UNKNOWN);
+ ea.setAttribute("url", "program:resources/icons/misc/X-red.gif");  //add icon for unknown state
+ icons.appendChild(ea);
 
-    return icons;
+ return icons;
 }

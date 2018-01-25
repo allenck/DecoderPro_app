@@ -146,11 +146,11 @@ namespace Operations
 #endif
  }
 
- /*public*/ int TrainsTableModel::rowCount(const QModelIndex &parent) const {
+ /*public*/ int TrainsTableModel::rowCount(const QModelIndex &/*parent*/) const {
      return sysList.size();
  }
 
- /*public*/ int TrainsTableModel::columnCount(const QModelIndex &parent) const {
+ /*public*/ int TrainsTableModel::columnCount(const QModelIndex &/*parent*/) const {
      return HIGHESTCOLUMN;
  }
 
@@ -466,10 +466,11 @@ namespace Operations
      if (trainManager->isBuildReportEnabled()) {
          train->printBuildReport();
      }
- #if 0
-     if (Setup::isGenerateCsvManifestEnabled() && trainManager.isOpenFileEnabled()) {
+ #if 1
+     if (Setup::isGenerateCsvManifestEnabled() && trainManager->isOpenFileEnabled())
+     {
          train->openFile();
-     } else if (Setup::isGenerateCsvManifestEnabled() && trainManager.isRunFileEnabled()) {
+     } else if (Setup::isGenerateCsvManifestEnabled() && trainManager->isRunFileEnabled()) {
          train->runFile();
      }
      else
@@ -489,7 +490,7 @@ namespace Operations
  void Build::process()
  {
   train->build();
-  emit finished();   \
+  emit finished();
  }
 
  // one of four buttons: Report, Move, Conductor or Terminate
@@ -611,7 +612,7 @@ namespace Operations
              || (e->getPropertyName()==(Train::BUILD_CHANGED_PROPERTY) && !isShowAll())) {
          updateList();
          fireTableDataChanged();
-     } else if (e->getSource()->metaObject()->className()==("Train")) {
+     } else if (QString(e->getSource()->metaObject()->className())==("Train")) {
          /*synchronized (this)*/ {
              Train* train = ((Train*) e->getSource());
              int row = sysList.indexOf(train);

@@ -17,6 +17,8 @@
 #include "throttlewindow.h"
 #include "progdefault.h"
 #include "addressedprogrammermanager.h"
+#include "windowpreferences.h"
+#include "locoaddressxml.h"
 
 AddressPanel::AddressPanel(QWidget *parent) :
     QDockWidget(parent),
@@ -56,7 +58,7 @@ AddressPanel::~AddressPanel()
 {
     delete ui;
 }
-#if 0
+
 /**
  * A JInternalFrame that provides a way for the user to enter a decoder address.
  * This class also store AddressListeners and notifies them when the user enters
@@ -66,7 +68,8 @@ AddressPanel::~AddressPanel()
  * @author Daniel Boudreau Copyright (C) 2008 (add consist feature)
  * @version $Revision: 22216 $
  */
-/*public*/ class AddressPanel extends JInternalFrame implements ThrottleListener, PropertyChangeListener {
+#if 0
+// /*public*/ class AddressPanel extends JInternalFrame implements ThrottleListener, PropertyChangeListener {
 
 
     /**
@@ -325,8 +328,8 @@ void AddressPanel::OnSetButton_clicked()
  */
 /*private*/ void initGUI() {
     mainPanel = new JPanel();
-    this.setContentPane(mainPanel);
-    this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    this->setContentPane(mainPanel);
+    this->setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
     mainPanel.setLayout(new GridBagLayout());
     GridBagConstraints constraints = new GridBagConstraints();
@@ -599,63 +602,72 @@ void AddressPanel::OnSetButton_clicked()
       notifyAddressReleased(currentAddress);
     }
 }
-#if 0
+#if 1
 /**
- * Create an Element of this object's preferences.
+ * Create an QDomElementof this object's preferences.
  * <ul>
  * <li> Window Preferences
  * <li> Address value
  * </ul>
  *
- * @return org.jdom.Element for this objects preferences. Defined in
+ * @return org.jdom.QDomElementfor this objects preferences. Defined in
  *         DTD/throttle-config
  */
-/*public*/ Element getXml() {
-    Element me = new Element("AddressPanel");
-    //Element window = new Element("window");
-    java.util.ArrayList<Element> children = new java.util.ArrayList<Element>(1);
-    children.add(WindowPreferences.getPreferences(this));
-    children.add((new jmri.configurexml.LocoAddressXml())
-            .store(addrSelector.getAddress()));
-    children.add((new jmri.configurexml.LocoAddressXml())
-            .store(consistAddress));
-    me.setContent(children);
+/*public*/ QDomElement AddressPanel::getXml() {
+ QDomDocument doc = QDomDocument();
+    QDomElement me = doc.createElement("AddressPanel");
+    //QDomElementwindow = doc.createElement("window");
+//    java.util.ArrayList<Element> children = new java.util.ArrayList<Element>(1);
+//    children.add(WindowPreferences.getPreferences(this));
+    QDomElement elem = WindowPreferences::getPreferences(this);
+    me.appendChild(elem);
+//    children.add((new jmri.configurexml.LocoAddressXml())
+//            .store(addrSelector.getAddress()));
+    elem = (new LocoAddressXml())->store(addrSelector->getAddress());
+    me.appendChild(elem);
+//    children.add((new jmri.configurexml.LocoAddressXml())
+//            .store(consistAddress));
+    elem = (new LocoAddressXml())->store(consistAddress);
+    me.appendChild(elem);
+//    me.setContent(children);
     return me;
 }
 
 /**
- * Use the Element passed to initialize based on user prefs.
+ * Use the QDomElementpassed to initialize based on user prefs.
  *
  * @param e
- *            The Element containing prefs as defined in DTD/throttle-config
+ *            The QDomElementcontaining prefs as defined in DTD/throttle-config
  */
-@SuppressWarnings("unchecked")
-/*public*/ void setXml(Element e) {
-    Element window = e.getChild("window");
-    WindowPreferences.setPreferences(this, window);
+//@SuppressWarnings("unchecked")
+/*public*/ void AddressPanel::setXml(QDomElement e)
+{
+ QDomElement window = e.firstChildElement("window");
+ WindowPreferences::setPreferences(this, window);
 
-    Element addressElement = e.getChild("address");
-    if ((addressElement != NULL) && ( this.getRosterEntry() == NULL)){
-        String address = addressElement.getAttribute("value").getValue();
-        addrSelector.setAddress(new DccLocoAddress(Integer
-                .parseInt(address), false)); // guess at the short/long
-        consistAddress = NULL;
-        changeOfAddress();
-    }
+ QDomElement addressElement= e.firstChildElement("address");
+ if ((addressElement!= QDomElement()) && ( this->getRosterEntry() == NULL))
+ {
+     QString address = addressElement.attribute("value");
+     addrSelector->setAddress(new DccLocoAddress(address.toInt(), false)); // guess at the short/long
+     consistAddress = NULL;
+     changeOfAddress();
+ }
 
-    List<Element> elementList = e.getChildren("locoaddress");
-    if ((elementList.size() > 0) && (getThrottle() == NULL)) {
-        log->debug("found " + elementList.size() +" locoaddress");
-        addrSelector.setAddress((DccLocoAddress) (new jmri.configurexml.LocoAddressXml())
-                .getAddress(elementList.get(0)));
-        consistAddress = NULL;
-        // if there are two locoaddress, the second is the consist address
-        if (elementList.size() > 1){
-            consistAddress = ((DccLocoAddress) (new jmri.configurexml.LocoAddressXml())
-                    .getAddress(elementList.get(1)));
-        }
-        changeOfAddress();
-    }
+ QDomNodeList elementList = e.elementsByTagName("locoaddress");
+ if ((elementList.size() > 0) && (getThrottle() == NULL))
+ {
+     log->debug("found " + QString::number(elementList.size()) +" locoaddress");
+     addrSelector->setAddress((DccLocoAddress*) (new LocoAddressXml())
+             ->getAddress(elementList.at(0).toElement()));
+     consistAddress = NULL;
+     // if there are two locoaddress, the second is the consist address
+     if (elementList.size() > 1){
+         consistAddress = ((DccLocoAddress*) (new LocoAddressXml())
+                 ->getAddress(elementList.at(1).toElement()));
+     }
+     changeOfAddress();
+ }
 }
 #endif
 /**

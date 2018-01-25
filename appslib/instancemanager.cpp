@@ -452,17 +452,32 @@ ConfigureManager* InstanceManager::configureManagerInstance()
 ThrottleManager* InstanceManager::throttleManagerInstance()  {
     return (ThrottleManager*)getDefault(/*ThrottleManager.class*/  "ThrottleManager");
 }
-#if 1
-SignalHeadManager* InstanceManager::signalHeadManagerInstance()  {
-    if (instance()->signalHeadManager != NULL) return instance()->signalHeadManager;
-    // As a convenience, we create a default object if none was provided explicitly.
-    // This must be replaced when we start registering specific implementations
-    //instance()->signalHeadManager = (SignalHeadManager*)initializer->getDefault(/*SignalHeadManager.class)*/"SignalHeadManager");
-    instance()->signalHeadManager = (SignalHeadManager*)new  AbstractSignalHeadManager();
-    return instance()->signalHeadManager;
+
+/**
+ * Will eventually be deprecated, use @{link #getDefault} directly.
+ *
+ * @return the default signal head manager. May not be the only instance.
+ * @deprecated 4.5.1
+ */
+//@Deprecated
+SignalHeadManager* InstanceManager::signalHeadManagerInstance()
+{
+//    if (instance()->signalHeadManager != NULL) return instance()->signalHeadManager;
+//    // As a convenience, we create a default object if none was provided explicitly.
+//    // This must be replaced when we start registering specific implementations
+//    //instance()->signalHeadManager = (SignalHeadManager*)initializer->getDefault(/*SignalHeadManager.class)*/"SignalHeadManager");
+//    instance()->signalHeadManager = (SignalHeadManager*)new  AbstractSignalHeadManager();
+//    return instance()->signalHeadManager;
+ return (SignalHeadManager*)getDefault("SignalHeadManager");
 }
-#endif
-#if 1
+
+/**
+ * Will eventually be deprecated, use @{link #getDefault} directly.
+ *
+ * @return the default signal mast manager. May not be the only instance.
+ * @deprecated 4.5.1
+ */
+//@Deprecated
 SignalMastManager* InstanceManager::signalMastManagerInstance()
 {
  SignalMastManager* m = (SignalMastManager*)getDefault("SignalMastManager");
@@ -477,7 +492,7 @@ void InstanceManager::setSignalMastManager(SignalMastManager* p)
 {
     store(p, "SignalMastManager");
 }
-#endif
+
 #if 1
 SignalSystemManager* InstanceManager::signalSystemManagerInstance()
 {
@@ -916,6 +931,17 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
   client->propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
  }
  emit propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
+}
+/**
+ * Get the property name included in the
+ * {@link java.beans.PropertyChangeEvent} thrown when the default for a
+ * specific class is changed.
+ *
+ * @param clazz the class being listened for
+ * @return the property name
+ */
+/*public*/ /*static*/ QString InstanceManager::getDefaultsPropertyName(QString clazz) {
+    return "default-" + clazz/*.getName()*/;
 }
 /* ****************************************************************************
  *                   Old Style Setters - Deprecated and migrated,

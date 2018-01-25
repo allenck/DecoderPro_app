@@ -825,6 +825,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 //  }
 // };
 // table.getTableHeader().setReorderingAllowed(true);
+ table->resizeRowsToContents();
  table->setColumnModel(new XTableColumnModel());
 // table.createDefaultColumnsFromModel();
 

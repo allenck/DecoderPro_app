@@ -13,9 +13,9 @@
 
 /*public*/ JsonTurnoutSocketService::JsonTurnoutSocketService(JsonConnection* connection, QObject* parent) : JsonSocketService(connection, parent)
 {
-    //super(connection);
-    turnouts = new QMap<QString, TurnoutListener*>();
-    this->service = new JsonTurnoutHttpService(connection->getObjectMapper());
+ //super(connection);
+ turnouts = new QMap<QString, TurnoutListener*>();
+ this->service = new JsonTurnoutHttpService(connection->getObjectMapper());
 }
 
 //@Override

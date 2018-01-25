@@ -161,7 +161,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      if (_train == NULL) {
          setTitle(tr("Show Car Types"));
-         repaint();
+         update();
          return;
      }
 
@@ -301,7 +301,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          }
      }
      pRoute->update();
-     repaint();
+     update();
  }
 
  /*private*/ /*static*/ /*final*/ QString TrainByCarTypeFrame::ROAD = "road"; // NOI18N

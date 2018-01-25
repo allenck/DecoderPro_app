@@ -57,6 +57,8 @@ public:
     /*public*/ void hideGroupsPane(bool hide);
     /*public*/ QString getSelectedRosterGroup();
     /*public*/ QList<RosterEntry*>* getSelectedRosterEntries();
+    /*public*/ void setTitle(QString title) ;
+    /*public*/ QVariant getProperty(QString key);
 
 
 public slots:
@@ -88,6 +90,7 @@ private:
     QString programmer1; // "Comprehensive
     QString programmer2; // "Basic"
     QVector<RosterEntry*> rows;
+
  Logger* log;
  bool inStartProgrammer;// = false;
  RosterEntryUpdateListener* rosterEntryUpdateListener;
@@ -119,6 +122,7 @@ private:
  QAction* contextEdit;
  QList<RosterEntry*>* selectedRosterEntries;
  void editMediaButton();
+ QString getClassName();
 
 private slots:
 //    void on_tableWidget_cellClicked(int row, int col);
@@ -166,6 +170,7 @@ protected:
     /*protected*/ void enableRosterGroupMenuItems(bool enable);
     /*protected*/ void helpMenu(QMenuBar* menuBar, /*final*/ JFrame* frame);
     /*protected*/ void deleteLoco();
+    /*protected*/ QString baseTitle;// = "Roster";
 
 protected slots:
     /*protected*/ void startIdentifyLoco();
@@ -184,7 +189,6 @@ protected slots:
     /*protected*/ void hideRosterImage();
     virtual /*protected*/ /*final*/ void buildWindow();
     /*protected*/ void showPopup(QPoint pos);
-
 
  friend class PwrListener;
  friend class MyIdentifyLoco;

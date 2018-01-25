@@ -700,7 +700,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      //panelCheckBoxes->add(p, gc);
      ((GridBagLayout*)panelCheckBoxes->layout())->addWidget(p, gc);
      panelCheckBoxes->update();
-     repaint();
+     update();
  }
 
 

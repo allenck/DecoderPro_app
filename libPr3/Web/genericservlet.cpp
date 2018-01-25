@@ -1,6 +1,7 @@
 #include "genericservlet.h"
 #include "servletconfig.h"
 #include "servletcontext.h"
+#include "QTimer"
 
 /*
  * The contents of this file are subject to the terms
@@ -67,7 +68,10 @@
  *
  */
 
-/*public*/ GenericServlet::GenericServlet() { }
+/*public*/ GenericServlet::GenericServlet( QObject* parent) : Servlet(parent)
+{
+ config = NULL;
+}
 
 
 
@@ -100,14 +104,15 @@
  *
  */
 
-/*public*/ QString GenericServlet::getInitParameter(QString name) {
-    ServletConfig* sc = getServletConfig();
-    if (sc == NULL) {
-        throw  IllegalStateException(
-            ("err.servlet_config_not_initialized"));
-    }
+/*public*/ QString GenericServlet::getInitParameter(QString name)
+{
+ ServletConfig* sc = getServletConfig();
+ if (sc == NULL)
+ {
+  throw  IllegalStateException(("err.servlet_config_not_initialized"));
+ }
 
-    return sc->getInitParameter(name);
+ return sc->getInitParameter(name);
 }
 
 
@@ -172,14 +177,15 @@ return config;
  *
  */
 
-/*public*/ ServletContext* GenericServlet::getServletContext() {
-    ServletConfig* sc = getServletConfig();
-    if (sc == NULL) {
-        throw new IllegalStateException(
-            tr("err.servlet_config_not_initialized"));
-    }
+/*public*/ ServletContext* GenericServlet::getServletContext()
+{
+ ServletConfig* sc = getServletConfig();
+ if (sc == NULL)
+ {
+  throw new IllegalStateException(tr("err.servlet_config_not_initialized"));
+ }
 
-    return sc->getServletContext();
+ return sc->getServletContext();
 }
 
 
@@ -231,7 +237,7 @@ return "";
 
 /*public*/ void GenericServlet::init(ServletConfig* config) throw (ServletException) {
 this->config = config;
-this->init();
+//this->init();
 }
 
 

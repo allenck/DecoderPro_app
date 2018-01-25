@@ -27,19 +27,18 @@
 
 class ConsistListListener : public QObject
 {
-    Q_OBJECT
+ Q_OBJECT
 public:
-    explicit ConsistListListener(QObject *parent = 0);
-    /** Receive notification that the consist manager has
-         * changed it's consist list.
-     */
-
-    /*public*/ virtual void notifyConsistListChanged() =0;
+ explicit ConsistListListener(QObject *parent = 0);
 
 signals:
     
 public slots:
-    
+ /** Receive notification that the consist manager has
+      * changed its consist list.
+  */
+ /*public*/ virtual void notifyConsistListChanged();
+
 };
 
 #endif // CONSISTLISTLISTENER_H

@@ -62,6 +62,8 @@ public:
     /*public*/ void setAllowInFrameServlet(bool allow) ;
     /*public*/ bool getAllowInFrameServlet();
     /*public*/ static JmriJFrame* getFrame(QString name);
+    /*public*/ void setFrameRef(QString windowFrameRef);
+    virtual /*public*/ QVariant getProperty(QString key);
 
 
 signals:
@@ -99,7 +101,7 @@ protected:
      * to find properties corresponding to the JavaBean properties
      * coding pattern.
      */
-    /*protected*/ QMap<QString, QObject>* properties;// = new QMap<QString, QObject>();
+    /*protected*/ QMap<QString, QVariant>* properties;// = new QMap<QString, QObject>();
 //    /*protected*/ /*transient*/ WindowInterface windowInterface = NULL;
     /*protected*/ void setShutDownTask();
     /*protected*/ void handleModified();

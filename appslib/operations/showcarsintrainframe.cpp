@@ -17,6 +17,7 @@
 #include "location.h"
 #include "route.h"
 #include <QCheckBox>
+#include <QThread>
 
 namespace Operations
 {
@@ -221,11 +222,11 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                _train->getTrainTerminatesName()));
    }
    pCars->update();
-  }
+//  }
 //     });
 
-#if 0
-  SCITFWorker* worker = new SCITFWorker();
+#if 1
+  SCITFWorker* worker = new SCITFWorker(this);
   QThread* thread = new QThread();
   connect(thread, SIGNAL(started()), worker, SLOT(process()));
   connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
@@ -234,51 +235,62 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   thread->start();
  }
 
- SCITFWorker::SCITFWorker()
+ SCITFWorker::SCITFWorker(ShowCarsInTrainFrame* scitf)
  {
+  this->scitf = scitf;
  }
  void SCITFWorker::process()
  {
-  log->debug("update");
-  if (_train == NULL || _train->getRoute() == NULL) {
+  scitf->log->debug("update");
+  if (scitf->_train == NULL || scitf->_train->getRoute() == NULL) {
       return;
   }
-  textTrainName.setText(_train->getIconName());
-  pCars.removeAll();
-  RouteLocation rl = _train->getCurrentLocation();
+  scitf->textTrainName->setText(scitf->_train->getIconName());
+  //scitf->pCars->removeAll();
+  if(scitf->pCars!= NULL && scitf->pCars->layout()!= NULL)
+  {
+   QObjectList ol = scitf->pCars->layout()->children();
+   foreach (QObject* o, ol) {
+    if(qobject_cast<QWidget*>(o) != NULL)
+    {
+     scitf->pCars->layout()->removeWidget((QWidget*)o);
+     delete o;
+    }
+   }
+  }RouteLocation* rl = scitf->_train->getCurrentLocation();
   if (rl != NULL) {
-      textLocationName.setText(rl.getLocation().getName());
-      textNextLocationName.setText(_train->getNextLocationName());
+      scitf->textLocationName->setText(rl->getLocation()->getName());
+      scitf->textNextLocationName->setText(scitf->_train->getNextLocationName());
       // add header
       int i = 0;
-      addItemLeft(pCars, textPickUp, 0, 0);
-      addItemLeft(pCars, textInTrain, 1, 0);
-      addItemLeft(pCars, textSetOut, 2, i++);
+      scitf->addItemLeft(scitf->pCars, scitf->textPickUp, 0, 0);
+      scitf->addItemLeft(scitf->pCars, scitf->textInTrain, 1, 0);
+      scitf->addItemLeft(scitf->pCars, scitf->textSetOut, 2, i++);
       // block cars by destination
-      for (RouteLocation rld : _train->getRoute().getLocationsBySequenceList()) {
-          for (Car car : carManager.getByTrainDestinationList(_train)) {
-              if ((car.getTrack() == NULL || car.getRouteLocation() == rl)
-                      && car.getRouteDestination() == rld) {
-                  log->debug("car ({}) routelocation ({}) track ({}) route destination ({})", car.toString(), car
-                          .getRouteLocation().getName(), car.getTrackName(), car.getRouteDestination().getName());
-                  JCheckBox checkBox = new JCheckBox(car.toString());
-                  if (car.getRouteDestination() == rl) {
-                      addItemLeft(pCars, checkBox, 2, i++); // set out
-                  } else if (car.getRouteLocation() == rl && car.getTrack() != NULL) {
-                      addItemLeft(pCars, checkBox, 0, i++); // pick up
+      for (RouteLocation* rld : *scitf->_train->getRoute()->getLocationsBySequenceList()) {
+          for (Car* car : *scitf->carManager->getByTrainDestinationList(scitf->_train)) {
+              if ((car->getTrack() == NULL || car->getRouteLocation() == rl)
+                      && car->getRouteDestination() == rld) {
+                  scitf->log->debug(tr("car (%1) routelocation (%2) track (%3) route destination (%4)").arg(car->toString()).arg(car
+                          ->getRouteLocation()->toString()).arg(scitf->getName()).arg(car->getTrackName()).arg(car->getRouteDestination()->getName()));
+                  QCheckBox* checkBox = new QCheckBox(car->toString());
+                  if (car->getRouteDestination() == rl) {
+                      scitf->addItemLeft(scitf->pCars, checkBox, 2, i++); // set out
+                  } else if (car->getRouteLocation() == rl && car->getTrack() != NULL) {
+                      scitf->addItemLeft(scitf->pCars, checkBox, 0, i++); // pick up
                   } else {
-                      addItemLeft(pCars, checkBox, 1, i++); // in train
+                      scitf->addItemLeft(scitf->pCars, checkBox, 1, i++); // in train
                   }
               }
           }
       }
 
-      textStatus.setText(getStatus(rl));
+      scitf->textStatus->setText(scitf->getStatus(rl));
   } else {
-      textStatus.setText(MessageFormat.format(TrainManifestText.getStringTrainTerminates(),
-              new Object[]{_train->getTrainTerminatesName()}));
+      scitf->textStatus->setText(TrainManifestText::getStringTrainTerminates().arg(
+              scitf->_train->getTrainTerminatesName()));
   }
-  pCars.repaint();
+  scitf->pCars->update();
  }
 #endif
  /*private*/ QString ShowCarsInTrainFrame::getStatus(RouteLocation* rl) {

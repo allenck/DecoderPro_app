@@ -2,7 +2,7 @@
 #define DROPJLABEL_H
 #include <QLabel>
 #include "logger.h"
-
+#include "namedicon.h"
 class DropTargetDropEvent;
 class DataFlavor;
 class DropJLabel : public QLabel

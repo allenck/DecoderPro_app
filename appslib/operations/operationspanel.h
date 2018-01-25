@@ -61,6 +61,7 @@ namespace Operations
   /*protected*/ int getNumberOfCheckboxesPerLine() ;
   /*protected*/ int getNumberOfCheckboxesPerLine(QSize size);
   QString gbStyleSheet;
+  /*protected*/ void storeValues();
 
  protected slots:
   /*protected*/ virtual void buttonActionPerformed(QWidget*);

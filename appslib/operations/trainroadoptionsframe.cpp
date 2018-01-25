@@ -295,7 +295,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      } else {
          roadNameAll->setChecked(true);
      }
-     panelRoads->repaint();
+     //panelRoads->repaint();
      panelRoads->update();
  }
 

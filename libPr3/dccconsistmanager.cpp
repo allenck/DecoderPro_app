@@ -4,7 +4,7 @@ DccConsistManager::DccConsistManager(QObject *parent) //:  ConsistManager(parent
 {
     ConsistTable = new QHash<DccLocoAddress*, DccConsist*>();
     ConsistList = new QList<DccLocoAddress*>();
-    ChangeListeners = new QList<ConsistListListener*>();
+    changeListeners = new QList<ConsistListListener*>();
 }
 /**
  * DccConsistManager.java
@@ -103,7 +103,9 @@ DccConsistManager::DccConsistManager(QObject *parent) //:  ConsistManager(parent
      * @param listener a Consist List Listener object.
      */
     /*public*/ void DccConsistManager::addConsistListListener(ConsistListListener* l){
-       ChangeListeners->append(l);
+       changeListeners->append(l);
+       disconnect(this, SIGNAL(consistListChanged()), l, SLOT(notifyConsistListChanged()));
+
     }
 
     /*
@@ -112,14 +114,17 @@ DccConsistManager::DccConsistManager(QObject *parent) //:  ConsistManager(parent
      * @param listener a Consist List Listener object.
      */
     /*public*/ void DccConsistManager::removeConsistListListener(ConsistListListener* l){
-       ChangeListeners->removeAt(ChangeListeners->indexOf(l));
+       changeListeners->removeAt(changeListeners->indexOf(l));
+       disconnect(this, SIGNAL(notifyConsistListChanged()), l, SLOT(notifyConsistListChanged()));
     }
 
     /*
      * Notify the registered Consist List Listener objects that the
      * Consist List has changed.
      */
-    /*public*/ void DccConsistManager::notifyConsistListChanged(){
-       foreach(ConsistListListener* l, *ChangeListeners)
-           l->notifyConsistListChanged();
+    /*public*/ void DccConsistManager::notifyConsistListChanged()
+{
+//       foreach(ConsistListListener* l, *changeListeners)
+//           l->notifyConsistListChanged();
+       emit consistListChanged();
     }

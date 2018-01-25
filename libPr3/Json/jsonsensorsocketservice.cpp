@@ -14,9 +14,10 @@
 ///*public*/ class JsonSensorSocketService extends JsonSocketService {
 
 
-/*public*/ JsonSensorSocketService::JsonSensorSocketService(JsonConnection* connection, QObject* parent) :JsonSocketService(connection, parent) {
-    //super(connection);
-    this->service = new JsonSensorHttpService(connection->getObjectMapper());
+/*public*/ JsonSensorSocketService::JsonSensorSocketService(JsonConnection* connection, QObject* parent) :JsonSocketService(connection, parent)
+{
+ //super(connection);
+ this->service = new JsonSensorHttpService(connection->getObjectMapper());
  this->sensors = new QMap<QString, SensorListener*>();
 }
 

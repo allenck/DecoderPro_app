@@ -20,7 +20,7 @@ class QMenuItem;
 class LayoutBlock;
 class LayoutEditor;
 class SignalMast;
-class LIBLAYOUTEDITORSHARED_EXPORT LevelXing : public QObject
+class LIBLAYOUTEDITORSHARED_EXPORT LevelXing : public LayoutTrack
 {
     Q_OBJECT
 public:
@@ -133,6 +133,8 @@ public:
     /*public*/ void setSignalCMast(QString signalMast);
     /*public*/ SignalMast* getSignalDMast();
     /*public*/ void setSignalDMast(QString signalMast);
+    /*public*/ QObject* getConnection(int location) throw (JmriException);
+    /*public*/ void setConnection(int location, QObject* o, int type) throw (JmriException);
 
 signals:
     

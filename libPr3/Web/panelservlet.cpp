@@ -30,13 +30,15 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
 }
 
 //@Override
-/*protected*/  QString PanelServlet::getXmlPanel(QString name)
+/*protected*/  QByteArray PanelServlet::getXmlPanel(QString name)
 {
  log->debug(tr("Getting %1 for %2").arg(getPanelType()).arg(name));
  QDomDocument doc = QDomDocument();
  try
  {
   PanelEditor* editor = (PanelEditor*) getEditor(name);
+  if(editor == NULL)
+   throw NullPointerException(tr("No Editor %1 found").arg(name));
 
   QDomElement panel = doc.createElement("panel");
 
@@ -109,12 +111,12 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
 //                .setTextMode(Format.TextMode.TRIM));
 
  // return out.outputString(doc);
-  return doc.toString();
+  return doc.toByteArray();
  }
  catch (NullPointerException ex)
  {
   log->warn("Requested Panel [" + name + "] does not exist.");
-  return "ERROR Requested panel [" + name + "] does not exist.";
+  return QString("ERROR Requested panel [" + name + "] does not exist.").toLatin1();
  }
 }
 
@@ -124,8 +126,6 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
  log->debug(tr("Getting %1 for %2").arg(getPanelType()).arg(name));
  try
  {
-  if(name == "panel")
-   name = "LayoutEditor";
   PanelEditor* editor = (PanelEditor*) getEditor(name);
   if(editor == NULL)
    throw NullPointerException(tr("editor not found for %1").arg(name));

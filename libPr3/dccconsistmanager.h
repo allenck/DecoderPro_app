@@ -21,14 +21,14 @@ public:
     /*public*/ void notifyConsistListChanged();
 
 signals:
-    
+
 public slots:
 private:
  /*private*/ QHash<DccLocoAddress*, DccConsist*>* ConsistTable;// = NULL;
 
  /*private*/ QList<DccLocoAddress*>* ConsistList;// = NULL;
 
- /*private*/ QList<ConsistListListener*>* ChangeListeners;// = NULL;
+ /*private*/ QList<ConsistListListener*>* changeListeners;// = NULL;
 
     
 };

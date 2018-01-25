@@ -25,7 +25,7 @@
  */
 // needed for unit tests
 /*public*/ RosterGroupComboBox::RosterGroupComboBox(Roster* roster, QWidget *parent)
-: QComboBox(parent)
+: RosterGroupSelector(parent)
 {
  common(roster, "");
 }
@@ -63,7 +63,7 @@ void RosterGroupComboBox::common(Roster* roster, QString selection)
  *
  * @param selection
  */
-/*public*/ RosterGroupComboBox::RosterGroupComboBox(QString selection, QWidget *parent) : QComboBox(parent)
+/*public*/ RosterGroupComboBox::RosterGroupComboBox(QString selection, QWidget *parent) : RosterGroupSelector(parent)
 {
   common(Roster::instance(), selection);
 }
@@ -74,7 +74,7 @@ void RosterGroupComboBox::common(Roster* roster, QString selection)
  * @param roster
  * @param selection
  */
-/*public*/ RosterGroupComboBox::RosterGroupComboBox(Roster* roster, QString selection, QWidget *parent) : QComboBox(parent)
+/*public*/ RosterGroupComboBox::RosterGroupComboBox(Roster* roster, QString selection, QWidget *parent) : RosterGroupSelector(parent)
 {
   common( roster, selection);
 }
@@ -84,7 +84,7 @@ void RosterGroupComboBox::common(Roster* roster, QString selection)
  * default roster group.
  */
 /*public*/ RosterGroupComboBox::RosterGroupComboBox(QWidget *parent)
- : QComboBox(parent)
+ : RosterGroupSelector(parent)
 {
  common(Roster::instance(), Roster::instance()->getDefaultRosterGroup());
 }

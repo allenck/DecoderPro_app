@@ -42,7 +42,7 @@
  root.insert(JSON::DATA, data);
  //QJsonArray properties = root.putArray(JSON::PROPERTIES);
  QJsonArray properties = QJsonArray();
- root.insert(JSON::PROPERTIES, properties);
+ //root.insert(JSON::PROPERTIES, properties);
  //bean.getPropertyKeys().stream().forEach((key) ->
  foreach(QString key, bean->getPropertyKeys())
  {
@@ -54,17 +54,20 @@
 //          {key, value.toString()}
 //         };
    obj.insert(key,value.toString());
-      properties.append(obj);
-  } else {
+   properties.append(obj);
+  }
+  else {
    QJsonObject obj;
 //         {
 //          {key, "null"}
 //         };
-     obj.insert(key, "null");
-      properties.append(obj);
+   obj.insert(key, /*"null"*/QJsonValue());
+   properties.append(obj);
   }
  }//);
- return data;
+ root.insert(JSON::PROPERTIES, properties);
+
+ return data;  // ACK Java returns "data" ??
 }
 
 /**
@@ -83,7 +86,7 @@
  */
 /*protected*/ void JsonNamedBeanHttpService::postNamedBean(NamedBean* bean, /*@Nonnull*/ QJsonObject data, /*@Nonnull*/ QString name, /*@Nonnull*/ QString type, /*@Nonnull*/ QLocale /*locale*/) throw (JsonException) {
     if (bean == NULL) {
-        throw JsonException(404, tr("Unable to access %1 {%2.").arg(type).arg(name));
+        throw JsonException(404, tr("Unable to access %1 %2.").arg(type).arg(name));
     }
     if (data.value(JSON::USERNAME).isString()) {
         bean->setUserName(data.value(JSON::USERNAME).toString());

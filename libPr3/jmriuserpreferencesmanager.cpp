@@ -120,7 +120,7 @@
 /*public*/ QSize JmriUserPreferencesManager::getScreen() {
     //return Toolkit.getDefaultToolkit().getScreenSize();
  QDesktopWidget* desktop = QApplication::desktop();
- desktop->screen()->size();
+ return desktop->screen()->size();
 }
 
 /**
@@ -361,7 +361,7 @@
     this->showMessage(title, message, strClass, item, sessionOnly, alwaysRemember, /*JOptionPane.WARNING_MESSAGE*/2);
 }
 
-/*protected*/ void JmriUserPreferencesManager::showMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember, int type) {
+/*protected*/ void JmriUserPreferencesManager::showMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember, int /*type*/) {
     /*final*/ QString preference = strClass + "." + item;
 
     if (this->getSessionPreferenceState(preference)) {
@@ -569,10 +569,10 @@
 
 //@Override
 /*public*/ QSet<QString> JmriUserPreferencesManager::getPropertyKeys(QString strClass) {
-    if (windowDetails->contains(strClass)) {
-        return windowDetails->value(strClass)->getPropertyKeys();
-    }
-    return QSet<QString>();
+ if (windowDetails->contains(strClass)) {
+     return windowDetails->value(strClass)->getPropertyKeys();
+ }
+ return QSet<QString>();
 }
 
 //@Override
@@ -1337,7 +1337,10 @@
      foreach(QVariant property , entry.value()->parameters.values())
      {
       QDomElement propertyElement = doc.createElement("property");
-      propertyElement.appendChild(doc.createElement("key").appendChild(doc.createTextNode(property.typeName())));
+      //propertyElement.appendChild(doc.createElement("key").appendChild(doc.createTextNode(property.typeName())));
+      QDomElement key = doc.createElement("key");
+      key.appendChild(doc.createTextNode(property.typeName()));
+      propertyElement.appendChild(key);
       QVariant value = property.toString();
       if (value != QVariant())
       {

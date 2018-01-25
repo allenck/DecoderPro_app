@@ -168,7 +168,7 @@
  * @throws jmri.server.json.JsonException if type is not a running zeroconf
  *                                        networking protocol.
  */
-/*public*/ QJsonObject JsonUtilHttpService::getNetworkService(QLocale /*locale*/, QString name) throw (JsonException) {
+/*public*/ QJsonObject JsonUtilHttpService::getNetworkService(QLocale /*locale*/, QString /*name*/) throw (JsonException) {
 //        for (ZeroConfService service : ZeroConfService.allServices()) {
 //            if (service.type().equals(name)) {
 //                return this->getNetworkService(service);
@@ -347,7 +347,7 @@ return this->getPanels(locale, JSON::XML);
           connection.insert(JSON::DATA, data);
         data.insert(JSON::NAME, memo->getUserName());
         data.insert(JSON::PREFIX, memo->getSystemPrefix());
-        data.insert(JSON::MFG, "null");
+        data.insert(JSON::MFG, /*"null"*/QJsonValue());
         prefixes.append(memo->getSystemPrefix());
         root.append(connection);
     }//);
@@ -362,7 +362,7 @@ return this->getPanels(locale, JSON::XML);
         connection.insert(JSON::DATA, data);
         data.insert(JSON::NAME, ConnectionNameFromSystemName::getConnectionName(prefix));
         data.insert(JSON::PREFIX, prefix);
-        data.insert(JSON::MFG, "null");
+        data.insert(JSON::MFG, /*"null"*/QJsonValue());
         root.append(connection);
     }
     return root;

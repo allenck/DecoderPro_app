@@ -29,6 +29,11 @@
 #include "throttleslistpanel.h"
 #include "throttlestablemodel.h"
 #include "withrottlecreationaction.h"
+#include "xmlfile.h"
+#include "jfilechooser.h"
+#include "storexmlconfigaction.h"
+#include "windowpreferences.h"
+#include "fileutil.h"
 
 ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *parent) :
     JmriJFrame(parent),
@@ -65,8 +70,8 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
 
  getSettings();
  throttleFrames = new QMap<QString, ThrottleWindow*>(/*5*/);
+ currentThrottleFrame = this;
  throttleFrames->insert("default",getCurrentThrottleFrame());
- currentThrottleFrame = NULL;
  mgr = (LnThrottleManager*)InstanceManager::throttleManagerInstance();
  addThrottle = new QAction(QIcon(":/resources/icons/throttles/add.png"),tr("Add Throttle"),this);
  ui->toolBar->addAction(addThrottle);
@@ -405,6 +410,7 @@ void ThrottleWindow::notifyThrottleFound(DccThrottle *t)
  connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  //setWindowTitle(((RosterEntry*)throttle->getRosterEntry())->getId());
  setFrameTitle();
+ setTitleText(title());
 
  emit throttleWindowupdate(new PropertyChangeEvent(this, "throttleFound", QVariant(), VPtr<Throttle>::asQVariant(throttle)));
  ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->notifyAddressThrottleFound(t);
@@ -588,72 +594,87 @@ void ThrottleWindow::OnFileMenuLoad()
 /*public*/ void ThrottleWindow::setTitleTextType(QString titleTextType) {
         this->titleTextType = titleTextType;
 }
-/*private*/ void saveThrottle(QString /*sfile*/) {
-#if 0
-       // Save throttle: title / window position
-       // as strongly linked to extended throttles and roster presence, do not save function buttons and background window as they're stored in the roster entry
-       XmlFile xf = new XmlFile(){};   // odd syntax is due to XmlFile being abstract
-       xf.makeBackupFile(sfile);
-       File file=new File(sfile);
-       try {
-           //The file does not exist, create it before writing
-           File parentDir=file.getParentFile();
-           if(!parentDir.exists())
-               if (!parentDir.mkdir()) // make directory and check result
-                   log.error("could not make parent directory");
-           if (!file.createNewFile()) // create file, check success
-               log.error("createNewFile failed");
-       } catch (Exception exp) {
-           log.error("Exception while writing the throttle file, may not be complete: "+exp);
-       }
+/*private*/ void ThrottleWindow::saveThrottle(QString sfile)
+{
+#if 1
+ // Save throttle: title / window position
+ // as strongly linked to extended throttles and roster presence, do not save function buttons and background window as they're stored in the roster entry
+ XmlFile* xf = new XmlFile()/*{}*/;   // odd syntax is due to XmlFile being abstract
+ xf->makeBackupFile(sfile);
+ File* file=new File(sfile);
+ try
+ {
+  //The file does not exist, create it before writing
+  File* parentDir=file->getParentFile();
+  if(!parentDir->exists())
+      if (!parentDir->mkdir()) // make directory and check result
+          log->error("could not make parent directory");
+  if (!file->createNewFile()) // create file, check success
+      log->error("createNewFile failed");
+ } catch (Exception exp) {
+     log->error("Exception while writing the throttle file, may not be complete: "+exp.getMessage());
+ }
 
-       try {
-           Element root = new Element("throttle-config");
-           Document doc = XmlFile.newDocument(root, XmlFile.dtdLocation+"throttle-config.dtd");
-           // add XSLT processing instruction
-           // <?xml-stylesheet type="text/xsl" href="XSLT/throttle.xsl"?>
+ try {
+     //QDomElement root = doc.createElement("throttle-config");
+     QDomElement root;
+//     root.setTagName("throttle-config");
+//     QDomDocument doc = XmlFile::newDocument(root, XmlFile::dtdLocation+"throttle-config.dtd");
+  doc = QDomDocument("throttle-config");
+  QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\"  encoding=\"UTF-8\"");
+  doc.appendChild(xmlProcessingInstruction);
+  xmlProcessingInstruction = doc.createProcessingInstruction("throttle-config", XmlFile::dtdLocation+"throttle-config.dtd");
+  doc.appendChild(xmlProcessingInstruction);
+    // add XSLT processing instruction
+     // <?xml-stylesheet type="text/xsl" href="XSLT/throttle.xsl"?>
+     QDomProcessingInstruction inst = doc.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"/xml/XSLT/throttle.xsl\"");
+
+     doc.appendChild(inst);
+     root = doc.createElement("throttle-config");
 /*			java.util.Map<String,String> m = new java.util.HashMap<String,String>();
-           m.put("type", "text/xsl");
-           m.put("href", jmri.jmrit.XmlFile.xsltLocation+"throttle.xsl");
-           ProcessingInstruction p = new ProcessingInstruction("xml-stylesheet", m);
-           doc.addContent(0,p);*/
-           Element throttleElement = getXml();
-           // don't save the loco address or consist address
+     m.put("type", "text/xsl");
+     m.put("href", jmri.jmrit.XmlFile.xsltLocation+"throttle.xsl");
+     ProcessingInstruction p = new ProcessingInstruction("xml-stylesheet", m);
+     doc.addContent(0,p);*/
+     doc.appendChild(root);
+     QDomElement throttleElement = getXml();
+     // don't save the loco address or consist address
 //			throttleElement.getChild("AddressPanel").removeChild("locoaddress");
 //			throttleElement.getChild("AddressPanel").removeChild("locoaddress");
-           if ((this.getRosterEntry() != NULL) && (getDefaultThrottleFolder()+ addressPanel.getRosterEntry().getId().trim() +".xml").compareTo(sfile)==0)
-               // don't save function buttons labels, they're in roster entry
-               throttleElement.getChild("FunctionPanel").removeChildren("FunctionButton");
+     if ((this->getRosterEntry() != NULL) && (getDefaultThrottleFolder()+ addressPanel->getRosterEntry()->getId().trimmed() +".xml")== (sfile))
+         // don't save function buttons labels, they're in roster entry
+         throttleElement.firstChildElement("FunctionPanel").removeAttribute("FunctionButton");
 
-           root.setContent(throttleElement);
-           xf.writeXML(file, doc);
-           setLastUsedSaveFile(sfile);
-       }
-       catch (Exception ex){
-           log.warn("Exception while storing throttle xml: "+ex);
-       }
+     root.appendChild(throttleElement);
+     xf->writeXML(file, doc);
+     setLastUsedSaveFile(sfile);
+ }
+ catch (Exception ex){
+     log->warn("Exception while storing throttle xml: "+ex.getMessage());
+ }
 #endif
-   }
+}
+
 /*public*/ void ThrottleWindow::saveThrottle()
 {
-#if 0
-        if (getRosterEntry() != NULL)
-            saveThrottle( getDefaultThrottleFolder()+ addressPanel.getRosterEntry().getId().trim() +".xml" );
-        else
-            if (getLastUsedSaveFile() != NULL)
-                saveThrottle( getLastUsedSaveFile() );
+#if 1
+ if (getRosterEntry() != NULL)
+     saveThrottle( getDefaultThrottleFolder()+ addressPanel->getRosterEntry()->getId().trimmed() +".xml" );
+ else
+ if (getLastUsedSaveFile() != NULL)
+     saveThrottle( getLastUsedSaveFile() );
 #endif
 }
 
 /*public*/ void ThrottleWindow::saveThrottleAs() {
-#if 0
-        JFileChooser fileChooser = jmri.jmrit.XmlFile.userFileChooser(Bundle.getMessage("PromptXmlFileTypes"), "xml");
-        fileChooser.setCurrentDirectory(new File(getDefaultThrottleFolder()));
-        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
-        java.io.File file = StoreXmlConfigAction.getFileName(fileChooser);
+#if 1
+        JFileChooser* fileChooser = XmlFile::userFileChooser(tr("XML files"), "xml");
+        fileChooser->setCurrentDirectory(new File(getDefaultThrottleFolder()));
+        fileChooser->setDialogType(JFileChooser::SAVE_DIALOG);
+        File* file = StoreXmlConfigAction::getFileName(fileChooser);
         if (file == NULL)
             return;
-        saveThrottle( file.getAbsolutePath() );
+        saveThrottle( file->getAbsolutePath() );
 #endif
     }
 /*public*/ void ThrottleWindow::nextRunningThrottleFrame()
@@ -859,34 +880,256 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
     return lastUsedSaveFile;
 }
 
+/*public*/ void ThrottleWindow::setLastUsedSaveFile(QString lusf) {
+        lastUsedSaveFile = lusf;
+        /*throttleWindow.*/updateGUI();
+    }
+
 /**
  * setFrameTitle - set the frame title based on type, text and address
  */
 /*public*/ void ThrottleWindow::setFrameTitle()
 {
-    QString addr = tr("Throttle");
-    if (addressPanel->getThrottle() != NULL) {
-        addr = addressPanel->getCurrentAddress()->toString();
-    }
-    if (getTitleTextType()==("address") == 0) {
-        setTitle(addr);
-    } else if (getTitleTextType() == ("text") ) {
-        setTitle(getTitleText());
-    } else if (getTitleTextType() == ("addressText") ) {
-        setTitle(addr + " " + getTitleText());
-    } else if (getTitleTextType() == ("textAddress") ) {
-        setTitle(getTitleText() + " " + addr);
-    } else if (getTitleTextType() == ("rosterID") ) {
-        if ((addressPanel->getRosterEntry() != NULL) && (addressPanel->getRosterEntry()->getId() != NULL)
-                && (addressPanel->getRosterEntry()->getId().length() > 0)) {
-            setTitle(addressPanel->getRosterEntry()->getId());
-        } else {
-            setTitle(addr);
-        }
-    }
+ QString addr = tr("Throttle");
+ if (addressPanel->getThrottle() != NULL) {
+     addr = addressPanel->getCurrentAddress()->toString();
+ }
+ if (getTitleTextType()==("address") == 0) {
+     setTitle(addr);
+ } else if (getTitleTextType() == ("text") ) {
+     setTitle(getTitleText());
+ } else if (getTitleTextType() == ("addressText") ) {
+     setTitle(addr + " " + getTitleText());
+ } else if (getTitleTextType() == ("textAddress") ) {
+     setTitle(getTitleText() + " " + addr);
+ }
+ else if (getTitleTextType() == ("rosterID") )
+ {
+  if ((addressPanel->getRosterEntry() != NULL) && (addressPanel->getRosterEntry()->getId() != NULL)
+          && (addressPanel->getRosterEntry()->getId().length() > 0)) {
+      setTitle(addressPanel->getRosterEntry()->getId());
+  } else {
+      setTitle(addr);
+  }
+ }
 }
 
 void ThrottleWindow::on_address_released(LocoAddress *)
 {
  setTitle(tr("Unassigned"));
+}
+#if 1
+/*public*/ QDomElement ThrottleWindow::getXml()
+{
+
+ QDomElement me =doc.createElement("ThrottleWindow");
+ me.setAttribute("title", titleText);
+ me.setAttribute("titleType", titleTextType);
+
+ //java.util.ArrayList<Element> children = new java.util.ArrayList<Element>(1);
+ //children.add(WindowPreferences.getPreferences(this));
+ me.appendChild(WindowPreferences::getPreferences(this));
+ if (!throttleFrames->isEmpty())
+ {
+  //ThrottleFrame* cf = this.getCurrentThrottleFrame();
+  ThrottleWindow* cf = this;
+  foreach (ThrottleWindow* tf, throttleFrames->values() )
+  {
+   //ThrottleFrame tf = tfi.next();
+   if ((ThrottleFrameManager::instance()->getThrottlesPreferences()->isUsingExThrottle()) && (ThrottleFrameManager::instance()->getThrottlesPreferences()->isSavingThrottleOnLayoutSave()))
+   {
+    if(tf != this)
+    {
+     tf->toFront();
+     tf->saveThrottle();
+    }
+   }
+   QDomElement tfe = tf->getXmlFile();
+   if (tfe == QDomElement()) {
+       tfe = tf->getXml(tf);
+   }
+   //children.add(tfe);
+   me.appendChild(tfe);
+  }
+  if (cf != NULL) {
+      cf->toFront();
+  }
+ }
+#if 0
+ // Save Jynstruments
+ if (throttleToolBar != NULL) {
+     Component[] cmps = throttleToolBar.getComponents();
+     if (cmps != NULL) {
+         for (int i = 0; i < cmps.length; i++) {
+             try {
+                 if (cmps[i] instanceof Jynstrument) {
+                     Jynstrument jyn = (Jynstrument) cmps[i];
+                     Element elt = new Element("Jynstrument");
+                     elt.setAttribute("JynstrumentFolder", FileUtil.getPortableFilename(jyn.getFolder()));
+                     Element je = jyn.getXml();
+                     if (je != NULL) {
+                         java.util.ArrayList<Element> jychildren = new java.util.ArrayList<Element>(1);
+                         jychildren.add(je);
+                         elt.setContent(jychildren);
+                     }
+                     children.add(elt);
+                 }
+
+             } catch (Exception ex) {
+                 log.debug("Got exception (no panic) " + ex);
+             }
+         }
+     }
+ }
+#endif
+ //me.setContent(children);
+ return me;
+}
+#endif
+/**
+ * Collect the prefs of this object into XML Element
+ * <ul>
+ * <li> Window prefs
+ * <li> ControlPanel
+ * <li> FunctionPanel
+ * <li> AddressPanel
+ * </ul>
+ *
+ *
+ * @return the XML of this object.
+ */
+/*public*/ QDomElement ThrottleWindow::getXml(ThrottleWindow* tf)
+{
+ bool switchAfter = false;
+ if(tf != this)
+ {
+  if (!tf->isEditMode)
+  {
+     tf->switchMode();
+     switchAfter = true;
+  }
+ }
+    QDomElement me = doc.createElement("ThrottleFrame");
+#if 0
+    if (((javax.swing.plaf.basic.BasicInternalFrameUI) getControlPanel().getUI()).getNorthPane() != null) {
+        Dimension bDim = ((javax.swing.plaf.basic.BasicInternalFrameUI) getControlPanel().getUI()).getNorthPane().getPreferredSize();
+        me.setAttribute("border", Integer.toString(bDim.height));
+    }
+#endif
+//    java.util.ArrayList<Element> children = new java.util.ArrayList<Element>(1);
+
+//        children.add(WindowPreferences.getPreferences(this));  // not required as it is in ThrottleWindow
+
+//    children.add(controlPanel.getXml());
+    me.appendChild(tf->controlPanel->getXml());
+
+//    children.add(functionPanel.getXml());
+    me.appendChild(tf->functionPanel->getXml());
+
+//    children.add(addressPanel.getXml());
+    me.appendChild(tf->addressPanel->getXml());
+#if 0
+    // Save Jynstruments
+    Component[] cmps = getComponents();
+    for (int i = 0; i < cmps.length; i++) {
+        try {
+            if (cmps[i] instanceof JInternalFrame) {
+                Component[] cmps2 = ((JInternalFrame) cmps[i]).getContentPane().getComponents();
+                int j = 0;
+                while ((j < cmps2.length) && (!(cmps2[j] instanceof Jynstrument))) {
+                    j++;
+                }
+                if ((j < cmps2.length) && (cmps2[j] instanceof Jynstrument)) {
+                    Jynstrument jyn = (Jynstrument) cmps2[j];
+                    Element elt = new Element("Jynstrument");
+                    elt.setAttribute("JynstrumentFolder", FileUtil.getPortableFilename(jyn.getFolder()));
+                    java.util.ArrayList<Element> jychildren = new java.util.ArrayList<Element>(1);
+                    jychildren.add(WindowPreferences.getPreferences((JInternalFrame) cmps[i]));
+                    Element je = jyn.getXml();
+                    if (je != null) {
+                        jychildren.add(je);
+                    }
+                    elt.setContent(jychildren);
+                    children.add(elt);
+                }
+            }
+        } catch (Exception ex) {
+            log.debug("Got exception (no panic) " + ex);
+        }
+    }
+#endif
+ if(tf != this)
+ {
+    //me.setContent(children);
+    if (switchAfter) {
+        tf->switchMode();
+    }
+ }
+ return me;
+}
+
+/*public*/ QDomElement ThrottleWindow::getXmlFile()
+{
+ if (getLastUsedSaveFile() == NULL) // || (getRosterEntry()==null))
+ {
+     return QDomElement();
+ }
+ QDomElement me = doc.createElement("ThrottleFrame");
+ me.setAttribute("ThrottleXMLFile", FileUtil::getPortableFilename(getLastUsedSaveFile()));
+ return me;
+}
+
+//@SuppressWarnings("unchecked")
+/*public*/ void ThrottleWindow::setXml(QDomElement e) {
+    if (e.attribute("title") != NULL) {
+        setTitle(e.attribute("title"));
+    }
+    if (e.attribute("title") != NULL) {
+        setTitleText(e.attribute("title"));
+    }
+    if (e.attribute("titleType") != NULL) {
+        setTitleTextType(e.attribute("titleType"));
+    }
+
+    QDomElement window = e.firstChildElement("window");
+    if (window != QDomElement()) {
+        WindowPreferences::setPreferences(this, window);
+    }
+
+    QDomNodeList tfes = e.elementsByTagName("ThrottleFrame");
+    if (/*(tfes != QDomElement()) &&*/ (tfes.size() > 0))
+    {
+     for (int i = 0; i < tfes.size(); i++)
+     {
+      ThrottleWindow* tf;
+      if (i == 0) {
+          tf = getCurrentThrottleFrame();
+      } else {
+          tf = addThrottleFrame();
+      }
+      tf->setXml(tfes.at(i).toElement());
+     }
+    }
+#if 0
+    QDomNodeList jinsts = e.elementsByTagName("Jynstrument");
+    if ((jinsts != NULL) && (jinsts.size() > 0)) {
+        for (int i = 0; i < jinsts.size(); i++) {
+            Jynstrument jyn = ynstrument(FileUtil.getExternalFilename(jinsts.get(i).attributeValue("JynstrumentFolder")));
+            if ((jyn != NULL) && (jinsts.get(i) != NULL)) {
+                jyn.setXml(jinsts.get(i));
+            }
+        }
+    }
+#endif
+    updateGUI();
+}
+
+/*public*/ /*static*/ QString ThrottleWindow::getDefaultThrottleFolder() {
+    return FileUtil::getUserFilesPath() + "throttle" + File::separator;
+}
+
+/*private*/ /*static*/ QString ThrottleWindow::DefaultThrottleFileName = "JMRI_ThrottlePreference.xml";
+
+/*public*/ /*static*/ QString ThrottleWindow::getDefaultThrottleFilename() {
+    return getDefaultThrottleFolder() + DefaultThrottleFileName;
 }

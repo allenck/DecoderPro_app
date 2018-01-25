@@ -48,9 +48,9 @@ TrackSegment::TrackSegment(QString id, QObject* c1, int t1, QObject* c2, int t2,
  }
  connect1 = c1;
  connect2 = c2;
- if ( (t1<LayoutEditor::POS_POINT) ||
-             ( ((t1>LayoutEditor::LEVEL_XING_D) && (t1<LayoutEditor::SLIP_A))
-                 || ((t1>LayoutEditor::SLIP_D) && (t1<LayoutEditor::TURNTABLE_RAY_OFFSET)) ) )
+ if ( (t1 < LayoutEditor::POS_POINT)
+  || ( ((t1 > LayoutEditor::LEVEL_XING_D) && (t1 < LayoutEditor::SLIP_A))
+  || ((t1 > LayoutEditor::SLIP_D) && (t1 < LayoutEditor::TURNTABLE_RAY_OFFSET))))
  {
   log.error("Invalid connect type 1 in TrackSegment constructor - "+id);
  }
@@ -394,12 +394,12 @@ TrackSegment::getConnectName(QObject* o,int type)
  }
  if (!dashed) popup->addAction(new QAction(tr("Style")+" - "+tr("Solid"),this));
     else popup->addAction(new QAction(tr("Style")+" - "+tr("Dashed"),this));
-    if (!mainline) popup->addAction(new QAction(tr("NotMainline"),this));
+    if (!mainline) popup->addAction(new QAction(tr("Not Mainline"),this));
     else popup->addAction(new QAction(tr("Mainline"),this));
-    if (blockName==("")) popup->addAction(new QAction(tr("NoBlock"),this));
+    if (blockName==("")) popup->addAction(new QAction(tr("No Block"),this));
     else popup->addAction(new QAction(tr("Block")+": "+getLayoutBlock()->getID(),this));
     if (hidden) popup->addAction(new QAction(tr("Hidden"),this));
-    else popup->addAction(new QAction(tr("NotHidden"),this));
+    else popup->addAction(new QAction(tr("Not Hidden"),this));
     popup->addSeparator();
 //    popup.add(new AbstractAction(rb.getQString("Edit")) {
 //            /*public*/ void actionPerformed(ActionEvent e) {

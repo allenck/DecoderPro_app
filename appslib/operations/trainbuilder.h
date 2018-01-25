@@ -4,8 +4,10 @@
 #include "traincommon.h"
 #include <QHash>
 
+class BuildFailedException;
 namespace Operations
 {
+
  class ScheduleItem;
  class EngineManager;
  class Track;
@@ -104,6 +106,7 @@ namespace Operations
   /*private*/ void reportCarsNotMoved(RouteLocation* rl, int percent);
   /*private*/ bool generateCarLoadFromStaging(Car* car); //throws BuildFailedException
   /*private*/ bool generateCarLoadStagingToStaging(Car* car); //throws BuildFailedException
+  /*private*/ void buildFailed(BuildFailedException e);
 
  private slots:
   /*private*/ void buildFailed(/*BuildFailedException e*/QString msg, QString type = "Normal");

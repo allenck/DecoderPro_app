@@ -1,13 +1,14 @@
 #ifndef ROSTERGROUPSELECTOR_H
 #define ROSTERGROUPSELECTOR_H
 
-#include <QObject>
+#include <QComboBox>
+#include "propertychangeevent.h"
 
-class RosterGroupSelector : public QObject
+class RosterGroupSelector : public QComboBox
 {
  Q_OBJECT
 public:
- explicit RosterGroupSelector(QObject *parent = 0);
+ explicit RosterGroupSelector(QWidget* parent = 0);
  /*public*/ /*final*/ static QString SELECTED_ROSTER_GROUP; //= "selectedRosterGroup";
 
  virtual /*public*/ QString getSelectedRosterGroup() {return "";}
@@ -22,6 +23,7 @@ public:
 
 
 signals:
+ void propertyChange(PropertyChangeEvent*);
 
 public slots:
 };

@@ -16,21 +16,27 @@
 }
 
 //@Override
-/*public*/ QJsonValue JsonMemoryHttpService::doGet(QString type, QString name, QLocale locale) throw (JsonException) {
-    Memory* memory = InstanceManager::memoryManagerInstance()->getMemory(name);
-    QJsonObject data = this->getNamedBean(memory, name, type, locale);
-    QJsonObject root = QJsonObject(); ////mapper.createQJsonObject();
-    root.insert(JSON::TYPE, JsonMemory::MEMORY);
-    if (memory != NULL) {
-        if (memory->getValue() == QVariant()) {
-            data.insert(JSON::VALUE, "null");
-        } else {
-            data.insert(JSON::VALUE, memory->getValue().toString());
-        }
-    }
-    root.insert(JSON::DATA, data);
+/*public*/ QJsonValue JsonMemoryHttpService::doGet(QString type, QString name, QLocale locale) throw (JsonException)
+{
+ Memory* memory = InstanceManager::memoryManagerInstance()->getMemory(name);
+ qDebug() << "memory value: " << memory->getValue();
+ QJsonObject data = this->getNamedBean(memory, name, type, locale);
+ QJsonObject root = QJsonObject(); ////mapper.createQJsonObject();
+ root.insert(JSON::TYPE, JsonMemory::MEMORY);
+ if (memory != NULL)
+ {
+  if (memory->getValue() == QVariant())
+  {
+   data.insert(JSON::VALUE, /*"null"*/QJsonValue());
+  }
+  else
+  {
+   data.insert(JSON::VALUE, memory->getValue().toDateTime().toString(Qt::ISODate));
+  }
+ }
+ root.insert(JSON::DATA, data);
 
-    return root;
+ return root;
 }
 
 //@Override
@@ -45,7 +51,7 @@
     if (data.value(JSON::COMMENT).isString()) {
         memory->setComment(data.value(JSON::COMMENT).toString());
     }
-    if (!data.value(JSON::VALUE).isNull()) {
+    if (!data.value(JSON::VALUE).isUndefined()) {
         if (data.value(JSON::VALUE).isNull()) {
             memory->setValue(QVariant());
         } else {

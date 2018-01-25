@@ -414,7 +414,15 @@ SOURCES += appslib.cpp \
     restartstartupactionfactory.cpp \
     restartaction.cpp \
     triggerroutemodelxml.cpp \
-    powerbuttonaction.cpp
+    powerbuttonaction.cpp \
+    operations/traincsvmanifest.cpp \
+    operations/traincsvcommon.cpp \
+    operations/buildfailedexception.cpp \
+    operations/traincustommanifest.cpp \
+    operations/traincustomcommon.cpp \
+    operations/setupexcelprogramframeaction.cpp \
+    operations/setupexcelprogrammanifestframe.cpp \
+    operations/setupexcelprogramframe.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -807,7 +815,15 @@ HEADERS += appslib.h\
     systemconnectionaction.h \
     restartaction.h \
     triggerroutemodelxml.h \
-    powerbuttonaction.h
+    powerbuttonaction.h \
+    operations/traincsvmanifest.h \
+    operations/traincsvcommon.h \
+    operations/buildfailedexception.h \
+    operations/traincustommanifest.h \
+    operations/traincustomcommon.h \
+    operations/setupexcelprogramframeaction.h \
+    operations/setupexcelprogrammanifestframe.h \
+    operations/setupexcelprogramframe.h
 
 unix:!symbian {
     maemo5 {
@@ -892,3 +908,4 @@ win32: {
 INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip" "C:\Program Files (x86)\GnuWin32\include"
 DEPENDPATH += "C:/Program Files (x86)/local/include/quazip"
 }
+

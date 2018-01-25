@@ -78,7 +78,7 @@
   }
   thisLayout->addWidget(i);
   //revalidate();
-  repaint();
+  update();
   this->dirty = true;
  }
 }

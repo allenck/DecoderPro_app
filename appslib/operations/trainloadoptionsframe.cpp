@@ -329,7 +329,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   {
    loadNameAll->setChecked(true);
   }
-  panelLoads->repaint();
+  //panelLoads->repaint();
   panelLoads->update();
  }
 

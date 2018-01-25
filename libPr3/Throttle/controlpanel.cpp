@@ -16,6 +16,7 @@
 #include "../../LayoutEditor/jlabel.h"
 #include <QPushButton>
 #include "namedicon.h"
+#include "windowpreferences.h"
 
 //ControlPanel::ControlPanel(QWidget *parent) :
 //    QDockWidget(parent)
@@ -54,7 +55,7 @@
  buttonFrame = new ButtonFrame;
 
  trackSliderMinInterval = 500;          // milliseconds
- lastTrackedSliderMovementTime = QTime::currentTime();
+ lastTrackedSliderMovementTime = 0;
 
  // LocoNet really only has 126 speed steps i.e. 0..127 - 1 for em stop
  MAX_SPEED = 126;
@@ -65,6 +66,13 @@
  speedSlider->setMaximum(MAX_SPEED);
  speedSlider->setValue(0);
   //speedSlider->setFocusable(false);
+ trackSlider = false;
+ trackSliderDefault = false;
+ trackSliderMinInterval = 200;         // milliseconds
+ trackSliderMinIntervalDefault = 200;  // milliseconds
+ trackSliderMinIntervalMin = 50;       // milliseconds
+ trackSliderMinIntervalMax = 1000;     // milliseconds
+ lastTrackedSliderMovementTime = 0;
 
   // add mouse-wheel support
 //  speedSlider.addMouseWheelListener(new MouseWheelListener() {
@@ -488,16 +496,17 @@ void ControlPanel::OnSliderChanged(int )
  if ( !internalAdjust)
  {
   bool doIt = false;
-//    if (!speedSlider->valueIsAdjusting()) {
-//        doIt = true;
-//    } else
-  int interval = QTime::currentTime().msecsTo( lastTrackedSliderMovementTime);
-  if (-QTime::currentTime().msecsTo( lastTrackedSliderMovementTime) >= trackSliderMinInterval)
-  {
-   doIt = true;
-   lastTrackedSliderMovementTime = QTime::currentTime();
-  }
-  if (doIt)
+//  if (!speedSlider->getValueIsAdjusting())
+//  {
+//   doIt = true;
+//   lastTrackedSliderMovementTime = QDateTime::currentMSecsSinceEpoch() - trackSliderMinInterval;
+//  }
+//  else
+  if (trackSlider
+  && QDateTime::currentMSecsSinceEpoch() - lastTrackedSliderMovementTime >= trackSliderMinInterval) {
+      doIt = true;
+      lastTrackedSliderMovementTime = QDateTime::currentMSecsSinceEpoch();
+  }  if (doIt)
   {
    float newSpeed = (speedSlider->value() / ( MAX_SPEED * 1.0f ) ) ;
    if (log->isDebugEnabled()) {log->debug( "stateChanged: slider pos: " + QString::number(speedSlider->value()) + " speed: " + QString::number(newSpeed) );}
@@ -841,4 +850,123 @@ void ButtonFrame::OnReverseButton()
  }
     //pack();
  repaint();
+}
+
+/**
+ * Collect the prefs of this object into XML Element
+ * <ul>
+ * <li> Window prefs
+ * </ul>
+ *
+ *
+ * @return the XML of this object.
+ */
+/*public*/ QDomElement ControlPanel::getXml()
+{
+ QDomDocument doc = QDomDocument();
+    QDomElement me = doc.createElement("ControlPanel");
+    me.setAttribute("displaySpeedSlider", (this->_displaySlider?"true":"false"));
+//    me.setAttribute("trackSlider", (this->trackSlider));
+    me.setAttribute("trackSliderMinInterval", QString::number(this->trackSliderMinInterval));
+//    me.setAttribute("switchSliderOnFunction", switchSliderFunction != NULL ? switchSliderFunction : "Fxx");
+    //Element window = new Element("window");
+//    java.util.ArrayList<Element> children = new java.util.ArrayList<Element>(1);
+//    children.add(WindowPreferences.getPreferences(this));
+//    me.setContent(children);
+    me.appendChild(WindowPreferences::getPreferences(this));
+    return me;
+}
+
+/**
+ * Set the preferences based on the XML Element.
+ * <ul>
+ * <li> Window prefs
+ * </ul>
+ *
+ *
+ * @param e The Element for this object.
+ */
+/*public*/ void ControlPanel::setXml(QDomElement e) {
+    internalAdjust = true;
+    try {
+     bool bok;
+        this->setSpeedController(e.attribute("displaySpeedSlider").toInt());
+     if(!bok) throw DataConversionException();
+    } catch (DataConversionException ex) {
+        log->error("DataConversionException in setXml: " + ex.getMessage());
+    } catch (Exception em) {
+        // in this case, recover by displaying the speed slider.
+        this->setSpeedController(SLIDERDISPLAY);
+    }
+    QString tsAtt = e.attribute("trackSlider");
+    if (tsAtt != NULL)
+    {
+     try
+     {
+      if(tsAtt == "true")
+       trackSlider = true;
+      else if(tsAtt == "false")
+       trackSlider = false;
+      else throw DataConversionException();
+     }
+     catch (DataConversionException ex) {
+      trackSlider = trackSliderDefault;
+     }
+    } else {
+        trackSlider = trackSliderDefault;
+    }
+    QString tsmiAtt = e.attribute("trackSliderMinInterval");
+    if (tsmiAtt != "")
+    {
+     try
+     {
+      bool bok;
+      trackSliderMinInterval = tsmiAtt.toLong(&bok);
+      if(!bok) throw DataConversionException();
+     }
+     catch (DataConversionException ex) {
+         trackSliderMinInterval = trackSliderMinIntervalDefault;
+     }
+     if (trackSliderMinInterval < trackSliderMinIntervalMin) {
+         trackSliderMinInterval = trackSliderMinIntervalMin;
+     } else if (trackSliderMinInterval > trackSliderMinIntervalMax) {
+         trackSliderMinInterval = trackSliderMinIntervalMax;
+     }
+    } else {
+        trackSliderMinInterval = trackSliderMinIntervalDefault;
+    }
+    if ((prevShuntingFn == "") && (e.attribute("switchSliderOnFunction") != "")) {
+        setSwitchSliderFunction(e.attribute("switchSliderOnFunction"));
+    }
+    internalAdjust = false;
+    QDomElement window = e.firstChildElement("window");
+    WindowPreferences::setPreferences(this, window);
+}
+
+/*public*/ void ControlPanel::setSwitchSliderFunction(QString fn) {
+    switchSliderFunction = fn;
+    if ((switchSliderFunction == "") || (switchSliderFunction.length() == 0)) {
+        return;
+    }
+    if ((_throttle != NULL) && (_displaySlider != STEPDISPLAY)) { // Update UI depending on function state
+#if 0
+        try {
+            java.lang.reflect.Method getter = throttle.getClass().getMethod("get" + switchSliderFunction, (Class[]) null);
+
+            bool state = (Boolean) getter.invoke(throttle, (Object[]) null);
+            if (state) {
+                setSpeedController(SLIDERDISPLAYCONTINUOUS);
+            } else {
+                setSpeedController(SLIDERDISPLAY);
+            }
+
+        } catch (Exception ex) {
+            log->debug("Exception in setSwitchSliderFunction: " + ex + " while looking for function " + switchSliderFunction);
+        }
+#endif
+    }
+}
+
+/*public*/ QString ControlPanel::getSwitchSliderFunction() {
+    return switchSliderFunction;
 }

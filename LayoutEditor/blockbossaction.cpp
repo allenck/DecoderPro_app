@@ -25,7 +25,7 @@
 {
  //super(s);
  // disable ourself if there is no primary Signal Head manager available
- if (InstanceManager::signalHeadManagerInstance() == NULL) {
+ if (InstanceManager::getNullableDefault("SignalHeadManager") == NULL) {
      setEnabled(false);
  }
  common();

@@ -102,6 +102,7 @@ public:
          return "";
      }
  }
+
  static QString getPeopleName(Protocol p)
  {
      switch(p)

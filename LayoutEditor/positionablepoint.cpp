@@ -1,6 +1,9 @@
 #include "positionablepoint.h"
 #include "tracksegment.h"
 #include "instancemanager.h"
+#include "panelmenu.h"
+#include "signalheadmanager.h"
+#include "blockbosslogic.h"
 
 //PositionablePoint::PositionablePoint(QObject *parent) :
 //    QObject(parent)
@@ -81,6 +84,8 @@
  xClick = 0;
  yClick = 0;
  item = NULL;
+ editLink = NULL;
+
 }
 
 /**
@@ -283,9 +288,9 @@
 /**
  * Setup and remove connections to track
  */
-/*public*/ void PositionablePoint::setTrackConnection (TrackSegment* track) {
+/*public*/ bool PositionablePoint::setTrackConnection (TrackSegment* track) {
     if (track==NULL) {
-        return;
+        return false;
     }
     if ( (connect1!=track) && (connect2!=track) ) {
         // not connected to this track
@@ -303,8 +308,10 @@
         }
         else {
             log.error ("Attempt to assign more than allowed number of connections");
+            return false;
         }
     }
+    return true;
 }
 
 /*public*/ void PositionablePoint::removeTrackConnection (TrackSegment* track)
@@ -443,7 +450,7 @@ void removeSML(QString signalMast){
  }
  case END_BUMPER:
  {
-  popup->addAction(new QAction(tr("EndBumper"),this));
+  popup->addAction(new QAction(tr("End Bumper"),this));
   LayoutBlock* blockEnd = NULL;
   if (connect1!=NULL) blockEnd = connect1->getLayoutBlock();
   if (blockEnd!=NULL)
@@ -476,7 +483,18 @@ void removeSML(QString signalMast){
   if (blockBoundary)
   {
    QAction * act;
-   popup->addAction(act =new QAction(tr("Set Signals"), this));
+   if (getType() == EDGE_CONNECTOR)
+   {
+    popup->addAction(act = new AbstractAction(tr("Edit Link"),this));
+//    {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            setLink();
+//        }
+//    });
+    connect(act, SIGNAL(triggered()), this, SLOT(setLink()));
+    }
+    popup->addAction(act =new QAction(tr("Set Signals"), this));
 //   {
 //                /*public*/ void actionPerformed(ActionEvent e) {
 //                if (tools == NULL) {
@@ -566,7 +584,7 @@ void PositionablePoint::On_setSensors()
  }
  // bring up signals at block boundary tool dialog
  tools->setSensorsAtBlockBoundaryFromMenu(instance,
-     layoutEditor->sensorIconEditor,(QFrame*)layoutEditor->sensorFrame);
+     layoutEditor->sensorIconEditor,layoutEditor->sensorFrame);
 
 }
 void PositionablePoint::On_setSignalMasts()
@@ -606,6 +624,146 @@ void PositionablePoint::remove()
  return active;
 }
 
+void PositionablePoint::setLink()
+{
+ if (getConnect1() == NULL || getConnect1()->getLayoutBlock() == NULL) {
+     log.error("Can not set link until we have a connecting track with a block assigned");
+     return;
+ }
+ editLink = new JDialog();
+ editLink->setTitle("EDIT LINK from " + getConnect1()->getLayoutBlock()->getDisplayName());
+ QVBoxLayout* editLinkLayout = new QVBoxLayout(editLink);
+
+ QWidget* container = new QWidget();
+ //container.setLayout(new BorderLayout());
+ QVBoxLayout* containerLayout = new QVBoxLayout(container);
+
+ QPushButton* done = new QPushButton(tr("Done"));
+// done.addActionListener(
+//         (ActionEvent a) -> {
+//     updateLink();
+// });
+ connect(done, SIGNAL(clicked(bool)), this, SLOT(updateLink()));
+#if 0
+ // make this button the default button (return or enter activates)
+ // Note: We have to invoke this later because we don't currently have a root pane
+ SwingUtilities.invokeLater(() -> {
+     JRootPane rootPane = SwingUtilities.getRootPane(done);
+     rootPane.setDefaultButton(done);
+ });
+#endif
+ containerLayout->addWidget(getLinkPanel(),0, Qt::AlignTop);//, BorderLayout.NORTH);
+ containerLayout->addWidget(done, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
+ //container.revalidate();
+ container->update();
+
+ editLinkLayout->addWidget(container);
+
+ editLink->adjustSize();
+ //editLink.setModal(false);
+ editLink->setVisible(true);
+}
+
+/*public*/ QWidget* PositionablePoint::getLinkPanel() {
+    editorCombo = new QComboBox/*<JCBHandle<LayoutEditor>>*/();
+    QList<LayoutEditor*>* panels = PanelMenu::instance()->getLayoutEditorPanelList();
+    editorCombo->addItem("None", QVariant());
+    if (panels->contains(layoutEditor)) {
+        panels->removeOne(layoutEditor);
+    }
+    for (LayoutEditor* p : *panels) {
+        //JCBHandle<LayoutEditor> h = new JCBHandle<LayoutEditor>(p);
+        //editorCombo.addItem(h);
+     editorCombo->addItem(p->getName(), VPtr<LayoutEditor>::asQVariant(p));
+        if (p == getLinkedEditor()) {
+            editorCombo->setCurrentText(p->getName());
+        }
+    }
+
+//    ActionListener selectPanelListener = (ActionEvent a) -> {
+//        updatePointBox();
+//    };
+
+//    editorCombo.addActionListener(selectPanelListener);
+    connect(editorCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(updatePointBox()));
+    QWidget* selectorPanel = new QWidget();
+    QHBoxLayout* selectorPanelLayout = new QHBoxLayout(selectorPanel);
+    selectorPanelLayout->addWidget(new QLabel("Select Panel"));
+    selectorPanelLayout->addWidget(editorCombo);
+    linkPointsBox = new QComboBox();
+    updatePointBox();
+    selectorPanelLayout->addWidget(new QLabel("Connecting Block"));
+    selectorPanelLayout->addWidget(linkPointsBox);
+    return selectorPanel;
+}
+
+void PositionablePoint::updatePointBox() {
+    linkPointsBox->clear();
+    pointList = new QList<PositionablePoint*>();
+    if (editorCombo->currentIndex() == 0) {
+        linkPointsBox->setEnabled(false);
+        return;
+    }
+    int ourDir = getConnect1Dir();
+    linkPointsBox->setEnabled(true);
+    //for (PositionablePoint* p : VPtr<LayoutEditor*>::asPtr(editorCombo->currentData().item().pointList)
+    for(int i = 1; i< editorCombo->count(); i++)
+    {
+     QVector<PositionablePoint*>* pointList = VPtr<LayoutEditor>::asPtr(editorCombo->itemData(i))->pointList;
+     for(int j=0;  j< pointList->count(); j++)
+     {
+      PositionablePoint* p = pointList->at(j);
+        if (p->getType() == EDGE_CONNECTOR) {
+            if (p->getLinkedPoint() == this) {
+                pointList->append(p);
+                linkPointsBox->addItem(p->getConnect2()->getLayoutBlock()->getDisplayName());
+                linkPointsBox->setCurrentText(p->getConnect2()->getLayoutBlock()->getDisplayName());
+            } else if (p->getLinkedPoint() == NULL) {
+                if (p->getConnect1() != NULL && p->getConnect1()->getLayoutBlock() != NULL) {
+                    if (p->getConnect1()->getLayoutBlock() != getConnect1()->getLayoutBlock() && ourDir != p->getConnect1Dir()) {
+                        pointList->append(p);
+                        linkPointsBox->addItem(p->getConnect1()->getLayoutBlock()->getDisplayName());
+                    }
+                }
+            }
+        }
+     }
+    }
+    editLink->adjustSize();
+}
+
+/*public*/ void PositionablePoint::updateLink() {
+    if (editorCombo->currentIndex() == 0 || linkPointsBox->currentIndex() == -1) {
+        if (getLinkedPoint() != NULL && getConnect2() != NULL) {
+            QString removeremote = NULL;
+            QString removelocal = NULL;
+            if (getConnect1Dir() == Path::EAST || getConnect1Dir() == Path::SOUTH) {
+                removeremote = getLinkedPoint()->getEastBoundSignal();
+                removelocal = getWestBoundSignal();
+                getLinkedPoint()->setEastBoundSignal("");
+            } else {
+                removeremote = getLinkedPoint()->getWestBoundSignal();
+                removelocal = getEastBoundSignal();
+                getLinkedPoint()->setWestBoundSignal("");
+            }
+            // removelocal and removeremote have been set here.
+            if (removeremote != ("")) {
+                SignalHead* sh = ((SignalHeadManager*) InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(removeremote);
+                getLinkedEditor()->removeSignalHead(sh);
+                BlockBossLogic::getStoppedObject(removeremote);
+            }
+            if (removelocal != ("")) {
+                SignalHead* sh = ((SignalHeadManager*)  InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(removelocal);
+                layoutEditor->removeSignalHead(sh);
+                BlockBossLogic::getStoppedObject(removelocal);
+            }
+        }
+        setLinkedPoint(NULL);
+    } else {
+        setLinkedPoint(pointList->at(linkPointsBox->currentIndex()));
+    }
+    editLink->setVisible(false);
+}
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PositionablePoint.class.getName());
 
 //}

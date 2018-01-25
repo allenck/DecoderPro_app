@@ -6,8 +6,10 @@
 #include "servletresponse.h"
 #include "servletconfig.h"
 
-/*public*/ /*interface*/ class Servlet : public QObject{
-
+/*public*/ /*interface*/ class Servlet : public QObject
+{
+public:
+ Servlet(QObject* parent = 0) : QObject(parent) {}
     /*public*/ virtual void init(ServletConfig* /*sc*/) throw (ServletException) {}
 
     /*public*/ virtual ServletConfig* getServletConfig() {return NULL;}

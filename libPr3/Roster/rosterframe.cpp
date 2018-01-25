@@ -99,7 +99,7 @@ void RosterFrame::common()
  setObjectName("RosterFrame");
  ui->setupUi(this);
  menuBar = new QMenuBar();
-
+ baseTitle = "Roster";
  model = new RosterTableModel();
  sorter = new QSortFilterProxyModel();
  sorter->setSourceModel(model);
@@ -577,9 +577,9 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 #endif
  // for debugging:
  QVector<QString> rosterGroupList = Roster::instance()->getRosterGroupList();
- bool bHide = prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className() ) + ".hideGroups");
+ bool bHide = prefsMgr->getSimplePreferenceState(this->getClassName() + ".hideGroups");
 
-    if ((!prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className() ) + ".hideGroups")) && !Roster::instance()->getRosterGroupList().isEmpty())
+    if ((!prefsMgr->getSimplePreferenceState(this->getClassName() + ".hideGroups")) && !Roster::instance()->getRosterGroupList().isEmpty())
     {
      hideGroupsPane(false);
     }
@@ -587,7 +587,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
     {
      hideGroupsPane(true);
     }
-    if (prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideSummary"))
+    if (prefsMgr->getSimplePreferenceState(this->getClassName() + ".hideSummary"))
     {
      //We have to set it to display first, then we can hide it.
      hideBottomPane(false);
@@ -596,11 +596,11 @@ void RosterFrame::on_actionNew_Throttle_triggered()
      ui->summaryPanel->setVisible(false);
      _hideBottomPane = true;
     }
-    if (prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideRosterImage")) {
+    if (prefsMgr->getSimplePreferenceState(this->getClassName() + ".hideRosterImage")) {
      ui->locoImage->setVisible(false);
      _hideRosterImage = true;
     }
-    if (prefsMgr->getSimplePreferenceState(QString(this->metaObject()->className()) + ".hideRosterImage"))
+    if (prefsMgr->getSimplePreferenceState(this->getClassName() + ".hideRosterImage"))
     {
      ui->locoImage->setVisible(false);
      _hideRosterImage = true;
@@ -647,7 +647,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
         }
     };
 #endif
-    QVariant splitterSizes = prefsMgr->getProperty(QString(this->metaObject()->className()), "splitterSizes");
+    QVariant splitterSizes = prefsMgr->getProperty(this->getClassName(), "splitterSizes");
     if(splitterSizes != QVariant())
     {
      QList<int> list = QList<int>();
@@ -1267,7 +1267,7 @@ void RosterFrame::propertyChange(PropertyChangeEvent *e)
 }
 void RosterFrame::on_groupChange(PropertyChangeEvent * pce)
 {
-  prefsMgr->setProperty(this->metaObject()->className(), RosterGroupsPanel::SELECTED_ROSTER_GROUP, pce->getNewValue().toString());
+  prefsMgr->setProperty(getClassName(), RosterGroupsPanel::SELECTED_ROSTER_GROUP, pce->getNewValue().toString());
   setTitle( pce->getNewValue().toString());
 
   // this is cheating ACK
@@ -1349,6 +1349,31 @@ void RosterFrame::On_newLoco_clicked()
 /*protected*/ void RosterFrame::setNewWindowAction(JmriAbstractAction* newWindowAction) {
     this->newWindowAction = newWindowAction;
     this->groups->setNewWindowMenuAction(newWindowAction);
+}
+//@Override
+/*public*/ void RosterFrame::setTitle(QString title) {
+    if (title == NULL || title.isEmpty()) {
+        title = Roster::ALLENTRIES;
+    }
+    if (this->baseTitle != NULL) {
+        if (title != (this->baseTitle) && !title.startsWith(this->baseTitle)) {
+            JmriJFrame::setTitle(this->baseTitle + ": " + title);
+        }
+    } else {
+        JmriJFrame::setTitle(title);
+    }
+}
+
+//@Override
+/*public*/ QVariant RosterFrame::getProperty(QString key) {
+    if (key.toLower() == (RosterGroupSelector::SELECTED_ROSTER_GROUP.toLower())) {
+        return getSelectedRosterGroup();
+    } else if (key.toLower() == QString("hideSummary").toLower()) {
+        return _hideBottomPane;
+    }
+    // call parent getProperty method to return any properties defined
+    // in the class heirarchy.
+    return JmriJFrame::getProperty(key);
 }
 #if 0
 RosterEntryUpdateListener::RosterEntryUpdateListener(RosterFrame* f)
@@ -1519,7 +1544,7 @@ void RosterFrame::additionsToToolBar()
     }
     return newWindowAction;
 }
-/*protected*/ void RosterFrame::helpMenu(QMenuBar* menuBar, /*final*/ JFrame* frame)
+/*protected*/ void RosterFrame::helpMenu(QMenuBar* menuBar, /*final*/ JFrame* /*frame*/)
 {
 //    try {
         // create menu and standard items
@@ -1536,7 +1561,7 @@ void RosterFrame::handleQuit(QCloseEvent* e)
 {
  if (e != NULL && frameInstances.size() == 1)
  {
-  /*final*/ QString rememberWindowClose = QString(this->metaObject()->className()) + ".closeDP3prompt";
+  /*final*/ QString rememberWindowClose = this->getClassName() + ".closeDP3prompt";
   if (!prefsMgr->getSimplePreferenceState(rememberWindowClose))
   {
    QWidget* message = new QWidget();
@@ -1574,12 +1599,12 @@ void RosterFrame::handleQuit(QCloseEvent* e)
  }
  else if (frameInstances.size() > 1)
  {
-  /*final*/ QString rememberWindowClose = QString(this->metaObject()->className()) + ".closeMultipleDP3prompt";
+  /*final*/ QString rememberWindowClose = this->getClassName() + ".closeMultipleDP3prompt";
   if (!prefsMgr->getSimplePreferenceState(rememberWindowClose))
   {
    QWidget* message = new QWidget();
    QLabel* question = new QLabel(tr("You have Multiple Roster Windows Open. Are you sure that you want to quit?"));
-   /*final*/ QCheckBox* remember = new QCheckBox(tr("MessageRememberSetting"));
+   /*final*/ QCheckBox* remember = new QCheckBox(tr("Remember Setting"));
    QFont f = remember->font();
    f.setPointSizeF(10.0);
    remember->setFont(f);
@@ -1612,12 +1637,16 @@ void RosterFrame::handleQuit(QCloseEvent* e)
 //closeWindow(NULL);
  }
 }
+QString /*private*/ RosterFrame::getClassName()
+{
+ return "jmri.jmrit.roster.swing.RosterFrame";
+}
 
 void RosterFrame::saveWindowDetails()
 {
- prefsMgr->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideSummary", _hideBottomPane);
- prefsMgr->setSimplePreferenceState(QString(this->metaObject()->className() ) + ".hideGroups", _hideGroups);
- prefsMgr->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideRosterImage", _hideRosterImage);
+ prefsMgr->setSimplePreferenceState(this->getClassName() + ".hideSummary", _hideBottomPane);
+ prefsMgr->setSimplePreferenceState(this->getClassName()  + ".hideGroups", _hideGroups);
+ prefsMgr->setSimplePreferenceState(this->getClassName() + ".hideRosterImage", _hideRosterImage);
 // p.setProperty(getWindowFrameRef(), "selectedRosterGroup", groups.getSelectedRosterGroup());
  QString selectedProgMode = "edit";
  if (ui->service->isChecked())
@@ -1697,7 +1726,7 @@ void RosterFrame::On_splitterMoved(int pos, int)
    str.append(",");
   str.append(QString::number(i));
  }
- prefsMgr->setProperty(this->metaObject()->className(), "splitterSizes", str);
+ prefsMgr->setProperty(getClassName(), "splitterSizes", str);
 }
 
 void RosterFrame::On_splitter2Moved(int pos, int)
@@ -1719,7 +1748,7 @@ void RosterFrame::On_splitter2Moved(int pos, int)
    str.append(",");
   str.append(QString::number(i));
  }
- ((UserPreferencesManager*)prefsMgr)->setProperty(this->metaObject()->className(), "splitter2Sizes", str);
+ prefsMgr->setProperty(getClassName(), "splitter2Sizes", str);
 }
 
 /*protected*/ void RosterFrame::systemsMenu() {
@@ -2024,7 +2053,7 @@ void RosterFrame::on_currentMapped(QAction *act) //SLOT[]
          //ui->groupsPlaceholder->show();
          groups->show();
         }
-     prefsMgr->setSimplePreferenceState(QString(this->metaObject()->className()) + ".hideGroups", hide);
+     prefsMgr->setSimplePreferenceState(this->getClassName() + ".hideGroups", hide);
     }
 
 /*protected*/ void RosterFrame::hideRosterImage() {

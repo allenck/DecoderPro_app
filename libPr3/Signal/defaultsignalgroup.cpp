@@ -67,8 +67,8 @@
 
 /*public*/ void DefaultSignalGroup::setSignalMast(QString pName){
 
-    SignalMast* mMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getBySystemName(pName);
-    if (mMast == NULL) mMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getByUserName(pName);
+    SignalMast* mMast = ((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getBySystemName(pName);
+    if (mMast == NULL) mMast = ((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getByUserName(pName);
     if (mMast == NULL) {
         log->warn("did not find a SignalHead named "+pName);
         return;
@@ -160,8 +160,8 @@
     Add a new signalhead to the group
 */
 /*public*/ void DefaultSignalGroup::addSignalHead(QString pName){
-    SignalHead* mHead = InstanceManager::signalHeadManagerInstance()->getBySystemName(pName);
-    if (mHead == NULL) mHead = InstanceManager::signalHeadManagerInstance()->getByUserName(pName);
+    SignalHead* mHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName);
+    if (mHead == NULL) mHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName);
     if (mHead == NULL) log->warn("did not find a SignalHead named "+pName);
     else {
         addSignalHead(new NamedBeanHandle<SignalHead*>(pName, mHead));

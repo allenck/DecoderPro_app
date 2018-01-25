@@ -75,7 +75,8 @@
  *
  */
 
-/*public*/ HttpServlet::HttpServlet() { }
+/*public*/ HttpServlet::HttpServlet(QObject* parent)  : GenericServlet(parent)
+{ }
 
 
 
@@ -684,7 +685,7 @@ throw (ServletException, IOException)
  * @see 				javax.servlet.Servlet#service
  *
  */
-#if 0
+#if 1
 /*protected*/ void HttpServlet::service(HttpServletRequest* req, HttpServletResponse* resp)
 throw (ServletException, IOException)
 {

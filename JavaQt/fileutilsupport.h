@@ -44,6 +44,7 @@ public:
  /*public*/ void createDirectory(File* dir);
  /*public*/ bool _delete(File* path);
  /*public*/ void copy(File* source, File* dest) throw (IOException);
+ /*public*/ void appendTextToFile(File* file, QString text) throw (IOException);
 
 private:
  /*private*/ static /*final*/ QString homePath;// = System.getProperty("user.home") + File.separator; // NOI18N

@@ -8,7 +8,7 @@ class GenericServlet : public Servlet
 {
  Q_OBJECT
 public:
- GenericServlet();
+ GenericServlet(QObject* parent = 0);
  /*public*/ virtual void destroy();
  /*public*/ virtual QString getInitParameter(QString name);
  /*public*/ virtual QStringListIterator getInitParameterNames();
@@ -16,12 +16,14 @@ public:
  /*public*/ virtual ServletContext* getServletContext();
  /*public*/ virtual QString getServletInfo() ;
  /*public*/ void init(ServletConfig* config) throw (ServletException);
- /*public*/ virtual void init() throw (ServletException);
  /*public*/ virtual void log(QString msg) ;
  /*public*/ virtual void log(QString message, Throwable t);
  /*public*/ /*abstract*/virtual void service(ServletRequest* req, ServletResponse* res)
  throw (ServletException, IOException);
  /*public*/ virtual QString getServletName();
+
+public slots:
+ /*public*/ virtual void init() throw (ServletException);
 
 private:
  /*private*/ /*transient*/ ServletConfig* config;

@@ -24,6 +24,7 @@
 #include "optional.h"
 #include "instancemanager.h"
 #include "jtablepersistencemanager.h"
+#include "operationsxml.h"
 
 //OperationsPanel::OperationsPanel(QWidget *parent) :
 //  QWidget(parent)
@@ -487,11 +488,11 @@ namespace Operations
              });
 #endif
  }
-#if 0
- /*protected*/ void storeValues() {
-     OperationsXml.save();
- }
 
+ /*protected*/ void OperationsPanel::storeValues() {
+     OperationsXml::save();
+ }
+#if 0
  /*protected*/ String lineWrap(String s) {
      return this.lineWrap(s, this.getPreferredSize());
  }

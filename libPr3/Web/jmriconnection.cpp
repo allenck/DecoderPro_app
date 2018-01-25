@@ -26,7 +26,12 @@ JmriConnection::JmriConnection(QObject *parent) : QObject(parent)
 /*public*/ JmriConnection::JmriConnection(QWebSocket* connection, QObject *parent) : QObject(parent) {
 common();
     this->webSocket = connection;
+ connect(webSocket, SIGNAL(disconnected()), this, SLOT(on_socketDisconnected()));
+}
 
+void JmriConnection::on_socketDisconnected()
+{
+ this->webSocket = NULL;
 }
 
 /**
@@ -111,7 +116,7 @@ void JmriConnection::common()
      *dataOutputStream << message;
     }
     qDebug() << "send:" << message;
-    if(this->webSocket != NULL)
+    if(this->webSocket != NULL   && this->webSocket->isValid())
     {
      webSocket->sendTextMessage(message);
     }

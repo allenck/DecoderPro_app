@@ -13,9 +13,9 @@
 
 /*public*/ JsonPowerSocketService::JsonPowerSocketService(JsonConnection* connection, QObject* parent) : JsonSocketService(connection, parent)
 {
-    //super(connection);
-    listening = false;
-    this->service = new JsonPowerHttpService(connection->getObjectMapper());
+ //super(connection);
+ listening = false;
+ this->service = new JsonPowerHttpService(connection->getObjectMapper());
 }
 
 //@Override

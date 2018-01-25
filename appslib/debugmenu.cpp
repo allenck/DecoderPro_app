@@ -52,11 +52,11 @@ void DebugMenu::common(QWidget* panel)
 #endif
         addAction(new InstallDecoderFileAction(tr("Import Decoder File"), panel));
         addAction(new InstallDecoderURLAction(tr("Import Decoder URL"), panel));
-        addAction(new DecoderIndexCreateAction(tr("MenuItemRecreateDecoderIndex"),panel));
-        addAction(new RecreateRosterAction(tr("MenuItemRecreateRoster"),panel));
+        addAction(new DecoderIndexCreateAction(tr("Recreate Decoder Index"),panel));
+        addAction(new RecreateRosterAction(tr("Recreate Roster"),panel));
         addAction(new UpdateDecoderDefinitionAction(tr("Update Decoder Definitions"),panel));
         addSeparator();
-        addAction(new XmlFileValidateAction(tr("MenuItemValidateXMLFile"), panel));
+        addAction(new XmlFileValidateAction(tr("Validate XML File"), panel));
 
         addAction(new NameCheckAction(tr("Check Decoder Names"), panel));
         addAction(new ProgCheckAction(tr("Check Programmer Names"), panel));

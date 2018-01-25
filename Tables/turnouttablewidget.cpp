@@ -130,6 +130,7 @@ void TurnoutTableWidget::createRow(int row, AbstractTurnout* t)
  connect(btnCommandState, SIGNAL(clicked()), statemapper, SLOT(map()));
  statemapper->setMapping(btnCommandState, t);
  ui->tableWidget->setCellWidget(row, VALUECOL, btnCommandState);
+ ui->tableWidget->setRowHeight(row,QPushButton().height());
  switch(t->getCommandedState())
  {
   default:

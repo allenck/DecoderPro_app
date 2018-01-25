@@ -15,7 +15,7 @@
 }
 #if 1
 //@Override
-/*public*/ QJsonValue JsonTimeHttpService::doGet(QString type, QString name, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonTimeHttpService::doGet(QString type, QString name, QLocale /*locale*/) throw (JsonException) {
     QJsonObject root = QJsonObject(); //this.mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::TIME);
     QJsonObject data = QJsonObject(); //root.putObject(DATA);

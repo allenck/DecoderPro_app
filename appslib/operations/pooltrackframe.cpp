@@ -251,7 +251,7 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
      poolStatus->setStyleSheet(gbStyleSheet);
      poolStatus->setTitle(tr("Tracks in pool %1").arg(poolName));
      poolStatus->update();
-     poolStatus->repaint();
+     //poolStatus->repaint();
      resize(QSize()); // kill JMRI window size
      adjustSize();
  }

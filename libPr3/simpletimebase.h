@@ -54,6 +54,8 @@ public:
     /*public*/ void removeMinuteChangeListener(PropertyChangeListener* l);
     /*public*/ void setState(int s) throw (JmriException);
     /*public*/ int getState();
+    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+
 signals:
     void minuteTick();
     void propertyChange(PropertyChangeEvent *e);
@@ -93,7 +95,6 @@ private:
     QTimer* timer;// = NULL;
     PropertyChangeSupport* pcMinutes;// = new PropertyChangeSupport(this);
     int oldMinutes;// = 0;
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     /*private*/ void clockSensorChanged();
  Logger* log;
 protected:

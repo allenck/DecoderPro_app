@@ -753,11 +753,11 @@ FileUtil::FileUtil(QObject *parent) :
  * @param dest must be the file, not the destination directory.
  * @throws IOException
  */
-/*public*/ /*static*/ void FileUtil::copy(File* source, File* dest) /*throws IOException*/
+/*public*/ /*static*/ void FileUtil::copy(File* source, File* dest) //throw (IOException)
 {
  FileUtilSupport::getDefault()->copy(source, dest);
 }
-#if 0
+
 /**
  * Simple helper method to just append a text string to the end of the given
  * filename. The file will be created if it does not exist.
@@ -766,13 +766,11 @@ FileUtil::FileUtil(QObject *parent) :
  * @param text Text to append
  * @throws java.io.IOException if file cannot be written to
  */
-/*public*/ static void appendTextToFile(File* file, QString text) /*throws IOException*/
+/*public*/ /*static*/ void FileUtil::appendTextToFile(File* file, QString text) //throw (IOException)
 {
-    PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, true), "UTF-8")); // NOI18N
-    pw.println(text);
-    pw.close();
+ FileUtilSupport::getDefault()->appendTextToFile(file, text);
 }
-#endif
+
 /**
  * Backup a file.
  *

@@ -29,6 +29,10 @@
 #include "trainschedulemanager.h"
 #include "schedule.h"
 #include "track.h"
+#include "jsonmanifest.h"
+#include "traincsvmanifest.h"
+#include "buildfailedexception.h"
+#include "joptionpane.h"
 
 namespace Operations
 {
@@ -87,11 +91,14 @@ namespace Operations
  {
   this->_train = train;
   connect(this, SIGNAL(buildException(QString, QString)), this, SLOT(buildFailed(QString, QString)));
-  //try {
-      build();
-//  } catch (BuildFailedException e) {
-//      buildFailed(e);
-//  }
+  try
+  {
+   build();
+  }
+  catch (BuildFailedException e)
+  {
+   buildFailed(e);
+  }
  }
 
  /*private*/ void TrainBuilder::build() //throws BuildFailedException
@@ -104,21 +111,22 @@ namespace Operations
 
    // create build report file
    File* file = TrainManagerXml::instance()->createTrainBuildReportFile(_train->getName());
-   //try {
-   QFile* qFile = new QFile(file->getPath());
-   if(!qFile->open(QIODevice::WriteOnly))
+   try
    {
-    log->error("Can not open build report file: '" + file->getName()+ "'");
-    return;
+    QFile* qFile = new QFile(file->getPath());
+    if(!qFile->open(QIODevice::WriteOnly))
+    {
+     log->error("Can not open build report file: '" + file->getName()+ "'");
+     return;
+    }
+    log->info(tr("build report for train %1 will write to file %2").arg(_train->getName()).arg(file->getPath()));
+    //_buildReport = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
+    //               "UTF-8")), true); // NOI18N
+    _buildReport = new PrintWriter(new QTextStream(qFile),true);
+   } catch (IOException e) {
+      log->error("Can not open build report file: " + file->getName());
+       return;
    }
-   log->info(tr("build report for train %1 will write to file %2").arg(_train->getName()).arg(file->getPath()));
-   //_buildReport = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
-//               "UTF-8")), true); // NOI18N
-   _buildReport = new PrintWriter(new QTextStream(qFile),true);
-//        } catch (IOException e) {
-//           log->error("Can not open build report file: " + file->getName());
-//            return;
-//        }
    QDateTime startTime = QDateTime::currentDateTime();
    addLine(_buildReport, ONE, tr("Build Report for train (%1) built on %2").arg(
            _train->getName()).arg(startTime.toString()));
@@ -130,11 +138,11 @@ namespace Operations
 
    if (Setup::getRouterBuildReportLevel()==(Setup::BUILD_REPORT_DETAILED))
    {
-    addLine(_buildReport, SEVEN, tr("buildRouterReportLevelDetailed"));
+    addLine(_buildReport, SEVEN, tr("Router build report level: Detailed"));
    }
    else if (Setup::getRouterBuildReportLevel()==(Setup::BUILD_REPORT_VERY_DETAILED))
    {
-    addLine(_buildReport, SEVEN, tr("buildRouterReportLevelVeryDetailed"));
+    addLine(_buildReport, SEVEN, tr("Router build report level: Very Detailed"));
    }
 
    if (!Setup::getComment().trimmed().isEmpty())
@@ -147,36 +155,24 @@ namespace Operations
 
    if (_train->getRoute() == NULL)
    {
-       //emit buildException(tr("ERROR Can not build train (%1), needs a route"),
-//                    _train->getName()));
-    emit buildException(tr("ERROR Can not build train (%1), needs a route").arg(
-                _train->getName()), "Normal");
-    return;
+    throw BuildFailedException(tr("ERROR Can not build train (%1), needs a route").arg(
+                    _train->getName()));
    }
    // get the train's route
    _routeList = _train->getRoute()->getLocationsBySequenceList();
    if (_routeList->size() < 1)
    {
-//            emit buildException(tr("buildErrorNeedRoute"),
-//                    _train->getName()));
-    emit buildException(tr("ERROR Route needs at least one location to build train (%1)").arg(_train->getName()), "Normal");
-    return;
+    throw BuildFailedException(tr("ERROR Route needs at least one location to build train (%1)").arg(_train->getName()));
    }
    // train departs
    _departLocation = locationManager->getLocationByName(_train->getTrainDepartsName());
    if (_departLocation == NULL) {
-//            emit buildException(tr("buildErrorNeedDepLoc"),
-//                    _train->getName()));
-    emit buildException(tr("ERROR Route departure location missing for train (%1)").arg(_train->getName()), "Normal");
-    return;
+    throw  BuildFailedException(tr("ERROR Route departure location missing for train (%1)").arg(_train->getName()));
    }
    // train terminates
    _terminateLocation = locationManager->getLocationByName(_train->getTrainTerminatesName());
    if (_terminateLocation == NULL) {
-//            emit buildException(tr("buildErrorNeedTermLoc"),
-//                    _train->getName()));
-    emit buildException(tr("ERROR Route terminate location missing for train (%1)").arg(_train->getName()), "Normal");
-    return;
+    throw  BuildFailedException(tr("ERROR Route terminate location missing for train (%1)").arg(_train->getName()));
    }
 
    // show train build options in detailed mode
@@ -208,7 +204,7 @@ namespace Operations
      {
       if (train->isBuildEnabled())
       {
-          addLine(_buildReport, SEVEN, tr("Train ({%1) %2").arg(train->getName()).arg(train->getDescription()));
+          addLine(_buildReport, SEVEN, tr("Train (%1) %2").arg(train->getName()).arg(train->getDescription()));
       }
      }
      if (!_train->isBuildEnabled()) {
@@ -255,9 +251,12 @@ namespace Operations
            && Control::fullTrainOnly) {
 //            emit buildException(tr("buildErrorCars").arg(
 //                    Integer.toString(_departLocation->getNumberRS()), _train->getTrainDepartsName(), _train->getName()));
-    emit buildException(tr("Not enough cars (%1) at departure (%2) to build train (%3)").arg(
-        _departLocation->getNumberRS()).arg(_train->getTrainDepartsName()).arg(_train->getName()), "Normal");
-    return;
+//    emit buildException(tr("Not enough cars (%1) at departure (%2) to build train (%3)").arg(
+//        _departLocation->getNumberRS()).arg(_train->getTrainDepartsName()).arg(_train->getName()), "Normal");
+//    return;
+    throw BuildFailedException(tr("Not enough cars (%1) at departure (%2) to build train (%3)").arg(
+        _departLocation->getNumberRS()).arg(_train->getTrainDepartsName()).arg(_train->getName()));
+
    }
    addLine(_buildReport, THREE, tr("Train (%1) route (%2):").arg(
            _train->getName()).arg(_train->getRoute()->getName()));
@@ -271,17 +270,19 @@ namespace Operations
     {
 //                emit buildException(tr("buildErrorLocMissing"),
 //                        _train->getRoute()->getName()));
-     emit buildException(tr("ERROR location missing in route (%1)").arg(_train->getRoute()->getName()), "Normal");
-     return;
+//     emit buildException(tr("ERROR location missing in route (%1)").arg(_train->getRoute()->getName()), "Normal");
+//     return;
+     throw BuildFailedException(tr("ERROR location missing in route (%1)").arg(_train->getRoute()->getName()));
+
     }
     // train doesn't drop or pick up cars from staging locations found in middle of a route
     if (location->isStaging() && rl != _train->getTrainDepartsRouteLocation()
             && rl != _train->getTrainTerminatesRouteLocation())
     {
-        addLine(_buildReport, ONE, tr("Location (%1) has only staging tracks").arg(rl
-                ->getName()));
-        rl->setCarMoves(rl->getMaxCarMoves()); // don't allow car moves for this location
-        // if a location is skipped, no car drops or pick ups
+     addLine(_buildReport, ONE, tr("Location (%1) has only staging tracks").arg(rl
+             ->getName()));
+     rl->setCarMoves(rl->getMaxCarMoves()); // don't allow car moves for this location
+     // if a location is skipped, no car drops or pick ups
     }
     else if (_train->skipsLocation(rl->getId()))
     {
@@ -290,7 +291,7 @@ namespace Operations
         rl->setCarMoves(rl->getMaxCarMoves()); // don't allow car moves for this location
     } else if (!rl->isDropAllowed() && !rl->isPickUpAllowed())
     {
-        addLine(_buildReport, THREE, tr("Location (%1) no set outs or pick ups, maximum train length %2 {%3").arg(
+        addLine(_buildReport, THREE, tr("Location (%1) no set outs or pick ups, maximum train length %2 %3").arg(
                 rl->getName()).arg(rl->getMaxTrainLength()).arg(Setup::getLengthUnit().toLower()));
         rl->setCarMoves(rl->getMaxCarMoves()); // don't allow car moves for this location
     }
@@ -303,7 +304,7 @@ namespace Operations
      if (location->isStaging() && rl->isPickUpAllowed()
              && rl == _train->getTrainDepartsRouteLocation())
      {
-         addLine(_buildReport, THREE, tr("Staging (%1) request %2 pick ups, maximum train length %3 {%4").arg(
+         addLine(_buildReport, THREE, tr("Staging (%1) request %2 pick ups, maximum train length %3 %4").arg(
                  rl->getName()).arg(rl->getMaxCarMoves()).arg(rl->getMaxTrainLength()).arg(
                          Setup::getLengthUnit().toLower()));
      }
@@ -366,15 +367,15 @@ namespace Operations
            log->debug(tr("Reducing number of moves for location (%1) by %2").arg(rl->getName()).arg(moves));
             rl->setCarMoves(moves);
             requested = requested - moves;
-            addLine(_buildReport, FIVE, tr("Route location (%1) id (%2) has random control of %3% reducing number of moves from %4 to %5").arg(
-                    rl->getName()).arg(rl->getId()).arg(rl->getRandomControl()).arg(rl->getMaxCarMoves()).arg(
-                            rl->getMaxCarMoves() - moves));
+            addLine(_buildReport, FIVE, tr("Route location (%1) id (%2) has random control of %3% reducing number of moves from %4 to %5").arg(rl->getName()).arg(rl->getId()).arg(rl->getRandomControl()).arg(rl->getMaxCarMoves()).arg( rl->getMaxCarMoves() - moves));
         if(!ok)
         {
 //               emit buildException(tr("buildErrorRandomControl"),
 //                       _train->getRoute()->getName(), rl->getName(), rl->getRandomControl()));
-         emit buildException(tr("Route (%1) location (%2) random control value (%3) is not an integer").arg(_train->getRoute()->getName()).arg(rl->getName()).arg(rl->getRandomControl()), "Normal");
-         return;
+//         emit buildException(tr("Route (%1) location (%2) random control value (%3) is not an integer").arg(_train->getRoute()->getName()).arg(rl->getName()).arg(rl->getRandomControl()), "Normal");
+//         return;
+         throw BuildFailedException(tr("Route (%1) location (%2) random control value (%3) is not an integer").arg(_train->getRoute()->getName()).arg(rl->getName()).arg(rl->getRandomControl()));
+
         }
     }
    }
@@ -499,8 +500,8 @@ namespace Operations
               log->debug("Train is returning to same track in staging");
            } else {
                addLine(_buildReport, ONE, tr("Note that the program requires an empty staging track for each train!"));
-               emit buildException(tr("All staging tracks at %1 are occupied, reserved, or can not service the train").arg(
-                       _terminateLocation->getName()), "Normal");
+               throw BuildFailedException(tr("All staging tracks at %1 are occupied, reserved, or can not service the train").arg(
+                       _terminateLocation->getName()));
                return;
            }
        }
@@ -512,7 +513,8 @@ namespace Operations
    // determine if train is departing staging
    _departStageTrack = NULL;
    QList<Track*> stagingTracks = _departLocation->getTrackByMovesList(Track::STAGING);
-   if (stagingTracks.size() > 0) {
+   if (stagingTracks.size() > 0)
+   {
        addLine(_buildReport, THREE, BLANK_LINE); // add line when in normal report mode
        addLine(_buildReport, ONE, tr("Train will depart staging (%1), there are %2 tracks").arg(
                _departLocation->getName()).arg(stagingTracks.size()));
@@ -521,22 +523,20 @@ namespace Operations
            startTime = QDateTime::currentDateTime(); // restart build timer
            if (_departStageTrack == NULL) {
                showTrainRequirements();
-               emit buildFailed(tr("Could not find a departure staging track at %1 that meets the train requirements").arg(
-                       _departLocation->getName()),"Normal");
+               throw BuildFailedException(tr("Could not find a departure staging track at %1 that meets the train requirements").arg(
+                       _departLocation->getName()));
                return;
            }
            // load engines for this train
            if (!getEngines(_reqNumEngines, _train->getEngineModel(), _train->getEngineRoad(), _train
                    ->getTrainDepartsRouteLocation(), engineTerminatesFirstLeg)) {
-               emit buildFailed(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
-                       _reqNumEngines).arg(_train->getTrainDepartsName()).arg(
-                               engineTerminatesFirstLeg->getName()), "Normal");
+               throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(_reqNumEngines).arg(_train->getTrainDepartsName()).arg(engineTerminatesFirstLeg->getName()));
             return;
            }
        } else {
            foreach (Track* track, stagingTracks) {
-               addLine(_buildReport, THREE, tr("Staging track (%1) has #2 loco(s) and %3 cars").arg(
-                       track->getName().arg(track->getNumberEngines()).arg(track->getNumberCars())));
+               addLine(_buildReport, THREE, tr("Staging track (%1) has %2 loco(s) and %3 cars").arg(
+                       track->getName()).arg(track->getNumberEngines()).arg(track->getNumberCars()));
                // is the departure track available?
                if (!checkDepartureStagingTrack(track)) {
                    continue;
@@ -553,8 +553,8 @@ namespace Operations
        }
        if (_departStageTrack == NULL) {
            showTrainRequirements();
-           emit buildFailed(tr("Could not find a departure staging track at %1 that meets the train requirements").arg(
-                   _departLocation->getName()), "Normal");
+           throw BuildFailedException(tr("Could not find a departure staging track at %1 that meets the train requirements").arg(
+                   _departLocation->getName()));
            return;
            // departing staging and returning to same track?
        } else if (_terminateStageTrack == NULL && _departLocation == _terminateLocation
@@ -568,8 +568,8 @@ namespace Operations
        }
        if (!getEngines(_reqNumEngines, _train->getEngineModel(), _train->getEngineRoad(), _train
                ->getTrainDepartsRouteLocation(), engineTerminatesFirstLeg)) {
-           emit buildFailed(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(_reqNumEngines).arg(
-                           _train->getTrainDepartsName()).arg(engineTerminatesFirstLeg->getName()), "Normal");
+           throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(_reqNumEngines).arg(
+                           _train->getTrainDepartsName()).arg(engineTerminatesFirstLeg->getName()));
         return;
        }
    }
@@ -587,9 +587,9 @@ namespace Operations
                _train->getSecondLegEngineRoad(), _train->getSecondLegStartLocation(), engineTerminatesSecondLeg)) {
            secondLeadEngine = _leadEngine;
        } else {
-           emit buildFailed(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
+           throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
                    _train->getSecondLegNumberEngines()).arg(
-                           _train->getSecondLegStartLocation()->toString()).arg(engineTerminatesSecondLeg->toString()), "Normal");
+                           _train->getSecondLegStartLocation()->toString()).arg(engineTerminatesSecondLeg->toString()));
         return;
        }
    }
@@ -604,9 +604,9 @@ namespace Operations
                ->getTrainTerminatesRouteLocation())) {
            thirdLeadEngine = _leadEngine;
        } else {
-           emit buildFailed(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
+           throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
                    _train->getThirdLegNumberEngines()).arg(
-                           _train->getThirdLegStartLocation()->toString()).arg(_train->getTrainTerminatesRouteLocation()->toString()), "Normal");
+                           _train->getThirdLegStartLocation()->toString()).arg(_train->getTrainTerminatesRouteLocation()->toString()));
         return;
        }
    }
@@ -630,7 +630,7 @@ namespace Operations
    _carList = carManager->getAvailableTrainList(_train);
    // TODO: DAB this needs to be controlled by each train
    if (requested > _carList->size() && Control::fullTrainOnly) {
-       emit buildFailed(tr("The number of requested cars (%1) for train (%2) is greater than the number available (%3)").arg(
+       throw BuildFailedException(tr("The number of requested cars (%1) for train (%2) is greater than the number available (%3)").arg(
                requested).arg(_train->getName().arg(_carList->size())));
    }
 
@@ -716,76 +716,78 @@ namespace Operations
 
    // now make manifest
    new TrainManifest(_train);
-#if 0
+
    try {
-       new JsonManifest(_train).build();
+       (new JsonManifest(_train))->build();
    } catch (IOException ex) {
-      log->error(tr("Unable to create JSON manifest: %1").arg(ex->getLocalizedMessage());
-       emit buildException(ex);
+      log->error(tr("Unable to create JSON manifest: %1").arg(ex.getLocalizedMessage()));
+       //emit buildException(ex);
+        throw BuildFailedException(ex);
    }
    if (Setup::isGenerateCsvManifestEnabled()) {
        new TrainCsvManifest(_train);
    }
-#endif
+
    // now create and place train icon
    _train->moveTrainIcon(_train->getTrainDepartsRouteLocation());
   log->debug(tr("Done building train (%1)").arg(_train->getName()));
  }
 
- /*private*/ void TrainBuilder::showTrainRequirements() {
-     addLine(_buildReport, ONE, BLANK_LINE); // add line
-     addLine(_buildReport, ONE, tr("Train requirements:"));
-     if (_train->getNumberEngines()==("0")) {
-         addLine(_buildReport, ONE, tr("Train does not require any locomotives"));
-     } else if (_train->getNumberEngines()==("1")) {
-         addLine(_buildReport, ONE, tr("Train departs (%1) with a single locomotive, model (%2) road (%3)").arg(
-                 _train->getTrainDepartsName()).arg(_train->getEngineModel()).arg(_train->getEngineRoad()));
-     } else {
-         addLine(_buildReport, ONE, tr("Train departs (%1) with %2 consisted locomotives, model (%3) road (%4)").arg(
-                 _train->getTrainDepartsName()).arg(_train->getNumberEngines()).arg(_train->getEngineModel()).arg(
-                 _train->getEngineRoad()));
-     }
-     // show any required loco changes
-     if ((_train->getSecondLegOptions() & Train::CHANGE_ENGINES) == Train::CHANGE_ENGINES) {
-         addLine(_buildReport, ONE, tr("Locomotive change at (%1), departs with %2 loco(s), model (%3) road (%4)").arg(
-                 _train->getSecondLegStartLocationName()).arg(_train->getSecondLegNumberEngines().arg(
-                 _train->getSecondLegEngineModel()).arg(_train->getSecondLegEngineRoad())));
-     }
-     if ((_train->getSecondLegOptions() & Train::HELPER_ENGINES) == Train::HELPER_ENGINES) {
-         addLine(_buildReport, ONE, tr("Train requests %1 helpers from (%2) to (%3), model (%4) road (%5)").arg(
-                 _train->getSecondLegNumberEngines()).arg(_train->getSecondLegStartLocationName()).arg(
-                 _train->getSecondLegEndLocationName()).arg(_train->getSecondLegEngineModel().arg(
-                 _train->getSecondLegEngineRoad())));
-     }
-     if ((_train->getThirdLegOptions() & Train::CHANGE_ENGINES) == Train::CHANGE_ENGINES) {
-         addLine(_buildReport, ONE, tr("Locomotive change at (%1), departs with %2 loco(s), model (%3) road ({%4)").arg(
-                 _train->getThirdLegStartLocationName()).arg(_train->getThirdLegNumberEngines()).arg(
-                 _train->getThirdLegEngineModel()).arg(_train->getThirdLegEngineRoad()));
-     }
-     if ((_train->getThirdLegOptions() & Train::HELPER_ENGINES) == Train::HELPER_ENGINES) {
-         addLine(_buildReport, ONE, tr("Train requests %1 helpers from ({%2) to (%3), model (%4) road (%5)").arg(
-                 _train->getThirdLegNumberEngines()).arg(_train->getThirdLegStartLocationName()).arg(
-                 _train->getThirdLegEndLocationName()).arg(_train->getThirdLegEngineModel()).arg(
-                 _train->getThirdLegEngineRoad()));
-     }
-     // show caboose or FRED requirements
-     if ((_train->getRequirements() & Train::CABOOSE) > 0) {
-         addLine(_buildReport, ONE, tr("Train must depart (%1) with caboose, road (%2)").arg(_train->getTrainDepartsName()).arg(_train->getCabooseRoad()));
-     }
-     // show any caboose changes in the train's route
-     if ((_train->getSecondLegOptions() & Train::REMOVE_CABOOSE) == Train::REMOVE_CABOOSE
-             || (_train->getSecondLegOptions() & Train::ADD_CABOOSE) == Train::ADD_CABOOSE) {
-         addLine(_buildReport, ONE, tr("Caboose change at (%1)").arg(_train->getSecondLegStartLocation()->toString()));
-     }
-     if ((_train->getThirdLegOptions() & Train::REMOVE_CABOOSE) == Train::REMOVE_CABOOSE
-             || (_train->getThirdLegOptions() & Train::ADD_CABOOSE) == Train::ADD_CABOOSE) {
-         addLine(_buildReport, ONE, tr("Caboose change at (%1)").arg(_train->getThirdLegStartLocation()->toString()));
-     }
-     if ((_train->getRequirements() & Train::FRED) > 0) {
-         addLine(_buildReport, ONE, tr("Train must depart (%1) with a car that has a FRED, road (%2)").arg(
-                 _train->getTrainDepartsName()).arg(_train->getCabooseRoad()));
-     }
-     addLine(_buildReport, ONE, BLANK_LINE); // add line
+ /*private*/ void TrainBuilder::showTrainRequirements()
+ {
+  addLine(_buildReport, ONE, BLANK_LINE); // add line
+  addLine(_buildReport, ONE, tr("Train requirements:"));
+  if (_train->getNumberEngines()==("0")) {
+      addLine(_buildReport, ONE, tr("Train does not require any locomotives"));
+  } else if (_train->getNumberEngines()==("1")) {
+      addLine(_buildReport, ONE, tr("Train departs (%1) with a single locomotive, model (%2) road (%3)").arg(
+              _train->getTrainDepartsName()).arg(_train->getEngineModel()).arg(_train->getEngineRoad()));
+  } else {
+      addLine(_buildReport, ONE, tr("Train departs (%1) with %2 consisted locomotives, model (%3) road (%4)").arg(
+              _train->getTrainDepartsName()).arg(_train->getNumberEngines()).arg(_train->getEngineModel()).arg(
+              _train->getEngineRoad()));
+  }
+  // show any required loco changes
+  if ((_train->getSecondLegOptions() & Train::CHANGE_ENGINES) == Train::CHANGE_ENGINES) {
+      addLine(_buildReport, ONE, tr("Locomotive change at (%1), departs with %2 loco(s), model (%3) road (%4)").arg(
+              _train->getSecondLegStartLocationName()).arg(_train->getSecondLegNumberEngines().arg(
+              _train->getSecondLegEngineModel()).arg(_train->getSecondLegEngineRoad())));
+  }
+  if ((_train->getSecondLegOptions() & Train::HELPER_ENGINES) == Train::HELPER_ENGINES) {
+      addLine(_buildReport, ONE, tr("Train requests %1 helpers from (%2) to (%3), model (%4) road (%5)").arg(
+              _train->getSecondLegNumberEngines()).arg(_train->getSecondLegStartLocationName()).arg(
+              _train->getSecondLegEndLocationName()).arg(_train->getSecondLegEngineModel().arg(
+              _train->getSecondLegEngineRoad())));
+  }
+  if ((_train->getThirdLegOptions() & Train::CHANGE_ENGINES) == Train::CHANGE_ENGINES) {
+      addLine(_buildReport, ONE, tr("Locomotive change at (%1), departs with %2 loco(s), model (%3) road ({%4)").arg(
+              _train->getThirdLegStartLocationName()).arg(_train->getThirdLegNumberEngines()).arg(
+              _train->getThirdLegEngineModel()).arg(_train->getThirdLegEngineRoad()));
+  }
+  if ((_train->getThirdLegOptions() & Train::HELPER_ENGINES) == Train::HELPER_ENGINES) {
+      addLine(_buildReport, ONE, tr("Train requests %1 helpers from ({%2) to (%3), model (%4) road (%5)").arg(
+              _train->getThirdLegNumberEngines()).arg(_train->getThirdLegStartLocationName()).arg(
+              _train->getThirdLegEndLocationName()).arg(_train->getThirdLegEngineModel()).arg(
+              _train->getThirdLegEngineRoad()));
+  }
+  // show caboose or FRED requirements
+  if ((_train->getRequirements() & Train::CABOOSE) > 0) {
+      addLine(_buildReport, ONE, tr("Train must depart (%1) with caboose, road (%2)").arg(_train->getTrainDepartsName()).arg(_train->getCabooseRoad()));
+  }
+  // show any caboose changes in the train's route
+  if ((_train->getSecondLegOptions() & Train::REMOVE_CABOOSE) == Train::REMOVE_CABOOSE
+          || (_train->getSecondLegOptions() & Train::ADD_CABOOSE) == Train::ADD_CABOOSE) {
+      addLine(_buildReport, ONE, tr("Caboose change at (%1)").arg(_train->getSecondLegStartLocation()->toString()));
+  }
+  if ((_train->getThirdLegOptions() & Train::REMOVE_CABOOSE) == Train::REMOVE_CABOOSE
+          || (_train->getThirdLegOptions() & Train::ADD_CABOOSE) == Train::ADD_CABOOSE) {
+      addLine(_buildReport, ONE, tr("Caboose change at (%1)").arg(_train->getThirdLegStartLocation()->toString()));
+  }
+  if ((_train->getRequirements() & Train::FRED) > 0) {
+      addLine(_buildReport, ONE, tr("Train must depart (%1) with a car that has a FRED, road (%2)").arg(
+              _train->getTrainDepartsName()).arg(_train->getCabooseRoad()));
+  }
+  addLine(_buildReport, ONE, BLANK_LINE); // add line
  }
 
  /**
@@ -914,7 +916,7 @@ namespace Operations
 
      // code check
      if (rl == NULL || rld == NULL) {
-         emit buildFailed(tr("ERROR locomotive location not specified!"),"Normal");
+         throw BuildFailedException(tr("ERROR locomotive location not specified!"));
       return false;
      }
 
@@ -1089,9 +1091,11 @@ namespace Operations
          if (status==(Track::OKAY)) {
              addEngineToTrain(engine, rl, rld, terminateTrack);
              return true; // done
-         } else {
-             addLine(_buildReport, SEVEN, tr("Can't send loco (%1) to %4 (%2) due to %3").arg(
-                     engine->toString()).arg(terminateTrack->getName()).arg(status).arg(
+         }
+         else
+         {
+          addLine(_buildReport, SEVEN, tr("Can't send loco (%1) to %4 (%2) due to %3")
+                  .arg(engine->toString()).arg(terminateTrack->getName()).arg(status).arg(
                              terminateTrack->getTrackTypeName()));
          }
          // find a destination track for this engine
@@ -1112,7 +1116,7 @@ namespace Operations
                  return true; // done
              } else {
                  addLine(_buildReport, SEVEN,
-                         tr("Can't send loco (%1) to %3 (%2) due to %3").arg(engine->toString()).arg(
+                         tr("Can't send loco (%1) to %4 (%2) due to %3").arg(engine->toString()).arg(
                                  track->getName()).arg(status).arg(track->getTrackTypeName()));
              }
          }
@@ -1213,8 +1217,8 @@ namespace Operations
                      foundCar = true;
                  }
                  if (!foundCar) {
-                     emit buildException(
-                             tr("BUILD FAILED car (%1) departing staging without a destination").arg(car->toString()), "Normal");
+                     throw BuildFailedException(
+                             tr("BUILD FAILED car (%1) departing staging without a destination").arg(car->toString()));
                   return;
                  }
              } // is there a specific road requirement for the car with FRED?
@@ -1248,8 +1252,8 @@ namespace Operations
          }
      }
      if (requiresCar && !foundCar) {
-         emit buildException(tr("Train (%1) requires %2, can't meet requirements at departure (%3) and/or termination (%4)").arg(
-                 _train->getName()).arg(tr("FRED")).arg(rl->getName()).arg(rld->getName()),"Normal");
+         throw BuildFailedException(tr("Train (%1) requires %2, can't meet requirements at departure (%3) and/or termination (%4)").arg(
+                 _train->getName()).arg(tr("FRED")).arg(rl->getName()).arg(rld->getName()));
       return;
      }
  }
@@ -1272,12 +1276,12 @@ namespace Operations
          bool requiresCaboose) //throws BuildFailedException
 {
      if (rl == NULL) {
-         emit buildException(tr("buildErrorCabooseNoLocation").arg(
-                 _train->getName()), "Normal");
+         throw BuildFailedException(tr("Caboose change requested for train (%1) departure location missing!").arg(
+                 _train->getName()));
       return;
      }
      if (rld == NULL) {
-         emit buildException(tr("buildErrorCabooseNoDestination").arg(
+         throw BuildFailedException(tr("Caboose change requested for train ({0}) departs ({1}) change location missing!").arg(
                  _train->getName()).arg(rl->getName()),"Normal");
       return;
      }
@@ -1305,63 +1309,68 @@ namespace Operations
      bool cabooseTip = true; // add a user tip to the build report about cabooses if none found
      bool cabooseAtDeparture = false; // set to true if caboose at departure location is found
      bool foundCaboose = false;
-     for (_carIndex = 0; _carIndex < _carList->size(); _carIndex++) {
-         Car* car = _carList->at(_carIndex);
-         if (car->isCaboose()) {
-             cabooseTip = false; // found at least one caboose, so they exist!
-             addLine(_buildReport, SEVEN, tr("Car (%1) is a caboose, road (%2) at location (%3, %4)").arg(
-                     car->toString()).arg(car->getRoadName()).arg(car->getLocationName()).arg(car->getTrackName()));
-             // car departing staging must leave with train
-             if (car->getTrack() == departTrack) {
-                 foundCaboose = false;
-                 if (checkCarForDestinationAndTrack(car, rl, rld)) {
-                     if (car->getTrain() == _train) {
-                         foundCaboose = true;
-                     }
-                 } else if (findDestinationAndTrack(car, rl, rld)) {
-                     foundCaboose = true;
-                 }
-                 if (!foundCaboose) {
-                     emit buildException(
-                             tr("BUILD FAILED car (%1) departing staging without a destination").arg(car->toString()),"Normal");
-                  return;
-                 }
-             } // is there a specific road requirement for the caboose?
-             else if (roadCaboose!=(Train::NONE) && roadCaboose!=(car->getRoadName())) {
-                 continue;
-             } else if (!foundCaboose && car->getLocationName()==(rl->getName())) {
-                 // remove cars that can't be picked up due to train and track directions
-                 if (!checkPickUpTrainDirection(car, rl)) {
-                     addLine(_buildReport, SEVEN,
-                             tr("Exclude car (%1) type (%2) at location (%3)").arg(car->toString(),
-                                     car->getTypeName()).arg((car->getLocationName() + " " + car->getTrackName())));
-                     _carList->removeOne(car); // remove this car from the list
-                     _carIndex--;
-                     continue;
-                 }
-                 // first pass, take a caboose that matches the engine
-                 if (leadEngine != NULL && car->getRoadName()==(leadEngine->getRoadName())) {
-                     addLine(_buildReport, SEVEN, tr("Car (%1) road (%2) matches loco (%3)").arg(
-                             car->toString()).arg(car->getRoadName()).arg(leadEngine->toString()));
-                     if (checkCarForDestinationAndTrack(car, rl, rld)) {
-                         if (car->getTrain() == _train) {
-                             foundCaboose = true;
-                         }
-                     } else if (findDestinationAndTrack(car, rl, rld)) {
-                         foundCaboose = true;
-                     }
-                     if (!foundCaboose) {
-                         _carList->removeOne(car); // remove this car from the list
-                         _carIndex--;
-                         continue;
-                     }
-                 }
-                 // done if we found a caboose and not departing staging
-                 if (foundCaboose && departTrack == NULL) {
-                     break;
-                 }
-             }
-         }
+     for (_carIndex = 0; _carIndex < _carList->size(); _carIndex++)
+     {
+      Car* car = _carList->at(_carIndex);
+      if (car->isCaboose())
+      {
+       cabooseTip = false; // found at least one caboose, so they exist!
+       addLine(_buildReport, SEVEN, tr("Car (%1) is a caboose, road (%2) at location (%3, %4)").arg(
+               car->toString()).arg(car->getRoadName()).arg(car->getLocationName()).arg(car->getTrackName()));
+       // car departing staging must leave with train
+       if (car->getTrack() == departTrack) {
+           foundCaboose = false;
+           if (checkCarForDestinationAndTrack(car, rl, rld)) {
+               if (car->getTrain() == _train) {
+                   foundCaboose = true;
+               }
+           } else if (findDestinationAndTrack(car, rl, rld)) {
+               foundCaboose = true;
+           }
+           if (!foundCaboose) {
+               throw BuildFailedException(
+                       tr("BUILD FAILED car (%1) departing staging without a destination").arg(car->toString()));
+            return;
+           }
+       } // is there a specific road requirement for the caboose?
+       else if (roadCaboose!=(Train::NONE) && roadCaboose!=(car->getRoadName()))
+       {
+           continue;
+       }
+       else if (!foundCaboose && car->getLocationName()==(rl->getName()))
+       {
+        // remove cars that can't be picked up due to train and track directions
+        if (!checkPickUpTrainDirection(car, rl)) {
+            addLine(_buildReport, SEVEN,
+                    tr("Exclude car (%1) type (%2) at location (%3)").arg(car->toString(),
+                            car->getTypeName()).arg((car->getLocationName() + " " + car->getTrackName())));
+            _carList->removeOne(car); // remove this car from the list
+            _carIndex--;
+            continue;
+        }
+        // first pass, take a caboose that matches the engine
+        if (leadEngine != NULL && car->getRoadName()==(leadEngine->getRoadName())) {
+            addLine(_buildReport, SEVEN, tr("Car (%1) road (%2) matches loco (%3)").arg(
+                    car->toString()).arg(car->getRoadName()).arg(leadEngine->toString()));
+            if (checkCarForDestinationAndTrack(car, rl, rld)) {
+                if (car->getTrain() == _train) {
+                    foundCaboose = true;
+                }
+            } else if (findDestinationAndTrack(car, rl, rld)) {
+                foundCaboose = true;
+            }
+            if (!foundCaboose) {
+                _carList->removeOne(car); // remove this car from the list
+                _carIndex--;
+                continue;
+            }
+        }
+        // done if we found a caboose and not departing staging
+        if (foundCaboose && departTrack == NULL) {
+            break;
+        }
+       }
+      }
      }
      if (requiresCaboose && !foundCaboose) {
         log->debug("Second pass looking for caboose");
@@ -1393,13 +1402,11 @@ namespace Operations
              addLine(_buildReport, ONE, tr("NOTE! The train has to also service the car type (Caboose)"));
          }
          if (!cabooseAtDeparture) {
-             emit buildException(tr("Train (%1) requires %2, can't find %2 at departure (%3)").arg(
-                     _train->getName()).arg(tr("Caboose").toLower()).arg(rl->getName()),"Normal");
+             throw BuildFailedException(tr("Train (%1) requires %2, can't find %2 at departure (%3)").arg( _train->getName()).arg(tr("Caboose").toLower()).arg(rl->getName()));
           return;
          }
          // we did find a caboose at departure that meet requirements, but couldn't place it at destination.
-         emit buildException(tr("Train (%1) requires %2, can't set out %2 at destination (%3)").arg(
-                 _train->getName()).arg(tr("Caboose")).arg(rld->getName()),"Normal");
+         throw BuildFailedException(tr("Train (%1) requires %2, can't set out %2 at destination (%3)").arg( _train->getName()).arg(tr("Caboose")).arg(rld->getName()));
          return;
      }
  }
@@ -1421,7 +1428,7 @@ namespace Operations
                      car->toString()).arg(car->getTypeName()).arg(
                              (car->getLocationName() + ").arg(" + car->getTrackName())));
              if (car->getTrack() == _departStageTrack) {
-                 emit buildException(tr("ERROR: Attempt to removed car with FRED or Caboose from staging"),"Normal"); // NOI18N
+                 throw BuildFailedException(tr("ERROR: Attempt to removed car with FRED or Caboose from staging")); // NOI18N
               return;
              }
              _carList->removeOne(car); // remove this car from the list
@@ -1466,8 +1473,8 @@ namespace Operations
              addLine(_buildReport, SEVEN, tr("Exclude car (%1) location unknown, last known location (%2, %3)").arg(
                      car->toString()).arg(car->getLocationName()).arg(car->getTrackName()));
              if (car->getTrack()==(_departStageTrack)) {
-                 emit buildException(tr("Staging (%1, %2) has a car (%3) with an unknown location").arg(
-                         car->getLocationName()).arg(car->getTrackName()).arg(car->toString()),"Normal");
+                 throw BuildFailedException(tr("Staging (%1, %2) has a car (%3) with an unknown location").arg(
+                         car->getLocationName()).arg(car->getTrackName()).arg(car->toString()));
               return;
              }
              _carList->removeOne(car);
@@ -1479,8 +1486,8 @@ namespace Operations
              addLine(_buildReport, SEVEN, tr("Exclude car (%1) out of service, car''s location (%2, %3)").arg(
                      car->toString()).arg(car->getLocationName()).arg(car->getTrackName()));
              if (car->getTrack()==(_departStageTrack)) {
-                 emit buildException(tr("Staging (%1, %2) has a car (%3) that is out of service").arg(car->getLocationName(),
-                         car->getTrackName()).arg(car->toString()), "Normal");
+                 throw BuildFailedException(tr("Staging (%1, %2) has a car (%3) that is out of service").arg(car->getLocationName(),
+                         car->getTrackName()).arg(car->toString()));
               return;
              }
              _carList->removeOne(car);
@@ -1678,9 +1685,9 @@ namespace Operations
          }
          // error if all of the cars and engines from staging aren't available
          if (numCarsFromStaging + _departStageTrack->getNumberEngines() != _departStageTrack->getNumberRS()) {
-             emit buildException(tr("ERROR not all cars or locos in staging can be serviced by this train, %1 cars or locos can not be serviced").arg(
+             throw BuildFailedException(tr("ERROR not all cars or locos in staging can be serviced by this train, %1 cars or locos can not be serviced").arg(
                      (_departStageTrack->getNumberRS()
-                             - (numCarsFromStaging + _departStageTrack->getNumberEngines()))), "Normal");
+                             - (numCarsFromStaging + _departStageTrack->getNumberEngines()))));
           return;
          }
         log->debug(tr("Staging departure track (%1) has %2 cars and %3 blocks").arg(_departStageTrack->getName()).arg(
@@ -1766,7 +1773,7 @@ namespace Operations
                          // The following code should not be executed, departing staging tracks are checked before
                          // this
                          // routine.
-                         emit buildException(tr("Car (%1) departing staging with destination that is not part of this train''s route").arg(car->toString()), "Normal");
+                         throw BuildFailedException(tr("Car (%1) departing staging with destination that is not part of this train''s route").arg(car->toString()));
                       return;
                      }
                      _carList->removeOne(car); // remove this car from the list
@@ -1797,14 +1804,14 @@ namespace Operations
          }
          // check to see that all cars have the same location and track
          if (car->getLocation() != c->getLocation() || car->getTrack() != c->getTrack()) {
-             emit buildException(tr("Car (%1) in kernel (%2) doesn''t match car (%3) location").arg(
-                     c->toString()).arg(car->getKernelName()).arg(car->toString()), "Normal");
+             throw BuildFailedException(tr("Car (%1) in kernel (%2) doesn''t match car (%3) location").arg(
+                     c->toString()).arg(car->getKernelName()).arg(car->toString()));
           return;
          }
      }
      if (foundLeadCar == false) {
-         emit buildException(tr("No lead car in kernel (%1)").arg(
-                 car->getKernelName()), "Normal");
+         throw BuildFailedException(tr("No lead car in kernel (%1)").arg(
+                 car->getKernelName()));
      }
  }
 
@@ -2343,7 +2350,7 @@ namespace Operations
         log->debug(tr("%1 cars stuck in staging").arg(carCount));
          QString msg = tr("BUILD FAILED could not find destinations for %1 car(s) departing from staging track (%2, %3)").arg(
                  carCount).arg(_departStageTrack->getLocation()->getName()).arg(_departStageTrack->getName());
-         emit buildException(msg + buf/*.toString()*/, /*BuildFailedException::STAGING*/"Staging");
+         throw BuildFailedException(msg + buf/*.toString()*/, /*BuildFailedException::STAGING*/"Staging");
      }
  }
 
@@ -2396,8 +2403,7 @@ namespace Operations
   *         ups.
   */
  /*private*/ void TrainBuilder::addCarToTrain(Car* car, RouteLocation* rl, RouteLocation* rld, Track* track) {
-     addLine(_buildReport, THREE, tr("buildCarAssignedDest").arg(
-             car->toString(), rld->getName(), track->getName()));
+     addLine(_buildReport, THREE, tr("buildCarAsCar (%1) assigned to train, destination (%2, %3)signedDest").arg(car->toString(), rld->getName(), track->getName()));
      car->setDestination(track->getLocation(), track);
      int length = car->getTotalLength();
      int weightTons = car->getAdjustedWeightTons();
@@ -2406,9 +2412,7 @@ namespace Operations
          length = car->getKernel()->getTotalLength(); // includes couplers
          weightTons = car->getKernel()->getAdjustedWeightTons();
          QList<Car*> kCars = car->getKernel()->getCars();
-         addLine(_buildReport, THREE, tr("Car (%1) is in kernel (%2) with %3 cars, %4 %5").arg(
-                 car->toString()).arg(car->getKernelName()).arg(kCars.size()).arg(car->getKernel()->getTotalLength()).arg(
-                 Setup::getLengthUnit().toLower()));
+         addLine(_buildReport, THREE, tr("Car (%1) is in kernel (%2) with %3 cars, %4 %5").arg(car->toString()).arg(car->getKernelName()).arg(kCars.size()).arg(car->getKernel()->getTotalLength()).arg(Setup::getLengthUnit().toLower()));
          foreach (Car* kCar, kCars) {
              if (kCar == car) {
                  continue;
@@ -3144,7 +3148,7 @@ namespace Operations
         log->debug(tr("Found %1 staging tracks").arg(tracks.size()));
          while (tracks.size() > 0) {
              // pick a track randomly
-             int rnd = (int) (qrand() * tracks.size());
+             int rnd = (int) (qrand() % tracks.size());
              Track* track = tracks.at(rnd);
              tracks.removeOne(track);
             log->debug(tr("Staging track (%1, %2)").arg(track->getLocation()->getName()).arg(track->getName()));
@@ -3402,7 +3406,7 @@ namespace Operations
      if (track->getScheduleMode() == Track::SEQUENTIAL) {
          si = track->getCurrentScheduleItem();
          if (si == NULL) {
-             emit buildException(tr("ERROR Can''t find schedule item (%1) for schedule (%2) for track (%3) at location (%4)").arg(
+             throw BuildFailedException(tr("ERROR Can''t find schedule item (%1) for schedule (%2) for track (%3) at location (%4)").arg(
                      track->getScheduleItemId()).arg(track->getScheduleName()).arg(track->getName()).arg(
                              track->getLocation()->getName()),"Normal");
           return NULL;
@@ -3413,9 +3417,9 @@ namespace Operations
      for (int i = 0; i < track->getSchedule()->getSize(); i++) {
          si = track->getNextScheduleItem();
          if (si == NULL) {
-             emit buildException(tr("ERROR Can''t find schedule item (%1) for schedule (%2) for track (%3) at location (%4)").arg(
+             throw BuildFailedException(tr("ERROR Can't find schedule item (%1) for schedule (%2) for track (%3) at location (%4)").arg(
                      track->getScheduleItemId()).arg(track->getScheduleName()).arg(track->getName()).arg(
-                             track->getLocation()->getName()), "Normal");
+                             track->getLocation()->getName()));
           return NULL;
          }
          si = checkScheduleItem(si, car, track);
@@ -3762,9 +3766,9 @@ namespace Operations
                      }
                  }
              } else {
-                 emit buildException(
+                 throw BuildFailedException(
                          tr("Car (%1) has staging destination (%2, %3) wrong track").arg(car->toString(),
-                                 car->getDestinationName()).arg(car->getDestinationTrackName()), "Normal");
+                                 car->getDestinationName()).arg(car->getDestinationTrackName()));
               return false;
              }
          }
@@ -3903,7 +3907,7 @@ namespace Operations
          Location* testDestination = rld->getLocation();
          if (testDestination == NULL) {
              // code check, should never throw, all locations in the route have been already checked
-             emit buildException(tr("Route (%1) missing location (%2)").arg(
+             throw BuildFailedException(tr("Route (%1) missing location (%2)").arg(
                      _train->getRoute()->getName()).arg(rld->getName()),"Normal");
           return false;
          }
@@ -4535,7 +4539,7 @@ namespace Operations
          }
      }
      if (_train->getLeadEngine() == NULL && !_train->isBuildConsistEnabled()) {
-         emit buildException(tr("ERROR could not find a locomotive that meets the train's HP requirements"), "Normal");
+         throw BuildFailedException(tr("ERROR could not find a locomotive that meets the train's HP requirements"));
      }
  }
 
@@ -4642,7 +4646,7 @@ namespace Operations
              extraHpNeeded).arg(rlNeedHp->getName()).arg(rld->getName()).arg(numberLocos));
      while (numberLocos < Setup::getMaxNumberEngines()) {
          if (!getEngines(1, _train->getEngineModel(), _train->getEngineRoad(), rl, rld)) {
-             emit buildException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
+             throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
                      tr("additional")).arg(rl->getName()).arg(rld->getName()),"Normal");
          }
          numberLocos++;
@@ -4661,86 +4665,150 @@ namespace Operations
      }
  }
 
- /*private*/ void TrainBuilder::buildFailed(/*BuildFailedException e*/QString msg, QString type) {
-     //QString msg = e->getMessage();
-     _train->setBuildFailedMessage(msg);
-     _train->setStatus(Train::CODE_BUILD_FAILED);
-     _train->setBuildFailed(true);
-     if (log->isDebugEnabled()) {
-        log->debug(msg);
-     }
-     if (TrainManager::instance()->isBuildMessagesEnabled()) {
+ /*private*/ void TrainBuilder::buildFailed(/*BuildFailedException e*/QString msg, QString type)
+ {
+  //QString msg = e->getMessage();
+  _train->setBuildFailedMessage(msg);
+  _train->setStatus(Train::CODE_BUILD_FAILED);
+  _train->setBuildFailed(true);
+  if (log->isDebugEnabled()) {
+     log->debug(msg);
+  }
+  if (TrainManager::instance()->isBuildMessagesEnabled()) {
 //         if (e->getExceptionType()==(BuildFailedException.NORMAL)) {
 //             JOptionPane.showMessageDialog(NULL, msg, tr("buildErrorMsg"),
 //                     _train->getName(), _train->getDescription()}), JOptionPane.ERROR_MESSAGE);
-      if(type == "Normal")
-      {
-       //QMessageBox::critical(NULL, tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()), msg);
-       emit error( tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()), msg);
-      }
-      else
-      {
-             // build error, could not find destinations for cars departing staging
+   if(type == "Normal")
+   {
+    //QMessageBox::critical(NULL, tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()), msg);
+    emit error( tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()), msg);
+   }
+   else
+   {
+    // build error, could not find destinations for cars departing staging
 //             Object[] options = {tr("buttonRemoveCars"), "OK"};
 //             int results = JOptionPane.showOptionDialog(NULL, msg, Bundle
 //                     ->getMessage("buildErrorMsg").arg(_train->getName(), _train->getDescription()}),
 //                     JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, NULL, options, options[1]);
-       int results = QMessageBox::critical(NULL, tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()), tr("Remove Cars"), QMessageBox::Ok | QMessageBox::Cancel);
-             if (results == QMessageBox::Ok) {
-                log->debug("User requested that cars be removed from staging track");
-                 removeCarsFromStaging();
-             }
-         }
-         int size = carManager->getList(_train)->size();
-         if (size > 0) {
+    int results = QMessageBox::critical(NULL, tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()), tr("Remove Cars"), QMessageBox::Ok | QMessageBox::Cancel);
+    if (results == QMessageBox::Ok) {
+       log->debug("User requested that cars be removed from staging track");
+        removeCarsFromStaging();
+    }
+   }
+   int size = carManager->getList(_train)->size();
+   if (size > 0)
+   {
 //             if (JOptionPane.showConfirmDialog(NULL, tr("buildCarsResetTrain"),
 //                     size, _train->getName()}), tr("buildResetTrain"),
 //                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-          if(QMessageBox::question(NULL, tr("Reset Train?"), tr("%1 cars have been assigned to train (%2), do you want to release the cars by reset?").arg(size).arg(_train->getName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-          {
-           _train->reset();
-          }
-         }
-         else if ((size = engineManager->getList(_train)->size()) > 0)
-         {
+    if(QMessageBox::question(NULL, tr("Reset Train?"), tr("%1 cars have been assigned to train (%2), do you want to release the cars by reset?").arg(size).arg(_train->getName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    {
+     _train->reset();
+    }
+   }
+   else if ((size = engineManager->getList(_train)->size()) > 0)
+   {
 //             if (JOptionPane.showConfirmDialog(NULL, tr("buildEnginesResetTrain"),
 //                     size, _train->getName()}), tr("buildResetTrain"),
 //                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-          if(QMessageBox::question(NULL, tr("Reset Train?"), tr("%1 engines have been assigned to train (%2), do you want to release the engines by reset?").arg(size).arg(_train->getName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-          {
-           _train->reset();
-          }
-         }
-     }
-     if (_buildReport != NULL) {
-         addLine(_buildReport, ONE, msg);
-         // Write to disk and close buildReport
-         addLine(_buildReport, ONE, tr("Build failed for train (%1)").arg(_train
-                 ->getName()));
-         _buildReport->flush();
-         _buildReport->close();
-     }
+    if(QMessageBox::question(NULL, tr("Reset Train?"), tr("%1 engines have been assigned to train (%2), do you want to release the engines by reset?").arg(size).arg(_train->getName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    {
+     _train->reset();
+    }
+   }
+  }
+  if (_buildReport != NULL)
+  {
+   addLine(_buildReport, ONE, msg);
+   // Write to disk and close buildReport
+   addLine(_buildReport, ONE, tr("Build failed for train (%1)").arg(_train
+           ->getName()));
+   _buildReport->flush();
+   _buildReport->close();
+  }
  }
+
+/*private*/ void TrainBuilder::buildFailed(BuildFailedException e)
+{
+ QString msg = e.getMessage();
+ _train->setBuildFailedMessage(msg);
+ _train->setStatus(Train::CODE_BUILD_FAILED);
+ _train->setBuildFailed(true);
+ log->debug(msg);
+
+ if (TrainManager::instance()->isBuildMessagesEnabled())
+ {
+  if (e.getExceptionType() ==(BuildFailedException::NORMAL))
+  {
+   JOptionPane::showMessageDialog(NULL, msg, tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()), JOptionPane::ERROR_MESSAGE);
+} else {
+   // build error, could not find destinations for cars departing staging
+   //Object[] options = {Bundle.getMessage("buttonRemoveCars"), Bundle.getMessage("ButtonOK")};
+QVariantList options = QVariantList();
+options.append("Remove cars");
+options.append("Ok");
+   int results = JOptionPane::showOptionDialog(NULL, msg, tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()),
+           JOptionPane::DEFAULT_OPTION, JOptionPane::ERROR_MESSAGE, QIcon(), options, options.at(1));
+   if (results == 0)
+   {
+       log->debug("User requested that cars be removed from staging track");
+       removeCarsFromStaging();
+   }
+  }
+  int size = carManager->getList(_train)->size();
+  if (size > 0)
+  {
+   if (JOptionPane::showConfirmDialog(NULL, tr("%1 cars have been assigned to train (%2), do you want to release the cars by reset?").arg(size).arg(_train->getName()),  tr("Reset Train?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION) {
+       _train->reset();
+   }
+  }
+  else if ((size = engineManager->getList(_train)->size()) > 0)
+  {
+   if (JOptionPane::showConfirmDialog(NULL,
+           tr("%1 engines have been assigned to train (%2), do you want to release the engines by reset?").arg(size).arg(_train->getName()),
+           tr("Reset Train?"),
+           JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION) {
+       _train->reset();
+   }
+  }
+ }
+ if (_buildReport != NULL)
+ {
+  addLine(_buildReport, ONE, msg);
+  // Write to disk and close buildReport
+  addLine(_buildReport, ONE, tr("Build failed for train (%1)").arg(_train
+          ->getName()));
+  _buildReport->flush();
+  _buildReport->close();
+ }
+}
 
  /**
   * build has failed due to cars in staging not having destinations this
   * routine removes those cars from the staging track by user request.
   */
- /*private*/ void TrainBuilder::removeCarsFromStaging() {
-     if (_departStageTrack == NULL) {
-         return;
-     }
-     foreach (Car* car, *_carList) {
-         // remove cars from departure staging track that haven't been assigned to this train
-         if (car->getTrack() == _departStageTrack && car->getTrain() == NULL) {
-             // remove track from kernel
-             if (car->getKernel() != NULL) {
-                 foreach (Car* c, car->getKernel()->getCars())
-                     c->setLocation(car->getLocation(), NULL);
-             } else {
-                 car->setLocation(car->getLocation(), NULL);
-             }
-         }
-     }
+ /*private*/ void TrainBuilder::removeCarsFromStaging()
+{
+  if (_departStageTrack == NULL)
+  {
+      return;
+  }
+  foreach (Car* car, *_carList)
+  {
+   // remove cars from departure staging track that haven't been assigned to this train
+   if (car->getTrack() == _departStageTrack && car->getTrain() == NULL)
+   {
+    // remove track from kernel
+    if (car->getKernel() != NULL)
+    {
+     foreach (Car* c, car->getKernel()->getCars())
+         c->setLocation(car->getLocation(), NULL);
+    }
+    else {
+     car->setLocation(car->getLocation(), NULL);
+    }
+   }
+  }
  }
 }

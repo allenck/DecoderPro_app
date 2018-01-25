@@ -164,8 +164,8 @@ virtual QDateTime getStartTime() {return QDateTime();}
     virtual void dispose() {}
 
 signals:
-//    void minuteTick();
-//    void propertyChange(PropertyChangeEvent*);
+    virtual void minuteTick();
+    virtual void propertyChange(PropertyChangeEvent*);
 public slots:
 
 };

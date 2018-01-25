@@ -12,11 +12,12 @@
 ///*public*/ class JsonSignalMastSocketService extends JsonSocketService {
 
 
-/*public*/ JsonSignalMastSocketService::JsonSignalMastSocketService(JsonConnection* connection, QObject* parent): JsonSocketService(connection, parent) {
-    //super(connection);
-    signalMasts = new QMap<QString, SignalMastListener*>();
+/*public*/ JsonSignalMastSocketService::JsonSignalMastSocketService(JsonConnection* connection, QObject* parent): JsonSocketService(connection, parent)
+{
+ //super(connection);
+ signalMasts = new QMap<QString, SignalMastListener*>();
 
-    this->service = new JsonSignalMastHttpService(connection->getObjectMapper());
+ this->service = new JsonSignalMastHttpService(connection->getObjectMapper());
 }
 
 //@Override

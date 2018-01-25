@@ -794,6 +794,30 @@ public URL getURL(URI uri) {
    if(names.contains("catalog.xml") && names.contains("names.xml") && names.contains("decoderIndex.xml"))
    {
     paths->append(info.path());
+    names = QDir(info.absolutePath() + File::separator + "web").entryList(filters,QDir::AllDirs);
+    if(names.contains("xml") && names.contains("prefs") && names.contains("dist"))
+     continue;
+    if(!names.contains("xml"))
+    {
+    // create link to xml dir so that web server can find files there
+    QFile linkDir(info.absolutePath() + File::separator + "xml" );
+     if(!linkDir.link(info.absolutePath() + File::separator + "web" + File::separator + "xml" ))
+      log->error(tr("error creating link to %1 error:%2").arg( linkDir.fileName()).arg(linkDir.error()));
+    }
+    if(!names.contains("prefs"))
+    {
+     // create link to xml dir so that web server can find files there
+     QFile linkDir(FileUtil::getPreferencesPath());
+      if(!linkDir.link(info.absolutePath() + File::separator + "web" + File::separator + "prefs" ))
+       log->error(tr("error creating link to %1 error:%2").arg( linkDir.fileName()).arg(linkDir.error()));
+    }
+    if(!names.contains("dist"))
+    {
+     // create link to xml dir so that web server can find files there
+     QFile linkDir(info.absolutePath() );
+      if(!linkDir.link(info.absolutePath() + File::separator + "web" + File::separator + "dist" ))
+       log->error(tr("error creating link to %1 error:%2").arg( linkDir.fileName()).arg(linkDir.error()));
+    }
     continue; //not expecting any more since we've just found one!
    }
   }
@@ -947,4 +971,34 @@ public URL getURL(URI uri) {
   if(!QFile::copy(source->path, dest->path))
    Logger::error(tr("copy of %1 to %2 failed!").arg(source->path).arg(dest->path) );
  }
+}
+/**
+ * Simple helper method to just append a text string to the end of the given
+ * filename. The file will be created if it does not exist.
+ *
+ * @param file File to append text to
+ * @param text Text to append
+ * @throws java.io.IOException if file cannot be written to
+ */
+/*public*/ void FileUtilSupport::appendTextToFile(File* file, QString text) throw (IOException)
+{
+//    try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
+//        pw.println(text);
+//    }
+ QFile f(file->getPath());
+ QString otext;
+ if(f.open(QIODevice::ReadOnly))
+ {
+  QTextStream is(&f);
+  otext = is.readAll();
+ }
+ f.close();
+ if(f.open(QIODevice::WriteOnly))
+ {
+  QTextStream os(&f);
+  os << otext << text;
+  f.close();
+ }
+ else
+    throw IOException();
 }

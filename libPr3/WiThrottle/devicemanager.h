@@ -8,7 +8,7 @@
 /*public*/ /*interface*/class DeviceManager : public RosterGroupSelector {
  Q_OBJECT
 public:
- inline DeviceManager(QObject* parent) : RosterGroupSelector(parent) {}
+ inline DeviceManager(QWidget* parent) : RosterGroupSelector(parent) {}
 };
 
 
