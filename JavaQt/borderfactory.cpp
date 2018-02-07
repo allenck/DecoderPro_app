@@ -4,7 +4,7 @@
 //{
 
 //}
-#if 0
+
 /**
  * Factory class for vending standard <code>Border</code> objects.  Wherever
  * possible, this factory will hand out references to shared
@@ -16,14 +16,14 @@
  *
  * @author David Kloba
  */
-/*public*/ class BorderFactory
-{
-#endif
+///*public*/ class BorderFactory
+//{
+
     /** Don't let anyone instantiate this class */
     /*private*/ BorderFactory::BorderFactory(QObject* parent)  : QObject(parent){
     }
 
-#if 0
+
 //// LineBorder ///////////////////////////////////////////////////////////////
     /**
      * Creates a line border withe the specified color.
@@ -31,11 +31,10 @@
      * @param color  a <code>Color</code> to use for the line
      * @return the <code>Border</code> object
      */
-    /*public*/ static Border createLineBorder(Color color) {
+    /*public*/ /*static*/ Border* BorderFactory::createLineBorder(QColor color) {
         return new LineBorder(color, 1);
     }
-#endif
-#if 0
+
     /**
      * Creates a line border with the specified color
      * and width. The width applies to all four sides of the
@@ -62,10 +61,10 @@
      * @see LineBorder#LineBorder(Color, int, boolean)
      * @since 1.7
      */
-    /*public*/ /*static*/ Border* createLineBorder(QColor color, int thickness, boolean rounded) {
+    /*public*/ /*static*/ Border* BorderFactory::createLineBorder(QColor color, int thickness, bool rounded) {
         return new LineBorder(color, thickness, rounded);
     }
-#endif
+
 #if 0
 //// BevelBorder /////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

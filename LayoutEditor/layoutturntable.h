@@ -176,7 +176,6 @@ private slots:
   /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
   /*protected*/ void showRayPopUp(QGraphicsSceneMouseEvent* e, int index);
   /*protected*/ void editTurntable(LayoutTurntable* x);
- friend class LayoutTurntable;
  friend class RayTrack;
  friend class LayoutEditor;
 };

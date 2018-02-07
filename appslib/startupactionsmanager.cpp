@@ -173,7 +173,7 @@
    {
     try
     {
-     action->performAction();
+     action->performAction(action->getTitle());
     }
     catch (JmriException ex)
     {

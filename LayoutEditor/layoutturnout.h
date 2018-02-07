@@ -19,6 +19,7 @@
 #include "windowlistener.h"
 #include "exceptions.h"
 
+class QGraphicsEllipseItem;
 class QCloseEvent;
 class JmriJFrame;
 class QDialog;
@@ -377,6 +378,7 @@ QVector<QObject*>* editAdditionalMenu;// = new QVector<QMenuItem*>();
 QVector<QObject*>* viewAdditionalMenu;// = new QVector<QMenuItem*>();
 QGraphicsItemGroup* item;
 QGraphicsItem* rects;
+QGraphicsEllipseItem* circle;
 void invalidate(QGraphicsScene* g2);
 void drawTurnouts(LayoutEditor* editor, QGraphicsScene* g2);
 void drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2);

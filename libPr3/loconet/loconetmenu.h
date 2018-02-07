@@ -22,7 +22,8 @@ public:
  //explicit LocoNetMenu(QWidget *parent = 0);
  /*public*/ LocoNetMenu(LocoNetSystemConnectionMemo* memo, QWidget *parent);
  static LocoNetMenu* instance(LocoNetSystemConnectionMemo* memo, QWidget* parent);
-
+ static LocoNetMenu* instance();
+ QList<LocoNetMenuItem*> getMenuItems();
 signals:
 
 public slots:

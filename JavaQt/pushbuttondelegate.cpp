@@ -59,7 +59,8 @@ void MyDelegate::setText(QString text) {buttonText = text;}
      y = r.top();//the Y coordinate
 //     w = 30;//button width
      w = r.width();
-     h = 30;//button height
+//     h = 30;//button height
+     h = r.height();
      button.rect = QRect(x,y,w,h);
      //button.text = "=^.^=";
 //     if(buttonText != "")

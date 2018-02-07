@@ -7,7 +7,7 @@ class RpsPositionIcon : public PositionableLabel
 {
  Q_OBJECT
 public:
- RpsPositionIcon();
+ RpsPositionIcon(Editor*);
 
 private:
  // store coordinate system information
@@ -15,6 +15,14 @@ private:
 
  double sxScale, syScale;
  int sxOrigin, syOrigin;
+ // display icon for a correct reading
+ QString activeName;// = "resources/icons/smallschematics/tracksegments/circuit-occupied.gif";
+ NamedIcon* active;// = new NamedIcon(activeName, activeName);
+
+ // display icon if the last reading not OK
+ QString errorName;// = "resources/icons/smallschematics/tracksegments/circuit-error.gif";
+ NamedIcon* error;// = new NamedIcon(errorName, errorName);
+
 };
 
 #endif // RPSPOSITIONICON_H

@@ -47,7 +47,7 @@ public slots:
     void showDoneButton_clicked();
 private:
     static const int STRUT_SIZE = 10;
-
+    void common();
     /*private*/ QMenu* _circuitMenu;
     /*private*/ QMenu* _todoMenu;
 

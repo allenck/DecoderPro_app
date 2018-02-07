@@ -353,6 +353,8 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
    QString className = QString(model->metaObject()->className());
    StartupModelFactory* factory = this->manager->getFactories(className);
    QString descr = factory->getDescription();
+   if(className == "PerformActionModel")
+    descr.append(" " + model->getTitle());
    return descr;
   }
    default:

@@ -7,7 +7,7 @@ SaveRestoreDialog::SaveRestoreDialog(bool bSaveMode, LocoIOData* data, QWidget *
 {
  ui->setupUi(this);
  ui->lblHelp->setText("");
- this->_defaults = _defaults;
+ this->_defaults = new QList<int>();//_defaults;
  this->bSaveMode = bSaveMode;
  this->data = data;
  if(!bSaveMode)

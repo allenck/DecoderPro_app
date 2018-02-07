@@ -5,6 +5,7 @@
 #include "startupactionfactory.h"
 #include "startupmodelfactory.h"
 #include "abstractaction.h"
+#include "loconetmenu.h"
 
 StartupActionModelUtil::StartupActionModelUtil(QObject* parent) : Bean(parent)
 {
@@ -114,6 +115,7 @@ entry.next();
  return NULL;
 }
 
+
 //@CheckForNull
 /*public*/ QStringList StartupActionModelUtil::getNames()
 {
@@ -153,7 +155,14 @@ entry.next();
  }
  ActionAttributes* attrs =  new ActionAttributes(name, clazz);
  actions->insert(clazz, attrs);
- this->firePropertyChange("length", NULL, NULL);
+ this->firePropertyChange("length", QVariant(), QVariant());
+}
+
+/*public*/ void StartupActionModelUtil::addAction(Class* clazz, QString name)
+{
+ ActionAttributes* attrs =  new ActionAttributes(name, clazz);
+ actions->insert(clazz, attrs);
+ this->firePropertyChange("length", QVariant(), QVariant());
 }
 
 /*public*/ void StartupActionModelUtil::removeAction(/*@NonNULL*/ QString strClass) throw (ClassNotFoundException)
@@ -255,6 +264,12 @@ entry.next();
   actionListBundle.insert("jmri.jmrix.loconet.locormi.LnMessageServerAction", "Start LocoNet Server");
   actionListBundle.insert("jmri.web.server.WebServerAction", "Start Web Server");
 
+  // add selected actions in the LocoNetMenu
+  actionListBundle.insert("LocoNetMenuStartupAction", "Monitor LocoNet");
+  actionListBundle.insert("LocoNetMenuStartupAction", "Monitor Slots");
+  actionListBundle.insert("LocoNetMenuStartupAction", "Clock Monitor");
+  actionListBundle.insert("LocoNetMenuStartupAction", "Monitor LocoNet Stats");
+
   foreach(QString key, actionListBundle.keys())
   {
    try
@@ -263,10 +278,13 @@ entry.next();
     ((AbstractAction*)clazz)->setClassname(key);
     ActionAttributes* attrs = new ActionAttributes(actionListBundle.value(key), clazz);
     actions->insert(clazz, attrs);
+    if(key == "LocoNetMenuStartupAction")
+     ((AbstractAction*)clazz)->setText(key);
    } catch (ClassNotFoundException ex) {
     log->error(tr("Did not find class \"%1\"").arg(key));
    }
   }
+
 #if 0
    QStringList factoryList = QStringList();
    factoryList << "PerformActionModelFactory" << "StartupPauseFactory" <<

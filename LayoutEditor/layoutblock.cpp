@@ -1124,7 +1124,6 @@ void LayoutBlock::sensorDebounceGlobalCheck_clicked()
 }
 
 
-#if 1 // TODO:
 void LayoutBlock::blockEditDonePressed(ActionEvent* /*a*/)
 {
  bool needsRedraw = false;
@@ -1249,7 +1248,7 @@ void LayoutBlock::blockEditCancelPressed(ActionEvent* /*a*/) {
     //editLayoutBlockFrame->dispose();
     editLayoutBlockFrame = NULL;
 }
-#endif
+
 /*private*/ void LayoutBlock::initializeColorCombo(QComboBox* colorCombo) {
  colorCombo->clear();
  for (int i = 0;i<numColors;i++)
@@ -1490,12 +1489,11 @@ void LayoutBlock::setBlockMetric(){
   {
    if(enableAddRouteLogging)
     log->info("From " + this->getDisplayName() + " block is attached " + attachedBlocks->at(i)->getDisplayName());
-#if 1 // TODO:
+
    for (int x = 0;x<attachedBlocks2->size(); x++)
    {
     addThroughPath(attachedBlocks->at(i)->getBlock(), attachedBlocks2->at(x)->getBlock(), panel);
    }
-#endif
   }
  }
 }
@@ -2402,7 +2400,7 @@ void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock, LayoutEditor*
     /* We change the logging level to fatal in the connectivity Util as we are testing all possible
     combinations including those that are invalid which would generate errors */
     org.apache.log4j.Logger connectionLog = org.apache.log4j.Logger->getLogger(connection.getClass().getName());
-    org.apache.log4j.Level currentLevel = connectionLog.getLevel();
+    Level* currentLevel = connectionLog.getLevel();
 
     try{
         connectionLog.setLevel(org.apache.log4j.Level.FATAL);
@@ -3185,7 +3183,7 @@ void LayoutBlock::updateRoutingInfo(LayoutBlock* src, RoutingPacket* update)
                     if(enableUpdateRouteLogging)
                         log->info("From " + this->getDisplayName() + " update metric for route " + nRo->getDestBlock()->getDisplayName() + " from " + QString("%1").arg(nRo->getLength()) + " to " + QString("%1").arg(updateLength));
                     nRo->setLength(updateLength);
-#if 0 // TODO: getThroughPathDestinationBySource is a member of ThroughPaths
+#if 1 // TODO: getThroughPathDestinationBySource is a member of ThroughPaths
                     QVector<Block*>* messageRecipients = getThroughPathDestinationBySource(srcblk);
                     RoutingPacket* newUpdate = new RoutingPacket(UPDATE, nRo->getDestBlock(), -1, -1, updateLength+block->getLengthMm(), -1, getNextPacketID());
                     updateRoutesToNeighbours(messageRecipients, nRo, newUpdate);

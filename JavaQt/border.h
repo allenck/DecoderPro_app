@@ -64,5 +64,10 @@ public:
      * background when painting.
      */
     virtual bool isBorderOpaque() {return false;}
+    virtual /*public*/ int lineWidth() {return 1;}
+    virtual /*public*/ QColor color() {return QColor(Qt::black);}
+    virtual /*public*/ bool roundedCorners() {return false;}
+
+
 };
 #endif // BORDER_H

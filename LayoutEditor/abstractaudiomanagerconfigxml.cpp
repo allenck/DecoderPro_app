@@ -284,10 +284,10 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
  *
  * @param audio The top-level element being created
  */
-/*abstract*/ /*public*/ void AbstractAudioManagerConfigXML::setStoreElementClass(QDomElement audio) {}
+/*abstract*/ /*public*/ void AbstractAudioManagerConfigXML::setStoreElementClass(QDomElement /*audio*/) {}
 
 //@Override
-/*public*/ void AbstractAudioManagerConfigXML::load(QDomElement element, QObject* o)  throw (Exception)
+/*public*/ void AbstractAudioManagerConfigXML::load(QDomElement /*element*/, QObject* /*o*/)  throw (Exception)
 {
  log->error("Invalid method called");
 }
@@ -300,7 +300,7 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
  * @return true if successful
  */
 //@Override
-/*abstract*/ /*public*/ bool AbstractAudioManagerConfigXML::load(QDomElement audio) throw (Exception){return false;}
+/*abstract*/ /*public*/ bool AbstractAudioManagerConfigXML::load(QDomElement /*audio*/) throw (Exception){return false;}
 
 /**
  * Utility method to load the individual Audio objects. If there's no
@@ -313,7 +313,7 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
 /*public*/ void AbstractAudioManagerConfigXML::loadAudio(QDomElement audio)
 {
 
- AudioManager* am = InstanceManager::audioManagerInstance();
+ AudioManager* am = (AudioManager*)InstanceManager::getDefault("AudioManager");
 
  // Count number of loaded Audio objects
  int loadedObjects = 0;

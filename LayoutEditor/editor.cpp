@@ -59,6 +59,7 @@
 #include "layouteditor.h"
 #include "controlpaneleditor.h"
 #include "paneleditor.h"
+#include "rpspositionicon.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -541,6 +542,7 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
   }
  }
 }
+
 /*public*/ bool Editor::allPositionable()
 {
     return _positionable;
@@ -563,6 +565,7 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
   }
  }
 }
+
 /*public*/ bool Editor::allControlling() {
     return _controlLayout;
 }
@@ -659,41 +662,41 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
     }
     return this->panelMenuIsVisible;
 }
-#if 0
-/*protected*/ void setScroll(int state) {
+#if 1
+/*protected*/ void Editor::setScroll(int state) {
     if (_debug) log->debug("setScroll "+state);
     switch (state) {
         case SCROLL_NONE:
-            _panelScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-            _panelScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+            editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
             break;
         case SCROLL_BOTH:
-            _panelScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            _panelScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+     editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+     editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
             break;
         case SCROLL_HORIZONTAL:
-            _panelScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-            _panelScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+     editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+     editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
             break;
         case SCROLL_VERTICAL:
-            _panelScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            _panelScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+     editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+     editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
             break;
     }
     _scrollState = state;
 }
 
-/*public*/ void setScroll(QString strState) {
+/*public*/ void Editor::setScroll(QString strState) {
     int state = SCROLL_BOTH;
-    if (strState==IgnoreCase("none") || strState==IgnoreCase("no")) state = SCROLL_NONE;
+    if (strState.toLower()=="none" || strState.toLower()=="no") state = SCROLL_NONE;
     else if (strState==("horizontal")) state = SCROLL_HORIZONTAL;
     else if (strState==("vertical")) state = SCROLL_VERTICAL;
-    if (_debug) log->debug("setScroll: strState= "+strState+", state= "+state);
+    if (_debug) log->debug("setScroll: strState= "+strState+", state= "+QString::number(state));
     setScroll(state);
 }
 
 
-/*public*/ QString getScrollable() {
+/*public*/ QString Editor::getScrollable() {
     QString value = "";
     switch (_scrollState) {
         case SCROLL_NONE:
@@ -900,15 +903,15 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
   MemoryIcon* pm = (MemoryIcon*) p;
   edit->addAction(new QAction("x= " + QString("%1").arg(pm->getOriginalX()),this));
   edit->addAction(new QAction("y= " + QString("%1").arg(pm->getOriginalY()), this));
-  CoordinateEdit* ce = new CoordinateEdit();
-  edit->addAction(CoordinateEdit::getCoordinateEditAction(pm,ce));
+  //CoordinateEdit* ce = new CoordinateEdit();
+  edit->addAction(CoordinateEdit::getCoordinateEditAction(pm, this));
  }
  else
  {
   edit->addAction(new QAction("x= " + QString("%1").arg(p->getX()),this));
   edit->addAction(new QAction("y= " + QString("%1").arg(p->getY()),this));
-  CoordinateEdit* ce = new CoordinateEdit();
-  edit->addAction(CoordinateEdit::getCoordinateEditAction(p,ce));
+  //CoordinateEdit* ce = new CoordinateEdit();
+  edit->addAction(CoordinateEdit::getCoordinateEditAction(p, this));
  }
  popup->addMenu(edit);
  return true;
@@ -956,8 +959,7 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
  PositionableLabel* ps = qobject_cast<PositionableLabel*>(p);
  if(ps != NULL)
   edit->addAction(new QAction(tr("level= ") + QString("%1").arg(ps->getDisplayLevel()),this));
- CoordinateEdit* coordinateEdit = new CoordinateEdit();
- edit->addAction(CoordinateEdit::getLevelEditAction(p, coordinateEdit));
+ edit->addAction(CoordinateEdit::getLevelEditAction(p, this));
  popup->addMenu(edit);
 }
 
@@ -2281,10 +2283,10 @@ void Editor::putBackground() {
  putItem((Positionable*)l);
  l->paint(editScene);
 }
-#if 0
+#if 1
 /*protected*/ void Editor::addRpsReporter() {
     RpsPositionIcon* l = new RpsPositionIcon(this);
-    l->setSize(l->getPreferredSize().width, l->getPreferredSize().height);
+    l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
     l->setDisplayLevel(SENSORS);
     setNextLocation(l);
     putItem(l);
@@ -3525,6 +3527,7 @@ abstract /*protected*/ void copyItem(Positionable p);
      QList<QGraphicsItem*> list = _selectRectItemGroup->childItems();
      foreach (QGraphicsItem* it, list)
      {
+      _selectRectItemGroup->scene()->removeItem(it);
       _selectRectItemGroup->removeFromGroup(it);
      }
     }

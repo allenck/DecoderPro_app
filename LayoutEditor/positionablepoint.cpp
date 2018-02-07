@@ -430,7 +430,7 @@ void removeSML(QString signalMast){
  {
  case ANCHOR:
  {
-  popup->addAction(new QAction(tr("Anchor"),this));
+  popup->addAction(new QAction(tr("Anchor ")+ getID(),this));
   LayoutBlock* block1 = NULL;
   LayoutBlock* block2 = NULL;
   if (connect1!=NULL) block1 = connect1->getLayoutBlock();
@@ -450,7 +450,7 @@ void removeSML(QString signalMast){
  }
  case END_BUMPER:
  {
-  popup->addAction(new QAction(tr("End Bumper"),this));
+  popup->addAction(new QAction(tr("End Bumper ")+ getID() ,this));
   LayoutBlock* blockEnd = NULL;
   if (connect1!=NULL) blockEnd = connect1->getLayoutBlock();
   if (blockEnd!=NULL)

@@ -47,6 +47,14 @@
 //this(tr("TitleListedTable"));
  common();
 }
+
+/*public*/ ListedTableFrame::ListedTableFrame(QString s, QWidget* parent)
+ : BeanTableFrame(s, parent)
+{
+ //super(s);
+ common();
+}
+
 void ListedTableFrame::common()
 {
  setObjectName("ListedTableFrame");
@@ -56,14 +64,8 @@ void ListedTableFrame::common()
  lastSelectedItem = NULL;
  thisLayout = new QVBoxLayout(getContentPane());
  statusBar()->show();
-}
 
-/*public*/ ListedTableFrame::ListedTableFrame(QString s, QWidget* parent)
- : BeanTableFrame(s, parent)
-{
- //super(s);
- common();
- if (InstanceManager::getDefault("ListedTableFrame") == NULL) {
+ if (InstanceManager::getNullableDefault("ListedTableFrame") == NULL) {
     //We add this to the instanceManager so that other components can add to the table
     InstanceManager::store(this, "ListedTableFrame");
  }
@@ -99,7 +101,7 @@ void ListedTableFrame::common()
  detailpanel = new QStackedWidget();
  detailpanel->setObjectName("detailPanel");
  detailpanel->resize(600,600);
- QVBoxLayout* detailPanelLayout;
+ //QVBoxLayout* detailPanelLayout;
  //detailpanel->setLayout(detailPanelLayout = new QVBoxLayout()); // Java CardLayout
  //QVBoxLayout* detailPanelLayout = new QVBoxLayout(detailpanel);
  tabbedTableArray = new QList<LTFTabbedTableItem*>(); //(TabbedTableItemListArrayArray->size());
@@ -124,6 +126,7 @@ void ListedTableFrame::common()
   removeItem->append(item);
   }
   detailpanel->adjustSize();
+  setHidden(true);
  }
 
  foreach (TabbedTableItemListArray* dead, *removeItem) {

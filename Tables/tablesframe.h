@@ -2,27 +2,27 @@
 #define TABLEFRAME_H
 
 #include <QMainWindow>
-#include "turnoutwidget.h"
-#include "sensorwidget.h"
+//#include "turnoutwidget.h"
+//#include "sensorwidget.h"
 #include <QListWidgetItem>
-#include "reporterwidget.h"
-#include "memorywidget.h"
-#include "blockwidget.h"
-#include "idtagswidget.h"
-#include "routewidget.h"
-#include "lightwidget.h"
-#include "signalheadwidget.h"
-#include "signalmastwidget.h"
-#include "signalgroupswidget.h"
-#include "signalmastlogicwidget.h"
-#include "lroutewidget.h"
-#include "logixwidget.h"
+//#include "reporterwidget.h"
+//#include "memorywidget.h"
+//#include "blockwidget.h"
+//#include "idtagswidget.h"
+//#include "routewidget.h"
+//#include "lightwidget.h"
+//#include "signalheadwidget.h"
+//#include "signalmastwidget.h"
+//#include "signalgroupswidget.h"
+//#include "signalmastlogicwidget.h"
+//#include "lroutewidget.h"
+//#include "logixwidget.h"
 #include <QMenuBar>
-#include "sectionwidget.h"
-#include "transitwidget.h"
+//#include "sectionwidget.h"
+//#include "transitwidget.h"
 #include "../LayoutEditor/jmrijframe.h"
 #include "audiotableframe.h"
-#include "audiowidget.h"
+//#include "audiowidget.h"
 #include "libtables_global.h"
 
 namespace Ui {
@@ -61,20 +61,20 @@ private:
     QWidget* currWidget;
     QWidget* sensorWidget;
     SensorTableTabAction* stAct;
-    ReporterWidget* reporterWidget;
-    MemoryWidget* memoryWidget;
-    BlockWidget* blockWidget;
-    IdTagsWidget* idTagsWidget;
-    RouteWidget* routeWidget;
-    LightWidget* lightWidget;
-    SignalHeadWidget* signalHeadWidget;
-    SignalMastWidget* signalMastWidget;
-    SignalGroupsWidget* signalGroupsWidget;
-    SignalMastLogicWidget* signalMastLogicWidget;
-    LRouteWidget* lRouteWidget;
-    LogixWidget* logixWidget;
-    SectionWidget* sectionWidget;
-    TransitWidget* transitWidget;
+//    ReporterWidget* reporterWidget;
+//    MemoryWidget* memoryWidget;
+//    BlockWidget* blockWidget;
+//    IdTagsWidget* idTagsWidget;
+//    RouteWidget* routeWidget;
+//    LightWidget* lightWidget;
+//    SignalHeadWidget* signalHeadWidget;
+//    SignalMastWidget* signalMastWidget;
+//    SignalGroupsWidget* signalGroupsWidget;
+//    SignalMastLogicWidget* signalMastLogicWidget;
+//    LRouteWidget* lRouteWidget;
+//    LogixWidget* logixWidget;
+//    SectionWidget* sectionWidget;
+//    TransitWidget* transitWidget;
     AudioTablePanel* audioTablePanel;
     //AudioWidget* audioWidget;
     AudioTableAction* audioTableAction;

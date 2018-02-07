@@ -4,6 +4,7 @@
 #include "exceptions.h"
 #include "class.h"
 
+class AbstractAction;
 class ActionAttributes;
 class Logger;
 class StartupActionModelUtil : public Bean
@@ -20,6 +21,7 @@ public:
  /*public*/ QStringList getNames();
  /*public*/ QVector<Class*> getClasses();
  /*public*/ void addAction(/*@NonNULL*/ QString strClass, /*@NonNULL*/ QString name) throw (ClassNotFoundException);
+ /*public*/ void addAction(Class* clazz, QString name);
  /*public*/ void removeAction(/*@NonNULL*/ QString strClass) throw (ClassNotFoundException);
  /*public*/ QString getOverride(/*@Nullable */QString name);
 

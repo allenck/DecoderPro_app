@@ -10,6 +10,7 @@
 #include "signalmastmanager.h"
 #include "signalmastlogicmanager.h"
 #include "createeditblock.h"
+#include "mathutil.h"
 
 //LayoutSlip::LayoutSlip(QObject *parent) :
 //    LayoutTurnout(parent)
@@ -1074,6 +1075,7 @@ void LayoutSlip::on_removeAction_triggered()
  needsBlockUpdate = false;
 }
 #endif
+
 void LayoutSlip::drawSlipState(int state, QPainter* painter)
 {
  int ctrX = 20;
@@ -1191,6 +1193,19 @@ painter->setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin))
        layoutEditor->third(D,B));
   }
  }
+}
+
+/*public*/ void LayoutSlip::drawSlipCircles(EditScene* g2) {
+    double circleRadius = controlPointSize * layoutEditor->getTurnoutCircleSize();
+    QPointF leftCenter = MathUtil::midpoint(getCoordsA(), getCoordsB());
+    double leftFract = circleRadius / MathUtil::distance(center,leftCenter);
+    QPointF leftCircleCenter = MathUtil::lerp(center, leftCenter, leftFract);
+    g2->addItem(layoutEditor->turnoutCircleAt(leftCircleCenter));
+
+    QPointF rightCenter =MathUtil:: midpoint(getCoordsC(), getCoordsD());
+    double rightFract = circleRadius / MathUtil::distance(center, rightCenter);
+    QPointF rightCircleCenter = MathUtil::lerp(center, rightCenter, rightFract);
+    g2->addItem(layoutEditor->turnoutCircleAt(rightCircleCenter));
 }
 
 //class SampleStates extends QWidget {

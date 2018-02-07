@@ -116,15 +116,20 @@
  //this(saveSize, savePosition);
  init(saveSize, savePosition);
 
- setWindowTitle(name);
+ setTitle(name);
 #if 1
  generateWindowRef();
- if (metaObject()->className()==("JmriJFrame")){
+ if (QString(metaObject()->className())==("JmriJFrame")){
      if ((this->windowTitle()==NULL) || (this->windowTitle()==("")))
          return;
  }
  setFrameLocation();
 #endif
+}
+
+/*public*/ JmriJFrame::~JmriJFrame()
+{
+ dispose();
 }
 
 void JmriJFrame::init(bool saveSize, bool savePosition)
@@ -219,15 +224,15 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  setFrameLocation();
 }
 
-#if 0
+#if 1
 /**
  * Remove this window from e.g. the Windows Menu
  * by removing it from the list of active JmriJFrames
  */
-/*public*/ void makePrivateWindow() {
-    synchronized (list) {
-        list.remove(this);
-    }
+/*public*/ void JmriJFrame::makePrivateWindow() {
+//    synchronized (list) {
+        frameList->removeOne(this);
+//    }
 }
 #endif
 void JmriJFrame::setFrameLocation()
@@ -265,7 +270,7 @@ void JmriJFrame::setFrameLocation()
   for(int i = 0; i<frameList->size();i++)
   {
    JmriJFrame* j = frameList->at(i);
-   if(j->metaObject()->className()==(this->metaObject()->className())
+   if(QString(j->metaObject()->className())== QString(this->metaObject()->className())
        && (j->isMinimized()) && (j->isVisible())
            && j->windowTitle()==(windowTitle()))
    {
@@ -302,7 +307,7 @@ void JmriJFrame::setFrameLocation()
   JmriJFrame* j = frameList->at(i);
   if(j == NULL)
    continue;
-  if(j!=this && j->getWindowFrameRef()==(ref))
+  if(j != this && j->getWindowFrameRef() == (ref))
   {
       ref = initref+":"+QString::number(refNo);
       refNo++;
@@ -852,6 +857,11 @@ private bool escapeKeyActionClosesWindow = false;
 /*public*/ void windowIconified(java.awt.event.WindowEvent e) {}
 /*public*/ void windowDeiconified(java.awt.event.WindowEvent e) {}
 #endif
+//@Override
+/*public*/ void JmriJFrame::windowClosing(QCloseEvent* e) {
+    handleModified();
+}
+
 #if 0
 /*public*/ void componentHidden(java.awt.event.ComponentEvent e) {}
 #endif
@@ -926,7 +936,8 @@ bool MyAbstractShutDownTask::execute()
  /*synchronized (list)*/
  {
   //QMutexLocker locker(&mutex);
-  frameList->removeAt(frameList->indexOf(this));
+  if(frameList->indexOf(this) >=0);
+   frameList->removeOne(this);
  }
  JFrame::dispose();
  //close();
@@ -1053,22 +1064,22 @@ void JmriJFrame::setLocation(int x, int y)
         return name;
     }
 
-    /**
-     * Sets the name of the component to the specified string.
-     * @param name  the string that is to be this
-     *           component's name
-     * @see #getName
-     * @since JDK1.1
-     */
-    /*public*/ void JmriJFrame::setName(QString name) {
-        QString oldName;
-        /*synchronized(getObjectLock())*/ {
-            oldName = this->name;
-            this->name = name;
+/**
+ * Sets the name of the component to the specified string.
+ * @param name  the string that is to be this
+ *           component's name
+ * @see #getName
+ * @since JDK1.1
+ */
+/*public*/ void JmriJFrame::setName(QString name) {
+    QString oldName;
+    /*synchronized(getObjectLock())*/ {
+        oldName = this->name;
+        this->name = name;
 //            nameExplicitlySet = true;
-        }
-//        firePropertyChange("name", oldName, name);
     }
+//        firePropertyChange("name", oldName, name);
+}
 void JmriJFrame::setWindowTitle(const QString &title)
 {
  setTitle(title);

@@ -128,7 +128,7 @@ SignalHeadTableAction::SignalHeadTableAction(QObject *parent) :
  prefixBox = new QComboBox();
  prefixBoxLabel = new QLabel("System : ");
  vtLabel = new QLabel("");
- defaultFlow = new QFormLayout();
+ defaultFlow = new FlowLayout();
  s1Box = new QComboBox(/*turnoutStates*/);
  s1Box->addItems(turnoutStates);
  s2Box = new QComboBox(/*turnoutStates*/);

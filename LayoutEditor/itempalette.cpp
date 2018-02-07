@@ -70,10 +70,11 @@ void ItemPalette::init()
  resize(551, 600);
  //setMinimumSize(500,600);
 }
+
 void ItemPalette::changeEvent(QEvent * e)
 {
  if(e->type() == QEvent::ActivationChange)
-   pack();
+   adjustSize();
 }
 
 /**
@@ -82,7 +83,6 @@ void ItemPalette::changeEvent(QEvent * e)
 /*public*/ /*static*/ void ItemPalette::storeIcons()
 {
   Logger* log = new Logger("ItemPalette");
- #if 1
  if (_iconMaps==NULL)
  {
   return;     // never loaded
@@ -124,14 +124,12 @@ void ItemPalette::changeEvent(QEvent * e)
   root->add(typeNode);
   if (log->isDebugEnabled()) log->debug("Add IndicatorTO node "+iter.key());
  }
-#endif
 }
 
 /*static*/ CatalogTreeNode* ItemPalette::store3levelMap(QString type, QHash<QString, QHash<QString, NamedIcon*>*>* familyMap)
 {
  Logger* log = new Logger("ItemPalette");
  CatalogTreeNode* typeNode = new CatalogTreeNode(type);
-#if 1
  QHashIterator<QString, QHash<QString, NamedIcon*>*>  iter (*familyMap);
  while (iter.hasNext())
  {
@@ -151,7 +149,6 @@ void ItemPalette::changeEvent(QEvent * e)
   typeNode->add(familyNode);
   if (log->isDebugEnabled()) log->debug("Add familyNode "+familyNode->objectName());
  }
-#endif
  return typeNode;
 }
 
@@ -288,7 +285,6 @@ void ItemPalette::changeEvent(QEvent * e)
    QDomNodeList families = typeList.at(i).toElement().childNodes();
    // detect this is a 4 level map collection.
    // not very elegant (i.e. extensible), but maybe all that's needed.
-#if 1
    if (typeName==("IndicatorTO"))
    {
     QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* familyTOMap =
@@ -298,7 +294,6 @@ void ItemPalette::changeEvent(QEvent * e)
                         " indicatorTO families to item type "+typeName+" to _indicatorTOMaps.");
    }
    else
-#endif
    {
     QHash<QString, QHash<QString, NamedIcon*>*>* familyMap = loadDefaultFamilyMap(families);
     _iconMaps->insert(typeName, familyMap);
@@ -396,6 +391,7 @@ void ItemPalette::changeEvent(QEvent * e)
 
     QWidget* itemPaletteWidget = new QWidget;
     setObjectName(QString::fromUtf8("ItemPaletteWidget"));
+    QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
     resize(494, 846);
     QVBoxLayout* itemPaletteWidgetLayout = new QVBoxLayout;
     itemPaletteWidget->setLayout(itemPaletteWidgetLayout);
@@ -420,7 +416,6 @@ void ItemPalette::changeEvent(QEvent * e)
     scrollArea->setWidgetResizable(true);
     //_tabPane->addTab(/*new QScrollArea*/(itemPanel),tr("Turnout"));
     _tabPane->addTab(scrollArea,tr("Turnout"));
-
     _tabIndex->insert("Turnout", itemPanel);
 
     itemPanel = new TableItemPanel(this, "Sensor", NULL,
@@ -545,18 +540,20 @@ void ItemPalette::changeEvent(QEvent * e)
 
 //    horizontalLayout_ItemPalette->addWidget(scrollArea);
     itemPaletteWidgetLayout->addWidget(_tabPane);
-    setCentralWidget(itemPaletteWidget);
+    thisLayout->addWidget(itemPaletteWidget);
     //pack();
 
     _tabPane->setCurrentIndex(1);
     //QTimer::singleShot(50, this, SLOT(tabPaneChanged(int)));
     adjustSize();
+    setHidden(true);
     connect(_tabPane, SIGNAL(currentChanged(int)), this, SLOT(tabPaneChanged(int)));
 //        System.out.println("Palette built in "+ (System.currentTimeMillis()-t)+ " milliseconds.");
 }
+
 void ItemPalette::tabPaneChanged(int = 0)
 {
- pack();
+ adjustSize();
 }
 
 /*public*/ void ItemPalette::stateChanged(ChangeEvent* e) {

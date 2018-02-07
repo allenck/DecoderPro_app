@@ -50,17 +50,17 @@ JmriJFrameServlet::JmriJFrameServlet()
 //        urlPatterns = {"/frame"})
 ///*public*/ class JmriJFrameServlet extends HttpServlet {
 
-void JmriJFrameServlet::sendClick(QString name, QWidget* c, int xg, int yg, QWidget* FrameContentPane) {  // global positions
+void JmriJFrameServlet::sendClick(QString /*name*/, QWidget* c, int xg, int yg, QWidget* FrameContentPane) {  // global positions
     int x = xg - c->pos().x();
     int y = yg - c->pos().y();
     log->debug(tr("component is %1 - %2").arg(c->metaObject()->className()).arg(c->objectName()));
     log->debug(tr("Local click at %1,%2").arg(x).arg(y));
 
-    if (c->metaObject()->className()==("QPushButton")) {
+    if (QString(c->metaObject()->className())==("QPushButton")) {
         ((QAbstractButton*) c)->click();
-    } else if (c->metaObject()->className()==("QCheckBox")) {
+    } else if (QString(c->metaObject()->className())==("QCheckBox")) {
         ((QAbstractButton*) c)->click();
-    } else if (c->metaObject()->className()==("QRadioButton")) {
+    } else if (QString(c->metaObject()->className())==("QRadioButton")) {
         ((QAbstractButton*) c)->click();
     }
 #if 0

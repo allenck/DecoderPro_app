@@ -2246,7 +2246,6 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 void LayoutBlockManager::setLastRoutingChange()
 {
  lastRoutingChange = QDateTime::currentMSecsSinceEpoch();
- //lastRoutingChange = 0; // TODO:
  stabilised = false;
  setRoutingStabilised();
 }

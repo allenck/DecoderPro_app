@@ -676,7 +676,7 @@ protected void paintTargetPanel(Graphics g) {
     {
      pasteItemPopUp(event);
     }
-    else if (_selectionGroup!=NULL)
+    else if (_selectionGroup!=NULL && !_selectionGroup->isEmpty())
     {
      showMultiSelectPopUp(event, _currentSelection);
     }
@@ -1099,6 +1099,8 @@ protected void paintTargetPanel(Graphics g) {
 {
  QMenu* popup = new QMenu();
  QAction* copy = new QAction("Copy",this); // changed "edit" to "copy"
+ if(p == NULL)
+  return;
  if (((PositionableLabel*)p)->isPositionable())
  {
   setShowAlignmentMenu(p, popup);

@@ -381,7 +381,11 @@ NamedIcon* LightIcon::getIcon(QString sState)
  {
   QList<QGraphicsItem*> l = _itemGroup->childItems();
   foreach(QGraphicsItem* item, l)
+  {
+   if(_itemGroup->scene())
+    _itemGroup->scene()->removeItem(item);
    _itemGroup->removeFromGroup(item);
+  }
  }
  else
    _itemGroup = new MyGraphicsItemGroup;

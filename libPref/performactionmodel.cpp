@@ -44,3 +44,7 @@ PerformActionModel::PerformActionModel(QObject *parent) :
     return l;
 }
 /*static*/ QList<PerformActionModel*> PerformActionModel::l =  QList<PerformActionModel*>();
+
+QString PerformActionModel::getTitle() { return title;}
+void PerformActionModel::setTitle(QString title) {this->title = title;}
+

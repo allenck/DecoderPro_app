@@ -16,15 +16,15 @@
 //{
 //}
 /**
- * <p>This class handles text attributes for Positionables.
- * Font size, style and color.
- * Margin size and color,
- * Border size and color,
- * Fixed sizes.
+ * <p>
+ * This class handles text attributes for Positionables. Font size, style and
+ * color. Margin size and color, Border size and color, Fixed sizes.
  * Justification.
  * </p>
- * @author  Pete Cressman copyright (C) 2010
- * @version $I $
+ *
+ * moved from PositionableLabel
+ *
+ * @author Pete Cressman copyright (C) 2010
  */
 ///*public*/ class PositionablePopupUtil {
 
@@ -89,6 +89,7 @@
     return _parent->getNameString()+": fixedWidth= "+QString("%1").arg(fixedWidth)+", fixedHeight= "+QString("%1").arg(fixedHeight)+
              ", margin= "+QString("%1").arg(margin)+", borderSize= "+QString("%1").arg(borderSize);
 }
+
 void PositionablePopupUtil::init()
 {
  log = new Logger("PositionalPopupUtil");

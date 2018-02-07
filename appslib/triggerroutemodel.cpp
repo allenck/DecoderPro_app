@@ -44,7 +44,7 @@ TriggerRouteModel::TriggerRouteModel()
 }
 
 //@Override
-/*public*/ void TriggerRouteModel::performAction() throw (JmriException) {
+/*public*/ void TriggerRouteModel::performAction(QString) throw (JmriException) {
     log->info(tr("Setting route \"%1\" at startup.").arg(this->getUserName()));
 
     try {

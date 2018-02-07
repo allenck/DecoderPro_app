@@ -5,6 +5,7 @@
 #include "liblayouteditor_global.h"
 #include <QComboBox>
 
+class EditScene;
 class TestState;
 class JmriBeanComboBox;
 class InstanceManager;
@@ -186,6 +187,7 @@ public:
     /*public*/ QVector<QString>* getBlockBoundaries();
     /*public*/ QObject* getConnection(int location) throw (JmriException);
     /*public*/ void setConnection(int location, QObject* o, int type) throw (JmriException);
+    /*public*/ void drawSlipCircles(EditScene* g2);
 
 signals:
     

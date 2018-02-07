@@ -12,6 +12,8 @@
 #include "sensor.h"
 #include "instancemanager.h"
 #include "namedbeanhandlemanager.h"
+#include "jpanel.h"
+#include "borderfactory.h"
 
 //MultiSensorIconAdder::MultiSensorIconAdder(QWidget *parent) :
 //    IconAdder(parent)
@@ -164,11 +166,11 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
   //k->setName(key);
   k->setVisible(false);
   p3->layout()->addWidget(k);
-  QFrame* p4 = new QFrame();
+  JPanel* p4 = new JPanel();
   p4->setLayout(new QHBoxLayout);
   p4->layout()->addWidget(new QLabel(tr("Sensor")));
   p3->layout()->addWidget(p4);
-  p4 = new QFrame();
+  p4 = new JPanel();
   p4->setLayout(new QHBoxLayout);
   NamedBeanHandle<Sensor*>* sensor = _sensorMap->value(key);
   QString name = tr("undefined");
@@ -182,9 +184,9 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
         }*/
    color = QColor(Qt::black);
   }
-  //p4.setBorder(BorderFactory.createLineBorder(color));
-  p4->setFrameStyle(QFrame::Panel | QFrame::Plain);
-  p4->setLineWidth(2);
+  p4->setBorder(BorderFactory::createLineBorder(color));
+  //p4->setFrameStyle(QFrame::Panel | QFrame::Plain);
+  //p4->setLineWidth(2);
   QPalette* palette = new QPalette();
   palette->setColor(QPalette::Foreground,color);
   p4->setPalette(*palette);
@@ -198,13 +200,13 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
   p13->layout()->addWidget(p3);
   p13->layout()->addWidget(p1);
 
-  QFrame* panel =new QFrame();
+  JPanel* panel =new JPanel();
   panel->setLayout(new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
   panel->layout()->addWidget(p13);
   panel->layout()->addWidget(p2);
-  //panel.setBorder(BorderFactory.createLineBorder(java.awt.Color.BLACK));
-  panel->setFrameStyle(QFrame::Panel | QFrame::Plain);
-  panel->setLineWidth(2);
+  panel->setBorder(BorderFactory::createLineBorder(QColor(Qt::black)));
+  //panel->setFrameStyle(QFrame::Panel | QFrame::Plain);
+  //panel->setLineWidth(2);
 
   rowPanelLayout->addWidget(panel);
   rowPanelLayout->addStrut(STRUT_SIZE);

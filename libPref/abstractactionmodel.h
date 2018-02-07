@@ -25,7 +25,7 @@ public:
     /*public*/ bool isSystemConnectionAction();
     /*public*/ bool isValid();
     /*public*/ QString toString();
- /*public*/ void performAction() throw (JmriException);
+ /*public*/ void performAction(QString) throw (JmriException);
  /*public*/ QList<Exception>* getExceptions();
  /*public*/ void addException(Exception exception);
 
@@ -40,10 +40,12 @@ private:
     /*private*/ /*final*/ QList<Exception>* exceptions;// = new ArrayList<>();
 
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(AbstractActionModel.class);
+ QString title;
 
 protected:
     /*protected*/ /*abstract*/ virtual void performAction(Action* action) throw (JmriException);
  friend class AbstractActionPanel;
+ friend class PerformActionModel;
 };
 #if 0
 class ResourceBundle :  public QObject

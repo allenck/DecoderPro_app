@@ -123,7 +123,7 @@ public:
   this->parent = parent;
  }
 public slots:
- void actionPerformed(ActionEvent *e = 0) { parent->updateItem();}
+ void actionPerformed(ActionEvent * = 0) { parent->updateItem();}
 };
 
 #endif // MULTISENSORICON_H

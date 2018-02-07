@@ -12,7 +12,7 @@
 #include "gridbagconstraints.h"
 #include <QSlider>
 #include <QButtonGroup>
-#include <QFormLayout>
+#include "flowlayout.h"
 #include "../../LayoutEditor/jlabel.h"
 #include <QPushButton>
 #include "namedicon.h"
@@ -312,7 +312,7 @@
  f.setPointSize(8);
  setFont(f);
  QWidget* mainPanel = new QWidget(this);
- QFormLayout* formLayout = new QFormLayout(mainPanel);
+ FlowLayout* formLayout = new FlowLayout(mainPanel);
  mainPanel->setLayout(formLayout);
  formLayout->setObjectName("formLayout");
     //this->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
@@ -468,7 +468,8 @@
     // set by default which speed selection method is on top
  setSpeedController(_displaySlider);
  mainPanelLayout->addWidget(buttonFrame);
- formLayout->setLayout(0, QFormLayout::SpanningRole, mainPanelLayout);
+ //formLayout->setLayout(0, QFormLayout::SpanningRole, mainPanelLayout);
+ formLayout->addWidget(mainPanel);
  this->setWidget(mainPanel);
  mainPanel->show();
 }

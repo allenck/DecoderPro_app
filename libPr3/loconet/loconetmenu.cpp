@@ -7,6 +7,7 @@
 #include "locoiomodules.h"
 #include "../libPr3/loconet/serveraction.h"
 #include "locoiomodules.h"
+#include "startupactionmodelutil.h"
 
 //LocoNetMenu::LocoNetMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -26,7 +27,10 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
   _instance = new LocoNetMenu(memo, parent);
  return _instance;
 }
-
+/*public*/ LocoNetMenu* LocoNetMenu::instance()
+{
+ return _instance;
+}
 /**
  *
  */
@@ -59,7 +63,7 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
  panelItems = QList<LocoNetMenuItem*>()
    << new LocoNetMenuItem(tr("Monitor LocoNet"), "jmri.jmrix.loconet.locomon.LocoMonPane")
    << new LocoNetMenuItem(tr("Monitor Slots"), "jmri.jmrix.loconet.slotmon.SlotMonPane")
-   << new LocoNetMenuItem(tr("Clock Mononitor"), "jmri.jmrix.loconet.clockmon.ClockMonPane")
+   << new LocoNetMenuItem(tr("Clock Monitor"), "jmri.jmrix.loconet.clockmon.ClockMonPane")
    << new LocoNetMenuItem(tr("Monitor LocoNet Stats"), "jmri.jmrix.loconet.locostats.LocoStatsPanel")
    << NULL
    << new LocoNetMenuItem(tr("Configure BDL16/BDL162/BDL168"), "jmri.jmrix.loconet.bdl16.BDL16Panel")
@@ -93,11 +97,11 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
   else
   {
    addAction(act = new LnNamedPaneAction((item->name), wi, item->load, memo));
-   if(item->load == "jmri.jmrix.loconet.locomon.LocoMonPane")
-   {
-    act->trigger();
-//    wi->hide();
-   }
+//   if(item->load == "jmri.jmrix.loconet.locomon.LocoMonPane")
+//   {
+//    act->trigger();
+//    //wi->hide();
+//   }
    if(item->load == "jmri.jmrix.loconet.locoio.LocoIOPanel")
    {
     addMenu(LocoIOModules::instance()->getMenu());
@@ -156,4 +160,8 @@ void LocoNetMenu::on_probeAction()
 // LocoIOData* data = new LocoIOData(0x51, 1, memo->getLnTrafficController());
 // data->startProbe();
  LocoIOModules::instance()->startProbe();
+}
+QList<LocoNetMenuItem*> LocoNetMenu::getMenuItems()
+{
+ return panelItems;
 }

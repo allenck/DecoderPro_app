@@ -300,17 +300,19 @@ void AppsBase::init()
   preferenceFileExists = false;
   configOK = false;
   log->info("No pre-existing config file found, searched for '" + file->getPath() + "'");
-  ((ConfigXmlManager*) InstanceManager::configureManagerInstance())->setPrefsLocation(file);
   return;
  }
  preferenceFileExists = true;
  try
  {
   ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
-  if (cm != NULL) {
-      configOK = ((JmriConfigurationManager*)cm)->load(file); // ACK force  cast, virtual not working!
-  } else {
-      configOK = false;
+  if (cm != NULL)
+  {
+   configOK = ((JmriConfigurationManager*)cm)->load(file); // ACK force  cast, virtual not working!
+  }
+  else
+  {
+   configOK = false;
   }
   if (log->isDebugEnabled())
   {
@@ -348,9 +350,15 @@ void AppsBase::init()
     if (log->isDebugEnabled()) {
         log->debug("start deferred load from config file " + file->getName());
     }
-    try {
-     ConfigureManager* mgr = InstanceManager::configureManagerInstance();
-     result = ((ConfigXmlManager*)mgr)->loadDeferred(file);
+    try
+    {
+     ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+     if (cm != NULL) {
+         result = cm->loadDeferred(file);
+     } else {
+         log->error("Failed to get default configure manager");
+         result = false;
+     }
     } catch (JmriException e) {
         log->error("Unhandled problem loading deferred configuration: " + e.getMessage());
         result = false;
@@ -363,36 +371,14 @@ void AppsBase::init()
 
 /*protected*/ void AppsBase::installShutDownManager()
 {
- if (InstanceManager::instance()->shutDownManagerInstance() == NULL)
-    InstanceManager::setShutDownManager(
-            new DefaultShutDownManager());
-#if 0
-    // configure the shutdown manager as a shutdown hook
-    // when it is installed.  This allows a clean shutdown
-    // when the shutdown hook is triggered via the POSIX signals
-    // HUP (Signal 1), INT (Signal 2), or TERM (Signal 15).  Note
-    // SIGHUP, SIGINT, and SIGTERM cause the program to go through
-    // the shutdown actions, but the Java process still remains until
-    // it receives a KILL (Signal 9).  A completely orderly shutdown
-    // can be forced by the two step process:
-    // `kill -s 15 pid`
-    // `kill -s 9 pid`
-    jmri.util.RuntimeUtil.addShutdownHook(new Thread(new Runnable() {
-        /*public*/ void run() {
-            if (log->isDebugEnabled()) {
-                log->debug("Shutdown hook called");
-            }
-            handleQuit();
-        }
-    }));
-#endif
+ InstanceManager::setDefault("ShutDownManager", new DefaultShutDownManager());
 }
 
 /*protected*/ void AppsBase::addDefaultShutDownTasks()
 {
     // add the default shutdown task to save blocks
     // as a special case, register a ShutDownTask to write out blocks
-    InstanceManager::shutDownManagerInstance()->
+    ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->
       _register(new WriteBlocksShutDownTask("Writing Blocks", this));
      #if 0 // done
     {
@@ -529,7 +515,7 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
 
     log->debug("Start handleQuit");
     try {
-        return InstanceManager::shutDownManagerInstance()->shutdown();
+        return ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->shutdown();
     } catch (Exception e) {
         log->error("Continuing after error in handleQuit");
     }
@@ -543,7 +529,7 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
     Logger* log = new Logger("AppsBase");
     log->debug("Start handleRestart");
     try {
-        return InstanceManager::shutDownManagerInstance()->restart();
+        return ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->restart();
     } catch (Exception e) {
         log->error("Continuing after error in handleRestart");
     }

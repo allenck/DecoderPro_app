@@ -1117,10 +1117,10 @@ void PositionableLabel::setVisible(bool b)
         }
     }
 #endif
-    /**
-    * Provides a generic method to return the bean associated with the Positionable
-    */
-    /*public*/ NamedBean* PositionableLabel::getNamedBean() { return NULL; }
+/**
+* Provides a generic method to return the bean associated with the Positionable
+*/
+/*public*/ NamedBean* PositionableLabel::getNamedBean() { return NULL; }
 
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PositionableLabel.class.getName());
 

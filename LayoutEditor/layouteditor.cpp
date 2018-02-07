@@ -45,6 +45,9 @@
 #include "userpreferencesmanager.h"
 #include "positionablejcomponent.h"
 #include "colorutil.h"
+#include <QSignalMapper>
+#include "jfilechooser.h"
+#include "system.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -167,9 +170,9 @@ _contents = new QVector<Positionable*>();
  layoutBlockManager = InstanceManager::layoutBlockManagerInstance();
  blockManger = new BlockManager(this);
  defaultTrackColor =  QColor(Qt::black);;
- defaultOccupiedTrackColor =  QColor(Qt::black);
- defaultAlternativeTrackColor =  QColor(Qt::black);
- // defaultBackgroundColor =  QColor(Qt::lightGray);
+ defaultOccupiedTrackColor =  QColor(Qt::red);
+ defaultAlternativeTrackColor =  QColor(Qt::white);
+
  defaultTextColor =  QColor(Qt::black);
  turnoutCircleColor = defaultTrackColor; //matches earlier versions
  turnoutCircleSize=2;  //matches earlier versions
@@ -301,16 +304,26 @@ _contents = new QVector<Positionable*>();
   ui->actionX_4_0->setChecked(true);
  connect(zoomGroup, SIGNAL(triggered(QAction*)), this, SLOT(OnZoom_selected(QAction*)));
 
+ //use turnoutCircleSize when you need an int and these when you need a double
+     //note: these only change when setTurnoutCircleSize is called
+     //using these avoids having to call getTurnoutCircleSize() and
+     //the multiply (x2) and the int -> double conversion overhead
+ circleRadius = SIZE * getTurnoutCircleSize();
+ circleDiameter = 2.0 * circleRadius;
+
  panelWidth = 600;
  panelHeight =400;
 
  //editScene = new EditScene(QRectF(-100, -100, 400, 400), this);
  editScene = new EditScene(QRectF(0, 0, panelWidth, panelHeight), this);
  _targetPanel = editScene;
+ defaultBackgroundColor =  editScene->backgroundBrush().color();//QColor(Qt::lightGray);
+
+#if 0
  _Colors << tr("Black")<<tr("Dark Gray")<<tr("Gray")<<tr("Light Gray")<<tr("White")<<tr("Red")<<tr("Pink") <<tr("Orange")<<tr("Yellow")<<tr("Green")<<tr("Blue")<<tr("Magenta");
  _colors << QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) << QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red)<<QColor(255,192,203) << QColor(255, 170, 0) << QColor(Qt::yellow ) << QColor(Qt::green) <<QColor(Qt::blue) <<QColor(Qt::magenta)<<QColor();
- QActionGroup* trackColorActGrp =new QActionGroup(this);
- QActionGroup* textColorActGrp = new QActionGroup(this);
+// QActionGroup* trackColorActGrp =new QActionGroup(this);
+// QActionGroup* textColorActGrp = new QActionGroup(this);
  QActionGroup* backgroundColorActGrp = new QActionGroup(this);
  QBrush defaultBackgroundBrush = editScene->backgroundBrush();
  QColor defaultBackgroundColor = defaultBackgroundBrush.color();
@@ -321,24 +334,23 @@ _contents = new QVector<Positionable*>();
   QVariant var = desiredColor;
   QString sColor = _Colors.at(i);
   const QIcon icon = getColourIcon(desiredColor);
-  QAction* trackColorAct = new QAction(icon, sColor,this);
-  trackColorAct->setCheckable(true);
-  trackColorAct->setData(var);
-  trackColorAct->setIconVisibleInMenu(true);
-  ui->menuSet_default_track_color->addAction(trackColorAct);
-  trackColorActGrp->addAction(trackColorAct);
-  if(defaultTrackColor == desiredColor)
-   trackColorAct->setChecked(true);
+//  QAction* trackColorAct = new QAction(icon, sColor,this);
+//  trackColorAct->setCheckable(true);
+//  trackColorAct->setData(var);
+//  trackColorAct->setIconVisibleInMenu(true);
+//  ui->menuSet_default_track_color->addAction(trackColorAct);
+//  trackColorActGrp->addAction(trackColorAct);
+//  if(defaultTrackColor == desiredColor)
+//   trackColorAct->setChecked(true);
 
-  QAction* textColorAct = new QAction(icon, sColor, this);
-  textColorAct->setCheckable(true);
-  textColorAct->setData(var);
-  textColorAct->setIconVisibleInMenu(true);
-  ui->menuSet_default_text_color->addAction(textColorAct);
-  textColorActGrp->addAction(textColorAct);
-  if(defaultTextColor == desiredColor)
-   textColorAct->setChecked(true);
-
+//  QAction* textColorAct = new QAction(icon, sColor, this);
+//  textColorAct->setCheckable(true);
+//  textColorAct->setData(var);
+//  textColorAct->setIconVisibleInMenu(true);
+//  ui->menuSet_default_text_color->addAction(textColorAct);
+//  textColorActGrp->addAction(textColorAct);
+//  if(defaultTextColor == desiredColor)
+//   textColorAct->setChecked(true);
   QAction* backgroundColorAct = new QAction(icon, sColor, this);
   backgroundColorAct->setCheckable(true);
   backgroundColorAct->setData(var);
@@ -347,16 +359,160 @@ _contents = new QVector<Positionable*>();
   backgroundColorActGrp->addAction(backgroundColorAct);
   if(defaultBackgroundColor == desiredColor)
    backgroundColorAct->setChecked(true);
+#endif
   // saved state of options when panel was loaded or created
   savedEditMode = true;
   savedPositionable = true;
   savedControlLayout = true;
   savedAnimatingLayout = true;
   savedShowHelpBar = false;
- }
+// }
+
+ textColorCount = 0;
+ trackColorCount = 0;
+ trackOccupiedColorCount = 0;
+ trackAlternativeColorCount = 0;
+ textColorCount = 0;
+ backgroundColorCount=0;
+ turnoutCircleColorCount = 0;
+ turnoutCircleSizeCount = 0;
+ trackColors = new QVector<QColor>(13);
+ trackOccupiedColors = new QVector<QColor>(13);
+ trackAlternativeColors = new QVector<QColor>(13);
+ textColors = new QVector<QColor>(13);
+ backgroundColors = new QVector<QColor>(13);
+ turnoutCircleColors = new QVector<QColor>(14);
+ turnoutCircleSizes = new QVector<int>(10);
+ trackColorMenuItems = new QVector<QAction*>(13);
+ trackOccupiedColorMenuItems = new QVector<QAction*>(13);
+ trackAlternativeColorMenuItems = new QVector<QAction*>(13);
+ backgroundColorMenuItems = new QVector<QAction*>(13);
+ textColorMenuItems = new QVector<QAction*>(13);
+ turnoutCircleColorMenuItems = new QVector<QAction*>(14);
+ turnoutCircleSizeMenuItems = new QVector<QAction*>(10);
+
+ //
+ //background image menu item
+ //
+// QAction* backgroundItem = new JMenuItem(rb.getString("AddBackground") + "...");
+ //optionMenu.add(backgroundItem);
+// backgroundItem.addActionListener((ActionEvent event) -> {
+//     addBackground();
+//     setDirty(true);
+//     repaint();
+// });
+
+ //
+ //background color menu item
+ //
+ QMenu* backgroundColorMenu = ui->menuSet_Background_color;//new QMenu(tr("Set Background Color"));
+ backgroundColorButtonGroup = new QActionGroup(this);
+ backgroundColorButtonMapper = new QSignalMapper();
+ connect(backgroundColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_colorBackgroundMenuItemSelected(int)));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Black"),     QColor(Qt::black));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("DarkGray"),  QColor(Qt::darkGray));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Gray"),      QColor(Qt::gray));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("LightGray"), QColor(Qt::lightGray));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("White"),     QColor(Qt::white));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Red"),       QColor(Qt::red));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Pink"),      QColor(255,192,203));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Orange"),    QColor(255, 170, 0));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Yellow"),    QColor(Qt::yellow));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Green"),     QColor(Qt::green));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Blue"),      QColor(Qt::blue));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Magenta"),   QColor(Qt::magenta));
+ addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Cyan"),      QColor(Qt::cyan));
+ ui->menuOptions->addMenu(backgroundColorMenu);
+ //
+ //track colors item menu item
+ //
+ QMenu* trkColourMenu = new QMenu(tr("Default Track Colors"));
+ ui->menuOptions->addMenu(trkColourMenu);
+
+ QMenu* trackColorMenu = new QMenu(tr("Default Track Color"));
+ trackColorButtonGroup = new QActionGroup(this);
+ trackColorButtonMapper = new QSignalMapper();
+ connect(trackColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackColorMenuEntry_triggered(int)));
+ addTrackColorMenuEntry(trackColorMenu, tr("Black"),     QColor(Qt::black));
+ addTrackColorMenuEntry(trackColorMenu, tr("DarkGray"),  QColor(Qt::darkGray));
+ addTrackColorMenuEntry(trackColorMenu, tr("Gray"),      QColor(Qt::gray));
+ addTrackColorMenuEntry(trackColorMenu, tr("LightGray"), QColor(Qt::lightGray));
+ addTrackColorMenuEntry(trackColorMenu, tr("White"),     QColor(Qt::white));
+ addTrackColorMenuEntry(trackColorMenu, tr("Red"),       QColor(Qt::red));
+ addTrackColorMenuEntry(trackColorMenu, tr("Pink"),      QColor(255,192,203));
+ addTrackColorMenuEntry(trackColorMenu, tr("Orange"),    QColor(255, 170, 0));
+ addTrackColorMenuEntry(trackColorMenu, tr("Yellow"),    QColor(Qt::yellow));
+ addTrackColorMenuEntry(trackColorMenu, tr("Green"),     QColor(Qt::green));
+ addTrackColorMenuEntry(trackColorMenu, tr("Blue"),      QColor(Qt::blue));
+ addTrackColorMenuEntry(trackColorMenu, tr("Magenta"),   QColor(Qt::magenta));
+ addTrackColorMenuEntry(trackColorMenu, tr("Cyan"),      QColor(Qt::cyan));
+ trkColourMenu->addMenu(trackColorMenu);
+
+ QMenu* trackOccupiedColorMenu = new QMenu(tr("Default Occupied Track Color"));
+ trackOccupiedColorButtonGroup = new QActionGroup(this);
+ trackOccupiedColorButtonMapper = new QSignalMapper();
+ connect(trackOccupiedColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackOccupiedColorMenuEntry_triggered(int)));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Black"),     QColor(Qt::black));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("DarkGray"),  QColor(Qt::darkGray));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Gray"),      QColor(Qt::gray));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("LightGray"), QColor(Qt::lightGray));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("White"),     QColor(Qt::white));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Red"),       QColor(Qt::red));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Pink"),      QColor(255,192,203));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Orange"),    QColor(255, 170, 0));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Yellow"),    QColor(Qt::yellow));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Green"),     QColor(Qt::green));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Blue"),      QColor(Qt::blue));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Magenta"),   QColor(Qt::magenta));
+ addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Cyan"),      QColor(Qt::cyan));
+ trkColourMenu->addMenu(trackOccupiedColorMenu);
+
+ QMenu* trackAlternativeColorMenu = new QMenu(tr("Default Alternative Track Color"));
+ trackAlternativeColorButtonGroup = new QActionGroup(this);
+ trackAlternativeColorButtonMapper = new QSignalMapper();
+ connect(trackAlternativeColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackAlternativeColorMenuEntry_triggered(int)));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Black"),     QColor(Qt::black));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("DarkGray"),  QColor(Qt::darkGray));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Gray"),      QColor(Qt::gray));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("LightGray"), QColor(Qt::lightGray));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("White"),     QColor(Qt::white));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Red"),       QColor(Qt::red));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Pink"),      QColor(255,192,203));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Orange"),    QColor(255, 170, 0));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Yellow"),    QColor(Qt::yellow));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Green"),     QColor(Qt::green));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Blue"),      QColor(Qt::blue));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
+ addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
+ trkColourMenu->addMenu(trackAlternativeColorMenu);
+
+ //
+ //add text color menu item
+ //
+ QMenu* textColorMenu = new QMenu(tr("Default Text Color"));
+ textColorButtonGroup = new QActionGroup(this);
+ textColorButtonMapper = new QSignalMapper();
+ connect(textColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(OnDefaultTextColorSelected(int)));
+ addTextColorMenuEntry(textColorMenu,  tr("Black"),     QColor(Qt::black));
+ addTextColorMenuEntry(textColorMenu,  tr("DarkGray"),  QColor(Qt::darkGray));
+ addTextColorMenuEntry(textColorMenu,  tr("Gray"),      QColor(Qt::gray));
+ addTextColorMenuEntry(textColorMenu,  tr("LightGray"), QColor(Qt::lightGray));
+ addTextColorMenuEntry(textColorMenu,  tr("White"),     QColor(Qt::white));
+ addTextColorMenuEntry(textColorMenu,  tr("Red"),       QColor(Qt::red));
+ addTextColorMenuEntry(textColorMenu,  tr("Pink"),      QColor(255,192,203));
+ addTextColorMenuEntry(textColorMenu,  tr("Orange"),    QColor(255, 170, 0));
+ addTextColorMenuEntry(textColorMenu,  tr("Yellow"),    QColor(Qt::yellow));
+ addTextColorMenuEntry(textColorMenu,  tr("Green"),     QColor(Qt::green));
+ addTextColorMenuEntry(textColorMenu,  tr("Blue"),      QColor(Qt::blue));
+ addTextColorMenuEntry(textColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
+ addTextColorMenuEntry(textColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
+ ui->menuOptions->addMenu(textColorMenu);
+
+
  editPanel->setMouseTracking(true);
  editPanel->setScene(editScene);
  _turnoutSelection = NULL;
+
 
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(OnScenePos(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)),this, SLOT(mouseClicked(QGraphicsSceneMouseEvent*)));
@@ -364,9 +520,9 @@ _contents = new QVector<Positionable*>();
  // connect(editScene,SIGNAL(sceneDragMove(QGraphicsSceneDragDropEvent*)),this, SLOT(mouseDragged(QGraphicsSceneDragDropEvent*)));
  connect(editScene, SIGNAL(sceneMousePress(QGraphicsSceneMouseEvent*)), this, SLOT(mousePressed(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(mouseMoved(QGraphicsSceneMouseEvent*)));
- connect(trackColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTrackColorSelected(QAction*)));
- connect(textColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTextColorSelected(QAction*)));
- connect(backgroundColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(on_colorBackgroundMenuItemSelected(QAction*)));
+// connect(trackColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTrackColorSelected(QAction*)));
+// connect(textColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTextColorSelected(QAction*)));
+// connect(backgroundColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(on_colorBackgroundMenuItemSelected(QAction*)));
 
  sensorIconEditor = new MultiIconEditor(4);
  sensorIconEditor->setIcon(0, "Active:",":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
@@ -393,13 +549,15 @@ _contents = new QVector<Positionable*>();
  signalIconEditor->setIcon(7, "Held:",":/resources/icons/smallschematics/searchlights/left-held-short.gif");
  signalIconEditor->setIcon(8, "Lunar",":/resources/icons/smallschematics/searchlights/left-lunar-short-marker.gif");
  signalIconEditor->setIcon(9, "Flash Lunar",":/resources/icons/smallschematics/searchlights/left-flashlunar-short-marker.gif");
- signalIconEditor->complete();markerImage = new QVector<LocoIcon*>(); // marker images
+ signalIconEditor->complete();
+ markerImage = new QVector<LocoIcon*>(); // marker images
  signalFrame = new JmriJFrame("<LayoutEditor>");
  QWidget* centralWidget = new QWidget();
- centralWidget->setLayout(new QFormLayout());
+ centralWidget->setLayout(new QVBoxLayout());
  signalFrame->setCentralWidget(centralWidget);
  centralWidget->layout()->addWidget(new QLabel("</html>Select new image from file,<br>then click an upper preview icon to change it.</html>"));
  centralWidget->layout()->addWidget(signalIconEditor);
+ signalFrame->resize(600, 400);
  signalFrame->setAllowInFrameServlet(false);
  signalFrame->adjustSize();
  signalFrame->setVisible(false);
@@ -457,7 +615,8 @@ _contents = new QVector<Positionable*>();
  // select turnout circle color
  QMenu* turnoutCircleColorMenu = new QMenu(tr("Set Turnout Circle Color"));
  turnoutCircleColorButtonGroup = new QActionGroup(this);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Use Default Track Color"), QColor());
+ turnoutCircleColorButtonMapper = new QSignalMapper(this);
+ addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Use Default Track Color"), defaultTrackColor);
  addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Black"), Qt::black);
  addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Dark Gray"), Qt::darkGray);
  addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Gray"), Qt::gray);
@@ -472,11 +631,12 @@ _contents = new QVector<Positionable*>();
  addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Magenta"), Qt::magenta);
  addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Cyan"), Qt::cyan);
  turnoutOptionsMenu->addMenu(turnoutCircleColorMenu);
- connect(turnoutCircleColorButtonGroup, SIGNAL(triggered(QAction*)), this, SLOT(On_turnoutCircleColorButtonGroup_triggered(QAction*)));
+ connect(turnoutCircleColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(On_turnoutCircleColorButtonMapper_triggered(int)));
 
  // select turnout circle size
  QMenu* turnoutCircleSizeMenu = new QMenu(tr("Turnout Circle Size"));
  turnoutCircleSizeButtonGroup = new QActionGroup(this);
+ turnoutCircleSizeButtonMapper = new QSignalMapper(this);
  addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "1", 1);
  addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "2", 2);
  addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "3", 3);
@@ -486,10 +646,10 @@ _contents = new QVector<Positionable*>();
  addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "7", 7);
  addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "8", 8);
  turnoutOptionsMenu->addMenu(turnoutCircleSizeMenu);
- connect(turnoutCircleSizeButtonGroup, SIGNAL(triggered(QAction*)), this, SLOT(On_turnoutCircleSizeButtonGroup_triggered(QAction*)));
+ connect(turnoutCircleSizeButtonMapper, SIGNAL(mapped(int)), this, SLOT(On_turnoutCircleSizeButtonMapper_triggered(int)));
 
  // enable drawing of unselected leg (helps when diverging angle is small)
- turnoutDrawUnselectedLegItem = new QAction(tr("TurnoutDrawUnselectedLeg"),this);
+ turnoutDrawUnselectedLegItem = new QAction(tr("Draw Unselected Turnout Leg"),this);
  turnoutDrawUnselectedLegItem->setCheckable(true);
  turnoutOptionsMenu->addAction(turnoutDrawUnselectedLegItem);
 // turnoutDrawUnselectedLegItem.addActionListener(new ActionListener() {
@@ -500,6 +660,54 @@ _contents = new QVector<Positionable*>();
 // });
  connect(turnoutDrawUnselectedLegItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutDrawUnselectedLegItem_triggered(bool)));
  turnoutDrawUnselectedLegItem->setChecked(turnoutDrawUnselectedLeg);
+
+ //add show grid menu item
+  autoAssignBlocksItem = new QAction(tr("Automatically Assign Blocks to Track"));
+  autoAssignBlocksItem->setCheckable(true);
+  turnoutOptionsMenu->addAction(autoAssignBlocksItem);
+//  autoAssignBlocksItem.addActionListener((ActionEvent event) -> {
+//      autoAssignBlocks = autoAssignBlocksItem.isSelected();
+//  });
+  connect(autoAssignBlocksItem, SIGNAL(triggered(bool)), this, SLOT(on_autoAssignBlocksItem_triggered(bool)));
+  autoAssignBlocksItem->setChecked(autoAssignBlocks);
+
+  //
+  //add hideTrackSegmentConstructionLines menu item
+  //
+  hideTrackSegmentConstructionLines = new QAction(tr("Hide Track Construction Lines"));
+  hideTrackSegmentConstructionLines->setCheckable(true);
+  ui->menuOptions->addAction(hideTrackSegmentConstructionLines);
+ // hideTrackSegmentConstructionLines.addActionListener((ActionEvent event) -> {
+//      int show = TrackSegment.SHOWCON;
+
+//      if (hideTrackSegmentConstructionLines.isSelected()) {
+//          show = TrackSegment.HIDECONALL;
+//      }
+
+//      for (TrackSegment t : trackList) {
+//          t.hideConstructionLines(show);
+//      }
+//      repaint();
+//  });
+  connect(hideTrackSegmentConstructionLines, SIGNAL(toggled(bool)), this, SLOT(on_hideTrackSegmentConstructionLines_toggled(bool)));
+  hideTrackSegmentConstructionLines->setChecked(autoAssignBlocks);
+
+  //
+  //add "use direct turnout control" menu item
+  //
+  useDirectTurnoutControlItem = new QAction(tr("Use Direct Turnout Control"));   //IN18N
+  useDirectTurnoutControlItem->setCheckable(true);
+  turnoutOptionsMenu->addAction(useDirectTurnoutControlItem);
+//  useDirectTurnoutControlItem.addActionListener((ActionEvent event) -> {
+//      useDirectTurnoutControl = false;
+
+//      if (useDirectTurnoutControlItem.isSelected()) {
+//          useDirectTurnoutControl = true;
+//      }
+//  });
+  connect(useDirectTurnoutControlItem, SIGNAL(triggered(bool)), this, SLOT(on_useDirectTurnoutControlItem_triggered(bool)));
+  useDirectTurnoutControlItem->setChecked(useDirectTurnoutControl);
+
  return turnoutOptionsMenu;
 }
 
@@ -515,6 +723,34 @@ void LayoutEditor::On_turnoutDrawUnselectedLegItem_triggered(bool)
  repaint();
 }
 
+void LayoutEditor::on_autoAssignBlocksItem_triggered(bool b)
+{
+ autoAssignBlocks = b;
+}
+
+void LayoutEditor::on_hideTrackSegmentConstructionLines_toggled(bool /*b*/)
+{
+  int show = TrackSegment::SHOWCON;
+
+  if (hideTrackSegmentConstructionLines->isChecked()) {
+      show = TrackSegment::HIDECONALL;
+  }
+
+  for (TrackSegment* t : *trackList) {
+      t->hideConstructionLines(show);
+  }
+  repaint();
+}
+
+void LayoutEditor::on_useDirectTurnoutControlItem_triggered(bool)
+{
+ useDirectTurnoutControl = false;
+
+ if (useDirectTurnoutControlItem->isChecked()) {
+     useDirectTurnoutControl = true;
+ }
+
+}
 void LayoutEditor::addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color)
 {
 //        ActionListener a = new ActionListener() {
@@ -526,25 +762,28 @@ void LayoutEditor::addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString
 //                repaint();
 //            }
 //        };
- QAction* r = new QAction(name, this);
+ const QIcon icon = getColourIcon(color);
+ QAction* r = new QAction(icon, name, this);
  r->setCheckable(true);
- r->setData(_colors.indexOf(color));
- //r.addActionListener(a);
+ //r->setData(_colors.indexOf(color));
  turnoutCircleColorButtonGroup->addAction(r);
+ turnoutCircleColorButtonMapper->setMapping(r, turnoutCircleColorCount);
+ //r.addActionListener(a);
+ connect(r, SIGNAL(triggered()), turnoutCircleColorButtonMapper, SLOT(map()));
  if (turnoutCircleColor==(color)) {
      r->setChecked(true);
  } else {
      r->setChecked(false);
  }
  menu->addAction(r);
-//        turnoutCircleColorMenuItems[turnoutCircleColorCount] = r;
-//        turnoutCircleColors[turnoutCircleColorCount] = color;
-//        turnoutCircleColorCount++;
+ turnoutCircleColorMenuItems->replace(turnoutCircleColorCount, r);
+ turnoutCircleColors->replace(turnoutCircleColorCount, color);
+ turnoutCircleColorCount++;
 }
 
-void LayoutEditor::On_turnoutCircleColorButtonGroup_triggered(QAction * act)
+void LayoutEditor::On_turnoutCircleColorButtonMapper_triggered(int i)
 {
- turnoutCircleColor = /*desiredColor*/_colors.at(act->data().toInt());
+ turnoutCircleColor = /*desiredColor*/turnoutCircleColors->at(i);
  setDirty(true);
  repaint();
 
@@ -568,20 +807,22 @@ void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString 
  r->setData(size);
  //r.addActionListener(a);
  turnoutCircleSizeButtonGroup->addAction(r);
+ turnoutCircleSizeButtonMapper->setMapping(r, size);
+ connect(r, SIGNAL(triggered(bool)), turnoutCircleSizeButtonMapper, SLOT(map()));
  if (turnoutCircleSize == size) {
      r->setChecked(true);
  } else {
      r->setChecked(false);
  }
  menu->addAction(r);
-//        turnoutCircleSizeMenuItems[turnoutCircleSizeCount] = r;
-//        turnoutCircleSizes[turnoutCircleSizeCount] = size;
-//        turnoutCircleSizeCount++;
+ turnoutCircleSizeMenuItems->replace(turnoutCircleSizeCount, r);
+ turnoutCircleSizes->replace(turnoutCircleSizeCount, size);
+ turnoutCircleSizeCount++;
 }
 
-void LayoutEditor::On_turnoutCircleSizeButtonGroup_triggered(QAction *act)
+void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
 {
- int desiredSize = act->data().toInt();
+ int desiredSize = size;//act->data().toInt();
  if (turnoutCircleSize != desiredSize)
  {
   turnoutCircleSize = desiredSize;
@@ -590,7 +831,7 @@ void LayoutEditor::On_turnoutCircleSizeButtonGroup_triggered(QAction *act)
  }
 }
 
-/*protected*/ void  LayoutEditor::targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* e)
+/*protected*/ void  LayoutEditor::targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* /*e*/)
 {
  bool save = (isDirty() || (savedEditMode != isEditable())
          || (savedPositionable != allPositionable())
@@ -662,7 +903,7 @@ double LayoutEditor::getPaintScale()
 //    checkPopUp(event);
 //   }
   }
-  if (bMeta || !bAlt && !bShift)
+  if (bMeta || (!bAlt && !bShift))
   {
    // if moving an item, identify the item for mouseDragging
    selectedObject = NULL;
@@ -837,7 +1078,8 @@ double LayoutEditor::getPaintScale()
     selectionWidth = 0.0;
     selectionHeight = 0.0;
    }
-   if (prevSelectionActive) /*repaint();*/ paintTargetPanel(editScene);
+   if (prevSelectionActive) /*repaint();*/
+    paintTargetPanel(editScene);
   } // isEditable
 
   else if (allControlling() && /*(!event.isMetaDown()) && (!event.isPopupTrigger()) &&*/
@@ -1437,6 +1679,7 @@ double LayoutEditor::getPaintScale()
   ui->yLabel->setText(QString("%1").arg(yLoc));
   // !ALT and SHIFT_DOWN
   Qt::KeyboardModifiers k = event->modifiers();
+  Q_UNUSED(k)
   bool bMeta = event->modifiers()&Qt::MetaModifier;
   bool bAlt = event->modifiers()&Qt::AltModifier;
   bool bShift =  event->modifiers()&Qt::ShiftModifier;
@@ -1734,7 +1977,7 @@ double LayoutEditor::getPaintScale()
  }
  QPointF newPos = QPointF(dLoc.x() + startDel.y(), dLoc.y() + startDel.y());
 
- if ((selectedObject!=NULL) && (/*event.isMetaDown() ||*/ event->modifiers()&Qt::MetaModifier!=0) && (selectedPointType==MARKER))
+ if ((selectedObject!=NULL) && (/*event.isMetaDown() ||*/ ((event->modifiers()&Qt::MetaModifier)!=0) || (selectedPointType==MARKER)))
   {
    // marker moves regardless of editMode or positionable
    PositionableLabel* pl = (PositionableLabel*)selectedObject;
@@ -1753,7 +1996,7 @@ double LayoutEditor::getPaintScale()
 
   if (isEditable())
   {
-   if ((selectedObject!=NULL) && (/*event.isMetaDown() ||*/ !(event->modifiers()&Qt::AltModifier)) && allPositionable())
+   if ((selectedObject!=NULL) && (/*event.isMetaDown() ||*/ !(event->modifiers()&Qt::AltModifier))|| allPositionable())
    {
     // moving a point
     if (snapToGridOnMove)
@@ -2129,6 +2372,7 @@ double LayoutEditor::getPaintScale()
  }
  return;
 }
+
 /*public*/ void LayoutEditor::mouseMoved(QGraphicsSceneMouseEvent* event)
 {
  calcLocation(event->scenePos(), 0, 0);
@@ -2182,6 +2426,7 @@ double LayoutEditor::getPaintScale()
   _prevNumSel = numSel;
  }
 }
+
 bool LayoutEditor::isEditable() {return bIsEditable;}
 /**
  * Add an Anchor point.
@@ -2568,7 +2813,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 //                        java.text.MessageFormat.format(rb.getQString("Error4"),
 //                        new Object[]{turnoutName}),
 //                        rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(this, tr("Error"), tr("Error - Physical turnout \"%1\" is already linked to a different Panel Turnout.\nPlease enter another turnout name and try again.").arg(turnoutName));
+    QMessageBox::critical(openPane, tr("Error"), tr("Error - Physical turnout \"%1\" is already linked to a different Panel Turnout.\nPlease enter another turnout name and try again.").arg(turnoutName));
 
     return false;
    }
@@ -3384,6 +3629,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
   return ts;
 }
 
+//compute the turnout circle at inPoint (used for drawing)
+/*public*/ QGraphicsEllipseItem* LayoutEditor::turnoutCircleAt(QPointF inPoint) {
+    return new QGraphicsEllipseItem(inPoint.x() - circleRadius,
+                                inPoint.y() - circleRadius, circleDiameter, circleDiameter);
+}
 
 /**
 *  Special internal class to allow drawing of layout to a JLayeredPane
@@ -3397,9 +3647,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
   // Optional antialising, to eliminate (reduce) staircase on diagonal lines
   if(antialiasingOn) /*g2.setRenderingHints(antialiasing);*/
    editPanel->setRenderHint(QPainter::Antialiasing);
-  if (isEditable() /*&& drawGrid*/)
-   drawPanelGrid(g2);
-   drawLabelImages(g2);
+  //if (isEditable() && drawGrid)
+  drawPanelGrid(g2);
+  drawLabelImages(g2);
 //  g2.setColor(defaultTrackColor);
   main = false;
 //  g2.setStroke(new BasicStroke(sideTrackWidth,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
@@ -3425,13 +3675,14 @@ bool LayoutEditor::isDirty() {return bDirty;}
    drawTurntableRects(g2);
    drawMemoryRects(g2);
    drawTrackCircleCentre(g2);
+   drawTurnoutCircles(g2);
    highLightSelection(g2);
   }
   else if (turnoutCirclesWithoutEditMode)
   {
    drawTurnoutCircles(g2);
+   drawSlipCircles(g2);
   }
-
 }
 
 
@@ -3489,7 +3740,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   x->drawXings(this, g2);
  }
 }
-#if 1
+
 /*private*/ void LayoutEditor::drawSlips(QGraphicsScene* g2)
 {
  for (int i = 0; i<slipList->size();i++)
@@ -3766,7 +4017,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   g2->addItem(x->item);
  }
 }
-#endif
+
 /*private*/ void LayoutEditor::drawTurnoutCircles(EditScene* g2)
 {
   // loop over all defined turnouts
@@ -3778,16 +4029,21 @@ bool LayoutEditor::isDirty() {return bDirty;}
     t->drawTurnoutCircles(this, g2);
    }
   }
+} //drawTurnoutCircles
+
+/*private*/ void LayoutEditor::drawSlipCircles(EditScene* g2)
+{
+ //loop over all defined slips
+
  for (int i = 0; i<slipList->size();i++)
  {
-  LayoutSlip* s = slipList->at(i);
-  if(!(s->getHidden() && !isEditable()))
+  LayoutSlip* sl = slipList->at(i);
+  if(!(sl->getHidden() && !isEditable()))
   {
-   s->drawTurnoutCircles(this, g2);
+   sl->drawSlipCircles(g2);
   }
  }
-
-}
+}  //drawSlipCircles
 
 /*private*/ void LayoutEditor::drawTurnoutRects(EditScene* g2)
 {
@@ -3823,10 +4079,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
    QPointF c = x->getCoordsCenter();
    double r = x->getRadius();
    //g2.setColor(defaultTrackColor);
-#if 0
-   g2.draw(new Ellipse2D.Double (
-       c.x()-r, c.y()-r, r+r, r+r));
-#endif
+//   g2.draw(new Ellipse2D.Double (
+//       c.x()-r, c.y()-r, r+r, r+r));
    QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(c.x()-r, c.y()-r, r+r, r+r);
    circle->setPen(QPen(defaultTrackColor, sideTrackWidth));
    x->item->addToGroup(circle);
@@ -3882,7 +4136,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  }
 }
 #if 1// see drawSlips.
-/*private*/ void LayoutEditor::drawSlipRects(EditScene* g2)
+/*private*/ void LayoutEditor::drawSlipRects(EditScene* /*g2*/)
 {
   // loop over all defined level crossings
   for (int i = 0; i<slipList->size();i++)
@@ -3955,7 +4209,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   }
 }
 #endif
-/*private*/ void LayoutEditor::drawTurntableRects(EditScene* g2)
+/*private*/ void LayoutEditor::drawTurntableRects(EditScene* /*g2*/)
 {
   // loop over all defined turntables
   for (int i = 0; i<turntableList->size();i++) {
@@ -4174,7 +4428,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
    //g2->destroyItemGroup(panelGridGroup);
   }
   panelGridGroup = NULL;
-  if(!drawGrid)
+  if(!isEditable() || !drawGrid)
    return;
   panelGridGroup = new QGraphicsItemGroup();
   //g2->addItem(panelGridGroup);
@@ -4725,7 +4979,8 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 */
 /*public*/ void LayoutEditor::setAllEditable(bool state)
 {
-  _editable = state;
+  //_editable = state;
+ Editor::setAllEditable(state);
   for (int i = 0; i<_contents->size(); i++)
   {
    _contents->at(i)->setEditable(state);
@@ -5073,7 +5328,7 @@ double LayoutEditor::toRadians(double degrees)
  {
      return true;
  }
- #if 0 // TODO:
+ #if 1 // TODO:
  else if (_turntableSelection!=NULL)
  {
      return true;
@@ -5530,6 +5785,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
    }
    return l;
   }
+#if 0
 /*public*/ PositionableLabel* LayoutEditor::setUpBackground(QString name)
 {
   NamedIcon* icon = NamedIcon::getIconByName(name);
@@ -5543,6 +5799,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
   putItem((Positionable*)l);
   return l;
 }
+#endif
  /**
   * Add a signal head to the Panel
   */
@@ -5663,8 +5920,8 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  }
 
  SignalMast* LayoutEditor::getSignalMast(QString name) {
-     SignalMast* sh = InstanceManager::signalMastManagerInstance()->getBySystemName(name);
-     if (sh == NULL) sh = InstanceManager::signalMastManagerInstance()->getByUserName(name);
+     SignalMast* sh = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name);
+     if (sh == NULL) sh = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getByUserName(name);
      if (sh == NULL) log.warn("did not find a SignalMast named "+name);
      return sh;
  }
@@ -6058,7 +6315,7 @@ void LayoutEditor::addSensor(QString name)
 ///*public*/ void MyLayoutEditor::setPositionableMenu(Positionable* p, QMenu* popup)
 //{
 // saveP = p;
-////  JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(Bundle.getMessage("LockPosition"));
+////  JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(tr("LockPosition"));
 ////  lockItem.setSelected(!p.isPositionable());
 // QAction* lockItem = new QAction(tr("Lock Position"),this);
 // lockItem->setCheckable(true);
@@ -6163,7 +6420,7 @@ void LayoutEditor::addSensor(QString name)
 */
 /*public*/ void LayoutEditor::setRemoveMenu(Positionable* p, QMenu* popup)
 {
-//  popup.add(new AbstractAction(Bundle.getMessage("Remove")) {
+//  popup.add(new AbstractAction(tr("Remove")) {
 //      Positionable comp;
 //      /*public*/ void actionPerformed(ActionEvent e) {
 //          comp.remove();
@@ -6304,14 +6561,58 @@ void LayoutEditor::on_actionAdd_loco_triggered()
  //markerImage->append(l);  // redundant??
 }
 
-///*public*/ void MyLayoutEditor::superPutLocoIcon(LocoIcon* l, QString name)
-//{
-//  l->setText(name);
-//  l->setHorizontalTextPosition(JLabel::CENTER);
-//  l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
-//  l->setEditable(isEditable());    // match popup mode to editor mode
-//  putItem((Positionable*)l);
-//}
+/**
+ * Add a background image
+ */
+/*public*/ void LayoutEditor::addBackground()
+{
+ if (inputFileChooser == NULL)
+ {
+     inputFileChooser = new JFileChooser(System::getProperty(
+                                             "user.dir") + File::separator + "resources" + File::separator +
+                                         "icons");
+//     FileChooserFilter filt = new jmri.util.FileChooserFilter("Graphics Files");
+//     filt.   addExtension("gif");
+//     filt.   addExtension("jpg");
+     QString filt = "Graphics Files (*.gif, *.jpg)";
+     inputFileChooser->setFileFilter(filt);
+ }
+ //inputFileChooser.rescanCurrentDirectory();
+
+ int retVal = inputFileChooser->showOpenDialog(this);
+
+ if (retVal != JFileChooser::APPROVE_OPTION)
+ {
+     return; //give up if no file selected
+ }
+ //NamedIcon icon = new NamedIcon(inputFileChooser.getSelectedFile().getPath(),
+ //inputFileChooser.getSelectedFile().getPath());
+
+ QString name = inputFileChooser->getSelectedFile()->getPath();
+
+ //convert to portable path
+ name = FileUtil::getPortableFilename(name);
+
+ //setup icon
+ backgroundImage->append(Editor::setUpBackground(name));
+}   //addBackground
+
+/**
+ * Remove a background image from the list of background images
+ */
+/*protected*/ void LayoutEditor::removeBackground(PositionableLabel* b)
+{
+ for (int i = 0; i < backgroundImage->size(); i++)
+ {
+  if (b == backgroundImage->at(i))
+  {
+   backgroundImage->remove(i);
+   setDirty(true);
+
+   return;
+  }
+ }
+}   //removeBackground
 
 /**
 *  Control whether panel items are positionable.
@@ -6320,13 +6621,13 @@ void LayoutEditor::on_actionAdd_loco_triggered()
 */
 /*public*/ void LayoutEditor::setAllPositionable(bool state)
 {
-//  /*super.*/setAllPositionable(state);
+ PanelEditor::setAllPositionable(state);
  ui->actionAllow_repositioning->setChecked(state);
  for (int i = 0; i<markerImage->size(); i++)
  {
   ((Positionable*)markerImage->at(i))->setPositionable(true);
  }
- _positionable =state;
+ //_positionable =state;
 }
 /**
 * Remove marker icons from panel
@@ -6818,7 +7119,7 @@ void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
 //  if (p.getDisplayLevel() == BKG || p instanceof PositionableShape) {
 //      return;
 //  }
-//  JCheckBoxMenuItem hideItem = new JCheckBoxMenuItem(Bundle.getMessage("SetHidden"));
+//  JCheckBoxMenuItem hideItem = new JCheckBoxMenuItem(tr("SetHidden"));
 //  hideItem.setSelected(p->isHidden());
 //  hideItem.addActionListener(new ActionListener(){
 //      Positionable comp;
@@ -6868,6 +7169,7 @@ void LayoutEditor::on_actionEdit_track_width_triggered()
   mainlineTrackWidth = dlg.mainlineTrackWidth();
  }
 }
+
 /*protected*/ void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color)
 {
  QVariant var = color;
@@ -6879,48 +7181,64 @@ void LayoutEditor::on_actionEdit_track_width_triggered()
  colorButtonGroup->addAction(act);
  menu->addAction(act);
 }
-///*protected*/ void MyLayoutEditor::makeBackgroundColorMenu(QMenu* colorMenu)
-//{
-// colorMenu->clear();
-// QActionGroup* buttonGrp = new QActionGroup(this);
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("default"), defaultBackgroundColor);
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Black"), QColor(Qt::black));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("DarkGray"),QColor(Qt::darkGray));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Gray"),QColor(Qt::gray));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("LightGray"),QColor(Qt::lightGray));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("White"),QColor(Qt::white));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Red"),QColor(Qt::red));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Pink"), QColor(255,233,236));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,170,0));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Yellow"),QColor(Qt::yellow));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Green"),QColor(Qt::green));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Blue"),QColor(Qt::blue));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Magenta"),QColor(Qt::magenta));
-// addBackgroundColorMenuEntry(colorMenu, buttonGrp, tr("Cyan"), QColor(Qt::cyan) );
 
-// connect(buttonGrp, SIGNAL(triggered(QAction*)), this,SLOT(on_colorBackgroundMenuItemSelected(QAction*)));
-//}
-#if 0
+void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
+//    ActionListener a = new ActionListener() {
+//        //final String desiredName = name;
+//        final Color desiredColor = color;
+
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if (!defaultBackgroundColor.equals(desiredColor)) {
+//                defaultBackgroundColor = desiredColor;
+//                setBackgroundColor(desiredColor);
+//                setDirty(true);
+//                repaint();
+//            }
+//        }   //actionPerformed
+//    };
+    QAction* r = new QAction(getColourIcon(color),name);
+    r->setCheckable(true);
+    backgroundColorButtonMapper->setMapping(r, backgroundColorCount);
+    //r.addActionListener(a);
+    connect(r, SIGNAL(triggered()), backgroundColorButtonMapper, SLOT(map()));
+    backgroundColorButtonGroup->addAction(r);
+
+    if (defaultBackgroundColor == (color)) {
+        r->setChecked(true);
+    } else {
+        r->setChecked(false);
+    }
+    menu->addAction(r);
+    backgroundColorMenuItems->replace(backgroundColorCount, r);
+    backgroundColors->replace(backgroundColorCount, color);
+    backgroundColorCount++;
+}   //addBackgroundColorMenuEntry
+
+
 void LayoutEditor::addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
-    ActionListener a = new ActionListener() {
-        /*final*/ QColor desiredColor = color;
+//    ActionListener a = new ActionListener() {
+//        /*final*/ QColor desiredColor = color;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!defaultTrackColor.equals(desiredColor)) {
-                LayoutTrack.setDefaultTrackColor(desiredColor);
-                defaultTrackColor = desiredColor;
-                setDirty(true);
-                repaint();
-            }
-        }   //actionPerformed
-    };
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if (!defaultTrackQColor(Qt::equals(desiredColor)) {
+//                LayoutTrack.setDefaultTrackColor(desiredColor);
+//                defaultTrackColor = desiredColor;
+//                setDirty(true);
+//                repaint();
+//            }
+//        }   //actionPerformed
+//    };
     //JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
-    QAction* r = new QAction(name, this);
+    QAction* r = new QAction(getColourIcon(color), name, this);
+    r->setCheckable(true);
+    trackColorButtonMapper->setMapping(r, trackColorCount);
+    connect(r, SIGNAL(triggered(bool)), trackColorButtonMapper, SLOT(map()));
     r->setCheckable(true);
 
-    r.addActionListener(a);
-    trackColorButtonGroup.add(r);
+    //r.addActionListener(a);
+    trackColorButtonGroup->addAction(r);
 
     if (defaultTrackColor == (color)) {
         r->setChecked(true);
@@ -6928,219 +7246,208 @@ void LayoutEditor::addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /
         r->setChecked(false);
     }
     menu->addAction(r);
-    trackColorMenuItems[trackColorCount] = r;
-    trackColors[trackColorCount] = color;
+    trackColorMenuItems->replace(trackColorCount, r);
+    trackColors->replace(trackColorCount, color);
     trackColorCount++;
 }   //addTrackColorMenuEntry
 
-void addTrackOccupiedColorMenuEntry(JMenu menu, final String name, final Color color) {
-    ActionListener a = new ActionListener() {
-        //final String desiredName = name;
-        final Color desiredColor = color;
+void LayoutEditor::on_addTrackColorMenuEntry_triggered(int i)
+{
+ QColor desiredColor = trackColors->at(i);
+ if (defaultTrackColor!=(desiredColor)) {
+     LayoutTrack::setDefaultTrackColor(desiredColor);
+     defaultTrackColor = desiredColor;
+     setDirty(true);
+     repaint();
+ }
+}
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!defaultOccupiedTrackColor.equals(desiredColor)) {
-                defaultOccupiedTrackColor = desiredColor;
-                setDirty(true);
-                repaint();
-            }
-        }   //actionPerformed
-    };
-    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+void LayoutEditor::addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
+//    ActionListener a = new ActionListener() {
+//        //final String desiredName = name;
+//        final Color desiredColor = color;
 
-    r.addActionListener(a);
-    trackOccupiedColorButtonGroup.add(r);
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if (!defaultOccupiedTrackQColor(Qt::equals(desiredColor)) {
+//                defaultOccupiedTrackColor = desiredColor;
+//                setDirty(true);
+//                repaint();
+//            }
+//        }   //actionPerformed
+//    };
+    QAction* r = new QAction(getColourIcon(color), name, this);
+    r->setCheckable(true);
+    trackColorButtonMapper->setMapping(r, trackOccupiedColorCount);
+    //r.addActionListener(a);
+    connect(r, SIGNAL(triggered(bool)), trackColorButtonMapper, SLOT(map()));
+    trackOccupiedColorButtonGroup->addAction(r);
 
-    if (defaultOccupiedTrackColor.equals(color)) {
-        r.setSelected(true);
+    if (defaultOccupiedTrackColor == (color)) {
+        r->setChecked(true);
     } else {
-        r.setSelected(false);
+        r->setChecked(false);
     }
-    menu.add(r);
-    trackOccupiedColorMenuItems[trackOccupiedColorCount] = r;
-    trackOccupiedColors[trackOccupiedColorCount] = color;
+    menu->addAction(r);
+    trackOccupiedColorMenuItems->replace(trackOccupiedColorCount, r);
+    trackOccupiedColors->replace(trackOccupiedColorCount, color);
     trackOccupiedColorCount++;
 }   //addTrackOccupiedColorMenuEntry
 
-void addTrackAlternativeColorMenuEntry(JMenu menu, final String name, final Color color) {
-    ActionListener a = new ActionListener() {
-        //final String desiredName = name;
-        final Color desiredColor = color;
+void LayoutEditor::on_addTrackOccupiedColorMenuEntry_triggered(int i)
+{
+ QColor desiredColor = trackOccupiedColors->at(i);
+ if (defaultOccupiedTrackColor != desiredColor)
+ {
+     defaultOccupiedTrackColor = desiredColor;
+     setDirty(true);
+     repaint();
+ }
+}
+void LayoutEditor::addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
+//    ActionListener a = new ActionListener() {
+//        //final String desiredName = name;
+//        final Color desiredColor = color;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!defaultAlternativeTrackColor.equals(desiredColor)) {
-                defaultAlternativeTrackColor = desiredColor;
-                setDirty(true);
-                repaint();
-            }
-        }   //actionPerformed
-    };
-    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if (!defaultAlternativeTrackQColor(Qt::equals(desiredColor)) {
+//                defaultAlternativeTrackColor = desiredColor;
+//                setDirty(true);
+//                repaint();
+//            }
+//        }   //actionPerformed
+//    };
+    QAction* r = new QAction(getColourIcon(color), name, this);
+    r->setCheckable(true);
+    trackAlternativeColorButtonMapper->setMapping(r, trackAlternativeColorCount);
+    //r.addActionListener(a);
+    connect(r, SIGNAL(triggered()), trackAlternativeColorButtonMapper, SLOT(map()) );
+    trackAlternativeColorButtonGroup->addAction(r);
 
-    r.addActionListener(a);
-    trackAlternativeColorButtonGroup.add(r);
-
-    if (defaultAlternativeTrackColor.equals(color)) {
-        r.setSelected(true);
+    if (defaultAlternativeTrackColor ==(color)) {
+        r->setChecked(true);
     } else {
-        r.setSelected(false);
+        r->setChecked(false);
     }
-    menu.add(r);
-    trackAlternativeColorMenuItems[trackAlternativeColorCount] = r;
-    trackAlternativeColors[trackAlternativeColorCount] = color;
+    menu->addAction(r);
+    trackAlternativeColorMenuItems->replace(trackAlternativeColorCount, r);
+    trackAlternativeColors->replace(trackAlternativeColorCount,color);
     trackAlternativeColorCount++;
 }   //addTrackAlternativeColorMenuEntry
 
-protected void setOptionMenuTrackColor() {
+void LayoutEditor::on_addTrackAlternativeColorMenuEntry_triggered(int i)
+{
+ QColor desiredColor = trackAlternativeColors->at(i);
+ if (defaultAlternativeTrackColor != (desiredColor)) {
+     defaultAlternativeTrackColor = desiredColor;
+     setDirty(true);
+     repaint();
+ }
+}
+
+/*protected*/ void LayoutEditor::setOptionMenuTrackColor() {
     for (int i = 0; i < trackColorCount; i++) {
-        trackColorMenuItems[i].setSelected(trackColors[i].equals(defaultTrackColor));
+        trackColorMenuItems->at(i)->setChecked(trackColors->at(i) == (defaultTrackColor));
     }
 
     for (int i = 0; i < trackOccupiedColorCount; i++) {
-        trackOccupiedColorMenuItems[i].setSelected(trackOccupiedColors[i].equals(defaultOccupiedTrackColor));
+        trackOccupiedColorMenuItems->at(i)->setChecked(trackOccupiedColors->at(i) == (defaultOccupiedTrackColor));
     }
 
     for (int i = 0; i < trackAlternativeColorCount; i++) {
-        trackAlternativeColorMenuItems[i].setSelected(trackAlternativeColors[i].equals(defaultAlternativeTrackColor));
+        trackAlternativeColorMenuItems->at(i)->setChecked(trackAlternativeColors->at(i) == (defaultAlternativeTrackColor));
     }
 }   //setOptionMenuTrackColor
 
-void addTextColorMenuEntry(JMenu menu, final String name, final Color color) {
-    ActionListener a = new ActionListener() {
-        //final String desiredName = name;
-        final Color desiredColor = color;
+void LayoutEditor::addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
+//    ActionListener a = new ActionListener() {
+//        //final String desiredName = name;
+//        final Color desiredColor = color;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!defaultTextColor.equals(desiredColor)) {
-                defaultTextColor = desiredColor;
-                setDirty(true);
-                repaint();
-            }
-        }   //actionPerformed
-    };
-    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if (!defaultTextColor == (desiredColor)) {
+//                defaultTextColor = desiredColor;
+//                setDirty(true);
+//                repaint();
+//            }
+//        }   //actionPerformed
+//    };
+    QAction* r = new QAction(getColourIcon(color), name, this);
+    r->setCheckable(true);
+    textColorButtonMapper->setMapping(r, textColorCount);
+    connect(r, SIGNAL(triggered()), textColorButtonMapper, SLOT(map()));
+    //r.addActionListener(a);
+    textColorButtonGroup->addAction(r);
 
-    r.addActionListener(a);
-    textColorButtonGroup.add(r);
-
-    if (defaultTextColor.equals(color)) {
-        r.setSelected(true);
+    if (defaultTextColor == (color)) {
+        r->setChecked(true);
     } else {
-        r.setSelected(false);
+        r->setChecked(false);
     }
-    menu.add(r);
-    textColorMenuItems[textColorCount] = r;
-    textColors[textColorCount] = color;
+    menu->addAction(r);
+    textColorMenuItems->replace(textColorCount, r);
+    textColors->replace(textColorCount, color);
     textColorCount++;
 }   //addTextColorMenuEntry
 
-void addTurnoutCircleColorMenuEntry(JMenu menu, final String name, final Color color) {
-    ActionListener a = new ActionListener() {
-        final Color desiredColor = color;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setTurnoutCircleColor(ColorUtil.colorToString(desiredColor));
-            setDirty(true);
-            repaint();
-        }   //actionPerformed
-    };
-
-    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
-
-    r.addActionListener(a);
-    turnoutCircleColorButtonGroup.add(r);
-
-    if (turnoutCircleColor.equals(color)) {
-        r.setSelected(true);
-    } else {
-        r.setSelected(false);
-    }
-    menu.add(r);
-    turnoutCircleColorMenuItems[turnoutCircleColorCount] = r;
-    turnoutCircleColors[turnoutCircleColorCount] = color;
-    turnoutCircleColorCount++;
-}   //addTurnoutCircleColorMenuEntry
-
-void addTurnoutCircleSizeMenuEntry(JMenu menu, final String name, final int size) {
-    ActionListener a = new ActionListener() {
-        final int desiredSize = size;
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (getTurnoutCircleSize() != desiredSize) {
-                setTurnoutCircleSize(desiredSize);
-                setDirty(true);
-                repaint();
-            }
-        }   //actionPerformed
-    };
-    JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
-
-    r.addActionListener(a);
-    turnoutCircleSizeButtonGroup.add(r);
-
-    if (getTurnoutCircleSize() == size) {
-        r.setSelected(true);
-    } else {
-        r.setSelected(false);
-    }
-    menu.add(r);
-    turnoutCircleSizeMenuItems[turnoutCircleSizeCount] = r;
-    turnoutCircleSizes[turnoutCircleSizeCount] = size;
-    turnoutCircleSizeCount++;
-}   //addTurnoutCircleSizeMenuEntry
-
-protected void setOptionMenuTurnoutCircleColor() {
-    for (int i = 0; i < turnoutCircleColorCount; i++) {
-        if ((turnoutCircleColors[i] == null) && (turnoutCircleColor == null)) {
-            turnoutCircleColorMenuItems[i].setSelected(true);
-        } else if ((turnoutCircleColors[i] != null) && turnoutCircleColors[i].equals(turnoutCircleColor)) {
-            turnoutCircleColorMenuItems[i].setSelected(true);
-        } else {
-            turnoutCircleColorMenuItems[i].setSelected(false);
-        }
-    }
+/*protected*/ void LayoutEditor::setOptionMenuTurnoutCircleColor()
+{
+ for (int i = 0; i < turnoutCircleColorCount; i++)
+ {
+     if ((turnoutCircleColors->at(i) == QColor()) && (turnoutCircleColor == QColor())) {
+         turnoutCircleColorMenuItems->at(i)->setChecked(true);
+     } else if ((turnoutCircleColors->at(i) != QColor()) && turnoutCircleColors->at(i) == (turnoutCircleColor)) {
+         turnoutCircleColorMenuItems->at(i)->setChecked(true);
+     } else {
+         turnoutCircleColorMenuItems->at(i)->setChecked(false);
+     }
+ }
 }   //setOptionMenuTurnoutCircleColor
 
-protected void setOptionMenuTurnoutCircleSize() {
-    for (int i = 0; i < turnoutCircleSizeCount; i++) {
-        if (turnoutCircleSizes[i] == getTurnoutCircleSize()) {
-            turnoutCircleSizeMenuItems[i].setSelected(true);
-        } else {
-            turnoutCircleSizeMenuItems[i].setSelected(false);
-        }
-    }
+/*protected*/ void LayoutEditor::setOptionMenuTurnoutCircleSize()
+{
+ for (int i = 0; i < turnoutCircleSizeCount; i++)
+ {
+  if (turnoutCircleSizes->at(i) == getTurnoutCircleSize())
+  {
+   turnoutCircleSizeMenuItems->at(i)->setChecked(true);
+  }
+  else
+  {
+   turnoutCircleSizeMenuItems->at(i)->setChecked(false);
+  }
+ }
 }   //setOptionMenuTurnoutCircleSize
 
-protected void setOptionMenuTextColor() {
+/*protected*/ void LayoutEditor::setOptionMenuTextColor() {
     for (int i = 0; i < textColorCount; i++) {
-        if (textColors[i].equals(defaultTextColor)) {
-            textColorMenuItems[i].setSelected(true);
+        if (textColors->at(i) == (defaultTextColor)) {
+            textColorMenuItems->at(i)->setChecked(true);
         } else {
-            textColorMenuItems[i].setSelected(false);
+            textColorMenuItems->at(i)->setChecked(false);
         }
     }
 }   //setOptionMenuTextColor
 
-protected void setOptionMenuBackgroundColor() {
+/*protected*/ void LayoutEditor::setOptionMenuBackgroundColor() {
     for (int i = 0; i < backgroundColorCount; i++) {
-        if (backgroundColors[i].equals(defaultBackgroundColor)) {
-            backgroundColorMenuItems[i].setSelected(true);
+        if (backgroundColors->at(i) == (defaultBackgroundColor)) {
+            backgroundColorMenuItems->at(i)->setChecked(true);
         } else {
-            backgroundColorMenuItems[i].setSelected(false);
+            backgroundColorMenuItems->at(i)->setChecked(false);
         }
     }
 }   //setOptionMenuBackgroundColor
-#endif
-void LayoutEditor::on_colorBackgroundMenuItemSelected(QAction* act)
+
+void LayoutEditor::on_colorBackgroundMenuItemSelected(int i)
 {
- QColor color = act->data().value<QColor>();
+ QColor color = backgroundColors->at(i);
  editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
 }
+
 void LayoutEditor::on_actionAdd_reporter_label_triggered()
 {
  AddReporterDlg* dlg = new AddReporterDlg(this);
@@ -7151,19 +7458,17 @@ void LayoutEditor::on_actionAdd_reporter_label_triggered()
    addReporter(rName,loc.x(),loc.y());
  }
 }
+
 void LayoutEditor::on_actionAdd_background_image_2_triggered()
 {
- setCursor(Qt::WaitCursor);
- QString fileName = QFileDialog::getOpenFileName(this,tr("Open background image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp *.gif)"));
- setCursor(Qt::ArrowCursor);
- if(!fileName.isEmpty())
- {
-  backgroundImage->append(setUpBackground(fileName));
- }
+ addBackground();
+ setDirty(true);
+ repaint();
 }
-              /**
-* Determine right side x of furthest right background
-*/
+#if 0
+/**
+ * Determine right side x of furthest right background
+ */
 /*private*/ int LayoutEditor::getNextBackgroundLeft()
 {
   int left = 0;
@@ -7183,6 +7488,7 @@ void LayoutEditor::on_actionAdd_background_image_2_triggered()
   }
   return left;
 }
+#endif
 void LayoutEditor::on_actionLoad_Other_XML_triggered()
 {
  setCursor(Qt::WaitCursor);
@@ -7324,37 +7630,24 @@ void LayoutEditor::OnDefaultTrackColorSelected(QAction *act)
 
  defaultTrackColor = c;
 }
-void LayoutEditor::setDefaultTrackColor(QString sColor)
+
+void LayoutEditor::setDefaultTextColor(QString color)
 {
- for(int i=0; i< ui->menuSet_default_track_color->actions().count(); i++)
- {
-  QAction* act = ui->menuSet_default_track_color->actions().at(i);
-  if(act->text() == sColor)
-  {
-   act->setChecked(true);
-   defaultTrackColor = act->data().value<QColor>();
-   Q_ASSERT(defaultTrackColor.isValid());
-  }
- }
-}
-void LayoutEditor::setDefaultTextColor(QString sColor)
-{
- for(int i=0; i< ui->menuSet_default_text_color->actions().count();  i++)
- {
-  QAction* act = ui->menuSet_default_text_color->actions().at(i);
-  if(act->text() == sColor)
-  {
-   act->setChecked(true);
-   defaultTextColor = act->data().value<QColor>();
-  }
- }
+ defaultTextColor = ColorUtil::stringToColor(color);
+ setOptionMenuTextColor();
 }
 
-void LayoutEditor::OnDefaultTextColorSelected(QAction *act)
+/*public*/ void LayoutEditor::setDefaultBackgroundColor(QString color) {
+        defaultBackgroundColor = ColorUtil::stringToColor(color);
+        setOptionMenuBackgroundColor();
+    }
+void LayoutEditor::OnDefaultTextColorSelected(int i)
 {
- QColor c = act->data().value<QColor>();
+ QColor c = textColors->at(i);
  defaultTextColor = c;
 }
+
+
 /*public*/ QString LayoutEditor::getLayoutName() {return layoutName;}
 /*public*/ void LayoutEditor::setLayoutName(QString name)
 {
@@ -7589,6 +7882,7 @@ int LayoutEditor::getTurnoutType(QString name)
   }
   tools->setSignalsAtBlockBoundary(signalIconEditor, signalFrame);
  }
+
  void LayoutEditor::on_actionSet_Signals_at_Turnout_triggered()
  {
   if (tools == NULL)
@@ -7597,6 +7891,7 @@ int LayoutEditor::getTurnoutType(QString name)
   }
   tools->setSignalsAtTurnout(signalIconEditor, signalFrame);
  }
+
  void LayoutEditor::on_actionSet_Signals_at_Crossover_triggered()
  {
   if (tools == NULL)
@@ -7605,6 +7900,7 @@ int LayoutEditor::getTurnoutType(QString name)
   }
   tools->setSignalsAtXoverTurnout(signalIconEditor, signalFrame);
  }
+
  void LayoutEditor::on_actionSet_Signals_at_Level_Crossing_triggered()
  {
   if (tools == NULL)
@@ -7613,6 +7909,7 @@ int LayoutEditor::getTurnoutType(QString name)
   }
   tools->setSignalsAtLevelXing(signalIconEditor, signalFrame);
  }
+
  void LayoutEditor::on_actionSet_Signals_at_Slip_triggered()
  {
   if (tools == NULL)
@@ -7621,6 +7918,7 @@ int LayoutEditor::getTurnoutType(QString name)
   }
   tools->setSignalsAtSlip(signalIconEditor, signalFrame);
  }
+
  void LayoutEditor::on_actionSet_Signals_at_Throat_to_Throat_Turnouts_triggered()
  {
   if (tools == NULL)
@@ -7629,6 +7927,7 @@ int LayoutEditor::getTurnoutType(QString name)
   }
   tools->setSignalsAtTToTTurnouts(signalIconEditor, signalFrame);
  }
+
  void LayoutEditor::on_actionSet_Signals_at_Three_Way_Turnout()
  {
   if (tools == NULL)
@@ -7896,6 +8195,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 /*public*/ void LayoutEditor::setDirectTurnoutControl(bool boo) {
     useDirectTurnoutControl = boo;
 // TODO:     useDirectTurnoutControlItem.setSelected(useDirectTurnoutControl);
+
 }
 
 /*public*/ bool LayoutEditor::getDirectTurnoutControl() {
@@ -7924,15 +8224,30 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 /*public*/ void LayoutEditor::setSideTrackWidth(int w) {
     sideTrackWidth = w;
 }
+/*public*/ void LayoutEditor::setDefaultTrackColor(QString color) {
+    defaultTrackColor = ColorUtil::stringToColor(color);
+    setOptionMenuTrackColor();
+}
+
+/*public*/ void LayoutEditor::setDefaultOccupiedTrackColor(QString color) {
+    defaultOccupiedTrackColor = ColorUtil::stringToColor(color);
+    setOptionMenuTrackColor();
+}
+
+/*public*/ void LayoutEditor::setDefaultAlternativeTrackColor(QString color) {
+    defaultAlternativeTrackColor = ColorUtil::stringToColor(color);
+    setOptionMenuTrackColor();
+}
+
 /*public*/ void LayoutEditor::setTurnoutCircleColor(QString color)
 {
- turnoutCircleColor = stringToColor(color);
-// TODO:  setOptionMenuTurnoutCircleColor();
+ turnoutCircleColor = ColorUtil::stringToColor(color);
+ setOptionMenuTurnoutCircleColor();
 }
 
 /*public*/ void LayoutEditor::setTurnoutCircleSize(int size) {
     turnoutCircleSize = size;
-// TODO:    setOptionMenuTurnoutCircleSize();
+  setOptionMenuTurnoutCircleSize();
 }
 
 /*public*/ void LayoutEditor::setTurnoutDrawUnselectedLeg(bool state)
@@ -7940,9 +8255,10 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (turnoutDrawUnselectedLeg != state)
  {
   turnoutDrawUnselectedLeg = state;
-// TODO:  turnoutDrawUnselectedLegItem.setSelected(turnoutDrawUnselectedLeg);
+  turnoutDrawUnselectedLegItem->setChecked(turnoutDrawUnselectedLeg);
  }
 }
+
 /*public*/ void LayoutEditor::setXScale(double xSc) {
     xScale = xSc;
 }
@@ -7951,95 +8267,33 @@ void LayoutEditor::closeEvent(QCloseEvent *)
     yScale = ySc;
 }
 
-/*public*/ /*static*/ QColor LayoutEditor::stringToColor(QString string)
-{
- if (string==("black"))
- {
-  return Qt::black;
- } else if (string==("darkGray")) {
-     return Qt::darkGray;
- } else if (string==("gray")) {
-     return Qt::gray;
- } else if (string==("lightGray")) {
-     return Qt::lightGray;
- } else if (string==("white")) {
-     return Qt::white;
- } else if (string==("red")) {
-     return Qt::red;
- } else if (string==("pink")) {
-     return QColor(255,192,203);
- } else if (string==("orange")) {
-     return QColor(255, 165, 0);
- } else if (string==("yellow")) {
-     return Qt::yellow;
- } else if (string==("green")) {
-    return Qt::green;
- } else if (string==("blue")) {
-     return Qt::blue;
- } else if (string==("magenta")) {
-     return Qt::magenta;
- } else if (string==("cyan")) {
-     return Qt::cyan;
- } else if (string==("track"))
- {
-  return QColor();
- }
- Logger::error("unknown color text '" + string + "' sent to stringToColor");
- return Qt::black;
-}
-// utility routines
-/*public*/ /*static*/ QString LayoutEditor::colorToString(QColor color)
-{
- if (color == QColor())
-  {
-        return "track";
-    } else if (color==(Qt::black)) {
-        return "black";
-    } else if (color==(Qt::darkGray)) {
-        return "darkGray";
-    } else if (color==(Qt::gray)) {
-        return "gray";
-    } else if (color==(Qt::lightGray)) {
-        return "lightGray";
-    } else if (color==(Qt::white)) {
-        return "white";
-    } else if (color==(Qt::red)) {
-        return "red";
-    } else if (color==QColor(255,192,203)) {
-        return "pink";
-    } else if (color==QColor(255, 165, 0)) {
-        return "orange";
-    } else if (color==(Qt::yellow)) {
-        return "yellow";
-    } else if (color==(Qt::green)) {
-        return "green";
-    } else if (color==(Qt::blue)) {
-        return "blue";
-    } else if (color==(Qt::magenta)) {
-        return "magenta";
-    } else if (color==(Qt::cyan)) {
-        return "cyan";
-    }
-    Logger::error("unknown color sent to colorToString");
-    return "black";
-}
 /*public*/ void LayoutEditor::setShowHelpBar(bool state)
 {
  if (showHelpBar != state)
   {
    showHelpBar = state;
-//   showHelpItem.setSelected(showHelpBar);
-//   if (isEditable()) {
-//       helpBar.setVisible(showHelpBar);
-//  }
+//   if (toolBarSide.equals(eToolBarSide.eFLOAT)) {
+//                   if (floatEditHelpPanel != null) {
+//                       floatEditHelpPanel.setVisible(isEditable() && showHelpBar);
+//                   }
+//               } else {
+//                   if (helpBarPanel != null) {
+//                       helpBarPanel.setVisible(isEditable() && showHelpBar);
+//                   }
+//               }
+//               InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefsMgr) -> {
+//                   prefsMgr.setSimplePreferenceState(getWindowFrameRef() + ".showHelpBar", showHelpBar);
+//               });
  }
 }
+
 /*public*/ void LayoutEditor::setDrawGrid(bool state)
 {
  if (drawGrid != state)
  {
   drawGrid = state;
   //showGridItem.setSelected(drawGrid);
+  ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
   on_actionShow_grid_in_edit_mode_toggled(state);
  }
 }
@@ -8049,6 +8303,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  {
   snapToGridOnAdd = state;
   //snapToGridOnAddItem.setSelected(snapToGridOnAdd);
+  ui->actionSnap_to_grid_when_adding->setChecked(snapToGridOnAdd);
   on_actionSnap_to_grid_when_adding_toggled(state);
  }
 }
@@ -8059,6 +8314,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  {
   snapToGridOnMove = state;
   //snapToGridOnMoveItem.setSelected(snapToGridOnMove);
+  ui->actionSnap_to_grid_when_moving->setChecked(snapToGridOnMove);
   on_actionSnap_to_grid_when_moving_toggled(state);
  }
 }
@@ -8069,6 +8325,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  {
   antialiasingOn = state;
   //antialiasingOnItem.setSelected(antialiasingOn);
+  ui->actionEnable_antialiasing_smoother_lines->setChecked(antialiasingOn);
   on_actionEnable_antialiasing_smoother_lines_toggled(state);
  }
 }
@@ -8079,6 +8336,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  {
   turnoutCirclesWithoutEditMode = state;
   //turnoutCirclesOnItem.setSelected(turnoutCirclesWithoutEditMode);
+  ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
   on_actionShow_turnout_circles_toggled(state);
  }
 }
@@ -8088,7 +8346,8 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (autoAssignBlocks != boo)
  {
   autoAssignBlocks = boo;
-  //autoAssignBlocksItem.setSelected(autoAssignBlocks);
+  autoAssignBlocksItem->setChecked(autoAssignBlocks);
+  //ui->action
  }
 }
 /*public*/ void LayoutEditor::setScroll(int state)
@@ -8096,14 +8355,15 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (isEditable())
  {
   //In edit mode the scroll bars are always displayed, however we will want to set the scroll for when we exit edit mode
-//  Editor::setScroll(SCROLL_BOTH);
+  Editor::setScroll(SCROLL_BOTH);
   _scrollState = state;
  }
  else
  {
-// Editor::setScroll(state);
+  Editor::setScroll(state);
  }
 }
+
 /**
  * Add a layout turntable at location specified
  */

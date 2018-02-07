@@ -48,7 +48,7 @@ ClockMonPane::ClockMonPane(QWidget *parent) :
 }
 
 /*public*/ QString ClockMonPane::getTitle() {
-    return LnPanel::getTitle(tr("Clock Mon"));
+    return LnPanel::getTitle(tr("Monitor Clock"));
 }
 
 ///*public*/ ClockMonPane() {
@@ -135,7 +135,8 @@ ClockMonPane::ClockMonPane(QWidget *parent) :
     frac_mins->setText(QString::number(s->getFcFracMins()));
 }
 
-/*public*/ void ClockMonPane::dispose() {
+//@Override
+/*public*/ void ClockMonPane::dispose() { 
     // Drop loconet connection
     if (memo->getSlotManager() != NULL) {
         //memo.getSlotManager().removeSlotListener(this);

@@ -61,7 +61,8 @@ ConfigXmlManager::ConfigXmlManager(QObject *parent) :
     ConfigureManager(parent)
 {
  setObjectName("ConfigXmlManager");
- log->setDebugEnabled(true);
+ if(log != NULL)
+  log->setDebugEnabled(true);
  plist =  QList<QObject*> ();
  //clist =  QHash<QObject*, int>();
  //clist = Collections.synchronizedMap(new QHash<QObject*, int>());
@@ -123,7 +124,7 @@ ConfigXmlManager::~ConfigXmlManager()
  */
 void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
 {
- if (log->isDebugEnabled())
+ if (log != NULL && log->isDebugEnabled())
  {
   QString adapter = adapterName(o);
   if (log->isDebugEnabled()) log->debug("register "+o->objectName()+" adapter "+adapter);

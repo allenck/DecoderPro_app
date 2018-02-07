@@ -67,7 +67,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  panel.setAttribute("controlling", (p->allControlling()?"yes":"no"));
  panel.setAttribute("hide", p->isVisible()?"no":"yes");
  panel.setAttribute("panelmenu", frame->menuBar()->isVisible()?"yes":"no");
-//    panel.setAttribute("scrollable", p->getScrollable());
+ panel.setAttribute("scrollable", p->getScrollable());
  if (p->getBackgroundColor()!=QColor())
  {
   panel.setAttribute("redBackground", p->getBackgroundColor().red());
@@ -225,7 +225,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  QString state = "both";
  if ((a = element.attribute("scrollable"))!=NULL)
      state = a;
-//    panel->setScroll(state);
+     panel->setScroll(state);
  bool bOk = true;
  bool bok;
      int red = element.attribute("redBackground","215").toInt(&bok);

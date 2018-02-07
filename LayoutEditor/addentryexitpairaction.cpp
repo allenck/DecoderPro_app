@@ -19,7 +19,7 @@
  */
 //private static final long serialVersionUID = -2153517492240562949L;
 
-/*public*/ AddEntryExitPairAction::AddEntryExitPairAction(QString s, LayoutEditor* panel, QObject *parent)
+/*public*/ AddEntryExitPairAction::AddEntryExitPairAction(QString /*s*/, LayoutEditor* panel, QObject *parent)
  : AbstractAction(parent)
 {
  //super(s);

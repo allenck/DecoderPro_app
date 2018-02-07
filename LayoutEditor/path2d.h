@@ -147,7 +147,7 @@ protected:
  friend class Path2D;
  friend class CopyIterator;
  friend class TxIterator;
-
+ friend class Region;
 };
 /*static*/ /*abstract*/ class Iterator : public PathIterator
 {

@@ -33,7 +33,7 @@ ScriptButtonModel::ScriptButtonModel()
 }
 
 //@Override
-/*public*/ void ScriptButtonModel::performAction() throw (JmriException) {
+/*public*/ void ScriptButtonModel::performAction(QString) throw (JmriException) {
     if (Apps::buttonSpace() != NULL) {
         QPushButton* b = new QPushButton((new ScriptButtonAction(this))->text());
         Apps::buttonSpace()->layout()->addWidget(b);

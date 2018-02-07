@@ -5,10 +5,11 @@
 #include "jtextfield.h"
 #include <QAction>
 #include "jtextfield.h"
+#include <QSpinBox>
+#include "gridbaglayout.h"
 
-Positionable* CoordinateEdit::pos = NULL;
-QString CoordinateEdit::title = "";
-
+//Positionable* CoordinateEdit::pos = NULL;
+//QString CoordinateEdit::title = "";
 
 /**
  * Displays and allows user to modify x & y coordinates of
@@ -41,7 +42,7 @@ QString CoordinateEdit::title = "";
  */
 
 ///*public*/ class CoordinateEdit extends JmriJFrame {
-/*public*/ /*static*/ QAction* CoordinateEdit::getCoordinateEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent)
+/*public*/ /*static*/ QAction* CoordinateEdit::getCoordinateEditAction(/*final*/ Positionable* pos, QObject* parent)
 {
 //    return new AbstractAction(Bundle.getMessage("SetXY")) {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -53,12 +54,17 @@ QString CoordinateEdit::title = "";
 //                f.setLocationRelativeTo((Component)pos);
 //            }
 //        };
-  CoordinateEdit::pos = pos;
-  QAction* setXYAction = new QAction(tr("SetXY"),parent);
-  connect(setXYAction, SIGNAL(triggered()), parent, SLOT(on_setXYAction_triggered()));
+  //CoordinateEdit::pos = pos;
+  SetXYAction* setXYAction = new SetXYAction(pos, tr("Set x & y%1").arg("..."), parent);
+  connect(setXYAction, SIGNAL(triggered()), setXYAction, SLOT(on_setXYAction_triggered()));
   return setXYAction;
 }
-void CoordinateEdit::on_setXYAction_triggered()
+
+SetXYAction::SetXYAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
+{
+ this->pos = pos;
+}
+void SetXYAction::on_setXYAction_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
@@ -70,7 +76,7 @@ void CoordinateEdit::on_setXYAction_triggered()
 }
 
 //////////////////////////////////////////////////////////////
-/*public*/ /*static*/ QAction* CoordinateEdit::getLevelEditAction(/*final*/ Positionable* /*pos*/, CoordinateEdit* parent)
+/*public*/ /*static*/ QAction* CoordinateEdit::getLevelEditAction(/*final*/ Positionable* pos, QObject* parent)
 {
 //    return new AbstractAction(Bundle.getMessage("SetLevel")) {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -82,11 +88,15 @@ void CoordinateEdit::on_setXYAction_triggered()
 //                f.setLocationRelativeTo((Component)pos);
 //            }
 //        };
- QAction* levelEditAction = new QAction(tr("Set Level"),parent);
- connect(levelEditAction, SIGNAL(triggered()), parent, SLOT(on_levelEditAction_triggered()));
+ LevelEditAction* levelEditAction = new LevelEditAction(pos, tr("Set Level").arg("..."),parent);
+ connect(levelEditAction, SIGNAL(triggered()), levelEditAction, SLOT(on_levelEditAction_triggered()));
  return levelEditAction;
 }
-void CoordinateEdit::on_levelEditAction_triggered()
+LevelEditAction::LevelEditAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
+{
+ this->pos = pos;
+}
+void LevelEditAction::on_levelEditAction_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
@@ -99,7 +109,7 @@ void CoordinateEdit::on_levelEditAction_triggered()
 //////////////////////////////////////////////////////////////
 /*public*/ /*static*/ AbstractAction* CoordinateEdit::getTooltipEditAction(/*final*/ Positionable* pos, QObject* parent)
 {
- return new TooltipEditAction(pos, tr("Set Tooltip"), (CoordinateEdit*)parent);
+ return new TooltipEditAction(pos, tr("Set Tooltip"), parent);
 // {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                CoordinateEdit f = new CoordinateEdit();
@@ -111,16 +121,19 @@ void CoordinateEdit::on_levelEditAction_triggered()
 //            }
 //        };
 }
-TooltipEditAction::TooltipEditAction(Positionable* pos, QString name, CoordinateEdit *coordinateEdit) : AbstractAction(name, coordinateEdit)
+
+TooltipEditAction::TooltipEditAction(Positionable* pos, QString name, QObject *parent) : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
+
 void TooltipEditAction::actionPerformed(ActionEvent *)
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("Set Tooltip%1").arg(""),pos, true);
+ f->init(tr("Set Tooltip%1").arg("..."),pos, true);
  f->initSetTip();
  f->setVisible(true);
 // f->setLocationRelativeTo((QObject*)pos);
@@ -156,7 +169,7 @@ void SetBorderSizeActionListener::actionPerformed(ActionEvent */*e*/)
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("Set Border Size%1").arg(""),CoordinateEdit::pos, true);
+ f->init(tr("Set Border Size%1").arg(""),pos, true);
  f-> initBorder();
  f->setVisible(true);
 }
@@ -174,17 +187,22 @@ void SetBorderSizeActionListener::actionPerformed(ActionEvent */*e*/)
 //                f.setLocationRelativeTo((Component)pos);
 //            }
 //        };
-  CoordinateEdit::pos = pos;
-  QAction* actionMarginEdit = new QAction(tr("Set Margin Size"), (QObject*)parent);
+  //QAction* actionMarginEdit = new QAction(tr("Set Margin Size"), (QObject*)parent);
+  ActionMarginEdit* actionMarginEdit = new ActionMarginEdit(pos, tr("Set Margin Size"), (QObject*)parent);
   connect(actionMarginEdit, SIGNAL(triggered()), parent, SLOT(on_actionMarginEdit_triggered()));
   return actionMarginEdit;
 }
-void PositionablePopupUtil::on_actionMarginEdit_triggered()
+
+ActionMarginEdit::ActionMarginEdit(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
+{
+ this->pos = pos;
+}
+void ActionMarginEdit::on_actionMarginEdit_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
 
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("Set Margin Size%1").arg(""), CoordinateEdit::pos, true);
+ f->init(tr("Set Margin Size%1").arg(""), pos, true);
  f->initMargin();
  f->setVisible(true);
  //                f.setLocationRelativeTo((Component)pos);
@@ -205,16 +223,20 @@ void PositionablePopupUtil::on_actionMarginEdit_triggered()
 //                f.setLocationRelativeTo((Component)pos);
 //            }
 //        };
-    CoordinateEdit::pos = pos;
-  QAction* actionGetFixedSizeEdit = new QAction(tr("Set Fixed Size"),parent);
+  ActionFixedSizeEdit* actionGetFixedSizeEdit = new ActionFixedSizeEdit(pos, tr("Set Fixed Size"),parent);
   connect(actionGetFixedSizeEdit, SIGNAL(triggered()), parent, SLOT(on_actionGetFixedSizeEdit_triggered())); // TODO:
   return actionGetFixedSizeEdit;
 }
-void PositionablePopupUtil::on_actionGetFixedSizeEdit_triggered()
+
+ActionFixedSizeEdit::ActionFixedSizeEdit(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
+{
+ this->pos = pos;
+}
+void ActionFixedSizeEdit::on_actionGetFixedSizeEdit_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
- f->init(tr("Set Fixed Size%1").arg(""), CoordinateEdit::pos, true);
+ f->init(tr("Set Fixed Size%1").arg(""), pos, true);
  f->initFixedSize();
  f->setVisible(true);
     //                f.setLocationRelativeTo((Component)pos);
@@ -234,25 +256,28 @@ void PositionablePopupUtil::on_actionGetFixedSizeEdit_triggered()
 //                f.setLocationRelativeTo((Component)pos);
 //            }
 //        };
- QAction* rotateAction = new QAction(tr("Rotate (degrees)"), parent);
- parent->pos = pos;
+ RotateAction* rotateAction = new RotateAction(pos, tr("Rotate (degrees)"), parent);
  connect(rotateAction, SIGNAL(triggered()), parent, SLOT(on_rotateAction_triggered()));
  return rotateAction;
 }
-void CoordinateEdit::on_rotateAction_triggered()
+RotateAction::RotateAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
 {
-//    CoordinateEdit* f = new CoordinateEdit();
-//    //f.addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
-//    f->init(tr("rotate"), pos, true);
-//    f->initRotate();
-//    f->setVisible(true);
+ this->pos = pos;
+}
+void RotateAction::on_rotateAction_triggered()
+{
+    CoordinateEdit* f = new CoordinateEdit();
+    f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+    f->init(tr("rotate"), pos, true);
+    f->initRotate();
+    f->setVisible(true);
     //f.setLocationRelativeTo((Component)pos);
-    initRotate();
+    //initRotate();
 }
 
 //////////////////////////////////////////////////////////////
 
-/*public*/ /*static*/ QAction* CoordinateEdit::getScaleEditAction(/*final*/ Positionable* /*pos*/, CoordinateEdit* parent)
+/*public*/ /*static*/ QAction* CoordinateEdit::getScaleEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent)
 {
 //    return new AbstractAction(Bundle.getMessage("scale")) {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -264,27 +289,31 @@ void CoordinateEdit::on_rotateAction_triggered()
 //                f.setLocationRelativeTo((Component)pos);
 //            }
 //        };
- QAction* scaleEditAction = new QAction(tr("Scale (percentage)"), parent);
+ ScaleEditAction* scaleEditAction = new ScaleEditAction(pos, tr("Scale (percentage)"), parent);
  connect(scaleEditAction, SIGNAL(triggered()), parent, SLOT(on_getScaleEditAction_triggered()));
  return scaleEditAction;
 }
-void CoordinateEdit::on_getScaleEditAction_triggered()
+ScaleEditAction::ScaleEditAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
 {
-    CoordinateEdit* f = new CoordinateEdit();
-    //f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
-    f->init(tr("Scale percentage: %1").arg(""), pos, true);
-    f->initScale();
-    f->setVisible(true);
-    //f.setLocationRelativeTo((Component)pos);
+ this->pos = pos;
+}
+void ScaleEditAction::on_getScaleEditAction_triggered()
+{
+ CoordinateEdit* f = new CoordinateEdit();
+ f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+ f->init(tr("Scale percentage: %1").arg("..."), pos, true);
+ f->initScale();
+ f->setVisible(true);
+ //f.setLocationRelativeTo((Component)pos);
 }
 
 //////////////////////////////////////////////////////////////
 
-/*public*/ /*static*/ QAction* CoordinateEdit::getTextEditAction(/*const*/ Positionable* /*pos*/, const QString title, CoordinateEdit* parent)
+/*public*/ /*static*/ QAction* CoordinateEdit::getTextEditAction(/*const*/ Positionable* pos, const QString title, QObject* parent)
 {
- CoordinateEdit::title = title;
- QAction* textEditAction = new QAction(title, parent);
- connect(textEditAction, SIGNAL(triggered()), parent, SLOT(on_getTextEditAction_triggered()));
+ //CoordinateEdit::title = title;
+ TextEditAction* textEditAction = new TextEditAction(pos, title, parent);
+ connect(textEditAction, SIGNAL(triggered()), textEditAction, SLOT(on_getTextEditAction_triggered()));
  return textEditAction;
 
 //    return new AbstractAction((title)) {
@@ -298,43 +327,71 @@ void CoordinateEdit::on_getScaleEditAction_triggered()
 //            }
 //        };
 }
-void CoordinateEdit::on_getTextEditAction_triggered()
+TextEditAction::TextEditAction(Positionable *pos, QString title, QObject *parent)
+{
+ this->pos = pos;
+ this->title = title;
+}
+
+void TextEditAction::on_getTextEditAction_triggered()
 {
  CoordinateEdit* f = new CoordinateEdit();
-// f.addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+ f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
  f->init((title), pos, false);
  f->initText();
  f->setVisible(true);
 // f.setLocationRelativeTo((Component)pos);
 }
 //////////////////////////////////////////////////////////////
-#if 0
-    /*public*/ static AbstractAction getZoomEditAction(final Positionable pos) {
-        return new AbstractAction(Bundle.getMessage("Zoom")) {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    CoordinateEdit f = new CoordinateEdit();
-                    f.addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
-                    f.init(Bundle.getMessage("Zoom"), pos, false);
-                    f.initZoom();
-                    f.setVisible(true);
-                    //f.setLocation(100,100);
-                    f.setLocationRelativeTo(pos.getEditor().getTargetPanel());
-                }
-            };
-    }
-    //////////////////////////////////////////////////////////////
-#endif
-    /*public*/ /*static*/ QAction* CoordinateEdit::getNameEditAction(/*final*/ Positionable* /*pos*/) {
-       QAction* act = new QAction(tr("Rename Panel Menu"),this);
-       connect(act, SIGNAL(triggered()), this, SLOT(renamePanelMenu()));
-       return act;
+#if 1
+/*public*/ /*static*/ AbstractAction* CoordinateEdit::getZoomEditAction(/*final*/ Positionable* pos, QObject* parent) {
+    return new GetZoomEditAction(pos, tr("Zoom"), parent);// {
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                CoordinateEdit f = new CoordinateEdit();
+//                f.addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+//                f.init(Bundle.getMessage("Zoom"), pos, false);
+//                f.initZoom();
+//                f.setVisible(true);
+//                //f.setLocation(100,100);
+//                f.setLocationRelativeTo(pos.getEditor().getTargetPanel());
+//            }
+//        };
 }
-/*public*/ void CoordinateEdit::renamePanelMenu(/*ActionEvent e*/) {
-    CoordinateEdit* f = new CoordinateEdit();
+
+GetZoomEditAction::GetZoomEditAction(Positionable *pos, QString name, QObject *parent)
+ : AbstractAction(name, parent)
+{
+ this->pos = pos;
+ connect(this, SIGNAL(triggered(bool)), this, SLOT(on_getZoomEditAction_triggered()));
+}
+
+void GetZoomEditAction::on_getZoomEditAction_triggered()
+{
+ CoordinateEdit* f = new CoordinateEdit();
+ f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+ f->init(tr("Zoom"), pos, false);
+ f->initZoom();
+ f->setVisible(true);
+ //f.setLocation(100,100);
+// f->setLocationRelativeTo(pos->getEditor()->getTargetPanel());
+}
+//////////////////////////////////////////////////////////////
+#endif
+    /*public*/ /*static*/ QAction* CoordinateEdit::getNameEditAction(/*final*/ Positionable* pos) {
+  GetNameEditAction* act = new GetNameEditAction(pos, tr("Rename Panel Menu"),this);
+  connect(act, SIGNAL(triggered()), act, SLOT(renamePanelMenu()));
+  return act;
+}
+GetNameEditAction::GetNameEditAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
+{
+ this->pos = pos;
+}
+/*public*/ void GetNameEditAction::renamePanelMenu(/*ActionEvent e*/) {
+ CoordinateEdit* f = new CoordinateEdit();
 //    f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
-    f->init(tr("Rename Panel Menu"), pos, false);
-    f->initSetName();
-    f->setVisible(true);
+ f->init(tr("Rename Panel Menu"), pos, false);
+ f->initSetName();
+ f->setVisible(true);
     //f.setLocation(100,100);
 //    f->setLocationRelativeTo(pos->getEditor()->getTargetPanel());
 }
@@ -374,8 +431,9 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : JmriJFrame("<CoordinateEdit>",
  //okButton->setFixedHeight(dim.height());
  cancelButton->setMinimumSize(dim);
  //cancelButton->setFixedHeight(dim.height());
- setWindowTitle(title);
-   //setLocation(pl->getLocation());
+ //setWindowTitle(title);
+ JmriJFrame::setTitle(title);
+ setLocation(pl->getLocation().x(),pl->getLocation().y());
 }
 
 /*public*/ void CoordinateEdit::initSetXY()
@@ -425,8 +483,7 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : JmriJFrame("<CoordinateEdit>",
  connect(spinY, SIGNAL(valueChanged(int)), this, SLOT(on_setXYSpinnerValues_changed()));
 
  //getContentPane().setLayout(new GridBagLayout());
- QWidget* centralWidget = new QWidget;
- setCentralWidget(centralWidget);
+ QWidget* centralWidget = getContentPane();
  gridLayout = new QGridLayout(centralWidget);
 gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
  addSpinItems(true);
@@ -510,8 +567,7 @@ void CoordinateEdit::on_setXYSpinnerValues_changed()
  spinX->setMaximumSize(QSize(spinX->maximumSize().width(), spinX->maximumSize().height()));
 
     //getContentPane().setLayout(new GridBagLayout());
- QWidget* centralWidget = new QWidget;
- setCentralWidget(centralWidget);
+ QWidget* centralWidget = getContentPane();
  gridLayout = new QGridLayout(centralWidget);
  gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
  addSpinItems(false);
@@ -568,9 +624,8 @@ void CoordinateEdit::on_setLevelCancelButton_clicked()
 //				xTextField.getMaximumSize().width+100, xTextField.getPreferredSize().height));
 
  //getContentPane().setLayout(new GridBagLayout());
- QWidget* centralWidget = new QWidget;
+ QWidget* centralWidget = getContentPane();
  QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);
- setCentralWidget(centralWidget);
  gridLayout = new QGridLayout;
  centralWidgetLayout->addLayout(gridLayout);
 
@@ -611,7 +666,7 @@ void CoordinateEdit::on_cancel()
 
 /*public*/ void CoordinateEdit::initBorder()
 {
- pl = CoordinateEdit::pos;
+ //pl = CoordinateEdit::pos;
  Q_ASSERT(pl != NULL);
 
  //ps = (PositionableLabel*)pos;
@@ -632,9 +687,8 @@ void CoordinateEdit::on_cancel()
  QVBoxLayout *centralWidgetLayout;
  if(getContentPane() == NULL)
  {
-  QWidget* centralWidget = new QWidget;
+  QWidget* centralWidget = getContentPane();
   centralWidget->setLayout( centralWidgetLayout = new QVBoxLayout(centralWidget));
-  setCentralWidget(centralWidget);
  }
  else
   centralWidgetLayout = new QVBoxLayout(centralWidget());
@@ -685,7 +739,7 @@ void CoordinateEdit::on_initBorderCancelButton_clicked()
 }
 void CoordinateEdit::initMargin()
 {
- pl = CoordinateEdit::pos;
+ //pl = CoordinateEdit::pos;
  Q_ASSERT(pl != NULL);
 
  PositionablePopupUtil* util = ((PositionableLabel*)pl)->getPopupUtility();
@@ -705,7 +759,7 @@ void CoordinateEdit::initMargin()
  QVBoxLayout *centralWidgetLayout;
  if(getContentPane() == NULL)
  {
-  QWidget* centralWidget = new QWidget;
+  QWidget* centralWidget = getContentPane();
   centralWidget->setLayout( centralWidgetLayout = new QVBoxLayout);
  }
  else
@@ -777,8 +831,7 @@ void CoordinateEdit::on_initMarginCancelButton_clicked()
  spinY->setMaximumSize( QSize(spinY->maximumSize().width(), spinY->maximumSize().height()));
 
     //getContentPane().setLayout(new GridBagLayout());
- QWidget* centralWidget = new QWidget;
- setCentralWidget(centralWidget);
+ QWidget* centralWidget = getContentPane();
  gridLayout = new QGridLayout(centralWidget);
  gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
 
@@ -826,7 +879,7 @@ void CoordinateEdit::on_initFixedSizeOkBubbon_clicked()
 
 /*public*/ void CoordinateEdit::initRotate()
 {
- //oldX = pl->getDegrees();
+ oldX = pl->getDegrees();
  //ps = qobject_cast<PositionableLabel*>(pos);
 
 //    textX = new javax.swing.JLabel();
@@ -860,12 +913,12 @@ void CoordinateEdit::on_initFixedSizeOkBubbon_clicked()
 //        }
 //    });
     pack();
- InputAngleDlg* dlg = new InputAngleDlg(pos->getDegrees(),this);
+ InputAngleDlg* dlg = new InputAngleDlg(pl->getDegrees(),this);
  if(dlg->exec() == QDialog::Accepted)
  {
   //(PositionableLabel*)pl->getEditor()->setSelectionsRotation(dlg->angle(), pl);
-  Editor* editor =   pos->getEditor();
-  editor->setSelectionsRotation(dlg->angle(), (Positionable*)pos);
+  Editor* editor =   pl->getEditor();
+  editor->setSelectionsRotation(dlg->angle(), (Positionable*)pl);
  }
 }
 
@@ -892,9 +945,8 @@ void CoordinateEdit::on_initFixedSizeOkBubbon_clicked()
                         spinX->sizeHint().width(), spinX->sizeHint().height()));
 
  //getContentPane().setLayout(new GridBagLayout());
- QWidget* centralWidget = new QWidget;
- setCentralWidget(centralWidget);
- centralWidget->setLayout(new QGridLayout);
+ QWidget* centralWidget =getContentPane();
+ centralWidget->setLayout(gridLayout =new QGridLayout);
 
  addSpinItems(false);
 
@@ -942,7 +994,7 @@ void CoordinateEdit::on_scaleCancel_clicked()
     xTextField->setToolTip("Enter Text");
 
     //getContentPane().setLayout(new GridBagLayout());
-    gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(getContentPane());
     addTextItems();
 
 //    okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -999,43 +1051,63 @@ void CoordinateEdit::on_editTextCancelButton_clicked()
  close();
 }
 
-#if 0
-    /*public*/ void initZoom() {
-        oldD = pl.getScale();
+#if 1
+/*public*/ void CoordinateEdit::initZoom() {
+    oldD = pl->getScale();
 
-        textX = new javax.swing.JLabel();
-        textX.setText(java.text.MessageFormat.format(Bundle.getMessage("Scale"), oldD*100));
-        textX.setVisible(true);
+    textX = new QLabel();
+    textX->setText(tr("Scale percentage: %1").arg(oldD*100));
+    textX->setVisible(true);
 
-        SpinnerNumberModel model = new SpinnerNumberModel(100.0,1.0,5000.0,1.0);
-        spinX = new javax.swing.JSpinner(model);
-        if (log.isDebugEnabled()) { log.debug("scale%= "+(int)Math.round(oldD*100));
-        }
-        spinX.setToolTipText(Bundle.getMessage("enterZoom"));
-        spinX.setMaximumSize(new Dimension(
-                spinX.getMaximumSize().width, spinX.getPreferredSize().height));
-
-        getContentPane().setLayout(new GridBagLayout());
-
-        addSpinItems(false);
-
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-                double s = ((Number)spinX.getValue()).doubleValue()/100;
-                pl.setScale(s);
-                pl.getEditor().setPaintScale(s);
-                textX.setText(java.text.MessageFormat.format(Bundle.getMessage("Scale"), pl.getScale()*100));
-                dispose();
-            }
-        });
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-                dispose();
-            }
-        });
-        pack();
+    SpinnerNumberModel* model = new SpinnerNumberModel(100.0,1.0,5000.0,1.0);
+    spinX = new QSpinBox(/*model*/);
+    spinX->setValue(100.0);
+    spinX->setMaximum(5000);
+    spinX->setMinimum(1);
+    spinX->setSingleStep(1);
+    if (log->isDebugEnabled()) {
+     log->debug("scale%= "+QString::number((int)qRound(oldD*100)));
     }
+    spinX->setToolTip(tr("Enter zoom percentage "));
+    spinX->setMaximumSize(QSize(
+            spinX->maximumSize().width(), spinX->sizeHint().height()));
 
+    getContentPane()->setLayout(gridLayout = new GridBagLayout());
+
+    addSpinItems(false);
+
+//    okButton.addActionListener(new java.awt.event.ActionListener() {
+//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
+//            double s = ((Number)spinX.getValue()).doubleValue()/100;
+//            pl.setScale(s);
+//            pl.getEditor().setPaintScale(s);
+//            textX.setText(java.text.MessageFormat.format(Bundle.getMessage("Scale"), pl.getScale()*100));
+//            dispose();
+//        }
+//    });
+    connect(okButton, SIGNAL(clicked(bool)), this, SLOT(on_okButton_clicked()));
+//    cancelButton.addActionListener(new java.awt.event.ActionListener() {
+//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
+//            dispose();
+//        }
+//    });
+    adjustSize();
+}
+
+void CoordinateEdit::on_okButton_clicked()
+{
+  double s = ((double)spinX->value())/100;
+  pl->setScale(s);
+  pl->getEditor()->setPaintScale(s);
+  pl->getEditor()->getTargetPanel()->views().at(0)->scale(s,s);
+  textX->setText(tr("Scale (percentage)%1").arg(pl->getScale()*100));
+  close();
+}
+
+void CoordinateEdit::on_cancelButton_clicked()
+{
+ close();
+}
 #endif
     /*public*/ void  CoordinateEdit::initSetName()
 {
@@ -1051,9 +1123,8 @@ void CoordinateEdit::on_editTextCancelButton_clicked()
 //		xTextField.setMaximumSize(new Dimension(1000, xTextField.getPreferredSize().height));
 //				xTextField.getMaximumSize().width+100, xTextField.getPreferredSize().height));
  //getContentPane().setLayout(new GridBagLayout());
- QWidget* centralWidget = new QWidget;
- setCentralWidget(centralWidget);
- centralWidget->setLayout(new QGridLayout);
+ QWidget* centralWidget = getContentPane();
+ centralWidget->setLayout(gridLayout = new QGridLayout);
 
  addTextItems();
 

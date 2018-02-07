@@ -1,10 +1,6 @@
 #include "rpspositionicon.h"
-
-RpsPositionIcon::RpsPositionIcon()
-{
-
-}
-#if 0 // TODO:
+#include "distributor.h"
+#include "namedicon.h"
 /**
  * An icon to display the position of an RPS input.
  *
@@ -12,30 +8,37 @@ RpsPositionIcon::RpsPositionIcon()
  *
  * @author Bob Jacobsen Copyright (C) 2007
  */
-/*public*/ class RpsPositionIcon extends PositionableLabel implements MeasurementListener {
+///*public*/ class RpsPositionIcon extends PositionableLabel implements MeasurementListener {
 
-    /*public*/ RpsPositionIcon(Editor editor) {
+    /*public*/ RpsPositionIcon::RpsPositionIcon(Editor* editor) : PositionableLabel(new NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
+                                                                                 "resources/icons/smallschematics/tracksegments/circuit-error.gif"), editor){
         // super ctor call to make sure this is an icon label
-        super(new NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
-                "resources/icons/smallschematics/tracksegments/circuit-error.gif"), editor);
+//        super(new NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
+//                "resources/icons/smallschematics/tracksegments/circuit-error.gif"), editor);
+ // display icon for a correct reading
+ activeName = "resources/icons/smallschematics/tracksegments/circuit-occupied.gif";
+ active = new NamedIcon(activeName, activeName);
+
+ // display icon if the last reading not OK
+ errorName = "resources/icons/smallschematics/tracksegments/circuit-error.gif";
+ error = new NamedIcon(errorName, errorName);
+
         _control = true;
+#if 0
         displayState();
 
         // blow up default font
-        setFont(jmri.util.FontUtil.deriveFont(getFont(), (float) 24.));
+        //setFont(jmri.util.FontUtil.deriveFont(getFont(), (float) 24.));
+        QFont f = font();
+        f.setPointSize(24);
+        setFont(f);
 
         // connect
-        Distributor.instance().addMeasurementListener(this);
+        Distributor::instance()->addMeasurementListener(this);
+#endif
     }
 
-    // display icon for a correct reading
-    String activeName = "resources/icons/smallschematics/tracksegments/circuit-occupied.gif";
-    NamedIcon active = new NamedIcon(activeName, activeName);
-
-    // display icon if the last reading not OK
-    String errorName = "resources/icons/smallschematics/tracksegments/circuit-error.gif";
-    NamedIcon error = new NamedIcon(errorName, errorName);
-
+#if 0
     /*public*/ NamedIcon getActiveIcon() {
         return active;
     }

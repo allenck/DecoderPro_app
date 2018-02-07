@@ -436,16 +436,6 @@ p, li { white-space: pre-wrap; }
       <string>Set Background color</string>
      </property>
     </widget>
-    <widget class="QMenu" name="menuSet_default_track_color">
-     <property name="title">
-      <string>Set default track color</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuSet_default_text_color">
-     <property name="title">
-      <string>Set default text color</string>
-     </property>
-    </widget>
     <addaction name="actionEdit_mode"/>
     <addaction name="actionAllow_repositioning"/>
     <addaction name="actionAllow_layout_control"/>
@@ -465,8 +455,6 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionAdd_Turntable"/>
     <addaction name="actionAdd_reporter_label"/>
     <addaction name="actionEdit_track_width"/>
-    <addaction name="menuSet_default_track_color"/>
-    <addaction name="menuSet_default_text_color"/>
     <addaction name="actionMoveLayout"/>
    </widget>
    <widget class="QMenu" name="menuTools">

@@ -14,7 +14,7 @@ public:
  /*public*/ File* getScript();
  /*public*/ void setScript(File* script);
  /*public*/ QString toString();
- /*public*/ void performAction() throw (JmriException);
+ /*public*/ void performAction(QString) throw (JmriException);
 
 private:
  /*private*/ File* script;

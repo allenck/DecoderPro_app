@@ -194,7 +194,9 @@ void TrackSegment::init(QString id)
     arc = boo;
     changed=true;
 }
-//    /*public*/ bool getCircle() {return circle;}
+
+/*public*/ bool TrackSegment::getCircle() {return circle;}
+
 /*public*/ void
 TrackSegment::setCircle(bool boo) {
     circle = boo;
@@ -392,6 +394,8 @@ TrackSegment::getConnectName(QObject* o,int type)
  {
   popup = new QMenu();
  }
+ //popup->addAction(new QAction(tr("Track Segment ") + getID(),this));
+ popup->addSection(tr("Track Segment ") + getID());
  if (!dashed) popup->addAction(new QAction(tr("Style")+" - "+tr("Solid"),this));
     else popup->addAction(new QAction(tr("Style")+" - "+tr("Dashed"),this));
     if (!mainline) popup->addAction(new QAction(tr("Not Mainline"),this));
@@ -1105,9 +1109,12 @@ void TrackSegment::drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2)
  //g2.draw(new Ellipse2D.Double (cX-SIZE2, cY-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2));
  QGraphicsItemGroup* group = new QGraphicsItemGroup();
  //g2->addEllipse(cX-SIZE2, cY-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2,QPen(color,1));
- QGraphicsEllipseItem* item = new QGraphicsEllipseItem(cX-LayoutEditor::SIZE2, cY-LayoutEditor::SIZE2, LayoutEditor::SIZE2+LayoutEditor::SIZE2, LayoutEditor::SIZE2+LayoutEditor::SIZE2);
- item->setPen(QPen(color,1));
- group->addToGroup(item);
+ if(!editor->hideTrackSegmentConstructionLines->isChecked())
+ {
+  QGraphicsEllipseItem* item = new QGraphicsEllipseItem(cX-LayoutEditor::SIZE2, cY-LayoutEditor::SIZE2, LayoutEditor::SIZE2+LayoutEditor::SIZE2, LayoutEditor::SIZE2+LayoutEditor::SIZE2);
+  item->setPen(QPen(color,1));
+  group->addToGroup(item);
+ }
  if (getArc())
  {
   LayoutBlock* b = getLayoutBlock();
@@ -1115,29 +1122,39 @@ void TrackSegment::drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2)
   else color =(editor->defaultTrackColor);
   //g2.draw(new Line2D.Double(getCoords(t.getConnect1(),t.getType1()), getCoords(t.getConnect2(),t.getType2())));
   //g2->addLine(QLineF(getCoords(t->getConnect1(),t->getType1()), getCoords(t->getConnect2(),t->getType2())),QPen(color,1));
-  QGraphicsLineItem* item = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect1(),getType1()), editor->getCoords(getConnect2(),getType2())));
-  item->setPen(QPen(color,1));
-  group->addToGroup(item);
+  if(!editor->hideTrackSegmentConstructionLines->isChecked())
+  {
+   QGraphicsLineItem* item = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect1(),getType1()), editor->getCoords(getConnect2(),getType2())));
+   item->setPen(QPen(color,1));
+   group->addToGroup(item);
+  }
   if (getCircle())
   {
    //g2.draw(new Line2D.Double();
    //g2->addLine(QLineF(getCoords(t->getConnect1(),t->getType1()),  QPointF(t->getCentreX(),t->getCentreY())),QPen(color,trackWidth));
-   QGraphicsLineItem* item1 = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect1(),getType1()),  QPointF(getCentreX(),getCentreY())));
-   item1->setPen(QPen(color,editor->trackWidth));
-   group->addToGroup(item1);
-   //g2.draw(new Line2D.Double(getCoords(t.getConnect2(),t.getType2()), new QPointF.Double(t.getCentreX(),t.getCentreY())));
-   //g2->addLine(QLineF(getCoords(t->getConnect2(),t->getType2()), QPointF(t->getCentreX(),t->getCentreY())),QPen(color, trackWidth));
-   QGraphicsLineItem* item2 = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect2(),getType2()), QPointF(getCentreX(),getCentreY())));
-   item2->setPen(QPen(color, editor->trackWidth));
-   group->addToGroup(item2);
+   if(!editor->hideTrackSegmentConstructionLines->isChecked())
+   {
+    QGraphicsLineItem* item1 = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect1(),getType1()),  QPointF(getCentreX(),getCentreY())));
+    item1->setPen(QPen(color,1));
+    group->addToGroup(item1);
+    //g2.draw(new Line2D.Double(getCoords(t.getConnect2(),t.getType2()), new QPointF.Double(t.getCentreX(),t.getCentreY())));
+    //g2->addLine(QLineF(getCoords(t->getConnect2(),t->getType2()), QPointF(t->getCentreX(),t->getCentreY())),QPen(color, trackWidth));
+    QGraphicsLineItem* item2 = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect2(),getType2()), QPointF(getCentreX(),getCentreY())));
+    item2->setPen(QPen(color, 1));
+    group->addToGroup(item2);
+   }
   }
   color =(editor->defaultTrackColor);
  }
  trackOval = group;
  g2->addItem(trackOval);
 }
-void TrackSegment::drawTrackCircleCentre(LayoutEditor */*editor*/, QGraphicsScene *g2)
+
+void TrackSegment::drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g2)
 {
+ if(editor->hideTrackSegmentConstructionLines->isChecked())
+  return;
+
     QPointF pt = getCoordsCenterCircle();
     reCalculateTrackSegmentAngle(pt.x(), pt.y()); // added ACK
 //    g2.setColor(Color.black);
@@ -1148,6 +1165,7 @@ void TrackSegment::drawTrackCircleCentre(LayoutEditor */*editor*/, QGraphicsScen
     circleItem = item;
     g2->addItem(circleItem);
 }
+
 /*
 * The recalculation method is used when the user changes the angle dynamically in edit mode
 * by dragging the centre of the cirle

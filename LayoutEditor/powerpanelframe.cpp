@@ -16,12 +16,11 @@
 ///*public*/ class PowerPanelFrame extends JmriJFrame {
 
 
-/*public*/ PowerPanelFrame::PowerPanelFrame(QWidget *parent)
+/*public*/ PowerPanelFrame::PowerPanelFrame(QWidget *parent) : JmriJFrame(tr("Power Panel"), parent)
 {
     //super(ResourceBundle.getBundle("jmri.jmrit.powerpanel.PowerPanelBundle").getString("TitlePowerPanel"));
  pane	= new PowerPane();
     // general GUI config
-//resize(300, 50);
 
  // install items in GUI
  //getContentPane()->layout()->addWidget(pane);
@@ -30,9 +29,11 @@
  // add help menu to window
  addHelpMenu("package.jmri.jmrit.powerpanel.PowerPanelFrame", true);
  setTitle(pane->getTitle());
- pack();
+ setMaximumSize(300, 50);
+
+ adjustSize();
  pane->setVisible(true);
- QTimer::singleShot(50, this, SLOT(pack()));
+ //QTimer::singleShot(50, this, SLOT(pack()));
 }
 
 /*public*/ void PowerPanelFrame::dispose() {

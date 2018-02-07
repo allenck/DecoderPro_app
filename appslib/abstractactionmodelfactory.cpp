@@ -76,6 +76,7 @@ AbstractActionModelFactory::AbstractActionModelFactory()
   if (result == JOptionPane::OK_OPTION)
   {
       QString name = actions->getSelectedValue().toString();
+      model->setTitle(name);
       Optional<StartupActionsManager*>* manager = (Optional<StartupActionsManager*>*)InstanceManager::getOptionalDefault("StartupActionsManager");
    if (name != (model->getName()))
    {

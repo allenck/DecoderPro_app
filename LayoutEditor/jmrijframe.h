@@ -23,6 +23,7 @@ public:
     /*public*/ JmriJFrame(QWidget *parent = 0);
     /*public*/ JmriJFrame(QString name, QWidget *parent = 0);
     /*public*/ JmriJFrame(QString name, bool saveSize, bool savePosition, QWidget *parent = 0);
+    /*public*/ ~JmriJFrame();
 //    /*public*/ void pack();
 //    /*public*/ QSize getPreferredSize();
 //    /*public*/ QSize getMaximumSize();
@@ -64,6 +65,8 @@ public:
     /*public*/ static JmriJFrame* getFrame(QString name);
     /*public*/ void setFrameRef(QString windowFrameRef);
     virtual /*public*/ QVariant getProperty(QString key);
+    /*public*/ void makePrivateWindow();
+    /*public*/ void windowClosing(QCloseEvent* e);
 
 
 signals:

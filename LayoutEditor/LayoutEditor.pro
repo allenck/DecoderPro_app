@@ -437,7 +437,18 @@ SOURCES += \
     helputil.cpp \
     rpspositionicon.cpp \
     scriptfilechooser.cpp \
-    layouttrack.cpp
+    layouttrack.cpp \
+    rpsreporter.cpp \
+    region.cpp \
+    model.cpp \
+    rpsreportermanager.cpp \
+    distributor.cpp \
+    reading.cpp \
+    measurement.cpp \
+    engine.cpp \
+    transmitter.cpp \
+    receiver.cpp \
+    rpsmenu.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -795,7 +806,19 @@ HEADERS += liblayouteditor_global.h \
     helputil.h \
     rpspositionicon.h \
     scriptfilechooser.h \
-    layouttrack.h
+    layouttrack.h \
+    rpsreporter.h \
+    region.h \
+    model.h \
+    rpsreportermanager.h \
+    distributor.h \
+    reading.h \
+    measurement.h \
+    engine.h \
+    transmitter.h \
+    receiver.h \
+    calculator.h \
+    rpsmenu.h
 
 
 FORMS    += \

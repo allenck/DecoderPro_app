@@ -176,7 +176,7 @@
 #include "layoutturntablexml.h"
 #include "filehistory.h"
 #include "jmriuserpreferencesmanager.h"
-#include "listedtableframe.h"
+//#include "listedtableframe.h"
 #include "lighttabletabaction.h"
 #include "signalmasttableaction.h"
 #include "../libPr3/Signal/signalgroupmanager.h"
@@ -263,6 +263,7 @@
 #include "lcdclockaction.h"
 #include "powerbuttonaction.h"
 #include "locoaddressxml.h"
+#include "loconetmenustartupaction.h"
 
 bool Metatypes::done = false;
 
@@ -454,7 +455,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LayoutTurntableXml>("LayoutTurntableXml");
  qRegisterMetaType<FileHistory>("FileHistory");
  qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");
- qRegisterMetaType<ListedTableFrame>("ListedTableFrame");
+ //qRegisterMetaType<ListedTableFrame>("ListedTableFrame");
  qRegisterMetaType<LightTableTabAction>("LightTableTabAction");
  qRegisterMetaType<SignalMastTableAction>("SignalMastTableAction");
  qRegisterMetaType<SignalGroupManager>("SignalGroupManager");
@@ -540,6 +541,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LcdClockAction>("LcdClockAction");
  qRegisterMetaType<PowerButtonAction>("PowerButtonAction");
  qRegisterMetaType<LocoAddressXml>("LocoAddressXml");
+ qRegisterMetaType<LocoNetMenuStartupAction>("LocoNetMenuStartupAction");
 
  Metatypes::done = true;
 }

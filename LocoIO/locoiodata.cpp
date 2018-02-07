@@ -622,6 +622,8 @@ void LocoIOData::writeSV7D()
 }
 /*public*/ LocoIOMode* LocoIOData::getLIM(int channel)
 {
+ if(channel >= lim.count())
+     return NULL;
  return lim[channel];
 }
 /*public*/ void LocoIOData::readValues(int channel)

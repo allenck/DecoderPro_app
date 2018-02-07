@@ -24,7 +24,7 @@
 #include "gridbagconstraints.h"
 #include "../LayoutEditor/inputdialog.h"
 #include "../LayoutEditor/maintenance.h"
-#include "logixwidget.h"
+//#include "logixwidget.h"
 #include "lroutetableaction.h"
 #include <QPushButton>
 #include "abstractsignalhead.h"
@@ -45,6 +45,7 @@
 #include "oblock.h"
 #include <QLabel>
 #include "pushbuttondelegate.h" // for PushButtonItemDelegate
+#include <QApplication>
 
 //LogixTableAction::LogixTableAction(QObject *parent) :
 //    QObject(parent)
@@ -6261,4 +6262,49 @@ void LogixTableAction::editConditional(int i )
 QString LogixTableAction::getName()
 {
  return "jmri.jmrit.beantable.LogixTableAction";
+}
+ItemDelegate::ItemDelegate(QStringList items, QObject *parent)
+: QAbstractItemDelegate(parent)
+{
+ Items = items;
+}
+
+
+QWidget* ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & index ) const
+{
+  QComboBox* editor = new QComboBox(parent);
+  editor->addItems(Items);
+  return editor;
+}
+
+void ItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+  int value = index.model()->data(index, Qt::EditRole).toUInt();
+  comboBox->setCurrentIndex(value);
+}
+
+void ItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+
+  model->setData(index, comboBox->currentText(), Qt::EditRole);
+}
+
+void ItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+{
+  editor->setGeometry(option.rect);
+}
+void ItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+  QStyleOptionViewItemV4 myOption = option;
+  QString text = Items.at(index.row());
+
+  myOption.text = text;
+
+  QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &myOption, painter);
+}
+QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+ return QSize (80, 100);
 }

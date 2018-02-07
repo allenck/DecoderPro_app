@@ -17,7 +17,7 @@
 #include "locoicon.h"
 #include "memoryicon.h"
 #include "analogclock2display.h"
-#include "../Tables/libtables.h"
+//#include "../Tables/libtables.h"
 #include "indicatortrackicon.h"
 #include "multiiconeditor.h"
 #include "memoryinputicon.h"
@@ -68,6 +68,9 @@
 #include "positionablepolygon.h"
 #include "indicatortrack.h"
 #include <QKeyEvent>
+#include "listedtableaction.h"
+#include "oblocktableaction.h"
+#include <QGraphicsView>
 
 ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
     Editor(parent)
@@ -121,7 +124,7 @@ ControlPanelEditor::~ControlPanelEditor()
  delete _itemPalette;
 }
 
-/*protected*/ void ControlPanelEditor::init(QString name)
+/*protected*/ void ControlPanelEditor::init(QString /*name*/)
 {
  log = new Logger("ControlPanelEditor");
  setObjectName("ControlPanelEditor");
@@ -134,7 +137,8 @@ ControlPanelEditor::~ControlPanelEditor()
  _circuitMenu = NULL;
  _editorMenu = NULL;
  _drawMenu = NULL;
- libTables = NULL;
+ _markerMenu = NULL;
+ //libTables = NULL;
  _portalIconMap = NULL;
 
  useGlobalFlagBox = new QAction(tr("Override individual Position & Control settings "),this);
@@ -147,6 +151,14 @@ ControlPanelEditor::~ControlPanelEditor()
  hiddenBox->setCheckable(true);
  disableShapeSelect = new QAction(tr("Disable Selecting Shapes"), this);
  disableShapeSelect->setCheckable(true);
+ scrollBoth = new QAction(tr("Both scrollbars"));
+ scrollBoth->setCheckable(true);
+ scrollNone = new QAction(tr("No scrollbars"), this);
+ scrollNone->setCheckable(true);
+ scrollHorizontal = new QAction(tr("Horizontal only"),this);
+ scrollHorizontal->setCheckable(true);
+ scrollVertical = new QAction(tr("Vertical only"), this);
+ scrollVertical->setCheckable(true);
  showTooltipBox = new QAction(tr("Show tooltips for all items"),this);
  showTooltipBox->setCheckable(true);
  _regular = true;	// true when TO_ARROW shows entry into ToBlock
@@ -167,15 +179,15 @@ ControlPanelEditor::~ControlPanelEditor()
  setUseGlobalFlag(false);
  _menuBar = new QMenuBar();
  _circuitBuilder = new CircuitBuilder(this);
-  _shapeDrawer = new ShapeDrawer(this);
-  makeDrawMenu();
-  makeWarrantMenu(false);
-  makeIconMenu();
-  makeZoomMenu();
-  makeMarkerMenu();
-  makeOptionMenu();
-  makeEditMenu();
-  makeFileMenu();
+ _shapeDrawer = new ShapeDrawer(this);
+ makeDrawMenu();
+ makeWarrantMenu(false);
+ makeIconMenu();
+ makeZoomMenu();
+ makeMarkerMenu();
+ makeOptionMenu();
+ makeEditMenu();
+ makeFileMenu();
  //_menuBar->addMenu(HelpUtil::instance()->makeHelpMenu("package.jmri.jmrit.display.ControlPanelEditor", true));
 
  setMenuBar(_menuBar);
@@ -202,7 +214,7 @@ ControlPanelEditor::~ControlPanelEditor()
 //    super.setDefaultToolTip(new ToolTip(NULL,0,0,new Font("Serif", Font.PLAIN, 12),
 //                                        Color.black, new Color(255, 250, 210), Color.black));
  // register the resulting panel for later configuration
- ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerUser(this);
+ ((ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager"))->registerUser(this);
  pack();
  setVisible(true);
 //    addKeyListener(this);
@@ -210,7 +222,7 @@ ControlPanelEditor::~ControlPanelEditor()
 
 /*protected*/ void ControlPanelEditor::makeIconMenu() {
     _iconMenu = new QMenu(tr("Add Items"));
-    _menuBar->addMenu(_iconMenu/*, 0*/);
+    _menuBar->insertMenu(_menuBar->actions().at(0), _iconMenu/*, 0*/);
 
     QAction* mi = new QAction(tr("Item Palette"),this);
 //    mi.addActionListener(new ActionListener() {
@@ -219,31 +231,32 @@ ControlPanelEditor::~ControlPanelEditor()
 //            }
 //        });
     connect(mi, SIGNAL(triggered()), this, SLOT(on_itemPallette()));
+    _iconMenu->addAction(new OBlockTableAction(tr("OBlock Table"),this));
+
 //    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
     _iconMenu->addAction(mi);
-    QAction* lt;
-    _iconMenu->addAction(lt= new QAction(tr("Item Table List"),this));
+    _iconMenu->addAction(new ListedTableAction(tr("Item Table List"),this));
 //    mi = (JMenuItem)_iconMenu.getMenuComponent(1);
 //    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
-    connect(lt, SIGNAL(triggered()), this, SLOT(onItemTableList()));
+//    connect(lt, SIGNAL(triggered()), this, SLOT(onItemTableList()));
 }
 void ControlPanelEditor::on_itemPallette()
 {
  _itemPalette->setVisible(true);
 }
 
-void ControlPanelEditor::onItemTableList()
-{
- if(libTables == NULL)
-     libTables = new LibTables();
-  libTables->show();
-}
+//void ControlPanelEditor::onItemTableList()
+//{
+// if(libTables == NULL)
+//     libTables = new LibTables();
+//  libTables->show();
+//}
 
 /*protected*/ void ControlPanelEditor::makeCircuitMenu() {
     if (_circuitMenu==NULL) {
         _circuitMenu = _circuitBuilder->makeMenu();
     }
-    _menuBar->addMenu(_circuitMenu/*, 0*/);
+    _menuBar->insertMenu(_menuBar->actions().at(0),_circuitMenu/*, 0*/);
 }
 /*protected*/ void ControlPanelEditor::makeCircuitMenu(bool edit)
 {
@@ -252,7 +265,7 @@ void ControlPanelEditor::onItemTableList()
  {
   //int idx = _menuBar.getComponentIndex(_warrantMenu);
   //_menuBar->addMenu(_circuitMenu, ++idx);
-  _menuBar->insertMenu((QAction*)_warrantMenu, _circuitMenu);
+  _menuBar->insertMenu(_warrantMenu->menuAction(), _circuitMenu);
   //_menuBar.revalidate();
  }
 }
@@ -270,7 +283,10 @@ void ControlPanelEditor::onItemTableList()
 //    });
     connect(disableShapeSelect, SIGNAL(triggered(bool)), this, SLOT(on_disableShapeSelect(bool)));
  }
- _menuBar->addMenu(_drawMenu/*, 0*/);
+ if(_menuBar->actions().count() == 0)
+  _menuBar->addMenu(_drawMenu);
+ else
+  _menuBar->insertMenu(_menuBar->actions().at(0), _drawMenu/*, 0*/);
 }
 
 void ControlPanelEditor::on_disableShapeSelect(bool)
@@ -296,7 +312,7 @@ void ControlPanelEditor::on_disableShapeSelect(bool)
 /*protected*/ void ControlPanelEditor::makeZoomMenu()
 {
  _zoomMenu = new QMenu(tr("Zoom"));
- _menuBar->addMenu(_zoomMenu/*, 0*/);
+ _menuBar->insertMenu(_menuBar->actions().at(0),_zoomMenu/*, 0*/);
  QAction* addItem = new QAction(tr("No Zoom"),this);
  _zoomMenu->addAction(addItem);
 //    addItem.addActionListener(new ActionListener() {
@@ -305,12 +321,12 @@ void ControlPanelEditor::on_disableShapeSelect(bool)
 //            }
 //        });
  connect(addItem, SIGNAL(triggered()), this, SLOT(zoomRestore()));
- addItem = new QAction(tr("Zoom"),this);
- _zoomMenu->addAction(addItem);
-#if 0
- PositionableJComponent z = new PositionableJComponent(this);
-    z.setScale(getPaintScale());
-    addItem.addActionListener(CoordinateEdit.getZoomEditAction(z));
+#if 1
+ PositionableJComponent* z = new PositionableJComponent(this);
+    z->setScale(getPaintScale());
+    //addItem.addActionListener(CoordinateEdit::getZoomEditAction(z));
+    _zoomMenu->addAction(CoordinateEdit::getZoomEditAction(z,this));
+
 #endif
  addItem = new QAction(tr("Zoom To Fit"),this);
  _zoomMenu->addAction(addItem);
@@ -348,7 +364,7 @@ void ControlPanelEditor::on_disableShapeSelect(bool)
  {
   makeCircuitMenu(edit);
  }
- _menuBar->addMenu(_warrantMenu/*, 0*/);
+ _menuBar->insertMenu(_menuBar->actions().at(0),_warrantMenu/*, 0*/);
 }
 
 void ControlPanelEditor::on_makeCircuitMenu()
@@ -359,7 +375,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
 /*protected*/ void ControlPanelEditor::makeMarkerMenu() {
     _markerMenu = new QMenu(tr("Marker"));
     _menuBar->addMenu(_markerMenu);
-//    _markerMenu.add(new AbstractAction(Bundle.getMessage("AddLoco")){
+//    _markerMenu.add(new AbstractAction(tr("AddLoco")){
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //            locoMarkerFromInput();
 //        }
@@ -368,7 +384,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
     _markerMenu->addAction(act);
     Editor* editor = (Editor*)this;
     connect(act, SIGNAL(triggered()), editor, SLOT(locoMarkerFromInput()));
-//    _markerMenu.add(new AbstractAction(Bundle.getMessage("AddLocoRoster")){
+//    _markerMenu.add(new AbstractAction(tr("AddLocoRoster")){
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //            locoMarkerFromRoster();
 //        }
@@ -376,7 +392,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
     act = new QAction(tr("Add Loco from roster"),this);
     _markerMenu->addAction(act);
     connect(act, SIGNAL(triggered()), editor, SLOT(locoMarkerFromRoster()));
-//    _markerMenu.add(new AbstractAction(Bundle.getMessage("RemoveMarkers")){
+//    _markerMenu.add(new AbstractAction(tr("RemoveMarkers")){
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //            removeMarkers();
 //        }
@@ -389,7 +405,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
 /*protected*/ void ControlPanelEditor::makeOptionMenu()
 {
  _optionMenu = new QMenu(tr("Option"));
- _menuBar->addMenu(_optionMenu/*, 0*/);
+ _menuBar->insertMenu(_menuBar->actions().at(0), _optionMenu/*, 0*/);
  // use globals item
  _optionMenu->addAction(useGlobalFlagBox);
 //    useGlobalFlagBox.addActionListener(new ActionListener() {
@@ -435,51 +451,77 @@ void ControlPanelEditor::on_makeCircuitMenu()
 //    });
  connect(showTooltipBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setAllShowTooltip(bool)));
  showTooltipBox->setChecked(showTooltip());
-#if 0  // QGraphicsView already has scrollbars
-    // Show/Hide Scroll Bars
-    QMenu* scrollMenu = new JMenu(Bundle.getMessage("ComboBoxScrollable"));
-    _optionMenu.add(scrollMenu);
-    ButtonGroup scrollGroup = new ButtonGroup();
-    scrollGroup.add(scrollBoth);
-    scrollMenu.add(scrollBoth);
-    scrollBoth.addActionListener(new ActionListener() {
-            /*public*/ void actionPerformed(ActionEvent event) {
-                setScroll(SCROLL_BOTH);
-//                    repaint();
-            }
-        });
-    scrollGroup.add(scrollNone);
-    scrollMenu.add(scrollNone);
-    scrollNone.addActionListener(new ActionListener() {
-            /*public*/ void actionPerformed(ActionEvent event) {
-                setScroll(SCROLL_NONE);
-//                    repaint();
-            }
-        });
-    scrollGroup.add(scrollHorizontal);
-    scrollMenu.add(scrollHorizontal);
-    scrollHorizontal.addActionListener(new ActionListener() {
-            /*public*/ void actionPerformed(ActionEvent event) {
-                setScroll(SCROLL_HORIZONTAL);
-//                    repaint();
-            }
-        });
-    scrollGroup.add(scrollVertical);
-    scrollMenu.add(scrollVertical);
-    scrollVertical.addActionListener(new ActionListener() {
-            /*public*/ void actionPerformed(ActionEvent event) {
-                setScroll(SCROLL_VERTICAL);
-//                    repaint();
-            }
-        });
+#if 1  // QGraphicsView already has scrollbars
+ // Show/Hide Scroll Bars
+ QMenu* scrollMenu = new QMenu(tr("Panel scrollbars"));
+ _optionMenu->addMenu(scrollMenu);
+ QActionGroup* scrollGroup = new QActionGroup(this);
+ scrollGroup->addAction(scrollBoth);
+ scrollMenu->addAction(scrollBoth);
+// scrollBoth.addActionListener(new ActionListener() {
+//         /*public*/ void actionPerformed(ActionEvent event) {
+//             setScroll(SCROLL_BOTH);
+////                    repaint();
+//         }
+//     });
+ connect(scrollBoth, SIGNAL(triggered()), this, SLOT(on_scrollBoth_triggered()));
+ scrollGroup->addAction(scrollNone);
+ scrollMenu->addAction(scrollNone);
+// scrollNone.addActionListener(new ActionListener() {
+//         /*public*/ void actionPerformed(ActionEvent event) {
+//             setScroll(SCROLL_NONE);
+////                    repaint();
+//         }
+//     });
+ connect(scrollNone, SIGNAL(triggered()), this, SLOT(on_scrollNone_triggered()));
+ scrollGroup->addAction(scrollHorizontal);
+ scrollMenu->addAction(scrollHorizontal);
+// scrollHorizontal.addActionListener(new ActionListener() {
+//         /*public*/ void actionPerformed(ActionEvent event) {
+//             setScroll(SCROLL_HORIZONTAL);
+////                    repaint();
+//         }
+//     });
+ connect(scrollHorizontal, SIGNAL(triggered()), this, SLOT(on_scrollHorizontal_triggered()));
+ scrollGroup->addAction(scrollVertical);
+ scrollMenu->addAction(scrollVertical);
+// scrollVertical.addActionListener(new ActionListener() {
+//         /*public*/ void actionPerformed(ActionEvent event) {
+//             setScroll(SCROLL_VERTICAL);
+////                    repaint();
+//         }
+//     });
+ connect(scrollVertical, SIGNAL(triggered()), this, SLOT(on_scrollVertical_triggered()));
+
 #endif
+}
+
+void ControlPanelEditor::on_scrollBoth_triggered()
+{
+ editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+ editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+}
+void ControlPanelEditor::on_scrollNone_triggered()
+{
+ editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+ editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+}
+void ControlPanelEditor::on_scrollHorizontal_triggered()
+{
+ editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+ editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+}
+void ControlPanelEditor::on_scrollVertical_triggered()
+{
+ editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+ editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
 }
 
 /*private*/ void ControlPanelEditor::makeFileMenu() {
     _fileMenu = new QMenu(tr("File"));
-    _menuBar->addMenu(_fileMenu/*, 0*/);
+    _menuBar->insertMenu(_menuBar->actions().at(0),_fileMenu/*, 0*/);
 #if 1
-//    _fileMenu->addAction(new NewPanelAction(Bundle.getMessage("New Panel...")));
+//    _fileMenu->addAction(new NewPanelAction(tr("New Panel...")));
 
     StoreXmlUserAction* act = new StoreXmlUserAction(tr("Save Panels..."),this);
     QAction* savePanelsAction = new QAction(tr("Save Panels..."),this);
@@ -550,7 +592,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
     connect(editItem, SIGNAL(triggered()), this, SLOT(closeEditor()));
 #endif
 }
-void CPEditItemActionListener::actionPerformed(ActionEvent *e)
+void CPEditItemActionListener::actionPerformed(ActionEvent *)
 {
     ImageIndexEditor* ii = ImageIndexEditor::instance(panelEd);
     ii->pack();
@@ -605,7 +647,7 @@ void ControlPanelEditor::storeImageIndexAction()
  */
 /*protected*/ void ControlPanelEditor::makeEditMenu() {
     _editMenu = new QMenu("Edit");
-    _menuBar->addMenu(_editMenu/*, 0*/);
+    _menuBar->insertMenu(_menuBar->actions().at(0), _editMenu/*, 0*/);
 //    _editMenu.setMnemonic(KeyEvent.VK_E);
 /*
 Tutorial recommended method not satisfactory.
@@ -824,18 +866,18 @@ void ControlPanelEditor::selectAllAction()
  {
   if (_editorMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_editorMenu);
-   _editorMenu->setVisible(false);
+   _menuBar->removeAction(_editorMenu->menuAction());
+   //_editorMenu->setVisible(false);
   }
   if (_markerMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_markerMenu);
-   _markerMenu->setVisible(false);
+   _menuBar->removeAction(_markerMenu->menuAction());
+ //  _markerMenu->setVisible(false);
   }
   if (_warrantMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_warrantMenu);
-   _warrantMenu->setVisible(false);
+   _menuBar->removeAction(_warrantMenu->menuAction());
+   //_warrantMenu->setVisible(false);
   }
   if (_drawMenu==NULL)
   {
@@ -843,8 +885,8 @@ void ControlPanelEditor::selectAllAction()
   }
   else
   {
-   //_menuBar->addMenu(_drawMenu/*, 0*/);
-   _drawMenu->setVisible(true);
+   _menuBar->insertMenu(_menuBar->actions().at(0), _drawMenu/*, 0*/);
+   //_drawMenu->setVisible(true);
   }
   if (_circuitMenu==NULL)
   {
@@ -852,8 +894,8 @@ void ControlPanelEditor::selectAllAction()
   }
   else
   {
-   //_menuBar->addMenu(_circuitMenu/*, 0*/);
-   _circuitMenu->setVisible(true);
+   _menuBar->insertMenu(_menuBar->actions().at(0), _circuitMenu/*, 0*/);
+   //_circuitMenu->setVisible(true);
   }
   if(_warrantMenu == NULL)
    makeWarrantMenu(edit);
@@ -864,8 +906,8 @@ void ControlPanelEditor::selectAllAction()
   }
   else
   {
-   //_menuBar->addMenu(_iconMenu/*, 0*/);
-   _iconMenu->setVisible(true);
+   _menuBar->insertMenu(_menuBar->actions().at(0), _iconMenu/*, 0*/);
+   //_iconMenu->setVisible(true);
   }
   if (_zoomMenu==NULL)
   {
@@ -873,8 +915,8 @@ void ControlPanelEditor::selectAllAction()
   }
   else
   {
-   //_menuBar->addMenu(_zoomMenu/*, 0*/);
-   _zoomMenu->setVisible(true);
+   _menuBar->insertMenu(_menuBar->actions().at(0),_zoomMenu/*, 0*/);
+   //_zoomMenu->setVisible(true);
   }
   if (_optionMenu==NULL)
   {
@@ -882,8 +924,8 @@ void ControlPanelEditor::selectAllAction()
   }
   else
   {
-   //_menuBar->addMenu(_optionMenu/*, 0*/);
-   _optionMenu->setVisible(true);
+   _menuBar->insertMenu(_menuBar->actions().at(0),_optionMenu/*, 0*/);
+   //_optionMenu->setVisible(true);
   }
   if (_editMenu==NULL)
   {
@@ -891,8 +933,8 @@ void ControlPanelEditor::selectAllAction()
   }
   else
   {
-   //_menuBar->addMenu(_editMenu/*, 0*/);
-   _editMenu->setVisible(true);
+   _menuBar->insertMenu(_menuBar->actions().at(0),_editMenu/*, 0*/);
+   //_editMenu->setVisible(true);
   }
   if (_fileMenu==NULL)
   {
@@ -900,51 +942,51 @@ void ControlPanelEditor::selectAllAction()
   }
   else
   {
-   //_menuBar->addMenu(_fileMenu/*, 0*/);
-   _fileMenu->setVisible(true);
+   _menuBar->insertMenu(_menuBar->actions().at(0),_fileMenu/*, 0*/);
+   //_fileMenu->setVisible(true);
   }
  }
  else
  {
   if (_fileMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_fileMenu);
-   _fileMenu->setVisible(false);
+   _menuBar->removeAction(_fileMenu->menuAction());
+   //_fileMenu->setVisible(false);
   }
   if (_editMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_editMenu);
-   _editMenu->setVisible(false);
+   _menuBar->removeAction(_editMenu->menuAction());
+   //_editMenu->setVisible(false);
   }
   if (_optionMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_optionMenu);
-   _menuBar->setVisible(false);
+   _menuBar->removeAction(_optionMenu->menuAction());
+   //_menuBar->setVisible(false);
   }
   if (_zoomMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_zoomMenu);
-   _zoomMenu->setVisible(false);
+   _menuBar->removeAction(_zoomMenu->menuAction());
+   //_zoomMenu->setVisible(false);
   }
   if (_iconMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_iconMenu);
-   _iconMenu->setVisible(false);
+   _menuBar->removeAction(_iconMenu->menuAction());
+   //_iconMenu->setVisible(false);
   }
   if (_warrantMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_warrantMenu);
-   _warrantMenu->setVisible(false);
+   _menuBar->removeAction(_warrantMenu->menuAction());
+   //_warrantMenu->setVisible(false);
   }
   if (_circuitMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_circuitMenu);
-   _circuitMenu->setVisible(false);
+   _menuBar->removeAction(_circuitMenu->menuAction());
+   //_circuitMenu->setVisible(false);
   }
   if (_drawMenu!=NULL)
   {
-   //_menuBar->removeAction((QAction*)_drawMenu);
-   _drawMenu->setVisible(false);
+   _menuBar->removeAction(_drawMenu->menuAction());
+   //_drawMenu->setVisible(false);
   }
   if (((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getSystemNameList().size() > 1)
   {
@@ -956,13 +998,13 @@ void ControlPanelEditor::selectAllAction()
   }
   else
   {
-   //_menuBar->addMenu(_markerMenu/*, 0*/);
-   _markerMenu->setVisible(true);
+   _menuBar->insertMenu(_menuBar->actions().at(0),_markerMenu/*, 0*/);
+   //_markerMenu->setVisible(true);
   }
   if (_editorMenu==NULL)
   {
    _editorMenu = new QMenu(tr("Edit"));
-//            _editorMenu.add(new AbstractAction(Bundle.getMessage("OpenEditor")) {
+//            _editorMenu.add(new AbstractAction(tr("OpenEditor")) {
 //                    /*public*/ void actionPerformed(ActionEvent e) {
 //                        setAllEditable(true);
 //                    }
@@ -970,7 +1012,7 @@ void ControlPanelEditor::selectAllAction()
    QAction* act = new QAction(tr("Open Editor"),this);
    connect(act, SIGNAL(triggered(bool)), this, SLOT(setAllEditable(bool)));
   }
-  _menuBar->addMenu(_editorMenu/*, 0*/);
+  _menuBar->insertMenu(_menuBar->actions().at(0),_editorMenu/*, 0*/);
  }
  Editor::setAllEditable(edit);
  setTitle();
@@ -994,6 +1036,7 @@ void ControlPanelEditor::selectAllAction()
         ((PositionableLabel*)p)->setLocation(((PositionableLabel*)p)->getX()+_fitX, ((PositionableLabel*)p)->getY()+_fitY);
     }
     setPaintScale(1.0);
+    getTargetPanel()->views().at(0)->scale(1.0,1.0);
 }
 
 /*private*/ void ControlPanelEditor::zoomToFit() // SLOT
@@ -1013,8 +1056,8 @@ void ControlPanelEditor::selectAllAction()
     _fitX = (int)qFloor(minX);
     _fitY = (int)qFloor(minY);
 
-//    QFrame* frame = getTargetFrame();
 #if 0 //TODO:
+    QFrame* frame = getTargetFrame();
     QWidget* contentPane = getTargetFrame()->getContentPane();
     QSize dim = contentPane->size();
     QSize d = getTargetPanel()->size();
@@ -1024,17 +1067,17 @@ void ControlPanelEditor::selectAllAction()
     scrollPane.getHorizontalScrollBar().setValue(0);
     scrollPane.getVerticalScrollBar().setValue(0);
     JViewport viewPort = scrollPane.getViewport();
-    Dimension dv = viewPort.getExtentSize();
+    QSize dv = viewPort.getExtentSize();
 
-    int dX = frame.getWidth()-dv.width;
-    int dY = frame.getHeight()-dv.height;
-    if (_debug) log.debug("zoomToFit: layoutWidth= "+(maxX-minX)+", layoutHeight= "+(maxY-minY)+
+    int dX = frame->width()-dv.width();
+    int dY = frame->height()-dv.height();
+    if (_debug) log->debug("zoomToFit: layoutWidth= "+(maxX-minX)+", layoutHeight= "+(maxY-minY)+
                           "\n\tframeWidth= "+frame.getWidth()+", frameHeight= "+frame.getHeight()+
-                          ", viewWidth= "+dv.width+", viewHeight= "+dv.height+
-                          "\n\tconWidth= "+dim.width+", conHeight= "+dim.height+
-                          ", panelWidth= "+d.width+", panelHeight= "+d.height);
-    double ratioX = dv.width/(maxX-minX);
-    double ratioY = dv.height/(maxY-minY);
+                          ", viewWidth= "+dv.width()+", viewHeight= "+dv.height()+
+                          "\n\tconWidth= "+dim.width()+", conHeight= "+dim.height()+
+                          ", panelWidth= "+d.width()+", panelHeight= "+d.height());
+    double ratioX = dv.width()/(maxX-minX);
+    double ratioY = dv.height()/(maxY-minY);
     double ratio = qMin(ratioX, ratioY);
     /*
     if (ratioX<ratioY) {
@@ -1053,19 +1096,27 @@ void ControlPanelEditor::selectAllAction()
     _fitX = (int)qFloor(minX);
     _fitY = (int)qFloor(minY);
     for (int i=0; i<contents.size(); i++) {
-        Positionable p = contents.get(i);
+        Positionable p = contents.at(i);
         p.setLocation(p.getX()-_fitX, p.getY()-_fitY);
     }
     setScroll(SCROLL_BOTH);
     setPaintScale(ratio);
     setScroll(SCROLL_NONE);
-    scrollNone.setSelected(true);
+    scrollNone->setChecked(true);
     //getTargetPanel().setSize((int)Math.ceil(maxX), (int)Math.ceil(maxY));
     frame.setSize((int)Math.ceil((maxX-minX)*ratio)+dX, (int)Math.ceil((maxY-minY)*ratio)+dY);
     scrollPane.getHorizontalScrollBar().setValue(0);
     scrollPane.getVerticalScrollBar().setValue(0);
     if (_debug) log.debug("zoomToFit: ratio= "+ratio+", w= "+(maxX-minX)+", h= "+(maxY-minY)+
-                          ", frameWidth= "+frame.getWidth()+", frameHeight= "+frame.getHeight());
+                          ", frameWidth= "+frame->width()+", frameHeight= "+frame->height());
+#else
+    QRectF dv = editScene->sceneRect();
+    double ratioX = dv.width()/(maxX-minX);
+    double ratioY = dv.height()/(maxY-minY);
+    double ratio = qMin(ratioX, ratioY);
+    setPaintScale(ratio);
+    getTargetPanel()->views().at(0)->scale(ratio,ratio);
+
 #endif
 }
 
@@ -1225,7 +1276,7 @@ void ControlPanelEditor::selectAllAction()
  repaint();
 }
 
-/*public*/ void ControlPanelEditor::keyReleaseEvent(QKeyEvent* e) {}
+/*public*/ void ControlPanelEditor::keyReleaseEvent(QKeyEvent* ) {}
 
 /*********** Mouse ***************/
 
@@ -1586,7 +1637,7 @@ void ControlPanelEditor::selectAllAction()
 }
 
 //@Override
-/*public*/ void ControlPanelEditor::mouseEntered(QGraphicsSceneMouseEvent * event) {
+/*public*/ void ControlPanelEditor::mouseEntered(QGraphicsSceneMouseEvent * /*event*/) {
     _targetPanel->repaint();
 }
 

@@ -42,23 +42,7 @@ private:
  void keyPressEvent(QKeyEvent *event);
  void keyReleaseEvent(QKeyEvent *event);
 };
-//class QgrapicsEllipseItem;
-//class QGraphicsArcItem : public QGraphicsEllipseItem {
-//public:
-//    QGraphicsArcItem ( qreal x, qreal y, qreal width, qreal height, QGraphicsItem * parent = 0 ) :
-//        QGraphicsEllipseItem(x, y, width, height, parent) {
-//    }
 
-//protected:
-//    void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
-//        painter->setPen(pen());
-//        painter->setBrush(brush());
-//        painter->drawArc(rect(), startAngle(), spanAngle());
-
-////        if (option->state & QStyle::State_Selected)
-////            qt_graphicsItem_highlightSelected(this, painter, option);
-//    }
-//};
 class QGraphicsEllipseItem;
 class QGraphicsArcItem : public QGraphicsEllipseItem {
 public:
@@ -77,6 +61,7 @@ protected:
 //            qt_graphicsItem_highlightSelected(this, painter, option);
     }
 };
+
 class QGraphicsRoundRectItem : public QGraphicsRectItem {
 public:
     QGraphicsRoundRectItem ( qreal x, qreal y, qreal width, qreal height, qreal xRaduis, qreal yRadius, QGraphicsItem * parent = 0 ) :

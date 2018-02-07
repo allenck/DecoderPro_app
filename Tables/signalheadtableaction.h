@@ -8,7 +8,7 @@
 #include <QStringList>
 #include <QList>
 #include <QGroupBox>
-#include <QFormLayout>
+#include "flowlayout.h"
 #include "logger.h"
 #include <QMenu>
 #include "abstracttableaction.h"
@@ -131,7 +131,7 @@ private:
  QComboBox* prefixBox;// = new QComboBox();
  QLabel* prefixBoxLabel;// = new QLabel("System : ");
  QLabel* vtLabel;// = new QLabel("");
- QFormLayout* defaultFlow;// = new QFormLayout();
+ FlowLayout* defaultFlow;// = new QFormLayout();
  Logger* log;
  int ukSignalAspectsFromBox(QComboBox* box);
  void setUkSignalAspectsFromBox(QComboBox* box, int val);

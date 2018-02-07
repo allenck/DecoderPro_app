@@ -29,6 +29,7 @@
     element.setAttribute("name", g->getClassName());
     element.setAttribute("type", "Action");
     element.setAttribute("class", "apps.PerformActionModelXml");
+    element.setAttribute("title", g->getTitle());
     QDomElement property = doc.createElement("property"); // NOI18N
     property.setAttribute("name", "systemPrefix"); // NOI18N
     property.setAttribute("value", g->getSystemPrefix());
@@ -49,13 +50,15 @@
 }
 
 //@Override
-/*public*/ bool PerformActionModelXml::load(QDomElement shared, QDomElement perNode) throw (Exception)
+/*public*/ bool PerformActionModelXml::load(QDomElement shared, QDomElement /*perNode*/) throw (Exception)
 {
  bool result = true;
  QString className = shared.attribute("name");
+ QString title = shared.attribute("title");
  PerformActionModel* model = new PerformActionModel();
  Exception* exception = NULL;
  model->setClassName(className);
+ model->setTitle(title);
  //for (QDomElement child : shared.getChildren("property"))
  QDomNodeList children = shared.elementsByTagName("property");
  for(int i = 0; i < children.count(); i++)

@@ -745,7 +745,7 @@ public URL getURL(URI uri) {
         // if path cannot be converted into a canonical path, return null
      Q_ASSERT(path != "/");
      Q_ASSERT(!path.endsWith("//"));
-        log->debug(tr("Using %1").arg(path));
+        //log->debug(tr("Using %1").arg(path));
         QFileInfo info(path);
         if(!info.exists())
          throw FileNotFoundException();
@@ -847,6 +847,7 @@ public URL getURL(URI uri) {
 //            }
 //        }
 //        return builder.toString();
+    if(url.path() == "") throw NullPointerException();
     QFile* f = new QFile(url.path());
     if(f->open(QIODevice::ReadOnly))
     {

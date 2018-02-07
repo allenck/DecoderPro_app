@@ -27,7 +27,6 @@ namespace Operations
  */
 ///*public*/ class Engine extends RollingStock {
 
-
  /*public*/ Engine::Engine(QString road, QString number, QObject *parent) :
    RollingStock(road, number, parent)
  {

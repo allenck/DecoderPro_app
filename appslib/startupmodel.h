@@ -22,6 +22,8 @@ public:
   */
  //@CheckForNull
  /*public*/ virtual QString getName() {return "";}
+ /*public*/ virtual QString getTitle() {return "";}
+ /*public*/ virtual void setTitle(QString) {}
 
  /**
   * Set the name of the model.
@@ -44,7 +46,7 @@ public:
   * @throws jmri.JmriException if there is an exception thrown initializing
   *                            the startup item
   */
- /*public*/ virtual void performAction() throw (JmriException) {}
+ /*public*/ virtual void performAction(QString) throw (JmriException) {}
 
  /**
   * Get the exceptions thrown by the startup model.

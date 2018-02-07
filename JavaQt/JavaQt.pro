@@ -140,7 +140,10 @@ SOURCES += javaqt.cpp \
     defaulttreemodel1.cpp \
     vetoablechangelistener.cpp \
     colorutil.cpp \
-    filenameextensionfilter.cpp
+    filenameextensionfilter.cpp \
+    jpanel.cpp \
+    lineborder.cpp \
+    mathutil.cpp
     #pattern.cpp \
     #charsequence.cpp \
     #patternsyntaxexception.cpp
@@ -310,7 +313,11 @@ HEADERS += javaqt.h\
     propertychangeprovider.h \
     consumer.h \
     colorutil.h \
-    filenameextensionfilter.h
+    filenameextensionfilter.h \
+    menu.h \
+    jpanel.h \
+    lineborder.h \
+    mathutil.h
 
 unix {
     target.path = /usr/lib

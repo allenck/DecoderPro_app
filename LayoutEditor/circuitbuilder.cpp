@@ -27,6 +27,7 @@
 #include "portalmanager.h"
 #include "instancemanager.h"
 #include "inputdialog.h"
+#include <QComboBox>
 
 //CircuitBuilder::CircuitBuilder(QObject *parent) :
 //    QObject(parent)
@@ -54,29 +55,43 @@
     log = new Logger("CircuitBuilder");
 //        _menuBar = new JMenuBar();
     log->error("CircuitBuilder ctor requires an Editor class");
-    _iconMap = NULL;
-    _editPathsFrame = NULL;
-    _editCircuitFrame = NULL;
-    _editPortalFrame = NULL;
-    _oblockModel = NULL;
-    _editDirectionFrame = NULL;
+    common();
 }
 
 /*public*/ CircuitBuilder::CircuitBuilder(ControlPanelEditor* ed, QObject *parent)
     :  QObject(parent){
     log = new Logger("CircuitBuilder");
+ common();
+ _editor = ed;
+}
 
-     _editor = ed;
-     _iconMap = new QHash<Positionable*, OBlock*>();
-     _sysNameBox = new JTextField();
-     _userNameBox = new JTextField();
-     _portalIcons = new QList<PortalIcon*>();
-     hasOBlocks = false;
-     _editPathsFrame = NULL;
-     _editCircuitFrame = NULL;
-     _editPortalFrame = NULL;
-     _oblockModel = NULL;
-     _editDirectionFrame = NULL;
+void CircuitBuilder::common()
+{
+ _editor = NULL;
+ _iconMap = new QHash<Positionable*, OBlock*>();
+ _sysNameBox = new JTextField();
+ _userNameBox = new JTextField();
+ _portalIcons = new QList<PortalIcon*>();
+ hasOBlocks = false;
+ _editPathsFrame = NULL;
+ _editCircuitFrame = NULL;
+ _editPortalFrame = NULL;
+ _oblockModel = NULL;
+ _editDirectionFrame = NULL;
+ // list of track icons not belonging to an OBlock
+ _darkTrack =  QList<Positionable*>();
+ // list of OBlocks with no icons
+ _bareBlock = new QList<OBlock*>();
+ // list of circuit icons needing converting
+ _unconvertedTrack =  QList<Positionable*>();
+// list of OBlocks whose icons need converting
+ _convertBlock = new QList<OBlock*>();
+ // map of Portals without PortalIcons or misplaced icons
+ _badPortalIcon = QMap<QString, Portal*>();
+ // map of PortalIcons by portal name
+ _portalIconMap = QHash<QString, PortalIcon*>();
+ _sysNameBox = new JTextField();
+ _userNameBox = new JTextField();
 }
 CircuitBuilder::~CircuitBuilder()
 {
@@ -1474,10 +1489,11 @@ convertFrame::convertFrame (QDialog* dialog, CircuitBuilder* parent) :JmriJFrame
   _dialog = dialog;
   this->parent = parent;
 }
-    /*public*/ void convertFrame::pack() {
-        JmriJFrame::pack();
+
+/*public*/ void convertFrame::pack() {
+    JmriJFrame::pack();
 //        _dialog->pack();
-    }
+}
 //};
 
 /*private*/ void CircuitBuilder::convertTO() {

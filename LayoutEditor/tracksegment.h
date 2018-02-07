@@ -21,19 +21,19 @@ public:
      * Accessor methods
     */
     /*public*/ QString getID();
- /*public*/ QString getBlockName();
- /*public*/ int getType1() ;
- /*public*/ int getType2() ;
- /*public*/ QObject* getConnect1();
- /*public*/ QObject* getConnect2();
- /*public*/ bool getDashed();
- /*public*/ void setDashed(bool dash);
- /*public*/ bool getHidden();
- /*public*/ void setHidden(bool hide);
- /*public*/ bool getMainline();
- /*public*/ void setMainline(bool main);
-   /*public*/ void setArc(bool boo);
-    /*public*/ bool getCircle() {return circle;}
+    /*public*/ QString getBlockName();
+    /*public*/ int getType1() ;
+    /*public*/ int getType2() ;
+    /*public*/ QObject* getConnect1();
+    /*public*/ QObject* getConnect2();
+    /*public*/ bool getDashed();
+    /*public*/ void setDashed(bool dash);
+    /*public*/ bool getHidden();
+    /*public*/ void setHidden(bool hide);
+    /*public*/ bool getMainline();
+    /*public*/ void setMainline(bool main);
+    /*public*/ void setArc(bool boo);
+    /*public*/ bool getCircle();
     /*public*/ void setCircle(bool boo);
     /*public*/ bool getFlip() {return flip;}
     /*public*/ void setFlip(bool boo);

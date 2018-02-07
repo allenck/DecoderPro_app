@@ -25,6 +25,7 @@
 #include "liblayouteditor_global.h"
 #include "signalheadicon.h"
 #include "paneleditor.h"
+#include "colorutil.h"
 
 namespace Ui {
 class LayoutEditor;
@@ -267,9 +268,9 @@ public:
      * Add a Reporter Icon to the panel
      */
     void addReporter(QString textReporter,int xx,int yy);
-    /*public*/ PositionableLabel* setUpBackground(QString name);
-    void setDefaultTrackColor(QString sColor);
+//    /*public*/ PositionableLabel* setUpBackground(QString name);
     void setDefaultTextColor(QString sColor);
+    /*public*/ void setDefaultBackgroundColor(QString color);
     /*public*/ QString getLayoutName();
     /*public*/ void setLayoutName(QString name);
     bool getDrawGrid() {return drawGrid;}
@@ -282,13 +283,13 @@ public:
 /*public*/ bool getTooltipsInEdit() {return tooltipsInEditMode;}
     float getMainlineTrackWidth(){return mainlineTrackWidth;}
     float getSideTrackWidth(){return sideTrackWidth;}
-    QString getDefaultTrackColor() {return colorToString(defaultTrackColor);}
-    QString getDefaultOccupiedTrackColor(){return colorToString(defaultOccupiedTrackColor);}
-    QString getTurnoutCircleColor(){return colorToString(turnoutCircleColor);}
+    QString getDefaultTrackColor() {return ColorUtil::colorToString(defaultTrackColor);}
+    QString getDefaultOccupiedTrackColor(){return ColorUtil::colorToString(defaultOccupiedTrackColor);}
+    QString getTurnoutCircleColor(){return ColorUtil::colorToString(turnoutCircleColor);}
     int getTurnoutCircleSize(){return turnoutCircleSize;}
     /*public*/ bool getTurnoutDrawUnselectedLeg() {return turnoutDrawUnselectedLeg;}
-    QString getDefaultAlternativeTrackColor(){return colorToString(defaultAlternativeTrackColor);}
-    QString getDefaultTextColor(){return colorToString(defaultTextColor);}
+    QString getDefaultAlternativeTrackColor(){return ColorUtil::colorToString(defaultAlternativeTrackColor);}
+    QString getDefaultTextColor(){return ColorUtil::colorToString(defaultTextColor);}
     bool getAutoBlockAssignment(){return autoAssignBlocks;}
     QColor getBackgroundColor();
     /*public*/ void loadFailed();
@@ -340,8 +341,8 @@ public:
     /*public*/ void setXScale(double xSc) ;
     /*public*/ void setYScale(double ySc);
     /*public*/ void setTurnoutCircles(bool state);
-    /*public*/ static QColor stringToColor(QString string);
-    /*public*/ static QString colorToString(QColor color);
+//    /*public*/ static QColor stringToColor(QString string);
+//    /*public*/ static QString colorToString(QColor color);
     /*public*/ void setShowHelpBar(bool state);
     /*public*/ void setSnapOnAdd(bool state);
     /*public*/ void setSnapOnMove(bool state);
@@ -357,8 +358,12 @@ public:
     /*public*/ QMenu* setupTurnoutSubMenu();
     /*public*/ bool containsSignalHead(SignalHead* head) ;
     /*public*/ void removeSignalHead(SignalHead* head);
-
-
+    /*public*/ QGraphicsEllipseItem* turnoutCircleAt(QPointF inPoint);
+    /*public*/ void addBackground();
+    /*public*/ void setDefaultTrackColor(QString color);
+    /*public*/ void setDefaultOccupiedTrackColor(QString color);
+    /*public*/ void setDefaultAlternativeTrackColor(QString color);
+void setScale(double scaleX, double scaleY);
 private:
  Ui::LayoutEditor *ui;
  QButtonGroup* buttonGroup;
@@ -447,6 +452,7 @@ private:
 // /*private*/ void drawXingAC(EditScene* g2,LevelXing* x);
 // /*private*/ void drawXingBD(EditScene* g2,LevelXing* x);
  /*private*/ void drawTurnoutCircles(EditScene* g2);
+ /*private*/ void drawSlipCircles(EditScene* g2);
  /*private*/ void drawTurnoutRects(EditScene* g2);
  /*private*/ void drawXingRects(EditScene* g2);
  /*private*/ void drawSelectionRect(EditScene* editScene);
@@ -541,10 +547,11 @@ bool noWarnTurntable;// = false;
 QString _defaultToolTip;
 Positionable* currComp;
 MemoryIcon* checkMemoryMarkerIcons(QPointF loc);
-/*private*/ int getNextBackgroundLeft();
-void setScale(double scaleX, double scaleY);
-QStringList _Colors;
-QList<QColor> _colors;
+// /*private*/ int getNextBackgroundLeft();
+JFileChooser* inputFileChooser;
+//void setScale(double scaleX, double scaleY);
+//QStringList _Colors;
+//QList<QColor> _colors;
 const QIcon getColourIcon(QColor color);
 bool tooltipsWithoutEditMode;
 bool tooltipsInEditMode;
@@ -555,7 +562,7 @@ bool _ignore;
 QMap<QString, QString>* _urlMap;// = new QMap<QString, QString>();
 NamedIcon* _newIcon;
 bool _delete;
-QFormLayout* formLayout;
+//QFormLayout* formLayout;
 RosterEntrySelectorPanel* rosterBox;
 bool bTestMode;
 QString layoutFile;
@@ -591,16 +598,60 @@ JTextField* yMove;
 /*private*/ void drawTurntableRects(EditScene* g2);
 /*private*/ void drawSlipRects(EditScene* g2);
 QAction* turnoutCirclesOnItem;
-void addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
-void addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size);
+QActionGroup* backgroundColorButtonGroup;
+QSignalMapper* backgroundColorButtonMapper;
+QActionGroup* trackColorButtonGroup;
+QSignalMapper* trackColorButtonMapper;
+QActionGroup* trackOccupiedColorButtonGroup;
+QSignalMapper* trackOccupiedColorButtonMapper;
+QActionGroup* trackAlternativeColorButtonGroup;
+QSignalMapper* trackAlternativeColorButtonMapper;
+QActionGroup* textColorButtonGroup;
+QSignalMapper* textColorButtonMapper;
 QActionGroup* turnoutCircleColorButtonGroup;
+QSignalMapper* turnoutCircleColorButtonMapper;
 QActionGroup* turnoutCircleSizeButtonGroup;
+QSignalMapper* turnoutCircleSizeButtonMapper;
 QAction* turnoutDrawUnselectedLegItem;
+QAction* useDirectTurnoutControlItem;
+/*private*/ int backgroundColorCount;// = 0;
+/*private*/ int trackColorCount;// = 0;
+/*private*/ int trackOccupiedColorCount;// = 0;
+/*private*/ int trackAlternativeColorCount;// = 0;
+/*private*/ int textColorCount;// = 0;
+/*private*/ int turnoutCircleColorCount;// = 0;
+/*private*/ int turnoutCircleSizeCount;// = 0;
+/*private*/ QVector<QColor>* backgroundColors = new QVector<QColor>(13);
+/*private*/ QVector<QColor>* trackColors = new QVector<QColor>(13);
+/*private*/ QVector<QColor>* trackOccupiedColors = new QVector<QColor>(13);
+/*private*/ QVector<QColor>* trackAlternativeColors = new QVector<QColor>(13);
+/*private*/ QVector<QColor>* textColors = new QVector<QColor>(13);
+/*private*/ QVector<QColor>* turnoutCircleColors;// = new QVector<QColor>(14);
+/*private*/ QVector<int>* turnoutCircleSizes;// = new QVector<int>(10);
+QAction* autoAssignBlocksItem;
+QAction* hideTrackSegmentConstructionLines;
 /*private*/ void checkPointOfPositionable(PositionablePoint* p);
 /*private*/ void checkPointsOfTurnout(LayoutTurnout* lt);
 /*private*/ void checkPointsOfTurnoutSub(QPointF dLoc);
 /*private*/ void rotateTurnout(LayoutTurnout* t);
-//void addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+void addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+void addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+void addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+void addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+void addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+void addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+void addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size);
+
+/*private*/ QVector<QAction*>* trackColorMenuItems;// = new QVector<QAction*>(13);
+/*private*/ QVector<QAction*>* trackOccupiedColorMenuItems;// = new QVector<QAction*>(13);
+/*private*/ QVector<QAction*>* trackAlternativeColorMenuItems;// = new QVector<QAction*>(13);
+/*private*/ QVector<QAction*>* backgroundColorMenuItems;// = new QVector<QAction*>(13);
+/*private*/ QVector<QAction*>* textColorMenuItems;// = new QVector<QAction*>(13);
+/*private*/ QVector<QAction*>* turnoutCircleColorMenuItems;// = new QVector<QAction*>(14);
+/*private*/ QVector<QAction*>* turnoutCircleSizeMenuItems;// = new QVector<QAction*>(10);
+
+/*private*/ double circleRadius;// = SIZE * getTurnoutCircleSize();
+/*private*/ double circleDiameter;// = 2.0 * circleRadius;
 
 private slots:
  void OnScenePos(QGraphicsSceneMouseEvent*);
@@ -626,7 +677,7 @@ private slots:
  void on_actionShow_turnout_circles_toggled(bool bState);
  void On_actionHidden_toggled(bool bState);
  void on_actionEdit_track_width_triggered();
- void on_colorBackgroundMenuItemSelected(QAction* act);
+ void on_colorBackgroundMenuItemSelected(int);
  void on_actionAdd_reporter_label_triggered();
  void on_actionAdd_background_image_2_triggered();
  void on_actionLoad_XML_triggered();
@@ -639,7 +690,7 @@ private slots:
  void OnZoom_selected(QAction* act);
  void on_actionEdit_mode_toggled(bool bState);
  void OnDefaultTrackColorSelected(QAction * act);
- void OnDefaultTextColorSelected(QAction * act);
+ void OnDefaultTextColorSelected(int);
  void on_actionDelete_this_panel_triggered();
  void on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool);
  void on_actionSet_Signals_at_Block_Boundary_triggered();
@@ -659,9 +710,15 @@ private slots:
  void on_actionAdd_Turntable_triggered();
  void On_turnoutCirclesOnItem_triggered(bool);
  void On_turnoutDrawUnselectedLegItem_triggered(bool);
- void On_turnoutCircleColorButtonGroup_triggered(QAction*);
- void On_turnoutCircleSizeButtonGroup_triggered(QAction*);
+ void On_turnoutCircleColorButtonMapper_triggered(int);
+ void On_turnoutCircleSizeButtonMapper_triggered(int);
  void on_actionSet_Signals_at_Three_Way_Turnout();
+ void on_autoAssignBlocksItem_triggered(bool b);
+ void on_hideTrackSegmentConstructionLines_toggled(bool);
+ void on_useDirectTurnoutControlItem_triggered(bool);
+ void on_addTrackColorMenuEntry_triggered(int);
+ void on_addTrackOccupiedColorMenuEntry_triggered(int);
+ void on_addTrackAlternativeColorMenuEntry_triggered(int);
 
 protected:
  /**
@@ -736,6 +793,13 @@ protected:
  * Remove marker icons from panel
  */
  /*protected*/ void removeMarkers();
+ /*protected*/ void setOptionMenuTurnoutCircleSize();
+ /*protected*/ void setOptionMenuTurnoutCircleColor();
+ /*protected*/ void setOptionMenuTextColor();
+ /*protected*/ void setOptionMenuBackgroundColor();
+ /*protected*/ void setOptionMenuTrackColor();
+ /*protected*/ void removeBackground(PositionableLabel* b);
+
 
 friend class TrackSegment;
 friend class EditLevelXingDlg;

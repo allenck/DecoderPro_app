@@ -22,7 +22,7 @@ public:
     /*public*/ void setWindowInterface(WindowInterface* w) ;
     /*public*/ void virtual initComponents() /*throw (Exception)*/;
     /*public*/ void virtual initContext(QObject* context) /*throw (Exception)*/ ;
-    /*public*/ void dispose();
+    virtual /*public*/ void dispose();
     /*public*/ void pack();
     /*public*/ QSize getPreferredSize();
     /*public*/ QSize getMaximumSize();

@@ -12,6 +12,7 @@
 #include "class.h"
 #include "connectionnamefromsystemname.h"
 #include "systemconnectionaction.h"
+#include "loconetmenustartupaction.h"
 
 //AbstractActionModel::AbstractActionModel(QObject *parent) :
 //    QObject(parent)
@@ -129,12 +130,14 @@
 }
 
 //@Override
-/*public*/ void AbstractActionModel::performAction() throw (JmriException)
+/*public*/ void AbstractActionModel::performAction(QString text) throw (JmriException)
 {
  log->debug(tr("Invoke Action from %1").arg(className));
  try
  {
   Action* action = (Action*) Class::forName(className)/*->newInstance()*/;
+  if(className == "LocoNetMenuStartupAction")
+   ((LocoNetMenuStartupAction*)action)->setTitle(text);
   //if (SystemConnectionAction.class.isAssignableFrom(action->getClass()))
   if(((Class*)action)->isAssignableFrom("SystemConnectionAction"))
   {

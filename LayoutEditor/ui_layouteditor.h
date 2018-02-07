@@ -151,8 +151,6 @@ public:
     QMenu *menuShow_scrollbars;
     QMenu *menuShow_icon_tooltips;
     QMenu *menuSet_Background_color;
-    QMenu *menuSet_default_track_color;
-    QMenu *menuSet_default_text_color;
     QMenu *menuTools;
     QMenu *menuZoom;
     QMenu *menuMarker;
@@ -606,10 +604,6 @@ public:
         menuShow_icon_tooltips->setObjectName(QStringLiteral("menuShow_icon_tooltips"));
         menuSet_Background_color = new QMenu(menuOptions);
         menuSet_Background_color->setObjectName(QStringLiteral("menuSet_Background_color"));
-        menuSet_default_track_color = new QMenu(menuOptions);
-        menuSet_default_track_color->setObjectName(QStringLiteral("menuSet_default_track_color"));
-        menuSet_default_text_color = new QMenu(menuOptions);
-        menuSet_default_text_color->setObjectName(QStringLiteral("menuSet_default_text_color"));
         menuTools = new QMenu(menuBar);
         menuTools->setObjectName(QStringLiteral("menuTools"));
         menuZoom = new QMenu(menuBar);
@@ -658,8 +652,6 @@ public:
         menuOptions->addAction(actionAdd_Turntable);
         menuOptions->addAction(actionAdd_reporter_label);
         menuOptions->addAction(actionEdit_track_width);
-        menuOptions->addAction(menuSet_default_track_color->menuAction());
-        menuOptions->addAction(menuSet_default_text_color->menuAction());
         menuOptions->addAction(actionMoveLayout);
         menuShow_scrollbars->addAction(actionBoth_scrollbars);
         menuShow_scrollbars->addAction(actionNo_scrollbars);
@@ -808,8 +800,6 @@ public:
         menuShow_scrollbars->setTitle(QApplication::translate("LayoutEditor", "Show scrollbars", Q_NULLPTR));
         menuShow_icon_tooltips->setTitle(QApplication::translate("LayoutEditor", "Show icon tooltips", Q_NULLPTR));
         menuSet_Background_color->setTitle(QApplication::translate("LayoutEditor", "Set Background color", Q_NULLPTR));
-        menuSet_default_track_color->setTitle(QApplication::translate("LayoutEditor", "Set default track color", Q_NULLPTR));
-        menuSet_default_text_color->setTitle(QApplication::translate("LayoutEditor", "Set default text color", Q_NULLPTR));
         menuTools->setTitle(QApplication::translate("LayoutEditor", "Tools", Q_NULLPTR));
         menuZoom->setTitle(QApplication::translate("LayoutEditor", "Zoom", Q_NULLPTR));
         menuMarker->setTitle(QApplication::translate("LayoutEditor", "Marker", Q_NULLPTR));

@@ -5,6 +5,7 @@
 #include <QColor>
 #include "QMessageBox"
 #include "transitmanager.h"
+#include "dispatcherframe.h"
 
 LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -52,7 +53,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("panelheight", p->getLayoutHeight());
  panel.setAttribute("panelwidth", p->getLayoutWidth());
  panel.setAttribute("sliders", (p->getScroll() ? "yes" : "no")); // deprecated
- //panel.setAttribute("scrollable", p->getScrollable());
+ panel.setAttribute("scrollable", p->getScrollable());
  panel.setAttribute("editable", (p->isEditable() ? "yes" : "no"));
  panel.setAttribute("positionable", (p->allPositionable() ? "yes" : "no"));
  panel.setAttribute("controlling", (p->allControlling() ? "yes" : "no"));
@@ -323,11 +324,13 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  double xScale = 1.0;
  double yScale = 1.0;
  a = element.attribute("xscale");
+ bool bok;
  if (a != NULL)
  {
   try
   {
-   xScale = a.toFloat();
+   xScale = a.toFloat(&bok);
+   if(!bok) throw Exception();
   }
   catch (Exception e)
   {
@@ -340,7 +343,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  {
   try
   {
-   yScale = a.toFloat();
+   yScale = a.toFloat(&bok);
+   if(!bok) throw Exception();
   }
   catch (Exception e)
   {
@@ -412,8 +416,9 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->setTurnoutCircleColor(turnoutCircleColor);
  panel->setTurnoutCircleSize(turnoutCircleSize);
  panel->setTurnoutDrawUnselectedLeg(turnoutDrawUnselectedLeg);
- panel->setXScale(xScale);
- panel->setYScale(yScale);
+// panel->setXScale(xScale);
+// panel->setYScale(yScale);
+ panel->setScale(xScale, yScale);
  // turnout size parameters
  double sz = 20.0;
  a = element.attribute("turnoutbx");
@@ -553,7 +558,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  if ((a = element.attribute("autoblkgenerate")) != NULL && a==("yes")) {
      value = true;
  }
-// TODO:    panel->setAutoBlockAssignment(value);
+ panel->setAutoBlockAssignment(value);
 
  value = true;
  if ((a = element.attribute("tooltipsinedit")) != NULL && a==("no")) {
@@ -566,11 +571,11 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
  // set default track color
  if ((a = element.attribute("defaultoccupiedtrackcolor")) != NULL) {
-// TODO:        panel->setDefaultOccupiedTrackColor(a);
+  panel->setDefaultOccupiedTrackColor(a);
  }
  // set default track color
  if ((a = element.attribute("defaultalternativetrackcolor")) != NULL) {
-// TODO:        panel->setDefaultAlternativeTrackColor(a);
+   panel->setDefaultAlternativeTrackColor(a);
  }
  try {
      int red = element.attribute("redBackground").toInt();
@@ -652,7 +657,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->panelWidth = panelWidth;
  panel->panelHeight = panelHeight;
  panel->editScene->setSceneRect(0,0,panelWidth, panelHeight);
-
+ panel->editPanel->scale(xScale, yScale); // added ACK
  panel->pack();
  panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
  panel->setVisible(true);    // always show the panel
@@ -668,7 +673,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  {
   if (element.attribute("openDispatcher") != NULL)
   {
-#if 0 // TODO:
+#if 1 // TODO:
    if (element.attribute("openDispatcher")==("yes"))
    {
     panel->setOpenDispatcherOnLoad(true);

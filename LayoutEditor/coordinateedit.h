@@ -23,9 +23,9 @@ class LIBLAYOUTEDITORSHARED_EXPORT CoordinateEdit : public JmriJFrame
     Q_OBJECT
 public:
     explicit CoordinateEdit(QWidget* parent = 0);
-    /*public*/ static QAction* getTextEditAction(/*const*/ Positionable* pos, const QString title, CoordinateEdit* parent);
-    /*public*/ static QAction* getLevelEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent);
-    /*public*/ static QAction* getCoordinateEditAction(/*final*/ Positionable* pos, CoordinateEdit *parent);
+    /*public*/ static QAction* getTextEditAction(/*const*/ Positionable* pos, const QString title, QObject* parent);
+    /*public*/ static QAction* getLevelEditAction(/*final*/ Positionable* pos, QObject* parent);
+    /*public*/ static QAction* getCoordinateEditAction(/*final*/ Positionable* pos, QObject *parent);
     /*public*/ void init(QString title, Positionable* pos, bool showName);
     /*public*/ void initSetXY();
     /*public*/ void initSetLevel();
@@ -38,18 +38,22 @@ public:
     /*public*/ static QAction* getFixedSizeEditAction(/*final*/ Positionable* pos, PositionablePopupUtil* parent);
     /*public*/ void initMargin();
     /*public*/ void initFixedSize();
-    static Positionable* pos;
+    //static Positionable* pos;
     /*public*/ static QAction* getBorderEditAction(/*final*/ Positionable* pos, QObject* parent);
     /*public*/ void initBorder();
     /*public*/ /*static*/ QAction* getNameEditAction(/*final*/ Positionable* pos);
     /*public*/ void  initSetName();
     /*public*/ static AbstractAction* getTooltipEditAction(/*final*/ Positionable* pos, QObject* parent);
     /*public*/ void initSetTip();
+ /*public*/ static AbstractAction* getZoomEditAction(/*final*/ Positionable* pos, QObject* parent);
+ /*public*/ void initZoom();
 
 signals:
     
 public slots:
-    /*public*/ void renamePanelMenu(/*ActionEvent e*/);
+//    /*public*/ void renamePanelMenu(/*ActionEvent e*/);
+ void on_okButton_clicked();
+ void on_cancelButton_clicked();
 
 private:
  QObject *parent;
@@ -59,7 +63,7 @@ private:
  int oldY;
  double oldD;
  QString oldStr;
- static QString title;
+ //static QString title;
 
  // member declarations
  QLabel* nameText;// = new QLabel();
@@ -83,11 +87,14 @@ private:
 // /*private*/ void addItem(QObject* c, int x, int y, int w, bool horzExpand);
  QGridLayout* gridLayout;
  Logger* log;
+ QAction* setXYAction;
+ QAction* levelEditAction;
+ QAction* textEditAction;
 
 private slots:
- void on_getTextEditAction_triggered();
- void on_levelEditAction_triggered();
- void on_setXYAction_triggered();
+// void on_getTextEditAction_triggered();
+// void on_levelEditAction_triggered();
+// void on_setXYAction_triggered();
  void on_setXYOkButton_clicked();
  void on_setXYCancelButton_clicked();
  void on_setXYSpinnerValues_changed();
@@ -95,8 +102,8 @@ private slots:
  void on_setLevelCancelButton_clicked();
  void on_editTextOkButton_clicked();
  void on_editTextCancelButton_clicked();
- void on_rotateAction_triggered();
- void on_getScaleEditAction_triggered();
+// void on_rotateAction_triggered();
+// void on_getScaleEditAction_triggered();
  //void on_actionMarginEdit_triggered();
  void on_initMarginOkButton_clicked();
  void on_initMarginCancelButton_clicked();
@@ -116,8 +123,9 @@ protected:
  /*protected*/ void addSpinItems(bool addY);
  /*protected*/ Editor* changeView(QString className);
 
-friend class MemoryIconCoordinateEdit;
+ friend class MemoryIconCoordinateEdit;
 };
+
 class SetBorderSizeActionListener : public ActionListener
 {
  Q_OBJECT
@@ -127,15 +135,116 @@ public:
  public slots:
     void actionPerformed(ActionEvent *e = 0);
 };
+
+class LevelEditAction : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+public:
+ LevelEditAction(Positionable* pos, QString name, QObject* parent);
+public slots:
+ void on_levelEditAction_triggered();
+};
+
 class TooltipEditAction : public AbstractAction
 {
  Q_OBJECT
- CoordinateEdit* coordinateEdit;
+ QObject* parent;
  Positionable* pos;
 public:
- TooltipEditAction(Positionable* pos, QString name, CoordinateEdit* coordinateEdit);
+ TooltipEditAction(Positionable* pos, QString name, QObject* parent);
 public slots:
  void actionPerformed(ActionEvent * = 0);
+};
+
+class ActionMarginEdit : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+public:
+ ActionMarginEdit(Positionable* pos, QString name, QObject* parent);
+public slots:
+ void on_actionMarginEdit_triggered();
+};
+
+class ScaleEditAction : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+public:
+ ScaleEditAction(Positionable* pos, QString name, QObject* parent);
+public slots:
+ void on_getScaleEditAction_triggered();
+};
+
+class GetNameEditAction : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+public:
+ GetNameEditAction(Positionable* pos, QString name, QObject* parent);
+public slots:
+ void renamePanelMenu();
+};
+
+class ActionFixedSizeEdit : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+public:
+ ActionFixedSizeEdit(Positionable* pos, QString name, QObject* parent);
+public slots:
+ void on_actionGetFixedSizeEdit_triggered();
+};
+class RotateAction : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+public:
+ RotateAction(Positionable* pos, QString name, QObject* parent);
+public slots:
+ void on_rotateAction_triggered();
+};
+
+class TextEditAction : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+ QString title;
+
+public:
+ TextEditAction(Positionable* pos, QString title, QObject* parent);
+public slots:
+ void on_getTextEditAction_triggered();
+};
+
+class SetXYAction : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+public:
+ SetXYAction(Positionable* pos, QString name, QObject* parent);
+public slots:
+ void on_setXYAction_triggered();
+};
+
+class GetZoomEditAction : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+public:
+ GetZoomEditAction(Positionable* pos, QString name, QObject* parent);
+public slots:
+ void on_getZoomEditAction_triggered();
 };
 
 #endif // COORDINATEEDIT_H

@@ -168,6 +168,7 @@
 // JCheckBoxMenuItem* disableItem = NULL;
 // JCheckBoxMenuItem* disableWhenOccupiedItem = NULL;
  tools = NULL;
+ circle = NULL;
 
  turnoutNameField = new JTextField(16);
  blockBNameField = new JTextField(16);
@@ -3856,6 +3857,7 @@ void LayoutTurnout::drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2)
  rects = group;
  g2->addItem(rects);
 }
+
 void LayoutTurnout::drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2)
 {
  QPointF pt = getCoordsCenter();
@@ -3863,7 +3865,9 @@ void LayoutTurnout::drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2)
 //          g2.setColor(turnoutCircleColor != NULL ? turnoutCircleColor : defaultTrackColor);
 //          g2.draw(new Ellipse2D.Double (
 //                          pt.x()-size, pt.y()-size, size+size, size+size));
- QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(pt.x()-size, pt.y()-size, size+size, size+size,0);
+ if(circle != NULL)
+  g2->removeItem(circle);
+ circle = new QGraphicsEllipseItem(pt.x()-size, pt.y()-size, size+size, size+size,0);
  circle->setPen( QPen( editor->turnoutCircleColor.isValid() ? editor->turnoutCircleColor : editor->defaultTrackColor, 1, Qt::SolidLine ) );
  g2->addItem(circle);
 }
@@ -3885,3 +3889,4 @@ void LayoutTurnout::redrawPanel()
 {
  layoutEditor->redrawPanel();
 }
+

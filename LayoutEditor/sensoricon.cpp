@@ -414,8 +414,7 @@ JCheckBoxMenuItem  momentaryItem = new JCheckBoxMenuItem(Bundle.getMessage("Mome
 #if 1
  if (isIcon())
  {
-  CoordinateEdit* coordinateEdit = new CoordinateEdit();
-  popup->addAction(CoordinateEdit::getTextEditAction((Positionable*)this, "Overlay Icon with Text...",coordinateEdit));
+  popup->addAction(CoordinateEdit::getTextEditAction((Positionable*)this, "Overlay Icon with Text...",this));
  }
  else
  {

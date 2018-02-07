@@ -387,7 +387,7 @@ double LayoutTurntable::round(double x) {
 /**
  * Display popup menu for information and editing
  */
-/*protected*/ void LayoutTurntable::showPopUp(QGraphicsSceneMouseEvent* e) {
+/*protected*/ void LayoutTurntable::showPopUp(QGraphicsSceneMouseEvent* /*e*/) {
     if (popup != NULL) {
         popup->clear();
     } else {
@@ -440,7 +440,7 @@ void LayoutTurntable::on_remove_triggered()
  dispose();
 }
 
-/*protected*/ void LayoutTurntable::showRayPopUp(QGraphicsSceneMouseEvent* e, int index) {
+/*protected*/ void LayoutTurntable::showRayPopUp(QGraphicsSceneMouseEvent* /*e*/, int index) {
     if (rayPopup != NULL) {
         rayPopup->clear();
     } else {
@@ -499,7 +499,7 @@ void LayoutTurntable::on_remove_triggered()
 /**
  * Edit a Turntable
  */
-/*protected*/ void LayoutTurntable::editTurntable(LayoutTurntable* x)
+/*protected*/ void LayoutTurntable::editTurntable(LayoutTurntable* /*x*/)
 {
  if (editOpen)
  {
@@ -667,7 +667,7 @@ void LayoutTurntable::on_addRayTrack_clicked()
  }
 }
 
-/*private*/ void LayoutTurntable::addRayTrackPressed(ActionEvent* a)
+/*private*/ void LayoutTurntable::addRayTrackPressed(ActionEvent* /*a*/)
 {
  double ang = 0.0;
  bool ok;
@@ -686,7 +686,7 @@ void LayoutTurntable::on_addRayTrack_clicked()
  needsRedraw = false;
 }
 
-void LayoutTurntable::deleteRayTrackPressed(ActionEvent* a) {
+void LayoutTurntable::deleteRayTrackPressed(ActionEvent* /*a*/) {
     double ang = 0.0;
     bool ok;
         ang = angleField->text().toFloat(&ok);
@@ -735,7 +735,7 @@ void LayoutTurntable::deleteRay(RayTrack* closest) {
     needsRedraw = false;
 }
 
-void LayoutTurntable::turntableEditDonePressed(ActionEvent* a)
+void LayoutTurntable::turntableEditDonePressed(ActionEvent* /*a*/)
 {
  // check if new radius was entered
  QString str = radiusField->text();
@@ -768,7 +768,7 @@ void LayoutTurntable::turntableEditDonePressed(ActionEvent* a)
  }
 }
 
-void LayoutTurntable::turntableEditCancelPressed(ActionEvent* a) {
+void LayoutTurntable::turntableEditCancelPressed(ActionEvent* /*a*/) {
     editOpen = false;
     editTurntableFrame->setVisible(false);
     editTurntableFrame->dispose();
@@ -913,7 +913,7 @@ void LayoutTurntable::remove() {
          lt->needsRedraw = true;
      }
  }
- /*public*/ void RayTrack::propertyChange(PropertyChangeEvent* e)
+ /*public*/ void RayTrack::propertyChange(PropertyChangeEvent* /*e*/)
  {
   if (getTurnout()->getKnownState() == turnoutState) {
       lt->lastKnownIndex = connectionIndex;

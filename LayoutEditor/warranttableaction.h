@@ -11,6 +11,8 @@
 #include "warranttableframe.h"
 #include "jdialog.h"
 #include "liblayouteditor_global.h"
+#include "actionlistener.h"
+#include "instancemanager.h"
 
 class OPath;
 class WTAShutDownTask;

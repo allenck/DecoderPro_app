@@ -105,8 +105,8 @@ public slots:
  /*public*/ void setOrientation(int ori);
  void on_setFontSize(QAction* act);
  void on_colorMenuItemSelected(QAction* act);
- void on_actionMarginEdit_triggered();
- void on_actionGetFixedSizeEdit_triggered();
+ //void on_actionMarginEdit_triggered();
+ //void on_actionGetFixedSizeEdit_triggered();
  void on_setTextOrientation_triggered(QAction* act);
 
 private:

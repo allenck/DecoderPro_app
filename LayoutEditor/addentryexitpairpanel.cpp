@@ -181,7 +181,7 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
    QMessageBox::information(NULL, tr("Information"), tr("Layout Block routing has been enabled."));
   }
  }
- entryExitFrame = new JmriJFrame("Discover Entry Exit Pairs", false, false);
+ entryExitFrame = new JmriJFrame(tr("Discover Entry Exit Pairs"), false, false);
  entryExitFrame->setMinimumSize(QSize());
  QWidget* centralWidget = new QWidget;
  QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);

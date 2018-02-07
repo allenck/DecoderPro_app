@@ -381,9 +381,9 @@ void LocoIODialog::onPropertyChange(PropertyChangeEvent* evt)
    ui->chkSpecialPorts->setChecked(true);
    emit specialPorts();
   }
-  sql->setData(data);
-  if(sql->commentRecordExists(channel+1))
-   sql->updateBasicComments(channel+1, data->getModuleType());
+//  sql->setData(data);
+//  if(sql->commentRecordExists(channel+1))
+//   sql->updateBasicComments(channel+1, data->getModuleType());
  }
  if (evt->getPropertyName() == "UnitAddress")
  {

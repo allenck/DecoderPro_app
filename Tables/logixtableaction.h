@@ -523,5 +523,22 @@ public:
  ECFWindowListener(LogixTableAction* self);
  void windowClosing(QCloseEvent *e);
 };
+class ItemDelegate : public QAbstractItemDelegate
+{
+  Q_OBJECT
+ public:
+  ItemDelegate(QStringList items, QObject *parent);
+  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+private:
+  QStringList Items;
+  //int row;
+signals:
+private slots:
+};
 
 #endif // LOGIXTABLEACTION_H

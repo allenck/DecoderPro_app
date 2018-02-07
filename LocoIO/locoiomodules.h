@@ -9,6 +9,7 @@
 class Logger;
 class Sql;
 class LocoIODialog;
+class LocoIOFrame;
 class LocoNetMessage;
 class QMenu;
 class QSignalMapper;
@@ -43,7 +44,8 @@ private:
  QSignalMapper* signalMapper;
  QMenu* menu;
  QList<LocoIOAddress*> list;
- QVector<LocoIODialog*> moduleDlg;
+ //QVector<LocoIODialog*> moduleDlg;
+ QVector<LocoIOFrame*> moduleDlg;
  bool bHexValues;
  Sql* sql;
  void on_actionLocoIO_triggered(/*bool bNewAddress*/);

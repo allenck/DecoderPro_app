@@ -14,6 +14,7 @@
 #include <QSpinBox>
 #include "flowlayout.h"
 #include "picklistmodel.h"
+#include <QGraphicsLinearLayout>
 
 //MemoryInputIcon::MemoryInputIcon(QWidget *parent) :
 //    PositionableJPanel(parent)
@@ -49,6 +50,7 @@
  widget->setFlag(QGraphicsItem::ItemIsFocusable,true) ;
  widget->setFlag(QGraphicsItem::ItemIsMovable, true);
  widget->setFlag(QGraphicsItem::ItemIsSelectable, true);
+ widget->setLayout(new QGraphicsLinearLayout());
  _textBox->setEnabled(true);
  //_itemGroup->addToGroup(widget);
  setLevel(Editor::LABELS);

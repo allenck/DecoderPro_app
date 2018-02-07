@@ -15,9 +15,12 @@ public:
     static /*public*/ void rememberObject(PerformActionModel* m);
     static /*public*/ QList<PerformActionModel*> rememberedObjects() ;
     static QList<PerformActionModel*> l;// = QList<PerformActionModel*>();
-
+    QString getTitle();
+    void setTitle(QString title);
 signals:
  void actionPerformed(ActionEvent*);
+
+private:
 
 public slots:
 protected slots:

@@ -136,8 +136,8 @@ void BeanTableDataModel::setManager(Manager *) {}
    int row = sysNameList.indexOf(name);
    try
    {
-    //fireTableRowsUpdated(row, row);
-    fireTableDataChanged();
+    fireTableRowsUpdated(row, row);
+    //fireTableDataChanged();
    }
    catch (Exception ex)
    {

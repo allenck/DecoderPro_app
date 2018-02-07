@@ -48,7 +48,7 @@ signals:
 
 public slots:
  /*public*/ void setUseGlobalFlag(bool set); // SLOT
-    void onItemTableList();
+//    void onItemTableList();
     void actionCut();
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
     /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event);
@@ -76,6 +76,11 @@ private:
  /*private*/ QAction* showTooltipBox;// = new QAction(tr("Show tooltips for all items"),this);
  /*private*/ QAction* hiddenBox;// = new QAction(tr("Show all hidden items"), this);
  /*private*/ QAction* disableShapeSelect;// = new JCheckBoxMenuItem(Bundle.getMessage("disableShapeSelect"));
+ /*private*/ QAction* scrollBoth;// = new JRadioButtonMenuItem(Bundle.getMessage("ScrollBoth"));
+ /*private*/ QAction* scrollNone;// = new JRadioButtonMenuItem(Bundle.getMessage("ScrollNone"));
+ /*private*/ QAction* scrollHorizontal;// = new JRadioButtonMenuItem(Bundle.getMessage("ScrollHorizontal"));
+ /*private*/ QAction* scrollVertical;// = new JRadioButtonMenuItem(Bundle.getMessage("ScrollVertical"));
+
       Logger* log;
  int _fitX;// = 0;
  int _fitY;// = 0;
@@ -115,6 +120,10 @@ void closeEditor();
 void sceneChanged(QList<QRectF>);
 void on_disableShapeSelect(bool);
 void on_makeCircuitMenu();
+void on_scrollBoth_triggered();
+void on_scrollNone_triggered();
+void on_scrollHorizontal_triggered();
+void on_scrollVertical_triggered();
 
 protected:
  /*protected*/ QMenuBar* _menuBar;

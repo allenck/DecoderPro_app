@@ -7,6 +7,7 @@
 #include "../LocoIO/locoiodialog.h"
 #include "../LocoIO/sql.h"
 #include "logger.h"
+#include "locoioframe.h"
 
 LocoIOModules* LocoIOModules::root = NULL;
 
@@ -22,7 +23,7 @@ LocoIOModules::LocoIOModules(QObject *parent) :
  data = new LocoIOData(0x51, 1,tc);
  menu = new QMenu("Configure LocoIO...");
  menu->addAction(tr("No LocoIO modules detected!"));
- //sql = new Sql(data);
+ sql = new Sql(data);
  log = new Logger("LocoIOModules");
  signalMapper = NULL;
  connect(data, SIGNAL(probeCompleted(QList<LocoIOAddress*>)), this, SLOT(onProbeCompleted(QList<LocoIOAddress*>)));
@@ -176,7 +177,8 @@ QMenu* LocoIOModules::getMenu() { return menu;}
 void LocoIOModules::on_actionLocoIO_triggered(/*bool bNewAddress*/)
 {
  //Q_UNUSED(bNewAddress)
- foreach(LocoIODialog* dlg, moduleDlg)
+ //foreach(LocoIODialog* dlg, moduleDlg)
+ foreach(LocoIOFrame* dlg, moduleDlg)
  {
   if(log->isDebugEnabled()) log->debug(QString("dialog for address 0x%1/0x%2").arg(dlg->address()->unitAddress(),0,16).arg(dlg->address()->unitSubAddress(),0, 16));
 
@@ -186,7 +188,8 @@ void LocoIOModules::on_actionLocoIO_triggered(/*bool bNewAddress*/)
    return;
   }
  }
- LocoIODialog* newDlg = new LocoIODialog(address, memo->getLnTrafficController(), bHexValues, sql, /*this*/NULL);
+ //LocoIODialog* newDlg = new LocoIODialog(address, memo->getLnTrafficController(), bHexValues, sql, /*this*/NULL);
+ LocoIOFrame* newDlg = new LocoIOFrame(address, memo->getLnTrafficController(), bHexValues, sql, /*this*/NULL);
 // newDlg->setAddress(data->getUnitAddress(), data->getUnitSubAddress());
  newDlg->show();
  if(log->isDebugEnabled()) log->debug(QString("LocoIo dialog created 0x%1/0x%2").arg(newDlg->address()->unitAddress(),0, 16).arg(newDlg->address()->unitSubAddress(), 0,16));

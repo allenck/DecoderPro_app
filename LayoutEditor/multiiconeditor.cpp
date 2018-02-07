@@ -33,7 +33,7 @@
  iconList = new QVector<NamedIcon*>(nIcons);
  iconNameList = new QVector<QString>(nIcons);
 
- this->setLayout(g = new QGridLayout(this/*, BoxLayout.Y_AXIS)*/));
+ this->setLayout(g = new QGridLayout());//, BoxLayout.Y_AXIS)));
  _catalog = new CatalogPane(true);
  buttonList = new QVector<QPushButton*>(nIcons);
  mapper = new QSignalMapper();
@@ -89,10 +89,12 @@ QString MultiIconEditor::getIconName(int iconNum)
     return iconNameList->at(iconNum);
 }
 
-/*public*/ void MultiIconEditor::complete() {
+/*public*/ void MultiIconEditor::complete()
+{
     // add the catalog, so icons can be selected
  g->addWidget(_catalog, iconList->count()+1,0,1,2);
 }
+
 CatalogPane* MultiIconEditor::catalog()
 {
  return _catalog;

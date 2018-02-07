@@ -312,6 +312,8 @@ public:
     //template<class T>
     /*synchronized*/ /*public*/ static /*<T extends Editor>*/ QList<Editor*> getEditors(/*@Nonnull*/ QString type);
     /*public*/ static Editor* getEditor(QString name);
+    /*public*/ void setScroll(QString strState);
+    /*public*/ QString getScrollable();
 
 signals:
     
@@ -457,6 +459,8 @@ private slots:
   /*protected*/ Editor* changeView(QString className);
 //  /*protected*/ void setSecondSelectionGroup(QList<Positionable*> list);
   /*abstract*/ /*protected*/ virtual void init(QString name);
+  /*protected*/ void addRpsReporter();
+  /*protected*/ void setScroll(int state);
 
   class SignalHeadActionListener : public ActionListener
   {
