@@ -13,6 +13,8 @@
 #include "allocationrequest.h"
 #include "vptr.h"
 #include "allocatedsection.h"
+#include "layouteditor.h"
+#include <QDateTime>
 
 //ActiveTrain::ActiveTrain(QObject *parent) : QObject(parent)
 //{
@@ -573,82 +575,83 @@
     }
     return dir;
 }
-#if 0
-/*public*/ void addAllocatedSection(AllocatedSection as) {
+#if 1
+/*public*/ void ActiveTrain::addAllocatedSection(AllocatedSection* as) {
     if (as != NULL) {
-        mAllocatedSections.add(as);
-        if (as.getSection() == mNextSectionToAllocate) {
+        mAllocatedSections->append(as);
+        if (as->getSection() == mNextSectionToAllocate) {
             // this  is the next Section in the Transit, update pointers
-            mLastAllocatedSection = as.getSection();
-            mNextSectionToAllocate = as.getNextSection();
-            mNextSectionSeqNumber = as.getNextSectionSequence();
+            mLastAllocatedSection = as->getSection();
+            mNextSectionToAllocate = as->getNextSection();
+            mNextSectionSeqNumber = as->getNextSectionSequence();
             mNextSectionDirection = getAllocationDirectionFromSectionAndSeq(
                     mNextSectionToAllocate, mNextSectionSeqNumber);
-            as.setAllocationNumber(mNextAllocationNumber);
+            as->setAllocationNumber(mNextAllocationNumber);
             mNextAllocationNumber++;
         } else {
             // this is an extra allocated Section
-            as.setAllocationNumber(-1);
+            as->setAllocationNumber(-1);
         }
         if ((mStatus == WAITING) && mStarted) {
             setStatus(RUNNING);
         }
-        if (as.getSequence() == 2) {
-            mSecondAllocatedSection = as.getSection();
+        if (as->getSequence() == 2) {
+            mSecondAllocatedSection = as->getSection();
         }
-        if (DispatcherFrame.instance().getNameInAllocatedBlock()) {
-            if (DispatcherFrame.instance().getRosterEntryInBlock() && getRosterEntry() != NULL) {
-                as.getSection().setNameFromActiveBlock(getRosterEntry());
-            } else {
-                as.getSection().setNameInBlocks(mTrainName);
-            }
-            as.getSection().suppressNameUpdate(true);
+        if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getNameInAllocatedBlock())
+        {
+         if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getRosterEntryInBlock() && getRosterEntry() != NULL) {
+             as->getSection()->setNameFromActiveBlock(VPtr<RosterEntry>::asQVariant(getRosterEntry()));
+         } else {
+             as->getSection()->setNameInBlocks(mTrainName);
+         }
+         as->getSection()->suppressNameUpdate(true);
         }
-        if (DispatcherFrame.instance().getExtraColorForAllocated()) {
-            as.getSection().setAlternateColorFromActiveBlock(true);
+        if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getExtraColorForAllocated()) {
+            as->getSection()->setAlternateColorFromActiveBlock(true);
         }
         refreshPanel();
     } else {
-        log.error("Null Allocated Section reference in addAllocatedSection of ActiveTrain");
+        log->error("Null Allocated Section reference in addAllocatedSection of ActiveTrain");
+    }
+}
+#endif
+/*private*/ void ActiveTrain::refreshPanel() {
+    if (DispatcherFrame::instance()->getLayoutEditor() != NULL) {
+        DispatcherFrame::instance()->getLayoutEditor()->redrawPanel();
     }
 }
 
-/*private*/ void refreshPanel() {
-    if (DispatcherFrame.instance().getLayoutEditor() != NULL) {
-        DispatcherFrame.instance().getLayoutEditor().redrawPanel();
-    }
-}
-
-/*public*/ void removeAllocatedSection(AllocatedSection as) {
+/*public*/ void ActiveTrain::removeAllocatedSection(AllocatedSection* as) {
     if (as == NULL) {
-        log.error("Null AllocatedSection reference in removeAllocatedSection of ActiveTrain");
+        log->error("Null AllocatedSection reference in removeAllocatedSection of ActiveTrain");
         return;
     }
     int index = -1;
-    for (int i = 0; i < mAllocatedSections.size(); i++) {
-        if (as == mAllocatedSections.get(i)) {
+    for (int i = 0; i < mAllocatedSections->size(); i++) {
+        if (as == mAllocatedSections->value(i)) {
             index = i;
         }
     }
     if (index < 0) {
-        log.error("Attempt to remove an unallocated Section " + as.getSectionName());
+        log->error("Attempt to remove an unallocated Section " + as->getSectionName());
         return;
     }
-    mAllocatedSections.remove(index);
+    mAllocatedSections->removeAt(index);
     if (mAutoRun) {
-        mAutoActiveTrain.removeAllocatedSection(as);
+        mAutoActiveTrain->removeAllocatedSection(as);
     }
-    if (DispatcherFrame.instance().getNameInAllocatedBlock()) {
-        as.getSection().clearNameInUnoccupiedBlocks();
-        as.getSection().suppressNameUpdate(false);
+    if (DispatcherFrame::instance()->getNameInAllocatedBlock()) {
+        as->getSection()->clearNameInUnoccupiedBlocks();
+        as->getSection()->suppressNameUpdate(false);
     }
-    as.getSection().setAlternateColor(false);
+    as->getSection()->setAlternateColor(false);
     refreshPanel();
-    if (as.getSection() == mLastAllocatedSection) {
+    if (as->getSection() == mLastAllocatedSection) {
         mLastAllocatedSection = NULL;
-        if (mAllocatedSections.size() > 0) {
-            mLastAllocatedSection = mAllocatedSections.get(
-                    mAllocatedSections.size() - 1).getSection();
+        if (mAllocatedSections->size() > 0) {
+            mLastAllocatedSection = mAllocatedSections->value(
+                    mAllocatedSections->size() - 1)->getSection();
         }
     }
 }
@@ -656,36 +659,36 @@
 /**
  * This resets the state of the ActiveTrain so that it can be reallocated.
  */
-/*public*/ void allocateAFresh() {
+/*public*/ void ActiveTrain::allocateAFresh() {
     setStatus(WAITING);
     setTransitReversed(false);
-    ArrayList<AllocatedSection> sectionsToRelease = new ArrayList<AllocatedSection>();
-    for (AllocatedSection as : DispatcherFrame.instance().getAllocatedSectionsList()) {
-        if (as.getActiveTrain() == this) {
-            sectionsToRelease.add(as);
+    QList<AllocatedSection*>* sectionsToRelease = new QList<AllocatedSection*>();
+    for (AllocatedSection* as : *DispatcherFrame::instance()->getAllocatedSectionsList()) {
+        if (as->getActiveTrain() == this) {
+            sectionsToRelease->append(as);
         }
     }
-    for (AllocatedSection as : sectionsToRelease) {
-        DispatcherFrame.instance().releaseAllocatedSection(as, true); // need to find Allocated Section
-        as.getSection().setState(jmri.Section.FREE);
+    for (AllocatedSection* as : *sectionsToRelease) {
+        DispatcherFrame::instance()->releaseAllocatedSection(as, true); // need to find Allocated Section
+        as->getSection()->setState(Section::FREE);
     }
     if (mLastAllocatedSection != NULL) {
-        mLastAllocatedSection.setState(jmri.Section.FREE);
+        mLastAllocatedSection->setState(Section::FREE);
     }
     resetAllAllocatedSections();
     clearAllocations();
     if (mAutoRun) {
-        mAutoActiveTrain.allocateAFresh();
+        mAutoActiveTrain->allocateAFresh();
     }
-    DispatcherFrame.instance().allocateNewActiveTrain(this);
+    DispatcherFrame::instance()->allocateNewActiveTrain(this);
 }
 
-/*public*/ void clearAllocations() {
-    for (AllocatedSection as : getAllocatedSectionList()) {
+/*public*/ void ActiveTrain::clearAllocations() {
+    for (AllocatedSection* as : *getAllocatedSectionList()) {
         removeAllocatedSection(as);
     }
 }
-#endif
+
 /*public*/ QList<AllocatedSection*>* ActiveTrain::getAllocatedSectionList() {
     QList<AllocatedSection*>* list = new QList<AllocatedSection*>();
     for (int i = 0; i < mAllocatedSections->size(); i++) {
@@ -935,7 +938,7 @@ protected Section* getSecondAllocatedSection() {
 #if 0
 protected bool addEndSection(Section* s, int seq) {
     AllocatedSection as = mAllocatedSections.get(mAllocatedSections.size() - 1);
-    if (!as.setNextSection(s, seq)) {
+    if (!as->setNextSection(s, seq)) {
         return false;
     }
     setEndBlockSection(s);
@@ -952,10 +955,10 @@ protected bool addEndSection(Section* s, int seq) {
 protected void removeLastAllocatedSection() {
     AllocatedSection as = mAllocatedSections.get(mAllocatedSections.size() - 1);
     //Set the end block using the AllocatedSections exit block before clearing the next section in the allocatedsection
-    setEndBlock(as.getExitBlock());
+    setEndBlock(as->getExitBlock());
 
-    as.setNextSection(NULL, 0);
-    setEndBlockSection(as.getSection());
+    as->setNextSection(NULL, 0);
+    setEndBlockSection(as->getSection());
 
     setEndBlockSectionSequenceNumber(getEndBlockSectionSequenceNumber() - 1);
     // In theory the following values should have already been set if there are no more sections to allocate.
@@ -977,17 +980,17 @@ protected AllocatedSection reverseAllAllocatedSections() {
     }
     return aSec;
 }
-
-protected void resetAllAllocatedSections() {
-    for (int i = 0; i < mAllocatedSections.size(); i++) {
-        AllocatedSection aSec = mAllocatedSections.get(i);
-        int dir = mTransit.getDirectionFromSectionAndSeq(aSec.getSection(), aSec.getSequence());
-        aSec.getSection().setState(dir);
-        aSec.setStoppingSensors();
+#endif
+/*protected*/ void ActiveTrain::resetAllAllocatedSections() {
+    for (int i = 0; i < mAllocatedSections->size(); i++) {
+        AllocatedSection* aSec = mAllocatedSections->value(i);
+        int dir = mTransit->getDirectionFromSectionAndSeq(aSec->getSection(), aSec->getSequence());
+        aSec->getSection()->setState(dir);
+        aSec->setStoppingSensors();
     }
 }
 
-protected void setRestart() {
+/*protected*/ void ActiveTrain::setRestart() {
     if (getDelayedRestart() == NODELAY) {
         return;
     }
@@ -995,20 +998,19 @@ protected void setRestart() {
     setStatus(READY);
     restartPoint = true;
     if (getDelayedRestart() == TIMEDDELAY) {
-        Date now = jmri.InstanceManager.getDefault(jmri.Timebase.class).getTime();
-        @SuppressWarnings("deprecation")
-        int nowHours = now.getHours();
-        @SuppressWarnings("deprecation")
-        int nowMinutes = now.getMinutes();
+        QDateTime now = ((Timebase*)InstanceManager::getDefault("Timebase"))->getTime();
+        //@SuppressWarnings("deprecation")
+        int nowHours = now.time().hour();
+        //@SuppressWarnings("deprecation")
+        int nowMinutes = now.time().minute();
         int hours = getRestartDelay() / 60;
         int minutes = getRestartDelay() % 60;
         restartHr = nowHours + hours + ((nowMinutes + minutes) / 60);
         restartMin = ((nowMinutes + minutes) % 60);
     }
-    DispatcherFrame.instance().addDelayedTrain(this);
+    DispatcherFrame::instance()->addDelayedTrain(this);
 }
 
-#endif
 /*protected*/ void ActiveTrain::holdAllocation(bool boo) {
     _holdAllocation = boo;
 }

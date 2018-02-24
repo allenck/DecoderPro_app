@@ -1223,70 +1223,84 @@
   for(int i = 0; i < nl.size(); i++)
   {
    QDomElement window = nl.at(i).toElement();
-      QString reference = window.attribute("class");
-      log->debug(tr("Reading window details for %1").arg(reference));
-      //try {
-      bool ok = true, ok1;
-          if (window.attribute("locX") != NULL && window.attribute("locX") != NULL) {
-              double x = window.attribute("locX").toDouble(&ok1);
-              if(!ok1) ok = false;
-              double y = window.attribute("locY").toDouble(&ok1);
-              if(!ok1) ok = false;
-              this->setWindowLocation(reference, QPoint((int) x, (int) y));
-          }
-          if (window.attribute("width") != NULL && window.attribute("height") != NULL) {
-              double width = window.attribute("width").toDouble(&ok1);
-              if(!ok1) ok = false;
-              double height = window.attribute("height").toDouble(&ok1);
-              if(!ok1) ok = false;
-              this->setWindowSize(reference, QSize((int) width, (int) height));
-          }
-      if(!ok)
-      {
-          log->error(tr("Unable to read dimensions of window \"%1\"").arg(reference));
-      }
-      if (window.firstChildElement("properties") != QDomElement())
-      {
-//          window.getChild("properties").getChildren().stream().forEach((property) -> {
-       QDomNodeList nl = window.elementsByTagName("properties");
-       for(int i = 0;  i < nl.size(); i++)
-       {
-        QDomElement property = nl.at(i).toElement();
-        QString key = property.firstChildElement("key").text();
-//        try {
-            //Class<?> cl = Class.forName(property.getChild("value").attribute("class"));
-        QObject* cl = (QObject*)Class::forName(property.firstChildElement("value").attribute("class"));
-        if(cl != NULL)
-        {
-            //Constructor<?> ctor = cl.getConstructor(new Class<?>[]{QString.class});
-         int cix;
-         if(cix = cl->metaObject()->indexOfConstructor(QMetaObject::normalizedSignature("QString")) >= 0)
-         {
-          QObject* ctor = cl->metaObject()->newInstance(Q_ARG(QString,QMetaObject::normalizedSignature(property.firstChildElement("value").text().toLatin1())));
-          //Object value = ctor.newInstance(new Object[]{property.getChild("value").getText()});
-          QString value;
-          QMetaObject::invokeMethod(ctor, QMetaObject::normalizedSignature(property.firstChildElement("value").text().toLatin1()),Qt::DirectConnection,Q_ARG(QString, value));
-
-         log->debug(tr("Setting property %1 for %2 to %3").arg(key).arg(reference).arg(value));
-            this->setProperty(reference, key, value);
-#if 0 // TODO:
-           } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-               log->error("Unable to retrieve property \"{}\" for window \"{}\"", key, reference);
-           } catch (NullPointerException ex) {
-               // NULL properties do not get set
-               log->debug("Property \"{}\" for window \"{}\" is NULL", key, reference);
-           }
-       });
-#endif
-       }
-     }
-     else
-       log->error(tr("Unable to retrieve property \"%1\" for window \"%2\"").arg(key).arg(reference));
-
+   QString reference = window.attribute("class");
+   log->debug(tr("Reading window details for %1").arg(reference));
+   try
+   {
+    bool ok;
+    if (window.attribute("locX") != NULL && window.attribute("locX") != NULL)
+    {
+     double x = window.attribute("locX").toDouble(&ok);
+     if(!ok) throw DataConversionException();
+     double y = window.attribute("locY").toDouble(&ok);
+     if(!ok) throw DataConversionException();
+     this->setWindowLocation(reference, QPoint((int) x, (int) y));
     }
-  //});
+    if (window.attribute("width") != NULL && window.attribute("height") != NULL)
+    {
+     double width = window.attribute("width").toDouble(&ok);
+     if(!ok) throw DataConversionException();
+     double height = window.attribute("height").toDouble(&ok);
+     if(!ok) throw DataConversionException();
+     this->setWindowSize(reference, QSize((int) width, (int) height));
+    }
    }
-  }
+   catch(DataConversionException ex)
+   {
+    log->error(tr("Unable to read dimensions of window \"%1\"").arg(reference));
+   }
+   if (window.firstChildElement("properties") != QDomElement())
+   {
+//          window.getChild("properties").getChildren().stream().forEach((property) -> {
+    QDomNodeList nl = window.firstChildElement("properties").childNodes();
+    for(int i = 0;  i < nl.size(); i++)
+    {
+     QDomElement property = nl.at(i).toElement();
+     QString key = property.firstChildElement("key").text();
+     if(key == "") continue; // added ACK
+     QString _class = property.firstChildElement("value").attribute("class");
+     QString value = property.firstChildElement("value").text();
+     this->setProperty(reference, key, value);
+#if 0
+     try
+     {
+      //Class<?> cl = Class.forName(property.getChild("value").attribute("class"));
+      QObject* cl = (QObject*)Class::forName(_class);
+      if(cl != NULL)
+      {
+       //Constructor<?> ctor = cl.getConstructor(new Class<?>[]{QString.class});
+       int cix;
+       if(cix = cl->metaObject()->indexOfConstructor(QMetaObject::normalizedSignature("QString")) >= 0)
+       {
+        QObject* ctor = cl->metaObject()->newInstance(Q_ARG(QString,QMetaObject::normalizedSignature(property.firstChildElement("value").text().toLatin1())));
+        //Object value = ctor.newInstance(new Object[]{property.getChild("value").getText()});
+        QString value;
+        QMetaObject::invokeMethod(ctor, QMetaObject::normalizedSignature(property.firstChildElement("value").text().toLatin1()),Qt::DirectConnection,Q_ARG(QString, value));
+        if(value.isEmpty()) throw NullPointerException();
+        log->debug(tr("Setting property %1 for %2 to %3").arg(key).arg(reference).arg(value));
+        this->setProperty(reference, key, value);
+       }
+       else throw NoSuchMethodException();
+//      catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
+      }
+     }
+     catch( ClassNotFoundException ex)
+     {
+       log->error(tr("Unable to retrieve property \"%1\" for window \"%2\"").arg(key).arg(reference));
+     }
+     catch( NoSuchMethodException ex)
+     {
+       log->error(tr("Unable to retrieve property \"%1\" for window \"%2\"").arg(key).arg(reference));
+     }
+     catch (NullPointerException ex)
+     {
+      // NULL properties do not get set
+      log->debug(tr("Property \"%1\" for window \"%2\" is NULL").arg(key).arg(reference));
+     }
+#endif
+    }//);
+   }
+  } // foreach window
  }
 #endif
 }
@@ -1308,12 +1322,14 @@
     window.setAttribute("class", entry.key());
     if (entry.value()->saveLocation)
     {
-        try {
-            window.setAttribute("locX", entry.value()->getLocation().x());
-            window.setAttribute("locY", entry.value()->getLocation().y());
-        } catch (NullPointerException ex) {
-            // Expected if the location has not been set or the window is open
-        }
+     try
+     {
+         window.setAttribute("locX", entry.value()->getLocation().x());
+         window.setAttribute("locY", entry.value()->getLocation().y());
+     }
+     catch (NullPointerException ex) {
+         // Expected if the location has not been set or the window is open
+     }
     }
     if (entry.value()->saveSize) {
         try {
@@ -1334,29 +1350,34 @@
 #if 1 // TODO:
 
      //entry.value().parameters.entrySet().stream().map((property) -> {
-     foreach(QVariant property , entry.value()->parameters.values())
+     //foreach(QVariant property , entry.value()->parameters.values())
+     QMapIterator<QString, QVariant> iter(entry.value()->parameters);
+     while (iter.hasNext())
      {
+      iter.next();
+      QString keyName = iter.key();
+      QVariant value = iter.value();
       QDomElement propertyElement = doc.createElement("property");
       //propertyElement.appendChild(doc.createElement("key").appendChild(doc.createTextNode(property.typeName())));
       QDomElement key = doc.createElement("key");
-      key.appendChild(doc.createTextNode(property.typeName()));
+      key.appendChild(doc.createTextNode(keyName));
       propertyElement.appendChild(key);
-      QVariant value = property.toString();
       if (value != QVariant())
       {
        QDomElement elem;
        propertyElement.appendChild(elem = doc.createElement("value"));
-       elem.setAttribute("class", value.typeName());
-       //elem.setText(value.toString());
-       QString qtClass = value.toString();
+       QString qtClass = value.typeName();
        QString javaClass = "??";
        if(qtClass == "QString") javaClass = "java.lang.String";
-       elem.appendChild(doc.createTextNode(javaClass));
+       elem.setAttribute("class", javaClass);
+       //elem.setText(value.toString());
+       elem.appendChild(doc.createTextNode(value.toString()));
       }
 //               return propertyElement;
 //           }).forEach((propertyElement) -> {
 //               properties.addContent(propertyElement);
 //           });
+       properties.appendChild(propertyElement);
       }
 #endif
      window.appendChild(properties);
@@ -1386,9 +1407,10 @@
  return QDomElement();
 }
 
-/*protected*/ void JmriUserPreferencesManager::saveElement(/*@NonNULL*/ QDomElement element) {
+/*protected*/ void JmriUserPreferencesManager::saveElement(/*@NonNULL*/ QDomElement element)
+{
 #if 1
-    log->trace(tr("Saving %1 element.").arg(element.tagName()));
+    if(log->isDebugEnabled()) log->trace(tr("Saving %1 element.").arg(element.tagName()));
     try {
         ProfileUtils::getUserInterfaceConfiguration(ProfileManager::getDefault()->getActiveProfile())->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), false);
     } catch (JDOMException ex) {

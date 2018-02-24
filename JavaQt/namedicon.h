@@ -112,6 +112,7 @@ public:
     QImage getImage();
     /*public*/ QImage getOriginalImage();
     void setImage(QImage);
+    QString getFilename() {return filename;}
 signals:
     
 public slots:
@@ -119,6 +120,7 @@ private:
 /*private*/ QString mName;//=null;
 /*private*/ QString mURL;//=null;
 /*private*/ QImage mDefaultImage;
+/*private*/ QString filename;
 void init();
 /*private*/ int _deg;// = 0;
 /*private*/ double _scale;// = 1.0;

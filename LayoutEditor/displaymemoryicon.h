@@ -28,7 +28,7 @@ public:
     static const int LEFT   = 0x00;
     static const int RIGHT  = 0x02;
     static const int CENTRE = 0x04;
-    /*public*/ void resetDefaultIcon() ;
+    virtual /*public*/ void resetDefaultIcon() ;
     /*public*/ void setDefaultIcon(NamedIcon* n) ;
     /*public*/ NamedIcon* getDefaultIcon();
     /*public*/ void setOriginalLocation(int x, int y);
@@ -47,13 +47,13 @@ public:
     /*public*/ NamedBeanHandle<Memory*>* getNamedMemory();
     /*public*/ Memory* getMemory();
     /*public*/ NamedBean* getNamedBean();
-    /*public*/ QMap<QString, NamedIcon*>* getMap();
+    virtual /*public*/ QMap<QString, NamedIcon*>* getMap();
     /*public*/ void addKeyAndIcon(NamedIcon* icon, QString keyValue);
     /**
      * Drive the current state of the display from the state of the
      * Memory.
      */
-    /*public*/ void displayState();
+    virtual /*public*/ void displayState();
     //QGraphicsItem* item;
     /*public*/ void setSelectable(bool b);
     /*public*/ bool isSelectable();
@@ -120,6 +120,7 @@ protected slots:
 
 friend class MemoryIcon;
 friend class AddIconActionListener;
+friend class BlockContentsIcon;
 };
 
 #endif // DISPLAYMEMORYICON_H

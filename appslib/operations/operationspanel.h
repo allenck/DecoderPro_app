@@ -1,7 +1,7 @@
 #ifndef OPERATIONSPANEL_H
 #define OPERATIONSPANEL_H
 
-#include <QWidget>
+#include "preferencespanel.h"
 #include "appslib_global.h"
 
 class JTextArea;
@@ -19,7 +19,7 @@ class ActionEvent;
 class QPushButton;
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT OperationsPanel : public QWidget
+ class APPSLIBSHARED_EXPORT OperationsPanel : public PreferencesPanel
  {
   Q_OBJECT
  public:

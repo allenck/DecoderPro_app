@@ -30,6 +30,8 @@
 #include "transit.h"
 #include "autoactivetrain.h"
 #include "transitmanager.h"
+#include "joptionpane.h"
+#include "optionsmenu.h"
 
 //DispatcherFrame::DispatcherFrame()
 //{
@@ -130,6 +132,13 @@
 
   nowMinutes = 0;    // last read fast clock minutes
   nowHours = 0;		// last read fast clock hours
+  extraFrame = NULL;
+  extraPane = NULL;
+  atSelectBox = new QComboBox();
+  extraBox = new QComboBox();
+  extraBoxList = new QList<Section*>();
+  atSelectedIndex = -1;
+
 
     initializeOptions();
     openDispatcherWindow();
@@ -155,7 +164,7 @@
 //        fastClock->addMinuteChangeListener(minuteChangeListener);
     }
 }
-/*public*/ void DispatcherFrame::minuteChange(PropertyChangeEvent* e) {
+/*public*/ void DispatcherFrame::minuteChange(PropertyChangeEvent* /*e*/) {
     //process change to new minute
     newFastClockMinute();
 }
@@ -355,7 +364,7 @@ void DispatcherFrame::openDispatcherWindow() {
         ButtonRenderer buttonRenderer = new ButtonRenderer();
         activeTrainsTable.setDefaultRenderer(JButton.class, buttonRenderer);
 #endif
-        QPushButton* sampleButton = new QPushButton(tr("Allocate Next"));
+//        QPushButton* sampleButton = new QPushButton(tr("Allocate Next"));
 //        activeTrainsTable.setRowHeight(sampleButton.getPreferredSize().height);
 //        allocateButtonColumn.setPreferredWidth((sampleButton.getPreferredSize().width) + 2);
         //JScrollPane activeTrainsTableScrollPane = new JScrollPane(activeTrainsTable);
@@ -590,15 +599,15 @@ void DispatcherFrame::on_cancelRestartButton()
 
 void DispatcherFrame::on_terminateTrainButton()
 {
-#if 0
+#if 1
  if (!newTrainActive) {
-     terminateTrain(e);
- } else if (activeTrainsList.size() > 0) {
-     atFrame.showActivateFrame();
-     JOptionPane.showMessageDialog(dispatcherFrame, tr("Message1"),
-             tr("MessageTitle"), JOptionPane.INFORMATION_MESSAGE);
+     terminateTrain(/*e*/);
+ } else if (activeTrainsList->size() > 0) {
+     atFrame->showActivateFrame();
+     JOptionPane::showMessageDialog(dispatcherFrame, tr("Complete or cancel Activate New Train pane before Terminating an ActiveTrain."),
+             tr("MessageTitle"), JOptionPane::INFORMATION_MESSAGE);
  } else {
-     atFrame.showActivateFrame();
+     atFrame->showActivateFrame();
  }
  #endif
 }
@@ -612,88 +621,89 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
     AllocatedSection* as = allocatedSections->at(index);
     releaseAllocatedSection(as, false);
 }
-#if 0
-// allocate extra window variables
-/*private*/ JmriJFrame extraFrame = NULL;
-/*private*/ Container extraPane = NULL;
-/*private*/ JComboBox<String> atSelectBox = new JComboBox<String>();
-/*private*/ JComboBox<String> extraBox = new JComboBox<String>();
-/*private*/ QList<Section> extraBoxList = new QList<Section>();
-/*private*/ int atSelectedIndex = -1;
 
-/*public*/ void allocateExtraSection(ActionEvent e, ActiveTrain at) {
-    allocateExtraSection(e);
+// allocate extra window variables
+
+/*public*/ void DispatcherFrame::allocateExtraSection(ActionEvent* /*e*/, ActiveTrain* at) {
+    allocateExtraSection(/*e*/);
     if (_ShortActiveTrainNames) {
-        atSelectBox.setSelectedItem(at->getTrainName());
+        atSelectBox->setCurrentText(at->getTrainName());
     } else {
-        atSelectBox.setSelectedItem(at->getActiveTrainName());
+        atSelectBox->setCurrentText(at->getActiveTrainName());
     }
 }
 
 // allocate an extra Section to an Active Train
-/*private*/ void allocateExtraSection(ActionEvent e) {
+/*private*/ void DispatcherFrame::allocateExtraSection(/*ActionEvent* e*/) {
     if (extraFrame == NULL) {
-        extraFrame = new JmriJFrame(tr("ExtraTitle"));
-        extraFrame.addHelpMenu("package.jmri.jmrit.dispatcher.AllocateExtra", true);
-        extraPane = extraFrame.getContentPane();
-        extraPane.setLayout(new BoxLayout(extraFrame.getContentPane(), BoxLayout.Y_AXIS));
+        extraFrame = new JmriJFrame(tr("Allocate Extra"));
+        extraFrame->addHelpMenu("package.jmri.jmrit.dispatcher.AllocateExtra", true);
+        extraPane = extraFrame->getContentPane();
+        QVBoxLayout* extraPaneLayout;
+        extraPane->setLayout(extraPaneLayout = new QVBoxLayout()); //(extraFrame.getContentPane(), BoxLayout.Y_AXIS));
         QWidget* p1 = new QWidget();
-        p1.setLayout(new FlowLayout());
-        p1.add(new QLabel(tr("ActiveColumnTitle") + ":"));
-        p1.add(atSelectBox);
-        atSelectBox.addActionListener(new ActionListener() {
-            @Override
-            /*public*/ void actionPerformed(ActionEvent e) {
-                handleATSelectionChanged(e);
-            }
-        });
-        atSelectBox.setToolTipText(tr("ATBoxHint"));
-        extraPane.add(p1);
+        FlowLayout* p1Layout;
+        p1->setLayout(p1Layout = new FlowLayout());
+        p1Layout->addWidget(new QLabel(tr("Active Train") + ":"));
+        p1Layout->addWidget(atSelectBox);
+//        atSelectBox.addActionListener(new ActionListener() {
+//            //@Override
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                handleATSelectionChanged(e);
+//            }
+//        });
+        connect(atSelectBox, SIGNAL(currentIndexChanged(int)), this, SLOT(handleATSelectionChanged()));
+        atSelectBox->setToolTip(tr("Select an Active Train to allocate the extra Section to."));
+        extraPaneLayout->addWidget(p1);
         QWidget* p2 = new QWidget();
-        p2.setLayout(new FlowLayout());
-        p2.add(new QLabel(tr("ExtraBoxLabel") + ":"));
-        p2.add(extraBox);
-        extraBox.setToolTipText(tr("ExtraBoxHint"));
-        extraPane.add(p2);
+        FlowLayout* p2Layout;
+        p2->setLayout(p2Layout = new FlowLayout());
+        p2Layout->addWidget(new QLabel(tr("Section to Allocate") + ":"));
+        p2Layout->addWidget(extraBox);
+        extraBox->setToolTip(tr("Select a connected Section to allocate."));
+        extraPaneLayout->addWidget(p2);
         QWidget* p7 = new QWidget();
-        p7.setLayout(new FlowLayout());
-        JButton cancelButton = NULL;
-        p7.add(cancelButton = new JButton(Bundle.getMessage("ButtonCancel")));
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            /*public*/ void actionPerformed(ActionEvent e) {
-                cancelExtraRequested(e);
-            }
-        });
-        cancelButton.setToolTipText(tr("CancelExtraHint"));
-        p7.add(new QLabel("    "));
-        JButton aExtraButton = NULL;
-        p7.add(aExtraButton = new JButton(tr("AllocateButton")));
-        aExtraButton.addActionListener(new ActionListener() {
-            @Override
-            /*public*/ void actionPerformed(ActionEvent e) {
-                addExtraRequested(e);
-            }
-        });
-        aExtraButton.setToolTipText(tr("AllocateButtonHint"));
-        extraPane.add(p7);
+        FlowLayout* p7Layout;
+        p7->setLayout(p7Layout = new FlowLayout());
+        QPushButton* cancelButton = NULL;
+        p7Layout->addWidget(cancelButton = new QPushButton(tr("Cancel")));
+//        cancelButton.addActionListener(new ActionListener() {
+//            @Override
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                cancelExtraRequested(e);
+//            }
+//        });
+        connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelExtraRequested()));
+        cancelButton->setToolTip(tr("Click to cancel without allocating an extra Section."));
+        p7Layout->addWidget(new QLabel("    "));
+        QPushButton* aExtraButton = NULL;
+        p7Layout->addWidget(aExtraButton = new QPushButton(tr("Allocate")));
+//        aExtraButton.addActionListener(new ActionListener() {
+//            @Override
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                addExtraRequested(e);
+//            }
+//        });
+        connect(aExtraButton, SIGNAL(clicked(bool)), this, SLOT(addExtraRequested()));
+        aExtraButton->setToolTip(tr("Click to allocate selected Section to Active Train."));
+        extraPaneLayout->addWidget(p7);
     }
     initializeATComboBox();
     initializeExtraComboBox();
-    extraFrame.pack();
-    extraFrame.setVisible(true);
+    extraFrame->pack();
+    extraFrame->setVisible(true);
 }
 
-/*private*/ void handleAutoAllocateChanged(ActionEvent e) {
-    setAutoAllocate(autoAllocateBox.isSelected());
+/*private*/ void DispatcherFrame::handleAutoAllocateChanged(ActionEvent* e) {
+    setAutoAllocate(autoAllocateBox->isChecked());
     if (optionsMenu != NULL) {
-        optionsMenu.initializeMenu();
+        optionsMenu->initializeMenu();
     }
     if (_AutoAllocate) {
-        autoAllocate.scanAllocationRequestList(allocationRequests);
+        autoAllocate->scanAllocationRequestList(allocationRequests);
     }
 }
-#endif
+
 /*protected*/ void DispatcherFrame::forceScanOfAllocation() {
 
     if (_AutoAllocate) {
@@ -701,77 +711,77 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
     }
 
 }
-#if 0
-/*private*/ void handleAutoReleaseChanged(ActionEvent e) {
-    if (autoReleaseBox.isSelected()) {
+
+/*private*/ void DispatcherFrame::handleAutoReleaseChanged(ActionEvent* /*e*/) {
+    if (autoReleaseBox->isChecked()) {
         checkAutoRelease();
     }
 }
 
-/*private*/ void handleATSelectionChanged(ActionEvent e) {
-    atSelectedIndex = atSelectBox.getSelectedIndex();
+/*private*/ void DispatcherFrame::handleATSelectionChanged(ActionEvent* /*e*/) {
+    atSelectedIndex = atSelectBox->currentIndex();
     initializeExtraComboBox();
-    extraFrame.pack();
-    extraFrame.setVisible(true);
+    extraFrame->adjustSize();
+    extraFrame->setVisible(true);
 }
 
-/*private*/ void initializeATComboBox() {
+/*private*/ void DispatcherFrame::initializeATComboBox() {
     atSelectedIndex = -1;
-    atSelectBox.removeAllItems();
-    for (int i = 0; i < activeTrainsList.size(); i++) {
-        ActiveTrain at = activeTrainsList.get(i);
+    atSelectBox->clear();
+    for (int i = 0; i < activeTrainsList->size(); i++) {
+        ActiveTrain* at = activeTrainsList->value(i);
         if (_ShortActiveTrainNames) {
-            atSelectBox.addItem(at->getTrainName());
+            atSelectBox->addItem(at->getTrainName());
         } else {
-            atSelectBox.addItem(at->getActiveTrainName());
+            atSelectBox->addItem(at->getActiveTrainName());
         }
     }
-    if (activeTrainsList.size() > 0) {
-        atSelectBox.setSelectedIndex(0);
+    if (activeTrainsList->size() > 0) {
+        atSelectBox->setCurrentIndex(0);
         atSelectedIndex = 0;
     }
 }
 
-/*private*/ void initializeExtraComboBox() {
-    extraBox.removeAllItems();
-    extraBoxList.clear();
+/*private*/ void DispatcherFrame::initializeExtraComboBox() {
+    extraBox->clear();
+    extraBoxList->clear();
     if (atSelectedIndex < 0) {
         return;
     }
-    ActiveTrain at = activeTrainsList.get(atSelectedIndex);
+    ActiveTrain* at = activeTrainsList->value(atSelectedIndex);
     //Transit t = at->getTransit();
-    QList<AllocatedSection> allocatedSectionList = at->getAllocatedSectionList();
-    QList<String> allSections = (QList<String>) InstanceManager.getDefault(jmri.SectionManager.class).getSystemNameList();
+    QList<AllocatedSection*>* allocatedSectionList = at->getAllocatedSectionList();
+    QList<QString> allSections = ((SectionManager*) InstanceManager::getDefault("SectionManager"))->getSystemNameList();
     for (int j = 0; j < allSections.size(); j++) {
-        Section s = InstanceManager.getDefault(jmri.SectionManager.class).getSection(allSections.get(j));
-        if (s.getState() == Section.FREE) {
+        Section* s =((SectionManager*) InstanceManager::getDefault("SectionManager"))->getSection(allSections.value(j));
+        if (s->getState() == Section::FREE) {
             // not already allocated, check connectivity to this train's allocated sections
-             bool connected = false;
-            for (int k = 0; k < allocatedSectionList.size(); k++) {
-                if (connected(s, allocatedSectionList.get(k).getSection())) {
-                    connected = true;
+             bool _connected = false;
+            for (int k = 0; k < allocatedSectionList->size(); k++) {
+                if (connected(s, allocatedSectionList->value(k)->getSection())) {
+                    _connected = true;
                 }
             }
-            if (connected) {
+            if (_connected) {
                 // add to the combo box, not allocated and connected to allocated
-                extraBoxList.add(s);
-                extraBox.addItem(getSectionName(s));
+                extraBoxList->append(s);
+                extraBox->addItem(getSectionName(s));
             }
         }
     }
-    if (extraBoxList.size() > 0) {
-        extraBox.setSelectedIndex(0);
+    if (extraBoxList->size() > 0) {
+        extraBox->setCurrentIndex(0);
     }
 }
 
-connected(Section s1, Section s2) {
+/*private*/ bool DispatcherFrame::connected(Section* s1, Section* s2) {
     if ((s1 != NULL) && (s2 != NULL)) {
-        QList<EntryPoint> s1Entries = (QList<EntryPoint>) s1.getEntryPointList();
-        QList<EntryPoint> s2Entries = (QList<EntryPoint>) s2.getEntryPointList();
-        for (int i = 0; i < s1Entries.size(); i++) {
-            Block b = s1Entries.get(i).getFromBlock();
-            for (int j = 0; j < s2Entries.size(); j++) {
-                if (b == s2Entries.get(j).getBlock()) {
+        QList<EntryPoint*>* s1Entries =  s1->getEntryPointList();
+        QList<EntryPoint*>* s2Entries =  s2->getEntryPointList();
+        for (int i = 0; i < s1Entries->size(); i++) {
+            Block* b = s1Entries->value(i)->getFromBlock();
+            for (int j = 0; j < s2Entries->size(); j++) {
+                if (b == s2Entries->value(j)->getBlock()) {
                     return true;
                 }
             }
@@ -780,15 +790,15 @@ connected(Section s1, Section s2) {
     return false;
 }
 
-/*public*/ String getSectionName(Section sec) {
-    String s = sec.getSystemName();
-    String u = sec.getUserName();
-    if ((u != NULL) && (!u  == ("") && (!u  == (s)))) {
+/*public*/ QString DispatcherFrame::getSectionName(Section* sec) {
+    QString s = sec->getSystemName();
+    QString u = sec->getUserName();
+    if ((!u.isNull()) && (u  != ("") && (u  != (s)))) {
         return (s + "(" + u + ")");
     }
     return s;
 }
-
+#if 0
 /*private*/ void cancelExtraRequested(ActionEvent e) {
     extraFrame.setVisible(false);
     extraFrame.dispose();   // prevent listing in the Window menu.
@@ -940,30 +950,31 @@ void cancelRestart(ActionEvent e) {
         }
     }
 }
-
+#endif
 // terminate an Active Train from the button in the Dispatcher window
-void terminateTrain(ActionEvent e) {
-    ActiveTrain at = NULL;
-    if (activeTrainsList.size() == 1) {
-        at = activeTrainsList.get(0);
-    } else if (activeTrainsList.size() > 1) {
-        Object choices[] = new Object[activeTrainsList.size()];
-        for (int i = 0; i < activeTrainsList.size(); i++) {
+void DispatcherFrame::terminateTrain(ActionEvent* e) {
+    ActiveTrain* at = NULL;
+    if (activeTrainsList->size() == 1) {
+        at = activeTrainsList->at(0);
+    } else if (activeTrainsList->size() > 1) {
+        //Object choices[] = new Object[activeTrainsList->size()];
+     QVector<QVariant> choices = QVector<QVariant>(activeTrainsList->size());
+        for (int i = 0; i < activeTrainsList->size(); i++) {
             if (_ShortActiveTrainNames) {
-                choices[i] = activeTrainsList.get(i).getTrainName();
+                choices.replace(i, activeTrainsList->value(i)->getTrainName());
             } else {
-                choices[i] = activeTrainsList.get(i).getActiveTrainName();
+                choices.replace(i, activeTrainsList->value(i)->getActiveTrainName());
             }
         }
-        Object selName = JOptionPane.showInputDialog(dispatcherFrame,
-                tr("TerminateTrainChoice"),
-                tr("TerminateTrainTitle"), JOptionPane.QUESTION_MESSAGE, NULL, choices, choices[0]);
-        if (selName == NULL) {
+        QVariant selName = JOptionPane::showInputDialog(dispatcherFrame,
+                tr("Please select an Active Train to Terminate."),
+                tr("Terminate Train"), JOptionPane::QUESTION_MESSAGE, QIcon(), choices.toList(), choices.at(0));
+        if (selName == QVariant()) {
             return;
         }
-        for (int j = 0; j < activeTrainsList.size(); j++) {
-            if (selName  == (choices[j])) {
-                at = activeTrainsList.get(j);
+        for (int j = 0; j < activeTrainsList->size(); j++) {
+            if (selName  == (choices.at(j))) {
+                at = activeTrainsList->value(j);
             }
         }
     }
@@ -971,7 +982,7 @@ void terminateTrain(ActionEvent e) {
         terminateActiveTrain(at);
     }
 }
-#endif
+
 // allocate the next section for an ActiveTrain at dispatcher's request
 void DispatcherFrame::allocateNextRequested(int index) {
     // set up an Allocation Request
@@ -1384,7 +1395,7 @@ void DispatcherFrame::allocateNextRequested(int index) {
  * this method. frame - window request is from, or "NULL" if not from a
  * window
  */
-/*protected*/ bool DispatcherFrame::requestAllocation(ActiveTrain* activeTrain, Section* /*section*/, int /*direction*/,
+/*protected*/ bool DispatcherFrame::requestAllocation(ActiveTrain* activeTrain, Section* section, int direction,
         int seqNumber, bool showErrorMessages, JmriJFrame* frame) {
     // check input entries
     if (activeTrain == NULL) {
@@ -1396,41 +1407,39 @@ void DispatcherFrame::allocateNextRequested(int index) {
         log->error("Missing ActiveTrain specification");
         return false;
     }
-#if 0
+#if 1
     if (section == NULL) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error17"), new Object[]{activeTrain.getActiveTrainName()}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane::showMessageDialog(frame, tr(
+                    "No Section specified in Allocation Request from Active\nTrain \"%1\". Cannot process the request.").arg(activeTrain->getActiveTrainName()), tr("Error"),
+                    JOptionPane::ERROR_MESSAGE);
         }
-        log->error("Missing Section specification in allocation request from " + activeTrain.getActiveTrainName());
+        log->error("Missing Section specification in allocation request from " + activeTrain->getActiveTrainName());
         return false;
     }
-    if (((seqNumber <= 0) || (seqNumber > (activeTrain.getTransit().getMaxSequence()))) && (seqNumber != -99)) {
+    if (((seqNumber <= 0) || (seqNumber > (activeTrain->getTransit()->getMaxSequence()))) && (seqNumber != -99)) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error19"), new Object[]{"" + seqNumber, activeTrain.getActiveTrainName()}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane::showMessageDialog(frame, tr(
+                    "Out-of-range sequence order number \"%1\" in Allocation Request from\nActive Train \"%2\". Cannot process the request.").arg(seqNumber).arg( activeTrain->getActiveTrainName()), tr("Error"),JOptionPane::ERROR_MESSAGE);
         }
-        log->error("Out-of-range sequence number *" + seqNumber + "* in allocation request");
+        log->error("Out-of-range sequence number *" + QString::number(seqNumber) + "* in allocation request");
         return false;
     }
-    if ((direction != Section.FORWARD) && (direction != Section.REVERSE)) {
+    if ((direction != Section::FORWARD) && (direction != Section::REVERSE)) {
         if (showErrorMessages) {
-            JOptionPane.showMessageDialog(frame, java.text.MessageFormat->format(tr(
-                    "Error18"), new Object[]{"" + direction, activeTrain.getActiveTrainName()}), Bundle.getMessage("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane::showMessageDialog(frame, tr(
+                    "Invalid direction \"%1\" in allocation request from Active\nTrain \"%2\". Cannot process the request.").arg(direction).arg(activeTrain->getActiveTrainName()), tr("Error"), JOptionPane::ERROR_MESSAGE);
         }
-        log->error("Invalid direction '" + direction + "' specification in allocation request");
+        log->error("Invalid direction '" + QString::number(direction) + "' specification in allocation request");
         return false;
     }
     // check if this allocation has already been requested
-    AllocationRequest ar = findAllocationRequestInQueue(section, seqNumber, direction, activeTrain);
+    AllocationRequest* ar = findAllocationRequestInQueue(section, seqNumber, direction, activeTrain);
     if (ar == NULL) {
         ar = new AllocationRequest(section, seqNumber, direction, activeTrain);
-        allocationRequests.add(ar);
+        allocationRequests->append(ar);
         if (_AutoAllocate) {
-            autoAllocate.scanAllocationRequestList(allocationRequests);
+            autoAllocate->scanAllocationRequestList(allocationRequests);
         }
     }
 #endif
@@ -2086,35 +2095,36 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
  * and whether this release is from a Terminate Train.
  */
 /*public*/ void DispatcherFrame::releaseAllocatedSection(AllocatedSection* as,  bool terminatingTrain) {
-#if 0
+#if 1
     // check that section is not occupied if not terminating train
     if (!terminatingTrain && (as->getSection()->getOccupancy() == Section::OCCUPIED)) {
         // warn the manual dispatcher that Allocated Section is occupied
-        int selectedValue = JOptionPane.showOptionDialog(dispatcherFrame, java.text.MessageFormat->format(
-                tr("Question5"), new Object[]{as.getSectionName()}), Bundle.getMessage("WarningTitle"),
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, NULL,
-                new Object[]{tr("ButtonYesX"), tr("ButtonNoX")},
+     QVariantList options = QVariantList(); options << tr("ButtonYesX") << tr("ButtonNoX");
+        int selectedValue = JOptionPane::showOptionDialog(dispatcherFrame,
+                tr("The Allocated Section \"%1\" is OCCUPIED. Do you want to release it? This could cause a collision.").arg(as->getSectionName()), tr("Warning"),
+                JOptionPane::YES_NO_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
+                options,
                 tr("ButtonNoX"));
         if (selectedValue == 1) {
             return;   // return without releasing if "No" response
         }
     }
     // release the Allocated Section
-    for (int i = allocatedSections.size(); i > 0; i--) {
-        if (as == allocatedSections.get(i - 1)) {
-            allocatedSections.remove(i - 1);
+    for (int i = allocatedSections->size(); i > 0; i--) {
+        if (as == allocatedSections->value(i - 1)) {
+            allocatedSections->removeAt(i - 1);
         }
     }
-    as.getSection().setState(Section.FREE);
-    as.getActiveTrain().removeAllocatedSection(as);
-    as.dispose();
+    as->getSection()->setState(Section::FREE);
+    as->getActiveTrain()->removeAllocatedSection(as);
+    as->dispose();
     if (allocatedSectionTableModel != NULL) {
-        allocatedSectionTableModel.fireTableDataChanged();
+        allocatedSectionTableModel->fireTableDataChanged();
     }
-    allocationRequestTableModel.fireTableDataChanged();
-    activeTrainsTableModel.fireTableDataChanged();
+    allocationRequestTableModel->fireTableDataChanged();
+    activeTrainsTableModel->fireTableDataChanged();
     if (_AutoAllocate) {
-        autoAllocate.scanAllocationRequestList(allocationRequests);
+        autoAllocate->scanAllocationRequestList(allocationRequests);
     }
 #endif
 }
@@ -2344,19 +2354,19 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
 /*protected*/ void DispatcherFrame::setScale(int sc) {
     _LayoutScale = sc;
 }
-#if 0
-/*public*/ QList<ActiveTrain> getActiveTrainsList() {
+#if 1
+/*public*/ QList<ActiveTrain*>* DispatcherFrame::getActiveTrainsList() {
     return activeTrainsList;
 }
-/*protected*/ QList<AllocatedSection> getAllocatedSectionsList() {
+/*protected*/ QList<AllocatedSection*>* DispatcherFrame::getAllocatedSectionsList() {
     return allocatedSections;
 }
 
-/*public*/ ActiveTrain getActiveTrainForRoster(RosterEntry re) {
+/*public*/ ActiveTrain* DispatcherFrame::getActiveTrainForRoster(RosterEntry* re) {
     if (!_TrainsFromRoster) {
         return NULL;
     }
-    for (ActiveTrain at : activeTrainsList) {
+    for (ActiveTrain* at : *activeTrainsList) {
         if (at->getRosterEntry()  == (re)) {
             return at;
         }
@@ -2465,13 +2475,13 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
 //    }
 
 
-   /*public*/ int ActiveTrainsTableModel::columnCount(const QModelIndex &parent) const
+   /*public*/ int ActiveTrainsTableModel::columnCount(const QModelIndex &/*parent*/) const
    {
             return ALLOCATEBUTTON_COLUMN + 1;
    }
 
     //@Override
-    /*public*/ int ActiveTrainsTableModel::rowCount(const QModelIndex &parent) const {
+    /*public*/ int ActiveTrainsTableModel::rowCount(const QModelIndex &/*parent*/) const {
         return (frame->activeTrainsList->size());
     }
 
@@ -2579,8 +2589,10 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
         if (col == ALLOCATEBUTTON_COLUMN) {
             // open an allocate window
             frame->allocateNextRequested(index.row());
+            return true;
         }
     }
+     return false;
    }
 
 /**
@@ -2623,13 +2635,13 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
 //    }
 
     //@Override
-    /*public*/ int AllocationRequestTableModel::columnCount(const QModelIndex &parent) const
+    /*public*/ int AllocationRequestTableModel::columnCount(const QModelIndex &/*parent*/) const
     {
         return CANCELBUTTON_COLUMN + 1;
     }
 
    // @Override
-    /*public*/ int AllocationRequestTableModel::rowCount(const QModelIndex &parent) const
+    /*public*/ int AllocationRequestTableModel::rowCount(const QModelIndex &/*parent*/) const
     {
         return (frame->allocationRequests->size());
     }
@@ -2760,12 +2772,15 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
         if (col == ALLOCATEBUTTON_COLUMN) {
             // open an allocate window
             frame->allocateRequested(row);
+            return true;
         }
         if (col == CANCELBUTTON_COLUMN) {
             // open an allocate window
             frame->cancelAllocationRequest(row);
+            return true;
         }
      }
+     return false;
     }
 //}
 
@@ -2906,11 +2921,16 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     }
 
     //@Override
-    /*public*/ bool AllocatedSectionTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+    /*public*/ bool AllocatedSectionTableModel::setData(const QModelIndex &index, const QVariant &/*value*/, int role)
     {
+     if(role == Qt::EditRole)
+     {
         if (index.column() == RELEASEBUTTON_COLUMN) {
             frame->releaseAllocatedSectionFromTable(index.row());
+            return true;
         }
+     }
+     return false;
     }
 //}
 

@@ -62,22 +62,22 @@
  */
 // /*public*/  class TreePath extends Object implements Serializable {
 
-    /**
-     * Creates a {@code TreePath} from an array. The array uniquely
-     * identifies the path to a node.
-     *
-     * @param path an array of objects representing the path to a node
-     * @throws IllegalArgumentException if {@code path} is {@code NULL},
-     *         empty, or contains a {@code NULL} value
-     */
-    //@ConstructorProperties({"path"})
-/*public*/  TreePath::TreePath(QList<QObject*>* path, QObject* parent) : QObject(parent)
+/**
+ * Creates a {@code TreePath} from an array. The array uniquely
+ * identifies the path to a node.
+ *
+ * @param path an array of objects representing the path to a node
+ * @throws IllegalArgumentException if {@code path} is {@code NULL},
+ *         empty, or contains a {@code NULL} value
+ */
+//@ConstructorProperties({"path"})
+/*public*/  TreePath::TreePath(QVector<QObject*>* path, QObject* parent) : QObject(parent)
 {
  common();
 
  if(path == NULL || path->length() == 0)
   throw new IllegalArgumentException("path in TreePath must be non NULL and not empty.");
- lastPathComponent = (QObject*)path->at(path->length() - 1);
+ lastPathComponent = path->at(path->length() - 1);
  if (lastPathComponent == NULL)
  {
   throw new IllegalArgumentException("Last path component must be non-NULL");
@@ -95,7 +95,7 @@
  * @throws IllegalArgumentException if {@code lastPathComponent} is
  *         {@code NULL}
  */
-/*public*/  TreePath::TreePath(QObject* lastPathComponent, QObject* parent) : QObject(parent)
+/*public*/  TreePath::TreePath(TreeNode* lastPathComponent, QObject* parent) : QObject(parent)
 {
  common();
  if(lastPathComponent == NULL)
@@ -139,10 +139,10 @@
  * @throws IllegalArgumentException if any of the elements from
  *         {@code 0} to {@code length - 1} are {@code NULL}
  */
-/*protected*/ TreePath::TreePath(QList<QObject*>* path, int length, QObject* parent) : QObject(parent)
+/*protected*/ TreePath::TreePath(QVector<QObject*>* path, int length, QObject* parent) : QObject(parent)
 {
  common();
- lastPathComponent = (QObject*)path->at(length-1);
+ lastPathComponent = path->at(length-1);
  if (lastPathComponent == NULL)
  {
   throw new IllegalArgumentException("Path elements must be non-NULL");

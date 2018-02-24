@@ -47,6 +47,7 @@
  log = new Logger("DefaultLogix");
  _conditionalSystemNames = new QStringList();
  _listeners = new QList<JmriSimplePropertyListener*>();
+ _conditionalMap = QMap<QString, Conditional*>();
 
  /**
   *  Operational instance variables (not saved between runs)
@@ -92,28 +93,66 @@
  * and empty String is returned.
  * @param order - order in which the Conditional calculates.
  */
-/*public*/ QString DefaultLogix::getConditionalByNumberOrder(int order) {
-    try {
-        return _conditionalSystemNames->at(order);
-    }
-    catch (IndexOutOfBoundsException ioob)
-    {
-        return "";
-    }
+/*public*/ QString DefaultLogix::getConditionalByNumberOrder(int order)
+{
+ try
+ {
+  if(order < 0 || order >= _conditionalSystemNames->count())
+   throw IndexOutOfBoundsException("invalid order");
+  return _conditionalSystemNames->at(order);
+ }
+ catch (IndexOutOfBoundsException ioob)
+ {
+  return "";
+ }
 }
 
 /**
- * Add a Conditional to this Logix
- * Returns true if Conditional was successfully added, returns false
- * if the maximum number of conditionals has been exceeded.
+ * Add a Conditional to this Logix Returns true if Conditional was
+ * successfully added, returns false if the maximum number of conditionals
+ * has been exceeded.
+ *
  * @param systemName The Conditional system name
- * @param order - the order this conditional should calculate in
- *                 if order is negative, the conditional is added
- *				   at the end of current group of conditionals
+ * @param order      - the order this conditional should calculate in if
+ *                   order is negative, the conditional is added at the end
+ *                   of current group of conditionals
  */
-/*public*/ bool DefaultLogix::addConditional(QString systemName,int /*order*/) {
+//@Override
+/*public*/ bool DefaultLogix::addConditional(QString systemName, int order) {
     _conditionalSystemNames->append(systemName);
     return (true);
+}
+
+/**
+ * Add a child Conditional to the parent Logix.
+ *
+ * @since 4.7.4
+ * @param systemName The system name for the Conditional object.
+ * @param conditional The Conditional object.
+ * @return true if the Conditional was added, false otherwise.
+ */
+//@Override
+/*public*/ bool DefaultLogix::addConditional(QString systemName, Conditional* conditional) {
+//    Conditional* chkDuplicate = _conditionalMap.putIfAbsent(systemName, conditional);
+ if(!_conditionalMap.contains(systemName))
+ {
+  _conditionalMap.insert(systemName, conditional);
+  return true;
+ }
+ log->error(tr("Conditional '%1' has already been added to Logix '%2'").arg(systemName).arg(getSystemName()));  // NOI18N
+ return (false);
+}
+
+/**
+ * Get a Conditional belonging to this Logix.
+ *
+ * @since 4.7.4
+ * @param systemName The name of the Conditional object.
+ * @return the Conditional object or null if not found.
+ */
+//@Override
+/*public*/ Conditional* DefaultLogix::getConditional(QString systemName) {
+    return _conditionalMap.value(systemName);
 }
 
 /**
@@ -163,15 +202,15 @@
     }
     // check other Logix(es) for use of this conditional (systemName) for use as a
     // variable in one of their conditionals
-    QStringListIterator iter1 (InstanceManager::logixManagerInstance()->getSystemNameList());
+    QStringListIterator iter1 (((LogixManager*)InstanceManager::getDefault("LogixManager"))->getSystemNameList());
     while (iter1.hasNext()) {
         QString sNameLogix = iter1.next();
         if (sNameLogix!=(getSystemName()) ) {
-            Logix* x = InstanceManager::logixManagerInstance()->getBySystemName(sNameLogix);
+            Logix* x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(sNameLogix);
             int numCond = x->getNumConditionals();
             for (int i=0; i<numCond; i++) {
                 QString sNameCond = x->getConditionalByNumberOrder(i);
-                Conditional* c = InstanceManager::conditionalManagerInstance()->getBySystemName(sNameCond);
+                Conditional* c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getBySystemName(sNameCond);
                 QList <ConditionalVariable*>* varList = c->getCopyOfStateVariables();
                 for (int k=0; k<varList->size(); k++)  {
                     ConditionalVariable* v = varList->at(k);
@@ -179,7 +218,7 @@
                          (v->getType()==Conditional::TYPE_CONDITIONAL_FALSE) )
                     {
                         QString name = v->getName();
-                        Conditional* c1 = InstanceManager::conditionalManagerInstance()->getConditional(name);
+                        Conditional* c1 = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getConditional(name);
                         if (c1 == NULL) {
                             log->error("\""+name+"\" is a non-existent Conditional variable in Conditional \""
                                       +c->getUserName()+"\" in Logix \""+x->getUserName()+"\" ("+sNameLogix+")");
@@ -204,12 +243,12 @@
     }
     _conditionalSystemNames->removeAt(ix);
     // delete the Conditional object
-    Conditional* c = ((ConditionalManager*)InstanceManager::conditionalManagerInstance())->getBySystemName(systemName);
+    Conditional* c = ((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->getBySystemName(systemName);
     if (c == NULL) {
         log->error("attempt to delete non-existant Conditional - "+systemName);
         return NULL;
     }
-    ((ConditionalManager*)InstanceManager::conditionalManagerInstance())->deleteConditional(c);
+    ((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->deleteConditional(c);
     return (NULL);
 }
 
@@ -226,7 +265,7 @@
  for (int i=0; i<_conditionalSystemNames->size(); i++)
  {
   cName = _conditionalSystemNames->at(i);
-  c = ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->getBySystemName(cName);
+  c = ((DefaultConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->getBySystemName(cName);
   if (c==NULL)
   {
    log->error("Invalid conditional system name when calculating Logix - "+cName);
@@ -265,7 +304,7 @@
 }
 
 /*private*/ void DefaultLogix::resetConditionals() {
-    ConditionalManager* cm = InstanceManager::conditionalManagerInstance();
+    ConditionalManager* cm = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"));
     for (int i=0; i<_conditionalSystemNames->size(); i++) {
         Conditional* conditional = ((DefaultConditionalManager*)cm)->getBySystemName(_conditionalSystemNames->at(i));
         if (conditional!=NULL) {
@@ -289,7 +328,7 @@
     }
     _listeners = new QList<JmriSimplePropertyListener*>();
     // cycle thru Conditionals to find objects to listen to
-    ConditionalManager* cm = InstanceManager::conditionalManagerInstance();
+    ConditionalManager* cm = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"));
     for (int i=0; i<_conditionalSystemNames->size(); i++) {
         Conditional* conditional = NULL;
         conditional = ((DefaultConditionalManager*)cm)->getBySystemName(_conditionalSystemNames->at(i));
@@ -582,7 +621,7 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
     String testUserName = "";
     String testVarName = "";
     // cycle thru Conditionals to find state variables
-    ConditionalManager cm = InstanceManager::conditionalManagerInstance();
+    ConditionalManager cm = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"));
     for (int i=0; i<_conditionalSystemNames.size(); i++) {
         c = cm.getBySystemName(_conditionalSystemNames.get(i));
         if (c!=NULL) {
@@ -614,10 +653,10 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
                         break;
                     case Conditional::TYPE_CONDITIONAL_TRUE:
                     case Conditional::TYPE_CONDITIONAL_FALSE:
-                        Conditional cx = InstanceManager::conditionalManagerInstance().
+                        Conditional cx = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")).
                                             getConditional(this,testVarName);
                         if (cx==NULL) {
-                            cx = InstanceManager::conditionalManagerInstance().
+                            cx = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")).
                                             getBySystemName(testVarName);
                         }
                         if (cx!=NULL) {
@@ -837,7 +876,7 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
   }
   case Logix::LISTENER_TYPE_CONDITIONAL:
   {
-   Conditional* c = ((ConditionalManager*)InstanceManager::conditionalManagerInstance())->
+   Conditional* c = ((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->
                            getConditional(listener->getDevName());
    if (c==NULL) {
        msg = "conditional";
@@ -975,7 +1014,7 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
         }
             case Logix::LISTENER_TYPE_CONDITIONAL:
         {
-                Conditional* c = ((ConditionalManager*)InstanceManager::conditionalManagerInstance())->
+                Conditional* c = ((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->
                                         getConditional(listener->getDevName());
                 if (c==NULL) {
                     msg = "conditional";
@@ -1089,7 +1128,7 @@ public boolean checkLoopCondition() {
     if (!_isActivated) {
         // Prepare a list of all variables used in conditionals
         java.util.HashSet <ConditionalVariable> variableList = new java.util.HashSet<ConditionalVariable>();
-        ConditionalManager cm = InstanceManager::conditionalManagerInstance();
+        ConditionalManager cm = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"));
         for (int i=0; i<_conditionalSystemNames.size(); i++) {
             Conditional c = NULL;
             c = cm.getBySystemName(_conditionalSystemNames.get(i));

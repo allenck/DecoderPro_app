@@ -50,14 +50,14 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
  scriptLocation->setToolTip(tr("Location of user scripts. If not specified, user files location will be used."));
  userLocation = new JTextField();
  userLocation->setToolTip(tr("Specify directory path where user files are stored. If not present, the Profile path will be used!"));
- programLocation = new JTextField();
- programLocation->setToolTip(tr("Select location of Java program resources to be used by this program. Requires either a Java version of JMRO or the JMRI source."));
+ _programLocation = new JTextField();
+ _programLocation->setToolTip(tr("Select location of Java program resources to be used by this program. Requires either a Java version of JMRO or the JMRI source."));
  QVBoxLayout* thisLayout;
  setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.Y_AXIS));
 
- thisLayout->addWidget(PrefLocation());
- thisLayout->addWidget(ScriptsLocation());
- thisLayout->addWidget(ProgramLocation());
+ thisLayout->addWidget(prefLocation());
+ thisLayout->addWidget(scriptsLocation());
+ thisLayout->addWidget(programLocation());
 
     /*p = new JPanel();
      JLabel throttle = new JLabel("Default Throttle Location");
@@ -68,7 +68,7 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
      add(p);*/
 }
 
-/*private*/ QWidget* FileLocationPane::ScriptsLocation() {
+/*private*/ QWidget* FileLocationPane::scriptsLocation() {
     QPushButton* bScript = new QPushButton(tr("Set..."));
     fcScript = new JFileChooser(FileUtil::getScriptsPath());
 
@@ -91,11 +91,11 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
     return p;
 }
 
-/*private*/ QWidget* FileLocationPane::ProgramLocation() {
+/*private*/ QWidget* FileLocationPane::programLocation() {
     QComboBox* cbProgram = new QComboBox();
     cbProgram->addItems(*FileUtil::findProgramPath());
     cbProgram->findText(FileUtil::getProgramPath());
-    programLocation->setText(cbProgram->currentText());
+    _programLocation->setText(cbProgram->currentText());
     connect(cbProgram, SIGNAL(currentIndexChanged(QString)), this, SLOT(programLocationChange(QString)));
     QVBoxLayout* thisLayout;
     setLayout(thisLayout = new QVBoxLayout()); //this, BoxLayout.Y_AXIS));
@@ -103,7 +103,7 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
     QHBoxLayout* pLayout = new QHBoxLayout(p);
     QLabel* label = new QLabel(tr("Program Dir"));
     pLayout->addWidget(label);
-    pLayout->addWidget(programLocation);
+    pLayout->addWidget(_programLocation);
     pLayout->addWidget(cbProgram);
     scriptLocation->setColumns(30);
     return p;
@@ -111,10 +111,10 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
 
 /*private*/ void FileLocationPane::programLocationChange(QString loc)
 {
- programLocation->setText(loc);
+ _programLocation->setText(loc);
 }
 
-/*private*/ QWidget* FileLocationPane::PrefLocation() {
+/*private*/ QWidget* FileLocationPane::prefLocation() {
     QWidget* p = new QWidget();
     QHBoxLayout* pLayout = new QHBoxLayout;
     p->setLayout(pLayout);
@@ -214,6 +214,11 @@ void FileLocationPane::On_fileSelected(QString file)
   FileUtil::setScriptsPath(this->scriptLocation->text());
   this->restartRequired = true;
  }
+ if (FileUtil::getProgramPath()!=(this->_programLocation->text()))
+ {
+  FileUtil::setProgramPath(this->_programLocation->text());
+  this->restartRequired = true;
+ }
 }
 
 //@Override
@@ -238,7 +243,7 @@ void FileLocationPane::On_fileSelected(QString file)
     }
 //    @Override
 //    @SuppressFBWarnings(value="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification="protected by if instanceof")
-/*public*/ void OpenAction::actionPerformed(ActionEvent* e) {
+/*public*/ void OpenAction::actionPerformed(ActionEvent* /*e*/) {
     // get the file
     chooser->showOpenDialog(NULL);
     if (chooser->getSelectedFile() == NULL) {

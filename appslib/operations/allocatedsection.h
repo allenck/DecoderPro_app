@@ -33,6 +33,14 @@ public:
  /*public*/ int getLength();
  /*public*/ void reset();
  /*public*/ /*synchronized*/ void dispose();
+ /*public*/ int getAllocationNumber();
+ /*public*/ void setAllocationNumber(int n);
+ /*public*/ Sensor* getForwardStoppingSensor();
+ /*public*/ Sensor* getReverseStoppingSensor();
+ /*public*/ void setIndex(int i);
+ /*public*/ int getIndex();
+ /*public*/ void setExitSignalListener(PropertyChangeListener* xSigListener);
+ /*public*/ PropertyChangeListener* getExitSignalListener();
 
 signals:
 
@@ -75,8 +83,10 @@ protected:
  /*protected*/ /*synchronized*/ bool isInActiveBlockList(Block* b);
  /*protected*/ void firePropertyChangeEvent(PropertyChangeEvent* evt);
  /*protected*/ void firePropertyChangeEvent(QString name, QVariant oldVal, QVariant newVal);
+ /*protected*/ void setStoppingSensors();
 
  friend class AutoActiveTrain;
+ friend class ActiveTrain;
 };
 
 #endif // ALLOCATEDSECTION_H

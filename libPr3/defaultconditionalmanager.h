@@ -2,12 +2,13 @@
 #define DEFAULTCONDITIONALMANAGER_H
 
 #include <QObject>
-#include "abstractmanager.h"
+#include "conditionalmanager.h"
 #include "libPr3_global.h"
 
+class Logger;
 class Logix;
 class Conditional;
-class LIBPR3SHARED_EXPORT DefaultConditionalManager : public AbstractManager
+class LIBPR3SHARED_EXPORT DefaultConditionalManager : public ConditionalManager
 {
     Q_OBJECT
 public:
@@ -23,15 +24,35 @@ public:
     /*public*/ Conditional* getByUserName(QString key);
     /*public*/ Conditional* getByUserName(Logix* x, QString key);
     /*public*/ Conditional* getBySystemName(QString name);
-    /*public*/ QStringList* getSystemNameListForLogix(Logix* x);
+    /*public*/ QStringList getSystemNameList();
+    /*public*/ QStringList getSystemNameListForLogix(Logix* x);
     static DefaultConditionalManager* _instance;// = null;
     static /*public*/ DefaultConditionalManager* instance();
+    /*public*/ QMap<QString, QList<QString> > getWhereUsedMap();
+    /*public*/ void addWhereUsed(QString target, QString reference);
+    /*public*/ QList<QString> getWhereUsed(QString target);
+    /*public*/ void removeWhereUsed(QString target, QString reference);
+    /*public*/ void displayWhereUsed();
+    /*public*/ QList<QString> getTargetList(QString reference);
 
 signals:
 
 public slots:
 private:
-    Logger* log;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("DefaultConditionalManager");
+
+    // --- Conditional Where Used processes ---
+
+    /**
+     * Maintain a list of conditionals that refer to a particular conditional.
+     * @since 4.7.4
+     */
+    /*private*/ /*final*/ QMap<QString, QList<QString> > conditionalWhereUsed;// = new HashMap<>();
+    /*private*/ static /*final*/ QStringList PATTERNS;
+
+protected:
+ /*protected*/ void handleUserNameUniqueness(Conditional* s);
+
 };
 
 #endif // DEFAULTCONDITIONALMANAGER_H

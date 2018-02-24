@@ -2,6 +2,10 @@
 #define TREESELECTIONMODEL_H
 #include <QObject>
 #include "treepath.h"
+#include <QVector>
+#include "rowmapper.h"
+#include "treeselectionlistener.h"
+#include "propertychangelistener.h"
 
 /**
   * This interface represents the current state of the selection for
@@ -87,7 +91,7 @@ public:
      * only one TreePath will remain selected. It is up to the particular
      * implementation to decide what TreePath remains selected.
      */
-    virtual void setSelectionMode(int mode) {}
+    virtual void setSelectionMode(int /*mode*/) {}
 
     /**
      * Returns the current selection mode, one of
@@ -104,7 +108,7 @@ public:
       *
       * @param path new path to select
       */
-    virtual void setSelectionPath(TreePath* path) {}
+    virtual void setSelectionPath(TreePath* /*path*/) {}
 
     /**
       * Sets the selection to path. If this represents a change, then
@@ -113,8 +117,8 @@ public:
       *
       * @param paths new selection
       */
-    virtual void setSelectionPaths(QList<TreePath>* paths) { }
-#if 0
+    virtual void setSelectionPaths(QList<TreePath>* /*paths*/) { }
+
     /**
       * Adds path to the current selection. If path is not currently
       * in the selection the TreeSelectionListeners are notified. This has
@@ -122,7 +126,7 @@ public:
       *
       * @param path the new path to add to the current selection
       */
-    void addSelectionPath(TreePath path);
+ virtual void addSelectionPath(TreePath* /*path*/) {}
 
     /**
       * Adds paths to the current selection.  If any of the paths in
@@ -132,7 +136,7 @@ public:
       *
       * @param paths the new paths to add to the current selection
       */
-    void addSelectionPaths(TreePath[] paths);
+ virtual void addSelectionPaths(QVector<TreePath*> /*paths*/) {}
 
     /**
       * Removes path from the selection. If path is in the selection
@@ -141,7 +145,7 @@ public:
       *
       * @param path the path to remove from the selection
       */
-    void removeSelectionPath(TreePath path);
+ virtual void removeSelectionPath(TreePath* /*path*/) {}
 
     /**
       * Removes paths from the selection.  If any of the paths in
@@ -151,8 +155,8 @@ public:
       *
       * @param paths the path to remove from the selection
       */
-    void removeSelectionPaths(TreePath[] paths);
-#endif
+ virtual void removeSelectionPaths(QVector<TreePath*> /*paths*/) {}
+
     /**
       * Returns the first path in the selection. How first is defined is
       * up to implementors, and may not necessarily be the TreePath with
@@ -160,72 +164,72 @@ public:
       * <code>RowMapper</code>.
       */
     virtual TreePath* getSelectionPath() {return NULL; }
-#if 0
+
     /**
       * Returns the paths in the selection. This will return null (or an
       * empty array) if nothing is currently selected.
       */
-    TreePath[] getSelectionPaths();
+    virtual QVector<TreePath*> getSelectionPaths() {return QVector<TreePath*>();}
 
     /**
      * Returns the number of paths that are selected.
      */
-    int getSelectionCount();
+ virtual int getSelectionCount() {return 0;}
 
     /**
       * Returns true if the path, <code>path</code>, is in the current
       * selection.
       */
-    boolean isPathSelected(TreePath path);
-#endif
+    virtual bool isPathSelected(TreePath* /*path*/) {return false;}
+
     /**
       * Returns true if the selection is currently empty.
       */
     virtual bool isSelectionEmpty() {return false;}
-#if 0
+
     /**
       * Empties the current selection.  If this represents a change in the
       * current selection, the selection listeners are notified.
       */
-    void clearSelection();
+ virtual void clearSelection() {}
 
     /**
      * Sets the RowMapper instance. This instance is used to determine
      * the row for a particular TreePath.
      */
-    void setRowMapper(RowMapper newMapper);
+ virtual void setRowMapper(RowMapper* /*newMapper*/) {}
 
     /**
      * Returns the RowMapper instance that is able to map a TreePath to a
      * row.
      */
-    RowMapper getRowMapper();
+   virtual RowMapper* getRowMapper() {return NULL;}
 
     /**
       * Returns all of the currently selected rows. This will return
       * null (or an empty array) if there are no selected TreePaths or
       * a RowMapper has not been set.
       */
-    int[] getSelectionRows();
+ virtual QVector<int> getSelectionRows() { return QVector<int>();}
 
     /**
      * Returns the smallest value obtained from the RowMapper for the
      * current set of selected TreePaths. If nothing is selected,
      * or there is no RowMapper, this will return -1.
       */
-    int getMinSelectionRow();
+ virtual int getMinSelectionRow() {return -1;}
 
     /**
      * Returns the largest value obtained from the RowMapper for the
      * current set of selected TreePaths. If nothing is selected,
      * or there is no RowMapper, this will return -1.
       */
-    int getMaxSelectionRow();
+ virtual int getMaxSelectionRow() {return -1;}
 
     /**
       * Returns true if the row identified by <code>row</code> is selected.
       */
-    boolean isRowSelected(int row);
+ virtual bool isRowSelected(int /*row*/) {return false;}
 
     /**
      * Updates this object's mapping from TreePaths to rows. This should
@@ -236,19 +240,19 @@ public:
      * listeners will invoke this for you. If you are implementing your own
      * view class, then you will have to invoke this.
      */
-    void resetRowSelection();
+ virtual void resetRowSelection() {}
 
     /**
      * Returns the lead selection index. That is the last index that was
      * added.
      */
-    int getLeadSelectionRow();
+ virtual int getLeadSelectionRow() {return -1;}
 
     /**
      * Returns the last path that was added. This may differ from the
      * leadSelectionPath property maintained by the JTree.
      */
-    TreePath getLeadSelectionPath();
+ virtual TreePath* getLeadSelectionPath() {return NULL;}
 
     /**
      * Adds a PropertyChangeListener to the listener list.
@@ -259,7 +263,7 @@ public:
      *
      * @param listener  the PropertyChangeListener to be added
      */
-    void addPropertyChangeListener(PropertyChangeListener listener);
+ virtual void addPropertyChangeListener(PropertyChangeListener* /*listener*/) {}
 
     /**
      * Removes a PropertyChangeListener from the listener list.
@@ -268,7 +272,7 @@ public:
      *
      * @param listener  the PropertyChangeListener to be removed
      */
-    void removePropertyChangeListener(PropertyChangeListener listener);
+ virtual void removePropertyChangeListener(PropertyChangeListener* /*listener*/) {}
 
     /**
       * Adds x to the list of listeners that are notified each time the
@@ -276,7 +280,7 @@ public:
       *
       * @param x the new listener to be added
       */
-    void addTreeSelectionListener(TreeSelectionListener x);
+ virtual void addTreeSelectionListener(TreeSelectionListener* /*x*/) {}
 
     /**
       * Removes x from the list of listeners that are notified each time
@@ -284,8 +288,7 @@ public:
       *
       * @param x the listener to remove
       */
-    void removeTreeSelectionListener(TreeSelectionListener x);
-#endif
+ virtual void removeTreeSelectionListener(TreeSelectionListener /*x*/) {}
 };
 
 #endif // TREESELECTIONMODEL_H

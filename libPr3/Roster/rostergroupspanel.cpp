@@ -245,9 +245,9 @@
     if (group == NULL || group==(Roster::ALLENTRIES) || group==(""))
     {
      QList<TreeNode*>* l = _model->getPathToRoot(_groups->getFirstChild());
-     QList<QObject*>* ol = new QList<QObject*>();
+     QVector<QObject*>* ol = new QVector<QObject*>();
      foreach(TreeNode* n, *l)
-      ol->append(n);
+      ol->append((QObject*)n);
      _tree->setSelectionPath(new TreePath(ol));
     } else {
 //        for (TreeNode n : new IterableEnumeration<TreeNode>(_groups.children())) {
@@ -258,9 +258,9 @@
      if (n->toString()==(group))
      {
       QList<TreeNode*>* l = _model->getPathToRoot(n);
-      QList<QObject*>* ol = new QList<QObject*>();
+      QVector<QObject*>* ol = new QVector<QObject*>();
       foreach(TreeNode* n, *l)
-        ol->append(n);
+        ol->append((QObject*)n);
       _tree->setSelectionPath(new TreePath(/*_model->getPathToRoot(n)*/ ol));
      }
   }
@@ -339,7 +339,7 @@ void RosterGroupsPanel::on_actButton_Clicked()
  //if (ie.getStateChange() == ItemEvent.SELECTED) {
   //TreePath* g = new TreePath(_model->getPathToRoot(_groups));
  QList<TreeNode*>* l = _model->getPathToRoot(_groups);
- QList<QObject*>* ol = new QList<QObject*>();
+ QVector<QObject*>* ol = new QVector<QObject*>();
  foreach (TreeNode* n, *l) {
   ol->append((QObject*)n);
  }
@@ -548,7 +548,7 @@ void MenuActionListener::addAction(QAction* act)
 {
  QAction* e = (QAction*)o;
  QList<TreeNode*>* l = panel->_model->getPathToRoot(panel->_groups);
- QList<QObject*>* ol = new QList<QObject*>();
+ QVector<QObject*>* ol = new QVector<QObject*>();
  foreach (TreeNode* n, *l) {
   ol->append((QObject*)n);
  }
@@ -734,7 +734,7 @@ MyTreeSelectionListener::MyTreeSelectionListener(RosterGroupsPanel *panel)
 /*public*/  void MyTreeSelectionListener::valueChanged(TreeSelectionEvent* e)
 {
  QList<TreeNode*>* list = panel->_model->getPathToRoot(panel->_groups);
- QList<QObject*>* ol = new QList<QObject*>();
+ QVector<QObject*>* ol = new QVector<QObject*>();
  foreach(TreeNode* n, *list) ol->append((QObject*)n);
  TreePath* g = new TreePath(ol);
  QString oldGroup = panel->selectedRosterGroup;

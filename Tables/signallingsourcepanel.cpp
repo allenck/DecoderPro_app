@@ -353,7 +353,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
             new QPushButton(tr("Delete")));
 }
 
-/*protected*/ void SignalMastAppearanceModel::setColumnToHoldButton(JTable* table, int column, QPushButton* sample) {
+/*protected*/ void SignalMastAppearanceModel::setColumnToHoldButton(JTable* /*table*/, int /*column*/, QPushButton* /*sample*/) {
     //TableColumnModel tcm = table.getColumnModel();
     // install a button renderer & editor
 #if 0 // TODO:

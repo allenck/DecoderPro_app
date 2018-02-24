@@ -938,7 +938,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return NamedBean::getPropertyChangeListeners(name0);
 }
-QList<QString >  PythonQtShell_NamedBean::getPropertyKeys()
+QSet<QString >  PythonQtShell_NamedBean::getPropertyKeys()
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("getPropertyKeys");
@@ -946,7 +946,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   if (obj) {
     static const char* argumentList[] ={"QList<QString >"};
     static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<QString > returnValue;
+      QSet<QString > returnValue;
     void* args[1] = {NULL};
     PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
     if (result) {
@@ -955,7 +955,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
         if (args[0]==NULL) {
           PythonQt::priv()->handleVirtualOverloadReturnError("getPropertyKeys", methodInfo, result);
         } else {
-          returnValue = *((QList<QString >*)args[0]);
+          returnValue = *((QSet<QString >*)args[0]);
         }
       }
     }
@@ -1283,7 +1283,7 @@ QList<PropertyChangeListener* >*  PythonQtWrapper_NamedBean::getPropertyChangeLi
   return ( ((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->promoted_getPropertyChangeListeners(name));
 }
 
-QList<QString >  PythonQtWrapper_NamedBean::getPropertyKeys(NamedBean* theWrappedObject)
+QSet<QString >  PythonQtWrapper_NamedBean::getPropertyKeys(NamedBean* theWrappedObject)
 {
   return ( ((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->promoted_getPropertyKeys());
 }
@@ -8657,7 +8657,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return Sensor::getPropertyChangeListeners(name0);
 }
-QList<QString >  PythonQtShell_Sensor::getPropertyKeys()
+QSet<QString> PythonQtShell_Sensor::getPropertyKeys()
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("getPropertyKeys");
@@ -8665,7 +8665,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   if (obj) {
     static const char* argumentList[] ={"QList<QString >"};
     static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<QString > returnValue;
+      QSet<QString > returnValue;
     void* args[1] = {NULL};
     PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
     if (result) {
@@ -8674,7 +8674,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
         if (args[0]==NULL) {
           PythonQt::priv()->handleVirtualOverloadReturnError("getPropertyKeys", methodInfo, result);
         } else {
-          returnValue = *((QList<QString >*)args[0]);
+          returnValue = *((QSet<QString >*)args[0]);
         }
       }
     }
@@ -11215,7 +11215,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return SignalHead::getPropertyChangeListeners(name0);
 }
-QList<QString >  PythonQtShell_SignalHead::getPropertyKeys()
+QSet<QString> PythonQtShell_SignalHead::getPropertyKeys()
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("getPropertyKeys");
@@ -11223,7 +11223,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   if (obj) {
     static const char* argumentList[] ={"QList<QString >"};
     static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<QString > returnValue;
+      QSet<QString > returnValue;
     void* args[1] = {NULL};
     PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
     if (result) {
@@ -11232,7 +11232,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
         if (args[0]==NULL) {
           PythonQt::priv()->handleVirtualOverloadReturnError("getPropertyKeys", methodInfo, result);
         } else {
-          returnValue = *((QList<QString >*)args[0]);
+          returnValue = *((QSet<QString >*)args[0]);
         }
       }
     }
@@ -16324,7 +16324,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return Turnout::getPropertyChangeListeners(name0);
 }
-QList<QString >  PythonQtShell_Turnout::getPropertyKeys()
+QSet<QString> PythonQtShell_Turnout::getPropertyKeys()
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("getPropertyKeys");
@@ -16332,7 +16332,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   if (obj) {
     static const char* argumentList[] ={"QList<QString >"};
     static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<QString > returnValue;
+      QSet<QString > returnValue;
     void* args[1] = {NULL};
     PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
     if (result) {
@@ -16341,7 +16341,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
         if (args[0]==NULL) {
           PythonQt::priv()->handleVirtualOverloadReturnError("getPropertyKeys", methodInfo, result);
         } else {
-          returnValue = *((QList<QString >*)args[0]);
+          returnValue = *((QSet<QString >*)args[0]);
         }
       }
     }

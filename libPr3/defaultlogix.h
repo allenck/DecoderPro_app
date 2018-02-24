@@ -13,7 +13,8 @@ public:
     /*public*/ int getNumConditionals();
     /*public*/ void swapConditional(int nextInOrder, int row) ;
     /*public*/ QString getConditionalByNumberOrder(int order) ;
-    /*public*/ bool addConditional(QString systemName,int order);
+    /*public*/ bool addConditional(QString systemName, int order);
+    /*public*/ bool addConditional(QString systemName, Conditional* conditional);
     /*public*/ void setEnabled(bool state);
     /*public*/ bool getEnabled();
     /*public*/ QStringList* deleteConditional(QString systemName);
@@ -22,6 +23,7 @@ public:
     /*public*/ void deActivateLogix();
     /*public*/ int getState();
     /*public*/ void setState(int state);
+    /*public*/ Conditional* getConditional(QString systemName) ;
 
 signals:
 
@@ -32,7 +34,11 @@ private:
      */
     QStringList* _conditionalSystemNames;// = new QStringList();
     QList <JmriSimplePropertyListener*>* _listeners;// = new QList<JmriSimplePropertyListener*>();
-
+    /**
+     * Maintain a list of conditional objects.  The key is the conditional system name
+     * @since 4.7.4
+     */
+    QMap<QString, Conditional*> _conditionalMap;// = new HashMap<>();
     /**
      *  Operational instance variables (not saved between runs)
      */

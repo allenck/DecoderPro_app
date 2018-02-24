@@ -376,6 +376,8 @@ class APPSLIBSHARED_EXPORT Xml
                          // Engine.java
                              static /*final*/ QString ENGINE; //="engine"; // NOI18N
                              static /*final*/ QString HP; //="hp"; // NOI18N
+                             static /*final*/ QString B_UNIT;// = "bUnit"; // NOI18N
+
                              //static /*final*/ QString TYPE; //="type"; // NOI18N
 
                              //static /*final*/ QString WEIGHT_TONS; //="weightTons"; // NOI18N

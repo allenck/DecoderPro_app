@@ -346,43 +346,43 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         switch (cType) {
             case LayoutConnectivity::XOVER_BOUNDARY_AB:
                 if (facingIsBlock1)
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
             case LayoutConnectivity::XOVER_BOUNDARY_CD:
                 if (facingIsBlock1)
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
             case LayoutConnectivity::XOVER_BOUNDARY_AC:
                 if (facingIsBlock1) {
                     if ( (lt->getSignalA2Name()==NULL) || (lt->getSignalA2Name()==("")) )
                         //there is no signal head for diverging (crossed over)
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                     else
                         // there is a diverging (crossed over) signal head, return it
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
                 }
                 else {
                     if ( (lt->getSignalC2Name()==NULL) || (lt->getSignalC2Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC2Name()));
                 }
             case LayoutConnectivity::XOVER_BOUNDARY_BD:
                 if (facingIsBlock1) {
                     if ( (lt->getSignalB2Name()==NULL) || (lt->getSignalB2Name()==("")) )
                         //there is no signal head for diverging (crossed over)
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                     else
                         // there is a diverging (crossed over) signal head, return it
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB2Name()));
                 }
                 else {
                     if ( (lt->getSignalD2Name()==NULL) || (lt->getSignalD2Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD2Name()));
                 }
         }
         // should never reach here, but ...
@@ -404,10 +404,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         bool block1IsWestEnd = tools->isAtWestEndOfAnchor(tr,p);
         if ( (block1IsWestEnd && facingIsBlock1) || (!block1IsWestEnd && !facingIsBlock1) ) {
             // block1 is on the west (north) end of the block boundary
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(p->getEastBoundSignal()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getEastBoundSignal()));
         }
         else {
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(p->getWestBoundSignal()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getWestBoundSignal()));
         }
     }
     if (cType==LayoutEditor::TURNOUT_A) {
@@ -418,7 +418,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             if (facingIsBlock1) {
                 if ( (lt->getSignalA2Name()==NULL) || (lt->getSignalA2Name()==("")) )
                     //there is no signal head for diverging
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                 else {
                     // check if track segments at B or C are in protected block (block 2)
                     if ( ((TrackSegment*)(lt->getConnectB()))->getBlockName()==(protectedBlock->getUserName()) ) {
@@ -426,9 +426,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                         if ( !(((TrackSegment*)lt->getConnectC())->getBlockName()==(protectedBlock->getUserName())) ) {
                             // track segment connected at C is not in block2, return continuing signal head at A
                             if (lt->getContinuingSense()==Turnout::CLOSED)
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                             else
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
                         }
                         else {
                             // B and C both in block2, check turnout position to decide which signal head to return
@@ -436,11 +436,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                             if ( ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                     ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                                 // continuing
-                                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                             else if ( ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                     ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                                 // diverging
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
                             else {
                                 // turnout state is UNKNOWN or INCONSISTENT
                                 log.error("Cannot choose signal head because turnout "+lt->getTurnout()->getSystemName()+
@@ -453,9 +453,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                     if ( (((TrackSegment*)lt->getConnectC())->getBlockName()==(protectedBlock->getUserName())) ) {
                         // track segment connected at C is in block 2, return diverging signal head
                         if (lt->getContinuingSense()==Turnout::CLOSED)
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
                         else
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                     }
                     else {
                         // neither track segment is in block 2 - should never get here unless layout turnout is
@@ -473,21 +473,21 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                     // track segment connected at B matches block 1, check C
                     if ( !(((TrackSegment*)lt->getConnectC())->getBlockName()==(facingBlock->getUserName())) )
                         // track segment connected at C is not in block 2, return signal head at continuing end
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                     else {
                         // B and C both in block 1, check turnout position to decide which signal head to return
                         int state = ((AbstractTurnout*)lt->getTurnout())->getKnownState();
                         if ( ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                     ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // continuing
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                         else if ( ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                     ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::THROWN) ) ) {
                             // diverging, check for second head
                             if ( (lt->getSignalC2Name()==NULL) || (lt->getSignalC2Name()==("")) )
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                             else
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC2Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC2Name()));
                         }
                         else {
                             // turnout state is UNKNOWN or INCONSISTENT
@@ -501,9 +501,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 if ( ((TrackSegment*)lt->getConnectC())->getBlockName()==(facingBlock->getUserName()) ) {
                     // track segment connected at C is in block 1, return diverging signal head, check for second head
                     if ( (lt->getSignalC2Name()==NULL) || (lt->getSignalC2Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC2Name()));
                 }
                 else {
                     // neither track segment is in block 1 - should never get here unless layout turnout is
@@ -531,28 +531,28 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 int state = ((AbstractTurnout*)lt->getTurnout())->getKnownState();
                 if (state==Turnout::THROWN) {
                     if ( (lt->getSignalA2Name()==NULL) || (lt->getSignalA2Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
                 }
                 else if (state==Turnout::CLOSED) {
                     LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
                     state = ((AbstractTurnout*)tLinked->getTurnout())->getKnownState();
                     if (state==Turnout::CLOSED) {
                         if (tLinked->getContinuingSense()==Turnout::CLOSED)
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                         else if ( (lt->getSignalA3Name()==NULL) || (lt->getSignalA3Name()==("")) )
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                         else
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA3Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA3Name()));
                     }
                     else if (state==Turnout::THROWN) {
                         if (tLinked->getContinuingSense()==Turnout::THROWN)
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                         else if ( (lt->getSignalA3Name()==NULL) || (lt->getSignalA3Name()==("")) )
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                         else
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA3Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA3Name()));
                     }
                     else {
                         // should never get here - linked turnout state is UNKNOWN or INCONSISTENT
@@ -584,13 +584,13 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             if (facingIsBlock1) {
                 if ( (lt->getSignalB2Name()==NULL) || (lt->getSignalB2Name()==("")) )
                 // there is only one signal at B, return it
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                 // check if track segments at A or D are in protected block (block 2)
                 if ( ((TrackSegment*)(lt->getConnectA()))->getBlockName()==(protectedBlock->getUserName()) ) {
                     // track segment connected at A matches block 2, check D
                     if ( !(((TrackSegment*)lt->getConnectD())->getBlockName()==(protectedBlock->getUserName())) ) {
                         // track segment connected at D is not in block2, return continuing signal head at B
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                     }
                     else {
                         // A and D both in block 2, check turnout position to decide which signal head to return
@@ -598,11 +598,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                         if ( ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // continuing
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                         else if ( ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // diverging (crossed over)
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB2Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB2Name()));
                         else {
                             // turnout state is UNKNOWN or INCONSISTENT
                             log.error("Cannot choose signal head because turnout "+lt->getTurnout()->getSystemName()+
@@ -614,7 +614,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 // track segment connected at A is not in block 2
                 if ( (((TrackSegment*)lt->getConnectD())->getBlockName()==(protectedBlock->getUserName())) )
                     // track segment connected at D is in block 2, return diverging signal head
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB2Name()));
                 else {
                     // neither track segment is in block 2 - should never get here unless layout turnout is
                     //       only item in block 2
@@ -630,21 +630,21 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                     // track segment connected at A matches block 1, check D
                     if ( !(((TrackSegment*)lt->getConnectD())->getBlockName()==(facingBlock->getUserName())) )
                         // track segment connected at D is not in block 2, return signal head at continuing end
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                     else {
                         // A and D both in block 1, check turnout position to decide which signal head to return
                         int state = ((AbstractTurnout*)lt->getTurnout())->getKnownState();
                         if ( ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // continuing
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                         else if ( ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::THROWN) ) ) {
                             // diverging, check for second head
                             if ( (lt->getSignalD2Name()==NULL) || (lt->getSignalD2Name()==("")) )
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
                             else
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD2Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD2Name()));
                         }
                         else {
                             // turnout state is UNKNOWN or INCONSISTENT
@@ -658,9 +658,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 if ( ((TrackSegment*)lt->getConnectD())->getBlockName()==(facingBlock->getUserName()) ) {
                     // track segment connected at D is in block 1, return diverging signal head, check for second head
                     if ( (lt->getSignalD2Name()==NULL) || (lt->getSignalD2Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD2Name()));
                 }
                 else {
                     // neither track segment is in block 1 - should never get here unless layout turnout is
@@ -675,18 +675,18 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         // not double crossover or LH crossover
         if (  (lt->getLinkType()==LayoutTurnout::NO_LINK) && (lt->getContinuingSense()==Turnout::CLOSED) ) {
             if (facingIsBlock1)
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
             else
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
         }
         else if (lt->getLinkType()==LayoutTurnout::NO_LINK) {
             if (facingIsBlock1)
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
             else {
                 if ( (lt->getSignalA2Name()==NULL) || (lt->getSignalA2Name()==("")) )
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
             }
         }
         else if (lt->getLinkType()==LayoutTurnout::THROAT_TO_THROAT) {
@@ -698,25 +698,25 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             if ( (lt->getContinuingSense()==Turnout::CLOSED) && ((lt->getSignalB2Name()==NULL) ||
                                                     (lt->getSignalB2Name()==(""))) )
                 // there is only one signal head here - return it
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
             else if ( (lt->getContinuingSense()==Turnout::THROWN) && ((lt->getSignalC2Name()==NULL) ||
                                                     (lt->getSignalC2Name()==(""))) )
                 // there is only one signal head here - return it
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
             // There are two signals here get linked turnout and decide which to return from linked turnout state
             LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
             int state = ((AbstractTurnout*)tLinked->getTurnout())->getKnownState();
             if (state==Turnout::CLOSED) {
                 if (lt->getContinuingSense()==Turnout::CLOSED)
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
             }
             else if (state==Turnout::THROWN) {
                 if (lt->getContinuingSense()==Turnout::CLOSED)
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB2Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC2Name()));
             }
             else
                 // should never get here - linked turnout state is UNKNOWN or INCONSISTENT
@@ -732,23 +732,23 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         else if (lt->getLinkType()==LayoutTurnout::SECOND_3_WAY) {
             if (facingIsBlock1) {
                 if (lt->getContinuingSense()==Turnout::CLOSED) {
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                 }
                 else {
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                 }
             }
             else {
                 // signal is at the linked turnout - the throat of the 3-way turnout
                 LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
                 if (lt->getContinuingSense()==Turnout::CLOSED) {
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tLinked->getSignalA1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA1Name()));
                 }
                 else {
                     if ( (tLinked->getSignalA3Name()==NULL) || (lt->getSignalA3Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tLinked->getSignalA1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tLinked->getSignalA3Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA3Name()));
                 }
             }
         }
@@ -762,13 +762,13 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             if (facingIsBlock1) {
                 if ( (lt->getSignalC2Name()==NULL) || (lt->getSignalC2Name()==("")) )
                     // there is only one head at C, return it
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                 // check if track segments at A or D are in protected block (block 2)
                 if ( ((TrackSegment*)(lt->getConnectA()))->getBlockName()==(protectedBlock->getUserName()) ) {
                     // track segment connected at A matches block 2, check D
                     if ( !(((TrackSegment*)lt->getConnectD())->getBlockName()==(protectedBlock->getUserName())) ) {
                         // track segment connected at D is not in block2, return diverging signal head at C
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC2Name()));
                     }
                     else {
                         // A and D both in block 2, check turnout position to decide which signal head to return
@@ -776,11 +776,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                         if ( ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // continuing
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                         else if ( ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // diverging (crossed over)
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC2Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC2Name()));
                         else {
                             // turnout state is UNKNOWN or INCONSISTENT
                             log.error("Cannot choose signal head because turnout "+lt->getTurnout()->getSystemName()+
@@ -792,7 +792,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 // track segment connected at A is not in block 2
                 if ( (((TrackSegment*)lt->getConnectD())->getBlockName()==(protectedBlock->getUserName())) )
                     // track segment connected at D is in block 2, return continuing signal head
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                 else {
                     // neither track segment is in block 2 - should never get here unless layout turnout is
                     //       only item in block 2
@@ -808,21 +808,21 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                     // track segment connected at D matches block 1, check A
                     if ( !(((TrackSegment*)lt->getConnectA())->getBlockName()==(facingBlock->getUserName())) )
                         // track segment connected at A is not in block 2, return signal head at continuing end
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
                     else {
                         // A and D both in block 1, check turnout position to decide which signal head to return
                         int state = ((AbstractTurnout*)lt->getTurnout())->getKnownState();
                         if ( ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // continuing
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
                         else if ( ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::THROWN) ) ) {
                             // diverging, check for second head
                             if ( (lt->getSignalA2Name()==NULL) || (lt->getSignalA2Name()==("")) )
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                             else
-                                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
                         }
                         else {
                             // turnout state is UNKNOWN or INCONSISTENT
@@ -836,9 +836,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 if ( ((TrackSegment*)lt->getConnectA())->getBlockName()==(facingBlock->getUserName()) ) {
                     // track segment connected at A is in block 1, return diverging signal head, check for second head
                     if ( (lt->getSignalA2Name()==NULL) || (lt->getSignalA2Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
                 }
                 else {
                     // neither track segment is in block 1 - should never get here unless layout turnout is
@@ -853,25 +853,25 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         // not double crossover or RH crossover
         if ( (lt->getLinkType()==LayoutTurnout::NO_LINK) && (lt->getContinuingSense()==Turnout::CLOSED) ) {
             if (facingIsBlock1)
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
             else if (lt->getTurnoutType()==LayoutTurnout::LH_XOVER)
                 // LH turnout - this is continuing track for D connection
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
             else {
                 // RH, LH or WYE turnout, this is diverging track for A connection
                 if ( (lt->getSignalA2Name()==NULL) || (lt->getSignalA2Name()==("")) )
                     // there is no signal head at the throat for diverging
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                 else
                     // there is a diverging head at the throat, return it
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
             }
         }
         else if (lt->getLinkType()==LayoutTurnout::NO_LINK) {
             if (facingIsBlock1)
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
             else
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
         }
         else if (lt->getLinkType()==LayoutTurnout::THROAT_TO_THROAT) {
             if (!facingIsBlock1) {
@@ -882,25 +882,25 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             if ( (lt->getContinuingSense()==Turnout::CLOSED) && ((lt->getSignalC2Name()==NULL) ||
                                                     (lt->getSignalC2Name()==(""))) )
                 // there is only one signal head here - return it
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
             else if ( (lt->getContinuingSense()==Turnout::THROWN) && ((lt->getSignalB2Name()==NULL) ||
                                                     (lt->getSignalB2Name()==(""))) )
                 // there is only one signal head here - return it
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
             // There are two signals here get linked turnout and decide which to return from linked turnout state
             LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
             int state = ((AbstractTurnout*)tLinked->getTurnout())->getKnownState();
             if (state==Turnout::CLOSED) {
                 if (lt->getContinuingSense()==Turnout::CLOSED)
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
             }
             else if (state==Turnout::THROWN) {
                 if (lt->getContinuingSense()==Turnout::CLOSED)
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC2Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB2Name()));
             }
             else {
                 // should never get here - linked turnout state is UNKNOWN or INCONSISTENT
@@ -911,22 +911,22 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         }
         else if (lt->getLinkType()==LayoutTurnout::FIRST_3_WAY) {
             if (facingIsBlock1) {
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
             }
             else {
                 if ( (lt->getSignalA2Name()==NULL) || (lt->getSignalA2Name()==("")) )
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA1Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalA2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
             }
         }
         else if (lt->getLinkType()==LayoutTurnout::SECOND_3_WAY) {
             if  (facingIsBlock1) {
                 if (lt->getContinuingSense()==Turnout::CLOSED) {
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                 }
                 else {
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                 }
             }
             else {
@@ -934,15 +934,15 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
                 if (lt->getContinuingSense()==Turnout::CLOSED) {
                     if ( (tLinked->getSignalA3Name()==NULL) || (tLinked->getSignalA3Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tLinked->getSignalA1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tLinked->getSignalA3Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA3Name()));
                 }
                 else {
                     if ( (tLinked->getSignalA2Name()==NULL) || (tLinked->getSignalA2Name()==("")) )
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tLinked->getSignalA1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA1Name()));
                     else
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tLinked->getSignalA2Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA2Name()));
                 }
             }
         }
@@ -953,21 +953,21 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         if (lt->getTurnoutType()==LayoutTurnout::RH_XOVER) {
             // no diverging route possible, this is continuing track for C connection
             if (facingIsBlock1)
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
             else
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
         }
         if (facingIsBlock1) {
             if ( (lt->getSignalD2Name()==NULL) || (lt->getSignalD2Name()==("")) )
                 //there is no signal head for diverging
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
             else {
                 // check if track segments at C or B are in protected block (block 2)
                 if ( ((TrackSegment*)(lt->getConnectC()))->getBlockName()==(protectedBlock->getUserName()) ) {
                     // track segment connected at C matches block 2, check B
                     if ( !(((TrackSegment*)lt->getConnectB())->getBlockName()==(protectedBlock->getUserName())) ) {
                         // track segment connected at B is not in block2, return continuing signal head at D
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
                     }
                     else {
                         // C and B both in block2, check turnout position to decide which signal head to return
@@ -975,11 +975,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                         if ( ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // continuing
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD1Name()));
                         else if ( ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                             // diverging
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD2Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD2Name()));
                         else {
                             // turnout state is UNKNOWN or INCONSISTENT
                             log.error("Cannot choose signal head because turnout "+lt->getTurnout()->getSystemName()+
@@ -991,7 +991,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 // track segment connected at C is not in block 2
                 if ( (((TrackSegment*)lt->getConnectB())->getBlockName()==(protectedBlock->getUserName())) )
                     // track segment connected at B is in block 2, return diverging signal head
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalD2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD2Name()));
                 else {
                     // neither track segment is in block 2 - should never get here unless layout turnout is
                     //      the only item in block 2
@@ -1008,21 +1008,21 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 // track segment connected at C matches block 1, check B
                 if ( !(((TrackSegment*)lt->getConnectB())->getBlockName()==(facingBlock->getUserName())) )
                     // track segment connected at B is not in block 2, return signal head at continuing end
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                 else {
                     // C and B both in block 1, check turnout position to decide which signal head to return
                     int state = ((AbstractTurnout*)lt->getTurnout())->getKnownState();
                     if ( ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::THROWN) ) )
                         // continuing
-                        return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalC1Name()));
+                        return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
                     else if ( ( (state==Turnout::THROWN) && (lt->getContinuingSense()==Turnout::CLOSED) ) ||
                                 ( (state==Turnout::CLOSED) && (lt->getContinuingSense()==Turnout::THROWN) ) ) {
                         // diverging, check for second head
                         if ( (lt->getSignalB2Name()==NULL) || (lt->getSignalB2Name()==("")) )
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                         else
-                            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB2Name()));
+                            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB2Name()));
                     }
                     else {
                         // turnout state is UNKNOWN or INCONSISTENT
@@ -1036,9 +1036,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             if ( ((TrackSegment*)lt->getConnectB())->getBlockName()==(facingBlock->getUserName()) ) {
                 // track segment connected at B is in block 1, return diverging signal head, check for second head
                 if ( (lt->getSignalB2Name()==NULL) || (lt->getSignalB2Name()==("")) )
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(lt->getSignalB2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB2Name()));
             }
             else {
                 // neither track segment is in block 1 - should never get here unless layout turnout is
@@ -1057,35 +1057,35 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         LayoutSlip* ls = (LayoutSlip*)connected;
         if(cType==LayoutEditor::SLIP_A){
             if(ls->getSlipState()==LayoutSlip::STATE_AD)
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalA2Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalA2Name()));
             else
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalA1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalA1Name()));
         }
         if(cType==LayoutEditor::SLIP_B){
             if(ls->getTurnoutType()==LayoutSlip::DOUBLE_SLIP){
                 if(ls->getSlipState()==LayoutSlip::STATE_BC)
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalB2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalB2Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalB1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalB1Name()));
             }
             else
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalB1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalB1Name()));
         }
         if(cType==LayoutEditor::SLIP_C){
             if(ls->getTurnoutType()==LayoutSlip::DOUBLE_SLIP){
                 if(ls->getSlipState()==LayoutSlip::STATE_BC)
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalC2Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalC2Name()));
                 else
-                    return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalC1Name()));
+                    return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalC1Name()));
             }
             else
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalC1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalC1Name()));
         }
         if(cType==LayoutEditor::SLIP_D){
             if(ls->getSlipState()==LayoutSlip::STATE_AD)
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalD2Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalD2Name()));
             else
-                return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(ls->getSignalD1Name()));
+                return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(ls->getSignalD1Name()));
         }
     }
     // block boundary must be at a level crossing
@@ -1097,30 +1097,30 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (cType==LayoutEditor::LEVEL_XING_A) {
         // block boundary is at the A connection of a level crossing
         if (facingIsBlock1)
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(xing->getSignalAName()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(xing->getSignalAName()));
         else
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(xing->getSignalCName()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(xing->getSignalCName()));
     }
     if (cType==LayoutEditor::LEVEL_XING_B) {
         // block boundary is at the B connection of a level crossing
         if (facingIsBlock1)
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(xing->getSignalBName()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(xing->getSignalBName()));
         else
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(xing->getSignalDName()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(xing->getSignalDName()));
     }
     if (cType==LayoutEditor::LEVEL_XING_C) {
         // block boundary is at the C connection of a level crossing
         if (facingIsBlock1)
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(xing->getSignalCName()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(xing->getSignalCName()));
         else
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(xing->getSignalAName()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(xing->getSignalAName()));
     }
     if (cType==LayoutEditor::LEVEL_XING_D) {
         // block boundary is at the D connection of a level crossing
         if (facingIsBlock1)
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(xing->getSignalDName()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(xing->getSignalDName()));
         else
-            return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(xing->getSignalBName()));
+            return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(xing->getSignalBName()));
     }
     return NULL;
 }
@@ -1173,9 +1173,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 p = (PositionablePoint*) t->getConnect1();
                     if(p->getType()==PositionablePoint::END_BUMPER){
                         if(p->getEastBoundSignalMast()!=(""))
-                            return InstanceManager::signalMastManagerInstance()->getSignalMast(p->getEastBoundSignalMast());
+                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMast());
                         if(p->getWestBoundSignalMast()!=(""))
-                            return InstanceManager::signalMastManagerInstance()->getSignalMast(p->getWestBoundSignalMast());
+                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMast());
                     }
 
             }
@@ -1183,9 +1183,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 p = (PositionablePoint*) t->getConnect2();
                     if(p->getType()==PositionablePoint::END_BUMPER){
                         if(p->getEastBoundSignalMast()!=(""))
-                            return InstanceManager::signalMastManagerInstance()->getSignalMast(p->getEastBoundSignalMast());
+                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMast());
                         if(p->getWestBoundSignalMast()!=(""))
-                            return InstanceManager::signalMastManagerInstance()->getSignalMast(p->getWestBoundSignalMast());
+                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMast());
                     }
             }
         }
@@ -1345,10 +1345,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         bool block1IsWestEnd = tools->isAtWestEndOfAnchor(tr,p);
         if ( (block1IsWestEnd && facingIsBlock1) || (!block1IsWestEnd && !facingIsBlock1) ) {
             // block1 is on the west (north) end of the block boundary
-            return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(p->getEastBoundSignalMast()));
+            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(p->getEastBoundSignalMast()));
         }
         else {
-            return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(p->getWestBoundSignalMast()));
+            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(p->getWestBoundSignalMast()));
         }
     }
     if(!facingIsBlock1)
@@ -1357,7 +1357,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         lt = (LayoutTurnout*)connected;
         if ((lt->getLinkType()==LayoutTurnout::NO_LINK) || (lt->getLinkType()==LayoutTurnout::FIRST_3_WAY)){
             if ( (lt->getSignalAMast()!=NULL) || (lt->getSignalAMast()!=("")) ){
-                return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(lt->getSignalAMast()));
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalAMast()));
             }
             // we only allow signal masts inbound to the turnout.
             return NULL;
@@ -1370,14 +1370,14 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (cType==LayoutEditor::TURNOUT_B) {
         lt = (LayoutTurnout*)connected;
         if ( (lt->getSignalBMast()!=NULL) || (lt->getSignalBMast()!=("")) ){
-            return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(lt->getSignalBMast()));
+            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalBMast()));
         }
         return NULL;
     }
     if (cType==LayoutEditor::TURNOUT_C) {
         lt = (LayoutTurnout*)connected;
         if ( (lt->getSignalCMast()!=NULL) || (lt->getSignalCMast()!=("")) ){
-            return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(lt->getSignalCMast()));
+            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalCMast()));
         }
         return NULL;
     }
@@ -1385,7 +1385,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (cType==LayoutEditor::TURNOUT_D) {
         lt = (LayoutTurnout*)connected;
             if ( (lt->getSignalDMast()!=NULL) || (lt->getSignalDMast()!=("")) ){
-                return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(lt->getSignalDMast()));
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalDMast()));
             }
         return NULL;
     }
@@ -1394,25 +1394,25 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         LayoutSlip* ls = (LayoutSlip*)connected;
         if(cType==LayoutEditor::SLIP_A){
             if((ls->getSignalAMast()!=NULL) || (ls->getSignalAMast()!=(""))){
-                return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(ls->getSignalAMast()));
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalAMast()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_B){
             if((ls->getSignalBMast()!=NULL) || (ls->getSignalBMast()!=(""))){
-                return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(ls->getSignalBMast()));
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalBMast()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_C){
             if((ls->getSignalCMast()!=NULL) || (ls->getSignalCMast()!=(""))){
-                return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(ls->getSignalCMast()));
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalCMast()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_D){
             if((ls->getSignalDMast()!=NULL) || (ls->getSignalDMast()!=(""))){
-                return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(ls->getSignalDMast()));
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalDMast()));
             }
             return NULL;
         }
@@ -1428,19 +1428,19 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     LevelXing* xing = (LevelXing*)connected;
     if (cType==LayoutEditor::LEVEL_XING_A) {
         // block boundary is at the A connection of a level crossing
-        return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(xing->getSignalAMastName()));
+        return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(xing->getSignalAMastName()));
     }
     if (cType==LayoutEditor::LEVEL_XING_B) {
          // block boundary is at the B connection of a level crossing
-        return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(xing->getSignalBMastName()));
+        return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(xing->getSignalBMastName()));
     }
     if (cType==LayoutEditor::LEVEL_XING_C) {
         // block boundary is at the C connection of a level crossing
-        return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(xing->getSignalCMastName()));
+        return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(xing->getSignalCMastName()));
     }
     if (cType==LayoutEditor::LEVEL_XING_D) {
         // block boundary is at the D connection of a level crossing
-        return (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(xing->getSignalDMastName()));
+        return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(xing->getSignalDMastName()));
     }
     return NULL;
 }

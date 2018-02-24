@@ -380,7 +380,7 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
 
 //int rowCount = 0;
 
-/*public*/ int AEPTableModel::rowCount(const QModelIndex &parent) const
+/*public*/ int AEPTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
  return _rowCount;
 }
@@ -399,10 +399,11 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
         int width = getPreferredWidth(i);
         table.getColumnModel().getColumn(i).setPreferredWidth(width);
     }
-    table->sizeColumnsToFit(-1);
+#endif
+    table->resizeColumnsToContents();
 
     configDeleteColumn(table);
-#endif
+
 }
 
 /*public*/ QVariant AEPTableModel::data(const QModelIndex &index, int role) const
@@ -496,7 +497,7 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
     }
 }
 
-/*protected*/ void AEPTableModel::deleteEntryExit(int row, int col) {
+/*protected*/ void AEPTableModel::deleteEntryExit(int row, int /*col*/) {
     NamedBean* nbSource = ((NamedBean*) source->at(row));
     NamedBean* nbDest = (NamedBean*) dest->at(row);
     parent->nxPairs->deleteNxPair(nbSource, nbDest, panel);
@@ -604,7 +605,7 @@ QString AEPTableModel::isPairActive(int row) const
  }
 }
 
-/*public*/ int AEPTableModel::columnCount(const QModelIndex &parent) const
+/*public*/ int AEPTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
  return NUMCOL;
 }
@@ -621,7 +622,7 @@ QString AEPTableModel::isPairActive(int row) const
 //};
 
 
-/*protected*/ void AddEntryExitPairPanel::configDeleteColumn(JTable* table)
+/*protected*/ void AEPTableModel::configDeleteColumn(JTable* table)
 {
  // have the delete column hold a button
  setColumnToHoldButton(table, AEPTableModel::DELETECOL,

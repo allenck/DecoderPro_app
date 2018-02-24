@@ -367,6 +367,8 @@ Xml::Xml() {}
 // Engine.java
    /*static*/ /*final*/ QString Xml::ENGINE = "engine"; // NOI18N
    /*static*/ /*final*/ QString Xml::HP = "hp"; // NOI18N
+   /*static*/ /*final*/ QString Xml::B_UNIT = "bUnit"; // NOI18N
+
    ///*static*/ /*final*/ QString Xml::TYPE = "type"; // NOI18N
 
    ///*static*/ /*final*/ QString Xml::WEIGHT_TONS = "weightTons"; // NOI18N

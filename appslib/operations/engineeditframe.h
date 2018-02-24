@@ -72,6 +72,8 @@ namespace Operations
   QPushButton* addButton; //=new JButton(Bundle.getMessage("Add"));
 
   // check boxes
+  QCheckBox* bUnitCheckBox;// = new JCheckBox(Bundle.getMessage("BUnit"));
+
   // text field
   JTextField* roadNumberTextField; //=new JTextField(Control.max_len_string_road_number);
   JTextField* builtTextField; //=new JTextField(Control.max_len_string_built_name + 3);
@@ -97,7 +99,8 @@ namespace Operations
   /*private*/ void removePropertyChangeListeners();
   Logger* log;
   /*private*/ void addEngine();
-  /*private*/ void writeFiles();
+  /*private*/ bool checkRoadNumber(QString roadNum);
+  /*private*/ void saveEngine();
 
  };
 }

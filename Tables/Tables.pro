@@ -106,7 +106,12 @@ SOURCES += \ #libtables.cpp \
     idtagtableaction.cpp \
     signalmastlogictableaction.cpp \
     transittableaction.cpp \
-    transitsectionaction.cpp
+    transitsectionaction.cpp \
+    conditionaltreeedit.cpp \
+    conditionaleditbase.cpp \
+    conditionallistedit.cpp \
+    picksinglepanel.cpp \
+    addnewdevicepanel.cpp
 
 HEADERS += \ #libtables.h\
         libtables_global.h \
@@ -204,7 +209,12 @@ HEADERS += \ #libtables.h\
     idtagtableaction.h \
     signalmastlogictableaction.h \
     transittableaction.h \
-    transitsectionaction.h
+    transitsectionaction.h \
+    conditionaltreeedit.h \
+    conditionaleditbase.h \
+    conditionallistedit.h \
+    picksinglepanel.h \
+    addnewdevicepanel.h
 
 unix:!symbian {
     maemo5 {

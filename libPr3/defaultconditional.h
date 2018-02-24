@@ -1,7 +1,7 @@
 #ifndef DEFAULTCONDTIONAL_H
 #define DEFAULTCONDTIONAL_H
 
-#include "abstractnamedbean.h"
+#include "conditional.h"
 #include "bitset.h"
 #include "exceptions.h"
 #include "actionlistener.h"
@@ -12,11 +12,11 @@ class Memory;
 class DataPair;
 class ConditionalAction;
 class ConditionalVariable;
-class LIBPR3SHARED_EXPORT DefaultConditional : public AbstractNamedBean
+class LIBPR3SHARED_EXPORT DefaultConditional : public Conditional
 {
     Q_OBJECT
 public:
-    //explicit DefaultCondtional(QObject *parent = 0);
+ explicit DefaultConditional(QObject *parent = 0) : Conditional(parent) {}
     /*public*/ static /*final*/ bool PARKS_DEBUG;// = false;
     /*public*/ DefaultConditional(QString systemName, QString userName="", QObject *parent = 0);
     /*public*/ static int getIndexInTable(QList<int> table, int entry);
@@ -37,6 +37,7 @@ public:
     /*public*/ int calculate (bool enabled, PropertyChangeEvent* evt);
     bool wantsToTrigger(PropertyChangeEvent* evt);
     /*public*/ QString validateAntecedent(QString ant, QList <ConditionalVariable*>* variableList);
+    /*public*/ QList<ConditionalAction*> getActionList();
 
 
 signals:

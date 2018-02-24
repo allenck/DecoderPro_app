@@ -30,6 +30,8 @@ public:
     /*public*/ void deleteTransit(Transit* z) ;
     /*public*/ QList<Transit*>* getListUsingSection(Section* s);
     /*static*/ /*public*/ TransitManager* instance();
+    /*public*/ QList<Transit*> getListUsingBlock(Block* b);
+    /*public*/ QList<Transit*> getListEntryBlock(Block* b);
 
 signals:
     

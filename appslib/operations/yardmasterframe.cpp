@@ -6,6 +6,7 @@
 #include "control.h"
 #include "yardmasterpanel.h"
 #include "printswitchlistaction.h"
+#include "yardmasterbytrackaction.h"
 
 namespace Operations
 {
@@ -35,9 +36,8 @@ namespace Operations
    QMenuBar* menuBar = new QMenuBar();
    QMenu* toolMenu = new QMenu(tr("Tools"));
    QAction *print= NULL, *preview =NULL;
-#if 0
-   toolMenu->addAction(new YardmasterByTrackAction(location));
-#endif
+
+   toolMenu->addAction(new YardmasterByTrackAction(location,this));
    toolMenu->addAction(print = new PrintSwitchListAction(tr("Print"), location,
            false, this));
    toolMenu->addAction(preview = new PrintSwitchListAction(tr("Preview"), location,

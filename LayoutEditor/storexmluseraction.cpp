@@ -53,7 +53,11 @@
  QString selectedFile = QFileDialog::getSaveFileName(NULL, tr("Save File"), FileUtil::getUserFilesPath(),tr("Xml files (*.xml);;All files (*.*)"));
 
  if (selectedFile == "") return;
+ saveFile(selectedFile);
+}
 
+void StoreXmlUserAction::saveFile(QString selectedFile)
+{
  // make a backup file
  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
  cm->makeBackup(new File(selectedFile));

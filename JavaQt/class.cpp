@@ -1,6 +1,8 @@
 #include "class.h"
 #include "classloader.h"
 #include "exceptions.h"
+#include <QDebug>
+
 /**
  * Instances of the class {@code Class} represent classes and
  * interfaces in a running Java application.  An enum is a kind of
@@ -210,7 +212,10 @@
       return (Class*)obj;
     }
      else
+     {
+      qDebug() << "class not fond: " << className;
       throw(ClassNotFoundException(className));
+     }
     }
 
 #if 0

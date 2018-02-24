@@ -215,7 +215,7 @@ namespace Operations
 
  /*private*/ void YardmasterPanel::clearAndUpdate() {
      trainCommon->clearUtilityCarTypes(); // reset the utility car counts
-     carCheckBoxes.clear();
+     checkBoxes.clear();
      isSetMode = false;
      update();
  }
@@ -370,9 +370,9 @@ log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyNam
          // remove car from list
          if (e->getSource()->metaObject()->className()==("Car")) {
              Car* car = (Car*) e->getSource();
-             carCheckBoxes.remove("p" + car->getId());
-             carCheckBoxes.remove("s" + car->getId());
-             carCheckBoxes.remove("m" + car->getId());
+             checkBoxes.remove("p" + car->getId());
+             checkBoxes.remove("s" + car->getId());
+             checkBoxes.remove("m" + car->getId());
              log->debug(tr("Car (%1) removed from list").arg(car->toString()));
          }
          update();

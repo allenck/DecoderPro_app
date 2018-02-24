@@ -2,32 +2,51 @@
 #define CATALOGPANE_H
 
 #include <QWidget>
-//#include <QFileSystemModel>
-#include "namedicon.h"
-#include "catalogtreemodel.h"
+#include <QLabel>
+#include "jtree.h"
+#include <QBoxLayout>
 
-namespace Ui {
-class CatalogPane;
-}
+class NamedIcon;
+class Logger;
 class CatalogPane : public QWidget
 {
-    Q_OBJECT
-
+ Q_OBJECT
 public:
-    /*explicit*/ CatalogPane(bool bShowFiles=false, QWidget *parent = 0);
-    ~CatalogPane();
-    NamedIcon* getSelectedIcon();
-    //QFileSystemModel* model;
-    CatalogTreeModel* model;
+ explicit CatalogPane(QWidget *parent = nullptr);
+ /*public*/ NamedIcon* getSelectedIcon();
+
+signals:
 
 public slots:
-    void on_tree_clicked(QModelIndex);
-signals:
-    void newDirectorySelected(QString path);
 
 private:
-    Ui::CatalogPane *ui;
-    bool bShowFiles;
+ /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("CatalogPane");
+ QLabel* preview;// = new JLabel();
+ JTree* dTree;
+ friend class CPTreeSelectionListener;
+ friend class CP2TreeSelectionListener;
+};
+
+class CPTreeSelectionListener : public TreeSelectionListener
+{
+ Q_OBJECT
+ CatalogPane* cp;
+public:
+ CPTreeSelectionListener(CatalogPane* cp);
+public slots:
+ /*public*/ void valueChanged(TreeSelectionEvent* e);
+
+};
+
+class CP2TreeSelectionListener : public TreeSelectionListener
+{
+ Q_OBJECT
+ CatalogPane* cp;
+public:
+ CP2TreeSelectionListener(CatalogPane* cp);
+public slots:
+ /*public*/ void valueChanged(TreeSelectionEvent* e);
+
 };
 
 #endif // CATALOGPANE_H

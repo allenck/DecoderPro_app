@@ -6,6 +6,7 @@
 #include "allocationrequest.h"
 #include "allocationplan.h"
 #include "signalmast.h"
+#include "transit.h"
 
 //AutoAllocate::AutoAllocate(QObject *parent) : QObject(parent)
 //{
@@ -768,21 +769,21 @@
     }
     return 0;
 }
-
-/*private*/ int willTraverse(Section s, ActiveTrain at, int seq) {
-    Transit t = at.getTransit();
-    if (!at.isTransitReversed()) {
-        for (int i = seq; i <= t.getMaxSequence(); i++) {
-            for (int j = 0; j < t.getSectionListBySeq(i).size(); j++) {
-                if (t.getSectionListBySeq(i)->at(j) == s) {
+#endif
+/*private*/ int AutoAllocate::willTraverse(Section* s, ActiveTrain* at, int seq) {
+    Transit* t = at->getTransit();
+    if (!at->isTransitReversed()) {
+        for (int i = seq; i < t->getMaxSequence(); i++) {
+            for (int j = 0; j < t->getSectionListBySeq(i)->size(); j++) {
+                if (t->getSectionListBySeq(i)->at(j) == s) {
                     return i;
                 }
             }
         }
     } else {
         for (int i = seq; i >= 0; i--) {
-            for (int j = 0; j < t.getSectionListBySeq(i).size(); j++) {
-                if (t.getSectionListBySeq(i)->at(j) == s) {
+            for (int j = 0; j < t->getSectionListBySeq(i)->size(); j++) {
+                if (t->getSectionListBySeq(i)->at(j) == s) {
                     return i;
                 }
             }
@@ -790,7 +791,7 @@
     }
     return 0;
 }
-
+#if 0
 /*private*/ bool sectionNeeded(AllocationRequest ar, ActiveTrain at) {
     // returns 'true' if request section, or its alternates, will be needed by specified train
     if ((ar == NULL) || (at == NULL)) {

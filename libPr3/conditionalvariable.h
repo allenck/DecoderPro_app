@@ -55,11 +55,15 @@ public:
     /*public*/ static QString getCompareSymbols(int index);
     /*public*/ static int stringToVariableTest(QString str);
     /*public*/ QString toString();
+    /*public*/ static QString describeState(int t);
+    /*public*/ QString getGuiName();
+    /*public*/ void setGuiName(QString guiName);
 
 signals:
 
 public slots:
  private:
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ConditionalVariable");
     /*private*/ bool _not;// = false;
     // Not a variable attribute, but retained as an artifact of previous releases.  This will be used
     // as the default operator immediately to the left of this variable in the antecedent statement. 
@@ -71,6 +75,7 @@ public slots:
     /*private*/ QString _dataString;// = "";
     /*private*/ int _num1;// = 0;
     /*private*/ int _num2;// = 0;
+    /*private*/ QString _guiName;// = "";       // Contains the user name of the referenced conditional
     /*private*/ NamedBeanHandle<NamedBean*>* _namedBean;// = NULL;
     //private NamedBeanHandle<Sensor> _namedSensorBean = null;
     // Name clarification: Formerly was named '_triggersCalculation' because it controlled whether
@@ -80,7 +85,6 @@ public slots:
     // state of the conditional, should that also  trigger the actions.
     /*private*/ bool _triggersActions;// = true;
     /*private*/ int _state;// = Conditional.UNKNOWN;        // tri-state
-    Logger* log;
     /*private*/ int fixMidnight(int time);
     void common();
 protected:

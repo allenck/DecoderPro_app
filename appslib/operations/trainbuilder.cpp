@@ -1019,6 +1019,14 @@ namespace Operations
          }
          // is this engine part of a consist?
          if (engine->getConsist() == NULL) {
+          // TODO Would be nice if blocking order was only set once for B unit engines.
+          // today a B unit is associated with a modelc723@knobacres
+
+          if (engine->isBunit())
+              engine->setBlocking(Engine::B_UNIT_BLOCKING);
+          else
+              engine->setBlocking(Engine::DEFAULT_BLOCKING_ORDER);
+          // single engine, but does the train require a consist?
              // single engine, but does the train require a consist?
              if (numberOfEngines > 1) {
                  addLine(_buildReport, SEVEN, tr("Skip single loco (%1) train requires %2 locomotives").arg(

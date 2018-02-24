@@ -3,7 +3,7 @@
 #include "proxysensormanager.h"
 #include "logger.h"
 #include "proxyturnoutmanager.h"
-#include <QDialog>
+#include "jdialog.h"
 #include <QVBoxLayout>
 //#include "jtextarea.h"
 #include "defaultsignalmastmanager.h"
@@ -16,7 +16,7 @@
 #include "defaultlogix.h"
 #include "defaultconditionalmanager.h"
 #include "conditionalvariable.h"
-#include <QListView>
+#include "jlist.h"
 #include "conditionalaction.h"
 #include "picklistmodel.h"
 #include "abstractsignalhead.h"
@@ -196,9 +196,7 @@ Maintenance::Maintenance(QObject *parent) :
 //    for (int i=0; i<display.size(); i++)  {
 //        listModel.addElement(display.get(i));
 //    }
- //JList list = new JList(listModel);
- QListView* list = new QListView();
- list->setModel(listModel);
+ JList* list = new JList(listModel);
  list->setSelectionMode(QAbstractItemView::SingleSelection);
 
  QPushButton* button = new QPushButton(tr("Delete"));
@@ -282,12 +280,12 @@ Maintenance::Maintenance(QObject *parent) :
     }
 #endif
     //JScrollPane scrollPane = new JScrollPane(list);
-    QWidget* scrollPane = new QWidget();
-    scrollPane->setLayout(new QVBoxLayout());
-    scrollPane->layout()->addWidget(list);
+//    QWidget* scrollPane = new QWidget();
+//    scrollPane->setLayout(new QVBoxLayout());
+//    scrollPane->layout()->addWidget(list);
     //button.addActionListener(new SearchListener(list, names));
     //button.setMaximumSize(button.getPreferredSize());
-    makeDialog(scrollPane, button, parent, tr("Orphaned Items"));
+    makeDialog(list, button, parent, tr("Orphaned Items"));
 }
 
 /**
@@ -1371,116 +1369,119 @@ Maintenance::Maintenance(QObject *parent) :
     found = false;
     empty = true;
     QList<Editor*>* panelList = PanelMenu::instance()->getEditorPanelList();
-    for (int i=0; i<panelList->size(); i++) {
-        Editor* panelEditor = panelList->at(i);
-        name = panelEditor->getTitle();
-        QString line1 = tr("%1%2: \"%3\" (%4)\n").arg(" ").arg( tr("Panel")).arg(name).arg( name);
-        QList <Positionable*> contents = panelEditor->getContents();
-        for (int k=0; k<contents.size(); k++) {
-            Positionable* o = contents.at(k);
-            if (QString(o->metaObject()->className())==("SensorIcon"))
-            {
-                name = ((SensorIcon*)o)->getSensor()->getSystemName();
-                QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg( tr("Sensor"));
-                if (testName(name, found, names, line1, NULL, line, tempText)) {
-                    found = true;
-                    referenceCount++;
-                }
-            } else if (QString(o->metaObject()->className())==("TurnoutIcon")) {
-                name = ((TurnoutIcon*)o)->getTurnout()->getSystemName();
-                QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("Turnout"));
-                if (testName(name, found, names, line1, NULL, line, tempText)) {
-                    found = true;
-                    referenceCount++;
-                }
-            } else if (QString(o->metaObject()->className())==("SignalHeadIcon")) {
-                name = ((SignalHeadIcon*)o)->getSignalHead()->getSystemName();
-                QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("SignalHead"));
-                if (testName(name, found, names, line1, NULL, line, tempText)) {
-                    found = true;
-                    referenceCount++;
-                }
-            }
-#if 1
-            else if (QString(o->metaObject()->className())==("MultiSensorIcon"))
-            {
-                MultiSensorIcon* msi = (MultiSensorIcon*)o;
-                for (int j=0; j<msi->getNumEntries(); j++)
-                {
-                    name = msi->getSensorName(j);
-                    QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("MultiSensor"));
-                    if (testName(name, found, names, line1, NULL, line, tempText)) {
-                        found = true;
-                        referenceCount++;
-                    }
-                }
-            }
+    for (int i=0; i<panelList->size(); i++)
+    {
+     if(qobject_cast<Editor*>(panelList->at(i)) == NULL)
+        continue;
+     Editor* panelEditor = panelList->at(i);
+     name = panelEditor->getTitle();
+     QString line1 = tr("%1%2: \"%3\" (%4)\n").arg(" ").arg( tr("Panel")).arg(name).arg( name);
+     QList <Positionable*> contents = panelEditor->getContents();
+     for (int k=0; k<contents.size(); k++) {
+         Positionable* o = contents.at(k);
+         if (QString(o->metaObject()->className())==("SensorIcon"))
+         {
+             name = ((SensorIcon*)o)->getSensor()->getSystemName();
+             QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg( tr("Sensor"));
+             if (testName(name, found, names, line1, NULL, line, tempText)) {
+                 found = true;
+                 referenceCount++;
+             }
+         } else if (QString(o->metaObject()->className())==("TurnoutIcon")) {
+             name = ((TurnoutIcon*)o)->getTurnout()->getSystemName();
+             QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("Turnout"));
+             if (testName(name, found, names, line1, NULL, line, tempText)) {
+                 found = true;
+                 referenceCount++;
+             }
+         } else if (QString(o->metaObject()->className())==("SignalHeadIcon")) {
+             name = ((SignalHeadIcon*)o)->getSignalHead()->getSystemName();
+             QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("SignalHead"));
+             if (testName(name, found, names, line1, NULL, line, tempText)) {
+                 found = true;
+                 referenceCount++;
+             }
+         }
+ #if 1
+         else if (QString(o->metaObject()->className())==("MultiSensorIcon"))
+         {
+             MultiSensorIcon* msi = (MultiSensorIcon*)o;
+             for (int j=0; j<msi->getNumEntries(); j++)
+             {
+                 name = msi->getSensorName(j);
+                 QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("MultiSensor"));
+                 if (testName(name, found, names, line1, NULL, line, tempText)) {
+                     found = true;
+                     referenceCount++;
+                 }
+             }
+         }
 
-            else if (QString(o->metaObject()->className())==("IndicatorTurnoutIcon"))
-            {
-                IndicatorTurnoutIcon* ito = (IndicatorTurnoutIcon*)o;
-                name = ito->getTurnout()->getSystemName();
-                QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("IndicatorTurnout"));
-                if (testName(name, found, names, line1, NULL, line, tempText)) {
-                    found = true;
-                    referenceCount++;
-                }
-                Sensor* sensor = ito->getOccSensor();
-                if (sensor!=NULL) {
-                    name = sensor->getSystemName();
-                    line = tr("%1Referred to in a %2 icon\n").arg("\t").arg( tr("IndicatorTurnout"));
-                    if (testName(name, found, names, line1, NULL, line, tempText)) {
-                        found = true;
-                        referenceCount++;
-                    }
-                }
-                OBlock* block = ito->getOccBlock();
-                if (block!=NULL) {
-                    sensor = block->getSensor();
-                    if (sensor!=NULL) {
-                        name = sensor->getSystemName();
-                        line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("IndicatorTurnout"));
-                        if (testName(name, found, names, line1, NULL, line, tempText)) {
-                            found = true;
-                            referenceCount++;
-                        }
-                    }
-                }
-            }
+         else if (QString(o->metaObject()->className())==("IndicatorTurnoutIcon"))
+         {
+             IndicatorTurnoutIcon* ito = (IndicatorTurnoutIcon*)o;
+             name = ito->getTurnout()->getSystemName();
+             QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("IndicatorTurnout"));
+             if (testName(name, found, names, line1, NULL, line, tempText)) {
+                 found = true;
+                 referenceCount++;
+             }
+             Sensor* sensor = ito->getOccSensor();
+             if (sensor!=NULL) {
+                 name = sensor->getSystemName();
+                 line = tr("%1Referred to in a %2 icon\n").arg("\t").arg( tr("IndicatorTurnout"));
+                 if (testName(name, found, names, line1, NULL, line, tempText)) {
+                     found = true;
+                     referenceCount++;
+                 }
+             }
+             OBlock* block = ito->getOccBlock();
+             if (block!=NULL) {
+                 sensor = block->getSensor();
+                 if (sensor!=NULL) {
+                     name = sensor->getSystemName();
+                     line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("IndicatorTurnout"));
+                     if (testName(name, found, names, line1, NULL, line, tempText)) {
+                         found = true;
+                         referenceCount++;
+                     }
+                 }
+             }
+         }
 
-            else if (QString(o->metaObject()->className())==("IndicatorTrackIcon"))
-            {
-                IndicatorTrackIcon* track = (IndicatorTrackIcon*)o;
-                Sensor* sensor = track->getOccSensor();
-                if (sensor!=NULL) {
-                    name = sensor->getSystemName();
-                    QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("IndicatorTrack"));
-                    if (testName(name, found, names, line1, NULL, line, tempText)) {
-                        found = true;
-                        referenceCount++;
-                    }
-                }
-                OBlock* block = track->getOccBlock();
-                if (block!=NULL) {
-                    sensor = block->getSensor();
-                    if (sensor!=NULL) {
-                        name = sensor->getSystemName();
-                        QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("IndicatorTrack"));
-                        if (testName(name, found, names, line1, NULL, line, tempText)) {
-                            found = true;
-                            referenceCount++;
-                        }
-                    }
-                }
+         else if (QString(o->metaObject()->className())==("IndicatorTrackIcon"))
+         {
+             IndicatorTrackIcon* track = (IndicatorTrackIcon*)o;
+             Sensor* sensor = track->getOccSensor();
+             if (sensor!=NULL) {
+                 name = sensor->getSystemName();
+                 QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("IndicatorTrack"));
+                 if (testName(name, found, names, line1, NULL, line, tempText)) {
+                     found = true;
+                     referenceCount++;
+                 }
+             }
+             OBlock* block = track->getOccBlock();
+             if (block!=NULL) {
+                 sensor = block->getSensor();
+                 if (sensor!=NULL) {
+                     name = sensor->getSystemName();
+                     QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("IndicatorTrack"));
+                     if (testName(name, found, names, line1, NULL, line, tempText)) {
+                         found = true;
+                         referenceCount++;
+                     }
+                 }
+             }
 
-            }
-            if (text != NULL && found) {
-                text->append(tempText);
-                tempText =  QString();
-                found = false;
-                empty = false;
-                line1 = "";
-            }
+         }
+         if (text != NULL && found) {
+             text->append(tempText);
+             tempText =  QString();
+             found = false;
+             empty = false;
+             line1 = "";
+         }
 #endif
      }
      if (text != NULL)
@@ -1541,8 +1542,7 @@ Maintenance::Maintenance(QObject *parent) :
 }
 
 /*static*/ void Maintenance::makeDialog(QWidget* component, QWidget* button, QWidget* parent, QString title) {
-    QDialog* dialog = new QDialog(parent); //, title, true);
-    dialog->setWindowTitle(title);
+    JDialog* dialog = new JDialog(parent, title, true);
     QPushButton* ok = new QPushButton(tr("OK"));
 //    class myListener implements ActionListener {
 //         java.awt.Window _w;

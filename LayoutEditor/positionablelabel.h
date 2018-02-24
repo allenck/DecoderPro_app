@@ -112,7 +112,7 @@ QString getToolTip();
   * Clean up when this object is no longer needed.  Should not
   * be called while the object is still displayed; see remove()
   */
- /*public*/ void dispose();
+ virtual /*public*/ void dispose();
  /**
   * Removes this object from display and persistance
   */
@@ -262,6 +262,7 @@ protected:
  friend class DragDecoratorLabel;
  friend class PositionablePropertiesUtil;
  friend class IEFWindowListener;
+ friend class BlockContentsIcon;
 };
 class IEFWindowListener : public WindowListener
 {

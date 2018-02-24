@@ -6,6 +6,7 @@
 #include "QMessageBox"
 #include "transitmanager.h"
 #include "dispatcherframe.h"
+#include "loadxmlconfigaction.h"
 
 LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -408,6 +409,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
  // create the objects
  LayoutEditor* panel = new LayoutEditor(name);
+ panel->setFilename(LoadXmlConfigAction::currentFile);
  panel->setLayoutName(name);
  panel->setMainlineTrackWidth(mainlinetrackwidth);
  panel->setSideTrackWidth(sidetrackwidth);

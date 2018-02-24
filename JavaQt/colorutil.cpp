@@ -143,6 +143,30 @@ ColorUtil::ColorUtil()
     }
     return "";
 }
+/**
+ * set the alpha component of a color
+ *
+ * @param color the color
+ * @param alpha the alpha component (integer 0 - 255)
+ * @return the new color with the specified alpha
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QColor ColorUtil::setAlpha(/*@Nonnull*/ QColor color, int alpha) {
+    return QColor(color.red(), color.green(), color.blue(), alpha);
+}
 
-    // initialize logging
-    /*private*/ /*final*/ /*static*/ Logger* ColorUtil::log = LoggerFactory::getLogger("ColorUtil");
+/**
+ * set the alpha component of a color
+ *
+ * @param color the color
+ * @param alpha the alpha component (double 0.0 - 1.0)
+ * @return the new color with the specified alpha
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QColor ColorUtil::setAlpha(/*@Nonnull*/ QColor color, double alpha) {
+    return  QColor(color.redF(), color.greenF(), color.blueF(),
+            (int) (255.0 * alpha));
+}
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* ColorUtil::log = LoggerFactory::getLogger("ColorUtil");

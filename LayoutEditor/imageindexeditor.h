@@ -3,7 +3,7 @@
 #include "jmrijframe.h"
 #include "liblayouteditor_global.h"
 
-class CatalogTreeItem;
+class CatalogTreeNode;
 class CatalogPanel;
 class ShutDownTask;
 class CatalogTreeNode;
@@ -31,10 +31,8 @@ private:
     static bool  _indexChanged;// = false;
     static ShutDownTask* 	_shutDownTask;
     /*private*/ ImageIndexEditor(QString name = "", QWidget *parent = 0);
-//    /*private*/ int countSubNodes(CatalogTreeNode* node) ;
-    /*private*/ int countSubNodes(CatalogTreeItem* node);
-//    /*private*/ int countIcons(CatalogTreeNode* node);
-    /*private*/ int countIcons(CatalogTreeItem* node);
+    /*private*/ int countSubNodes(CatalogTreeNode* node) ;
+    /*private*/ int countIcons(CatalogTreeNode* node);
     /*private*/ void init(Editor* editor);
     /*private*/ QWidget* makeCatalogPanel();
     /*private*/ QWidget*  makeIndexPanel();

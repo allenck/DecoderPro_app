@@ -4,6 +4,12 @@
 #include "treepath.h"
 #include <QVector>
 #include "vptr.h"
+#include "treemodelevent.h"
+#include "treemodellistener.h"
+#include <QDebug>
+#include <QStyle>
+#include <QApplication>
+#include <QDesktopWidget>
 
 DefaultTreeModel::DefaultTreeModel(QObject *parent) :
     TreeModel(parent)
@@ -43,7 +49,7 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
     //this(root, false);
  this->root = root;
  this->_asksAllowsChildren = false;
-
+ listenerList = new EventListenerList();
 }
 
 /**
@@ -58,7 +64,7 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
   */
 /*public*/ DefaultTreeModel::DefaultTreeModel(TreeNode* root, bool asksAllowsChildren, QObject *parent) : TreeModel(parent){
     //super();
-//    listenerList = new EventListenerList();
+    listenerList = new EventListenerList();
     this->root = root;
     this->_asksAllowsChildren = asksAllowsChildren;
 }
@@ -323,10 +329,11 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
   * node and its childrens children...  This will post a
   * treeStructureChanged event.
   */
-/*public*/ void DefaultTreeModel::nodeStructureChanged(TreeNode* node) {
-    if(node != NULL) {
-       fireTreeStructureChanged((QObject*)this, (QList<QObject*>*)getPathToRoot(node), NULL, NULL);
-    }
+/*public*/ void DefaultTreeModel::nodeStructureChanged(TreeNode* node)
+{
+ if(node != NULL) {
+    fireTreeStructureChanged((QObject*)this, (QList<QObject*>*)getPathToRoot(node), NULL, NULL);
+ }
 }
 
 /**
@@ -402,9 +409,11 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
  * @see     #removeTreeModelListener
  * @param   l       the listener to add
  */
-///*public*/ void DefaultTreeModel::addTreeModelListener(TreeModelListener* l) {
-////    listenerList.add(TreeModelListener.class, l);
-//}
+/*public*/ void DefaultTreeModel::addTreeModelListener(TreeModelListener* l) {
+    listenerList->add("TreeModelListener", l);
+    //connect()
+    connect(this, SIGNAL(treeStructureChanged(TreeModelEvent*)), l, SLOT(treeStructureChanged(TreeModelEvent*)));
+}
 
 /**
  * Removes a listener previously added with <B>addTreeModelListener()</B>.
@@ -412,9 +421,9 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
  * @see     #addTreeModelListener
  * @param   l       the listener to remove
  */
-///*public*/ void DefaultTreeModel::removeTreeModelListener(TreeModelListener* l) {
-////    listenerList.remove(TreeModelListener.class, l);
-//}
+/*public*/ void DefaultTreeModel::removeTreeModelListener(TreeModelListener* l) {
+//    listenerList->remove("TreeModelListener", l);
+}
 
 /**
  * Returns an array of all the tree model listeners
@@ -429,9 +438,16 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
  *
  * @since 1.4
  */
-///*public*/ QList<TreeModelListener*> DefaultTreeModel::getTreeModelListeners() {
-////    return listenerList.getListeners(TreeModelListener.class);
-//}
+/*public*/ QList<TreeModelListener*> DefaultTreeModel::getTreeModelListeners() {
+    //return listenerList->getListeners("TreeModelListener");
+ QVector<QObject*> list =  listenerList->getListenerList();
+ QList<TreeModelListener*> listenerList = QList<TreeModelListener*>();
+ foreach (QObject* listener, list) {
+  if(listener->objectName() == "TreeModelListener")
+   listenerList.append((TreeModelListener*)listener);
+ }
+ return listenerList;
+}
 
 /**
  * Notifies all listeners that have registered interest for
@@ -588,22 +604,22 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
  *             use {@code NULL} to identify the root has changed
  */
 /*private*/ void DefaultTreeModel::fireTreeStructureChanged(QObject* source, TreePath* path) {
-#if 0
+#if 1
     // Guaranteed to return a non-NULL array
-    Object[] listeners = listenerList.getListenerList();
-    TreeModelEvent e = NULL;
+    QVector<QObject*> listeners = listenerList->getListenerList();
+    TreeModelEvent* e = NULL;
     // Process the listeners last to first, notifying
     // those that are interested in this event
-    for (int i = listeners.length-2; i>=0; i-=2) {
-        if (listeners[i]==TreeModelListener.class) {
-            // Lazily create the event:
-            if (e == NULL)
+//    for (int i = listeners.length-2; i>=0; i-=2) {
+//        if (listeners[i]==TreeModelListener.class) {
+//            // Lazily create the event:
+//            if (e == NULL)
                 e = new TreeModelEvent(source, path);
-            ((TreeModelListener)listeners[i+1]).treeStructureChanged(e);
-        }
-    }
+//            ((TreeModelListener)listeners[i+1]).treeStructureChanged(e);
+//        }
+//    }
 #endif
-  emit treeStructureChanged(source, path);
+  emit treeStructureChanged(e);
 }
 
 /**
@@ -676,16 +692,32 @@ private void readObject(ObjectInputStream s)
 #endif
 QModelIndex DefaultTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
- if (!hasIndex(row,column,parent))
-  return QModelIndex();
+// if (!hasIndex(row,column,parent))
+//  return QModelIndex();
  DefaultMutableTreeNode* parentItem;
+ DefaultMutableTreeNode *childItem;
  if (!parent.isValid())
   parentItem = (DefaultMutableTreeNode*)root;
  else
   parentItem = static_cast<DefaultMutableTreeNode*>(parent.internalPointer());
- DefaultMutableTreeNode *childItem = (DefaultMutableTreeNode*)parentItem->getFirstChild();
+ try
+ {
+  int childCount = parentItem->getChildCount();
+  if((row >= childCount) || (row < 0))
+  {
+   return QModelIndex();
+  }
+  childItem = (DefaultMutableTreeNode*)parentItem->getChildAt(row);
+ }
+ catch (NoSuchElementException ex)
+ {
+  return QModelIndex();
+ }
  if (childItem)
+ {
+  qDebug() << "Parent has " << parentItem->getChildCount() << " children, Child Level "  << childItem->getLevel() << childItem->toString();
   return createIndex(row,column,childItem);
+ }
  else
   return QModelIndex();
 }
@@ -698,27 +730,44 @@ QModelIndex DefaultTreeModel::parent(const QModelIndex &index) const
  DefaultMutableTreeNode* parentItem = (DefaultMutableTreeNode*)childItem->getParent();
  if (parentItem == root )
   return QModelIndex();
- return createIndex(index.row(),0,parentItem);
+ return createIndex(index.row(), 0, parentItem);
 }
-int DefaultTreeModel::columnCount(const QModelIndex &parent) const
+
+int DefaultTreeModel::columnCount(const QModelIndex &/*parent*/) const
 {
  return 1;
 }
 
 int DefaultTreeModel::rowCount(const QModelIndex &parent) const
 {
- if(root->getChildCount() == 0) return 0;
- int rows =  root->getChildAt(0)->getChildCount();
- return rows;
+// if(QString(metaObject()->className()) == "DefaultTreeModel")
+// {
+  TreeNode* parentItem;
+  if (parent.column() > 0)
+   return 0;
+  if (!parent.isValid())
+   parentItem = root;
+  else
+   parentItem = static_cast<DefaultMutableTreeNode*>(parent.internalPointer());
+  return parentItem->getChildCount();
 }
+
 
 QVariant DefaultTreeModel::data(const QModelIndex &index, int role) const
 {
- DefaultMutableTreeNode* node = (DefaultMutableTreeNode*)root->getChildAt(0)->getChildAt(index.row());
+ //DefaultMutableTreeNode* node = (DefaultMutableTreeNode*)root->getChildAt(0)->getChildAt(index.row());
+ DefaultMutableTreeNode* node = static_cast<DefaultMutableTreeNode*>(index.internalPointer());
 
  if(role == Qt::DisplayRole)
  {
   return node->toString();
+ }
+ if(role == Qt::DecorationRole)
+ {
+  if(node->isLeaf())
+  return QApplication::desktop()->style()->standardIcon(QStyle::SP_FileIcon).pixmap(QSize(24,24));
+  else
+   return QApplication::desktop()->style()->standardIcon(QStyle::SP_DirIcon).pixmap(QSize(24,24));
  }
  if(role == Qt::UserRole)
  {
@@ -727,12 +776,12 @@ QVariant DefaultTreeModel::data(const QModelIndex &index, int role) const
  return QVariant();
 }
 
-Qt::ItemFlags DefaultTreeModel::flags(const QModelIndex &index) const
+Qt::ItemFlags DefaultTreeModel::flags(const QModelIndex &/*index*/) const
 {
  return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant DefaultTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant DefaultTreeModel::headerData(int /*section*/, Qt::Orientation orientation, int role) const
 {
  if(role == Qt::DisplayRole &&  orientation == Qt::Horizontal)
  {

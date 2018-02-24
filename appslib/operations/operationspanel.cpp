@@ -48,7 +48,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString OperationsPanel::NONE = ""; // NOI18N
 
  /*public*/ OperationsPanel::OperationsPanel(QWidget *parent) :
-  QWidget(parent)
+  PreferencesPanel(parent)
  {
        //super();
   setObjectName("OperationsPanel");

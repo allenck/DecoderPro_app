@@ -59,7 +59,7 @@
 
 //	static final java.util.ResourceBundle rbx = java.util.ResourceBundle.getBundle("jmri.jmrit.beantable.LogixTableBundle");
 
-/*public*/ DefaultConditional::DefaultConditional(QString systemName, QString userName, QObject *parent) :AbstractNamedBean(systemName, userName,parent)
+/*public*/ DefaultConditional::DefaultConditional(QString systemName, QString userName, QObject *parent) : Conditional(systemName, userName,parent)
 {
  //super(systemName, userName);
     // boolean expression of state variables
@@ -162,6 +162,7 @@
 /**
  * Set list of actions
  */
+//@Override
 /*public*/ void DefaultConditional::setAction (QList <ConditionalAction*>* arrayList) {
     _actionList = arrayList;
 }
@@ -183,6 +184,16 @@
     }
     return actionList;
 }
+
+/**
+ * Get the list of actions for this conditional.
+ *
+ * @return the list of actions
+ */
+/*public*/ QList<ConditionalAction*> DefaultConditional::getActionList() {
+    return *_actionList;
+}
+
 /**
  * Calculate this Conditional::
 * When _enabled is false, Conditional::calculate will compute the state of the conditional,

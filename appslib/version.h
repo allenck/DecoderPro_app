@@ -18,7 +18,7 @@ public:
      * Minor number changes with each production release.
      * Odd is development, even is production.
      */
-    static /*final*/ const /*public*/ int minor = 1;
+    static /*final*/ const /*public*/ int minor = 7;
 
     /* Test number changes with individual releases,
      * generally fastest for test releases. Set 0 for production

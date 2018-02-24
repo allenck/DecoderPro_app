@@ -23,6 +23,8 @@
 #include "track.h"
 #include "carsetframe.h"
 #include "htmltextedit.h"
+#include "joptionpane.h"
+#include "carstableframe.h"
 
 namespace Operations
 {
@@ -65,14 +67,15 @@ namespace Operations
    // major buttons
    selectButton = new QPushButton(tr("Select"));
    clearButton = new QPushButton(tr("Clear"));
-   setButton = new QPushButton(tr("Set"));
+   modifyButton = new QPushButton(tr("Modify")); // see setModifyButtonText()
+
    moveButton = new QPushButton(tr("Move"));
 
    // text panes
    textLocationCommentPane = new HtmlTextEdit();
    textTrainCommentPane = new HtmlTextEdit();
    textTrainRouteCommentPane = new HtmlTextEdit();
-    textTrainRouteLocationCommentPane = new HtmlTextEdit();
+   textTrainRouteLocationCommentPane = new HtmlTextEdit();
 
    // panels
    pRailRoadName = new QGroupBox();
@@ -89,7 +92,7 @@ namespace Operations
    pButtons = new QGroupBox();
 
    // check boxes
-   carCheckBoxes =  QHash<QString, QCheckBox*>();
+   checkBoxes =  QHash<QString, QCheckBox*>();
    rollingStock =  QList<RollingStock*>();
 
    // flags
@@ -253,12 +256,12 @@ namespace Operations
   pButtons->setTitle(tr("Work"));
   addItem(pButtons, selectButton, 0, 0);
   addItem(pButtons, clearButton, 1, 0);
-  addItem(pButtons, setButton, 2, 0);
+  addItem(pButtons, modifyButton, 2, 0);
 
   // setup buttons
   addButtonAction(selectButton);
   addButtonAction(clearButton);
-  addButtonAction(setButton);
+  addButtonAction(modifyButton);
 
   setMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
  }
@@ -273,8 +276,14 @@ namespace Operations
      if (source == clearButton) {
          selectCheckboxes(false);
      }
-     if (source == setButton) {
-         isSetMode = !isSetMode; // toggle setMode
+     if (source == modifyButton)
+     {
+      isSetMode = !isSetMode; // toggle setMode
+      update();
+      // ask if user wants to add cars to train
+      if (isSetMode) {
+          addCarToTrain();
+      }
      }
      check();
  }
@@ -328,7 +337,7 @@ namespace Operations
 
      textTrainRouteLocationCommentGB->setVisible(false);
 
-     setButtonText();
+     setModifyButtonText();
  }
 
  /*protected*/ void CommonConductorYardmasterPanel::updateComplete() {
@@ -344,13 +353,22 @@ namespace Operations
      pSetouts->update();
      pMoves->update();
 
-     selectButton->setEnabled(carCheckBoxes.size() > 0);
-     clearButton->setEnabled(carCheckBoxes.size() > 0);
+     selectButton->setEnabled(checkBoxes.size() > 0);
+     clearButton->setEnabled(checkBoxes.size() > 0);
      check();
 
      log->debug("update complete");
  }
 
+ /*private*/ void CommonConductorYardmasterPanel::addCarToTrain()
+ {
+  if (JOptionPane::showConfirmDialog(this,
+          tr("Do you want to add cars to train (%1)?").arg(_train->getName()),
+          tr("Add cars to train?"),
+          JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION) {
+      new CarsTableFrame(false, textLocationName->text(), NULL);
+  }
+ }
 
  // action for set button for a car, opens the set car window
  /*public*/ void CommonConductorYardmasterPanel::setCarButtonActionPerfomed(QWidget* ae) {
@@ -377,25 +395,25 @@ namespace Operations
  // Determines if all car checkboxes are selected. Disables the Set button if
  // all checkbox are selected.
  /*protected*/ void CommonConductorYardmasterPanel::check() {
-     QListIterator<QCheckBox*> en(carCheckBoxes.values());
+     QListIterator<QCheckBox*> en(checkBoxes.values());
      while (en.hasNext()) {
          QCheckBox* checkBox = en.next();
          if (!checkBox->isChecked()) {
              // log->debug("Checkbox (" + checkBox.getText() + ") isn't selected ");
              moveButton->setEnabled(false);
-             setButton->setEnabled(true);
+             modifyButton->setEnabled(true);
              return;
          }
      }
      // all selected, work done!
      moveButton->setEnabled(_train != NULL && _train->isBuilt());
-     setButton->setEnabled(false);
+     modifyButton->setEnabled(false);
      isSetMode = false;
-     setButtonText();
+     setModifyButtonText();
  }
 
  /*protected*/ void CommonConductorYardmasterPanel::selectCheckboxes(bool enable) {
-     QListIterator<QCheckBox*> en = carCheckBoxes.values();
+     QListIterator<QCheckBox*> en = checkBoxes.values();
      while (en.hasNext()) {
          QCheckBox* checkBox = en.next();
          checkBox->setChecked(enable);
@@ -497,13 +515,13 @@ namespace Operations
           connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       }
       // did we already process this car?
-      if (carCheckBoxes.contains("p" + car->getId()))
+      if (checkBoxes.contains("p" + car->getId()))
       {
-          if (isSetMode && !carCheckBoxes.value("p" + car->getId())->isChecked()) {
+          if (isSetMode && !checkBoxes.value("p" + car->getId())->isChecked()) {
               // change to set button so user can remove car from train
               pPickups->layout()->addWidget(addSet(car));
           } else {
-              pPickups->layout()->addWidget(carCheckBoxes.value("p" + car->getId()));
+              pPickups->layout()->addWidget(checkBoxes.value("p" + car->getId()));
           }
           // figure out the checkbox text, either single car or utility
       }
@@ -526,7 +544,7 @@ namespace Operations
        setCheckBoxFont(checkBox);
        addCheckBoxAction(checkBox);
        pPickups->layout()->addWidget(checkBox);
-       carCheckBoxes.insert("p" + car->getId(), checkBox);
+       checkBoxes.insert("p" + car->getId(), checkBox);
       }
      }
     }
@@ -554,12 +572,12 @@ namespace Operations
             //car.addPropertyChangeListener(this);
             connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         }
-        if (carCheckBoxes.contains("s" + car->getId())) {
-            if (isSetMode && !carCheckBoxes.value("s" + car->getId())->isChecked()) {
+        if (checkBoxes.contains("s" + car->getId())) {
+            if (isSetMode && !checkBoxes.value("s" + car->getId())->isChecked()) {
                 // change to set button so user can remove car from train
                 pSetouts->layout()->addWidget(addSet(car));
             } else {
-                pSetouts->layout()->addWidget(carCheckBoxes.value("s" + car->getId()));
+                pSetouts->layout()->addWidget(checkBoxes.value("s" + car->getId()));
             }
         } else {
             QString text;
@@ -575,7 +593,7 @@ namespace Operations
             setCheckBoxFont(checkBox);
             addCheckBoxAction(checkBox);
             pSetouts->layout()->addWidget(checkBox);
-            carCheckBoxes.insert("s" + car->getId(), checkBox);
+            checkBoxes.insert("s" + car->getId(), checkBox);
         }
         // local move?
     }
@@ -588,12 +606,12 @@ namespace Operations
          rollingStock.append(car);
          //car.addPropertyChangeListener(this);
      }
-     if (carCheckBoxes.contains("m" + car->getId())) {
-         if (isSetMode && !carCheckBoxes.value("m" + car->getId())->isChecked()) {
+     if (checkBoxes.contains("m" + car->getId())) {
+         if (isSetMode && !checkBoxes.value("m" + car->getId())->isChecked()) {
              // change to set button so user can remove car from train
              pMoves->layout()->addWidget(addSet(car));
          } else {
-             pMoves->layout()->addWidget(carCheckBoxes.value("m" + car->getId()));
+             pMoves->layout()->addWidget(checkBoxes.value("m" + car->getId()));
          }
      }
      else
@@ -615,7 +633,7 @@ namespace Operations
       setCheckBoxFont(checkBox);
       addCheckBoxAction(checkBox);
       pMoves->layout()->addWidget(checkBox);
-      carCheckBoxes.insert("m" + car->getId(), checkBox);
+      checkBoxes.insert("m" + car->getId(), checkBox);
      }
     }
    }
@@ -662,11 +680,11 @@ namespace Operations
      }
  }
 
- /*protected*/ void CommonConductorYardmasterPanel::setButtonText() {
+ /*protected*/ void CommonConductorYardmasterPanel::setModifyButtonText() {
      if (isSetMode) {
-         setButton->setText(tr("Done"));
+         modifyButton->setText(tr("Done"));
      } else {
-         setButton->setText(tr("Set"));
+         modifyButton->setText(tr("Set"));
      }
  }
 

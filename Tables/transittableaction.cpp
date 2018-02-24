@@ -123,7 +123,7 @@ void TransitTableAction::common()
  alternateSectionBox = new QComboBox();
  addAlternateSection = NULL;
  _autoSystemName = new QCheckBox(tr("Auto Sys Name"));
- systemNameAuto = QString(this->metaObject()->className()) + ".AutoSystemName";
+ systemNameAuto = getClassName() + ".AutoSystemName";
 
  // variables for view actions window
  activeRow = 0;

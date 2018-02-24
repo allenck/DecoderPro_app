@@ -537,7 +537,6 @@ void SensorIcon::on_editSensorItemAction_triggered()
   parent->updateItem();
  }
 
-#if 1
 /*protected*/ void SensorIcon::editItem()
 {
  makePaletteFrame(tr("Edit %1 Item").arg("Sensor"));
@@ -599,7 +598,7 @@ void SensorIcon::updateItem()
  _itemPanel = NULL;
  invalidate();
 }
-#endif
+
 //@Override
 /*public*/ bool SensorIcon::setEditIconMenu(QMenu* popup)
 {

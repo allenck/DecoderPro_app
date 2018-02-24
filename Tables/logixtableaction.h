@@ -1,4 +1,4 @@
-﻿#ifndef LOGIXTABLEACTION_H
+#ifndef LOGIXTABLEACTION_H
 #define LOGIXTABLEACTION_H
 
 #include <QObject>
@@ -14,11 +14,19 @@
 #include "windowlistener.h"
 #include "libtables_global.h"
 #include "abstracttableaction.h"
+#include "actionlistener.h"
+#include "jfilechooser.h"
+#include "conditionaleditbase.h"
+#include <QCloseEvent>
 
-class EditActionFrameWindowListener;
+class LTAEditActionFrameWindowListener;
+class ConditionalListEdit;
+class ConditionalTreeEdit;
+class JFileChooser;
+class HtmlTextEdit;
+class SelectionMode;
 class AddLogixFrameWindowListener;
 class EditLogixFrameWindowListener;
-class EditVariableFrameWindowListener;
 //class VariableSignalTestStateListener;
 //class VariableSignalHeadNameListener;
 //class ActionSignalHeadNameListener;
@@ -40,7 +48,6 @@ class Logix;
 class Conditional;
 class PropertyChangeEvent;
 class QLabel;
-class ConditionalTableModel;
 class JTextField;
 class JmriJFrame;
 class PickFrame;
@@ -57,88 +64,101 @@ public:
     LogixTableAction(const LogixTableAction&);
     /*public*/ static QString formatTime(int hour, int minute);
     /*public*/ void setEnabled(bool newValue);
-    void enableAll(bool enable);
     void OpenPickListTable();
     void editPressed(QString sName);
     bool checkFlags(QString sName);
-    void makeEditLogixWindow();
-    void swapConditional(int row);
     void messageDuplicateConditionalUserName(QString svName);
-    void variableNegationChanged(int row, QString oper);
-    void variableOperatorChanged(int row, QString oper);
     void makeAntecedent();
     bool alreadyEditingActionOrVariable();
     void cleanUpVariable();
     QWidget* makeTopPanel(QWidget* frame, QString title, int width, int height);
-    void swapActions(int row);
     void cleanUpAction();
-    void editConditionalPressed(int rx);
-    void makeEditConditionalWindow();
-    QWidget* makeEditPanel(QWidget* comp, QString label, QString hint);
+//    void editConditionalPressed(int rx);
+//    QWidget* makeEditPanel(QWidget* comp, QString label, QString hint);
     void copyPressed(QString sName);
     void copyConditionalToLogix(QString cSysName, Logix* srcLogix, Logix* targetLogix);
     bool checkLogixUserName(QString uName);
     bool checkLogixSysName();
     void deletePressed(QString sName);
-    bool checkEditConditional();
-    bool checkConditionalUserName(QString uName, Logix* logix);
-    bool checkConditionalSystemName(QString sName);
-    void finishDone();
     /*public*/ void setMessagePreferencesDetails();
     QWidget* makeAddLogixFrame(QString titleId, QString messageId1, QString messageId2="");
     /*public*/ QString getClassDescription();
     void editVariableFrameWindowClosing();
     void makeEditActionWindow(int row);
-    static QString getName();
-
+//    static QString getName();
+    /*public*/ void setMenuBar(BeanTableFrame* f);
+    /**
+     * Input selection names.
+     *
+     * @since 4.7.3
+     */
+    /*public*/ enum SelectionMode {
+        /**
+         * Use the traditional text field, with the tabbed Pick List available
+         * for drag-n-drop
+         */
+        USEMULTI,
+        /**
+         * Use the traditional text field, but with a single Pick List that
+         * responds with a click
+         */
+        USESINGLE,
+        /**
+         * Use combo boxes to select names instead of a text field.
+         */
+        USECOMBO
+    };
+    /**
+     * Conditional edit view mode
+     *
+     * @since 4.9.x
+     */
+    /*public*/ enum EditMode {
+        /**
+         * Use the traditional table list mode for editing conditionals
+         */
+        LISTEDIT,
+        /**
+         * Use the tree based mode for editing condtiionals
+         */
+        TREEEDIT
+    };
 
 signals:
     void propertyChange(QString, QVariant, QVariant);
 public slots:
-    void editConditional(int);
-    void makeEditVariableWindow(int row);
-    void deleteVariablePressed();
-    void deleteVariablePressed(int row);
-    void checkVariablePressed(ActionEvent* e = 0);
+//    void editConditional(int);
+//    void makeEditVariableWindow(int row);
+//    void deleteVariablePressed();
+//    void deleteVariablePressed(int row);
     void copyLogixPressed(ActionEvent* e = 0);
     void deletePressed(ActionEvent* e = 0);
-    void newConditionalPressed(ActionEvent* e = 0);
-    void calculatePressed(ActionEvent* e = 0);
-    void donePressed(ActionEvent* e = 0);
-    void yesButtonPressed();
+//    void newConditionalPressed(ActionEvent* e = 0);
     void createPressed(ActionEvent *e = 0);
     void cancelAddPressed(ActionEvent* e = 0);
     void autoSystemName();
-    void reorderPressed(ActionEvent* e = 0);
     void findEmptyPressed(ActionEvent* e = 0);
     void findOrphansPressed(ActionEvent* e = 0);
     void crossReference_requested();
-    void addVariablePressed(ActionEvent* e = 0);
-    void itemStateChanged(int);
-    void cancelEditVariablePressed();
-    void updateActionPressed();
-    void updateVariablePressed();
-    void cancelEditActionPressed();
-    bool logicTypeChanged(ActionEvent* e = 0);
-    void helpPressed(ActionEvent* e = 0);
-    void addActionPressed(ActionEvent* e = 0);
-    void reorderActionPressed(ActionEvent* e = 0);
-    void updateConditionalPressed(ActionEvent* e = 0);
-    void cancelConditionalPressed(ActionEvent* e = 0);
-    void deleteConditionalPressed(QString sName = "");
-    void on_actionSetButton_Pressed();
-    void deleteActionPressed(int row);
-    void setFileLocation(ActionEvent* e = 0);
-    /*public*/ void actionSignalHeadNameListener(ActionEvent* e = 0) ;
-    /*public*/ void variableSignalTestStateListener(ActionEvent* e = 0);
-    /*public*/ void variableSignalHeadNameListener(ActionEvent* e = 0);
-    void variableItemStateChanged(int);
-    void variableSignalMastNameListener(); // SLOT[]
-    void actionSignalMastNameListener(); // SLOT[]
-    void _actionTypeListener(int type); // SLOT[]
-    void on_actionItemType_changed(int);
-    void deleteActionPressed();
-
+//    void itemStateChanged(int);
+//    void cancelEditVariablePressed();
+//    void updateActionPressed();
+//    void updateVariablePressed();
+//    void cancelEditActionPressed();
+//    void on_actionSetButton_Pressed();
+//    void deleteActionPressed(int row);
+//    /*public*/ void actionSignalHeadNameListener(ActionEvent* e = 0) ;
+//    /*public*/ void variableSignalTestStateListener(ActionEvent* e = 0);
+//    /*public*/ void variableSignalHeadNameListener(ActionEvent* e = 0);
+//    void variableItemStateChanged(int);
+//    void variableSignalMastNameListener(); // SLOT[]
+//    void _actionTypeListener(int type); // SLOT[]
+//    void on_actionItemType_changed(int);
+//    void deleteActionPressed();
+    void enableAll(bool enable);
+    virtual void showSaveReminder();
+    void on_noButtonClicked();
+    void on_yesButtonClicked();
 
 private:
     // Multi use variables
@@ -146,27 +166,26 @@ private:
 
     LogixManager* _logixManager;// = null; // set when LogixAction is created
     bool _showReminder;// = false;
-    bool _suppressReminder;// = false;
-    bool _suppressIndirectRef;// = false;
-    bool enabled;
+    //bool _suppressReminder;// = false;
+    //bool _suppressIndirectRef;// = false;
+    //bool enabled;
     QString _logixSysName;
     PickFrame* _pickTables;
 
     // current focus variables
     Logix* _curLogix;// = null;
-    int numConditionals;// = 0;
+    //int numConditionals;// = 0;
     int conditionalRowNumber;// = 0;
-    Conditional* _curConditional;// = null;
+    //Conditional* _curConditional;// = null;
 
     // Edit Logix Variables
-    JmriJFrame* editLogixFrame;// = NULL;
-    bool inEditMode;// = false;
-    bool inCopyMode;// = false;
-    bool _inReorderMode;// = false;
-    int _nextInOrder;// = 0;
-    JTextField* editUserName;// = new JTextField(20);
-    ConditionalTableModel* conditionalTableModel;// = NULL;
-    QLabel* status;// = new QLabel(" ");
+//    JmriJFrame* editLogixFrame;// = NULL;
+    bool _inEditMode;// = false;
+    bool _inCopyMode;// = false;
+//    bool _inReorderMode;// = false;
+//    int _nextInOrder;// = 0;
+//    JTextField* editUserName;// = new JTextField(20);
+//    QLabel* status;// = new QLabel(" ");
 
     // Add Logix Variables
     JmriJFrame* addLogixFrame;// = NULL;
@@ -180,10 +199,10 @@ private:
     QPushButton* create;
 
     // Edit Conditional Variables
-    bool inEditConditionalMode;// = false;
-    JmriJFrame* editConditionalFrame;// = NULL;
-    JTextField* conditionalUserName;// = new JTextField(22);
-    /*private*/ QRadioButton* _triggerOnChangeButton;
+//    bool inEditConditionalMode;// = false;
+//    JmriJFrame* editConditionalFrame;// = NULL;
+//    JTextField* conditionalUserName;// = new JTextField(22);
+//    /*private*/ QRadioButton* _triggerOnChangeButton;
 
     /*private*/ ActionTableModel* _actionTableModel;// = NULL;
     /*private*/ LVariableTableModel* _variableTableModel;// = NULL;
@@ -244,57 +263,93 @@ private:
     /*private*/ ConditionalAction* _curAction;
     /*private*/ int _curActionRowNumber;
      UserPreferencesManager* p;
-     void appendToAntecedent(ConditionalVariable* variable);
-     bool validateAntecedent();
      void initializeStateVariables();
      QWidget* makeButtonPanel(QPushButton* updateListener,
                             QPushButton*  cancelListener,
                             QPushButton*  deleteListener);
-     /*private*/ void compareTypeChanged(int selection);
-     void loadJComboBoxWithSignalAspects(QComboBox* box, QString signalName);
-     void loadJComboBoxWithMastAspects(QComboBox* box, QString mastName);
-     bool validateAction();
-     bool validateVariable();
-     QString validateSensorReference(QString name);
-     QString validateLightReference(QString name);
-     QString validateConditionalReference(QString name);
-     QString validateLogixReference(QString name);
-     QString validateRouteReference(QString name);
-     QString validateMemoryReference(QString name);
-     QString validateTurnoutReference(QString name);
-     QString validateSignalHeadReference(QString name);
-     QString validateSignalMastReference(QString name);
-     bool validateIntegerReference(int actionType, QString intReference);
-     bool validateInteger(int actionType, int time);
-     void displayBadIntegerReference(int actionType);
-     Light* getLight(QString name);
-     int parseTime(QString s);
+//     /*private*/ void compareTypeChanged(int selection);
+//     void loadJComboBoxWithSignalAspects(QComboBox* box, QString signalName);
+//     void loadJComboBoxWithMastAspects(QComboBox* box, QString mastName);
+//     bool validateAction();
+//     bool validateVariable();
+//     QString validateSensorReference(QString name);
+//     QString validateLightReference(QString name);
+//     QString validateConditionalReference(QString name);
+//     QString validateLogixReference(QString name);
+//     QString validateRouteReference(QString name);
+//     QString validateMemoryReference(QString name);
+//     QString validateTurnoutReference(QString name);
+//     QString validateSignalHeadReference(QString name);
+//     QString validateSignalMastReference(QString name);
+//     bool validateIntegerReference(int actionType, QString intReference);
+//     bool validateInteger(int actionType, int time);
+//     void displayBadIntegerReference(int actionType);
+//     Light* getLight(QString name);
+//     int parseTime(QString s);
      void messageInvalidSignalHeadAppearance(QString name, QString appearance) ;
      void messageInvalidActionItemName(QString name, QString itemType);
      int getActionTypeFromBox(int itemType, int actionTypeSelection);
      void initializeActionVariables();
-     void actionItemChanged(int type);
+//     void actionItemChanged(int type);
      int itemType;
-     //ActionTypeListener* _actionTypeListener;
      /*private*/ void variableTypeChanged(int itemType);
-     EditVariableFrameWindowListener* editVariableFrameWindowListener;
      AddLogixFrameWindowListener* addLogixFrameWindowListener;
-     EditLogixFrameWindowListener* editLogixFrameWindowListener;
-     EditActionFrameWindowListener* editActionFrameWindowListener;
-Logger* log;
-void showSaveReminder();
-QCheckBox* remember;
-Logix* x;
-QDialog* dialog ;
- //LogixTableModel* m;
+     LTAEditActionFrameWindowListener* editActionFrameWindowListener;
+     void loadSelectionMode();
+     void setSelectionMode(SelectionMode newMode);
+     bool checkConditionalUserName(QString uName, Logix* logix);
+     bool checkConditionalSystemName(QString sName);
+
+     Logger* log;
+     QCheckBox* remember;
+     Logix* x;
+     QDialog* dialog ;
+      //LogixTableModel* m;
+     EditMode _editMode;
+     // Save conditional reference target names before updating
+     /*private*/ QSet<QString> _saveTargetNames;// = TreeSet<String>();
+     /*private*/ QMap<QString, QList<QString> > _saveTargetList;// = new HashMap<>();
+     SelectionMode _selectionMode;
+     void loadEditorMode();
+     void setEditorMode(EditMode newMode);
+     QStringList selectionModes;
+     QStringList editModes;
+     static /*final*/ int STRUT;// = 10;
+     HtmlTextEdit* buildWhereUsedListing();
+     QString getWhereUsedName(QString cName);
+     void browserPressed(QString sName);
+     void makeBrowserWindow();
+     JFileChooser* userFileChooser;// = new JFileChooser(FileUtil.getUserFilesPath());
+     HtmlTextEdit* buildConditionalListing();
+     JmriJFrame* condBrowserFrame;
+     void handleCreateException(QString sysName);
+     void loadReferenceNames(QList<ConditionalVariable*> varList, QStringList treeSet);
+      ConditionalListEdit* _listEdit;// = null;
+      ConditionalTreeEdit* _treeEdit;
+      bool checkConditionalReferences(QString logixName);
+      void deleteSourceWhereUsed();
+      void updateWhereUsed(QSet<QString> newTargetNames, QString refName);
+      QWidget* makeEditPanel(QWidget* comp, QString label, QString hint);
+
 protected:
-/*protected*/ QString getClassName();
-/*protected*/ void createModel();
+     /*protected*/ QString getClassName();
+     /*protected*/ void createModel();
+     /*protected*/ void setTitle();
+     /*protected*/ QString helpTarget();
+
+
 protected slots:
  /*protected*/ void addPressed(ActionEvent* e = 0);
+ void on_useMulti_triggered();
+ void on_useSingle_triggered();
+ void on_useComboNameBoxes_triggered();
+ void on_listEdit_triggered();
+ void on_treeEdit_triggered();
+ void makeWhereUsedWindow();
+ void openPickListTable();
+ void on_helpBrowse_triggered();
+ void saveBrowserPressed();
 
-
-    friend class ConditionalTableModel;
     friend class LVariableTableModel;
     friend class ActionTableModel;
     friend class LogixTableModel;
@@ -302,7 +357,10 @@ protected slots:
     //friend class ActionTypeListener;
     friend class VariableSignalTestStateListener;
     friend class ActionSignalHeadNameListener;
-    friend class EditLogixFrameWindowListener;
+    //friend class EditLogixFrameWindowListener;
+    friend class LTALogixEventListener;
+    friend class LTALogixEventListener1;
+    friend class RefDialog;
 };
 Q_DECLARE_METATYPE(LogixTableAction)
 
@@ -310,12 +368,14 @@ class LIBTABLESSHARED_EXPORT RefDialog : public JDialog
 {
  Q_OBJECT
     JTextField* _devNameField;
-    LogixTableAction* _parent;
+    LogixTableAction* action;
+    BeanTableFrame* frame;
 public:
-    RefDialog(LogixTableAction* parent);
+    RefDialog(BeanTableFrame* frame, LogixTableAction* action);
 public slots:
     void deviceReportPressed(ActionEvent* e = 0);
 };
+
 class LIBTABLESSHARED_EXPORT LogixTableModel : public BeanTableDataModel
 {
  Q_OBJECT
@@ -347,123 +407,17 @@ LogixTableAction* self;
 
 protected:
  /*protected*/ QString enabledString;// = tr("Enabled");
-/*protected*/ QString getBeanType();
-/*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
-/*protected*/ QString getMasterClassName();
-/*protected*/ void configDeleteColumn(QTableView* table) ;
- friend class LogixWidget;
-};
+ /*protected*/ QString getBeanType();
+ /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
+ /*protected*/ QString getMasterClassName();
+ /*protected*/ void configDeleteColumn(JTable* table) ;
+ /*protected*/ void configValueColumn(JTable *table);
 
-/*public*/ class LIBTABLESSHARED_EXPORT ConditionalTableModel : public  QAbstractTableModel //implements PropertyChangeListener
-{
- Q_OBJECT
-    QMutex mutex;
-    LogixTableAction* self;
-public:
-  enum COLUMNS
-  {
-   SNAME_COLUMN = 0,
-   UNAME_COLUMN = 1,
-   STATE_COLUMN = 2,
-   BUTTON_COLUMN = 3
-  };
-  /*public*/ ConditionalTableModel(QObject* parent) ;
-  /*synchronized*/ void updateConditionalListeners();
-  bool matchPropertyName(PropertyChangeEvent* e);
-  ///*public*/ Class<?> getColumnClass(int c);
-  /*public*/ int columnCount(const QModelIndex &parent) const;
-  /*public*/ int rowCount(const QModelIndex &parent) const;
-  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-//  /*public*/ int getPreferredWidth(int col) ;
-  /*public*/ QVariant data(const QModelIndex &index, int role) const;
-  /*public*/ bool  setData(const QModelIndex &index, const QVariant &value, int role);
-  void fireTableRowsUpdated(int r1, int r2);
-  void fireTableDataChanged();
-  void fireTableRowsInserted(int r1, int r2);
-  void fireTableRowsDeleted(int r1, int r2);
-public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-
-  friend class WindowMaker;
-};
-/*public*/ class LIBTABLESSHARED_EXPORT LVariableTableModel : public QAbstractTableModel
-{
- Q_OBJECT
-public:
-    enum COLUMNS
-    {
-     ROWNUM_COLUMN = 0,
-     AND_COLUMN = 1,
-     NOT_COLUMN = 2,
-     DESCRIPTION_COLUMN = 3,
-     STATE_COLUMN = 4,
-     TRIGGERS_COLUMN = 5,
-     EDIT_COLUMN = 6,
-     DELETE_COLUMN = 7
-    };
-    LVariableTableModel(QObject* parent);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-//    /*public*/ int getPreferredWidth(int col);
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    void fireTableRowsDeleted(int row1, int row2);
-    void fireTableDataChanged();
-    void fireTableRowsInserted(int, int);
-    void fireTableRowsUpdated(int, int);
-
-private:
-    LogixTableAction* self;
-};
-/*public*/ class ActionTableModel : public QAbstractTableModel
-{
-    Q_OBJECT
-    LogixTableAction* self;
-public:
-    enum COLUMNS
-    {
-     DESCRIPTION_COLUMN = 0,
-     EDIT_COLUMN = 1,
-     DELETE_COLUMN = 2
-    };
-    ActionTableModel(QObject* parent);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    void fireTableRowsDeleted(int, int);
-public slots:
-    void fireTableDataChanged();
-    void fireTableRowsUpdated(int, int);
-    void fireTableRowsInserted(int, int);
 };
 #if 0
-class ActionTypeListener : public /*ActionListener*/ QObject
-{
-    Q_OBJECT
-    LogixTableAction* self;
-    int _itemType;
 
-public:
-    ActionTypeListener(LogixTableAction* self);
-    /*public*/ void actionPerformed(ActionEvent* e = NULL);
-    /*public*/ void setItemType(int type);
 
-};
-//transient ActionListener variableSignalTestStateListener = new ActionListener() {
-class VariableSignalTestStateListener : public QObject
-{
- Q_OBJECT
-    LogixTableAction* self;
-public:
-    VariableSignalTestStateListener(LogixTableAction* self);
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
-};
+
 
 //transient ActionListener variableSignalHeadNameListener = new ActionListener() {
 class VariableSignalHeadNameListener :  public QObject
@@ -475,16 +429,8 @@ class VariableSignalHeadNameListener :  public QObject
     /*public*/ void actionPerformed(ActionEvent e);
 };
 #endif
-class EditVariableFrameWindowListener : public WindowListener
-{
-  Q_OBJECT
- LogixTableAction* self;
-public:
- EditVariableFrameWindowListener(LogixTableAction* self);
- void windowClosing(QCloseEvent *e);
- void windowDeiconified(QResizeEvent *){}
- void windowIconified(QResizeEvent *){}
-};
+
+
 class AddLogixFrameWindowListener : public WindowListener
 {
   Q_OBJECT
@@ -495,34 +441,8 @@ public:
  void windowDeiconified(QResizeEvent *){}
  void windowIconified(QResizeEvent *){}
 };
-class EditLogixFrameWindowListener : public WindowListener
-{
-  Q_OBJECT
- LogixTableAction* self;
-public:
- EditLogixFrameWindowListener(LogixTableAction* self);
- void windowClosing(QCloseEvent *e);
- void windowDeiconified(QResizeEvent *){}
- void windowIconified(QResizeEvent *){}
-};
-class EditActionFrameWindowListener : public WindowListener
-{
-    Q_OBJECT
-   LogixTableAction* self;
-  public:
-   EditActionFrameWindowListener(LogixTableAction* self);
-   void windowClosing(QCloseEvent *e);
-   void windowDeiconified(QResizeEvent *){}
-   void windowIconified(QResizeEvent *){}
-};
-class ECFWindowListener : public WindowListener
-{
- Q_OBJECT
- LogixTableAction* self;
-public:
- ECFWindowListener(LogixTableAction* self);
- void windowClosing(QCloseEvent *e);
-};
+
+
 class ItemDelegate : public QAbstractItemDelegate
 {
   Q_OBJECT
@@ -541,4 +461,44 @@ signals:
 private slots:
 };
 
+class CrossReferenceActionListener : public ActionListener
+{
+ Q_OBJECT
+ BeanTableFrame* frame;
+ LogixTableAction* parent;
+public:
+ CrossReferenceActionListener(BeanTableFrame* frame, LogixTableAction* parent);
+
+public slots:
+ void actionPerformed();
+};
+
+class LTALogixEventListener : public LogixEventListener
+{
+ LogixTableAction* lta;
+ QString sName;
+
+public:
+ /*public*/ LTALogixEventListener(QString sName, LogixTableAction* lta);
+ /*public*/ void logixEventOccurred();
+};
+
+class LTALogixEventListener1 : public LogixEventListener
+{
+ QString sName;
+ LogixTableAction* lta;
+public:
+ /*public*/ LTALogixEventListener1(QString sName, LogixTableAction* lta);
+ /*public*/ void logixEventOccurred();
+};
+
+class LTAEditActionFrameWindowListener : public WindowListener
+{
+ Q_OBJECT
+ LogixTableAction* lta;
+public:
+ LTAEditActionFrameWindowListener(LogixTableAction* lta);
+ void windowClosing(QCloseEvent */*e*/);
+
+};
 #endif // LOGIXTABLEACTION_H

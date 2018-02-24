@@ -96,11 +96,13 @@ void ListedTableFrame::common()
 
 /*public*/ void ListedTableFrame::initComponents()
 {
+ JmriJFrame::initComponents();
+
  actionList = new ActionJList(this);
 
  detailpanel = new QStackedWidget();
  detailpanel->setObjectName("detailPanel");
- detailpanel->resize(600,600);
+ //resize(900,600);
  //QVBoxLayout* detailPanelLayout;
  //detailpanel->setLayout(detailPanelLayout = new QVBoxLayout()); // Java CardLayout
  //QVBoxLayout* detailPanelLayout = new QVBoxLayout(detailpanel);
@@ -155,13 +157,14 @@ void ListedTableFrame::common()
  cardHolder->addWidget(buttonpanel);
  cardHolder->addWidget(detailpanel);
 
+ connect(cardHolder, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int, int)));
 
-//cardHolder->setDividerSize(8);
-//    if (lastdivider != 0) {
-//        cardHolder->setDividerLocation(lastdivider);
-//    } else { //Else if no specific size has been given we set it to the lists preferred width
-//        cardHolder->setDividerLocation(listScroller.getPreferredSize().width);
-//    }
+ cardHolder->setMinimumWidth(8);
+    if (lastdivider != 0) {
+        cardHolder->setMinimumWidth(lastdivider);
+    } else { //Else if no specific size has been given we set it to the lists preferred width
+        //cardHolder->setDividerLocation(listScroller.getPreferredSize().width);
+    }
 #if 0
     cardHolder.addPropertyChangeListener(new PropertyChangeListener() {
         //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
@@ -177,6 +180,18 @@ void ListedTableFrame::common()
  getContentPane()->layout()->addWidget(cardHolder);
  adjustSize();
  actionList->selectListItem(0);
+}
+
+void ListedTableFrame::splitterMoved(int pos, int /*index*/)
+{
+ lastdivider = pos;
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setProperty("jmri.jmrit.beantable.ListedTableFrame","dividerLocation", pos);
+}
+
+/*public*/ QString ListedTableFrame::getClassName()
+{
+ // java class name used by preferences
+ return "jmri.jmrit.beantable.ListedTableFrame";
 }
 
 QWidget* ListedTableFrame::errorPanel(QString text)
@@ -728,7 +743,7 @@ void ActionJList::openNewTableWindow(int index) {
 //        }
 
 //        /*public*/ void run() {
-            ListedTableAction* tmp = new ListedTableAction(item->getItemString(), item->getClassAsString(), 0/*((ListedTableFrame*)frame)->cardHolder->getDividerLocation()*/);
+            ListedTableAction* tmp = new ListedTableAction(item->getItemString(), item->getClassAsString(), ListedTableFrame::lastdivider, NULL);
             tmp->actionPerformed();
 //        }
 //    }

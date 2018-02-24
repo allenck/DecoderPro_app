@@ -10,6 +10,8 @@ public:
  /*public*/ static QString colorToString(/*@Nullable*/ QColor color);
  /*public*/ static QString colorToColorName(/*@Nullable*/ QColor color);
  /*public*/ static QColor stringToColor(QString string);
+ /*public*/ static QColor setAlpha(/*@Nonnull*/ QColor color, int alpha);
+ /*public*/ static QColor setAlpha(/*@Nonnull*/ QColor color, double alpha);
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ColorUtil");

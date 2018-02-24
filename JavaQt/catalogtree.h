@@ -53,9 +53,14 @@ public slots:
 
 private:
     AbstractNamedBean* bean;
+    QString systemName;
+    QString userName;
 protected:
     /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+ friend class DefaultCatalogTreeManager;
  friend class AbstractCatalogTree;
+ friend class CatalogTreeManager;
+ friend class CatalogTreeFS;
 };
 
 #endif // CATALOGTREE_H

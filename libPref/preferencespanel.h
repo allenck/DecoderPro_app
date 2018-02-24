@@ -130,6 +130,8 @@ public:
   }
   return NULL;
  }
+public slots:
+ virtual void propertyChange(PropertyChangeEvent* /*evt*/) {}
 };
 Q_DECLARE_METATYPE(PreferencesPanel)
 #endif // PREFERENCESPANEL_H

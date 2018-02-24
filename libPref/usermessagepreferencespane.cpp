@@ -76,7 +76,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
  p->setClassDescription("jmri.jmrit.beantable.BlockTableAction");
 
  p->setClassDescription("jmri.jmrit.beantable.LightTableAction");
- p->setClassDescription(LogixTableAction::getName());
+ p->setClassDescription("jmri.jmrit.beantable.LogixTableAction");
  p->setClassDescription(LRouteTableAction::getName());
  p->setClassDescription("jmri.jmrit.beantable.MemoryTableAction");
 

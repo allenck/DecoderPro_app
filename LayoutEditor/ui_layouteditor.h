@@ -264,7 +264,7 @@ public:
         actionLoad_Other_XML->setObjectName(QStringLiteral("actionLoad_Other_XML"));
         actionSave = new QAction(LayoutEditor);
         actionSave->setObjectName(QStringLiteral("actionSave"));
-        actionSave->setEnabled(true);
+        actionSave->setEnabled(false);
         actionSave_as = new QAction(LayoutEditor);
         actionSave_as->setObjectName(QStringLiteral("actionSave_as"));
         actionSave_as->setEnabled(true);
@@ -632,7 +632,6 @@ public:
         menuFile->addAction(actionLoad_XML);
         menuFile->addAction(actionLoad_Other_XML);
         menuFile->addAction(actionSave);
-        menuFile->addAction(actionSave_as);
         menuOptions->addAction(actionEdit_mode);
         menuOptions->addAction(actionAllow_repositioning);
         menuOptions->addAction(actionAllow_layout_control);

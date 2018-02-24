@@ -24,6 +24,7 @@ public:
     /*public*/ NamedBean* getSelectedBean();
     /*public*/ void setSelectedBean(NamedBean* nBean);
     /*public*/ void excludeItems(QList<NamedBean*>* exclude);
+#if 0
     /**
     * constant used to format the entries in the combo box using the displayname
     */
@@ -50,7 +51,7 @@ public:
     * followed by the userame
     */
     /*public*/ /*final*/ const static int SYSTEMNAMEUSERNAME = 0x04;
-
+#endif
     /*public*/ void dispose();
 //    /*public*/ /*interface*/ class KeySelectionManager {
 //            /** Given <code>aKey</code> and the model, returns the row
@@ -121,7 +122,32 @@ public:
 //            return -1;
 //        }
 //    };
-
+    /*public*/ void setSelectedBeanByName(QString inBeanName);
+    /*public*/ enum DisplayOptions {
+           /**
+            * Format the entries in the combo box using the display name.
+            */
+           DISPLAYNAME = 1,
+           /**
+            * Format the entries in the combo box using the username. If the
+            * username value is blank for a bean then the system name is used.
+            */
+           USERNAME = 2,
+           /**
+            * Format the entries in the combo box using the system name.
+            */
+           SYSTEMNAME = 3,
+           /**
+            * Format the entries in the combo box with the username followed by the
+            * system name.
+            */
+           USERNAMESYSTEMNAME =4,
+           /**
+            * Format the entries in the combo box with the system name followed by
+            * the username.
+            */
+           SYSTEMNAMEUSERNAME = 5
+    };
 
 signals:
 

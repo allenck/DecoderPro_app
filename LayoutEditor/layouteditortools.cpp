@@ -510,8 +510,8 @@
  signalMastLevelXingPanel = new QWidget();
 
  // operational variables for Set Signals at 3-Way Turnout tool
- /*private*/ JmriJFrame* setSignalsAt3WayFrame = NULL;
- /*private*/ bool setSignalsAt3WayOpen = false;
+ setSignalsAt3WayFrame = NULL;
+ setSignalsAt3WayOpen = false;
  turnoutANameField = new JTextField(16);
  turnoutBNameField = new JTextField(16);
  a13WayField = new JTextField(16);
@@ -769,21 +769,21 @@ void LayoutEditorTools::turnoutNameField_textChanged(QString text)
 }
 void LayoutEditorTools::throatContinuingField_textChanged(QString text)
 {
-throatContinuingField->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(text, true));
+throatContinuingField->setCompleter(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getCompleter(text, true));
 }
 void LayoutEditorTools::throatDivergingField_textChanged(QString text)
 {
-  throatDivergingField->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(text, true));
+  throatDivergingField->setCompleter(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getCompleter(text, true));
 }
 
 void LayoutEditorTools::continuingField_textChanged(QString text)
 {
- continuingField->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(text, true));
+ continuingField->setCompleter(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getCompleter(text, true));
 }
 
 void LayoutEditorTools::divergingField_textChanged(QString text )
 {
- divergingField->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(text, true));
+ divergingField->setCompleter(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getCompleter(text, true));
 }
 
 /*private*/ void LayoutEditorTools::turnoutSignalsGetSaved (ActionEvent* /*a*/) // SLOT[]
@@ -805,6 +805,7 @@ void LayoutEditorTools::on_changeSignalIcon_clicked() // SLOT[]
  turnoutFromMenu = false;
  setSignalsFrame->setVisible(false);
 }
+
 /*private*/ void LayoutEditorTools::setSignalsDonePressed (ActionEvent* /*a*/) // SLOT[]
 {
  // process turnout name
@@ -1725,7 +1726,7 @@ else if (throatDivergingHead==NULL)
   }
   return NULL;
  }
- SignalHead* head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(str);
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(str);
  if (head==NULL)
  {
 //        JOptionPane.showMessageDialog(frame,
@@ -1750,7 +1751,7 @@ else if (throatDivergingHead==NULL)
     if ( (str==NULL) || (str==("")) ) {
         return NULL;
     }
-    return  (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(str));
+    return  (((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(str));
 }
 
 /**
@@ -1973,7 +1974,7 @@ else if (throatDivergingHead==NULL)
 //@SuppressWarnings("NULL")
 /*public*/ void LayoutEditorTools::removeSignalHeadFromPanel(QString signalName) {
     if ( (signalName==NULL) || (signalName.length()<1) ) return;
-    SignalHead* head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+    SignalHead* head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                                     getSignalHead(signalName);
     removeAssignment(head);
     SignalHeadIcon* h = NULL;
@@ -2067,8 +2068,7 @@ else if (throatDivergingHead==NULL)
                     signalName = p->getWestBoundSignal();
                 else signalName = p->getEastBoundSignal();
                 if ((signalName==NULL)||(signalName==(""))) return NULL;
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
-                                getSignalHead(signalName);
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalName);
             }
             obj = p;
         }
@@ -2077,7 +2077,7 @@ else if (throatDivergingHead==NULL)
             LayoutTurnout* to = (LayoutTurnout*)connect;
             QString signalName = to->getSignalA2Name();
             if ((!(signalName==NULL))&&(!(signalName==(""))))
-                auxSignal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             signalName = to->getSignalA1Name();
             if ((signalName==NULL)||(signalName==(""))) {
@@ -2090,7 +2090,7 @@ else if (throatDivergingHead==NULL)
                 obj = to;
             }
             else {
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             }
         }
@@ -2101,7 +2101,7 @@ else if (throatDivergingHead==NULL)
             if (to->getContinuingSense()==Turnout::THROWN)
                 signalName = to->getSignalC2Name();
             if ((!(signalName==NULL))&&(!(signalName==(""))))
-                auxSignal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             if (to->getContinuingSense()==Turnout::CLOSED)
                 signalName = to->getSignalB1Name();
@@ -2117,7 +2117,7 @@ else if (throatDivergingHead==NULL)
                 obj = to;
             }
             else {
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             }
         }
@@ -2128,7 +2128,7 @@ else if (throatDivergingHead==NULL)
             if (to->getContinuingSense()==Turnout::THROWN)
                 signalName = to->getSignalB2Name();
             if ((!(signalName==NULL))&&(!(signalName==(""))))
-                auxSignal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             if (to->getContinuingSense()==Turnout::CLOSED)
                 signalName = to->getSignalC1Name();
@@ -2144,7 +2144,7 @@ else if (throatDivergingHead==NULL)
                 obj = to;
             }
             else {
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             }
         }
@@ -2153,7 +2153,7 @@ else if (throatDivergingHead==NULL)
             LayoutTurnout* to = (LayoutTurnout*)connect;
             QString signalName = to->getSignalD2Name();
             if ((!(signalName==NULL))&&(!(signalName==(""))))
-                auxSignal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             signalName = to->getSignalD1Name();
             if ((signalName==NULL)||(signalName==("")))   {
@@ -2166,7 +2166,7 @@ else if (throatDivergingHead==NULL)
                 obj = to;
             }
             else {
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             }
         }
@@ -2175,7 +2175,7 @@ else if (throatDivergingHead==NULL)
             LevelXing* x = (LevelXing*)connect;
             QString signalName = x->getSignalAName();
             if ((signalName!=NULL)&&(signalName!=("")))
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             t=(TrackSegment*)x->getConnectC();
             if (t==NULL) return NULL;
@@ -2187,7 +2187,7 @@ else if (throatDivergingHead==NULL)
             LevelXing* x = (LevelXing*)connect;
             QString signalName = x->getSignalBName();
             if ((signalName!=NULL)&&(signalName!=("")))
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->                                getSignalHead(signalName);
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->                                getSignalHead(signalName);
             t=(TrackSegment*)x->getConnectD();
             if (t==NULL) return NULL;
             if (track->getLayoutBlock()!=t->getLayoutBlock()) return NULL;
@@ -2198,7 +2198,7 @@ else if (throatDivergingHead==NULL)
             LevelXing* x = (LevelXing*)connect;
             QString signalName = x->getSignalCName();
             if ((signalName!=NULL)&&(signalName!=("")))
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             t=(TrackSegment*)x->getConnectA();
             if (t==NULL) return NULL;
@@ -2210,7 +2210,7 @@ else if (throatDivergingHead==NULL)
             LevelXing* x = (LevelXing*)connect;
             QString signalName = x->getSignalDName();
             if ((signalName!=NULL)&&(signalName!=("")))
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             t=(TrackSegment*)x->getConnectB();
             if (t==NULL) return NULL;
@@ -2221,7 +2221,7 @@ else if (throatDivergingHead==NULL)
             LayoutSlip* sl = (LayoutSlip*)connect;
             QString signalName = sl->getSignalA2Name();
             if ((!(signalName==NULL))&&(!(signalName==(""))))
-                auxSignal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             signalName = sl->getSignalA1Name();
             if ((signalName==NULL)||(signalName==(""))) {
@@ -2234,7 +2234,7 @@ else if (throatDivergingHead==NULL)
                 obj = sl;
             }
             else {
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             }
         }
@@ -2244,7 +2244,7 @@ else if (throatDivergingHead==NULL)
             if(sl->getTurnoutType()==LayoutSlip::DOUBLE_SLIP){
                 signalName = sl->getSignalB2Name();
                 if ((!(signalName==NULL))&&(!(signalName==(""))))
-                    auxSignal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                    auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                     getSignalHead(signalName);
             }
             signalName = sl->getSignalB1Name();
@@ -2258,7 +2258,7 @@ else if (throatDivergingHead==NULL)
                 obj = sl;
             }
             else {
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             }
         }
@@ -2268,7 +2268,7 @@ else if (throatDivergingHead==NULL)
             if(sl->getTurnoutType()==LayoutSlip::DOUBLE_SLIP){
                 signalName = sl->getSignalC2Name();
                 if ((!(signalName==NULL))&&(!(signalName==(""))))
-                    auxSignal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                    auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                     getSignalHead(signalName);
             }
             signalName = sl->getSignalC1Name();
@@ -2282,7 +2282,7 @@ else if (throatDivergingHead==NULL)
                 obj = sl;
             }
             else {
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             }
         }
@@ -2290,7 +2290,7 @@ else if (throatDivergingHead==NULL)
             LayoutSlip* sl = (LayoutSlip*)connect;
             QString signalName = sl->getSignalD2Name();
             if ((!(signalName==NULL))&&(!(signalName==(""))))
-                auxSignal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             signalName = sl->getSignalD1Name();
             if ((signalName==NULL)||(signalName==(""))) {
@@ -2303,7 +2303,7 @@ else if (throatDivergingHead==NULL)
                 obj = sl;
             }
             else {
-                return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
+                return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             }
         }
@@ -7053,7 +7053,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     return true;
 }
 
-/*private*/ void LayoutEditorTools::set3WaySignalsDonePressed (ActionEvent* a) {
+/*private*/ void LayoutEditorTools::set3WaySignalsDonePressed (ActionEvent* /*a*/) {
     // process turnout names
     if ( !get3WayTurnoutInformation() ) return;
     // process signal head names
@@ -8510,8 +8510,8 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
  // Initialize if needed
  if (setSignalMastsAtBoundaryFrame == NULL)
  {
-  eastSignalMast = new BeanDetails("Signal Mast", (Manager*)InstanceManager::signalMastManagerInstance());
-  westSignalMast = new BeanDetails("Signal Mast", (Manager*)InstanceManager::signalMastManagerInstance());
+  eastSignalMast = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
+  westSignalMast = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
   setSignalMastsAtBoundaryFrame = new JmriJFrame( tr("Set Signal Masts at Block Boundary"), false, true );
   setSignalMastsAtBoundaryFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalMastsAtBoundary", true);
   setSignalMastsAtBoundaryFrame->setLocation(70,30);
@@ -8683,7 +8683,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
         }
         return NULL;
     }
-    SignalMast* head = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(str);
+    SignalMast* head = ((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(str);
     if (head==NULL) {
 //        JOptionPane.showMessageDialog(frame,
 //                java.text.MessageFormat.format(tr("SignalMastsError4"),
@@ -8701,7 +8701,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
     if ( (str==NULL) || (str==("")) ) {
         return NULL;
     }
-    return  (((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(str));
+    return  (((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(str));
 }
 
 /**
@@ -8793,7 +8793,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
 //@SuppressWarnings("NULL")
 /*public*/ void LayoutEditorTools::removeSignalMastFromPanel(QString signalMastName) {
     if ( (signalMastName==NULL) || (signalMastName.length()<1) ) return;
-    SignalMast* signalMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->
+    SignalMast* signalMast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->
                                                     getSignalMast(signalMastName);
     removeSignalMastAssignment(signalMast);
     SignalMastIcon* h = NULL;
@@ -8869,7 +8869,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
   }
 
   removeSignalMastFromPanel(boundary->getEastBoundSignalMast());
-  removeSignalMastAssignment(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(boundary->getEastBoundSignalMast()));
+  removeSignalMastAssignment(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(boundary->getEastBoundSignalMast()));
   boundary->setEastBoundSignalMast("");
  }
  if(block2BoundSignalMast==NULL)
@@ -8880,7 +8880,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
   }
 
   removeSignalMastFromPanel(boundary->getWestBoundSignalMast());
-  removeSignalMastAssignment(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(boundary->getWestBoundSignalMast()));
+  removeSignalMastAssignment(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(boundary->getWestBoundSignalMast()));
   boundary->setWestBoundSignalMast("");
  }
  if(block2BoundSignalMast!=NULL && block1BoundSignalMast!=NULL)
@@ -9627,42 +9627,42 @@ void LayoutEditorTools::createListUsedSignalMasts(){
         //We allow the same sensor to be allocated in both directions.
         if (po!=boundary){
             if (po->getEastBoundSignalMast()!=NULL && po->getEastBoundSignalMast()!=(""))
-                usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(po->getEastBoundSignalMast()));
+                usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getEastBoundSignalMast()));
             if (po->getWestBoundSignalMast()!=NULL && po->getWestBoundSignalMast()!=(""))
-                usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(po->getWestBoundSignalMast()));
+                usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getWestBoundSignalMast()));
         }
     }
 
     foreach (LayoutTurnout* to , *layoutEditor->turnoutList) {
         if (to->getSignalAMast()!=NULL && to->getSignalAMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(to->getSignalAMast()));
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalAMast()));
         if (to->getSignalBMast()!=NULL && to->getSignalBMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(to->getSignalBMast()));
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalBMast()));
         if (to->getSignalCMast()!=NULL && to->getSignalCMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(to->getSignalCMast()));
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalCMast()));
         if (to->getSignalDMast()!=NULL && to->getSignalDMast()!=("") )
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(to->getSignalDMast()));
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalDMast()));
     }
     foreach (LevelXing* x, *layoutEditor->xingList) {
         if (x->getSignalAMastName()!=NULL && x->getSignalAMastName()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(x->getSignalAMastName()));
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalAMastName()));
         if (x->getSignalBMastName()!=NULL && x->getSignalBMastName()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(x->getSignalBMastName()));
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalBMastName()));
         if (x->getSignalCMastName()!=NULL && x->getSignalCMastName()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(x->getSignalCMastName()));
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalCMastName()));
         if (x->getSignalDMastName()!=NULL && x->getSignalDMastName()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(x->getSignalDMastName()));
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalDMastName()));
     }
-#if 0
-    for (LayoutSlip sl :layoutEditor->slipList) {
-        if (sl->getSignalAMast()!=NULL && !sl->getSignalAMast()==(""))
-            usedMasts->layout()->addWidget(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(sl->getSignalAMast()));
-        if (sl->getSignalBMast()!=NULL && !sl->getSignalBMast()==(""))
-            usedMasts->layout()->addWidget(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(sl->getSignalBMast()));
-        if (sl->getSignalCMast()!=NULL && !sl->getSignalCMast()==(""))
-            usedMasts->layout()->addWidget(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(sl->getSignalCMast()));
-        if (sl->getSignalDMast()!=NULL && !sl->getSignalDMast()==(""))
-            usedMasts->layout()->addWidget(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(sl->getSignalDMast()));
+#if 1
+    for (LayoutSlip* sl : *layoutEditor->slipList) {
+        if (sl->getSignalAMast()!=NULL && sl->getSignalAMast()!=(""))
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalAMast()));
+        if (sl->getSignalBMast()!=NULL && sl->getSignalBMast()!=(""))
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalBMast()));
+        if (sl->getSignalCMast()!=NULL && sl->getSignalCMast()!=(""))
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalCMast()));
+        if (sl->getSignalDMast()!=NULL && sl->getSignalDMast()!=(""))
+            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalDMast()));
     }
 #endif
 }
@@ -9699,10 +9699,10 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
         theContentPane->setLayout(centralWidgetLayout = new QVBoxLayout(theContentPane/*, BoxLayout.Y_AXIS*/));
         QWidget* panel1 = new QWidget();
         panel1->setLayout(new QHBoxLayout());
-        turnoutSignalMastA = new BeanDetails("Signal Mast", (Manager*)InstanceManager::signalMastManagerInstance());
-        turnoutSignalMastB = new BeanDetails("Signal Mast", (Manager*)InstanceManager::signalMastManagerInstance());
-        turnoutSignalMastC = new BeanDetails("Signal Mast", (Manager*)InstanceManager::signalMastManagerInstance());
-        turnoutSignalMastD= new BeanDetails("Signal Mast", (Manager*)InstanceManager::signalMastManagerInstance());
+        turnoutSignalMastA = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
+        turnoutSignalMastB = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
+        turnoutSignalMastC = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
+        turnoutSignalMastD= new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
         if (turnoutMastFromMenu)
         {
             QLabel* turnoutMastNameLabel = new QLabel( tr("Turnout")+" "+
@@ -10304,10 +10304,10 @@ return;
  // Initialize if needed
  if (signalMastsAtSlipFrame == NULL)
  {
-  slipSignalMastA = new BeanDetails("Signal Mast", (Manager*) InstanceManager::signalMastManagerInstance());
-  slipSignalMastB = new BeanDetails("Signal Mast", (Manager*) InstanceManager::signalMastManagerInstance());
-  slipSignalMastC = new BeanDetails("Signal Mast",(Manager*) InstanceManager::signalMastManagerInstance());
-  slipSignalMastD = new BeanDetails("Signal Mast", (Manager*) InstanceManager::signalMastManagerInstance());
+  slipSignalMastA = new BeanDetails("Signal Mast", (Manager*) InstanceManager::getDefault("SignalMastManager"));
+  slipSignalMastB = new BeanDetails("Signal Mast", (Manager*) InstanceManager::getDefault("SignalMastManager"));
+  slipSignalMastC = new BeanDetails("Signal Mast",(Manager*) InstanceManager::getDefault("SignalMastManager"));
+  slipSignalMastD = new BeanDetails("Signal Mast", (Manager*) InstanceManager::getDefault("SignalMastManager"));
 
   signalMastsAtSlipFrame = new JmriJFrame( tr("Set Signal Masts at a Slip"), false, true );
   signalMastsAtSlipFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtLayoutSlip", true);
@@ -10819,10 +10819,10 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
  // Initialize if needed
  if (signalMastsAtXingFrame == NULL)
  {
-  xingSignalMastA = new BeanDetails("Signal Mast", (Manager*) InstanceManager::signalMastManagerInstance());
-  xingSignalMastB = new BeanDetails("Signal Mast",(Manager*) InstanceManager::signalMastManagerInstance());
-  xingSignalMastC = new BeanDetails("Signal Mast",(Manager*) InstanceManager::signalMastManagerInstance());
-  xingSignalMastD = new BeanDetails("Signal Mast",(Manager*) InstanceManager::signalMastManagerInstance());
+  xingSignalMastA = new BeanDetails("Signal Mast", (Manager*) InstanceManager::getDefault("SignalMastManager"));
+  xingSignalMastB = new BeanDetails("Signal Mast",(Manager*) InstanceManager::getDefault("SignalMastManager"));
+  xingSignalMastC = new BeanDetails("Signal Mast",(Manager*) InstanceManager::getDefault("SignalMastManager"));
+  xingSignalMastD = new BeanDetails("Signal Mast",(Manager*) InstanceManager::getDefault("SignalMastManager"));
 
   signalMastsAtXingFrame = new JmriJFrame( tr("SignalMastsAtLevelXing"), false, true );
   signalMastsAtXingFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtLevelXing", true);
@@ -14381,7 +14381,7 @@ void LayoutEditorTools::eastBoundField_textChanged(QString text)
 }
 void LayoutEditorTools::westBoundField_textChanged(QString text)
 {
-    QCompleter* completer = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(text, true);
+    QCompleter* completer = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getCompleter(text, true);
     if(completer!= NULL)
       eastBoundField->setCompleter(completer);
 }
@@ -14413,7 +14413,7 @@ void LayoutEditorTools::on_d2TToTField_textEdited(QString txt)
 void LayoutEditorTools::commonTField(QString txt, JTextField* f)
 {
  QCompleter* completer;
- QStringList l = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSystemNameList();
+ QStringList l = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSystemNameList();
  QStringList c =   QStringList();
  foreach(QString s, l)
  {

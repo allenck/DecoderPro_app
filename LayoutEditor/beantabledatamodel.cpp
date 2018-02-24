@@ -45,7 +45,7 @@
 
 ///*static*/ /*public*/ /*final*/ int BeanTableDataModel::NUMCOLUMN = 5;
 
-
+//template<class T>
 /*public*/ BeanTableDataModel::BeanTableDataModel(QObject *parent) :   AbstractTableModel(parent)
 {
  //super();
@@ -56,7 +56,7 @@
  nbMan = (NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager");
  _table = NULL;
 }
-
+//template<class T>
 void /*public*/ BeanTableDataModel::init()
 {
  AbstractManager* manager = (AbstractManager*)getManager();
@@ -72,7 +72,11 @@ BeanTableDataModel::~BeanTableDataModel()
 {
  delete log;
 }
+
+//template<class T>
 Manager* BeanTableDataModel::getManager() {return NULL;}
+
+//template<class T>
 void BeanTableDataModel::setManager(Manager *) {}
 
 /*protected*/ /*synchronized*/ void BeanTableDataModel::updateNameList()
@@ -199,7 +203,6 @@ void BeanTableDataModel::setManager(Manager *) {}
 //        return NULL;
 //    }
 //}
-
 /*public*/ Qt::ItemFlags BeanTableDataModel::flags(const QModelIndex &index) const
 {
  switch (index.column())
@@ -294,7 +297,6 @@ void BeanTableDataModel::setManager(Manager *) {}
 }
 
 /*abstract*/ /*protected*/ QString BeanTableDataModel::getMasterClassName() {return "";}
-
 
 /*public*/ bool BeanTableDataModel:: setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -578,6 +580,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
  setColumnToHoldButton(table, VALUECOL, configureButton());
  connect(table, SIGNAL(clicked(QModelIndex)),this, SLOT(On_itemClicked(QModelIndex)));
 }
+
 void BeanTableDataModel::On_itemClicked(QModelIndex index)
 {
  if(index.column() == VALUECOL)

@@ -76,6 +76,7 @@ void IconAdder::init()
  _iconPanel = NULL;
 // setMinimumHeight(200);
  _addButton = NULL;
+ _pickTablePane = NULL;
 }
 
 /*public*/ IconAdder::IconAdder(bool allowDeletes, QWidget *parent) : QWidget(parent)
@@ -792,9 +793,9 @@ this.add(new JSeparator());
     _closeButton->setVisible(true);
  }
 //this.add(_catalog);
-//        if (_pickTablePane != NULL) {
-//            _pickTablePane.setVisible(false);
-//        }
+ if (_pickTablePane != NULL) {
+     _pickTablePane->setVisible(false);
+ }
  if(_table != NULL) _table->setVisible(false);
  pack();
 }

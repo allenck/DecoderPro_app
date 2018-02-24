@@ -19,6 +19,7 @@
  * @see DefaultListSelectionModel
  */
 
+class ListSelectionListener;
 /*public*/ /*interface*/class JAVAQTSHARED_EXPORT ListSelectionModel : public QObject
 {
  Q_OBJECT
@@ -279,7 +280,7 @@
      * @see #insertIndexInterval
      * @see #removeIndexInterval
      */
-//    virtual void addListSelectionListener(ListSelectionListener x) = 0;
+    virtual void addListSelectionListener(ListSelectionListener* /*x*/) {}
 
     /**
      * Remove a listener from the list that's notified each time a
@@ -288,6 +289,6 @@
      * @param x the ListSelectionListener
      * @see #addListSelectionListener
      */
-//    virtual void removeListSelectionListener(ListSelectionListener x) = 0;
+    virtual void removeListSelectionListener(ListSelectionListener* /*x*/) {}
 };
 #endif // LISTSELECTIONMODEL_H

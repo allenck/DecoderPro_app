@@ -9,13 +9,14 @@
 #include "carmanagerxml.h"
 #include "enginemanagerxml.h"
 
+/*private*/ /*static*/ QString OperationsXml::operationsDirectoryName = "operations"; // NOI18N
+
 OperationsXml::OperationsXml(QObject *parent) :
   XmlFile(parent)
 {
  log = new Logger("OperationsXml");
  dirty = false;
- //operationsDirectoryName = "operations"; // NOI18N
- operationsFileName = "Operations.xml";
+ operationsFileName = "DefaultOperations.xml"; // should be overridden // NOI18N
 }
 /**
  * Loads and stores the operation setup using xml files.
@@ -32,9 +33,11 @@ OperationsXml::OperationsXml(QObject *parent) :
 /*public*/ void OperationsXml::writeOperationsFile()
 {
  createFile(getDefaultOperationsFilename(), true); // make backup
- try {
+ try
+ {
      writeFile(getDefaultOperationsFilename());
- } catch (Exception e) {
+ }
+ catch (Exception e) {
      Logger::error("Exception while writing operation file, may not be complete: " + e.getMessage());
  }
 }
@@ -130,10 +133,9 @@ OperationsXml::OperationsXml(QObject *parent) :
 
 /*public*/ /*static*/ QString OperationsXml::getOperationsDirectoryName()
 {
- return /*operationsDirectoryName*/ "operations";
+ return operationsDirectoryName;
 }
 
-/*private*/ /*static*/ QString OperationsXml::operationsDirectoryName = "operations"; // NOI18N
 
 /*public*/ void OperationsXml::setOperationsFileName(QString name)
 {
@@ -156,8 +158,7 @@ OperationsXml::OperationsXml(QObject *parent) :
  */
 /*public*/ /*static*/ QString OperationsXml::getFileLocation()
 {
- //return fileLocation;
- return FileUtil::getUserFilesPath();
+ return fileLocation;
 }
 
 /**
@@ -215,6 +216,22 @@ OperationsXml::OperationsXml(QObject *parent) :
 //    }
 //    return buf/*.toString()*/;
  return comment;
+}
+
+/**
+ * Checks name for the file control characters:
+ *
+ * @param name The string to check for a valid file name.
+ * @return true if name is okay, false if name contains a control character.
+ */
+/*public*/ /*static*/ bool OperationsXml::checkFileName(QString name) {
+    if (name.contains(".") || name.contains("<") || name.contains(">") // NOI18N
+            || name.contains(":") || name.contains("\"") || name.contains("\\") // NOI18N
+            || name.contains("/") || name.contains("|") || name.contains("?") // NOI18N
+            || name.contains("*")) { // NOI18N
+        return false;
+    }
+    return true;
 }
 
 /**

@@ -9498,6 +9498,11 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
  return currentIndex().row();
 }
 
+ /*public*/ int JTable::getSelectedColumn()
+ {
+  return currentIndex().column();
+ }
+
 /*public*/ QVector<int>* JTable::getSelectedRows()
 {
  QList<QModelIndex> list = selectedIndexes();

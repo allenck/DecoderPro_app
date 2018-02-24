@@ -154,6 +154,10 @@ public:
  /*public*/ QList<AllocatedSection*>* getAllocatedSectionList();
  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
  /*public*/ AllocationRequest* initializeFirstAllocation();
+ /*public*/ void removeAllocatedSection(AllocatedSection* as);
+ /*public*/ void allocateAFresh();
+ /*public*/ void clearAllocations();
+ /*public*/ void addAllocatedSection(AllocatedSection* as);
 
 signals:
 
@@ -216,6 +220,7 @@ private:
  // Property Change Support
  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
  /*private*/ QString getSectionName(Section* sc);
+ /*private*/ void refreshPanel();
 
 
 protected:
@@ -224,6 +229,8 @@ protected:
  /*protected*/ bool holdAllocation();
  /*protected*/ bool reachedRestartPoint();
  /*protected*/ void restart();
+ /*protected*/ void resetAllAllocatedSections();
+ /*protected*/ void setRestart();
 
  friend class DispatcherFrame;
 };

@@ -26,14 +26,13 @@
 //      e.printStackTrace();
 //  }
 
-/*public*/ AbstractCatalogTree::AbstractCatalogTree(QString sysname, QString username, QObject *parent) : DefaultTreeModel(new CatalogTreeNode(username))
+/*public*/ AbstractCatalogTree::AbstractCatalogTree(QString sysname, QString username, QObject *parent) : CatalogTree( parent)
 {
  //super(new CatalogTreeNode(username));
- log = new Logger("AbstractCatalogTree");
+ root = new CatalogTreeNode(username);
  mUserName = username;
  mSystemName = sysname.toUpper();
-// bean->setSysName(sysname);
-// bean->setUserName(username);
+ bean = new AbstractNamedBean(sysname,username);
 }
 AbstractCatalogTree::~AbstractCatalogTree()
 {
@@ -52,7 +51,7 @@ AbstractCatalogTree::~AbstractCatalogTree()
  * @param pParent Node for the parent of the resource to be scanned, e.g.
  *              where in the tree to insert it.
  */
-///*public*/ /*abstract*/ void insertNodes(QString pName, QString pPath, CatalogTreeNode* pParent);
+/*public*/ /*abstract*/ void AbstractCatalogTree::insertNodes(QString pName, QString pPath, CatalogTreeNode* pParent) {}
 
 /**
  * Starting point to recursively add nodes to the tree by scanning a file directory
@@ -60,9 +59,8 @@ AbstractCatalogTree::~AbstractCatalogTree()
  */
 /*public*/ void AbstractCatalogTree::insertNodes(QString pathToRoot) {
     CatalogTreeNode* root = (CatalogTreeNode*)getRoot();
-    if (log->isDebugEnabled()) log->debug("insertNodes: rootName= "+root->getUserObject().toString()
-                                        +", pathToRoot= "+pathToRoot);
-//    insertNodes(root->getUserObject().toString(), pathToRoot, root);
+    if (log->isDebugEnabled()) log->debug("insertNodes: rootName= "+root->getUserObject().toString() + ", pathToRoot= " + pathToRoot);
+    insertNodes(root->getUserObject().toString(), pathToRoot, root);
 }
 
 
@@ -191,6 +189,7 @@ AbstractCatalogTree::~AbstractCatalogTree()
 
 /*public*/ void AbstractCatalogTree::setState(int s) throw (JmriException){}
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractCatalogTree.class.getName());
+/*private*/ /*final*/ /*static*/ Logger* AbstractCatalogTree::log = LoggerFactory::getLogger("AbstractCatalogTree");
+
 
 //}

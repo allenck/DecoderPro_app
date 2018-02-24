@@ -411,7 +411,7 @@ public:
      * and don't throw events on modification.
      * Key must not be null.
      */
-    /*public*/ virtual void setProperty(QString /*strClass*/, QVariant /*key*/, QVariant /*value*/) {}
+    /*public*/ virtual void setProperty(QString /*strClass*/, QString /*key*/, QVariant /*value*/) {}
 
     /**
      * Retrieve the value associated with a key in a given class

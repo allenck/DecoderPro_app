@@ -130,14 +130,14 @@ private:
      * Settable directories
      */
     /* JMRI program path, defaults to directory JMRI is executed from */
-    static /*private*/ QString programPath;// = NULL;
+    //static /*private*/ QString programPath;// = NULL;
     /* path to jmri.jar */
-    static /*private*/ QString jarPath;// = NULL;
+    //static /*private*/ QString jarPath;// = NULL;
     /* path to the jython scripts directory */
-    static /*private*/ QString scriptsPath;// = NULL;
+    //static /*private*/ QString scriptsPath;// = NULL;
     /* path to the user's files directory */
-    static /*private*/ QString userFilesPath;// = NULL;
-    static /*private*/ QString profilePath;// = null;
+    //static /*private*/ QString userFilesPath;// = NULL;
+    //static /*private*/ QString profilePath;// = null;
 
 //Logger log;
  static bool _debug;

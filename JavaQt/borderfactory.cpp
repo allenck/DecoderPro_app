@@ -342,7 +342,7 @@
                                             Color shadow)    {
         return new EtchedBorder(type, highlight, shadow);
     }
-
+#endif
 //// TitledBorder ////////////////////////////////////////////////////////////
     /**
      * Creates a new titled border with the specified title,
@@ -354,7 +354,7 @@
      * @param title      a <code>String</code> containing the text of the title
      * @return the <code>TitledBorder</code> object
      */
-    /*public*/ static TitledBorder createTitledBorder(String title)     {
+    /*public*/ /*static*/ TitledBorder* BorderFactory::createTitledBorder(QString title)     {
         return new TitledBorder(title);
     }
 
@@ -370,7 +370,7 @@
      *                   by the current look and feel.
      * @return the <code>TitledBorder</code> object
      */
-    /*public*/ static TitledBorder createTitledBorder(Border border)       {
+    /*public*/ /*static*/ TitledBorder* BorderFactory::createTitledBorder(Border* border)       {
         return new TitledBorder(border);
     }
 
@@ -384,8 +384,8 @@
      * @param title      a <code>String</code> containing the text of the title
      * @return the <code>TitledBorder</code> object
      */
-    /*public*/ static TitledBorder createTitledBorder(Border border,
-                                                   String title) {
+    /*public*/ /*static*/ TitledBorder* BorderFactory::createTitledBorder(Border* border,
+                                                   QString title) {
         return new TitledBorder(border, title);
     }
 
@@ -420,8 +420,8 @@
      *</ul>
      * @return the <code>TitledBorder</code> object
      */
-    /*public*/ static TitledBorder createTitledBorder(Border border,
-                        String title,
+    /*public*/ /*static*/ TitledBorder* BorderFactory::createTitledBorder(Border* border,
+                        QString title,
                         int titleJustification,
                         int titlePosition)      {
         return new TitledBorder(border, title, titleJustification,
@@ -460,11 +460,12 @@
      * @param titleFont           a Font object specifying the title font
      * @return the TitledBorder object
      */
-    /*public*/ static TitledBorder createTitledBorder(Border border,
-                        String title,
+    /*public*/ /*static*/ TitledBorder* BorderFactory::createTitledBorder(Border* border,
+                        QString title,
                         int titleJustification,
                         int titlePosition,
-                        Font titleFont) {
+                        QFont titleFont)
+    {
         return new TitledBorder(border, title, titleJustification,
                         titlePosition, titleFont);
     }
@@ -501,15 +502,17 @@
      * @param titleColor  a <code>Color</code> object specifying the title color
      * @return the <code>TitledBorder</code> object
      */
-    /*public*/ static TitledBorder createTitledBorder(Border border,
-                        String title,
+    /*public*/ /*static*/ TitledBorder* BorderFactory::createTitledBorder(Border* border,
+                        QString title,
                         int titleJustification,
                         int titlePosition,
-                        Font titleFont,
-                        Color titleColor)       {
+                        QFont titleFont,
+                        QColor titleColor)
+    {
         return new TitledBorder(border, title, titleJustification,
                         titlePosition, titleFont, titleColor);
     }
+#if 0
 //// EmptyBorder ///////////////////////////////////////////////////////////
     final static Border emptyBorder = new EmptyBorder(0, 0, 0, 0);
 

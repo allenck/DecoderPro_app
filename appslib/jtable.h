@@ -111,6 +111,7 @@ public:
  /*public*/ int getRowHeight();
  /*public*/ int getRowHeight(int);
  /*public*/ int getSelectedRow();
+ /*public*/ int getSelectedColumn();
  /*public*/ QVector<int>* getSelectedRows();
  /*public*/ void setRowSelectionInterval(int index0, int index1);
  /*public*/ int rowAtPoint(QPoint point);

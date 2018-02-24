@@ -17,7 +17,7 @@ public:
  /*public*/ QString getDefaultOperationsFilename() ;
  /*public*/ static void setOperationsDirectoryName(QString name);
  /*public*/ static QString getOperationsDirectoryName() ;
- /*public*/ void setOperationsFileName(QString name);
+ /*public*/ virtual void setOperationsFileName(QString name);
  /*public*/ virtual QString getOperationsFileName();
  /*public*/ static QString getFileLocation();
  /*public*/ static void setFileLocation(QString location);
@@ -25,15 +25,16 @@ public:
  /*public*/ Q_DECL_DEPRECATED static QString convertFromXmlComment(QString comment);
  /*public*/ static void save();
  /*public*/ static bool areFilesDirty();
- /*private*/ QString operationsFileName;// = "DefaultOperations.xml"; // NOI18N should be overridden
+ /*public*/ static bool checkFileName(QString name);
 
 signals:
 
 public slots:
 private:
  /*private*/ bool dirty;// = false;
-  /*private*/ static QString operationsDirectoryName;// = "operations"; // NOI18N
- // /*private*/ QString operationsFileName;// = "DefaultOperations.xml"; // NOI18N should be overridden
+ /*private*/ static QString operationsDirectoryName;// = "operations"; // NOI18N
+ /*private*/ QString operationsFileName;// = "DefaultOperations.xml"; // NOI18N should be overridden
+
  /*private*/ static QString fileLocation;// = FileUtil.getUserFilesPath();
  Logger* log;
 protected:

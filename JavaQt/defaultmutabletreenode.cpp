@@ -87,9 +87,10 @@ DefaultMutableTreeNode::DefaultMutableTreeNode(QObject *oparent)
 : MutableTreeNode(oparent)
 {
  //this(userObject, true);
-    common();
+ common();
  this->userObject = userObject;
  this->allowsChildren = true;
+ setObjectName(userObject.toString());
 }
 
 /**
@@ -110,6 +111,7 @@ DefaultMutableTreeNode::DefaultMutableTreeNode(QObject *oparent)
  //parent = NULL;
  this->allowsChildren = allowsChildren;
  this->userObject = userObject;
+ setObjectName(userObject.toString());
 }
 
 void DefaultMutableTreeNode::common()
@@ -117,7 +119,7 @@ void DefaultMutableTreeNode::common()
  log = new Logger("DefaultMutableTreeNode");
  setObjectName("DefaultMutableTreeNode");
  _children = NULL;
- parent=NULL;
+ _parent = NULL;
 }
 
 //
@@ -147,22 +149,22 @@ void DefaultMutableTreeNode::common()
 {
  if (!allowsChildren)
  {
-  throw new IllegalStateException("node does not allow children");
+  throw  IllegalStateException("node does not allow children");
  }
  else if (newChild == NULL)
  {
-  throw new IllegalArgumentException("new child is NULL");
+  throw  IllegalArgumentException("new child is NULL");
  }
  else if (isNodeAncestor(newChild))
  {
-  throw new IllegalArgumentException("new child is an ancestor");
+  throw  IllegalArgumentException("new child is an ancestor");
  }
 
  MutableTreeNode* oldParent = (MutableTreeNode*)((DefaultMutableTreeNode*)newChild)->getParent();
 
  if (oldParent != NULL)
  {
-  ((DefaultMutableTreeNode*)oldParent)->remove(newChild);
+  oldParent->remove(newChild);
  }
  newChild->setParent(this);
  if (_children == NULL)
@@ -186,7 +188,7 @@ void DefaultMutableTreeNode::common()
 {
  MutableTreeNode* child = (MutableTreeNode*)getChildAt(childIndex);
  _children->remove(childIndex);
- ((DefaultMutableTreeNode*) child)->setParent(NULL);
+ child->setParent(NULL);
 }
 
 /**
@@ -200,7 +202,7 @@ void DefaultMutableTreeNode::common()
  */
 /*public*/ void DefaultMutableTreeNode::setParent(MutableTreeNode* newParent)
 {
- parent = newParent;
+ _parent = newParent;
 }
 
 /**
@@ -210,7 +212,7 @@ void DefaultMutableTreeNode::common()
  */
 /*public*/ TreeNode* DefaultMutableTreeNode::getParent()
 {
- return parent;
+ return _parent;
 }
 
 /**
@@ -223,11 +225,11 @@ void DefaultMutableTreeNode::common()
  */
 /*public*/ TreeNode* DefaultMutableTreeNode::getChildAt(int index)
 {
- if (_children == NULL)
+ if (_children == NULL || _children->isEmpty())
  {
-  //throw new ArrayIndexOutOfBoundsException("node has no children");
   log->error("node has no children");
   return NULL;
+  //throw  ArrayIndexOutOfBoundsException("node has no children");
  }
  return (TreeNode*)_children->at(index);
 }
@@ -266,7 +268,7 @@ void DefaultMutableTreeNode::common()
 {
     if (aChild == NULL)
     {
-        throw new IllegalArgumentException("argument is NULL");
+        throw  IllegalArgumentException("argument is NULL");
     }
 
     if (!isNodeChild(aChild))
@@ -366,7 +368,7 @@ void DefaultMutableTreeNode::common()
 {
     MutableTreeNode* parent = (MutableTreeNode*)getParent();
     if (parent != NULL) {
-        ((DefaultMutableTreeNode*)parent)->remove(this);
+        parent->remove(this);
     }
 }
 
@@ -382,12 +384,12 @@ void DefaultMutableTreeNode::common()
 {
     if (aChild == NULL)
     {
-        throw new IllegalArgumentException("argument is NULL");
+        throw  IllegalArgumentException("argument is NULL");
     }
 
     if (!isNodeChild(aChild))
     {
-        throw new IllegalArgumentException("argument is not a child");
+        throw  IllegalArgumentException("argument is not a child");
     }
     remove(getIndex(aChild));       // linear search
 }
@@ -457,7 +459,7 @@ void DefaultMutableTreeNode::common()
   {
    return true;
   }
- } while((ancestor = ((DefaultMutableTreeNode*)ancestor)->getParent()) != NULL);
+ } while((ancestor = ancestor->getParent()) != NULL);
 
  return false;
 }
@@ -548,7 +550,7 @@ void DefaultMutableTreeNode::common()
 
     if (node1 != NULL || node2 != NULL)
     {
-        throw new Error ("nodes should be NULL");
+        throw  Error ("nodes should be NULL");
     }
 
     return NULL;
@@ -592,7 +594,7 @@ void DefaultMutableTreeNode::common()
 
     if (last == NULL)
     {
-        throw new Error ("nodes should be NULL");
+        throw  Error ("nodes should be NULL");
     }
 
     return ((DefaultMutableTreeNode*)last)->getLevel() - getLevel();
@@ -613,7 +615,7 @@ void DefaultMutableTreeNode::common()
     int levels = 0;
 
     ancestor = this;
-    while((ancestor = ((DefaultMutableTreeNode*)ancestor)->getParent()) != NULL)
+    while((ancestor = ancestor->getParent()) != NULL)
     {
         levels++;
     }
@@ -663,7 +665,7 @@ void DefaultMutableTreeNode::common()
  else
  {
   depth++;
-  retNodes = getPathToRoot(((DefaultMutableTreeNode*)aNode)->getParent(), depth);
+  retNodes = getPathToRoot(aNode->getParent(), depth);
   retNodes->replace((retNodes->size() - depth), aNode);
  }
  return retNodes;
@@ -700,7 +702,7 @@ void DefaultMutableTreeNode::common()
  do
  {
         previous = ancestor;
-        ancestor = ((DefaultMutableTreeNode*)ancestor)->getParent();
+        ancestor = ancestor->getParent();
  } while (ancestor != NULL);
 
  return previous;
@@ -934,8 +936,7 @@ void DefaultMutableTreeNode::common()
  */
 /*public*/ TreeNode* DefaultMutableTreeNode::getFirstChild() {
     if (getChildCount() == 0) {
-        //throw new NoSuchElementException("node has no children");
-     return NULL;
+        throw NoSuchElementException("node has no children");
     }
     return getChildAt(0);
 }
@@ -950,7 +951,7 @@ void DefaultMutableTreeNode::common()
  */
 /*public*/ TreeNode* DefaultMutableTreeNode::getLastChild() {
     if (getChildCount() == 0) {
-        throw new NoSuchElementException("node has no children");
+        throw  NoSuchElementException("node has no children");
     }
     return getChildAt(getChildCount()-1);
 }
@@ -972,13 +973,13 @@ void DefaultMutableTreeNode::common()
  */
 /*public*/ TreeNode* DefaultMutableTreeNode::getChildAfter(TreeNode* aChild) {
     if (aChild == NULL) {
-        throw new IllegalArgumentException("argument is NULL");
+        throw  IllegalArgumentException("argument is NULL");
     }
 
     int index = getIndex(aChild);           // linear search
 
     if (index == -1) {
-        throw new IllegalArgumentException("node is not a child");
+        throw  IllegalArgumentException("node is not a child");
     }
 
     if (index < getChildCount() - 1) {
@@ -1003,13 +1004,13 @@ void DefaultMutableTreeNode::common()
  */
 /*public*/ TreeNode* DefaultMutableTreeNode::getChildBefore(TreeNode* aChild) {
     if (aChild == NULL) {
-        throw new IllegalArgumentException("argument is NULL");
+        throw  IllegalArgumentException("argument is NULL");
     }
 
     int index = getIndex(aChild);           // linear search
 
     if (index == -1) {
-        throw new IllegalArgumentException("argument is not a child");
+        throw  IllegalArgumentException("argument is not a child");
     }
 
     if (index > 0) {
@@ -1046,7 +1047,7 @@ void DefaultMutableTreeNode::common()
 
         if (retval && !((DefaultMutableTreeNode*)getParent())
                        ->isNodeChild(anotherNode)) {
-            throw new Error("sibling has different parent");
+            throw  Error("sibling has different parent");
         }
     }
 
@@ -1094,7 +1095,7 @@ void DefaultMutableTreeNode::common()
     }
 
     if (retval != NULL && !isNodeSibling(retval)) {
-        throw new Error("child of parent is not a sibling");
+        throw  Error("child of parent is not a sibling");
     }
 
     return retval;
@@ -1121,7 +1122,7 @@ void DefaultMutableTreeNode::common()
     }
 
     if (retval != NULL && !isNodeSibling(retval)) {
-        throw new Error("child of parent is not a sibling");
+        throw  Error("child of parent is not a sibling");
     }
 
     return retval;
@@ -1279,7 +1280,7 @@ void DefaultMutableTreeNode::common()
     }
 
     if (count < 1) {
-        throw new Error("tree has zero leaves");
+        throw Error("tree has zero leaves");
     }
 
     return count;
@@ -1320,11 +1321,11 @@ if (userObject == QVariant()) {
 
         // shallow copy -- the new node has no parent or children
         newNode->_children = NULL;
-        newNode->parent = NULL;
+        newNode->_parent = NULL;
 
     } catch (CloneNotSupportedException e) {
         // Won't happen because we implement Cloneable
-        throw new Error(e.getMessage());
+        throw  Error(e.getMessage());
     }
 #endif
     return newNode;
@@ -1540,7 +1541,7 @@ private void readObject(ObjectInputStream s)
     //super();
 
     if (ancestor == NULL || descendant == NULL) {
-        throw new IllegalArgumentException("argument is NULL");
+        throw  IllegalArgumentException("argument is NULL");
     }
 
     TreeNode* current;
@@ -1552,7 +1553,7 @@ private void readObject(ObjectInputStream s)
     while (current != ancestor) {
         current = current->getParent();
         if (current == NULL && descendant != ancestor) {
-            throw new IllegalArgumentException(QString("node ") + ancestor->objectName() +
+            throw  IllegalArgumentException(QString("node ") + ancestor->objectName() +
                         QString(" is not an ancestor of ") + descendant->objectName());
         }
         stack->push(current);
@@ -1567,7 +1568,7 @@ private void readObject(ObjectInputStream s)
         try {
             return stack->pop();
         } catch (EmptyStackException e) {
-            throw new NoSuchElementException("No more elements");
+            throw  NoSuchElementException("No more elements");
         }
     }
 

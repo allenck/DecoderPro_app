@@ -724,7 +724,8 @@ SOURCES += \
     Web/stringescapeutils.cpp \
     Throttle/windowpreferences.cpp \
     Throttle/locoaddressxml.cpp \
-    loconetmenustartupaction.cpp
+    loconetmenustartupaction.cpp \
+    Web/aboutservlet.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1466,7 +1467,8 @@ HEADERS += \
     Web/stringescapeutils.h \
     Throttle/windowpreferences.h \
     Throttle/locoaddressxml.h \
-    loconetmenustartupaction.h
+    loconetmenustartupaction.h \
+    Web/aboutservlet.h
 #    Web/controller/servletcontroller.h
     #abstractpreferencesmanager.h \
     #connectionconfigmanager.h

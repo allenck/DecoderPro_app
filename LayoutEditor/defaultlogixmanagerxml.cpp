@@ -47,7 +47,7 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
    log->debug("logix system name is "+sname);
-   Logix* x = ((DefaultLogixManager*)tm)->getBySystemName(sname);
+   Logix* x = tm->getBySystemName(sname);
    bool enabled = ((DefaultLogix*)x)->getEnabled();
    QDomElement elem = doc.createElement("logix");
    elem.setAttribute("systemName", sname);
@@ -61,14 +61,14 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
    if (enabled) elem.setAttribute("enabled","yes");
    else elem.setAttribute("enabled","no");
    // save child Conditionals
-   int numConditionals = ((DefaultLogix*)x)->getNumConditionals();
+   int numConditionals = x->getNumConditionals();
    if (numConditionals>0)
    {
     QString cSysName = "";
     QDomElement cElem = QDomElement();
     for (int k = 0;k<numConditionals;k++)
     {
-     cSysName = ((DefaultLogix*)x)->getConditionalByNumberOrder(k);
+     cSysName = x->getConditionalByNumberOrder(k);
      cElem = doc.createElement("logixConditional");
      cElem.setAttribute("systemName",cSysName);
      cElem.setAttribute("order",(k));
@@ -166,7 +166,8 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
                     int cOrder = logixConditionalList.at(n).toElement()
                                                         .attribute("order").toInt();
                     // add conditional to logix
-                    ((DefaultLogix*)x)->addConditional(cSysName,cOrder);
+                    x->addConditional(cSysName,cOrder);
+                    //x->addConditional(cSysName,((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->createNewConditional(cSysName, ""));
                 }
             }
         }

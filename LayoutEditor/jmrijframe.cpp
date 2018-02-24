@@ -94,14 +94,14 @@
  setWindowTitle(name);
  init(true, true);
  //this(name, true, true);
- generateWindowRef();
- if (metaObject()->className()==("JmriJFrame"))
- {
-  if ((this->windowTitle() == "") || (this->windowTitle() == (""))) {
-      return;
-  }
- }
- setFrameLocation();
+// generateWindowRef();
+// if (metaObject()->className()==("JmriJFrame"))
+// {
+//  if ((this->windowTitle() == "") || (this->windowTitle() == (""))) {
+//      return;
+//  }
+// }
+// setFrameLocation();
 }
 
 /**
@@ -143,12 +143,12 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  properties = new QMap<QString, QVariant>();
  QDesktopWidget* w = QApplication::desktop();
  //setMinimumSize(100,20); // already done in JFrame!
+ setLocation(20,50);
  setMaximumHeight(w->height() - 100);
  task = NULL;
  modifiedFlag = false;
  windowMenu = NULL;
  installEventFilter(this);
- windowFrameRef = QString(this->metaObject()->className());
  mShown = false;
 
  reuseFrameSavedPosition=savePosition;
@@ -186,13 +186,23 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
 // TODO:    addWindowCloseShortCut();
 
- windowFrameRef = metaObject()->className();
- if (metaObject()->className()!=("JmriJFrame"))
- {
-     generateWindowRef();
-     setFrameLocation();
- }
+// windowFrameRef = getClassName(); //metaObject()->className();
+// if (metaObject()->className()!=("JmriJFrame"))
+// {
+//     generateWindowRef();
+//     setFrameLocation();
+// }
 }
+
+/*
+ * This method should be overriden to provide the full java classname
+ * so that preferences can be stored in a manner that either this app or the original
+ * Java code can interpret save preferences equally.
+/*public*/ QString JmriJFrame::getClassName()
+{
+ return QString(metaObject()->className());
+}
+
 /**
   * This function does not exist in the original JMRI Java code. Because C++ subclasses
   * are not yet constructed when JmriJFrame is the superclass, the classname that is
@@ -270,8 +280,7 @@ void JmriJFrame::setFrameLocation()
   for(int i = 0; i<frameList->size();i++)
   {
    JmriJFrame* j = frameList->at(i);
-   if(QString(j->metaObject()->className())== QString(this->metaObject()->className())
-       && (j->isMinimized()) && (j->isVisible())
+   if(j->getClassName()== getClassName()  && (j->isMinimized()) && (j->isVisible())
            && j->windowTitle()==(windowTitle()))
    {
     if ((j->pos().x()==this->pos().x()) && (j->pos().y()==this->pos().y()))
@@ -395,7 +404,6 @@ void JmriJFrame::reSizeToFitOnScreen()
 
 void JmriJFrame::offSetFrameOnScreen(JmriJFrame* f)
 {
-#if 1
 /* We use the frame that we are moving away from insets, as at this point
 our own insets have not been correctly built and always return a size of zero */
 //    int frameOffSetx = this->pos().x()+f->getInsets().top;
@@ -418,7 +426,6 @@ our own insets have not been correctly built and always return a size of zero */
     if (frameOffSetx>=dim.width())
         frameOffSetx=/*f.getInsets().top*/20/2;
     this->move(frameOffSetx, frameOffSety);
-#endif
 }
 
 
@@ -429,7 +436,15 @@ our own insets have not been correctly built and always return a size of zero */
  * created an installed in this method, rather than
  * in the ctor itself.
  */
-/*public*/ void JmriJFrame::initComponents() /*throw (Exception)*/ {}
+/*public*/ void JmriJFrame::initComponents() /*throw (Exception)*/
+{
+ windowFrameRef = getClassName(); //metaObject()->className();
+ if (windowFrameRef!=("JmriJFrame"))
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
+}
 
 /**
  * Add a standard help menu, including window specific help item.

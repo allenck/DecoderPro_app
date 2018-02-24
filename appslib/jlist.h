@@ -9,6 +9,7 @@ class JAVAQTSHARED_EXPORT JList : public QListView
 {
 public:
  JList( QWidget* parent = 0);
+ JList(QAbstractListModel* model, QWidget* parent = 0);
  JList(QList<QString>, QWidget* parent = 0);
  QModelIndexList getSelectedValues();
  QModelIndex locationToIndex(QPoint);

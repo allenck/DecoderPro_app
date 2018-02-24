@@ -24,6 +24,7 @@ public:
     void setName(QString name);
 
 signals:
+ void showPopUp(NamedIcon*);
 
 public slots:
 private:

@@ -2,6 +2,7 @@
 #define OPERATIONSSETUPPANEL_H
 #include "operationspreferencespanel.h"
 #include "appslib_global.h"
+#include "propertychangeevent.h"
 
 class ActionEvent;
 class JTextArea;
@@ -20,6 +21,10 @@ namespace Operations
   Q_OBJECT
  public:
   explicit OperationsSetupPanel(QWidget *parent = 0);
+  /*public*/ QString getTabbedPreferencesTitle();
+  /*public*/ QString getPreferencesTooltip();
+  /*public*/ void savePreferences();
+  /*public*/ bool isDirty();
 
  private:
   /*private*/ void setDirectionCheckBox(int direction);
@@ -30,6 +35,7 @@ namespace Operations
  public slots:
   /*public*/ void checkBoxActionPerformed(QWidget* ae);
   /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e);
 
  private:
   /**

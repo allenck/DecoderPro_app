@@ -7,6 +7,7 @@
 #include "imageicon.h"
 #include "abstractmemory.h"
 #include <QSignalMapper>
+#include "rostericonfactory.h"
 
 //MemoryIcon::MemoryIcon(QObject *parent) :
 //    DisplayMemoryIcon(parent)
@@ -70,134 +71,129 @@
 
 /*public*/ void MemoryIcon::displayState()
 {
- if(log->isDebugEnabled()) log->debug("displayState");
- if (getMemory() == NULL)
- {  // use default if not connected yet
-  setText(defaultText);
-  updateSize();
-  return;
- }
- if(re!=NULL)
- {
-  InstanceManager::throttleManagerInstance()->removeListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
-  re=NULL;
- }
- QVariant key = ((AbstractMemory*)getMemory())->getValue();
- if (key != QVariant())
- {
-  QMap<QString, NamedIcon*>* map = getMap();
-  if (map == NULL)
-  {
-   // no map, attempt to show object directly
-   QVariant val = key;
-   //if (val instanceof jmri.jmrit.roster.RosterEntry)
-   //if(qobject_cast<RosterEntry*>(val)!= NULL)
-   RosterEntry* roster = VPtr<RosterEntry>::asPtr(val);
-   if(roster != NULL)
-   {
-    //RosterEntry* roster = (RosterEntry*) val;
+ log->debug("displayState()");
 
-    val = updateMemoryFromRosterVal(roster);
-    flipRosterIcon = false;
-    if(val.isNull())
+ if (namedMemory == NULL) {  // use default if not connected yet
+     setIcon(defaultIcon);
+     updateSize();
      return;
-   }
-   else
-   //if (val instanceof javax.swing.ImageIcon)
-   //if(qobject_cast<ImageIcon*>(val)!=NULL)
-   if(VPtr<ImageIcon>::asPtr(val)!=NULL)
-   {
-    setIcon((NamedIcon*) VPtr<ImageIcon>::asPtr(val));
-    setText(NULL);
-    _text = false;
-    _icon = true;
-    updateSize();
-    return;
-   }
-   //if (val instanceof String)
-//   if(qobject_cast<QString*>(val)!=NULL)
-//   {
-//    if (*(QString*)val==QString(""))
-//     setText(defaultText);
-//    else
-//     setText(*(QString*) val);
-//    setIcon(NULL);
-//    _text = true;
-//    _icon = false;
-//    updateSize();
-//    return;
-//   }
-#if 0 // TODO:
-   else
-   //if (val instanceof Number)
-   if(qobject_cast<qint32*>(val) != NULL)
-   {
-    setText(QString("%1").arg(*(int*)val));
-    setIcon(NULL);
-    _text = true;
-    _icon = false;
-    updateSize();
-    return;
-   }
-   #endif
-   else if(val.canConvert<int>())
-   {
-    setText(val.toString());
-    setIcon(NULL);
-    _text = true;
-    _icon = false;
-    updateSize();
-    return;
-   }
-   else if(val.canConvert<QString>())
-   {
-    if(val.toString() == "")
-     setText(defaultText);
-    else
-     setText(val.toString());
-    setIcon(NULL);
-    _text = true;
-    _icon = false;
-    updateSize();
-    return;
-   }
-   else log->warn("can't display current value of "+getNameString()/*+
-                ", val= "+val+" of Class "+val.getClass().getName()*/);
-  }
-  else
-  {
-   // map exists, use it
-   NamedIcon* newicon = map->value(key.toString());
-   if (newicon!=NULL)
-   {
+ }
+ if (re != NULL) {
+     InstanceManager::throttleManagerInstance()->removeListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
+     re = NULL;
+ }
+ QVariant key = getMemory()->getValue();
+ displayState(key);
+}
 
-    setText(NULL);
-    DisplayMemoryIcon::setIcon(newicon);
-    _text = false;
-    _icon = true;
-    updateSize();
-    return;
-   }
-   else
-   {
-    // no match, use default
-    setIcon(getDefaultIcon());
+/*protected*/ void MemoryIcon::displayState(QVariant key)
+{
+ log->debug(tr("displayState(%1)").arg(key.toString()));
+if (key != QVariant()) {
+    if (map == NULL) {
+        QVariant val = key;
+        // no map, attempt to show object directly
+        //if (val instanceof jmri.jmrit.roster.RosterEntry)
+        if(VPtr<RosterEntry>::asPtr(val)!= NULL)
+        {
+            RosterEntry* roster = VPtr<RosterEntry>::asPtr(val);
+            val = updateIconFromRosterVal(roster);
+            flipRosterIcon = false;
+            if (val == QVariant()) {
+                return;
+            }
+        }
+        //if (val instanceof String)
+        if(val.toString() != "")        {
+            QString str = val.toString();
+            _icon = false;
+            _text = true;
+            setText(str);
+            updateIcon(NULL);
+            if (log->isDebugEnabled()) {
+                log->debug("String str= \"" + str + "\" str.trim().length()= " + str.trimmed().length());
+                log->debug("  maxWidth()= " + QString::number(maxWidth()) + ", maxHeight()= " + QString::number(maxHeight()));
+                log->debug(tr("  getBackground(): %1").arg(ColorUtil::colorToColorName(getBackground())));
+                log->debug(tr("  _editor.getTargetPanel().getBackground(): %1").arg(ColorUtil::colorToColorName( _editor->getTargetPanel()->backgroundBrush().color())));
+//                log->debug(tr("  setAttributes to getPopupUtility(%1) with").arg(getPopupUtility()));
+//                log->debug(tr("     hasBackground() %1").arg(getPopupUtility()->hasBackground()));
+//                log->debug(tr("     getBackground() ^1").arg(ColorUtil::colorToColorName(getPopupUtility()->getBackground())));
+//                log->debug(tr("    on editor %1").arg(_editor));
+            }
+//            _editor->setAttributes(getPopupUtility(), this, true);
+        }
+        //else if (val instanceof javax.swing.ImageIcon)
+        else if(VPtr<ImageIcon>::asPtr(val) != NULL)
+        {
+            _icon = true;
+            _text = false;
+            setIcon(VPtr<NamedIcon>::asPtr(val));
+            setText(NULL);
+        }
+//        else if (val instanceof Number) { // see string
+//            _icon = false;
+//            _text = true;
+//            setText(val.toString());
+//            setIcon(NULL);
+//        }
+        else {
+            log->warn("can't display current value of " + getNameString()
+                    + ", val= " + val.toString() + " of Class " + /*val.getClass().getName()*/val.typeName());
+        }
+    } else {
+        // map exists, use it
+        NamedIcon* newicon = map->value(key.toString());
+        if (newicon != NULL) {
 
-    setText(NULL);
-    _text = false;
-    _icon = true;
-    updateSize();
-   }
-  }
+            setText(NULL);
+            DisplayMemoryIcon::setIcon(newicon);
+        } else {
+            // no match, use default
+            _icon = true;
+            _text = false;
+            setIcon(defaultIcon);
+            setText(NULL);
+        }
+    }
  }
  else
  {
-  setIcon(NULL);
-  setText(defaultText);
-  _text = true;
-  _icon = false;
-  updateSize();
+  if (log->isDebugEnabled()) {
+      log->debug("object NULL");
+  }
+  _icon = true;
+  _text = false;
+  setIcon(defaultIcon);
+  setText(NULL);
  }
+updateSize();
+}
+
+/*protected*/ QVariant MemoryIcon::updateIconFromRosterVal(RosterEntry* roster)
+{
+    re = roster;
+    ImageIcon* icon = ((RosterIconFactory*)InstanceManager::getDefault("RosterIconFactory"))->getIcon(roster);
+    if (icon == NULL || icon->getIconWidth() == -1 || icon->getIconHeight() == -1) {
+        //the IconPath is still at default so no icon set
+        return roster->titleString();
+    } else {
+        NamedIcon* rosterIcon = new NamedIcon(roster->getIconPath(), roster->getIconPath());
+        _text = false;
+        _icon = true;
+        updateIcon(rosterIcon);
+
+        if (flipRosterIcon) {
+            flipIcon(NamedIcon::HORIZONTALFLIP);
+        }
+        InstanceManager::throttleManagerInstance()->attachListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
+        QVariant isForward = InstanceManager::throttleManagerInstance()->getThrottleInfo(re->getDccLocoAddress(), "IsForward");
+        if (isForward != QVariant()) {
+            if (! isForward.toBool()) {
+                flipIcon(NamedIcon::HORIZONTALFLIP);
+            }
+        }
+    }
+    return QVariant();
 }
 
 //JCheckBoxMenuItem  updateBlockItem = new JCheckBoxMenuItem("Update Block Details");
@@ -273,7 +269,7 @@
      if ((InstanceManager::sectionManagerInstance()->getSystemNameList().size()) > 0 && ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getBlockWithMemoryAssigned(getMemory()) != NULL)
      {
    DispatcherFrame df = InstanceManager::getDefault("DispatcherFrame");
-         if (df != null) {
+         if (df != NULL) {
              ActiveTrain* at = df.getActiveTrainForRoster(re);
              if (at != NULL) {
                  popup->addAction(new AbstractAction(tr("MenuTerminateTrain")));

@@ -285,6 +285,13 @@ void JmriBeanComboBox::updateComboBox(QString select)
     updateComboBox(_lastSelected);
 }
 
+/*public*/ void JmriBeanComboBox::setSelectedBeanByName(QString inBeanName) {
+    if (inBeanName == NULL) {
+        return;
+    }
+    NamedBean* nBean = _manager->getNamedBean(inBeanName);
+    setSelectedBean(nBean);
+}
 
 /*public*/ void JmriBeanComboBox::excludeItems(QList<NamedBean*>* exclude){
     this->exclude = exclude;

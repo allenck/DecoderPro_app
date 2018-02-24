@@ -915,16 +915,16 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  if (((p->getConnect1())->getLayoutBlock()==lBlock) && ((p->getConnect2())->getLayoutBlock()!=lBlock))
  {
   if ( (leTools->isAtWestEndOfAnchor(p->getConnect2(), p) && facing) ||((!leTools->isAtWestEndOfAnchor(p->getConnect2(), p)) && (!facing)) )
-   return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(p->getWestBoundSignal());
+   return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getWestBoundSignal());
   else
-   return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(p->getEastBoundSignal()));
+   return (((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getEastBoundSignal()));
  }
  else if (((p->getConnect1())->getLayoutBlock()!=lBlock) && ((p->getConnect2())->getLayoutBlock()==lBlock))
  {
   if ( (leTools->isAtWestEndOfAnchor(p->getConnect1(), p) && facing) || ((!leTools->isAtWestEndOfAnchor(p->getConnect1(), p)) && (!facing)) )
-   return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(p->getWestBoundSignal()));
+   return (((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getWestBoundSignal()));
   else
-   return (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(p->getEastBoundSignal()));
+   return (((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getEastBoundSignal()));
  }
  else
  {
@@ -1009,30 +1009,30 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  if (((TrackSegment*)x->getConnectA())->getLayoutBlock()==lBlock)
  {
   if (facing)
-   return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(x->getSignalCName());
+   return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalCName());
   else
-   return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(x->getSignalAName());
+   return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalAName());
  }
  if (((TrackSegment*)x->getConnectB())->getLayoutBlock()==lBlock)
  {
   if (facing)
-    return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(x->getSignalDName());
+    return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalDName());
    else
-    return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(x->getSignalBName());
+    return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalBName());
   }
   if (((TrackSegment*)x->getConnectC())->getLayoutBlock()==lBlock)
   {
    if (facing)
-    return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(x->getSignalAName());
+    return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalAName());
    else
-    return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(x->getSignalCName());
+    return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalCName());
   }
   if (((TrackSegment*)x->getConnectD())->getLayoutBlock()==lBlock)
   {
   if (facing)
-   return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(x->getSignalBName());
+   return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalBName());
   else
-   return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(x->getSignalDName());
+   return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalDName());
  }
 #endif
  return NULL;

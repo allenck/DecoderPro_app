@@ -134,11 +134,13 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  // enough to reserve much space.
  dataTableSize.setHeight(qMax(dataTableSize.height(), 400));
 //    dataScroll.getViewport().setPreferredSize(dataTableSize);
+ dataTable->resize(dataTableSize);
 
  // set preferred scrolling options
 //    dataScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 //    dataScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 // dataModel->loadTableColumnDetails(dataTable);
+ dataModel->persistTable(dataTable);
 }
 
 /**

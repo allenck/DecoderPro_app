@@ -27,6 +27,7 @@
 #include "denialservlet.h"
 #include "operationsservlet.h"
 #include "defaultservletconfig.h"
+#include "aboutservlet.h"
 
 /** Logger class */
 //extern FileLogger* logger;
@@ -162,6 +163,12 @@ void RequestHandler::service(stefanfrings::HttpRequest& request, stefanfrings::H
   return;
  }
 
+ if(path.startsWith( "/about"))
+ {
+  servlet = new AboutServlet();
+  ((AboutServlet*)servlet)->doGet(req,resp);
+  return;
+ }
 
  QStringList sl = path.split('/');
  if(((sl.size()>= 3) && sl.at(1) == "servlet") || ((sl.size() == 2) && (sl.at(1) == "roster")) || ((sl.size() > 3) && (sl.at(2)== "entry")))

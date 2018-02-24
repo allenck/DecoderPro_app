@@ -89,6 +89,7 @@ void TableFrames::common()
 //@Override
 /*public*/ void TableFrames::initComponents()
 {
+ JmriJFrame::initComponents();
  setTitle(tr("Occupancy Blocks, their Portals and Paths"));
  QMenuBar* menuBar = new QMenuBar();
  //java.util.ResourceBundle rb = java.util.ResourceBundle.getBundle("apps.AppsBundle");
@@ -1072,4 +1073,8 @@ static class MyBooleanRenderer extends javax.swing.table.DefaultTableCellRendere
 /*public*/ QString TableFrames::toString()
 {
  return QString(this->metaObject()->className());
+}
+/*public*/ QString TableFrames::getClassName()
+{
+ return "jmri.jmrit.beantable.oblock.TableFrames";
 }

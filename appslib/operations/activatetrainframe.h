@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include "actionevent.h"
 
 class JmriBeanComboBox;
 class Block;
@@ -24,6 +25,8 @@ class ActivateTrainFrame : public QObject
 public:
  //explicit ActivateTrainFrame(QObject *parent = 0);
  /*public*/ ActivateTrainFrame(DispatcherFrame* d);
+ /*public*/ void showActivateFrame(RosterEntry* re);
+ /*public*/ void initiateTrain(ActionEvent* e, RosterEntry* re, Block* b);
 
 signals:
 
@@ -91,9 +94,17 @@ private:
 
  /*private*/ QComboBox*trainTypeBox; // =  new QComboBox();
  // Note: See also items related to automatically running trains near the end of this module
+ /*private*/ bool setComboBox(QComboBox*box, QString txt);
 
  bool transitsFromSpecificBlock; // =  false;
+ /*private*/ void initializeFreeTransitsCombo(QList<Transit*> transitList);
+ /*private*/ QString getBlockName(Block* b);
 
+protected:
+ /*protected*/ void showActivateFrame();
+ /*protected*/ void initiateTrain(ActionEvent* e = 0);
+
+friend class DispatcherFrame;
 };
 
 #endif // ACTIVATETRAINFRAME_H

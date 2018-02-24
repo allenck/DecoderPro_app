@@ -20,16 +20,21 @@
 // /*public*/ class CatalogTreeFS extends AbstractCatalogTree {
 
 
-/*public*/ CatalogTreeFS::CatalogTreeFS(QString sysName, QString userName, QObject *parent) : AbstractCatalogTree(sysName, userName, parent){
-        //super(sysName, userName);
-    parameters = new QMap<QString, QString>();
-    }
+/*public*/ CatalogTreeFS::CatalogTreeFS(QString sysName, QString userName, QObject *parent) : AbstractCatalogTree(sysName, userName, parent)
+{
+ //super(sysName, userName);
+ this->systemName = sysName;
+ this->userName = userName;
+ parameters = new QMap<QString, QString>();
+ log->setDebugEnabled(true);
+}
 
-/*public*/ void CatalogTreeFS::setFilter(QStringList filter) {
-    _filter =  QStringList();
-    for (int i=0; i<filter.length(); i++) {
-        _filter.append(filter.at(i));
-    }
+/*public*/ void CatalogTreeFS::setFilter(QStringList filter)
+{
+ _filter =  QStringList();
+ for (int i=0; i<filter.length(); i++) {
+     _filter.append(filter.at(i));
+ }
 }
 
 /*public*/ QStringList CatalogTreeFS::getFilter() {
@@ -59,35 +64,44 @@ bool CatalogTreeFS::filter(QString ext) {
  * @param pParent Node for the parent of the resource to be scanned, e.g.
  *              where in the tree to insert it.
  */
-/*public*/ void CatalogTreeFS::insertNodes(QString pName, QString pPath, CatalogTreeNode* pParent) {
-    QFileInfo fp = QFileInfo(pPath);
-    if (!fp.exists()) return;
+/*public*/ void CatalogTreeFS::insertNodes(QString pName, QString pPath, CatalogTreeNode* pParent)
+{
+ if(pPath.endsWith('/'))
+  pPath = pPath.mid(0,pPath.lastIndexOf('/'));
+ QFileInfo fp = QFileInfo(pPath);
+ if (!fp.exists()) return;
 
-    // suppress overhead files
-    QString filename = fp.fileName();
-    if (filename.startsWith(".")) return;
-    if (filename==("CVS")) return;
+ // suppress overhead files
+ QString filename = fp.fileName();
+ if (filename.startsWith(".")) return;
+ if (filename==("CVS")) return;
 
-    if (fp.isDir()) {
-        // first, represent this one
-        CatalogTreeNode* newElement = new CatalogTreeNode(pName);
-        insertNodeInto(newElement, pParent, pParent->getChildCount());
-        QDir dir(fp.absoluteDir());
-        QStringList sp = dir.entryList();
-        for (int i=0; i<sp.length(); i++) {
-            //if (log.isDebugEnabled()) log.debug("Descend into resource: "+sp[i]);
-            insertNodes(sp.at(i), pPath+"/"+sp.at(i), newElement);
-        }
-    } else /* leaf */ {
-        //QString ext = FileChooserFilter.getFileExtension(fp);
-        QString ext = fp.suffix();
-        if (!filter(ext)) return;
-        int index = filename.indexOf('.');
-        if (index > 0) {
-            filename = filename.mid(0, index);
-        }
-        pParent->addLeaf(filename, pPath);
-    }
+ if (fp.isDir())
+ {
+  // first, represent this one
+  CatalogTreeNode* newElement = new CatalogTreeNode(pName);
+  insertNodeInto(newElement, pParent, pParent->getChildCount());
+  QDir dir(fp.absoluteFilePath());
+  QStringList sp = dir.entryList();
+  for (int i=0; i<sp.length(); i++)
+  {
+   if(sp.at(i) == "." || sp.at(i) == "..")
+    continue;
+   if (log->isDebugEnabled()) log->debug("Descend into resource: "+ sp.at(i));
+   insertNodes(sp.at(i), pPath + "/" +sp.at(i), newElement);
+  }
+ }
+ else /* leaf */
+ {
+  //QString ext = FileChooserFilter.getFileExtension(fp);
+  QString ext = fp.suffix();
+  if (!filter(ext)) return;
+  int index = filename.indexOf('.');
+  if (index > 0) {
+      filename = filename.mid(0, index);
+  }
+  pParent->addLeaf(filename, pPath);
+ }
 }
 
 /*public*/ void CatalogTreeFS::setProperty(QString key, QString value) {
@@ -105,3 +119,4 @@ bool CatalogTreeFS::filter(QString ext) {
     return parameters->keys();
 }
 
+/*private*/ /*final*/ /*static*/ Logger* CatalogTreeFS::log = LoggerFactory::getLogger("CatalogTreeFS");

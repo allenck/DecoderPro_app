@@ -16,6 +16,7 @@
 #include "signalmastitempanel.h"
 #include "picklistmodel.h"
 #include "tableitempanel.h"
+#include "joptionpane.h"
 
 SignalMastIcon::SignalMastIcon(QObject *parent) :
     PositionableIcon(parent)
@@ -153,8 +154,17 @@ pName=sh->getName();
         s = s.mid(s.indexOf("resources"));
   if(s.startsWith("resources"))  // TODO: make this configurable
      s = FileUtil::getProgramPath()+s;
-  NamedIcon* n = new NamedIcon(s,s);
-    _iconMap->insert(aspect, n);
+  NamedIcon* n;
+  try
+  {
+   n = new NamedIcon(s, s);
+  } catch (NullPointerException e)
+  {
+      JOptionPane::showMessageDialog(NULL, tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s, getNameString()), tr("Error with Icons"), JOptionPane::ERROR_MESSAGE);
+      log->error(tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s).arg(getNameString()));
+      return true;
+  }
+  _iconMap->insert(s, n);
   if(_rotate!=0)
   {
    n->rotate(_rotate, this);

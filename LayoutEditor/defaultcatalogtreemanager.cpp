@@ -5,14 +5,18 @@
 #include "catalogtreeindex.h"
 #include "catalogtreefs.h"
 #include "catalogtreemanager.h"
+#include "instancemanager.h"
+#include "loggerfactory.h"
 
 /*private*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::_instance = NULL;
 
 DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     CatalogTreeManager(parent)
 {
- log = new Logger("DefaultCatalogTreeManager");
+ _tsys = new QMap<QString, CatalogTree*>();
+ _tuser = new QMap<QString, CatalogTree*>();
 }
+
 /**
  * Provide the concrete implementation for the Internal CatalogTree Manager.
  * <P>
@@ -79,42 +83,39 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     return (CatalogTree*)_tuser->value(key);
 }
 
-/*public*/ CatalogTree*  DefaultCatalogTreeManager::newCatalogTree(QString sysName, QString userName) {
-    if (log->isDebugEnabled()) log->debug("new CatalogTree: systemName= "+sysName
-                                        +", userName= "+userName);
-    if (sysName == NULL) {
-        log->error("SystemName cannot be NULL. UserName= "+userName);
-        return NULL;
-    }
-    QString systemName = sysName.toUpper();
+/*public*/ CatalogTree*  DefaultCatalogTreeManager::newCatalogTree(QString sysName, QString userName)
+{
+ if (log->isDebugEnabled()) log->debug("new CatalogTree: systemName= "+sysName
+                                     +", userName= "+userName);
+ if (sysName == NULL) {
+     log->error("SystemName cannot be NULL. UserName= "+userName);
+     return NULL;
+ }
+ QString systemName = sysName.toUpper();
 
-    // return existing if there is one
-    CatalogTree* s;
-    if ( (userName!="") && ((s = getByUserName(userName)) != NULL))
-    {
-#if 1
-        if (getBySystemName(systemName)!=s)
-            //log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
-#endif
-        return s;
-    }
-    if ( (s = getBySystemName(systemName)) != NULL)
-    {
-#if 1
-        if ((s->getUserName() == NULL) && (userName != NULL))
-            s->setUserName(userName);
-        else if (userName != NULL) log->warn("Found memory via system name ("+systemName
-                                +") with non-NULL user name ("+userName+")");
-#endif
-        return s;
-    }
+ // return existing if there is one
+ CatalogTree* s;
+ if ( (userName!="") && ((s = getByUserName(userName)) != NULL))
+ {
+     if (getBySystemName(systemName)!=s)
+         log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
+     return s;
+ }
+ if ( (s = getBySystemName(systemName)) != NULL)
+ {
+     if ((s->getUserName() == NULL) && (userName != NULL))
+         s->setUserName(userName);
+     else if (userName != NULL) log->warn("Found memory via system name ("+systemName
+                             +") with non-NULL user name ("+userName+")");
+     return s;
+ }
 
-    // doesn't exist, make a new one
-    s = createNewCatalogTree(systemName, userName);
+ // doesn't exist, make a new one
+ s = createNewCatalogTree(systemName, userName);
 
-    // save in the maps
-    Register((NamedBean*)s);
-    return s;
+ // save in the maps
+ Register(s);
+ return s;
 }
 
 /**
@@ -185,9 +186,43 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
 }
 
 /*public*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::DefaultCatalogTreeManagerinstance() {
- if (_instance == NULL) _instance = new DefaultCatalogTreeManager();
- return _instance;
+ return (DefaultCatalogTreeManager*)InstanceManager::getDefault("DefaultCatalogTreeManager");
 }
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultCatalogTreeManager.class.getName());
-//}
+void DefaultCatalogTreeManager::Register(CatalogTree * tree)
+{
+ QString systemName = ((AbstractCatalogTree*)tree)->mSystemName;
+  QString userName = ((AbstractCatalogTree*)tree)->mUserName;
+  Q_ASSERT(!systemName.isEmpty());
+ _tsys->insert(systemName, tree);
+ _tuser->insert(userName, tree);
+}
+
+
+/*private*/ /*final*/ /*static*/ Logger* DefaultCatalogTreeManager::log = LoggerFactory::getLogger("DefaultCatalogTreeManager");
+#if 0
+//@ServiceProvider(service = InstanceInitializer.class)
+public static class Initializer extends AbstractInstanceInitializer {
+
+    @Override
+    public <T> Object getDefault(Class<T> type) throws IllegalArgumentException {
+        if (type.equals(CatalogTreeManager.class)) {
+            return new DefaultCatalogTreeManager();
+        }
+        return super.getDefault(type);
+    }
+
+    @Override
+    public Set<Class<?>> getInitalizes() {
+        Set<Class<?>> set = super.getInitalizes();
+        set.add(CatalogTreeManager.class);
+        return set;
+    }
+
+}
+#endif
+
+/*public*/  QStringList DefaultCatalogTreeManager::getSystemNameList()
+{
+ return _tsys->keys();
+}

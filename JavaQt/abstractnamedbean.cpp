@@ -216,9 +216,9 @@ QString AbstractNamedBean::getDisplayName()
     return parameters->value(key);
 }
 
-/*public java.util.*/QList<QString> AbstractNamedBean::getPropertyKeys() {
-    if (parameters == NULL || parameters->isEmpty()) return QList<QString>();
-    return parameters->keys();
+/*public java.util.*/QSet<QString> AbstractNamedBean::getPropertyKeys() {
+    if (parameters == NULL || parameters->isEmpty()) return QSet<QString>();
+    return parameters->keys().toSet();
 }
 
 /*public*/ void AbstractNamedBean::removeProperty(QString key) {

@@ -3,6 +3,7 @@
 #include <QObject>
 #include "signalhead.h"
 #include "abstractmanager.h"
+#include <QCompleter>
 
 class LIBPR3SHARED_EXPORT SignalHeadManager : public AbstractManager
 {
@@ -51,6 +52,7 @@ public:
          * Get a list of all SignalHead system names.
          */
 //        virtual QStringList getSystemNameList() { return QStringList();}
+          virtual QCompleter* getCompleter(QString /*text*/, bool /*bIncludeUserNames*/) {return NULL;}
 
 signals:
     

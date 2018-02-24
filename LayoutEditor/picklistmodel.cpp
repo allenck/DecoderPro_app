@@ -28,6 +28,9 @@
 #include "lnsensormanager.h"
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
+#include "block.h"
+#include "blockmanager.h"
+#include "logixmanager.h"
 
 //PickListModel::PickListModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -616,6 +619,18 @@ QMimeData* PickListModel::mimeData(const QModelIndexList &indexes) const
     }
     return new MemoryPickModel();
 }
+
+//@Nonnull
+/*public*/ /*static*/ PickListModel* PickListModel::blockPickModelInstance() {
+    int num = _listMap->value("block");
+    if (num != 0) {
+        _listMap->insert("block", num + 1);
+    } else {
+        _listMap->insert("block", 1);
+    }
+    return new BlockPickModel();
+}
+
 /*public*/ /*static*/ PickListModel* PickListModel::reporterPickModelInstance() {
     int num = _listMap->value("reporter");
     if (num!=0) {
@@ -672,6 +687,16 @@ QMimeData* PickListModel::mimeData(const QModelIndexList &indexes) const
     }
     return new EntryExitPickModel();
 }
+/*public*/ /*static*/ PickListModel* PickListModel::logixPickModelInstance() {
+    int num = _listMap->value("logix");
+    if (num!=0) {
+        _listMap->insert("logix", num+1);
+    } else {
+        _listMap->insert("logix", (1));
+    }
+    return new LogixPickModel();
+}
+
 //static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PickListModel.class.getName());
 //}
 
@@ -958,6 +983,42 @@ ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
 //    connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newReporterCreated(NamedBean*)));
 //    connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
+
+//static class BlockPickModel extends PickListModel<Block> {
+
+//    BlockManager manager = InstanceManager.getDefault(BlockManager.class);
+
+    BlockPickModel::BlockPickModel() {
+        _name = tr("Block Table");
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ Manager* BlockPickModel::getManager()
+    {
+     manager = (BlockManager*)InstanceManager::getDefault("BlockManager");
+        return manager;
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ NamedBean* BlockPickModel::addBean(QString name) throw (IllegalArgumentException) {
+        return manager->provideBlock(name);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ NamedBean* BlockPickModel::addBean(QString sysName, QString userName) {
+        return manager->createNewBlock(sysName, userName);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ bool BlockPickModel::canAddBean() {
+        return true;
+    }
+//};
+
 /*public*/ Manager* ReporterPickModel::getManager() {
     return manager;
 }
@@ -1169,4 +1230,39 @@ EntryExitPickModel::EntryExitPickModel (QObject* parent): PickListModel(parent) 
 }
 //};
 
+LogixPickModel::LogixPickModel (QObject* parent): PickListModel(parent) {
+    manager = (LogixManager*) InstanceManager::getDefault("LogixManager");
+    _name = tr("Logix Table");
+}
+/*public*/ Manager* LogixPickModel::getManager() {
+    return manager;
+}
+/*public*/ NamedBean* LogixPickModel::getBySystemName(QString name) {
+    return (NamedBean*)manager->getBySystemName(name);
+}
+
+/*public*/ NamedBean* LogixPickModel::addBean(QString /*name*/) {
+    return NULL;
+}
+/*public*/ NamedBean* LogixPickModel::addBean(QString /*sysName*/, QString /*userName*/) {
+    return NULL;
+}
+/*public*/ bool LogixPickModel::canAddBean() {
+    return false;
+
+}/*public*/ QVariant LogixPickModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+ if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
+ {
+  if (section == SNAME_COLUMN)
+  {
+   return "Unique Id";
+  }
+  else if (section == UNAME_COLUMN)
+  {
+   return tr("User Name");
+  }
+ }
+ return QVariant();
+}
 

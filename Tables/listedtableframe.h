@@ -30,10 +30,13 @@ public:
     /*public*/ void dispose();
     /*public*/ void setDividerLocation(int loc);
     /*public*/ int getDividerLocation();
+    /*public*/ QString getClassName();
+
 public slots:
     void On_newItem_triggered();
     void On_viewMenu_triggered(QObject*);
     void On_listSelection(QModelIndex);
+    void splitterMoved(int, int);
 
 private:
     QList<LTFTabbedTableItem*>* tabbedTableArray;// = new ArrayList<TabbedTableItem>();

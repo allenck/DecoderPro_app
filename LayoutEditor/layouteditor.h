@@ -31,6 +31,7 @@ namespace Ui {
 class LayoutEditor;
 }
 
+class StoreXmlUserAction;
 class TurnoutSelection;
 class LayoutEditorFindItems;
 class LayoutTurntable;
@@ -363,7 +364,10 @@ public:
     /*public*/ void setDefaultTrackColor(QString color);
     /*public*/ void setDefaultOccupiedTrackColor(QString color);
     /*public*/ void setDefaultAlternativeTrackColor(QString color);
-void setScale(double scaleX, double scaleY);
+    void setScale(double scaleX, double scaleY);
+    /*public*/ QString getClassName();
+    /*public*/ void setFilename(QString path);
+
 private:
  Ui::LayoutEditor *ui;
  QButtonGroup* buttonGroup;
@@ -393,6 +397,7 @@ private:
  /*private*/ int numLayoutSlips;// = 0;
  /*private*/ int numLayoutTurnouts;// = //0;
  /*private*/ int numLayoutTurntables;// = 0;
+ StoreXmlUserAction* savePanels;
 
  //bool bDirty;
  bool isDirty();
@@ -683,7 +688,7 @@ private slots:
  void on_actionLoad_XML_triggered();
  void on_actionLoad_Other_XML_triggered();
  void on_actionSave_triggered();
- void on_actionSave_as_triggered();
+ //void on_actionSave_as_triggered();
  void on_newSensor(QString,int,int);
  void on_actionSnap_to_grid_when_adding_toggled(bool bState);
  void on_actionSnap_to_grid_when_moving_toggled(bool bState);

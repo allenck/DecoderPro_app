@@ -82,7 +82,8 @@ LayoutEditor::~LayoutEditor()
 void LayoutEditor::init()
 {
  setObjectName("LayoutEditor");
- StoreXmlUserAction* savePanels = new StoreXmlUserAction(tr("Save Panels..."), this);
+ JmriJFrame::initComponents();
+ savePanels = new StoreXmlUserAction(tr("Save Panels..."), this);
  ui->menuFile->insertAction(ui->actionSave_panels,savePanels);
  ui->menuFile->removeAction(ui->actionSave_panels); // remove the old one.
  _contents = new QVector<Positionable*>();
@@ -7500,8 +7501,8 @@ void LayoutEditor::on_actionLoad_Other_XML_triggered()
   setCursor(Qt::WaitCursor);
   xml.loadfile(fileName);
   setCursor(Qt::ArrowCursor);
-  ui->actionSave->setEnabled(true);
-  ui->actionSave_as->setEnabled(true);
+  //ui->actionSave->setEnabled(true);
+  //ui->actionSave_as->setEnabled(true);
   ui->actionLoad_Other_XML->setEnabled(false);
   ui->actionLoad_XML->setEnabled(false);
  }
@@ -7516,11 +7517,12 @@ void LayoutEditor::on_actionLoad_XML_triggered()
  bool bResult = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->load(new File(QDir::homePath() + "/.jmri/mylayout.xml"));
  layoutFile = QDir::homePath() + "/.jmri/mylayout.xml";
  setCursor(Qt::ArrowCursor);
- ui->actionSave->setEnabled(true);
- ui->actionSave_as->setEnabled(true);
+// ui->actionSave->setEnabled(true);
+// ui->actionSave_as->setEnabled(true);
  ui->actionLoad_Other_XML->setEnabled(false);
  ui->actionLoad_XML->setEnabled(false);
 }
+
 void LayoutEditor::on_newSensor(QString name, int x, int y)
 {
  QPoint p(x,y);
@@ -7529,41 +7531,44 @@ void LayoutEditor::on_newSensor(QString name, int x, int y)
 
  addSensor(name);
 }
+
+void LayoutEditor::setFilename(QString path)
+{
+ layoutFile = path;
+ if(path != NULL)
+  ui->actionSave->setEnabled(true);
+}
 #if 1
 void LayoutEditor::on_actionSave_triggered()
 {
  if(layoutFile.isEmpty())
  {
-  on_actionSave_as_triggered();
+  //on_actionSave_as_triggered();
+  savePanels->actionPerformed();
  }
  setCursor(Qt::WaitCursor);
  makeBackupFile(layoutFile);
 
-// SaveXml saveXml(this);
-// saveXml.store(layoutFile);
- try
- {
- bool results = ((JmriConfigurationManager*)InstanceManager::getNullableDefault("JmriConfigurationManager"))->storeUser(new File(layoutFile));
- } catch (NullPointerException ex)
- {}
+ savePanels->saveFile(layoutFile);
+
  setCursor(Qt::ArrowCursor);
 }
 
-void LayoutEditor::on_actionSave_as_triggered()
-{
- QString path = QFileDialog::getSaveFileName(this,tr("Save file as"),layoutFile);
- if(path.isEmpty()) 
- {
-  QMessageBox::warning(this, tr("Warning"), tr("No file name specified"));
-  return;
- }
- setCursor(Qt::WaitCursor);
- SaveXml saveXml(this);  // TODO: get rid of this; use Jmri code to save
- saveXml.store(path);
- layoutFile = path;
- setCursor(Qt::ArrowCursor);
+//void LayoutEditor::on_actionSave_as_triggered()
+//{
+// QString path = QFileDialog::getSaveFileName(this,tr("Save file as"),layoutFile);
+// if(path.isEmpty())
+// {
+//  QMessageBox::warning(this, tr("Warning"), tr("No file name specified"));
+//  return;
+// }
+// setCursor(Qt::WaitCursor);
+// SaveXml saveXml(this);  // TODO: get rid of this; use Jmri code to save
+// saveXml.store(path);
+// layoutFile = path;
+// setCursor(Qt::ArrowCursor);
 
-}
+//}
 #endif
 void LayoutEditor::on_actionSnap_to_grid_when_adding_toggled(bool bState)
 {
@@ -7588,7 +7593,6 @@ void LayoutEditor::OnZoom_selected(QAction *act)
 }
 void LayoutEditor::setScale(double scaleX, double scaleY)
 {
- editPanel->scale(scaleX, scaleY);
  if(scaleX == 1.0)
   ui->actionNo_zoom->setChecked(true);
  else if(scaleX == 1.5)
@@ -7601,6 +7605,7 @@ void LayoutEditor::setScale(double scaleX, double scaleY)
   ui->actionX_4_0->setChecked(true);
  xScale = scaleX;
  yScale = scaleY;
+// editPanel->scale(scaleX, scaleY);
 }
 const QIcon LayoutEditor::getColourIcon(QColor color)
 {
@@ -7684,8 +7689,8 @@ void LayoutEditor::on_actionDelete_this_panel_triggered()
  panelGridGroup = NULL;
  ui->actionLoad_Other_XML->setEnabled(true);
  ui->actionLoad_XML->setEnabled(true);
- ui->actionSave->setEnabled(false);
- ui->actionSave_as->setEnabled(false);
+// ui->actionSave->setEnabled(false);
+// ui->actionSave_as->setEnabled(false);
  InstanceManager::setLayoutBlockManager(new LayoutBlockManager());
 }
 /*public*/ void LayoutEditor::loadFailed() {
@@ -8542,4 +8547,9 @@ void LayoutEditor::on_okMove_clicked()
 //    pt.y /= getPaintScale();
     QPointF pt = QPointF(editScene->sceneRect().width()/2, editScene->sceneRect().height()/2);
     return pt;
+}
+
+/*public*/ QString LayoutEditor::getClassName()
+{
+ return "jmri.jmrit.display.layoutEditor.LayoutEditor";
 }

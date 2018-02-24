@@ -44,6 +44,8 @@ MultiSensorIconFrame::MultiSensorIconFrame(LayoutEditor* p, QWidget *parent) : J
 
 /*public*/ void MultiSensorIconFrame::initComponents()
 {
+ JmriJFrame::initComponents();
+
  //this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
  QWidget* centralWidget = new QWidget();
  centralWidget->setLayout(new QVBoxLayout());
@@ -96,7 +98,7 @@ MultiSensorIconFrame::MultiSensorIconFrame(LayoutEditor* p, QWidget *parent) : J
  defaultIcons->setIcon(1, "Inconsistent:","program:resources/icons/USS/plate/levers/l-unknown.gif");
  defaultIcons->setIcon(2, "Inactive:","program:resources/icons/USS/plate/levers/l-inconsistent.gif");
  defaultIcons->complete();
- defaultIcons->catalog()->model->setFilter(QDir::AllDirs | QDir::Files);
+ //defaultIcons->catalog()->model->setFilter(QDir::AllDirs | QDir::Files);
 
  defaultsFrame = new JmriJFrame("", false, true);
  if(defaultsFrame->centralWidget() == NULL)
@@ -127,15 +129,16 @@ MultiSensorIconFrame::MultiSensorIconFrame(LayoutEditor* p, QWidget *parent) : J
 //    });
     connect(b, SIGNAL(clicked()), this, SLOT(on_createAndAdd()));
     this->centralWidget()->layout()->addWidget(b);
+
 }
 void MultiSensorIconFrame::on_addSensor()
 {
- defaultIcons->catalog()->model->setFilter(QDir::AllDirs | QDir::Files);
+ //defaultIcons->catalog()->model->setFilter(QDir::AllDirs | QDir::Files);
  defaultsFrame->setVisible(true);
 }
 void MultiSensorIconFrame::on_setIcons()
 {
- defaultIcons->catalog()->model->setFilter(QDir::AllDirs | QDir::Files);
+ //defaultIcons->catalog()->model->setFilter(QDir::AllDirs | QDir::Files);
  defaultsFrame->setVisible(true);
 }
 AddSensorActionListener* AddSensorActionListener::init(QWidget *self, JmriJFrame *frame)

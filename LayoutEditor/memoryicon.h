@@ -38,6 +38,8 @@ Logger* log;
 protected:
 /*protected*/ void setValue(QVariant obj);
 /*protected*/ void addRosterToMemory(RosterEntry* roster);
+/*protected*/ void displayState(QVariant key);
+/*protected*/ QVariant updateIconFromRosterVal(RosterEntry* roster);
 
 };
 

@@ -85,6 +85,10 @@ void DragJLabel::mousePressEvent(QMouseEvent *e)
   dr->setMimeData(data);
   dr->start();
  }
+ if(e->button() & Qt::RightButton)
+ {
+  emit showPopUp(getIcon());
+ }
 }
 
 //     //if (log.isDebugEnabled()) log.debug("DragJLabel.DragSourceDragEvent ");

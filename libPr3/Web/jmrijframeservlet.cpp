@@ -215,7 +215,6 @@ void JmriJFrameServlet::sendClick(QString /*name*/, QWidget* c, int xg, int yg, 
 //@Override
 /*protected*/ void JmriJFrameServlet::doGet(HttpServletRequest* request, HttpServletResponse* response) throw (ServletException, IOException)
 {
-#if 1
  if (WebServerPreferences::getDefault()->isDisableFrames())
  {
   if (WebServerPreferences::getDefault()->isRedirectFramesToPanels())
@@ -263,7 +262,6 @@ void JmriJFrameServlet::sendClick(QString /*name*/, QWidget* c, int xg, int yg, 
  } else {
      this->doList(request, response);
  }
-#endif
 }
 
 //@Override
@@ -586,7 +584,7 @@ void JmriJFrameServlet::sendClick(QString /*name*/, QWidget* c, int xg, int yg, 
         }
        }
     //if clicked on background, search for layout editor target pane TODO: simplify id'ing background
-#if 0
+#if 0 // done, see below
     if (QString(c->metaObject()->className()) != (/*"jmri.jmrit.display.Editor$TargetPane"*/ "Editor") // NOI18N
             && (qobject_cast<PositionableLabel*>(c) !=NULL)
             && !(qobject_cast<LightIcon*>(c) !=NULL)

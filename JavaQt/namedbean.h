@@ -4,7 +4,9 @@
 #include <QObject>
 #include "propertychangelistener.h"
 #include "javaqt_global.h"
+#include "exceptions.h"
 
+class BadUserNameException;
 class JAVAQTSHARED_EXPORT NamedBean : public  QObject
 {
  //Q_OBJECT
@@ -203,14 +205,75 @@ public:
      * Remove the key/value pair against the NamedBean.
      */
     /*public*/ virtual void removeProperty(/*@Nonnull*/ QString /*key*/) {}
-        /**
-         * Retrieve the complete current set of keys.
-         */
-        virtual QList<QString> getPropertyKeys()  {return QList<QString>();}
+    /**
+     * Retrieve the complete current set of keys.
+     */
+    virtual QSet<QString> getPropertyKeys();
     /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* /*evt*/) {}//throws java.beans.PropertyVetoException;
 
 
-        virtual bool hashCode() {return false;}
+    virtual bool hashCode() {return false;}
+
+    /**
+     * For instances in the code where we are dealing with just a bean and a
+     * message needs to be passed to the user or in a log.
+     *
+     * @return a string of the bean type, eg Turnout, Sensor etc
+     */
+    //@CheckReturnValue
+    //@Nonnull
+    /*public*/ virtual QString getBeanType();
+
+    /**
+     * Enforces, and as a user convenience converts to, the standard form for a
+     * user name.
+     * <p>
+     * This implementation just does a trim(), but later versions might e.g. do
+     * more extensive things.
+     *
+     * @param inputName User name to be normalized
+     * @throws BadUserNameException If the inputName can't be converted to
+     *                              normalized form
+     * @return A user name in standard normalized form or null if inputName was
+     *         null
+     */
+    //@CheckReturnValue
+    //@CheckForNull
+    static /*public*/ QString normalizeUserName(/*@CheckForNull*/ QString /*inputName*/);// throw (BadUserNameException);
+
+    /**
+     * Provide a comparison between the system names of two beans.
+     * This provides a implementation for e.g. {@link java.util.Comparator}.
+     * @return 0 if the names are the same, -1 if the first argument orders before
+     * the second argument's name, +1 if the first argument's name  orders after the second argument's name.
+     * The comparison is alphanumeric on the system prefix, then alphabetic on the
+     * type letter, then system-specific comparison on the two suffix parts
+     * via the {@link compareSystemNameSuffix} method.
+     *
+     * @param n2 The second NamedBean in the comparison ("this" is the first one)
+     * @return -1,0,+1 for ordering if the names are well-formed; may not provide proper ordering if the names are not well-formed.
+     */
+    //@CheckReturnValue
+    /*public*/ virtual /*default*/ int compareTo(/*@Nonnull*/ NamedBean* n2);
+
+    /**
+     * Compare the suffix of this NamedBean's name with the
+     * suffix of the argument NamedBean's name for the {@link #compareTo} operation.
+     * This is intended to be a system-specific comparison that understands the various formats, etc.
+     *
+     * @param suffix1 The suffix for the 1st bean in the comparison
+     * @param suffix2 The suffix for the 2nd bean in the comparison
+     * @param n2 The other (second) NamedBean in the comparison
+     * @return -1,0,+1 for ordering if the names are well-formed; may not provide proper ordering if the names are not well-formed.
+     */
+    //@CheckReturnValue
+    /*public*/ virtual int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1,/* @Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n2);
+
+    /*public*/ class BadUserNameException : public IllegalArgumentException {
+    };
+
+    /*public*/ class BadSystemNameException : public IllegalArgumentException {
+    };
 signals:
 
 public slots:

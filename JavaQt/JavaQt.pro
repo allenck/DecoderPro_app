@@ -61,7 +61,6 @@ SOURCES += javaqt.cpp \
     borderlayout.cpp \
     flowlayout.cpp \
     jfilechooser.cpp \
-    matcher.cpp \
     stringutil.cpp \
     mimetype.cpp \
     mimetypeparameterlist.cpp \
@@ -143,10 +142,15 @@ SOURCES += javaqt.cpp \
     filenameextensionfilter.cpp \
     jpanel.cpp \
     lineborder.cpp \
-    mathutil.cpp
-    #pattern.cpp \
-    #charsequence.cpp \
-    #patternsyntaxexception.cpp
+    mathutil.cpp \
+    titledborder.cpp \
+    abstractborder.cpp \
+    stringutils.cpp \
+    eventlistenerlist.cpp \
+    class.cpp \
+    treemodelevent.cpp \
+    matcher.cpp \
+    htmldelegate.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -204,7 +208,6 @@ HEADERS += javaqt.h\
     borderlayout.h \
     flowlayout.h \
     jfilechooser.h \
-    matcher.h \
     stringutil.h \
     mimetype.h \
     mimetypeparameterlist.h \
@@ -317,7 +320,19 @@ HEADERS += javaqt.h\
     menu.h \
     jpanel.h \
     lineborder.h \
-    mathutil.h
+    mathutil.h \
+    titledborder.h \
+    abstractborder.h \
+    listselectionlistener.h \
+    stringutils.h \
+    treeexpansionevent.h \
+    treeexpansionlistener.h \
+    eventlistenerlist.h \
+    class.h \
+    treemodelevent.h \
+    treemodellistener.h \
+    matcher.h \
+    htmldelegate.h
 
 unix {
     target.path = /usr/lib

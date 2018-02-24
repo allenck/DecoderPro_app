@@ -23,6 +23,8 @@ public slots:
 private:
     QStringList _filter;
     QMap<QString, QString>* parameters;// = null;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("CatalogTreeFS");
+
 };
 
 #endif // CATALOGTREEFS_H

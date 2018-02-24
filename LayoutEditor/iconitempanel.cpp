@@ -32,6 +32,7 @@
  setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
  log = new Logger("IconItemPanel");
 }
+
 /*public*/ void IconItemPanel::init()
 {
 
@@ -41,11 +42,11 @@
  {
 //        Thread.yield();
   QThread::yieldCurrentThread();
-  layout()->addWidget(instructions());
+  thisLayout->addWidget(instructions());
   initIconFamiliesPanel();
   initButtonPanel();
   _catalog = CatalogPanel::makeDefaultCatalog();
-  layout()->addWidget(_catalog);
+  thisLayout->addWidget(_catalog);
   _catalog->setVisible(false);
   _catalog->setToolTip(tr("Drag an icon directly from the Catalog Panel to add it to the control panel  "));
   setMinimumSize(size());
@@ -157,7 +158,7 @@
   }
   _iconPanel->layout()->addWidget(panel);
  }
- layout()->addWidget(_iconPanel/*, 1*/);
+ thisLayout->addWidget(_iconPanel/*, 1*/);
  //_iconPanel->addMouseListener(this);
 }
 
@@ -216,7 +217,7 @@
     bottomPanel->layout()->addWidget(addIconButton);
     addIconButton->setSizePolicy(sizePolicy);
 
-    layout()->addWidget(bottomPanel);
+    thisLayout->addWidget(bottomPanel);
 
     deleteIconButton = new QPushButton(tr("Delete Icon"));
 //    deleteIconButton.addActionListener(new ActionListener() {
@@ -230,7 +231,7 @@
     bottomPanel->layout()->addWidget(deleteIconButton);
     deleteIconButton->setEnabled(false);
 
-    layout()->addWidget(bottomPanel);
+    thisLayout->addWidget(bottomPanel);
 }
 void IconItemPanel::on_catalogButton_clicked()
 {

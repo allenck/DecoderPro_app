@@ -60,6 +60,7 @@
 #include "controlpaneleditor.h"
 #include "paneleditor.h"
 #include "rpspositionicon.h"
+#include "blockcontentsicon.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -2185,7 +2186,17 @@ void Editor::addSlip()
  putItem(l);
  return l;
 }
-
+/*protected*/ BlockContentsIcon* Editor::putBlockContents() {
+    BlockContentsIcon* result = new BlockContentsIcon(new NamedIcon("resources/icons/misc/X-red.gif",
+            "resources/icons/misc/X-red.gif"), this);
+    IconAdder* blockIconEditor = getIconEditor("BlockLabel");
+    result->setBlock(blockIconEditor->getTableSelection()->getDisplayName());
+    result->setSize(result->getPreferredSize().width(), result->getPreferredSize().height());
+    result->setDisplayLevel(MEMORIES);
+    setNextLocation(result);
+    putItem(result);
+    return result;
+}
 /**
  * Add a Light indicator to the target
  */

@@ -34,7 +34,7 @@
  iconNameList = new QVector<QString>(nIcons);
 
  this->setLayout(g = new QGridLayout());//, BoxLayout.Y_AXIS)));
- _catalog = new CatalogPane(true);
+ _catalog = new CatalogPane(/*true*/);
  buttonList = new QVector<QPushButton*>(nIcons);
  mapper = new QSignalMapper();
  connect(mapper, SIGNAL(mapped(int)), this, SLOT(iconButton_clicked(int)));

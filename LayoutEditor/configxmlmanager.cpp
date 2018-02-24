@@ -46,6 +46,7 @@
 #include "defaultcatalogtreemanagerxml.h"
 #include "loggerfactory.h"
 #include "abstractxmladapter.h"
+#include <QUrl>
 
 /**
  * Define the current schema version string for the layout-config schema.

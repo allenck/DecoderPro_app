@@ -16,6 +16,7 @@ FileLocationsPreferences::FileLocationsPreferences()
 
 /*public*/ /*static*/ /*final*/ QString FileLocationsPreferences::USER_FILES = "user-files"; // NOI18N
 /*public*/ /*static*/ /*final*/ QString FileLocationsPreferences::SCRIPTS = "scripts"; // NOI18N
+/*public*/ /*static*/ /*final*/ QString FileLocationsPreferences::JMRIPROGRAM = "jmriprogram"; // NOI18N added ACK
 
 //@Override
 /*public*/ void FileLocationsPreferences::initialize(Profile* profile) throw (InitializationException)
@@ -61,6 +62,31 @@ FileLocationsPreferences::FileLocationsPreferences()
       scripts = FileUtil::getAbsoluteFilename(scripts);
       throw new InitializationException(tr("Scripts location \"%1\" does not exist.").arg(scripts), QString("Scripts location \"%1\" does not exist.").arg(scripts), NULL);
   }
+
+  QString jmriprogram = shared->get(JMRIPROGRAM, FileUtil::PROFILE);
+  if (!jmriprogram.startsWith(FileUtil::PROFILE) && !jmriprogram.startsWith(FileUtil::PROGRAM))
+  {
+   jmriprogram = perNode->get(JMRIPROGRAM, jmriprogram);
+  }
+  FileUtil::setProgramPath(FileUtil::getAbsoluteFilename(jmriprogram));
+  try
+  {
+   if (!FileUtil::getFile(jmriprogram)->isDirectory())
+   {
+       //QString message = "ScriptsIsNotDir"; // NOI18N
+       jmriprogram = FileUtil::getAbsoluteFilename(jmriprogram);
+       if(!QDir(jmriprogram).exists())
+        throw FileNotFoundException(jmriprogram);
+       throw new InitializationException(tr("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram), QString("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram),NULL);
+   }
+  }
+  catch (FileNotFoundException ex)
+  {
+      //QString message = "ScriptsDoesNotExist"; // NOI18N
+      jmriprogram = FileUtil::getAbsoluteFilename(jmriprogram);
+      throw new InitializationException(tr("JmriProgram location \"%1\" does not exist.").arg(jmriprogram), QString("JmriProgram location \"%1\" does not exist.").arg(jmriprogram), NULL);
+  }
+  FileUtil::setProgramPath(FileUtil::getAbsoluteFilename(jmriprogram));
  }
 }
 
@@ -75,6 +101,8 @@ FileLocationsPreferences::FileLocationsPreferences()
     Preferences* perNode = ProfileUtils::getPreferences(profile, "jmri/implementation/FileLocations/FileLocationsPreferences", false);
     shared->put(USER_FILES, FileUtil::getPortableFilename(FileUtil::getUserFilesPath(), true, false));
     shared->put(SCRIPTS, FileUtil::getPortableFilename(FileUtil::getScriptsPath()));
+    shared->put(JMRIPROGRAM, FileUtil::getPortableFilename(FileUtil::getProgramPath()));
     perNode->put(USER_FILES, FileUtil::getPortableFilename(FileUtil::getUserFilesPath(), true, false));
     perNode->put(SCRIPTS, FileUtil::getPortableFilename(FileUtil::getScriptsPath()));
+    perNode->put(JMRIPROGRAM, FileUtil::getPortableFilename(FileUtil::getProgramPath()));
 }

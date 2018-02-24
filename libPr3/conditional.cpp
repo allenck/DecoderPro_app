@@ -166,6 +166,9 @@ const /*static*/  QList<int> Conditional::ITEM_TO_ENTRYEXIT_TEST=QList<int>() <<
 const /*static*/ QList<int> Conditional::ITEM_TO_OBLOCK_ACTION=QList<int>() << Conditional::ACTION_DEALLOCATE_BLOCK << Conditional::ACTION_SET_BLOCK_VALUE << Conditional::ACTION_SET_BLOCK_ERROR << Conditional::ACTION_CLEAR_BLOCK_ERROR << Conditional::ACTION_SET_BLOCK_OUT_OF_SERVICE <<  Conditional::ACTION_SET_BLOCK_IN_SERVICE;
  const /*static*/  QList<int> Conditional::ITEM_TO_LOGIX_ACTION=QList<int>() <<Conditional::ACTION_ENABLE_LOGIX << Conditional::ACTION_DISABLE_LOGIX;
  const /*static*/  QList<int> Conditional::ITEM_TO_SCRIPT_ACTION=QList<int>() <<Conditional::ACTION_RUN_SCRIPT << Conditional::ACTION_JYTHON_COMMAND;
+ const /*static*/ /*final*/ QList<int> Conditional::ITEM_TO_ENTRYEXIT_ACTION=QList<int>()<<
+ Conditional::ACTION_SET_NXPAIR_ENABLED <<
+ Conditional::ACTION_SET_NXPAIR_DISABLED<< Conditional::ACTION_SET_NXPAIR_SEGMENT;
  const /*static*/  QList<int> Conditional::ITEM_TO_AUDIO_ACTION=QList<int>() <<Conditional::ACTION_PLAY_SOUND << Conditional::ACTION_CONTROL_AUDIO;
  const /*static*/  QList<int> Conditional::ITEM_TO_OTHER_ACTION=QList<int>() <<Conditional::ACTION_TRIGGER_ROUTE;
  const /*static*/  QList<int> Conditional::ITEM_TO_CLOCK_ACTION=QList<int>() <<Conditional::ACTION_SET_FAST_CLOCK_TIME <<

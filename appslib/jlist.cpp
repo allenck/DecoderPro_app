@@ -4,6 +4,11 @@ JList::JList(QWidget* parent) : QListView(parent)
 {
 
 }
+JList::JList(QAbstractListModel* model, QWidget* parent) : QListView(parent)
+{
+ setModel(model);
+}
+
 
 JList::JList(QList<QString> list, QWidget *parent) : QListView(parent)
 {

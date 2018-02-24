@@ -108,7 +108,7 @@ virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
-virtual QList<QString >  getPropertyKeys();
+virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QString  getSystemName();
 virtual QString  getUserName();
@@ -136,7 +136,7 @@ inline QList<QString >*  promoted_getListenerRefs() { return NamedBean::getListe
 inline int  promoted_getNumPropertyChangeListeners() { return NamedBean::getNumPropertyChangeListeners(); }
 inline QVariant  promoted_getProperty(QString  key) { return NamedBean::getProperty(key); }
 inline QList<PropertyChangeListener* >*  promoted_getPropertyChangeListeners(QString  name) { return NamedBean::getPropertyChangeListeners(name); }
-inline QList<QString >  promoted_getPropertyKeys() { return NamedBean::getPropertyKeys(); }
+inline QSet<QString >  promoted_getPropertyKeys() { return NamedBean::getPropertyKeys(); }
 inline int  promoted_getState() { return NamedBean::getState(); }
 inline QString  promoted_getSystemName() { return NamedBean::getSystemName(); }
 inline QString  promoted_getUserName() { return NamedBean::getUserName(); }
@@ -167,7 +167,7 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    int  getNumPropertyChangeListeners(NamedBean* theWrappedObject);
    QVariant  getProperty(NamedBean* theWrappedObject, QString  key);
    QList<PropertyChangeListener* >*  getPropertyChangeListeners(NamedBean* theWrappedObject, QString  name);
-   QList<QString >  getPropertyKeys(NamedBean* theWrappedObject);
+   QSet<QString >  getPropertyKeys(NamedBean* theWrappedObject);
    int  getState(NamedBean* theWrappedObject);
    QString  getSystemName(NamedBean* theWrappedObject);
    QString  getUserName(NamedBean* theWrappedObject);
@@ -942,7 +942,7 @@ virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
-virtual QList<QString >  getPropertyKeys();
+virtual QSet<QString >  getPropertyKeys();
 virtual int  getRawState() const;
 virtual long  getSensorDebounceGoingActiveTimer() const;
 virtual long  getSensorDebounceGoingInActiveTimer() const;
@@ -1220,7 +1220,7 @@ virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
-virtual QList<QString >  getPropertyKeys();
+virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QString  getSystemName() const;
 virtual QString  getUserName();
@@ -1721,7 +1721,7 @@ virtual int  getNumberOutputBits();
 virtual QVariant  getProperty(QString  key);
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
-virtual QList<QString >  getPropertyKeys();
+virtual QSet<QString >  getPropertyKeys();
 virtual bool  getReportLocked();
 virtual Sensor*  getSecondSensor();
 virtual int  getState();

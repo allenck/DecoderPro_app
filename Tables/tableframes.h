@@ -37,6 +37,7 @@ public:
  /*public*/ void internalFrameActivated(InternalFrameEvent* e);
  /*public*/ void internalFrameDeiconified(InternalFrameEvent* e) ;
  /*public*/ void internalFrameDeactivated(InternalFrameEvent* e);
+ /*public*/ QString getClassName();
 
 signals:
 

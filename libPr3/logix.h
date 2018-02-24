@@ -35,6 +35,7 @@
  * @version			$Revision 1.0 $
  */
 
+class Conditional;
 /*public*/ class Logix : public AbstractNamedBean
 {
  Q_OBJECT
@@ -100,16 +101,35 @@ public:
      */
     /*public*/ virtual bool addConditional(QString /*systemName*/,int /*order*/) {return false;}
 
-    /**
-     * Delete a Conditional from this Logix
-     * <P>
-     * Note: Since each Logix must have at least one Conditional,
-     *    the last Conditional will not be deleted.
-     * <P>
-     * Returns An array of names used in an error message explaining why Conditional
-     * should not be deleted.
-     * @param systemName The Conditional system name
-     */
+ /**
+      * Add a child Conditional to the parent Logix.
+      *
+      * @since 4.7.4
+      * @param systemName The system name for the Conditional object.
+      * @param conditional The Conditional object.
+      * @return true if the Conditional was added, false otherwise.
+      */
+ /*public*/ virtual bool addConditional(QString /*systemName*/, Conditional* /*conditional*/) {return false;}
+
+ /**
+  * Get a Conditional belonging to this Logix.
+  *
+  * @since 4.7.4
+  * @param systemName The name of the Conditional object.
+  * @return the Conditional object or null if not found.
+  */
+ /*public*/ virtual Conditional* getConditional(QString /*systemName*/) {return NULL;}
+
+ /**
+ * Delete a Conditional from this Logix
+ * <P>
+ * Note: Since each Logix must have at least one Conditional,
+ *    the last Conditional will not be deleted.
+ * <P>
+ * Returns An array of names used in an error message explaining why Conditional
+ * should not be deleted.
+ * @param systemName The Conditional system name
+ */
  /*public*/ virtual QStringList* deleteConditional(QString /*systemName*/) {return NULL;}
 
     /**

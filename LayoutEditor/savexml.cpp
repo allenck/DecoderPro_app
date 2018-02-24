@@ -988,7 +988,7 @@ void SaveXml::storeUserName(AbstractNamedBean* t, QDomElement elem)
  */
 void SaveXml::storeProperties(AbstractNamedBean* t, QDomElement elem)
 {
- QStringList s = t->getPropertyKeys();
+ QSet<QString> s = t->getPropertyKeys();
  if (s.isEmpty() || s.size() == 0) return;
  QDomElement ret = doc.createElement("properties");
  elem.appendChild(ret);

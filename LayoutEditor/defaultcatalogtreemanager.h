@@ -19,16 +19,21 @@ public:
     /*public*/ CatalogTree* getByUserName(QString key);
     /*public*/ CatalogTree* newCatalogTree(QString sysName, QString userName);
     /*public*/ static DefaultCatalogTreeManager* DefaultCatalogTreeManagerinstance();
+    /*public*/  QStringList getSystemNameList();
 
 signals:
 
 public slots:
 private:
     /*private*/ static DefaultCatalogTreeManager* _instance;
-    Logger* log;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("DefaultCatalogTreeManager");
+    void Register(CatalogTree * tree);
+
 protected:
     /*protected*/ void registerSelf();
     /*protected*/ CatalogTree* createNewCatalogTree(QString systemName, QString userName);
+    QMap<QString, CatalogTree*>* _tsys;
+    QMap<QString, CatalogTree*>* _tuser;
 
 };
 Q_DECLARE_METATYPE(DefaultCatalogTreeManager)

@@ -24,9 +24,9 @@ signals:
 
 public slots:
 private:
- Logger* log;
+ /*private*/ /*final*/ /*static*/ Logger* log;// = LoggerFactory.getLogger(CatalogTreeNode.class);
  // Sorted by height for ease of display in CatalogPanel
- /*private*/ QVector <CatalogTreeLeaf*>* _leaves;// = new QList<CatalogTreeLeaf*>();
+ /*private*/ QVector <CatalogTreeLeaf*>* _leafs;// = new QList<CatalogTreeLeaf*>();
 
 };
 

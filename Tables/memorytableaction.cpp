@@ -50,7 +50,7 @@ void MemoryTableAction::common()
  numberToAdd = new JTextField(10);
  range = new QCheckBox(tr("Add Range Box"));
  autoSystemName = new QCheckBox(tr("Auto Sys Name"));
- systemNameAuto = QString(this->metaObject()->className()) + ".AutoSystemName";
+ systemNameAuto = QString(getClassName()) + ".AutoSystemName";
 
  log = new Logger("MemoryTableAction");
 }

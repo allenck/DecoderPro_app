@@ -11,6 +11,9 @@
 #include "propertychangesupport.h"
 #include "abstractoperationsserver.h"
 #include <QTextEdit>
+#include "instancemanager.h"
+#include "webserverpreferences.h"
+
 namespace Operations
 {
  Setup::Setup(QObject *parent) :
@@ -303,7 +306,6 @@ namespace Operations
  /*private*//*static*/QString Setup::setupComment = Setup::NONE;
 
  /*private*/ /*static*/ bool Setup::mainMenuEnabled = false; // when true add operations menu to main menu bar
- #if 1
  /*private*//*static*/bool Setup::closeWindowOnSave = false; // when true, close window when save button is activated
  /*private*//*static*/bool Setup::autoSave = true; // when true, automatically save files if modified
  /*private*//*static*/bool Setup::autoBackup = true; // when true, automatically backup files
@@ -355,7 +357,7 @@ namespace Operations
  /*public*/  /*static final*/ QString Setup::SWITCH_LIST_CSV_PROPERTY_CHANGE = "setupSwitchListCSVChange"; //  NOI18N
  /*public*/  /*static final*/ QString Setup::MANIFEST_CSV_PROPERTY_CHANGE = "setupManifestCSVChange"; //  NOI18N
  /*public*/  /*static final*/ QString Setup::REAL_TIME_PROPERTY_CHANGE = "setupSwitchListRealTime"; //  NOI18N
- #endif
+
  /*public*//*static*/bool Setup::isMainMenuEnabled()
  {
   Operations::OperationsSetupXml::instance(); // load file
@@ -604,7 +606,7 @@ namespace Operations
  {
   if (railroadName == NULL)
   {
-   //return //WebServerManager.getWebServerPreferences().getRailRoadName();
+   return ((WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences"))->getRailRoadName();
   }
   return railroadName;
  }

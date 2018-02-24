@@ -28,6 +28,7 @@
 #include "ds64panel.h"
 #include "dispatcheraction.h"
 #include "withrottlecreationaction.h"
+#include "webserveraction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -165,25 +166,19 @@ addAction(ta);
  addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
  addAction(new SpeedometerAction(tr("Speedometer..."),this));
  addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
-#if 1
  addAction(new DispatcherAction(tr("Dispatcher..."),this));
-#endif
  addSeparator();
-
  addAction(new SendPacketAction(tr("Send DCC Packet"),this));
-
  addSeparator();
-#if 0
+#if 0 // TODO:
  // US&S CTC subsystem tools
  addMenu(new jmri.jmrit.ussctc.ToolsMenu());
 #endif
  // operations menu
  addMenu(new OperationsMenu());
-#if 0
- add(new JSeparator());
+ addSeparator();
  // add start web server
- addMenu(new jmri.web.server.WebServerAction());
-#endif
+ addAction(new WebServerAction(this));
 }
 
 

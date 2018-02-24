@@ -5,6 +5,8 @@
 #include "manager.h"
 //#include "propertychangesupport.h"
 #include "javaqt_global.h"
+#include "exceptions.h"
+
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -14,7 +16,7 @@
  * @author      Bob Jacobsen Copyright (C) 2003
  * @version	$Revision: 19272 $
  */
-class Manager;
+//class Manager;
 class PropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyChangeEvent;
@@ -84,6 +86,7 @@ public:
     void registerSelf();
     /*public*/ QList<NamedBean*>* getNamedBeanList();
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName); //throws NamedBean.BadSystemNameException
 
 signals:
     void beanDeleted(NamedBean* s);
@@ -92,6 +95,7 @@ signals:
 
 public slots:
     virtual void on_propertyChange(PropertyChangeEvent* e);
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt); //throw PropertyVetoException
 private:
 friend class SectionTableDataModel;
 friend class ReporterPickModel;
@@ -137,4 +141,11 @@ protected:
 
 };
 
+class PropertyVetoException : public Exception
+{
+public:
+ PropertyVetoException(QString mag = "");
+ ~PropertyVetoException() throw() {}
+
+};
 #endif // ABSTRACTMANAGER_H

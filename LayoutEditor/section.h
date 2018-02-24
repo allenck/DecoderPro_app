@@ -229,11 +229,16 @@ public:
      *    If Layout Editor panel is not present, Layout Blocks will not be present, and nothing will be set.
      */
     /*public*/ void setAlternateColor(bool set);
+    /*public*/ void setAlternateColorFromActiveBlock(bool set);
+
     /**
      * This function sets a string in the memories associated with blocks in this section.
      *    If Layout Editor panel is not present, Layout Blocks will not be present, and nothing will be set.
      */
     /*public*/ void setNameInBlocks(QString name);
+    /*public*/ void setNameInBlocks(QVariant value);
+    /*public*/ void setNameFromActiveBlock(QVariant value);
+
     /**
      * This function clears the string in the memories associated with unoccupied blocks in this section.
      *    If Layout Editor panel is not present, Layout Blocks will not be present, and nothing will be set.

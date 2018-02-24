@@ -115,40 +115,39 @@ transitsFromSpecificBlock = false;
 //static final ResourceBundle rb = ResourceBundle
 //        .getBundle("jmri.jmrit.dispatcher.DispatcherBundle");
 
-#if 0
 
 /**
  * Open up a new train window, for a given roster entry located in a
  * specific block
  */
-/*public*/ void initiateTrain(ActionEvent e, RosterEntry re, Block b) {
+/*public*/ void ActivateTrainFrame::initiateTrain(ActionEvent* e, RosterEntry* re, Block* b) {
     initiateTrain(e);
     if (_TrainsFromRoster && re != NULL) {
-        setComboBox(trainSelectBox, re.getId());
+        setComboBox(trainSelectBox, re->getId());
         //Add in some bits of code as some point to filter down the transits that can be used.
     }
     if (b != NULL && selectedTransit != NULL) {
-        QList<Transit> transitList = _TransitManager.getListUsingBlock(b);
-        QList<Transit> transitEntryList = _TransitManager.getListEntryBlock(b);
-        for (Transit t : transitEntryList) {
+        QList<Transit*> transitList = _TransitManager->getListUsingBlock(b);
+        QList<Transit*> transitEntryList = _TransitManager->getListEntryBlock(b);
+        for (Transit* t : transitEntryList) {
             if (!transitList.contains(t)) {
-                transitList.add(t);
+                transitList.append(t);
             }
         }
         transitsFromSpecificBlock = true;
         initializeFreeTransitsCombo(transitList);
-        QList<Block> tmpBlkList = new QList<Block>();
-        if (selectedTransit.getEntryBlocksList().contains(b)) {
-            tmpBlkList = selectedTransit.getEntryBlocksList();
-            inTransitBox.setSelected(false);
-        } else if (selectedTransit.containsBlock(b)) {
-            tmpBlkList = selectedTransit.getInternalBlocksList();
-            inTransitBox.setSelected(true);
+        QList<Block*>* tmpBlkList = new QList<Block*>();
+        if (selectedTransit->getEntryBlocksList()->contains(b)) {
+            tmpBlkList = selectedTransit->getEntryBlocksList();
+            inTransitBox->setChecked(false);
+        } else if (selectedTransit->containsBlock(b)) {
+            tmpBlkList = selectedTransit->getInternalBlocksList();
+            inTransitBox->setChecked(true);
         }
-        QList<Integer> tmpSeqList = selectedTransit.getBlockSeqList();
-        for (int i = 0; i < tmpBlkList.size(); i++) {
-            if (tmpBlkList.get(i) == b) {
-                setComboBox(startingBlockBox, getBlockName(b) + "-" + tmpSeqList.get(i));
+        QList<int>* tmpSeqList = selectedTransit->getBlockSeqList();
+        for (int i = 0; i < tmpBlkList->size(); i++) {
+            if (tmpBlkList->at(i) == b) {
+                setComboBox(startingBlockBox, getBlockName(b) + "-" + tmpSeqList->at(i));
                 break;
             }
         }
@@ -161,8 +160,9 @@ transitsFromSpecificBlock = false;
  * Called by Dispatcher in response to the dispatcher clicking the New Train
  * button
  */
-/*protected*/ void initiateTrain(ActionEvent e) {
+/*protected*/ void ActivateTrainFrame::initiateTrain(ActionEvent* /*e*/) {
     // set Dispatcher defaults
+#if 0
     _TrainsFromRoster = _dispatcher.getTrainsFromRoster();
     _TrainsFromTrains = _dispatcher.getTrainsFromTrains();
     _TrainsFromUser = _dispatcher.getTrainsFromUser();
@@ -420,8 +420,9 @@ transitsFromSpecificBlock = false;
     initializeFreeTrainsCombo();
     initiateFrame.pack();
     initiateFrame.setVisible(true);
+#endif
 }
-
+#if 0
 /*private*/ void initializeTrainTypeBox() {
     trainTypeBox.removeAllItems();
     trainTypeBox.addItem("<" + tr("None").toLowerCase() + ">"); // <none>
@@ -764,45 +765,45 @@ transitsFromSpecificBlock = false;
     initiateFrame = NULL;
     _dispatcher.newTrainDone(at);
 }
-
-/*private*/ void initializeFreeTransitsCombo(QList<Transit> transitList) {
-    QList<String> allTransits = (QList<String>) _TransitManager.getSystemNameList();
-    transitSelectBox.removeAllItems();
-    transitBoxList.clear();
+#endif
+/*private*/ void ActivateTrainFrame::initializeFreeTransitsCombo(QList<Transit*> transitList) {
+    QList<QString> allTransits =  _TransitManager->getSystemNameList();
+    transitSelectBox->clear();
+    transitBoxList->clear();
     if (transitList.isEmpty()) {
         for (int i = 0; i < allTransits.size(); i++) {
-            String tName = allTransits.get(i);
-            Transit t = _TransitManager.getBySystemName(tName);
-            transitList.add(t);
+            QString tName = allTransits.at(i);
+            Transit* t = _TransitManager->getBySystemName(tName);
+            transitList.append(t);
         }
 
     }
-    for (Transit t : transitList) {
+    for (Transit* t : transitList) {
         bool free = true;
-        for (int j = 0; j < _ActiveTrainsList.size(); j++) {
-            ActiveTrain at = _ActiveTrainsList.get(j);
-            if (t == at.getTransit()) {
+        for (int j = 0; j < _ActiveTrainsList->size(); j++) {
+            ActiveTrain* at = _ActiveTrainsList->value(j);
+            if (t == at->getTransit()) {
                 free = false;
             }
         }
         if (free) {
-            String tName = t.getSystemName();
-            transitBoxList.add(t);
-            String uname = t.getUserName();
-            if ((uname != NULL) && (!uname.equals("")) && (!uname.equals(tName))) {
+            QString tName = t->getSystemName();
+            transitBoxList->append(t);
+            QString uname = t->getUserName();
+            if ((uname != NULL) && ( uname != ("")) && (uname!=(tName))) {
                 tName = tName + "(" + uname + ")";
             }
-            transitSelectBox.addItem(tName);
+            transitSelectBox->addItem(tName);
         }
     }
-    if (transitBoxList.size() > 0) {
-        transitSelectBox.setSelectedIndex(0);
-        selectedTransit = transitBoxList.get(0);
+    if (transitBoxList->size() > 0) {
+        transitSelectBox->setCurrentIndex(0);
+        selectedTransit = transitBoxList->value(0);
     } else {
         selectedTransit = NULL;
     }
 }
-
+#if 0
 ActionListener trainSelectBoxListener = NULL;
 
 /*private*/ void initializeFreeTrainsCombo() {
@@ -925,12 +926,12 @@ ActionListener trainSelectBoxListener = NULL;
         destinationBlockBox.addItem(bName);
     }
 }
-
-/*private*/ String getBlockName(Block b) {
+#endif
+/*private*/ QString ActivateTrainFrame::getBlockName(Block* b) {
     if (b != NULL) {
-        String sName = b.getSystemName();
-        String uName = b.getUserName();
-        if ((uName != NULL) && (!uName.equals("")) && (!uName.equals(sName))) {
+        QString sName = b->getSystemName();
+        QString uName = b->getUserName();
+        if ((uName != NULL) && (uName!=("")) && (uName != (sName))) {
             return (sName + "(" + uName + ")");
         }
         return sName;
@@ -938,19 +939,19 @@ ActionListener trainSelectBoxListener = NULL;
     return " ";
 }
 
-/*protected*/ void showActivateFrame() {
+/*protected*/ void ActivateTrainFrame::showActivateFrame() {
     if (initiateFrame != NULL) {
-        initializeFreeTransitsCombo(new QList<Transit>());
-        initiateFrame.setVisible(true);
+        initializeFreeTransitsCombo( QList<Transit*>());
+        initiateFrame->setVisible(true);
     } else {
-        _dispatcher.newTrainDone(NULL);
+        _dispatcher->newTrainDone(NULL);
     }
 }
 
-/*public*/ void showActivateFrame(RosterEntry re) {
+/*public*/ void ActivateTrainFrame::showActivateFrame(RosterEntry* /*re*/) {
     showActivateFrame();
 }
-
+#if 0
 /*private*/ void loadTrainInfo(ActionEvent e) {
     String[] names = _tiFile.getTrainInfoFileNames();
     TrainInfo info = NULL;
@@ -1141,21 +1142,21 @@ ActionListener trainSelectBoxListener = NULL;
     newName = newName.replaceAll("[\\W]", "_");
     return (newName + ".xml");
 }
-
-/*private*/ bool setComboBox(QComboBox*box, String txt) {
+#endif
+/*private*/ bool ActivateTrainFrame::setComboBox(QComboBox*box, QString txt) {
     bool found = false;
-    for (int i = 0; i < box.getItemCount(); i++) {
-        if (txt.equals(box.getItemAt(i))) {
-            box.setSelectedIndex(i);
+    for (int i = 0; i < box->count(); i++) {
+        if (txt == box->itemText(i)) {
+            box->setCurrentIndex(i);
             found = true;
         }
     }
     if (!found) {
-        box.setSelectedIndex(0);
+        box->setCurrentIndex(0);
     }
     return found;
 }
-
+#if 0
 int delayModeFromBox(QComboBox*box) {
     String mode = (String) box.getSelectedItem();
     int result = jmri.util.StringUtil.getStateFromName(mode, delayedStartInt, delayedStartString);

@@ -4,6 +4,7 @@
 #include "trainmanifestheadertext.h"
 #include "trainmanifesttext.h"
 #include "trainswitchlisttext.h"
+#include "version.h"
 
 namespace Operations
 {
@@ -58,11 +59,12 @@ namespace Operations
          file = new QFile(name);
      }
      // create root element
-     doc = QDomDocument();
+     doc = QDomDocument("operations-config");
      QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\"  encoding=\"UTF-8\"");
      doc.appendChild(xmlProcessingInstruction);//    QDomElement root = QDomElement("operations-config"); // NOI18N
  //    QDomDocument doc = newDocument(root, dtdLocation + "operations-config.dtd"); // NOI18N
      //QDomDocument doc;
+
      QDomElement root = doc.createElement("operations-config");
 
      // add XSLT processing instruction
@@ -71,11 +73,10 @@ namespace Operations
  //    m.put("href", xsltLocation + "operations-config.xsl"); // NOI18N
  //    ProcessingInstruction p = new ProcessingInstruction("xml-stylesheet", m); // NOI18N
  //    doc.addContent(0, p);
-     QDomProcessingInstruction p = doc.createProcessingInstruction("type", "text/xsl");
-     root.appendChild(p);
-      p = doc.createProcessingInstruction("href", tr("%1operations-config.xsl").arg(xsltLocation));
-     root.appendChild(p);
+     QDomProcessingInstruction p = doc.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"/xml/XSLT/operations-config.xsl\"");
+     doc.appendChild(p);
      doc.appendChild(root);
+     root.appendChild(doc.createComment(tr("Written by JMRI version %1 on %1").arg(Version::getCanonicalVersion()).arg(QDateTime::currentDateTime().toString())));
 
      // add top-level elements
      Setup::setDoc(doc);

@@ -31,8 +31,7 @@ namespace Operations
  OperationsXml(parent)
  {
   log = new Logger("CarManagerXml");
-  operationsFileName = "OperationsCarRoster.xml"; // NOI18N
-
+  setOperationsFileName("OperationsCarRoster.xml"); // NOI18N
  }
 
  /**
@@ -141,11 +140,12 @@ Logger* log = new Logger("CarManagerXml");
  }
 
  /*public*/ void CarManagerXml::setOperationsFileName(QString name) {
-     operationsFileName = name;
+     //operationsFileName = name;
+  OperationsXml::setOperationsFileName(name);
  }
 
  /*public*/ QString CarManagerXml::getOperationsFileName() {
-     return operationsFileName;
+     return OperationsXml::getOperationsFileName();
  }
 
  /*public*/ void CarManagerXml::dispose(){

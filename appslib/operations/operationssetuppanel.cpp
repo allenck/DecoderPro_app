@@ -867,126 +867,129 @@ OperationsPreferencesPanel(parent)
           comboBox->addItem(color);
       }
   }
-#if 0
-  @Override
-  /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-      log->debug("propertyChange ({}), new: ({})", e.getPropertyName(), e.getNewValue());
-  }
 
-  @Override
-  /*public*/ String getTabbedPreferencesTitle() {
-      return tr("TitleOperationsSetup");
-  }
-
-  @Override
-  /*public*/ String getPreferencesTooltip() {
-      return null;
-  }
-
-  @Override
-  /*public*/ void savePreferences() {
-      this.save();
-  }
-  //@Override
-  /*public*/ bool isDirty() {
-      if (// set car types
-              (typeDesc->isChecked() && !Setup::getCarTypes()==(Setup::DESCRIPTIVE))
-              || (typeAAR->isChecked() && !Setup::getCarTypes()==(Setup::AAR))
-              // main menu enabled?
-              || Setup::isMainMenuEnabled() != mainMenuCheckBox->isChecked()
-              || Setup::isCloseWindowOnSaveEnabled() != closeOnSaveCheckBox->isChecked()
-              || Setup::isAutoSaveEnabled() != autoSaveCheckBox->isChecked()
-              || Setup::isAutoBackupEnabled() != autoBackupCheckBox->isChecked()
-              // add panel name to setup
-              || !Setup::getPanelName()==(panelTextField.getText())
-              // train Icon X&Y
-              || Setup::isTrainIconCordEnabled() != iconCheckBox->isChecked()
-              || Setup::isTrainIconAppendEnabled() != appendCheckBox->isChecked()
-              // train Icon X&Y
-              || Setup::isTrainIconCordEnabled() != iconCheckBox->isChecked()
-              || Setup::isTrainIconAppendEnabled() != appendCheckBox->isChecked()
-              // save train icon colors
-              || !Setup::getTrainIconColorNorth()==(northComboBox->getSelectedItem())
-              || !Setup::getTrainIconColorSouth()==(southComboBox->getSelectedItem())
-              || !Setup::getTrainIconColorEast()==(eastComboBox->getSelectedItem())
-              || !Setup::getTrainIconColorWest()==(westComboBox->getSelectedItem())
-              || !Setup::getTrainIconColorLocal()==(localComboBox->getSelectedItem())
-              || !Setup::getTrainIconColorTerminate()==(terminateComboBox->getSelectedItem())
-              || Setup::getMaxNumberEngines() != Integer.parseInt(maxEngineSizeTextField.getText())
-              || Setup::getHorsePowerPerTon() != Integer.parseInt(hptTextField.getText())
-              // switch time
-              || Setup::getSwitchTime() != Integer.parseInt(switchTimeTextField.getText())
-              // travel time
-              || Setup::getTravelTime() != Integer.parseInt(travelTimeTextField.getText())
-              || !Setup::getYearModeled()==(yearTextField.getText().trim())
-              || Setup::getMaxTrainLength() != Integer.parseInt(maxLengthTextField.getText())
-              || !Setup::getComment()==(this.commentTextArea.getText())) {
-          return true;
-      }
-
-      // set train direction
-      int direction = 0;
-      if (eastCheckBox->isChecked()) {
-          direction = Setup::EAST + Setup::WEST;
-      }
-      if (northCheckBox->isChecked()) {
-          direction += Setup::NORTH + Setup::SOUTH;
-      }
-      // set scale
-      int scale = 0;
-      if (scaleZ->isChecked()) {
-          scale = Setup::Z_SCALE;
-      }
-      if (scaleN->isChecked()) {
-          scale = Setup::N_SCALE;
-      }
-      if (scaleTT->isChecked()) {
-          scale = Setup::TT_SCALE;
-      }
-      if (scaleOO->isChecked()) {
-          scale = Setup::OO_SCALE;
-      }
-      if (scaleHOn3->isChecked()) {
-          scale = Setup::HOn3_SCALE;
-      }
-      if (scaleHO->isChecked()) {
-          scale = Setup::HO_SCALE;
-      }
-      if (scaleSn3->isChecked()) {
-          scale = Setup::Sn3_SCALE;
-      }
-      if (scaleS->isChecked()) {
-          scale = Setup::S_SCALE;
-      }
-      if (scaleOn3->isChecked()) {
-          scale = Setup::On3_SCALE;
-      }
-      if (scaleO->isChecked()) {
-          scale = Setup::O_SCALE;
-      }
-      if (scaleG->isChecked()) {
-          scale = Setup::G_SCALE;
-      }
-      QString lengthUnit = "";
-      // Set Unit of Length
-      if (feetUnit->isChecked()) {
-          lengthUnit = Setup::FEET;
-      }
-      if (meterUnit->isChecked()) {
-          lengthUnit = Setup::METER;
-      }
-      return ( // train direction
-              Setup::getTrainDirection() != direction
-              // scale
-              || Setup::getScale() != scale
-              || !Setup::getRailroadName()==(this.railroadNameTextField.getText())
-              // unit of length
-              || !Setup::getLengthUnit()==(lengthUnit));
+ /*private*/ QWidget* OperationsSetupPanel::getTopLevelAncestor()
+ {
+  return window();
  }
-#endif
-/*private*/ QWidget* OperationsSetupPanel::getTopLevelAncestor()
-{
- return window();
-}
 
+
+ //@Override
+ /*public*/ void OperationsSetupPanel::propertyChange(PropertyChangeEvent* e)
+ {
+  log->debug(tr("propertyChange (%1), new: (%2)").arg(e->getPropertyName(), e->getNewValue().toString()));
+ }
+
+ //@Override
+ /*public*/ QString OperationsSetupPanel::getTabbedPreferencesTitle()
+ {
+     return tr("Operations Setup");
+ }
+
+ //@Override
+ /*public*/ QString OperationsSetupPanel::getPreferencesTooltip() {
+    return "";
+ }
+
+ //@Override
+ /*public*/ void OperationsSetupPanel::savePreferences() {
+     this->save();
+ }
+
+ //@Override
+ /*public*/ bool OperationsSetupPanel::isDirty() {
+    if (// set car types
+            (typeDesc->isChecked() && Setup::getCarTypes() != (Setup::DESCRIPTIVE))
+            || (typeAAR->isChecked() && Setup::getCarTypes() != (Setup::AAR))
+            // main menu enabled?
+            || Setup::isMainMenuEnabled() != mainMenuCheckBox->isChecked()
+            || Setup::isCloseWindowOnSaveEnabled() != closeOnSaveCheckBox->isChecked()
+            || Setup::isAutoSaveEnabled() != autoSaveCheckBox->isChecked()
+            || Setup::isAutoBackupEnabled() != autoBackupCheckBox->isChecked()
+            // add panel name to setup
+            || Setup::getPanelName() != (panelTextField->text())
+            // train Icon X&Y
+            || Setup::isTrainIconCordEnabled() != iconCheckBox->isChecked()
+            || Setup::isTrainIconAppendEnabled() != appendCheckBox->isChecked()
+            // train Icon X&Y
+            || Setup::isTrainIconCordEnabled() != iconCheckBox->isChecked()
+            || Setup::isTrainIconAppendEnabled() != appendCheckBox->isChecked()
+            // save train icon colors
+            || Setup::getTrainIconColorNorth() != (northComboBox ->currentText())
+            || Setup::getTrainIconColorSouth() != (southComboBox ->currentText())
+            || Setup::getTrainIconColorEast() != (eastComboBox ->currentText())
+            || Setup::getTrainIconColorWest() != (westComboBox ->currentText())
+            || Setup::getTrainIconColorLocal() != (localComboBox ->currentText())
+            || Setup::getTrainIconColorTerminate() != (terminateComboBox ->currentText())
+            || Setup::getMaxNumberEngines() != (maxEngineSizeTextField->text().toInt())
+            || Setup::getHorsePowerPerTon() != (hptTextField->text().toInt())
+            // switch time
+            || Setup::getSwitchTime() != (switchTimeTextField->text().toInt())
+            // travel time
+            || Setup::getTravelTime() != (travelTimeTextField->text().toInt())
+            || Setup::getYearModeled() != (yearTextField->text().trimmed())
+            || Setup::getMaxTrainLength() != (maxLengthTextField->text().toInt())
+            || Setup::getComment() != (this->commentTextArea->toHtml())) {
+        return true;
+    }
+
+    // set train direction
+    int direction = 0;
+    if (eastCheckBox->isChecked()) {
+        direction = Setup::EAST + Setup::WEST;
+    }
+    if (northCheckBox->isChecked()) {
+        direction += Setup::NORTH + Setup::SOUTH;
+    }
+    // set scale
+    int scale = 0;
+    if (scaleZ->isChecked()) {
+        scale = Setup::Z_SCALE;
+    }
+    if (scaleN->isChecked()) {
+        scale = Setup::N_SCALE;
+    }
+    if (scaleTT->isChecked()) {
+        scale = Setup::TT_SCALE;
+    }
+    if (scaleOO->isChecked()) {
+        scale = Setup::OO_SCALE;
+    }
+    if (scaleHOn3->isChecked()) {
+        scale = Setup::HOn3_SCALE;
+    }
+    if (scaleHO->isChecked()) {
+        scale = Setup::HO_SCALE;
+    }
+    if (scaleSn3->isChecked()) {
+        scale = Setup::Sn3_SCALE;
+    }
+    if (scaleS->isChecked()) {
+        scale = Setup::S_SCALE;
+    }
+    if (scaleOn3->isChecked()) {
+        scale = Setup::On3_SCALE;
+    }
+    if (scaleO->isChecked()) {
+        scale = Setup::O_SCALE;
+    }
+    if (scaleG->isChecked()) {
+        scale = Setup::G_SCALE;
+    }
+    QString lengthUnit = "";
+    // Set Unit of Length
+    if (feetUnit->isChecked()) {
+        lengthUnit = Setup::FEET;
+    }
+    if (meterUnit->isChecked()) {
+        lengthUnit = Setup::METER;
+    }
+    return ( // train direction
+            Setup::getTrainDirection() != direction
+            // scale
+            || Setup::getScale() != scale
+            || Setup::getRailroadName() != (this->railroadNameTextField->text())
+            // unit of length
+            || Setup::getLengthUnit() != (lengthUnit));
+ }
 }

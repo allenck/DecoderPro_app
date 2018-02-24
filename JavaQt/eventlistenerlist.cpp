@@ -1,5 +1,9 @@
 #include "eventlistenerlist.h"
-QVector<QObject*>* EventListenerList::NULL_ARRAY = new QVector<QObject*>();
+#include "loggerbase.h"
+
+QVector<QObject*> EventListenerList::NULL_ARRAY =  QVector<QObject*>();
+
+/*private*/ /*final*/ /*static*/ Logger* EventListenerList::log = LoggerFactory::getLogger("EventListenerList");
 
 EventListenerList::EventListenerList(QObject *parent) :
     QObject(parent)
@@ -26,7 +30,7 @@ EventListenerList::EventListenerList(QObject *parent) :
  * to the class definition:
  * <pre>
  * EventListenerList listenerList = new EventListenerList();
- * FooEvent fooEvent = null;
+ * FooEvent fooEvent = NULL;
  *
  * public void addFooListener(FooListener l) {
  *     listenerList.add(FooListener.class, l);
@@ -43,14 +47,14 @@ EventListenerList::EventListenerList(QObject *parent) :
  * // the fire method.
  *
  * protected void fireFooXXX() {
- *     // Guaranteed to return a non-null array
+ *     // Guaranteed to return a non-NULL array
  *     Object[] listeners = listenerList.getListenerList();
  *     // Process the listeners last to first, notifying
  *     // those that are interested in this event
  *     for (int i = listeners.length-2; i>=0; i-=2) {
  *         if (listeners[i]==FooListener.class) {
  *             // Lazily create the event:
- *             if (fooEvent == null)
+ *             if (fooEvent == NULL)
  *                 fooEvent = new FooEvent(this);
  *             ((FooListener)listeners[i+1]).fooXXX(fooEvent);
  *         }
@@ -82,8 +86,8 @@ EventListenerList::EventListenerList(QObject *parent) :
  * performance reasons, this implementation passes back
  * the actual data structure in which the listener data
  * is stored internally!
- * This method is guaranteed to pass back a non-null
- * array, so that no null-checking is required in
+ * This method is guaranteed to pass back a non-NULL
+ * array, so that no NULL-checking is required in
  * fire methods.  A zero-length array of Object should
  * be returned if there are currently no listeners.
  *
@@ -93,7 +97,7 @@ EventListenerList::EventListenerList(QObject *parent) :
  * on a copy of the array returned rather than the array
  * itself.
  */
-/*public*/ QVector<QObject*>* EventListenerList::getListenerList() {
+/*public*/ QVector<QObject*> EventListenerList::getListenerList() {
     return listenerList;
 }
 
@@ -105,14 +109,15 @@ EventListenerList::EventListenerList(QObject *parent) :
  *
  * @since 1.3
  */
-///*public*/ <T extends EventListener> T[] getListeners(Class<T> t) {
-//    Object[] lList = listenerList;
+//template <class T>
+///*public*/ /*<T extends EventListener>*/ QVector<T*> EventListenerList::getListeners(QString t) {
+//    QObjectList lList = listenerList;
 //    int n = getListenerCount(lList, t);
-//    T[] result = (T[])Array.newInstance(t, n);
+//    QVector<T*> result = QVector<T*>(n);//(T[])Array.newInstance(t, n);
 //    int j = 0;
-//    for (int i = lList.length-2; i>=0; i-=2) {
-//        if (lList[i] == t) {
-//            result[j++] = (T)lList[i+1];
+//    for (int i = lList.length()-2; i>=0; i-=2) {
+//        if (lList.at(i) == t) {
+//            result.replace(j++, (T*)lList.at(i+1));
 //        }
 //    }
 //    return result;
@@ -122,7 +127,7 @@ EventListenerList::EventListenerList(QObject *parent) :
  * Returns the total number of listeners for this listener list.
  */
 /*public*/ int EventListenerList::getListenerCount() {
-    return listenerList->count()/2;
+    return listenerList.count()/2;
 }
 
 /**
@@ -130,14 +135,21 @@ EventListenerList::EventListenerList(QObject *parent) :
  * for this listener list.
  */
 /*public*/ int EventListenerList::getListenerCount(QString t) {
-    QVector<QObject*>* lList = listenerList;
-    return getListenerCount(lList, t);
+    QVector<QObject*> lList = listenerList;
+   // return getListenerCount(lList, t);
+    int n =0;
+    foreach (QObject* obj, lList) {
+     Q_ASSERT(obj->objectName()!= "");
+     if(obj->objectName() == t)
+      n++;
+    }
+    return n;
 }
 
 /*private*/ int EventListenerList::getListenerCount( QVector<QObject*>* list, QString t)
 {
  int count = 0;
- for (int i = 0; i < list->length; i+=2)
+ for (int i = 0; i < list->length(); i+=2)
  {
   if (t == list->at(i)->metaObject()->className())
    count++;
@@ -150,29 +162,36 @@ EventListenerList::EventListenerList(QObject *parent) :
  * @param t the type of the listener to be added
  * @param l the listener to be added
  */
-/*public*/ synchronized <T extends EventListener> void add(Class<T> t, T l) {
-    if (l==null) {
+//template<class T>
+/*public*/ /*synchronized*/ /*<T extends EventListener>*/  void EventListenerList::add(QString t, EventListener* l) {
+    if (l==NULL) {
         // In an ideal world, we would do an assertion here
         // to help developers know they are probably doing
         // something wrong
         return;
     }
-    if (!t.isInstance(l)) {
-        throw new IllegalArgumentException("Listener " + l +
-                                     " is not of type " + t);
+    //if (!t->isInstance(l))
+    if(QString(l->metaObject()->superClass()->className()) != t )
+    {
+     log->warn("Listener " + QString(l->metaObject()->className()) +
+                 " is not of type " + t);
+//        throw IllegalArgumentException("Listener " + QString(l->metaObject()->className()) +
+//        + " superclass " +   QString(l->metaObject()->superClass()->className())+                           " is not of type " + t);
     }
     if (listenerList == NULL_ARRAY) {
         // if this is the first listener added,
         // initialize the lists
-        listenerList = new Object[] { t, l };
+        listenerList = QVector<QObject*>(); listenerList << l ;
     } else {
         // Otherwise copy the array and add the new listener
-        int i = listenerList.length;
-        Object[] tmp = new Object[i+2];
-        System.arraycopy(listenerList, 0, tmp, 0, i);
-
-        tmp[i] = t;
-        tmp[i+1] = l;
+        int i = listenerList.length();
+        QVector<QObject*> tmp = QVector<QObject*>(i+2);
+        //System.arraycopy(listenerList, 0, tmp, 0, i);
+        foreach (QObject* o, listenerList) {
+         tmp.append(o);
+        }
+        tmp.replace(i, (EventListener*)Class::forName(t));
+        tmp.replace(i+1, l);
 
         listenerList = tmp;
     }
@@ -183,21 +202,26 @@ EventListenerList::EventListenerList(QObject *parent) :
  * @param t the type of the listener to be removed
  * @param l the listener to be removed
  */
-/*public*/ synchronized <T extends EventListener> void remove(Class<T> t, T l) {
-    if (l ==null) {
+template<class T>
+/*public*/ /*synchronized*/ /*<T extends EventListener> */void EventListenerList::remove(QString t, T* l) {
+    if (l ==NULL) {
         // In an ideal world, we would do an assertion here
         // to help developers know they are probably doing
         // something wrong
         return;
     }
-    if (!t.isInstance(l)) {
+    //if (!t.isInstance(l))
+    if(qobject_cast<T*>(t) != NULL)
+    {
         throw new IllegalArgumentException("Listener " + l +
                                      " is not of type " + t);
     }
     // Is l on the list?
     int index = -1;
-    for (int i = listenerList.length-2; i>=0; i-=2) {
-        if ((listenerList[i]==t) && (listenerList[i+1].equals(l) == true)) {
+    for (int i = listenerList.length()-2; i>=0; i-=2)
+    {
+        if ((listenerList.at(i)->objectName() == t)// listenerList[i]==t)
+            && (listenerList[i+1] ==  (l) == true)) {
             index = i;
             break;
         }
@@ -205,36 +229,45 @@ EventListenerList::EventListenerList(QObject *parent) :
 
     // If so,  remove it
     if (index != -1) {
-        Object[] tmp = new Object[listenerList.length-2];
+        QVector<QObject*> tmp = QVector<QObject*>(listenerList.length()-2);
         // Copy the list up to index
-        System.arraycopy(listenerList, 0, tmp, 0, index);
+        //System.arraycopy(listenerList, 0, tmp, 0, index);
+        for(int i = 0; i < index; i++)
+        {
+         tmp.replace(i, listenerList.at(i));
+        }
         // Copy from two past the index, up to
         // the end of tmp (which is two elements
         // shorter than the old list)
-        if (index < tmp.length)
-            System.arraycopy(listenerList, index+2, tmp, index,
-                             tmp.length - index);
-        // set the listener array to the new array or null
-        listenerList = (tmp.length == 0) ? NULL_ARRAY : tmp;
+        if (index < tmp.length())
+//            System.arraycopy(listenerList, index+2, tmp, index,
+//                             tmp.length - index);
+         for(int i = index+2; i < tmp.length() - index; i++)
+         {
+          tmp.replace(i, listenerList.at(tmp.length()-i));
+         }
+
+        // set the listener array to the new array or NULL
+        listenerList = (tmp.length() == 0) ? NULL_ARRAY : tmp;
         }
 }
-
+#if 0
 // Serialization support.
 /*private*/ void writeObject(ObjectOutputStream s) throws IOException {
     Object[] lList = listenerList;
     s.defaultWriteObject();
 
-    // Save the non-null event listeners:
+    // Save the non-NULL event listeners:
     for (int i = 0; i < lList.length; i+=2) {
         Class t = (Class)lList[i];
         EventListener l = (EventListener)lList[i+1];
-        if ((l!=null) && (l instanceof Serializable)) {
+        if ((l!=NULL) && (l instanceof Serializable)) {
             s.writeObject(t.getName());
             s.writeObject(l);
         }
     }
 
-    s.writeObject(null);
+    s.writeObject(NULL);
 }
 
 /*private*/ void readObject(ObjectInputStream s)
@@ -243,23 +276,23 @@ EventListenerList::EventListenerList(QObject *parent) :
     s.defaultReadObject();
     Object listenerTypeOrNull;
 
-    while (null != (listenerTypeOrNull = s.readObject())) {
+    while (NULL != (listenerTypeOrNull = s.readObject())) {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         EventListener l = (EventListener)s.readObject();
         add((Class<EventListener>)Class.forName((String)listenerTypeOrNull, true, cl), l);
     }
 }
-
+#endif
 /**
  * Returns a string representation of the EventListenerList.
  */
-/*public*/ QString toString() {
-    Object[] lList = listenerList;
-    String s = "EventListenerList: ";
-    s += lList.length/2 + " listeners: ";
-    for (int i = 0 ; i <= lList.length-2 ; i+=2) {
-        s += " type " + ((Class)lList[i]).getName();
-        s += " listener " + lList[i+1];
+/*public*/ QString EventListenerList::toString() {
+    QVector<QObject*> lList = listenerList;
+    QString s = "EventListenerList: ";
+    s += lList.length()/2 + " listeners: ";
+    for (int i = 0 ; i <= lList.length()-2 ; i+=2) {
+        s += " type " + QString((/*(Class)*/lList[i])->metaObject()->className());
+        s += " listener " + lList[i+1]->objectName();
     }
     return s;
 }

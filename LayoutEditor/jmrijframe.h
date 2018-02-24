@@ -67,7 +67,7 @@ public:
     virtual /*public*/ QVariant getProperty(QString key);
     /*public*/ void makePrivateWindow();
     /*public*/ void windowClosing(QCloseEvent* e);
-
+    /*public*/ virtual QString getClassName();
 
 signals:
 

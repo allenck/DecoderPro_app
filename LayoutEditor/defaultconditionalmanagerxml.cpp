@@ -79,29 +79,29 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
     ConditionalVariable* variable = variableList->at(k);
     QDomElement vElem = doc.createElement("conditionalStateVariable");
     int oper = variable->getOpern();
-        if (oper == Conditional::OPERATOR_AND && variable->isNegated()) {
-            oper = Conditional::OPERATOR_AND_NOT;    // backward compatibility
-        } else if (oper == Conditional::OPERATOR_NONE && variable->isNegated()) {
-            oper = Conditional::OPERATOR_NOT;        // backward compatibility
-        }
-        vElem.setAttribute("operator",(oper));
-        if (variable->isNegated())
-            vElem.setAttribute("negated","yes");
-        else
-            vElem.setAttribute("negated","no");
-        vElem.setAttribute("type",(variable->getType()));
-        vElem.setAttribute("systemName", variable->getName());
-        vElem.setAttribute("dataString", variable->getDataString());
-        vElem.setAttribute("num1",(variable->getNum1()));
-        vElem.setAttribute("num2",(variable->getNum2()));
-        if (variable->doTriggerActions())
-            vElem.setAttribute("triggersCalc","yes");
-        else
-            vElem.setAttribute("triggersCalc","no");
-        elem.appendChild(vElem);
+    if (oper == Conditional::OPERATOR_AND && variable->isNegated()) {
+        oper = Conditional::OPERATOR_AND_NOT;    // backward compatibility
+    } else if (oper == Conditional::OPERATOR_NONE && variable->isNegated()) {
+        oper = Conditional::OPERATOR_NOT;        // backward compatibility
     }
-    // save action information
-    QList<ConditionalAction*>* actionList = ((DefaultConditional*)c)->getCopyOfActions();
+    vElem.setAttribute("operator",(oper));
+    if (variable->isNegated())
+        vElem.setAttribute("negated","yes");
+    else
+        vElem.setAttribute("negated","no");
+    vElem.setAttribute("type",(variable->getType()));
+    vElem.setAttribute("systemName", variable->getName());
+    vElem.setAttribute("dataString", variable->getDataString());
+    vElem.setAttribute("num1",(variable->getNum1()));
+    vElem.setAttribute("num2",(variable->getNum2()));
+    if (variable->doTriggerActions())
+        vElem.setAttribute("triggersCalc","yes");
+    else
+        vElem.setAttribute("triggersCalc","no");
+    elem.appendChild(vElem);
+   }
+   // save action information
+   QList<ConditionalAction*>* actionList = ((DefaultConditional*)c)->getCopyOfActions();
    for (int k=0; k < actionList->size(); k++)
    {
     ConditionalAction* action = actionList->at(k);
@@ -125,9 +125,9 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
     elem.appendChild(aElem);
     }
     conditionals.appendChild(elem);
-        }
-    }
-    return (conditionals);
+   }
+  }
+  return (conditionals);
 }
 
 /**

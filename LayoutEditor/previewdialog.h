@@ -16,7 +16,7 @@ class PreviewDialog : public JDialog
     Q_OBJECT
 public:
     //explicit PreviewDialog(QWidget *parent = 0);
-    /*public*/ PreviewDialog(JFrame* frame, QString title, QDir* dir, QStringList filter, bool modality, QWidget *parent );
+    /*public*/ PreviewDialog(JFrame* frame, QString title, QDir* dir, QStringList filter );
     /*public*/ void init(ActionListener* addAction, ActionListener* moreAction,
                      ActionListener* lookAction, ActionListener* cancelAction,
                      int startNum, JFrame* waitDialog);
@@ -45,7 +45,6 @@ private:
     QStringList _filter;   // file extensions of types to display
     QPushButton* _addButton;
     QPushButton* _moreButton;
-    bool _mode;
     bool _noMemory;// = false;
     Logger* log;
     void resetPanel();

@@ -5,7 +5,7 @@
 
 class QVBoxLayout;
 class QGroupBox;
-class JTextPane;
+//class JTextPane;
 class QScrollArea;
 class PropertyChangeEvent;
 class QLabel;
@@ -37,6 +37,7 @@ namespace Operations
   Logger* log;
   CarSetFrame* csf;// = NULL;
   QVBoxLayout* thisLayout;
+  /*private*/ void addCarToTrain();
 
  protected:
   /*protected*/ static /*final*/ QString Tab;//= "     "; // used to space out headers
@@ -68,7 +69,8 @@ namespace Operations
   // major buttons
   /*protected*/ QPushButton* selectButton;//= new JButton(Bundle.getMessage("Select"));
   /*protected*/ QPushButton* clearButton;//= new JButton(Bundle.getMessage("Clear"));
-  /*protected*/ QPushButton* setButton;//= new JButton(Bundle.getMessage("Set"));
+  /*protected*/ QPushButton* modifyButton;// = new JButton(Bundle.getMessage("Modify")); // see setModifyButtonText()
+
   /*protected*/ QPushButton* moveButton;//= new JButton(Bundle.getMessage("Move"));
 
   // text panes
@@ -96,12 +98,12 @@ namespace Operations
   /*protected*/ QGroupBox* pButtons;//= new JPanel();
 
   // check boxes
-  /*protected*/ QHash<QString, QCheckBox*> carCheckBoxes;//= new Hashtable<>();
+  /*protected*/ QHash<QString, QCheckBox*> checkBoxes;//= new Hashtable<>();
   /*protected*/ QList<RollingStock*> rollingStock;//= new ArrayList<>();
   // flags
   /*protected*/ bool isSetMode;//= false; // when true, cars that aren't selected (checkbox) can be "set"
   /*protected*/ void initialize();
-  /*protected*/ void setButtonText();
+  /*protected*/ void setModifyButtonText();
   /*protected*/ void removePropertyChangeListerners();
   /*protected*/ void updateLocoPanes(RouteLocation* rl);
   /*protected*/ QString getStatus(RouteLocation* rl, bool isManifest);
@@ -115,6 +117,7 @@ namespace Operations
 
  friend class YardmasterPanel;
  friend class TrainConductorPanel;
+ friend class YardmasterByTrackPanel;
  };
 }
 #endif // COMMONCONDUCTORYARDMASTERPANEL_H

@@ -130,6 +130,8 @@ void NamedIcon::init()
  {
   return NULL;
  }
+// else
+//  return new NamedIcon(u.fileName(), pName);
  return new NamedIcon(pName, pName);
 }
 
@@ -472,8 +474,10 @@ QImage NamedIcon::getImage()
 {
  if(this == NULL)
   return QImage();
+ if(!mDefaultImage.isNull())
+  return mDefaultImage;
  QImage img;
- QString fn;
+
  const char* fmt;
  if(mURL.endsWith(".gif"))
   fmt = "GIF";
@@ -482,15 +486,17 @@ QImage NamedIcon::getImage()
    fmt = "PNG";
 
  if(File(mURL).exists())
+ {
   img = QImage(mURL, fmt);
+  filename = File(mURL).getPath();
+ }
  else
  {
-  fn = FileUtil::getAbsoluteFilename(mURL);
-
-  img =  QImage(fn, fmt);
+  filename = FileUtil::getAbsoluteFilename(mURL);
+  img =  QImage(filename, fmt);
  }
  if(img.isNull())
-  log->debug( "unable to load " + mURL + " ("+ fn + ")");
+  log->debug( "unable to load " + mURL + " ("+ filename + ")");
  return img;
 }
 void NamedIcon::setImage(QImage img)

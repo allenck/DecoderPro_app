@@ -539,6 +539,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
   if (mBlockEntries->at(i)->getState() == OCCUPIED)
   {
    o = OCCUPIED;
+   break;
   }
  }
  if (mOccupancy!=o)
@@ -1306,19 +1307,19 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 /*private*/ bool Section::placeSensorInCrossover(QString b1Name, QString b2Name, QString c1Name, QString c2Name,  int direction, ConnectivityUtil* cUtil)
 {
  #if 1 // TODO:
-    SignalHead* b1Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(b1Name);
+    SignalHead* b1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(b1Name);
     SignalHead* b2Head = NULL;
     SignalHead* c1Head = NULL;
     SignalHead* c2Head = NULL;
     bool success = true;
     if ( (b2Name!=NULL) && (b2Name!=("")) ) {
-        b2Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(b2Name);
+        b2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(b2Name);
     }
     if ( (c1Name!=NULL) && (c1Name!=("")) ) {
-        c1Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(c1Name);
+        c1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(c1Name);
     }
     if ( (c2Name!=NULL) && (c2Name!=("")) ) {
-        c2Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(c2Name);
+        c2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(c2Name);
     }
     if (b2Head!=NULL) {
         if (!checkDirectionSensor(b1Head, direction, ConnectivityUtil::OVERALL, cUtil)) success = false;
@@ -1541,7 +1542,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                      (TrackSegment*)x->getConnectA(), false, 0);
                  TrackNode* altNode = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_C,
                                      (TrackSegment*)x->getConnectC(), false, 0);
-                 SignalHead* sh = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                 SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalAName());
                  if (!setDirectionSensorByConnectivity(tn, altNode, sh, cBlock, cUtil)) errorCount ++;
              }
@@ -1551,7 +1552,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                      (TrackSegment*)x->getConnectC(), false, 0);
                  TrackNode* altNode = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_A,
                                      (TrackSegment*)x->getConnectA(), false, 0);
-                 SignalHead* sh = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                 SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalCName());
                  if (!setDirectionSensorByConnectivity(tn, altNode, sh, cBlock, cUtil)) errorCount ++;
              }
@@ -1562,7 +1563,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
          int direction = getDirectionForBlocks(alBlock, clBlock);
          if (direction != EntryPoint::UNKNOWN) {
              if ( (x->getSignalCName()!=NULL) && (x->getSignalCName()!=("")) ) {
-                 SignalHead* sh = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                 SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalCName());
                  if (!checkDirectionSensor(sh, direction, ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
              }
@@ -1576,7 +1577,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
          int direction = getDirectionForBlocks(clBlock, alBlock);
          if (direction != EntryPoint::UNKNOWN) {
              if ( (x->getSignalAName()!=NULL) && (x->getSignalAName()!=("")) ) {
-                 SignalHead* sh = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                 SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalAName());
                  if (!checkDirectionSensor(sh, direction, ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
              }
@@ -1596,7 +1597,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                      (TrackSegment*)x->getConnectB(), false, 0);
                  TrackNode* altNode = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_D,
                                      (TrackSegment*)x->getConnectD(), false, 0);
-                 SignalHead* sh = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                 SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalBName());
                  if (!setDirectionSensorByConnectivity(tn, altNode, sh, cBlock, cUtil)) errorCount ++;
              }
@@ -1606,7 +1607,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                      (TrackSegment*)x->getConnectD(), false, 0);
                  TrackNode* altNode = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_B,
                                      (TrackSegment*)x->getConnectB(), false, 0);
-                 SignalHead* sh = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                 SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalDName());
                  if (!setDirectionSensorByConnectivity(tn, altNode, sh, cBlock, cUtil)) errorCount ++;
              }
@@ -1617,7 +1618,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
          int direction = getDirectionForBlocks(blBlock, dlBlock);
          if (direction != EntryPoint::UNKNOWN) {
              if ( (x->getSignalDName()!=NULL) && (x->getSignalDName()!=("")) ) {
-                 SignalHead* sh = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                 SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalDName());
                  if (!checkDirectionSensor(sh, direction, ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
              }
@@ -1631,7 +1632,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
          int direction = getDirectionForBlocks(dlBlock, blBlock);
          if (direction != EntryPoint::UNKNOWN) {
              if ( (x->getSignalBName()!=NULL) && (x->getSignalBName()!=("")) ) {
-                 SignalHead* sh = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                 SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalBName());
                  if (!checkDirectionSensor(sh, direction, ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
              }
@@ -1657,16 +1658,16 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                     if (direction == EntryPoint::FORWARD) altDirection = EntryPoint::REVERSE;
                     if (direction==EntryPoint::UNKNOWN) errorCount ++;
                     else {
-                        SignalHead* aHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* aHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                         t->getSignalA1Name());
                         SignalHead* a2Head = NULL;
                         QString a2Name = t->getSignalA2Name();
                         if ( (a2Name!=NULL) && (a2Name!=("")) ) {
-                            a2Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(a2Name);
+                            a2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(a2Name);
                         }
-                        SignalHead* bHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* bHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                         t->getSignalB1Name());
-                        SignalHead* cHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* cHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                         t->getSignalC1Name());
                         if (t->getLayoutBlock()->getBlock()==cBlock) {
                             // turnout is in this block, set direction sensors on all signal heads
@@ -1736,19 +1737,19 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                     LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(t->getLinkedTurnoutName(),panel);
                     if (tLinked==NULL) log.error("NULL Layout Turnout linked to turnout "+t->getTurnout()->getSystemName());
                     else if (t->getLinkType()==LayoutTurnout::THROAT_TO_THROAT) {
-                        SignalHead* b1Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* b1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalB1Name());
                         SignalHead* b2Head = NULL;
                         QString hName = t->getSignalB2Name();
                         if ( (hName!=NULL) && (hName!=("")) ) {
-                            b2Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(hName);
+                            b2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
-                        SignalHead* c1Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* c1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalC1Name());
                         SignalHead* c2Head = NULL;
                         hName = t->getSignalC2Name();
                         if ( (hName!=NULL) && (hName!=("")) ) {
-                            c2Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(hName);
+                            c2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
                         int direction = getDirectionStandardTurnout(t,cUtil);
                         int altDirection = EntryPoint::FORWARD;
@@ -1770,19 +1771,19 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                             }
                             else {
                                 // turnout is not in this block, switch to heads of linked turnout
-                                b1Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                                b1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             tLinked->getSignalB1Name());
                                 hName = tLinked->getSignalB2Name();
                                 b2Head = NULL;
                                 if ( (hName!=NULL) && (hName!=("")) ) {
-                                    b2Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(hName);
+                                    b2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                                 }
-                                c1Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                                c1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             tLinked->getSignalC1Name());
                                 c2Head = NULL;
                                 hName = tLinked->getSignalC2Name();
                                 if ( (hName!=NULL) && (hName!=("")) ) {
-                                    c2Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(hName);
+                                    c2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                                 }
                                 if ( ((t->getContinuingSense()==Turnout::CLOSED) &&
                                     (((TrackSegment*)t->getConnectB())->getLayoutBlock()->getBlock()==cBlock)) ||
@@ -1832,19 +1833,19 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                         }
                     }
                     else if (t->getLinkType()==LayoutTurnout::FIRST_3_WAY) {
-                        SignalHead* a1Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* a1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalA1Name());
                         SignalHead* a2Head = NULL;
                         QString hName = t->getSignalA2Name();
                         if ( (hName!=NULL) && (hName!=("")) ) {
-                            a2Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(hName);
+                            a2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
                         SignalHead* a3Head = NULL;
                         hName = t->getSignalA3Name();
                         if ( (hName!=NULL) && (hName!=("")) ) {
-                            a3Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(hName);
+                            a3Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
-                        SignalHead* cHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* cHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalC1Name());
                         int direction = getDirectionStandardTurnout(t,cUtil);
                         int altDirection = EntryPoint::FORWARD;
@@ -1886,16 +1887,16 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                         }
                     }
                     else if (t->getLinkType()==LayoutTurnout::SECOND_3_WAY) {
-                        SignalHead* bHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* bHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalB1Name());
-                        SignalHead* cHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* cHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalC1Name());
-                        SignalHead* a1Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(
+                        SignalHead* a1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                         tLinked->getSignalA1Name());
                         SignalHead* a3Head = NULL;
                         QString hName = tLinked->getSignalA3Name();
                         if ( (hName!=NULL) && (hName!=("")) ) {
-                            a3Head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(hName);
+                            a3Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
                         int direction = getDirectionStandardTurnout(t,cUtil);
                         int altDirection = EntryPoint::FORWARD;
@@ -1997,22 +1998,22 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                     if (direction==EntryPoint::FORWARD) altDirection = EntryPoint::REVERSE;
                     if (direction==EntryPoint::UNKNOWN) errorCount++;
                     else {
-                        if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalA1Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
-                        if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalA2Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                        if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalA1Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                        if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalA2Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
                         if(t->getTurnoutType()==LayoutTurnout::SINGLE_SLIP){
-                            if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalB1Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                            if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalB1Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
                         } else {
-                            if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalB1Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
-                            if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalB2Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                            if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalB1Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                            if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalB2Name()), altDirection, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
                         }
                         if(t->getTurnoutType()==LayoutTurnout::SINGLE_SLIP){
-                            if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalC1Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                            if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalC1Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
                         } else {
-                            if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalC1Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
-                            if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalC2Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                            if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalC1Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                            if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalC2Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
                         }
-                        if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalD1Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
-                        if(!checkDirectionSensor(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(t->getSignalD2Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                        if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalD1Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
+                        if(!checkDirectionSensor(((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(t->getSignalD2Name()), direction, ConnectivityUtil::OVERALL, cUtil)) errorCount++;
                     }
                 }
                 else {
@@ -2237,35 +2238,109 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 }
 
 /**
- * This function sets a string in the memories associated with blocks in this section.
- *    If Layout Editor panel is not present, Layout Blocks will not be present, and nothing will be set.
+ * This function sets/resets the display to use alternate color for
+ * unoccupied blocks in this section. If the section already contains an
+ * active block, then the alternative colour will be set from the active
+ * block, if no active block is found or we are clearing the alternative
+ * colour then all the blocks in the section will be set. If Layout Editor
+ * panel is not present, Layout Blocks will not be present, and nothing will
+ * be set.
+ *
+ * @param set true to use alternate unoccupied color; false otherwise
+ */
+/*public*/ void Section::setAlternateColorFromActiveBlock(bool set) {
+    LayoutBlockManager* lbm = (LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager");
+    bool beenSet = false;
+    if (!set || getState() == FREE || getState() == UNKNOWN) {
+        setAlternateColor(set);
+    } else if (getState() == FORWARD) {
+        for (Block* b : *mBlockEntries) {
+            if (b->getState() == Block::OCCUPIED) {
+                beenSet = true;
+            }
+            if (beenSet) {
+                LayoutBlock* lb = lbm->getByUserName(b->getUserName());
+                if (lb != NULL) {
+                    lb->setUseExtraColor(set);
+                }
+            }
+        }
+    } else if (getState() == REVERSE) {
+        for (Block* b : *mBlockEntries) {
+            if (b->getState() == Block::OCCUPIED) {
+                beenSet = true;
+            }
+            if (beenSet) {
+                LayoutBlock* lb = lbm->getByUserName(b->getUserName());
+                if (lb != NULL) {
+                    lb->setUseExtraColor(set);
+                }
+            }
+        }
+    }
+    if (!beenSet) {
+        setAlternateColor(set);
+    }
+}
+/**
+ * Set the block values for blocks in this section.
+ *
+ * @param name the value to set all blocks to
  */
 /*public*/ void Section::setNameInBlocks(QString name) {
-    for (int i=0; i<mBlockEntries->size(); i++) {
-        Block* b = mBlockEntries->at(i);
-        LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(b->getUserName());
-        if (lb!=NULL) {
-            Memory* m = lb->getMemory();
-            if (m!=NULL) m->setValue(QVariant(name));
-        }
+    for (Block* b : *mBlockEntries) {
+        b->setValue(name);
     }
 }
 
 /**
- * This function clears the string in the memories associated with unoccupied blocks in this section.
- *    If Layout Editor panel is not present, Layout Blocks will not be present, and nothing will be set.
+ * This function sets the block values for blocks in this section.
+ *
+ * @param value the name to set block values to
  */
-/*public*/ void Section::clearNameInUnoccupiedBlocks() {
-    for (int i=0; i<mBlockEntries->size(); i++) {
-        Block* b = mBlockEntries->at(i);
-        if (b->getState()==Block::UNOCCUPIED) {
-            LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(b->getUserName());
-            if (lb!=NULL) {
-                Memory* m = lb->getMemory();
-                if (m!=NULL) m->setValue(/*"  "*/QVariant());
+/*public*/ void Section::setNameInBlocks(QVariant value) {
+    for (Block* b : *mBlockEntries) {
+        b->setValue(value);
+    }
+}
+
+/*public*/ void Section::setNameFromActiveBlock(QVariant value) {
+    bool beenSet = false;
+    if (value == QVariant() || getState() == FREE || getState() == UNKNOWN) {
+        setNameInBlocks(value);
+    } else if (getState() == FORWARD) {
+        for (Block* b : *mBlockEntries) {
+            if (b->getState() == Block::OCCUPIED) {
+                beenSet = true;
+            }
+            if (beenSet) {
+                b->setValue(value);
+            }
+        }
+    } else if (getState() == REVERSE) {
+        for (Block* b : *mBlockEntries) {
+            if (b->getState() == Block::OCCUPIED) {
+                beenSet = true;
+            }
+            if (beenSet) {
+                b->setValue(value);
             }
         }
     }
+    if (!beenSet) {
+        setNameInBlocks(value);
+    }
+}
+
+/**
+ * This function clears the block values for blocks in this section.
+ */
+/*public*/ void Section::clearNameInUnoccupiedBlocks() {
+ for (Block* b : *mBlockEntries) {
+     if (b->getState() == Block::UNOCCUPIED) {
+         b->setValue("  ");
+     }
+ }
 }
 
 /**

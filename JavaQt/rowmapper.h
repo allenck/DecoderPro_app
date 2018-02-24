@@ -1,8 +1,8 @@
 #ifndef ROWMAPPER_H
 #define ROWMAPPER_H
 #include <QObject>
-
-class TreePath;
+#include "treepath.h"
+#include <QVector>
 /**
  * Defines the requirements for an object that translates paths in
  * the tree into display rows.
@@ -20,7 +20,7 @@ public:
      * in <code>path</code> is not valid its entry in the array should
      * be set to -1.
      */
-    virtual QList<int>* getRowsForPaths(QList<TreePath*>* path) {return new QList<int>();}
+    virtual QVector<int> getRowsForPaths(QVector<TreePath*> /*path*/) const {return QVector<int>();}
 };
 
 #endif // ROWMAPPER_H

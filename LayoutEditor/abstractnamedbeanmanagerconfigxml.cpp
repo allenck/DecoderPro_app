@@ -224,7 +224,7 @@ void AbstractNamedBeanManagerConfigXML::storeProperties(NamedBean* t, QDomElemen
 {
 #if 1 // TODO:
     //java.util.Set<Object> s = t->getPropertyKeys();
- QList<QString> s = t->getPropertyKeys();
+ QSet<QString> s = t->getPropertyKeys();
  if (/*s == NULL ||*/ s.size() == 0) return;
  QDomElement ret = doc.createElement("properties");
  elem.appendChild(ret);

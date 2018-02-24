@@ -287,7 +287,7 @@ void ImageIndexEditor::openItem_triggered()
 void ImageIndexEditor::addNode()
 {
  //CatalogTreeNode* selectedNode = _index->getSelectedNode();
- CatalogTreeItem* selectedNode = _index->getSelectedNode();
+ CatalogTreeNode* selectedNode = _index->getSelectedNode();
  if (selectedNode == NULL)
  {
 //  JOptionPane.showMessageDialog(this, tr("selectAddNode"),
@@ -364,8 +364,7 @@ void ImageIndexEditor::renameNode() {
 }
 
 void ImageIndexEditor::deleteNode() {
-    //CatalogTreeNode* selectedNode = _index->getSelectedNode();
-    CatalogTreeItem* selectedNode = _index->getSelectedNode();
+    CatalogTreeNode* selectedNode = _index->getSelectedNode();
     if (selectedNode == NULL)
     {
 //        JOptionPane.showMessageDialog(this, tr("selectDeleteNode"),
@@ -384,7 +383,7 @@ void ImageIndexEditor::deleteNode() {
 //        if (response == JOptionPane.YES_OPTION) {
 //            _index.removeNodeFromModel(selectedNode);
 //        }
-        switch(QMessageBox::question(this, tr("Question"), tr("Delete node, %1, its %2 subnodes, and all %3 image indices?").arg(selectedNode->path).arg(numNodes).arg(numIcons)))
+        switch(QMessageBox::question(this, tr("Question"), tr("Delete node, %1, its %2 subnodes, and all %3 image indices?").arg(selectedNode->getUserObject().toString()).arg(numNodes).arg(numIcons)))
         {
         case QMessageBox::Yes:
             _index->removeNodeFromModel(selectedNode);
@@ -404,32 +403,33 @@ void ImageIndexEditor::deleteNode() {
 //    }
 //    return cnt;
 //}
-/*private*/ int ImageIndexEditor::countSubNodes(CatalogTreeItem* node)
+/*private*/ int ImageIndexEditor::countSubNodes(CatalogTreeNode* node)
 {
  int cnt = 0;
- QListIterator<CatalogTreeItem*> it(node->children());
+ QVectorIterator<TreeNode*> it(*node->children());
  while(it.hasNext())
  {
-  CatalogTreeItem* item = it.next();
-  QFileInfo dir(item->path);
-  if(dir.isDir())
+  CatalogTreeNode* item = (CatalogTreeNode*)it.next();
+//  QFileInfo dir(item->path);
+//  if(dir.isDir())
    cnt += countSubNodes(item) + 1;
  }
  return cnt;
 }
-/*private*/ int ImageIndexEditor::countIcons(CatalogTreeItem* node)
+/*private*/ int ImageIndexEditor::countIcons(CatalogTreeNode* node)
 {
  int cnt = 0;
- QListIterator<CatalogTreeItem*> it(node->children());
+ QVectorIterator<TreeNode*> it(*node->children());
  while(it.hasNext())
  {
-  CatalogTreeItem* item = it.next();
-  QFileInfo dir(item->path);
-  if(dir.isDir())
-   cnt += countIcons(item);
-  else
-    cnt++;
+  TreeNode* item = it.next();
+//  QFileInfo dir(item->path);
+//  if(dir.isDir())
+   cnt += countIcons((CatalogTreeNode*)item);
+//  else
+//    cnt++;
  }
+ cnt += node->getNumLeaves();
  return cnt;
 }
 

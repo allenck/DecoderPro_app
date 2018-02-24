@@ -448,7 +448,9 @@ SOURCES += \
     engine.cpp \
     transmitter.cpp \
     receiver.cpp \
-    rpsmenu.cpp
+    rpsmenu.cpp \
+    blockcontentsicon.cpp \
+    blockcontentsiconxml.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -818,7 +820,9 @@ HEADERS += liblayouteditor_global.h \
     transmitter.h \
     receiver.h \
     calculator.h \
-    rpsmenu.h
+    rpsmenu.h \
+    blockcontentsicon.h \
+    blockcontentsiconxml.h
 
 
 FORMS    += \
@@ -836,7 +840,7 @@ FORMS    += \
     editlevelxingdlg.ui \
     paneleditor.ui \
     addpaneleditordialog.ui \
-    catalogpane.ui \
+    #catalogpane.ui \
     multisensoriconwidget.ui \
     sensorentrywidget.ui \
     itempalettewidget.ui \
@@ -859,8 +863,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
 else:unix:!macx: LIBS += -L$$PWD/../libPr3/ -lPr3
 
-INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal $$PWD/../Tables
-DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal $$PWD/../Tables
+INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal $$PWD/../Tables $$PWD/../libPr3/Throttle
+DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal $$PWD/../Tables $$PWD/../libPr3/Throttle
 
 #DEFINES += BLOCKS_AND_SECTIONS
 

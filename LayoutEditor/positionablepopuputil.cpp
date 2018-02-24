@@ -10,6 +10,10 @@
 #include "jtextfield.h"
 #include <QPalette>
 #include <editor.h>
+#include "positionablejpanel.h"
+#include "colorutil.h"
+#include <QPalette>
+#include <QBrush>
 
 //PositionablePopupUtil::PositionablePopupUtil(QObject *parent) :
 //    QObject(parent)
@@ -324,11 +328,33 @@ void PositionablePopupUtil::display()
  ((PositionableLabel*)_parent)->updateSize();
 }
 
+/*public*/ void PositionablePopupUtil::setHasBackground(bool set) {
+    _hasBackground = set;
+    //if (_textComponent instanceof PositionableJPanel)
+    if(qobject_cast<PositionableJPanel*>(_textComponent) != NULL)
+    {
+        ((PositionableJPanel*)_textComponent)->setOpaque(_hasBackground);
+    }
+    if (!_hasBackground) {
+        _parent->setOpaque(false);
+        ((PositionableJPanel*)_textComponent)->setOpaque(false);
+    }
+}
+
+/*public*/ bool PositionablePopupUtil::hasBackground() {
+    return _hasBackground;
+}
+
 /*public*/ QColor PositionablePopupUtil::getBackground()
 {
- if(_textComponent == NULL || qobject_cast<PositionableLabel*>(_textComponent) == NULL)
-        return QColor();
- return ((PositionableLabel*)_textComponent)->getBackground();
+ QColor c;
+ QPalette p = ((QWidget*)_textComponent)->palette();
+ c= p.background().color();
+ if (!_hasBackground) {
+     // make sure the alpha value is set to 0
+     c = ColorUtil::setAlpha(c,0);
+ }
+ return c;
 }
 
 /*protected*/ QMenu* PositionablePopupUtil::makeFontSizeMenu()

@@ -517,21 +517,21 @@ static final ResourceBundle rb = ResourceBundle
         }
     }
 }
-#if 0
-/*protected*/ void removeAllocatedSection(AllocatedSection as) {
+
+/*protected*/ void AutoActiveTrain::removeAllocatedSection(AllocatedSection* as) {
     int index = -1;
-    for (int i = _allocatedSectionList.size(); i > 0; i--) {
+    for (int i = _allocatedSectionList->size(); i > 0; i--) {
         if (_allocatedSectionList->at(i - 1) == as) {
             index = i - 1;
         }
     }
     if (index >= 0) {
-        _allocatedSectionList.remove(index);
+        _allocatedSectionList->removeAt(index);
     } else {
-       log->warn("unexpected call to removeAllocatedSection - Section " + as->getSection().getSystemName());
+       log->warn("unexpected call to removeAllocatedSection - Section " + as->getSection()->getSystemName());
     }
 }
-#endif
+
 /*private*/ bool AutoActiveTrain::isStopping() {
     // here add indicator for new stopping methods, if any are added
     return (_stoppingBySensor || _stoppingByBlockOccupancy || _stoppingUsingSpeedProfile);
@@ -569,28 +569,29 @@ static final ResourceBundle rb = ResourceBundle
 }
 
 /*protected*/ /*synchronized*/ void AutoActiveTrain::setupNewCurrentSignal(AllocatedSection* as) {
-#if 0
+#if 1
     removeCurrentSignal();
-    if (DispatcherFrame::instance().getSignalType() == DispatcherFrame::SIGNALHEAD) {
-        SignalHead sh = _lbManager.getFacingSignalHead(_currentBlock, _nextBlock);
+    if (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD) {
+        SignalHead* sh = _lbManager->getFacingSignalHead(_currentBlock, _nextBlock);
         if (sh != NULL) {
             _controllingSignal = sh;
             _conSignalProtectedBlock = _nextBlock;
-            sh.addPropertyChangeListener(_conSignalListener = new PropertyChangeListener() {
-                @Override
-                /*public*/ void propertyChange(PropertyChangeEvent e) {
-                    if (e.getPropertyName() == ("Appearance")) {
-                        // controlling signal has changed appearance
-                        setSpeedBySignal();
-                        if (_stoppingForStopSignal && (_targetSpeed > 0.0)) {
-                            cancelStopInCurrentSection();
-                            _stoppingForStopSignal = false;
-                        }
-                    }
-                }
-            });
+//            sh.addPropertyChangeListener(_conSignalListener = new PropertyChangeListener() {
+//                @Override
+//                /*public*/ void propertyChange(PropertyChangeEvent e) {
+//                    if (e.getPropertyName() == ("Appearance")) {
+//                        // controlling signal has changed appearance
+//                        setSpeedBySignal();
+//                        if (_stoppingForStopSignal && (_targetSpeed > 0.0)) {
+//                            cancelStopInCurrentSection();
+//                            _stoppingForStopSignal = false;
+//                        }
+//                    }
+//                }
+//            });
+            connect(sh, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
             if (log->isDebugEnabled()) {
-               log->debug("new current signal = " + sh.getSystemName());
+               log->debug("new current signal = " + sh->getSystemName());
             }
             setSpeedBySignal();
         } // Note: NULL signal head will result when exiting throat-to-throat blocks.
@@ -599,9 +600,9 @@ static final ResourceBundle rb = ResourceBundle
         }
     } else {
         //SignalMast
-        SignalMast sm = NULL;
-        Block cB = _currentBlock;
-        Block nB = _nextBlock;
+        SignalMast* sm = NULL;
+        Block* cB = _currentBlock;
+        Block* nB = _nextBlock;
         if (as == NULL) {
             as = _currentAllocatedSection;
         }
@@ -611,7 +612,7 @@ static final ResourceBundle rb = ResourceBundle
         //    nB = getNextBlock(nB, as);
         //}
         while (sm == NULL && nB != NULL) {
-            sm = _lbManager.getFacingSignalMast(cB, nB);
+            sm = _lbManager->getFacingSignalMast(cB, nB);
             if (sm == NULL) {
                 cB = nB;
                 nB = getNextBlock(nB, as);
@@ -620,32 +621,32 @@ static final ResourceBundle rb = ResourceBundle
         if (sm != NULL) {
             _controllingSignalMast = sm;
             _conSignalProtectedBlock = nB;
-            sm.addPropertyChangeListener(_conSignalMastListener = new PropertyChangeListener() {
-                @Override
-                /*public*/ void propertyChange(PropertyChangeEvent e) {
-                    if (e.getPropertyName() == ("Aspect")) {
-                        // controlling signal has changed appearance
-                        if (_stoppingForStopSignal && (_targetSpeed > 0.0)) {
-                            cancelStopInCurrentSection();
-                            _stoppingForStopSignal = false;
-                        }
-                        setSpeedBySignal();
-                    } else if (e.getPropertyName() == ("Held")) {
-                        if (!((Boolean) e.getNewValue()).boolValue()) {
-                            cancelStopInCurrentSection();
-                            _stoppingForStopSignal = false;
-                        }
-                        setSpeedBySignal();
-                    }
-                }
-            });
-           log->debug("{}: new current signalmast {}({}) for section {}", _activeTrain->getTrainName(), sm.getDisplayName(),
-              sm.getAspect(), as->getSectionName());
+//            sm.addPropertyChangeListener(_conSignalMastListener = new PropertyChangeListener() {
+//                @Override
+//                /*public*/ void propertyChange(PropertyChangeEvent e) {
+//                    if (e.getPropertyName() == ("Aspect")) {
+//                        // controlling signal has changed appearance
+//                        if (_stoppingForStopSignal && (_targetSpeed > 0.0)) {
+//                            cancelStopInCurrentSection();
+//                            _stoppingForStopSignal = false;
+//                        }
+//                        setSpeedBySignal();
+//                    } else if (e.getPropertyName() == ("Held")) {
+//                        if (!((Boolean) e.getNewValue()).boolValue()) {
+//                            cancelStopInCurrentSection();
+//                            _stoppingForStopSignal = false;
+//                        }
+//                        setSpeedBySignal();
+//                    }
+//                }
+//            });
+            connect(sm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+           log->debug(tr("%1: new current signalmast %2(%3) for section %4").arg(_activeTrain->getTrainName()).arg(sm->getDisplayName()).arg(
+              sm->getAspect()).arg(as->getSectionName()));
             setSpeedBySignal();
         } // Note: NULL signal head will result when exiting throat-to-throat blocks.
         else {
-           log->debug("{}: new current signalmast is NULL for section {} - sometimes OK", _activeTrain->getTrainName(),
-              as->getSectionName());
+           log->debug(tr("%1: new current signalmast is NULL for section %2 - sometimes OK").arg( _activeTrain->getTrainName()).arg(as->getSectionName()));
         }
     }
 #endif
@@ -848,10 +849,10 @@ static final ResourceBundle rb = ResourceBundle
         }
     }
 }
-#if 0
+#if 1
 
 // called to cancel a stopping action that is in progress
-private synchronized void cancelStopInCurrentSection() {
+/*private*/ /*synchronized*/ void AutoActiveTrain::cancelStopInCurrentSection() {
     if (isStopping()) {
         if (_stoppingBySensor) {
             // cancel stopping by stop sensor
@@ -1129,7 +1130,7 @@ protected synchronized void executeStopTasks(int task) {
 }
 
 /*private*/ /*synchronized*/ void AutoActiveTrain::setTargetSpeedState(int speedState) {
-#if 0
+#if 1
     _autoEngineer->slowToStop(false);
     if (speedState > STOP_SPEED) {
         float speed = _speedRatio[speedState];
@@ -1697,3 +1698,28 @@ class PauseTrain implements Runnable {
     return RAMP_NONE;
 }
 
+/*public*/ void AutoActiveTrain::propertyChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() == ("Appearance")) {
+        // controlling signal has changed appearance
+        setSpeedBySignal();
+        if (_stoppingForStopSignal && (_targetSpeed > 0.0)) {
+            cancelStopInCurrentSection();
+            _stoppingForStopSignal = false;
+        }
+    }
+    if (e->getPropertyName() == ("Aspect"))
+    {
+       // controlling signal has changed appearance
+       if (_stoppingForStopSignal && (_targetSpeed > 0.0)) {
+           cancelStopInCurrentSection();
+           _stoppingForStopSignal = false;
+       }
+       setSpeedBySignal();
+    } else if (e->getPropertyName() == ("Held")) {
+       if (!( e->getNewValue().toBool())) {
+           cancelStopInCurrentSection();
+           _stoppingForStopSignal = false;
+       }
+       setSpeedBySignal();
+   }
+}

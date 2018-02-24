@@ -165,6 +165,7 @@ static class ToolTipTimer : QTimer {
 };
 #endif
 
+class BlockContentsIcon;
 class Class;
 class CircuitBuilder;
 class TrainIcon;
@@ -461,6 +462,7 @@ private slots:
   /*abstract*/ /*protected*/ virtual void init(QString name);
   /*protected*/ void addRpsReporter();
   /*protected*/ void setScroll(int state);
+  /*protected*/ BlockContentsIcon* putBlockContents();
 
   class SignalHeadActionListener : public ActionListener
   {

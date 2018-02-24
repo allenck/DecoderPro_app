@@ -155,7 +155,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
  ps->setLineWidth(getInt(element, "lineWidth"));
  int alpha = -1;
  bool bOk;
- a = element.attribute("alpha");
+ a = element.attribute("alpha", QString::number(alpha));
  if (a != "")
  {
   alpha = a.toInt(&bOk);

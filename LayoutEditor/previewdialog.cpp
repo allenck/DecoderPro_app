@@ -56,7 +56,7 @@
 
     //static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.catalog.CatalogBundle");
 
-/*public*/ PreviewDialog::PreviewDialog(JFrame* frame, QString title, QDir* dir, QStringList filter, bool modality, QWidget *parent ) : JDialog(parent)
+/*public*/ PreviewDialog::PreviewDialog(JFrame* frame, QString title, QDir* dir, QStringList filter) : JDialog(frame, title, false)
 {
  //super(frame, tr(title), modality);
  _currentBackground = _grayColor;
@@ -72,7 +72,6 @@
  for (int i=0; i<filter.length(); i++) {
      _filter.append( filter.at(i));
     }
-    _mode = modality;
 }
 
 /*public*/ void PreviewDialog::init(ActionListener* addAction, ActionListener* moreAction, ActionListener* lookAction, ActionListener* cancelAction, int startNum, JFrame* waitDialog)
@@ -442,16 +441,12 @@ class MemoryExceptionHandler implements Thread.UncaughtExceptionHandler {
                     }
                     c.insets = new Insets(5, 5, 0, 0);
                     DragJLabel* image;
-                    if (_mode){
+                    //modeless is for ImageEditor dragging
+                    try {
+                        image = new DragJLabel(new DataFlavor(ImageIndexEditor::IconDataFlavorMime));
+                    } catch (ClassNotFoundException cnfe) {
+                        //cnfe.printStackTrace();
                         image = new DragJLabel(NULL);
-                    } else {
-                        //modeless is for ImageEditor dragging
-                        try {
-                            image = new DragJLabel(new DataFlavor(ImageIndexEditor::IconDataFlavorMime));
-                        } catch (ClassNotFoundException cnfe) {
-                            //cnfe.printStackTrace();
-                            image = new DragJLabel(NULL);
-                        }
                     }
 //                    image->setOpaque(true);
                     image->setName(name);

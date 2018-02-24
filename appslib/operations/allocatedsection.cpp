@@ -170,55 +170,55 @@
 /*public*/ bool AllocatedSection::getExited() {
     return mExited;
 }
-#if 0
-/*public*/ int getAllocationNumber() {
+
+/*public*/ int AllocatedSection::getAllocationNumber() {
     return mAllocationNumber;
 }
 
-/*public*/ void setAllocationNumber(int n) {
+/*public*/ void AllocatedSection::setAllocationNumber(int n) {
     mAllocationNumber = n;
 }
 
-/*public*/ jmri.Sensor getForwardStoppingSensor() {
+/*public*/ Sensor* AllocatedSection::getForwardStoppingSensor() {
     return mForwardStoppingSensor;
 }
 
-/*public*/ jmri.Sensor getReverseStoppingSensor() {
+/*public*/ Sensor* AllocatedSection::getReverseStoppingSensor() {
     return mReverseStoppingSensor;
 }
 
 /**
  * Access methods for automatic running instance variables
  */
-/*public*/ void setIndex(int i) {
+/*public*/ void AllocatedSection::setIndex(int i) {
     mIndex = i;
 }
 
-/*public*/ int getIndex() {
+/*public*/ int AllocatedSection::getIndex() {
     return mIndex;
 }
 
-/*public*/ void setExitSignalListener(java.beans.PropertyChangeListener xSigListener) {
+/*public*/ void AllocatedSection::setExitSignalListener(PropertyChangeListener* xSigListener) {
     mExitSignalListener = xSigListener;
 }
 
-/*public*/ java.beans.PropertyChangeListener getExitSignalListener() {
+/*public*/ PropertyChangeListener* AllocatedSection::getExitSignalListener() {
     return mExitSignalListener;
 }
 
 /**
  * Methods
  */
- /*protected*/ void setStoppingSensors() {
-    if (mSection.getState() == jmri.Section.FORWARD) {
-        mForwardStoppingSensor = mSection.getForwardStoppingSensor();
-        mReverseStoppingSensor = mSection.getReverseStoppingSensor();
+ /*protected*/ void AllocatedSection::setStoppingSensors() {
+    if (mSection->getState() == Section::FORWARD) {
+        mForwardStoppingSensor = mSection->getForwardStoppingSensor();
+        mReverseStoppingSensor = mSection->getReverseStoppingSensor();
     } else {
-        mForwardStoppingSensor = mSection.getReverseStoppingSensor();
-        mReverseStoppingSensor = mSection.getForwardStoppingSensor();
+        mForwardStoppingSensor = mSection->getReverseStoppingSensor();
+        mReverseStoppingSensor = mSection->getForwardStoppingSensor();
     }
 }
-#endif
+
  /*protected*/ TransitSection* AllocatedSection::getTransitSection() {
     return (mActiveTrain->getTransit()->getTransitSectionFromSectionAndSeq(mSection, mSequence));
 }

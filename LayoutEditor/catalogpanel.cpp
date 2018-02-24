@@ -26,6 +26,10 @@
 #include <QGridLayout>
 #include <QTableWidget>
 #include <QHeaderView>
+#include "catalogtreeleaf.h"
+#include "jtree.h"
+#include "namedicon.h"
+#include "joptionpane.h"
 
 //CatalogPanel::CatalogPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -58,17 +62,17 @@
  */
 // /*public*/ class CatalogPanel extends QWidget* implements MouseListener {
 
-    /*public*/ /*static*/ /*final*/ double CatalogPanel::ICON_SCALE = 0.15;
-    /*public*/ /*static*/ /*final*/ int CatalogPanel::ICON_WIDTH = 100;
-    /*public*/ /*static*/ /*final*/ int CatalogPanel::ICON_HEIGHT = 100;
+/*public*/ /*static*/ /*final*/ double CatalogPanel::ICON_SCALE = 0.15;
+/*public*/ /*static*/ /*final*/ int CatalogPanel::ICON_WIDTH = 100;
+/*public*/ /*static*/ /*final*/ int CatalogPanel::ICON_HEIGHT = 100;
 /*static*/ QColor    CatalogPanel::_grayColor =  QColor(235,235,235);
     //static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.catalog->CatalogBundle");
 
 /*public*/ CatalogPanel::CatalogPanel(QWidget *parent) : QWidget(parent)
 {
  common();
- //_model =new DefaultTreeModel(new CatalogTreeNode("mainRoot"));
- _model = new CatalogTreeModel();
+ _model =new DefaultTreeModel(new CatalogTreeNode("mainRoot"));
+ //_model = new CatalogTreeModel();
 }
 
 /*public*/ CatalogPanel::CatalogPanel(QString label1, QString label2, QWidget *parent) : QWidget(parent)
@@ -77,27 +81,10 @@
  common();
  QVBoxLayout* thisLayout;
  setLayout(thisLayout = new QVBoxLayout(this/*, BoxLayout.Y_AXIS*/));
-// this->setContentsMargins(0,0,0,0);
-// l->setContentsMargins(0,0,0,0);
-// l->setMargin(0);
- // QWidget* p = new QWidget();
- // QVBoxLayout* pl;
- // p->setLayout(pl = new QVBoxLayout(p/*, BoxLayout.Y_AXIS*/));
- // pl->setMargin(1);
- // p->setContentsMargins(0,0,0,0);
- // pl->setContentsMargins(0,0,0,0);
  QVBoxLayout* pLayout = new QVBoxLayout;
-// QWidget* p1 = new QWidget();
-// QHBoxLayout* p1Layout;
-// p1->setLayout(p1Layout = new /*BorderLayout()*/QHBoxLayout);
-// p1Layout->setMargin(0);
  QHBoxLayout* p1Layout = new QHBoxLayout;
  p1Layout->addWidget(new QLabel(label1),0,Qt::AlignLeft /*BorderLayout::West*/);
  pLayout->addLayout(p1Layout);
-// QWidget* p2 = new QWidget();
-// QHBoxLayout* p2Layout;
-// p2->setLayout(p2Layout = new /*BorderLayout*/QHBoxLayout());
-// p2Layout->setMargin(0);
  QHBoxLayout* p2Layout = new QHBoxLayout;
  p2Layout->addWidget(new QLabel(label2), 0, Qt::AlignLeft/*BorderLayout::West*/);
  pLayout->addLayout(p2Layout);
@@ -136,12 +123,11 @@ void CatalogPanel::common()
 #endif
 /*public*/ void CatalogPanel::init(bool treeDnD)
 {
- //_model =new DefaultTreeModel(new CatalogTreeNode("mainRoot"));
- _model = new CatalogTreeModel(true);
+ _model =new DefaultTreeModel(new CatalogTreeNode("mainRoot"));
 
  if (treeDnD)
  {   // index editor (right pane)
-   _dTree = new QTreeView();
+   _dTree = new JTree(_model); // new DropJTree(_model);
    _noDrag = true;
    _dTree->setDragEnabled(true);
    _dTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -150,20 +136,23 @@ void CatalogPanel::common()
   }
   else
   {    // Catalog (left pane index editor or all icon editors)
-   _dTree = new QTreeView();
+   _dTree = new JTree(_model);
    _noDrag = false;
 //        _dTree->setDragEnabled(true);
-//        _dTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
-//        _dTree->setAcceptDrops(false);
+//   _dTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
+   _dTree->setAcceptDrops(false);
   }
-  _dTree->setModel(_model);
   _dTree->setIndentation(10);
   _dTree->setAnimated(true);
   _dTree->setHeaderHidden(true);
   _dTree->setItemsExpandable(true);
   _dTree->setRootIsDecorated(true);
   _dTree->setSelectionMode(QAbstractItemView::SingleSelection);
-  connect(_dTree, SIGNAL(clicked(QModelIndex)), this, SLOT(on_tree_clicked(QModelIndex)));
+  //connect(_dTree, SIGNAL(clicked(QModelIndex)), this, SLOT(on_tree_clicked(QModelIndex)));
+//  _dTree.addTreeSelectionListener((TreeSelectionEvent e) -> {
+//      updatePanel();
+//  });
+  _dTree->addTreeSelectionListener(new CPLTreeSelectionListener(this));
   _dTree->setMaximumHeight(120);
   QSizePolicy sp = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
   sp.setHorizontalStretch(0);
@@ -193,42 +182,46 @@ void CatalogPanel::common()
     layout()->addWidget(/*_treePane*/_dTree);
     setupPanel();
 }
-#if 1
+CPLTreeSelectionListener::CPLTreeSelectionListener(CatalogPanel *cp) {this->cp = cp;}
+void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
+{
+ cp->updatePanel();
+}
+
 /*public*/ void CatalogPanel::updatePanel()
 {
- if (log->isDebugEnabled()) log->debug(QString("updatePanel: _dTree.isSelectionEmpty()= ")+(_dTree->currentIndex().isValid()?"no":"yes")
-                                          +", _dTree.getSelectionPath() is NULL "+((_dTree->currentIndex(). data().toString()==NULL)?"yes":"no"));
- //if (!_dTree.isSelectionEmpty() && _dTree.getSelectionPath()!=NULL ) {
- if(_dTree->currentIndex().isValid())
+ if (log->isDebugEnabled()) log->debug(QString("updatePanel: _dTree.isSelectionEmpty()= ")+(_dTree->currentIndex().isValid()?"no":"yes") + ", _dTree.getSelectionPath() is NULL " +((_dTree->currentIndex().data().toString()==NULL)?"yes":"no"));
+ if (!_dTree->isSelectionEmpty() && _dTree->getSelectionPath()!=NULL ) {
  {
-//        try {
-  _previewLabel->setText(setIcons());
-//        } catch (OutOfMemoryError oome) {
-//            resetPanel();
-//            if (log->isDebugEnabled()) log->debug("setIcons threw OutOfMemoryError "+oome);
-//        }
+//  try
+//  {
+   _previewLabel->setText(setIcons());
+  }
+//   catch (OutOfMemoryError oome) {
+//       resetPanel();
+//       if (log->isDebugEnabled()) log->debug("setIcons threw OutOfMemoryError "+oome);
+//   }
  }
  else
  {
   _previewLabel->setText(" ");
  }
 }
-#endif
+
 /**
 * Create a new model and add it to the main root
 */
 /*public*/ void CatalogPanel::createNewBranch(QString systemName, QString userName, QString path)
 {
- CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
- CatalogTree* tree = ((DefaultCatalogTreeManager*)manager)->getBySystemName(systemName);
+ CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
+ CatalogTree* tree = manager->getBySystemName(systemName);
  if (tree == NULL)
  {
-  tree = ((DefaultCatalogTreeManager*)manager)->newCatalogTree(systemName, userName);
-  ((AbstractCatalogTree*)tree)->insertNodes(path);
+  tree = manager->newCatalogTree(systemName, userName);
+  tree->insertNodes(path);
  }
  addTree(tree);
 
-  _model->createNewNode(userName, path);
 }
 
 /**
@@ -236,21 +229,21 @@ void CatalogPanel::common()
 */
 /*public*/ void CatalogPanel::addTree(CatalogTree* tree)
 {
-#if 0
+
  QString name = tree->getSystemName();
  for (int i=0; i<_branchModel->size(); i++)
  {
-  if (name==(_branchModel->at(i)->getSystemName()))
+  if (name == (_branchModel->at(i)->getSystemName()))
   {
    return;
   }
  }
-#endif
-//    addTreeBranch((CatalogTreeNode*)((AbstractCatalogTree*)tree)->getRoot());
+
+  addTreeBranch((CatalogTreeNode*)tree->getRoot());
  _branchModel->append(tree);
-    //_model->reload();
+ _model->reload();
 }
-#if 0
+
 /**
 * Recursively add the branch nodes to display tree
 */
@@ -270,7 +263,7 @@ void CatalogPanel::common()
         addNode(root, n);
     }
 }
-#endif
+
 /**
 * Clones the node and adds to parent.
 */
@@ -357,35 +350,30 @@ void CatalogPanel::common()
 *  Insert a new node into the displayed tree.
 */
 //@SuppressWarnings("unchecked")
-///*public*/ bool CatalogPanel::insertNodeIntoModel(QString name, CatalogTreeNode* parent) {
-//    if (!nameOK(parent, name)) {
-//        return false;
-//    }
-//    int index = 0;
-//    QVectorIterator<CatalogTreeNode*>* e = (QVectorIterator<CatalogTreeNode*>*)parent->children();
-//    while (e->hasNext()) {
-//        CatalogTreeNode* n = e->next();
-//        if (name < (n->toString()) ) {
-//            break;
-//        }
-//        index++;
-//    }
-//    CatalogTreeNode* newChild = new CatalogTreeNode(name);
-//    _model->insertNodeInto(newChild, parent, index);
-//    CatalogTreeNode* cParent = getCorrespondingNode(parent);
-//    CatalogTreeNode* node = new CatalogTreeNode(name);
-//    AbstractCatalogTree* tree = (AbstractCatalogTree*)getCorespondingModel(parent);
-//    tree->insertNodeInto(node, cParent, index);
-
-//    ImageIndexEditor::indexChanged(true);
-//    return true;
-//}
-/*public*/ bool CatalogPanel::insertNodeIntoModel(QString name, CatalogTreeItem *parent)
+/*public*/ bool CatalogPanel::insertNodeIntoModel(QString name, CatalogTreeNode *parent)
 {
- _model->createNewNode(name, parent->path);
+ if (!nameOK(parent, name)) {
+     return false;
+ }
+ int index = 0;
+ QVectorIterator<TreeNode*> e(*parent->children());
+ while (e.hasNext()) {
+     TreeNode* n = e.next();
+     if (name < ((CatalogTreeNode*)n)->toString()) {
+         break;
+     }
+     index++;
+ }
+ CatalogTreeNode* newChild = new CatalogTreeNode(name);
+ _model->insertNodeInto(newChild, parent, index);
+ CatalogTreeNode* cParent = getCorrespondingNode(parent);
+ CatalogTreeNode* node = new CatalogTreeNode(name);
+ AbstractCatalogTree* tree = (AbstractCatalogTree*) getCorespondingModel(parent);
+ tree->insertNodeInto(node, cParent, index);
+ ((ImageIndexEditor*)InstanceManager::getDefault("ImageIndexEditor"))->indexChanged(true);
  return true;
 }
-#if 0
+
 /**
 *  Delete a node from the displayed tree.
 */
@@ -395,28 +383,24 @@ void CatalogPanel::common()
     _model->removeNodeFromParent(node);
     ImageIndexEditor::indexChanged(true);
 }
-#endif
-/*public*/ void CatalogPanel::removeNodeFromModel(CatalogTreeItem* node)
-{
- _model->removeNode(node);
-}
 
-#if 0
+
+#if 1
 /**
 * Make a change to a node in the displayed tree. Either its name
 * or the contents of its leaves (image references)
 */
-/*public*/ boolean nodeChange(CatalogTreeNode node, String name) {
-    CatalogTreeNode cNode = getCorrespondingNode(node);
-    cNode.setLeaves(node.getLeaves());
-    AbstractCatalogTree tree = (AbstractCatalogTree)getCorespondingModel(node);
+/*public*/ bool CatalogPanel::nodeChange(CatalogTreeNode* node, QString name) {
+    CatalogTreeNode* cNode = getCorrespondingNode(node);
+    cNode->setLeaves(node->getLeaves());
+    AbstractCatalogTree* tree = (AbstractCatalogTree*)getCorespondingModel(node);
 
-    cNode.setUserObject(name);
-    node.setUserObject(name);
-    tree.nodeChanged(cNode);
-    _model.nodeChanged(node);
+    cNode->setUserObject(name);
+    node->setUserObject(name);
+    tree->nodeChanged(cNode);
+    _model->nodeChanged(node);
     updatePanel();
-    ImageIndexEditor.indexChanged(true);
+    ImageIndexEditor::indexChanged(true);
     updatePanel();
     return true;
 }
@@ -440,7 +424,7 @@ void CatalogPanel::common()
 /**
 *  Only call when log->isDebugEnabled() is true
 *
-/*public*/ void enumerateTree() {
+/*public*/ void enumerateTree() {T
     CatalogTreeNode root = (CatalogTreeNode)_model.getRoot();
     log->debug("enumerateTree called for root= "+root.toString()+
                   ", has "+root.getChildCount()+" children");
@@ -618,42 +602,23 @@ void CatalogPanel::grayButtonClicked()
 /*protected*/ QString CatalogPanel::setIcons() /*throws OutOfMemoryError*/
 {
  resetPanel();
-#if 0
-    CatalogTreeNode node = getSelectedNode();
-    if (node == NULL) {
-        return NULL;
-    }
-    List<CatalogTreeLeaf> leaves = node.getLeaves();
-    if (leaves == NULL) {
-        return NULL;
-    }
-#endif
- QString path =_dTree->currentIndex().data().toString();
- CatalogTreeItem* item = (CatalogTreeItem*)_dTree->currentIndex().internalPointer();
- QDir dir(item->path);
- QStringList leaves;
- if(!_noDrag)
-  leaves = dir.entryList(_model->getFilter(), QDir::Files);
- else
- {
-  leaves = QStringList();
-  QList<CatalogTreeItem*> items = item->children();
-  foreach (CatalogTreeItem* i, items)
-  {
-   leaves << i->path;
-  }
+ CatalogTreeNode* node = getSelectedNode();
+ if (node == NULL) {
+     return NULL;
+ }
+ QVector<CatalogTreeLeaf*>* leaves = node->getLeaves();
+
+ if (leaves == NULL || leaves->isEmpty()) {
+     return NULL;
  }
  int numCol = 1;
- int maxRowHeight = 0;
- while (numCol*numCol < leaves.size())
- {
-  numCol++;
+ while (numCol * numCol < leaves->size()) {
+     numCol++;
  }
- if (numCol > 1)
- {
-  numCol--;
+ if (numCol > 1) {
+     numCol--;
  }
- int numRow = leaves.size()/numCol;
+ int numRow = leaves->size() / numCol;
  bool newCol = false;
  _noMemory = false;
  // VM launches another thread to run ImageFetcher.
@@ -662,7 +627,7 @@ void CatalogPanel::grayButtonClicked()
  QGridLayout* gridbag = new QGridLayout();
  gridbag->setMargin(0);
  _preview->setLayout(gridbag);
-_preview->setLayout(new QVBoxLayout);
+//_preview->setLayout(new QVBoxLayout);
  GridBagConstraints c;// = GridBagConstraints();
  c.fill = GridBagConstraints::NONE;
  c.anchor = GridBagConstraints::CENTER;
@@ -670,19 +635,14 @@ _preview->setLayout(new QVBoxLayout);
  c.weighty = 1.0;
  c.gridy = 0;
  c.gridx = -1;
- for (int i=0; i<leaves.size(); i++)
+ for (int i=0; i<leaves->size(); i++)
  {
   if (_noMemory)
   {
    continue;
   }
-        //CatalogTreeLeaf leaf = leaves.get(i);
-  QFileInfo info;
-  if(_noDrag)
-   info = QFileInfo(leaves.at(i));
-  else
-   info = QFileInfo(item->path+QDir::separator()+leaves.at(i));
-  NamedIcon* icon = new NamedIcon(info.absoluteFilePath(), info.baseName());
+  CatalogTreeLeaf* leaf = leaves->at(i);
+  NamedIcon* icon = new NamedIcon(leaf->getPath(), leaf->getName());
   double scale = icon->reduceTo(ICON_WIDTH, ICON_HEIGHT, ICON_SCALE);
 //  int w = icon->getIconWidth();
   int h = icon->getIconHeight();
@@ -701,7 +661,7 @@ _preview->setLayout(new QVBoxLayout);
    {
     c.gridx=0;
    }
-   maxRowHeight = 0;
+//   maxRowHeight = 0;
   }
   else if (!newCol)
   { // start new column
@@ -716,7 +676,7 @@ _preview->setLayout(new QVBoxLayout);
    numRow++;
    c.gridx = 0;
    newCol = false;
-   maxRowHeight = 0;
+//   maxRowHeight = 0;
   }
   c.insets = new Insets(5, 5, 0, 0);
 
@@ -741,10 +701,12 @@ _preview->setLayout(new QVBoxLayout);
 //                continue;
 //            }
   }
+  connect(nameLabel, SIGNAL(showPopUp(NamedIcon*)), this, SLOT(showPopUp(NamedIcon*)));
+
 //            image.setOpaque(true);
 //            image.setName(leaf.getName());
 //            image.setBackground(_currentBackground);
-  nameLabel->setText(info.fileName());
+  nameLabel->setText(leaf->getName());
 //  nameLabel->setName(info.fileName());
   nameLabel->setMinimumHeight(h+20);
 //    nameLabel->setBackground(_currentBackground);
@@ -771,9 +733,9 @@ _preview->setLayout(new QVBoxLayout);
   gridbag->addWidget(p, c.gridy, c.gridx, 1,1);
 //  int hRow = gridbag->rowMinimumHeight(c.gridy);
 //  if(h+20 > hRow)
-  maxRowHeight = qMax(maxRowHeight, h);
-  if(h+20 > maxRowHeight)
-   gridbag->setRowMinimumHeight(c.gridy, /*h+20*/h+60 + label->sizeHint().height());
+//  maxRowHeight = qMax(maxRowHeight, h);
+//  if(h+20 > maxRowHeight)
+//   gridbag->setRowMinimumHeight(c.gridy, /*h+20*/h+60 + label->sizeHint().height());
   if (_noMemory)
   {
    continue;
@@ -795,14 +757,14 @@ _preview->setLayout(new QVBoxLayout);
 
     //Thread.setDefaultUncaughtExceptionHandler(new jmri.util.exceptionhandler.UncaughtExceptionHandler());
  packParentFrame(this);
- return tr("Node \"%1\" has %2 image files.").arg(dir.dirName()).arg(leaves.size());
+ return tr("Node \"%1\" has %2 image files.").arg(node->getUserObject().toString()).arg(leaves->size());
 }
 
 /*public*/ /*static*/ CatalogPanel* CatalogPanel::makeDefaultCatalog()
 {
  CatalogPanel* catalog = new CatalogPanel("Catalogues:", "Select a directory to view its images");
  catalog->init(false);
- CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
+ CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  QStringList sysNames = manager->getSystemNameList();
  if (!sysNames .isEmpty())
  {
@@ -811,7 +773,7 @@ _preview->setLayout(new QVBoxLayout);
    QString systemName = sysNames.at(i);
    if (systemName.at(0) == 'I')
    {
-    catalog->addTree( ((DefaultCatalogTreeManager*)manager)->getBySystemName(systemName));
+    catalog->addTree( manager->getBySystemName(systemName));
    }
   }
  }
@@ -931,31 +893,32 @@ _preview->setLayout(new QVBoxLayout);
 
 //    return NULL;
 //}
-/*public*/ CatalogTreeItem* CatalogPanel::getSelectedNode()
+/*public*/ CatalogTreeNode* CatalogPanel::getSelectedNode()
 {
  if(_dTree->currentIndex().isValid())
-  return (CatalogTreeItem*)_dTree->currentIndex().internalPointer();
+  return (CatalogTreeNode*)_dTree->currentIndex().internalPointer();
  return NULL;
 }
 
-#if 0
-void delete(NamedIcon icon) {
-    CatalogTreeNode node = getSelectedNode();
-    node.deleteLeaf(icon.getName(), icon.getURL());
+
+void CatalogPanel::_delete(NamedIcon* icon) {
+    CatalogTreeNode* node = getSelectedNode();
+    node->deleteLeaf(icon->getName(), icon->getURL());
     updatePanel();
 }
 
-void rename(NamedIcon icon) {
-    String name = JOptionPane.showInputDialog(getParentFrame(this),
-                                          tr("newIconName"), icon.getName(),
-                                          JOptionPane.QUESTION_MESSAGE);
+void CatalogPanel::rename(NamedIcon* icon)
+{
+    QString name = JOptionPane::showInputDialog(getParentFrame(this),
+                                          tr("newIconName %1").arg(icon->getName()),
+                                          JOptionPane::QUESTION_MESSAGE);
     if (name != NULL && name.length() > 0) {
-        CatalogTreeNode node = getSelectedNode();
-        CatalogTreeLeaf leaf = node.getLeaf(icon.getName(), icon.getURL());
+        CatalogTreeNode* node = getSelectedNode();
+        CatalogTreeLeaf* leaf = node->getLeaf(icon->getName(), icon->getURL());
         if (leaf != NULL) {
-            leaf.setName(name);
+            leaf->setName(name);
         }
-        getParentFrame(this).invalidate();
+        //getParentFrame(this).invalidate();
         updatePanel();
     }
 }
@@ -965,9 +928,9 @@ void rename(NamedIcon icon) {
 *  Save this code in case there is a need to use an alternative
 *  icon changing method rather than DnD.
 *
-/*public*/ NamedIcon getSelectedIcon() {
+public NamedIcon* CatalogPanel::getSelectedIcon() {
     if (_selectedImage != NULL) {
-        JLabel l = (JLabel)_selectedImage.getComponent(0);
+        QLabel* l = (QLabel*)_selectedImage.getComponent(0);
         // deselect
         //setSelectionBackground(_currentBackground); Save for use as alternative to DnD.
         _selectedImage = NULL;
@@ -976,39 +939,55 @@ void rename(NamedIcon icon) {
     return NULL;
 } */
 
-private void showPopUp(MouseEvent e, NamedIcon icon) {
-    if (log->isDebugEnabled()) log->debug("showPopUp "+icon.toString());
-    JPopupMenu popup = new JPopupMenu();
-    popup.add(new JMenuItem(icon.getName()));
-    popup.add(new JMenuItem(icon.getURL()));
-    popup.add(new javax.swing.JPopupMenu.Separator());
+///*private*/ void CatalogPanel::showPopUp(MouseEvent e, NamedIcon* icon) {
+/*private*/ void CatalogPanel::showPopUp(NamedIcon* icon)
+{
+    if (log->isDebugEnabled()) log->debug("showPopUp "+icon->toString());
+    QMenu* popup = new QMenu();
+    popup->addAction(new QAction(icon->getName(),this));
+    popup->addAction(new QAction(icon->getURL()));
+    popup->addSeparator();
 
-    popup.add(new AbstractAction(tr("RenameIcon")) {
-            NamedIcon icon;
-            /*public*/ void actionPerformed(ActionEvent e) {
-                rename(icon);
-            }
-            AbstractAction init(NamedIcon i) {
-                icon = i;
-                return this;
-            }
-        }.init(icon));
-    popup.add(new javax.swing.JPopupMenu.Separator());
+//    popup.add(new AbstractAction(tr("Rename Icon")) {
+//            NamedIcon icon;
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                rename(icon);
+//            }
+//            AbstractAction init(NamedIcon i) {
+//                icon = i;
+//                return this;
+//            }
+//        }.init(icon));
+    QSignalMapper* mapper1 = new QSignalMapper();
+    QAction* renameAct = new QAction(tr("Rename Icon"),this);
+    mapper1->setMapping(renameAct, icon);
+    connect(renameAct, SIGNAL(triggered()), mapper1, SLOT(map()));
+    connect(mapper1, SIGNAL(mapped(QObject*)), this, SLOT(rename(QObject*)));
+    popup->addSeparator();
+    popup->addAction(renameAct);
 
-    popup.add(new AbstractAction(tr("DeleteIcon")) {
-            NamedIcon icon;
-            /*public*/ void actionPerformed(ActionEvent e) {
-                delete(icon);
-            }
-            AbstractAction init(NamedIcon i) {
-                icon = i;
-                return this;
-            }
-        }.init(icon));
-    popup.show(e.getComponent(), e.getX(), e.getY());
+//    popup.add(new AbstractAction(tr("Delete Icon")) {
+//            NamedIcon icon;
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                delete(icon);
+//            }
+//            AbstractAction init(NamedIcon i) {
+//                icon = i;
+//                return this;
+//            }
+//        }.init(icon));
+    QSignalMapper* mapper2 = new QSignalMapper();
+    QAction* deleteAct = new QAction(tr("Delete Icon"), this);
+    mapper1->setMapping(renameAct, icon);
+    connect(deleteAct, SIGNAL(triggered()), mapper2, SLOT(map()));
+    connect(mapper2, SIGNAL(mapped(QObject*)), this, SLOT(_delete(QObject*)));
+    popup->addAction(deleteAct);
+    //popup.show(e.getComponent(), e.getX(), e.getY());
+    popup->exec(QCursor::pos());
 }
 
 
+#if 0
 /*public*/ void mouseClicked(MouseEvent e) {
 }
 /*public*/ void mouseEntered(MouseEvent e) {
@@ -1087,12 +1066,12 @@ void CatalogPanel::on_tree_clicked(QModelIndex index)
 {
  //QString path = model->filePath(index);
  QString path =index.data().toString();
- CatalogTreeItem* item = (CatalogTreeItem*)index.internalPointer();
+ CatalogTreeNode* item = (CatalogTreeNode*)index.internalPointer();
 
  qDebug() << tr("selected item: row = %1, col = %2, path = %3").arg(index.row()).arg(index.column()).arg(path);
  //if(model->isDir(index))
- emit newDirectorySelected(item->path);
- QFileInfo info(item->path);
+ emit newDirectorySelected(item->toString());
+ //QFileInfo info(item->path);
  updatePanel();
 // if(info.isFile())
 // {

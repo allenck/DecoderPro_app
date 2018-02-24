@@ -35,6 +35,10 @@ namespace Operations
   /*public*/ QString getTypeName();
   /*public*/ QString testDestination(Location* destination, Track* track);
   /*public*/ void dispose();
+  /*public*/ static /*final*/ int NCE_REAR_BLOCK_NUMBER;// = 8;
+  /*public*/ static /*final*/ int B_UNIT_BLOCKING;// = 10; // block B Units after NCE Consists
+  /*public*/ void setBunit(bool bUnit) ;
+  /*public*/ bool isBunit();
 
  signals:
 

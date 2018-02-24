@@ -175,6 +175,29 @@ public:
         static const   int ENTRYEXIT = PANELFILES + 10;
 
         virtual int getXMLOrder() {return 0;}
+        /**
+         * For instances in the code where we are dealing with just a bean and a
+         * message needs to be passed to the user or in a log.
+         *
+         * @return a string of the bean type that the manager handles, eg Turnout,
+         *         Sensor etc
+         */
+        //@CheckReturnValue
+        //@Nonnull
+        /*public*/ virtual QString getBeanTypeHandled() {return "";}
+
+        /**
+         * Enforces, and as a user convenience converts to, the standard form for a
+         * system name for the NamedBeans handled by this manager.
+         *
+         * @param inputName System name to be normalized
+         * @throws NamedBean.BadSystemNameException If the inputName can't be
+         *                                          converted to normalized form
+         * @return A system name in standard normalized form
+         */
+        //@CheckReturnValue
+        /*public*/ //@Nonnull
+        QString virtual normalizeSystemName(/*@Nonnull */QString /*inputName*/) {return "";} //throw NamedBean.BadSystemNameException;
 
 signals:
     

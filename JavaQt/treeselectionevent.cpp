@@ -1,5 +1,6 @@
 #include "treeselectionevent.h"
 #include "treepath.h"
+#include "exceptions.h"
 
  /**
   * An event that characterizes a change in the current
@@ -33,8 +34,8 @@
   * @param source source of event
   * @param paths the paths that have changed in the selection
   */
-/*public*/ TreeSelectionEvent::TreeSelectionEvent(QObject* source, QList<TreePath*>* paths,
-                          QList<bool>* areNew, TreePath* oldLeadSelectionPath,
+/*public*/ TreeSelectionEvent::TreeSelectionEvent(QObject* source, QVector<TreePath*> paths,
+                          QVector<bool> areNew, TreePath* oldLeadSelectionPath,
                           TreePath* newLeadSelectionPath)
 : QObject(source)
 {
@@ -61,10 +62,10 @@
 : QObject(source)
 {
     //super(source);
-    paths = new QList<TreePath*>(); //[1];
-    paths->append(path);
-    areNew = new QList<bool>();
-    areNew->append(isNew);
+    paths = QVector<TreePath*>(); //[1];
+    paths.append(path);
+    areNew = QVector<bool>();
+    areNew.append(isNew);
     this->oldLeadSelectionPath = oldLeadSelectionPath;
     this->newLeadSelectionPath = newLeadSelectionPath;
 }
@@ -73,14 +74,14 @@
   * Returns the paths that have been added or removed from the
   * selection.
   */
-/*public*/ QList<TreePath*>* TreeSelectionEvent::getPaths()
+/*public*/ QVector<TreePath*> TreeSelectionEvent::getPaths()
 {
     int                  numPaths;
-    QList<TreePath*>*          retPaths;
+    QVector<TreePath*>          retPaths;
 
-    numPaths = paths->length();
-    retPaths = new QList<TreePath*>();//TreePath[numPaths];
-    for(int i=0; i < numPaths; i++) retPaths->append(NULL);
+    numPaths = paths.length();
+    retPaths = QVector<TreePath*>();//TreePath[numPaths];
+    for(int i=0; i < numPaths; i++) retPaths.append(NULL);
     //System.arraycopy(paths, 0, retPaths, 0, numPaths);
     return retPaths;
 }
@@ -90,7 +91,7 @@
   */
 /*public*/ TreePath* TreeSelectionEvent::getPath()
 {
-    return paths->at(0);
+    return paths.at(0);
 }
 
 /**
@@ -104,7 +105,7 @@
  *         {@code false} otherwise
  */
 /*public*/ bool TreeSelectionEvent::isAddedPath() {
-    return areNew->at(0);
+    return areNew.at(0);
 }
 
 /**
@@ -124,10 +125,10 @@
  * @see #getPaths
  */
 /*public*/ bool TreeSelectionEvent::isAddedPath(TreePath* path) {
-    for(int counter = paths->length() - 1; counter >= 0; counter--)
-        if(paths->at(counter) == (path))
-            return areNew->at(counter);
-    //throw new IllegalArgumentException("path is not a path identified by the TreeSelectionEvent");
+    for(int counter = paths.length() - 1; counter >= 0; counter--)
+        if(paths.at(counter) == (path))
+            return areNew.at(counter);
+    throw new IllegalArgumentException("path is not a path identified by the TreeSelectionEvent");
 }
 
 /**
@@ -146,12 +147,12 @@
  * @since 1.3
  */
 /*public*/ bool TreeSelectionEvent::isAddedPath(int index) {
-    if (paths == NULL || index < 0 || index >= paths->length())
+    if (paths.isEmpty() || index < 0 || index >= paths.length())
     {
         //throw new IllegalArgumentException("index is beyond range of added paths identified by TreeSelectionEvent");
      Q_ASSERT(false);
     }
-    return areNew->at(index);
+    return areNew.at(index);
 }
 
 /**

@@ -97,6 +97,8 @@ public:
     */
     /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
     const QIcon getColourIcon(QColor color);
+    /*public*/ void setHasBackground(bool set);
+    /*public*/ bool hasBackground();
 
 
 signals:
@@ -128,6 +130,7 @@ private:
  QVector<QMenu*>* editAdditionalMenu;// = new QVector<QMenu*>(0);
  QVector<QMenu*>* viewAdditionalMenu;// = new QVector<QMenu*>(0);
  int saveType;
+ /*private*/ bool _hasBackground;      // Should background be painted or clear
 
  Logger* log;
 private slots:

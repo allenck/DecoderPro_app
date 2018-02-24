@@ -66,7 +66,7 @@ public:
     /*public*/ DefaultMutableTreeNode* getNextLeaf();
     /*public*/ DefaultMutableTreeNode* getPreviousLeaf();
     /*public*/ int getLeafCount();
-    /*public*/ QString toString();
+    /*public*/ virtual QString toString();
     /*public*/ QObject* clone();
     /**
      * An enumeration that is always empty. This is used when an enumeration
@@ -84,7 +84,7 @@ private:
 
 protected:
     /** this node's parent, or null if this node has no parent */
-    /*protected*/ MutableTreeNode*   parent;
+    /*protected*/ MutableTreeNode*   _parent;
 
     /** array of children, may be null if this node has no children */
     /*protected*/ QVector<TreeNode*>* _children;

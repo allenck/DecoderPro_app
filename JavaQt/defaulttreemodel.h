@@ -2,6 +2,8 @@
 #define DEFAULTTREEMODEL_H
 #include "treemodel.h"
 #include "javaqt_global.h"
+#include "eventlistenerlist.h"
+#include "treemodelevent.h"
 
 class TreeNode;
 //class EventListenerList;
@@ -34,9 +36,9 @@ public:
     /*public*/ void nodesChanged(TreeNode* node, QList<int>* childIndices) ;
     /*public*/ void nodeStructureChanged(TreeNode* node);
     /*public*/ QList<TreeNode*>* getPathToRoot(TreeNode* aNode);
-//    /*public*/ void addTreeModelListener(TreeModelListener* l);
-//    /*public*/ void removeTreeModelListener(TreeModelListener* l);
-//    /*public*/ QList<TreeModelListener*> getTreeModelListeners();
+    /*public*/ void addTreeModelListener(TreeModelListener* l);
+    /*public*/ void removeTreeModelListener(TreeModelListener* l);
+    /*public*/ QList<TreeModelListener*> getTreeModelListeners();
      void setState(int /*s*/){}
      int getState(){return 0;}
 
@@ -48,7 +50,7 @@ public:
      Qt::ItemFlags flags(const QModelIndex &index) const;
      QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 signals:
-    void treeStructureChanged(QObject* source, TreePath* path);
+    void treeStructureChanged(TreeModelEvent*);
     void treeNodesChanged(QObject* source, QList<QObject*>* path,
                           QList<int>* childIndices,
                           QList<QObject*>* children);
@@ -70,7 +72,7 @@ protected:
     /** Root of the tree. */
     /*protected*/ TreeNode* root;
     /** Listeners. */
-//    /*protected*/ EventListenerList* listenerList = new EventListenerList();
+    /*protected*/ EventListenerList* listenerList;// = new EventListenerList();
     /**
       * Determines how the <code>isLeaf</code> method figures
       * out if a node is a leaf node. If true, a node is a leaf

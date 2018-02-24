@@ -10,7 +10,8 @@ CatalogTree::CatalogTree(QObject *parent) :
 //    NOFILTER = 'N';    // letter for unfiltered
 //    FILESYS  = 'F';    // typeLetter for tree based on file system
 //    XML      = 'X';    // typeLetter for index tree stored in XML file
- bean = new AbstractNamedBean(parent);
+ //bean = new AbstractNamedBean(parent);
+ bean = NULL;
 }
 /**
  * Represents a CatalogTree, a tree displaying a taxonomy - e.g. a file system directory,
@@ -71,7 +72,11 @@ void CatalogTree::addPropertyChangeListener(PropertyChangeListener* l)
  bean->addPropertyChangeListener(l);
 }
 
-/*public*/ QString CatalogTree::getSystemName() const  {bean->getSystemName();}
+/*public*/ QString CatalogTree::getSystemName() const
+{
+ //return bean->getSystemName();
+ return systemName;
+}
 /*public*/ QString CatalogTree::getUserName() {return bean->getUserName();}
 /*public*/ void CatalogTree::setUserName(QString s) { bean->setUserName(s);}
 

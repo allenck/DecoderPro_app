@@ -22,6 +22,7 @@
 #include "entryexitpairs.h"
 #include "warrant.h"
 #include "oblock.h"
+#include "loggerfactory.h"
 
 ConditionalVariable::ConditionalVariable(QObject *parent) :
     QObject(parent)
@@ -64,7 +65,6 @@ ConditionalVariable::ConditionalVariable(QObject *parent) :
 //    }
 void ConditionalVariable::common()
 {
-  log = new Logger("ConditionalVariable");
  _not = false;
  // Not a variable attribute, but retained as an artifact of previous releases.  This will be used
  // as the default operator immediately to the left of this variable in the antecedent statement. 
@@ -76,6 +76,9 @@ void ConditionalVariable::common()
  _dataString = "";
  _num1 = 0;
  _num2 = 0;
+ _guiName = "";       // Contains the user name of the referenced conditional
+ setObjectName("ConditionalVariable");
+
  _namedBean = NULL;
  nbhm = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
 //private NamedBeanHandle<Sensor> _namedSensorBean = NULL;
@@ -139,7 +142,7 @@ void ConditionalVariable::common()
   }
   case Conditional::ITEM_TYPE_SIGNALHEAD:
   {
-        SignalHead* s = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(_name);
+        SignalHead* s = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(_name);
         if (s == NULL) {
             log->error("invalid signalhead name= \""+_name+"\" in state variable");
             return;
@@ -149,7 +152,7 @@ void ConditionalVariable::common()
   }
   case Conditional::ITEM_TYPE_SIGNALMAST:
   {
-   SignalMast* sm = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(_name);
+   SignalMast* sm = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_name);
    if (sm == NULL) {
        log->error("invalid signalmast name= \""+_name+"\" in state variable");
        return;
@@ -169,7 +172,7 @@ void ConditionalVariable::common()
   }
   case Conditional::ITEM_TYPE_CONDITIONAL:
   {
-   Conditional* c = ((ConditionalManager*)InstanceManager::conditionalManagerInstance())->getConditional(_name);
+   Conditional* c = ((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->getConditional(_name);
    if(c == NULL){
        log->error("invalid conditiona; name= \""+_name+"\" in state variable");
        return;
@@ -276,13 +279,13 @@ void ConditionalVariable::common()
      bean = (NamedBean*)((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(_name);
      break;
  case Conditional::ITEM_TYPE_SIGNALMAST:
-     bean = (NamedBean*)((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(_name);
+     bean = (NamedBean*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_name);
      break;
  case Conditional::ITEM_TYPE_SIGNALHEAD:
-     bean = (NamedBean*)((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(_name);
+     bean = (NamedBean*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(_name);
      break;
  case Conditional::ITEM_TYPE_CONDITIONAL:
-  bean = (NamedBean*)((ConditionalManager*)InstanceManager::conditionalManagerInstance())->getConditional(_name);
+  bean = (NamedBean*)((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->getConditional(_name);
   break;
  case Conditional::ITEM_TYPE_WARRANT:
   bean = (NamedBean*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getWarrant(_name);
@@ -344,7 +347,22 @@ void ConditionalVariable::common()
 /*public*/ void ConditionalVariable::setNum2(int num) {
     _num2 = num;
 }
+/**
+ * @since 4.7.4
+ * @return the GUI name for the referenced conditional.
+ */
+/*public*/ QString ConditionalVariable::getGuiName() {
+    return _guiName;
+}
 
+/**
+ * Set the GUI name for the conditional state variable.
+ * @since 4.7.4
+ * @param guiName The referenced Conditional user name.
+ */
+/*public*/ void ConditionalVariable::setGuiName(QString guiName) {
+    _guiName = guiName;
+}
 /**
 * If change of state of this object causes a change of state of the Conditional,
 * should any actions be executed.
@@ -567,9 +585,9 @@ void ConditionalVariable::common()
     }
         case Conditional::ITEM_TYPE_CONDITIONAL:
     {
-            Conditional* c = InstanceManager::conditionalManagerInstance()->getBySystemName(getName());
+            Conditional* c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getBySystemName(getName());
             if (c ==NULL) {
-                c = InstanceManager::conditionalManagerInstance()->getByUserName(getName());
+                c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getByUserName(getName());
                 if (c == NULL) {
                     log->error("invalid conditional name= \""+getName()+"\" in state variable");
                     return (false);
@@ -782,7 +800,91 @@ bool ConditionalVariable::compare(QString value1, QString value2, bool caseInsen
     }
     return "";
 }
-
+/**
+ * Get state name from Variable Test Type
+ *
+ * @param t the state
+ * @return the localized description
+ */
+/*public*/ /*static*/ QString ConditionalVariable::describeState(int t) {
+    switch (t) {
+        case Conditional::TYPE_NONE:
+            return ""; // NOI18N
+        case Conditional::TYPE_SENSOR_ACTIVE:
+            return tr("Active"); // NOI18N
+        case Conditional::TYPE_SENSOR_INACTIVE:
+            return tr("Inactive"); // NOI18N
+        case Conditional::TYPE_TURNOUT_THROWN:
+            return tr("Thrown"); // NOI18N
+        case Conditional::TYPE_TURNOUT_CLOSED:
+            return tr("Closed"); // NOI18N
+        case Conditional::TYPE_CONDITIONAL_TRUE:
+            return tr("True"); // NOI18N
+        case Conditional::TYPE_CONDITIONAL_FALSE:
+            return tr("False"); // NOI18N
+        case Conditional::TYPE_LIGHT_ON:
+            return tr("LightOn"); // NOI18N
+        case Conditional::TYPE_LIGHT_OFF:
+            return tr("LightOff"); // NOI18N
+        case Conditional::TYPE_MEMORY_EQUALS:
+            return tr("StateMemoryEquals"); // NOI18N
+        case Conditional::TYPE_MEMORY_COMPARE:
+            return tr("StateMemoryCompare"); // NOI18N
+        case Conditional::TYPE_FAST_CLOCK_RANGE:
+            return ""; // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_RED:
+            return tr("Red"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_YELLOW:
+            return tr("Yellow"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_GREEN:
+            return tr("Green"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_DARK:
+            return tr("Dark"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_FLASHRED:
+            return tr("Flashing Red"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_FLASHYELLOW:
+            return tr("Flashing Yellow"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_FLASHGREEN:
+            return tr("Flashing Green"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_HELD:
+            return tr("Held"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_LUNAR:
+            return tr("Lunar"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_FLASHLUNAR:
+            return tr("Flashing Lunar"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_LIT:
+            return tr("TypeSignalHeadLit"); // NOI18N
+        case Conditional::TYPE_MEMORY_EQUALS_INSENSITIVE:
+            return tr("StateMemoryEqualsInsensitive"); // NOI18N
+        case Conditional::TYPE_MEMORY_COMPARE_INSENSITIVE:
+            return tr("StateMemoryCompareInsensitive"); // NOI18N
+        case Conditional::TYPE_ROUTE_FREE:
+            return tr("StateRouteFree"); // NOI18N
+        case Conditional::TYPE_ROUTE_OCCUPIED:
+            return tr("stateRouteOccupied"); // NOI18N
+        case Conditional::TYPE_ROUTE_ALLOCATED:
+            return tr("StateRouteReserved"); // NOI18N
+        case Conditional::TYPE_ROUTE_SET:
+            return tr("StateRouteIsSet"); // NOI18N
+        case Conditional::TYPE_TRAIN_RUNNING:
+            return tr("StateTrainRunning"); // NOI18N
+        case Conditional::TYPE_SIGNAL_MAST_ASPECT_EQUALS:
+            return tr("TypeSignalMastAspectEquals"); // NOI18N
+        case Conditional::TYPE_SIGNAL_HEAD_APPEARANCE_EQUALS:
+            return tr("TypeSignalHeadAspectEquals"); // NOI18N
+        case Conditional::TYPE_SIGNAL_MAST_LIT:
+            return tr("StateSignalMastLit"); // NOI18N
+        case Conditional::TYPE_SIGNAL_MAST_HELD:
+            return tr("StateSignalMastHeld"); // NOI18N
+        case Conditional::TYPE_ENTRYEXIT_ACTIVE:
+            return tr("SensorStateActive"); // NOI18N
+        case Conditional::TYPE_ENTRYEXIT_INACTIVE:
+            return tr("SensorStateInactive"); // NOI18N
+        default:
+            log->warn(tr("Unhandled condition type: %1").arg(t)); // NOI18N
+            return "<none>";
+    }
+}
 /**
  * get state name from Variable Test Type
  */
@@ -1073,3 +1175,4 @@ bool ConditionalVariable::compare(QString value1, QString value2, bool caseInsen
     }
     return objectName();
 }
+/*private*/ /*final*/ /*static*/ Logger* ConditionalVariable::log = LoggerFactory::getLogger("ConditionalVariable");

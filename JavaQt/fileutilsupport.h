@@ -4,6 +4,7 @@
 #include "bean.h"
 #include "exceptions.h"
 #include <QDir>
+#include "fileutil.h"
 
 class Logger;
 class File;
@@ -45,6 +46,17 @@ public:
  /*public*/ bool _delete(File* path);
  /*public*/ void copy(File* source, File* dest) throw (IOException);
  /*public*/ void appendTextToFile(File* file, QString text) throw (IOException);
+ /*public*/ QTextStream* findInputStream(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations);
+ /*public*/ QTextStream* findInputStream(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
+ /*public*/ QString findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
+ /*public*/ QString urlToURI(/*@Nonnull*/ QUrl url);
+ /*public*/ QUrl findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ QStringList searchPaths);
+ /*public*/ QString findURI(/*@Nonnull*/ QString path);
+ /*public*/ QString findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ QStringList searchPaths);
+ /*public*/ QString findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations);
+ /*public*/ QString findExternalFilename(/*@Nonnull*/ QString path);
+ /*public*/ QUrl findURL(/*@Nonnull*/ QString path, FileUtil::Location locations);
+ /*public*/ QUrl findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
 
 private:
  /*private*/ static /*final*/ QString homePath;// = System.getProperty("user.home") + File.separator; // NOI18N

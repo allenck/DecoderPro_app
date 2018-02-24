@@ -3,9 +3,10 @@
 
 #include <QWidget>
 #include <QLabel>
-#include <QTreeView>
+#include "jtree.h"
 #include "logger.h"
 
+class NamedIcon;
 class JFrame;
 class CatalogTreeItem;
 class CatalogTreeModel;
@@ -27,18 +28,17 @@ public:
     /*public*/ void createNewBranch(QString systemName, QString userName, QString path);
     /*public*/ void addTree(CatalogTree* tree);
     /*public*/ void init(bool treeDnD);
-//    /*public*/ CatalogTreeNode* getSelectedNode();
-    /*public*/ CatalogTreeItem* getSelectedNode();
-//    /*public*/ bool insertNodeIntoModel(QString name, CatalogTreeNode* parent);
-    /*public*/ bool insertNodeIntoModel(QString name, CatalogTreeItem* parent);
-//    /*public*/ void removeNodeFromModel(CatalogTreeNode* node);
-    /*public*/ void removeNodeFromModel(CatalogTreeItem* node);
+    /*public*/ CatalogTreeNode* getSelectedNode();
+    /*public*/ bool insertNodeIntoModel(QString name, CatalogTreeNode* parent);
+    /*public*/ void removeNodeFromModel(CatalogTreeNode* node);
     /*public*/ static CatalogPanel* makeDefaultCatalog();
     /*public*/ static void packParentFrame(QWidget* comp);
     /*public*/ static JFrame* getParentFrame(QWidget* comp);
     /*public*/ static QString printDbl(double z, int decimalPlaces);
     /*public*/ void setBackground(QWidget* container);
     /*public*/ void updatePanel();
+    /*public*/ bool nodeChange(CatalogTreeNode* node, QString name);
+    /*public*/ NamedIcon* getSelectedIcon();
 
 signals:
     void newDirectorySelected(QString);
@@ -58,13 +58,11 @@ private:
     bool         _noDrag;
 
     //QScrollArea*             _treePane;
-    QTreeView*                   _dTree;
-    //DefaultTreeModel*        _model;
-    CatalogTreeModel* _model;
+    JTree*                   _dTree;
+    DefaultTreeModel*        _model;
     QList<CatalogTree*>* _branchModel;// = new QList <CatalogTree>();
     /*private*/ void setupPanel();
     void common();
-//    /*private*/ void addTreeBranch(CatalogTreeNode* node);
     /*private*/ bool nameOK(CatalogTreeNode* node, QString name);
     /*private*/ CatalogTreeNode* match(CatalogTreeNode* cRoot, QVector<TreeNode*>* nodes, int idx);
     /*private*/ void addNode(CatalogTreeNode* parent, CatalogTreeNode* n);
@@ -72,11 +70,31 @@ private:
     /*private*/ CatalogTreeNode* getCorrespondingNode(CatalogTreeNode* node);
     Logger* log;
     bool _noMemory; // = false;
+    /*private*/ void addTreeBranch(CatalogTreeNode* node);
+
+private slots:
+    /*private*/ void showPopUp(NamedIcon*);
+    void rename(NamedIcon* obj);
+    void _delete(NamedIcon* obj);
+
+
 protected:
     /*protected*/ QColor _currentBackground;// = _grayColor;
     /*protected*/ QWidget*  _preview;
     /*protected*/ void resetPanel();
     /*protected*/ QString setIcons();
+    friend class CPLTreeSelectionListener;
 };
+class CPLTreeSelectionListener : public TreeSelectionListener
+{
+ Q_OBJECT
+ CatalogPanel* cp;
+public:
 
+ CPLTreeSelectionListener(CatalogPanel* cp);
+public slots:
+ void valueChanged(TreeSelectionEvent* /*e*/);
+public:
+
+};
 #endif // CATALOGPANEL_H

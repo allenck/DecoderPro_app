@@ -768,7 +768,7 @@ void PositionableShape::OnCancel_clicked()
   QRectF bnd = _itemGroup->boundingRect();
   QPointF center = bnd.center();
   _itemGroup->setTransformOriginPoint(center);
-  _itemGroup->setRotation(item->rotation());
+  _itemGroup->setRotation(_shape->item->rotation());
  }
  _itemGroup->setZValue(getDisplayLevel());
  _itemGroup->update();

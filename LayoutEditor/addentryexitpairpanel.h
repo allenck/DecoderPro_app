@@ -87,7 +87,6 @@ private slots:
   void optionSaveButton();
 
 protected:
-  /*protected*/ void configDeleteColumn(JTable* table);
   /*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* sample);
 
 protected slots:
@@ -156,6 +155,7 @@ private:
 
 protected:
     /*protected*/ void deleteEntryExit(int row, int col);
+    /*protected*/ void configDeleteColumn(JTable* table);
 
 private:
 

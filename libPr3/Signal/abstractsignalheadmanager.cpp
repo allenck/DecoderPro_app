@@ -60,6 +60,7 @@ void AbstractSignalHeadManager::Register(NamedBean *s)
  emit newSignalHeadCreated((AbstractSignalHead*)s);
  emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->count())));
 }
+
 QCompleter* AbstractSignalHeadManager::getCompleter(QString text, bool bIncludeUserNames)
 {
  if(text.length()>2)

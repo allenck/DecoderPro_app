@@ -26,6 +26,8 @@
  */
 // /*public*/ class LoadXmlConfigAction extends LoadStoreBaseAction {
 
+/*public*/ QString LoadXmlConfigAction::currentFile = "";
+
 /**
  *
  */
@@ -65,26 +67,29 @@ void LoadXmlConfigAction::common()
  File* file = getFile(fileChooser);
  if (file != NULL)
  {
-//  try {
-  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
-  if (cm == NULL)
+  try
   {
-      log->error("Failed to get default configure manager");
-  }
-  else
-  {
-   results = cm->load(file);
-   if (results)
+   ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   if (cm == NULL)
    {
-    // insure logix etc fire up
-    InstanceManager::logixManagerInstance()->activateAllLogixs();
-    ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
-    (new DefaultCatalogTreeManagerXml())->readCatalogTrees();
+       log->error("Failed to get default configure manager");
    }
+   else
+   {
+    currentFile = file->getPath();
+    results = cm->load(file);
+    if (results)
+    {
+     // insure logix etc fire up
+     ((LogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
+     ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
+     (new DefaultCatalogTreeManagerXml())->readCatalogTrees();
+    }
+    currentFile = "";
+   }
+  } catch (JmriException e) {
+         log->error("Unhandled problem in loadFile: " + e.getMessage());
   }
-//     } catch (JmriException e) {
-//         log.error("Unhandled problem in loadFile: " + e);
-//     }
  }
  else
  {

@@ -14,7 +14,7 @@
 #include "audio.h"
 
 DefaultConditionalAction::DefaultConditionalAction(QObject *parent) :
-    ConditionalAction()
+    ConditionalAction(parent)
 {
     common();
 }
@@ -59,7 +59,7 @@ void DefaultConditionalAction::common()
 //    /*public*/ DefaultConditionalAction() {
 //    }
 
-/*public*/ DefaultConditionalAction::DefaultConditionalAction(int option, int type, QString name, int actionData, QString actionStr ,QObject *parent) : ConditionalAction()
+/*public*/ DefaultConditionalAction::DefaultConditionalAction(int option, int type, QString name, int actionData, QString actionStr ,QObject *parent) : ConditionalAction(parent)
 {
     common();
     _option = option;

@@ -287,7 +287,7 @@
 
 void UsbTreeView::rowsInserted(const QModelIndex &parent, int start, int end)
 {
- if(!isExpanded(parent))
+ if(!QTreeView::isExpanded(parent))
   expand(parent);
  QAbstractItemView::rowsInserted(parent, start, end);
 }

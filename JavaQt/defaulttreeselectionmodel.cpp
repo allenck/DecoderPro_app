@@ -3,6 +3,7 @@
 #include <propertychangesupport.h>
 #include "bitset.h"
 #include <rowmapper.h>
+#include "eventlistenerlist.h"
 
 //DefaultTreeSelectionModel::DefaultTreeSelectionModel()
 //{
@@ -47,11 +48,11 @@
     selectionMode = DISCONTIGUOUS_TREE_SELECTION;
     leadIndex = leadRow = -1;
     uniquePaths = new QHash<TreePath*, bool>();
-    lastPaths = new QHash<TreePath, bool>();
-    tempPaths = new QList<TreePath*>(); //[1];
-    tempPaths->append(NULL);
+    lastPaths = new QHash<TreePath*, bool>();
+    tempPaths = QVector<TreePath*>(); //[1];
+    tempPaths.append(NULL);
     rowMapper = NULL;
-    selection = NULL;
+    selection = QVector<TreePath*>();
 }
 #if 0
 /**
@@ -117,12 +118,12 @@
   */
 /*public*/ void DefaultTreeSelectionModel::setSelectionPath(TreePath* path) {
     if(path == NULL)
-        setSelectionPaths(NULL);
+        setSelectionPaths(QVector<TreePath*>());
     else {
-        QList<TreePath*>*          newPaths = new QList<TreePath*>();
+        QVector<TreePath*>          newPaths = QVector<TreePath*>();
 
-        newPaths->append( path);
-        newPaths->append(NULL);
+        newPaths.append( path);
+        newPaths.append(NULL);
         setSelectionPaths(newPaths);
     }
 }
@@ -150,25 +151,25 @@
  *
  * @param pPaths the new selection
  */
-/*public*/ void DefaultTreeSelectionModel::setSelectionPaths(QList<TreePath*>* pPaths) {
+/*public*/ void DefaultTreeSelectionModel::setSelectionPaths(QVector<TreePath*> pPaths) {
     int            newCount, newCounter, oldCount, oldCounter;
-    QList<TreePath*>*     paths = pPaths;
+    QVector<TreePath*>     paths = pPaths;
 
-    if(paths == NULL)
+    if(paths.isEmpty())
         newCount = 0;
     else
-        newCount = paths->length();
-    if(selection == NULL)
+        newCount = paths.length();
+    if(selection.isEmpty())
         oldCount = 0;
     else
-        oldCount = selection->length();
+        oldCount = selection.length();
     if((newCount + oldCount) != 0) {
         if(selectionMode == TreeSelectionModel::SINGLE_TREE_SELECTION) {
             /* If single selection and more than one path, only allow
                first. */
             if(newCount > 1) {
-                paths = new QList<TreePath*>();
-                paths->append(pPaths->at(0));
+                paths = QVector<TreePath*>();
+                paths.append(pPaths.at(0));
                 newCount = 1;
             }
         }
@@ -177,8 +178,8 @@
             /* If contiguous selection and paths aren't contiguous,
                only select the first path item. */
             if(newCount > 0 && !arePathsContiguous(paths)) {
-                paths = new QList<TreePath*>();
-                paths->append(pPaths->at(0));
+                paths =  QVector<TreePath*>();
+                paths.append(pPaths.at(0));
                 newCount = 1;
             }
         }
@@ -452,8 +453,8 @@
   * if only one item currently selected.
   */
 /*public*/ TreePath* DefaultTreeSelectionModel::getSelectionPath() {
-    if (selection != NULL && selection->length() > 0) {
-        return selection->at(0);
+    if (!selection.isEmpty() && selection.length() > 0) {
+        return selection.at(0);
     }
     return NULL;
 }
@@ -463,26 +464,26 @@
   *
   * @return the selection
   */
-/*public*/ QList<TreePath*>* DefaultTreeSelectionModel::getSelectionPaths() {
-    if(selection != NULL) {
-        int                 pathSize = selection->length();
-        QList<TreePath*>*   result = new QList<TreePath*>();
+/*public*/ QVector<TreePath*> DefaultTreeSelectionModel::getSelectionPaths() {
+    if(!selection.isEmpty()) {
+        int                 pathSize = selection.length();
+        QVector<TreePath*>   result =  QVector<TreePath*>();
 
         //System.arraycopy(selection, 0, result, 0, pathSize);
-        foreach (TreePath* p, *selection)
+        foreach (TreePath* p, selection)
         {
-         result->append(p);
+         result.append(p);
         }
         return result;
     }
-    return new QList<TreePath*>();
+    return QVector<TreePath*>();
 }
 
 /**
  * Returns the number of paths that are selected.
  */
 /*public*/ int DefaultTreeSelectionModel::getSelectionCount() {
-    return (selection == NULL) ? 0 : selection->length();
+    return (selection.isEmpty()) ? 0 : selection.length();
 }
 
 /**
@@ -497,28 +498,28 @@
   * Returns true if the selection is currently empty.
   */
 /*public*/ bool DefaultTreeSelectionModel::isSelectionEmpty() {
-    return (selection == NULL || selection->length() == 0);
+    return (selection.isEmpty() || selection.length() == 0);
 }
-#if 0
+
 /**
   * Empties the current selection.  If this represents a change in the
   * current selection, the selection listeners are notified.
   */
-/*public*/ void clearSelection() {
-    if (selection != NULL && selection.length > 0) {
-        int                    selSize = selection.length;
-        boolean[]              newness = new boolean[selSize];
+/*public*/ void DefaultTreeSelectionModel::clearSelection() {
+    if (!selection.isEmpty() && selection.length() > 0) {
+        int                    selSize = selection.length();
+        QVector<bool>      newness = QVector<bool>(selSize);
 
         for(int counter = 0; counter < selSize; counter++)
-            newness[counter] = false;
+            newness.replace(counter, false);
 
-        TreeSelectionEvent     event = new TreeSelectionEvent
+        TreeSelectionEvent*     event = new TreeSelectionEvent
             (this, selection, newness, leadPath, NULL);
 
         leadPath = NULL;
         leadIndex = leadRow = -1;
-        uniquePaths.clear();
-        selection = NULL;
+        uniquePaths->clear();
+        selection = QVector<TreePath*>();
         resetRowSelection();
         fireValueChanged(event);
     }
@@ -530,8 +531,8 @@
   *
   * @param x the new listener to be added
   */
-/*public*/ void addTreeSelectionListener(TreeSelectionListener x) {
-    listenerList.add(TreeSelectionListener.class, x);
+/*public*/ void DefaultTreeSelectionModel::addTreeSelectionListener(TreeSelectionListener* x) {
+    listenerList->add("TreeSelectionListener", x);
 }
 
 /**
@@ -540,8 +541,8 @@
   *
   * @param x the listener to remove
   */
-/*public*/ void removeTreeSelectionListener(TreeSelectionListener x) {
-    listenerList.remove(TreeSelectionListener.class, x);
+/*public*/ void DefaultTreeSelectionModel::removeTreeSelectionListener(TreeSelectionListener* x) {
+//    listenerList->remove("TreeSelectionListener", x);
 }
 
 /**
@@ -557,8 +558,15 @@
  *
  * @since 1.4
  */
-/*public*/ TreeSelectionListener[] getTreeSelectionListeners() {
-    return listenerList.getListeners(TreeSelectionListener.class);
+/*public*/ QVector<TreeSelectionListener*> DefaultTreeSelectionModel::getTreeSelectionListeners() {
+    //return listenerList->getListeners(QString("TreeSelectionListener"));
+ QVector<TreeSelectionListener*> rslt = QVector<TreeSelectionListener*>();
+ QVector<QObject*> olist = listenerList->getListenerList();
+ foreach (QObject* obj, olist) {
+  if(qobject_cast<TreeSelectionListener*>(obj) != NULL)
+    rslt.append((TreeSelectionListener*)obj);
+ }
+ return rslt;
 }
 
 /**
@@ -567,18 +575,20 @@
  * @see #addTreeSelectionListener
  * @see EventListenerList
  */
-/*protected*/ void fireValueChanged(TreeSelectionEvent e) {
+/*protected*/ void DefaultTreeSelectionModel::fireValueChanged(TreeSelectionEvent* e) {
     // Guaranteed to return a non-NULL array
-    Object[] listeners = listenerList.getListenerList();
+    QVector<QObject*> listeners = listenerList->getListenerList();
     // TreeSelectionEvent e = NULL;
     // Process the listeners last to first, notifying
     // those that are interested in this event
-    for (int i = listeners.length-2; i>=0; i-=2) {
-        if (listeners[i]==TreeSelectionListener.class) {
+    for (int i = listeners.length()-2; i>=0; i-=2) {
+        //if (listeners.at(i)=="TreeSelectionListener")
+     if(qobject_cast<TreeSelectionListener*>(listeners.at(i)) != NULL)
+        {
             // Lazily create the event:
             // if (e == NULL)
             // e = new ListSelectionEvent(this, firstIndex, lastIndex);
-            ((TreeSelectionListener)listeners[i+1]).valueChanged(e);
+            ((TreeSelectionListener*)listeners.at(i+1))->valueChanged(e);
         }
     }
 }
@@ -620,9 +630,10 @@
  *
  * @since 1.3
  */
-/*public*/ <T extends EventListener> T[] getListeners(Class<T> listenerType) {
-    return listenerList.getListeners(listenerType);
-}
+//template<class T>
+///*public*/ /*<T extends EventListener>*/ QVector<T*> DefaultTreeSelectionModel::getListeners(QString listenerType) {
+//    return listenerList->getListeners(listenerType);
+//}
 
 /**
  * Returns the selection in terms of rows. There is not
@@ -638,31 +649,31 @@
  *
  * @return the selection in terms of rows
  */
-/*public*/ int[] getSelectionRows() {
+/*public*/ QVector<int> DefaultTreeSelectionModel::getSelectionRows() {
     // This is currently rather expensive.  Needs
     // to be better support from ListSelectionModel to speed this up.
-    if (rowMapper != NULL && selection != NULL && selection.length > 0) {
-        int[]      rows = rowMapper.getRowsForPaths(selection);
+    if (rowMapper != NULL && !selection.isEmpty() && selection.length() > 0) {
+        QVector<int>      rows = rowMapper->getRowsForPaths(selection);
 
-        if (rows != NULL) {
+        if (!rows.isEmpty()) {
             int       invisCount = 0;
 
-            for (int counter = rows.length - 1; counter >= 0; counter--) {
+            for (int counter = rows.length() - 1; counter >= 0; counter--) {
                 if (rows[counter] == -1) {
                     invisCount++;
                 }
             }
             if (invisCount > 0) {
-                if (invisCount == rows.length) {
-                    rows = NULL;
+                if (invisCount == rows.length()) {
+                    rows = QVector<int>();
                 }
                 else {
-                    int[]    tempRows = new int[rows.length - invisCount];
+                    QVector<int>    tempRows = QVector<int>(rows.length() - invisCount);
 
-                    for (int counter = rows.length - 1, visCounter = 0;
+                    for (int counter = rows.length() - 1, visCounter = 0;
                          counter >= 0; counter--) {
-                        if (rows[counter] != -1) {
-                            tempRows[visCounter++] = rows[counter];
+                        if (rows.at(counter) != -1) {
+                            tempRows.replace(visCounter++, rows.at(counter));
                         }
                     }
                     rows = tempRows;
@@ -671,7 +682,7 @@
         }
         return rows;
     }
-    return new int[0];
+    return QVector<int>();
 }
 
 /**
@@ -679,8 +690,8 @@
  * current set of selected TreePaths. If nothing is selected,
  * or there is no RowMapper, this will return -1.
   */
-/*public*/ int getMinSelectionRow() {
-    return listSelectionModel.getMinSelectionIndex();
+/*public*/ int DefaultTreeSelectionModel::getMinSelectionRow() {
+    return listSelectionModel->getMinSelectionIndex();
 }
 
 /**
@@ -688,15 +699,15 @@
  * current set of selected TreePaths. If nothing is selected,
  * or there is no RowMapper, this will return -1.
   */
-/*public*/ int getMaxSelectionRow() {
-    return listSelectionModel.getMaxSelectionIndex();
+/*public*/ int DefaultTreeSelectionModel::getMaxSelectionRow() {
+    return listSelectionModel->getMaxSelectionIndex();
 }
 
 /**
   * Returns true if the row identified by <code>row</code> is selected.
   */
-/*public*/ boolean isRowSelected(int row) {
-    return listSelectionModel.isSelectedIndex(row);
+/*public*/ bool DefaultTreeSelectionModel::isRowSelected(int row) {
+    return listSelectionModel->isSelectedIndex(row);
 }
 
 /**
@@ -710,28 +721,28 @@
  * the currently selected TreePaths are still valid based on the
  * selection mode.
  */
-/*public*/ void resetRowSelection() {
-    listSelectionModel.clearSelection();
-    if(selection != NULL && rowMapper != NULL) {
+/*public*/ void DefaultTreeSelectionModel::resetRowSelection() {
+    listSelectionModel->clearSelection();
+    if(!selection.isEmpty() && rowMapper != NULL) {
         int               aRow;
         int               validCount = 0;
-        int[]             rows = rowMapper.getRowsForPaths(selection);
+        QVector<int>             rows = rowMapper->getRowsForPaths(selection);
 
-        for(int counter = 0, maxCounter = selection.length;
+        for(int counter = 0, maxCounter = selection.length();
             counter < maxCounter; counter++) {
             aRow = rows[counter];
             if(aRow != -1) {
-                listSelectionModel.addSelectionInterval(aRow, aRow);
+                listSelectionModel->addSelectionInterval(aRow, aRow);
             }
         }
-        if(leadIndex != -1 && rows != NULL) {
+        if(leadIndex != -1 && !rows.isEmpty()) {
             leadRow = rows[leadIndex];
         }
         else if (leadPath != NULL) {
             // Lead selection path doesn't have to be in the selection.
-            tempPaths[0] = leadPath;
-            rows = rowMapper.getRowsForPaths(tempPaths);
-            leadRow = (rows != NULL) ? rows[0] : -1;
+            tempPaths.replace(0, leadPath);
+            rows = rowMapper->getRowsForPaths(tempPaths);
+            leadRow = (!rows .isEmpty()) ? rows.at(0) : -1;
         }
         else {
             leadRow = -1;
@@ -747,7 +758,7 @@
  * Returns the lead selection index. That is the last index that was
  * added.
  */
-/*public*/ int getLeadSelectionRow() {
+/*public*/ int DefaultTreeSelectionModel::getLeadSelectionRow() {
     return leadRow;
 }
 
@@ -755,7 +766,7 @@
  * Returns the last path that was added. This may differ from the
  * leadSelectionPath property maintained by the JTree.
  */
-/*public*/ TreePath getLeadSelectionPath() {
+/*public*/ TreePath* DefaultTreeSelectionModel::getLeadSelectionPath() {
     return leadPath;
 }
 
@@ -768,12 +779,12 @@
  *
  * @param listener  the PropertyChangeListener to be added
  */
-/*public*/ synchronized void addPropertyChangeListener(
-                            PropertyChangeListener listener) {
+/*public*/ /*synchronized*/ void DefaultTreeSelectionModel::addPropertyChangeListener(
+                            PropertyChangeListener* listener) {
     if (changeSupport == NULL) {
-        changeSupport = new SwingPropertyChangeSupport(this);
+        changeSupport = new PropertyChangeSupport(this);
     }
-    changeSupport.addPropertyChangeListener(listener);
+    changeSupport->addPropertyChangeListener(listener);
 }
 
 /**
@@ -784,12 +795,12 @@
  * @param listener  the PropertyChangeListener to be removed
  */
 
-/*public*/ synchronized void removePropertyChangeListener(
-                            PropertyChangeListener listener) {
+/*public*/ /*synchronized*/ void DefaultTreeSelectionModel::removePropertyChangeListener(
+                            PropertyChangeListener* listener) {
     if (changeSupport == NULL) {
         return;
     }
-    changeSupport.removePropertyChangeListener(listener);
+    changeSupport->removePropertyChangeListener(listener);
 }
 
 /**
@@ -805,11 +816,11 @@
  *
  * @since 1.4
  */
-/*public*/ PropertyChangeListener[] getPropertyChangeListeners() {
+/*public*/ QList<PropertyChangeListener*>* DefaultTreeSelectionModel::getPropertyChangeListeners() {
     if (changeSupport == NULL) {
-        return new PropertyChangeListener[0];
+        return new QList<PropertyChangeListener*>();
     }
-    return changeSupport.getPropertyChangeListeners();
+    return changeSupport->getPropertyChangeListeners();
 }
 
 /**
@@ -826,28 +837,28 @@
  * more than one TreePath is selected, the selection is reset to
  * contain the first path currently selected.
  */
-/*protected*/ void insureRowContinuity() {
-    if(selectionMode == TreeSelectionModel.CONTIGUOUS_TREE_SELECTION &&
-       selection != NULL && rowMapper != NULL) {
-        DefaultListSelectionModel lModel = listSelectionModel;
-        int                       min = lModel.getMinSelectionIndex();
+/*protected*/ void DefaultTreeSelectionModel::insureRowContinuity() {
+    if(selectionMode == TreeSelectionModel::CONTIGUOUS_TREE_SELECTION &&
+       !selection.isEmpty() && !rowMapper != NULL) {
+        DefaultListSelectionModel* lModel = listSelectionModel;
+        int                       min = lModel->getMinSelectionIndex();
 
         if(min != -1) {
             for(int counter = min,
-                    maxCounter = lModel.getMaxSelectionIndex();
+                    maxCounter = lModel->getMaxSelectionIndex();
                     counter <= maxCounter; counter++) {
-                if(!lModel.isSelectedIndex(counter)) {
+                if(!lModel->isSelectedIndex(counter)) {
                     if(counter == min) {
                         clearSelection();
                     }
                     else {
-                        TreePath[] newSel = new TreePath[counter - min];
-                        int selectionIndex[] = rowMapper.getRowsForPaths(selection);
+                        QVector<TreePath*> newSel =  QVector<TreePath*>(counter - min);
+                        QVector<int> selectionIndex = rowMapper->getRowsForPaths(selection);
                         // find the actual selection pathes corresponded to the
                         // rows of the new selection
-                        for (int i = 0; i < selectionIndex.length; i++) {
+                        for (int i = 0; i < selectionIndex.length(); i++) {
                             if (selectionIndex[i]<counter) {
-                                newSel[selectionIndex[i]-min] = selection[i];
+                                newSel.replace(selectionIndex[i]-min, selection[i]);
                             }
                         }
                         setSelectionPaths(newSel);
@@ -857,37 +868,37 @@
             }
         }
     }
-    else if(selectionMode == TreeSelectionModel.SINGLE_TREE_SELECTION &&
-            selection != NULL && selection.length > 1) {
-        setSelectionPath(selection[0]);
+    else if(selectionMode == TreeSelectionModel::SINGLE_TREE_SELECTION &&
+            !selection.isEmpty() && selection.length() > 1) {
+        setSelectionPath(selection.at(0));
     }
 }
-#endif
+
 /**
  * Returns true if the paths are contiguous,
  * or this object has no RowMapper.
  */
-/*protected*/ bool DefaultTreeSelectionModel::arePathsContiguous(QList<TreePath*>* paths) {
-    if(rowMapper == NULL || paths->length() < 2)
+/*protected*/ bool DefaultTreeSelectionModel::arePathsContiguous(QVector<TreePath*> paths) {
+    if(rowMapper == NULL || paths.length() < 2)
         return true;
-#if 0
-    else {
-        BitSet*                             bitSet = new BitSet(32);
-        int                                anIndex, counter, min;
-        int                                pathCount = paths->length();
-        int                                validCount = 0;
-        QList<TreePath*>*                  tempPath = new QList<TreePath*>();
 
-        tempPath->append(paths->at(0));
-        min = rowMapper->getRowsForPaths(tempPath->at(0));
+    else {
+        BitSet*                             bitSet =  new BitSet(32);
+        int                                anIndex, counter, min;
+        int                                pathCount = paths.length();
+        int                                validCount = 0;
+        QVector<TreePath*>                  tempPath = QVector<TreePath*>();
+
+        tempPath.append(paths.at(0));
+        min = rowMapper->getRowsForPaths(tempPath).at(0);
         for(counter = 0; counter < pathCount; counter++) {
-            if(paths->at(counter) != NULL) {
-                tempPath[0] = paths[counter];
-                QList<int>* rows = rowMapper->getRowsForPaths(tempPath);
-                if (rows == NULL) {
+            if(!paths.at(counter) != NULL) {
+                tempPath.replace(0, paths[counter]);
+                QVector<int> rows = rowMapper->getRowsForPaths(tempPath);
+                if (rows.isEmpty()) {
                     return false;
                 }
-                anIndex = rows->at(0);
+                anIndex = rows.at(0);
                 if(anIndex == -1 || anIndex < (min - pathCount) ||
                    anIndex > (min + pathCount))
                     return false;
@@ -906,9 +917,8 @@
                 return false;
     }
     return true;
-   #endif
 }
-#if 0
+
 /**
  * Used to test if a particular set of <code>TreePath</code>s can
  * be added. This will return true if <code>paths</code> is NULL (or
@@ -917,47 +927,47 @@
  * adding the paths to the current selection still results in a
  * contiguous set of <code>TreePath</code>s.
  */
-/*protected*/ boolean canPathsBeAdded(TreePath[] paths) {
-    if(paths == NULL || paths.length == 0 || rowMapper == NULL ||
-       selection == NULL || selectionMode ==
-       TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION)
+/*protected*/ bool DefaultTreeSelectionModel::canPathsBeAdded(QVector<TreePath*> paths) {
+    if(paths.isEmpty() || paths.length() == 0 || rowMapper == NULL ||
+       selection == QVector<TreePath*>() || selectionMode ==
+       TreeSelectionModel::DISCONTIGUOUS_TREE_SELECTION)
         return true;
     else {
-        BitSet                       bitSet = new BitSet();
-        DefaultListSelectionModel    lModel = listSelectionModel;
+        BitSet*                       bitSet = new BitSet();
+        DefaultListSelectionModel*    lModel = listSelectionModel;
         int                          anIndex;
         int                          counter;
-        int                          min = lModel.getMinSelectionIndex();
-        int                          max = lModel.getMaxSelectionIndex();
-        TreePath[]                   tempPath = new TreePath[1];
+        int                          min = lModel->getMinSelectionIndex();
+        int                          max = lModel->getMaxSelectionIndex();
+        QVector<TreePath*>                   tempPath = QVector<TreePath*>(1);
 
         if(min != -1) {
             for(counter = min; counter <= max; counter++) {
-                if(lModel.isSelectedIndex(counter))
-                    bitSet.set(counter);
+                if(lModel->isSelectedIndex(counter))
+                    bitSet->set(counter);
             }
         }
         else {
-            tempPath[0] = paths[0];
-            min = max = rowMapper.getRowsForPaths(tempPath)[0];
+            tempPath.replace(0, paths.at(0));
+            min = max = rowMapper->getRowsForPaths(tempPath).at(0);
         }
-        for(counter = paths.length - 1; counter >= 0; counter--) {
+        for(counter = paths.length() - 1; counter >= 0; counter--) {
             if(paths[counter] != NULL) {
-                tempPath[0] = paths[counter];
-                int[]   rows = rowMapper.getRowsForPaths(tempPath);
-                if (rows == NULL) {
+                tempPath.replace(0, paths.at(counter));
+                QVector<int>   rows = rowMapper->getRowsForPaths(tempPath);
+                if (rows.isEmpty()) {
                     return false;
                 }
-                anIndex = rows[0];
-                min = Math.min(anIndex, min);
-                max = Math.max(anIndex, max);
+                anIndex = rows.at(0);
+                min = qMin(anIndex, min);
+                max = qMax(anIndex, max);
                 if(anIndex == -1)
                     return false;
-                bitSet.set(anIndex);
+                bitSet->set(anIndex);
             }
         }
         for(counter = min; counter <= max; counter++)
-            if(!bitSet.get(counter))
+            if(!bitSet->get(counter))
                 return false;
     }
     return true;
@@ -968,60 +978,60 @@
  * continuity of the model.
  * This is rather expensive.
  */
-/*protected*/ boolean canPathsBeRemoved(TreePath[] paths) {
-    if(rowMapper == NULL || selection == NULL ||
-       selectionMode == TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION)
+/*protected*/ bool DefaultTreeSelectionModel::canPathsBeRemoved(QVector<TreePath*> paths) {
+    if(rowMapper == NULL || selection.isEmpty() ||
+       selectionMode == TreeSelectionModel::DISCONTIGUOUS_TREE_SELECTION)
         return true;
     else {
-        BitSet               bitSet = new BitSet();
+        BitSet*               bitSet =  new BitSet();
         int                  counter;
-        int                  pathCount = paths.length;
+        int                  pathCount = paths.length();
         int                  anIndex;
         int                  min = -1;
         int                  validCount = 0;
-        TreePath[]           tempPath = new TreePath[1];
-        int[]                rows;
+        QVector<TreePath*>           tempPath =  QVector<TreePath*>(1);
+        QVector<int>                rows;
 
         /* Determine the rows for the removed entries. */
-        lastPaths.clear();
+        lastPaths->clear();
         for (counter = 0; counter < pathCount; counter++) {
             if (paths[counter] != NULL) {
-                lastPaths.put(paths[counter], Boolean.TRUE);
+                lastPaths->insert(paths[counter], true);
             }
         }
-        for(counter = selection.length - 1; counter >= 0; counter--) {
-            if(lastPaths.get(selection[counter]) == NULL) {
-                tempPath[0] = selection[counter];
-                rows = rowMapper.getRowsForPaths(tempPath);
-                if(rows != NULL && rows[0] != -1 && !bitSet.get(rows[0])) {
+        for(counter = selection.length() - 1; counter >= 0; counter--) {
+            if(lastPaths->value(selection[counter]) == NULL) {
+                tempPath.replace(0, selection.at(counter));
+                rows = rowMapper->getRowsForPaths(tempPath);
+                if(!rows.isEmpty() && rows.at(0) != -1 && !bitSet->get(rows.at(0))) {
                     validCount++;
                     if(min == -1)
-                        min = rows[0];
+                        min = rows.at(0);
                     else
-                        min = Math.min(min, rows[0]);
-                    bitSet.set(rows[0]);
+                        min = qMin(min, rows.at(0));
+                    bitSet->set(rows.at(0));
                 }
             }
         }
-        lastPaths.clear();
+        lastPaths->clear();
         /* Make sure they are contiguous. */
         if(validCount > 1) {
             for(counter = min + validCount - 1; counter >= min;
                 counter--)
-                if(!bitSet.get(counter))
+                if(!bitSet->get(counter))
                     return false;
         }
     }
     return true;
 }
-
+#if 0
 /**
  * Notifies listeners of a change in path. changePaths should contain
  * instances of PathPlaceHolder.
  *
  * @deprecated As of JDK version 1.7
  */
-@Deprecated
+//@Deprecated
 /*protected*/ void notifyPathChange(Vector<?> changedPaths,
                                 TreePath oldLeadSelection) {
     int                    cPathCount = changedPaths.size();
@@ -1040,23 +1050,23 @@
 
     fireValueChanged(event);
 }
-
+#endif
 /**
  * Updates the leadIndex instance variable.
  */
-/*protected*/ void updateLeadIndex() {
+/*protected*/ void DefaultTreeSelectionModel::updateLeadIndex() {
     if(leadPath != NULL) {
-        if(selection == NULL) {
+        if(selection.isEmpty()) {
             leadPath = NULL;
             leadIndex = leadRow = -1;
         }
         else {
             leadRow = leadIndex = -1;
-            for(int counter = selection.length - 1; counter >= 0;
+            for(int counter = selection.length() - 1; counter >= 0;
                 counter--) {
                 // Can use == here since we know leadPath came from
                 // selection
-                if(selection[counter] == leadPath) {
+                if(selection.at(counter) == leadPath) {
                     leadIndex = counter;
                     break;
                 }
@@ -1073,7 +1083,7 @@
  * still called by setSelectionPaths and addSelectionPaths, but only
  * for backwards compatibility.
  */
-/*protected*/ void insureUniqueness() {
+/*protected*/ void DefaultTreeSelectionModel::insureUniqueness() {
 }
 
 
@@ -1083,25 +1093,25 @@
  *
  * @return a String representation of this object
  */
-/*public*/ String toString() {
+/*public*/ QString DefaultTreeSelectionModel::toString() {
     int                selCount = getSelectionCount();
-    StringBuffer       retBuffer = new StringBuffer();
-    int[]              rows;
+    QString       retBuffer;// = new StringBuffer();
+    QVector<int>              rows;
 
     if(rowMapper != NULL)
-        rows = rowMapper.getRowsForPaths(selection);
+        rows = rowMapper->getRowsForPaths(selection);
     else
-        rows = NULL;
-    retBuffer.append(getClass().getName() + " " + hashCode() + " [ ");
+        rows = QVector<int>();
+    retBuffer.append(QString(metaObject()->className()) + " " /*+ hashCode() */+ " [ ");
     for(int counter = 0; counter < selCount; counter++) {
-        if(rows != NULL)
-            retBuffer.append(selection[counter].toString() + "@" +
-                             Integer.toString(rows[counter])+ " ");
+        if(!rows.isEmpty())
+            retBuffer.append(selection.at(counter)->toString() + "@" +
+                             QString::number(rows.at(counter))+ " ");
         else
-            retBuffer.append(selection[counter].toString() + " ");
+            retBuffer.append(selection[counter]->toString() + " ");
     }
     retBuffer.append("]");
-    return retBuffer.toString();
+    return retBuffer/*.toString()*/;
 }
 
 /**
@@ -1112,13 +1122,14 @@
  * @exception CloneNotSupportedException never thrown by instances of
  *                                       this class
  */
-/*public*/ Object clone() throws CloneNotSupportedException {
+/*public*/ QObject* DefaultTreeSelectionModel::clone() throw (CloneNotSupportedException) {
+#if 0
     DefaultTreeSelectionModel        clone = (DefaultTreeSelectionModel)
-                        super.clone();
+                        TreeSelectionModel::clone();
 
     clone.changeSupport = NULL;
     if(selection != NULL) {
-        int              selLength = selection.length;
+        int              selLength = selection.length();
 
         clone.selection = new TreePath[selLength];
         System.arraycopy(selection, 0, clone.selection, 0, selLength);
@@ -1130,8 +1141,11 @@
     clone.lastPaths = new Hashtable<TreePath, Boolean>();
     clone.tempPaths = new TreePath[1];
     return clone;
+#else
+ return NULL;
+#endif
 }
-
+#if 0
 // Serialization support.
 /*private*/ void writeObject(ObjectOutputStream s) throws IOException {
     Object[]             tValues;
@@ -1161,7 +1175,8 @@
         rowMapper = (RowMapper)tValues[1];
 }
 }
-
+#endif
+#if 0
 /**
 * Holds a path and whether or not it is new.
 */

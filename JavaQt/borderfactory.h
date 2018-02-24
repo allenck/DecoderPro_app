@@ -7,6 +7,7 @@
 #include <QIcon>
 #include <QColor>
 #include "lineborder.h"
+#include "titledborder.h"
 
 class BorderFactory : QObject
 {
@@ -19,6 +20,24 @@ public:
                                              QColor color);
  /*public*/ static MatteBorder* createMatteBorder(int top, int left, int bottom, int right,
                                              QIcon tileIcon);
+ /*public*/ static TitledBorder* createTitledBorder(QString title);
+ /*public*/ static TitledBorder* createTitledBorder(Border* border);
+ /*public*/ static TitledBorder* createTitledBorder(Border* border,  QString title);
+ /*public*/ /*static*/ TitledBorder* createTitledBorder(Border* border,
+                     QString title,
+                     int titleJustification,
+                     int titlePosition);
+ /*public*/ /*static*/ TitledBorder* createTitledBorder(Border* border,
+                     QString title,
+                     int titleJustification,
+                     int titlePosition,
+                     QFont titleFont);
+ /*public*/ /*static*/ TitledBorder* createTitledBorder(Border* border,
+                     QString title,
+                     int titleJustification,
+                     int titlePosition,
+                     QFont titleFont,
+                     QColor titleColor);
 
 private:
  BorderFactory(QObject* parent = 0);

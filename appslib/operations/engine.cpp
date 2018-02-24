@@ -27,6 +27,9 @@ namespace Operations
  */
 ///*public*/ class Engine extends RollingStock {
 
+ /*public*/ /*static*/ /*final*/ int Engine::NCE_REAR_BLOCK_NUMBER = 8;
+ /*public*/ /*static*/ /*final*/ int Engine::B_UNIT_BLOCKING = 10; // block B Units after NCE Consists
+
  /*public*/ Engine::Engine(QString road, QString number, QObject *parent) :
    RollingStock(road, number, parent)
  {
@@ -203,6 +206,26 @@ namespace Operations
     return weight;
  }
 
+/*public*/ void Engine::setBunit(bool bUnit) {
+    if (getModel() == (NONE)) {
+        return;
+    }
+    bool old = isBunit();
+    engineModels->setModelBunit(getModel(), bUnit);
+    if (old != bUnit) {
+        setDirtyAndFirePropertyChange(TYPE_CHANGED_PROPERTY, old, bUnit);
+    }
+}
+
+/*public*/ bool Engine::isBunit() {
+    try {
+        return engineModels->isModelBunit(getModel());
+    } catch (NullPointerException npe) {
+        log->debug(tr("NPE getting is B unit for Engine (%1)").arg(toString()));
+    }
+    return false;
+}
+
  /**
   * Place locomotive in a consist
   *
@@ -304,6 +327,9 @@ namespace Operations
      if ((a = e.attribute (Xml::WEIGHT_TONS)) != NULL) {
          setWeightTons(a);
      }
+     if ((a = e.attribute(Xml::B_UNIT)) != NULL) {
+         setBunit(a == (Xml::_TRUE));
+     }
      if ((a = e.attribute (Xml::CONSIST)) != NULL) {
          Consist* c = EngineManager::instance()->getConsistByName(a);
          if (c != NULL) {
@@ -336,6 +362,7 @@ namespace Operations
   RollingStock::store(e);
   e.setAttribute(Xml::MODEL, getModel());
   e.setAttribute(Xml::HP, getHp());
+  e.setAttribute(Xml::B_UNIT, (isBunit() ? Xml::_TRUE : Xml::_FALSE));
   if (getConsist() != NULL)
   {
    e.setAttribute(Xml::CONSIST, getConsistName());

@@ -122,7 +122,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  }
 
  /*public EcosLocoAddress getByDccAddress(int address) {return getManager().getByDccAddress(address);}*/
- /*public*/ QString SmlBeanTableDataModel::getValue(QString s) {
+ /*public*/ QString SmlBeanTableDataModel::getValue(QString /*s*/) {
      return "Set";
  }
 
@@ -130,7 +130,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      return act->getClassName();
  }
 
- /*public*/ void SmlBeanTableDataModel::clickOn(NamedBean* t) {
+ /*public*/ void SmlBeanTableDataModel::clickOn(NamedBean* /*t*/) {
  }
 
  //@Override
@@ -232,7 +232,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  }
 
  //@Override
- /*public*/ int SmlBeanTableDataModel::columnCount(const QModelIndex &parent) const
+ /*public*/ int SmlBeanTableDataModel::columnCount(const QModelIndex &/*parent*/) const
 {
      return EDITLOGICCOL + 1;
  }
@@ -352,12 +352,12 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  }
 }
 
- void SmlBeanTableDataModel::editLogic(int row, int col) {
+ void SmlBeanTableDataModel::editLogic(int row, int /*col*/) {
      act->sigLog->setMast(getLogicFromRow(row)->getSourceMast(), getDestMastFromRow(row));
      act->sigLog->actionPerformed(NULL);
  }
 
- void SmlBeanTableDataModel::deleteLogic(int row, int col) {
+ void SmlBeanTableDataModel::deleteLogic(int row, int /*col*/) {
      //This needs to be looked at
      InstanceManager::signalMastLogicManagerInstance()->removeSignalMastLogic(getLogicFromRow(row), getDestMastFromRow(row));
  }

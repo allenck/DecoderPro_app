@@ -264,6 +264,8 @@
 #include "powerbuttonaction.h"
 #include "locoaddressxml.h"
 #include "loconetmenustartupaction.h"
+#include "blockcontentsiconxml.h"
+#include "treeselectionlistener.h"
 
 bool Metatypes::done = false;
 
@@ -542,6 +544,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<PowerButtonAction>("PowerButtonAction");
  qRegisterMetaType<LocoAddressXml>("LocoAddressXml");
  qRegisterMetaType<LocoNetMenuStartupAction>("LocoNetMenuStartupAction");
+ qRegisterMetaType<BlockContentsIconXml>("BlockContentsIconXml");
+ qRegisterMetaType<TreeSelectionListener>("TreeSelectionListener");
 
  Metatypes::done = true;
 }

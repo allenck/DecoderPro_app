@@ -88,7 +88,7 @@ void SetXYAction::on_setXYAction_triggered()
 //                f.setLocationRelativeTo((Component)pos);
 //            }
 //        };
- LevelEditAction* levelEditAction = new LevelEditAction(pos, tr("Set Level").arg("..."),parent);
+ LevelEditAction* levelEditAction = new LevelEditAction(pos, tr("Set Level %1").arg("..."),parent);
  connect(levelEditAction, SIGNAL(triggered()), levelEditAction, SLOT(on_levelEditAction_triggered()));
  return levelEditAction;
 }
@@ -189,7 +189,7 @@ void SetBorderSizeActionListener::actionPerformed(ActionEvent */*e*/)
 //        };
   //QAction* actionMarginEdit = new QAction(tr("Set Margin Size"), (QObject*)parent);
   ActionMarginEdit* actionMarginEdit = new ActionMarginEdit(pos, tr("Set Margin Size"), (QObject*)parent);
-  connect(actionMarginEdit, SIGNAL(triggered()), parent, SLOT(on_actionMarginEdit_triggered()));
+  connect(actionMarginEdit, SIGNAL(triggered()), actionMarginEdit, SLOT(on_actionMarginEdit_triggered()));
   return actionMarginEdit;
 }
 
@@ -224,7 +224,7 @@ void ActionMarginEdit::on_actionMarginEdit_triggered()
 //            }
 //        };
   ActionFixedSizeEdit* actionGetFixedSizeEdit = new ActionFixedSizeEdit(pos, tr("Set Fixed Size"),parent);
-  connect(actionGetFixedSizeEdit, SIGNAL(triggered()), parent, SLOT(on_actionGetFixedSizeEdit_triggered())); // TODO:
+  connect(actionGetFixedSizeEdit, SIGNAL(triggered()), actionGetFixedSizeEdit, SLOT(on_actionGetFixedSizeEdit_triggered())); // TODO:
   return actionGetFixedSizeEdit;
 }
 
@@ -257,7 +257,7 @@ void ActionFixedSizeEdit::on_actionGetFixedSizeEdit_triggered()
 //            }
 //        };
  RotateAction* rotateAction = new RotateAction(pos, tr("Rotate (degrees)"), parent);
- connect(rotateAction, SIGNAL(triggered()), parent, SLOT(on_rotateAction_triggered()));
+ connect(rotateAction, SIGNAL(triggered()), rotateAction, SLOT(on_rotateAction_triggered()));
  return rotateAction;
 }
 RotateAction::RotateAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
@@ -331,6 +331,7 @@ TextEditAction::TextEditAction(Positionable *pos, QString title, QObject *parent
 {
  this->pos = pos;
  this->title = title;
+ AbstractAction::setText(title);
 }
 
 void TextEditAction::on_getTextEditAction_triggered()

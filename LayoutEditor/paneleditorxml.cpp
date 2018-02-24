@@ -56,7 +56,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
  panel.setAttribute("width", size.width());
  panel.setAttribute("editable", (p->isEditable()?"yes":"no"));
  panel.setAttribute("positionable", (p->allPositionable()?"yes":"no"));
- //panel.setAttribute("showcoordinates", (p.showCoordinates()?"yes":"no"));
+ panel.setAttribute("showcoordinates", (p->showCoordinates()?"yes":"no"));
  panel.setAttribute("showtooltips", (p->showTooltip()?"yes":"no"));
  panel.setAttribute("controlling", (p->allControlling()?"yes":"no"));
  panel.setAttribute("hide", (p->isVisible()?"no":"yes"));

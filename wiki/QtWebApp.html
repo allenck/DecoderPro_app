@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>QtWebApp</title></head><body>
+<h1>QtWebApp</h1>
+The QtWebApp source can be downloaded from <a href="https://github.com/samiavasil/QtWebApp">https://github.com/samiavasil/QtWebApp</a>.<br>
+However there are a few minor changes that must be made in order to use with the JMRI DecoderPro port. <br>
+<h3>Changes to StaticFileController</h3>
+<ul>
+  <li>Strip off document root path from supplied pathanames. This is necessary to properly resolve filenames. <br>
+ </li>
+</ul>
+<pre style="width: 775px;">void StaticFileController::service(HttpRequest&amp; request, HttpResponse&amp; response)<br>{<br>    QByteArray path=request.getPath();<br><span class="diffadd">   <span style="color: rgb(51, 255, 51);"> </span><span style="font-style: italic; color: rgb(153, 0, 0);">if(path.startsWith(docroot.toLocal8Bit()))</span></span><br style="font-style: italic; color: rgb(153, 0, 0);"><span style="font-style: italic; color: rgb(153, 0, 0);" class="diffadd">        path = path.remove(0, docroot.length());</span><br>    // Check if we have the file in cache<br>    qint64 now=QDateTime::currentMSecsSinceEpoch();<br>    mutex.lock();<br>    CacheEntry* entry=cache.object(path);<br>    if (entry &amp;&amp; (cacheTimeout==0 || entry-&gt;created&gt;now-cacheTimeout))<br>    {</pre>
+<ul>
+  <li>Add icon MIME type in function setContentType()<br>
+  </li>
+</ul>
+<pre style="width: 490px;">else if (fileName.endsWith(".otf"))<br>    {<br>        response.setHeader("Content-Type", "application/font-otf");<br>    }<br><span class="diffadd">    <span style="color: rgb(153, 0, 0); font-style: italic;">else if (fileName.endsWith(".ico"))</span></span><br style="color: rgb(153, 0, 0); font-style: italic;"><span style="color: rgb(153, 0, 0); font-style: italic;" class="diffadd">    {</span><br style="color: rgb(153, 0, 0); font-style: italic;"><span style="color: rgb(153, 0, 0); font-style: italic;" class="diffadd">        response.setHeader("Content-Type", "image/x-icon");</span><br style="color: rgb(153, 0, 0); font-style: italic;"><span style="color: rgb(153, 0, 0); font-style: italic;" class="diffadd">    }</span><br>    // Todo: add all of your content types<br>    else<br>    {<br>        qDebug("StaticFileController: unknown MIME type for filename '%s'", qPrintable(fileName));<br>    }</pre>
+<br>
+
+
+</body></html>

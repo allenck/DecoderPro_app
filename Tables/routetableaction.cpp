@@ -209,7 +209,7 @@ void RouteTableAction::init()
  _systemName = new JTextField(12);
  _userName = new JTextField(22);
  _autoSystemName = new QCheckBox(tr("Automatically Generate System Name"));
- systemNameAuto = QString("")+metaObject()->className()+".AutoSystemName";
+ systemNameAuto = getClassName()+".AutoSystemName";
 //    UserPreferencesManager pref;
  
  addFrame = NULL;

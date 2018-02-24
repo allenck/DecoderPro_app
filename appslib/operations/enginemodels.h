@@ -30,6 +30,8 @@ namespace Operations
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ void load(QDomElement root);
   /*public*/ void dispose();
+  /*public*/ void setModelBunit(QString model, bool bUnit);
+  /*public*/ bool isModelBunit(QString model);
 
  signals:
 
@@ -53,6 +55,7 @@ namespace Operations
   /*protected*/ QHash<QString, QString>_engineLengthHashTable;// = new Hashtable<String, String>();
   /*protected*/ QHash<QString, QString>_engineTypeHashTable;// = new Hashtable<String, String>();
   /*protected*/ QHash<QString, QString>_engineWeightHashTable;// = new Hashtable<String, String>();
+ /*protected*/ QHash<QString, bool> _engineBunitHashTable;// = new Hashtable<>();
 
  };
 }

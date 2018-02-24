@@ -93,6 +93,7 @@ public slots:
  /*public*/ void notifyThrottleFound(DccThrottle* t);
  /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
  /*public*/ void on_sensorChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 private:
  Logger * log;
@@ -166,6 +167,7 @@ private:
   /*private*/ int getBlockLength(Block* b);
   /*private*/ /*synchronized*/ void setStopNow();
   /*private*/ void setStopByBlockOccupancy();
+  /*private*/ /*synchronized*/ void cancelStopInCurrentSection();
 
 private slots:
   /*private*/ /*synchronized*/ void handleStopSensorChange();
@@ -187,6 +189,7 @@ protected:
   /*protected*/ void waitUntilStopped();
   /*protected*/ void resumeAutomaticRunning();
   /*protected*/ void initiateWorking();
+  /*protected*/ void removeAllocatedSection(AllocatedSection* as);
 
 protected slots:
   /*protected*/ void handleSectionStateChange(AllocatedSection* as) ;

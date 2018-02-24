@@ -588,7 +588,7 @@ void BeanEditAction::formatTextAreaAsLabel(JTextArea* pane)
      if (!nb->getPropertyKeys().isEmpty())
      {
       attributes =  QVector<KeyValueModel*>(nb->getPropertyKeys().size());
-     QListIterator<QString> ite( nb->getPropertyKeys());
+     QListIterator<QString> ite( nb->getPropertyKeys().toList());
      while (ite.hasNext())
      {
       QString key = ite.next();
@@ -621,7 +621,7 @@ void BeanEditAction::formatTextAreaAsLabel(JTextArea* pane)
  //remove undefined keys
  if (!nb->getPropertyKeys().isEmpty())
  {
-  QListIterator<QString> ite( nb->getPropertyKeys());
+  QListIterator<QString> ite( nb->getPropertyKeys().toList());
   while (ite.hasNext())
   {
    if (!keyExist(ite.next())) // not very efficient algorithm!

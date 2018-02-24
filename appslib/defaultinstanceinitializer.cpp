@@ -55,6 +55,7 @@
 #include "throttlespreferences.h"
 #include "jsonserverpreferences.h"
 #include "loconetconsistmanager.h"
+#include "catalogtreemodel.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -266,8 +267,8 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
  if (type == "Timebase")
  {
   Timebase* timebase = (Timebase*)new SimpleTimebase(/*this*/);
-  if (InstanceManager::configureManagerInstance() != NULL)
-   ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerConfig(timebase, Manager::TIMEBASE);
+  if (InstanceManager::getNullableDefault("ConfigureManager") != NULL)
+   ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(timebase, Manager::TIMEBASE);
   return timebase;
 //        return new SimpleTimebase();
  }
@@ -446,6 +447,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   JsonServerPreferences* jsp = new JsonServerPreferences();
   InstanceManager::store(jsp,type);
   return jsp;
+ }
+
+ if (type == "CatalogTreeModel") {
+     CatalogTreeModel* ctm = new CatalogTreeModel();
+     InstanceManager::store(ctm, type);
+     return ctm;
  }
 
 // if(type == "GlobalProgrammerManager")

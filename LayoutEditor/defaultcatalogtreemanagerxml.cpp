@@ -8,6 +8,7 @@
 #include "imageindexeditor.h"
 #include "instancemanager.h"
 #include "catalogtreeleaf.h"
+#include "version.h"
 
 DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
     XmlFile(parent)
@@ -40,18 +41,18 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
 /*public*/ void DefaultCatalogTreeManagerXml::writeCatalogTrees() /*throw (IOException)*/
 {
  if (log-> isDebugEnabled()) log-> debug("entered writeCatalogTreeValues");
- CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
- QStringList trees = ((DefaultCatalogTreeManager*)manager)->getSystemNameList();
+ CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
+ QStringList trees = manager->getSystemNameList();
  bool found = false;
- QStringListIterator iter( ((DefaultCatalogTreeManager*)manager)->getSystemNameList());
+ QStringListIterator iter( manager->getSystemNameList());
  while (iter.hasNext())
  {
   QString sname = iter.next();
-  CatalogTree* tree = ((DefaultCatalogTreeManager*)manager)->getBySystemName(sname);
+  CatalogTree* tree = manager->getBySystemName(sname);
   if (log-> isDebugEnabled())
   {
    log-> debug("Tree: sysName= "+sname+", userName= "+((AbstractCatalogTree*)tree)->getUserName());
-   CatalogTreeNode* root = (CatalogTreeNode*)((AbstractCatalogTree*)tree)->getRoot();
+   CatalogTreeNode* root = (CatalogTreeNode*)tree->getRoot();
    log-> debug("enumerateTree called for root= "+root->toString()+
                       ", has "+root->getChildCount()+" children");
    QVectorIterator<CatalogTreeNode*>* e =(QVectorIterator<CatalogTreeNode*>*)root->depthFirstEnumeration();
@@ -82,10 +83,13 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
   m->insert("type", "text/xsl");
   m->insert("href", xsltLocation+"panelfile.xsl");
   //ProcessingInstruction* p = new ProcessingInstruction("xml-stylesheet", m);
-  QDomProcessingInstruction p = doc.createProcessingInstruction("type", "text/xsl");
+  QDomProcessingInstruction p = doc.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"/xml/XSLT/panelfile.xsl\"");
+  doc.appendChild(p);
+  p = doc.createProcessingInstruction("type", "text/xsl");
   doc.appendChild(p);
   p = doc.createProcessingInstruction("xml-stylesheet", QString("type=\"text/xsl\",href=\"%1locomotive.xsl\"").arg(xsltLocation));
   doc.appendChild(p);
+  root.appendChild(doc.createComment(tr("Written by JMRI version %1 on %1").arg(Version::getCanonicalVersion()).arg(QDateTime::currentDateTime().toString())));
 
   store(root, trees);
 
@@ -118,7 +122,7 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
  */
 /*public*/ void DefaultCatalogTreeManagerXml::store(QDomElement cat, QStringList trees)
 {
- CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
+ CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  cat.setAttribute("class","jmri.jmrit.catalog-> DefaultCatalogTreeManagerConfigXML");
  QStringListIterator iter(trees);
     while (iter.hasNext()) {
@@ -131,13 +135,11 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
         if (sname.at(1) != CatalogTree::XML) {
             continue;
         }
-        CatalogTree* ct = ((DefaultCatalogTreeManager*)manager)->getBySystemName(sname);
+        CatalogTree* ct = manager->getBySystemName(sname);
         QDomElement elem = doc.createElement("catalogTree");
         elem.setAttribute("systemName", sname);
-#if 0
         QString uname = ct->getUserName();
         if (uname!="") elem.setAttribute("userName", uname);
-#endif
         storeNode(elem, (CatalogTreeNode*)ct->getRoot());
 
         if (log-> isDebugEnabled()) log-> debug("store CatalogTree "+sname);
@@ -223,7 +225,7 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
 /*public*/ void DefaultCatalogTreeManagerXml::loadCatalogTrees(QDomElement catalogTrees) {
    QDomNodeList catList = catalogTrees.elementsByTagName("catalogTree");
     if (log-> isDebugEnabled()) log-> debug("loadCatalogTrees: found "+QString::number(catList.size())+" CatalogTree objects");
-    CatalogTreeManager* mgr = InstanceManager::catalogTreeManagerInstance();
+    CatalogTreeManager* mgr = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
 
     for (int i=0; i<catList.size(); i++) {
         QDomElement elem = catList.at(i).toElement();

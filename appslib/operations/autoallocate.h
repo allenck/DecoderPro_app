@@ -2,6 +2,7 @@
 #define AUTOALLOCATE_H
 
 #include <QObject>
+#include "section.h"
 
 class ActiveTrain;
 class ConnectivityUtil;
@@ -32,6 +33,7 @@ private:
  /*private*/ void removeCompletePlans();
  /*private*/ bool isSignalHeldAtStartOfSection(AllocationRequest* ar);
  /*private*/ AllocationPlan* getPlanThisTrain(ActiveTrain* at);
+ /*private*/ int willTraverse(Section* s, ActiveTrain* at, int seq);
 
 protected:
  /*protected*/ void scanAllocationRequestList(QList<AllocationRequest*>* list);

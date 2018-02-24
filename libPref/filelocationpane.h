@@ -44,13 +44,13 @@ private:
     /*private*/ bool restartRequired;// = false;
     /*private*/ /*final*/ JTextField* scriptLocation;// = new JTextField();
     /*private*/ /*final*/ JTextField* userLocation;// = new JTextField();
-    /*private*/ /*final*/ JTextField* programLocation;// = new JTextField();
+    /*private*/ /*final*/ JTextField* _programLocation;// = new JTextField();
 
-    /*private*/ QWidget* PrefLocation();
+    /*private*/ QWidget* prefLocation();
     /*private*/ void common();
-    /*private*/ QWidget* ScriptsLocation();
+    /*private*/ QWidget* scriptsLocation();
     /*final*/ JFileChooser* fcScript;
-    /*private*/ QWidget* ProgramLocation();
+    /*private*/ QWidget* programLocation();
 
 };
 

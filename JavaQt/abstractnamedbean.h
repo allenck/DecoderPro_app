@@ -47,7 +47,7 @@ public:
     /*public*/ virtual void setProperty(QString key, QVariant value);
     /*public*/ virtual QVariant getProperty(QString key);
 
-    /*public java.util.*/QList<QString> getPropertyKeys();
+    /*public java.util.*/QSet<QString> getPropertyKeys();
     PropertyChangeSupport* pcs;
     /*public*/ void removeProperty(QString key);
 
@@ -84,6 +84,7 @@ private:
   /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
 //  /*protected*/ void firePropertyChange(QString p, QObject* old, QObject* n);
  friend class CatalogTree;
+ friend class AbstractCatalogTree;
 };
 
 #endif // ABSTRACTNAMEDBEAN_H

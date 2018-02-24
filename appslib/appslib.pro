@@ -91,6 +91,7 @@ SOURCES += appslib.cpp \
     installdecoderfileaction.cpp \
     vsdsoundspanel.cpp \
     vsdoptionpanel.cpp \
+    operationsxml.cpp \
     operations/trainswitchlisttext.cpp \
     operations/schedule.cpp \
     operations/scheduleitem.cpp \
@@ -287,7 +288,6 @@ SOURCES += appslib.cpp \
     operations/pooltrackaction.cpp \
     operations/pooltrackframe.cpp \
     operations/printlocationsbycartypesaction.cpp \
-    operationsxml.cpp \
     operations/routecopyframe.cpp \
     operations/schedulesbyloadaction.cpp \
     operations/schedulesbyloadframe.cpp \
@@ -391,7 +391,6 @@ SOURCES += appslib.cpp \
     abstractactionmodelfactory.cpp \
     performactionmodelfactory.cpp \
     startupactionmodelutil.cpp \
-    class.cpp \
     metadata.cpp \
     startuppausefactory.cpp \
     startuppausemodel.cpp \
@@ -422,7 +421,11 @@ SOURCES += appslib.cpp \
     operations/traincustomcommon.cpp \
     operations/setupexcelprogramframeaction.cpp \
     operations/setupexcelprogrammanifestframe.cpp \
-    operations/setupexcelprogramframe.cpp
+    operations/setupexcelprogramframe.cpp \
+    operations/optionsmenu.cpp \
+    operations/yardmasterbytrackpanel.cpp \
+    operations/yardmasterbytrackframe.cpp \
+    operations/yardmasterbytrackaction.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -823,7 +826,11 @@ HEADERS += appslib.h\
     operations/traincustomcommon.h \
     operations/setupexcelprogramframeaction.h \
     operations/setupexcelprogrammanifestframe.h \
-    operations/setupexcelprogramframe.h
+    operations/setupexcelprogramframe.h \
+    operations/optionsmenu.h \
+    operations/yardmasterbytrackpanel.h \
+    operations/yardmasterbytrackframe.h \
+    operations/yardmasterbytrackaction.h
 
 unix:!symbian {
     maemo5 {

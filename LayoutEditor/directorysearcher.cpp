@@ -260,8 +260,7 @@ this->s = s;
                              int startNum) {
     _quitLooking = false;
     // if both addAction & lookAction not NULL dialog will be modeless - i.e dragable
-    _previewDialog = new PreviewDialog(NULL, "previewDir", dir, CatalogTreeManager::IMAGE_FILTER,
-                                        ((addAction != NULL)||(lookAction != NULL)),0 );
+    _previewDialog = new PreviewDialog(NULL, "previewDir", dir, CatalogTreeManager::IMAGE_FILTER);
     _previewDialog->init(addAction, moreAction, lookAction, cancelAction,
                         startNum, _waitDialog);
     if (lookAction == NULL) {

@@ -60,6 +60,7 @@ void AbstractManager::registerSelf()
   }
 
 }
+/*public*/ QString AbstractManager::normalizeSystemName(/*@Nonnull*/ QString inputName) {return "";} //throws NamedBean.BadSystemNameException
 
 ///*abstract*/ /*public*/ int AbstractManager::getXMLOrder() { return 0;}
 
@@ -166,12 +167,13 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  QString systemName;
  QString userName;
  QString cName = QString(s->metaObject()->className());
- if(qobject_cast<AbstractCatalogTree*>(s))
- {
-  systemName = ((AbstractCatalogTree*)s)->getSystemName();
-  userName = ((AbstractCatalogTree*)s)->getUserName();
- }
- else
+// if(qobject_cast<AbstractCatalogTree*>(s))
+// {
+//  systemName = ((AbstractCatalogTree*)s)->getSystemName();
+//  Q_ASSERT(!systemName.isEmpty());
+//  userName = ((AbstractCatalogTree*)s)->getUserName();
+// }
+// else
  {
  systemName = s->getSystemName();
  Q_ASSERT(!systemName.isEmpty());
@@ -309,4 +311,62 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  return _tsys;
 }
 
+
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) //throw PropertyVetoException
+{
+#if 0 // TODO:
+    if ("CanDelete" == (evt->getPropertyName())) { //IN18N
+        QString message;// = new StringBuilder();
+        message.append(tr("Found in the following <b>%1s</b>").arg(getBeanTypeHandled()))
+                .append("<ul>");
+        bool found = false;
+        for (NamedBean* nb : _tsys->values()) {
+            try {
+                nb->vetoableChange(evt);
+            } catch (/*PropertyVetoException*/ Exception e) {
+                if (e.getPropertyChangeEvent().getPropertyName() == ("DoNotDelete")) { //IN18N
+                    throw e;
+                }
+                found = true;
+                message.append("<li>")
+                        .append(e.getMessage())
+                        .append("</li>");
+            }
+        }
+        message.append("</ul>")
+                .append(Bundle.getMessage("VetoWillBeRemovedFrom", getBeanTypeHandled()));
+        if (found) {
+            throw new PropertyVetoException(message.toString(), evt);
+        }
+    } else {
+        for (NamedBean nb : _tsys.values()) {
+            try {
+                nb.vetoableChange(evt);
+            } catch (PropertyVetoException e) {
+                throw e;
+            }
+        }
+    }
+#endif
+}
+
+/**
+ * Enforces, and as a user convenience converts to, the standard form for a
+ * system name for the NamedBeans handled by this manager.
+ *
+ * @param inputName System name to be normalized
+ * @throws NamedBean.BadSystemNameException If the inputName can't be
+ *                                          converted to normalized form
+ * @return A system name in standard normalized form
+ */
+ //@CheckReturnValue
+ //@Override
+ //@Nonnull
+/*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) //throws NamedBean.BadSystemNameException
+{
+    return inputName;
+}
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractManager.class.getName());
+PropertyVetoException::PropertyVetoException(QString s) {msg = s;}

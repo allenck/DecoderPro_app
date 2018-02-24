@@ -161,11 +161,13 @@ bool Apps::configDeferredLoadOK = false;
  // install shutdown manager
  //InstanceManager::instance()->setShutDownManager(new DefaultShutDownManager());
 
- //ShutDownManager* sm = (ShutDownManager*)InstanceManager::instance()->getDefault("ShutDownManager");
+
+ // install shutdown manager
+ InstanceManager::setDefault("ShutDownManager", new DefaultShutDownManager());
 
  // add the default shutdown task to save blocks
  // as a special case, register a ShutDownTask to write out blocks
- InstanceManager::shutDownManagerInstance()->_register(new WriteBlocksShutdownTask("Writing Blocks") ); //->
+ ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(new WriteBlocksShutdownTask("Writing Blocks") ); //->
 //            _register(new AbstractShutDownTask("Writing Blocks") {
 //                //@Override
 //                /*public*/ bool execute() {

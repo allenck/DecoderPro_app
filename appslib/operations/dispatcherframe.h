@@ -6,6 +6,9 @@
 #include "propertychangelistener.h"
 #include "abstracttablemodel.h"
 #include "timebase.h"
+#include "rosterentry.h"
+#include <QComboBox>
+
 
 class Block;
 class HeldMastDetails;
@@ -56,6 +59,10 @@ public:
           bool showErrorMessages, JmriJFrame* frame);
  /*public*/ void allocateNewActiveTrain(ActiveTrain* at);
  /*public*/ void newTrainDone(ActiveTrain* at);
+ /*public*/ QList<ActiveTrain*>* getActiveTrainsList();
+ /*public*/ ActiveTrain* getActiveTrainForRoster(RosterEntry* re);
+ /*public*/ void allocateExtraSection(ActionEvent* e, ActiveTrain* at);
+ /*public*/ QString getSectionName(Section* sec);
 
 
 private:
@@ -128,6 +135,15 @@ private:
  /*private*/ void removeHeldMast(SignalMast* sm, ActiveTrain* at);
  /*private*/ bool isInAllocatedSection(Block* b);
  /*private*/ void fastClockWarn( bool wMess);
+ /*private*/ JmriJFrame* extraFrame;// = NULL;
+ /*private*/ QWidget* extraPane;// = NULL;
+ /*private*/ QComboBox* atSelectBox;// = new JComboBox<String>();
+ /*private*/ QComboBox* extraBox;// = new JComboBox<String>();
+ /*private*/ QList<Section*>* extraBoxList;// = new QList<Section>();
+ /*private*/ int atSelectedIndex;// = -1;
+ /*private*/ void initializeATComboBox();
+ /*private*/ void initializeExtraComboBox();
+ /*private*/ bool connected(Section* s1, Section* s2);
 
 private slots:
  void on_addTrainButton();
@@ -135,6 +151,11 @@ private slots:
  void on_terminateTrainButton();
  void minuteChange(PropertyChangeEvent*);
  /*private*/ void handleActiveTrainChange(PropertyChangeEvent* e);
+ /*private*/ void allocateExtraSection(/*ActionEvent* e*/);
+ /*private*/ void handleAutoReleaseChanged(ActionEvent* e = 0);
+ /*private*/ void handleATSelectionChanged(ActionEvent* e = 0);
+ /*private*/ void handleAutoAllocateChanged(ActionEvent* e = 0);
+ void terminateTrain(ActionEvent* e = 0);
 
 protected:
  /*protected*/ int getSignalType();
@@ -188,6 +209,7 @@ protected:
  /*protected*/ void setShortActiveTrainNames( bool set);
  /*protected*/  bool getSupportVSDecoder();
  /*protected*/ void setSupportVSDecoder( bool set);
+ /*protected*/ QList<AllocatedSection*>* getAllocatedSectionsList();
 
  friend class ActiveTrain;
  friend class ActiveTrainsTableModel;
@@ -199,6 +221,7 @@ protected:
  friend class AutoActiveTrain;
  friend class AutoEngineer;
  friend class AllocatedSection;
+ friend class OptionsMenu;
 };
 
 /**

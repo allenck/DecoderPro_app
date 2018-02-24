@@ -80,7 +80,7 @@ void BlockTableAction::common()
  _autoSystemName = new QCheckBox(tr("LabelAutoSysName"));
 
  speeds = new QComboBox();
- systemNameAuto = QString(this->metaObject()->className()) + ".AutoSystemName";
+ systemNameAuto = QString(getClassName()) + ".AutoSystemName";
  log = new Logger("BlockTableAction");
 
 
@@ -1116,6 +1116,7 @@ void BlockTableAction::deletePaths(JmriJFrame* f) {
 }
 
 /*protected*/ QString BlockTableAction::getClassName() {
- return QString(this->metaObject()->className());
+ //return QString(this->metaObject()->className());
+ return "jmri.jmrit.beantable.BlockTableAction";
 }
 

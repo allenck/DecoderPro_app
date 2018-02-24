@@ -51,6 +51,8 @@ namespace Operations {
  _engineLengthHashTable = QHash<QString, QString>();
  _engineTypeHashTable = QHash<QString, QString>();
  _engineWeightHashTable = QHash<QString, QString>();
+ _engineBunitHashTable =  QHash<QString, bool>();
+
 
  }
 /**
@@ -85,6 +87,7 @@ namespace Operations {
      _engineLengthHashTable.clear();
      _engineTypeHashTable.clear();
      _engineWeightHashTable.clear();
+     _engineBunitHashTable.clear();
      RollingStockAttribute::dispose();
      loadDefaults();
  }
@@ -129,6 +132,16 @@ namespace Operations {
      return _engineTypeHashTable.value(model);
  }
 
+ /*public*/ void EngineModels::setModelBunit(QString model, bool bUnit) {
+    _engineBunitHashTable.insert(model, bUnit);
+}
+
+ /*public*/ bool EngineModels::isModelBunit(QString model) {
+     if (_engineBunitHashTable.contains(model))
+         return _engineBunitHashTable.value(model);
+     return false;
+ }
+
  /*public*/ void EngineModels::setModelWeight(QString model, QString type) {
      _engineWeightHashTable.insert(model, type);
  }
@@ -161,6 +174,7 @@ namespace Operations {
          setModelLength(models[i], lengths[i]);
          setModelType(models[i], types[i]);
          setModelWeight(models[i], weights[i]);
+         setModelBunit(models[i], false); // there are no B units in the default files
      }
  }
 

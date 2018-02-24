@@ -1,7 +1,6 @@
 #include "fileutilsupport.h"
 #include <QDir>
 #include "file.h"
-#include "fileutil.h"
 #include "system.h"
 #include <QUrl>
 #include "matcher.h"
@@ -54,7 +53,7 @@
   QString realPath = pathFromPortablePath(path);
   QFileInfo info(realPath);
   if(!info.exists())
-   throw FileNotFoundException();
+   throw FileNotFoundException(realPath);
   file = new File(realPath);
   if(!file->exists())
    throw FileNotFoundException(tr("File not found: %s").arg(file->getPath()));
@@ -572,6 +571,36 @@ public URL getURL(URI uri) {
         this->firePropertyChange(FileUtil::SCRIPTS, old, path);
     }
 }
+/**
+ * Get the URL of a portable filename if it can be located using
+ * {@link #findURI(java.lang.String)}
+ *
+ * @param path the path to find
+ * @return URL of portable or absolute path
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::findExternalFilename(/*@Nonnull*/ QString path)
+{
+ log->debug(tr("Finding external path %1").arg(path));
+ if (this->isPortableFilename(path))
+ {
+  int index = path.indexOf(":") + 1;
+  QString location = path.mid(0, index);
+  path = path.mid(index);
+  log->debug(tr("Finding %1 and %2").arg(location).arg(path));
+  if(location == FileUtil::PROGRAM)
+   return this->findURI(path, FileUtil::Location::INSTALLED);
+  if(location ==  FileUtil::PREFERENCES)
+   return this->findURI(path, FileUtil::Location::USER);
+  if(location == FileUtil::PROFILE ||
+      location == FileUtil::SETTINGS ||
+      location == FileUtil::SCRIPTS ||
+      location == FileUtil::HOME)
+   return this->findURI(this->getExternalFilename(location + path));
+ }
+ return this->findURI(path, FileUtil::Location::ALL);
+}
 #if 0
 /**
  * Get the JMRI distribution jar file.
@@ -748,7 +777,8 @@ public URL getURL(URI uri) {
         //log->debug(tr("Using %1").arg(path));
         QFileInfo info(path);
         if(!info.exists())
-         throw FileNotFoundException();
+         //throw FileNotFoundException(path);
+         throw NullPointerException(path);
         return (new File(path.replace(FileUtil::SEPARATOR, File::separatorChar)))->getCanonicalPath();
     } catch (IOException ex) {
         log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
@@ -772,6 +802,7 @@ public URL getURL(URI uri) {
  scanDir(home, paths, 0);
  return paths;
 }
+
 /*private*/ void FileUtilSupport::scanDir(QDir start, QStringList* paths, int depth)
 {
  QStringList filters;
@@ -1002,4 +1033,344 @@ public URL getURL(URI uri) {
  }
  else
     throw IOException();
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.io.InputStream} for that file. Search order is defined by
+ * {@link #findURL(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...) }.
+ *
+ * @param path      The relative path of the file or resource
+ * @param locations The type of locations to limit the search to
+ * @return InputStream or null.
+ * @see #findInputStream(java.lang.String)
+ * @see #findInputStream(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*public*/ QTextStream* FileUtilSupport::findInputStream(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations) {
+    return this->findInputStream(path, locations, QStringList());
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.io.InputStream} for that file. Search order is defined by
+ * {@link #findURL(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...) }.
+ *
+ * @param path        The relative path of the file or resource
+ * @param locations   The type of locations to limit the search to
+ * @param searchPaths a list of paths to search for the path in
+ * @return InputStream or null.
+ * @see #findInputStream(java.lang.String)
+ * @see #findInputStream(java.lang.String, java.lang.String...)
+ */
+/*public*/ QTextStream* FileUtilSupport::findInputStream(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths) {
+    QUrl file = this->findURL(path, locations, searchPaths);
+    if (file.path() != NULL) {
+        try {
+            //return file->openStream();
+      QFile f(path);
+      if(!f.open(QIODevice::ReadOnly)) throw IOException(f.fileName());
+      return new QTextStream(&f);
+        } catch (IOException ex) {
+            log->error(ex.getLocalizedMessage(), ex.getMessage());
+        }
+    }
+    return NULL;
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.net.URI} for that file. Search order is defined by
+ * {@link #findURI(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...)}.
+ * No limits are placed on search locations.
+ *
+ * @param path The relative path of the file or resource.
+ * @return The URI or null.
+ * @see #findURI(java.lang.String, java.lang.String...)
+ * @see #findURI(java.lang.String, jmri.util.FileUtil.Location)
+ * @see #findURI(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*public*/ QString FileUtilSupport::findURI(/*@Nonnull*/ QString path) {
+    return this->findURI(path, QStringList());
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.net.URI} for that file. Search order is defined by
+ * {@link #findURI(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...)}.
+ * No limits are placed on search locations.
+ * <p>
+ * Note that if the file for path is not found in one of the searchPaths,
+ * all standard locations are also be searched through to find the file. If
+ * you need to limit the locations where the file can be found use
+ * {@link #findURI(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...)}.
+ *
+ * @param path        The relative path of the file or resource
+ * @param searchPaths a list of paths to search for the path in
+ * @return The URI or null
+ * @see #findURI(java.lang.String)
+ * @see #findURI(java.lang.String, jmri.util.FileUtil.Location)
+ * @see #findURI(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*public*/ QString FileUtilSupport::findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ QStringList searchPaths) {
+    return this->findURI(path, FileUtil::Location::ALL, searchPaths);
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.net.URI} for that file. Search order is defined by
+ * {@link #findURI(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...)}.
+ *
+ * @param path      The relative path of the file or resource
+ * @param locations The types of locations to limit the search to
+ * @return The URI or null
+ * @see #findURI(java.lang.String)
+ * @see #findURI(java.lang.String, java.lang.String...)
+ * @see #findURI(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*public*/ QString FileUtilSupport::findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations) {
+    return this->findURI(path, locations, QStringList());
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.net.URI} for that file.
+ * <p>
+ * Search order is:
+ * <ol>
+ * <li>For any provided searchPaths, iterate over the searchPaths by
+ * prepending each searchPath to the path and following the following search
+ * order:<ol>
+ * <li>As a {@link java.io.File} in the user preferences directory</li>
+ * <li>As a File in the current working directory (usually, but not always
+ * the JMRI distribution directory)</li>
+ * <li>As a File in the JMRI distribution directory</li>
+ * <li>As a resource in jmri.jar</li>
+ * </ol></li>
+ * <li>If the file or resource has not been found in the searchPaths, search
+ * in the four locations listed without prepending any path</li>
+ * <li>As a File with an absolute path</li>
+ * </ol>
+ * <p>
+ * The <code>locations</code> parameter limits the above logic by limiting
+ * the location searched.
+ * <ol>
+ * <li>{@link Location#ALL} will not place any limits on the search</li>
+ * <li>{@link Location#NONE} effectively requires that <code>path</code> be
+ * a portable pathname</li>
+ * <li>{@link Location#INSTALLED} limits the search to the
+ * {@link FileUtil#PROGRAM} directory and JARs in the class path</li>
+ * <li>{@link Location#USER} limits the search to the
+ * {@link FileUtil#PREFERENCES}, {@link FileUtil#PROFILE}, and
+ * {@link FileUtil#SETTINGS} directories (in that order)</li>
+ * </ol>
+ *
+ * @param path        The relative path of the file or resource
+ * @param locations   The types of locations to limit the search to
+ * @param searchPaths a list of paths to search for the path in
+ * @return The URI or null
+ * @see #findURI(java.lang.String)
+ * @see #findURI(java.lang.String, jmri.util.FileUtil.Location)
+ * @see #findURI(java.lang.String, java.lang.String...)
+ */
+/*public*/ QString FileUtilSupport::findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths) {
+//    if (log->isDebugEnabled()) { // avoid the Arrays.toString call unless debugging
+//        log->debug(tr("Attempting to find %1 in %2").arg(path).arg( Arrays.toString(searchPaths));
+//    }
+    if (this->isPortableFilename(path)) {
+        try {
+            return this->findExternalFilename(path);
+        } catch (NullPointerException ex) {
+            // do nothing
+        }
+    }
+    QString resource = "";
+    for (QString searchPath : searchPaths) {
+        resource = this->findURI(searchPath + File::separator + path);
+        if (resource != "") {
+            return resource;
+        }
+    }
+    File* file;
+    if (locations == FileUtil::Location::ALL || locations == FileUtil::Location::USER) {
+        // attempt to return path from preferences directory
+        file = new File(this->getUserFilesPath(), path);
+        if (file->exists()) {
+            //return file.toURI();
+         return file->getPath();
+        }
+        // attempt to return path from profile directory
+        file = new File(this->getProfilePath(), path);
+        if (file->exists()) {
+            //return file.toURI();
+         return file->getPath();
+        }
+        // attempt to return path from preferences directory
+        file = new File(this->getPreferencesPath(), path);
+        if (file->exists()) {
+            //return file.toURI();
+         return file->getPath();
+        }
+    }
+    if (locations == FileUtil::Location::ALL || locations == FileUtil::Location::INSTALLED) {
+        // attempt to return path from current working directory
+        file = new File(path);
+        if (file->exists()) {
+            //return file.toURI();
+         return file->getPath();
+        }
+        // attempt to return path from JMRI distribution directory
+        file = new File(this->getProgramPath() + path);
+        if (file->exists()) {
+            //return file.toURI();
+         return file->getPath();
+        }
+    }
+#if 0
+    if (locations == FileUtil::Location::ALL || locations == FileUtil::Location::INSTALLED) {
+        // return path if in jmri.jar or null
+        // The ClassLoader needs paths to use /
+        path = path.replace(File::separatorChar, '/');
+        QUrl url = FileUtilSupport::class.getClassLoader().getResource(path);
+        if (url == null) {
+            url = FileUtilSupport.class.getResource(path);
+            if (url == null) {
+                log->debug("{} not found in classpath", path);
+            }
+        }
+        try {
+            resource = (url != null) ? url.toURI() : null;
+        } catch (URISyntaxException ex) {
+            log->warn("Unable to get URI for {}", path, ex);
+        }
+    }
+#endif
+    // if a resource has not been found and path is absolute and exists
+    // return it
+    if (resource == "") {
+        file = new File(path);
+        if (file->isAbsolute() && file->exists()) {
+            //return file.toURI();
+         return file->getPath();
+        }
+    }
+    return resource;
+}
+#if 0
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.net.URL} for that file. Search order is defined by
+ * {@link #findURL(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...)}.
+ * No limits are placed on search locations.
+ *
+ * @param path The relative path of the file or resource.
+ * @return The URL or null.
+ * @see #findURL(java.lang.String, java.lang.String...)
+ * @see #findURL(java.lang.String, jmri.util.FileUtil.Location)
+ * @see #findURL(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*public*/ URL findURL(/*@Nonnull*/ String path) {
+    return this->findURL(path, new String[]{});
+}
+#endif
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.net.URL} for that file. Search order is defined by
+ * {@link #findURL(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...)}.
+ * No limits are placed on search locations.
+ *
+ * @param path        The relative path of the file or resource
+ * @param searchPaths a list of paths to search for the path in
+ * @return The URL or null
+ * @see #findURL(java.lang.String)
+ * @see #findURL(java.lang.String, jmri.util.FileUtil.Location)
+ * @see #findURL(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*public*/ QUrl FileUtilSupport::findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ QStringList searchPaths) {
+    return this->findURL(path, FileUtil::Location::ALL, searchPaths);
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.net.URL} for that file. Search order is defined by
+ * {@link #findURL(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...)}.
+ *
+ * @param path      The relative path of the file or resource
+ * @param locations The types of locations to limit the search to
+ * @return The URL or null
+ * @see #findURL(java.lang.String)
+ * @see #findURL(java.lang.String, java.lang.String...)
+ * @see #findURL(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*public*/ QUrl FileUtilSupport::findURL(/*@Nonnull*/ QString path, FileUtil::Location locations) {
+    return this->findURL(path, locations, QStringList());
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.net.URL} for that file.
+ * <p>
+ * Search order is:
+ * <ol><li>For any provided searchPaths, iterate over the searchPaths by
+ * prepending each searchPath to the path and following the following search
+ * order:
+ * <ol><li>As a {@link java.io.File} in the user preferences directory</li>
+ * <li>As a File in the current working directory (usually, but not always
+ * the JMRI distribution directory)</li> <li>As a File in the JMRI
+ * distribution directory</li> <li>As a resource in jmri.jar</li></ol></li>
+ * <li>If the file or resource has not been found in the searchPaths, search
+ * in the four locations listed without prepending any path</li></ol>
+ * <p>
+ * The <code>locations</code> parameter limits the above logic by limiting
+ * the location searched.
+ * <ol><li>{@link Location#ALL} will not place any limits on the
+ * search</li><li>{@link Location#NONE} effectively requires that
+ * <code>path</code> be a portable
+ * pathname</li><li>{@link Location#INSTALLED} limits the search to the
+ * {@link FileUtil#PROGRAM} directory and JARs in the class
+ * path</li><li>{@link Location#USER} limits the search to the
+ * {@link FileUtil#PROFILE} directory</li></ol>
+ *
+ * @param path        The relative path of the file or resource
+ * @param locations   The types of locations to limit the search to
+ * @param searchPaths a list of paths to search for the path in
+ * @return The URL or null
+ * @see #findURL(java.lang.String)
+ * @see #findURL(java.lang.String, jmri.util.FileUtil.Location)
+ * @see #findURL(java.lang.String, java.lang.String...)
+ */
+/*public*/ QUrl FileUtilSupport::findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths) {
+    QString file = this->findURI(path, locations, searchPaths);
+    if (file != "") {
+        try {
+            //return file.toURL();
+         return file;
+        } catch (MalformedURLException ex) {
+            log->error(ex.getLocalizedMessage(), ex.getMessage());
+        }
+    }
+    return QUrl();
+}
+
+/**
+ * Return the {@link java.net.URI} for a given URL
+ *
+ * @param url the URL
+ * @return a URI or null if the conversion would have caused a
+ *         {@link java.net.URISyntaxException}
+ */
+/*public*/ QString FileUtilSupport::urlToURI(/*@Nonnull*/ QUrl url) {
+//    try {
+//        return url.toURI();
+//    } catch (URISyntaxException ex) {
+//        log->error("Unable to get URI from URL", ex);
+//        return null;
+//    }
+ return url.toLocalFile();
 }

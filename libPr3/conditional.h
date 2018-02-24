@@ -1,17 +1,18 @@
 #ifndef CONDITIONAL_H
 #define CONDITIONAL_H
-#include "namedbean.h"
+#include "abstractnamedbean.h"
 #include "propertychangelistener.h"
 #include "libPr3_global.h"
 
 //class QList;
 class ConditionalAction;
 class ConditionalVariable;
-class LIBPR3SHARED_EXPORT Conditional : public NamedBean
+class LIBPR3SHARED_EXPORT Conditional : public AbstractNamedBean
 {
     Q_OBJECT
 public:
-    //explicit Conditional(QObject *parent = 0);
+ explicit Conditional(QObject *parent = 0) :AbstractNamedBean(parent) {}
+ Conditional(QString sysName, QString userName, QObject*parent = 0) : AbstractNamedBean(sysName, userName, parent) {}
     /**
      * A Conditional is layout control logic, consisting of a logical
      * expression and an action.
@@ -208,7 +209,10 @@ public:
      ACTION_MANUAL_RUN_WARRANT = 48,
      ACTION_SET_TRAIN_NAME = 49,
      ACTION_SET_BLOCK_VALUE = 50,
-     NUM_ACTION_TYPES = 50
+     ACTION_SET_NXPAIR_ENABLED = 51,
+     ACTION_SET_NXPAIR_DISABLED = 52,
+     ACTION_SET_NXPAIR_SEGMENT = 53,
+     NUM_ACTION_TYPES = 53
    };
     /**************************************************************************************/
     /* New Variable and Action type scheme for Logix UI
@@ -490,7 +494,14 @@ public:
                                                                                 // OF STATIC FINAL ELEMENTS??
         const static  QList<int> ITEM_TO_SCRIPT_ACTION; /*= {ACTION_RUN_SCRIPT, ACTION_JYTHON_COMMAND}*/
 
-        // Map Misc Type comboBox items to Misc action types
+// Map EntryExit Type comboBox items to EntryExit action types
+   //@SuppressFBWarnings(value = "MS_MUTABLE_ARRAY") // with existing code structure,
+   // just have to accept these exposed
+   // arrays. Someday...
+   // WHAT IS EXPOSED IN A STATIC FINAL ARRAY
+   // OF STATIC FINAL ELEMENTS??
+   /*public*/ const static /*final*/ QList<int> ITEM_TO_ENTRYEXIT_ACTION;// = {ACTION_SET_NXPAIR_ENABLED,
+//       ACTION_SET_NXPAIR_DISABLED, ACTION_SET_NXPAIR_SEGMENT};// Map Misc Type comboBox items to Misc action types
 //        @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="MS_MUTABLE_ARRAY") // with existing code structure,
                                                                                     // just have to accept these exposed
                                                                                     // arrays. Someday...
@@ -528,7 +539,7 @@ public:
         /**
          * Set list of actions
          */
-        virtual void setAction (QList <ConditionalAction*>* arrayList) = 0;
+        virtual void setAction (QList <ConditionalAction*>* /*arrayList*/) {}
 
         /**
          * Make deep clone of actions
@@ -560,7 +571,7 @@ public:
         *  Check that an antecedent is well formed.  If not,
         * returns an error message.  Otherwise returns null.
         */
-        virtual QString validateAntecedent(QString ant, QList <ConditionalVariable*> variableList) = 0;
+        virtual QString validateAntecedent(QString /*ant*/, QList <ConditionalVariable*> /*variableList*/) {return QString();}
 
 
         /**
@@ -582,18 +593,18 @@ public:
         /**
          * Request a call-back when the bound KnownState property changes.
          */
-        virtual void addPropertyChangeListener(PropertyChangeListener* l) = 0;
+        virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) {}
 
         /**
          * Remove a request for a call-back when a bound property changes.
          */
-        virtual void removePropertyChangeListener(PropertyChangeListener* l) = 0;
+        virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) {}
 
         /**
          * Remove references to and from this object, so that it can
          * eventually be garbage-collected.
          */
-        virtual void dispose() = 0;  // remove _all_ connections!
+        virtual void dispose() {}  // remove _all_ connections!
 
 signals:
     

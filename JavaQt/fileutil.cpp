@@ -19,13 +19,13 @@ const QString FileUtil::FILE = "file:"; // NOI18N
 const QChar FileUtil::SEPARATOR = '/'; // NOI18N
 QString FileUtil::homePath = QDir::homePath() + QDir::separator(); // NOI18N
 #if 1 // override program path for development
-QString FileUtil::programPath = QDir::homePath() + QDir::separator()+"NetBeansProjects"+QDir::separator()+"jmri"+ QDir::separator();
+//QString FileUtil::programPath = QDir::homePath() + QDir::separator()+"NetBeansProjects"+QDir::separator()+"jmri"+ QDir::separator();
 #endif
-QString FileUtil::jarPath = "";
-QString FileUtil::scriptsPath = "";
-QString FileUtil::userFilesPath = QDir::homePath() + QDir::separator()+".jmri"+ QDir::separator();
+//QString FileUtil::jarPath = "";
+//QString FileUtil::scriptsPath = "";
+//QString FileUtil::userFilesPath = QDir::homePath() + QDir::separator()+".jmri"+ QDir::separator();
 /* path to the current profile */
-/*static*/ /*private*/ QString FileUtil::profilePath = "";
+///*static*/ /*private*/ QString FileUtil::profilePath = "";
 bool FileUtil::_debug = false;
 
 FileUtil::FileUtil(QObject *parent) :
@@ -271,17 +271,17 @@ FileUtil::FileUtil(QObject *parent) :
 }
 
 /**
- * Get the JMRI program directory.
+ * Get the JMRI program directory. If the program directory has not been
+ * previously sets, first sets the program directory to the value specified
+ * in the Java System property <code>jmri.path.program</code>, or
+ * <code>.</code> if that property is not set.
  *
- * @return JMRI program directory as a QString.
+ * @return JMRI program directory as a String.
  */
-/*static*/ /*public*/ QString FileUtil::getProgramPath()
-{
- if (programPath == NULL)
- {
-  FileUtil::setProgramPath("."); // NOI18N
- }
- return programPath;
+//@Nonnull
+//@CheckReturnValue
+/*static*/ /*public*/ QString FileUtil::getProgramPath() {
+    return FileUtilSupport::getDefault()->getProgramPath();
 }
 
 /**
@@ -416,6 +416,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QUrl FileUtil::findURL(QString path, /*@NonNull*/ QStringList searchPaths)
 {
+#if 1
  Logger log;
  if (log.isDebugEnabled())
  {
@@ -473,6 +474,9 @@ FileUtil::FileUtil(QObject *parent) :
 //    }
 //    return resource;
  return QUrl();
+#else
+ return FileUtilSupport::getDefault()->findURL(path, searchPaths);
+#endif
 }
 /**
  * Search for a file or JAR resource by name and return the
@@ -526,6 +530,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QUrl FileUtil::findURL(QString path, Location locations, /*@Nonnull*/ QStringList searchPaths)
 {
+#if 1
  Logger log("FileUtil");
     if (log.isDebugEnabled()) { // avoid the Arrays.toString call unless debugging
         log.debug(QString("Attempting to find %1 in %2").arg(path).arg(/*Arrays.toString(searchPaths)*/""));
@@ -578,6 +583,9 @@ FileUtil::FileUtil(QObject *parent) :
 //        }
 //    }
     return resource;
+#else
+ return FileUtilSupport::getDefault()->findURL(path, locations, searchPaths);
+#endif
 }
 
 /**
@@ -658,20 +666,10 @@ FileUtil::FileUtil(QObject *parent) :
  *
  * @return the scriptsPath
  */
-/*public*/ /*static*/ QString FileUtil::getScriptsPath()
-{
- if (scriptsPath != NULL)
- {
-  return scriptsPath;
- }
- // scriptsPath not set by user, return default if it exists
- QFileInfo* file = new QFileInfo(FileUtil::getProgramPath() + QDir::separator() + "jython" + QDir::separator()); // NOI18N
- if (file->exists())
- {
-  return file->path();
- }
- // if default does not exist, return user's files directory
- return FileUtil::getUserFilesPath();
+//@Nonnull
+//@CheckReturnValue
+/*public*/ /*static*/ QString FileUtil::getScriptsPath() {
+    return FileUtilSupport::getDefault()->getScriptsPath();
 }
 
 /**

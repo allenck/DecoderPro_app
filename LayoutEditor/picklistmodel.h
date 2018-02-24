@@ -9,6 +9,8 @@
 #include "entryexitpairs.h"
 #include "liblayouteditor_global.h"
 
+class Block;
+class BlockManager;
 class QSortFilterProxyModel;
 class AbstractReporterManager;
 class AbstractLightManager;
@@ -37,6 +39,8 @@ class MemoryManager;
 class ReporterManager;
 class LightManager;
 class PropertyChangeEvent;
+class LogixManager;
+
 class LIBLAYOUTEDITORSHARED_EXPORT PickListModel : public /*AbstractNamedBean*/AbstractTableModel
 {
     Q_OBJECT
@@ -83,8 +87,8 @@ static /*public*/ int getNumInstances(QString type);
 /*public*/ static PickListModel* warrantPickModelInstance();
 /*public*/ static PickListModel* conditionalPickModelInstance();
 /*public*/ static PickListModel* entryExitPickModelInstance();
-//void fireTableDataChanged();
-//void fireTableRowsUpdated(int, int);
+/*public*/ static PickListModel* blockPickModelInstance();
+/*public*/ static PickListModel* logixPickModelInstance();
 
 int getState() {return 0;}
 void setState(int /*s*/) {}
@@ -112,6 +116,7 @@ protected:
 
  friend class TurnoutPickModel;
 };
+
 class TurnoutPickModel : public  PickListModel
 {
  Q_OBJECT
@@ -167,6 +172,7 @@ public:
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName) ;
     /*public*/ bool canAddBean();
+
 public slots:
     void tableClicked(QModelIndex index);
     void newSignalHeadCreated(NamedBean *t);
@@ -202,6 +208,18 @@ public:
 public slots:
     void tableClicked(QModelIndex index);
     void newMemoryCreated( Memory *t);
+};
+
+/*static*/ class BlockPickModel : public PickListModel
+{
+ Q_OBJECT
+    BlockManager* manager;// = InstanceManager.getDefault(BlockManager.class);
+public:
+    BlockPickModel();
+    /*public*/ Manager* getManager();
+    /*public*/ NamedBean* addBean(QString name) throw (IllegalArgumentException);
+    /*public*/ NamedBean* addBean(QString sysName, QString userName);
+    /*public*/ bool canAddBean();
 };
 
 class ReporterPickModel : public PickListModel {
@@ -305,4 +323,19 @@ public:
     /*public*/ bool canAddBean();
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 };
+
+class LogixPickModel : public PickListModel {
+    Q_OBJECT
+public:
+
+    LogixManager* manager;
+    LogixPickModel (QObject *parent = 0);
+    /*public*/ Manager* getManager();
+    /*public*/ NamedBean* getBySystemName(QString name);
+    /*public*/ NamedBean* addBean(QString name);
+    /*public*/ NamedBean* addBean(QString sysName, QString userName);
+    /*public*/ bool canAddBean();
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+};
+
 #endif // PICKLISTMODEL_H

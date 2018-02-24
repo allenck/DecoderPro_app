@@ -101,7 +101,7 @@
   treeNodes.last()->add(node);
  }
  QVector<TreeNode*>* path = node->getPath();
- QList<QObject*>* ol = new QList<QObject*>();
+ QVector<QObject*>* ol = new QVector<QObject*>();
  foreach(TreeNode* n, *path) ol->append((QObject*)n);
  _pathArray->replace(_nstored, new TreePath( /*path*/ ol));
  _itemArray->replace(_nstored++, s);

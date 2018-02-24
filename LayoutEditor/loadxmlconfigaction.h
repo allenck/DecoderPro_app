@@ -15,7 +15,7 @@ public:
  LoadXmlConfigAction(const LoadXmlConfigAction&) : LoadStoreBaseAction() {}
  static /*public*/ File* getFile(JFileChooser* fileChooser);
  static /*public*/ File* getFileCustom(JFileChooser* fileChooser);
-
+ static /*public*/ QString currentFile;
 signals:
 
 public slots:
