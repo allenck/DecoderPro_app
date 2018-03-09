@@ -126,13 +126,13 @@ Roster::Roster(QObject *parent) :
 
  QString filename = rosterFilename;
  log = new Logger("Roster");
-    _list = new QList<RosterEntry*>();
-    pcs = new PropertyChangeSupport(this);
-    defaultRosterGroup = "";
-    rosterGroups = QMap<QString, RosterGroup*>();
+ _list = new QList<RosterEntry*>();
+ pcs = new PropertyChangeSupport(this);
+ defaultRosterGroup = "";
+ rosterGroups = QMap<QString, RosterGroup*>();
 
-    _rosterGroupPrefix = "RosterGroup:";
-    ALLENTRIES = tr("All Entries");
+ _rosterGroupPrefix = "RosterGroup:";
+ ALLENTRIES = tr("All Entries");
 //schemaVersion = "";
  dirty = false;
 try
@@ -157,6 +157,12 @@ try
 //        // ignore inability to display dialog
 //        }
   QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred  while trying to read the roster index file: %1").arg( rosterFilename));
+ }
+ catch (NullPointerException ex)
+ {
+  log->error("Exception during roster reading: " + rosterFilename);
+  QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred  while trying to read the roster index file: %1").arg( rosterFilename));
+
  }
 }
 

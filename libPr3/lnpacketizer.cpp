@@ -37,125 +37,9 @@ LnPacketizer::LnPacketizer(QObject* parent)
 #endif
  priorMsg=NULL;
 }
-//// The methods to implement the LocoNetInterface
-//void LnPacketizer::setThread(MasterThread *thread)
-//{
-// this->thread = thread;
-// connect(this->thread, SIGNAL(dataWritten(QVector<char>)), this, SLOT(msgTransmitted(QVector<char>)));
-//}
-#if 0
-void LnPacketizer::setSerial(QSerialPort* serial)
-{
- //thread->setSerial(serial);
- this->serial = serial;
-#ifndef USE_THREAD
- istream = new QDataStream(serial);
- ostream = new QDataStream(serial);
- connect(this->serial, SIGNAL(readyRead()), this,SLOT(dataReady()) );
-#else
-istream = controller->getInputStream();
-ostream = controller->getOutputStream();
-#endif
-}
-#endif
+// The methods to implement the LocoNetInterface
 
 /*public*/ bool LnPacketizer::status() { return ((ostream != NULL) & (istream != NULL)); }
-#ifndef USE_THREAD
-
-void LnPacketizer::dataReady() // [slot]
-{
- int iDebug = 2;  // 2 = display all messages, 1 = display only formatted message.
- //mutex1.lock();
- QByteArray ba = serial->readAll();
- foreach(int c, ba)
-  baStream->append(c);
- if(iDebug > 1)
-  qDebug() << QString("baStream->size = %1").arg(baStream->size());
- int msgLength=0;
- int count = ba.count();
- int currOpcode = 0;
- int nextElement = -1;
- //int i=0;
- if(iDebug > 1)
- {
-  QString s;
-  foreach(char c, ba)
-   s.append(QString("%1 ").arg(c&0xff,0,16));
-  qDebug()<< QString("data received %1 bytes: %2").arg(count).arg(s);
- }
- LocoNetMessage* msg;
- int data;
-
- while(baStream->size()>1)
- {
-   ba = serial->readAll();  // get any additional characters that may have arrived.
-   foreach(int c, ba)
-     baStream->append(c);
-   currOpcode = baStream->at(0)&0xff;
-   nextElement = baStream->at(1);
-
-  switch(currOpcode & 0xE0)
-  {
-  case 0x80: // 2 byte message
-   msg = new LocoNetMessage(2);
-   break;
-  case 0xA0: // 4 byte message
-   msg = new LocoNetMessage(4);
-   break;
-  case 0xC0: // 6 byte message
-   msg = new LocoNetMessage(6);
-   break;
-  case 0xE0: // variable length message.
-   msg= new LocoNetMessage(nextElement);
-   break;
-  default:
-   baStream->remove(0,1);
-   continue;
-  }
-  msg->setOpCode(currOpcode);
-  msg->setElement(1, nextElement);
-  msgLength = msg->getNumDataElements();
-  if(baStream->count() >= msgLength) // are there enough chars in buffer?
-  {
-   baStream->remove(0,2); // remove opcode and first element already read from buffer.
-   for(int i=2; i < msgLength; i++)
-   {
-    data = baStream->at(0)&0xff;
-    //    // check for message-blocking error
-    if (fulldebug) log->debug("char "+QString("%1").arg(i)+" is: "+QString("%1").arg(data,0,16));
-    if ( (data&0x80) != 0)
-    {
-     log->warn("LocoNet message with opCode: "
-                       +QString("%1").arg(currOpcode,0,16)
-                       +" ended early. Expected length: "+QString("%1").arg(msgLength)
-                       +" seen length: "+QString("%1").arg(i)
-                       +" unexpected byte: "
-                       +QString("%1").arg(data,0,16));
-    //      opCode = b;
-    //      throw new LocoNetMessageException();
-     continue;
-    }
-    baStream->remove(0,1);
-    msg->setElement(i, data);
-   }
-   if(msg->checkParity())
-   {
-    emit messageProcessed(msg,false);
-    emit LnTrafficController::messageProcessed(msg);
-    emit LocoNetInterface::messageProcessed(msg);
-//    if(iDebug > 0)
-//     qDebug()<< QString("message received: "+msg->toString() + "-> " + monitor->displayMessage(*msg));
-    continue;
-   }
-   else
-    log->warn("Ignore Loconet packet with bad checksum: "+msg->toString());
-   continue;
-  }
-  break;
- }
- mutex1.unlock();
-}
-#endif
 void LnPacketizer::connectPort(LnPortController* p)
 {
  istream = p->getInputStream();
@@ -183,64 +67,6 @@ void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
 
  // set the error correcting code byte(s) before transmittal
  m->setParity();
-#if 0
-#ifndef USE_THREAD
-
- if(!(serial->isOpen()))
- {
-  log->error(QString("Serial port '%1' not  open, returned error: ").arg(serial->portName()) +serial->errorString());
-  return;
- }
- //mutex2.lock();
- qint64 bw = serial->write(m->toCharArray().constData(),m->getNumDataElements());
- log->debug(tr("%1 bytes of %2 written").arg(bw).arg(m->getNumDataElements()));
-#endif
-#ifdef USE_THREAD
- // stream to port in single write, as that's needed by serial
- int len = m->getNumDataElements();
- for(int i = 0; i < len; i++)
-
- {
-  mutex3.lock();
-  xmtBuffer.append(m->getElement(i));
-  mutex3.unlock();
- }
- if (debug) log->debug("queue LocoNet packet: "+m->toString());
-// // in an atomic operation, queue the request and wake the xmit thread
-// try
-// {
-////     synchronized(xmtHandler) {
-    mutex3.lock();
-    xmtList->append(&xmtBuffer);
-//      //xmtHandler->notify();
-//   xmtHandler->start();
-    mutex3.unlock();
-////     }
-// }
-// catch (Exception e) {
-//     log->warn("passing to xmit: unexpected exception: "+e.getMessage());
-// }
- emit messageProcessed(m, true);
-
-#else
- if (serial->waitForBytesWritten(100))
- {
-  // data successfully written!
-  emit messageProcessed(m, true);
-  log->debug(m->toString());
-#ifdef Q_WS_WIN
-   serial->waitForReadyRead(100);
-#endif
- }
- else
- {
-  QString errmsg = tr("Wait write request timeout %1 '%2' port %3").arg(QTime::currentTime().toString()).arg(serial->errorString()).arg(serial->portName());
-//     emit timeout(errmsg);
-  qDebug() << errmsg;
- }
-#endif
- //mutex2.unlock();
-#endif
  emit sendMessage(m);
 }
 /**
@@ -272,11 +98,7 @@ void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
     // start the XmtHandler in a thread of its own
     if( xmtHandler == NULL )
       xmtHandler = new XmtHandler(this);
-    //QThread* xmtThread = new QThread(this);//QThread(xmtHandler, "LocoNet transmit handler");
     log->debug(QString("Xmt thread (%2) starts at priority %1").arg(xmtpriority).arg(xmtHandler->objectName()));
-    //xmtThread.setDaemon(true);
-    //connect(xmtThread, SIGNAL(started()), xmtHandler, SLOT(run()));
-    //connect(xmtThread, SIGNAL(finished()), xmtHandler, SLOT(deleteLater()));
     XmtHandler* outHandler = (XmtHandler*)xmtHandler;
     connect(this, SIGNAL(sendMessage(LocoNetMessage*)), outHandler, SLOT(sendMessage(LocoNetMessage*)));
 
@@ -286,28 +108,15 @@ void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
     // start the RcvHandler in a thread of its own
     if( rcvHandler == NULL )
       rcvHandler = new RcvHandler(this) ;
-    //QThread* rcvThread = new QThread(this); //(rcvHandler, "LocoNet receive handler");
     int rcvpriority = QThread::HighestPriority;
     log->debug(QString("rcv thread (%2) starts at priority %1").arg(rcvpriority).arg(rcvHandler->objectName()));
-    //rcvThread.setDaemon(true);
-   // connect(rcvThread, SIGNAL(started()), rcvHandler, SLOT(run));
-    //connect(rcvThread, SIGNAL(finished()), rcvHandler, SLOT(deleteLater()));
     RcvHandler* handler = (RcvHandler*)rcvHandler;
-//    connect(handler, SIGNAL(notifyMessage(LocoNetMessage*)), this, SLOT(loconetMsgRcvd(LocoNetMessage*)));
-
-//    if(objectName() == "LnPacketizer")
      connect(handler, SIGNAL(passMessage(LocoNetMessage*)), this, SLOT(loconetMsgRcvd(LocoNetMessage*)));
-//    else
-//     connect(handler, SIGNAL(notifyMessage(LocoNetMessage*)), this, SLOT(loconetMsgRcvd(LocoNetMessage*)));
 
     connect(handler, SIGNAL(finished()), this, SLOT(rcvTerminated()));
-    //rcvHandler->setPriority(QThread::HighestPriority);
-    //connect(serial, SIGNAL(readyRead()), handler, SLOT(dataAvailable()));
     if (istream != NULL)
       rcvHandler->start(QThread::HighestPriority);
 }
-#else
-void LnPacketizer::startThreads() {} // dummy routine
 #endif
 void LnPacketizer::loconetMsgRcvd(LocoNetMessage *m)    // [slot]
 {
@@ -330,8 +139,6 @@ void LnPacketizer::msgTransmitted(const QVector<char> &v)   // [slot]
 {
  while (true)
  {   // loop permanently, program close will exit
-//  while(!trafficController->istream->atEnd())
-//  {
   int opCode=0;
   // start by looking for command -  skip if bit not set
   while ( ((opCode = (trafficController->readByteProtected(trafficController->istream)&0xFF)) & 0x80) == 0 )
@@ -411,43 +218,10 @@ void LnPacketizer::msgTransmitted(const QVector<char> &v)   // [slot]
   // message is complete, dispatch it !!
   {
    if (trafficController->debug) log.debug("queue message for notification: "+msg->toString());
-//   /*final*/ LocoNetMessage* thisMsg = msg;
-//   /*final*/ LnPacketizer* thisTC = trafficController;
-//   // return a notification via the queue to ensure end
-//     Runnable* r = new Runnable() {
-//      LocoNetMessage* msgForLater = thisMsg;
-//      LnPacketizer* myTC = thisTC;
-//      /*public*/ void run() {
-//       myTC->notify(msgForLater);
-//      }
-//     }
-//     invokeLater(r);
    emit passMessage(msg);
   }
   msg = NULL;
   // done with this one
-//  }
-//  catch (LocoNetMessageException e) {
-//   // just let it ride for now
-//         log.warn("run: unexpected LocoNetMessageException: "+e.getMessage());
-//  }
-//  catch (EOFException e) {
-//   // posted from idle port when enableReceiveTimeout used
-//   if (trafficController->fulldebug) log.debug("EOFException, is LocoNet serial I/O using timeouts?");
-//  }
-//  catch (IOException e) {
-//   // fired when write-end of HexFile reaches end
-//   if (trafficController->debug) log.debug("IOException, should only happen with HexFile: "+e.msg);
-//   log.info("End of file");
-//   trafficController->disconnectPort(trafficController->controller);
-//   return;
-//  }
-//  // normally, we don't catch the unnamed Exception, but in this
-//  // permanently running loop it seems wise.
-//  catch (Exception e) {
-//   log.warn("run: unexpected Exception: "+e.msg);
-//  }
-//  } // end while ! at end
  } // end of permanent loop
 }
 /*protected*/ char LnPacketizer::readByteProtected(QDataStream *istream)
@@ -472,25 +246,6 @@ void LnPacketizer::msgTransmitted(const QVector<char> &v)   // [slot]
 {
  bool debug = log.isDebugEnabled();
 
-// while (true)
-// { // loop permanently
-   // any input?
-//   try
-//   {
-   // get content; failure is a NoSuchElementException
-//    if (trafficController->fulldebug) log.debug("check for input");
-//    char msg[1];
-//    QMutex mutex1;
-//    //synchronized (this)
-//    {
-//     if(trafficController->xmtList.count()>0)
-//     {
-//      mutex1.lock();
-//      msg[0] = trafficController->xmtList.first();
-//      trafficController->xmtList.removeFirst();
-//      mutex1.unlock();
-//     }
-//    }
   exec();
  }
 void XmtHandler::sendMessage(LocoNetMessage* m) // SLOT[]
@@ -508,17 +263,12 @@ void XmtHandler::sendMessage(LocoNetMessage* m) // SLOT[]
        log.debug("LocoNet port not ready to receive");
        return;
       }
-      //if (trafficController->debug) log.debug("start write to stream  : "+LnPacketizer::hexStringFromBytes(trafficController->xmtBuffer));
-//      trafficController->ostream->writeRawData(msg,1);
       QMutex mutex3;
       mutex3.lock();
-      //trafficController->ostream->writeRawData(trafficController->xmtBuffer,1);
       trafficController->ostream->writeBytes(m->toCharArray().constData(),m->getNumDataElements());      //trafficController->xmtBuffer.remove(0,1);
       mutex3.unlock();
       if(trafficController->serial != NULL) //HexFile won't have a serial object!
        trafficController->serial->flush();
-      //if (trafficController->fulldebug) log.debug("end write to stream: "+LnPacketizer::hexStringFromBytes(trafficController->xmtBuffer));
-      //messageTransmitted(trafficController->xmtBuffer);
       messageTransmitted(m->toCharArray().constData());
      }
     }
@@ -527,21 +277,5 @@ void XmtHandler::sendMessage(LocoNetMessage* m) // SLOT[]
      // no stream connected
      log.warn("sendLocoNetMessage: no connection established");
     }
-//    }
-//    catch (IOException e)
-//    {
-//     log.warn("sendLocoNetMessage: IOException: "+e.msg);
-//    }
-//   }
-//   catch (NoSuchElementException e)
-//   {
-//    // message queue was empty, wait for input
-//    if (trafficController->fulldebug) log.debug("start wait");
-
-//    //new WaitHandler(this);  // handle synchronization, spurious wake, interruption
-
-//    if (trafficController->fulldebug) log.debug("end wait");
-//   }
-// }
 }
 #endif

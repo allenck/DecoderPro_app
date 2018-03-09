@@ -185,8 +185,10 @@
 {
  setObjectName("JmrixConfigPane");
 
+
  _isDirty = false;
  modeBox = new QComboBox();
+ modeBox->setMinimumWidth(100);
  manuBox = new QComboBox();
  details = new QWidget();
  details->setObjectName("details");
@@ -302,6 +304,7 @@
  manufacturerPanelLayout->addWidget(manuBox, 0, Qt::AlignCenter);
  QGroupBox* connectionPanel = new QGroupBox(tr("System Connection"));
  QVBoxLayout* connectionPanelLayout = new QVBoxLayout(connectionPanel);
+ connectionPanel->setMinimumWidth(500);
  connectionPanelLayout->addWidget(modeBox, 0, Qt::AlignCenter);
  //QWidget* initialPanel = new QWidget();
  QVBoxLayout* initialPanelLayout = new QVBoxLayout;
@@ -313,6 +316,7 @@
  initialPanelLayout->addWidget(connectionPanel);
  layout->addLayout(initialPanelLayout,0); //, Qt::AlignTop);
  QGroupBox*settingsPanel = new QGroupBox(tr("Settings"));
+ settingsPanel->setMinimumSize( 300, 200);
  QVBoxLayout* settingsPanelLayout =new QVBoxLayout(settingsPanel);
 
  //initialPanelLayout->addWidget(new JTitledSeparator(tr("Settings"))); // NOI18N

@@ -10,7 +10,7 @@ class LocoSelTreePane : public CombinedLocoSelTreePane
     Q_OBJECT
 public:
     explicit LocoSelTreePane(QWidget *parent = 0);
-    /*public*/ LocoSelTreePane(QLabel* s, QWidget *parent = 0);
+    /*public*/ LocoSelTreePane(QLabel* s, ProgModeSelector* selector, QWidget *parent = 0);
 
 signals:
 

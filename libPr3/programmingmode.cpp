@@ -30,6 +30,74 @@
 //@net.jcip.annotations.Immutable
 ///*public*/ final class ProgrammingMode  {
 
+/**
+     * NMRA "Paged" mode
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::PAGEMODE = new ProgrammingMode("PAGEMODE");
+
+    /**
+     * NMRA "Operations" or "Programming on the main" mode, using only the
+     * bit-wise operations
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::OPSBITMODE = new ProgrammingMode("OPSBITMODE");
+
+    /**
+     * NMRA "Programming on the main" mode for stationary decoders, using only
+     * the byte-wise operations and "extended" addressing.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::OPSACCEXTBYTEMODE = new ProgrammingMode("OPSACCEXTBYTEMODE");
+
+    /**
+     * NMRA "Programming on the main" mode for stationary decoders, using only
+     * the bit-wise operations. Note that this is defined as using the "normal",
+     * not "extended" addressing.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::OPSACCBITMODE = new ProgrammingMode("OPSACCBITMODE");
+
+    /**
+     * NMRA "Programming on the main" mode for stationary decoders, using only
+     * the bit-wise operations and "extended" addressing.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::OPSACCEXTBITMODE = new ProgrammingMode("OPSACCEXTBITMODE");
+
+    /**
+     * NMRA "Programming on the main" mode for stationary decoders, using only
+     * the byte-wise operations. Note that this is defined as using the
+     * "normal", not "extended" addressing.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::OPSACCBYTEMODE = new ProgrammingMode("OPSACCBYTEMODE");
+
+    /**
+     * NMRA "Address-only" mode. Often implemented as a proper subset of
+     * "Register" mode, as the underlying operation is the same.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::ADDRESSMODE = new ProgrammingMode("ADDRESSMODE");
+
+    /**
+     * NMRA "Operations" or "Programming on the main" mode, using only the
+     * byte-wise operations.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::OPSBYTEMODE = new ProgrammingMode("OPSBYTEMODE");
+
+    /**
+     * NMRA "Direct" mode, using only the byte-wise operations.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::DIRECTBYTEMODE = new ProgrammingMode("DIRECTBYTEMODE");
+
+    /**
+     * NMRA "Register" mode.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::REGISTERMODE = new ProgrammingMode("REGISTERMODE");
+
+    /**
+     * NMRA "Direct" mode, using only the bit-wise operations.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::DIRECTBITMODE = new ProgrammingMode("DIRECTBITMODE");
+
+    /**
+     * NMRA "Direct" mode, using both the bit-wise and byte-wise operations.
+     */
+    /*public*/ /*static*/ /*final*/ ProgrammingMode* ProgrammingMode::DIRECTMODE = new ProgrammingMode("DIRECTMODE");
 
 //    /*public*/ ProgrammingMode(QString standardName) {
 //        this.standardName = standardName;

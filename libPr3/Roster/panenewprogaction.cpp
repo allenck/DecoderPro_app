@@ -72,7 +72,7 @@ void PaneNewProgAction::init()
  QLabel* statusLabel = new QLabel;
 
  // new Loco on programming track
- QWidget* pane1 = new PNPLocoSelTreePane(statusLabel, NULL);
+ QWidget* pane1 = new PNPLocoSelTreePane(statusLabel, NULL, NULL);
 // {
 //            protected void startProgrammer(DecoderFile decoderFile, RosterEntry re,
 //                                            String filename) {
@@ -101,8 +101,8 @@ void PaneNewProgAction::init()
  f->setVisible(true);
  QTimer::singleShot(50, f, SLOT(pack()));
 }
-PNPLocoSelTreePane::PNPLocoSelTreePane(QLabel* s, QWidget* parent) :
-    LocoSelTreePane(s, parent) {}
+PNPLocoSelTreePane::PNPLocoSelTreePane(QLabel* s, ProgModeSelector* selector, QWidget* parent) :
+    LocoSelTreePane(s, selector, parent) {}
 
 /*protected*/ void PNPLocoSelTreePane:: startProgrammer(DecoderFile* decoderFile, RosterEntry* re, QString filename)
 {

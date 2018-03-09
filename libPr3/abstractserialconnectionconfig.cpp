@@ -64,7 +64,7 @@
     : AbstractConnectionConfig(parent)
 {
  common();
- adapter = NULL;
+ //adapter = NULL;
  addToActionList();
 }
 
@@ -245,9 +245,9 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
   return PortNameMapper::getPortFromName(t);
   //return t;
  }
- else if ((adapter!=NULL) && (((PR3Adapter*)adapter)->getCurrentPortName()!=NULL))
+ else if ((adapter!=NULL) && adapter->getCurrentPortName()!=NULL)
  {
-  return ((PR3Adapter*)adapter)->getCurrentPortName();
+  return adapter->getCurrentPortName();
  }
  return JmrixConfigPane::NONE;
 }

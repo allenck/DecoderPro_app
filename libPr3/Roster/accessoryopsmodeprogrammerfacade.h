@@ -9,7 +9,7 @@ class AccessoryOpsModeProgrammerFacade : public AbstractProgrammerFacade
     Q_OBJECT
 public:
     //explicit AccessoryOpsModeProgrammerFacade(QObject *parent = 0);
-    /*public*/ AccessoryOpsModeProgrammerFacade(AddressedProgrammer* prog, QObject *parent = 0 );
+ /*public*/ AccessoryOpsModeProgrammerFacade(Programmer* prog, /*@Nonnull */QString addrType, int delay, AddressedProgrammer* baseProg, QObject *parent= 0);
     /*public*/ QList<ProgrammingMode*> getSupportedModes();
     /*public*/ void setMode(ProgrammingMode* p);
     /*public*/ bool getCanRead();
@@ -32,13 +32,29 @@ private:
     // members for handling the programmer interface
     int _val;	// remember the value being read/written for confirmative reply
     QString _cv;	// remember the cv number being read/written
+    QString _addrType;               // remember the address type: ("decoder" or null) or ("accessory" or "output")
+    int _delay;                     // remember the programming delay, in milliseconds
+    AddressedProgrammer* _baseProg;   // remember the underlying programmer
     /*private*/ ProgListener* _usingProgrammer;// = null;
     enum ProgState { PROGRAMMING, NOTPROGRAMMING };
     ProgState state;// = ProgState.NOTPROGRAMMING;
     Logger* log;
 protected:
     /*protected*/ void useProgrammer(ProgListener* p) throw (ProgrammerException);
-
+ friend class DelayWorker;
 };
 
+class DelayWorker : public QObject
+{
+ Q_OBJECT
+ AccessoryOpsModeProgrammerFacade* facade;
+ QString cv;
+ int val;
+public:
+ DelayWorker(QString cv, int val, AccessoryOpsModeProgrammerFacade* facade);
+public slots:
+ void process();
+signals:
+ void finished();
+};
 #endif // ACCESSORYOPSMODEPROGRAMMERFACADE_H

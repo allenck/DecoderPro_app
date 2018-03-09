@@ -33,13 +33,12 @@
 /*public*/ SwingShutDownTask::SwingShutDownTask(QString name, QString warning, QString action, QWidget* component, QObject *parent)
  : AbstractShutDownTask(name, parent)
 {
-    //super(name);
-    this->component = component;
-    this->warning = warning;
-    this->action = action;
-    log = new Logger("SwingShutDownTask");
+ //super(name);
+ this->component = component;
+ this->warning = warning;
+ this->action = action;
+ log = new Logger("SwingShutDownTask");
 }
-
 
 /**
  * Take the necessary action.

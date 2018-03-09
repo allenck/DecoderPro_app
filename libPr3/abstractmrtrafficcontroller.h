@@ -73,8 +73,13 @@ private:
  /*private*/ void checkReplyInDispatch();
 
 protected:
+
+ /**
+  * Flag that threads should terminate as soon as they can.
+  */
+ /*protected*/ volatile bool threadStopRequest;/// = false;
  // set the instance variable
- /*abstract*/virtual  /*protected*/ void setInstance();
+ /*abstract*/virtual  /*protected*/ void setInstance() {}
 
  // The methods to implement the abstract Interface
 
@@ -84,20 +89,20 @@ protected:
  /*protected*/ /*synchronized*/ void removeListener(AbstractMRListener* l);
  /*protected*/ void notifyMessage(AbstractMRMessage* m, AbstractMRListener* notMe);
  /*abstract*/ /*protected*/ virtual void forwardMessage(AbstractMRListener* client, AbstractMRMessage* m) = 0;
- /*abstract*/ /*protected*/ AbstractMRMessage* pollMessage();
- /*abstract*/ /*protected*/ AbstractMRListener* pollReplyHandler();
+ /*abstract*/ /*protected*/ virtual AbstractMRMessage* pollMessage() {return NULL;}
+ /*abstract*/ /*protected*/ virtual AbstractMRListener* pollReplyHandler() {return NULL;}
  /*protected*/ AbstractMRListener* mLastSender;// = NULL;
 
  volatile /*protected*/ int mCurrentMode;
- /*abstract*/ /*protected*/ AbstractMRMessage* enterProgMode();
- /*abstract*/ /*protected*/ AbstractMRMessage* enterNormalMode();
+ /*abstract*/ /*protected*/ virtual AbstractMRMessage* enterProgMode() {return NULL;}
+ /*abstract*/ /*protected*/  virtual AbstractMRMessage* enterNormalMode()  {return NULL;}
  /*protected*/ bool programmerIdle();
  /*protected*/ int enterProgModeDelayTime();
  volatile /*protected*/ int mCurrentState;
  /*protected*/ bool allowUnexpectedReply;
  /*protected*/ void setAllowUnexpectedReply(bool expected);
  /*protected*/ void notifyReply(AbstractMRReply* r, AbstractMRListener* dest);
- /*abstract*/ /*protected*/ void forwardReply(AbstractMRListener* client, AbstractMRReply* m);
+ /*abstract*/ /*protected*/ virtual void forwardReply(AbstractMRListener* client, AbstractMRReply* m) {}
  /*synchronized*/ /*protected*/ void sendMessage(AbstractMRMessage* m, AbstractMRListener* reply);
  /*protected*/ void transmitWait(int waitTime, int state, QString InterruptMessage);
  /*protected*/ bool flushReceiveChars;// = false;
@@ -127,8 +132,8 @@ protected:
 
  /*protected*/ int maxRcvExceptionCount;// = 100;
  /*protected*/ void reportReceiveLoopException(Exception e);
- /*abstract*/ /*protected*/ AbstractMRReply* newReply();
- /*abstract*/ /*protected*/ bool endOfMessage(AbstractMRReply* r);
+ /*abstract*/ /*protected*/ virtual AbstractMRReply* newReply(){return NULL;}
+ /*abstract*/ /*protected*/ virtual bool endOfMessage(AbstractMRReply* r) {return false;}
  /*protected*/ void waitForStartOfReply(QDataStream* istream) throw (IOException);
  /*protected*/ char readByteProtected(QDataStream* istream) throw (IOException);
  /*protected*/ void loadChars(AbstractMRReply* msg, QDataStream* istream) throw (IOException);
@@ -138,6 +143,8 @@ protected:
  friend class RcvNotifier;
  friend class XmtNotifier;
  friend class CleanupHook;
+ friend class XmitWorker;
+ friend class RcvWorker;
 };
 
 /**
@@ -208,4 +215,37 @@ public:
     }
 }; // end cleanUpHook
 
+class XmitWorker : public QObject
+{
+ Q_OBJECT
+ AbstractMRTrafficController* amrtc;
+public:
+ XmitWorker(AbstractMRTrafficController* amrtc);
+
+public slots:
+ void run();
+
+signals:
+ void finished();
+
+};
+
+class RcvWorker : public QObject
+{
+ Q_OBJECT
+ AbstractMRTrafficController* amrtc;
+public:
+ RcvWorker( AbstractMRTrafficController* amrtc) { this->amrtc = amrtc;}
+public slots:
+ void run()
+ {
+  amrtc->receiveLoop();
+  emit finished();
+ }
+
+signals:
+ void finished();
+
+
+};
 #endif // ABSTRACTMRTRAFFICCONTROLLER_H

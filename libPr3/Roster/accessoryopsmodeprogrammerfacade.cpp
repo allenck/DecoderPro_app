@@ -4,7 +4,7 @@
 #include "commandstation.h"
 #include "instancemanager.h"
 #include "nmrapacket.h"
-
+#include "sleeperthread.h"
 //AccessoryOpsModeProgrammerFacade::AccessoryOpsModeProgrammerFacade(QObject *parent) :
 //    AbstractProgrammerFacade(parent)
 //{
@@ -37,16 +37,34 @@
 
 // /*public*/ class AccessoryOpsModeProgrammerFacade extends AbstractProgrammerFacade implements ProgListener {
 
-/*public*/ AccessoryOpsModeProgrammerFacade::AccessoryOpsModeProgrammerFacade(AddressedProgrammer* prog, QObject* parent)
-    : AbstractProgrammerFacade(prog, parent)
+/**
+ * Programmer facade for access to Accessory Decoder Ops Mode programming.
+ *
+ * @param prog     The (possibly already decorated) programmer we are
+ *                 piggybacking on.
+ * @param addrType A string. "accessory" or "output" causes the address to
+ *                 be interpreted as an 11 bit accessory output address.
+ *                 "decoder" causes the address to be interpreted as a 9 bit
+ *                 accessory decoder address "signal" causes the address to
+ *                 be interpreted as an 11 bit signal decoder address.
+ * @param delay    A string representing the desired delay between
+ *                 programming operations, in milliseconds.
+ * @param baseProg The underlying undecorated Ops Mode Programmer we are
+ *                 piggybacking on.
+ */
+//@SuppressFBWarnings(value = "DM_CONVERT_CASE",
+//        justification = "parameter value is never localised")  // NOI18N
+/*public*/ AccessoryOpsModeProgrammerFacade::AccessoryOpsModeProgrammerFacade(Programmer* prog, /*@NonNULL */QString addrType, int delay, AddressedProgrammer* baseProg, QObject *parent) :AbstractProgrammerFacade(prog)
 {
- //super(prog);
- this->mode = prog->getMode();
- this->prog = prog;
- _usingProgrammer = NULL;
- state = NOTPROGRAMMING;
+   // super(prog);
+    log->debug("Constructing AccessoryOpsModeProgrammerFacade");
+    this->_usingProgrammer = NULL;
+    this->mode = prog->getMode();
+    this->aprog = (AddressedProgrammer*)prog;
+    this->_addrType = (addrType == NULL) ? "" : addrType.toLower(); // NOI18N
+    this->_delay = delay;
+    this->_baseProg = baseProg;
 }
-
 //@Override
 /*public*/ QList<ProgrammingMode*> AccessoryOpsModeProgrammerFacade::getSupportedModes() {
     QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
@@ -73,19 +91,106 @@
 
 
 // programming interface
-/*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException) {
-    _val = val;
-    useProgrammer(p);
-    state = PROGRAMMING;
+/*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException)
+{
+ _val = val;
+ useProgrammer(p);
+ state = PROGRAMMING;
+ QByteArray b;
 
-    // send DCC command to implement prog.writeCV(cv, val, (ProgListener*)this);
-    QByteArray b = NmraPacket::accDecoderPktOpsMode(aprog->getAddressNumber(), cv.toInt(), val);
-    ((CommandStation*)InstanceManager::getDefault("CommandStation"))->sendPacket(b,1);
+ // Send DCC commands to implement prog.writeCV(cv, val, this);
+ if (_addrType ==  "accessory" || _addrType == "output")
+ {
+         // interpret address as accessory address
+         log->debug(tr("Send an accDecoderPktOpsMode: address=%1, cv=%2, value=%3").arg(
+                 _baseProg->getAddressNumber()).arg((cv.toInt())).arg(val));
+         b = NmraPacket::accDecoderPktOpsMode(_baseProg->getAddressNumber(), (cv.toInt()), val);
+ }
+ else if(_addrType ==  "signal")
+ {
+         // interpret address as signal address
+         log->debug(tr("Send an accSignalDecoderPktOpsMode: address=%1, cv=%2, value=%3").arg(
+                 _baseProg->getAddressNumber()).arg(cv.toInt()).arg(val));
+         b = NmraPacket::accSignalDecoderPktOpsMode(_baseProg->getAddressNumber(), (cv.toInt()), val);
+  }
+  else if (_addrType == "altsignal")
+  {
+         // interpret address as signal address using the alternative interpretation of S-9.2.1
+         log->debug(tr("Send an altAccSignalDecoderPktOpsMode: address=%1, cv=%2, value=%3").arg(
+                 _baseProg->getAddressNumber()).arg(cv.toInt()).arg(val));
+         b = NmraPacket::altAccSignalDecoderPktOpsMode(_baseProg->getAddressNumber(), cv.toInt(), val);
+  }
+  else if (_addrType == "decoder")
+  {
+         // interpet address as decoder address
+         log->debug(tr("Send an accDecPktOpsMode: address=%1, cv=%2, value=%3").arg(
+                 _baseProg->getAddressNumber()).arg(cv.toInt()).arg(val));
+         b = NmraPacket::accDecPktOpsMode(_baseProg->getAddressNumber(), (cv.toInt()), val);
+ }
+ else if (_addrType == "legacy")
+ {
+         // interpet address as decoder address and send legacy packet
+         log->debug(tr("Send an accDecPktOpsModeLegacy: address=%1, cv=%2, value=%3").arg(
+                 _baseProg->getAddressNumber()).arg(cv.toInt()).arg(val));
+         b = NmraPacket::accDecPktOpsModeLegacy(_baseProg->getAddressNumber(), cv.toInt(), val);
+  }
+ else
+ {log->error(tr("Unknown Address Type \"%1\"").arg(_addrType));
+         programmingOpReply(val, ProgListener::UnknownError);
+         return;
+ }
+ ((CommandStation*)InstanceManager::getDefault("CommandStation"))->sendPacket(b, 2); // send two packets
 
-    // and reply done
-    p->programmingOpReply(val, ProgListener::OK);
+ // set up a delayed completion reply
+#if 0
+ new Thread(new Runnable() {
+     @Override
+     public synchronized void run() {
+         log.debug("delaying {} milliseconds for cv={}, value={}", _delay, Integer.parseInt(cv), val);
+         if (_delay > 0) {
+             try {
+                 Thread.sleep(_delay);
+             } catch (InterruptedException ie) {
+                 log.error("Interrupted while sleeping {}", ie);
+             }
+         }
+         log.debug("            delay elapsed for cv={}, value={}", Integer.parseInt(cv), val);
+         programmingOpReply(val, ProgListener.OK);
+     }
+ }).start();
+#else
+ DelayWorker* worker = new DelayWorker(cv, val, this);
+ QThread* thread = new QThread();
+ connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
+ connect(thread, SIGNAL(started()), worker, SLOT(process()));
+ worker->moveToThread(thread );
+ thread->start();
+
+#endif
 }
 
+DelayWorker::DelayWorker(QString cv, int val, AccessoryOpsModeProgrammerFacade *facade) : QObject()
+{
+ this->facade = facade;
+ this->cv = cv;
+ this->val = val;
+}
+
+void DelayWorker::process()
+{
+ facade->log->debug(tr("delaying %1 milliseconds for cv=%2, value=%3").arg(facade->_delay).arg(cv).arg(val));
+ if (facade->_delay > 0) {
+     try {
+         //Thread.sleep(_delay);
+   SleeperThread::msleep(facade->_delay);
+     } catch (InterruptedException ie) {
+         facade->log->error(tr("Interrupted while sleeping %1").arg(ie.getMessage()));
+     }
+ }
+ facade->log->debug(tr("            delay elapsed for cv=%1, value=%2").arg(cv).arg(val));
+ facade->programmingOpReply(val, ProgListener::OK);
+ emit finished();
+}
 /*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::confirmCV(QString cv, int val, ProgListener* p) throw (ProgrammerException) {
     readCV(cv, p);
 }

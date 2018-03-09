@@ -20,6 +20,7 @@
 #include "operationsmenu.h"
 #include "debugmenu.h"
 #include "webserveraction.h"
+#include "windowinterface.h"
 
 //AppsLaunchFrame::AppsLaunchFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -191,8 +192,8 @@
  * @param menuBar
  * @param wi
  */
-/*protected*/ void AppsLaunchFrame::systemsMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
-    ActiveSystemsMenu::addItems(menuBar);
+/*protected*/ void AppsLaunchFrame::systemsMenu(QMenuBar* menuBar, WindowInterface* wi) {
+    ActiveSystemsMenu::addItems(menuBar, wi->getFrame());
 }
 
 /*protected*/ void AppsLaunchFrame::debugMenu(QMenuBar* menuBar, WindowInterface* /*wi*/, AppsLaunchPane* pane)

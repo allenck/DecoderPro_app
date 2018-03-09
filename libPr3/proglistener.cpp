@@ -1,4 +1,5 @@
 #include "proglistener.h"
+#include <QMetaEnum>
 
 ProgListener::ProgListener(QObject *parent) :
     QObject(parent)
@@ -13,3 +14,10 @@ ProgListener::ProgListener(QObject *parent) :
  */
 void ProgListener::programmingOpReply(int value, int status) {}
 
+QString ProgListener::statusString(ProgListener::status type)
+{
+ const QMetaObject &mo = ProgListener::staticMetaObject;
+ int index = mo.indexOfEnumerator("status");
+ QMetaEnum metaEnum = mo.enumerator(index);
+ return metaEnum.valueToKey(type);
+}

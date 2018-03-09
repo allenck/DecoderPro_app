@@ -10,7 +10,7 @@ SerialPort::SerialPort(QObject *parent) :
     QObject(parent)
 {
  log = new Logger("SerialPort", this);
- serial = NULL;
+ serial = new QSerialPort(this);
 // rcvBuffer = new QByteArray(500,0);
 // xmtBuffer = new QByteArray(500,0);
 
@@ -19,6 +19,8 @@ SerialPort::SerialPort(QObject *parent) :
  istream = NULL;
  ostream = NULL;
  bOpened = false;
+ rcvTimeout = 0;
+
 }
 //activeSerialPort->setSerialPortParams(baud, SerialPort::DATABITS_8,
 //                                     SerialPort::STOPBITS_1, SerialPort::PARITY_NONE);
@@ -33,23 +35,31 @@ void SerialPort::setSerialPortParams(int baud, int databits, int stopbits, int p
  QSerialPort::BaudRate rate;
  switch (baud)
  {
+ case 9600:
+  rate = QSerialPort::Baud9600;  // used by Sprog
+  break;
+ case 115200:
+  rate = QSerialPort::Baud115200;
+  break;
  case 57600:
-  rate = QSerialPort::Baud57600;
+  rate = QSerialPort::Baud57600;  // used by LocoNet
   break;
  default:
-  //throw new UnsupportedCommOperationException("invalid baud rate");
-  rate = QSerialPort::Baud57600;
+  throw new UnsupportedCommOperationException("invalid baud rate");
+  //rate = QSerialPort::Baud57600;
  }
  // TODO: translate parameters to those required by QtSerial port. Defaults here are OK for PR3 adapter.
  if (!serial->setBaudRate(rate))
  {
-  emit error(tr("Can't set baud rate 9600 baud to port %1, error code %2").arg(serial->portName()).arg(serial->errorString()));
+  emit error(tr("Can't set baud rate %3 baud to port %1, error code %2").arg(serial->portName()).arg(serial->errorString()).arg(baud));
+  throw UnsupportedCommOperationException(tr("Can't set baud rate %3 baud to port %1, error code %2").arg(serial->portName()).arg(serial->errorString()).arg(baud));
+
   return;
  }
  QSerialPort::DataBits db;
  switch(databits)
  {
- case DATABITS8:
+ case DATABITS_8:
   db = QSerialPort::Data8;
   break;
  default:
@@ -66,7 +76,7 @@ void SerialPort::setSerialPortParams(int baud, int databits, int stopbits, int p
  QSerialPort::Parity p;
  switch(parity)
  {
-  case PARITYNONE:
+  case PARITY_NONE:
   p = QSerialPort::NoParity;
   break;
  default:
@@ -94,7 +104,9 @@ void SerialPort::setSerialPortParams(int baud, int databits, int stopbits, int p
                 .arg(serial->portName()).arg(serial->errorString()));
   return;
  }
+
 }
+
 void SerialPort::setRTS(bool bRts)
 {
  if(!serial->setRequestToSend(bRts))
@@ -125,6 +137,7 @@ void SerialPort::setFlowControlMode(int flow) throw (UnsupportedCommOperationExc
    myFlow = QSerialPort::NoFlowControl;
    break;
   default:
+  //myFlow = QSerialPort::SoftwareControl;
    throw new UnsupportedCommOperationException("invalid flow control");
  }
  if(!serial->setFlowControl(myFlow))
@@ -172,16 +185,19 @@ bool SerialPort::flush()
 {
  return serial->flush();
 }
-bool SerialPort::open(QIODevice::OpenMode mode)
-{
- return serial->open(mode);
-}
 
 bool SerialPort::open(QString portName, QIODevice::OpenMode mode)
 {
+ serial->setPortName(portName);
+ return open(mode);
+}
+
+bool SerialPort::open(QIODevice::OpenMode mode)
+
+{
  if(bOpened)
   serial->close();
- QSerialPortInfo info = QSerialPortInfo(portName);
+ //QSerialPortInfo info = QSerialPortInfo(portName);
  QList<QSerialPortInfo> list = QSerialPortInfo::availablePorts();
 
  log->info("Available ports:");
@@ -193,12 +209,10 @@ bool SerialPort::open(QString portName, QIODevice::OpenMode mode)
 // if(list.count() > 0)
 //  serial = new QSerialPort(list.at(0));
 // else
-  serial = new QSerialPort(portName);
  connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this, SLOT(OnError()));
- //connect(serial, SIGNAL(readyRead()), this, SLOT(OnDataReady()));
- //serial->setPortName(portName);
- this->portName = portName;
- bool bOpened = serial->open(mode);
+
+ this->portName = serial->portName();
+ bOpened = serial->open(mode);
  if(!bOpened)
  {
   log->error(tr("Can't open serial port %1, error %2").arg(portName).arg(serial->errorString()));
@@ -206,11 +220,12 @@ bool SerialPort::open(QString portName, QIODevice::OpenMode mode)
   emit error(tr("Can't open serial port %1, error %2").arg(portName).arg(serial->errorString()));
   return false;
  }
+
  log->info(serial->errorString());
  QSerialPortInfo inf = QSerialPortInfo(portName);
  log->info(inf.isBusy()?"busy":"not busy");
  // Setup input and output streams
- connect(serial, SIGNAL(readyRead()), this, SLOT(dataReady()));
+
  //xmtTimer();
  istream = new QDataStream(serial);
 
@@ -240,10 +255,10 @@ bool SerialPort::open(QString portName, QIODevice::OpenMode mode)
 // QTimer::singleShot(50, this, SLOT(xmtTimer()));
 //}
 
-void SerialPort::dataReady()
-{
-  LnPacketizer::dataAvailable->wakeAll();
-}
+//void SerialPort::dataReady()
+//{
+//  LnPacketizer::dataAvailable->wakeAll();
+//}
 
 int SerialPort::databits()
 {
@@ -296,3 +311,21 @@ void SerialPort::OnDataReady()
 {
  log->info("Data ready");
 }
+
+qint32 SerialPort::getBaudRate()
+{
+ return serial->baudRate();
+}
+
+qint32 SerialPort::getReceiveTimeout()
+{
+ return rcvTimeout;
+}
+
+void SerialPort::enableReceiveTimeout(qint32 value) {rcvTimeout=value;}
+
+QSerialPort* SerialPort::device() { return serial;}
+
+bool SerialPort::isReceiveTimeoutEnabled() {return rcvTimeout != 0;}
+
+QSerialPort::SerialPortError SerialPort::lastError() {return serial->error();}

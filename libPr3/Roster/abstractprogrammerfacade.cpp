@@ -38,32 +38,32 @@
 }
 
 //@Override
-/*public*/ void AbstractProgrammerFacade::writeCV(int CV, int val, ProgListener*p) //throw (ProgrammerException)
+/*public*/ void AbstractProgrammerFacade::writeCV(int CV, int val, ProgListener*p) throw (ProgrammerException)
 {
     prog->writeCV(CV, val, p);
 }
 //@Override
-/*public*/ void AbstractProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void AbstractProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     prog->writeCV(CV, val, p);
 }
 //@Override
-/*public*/ void AbstractProgrammerFacade::readCV(int CV, ProgListener* p) //throws ProgrammerException
+/*public*/ void AbstractProgrammerFacade::readCV(int CV, ProgListener* p) throw (ProgrammerException)
 {
     prog->readCV(CV, p);
 }
 //@Override
-/*public*/ void AbstractProgrammerFacade::readCV(QString CV, ProgListener* p) //throws ProgrammerException
+/*public*/ void AbstractProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
 {
     prog->readCV(CV, p);
 }
 //@Override
-/*public*/ void AbstractProgrammerFacade::confirmCV(int CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void AbstractProgrammerFacade::confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     prog->confirmCV(CV, val, p);
 }
 //@Override
-/*public*/ void AbstractProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void AbstractProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     prog->confirmCV(CV, val, p);
 }

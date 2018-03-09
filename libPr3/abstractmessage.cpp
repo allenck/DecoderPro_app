@@ -13,11 +13,11 @@
 ///*public*/ abstract class AbstractMessage implements Message {
 
 /** Creates a new instance of AbstractMessage */
-/*public*/ AbstractMessage::AbstractMessage(QObject *parent)
+/*public*/ AbstractMessage::AbstractMessage(QObject *parent) : Message(parent)
 {
  this->parent = parent;
  log = new Logger("AbstractMessage");
- _dataChars = NULL;
+ _dataChars = QByteArray();
 
  _nDataChars = 0;
 
@@ -26,9 +26,9 @@
 /*public*/ AbstractMessage::AbstractMessage(int n)
 {
  if (n<1)
-        log->error("invalid length in call to ctor");
-    _nDataChars = n;
-    _dataChars = new QByteArray[n];
+  log->error("invalid length in call to ctor");
+ _nDataChars = n;
+ _dataChars = QByteArray(n,0);
 }
 
 /*public*/ AbstractMessage::AbstractMessage(QString s)
@@ -36,7 +36,8 @@
  //this(s.length());
  QByteArray ba = s.toLatin1();
  for (int i = 0; i<_nDataChars; i++)
-  _dataChars->replace(i, ba.at(i));
+  //_dataChars.replace(i, ba.at(i));
+  _dataChars[i] = ba.at(i);
 }
 
 //@SuppressWarnings("NULL")
@@ -45,17 +46,17 @@
  if (m == NULL)
   log->error("copy ctor of NULL message throws exception");
  _nDataChars = m->_nDataChars;
- _dataChars = new QByteArray[_nDataChars];
- for (int i = 0; i<_nDataChars; i++) _dataChars->replace(i, m->_dataChars->at(i));
+ _dataChars = QByteArray(_nDataChars,0);
+ for (int i = 0; i<_nDataChars; i++) _dataChars.replace(i, m->_dataChars.at(i));
 }
 
-/*public*/ int AbstractMessage::getElement(int n) {return _dataChars->at(n);}
+/*public*/ int AbstractMessage::getElement(int n) {return _dataChars.at(n);}
 
 
 // accessors to the bulk data
 /*public*/ int AbstractMessage::getNumDataElements() {return _nDataChars;}
 
-/*public*/ void AbstractMessage::setElement(int n, int v) {_dataChars->replace(n, v);  }
+/*public*/ void AbstractMessage::setElement(int n, int v) {_dataChars[n]= v;  }
 
 
 

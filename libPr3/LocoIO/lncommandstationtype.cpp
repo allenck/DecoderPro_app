@@ -87,19 +87,19 @@ LnCommandStationType::LnCommandStationType(QString name, bool canRead, bool prog
 {
  if(values.isEmpty())
  {
-            values.append(new LnCommandStationType("DCS100 (Chief)",              true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS100));
-            values.append(new LnCommandStationType("DCS200",                      true,   false,  "LnThrottleManager",    "SlotManager",COMMAND_STATION_DCS200));
-            values.append(new LnCommandStationType("DCS50 (Zephyr)",              true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS050));
-            values.append(new LnCommandStationType("DCS51 (Zephyr Xtra)",         true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS051));
-            values.append(new LnCommandStationType("DB150 (Empire Builder)",      false,  true,   "LnThrottleManager",    "SlotManager", COMMAND_STATION_DB150));
-            values.append(new LnCommandStationType("LocoBuffer (PS)",             true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_LBPS));
-            values.append(new LnCommandStationType("Mix-Master",                  false,  true,   "LnThrottleManager",    "SlotManager", COMMAND_STATION_MM));
-            values.append(new LnCommandStationType("Intellibox-I",                true,   true,   "Ib1ThrottleManager",   "SlotManager", COMMAND_STATION_IBX_TYPE_1)), // NOI18N
-            values.append(new LnCommandStationType("Intellibox-II",               true,   true,   "Ib2ThrottleManager",   "UhlenbrockSlotManager", COMMAND_STATION_IBX_TYPE_2)); // NOI18N
-            values.append(new LnCommandStationType("PR3 standalone programmer",   true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_PR3_ALONE));
-            values.append(new LnCommandStationType("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_STANDALONE));  // NOI18N
-
+  values.append(new LnCommandStationType("DCS100 (Chief)",              true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS100));
+  values.append(new LnCommandStationType("DCS200",                      true,   false,  "LnThrottleManager",    "SlotManager",COMMAND_STATION_DCS200));
+  values.append(new LnCommandStationType("DCS50 (Zephyr)",              true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS050));
+  values.append(new LnCommandStationType("DCS51 (Zephyr Xtra)",         true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS051));
+  values.append(new LnCommandStationType("DB150 (Empire Builder)",      false,  true,   "LnThrottleManager",    "SlotManager", COMMAND_STATION_DB150));
+  values.append(new LnCommandStationType("LocoBuffer (PS)",             true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_LBPS));
+  values.append(new LnCommandStationType("Mix-Master",                  false,  true,   "LnThrottleManager",    "SlotManager", COMMAND_STATION_MM));
+  values.append(new LnCommandStationType("Intellibox-I",                true,   true,   "Ib1ThrottleManager",   "SlotManager", COMMAND_STATION_IBX_TYPE_1)), // NOI18N
+  values.append(new LnCommandStationType("Intellibox-II",               true,   true,   "Ib2ThrottleManager",   "UhlenbrockSlotManager", COMMAND_STATION_IBX_TYPE_2)); // NOI18N
+  values.append(new LnCommandStationType("PR3 standalone programmer",   true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_PR3_ALONE));
+  values.append(new LnCommandStationType("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_STANDALONE));  // NOI18N
  }
+
  foreach (LnCommandStationType* p, values)
  {
   if (p->name==(name)) return p;

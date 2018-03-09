@@ -25,11 +25,11 @@ public:
  /**
   * Standard error handling for port-not-found case
   */
- /*public*/ QString handlePortNotFound(NoSuchPortException p,
+ /*public*/ virtual QString handlePortNotFound(NoSuchPortException p,
                          QString portName,
                          Logger* log);
     /*public*/ void _connect(); // throw( Exception);
- /*public*/ void setPort(QString port);
+ /*public*/ virtual void setPort(QString port);
     /*public*/  QString getCurrentPortName();
  /*public*/ QVector<QString> getPortNames();
  /**
@@ -51,7 +51,7 @@ public:
   * Uses the validBaudNumber and validBaudRates methods to do this.
   * @return -1 if no match (configuration system should prevent this)
   */
- /*public*/ int currentBaudNumber(QString currentBaudRate);
+ /*public*/ virtual int currentBaudNumber(QString currentBaudRate);
  /*This in place here until all systems are converted over to the systemconnection memo
  this will then become abstract, once all the code has been refactored*/
 // /*public*/ SystemConnectionMemo* getSystemConnectionMemo();

@@ -291,57 +291,10 @@ void CvTableModel::configureTable(JTable *cvTable)
 {
  if(_table == NULL)
   _table = cvTable;
- //QSignalMapper* readMapper = new QSignalMapper(this);
- //cvTable->setItemDelegateForColumn(CvTableModel::READCOLUMN, new PushButtonDelegate());
  setColumnToHoldButton(cvTable,READCOLUMN);
- //connect(readMapper, SIGNAL(mapped(int)), this, SLOT(OnReadMapper(int)));
- //QSignalMapper* writeMapper = new QSignalMapper(this);
- //cvTable->setItemDelegateForColumn(CvTableModel::WRITECOLUMN, new PushButtonDelegate());
  setColumnToHoldButton(cvTable, WRITECOLUMN);
- //connect(writeMapper, SIGNAL(mapped(int)), this, SLOT(OnWriteMapper(int)));
- //QSignalMapper* confirmMapper = new QSignalMapper(this);
- //cvTable->setItemDelegateForColumn(CvTableModel::COMPARECOLUMN, new PushButtonDelegate());
  setColumnToHoldButton(cvTable, COMPARECOLUMN);
- //connect(confirmMapper, SIGNAL(mapped(int)), this, SLOT(OnConfirmMapper(int)));
  setPersistentButtons();
-}
-
-void CvTableModel::OnReadMapper(int row)
-{
- int newRow = mapRow(row);
- CvValue* val = getCvByRow(newRow);
- val->read(_status);
-}
-int CvTableModel::mapRow(int row)
-{
- int newRow = row;
- QString cv;
- QString dCv;
- QAbstractItemModel * model = (QSortFilterProxyModel*)_table->model();
- if(model != NULL)
- {
-  QModelIndex m = model->index(row, 0);
-  dCv = m.data().toString();
-  QModelIndex ix = ((QSortFilterProxyModel*)model)->mapToSource(m);
-  newRow = ix.row();
-
-  cv = ix.data().toString();
- }
- return newRow;
-}
-
-void CvTableModel::OnWriteMapper(int row)
-{
- int newRow = mapRow(row);
- CvValue* val = getCvByRow(newRow);
- val->write(_status);
-}
-
-void CvTableModel::OnConfirmMapper(int row)
-{
- int newRow = mapRow(row);
- CvValue* val = getCvByRow(newRow);
- val->confirm(_status);
 }
 
 /*public*/ bool CvTableModel::decoderDirty()

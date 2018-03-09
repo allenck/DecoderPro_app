@@ -1,3 +1,5 @@
+
+
 #include "abstractconnectionconfig.h"
 #include "instancemanager.h"
 #include "jmriuserpreferencesmanager.h"
@@ -21,7 +23,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
  systemPrefixLabel = new QLabel("Connection Prefix:");
  connectionNameLabel = new QLabel("Connection Name:");
  systemPrefixField = new JTextField(10);
- connectionNameField = new JTextField(15);
+ connectionNameField = new JTextField(16);
  options = QHash<QString, Option*>();
  additionalItems = new QList<QWidget*>();
  gbLayout = new QGridLayout();

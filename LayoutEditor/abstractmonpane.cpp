@@ -183,7 +183,7 @@ AbstractMonPane::~AbstractMonPane()
 //    });
 
  // fix a width for current character set
- JTextField* t = new JTextField(80);
+ //JTextField* t = new JTextField(80);
 //    int x = jScrollPane1.getPreferredSize().width+t.getPreferredSize().width;
 //    int y = jScrollPane1.getPreferredSize().height+10*t.getPreferredSize().height;
 
@@ -330,6 +330,7 @@ void AbstractMonPane::OnAutoScrollCheckBox(bool /*bChecked*/)
 {
  //doAutoScroll(monTextPane, autoScrollCheckBox->isChecked());
 }
+
 void AbstractMonPane::OnAlwaysOnTopCheckBox(bool bChecked)
 {
  Qt::WindowFlags flags = windowFlags();

@@ -58,6 +58,24 @@ public:
      * @author      Bob Jacobsen Copyright (C) 2003
      * @version	$Revision: 20288 $
      */
+ enum NameValidity {
+         /**
+          * Indicates the name is valid as is,
+          * and can also be a valid prefix for longer names
+          */
+         VALID,
+          /**
+           * Indicates name is not valid as-is, nor
+           * can it be made valid by adding more characters;
+           * just a bad start.
+           */
+         INVALID,
+         /**
+          * Indicates that adding additional characters might (or might not)
+          * turn this into a valid name; it is not a valid name now.
+          */
+         VALID_AS_PREFIX_ONLY
+     };
 //    public interface Manager {
 
 //        /**

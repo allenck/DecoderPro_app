@@ -96,7 +96,7 @@
  f->setMenuBar(menuBar);
 
  // new Loco on programming track
- QWidget* pane1 = new MyCombinedLocoSelTreePane(this, statusLabel);
+ QWidget* pane1 = new MyCombinedLocoSelTreePane(this, statusLabel, modePane);
  ((MyCombinedLocoSelTreePane*)pane1)->init();
 // {
 //            protected void startProgrammer(DecoderFile decoderFile, RosterEntry re,
@@ -132,8 +132,8 @@
  f->setVisible(true);
 }
 /*public*/
-/*protected*/ PaneProgAction::MyCombinedLocoSelTreePane::MyCombinedLocoSelTreePane(PaneProgAction* act, QLabel * statusLabel, QWidget* parent)
-    : CombinedLocoSelTreePane(statusLabel, parent)
+/*protected*/ PaneProgAction::MyCombinedLocoSelTreePane::MyCombinedLocoSelTreePane(PaneProgAction* act, QLabel * statusLabel, ProgModeSelector* modePane, QWidget* parent)
+    : CombinedLocoSelTreePane(statusLabel, modePane, parent)
 {
  this->act = act;
 }

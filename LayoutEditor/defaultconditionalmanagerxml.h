@@ -1,5 +1,5 @@
-#ifndef DEFAULTCONDTIONALMANAGERXML_H
-#define DEFAULTCONDTIONALMANAGERXML_H
+#ifndef DEFAULTCONDITIONALMANAGERXML_H
+#define DEFAULTCONDITIONALMANAGERXML_H
 #include "abstractnamedbeanmanagerconfigxml.h"
 #include "liblayouteditor_global.h"
 
@@ -27,4 +27,4 @@ protected:
 
 };
 Q_DECLARE_METATYPE(DefaultConditionalManagerXml)
-#endif // DEFAULTCONDTIONALMANAGERXML_H
+#endif // DEFAULTCONDITIONALMANAGERXML_H

@@ -51,19 +51,20 @@ ProgrammerManager(parent)
 
 /*public*/ Programmer* DeferringProgrammerManager::getGlobalProgrammer() {
  GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
-    if (gp == NULL) {
-        log->debug("no defaultGlobal ProgrammerManager, getGlobalProgrammer returns NULL" );
-        return NULL;
-    }
-    Programmer* p = gp->getGlobalProgrammer();
-    log->debug(tr("getGlobalProgrammer returns default service-mode programmer of type %1 from %2").arg(
-        (p != NULL ? p->metaObject()->className() : "(NULL)")).arg(gp->metaObject()->className() ));
-    return p;
+ if (gp == NULL || this == gp)
+ {
+     log->debug("no defaultGlobal ProgrammerManager, getGlobalProgrammer returns NULL" );
+     return NULL;
+ }
+ Programmer* p = gp->getGlobalProgrammer();
+ log->debug(tr("getGlobalProgrammer returns default service-mode programmer of type %1 from %2").arg(
+     (p != NULL ? p->metaObject()->className() : "(NULL)")).arg(gp->metaObject()->className() ));
+ return p;
 }
 
 /*public*/ Programmer* DeferringProgrammerManager::reserveGlobalProgrammer() {
  GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
-    if (gp == NULL) {
+    if (gp == NULL || this == gp) {
         return NULL;
     }
     return gp->reserveGlobalProgrammer();
@@ -71,7 +72,7 @@ ProgrammerManager(parent)
 
 /*public*/ void DeferringProgrammerManager::releaseGlobalProgrammer(Programmer* p) {
  GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
-    if (gp == NULL) {
+    if (gp == NULL || this == gp) {
         return;
     }
     gp->releaseGlobalProgrammer(p);
@@ -85,7 +86,7 @@ ProgrammerManager(parent)
 /*public*/ bool DeferringProgrammerManager::isGlobalProgrammerAvailable()
 {
  GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
- if (gp == NULL)
+ if (gp == NULL || this == gp)
  {
   return false;
  }
@@ -94,7 +95,7 @@ ProgrammerManager(parent)
 
 /*public*/ AddressedProgrammer* DeferringProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
  AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getNullableDefault("AddressedProgrammerManager");
-    if (ap == NULL) {
+    if (ap == NULL  || this == ap) {
         return NULL;
     }
     return ap->getAddressedProgrammer(pLongAddress, pAddress);
@@ -102,7 +103,7 @@ ProgrammerManager(parent)
 
 /*public*/ AddressedProgrammer* DeferringProgrammerManager::reserveAddressedProgrammer(bool pLongAddress, int pAddress) {
  AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
-    if (ap == NULL) {
+    if (ap == NULL || this == ap) {
         return NULL;
     }
     return ap->reserveAddressedProgrammer(pLongAddress, pAddress);
@@ -110,7 +111,7 @@ ProgrammerManager(parent)
 
 /*public*/ void DeferringProgrammerManager::releaseAddressedProgrammer(AddressedProgrammer* p) {
  AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
-    if (ap == NULL) {
+    if (ap == NULL || this == ap) {
         return;
     }
     ap->releaseAddressedProgrammer(p);
@@ -123,7 +124,7 @@ ProgrammerManager(parent)
  */
 /*public*/ bool DeferringProgrammerManager::isAddressedModePossible() {
  AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
-    if (ap == NULL) {
+    if (ap == NULL || this == ap) {
         return false;
     }
     return ap->isAddressedModePossible();

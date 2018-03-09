@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QStringList>
 #include "lnconnectiontypelist.h"
+#include "sprog/sprogconnectiontypelist.h"
 
 class LIBPR3SHARED_EXPORT DCCManufacturerList : public QObject
 {

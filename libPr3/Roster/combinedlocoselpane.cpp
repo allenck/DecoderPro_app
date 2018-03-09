@@ -52,10 +52,11 @@ CombinedLocoSelPane::CombinedLocoSelPane(QWidget *parent) :
 
 //    static final java.util.ResourceBundle rbt = jmri.jmrit.symbolicprog.SymbolicProgBundle.bundle();
 
-/*public*/ CombinedLocoSelPane::CombinedLocoSelPane(QLabel* s, QWidget *parent) : LocoSelPane(parent)
+/*public*/ CombinedLocoSelPane::CombinedLocoSelPane(QLabel* s, ProgModeSelector* selector, QWidget *parent) : LocoSelPane(parent)
 {
  common();
  _statusLabel = s;
+ this-> selector = selector;
  init();
 }
 
@@ -110,13 +111,16 @@ JToggleButton* CombinedLocoSelPane::addDecoderIdentButton()
 {
  JToggleButton* iddecoder = new JToggleButton(tr("Read type from decoder"));
  iddecoder->setToolTip(tr("Read the decoders mfg and version, then attempt to select its type"));
- if (InstanceManager::programmerManagerInstance()!= NULL
-                && InstanceManager::programmerManagerInstance()->getGlobalProgrammer()!=NULL
-                && !InstanceManager::programmerManagerInstance()->getGlobalProgrammer()->getCanRead())
+ if (InstanceManager::getNullableDefault("GlobalProgrammerManager") != NULL)
  {
-  // can't read, disable the button
-  iddecoder->setEnabled(false);
-  iddecoder->setToolTip(tr("Button disabled because configured command station can't read CVs"));
+  Programmer* p = ((GlobalProgrammerManager*) InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+  if (p != NULL && !p->getCanRead())
+
+  {
+   // can't read, disable the button
+   iddecoder->setEnabled(false);
+   iddecoder->setToolTip(tr("Button disabled because configured command station can't read CVs"));
+  }
  }
 // iddecoder.addActionListener( new ActionListener() {
 //            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
@@ -126,6 +130,7 @@ JToggleButton* CombinedLocoSelPane::addDecoderIdentButton()
  connect(iddecoder, SIGNAL(clicked()), this, SLOT(startIdentifyDecoder()));
  return iddecoder;
 }
+
 void CombinedLocoSelPane::On_decoderBoxIndexChanged(int)
 {
  if (decoderBox->currentIndex() != 0)
@@ -245,7 +250,7 @@ void CombinedLocoSelPane::On_locoBoxPropertyChange()
 void CombinedLocoSelPane::On_idloco_clicked()
 {
  if (log->isDebugEnabled()) log->debug("Identify locomotive pressed");
- startIdentifyLoco();
+ startIdentifyDecoder();
 }
 /**
  * Initialize the GUI
@@ -317,16 +322,65 @@ void CombinedLocoSelPane::On_go2_clicked()
 }
 
 /**
- * Identify loco button pressed, start the identify operation
- * This defines what happens when the identify is done.
+ * Identify loco button pressed, start the identify operation This defines
+ * what happens when the identify is done.
  */
 /*protected*/ void CombinedLocoSelPane::startIdentifyLoco() {
     // start identifying a loco
-    CombinedLocoSelPane* me = this;
-    CLSIdentifyLoco* id = new CLSIdentifyLoco(this);
+    Programmer* p = NULL;
+    if (selector != NULL && selector->isSelected()) {
+        p = selector->getProgrammer();
+    }
+    if (p == NULL) {
+        log->warn("Selector did not provide a programmer, use default");
+        p = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+    }
+    CLSIdentifyLoco* id = new CLSIdentifyLoco(p, this);
+//    {
+
+//        @Override
+//        protected void done(int dccAddress) {
+//            // if Done, updated the selected decoder
+//            CombinedLocoSelPane.this.selectLoco(dccAddress);
+//        }
+
+//        @Override
+//        protected void message(String m) {
+//            if (_statusLabel != NULL) {
+//                _statusLabel.setText(m);
+//            }
+//        }
+
+//        @Override
+//        protected void error() {
+//            // raise the button again
+//            idloco.setSelected(false);
+//        }
+//    };
     id->start();
 }
-CLSIdentifyLoco::CLSIdentifyLoco(CombinedLocoSelPane *who)
+
+/**
+ * Identify loco button pressed, start the identify operation
+ * This defines what happens when the identify is done.
+ */
+/*protected*/ void CombinedLocoSelPane::startIdentifyDecoder()
+{
+ // start identifying a decoder
+ Programmer* p = NULL;
+ if (selector != NULL && selector->isSelected()) {
+     p = selector->getProgrammer();
+ }
+ if (p == NULL)
+ {
+     log->warn("Selector did not provide a programmer, use default");
+     p = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+ }
+ CLSIdentifyDecoder* id = new CLSIdentifyDecoder(p, this);
+ id->start();
+}
+
+CLSIdentifyLoco::CLSIdentifyLoco(Programmer* programmer, CombinedLocoSelPane *who) : IdentifyLoco(programmer)
 {
  this->who = who;
 }
@@ -345,34 +399,7 @@ CLSIdentifyLoco::CLSIdentifyLoco(CombinedLocoSelPane *who)
 }
 
 
-/**
- * Identify loco button pressed, start the identify operation.
- * This defines what happens when the identify is done.
- */
-/*protected*/ void CombinedLocoSelPane::startIdentifyDecoder()
-{
- // start identifying a decoder
- CombinedLocoSelPane* me = this;
- iddecoder->setEnabled(false);
- setCursor(Qt::WaitCursor);
-//    IdentifyDecoder id = new IdentifyDecoder() {
-//            private CombinedLocoSelPane who = me;
-//            /*protected*/ void done(int mfg, int model, int productID) {
-//                // if Done, updated the selected decoder
-//                who.selectDecoder(mfg, model, productID);
-//            }
-//            /*protected*/ void message(String m) {
-//                if (_statusLabel != NULL) _statusLabel.setText(m);
-//            }
-//            /*protected*/ void error() {
-//                // raise the button again
-//                iddecoder.setSelected(false);
-//            }
-//        };
- CLSIdentifyDecoder* id = new CLSIdentifyDecoder(me);
- id->start();
-}
-CLSIdentifyDecoder::CLSIdentifyDecoder(CombinedLocoSelPane *who)
+CLSIdentifyDecoder::CLSIdentifyDecoder(Programmer* programmer, CombinedLocoSelPane *who) : IdentifyDecoder(programmer)
 {
  this->who = who;
  who->iddecoder->setEnabled(true);
@@ -394,6 +421,7 @@ CLSIdentifyDecoder::CLSIdentifyDecoder(CombinedLocoSelPane *who)
  // raise the button again
  who->iddecoder->setSelected(false);
 }
+
 /**
  * Notification that the Roster has changed, so the locomotive
  * selection list has to be changed.

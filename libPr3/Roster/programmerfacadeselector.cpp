@@ -4,6 +4,11 @@
 #include "addressedprogrammer.h"
 #include "multiindexprogrammerfacade.h"
 #include "addressedhighcvprogrammerfacade.h"
+#include "loggerfactory.h"
+#include "class.h"
+#include "opsmodedelayedprogrammerfacade.h"
+#include "offsethighcvprogrammerfacade.h"
+#include "resettingoffsethighcvprogrammerfacade.h"
 
 ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
     QObject(parent)
@@ -17,9 +22,9 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
  */
 // /*public*/ class ProgrammerFacadeSelector  {
 
-/*public*/ /*static*/ Programmer* ProgrammerFacadeSelector::loadFacadeElements(QDomElement element, Programmer* programmer)
+/*public*/ /*static*/ Programmer* ProgrammerFacadeSelector::loadFacadeElements(
+        QDomElement element, Programmer* programmer, bool allowCache, Programmer* baseProg)
 {
- Logger* log = new Logger("ProgrammerFacadeSelector");
 
  // iterate over any facades and add them
  QDomNodeList facades = element.elementsByTagName("capability");
@@ -57,7 +62,6 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
    programmer = (Programmer*)pf; // to go around and see if there are more
 
   }
-#if 0
   else if (fname==("High Access via Partial Index"))
   {
    // going to create a specific one
@@ -66,7 +70,7 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
    QString factor       = parameters.at(2).toElement().text();
    QString modulo       = parameters.at(3).toElement().text();
 
-   OffsetHighCvProgrammerFacade pf =
+   OffsetHighCvProgrammerFacade* pf =
             new OffsetHighCvProgrammerFacade(programmer, top, addrCV, factor, modulo);
 
         log->debug("new programmer "+QString(pf->metaObject()->className()));
@@ -80,15 +84,14 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
         QString modulo       = parameters.at(3).toElement().text();
         QString indicator    = parameters.at(4).toElement().text();
 
-        ResettingOffsetHighCvProgrammerFacade pf =
+        ResettingOffsetHighCvProgrammerFacade* pf =
             new ResettingOffsetHighCvProgrammerFacade(programmer, top, addrCV, factor, modulo, indicator);
 
-        log->debug("new programmer "+QString(pf->metaObject()->className()));
+        log->debug(tr("new programmer ")+QString(pf->metaObject()->className()));
         programmer = pf; // to go around and see if there are more
 
-    } else
-#endif
-  if (fname==("Indexed CV access"))
+    }
+  else if (fname==("Indexed CV access"))
   {
    // going to create a specific one
    QString PI           = parameters.at(0).toElement().text();
@@ -111,26 +114,74 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
    log->debug("new programmer "+QString(pf->metaObject()->className()));
    programmer = pf; // to go around and see if there are more
   }
-  else
-  //if (programmer instanceof AddressedProgrammer && fname==("Ops Mode Accessory Programming"))
-  if(qobject_cast<AddressedProgrammer*>(programmer) != NULL)
+  else if(fname == "Ops Mode Accessory Programming")
   {
+   //if ("AddressedProgrammer".isAssignableFrom(baseProg.getClass()))
+   Class* clazz = Class::forName("AddressedProgrammer");
+   if(clazz->isAssignableFrom(baseProg->metaObject()->className()))
+   {  // create if relevant to current mode, otherwise silently ignore
+    QString addrType = "decoder";
+    int delay = 500;
+    //for (QDomNode node : parameters)
+    for(int i = 0; i < parameters.size(); i++)
+    {
+     QDomElement x = parameters.at(i).toElement();
+     if(x.attribute("name")== "Address Type")
+     {
+      addrType = x.text();
+     }
+     else if( x.attribute("name") == "Delay")
+     {
+             delay = x.text().toInt();
+     }
+     else
+     {
+      log->error(tr("Unknown parameter \"%1\" for \"%2\"").arg(fname).arg(x.text()));
+     }
+    }
+    log->debug(tr("\"%1\": addrType=\"%2\", delay=\"%3\", baseProg=\"%4\"").arg(fname).arg(addrType).arg(delay).arg(baseProg->metaObject()->className()));
 
-   AccessoryOpsModeProgrammerFacade* pf =
-            new AccessoryOpsModeProgrammerFacade((AddressedProgrammer*)programmer);
-
-   log->debug("new programmer "+QString(pf->metaObject()->className()));
-   programmer = pf; // to go around and see if there are more
+    AccessoryOpsModeProgrammerFacade* pf
+            = new AccessoryOpsModeProgrammerFacade(programmer, addrType, delay, (AddressedProgrammer*) baseProg);
+    log->debug(tr("new programmer '%1' %2").arg(fname).arg(pf->metaObject()->className()));
+    programmer = pf; // to go around and see if there are more
+   }
+  }
+  else if(fname == "Ops Mode Delayed Programming")
+  {
+   Class* clazz = Class::forName("AddressedProgrammer");
+//   if (AddressedProgrammer.class.isAssignableFrom(baseProg.getClass())) {  // create if relevant to current mode, otherwise silently ignore
+   if(clazz->isAssignableFrom(baseProg->metaObject()->className()))
+   {
+    int delay = 500;
+    for(int i=0; i < parameters.size(); i++)
+    {
+     QDomElement x = parameters.at(i).toElement();
+     if(x.attribute("name")== "Delay")
+     {
+             delay = x.text().toInt();
+     }
+     else
+     {
+      log->error(tr("Unknown parameter \"%1\" for \"%2\"").arg(fname).arg(x.text()));
+     }
+    }
+    log->debug(tr("\"%1\": delay=\"%2\"").arg(fname).arg(delay));
+    OpsModeDelayedProgrammerFacade* pf
+             = new OpsModeDelayedProgrammerFacade(programmer, delay);
+    log->debug(tr("new programmer '%1' %2").arg(fname).arg(pf->metaObject()->className()));
+    programmer = pf; // to go around and see if there are more
+   }
   }
   else
 
   {
    log->error("Cannot create programmer capability named: "+fname);
   }
- }
 
+ }
  return programmer;
 }
 
-//    static Logger log = LoggerFactory.getLogger(ProgrammerFacadeSelector.class.getName());
+/*static*/ Logger* ProgrammerFacadeSelector::log = LoggerFactory::getLogger("ProgrammerFacadeSelector");
 //}

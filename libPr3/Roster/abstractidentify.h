@@ -4,12 +4,13 @@
 #include <QObject>
 #include "logger.h"
 #include "libPr3_global.h"
+#include "programmer.h"
 
 class LIBPR3SHARED_EXPORT AbstractIdentify : public QObject
 {
     Q_OBJECT
 public:
-    explicit AbstractIdentify(QObject *parent = 0);
+    AbstractIdentify(Programmer* programmer, QObject *parent = 0);
     /*public*/ void start();
     /*public*/ bool isRunning();
     /*abstract*/ /*public*/ virtual bool test1() = 0;  // no argument to start
@@ -28,16 +29,21 @@ public:
 
     /*abstract*/ /*public*/ virtual bool test8(int value) = 0;
 
+    /*abstract*/ /*public*/ virtual bool test9(int value) = 0;
+
 signals:
 
 public slots:
-    /*public*/ void programmingOpReply(int value, int status);
-    void On_programmerException(QString);
+    /*public*/ virtual void programmingOpReply(int value, int status);
 
 private:
-    Logger* log;
+    static Logger* log;
     /** State of the internal sequence */
     int state;// = 0;
+    int retry;
+    Programmer* programmer;
+    ProgrammingMode* savedMode;
+    static /*final*/ int RETRY_COUNT;// = 2;
 
 protected:
     /*protected*/ void identifyDone();

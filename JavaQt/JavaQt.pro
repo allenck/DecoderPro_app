@@ -150,7 +150,9 @@ SOURCES += javaqt.cpp \
     class.cpp \
     treemodelevent.cpp \
     matcher.cpp \
-    htmldelegate.cpp
+    htmldelegate.cpp \
+    bufferedoutputstream.cpp \
+    bufferedinputstream.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -332,7 +334,10 @@ HEADERS += javaqt.h\
     treemodelevent.h \
     treemodellistener.h \
     matcher.h \
-    htmldelegate.h
+    htmldelegate.h \
+    componentfactory.h \
+    bufferedoutputstream.h \
+    bufferedinputstream.h
 
 unix {
     target.path = /usr/lib

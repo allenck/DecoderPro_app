@@ -78,7 +78,7 @@ void TwoIndexTcsProgrammerFacade::parseCV(QString cv) throw (IllegalArgumentExce
 }
 
 // programming interface
-/*synchronized*/ /*public*/ void TwoIndexTcsProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) //throws jmri.ProgrammerException
+/*synchronized*/ /*public*/ void TwoIndexTcsProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     _val = val;
     useProgrammer(p);
@@ -94,12 +94,12 @@ void TwoIndexTcsProgrammerFacade::parseCV(QString cv) throw (IllegalArgumentExce
     }
 }
 
-/*synchronized*/ /*public*/ void TwoIndexTcsProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) //throws jmri.ProgrammerException
+/*synchronized*/ /*public*/ void TwoIndexTcsProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     readCV(CV, p);
 }
 
-/*synchronized*/ /*public*/ void TwoIndexTcsProgrammerFacade::readCV(QString CV, ProgListener* p) // throws jmri.ProgrammerException
+/*synchronized*/ /*public*/ void TwoIndexTcsProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
 {
     useProgrammer(p);
     parseCV(CV);

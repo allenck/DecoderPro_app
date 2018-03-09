@@ -14,13 +14,14 @@
 {
  Q_OBJECT
  public:
+ Message(QObject* parent=0) : QObject(parent) {}
     virtual int getElement(int n) = 0;
 
     virtual int getNumDataElements() = 0;
 
     virtual void setElement(int n, int v) = 0;
 
-    virtual QString toString() = 0;
+ virtual QString toString() {return "";}
 
 };
 

@@ -37,10 +37,16 @@
 #include "programmerfacadeselector.h"
 #include "jseparator.h"
 #include "programmingmode.h"
+#include "programmerconfigmanager.h"
+#include "verifywriteprogrammerfacade.h"
+#include "csvimportaction.h"
+#include "csvexportaction.h"
+
 int PaneProgFrame::iLabel=0;
 
 // derived from java PaneProgFrame class.
 bool PaneProgFrame::showEmptyPanes = true;
+
 PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntry, QString frameTitle, QString pProgrammerFile, Programmer* pProg, bool opsMode, QWidget *parent) :
     JmriJFrame(parent),
     ui(new Ui::PaneProgFrame)
@@ -152,7 +158,8 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
  // set the programming mode
  if (pProg != NULL)
  {
-  if (InstanceManager::programmerManagerInstance() != NULL)
+  if (((AddressedProgrammerManager*)InstanceManager::getOptionalDefault("AddressedProgrammerManager"))!= NULL
+                      || ((GlobalProgrammerManager*)InstanceManager::getOptionalDefault("GlobalProgrammerManager"))!= NULL)
   {
    // go through in preference order, trying to find a mode
    // that exists in both the programmer and decoder.
@@ -162,8 +169,15 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
    if (!decoderRoot.isNull()
      && (programming = decoderRoot.firstChildElement("decoder").firstChildElement("programming"))!= QDomElement())
    {
-    // add any needed facades
-    Programmer* pf = ProgrammerFacadeSelector::loadFacadeElements(programming, mProgrammer);
+    // add a verify-write facade if configured
+    Programmer* pf = mProgrammer;
+    if (getDoConfirmRead())
+    {
+     pf = new VerifyWriteProgrammerFacade(pf);
+     log->debug(tr("adding VerifyWriteProgrammerFacade, new programmer is %1").arg(pf->metaObject()->className()));
+    }
+    // add any facades defined in the decoder file
+    pf = ProgrammerFacadeSelector::loadFacadeElements(programming, pf, getCanCacheDefault(), pProg);
     log->debug("new programmer "+QString(pf->metaObject()->className()));
     mProgrammer = pf;
     cvModel->setProgrammer(pf);
@@ -205,7 +219,7 @@ PaneProgFrame::~PaneProgFrame()
  * <li>Retrieves "productID" and "model attributes from the "model" element
  * and "family" attribute from the roster entry. </li>
  * <li>Then invokes DecoderFile.isIncluded() with the retrieved values.</li>
- * <li>Deals deals gracefully with null or missing elements and attributes.</li>
+ * <li>Deals deals gracefully with NULL or missing elements and attributes.</li>
  * </ul>
  * @param e                 XML element with possible "include" and "exclude" attributes to be checked
  * @param aModelElement     "model" element from the Decoder Index, used to get "model" and "productID".
@@ -223,21 +237,21 @@ PaneProgFrame::~PaneProgFrame()
 // {
  pID = aModelElement.attribute("productID", "");
 //    } catch (Exception ex){
-//        pID = null;
+//        pID = NULL;
 //    }
 
  QString modelName;
 //    try {
  modelName = aModelElement.attribute("model", "");
 //    } catch (Exception ex){
-//        modelName = null;
+//        modelName = NULL;
 //    }
 
  QString familyName;
 //    try {
  familyName = aRosterEntry->getDecoderFamily();
 //    } catch (Exception ex){
-//        familyName = null;
+//        familyName = NULL;
 //    }
  return DecoderFile::isIncluded(e, pID, modelName, familyName, extraIncludes, extraExcludes);
 }
@@ -383,7 +397,7 @@ PaneProgFrame::~PaneProgFrame()
    programmerRoot = pf->rootFromName(filename);
   else
    programmerRoot = pf->rootFromName(FileUtil::getUserFilesPath()+filename);
-
+  // programmerRoot = pf->rootFromName(FileUtil::findURL(filename).path());
   // get the showEmptyPanes attribute, if yes/no update our state
   if (programmerRoot.firstChildElement("programmer").attribute("showEmptyPanes") != "")
   {
@@ -490,7 +504,7 @@ void PaneProgFrame::closeEvent(QCloseEvent * e)
 //            // cancel requested
 //            return; // without doing anything
 //        }
-  switch(QMessageBox::question(0, tr("Close Window"), tr("PromptCloseWindowNotWrittenConfig"), QMessageBox::Ok | QMessageBox::Save |  QMessageBox::Cancel))
+  switch(QMessageBox::question(0, tr("Close Window"), tr("Some changes have not been written to the decoder. They will be lost. Close window?"), QMessageBox::Ok | QMessageBox::Save |  QMessageBox::Cancel))
   {
   case QMessageBox::Save:
    if (!storeFile()) return;   // don't close if failed
@@ -901,15 +915,15 @@ void PaneProgFrame::on_btnStore_clicked()
  // some of the names are so long, and we expect more formats
  QMenu* importSubMenu = new QMenu(tr("Import"));
  fileMenu->addMenu(importSubMenu);
-//    importSubMenu.add(new Pr1ImportAction(tr("MenuImportPr1"), cvModel, this));
+//    importSubMenu.add(new Pr1ImportAction(tr("PR1 file..."), cvModel, this));
 
  // add "Export" submenu; this is heirarchical because
  // some of the names are so long, and we expect more formats
  QMenu* exportSubMenu = new QMenu(tr("Export"));
  fileMenu->addMenu(exportSubMenu);
-//    exportSubMenu.add(new CsvExportAction(tr("MenuExportCSV"), cvModel, this));
-//    exportSubMenu.add(new Pr1ExportAction(tr("MenuExportPr1DOS"), cvModel, this));
-//    exportSubMenu.add(new Pr1WinExportAction(tr("MenuExportPr1WIN"), cvModel, this));
+ exportSubMenu->addAction(new CsvExportAction(tr("CSV file..."), cvModel, this));
+//    exportSubMenu.add(new Pr1ExportAction(tr("PR1DOS file..."), cvModel, this));
+//    exportSubMenu.add(new Pr1WinExportAction(tr("PR1WIN file..."), cvModel, this));
 
     // to control size, we need to insert a single
     // JPanel, then have it laid out with BoxLayout
@@ -1817,3 +1831,27 @@ void PaneProgFrame::setProgrammingGui(QWidget* pane)
 /*public*/ /*static*/ bool PaneProgFrame::getShowCvNumbers() {
     return showCvNumbers;
 }
+
+/*public*/ /*static*/ void PaneProgFrame::setCanCacheDefault(bool yes) {
+        if (InstanceManager::getNullableDefault("ProgrammerConfigManager") != NULL) {
+            ((ProgrammerConfigManager*)InstanceManager::getDefault("ProgrammerConfigManager"))->setCanCacheDefault(yes);
+        }
+    }
+
+    /*public*/ /*static*/ bool PaneProgFrame::getCanCacheDefault() {
+        return (InstanceManager::getNullableDefault("ProgrammerConfigManager") == NULL)
+                ? true
+                : ((ProgrammerConfigManager*)InstanceManager::getDefault("ProgrammerConfigManager"))->isCanCacheDefault();
+    }
+
+    /*public*/ /*static*/ void PaneProgFrame::setDoConfirmRead(bool yes) {
+        if (InstanceManager::getNullableDefault("ProgrammerConfigManager") != NULL) {
+            ((ProgrammerConfigManager*)InstanceManager::getDefault("ProgrammerConfigManager"))->setDoConfirmRead(yes);
+        }
+    }
+
+    /*public*/ /*static*/ bool PaneProgFrame::getDoConfirmRead() {
+        return (InstanceManager::getNullableDefault("ProgrammerConfigManager") == NULL)
+                ? true
+                : ((ProgrammerConfigManager*)InstanceManager::getDefault("ProgrammerConfigManager"))->isDoConfirmRead();
+    }

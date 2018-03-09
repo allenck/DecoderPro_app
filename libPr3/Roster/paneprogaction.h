@@ -33,7 +33,7 @@ private:
     {
      PaneProgAction* act;
     public:
-     MyCombinedLocoSelTreePane(PaneProgAction* act, QLabel*, QWidget* = 0);
+     MyCombinedLocoSelTreePane(PaneProgAction* act, QLabel*, ProgModeSelector* modePane, QWidget* = 0);
     private:
 
     protected:

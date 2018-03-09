@@ -8,6 +8,7 @@
 #include "identifyloco.h"
 #include "decoderfile.h"
 #include <QMessageBox>
+#include "instancemanager.h"
 
 //KnownLocoSelPane::KnownLocoSelPane(QWidget *parent) :
 //    LocoSelPane(parent)
@@ -26,10 +27,11 @@
  */
 ///*public*/ class KnownLocoSelPane extends LocoSelPane  {
 
-/*public*/ KnownLocoSelPane::KnownLocoSelPane(QLabel* s, bool ident, QWidget *parent) : LocoSelPane(parent)
+/*public*/ KnownLocoSelPane::KnownLocoSelPane(QLabel* s, bool ident, ProgModeSelector* selector, QWidget *parent) : LocoSelPane(parent)
 {
     mCanIdent = ident;
     mStatusLabel = s;
+    this->selector = selector;
     init();
 }
 
@@ -38,6 +40,7 @@
     //this(NULL, ident);
     mStatusLabel = NULL;
     mCanIdent = ident;
+    this->selector = NULL;
     init();
 }
 
@@ -121,7 +124,13 @@ void KnownLocoSelPane::On_go2_clicked()
 {
  // start identifying a loco
  /*final*/ KnownLocoSelPane* me = this;
-// IdentifyLoco* id = new IdentifyLoco() {
+ Programmer* p = NULL;
+ if (selector != NULL && selector->isSelected()) p = selector->getProgrammer();
+ if (p == NULL) {
+     log->warn("Selector did not provide a programmer, use default");
+     p = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+ }
+ // IdentifyLoco* id = new IdentifyLoco() {
 //            private KnownLocoSelPane who = me;
 //            protected void done(int dccAddress) {
 //            // if Done, updated the selected decoder
@@ -132,7 +141,7 @@ void KnownLocoSelPane::On_go2_clicked()
 //            }
 //            /*public*/ void error() {}
 //        };
-    KLSPIdentifyLoco* id = new KLSPIdentifyLoco(this);
+    KLSPIdentifyLoco* id = new KLSPIdentifyLoco(p, this);
     id->start();
 }
 /*protected*/ void KLSPIdentifyLoco::done(int dccAddress) {
@@ -142,7 +151,7 @@ void KnownLocoSelPane::On_go2_clicked()
 /*protected*/ void KLSPIdentifyLoco::message(QString m) {
     if (who->mStatusLabel != NULL) who->mStatusLabel->setText(m);
 }
-KLSPIdentifyLoco::KLSPIdentifyLoco(KnownLocoSelPane *who)
+KLSPIdentifyLoco::KLSPIdentifyLoco(Programmer* programmer, KnownLocoSelPane *who) : IdentifyLoco(programmer)
 {
  this->who = who;
 }

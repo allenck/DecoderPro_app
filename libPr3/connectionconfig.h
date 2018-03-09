@@ -1,7 +1,10 @@
+
+
 #ifndef CONNECTIONCONFIG_H
 #define CONNECTIONCONFIG_H
 #include <QObject>
 #include <QMetaType>
+#include "portadapter.h"
 
 /**
  * Definition of objects to handle configuring a layout connection.
@@ -11,11 +14,9 @@
  * @see JmrixConfigPane
  * @see AbstractSerialPortController
  */
-class PortAdapter;
-/*public*/ /*interface*/
-class  ConnectionConfig : public QObject
+/*public*/ /*interface*/class  ConnectionConfig : public QObject
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
     ConnectionConfig(QObject* parent = 0) : QObject(parent) {}
     virtual ~ConnectionConfig() {}

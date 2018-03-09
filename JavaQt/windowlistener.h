@@ -36,13 +36,13 @@ public:
      * Invoked when the user attempts to close the window
      * from the window's system menu.
      */
-    /*public*/ virtual void windowClosing(QCloseEvent* e) = 0;
+    /*public*/ virtual void windowClosing(QCloseEvent* /*e*/) = 0;
 
     /**
      * Invoked when a window has been closed as the result
      * of calling dispose on the window.
      */
-//    /*public*/ void windowClosed(WindowEvent e);
+ /*public*/ virtual void windowClosed(QCloseEvent /*e*/) {}
 
     /**
      * Invoked when a window is changed from a normal to a

@@ -58,6 +58,8 @@ public:
     void sendLocoNetMessage(LocoNetMessage* m);
 
 public slots:
+    void dataReady();
+
 signals:
     void error(QString msg);
     

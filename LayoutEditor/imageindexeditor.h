@@ -43,5 +43,15 @@ private slots:
     void deleteNode();
     void openItem_triggered();
 };
+class IIEWindowListener : public WindowListener
+{
+ Q_OBJECT
+ ImageIndexEditor* iie;
+public:
+ IIEWindowListener(ImageIndexEditor* iie);
 
+public slots:
+ /*public*/ void windowClosing(QCloseEvent*);
+
+};
 #endif // IMAGEINDEXEDITOR_H

@@ -450,7 +450,8 @@ SOURCES += \
     receiver.cpp \
     rpsmenu.cpp \
     blockcontentsicon.cpp \
-    blockcontentsiconxml.cpp
+    blockcontentsiconxml.cpp \
+    abstractmonframe.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -822,7 +823,8 @@ HEADERS += liblayouteditor_global.h \
     calculator.h \
     rpsmenu.h \
     blockcontentsicon.h \
-    blockcontentsiconxml.h
+    blockcontentsiconxml.h \
+    abstractmonframe.h
 
 
 FORMS    += \

@@ -213,7 +213,7 @@
     }
      else
      {
-      qDebug() << "class not fond: " << className;
+      qDebug() << "class not found: " << className;
       throw(ClassNotFoundException(className));
      }
     }

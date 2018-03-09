@@ -59,6 +59,8 @@
 #include "rosterentryselectorpanel.h"
 #include "deleterosteritemaction.h"
 #include "tabbedpreferencesaction.h"
+#include "activesystemsmenu.h"
+#include "joptionpane.h"
 
 QList<RosterFrame*> RosterFrame::frameInstances =  QList<RosterFrame*>();
 
@@ -312,7 +314,8 @@ void RosterFrame::common()
  connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(updateProgMode()));
 
  LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
- ui->menubar->insertMenu(ui->menuLocoNet->menuAction(),  LocoNetMenu::instance(connectionMemo, this));
+ //ui->menubar->insertMenu(ui->menuLocoNet->menuAction(),  LocoNetMenu::instance(connectionMemo, this));
+ ActiveSystemsMenu::addItems(ui->menubar, this);
  ui->menuLocoNet->clear();
  ui->menubar->removeAction(ui->menuLocoNet->menuAction());
 }
@@ -919,13 +922,31 @@ void RosterFrame::updateProgMode() // SLOT
 //taken out of CombinedLocoSelPane
 /*protected*/ void RosterFrame::startIdentifyLoco()
 {
- if (InstanceManager::programmerManagerInstance() == NULL || !(((LnProgrammerManager*)InstanceManager::programmerManagerInstance())->isGlobalProgrammerAvailable()))
+ Programmer* programmer = NULL;
+ if (modePanel->isSelected())
  {
-  log->error("Identify loco called when no service mode programmer is available");
-//        JOptionPane.showMessageDialog(NULL, tr("IdentifyError"));
-  QMessageBox::critical(0, tr("Error"), tr("Identify loco called when no service mode programmer is available"));
-  return;
+     programmer = modePanel->getProgrammer();
  }
+ if (programmer == NULL)
+ {
+  GlobalProgrammerManager* gpm = (GlobalProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
+  if (gpm != NULL)
+  {
+   programmer = gpm->getGlobalProgrammer();
+   log->warn(tr("Selector did not provide a programmer, attempt to use GlobalProgrammerManager default: %1").arg(programmer->metaObject()->className()));
+} else {
+   log->warn("Selector did not provide a programmer, and no ProgramManager found in InstanceManager");
+  }
+ }
+
+ // if failed to get programmer, tell user and stop
+ if (programmer == NULL) {
+     log->error("Identify loco called when no service mode programmer is available; button should have been disabled");
+     JOptionPane::showMessageDialog(NULL, tr("Identify loco called when no service mode programmer is available"));
+     return;
+ }
+
+ // and now do the work
 #if 0
     // start identifying a loco
     /*final*/ RosterFrame* me = this;
@@ -950,7 +971,7 @@ void RosterFrame::updateProgMode() // SLOT
         }
     };
 #endif
-    MyIdentifyLoco* ident = new MyIdentifyLoco(this);
+    MyIdentifyLoco* ident = new MyIdentifyLoco(programmer, this);
     connect(ident, SIGNAL(doneSignal(int,bool,int,int)), this, SLOT(selectLoco(int,bool,int,int)));
     ident->start();
 }
@@ -1752,7 +1773,7 @@ void RosterFrame::On_splitter2Moved(int pos, int)
 }
 
 /*protected*/ void RosterFrame::systemsMenu() {
-    ActiveSystemsMenu::addItems(getMenu());
+    ActiveSystemsMenu::addItems(getMenu(),this);
     getMenu()->addMenu(new WindowMenu(this));
 }
 void RosterFrame::On_Quit()

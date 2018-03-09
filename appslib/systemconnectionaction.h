@@ -35,7 +35,7 @@ public:
      * @param memo the SystemConnectionMemo
      * @throws IllegalArgumentException if the SystemConnectionMemo is invalid
      */
-    /*public*/ virtual void setSystemConnectionMemo(/*@Nonnull*/ SystemConnectionMemo* memo) throw (IllegalArgumentException) {}
+    /*public*/ virtual void setSystemConnectionMemo(/*@Nonnull*/ SystemConnectionMemo* /*memo*/) throw (IllegalArgumentException) {}
 
     /**
      * Get a list of {@link jmri.jmrix.SystemConnectionMemo} subclasses that the

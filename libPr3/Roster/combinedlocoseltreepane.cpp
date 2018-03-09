@@ -42,8 +42,8 @@ CombinedLocoSelTreePane::CombinedLocoSelTreePane(QWidget *parent) :
  */
 ///*public*/ class CombinedLocoSelTreePane extends CombinedLocoSelPane  {
 
-/*public*/ CombinedLocoSelTreePane::CombinedLocoSelTreePane(QLabel* s, QWidget *parent)
-    : CombinedLocoSelPane(s, parent)
+/*public*/ CombinedLocoSelTreePane::CombinedLocoSelTreePane(QLabel* s, ProgModeSelector* selector, QWidget *parent)
+    : CombinedLocoSelPane(s, selector, parent)
 {
  //super(s);
  this->common();

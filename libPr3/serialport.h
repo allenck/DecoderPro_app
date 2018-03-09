@@ -19,6 +19,7 @@ public:
     QDataStream* getOutputStream(){return ostream;}
     QDataStream* getInputStream(){return istream;}
     QSerialPort* getSerialPort() { return serial;}
+    qint32 getBaudRate();
     void setSerialPortParams(int i, int i1, int i2, int i3) throw(UnsupportedCommOperationException);
 
     bool isDTR(){QSerialPort::PinoutSignals sig = serial->pinoutSignals(); return sig & serial->DataTerminalReadySignal;}
@@ -30,9 +31,16 @@ public:
     int databits();
     QString parity();
     QString stopBits();
-    static const int DATABITS8 =  QSerialPort::Data8;
+    QSerialPort* device();
+    qint32 getReceiveTimeout();
+    void enableReceiveTimeout(qint32);
+    bool isReceiveTimeoutEnabled();
+    QSerialPort::SerialPortError lastError();
+
+
+    static const int DATABITS_8 =  QSerialPort::Data8;
     static const int STOPBITS_1 =  QSerialPort::OneStop;
-    static const int PARITYNONE = QSerialPort::NoParity;
+    static const int PARITY_NONE = QSerialPort::NoParity;
     static const int FLOWCONTROL_RTSCTS_OUT = QSerialPort::HardwareControl;
     static const int FLOWCONTROL_RTSCTS_IN = QSerialPort::HardwareControl;
     static const int FLOWCONTROL_NONE = QSerialPort::NoFlowControl;
@@ -47,10 +55,12 @@ public:
     QString flowControl();
     bool open(QString portName, QIODevice::OpenMode mode);
     bool open(QIODevice::OpenMode mode);
+
 signals:
     void error(QString s);
+
 public slots:
-    void dataReady();
+//    void dataReady();
 //    void xmtTimer();
     void OnError();
     void OnDataReady();
@@ -61,6 +71,7 @@ private:
  QSerialPort* serial;
  QString portName;
  bool bOpened;
+ qint32 rcvTimeout;
 };
 
 #endif // SERIALPORT_H

@@ -32,9 +32,9 @@ public:
     static /*final*/ QString format2Flag;// = "T2CV"; // flag to indicate this type of CV
     static /*final*/ QString format3Flag;// = "T3CV"; // flag to indicate this type of CV
     static /*final*/ int readOffset;// = 100;
-    /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p); //throws jmri.ProgrammerException
-    /*synchronized*/ /*public*/ void confirmCV(QString CV, int val, ProgListener* p);
-    /*synchronized*/ /*public*/ void readCV(QString CV, ProgListener* p);
+    /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
+    /*synchronized*/ /*public*/ void confirmCV(QString CV, int val, ProgListener* p)throw (ProgrammerException) ;
+    /*synchronized*/ /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
     /*public*/ void programmingOpReply(int value, int status);
 
 signals:

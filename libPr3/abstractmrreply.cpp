@@ -28,42 +28,42 @@ AbstractMRReply::AbstractMRReply(QObject *parent) :
 //}
 
 // copy one
-/*public*/  AbstractMRReply::AbstractMRReply(AbstractMRReply* m) {
+/*public*/  AbstractMRReply::AbstractMRReply(AbstractMRReply* m, QObject *parent) : AbstractMessage(parent){
     //this();
     init();
     if (m == NULL)
         log->error("copy ctor of NULL message");
     else{
         _nDataChars = m->_nDataChars;
-        for (int i = 0; i<_nDataChars; i++) _dataChars->replace(i, m->_dataChars->at(i));
+        for (int i = 0; i<_nDataChars; i++) _dataChars.replace(i, m->_dataChars.at(i));
     }
 }
 
 // from String
-/*public*/ AbstractMRReply::AbstractMRReply(QString s) {
+/*public*/ AbstractMRReply::AbstractMRReply(QString s, QObject *parent) : AbstractMessage(parent) {
     //this();
     init();
     _nDataChars = s.length();
     for (int i = 0; i<_nDataChars; i++)
-        _dataChars->replace(i, s.mid(i,1));
+        _dataChars.replace(i, s.mid(i,1));
 }
 void AbstractMRReply::init()
 {
     log = new Logger("AbstractMRReply");
     setBinary(false);
     unsolicited = false;
-    _dataChars = new QByteArray[maxSize()];
+    _dataChars = QByteArray(maxSize(),0);
 
 }
 
 // keep track of length
 /*public*/ void AbstractMRReply::setElement(int n, int v) {
-    _dataChars->replace(n, (char) v);
+    _dataChars[n] = (char) v;
     _nDataChars = qMax(_nDataChars, n+1);
 }
 
-/*public*/ void AbstractMRReply::setOpCode(int i) { _dataChars->replace(0, (char)i);}
-/*public*/ int AbstractMRReply::getOpCode() {return _dataChars->at(0);}
+/*public*/ void AbstractMRReply::setOpCode(int i) { _dataChars.replace(0, (char)i);}
+/*public*/ int AbstractMRReply::getOpCode() {return _dataChars.at(0);}
 
 // accessors to the bulk data
 /*public*/ void AbstractMRReply::flush(){
@@ -95,13 +95,13 @@ void AbstractMRReply::init()
   {
    if (i!=0) s+=" ";
    //s = jmri.util.StringUtil.appendTwoHexFromInt(_dataChars[i]&0xFF, s);
-   if((_dataChars->at(i)& 0xFF) < 0x10) s.append("0");
-   s.append(QString("%1").arg((_dataChars->at(i)& 0xFF),0,16));
+   if((_dataChars.at(i)& 0xFF) < 0x10) s.append("0");
+   s.append(QString("%1").arg((_dataChars.at(i)& 0xFF),0,16));
 
   }
   else
   {
-   s+=(char)_dataChars->at(i);
+   s+=(char)_dataChars.at(i);
   }
  }
  return s;
@@ -153,8 +153,8 @@ void AbstractMRReply::init()
         QByteArray ba = s.toLatin1();
         for (int j=0; j<s.length(); j++)
         {
-            //if (_dataChars->at(i+j) != s.mid(j, 1)) continue outer;
-            if (_dataChars->at(i+j) != ba.at(j)) break; // ???
+            //if (_dataChars.at(i+j) != s.mid(j, 1)) continue outer;
+            if (_dataChars.at(i+j) != ba.at(j)) break; // ???
 
         }
         // here we succeed

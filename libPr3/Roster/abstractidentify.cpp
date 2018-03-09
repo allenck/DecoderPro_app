@@ -2,13 +2,18 @@
 #include "lnprogrammermanager.h"
 #include "instancemanager.h"
 #include "globalprogrammermanager.h"
+#include "loggerfactory.h"
+#include "programmingmode.h"
 
-AbstractIdentify::AbstractIdentify(QObject *parent) :
+/*static*/ /*final*/ int AbstractIdentify::RETRY_COUNT = 2;
+
+AbstractIdentify::AbstractIdentify(Programmer* programmer, QObject *parent) :
     QObject(parent)
 {
- log = new Logger("AbstractIdentify");
  state = 0;
+ this->programmer = programmer;
 }
+
 /**
  * Abstract base for common code of IdentifyLoco and IdentifyDecoder, the
  * two classes that use a programmer to match Roster entries to what's on the
@@ -52,8 +57,14 @@ AbstractIdentify::AbstractIdentify(QObject *parent) :
     // must be idle, or something quite bad has happened
     if (state !=0) log->error("start with state "+QString::number(state)+", should have been zero");
 
+    if (programmer != NULL)
+    {
+     savedMode = programmer->getMode(); // In case we need to change modes
+    }
+
     // The first test is invoked here; the rest are handled in the programmingOpReply callback
     state = 1;
+    retry = 0;
     test1();
 }
 
@@ -74,18 +85,50 @@ AbstractIdentify::AbstractIdentify(QObject *parent) :
  * a CV read request terminates.  Each will reduce (if possible) the
  * list of consistent decoders, and starts the next step.
  */
+//@override
 /*public*/ void AbstractIdentify::programmingOpReply(int value, int status)
 {
- // we abort if the status isn't normal
- if (status != ProgListener::OK)
- {
-  log->warn("Stopping due to error: "
-                 +((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer()->decodeErrorCode(status));
-        statusUpdate("Stopping due to error: "
-                     +((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer()->decodeErrorCode(status));
+ // we abort if there's no programmer
+ //  (doing this now to simplify later)
+ if (programmer == NULL) {
+     log->warn("No programmer connected");
+     statusUpdate("No programmer connected");
+
   state = 0;
   error();
   return;
+ }
+ // we abort if the status isn't normal
+ if (status != ProgListener::OK)
+ {
+  if (retry < RETRY_COUNT) {
+      statusUpdate("Programmer error: "
+              + programmer->decodeErrorCode(status));
+      state--;
+      retry++;
+  } else if (programmer->getMode() != ProgrammingMode::PAGEMODE
+          && programmer->getSupportedModes().contains(ProgrammingMode::PAGEMODE)) {
+      programmer->setMode(ProgrammingMode::PAGEMODE);
+      retry = 0;
+      state--;
+      log->warn(programmer->decodeErrorCode(status)
+              + ", trying " + programmer->getMode()->toString() + " mode");
+  } else {
+      log->warn("Stopping due to error: "
+              + programmer->decodeErrorCode(status));
+      statusUpdate("Stopping due to error: "
+              + programmer->decodeErrorCode(status));
+      if (programmer->getMode() != savedMode) {  // restore original mode
+          log->warn("Restoring " + savedMode->toString() + " mode");
+          programmer->setMode(savedMode);
+      }
+      state = 0;
+      retry = 0;
+      error();
+      return;
+  }
+ } else {
+     retry = 0;
  }
  // continuing for normal operation
  // this should eventually be something smarter, maybe using reflection,
@@ -116,16 +159,26 @@ AbstractIdentify::AbstractIdentify(QObject *parent) :
    state = 7;
    if (test7(value)) identifyDone();
    return;
-  case 7:
+ case 7:
    state = 8;
-   if (test8(value)) identifyDone();
-   else log->error("test8 with value = "+QString::number(value)+" returned false, but there is no next step");
+   if (test8(value)) {
+       identifyDone();
+   }
    return;
-  default:
+ case 8:
+   state = 9;
+   if (test9(value))
+   {
+    identifyDone();
+   }
+   else {
+     log->error("test9 with value = " + QString::number(value) + " returned false, but there is no next step");
+   }
+   return;
+default:
    // this is an error
-   log->error(tr("unexpected state in normal operation: ")+QString::number(state)+" value: "+QString::number(value)+", ending identification");
+   log->error("unexpected state in normal operation: " + QString::number(state) + " value: " + QString::number(value) + ", ending identification");
    identifyDone();
-   return;
  }
 }
 
@@ -143,45 +196,39 @@ AbstractIdentify::AbstractIdentify(QObject *parent) :
  */
 /*protected*/ void AbstractIdentify::readCV(int cv)
 {
- //Programmer* p = InstanceManager::programmerManagerInstance()->getGlobalProgrammer();
- GlobalProgrammerManager* p = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
- if (p == NULL)
+ if (programmer == NULL)
  {
   statusUpdate("No programmer connected");
  }
  else
  {
-//  try
-//  {
-  //SlotManager* s = (SlotManager*)p;
-  AbstractProgrammer* s = (AbstractProgrammer*)p->getGlobalProgrammer();
-  connect(s, SIGNAL(programmerException(QString)), this, SLOT(On_programmerException(QString)));
-  s->readCV(QString::number(cv), (ProgListener*)this);
-//  }
-//  catch (ProgrammerException ex)
-//  {
-//   statusUpdate(ex.getMessage());
-//  }
+  try
+  {
+   programmer->readCV(QString::number(cv), (ProgListener*)this);
+  }
+  catch (ProgrammerException ex)
+  {
+   statusUpdate(ex.getMessage());
+  }
  }
-}
-void AbstractIdentify::On_programmerException(QString txt)
-{
- statusUpdate(txt);
 }
 
 /*protected*/ void AbstractIdentify::writeCV(int cv, int value)
 {
- SlotManager* p = (SlotManager*)((LnProgrammerManager*)InstanceManager::programmerManagerInstance())->getGlobalProgrammer();
- if (p == NULL)
+ if (programmer == NULL)
  {
   statusUpdate("No programmer connected");
  }
  else
  {
-//        try {
-  p->writeCV(cv, value, (ProgListener*)this);
-//        } catch (ProgrammerException ex) {
-//            statusUpdate(ex.getMessage());
-//        }
+  try
+  {
+   programmer->writeCV(cv, value, (ProgListener*)this);
+  } catch (ProgrammerException ex) {
+      statusUpdate(ex.getMessage());
+  }
  }
 }
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* AbstractIdentify::log = LoggerFactory::getLogger("AbstractIdentify");

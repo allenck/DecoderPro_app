@@ -5,6 +5,7 @@
 #include "proglistener.h"
 #include "exceptions.h"
 #include "propertychangelistener.h"
+#include "exceptions.h"
 
 /**
  * Provide access to the hardware DCC decoder programming capability.
@@ -123,78 +124,143 @@ public:
 //     CBUSNODEVARMODE  = 140
 //    };
 
-/**
- * Perform a CV write in the system-specific manner,
- * and using the specified programming mode.
- * Note that this returns before the write
- * is complete; you have to provide a ProgListener to hear about
- * completion. The exceptions will only be thrown at the start, not
- * during the actual programming sequence. A typical exception would be
- * due to an invalid mode (though that should be prevented earlier)
- */
- virtual void writeCV(int /*CV*/, int /*val*/, ProgListener* /*p*/) /*throw(ProgrammerException)*/ {}
  /**
-  * Perform a CV write in the system-specific manner,
-  * and using the specified programming mode.
-  *<P>
-  * Handles a general address space through a String address.
-  * Each programmer defines the acceptable formats.
-  *<P>
-  * Note that this returns before the write
-  * is complete; you have to provide a ProgListener to hear about
-  * completion. The exceptions will only be thrown at the start, not
-  * during the actual programming sequence. A typical exception would be
-  * due to an invalid mode (though that should be prevented earlier)
+  * Perform a CV write in the system-specific manner, and using the specified
+  * programming mode.
+  * <P>
+  * Handles the legacy DCC case of a single-number address space.
+  * <P>
+  * Note that this returns before the write is complete; you have to provide
+  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
+  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
+  * <p>
+  * Exceptions will only be
+  * thrown at the start, not during the actual programming sequence. A
+  * typical exception would be due to an invalid mode (though that should be
+  * prevented earlier)
+  *
+  * @param CV  the CV to write
+  * @param val the value to write
+  * @param p   the listener that will be notified of the write
+  * @throws jmri.ProgrammerException if unable to communicate
+  * @deprecated As of 4.1.1, use #writeCV(java.lang.String, int,
+  * jmri.ProgListener)
   */
- virtual /*public*/ void writeCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) /*throw (ProgrammerException)*/ {}
+ //@Deprecated
+ QT_DEPRECATED virtual void writeCV(int /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) {}
  /**
- * Perform a CV read in the system-specific manner,
- * and using the specified programming mode.
- * Note that this returns before the read
- * is complete; you have to provide a ProgListener to hear about
- * completion. The exceptions will only be thrown at the start, not
- * during the actual programming sequence. A typical exception would be
- * due to an invalid mode (though that should be prevented earlier)
- */
-virtual void readCV(int /*CV*/, ProgListener* /*p*/) {} // throws ProgrammerException;
- /**
-  * Perform a CV read in the system-specific manner,
-  * and using the specified programming mode.
-  *<P>
-  * Handles a general address space through a String address.
-  * Each programmer defines the acceptable formats.
-  *<P>
-  * Note that this returns before the read
-  * is complete; you have to provide a ProgListener to hear about
-  * completion. The exceptions will only be thrown at the start, not
-  * during the actual programming sequence. A typical exception would be
-  * due to an invalid mode (though that should be prevented earlier)
+  * Perform a CV write in the system-specific manner, and using the specified
+  * programming mode.
+  * <P>
+  * Handles a general address space through a String address. Each programmer
+  * defines the acceptable formats.
+  * <P>
+  * Note that this returns before the write is complete; you have to provide
+  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
+  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
+  * <p>
+  * Exceptions will only be
+  * thrown at the start, not during the actual programming sequence. A
+  * typical exception would be due to an invalid mode (though that should be
+  * prevented earlier)
+  *
+  * @param CV  the CV to write
+  * @param val the value to write
+  * @param p   the listener that will be notified of the write
+  * @throws jmri.ProgrammerException if unable to communicate
   */
- virtual /*public*/ void readCV(QString /*CV*/, ProgListener* /*p*/) {} // throws ProgrammerException;
+ virtual /*public*/ void writeCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) {}
  /**
- * Confirm the value of a CV using the specified programming mode.
- * On some systems, this is faster than a read.
- * Note that this returns before the confirm
- * is complete; you have to provide a ProgListener to hear about
- * completion. The exceptions will only be thrown at the start, not
- * during the actual programming sequence. A typical exception would be
- * due to an invalid mode (though that should be prevented earlier)
- */
-virtual void confirmCV(int /*CV*/, int /*val*/, ProgListener* /*p*/) {} /*throw(ProgrammerException)*/
- /**
-  * Confirm the value of a CV using the specified programming mode.
-  * On some systems, this is faster than a read.
-  *<P>
-  * Handles a general address space through a String address.
-  * Each programmer defines the acceptable formats.
-  *<P>
-  * Note that this returns before the confirm
-  * is complete; you have to provide a ProgListener to hear about
-  * completion. The exceptions will only be thrown at the start, not
-  * during the actual programming sequence. A typical exception would be
-  * due to an invalid mode (though that should be prevented earlier)
+  * Perform a CV read in the system-specific manner, and using the specified
+  * programming mode.
+  * <P>
+  * Handles the legacy DCC case of a single-number address space.
+  * <P>
+  * Note that this returns before the write is complete; you have to provide
+  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
+  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
+  * <p>
+  * Exceptions will only be
+  * thrown at the start, not during the actual programming sequence. A
+  * typical exception would be due to an invalid mode (though that should be
+  * prevented earlier)
+  *
+  * @param CV the CV to read
+  * @param p  the listener that will be notified of the read
+  * @throws jmri.ProgrammerException if unable to communicate
+  * @deprecated As of 4.1.1, use #readCV(java.lang.String, int,
+  * jmri.ProgListener)
   */
-  virtual /*public*/ void confirmCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) /*throw (ProgrammerException)*/ {}
+ //@Deprecated
+QT_DEPRECATED virtual void readCV(int /*CV*/, ProgListener* /*p*/)  throw (ProgrammerException)
+ {}
+ /**
+      * Perform a CV read in the system-specific manner, and using the specified
+  * programming mode.
+  * <P>
+  * Handles a general address space through a String address. Each programmer
+  * defines the acceptable formats.
+  * <P>
+  * Note that this returns before the write is complete; you have to provide
+  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
+  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
+  * <p>
+  * Exceptions will only be
+  * thrown at the start, not during the actual programming sequence. A
+  * typical exception would be due to an invalid mode (though that should be
+  * prevented earlier)
+  *
+  * @param CV the CV to read
+  * @param p  the listener that will be notified of the read
+  * @throws jmri.ProgrammerException if unable to communicate
+  */
+ virtual /*public*/ void readCV(QString /*CV*/, ProgListener* /*p*/) throw (ProgrammerException) {}
+ /**
+  * Confirm the value of a CV using the specified programming mode. On some
+  * systems, this is faster than a read.
+  * <P>
+  * Handles the legacy DCC case of a single-number address space.
+  * <P>
+  * Note that this returns before the write is complete; you have to provide
+  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
+  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
+  * <p>
+  * Exceptions will only be
+  * thrown at the start, not during the actual programming sequence. A
+  * typical exception would be due to an invalid mode (though that should be
+  * prevented earlier)
+  *
+  * @param CV  the CV to confirm
+  * @param val the value to confirm
+  * @param p   the listener that will be notified of the confirmation
+  * @throws jmri.ProgrammerException if unable to communicate
+  * @deprecated As of 4.1.1, use #confirmCV(java.lang.String, int,
+  * jmri.ProgListener)
+  */
+ //@Deprecated
+QT_DEPRECATED virtual void confirmCV(int /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) {}
+ /**
+  * Confirm the value of a CV using the specified programming mode. On some
+  * systems, this is faster than a read.
+  * <P>
+  * Handles a general address space through a String address. Each programmer
+  * defines the acceptable formats.
+  * <P>
+  * Note that this returns before the write is complete; you have to provide
+  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
+  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
+  * <p>
+  * Exceptions will only be
+  * thrown at the start, not during the actual programming sequence. A
+  * typical exception would be due to an invalid mode (though that should be
+  * prevented earlier)
+  *
+  * @param CV  the CV to confirm
+  * @param val the value to confirm
+  * @param p   the listener that will be notified of the confirmation
+  * @throws jmri.ProgrammerException if unable to communicate
+  */
+  virtual /*public*/ void confirmCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) {}
 /**
  * Get the list of {@link ProgrammingMode} supported by this
  * Programmer. If the order is significant, earlier modes are better.
@@ -220,7 +286,33 @@ virtual void confirmCV(int /*CV*/, int /*val*/, ProgListener* /*p*/) {} /*throw(
  */
  virtual /*public*/ bool getCanWrite(QString /*addr*/) {return false;}
 
-  virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
+ /**
+      * Learn about whether the programmer does any kind of verification of write
+      * operations
+      *
+      * @param addr A CV address to check (in case this varies with CV range) or
+      *             null for any
+      * @return The confirmation behavior that can be counted on (might be better
+      *         in some cases)
+      */
+      enum WriteConfirmMode {
+     /**
+      * No verification available, writes are blind
+      */
+     NotVerified,
+     /**
+      * Programmer signals error if there's no reply from the device
+      */
+     DecoderReply,
+     /**
+      * Programmer does a read after write to verify
+      */
+     ReadAfterWrite
+      };
+     //@Nonnull
+     /*public*/ virtual WriteConfirmMode getWriteConfirmMode(QString /*addr*/) {return NotVerified;}
+
+     virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
 virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
 
 // error handling on request is via exceptions

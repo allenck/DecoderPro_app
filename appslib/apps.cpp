@@ -587,7 +587,7 @@ void Apps::initGui() // must be called after Constructor is complete!
 #endif
 /*public*/ void Apps::Run1::run() {
     try {
-        InstanceManager::tabbedPreferencesInstance()->init();
+        ((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->init();
     } catch (Exception ex) {
         Logger::error("Error trying to setup preferences {}"+ ex.getMessage());
     }
@@ -842,9 +842,9 @@ void Apps::On_handleQuit()
  * @param menuBar
  * @param wi
  */
-/*protected*/ void Apps::systemsMenu(QMenuBar* menuBar, WindowInterface* /*wi*/)
+/*protected*/ void Apps::systemsMenu(QMenuBar* menuBar, WindowInterface* wi)
 {
- ActiveSystemsMenu::addItems(menuBar);
+ ActiveSystemsMenu::addItems(menuBar, wi->getFrame());
 }
 #if 1
 /*protected*/ void Apps::debugMenu(QMenuBar* menuBar, WindowInterface* wi) {
@@ -1070,7 +1070,7 @@ void Apps::On_handleQuit()
  //ConnectionStatus::instance().addPropertyChangeListener(this);
  connect(ConnectionStatus::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,  SLOT(propertyChange(PropertyChangeEvent*)));
  //ArrayList<Object> connList = InstanceManager::configureManagerInstance().getInstanceList(ConnectionConfig.class);
- QObjectList connList = InstanceManager::configureManagerInstance()->getInstanceList("ConnectionConfig");
+ QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
  int i = 0;
  if (!connList.isEmpty())
  {
@@ -1359,7 +1359,7 @@ void Apps::keyPressEvent(QKeyEvent *e)
   debugmsg = false;
   return;
  }
- InstanceManager::logixManagerInstance()->setLoadDisabled(true);
+ ((LogixManager*)InstanceManager::getDefault("LogixManager"))->setLoadDisabled(true);
  Logger* log = new Logger("Apps");
  log->info("Requested loading with Logixs disabled.");
  debugmsg = false;

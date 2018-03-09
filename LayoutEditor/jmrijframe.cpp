@@ -745,25 +745,25 @@ private bool escapeKeyActionClosesWindow = false;
     }
     return NULL;
 }
-#if 0
+
 
 // handle resizing when first shown
-/*public*/ void addNotify() {
-    super.addNotify();
+/*public*/ void JmriJFrame::addNotify() {
+    //super.addNotify();
     // log->debug("addNotify window ("+windowTitle()+")");
     if (mShown)
         return;
     // resize frame to account for menubar
-    JMenuBar jMenuBar = getJMenuBar();
+    QMenuBar* jMenuBar = menuBar();
     if (jMenuBar != NULL) {
-        int jMenuBarHeight = jMenuBar.getPreferredSize().height;
-        Dimension dimension = getSize();
-        dimension.height += jMenuBarHeight;
-        setSize(dimension);
+        int jMenuBarHeight = jMenuBar->sizeHint().height();
+        QSize dimension = size();
+        dimension.setHeight(size().height() + jMenuBarHeight);
+        resize(dimension);
     }
     mShown = true;
 }
-#endif
+
 /**
  * Set whether the frame Position is saved or not after it has been created.
  */

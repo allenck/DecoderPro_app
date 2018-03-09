@@ -54,13 +54,13 @@ AbstractProgrammerFacade(prog, parent) {
 
 // programming interface
 //@Override
-/*public*/ void AddressedHighCvProgrammerFacade::writeCV(int CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void AddressedHighCvProgrammerFacade::writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     writeCV("" + CV, val, p);
 }
 
 //@Override
-/*public*/ void AddressedHighCvProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void AddressedHighCvProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     log->debug("start writeCV");
     _cv = CV.toInt();
@@ -78,25 +78,25 @@ AbstractProgrammerFacade(prog, parent) {
 }
 
 //@Override
-/*public*/ void AddressedHighCvProgrammerFacade::confirmCV(int CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void AddressedHighCvProgrammerFacade::confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     confirmCV("" + CV, val, p);
 }
 
 //@Override
-/*public*/ void AddressedHighCvProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void AddressedHighCvProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     readCV(CV, p);
 }
 
 //@Override
-/*public*/ void AddressedHighCvProgrammerFacade::readCV(int CV, ProgListener* p) //throws ProgrammerException
+/*public*/ void AddressedHighCvProgrammerFacade::readCV(int CV, ProgListener* p) throw (ProgrammerException)
 {
     readCV(QString::number(CV), p);
 }
 
 //@Override
-/*public*/ void AddressedHighCvProgrammerFacade::readCV(QString CV, ProgListener* p) //throws ProgrammerException
+/*public*/ void AddressedHighCvProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
 {
     log->debug("start readCV");
     _cv = CV.toInt();

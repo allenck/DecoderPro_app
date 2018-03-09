@@ -7,6 +7,7 @@
 #include "lnsensormanager.h"
 #include "lnreportermanager.h"
 #include "throttlemanager.h"
+#include "componentfactory.h"
 
 /**
  * Lightweight class to denote that a system is active,
@@ -19,6 +20,7 @@
  * @author		Bob Jacobsen  Copyright (C) 2010
  * @version             $Revision: 20788 $
  */
+class LnComponentFactory;
 class ResourceBundle;
 class LnCommandStationType;
 class LnMessageManager;
@@ -77,6 +79,7 @@ public:
 
 
 private:
+ LnComponentFactory* cf;// = null;
  LnTrafficController* lt;
  LnMessageManager* lnm;
  SlotManager* sm;

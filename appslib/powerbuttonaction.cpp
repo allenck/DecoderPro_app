@@ -47,6 +47,7 @@ void PowerButtonAction::updateLabel()
  try
  {
   PowerManager* p = (PowerManager*)InstanceManager::getDefault("PowerManager");
+  if(p == NULL) return;
   if (p->getPower() != PowerManager::ON) {
       putValue(Action::NAME, tr("Set Power On"));
   }

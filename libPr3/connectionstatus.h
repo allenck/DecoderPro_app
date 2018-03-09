@@ -7,6 +7,7 @@
 #include <QStringList>
 #include "propertychangesupport.h"
 #include "libPr3_global.h"
+#include <QPair>
 
 class LIBPR3SHARED_EXPORT ConnectionStatus : public QObject
 {
@@ -17,12 +18,15 @@ public:
     /*public*/ static const QString CONNECTION_UP;// = "Connected";
     /*public*/ static const QString CONNECTION_DOWN;// = "Not Connected";
     // simple database of port names and their status
-    static QStringList* portNames;// = new QStringList();
-    static QStringList* portStatus;// = new QStringList();
+    //static QStringList* portNames;// = new QStringList();
+    QHash<QPair<QString, QString>, QString> portStatus;// = new QStringList();
     /*public*/ static /*synchronized*/ ConnectionStatus* instance();
     /*public*/ /*synchronized*/ void addConnection (QString systemName, QString portName);
-    /*public*/ /*synchronized*/ void setConnectionState(QString portName, QString state);
-    /*public*/ /*synchronized*/ QString getConnectionState(QString portName);
+    QT_DEPRECATED /*public*/ /*synchronized*/ void setConnectionState(QString portName, QString state);
+    /*public*/ /*synchronized*/ void setConnectionState(QString systemName, QString portName, QString state);
+    QT_DEPRECATED /*public*/ /*synchronized*/ QString getConnectionState(QString portName);
+    /*public*/ /*synchronized*/ QString getSystemState(QString systemName);
+    /*public*/ /*synchronized*/ QString getConnectionState(QString systemName, QString portName);
     /*public*/ /*synchronized*/ bool isConnectionOk(QString portName);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
@@ -40,5 +44,6 @@ protected:
  /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
 
 };
+
 
 #endif // CONNECTIONSTATUS_H

@@ -15,12 +15,12 @@ class LIBPR3_GLOBAL_H AddressedHighCvProgrammerFacade : public AbstractProgramme
 public:
  //explicit AddressedHighCvProgrammerFacade(QObject *parent = 0);
  /*public*/ AddressedHighCvProgrammerFacade(Programmer* prog, QString top, QString addrCVhigh, QString addrCVlow, QString valueCV, QString modulo, QObject *parent = 0);
- /*public*/ void writeCV(int CV, int val, ProgListener* p); //throws ProgrammerException
- /*public*/ void writeCV(QString CV, int val, ProgListener* p); //throws ProgrammerException
- /*public*/ void confirmCV(int CV, int val, ProgListener* p); //throws ProgrammerException
- /*public*/ void confirmCV(QString CV, int val, ProgListener* p); //throws ProgrammerException
- /*public*/ void readCV(int CV, ProgListener* p); //throws ProgrammerException
- /*public*/ void readCV(QString CV, ProgListener* p); //throws ProgrammerException
+ /*public*/ void writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException);
+ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
+ /*public*/ void confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException);
+ /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
+ /*public*/ void readCV(int CV, ProgListener* p) throw (ProgrammerException);
+ /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
  /*public*/ void programmingOpReply(int value, int status);
  // Access to full address space provided by this->
  /*public*/ bool getCanRead();

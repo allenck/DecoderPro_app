@@ -74,7 +74,7 @@ void CatalogTreeModel::insertResourceNodes(QString pName, QString pPath, Default
         }
 
         for (QString item : sp) {
-            log->trace(tr("Descend into resource: %1").arg(item));
+            if(log->isDebugEnabled()) log->trace(tr("Descend into resource: %1").arg(item));
             insertResourceNodes(item, pPath + "/" + item, newElement);
         }
     }

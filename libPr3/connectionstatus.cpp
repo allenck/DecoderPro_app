@@ -1,12 +1,12 @@
 #include "connectionstatus.h"
+#include "exceptions.h"
 
 /*public*/ /*static*/ const QString ConnectionStatus::CONNECTION_UNKNOWN = "Unknown";
 /*public*/ /*static*/ const QString ConnectionStatus::CONNECTION_UP = "Connected";
 /*public*/ /*static*/ const QString ConnectionStatus::CONNECTION_DOWN = "Not Connected";
 QMutex* ConnectionStatus::mutex = new QMutex();
 ConnectionStatus* ConnectionStatus::_instance = NULL;
-QStringList* ConnectionStatus::portNames= new QStringList();
-QStringList* ConnectionStatus::portStatus = new QStringList();
+//QStringList* ConnectionStatus::portNames= new QStringList();
 
 
 ConnectionStatus::ConnectionStatus(QObject *parent) :
@@ -15,6 +15,8 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
  log = new Logger("ConnectionStatus");
  pcs = new PropertyChangeSupport(this);
  setObjectName("ConnectionStatus");
+ portStatus = QHash<QPair<QString, QString>, QString>();
+
 }
 /**
  * Interface for classes that wish to get notification when the
@@ -44,15 +46,13 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
 
 /*public*/ /*synchronized*/ void ConnectionStatus::addConnection (QString systemName, QString portName)
 {
- QMutexLocker locker(mutex);
  log->debug ("add connection to monitor " + systemName + " " + portName);
- if (portName == NULL)
-  return;
- if (portNames->contains(portName))
-  return;
- portNames->append(portName);
- portStatus->append(CONNECTION_UNKNOWN);
- firePropertyChange("add", QVariant(), QVariant(portName));
+ QPair<QString, QString> newKey(systemName, portName);
+ if (!portStatus.contains(newKey))
+ {
+     portStatus.insert(newKey, CONNECTION_UNKNOWN);
+     firePropertyChange("add", QVariant(), portName);
+ }
 }
 /**
  * sets the connection state of a communication port
@@ -61,6 +61,7 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
  */
 /*public*/ /*synchronized*/ void ConnectionStatus::setConnectionState(QString portName, QString state)
 {
+#if 0
  QMutexLocker locker(mutex);
  log->debug ("set " + portName + " connection status: " + state);
  if (portName == NULL)
@@ -86,6 +87,33 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
    }
   }
  }
+#else
+ setConnectionState(NULL, portName, state);
+#endif
+}
+
+/**
+ * Set the connection state of a communication port.
+ *
+ * @param systemName the system name
+ * @param portName   the port name
+ * @param state      one of ConnectionStatus.UP, ConnectionStatus.DOWN, or
+ *                   ConnectionStatus.UNKNOWN.
+ */
+/*public*/ /*synchronized*/ void ConnectionStatus::setConnectionState(QString systemName, QString portName, QString state)
+{
+ log->debug(tr("set %1 connection status: %2").arg(portName).arg(state));
+ QPair<QString, QString> newKey(systemName, portName);
+ if (!portStatus.contains(newKey))
+ {
+     portStatus.insert(newKey, state);
+     firePropertyChange("add", QVariant(), portName);
+ }
+ else
+ {
+  portStatus.insert(newKey, state); // will overlay existing entry
+  firePropertyChange("change", state, portName);
+ }
 }
 
 /**
@@ -95,20 +123,68 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
  */
 /*public*/ /*synchronized*/ QString ConnectionStatus::getConnectionState(QString portName)
 {
- //QMutexLocker locker(mutex);
- QString stateText = CONNECTION_UNKNOWN;
- if (portNames->contains(portName))
+ QPair<QString, QString> newKey(NULL, portName);
+ if (portStatus.contains(newKey))
  {
-  for (int i=0; i<portNames->size(); i++)
+  return getConnectionState(NULL, portName);
+ }
+ else
+ {
+  // we have to see if there is a key that has portName as the port value.
+  for (QPair<QString, QString> c : portStatus.keys())
   {
-   if (portName==(portNames->at(i)))
+   if (c.first == NULL ? portName == NULL : c.second==(portName))
    {
-    stateText = portStatus->at(i);
-    break;
+       // if we find a match, return it.
+       return getConnectionState(c.first, c.second);
    }
   }
  }
- log->debug ("get connection status: " + portName + " " + stateText);
+ // and if we still don't find a match, go ahead and try with NULL as
+ // the system name.
+ return getConnectionState(NULL, portName);
+ }
+
+/**
+ * get the status of a communication port based on the system name.
+ *
+ * @param systemName the system name
+ * @return the status
+ */
+/*public*/ /*synchronized*/ QString ConnectionStatus::getSystemState(QString systemName) {
+    QPair<QString, QString> newKey(systemName, NULL);
+    if (portStatus.contains(newKey)) {
+        return getConnectionState(systemName, NULL);
+    } else {
+        // we have to see if there is a key that has systemName as the port value.
+        for (QPair<QString, QString> c : portStatus.keys()) {
+            if (c.first == NULL ? systemName == NULL : c.first == (systemName)) {
+                // if we find a match, return it.
+                return getConnectionState(c.first, c.second);
+            }
+        }
+    }
+    // and if we still don't find a match, go ahead and try with NULL as
+    // the port name.
+    return getConnectionState(systemName, NULL);
+}
+
+/**
+ * Get the status of a communication port.
+ *
+ * @param systemName the system name
+ * @param portName   the port name
+ * @return the status
+ */
+/*public*/ /*synchronized*/ QString ConnectionStatus::getConnectionState(QString systemName, QString portName)
+{
+ QString stateText = CONNECTION_UNKNOWN;
+ QPair<QString, QString> newKey(systemName, portName);
+ if (portStatus.contains(newKey))
+ {
+    stateText = portStatus.value(newKey);
+ }
+ log->debug(tr("get connection status: %1 %2").arg(portName).arg(stateText));
  return stateText;
 }
 
@@ -144,3 +220,7 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
  pcs->removePropertyChangeListener(l);
  disconnect(pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
+
+
+
+

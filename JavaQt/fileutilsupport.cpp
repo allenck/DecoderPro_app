@@ -977,13 +977,17 @@ public URL getURL(URI uri) {
   if (source->isDirectory())
   {
    bool ok = dest->mkdirs();
-   if (!ok) {
-       throw new IOException("Could not use mkdirs to create destination directory");
+   if (!ok)
+   {
+    log->error(tr("Could not use mkdirs to create destination directory").arg(dest->getParent()));
+    throw new IOException("Could not use mkdirs to create destination directory");
    }
   } else {
    bool ok = dest->createNewFile();
-   if (!ok) {
-       throw new IOException("Could not create destination file");
+   if (!ok)
+   {
+    log->error(tr("Could not create destination file %s ").arg(dest->getPath()));
+    throw new IOException(tr("Could not create destination file %s ").arg(dest->getPath()));
    }
   }
  }

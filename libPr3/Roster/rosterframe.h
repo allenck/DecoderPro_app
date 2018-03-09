@@ -209,7 +209,7 @@ public:
  {
   if(e->getPropertyName() == "Power")
   {
-   LnPowerManager* pmgr = (LnPowerManager*)InstanceManager::powerManagerInstance();
+   LnPowerManager* pmgr = (LnPowerManager*)InstanceManager::getDefault("PowerManager");
    if(pmgr->isPowerOn())
    {
     //parent->togglePower = new QToolButton();
@@ -235,13 +235,16 @@ public:
   friend class RosterFrame;
 };
 Q_DECLARE_METATYPE(RosterFrame)
+
 class MyIdentifyLoco : public IdentifyLoco
 {
     Q_OBJECT
+ Programmer* programmer;
  public:
-    MyIdentifyLoco(RosterFrame* me)
+    MyIdentifyLoco(Programmer* programmer, RosterFrame* me) : IdentifyLoco(programmer)
     {
      who = me;
+     this->programmer = programmer;
     }
 
 private:

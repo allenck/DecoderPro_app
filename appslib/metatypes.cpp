@@ -266,6 +266,10 @@
 #include "loconetmenustartupaction.h"
 #include "blockcontentsiconxml.h"
 #include "treeselectionlistener.h"
+#include "sprog/sprogconnectionconfig.h"
+#include "sprog/sprogcsconnectionconfig.h"
+#include "sprog/sprogconnectionconfigxml.h"
+#include "sprog/sprogcsconnectionconfigxml.h"
 
 bool Metatypes::done = false;
 
@@ -546,6 +550,10 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LocoNetMenuStartupAction>("LocoNetMenuStartupAction");
  qRegisterMetaType<BlockContentsIconXml>("BlockContentsIconXml");
  qRegisterMetaType<TreeSelectionListener>("TreeSelectionListener");
+ qRegisterMetaType<Sprog::SprogConnectionConfig>("SprogConnectionConfig");
+ qRegisterMetaType<Sprog::SprogCSConnectionConfig>("SprogCSConnectionConfig");
+ qRegisterMetaType<Sprog::SprogConnectionConfigXml>("SprogConnectionConfigXml");
+ qRegisterMetaType<Sprog::SprogCSConnectionConfigXml>("SprogCSConnectionConfigXml");
 
  Metatypes::done = true;
 }

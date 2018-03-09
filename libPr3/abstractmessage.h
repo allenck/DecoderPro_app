@@ -3,9 +3,10 @@
 #include "message.h"
 #include "logger.h"
 
+
 class AbstractMessage : public Message
 {
-    Q_OBJECT
+ Q_OBJECT
 public:
     //explicit AbstractMessage(QObject *parent = 0);
     /*public*/ AbstractMessage(QObject *parent = 0);
@@ -26,12 +27,15 @@ private:
  QObject *parent;
  // display format
 
- /*protected*/ QByteArray* _dataChars;// = NULL;
+protected:
+ /*protected*/ QByteArray _dataChars;// = NULL;
  // display format
  // contents (/*private*/)
  /*protected*/ int _nDataChars;// = 0;
  friend class AbstractMRMessage;
  friend class AbstractMRReply;
+
+ friend class SprogMessage;
 };
 
 #endif // ABSTRACTMESSAGE_H

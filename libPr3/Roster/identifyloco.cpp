@@ -2,8 +2,8 @@
 #include "instancemanager.h"
 #include "lnprogrammermanager.h"
 
-IdentifyLoco::IdentifyLoco(QObject *parent) :
-    AbstractIdentify(parent)
+IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
+    AbstractIdentify(programmer, parent)
 {
  address = -1;
  originalMode = DefaultProgrammerManager::NONE;
@@ -30,8 +30,6 @@ IdentifyLoco::IdentifyLoco(QObject *parent) :
 // steps of the identification state machine
 /*public*/ bool IdentifyLoco::test1()
 {
- // insure available?
- InstanceManager::programmerManagerInstance()->getGlobalProgrammer();
  // request contents of CV 29
  statusUpdate(tr("Read CV 29"));
  readCV(29);
@@ -122,6 +120,11 @@ IdentifyLoco::IdentifyLoco(QObject *parent) :
 
 /*public*/ bool IdentifyLoco::test8(int value) {
     log->error("unexpected step 8 reached with value: "+QString::number(value));
+    return true;
+}
+//@Override
+/*public*/ bool IdentifyLoco::test9(int value) {
+    log->error("unexpected step 9 reached with value: " + QString::number(value));
     return true;
 }
 

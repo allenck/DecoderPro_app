@@ -82,6 +82,10 @@ public:
     static int iLabel;
     static bool  getShowCvNumbers();
     /*public*/ static void setShowCvNumbers(bool yes);
+    /*public*/ static void setCanCacheDefault(bool yes) ;
+    /*public*/ static bool getCanCacheDefault();
+    /*public*/ static void setDoConfirmRead(bool yes);
+    /*public*/ static bool getDoConfirmRead();
 
 public slots:
     void on_btnReadChangesAllSheets_clicked();

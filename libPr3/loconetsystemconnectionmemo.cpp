@@ -19,6 +19,7 @@
 #include "resourcebundle.h"
 #include "loconet/HexFile/debugthrottlemanager.h"
 #include "lnmessagemanager.h"
+#include "lncomponentfactory.h"
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
  : SystemConnectionMemo("L","LocoNet", parent)
@@ -38,15 +39,16 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt
  clockControl = NULL;
  mTurnoutNoRetry = false;
  mTurnoutExtraSpace = false;
+ cf = NULL;
 
  this->sm = sm; // doesn't full register, but fine for this purpose.
  Register(); // registers general type
  InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
 
-// // create and register the LnComponentFactory
-// InstanceManager.store(cf = new jmri.jmrix.loconet.swing.LnComponentFactory(this),
-//                                jmri.jmrix.swing.ComponentFactory.class);
-// lnm = NULL;
+ // create and register the LnComponentFactory
+ InstanceManager::store(cf = new LnComponentFactory(this),
+                                "ComponentFactory");
+ lnm = NULL;
 
 }
 
@@ -69,13 +71,18 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
  mTurnoutExtraSpace = false;
  tm = NULL;
  lnm = NULL;
+ cf = NULL;
 
  //setSlotManager(sm);
  this->sm = NULL;
  Register(); // registers general type
  InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
 
+ // create and register the LnComponentFactory
+ InstanceManager::store(cf = new LnComponentFactory(this),
+                                "ComponentFactory");
 }
+
 LocoNetSystemConnectionMemo::~LocoNetSystemConnectionMemo()
 {
  dispose();

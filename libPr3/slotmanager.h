@@ -16,6 +16,7 @@
 #include "dccconsist.h"
 #include "simpleprogframe.h"
 #include "runnable.h"
+#include "programmingmode.h"
 
 /**
  * Controls a collection of slots, acting as the
@@ -51,6 +52,7 @@
  * @author	Bob Jacobsen  Copyright (C) 2001, 2003
  * @version     $Revision: 20788 $
  */
+class CsOpSwAccess;
 class LnCommandStationType;
 class LocoNetSystemConnectionMemo;
 class Logger;
@@ -207,11 +209,11 @@ public:
      */
     int getInUseCount();
     void writeCVOpsMode(int CV, int val, ProgListener* p,int addr, bool longAddr) throw(ProgrammerException);
-    void writeCV(int CV, int val, ProgListener* p) /*throw(ProgrammerException)*/;
+    void writeCV(int CV, int val, ProgListener* p) throw(ProgrammerException);
     void doWrite(int CV, int val, ProgListener* p, int pcmd) throw(ProgrammerException);
     void confirmCVOpsMode(int CV, int val, ProgListener* p,
-                          int addr, bool longAddr)/* throw(ProgrammerException)*/;
-    void confirmCV(int CV, int val, ProgListener* p) /*throw(ProgrammerException)*/;
+                          int addr, bool longAddr) throw(ProgrammerException);
+    void confirmCV(int CV, int val, ProgListener* p) throw(ProgrammerException);
     void doConfirm(int CV, int val, ProgListener* p, int pcmd) /*throw(ProgrammerException)*/;
     /**
      * Invoked by LnOpsModeProgrammer to start an ops-mode
@@ -228,9 +230,9 @@ public:
     QString getUserName();
     QString getSystemPrefix();
     LocoNetSystemConnectionMemo* getSystemConnectionMemo();
-    /*public*/ void writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/;
-    /*public*/ void readCV(QString CV, ProgListener* p);// throw (ProgrammerException;
-    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/;
+    /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
+    /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
+    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ QList<ProgrammingMode*> getSupportedModes();
 
 
@@ -295,7 +297,10 @@ private:
  ProgListener* _usingProgrammer;
  QTimer* mPowerTimer;
  LocoNetSystemConnectionMemo* adaptermemo;
-
+ ProgrammingMode* csOpSwProgrammingMode;// = new ProgrammingMode(
+//             "LOCONETCSOPSWMODE",
+//             Bundle.getMessage("LOCONETCSOPSWMODE"));
+ CsOpSwAccess* csOpSwAccessor;
 
 private slots:
  /**

@@ -39,21 +39,14 @@ public:
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
-//    /*public*/ void actionPerformed(QString) ;
-    void OnReadMapper(int row);
-    void OnWriteMapper(int row);
-    void OnConfirmMapper(int row);
+
 signals:
     //void modelChange(CvValue*, int);
 private:
     /*private*/ int _numRows;// = 0;                // must be zero until Vectors are initialized
     static /*final*/ const int MAXCVNUM = 1024;
     /*private*/ QVector<CvValue*>* _cvDisplayVector;// = new QVector<CvValue*>();  // vector of CvValue objects, in display order
-//    /*private*/ QVector<CvValue*>* _cvAllVector;// = new QVector<CvValue*>(MAXCVNUM+1);  // vector of all possible CV objects
     /*private*/ QMap<QString, CvValue*>* _cvAllMap;// = new HashMap<String, CvValue>();
-     //    /*private*/ QVector<QPushButton*>* _writeButtons;// = new QVector<QPushButton*>();
-//    /*private*/ QVector<QPushButton*>* _readButtons;// = new QVector<QPushButton*>();
-//    /*private*/ QVector<QPushButton*>* _compareButtons;// = new QVector<QPushButton*>();
     /*private*/ Programmer* mProgrammer;
     int mapRow(int row);
 
@@ -69,9 +62,6 @@ private:
     /*private*/ static /*final*/ const int HIGHESTNOPROG = STATECOLUMN+1;
 
     /*private*/ QLabel* _status;// = NULL;
-//    QSignalMapper* readMapper;
-//    QSignalMapper* writeMapper;
-//    QSignalMapper* compareMapper;
     Logger* log;
 
  friend class PaneProgPane;

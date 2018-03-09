@@ -68,6 +68,7 @@ public:
     /*public*/ void makePrivateWindow();
     /*public*/ void windowClosing(QCloseEvent* e);
     /*public*/ virtual QString getClassName();
+    /*public*/ void addNotify();
 
 signals:
 

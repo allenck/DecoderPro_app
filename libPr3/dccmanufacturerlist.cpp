@@ -141,42 +141,42 @@ QString     DCCManufacturerList::MRC = "MRC";
     /*public static*/ QStringList* DCCManufacturerList::getSystemNames() {
     QStringList* list = new QStringList();
     *list << NONE <<
-             ATLAS <<
-             BACHRUS <<
-             CMRI <<
-             CTI <<
+//             ATLAS <<
+//             BACHRUS <<
+//             CMRI <<
+//             CTI <<
              DIGITRAX <<
-             DCCSPEC <<
-             DCC4PC <<
-             EASYDCC <<
-             ESU <<
-             HORNBY <<
-             IEEE802154 <<
-             JMRI <<
-             LENZ <<
-             LIONEL <<
-             MAPLE <<
-             MARKLIN <<
-             MERG <<
-             MRC <<
-             NCE <<
-             NAC <<
-             OAK <<
-             OPENLCB <<
-             OTHER <<
-             POWERLINE <<
-             PROTRAK <<
-             QSI <<
-             RFID <<
-             ROCO <<
-             SPROG <<
-             SRCP <<
-             TAMS <<
-             TRACTRONICS <<
-             UHLEN <<
-             WANGROW <<
-             ZIMO <<
-             ZTC;
+//             DCCSPEC <<
+//             DCC4PC <<
+//             EASYDCC <<
+//             ESU <<
+//             HORNBY <<
+//             IEEE802154 <<
+//             JMRI <<
+//             LENZ <<
+//             LIONEL <<
+//             MAPLE <<
+//             MARKLIN <<
+//             MERG <<
+//             MRC <<
+//             NCE <<
+//             NAC <<
+//             OAK <<
+//             OPENLCB <<
+//             OTHER <<
+//             POWERLINE <<
+//             PROTRAK <<
+//             QSI <<
+//             RFID <<
+//             ROCO <<
+             SPROG;
+//             SRCP <<
+//             TAMS <<
+//             TRACTRONICS <<
+//             UHLEN <<
+//             WANGROW <<
+//             ZIMO <<
+//             ZTC;
     return list;
     }
 
@@ -215,7 +215,7 @@ QString     DCCManufacturerList::MRC = "MRC";
 //        if(System==(QSI)) { return new jmri.jmrix.qsi.QSIConnectionTypeList().getAvailableProtocolClasses(); }
 //        if(System==(RFID)) { return new jmri.jmrix.rfid.RfidConnectionTypeList().getAvailableProtocolClasses(); }
 //        if(System==(ROCO)) { return new jmri.jmrix.lenz.LenzConnectionTypeList().getAvailableProtocolClasses(); }
-//        if(System==(SPROG)) { return new jmri.jmrix.sprog.SprogConnectionTypeList().getAvailableProtocolClasses();  }
+        if(System==(SPROG)) { return (new SprogConnectionTypeList())->getAvailableProtocolClasses();  }
 //        if(System==(SRCP)) { return new jmri.jmrix.srcp.SRCPConnectionTypeList().getAvailableProtocolClasses(); }
 //        if(System==(TAMS)) { return new jmri.jmrix.tams.TamsConnectionTypeList().getAvailableProtocolClasses(); }
 //        if(System==(TRACTRONICS)) { return new jmri.jmrix.secsi.SerialConnectionTypeList().getAvailableProtocolClasses(); }

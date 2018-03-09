@@ -24,8 +24,8 @@ LocoSelTreePane::LocoSelTreePane(QWidget *parent) :
  */
 ///*public*/ class LocoSelTreePane extends CombinedLocoSelTreePane  {
 
-/*public*/ LocoSelTreePane::LocoSelTreePane(QLabel* s,QWidget *parent)
-    : CombinedLocoSelTreePane(s, parent)
+/*public*/ LocoSelTreePane::LocoSelTreePane(QLabel* s, ProgModeSelector* selector, QWidget *parent)
+    : CombinedLocoSelTreePane(s, selector, parent)
 {
  //super(s);
 }

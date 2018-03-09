@@ -1,7 +1,7 @@
 #include "identifydecoder.h"
 
-IdentifyDecoder::IdentifyDecoder(QObject *parent) :
-    AbstractIdentify(parent)
+IdentifyDecoder::IdentifyDecoder(Programmer* programmer, QObject *parent) :
+    AbstractIdentify(programmer,parent)
 {
  mfgID = -1; 	// cv8
  modelID = -1;	// cv7
@@ -119,7 +119,25 @@ IdentifyDecoder::IdentifyDecoder(QObject *parent) :
         productID = (productIDhigh * 256) + productIDlow;
         return true;
     }
+    else if (mfgID == 151)
+    {  // ESU
+     productID = productID + (value * 256 * 256);
+     statusUpdate("Read productID Byte 4");
+     readCV(264);
+     return false;
+    }
     log->error("unexpected step 8 reached with value: "+value);
+    return true;
+}
+
+//@Override
+/*public*/ bool IdentifyDecoder::test9(int value) {
+    if (mfgID == 151) {  // ESU
+        productID = productID + (value * 256 * 256 * 256);
+        log->info("Decoder returns mfgID:" + QString::number(mfgID) + ";modelID:" + QString::number(modelID) + ";productID:" + QString::number(productID));
+        return true;
+    }
+    log->error("unexpected step 9 reached with value: " + value);
     return true;
 }
 

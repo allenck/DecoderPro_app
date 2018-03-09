@@ -211,6 +211,7 @@ void LocoBufferAdapter::common()
  opened = true;
 
 //((LocoNetSystemConnectionMemo*)adaptermemo)->configureManagers();
+ connect(activeSerialPort->device(), SIGNAL(readyRead()), this, SLOT(dataReady()));
 
 #else
  activeSerialPort->setPortName(portName);
@@ -278,6 +279,11 @@ void LocoBufferAdapter::common()
  }
  opened = true;
  return ""; // normal operation
+}
+
+void LocoBufferAdapter::dataReady()
+{
+  LnPacketizer::dataAvailable->wakeAll();
 }
 
 /**
@@ -363,8 +369,8 @@ QSerialPort* LocoBufferAdapter::getSerialPort()
 
  int baud = currentBaudNumber(mBaudRate);
  Q_UNUSED(baud);
- activeSerialPort->setSerialPortParams(baud, SerialPort::DATABITS8,
-                                         SerialPort::STOPBITS_1, SerialPort::PARITYNONE);
+ activeSerialPort->setSerialPortParams(baud, SerialPort::DATABITS_8,
+                                         SerialPort::STOPBITS_1, SerialPort::PARITY_NONE);
 
  // set RTS high, DTR high - done early, so flow control can be configured after
  activeSerialPort->setRTS(true);		// not connected in some serial ports and adapters

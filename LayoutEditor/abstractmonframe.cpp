@@ -11,6 +11,8 @@
 #include <QScrollArea>
 #include <QFileDialog>
 #include "fileutil.h"
+#include "jfilechooser.h"
+#include "loggerfactory.h"
 
 //AbstractMonFrame::AbstractMonFrame(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -37,7 +39,7 @@
 /*public*/ void AbstractMonFrame::dispose() {
     p->setSimplePreferenceState(timeStampCheck, timeCheckBox->isChecked());
     p->setSimplePreferenceState(rawDataCheck, rawCheckBox->isChecked());
-    p->setSimplePreferenceState(alwaysOnTopCheck, alwaysOnTopCheckBox.isChecked());
+    p->setSimplePreferenceState(alwaysOnTopCheck, alwaysOnTopCheckBox->isChecked());
     p->setSimplePreferenceState(autoScrollCheck, !autoScrollCheckBox->isChecked());
     JmriJFrame::dispose();
 }
@@ -56,7 +58,7 @@
     // member declarations
     clearButton = new QPushButton();
     freezeButton = new JToggleButton();
-    jScrollPane1 = new QScrollArea();
+//    jScrollPane1 = new QScrollArea();
     monTextPane = new JTextArea();
     startLogButton = new QPushButton ();
     stopLogButton = new QPushButton ();
@@ -68,11 +70,10 @@
     entryField = new JTextField();
     enterButton = new QPushButton ();
     newline = /*System.getProperty("line.separator");*/ "\n";
-    log = new Logger("AbstractMonFrame");
     logStream = NULL;
-    df = new SimpleDateFormat("HH:mm:ss.SSS");
+    df = QString("HH:mm:ss.zzz");
     linesBuffer =  QString();
-    logFileChooser = new QFileDialog(this, tr("Select Log File"), FileUtil::getUserFilesPath());
+    logFileChooser = new JFileChooser(FileUtil::getUserFilesPath());
 }
 
 /*public*/ void AbstractMonFrame::initComponents() throw (Exception)
@@ -96,9 +97,11 @@
     monTextPane->setVisible(true);
     monTextPane->setToolTip("Command and reply monitoring information appears here");
     monTextPane->setEditable(false);
+    monTextPane->setReadOnly(true);
+    monTextPane->setEnabled(true);
 
     // Add document listener to scroll to end when modified if required
-    monTextPane->getDocument().addDocumentListener(new DocumentListener();
+//    monTextPane->getDocument().addDocumentListener(new DocumentListener();
 //    {
 
 //        // References to the JTextArea and QCheckBox
@@ -123,15 +126,22 @@
 //    });
 
     entryField->setToolTip("Enter text here, then click button to include it in log");
+    // cap vertical size to avoid over-growth
+    QSize currentPreferredSize = entryField->getPreferredSize();
+    QSize currentMaximumSize = entryField->maximumSize();
+    currentMaximumSize.setHeight(currentPreferredSize.height());
+    entryField->setMaximumSize(currentMaximumSize);
 
     // fix a width for current character set
-    JTextField* t = new JTextField(80);
-    int x = jScrollPane1.getPreferredSize().width+t.getPreferredSize().width;
-    int y = jScrollPane1.getPreferredSize().height+10*t.getPreferredSize().height;
+//    JTextField* t = new JTextField(80);
+//    int x = jScrollPane1->sizeHint().width()+t->sizeHint().width();
+//    int y = jScrollPane1->sizeHint().height()+10*t->sizeHint().height();
 
-    jScrollPane1->getViewport().add(monTextPane);
-    jScrollPane1->setPreferredSize(new Dimension(x, y));
-    jScrollPane1->setVisible(true);
+//    //jScrollPane1->getViewport().add(monTextPane);
+//    jScrollPane1->setWidget(monTextPane);
+//    jScrollPane1->setWidgetResizable(true);
+//    jScrollPane1->resize(QSize(x, y));
+//    jScrollPane1->setVisible(true);
 
     startLogButton->setText("Start logging");
     startLogButton->setVisible(true);
@@ -167,12 +177,12 @@
     openFileChooserButton->setToolTip("Click here to select a new output log file");
 
     setTitle(title());
-//    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
- QWidget* centralWidget = new QWidget;
- QVBoxLayout* contentPaneLayout = new QVBoxLayout;
- centralWidget->setLayout(contentPaneLayout);
+
+    QVBoxLayout* contentPaneLayout;
+    getContentPane()->setLayout(contentPaneLayout = new QVBoxLayout());//, BoxLayout.Y_AXIS));
+
     // add items to GUI
-    contentPaneLayout->addWidget(jScrollPane1);
+    contentPaneLayout->addWidget(/*jScrollPane1*/monTextPane);
 
 //    QWidget* paneA = new QWidget();
 //    paneA.setLayout(new BoxLayout(paneA, BoxLayout.Y_AXIS));
@@ -186,6 +196,7 @@
     pane1Layout->addWidget(rawCheckBox);
     pane1Layout->addWidget(timeCheckBox);
     pane1Layout->addWidget(alwaysOnTopCheckBox);
+    pane1Layout->addWidget(autoScrollCheckBox);
     paneALayout->addLayout(pane1Layout);
 
 //    QWidget* pane2 = new QWidget();
@@ -248,7 +259,7 @@
 //            setAlwaysOnTop(alwaysOnTopCheckBox.isChecked());
 //        }
 //    });
-    connect(alwaysOnTopCheckBox, SIGNAL(clicked()), this, SLOT(ONalwaysOnTopCheckBox()));
+    connect(alwaysOnTopCheckBox, SIGNAL(clicked(bool)), this, SLOT(On_alwaysOnTopCheckBox(bool)));
 
 //    autoScrollCheckBox.addActionListener(new ActionListener() {
 //        @Override
@@ -256,114 +267,156 @@
 //            doAutoScroll(monTextPane, autoScrollCheckBox.isChecked());
 //        }
 //    });
-    connect(autoScrollCheckBox, SIGNAL(clicked()), this, SLOT(OnAutoScrollCheckBox()));
+    connect(autoScrollCheckBox, SIGNAL(clicked()), this, SLOT(On_autoScrollCheckBox()));
 
  // set file chooser to a default
- logFileChooser.setSelectedFile(new File("monitorLog.txt"));
+ logFileChooser->setSelectedFile(new File("monitorLog.txt"));
 
  // connect to data source
  init();
 
  // add help menu to window
- addHelpMenu();
+ setHelp();
 
  // prevent button areas from expanding
  pack();
- paneALayout->setMaximumSize(paneALayout->sizeHint());
+ //paneALayout->setMaximumSize(paneALayout->sizeHint());
  pack();
+}
+
+void AbstractMonFrame::On_alwaysOnTopCheckBox(bool bChecked)
+{
+ Qt::WindowFlags flags = windowFlags();
+ if (bChecked)
+ {
+  this->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+  this->show();
+ }
+ else
+ {
+  this->setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+  this->show();
+ }
+
+}
+
+void AbstractMonFrame::On_autoScrollCheckBox()
+{
+ doAutoScroll(monTextPane, autoScrollCheckBox->isChecked());
 }
 
 /**
  * Define help menu for this window.
  * <p>
- * By default, provides a generic help page
- * that covers general features.  Specific
- * implementations can override this to
- * show their own help page if desired.
+ * By default, provides a generic help page that covers general features.
+ * Specific implementations can override this to show their own help page if
+ * desired.
  */
-/*protected*/ void AbstractMonFrame::addHelpMenu() {
-    addHelpMenu("package.jmri.jmrix.AbstractMonFrame", true);
+/*protected*/ void AbstractMonFrame::setHelp() {
+    addHelpMenu("package.jmri.jmrix.AbstractMonFrame", true); // NOI18N
 }
 
-/*public*/ void AbstractMonFrame::nextLine(QString line, QString raw) {
-    // handle display of traffic
-    // line is the traffic in 'normal form', raw is the "raw form"
-    // Both should be one or more well-formed lines, e.g. end with \n
-    //StringBuffer sb = new StringBuffer(120);
-    QString sb;
+/*public*/ void AbstractMonFrame::nextLine(QString line, QString raw)
+{
+ // handle display of traffic
+ // line is the traffic in 'normal form', raw is the "raw form"
+ // Both should be one or more well-formed lines, e.g. end with \n
+ //StringBuffer sb = new StringBuffer(120);
+ QString sb;
 
-    // display the timestamp if requested
-    if ( timeCheckBox->isChecked() ) {
-        sb.append(df.format(new Date())).append( ": " ) ;
-    }
+ // display the timestamp if requested
+ if ( timeCheckBox->isChecked() )
+ {
+  sb.append(QDateTime::currentDateTime().toString(df) + " " ) ;    }
 
-    // display the raw data if requested
-    if ( rawCheckBox.isChecked() ) {
-        sb.append( '[' ).append(raw).append( "]  " );
-    }
+ // display the raw data if requested
+ if ( rawCheckBox->isChecked() )
+ {
+     sb.append( '[' ).append(raw).append( "]  " );
+ }
 
-    // display decoded data
-    sb.append(line);
-    synchronized( self )
-    {
-        linesBuffer.append( sb.toString() );
-    }
+ // display decoded data
+ if(line.endsWith('\n'))
+ {
+  line = line.mid(0, line.length()-1);
+ }
+ sb.append(line);
+//    synchronized( self )
+ {
+  linesBuffer.append( sb/*.toString() */);
+ }
 
-    // if not frozen, display it in the Swing thread
-    if (!freezeButton.isChecked()) {
-        Runnable r = new Runnable() {
-            /*public*/ void run() {
-                synchronized( self )
-                {
-                    monTextPane.append( linesBuffer.toString() );
-                    int LineCount = monTextPane.getLineCount() ;
-                    if( LineCount > MAX_LINES )
-                    {
-                        LineCount -= MAX_LINES ;
-                        try {
-                            int offset = monTextPane.getLineStartOffset(LineCount);
-                            monTextPane.getDocument().remove(0, offset ) ;
-                        }
-                        catch (BadLocationException ex) {
-                        }
-                    }
-                    linesBuffer.setLength(0) ;
-                }
-            }
-        };
-        javax.swing.SwingUtilities.invokeLater(r);
-    }
+ // if not frozen, display it in the Swing thread
+ if (!freezeButton->isChecked())
+ {
+//        Runnable r = new Runnable() {
+//            /*public*/ void run() {
+//                synchronized( self )
+//                {
+   monTextPane->append( linesBuffer/*.toString()*/ );
+   int LineCount = monTextPane->document()->lineCount();
+   if( LineCount > MAX_LINES )
+   {
+    LineCount -= MAX_LINES ;
+//                        try {
+//                            int offset = monTextPane->getLineStartOffset(LineCount);
+//                            monTextPane->document()->remove(0, offset ) ;
+//                        }
+//                        catch (BadLocationException ex) {
+//                        }
+    QTextCursor tc = monTextPane->textCursor();
+    tc.movePosition(QTextCursor::Start);
+    tc.setPosition(500);
+    tc.removeSelectedText();
+   }
+   linesBuffer = "";
+   if(autoScrollCheckBox->isChecked())
+    monTextPane->moveCursor( QTextCursor::End);
+//                    linesBuffer.setLength(0) ;
+//                }
+//            }
+//        };
+//        javax.swing.SwingUtilities.invokeLater(r);
+ }
 
-    // if requested, log to a file.
-
-    if (logStream != NULL) {
-        synchronized (logStream) {
-            String logLine = sb.toString();
-            if (!newline.equals("\n")) {
-                // have to massage the line-ends
-                int i = 0;
-                int lim = sb.length();
-                StringBuffer out = new StringBuffer(sb.length()+10);  // arbitrary guess at space
-                for ( i = 0; i<lim; i++) {
-                    if (sb.charAt(i) == '\n')
-                        out.append(newline);
-                    else
-                        out.append(sb.charAt(i));
-                }
-                logLine = out.toString();
-            }
-            logStream.print(logLine);
-        }
-    }
+ // if requested, log to a file.
+#if 0
+ if (logStream != NULL) {
+     synchronized (logStream)
+     {
+         QString logLine = sb.toString();
+         if (!newline == ("\n"))
+         {
+             // have to massage the line-ends
+             int i = 0;
+             int lim = sb.length();
+             QString out;// = new StringBuffer(sb.length()+10);  // arbitrary guess at space
+             for ( i = 0; i<lim; i++) {
+                 if (sb.at(i) == '\n')
+                     out.append(newline);
+                 else
+                     out.append(sb.at(i));
+             }
+             logLine = out/*.toString()*/;
+         }
+         logStream->print(logLine);
+     }
+ }
+#endif
 }
 
+AMFWorker::AMFWorker() {}
+void AMFWorker::process()
+{
+
+}
 
 /*public*/ /*synchronized*/ void AbstractMonFrame::clearButtonActionPerformed(ActionEvent* e) {
     // clear the monitoring history
-    synchronized( linesBuffer )
+//    synchronized( linesBuffer )
     {
-        linesBuffer.setLength(0);
-        monTextPane.setText("");
+//        linesBuffer.setLength(0);
+//        monTextPane.setText("");
     }
 }
 
@@ -372,9 +425,9 @@
     if ( logStream==NULL) {  // successive clicks don't restart the file
         // start logging
         try {
-            logStream = new PrintStream (new FileOutputStream(logFileChooser.getSelectedFile()));
+//            logStream = new PrintStream (new FileOutputStream(logFileChooser->getSelectedFile()));
         } catch (Exception ex) {
-            log.error("exception "+ex);
+            log->error("exception "+ex.getMessage());
         }
     }
 }
@@ -382,9 +435,10 @@
 /*public*/ /*synchronized*/ void AbstractMonFrame::stopLogButtonActionPerformed(ActionEvent* e) {
     // stop logging by removing the stream
     if (logStream!=NULL) {
-        synchronized (logStream) {
-            logStream.flush();
-            logStream.close();
+//        synchronized (logStream)
+        {
+//            logStream.flush();
+//            logStream.close();
         }
         logStream = NULL;
     }
@@ -392,11 +446,11 @@
 
 /*public*/ void AbstractMonFrame::openFileChooserButtonActionPerformed(ActionEvent*e) {
     // start at current file, show dialog
-    int retVal = logFileChooser.showSaveDialog(this);
+    int retVal = logFileChooser->showSaveDialog(this);
 
     // handle selection or cancel
-    if (retVal == JFileChooser.APPROVE_OPTION) {
-        boolean loggingNow = (logStream != NULL);
+    if (retVal == JFileChooser::APPROVE_OPTION) {
+        bool loggingNow = (logStream != NULL);
         stopLogButtonActionPerformed(e);  // stop before changing file
         //File file = logFileChooser.getSelectedFile();
         // if we were currently logging, start the new file
@@ -404,13 +458,13 @@
     }
 }
 
-/*public*/ void AbstractMonFrame::enterButtonActionPerformed(ActionEvent* e) {
+/*public*/ void AbstractMonFrame::enterButtonActionPerformed(ActionEvent* /*e*/) {
     nextLine(entryField->text()+"\n", "");
 }
 
-/*public*/ /*synchronized*/ QString getFrameText()
+/*public*/ /*synchronized*/ QString AbstractMonFrame::getFrameText()
 {
-    return linesBuffer.toString();
+    return linesBuffer/*.toString()*/;
 }
 
 /**
@@ -420,18 +474,20 @@
  * @param scroll True to move to end
  */
 /*private*/ void AbstractMonFrame::doAutoScroll(/*final*/ JTextArea* ta, /*final*/ bool scroll) {
-    SwingUtilities.invokeLater(new Runnable() {
-        //@Override
-        /*public*/ void run() {
-            int len = ta.getText().length();
-            if (scroll) {
-                ta.setCaretPosition(len);
-            } else if (ta.getCaretPosition()==len && len>0) {
-                ta.setCaretPosition(len-1);
-            }
+//    SwingUtilities.invokeLater(new Runnable()
+//    {
+//        //@Override
+//        /*public*/ void run()
+        {
+            int len = ta->toPlainText().length();
+//            if (scroll) {
+//                ta->setCaretPosition(len);
+//            } else if (ta.getCaretPosition()==len && len>0) {
+//                ta.setCaretPosition(len-1);
+//            }
         }
-    });
+//    });
 }
 
-//private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractMonFrame.class.getName());
+/*private*/ /*static*/ /*final*/ Logger* AbstractMonFrame::log = LoggerFactory::getLogger("AbstractMonFrame");
 //}

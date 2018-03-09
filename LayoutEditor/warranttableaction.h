@@ -213,7 +213,7 @@ public:
 //              return true;
 //          }
 //      };
-   InstanceManager::shutDownManagerInstance()->_register(WarrantTableAction::_shutDownTask);
+   ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(WarrantTableAction::_shutDownTask);
   }
   WarrantTableAction::updateWarrantMenu( this);
 }
@@ -261,7 +261,7 @@ public slots:
  void actionPerformed(ActionEvent */*e*/ = 0)
  {
   WarrantTableAction::_log->close();
-  InstanceManager::shutDownManagerInstance()->deregister(WarrantTableAction::_shutDownTask);
+  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->deregister(WarrantTableAction::_shutDownTask);
   WarrantTableAction::_shutDownTask = NULL;
   WarrantTableAction::_log = NULL;
   WarrantTableAction::updateWarrantMenu(this);

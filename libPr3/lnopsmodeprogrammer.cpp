@@ -38,20 +38,20 @@
 /**
  * Forward a write request to an ops-mode write operation
  */
-/*public*/ void LnOpsModeProgrammer::writeCV(int CV, int val, ProgListener* p) /*throw (ProgrammerException)*/
+/*public*/ void LnOpsModeProgrammer::writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
 {
  mSlotMgr->writeCVOpsMode(CV, val, p, mAddress, mLongAddr);
 }
 
-/*public*/ void LnOpsModeProgrammer::readCV(int CV, ProgListener* p) /*throw ProgrammerException*/ {
+/*public*/ void LnOpsModeProgrammer::readCV(int CV, ProgListener* p) throw (ProgrammerException) {
  mSlotMgr->readCVOpsMode(CV, p, mAddress, mLongAddr);
 }
 
-/*public*/ void LnOpsModeProgrammer::confirmCV(int CV, int val, ProgListener* p) /*throws ProgrammerException*/ {
+/*public*/ void LnOpsModeProgrammer::confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException) {
  mSlotMgr->confirmCVOpsMode(CV, val, p, mAddress, mLongAddr);
 }
 
-/*public*/ void LnOpsModeProgrammer::writeCV(QString CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void LnOpsModeProgrammer::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
  this->p = NULL;
 // Check mode
@@ -91,7 +91,7 @@
  }
 }
 
-/*public*/ void LnOpsModeProgrammer::readCV(QString CV, ProgListener* p) //throws ProgrammerException
+/*public*/ void LnOpsModeProgrammer::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
 {
  this->p = NULL;
  // Check mode
@@ -129,7 +129,7 @@
  }
 }
 
-/*public*/ void LnOpsModeProgrammer::confirmCV(QString CV, int val, ProgListener* p) //throws ProgrammerException
+/*public*/ void LnOpsModeProgrammer::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
  this->p = NULL;
  // Check mode

@@ -24,7 +24,7 @@ void PR3Adapter::setSerialPort(SerialPort* activeSerialPort) throw(UnsupportedCo
  for (int i = 0; i<validBaudNumber().size(); i++ )
   if (validBaudRates()[i]==(mBaudRate))
    baud = validBaudNumber()[i];
-  activeSerialPort->setSerialPortParams(baud, SerialPort::DATABITS8, SerialPort::STOPBITS_1, SerialPort::PARITYNONE);
+  activeSerialPort->setSerialPortParams(baud, SerialPort::DATABITS_8, SerialPort::STOPBITS_1, SerialPort::PARITY_NONE);
 
   // set RTS high, DTR high - done early, so flow control can be configured after
   activeSerialPort->setRTS(true);		// not connected in some serial ports and adapters

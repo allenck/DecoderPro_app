@@ -13,6 +13,7 @@
 #include "programmingmode.h"
 #include "programmer.h"
 #include "addressedprogrammer.h"
+#include "accessoryopsmodeprogrammerfacade.h"
 
 //ProgOpsModePane::ProgOpsModePane(QWidget *parent) :
 //    QWidget(parent)
@@ -38,8 +39,28 @@
 void ProgOpsModePane::init()
 {
  mOpsByteButton  	= new QRadioButton();
- mAddrField           = new JTextField(4);
- mLongAddrCheck        = new QCheckBox("Long address");
+ //SpinnerNumberModel model = new SpinnerNumberModel(0, 0, 10239, 1); // 10239 is highest DCC Long Address documented by NMRA as per 2017
+ mAddrField = new QSpinBox(/*model*/);
+ mAddrField->setMinimum(0);
+ mAddrField->setMaximum(10239);
+ mAddrField->setValue(0);
+ mAddrField->setSingleStep(1);
+ lowAddrLimit = 0;
+ highAddrLimit = 10239;
+ oldAddrValue = 3; // Default start value
+ shortAddrButton = new QRadioButton(tr("Short Address"));
+ longAddrButton = new QRadioButton(tr("LongAddress"));
+ offsetAddrCheckBox = new QCheckBox(tr("Offset Address"));
+ addressLabel = new QLabel(tr("Address:"));
+ oldLongAddr = false;
+ opsAccyMode = false;
+ oldOpsAccyMode = false;
+ opsSigMode = false;
+ oldOpsSigMode = false;
+ oldoffsetAddrCheckBox = false;
+ programmer = NULL;
+ facadeProgrammer = NULL;
+
  log = new Logger("ProgOpsModePane");
  oldAddrText             = "";
  oldLongAddr             = false;
@@ -52,46 +73,62 @@ void ProgOpsModePane::init()
  */
 /*public*/ Programmer* ProgOpsModePane::getProgrammer()
 {
- if ( (mLongAddrCheck->isChecked() == oldLongAddr) && mAddrField->text()==(oldAddrText) )
+ log->debug(tr("getProgrammer mLongAddrCheck.isSelected()=%1, oldLongAddr=%2, mAddrField.getValue()=%3, oldAddrValue=%4, opsAccyMode=%5, oldOpsAccyMode=%6, opsSigMode=%7, oldOpsSigMode=%8, oldoffsetAddrCheckBox=%9)").arg(longAddrButton->isChecked()).arg(oldLongAddr).arg(mAddrField->value()).arg(oldAddrValue).arg(opsAccyMode).arg(oldOpsAccyMode).arg(opsSigMode).arg(oldOpsSigMode).arg(oldoffsetAddrCheckBox));
+
+ if (longAddrButton->isChecked() == oldLongAddr
+                 && mAddrField->value() == (oldAddrValue)
+                 && offsetAddrCheckBox->isChecked() == oldoffsetAddrCheckBox
+                 && opsAccyMode == oldOpsAccyMode
+                 && opsSigMode == oldOpsSigMode)
  {
+  log->debug("getProgrammer hasn't changed");
   // hasn't changed
-  return (Programmer*)programmer;
- }
-
- // here values have changed, try to create a new one
-#if QT_VERSION < 0x050000
-  AddressedProgrammerManager* pm = VPtr<AddressedProgrammerManager>::asPtr(progBox->itemData(progBox->currentIndex()));
-#else
- AddressedProgrammerManager* pm = VPtr<AddressedProgrammerManager>::asPtr(progBox->itemData(progBox->currentIndex()));
-#endif
- oldLongAddr = mLongAddrCheck->isChecked();
- oldAddrText = mAddrField->text();
-
- if (pm != NULL)
- {
-  int address = 3;
-  try
-  {
-   address = mAddrField->text().toInt();
+  if (opsAccyMode || opsSigMode) {
+      return facadeProgrammer;
+  } else {
+      return programmer;
   }
-  catch (NumberFormatException e)
-  {
-   log->error("loco address \"{}\" not correct" + mAddrField->text());
-   programmer = NULL;
-  }
-  bool longAddr = mLongAddrCheck->isChecked();
-  log->debug("ops programmer for address " + QString::number(address)
-                + ", long address " + QString::number(longAddr));
-  programmer = pm->getAddressedProgrammer(longAddr, address);
-  log->debug("   programmer: {}" + programmer->getAddress());
+}
 
-  // whole point is to get mode...
-  setProgrammerFromGui(programmer);
+// here values have changed, try to create a new one
+ AddressedProgrammerManager* pm = VPtr<AddressedProgrammerManager>::asPtr(progBox->currentData());
+ oldLongAddr = longAddrButton->isChecked();
+ oldAddrValue = mAddrField->value();
+ oldOpsAccyMode = opsAccyMode;
+ oldOpsSigMode = opsSigMode;
+ oldoffsetAddrCheckBox = offsetAddrCheckBox->isChecked();
+ setAddrParams();
+
+ if (pm != NULL) {
+     int address = 3;
+     try {
+         address = mAddrField->value();
+     } catch (NumberFormatException e) {
+         log->error(tr("loco address \"%1\" not correct").arg(mAddrField->value()));
+         programmer = NULL;
+     }
+     bool longAddr = longAddrButton->isChecked();
+     log->debug("ops programmer for address " + QString::number(address)
+             + ", long address " + longAddr);
+     programmer = pm->getAddressedProgrammer(longAddr, address);
+     log->debug(tr("   programmer: %1").arg(programmer->metaObject()->className()));
+
+     // whole point is to get mode...
+     setProgrammerFromGui(programmer);
+ } else {
+     log->warn("request for ops mode programmer with no ProgrammerManager configured");
+     programmer = NULL;
  }
- else
- {
-  log->warn("request for ops mode programmer with no ProgrammerManager configured");
-  programmer = NULL;
+ if (opsAccyMode) {
+     log->debug("   getting AccessoryOpsModeProgrammerFacade");
+     facadeProgrammer = new AccessoryOpsModeProgrammerFacade((Programmer*)programmer,
+             QString(longAddrButton->isChecked() ? "accessory" : "decoder"), 200, programmer);
+     return facadeProgrammer;
+ } else if (opsSigMode) {
+     QString addrType = offsetAddrCheckBox->isChecked() ? "signal" : "altsignal";
+     log->debug(tr("   getting AccessoryOpsModeProgrammerFacade %1").arg(addrType));
+     facadeProgrammer = new AccessoryOpsModeProgrammerFacade(programmer, addrType, 200, programmer);
+     return facadeProgrammer;
  }
  return programmer;
 }
@@ -107,66 +144,104 @@ void ProgOpsModePane::init()
 }
 
 /**
- * @param direction
- * @param group allows grouping of buttons across panes
+ * Constructor for the Programming settings pane.
+ *
+ * @param direction controls layout, either BoxLayout.X_AXIS or
+ *                  BoxLayout.Y_AXIS
+ * @param group     A set of JButtons to display programming modes
  */
-/*public*/ ProgOpsModePane::ProgOpsModePane(QBoxLayout::Direction direction, QButtonGroup* group, QWidget *parent)  : QWidget(parent)
+/*public*/ ProgOpsModePane::ProgOpsModePane(QBoxLayout::Direction direction, QButtonGroup* group, QWidget* parent) : ProgModeSelector(parent)
 {
- init();
- // save the group to use
- mModeGroup = group;
+    modeGroup = group;
+    addrGroup->addButton(shortAddrButton);
+    addrGroup->addButton(longAddrButton);
 
- // general GUI config
- setLayout(layout = new QBoxLayout(direction));
+    // general GUI config
+    //setLayout(new BoxLayout(this, direction));
+    thisLayout = new QBoxLayout(direction,this);
 
- // create the programmer display combo box
- QVector<AddressedProgrammerManager*>* v = new QVector<AddressedProgrammerManager*>();
- foreach (QObject* o,  *InstanceManager::getList("AddressedProgrammerManager"))
- {
-  AddressedProgrammerManager* pm = (AddressedProgrammerManager*)o;
-  v->append(pm);
- }
- layout->addWidget(progBox = new QComboBox); //<AddressedProgrammerManager>(v));
- foreach (AddressedProgrammerManager* m, *v)
- {
-     progBox->addItem(m->getUserName(), VPtr<AddressedProgrammerManager>::asQVariant(m));
- }
- // if only one, don't show
- if (progBox->count()<2) progBox->setVisible(false);
- progBox->setCurrentIndex(progBox->findText( ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getUserName())); // set default
-//            progBox.addActionListener(new java.awt.event.ActionListener(){
-//                public void actionPerformed(java.awt.event.ActionEvent e) {
-//                    // new programmer selection
-//                    programmerSelected();
-//                }
-//            });
+    // create the programmer display combo box
+    QVector<AddressedProgrammerManager*> v = QVector<AddressedProgrammerManager*>();
+    for (QObject* pm : *InstanceManager::getList("AddressedProgrammerManager")) {
+        v.append((AddressedProgrammerManager*)pm);
+    }
+    thisLayout->addWidget(progBox = new QComboBox(/*v*/));
+    foreach (AddressedProgrammerManager* m, v)
+    {
+     progBox->addItem(m->toString(), VPtr<AddressedProgrammerManager>::asQVariant(m));
+    }
+    // if only one, don't show
+    if (progBox->count() < 2)
+    {
+        progBox->setVisible(false);
+    }
+    progBox->setCurrentIndex(progBox->findText(((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->toString())); // set default
+//    progBox.addActionListener(new java.awt.event.ActionListener() {
+//        @Override
+//        public void actionPerformed(java.awt.event.ActionEvent e) {
+//            // new programmer selection
+//            programmerSelected();
+//        }
+//    });
+    connect(progBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(programmerSelected()));
 
- QWidget* panel = new QWidget();
- FlowLayout* panelLayout;
- panel->setLayout(panelLayout = new FlowLayout());
- panelLayout->addWidget(new QLabel("Addr:"));
- panelLayout->addWidget(mAddrField);
- layout->addWidget(panel);
- layout->addWidget(mLongAddrCheck);
+    thisLayout->addWidget(new QLabel(tr("Program On Main")));
+    thisLayout->addWidget(new QLabel(" "));
+    thisLayout->addWidget(shortAddrButton);
+    thisLayout->addWidget(longAddrButton);
+    thisLayout->addWidget(offsetAddrCheckBox);
+    offsetAddrCheckBox->setToolTip(tr("When checked, uses an alternative DCC addressing scheme."));
+    QWidget* panel = new QWidget();
+    //panel.setLayout(new java.awt.FlowLayout());
+    FlowLayout* panelLayout = new FlowLayout(panel);
+    panelLayout->addWidget(addressLabel);
+    panelLayout->addWidget(mAddrField);
+    mAddrField->setToolTip(tr("Enter the decoder numeric address"));
+    thisLayout->addWidget(panel);
+    thisLayout->addWidget(new QLabel(tr("Mode:")));
 
-//mAddrField.addActionListener(new java.awt.event.ActionListener(){
-//    public void actionPerformed(java.awt.event.ActionEvent e) {
-//        // new programmer selection
-//        programmerSelected(); // in case has valid address now
-//    }
-//});
- connect(mAddrField, SIGNAL(editingFinished()), this, SLOT(programmerSelected()));
-//mLongAddrCheck.addActionListener(new java.awt.event.ActionListener(){
-//    public void actionPerformed(java.awt.event.ActionEvent e) {
-//        // new programmer selection
-//        programmerSelected(); // in case has valid address now
-//    }
-//});
- connect(mLongAddrCheck, SIGNAL(clicked()), this, SLOT(programmerSelected()));
+//        mAddrField.addActionListener(new java.awt.event.ActionListener() {
+//            @Override
+//            public void actionPerformed(java.awt.event.ActionEvent e) {
+    // new programmer selection
+//                programmerSelected(); // in case it has valid address now
+//            }
+//        });
+//    shortAddrButton.addActionListener(new java.awt.event.ActionListener() {
+//        @Override
+//        public void actionPerformed(java.awt.event.ActionEvent e) {
+//            // new programmer selection
+//            programmerSelected(); // in case it has valid address now
+//        }
+//    });
+    connect(shortAddrButton, SIGNAL(clicked(bool)), this, SLOT(programmerSelected()));
 
- // and execute the setup for 1st time
- programmerSelected();
+//    longAddrButton.addActionListener(new java.awt.event.ActionListener() {
+//        @Override
+//        public void actionPerformed(java.awt.event.ActionEvent e) {
+//            // new programmer selection
+//            programmerSelected(); // in case it has valid address now
+//        }
+//    });
+    connect(longAddrButton, SIGNAL(clicked(bool)), this, SLOT(programmerSelected()));
+
+//    offsetAddrCheckBox.addActionListener(new java.awt.event.ActionListener() {
+//        @Override
+//        public void actionPerformed(java.awt.event.ActionEvent e) {
+//            // new programmer selection
+//            programmerSelected(); // in case it has valid address now
+//        }
+//    });
+    connect(offsetAddrCheckBox, SIGNAL(clicked(bool)), this, SLOT(programmerSelected()));
+
+    shortAddrButton->setChecked(true);
+    offsetAddrCheckBox->setChecked(false);
+    offsetAddrCheckBox->setVisible(false);
+
+    // and execute the setup for 1st time
+    programmerSelected();
 }
+
 /**
  * reload the interface with the new programmers
  */
@@ -180,45 +255,59 @@ void ProgOpsModePane::programmerSelected()
  buttonMap.clear();
 
  // require new programmer if possible
- oldAddrText = "";
+ oldAddrValue = -1;
 
  // configure buttons
  int index = 0;
- QList<ProgrammingMode*> modes;
- if (getProgrammer() != NULL)
- {
-  modes = getProgrammer()->getSupportedModes();
- } else
- {
-  //modes = ((AddressedProgrammerManager*) progBox->itemData(progBox->currentIndex()))->getDefaultModes();
-  modes = (QList<ProgrammingMode*>)VPtr<AddressedProgrammerManager>::asPtr(progBox->itemData(progBox->currentIndex()))->getDefaultModes();
+ QList<ProgrammingMode*> modes = QList<ProgrammingMode*>();
+ if (getProgrammer() != NULL) {
+     //modes.addAll(programmer->getSupportedModes());
+  foreach(ProgrammingMode* mode, programmer->getSupportedModes())
+   modes.append(mode);
+ } else {
+     //modes.addAll(((AddressedProgrammerManager) progBox.getSelectedItem()).getDefaultModes());
+  foreach(ProgrammingMode* mode, (VPtr<AddressedProgrammerManager>::asPtr( progBox->currentData())->getDefaultModes()))
+   modes.append(mode);
  }
- log->debug(tr("   has %1 modes").arg( modes.size()));
- foreach (ProgrammingMode* mode, modes)
+ // add OPSACCBYTEMODE & OPSACCEXTBYTEMODE if possible
+ if (modes.contains(ProgrammingMode::OPSBYTEMODE))
  {
-  QRadioButton* button;
-  // need a new button?
-  if (index >= buttonPool.size())
-  {
-   log->debug("   add button");
-   button = new QRadioButton();
-   buttonPool.append(button);
-   modeGroup->addButton(button);
-   //button.addActionListener(this);
-   connect(button, SIGNAL(clicked()), this, SLOT(actionPerformed()));
-   layout->addWidget(button); // add to GUI
-  }
-  // configure next button in pool
-  log->debug(tr("   set for %1").arg(mode->toString()));
-  button = buttonPool.at(index++);
-  button->setVisible(true);
-  modeGroup->addButton(button);
-  button->setText(mode->toString());
-  buttonMap.insert(mode, button);
+     if (!modes.contains(ProgrammingMode::OPSACCBYTEMODE))
+     {
+         log->debug(tr("   adding button for %1 via AccessoryOpsModeProgrammerFacade").arg( ProgrammingMode::OPSACCBYTEMODE->toString()));
+         modes.append(ProgrammingMode::OPSACCBYTEMODE);
+     }
+     if (!modes.contains(ProgrammingMode::OPSACCEXTBYTEMODE))
+     {
+         log->debug(tr("   adding button for %1 via AccessoryOpsModeProgrammerFacade").arg( ProgrammingMode::OPSACCEXTBYTEMODE->toString()));
+         modes.append(ProgrammingMode::OPSACCEXTBYTEMODE);
+     }
+ }
+ log->debug(tr("   has %1 modes").arg(modes.size()));
+ for (ProgrammingMode* mode : modes) {
+     QRadioButton* button;
+     // need a new button?
+     if (index >= buttonPool.size()) {
+         log->debug("   add button");
+         button = new QRadioButton();
+         buttonPool.append(button);
+         modeGroup->addButton(button);
+         //button.addActionListener(this);
+         connect(button, SIGNAL(clicked(bool)), this, SLOT());
+         thisLayout->addWidget(button); // add to GUI
+     }
+     // configure next button in pool
+     log->debug(tr("   set for %1").arg(mode->toString()));
+     button = buttonPool.value(index++);
+     button->setVisible(true);
+     modeGroup->addButton(button);
+     button->setText(mode->toString());
+     buttonMap.insert(mode, button);
  }
 
  setGuiFromProgrammer();
 }
+
 /**
 * Listen to buttons for mode changes
 */
@@ -291,6 +380,71 @@ void ProgOpsModePane::setGuiFromProgrammer()
  }
  log->debug("  setting button for mode {}" + mode->toString());
  button->setChecked(true);
+}
+
+/**
+ * Set address limits and field names depending on address type.
+ */
+void ProgOpsModePane::setAddrParams()
+{
+ if (opsAccyMode)
+ {
+     shortAddrButton->setText(tr("Decoder Address"));
+     shortAddrButton->setToolTip(tr("The 9-bit decoder or board address (range 1-511)"));
+     shortAddrButton->setVisible(true);
+     longAddrButton->setText(tr("Accessory address"));
+     longAddrButton->setToolTip(tr("The 11-bit accessory or output address (range 1-2044)"));
+     offsetAddrCheckBox->setVisible(false);
+     addressLabel->setText(tr("Address:"));
+     if (longAddrButton->isChecked()) {
+         lowAddrLimit = 1;
+         highAddrLimit = 2044;
+     } else {
+         lowAddrLimit = 1;
+         highAddrLimit = 511;
+     }
+ } else if (opsSigMode) {
+     shortAddrButton->setVisible(false);
+     longAddrButton->setVisible(false);
+     offsetAddrCheckBox->setVisible(true);
+     addressLabel->setText(tr("Signal address:"));
+     lowAddrLimit = 1;
+     highAddrLimit = 2044;
+ } else {
+     shortAddrButton->setText(tr("Short address"));
+     shortAddrButton->setToolTip(tr("The short (one byte) address (range 1-127)"));
+     shortAddrButton->setVisible(true);
+     longAddrButton->setText(tr("Long address"));
+     longAddrButton->setToolTip(tr("The long (two byte) decoder address (range 0-10239)"));
+     offsetAddrCheckBox->setVisible(false);
+     addressLabel->setText(tr("Address:"));
+     if (longAddrButton->isChecked()) {
+         lowAddrLimit = 0;
+         highAddrLimit = 10239;
+     } else {
+         lowAddrLimit = 1;
+         highAddrLimit = 127;
+     }
+ }
+
+ log->debug(tr(
+         "Setting lowAddrLimit=%1, highAddrLimit=%2").arg(lowAddrLimit).arg(highAddrLimit));
+ mAddrField->setMinimum(lowAddrLimit);
+
+ mAddrField->setMaximum(highAddrLimit);
+ int address;
+
+ try {
+     address = mAddrField->value();
+ } catch (NumberFormatException e) {
+     log->debug(tr("loco address \"%1\" not correct").arg(mAddrField->value()));
+     return;
+ }
+ if (address < lowAddrLimit) {
+     mAddrField->setValue(lowAddrLimit);
+ } else if (address > highAddrLimit) {
+     mAddrField->setValue(highAddrLimit);
+ }
 }
 
 // no longer needed, disconnect if still connected

@@ -109,8 +109,12 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
        prefix = "LocobufferUsb";
       else if(sl.at(3) == "locobuffer")
        prefix = "Locobuffer";
-       newClassName = prefix+"ConnectionConfigXml";
-       if(!prefix.isEmpty())
+      else if(sl.at(3) == "sprog")
+       prefix = "Sprog";
+      else if(sl.at(3) == "sprogCS")
+       prefix = "SprogCS";
+      newClassName = prefix+"ConnectionConfigXml";
+      if(!prefix.isEmpty())
         className = className.replace("ConnectionConfigXml", newClassName);
      }
 

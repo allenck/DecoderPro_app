@@ -5,6 +5,9 @@
 #include "abstractmrmessage.h"
 #include "abstractmrreply.h"
 #include <QTime>
+#include "connectionstatus.h"
+#include <QThread>
+#include "abstractnetworkportcontroller.h"
 
 //AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) :
 //    QObject(parent)
@@ -66,6 +69,7 @@
  ostream = NULL;
 
  rcvException = false;
+ threadStopRequest = false;
 
  maxRcvExceptionCount = 100;
  // Defined this way to reduce new object creation
@@ -505,7 +509,7 @@
     return timeoutFlag;
 }
 
-/*protected*/ void AbstractMRTrafficController::handleTimeout(AbstractMRMessage* msg,AbstractMRListener* l)
+/*protected*/ void AbstractMRTrafficController::handleTimeout(AbstractMRMessage* msg, AbstractMRListener* /*l*/)
 {
     //log->debug("Timeout mCurrentState:" + mCurrentState);
     log->warn("Timeout on reply to message: "+msg->toString()+
@@ -514,7 +518,8 @@
     timeoutFlag = true;
     flushReceiveChars = true;
 }
-/*protected*/ void AbstractMRTrafficController::resetTimeout(AbstractMRMessage* msg) {
+
+/*protected*/ void AbstractMRTrafficController::resetTimeout(AbstractMRMessage* /*msg*/) {
     if (timeouts>0) log->debug(tr("Reset timeout after ")+QString("%1").arg(timeouts)+tr(" timeouts"));
     timeouts=0;
     timeoutFlag = false;
@@ -525,7 +530,7 @@
  * @param msg  The output byte stream
  * @return next location in the stream to fill
  */
-/*protected*/ int AbstractMRTrafficController::addHeaderToOutput(QByteArray* msg, AbstractMRMessage* m)
+/*protected*/ int AbstractMRTrafficController::addHeaderToOutput(QByteArray* /*msg*/, AbstractMRMessage* /*m*/)
 {
     return 0;
 }
@@ -688,20 +693,52 @@
                                         }
                                   }
             });
-        xmtThread.setName("Transmit");
-        xmtThread.start();
-        rcvThread = new Thread(new Runnable() {
-                /*public*/ void run() { receiveLoop(); }
-            });
-        rcvThread.setName("Receive");
-        int xr = rcvThread.getPriority();
-        xr++;
-        rcvThread.setPriority(xr);      //bump up the priority
-        rcvThread.start();
 #endif
+        xmtThread = new QThread();
+        xmtThread->setObjectName("Transmit");
+        XmitWorker* xmitWorker = new XmitWorker(this);
+        connect(xmtThread, SIGNAL(started()), xmitWorker, SLOT(run()));
+        connect(xmitWorker, SIGNAL(finished()), xmtThread, SLOT(quit()));
+        xmitWorker->moveToThread(xmtThread);
+        xmtThread->start();
+
+//        rcvThread = new Thread(new Runnable() {
+//                /*public*/ void run() { receiveLoop(); }
+//            });
+        rcvThread = new QThread();
+        RcvWorker* rcvWorker = new RcvWorker(this);
+        rcvThread->setObjectName("Receive");
+        connect(rcvThread, SIGNAL(started()), rcvWorker, SLOT(run()));
+        connect(rcvWorker, SIGNAL(finished()), rcvThread, SLOT(quit()));
+        rcvWorker->moveToThread(rcvThread);
+        int xr = rcvThread->priority();
+        xr++;
+        rcvThread->setPriority((QThread::Priority)xr);      //bump up the priority
+        rcvThread->start();
+
     } catch (Exception e) {
         log->error("Failed to start up communications. Error was "+e.getMessage());
     }
+
+}
+XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
+{
+ this->amrtc = amrtc;
+}
+
+/*public*/ void XmitWorker::run()
+{
+ try
+ {
+  amrtc->transmitLoop();
+ }
+ catch (Throwable e)
+ {
+   //amrtc->log->fatal("Transmit thread terminated prematurely by: "+e.getLocalizedMessage(), e.getMessage());
+   amrtc->log->error("Transmit thread terminated prematurely by: "+e.getLocalizedMessage(), e.getMessage());
+
+   emit finished();
+ }
 }
 
 /**
@@ -763,6 +800,12 @@
                 reportReceiveLoopException(e1);
             }
         }
+     if (!threadStopRequest) { // if e.g. unexpected end
+         ConnectionStatus::instance()->setConnectionState(controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
+         log->error(tr("Exit from rcv loop in %1").arg(this->metaObject()->className()));
+         recovery(); // see if you can restart
+     }
+
     }
    // TODO: ConnectionStatus.instance().setConnectionState(controller.getCurrentPortName(), ConnectionStatus.CONNECTION_DOWN);
     log->error("Exit from rcv loop");
@@ -781,12 +824,14 @@
  */
 /*protected*/ void AbstractMRTrafficController::reportReceiveLoopException(Exception e) {
     log->error("run: Exception: "+e.getMessage());
-// TODO:    jmri.jmrix.ConnectionStatus.instance().setConnectionState(controller.getCurrentPortName(), jmri.jmrix.ConnectionStatus.CONNECTION_DOWN);
-//    if (controller instanceof AbstractNetworkPortController)
-//    {
-//        portWarnTCP(e);
-//    }
+    log->error(tr("run: Exception: %1 in %2").arg(e.getMessage()).arg(this->metaObject()->className()).arg(e.getMessage()));
+    ConnectionStatus::instance()->setConnectionState(controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
+    if (qobject_cast<AbstractNetworkPortController*>(controller))
+    {
+        portWarnTCP(e);
+    }
 }
+
 ///*abstract*/ /*protected*/ AbstractMRReply* AbstractMRTrafficController::newReply();
 ///*abstract*/ /*protected*/ bool AbstractMRTrafficController::endOfMessage(AbstractMRReply* r);
 

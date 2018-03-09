@@ -6,6 +6,7 @@
 #include "logger.h"
 #include "paneprogframe.h"
 
+class ProgModeSelector;
 class PaneNewProgAction : public QAction
 {
     Q_OBJECT
@@ -27,7 +28,7 @@ class PNPLocoSelTreePane : public LocoSelTreePane
 {
  Q_OBJECT
 public:
-    PNPLocoSelTreePane(QLabel*, QWidget* = 0);
+    PNPLocoSelTreePane(QLabel*, ProgModeSelector* selector, QWidget* = 0);
 protected:
   /*protected*/ void startProgrammer(DecoderFile* decoderFile, RosterEntry* re, QString filename);
 

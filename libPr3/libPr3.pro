@@ -361,7 +361,6 @@ SOURCES += \
     Roster/printrosterentry.cpp \
     lnopsmodeprogrammer.cpp \
     programmingmode.cpp \
-    Roster/abstractconnectionconfig.cpp \
     abstractserialconnectionconfig.cpp \
     loconet/Pr3/pr3connectionconfig.cpp \
     loconet/Pr3/connectionconfigxml.cpp \
@@ -725,7 +724,146 @@ SOURCES += \
     Throttle/windowpreferences.cpp \
     Throttle/locoaddressxml.cpp \
     loconetmenustartupaction.cpp \
-    Web/aboutservlet.cpp
+    Web/aboutservlet.cpp \
+    sprog/serialdriveradapter.cpp \
+    sprog/sprogportcontroller.cpp \
+    sprog/sprogsystemconnectionmemo.cpp \
+    sprog/sprogtrafficcontroller.cpp \
+    sprog/sprogmessage.cpp \
+    abstractmrmessage.cpp \
+    abstractmessage.cpp \
+    sprog/sprogreply.cpp \
+    sprog/sprogtype.cpp \
+    abstractconnectionconfig.cpp \
+    sprog/sprogconnectionconfig.cpp \
+    sprog/sprogconnectiontypelist.cpp \
+    sprog/sprogversion.cpp \
+    sprog/sprogprogrammermanager.cpp \
+    sprog/sprogpowermanager.cpp \
+    sprog/sprogversionquery.cpp \
+    sprog/sprogcomponentfactory.cpp \
+    sprog/sprogprogrammer.cpp \
+    sprog/sprogcommandstation.cpp \
+    sprog/sprogslot.cpp \
+    sprog/sproginterface.cpp \
+    abstractmrreply.cpp \
+    sprog/sprogconnectionconfigxml.cpp \
+    sprog/sprogcsserialdriveradapter.cpp \
+    sprog/sprogcsconnectionconfigxml.cpp \
+    sprog/sprogcsconnectionconfig.cpp \
+    sprog/sprogturnout.cpp \
+    sprog/sprogthrottle.cpp \
+    sprog/sprogthrottlemanager.cpp \
+    sprog/sprogturnoutmanager.cpp \
+    sprog/sprogcsturnout.cpp \
+    sprog/sprogcsthrottlemanager.cpp \
+    sprog/sprogcsthrottle.cpp \
+    sprog/sprogversionlistener.cpp \
+    sprog/sprogslotlistener.cpp \
+    sprog/sprogcsmenu.cpp \
+    sprog/sprogconsoleaction.cpp \
+    sprog/sprogconsoleframe.cpp \
+    sprog/sprogversionaction.cpp \
+    sprog/sprogversionframe.cpp \
+    sprog/sprogmenu.cpp \
+    loconet/lncomponentfactory.cpp \
+    abstractmrtrafficcontroller.cpp \
+    sprog/sprogpacketgenframe.cpp \
+    sprog/sprogpacketgenaction.cpp \
+    sprog/sprogmonframe.cpp \
+    sprog/sprogmonaction.cpp \
+    sprog/pisprognanoserialdriveradapter.cpp \
+    sprog/sprogupdateframe.cpp \
+    sprog/sprogiiupdateframe.cpp \
+    sprog/sprogiiupdateaction.cpp \
+    sprog/sprogupdateaction.cpp \
+    sprog/sproghexfile.cpp \
+    sprog/sprogslotmonaction.cpp \
+    sprog/sprogslotmonframe.cpp \
+    sprog/sprogslotmondatamodel.cpp \
+    Roster/opsmodedelayedprogrammerfacade.cpp \
+    loconet/csopswaccess.cpp \
+    verifywriteprogrammerfacade.cpp \
+    Roster/csvimportaction.cpp \
+    Roster/genericimportaction.cpp \
+    Roster/csvimporter.cpp \
+    Roster/csvexportaction.cpp \
+    Roster/offsethighcvprogrammerfacade.cpp \
+    Roster/resettingoffsethighcvprogrammerfacade.cpp
+#    loconet/HexFile/debugprogrammermanager.cpp \
+#    loconet/HexFile/debugthrottle.cpp \
+#    loconet/HexFile/debugthrottlemanager.cpp \
+#    loconet/HexFile/hexfileconnectionconfig.cpp \
+#    loconet/HexFile/hexfileconnectionconfigxml.cpp \
+#    loconet/HexFile/hexfileframe.cpp \
+#    loconet/HexFile/hexfileserver.cpp \
+#    loconet/HexFile/lnhexfileport.cpp \
+#    loconet/HexFile/progdebugger.cpp \
+#    loconet/LnOverTcp/lnovertcpconnectionconfig.cpp \
+#    loconet/LnOverTcp/lnovertcpconnectionconfigxml.cpp \
+#    loconet/Locobuffer/locobufferconnectionconfig.cpp \
+#    loconet/Locobuffer/locobufferconnectionconfigxml.cpp \
+#    loconet/LocobufferUsb/locobufferusbconnectionconfig.cpp \
+#    loconet/LocobufferUsb/locobufferusbconnectionconfigxml.cpp \
+#    loconet/Pr3/connectionconfigxml.cpp \
+#    loconet/Pr3/pr3connectionconfig.cpp \
+#    loconet/branchto.cpp \
+#    loconet/branchtoeditor.cpp \
+#    loconet/channelstart.cpp \
+#    loconet/channelstarteditor.cpp \
+#    loconet/clientrxhandler.cpp \
+#    loconet/defaultmutabletreemodel.cpp \
+#    loconet/delaysound.cpp \
+#    loconet/delaysoundeditor.cpp \
+#    loconet/editorfilepane.cpp \
+#    loconet/editorframe.cpp \
+#    loconet/editorpane.cpp \
+#    loconet/editortabledatamodel.cpp \
+#    loconet/endsound.cpp \
+#    loconet/endsoundeditor.cpp \
+#    loconet/fourbytemacro.cpp \
+#    loconet/fourbytemacroeditor.cpp \
+#    loconet/generatetrigger.cpp \
+#    loconet/generatetriggereditor.cpp \
+#    loconet/initiatesound.cpp \
+#    loconet/initiatesoundeditor.cpp \
+#    loconet/jeditorpane.cpp \
+#    loconet/jmriserver.cpp \
+#    loconet/lncomponentfactory.cpp \
+#    loconet/lnnetworkportcontroller.cpp \
+#    loconet/lnovertcppacketizer.cpp \
+#    loconet/lntcpdriveradapter.cpp \
+#    loconet/loaderengine.cpp \
+#    loconet/loadmodifier.cpp \
+#    loconet/loadmodifiereditor.cpp \
+#    loconet/loconetmenu.cpp \
+#    loconet/loconetmsgdialog.cpp \
+#    loconet/maskcompare.cpp \
+#    loconet/maskcompareeditor.cpp \
+#    loconet/monitoringlabel.cpp \
+#    loconet/play.cpp \
+#    loconet/playeditor.cpp \
+#    loconet/qtsoundaudioclip.cpp \
+#    loconet/querycvdialog.cpp \
+#    loconet/sdfbuffer.cpp \
+#    loconet/sdfconstants.cpp \
+#    loconet/sdfeditorpane.cpp \
+#    loconet/sdfmacro.cpp \
+#    loconet/sdfmacroeditor.cpp \
+#    loconet/sdlversion.cpp \
+#    loconet/sdlversioneditor.cpp \
+#    loconet/server.cpp \
+#    loconet/serveraction.cpp \
+#    loconet/serverframe.cpp \
+#    loconet/skemestart.cpp \
+#    loconet/skemestarteditor.cpp \
+#    loconet/skipontrigger.cpp \
+#    loconet/skipontriggereditor.cpp \
+#    loconet/soundloaderpane.cpp \
+#    loconet/spjfile.cpp \
+#    loconet/twobytemacro.cpp \
+#    loconet/twobytemacroeditor.cpp \
+#    loconet/wavbuffer.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1080,8 +1218,6 @@ HEADERS += \
     programmingmode.h \
     globalprogrammermanager.h \
     addressedprogrammermanager.h \
-    Roster/connectionconfig.h \
-    Roster/abstractconnectionconfig.h \
     abstractserialconnectionconfig.h \
     loconet/Pr3/pr3connectionconfig.h \
     loconet/Pr3/connectionconfigxml.h \
@@ -1468,10 +1604,152 @@ HEADERS += \
     Throttle/windowpreferences.h \
     Throttle/locoaddressxml.h \
     loconetmenustartupaction.h \
-    Web/aboutservlet.h
-#    Web/controller/servletcontroller.h
-    #abstractpreferencesmanager.h \
-    #connectionconfigmanager.h
+    Web/aboutservlet.h \
+    sprog/serialdriveradapter.h \
+    sprog/sprogportcontroller.h \
+    sprog/sprogsystemconnectionmemo.h \
+    sprog/sprogconstants.h \
+    sprog/sproglistener.h \
+    sprog/sproginterface.h \
+    sprog/sprogtrafficcontroller.h \
+    sprog/sprogmessage.h \
+    abstractmrmessage.h \
+    abstractmessage.h \
+    sprog/sprogreply.h \
+    sprog/sprogtype.h \
+    abstractmrreply.h \
+    abstractconnectionconfig.h \
+    sprog/sprogconnectionconfig.h \
+    sprog/sprogconnectiontypelist.h \
+    sprog/sprogversion.h \
+    sprog/sprogprogrammermanager.h \
+    sprog/sprogpowermanager.h \
+    sprog/sprogversionquery.h \
+    sprog/sprogcomponentfactory.h \
+    sprog/sprogprogrammer.h \
+    sprog/sprogcommandstation.h \
+    connectionconfig.h \
+    sprog/sprogslot.h \
+    sprog/sprogconnectionconfigxml.h \
+    sprog/sprogcsserialdriveradapter.h \
+    sprog/sprogcsconnectionconfigxml.h \
+    sprog/sprogcsconnectionconfig.h \
+    sprog/sprogturnout.h \
+    sprog/sprogthrottle.h \
+    sprog/sprogthrottlemanager.h \
+    sprog/sprogturnoutmanager.h \
+    sprog/sprogcsturnout.h \
+    sprog/sprogcsthrottlemanager.h \
+    sprog/sprogcsthrottle.h \
+    sprog/sprogslotlistener.h \
+    sprog/sprogversionlistener.h \
+    sprog/sprogcsmenu.h \
+    sprog/sprogconsoleaction.h \
+    sprog/sprogconsoleframe.h \
+    sprog/sprogversionaction.h \
+    sprog/sprogversionframe.h \
+    sprog/sprogmenu.h \
+    loconet/lncomponentfactory.h \
+    abstractmrtrafficcontroller.h \
+    sprog/sprogpacketgenframe.h \
+    sprog/sprogpacketgenaction.h \
+    sprog/sprogmonframe.h \
+    sprog/sprogmonaction.h \
+    sprog/pisprognanoserialdriveradapter.h \
+    sprog/sprogupdateframe.h \
+    sprog/sprogiiupdateframe.h \
+    sprog/sprogiiupdateaction.h \
+    sprog/sprogupdateaction.h \
+    sprog/sproghexfile.h \
+    sprog/sprogslotmonaction.h \
+    sprog/sprogslotmonframe.h \
+    sprog/sprogslotmondatamodel.h \
+    Roster/opsmodedelayedprogrammerfacade.h \
+    loconet/csopswaccess.h \
+    verifywriteprogrammerfacade.h \
+    Roster/csvimportaction.h \
+    Roster/genericimportaction.h \
+    Roster/csvimporter.h \
+    Roster/csvexportaction.h \
+    Roster/offsethighcvprogrammerfacade.h \
+    Roster/resettingoffsethighcvprogrammerfacade.h
+#    loconet/HexFile/debugprogrammermanager.h \
+#    loconet/HexFile/debugthrottle.h \
+#    loconet/HexFile/debugthrottlemanager.h \
+#    loconet/HexFile/hexfileconnectionconfig.h \
+#    loconet/HexFile/hexfileconnectionconfigxml.h \
+#    loconet/HexFile/hexfileframe.h \
+#    loconet/HexFile/hexfileserver.h \
+#    loconet/HexFile/lnhexfileport.h \
+#    loconet/HexFile/progdebugger.h \
+#    loconet/LnOverTcp/lnovertcpconnectionconfig.h \
+#    loconet/LnOverTcp/lnovertcpconnectionconfigxml.h \
+#    loconet/Locobuffer/locobufferconnectionconfig.h \
+#    loconet/Locobuffer/locobufferconnectionconfigxml.h \
+#    loconet/LocobufferUsb/locobufferusbconnectionconfig.h \
+#    loconet/LocobufferUsb/locobufferusbconnectionconfigxml.h \
+#    loconet/Pr3/connectionconfigxml.h \
+#    loconet/Pr3/pr3connectionconfig.h \
+#    loconet/branchto.h \
+#    loconet/branchtoeditor.h \
+#    loconet/channelstart.h \
+#    loconet/channelstarteditor.h \
+#    loconet/clientrxhandler.h \
+#    loconet/defaultmutabletreemodel.h \
+#    loconet/delaysound.h \
+#    loconet/delaysoundeditor.h \
+#    loconet/editorfilepane.h \
+#    loconet/editorframe.h \
+#    loconet/editorpane.h \
+#    loconet/editortabledatamodel.h \
+#    loconet/endsound.h \
+#    loconet/endsoundeditor.h \
+#    loconet/fourbytemacro.h \
+#    loconet/fourbytemacroeditor.h \
+#    loconet/generatetrigger.h \
+#    loconet/generatetriggereditor.h \
+#    loconet/initiatesound.h \
+#    loconet/initiatesoundeditor.h \
+#    loconet/jeditorpane.h \
+#    loconet/jmriserver.h \
+#    loconet/lncomponentfactory.h \
+#    loconet/lnnetworkportcontroller.h \
+#    loconet/lnovertcppacketizer.h \
+#    loconet/lntcpdriveradapter.h \
+#    loconet/loaderengine.h \
+#    loconet/loadmodifier.h \
+#    loconet/loadmodifiereditor.h \
+#    loconet/loconetmenu.h \
+#    loconet/loconetmsgdialog.h \
+#    loconet/maskcompare.h \
+#    loconet/maskcompareeditor.h \
+#    loconet/monitoringlabel.h \
+#    loconet/networkportadapter.h \
+#    loconet/play.h \
+#    loconet/playeditor.h \
+#    loconet/qtsoundaudioclip.h \
+#    loconet/querycvdialog.h \
+#    loconet/sdfbuffer.h \
+#    loconet/sdfconstants.h \
+#    loconet/sdfeditorpane.h \
+#    loconet/sdfmacro.h \
+#    loconet/sdfmacroeditor.h \
+#    loconet/sdlversion.h \
+#    loconet/sdlversioneditor.h \
+#    loconet/server.h \
+#    loconet/serveraction.h \
+#    loconet/serverframe.h \
+#    loconet/serverlistner.h \
+#    loconet/skemestart.h \
+#    loconet/skemestarteditor.h \
+#    loconet/skipontrigger.h \
+#    loconet/skipontriggereditor.h \
+#    loconet/soundloaderpane.h \
+#    loconet/spjfile.h \
+#    loconet/twobytemacro.h \
+#    loconet/twobytemacroeditor.h \
+#    loconet/wavbuffer.h
+
  !contains(FTDI, 1) {
     HEADERS +=
  }

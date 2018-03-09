@@ -1,8 +1,8 @@
 #ifndef ABSTRACTMONFRAME_H
 #define ABSTRACTMONFRAME_H
 #include "jmrijframe.h"
+#include "jfilechooser.h"
 
-class QFileDialog;
 class DateFormat;
 class PrintStream;
 class ActionEvent;
@@ -26,12 +26,13 @@ signals:
 
 public slots:
     /*public*/ /*synchronized*/ void clearButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ /*synchronized*/ void clearButtonActionPerformed(ActionEvent* e = 0);
     /*public*/ /*synchronized*/ void startLogButtonActionPerformed(ActionEvent* e = 0);
     /*public*/ /*synchronized*/ void stopLogButtonActionPerformed(ActionEvent* e = 0);
     /*public*/ void openFileChooserButtonActionPerformed(ActionEvent*e = 0);
     /*public*/ void enterButtonActionPerformed(ActionEvent* e = 0);
     /*public*/ /*synchronized*/ QString getFrameText();
+    void On_alwaysOnTopCheckBox(bool);
+    void On_autoScrollCheckBox();
 
 private:
     QString rawDataCheck;// = this.getClass().getName()+".RawData";
@@ -44,21 +45,22 @@ private:
     AbstractMonFrame* self;
 
     // to find and remember the log file
-    QFileDialog* logFileChooser = new JFileChooser(FileUtil.getUserFilesPath());
+    JFileChooser* logFileChooser;// = new JFileChooser(FileUtil.getUserFilesPath());
     QString newline;// = System.getProperty("line.separator");
-    Logger* log;
+    /*private*/ static /*final*/ Logger* log;// = Loggerfactory::getLogger("AbstractMonFrame");
+
     /*private*/ void doAutoScroll(/*final*/ JTextArea* ta, /*final*/ bool scroll);
     /*volatile*/ PrintStream* logStream;// = NULL;
 
     // to get a time string
-    DateFormat* df;// = new SimpleDateFormat("HH:mm:ss.SSS");
+    QString df;// = new SimpleDateFormat("HH:mm:ss.SSS");
 
     QString linesBuffer =  QString();
     static /*private*/ int MAX_LINES;// = 500 ;
 
 protected:
-    /*protected*/ /*abstract*/ QString title();    // provide the title for the frame
-    /*protected*/ /*abstract*/ virtual void init();
+    /*protected*/ /*abstract*/ virtual QString title() {return "";}   // provide the title for the frame
+    /*protected*/ /*abstract*/ virtual void init() {}
     // member declarations
     /*protected*/ QPushButton*clearButton;// = new JButton();
     /*protected*/ JToggleButton* freezeButton;// = new JToggleButton();
@@ -73,8 +75,21 @@ protected:
     /*protected*/ QPushButton* openFileChooserButton;// = new JButton();
     /*protected*/ JTextField* entryField;// = new JTextField();
     /*protected*/ QPushButton* enterButton;// = new JButton();
-    /*protected*/ void addHelpMenu();
+    virtual /*protected*/ void setHelp();
 
 };
 
+class AMFWorker : public QObject
+{
+ Q_OBJECT
+
+public:
+ AMFWorker();
+public slots:
+ void process();
+
+signals:
+ void finished();
+
+};
 #endif // ABSTRACTMONFRAME_H

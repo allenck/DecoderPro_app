@@ -3,6 +3,7 @@
 #include "locoselpane.h"
 #include "logger.h"
 #include "identifyloco.h"
+#include "progmodeselector.h"
 
 class RosterEntry;
 class DecoderFile;
@@ -15,7 +16,7 @@ class KnownLocoSelPane : public LocoSelPane
     Q_OBJECT
 public:
     //explicit KnownLocoSelPane(QWidget *parent = 0);
-    /*public*/ KnownLocoSelPane(QLabel* s, bool ident, QWidget *parent = 0);
+    /*public*/ KnownLocoSelPane(QLabel* s, bool ident, ProgModeSelector* selector, QWidget *parent = 0);
     /*public*/ KnownLocoSelPane(bool ident, QWidget *parent= 0);
 
 signals:
@@ -27,6 +28,7 @@ private:
     bool mCanIdent;
 
     QComboBox* programmerBox;
+    ProgModeSelector* selector;
     Logger* log;
     /*private*/ void addProgrammerBox();
     QLabel* mStatusLabel;// = NULL;
@@ -41,14 +43,18 @@ protected:
                                        QString programmerName);
 friend class KLSPIdentifyLoco;
 };
+
 class KLSPIdentifyLoco : public IdentifyLoco
 {
     Q_OBJECT
     /*private*/ KnownLocoSelPane* who;// = me;
+public:
+    KLSPIdentifyLoco(Programmer* programmer, KnownLocoSelPane* who);
+    /*public*/ void error();
+protected:
     /*protected*/ void done(int dccAddress);
     /*protected*/ void message(QString m) ;
-    KLSPIdentifyLoco(KnownLocoSelPane* who);
-    /*public*/ void error();
+
     friend class KnownLocoSelPane;
 };
 

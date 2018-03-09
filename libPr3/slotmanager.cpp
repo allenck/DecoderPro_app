@@ -5,6 +5,7 @@
 #include "instancemanager.h"
 #include "defaultprogrammermanager.h"
 #include "programmingmode.h"
+#include "csopswaccess.h"
 
 /*final static protected*/ int SlotManager::NUM_SLOTS = 128;
 
@@ -35,6 +36,9 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  mPowerTimer = NULL;
  nextReadSlot = 0;
  _slots.reserve(128);
+ csOpSwProgrammingMode = new ProgrammingMode(
+             "LOCONETCSOPSWMODE",
+             tr("Command Station Op Switches"));
 
  loadSlots();
 
@@ -782,7 +786,7 @@ void SlotManager::writeCVOpsMode(int CV, int val, ProgListener* p, int addr, boo
     mServiceMode = false;
     doWrite(CV, val, p, 0x67);  // ops mode byte write, with feedback
 }
-void SlotManager::writeCV(int CV, int val, ProgListener* p) /*throw(ProgrammerException)*/
+void SlotManager::writeCV(int CV, int val, ProgListener* p) throw(ProgrammerException)
 {
  lopsa = 0;
  hopsa = 0;
@@ -816,7 +820,7 @@ void SlotManager::doWrite(int CV, int val, ProgListener* p, int pcmd) throw(Prog
 }
 
 void SlotManager::confirmCVOpsMode(int CV, int val, ProgListener* p,
-                           int addr, bool longAddr) /*throw(ProgrammerException)*/
+                           int addr, bool longAddr) throw(ProgrammerException)
 {
  Q_UNUSED(longAddr)
     lopsa = addr&0x7f;
@@ -824,7 +828,7 @@ void SlotManager::confirmCVOpsMode(int CV, int val, ProgListener* p,
     mServiceMode = false;
     doConfirm(CV, val, p, 0x2F);  // although LPE implies 0x2C, 0x2F is observed
 }
-void SlotManager::confirmCV(int CV, int val, ProgListener* p) /*throw(ProgrammerException)*/
+void SlotManager::confirmCV(int CV, int val, ProgListener* p) throw(ProgrammerException)
 {
     lopsa = 0;
     hopsa = 0;
@@ -1193,15 +1197,47 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
 // initialize logging
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SlotManager.class.getName());
 
-/*public*/ void SlotManager::writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/
+/*public*/ void SlotManager::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
  writeCV(CV.toInt(), val, p);
 }
-/*public*/ void SlotManager::readCV(QString CV, ProgListener* p)// throws ProgrammerException
-{
- readCV(CV.toInt(), p);
+/**
+ * Read a CV via the OpsMode programmer
+ * <p>
+ * @param cvNum a String containing the CV number
+ * @param p programmer
+ * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
+ */
+//@Override
+/*public*/ void SlotManager::readCV(QString cvNum, ProgListener* p) throw (ProgrammerException) {
+    log->debug(tr("readCV(string): cvNum=%1").arg(cvNum));
+    if (getMode()== (csOpSwProgrammingMode)) {
+        log->debug("cvOpSw mode!");
+        //handle Command Station OpSw programming here
+        QStringList parts = cvNum.split("\\.");
+        if ((parts[0]==("csOpSw")) && (parts.length()==2)) {
+            if (csOpSwAccessor == NULL) {
+                csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
+            } else {
+                csOpSwAccessor->setProgrammerListener(p);
+            }
+            // perform the CsOpSwMode read access
+            log->debug("going to try the opsw access");
+            csOpSwAccessor->readCsOpSw(cvNum, p);
+            return;
+
+        } else {
+            log->warn("rejecting the cs opsw access account unsupported CV name format");
+            // unsupported format in "cv" name.  Signal an error.
+            p->programmingOpReply(1, ProgListener::SequenceError);
+            return;
+
+        }
+    } else {
+        readCV((cvNum.toInt()), p);
+    }
 }
-/*public*/ void SlotManager::confirmCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/
+/*public*/ void SlotManager::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
  confirmCV(CV.toInt(), val, p);
 }

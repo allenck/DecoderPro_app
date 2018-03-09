@@ -94,6 +94,16 @@
   ConnectionStatus::instance()->setConnectionState(
               m_HostName, ConnectionStatus::CONNECTION_DOWN);
  }
+ if (opened && m_port != 0)
+ {
+  ConnectionStatus::instance()->setConnectionState(
+             m_HostName + ":" + m_port, ConnectionStatus::CONNECTION_UP);
+ }
+ else if (opened)
+ {
+  ConnectionStatus::instance()->setConnectionState(
+             m_HostName, ConnectionStatus::CONNECTION_UP);
+ }
 }
 #if 0
      opened = true;

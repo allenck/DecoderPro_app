@@ -1,5 +1,7 @@
 #include "nmrapacket.h"
 #include "logger.h"
+#include "loggerfactory.h"
+#include "exceptions.h"
 
 /*static*/ /*final*/ /*public*/ int NmraPacket::NOADDRESS = 1;
 /*static*/ /*final*/ /*public*/ int NmraPacket::LOCO_SHORT_ADDRESS = 2;
@@ -58,31 +60,45 @@
  * @version     $Revision: 19981 $
  */
 ///*public*/ class NmraPacket {
-#if 0
+
+/**
+     * Create a packet containing a decoder idle instruction.
+     *
+     * @return the packet as a byte array or null if the address is not valid
+     */
+    //@CheckForNull
+    /*public*/ /*static*/ QByteArray NmraPacket::idlePacket() {
+        QByteArray retVal;
+        retVal = QByteArray(3, 0);
+        retVal.replace(0, (0xFF));  // address byte for decoder idle
+        retVal.replace(1, (char)(0));     // decoder idle instruction
+        retVal.replace(2, (0xFF));  // checksum byte
+        return retVal;
+    }
+
     /**
      * Create a packet containing a one-byte instruction.
      */
-    /*public*/ static byte[] oneBytePacket(int address, bool longAddr,
-                            byte arg1) {
+    /*public*/ /*static*/ QByteArray NmraPacket::oneBytePacket(int address, bool longAddr,
+                            char arg1) {
         if (!addressCheck(address, longAddr)) {
             return NULL;  // failed!
         }
 
         // end sanity check, format output
-        byte[] retVal;
+        QByteArray retVal;
         if (longAddr) {
             // long address form
-            retVal = new byte[4];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = arg1;
-            retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]);
-        } else {
+            retVal = QByteArray(4,0);
+            retVal.replace(0, (192+((address/256)&0x3F)));
+            retVal.replace(1, (address&0xFF));
+            retVal.replace(2, arg1);
+            retVal.replace(3, (retVal[0] ^ retVal[1] ^ retVal[2]));
             // short address form
-            retVal = new byte[3];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = arg1;
-            retVal[2] = (byte) (retVal[0]^retVal[1]);
+            retVal = QByteArray(3,0);
+            retVal.replace(0, (address&0xFF));
+            retVal.replace(1, arg1);
+            retVal.replace(2, (retVal[0] ^ retVal[1]));
         }
         return retVal;
     }
@@ -90,29 +106,29 @@
     /**
      * Create a packet containing a two-byte instruction.
      */
-    /*public*/ static byte[] twoBytePacket(int address, bool longAddr,
-                            byte arg1, byte arg2) {
+    /*public*/ /*static*/ QByteArray NmraPacket::twoBytePacket(int address, bool longAddr,
+                            char arg1, char arg2) {
         if (!addressCheck(address, longAddr)) {
             return NULL;  // failed!
         }
 
         // end sanity check, format output
-        byte[] retVal;
+        QByteArray retVal;
         if (longAddr) {
             // long address form
-            retVal = new byte[5];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = arg1;
-            retVal[3] = arg2;
-            retVal[4] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]);
+            retVal = QByteArray(5,0);
+            retVal.replace(0, (192+((address/256)&0x3F)));
+            retVal.replace(1, (address&0xFF));
+            retVal.replace(2, arg1);
+            retVal.replace(3, arg2);
+            retVal.replace(4, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3]));
         } else {
             // short address form
-            retVal = new byte[4];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = arg1;
-            retVal[2] = arg2;
-            retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]);
+            retVal = QByteArray(4,0);
+            retVal.replace(0, (address&0xFF));
+            retVal.replace(1, arg1);
+            retVal.replace(2, arg2);
+            retVal.replace(3, (retVal[0] ^ retVal[1] ^ retVal[2]));
         }
         return retVal;
     }
@@ -120,31 +136,31 @@
     /**
      * Create a packet containing a three-byte instruction.
      */
-    /*public*/ static byte[] threeBytePacket(int address, bool longAddr,
-                            byte arg1, byte arg2, byte arg3) {
+    /*public*/ /*static*/ QByteArray NmraPacket::threeBytePacket(int address, bool longAddr,
+                            char arg1, char arg2, char arg3) {
         if (!addressCheck(address, longAddr)) {
             return NULL;  // failed!
         }
 
         // end sanity check, format output
-        byte[] retVal;
+        QByteArray retVal;
         if (longAddr) {
             // long address form
-            retVal = new byte[6];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = arg1;
-            retVal[3] = arg2;
-            retVal[4] = arg3;
-            retVal[5] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]^retVal[4]);
+            retVal = QByteArray(6,0);
+            retVal.replace(0, (192+((address/256)&0x3F)));
+            retVal.replace(1, (address&0xFF));
+            retVal.replace(2, arg1);
+            retVal.replace(3, arg2);
+            retVal.replace(4, arg3);
+            retVal.replace(5, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3] ^ retVal[4]));
         } else {
             // short address form
-            retVal = new byte[5];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = arg1;
-            retVal[2] = arg2;
-            retVal[3] = arg3;
-            retVal[4] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]);
+            retVal = QByteArray(5,0);
+            retVal.replace(0, (address&0xFF));
+            retVal.replace(1, arg1);
+            retVal.replace(2, arg2);
+            retVal.replace(3, arg3);
+            retVal.replace(4, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3]));
         }
         return retVal;
     }
@@ -152,40 +168,40 @@
     /**
      * Create a packet containing a four-byte instruction.
      */
-    /*public*/ static byte[] fourBytePacket(int address, bool longAddr,
-                            byte arg1, byte arg2, byte arg3, byte arg4) {
+    /*public*/ /*static*/ QByteArray NmraPacket::fourBytePacket(int address, bool longAddr,
+                            char arg1, char arg2, char arg3, char arg4) {
         if (!addressCheck(address, longAddr)) {
             return NULL;  // failed!
         }
 
         // end sanity check, format output
-        byte[] retVal;
+        QByteArray retVal;
         if (longAddr) {
             // long address form
-            retVal = new byte[7];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = arg1;
-            retVal[3] = arg2;
-            retVal[4] = arg3;
-            retVal[5] = arg4;
-            retVal[6] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]^retVal[4]^retVal[5]);
+            retVal = QByteArray(7,0);
+            retVal.replace(0, (192+((address/256)&0x3F)));
+            retVal.replace(1, (address&0xFF));
+            retVal.replace(2, arg1);
+            retVal.replace(3, arg2);
+            retVal.replace(4, arg3);
+            retVal.replace(5, arg4);
+            retVal.replace(6, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3] ^ retVal[4] ^ retVal[5]));
         } else {
             // short address form
-            retVal = new byte[6];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = arg1;
-            retVal[2] = arg2;
-            retVal[3] = arg3;
-            retVal[4] = arg4;
-            retVal[5] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]^retVal[4]);
+            retVal = QByteArray(6,0);
+            retVal.replace(0, (address&0xFF));
+            retVal.replace(1, arg1);
+            retVal.replace(2, arg2);
+            retVal.replace(3, arg3);
+            retVal.replace(4, arg4);
+            retVal.replace(5, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3] ^ retVal[4]));
         }
         return retVal;
     }
 
-#endif
+
     /*public*/ /*static*/ QByteArray NmraPacket::accDecoderPkt(int addr, int active, int outputChannel) {
-    Logger* log = new Logger("NmraPacket");
+    //Logger* log = new Logger("NmraPacket");
         // From the NMRA RP:
         // 0 10AAAAAA 0 1AAACDDD 0 EEEEEEEE 1
         // Accessory Digital Decoders can be designed to control momentary or
@@ -271,18 +287,18 @@
         int lowCVnum = (cvNum-1) & 0xFF;
         int highCVnum = ((cvNum-1) >> 8) & 0x03;
 
-        //byte[] retVal = new byte[6];
+        //QByteArray retVal = QByteArray(6];
         QByteArray retVal(6,0);
         retVal.replace(0, (0x80 | lowAddr));
         retVal.replace(1,(0x80 | (highAddr << 4 ) | ( active << 3) | outputChannel&0x07));
         retVal.replace(2,(0xEC | highCVnum));
         retVal.replace(3,(lowCVnum));
         retVal.replace(4, (0xFF & data));
-        retVal.replace(5,  (retVal[0]^retVal[1]^retVal[2]^retVal[3]^retVal[4]));
+        retVal.replace(5,  (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3] ^ retVal[4]));
 
         return retVal;
     }
-#if 0
+
      /**
       * From the NMRA RP:
       * The format for Accessory Decoder Configuration Variable Access Instructions is:
@@ -294,7 +310,6 @@
       *
       *  This is the old "legacy" format, newer decoders use the "Basic Accessory Decoder Packet"
       */
-#endif
      /*public*/ /*static*/ QByteArray NmraPacket::accDecPktOpsModeLegacy(int addr, int cvNum, int data) {
     Logger log("NmraPacket::accDecPktOpsModeLegacy");
          if (addr < 1 || addr>511) {
@@ -318,19 +333,16 @@
          int lowCVnum = (cvNum-1) & 0xFF;
          int highCVnum = ((cvNum-1) >> 8) & 0x03;
 
-         //byte[] retVal = new byte[5];
+         //QByteArray retVal = QByteArray(5];
          QByteArray retVal(5,0);
          retVal.replace (0, (0x80 | lowAddr));
          retVal.replace(1, (0x0C | (highAddr << 4 ) | highCVnum));
          retVal.replace(2, (lowCVnum));
          retVal.replace(3, (0xFF & data));
-         retVal.replace(4, (retVal[0]^retVal[1]^retVal[2]^retVal[3]));
+         retVal.replace(4, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3]));
 
          return retVal;
      }
-#if 0
-
-
 
     /**
      * From the RP:
@@ -348,7 +360,7 @@
      * @param outputAddr Address of accessory output, starting with 1 and a maximum of 2044
      * @param aspect Aspect Number starting with 0 and a maximum of 31
      */
-    /*public*/ static byte[] accSignalDecoderPkt(int outputAddr, int aspect) {
+    /*public*/ /*static*/ QByteArray NmraPacket::accSignalDecoderPkt(int outputAddr, int aspect) {
 
       if (outputAddr < 1 || outputAddr>2044) {
           Logger::error("invalid address " + outputAddr);
@@ -364,18 +376,67 @@
       int lowAddr = (outputAddr & 0x03 ) ;  // Output Pair Address
       int boardAddr = (outputAddr >> 2) + 1 ; // Board Address
 
-      /*int midAddr =  boardAddr & 0x3F ;
-      int highAddr = ( (~boardAddr) >> 6) & 0x07;
-
-      byte[] retVal = new byte[4];
-      retVal[0] = (byte) (0x80 | midAddr ) ;
-      retVal[1] = (byte) (0x01 | (highAddr<<4) | (lowAddr << 1)) ;
-      retVal[2] = (byte) (0x1F & aspect);
-      retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]);*/
-
       return accSignalDecoderPktCommon(lowAddr, boardAddr, aspect);
+
     }
-#endif
+
+/**
+ * Provide an extended operations mode accessory CV programming packet via a
+ * simplified interface, given a signal address.
+ * <br><br>
+ * From the NMRA Standard: Extended Decoder Packet address for operations
+ * mode programming
+ * <br><br>
+ * 10AAAAAA 0 0AAA0AA1
+ * <br><br>
+ * <br>
+ * The resulting packet would be
+ * <br><br>
+ * {preamble} 10AAAAAA 0 0AAA0AA1 0 (1110CCVV 0 VVVVVVVV 0 DDDDDDDD) 0
+ * EEEEEEEE 1
+ *
+ * @param addr  the signal address
+ * @param cvNum the CV
+ * @param data  the data
+ * @return a packet
+ */
+/*public*/ /*static*/ QByteArray NmraPacket::accSignalDecoderPktOpsMode(int addr, int cvNum, int data) {
+
+    if (addr < 1 || addr > 2044) {
+        log->error("invalid address " + QString::number(addr));
+        throw new IllegalArgumentException();
+    }
+
+    if (cvNum < 1 || cvNum > 1024) {
+        log->error("invalid CV number " + QString::number(cvNum));
+        return NULL;
+    }
+
+    if (data < 0 || data > 255) {
+        log->error("invalid data " + QString::number(data));
+        return NULL;
+    }
+
+    int outputAddr = addr - 1; // Make the address 0 based
+    int lowAddr = (outputAddr & 0x03);
+    int boardAddr = (outputAddr >> 2) + 1; // Board Address
+    int midAddr = (boardAddr & 0x3F);
+    int highAddr = (~(boardAddr >> 6)) & 0x07;
+
+    int lowCVnum = (cvNum - 1) & 0xFF;
+    int highCVnum = ((cvNum - 1) >> 8) & 0x03;
+
+    QByteArray retVal = QByteArray(6,0);
+    retVal[0] = (char) (0x80 | midAddr);
+    retVal[1] = (char) (0x01 | (highAddr << 4) | (lowAddr << 1));
+    retVal[2] = (char) (0xEC | highCVnum);
+    retVal[3] = (char) (lowCVnum);
+    retVal[4] = (char) (0xFF & data);
+    retVal[5] = (char) (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3] ^ retVal[4]);
+
+    return retVal;
+}
+
 /**
  * An alternative interpretation of RP-9.2.1 due to an omission in the address definition of extended accessory packets.
  * Since there is no such description for the address bits of the Extended Accessory Decoder Control Packet,
@@ -397,6 +458,53 @@
 
     return accSignalDecoderPktCommon(lowAddr, boardAddr, aspect);
 }
+/**
+ * Provide an extended operations mode accessory CV programming packet via a
+ * simplified interface, given a signal address, using the alternative
+ * interpretation of S-9.2.1, due to an omission in the address definition
+ * of extended accessory packets.
+ *
+ * @param addr  the signal address
+ * @param cvNum the CV
+ * @param data  the data
+ * @return a packet
+ */
+/*public*/ /*static*/ QByteArray NmraPacket::altAccSignalDecoderPktOpsMode(int addr, int cvNum, int data) {
+
+    if (addr < 1 || addr > 2044) {
+        log->error("invalid address " + QString::number(addr));
+        throw new IllegalArgumentException();
+    }
+
+    if (cvNum < 1 || cvNum > 1024) {
+        log->error("invalid CV number " + QString::number(cvNum));
+        return NULL;
+    }
+
+    if (data < 0 || data > 255) {
+        log->error("invalid data " + QString::number(data));
+        return NULL;
+    }
+
+    int outputAddr = addr - 1; // Make the address 0 based
+    int lowAddr = (outputAddr & 0x03);
+    int boardAddr = (outputAddr >> 2); // Board Address
+    int midAddr = (boardAddr & 0x3F);
+    int highAddr = (~(boardAddr >> 6)) & 0x07;
+
+    int lowCVnum = (cvNum - 1) & 0xFF;
+    int highCVnum = ((cvNum - 1) >> 8) & 0x03;
+
+    QByteArray retVal = QByteArray(6,0);
+    retVal[0] = (char) (0x80 | midAddr);
+    retVal[1] = (char) (0x01 | (highAddr << 4) | (lowAddr << 1));
+    retVal[2] = (char) (0xEC | highCVnum);
+    retVal[3] = (char) (lowCVnum);
+    retVal[4] = (char) (0xFF & data);
+    retVal[5] = (char) (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3] ^ retVal[4]);
+
+    return retVal;
+}
 
 /*protected*/ /*static*/ QByteArray NmraPacket::accSignalDecoderPktCommon(int lowAddr, int boardAddr, int aspect)
 {
@@ -413,7 +521,7 @@
  retVal.replace(0,  (0x80 | midAddr ) );
  retVal.replace(1,  (0x01 | (highAddr<<4) | (lowAddr << 1))) ;
  retVal.replace(2,  (0x1F & aspect));
- retVal.replace(3,  (retVal[0]^retVal[1]^retVal[2]));
+ retVal.replace(3,  (retVal[0] ^ retVal[1] ^ retVal[2]));
 
  return retVal;
 }
@@ -468,102 +576,123 @@
         // get the packet
         return NmraPacket::accDecoderPktOpsMode(aBits, cBit, dBits, cvNum, data);
     }
+/**
+ * Provide a basic operations mode accessory CV programming packet via a
+ * simplified interface, given a decoder address.
+ * <br><br>
+ * From the NMRA Standard: Basic Accessory Decoder Packet address for
+ * operations mode programming
+ * <br><br>
+ * 10AAAAAA 0 1AAACDDD
+ * <br><br>
+ * Where DDD is used to indicate the output whose CVs are being modified and
+ * C=1.
+ * <br>
+ * If CDDD= 0000 then the CVs refer to the entire decoder.
+ * <br><br>
+ * Hence this method uses CDDD= 0000.
+ * <br><br>
+ * For programming individual outputs use
+ * {@link #accDecoderPktOpsMode(int accAddr, int cvNum, int data)}
+ * <br><br>
+ *
+ * @param decAddr Address of decoder, in the range 1 to 511
+ * @param cvNum   CV number to access
+ * @param data    Data to be written
+ * @return a packet
+ */
+/*public*/ /*static*/ QByteArray NmraPacket::accDecPktOpsMode(int decAddr, int cvNum, int data) {
+    // dBit is the "channel" info, least 7 bits, for the packet
+    // The lowest channel bit represents CLOSED (1) and THROWN (0)
+    int dBits = 0;  // dBits is the "channel" info, CDDD= 0000 indicates the entire decoder
 
-    /**
-     * Provide a legacy operation mode accessory control packet via a simplified interface
-     * @param number Address of accessory, starting with 1
-     * @param cvNum CV number to access
-     * @param data Data to be written
-     */
-    /*public*/ /*static*/ QByteArray NmraPacket::accDecoderPktOpsModeLegacy(int number, int cvNum, int data) {
+    // aBits is the "address" part of the nmra packet, which starts with 1
+    int aBits = decAddr;
 
-        // aBits is the "address" part of the nmra packet, which starts with 1
-        int aBits = (number-1) >> 2;      // Divide by 4 to get the 'base'
-        aBits += 1;                       // Base is +1
+    // cBit is the control bit, CDDD= 0000 indicates the entire decoder
+    int cBit = 0;
 
-        // get the packet
-        return NmraPacket::accDecPktOpsModeLegacy(aBits, cvNum, data);
+    // get the packet
+    return NmraPacket::accDecoderPktOpsMode(aBits, cBit, dBits, cvNum, data);
+}
+
+/**
+ * Provide a legacy operation mode accessory control packet via a simplified interface
+ * @param number Address of accessory, starting with 1
+ * @param cvNum CV number to access
+ * @param data Data to be written
+ */
+/*public*/ /*static*/ QByteArray NmraPacket::accDecoderPktOpsModeLegacy(int number, int cvNum, int data) {
+
+    // aBits is the "address" part of the nmra packet, which starts with 1
+    int aBits = (number-1) >> 2;      // Divide by 4 to get the 'base'
+    aBits += 1;                       // Base is +1
+
+    // get the packet
+    return NmraPacket::accDecPktOpsModeLegacy(aBits, cvNum, data);
+}
+
+/*public*/ /*static*/ QByteArray NmraPacket::opsCvWriteByte(int address, bool longAddr, int cvNum, int data ) {
+    if (log->isDebugEnabled()) log->debug("opswrite "+QString::number(address)+" "+QString::number(cvNum)+" "+QString::number(data));
+
+    if (!addressCheck(address, longAddr)) {
+        return NULL;  // failed!
     }
+
+    if (data<0 || data>255) {
+        Logger::error("invalid data "+data);
+        return NULL;
+    }
+    if (cvNum<1 || cvNum>1024) {
+        Logger::error("invalid CV number "+cvNum);
+        return NULL;
+    }
+
+    // end sanity checks, format output
+    QByteArray retVal;
+    int arg1 = 0xEC + (((cvNum-1)>>8)&0x03);
+    int arg2 = (cvNum-1)&0xFF;
+    int arg3 = data&0xFF;
+
+    return NmraPacket::threeBytePacket(address, longAddr, (char)arg1,  (char)arg2,  (char)arg3);
+}
+
+/*public*/ /*static*/ QByteArray NmraPacket::speedStep128Packet(int address, bool longAddr, int speed, bool fwd ) {
+    if (log->isDebugEnabled()) log->debug("128 step packet "+QString::number(address)+" "+QString::number(speed));
+
+    if (!addressCheck(address, longAddr)) {
+        return NULL;  // failed!
+    }
+
+    if (speed<0 || speed>127) {
+        Logger::error("invalid speed "+speed);
+        return NULL;
+    }
+
+    // end sanity checks, format output
+    QByteArray retVal;
+    int arg1 = 0x3F;
+    int arg2 = (speed&0x7F) | (fwd ? 0x80 : 0);
+
+    if (longAddr) {
+        // long address form
+        retVal = QByteArray(5, 0);
+        retVal.replace(0, (192+((address/256)&0x3F)));
+        retVal.replace(1, (address&0xFF));
+        retVal.replace(2, arg1);
+        retVal.replace(3, arg2);
+        retVal.replace(4, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3]));
+    } else {
+        // short address form
+        retVal = QByteArray(4,0);
+        retVal.replace(0, (address&0xFF));
+        retVal.replace(1, arg1);
+        retVal.replace(2, arg2);
+        retVal.replace(3, (retVal[0] ^ retVal[1] ^ retVal[2]));
+    }
+    return retVal;
+}
 #if 0
-    /*public*/ static byte[] opsCvWriteByte(int address, bool longAddr, int cvNum, int data ) {
-        if (log.isDebugEnabled()) log.debug("opswrite "+address+" "+cvNum+" "+data);
-
-        if (!addressCheck(address, longAddr)) {
-            return NULL;  // failed!
-        }
-
-        if (data<0 || data>255) {
-            Logger::error("invalid data "+data);
-            return NULL;
-        }
-        if (cvNum<1 || cvNum>1024) {
-            Logger::error("invalid CV number "+cvNum);
-            return NULL;
-        }
-
-        // end sanity checks, format output
-        byte[] retVal;
-        int arg1 = 0xEC + (((cvNum-1)>>8)&0x03);
-        int arg2 = (cvNum-1)&0xFF;
-        int arg3 = data&0xFF;
-
-        if (longAddr) {
-            // long address form
-            retVal = new byte[6];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = (byte) arg1;
-            retVal[3] = (byte) arg2;
-            retVal[4] = (byte) arg3;
-            retVal[5] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]^retVal[4]);
-        } else {
-            // short address form
-            retVal = new byte[5];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = (byte) arg1;
-            retVal[2] = (byte) arg2;
-            retVal[3] = (byte) arg3;
-            retVal[4] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]);
-        }
-        return retVal;
-    }
-
-    /*public*/ static byte[] speedStep128Packet(int address, bool longAddr, int speed, bool fwd ) {
-        if (log.isDebugEnabled()) log.debug("128 step packet "+address+" "+speed);
-
-        if (!addressCheck(address, longAddr)) {
-            return NULL;  // failed!
-        }
-
-        if (speed<0 || speed>127) {
-            Logger::error("invalid speed "+speed);
-            return NULL;
-        }
-
-        // end sanity checks, format output
-        byte[] retVal;
-        int arg1 = 0x3F;
-        int arg2 = (speed&0x7F) | (fwd ? 0x80 : 0);
-
-        if (longAddr) {
-            // long address form
-            retVal = new byte[5];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = (byte) arg1;
-            retVal[3] = (byte) arg2;
-            retVal[4] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]);
-        } else {
-            // short address form
-            retVal = new byte[4];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = (byte) arg1;
-            retVal[2] = (byte) arg2;
-            retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]);
-        }
-        return retVal;
-    }
-
     /**
      * From NMRA RP 9.2.1
          * [A Crosland 05/02/12] There is an issue with this method in that it cannot
@@ -588,8 +717,8 @@
      * and speed U1111 is full speed. This provides 14 discrete speed steps in
      * each direction.
      */
-    /*public*/ static byte[] speedStep28Packet(int address, bool longAddr, int speed, bool fwd ) {
-        if (log.isDebugEnabled()) log.debug("28 step packet "+address+" "+speed);
+    /*public*/ static QByteArray speedStep28Packet(int address, bool longAddr, int speed, bool fwd ) {
+        if (log->isDebugEnabled()) log->debug("28 step packet "+address+" "+speed);
 
         if (!addressCheck(address, longAddr)) {
             return NULL;  // failed!
@@ -607,26 +736,26 @@
         speedC = speedC + c;
 
         // end sanity checks, format output
-        byte[] retVal;
+        QByteArray retVal;
         int arg1 = (fwd ? 0x60 : 0x40)| speedC;
 
         if (longAddr) {
             // long address form
-            retVal = new byte[4];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = (byte) arg1;
-            retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]);
+            retVal = QByteArray(4];
+            retVal.replace(0, (192+((address/256)&0x3F));
+            retVal.replace(1, (address&0xFF);
+            retVal.replace(2, arg1;
+            retVal.replace(3, (retVal.replace(0]^retVal.replace(1]^retVal.replace(2]^retVal.replace(3]);
         } else {
             // short address form
-            retVal = new byte[3];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = (byte) arg1;
-            retVal[2] = (byte) (retVal[0]^retVal[1]^retVal[2]);
+            retVal = QByteArray(3];
+            retVal.replace(0, (address&0xFF);
+            retVal.replace(1, arg1;
+            retVal.replace(2, (retVal.replace(0]^retVal.replace(1]^retVal.replace(2]);
         }
         return retVal;
     }
-
+#endif
     /**
      * New version of speedStep28Packet to allow access to the whole range of 28
      * step speed packets
@@ -641,8 +770,8 @@
      * @param speed     speed step value 0 - 31 for insertion into DC packet
      * @param fwd
      */
-    /*public*/ static byte[] speedStep28Packet(Boolean full, int address, bool longAddr, int speed, bool fwd ) {
-        if (log.isDebugEnabled()) log.debug("28 step packet "+address+" "+speed);
+    /*public*/ /*static*/ QByteArray NmraPacket::speedStep28Packet(bool full, int address, bool longAddr, int speed, bool fwd ) {
+        if (log->isDebugEnabled()) log->debug("28 step packet "+QString::number(address)+" "+QString::number(speed));
 
         if (full != true) {
             Logger::error("invalid method invocation");
@@ -663,31 +792,31 @@
         speedC = speedC + c;
 
         // end sanity checks, format output
-        byte[] retVal;
+       QByteArray retVal;
         int arg1 = (fwd ? 0x60 : 0x40)| speedC;
 
         if (longAddr) {
             // long address form
-            retVal = new byte[4];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = (byte) arg1;
-            retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]);
+            retVal = QByteArray(4,0);
+            retVal.replace(0, (192+((address/256)&0x3F)));
+            retVal.replace(1, (address&0xFF));
+            retVal.replace(2, arg1);
+            retVal.replace(3, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3]));
         } else {
             // short address form
-            retVal = new byte[3];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = (byte) arg1;
-            retVal[2] = (byte) (retVal[0]^retVal[1]^retVal[2]);
+            retVal = QByteArray(3,0);
+            retVal.replace(0, (address&0xFF));
+            retVal.replace(1, arg1);
+            retVal.replace(2, (retVal[0] ^ retVal[1] ^ retVal[2]));
         }
         return retVal;
     }
 
-
-    /*public*/ static byte[] speedStep14Packet(int address, bool longAddr,
+#if 0
+    /*public*/ static QByteArray speedStep14Packet(int address, bool longAddr,
             int speed, bool fwd, bool F0) {
-        if (log.isDebugEnabled())
-            log.debug("14 step packet " + address + " " + speed + " " + F0);
+        if (log->isDebugEnabled())
+            log->debug("14 step packet " + address + " " + speed + " " + F0);
 
         if (speed < 0 || speed > 15) {
             Logger::error("invalid speed " + speed);
@@ -700,31 +829,31 @@
             speedC = speedC + 0x10;
 
         // end sanity checks, format output
-        byte[] retVal;
+        QByteArray retVal;
         int arg1 = (fwd ? 0x60 : 0x40)| speedC;
 
         if (longAddr) {
             // long address form
-            retVal = new byte[4];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = (byte) arg1;
-            retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]);
+            retVal = QByteArray(4,0);
+            retVal.replace(0, (192+((address/256)&0x3F)));
+            retVal.replace(1, (address&0xFF));
+            retVal.replace(2, arg1);
+            retVal.replace(3, (retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3]));
         } else {
             // short address form
-            retVal = new byte[3];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = (byte) arg1;
-            retVal[2] = (byte) (retVal[0]^retVal[1]^retVal[2]);
+            retVal = QByteArray(3,0);
+            retVal.replace(0, (address&0xFF));
+            retVal.replace(1, arg1);
+            retVal.replace(2, (retVal[0] ^ retVal[1] ^ retVal[2]));
         }
 
 
         return retVal;
     }
-
-    /*public*/ static byte[] function0Through4Packet(int address, bool longAddr,
+#endif
+    /*public*/ /*static*/ QByteArray NmraPacket::function0Through4Packet(int address, bool longAddr,
                         bool f0, bool f1, bool f2, bool f3, bool f4 ) {
-        if (log.isDebugEnabled()) log.debug("f0 through f4 packet "+address);
+        if (log->isDebugEnabled()) log->debug("f0 through f4 packet "+address);
 
         if (!addressCheck(address, longAddr)) {
             return NULL;  // failed!
@@ -732,7 +861,7 @@
 
         // end sanity check, format output
 
-        byte[] retVal;
+        QByteArray retVal;
         int arg1 = 0x80 |
                     ( f0 ? 0x10 : 0) |
                     ( f1 ? 0x01 : 0) |
@@ -742,31 +871,31 @@
 
         if (longAddr) {
             // long address form
-            retVal = new byte[4];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = (byte) arg1;
-            retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]);
+            retVal = QByteArray(4,0);
+            retVal.replace(0, (192+((address/256)&0x3F)));
+            retVal.replace(1, (address&0xFF));
+            retVal.replace(2, arg1);
+            retVal.replace(3, (retVal[0] ^ retVal[1] ^ retVal[2]));
         } else {
             // short address form
-            retVal = new byte[3];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = (byte) arg1;
-            retVal[2] = (byte) (retVal[0]^retVal[1]);
+            retVal = QByteArray(3,0);
+            retVal.replace(0, (address&0xFF));
+            retVal.replace(1, arg1);
+            retVal.replace(2, (retVal[0] ^ retVal[1]));
         }
         return retVal;
     }
 
-    /*public*/ static byte[] function5Through8Packet(int address, bool longAddr,
+    /*public*/ /*static*/ QByteArray NmraPacket::function5Through8Packet(int address, bool longAddr,
                         bool f5, bool f6, bool f7, bool f8 ) {
-        if (log.isDebugEnabled()) log.debug("f5 through f8 packet "+address);
+        if (log->isDebugEnabled()) log->debug("f5 through f8 packet "+address);
 
         if (!addressCheck(address, longAddr)) {
             return NULL;  // failed!
         }
 
         // end sanity check, format output
-        byte[] retVal;
+        QByteArray retVal;
         int arg1 = 0xB0 |
                     ( f8 ? 0x08 : 0) |
                     ( f7 ? 0x04 : 0) |
@@ -775,21 +904,21 @@
 
         if (longAddr) {
             // long address form
-            retVal = new byte[4];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = (byte) arg1;
-            retVal[3] = (byte) (retVal[0]^retVal[1]^retVal[2]);
+            retVal = QByteArray(4,0);
+            retVal.replace(0, (192+((address/256)&0x3F)));
+            retVal.replace(1, (address&0xFF));
+            retVal.replace(2, arg1);
+            retVal.replace(3, (retVal[0] ^ retVal[1] ^ retVal[2]));
         } else {
             // short address form
-            retVal = new byte[3];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = (byte) arg1;
-            retVal[2] = (byte) (retVal[0]^retVal[1]);
+            retVal = QByteArray(3,0);
+            retVal.replace(0, (address&0xFF));
+            retVal.replace(1, arg1);
+            retVal.replace(2, (retVal[0] ^ retVal[1]));
         }
         return retVal;
     }
-#endif
+
 /*public*/ /*static*/ QByteArray NmraPacket::function9Through12Packet(int address, bool longAddr, bool f9, bool f10, bool f11, bool f12 )
 {
  Logger* log = new Logger("NmraPacket");
@@ -812,20 +941,20 @@
  {
   // long address form
     //retVal = new QByteArray(4,0);
-  QByteArray retval(4,0);
+  QByteArray retVal(4,0);
     retVal.replace(0, (192+((address/256)&0x3F)));
     retVal.replace(1,(address&0xFF));
     retVal.replace(2,arg1);
-    retVal.replace(3,retVal[0]^retVal[1]^retVal[2]);
+    retVal.replace(3,(retVal[0] ^ retVal[1] ^ retVal[2]));
  }
  else
  {
   // short address form
   //retVal = new QByteArray(3,0);
-  QByteArray retval(3,0);
+  QByteArray retVal(3,0);
   retVal.replace(0, (address&0xFF));
   retVal.replace(1, arg1);
-  retVal.replace(2, (retVal[0]^retVal[1]));
+  retVal.replace(2, (retVal[0] ^ retVal[1]));
  }
  return retVal;
 }
@@ -834,7 +963,7 @@
                     bool f13, bool f14, bool f15, bool f16,
                     bool f17, bool f18, bool f19, bool f20 )
 {
-    //if (log.isDebugEnabled()) log.debug("f13 through f20 packet "+address);
+    //if (log->isDebugEnabled()) log->debug("f13 through f20 packet "+address);
 
     if (!addressCheck(address, longAddr)) {
         return NULL;  // failed!
@@ -852,30 +981,14 @@
                 ( f14 ? 0x02 : 0) |
                 ( f13 ? 0x01 : 0);
 
-    if (longAddr) {
-        // long address form
-        retVal = QByteArray(5, 0);
-        retVal.replace(0, (char) (192+((address/256)&0x3F)));
-        retVal.replace(1, (char) (address&0xFF));
-        retVal.replace(2, (char) arg1);
-        retVal.replace(3, (char) arg2);
-        retVal.replace(4, (char) (retVal[0]^retVal[1]^retVal[2]^retVal[3]));
-    } else {
-        // short address form
-        retVal = QByteArray (4, 0);
-        retVal.replace(0, (char) (address&0xFF));
-        retVal.replace(1, (char) arg1);
-        retVal.replace(2, (char) arg2);
-        retVal.replace(3, (char) (retVal[0]^retVal[1]^retVal[2]));
-    }
-    return retVal;
+    return NmraPacket::twoBytePacket(address, longAddr, (char) arg1,(char)arg2);
 }
 
 /*public*/ /*static*/ QByteArray NmraPacket::function21Through28Packet(int address, bool longAddr,
                         bool f21, bool f22, bool f23, bool f24,
                         bool f25, bool f26, bool f27, bool f28 )
 {
- //if (log.isDebugEnabled()) log.debug("f21 through f28 packet "+address);
+ //if (log->isDebugEnabled()) log->debug("f21 through f28 packet "+address);
 
  if (!addressCheck(address, longAddr))
  {
@@ -894,26 +1007,7 @@
                     ( f22 ? 0x02 : 0) |
                     ( f21 ? 0x01 : 0);
 
- if (longAddr)
- {
-  // long address form
-  retVal = QByteArray(5,0);
-  retVal.replace(0, (char) (192+((address/256)&0x3F)));
-  retVal.replace(1, (char) (address&0xFF));
-  retVal.replace(2, (char) arg1);
-  retVal.replace(3, (char) arg2);
-  retVal.replace(4, (char) (retVal[0]^retVal[1]^retVal[2]^retVal[3]));
- }
- else
- {
-  // short address form
-  retVal = QByteArray(4,0);
-  retVal.replace(0, (char) (address&0xFF));
-  retVal.replace(1, (char) arg1);
-  retVal.replace(2, (char) arg2);
-  retVal.replace(3, (char) (retVal[0]^retVal[1]^retVal[2]));
- }
- return retVal;
+return NmraPacket::twoBytePacket(address, longAddr, (char) arg1, (char) arg2);
 }
 #if 0
     /**
@@ -927,7 +1021,7 @@
      * @param function see note above
      * @param value  value to be sent in analog control instruction
      */
-    /*public*/ static byte[]  analogControl(int address, bool longAddr,
+    /*public*/ static QByteArray  analogControl(int address, bool longAddr,
                                         int function, int value) {
 
         if (!addressCheck(address, longAddr)) {
@@ -935,27 +1029,27 @@
         }
 
         // end sanity check, format output
-        byte[] retVal;
+        QByteArray retVal;
         int arg1 = 0x3D;  // analog instruction tag
 
 
         if (longAddr) {
             // long address form
-            retVal = new byte[6];
-            retVal[0] = (byte) (192+((address/256)&0x3F));
-            retVal[1] = (byte) (address&0xFF);
-            retVal[2] = (byte) arg1;
-            retVal[3] = (byte) (function&0xFF);
-            retVal[4] = (byte) (value&0xFF);
-            retVal[5] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]^retVal[4]);
+            retVal = QByteArray(6];
+            retVal.replace(0, (192+((address/256)&0x3F));
+            retVal.replace(1, (address&0xFF);
+            retVal.replace(2, arg1;
+            retVal.replace(3, (function&0xFF);
+            retVal.replace(4, (value&0xFF);
+            retVal.replace(5, (retVal.replace(0]^retVal.replace(1]^retVal.replace(2]^retVal.replace(3]^retVal.replace(4]);
         } else {
             // short address form
-            retVal = new byte[5];
-            retVal[0] = (byte) (address&0xFF);
-            retVal[1] = (byte) arg1;
-            retVal[2] = (byte) (function&0xFF);
-            retVal[3] = (byte) (value&0xFF);
-            retVal[4] = (byte) (retVal[0]^retVal[1]^retVal[2]^retVal[3]);
+            retVal = QByteArray(5];
+            retVal.replace(0, (address&0xFF);
+            retVal.replace(1, arg1;
+            retVal.replace(2, (function&0xFF);
+            retVal.replace(3, (value&0xFF);
+            retVal.replace(4, (retVal.replace(0]^retVal.replace(1]^retVal.replace(2]^retVal.replace(3]);
         }
         return retVal;
     }
@@ -993,14 +1087,14 @@ else
         retVal.replace(1, (address&0xFF));
         retVal.replace(2, arg1);
         retVal.replace(3,(consist&0xFF));
-        retVal.replace(4,(retVal[0]^retVal[1]^retVal[2]^retVal[3]));
+        retVal.replace(4,(retVal[0] ^ retVal[1] ^ retVal[2] ^ retVal[3]));
     } else {
         // short address form
         retVal =QByteArray(4,0);
         retVal.replace(0, (address&0xFF));
         retVal.replace(1, arg1);
         retVal.replace(2, (consist&0xFF));
-        retVal.replace(3,(retVal[0]^retVal[1]^retVal[2]));
+        retVal.replace(3,(retVal[0] ^ retVal[1] ^ retVal[2]));
     }
     return retVal;
 }
@@ -1028,7 +1122,7 @@ else
      * This finds and returns the type of address within a specific
      * packet, e.g. "the stationary decoder space".
      */
-    static int extractAddressType(byte[] packet) {
+    static int extractAddressType(QByteArray packet) {
         return 0;
     }
 
@@ -1038,7 +1132,7 @@ else
      * This finds and returns the numerical address within a specific
      * type, e.g. "first address within the stationary decoder space".
      */
-    static int extractAddressNumber(byte[] packet) {
+    static int extractAddressNumber(QByteArray packet) {
         return 0;
     }
 
@@ -1049,19 +1143,19 @@ else
      * type of packet/instruction, masking off the other bits.
      *
      */
-    static int extractInstruction(byte[] packet) {
+    static int extractInstruction(QByteArray packet) {
         return 0;
     }
 
     /**
      * Convert NMRA packet to a readable form
      */
-    static /*public*/ String format(byte[] p) {
+    static /*public*/ String format(QByteArray p) {
         return jmri.util.StringUtil.hexStringFromBytes(p);
     }
 #endif
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(NmraPacket.class.getName());
+/*static*/ Logger* NmraPacket::log = LoggerFactory::getLogger("NmraPacket");
 //}
 
 

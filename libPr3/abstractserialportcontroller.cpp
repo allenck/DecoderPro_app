@@ -2,6 +2,8 @@
 #include <QThread>
 #include <QtSerialPort/QSerialPortInfo>
 #include "instancemanager.h"
+#include "joptionpane.h"
+#include "connectionstatus.h"
 
 Option::Option()
 {
@@ -166,9 +168,9 @@ QString AbstractSerialPortController::getOptionState(QString option)
             Logger* log)
 {
  log->error(portName+" port is in use: "+p.getMessage());
- /*JOptionPane.showMessageDialog(NULL, "Port is in use",
-                                "Error", JOptionPane.ERROR_MESSAGE);*/
-//TODO: ConnectionStatus.instance().setConnectionState(portName, ConnectionStatus.CONNECTION_DOWN);
+ JOptionPane::showMessageDialog(NULL, "Port is in use",
+                                "Error", JOptionPane::ERROR_MESSAGE);
+ ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_DOWN);
  return portName+" port is in use";
 }
 
@@ -179,9 +181,9 @@ QString AbstractSerialPortController::getOptionState(QString option)
                         QString portName,
                         Logger* log) {
             log->error("Serial port "+portName+" not found");
-            /*JOptionPane.showMessageDialog(NULL, "Serial port "+portName+" not found",
-                                            "Error", JOptionPane.ERROR_MESSAGE);*/
-// TODO:           ConnectionStatus.instance().setConnectionState(portName, ConnectionStatus.CONNECTION_DOWN);
+            JOptionPane::showMessageDialog(NULL, "Serial port "+portName+" not found",
+                                            "Error", JOptionPane::ERROR_MESSAGE);
+ ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_DOWN);
             return portName+" not found";
 }
 
@@ -203,22 +205,27 @@ QString AbstractSerialPortController::getOptionState(QString option)
    //This shouldn't happen but in the tests for some reason this happens
    log->error("Port names returned as NULL");
    return NULL;
-        }
-        if (getPortNames().size()<=0) {
-            log->error("No usable ports returned");
-            return NULL;
-        }
-        return NULL;
-        // return (String)getPortNames().elementAt(0);
-    }
-    return mPort;
+  }
+  if (getPortNames().size()<=0)
+  {
+      log->error("No usable ports returned");
+      return NULL;
+  }
+  return NULL;
+  // return (String)getPortNames().elementAt(0);
+ }
+ return mPort;
 }
 
 /**
  * Set the baud rate.  This records it for later.
  */
 /*public*/ void AbstractSerialPortController::configureBaudRate(QString rate) { mBaudRate = rate;}
-/*public*/ QString AbstractSerialPortController::getCurrentBaudRate() {
+
+/*public*/ QString AbstractSerialPortController::getCurrentBaudRate()
+{
+ if(validBaudRates().isEmpty())
+  return "";
  if (mBaudRate.isEmpty()) return validBaudRates()[0];
     return mBaudRate;
 }

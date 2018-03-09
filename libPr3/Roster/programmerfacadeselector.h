@@ -11,10 +11,14 @@ class ProgrammerFacadeSelector : public QObject
     Q_OBJECT
 public:
     explicit ProgrammerFacadeSelector(QObject *parent = 0);
-    /*public*/ static Programmer* loadFacadeElements(QDomElement element, Programmer* programmer);
+ /*public*/ static Programmer* loadFacadeElements(
+         QDomElement element, Programmer* programmer, bool allowCache, Programmer* baseProg);
+
 
 signals:
 private:
+ static Logger* log;// = LoggerFactory::getLogger("ProgrammerFacadeSelector");
+
 public slots:
 
 };

@@ -73,15 +73,16 @@ QString AbstractProgrammer::decodeErrorCode(int code)
  //emit propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
 }
 
-/*public*/ void AbstractProgrammer::writeCV(QString CV, int val, ProgListener* p) /*throws ProgrammerException */
+/*public*/ void AbstractProgrammer::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
  Programmer::writeCV(CV.toInt(), val, p);
 }
-/*public*/ void AbstractProgrammer::readCV(QString CV, ProgListener* p) /*throws ProgrammerException*/
+/*public*/ void AbstractProgrammer::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
 {
- Programmer::readCV(CV.toInt(), p);
+ readCV(CV, p);
 }
-/*public*/ void AbstractProgrammer::confirmCV(QString CV, int val, ProgListener* p) /*throws ProgrammerException */{
+/*public*/ void AbstractProgrammer::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
+{
  Programmer::confirmCV(CV.toInt(), val, p);
 }
 
@@ -190,7 +191,6 @@ QString AbstractProgrammer::decodeErrorCode(int code)
         return 8;
     }
     throw new ProgrammerException("error");
-    //emit ProgrammerException();
  }
 
  void AbstractProgrammer::timeout()

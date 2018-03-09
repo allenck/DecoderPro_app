@@ -19,6 +19,7 @@
 #include "dataflavor.h"
 #include "directorysearcher.h"
 #include "catalogtreemodel.h"
+#include "joptionpane.h"
 
 //ImageIndexEditor::ImageIndexEditor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -164,23 +165,36 @@
 //            checkImageIndex();
 //        }
 //    });
+    addWindowListener(new IIEWindowListener(this));
     //setLocation(10, 200);
     pack();
     setVisible(true);
 }
+
+IIEWindowListener::IIEWindowListener(ImageIndexEditor *iie) { this->iie = iie;}
+void IIEWindowListener::windowClosing(QCloseEvent *)
+{
+ DirectorySearcher::instance()->close();
+ iie->checkImageIndex();
+}
+
 void ImageIndexEditor::openItem_triggered()
 {
  DirectorySearcher::instance()->openDirectory(false);
 }
 
-/*public*/ /*static*/ /*final*/ /*synchronized*/ void ImageIndexEditor::indexChanged(bool changed) {
-    _indexChanged = changed;
-    if (InstanceManager::shutDownManagerInstance()!=NULL) {
-        if (changed) {
-            if (_shutDownTask == NULL) {
-                _shutDownTask = (ShutDownTask*)new SwingShutDownTask("DecoderPro Decoder Window Check",
-                        tr("Do you want to want to save these changes?\n                           Select \"No\" and no further messages will be posted."),
-                        tr("Save & Quit"), NULL);
+/*public*/ /*static*/ /*final*/ /*synchronized*/ void ImageIndexEditor::indexChanged(bool changed)
+{
+ _indexChanged = changed;
+ShutDownManager* sdm;
+ if ((sdm =(ShutDownManager*)InstanceManager::getOptionalDefault("ShutDownManager"))!=NULL)
+ {
+  if (changed)
+  {
+   if (_shutDownTask == NULL) {
+       _shutDownTask = (ShutDownTask*)new SwingShutDownTask("DecoderPro Decoder Window Check",
+               tr("Do you want to want to save these changes?\n                           Select \"No\" and no further messages will be posted."),
+               tr("Save & Quit"), NULL);
 
 //                {
 //                    /*public*/ bool checkPromptNeeded() {
@@ -191,10 +205,10 @@ void ImageIndexEditor::openItem_triggered()
 //                        return true;
 //                    }
 //                };
-            }
-            ((DefaultShutDownManager*)InstanceManager::shutDownManagerInstance())->_register(_shutDownTask);
-        }
-    }
+   }
+   sdm->_register(_shutDownTask);
+  }
+ }
 }
 /*public*/ /*static*/ bool ImageIndexEditor::isIndexChanged() {
     return _indexChanged;
@@ -203,28 +217,19 @@ void ImageIndexEditor::openItem_triggered()
 /**
 *  Called from window close of Icon Editors
 */
-/*public*/ /*static*/ bool ImageIndexEditor::checkImageIndex() {
-    if (_indexChanged) {
-//        int result = JOptionPane.showConfirmDialog(NULL, tr("SaveImageIndex"),
-//                                      tr("question"), JOptionPane.YES_NO_CANCEL_OPTION,
-//                                                   JOptionPane.QUESTION_MESSAGE);
-//        if (result == JOptionPane.YES_OPTION) {
-//            storeImageIndex();
-//            return true;
-//        } else if (result == JOptionPane.NO_OPTION) {
-//            indexChanged(false);
-//        }
-        switch(QMessageBox::question(NULL, tr("Question"), tr("Do you want to want to save these changes?\nSelect \"No\" and no further messages will be posted."),QMessageBox::Yes | QMessageBox::No))
-        {
-        case QMessageBox::Yes:
-            storeImageIndex();
-            return true;
-        default:
-        case QMessageBox::No:
-            indexChanged(false);
-        }
-    }
-    return false;
+/*public*/ /*static*/ bool ImageIndexEditor::checkImageIndex()
+{
+ if (_indexChanged)
+ {
+  int result = JOptionPane::showConfirmDialog(NULL, tr("Do you want to want to save these changes?\nSelect \"No\" and no further messages will be posted."),tr("Question"), JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
+  if (result == JOptionPane::YES_OPTION) {
+      storeImageIndex();
+      return true;
+  } else if (result == JOptionPane::NO_OPTION) {
+      indexChanged(false);
+  }
+ }
+ return false;
 }
 
 /*public*/ /*static*/ void ImageIndexEditor::storeImageIndex() // SLOT[]
@@ -246,7 +251,7 @@ void ImageIndexEditor::openItem_triggered()
 /*private*/ QWidget* ImageIndexEditor::makeCatalogPanel() {
     _catalog = new CatalogPanel(tr("Default Catalogs:"), tr("Select a directory to view its images"));
     _catalog->init(false);
-    CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
+    CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
     QStringList sysNames = ((DefaultCatalogTreeManager*)manager)->getSystemNameList();
     if (!sysNames.isEmpty()) {
         for (int i=0; i<sysNames.size(); i++) {
@@ -267,8 +272,7 @@ void ImageIndexEditor::openItem_triggered()
     _index->init(true);
 
     bool found = false;
-    CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
-    QStringList sysNames = ((DefaultCatalogTreeManager*)manager)->getSystemNameList();
+CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");    QStringList sysNames = ((DefaultCatalogTreeManager*)manager)->getSystemNameList();
     if (!sysNames.isEmpty()) {
         for (int i=0; i<sysNames.size(); i++) {
             QString systemName = sysNames.at(i);
@@ -296,17 +300,17 @@ void ImageIndexEditor::addNode()
     }
   else
  {
-#if 0
-        QString name = JOptionPane.showInputDialog(this, tr("nameAddNode"),
-                                      tr("question"), JOptionPane.QUESTION_MESSAGE);
+#if 1
+        QString name = JOptionPane::showInputDialog(this, tr("Please enter a name for the node you want to add."),
+                                      tr("Question"), JOptionPane::QUESTION_MESSAGE);
         if (name != NULL) {
-            if(!_index.insertNodeIntoModel(name, selectedNode)) {
-                JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(
-                                    tr("duplicateNodeName"), new Object[] {name}),
-                                    tr("error"), JOptionPane.ERROR_MESSAGE);
+            if(!_index->insertNodeIntoModel(name, selectedNode)) {
+                JOptionPane::showMessageDialog(this,
+                                    tr("The name \"%1}\" is a duplicate. Node names\nin the path to the root must be unique.").arg(name),
+                                    tr("error"), JOptionPane::ERROR_MESSAGE);
             }
         }
-#endif
+#else
         QString name;
         InputDialog* dlg = new InputDialog(tr("Please enter a name for the node you want to add."),name);
         if(dlg->exec() == QDialog::Accepted)
@@ -320,31 +324,28 @@ void ImageIndexEditor::addNode()
              QMessageBox::critical(this, tr("Error"), tr("The name \"%1}\" is a duplicate. Node names\n                                                        in the path to the root must be unique.").arg(name));
          }
         }
+#endif
  }
  //invalidate();
 }
 
 void ImageIndexEditor::renameNode() {
-#if 0
     CatalogTreeNode* selectedNode = _index->getSelectedNode();
     if (selectedNode == NULL)
     {
-//        JOptionPane.showMessageDialog(this, tr("selectRenameNode"),
-//                                      tr("info"), JOptionPane.INFORMATION_MESSAGE);
-        QMessageBox::information(this, tr("Info"), tr("Please enter a name for the node."));
+        JOptionPane::showMessageDialog(this, tr("Please enter a name for the node."), tr("Info"), JOptionPane::INFORMATION_MESSAGE);
     }
     else
     {
-//     String name = JOptionPane.showInputDialog(this, tr("newNameNode"),
-//                                      selectedNode.getUserObject());
-//        if (name != NULL) {
-//            if (!_index.nodeChange(selectedNode, name)){
-//                JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(
-//                                    tr("duplicateNodeName"), new Object[] {name}),
-//                                    tr("error"), JOptionPane.ERROR_MESSAGE);
-//            }
-
-//        }
+#if 1
+     QString name = JOptionPane::showInputDialog(this, tr("Please enter a new name for the node."), selectedNode->getUserObject());
+     if (name != NULL)
+     {
+      if (!_index->nodeChange(selectedNode, name)){
+          JOptionPane::showMessageDialog(this, tr("The name \"%1\" is a duplicate. Node names\nin the path to the root must be unique.").arg(name),tr("error"), JOptionPane::ERROR_MESSAGE);
+      }
+     }
+#else
        QString name;
        InputDialog* dlg = new InputDialog(tr("Please enter a new name for the node."),name);
        if(dlg->exec() == QDialog::Accepted)
@@ -355,12 +356,11 @@ void ImageIndexEditor::renameNode() {
        {
         if(!_index->insertNodeIntoModel(name, selectedNode))
         {
-            QMessageBox::critical(this, tr("Error"), tr("The name \"%1}\" is a duplicate. Node names\n                                                        in the path to the root must be unique.").arg(name));
+            QMessageBox::critical(this, tr("Error"), tr("The name \"%1\" is a duplicate. Node names\nin the path to the root must be unique.").arg(name));
         }
-                                               }
+#endif
     }
 //    invalidate();
-#endif
 }
 
 void ImageIndexEditor::deleteNode() {
@@ -394,15 +394,6 @@ void ImageIndexEditor::deleteNode() {
 }
 
 //@SuppressWarnings("unchecked")
-///*private*/ int ImageIndexEditor::countSubNodes(CatalogTreeNode* node) {
-//    int cnt = 0;
-//    QVectorIterator<CatalogTreeNode*>* e = (QVectorIterator<CatalogTreeNode*>*)node->children();
-//    while (e->hasNext()) {
-//        CatalogTreeNode* n = e->next();
-//        cnt += countSubNodes(n) + 1;
-//    }
-//    return cnt;
-//}
 /*private*/ int ImageIndexEditor::countSubNodes(CatalogTreeNode* node)
 {
  int cnt = 0;
@@ -416,6 +407,7 @@ void ImageIndexEditor::deleteNode() {
  }
  return cnt;
 }
+
 /*private*/ int ImageIndexEditor::countIcons(CatalogTreeNode* node)
 {
  int cnt = 0;
@@ -433,14 +425,3 @@ void ImageIndexEditor::deleteNode() {
  return cnt;
 }
 
-//@SuppressWarnings("unchecked")
-///*private*/ int ImageIndexEditor::countIcons(CatalogTreeNode* node) {
-//    int cnt = 0;
-//    QVectorIterator<CatalogTreeNode*>* e = (QVectorIterator<CatalogTreeNode*>*)node->children();
-//    while (e->hasNext()) {
-//        CatalogTreeNode* n = e->next();
-//        cnt += countIcons(n);
-//    }
-//    cnt += node->getNumLeaves();
-//    return cnt;
-//}

@@ -13,6 +13,9 @@ ProgrammerConfigManager::ProgrammerConfigManager()
  defaultFile = "";
  showEmptyPanes = true;
  showCvNumbers = false;
+ doConfirmRead = false;
+ canCacheDefault = false;
+
 
 }
 /**
@@ -25,6 +28,8 @@ ProgrammerConfigManager::ProgrammerConfigManager()
     /*public*/ /*final*/ /*static*/ QString ProgrammerConfigManager::DEFAULT_FILE = "defaultFile";
     /*public*/ /*final*/ /*static*/ QString ProgrammerConfigManager::SHOW_EMPTY_PANES = "showEmptyPanes";
     /*public*/ /*final*/ /*static*/ QString ProgrammerConfigManager::SHOW_CV_NUMBERS = "showCvNumbers";
+    /*public*/ /*final*/ /*static*/ QString ProgrammerConfigManager::CAN_CACHE_DEFAULT = "canCacheDefault";
+    /*public*/ /*final*/ /*static*/ QString ProgrammerConfigManager::DO_CONFIRM_READ = "doConfirmRead";
 
 //@Override
 /*public*/ void ProgrammerConfigManager::initialize(Profile* profile) throw (InitializationException)
@@ -127,3 +132,34 @@ ProgrammerConfigManager::ProgrammerConfigManager()
     this->showCvNumbers = showCvNumbers;
     firePropertyChange(SHOW_CV_NUMBERS, oldShowCvNumbers, showCvNumbers);
 }
+/**
+     * @return the canCacheDefault
+     */
+    /*public*/ bool ProgrammerConfigManager::isCanCacheDefault() {
+        return canCacheDefault;
+    }
+
+    /**
+     * @param canCacheDefault new value
+     */
+    /*public*/ void ProgrammerConfigManager::setCanCacheDefault(bool canCacheDefault) {
+        bool oldCanCacheDefault = this->canCacheDefault;
+        this->canCacheDefault = canCacheDefault;
+        firePropertyChange(CAN_CACHE_DEFAULT, oldCanCacheDefault, canCacheDefault);
+    }
+
+    /**
+     * @return the doConfirmRead
+     */
+    /*public*/ bool ProgrammerConfigManager::isDoConfirmRead() {
+        return doConfirmRead;
+    }
+
+    /**
+     * @param doConfirmRead new value
+     */
+    /*public*/ void ProgrammerConfigManager::setDoConfirmRead(bool doConfirmRead) {
+        bool oldDoConfirmRead = this->doConfirmRead;
+        this->doConfirmRead = doConfirmRead;
+        firePropertyChange(DO_CONFIRM_READ, oldDoConfirmRead, doConfirmRead);
+    }

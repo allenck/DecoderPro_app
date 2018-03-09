@@ -6,7 +6,7 @@ class IdentifyDecoder : public AbstractIdentify
 {
     Q_OBJECT
 public:
-    explicit IdentifyDecoder(QObject *parent = 0);
+    explicit IdentifyDecoder(Programmer* programmer, QObject *parent = 0);
     /*public*/ bool test1();
     /*public*/ bool test2(int value);
     /*public*/ bool test3(int value) ;
@@ -15,6 +15,8 @@ public:
     /*public*/ bool test6(int value);
     /*public*/ bool test7(int value) ;
     /*public*/ bool test8(int value);
+    /*public*/ bool test9(int value);
+
 signals:
 
 public slots:

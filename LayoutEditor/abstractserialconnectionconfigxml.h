@@ -14,7 +14,7 @@ public:
     QDomElement store(QObject* o, bool shared);
     /*public*/ QDomElement store(QObject* object);
     /*public*/ bool load(QDomElement shared, QDomElement perNode);// //throws Exception
-
+    /*public*/ virtual QString javaClass() {return "";}
 signals:
 
 public slots:

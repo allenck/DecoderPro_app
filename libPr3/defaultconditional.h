@@ -1,5 +1,5 @@
-#ifndef DEFAULTCONDTIONAL_H
-#define DEFAULTCONDTIONAL_H
+#ifndef DEFAULTCONDITIONAL_H
+#define DEFAULTCONDITIONAL_H
 
 #include "conditional.h"
 #include "bitset.h"
@@ -103,4 +103,4 @@ public slots:
 
 };
 
-#endif // DEFAULTCONDTIONAL_H
+#endif // DEFAULTCONDITIONAL_H

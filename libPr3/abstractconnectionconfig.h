@@ -3,9 +3,11 @@
 
 #include "connectionconfig.h"
 #include <QHash>
+#include <QWidget>
+#include <QLabel>
 #include "libPr3_global.h"
 
-class LocobufferConnectionConfig;
+//class LocobufferConnectionConfig;
 class PortAdapter;
 class QGridLayout;
 class GridBagConstraints;
@@ -79,3 +81,4 @@ friend class ASCCActionListener;
 };
 
 #endif // ABSTRACTCONNECTIONCONFIG_H
+

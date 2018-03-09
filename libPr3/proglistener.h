@@ -59,6 +59,10 @@ public:
          * the command station and the PC durring programming */
     CommError  = 0x400
     };
+    Q_ENUM(status)
+
+    static QString statusString(ProgListener::status type);
+
 signals:
     
 public slots:

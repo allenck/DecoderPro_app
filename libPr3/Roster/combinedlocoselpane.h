@@ -4,6 +4,7 @@
 #include "identifyloco.h"
 #include "identifydecoder.h"
 #include "libPr3_global.h"
+#include "progmodeselector.h"
 
 class RosterEntry;
 class DecoderFile;
@@ -17,14 +18,14 @@ class LIBPR3SHARED_EXPORT CombinedLocoSelPane : public LocoSelPane
     Q_OBJECT
 public:
     explicit CombinedLocoSelPane(QWidget *parent = 0);
-    /*public*/ CombinedLocoSelPane(QLabel* s, QWidget *parent = 0);
+    /*public*/ CombinedLocoSelPane(QLabel* s, ProgModeSelector* selector, QWidget *parent = 0);
     /*public*/ void init();
 
 signals:
 
 public slots:
     void On_decoderBoxIndexChanged(int);
-    void startIdentifyDecoder();
+//    void startIdentifyDecoder();
     void On_locoBoxPropertyChange();
     void On_idloco_clicked();
     void On_go2_clicked();
@@ -44,6 +45,7 @@ private:
    virtual void updateForDecoderTypeID(QList<DecoderFile*>* pList);
    virtual void updateForDecoderMfgID(QString pMfg, int pMfgID, int pModelID);
    virtual void updateForDecoderNotID(int pMfgID, int pModelID);
+   ProgModeSelector* selector;
 
 protected:
    /*protected*/ GlobalRosterEntryComboBox* locoBox ;//= new GlobalRosterEntryComboBox();
@@ -64,33 +66,37 @@ protected:
    /*protected*/ virtual void startProgrammer(DecoderFile* decoderFile, RosterEntry* r, QString progName);
 
 protected slots:
-    /*protected*/ void startIdentifyLoco();
+   /*protected*/ void startIdentifyDecoder();
+   /*protected*/ void startIdentifyLoco();
+
  friend class CombinedLocoSelTreePane;
  friend class CLSIdentifyLoco;
  friend class CLSIdentifyDecoder;
 };
+
 class CLSIdentifyLoco : public IdentifyLoco
 {
     Q_OBJECT
  /*private*/ CombinedLocoSelPane* who;
 public:
- CLSIdentifyLoco(CombinedLocoSelPane* who);
+ CLSIdentifyLoco(Programmer* programmer, CombinedLocoSelPane* who);
  protected:
  /*protected*/ void done(int dccAddress);
  /*protected*/ void message(QString m);
  /*protected*/ void error();
 };
 
+
 class CLSIdentifyDecoder : public IdentifyDecoder
 {
     Q_OBJECT
-
     /*private*/ CombinedLocoSelPane* who;
 public:
-    CLSIdentifyDecoder(CombinedLocoSelPane* who);
+    CLSIdentifyDecoder(Programmer* p, CombinedLocoSelPane* who);
 protected:
     /*protected*/ void done(int mfg, int model, int productID);
     /*protected*/ void message(QString m) ;
     /*protected*/ void error();
 };
+
 #endif // COMBINEDLOCOSELPANE_H
