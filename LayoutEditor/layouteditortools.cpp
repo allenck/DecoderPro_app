@@ -1150,6 +1150,7 @@ else if (throatDivergingHead==NULL)
   {
    t = layoutEditor->turnoutList->at(i);
    Turnout* lt = t->getTurnout();
+   Q_UNUSED(lt);
    if (t->getTurnout() == turnout)
    {
 
@@ -6833,7 +6834,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
  signalFrame->setVisible(true);
 }
 
-/*private*/ void LayoutEditorTools::getSaved3WaySignals (ActionEvent* a) {
+/*private*/ void LayoutEditorTools::getSaved3WaySignals (ActionEvent* /*a*/) {
     if ( !get3WayTurnoutInformation() ) return;
     a13WayField->setText(layoutTurnoutA->getSignalA1Name());
     a23WayField->setText(layoutTurnoutA->getSignalA2Name());
@@ -6842,7 +6843,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     c3WayField->setText(layoutTurnoutB->getSignalB1Name());
     d3WayField->setText(layoutTurnoutB->getSignalC1Name());
 }
-/*private*/ void LayoutEditorTools::set3WaySignalsCancelPressed (ActionEvent* a) {
+/*private*/ void LayoutEditorTools::set3WaySignalsCancelPressed (ActionEvent* /*a*/) {
     setSignalsAt3WayOpen = false;
     setSignalsAt3WayFrame->setVisible(false);
 }

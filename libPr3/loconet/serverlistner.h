@@ -1,6 +1,6 @@
 #ifndef SERVERLISTNER_H
 #define SERVERLISTNER_H
-#include "server.h"
+#include "lntcpserver.h"
 /**
  * Implementation of the LocoNetOverTcp LbServer Server Protocol
  *
@@ -12,8 +12,8 @@
 public:
  ServerListner(QObject* parent) : QObject(parent) {}
 
- /*public*/ virtual void notifyServerStateChanged(Server* s) {}
+ /*public*/ virtual void notifyServerStateChanged(LnTcpServer* s) {}
 
- /*public*/ virtual void notifyClientStateChanged(Server* s) {}
+ /*public*/ virtual void notifyClientStateChanged(LnTcpServer* s) {}
 };
 #endif // SERVERLISTNER_H

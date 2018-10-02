@@ -2,9 +2,9 @@
 #define ITEMPANEL_H
 
 #include <QWidget>
+#include "displayframe.h"
 
 class QVBoxLayout;
-class JmriJFrame;
 class Editor;
 class NamedIcon;
 class ItemPanel : public QWidget
@@ -12,7 +12,7 @@ class ItemPanel : public QWidget
     Q_OBJECT
 public:
     //explicit ItemPanel(QWidget *parent = 0);
-    /*public*/ ItemPanel(JmriJFrame* parentFrame, QString  type, QString family, Editor* editor, QWidget *parent = 0);
+    /*public*/ ItemPanel(DisplayFrame* parentFrame, QString  type, QString family, Editor* editor, QWidget *parent = 0);
     virtual /*public*/ void init();
     /*public*/ QString getFamilyName();
     static /*final*/ QStringList TURNOUT;// = {"TurnoutStateClosed", "TurnoutStateThrown",
@@ -53,6 +53,7 @@ protected:
     /*protected*/ void setFamily(QString family);
     /*protected*/ void removeIconFamiliesPanel();
     /*protected*/ void removeIconMap(QString family);
+    /*protected*/ virtual void closeDialogs() {}
     /*protected*/ void reset();
     /*protected*/ void updateFamiliesPanel();
     /*protected*/ /*final*/ bool isUpdate();
@@ -66,6 +67,8 @@ friend class IndicatorTOItemPanel;
 friend class IndicatorItemPanel;
 friend class IconItemPanel;
 friend class IconDragJLabel;
+friend class ItemPalette;
+friend class MultiSensorIconDialog;
 };
 
 #endif // ITEMPANEL_H

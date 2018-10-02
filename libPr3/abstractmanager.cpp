@@ -184,6 +184,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
  // listen for name and state changes to forward
  s->addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
+ 
  if(qobject_cast<TreeModel*>(s) != NULL)
  {
   connect((AbstractCatalogTree*)s, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
@@ -369,4 +370,3 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     return inputName;
 }
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractManager.class.getName());
-PropertyVetoException::PropertyVetoException(QString s) {msg = s;}

@@ -20,70 +20,71 @@ DefaultProgrammerManager::DefaultProgrammerManager(QObject* parent) :ProgrammerM
 /**
  * NMRA "Paged" mode
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::PAGEMODE = new ProgrammingMode("PAGEMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::PAGEMODE =  ProgrammingMode::PAGEMODE;
 
 /**
  * NMRA "Operations" or "Programming on the main" mode, using only the bit-wise operations
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSBITMODE = new ProgrammingMode("OPSBITMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSBITMODE =  ProgrammingMode::OPSBITMODE;
 
 /**
  * NMRA "Programming on the main" mode for stationary decoders,
  * using only the byte-wise operations and "extended" addressing.
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSACCEXTBYTEMODE = new ProgrammingMode("OPSACCEXTBYTEMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSACCEXTBYTEMODE =  ProgrammingMode::OPSACCEXTBYTEMODE;
 
 /**
  * NMRA "Programming on the main" mode for stationary decoders,
  * using only the bit-wise operations. Note that this is
  * defined as using the "normal", not "extended" addressing.
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSACCBITMODE = new ProgrammingMode("OPSACCBITMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSACCBITMODE =  ProgrammingMode::OPSACCBITMODE;
 
 /**
  * NMRA "Programming on the main" mode for stationary decoders,
  * using only the bit-wise operations and "extended" addressing.
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSACCEXTBITMODE = new ProgrammingMode("OPSACCEXTBITMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSACCEXTBITMODE =  ProgrammingMode::OPSACCEXTBITMODE;
 
 /**
  * NMRA "Programming on the main" mode for stationary decoders,
  * using only the byte-wise operations. Note that this is
  * defined as using the "normal", not "extended" addressing.
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSACCBYTEMODE = new ProgrammingMode("OPSACCBYTEMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSACCBYTEMODE =  ProgrammingMode::OPSACCBYTEMODE;
 
-/**
- * No programming mode available
- */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::NONE = new ProgrammingMode("NONE");
+///**
+// * No programming mode available
+// */
+///*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::NONE =  ProgrammingMode::NONE;
 
 /**
  * NMRA "Address-only" mode. Often implemented as
  * a proper subset of "Register" mode, as the
  * underlying operation is the same.
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::ADDRESSMODE = new ProgrammingMode("ADDRESSMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::ADDRESSMODE = ProgrammingMode::ADDRESSMODE;
 
 /**
  * NMRA "Operations" or "Programming on the main" mode, using only the byte-wise operations
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSBYTEMODE = new ProgrammingMode("OPSBYTEMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::OPSBYTEMODE =  ProgrammingMode::OPSBYTEMODE;
 
 /**
  * NMRA "Direct" mode, using only the byte-wise operations
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::DIRECTBYTEMODE = new ProgrammingMode("DIRECTBYTEMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::DIRECTBYTEMODE =  ProgrammingMode::DIRECTBYTEMODE;
 
 /**
  * NMRA "Register" mode
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::REGISTERMODE = new ProgrammingMode("REGISTERMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::REGISTERMODE =  ProgrammingMode::REGISTERMODE;
 
 /**
  * NMRA "Direct" mode, using only the bit-wise operations
  */
-/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::DIRECTBITMODE = new ProgrammingMode("DIRECTBITMODE");
+/*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::DIRECTBITMODE =  ProgrammingMode::DIRECTBITMODE;
+
 /*public*/ DefaultProgrammerManager::DefaultProgrammerManager(Programmer* pProgrammer, QObject* parent)
     : ProgrammerManager(parent)
 {

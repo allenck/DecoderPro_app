@@ -158,7 +158,7 @@ public:
          * @throws JmriException
          * @since 2.11.2
          */
-    virtual bool load(File* /*file*/, bool /*registerDeferred*/)  throw (JmriException) { return false;}
+         virtual bool load(File* /*file*/, bool /*registerDeferred*/)  throw (JmriException) { return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -169,7 +169,7 @@ public:
          * @throws JmriException
          * @since 2.11.2
          */
-        virtual bool load(QUrl /*file*/, bool /*registerDeferred*/)  { return false;}  // throws JmriException;
+        virtual bool load(QUrl /*file*/, bool /*registerDeferred*/) throw (JmriException) { return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -181,7 +181,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-        virtual bool loadDeferred(File* /*file*/)  { return false;} // throws JmriException;
+        virtual bool loadDeferred(File* /*file*/)  throw (JmriException) { return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -193,7 +193,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-        virtual bool loadDeferred(QUrl /*file*/)  { return false;} // throws JmriException;
+        virtual bool loadDeferred(QUrl /*file*/) throw (JmriException) { return false;}
 
         /**
          * Provide a method-specific way of locating a file to be

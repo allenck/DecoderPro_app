@@ -21,8 +21,14 @@ void PR3SystemConnectionMemo::configureManagersPR2()
  InstanceManager::setThrottleManager(
   getThrottleManager());
 
- InstanceManager::setProgrammerManager(
-  getProgrammerManager());
+
+ if (getProgrammerManager()->isAddressedModePossible()) {
+     InstanceManager::setAddressedProgrammerManager(getProgrammerManager());
+ }
+ if (getProgrammerManager()->isGlobalProgrammerAvailable()) {
+     InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
+ }
+
  // Establish a ShutDownTask so that the PR3 should be be returned to
  // LocoNet Interface mode at shutdown
          // Finally, create and register a shutdown task to ensure clean exit
@@ -98,7 +104,7 @@ void PR3SystemConnectionMemo::configureManagersPR2()
   tm = new LocoNetThrottledTransmitter(getLnTrafficController(), mTurnoutExtraSpace);
   log->debug(QString("ThrottleTransmitted configured with :")+(mTurnoutExtraSpace?"true":"false"));
 
-  InstanceManager::setPowerManager((PowerManager*)LocoNetSystemConnectionMemo::getPowerManager());
+  InstanceManager::store((QObject*)LocoNetSystemConnectionMemo::getPowerManager(), "PowerManager");
 
   InstanceManager::setTurnoutManager((TurnoutManager*)getTurnoutManager());
 
@@ -108,7 +114,13 @@ void PR3SystemConnectionMemo::configureManagersPR2()
 
   InstanceManager::setThrottleManager(LocoNetSystemConnectionMemo::getThrottleManager());
 
-  InstanceManager::setProgrammerManager(getProgrammerManager());
+  if (getProgrammerManager()->isAddressedModePossible())
+  {
+      InstanceManager::setAddressedProgrammerManager(getProgrammerManager());
+  }
+  if (getProgrammerManager()->isGlobalProgrammerAvailable()) {
+      InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
+  }
 
   InstanceManager::setReporterManager((ReporterManager*)getReporterManager());
 

@@ -7,6 +7,8 @@
 #include "javaqt_global.h"
 #include <QVariant>
 
+class Reader;
+class FileInputStream;
 class LineReader;
 class QTextStream;
 class JAVAQTSHARED_EXPORT Properties : public QObject
@@ -30,10 +32,8 @@ public:
     /*public*/ void remove(QString);
     /*public*/ QStringListIterator propertyNames();
     /*public*/ void store(QTextStream* writer, QString comments) throw (IOException);
-    /*private*/ static void writeComments(QTextStream* bw, QString comments) throw (IOException);
-    /*private*/ QString saveConvert(QString theString,
-                                    bool escapeSpace,
-                                    bool escapeUnicode);
+    /*public*/  void load(FileInputStream* inStream); //throws IOException
+
 
 signals:
 
@@ -57,8 +57,13 @@ private:
      friend class Properties;
     };
     /*private*/ void load0 (LineReader* lr); //throws IOException
+
     /*private*/ QString loadConvert (QByteArray in, int off, int len, QByteArray convtBuf);
     /*private*/ void store0(QTextStream* bw, QString comments, bool escUnicode)throw (IOException);
+    /*private*/ static void writeComments(QTextStream* bw, QString comments) throw (IOException);
+    /*private*/ QString saveConvert(QString theString,
+                                    bool escapeSpace,
+                                    bool escapeUnicode);
 
 protected:
     /**
@@ -78,6 +83,8 @@ class LineReader : public QObject
  Q_OBJECT
 public:
  /*public*/ LineReader(QTextStream* inStream);
+ /*public*/ LineReader(QDataStream *reader);
+
 // /*public*/ LineReader(Reader* reader) ;
 
 private:
@@ -89,7 +96,7 @@ private:
  int inLimit;// = 0;
  int inOff;// = 0;
  QTextStream* inStream;
-// Reader* reader;
+ //QDataStream* reader;
 public:
  QByteArray lineBuf;
  int readLine();// throws IOException

@@ -2869,9 +2869,9 @@ if (roads.length() == 0) {
  /**
   * Run train scripts, waits for completion before returning.
   */
- /*private*/ /*synchronized*/ void Train::runScripts(QStringList scripts)
+ /*private*/ /*synchronized*/ void Train::runScripts(QStringList /*scripts*/)
 {
-#if 0
+#if 0 // TODO:
   if (scripts.size() > 0)
   {
       // save the current status
@@ -3424,19 +3424,23 @@ if (roads.length() == 0) {
 }
 
  // LocationManager locationManager = LocationManager.instance();
- /*private*/ void Train::updateStatus(RouteLocation* old, RouteLocation* next) {
-     if (next != NULL) {
-         setStatus(CODE_TRAIN_EN_ROUTE);
-         // run move scripts
-// TODO:            runScripts(getMoveScripts());
-     } else {
-         log->debug("Train (" + getName() + ") terminated");
-// TODO:            setTerminationDate(TrainCommon::getDate(false));
-        setStatus(CODE_TERMINATED);
-         setBuilt(false);
-         // run termination scripts
-// TODO:           runScripts(getTerminationScripts());
-     }
+ /*private*/ void Train::updateStatus(RouteLocation* /*old*/, RouteLocation* next)
+ {
+  if (next != NULL)
+  {
+   setStatus(CODE_TRAIN_EN_ROUTE);
+   // run move scripts
+   runScripts(getMoveScripts());
+  }
+  else
+  {
+   log->debug("Train (" + getName() + ") terminated");
+   setTerminationDate(TrainCommon::getDate(false));
+   setStatus(CODE_TERMINATED);
+   setBuilt(false);
+   // run termination scripts
+   runScripts(getTerminationScripts());
+  }
  }
 
  /**
@@ -4240,7 +4244,7 @@ if (roads.length() == 0) {
      }
 
      // forward any property changes in this train's route
-     if (e->getSource()->metaObject()->className() ==("Route-")) {
+     if (QString(e->getSource()->metaObject()->className()) ==("Route-")) {
          setDirtyAndFirePropertyChange(e->getPropertyName(), e->getOldValue(), e->getNewValue());
      }
  }

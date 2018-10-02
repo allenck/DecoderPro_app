@@ -59,7 +59,13 @@
     // Install a debug programmer, replacing the existing LocoNet one
     ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->setProgrammerManager(
             new DebugProgrammerManager(port->getSystemConnectionMemo()));
-    InstanceManager::setProgrammerManager( ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager());
+    if (((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager()->isAddressedModePossible())
+    {
+        InstanceManager::setAddressedProgrammerManager(((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager());
+    }
+    if (((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager()->isGlobalProgrammerAvailable()) {
+        InstanceManager::store(((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager(), "GlobalProgrammerManager");
+    }
 
     // Install a debug throttle manager, replacing the existing LocoNet one
     ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->setThrottleManager(new DebugThrottleManager(port->getSystemConnectionMemo()));

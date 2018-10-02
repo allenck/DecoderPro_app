@@ -50,13 +50,13 @@ public:
      * @param width the width of the painted border
      * @param height the height of the painted border
      */
-    virtual void paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height) {}
+    virtual void paintBorder(QWidget* /*c*/, QPainter* /*g*/, int /*x*/, int /*y*/, int /*width*/, int /*height*/) {}
 
     /**
      * Returns the insets of the border.
      * @param c the component for which this border insets value applies
      */
-    virtual Insets* getBorderInsets(QWidget* c) {return NULL;}
+    virtual Insets* getBorderInsets(QWidget* /*c*/) {return NULL;}
 
     /**
      * Returns whether or not the border is opaque.  If the border

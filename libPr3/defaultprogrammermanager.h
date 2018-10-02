@@ -10,70 +10,71 @@ public:
     /**
      * NMRA "Paged" mode
      */
-    /*public*/ static /*final*/ ProgrammingMode* PAGEMODE;// = new ProgrammingMode("PAGEMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* PAGEMODE;// = new ProgrammingMode("PAGEMODE");
 
     /**
      * NMRA "Operations" or "Programming on the main" mode, using only the bit-wise operations
      */
-    /*public*/ static /*final*/ ProgrammingMode* OPSBITMODE;// = new ProgrammingMode("OPSBITMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* OPSBITMODE;// = new ProgrammingMode("OPSBITMODE");
 
     /**
      * NMRA "Programming on the main" mode for stationary decoders,
      * using only the byte-wise operations and "extended" addressing.
      */
-    /*public*/ static /*final*/ ProgrammingMode* OPSACCEXTBYTEMODE;// = new ProgrammingMode("OPSACCEXTBYTEMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* OPSACCEXTBYTEMODE;// = new ProgrammingMode("OPSACCEXTBYTEMODE");
 
     /**
      * NMRA "Programming on the main" mode for stationary decoders,
      * using only the bit-wise operations. Note that this is
      * defined as using the "normal", not "extended" addressing.
      */
-    /*public*/ static /*final*/ ProgrammingMode* OPSACCBITMODE;// = new ProgrammingMode("OPSACCBITMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* OPSACCBITMODE;// = new ProgrammingMode("OPSACCBITMODE");
 
     /**
      * NMRA "Programming on the main" mode for stationary decoders,
      * using only the bit-wise operations and "extended" addressing.
      */
-    /*public*/ static /*final*/ ProgrammingMode* OPSACCEXTBITMODE;// = new ProgrammingMode("OPSACCEXTBITMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* OPSACCEXTBITMODE;// = new ProgrammingMode("OPSACCEXTBITMODE");
 
     /**
      * NMRA "Programming on the main" mode for stationary decoders,
      * using only the byte-wise operations. Note that this is
      * defined as using the "normal", not "extended" addressing.
      */
-    /*public*/ static /*final*/ ProgrammingMode* OPSACCBYTEMODE;// = new ProgrammingMode("OPSACCBYTEMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* OPSACCBYTEMODE;// = new ProgrammingMode("OPSACCBYTEMODE");
 
     /**
      * No programming mode available
      */
-    /*public*/ static /*final*/ ProgrammingMode* NONE;// = new ProgrammingMode("NONE");
+//    /*public*/ static /*final*/ ProgrammingMode* NONE;// = new ProgrammingMode("NONE");
 
-    /**
-     * NMRA "Address-only" mode. Often implemented as
-     * a proper subset of "Register" mode, as the
-     * underlying operation is the same.
-     */
-    /*public*/ static /*final*/ ProgrammingMode* ADDRESSMODE;// = new ProgrammingMode("ADDRESSMODE");
+ /**
+      * NMRA "Address-only" mode. Often implemented as a proper subset of
+      * "Register" mode, as the underlying operation is the same.
+      *
+      * @deprecated since 4.9.5; use {@link ProgrammingMode#ADDRESSMODE} instead
+      */
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* ADDRESSMODE;// = new ProgrammingMode("ADDRESSMODE");
 
     /**
      * NMRA "Operations" or "Programming on the main" mode, using only the byte-wise operations
      */
-    /*public*/ static /*final*/ ProgrammingMode* OPSBYTEMODE;// = new ProgrammingMode("OPSBYTEMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* OPSBYTEMODE;// = new ProgrammingMode("OPSBYTEMODE");
 
     /**
      * NMRA "Direct" mode, using only the byte-wise operations
      */
-    /*public*/ static /*final*/ ProgrammingMode* DIRECTBYTEMODE;// = new ProgrammingMode("DIRECTBYTEMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* DIRECTBYTEMODE;// = new ProgrammingMode("DIRECTBYTEMODE");
 
     /**
      * NMRA "Register" mode
      */
-    /*public*/ static /*final*/ ProgrammingMode* REGISTERMODE;// = new ProgrammingMode("REGISTERMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* REGISTERMODE;// = new ProgrammingMode("REGISTERMODE");
 
     /**
      * NMRA "Direct" mode, using only the bit-wise operations
      */
-    /*public*/ static /*final*/ ProgrammingMode* DIRECTBITMODE;// = new ProgrammingMode("DIRECTBITMODE");
+    QT_DEPRECATED /*public*/ static /*final*/ ProgrammingMode* DIRECTBITMODE;// = new ProgrammingMode("DIRECTBITMODE");
 
     // For the record, these were the original numerical definitions:
     //     public static final ProgrammingMode NONE	    =  new ProgrammingMode("NONE", 0);

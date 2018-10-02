@@ -9,7 +9,7 @@ class PositionableIcon : public PositionableLabel
 {
     Q_OBJECT
 public:
-    explicit PositionableIcon(QObject *parent = 0);
+    explicit PositionableIcon(QWidget *parent = 0);
     /*public*/ PositionableIcon(Editor* editor, Positionable *parent);
     /*public*/ PositionableIcon(NamedIcon* s, Editor* editor, Positionable *parent);
     /*public*/ PositionableIcon(QString s, Editor* editor, Positionable *parent);
@@ -44,8 +44,8 @@ protected:
  /*protected*/ double _scale;// = 1.0;			// getScale, come from net result found in one of the icons
  /*protected*/ int _rotate;// = 0;
  /*protected*/ void rotateOrthogonal();
- /*protected*/ QHash<QString, NamedIcon*>* cloneMap(QHash<QString, NamedIcon*>* map, PositionableLabel* pos);
-
+ /*protected*/ static QHash<QString, NamedIcon*>* cloneMap(QHash<QString, NamedIcon*>* map, PositionableLabel* pos);
+ friend class PortalItemPanel;
 };
 
 #endif // POSITIONABLEICON_H

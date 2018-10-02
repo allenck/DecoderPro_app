@@ -203,7 +203,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  //fireTableChanged(new TableModelEvent(this));
  beginResetModel();
  endResetModel();
- setPersistentButtons();
+ //setPersistentButtons();
 }
 
 /**
@@ -265,7 +265,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  Q_ASSERT(lastRow < rows);
 // beginInsertRows(QModelIndex(), firstRow, lastRow);
 // endInsertRows();
- setPersistentButtons();
+ //setPersistentButtons();
 }
 
 /**
@@ -410,7 +410,7 @@ void AbstractTableModel::setPersistentButtons()
  {
   foreach(int col, buttonMap)
   {
-   QModelIndex ix = index(row, col, QModelIndex());
+   QModelIndex ix = index(row, col);
    if((flags(ix) & Qt::ItemIsEnabled) != 0 )
    {
     _table->openPersistentEditor(ix);

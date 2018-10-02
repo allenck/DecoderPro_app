@@ -260,9 +260,9 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void SetTrainIconPositionFrame::comboBoxActionPerformed(QWidget* ae)
+ /*public*/ void SetTrainIconPositionFrame::comboBoxActionPerformed(QWidget* /*ae*/)
  {
-  QComboBox* source = (QComboBox*)ae;
+  //QComboBox* source = (QComboBox*)ae;
      if (locationBox->currentText() == NULL) {
          resetSpinners();
          removeIcons();
@@ -426,7 +426,7 @@ namespace Operations
      }
  }
 
- /*private*/ void SetTrainIconPositionFrame::addIconListener(TrainIcon* tI)
+ /*private*/ void SetTrainIconPositionFrame::addIconListener(TrainIcon* /*tI*/)
  {
 #if 0 //TODO: Need to define CoponentEvent
      tI.addComponentListener(new ComponentListener() {
@@ -449,15 +449,15 @@ namespace Operations
      });
 #endif
  }
-#if 0 // TODO:
- protected void trainIconMoved(java.awt.event.ComponentEvent ae) {
+#if 0
+ /*protected*/ void SetTrainIconPositionFrame::trainIconMoved(ComponentEvent* ae) {
      if (source == _tIonEast) {
-         log.debug("East train icon X: {} Y: {}", _tIonEast.getLocation().x, _tIonEast.getLocation().y);
-         spinTrainIconEastX->setValue(_tIonEast.getLocation().x);
-         spinTrainIconEastY->setValue(_tIonEast.getLocation().y);
+         log->debug(tr("East train icon X: %1 Y: %2").arg(_tIonEast->getLocation().x()).arg( _tIonEast->getLocation().y()));
+         spinTrainIconEastX->setValue(_tIonEast->getLocation().x());
+         spinTrainIconEastY->setValue(_tIonEast->getLocation().y());
      }
      if (source == _tIonWest) {
-         log.debug("West train icon X: {} Y: {}", _tIonWest.getLocation().x, _tIonWest.getLocation().y);
+         log->debug("West train icon X: {} Y: {}", _tIonWest.getLocation().x, _tIonWest.getLocation().y);
          spinTrainIconWestX->setValue(_tIonWest.getLocation().x);
          spinTrainIconWestY->setValue(_tIonWest.getLocation().y);
      }

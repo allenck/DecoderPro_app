@@ -184,7 +184,7 @@ static SensorManager* sensorManagerInstance();
 static TurnoutManager* turnoutManagerInstance();
 static LightManager* lightManagerInstance();
 Q_DECL_DEPRECATED static ProgrammerManager* programmerManagerInstance();
-static void setProgrammerManager(ProgrammerManager* p);
+//static void setProgrammerManager(ProgrammerManager* p);
 static ThrottleManager* throttleManagerInstance();
 static void setTurnoutManager(TurnoutManager* p);
 
@@ -202,6 +202,7 @@ Q_DECL_DEPRECATED static SectionManager* sectionManagerInstance();
 static SensorManager* sensorManager;
 static InstanceManager* instance();
 static SignalMastLogicManager* signalMastLogicManagerInstance();
+static /*public*/  bool containsDefault(/*@Nonnull*/ QString type);
 
 Q_DECL_DEPRECATED static RouteManager* routeManagerInstance();
 
@@ -230,7 +231,8 @@ static void setConditionalManager(ConditionalManager* p);
 static void setLogixManager(LogixManager* p);
 Q_DECL_DEPRECATED static void setShutDownManager(ShutDownManager* p);
 static void setTabbedPreferences(TabbedPreferences* p);
-static void setCommandStation(CommandStation* p);
+QT_DEPRECATED static void setCommandStation(CommandStation* p);
+QT_DEPRECATED static /*public*/ void setAddressedProgrammerManager(AddressedProgrammerManager* p);
 static void setReporterManager(ReporterManager* p);
 static void removePropertyChangeListener(PropertyChangeListener* l);
 
@@ -241,8 +243,8 @@ public slots:
 private:
 //    static private HashMap<Class<?>,ArrayList<Object>> managerLists;
 //static QHash<QString,QObjectList*>* managerLists;
- //static Logger log;
-  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("InstanceManager");
+ //Logger* log;
+ /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("InstanceManager");
  static void setRootInstance();
  static ConfigureManager* configureManager;
  /*private*/ ClockControl* clockControl;// = NULL;

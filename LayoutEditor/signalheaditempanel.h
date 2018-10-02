@@ -9,7 +9,7 @@ class SignalHeadItemPanel : public TableItemPanel
     Q_OBJECT
 public:
     //explicit SignalHeadItemPanel(QWidget *parent = 0);
-    /*public*/ SignalHeadItemPanel(JmriJFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
+    /*public*/ SignalHeadItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     /*public*/ void valueChanged(/*ListSelectionEvent e*/);
 
 signals:

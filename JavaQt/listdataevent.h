@@ -1,9 +1,9 @@
 #ifndef LISTDATAEVENT_H
 #define LISTDATAEVENT_H
 #include "eventobject.h"
-#include "libPr3_global.h"
+#include "javaqt_global.h"
 
-class LIBPR3SHARED_EXPORT ListDataEvent : public EventObject
+class JAVAQTSHARED_EXPORT ListDataEvent : public EventObject
 {
     Q_OBJECT
 public:

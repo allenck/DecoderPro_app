@@ -35,3 +35,12 @@
 {
  return _type;
 }
+
+/*protected*/ void ItemDialog::closeDialogs() {
+    }
+
+//@Override
+/*public*/ void ItemDialog::dispose() {
+    closeDialogs();
+    JDialog::dispose();
+}

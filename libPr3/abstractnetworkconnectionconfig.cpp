@@ -414,7 +414,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   NUMOPTIONS = NUMOPTIONS + 2;
  }
  NUMOPTIONS = NUMOPTIONS + options.size();
- hostNameField->setText(((AbstractNetworkPortController*)adapter)->getHostName());
+ hostNameField->setText(adapter->getHostName());
  hostNameFieldLabel = new QLabel(tr("IP Address/Host Name: "));
  hostNameField->setToolTip(tr("IP Address for fully manual configuration.  Optional hostname for ZeroConf/mDNS configuration. "));
  //if(adapter->getHostName()==(""))
@@ -426,18 +426,18 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 
  portField->setToolTip(tr("Port address setting of the TCP Connection"));
  portField->setEnabled(true);
- portField->setText(QString::number(((AbstractNetworkPortController*)adapter)->getPort()));
+ portField->setText(QString::number(adapter->getPort()));
  portFieldLabel = new QLabel(tr("TCP/UDP Port: "));
 
  adNameField->setToolTip(tr("Expected ZeroConf/mDNS Advertisement Identifier"));
  adNameField->setEnabled(false);
- adNameField->setText("" + ((AbstractNetworkPortController*)adapter)->getAdvertisementName());
+ adNameField->setText("" + adapter->getAdvertisementName());
  adNameFieldLabel = new QLabel(tr("Advertisement Identifier: "));
  adNameFieldLabel->setEnabled(false);
 
  serviceTypeField->setToolTip(tr("ZeroConf/mDNS service type. "));
  serviceTypeField->setEnabled(false);
- serviceTypeField->setText("" + ((AbstractNetworkPortController*)adapter)->getServiceType());
+ serviceTypeField->setText("" + adapter->getServiceType());
  serviceTypeFieldLabel = new QLabel(tr("Service Type Name: "));
  serviceTypeFieldLabel->setEnabled(false);
  QFont f = showAutoConfig->font();
@@ -453,7 +453,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //                }
 //            });
  connect(showAutoConfig, SIGNAL(toggled(bool)), this, SLOT(setAutoNetworkConfig()));
- showAutoConfig->setChecked(((AbstractNetworkPortController*)adapter)->getMdnsConfigure());
+ showAutoConfig->setChecked(adapter->getMdnsConfigure());
  setAutoNetworkConfig();
 
  f = showAdvanced->font();
@@ -688,13 +688,13 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  {
   portField->setEnabled(false);
   portFieldLabel->setEnabled(false);
-  ((AbstractNetworkPortController*)adapter)->setMdnsConfigure(true);
+  adapter->setMdnsConfigure(true);
  }
  else
  {
   portField->setEnabled(true);
   portFieldLabel->setEnabled(true);
-  ((AbstractNetworkPortController*)adapter)->setMdnsConfigure(false);
+  adapter->setMdnsConfigure(false);
  }
 }
 
@@ -702,12 +702,12 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 /*public*/ QString AbstractNetworkConnectionConfig::getManufacturer()
 {
  if(adapter == NULL) return "";
- return ((AbstractNetworkPortController*)adapter)->getManufacturer();
+ return adapter->getManufacturer();
 }
 
 //Override
 /*public*/ void AbstractNetworkConnectionConfig::setManufacturer(QString manufacturer) {
-    ((AbstractNetworkPortController*)adapter)->setManufacturer(manufacturer);
+    adapter->setManufacturer(manufacturer);
 }
 
 //Override
@@ -715,20 +715,20 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
     if (adapter == NULL) {
         return true;
     }
-    return ((AbstractNetworkPortController*)adapter)->getDisabled();
+    return adapter->getDisabled();
 }
 
 //Override
 /*public*/ void AbstractNetworkConnectionConfig::setDisabled(bool disabled) {
     if (adapter != NULL) {
-        ((AbstractNetworkPortController*)adapter)->setDisabled(disabled);
+        adapter->setDisabled(disabled);
     }
 }
 
 //Override
 /*public*/ QString AbstractNetworkConnectionConfig::getConnectionName() {
-    if (((AbstractNetworkPortController*)adapter)->getSystemConnectionMemo() != NULL) {
-        return ((AbstractNetworkPortController*)adapter)->getSystemConnectionMemo()->getUserName();
+    if (adapter->getSystemConnectionMemo() != NULL) {
+        return adapter->getSystemConnectionMemo()->getUserName();
     } else {
         return name();
     }
@@ -737,7 +737,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //Override
 /*public*/ void AbstractNetworkConnectionConfig::dispose() {
     if (adapter != NULL) {
-        ((AbstractNetworkPortController*)adapter)->dispose();
+        adapter->dispose();
         adapter = NULL;
     }
     AbstractConnectionConfig::dispose();

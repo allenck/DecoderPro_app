@@ -1,8 +1,15 @@
 #include "abstractnamedbean.h"
-
+#include "loggerfactory.h"
 AbstractNamedBean::AbstractNamedBean(QObject *parent)
 {
+ common("", "", parent);
+}
+
+void AbstractNamedBean::common(QString sys, QString user, QObject *parent)
+{
  this->parent = parent;
+ this->mSystemName = sys;
+ this->mUserName = user;
  parameters = NULL;
  _Register = new QHash<PropertyChangeListener*, QString>();
  listenerRefs = new QHash<PropertyChangeListener*, QString>();
@@ -30,33 +37,20 @@ AbstractNamedBean::AbstractNamedBean(QObject *parent)
 AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(sys, parent)
 {
  Q_ASSERT(!sys.isEmpty());
- this->parent = parent;
- mSystemName = sys;
- setObjectName(mSystemName);
- mUserName = "";
- parameters = NULL;
- _Register = new QHash<PropertyChangeListener*, QString>();
- listenerRefs = new QHash<PropertyChangeListener*, QString>();
- pcs = new PropertyChangeSupport((QObject*)this);
+ common(sys, "", parent );
 }
 
 AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : NamedBean(sysName,parent)
 {
  //Q_ASSERT(!sysName.isEmpty());
- this->parent = parent;
- mSystemName = sysName;
- setObjectName(mSystemName);
- mUserName = user;
- parameters = NULL;
- _Register = new QHash<PropertyChangeListener*, QString>();
- listenerRefs = new QHash<PropertyChangeListener*, QString>();
- pcs = new PropertyChangeSupport((QObject*)this);
+common(sysName, user, parent);
  NamedBean::setUserName(user);
 }
 
 /**
  * Get associated comment text.
  */
+//@Override
 QString AbstractNamedBean:: getComment() { return this->comment; }
 
 /**
@@ -65,14 +59,20 @@ QString AbstractNamedBean:: getComment() { return this->comment; }
  * Comments can be any valid text.
  * @param comment Null means no comment associated.
  */
+//@Override
+//@OverridingMethodsMustInvokeSuper
 void AbstractNamedBean::setComment(QString comment)
 {
  QString old = this->comment;
- this->comment = comment;
+ if (comment == NULL || comment.trimmed().isEmpty()) {
+     this->comment = "";
+ } else {
+     this->comment = comment;
+ }
  firePropertyChange("Comment", old, comment);
- //emit propertyChange(this, "Comment", old, comment);
 }
 
+//@Override
 QString AbstractNamedBean::getDisplayName()
 {
  QString name = getUserName();
@@ -87,17 +87,18 @@ QString AbstractNamedBean::getDisplayName()
 }
 
 //@Override
-/*public*/ QString AbstractNamedBean::getFullyFormattedDisplayName() {
-    QString name = getUserName();
-    if (name != "" && name.length() > 0 && name != (getSystemName())) {
-        name = getSystemName() + "(" + name + ")";
-    } else {
-        name = getSystemName();
-    }
-    return name;
+/*public*/ QString AbstractNamedBean::getFullyFormattedDisplayName()
+{
+ QString name = getUserName();
+ if (name != "" && name.length() > 0 && name != (getSystemName())) {
+     name = getSystemName() + "(" + name + ")";
+ } else {
+     name = getSystemName();
+ }
+ return name;
 }
 
-
+//@Override
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l, const QString beanRef, QString listenerRef)
 {
  pcs->addPropertyChangeListener(l);
@@ -105,8 +106,11 @@ QString AbstractNamedBean::getDisplayName()
      _Register->insert(l, beanRef);
  if(listenerRef!=NULL)
      listenerRefs->insert(l, listenerRef);
+ //connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
+//@Override
+//@OverridingMethodsMustInvokeSuper
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l)
 {
  pcs->addPropertyChangeListener(l);
@@ -115,6 +119,8 @@ QString AbstractNamedBean::getDisplayName()
 /*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* l)
 {
  pcs->removePropertyChangeListener(l);
+ disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+
  _Register->remove(l);
  listenerRefs->remove(l);
 }
@@ -205,6 +211,19 @@ QString AbstractNamedBean::getDisplayName()
     pcs = NULL;
 }
 
+//@Override
+//@CheckReturnValue
+/*public*/ QString AbstractNamedBean::describeState(int state) {
+    switch (state) {
+        case UNKNOWN:
+            return tr("Unknown");
+        case INCONSISTENT:
+            return tr("Inconsistent");
+        default:
+            return tr("Unexpected value: %1").arg(state);
+    }
+}
+
 /*public*/ void AbstractNamedBean::setProperty(QString key, QVariant value) {
     if (parameters == NULL)
         parameters = new QMap<QString, QVariant>();
@@ -227,8 +246,74 @@ QString AbstractNamedBean::getDisplayName()
     }
     parameters->remove(key);
 }
-/*public*/ void vetoableChange(PropertyChangeEvent* evt) //throws java.beans.PropertyVetoException
+
+//@Override
+/*public*/ void AbstractNamedBean::vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException)
 {
 }
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractNamedBean.class.getName());
+/**
+ * {@inheritDoc}
+ * <p>
+ * This implementation tests that the results of
+ * {@link jmri.NamedBean#getSystemName()} and
+ * {@link jmri.NamedBean#getUserName()} are equal for this and obj.
+ *
+ * @param obj the reference object with which to compare.
+ * @return {@code true} if this object is the same as the obj argument;
+ *         {@code false} otherwise.
+ */
+//@Override
+/*public*/ bool AbstractNamedBean::equals(QObject* obj)
+{
+ // test the obj == this
+ bool result = NamedBean::equals(obj);
+
+ //if (!result && (obj != NULL) && obj instanceof AbstractNamedBean)
+ if(!result && (obj != NULL && qobject_cast<AbstractNamedBean*>(obj) != NULL))
+ {
+  AbstractNamedBean* b = (AbstractNamedBean*) obj;
+  if (this->getSystemName() == (b->getSystemName()))
+  {
+   QString bUserName = b->getUserName();
+   if ((mUserName != NULL) && (bUserName != NULL)
+           && mUserName == (bUserName))
+   {
+       result = true;
+   }
+  }
+ }
+ return result;
+}
+
+/**
+ * calculate our hash code
+ *
+ * @return our hash code
+ */
+//@Override
+//public int hashCode() {
+//    int result = super.hashCode();
+//    if (mSystemName != null) {
+//        result = mSystemName.hashCode();
+//        if (mUserName != null) {
+//            result = (result * 37) + mUserName.hashCode();
+//        }
+//    } else if (mUserName != null) {
+//        result = mUserName.hashCode();
+//    }
+//    return result;
+//}
+
+/**
+ * {@inheritDoc}
+ *
+ * By default, does an alphanumeric-by-chunks comparison
+ */
+//@CheckReturnValue
+/*public*/ int AbstractNamedBean::compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* /*n*/) {
+    //jmri.util.AlphanumComparator ac = new jmri.util.AlphanumComparator();
+    return QString::compare(suffix1, suffix2);
+}
+
+/*private*/ /*static*/ Logger* AbstractNamedBean::log = LoggerFactory::getLogger("AbstractNamedBean");

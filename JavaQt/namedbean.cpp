@@ -2,6 +2,7 @@
 #include "namedbean.h"
 #include <QSet>
 #include <QString>
+#include "manager.h"
 
 //const int NamedBean::UNKNOWN      = 0x01;
 //const int NamedBean::INCONSISTENT = 0x08;
@@ -19,7 +20,7 @@ NamedBean::NamedBean(QString name, QObject *parent)
  _state = UNKNOWN;
  _systemName = name;
 }
-NamedBean::NamedBean(const NamedBean & other)
+NamedBean::NamedBean(const NamedBean & other): QObject()
 {
  this->_parent = other._parent;
  this->_name = other._name;
@@ -78,6 +79,17 @@ void NamedBean::setState(int s)
  _state = s;
 }
 int NamedBean::getState() { return _state;}
+/**
+ * Provide human-readable, localized version of state value.
+ * <P>
+ * This method is intended for use when presenting to a human operator.
+ *
+ * @param state the state to describe
+ * @return the state in localized form
+ */
+//@CheckReturnValue
+/*public*/ QString describeState(int state) {return "";}
+
 QString NamedBean::getComment() { return _comment;}
 void NamedBean::setComment(QString comment)
 {
@@ -152,30 +164,29 @@ QVariant NamedBean::getProperty(QString /*key*/)
  * @return -1,0,+1 for ordering if the names are well-formed; may not provide proper ordering if the names are not well-formed.
  */
 //@CheckReturnValue
-/*public*/ /*default*/ int NamedBean::compareTo(/*@Nonnull*/ NamedBean* /*n2*/) {
-#if 0 // TODO:
-    jmri.util.AlphanumComparator ac = new jmri.util.AlphanumComparator();
-    String o1 = this.getSystemName();
-    String o2 = n2.getSystemName();
+/*public*/ /*default*/ int NamedBean::compareTo(/*@Nonnull*/ NamedBean* n2) {
+    //jmri.util.AlphanumComparator ac = new jmri.util.AlphanumComparator();
+    QString o1 = this->getSystemName();
+    QString o2 = n2->getSystemName();
 
-    int p1len = Manager.getSystemPrefixLength(o1);
-    int p2len = Manager.getSystemPrefixLength(o2);
+    int p1len = Manager::getSystemPrefixLength(o1);
+    int p2len = Manager::getSystemPrefixLength(o2);
 
-    int comp = ac.compare(o1.substring(0, p1len), o2.substring(0, p2len));
+    //int comp = ac.compare(o1.substring(0, p1len), o2.substring(0, p2len));
+    int comp = QString::compare(o1.mid(0,p1len),o2.mid(0, p2len));
     if (comp != 0) return comp;
 
-    char c1 = o1.charAt(p1len);
-    char c2 = o2.charAt(p2len);
+    QChar c1 = o1.at(p1len);
+    QChar c2 = o2.at(p2len);
 
     if (c1 != c2) {
         return (c1 > c2) ? +1 : -1 ;
     } else {
-        return this.compareSystemNameSuffix(o1.substring(p1len+1), o2.substring(p2len+1), n2);
+        return this->compareSystemNameSuffix(o1.mid(p1len+1), o2.mid(p2len+1), n2);
     }
-#else
- return 0;
-#endif
 }
+
+/*public*/ bool NamedBean::equals(QObject* /*obj*/) {return false;}
 
 /**
  * Compare the suffix of this NamedBean's name with the

@@ -11,7 +11,7 @@ public:
     //explicit QStringTokenizer(QObject *parent = 0);
     /*public*/ StringTokenizer(QString str, QString delim = " \t\n\r\f", bool returnDelims = false/*, QObject *parent = 0*/);
  ~StringTokenizer() {}
- StringTokenizer(const StringTokenizer&) {}
+ StringTokenizer(const StringTokenizer&): QObject() {}
     /*public*/ bool hasMoreTokens();
     /*public*/ QString nextToken();
     /*public*/ QString nextToken(QString delim);

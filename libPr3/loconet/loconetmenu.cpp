@@ -5,7 +5,7 @@
 #include "../libPr3/LocoIO/lnnamedpaneaction.h"
 #include "locoiodata.h"
 #include "locoiomodules.h"
-#include "../libPr3/loconet/serveraction.h"
+#include "../libPr3/loconet/lntcpserveraction.h"
 #include "locoiomodules.h"
 #include "startupactionmodelutil.h"
 
@@ -110,7 +110,7 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
  }
  addSeparator();
 // add(new jmri.jmrix.loconet.locormi.LnMessageServerAction(rb.getString("MenuItemStartLocoNetServer")));
- addAction(new ServerAction(tr("Start LocoNetOverTCP Server"),this));
+ addAction(new LnTcpServerAction(tr("Start LocoNetOverTCP Server"),this));
 QAction* probeAct = new QAction(tr("Probe"), wi);
 addAction(probeAct);
 connect(probeAct, SIGNAL(triggered()), this, SLOT(on_probeAction()));

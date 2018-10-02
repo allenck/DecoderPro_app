@@ -47,7 +47,7 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
  beginInsertRows(QModelIndex(), throttleFrames.count(), throttleFrames.count());
  throttleFrames.append(tf);
  endInsertRows();
-    //fireTableDataChanged();
+    fireTableDataChanged();
 }
 
 /*public*/ void ThrottlesTableModel::removeThrottleFrame(ThrottleWindow* tf, DccLocoAddress* la)

@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QVariant>
 #include "javaqt_global.h"
+#include "propertychangelistener.h"
+#include "propertychangesupport.h"
 
 class TableCellRenderer;
 class TableCellEditor;
@@ -32,6 +34,14 @@ public:
  /*public*/ int getWidth();
  /*public*/ void setPreferredWidth(int preferredWidth);
  /*public*/ int getPreferredWidth();
+ /*public*/ void setMinWidth(int minWidth);
+ /*public*/ int getMinWidth();
+ /*public*/ void setMaxWidth(int maxWidth);
+ /*public*/ int getMaxWidth();
+ /*public*/ void setResizable(bool isResizable);
+ /*public*/ bool getResizable();
+ /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* listener);
+ /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener);
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -43,6 +53,8 @@ private:
   * <code>changeSupport</code> field describes them.
   */
 // /*private*/ SwingPropertyChangeSupport changeSupport;
+ PropertyChangeSupport* changeSupport;
+
  void common();
  /*private*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
 

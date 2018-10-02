@@ -13,9 +13,10 @@
 #include "itempalette.h"
 #include "iconadder.h"
 #include "loggerfactory.h"
+#include "displayframe.h"
 
-PositionableLabel::PositionableLabel(QObject *parent) :
-    JLabel()
+PositionableLabel::PositionableLabel(QWidget *parent) :
+    JLabel(parent)
 {
 }
 /**
@@ -632,7 +633,7 @@ void IEFWindowListener::windowClosing(QCloseEvent */*e*/)
 {
  ItemPalette::loadIcons();
 
- _paletteFrame = new JmriJFrame(title, false, false);
+ _paletteFrame = new DisplayFrame(title, false, false);
 //    _paletteFrame->setLocationRelativeTo(this);
  _paletteFrame->toFront();
 //    _paletteFrame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -753,7 +754,7 @@ void PositionableLabel::on_disableControlMenu_toggled(bool bState) // [slot]
     _namedIcon = NULL;
     JLabel::setText(_unRotatedText);
     setOpaque(_saveOpaque);
-    // _popupUtil.setBorder(true);
+    _popupUtil->setBorder(true);
    }
    else
    {
@@ -793,7 +794,7 @@ void PositionableLabel::on_disableControlMenu_toggled(bool bState) // [slot]
     JLabel::setText(NULL);
     _rotateText = true;
     setOpaque(false);
-//                    _popupUtil.setBorder(false);
+    _popupUtil->setBorder(false);
    }
    _namedIcon->rotate(deg, this);
    setIcon(_namedIcon);

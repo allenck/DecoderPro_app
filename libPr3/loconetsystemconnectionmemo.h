@@ -8,6 +8,7 @@
 #include "lnreportermanager.h"
 #include "throttlemanager.h"
 #include "componentfactory.h"
+#include "defaultprogrammermanager.h"
 
 /**
  * Lightweight class to denote that a system is active,
@@ -59,8 +60,8 @@ public:
  SlotManager* getSlotManager() { return sm; }
  void setSlotManager(SlotManager* sm);
  LnMessageManager* getLnMessageManager();
- ProgrammerManager* getProgrammerManager();
- void setProgrammerManager(ProgrammerManager* p);
+ DefaultProgrammerManager* getProgrammerManager();
+ void setProgrammerManager(DefaultProgrammerManager* p);
  /*public*/ bool provides(QString type);
  /*public*/ Manager*  get(QString T);
  void configureManagers();
@@ -83,7 +84,6 @@ private:
  LnTrafficController* lt;
  LnMessageManager* lnm;
  SlotManager* sm;
- ProgrammerManager* programmerManager;
  Logger* log;
  LocoNetConsistManager* consistManager;
 
@@ -100,6 +100,7 @@ protected:
  LnLightManager* lightManager;
  //ResourceBundle* getActionModelResourceBundle();
  /*protected*/ ResourceBundle* getActionModelResourceBundle();
+ /*protected*/ DefaultProgrammerManager* programmerManager;
 
 };
 

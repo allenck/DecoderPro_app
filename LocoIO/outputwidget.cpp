@@ -3,6 +3,7 @@
 #include "lnpacketizer.h"
 #include "instancemanager.h"
 #include "proxysensormanager.h"
+#include "lnturnout.h"
 
 OutputWidget::OutputWidget(LocoIOData* data, int port, /*LnPacketizer* packetizer*/LnTrafficController* tc, QButtonGroup* group, QWidget *parent) :
     QWidget(parent),
@@ -194,36 +195,36 @@ void OutputWidget::on_btnTest_clicked()
  {
   switch (mode->getOpcode())
   {
-  case LnConstants::OPC_INPUT_REP: // Block occupied
-  {
-   LocoNetMessage* msg = new LocoNetMessage(4);
-   msg->setOpCode(LnConstants::OPC_INPUT_REP);
-   msg->setElement(1, data->getAddr(channel));
-   msg->setElement(2, data->getV2(channel)|(btnText==QString("On")?0x40:0x00));
-   //packetizer->sendLocoNetMessage(msg);
-   tc->sendLocoNetMessage(msg);
-   if(btnText == "On")
-    ui->btnTest->setText("Off");
-   else
-    ui->btnTest->setText("On");
-   break;
-  }
-  case LnConstants::OPC_SW_REQ:    // switch
-  {
-   LocoNetMessage* msg = new LocoNetMessage(4);
-   msg->setOpCode(LnConstants::OPC_SW_REQ);
-   msg->setElement(1, data->getV1(channel));
-   msg->setElement(2, data->getV2(channel)|(btnText==QString("On")?0x10:0x00));
-   //packetizer->sendLocoNetMessage(msg);
-   tc->sendLocoNetMessage(msg);
-   if(btnText == "On")
-    ui->btnTest->setText("Off");
-   else
-    ui->btnTest->setText("On");
-   break;
-  }
-  default:
-   break;
+   case LnConstants::OPC_INPUT_REP: // Block occupied
+   {
+    LocoNetMessage* msg = new LocoNetMessage(4);
+    msg->setOpCode(LnConstants::OPC_INPUT_REP);
+    msg->setElement(1, data->getAddr(channel));
+    msg->setElement(2, data->getV2(channel)|(btnText=="On"?0x40:0x00));
+    //packetizer->sendLocoNetMessage(msg);
+    tc->sendLocoNetMessage(msg);
+    if(btnText == "On")
+     ui->btnTest->setText("Off");
+    else
+     ui->btnTest->setText("On");
+    break;
+   }
+   case LnConstants::OPC_SW_REQ:    // switch
+   {
+    LocoNetMessage* msg = new LocoNetMessage(4);
+    msg->setOpCode(LnConstants::OPC_SW_REQ);
+    msg->setElement(1, data->getV1(channel));
+    msg->setElement(2, data->getV2(channel)|(btnText=="On"?0x20:0x00));
+    //packetizer->sendLocoNetMessage(msg);
+    tc->sendLocoNetMessage(msg);
+    if(btnText == "On")
+     ui->btnTest->setText("Off");
+    else
+     ui->btnTest->setText("On");
+    break;
+   }
+   default:
+    break;
   }
  }
 }

@@ -512,9 +512,9 @@
         return new TitledBorder(border, title, titleJustification,
                         titlePosition, titleFont, titleColor);
     }
-#if 0
+
 //// EmptyBorder ///////////////////////////////////////////////////////////
-    final static Border emptyBorder = new EmptyBorder(0, 0, 0, 0);
+    /*final*/ /*static*/ Border* BorderFactory::emptyBorder = new EmptyBorder(0, 0, 0, 0);
 
     /**
      * Creates an empty border that takes up no space. (The width
@@ -522,7 +522,7 @@
      *
      * @return the <code>Border</code> object
      */
-    /*public*/ static Border createEmptyBorder() {
+    /*public*/ /*static*/ Border* BorderFactory::createEmptyBorder() {
         return emptyBorder;
     }
 
@@ -541,11 +541,11 @@
      *                  in pixels
      * @return the <code>Border</code> object
      */
-    /*public*/ static Border createEmptyBorder(int top, int left,
+    /*public*/ /*static*/ Border* BorderFactory::createEmptyBorder(int top, int left,
                                                 int bottom, int right) {
         return new EmptyBorder(top, left, bottom, right);
     }
-
+#if 0
 //// CompoundBorder ////////////////////////////////////////////////////////
     /**
      * Creates a compound border with a <code>null</code> inside edge and a

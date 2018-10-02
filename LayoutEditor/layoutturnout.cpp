@@ -1494,7 +1494,7 @@
    actionNewTurnout = new QAction(QString("Turnout")+": "+turnoutName,this);
    popup->addAction(actionNewTurnout);
   }
-#if 1 // TODO:
+
   // Rotate if there are no track connections
   if ( (connectA==NULL) && (connectB==NULL) &&
                 (connectC==NULL) && (connectD==NULL) )
@@ -1537,10 +1537,6 @@
 //        });
   }
 
-
-
-
-#endif
 //  if (disableItem==NULL)
 //   disableItem = new JCheckBoxMenuItem(tr("Disabled"));
 //  disableItem.setSelected(disabled);

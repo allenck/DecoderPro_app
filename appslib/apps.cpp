@@ -48,6 +48,8 @@
 #include "jythonautomatonaction.h"
 #include "jythonsigletaction.h"
 #include "runjythonscript.h"
+#include "jynstrument.h"
+#include "jynstrumentfactory.h"
 #endif
 #include "../libPr3/loconet/LnOverTcp/lnovertcpconnectionconfig.h"
 #include "audiotableaction.h"
@@ -90,6 +92,7 @@
 #include "webserveraction.h"
 #include <QImageReader>
 #include "startupactionsmanager.h"
+#include "throttlewindow.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -125,7 +128,6 @@ bool Apps::configDeferredLoadOK = false;
  //super(true);
  //long start = System.nanoTime();
  start = QDateTime::currentMSecsSinceEpoch();
- log = new Logger("Apps");
  _buttonSpace = NULL;
  cs4 = new QLabel("?", this);
  cs4->setObjectName("cs4");
@@ -146,9 +148,10 @@ bool Apps::configDeferredLoadOK = false;
  splash(true, true);
 //#endif
  setButtonSpace();
-#if 0
+#ifdef SCRIPTING_ENABLED
     setJynstrumentSpace();
-
+#endif
+#if 0
     jmri.Application.setLogo(logo());
     jmri.Application.setURL(line2());
 
@@ -520,8 +523,8 @@ bool Apps::configDeferredLoadOK = false;
  log->debug(QString("Config go OK? ")+ QString((configOK || configDeferredLoadOK)?"Yes":"No"));
  if ((!configOK) || (!configDeferredLoadOK))
  {
-//        HelpUtil::displayHelpRef("package.apps.AppConfigPanelErrorPage");
-//        doPreferences();
+        HelpUtil::displayHelpRef("package.apps.AppConfigPanelErrorPage");
+        doPreferences();
  }
  log->debug("Done with doPreferences, start statusPanel");
 
@@ -648,34 +651,51 @@ void Apps::initGui() // must be called after Constructor is complete!
     _buttonSpace = new QWidget();
     _buttonSpace->setLayout(new FlowLayout());
 }
-#if 0
-static JComponent _jynstrumentSpace = NULL;
+#ifdef SCRIPTING_ENABLED
+/*static*/ Component* Apps::_jynstrumentSpace = NULL;
 
-@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
-        justification = "only one application at a time")
-/*protected*/ void setJynstrumentSpace() {
-    _jynstrumentSpace = new JPanel();
-    _jynstrumentSpace.setLayout(new FlowLayout());
-    new FileDrop(_jynstrumentSpace, new Listener() {
-        //@Override
-        /*public*/ void filesDropped(File[] files) {
-            for (int i = 0; i < files.length; i++) {
-                ynstrument(files[i].getPath());
-            }
-        }
-    });
+//@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
+//        justification = "only one application at a time")
+/*protected*/ void Apps::setJynstrumentSpace() {
+    _jynstrumentSpace = new Component();
+    FlowLayout* _jynstrumentSpaceLayout;
+    _jynstrumentSpace->setLayout(_jynstrumentSpaceLayout =new FlowLayout());
+    AppsFileDrop* fileDrop = new AppsFileDrop(_jynstrumentSpace, new FileDrop::Listener(), this);
+    Q_UNUSED(fileDrop);
+//    new FileDrop(_jynstrumentSpace, new Listener() {
+//        //@Override
+//        /*public*/ void filesDropped(File[] files) {
+//            for (int i = 0; i < files.length; i++) {
+//                ynstrument(files[i].getPath());
+//            }
+//        }
+//    });
 }
 
-/*public*/ static void ynstrument(String path) {
-    Jynstrument it = JynstrumentFactory.createInstrument(path, _jynstrumentSpace);
+AppsFileDrop::AppsFileDrop(Component *_jynstrumentSpace, FileDrop::Listener *listener, Apps* apps):FileDrop(_jynstrumentSpace, listener,apps)
+{
+ this->_jynstrumentSpace = _jynstrumentSpace;
+ this->listener = listener;
+ this->apps = apps;
+}
+
+void AppsFileDrop::filesDropped(QList<File *> files)
+{
+ for (int i = 0; i < files.length(); i++) {
+     apps->ynstrument(files[i]->getPath());
+ }
+}
+
+/*public*/ /*static*/ void Apps::ynstrument(QString path) {
+    Jynstrument* it = JynstrumentFactory::createInstrument(path, _jynstrumentSpace);
     if (it == NULL) {
         log->error("Error while creating Jynstrument {}", path);
         return;
     }
-    ThrottleFrame.setTransparent(it);
-    it.setVisible(true);
-    _jynstrumentSpace.setVisible(true);
-    _jynstrumentSpace.add(it);
+    ThrottleWindow::setTransparent(it);
+    it->setVisible(true);
+    _jynstrumentSpace->setVisible(true);
+    _jynstrumentSpace->layout()->addWidget(it);
 }
 #endif
 /**
@@ -1628,3 +1648,5 @@ bool WriteBlocksShutdownTask::execute()
 // continue shutdown
 return true;
 }
+
+/*static*/ /*private*/ Logger* Apps::log = LoggerFactory::getLogger("Apps");

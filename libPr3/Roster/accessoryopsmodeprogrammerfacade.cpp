@@ -5,6 +5,8 @@
 #include "instancemanager.h"
 #include "nmrapacket.h"
 #include "sleeperthread.h"
+#include "programmingmode.h"
+
 //AccessoryOpsModeProgrammerFacade::AccessoryOpsModeProgrammerFacade(QObject *parent) :
 //    AbstractProgrammerFacade(parent)
 //{
@@ -68,10 +70,10 @@
 //@Override
 /*public*/ QList<ProgrammingMode*> AccessoryOpsModeProgrammerFacade::getSupportedModes() {
     QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
-    ret.append(DefaultProgrammerManager::OPSACCBYTEMODE);
-    ret.append(DefaultProgrammerManager::OPSACCBITMODE);
-    ret.append(DefaultProgrammerManager::OPSACCEXTBYTEMODE);
-    ret.append(DefaultProgrammerManager::OPSACCEXTBITMODE);
+    ret.append(ProgrammingMode::OPSACCBYTEMODE);
+    ret.append(ProgrammingMode::OPSACCBITMODE);
+    ret.append(ProgrammingMode::OPSACCEXTBYTEMODE);
+    ret.append(ProgrammingMode::OPSACCEXTBITMODE);
     return ret;
 }
 

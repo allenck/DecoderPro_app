@@ -58,10 +58,8 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  turnoutConnectivity = true;
 
  layoutEditor = thePanel;
-#if 1 // TODO:
  auxTools = new LayoutEditorAuxTools(layoutEditor);
  leTools = layoutEditor->getLETools();
-#endif
  layoutBlockManager = InstanceManager::layoutBlockManagerInstance();
 }
 
@@ -98,7 +96,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             LayoutTurnout* ltx = allTurnouts->at(i);
             int tTyp = ltx->getTurnoutType();
             list->append(ltx);
-#if 1 //TODO:
             //if(ltx instanceof LayoutSlip)
             if(qobject_cast<LayoutSlip*>(ltx))
             {
@@ -317,7 +314,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         break;
                 }
             }
-#endif
         }
         return list;
     }
@@ -947,7 +943,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
   return NULL;
  }
  LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
-#if 1 //TODO:
  if (((p->getConnect1())->getLayoutBlock()==lBlock) && ((p->getConnect2())->getLayoutBlock()!=lBlock))
  {
   if ( (leTools->isAtWestEndOfAnchor(p->getConnect2(), p) && facing) || ((!leTools->isAtWestEndOfAnchor(p->getConnect2(), p)) && (!facing)) )
@@ -967,7 +962,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
   // should never happen
   return NULL;
  }
-#endif
 }
 
 
@@ -999,7 +993,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
   return NULL;
  }
  LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
-#if 1 //TODO:
  if ( (x->getConnectA()==NULL) || (x->getConnectB()==NULL) ||
                                         (x->getConnectC()==NULL) || (x->getConnectD()==NULL) )
  {
@@ -1034,7 +1027,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
   else
    return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalDName());
  }
-#endif
  return NULL;
 }
 
@@ -1153,7 +1145,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
         log.error("Null string for sensor name on entry to addSensorToSignalHeadLogic");
         return false;
     }
-#if 1 //TODO:
     BlockBossLogic* bbLogic = BlockBossLogic::getStoppedObject(((AbstractSignalHead*)sh)->getSystemName());
     if (bbLogic==NULL) {
         log.error("Trouble opening BlockBossLogic for "+((AbstractSignalHead*)sh)->getSystemName());
@@ -1235,7 +1226,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     }
     bbLogic->retain();
     bbLogic->start();
-#endif
     return true;
 }
 
@@ -1254,7 +1244,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
         log.error("Null QVector of sensor names on entry to removeSensorsFromSignalHeadLogic");
         return false;
     }
-#if 1 //TODO:
     BlockBossLogic* bbLogic = BlockBossLogic::getStoppedObject(((AbstractSignalHead*)sh)->getSystemName());
     if (bbLogic==NULL)
     {
@@ -1292,7 +1281,6 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     }
     bbLogic->retain();
     bbLogic->start();
-#endif
     return true;
 }
 
@@ -2565,9 +2553,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     }
                 }
             }
-#if 0 // TODO:
+#if 1 // TODO:
             else if(conType>=LayoutEditor::SLIP_A && conType<=LayoutEditor::SLIP_D){
-                LayoutSlip* ls = (LayoutSlip)conObj;
+                LayoutSlip* ls = (LayoutSlip*)conObj;
                 int tType = ls->getTurnoutType();
                 if (ls->getLayoutBlock()!=lb){
                     if(ls->getLayoutBlock()==nlb) return true;
@@ -2587,9 +2575,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                     curTS = (TrackSegment*)ls->getConnectC();
                                                     if (((TrackSegment*)ls->getConnectD())->getLayoutBlock()==lb) {
                                                         //if (posTS != NULL) {
-                                                            posTS.add((TrackSegment*)ls->getConnectD());
+                                                            posTS->append((TrackSegment*)ls->getConnectD());
                                                         //}
-                                                        posOB.add(conObj);
+                                                        posOB->append(conObj);
                                                     }
                                                  } else {
                                                     curTS = (TrackSegment*)ls->getConnectD();
@@ -2612,9 +2600,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                         curTS = (TrackSegment*)ls->getConnectC();
                                                         if (((TrackSegment*)ls->getConnectD())->getLayoutBlock()==lb) {
                                                             //if (posTS != NULL) {
-                                                                posTS.add((TrackSegment*)ls->getConnectD());
+                                                                posTS->append((TrackSegment*)ls->getConnectD());
                                                             //}
-                                                            posOB.add(conObj);
+                                                            posOB->append(conObj);
                                                         }
                                                     } else {
                                                         curTS = (TrackSegment*)ls->getConnectD();
@@ -2637,9 +2625,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                         curTS = (TrackSegment*)ls->getConnectB();
                                                         if (((TrackSegment*)ls->getConnectA())->getLayoutBlock()==lb) {
                                                             //if (posTS != NULL) {
-                                                                posTS.add((TrackSegment*)ls->getConnectA());
+                                                                posTS->append((TrackSegment*)ls->getConnectA());
                                                             //}
-                                                            posOB.add(conObj);
+                                                            posOB->append(conObj);
                                                         }
                                                     } else {
                                                         curTS = (TrackSegment*)ls->getConnectA();
@@ -2658,9 +2646,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                         curTS = (TrackSegment*)ls->getConnectB();
                                                         if (((TrackSegment*)ls->getConnectA())->getLayoutBlock()==lb) {
                                                             //if (posTS != NULL) {
-                                                                posTS.add((TrackSegment*)ls->getConnectA());
+                                                                posTS->append((TrackSegment*)ls->getConnectA());
                                                             //}
-                                                            posOB.add(conObj);
+                                                            posOB->append(conObj);
                                                         }
                                                     } else {
                                                         curTS = (TrackSegment*)ls->getConnectA();

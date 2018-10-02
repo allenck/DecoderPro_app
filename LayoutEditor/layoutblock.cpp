@@ -1636,8 +1636,9 @@ bool LayoutBlock::informNeighbourOfAttachment(LayoutBlock* lBlock, Block* block,
     if(!adj->isMutual())
     {
         if (enableAddRouteLogging){
-            log->info("From " + this->getDisplayName() + " neighbour " + block->getDisplayName() + " wants us to " + decodePacketFlow(workingDirection));
-            log->info("From " + this->getDisplayName() + " we have neighbour " + block->getDisplayName() + " set as " + decodePacketFlow(adj->getPacketFlow()));
+         log->info(tr("From %1 neighbour %2 wants us to %3; we have it set as %4").arg(
+                 this->getDisplayName()).arg(block->getDisplayName()).arg(
+                 decodePacketFlow(workingDirection)).arg(decodePacketFlow(adj->getPacketFlow())));
         }
         //Simply if both the neighbour and us both want to do the same thing with sending routing information,
         //in one direction then no routes will be passed.#
@@ -2399,7 +2400,7 @@ void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock, LayoutEditor*
     QVector<int>* stodSet = new QVector<int>();
     /* We change the logging level to fatal in the connectivity Util as we are testing all possible
     combinations including those that are invalid which would generate errors */
-    org.apache.log4j.Logger connectionLog = org.apache.log4j.Logger->getLogger(connection.getClass().getName());
+    Logger connectionLog = Logger::getLogger(connection.getClass().getName());
     Level* currentLevel = connectionLog.getLevel();
 
     try{
@@ -2407,7 +2408,7 @@ void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock, LayoutEditor*
         stod = connection.getTurnoutList(block, srcBlock, dstBlock);
         stodSet = connection.getTurnoutSettingList();
         connectionLog.setLevel(currentLevel);
-    } catch (java.lang.NullPointerException ex){
+    } catch (NullPointerException ex){
         connectionLog.setLevel(currentLevel);
         if(enableAddRouteLogging)
             log->error(block->getDisplayName() + " Exception caught while trying to discover turnout connectivity\nSource " + srcBlock->getDisplayName() + ", dest  " + dstBlock->getDisplayName()+"\n"+ex.toString());
@@ -2424,7 +2425,7 @@ void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock, LayoutEditor*
         tmpdtos = connection.getTurnoutList(block, dstBlock, srcBlock);
         tmpdtosSet = connection.getTurnoutSettingList();
         connectionLog.setLevel(currentLevel);
-    } catch (java.lang.NullPointerException ex){
+    } catch (NullPointerException ex){
         connectionLog.setLevel(currentLevel);
         if(enableAddRouteLogging)
             log->error(block->getDisplayName() + " Exception caught while trying to discover turnout connectivity\nSource " + srcBlock->getDisplayName() + ", dest  " + dstBlock->getDisplayName()+"\n"+ex.toString());
@@ -3571,7 +3572,7 @@ void Adjacencies::setPacketFlow(int flow) {
     if(flow!=packetFlow){
         int oldFlow = packetFlow;
         packetFlow=flow;
-//        firePropertyChange("neighbourpacketflow", oldFlow, packetFlow);
+     thisBlock->firePropertyChange("neighbourpacketflow", oldFlow, packetFlow);
     }
 
 }

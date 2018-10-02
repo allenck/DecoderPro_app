@@ -146,7 +146,7 @@ Box::Box(QWidget *parent) :
     return new Filler(QSize(width,0), QSize(width,0),
                       QSize(width, SHRT_MAX));
 }
-#if 0
+
 /**
  * Creates an invisible, fixed-height component.
  * In a vertical box,
@@ -166,11 +166,11 @@ Box::Box(QWidget *parent) :
  * @see #createGlue
  * @see #createRigidArea
  */
-/*public*/ static Component createVerticalStrut(int height) {
+/*public*/ /*static*/ QWidget* Box::createVerticalStrut(int height) {
     return new Filler(QSize(0,height), QSize(0,height),
                       QSize(SHRT_MAX, height));
 }
-#endif
+
 /**
  * Creates an invisible "glue" component
  * that can be useful in a Box

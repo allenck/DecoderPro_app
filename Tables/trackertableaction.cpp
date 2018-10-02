@@ -119,16 +119,14 @@ void TrackerTableAction::common()
  */
 //static class TableFrame extends JmriJFrame implements PropertyChangeListener, MouseListener {
 
-
 TableFrame::TableFrame()
 {
  log = new Logger("TableFrame");
  _trainNameBox = new JTextField(30);
- JTextField* _trainLocationBox = new JTextField(30);
+ _trainLocationBox = new JTextField(30);
  JTextField* _status = new JTextField(80);
  QStringList _statusHistory =  QStringList();
- /*public*/ static int _maxHistorySize = 20;
- bool _appendStatus = false;
+ _appendStatus = false;
  _blocks =  QHash<OBlock*, QList<Tracker*> >();
  setTitle(tr("Tracker Table"));
  _model = new TrackerTableModel(this);
@@ -153,7 +151,7 @@ TableFrame::TableFrame()
  table->setDragEnabled(true);
 // table.setTransferHandler(new jmri.util.DnDTableExportHandler());
  //JScrollPane tablePane = new JScrollPane(table);
- QSize dim = table->sizeHint();
+// QSize dim = table->sizeHint();
 // table.getRowHeight(new JButton("STOPIT").getPreferredSize().height);
 // dim.height = table.getRowHeight() * 2;
 // tablePane.getViewport().setPreferredSize(dim);
@@ -717,7 +715,7 @@ void TableFrame::openPickList() {
     setStatus(tr("Tracking ended for train \"%1\".").arg(t->getTrainName()));
 }
 
-/*public*/ void TableFrame::mouseClicked(QMouseEvent* event) {
+/*public*/ void TableFrame::mouseClicked(QMouseEvent* /*event*/) {
     QMenu* popup = new QMenu();
     for (int i = _statusHistory.size() - 1; i >= 0; i--)
     {
@@ -728,16 +726,16 @@ void TableFrame::openPickList() {
     popup->exec(QCursor::pos());
 }
 
-/*public*/ void TableFrame::mousePressed(QMouseEvent* event) {
+/*public*/ void TableFrame::mousePressed(QMouseEvent* /*event*/) {
 }
 
-/*public*/ void TableFrame::mouseEntered(QMouseEvent* event) {
+/*public*/ void TableFrame::mouseEntered(QMouseEvent* /*event*/) {
 }
 
-/*public*/ void TableFrame::mouseExited(QMouseEvent* event) {
+/*public*/ void TableFrame::mouseExited(QMouseEvent* /*event*/) {
 }
 
-/*public*/ void TableFrame::mouseReleased(QMouseEvent* event) {
+/*public*/ void TableFrame::mouseReleased(QMouseEvent* /*event*/) {
 }
 
 /*private*/ void TableFrame::setStatus(QString msg) {
@@ -767,12 +765,12 @@ void TableFrame::openPickList() {
     _parent = f;
 }
 
-/*public*/ int TrackerTableModel::columnCount(const QModelIndex &parent) const
+/*public*/ int TrackerTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return NUMCOLS;
 }
 
-/*public*/ int TrackerTableModel::rowCount(const QModelIndex &parent) const
+/*public*/ int TrackerTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
     return TrackerTableAction::_trackerList.size();
 }
@@ -812,7 +810,7 @@ void TableFrame::openPickList() {
      return QVariant();
 }
 
-/*public*/ bool TrackerTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+/*public*/ bool TrackerTableModel::setData(const QModelIndex &index, const QVariant &/*value*/, int role)
     {
      if(role == Qt::EditRole)
      {

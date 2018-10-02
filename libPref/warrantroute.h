@@ -221,7 +221,7 @@ class SelectActionListener : public ActionListener
  DefaultTreeModel* tree;
  WarrantRoute* caller;
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0)
+ /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0)
  {
   if (buts->checkedButton()!=NULL)
   {

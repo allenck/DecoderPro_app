@@ -291,29 +291,33 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     }
 }
 
-/*synchronized*/ /*public*/ void SprogConsoleFrame::saveButtonActionPerformed(ActionEvent* e) {
-    SprogMessage* saveMsg;
-    int currentLimitForHardware;
-    // Send Current Limit if possible
-    state = State::CURRENTSENT;
-    if (isCurrentLimitPossible()) {
-        validateCurrent();
-        // Value written is scaled from mA to hardware units
-        currentLimitForHardware = (int) (currentLimit * (1/sv->sprogType->getCurrentMultiplier()));
-        if (sv->sprogType->_sprogType < SprogType::SPROGIIv3) {
-            // Hack for SPROG bug where MSbyte of value must be non-zero
-            currentLimitForHardware += 256;
-        }
-        tmpString = QString::number(currentLimitForHardware);
-        saveMsg = new SprogMessage("I " + tmpString);
-    } else {
-        // Else send blank message to kick things off
-        saveMsg = new SprogMessage(" " + tmpString);
-    }
-    nextLine("cmd: \"" + saveMsg->toString(_memo->getSprogTrafficController()->isSIIBootMode()) + "\"\n", "");
-    tc->sendSprogMessage(saveMsg, (SprogListener*)this);
+/*synchronized*/ /*public*/ void SprogConsoleFrame::saveButtonActionPerformed(ActionEvent* e)
+{
+ SprogMessage* saveMsg;
+ int currentLimitForHardware;
+ // Send Current Limit if possible
+ state = State::CURRENTSENT;
+ if (isCurrentLimitPossible())
+ {
+  validateCurrent();
+  // Value written is scaled from mA to hardware units
+  currentLimitForHardware = (int) (currentLimit * (1/sv->sprogType->getCurrentMultiplier()));
+  if (sv->sprogType->_sprogType < SprogType::SPROGIIv3) {
+      // Hack for SPROG bug where MSbyte of value must be non-zero
+      currentLimitForHardware += 256;
+  }
+  tmpString = QString::number(currentLimitForHardware);
+  saveMsg = new SprogMessage("I " + tmpString);
+ }
+ else
+ {
+  // Else send blank message to kick things off
+  saveMsg = new SprogMessage(" " + tmpString);
+ }
+ nextLine("cmd: \"" + saveMsg->toString(_memo->getSprogTrafficController()->isSIIBootMode()) + "\"\n", "");
+ tc->sendSprogMessage(saveMsg, (SprogListener*)this);
 
-    // Further messages will be sent from state machine
+ // Further messages will be sent from state machine
 }
 
 //@SuppressFBWarnings(value = "IS2_INCONSISTENT_SYNC")

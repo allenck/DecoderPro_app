@@ -46,6 +46,9 @@ public:
     /*public*/ static QByteArray altAccSignalDecoderPktOpsMode(int addr, int cvNum, int data);
     /*public*/ static QByteArray accDecPktOpsMode(int decAddr, int cvNum, int data);
 
+    static /*public*/ QString format(QByteArray p);
+
+
 private:
     /**
      * Objects of this class should not be created.

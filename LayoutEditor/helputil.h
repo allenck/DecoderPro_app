@@ -36,7 +36,7 @@ public:
     static HelpBroker* globalHelpBroker;
     static /*public*/ QAction* makeHelpMenuItem(QString ref);
     static /*public*/ void addHelpToComponent(QWidget* component, QString ref);
-//    static /*public*/ void displayHelpRef(QString ref);
+    static /*public*/ void displayHelpRef(QString ref);
     static /*public*/ HelpBroker* getGlobalHelpBroker();
     static /*public*/ QAction* getHelpAction(/*final*/ QString name, /*final*/ QIcon icon, /*final*/ QString id);
 

@@ -13,10 +13,8 @@ public:
  /*public*/ LineBorder(QColor color, QObject* parent = 0);
  /*public*/ LineBorder(QColor color, int thickness, QObject* parent = 0);
  /*public*/ LineBorder(QColor color, int thickness, bool roundedCorners, QObject* parent = 0) ;
-#if 0
  LineBorder(int top, int left, int bottom, int right, QObject* parent = 0);
  LineBorder(Insets* borderInsets, QObject* parent = 0);
-#endif
  /*public*/ int lineWidth();
  /*public*/ QColor color();
  /*public*/ bool roundedCorners();
@@ -30,9 +28,7 @@ protected:
  /*protected*/ int thickness;
  /*protected*/ QColor lineColor;
  /*protected*/ bool _roundedCorners;
-#if 0
  /*protected*/ int left, right, top, bottom;
-#endif
 
 };
 

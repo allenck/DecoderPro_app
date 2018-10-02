@@ -5,6 +5,8 @@
 #include "block.h"
 #include "section.h"
 #include "logger.h"
+#include "signalspeedmap.h"
+#include "instancemanager.h"
 
 //RosterSpeedProfile::RosterSpeedProfile(QObject *parent) :
 //  QObject(parent)
@@ -18,8 +20,103 @@
  * for a throttle using 126 steps.
  *
  */
-///*public*/ class RosterSpeedProfile {
+// /*public*/ class RosterSpeedProfile {
 
+/* for speed conversions */
+    /*static*/ /*public*/ /*final*/ float RosterSpeedProfile::MMS_TO_MPH = 0.00223694f;
+    /*static*/ /*public*/ /*final*/ float RosterSpeedProfile::MMS_TO_KPH = 0.0036f;
+
+/**
+ * Returns the scale speed as a numeric. if warrent prefernces are not a
+ * speed value returned unchanged.
+ *
+ * @param mms MilliMetres per second
+ * @return scale speed in units specified by Warrant Preferences. if warrent
+ *         prefernces are not a speed
+ */
+/*public*/ float RosterSpeedProfile::MMSToScaleSpeed(float mms) {
+    int interp = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getInterpretation();
+    float scale = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getLayoutScale();
+
+    switch (interp) {
+        case SignalSpeedMap::SPEED_MPH:
+            return mms * scale * MMS_TO_MPH;
+        case SignalSpeedMap::SPEED_KMPH:
+            return mms * scale * MMS_TO_KPH;
+        case SignalSpeedMap::PERCENT_THROTTLE:
+        case SignalSpeedMap::PERCENT_NORMAL:
+            return mms;
+        default:
+            log->warn("MMSToScaleSpeed: Signal Speed Map is not in a scale speed, not modifing.");
+            return mms;
+    }
+}
+
+/**
+ * Returns the scale speed format as a string with the units added given
+ * MilliMetres per Second. If the warrant preference is a percentage of
+ * normal or throttle will use metres per second.
+ *
+ * @param mms MilliMetres per second
+ * @return a string with scale speed and units
+ */
+/*public*/ QString RosterSpeedProfile::convertMMSToScaleSpeedWithUnits(float mms) {
+    int interp = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getInterpretation();
+    float scale = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getLayoutScale();
+    QString formattedWithUnits;
+    switch (interp) {
+        case SignalSpeedMap::SPEED_MPH:
+            formattedWithUnits = QString::asprintf("%.2f mph", mms * scale * MMS_TO_MPH);
+            break;
+        case SignalSpeedMap::SPEED_KMPH:
+            formattedWithUnits = QString::asprintf("%.2f kph", mms * scale * MMS_TO_KPH);
+            break;
+        case SignalSpeedMap::PERCENT_THROTTLE:
+        case SignalSpeedMap::PERCENT_NORMAL:
+            formattedWithUnits = QString::asprintf("%.2f mms", mms);
+            break;
+        default:
+            log->warn("ScaleSpeedToMMS: Signal Speed Map has no interp, not modifing.");
+            formattedWithUnits = QString::asprintf("%.2f", mms);
+    }
+    return formattedWithUnits;
+}
+
+/**
+ * Returns the scale speed format as a string with the units added given a
+ * throttle setting. and direction
+ *
+ * @param throttleSetting as percentage of 1.0
+ * @param isForward       true or false
+ * @return a string with scale speed and units
+ */
+/*public*/ QString RosterSpeedProfile::convertThrottleSettingToScaleSpeedWithUnits(float throttleSetting, bool isForward) {
+    return convertMMSToScaleSpeedWithUnits(getSpeed(throttleSetting, isForward));
+}
+
+/**
+ * MilliMetres per Second given scale speed.
+ *
+ * @param scaleSpeed in MPH or KPH
+ * @return MilliMetres per second
+ */
+/*public*/ float RosterSpeedProfile::convertScaleSpeedToMMS(float scaleSpeed) {
+    int interp = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getInterpretation();
+    float scale = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getLayoutScale();
+    float mmsSpeed;
+    switch (interp) {
+        case SignalSpeedMap::SPEED_MPH:
+            mmsSpeed = scaleSpeed / scale / MMS_TO_MPH;
+            break;
+        case SignalSpeedMap::SPEED_KMPH:
+            mmsSpeed = scaleSpeed / scale / MMS_TO_KPH;
+            break;
+        default:
+            log->warn("ScaleSpeedToMMS: Signal Speed Map is not in a scale speed, not modifing.");
+            mmsSpeed = scaleSpeed;
+    }
+    return mmsSpeed;
+}
 
 /*public*/ RosterSpeedProfile::RosterSpeedProfile(RosterEntry* re, QObject *parent) :
   QObject(parent)
@@ -110,13 +207,13 @@
     float higher = 0;
     int highStep = 0;
     int lowStep = 0;
-    if (/*speeds.*/higherKey(iSpeedStep) != NULL) {
+    if (/*speeds.*/higherKey(iSpeedStep) != 0) {
         highStep = /*speeds.*/higherKey(iSpeedStep);
         higher = speeds.value(highStep)->getForwardSpeed();
     } else {
         return -1.0f;
     }
-    if (/*speeds.*/lowerKey(iSpeedStep) != NULL) {
+    if (/*speeds.*/lowerKey(iSpeedStep) != 0) {
         lowStep = /*speeds.*/lowerKey(iSpeedStep);
         lower = speeds.value(lowStep)->getForwardSpeed();
     }
@@ -161,13 +258,13 @@ int RosterSpeedProfile::lowerKey(int key)
     float higher = 0;
     int highStep = 0;
     int lowStep = 0;
-    if (/*speeds.*/higherKey(iSpeedStep) != NULL) {
+    if (/*speeds.*/higherKey(iSpeedStep) != 0) {
         highStep = /*speeds.*/higherKey(iSpeedStep);
         higher = speeds.value(highStep)->getForwardSpeed();
     } else {
         return -1.0f;
     }
-    if (/*speeds.*/lowerKey(iSpeedStep) != NULL) {
+    if (/*speeds.*/lowerKey(iSpeedStep) != 0) {
         lowStep = /*speeds.*/lowerKey(iSpeedStep);
         lower = speeds.value(lowStep)->getForwardSpeed();
     }

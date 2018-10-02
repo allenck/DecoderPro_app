@@ -222,7 +222,6 @@ bool AbstractNamedBeanManagerConfigXML::getAttributeBool(QDomElement elem, QStri
  */
 void AbstractNamedBeanManagerConfigXML::storeProperties(NamedBean* t, QDomElement elem)
 {
-#if 1 // TODO:
     //java.util.Set<Object> s = t->getPropertyKeys();
  QSet<QString> s = t->getPropertyKeys();
  if (/*s == NULL ||*/ s.size() == 0) return;
@@ -253,7 +252,6 @@ void AbstractNamedBeanManagerConfigXML::storeProperties(NamedBean* t, QDomElemen
    p.appendChild(e);
   }
  }
-#endif
 }
 
 /**
@@ -269,6 +267,26 @@ void AbstractNamedBeanManagerConfigXML::loadProperties(NamedBean* t, QDomElement
  for (int i=0; i< pList.count(); i++)
  {
   QDomElement e = pList.at(i).toElement();
+  QDomElement eKey = e.firstChildElement("key");
+  QString keyClass;
+  QString keyText;
+  if(!eKey.isNull())
+  {
+   keyClass = e.attribute("class");
+   keyText = e.text();
+  }
+  QDomElement eValue = e.firstChildElement("value");
+  QString valueClass;
+  QString valueText;
+  if(!eValue.isNull())
+  {
+   valueClass = e.attribute("class");
+   valueText = e.text();
+  }
+  if(keyClass != "")
+  {
+   t->setProperty(keyText, valueText);
+  }
 #if 0 // TODO:
   try
   {

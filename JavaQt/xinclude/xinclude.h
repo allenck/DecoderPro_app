@@ -18,6 +18,7 @@ class XInclude : public QObject
 public:
  explicit XInclude(QObject *parent = 0);
  bool copyXml(QUrl* in, File* toFile, QWidget* who);
+
 signals:
 
 public slots:

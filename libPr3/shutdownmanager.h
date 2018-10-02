@@ -80,6 +80,14 @@ public:
          * @return boolean which should be False
          */
         virtual bool shutdown() = 0;
+ /**
+      * Allow components that normally request confirmation to shutdown to
+      * determine if the shutdown is already underway so as not to request
+      * confirmation.
+      *
+      * @return true if shutting down or restarting
+      */
+ /*public*/ virtual bool isShuttingDown() {return false;}
 signals:
     
 public slots:

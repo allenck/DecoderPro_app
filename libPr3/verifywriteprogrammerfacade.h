@@ -5,6 +5,7 @@
 class Logger;
 class VerifyWriteProgrammerFacade : public AbstractProgrammerFacade
 {
+ Q_OBJECT
 public:
  /*public*/ VerifyWriteProgrammerFacade(Programmer* prog, QObject* parent = 0);
  /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);

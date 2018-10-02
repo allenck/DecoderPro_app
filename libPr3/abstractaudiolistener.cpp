@@ -140,7 +140,7 @@ void AbstractAudioListener::common()
 
  if (this->_velocity.length() != 0)
  {
-#if 0
+#if 0 // TODO:
   this->_currentPosition.scaleAdd(
                 timePassed * this->_metersPerUnit,
                 this->_velocity,
@@ -156,7 +156,7 @@ void AbstractAudioListener::common()
 #endif
  }
 }
-/*private*/ /*static*/ /*final*/ AudioFactory* AbstractAudioListener::activeAudioFactory = InstanceManager::audioManagerInstance()->getActiveAudioFactory();
+/*private*/ /*static*/ /*final*/ AudioFactory* AbstractAudioListener::activeAudioFactory = ((AudioManager*) InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
 
 //@Override
 /*public*/ void AbstractAudioListener::resetCurrentPosition() {

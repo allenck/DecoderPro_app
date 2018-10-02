@@ -1,12 +1,13 @@
 #ifndef ABSTRACTLISTMODEL_H
 #define ABSTRACTLISTMODEL_H
 #include "listmodel.h"
-#include "libPr3_global.h"
+#include "javaqt_global.h"
+#include "listdataevent.h"
 
 class EventListenerList;
-class LIBPR3SHARED_EXPORT AbstractListModel : public ListModel
+class JAVAQTSHARED_EXPORT AbstractListModel : public ListModel
 {
-    //Q_OBJECT
+    Q_OBJECT
 public:
     explicit AbstractListModel(QObject *parent = 0);
     /*public*/ void addListDataListener(ListDataListener* l);
@@ -14,6 +15,7 @@ public:
     /*public*/ QList<ListDataListener*>* getListDataListeners();
 
 signals:
+ void contentsChanged(ListDataEvent*);
 
 public slots:
 private:

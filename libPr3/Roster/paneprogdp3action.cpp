@@ -338,6 +338,7 @@ if (p == NULL) {
    log->error("Exception while loading decoder XML file: "+decoderFile->getFilename(), e.getMessage()); return; 
   } // NOI18N
   modelElem = decoderFile->getModelElement();
+
   decoderFile->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel); // NOI18N
   rosterPanel->setVisible(true);
  } 

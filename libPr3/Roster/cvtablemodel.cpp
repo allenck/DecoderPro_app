@@ -178,8 +178,7 @@
      case CvValue::STORED:  		return tr("Stored");
      case CvValue::FROMFILE:  	return tr("From File");
      case CvValue::SAME:  		return tr("Same");
-     case CvValue::DIFF:  		return tr("Diff")+ " " +
-      _cvDisplayVector->at(row)->getDecoderValue();
+     case CvValue::DIFF:  		return tr("Diff")+ " " + _cvDisplayVector->at(row)->getDecoderValue();
      default: return "inconsistent";
     }
    }

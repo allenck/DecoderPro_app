@@ -87,18 +87,18 @@ SensorGroupFrame::SensorGroupFrame(QWidget *parent) :
      sensorColumnModel->addColumn(new TableColumn);
     TableColumn* includeColumnS = sensorColumnModel->
                                         getColumn(SensorTableModel::INCLUDE_COLUMN);
-//    includeColumnS->setResizable(false);
-//    includeColumnS->setMinWidth(50);
-//    includeColumnS->setMaxWidth(60);
+    includeColumnS->setResizable(false);
+    includeColumnS->setMinWidth(50);
+    includeColumnS->setMaxWidth(60);
     TableColumn* sNameColumnS = sensorColumnModel->
                                         getColumn(SensorTableModel::SNAME_COLUMN);
-//    sNameColumnS->setResizable(true);
-//    sNameColumnS->setMinWidth(75);
+    sNameColumnS->setResizable(true);
+    sNameColumnS->setMinWidth(75);
     sNameColumnS->setPreferredWidth(95);
     TableColumn* uNameColumnS = sensorColumnModel->
                                         getColumn(SensorTableModel::UNAME_COLUMN);
-//    uNameColumnS->setResizable(true);
-//    uNameColumnS->setMinWidth(210);
+    uNameColumnS->setResizable(true);
+    uNameColumnS->setMinWidth(210);
     uNameColumnS->setPreferredWidth(260);
 
 //    rowHeight = sensorTable->getRowHeight();
@@ -148,7 +148,7 @@ SensorGroupFrame::SensorGroupFrame(QWidget *parent) :
 
     DefaultListModel* groupModel = new DefaultListModel();
     // Look for Sensor group in Route table
-    RouteManager* rm = InstanceManager::routeManagerInstance();
+    RouteManager* rm = (RouteManager*)InstanceManager::getDefault("RouteManager");
     QStringList routeList = rm->getSystemNameList();
     int i = 0;
     while (i < routeList.size()) {
@@ -172,7 +172,7 @@ SensorGroupFrame::SensorGroupFrame(QWidget *parent) :
     Logix* logix = getSystemLogix();
     for (i = 0; i<logix->getNumConditionals(); i++) {
         QString name = logix->getConditionalByNumberOrder(i);
-        Conditional* c = InstanceManager::conditionalManagerInstance()->getBySystemName(name);
+        Conditional* c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getBySystemName(name);
         if (c != NULL) {
             groupModel->addElement(c->getUserName().mid(ConditionalUserPrefix.length()));
         }
@@ -238,7 +238,7 @@ void SensorGroupFrame::addPressed() {
      QMessageBox::critical(this, tr("Error"), tr("A Sensor Group needs to have at least 2 sensors to be useful."));
     }
     Conditional* c = (Conditional*)new SensorGroupConditional(cSystemName, cUserName);
-    InstanceManager::conditionalManagerInstance()->Register(c);
+    ((ConditionalManager*)InstanceManager::getDefault("ConditionaManager"))->Register(c);
     c->setStateVariables(&variableList);
     c->setLogicType(Conditional::ALL_OR, "");
     c->setAction(&actionList);
@@ -263,7 +263,7 @@ void SensorGroupFrame:: viewPressed()
     }
     _nameField->setText(group);
     // Look for Sensor group in Route table
-    RouteManager* rm = InstanceManager::routeManagerInstance();
+    RouteManager* rm = (RouteManager*)InstanceManager::getDefault("RouteManager");
     QStringList l = rm->getSystemNameList();
     QString prefix = (namePrefix+group+nameDivider).toUpper();
     bool isRoute = false;
@@ -284,30 +284,37 @@ void SensorGroupFrame:: viewPressed()
         }
     }
     // look for  Sensor group in SYSTEM Logix
-    if (!isRoute){
-        Logix* logix = getSystemLogix();
-        QString cSystemName = (ConditionalSystemPrefix+group).toUpper();
-        QString cUserName = ConditionalUserPrefix+group;
-        for (int i = 0; i<logix->getNumConditionals(); i++) {
-            QString name = logix->getConditionalByNumberOrder(i);
-            if (cSystemName==(name) || cUserName==(name)) {
-                Conditional* c = InstanceManager::conditionalManagerInstance()->getBySystemName(name);
-                if (c == NULL) {
-                    log->error("Conditional \""+name+"\" expected but NOT found in Logix "+logix->getSystemName());
-                } else {
-                    QList <ConditionalVariable*>* variableList = c->getCopyOfStateVariables();
-                    for (int k=0; k<variableList->size(); k++) {
-                        QString sensor = variableList->at(k)->getName();
-                        for (int j=_sensorModel->rowCount(QModelIndex())-1; j>=0; j--) {
-                            if (_sensorModel->data(_sensorModel->index(j,BeanTableModel::SNAME_COLUMN),Qt::DisplayRole).toString() ==(sensor)) {
-                                _sensorModel->setData(_sensorModel->index(j, BeanTableModel::INCLUDE_COLUMN),Qt::EditRole,true);
-                                setRow = j;
-                            }
-                        }
-                    }
-                }
-            }
+    if (!isRoute)
+    {
+     Logix* logix = getSystemLogix();
+     QString cSystemName = (ConditionalSystemPrefix+group).toUpper();
+     QString cUserName = ConditionalUserPrefix+group;
+     for (int i = 0; i<logix->getNumConditionals(); i++)
+     {
+      QString name = logix->getConditionalByNumberOrder(i);
+      if (cSystemName==(name) || cUserName==(name))
+      {
+       Conditional* c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getBySystemName(name);
+       if (c == NULL) {
+           log->error("Conditional \""+name+"\" expected but NOT found in Logix "+logix->getSystemName());
+       }
+       else
+       {
+        QList <ConditionalVariable*>* variableList = c->getCopyOfStateVariables();
+        for (int k=0; k<variableList->size(); k++)
+        {
+         QString sensor = variableList->at(k)->getName();
+         for (int j=_sensorModel->rowCount(QModelIndex())-1; j>=0; j--)
+         {
+          if (_sensorModel->data(_sensorModel->index(j,BeanTableModel::SNAME_COLUMN),Qt::DisplayRole).toString() ==(sensor)) {
+              _sensorModel->setData(_sensorModel->index(j, BeanTableModel::INCLUDE_COLUMN),Qt::EditRole,true);
+              setRow = j;
+          }
+         }
         }
+       }
+      }
+     }
     }
     _sensorModel->fireTableDataChanged();
     setRow -= 9;
@@ -349,7 +356,7 @@ void SensorGroupFrame::deleteGroup(bool showMsg) {
     QString prefix = (namePrefix+group+nameDivider).toUpper();
 
     // remove the old routes
-    RouteManager* rm = InstanceManager::routeManagerInstance();
+    RouteManager* rm = (RouteManager*)InstanceManager::getDefault("RouteManager");
     QStringList l = rm->getSystemNameList();
 
     for (int i = 0; i<l.size(); i++) {
@@ -367,7 +374,7 @@ void SensorGroupFrame::deleteGroup(bool showMsg) {
     for (int i = 0; i<logix->getNumConditionals(); i++) {
         QString name = logix->getConditionalByNumberOrder(i);
         if (cSystemName==(name) || cUserName==(name)) {
-            Conditional* c = InstanceManager::conditionalManagerInstance()->getBySystemName(name);
+            Conditional* c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getBySystemName(name);
             if (c == NULL) {
                 log->error("Conditional \""+name+"\" expected but NOT found in Logix "+logix->getSystemName());
             } else {

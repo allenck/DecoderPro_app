@@ -18,6 +18,7 @@ public:
  /*public*/ void setLayout(QLayout* l);
  /*public*/ static QWidget* createRigidArea(QSize d);
  /*public*/ static QWidget* createHorizontalStrut(int width);
+ /*public*/ static QWidget* createVerticalStrut(int height);
 
 signals:
 

@@ -5,7 +5,12 @@
 #include "logger.h"
 #include <QTime>
 #include <QtXml>
+#include <QMenu>
+#include <QFrame>
 
+class MySlider;
+class AddressPanel;
+class LocoAddress;
 class QButtonGroup;
 class ButtonFrame;
 class NamedIcon;
@@ -23,10 +28,12 @@ class ControlPanel : public QDockWidget
 public:
     //explicit ControlPanel(QWidget *parent = 0);
     /*public*/ ControlPanel(LearnThrottleFrame* ltf, QWidget *parent);
+ /*public*/ void setAddressPanel(AddressPanel* addressPanel);
+ /*public*/  ~ControlPanel();
     /*public*/ void dispose();
     /*public*/ void setEnabled(bool isEnabled);
-    /*public*/ void setSpeedSteps(int steps);
-    /*public*/ void setSpeedController(bool displaySlider);
+//    /*public*/ void setSpeedSteps(int steps);
+    QT_DEPRECATED /*public*/ void setSpeedController(int displaySlider);
     /*public*/ void setSpeedValues(int speedIncrement, int speed);
     /*public*/ void accelerate1();
     /*public*/ void accelerate10();
@@ -43,30 +50,47 @@ public:
  };
  /*public*/ QString getSwitchSliderFunction();
  /*public*/ void setSwitchSliderFunction(QString fn);
+ /*public*/ bool isSpeedControllerAvailable(int displaySlider);
+ /*final*/ /*public*/ static int BUTTON_SIZE;// = 40;
+ /*public*/ bool isEnabled();
+ /*public*/ int getDisplaySlider();
+ /*public*/ void setTrackSlider(bool track);
+ /*public*/ bool getTrackSlider();
 
 signals:
 
 public slots:
-    /*public*/ void notifyThrottleFound(DccThrottle* t);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void notifyAddressChosen(LocoAddress* l);
+ /*public*/ void notifyAddressReleased(LocoAddress* la);
+ /*public*/ void notifyAddressThrottleFound(DccThrottle* t);
+ /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);
+ /*public*/ void notifyConsistAddressReleased(int address, bool isLong);
+ /*public*/ void notifyConsistAddressThrottleFound(DccThrottle* throttle);
 
 private:
     /*private*/ LearnThrottleFrame* _throttleFrame;
-
-    /*private*/ QSlider* speedSlider;
+    /*private*/ QWidget* mainPanel;
+    /*private*/ MySlider* speedSlider;
+    /*private*/ MySlider* speedSliderContinuous;
     /*private*/ QSpinBox* speedSpinner;
 //    /*private*/ SpinnerNumberModel speedSpinnerModel;
-    /*private*/ QRadioButton* SpeedStep128Button;
-    /*private*/ QRadioButton* SpeedStep28Button;
-    /*private*/ QRadioButton* SpeedStep27Button;
-    /*private*/ QRadioButton* SpeedStep14Button;
+        /*private*/ QRadioButton* speedStep128Button;
+    /*private*/ QRadioButton* speedStep28Button;
+    /*private*/ QRadioButton* speedStep27Button;
+    /*private*/ QRadioButton* speedStep14Button;
+    /*private*/ QRadioButton *forwardButton, *reverseButton;
+    /*private*/ QPushButton* stopButton;
+    /*private*/ QPushButton* idleButton;
 
-    /*private*/ QWidget* speedControlPanel;
+    /*private*/ QFrame* speedControlPanel;
     /*private*/	QWidget* spinnerPanel;
-    /*private*/	QWidget* sliderPanel;
+    /*private*/	QFrame* sliderPanel;
+    /*private*/ QWidget* speedSliderContinuousPanel;
     ButtonFrame* buttonFrame;
+    /*private*/ AddressPanel* addressPanel; //for access to roster entry
 
-    /*private*/ bool _displaySlider;// = true;
+    /*private*/ int _displaySlider;// = SLIDERDISPLAY;
     /*private*/ bool _emergencyStop;// = false;
 
     /*private*/ DccThrottle* _throttle;
@@ -96,15 +120,29 @@ private:
     // Switch to continuous slider on function...
     /*private*/ QString switchSliderFunction = "Fxx";
     /*private*/ QString prevShuntingFn = "";
+    /*private*/ void setSpeedStepsMode(int speedStepMode);
+    QMenu* propertiesPopup;
+    /*private*/ void setIsForward(bool isForward);
+    QWidget* buttonPanel;
+    void resizeEvent(QResizeEvent*);
 
 private slots:
-    void OnSliderChanged(int);
+    void OnSpeedSliderChanged(int);
+    void speedSliderContinuousChanged(int);
     void OnSpinnerChanged(int);
     void OnSpeedStep14();
     void OnSpeedStep28();
     void OnSpeedStep27();
     void OnSpeedStep128();
+    void forwardButtonClicked();
+    void reverseButtonClicked();
+    void stop();
+    void idleButtonClicked();
+    void on_editProperties();
+    void on_menu_requested();
+
 };
+#if 0
 class ButtonFrame : public QWidget
 {
  Q_OBJECT
@@ -130,5 +168,6 @@ public slots:
     /*public*/ void notifyThrottleFound(DccThrottle* t);
 
 };
+#endif
 
 #endif // CONTROLPANEL_H

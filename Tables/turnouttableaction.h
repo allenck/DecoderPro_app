@@ -192,6 +192,8 @@ public slots:
     TTComboBoxDelegate* lockDecColDelegate;
     TTComboBoxDelegate* opsEditColDelegate;
     TTComboBoxDelegate* opsOnOffColDelegate;
+    TTComboBoxDelegate* sensorsColDelegate;
+
  protected:
     /*protected*/ QString getMasterClassName();
     /*protected*/ QString getBeanType();

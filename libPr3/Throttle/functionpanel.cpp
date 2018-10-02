@@ -13,6 +13,7 @@
 #include "throttlespreferences.h"
 #include <QKeyEvent>
 #include "flowlayout.h"
+#include "windowpreferences.h"
 
 
 FunctionPanel::FunctionPanel(QWidget *parent) :
@@ -225,7 +226,7 @@ FunctionPanel::~FunctionPanel()
     this->addressPanel = addressPanel;
 
 }
-
+#if 0
 /*public*/ void FunctionPanel::saveFunctionButtonsToRoster (RosterEntry* rosterEntry)
 {
  log->debug("saveFunctionButtonsToRoster");
@@ -260,7 +261,7 @@ FunctionPanel::~FunctionPanel()
  }
  Roster::writeRosterFile();
 }
-#if 1
+#endif
 /**
  * Place and initialize all the buttons.
  */
@@ -295,7 +296,7 @@ FunctionPanel::~FunctionPanel()
 //            buttonActionCmdPerformed();
 //        }
 //    });
- connect(alt1Button, SIGNAL(toggled(bool)), this, SLOT(buttonActionCmdPerformed()));
+ connect(alt1Button, SIGNAL(clicked(bool)), this, SLOT(buttonActionCmdPerformed()));
  mainPanelLayout->addWidget(alt1Button);
 
  mainPanelLayout->addWidget(functionButton.at(0));
@@ -309,7 +310,8 @@ FunctionPanel::~FunctionPanel()
  // TODO: is this necessary?
  //KeyListenerInstaller.installKeyListenerOnAllComponents(	new FunctionButtonKeyListener(), this);
 }
-#endif
+
+
 // activated when alt1Button is pressed or released
 /*public*/ void FunctionPanel::buttonActionCmdPerformed()
 {
@@ -340,7 +342,7 @@ FunctionPanel::~FunctionPanel()
   }
  }
 }
-
+#endif
 /**
  * Make sure that all function buttons are being displayed
  * if buttons label loaded from a roster entry, update buttons accordingly
@@ -668,12 +670,14 @@ FunctionPanel::~FunctionPanel()
 {
  QDomDocument doc;
     QDomElement me = doc.createElement("FunctionPanel");
-#if 0
-    QDomNodeList children =  QDomNodeList(1+FunctionPanel::NUM_FUNCTION_BUTTONS);
-    children.add(WindowPreferences::getPreferences(this));
-    for (int i=0; i<FunctionPanel.NUM_FUNCTION_BUTTONS; i++)
-        children.add(functionButton.at(i)->getXml());
-    me.setContent(children);
+#if 1
+    //QDomNodeList children =  QDomNodeList(1+FunctionPanel::NUM_FUNCTION_BUTTONS);
+    //children.add(WindowPreferences::getPreferences(this));
+    me.appendChild(WindowPreferences::getPreferences(this));
+    for (int i=0; i<FunctionPanel::NUM_FUNCTION_BUTTONS; i++)
+        //children.add(functionButton.at(i)->getXml());
+     me.appendChild(functionButton.at(i)->getXml());
+    //me.setContent(children);
 #endif
     return me;
 }
@@ -751,4 +755,4 @@ FunctionPanel::~FunctionPanel()
 
 /*public*/ void FunctionPanel::notifyConsistAddressThrottleFound(DccThrottle* throttle) {
 }
-#endif
+

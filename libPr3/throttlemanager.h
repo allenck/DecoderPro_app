@@ -149,6 +149,53 @@ virtual void cancelThrottleRequest(int /*address*/, ThrottleListener* /*l*/) {}
 virtual void cancelThrottleRequest(int /*address*/, bool  /*isLong*/, ThrottleListener* /*l*/) {}
 
 /**
+ * Steal a requested throttle.
+ * <P>
+ * This is a convenience version of the call, which uses system-specific
+ * logic to tell whether the address is a short or long form.
+ *
+ * @param re desired Roster Entry
+ * @param l  ThrottleListener requesting the throttle steal occur.
+ * @param steal true if the request should continue, false otherwise.
+ * @since 4.9.2
+ */
+/*public*/ virtual void stealThrottleRequest(BasicRosterEntry* /*re*/, ThrottleListener* /*l*/, bool /*steal*/) {}
+
+/**
+ * Steal a requested throttle.
+ * <P>
+ * This is a convenience version of the call, which uses system-specific
+ * logic to tell whether the address is a short or long form.
+ *
+ * @param address desired decoder address
+ * @param l  ThrottleListener requesting the throttle steal occur.
+ * @param steal true if the request should continue, false otherwise.
+ * @since 4.9.2
+ */
+/*public*/ virtual void stealThrottleRequest(int /*address*/, ThrottleListener* /*l*/,bool /*steal*/) {}
+
+/**
+ * Steal a requested throttle.
+ *
+ * @param address desired decoder address
+ * @param isLong  true if requesting a DCC long (extended) address
+ * @param l  ThrottleListener requesting the throttle steal occur.
+ * @param steal true if the request should continue, false otherwise.
+ * @since 4.9.2
+ */
+/*public*/ virtual void stealThrottleRequest(int /*address*/, bool /*isLong*/, ThrottleListener* /*l*/,bool /*steal*/) {}
+
+/**
+ * Steal a requested throttle.
+ *
+ * @param address desired LocoAddress
+ * @param l  ThrottleListener requesting the throttle steal occur.
+ * @param steal true if the request should continue, false otherwise.
+ * @since 4.9.2
+ */
+/*public*/ virtual void stealThrottleRequest(LocoAddress* /*address*/, ThrottleListener* /*l*/,bool /*steal*/) {}
+
+/**
  * Check to see if the Dispatch Button should be enabled or not
  **/
 virtual bool  hasDispatchFunction() {return false;}

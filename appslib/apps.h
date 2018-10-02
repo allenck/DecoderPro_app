@@ -5,6 +5,9 @@
 #include "runnable.h"
 #include "logger.h"
 #include "appslib_global.h"
+#include "filedrop.h"
+
+
 
 class QMenuBar;
 class JFrame;
@@ -36,6 +39,9 @@ static /*public*/ QString getConfigFileName();
 /*public*/ void windowClosing(QCloseEvent* e);
 void initGui();
 //void init();  // call init after constructor is complete
+#ifdef SCRIPTING_ENABLED
+/*public*/ static void ynstrument(QString path);
+#endif
 
 signals:
 
@@ -44,7 +50,7 @@ public slots:
 void On_handleQuit();
 
 private:
-    Logger* log;
+    static Logger* log;
     JFrame* _frame;
     qint64 start;
     class MyShutdownTask : public AbstractShutDownTask
@@ -86,6 +92,9 @@ private:
     QVector<ConnectionConfig*> connection;// = {NULL, NULL, NULL, NULL};
     QAction* prefsAction;
     /*public*/ void doPreferences();
+#ifdef SCRIPTING_ENABLED
+static Component* _jynstrumentSpace;// = NULL;
+#endif
 
 protected:
     QT_DEPRECATED /*protected*/ /*final*/ void addToActionModel();
@@ -127,6 +136,9 @@ protected:
     /*protected*/ void systemsMenu(QMenuBar* menuBar, WindowInterface* wi);
     /*protected*/ void closeEvent(QCloseEvent *);
     /*protected*/ void debugMenu(QMenuBar* menuBar, WindowInterface* wi);
+#ifdef SCRIPTING_ENABLED
+    /*protected*/ void setJynstrumentSpace();
+#endif
 
 };
 class WriteBlocksShutdownTask : public AbstractShutDownTask
@@ -139,5 +151,16 @@ public slots:
     /*public*/ bool execute();
 private:
     Logger* log;
+};
+
+class AppsFileDrop : public FileDrop
+{
+ Q_OBJECT
+ Component* _jynstrumentSpace;
+ FileDrop::Listener* listener;
+ Apps* apps;
+public:
+ AppsFileDrop(Component* _jynstrumentSpace, FileDrop::Listener* listener, Apps* apps);
+ /*public*/ void filesDropped(QList<File*> files);
 };
 #endif // APPS_H

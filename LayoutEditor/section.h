@@ -252,7 +252,7 @@ public:
     /*public*/ void setSectionType(int type);
     /*public*/ int getSectionType();
     /*public*/ QString getBeanType() ;
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt); //throws java.beans.PropertyVetoException;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
  /*public*/ Block* getLastBlock();
 
 signals:

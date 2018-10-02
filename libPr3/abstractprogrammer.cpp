@@ -5,6 +5,9 @@
 #include "programmingmode.h"
 #include "rosterentry.h" // for VPtr
 
+/*static*/ int AbstractProgrammer::SHORT_TIMEOUT=2000;
+/*static*/ int AbstractProgrammer::LONG_TIMEOUT=60000;
+
 AbstractProgrammer::AbstractProgrammer(QObject *parent) /*:
     Programmer(parent)*/
 {
@@ -13,7 +16,7 @@ AbstractProgrammer::AbstractProgrammer(QObject *parent) /*:
  log = new Logger();
   propListeners= new QVector<PropertyChangeListener*>();
   propertyChangeSupport = new PropertyChangeSupport(this);
-  mode = DefaultProgrammerManager::PAGEMODE;
+  mode = ProgrammingMode::PAGEMODE;
 }
 QString AbstractProgrammer::decodeErrorCode(int code)
 {

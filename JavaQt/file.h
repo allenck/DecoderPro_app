@@ -92,6 +92,7 @@ private:
      * Enum type that indicates the status of a file path.
      */
     /*private*/ /*static*/ enum PathStatus {UNKNOWN, INVALID, CHECKED };
+
     /*final*/ bool isInvalid();
     /**
      * The flag indicating whether the file path is invalid.
@@ -109,7 +110,7 @@ private:
 
 friend class FileUtil;
 friend class FileUtilSupport;
-
+friend class FileInputStream;
 };
 
 #endif // FILE_H

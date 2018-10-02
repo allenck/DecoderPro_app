@@ -281,8 +281,8 @@ namespace Operations
      }
  }
 
- /*private*/ void SetTrainIconRouteFrame::addIconListener(TrainIcon* tI) {
-#if 0
+ /*private*/ void SetTrainIconRouteFrame::addIconListener(TrainIcon* /*tI*/) {
+#if 0 // TODO:
      tI.addComponentListener(new ComponentListener() {
          /*public*/ void componentHidden(java.awt.event.ComponentEvent e) {
          }

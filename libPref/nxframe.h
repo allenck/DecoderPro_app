@@ -83,7 +83,7 @@ class NXWindowListener : public WindowListener
  NXFrame* frame;
 public:
  NXWindowListener(NXFrame* frame) {this->frame = frame;}
- void windowClosing(QCloseEvent *e)
+ void windowClosing(QCloseEvent */*e*/)
  {
   frame->closeFrame();
  }

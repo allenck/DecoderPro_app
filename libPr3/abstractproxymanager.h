@@ -14,6 +14,9 @@ public:
      * internal manager.  This is not a live list.
      */
     /*public*/ QList<Manager*> getManagerList();
+    /*public*/ QList<Manager*> getDisplayOrderManagerList();
+    /*public*/ Manager* getInternalManager();
+    /*public*/ Manager* getDefaultManager();
     /*public*/ void addManager(Manager* m);
     /**
      * Locate via user name, then system name if needed.
@@ -100,6 +103,7 @@ private:
     Logger log;
     /*private*/ Manager* initInternal();
     /*private*/ Manager* internalManager; //= null;
+    /*private*/ Manager* defaultManager;
 
 protected:
     /**

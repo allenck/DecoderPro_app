@@ -267,6 +267,8 @@ void TabbedTableItem::createDataModel()
 
  dataModel->configureTable(dataTable);
  dataModel->loadTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
+ //dataModel->setPersistentButtons();
+
 
  QSize dataTableSize = dataTable->sizeHint();
  // width is right, but if table is empty, it's not high

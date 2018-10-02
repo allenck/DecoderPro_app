@@ -3162,7 +3162,7 @@ namespace Operations
   *
   * @param strings
   */
- /*private*//*static*/void Setup::stringToKeyConversion(QStringList strings)
+ /*private*//*static*/void Setup::stringToKeyConversion(QStringList /*strings*/)
  {
  #if 0
      Locale locale = Locale.ROOT;
@@ -3195,7 +3195,7 @@ namespace Operations
  #endif
  /*protected*//*static*/void Setup::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      Operations::OperationsSetupXml::instance()->setDirty(true);
- //    pcs.firePropertyChange(p, old, n);
+   //pcs->firePropertyChange(p, old, n);
  }
 
  QDomDocument Setup::doc= QDomDocument();

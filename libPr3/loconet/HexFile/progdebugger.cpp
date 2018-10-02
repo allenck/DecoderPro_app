@@ -25,7 +25,7 @@
 /*public*/ ProgDebugger::ProgDebugger(QObject *parent) :
     AddressedProgrammer(parent) {
     common();
-    mode = DefaultProgrammerManager::PAGEMODE;
+    mode = ProgrammingMode::PAGEMODE;
 }
 
 /*public*/ ProgDebugger::ProgDebugger(bool pLongAddress, int pAddress, QObject *parent) :
@@ -34,7 +34,7 @@
     common();
     longAddr = pLongAddress;
     address = pAddress;
-    mode = DefaultProgrammerManager::OPSBITMODE;
+    mode = ProgrammingMode::OPSBITMODE;
 }
 void ProgDebugger::common()
 {
@@ -267,8 +267,8 @@ void ProgDebugger::PDRunnable3::run()
 //                DefaultProgrammerManager::OPSBYTEMODE
 //            }
 //        );
-        QList<ProgrammingMode*> l = QList<ProgrammingMode*>() <<DefaultProgrammerManager::OPSBITMODE <<
-                DefaultProgrammerManager::OPSBYTEMODE;
+        QList<ProgrammingMode*> l = QList<ProgrammingMode*>() <<ProgrammingMode::OPSBITMODE <<
+                ProgrammingMode::OPSBYTEMODE;
         return l;
     } else {
         // global programmer
@@ -280,8 +280,8 @@ void ProgDebugger::PDRunnable3::run()
 //                DefaultProgrammerManager::DIRECTBYTEMODE
 //            }
 //        );
-        QList<ProgrammingMode*> l = QList<ProgrammingMode*>() <<DefaultProgrammerManager::PAGEMODE <<
-                DefaultProgrammerManager::DIRECTBITMODE << DefaultProgrammerManager::DIRECTBYTEMODE;
+        QList<ProgrammingMode*> l = QList<ProgrammingMode*>() <<ProgrammingMode::PAGEMODE <<
+                ProgrammingMode::DIRECTBITMODE << ProgrammingMode::DIRECTBYTEMODE;
         return l;
     }
 }

@@ -263,6 +263,7 @@ entry.next();
   actionListBundle.insert("jmri.jmrix.libusb.UsbViewAction", "Open USB Device Viewer");
   actionListBundle.insert("jmri.jmrix.loconet.locormi.LnMessageServerAction", "Start LocoNet Server");
   actionListBundle.insert("jmri.web.server.WebServerAction", "Start Web Server");
+  actionListBundle.insert("jmri.jmrix.loconet.loconetovertcp.LnTcpServerAction", "Start LocoNet Over Tcp Server");
 
   // add selected actions in the LocoNetMenu
   actionListBundle.insert("LocoNetMenuStartupAction", "Monitor LocoNet");

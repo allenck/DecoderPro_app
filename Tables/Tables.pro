@@ -12,38 +12,15 @@ TEMPLATE = lib
 DEFINES += LIBTABLES_LIBRARY
 # BLOCKS_AND_SECTIONS
 
-SOURCES += \ #libtables.cpp \
-    #turnoutwidget.cpp \
-    #turnouttablewidget.cpp \
-    #sensorwidget.cpp \
-    #sensortablewidget.cpp \
-#    reporterwidget.cpp \
-#    memorywidget.cpp \
-#    blockwidget.cpp \
-#    idtagswidget.cpp \
-#    addeditdialog.cpp \
-#    routewidget.cpp \
-#    lightwidget.cpp \
-#    addeditlightdialog.cpp \
-#    addeditlightcontroldialog.cpp \
-    slotmonitor.cpp \
-#    signalheadwidget.cpp \
+SOURCES +=  slotmonitor.cpp \
     beanselectcreatepanel.cpp \
     jmribeancombobox.cpp \
     dialogsignalgroupstablewidget.cpp \
-#    signalmastwidget.cpp \
-#    signalgroupswidget.cpp \
-#    signalmastlogicwidget.cpp \
-    routetableaction.cpp \
     logixtableaction.cpp \
     defaultconditionalaction.cpp \
-#    lroutewidget.cpp \
-#    logixwidget.cpp \
     pickframe.cpp \
     lroutetableaction.cpp \
     sectiontableaction.cpp \
-#    sectionwidget.cpp \
-#    transitwidget.cpp \
     signalheadtableaction.cpp \
     signallingsourcepanel.cpp \
     signallingsourceframe.cpp \
@@ -71,10 +48,8 @@ SOURCES += \ #libtables.cpp \
     audiolistenerframe.cpp \
     audiotablepanel.cpp \
     audiotableframe.cpp \
-#    audiowidget.cpp \
     blocktableaction.cpp \
     addnewbeanpanel.cpp \
-#    tablesframe.cpp \
     trackertableaction.cpp \
     tracker.cpp \
     oblocktableaction.cpp \
@@ -93,7 +68,7 @@ SOURCES += \ #libtables.cpp \
     sensortabletabaction.cpp \
     lighttabletabaction.cpp \
     lighttableaction.cpp \
-#    lighttablewidget.cpp \
+    routetableaction.cpp \
     listedtableframe.cpp \
     listedtableaction.cpp \
     signalmasttableaction.cpp \
@@ -113,46 +88,22 @@ SOURCES += \ #libtables.cpp \
     picksinglepanel.cpp \
     addnewdevicepanel.cpp
 
-HEADERS += \ #libtables.h\
-        libtables_global.h \
-    #turnoutwidget.h \
-    #turnouttablewidget.h \
-    #sensorwidget.h \
-    #sensortablewidget.h \
-#    reporterwidget.h \
-#    memorywidget.h \
-#    blockwidget.h \
-#    idtagswidget.h \
-#    addeditdialog.h \
-#    routewidget.h \
-#    lightwidget.h \
-#    lighttablewidget.h \
-#    addeditlightdialog.h \
-#    addeditlightcontroldialog.h \
+HEADERS += libtables_global.h \
     slotmonitor.h \
-#    signalheadwidget.h \
     beanselectcreatepanel.h \
     jmribeancombobox.h \
     dialogsignalgroupstablewidget.h \
-#    signalmastwidget.h \
-#    signalmastlogicwidget.h \
-#    signalgroupswidget.h \
     routetableaction.h \
     logixtableaction.h \
     defaultconditionalaction.h \
-#    lroutewidget.h \
-#    logixwidget.h \
     pickframe.h \
     lroutetableaction.h \
-#    sectionwidget.h \
-#    transitwidget.h \
     signalheadtableaction.h \
     signallingsourcepanel.h \
     signallingsourceframe.h \
     signallingsourceaction.h \
     signallingaction.h \
     signallingframe.h \
-    signallingpanel.h \
     signalgrouptableaction.h \
     sectiontableaction.h \
     signalgroupsubtableaction.h \
@@ -174,10 +125,8 @@ HEADERS += \ #libtables.h\
     audiolistenerframe.h \
     audiotablepanel.h \
     audiotableframe.h \
-#    audiowidget.h \
     blocktableaction.h \
     addnewbeanpanel.h \
-#    tablesframe.h \
     trackertableaction.h \
     tracker.h \
     oblocktableaction.h \
@@ -213,6 +162,7 @@ HEADERS += \ #libtables.h\
     conditionaltreeedit.h \
     conditionaleditbase.h \
     conditionallistedit.h \
+    signallingpanel.h \
     picksinglepanel.h \
     addnewdevicepanel.h
 

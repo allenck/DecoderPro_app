@@ -3,6 +3,7 @@
 #include "familyitempanel.h"
 #include "dragjlabel.h"
 
+class DisplayFrame;
 class JDialog;
 class QItemSelection;
 class TIconDragJLabel;
@@ -16,7 +17,7 @@ class TableItemPanel : public FamilyItemPanel
     Q_OBJECT
 public:
     //explicit TableItemPanel(QWidget *parent = 0);
-    /*public*/ TableItemPanel(JmriJFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
+    /*public*/ TableItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     /*public*/ void init();
     /*public*/ void init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap);
     /*public*/ NamedBean* getTableSelection();

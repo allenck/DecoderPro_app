@@ -18,7 +18,7 @@
 #include "optionsdialog.h"
 #include <QComboBox>
 #include "defaultprogrammermanager.h"
-#include "lnprogrammermanager.h"
+#include "programmermanager.h"
 #include "Throttle/throttlewindow.h"
 #include "paneserviceprogframe.h"
 #include "progmodeselector.h"
@@ -61,6 +61,9 @@
 #include "tabbedpreferencesaction.h"
 #include "activesystemsmenu.h"
 #include "joptionpane.h"
+#include "connectionconfigmanager.h"
+#include "addressedprogrammermanager.h"
+#include "abstractpowermanager.h"
 
 QList<RosterFrame*> RosterFrame::frameInstances =  QList<RosterFrame*>();
 
@@ -170,7 +173,7 @@ void RosterFrame::common()
  connect(currentMapper, SIGNAL(mapped(QObject*)), this, SLOT(on_currentMapped(QObject*)));
 
  log = new Logger("RosterFrame");
-// newLoco = new QToolButton(this);\
+// newLoco = new QToolButton(this);
 // newLoco->setIcon(QIcon(":/resources/icons/misc/gui3/NewLocoButton.png"));
 // newLoco->setText(tr("New Loco"));
 // newLoco->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -186,7 +189,7 @@ void RosterFrame::common()
  ui->toolBar->addWidget(identifyLoco);
  connect(identifyLoco, SIGNAL(clicked()), this, SLOT(startIdentifyLoco()));
 
- LnPowerManager* pmgr = (LnPowerManager*) InstanceManager::powerManagerInstance();
+ PowerManager* pmgr = (PowerManager*) InstanceManager::getDefault("PowerManager");
  //pmgr->addPropertyChangeListener(new PwrListener(this));
  togglePower = new QToolButton( this);
  togglePower->setIcon(QIcon(":/resources/icons/throttles/power_yellow.png"));
@@ -196,12 +199,12 @@ void RosterFrame::common()
   AbstractPowerManager* apm = (AbstractPowerManager*)pmgr;
   connect(apm->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
-  if(pmgr->isPowerOn())
+  if(pmgr->getPower()== PowerManager::ON)
   {
    togglePower->setIcon(QIcon(":/resources/icons/throttles/power_green.png") );
    togglePower->setText(tr("Power on"));
   }
-  else if (pmgr->isPowerOff())
+  else if (pmgr->getPower()== PowerManager::OFF)
   {
    togglePower->setIcon(QIcon(":/resources/icons/throttles/power_red.png"));
    togglePower->setText(tr("Power off"));
@@ -313,7 +316,8 @@ void RosterFrame::common()
  connect(ui->edit, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
  connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(updateProgMode()));
 
- LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
+// LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
+// Q_UNUSED(connectionMemo);
  //ui->menubar->insertMenu(ui->menuLocoNet->menuAction(),  LocoNetMenu::instance(connectionMemo, this));
  ActiveSystemsMenu::addItems(ui->menubar, this);
  ui->menuLocoNet->clear();
@@ -324,14 +328,14 @@ void RosterFrame::On_ConnectionStatusPropertyChange(PropertyChangeEvent *e)
 {
  if ((e->getPropertyName()==("change")) || (e->getPropertyName()==("add")))
  {
-  updateProgrammerStatus();
+  updateProgrammerStatus(e);
  }
 }
 void RosterFrame::On_InstanceManagerPropertyChange(PropertyChangeEvent * e)
 {
  if (e->getPropertyName()==("programmermanager"))
  {
-  updateProgrammerStatus();
+  updateProgrammerStatus(e);
  }
 }
 RosterFrame::~RosterFrame()
@@ -436,7 +440,7 @@ void RosterFrame::on_btnThrottle_clicked()
  }
  // Throttle window not found; create a new one.
  ThrottleWindow* tw = new ThrottleWindow(/*memo,*/this);
- //tw->setId(rosterEntry->getId());
+ tw->getAddressPanel()->setRosterEntry(rosterEntry);
  tw->show();
 }
 //void RosterFrame::on_menuWindow_aboutToShow()
@@ -461,9 +465,9 @@ void RosterFrame::on_btnProgram_clicked()
  QString frameTitle = rosterEntry->getId();
  QString filename = cbProgrammers->currentText();
  QString pProgrammerFile = tr("programmers") + QDir::separator() + filename + ".xml";
- ProgrammerManager* mgr = InstanceManager::programmerManagerInstance();
- Programmer* programmer = ((DefaultProgrammerManager*)mgr)->getGlobalProgrammer();
- Q_UNUSED(programmer);
+ ProgrammerManager* mgr = (ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager");
+// Programmer* programmer = ((DefaultProgrammerManager*)mgr)->getGlobalProgrammer();
+// Q_UNUSED(programmer);
 
  if(ui->edit->isChecked())
  {
@@ -630,7 +634,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 //                      rtable.resetColumnWidths();
 //                  }
 //              });
-    connect(Roster::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_RosterChange(PropertyChangeEvent*)));
+    connect(Roster::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent* )), this, SLOT(on_RosterChange(PropertyChangeEvent*)));
 #if 0
     PropertyChangeListener* propertyChangeListener = new PropertyChangeListener() {
         @Override
@@ -681,7 +685,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
     connect(ui->splitter_2, SIGNAL(splitterMoved(int,int)), this, SLOT(On_splitter2Moved(int, int)));
 
 #endif
- updateProgrammerStatus();
+ updateProgrammerStatus(NULL);
 // ConnectionStatus::instance()->addPropertyChangeListener(new PropertyChangeListener());
 //    {
 ////        @Override
@@ -752,43 +756,62 @@ void RosterFrame::on_actionNew_Throttle_triggered()
  * this handles setting up and updating the GUI for the types of programmer
  * available.
  */
-/*protected*/ void RosterFrame::updateProgrammerStatus()
+/*protected*/ void RosterFrame::updateProgrammerStatus(/*@Nullable*/ PropertyChangeEvent* evt)
 {
  ConnectionConfig* oldServMode = serModeProCon;
  ConnectionConfig* oldOpsMode = opsModeProCon;
 
- GlobalProgrammerManager* gpm = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
+ GlobalProgrammerManager* gpm = NULL;
+ AddressedProgrammerManager* apm = NULL;
+
+ // Find the connection that goes with the global programmer
+ // test that IM has a default GPM, or that event is not the removal of a GPM
+ if (InstanceManager::containsDefault("GlobalProgrammerManager")
+                 || (evt != NULL
+                 && evt->getPropertyName() == (InstanceManager::getDefaultsPropertyName("GlobalProgrammerManager"))
+                 && evt->getNewValue() == QVariant()))
+ {
+  gpm = (GlobalProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
+ }
  if (gpm!=NULL)
  {
-  QString serviceModeProgrammer = gpm->getUserName();
-  QList<QObject*> connList = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->getInstanceList("ConnectionConfig");
-  if (!connList.isEmpty())
+  QString serviceModeProgrammerName = gpm->getUserName();
+  log->debug(tr("GlobalProgrammerManager found of class %1 name %2 ").arg(gpm->metaObject()->className()).arg(serviceModeProgrammerName));
+  QList<ConnectionConfig*>* ccm = ((ConnectionConfigManager*)InstanceManager::getOptionalDefault("ConnectionConfigManager"))->getConnections();
+  foreach (ConnectionConfig* connection, *ccm)
   {
-   for (int x = 0; x < connList.size(); x++)
+   log->debug(tr("Checking connection name %1").arg(connection->getConnectionName()));
+   if (connection->getConnectionName() != NULL && connection->getConnectionName()==(serviceModeProgrammerName))
    {
-    ConnectionConfig* conn = (ConnectionConfig*) connList.at(x);
-    if (conn->getConnectionName() != NULL && conn->getConnectionName()==(serviceModeProgrammer))
-    {
-     serModeProCon = conn;
-    }
+       log->debug("Connection found for GlobalProgrammermanager");
+       serModeProCon = connection;
    }
   }
  }
- AddressedProgrammerManager* apm = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
+
+ // Find the connection that goes with the addressed programmer
+ // test that IM has a default APM, or that event is not the removal of an APM
+ if (InstanceManager::containsDefault("AddressedProgrammerManager")
+         || (evt != NULL
+         && evt->getPropertyName() == (InstanceManager::getDefaultsPropertyName("AddressedProgrammerManager"))
+         && evt->getNewValue() == QVariant()))
+ {
+     apm = (AddressedProgrammerManager*)InstanceManager::getNullableDefault("AddressedProgrammerManager");
+ }
  if (apm!=NULL)
  {
-  //Ideally we should probably have the programmer manager reference the username configured in the system connection memo.
-  //but as DP3 (jmri can not use multiple programmers!) isn't designed for multi-connection enviroments this should be sufficient*/
-  QString opsModeProgrammer = apm->getUserName();
-  QObjectList connList = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->getInstanceList("ConnectionConfig");
-  if (!connList.isEmpty())
+  QString opsModeProgrammerName = apm->getUserName();
+  log->debug(tr("AddressedProgrammerManager found of class %1 name %2 ").arg(apm->metaObject()->className()).arg(opsModeProgrammerName));
+  //InstanceManager.getOptionalDefault(ConnectionConfigManager.class).ifPresent((ccm) ->
+  if(InstanceManager::getOptionalDefault("ConnectionConfigManager")!= NULL)
   {
-   for (int x = 0; x < connList.size(); x++)
+   QList<ConnectionConfig*>* ccm = ((ConnectionConfigManager*)InstanceManager::getOptionalDefault("ConnectionConfigManager"))->getConnections();
+   foreach (ConnectionConfig* connection, *ccm)
    {
-    ConnectionConfig* conn = (ConnectionConfig*) connList.at(x);
-    if (conn->getConnectionName() != NULL && conn->getConnectionName()==(opsModeProgrammer))
-    {
-     opsModeProCon = conn;
+    log->debug(tr("Checking connection name %1").arg(connection->getConnectionName()));
+    if (connection->getConnectionName() != NULL && connection->getConnectionName() == (opsModeProgrammerName)) {
+        log->debug("Connection found for AddressedProgrammermanager");
+        opsModeProCon = connection;
     }
    }
   }
@@ -1074,12 +1097,13 @@ void RosterFrame::updateProgMode() // SLOT
 
 void RosterFrame::on_togglePower_clicked()
 {
- LnPowerManager* pmgr = ( LnPowerManager*)InstanceManager::powerManagerInstance();
- if(pmgr->isPowerOn())
+ PowerManager* pmgr = ( PowerManager*)InstanceManager::getDefault("PowerManager");
+ if(pmgr->getPower() == PowerManager::ON)
   pmgr->setPower(PowerManager::OFF);
  else
   pmgr->setPower(PowerManager::ON);
 }
+
 void RosterFrame::on_actionDelete_Loco_triggered()
 {
  Roster* roster = Roster::instance();
@@ -1261,14 +1285,14 @@ void RosterFrame::propertyChange(PropertyChangeEvent *e)
 #endif
  if(e->getPropertyName() == "Power")
  {
-  LnPowerManager* pmgr = (LnPowerManager*)InstanceManager::powerManagerInstance();
-  if(pmgr->isPowerOn())
+  PowerManager* pmgr = (PowerManager*)InstanceManager::getDefault("PowerManager");
+  if(pmgr->getPower()== PowerManager::ON)
   {
    //parent->togglePower = new QToolButton();
    togglePower->setIcon(QIcon(":/resources/icons/throttles/power_green.png") );
    togglePower->setText(tr("Power on"));
   }
-  else if (pmgr->isPowerOff())
+  else if (pmgr->getPower()== PowerManager::OFF)
   {
    //parent->togglePower = new QToolButton( );
    togglePower->setIcon(QIcon(":/resources/icons/throttles/power_red.png"));
@@ -1283,7 +1307,7 @@ void RosterFrame::propertyChange(PropertyChangeEvent *e)
  }
  if (e->getPropertyName()==("programmermanager"))
  {
-  updateProgrammerStatus();
+  updateProgrammerStatus(e);
  }
 }
 void RosterFrame::on_groupChange(PropertyChangeEvent * pce)

@@ -108,7 +108,7 @@ protected:
 // /*protected*/ BeanTableDataModel* m;
  /*protected*/ void deleteBean(int row, int col);
 /*abstract*/ /*protected*/ virtual QString getBeanType();
-///*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* sample = NULL);
+/*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* sample = NULL);
 /*protected*/ virtual void configValueColumn(JTable* table);
  virtual /*protected*/ void configDeleteColumn(JTable* table);
  virtual /*abstract*/ /*protected*/ QString getMasterClassName();
@@ -138,6 +138,7 @@ friend class LogixWidget;
 friend class LTFTabbedTableItem;
 friend class AbstractTableAction;
 friend class TurnoutTableDataModel;
+friend class SignalMastTableAction;
 };
 
 #endif // BEANTABLEDATAMODEL_H

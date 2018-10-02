@@ -131,10 +131,11 @@ InstanceManager::InstanceManager(QObject *parent) :
 void InstanceManager::store(QObject* item, QString type)
 {
  QHash<QString,QObjectList*>* mgrLists = managerLists;
+ Q_UNUSED(mgrLists);
  //log->debug(tr("Store item of type %1").arg(type));
  if (item == NULL) {
      NullPointerException npe =  NullPointerException();
-     log->error(tr("Should not store null value of type %1").arg(type));
+     Logger::error(tr("Should not store null value of type %1").arg(type));
      throw npe;
  }
  QObjectList* l =  managerLists->value(type);
@@ -149,6 +150,7 @@ void InstanceManager::store(QObject* item, QString type)
 void InstanceManager::storeBefore( int index, QObject* item, QString type)
 {
  QHash<QString,QObjectList*>* mgrLists = managerLists;
+ Q_UNUSED(mgrLists);
  log->debug(tr("Store item of type %1").arg(type));
  if (item == NULL) {
      NullPointerException npe =  NullPointerException();
@@ -267,15 +269,16 @@ template<class T>
 //static /*public*/ <T> T getNullableDefault(@Nonnull Class<T> type) {
 /*static*/ /*public*/ QObject* InstanceManager::getNullableDefault(QString type)
 {
- if(log->isTraceEnabled())
-  log->trace(tr("getOptionalDefault of type %1").arg(type/*.getName()*/));
+// if( log->isTraceEnabled())
+//  log->trace(tr("getOptionalDefault of type %1").arg(type/*.getName()*/));
     //ArrayList<T> l = (ArrayList<T>) getList(type);
  QHash<QString,QObjectList*>* mgrList = managerLists;
+ Q_UNUSED(mgrList);
  QObjectList* l = getList(type);
  if (l->isEmpty())
  {
   // see if can autocreate
-  log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
+  //log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
 #if 1
         //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
   QObject* obj1;
@@ -301,13 +304,14 @@ template<class T>
    }
 #endif
         // see if initializer can handle
-        log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
+//        log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
         //@SuppressWarnings("unchecked")
         QObject* obj = initializer->getDefault(type);
-        if (obj != NULL) {
-            log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
-            l->append(obj);
-            return l->at(l->size() - 1);
+        if (obj != NULL)
+        {
+//          log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
+          l->append(obj);
+          return l->at(l->size() - 1);
         }
 
         // don't have, can't make
@@ -364,6 +368,19 @@ QObject* InstanceManager::setDefault(QString type, QObject* val)
 }
 
 /**
+ * Check if a default has been set for the given type.
+ *
+ * @param <T>  The type of the class
+ * @param type The class type
+ * @return true if an item is available as a default for the given type;
+ *         false otherwise
+ */
+/*static*/ /*public*/  bool InstanceManager::containsDefault(/*@Nonnull*/ QString type) {
+    QObjectList* l = getList(type);
+    return !l->isEmpty();
+}
+
+/**
  * Dump generic content of InstanceManager
  * by type.
  */
@@ -413,27 +430,27 @@ ProgrammerManager* InstanceManager::programmerManagerInstance()
  return (ProgrammerManager*)getDefault("ProgrammerManager");
 }
 
-void InstanceManager::setProgrammerManager(ProgrammerManager* p) {
-    if(p->isAddressedModePossible() )
-        store(p, "AddressedProgrammerManager");
-    if(p->isGlobalProgrammerAvailable() )
-        store(p, "GlobalProgrammerManager");
+//void InstanceManager::setProgrammerManager(ProgrammerManager* p) {
+//    if(p->isAddressedModePossible() )
+//        store(p, "AddressedProgrammerManager");
+//    if(p->isGlobalProgrammerAvailable() )
+//        store(p, "GlobalProgrammerManager");
 
-//  Now that we have a programmer manager, install the default
-//  Consist manager if Ops mode is possible, and there isn't a
-//  consist manager already.
- //if(programmerManagerInstance()->isAddressedModePossible()
- if(p->isAddressedModePossible()
-    && consistManagerInstance() == NULL)
- {
-    setConsistManager(new DccConsistManager());
- }
- instance()->notifyPropertyChangeListener("programmermanager", QVariant(), QVariant());
-}
+////  Now that we have a programmer manager, install the default
+////  Consist manager if Ops mode is possible, and there isn't a
+////  consist manager already.
+// //if(programmerManagerInstance()->isAddressedModePossible()
+// if(p->isAddressedModePossible()
+//    && consistManagerInstance() == NULL)
+// {
+//    setConsistManager(new DccConsistManager());
+// }
+// instance()->notifyPropertyChangeListener("programmermanager", QVariant(), QVariant());
+//}
 
 SensorManager* InstanceManager::sensorManagerInstance()
 {
-return (SensorManager*)getDefault("SensorManager");
+ return (SensorManager*)getDefault("SensorManager");
 }
 
 TurnoutManager* InstanceManager::turnoutManagerInstance()
@@ -698,6 +715,7 @@ void InstanceManager::setRootInstance()
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",justification="Only used during system initialization")
 void InstanceManager::init()
 {
+ log = new Logger("InstanceManager");
  //sensorManager = NULL;
  configureManager = NULL;
  timebase = NULL;
@@ -869,18 +887,20 @@ void InstanceManager::setConsistManager(ConsistManager* p) {
 // either built into instances of calling code or a
 // new service, before this can be deprecated.
 //
+//@Deprecated
 /*static*/ /*public*/ void InstanceManager::setCommandStation(CommandStation* p)
 {
  store(p, "CommandStation");
+}
 
- // since there is a command station available, use
- // the NMRA consist manager instead of the generic consist
- // manager.
- if (consistManagerInstance() == NULL ||
-            (consistManagerInstance()->metaObject()->className())=="DccConsistManager")
- {
-  setConsistManager(new NmraConsistManager());
- }
+/**
+ * @param p CommandStation to make default
+ * @deprecated Since 4.9.5, use
+ * {@link #store(java.lang.Object,java.lang.Class)} directly.
+ */
+//@Deprecated
+/*static*/ /*public*/ void InstanceManager::setAddressedProgrammerManager(AddressedProgrammerManager* p) {
+    store(p, "AddressedProgrammerManager");
 }
 
 void InstanceManager::setReporterManager(ReporterManager* p) {

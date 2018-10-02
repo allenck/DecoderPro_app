@@ -1921,7 +1921,7 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    void static_InstanceManager_setDefault(QString  type, QObject*  val);
    void static_InstanceManager_setLayoutBlockManager(LayoutBlockManager*  p);
    void static_InstanceManager_setPowerManager(PowerManager*  p);
-   void static_InstanceManager_setProgrammerManager(ProgrammerManager*  p);
+   //void static_InstanceManager_setProgrammerManager(ProgrammerManager*  p);
    void static_InstanceManager_setReporterManager(ReporterManager*  p);
    void static_InstanceManager_setSensorManager(SensorManager*  p);
    void static_InstanceManager_setShutDownManager(ShutDownManager*  p);

@@ -397,17 +397,18 @@ void removeSML(QString signalMast){
 {
  // if (debug) log.debug("Release: "+where(e));
  //if (e.isPopupTrigger())
- if(e->buttons()& Qt::RightButton != 0)
+ if((e->buttons()& Qt::RightButton) != 0)
  {
   showPopUp(e);
  }
 }
 
-/*public*/ void PositionablePoint::mouseClicked(QGraphicsSceneMouseEvent* e) {
-    if(e->buttons()& Qt::RightButton != 0)
-    {
-     showPopUp(e);
-    }
+/*public*/ void PositionablePoint::mouseClicked(QGraphicsSceneMouseEvent* e)
+{
+ if((e->buttons()& Qt::RightButton) != 0)
+ {
+  showPopUp(e);
+ }
 }
 
 

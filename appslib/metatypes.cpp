@@ -270,6 +270,9 @@
 #include "sprog/sprogcsconnectionconfig.h"
 #include "sprog/sprogconnectionconfigxml.h"
 #include "sprog/sprogcsconnectionconfigxml.h"
+#include "throttleframemanager.h"
+#include "lntcppreferencespanel.h"
+#include "lntcpserveraction.h"
 
 bool Metatypes::done = false;
 
@@ -554,6 +557,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<Sprog::SprogCSConnectionConfig>("SprogCSConnectionConfig");
  qRegisterMetaType<Sprog::SprogConnectionConfigXml>("SprogConnectionConfigXml");
  qRegisterMetaType<Sprog::SprogCSConnectionConfigXml>("SprogCSConnectionConfigXml");
+ qRegisterMetaType<LnTcpPreferencesPanel>("LnTcpPreferencesPanel");
+ qRegisterMetaType<LnTcpServerAction>("LnTcpServerAction");
 
  Metatypes::done = true;
 }

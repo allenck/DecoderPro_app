@@ -24,14 +24,14 @@
 //{
 
     /**
-     * Creates an empty border with the specified insets.
+     * Creates an empty border with the specified insets->
      * @param top the top inset of the border
      * @param left the left inset of the border
      * @param bottom the bottom inset of the border
      * @param right the right inset of the border
      */
     /*public*/ EmptyBorder::EmptyBorder(int top, int left, int bottom, int right, QObject* parent)
- : Border(parent){
+ : AbstractBorder(parent){
         this->top = top;
         this->right = right;
         this->bottom = bottom;
@@ -39,12 +39,12 @@
     }
 
     /**
-     * Creates an empty border with the specified insets.
+     * Creates an empty border with the specified insets->
      * @param borderInsets the insets of the border
      */
     //@ConstructorProperties({"borderInsets"})
     /*public*/ EmptyBorder::EmptyBorder(Insets* borderInsets, QObject* parent)
- : Border(parent)
+ : AbstractBorder(parent)
 {
         this->top = borderInsets->top;
         this->right = borderInsets->right;
@@ -57,17 +57,17 @@
      */
     /*public*/ void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
     }
-
+#endif
     /**
      * Reinitialize the insets parameter with this Border's current Insets.
      * @param c the component for which this border insets value applies
      * @param insets the object to be reinitialized
      */
-    /*public*/ Insets getBorderInsets(Component c, Insets insets) {
-        insets.left = left;
-        insets.top = top;
-        insets.right = right;
-        insets.bottom = bottom;
+    /*public*/ Insets* EmptyBorder::getBorderInsets(QWidget* c, Insets* insets) {
+        insets->left = left;
+        insets->top = top;
+        insets->right = right;
+        insets->bottom = bottom;
         return insets;
     }
 
@@ -75,7 +75,7 @@
      * Returns the insets of the border.
      * @since 1.3
      */
-    /*public*/ Insets getBorderInsets() {
+    /*public*/ Insets* EmptyBorder::getBorderInsets() {
         return new Insets(top, left, bottom, right);
     }
 
@@ -83,5 +83,5 @@
      * Returns whether or not the border is opaque.
      * Returns false by default.
      */
-    /*public*/ bool isBorderOpaque() { return false; }
-#endif
+    /*public*/ bool EmptyBorder::isBorderOpaque() { return false; }
+

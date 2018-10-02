@@ -20,6 +20,14 @@
  */
 ///*public*/ class StartupActionsPreferencesPanel extends JPanel implements PreferencesPanel {
 
+bool compareItems(QObject* o1, QObject* o2)
+{
+ QAction* a1 = (QAction*)o1;
+ QAction* a2 = (QAction*)o2;
+ int ret = QString::compare(a1->text(),a2->text());
+ return ret < 0;
+}
+
 /**
  * Creates new form StartupActionsPreferencesPanel
  */
@@ -54,6 +62,7 @@
  }//);
   connect(mapper, SIGNAL(mapped(QObject*)), this, SLOT(on_getAction(QObject*)));
 //    items.sort((JMenuItem o1, JMenuItem o2) -> o1.getText().compareTo(o2.getText()));
+  qSort(items.begin(), items.end(), compareItems);
 //    items.stream().forEach((item) ->
  foreach(QAction* item, items)
  {

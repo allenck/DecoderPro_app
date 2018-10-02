@@ -32,6 +32,7 @@ class LIBPR3SHARED_EXPORT WaitingThrottle : public QObject
  ThrottleListener* getListener();
  BasicRosterEntry* getRosterEntry();
 };
+
 /*protected*/ /*static*/ class LIBPR3SHARED_EXPORT Addresses : public QObject
 {
  Q_OBJECT

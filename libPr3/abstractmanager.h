@@ -141,11 +141,4 @@ protected:
 
 };
 
-class PropertyVetoException : public Exception
-{
-public:
- PropertyVetoException(QString mag = "");
- ~PropertyVetoException() throw() {}
-
-};
 #endif // ABSTRACTMANAGER_H

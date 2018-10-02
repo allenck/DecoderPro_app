@@ -18,7 +18,7 @@
 #include "tableitempanel.h"
 #include "joptionpane.h"
 
-SignalMastIcon::SignalMastIcon(QObject *parent) :
+SignalMastIcon::SignalMastIcon(QWidget* parent) :
     PositionableIcon(parent)
 {
 }
@@ -101,7 +101,7 @@ pName=sh->getName();
  */
 /*public*/ void SignalMastIcon::setSignalMast(QString pName) {
     this->pName = pName;
-    mMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(pName);
+    mMast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(pName);
     if (mMast == NULL) log->warn("did not find a SignalMast named "+pName);
     else {
         namedMast = new NamedBeanHandle<SignalMast*>(pName, mMast);

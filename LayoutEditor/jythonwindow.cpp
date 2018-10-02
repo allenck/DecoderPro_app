@@ -9,6 +9,8 @@
 #include <QScrollArea>
 #include "flowlayout.h"
 #include "jmrijframe.h"
+#include "PythonQt.h"
+
 
 //JythonWindow::JythonWindow(QObject *parent) :
 //  AbstractAction(parent)

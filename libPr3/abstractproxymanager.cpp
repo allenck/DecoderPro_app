@@ -16,6 +16,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 {
  mgrs = new /*java.util.ArrayList*/QList<Manager*>();
  internalManager = NULL;
+ defaultManager = NULL;
  registerSelf();
 }
 /**
@@ -71,6 +72,43 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  initInternal();
  QList<Manager*> retval = QList<Manager*>(*mgrs);
  return retval;
+}
+
+/**
+ * Returns a list of all managers, with the default
+ * at the start and internal default at the end.
+ *
+ * @return the list of managers
+ */
+/*public*/ QList<Manager*> AbstractProxyManager::getDisplayOrderManagerList() {
+    // make sure internal present
+    initInternal();
+
+    QList<Manager*> retval =  QList<Manager*>();
+    if (defaultManager != NULL) { retval.append(defaultManager); }
+    foreach (Manager* manager, *mgrs) {
+        if (manager != defaultManager && manager != internalManager) {
+            retval.append(manager);
+        }
+    }
+    if (internalManager != NULL && internalManager != defaultManager) {
+        retval.append(internalManager);
+    }
+    return retval;
+}
+
+/*public*/ Manager* AbstractProxyManager::getInternalManager() {
+    initInternal();
+    return internalManager;
+}
+
+/**
+ * Returns the set default or, if not present, the internal manager as defacto default
+ */
+/*public*/ Manager* AbstractProxyManager::getDefaultManager() {
+    if (defaultManager != NULL) return defaultManager;
+
+    return getInternalManager();
 }
 
 /*public*/ void AbstractProxyManager::addManager(Manager* m)

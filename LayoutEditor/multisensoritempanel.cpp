@@ -8,7 +8,8 @@
 #include "itempalette.h"
 #include <QButtonGroup>
 #include <QRadioButton>
-#include "icondialog.h"
+#include "multisensoricondialog.h"
+
 
 //MultiSensorItemPanel::MultiSensorItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -17,7 +18,7 @@
 // /*public*/ class MultiSensorItemPanel extends TableItemPanel {
 
 
-/*public*/ MultiSensorItemPanel::MultiSensorItemPanel(JmriJFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor, parent)
+/*public*/ MultiSensorItemPanel::MultiSensorItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor, parent)
 {
     //super(parentFrame, type, family, model, editor);
     _upDown = false;
@@ -151,19 +152,12 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
     }
 }
 
-/*protected*/ void MultiSensorItemPanel::openEditDialog() {
-#if 0 // TODO:
-    IconDialog* dialog = new MultiSensorIconDialog(_itemType, _family, this, _currentIconMap);
-    dialog->sizeLocate();
-#endif
-}
-
-/*protected*/ void MultiSensorItemPanel::createNewFamily(QString type)
+//@Override
+/*protected*/ IconDialog* MultiSensorItemPanel::openDialog(QString type, QString family, QHash<QString, NamedIcon*>* iconMap)
 {
-#if 0 // TODO:
-    IconDialog dialog = new MultiSensorIconDialog(_itemType, NULL, this, NULL);
-    dialog->sizeLocate();
-#endif
+ IconDialog* dialog = new MultiSensorIconDialog(type, family, this, iconMap);
+ dialog->sizeLocate();
+ return dialog;
 }
 
 /**

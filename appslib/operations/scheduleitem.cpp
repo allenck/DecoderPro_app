@@ -37,7 +37,7 @@ namespace Operations
   * @param id
   * @param type car type for schedule
   */
- /*public*/ ScheduleItem::ScheduleItem(QString id, QString type, QObject* parent ) {
+ /*public*/ ScheduleItem::ScheduleItem(QString id, QString type, QObject* /*parent*/ ) {
   common();
      log->debug(tr("New schedule item, car type (%1) id: %2").arg(type).arg(id));
      _type = type;

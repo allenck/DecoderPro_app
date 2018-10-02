@@ -572,7 +572,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
 // loadTableColumnDetails(table);
  table->setContextMenuPolicy(Qt::CustomContextMenu);
  connect(table, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showPopup(QPoint)));
- setPersistentButtons();
+ //setPersistentButtons();
 }
 
 /*protected*/ void BeanTableDataModel::configValueColumn(JTable* table) {
@@ -606,29 +606,29 @@ void BeanTableDataModel::On_itemClicked(QModelIndex index)
  setColumnToHoldButton(table, DELETECOL/*, new QPushButton(tr("Delete"))*/);
 }
 
-///**
-// * Service method to setup a column so that it will hold a
-// * button for it's values
-// * @param table
-// * @param column
-// * @param sample Typical button, used for size
-// */
-///*protected*/ void BeanTableDataModel::setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/)
-//{ // TODO:
-// // install a button renderer & editor
-////    ButtonRenderer buttonRenderer = new ButtonRenderer();
-////    table.setDefaultRenderer(JButton.class,buttonRenderer);
-////    TableCellEditor buttonEditor = new ButtonEditor(new JButton());
-////    table.setDefaultEditor(JButton.class,buttonEditor);
-////    // ensure the table rows, columns have enough room for buttons
-////    table.setRowHeight(sample.getPreferredSize().height);
-////    table.getColumnModel().getColumn(column)
-////        .setPreferredWidth((sample.getPreferredSize().width)+4);
-// this->table = table;
-// table->setItemDelegateForColumn(column, new PushButtonDelegate());
-// buttonMap.append(column);
-// setPersistentButtons();
-//}
+/**
+ * Service method to setup a column so that it will hold a
+ * button for it's values
+ * @param table
+ * @param column
+ * @param sample Typical button, used for size
+ */
+/*protected*/ void BeanTableDataModel::setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/)
+{ // TODO:
+ // install a button renderer & editor
+//    ButtonRenderer buttonRenderer = new ButtonRenderer();
+//    table.setDefaultRenderer(JButton.class,buttonRenderer);
+//    TableCellEditor buttonEditor = new ButtonEditor(new JButton());
+//    table.setDefaultEditor(JButton.class,buttonEditor);
+//    // ensure the table rows, columns have enough room for buttons
+//    table.setRowHeight(sample.getPreferredSize().height);
+//    table.getColumnModel().getColumn(column)
+//        .setPreferredWidth((sample.getPreferredSize().width)+4);
+ this->_table = table;
+ table->setItemDelegateForColumn(column, new PushButtonDelegate());
+ buttonMap.append(column);
+ //setPersistentButtons();
+}
 
 void BeanTableDataModel::OnButtonClicked(QObject* o)
 {
@@ -797,7 +797,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
  * @return the table
  * @throws NullPointerException if name or model are null
  */
-/*public*/ JTable* BeanTableDataModel::makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* model, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter) {
+/*public*/ JTable* BeanTableDataModel::makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* /*model*/, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter) {
 //    Objects.requireNonNull(name, "the table name must be nonnull");
 //    Objects.requireNonNull(model, "the table model must be nonnull");
     JTable* table = new JTable((QAbstractItemModel*)sorter);
@@ -913,7 +913,7 @@ class PopupListener extends MouseAdapter {
  popupMenu->popup(_table->viewport()->mapToGlobal(p));
 }
 
-void BeanTableDataModel::addToPopUp(QMenu *popup) {}
+void BeanTableDataModel::addToPopUp(QMenu */*popup*/) {}
 
 #if 0
 class popupmenuRemoveName implements ActionListener {
@@ -1150,7 +1150,7 @@ static class headerActionListener implements ActionListener {
     }
 }
 #endif
-/*protected*/ void BeanTableDataModel::addMouseListenerToHeader(JTable* table)
+/*protected*/ void BeanTableDataModel::addMouseListenerToHeader(JTable* /*table*/)
 {
 #if 0 // TODO:
     MouseListener mouseHeaderListener = new TableHeaderListener(table);
@@ -1198,6 +1198,7 @@ class TableHeaderListener extends MouseAdapter {
 #if 1
  XTableColumnModel* tcm = (XTableColumnModel*)table->getColumnModel();
  QSortFilterProxyModel* tmodel = ((QSortFilterProxyModel*)table->getModel());
+ Q_UNUSED(tmodel);
  QListIterator<TableColumn*> en = tcm->getColumns(false);
  while(en.hasNext())
  {

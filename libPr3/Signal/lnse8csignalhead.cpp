@@ -188,13 +188,13 @@ void LnSE8cSignalHead::init(int pNumber)
             if ((sw2 & LnConstants::OPC_SW_REP_INPUTS)==0)
             {
                 // sort out states
-                if ((sw2 & OPC_SW_REP_CLOSED) != 0)
+                if ((sw2 & LnConstants::OPC_SW_REP_CLOSED) != 0)
                 {
                     // was set CLOSED
                     if (mAppearance!=SignalHead::FLASHGREEN)
                         mAppearance = SignalHead::GREEN;
                 }
-                if ((sw2 & OPC_SW_REP_THROWN) != 0) {
+                if ((sw2 & LnConstants::OPC_SW_REP_THROWN) != 0) {
                     // was set THROWN
                     if (mAppearance!=SignalHead::FLASHRED)
                         mAppearance = SignalHead::RED;
@@ -211,7 +211,7 @@ void LnSE8cSignalHead::init(int pNumber)
                         || !mLit || !mFlashOn ))
                     mAppearance = SignalHead::DARK;    // that's the setting by default
             }
-            if ((sw2 & OPC_SW_REP_THROWN) != 0) {
+            if ((sw2 & LnConstants::OPC_SW_REP_THROWN) != 0) {
                 // was set THROWN
                 if (mAppearance!=SignalHead::FLASHYELLOW)
                     mAppearance = SignalHead::YELLOW;

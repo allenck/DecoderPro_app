@@ -12,6 +12,7 @@
 #include <QGraphicsItemGroup>
 #include "exceptions.h"
 
+class Border;
 class MyGraphicsItemGroup : public QGraphicsItemGroup
 {
  QString _name;
@@ -194,7 +195,7 @@ public:
         /*public*/ virtual void setForeground(QColor /*bg*/) {}
     /*public*/ virtual QColor getForeground() {return QColor();}
     /*public*/ virtual QFont getFont() {return QFont();}
-//        /*public*/ virtual void setBorder(Border border);
+    /*public*/ virtual void setBorder(Border* /*border*/) {}
 //        /*public*/ virtual Dimension getPreferredSize();
     /*public*/ virtual void invalidate() {repaint();}
 //        /*public*/ virtual void repaint() {}

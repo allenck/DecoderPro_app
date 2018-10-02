@@ -28,13 +28,13 @@ class Editor;
 class PositionablePopupUtil;
 class CoordinateEdit;
 class AddPanelIconDialog;
-class JmriJFrame;
+class DisplayFrame;
 
 class LIBLAYOUTEDITORSHARED_EXPORT PositionableLabel : public JLabel
 {
  Q_OBJECT
 public:
-    explicit PositionableLabel(QObject *parent = 0);
+    explicit PositionableLabel(QWidget *parent = 0);
 /*public*/ PositionableLabel(QString s, Editor* editor, Positionable *parent=0);
 /*public*/ PositionableLabel(NamedIcon* s, Editor* editor, Positionable *parent=0) ;
 /*public*/ /*final*/ bool isIcon();
@@ -186,7 +186,7 @@ IconAdder* _iconEditor;
 QString _tooltip;
 Positionable* parent;
 bool _bVisible;
-JmriJFrame* _paletteFrame;
+DisplayFrame* _paletteFrame;
 QFont _font;
 int currRotation;
 bool needsRotate;

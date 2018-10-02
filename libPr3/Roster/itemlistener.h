@@ -32,7 +32,7 @@ public:
          * The code written for this method performs the operations
          * that need to occur when an item is selected (or deselected).
          */
-        virtual void itemStateChanged(ItemEvent* e) = 0;
+        virtual void itemStateChanged(ItemEvent* /*e*/) = 0;
 
 signals:
 

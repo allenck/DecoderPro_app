@@ -33,7 +33,7 @@ signals:
     //void propertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
     //void propertyChange(PropertyChangeEvent *);
 public slots:
- /*public*/ void vetoableChange(PropertyChangeEvent* evt); /*throw PropertyVetoException*/
+ /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 
 private:
     /*private*/ static const  QVector<int> validStates;// = new int[]{

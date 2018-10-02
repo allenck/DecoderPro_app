@@ -47,6 +47,10 @@ using namespace Sprog;
 
 /*static*/ /*final*/ int SprogProgrammer::NOTPROGRAMMING = 0;    // is notProgramming
 /*static*/ /*final*/ int SprogProgrammer::COMMANDSENT = 2;       // read/write command sent, waiting reply
+/*synchronized*/ /*public*/ void SprogProgrammer::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
+{
+ writeCV(CV.toInt(), val,p);
+}
 
 // programming interface
 //@Override
@@ -235,7 +239,7 @@ using namespace Sprog;
 //      temp->programmingOpReply(value, status);
   connect(this, SIGNAL(notify_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
   emit notify_programmingOpReply(value, status);
-  connect(this, SIGNAL(notify_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+  disconnect(this, SIGNAL(notify_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
 
  }
 }

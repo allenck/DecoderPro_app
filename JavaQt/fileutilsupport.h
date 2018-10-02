@@ -57,6 +57,7 @@ public:
  /*public*/ QString findExternalFilename(/*@Nonnull*/ QString path);
  /*public*/ QUrl findURL(/*@Nonnull*/ QString path, FileUtil::Location locations);
  /*public*/ QUrl findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
+ /*public*/ QString locateFile(QDir start, QString fileName);
 
 private:
  /*private*/ static /*final*/ QString homePath;// = System.getProperty("user.home") + File.separator; // NOI18N

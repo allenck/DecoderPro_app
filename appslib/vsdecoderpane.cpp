@@ -125,7 +125,7 @@ JmriPanel(p)
 /**
  * initContext() : does nothing. Here to satisfy the parent class
  */
-/*public*/ void VSDecoderPane::initContext(QObject* context) {
+/*public*/ void VSDecoderPane::initContext(QObject* /*context*/) {
     // Does nothing.  Here for completeness.
 }
 
@@ -256,7 +256,7 @@ JmriPanel(p)
  * Handle a volume slider change
  */
 // NOTE: should this be /*public*/???
-/*public*/ void VSDecoderPane::volumeChange(ChangeEvent* e) {
+/*public*/ void VSDecoderPane::volumeChange(ChangeEvent* /*e*/) {
     //JSlider v = (JSlider) e.getSource();
     log->debug("Volume slider moved. value = " + volume->value());
     firePropertyChange(VOLUME_CHANGE, volume->value(), volume->value());

@@ -116,6 +116,7 @@ public:
     /*public*/ static void backup(File* file);// //throws IOException
     /*public*/ static QString sanitizeFilename(QString name);
     /*public*/ static QStringList* findProgramPath();
+    /*public*/ static QString locateFile(QDir start, QString fileName);
 
 
 signals:

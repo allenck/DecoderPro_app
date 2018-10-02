@@ -301,7 +301,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
  _isRemoved = false;
  this->jpp = jpp;
 
- log->debug(tr("Instantiating node \"%1\"").arg(name));
+ //log->debug(tr("Instantiating node \"%1\"").arg(name));
 
  root = new QMap<QString, QString>();
  children = new QMap<QString, JmriPreferences*>();

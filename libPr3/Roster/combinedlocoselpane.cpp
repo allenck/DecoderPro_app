@@ -637,6 +637,7 @@ void CombinedLocoSelPane::updateForDecoderNotID(int pMfgID, int pModelID)
 /*protected*/ void CombinedLocoSelPane::openNewLoco()
 {
  // find the decoderFile object
+ setCursor(Qt::WaitCursor);
  DecoderFile* decoderFile = DecoderIndexFile::instance()->fileFromTitle(selectedDecoderType());
  if (log->isDebugEnabled()) log->debug("decoder file: "+decoderFile->getFilename());
 
@@ -651,6 +652,8 @@ void CombinedLocoSelPane::updateForDecoderNotID(int pMfgID, int pModelID)
  Roster::instance()->addEntry(re);
 
  startProgrammer(decoderFile, re, programmerBox->currentText());
+ setCursor(Qt::ArrowCursor);
+
 }
 
 /** meant to be overridden to start the desired type of programmer */

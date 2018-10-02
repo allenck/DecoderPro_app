@@ -237,7 +237,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  {
 #if 1 // TODO:
   QList<WaitingThrottle*>* a = throttleListeners->value(la);
-  if (a->isEmpty()) return;
+  if (a == NULL) return;
   for (int i = 0; i<a->size(); i++)
   {
    if (l == a->value(i)->getListener())

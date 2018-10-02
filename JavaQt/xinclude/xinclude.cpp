@@ -26,6 +26,8 @@ bool XInclude::copyXml(QUrl *in, File* toFile, QWidget* who)
    throw IOException(tr("input file \"%1\" can not be opened").arg(in->path()));
   reader->setDevice(fin);
 
+  FileUtil::createDirectory(toFile->getParent());
+
   QFile* fout = new QFile(toFile->getPath());
   if(!fout->open(QIODevice::WriteOnly)) throw IOException(tr("File \"%1\" cannot be opened").arg(toFile->getPath()));
   writer->setDevice(fout);
@@ -36,7 +38,7 @@ bool XInclude::copyXml(QUrl *in, File* toFile, QWidget* who)
   writer->writeStartDocument(reader->documentVersion().toString());
   QXmlStreamReader::TokenType type;
   QString typeString;
-  while(type = reader->readNext())
+  while((type = reader->readNext()))
   {
    typeString = reader->tokenString();
    if(type == QXmlStreamReader::ProcessingInstruction)
@@ -110,8 +112,9 @@ bool XInclude::processStartElement(QXmlStreamReader* reader)
  {
   if(attributes.count() > 0 && sl.at(0) == "href")
   {
+   QString href = sv.at(0);
    qDebug() << tr("Process xi:include href=\"%1\"").arg(sv.at(0));
-   QUrl* url = new QUrl(sv.at(0));
+   QUrl* url = new QUrl(href);
    if(!url->isValid())
     throw Exception(tr("Invalid url: \"%1\"").arg(url->path()));
    processInclude(url);
@@ -146,6 +149,7 @@ bool XInclude::processStartElement(QXmlStreamReader* reader)
  do
  {
   QXmlStreamReader::TokenType type = reader->readNext();
+  Q_UNUSED(type);
   QString typeString = reader->tokenString();
   if(reader->isCharacters())
   {
@@ -175,7 +179,8 @@ bool XInclude::processStartElement(QXmlStreamReader* reader)
 bool XInclude::XInclude::processInclude(QUrl* href)
 {
  this->href = href;
- if(href->path().startsWith("/xml/decoders/"))
+ QString hPath = href->path();
+ if(hPath.startsWith("xml/") || hPath.startsWith("/xml/"))
  {
   qDebug() << href->path();
   QFile* fi = new QFile(FileUtil::getProgramPath()+ href->path());
@@ -207,6 +212,7 @@ bool XInclude::XInclude::processInclude(QUrl* href)
  loop.exec();
  if(!timer.isActive())
   throw IOException(tr("failure reading %1").arg(href->path()));
+ return true;
 }
 
 void XInclude::fileDownloaded(QNetworkReply* pReply)
@@ -229,11 +235,12 @@ void XInclude::processIncludeBody(QXmlStreamReader* reader)
  {
   writer->writeComment(tr("XInclude read from %1=%2").arg("href").arg(href->path()));
 
-  reader->readNextStartElement();
+  //reader->readNextStartElement();
   QString rootName = reader->qualifiedName().toString();
   reader->readNext();
 
   QXmlStreamReader::TokenType type;
+  Q_UNUSED(type);
   QString typeString;
   do
   {

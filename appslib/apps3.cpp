@@ -146,10 +146,12 @@
 
 /*protected*/ void Apps3::addToActionModel() {
  CreateButtonModel* bm = (CreateButtonModel*)InstanceManager::getDefault("CreateButtonModel");
+ Q_UNUSED(bm);
 //    ResourceBundle rb = getActionModelResourceBundle();
 //    if (rb == NULL || bm == NULL) {
 //        return;
-//    }//    QStringListIterator e = rb.getKeys();
+//    }
+ //    QStringListIterator e = rb.getKeys();
  //    while (e.hasMoreElements()) {
  //        QString key = e.nextElement();
  //        try {

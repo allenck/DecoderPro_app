@@ -15,16 +15,17 @@
 }
 
 //@Override
-/*public*/ void WiFiConsist::add(DccLocoAddress* loco, bool dirNorm) {
+/*public*/ void WiFiConsist::add(DccLocoAddress* loco, bool dirNorm)
+{
     restore(loco, dirNorm);
     sendConsistCommand(loco, dirNorm, this);
 }
 
 //@Override
 /*public*/ void WiFiConsist::remove(DccLocoAddress* loco) {
-    ConsistDir->remove(loco);
-    ConsistList->removeOne(loco);
-    ConsistPosition->remove(loco);
+    consistDir->remove(loco);
+    consistList->removeOne(loco);
+    consistPosition->remove(loco);
     sendConsistCommand(loco, true, NULL);
 }
 

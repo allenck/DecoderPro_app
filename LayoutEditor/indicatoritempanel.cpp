@@ -19,7 +19,7 @@
 /**
 * Constructor for plain icons and backgrounds
 */
-/*public*/ IndicatorItemPanel::IndicatorItemPanel(JmriJFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent) : FamilyItemPanel(parentFrame, type, family, editor, parent)
+/*public*/ IndicatorItemPanel::IndicatorItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent) : FamilyItemPanel(parentFrame, type, family, editor, parent)
 {
     //super(parentFrame, type, family, editor);
     log = new Logger("IndicatorItemPanel");
@@ -67,7 +67,7 @@
     }
 }
 
-/*protected*/ void IndicatorItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey) {
+/*protected*/ void IndicatorItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString /*displayKey*/) {
     FamilyItemPanel::makeDndIconPanel(iconMap, "ClearTrack");
 }
 

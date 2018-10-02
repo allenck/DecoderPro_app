@@ -5,7 +5,7 @@
 #include <QMenu>
 #include "logger.h"
 #include "actionlistener.h"
-#include "jmrijframe.h"
+#include "displayframe.h"
 
 class QGraphicsSceneMouseEvent;
 class EditPortalDirection;
@@ -102,7 +102,7 @@ private:
     IndicatorItemPanel* _trackPanel;
     IndicatorTOItemPanel* _trackTOPanel;
     PositionableLabel* _oldIcon;
-    JmriJFrame* _convertFrame;     // must be modal dialog to halt convetIcons loop
+    DisplayFrame* _convertFrame;     // must be modal dialog to halt convetIcons loop
     QDialog* _convertDialog;     // must be modal dialog to halt convetIcons loop
     /*private*/ bool editingOK();
     /*private*/ QList<Positionable*>* makeSelectionGroup(OBlock* block, bool showPort);
@@ -191,6 +191,7 @@ protected slots:
  friend class PortalIcon;
 
 };
+
 class TOPActionListener : public ActionListener
 {
  Q_OBJECT
@@ -202,7 +203,7 @@ public:
 public slots:
  void actionPerformed(ActionEvent *e = 0);
 };
-/*static*/ class convertFrame : public JmriJFrame {
+/*static*/ class convertFrame : public DisplayFrame {
     Q_OBJECT
     QDialog* _dialog;
     CircuitBuilder* parent;
@@ -210,6 +211,7 @@ public:
     convertFrame (QDialog* dialog, CircuitBuilder* parent) ;
     /*public*/ void pack();
 };
+
 class EditCircuitActionListener : public ActionListener
 {
  Q_OBJECT
@@ -228,6 +230,7 @@ public slots:
   parent-> editCircuitError(sysName);
  }
 };
+
 class PortalCircuitActionListener : public ActionListener
 {
     Q_OBJECT

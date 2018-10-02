@@ -6,7 +6,6 @@ IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
     AbstractIdentify(programmer, parent)
 {
  address = -1;
- originalMode = DefaultProgrammerManager::NONE;
  log = new Logger("IdentifyLoco");
 }
 /**

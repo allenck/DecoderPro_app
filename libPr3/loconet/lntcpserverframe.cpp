@@ -1,10 +1,11 @@
-#include "serverframe.h"
+#include "lntcpserverframe.h"
 #include <QSpinBox>
 #include <QPushButton>
 #include <QCheckBox>
 #include <QBoxLayout>
-#include "server.h"
+#include "lntcpserver.h"
 #include <QLabel>
+#include "instancemanager.h"
 
 //ServerFrame::ServerFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -30,19 +31,20 @@
  */
 // /*private*/ static final long serialVersionUID = -3729652398213286613L;
 
-/*private*/ ServerFrame::ServerFrame(QWidget *parent) :
+/*public*/ LnTcpServerFrame::LnTcpServerFrame(LnTcpServer* server, QWidget *parent) :
 JmriJFrame(QString("LocoNetOverTcp Server"), parent)
 {
+ this->server = server;
  //super("LocoNetOverTcp Server");
  portNumberLabel = new QLabel("  Port Number: ");
- serverStatus = new QLabel("Server Status:         ");
+ statusLabel = new QLabel("Server Status:         ");
  clientStatus = new QLabel("   Client Count:  ");
 
- autoStartCheckBox = new QCheckBox(
-         "Start Server at Application Startup");
+ //autoStartCheckBox = new QCheckBox(
+//         "Start Server at Application Startup");
  startButton = new QPushButton("Start Server");
  stopButton = new QPushButton("Stop Server");
- saveButton = new QPushButton("Save Settings");
+ //saveButton = new QPushButton("Save Settings");
 
  //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
  QWidget* centralWidget = new QWidget();
@@ -50,12 +52,12 @@ JmriJFrame(QString("LocoNetOverTcp Server"), parent)
  centralWidget->setLayout(centralWidgetLayout);
  setCentralWidget(centralWidget);
 
- portNumber = new QSpinBox();
- //portNumberModel = new SpinnerNumberModel(65535, 1, 65535, 1);
- //portNumber.setModel(portNumberModel);
- portNumber->setMinimum(1);
- portNumber->setMaximum(65535);
- portNumber->setSingleStep(1);
+// portNumber = new QSpinBox();
+// //portNumberModel = new SpinnerNumberModel(65535, 1, 65535, 1);
+// //portNumber.setModel(portNumberModel);
+// portNumber->setMinimum(1);
+// portNumber->setMaximum(65535);
+// portNumber->setSingleStep(1);
 
 // portNumber->setFocusable(false);
 
@@ -64,9 +66,9 @@ JmriJFrame(QString("LocoNetOverTcp Server"), parent)
 // JPanel panel = new JPanel();
 // panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
   QHBoxLayout* panelLayout = new QHBoxLayout;
-  panelLayout->addWidget(autoStartCheckBox);
-  panelLayout->addWidget(portNumberLabel);
-  panelLayout->addWidget(portNumber);
+  //panelLayout->addWidget(autoStartCheckBox);
+//  panelLayout->addWidget(portNumberLabel);
+//  panelLayout->addWidget(portNumber);
   //getContentPane().add(panel);
   centralWidgetLayout->addLayout(panelLayout);
  }
@@ -76,7 +78,7 @@ JmriJFrame(QString("LocoNetOverTcp Server"), parent)
   QHBoxLayout* panelLayout = new QHBoxLayout;
   panelLayout->addWidget(startButton);
   panelLayout->addWidget(stopButton);
-  panelLayout->addWidget(saveButton);
+  //panelLayout->addWidget(saveButton);
  //getContentPane().add(panel);
   centralWidgetLayout->addLayout(panelLayout);
  }
@@ -85,7 +87,7 @@ JmriJFrame(QString("LocoNetOverTcp Server"), parent)
 // JPanel panel = new JPanel();
 // panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
   QHBoxLayout* panelLayout = new QHBoxLayout;
-  panelLayout->addWidget(serverStatus);
+  panelLayout->addWidget(statusLabel);
   panelLayout->addWidget(clientStatus);
   //getContentPane().add(panel);
   centralWidgetLayout->addLayout(panelLayout);
@@ -112,128 +114,117 @@ JmriJFrame(QString("LocoNetOverTcp Server"), parent)
 //         Server.getInstance().saveSettings();
 //     }
 // });
- connect(saveButton, SIGNAL(clicked()), this, SLOT(on_saveButton_clicked()));
+// connect(saveButton, SIGNAL(clicked()), this, SLOT(on_saveButton_clicked()));
 
 // autoStartCheckBox.addActionListener(new ActionListener() {
 //     /*public*/ void actionPerformed(ActionEvent a) {
 //         saveButton.setEnabled(true);
 //     }
 // });
- connect(autoStartCheckBox, SIGNAL(toggled(bool)), this, SLOT(on_autoStartCheckBox_toggled(bool)));
+ //connect(autoStartCheckBox, SIGNAL(toggled(bool)), this, SLOT(on_autoStartCheckBox_toggled(bool)));
 
- if (portNumber != NULL) {
+// if (portNumber != NULL) {
 //     portNumber.addChangeListener(new ChangeListener() {
 //         /*public*/ void stateChanged(ChangeEvent e) {
 //             saveButton.setEnabled(true);
 //         }
 //     });
-  connect(portNumber, SIGNAL(valueChanged(int)), this, SLOT(on_portNumber_valueChanged(int)));
- }
+//  connect(portNumber, SIGNAL(valueChanged(int)), this, SLOT(on_portNumber_valueChanged(int)));
+// }
 
- connect(Server::getInstance(), SIGNAL(serverStateChanged(Server*)), this, SLOT(notifyServerStateChanged(Server*)));
+ connect(this->server, SIGNAL(serverStateChanged(LnTcpServer*)), this, SLOT(notifyServerStateChanged(LnTcpServer*)));
+ connect(this->server, SIGNAL(clientStateChanged(LnTcpServer*,int)), this, SLOT(notifyClientStateChanged(LnTcpServer*,int)));
 
  updateClientStatus();
 
  adjustSize();
 }
-void ServerFrame::on_startButton_clicked()
+
+void LnTcpServerFrame::on_startButton_clicked()
 {
- Server::getInstance()->enable();
+ this->server->enable();
 }
-void ServerFrame::on_stopButton_clicked()
+
+void LnTcpServerFrame::on_stopButton_clicked()
 {
- Server::getInstance()->disable();
+ this->server->disable();
 }
-void ServerFrame::on_saveButton_clicked()
-{
- Server::getInstance()->setAutoStart(autoStartCheckBox->isChecked());
- Server::getInstance()->setPortNumber( portNumber->value());
- Server::getInstance()->saveSettings();
-}
-void ServerFrame::on_autoStartCheckBox_toggled(bool)
-{
- saveButton->setEnabled(true);
-}
-void ServerFrame::on_portNumber_valueChanged(int)
-{
- saveButton->setEnabled(true);
-}
+//void ServerFrame::on_saveButton_clicked()
+//{
+// LnTcpServer::getInstance()->setAutoStart(autoStartCheckBox->isChecked());
+// LnTcpServer::getInstance()->setPortNumber( portNumber->value());
+// LnTcpServer::getInstance()->saveSettings();
+//}
+//void LnTcpServerFrame::on_autoStartCheckBox_toggled(bool)
+//{
+// saveButton->setEnabled(true);
+//}
+//void LnTcpServerFrame::on_portNumber_valueChanged(int)
+//{
+// saveButton->setEnabled(true);
+//}
 
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
 //        justification = "Only used during system initialization")
-/*public*/ void ServerFrame::windowClosing(QCloseEvent* e) {
+/*public*/ void LnTcpServerFrame::windowClosing(QCloseEvent* e) {
     setVisible(false);
     self = NULL;
-    Server::getInstance()->setStateListner(NULL);
+    this->server->setStateListner(NULL);
     dispose();
     JmriJFrame::windowClosing(e);
 }
 
-/*public*/ void ServerFrame::dispose() {
+/*public*/ void LnTcpServerFrame::dispose() {
     JmriJFrame::dispose();
 }
-ServerFrame* ServerFrame::self = NULL;
+LnTcpServerFrame* LnTcpServerFrame::self = NULL;
 
-/*static*/ /*public*/ /*synchronized*/ ServerFrame* ServerFrame::getInstance()
+/*static*/ /*public*/ /*synchronized*/ LnTcpServerFrame* LnTcpServerFrame::getInstance()
 {
- if (self == NULL)
- {
-  self = new ServerFrame();
-  Server* server = Server::getInstance();
-  server->setStateListner((ServerListner*)self);
-  server->updateServerStateListener();
-  server->updateClientStateListener();
-  connect(server, SIGNAL(clientStateChanged(Server*,int)), self, SLOT(notifyClientStateChanged(Server*,int)));
- }
-
- return self;
+ return getDefault();
 }
 
-/*private*/ void ServerFrame::updateServerStatus()
+/**
+ * Get the server status window for the default LocoNet over TCP server.
+ *
+ * @return the default server frame instance, creating it if needed
+ */
+/*static*/ /*public*/ /*synchronized*/ LnTcpServerFrame* LnTcpServerFrame::getDefault()
 {
- Server* server = Server::getInstance();
- autoStartCheckBox->setChecked(server->getAutoStart());
- autoStartCheckBox->setEnabled(!server->isEnabled());
- if (portNumber != NULL)
- {
-  portNumber->setValue(server->getPortNumber());
-  portNumber->setEnabled(!server->isEnabled());
-  portNumberLabel->setEnabled(!server->isEnabled());
- }
+ LnTcpServerFrame* frame = (LnTcpServerFrame*)InstanceManager::getOptionalDefault("LnTcpServerFrame");
+ if(frame == NULL)
+  frame = (LnTcpServerFrame*)InstanceManager::setDefault("LnTcpServerFrame", new LnTcpServerFrame(LnTcpServer::getDefault()));
+ return frame;
+}
+
+/*private*/ void LnTcpServerFrame::updateServerStatus()
+{
+ LnTcpServer* server = LnTcpServer::getInstance();
+// autoStartCheckBox->setChecked(server->getAutoStart());
+// autoStartCheckBox->setEnabled(!server->isEnabled());
+// if (portNumber != NULL)
+// {
+//  portNumber->setValue(server->getPortNumber());
+//  portNumber->setEnabled(!server->isEnabled());
+//  portNumberLabel->setEnabled(!server->isEnabled());
+// }
  startButton->setEnabled(!server->isEnabled());
  stopButton->setEnabled(server->isEnabled());
- saveButton->setEnabled(server->isSettingChanged());
- serverStatus->setText(tr("Server Status: ") + (server->isEnabled() ? "Enabled" : "Disabled"));
+ //saveButton->setEnabled(server->isSettingChanged());
+ statusLabel->setText(tr("Server Status: ") + (server->isEnabled() ? "Enabled" : "Disabled"));
 }
 
-/*private*/ void ServerFrame::updateClientStatus() {
-    clientStatus->setText("   Client Count: " + QString::number(Server::getInstance()->getClientCount()));
+/*private*/ void LnTcpServerFrame::updateClientStatus() {
+    clientStatus->setText("   Client Count: " + QString::number(LnTcpServer::getInstance()->getClientCount()));
 }
 
-/*public*/ void ServerFrame::notifyServerStateChanged(Server* s)
+/*public*/ void LnTcpServerFrame::notifyServerStateChanged(LnTcpServer* /*s*/)
 {
-#if 0
-    javax.swing.SwingUtilities.invokeLater(new Runnable() {
-        /*public*/ void run() {
-            updateServerStatus();
-        }
-    });
-#else
  updateServerStatus();
-#endif
 }
 
-/*public*/ void ServerFrame::notifyClientStateChanged(Server* s, int clients)
+/*public*/ void LnTcpServerFrame::notifyClientStateChanged(LnTcpServer* /*s*/, int clients)
 {
-#if 0
-    javax.swing.SwingUtilities.invokeLater(new Runnable() {
-        /*public*/ void run() {
-            updateClientStatus();
-        }
-    });
-
-#endif
     clientStatus->setText("   Client Count: " + QString::number(clients));
-
 }
 

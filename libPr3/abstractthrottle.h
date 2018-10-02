@@ -18,6 +18,8 @@ public:
     /*public final*/ static float SPEED_STEP_128_INCREMENT;//=1.0f/126.0f; // remember there are only 126 ;
     /*public*/ float getSpeedSetting();
     /*public*/ void setSpeedSetting(float speed);
+    /*public*/ void setSpeedSetting(float speed, bool allowDuplicates, bool allowDuplicatesOnStop);
+    /*public*/ void setSpeedSettingAgain(float speed);
     /*public*/ bool getIsForward();
     /*public*/ void setIsForward(bool forward);
     /*public*/ bool getF0();
@@ -194,16 +196,16 @@ protected:
      */
     /*protected*/ bool active;
     /*protected*/ SystemConnectionMemo* adapterMemo;
-         /*protected*/ void sendFunctionGroup1();
-         /*protected*/ void sendFunctionGroup2();
-         /*protected*/ void sendFunctionGroup3();
-         /*protected*/ void sendFunctionGroup4();
-         /*protected*/ void sendFunctionGroup5();
-         /*protected*/ void sendMomentaryFunctionGroup1();
-         /*protected*/ void sendMomentaryFunctionGroup2();
-         /*protected*/ void sendMomentaryFunctionGroup3();
-         /*protected*/ void sendMomentaryFunctionGroup4() ;
-         /*protected*/ void sendMomentaryFunctionGroup5();
+    /*protected*/ virtual void sendFunctionGroup1();
+    /*protected*/ virtual void sendFunctionGroup2();
+    /*protected*/ virtual void sendFunctionGroup3();
+    /*protected*/ virtual void sendFunctionGroup4();
+    /*protected*/ virtual void sendFunctionGroup5();
+    /*protected*/ virtual void sendMomentaryFunctionGroup1();
+    /*protected*/ virtual void sendMomentaryFunctionGroup2();
+    /*protected*/ virtual void sendMomentaryFunctionGroup3();
+    /*protected*/ virtual void sendMomentaryFunctionGroup4() ;
+    /*protected*/ virtual void sendMomentaryFunctionGroup5();
      /*protected*/ void record(float speed);
      /*protected*/ void startClock();
      void stopClock();

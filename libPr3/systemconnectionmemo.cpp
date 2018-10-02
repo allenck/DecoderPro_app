@@ -7,6 +7,7 @@
 #include "internalsystemconnectionmemo.h"
 #include "loggerfactory.h"
 #include "startupactionmodelutil.h"
+#include "systemconnectionmemomanager.h"
 
 /**
  * Lightweight abstract class to denote that a system is active,
@@ -19,6 +20,11 @@
  * @author		Bob Jacobsen  Copyright (C) 2010
  * @version             $Revision: 18843 $
  */
+
+/*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::DISABLED = "ConnectionDisabled";
+/*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::USER_NAME = "ConnectionNameChanged";
+/*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::SYSTEM_PREFIX = "ConnectionPrefixChanged";
+
 QVector<PropertyChangeListener*>* SystemConnectionMemo::listeners = new QVector<PropertyChangeListener*>();
 QStringList* SystemConnectionMemo::userNames = new QStringList();
 QStringList* SystemConnectionMemo::sysPrefixes = new QStringList();
@@ -132,23 +138,7 @@ void SystemConnectionMemo::Register()
 {
  log->debug(tr("register as SystemConnectionMemo, really of type %1").arg(this->metaObject()->className()));
 
- // check for special case
- QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
- if ((list->size() > 0) && (qobject_cast<InternalSystemConnectionMemo*>(list->at(list->size()-1)) != NULL))
- {
-     // last is internal, so insert before that one
-     log->debug("   putting one before end");
-//     SystemConnectionMemo* old = (SystemConnectionMemo*)list->at(list->size()-1);
-//     InstanceManager::deregister(old, "SystemConnectionMemo");
-//     InstanceManager::store(this, "SystemConnectionMemo");
-//     InstanceManager::store(old, "SystemConnectionMemo");
-     InstanceManager::storeBefore(list->size()-1, this,"SystemConnectionMemo");
- } else {
-     // just add on end
-     InstanceManager::store(this, "SystemConnectionMemo");
- }
-
- notifyPropertyChangeListener("ConnectionAdded", QVariant(), QVariant());
+ SystemConnectionMemoManager::getDefault()->_register(this);
 }
 
 /**
@@ -174,51 +164,60 @@ bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
  if(addSystemPrefix(systemPrefix))
  {
   prefix = systemPrefix;
-  if (this->prefixAsLoaded == "")
+  if (SystemConnectionMemoManager::getDefault()->isSystemPrefixAvailable(systemPrefix))
   {
-   this->prefixAsLoaded = systemPrefix;
+     prefix = systemPrefix;
+     if (this->prefixAsLoaded == "")
+     {
+         this->prefixAsLoaded = systemPrefix;
+     }
+     //this.propertyChangeSupport.firePropertyChange(SYSTEM_PREFIX, oldPrefix, systemPrefix);
+     emit propertyChange(new PropertyChangeEvent(this, SYSTEM_PREFIX, oldPrefix, systemPrefix));
+     return true;
   }
-  removeSystemPrefix(oldPrefix);
-  notifyPropertyChangeListener("ConnectionPrefixChanged", QVariant(oldPrefix), QVariant(systemPrefix));
-  return true;
  }
  log->debug(tr("setSystemPrefix false for \"%1\"").arg( systemPrefix));
  return false;
 }
 
+
+
 /**
- * Provides access to the system user name string.
+ * Provide access to the system user name string.
+ * <p>
  * This was previously fixed at configuration time.
+ *
+ * @return User name
  */
-QString SystemConnectionMemo::getUserName() { return userName; }
+/*public*/ QString SystemConnectionMemo::getUserName() {
+    return userName;
+}
 
-//This should probably throwing an exception
-bool SystemConnectionMemo::setUserName(QString name)
-{
- if (name == "")
-  throw new NullPointerException();
- if (name == (userName))
- {
-  if (this->userNameAsLoaded == "")
-  {
-      this->userNameAsLoaded = name;
-  }
-  return true;
- }
-
- QString oldUserName = this->userName;
- if(addUserName(name))
- {
-  this->userName = name;
-  if (this->userNameAsLoaded == "")
-  {
-      this->userNameAsLoaded = name;
-  }
-  removeUserName(oldUserName);
-  notifyPropertyChangeListener("ConnectionNameChanged", oldUserName, name);
-  return true;
- }
- return false;
+/**
+ * Set the user name for the system connection.
+ *
+ * @param userName user name to use for this system connection
+ * @throws java.lang.NullPointerException if name is null
+ * @return true if the user name could be set.
+ */
+/*public*/ /*final*/ bool SystemConnectionMemo::setUserName(/*@Nonnull*/ QString userName) {
+    //Objects.requireNonNull(userName);
+    if (userName == (this->userName)) {
+        if (this->userNameAsLoaded == "") {
+            this->userNameAsLoaded = userName;
+        }
+        return true;
+    }
+    QString oldUserName = this->userName;
+    if (SystemConnectionMemoManager::getDefault()->isUserNameAvailable(userName)) {
+        this->userName = userName;
+        if (this->userNameAsLoaded == "") {
+            this->userNameAsLoaded = userName;
+        }
+        //this.propertyChangeSupport.firePropertyChange(USER_NAME, oldUserName, userName);
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -270,7 +269,7 @@ void SystemConnectionMemo::setDisabled(bool disabled)
 
 /*static*/ void SystemConnectionMemo::addPropertyChangeListener(PropertyChangeListener* l) {
     // add only if not already registered
-    if (!listeners->contains(l)) {
+    if ( !listeners->contains(l)) {
         listeners->append(l);
     }
 }

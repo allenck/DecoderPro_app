@@ -363,7 +363,6 @@
  *		been made.
  */
 /*private*/ void LayoutEditorAuxTools::updateBlockConnectivity() {
- #if 1 // TODO:
     int sz = cList->size();
     QVector<bool> found = QVector<bool>(sz);
     for (int i=0;i<sz;i++) {found.replace(i,false);}
@@ -606,7 +605,6 @@
         }
     }
     blockConnectivityChanged = false;
-#endif
 }
 //
 /*private*/ void LayoutEditorAuxTools::checkConnectivity(LayoutConnectivity* c,QVector<bool> found) {

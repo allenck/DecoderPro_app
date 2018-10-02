@@ -1,6 +1,7 @@
 #ifndef BOUNDEDRANGEMODEL_H
 #define BOUNDEDRANGEMODEL_H
 #include "javaqt_global.h"
+#include "qobject.h"
 
 class ChangeListener;
 /**
@@ -52,8 +53,9 @@ class ChangeListener;
  * @author Hans Muller
  * @see DefaultBoundedRangeModel
  */
-/*public*/ class JAVAQTSHARED_EXPORT BoundedRangeModel
+/*public*/ class JAVAQTSHARED_EXPORT BoundedRangeModel : public QObject
 {
+ //Q_OBJECT
  public:
     /**
      * Returns the minimum acceptable value.

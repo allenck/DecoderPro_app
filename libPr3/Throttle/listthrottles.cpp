@@ -26,15 +26,15 @@ ListThrottles::ListThrottles(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *par
  connect(emergencyStop, SIGNAL(triggered()), this, SLOT(on_emergencyStop_clicked()));
  ui->toolBar->addAction(emergencyStop);
 
- pmgr=(LnPowerManager*)InstanceManager::powerManagerInstance();
+ pmgr=(PowerManager*)InstanceManager::getDefault("PowerManager");
  if(this->pmgr != NULL)
  {
   //LnPowerManager* pmgr = memo->getPowerManager();
   pmgr->addPropertyChangeListener((PropertyChangeListener*)this);
-  connect(pmgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  if(pmgr->isPowerOn())
+  connect(pmgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,  SLOT(propertyChange(PropertyChangeEvent*)));
+  if(((LnPowerManager*)pmgr)->isPowerOn())
    togglePower = new QAction(QIcon(":/resources/icons/throttles/power_green.png"), tr("Power on"), this);
-  else if (pmgr->isPowerOff())
+  else if (((LnPowerManager*)pmgr)->isPowerOff())
    togglePower = new QAction(QIcon(":/resources/icons/throttles/power_red.png"), tr("Power off"), this);
   else
    togglePower = new QAction(QIcon(":/resources/icons/throttles/power_yellow.png"), tr("Power unknown"), this);
@@ -60,7 +60,7 @@ ListThrottles::~ListThrottles()
 void ListThrottles::on_togglePower_clicked()
 {
 // LnPowerManager* pmgr = memo->getPowerManager();
- if(pmgr->isPowerOn())
+ if(((LnPowerManager*)pmgr)->isPowerOn())
   pmgr->setPower(PowerManager::OFF);
  else
   pmgr->setPower(PowerManager::ON);
@@ -70,12 +70,12 @@ void ListThrottles::propertyChange(PropertyChangeEvent *e)
  if(e->getPropertyName() == "Power")
  {
   //LnPowerManager* pmgr = memo->getPowerManager();
-  if(pmgr->isPowerOn())
+  if(((LnPowerManager*)pmgr)->isPowerOn())
   {
    togglePower->setIcon(QIcon(":/resources/icons/throttles/power_green.png"));
    togglePower->setText(tr("Power on"));
   }
-  else if (pmgr->isPowerOff())
+  else if (((LnPowerManager*)pmgr)->isPowerOff())
   {
    togglePower->setIcon(QIcon(":/resources/icons/throttles/power_red.png"));
    togglePower->setText(tr("Power off"));

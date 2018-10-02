@@ -19,10 +19,10 @@ public:
  /*public*/ void addConsistListListener(ConsistListListener* listener);
  /*public*/ void removeConsistListListener(ConsistListListener* listener);
  /*public*/ bool isConsistManager();
- /*public*/ void notifyConsistListChanged();
 
 public slots:
  void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void notifyConsistListChanged();
 
 signals:
  void consistListChanged();

@@ -42,7 +42,6 @@ void AutomatTableAction::common()
 /*public*/ void AutomatTableAction::actionPerformed(ActionEvent* /*e*/)
 { // create the frame
  f = new AutomatTableFrame(new AutomatTableDataModel());
- // TODO: set model
  f->pack();
  f->setVisible(true);
 

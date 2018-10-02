@@ -238,19 +238,19 @@ void LnTurnout::sendSetOffMessage(int state) {
                     // sort out states
                      int state;
                      state = sw2 &
-                             (/*LnConstants::*/OPC_SW_REP_CLOSED|/*LnConstants::*/OPC_SW_REP_THROWN);
+                             (LnConstants::OPC_SW_REP_CLOSED|LnConstants::OPC_SW_REP_THROWN);
                      state = adjustStateForInversion(state);
 
                      switch (state) {
-                 case /*LnConstants::*/OPC_SW_REP_CLOSED:
+                 case 0x20: //LnConstants::OPC_SW_REP_CLOSED:
                      newCommandedState(Turnout::CLOSED);
                      if (getFeedbackMode()==Turnout::MONITORING || getFeedbackMode()==Turnout::DIRECT) newKnownState(Turnout::CLOSED);
                      break;
-                 case /*LnConstants::*/OPC_SW_REP_THROWN:
+                 case 0x10: //LnConstants::OPC_SW_REP_THROWN:
                      newCommandedState(Turnout::THROWN);
                      if (getFeedbackMode()==Turnout::MONITORING || getFeedbackMode()==Turnout::DIRECT) newKnownState(Turnout::THROWN);
                      break;
-                 case /*LnConstants::*/OPC_SW_REP_CLOSED|/*LnConstants::*/OPC_SW_REP_THROWN:
+                 case 0x30: //LnConstants::OPC_SW_REP_CLOSED|LnConstants::OPC_SW_REP_THROWN:
                      newCommandedState(Turnout::CLOSED+Turnout::THROWN);
                      if (getFeedbackMode()==Turnout::MONITORING || getFeedbackMode()==Turnout::DIRECT) newKnownState(Turnout::CLOSED+Turnout::THROWN);
                      break;

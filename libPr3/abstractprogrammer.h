@@ -48,8 +48,8 @@ private:
 
 protected:
 
-    const static int SHORT_TIMEOUT=2000;
-    const static int LONG_TIMEOUT=60000;
+    static int SHORT_TIMEOUT;//=2000;
+    static int LONG_TIMEOUT;//=60000;
 
     QTimer* timer;
     // data members to hold contact with the property listeners

@@ -29,6 +29,10 @@
 #include "dispatcheraction.h"
 #include "withrottlecreationaction.h"
 #include "webserveraction.h"
+#include "storexmlthrottleslayoutaction.h"
+#include "storedefaultxmlthrottleslayoutaction.h"
+#include "loadxmlthrottleslayoutaction.h"
+#include "loaddefaultxmlthrottleslayoutaction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -86,7 +90,7 @@ void ToolsMenu::common()
  addMenu(programmerMenu);
 
  // disable programmer menu if there's no programmer manager
- if (InstanceManager::programmerManagerInstance() == NULL) {
+ if (InstanceManager::getDefault("ProgrammerManager") == NULL) {
      programmerMenu->setEnabled(false);
  }
 
@@ -120,15 +124,13 @@ addAction(ta);
  throttleMenu->addAction(new ThrottleCreationAction(tr("New Throttle"),(WindowInterface*)this));
  throttleMenu->addAction(new ThrottlesListAction(tr("Throttles List Window"),this));
  throttleMenu->addSeparator();
-#if 0
- throttleMenu.add(new StoreXmlThrottlesLayoutAction(tr("MenuItemSaveThrottleLayout")));
- throttleMenu.add(new LoadXmlThrottlesLayoutAction(tr("MenuItemLoadThrottleLayout")));
- throttleMenu.addSeparator();
- throttleMenu.add(new StoreDefaultXmlThrottlesLayoutAction(tr("MenuItemSaveAsDefaultThrottleLayout")));
- throttleMenu.add(new LoadDefaultXmlThrottlesLayoutAction(tr("MenuItemLoadDefaultThrottleLayout")));
+ throttleMenu->addAction(new StoreXmlThrottlesLayoutAction(tr("Save Throttle Layout"),this));
+ throttleMenu->addAction(new LoadXmlThrottlesLayoutAction(tr("Open Throttles Layout..."),this));
+ throttleMenu->addSeparator();
+ throttleMenu->addAction(new StoreDefaultXmlThrottlesLayoutAction(tr("Save As Default Throttles Layout"),this));
+ throttleMenu->addAction(new LoadDefaultXmlThrottlesLayoutAction(tr("Load Default Throttles Layout"),this));
  //throttleMenu.addSeparator();
  //throttleMenu.add(new jmri.jmrit.throttle.ThrottlesPreferencesAction(tr("MenuItemThrottlesPreferences"))); // now in tabbed preferences
-#endif
  throttleMenu->addSeparator();
  throttleMenu->addAction(new WiThrottleCreationAction(tr("Start WiThrottle"),this));
  addMenu(throttleMenu);

@@ -26,7 +26,7 @@
     * Constructor for all table types.  When item is a bean, the itemType is the name key
     * for the item in jmri.NamedBeanBundle.properties
     */
-/*public*/ ItemPanel::ItemPanel(JmriJFrame* parentFrame, QString  type, QString family, Editor* editor, QWidget* parent)
+/*public*/ ItemPanel::ItemPanel(DisplayFrame* parentFrame, QString  type, QString family, Editor* editor, QWidget* parent)
     : QWidget(parent)
 {
  _update = false;    // Editing existing icon, do not allow icon dragging. set in init()
@@ -67,6 +67,10 @@
 }
 /*protected*/ void ItemPanel::removeIconMap(QString family) {
 }
+
+/*protected*/ void closeDialogs() {
+}
+
 /*protected*/ void ItemPanel::reset() {
   _paletteFrame->pack();
 //      _paletteFrame.invalidate();

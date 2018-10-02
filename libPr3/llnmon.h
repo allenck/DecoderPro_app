@@ -15,15 +15,22 @@
 #include "lnsensor.h"
 #include "lnsensormanager.h"
 
-class LnTurnoutManager;
-class LnSensorManager;
+class TurnoutManager;
+class SensorManager;
 //class LnReporterManager;
 //class LnReporter;
 class LIBPR3SHARED_EXPORT LlnMon : public QObject
 {
     Q_OBJECT
 public:
-    explicit LlnMon(QObject *parent = 0);
+    QT_DEPRECATED /*public*/explicit LlnMon(QObject *parent = 0);
+    QT_DEPRECATED /*public*/ LlnMon(LocoNetSystemConnectionMemo* memo, QObject *parent = 0);
+    QT_DEPRECATED /*public*/ LlnMon(/*@Nonnull*/ TurnoutManager* turnoutManager,
+         /*@Nonnull*/ SensorManager* sensorManager,
+         /*@Nonnull*/ ReporterManager* reporterManager, QObject *parent = 0);
+    QT_DEPRECATED /*public*/ LlnMon(/*@Nonnull*/ QString prefix, QObject *parent = 0);
+
+
     static QString getDeviceNameFromIPLInfo(int manuf, int type);
     static QString getSlaveNameFromIPLInfo(int manuf, int slaveNum);
     /**
@@ -38,23 +45,25 @@ public:
      * turnout "system names"
      * @param loconetTurnoutManager
      */
-    /*public*/ void setLocoNetTurnoutManager (LnTurnoutManager* loconetTurnoutManager);
+    QT_DEPRECATED /*public*/ void setLocoNetTurnoutManager (TurnoutManager* loconetTurnoutManager);
 
-    /*public*/ void setLocoNetReporterManager (LnReporterManager* loconetReporterManager);
+    QT_DEPRECATED /*public*/ void setLocoNetReporterManager (ReporterManager* loconetReporterManager);
 
     /**
      * sets the loconet sensor manager which is used to find sensor "user names" from
      * sensor "system names"
      * @param loconetSensorManager
      */
-    /*public*/ void setLocoNetSensorManager (LnSensorManager* loconetSensorManager);
+    QT_DEPRECATED /*public*/ void setLocoNetSensorManager (SensorManager* loconetSensorManager);
     static int SENSOR_ADR(int a1, int a2);
+
 
 
 signals:
 
 public slots:
 private:
+    void common(QString prefix);
     /**
      * Flag that determines if we print loconet opcodes
      */
@@ -118,15 +127,76 @@ private:
      * @return
      */
     static QString convertToMixed(int addressLow, int addressHigh);
-    QString locoNetTurnoutPrefix;
-    QString locoNetSensorPrefix;
-    QString locoNetReporterPrefix;
-    LnTurnoutManager* turnoutManager;
-#if 1
-    LnReporterManager* reporterManager;
-#endif
 
-    LnSensorManager* sensorManager;
+    /*private*/ QString trackStatusByteToString(int trackStatusByte);
+    /*private*/ QString figureAddressIncludingAliasing(int adr, int adr2, int ss2, int id1, int id2);
+    /*private*/ QString getAlmTaskType(int taskTypeByte) ;
+    QString turnoutPrefix;
+    QString sensorPrefix;
+    QString reporterPrefix;
+    TurnoutManager* turnoutManager;
+    ReporterManager* reporterManager;
+    SensorManager* sensorManager;
+
+    /*private*/ QString interpretOpcPeerXfer20_1(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20_2(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20_3(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20_4(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20_7(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20_10(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20_8(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20_0f(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer20Sub10(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer16(LocoNetMessage l);
+    /*private*/ QString interpretSV1Message(LocoNetMessage l) ;
+    /*private*/ QString interpretSV0Message(LocoNetMessage l);
+    /*private*/ QString interpretSV2Message(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer10(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer9(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer7(LocoNetMessage l);
+    /*private*/ QString interpretOpcPeerXfer(LocoNetMessage l);
+    /*private*/ QString interpretLongAck(LocoNetMessage l);
+    /*private*/ QString interpretPm4xPowerEvent(LocoNetMessage l);
+    /*private*/ QString interpretOpSws(LocoNetMessage l);
+    /*private*/ QString interpretDeviceType(LocoNetMessage l);
+    /*private*/ QString interpretOpcMultiSense(LocoNetMessage l);
+    /*private*/ QString interpretOpcMultiSenseTranspPresence(LocoNetMessage l);
+    /*private*/ QString interpretOpcWrSlDataOpcSlRdData(LocoNetMessage l);
+    /*private*/ QString interpretOpcInputRep(LocoNetMessage l);
+    /*private*/ QString interpretOpcSwRep(LocoNetMessage l);
+    /*private*/ QString interpretOpcSwAck(LocoNetMessage l);
+    /*private*/ QString interpretOpcSwState(LocoNetMessage l);
+    /*private*/ QString interpretOpcRqSlData(LocoNetMessage l);
+    /*private*/ QString interpretOpcMoveSlots(LocoNetMessage l);
+    /*private*/ QString interpretOpcConsistFunc(LocoNetMessage l);
+    /*private*/ QString interpretOpcLocoSnd(LocoNetMessage l);
+    /*private*/ QString interpretOpcLocoDirf(LocoNetMessage l);
+    /*private*/ QString interpretOpcLocoSpd(LocoNetMessage l);
+    /*private*/ QString interpretOpcPanelQuery(LocoNetMessage l);
+    /*private*/ QString interpretOpcSwReq(LocoNetMessage l);
+    /*private*/ QString interpretFastClockSlot(LocoNetMessage l, QString mode, int id1, int id2);
+    /*private*/ QString interpretProgSlot(LocoNetMessage l, QString mode, int id1, int id2, int command);
+    /*private*/ QString interpretCmdStnCfgSlotRdWr(LocoNetMessage l, int command);
+    /*private*/ QString interpretCmdStnExtCfgSlotRdWr(LocoNetMessage l, int command);
+    /*private*/ QString interpretStandardSlotRdWr(LocoNetMessage l, int id1, int id2, int command, int slot);
+    /*private*/ QString interpretOpcPanelResponse(LocoNetMessage l);
+#if 0
+    /*private*/ QString interpretOpcLissyUpdate(LocoNetMessage l);
+    /*private*/ QString interpretOpcImmPacket(LocoNetMessage l);
+#endif
+    /*private*/ QString interpretOpcPr3Mode(LocoNetMessage l);
+#if 0
+    /*private*/ QString interpretIb2Special(LocoNetMessage l);
+    /*private*/ QString interpretIb2F9_to_F12(LocoNetMessage l);
+#endif
+    /*private*/ static /*final*/ QList<QString> ds54sensors; //[] = {"AuxA", "SwiA", "AuxB", "SwiB", "AuxC", "SwiC", "AuxD", "SwiD"};    // NOI18N
+    /*private*/ static /*final*/ QList<QString> ds64sensors;//[] = {"A1", "S1", "A2", "S2", "A3", "S3", "A4", "S4"};                    // NOI18N
+    /*private*/ static /*final*/ QList<QString> se8csensors;//[] = {"DS01", "DS02", "DS03", "DS04", "DS05", "DS06", "DS07", "DS08"};    // NOI18N
+
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("Llnmon");
+    /*private*/ QString fcTimeToString(int hour, int minute);
+
 protected:
     /**
      * Global flag to indicate the message was not fully parsed, so the hex
@@ -140,6 +210,10 @@ protected:
      * @return String representation
      */
     QString format(LocoNetMessage l);
+    /*protected*/ QString interpretDIRF(int dirf);
+    /*protected*/ QVector<QString> interpretF0_F4toStrings(int dirf);
+    /*protected*/ QString directionOfTravelString(bool isForward);
+    /*protected*/ QVector<QString> interpretF5_F8toStrings(int snd);
 
 };
 

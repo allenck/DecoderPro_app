@@ -21,8 +21,8 @@
  */
 //private /*static final*/ long serialVersionUID = -734742811189091810L;
 
-/*static final*/ QString PathTurnoutTableModel::closed = ((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getClosedText();
-/*static final*/ QString PathTurnoutTableModel::thrown = ((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getThrownText();
+/*static final*/ QString PathTurnoutTableModel::closed = tr("Closed");//((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getClosedText();
+/*static final*/ QString PathTurnoutTableModel::thrown = tr("Thrown");//((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getThrownText();
 
 /*static final*/ QStringList PathTurnoutTableModel::turnoutStates = QStringList() << PathTurnoutTableModel::closed << PathTurnoutTableModel::thrown;//, unknown, inconsistent};
 

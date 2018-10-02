@@ -108,5 +108,5 @@ bool LnPortController::okToSend()
  //@Override
  /*public*/ SystemConnectionMemo* LnPortController::getSystemConnectionMemo()
  {
-  return (SystemConnectionMemo*) AbstractSerialPortController::getSystemConnectionMemo();
+  return (LocoNetSystemConnectionMemo*) AbstractSerialPortController::getSystemConnectionMemo();
  }

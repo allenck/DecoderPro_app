@@ -1,8 +1,9 @@
 #include "defaultlistmodel.h"
 #include <QVector>
 
+
 DefaultListModel::DefaultListModel(QObject *parent) :
-    QAbstractListModel(parent)
+    AbstractListModel(parent)
 {
  delegate = new QVector<QVariant>();
 }
@@ -44,7 +45,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
     /*public*/ int DefaultListModel::getSize() {
         return delegate->size();
     }
-    /*public*/ int DefaultListModel::rowCount(const QModelIndex &parent) const{
+    /*public*/ int DefaultListModel::rowCount(const QModelIndex &/*parent*/) const{
     return delegate->size();
 }
     /**
@@ -154,17 +155,18 @@ DefaultListModel::DefaultListModel(QObject *parent) :
     /*public*/ boolean isEmpty() {
         return delegate.isEmpty();
     }
-
+#endif
     /**
      * Returns an enumeration of the components of this list.
      *
      * @return  an enumeration of the components of this list
      * @see Vector#elements()
      */
-    /*public*/ Enumeration<E> elements() {
-        return delegate.elements();
+    /*public*/ QListIterator<QVariant> DefaultListModel::elements() {
+        //return delegate->elements();
+     return QListIterator<QVariant>(delegate->toList());
     }
-
+#if 0
     /**
      * Tests whether the specified object is a component in this list.
      *
@@ -315,7 +317,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
         beginRemoveRows(QModelIndex(), index, index);
         delegate->remove(index);
         endRemoveRows();
-        //fireIntervalRemoved(this, index, index);
+        fireIntervalRemoved(this, index, index);
     }
 #if 0
     /**
@@ -350,7 +352,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
     /*public*/ void DefaultListModel::addElement(QVariant element) {
         int index = delegate->size();
         delegate->append(element);
-        // TODO:fireIntervalAdded(this, index, index);
+        fireIntervalAdded(this, index, index);
     }
 #if 0
     /**
@@ -466,7 +468,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
         beginInsertRows(QModelIndex(), index, index);
         delegate->insert(index,element);
         endInsertRows();
-        //fireIntervalAdded(this, index, index);
+        fireIntervalAdded(this, index, index);
     }
 
     /**
@@ -484,7 +486,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
     /*public*/ QVariant DefaultListModel::remove(int index) {
         QVariant rv = delegate->at(index);
         delegate->remove(index);
-//        fireIntervalRemoved(this, index, index);
+        fireIntervalRemoved(this, index, index);
         return rv;
     }
 #if 0
@@ -525,7 +527,6 @@ DefaultListModel::DefaultListModel(QObject *parent) :
         fireIntervalRemoved(this, fromIndex, toIndex);
     }
 
-    /*
     /*public*/ void addAll(Collection c) {
     }
 

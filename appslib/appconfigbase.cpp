@@ -176,8 +176,11 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 {
  if (panel->isPersistant())
  {
-  InstanceManager::configureManagerInstance()->registerPref(panel);
+  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if (cm != NULL) {
+     cm->registerPref(panel);
  }
+}
  //if (panel instanceof ManagingPreferencesPanel)
  if(qobject_cast<ManagingPreferencesPanel*>(panel) != NULL)
  {

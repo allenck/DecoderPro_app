@@ -30,7 +30,7 @@
 #include "inputdialog.h"
 #include "xtablecolumnmodel.h"
 #include "turnouteditaction.h"
-
+#include "systemnamecomparator.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -186,6 +186,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   for(int x = 0; x<managerList.size(); x++)
   {
    connect(((AbstractTurnoutManager*)managerList.at(x))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  }
+  foreach (Manager* mgr, *((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->mgrs) {
+  connect((SensorManager*)mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
  }
  else
@@ -786,8 +789,11 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 #endif
     setColumnToHoldButton(_table, EDITCOL);
     setColumnToHoldDelegate(_table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), self));
-    setColumnToHoldDelegate(_table, SENSOR1COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
-    setColumnToHoldDelegate(_table, SENSOR2COL, new TTComboBoxDelegate(InstanceManager::sensorManagerInstance()->getSystemNameList(), self));
+    QStringList sensors = InstanceManager::sensorManagerInstance()->getSystemNameList();
+    qSort(sensors.begin(), sensors.end(), SystemNameComparator::compare);
+    sensorsColDelegate = new TTComboBoxDelegate(sensors, self);
+    setColumnToHoldDelegate(_table, SENSOR1COL, sensorsColDelegate);
+    setColumnToHoldDelegate(_table, SENSOR2COL, sensorsColDelegate);
     setColumnToHoldDelegate(_table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), self));
     setColumnToHoldDelegate(_table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), self));
     setColumnToHoldDelegate(_table, LOCKOPRCOL, new TTComboBoxDelegate(self->lockOperations, self));
@@ -831,6 +837,12 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  else if (e->getPropertyName()==("DefaultTurnoutThrownSpeedChange"))
  {
   self->updateThrownList();
+ }
+ else if (e->getPropertyName()==("length"))
+ {
+  QStringList sensors = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSystemNameList();
+  qSort(sensors.begin(), sensors.end(), SystemNameComparator::compare);
+  sensorsColDelegate->setItems(sensors, "");
  }
  else
  {
@@ -1642,7 +1654,7 @@ ItemListener1::ItemListener1(JmriJFrame *F)
  this->F = F;
 }
 
-void ItemListener1::actionPerformed(ActionEvent *e)
+void ItemListener1::actionPerformed(ActionEvent */*e*/)
 {
    new TurnoutOperationFrame(/*final*/F);
 }
@@ -1651,7 +1663,7 @@ ItemListener2::ItemListener2(JmriJFrame *F, TurnoutTableAction* self)
  this->F = F;
  this->self = self;
 }
-void ItemListener2::actionPerformed(ActionEvent *e)
+void ItemListener2::actionPerformed(ActionEvent */*e*/)
 {
  self->setDefaultSpeeds(/*final*/F);
 }

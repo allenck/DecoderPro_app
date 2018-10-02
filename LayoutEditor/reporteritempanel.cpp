@@ -14,7 +14,7 @@
 //}
 ///*public*/ class ReporterItemPanel extends TableItemPanel {
 
-/*public*/ ReporterItemPanel::ReporterItemPanel(JmriJFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor,parent){
+/*public*/ ReporterItemPanel::ReporterItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor,parent){
         //super(parentFrame, type, family, model, editor);
     log = new Logger("ReporterItemPanel");
     }
@@ -56,7 +56,7 @@
     _iconFamilyPanel->layout()->addWidget(_dragIconPanel);
 }
 
-/*protected*/ void ReporterItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey)
+/*protected*/ void ReporterItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/)
 {
  if (_update)
  {

@@ -10,6 +10,7 @@
 #include <QBrush>
 #include "flowlayout.h"
 #include "namedicon.h"
+#include "displayframe.h"
 
 //BackgroundItemPanel::BackgroundItemPanel(QWidget *parent) :
 //    IconItemPanel(parent)
@@ -24,7 +25,7 @@
 /**
 * Constructor for plain icons and backgrounds
 */
-/*public*/ BackgroundItemPanel::BackgroundItemPanel(JmriJFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent) : IconItemPanel(parentFrame, type, family, editor, parent)
+/*public*/ BackgroundItemPanel::BackgroundItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent) : IconItemPanel(parentFrame, type, family, editor, parent)
 {
  // super(parentFrame, type, family, editor);
   _level = Editor::BKG;
@@ -78,6 +79,11 @@ void BackgroundItemPanel::backgroundButton_clicked()
  ColorDialog dlg(_editor, this);
  dlg.exec();
 }
+
+//@Override
+/*protected*/ QWidget* BackgroundItemPanel::makeBgButtonPanel(ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*> imgArray, DisplayFrame* parent) {
+        return NULL; // no button to set Preview Bg on BackgroundItemPanel
+    }
 void BackgroundItemPanel::colorChanged(QColor)
 {
 

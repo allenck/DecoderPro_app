@@ -41,6 +41,10 @@
 #include "verifywriteprogrammerfacade.h"
 #include "csvimportaction.h"
 #include "csvexportaction.h"
+#include "xmlinclude.h"
+#include "joptionpane.h"
+#include "xinclude/xinclude.h"
+#include <QTemporaryDir>
 
 int PaneProgFrame::iLabel=0;
 
@@ -311,24 +315,24 @@ PaneProgFrame::~PaneProgFrame()
  // find a mode to set it to
 
  QList<ProgrammingMode*> modes = mProgrammer->getSupportedModes();
- if (modes.contains(DefaultProgrammerManager::DIRECTBITMODE)&&directbit)
+ if (modes.contains(ProgrammingMode::DIRECTBITMODE)&&directbit)
  {
-  mProgrammer->setMode(DefaultProgrammerManager::DIRECTBITMODE);
+  mProgrammer->setMode(ProgrammingMode::DIRECTBITMODE);
   log->debug("Set to DIRECTBITMODE");
  }
- else if (modes.contains(DefaultProgrammerManager::DIRECTBYTEMODE)&&directbyte)
+ else if (modes.contains(ProgrammingMode::DIRECTBYTEMODE)&&directbyte)
  {
-  mProgrammer->setMode(DefaultProgrammerManager::DIRECTBYTEMODE);
+  mProgrammer->setMode(ProgrammingMode::DIRECTBYTEMODE);
   log->debug("Set to DIRECTBYTEMODE");
  }
- else if (modes.contains(DefaultProgrammerManager::PAGEMODE)&&paged)
+ else if (modes.contains(ProgrammingMode::PAGEMODE)&&paged)
  {
-  mProgrammer->setMode(DefaultProgrammerManager::PAGEMODE);
+  mProgrammer->setMode(ProgrammingMode::PAGEMODE);
   log->debug("Set to PAGEMODE");
  }
- else if (modes.contains(DefaultProgrammerManager::REGISTERMODE)&&_register)
+ else if (modes.contains(ProgrammingMode::REGISTERMODE)&&_register)
  {
-  mProgrammer->setMode(DefaultProgrammerManager::REGISTERMODE);
+  mProgrammer->setMode(ProgrammingMode::REGISTERMODE);
   log->debug("Set to REGISTERMODE");
  }
  else log->warn("No acceptable mode found, leave as found");
@@ -349,56 +353,124 @@ PaneProgFrame::~PaneProgFrame()
   if(DecoderFile::fileLocation.startsWith(QDir::separator()))
    decoderRoot = df->rootFromName(DecoderFile::fileLocation+df->getFilename());
   else
-   decoderRoot = df->rootFromName(XmlFile::xmlDir()+DecoderFile::fileLocation+df->getFilename());
- }
+  {
+   QStringList slist = QStringList() << FileUtil::getUserFilesPath();
+   //decoderRoot = df->rootFromName(XmlFile::xmlDir()+DecoderFile::fileLocation+df->getFilename());
+   decoderRoot = df->rootFromName(FileUtil::findURL(DecoderFile::fileLocation+ df->getFilename(),slist).path());
+   }
+  }
  catch (Exception e)
  {
   log->error("Exception while loading decoder XML file: "+df->getFilename(), e.getMessage());
  }
-    // load variables from decoder tree
-    df->getProductID();
-    df->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel);
 
-    // load reset from decoder tree
-    if (variableModel->piCv() >= 0) {
-        resetModel->setPiCv(variableModel->piCv());
-    }
-    if (variableModel->siCv() >= 0) {
-        resetModel->setSiCv(variableModel->siCv());
-    }
-    df->loadResetModel(decoderRoot.firstChildElement("decoder"), resetModel);
+ if(XmlInclude::scanForInclude(decoderRoot))
+ {
+  int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load decoder file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
+  if(ret == JOptionPane::CANCEL_OPTION)
+   return;
+  XInclude* xinclude = new XInclude();
+  File* f;
+  QUrl url = QUrl(DecoderFile::fileLocation+df->getFilename());
+  if(ret == JOptionPane::YES_OPTION)
+  {
+   xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFilename()), this);
+  }
+   else
+  {
+   QTemporaryDir dir;
+   xinclude->copyXml(&url, f = new File(dir.path()+df->getFilename()),this);
+  }
+  decoderRoot = df->rootFromFile(f);
+ }
 
-    // load function names
-    re->loadFunctions(decoderRoot.firstChildElement("decoder").firstChildElement("family").firstChildElement("functionlabels"));
+ statusBar()->showMessage(tr("reading decoder file %1").arg(df->getFilename()));
+ // load variables from decoder tree
+ df->getProductID();
+ setCursor(Qt::WaitCursor);
+// QDomNodeList nl = decoderRoot.childNodes();
+// for(int i = 0; i < nl.count(); i++)
+// {
+//  QDomElement e2 = nl.at(i).toElement();
+//  if(e2.tagName() == "xi:include")
+//  {
+//   QString href= e2.attribute("href");
+//   qDebug() << e2.tagName() << " href= " << href;
+//   QDomDocumentFragment frag = XmlInclude::processInclude(e2);
 
-    // get the showEmptyPanes attribute, if yes/no update our state
-    if (decoderRoot.attribute("showEmptyPanes") != "")
-    {
-        if (log->isDebugEnabled()) log->debug("Found in decoder "+decoderRoot.attribute("showEmptyPanes"));
-        if (decoderRoot.attribute("showEmptyPanes")==("yes"))
-            setShowEmptyPanes(true);
-        else if (decoderRoot.attribute("showEmptyPanes")==("no"))
-            setShowEmptyPanes(false);
-        // leave alone for "default" value
-        if (log->isDebugEnabled()) log->debug(tr("result ")+(getShowEmptyPanes()?"true":"false"));
-    }
+//   decoderRoot.replaceChild(frag, e2);
+//  }
+// }
+ df->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel);
 
-    // save the pointer to the model element
-    modelElem = df->getModelElement();
+ // load reset from decoder tree
+ if (variableModel->piCv() >= 0) {
+     resetModel->setPiCv(variableModel->piCv());
+ }
+ if (variableModel->siCv() >= 0) {
+     resetModel->setSiCv(variableModel->siCv());
+ }
+ df->loadResetModel(decoderRoot.firstChildElement("decoder"), resetModel);
+
+ // load function names
+ re->loadFunctions(decoderRoot.firstChildElement("decoder").firstChildElement("family").firstChildElement("functionlabels"));
+
+ // get the showEmptyPanes attribute, if yes/no update our state
+ if (decoderRoot.attribute("showEmptyPanes") != "")
+ {
+     if (log->isDebugEnabled()) log->debug("Found in decoder "+decoderRoot.attribute("showEmptyPanes"));
+     if (decoderRoot.attribute("showEmptyPanes")==("yes"))
+         setShowEmptyPanes(true);
+     else if (decoderRoot.attribute("showEmptyPanes")==("no"))
+         setShowEmptyPanes(false);
+     // leave alone for "default" value
+     if (log->isDebugEnabled()) log->debug(tr("result ")+(getShowEmptyPanes()?"true":"false"));
+ }
+
+ // save the pointer to the model element
+ modelElem = df->getModelElement();
+ setCursor(Qt::ArrowCursor);
 }
 
 /*protected*/ void PaneProgFrame::loadProgrammerFile(RosterEntry* r)
 {
  // Open and parse programmer file
+ setCursor(Qt::WaitCursor);
+
  XmlFile* pf = new XmlFile();  // XmlFile is abstract
  try
  {
   if(filename.startsWith(FileUtil::SEPARATOR))
    programmerRoot = pf->rootFromName(filename);
   else
-   programmerRoot = pf->rootFromName(FileUtil::getUserFilesPath()+filename);
-  // programmerRoot = pf->rootFromName(FileUtil::findURL(filename).path());
+  {
+//   programmerRoot = pf->rootFromName(FileUtil::getUserFilesPath()+filename);
+   QStringList slist = QStringList() << FileUtil::getUserFilesPath();
+   programmerRoot = pf->rootFromName(FileUtil::findURL(filename, slist).path());
+  }
+  statusBar()->showMessage(tr("reading programmer %1").arg(pf->getPathname()));
   // get the showEmptyPanes attribute, if yes/no update our state
+  if(XmlInclude::scanForInclude(programmerRoot))
+  {
+   int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load programmer file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
+   if(ret == JOptionPane::CANCEL_OPTION)
+    return;
+   XInclude* xinclude = new XInclude();
+   QUrl url = FileUtil::findURL(filename);
+   File* f;
+   if(ret == JOptionPane::YES_OPTION)
+   {
+    xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ filename), this);
+   }
+    else
+   {
+    QTemporaryDir dir;
+    xinclude->copyXml(&url, f = new File(dir.path()+filename),this);
+   }
+   programmerRoot = pf->rootFromFile(f);
+
+  }
+
   if (programmerRoot.firstChildElement("programmer").attribute("showEmptyPanes") != "")
   {
    if (log->isDebugEnabled()) log->debug("Found in programmer "+programmerRoot.firstChildElement("programmer").attribute("showEmptyPanes"));
@@ -412,8 +484,7 @@ PaneProgFrame::~PaneProgFrame()
 
   // get extra any panes from the decoder file
   QString a;
-  if ( (a = programmerRoot.firstChildElement("programmer").attribute("decoderFilePanes")) != ""
-                   && a==("yes"))
+  if ( (a = programmerRoot.firstChildElement("programmer").attribute("decoderFilePanes")) != "" && a==("yes"))
   {
    if (!decoderRoot.isNull())
    {
@@ -428,6 +499,8 @@ PaneProgFrame::~PaneProgFrame()
   // provide traceback too
 //        e.printStackTrace();
  }
+ setCursor(Qt::ArrowCursor);
+
 }
 /**
  * @return true if decoder needs to be written
@@ -534,11 +607,16 @@ int x = l.size()+1;
  //    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
  // deregister shutdown hooks
- if (InstanceManager::shutDownManagerInstance()!=NULL)
-  InstanceManager::shutDownManagerInstance()->deregister(decoderDirtyTask);
+ if (InstanceManager::getNullableDefault("ShutDownManager") != NULL)
+ {
+  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->deregister(decoderDirtyTask);
+
+ }
  decoderDirtyTask = NULL;
- if (InstanceManager::shutDownManagerInstance()!=NULL)
-  InstanceManager::shutDownManagerInstance()->deregister(fileDirtyTask);
+ if (InstanceManager::getNullableDefault("ShutDownManager") != NULL)
+ {
+  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->deregister(fileDirtyTask);
+ }
  fileDirtyTask = NULL;
 
  // do the close itself
@@ -597,6 +675,20 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
   makeMediaPane(r);
  }
  // for all "pane" elements in the programmer
+// QDomNodeList children = base.childNodes();
+// for(int i = 0; i < children.count(); i++)
+// {
+//  QDomElement e2 = children.at(i).toElement();
+//  if(e2.tagName() == "xi:include")
+//  {
+//   QString href= e2.attribute("href");
+//   qDebug() << e2.tagName() << " href= " << href;
+//   QDomDocumentFragment frag = XmlInclude::processInclude(e2);
+
+//   base.replaceChild(frag, e2);
+//  }
+// }
+
  QDomNodeList paneList = base.elementsByTagName("pane");
  if (log->isDebugEnabled()) log->debug("will process "+QString::number(paneList.size())+" pane definitions");
  for (int i=0; i<paneList.size(); i++)
@@ -822,6 +914,8 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
     QFrame* frame = new QFrame();
     QVBoxLayout* frameLayout = new QVBoxLayout();
     frame->setLayout(frameLayout);
+
+    // add roster info
     _rMPane = new RosterMediaPane(r);
     frameLayout->addWidget(_rMPane);
     // add the store button
@@ -846,7 +940,7 @@ void PaneProgFrame::on_btnStore_clicked()
 {
 
  // create ShutDownTasks
- if (InstanceManager::shutDownManagerInstance()!=NULL)
+ if (InstanceManager::getNullableDefault("ShutDownManager") != NULL)
  {
   //if (getModePane()!=NULL && decoderDirtyTask == NULL) decoderDirtyTask =
   if (decoderDirtyTask == NULL)
@@ -854,7 +948,7 @@ void PaneProgFrame::on_btnStore_clicked()
 //  {
 //   /*public*/ bool checkPromptNeeded() { return !checkDirtyDecoder(); }
 //  };
-  ((DefaultShutDownManager*)InstanceManager::shutDownManagerInstance())->_register(decoderDirtyTask);
+  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(decoderDirtyTask);
 
   if (fileDirtyTask == NULL) fileDirtyTask = new FileDirtyTask("DecoderPro Decoder Window Check",
                                                               tr("Some changes have not been written to a configuration file. Quit?"),
@@ -868,7 +962,7 @@ void PaneProgFrame::on_btnStore_clicked()
 //        return result;
 //    }
 //  };
-  ((DefaultShutDownManager*)InstanceManager::shutDownManagerInstance())->_register(fileDirtyTask);
+  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(fileDirtyTask);
  }
 
  // Create a menu bar
@@ -915,7 +1009,10 @@ void PaneProgFrame::on_btnStore_clicked()
  // some of the names are so long, and we expect more formats
  QMenu* importSubMenu = new QMenu(tr("Import"));
  fileMenu->addMenu(importSubMenu);
-//    importSubMenu.add(new Pr1ImportAction(tr("PR1 file..."), cvModel, this));
+ importSubMenu->addAction(new CsvImportAction(tr("CSV file..."), cvModel, this, progStatus));
+// importSubMenu.add(new Pr1ImportAction(Bundle.getMessage("MenuImportPr1"), cvModel, this, progStatus));
+// importSubMenu.add(new LokProgImportAction(Bundle.getMessage("MenuImportLokProg"), cvModel, this, progStatus));
+// importSubMenu.add(new QuantumCvMgrImportAction(Bundle.getMessage("MenuImportQuantumCvMgr"), cvModel, this, progStatus));
 
  // add "Export" submenu; this is heirarchical because
  // some of the names are so long, and we expect more formats
@@ -1050,7 +1147,7 @@ void PaneProgFrame::on_btnStore_clicked()
 
  // add help
  addHelp();
- setCursor(Qt::ArrowCursor);
+ //setCursor(Qt::ArrowCursor);
 }
 /*public*/ QList<QWidget*> PaneProgFrame::getPaneList(){
     return paneList;

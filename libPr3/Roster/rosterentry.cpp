@@ -393,7 +393,9 @@ void RosterEntry::init()
 /*public*/ QString RosterEntry::getIconPath() { return _iconFilePath; }
 
 /*public*/ void RosterEntry::setShuntingFunction(QString fn){
-    _isShuntingOn=fn;
+ QString old = this->_isShuntingOn;
+ _isShuntingOn = fn;
+ this->firePropertyChange(RosterEntry::SHUNTING_FUNCTION, old, this->_isShuntingOn);
 }
 /*public*/ QString RosterEntry::getShuntingFunction(){ return _isShuntingOn; }
 
@@ -404,6 +406,12 @@ void RosterEntry::init()
 }
 /*public*/ QString RosterEntry::getURL() { return _URL; }
 
+/*public*/ void RosterEntry::setDateModified(/*@Nonnull*/ QDateTime date) {
+        QDateTime old = this->dateModified;
+        this->dateModified = date;
+        this->firePropertyChange(RosterEntry::DATE_UPDATED, old, date);
+}
+
 /**
  * Set the date modified given a string representing a date.
  * <p>
@@ -413,17 +421,30 @@ void RosterEntry::init()
  * @throws ParseException if the date cannot be parsed
  */
 /*public*/ void RosterEntry::setDateModified(/*@Nonnull*/ QString date) throw (ParseException) {
-    try {
-        // parse using ISO 8601 date format(s)
-        this->setDateModified(QDateTime::fromString(date, Qt::ISODate).toString(Qt::ISODate));
-    } catch (IllegalArgumentException /*| ParseException*/ ex) {
-        // IllegalArgumentException for Jackson 2.0.6
-        // ParseException for Jackson 2.8.5
-        // evaluating Jackson upgrade under separate branch
-        // parse using defaults since thats how it was saved if saved
-        // by earlier versions of JMRI
-        this->setDateModified(QDateTime::fromString(date).toString(Qt::ISODate));
-    }
+ try
+ {
+  // parse using ISO 8601 date format(s)
+  QDateTime dt = QDateTime::fromString(date, Qt::ISODate);
+  if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+  this->setDateModified(dt);
+ }
+ catch (ParseException ex)
+ {
+  log->debug("ParseException in setDateModified");
+  // parse using defaults since thats how it was saved if saved
+  // by earlier versions of JMRI
+  QDateTime dt = QDateTime::fromString(date,"dddd, d MMMM yy hh:mm:ss");
+  if(!dt.isValid()) throw IllegalArgumentException(tr("error parsing date '%1'").arg(date));
+  this->setDateModified(dt);
+ }
+ catch (IllegalArgumentException ex2)
+ {
+  // warn that there's perhaps something wrong with the classpath
+  log->error("IllegalArgumentException in RosterEntry.setDateModified - this may indicate a problem with the classpath, specifically multiple copies of the 'jackson` library. See release notes" );
+  // parse using defaults since thats how it was saved if saved
+  // by earlier versions of JMRI
+  //this.setDateModified(DateFormat.getDateTimeInstance().parse(date));
+ }
 }
 
 //@CheckForNull
@@ -963,7 +984,8 @@ void RosterEntry::init()
 {
 //    java.text.DateFormat df = java.text.DateFormat.getDateTimeInstance();
 //    setDateUpdated(df.format(new java.util.Date()));
-    setDateUpdated( QDateTime::currentDateTime().toString("MMM d, yyyy h:m:s AP"));
+    //setDateUpdated( QDateTime::currentDateTime().toString("MMM d, yyyy h:m:s AP"));
+ setDateModified(QDateTime::currentDateTime());
 }
 
 /**
@@ -1356,10 +1378,66 @@ if (!(_decoderFamily==("")))
   if ((a = e.attribute("dccAddress")) != "" )  _dccAddress = a;
 
   // file path were saved without default xml config path
-  if ((a = e.attribute("imageFilePath")) != "" )  _imageFilePath = FileUtil::getAbsoluteFilename( a);
-  if ((a = e.attribute("iconFilePath")) != "" )  _iconFilePath = FileUtil::getAbsoluteFilename( a);
+  if ((a = e.attribute("imageFilePath")) != "" )
+  {
+   try
+   {
+    if (FileUtil::getFile(a)->isFile())
+    {
+     _imageFilePath = FileUtil::getAbsoluteFilename(a);
+    }
+   }
+   catch (FileNotFoundException ex)
+   {
+    if(a.contains(":"))
+     a = a.mid(a.indexOf(":")+1);
+    try
+    {
+     if(FileUtil::getFile(FileUtil::getUserResourcePath() + a)->isFile())
+     {
+      _imageFilePath = FileUtil::getUserResourcePath() + a;
+     }
+     QString p = FileUtil::locateFile(FileUtil::getProgramPath(), a);
+     if(p != "" && FileUtil::getFile(p)->isFile())
+      _imageFilePath = p;
+    }
+    catch (FileNotFoundException ex1)
+    {
+        _imageFilePath = "";
+    }
+   }
+  }
+  if ((a = e.attribute("iconFilePath")) != "" )
+  {
+   try
+   {
+    if (FileUtil::getFile(a)->isFile())
+    {
+        _iconFilePath = FileUtil::getAbsoluteFilename(a);
+    }
+   } catch (FileNotFoundException ex)
+   {
+    if(a.contains(":"))
+     a = a.mid(a.indexOf(":")+1);
+    try
+    {
+    if (FileUtil::getFile(FileUtil::getUserResourcePath() + a)->isFile())
+    {
+      _iconFilePath = FileUtil::getUserResourcePath() + a;
+     }
+    QString p = FileUtil::locateFile(FileUtil::getProgramPath(), a);
+    if(p != "" && FileUtil::getFile(p)->isFile())
+     _imageFilePath = p;
+    }
+    catch (FileNotFoundException ex1)
+    {
+     _iconFilePath = "";
+    }
+   }
+  }
   if ((a = e.attribute("URL")) != "" )  _URL = a;
-  if ((a = e.attribute("IsShuntingOn")) != "" )  _isShuntingOn = a;
+  if ((a = e.attribute("IsShuntingOn")) != "" )
+   _isShuntingOn = a;
   if ((a = e.attribute("maxSpeed")) != "" )
        _maxSpeedPCT = a.toInt();
   QDomElement e3;

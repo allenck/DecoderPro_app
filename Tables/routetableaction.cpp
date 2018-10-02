@@ -71,10 +71,10 @@
 /*public*/ /*final*/ /*static*/ QString RouteTableAction::CONDITIONAL_SYS_PREFIX = LOGIX_SYS_NAME+"C";
 /*private*/ /*static*/ QStringList RouteTableAction::sensorInputModes =  QStringList() << "On Active" << "On Inactive"<< "On Change"<< "Veto Active"<< "Veto Inactive";
 /*static*/ QList<int> RouteTableAction::sensorInputModeValues =  QList<int>() <<Route::ONACTIVE << Route::ONINACTIVE << Route::ONCHANGE << Route::VETOACTIVE << Route::VETOINACTIVE;
-/*private*/ /*static*/ QStringList RouteTableAction::turnoutInputModes = QStringList() << "On "+((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText() <<                                        "On "+((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText() <<
-"On Change" <<  "Veto Closed" <<  "Veto Thrown";
+/*private*/ /*static*/ QStringList RouteTableAction::turnoutInputModes = QStringList() << "On "+/*((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText()*/tr("Closed") <<                                        "On "+/*((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText()*/ tr("Thrown") <<
+tr("On Change") <<  tr("Veto Closed") <<  tr("Veto Thrown");
 /*private*/ /*static*/ QList<int> RouteTableAction::turnoutInputModeValues = QList<int>() <<Route::ONCLOSED << Route::ONTHROWN << Route::ONCHANGE << Route::VETOCLOSED << Route::VETOTHROWN;
-/*private*/ /*static*/ QStringList RouteTableAction::lockTurnoutInputModes =  QStringList() << "On "+((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText() <<                                            "On "+((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText() <<                                            "On Change";
+/*private*/ /*static*/ QStringList RouteTableAction::lockTurnoutInputModes =  QStringList() << "On "+/*((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText()*/tr("Closed") <<                                            "On "+/*((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText()*/tr("Thrown") <<                                            "On Change";
 int RouteTableAction::ROW_HEIGHT = 20;
 #if 0
 bool systemNameComparator(QString o1, QString o2)

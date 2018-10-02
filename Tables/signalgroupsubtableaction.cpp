@@ -41,8 +41,8 @@
                                         tr("Set State");
 /*private*/ /*static*/ QString SignalGroupSubTableAction::SET_TO_ACTIVE = tr("Active");
 /*private*/ /*static*/ QString SignalGroupSubTableAction::SET_TO_INACTIVE = tr("Inactive");
-/*private*/ /*static*/ QString SignalGroupSubTableAction::SET_TO_CLOSED = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText();
-/*private*/ /*static*/ QString SignalGroupSubTableAction::SET_TO_THROWN = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText();
+/*private*/ /*static*/ QString SignalGroupSubTableAction::SET_TO_CLOSED = tr("Closed");// ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText();
+/*private*/ /*static*/ QString SignalGroupSubTableAction::SET_TO_THROWN = tr("Thrown");// ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText();
 
 /*private*/ /*static*/ QVector<QString> SignalGroupSubTableAction::sensorInputModes = QVector<QString>() << "Active" << "Inactive";
 /*private*/ /*static*/ QVector<int> SignalGroupSubTableAction::sensorInputModeValues = QVector<int>() << SignalGroup::ONACTIVE << SignalGroup::ONINACTIVE;
@@ -853,7 +853,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
 
 
 
-    /*private*/ /*static*/ QVector<QString> SignalGroupSubTableAction::turnoutInputModes = QVector<QString>() << ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText() << ((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getThrownText() ;
+    /*private*/ /*static*/ QVector<QString> SignalGroupSubTableAction::turnoutInputModes = QVector<QString>() << /*((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText()*/tr("Closed") << /*((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getThrownText()*/ tr("Thrown") ;
     /*private*/ /*static*/ QVector<int> SignalGroupSubTableAction::turnoutInputModeValues = QVector<int>() << SignalGroup::ONCLOSED << SignalGroup::ONTHROWN ;
 
 //    /*private*/ /*abstract*/ class SignalGroupElement : public QObject

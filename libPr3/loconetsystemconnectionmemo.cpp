@@ -147,14 +147,14 @@ LnMessageManager* LocoNetSystemConnectionMemo::getLnMessageManager()
 }
 
 
-ProgrammerManager* LocoNetSystemConnectionMemo::getProgrammerManager() {
+DefaultProgrammerManager* LocoNetSystemConnectionMemo::getProgrammerManager() {
     if (programmerManager == NULL)
     {
         programmerManager = new LnProgrammerManager(getSlotManager(), this);
     }
     return programmerManager;
 }
-void LocoNetSystemConnectionMemo::setProgrammerManager(ProgrammerManager* p) {
+void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager* p) {
     programmerManager = p;
 }
 
@@ -239,8 +239,7 @@ void LocoNetSystemConnectionMemo::configureManagers()
   log->debug("set turnout retry: "+mTurnoutNoRetry);
  }
 
- InstanceManager::setPowerManager(
-  getPowerManager());
+ InstanceManager::store(getPowerManager(), "PowerManager");
 
  InstanceManager::setSensorManager(
   (SensorManager*)getSensorManager());
@@ -254,8 +253,14 @@ void LocoNetSystemConnectionMemo::configureManagers()
  InstanceManager::setThrottleManager(
   getThrottleManager());
 
- InstanceManager::setProgrammerManager(
-  getProgrammerManager());
+ if (getProgrammerManager()->isAddressedModePossible())
+ {
+  InstanceManager::setAddressedProgrammerManager(getProgrammerManager());
+ }
+ if (getProgrammerManager()->isGlobalProgrammerAvailable())
+ {
+  InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
+ }
 
  InstanceManager::setReporterManager(
   (ReporterManager*)getReporterManager());

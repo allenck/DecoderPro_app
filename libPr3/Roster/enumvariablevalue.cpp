@@ -36,7 +36,7 @@
     comboRBs = new QList<ComboRadioButtons*>();
 
     treeNodes = QVector<DefaultMutableTreeNode*>();
-    treeNodes.append(new DefaultMutableTreeNode);
+    treeNodes.append(new DefaultMutableTreeNode(""));
 }
 
 /**
@@ -93,7 +93,10 @@
  */
 /*public*/ void EnumVariableValue::addItem(QString s, int value)
 {
- _valueArray->replace(_nstored, value);
+ if(_nstored == _valueArray->length())
+  _valueArray->append(value); // add ACK
+ else
+  _valueArray->replace(_nstored, value);
  TreeLeafNode* node = new TreeLeafNode(s, _nstored);
  if(!treeNodes.isEmpty())
  {
@@ -103,8 +106,17 @@
  QVector<TreeNode*>* path = node->getPath();
  QVector<QObject*>* ol = new QVector<QObject*>();
  foreach(TreeNode* n, *path) ol->append((QObject*)n);
- _pathArray->replace(_nstored, new TreePath( /*path*/ ol));
- _itemArray->replace(_nstored++, s);
+ if(_nstored == _pathArray->length())
+  _pathArray->append(new TreePath( /*path*/ ol)); // add ACK
+ else
+  _pathArray->replace(_nstored, new TreePath( /*path*/ ol));
+ if(_nstored == _itemArray->length())
+ {
+  _itemArray->append(s); // add ACK
+  _nstored++;
+ }
+ else
+  _itemArray->replace(_nstored++, s);
 }
 
 /*public*/ void EnumVariableValue::startGroup(QString name)

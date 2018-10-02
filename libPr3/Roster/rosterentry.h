@@ -133,6 +133,7 @@ public:
     /*public*/ QString getShuntingFunction();
     /*public*/ void setURL(QString s);
     /*public*/ QString getURL();
+    /*public*/ void setDateModified(/*@Nonnull*/ QDateTime date);
     /*public*/ void setDateModified(/*@Nonnull*/ QString date) throw (ParseException) ;
     /*public*/ QDateTime getDateModified();
     QT_DEPRECATED /*public*/ void setDateUpdated(QString s);

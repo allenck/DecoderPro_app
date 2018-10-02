@@ -98,13 +98,13 @@ QList<char> StringUtil::hexChars = QList<char>() <<  '0'<< '1'<< '2'<< '3'<< '4'
     return sb/*.toString()*/ ;
 }
 
-#if 0
+
 /**
  * Convert a small number to eight 1/0 characters.
  * @param msbLeft the MSB is on the left of the display
  */
-static /*public*/ String to8Bits(int val, boolean msbLeft) {
-    String result ="";
+/*static*/ /*public*/ QString StringUtil::to8Bits(int val, bool msbLeft) {
+    QString result ="";
     for (int i=0; i<8; i++) {
         if (msbLeft)
             result = (((val&0x01) != 0) ? "1" : "0")+result;
@@ -114,7 +114,7 @@ static /*public*/ String to8Bits(int val, boolean msbLeft) {
     }
     return result;
 }
-#endif
+
 /**
  * Create a String containing hexadecimal values from a byte[].
  *
@@ -133,7 +133,18 @@ static /*public*/ String to8Bits(int val, boolean msbLeft) {
  }
  return sb/*.toString()*/;
 }
-#if 1
+/*static*/ /*public*/ QString StringUtil::hexStringFromBytes(QByteArray bytes)
+{
+ QString sb;// = new StringBuffer();
+ for (int i = 0; i<bytes.size(); i++)
+ {
+  sb.append( hexChars.at((bytes.at(i)&0xF0) >> 4 ) );
+  sb.append( hexChars.at( bytes.at(i) & 0x0F ) );
+  sb.append(' ');
+ }
+ return sb/*.toString()*/;
+}
+
 /**
  * Create a byte[] from a String containing hexadecimal values.
  *
@@ -191,7 +202,7 @@ static /*public*/ String to8Bits(int val, boolean msbLeft) {
  }
  return b;
 }
-#endif
+
 /**
  * This is a lexagraphic sort; lower case goes to the end.
  * Identical entries are retained, so the output length is the same

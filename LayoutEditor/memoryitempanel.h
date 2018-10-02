@@ -17,7 +17,7 @@ class MemoryItemPanel : public TableItemPanel
 public:
     //explicit MemoryItemPanel(QWidget *parent = 0);
     enum Type { READONLY, READWRITE, SPINNER, COMBO };
-    /*public*/ MemoryItemPanel(ItemPalette* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
+    /*public*/ MemoryItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     /*public*/ void init();
 
 signals:

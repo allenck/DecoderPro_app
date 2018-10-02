@@ -68,12 +68,12 @@ ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
 //        }
     int typeId = QMetaType::type(className.toLocal8Bit());
     if(typeId > 0)
-     ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector:"))->setDefault(c,name);
+     ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector"))->setDefault(c,name);
 
     }
     // put into effect
-    ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector:"))->configure();
-    InstanceManager::configureManagerInstance()->registerPref((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector:"));
+    ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector"))->configure();
+    ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector"));
     return true;
 }
 

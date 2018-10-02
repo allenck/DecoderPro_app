@@ -21,8 +21,6 @@
  */
 ///*public*/ class ThrottleFrameManager
 //{
-/** record the single instance of Roster **/
-/*private*/ /*static*/ ThrottleFrameManager* ThrottleFrameManager::_instance = NULL;
 
 /*private*/ /*static*/ int ThrottleFrameManager::NEXT_THROTTLE_KEY = Qt::Key_Right;
 /*private*/ /*static*/ int ThrottleFrameManager::PREV_THROTTLE_KEY = Qt::Key_Left;
@@ -38,8 +36,9 @@ QObject(parent) // can only be created by instance() => /*private*/
  throttlesListPanel = NULL;
  throttlesListFrame = NULL;
  throttleWindows = new QList<ThrottleWindow*>(/*0*/);
+ InstanceManager::store(this, "ThrottleFrameManager");  // added ACK
 
- if(InstanceManager::getDefault("ThrottlesPreferences")==NULL)
+ if(InstanceManager::getNullableDefault("ThrottlesPreferences")==NULL)
  {
   InstanceManager::store(new ThrottlesPreferences(), "ThrottlesPreferences");
  }
@@ -52,11 +51,7 @@ QObject(parent) // can only be created by instance() => /*private*/
  */
 /*public*/ /*static*/ ThrottleFrameManager* ThrottleFrameManager::instance()
 {
- if (_instance == NULL)
- {
-  _instance = new ThrottleFrameManager();
- }
- return _instance;
+ return (ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager");
 }
 
 
@@ -213,10 +208,11 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
  throttlesListFrame->setVisible(false);
 }
 
-/*public*/ void ThrottleFrameManager::showThrottlesList() {
-    if (throttlesListFrame == NULL)
-        buildThrottleListFrame();
-    throttlesListFrame->setVisible( ! throttlesListFrame->isVisible() );
+/*public*/ void ThrottleFrameManager::showThrottlesList()
+{
+ if (throttlesListFrame == NULL)
+     buildThrottleListFrame();
+ throttlesListFrame->setVisible( ! throttlesListFrame->isVisible() );
 }
 
 /*public*/ void ThrottleFrameManager::showThrottlesPreferences() {

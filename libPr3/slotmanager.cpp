@@ -16,7 +16,9 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  log->setDebugEnabled(false);
  log->setInfoEnabled(true);
  // need a longer LONG_TIMEOUT for Fleischman command stations
- LONG_TIMEOUT=180000;
+ // change timeout values from AbstractProgrammer superclass
+ LONG_TIMEOUT = 180000;  // Fleischman command stations take forever
+ SHORT_TIMEOUT = 8000;   // DCS240 reads
  lastMessage = -1;
  mCanRead = true;
  throttledTransmitter = NULL;
@@ -39,6 +41,8 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  csOpSwProgrammingMode = new ProgrammingMode(
              "LOCONETCSOPSWMODE",
              tr("Command Station Op Switches"));
+ postProgDelay = 100;
+
 
  loadSlots();
 
@@ -66,6 +70,7 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  staleSlotCheckTimer->setInterval( 30000 );
  staleSlotCheckTimer->start();
 }
+
 /*protected*/ void SlotManager::loadSlots()
 {
  // initialize slot array
@@ -77,20 +82,35 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  * Send a DCC packet to the rails. This implements the CommandStation interface.
  * @param packet
  */
-void SlotManager::sendPacket(QByteArray packet, int repeats)
+void SlotManager::sendPacket(QByteArray packet, int sendCount)
 {
-    if (repeats>7) log->error("Too many repeats!");
-    if (packet.length()<=1) log->error("Invalid DCC packet length: "+packet.length());
-    if (packet.length()>6) log->error("Only 6-byte packets accepted: "+packet.length());
+ if (sendCount > 8)
+ {
+  log->warn(tr("Ops Mode Accessory Packet 'Send count' reduced from %1 to 8.").arg(sendCount)); // NOI18N
+  sendCount = 8;
+ }
+ if (sendCount < 1)
+ {
+  log->warn(tr("Ops Mode Accessory Packet 'Send count' of %1 is illegal and is forced to 1.").arg(sendCount)); // NOI18N
+  sendCount = 1;
+ }
+ if (packet.length() <= 1)
+ {
+  log->error("Invalid DCC packet length: " + QString::number(packet.length())); // NOI18N
+ }
+ if (packet.length() > 6)
+ {
+  log->error("DCC packet length is too great: %1 bytes were passed; ignoring the request. " + QString::number(packet.length())); // NOI18N
+    }
 
     LocoNetMessage* m = new LocoNetMessage(11);
-    m->setElement(0,0xED);
+    m->setElement(0,LnConstants::OPC_IMM_PACKET);
     m->setElement(1,0x0B);
     m->setElement(2,0x7F);
     // the incoming packet includes a check byte that's not included in LocoNet packet
     int length = packet.length()-1;
 
-    m->setElement(3, (repeats&0x7)+16*(length&0x7));
+    m->setElement(3, ((sendCount - 1) & 0x7) + 16 * (length & 0x7));
 
     int highBits = 0;
     if (length>=1 && ((packet[0]&0x80) != 0)) highBits |= 0x01;
@@ -209,7 +229,12 @@ void SlotManager::notify(LocoNetSlot* s)
 //        }
  if (log->isDebugEnabled()) log->debug(QString("notify %1 SlotListeners about slot %2").arg(v->size()).arg(s->getSlot()));
  // forward to all listeners
+ foreach(SlotListener* l, *v)
+ {
+  connect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
  emit changedSlot(s);
+  disconnect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+}
 #if 0
     int cnt = v->size();
     for (int i=0; i < cnt; i++)
@@ -451,7 +476,7 @@ int SlotManager::findSlotFromMessage(LocoNetMessage* m) {
    // 'not implemented' (op on main)
    // but BDL16 and other devices can eventually reply, so
    // move to commandExecuting state
-   log->debug("LACK accepted, next state 2");
+   log->debug("LACK accepted, next state 2-commandExecuting");
    if ( (_progRead || _progConfirm) && mServiceMode)
     startLongTimer();
    else
@@ -472,7 +497,7 @@ int SlotManager::findSlotFromMessage(LocoNetMessage* m) {
    {// incorrect Reserved OpSw setting can cause this response to OpsMode Read
     // just treat it as a normal OpsMode Read response
     // move to commandExecuting state
-    log->debug("LACK accepted (ignoring incorrect OpSw), next state 2");
+    log->debug("LACK accepted (ignoring incorrect OpSw), next state 2-commandExecuting");
     startShortTimer();
     progState = 2;
    }
@@ -494,7 +519,7 @@ int SlotManager::findSlotFromMessage(LocoNetMessage* m) {
 //    timer->setInterval(delay);
 //    timer->setSingleShot(true);
 //    timer->start();
-    QTimer::singleShot(100, this, SLOT(On_notifyProgListenerEnd()));
+    QTimer::singleShot(postProgDelay, this, SLOT(On_notifyProgListenerEnd()));
    }
   }
   else
@@ -517,11 +542,13 @@ void SlotManager::forwardMessageToSlot(LocoNetMessage* m, int i) {
 
     // if here, i holds the slot number, and we expect to be able to parse
     // and have the slot handle the message
-    if (i>=_slots.size() || i<0) log->error(QString("Received slot number %1 is greater than array length %2 Message was %3").arg(i).arg(_slots.size()).arg( m->toString()));
-    try {
-        _slots[i]->setSlot(m);
+    if (i>=_slots.length() || i<0) log->error(QString("Received slot number %1 is greater than array length %2 Message was %3").arg(i).arg(_slots.size()).arg( m->toString()));
+    try
+    {
+     _slots[i]->setSlot(m);
     }
-    catch (LocoNetException* e) {
+    catch (LocoNetException* e)
+    {
         // must not have been interesting, or at least routed right
         log->error("slot rejected LocoNetMessage"+m->toString());
         return;
@@ -532,28 +559,29 @@ void SlotManager::forwardMessageToSlot(LocoNetMessage* m, int i) {
 
 void SlotManager::respondToAddrRequest(LocoNetMessage* m, int i)
 {
- // if the last was a OPC_LOCO_ADR and this was OPC_SL_RD_DATA
- if ( (lastMessage==0xBF) && (m->getOpCode()==0xE7))
- {
-  // yes, see if request exists
-  // note that slot has already been told, so
-  // slot i has the address of this request
-  int addr = _slots[i]->locoAddr();
-  if (log->isDebugEnabled()) log->debug(QString("LOCO_ADR resp of slot %1 loco %2 ").arg(i).arg(addr));
-  //SlotListener* l = mLocoAddrHash.get(Integer.valueOf(addr));
-  SlotListener* l = mLocoAddrHash.value(addr);
-  if (l!=NULL)
-  {
-   // only notify once per request
-   mLocoAddrHash.remove(addr);
-   // and send the notification
-   if (log->isDebugEnabled()) log->debug("notify listener");
-   ((LnThrottleManager*)l)->notifyChangedSlot(_slots[i]);
-  }
-  else
-  {
-   if (log->isDebugEnabled()) log->debug("no request for this");
-  }
+ // is called any time a LocoNet message is received.  Note that we do _NOT_ know why a given message happens!
+
+ // if this is OPC_SL_RD_DATA
+ if (m->getOpCode() == LnConstants::OPC_SL_RD_DATA) {
+     // yes, see if request exists
+     // note that the appropriate _slots[] entry has already been updated
+     // to reflect the content of the LocoNet message, so _slots[i]
+     // has the locomotive address of this request
+     int addr = _slots[i]->locoAddr();
+     log->debug(tr("LOCO_ADR resp is slot %1 for addr %2").arg(i).arg(addr)); // NOI18N
+     SlotListener* l = mLocoAddrHash.value((addr));
+     if (l != NULL) {
+         // only notify once per request
+         mLocoAddrHash.remove((addr));
+         // and send the notification
+         log->debug("notify listener"); // NOI18N
+         connect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+         //l->notifyChangedSlot(_slots[i]);
+         emit notifyChangedSlot(_slots[i]);
+         disconnect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+     } else {
+         log->debug(tr("no request for addr %1").arg(addr)); // NOI18N
+     }
  }
 }
 
@@ -626,10 +654,10 @@ void SlotManager::programmerOpMessage(LocoNetMessage* m, int i)
 /*public*/ QList<ProgrammingMode*> SlotManager::getSupportedModes()
 {
  QList<ProgrammingMode*> ret = QList<ProgrammingMode*>();
- ret.append(DefaultProgrammerManager::PAGEMODE);
- ret.append(DefaultProgrammerManager::DIRECTBYTEMODE);
- ret.append(DefaultProgrammerManager::REGISTERMODE);
- ret.append(DefaultProgrammerManager::ADDRESSMODE);
+ ret.append(ProgrammingMode::PAGEMODE);
+ ret.append(ProgrammingMode::DIRECTBYTEMODE);
+ ret.append(ProgrammingMode::REGISTERMODE);
+ ret.append(ProgrammingMode::ADDRESSMODE);
  return ret;
 }
 
@@ -665,7 +693,7 @@ void SlotManager::notifyPropertyChange(QString name, int oldval, int newval) {
     emit propertyChange(new PropertyChangeEvent(this, name,oldval, newval));
 }
 
-
+#if 0
 /**
  * Determine whether this Programmer implementation powers off the
  * main track after a service track programming operation.
@@ -690,6 +718,7 @@ void SlotManager::setProgPowersOff(bool pProgPowersOff) {
     mProgPowersOff = pProgPowersOff;
 }
 
+#endif
 
 /**
  * Determine whether this Programmer implementation is capable of
@@ -702,17 +731,17 @@ void SlotManager::setProgPowersOff(bool pProgPowersOff) {
 bool SlotManager::getCanRead() { return mCanRead; }
 
 /**
-// * Configure whether this Programmer implementation is capable of
-// * reading decoder contents. <P>
-// * This is not part of the Programmer interface, but is used
-// * as part of the startup sequence for the LocoNet objects.
-// *
-// * @param pCanRead True if reads are possible
-// */
-//void SlotManager::setCanRead(bool pCanRead) {
-//    log->debug("set canRead to "+pCanRead);
-//    mCanRead = pCanRead;
-//}
+ * Returns the write confirm mode implemented by the command station.
+ * <p>
+ * Service mode always checks for DecoderReply.  (The DCS240 also seems to do
+ * ReadAfterWrite, but that's not fully understood yet)
+ * @param addr - This implementation ignores this parameter
+ * @return the supported WriteConfirmMode
+ */
+//@Nonnull
+//@Override
+/*public*/ Programmer::WriteConfirmMode SlotManager::getWriteConfirmMode(QString addr) { return WriteConfirmMode::DecoderReply; }
+
 
 /**
  * Set the command station type
@@ -737,25 +766,7 @@ LnCommandStationType* SlotManager::getCommandStationType(){
     return commandStationType;
 }
 
-/**
- * Determine is a mode is available for this Programmer implementation
- * @param mode A mode constant from the Programmer interface
- * @return True if paged or register mode
- */
-//bool SlotManager::hasMode(int mode)
-//{
-// if ( mode == Programmer::PAGEMODE ||
-//      mode == Programmer::ADDRESSMODE ||
-//      mode == Programmer::DIRECTBYTEMODE ||
-//      mode == Programmer::REGISTERMODE )
-// {
-//  log->debug(QString("hasMode request on mode %1 returns true").arg(mode));
-//  return true;
-// }
-// log->debug(QString("hasMode returns false on mode %1").arg(mode));
-// return false;
-//}
-#if 1
+
 /**
  * Internal routine to handle a timeout
  */
@@ -777,7 +788,6 @@ LnCommandStationType* SlotManager::getCommandStationType(){
  }
 }
 
-#endif
 void SlotManager::writeCVOpsMode(int CV, int val, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException)
 {
      Q_UNUSED(longAddr)
@@ -786,6 +796,7 @@ void SlotManager::writeCVOpsMode(int CV, int val, ProgListener* p, int addr, boo
     mServiceMode = false;
     doWrite(CV, val, p, 0x67);  // ops mode byte write, with feedback
 }
+
 void SlotManager::writeCV(int CV, int val, ProgListener* p) throw(ProgrammerException)
 {
  lopsa = 0;
@@ -793,10 +804,10 @@ void SlotManager::writeCV(int CV, int val, ProgListener* p) throw(ProgrammerExce
  mServiceMode = true;
     // parse the programming command
  int pcmd = 0x43;       // LPE implies 0x40, but 0x43 is observed
- if (getMode() == (DefaultProgrammerManager::PAGEMODE)) pcmd = pcmd | 0x20;
- else if (getMode() == DefaultProgrammerManager::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
- else if (getMode() == DefaultProgrammerManager::REGISTERMODE
-             || getMode() == DefaultProgrammerManager::ADDRESSMODE) pcmd = pcmd | 0x10;
+ if (getMode() == (ProgrammingMode::PAGEMODE)) pcmd = pcmd | 0x20;
+ else if (getMode() == ProgrammingMode::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
+ else if (getMode() == ProgrammingMode::REGISTERMODE
+             || getMode() == ProgrammingMode::ADDRESSMODE) pcmd = pcmd | 0x10;
  else
  //throw (new ProgrammerException("mode not supported"));
   emit programmerException("mode not supported");
@@ -835,10 +846,10 @@ void SlotManager::confirmCV(int CV, int val, ProgListener* p) throw(ProgrammerEx
     mServiceMode = true;
     // parse the programming command
     int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
-    if (getMode() == DefaultProgrammerManager::PAGEMODE) pcmd = pcmd | 0x20;
-    else if (getMode() == DefaultProgrammerManager::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
-    else if (getMode() == DefaultProgrammerManager::REGISTERMODE
-             || getMode() == DefaultProgrammerManager::ADDRESSMODE) pcmd = pcmd | 0x10;
+    if (getMode() == ProgrammingMode::PAGEMODE) pcmd = pcmd | 0x20;
+    else if (getMode() == ProgrammingMode::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
+    else if (getMode() == ProgrammingMode::REGISTERMODE
+             || getMode() == ProgrammingMode::ADDRESSMODE) pcmd = pcmd | 0x10;
     else
      //throw new ProgrammerException("mode not supported");
      emit programmerException("mode not supported");
@@ -882,6 +893,7 @@ void SlotManager::readCVOpsMode(int CV, ProgListener* p, int addr, bool longAddr
     mServiceMode = false;
     doRead(CV, p, 0x2F);  // although LPE implies 0x2C, 0x2F is observed
 }
+
 void SlotManager::readCV(int CV, ProgListener* p) throw(ProgrammerException)
 {
     lopsa = 0;
@@ -889,16 +901,16 @@ void SlotManager::readCV(int CV, ProgListener* p) throw(ProgrammerException)
     mServiceMode = true;
     // parse the programming command
     int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
-    if (getMode() == DefaultProgrammerManager::PAGEMODE) pcmd = pcmd | 0x20;
-    else if (getMode() == DefaultProgrammerManager::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
-    else if (getMode() == DefaultProgrammerManager::REGISTERMODE
-             || getMode() == DefaultProgrammerManager::ADDRESSMODE) pcmd = pcmd | 0x10;
+    if (getMode() == ProgrammingMode::PAGEMODE) pcmd = pcmd | 0x20;
+    else if (getMode() == ProgrammingMode::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
+    else if (getMode() == ProgrammingMode::REGISTERMODE
+             || getMode() == ProgrammingMode::ADDRESSMODE) pcmd = pcmd | 0x10;
     else
-//        throw new ProgrammerException("mode not supported");
-     emit programmerException("mode not supported");
+     throw new ProgrammerException("mode not supported");
 
     doRead(CV, p, pcmd);
 }
+
 void SlotManager::doRead(int CV, ProgListener* p, int progByte) throw(ProgrammerException)
 {
     if (log->isDebugEnabled()) log->debug("readCV: "+QString::number(CV));
@@ -924,8 +936,7 @@ void SlotManager::useProgrammer(ProgListener* p) // throws jmri.ProgrammerExcept
  {
   if (log->isInfoEnabled())
    log->info(QString("programmer already in use by %1").arg(_usingProgrammer->objectName()));
-  //throw new ProgrammerException("programmer in use");
-  emit programmerException("programmer in use");
+  throw new ProgrammerException("programmer in use");
  }
  else
  {
@@ -1009,56 +1020,33 @@ void SlotManager::notifyProgListenerLack(int status)
 void SlotManager::sendProgrammingReply(ProgListener* p, int value, int status)
 {
  int delay = 20;  // value in service mode
- if (!mServiceMode) delay=100;  // value in ops mode
-
- NotifyDelay* r = new NotifyDelay(delay, p, value, status);
- r->start();
+ new SendProgrammingReplyDelay(p, value, status,  delay);
 }
-#if 0
-    static class NotifyDelay extends Thread {
-        int delay;
-        ProgListener p;
-        int value;
-        int status;
-        NotifyDelay(int delay, ProgListener p, int value, int status) {
-            this.delay = delay;
-            this.p = p;
-            this.value = value;
-            this.status = status;
-        }
-        public void run() {
-            synchronized (this) {
-                try {
-                    wait(delay);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt(); // retain if needed later
-                }
-            }
-            // to avoid problems, we defer this to Swing thread
-            NotifyExec r = new NotifyExec(p, value, status);
-            javax.swing.SwingUtilities.invokeLater(r);
-        }
-    }
+ SendProgrammingReplyDelay::SendProgrammingReplyDelay(ProgListener *p, int value, int status, int delay)
+ {
+  this->p = p;
+  this->value = value;
+  this->status = status;
+  this->delay = delay;
+  QTimer* timer = new QTimer();
+  timer->setSingleShot(true);
+  connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
+  timer->start(delay);
+ }
+ void SendProgrammingReplyDelay::timeout()
+ {
+//         p.programmingOpReply(value, status);
+  connect(this, SIGNAL(on_programmingOpReply(int,int)), p, SLOT(programmingOpReply(int,int)));
+  emit on_programmingOpReply(value, status);
+  disconnect(this, SIGNAL(on_programmingOpReply(int,int)), p, SLOT(programmingOpReply(int,int)));
+ }
 
-    static class NotifyExec implements Runnable {
-        ProgListener p;
-        int value;
-        int status;
-        NotifyExec(ProgListener p, int value, int status) {
-            this.p = p;
-            this.value = value;
-            this.status = status;
-        }
-        public void run() {
-            p.programmingOpReply(value, status);
-        }
-    }
-#endif
 /**
  * Internal routine to stop power timer, as another programming
  * operation has happened
  */
-/*protected*/ void SlotManager::stopEndOfProgrammingTimer() {
+/*protected*/ void SlotManager::stopEndOfProgrammingTimer()
+{
     if (mPowerTimer!=NULL) mPowerTimer->stop();
 }
 

@@ -85,7 +85,7 @@ const static int   POWER			=  16;
 
 
 signals:
-virtual void messageProcessed(LocoNetMessage* msg);
+ void messageProcessed(LocoNetMessage* msg);
     
 public slots:
     

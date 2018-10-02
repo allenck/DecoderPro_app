@@ -62,9 +62,11 @@ private slots:
 protected:
  /*protected*/ float floatSpeed(int lSpeed);
  /*protected*/ int intSpeed(float fSpeed);
- /*protected*/ virtual void sendFunctionGroup1();
- /*protected*/ virtual void sendFunctionGroup2();
- /*protected*/ virtual void sendFunctionGroup3();
+ /*protected*/ void sendFunctionGroup1();
+ /*protected*/ void sendFunctionGroup2();
+ /*protected*/ void sendFunctionGroup3();
+ /*protected*/ void sendFunctionGroup4();
+ /*protected*/ void sendFunctionGroup5();
  /*protected*/ void throttleDispose();
  /*protected*/ void startRefresh();
 

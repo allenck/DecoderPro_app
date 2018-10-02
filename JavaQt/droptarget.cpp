@@ -7,6 +7,7 @@
 #include "droptargetdropevent.h"
 #include "componentpeer.h"
 #include "logger.h"
+#include "systemflavormap.h"
 
 DropTarget::DropTarget(QObject *parent) :
     QObject(parent)
@@ -479,7 +480,7 @@ void DropTarget::doSetDefaultActions(int ops) {
  */
 
 /*public*/ void DropTarget::setFlavorMap(FlavorMap* fm) {
-    flavorMap = fm;// TODO: == NULL ? SystemFlavorMap.getDefaultFlavorMap() : fm;
+    flavorMap = (fm == NULL ? SystemFlavorMap::getDefaultFlavorMap() : fm);
 }
 
 /**

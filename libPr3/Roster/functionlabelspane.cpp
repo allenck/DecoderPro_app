@@ -156,6 +156,55 @@ FunctionLabelsPane::FunctionLabelsPane(RosterEntry* re, QWidget *parent) :
     connect(ui->iconOn16, SIGNAL(fileNameChanged(QString)), this, SLOT(OnIconOn16_changed(QString)));
     connect(ui->iconOn16, SIGNAL(rightClick(DropJLabel*)), this, SLOT(onRightClick(DropJLabel*)));
 
+    ui->lbl0->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl1->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl2->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl3->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl4->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl5->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl6->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl7->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl8->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl9->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl10->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl11->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl12->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl13->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl14->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl15->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl16->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl17->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl18->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl19->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl20->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl21->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl22->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl23->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl24->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl25->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl26->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl27->setStyleSheet("QLineEdit{border: 1px solid blue}");
+    ui->lbl28->setStyleSheet("QLineEdit{border: 1px solid blue}");
+
+
+    QVector<QRadioButton*> shunterMode = QVector<QRadioButton*>() << ui->radioButton_0 << ui->radioButton_1 << ui->radioButton_2 << ui->radioButton_3 << ui->radioButton_4 << ui->radioButton_5 << ui->radioButton_6 << ui->radioButton_7 << ui->radioButton_8 << ui->radioButton_9 << ui->radioButton_10 << ui->radioButton_11 << ui->radioButton_12 << ui->radioButton_13 << ui->radioButton_14 << ui->radioButton_15 << ui->radioButton_16 << ui->radioButton_17 << ui->radioButton_18 << ui->radioButton_19 << ui->radioButton_20 << ui->radioButton_21 << ui->radioButton_22 << ui->radioButton_23 << ui->radioButton_24 << ui->radioButton_25 << ui->radioButton_26 << ui->radioButton_27 << ui->radioButton_28;
+
+    shunterModeMapper = new QSignalMapper(this);
+    for(int i=0; i <= 28; i++)
+    {
+     QRadioButton* rb = shunterMode.at(i);
+     shunterModeMapper->setMapping(rb,i);
+     connect(rb, SIGNAL(clicked()), shunterModeMapper, SLOT(map()));
+    }
+    connect(shunterModeMapper, SIGNAL(mapped(int)), this, SLOT(on_shunterRbClicked(int)));
+    QString fn = re->getShuntingFunction();
+    bool bOk;
+    if(!fn.isEmpty() && fn.at(0)== 'F')
+    {
+     int f = fn.mid(1).toInt(&bOk);
+     if(bOk)
+      shunterMode.at(f)->setChecked(true);
+    }
 
     setWindowTitle(re->getId());
 }
@@ -560,4 +609,9 @@ void FunctionLabelsPane::onRightClick(DropJLabel * l)
   l->setIconFn(newPath, QSize(32,32));
   emit l->fileNameChanged(newPath);
  }
+}
+
+void FunctionLabelsPane::on_shunterRbClicked(int i)
+{
+ re->setShuntingFunction(QString("F%1").arg(i));
 }

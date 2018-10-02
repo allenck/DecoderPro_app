@@ -1,4 +1,5 @@
 #include "abstractborder.h"
+#include "exceptions.h"
 
 AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
 {
@@ -35,7 +36,7 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  */
 /*public*/ void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
 }
-
+#endif
 /**
  * This default implementation returns a new {@link Insets} object
  * that is initialized by the {@link #getBorderInsets(Component,Insets)}
@@ -46,7 +47,7 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * @param c  the component for which this border insets value applies
  * @return a new {@link Insets} object
  */
-/*public*/ Insets getBorderInsets(Component c)       {
+/*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c)       {
     return getBorderInsets(c, new Insets(0, 0, 0, 0));
 }
 
@@ -56,8 +57,8 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * @param insets the object to be reinitialized
  * @return the <code>insets</code> object
  */
-/*public*/ Insets getBorderInsets(Component c, Insets insets) {
-    insets.left = insets.top = insets.right = insets.bottom = 0;
+/*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c, Insets* insets) {
+    insets->left = insets->top = insets->right = insets->bottom = 0;
     return insets;
 }
 
@@ -65,7 +66,7 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * This default implementation returns false.
  * @return false
  */
-/*public*/ bool isBorderOpaque() { return false; }
+/*public*/ bool AbstractBorder::isBorderOpaque() { return false; }
 
 /**
  * This convenience method calls the static method.
@@ -76,8 +77,8 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * @param height the height of the border
  * @return a <code>Rectangle</code> containing the interior coordinates
  */
-/*public*/ Rectangle getInteriorRectangle(Component c, int x, int y, int width, int height) {
-    return getInteriorRectangle(c, this, x, y, width, height);
+/*public*/ QRect AbstractBorder::getInteriorRectangle(QWidget* c, int x, int y, int width, int height) {
+    return getInteriorRectangle(c, (Border*)this, x, y, width, height);
 }
 
 /**
@@ -92,16 +93,16 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * @param height the height of the border
  * @return a <code>Rectangle</code> containing the interior coordinates
  */
-/*public*/ static Rectangle getInteriorRectangle(Component c, Border b, int x, int y, int width, int height) {
-    Insets insets;
-    if(b != null)
-        insets = b.getBorderInsets(c);
+/*public*/ /*static*/ QRect AbstractBorder::getInteriorRectangle(QWidget* c, Border* b, int x, int y, int width, int height) {
+    Insets* insets;
+    if(b != NULL)
+        insets = b->getBorderInsets(c);
     else
         insets = new Insets(0, 0, 0, 0);
-    return new Rectangle(x + insets.left,
-                                y + insets.top,
-                                width - insets.right - insets.left,
-                                height - insets.top - insets.bottom);
+    return QRect(x + insets->left,
+                                y + insets->top,
+                                width - insets->right - insets->left,
+                                height - insets->top - insets->bottom);
 }
 
 /**
@@ -124,14 +125,14 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * @see java.awt.Component#getBaselineResizeBehavior()
  * @since 1.6
  */
-/*public*/ int getBaseline(Component c, int width, int height) {
+/*public*/ int AbstractBorder::getBaseline(QWidget c, int width, int height) {
     if (width < 0 || height < 0) {
-        throw new IllegalArgumentException(
+        throw IllegalArgumentException(
                 "Width and height must be >= 0");
     }
     return -1;
 }
-
+#if 0
 /**
  * Returns an enum indicating how the baseline of a component
  * changes as the size changes.  This method is primarily meant for
@@ -140,7 +141,7 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * The default implementation returns
  * <code>BaselineResizeBehavior.OTHER</code>, subclasses that support
  * baseline should override appropriately.  Subclasses should
- * never return <code>null</code>; if the baseline can not be
+ * never return <code>NULL</code>; if the baseline can not be
  * calculated return <code>BaselineResizeBehavior.OTHER</code>.  Callers
  * should first ask for the baseline using
  * <code>getBaseline</code> and if a value &gt;= 0 is returned use
@@ -157,8 +158,8 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  */
 /*public*/ Component.BaselineResizeBehavior getBaselineResizeBehavior(
         Component c) {
-    if (c == null) {
-        throw new NullPointerException("Component must be non-null");
+    if (c == NULL) {
+        throw new NullPointerException("Component must be non-NULL");
     }
     return Component.BaselineResizeBehavior.OTHER;
 }

@@ -61,6 +61,11 @@
 #include "paneleditor.h"
 #include "rpspositionicon.h"
 #include "blockcontentsicon.h"
+#include "box.h"
+#include "catalogpanel.h"
+#include "border.h"
+#include "borderfactory.h"
+#include "compoundborder.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -213,7 +218,7 @@ void Editor::commonInit()
 /**
 *
 */
-/*public*/ NamedIcon* Editor::loadFailed(QString /*msg*/, QString url)
+/*public*/ NamedIcon* Editor::loadFailed(QString msg, QString url)
 {
  if (_debug) log->debug("loadFailed _ignore= "+_ignore);
  QString goodUrl = _urlMap->value(url);
@@ -228,8 +233,8 @@ void Editor::commonInit()
  }
  _newIcon = NULL;
  _delete = false;
-// TODO:
-// new UrlErrorDialog(msg, url);
+
+ new UrlErrorDialog(msg, url);
 
 if (_delete)
 {
@@ -367,6 +372,7 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 }
 /*protected*/ /*const*/ void Editor::setPaintScale(double newScale) {
     double ratio = newScale/_paintScale;
+    Q_UNUSED(ratio);
     _paintScale = newScale;
     //setScrollbarScale(ratio);
 }
@@ -740,14 +746,14 @@ void Editor::closeEvent(QCloseEvent */*e*/)
   QString message = NULL;
   if(save)
   {
-//   message = Bundle.getMessage("Reminder1")+" "+Bundle.getMessage("Reminder2")+
-//                            "\n"+Bundle.getMessage("Reminder3");
+//   message = tr("Reminder1")+" "+tr("Reminder2")+
+//                            "\n"+tr("Reminder3");
    message = tr("This panel has been changed.  ") + tr("Please remember to save it to disk.") + tr("( Select 'Save Panels...' in the Panels menu or the File menu of any panel.)");
    QMessageBox::question(this, tr("Reminder"), message);
   }
   else
   {
-   //message = Bundle.getMessage("PanelCloseQuestion") +"\n" + Bundle.getMessage("PanelCloseHelp");
+   //message = tr("PanelCloseQuestion") +"\n" + tr("PanelCloseHelp");
    if(this->window() != NULL)
     name = this->window()->windowTitle();
    message = tr("Do you want to hide or delete \"%1\"?\nUse Panels->Show Panel to display hidden panels.").arg(name);
@@ -790,7 +796,7 @@ void Editor::closeEvent(QCloseEvent */*e*/)
  * view
  *
  */
-/*abstract*/ /*protected*/ void Editor::paintTargetPanel(QGraphicsScene* g) {}
+/*abstract*/ /*protected*/ void Editor::paintTargetPanel(QGraphicsScene* /*g*/) {}
 
 ///*protected*/ void Editor::setSecondSelectionGroup(QList<Positionable*> list) {
 //    _secondSelectionGroup = list;
@@ -860,7 +866,7 @@ JFrame* frame = getTargetFrame();
 */
 /*public*/ void Editor::setPositionableMenu(Positionable* p, QMenu* popup)
 {
- //JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(Bundle.getMessage("LockPosition"));
+ //JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(tr("LockPosition"));
  //lockItem.setSelected(!p.isPositionable());
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
  if(pl == NULL) return;
@@ -976,7 +982,7 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
    //  if (p.getDisplayLevel() == BKG || p instanceof PositionableShape) {
    //      return;
    //  }
-   //  JCheckBoxMenuItem hideItem = new JCheckBoxMenuItem(Bundle.getMessage("SetHidden"));
+   //  JCheckBoxMenuItem hideItem = new JCheckBoxMenuItem(tr("SetHidden"));
    //  hideItem.setSelected(p->isHidden());
    //  hideItem.addActionListener(new ActionListener(){
    //      Positionable comp;
@@ -1046,7 +1052,7 @@ ShowToolTipActionListener::ShowToolTipActionListener(Positionable *pos, bool isC
  this->isChecked = isChecked;
  this->editor = editor;
 }
-void ShowToolTipActionListener::actionPerformed(ActionEvent *e)
+void ShowToolTipActionListener::actionPerformed(ActionEvent */*e*/)
 {
  comp->setShowTooltip(!isChecked);
 }
@@ -1057,7 +1063,7 @@ void ShowToolTipActionListener::actionPerformed(ActionEvent *e)
 */
 /*public*/ void Editor::setRemoveMenu(Positionable* p, QMenu* popup)
 {
-    //  popup.add(new AbstractAction(Bundle.getMessage("Remove")) {
+    //  popup.add(new AbstractAction(tr("Remove")) {
     //      Positionable comp;
     //      /*public*/ void actionPerformed(ActionEvent e) {
     //          comp.remove();
@@ -1164,16 +1170,16 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 #if 0 // done, see below.
     const JmriJFrame locoFrame = new JmriJFrame();
     locoFrame.getContentPane().setLayout(new FlowLayout());
-    locoFrame.setTitle(Bundle.getMessage("EnterLocoMarker"));
+    locoFrame.setTitle(tr("EnterLocoMarker"));
     javax.swing.JLabel textId = new javax.swing.JLabel();
-    textId.setText(Bundle.getMessage("LocoID")+":");
+    textId.setText(tr("LocoID")+":");
     locoFrame.getContentPane().add(textId);
     const javax.swing.JTextField locoId = new javax.swing.JTextField(7);
     locoFrame.getContentPane().add(locoId);
     locoId.setText("");
-    locoId.setToolTipText(Bundle.getMessage("EnterLocoID"));
+    locoId.setToolTipText(tr("EnterLocoID"));
     javax.swing.JButton okay = new javax.swing.JButton();
-    okay.setText(Bundle.getMessage("OK"));
+    okay.setText(tr("OK"));
     okay.addActionListener(new java.awt.event.ActionListener() {
         /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
             QString nameID = locoId.getText();
@@ -1181,8 +1187,8 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
                 addLocoIcon(nameID.trim());
             }
             else {
-                JOptionPane.showMessageDialog(locoFrame,Bundle.getMessage("ErrorEnterLocoID"),
-                                Bundle.getMessage("errorTitle"),JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(locoFrame,tr("ErrorEnterLocoID"),
+                                tr("errorTitle"),JOptionPane.ERROR_MESSAGE);
             }
         }
     });
@@ -1282,7 +1288,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 
 /* Positionable has set a new level.  Editor must change it in the target panel.
 */
-/*public*/ void Editor::displayLevelChange(Positionable* l){
+/*public*/ void Editor::displayLevelChange(Positionable* /*l*/){
 //    removeFromTarget(l);
 //    addToTarget(l);
 // if(l->_itemGroup != NULL)
@@ -1534,7 +1540,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  */
 /*protected*/ void Editor::addTextEditor()
 {
- //QString newLabel = JOptionPane.showInputDialog(this, Bundle.getMessage("PromptNewLabel"));
+ //QString newLabel = JOptionPane.showInputDialog(this, tr("PromptNewLabel"));
  QString newLabel;
  InputDialog* dlg = new InputDialog(tr("Enter Text, then press OK"), "");
 //    if (newLabel==NULL) return;  // canceled
@@ -1763,8 +1769,8 @@ void AddPanelIconActionListener::actionPerformed(ActionEvent *)
 /*protected*/ void Editor::addMemoryEditor()
 {
 // IconAdder* editor = new IconAdder("Memory") {
-//            JButton bSpin = new JButton(Bundle.getMessage("AddSpinner"));
-//            JButton bBox = new JButton(Bundle.getMessage("AddInputBox"));
+//            JButton bSpin = new JButton(tr("AddSpinner"));
+//            JButton bBox = new JButton(tr("AddInputBox"));
 //            JSpinner spinner = new JSpinner(_spinCols);
 //            /*protected*/ void addAdditionalButtons(JPanel p) {
 //                bSpin.addActionListener( new ActionListener() {
@@ -1782,7 +1788,7 @@ void AddPanelIconActionListener::actionPerformed(ActionEvent *)
 //                ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setColumns(2);
 //                spinner.setMaximumSize(spinner.getPreferredSize());
 //                JPanel p2 = new JPanel();
-//                p2.add(new JLabel(Bundle.getMessage("NumColsLabel")));
+//                p2.add(new JLabel(tr("NumColsLabel")));
 //                p2.add(spinner);
 //                p1.add(p2);
 //                p1.add(bBox);
@@ -2347,7 +2353,7 @@ void Editor::putBackground() {
 //  pLayout->setSpacing(0);
   if (add)
   {
-   txt = tr("To add a %1 to the Panel,").arg( /*Bundle.getMessage*/name);
+   txt = tr("To add a %1 to the Panel,").arg( /*tr*/name);
   }
   else
   {
@@ -2502,7 +2508,9 @@ if (dir != NULL) {
 SearchItemActionListener* SearchItemActionListener::init(IconAdder *ed)
 {
  ea = ed;
+ return this;
 }
+
 EditItemActionListener* EditItemActionListener::init(Editor *ed)
 {
  editor = ed;
@@ -2519,15 +2527,6 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 #endif
 /*protected*/ void Editor::removeFromTarget(Positionable* l)
 {
-#if 0 // TODO:
-    _targetPanel.remove((Component)l);
-    _highlightcomponent = NULL;
-    Point p = l.getLocation();
-    int w = l.getWidth();
-    int h = l.getHeight();
-    _targetPanel.validate();
-    _targetPanel.repaint(p.x,p.y,w,h);
-#endif
  if(l->_itemGroup != NULL && l->_itemGroup->scene()!= NULL)
  editScene->removeItem(l->_itemGroup);
  if(l->_handleGroup != NULL && l->_handleGroup)
@@ -2553,11 +2552,11 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
  if (_debug) log->debug("deletePanel");
  // verify deletion
 //int selectedValue = JOptionPane.showOptionDialog(_targetPanel,
-//            Bundle.getMessage("QuestionA")+"\n"+Bundle.getMessage("QuestionB"),
-//            Bundle.getMessage("DeleteVerifyTitle"),JOptionPane.YES_NO_OPTION,
+//            tr("QuestionA")+"\n"+tr("QuestionB"),
+//            tr("DeleteVerifyTitle"),JOptionPane.YES_NO_OPTION,
 //            JOptionPane.QUESTION_MESSAGE,NULL,
-//            new Object[]{Bundle.getMessage("ButtonYesDelete"),Bundle.getMessage("ButtonNoCancel")},
-//            Bundle.getMessage("ButtonNoCancel"));
+//            new Object[]{tr("ButtonYesDelete"),tr("ButtonNoCancel")},
+//            tr("ButtonNoCancel"));
 //    // return without deleting if "No" response
 //    return (selectedValue == JOptionPane.YES_OPTION);
  int selectedValue = QMessageBox::question(this, tr("Verify Delete Panel"),tr("Do you want to delete this panel?"), QMessageBox::Yes | QMessageBox::No);
@@ -2576,7 +2575,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
      frame->dispose();
  }
  // delete panel - deregister the panel for saving
- ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->deregister(this);
+ ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->deregister(this);
  PanelMenu::instance()->deletePanel(this);
  editors->removeOne(this);
  setVisible(false);
@@ -3039,7 +3038,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
  {
   return false;
  }
-//    popup.add(new AbstractAction(Bundle.getMessage("TextAttributes")){
+//    popup.add(new AbstractAction(tr("TextAttributes")){
 //        Positionable comp;
 //        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
 //            new TextAttrDialog(comp);
@@ -3066,7 +3065,7 @@ void Editor::On_textAttributesAction_triggered() // SLOT[]
 //    jmri.jmrit.display.palette.DecoratorPanel _decorator;
 TextAttrDialog::TextAttrDialog(Positionable* p, QWidget* _targetFrame) : JDialog(_targetFrame)
 {
- //super(_targetFrame, Bundle.getMessage("TextAttributes"), true);
+ //super(_targetFrame, tr("TextAttributes"), true);
 //    QFont f = font();
 //    f.setPointSize(8);
 //    setFont(f);
@@ -3163,21 +3162,20 @@ void TextAttrDialog::doneButton_clicked()
                 pos->rotate(0);
                 int mar = newUtil->getMargin();
                 int bor = newUtil->getBorderSize();
-#if 0 // TODO:
-                javax.swing.border.Border outlineBorder;
+
+                Border* outlineBorder;
                 if (bor==0) {
-                    outlineBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+                    outlineBorder = BorderFactory::createEmptyBorder(0, 0, 0, 0);
                 }else {
-                    outlineBorder = new javax.swing.border.LineBorder(newUtil.getBorderColor(), bor);
+                    outlineBorder = new LineBorder(newUtil->getBorderColor(), bor);
                 }
-                javax.swing.border.Border borderMargin;
+                Border* borderMargin;
                 if (isOpaque){
-                    borderMargin = new javax.swing.border.LineBorder(pos.getBackground(), mar);
+                    borderMargin = new LineBorder(pos->getBackground(), mar);
                 } else{
-                    borderMargin = BorderFactory.createEmptyBorder(mar, mar, mar, mar);
+                    borderMargin = BorderFactory::createEmptyBorder(mar, mar, mar, mar);
                 }
-                pos.setBorder(new javax.swing.border.CompoundBorder(outlineBorder, borderMargin));
-#endif
+                pos->setBorder(new CompoundBorder(outlineBorder, borderMargin));
                 pos->setOpaque(isOpaque);
                 pos->rotate(deg);
                 if(pos->_itemGroup != NULL)
@@ -3665,7 +3663,7 @@ abstract public void mouseExited(MouseEvent event);
 /*
  * set up target panel, frame etc.
  */
-/*abstract*/ /*protected*/ void Editor::init(QString name) {}
+/*abstract*/ /*protected*/ void Editor::init(QString /*name*/) {}
 /**
  * Get a List of the currently-existing Editor objects. The returned list is
  * a copy made at the time of the call, so it can be manipulated as needed
@@ -3747,3 +3745,113 @@ abstract public void mouseExited(MouseEvent event);
     }
     return NULL;
 }
+//class UrlErrorDialog extends JDialog {
+
+//        JTextField _urlField;
+//        CatalogPanel _catalog;
+//        String _badUrl;
+
+UrlErrorDialog::UrlErrorDialog(QString msg, QString url, Editor* _targetFrame) : JDialog(_targetFrame, tr("Icon Not Found"), true)
+{
+    //super(_targetFrame, tr("BadIcon"), true);
+    _badUrl = url;
+//    QWidget* content = new QWidget();
+    QWidget* panel = new QWidget();
+    //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    QVBoxLayout* panelLayout = new QVBoxLayout(panel);
+    panelLayout->addWidget(Box::createVerticalStrut(10));
+    panelLayout->addWidget(new QLabel(tr("Icon file for %1 not found").arg(msg)));
+    panelLayout->addWidget(new QLabel(tr("No icon will appear for this item in the panel.")));
+    panelLayout->addWidget(new QLabel(tr("Enter the correct file name in the text box or")));
+    panelLayout->addWidget(new QLabel(tr("drag an icon from the directories below into the text box.")));
+    panelLayout->addWidget(Box::createVerticalStrut(10));
+    panelLayout->addWidget(new QLabel(tr("Press [%1] to use file name in the text box for the icon.").arg( tr("Continue"))));
+    panelLayout->addWidget(new QLabel(tr("Press [%1] to remove the icon when the panel is saved.").arg( tr("Delete"))));
+    panelLayout->addWidget(new QLabel(tr("Save the panel to make these changes permanent.")));
+    panelLayout->addWidget(Box::createVerticalStrut(10));
+    panelLayout->addWidget(new QLabel(tr("UrlErrorPrompt4").arg(tr("ButtonIgnore"))));
+    panelLayout->addWidget(Box::createVerticalStrut(10));
+    _urlField = new JTextField(url);
+    _urlField->setDragEnabled(true);
+//    _urlField->setTransferHandler(new DnDStringImportHandler());
+    panelLayout->addWidget(_urlField);
+    panelLayout->addWidget(makeDoneButtonPanel());
+    _urlField->setToolTip(tr("Type in a file name to correct the url name or drag an icon from the Catalog panel"));
+    panel->setToolTip(tr("Type in a file name to correct the url name or drag an icon from the Catalog panel"));
+    _catalog = CatalogPanel::makeDefaultCatalog();
+    _catalog->setToolTip(tr("Drag an icon from the Catalog to the text box to correct the url name."));
+    panelLayout->addWidget(_catalog);
+//    content.add(panel);
+//    setContentPane(content);
+    QVBoxLayout* thisLayout = new QVBoxLayout(this);
+    thisLayout->addWidget(panel);
+    setLocation(200, 100);
+    pack();
+}
+
+/*protected*/ QWidget* UrlErrorDialog::makeDoneButtonPanel() {
+    QWidget* result = new QWidget();
+    FlowLayout* resultLayout;
+    result->setLayout(resultLayout = new FlowLayout());
+    QPushButton* doneButton = new QPushButton(tr("Continue"));
+//    doneButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            _newIcon = NamedIcon.getIconByName(_urlField.getText());
+//            if (_newIcon != null) {
+//                _urlMap.put(_badUrl, _urlField.getText());
+//            }
+//            dispose();
+//        }
+//    });
+    connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(doneButton_clicked()));
+    doneButton->setToolTip(tr("Use the file name in the text field and keep it when the panel is saved."));
+    resultLayout->addWidget(doneButton);
+
+    QPushButton* deleteButton = new QPushButton(tr("Delete"));
+//    deleteButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            _delete = true;
+//            dispose();
+//        }
+//    });
+    connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButton_clicked()));
+    resultLayout->addWidget(deleteButton);
+    deleteButton->setToolTip(tr("Delete this item from the panel and do not save it to the xml file"));
+
+    QPushButton* cancelButton = new QPushButton(tr("Ignore"));
+//    cancelButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            _ignore = true;
+//            dispose();
+//        }
+//    });
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(cancelButton_clicked()));
+    resultLayout->addWidget(cancelButton);
+    cancelButton->setToolTip(tr("Ignore any further url name errors and retain the current icon file names."));
+    return result;
+}
+
+void UrlErrorDialog::doneButton_clicked()
+{
+ parent->_newIcon = NamedIcon::getIconByName(_urlField->text());
+ if (parent->_newIcon != NULL) {
+     parent->_urlMap->insert(_badUrl, _urlField->text());
+ }
+ dispose();
+}
+
+void UrlErrorDialog::deleteButton_clicked()
+{
+ parent->_delete = true;
+ dispose();
+}
+
+void UrlErrorDialog::cancelButton_clicked()
+{
+ parent->_ignore = true;
+ dispose();
+}
+//}

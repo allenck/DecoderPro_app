@@ -207,19 +207,22 @@ HexFileFrame::HexFileFrame(QWidget *parent) :
  lnSensorManager->setDefaultSensorState(port->getOptionState("SensorDefaultState"));
 
  // Install a debug programmer, replacing the existing LocoNet one
- ProgrammerManager* ep = ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager();
+ DefaultProgrammerManager* ep = ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager();
  ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->setProgrammerManager(
-            new DebugProgrammerManager(port->getSystemConnectionMemo()));
- InstanceManager::setProgrammerManager(
-            ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager());
- InstanceManager::deregister(ep, "ProgrammerManager");
+         new DebugProgrammerManager(port->getSystemConnectionMemo()));
+ if (((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager()->isAddressedModePossible()) {
+     InstanceManager::setAddressedProgrammerManager(((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager());
+ }
+ if (((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager()->isGlobalProgrammerAvailable()) {
+     InstanceManager::store(((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager(), "GlobalProgrammerManager");
+ }
  InstanceManager::deregister(ep, "AddressedProgrammerManager");
  InstanceManager::deregister(ep, "GlobalProgrammerManager");
 
- // Install a debug throttle manager, replacing the existing LocoNet one
- ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->setThrottleManager(new DebugThrottleManager(port->getSystemConnectionMemo()));
- InstanceManager::setThrottleManager(
-            ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getThrottleManager());
+// Install a debug throttle manager, replacing the existing LocoNet one
+((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->setThrottleManager(new DebugThrottleManager(port->getSystemConnectionMemo()));
+InstanceManager::setThrottleManager(
+    ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getThrottleManager());
 
  // start operation of packetizer
  packets->startThreads();

@@ -20,14 +20,14 @@ public:
     /*public*/ QListIterator<ThrottleWindow*> iterator();
     /*public*/ void addThrottleFrame(ThrottleWindow* tf);
     /*public*/ void removeThrottleFrame(ThrottleWindow* tf, DccLocoAddress* la);
+public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ void notifyAddressChosen(LocoAddress* la) ;
     /*public*/ void notifyAddressReleased(LocoAddress* addr);
     /*public*/ void notifyAddressThrottleFound(DccThrottle* throttle);
     /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);
     /*public*/ void notifyConsistAddressReleased(int address, bool isLong);
     /*public*/ void notifyConsistAddressThrottleFound(DccThrottle* throttle) ;
-public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 signals:
 

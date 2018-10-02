@@ -5,6 +5,7 @@
 #include <QString>
 #include "libPr3_global.h"
 #include "propertychangelistener.h"
+#include "propertychangesupport.h"
 
 class LIBPR3SHARED_EXPORT PowerManager : public QObject
 {
@@ -31,6 +32,8 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
     virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
 
     virtual QString getUserName() {return "";}
+ PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+
  signals:
  public slots:
  inline void virtual propertyChange(PropertyChangeEvent*) {}

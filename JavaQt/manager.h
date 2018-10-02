@@ -216,10 +216,65 @@ public:
         //@CheckReturnValue
         /*public*/ //@Nonnull
         QString virtual normalizeSystemName(/*@Nonnull */QString /*inputName*/) {return "";} //throw NamedBean.BadSystemNameException;
+        /**
+         * Provides length of the system prefix of the given system name.
+         * <p>
+         * This is a common operation across JMRI, as the system prefix can be
+         * parsed out without knowledge of the type of NamedBean involved.
+         *
+         * @param inputName System name to provide the prefix
+         * @throws NamedBean.BadSystemNameException If the inputName can't be
+         *                                          converted to normalized form
+         * @return The length of the system-prefix part of the system name in standard normalized form
+         */
+        //@CheckReturnValue
+        static /*public*/
+        int getSystemPrefixLength(/*@Nonnull*/ QString inputName) throw (NamedBean::BadSystemNameException);
+
+        /**
+             * Indicate whether a system-prefix is one of the legacy non-parsable ones
+             * that are being removed during the JMRI 4.11 cycle.
+             * @deprecated to make sure we remember to remove this post-4.11
+             * @since 4.11.2
+             * @return true if a legacy prefix, hence non-parsable
+             */
+            //@Deprecated
+        QT_DEPRECATED
+            //@SuppressWarnings("fallthrough")
+            //@SuppressFBWarnings(value = "SF_SWITCH_FALLTHROUGH", justification="intentional to make code more readable")
+            //@CheckReturnValue
+            /*public*/ static bool isLegacySystemPrefix(/*@Nonnull*/ QString prefix);
+
+            //@Deprecated
+        /**
+         * If the argument starts with one of the legacy prefixes, detect that and
+         * indicate its length.
+         * <p>
+         * This is a slightly-expensive operation, and should be used sparingly
+         *
+         * @deprecated to make sure we remember to remove this post-4.11
+         * @since 4.11.2
+         * @return length of a legacy prefix, if present, otherwise -1
+         */
+        //@Deprecated
+        QT_DEPRECATED
+        //@CheckReturnValue
+        /*public*/ static int startsWithLegacySystemPrefix(/*@Nonnull*/ QString prefix);
+        virtual /*public*/ QString getEntryToolTip() {return "";}
 
 signals:
     
 public slots:
+
+private:
+        QT_DEPRECATED
+//            static /*final*/ java.util.TreeSet<String> legacyPrefixes
+//                = new java.util.TreeSet<>(java.util.Arrays.asList(
+//                    new String[]{
+//                        "DX", "DCCPP", "DP", "MR", "MC", "PI", "TM"
+//                    }));
+        static QStringList legacyPrefixes;// = QStringList() << "DX" << "DCCPP" << "DP" << "MR" << "MC" << "PI" << "TM";
+
     
 };
 Q_DECLARE_INTERFACE(Manager, "ManagerInterface")

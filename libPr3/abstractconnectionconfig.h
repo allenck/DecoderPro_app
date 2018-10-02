@@ -67,7 +67,7 @@ protected:
     /*protected*/ JTextField* systemPrefixField;// = new JTextField(10);
     /*protected*/ JTextField* connectionNameField;// = new JTextField(15);
     /*protected*/ QString systemPrefix;
-    /*protected*/ QString connectionName;
+//    /*protected*/ QString connectionName;
     /*protected*/ QWidget* _details;
     /*protected*/ QHash<QString, AbstractConnectionConfig::Option*> options;// = new Hashtable<>();
     virtual /*abstract*/ /*protected*/ void setInstance();

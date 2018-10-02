@@ -39,7 +39,6 @@
  int n = nodes.size();
  QVector<QMenu*> retval =  QVector<QMenu*>(n);
 
- int i = 0;
  QList<int> mnemonicList =  QList<int>();
  for (int i = 0; i <  nodes.size(); i++)
  {
@@ -218,9 +217,9 @@
  return menu;
 }
 
-/*static*/ void JMenuUtil::setMenuItemInterAction(QObject* context, /*final*/ QString ref, /*final*/ QAction* menuItem)
+/*static*/ void JMenuUtil::setMenuItemInterAction(QObject* /*context*/, /*final*/ QString /*ref*/, /*final*/ QAction* /*menuItem*/)
 {
-#if 0
+#if 0 // TODO:
     Method* methodListener = NULL;
     try {
      methodListener = context.getClass().getMethod("addPropertyChangeListener", "PropertyChangeListener");

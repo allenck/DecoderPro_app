@@ -61,6 +61,7 @@ public:
     /*public*/ void windowClosing(QCloseEvent* /*e*/);
     void addWindowListener(WindowListener* l);
     void setLocationRelativeTo(QWidget*) {}
+    virtual void dispose();
 
 signals:
 
@@ -75,7 +76,7 @@ private:
     /*private*/ int defaultCloseOperation;// = HIDE_ON_CLOSE;
     Logger * log;
     void closeEvent(QCloseEvent* /*e*/);
-
+    bool modal;
 protected:
     /**
      * @see #getRootPane

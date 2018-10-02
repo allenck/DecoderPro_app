@@ -33,7 +33,6 @@ namespace Operations
    : QObject(parent)
  {
   pcs = new ::PropertyChangeSupport(this);
-  int _id = 0;
   log = new ::Logger("RouteManager");
  }
 
@@ -341,13 +340,13 @@ namespace Operations
  * @return null if no match found
  */
 //@CheckForNull
-/*public*/ Route* getRoute(/*@Nonnull*/ QString name) {return NULL;}
+/*public*/ Route* getRoute(/*@Nonnull*/ QString /*name*/) {return NULL;}
 
 //@CheckForNull
-/*public*/ Route* getByUserName(/*@Nonnull*/ QString s) {return NULL;}
+/*public*/ Route* getByUserName(/*@Nonnull*/ QString /*s*/) {return NULL;}
 
 //@CheckForNull
-/*public*/ Route* getBySystemName(/*@Nonnull*/ QString s) {return NULL;}
+/*public*/ Route* getBySystemName(/*@Nonnull*/ QString /*s*/) {return NULL;}
 
 /**
  * Get a list of all Route system names.
@@ -364,5 +363,5 @@ namespace Operations
  *
  * @param r the route to remove
  */
-void deleteRoute(/*@Nonnull*/ Route* r) {}
+void deleteRoute(/*@Nonnull*/ Route* /*r*/) {}
 }

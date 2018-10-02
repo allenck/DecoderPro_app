@@ -34,6 +34,16 @@
 #include "storexmlconfigaction.h"
 #include "windowpreferences.h"
 #include "fileutil.h"
+#include "loadxmlconfigaction.h"
+#include "largepowermanagerbutton.h"
+#include <QPalette>
+#include "loadxmlthrottleslayoutaction.h"
+#include "loaddefaultxmlthrottleslayoutaction.h"
+#include "storexmlthrottleslayoutaction.h"
+#include "storedefaultxmlthrottleslayoutaction.h"
+#ifdef SCRIPTING_ENABLED
+#include "jynstrument.h"
+#endif
 
 ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *parent) :
     JmriJFrame(parent),
@@ -51,15 +61,18 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  controlPanel = new ControlPanel(lf, this);
  controlPanel->setObjectName(QString::fromUtf8("controlPanel"));
  controlPanel->setWindowTitle(tr("Control Panel"));
- controlPanel->setAllowedAreas(Qt::LeftDockWidgetArea);
+ controlPanel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
  this->addDockWidget(static_cast<Qt::DockWidgetArea>(Qt::LeftDockWidgetArea), controlPanel);
  connect(this, SIGNAL(throttleWindowupdate(PropertyChangeEvent*)), controlPanel, SLOT(propertyChange(PropertyChangeEvent*)));
 
  functionPanel = new FunctionPanel(this);
- functionPanel->setAllowedAreas(Qt::RightDockWidgetArea|Qt::TopDockWidgetArea);
  functionPanel->setAllowedAreas(Qt::TopDockWidgetArea | Qt::RightDockWidgetArea);
  this->addDockWidget(static_cast<Qt::DockWidgetArea>(Qt::TopDockWidgetArea), functionPanel);
  connect(this, SIGNAL(throttleWindowupdate(PropertyChangeEvent*)), functionPanel, SLOT(propertyChange(PropertyChangeEvent*)));
+
+ speedPanel = new SpeedPanel(this);
+ speedPanel->setAllowedAreas(Qt::AllDockWidgetAreas);
+ this->addDockWidget(static_cast<Qt::DockWidgetArea>(Qt::BottomDockWidgetArea), speedPanel);
 
  setWindowTitle(tr("Unassigned"));
  listViewDlg = NULL;
@@ -67,6 +80,9 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  rosterEntry = NULL;
  cardCounterID = 0; // to generate unique names for each card
  cardCounterNB = 1; // real counter
+ willSwitch = false;
+ titleTextType = "rosterID";
+ BACKPANEL_LAYER = 0x80000000;
 
  getSettings();
  throttleFrames = new QMap<QString, ThrottleWindow*>(/*5*/);
@@ -97,35 +113,64 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  emergencyStop = new QAction(QIcon(":/resources/icons/throttles/estop.png"), tr("Emergency stop"), this);
  connect(emergencyStop, SIGNAL(triggered()), this, SLOT(on_emergencyStop_clicked()));
  ui->toolBar->addAction(emergencyStop);
- powerMgr = (LnPowerManager*)InstanceManager::powerManagerInstance();
- if(this->powerMgr != NULL)
- {
-  //LnPowerManager* pmgr = memo->getPowerManager();
-  //powerMgr->addPropertyChangeListener((PropertyChangeListener*)this);
-  connect(this->powerMgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  if(powerMgr->isPowerOn())
-   togglePower = new QAction(QIcon(":/resources/icons/throttles/power_green.png"), tr("Power on"), this);
-  else if (powerMgr->isPowerOff())
-   togglePower = new QAction(QIcon(":/resources/icons/throttles/power_red.png"), tr("Power off"), this);
-  else
-   togglePower = new QAction(QIcon(":/resources/icons/throttles/power_yellow.png"), tr("Power unknown"), this);
- }
- else
-  togglePower = new QAction(QIcon(":/resources/icons/throttles/power_yellow.png"), tr("Power unknown"), this);
- ui->toolBar->addAction(togglePower);
- connect(togglePower, SIGNAL(triggered()), this, SLOT(on_togglePower_clicked()));
+ powerMgr = (PowerManager*)InstanceManager::getDefault("PowerManager");
+ ui->toolBar->addWidget(new LargePowerManagerButton());
  ui->toolBar->addSeparator();
  editView = new QAction(QIcon(":/resources/icons/throttles/edit-view.png"),tr("Edit view"),this);
  ui->toolBar->addAction(editView);
  listViewAct = new QAction(QIcon(":/resources/icons/throttles/list.png"),tr("List manage throttles"),this);
+ listViewAct->setToolTip("View Local Throttles table");
  ui->toolBar->addAction(listViewAct);
+ throttleToolBar = ui->toolBar;
  connect(listViewAct, SIGNAL(triggered()), this, SLOT(on_listView_clicked()));
  PanelMenu::instance()->addEditorPanel((Editor*)this);
  connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
  bAltFunc = false;
- //addressPanel->addAddressListener((AddressListener*)this);
- connect(addressPanel, SIGNAL(notifyAddressThrottleFound(DccThrottle*)), this, SLOT(notifyAddressThrottleFound(DccThrottle*)));
- connect(addressPanel, SIGNAL(notifyAddressReleased(LocoAddress*)), this, SLOT(on_address_released(LocoAddress*)));
+ addressPanel->addAddressListener((AddressListener*)controlPanel);
+ addressPanel->addAddressListener((AddressListener*)functionPanel);
+ addressPanel->addAddressListener((AddressListener*)speedPanel);
+ addressPanel->addAddressListener((AddressListener*)this);
+ addressPanel->addAddressListener((AddressListener*)((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->getTableModel());
+ functionPanel->setAddressPanel(addressPanel);
+ controlPanel->setAddressPanel(addressPanel);
+ speedPanel->setAddressPanel(addressPanel);
+
+
+#if 1
+ if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle())
+ {
+  /*         if ( InstanceManager.getDefault(ThrottleFrameManager.class).getThrottlesPreferences().isUsingTransparentCtl() ) {
+              setTransparent(functionPanel);
+              setTransparent(addressPanel);
+              setTransparent(controlPanel);
+              }*/
+  if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingRosterImage())
+  {
+//   backgroundPanel = new BackgroundPanel();
+//   backgroundPanel->setAddressPanel(addressPanel); // reusing same way to do it than existing thing in functionPanel
+//   //   addComponentListener(backgroundPanel); // backgroudPanel warned when desktop resized
+//   addressPanel->addAddressListener((AddressListener*)backgroundPanel);
+//   addressPanel->setBackgroundPanel(backgroundPanel); // so that it's changeable when browsing through rosters
+//   //add(backgroundPanel, BACKPANEL_LAYER);
+//   ui->formLayout_2->addWidget(backgroundPanel);
+   if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingRosterImage())
+   {
+    if(rosterEntry != NULL && rosterEntry->getImagePath() != "")
+    {
+     QPixmap bkgnd(rosterEntry->getImagePath());
+     if (!((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isResizingWindow())
+      bkgnd = bkgnd.scaled(this->size(), Qt::KeepAspectRatio);
+     else
+      bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+     QPalette palette;
+     palette.setBrush(QPalette::Background, bkgnd);
+     this->setPalette(palette);
+    }
+   }
+  }
+//  addComponentListener(this); // to force sub windows repositionning
+ }
+#endif
  initializeMenu();
 
  ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->addThrottleFrame(this);
@@ -173,13 +218,11 @@ ThrottleWindow::~ThrottleWindow()
  fileMenu->addAction(fileMenuSave);
  fileMenu->addAction(fileMenuSaveAs);
  fileMenu->addSeparator();
-#if 0
- fileMenu->addA(new LoadXmlThrottlesLayoutAction(tr("MenuItemLoadThrottleLayout")));
- fileMenu.add(new StoreXmlThrottlesLayoutAction(tr("MenuItemSaveThrottleLayout" )));
- fileMenu.addSeparator();
- fileMenu.add(new LoadDefaultXmlThrottlesLayoutAction(tr("MenuItemLoadDefaultThrottleLayout" )));
- fileMenu.add(new StoreDefaultXmlThrottlesLayoutAction(tr("MenuItemSaveAsDefaultThrottleLayout" )));
-#endif
+ fileMenu->addAction(new LoadXmlThrottlesLayoutAction(tr("Open Throttles Layout..."),this));
+ fileMenu->addAction(new StoreXmlThrottlesLayoutAction(tr("Save Throttles Layout..." ),this));
+ fileMenu->addSeparator();
+ fileMenu->addAction(new LoadDefaultXmlThrottlesLayoutAction(tr("Load Default Throttles Layout" ),this));
+ fileMenu->addAction(new StoreDefaultXmlThrottlesLayoutAction(tr("Save As Default Throttles Layout" ),this));
  fileMenu->addSeparator();
  fileMenu->addAction(new WiThrottleCreationAction(tr("Start WiThrottle"),this));
 
@@ -216,6 +259,18 @@ ThrottleWindow::~ThrottleWindow()
 //    });
  connect(viewFunctionPanel, SIGNAL(toggled(bool)), this, SLOT(on_actionFunction_Panel_toggled(bool)));
 
+ viewSpeedPanel = new QAction(tr("Speed Panel"),this);
+ viewSpeedPanel->setCheckable(true);
+ viewSpeedPanel->setChecked(true);
+//    viewFunctionPanel.addItemListener(new ItemListener() {
+
+//        public void itemStateChanged(ItemEvent e) {
+//            getCurrentThrottleFrame().getFunctionPanel().setVisible(e.getStateChange() == ItemEvent.SELECTED);
+//        }
+//    });
+ connect(viewSpeedPanel, SIGNAL(toggled(bool)), this, SLOT(on_actionSpeed_Panel_toggled(bool)));
+
+
  viewAllButtons = new QAction(tr("Reset function buttons"),this);
 //    viewAllButtons.addActionListener(new AbstractAction() {
 
@@ -247,6 +302,7 @@ ThrottleWindow::~ThrottleWindow()
  viewMenu->addAction(viewAddressPanel);
  viewMenu->addAction(viewControlPanel);
  viewMenu->addAction(viewFunctionPanel);
+ viewMenu->addAction(viewSpeedPanel);
  viewMenu->addSeparator();
  viewMenu->addAction(viewAllButtons);
  viewMenu->addAction(makeAllComponentsInBounds);
@@ -254,6 +310,7 @@ ThrottleWindow::~ThrottleWindow()
  viewMenu->addAction(switchViewMode);
  viewMenu->addAction(viewThrottlesList);
 
+ connect(viewThrottlesList, SIGNAL(triggered(bool)), this, SLOT(on_listView_clicked()));
  QMenu* editMenu = new QMenu(tr("Edit"));
  QAction* preferencesItem = new QAction(tr("Frame properties"),this);
  editMenu->addAction(preferencesItem);
@@ -348,7 +405,7 @@ void ThrottleWindow::on_emergencyStop_clicked()
  msg->setOpCode(LnConstants::OPC_IDLE);
  ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo"))->getLnTrafficController()->sendLocoNetMessage(msg);
 }
-
+#if 0
 void ThrottleWindow::on_togglePower_clicked()
 {
  //LnPowerManager* pmgr = memo->getPowerManager();
@@ -357,6 +414,7 @@ void ThrottleWindow::on_togglePower_clicked()
  else
   powerMgr->setPower(PowerManager::ON);
 }
+#endif
 void ThrottleWindow::on_actionPower_On_triggered()
 {
  //LnPowerManager* pmgr = memo->getPowerManager();
@@ -370,6 +428,7 @@ void ThrottleWindow::on_actionPower_Off_triggered()
 
 void ThrottleWindow::propertyChange(PropertyChangeEvent *e)
 {
+#if 0
  if(e->getPropertyName() == "Power")
  {
   //LnPowerManager* pmgr = memo->getPowerManager();
@@ -391,11 +450,32 @@ void ThrottleWindow::propertyChange(PropertyChangeEvent *e)
  }
 
  else
+#endif
   log->debug(tr("Property change '%1' %2").arg(e->getPropertyName()).arg(e->getNewValue().toString()));
  emit throttleWindowupdate(e);
 }
+
+//@Override
+/*public*/ void ThrottleWindow::notifyAddressChosen(LocoAddress* /*l*/) {
+}
+
+//@Override
+/*public*/ void ThrottleWindow::notifyAddressReleased(LocoAddress* /*la*/) {
+    setLastUsedSaveFile("");
+    setFrameTitle();
+    /*throttleWindow.*/updateGUI();
+}
+
 void ThrottleWindow::notifyAddressThrottleFound(DccThrottle*t) // SLOT[]
 {
+ if ((((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle())
+         && (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isAutoLoading())
+         && (addressPanel != NULL) && (addressPanel->getRosterEntry() != NULL)
+         && ((getLastUsedSaveFile() == NULL) || (getLastUsedSaveFile() !=(getDefaultThrottleFolder() + addressPanel->getRosterEntry()->getId().trimmed() + ".xml") ))) {
+     loadThrottle(getDefaultThrottleFolder() + addressPanel->getRosterEntry()->getId().trimmed() + ".xml");
+ }
+ setFrameTitle();
+ /*throttleWindow*/ updateGUI();
  notifyThrottleFound(t);
 }
 
@@ -403,7 +483,21 @@ void ThrottleWindow::notifyThrottleFound(DccThrottle *t)
 {
  this->throttle = (LocoNetThrottle*)t;
  rosterEntry = (RosterEntry*)throttle->getRosterEntry();
- controlPanel->notifyThrottleFound(t);
+ if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingRosterImage())
+ {
+  if(rosterEntry != NULL && rosterEntry->getImagePath() != "")
+  {
+   QPixmap bkgnd(rosterEntry->getImagePath());
+   if (!((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isResizingWindow())
+    bkgnd = bkgnd.scaled(this->size(), Qt::KeepAspectRatio);
+   else
+    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+   QPalette palette;
+   palette.setBrush(QPalette::Background, bkgnd);
+   this->setPalette(palette);
+  }
+ }
+ controlPanel->notifyAddressThrottleFound(t);
  functionPanel->setAddressPanel(addressPanel);
  functionPanel->notifyAddressThrottleFound(t);
  //throttle->addPropertyChangeListener((PropertyChangeListener*)this);
@@ -459,11 +553,7 @@ void ThrottleWindow::notifyChangedSlot(LocoNetSlot * s)
 
 void ThrottleWindow::on_listView_clicked()
 {
- ListThrottles* listViewDlg = NULL;
- ThrottleFrameManager::instance()->getThrottlesListPanel();
- if(listViewDlg == NULL)
-  listViewDlg = new ListThrottles(/*memo,*/ this);
- listViewDlg->show();
+ ThrottleFrameManager::instance()->showThrottlesList();
 }
 
 void ThrottleWindow::on_menuWindow_aboutToShow()
@@ -497,9 +587,15 @@ void ThrottleWindow::on_actionControl_Panel_toggled(bool bChecked)
 {
  controlPanel->setVisible(bChecked);
 }
+
 void ThrottleWindow::on_actionFunction_Panel_toggled(bool bChecked)
 {
  functionPanel->setVisible(bChecked);
+}
+
+void ThrottleWindow::on_actionSpeed_Panel_toggled(bool bChecked)
+{
+ speedPanel->setVisible(bChecked);
 }
 RosterEntry* ThrottleWindow::getRosterEntry() { return rosterEntry;}
 
@@ -507,6 +603,7 @@ void ThrottleWindow::removeThrottleFrame()
 {
  //removeThrottleFrame( getCurrentThrottleFrame() );
 }
+
 AddressPanel* ThrottleWindow::getAddressPanel() { return addressPanel;}
 ControlPanel* ThrottleWindow::getControlPanel() { return controlPanel;}
 FunctionPanel* ThrottleWindow::getFunctionPanel() { return functionPanel;}
@@ -516,32 +613,33 @@ void ThrottleWindow::OnFileMenuLoad()
  //            getCurrentThrottleFrame().loadThrottle(NULL);
  loadThrottle(NULL);
 }
-/*public*/ void ThrottleWindow::loadThrottle(QString /*sfile*/) {
-#if 0 // TODO:
+/*public*/ void ThrottleWindow::loadThrottle(QString sfile) {
+#if 1 // TODO:
     if (sfile == "") {
-           JFileChooser fileChooser = jmri.jmrit.XmlFile.userFileChooser(Bundle.getMessage("PromptXmlFileTypes"), "xml");
-           fileChooser.setCurrentDirectory(new File(getDefaultThrottleFolder()));
-       fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-           java.io.File file = LoadXmlConfigAction.getFile(fileChooser);
+           JFileChooser* fileChooser = XmlFile::userFileChooser(tr("Xml files"), "xml");
+           fileChooser->setCurrentDirectory(new File(getDefaultThrottleFolder()));
+       fileChooser->setDialogType(JFileChooser::OPEN_DIALOG);
+           File* file = LoadXmlConfigAction::getFile(fileChooser);
            if (file == NULL) return;
-           sfile = file.getAbsolutePath();
+           sfile = file->getAbsolutePath();
            if (sfile == NULL) return;
        }
 
-       boolean switchAfter = false;
+       bool switchAfter = false;
        if (! isEditMode) {
            switchMode();
            switchAfter = true;
        }
 
        try {
-           XmlFile xf = new XmlFile(){};   // odd syntax is due to XmlFile being abstract
-           File f=new File(sfile);
-           Element root = xf.rootFromFile(f);
-           Element conf = root.getChild("ThrottleFrame");
+           XmlFile* xf = new XmlFile();   // odd syntax is due to XmlFile being abstract
+           File* f=new File(sfile);
+           QDomElement root = xf->rootFromFile(f);
+           QDomElement conf = root.firstChildElement("ThrottleFrame");
            // File looks ok
            setLastUsedSaveFile(sfile);
            // close all existing Jynstruments
+#if 0
            Component[] cmps = getComponents();
            for (int i=0; i<cmps.length; i++) {
                try {
@@ -559,11 +657,12 @@ void ThrottleWindow::OnFileMenuLoad()
                    log.debug("Got exception (no panic) "+ex);
                }
            }
+#endif
            // and finally load all preferences
            setXml(conf);
        } catch (Exception ex) {
-           if (log.isDebugEnabled())
-               log.debug("Loading throttle exception: " + ex.getMessage());
+           if (log->isDebugEnabled())
+               log->debug("Loading throttle exception: " + ex.getMessage());
        }
 //    	checkPosition();
        if (switchAfter) {
@@ -572,6 +671,7 @@ void ThrottleWindow::OnFileMenuLoad()
 #endif
  return ;
 }
+
 /*private*/ void ThrottleWindow::editPreferences()
 {
  ThrottleFramePropertyEditor* editor = new ThrottleFramePropertyEditor();
@@ -742,15 +842,18 @@ void ThrottleWindow::OnFileMenuLoad()
     }
 /*private*/ void ThrottleWindow::switchMode()
 {
- isEditMode = ! isEditMode;
- if (! throttleFrames->isEmpty() )
- {
-  //for (Iterator<ThrottleFrame> tfi = throttleFrames.values().iterator(); tfi.hasNext(); )
-  QListIterator< ThrottleWindow*> tfi(throttleFrames->values());
-  while(tfi.hasNext())
-  {
-   tfi.next()->switchMode();
-  }
+ if (isVisible()) {
+#if 0
+     if (isEditMode) {
+         playRendering();
+     } else {
+         editRendering();
+     }
+#endif
+     isEditMode = !isEditMode;
+     willSwitch = false;
+ } else {
+     willSwitch = !willSwitch;
  }
  updateGUI();
 }
@@ -894,7 +997,7 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  if (addressPanel->getThrottle() != NULL) {
      addr = addressPanel->getCurrentAddress()->toString();
  }
- if (getTitleTextType()==("address") == 0) {
+ if (getTitleTextType()==("address") ) {
      setTitle(addr);
  } else if (getTitleTextType() == ("text") ) {
      setTitle(getTitleText());
@@ -918,11 +1021,11 @@ void ThrottleWindow::on_address_released(LocoAddress *)
 {
  setTitle(tr("Unassigned"));
 }
-#if 1
+
 /*public*/ QDomElement ThrottleWindow::getXml()
 {
 
- QDomElement me =doc.createElement("ThrottleWindow");
+ QDomElement me =doc.createElement("ThrottleFrame");
  me.setAttribute("title", titleText);
  me.setAttribute("titleType", titleTextType);
 
@@ -955,37 +1058,47 @@ void ThrottleWindow::on_address_released(LocoAddress *)
       cf->toFront();
   }
  }
-#if 0
+ me.appendChild(controlPanel->getXml());
+ me.appendChild(functionPanel->getXml());
+ me.appendChild(addressPanel->getXml());
+ me.appendChild(speedPanel->getXml());
+
+#ifdef SCRIPTING_ENABLED
  // Save Jynstruments
+ QDomDocument doc = QDomDocument();
  if (throttleToolBar != NULL) {
-     Component[] cmps = throttleToolBar.getComponents();
-     if (cmps != NULL) {
-         for (int i = 0; i < cmps.length; i++) {
+     QObjectList cmps = throttleToolBar->children();
+     if (!cmps.isEmpty()) {
+         for (int i = 0; i < cmps.length(); i++) {
              try {
-                 if (cmps[i] instanceof Jynstrument) {
-                     Jynstrument jyn = (Jynstrument) cmps[i];
-                     Element elt = new Element("Jynstrument");
-                     elt.setAttribute("JynstrumentFolder", FileUtil.getPortableFilename(jyn.getFolder()));
-                     Element je = jyn.getXml();
-                     if (je != NULL) {
-                         java.util.ArrayList<Element> jychildren = new java.util.ArrayList<Element>(1);
-                         jychildren.add(je);
-                         elt.setContent(jychildren);
-                     }
-                     children.add(elt);
+                 //if (cmps[i] instanceof Jynstrument)
+           if(qobject_cast<Jynstrument*>(cmps.at(i)) != NULL)
+                 {
+                     Jynstrument* jyn = (Jynstrument*) cmps[i];
+                     QDomElement elt = doc.createElement("Jynstrument");
+                     elt.setAttribute("JynstrumentFolder", FileUtil::getPortableFilename(jyn->getFolder()));
+                     QDomElement je = jyn->getXml();
+//                     if (je != NULL) {
+//                         java.util.ArrayList<Element> jychildren = new java.util.ArrayList<Element>(1);
+//                         jychildren.add(je);
+//                         elt.setContent(jychildren);
+//                     }
+//                     children.add(elt);
+                     elt.appendChild(je);
                  }
 
              } catch (Exception ex) {
-                 log.debug("Got exception (no panic) " + ex);
+                 log->debug("Got exception (no panic) " + ex.getMessage());
              }
          }
      }
  }
 #endif
+
  //me.setContent(children);
  return me;
 }
-#endif
+
 /**
  * Collect the prefs of this object into XML Element
  * <ul>
@@ -1132,4 +1245,62 @@ void ThrottleWindow::on_address_released(LocoAddress *)
 
 /*public*/ /*static*/ QString ThrottleWindow::getDefaultThrottleFilename() {
     return getDefaultThrottleFolder() + DefaultThrottleFileName;
+}
+
+// some utilities to turn a component background transparent
+/*public*/ /*static*/ void ThrottleWindow::setTransparentBackground(QObject* jcomp) {
+    //if (jcomp instanceof JPanel) //OS X: Jpanel components are enough
+    if(qobject_cast<QWidget*>(jcomp) != NULL)
+    {
+        //jcomp.setBackground(new Color(0, 0, 0, 0));
+     QPalette pal = ((QWidget*)jcomp)->palette();
+     pal.setColor(QPalette::Background, QColor(0,0,0,0));
+     ((QWidget*)jcomp)->setPalette(pal);
+
+    }
+    setTransparentBackground(((QWidget*)jcomp)->children());
+}
+
+/*public*/ /*static*/ void ThrottleWindow::setTransparentBackground(QObjectList comps) {
+    for (QObject* comp : comps)
+    {
+     try {
+//            if (comp instanceof JComponent)
+      if(qobject_cast<QWidget*>(comp) != NULL)
+      {
+          setTransparentBackground((QWidget*) comp);
+      }
+     } catch (Exception e) {
+         // Do nothing, just go on
+     }
+    }
+}
+
+// some utilities to turn a component background transparent
+/*public*/ /*static*/ void ThrottleWindow::setTransparent(QWidget* jcomp) {
+    setTransparent(jcomp, true);
+}
+
+/*public*/ /*static*/ void ThrottleWindow::setTransparent(QObject* jcomp, bool transparency) {
+    //if (jcomp instanceof JPanel)
+ if(qobject_cast<QWidget*>(jcomp) != NULL)
+    { //OS X: Jpanel components are enough
+        //jcomp.setOpaque(!transparency);
+     ((QWidget*)jcomp)->setWindowOpacity(transparency?0.0:1.0);
+    }
+    setTransparent(((QWidget*)jcomp)->children(), transparency);
+}
+
+/*private*/ /*static*/ void ThrottleWindow::setTransparent(QObjectList comps, bool transparency) {
+    for (QObject* comp : comps) {
+        try {
+            //if (comp instanceof JComponent)
+      if(qobject_cast<QWidget*>(comp)!= NULL)
+            {
+                setTransparent((QWidget*) comp, transparency);
+            }
+        } catch (Exception e) {
+            // Do nothing, just go on
+        }
+    }
 }

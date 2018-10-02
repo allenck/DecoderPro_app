@@ -885,7 +885,7 @@ if(options.count() >0)
     return dialog;
 }
 
-/*private*/ void JOptionPane::initDialog(/*final*/ JDialog* dialog, int style, QWidget* parentComponent) {
+/*private*/ void JOptionPane::initDialog(/*final*/ JDialog* dialog, int /*style*/, QWidget* parentComponent) {
  dialog->setModal(true);
 //    dialog.setComponentOrientation(this->getComponentOrientation());
     QWidget* contentPane = dialog->getContentPane();

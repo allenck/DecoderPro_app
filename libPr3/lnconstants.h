@@ -41,10 +41,8 @@ public:
    static int SND_F6           ; //0x02;  /* Sound 2/Function 6 bit */
    static int SND_F5           ; //0x01;  /* Sound 1/Function 5 bit */
 
-   //static int OPC_SW_ACK_CLOSED; //0x20;  /* command switch closed/open bit   */
-#define OPC_SW_ACK_CLOSED 0x20
-   //static int OPC_SW_ACK_OUTPUT; //0x10;  /* command switch output on/off bit */
-#define OPC_SW_ACK_OUTPUT 0x10
+   static const int OPC_SW_ACK_CLOSED; //0x20;  /* command switch closed/open bit   */
+   static const int OPC_SW_ACK_OUTPUT; //0x10;  /* command switch output on/off bit */
 
    static int OPC_INPUT_REP_CB ; //0x40;  /* control bit, reserved otherwise      */
    static int OPC_INPUT_REP_SW ; //0x20;  /* input is switch input, aux otherwise */
@@ -52,10 +50,8 @@ public:
 
    static int OPC_SW_REP_SW    ; //0x20;  /* switch input, aux input otherwise    */
    static int OPC_SW_REP_HI    ; //0x10;  /* input is HI, LO otherwise            */
-   //static int OPC_SW_REP_CLOSED; //0x20;  /* 'Closed' line is ON, OFF otherwise   */
-#define OPC_SW_REP_CLOSED 0x20
-   //static int OPC_SW_REP_THROWN; //0x10;  /* 'Thrown' line is ON, OFF otherwise   */
-#define OPC_SW_REP_THROWN 0x10
+   static const int OPC_SW_REP_CLOSED; //0x20;  /* 'Closed' line is ON, OFF otherwise   */
+   static const int OPC_SW_REP_THROWN; //0x10;  /* 'Thrown' line is ON, OFF otherwise   */
    static int OPC_SW_REP_INPUTS; //0x40;  /* sensor inputs, outputs otherwise     */
 
    static int OPC_SW_REQ_DIR   ; //0x20;  /* switch direction - closed/thrown     */
@@ -63,10 +59,17 @@ public:
 
    static int OPC_LOCO_SPD_ESTOP; //0x01; /* emergency stop command               */
 
-#define OPC_MULTI_SENSE_MSG     0x60 // byte 1
-#define OPC_MULTI_SENSE_PRESENT 0x20 // MSG field: transponder seen
-#define OPC_MULTI_SENSE_ABSENT  0x00 // MSG field: transponder lost
-#define OPC_MULTI_SENSE_POWER   0x60 // MSG field: Power message
+//   static const int OPC_MULTI_SENSE_MSG;//     0x60 // byte 1
+//   static const int OPC_MULTI_SENSE_PRESENT;// 0x20 // MSG field: transponder seen
+//   static const int OPC_MULTI_SENSE_ABSENT;//  0x00 // MSG field: transponder lost
+//   static const int OPC_MULTI_SENSE_POWER;//   0x60 // MSG field: Power message
+   enum OPC_MULTI_SENSE
+   {
+    OPC_MULTI_SENSE_MSG =   0x60, // byte 1
+    OPC_MULTI_SENSE_PRESENT =  0x20, // MSG field: transponder seen
+    OPC_MULTI_SENSE_ABSENT =  0x00, // MSG field: transponder lost
+    OPC_MULTI_SENSE_POWER = 0x60 // MSG field: Power message
+   };
 
    /* Slot Status byte definitions and macros */
    /***********************************************************************************
@@ -198,17 +201,29 @@ public:
    GTRK_POWER       = 0x01,      /* 1=DCC packets are ON in MASTER, Global POWER up      */
    FC_SLOT          = 0x7b,      /* Fast clock is in this slot                           */
    PRG_SLOT         = 0x7c,      /* This slot communicates with the programming track    */
-   CFG_SLOT         = 0x7f      /* This slot holds configuration bits                   */
+   CFG_EXT_SLOT     = 0x7e,      /* This slot holds extended configuration bits for some command stations */
+   CFG_SLOT         = 0x7f       /* This slot holds configuration bits                   */
    };
 
    /* values and macros to decode programming messages */
-   static int PCMD_RW          ; //0x40;      /* 1; //write, 0; //read                                  */
-   static int PCMD_BYTE_MODE   ; //0x20;      /* 1; //byte operation, 0; //bit operation (if possible)  */
-   static int PCMD_TY1         ; //0x10;      /* TY1 Programming type select bit                      */
-   static int PCMD_TY0         ; //0x08;      /* TY0 Programming type select bit                      */
-   static int PCMD_OPS_MODE    ; //0x04;      /* 1; //Ops mode, 0; //Service Mode                       */
-   static int PCMD_RSVRD1      ; //0x02;      /* reserved                                             */
-   static int PCMD_RSVRD0      ; //0x01;      /* reserved                                             */
+//   static int PCMD_RW          ; //0x40;      /* 1; //write, 0; //read                                  */
+//   static int PCMD_BYTE_MODE   ; //0x20;      /* 1; //byte operation, 0; //bit operation (if possible)  */
+//   static int PCMD_TY1         ; //0x10;      /* TY1 Programming type select bit                      */
+//   static int PCMD_TY0         ; //0x08;      /* TY0 Programming type select bit                      */
+//   static int PCMD_OPS_MODE    ; //0x04;      /* 1; //Ops mode, 0; //Service Mode                       */
+//   static int PCMD_RSVRD1      ; //0x02;      /* reserved                                             */
+//   static int PCMD_RSVRD0      ; //0x01;      /* reserved                                             */
+enum PCMD
+{
+ PCMD_RW           = 0x40,      /* 1; //write, 0; //read                                  */
+ PCMD_BYTE_MODE    = 0x20,      /* 1; //byte operation, 0; //bit operation (if possible)  */
+ PCMD_TY1          = 0x10,      /* TY1 Programming type select bit                      */
+ PCMD_TY0          = 0x08,      /* TY0 Programming type select bit                      */
+ PCMD_OPS_MODE     = 0x04,      /* 1; //Ops mode, 0; //Service Mode                       */
+ PCMD_RSVRD1       = 0x02,      /* reserved                                             */
+ PCMD_RSVRD0       = 0x01      /* reserved                                             */
+};
+
 
    /* programming mode mask */
    static int PCMD_MODE_MASK   ; //PCMD_BYTE_MODE | PCMD_OPS_MODE | PCMD_TY1 | PCMD_TY0;
@@ -217,31 +232,60 @@ public:
     *  programming modes
     */
    /* Paged mode  byte R/W on Service Track */
-   static int PAGED_ON_SRVC_TRK      ; //PCMD_BYTE_MODE;
+//   static int PAGED_ON_SRVC_TRK      ; //PCMD_BYTE_MODE;
 
-   /* Direct mode byte R/W on Service Track */
-   static int DIR_BYTE_ON_SRVC_TRK   ; //PCMD_BYTE_MODE | PCMD_TY0;
+//   /* Direct mode byte R/W on Service Track */
+//   static int DIR_BYTE_ON_SRVC_TRK   ; //PCMD_BYTE_MODE | PCMD_TY0;
 
-   /* Direct mode bit  R/W on Service Track */
-   static int DIR_BIT_ON_SRVC_TRK    ; //PCMD_TY0;
+//   /* Direct mode bit  R/W on Service Track */
+//   static int DIR_BIT_ON_SRVC_TRK    ; //PCMD_TY0;
 
-   /* Physical Register byte R/W on Service Track */
-   static int REG_BYTE_RW_ON_SRVC_TRK; //PCMD_TY1;
+//   /* Physical Register byte R/W on Service Track */
+//   static int REG_BYTE_RW_ON_SRVC_TRK; //PCMD_TY1;
 
-   /* Service Track Reserved function */
-   static int SRVC_TRK_RESERVED      ; //PCMD_TY1 | PCMD_TY0;
+//   /* Service Track Reserved function */
+//   static int SRVC_TRK_RESERVED      ; //PCMD_TY1 | PCMD_TY0;
 
-   /* Ops mode byte program - no feedback */
-   static int OPS_BYTE_NO_FEEDBACK   ; //PCMD_BYTE_MODE | PCMD_OPS_MODE;
+//   /* Ops mode byte program - no feedback */
+//   static int OPS_BYTE_NO_FEEDBACK   ; //PCMD_BYTE_MODE | PCMD_OPS_MODE;
 
-   /* Ops mode byte program - feedback */
-   static int OPS_BYTE_FEEDBACK      ; //OPS_BYTE_NO_FEEDBACK | PCMD_TY0;
+//   /* Ops mode byte program - feedback */
+//   static int OPS_BYTE_FEEDBACK      ; //OPS_BYTE_NO_FEEDBACK | PCMD_TY0;
 
-   /* Ops mode bit program - no feedback */
-   static int OPS_BIT_NO_FEEDBACK    ; //PCMD_OPS_MODE;
+//   /* Ops mode bit program - no feedback */
+//   static int OPS_BIT_NO_FEEDBACK    ; //PCMD_OPS_MODE;
 
-   /* Ops mode bit program - feedback */
-   static int OPS_BIT_FEEDBACK       ; //OPS_BIT_NO_FEEDBACK | PCMD_TY0;
+//   /* Ops mode bit program - feedback */
+//   static int OPS_BIT_FEEDBACK       ; //OPS_BIT_NO_FEEDBACK | PCMD_TY0;
+   enum PGMMODES
+   {
+    PAGED_ON_SRVC_TRK       = PCMD_BYTE_MODE,
+
+    /* Direct mode byte R/W on Service Track */
+    DIR_BYTE_ON_SRVC_TRK    = PCMD_BYTE_MODE | PCMD_TY0,
+
+    /* Direct mode bit  R/W on Service Track */
+    DIR_BIT_ON_SRVC_TRK     = PCMD_TY0,
+
+    /* Physical Register byte R/W on Service Track */
+    REG_BYTE_RW_ON_SRVC_TRK = PCMD_TY1,
+
+    /* Service Track Reserved function */
+    SRVC_TRK_RESERVED       = PCMD_TY1 | PCMD_TY0,
+
+    /* Ops mode byte program - no feedback */
+    OPS_BYTE_NO_FEEDBACK    = PCMD_BYTE_MODE | PCMD_OPS_MODE,
+
+    /* Ops mode byte program - feedback */
+    OPS_BYTE_FEEDBACK       = OPS_BYTE_NO_FEEDBACK | PCMD_TY0,
+
+    /* Ops mode bit program - no feedback */
+    OPS_BIT_NO_FEEDBACK     = PCMD_OPS_MODE,
+
+    /* Ops mode bit program - feedback */
+    OPS_BIT_FEEDBACK        = OPS_BIT_NO_FEEDBACK | PCMD_TY0
+
+   };
 
    /* Programmer Status error flags */
    static int PSTAT_USER_ABORTED ; //0x08;    /* User aborted this command */
@@ -377,26 +421,47 @@ public:
    static int KEY_WR_SL_DATA		;//= 1<< 22;
 
    // reverse-engineered constants
-
-   static int RE_IPL_MFR_DIGITRAX           ; //0x00;
-   static int RE_IPL_MFR_ALL                ; //0x00;
-   static int RE_IPL_DIGITRAX_HOST_UT4      ; //0x04;
-   static int RE_IPL_DIGITRAX_HOST_UR92     ; //0x5C;
-   static int RE_IPL_DIGITRAX_HOST_DCS51    ; //0x33;
-   static int RE_IPL_DIGITRAX_HOST_DT402    ; //0x2A;
-   static int RE_IPL_DIGITRAX_HOST_PR3      ; //0x23;
-   static int RE_IPL_DIGITRAX_HOST_ALL      ; //0x00;
-   static int RE_IPL_DIGITRAX_SLAVE_RF24    ; //0x18;
-   static int RE_IPL_DIGITRAX_SLAVE_ALL     ; //0x00;
-#define RE_IPL_PING_OPERATION         0x08
-#define RE_IPL_IDENTITY_OPERATION     0x0f
-#define RE_LACK_SPEC_CASE1            0x50 // special case LACK response for OpSw accesses
-#define RE_LACK_SPEC_CASE2            0x00 // special case LACK response for OpSw accesses
-#define RE_OPC_PR3_MODE               0xD3
-   static int RE_MULTI_SENSE_DEV_TYPE_PM4X  ; //0x00;
-   static int RE_MULTI_SENSE_DEV_TYPE_BDL16X; //0x01;
-   static int RE_MULTI_SENSE_DEV_TYPE_SE8   ; //0x02;
-   static int RE_MULTI_SENSE_DEV_TYPE_DS64  ; //0x03;
+   enum REIPL
+   {
+   RE_IPL_MFR_DIGITRAX           =0x00,
+   RE_IPL_MFR_ALL                =0x00,
+   RE_IPL_DIGITRAX_HOST_LNRP     =0x01,
+   RE_IPL_DIGITRAX_HOST_UT4      =0x04,
+   RE_IPL_DIGITRAX_HOST_WTL12    =0x0c,
+   RE_IPL_DIGITRAX_HOST_DB210OPTO=0x14,
+   RE_IPL_DIGITRAX_HOST_DB210    =0x15,
+   RE_IPL_DIGITRAX_HOST_DCS210   =0x1b,
+   RE_IPL_DIGITRAX_HOST_DB220    =0x16,
+   RE_IPL_DIGITRAX_HOST_DCS240   =0x1c,
+   RE_IPL_DIGITRAX_HOST_UR92     =0x5C,
+   RE_IPL_DIGITRAX_HOST_DCS51    =0x33,
+   RE_IPL_DIGITRAX_HOST_DT402    =0x2A,
+   RE_IPL_DIGITRAX_HOST_DT500    =0x32,
+   RE_IPL_DIGITRAX_HOST_PR3      =0x23,
+   RE_IPL_DIGITRAX_HOST_PR4      =0x24,
+   RE_IPL_DIGITRAX_HOST_BXP88    =0x58,
+   RE_IPL_DIGITRAX_HOST_LNWI     =0x63,
+   RE_IPL_DIGITRAX_HOST_ALL      =0x00,
+   RE_IPL_DIGITRAX_SLAVE_RF24    =0x18,
+   RE_IPL_DIGITRAX_SLAVE_ALL     =0x00,
+   RE_IPL_PING_OPERATION         =0x08,
+   RE_IPL_IDENTITY_OPERATION     =0x0f
+};
+   static const int RE_LACK_SPEC_CASE1            ; //0x50 // special case LACK response for OpSw accesses
+   static int RE_LACK_SPEC_CASE2            ; //0x00 // special case LACK response for OpSw accesses
+   //static int RE_OPC_PR3_MODE               ; //0xD3
+//   static int const RE_MULTI_SENSE_DEV_TYPE_PM4X  ; //0x00;
+//   static int RE_MULTI_SENSE_DEV_TYPE_BDL16X; //0x01;
+//   static int RE_MULTI_SENSE_DEV_TYPE_SE8   ; //0x02;
+//   static int RE_MULTI_SENSE_DEV_TYPE_DS64  ; //0x03;
+   enum DEVTYPE
+   {
+    RE_OPC_PR3_MODE               = 0xD3,
+    RE_MULTI_SENSE_DEV_TYPE_PM4X  = 0x00,
+    RE_MULTI_SENSE_DEV_TYPE_BDL16X = 0x01,
+    RE_MULTI_SENSE_DEV_TYPE_SE8   = 0x02,
+    RE_MULTI_SENSE_DEV_TYPE_DS64  =0x03
+   };
 
    // Below data is assumed, based on firmware files available from RR-Cirkits web site
    static int RE_IPL_MFR_RR_CIRKITS         ; //87;
@@ -459,7 +524,85 @@ public:
    static int RE_DPLX_SCAN_REPORT_B2            ; //0x10 ;
    static int RE_DPLX_SCAN_REPORT_B3            ; //0x10 ;
 
-
+   /* Intellibox-II mobile decoder function control beyond F8
+        * also used for Intellibox-I ("one") with SW version 2.x for control of functions beyond F8
+        * Intellibox-I version 2.x has two ways to control F0-F8:
+        *    - with regular LocoNet OPC_LOCO_SND and OPC_LOCO_DIRF
+        *    - with special Uhlenbrock RE_OPC_IB2_SPECIAL
+        *
+        * 4 byte MESSAGE with OPCODE = RE_OPC_IB2_F9_F12
+        * Used by Intellibox-II only, for F9-F12
+        * FORMAT = <OPC>,<SLOT>,<FUNC>,<CKSUM>
+        * :
+        *  <SLOT> = Slot number
+        *  <FUNC> = functions F9-F12 mask
+        */
+   enum REIB2
+   {
+        RE_OPC_IB2_F9_F12 = 0xA3,
+        RE_IB2_F9_MASK = 0x01,
+        RE_IB2_F10_MASK = 0x02,
+        RE_IB2_F11_MASK = 0x04,
+        RE_IB2_F12_MASK = 0x08
+   };
+   /* 6 byte MESSAGE with OPCODE = RE_OPC_IB2_SPECIAL
+        * Used by Intellibox-I for F0-F28 and Intellibox-II for F13-F28
+        * For Intellibox-I, for F0-F8:
+        *      - F0-F8 triggers this message only when controlling function after pressing twice on lok# button
+        *      - Direct control of functions through function buttons triggers the regular LocoNet function message
+        * :
+        * FORMAT = <OPC>,<SPE>,<SLOT>,<FTOK>,<FUNC>,<CKSUM>
+        * :
+        *  <SPE> = Specific value RE_IB2_SPECIAL_FUNCS_TOKEN
+        *  <SLOT> = Slot number
+        *  <FTOK> = functions token
+        *  <FUNC> = functions mask
+        */
+   // Common to Intellibox-I and -II :
+   enum REIB12
+   {
+        RE_OPC_IB2_SPECIAL = 0xD4, //For functions F13-F28 (IB-II) and by IB-I v2.x ("one") for F0-F28
+        RE_IB2_SPECIAL_FUNCS_TOKEN = 0x20,
+   //Used only by Intellibox-I ("one") version 2.x
+        RE_IB1_SPECIAL_F0_F4_TOKEN = 0x06, //Used by Intellibox-I ("one") version 2.x
+        RE_IB1_F0_MASK = 0x10, //Used by Intellibox-I ("one") version 2.x only for F0
+        RE_IB1_F1_MASK = 0x01, //Used by Intellibox-I ("one") version 2.x only for F1
+        RE_IB1_F2_MASK = 0x02, //Used by Intellibox-I ("one") version 2.x only for F2
+        RE_IB1_F3_MASK = 0x04, //Used by Intellibox-I ("one") version 2.x only for F3
+        RE_IB1_F4_MASK = 0x08, //Used by Intellibox-I ("one") version 2.x only for F4
+   //Used only by Intellibox-I ("one") version 2.x
+        RE_IB1_SPECIAL_F5_F11_TOKEN = 0x07, //Used by Intellibox-I ("one") version 2.x
+        RE_IB1_F5_MASK = 0x01, //Used by Intellibox-I ("one") version 2.x only for F5
+        RE_IB1_F6_MASK = 0x02, //Used by Intellibox-I ("one") version 2.x only for F6
+        RE_IB1_F7_MASK = 0x04, //Used by Intellibox-I ("one") version 2.x only for F7
+        RE_IB1_F8_MASK = 0x08, //Used by Intellibox-I ("one") version 2.x only for F8
+        RE_IB1_F9_MASK = 0x10, //Used by Intellibox-I ("one") version 2.x only for F9
+        RE_IB1_F10_MASK = 0x20, //Used by Intellibox-I ("one") version 2.x only for F10
+        RE_IB1_F11_MASK = 0x40, //Used by Intellibox-I ("one") version 2.x only for F11
+   // Common to Intellibox-I and -II :
+        RE_IB2_SPECIAL_F13_F19_TOKEN = 0x08,
+        RE_IB2_F13_MASK = 0x01,
+        RE_IB2_F14_MASK = 0x02,
+        RE_IB2_F15_MASK = 0x04,
+        RE_IB2_F16_MASK = 0x08,
+        RE_IB2_F17_MASK = 0x10,
+        RE_IB2_F18_MASK = 0x20,
+        RE_IB2_F19_MASK = 0x40,
+   // Common to Intellibox-I and -II :
+        RE_IB2_SPECIAL_F21_F27_TOKEN = 0x09,
+        RE_IB2_F21_MASK = 0x01,
+        RE_IB2_F22_MASK = 0x02,
+        RE_IB2_F23_MASK = 0x04,
+        RE_IB2_F24_MASK = 0x08,
+        RE_IB2_F25_MASK = 0x10,
+        RE_IB2_F26_MASK = 0x20,
+        RE_IB2_F27_MASK = 0x40,
+   // Common to Intellibox-I and -II :
+        RE_IB2_SPECIAL_F20_F28_TOKEN = 0x05, // Also applicable to F12
+        RE_IB2_SPECIAL_F12_MASK = 0x10, //F12 is also controlled with the special F20-F28 command
+        RE_IB2_SPECIAL_F20_MASK = 0x20,
+        RE_IB2_SPECIAL_F28_MASK = 0x40
+   };
 };
 
 #endif // LNCONSTANTS_H

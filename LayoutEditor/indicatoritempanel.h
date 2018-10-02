@@ -9,7 +9,7 @@ class IndicatorItemPanel : public FamilyItemPanel
     Q_OBJECT
 public:
     //explicit IndicatorItemPanel(QWidget *parent = 0);
-    /*public*/ IndicatorItemPanel(JmriJFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent);
+    /*public*/ IndicatorItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent);
     /*public*/ void init();
     /*public*/ void init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap = 0);
     /*public*/ void dispose();

@@ -516,9 +516,9 @@ void FileDrop::common(PrintStream* out, Component* c, Border* dragBorder, bool r
 /**
  * Determine if the dragged data is a file list.
  */
-/*private*/ bool FileDrop::isDragOk(PrintStream* out, /*final*/ QDropEvent* evt) {
-    bool ok = false;
+/*private*/ bool FileDrop::isDragOk(PrintStream* /*out*/, /*final*/ QDropEvent* evt) {
 #if 0
+    bool ok = false;
     // Get data flavors being dragged
     java.awt.datatransfer.DataFlavor[] flavors = evt.getCurrentDataFlavors();
 
@@ -618,9 +618,9 @@ private static void log(java.io.PrintStream out, String message) {   // Log mess
 /**
  * Implement this inner interface to listen for when files are dropped. For
  * example your class declaration may begin like this:      <pre><code>
- *      /*public*/ class MyClass implements FileDrop.Listener
+ *      public class MyClass implements FileDrop.Listener
  *      ...
- *      /*public*/ void filesDropped( java.io.File[] files )
+ *      public void filesDropped( java.io.File[] files )
  *      {
  *          ...
  *      }   // end filesDropped
@@ -679,7 +679,7 @@ MyDropTargetListener::MyDropTargetListener( FileDrop* fileDrop, QObject* parent)
     }   // end else: drag not ok
 }   // end dragEnter
 
-/*public*/ void MyDropTargetListener::dragOver(QDragMoveEvent* evt) {   // This is called continually as long as the mouse is
+/*public*/ void MyDropTargetListener::dragOver(QDragMoveEvent* /*evt*/) {   // This is called continually as long as the mouse is
     // over the drag target.
 }   // end dragOver
 

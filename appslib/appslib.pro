@@ -23,10 +23,17 @@ unix:exists(/home/allen/Projects/PythonQt3.0/lib/libPythonQt.so) {
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
  SOURCES += operations/trainsscriptaction.cpp \
-    operations/trainsscriptframe.cpp
+    operations/trainsscriptframe.cpp \
+    jynstrument.cpp \
+    jynstrumentfactory.cpp
+
 
 HEADERS +=     operations/trainscriptaction.h \
-    operations/trainscriptframe.h
+    operations/trainscriptframe.h \
+    jynstrument.h \
+    jynstrumentfactory.h
+
+
  message("Appslib: scripting enabled")
 } else {
  message("Appslib: scripting disabled")
@@ -425,7 +432,9 @@ SOURCES += appslib.cpp \
     operations/optionsmenu.cpp \
     operations/yardmasterbytrackpanel.cpp \
     operations/yardmasterbytrackframe.cpp \
-    operations/yardmasterbytrackaction.cpp
+    operations/yardmasterbytrackaction.cpp \
+    jynstrumentpopupmenu.cpp \
+    preferencesbean.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -830,7 +839,9 @@ HEADERS += appslib.h\
     operations/optionsmenu.h \
     operations/yardmasterbytrackpanel.h \
     operations/yardmasterbytrackframe.h \
-    operations/yardmasterbytrackaction.h
+    operations/yardmasterbytrackaction.h \
+    jynstrumentpopupmenu.h \
+    preferencesbean.h
 
 unix:!symbian {
     maemo5 {

@@ -12,6 +12,15 @@ public:
  /*public*/ MatteBorder(int top, int left, int bottom, int right, QIcon tileIcon, QObject* parent = 0);
  /*public*/ MatteBorder(Insets* borderInsets, QIcon tileIcon, QObject* parent = 0);
  /*public*/ MatteBorder(QIcon tileIcon, QObject* parent = 0);
+ /*public*/ Insets* getBorderInsets(QWidget* c, Insets* insets);
+ /*public*/ Insets* getBorderInsets();
+ /*public*/ QColor getMatteColor();
+ /*public*/ QIcon getTileIcon();
+ /*public*/ bool isBorderOpaque();
+
+private:
+ /*private*/ Insets* computeInsets(Insets* insets);
+
 
 protected:
  /*protected*/ QColor color;

@@ -34,7 +34,7 @@ public:
     /*public*/ bool isAspectDisabled(QString aspect);
     /*public*/ void setAllowUnLit(bool boo);
     /*public*/ bool allowUnLit();
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt); /*throws java.beans.PropertyVetoException*/
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
     /*public*/ QString getBeanType();
 signals:
 

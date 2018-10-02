@@ -35,7 +35,7 @@
 ///*public*/ class MemoryItemPanel extends TableItemPanel implements ChangeListener, ListSelectionListener {
 
 
-/*public*/ MemoryItemPanel::MemoryItemPanel(ItemPalette* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent)
+/*public*/ MemoryItemPanel::MemoryItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent)
     : TableItemPanel(parentFrame, type, family, model, editor, parent)
 {
  //super(parentFrame, type, family, model, editor);

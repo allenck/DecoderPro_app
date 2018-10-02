@@ -248,7 +248,7 @@ QWidget* AppsLaunchPane::_buttonSpace = NULL;
     //ConnectionStatus::instance().addPropertyChangeListener(this);
     connect(ConnectionStatus::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     //ArrayList<Object> connList = InstanceManager::configureManagerInstance().getInstanceList(ConnectionConfig.class);
-    QObjectList connList = InstanceManager::configureManagerInstance()->getInstanceList("ConnectionConfig");
+    QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
     int i = 0;
     if (!connList.isEmpty()) {
         for (int x = 0; x < connList.size(); x++) {
@@ -368,8 +368,8 @@ static /*public*/ QString AppsLaunchPane::getConnection4() {
 {
  Logger log = Logger("Apps");
  // save the configuration filename if present on the command line
-#if 0 // TODO:
- if (args->length() >= 1 && args[0] != NULL && !args[0].contains("=")) {
+#if 1 // TODO:
+ if (args.length() >= 1 && args[0] != NULL && !args[0].contains("=")) {
      def = args[0];
      log.debug("Config file was specified as: "+ args[0]);
  }
@@ -393,7 +393,7 @@ static /*public*/ QString AppsLaunchPane::getConnection4() {
 }
 
 //@Override
-/*public*/ void AppsLaunchPane::propertyChange(PropertyChangeEvent* ev) {
+/*public*/ void AppsLaunchPane::propertyChange(PropertyChangeEvent* /*ev*/) {
     if (log->isDebugEnabled()) {
         log->debug("property change: comm port status update");
     }

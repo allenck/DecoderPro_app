@@ -66,6 +66,17 @@ DEFINES += LIBPR3_LIBRARY
 #QMAKE_EXTRA_TARGETS += build_nr
 #PRE_TARGETDEPS += build_nr
 
+win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
+ ENABLE_SCRIPTING = "Y"
+}
+unix:exists(/home/allen/Projects/PythonQt3.0/lib/libPythonQt.so) {
+ ENABLE_SCRIPTING = "Y"
+}
+#CONFIG += scripts
+equals(ENABLE_SCRIPTING, "Y") {
+    DEFINES += SCRIPTING_ENABLED
+}
+
 SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
@@ -89,6 +100,7 @@ SOURCES += \
     slotmanager.cpp \
     abstractprogrammer.cpp \
     loconetslot.cpp \
+    systemconnectionmemomanager.cpp \
     systemconnectionmemo.cpp \
     loconetsystemconnectionmemo.cpp \
     abstractpowermanager.cpp \
@@ -212,18 +224,15 @@ SOURCES += \
     Roster/resettablemodel.cpp \
     Roster/combocheckbox.cpp \
     Roster/comboradiobuttons.cpp \
-    Roster/listdataevent.cpp \
     Roster/indexedcombocheckbox.cpp \
     Roster/indexedpairvariablevalue.cpp \
     Roster/decvarslider.cpp \
     Roster/comboonradiobutton.cpp \
     Roster/combooffradiobutton.cpp \
     Roster/indexedvarslider.cpp \
-    Roster/changeevent.cpp \
     Roster/rosterentrypane.cpp \
     Roster/decoderindexfile.cpp \
     Roster/defaultcomboboxmodel.cpp \
-    Roster/abstractlistmodel.cpp \
     Roster/busyglasspane.cpp \
     Roster/dccaddresspanel.cpp \
     Roster/paneprogpane.cpp \
@@ -437,9 +446,6 @@ SOURCES += \
     loconet/lnnetworkportcontroller.cpp \
     abstractnetworkportcontroller.cpp \
     loconet/lntcpdriveradapter.cpp \
-    loconet/server.cpp \
-    loconet/serveraction.cpp \
-    loconet/serverframe.cpp \
     loconet/jmriserver.cpp \
     loconet/clientrxhandler.cpp \
     loconet/LnOverTcp/lnovertcpconnectionconfig.cpp \
@@ -789,7 +795,23 @@ SOURCES += \
     Roster/csvimporter.cpp \
     Roster/csvexportaction.cpp \
     Roster/offsethighcvprogrammerfacade.cpp \
-    Roster/resettingoffsethighcvprogrammerfacade.cpp
+    Roster/resettingoffsethighcvprogrammerfacade.cpp \
+    Throttle/storexmlthrottleslayoutaction.cpp \
+    Throttle/storedefaultxmlthrottleslayoutaction.cpp \
+    Throttle/loadxmlthrottleslayoutaction.cpp \
+    Throttle/loaddefaultxmlthrottleslayoutaction.cpp \
+    Throttle/speedpanel.cpp \
+    Throttle/backgroundpanel.cpp \
+    Roster/functionlabelpane.cpp \
+    Throttle/controlpanelpropertyeditor.cpp \
+    Roster/loconetconsist.cpp \
+    loconet/LnOverTcp/lntcppreferences.cpp \
+    loconet/lntcppreferencespanel.cpp \
+    loconet/lntcpserver.cpp \
+    loconet/lntcpserverframe.cpp \
+    loconet/lntcpserveraction.cpp \
+    lnsv2messagecontents.cpp \
+    loconet/loconetmessageinterpret.cpp
 #    loconet/HexFile/debugprogrammermanager.cpp \
 #    loconet/HexFile/debugthrottle.cpp \
 #    loconet/HexFile/debugthrottlemanager.cpp \
@@ -897,6 +919,7 @@ HEADERS += \
     programmer.h \
     loconetslot.h \
     slotlistener.h \
+    systemconnectionmemomanager.h \
     systemconnectionmemo.h \
     loconetsystemconnectionmemo.h \
     powermanager.h \
@@ -1047,18 +1070,15 @@ HEADERS += \
     Roster/combocheckbox.h \
     Roster/comboradiobuttons.h \
     Roster/listdatalistener.h \
-    Roster/listdataevent.h \
     Roster/indexedcombocheckbox.h \
     Roster/indexedpairvariablevalue.h \
     Roster/decvarslider.h \
     Roster/comboonradiobutton.h \
     Roster/combooffradiobutton.h \
     Roster/indexedvarslider.h \
-    Roster/changeevent.h \
     Roster/rosterentrypane.h \
     Roster/decoderindexfile.h \
     Roster/defaultcomboboxmodel.h \
-    Roster/abstractlistmodel.h \
     Roster/paneprogpane.h \
     Roster/itemlistener.h \
     Roster/panecontainer.h \
@@ -1132,6 +1152,12 @@ HEADERS += \
     sensorgroupconditional.h \
     defaultconditionalaction.h \
     connectionnamefromsystemname.h \
+    audio.h \
+    audiobuffer.h \
+    audiomanager.h \
+    defaultaudiomanager.h \
+    abstractaudiomanager.h \
+    abstractaudio.h \
     oblock.h \
     portal.h \
     warrant.h \
@@ -1244,16 +1270,10 @@ HEADERS += \
     loconet/HexFile/hexfileconnectionconfig.h \
     abstractsimulatorconnectionconfig.h \
     audiocommand.h \
-    audio.h \
-    audiobuffer.h \
-    audiomanager.h \
     audiofactory.h \
     audiosource.h \
     audiothread.h \
     abstractaudiothread.h \
-    defaultaudiomanager.h \
-    abstractaudiomanager.h \
-    abstractaudio.h \
     abstractaudiobuffer.h \
     audiolistener.h \
     nullaudiofactory.h \
@@ -1261,7 +1281,6 @@ HEADERS += \
     nullaudiosource.h \
     nullaudiobuffer.h \
     nullaudiolistener.h \
-    abstractaudiolistener.h \
     abstractaudiosource.h \
     audiocommandthread.h \
     qtsoundaudiofactory.h \
@@ -1293,14 +1312,12 @@ HEADERS += \
     pr3selectpane.h \
     loaderpane.h \
     memorycontents.h \
+    abstractaudiolistener.h \
     loconet/lnovertcppacketizer.h \
     loconet/lnnetworkportcontroller.h \
     abstractnetworkportcontroller.h \
     loconet/lntcpdriveradapter.h \
-    loconet/server.h \
     loconet/serverlistner.h \
-    loconet/serveraction.h \
-    loconet/serverframe.h \
     loconet/jmriserver.h \
     loconet/clientrxhandler.h \
     loconet/LnOverTcp/lnovertcpconnectionconfig.h \
@@ -1514,12 +1531,6 @@ HEADERS += \
     Json/jsonrostersocketservice.h \
     Web/webserver.h \
     Web/webserveraction.h \
-#    Web/controller/dumpcontroller.h \
-#    Web/controller/fileuploadcontroller.h \
-#    Web/controller/formcontroller.h \
-#    Web/controller/sessioncontroller.h \
-#    Web/controller/templatecontroller.h \
-#    Web/requestmapper.h \
     Web/requesthandler.h \
     Web/httpservlet.h \
     Web/genericservlet.h \
@@ -1672,83 +1683,23 @@ HEADERS += \
     Roster/csvimporter.h \
     Roster/csvexportaction.h \
     Roster/offsethighcvprogrammerfacade.h \
-    Roster/resettingoffsethighcvprogrammerfacade.h
-#    loconet/HexFile/debugprogrammermanager.h \
-#    loconet/HexFile/debugthrottle.h \
-#    loconet/HexFile/debugthrottlemanager.h \
-#    loconet/HexFile/hexfileconnectionconfig.h \
-#    loconet/HexFile/hexfileconnectionconfigxml.h \
-#    loconet/HexFile/hexfileframe.h \
-#    loconet/HexFile/hexfileserver.h \
-#    loconet/HexFile/lnhexfileport.h \
-#    loconet/HexFile/progdebugger.h \
-#    loconet/LnOverTcp/lnovertcpconnectionconfig.h \
-#    loconet/LnOverTcp/lnovertcpconnectionconfigxml.h \
-#    loconet/Locobuffer/locobufferconnectionconfig.h \
-#    loconet/Locobuffer/locobufferconnectionconfigxml.h \
-#    loconet/LocobufferUsb/locobufferusbconnectionconfig.h \
-#    loconet/LocobufferUsb/locobufferusbconnectionconfigxml.h \
-#    loconet/Pr3/connectionconfigxml.h \
-#    loconet/Pr3/pr3connectionconfig.h \
-#    loconet/branchto.h \
-#    loconet/branchtoeditor.h \
-#    loconet/channelstart.h \
-#    loconet/channelstarteditor.h \
-#    loconet/clientrxhandler.h \
-#    loconet/defaultmutabletreemodel.h \
-#    loconet/delaysound.h \
-#    loconet/delaysoundeditor.h \
-#    loconet/editorfilepane.h \
-#    loconet/editorframe.h \
-#    loconet/editorpane.h \
-#    loconet/editortabledatamodel.h \
-#    loconet/endsound.h \
-#    loconet/endsoundeditor.h \
-#    loconet/fourbytemacro.h \
-#    loconet/fourbytemacroeditor.h \
-#    loconet/generatetrigger.h \
-#    loconet/generatetriggereditor.h \
-#    loconet/initiatesound.h \
-#    loconet/initiatesoundeditor.h \
-#    loconet/jeditorpane.h \
-#    loconet/jmriserver.h \
-#    loconet/lncomponentfactory.h \
-#    loconet/lnnetworkportcontroller.h \
-#    loconet/lnovertcppacketizer.h \
-#    loconet/lntcpdriveradapter.h \
-#    loconet/loaderengine.h \
-#    loconet/loadmodifier.h \
-#    loconet/loadmodifiereditor.h \
-#    loconet/loconetmenu.h \
-#    loconet/loconetmsgdialog.h \
-#    loconet/maskcompare.h \
-#    loconet/maskcompareeditor.h \
-#    loconet/monitoringlabel.h \
-#    loconet/networkportadapter.h \
-#    loconet/play.h \
-#    loconet/playeditor.h \
-#    loconet/qtsoundaudioclip.h \
-#    loconet/querycvdialog.h \
-#    loconet/sdfbuffer.h \
-#    loconet/sdfconstants.h \
-#    loconet/sdfeditorpane.h \
-#    loconet/sdfmacro.h \
-#    loconet/sdfmacroeditor.h \
-#    loconet/sdlversion.h \
-#    loconet/sdlversioneditor.h \
-#    loconet/server.h \
-#    loconet/serveraction.h \
-#    loconet/serverframe.h \
-#    loconet/serverlistner.h \
-#    loconet/skemestart.h \
-#    loconet/skemestarteditor.h \
-#    loconet/skipontrigger.h \
-#    loconet/skipontriggereditor.h \
-#    loconet/soundloaderpane.h \
-#    loconet/spjfile.h \
-#    loconet/twobytemacro.h \
-#    loconet/twobytemacroeditor.h \
-#    loconet/wavbuffer.h
+    Roster/resettingoffsethighcvprogrammerfacade.h \
+    Throttle/storexmlthrottleslayoutaction.h \
+    Throttle/storedefaultxmlthrottleslayoutaction.h \
+    Throttle/loadxmlthrottleslayoutaction.h \
+    Throttle/loaddefaultxmlthrottleslayoutaction.h \
+    Throttle/speedpanel.h \
+    Throttle/backgroundpanel.h \
+    Roster/functionlabelpane.h \
+    Throttle/controlpanelpropertyeditor.h \
+    Roster/loconetconsist.h \
+    loconet/LnOverTcp/lntcppreferences.h \
+    loconet/lntcppreferencespanel.h \
+    loconet/lntcpserver.h \
+    loconet/lntcpserverframe.h \
+    loconet/lntcpserveraction.h \
+    lnsv2messagecontents.h \
+    loconet/loconetmessageinterpret.h
 
  !contains(FTDI, 1) {
     HEADERS +=

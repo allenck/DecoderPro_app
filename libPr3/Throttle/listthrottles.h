@@ -11,7 +11,7 @@ class ListThrottles;
 
 class ThrottlesTableCellRenderer;
 class ThrottleWindow;
-class LnPowerManager;
+class PowerManager;
 class PropertyChangeEvent;
 class LocoNetSystemConnectionMemo;
 class LIBPR3SHARED_EXPORT ListThrottles : public JmriJFrame
@@ -29,7 +29,7 @@ private:
     QAction* throttlePrefs;
 //    LocoNetSystemConnectionMemo* memo;
  Logger* log;
- LnPowerManager* pmgr;
+ PowerManager* pmgr;
  ThrottlesTableCellRenderer* renderer;
 
 private slots:

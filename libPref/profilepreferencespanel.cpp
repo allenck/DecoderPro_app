@@ -428,7 +428,7 @@
  }
 }
 
-/*private*/ void ProfilePreferencesPanel::btnExportProfileActionPerformed(ActionEvent* evt)
+/*private*/ void ProfilePreferencesPanel::btnExportProfileActionPerformed(ActionEvent* /*evt*/)
 {
  Profile* p = ProfileManager::defaultManager()->getProfiles(profilesTbl->currentIndex().row());
 #if 1
@@ -525,7 +525,7 @@
 #endif
 }
 
-/*private*/ void ProfilePreferencesPanel::btnActivateProfileActionPerformed(ActionEvent* evt) {
+/*private*/ void ProfilePreferencesPanel::btnActivateProfileActionPerformed(ActionEvent* /*evt*/) {
 //    try {
         Profile* p = ProfileManager::defaultManager()->getProfiles(profilesTbl->currentIndex().row());
         ProfileManager::defaultManager()->setNextActiveProfile(p);
@@ -536,7 +536,7 @@
 //    }
 }
 
-/*private*/ void ProfilePreferencesPanel::btnCreateNewProfileActionPerformed(ActionEvent* evt)
+/*private*/ void ProfilePreferencesPanel::btnCreateNewProfileActionPerformed(ActionEvent* /*evt*/)
 {
 #if 0
     AddProfileDialog apd = new AddProfileDialog((Frame) SwingUtilities.getWindowAncestor(this), true, true);
@@ -544,12 +544,12 @@
     apd.setVisible(true);
 #endif
     AddProfileDialog* apd = new AddProfileDialog(this, true,true);
+    apd->setLocationRelativeTo(this);
     apd->setVisible(true);
 }
 
-/*private*/ void ProfilePreferencesPanel::btnDeleteProfileActionPerformed(ActionEvent* evt)
+/*private*/ void ProfilePreferencesPanel::btnDeleteProfileActionPerformed(ActionEvent* /*evt*/)
 {
-#if 1
  QModelIndexList mil = profilesTbl->selectionModel()->selectedIndexes();
 
 
@@ -591,7 +591,6 @@
             //profilesTbl.repaint();
       }
     }
-#endif
 }
 
 /*private*/ void ProfilePreferencesPanel::btnOpenExistingProfileActionPerformed(ActionEvent* /*evt*/)

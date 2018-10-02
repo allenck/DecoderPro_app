@@ -2,7 +2,6 @@
 #define JYTHONWINDOW_H
 #include "abstractaction.h"
 //#include "PythonQt_QtAll.h"
-#include "PythonQt.h"
 #include "windowlistener.h"
 
 class JTextArea;

@@ -3,13 +3,14 @@
 #include "tableitempanel.h"
 #include "defaultlistselectionmodel.h"
 
+class IconDialog;
 class MultiSensorSelectionModel;
 class MultiSensorItemPanel : public TableItemPanel
 {
     Q_OBJECT
 public:
     //explicit MultiSensorItemPanel(QWidget *parent = 0);
-    /*public*/ MultiSensorItemPanel(JmriJFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
+    /*public*/ MultiSensorItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     /*public*/ static /*final*/ QStringList POSITION;//= {"first", "second", "third", "fourth", "fifth",
 //                                         "sixth", "seventh", "eighth", "nineth", "tenth" };
     /*public*/ QList<NamedBean*>* getTableSelections();
@@ -37,11 +38,11 @@ protected:
     /*protected*/ void initIconFamiliesPanel();
     /*protected*/ void setFamily(QString family);
     /*protected*/ void setSelections();
-    /*protected*/ void openEditDialog();
-    /*protected*/ void createNewFamily(QString type);
+    /*protected*/ IconDialog* openDialog(QString type, QString family, QHash<QString, NamedIcon*>* iconMap);
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map);
 friend class MultiSensorSelectionModel;
 friend class MSIconDragJLabel;
+friend class MultiSensorIconDialog;
 };
 
 /*protected*/ class MultiSensorSelectionModel : public DefaultListSelectionModel

@@ -291,10 +291,10 @@ _readButtons = new QVector<QPushButton*>();
  // decode and handle specific types
  QDomElement child;
  VariableValue* v = NULL;
- if(!(child=e.firstChildElement("xi:include")).isNull())
- {
-  e.replaceChild(XmlInclude::processInclude(child), child);
- }
+// if(!(child=e.firstChildElement("xi:include")).isNull())
+// {
+//  e.replaceChild(XmlInclude::processInclude(child), child);
+// }
  if ( !(child = e.firstChildElement("decVal")).isNull())
  {
   v = processDecVal(child, name, comment, readOnly, infoOnly, writeOnly, opsOnly, CV, mask, item);
@@ -577,37 +577,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
     return v;
 }
 
-#if 0 // old code
-/*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException)
-{
- VariableValue* v;
- //@SuppressWarnings("unchecked")
- QDomNodeList l = child.elementsByTagName("enumChoice");
- EnumVariableValue* v1 = new EnumVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, 0, l.size() - 1, _cvModel->allCvMap(), _status, item);
 
- v = v1; // v1 is of EnunVariableValue type, so doesn't need casts
- v1->nItems(l.size());
- for (int k = 0; k < l.size(); k++)
- {
-  // is a value specified?
-  QDomElement enumChElement = l.at(k).toElement();
-  QString valAttr = enumChElement.attribute("value");
-  if (valAttr == "")
-  {
-   //v1->addItem(LocaleSelector.attribute(enumChElement, "choice"));
-   v1->addItem(enumChElement.attribute("choice"));
-  }
-  else
-  {
-   //v1->addItem(LocaleSelector.attribute(enumChElement, "choice"),
-//                            Integer.parseInt(valAttr.getValue()));
-   v1->addItem(enumChElement.attribute("choice"), valAttr.toInt());
-  }
- }
- v1->lastItem();
- return v;
-}
-#else
 /*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException)
 {
  int count = 0;
@@ -643,35 +613,38 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
  * Recursively walk the child enumChoice elements, working through the
  * enumChoiceGroup elements as needed.
  */
-/*protected*/ void VariableTableModel::handleENumValChildren(QDomElement e, EnumVariableValue* var) {
+/*protected*/ void VariableTableModel::handleENumValChildren(QDomElement e, EnumVariableValue* var)
+{
     //List<Element> local = e.getChildren();
  QDomNodeList local = e.childNodes();
-    for (int k = 0; k < local.size(); k++) {
-        //Element el = local.get(k);
-     QDomElement el = local.at(k).toElement();
-        if (el.tagName()==("enumChoice")) {
-            QString valAttr = el.attribute("value");
-            if (valAttr == "")
-            {
-                //var->addItem(LocaleSelector.getAttribute(el, "choice"));
-             var->addItem(el.attribute("choice"));
-            }
-            else
-            {
+ for (int k = 0; k < local.size(); k++)
+ {
+     //Element el = local.get(k);
+  QDomElement el = local.at(k).toElement();
+  if (el.tagName()==("enumChoice"))
+  {
+   QString valAttr = el.attribute("value");
+   if (valAttr == "")
+   {
+       //var->addItem(LocaleSelector.getAttribute(el, "choice"));
+    var->addItem(el.attribute("choice"));
+   }
+   else
+   {
 //                var->addItem(LocaleSelector.getAttribute(el, "choice"),
 //                        Integer.parseInt(valAttr.getValue()));
-             var->addItem(el.attribute("choice"),el.text().toInt());
-            }
-        } else if (el.tagName()==("enumChoiceGroup"))
-        {
-            //var->startGroup(LocaleSelector.getAttribute(el, "name"));
-         var->startGroup(el.attribute("name"));
-            handleENumValChildren(el, var);
-            var->endGroup();
-        }
-    }
+    var->addItem(el.attribute("choice"),el.text().toInt());
+   }
+  }
+  else if (el.tagName()==("enumChoiceGroup"))
+  {
+      //var->startGroup(LocaleSelector.getAttribute(el, "name"));
+   var->startGroup(el.attribute("name"));
+   handleENumValChildren(el, var);
+   var->endGroup();
+  }
+ }
 }
-#endif
 
 /*protected*/ VariableValue* VariableTableModel::processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) {
     VariableValue* v;

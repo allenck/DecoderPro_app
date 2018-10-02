@@ -263,6 +263,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
    {
     QWidget* insideCombo = new QWidget();
     int gridsize = (int) (qCeil((cob->size() / 2.0)));
+    Q_UNUSED(gridsize);
     QFormLayout* insideComboLayout = new QFormLayout;
     //insideCombo->setLayout(new GridLayout2(gridsize, 2 * 2, 10, 2));
     insideCombo->setLayout(insideComboLayout);

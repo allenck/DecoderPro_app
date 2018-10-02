@@ -9,14 +9,14 @@
 DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
 {
  consistAddress = new DccLocoAddress(address,false);
- ConsistDir = new QHash<DccLocoAddress*, bool>();
- ConsistList = new QList<DccLocoAddress*>();
- ConsistPosition = new QHash<DccLocoAddress*, int>();
+ consistDir = new QHash<DccLocoAddress*, bool>();
+ consistList = new QList<DccLocoAddress*>();
+ consistPosition = new QHash<DccLocoAddress*, int>();
  consistRoster = new QMap<DccLocoAddress*, QString>();
  ConsistID = consistAddress->toString();
  log =new Logger("DccConsist");
  listeners = new QVector<ConsistListener*>();
- ConsistType = ADVANCED_CONSIST;
+ consistType = ADVANCED_CONSIST;
 }
 /**
  * This is the Default DCC consist.
@@ -43,21 +43,21 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
 /*public*/ DccConsist::DccConsist(DccLocoAddress* address, QObject* parent) //: Consist(parent)
 {
  consistAddress = address;
- ConsistDir = new QHash<DccLocoAddress*, bool>();
- ConsistList = new QList<DccLocoAddress*>();
- ConsistPosition = new QHash<DccLocoAddress*, int>();
+ consistDir = new QHash<DccLocoAddress*, bool>();
+ consistList = new QList<DccLocoAddress*>();
+ consistPosition = new QHash<DccLocoAddress*, int>();
  ConsistID = consistAddress->toString();
  log =new Logger("DccConsist");
  listeners = new QVector<ConsistListener*>();
- ConsistType = ADVANCED_CONSIST;
+ consistType = ADVANCED_CONSIST;
 }
 
 // Clean Up local Storage.
 /*public*/ void DccConsist::dispose()
 {
- for(int i=(ConsistList->size()-1);i>=0;i--)
+ for(int i=(consistList->size()-1);i>=0;i--)
  {
-  DccLocoAddress* loco=ConsistList->at(i);
+  DccLocoAddress* loco=consistList->at(i);
   if(log->isDebugEnabled()) log->debug("Deleting Locomotive: " + loco->toString());
   try
   {
@@ -68,15 +68,19 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
    log->error("Error removing loco: " + loco->toString() + " from consist: " + consistAddress->toString());
   }
  }
- ConsistList = NULL;
- ConsistDir = NULL;
- ConsistPosition = NULL;
+ //consistList = NULL;
+ delete consistList;
+ //consistDir = NULL;
+ delete consistDir;
+ //consistPosition = NULL;
+ delete consistPosition;
 }
 
 // Set the Consist Type
-/*public*/ void DccConsist::setConsistType(int consist_type){
+/*public*/ void DccConsist::setConsistType(int consist_type)
+{
       if(consist_type==ADVANCED_CONSIST) {
-    ConsistType = consist_type;
+    consistType = consist_type;
     return;
       }
       else {
@@ -86,43 +90,47 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
 }
 
 // get the Consist Type
-/*public*/ int DccConsist::getConsistType(){
-    return ConsistType;
+/*public*/ int DccConsist::getConsistType()
+{
+    return consistType;
 }
 
 // get the Consist Address
-/*public*/ DccLocoAddress* DccConsist::getConsistAddress(){
+/*public*/ DccLocoAddress* DccConsist::getConsistAddress()
+{
     return consistAddress;
 }
 
 /* is this address allowed?
-     * Since address 00 is an analog locomotive, we can't program CV19
- * to include it in a consist, but all other addresses are ok.
-     */
-    /*public*/ bool DccConsist::isAddressAllowed(DccLocoAddress* address) {
-            if(address->getNumber()!=0) return(true);
-            else return(false);
-    }
+ * Since address 00 is an analog locomotive, we can't program CV19
+* to include it in a consist, but all other addresses are ok.
+ */
+/*public*/ bool DccConsist::isAddressAllowed(DccLocoAddress* address)
+{
+        if(address->getNumber()!=0) return(true);
+        else return(false);
+}
 
 /* is there a size limit for this consist?
-     * For Decoder Assisted Consists, returns -1 (no limit)
-     * return 0 for any other consist type.
-     */
-    /*public*/ int DccConsist::sizeLimit(){
-       if(ConsistType==ADVANCED_CONSIST) {
-            return -1;
-       } else return 0;
-    }
+ * For Decoder Assisted Consists, returns -1 (no limit)
+ * return 0 for any other consist type.
+ */
+/*public*/ int DccConsist::sizeLimit() const
+{
+   if(consistType==ADVANCED_CONSIST) {
+        return -1;
+   } else return 0;
+}
 
 
 // get a list of the locomotives in the consist
-    /*public*/ QList<DccLocoAddress*>* DccConsist::getConsistList() { return ConsistList; }
+    /*public*/ QList<DccLocoAddress *>* DccConsist::getConsistList() { return consistList; }
 
 // does the consist contain the specified address?
-/*public*/ bool DccConsist::contains(DccLocoAddress* address) {
-   if(ConsistType==ADVANCED_CONSIST) {
+/*public*/ bool DccConsist::contains(DccLocoAddress* address)  {
+   if(consistType==ADVANCED_CONSIST) {
     //String Address = Integer.toString(address);
-    return(ConsistList->contains(address));
+    return(consistList->contains(address));
    } else {
     log->error("Consist Type Not Supported");
     notifyConsistListeners(new DccLocoAddress(0,false),ConsistListener::NotImplemented);
@@ -132,10 +140,10 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
 
 // get the relative direction setting for a specific
 // locomotive in the consist
-/*public*/ bool DccConsist::getLocoDirection(DccLocoAddress* address) {
-   if(ConsistType==ADVANCED_CONSIST) {
+/*public*/ bool DccConsist::getLocoDirection(DccLocoAddress* address)   {
+   if(consistType==ADVANCED_CONSIST) {
     //String Address= Integer.toString(address);
-    bool Direction = ConsistDir->value(address);
+    bool Direction = consistDir->value(address);
     return( Direction);
    } else {
     Logger::error("Consist Type Not Supported");
@@ -150,12 +158,13 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
  *  @param directionNormal is True if the locomotive is traveling
      *        the same direction as the consist, or false otherwise.
      */
-/*public*/ void DccConsist::add(DccLocoAddress* LocoAddress,bool directionNormal) {
-      if(ConsistType==ADVANCED_CONSIST) {
+/*public*/ void DccConsist::add(DccLocoAddress* LocoAddress,bool directionNormal)
+{
+      if(consistType==ADVANCED_CONSIST) {
      //String Address= Integer.toString(LocoAddress);
          bool Direction = (directionNormal);
-     if(!(ConsistList->contains(LocoAddress))) ConsistList->append(LocoAddress);
-     ConsistDir->insert(LocoAddress,Direction);
+     if(!(consistList->contains(LocoAddress))) consistList->append(LocoAddress);
+     consistDir->insert(LocoAddress,Direction);
          addToAdvancedConsist(LocoAddress, directionNormal);
       }
       else {
@@ -173,11 +182,11 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
      *        the same direction as the consist, or false otherwise.
      */
 /*public*/ void DccConsist::restore(DccLocoAddress* LocoAddress,bool directionNormal) {
-      if(ConsistType==ADVANCED_CONSIST) {
+      if(consistType==ADVANCED_CONSIST) {
      //String Address= Integer.toString(LocoAddress);
          bool Direction = (directionNormal);
-     if(!(ConsistList->contains(LocoAddress))) ConsistList->append(LocoAddress);
-     ConsistDir->insert(LocoAddress,Direction);
+     if(!(consistList->contains(LocoAddress))) consistList->append(LocoAddress);
+     consistDir->insert(LocoAddress,Direction);
       }
       else {
     log->error("Consist Type Not Supported");
@@ -191,12 +200,12 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
      */
 /*public*/ void DccConsist::remove(DccLocoAddress* LocoAddress)
 {
- if(ConsistType==ADVANCED_CONSIST)
+ if(consistType==ADVANCED_CONSIST)
  {
   //String Address= Integer.toString(LocoAddress);
-  ConsistDir->remove(LocoAddress);
-  ConsistList->removeAt(ConsistList->indexOf(LocoAddress));
-  ConsistPosition->remove(LocoAddress);
+  consistDir->remove(LocoAddress);
+  consistList->removeAt(consistList->indexOf(LocoAddress));
+  consistPosition->remove(LocoAddress);
   removeFromAdvancedConsist(LocoAddress);
  }
  else
@@ -242,10 +251,10 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
                  ->releaseAddressedProgrammer(opsProg);
 }
 
-    /*
+/*
  *  Remove a Locomotive from an Advanced Consist
  *  @param address is the Locomotive address to remove from the consist
-     */
+ */
 /*protected*/ void DccConsist::removeFromAdvancedConsist(DccLocoAddress* LocoAddress) {
     AddressedProgrammer* opsProg = ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->getAddressedProgrammer(LocoAddress->isLongAddress(),
                         LocoAddress->getNumber());
@@ -263,25 +272,26 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
  *  @param position is a constant representing the position within
  *         the consist.
  */
-/*public*/ void DccConsist::setPosition(DccLocoAddress* address,int position){
-        ConsistPosition->insert(address,(position));
+/*public*/ void DccConsist::setPosition(DccLocoAddress* address,int position)
+{
+        consistPosition->insert(address,(position));
 }
 
 /*
  * Get the position of a locomotive within the consist
  * @param address is the Locomotive address of interest
  */
-/*public*/ int DccConsist::getPosition(DccLocoAddress* address){
-    if(ConsistPosition->contains(address))
-        return(ConsistPosition->value(address));
+/*public*/ int DccConsist::getPosition(DccLocoAddress* address) {
+    if(consistPosition->contains(address))
+        return(consistPosition->value(address));
     // if the consist order hasn't been set, we'll use default
     // positioning based on index in the arraylist.  Lead locomotive
     // is position 0 in the list and the trail is the last locomtoive
     // in the list.
-    int index=ConsistList->indexOf(address);
+    int index=consistList->indexOf(address);
     if(index==0)
         return(Consist::POSITION_LEAD);
-    else if(index==(ConsistList->size()-1))
+    else if(index==(consistList->size()-1))
         return(Consist::POSITION_TRAIL);
     else return index;
 }
@@ -315,41 +325,44 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
 }
 
 /*
-     * Add a Listener for consist events
-     * @param Listener is a consistListener object
-     */
-    /*public*/ void DccConsist::addConsistListener(ConsistListener* Listener){
-    if(!listeners->contains(Listener))
-        listeners->append(Listener);
+ * Add a Listener for consist events
+ * @param Listener is a consistListener object
+ */
+/*public*/ void DccConsist::addConsistListener(ConsistListener* Listener)
+{
+if(!listeners->contains(Listener))
+    listeners->append(Listener);
 }
 
-    /*
-     * Remove a Listener for consist events
-     * @param Listener is a consistListener object
-     */
-    /*public*/ void DccConsist::removeConsistListener(ConsistListener* Listener){
-    if(listeners->contains(Listener))
-        listeners->remove(listeners->indexOf(Listener));
+/*
+ * Remove a Listener for consist events
+ * @param Listener is a consistListener object
+ */
+/*public*/ void DccConsist::removeConsistListener(ConsistListener* Listener)
+{
+if(listeners->contains(Listener))
+    listeners->remove(listeners->indexOf(Listener));
 }
 
-    // Get and set the
-    /*
-     * Set the text ID associated with the consist
-     * @param String is a string identifier for the consist
-     */
-    /*public*/ void DccConsist::setConsistID(QString ID){
-    ConsistID=ID;
-    }
+// Get and set the
+/*
+ * Set the text ID associated with the consist
+ * @param String is a string identifier for the consist
+ */
+/*public*/ void DccConsist::setConsistID(QString ID)  {
+ConsistID=ID;
+}
 
-    /*
-     * Get the text ID associated with the consist
-     * @return String identifier for the consist
-     *         default value is the string Identifier for the
-     *         consist address.
-     */
-    /*public*/ QString DccConsist::getConsistID(){
-    return ConsistID;
-    }
+/*
+ * Get the text ID associated with the consist
+ * @return String identifier for the consist
+ *         default value is the string Identifier for the
+ *         consist address.
+ */
+/*public*/ QString DccConsist::getConsistID()
+{
+ return ConsistID;
+}
 
 /*
      * Reverse the order of locomotives in the consist and flip
@@ -358,29 +371,29 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
 /*public*/ void DccConsist::reverse()
 {
  // save the old lead locomotive direction.
- bool oldDir=ConsistDir->value(ConsistList->at(0));
+ bool oldDir=consistDir->value(consistList->at(0));
  // reverse the direction of the list
  //Collections.reverse(ConsistList);
  QList<DccLocoAddress*>* newList = new QList<DccLocoAddress*>();
- for (int i= ConsistList->size()-1; i >= 0; i --)
+ for (int i= consistList->size()-1; i >= 0; i --)
  {
-  DccLocoAddress* a = ConsistList->at(i);
+  DccLocoAddress* a = consistList->at(i);
   newList->append(a);
  }
- ConsistList = newList;
+ consistList = newList;
  // and then save the new lead locomotive direction
- bool newDir=ConsistDir->value(ConsistList->at(0));
+ bool newDir=consistDir->value(consistList->at(0));
  // and itterate through the list to reverse the directions of the
  // individual elements of the list.
  //java.util.Iterator<DccLocoAddress> i= ConsistList.iterator();
- QListIterator<DccLocoAddress*> i(*ConsistList);
+ QListIterator<DccLocoAddress*> i(*consistList);
  while(i.hasNext()){
         DccLocoAddress* locoaddress=i.next();
         if(oldDir==newDir)
       add(locoaddress,getLocoDirection(locoaddress));
         else
       add(locoaddress,!getLocoDirection(locoaddress));
-    if(ConsistPosition->contains(locoaddress))
+    if(consistPosition->contains(locoaddress))
     {
     if(getPosition(locoaddress)==Consist::POSITION_LEAD)
        setPosition(locoaddress,Consist::POSITION_TRAIL);
@@ -388,7 +401,7 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
        setPosition(locoaddress,Consist::POSITION_LEAD);
     else
        setPosition(locoaddress,
-                        ConsistList->size()-getPosition(locoaddress));
+                        consistList->size()-getPosition(locoaddress));
     }
       }
 }

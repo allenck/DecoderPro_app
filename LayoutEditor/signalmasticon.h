@@ -16,7 +16,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalMastIcon : public PositionableIcon
 {
     Q_OBJECT
 public:
-    explicit SignalMastIcon(QObject *parent = 0);
+    explicit SignalMastIcon(QWidget *parent = 0);
     /*public*/ SignalMastIcon(Editor* editor, Positionable* parent = 0);
  ~SignalMastIcon() {}
  SignalMastIcon(const SignalMastIcon&) : PositionableIcon() {}

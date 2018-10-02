@@ -31,7 +31,7 @@
 * Constructor for all table types.  When item is a bean, the itemType is the name  key
  * for the item in jmri.NamedBeanBundle.properties
  */
-/*public*/ IndicatorTOItemPanel::IndicatorTOItemPanel(JmriJFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor, parent)
+/*public*/ IndicatorTOItemPanel::IndicatorTOItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor, parent)
 {
     //super(parentFrame, type, family, model, editor);
  log = new Logger("IndicatorTOItemPanel");
@@ -128,7 +128,7 @@
 /*
 * Get a handle in order to change visibility
 */
-/*protected*/ QWidget* IndicatorTOItemPanel::initTablePanel(PickListModel* model, Editor* editor, QWidget *parent) {
+/*protected*/ QWidget* IndicatorTOItemPanel::initTablePanel(PickListModel* model, Editor* editor, QWidget */*parent*/) {
     _tablePanel = TableItemPanel::initTablePanel(model, editor);
     return _tablePanel;
 }
@@ -225,7 +225,6 @@
     c.gridwidth = 1;
     c.gridheight = 1;
     c.gridy = -1;
-#if 1
     //Iterator<Entry<String, Hashtable<String, NamedIcon>>> it = map.entrySet().iterator();
     QHashIterator<QString, QHash<QString, NamedIcon*>*> it(*map);
     while (it.hasNext()) {
@@ -300,13 +299,13 @@
         gridbag->addWidget(panel, c.gridy, c.gridx, 1,1);
         //if (log-> isDebugEnabled()) log-> debug("addIcons2Panel: row "+c.gridy+" has "+iconMap.size()+" icons");
     }
-#endif
 }
-void EditIconActionListener::actionPerformed(ActionEvent *a)
+void EditIconActionListener::actionPerformed(ActionEvent */*a*/)
 {
     parent->openEditDialog(key);
 }
-EditIconActionListener*  EditIconActionListener::init(QString k, IndicatorTOItemPanel *parent)
+
+void  EditIconActionListener::init(QString k, IndicatorTOItemPanel *parent)
 {
  key = k;
  this->parent = parent;

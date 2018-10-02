@@ -8,7 +8,7 @@ class LocoNetSlot;
 class SlotListener : public QObject
 {
     Q_OBJECT
-public:
+public slots:
     //explicit SlotListener(QObject *parent = 0);
     /**
      * Interface for objects that want to be notified when a

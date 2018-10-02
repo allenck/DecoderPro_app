@@ -583,7 +583,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      int red = element.attribute("redBackground").toInt();
      int blue = element.attribute("blueBackground").toInt();
      int green = element.attribute("greenBackground").toInt();
-// TODO:        panel->setDefaultBackgroundColor(LayoutEditor::colorToString( QColor(QRgb(red, green, blue))));
+     panel->setDefaultBackgroundColor(ColorUtil::colorToString( QColor(red, green, blue)));
      panel->setBackgroundColor( QColor(red, green, blue));
  } catch (DataConversionException e) {
      log->warn("Could not parse color attributes!");
@@ -675,7 +675,6 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  {
   if (element.attribute("openDispatcher") != NULL)
   {
-#if 1 // TODO:
    if (element.attribute("openDispatcher")==("yes"))
    {
     panel->setOpenDispatcherOnLoad(true);
@@ -685,7 +684,6 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    {
     panel->setOpenDispatcherOnLoad(false);
    }
-#endif
   }
  }
  return result;

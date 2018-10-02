@@ -92,6 +92,7 @@ AppsBase::AppsBase(QObject *parent) :
 //    Log4JUtil.initLog4J();
  //QTimer::singleShot(10, this, SLOT(init())); // configureProfile() once constructor is finished.
 }
+
 void AppsBase::init()
 {
  configureProfile();
@@ -308,7 +309,7 @@ void AppsBase::init()
   ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
   if (cm != NULL)
   {
-   configOK = ((JmriConfigurationManager*)cm)->load(file); // ACK force  cast, virtual not working!
+   configOK = cm->load(file);
   }
   else
   {

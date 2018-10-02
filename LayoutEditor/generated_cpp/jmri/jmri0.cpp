@@ -17716,10 +17716,10 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setPowerManager(Pow
   (InstanceManager::setPowerManager(p));
 }
 
-void PythonQtWrapper_InstanceManager::static_InstanceManager_setProgrammerManager(ProgrammerManager*  p)
-{
-  (InstanceManager::setProgrammerManager(p));
-}
+//void PythonQtWrapper_InstanceManager::static_InstanceManager_setProgrammerManager(ProgrammerManager*  p)
+//{
+//  (InstanceManager::setProgrammerManager(p));
+//}
 
 void PythonQtWrapper_InstanceManager::static_InstanceManager_setReporterManager(ReporterManager*  p)
 {

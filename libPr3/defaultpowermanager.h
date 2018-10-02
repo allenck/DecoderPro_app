@@ -16,7 +16,7 @@ public:
 
 private:
  // to hear of changes
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+// PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
  int power;// = UNKNOWN;
 protected:
  /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);

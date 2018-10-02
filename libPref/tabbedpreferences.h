@@ -43,52 +43,54 @@ public:
     /*public*/ QStringList getPreferenceSubCategory(QString category);
     /*public*/ void disablePreferenceItem(QString selection, QString subCategory);
     /*public*/ void setUIFontSize(float size);
+    /*public*/ bool isPreferencesValid();
 
-    /*static*/ class PreferencesCatItems : public QObject
-    {
-     /**
-      *
-      */
-     //private static final long serialVersionUID = 5928584215129175250L;
-     /*
-      * This contains details of all list items to be displayed in the
-      * preferences
-      */
-     QString itemText;
-     QString prefItem;
-     QTabWidget* tabbedPane;// = new QTabWidget();
-     QStringList disableItemsList;// = new ArrayList<>();
-     /*static*/ class TabDetails : public QObject
-     {
-      /**
-       *
-       */
-      //private static final long serialVersionUID = -7077354592762639878L;
-      /* This contains all the JPanels that make up a preferences menus */
-      QWidget* tabItem;
-      QString tabTooltip;
-      QString tabTitle;
-      QWidget* tabPanel;// = new JPanel();
-      //bool store;
-     public:
-      TabDetails(QString labelkey, QString tabTit, QWidget* item,
-                QString tooltip);
-      QString getToolTip() ;
-      QString getTitle();
-      QWidget* getPanel() ;
-      QWidget* getItem();
-     }; // end TabDetails class
-    QList<TabDetails*> TabDetailsArray;// = new ArrayList<>();
-    public:
-      PreferencesCatItems(QString pref, QString title) ;
-      void addPreferenceItem(QString title, QString labelkey, QWidget* item, QString tooltip) ;
-      QString getPrefItem() ;
-      QString getItemString();
-      QStringList getSubCategoriesList();
-      QWidget* getPanel() ;
-      void gotoSubCategory(QString sub);
-      void disableSubCategory(QString sub);
-    }; // end PreferencesCatItem class
+
+//    /*static*/ class PreferencesCatItems : public QObject
+//    {
+//     /**
+//      *
+//      */
+//     //private static final long serialVersionUID = 5928584215129175250L;
+//     /*
+//      * This contains details of all list items to be displayed in the
+//      * preferences
+//      */
+//     QString itemText;
+//     QString prefItem;
+//     QTabWidget* tabbedPane;// = new QTabWidget();
+//     QStringList disableItemsList;// = new ArrayList<>();
+//     /*static*/ class TabDetails : public QObject
+//     {
+//      /**
+//       *
+//       */
+//      //private static final long serialVersionUID = -7077354592762639878L;
+//      /* This contains all the JPanels that make up a preferences menus */
+//      QWidget* tabItem;
+//      QString tabTooltip;
+//      QString tabTitle;
+//      QWidget* tabPanel;// = new JPanel();
+//      //bool store;
+//     public:
+//      TabDetails(QString labelkey, QString tabTit, QWidget* item,
+//                QString tooltip);
+//      QString getToolTip() ;
+//      QString getTitle();
+//      QWidget* getPanel() ;
+//      QWidget* getItem();
+//     }; // end TabDetails class
+//    QList<TabDetails*> TabDetailsArray;// = new ArrayList<>();
+//    public:
+//      PreferencesCatItems(QString pref, QString title, int sortOrder) ;
+//      void addPreferenceItem(QString title, QString labelkey, QWidget* item, QString tooltip) ;
+//      QString getPrefItem() ;
+//      QString getItemString();
+//      QStringList getSubCategoriesList();
+//      QWidget* getPanel() ;
+//      void gotoSubCategory(QString sub);
+//      void disableSubCategory(QString sub);
+//    }; // end PreferencesCatItem class
 signals:
  void propertyChange(PropertyChangeEvent*);
 public slots:
@@ -110,7 +112,7 @@ private:
     /*private*/ void setInitalisationState(int state);
     /*private*/ bool invokeSaveOptions();
     void selection(QString View);
-    /*private*/ void addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, bool store, QString tooltip);
+    /*private*/ void addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder);
     int getCategoryIndexFromString(QString category);
     void updateJList();
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("TabbedPreferences");
@@ -120,56 +122,64 @@ protected:
     /*protected*/ QStringList getChoices();
 friend class TabbedPreferencesFrame;
 };
-/*static*/ class PreferencesCatItems : QObject
+
+/*static*/ class PreferencesCatItems : public QObject
 {
  Q_OBJECT
-        /**
-         *
-         */
-        //private static final long serialVersionUID = 5928584215129175250L;
-        /*
-         * This contains details of all list managedPreferences to be displayed in the
-         * preferences
-         */
-        QString itemText;
-        QString prefItem;
-        QTabWidget* tabbedPane;// = new JTabbedPane();
-        QList<QString> disableItemsList;// = new QList<>();
+    /**
+     *
+     */
+    //private static final long serialVersionUID = 5928584215129175250L;
+    /*
+     * This contains details of all list managedPreferences to be displayed in the
+     * preferences
+     */
+    QString itemText;
+    QString prefItem;
+    int sortOrder;// = Integer.MAX_VALUE;
+    QTabWidget* tabbedPane;// = new JTabbedPane();
+    QList<QString> disableItemsList;// = new QList<>();
 
-        QList<TabDetails*> TabDetailsArray;// = new ArrayList<>();
-        TabbedPreferences* tabbedPreferences;
+    QList<TabDetails*> tabDetailsArray;// = new ArrayList<>();
+    TabbedPreferences* tabbedPreferences;
 public:
 
-        PreferencesCatItems(QString pref, QString title, TabbedPreferences* tabbedPreferences);
-        void addPreferenceItem(QString title, QString labelkey, QWidget* item,
-                QString tooltip) ;
-        QString getPrefItem();
-        QString getItemString();
-        QList<QString> getSubCategoriesList();
-        QWidget* getPanel();
-        void gotoSubCategory(QString sub);
-        void disableSubCategory(QString sub);
-        };
+    PreferencesCatItems(QString pref, QString title, int sortOrder, TabbedPreferences* tabbedPreferences);
+    void addPreferenceItem(QString title, QString labelkey, QWidget* item,
+            QString tooltip, int sortOrder) ;
+    QString getPrefItem();
+    QString getItemString();
+    QList<QString> getSubCategoriesList();
+    QWidget* getPanel();
+    void gotoSubCategory(QString sub);
+    void disableSubCategory(QString sub);
+    int getSortOrder();
+    void setSortOrder(int sortOrder);
 
-        /*static*/ class TabDetails : public QObject
+};
+
+/*static*/ class TabDetails : public QObject
 {
 Q_OBJECT
-            /**
-             *
-             */
-           //private static final long serialVersionUID = -7077354592762639878L;
-            /* This contains all the JPanels that make up a preferences menus */
-            QWidget* tabItem;
-            QString tabTooltip;
-            QString tabTitle;
-            QWidget* tabPanel;// = new JPanel();
-            //boolean store;
+    /**
+     *
+     */
+   //private static final long serialVersionUID = -7077354592762639878L;
+    /* This contains all the JPanels that make up a preferences menus */
+    QWidget* tabItem;
+    QString tabTooltip;
+    QString tabTitle;
+    QWidget* tabPanel;// = new JPanel();
+    //boolean store;
+    int sortOrder;
 public:
-            TabDetails(QString labelkey, QString tabTit, QWidget* item,
-                    QString tooltip) ;
-            QString getToolTip();
-            QString getTitle();
-            QWidget* getPanel();
-            QWidget* getItem() ;
-    };
+    TabDetails(QString labelkey, QString tabTit, QWidget* item,
+            QString tooltip, int sortOrder) ;
+    QString getToolTip();
+    QString getTitle();
+    QWidget* getPanel();
+    QWidget* getItem() ;
+    void setSortOrder(int sortOrder);
+    int getSortOrder();
+};
 #endif // TABBEDPREFERENCES_H

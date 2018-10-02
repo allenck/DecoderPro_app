@@ -1,4 +1,5 @@
 #include "loconetmessage.h"
+#include "loconetmessageinterpret.h"
 
 LocoNetMessage::LocoNetMessage(int len, QObject *parent) :
     QObject(parent)
@@ -257,6 +258,72 @@ bool LocoNetMessage::checkParity()
  if (_nDataBytes>2) r+= _dataBytes[2]*128*128;
   return r;
 }
+
+//@Override
+/**
+ * Interprets a LocoNet message into a string describing the
+ * message.
+ * <p>
+ * Where appropriate, this method presents both the JMRI "System Name" and
+ * the JMRI "User Name" (where available) for messages which contain control
+ * or status information for a Turnout, Sensor or Reporter.
+ * <p>
+ * Display of "User Name" information is acquired from the appropriate "manager",
+ * via a reference to an object with an assembled "System Name".  This method
+ * assumes a system connection "prefix" of "L" when assembling that system name.
+ * The remainder of the assembled system name depends on the message contents -
+ * message type determines which JMRI object type letter to add - "T" for turnouts,
+ * "S" for sensors, and "R" for transponding reporters.
+ * <p>
+ * If the appropriate manager already has an object for the system name being
+ * referenced, the method requests the associated user name.  If a user name is
+ * returned, then the method uses that user name as part of the message.  If
+ * there is no associated JMRI object configured, or if the associated JMRI
+ * object does not have a user name assigned, then the method does not display
+ * a user name.
+ * <p>
+ * The method is not appropriate when the user has multiple LocoNet connections
+ * or when the user has a single LocoNet connection but has changed the connection
+ * prefix to something other than the default of "L".
+ * <p>
+ * @return a human readable representation of the message.
+ */
+/*public*/ QString LocoNetMessage::toMonitorString(){
+      return toMonitorString("L"); // NOI18N
+}
+
+/**
+ * Interprets a LocoNet message into a string describing the
+ * message when a specific connection prefix is known.
+ * <p>
+ * Where appropriate, this method presents both the JMRI "System Name" and
+ * the JMRI "User Name" (where available) for messages which contain control
+ * or status information for a Turnout, Sensor or Reporter.
+ * <p>
+ * Display of "User Name" information is acquired from the appropriate "manager",
+ * via a reference to an object with an assembled "System Name".  This method
+ * uses system connection "prefix" as specified in the "prefix" argument when
+ * assembling that system name.  The remainder of the assembled system name
+ * depends on the message contents.  Message type determines which JMRI
+ * object type letter is added after the "prefix" - "T" for turnouts, * "S"
+ * for sensors, and "R" for transponding reporters.  The item number
+ * specified in the LocoNet message is appended to finish the system name.
+ * <p>
+ * If the appropriate manager already has an object for the system name being
+ * referenced, the method requests the associated user name.  If a user name is
+ * returned, then the method uses that user name as part of the message.  If
+ * there is no associated JMRI object configured, or if the associated JMRI
+ * object does not have a user name assigned, then the method does not display
+ * a user name.
+ * <p>
+ * @param prefix - the "System Name" prefix denoting the connection
+ * @return a human readable representation of the message.
+ */
+/*public*/ QString LocoNetMessage::toMonitorString(/*@Nonnull*/ QString prefix){
+      return LocoNetMessageInterpret::interpretMessage(this,
+              prefix+"T", prefix+"S", prefix+"R");
+}
+
 /**
  * Return a newly created OPC_PEER_XFR message.
  * @param src Source address

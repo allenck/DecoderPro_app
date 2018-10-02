@@ -1,5 +1,6 @@
 #include "loconetconsistmanager.h"
 #include "lnthrottlemanager.h"
+#include "loconetconsist.h"
 
 LocoNetConsistManager::LocoNetConsistManager(LocoNetSystemConnectionMemo* lm, QObject *parent) :
     AbstractConsistManager(parent)
@@ -54,15 +55,12 @@ LocoNetConsistManager::LocoNetConsistManager(LocoNetSystemConnectionMemo* lm, QO
 /*public*/ Consist* LocoNetConsistManager::addConsist(DccLocoAddress* address){
     if(consistList->contains(address)) // no duplicates allowed.
        return consistTable->value(address);
-#if 0 // TODO define LocoNetConsist
-    LocoNetConsist consist;
+
+    LocoNetConsist* consist;
     consist = new LocoNetConsist(address,memo);
-    consistTable.put(address,consist);
-    consistList.add(address);
+    consistTable->insert(address,consist);
+    consistList->append(address);
     return consist;
-#else
-    return NULL;
-#endif
 }
 
 

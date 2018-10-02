@@ -574,7 +574,7 @@ protected slots:
   friend class LayoutEditorXml;
   friend class PositionablePolygon;
   friend class PolygonAction;
-
+  friend class UrlErrorDialog;
 public:
   class AddRightTOActionListener : public ActionListener
   {
@@ -773,4 +773,24 @@ public:
  void windowClosing(QCloseEvent *e);
 };
 
+class UrlErrorDialog : public JDialog
+{
+ Q_OBJECT
+    JTextField* _urlField;
+    CatalogPanel* _catalog;
+    QString _badUrl;
+    Editor* parent;
+
+public:
+    UrlErrorDialog(QString msg, QString url, Editor* parent = nullptr);
+
+public slots:
+    void doneButton_clicked();
+    void deleteButton_clicked();
+    void cancelButton_clicked();
+
+protected:
+
+    /*protected*/ QWidget* makeDoneButtonPanel();
+};
 #endif // EDITOR_H

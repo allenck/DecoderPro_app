@@ -70,6 +70,8 @@ namespace Operations
   Logger* log;
   /*private*/ void addIconListener(TrainIcon* tI);
 
+ protected:
+//  /*protected*/ void trainIconMoved(ComponentEvent* ae);
  };
 }
 #endif // SETTRAINICONPOSITIONFRAME_H

@@ -4,6 +4,8 @@
 #include <QTextStream>
 #include <QtXml>
 #include "limits.h"
+#include "fileinputstream.h"
+#include "reader.h"
 
 //QHash<QString, QString> Properties::hash =  QHash<QString, QString>();
 QMap<QString, QVariant> Properties::_hashTable =  QMap<QString, QVariant>();
@@ -323,6 +325,11 @@ QObject(parent)
  load0(new LineReader(inStream));
 }
 
+/*public*/ /*synchronized*/ void Properties::load(FileInputStream* inStream) //throws IOException
+{
+ load0(new LineReader(inStream));
+}
+
 /*private*/ void Properties::load0 (LineReader* lr) //throws IOException
 {
  //char[] convtBuf = new char[1024];
@@ -408,12 +415,14 @@ QByteArray convtBuf;
  //inByteBuf = new byte[8192];
 }
 
-///*public*/ LineReader::LineReader(Reader* reader)
-//{
-// common();
-// this->reader = reader;
-// //inCharBuf = new char[8192];
-//}
+/*public*/ LineReader::LineReader(QDataStream* reader)
+{
+ common();
+ this->inStream = new QTextStream(reader->device());
+ //this->reader = reader;
+ //inCharBuf = new char[8192];
+}
+
 void LineReader::common()
 {
  //lineBuf[] = new char[1024];

@@ -493,64 +493,53 @@ void InputWidget::onMessageReceived(LocoNetMessage *msg, bool b)
  if(!msg->checkParity()) return;
  int in1 = msg->getElement(1);
  int in2 = msg->getElement(2);
- if(ui->rbBlockDetectionActiveHigh->isChecked() || ui->rbBlockDetectionActiveLow->isChecked())
+ QString sColor = "lightGray";
+ if(msg->getOpCode()== LnConstants::OPC_INPUT_REP &&(ui->rbBlockDetectionActiveHigh->isChecked() || ui->rbBlockDetectionActiveLow->isChecked()))
  {
   opc = LnConstants::OPC_INPUT_REP;
   if(msg->getOpCode() != opc)
    return;
   int addr = ((LlnMon::SENSOR_ADR(in1,in2)-1)*2+((in2 & LnConstants::OPC_INPUT_REP_SW)!=0?2:1));
   if(addr != data->getAddr(channel)) return;
+  if((in2 & LnConstants::OPC_SW_REP_HI) == 0)
+   //p.setColor(QPalette::Base, Qt::red);
+   sColor = data->ssRed;
+  else
+   //p.setColor(QPalette::Base, Qt::green);
+   sColor = "green";
+  ui->edStatus->setStyleSheet(QString("QLineEdit { background-color :  %1}").arg(sColor));
+  return;
  }
- else
- if(ui->rbToggleSwitch->isChecked() || ui->rbPushButtonActiveHigh->isChecked()||ui->rbPushButtonActiveLow->isChecked())
+
+ if(msg->getOpCode()== LnConstants::OPC_SW_REQ &&(ui->rbToggleSwitch->isChecked() || ui->rbPushButtonActiveHigh->isChecked()||ui->rbPushButtonActiveLow->isChecked()))
  {
-   opc=LnConstants::OPC_SW_REQ;
-   if(msg->getOpCode() != opc)
-    return;
    int sensor = LlnMon::SENSOR_ADR(in1, in2);
    if(sensor != data->getAddr(channel)) return;
- }
- else
-  if(ui->rbSwitchPointFeedback->isChecked() || ui->rbContact1PointFeedback->isChecked() || ui->rbContact2PointFeedback->isChecked())
-  {
-   opc=LnConstants::OPC_SW_REP;
-   if(msg->getOpCode() != opc)
-    return;
-   int sw = LlnMon::SENSOR_ADR(in1, in2);
-   if(sw != data->getAddr(channel)) return;
-  }
- QString sColor;
- if(ui->rbBlockDetectionActiveHigh->isChecked() || ui->rbBlockDetectionActiveLow->isChecked())
- {
-  if(msg->getElement(2) & 0x10)
-   //p.setColor(QPalette::Base, Qt::yellow);
-  sColor = data->ssYellow;
-  else
-   //p.setColor(QPalette::Base, Qt::black);
-   sColor = data->ssBlack;
- }
- else
- if(ui->rbToggleSwitch->isChecked() || ui->rbPushButtonActiveHigh->isChecked()||ui->rbPushButtonActiveLow->isChecked())
- {
-  if(msg->getElement(2) == 0x10)
-   //p.setColor(QPalette::Base, Qt::red);
-   sColor = data->ssRed;
-  else
-   //p.setColor(QPalette::Base, Qt::green);
-   sColor = "green";
- }
- else
- {
-  if(msg->getElement(2) == 0x10)
-   //p.setColor(QPalette::Base, Qt::red);
-   sColor = data->ssRed;
-  else
-   //p.setColor(QPalette::Base, Qt::green);
-   sColor = "green";
- }
- //ui->edStatus->setPalette(p);
- ui->edStatus->setStyleSheet(QString("QLineEdit { background-color : %1}").arg(sColor));
 
+   if((in2 & LnConstants::OPC_SW_REP_HI) == 0)
+    //p.setColor(QPalette::Base, Qt::red);
+    sColor = data->ssRed;
+   else
+    //p.setColor(QPalette::Base, Qt::green);
+    sColor = "green";
+   ui->edStatus->setStyleSheet(QString("QLineEdit { background-color : %1}").arg(sColor));
+   return;
+ }
+
+  if((msg->getOpCode()== LnConstants::OPC_SW_REP) && (ui->rbSwitchPointFeedback->isChecked() || ui->rbContact1PointFeedback->isChecked() || ui->rbContact2PointFeedback->isChecked()))
+  {
+      int sensor = LlnMon::SENSOR_ADR(in1, in2);
+      if(sensor != data->getAddr(channel)) return;
+
+      if((in2 & LnConstants::OPC_SW_REP_HI) == 0)
+       //p.setColor(QPalette::Base, Qt::red);
+       sColor = data->ssRed;
+      else
+       //p.setColor(QPalette::Base, Qt::green);
+       sColor = "green";
+      ui->edStatus->setStyleSheet(QString("QLineEdit { background-color : %1}").arg(sColor));
+      return;
+  }
 }
 void InputWidget::on_rbDoubleInput_toggled(bool bChecked)
 {

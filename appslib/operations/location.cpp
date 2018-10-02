@@ -181,9 +181,9 @@ namespace Operations
   * @param location the location to copy the tracks to.
   */
  /*public*/ void Location::copyTracksLocation(Location* location) {
-#if 0 //TODO:
+#if 1 //TODO:
      foreach (Track* track, getTrackList()) {
-         if (location.getTrackByName(track->getName(), NULL) != (NULL)) {
+         if (location->getTrackByName(track->getName(), NULL) != (NULL)) {
              continue;
          }
          track->copyTrack(track->getName(), location);
@@ -546,9 +546,9 @@ namespace Operations
  /*public*/ void Location::addRS(RollingStock* rs)
 {
      setNumberRS(getNumberRS() + 1);
-     if (rs->metaObject()->className() == "Car") {
+     if (QString(rs->metaObject()->className()) == "Car") {
          setNumberCars(getNumberCars() + 1);
-     } else if (rs->metaObject()->className() == "Engine") {
+     } else if (QString(rs->metaObject()->className()) == "Engine") {
          setNumberEngines(getNumberEngines() + 1);
      }
      setUsedLength(getUsedLength() + rs->getTotalLength());
@@ -556,9 +556,9 @@ namespace Operations
 
  /*public*/ void Location::deleteRS(RollingStock* rs) {
      setNumberRS(getNumberRS() - 1);
-     if (rs->metaObject()->className() == "Car") {
+     if (QString(rs->metaObject()->className()) == "Car") {
          setNumberCars(getNumberCars() - 1);
-     } else if (rs->metaObject()->className() == "Engine") {
+     } else if (QString(rs->metaObject()->className()) == "Engine") {
          setNumberEngines(getNumberEngines() - 1);
      }
      setUsedLength(getUsedLength() - rs->getTotalLength());
@@ -847,15 +847,15 @@ if (types.length() == 0) {
    bool locAdded = false;
    for (int j = 0; j < out.size(); j++)
    {
-    if (QString::compare(track->getName(), out.at(j)->getName(),Qt::CaseInsensitive) < 0
-               && (type != NULL && track->getTrackType()==(type) || type == NULL))
+    if ((QString::compare(track->getName(), out.at(j)->getName(),Qt::CaseInsensitive) < 0)
+               && (type != NULL && (track->getTrackType()==(type)) || (type == NULL)))
     {
      out.insert(j, track);
      locAdded = true;
      break;
     }
    }
-   if (!locAdded && (type != NULL && track->getTrackType()==(type) || type == NULL)) {
+   if (!locAdded && (type != NULL && (track->getTrackType()==(type)) || (type == NULL))) {
        out.append(track);
    }
   }
@@ -880,13 +880,13 @@ if (types.length() == 0) {
          bool locAdded = false;
          for (int j = 0; j < moveList.size(); j++) {
              if (track->getMoves() < moveList.at(j)->getMoves()
-                     && (type != NULL && track->getTrackType()==(type) || type == NULL)) {
+                     && ((type != NULL) && (track->getTrackType()==(type)) || (type == NULL))) {
                  moveList.insert(j, track);
                  locAdded = true;
                  break;
              }
          }
-         if (!locAdded && (type != NULL && track->getTrackType()==(type) || type == NULL)) {
+         if (!locAdded && ((type != NULL) && (track->getTrackType()==(type)) || (type == NULL))) {
              moveList.append(track);
          }
      }
@@ -1386,8 +1386,8 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
   if (e.attribute(Xml::READER) != "")
   {
    //@SuppressWarnings("unchecked")
-   Reporter* r = InstanceManager
-              ::reporterManagerInstance()
+   Reporter* r = ((ReporterManager*)InstanceManager
+              ::getDefault("ReporterManager"))
               ->provideReporter(
                       e.attribute(Xml::READER));
       setReporter(r);

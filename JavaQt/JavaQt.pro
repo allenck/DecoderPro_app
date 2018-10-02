@@ -15,6 +15,9 @@ TEMPLATE = lib
 DEFINES += JAVAQT_LIBRARY
 
 SOURCES += javaqt.cpp \
+    logger.cpp \
+    loggerbase.cpp \
+    loggerfactory.cpp \
     fileutil.cpp \
     calendar.cpp \
     box.cpp \
@@ -23,7 +26,6 @@ SOURCES += javaqt.cpp \
     jseparator.cpp \
     jmripanel.cpp \
     abstractaction.cpp \
-    logger.cpp \
     gridbagconstraints.cpp \
     insets.cpp \
     jtextfield.cpp \
@@ -73,7 +75,6 @@ SOURCES += javaqt.cpp \
     swingshutdowntask.cpp \
     jtree.cpp \
     gregoriancalendar.cpp \
-    printwriter.cpp \
     writer.cpp \
     json.cpp \
     htmltextedit.cpp \
@@ -92,7 +93,6 @@ SOURCES += javaqt.cpp \
     treeselectionmodel.cpp \
     treeselectionevent.cpp \
     defaulttreeselectionmodel.cpp \
-    resizableimagepanel.cpp \
     editableresizableimagepanel.cpp \
     filedrop.cpp \
     borderfactory.cpp \
@@ -133,8 +133,6 @@ SOURCES += javaqt.cpp \
     xinclude/xinclude.cpp \
     jmrilocalentityresolver.cpp \
     inputsource.cpp \
-    loggerbase.cpp \
-    loggerfactory.cpp \
     catalogtreemodel.cpp \
     defaulttreemodel1.cpp \
     vetoablechangelistener.cpp \
@@ -152,7 +150,26 @@ SOURCES += javaqt.cpp \
     matcher.cpp \
     htmldelegate.cpp \
     bufferedoutputstream.cpp \
-    bufferedinputstream.cpp
+    bufferedinputstream.cpp \
+    myslider.cpp \
+    resizableimagepanel.cpp \
+    reader.cpp \
+    inputstreamreader.cpp \
+    filereader.cpp \
+    fileinputstream.cpp \
+    buffer.cpp \
+    charbuffer.cpp \
+    spliterator.cpp \
+    printwriter.cpp \
+    manager.cpp \
+    abstractlistmodel.cpp \
+    compoundborder.cpp \
+    listdataevent.cpp \
+    systemflavormap.cpp \
+    changeevent.cpp \
+    appcontext.cpp \
+    imagepanel.cpp \
+    bufferedimage.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -250,7 +267,6 @@ HEADERS += javaqt.h\
     defaulttreeselectionmodel.h \
     rowmapper.h \
     treeselectionlistener.h \
-    resizableimagepanel.h \
     editableresizableimagepanel.h \
     filedrop.h \
     border.h \
@@ -337,7 +353,27 @@ HEADERS += javaqt.h\
     htmldelegate.h \
     componentfactory.h \
     bufferedoutputstream.h \
-    bufferedinputstream.h
+    bufferedinputstream.h \
+    myslider.h \
+    resizableimagepanel.h \
+    reader.h \
+    inputstreamreader.h \
+    filereader.h \
+    fileinputstream.h \
+    buffer.h \
+    charbuffer.h \
+    spliterator.h \
+    abstractlistmodel.h \
+    listmodel.h \
+    compoundborder.h \
+    listdataevent.h \
+    flavormap.h \
+    systemflavormap.h \
+    changeevent.h \
+    appcontext.h \
+    initeventlistener.h \
+    imagepanel.h \
+    bufferedimage.h
 
 unix {
     target.path = /usr/lib

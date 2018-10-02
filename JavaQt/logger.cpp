@@ -34,7 +34,6 @@ bool Logger::isInfoEnabled()
 bool Logger::isTraceEnabled()
 { return bTraceEnabled;}
 
-
 void Logger::debug(QString s)
 {
  LoggerBase::debug(name, s);

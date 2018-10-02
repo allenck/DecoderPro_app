@@ -11,7 +11,7 @@ class ReporterItemPanel : public TableItemPanel
     Q_OBJECT
 public:
     //explicit ReporterItemPanel(QWidget *parent = 0);
-    /*public*/ ReporterItemPanel(JmriJFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent);
+    /*public*/ ReporterItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent);
     /*public*/ void init();
     /*public*/ void valueChanged(ListSelectionEvent* e = 0);
 

@@ -40,8 +40,7 @@ public:
     bool isF6()	{ return 0!=(_snd&LnConstants::SND_F6); }
     bool isF7()	{ return 0!=(_snd&LnConstants::SND_F7); }
     bool isF8()	{ return 0!=(_snd&LnConstants::SND_F8); }
-
-    bool isF9()	{ return localF9; }
+    bool isF9()	 { return localF9; }
     bool isF10()	{ return localF10; }
     bool isF11()	{ return localF11; }
     bool isF12()	{ return localF12; }

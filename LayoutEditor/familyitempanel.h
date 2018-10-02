@@ -5,6 +5,7 @@
 #include "actionlistener.h"
 #include "logger.h"
 
+class IconDialog;
 class DragJLabel;
 class DataFlavor;
 class NamedIcon;
@@ -13,7 +14,7 @@ class FamilyItemPanel : public ItemPanel
     Q_OBJECT
 public:
     //explicit FamilyItemPanel(QWidget *parent = 0);
-    /*public*/ FamilyItemPanel(JmriJFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent = 0);
+    /*public*/ FamilyItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent = 0);
     /*public*/ void init() ;
     /*public*/ void init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap) ;
     /*public*/ void virtual init(ActionListener* doneAction);
@@ -23,16 +24,18 @@ signals:
 
 public slots:
     void on_showIconsButton_clicked();
-    void on_newFamilyButton_clicked();
+
 private:
     QWidget*    _bottom1Panel;  // Typically _showIconsButton and editIconsButton
     QWidget*    _bottom2Panel;  // createIconFamilyButton - when all families deleted
     QPushButton*   _showIconsButton;
     QPushButton*   _updateButton;
     /*private*/ void checkCurrentMap(QHash<QString, NamedIcon*>* iconMap);
-Logger* log;
+    Logger* log;
+    IconDialog* _dialog;
+
 private slots:
-    /*private*/ void createNewFamilySet(QString type) ;
+    /*private*/ QWidget* makeCreateNewFamilyPanel();
 
 protected:
     /*protected*/ QWidget*    _iconFamilyPanel;
@@ -52,10 +55,15 @@ protected:
     /*protected*/ void showIcons();
     /*protected*/ virtual QWidget* makeBottom2Panel();
     /*protected*/ virtual QWidget* makeBottom3Panel(ActionListener* doneAction, QWidget* bottom1Panel) ;
-    /*protected*/ void removeIconFamiliesPanel();
     /*protected*/ virtual void setFamily(QString family) ;
+    /*protected*/ virtual IconDialog* openDialog(QString type, QString family, QHash<QString, NamedIcon*>* iconMap);
+    /*protected*/ void closeDialogs();
+    /*protected*/ void deleteFamilySet();
+    /*protected*/ bool _suppressDragging;
+
 protected slots:
     /*protected*/ void openEditDialog();
+    /*protected*/ bool newFamilyDialog();
     /*protected*/ void updateFamiliesPanel();
 
 friend class ItemPalette;
@@ -67,7 +75,9 @@ friend class MemoryItemPanel;
 friend class ReporterItemPanel;
 friend class IndicatorTOItemPanel;
 friend class IconDialog;
+friend class MultiSensorIconDialog;
 };
+
 class ButtonListener : public QObject
 {
  Q_OBJECT

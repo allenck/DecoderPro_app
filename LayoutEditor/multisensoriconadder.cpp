@@ -281,7 +281,7 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
  this->layout()->addWidget(p);
  //this.add(new JSeparator());
  IconAdder::complete(addIconAction, changeIcon, addToTable, update);
- //TODO: _table.setDragEnabled(true);
+ _table->setDragEnabled(true);
 //TODO: _table.setTransferHandler(new ExportHandler());
  valueChanged();
 }

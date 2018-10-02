@@ -213,7 +213,6 @@ void DisplayMemoryIcon::on_propertyChange(QString sType, QVariant /*sOld*/, QVar
     //width = -1;
  displayState(); // in case changed
 }
-#if 1 // TODO:
 
 // update icon as state of Memory changes
 /*public*/ void DisplayMemoryIcon::propertyChange(PropertyChangeEvent* e)
@@ -248,7 +247,6 @@ void DisplayMemoryIcon::on_propertyChange(QString sType, QVariant /*sOld*/, QVar
         name = getMemory()->getSystemName();
     return name;
 }
-#endif
 
 /*public*/ void DisplayMemoryIcon::setSelectable(bool b) {selectable = b;}
 /*public*/ bool DisplayMemoryIcon::isSelectable() { return selectable;}
@@ -430,7 +428,7 @@ void DisplayMemoryIcon::on_editMemoryValueAction_triggered()
   updateSize();
   return;
  }
-#if 1 // TODO:
+
  if(re!=NULL)
  {
   InstanceManager::throttleManagerInstance()->removeListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
@@ -543,7 +541,6 @@ void DisplayMemoryIcon::on_editMemoryValueAction_triggered()
   }
  }
  else
-#endif
  {
   if (log->isDebugEnabled()) log->debug("memory NULL");
   setIcon(defaultIcon);

@@ -3,6 +3,7 @@
 #include "jmrijframe.h"
 #include "libpref_global.h"
 
+class TabbedPreferences;
 class LIBPREFSHARED_EXPORT TabbedPreferencesFrame : public JmriJFrame
 {
     Q_OBJECT
@@ -18,6 +19,7 @@ public slots:
 private:
     static bool init;// = false;
     static int lastdivider;
+    /*private*/ TabbedPreferences* getTabbedPreferences();
 
 };
 

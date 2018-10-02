@@ -9,7 +9,7 @@ class SignalMastItemPanel : public TableItemPanel
     Q_OBJECT
 public:
     //explicit SignalMastItemPanel(QWidget *parent = 0);
-    /*public*/ SignalMastItemPanel(JmriJFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
+    /*public*/ SignalMastItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     void init();
     void init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap);
 

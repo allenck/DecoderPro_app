@@ -94,6 +94,7 @@ void LocoMonPane::closeEvent(QCloseEvent *)
  if(memo->provides("ReporterManager"))
   llnmon->setLocoNetReporterManager((LnReporterManager*)memo->get("ReporterManager"));
  //AbstractMonPane::initComponents();
+ systemConnectionPrefix = memo->getSystemPrefix();
 }
 
 
@@ -101,10 +102,12 @@ void LocoMonPane::closeEvent(QCloseEvent *)
 {  // receive a LocoNet message and log it
  // send the raw data, to display if requested
  QString raw = l->toString();
+ // format the message text, expect it to provide consistent \n after each line
+ QString formatted = l->toMonitorString(systemConnectionPrefix);
 
  // display the decoded data
  // we use Llnmon to format, expect it to provide consistent \n after each line
- nextLine(llnmon->displayMessage(*l), raw );
+ nextLine(/*llnmon->displayMessage(*l)*/formatted, raw );
 }
 
 LocoMonPane* LocoMonPane::instance() { return _instance; }

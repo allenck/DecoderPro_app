@@ -1,9 +1,9 @@
 #ifndef CHANGEEVENT_H
 #define CHANGEEVENT_H
 #include "eventobject.h"
-#include "libPr3_global.h"
+#include "javaqt_global.h"
 
-class LIBPR3SHARED_EXPORT ChangeEvent : public EventObject
+class JAVAQT_GLOBAL_H ChangeEvent : public EventObject
 {
     Q_OBJECT
 public:

@@ -3,6 +3,8 @@
 #include <QTabWidget>
 #include "jframe.h"
 #include "libpref_global.h"
+#include "limits.h"
+
 /**
  * An interface to define methods that the Preferences Window can and should
  * expect Preferences panels to implement.
@@ -129,6 +131,24 @@ public:
    }
   }
   return NULL;
+ }
+ /**
+  * Indicate that the preferences are valid.
+  *
+  * @return true if the preferences are valid, false otherwise
+  */
+ /*public*/ /*abstract*/ virtual bool isPreferencesValid() {return false;}
+
+ /**
+  * Indicate the sort order to be used to sort PreferencesPanels in
+  * TabbedPreferences. PreferencesPanels with the same sort order value are
+  * alphabetically within that sort order.
+  *
+  * @return the sort order; default implementation returns
+  *         {@link java.lang.Integer#MAX_VALUE}.
+  */
+ /*public*/ /*default*/ virtual int getSortOrder() {
+     return INT_MAX;
  }
 public slots:
  virtual void propertyChange(PropertyChangeEvent* /*evt*/) {}

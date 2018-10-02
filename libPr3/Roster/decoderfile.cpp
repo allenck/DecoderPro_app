@@ -299,46 +299,46 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
 /*public*/ void DecoderFile::processVariablesElement(QDomElement variablesElement,
                               VariableTableModel* variableModel, QString extraInclude, QString extraExclude)
 {
- QDomNodeList nl = variablesElement.childNodes();
- qDebug() << "root contains " << QString::number(nl.count()) << " nodes ";
- for(int i=0; i < nl.count(); i++)
- {
-  QDomElement e = nl.at(i).toElement();
+// QDomNodeList nl = variablesElement.childNodes();
+// qDebug() << "root contains " << QString::number(nl.count()) << " nodes ";
+// for(int i=0; i < nl.count(); i++)
+// {
+//  QDomElement e = nl.at(i).toElement();
 
-  if(e.tagName() == "xi:include")
-  {
-   QString href= e.attribute("href");
-   qDebug() << e.tagName() << " href= " << href;
-   QDomDocumentFragment frag = XmlInclude::processInclude(e);
-   QDomNodeList nl1 = frag.childNodes();
-   if(nl1.count() > 0)
-   {
-    qDebug() << "first node to be inserted " << nl1.at(0).toElement().tagName() << " of " << QString::number(nl1.count()) << " nodes.";
-    QDomElement var = frag.firstChildElement("variable");
-    if(!var.isNull())
-     qDebug() << " variable tag CV = " << var.attribute("CV") << " item= " << var.attribute("item");
-   }
-   variablesElement.replaceChild(frag, e);
-  }
-  else
-  {
-   qDebug() << e.tagName() << " CV=" << e.attribute("CV");
-   if(e.tagName() == "variable")
-   {
-    if(e.firstChild().toElement().tagName() == "xi:include")
-    {
-     QDomElement e2 = e.firstChild().toElement();
-     QString href= e2.attribute("href");
-     qDebug() << e2.tagName() << " href= " << href;
-     QDomDocumentFragment frag = XmlInclude::processInclude(e);
+//  if(e.tagName() == "xi:include")
+//  {
+//   QString href= e.attribute("href");
+//   qDebug() << e.tagName() << " href= " << href;
+//   QDomDocumentFragment frag = XmlInclude::processInclude(e);
+//   QDomNodeList nl1 = frag.childNodes();
+//   if(nl1.count() > 0)
+//   {
+//    qDebug() << "first node to be inserted " << nl1.at(0).toElement().tagName() << " of " << QString::number(nl1.count()) << " nodes.";
+//    QDomElement var = frag.firstChildElement("variable");
+//    if(!var.isNull())
+//     qDebug() << " variable tag CV = " << var.attribute("CV") << " item= " << var.attribute("item");
+//   }
+//   variablesElement.replaceChild(frag, e);
+//  }
+//  else
+//  {
+//   qDebug() << e.tagName() << " CV=" << e.attribute("CV");
+//   if(e.tagName() == "variable")
+//   {
+//    if(e.firstChild().toElement().tagName() == "xi:include")
+//    {
+//     QDomElement e2 = e.firstChild().toElement();
+//     QString href= e2.attribute("href");
+//     qDebug() << e2.tagName() << " href= " << href;
+//     QDomDocumentFragment frag = XmlInclude::processInclude(e);
 
-     e.replaceChild(frag, e2);
-    }
-   }
-  }
- }
- nl = variablesElement.childNodes();
- qDebug() << "root now contains " << QString::number(nl.count()) << " nodes ";
+//     e.replaceChild(frag, e2);
+//    }
+//   }
+//  }
+// }
+// nl = variablesElement.childNodes();
+// qDebug() << "root now contains " << QString::number(nl.count()) << " nodes ";
 
  // handle include, exclude on this element
  extraInclude = extraInclude +(variablesElement.attribute("include")!="" ? ","+variablesElement.attribute("include") : "");
@@ -472,7 +472,9 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
 // use the decoder Element from the file to load a VariableTableModel for programming.
 //@SuppressWarnings("unchecked")
 /*public*/ void DecoderFile::loadResetModel(QDomElement decoderElement,
-                           ResetTableModel* resetModel) {
+                           ResetTableModel* resetModel)
+{
+
     if (!decoderElement.firstChildElement("resets").isNull()) {
         QDomNodeList resetList = decoderElement.firstChildElement("resets").elementsByTagName("factReset");
         for (int i=0; i<resetList.size(); i++) {

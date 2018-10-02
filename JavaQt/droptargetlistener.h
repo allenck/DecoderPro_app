@@ -52,7 +52,7 @@ public:
      * @param dtde the <code>DropTargetDragEvent</code>
      */
 
-    virtual void dragEnter(/*DropTargetDragEvent*/QDragEnterEvent* dtde){}
+    virtual void dragEnter(/*DropTargetDragEvent*/QDragEnterEvent* /*dtde*/){}
 
     /**
      * Called when a drag operation is ongoing, while the mouse pointer is still
@@ -81,7 +81,7 @@ public:
      * @param dte the <code>DropTargetEvent</code>
      */
 
-    virtual  void dragExit(/*DropTargetEvent*/QDragLeaveEvent* dte) {}
+    virtual  void dragExit(/*DropTargetEvent*/QDragLeaveEvent* /*dte*/) {}
 
     /**
      * Called when the drag operation has terminated with a drop on
@@ -124,6 +124,6 @@ public:
      * @param dtde the <code>DropTargetDropEvent</code>
      */
 
-    virtual void drop(/*DropTargetDropEvent*/QDropEvent* dtde) {}
+    virtual void drop(/*DropTargetDropEvent*/QDropEvent* /*dtde*/) {}
 };
 #endif // DROPTARGETLISTENER_H

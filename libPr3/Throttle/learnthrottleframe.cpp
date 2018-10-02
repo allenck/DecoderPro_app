@@ -36,7 +36,7 @@
     {
         //super(false, false);
         _warrantFrame = warrantFrame;
-        powerMgr = InstanceManager::powerManagerInstance();
+        powerMgr = (PowerManager*)InstanceManager::getDefault("PowerManager");
         if (powerMgr == NULL) {
             log->info("No power manager instance found, panel not active");
         }

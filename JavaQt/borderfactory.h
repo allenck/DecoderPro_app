@@ -38,9 +38,14 @@ public:
                      int titlePosition,
                      QFont titleFont,
                      QColor titleColor);
+ /*public*/ static Border* createEmptyBorder();
+ /*public*/ static Border* createEmptyBorder(int top, int left,                                                int bottom, int right);
+
 
 private:
  BorderFactory(QObject* parent = 0);
+ /*final*/ static Border* emptyBorder;// = new EmptyBorder(0, 0, 0, 0);
+
 };
 
 #endif // BORDERFACTORY_H

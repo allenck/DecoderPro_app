@@ -573,7 +573,7 @@ void IconAdder::checkIconSizes()
  return new NamedIcon((NamedIcon*)_iconMap->value(key)->getIcon());
 //return NULL;
 }
-#if 1
+
 /**
 * Returns a new QHash of only the icons selected for display.
 */
@@ -1008,9 +1008,9 @@ void DropButton::dropEvent(QDropEvent *e)
     parent->_iconMap->insert(key, button);
     if (!parent->_update)
     {
-//     _defaultIcons.deleteLeaf(key, oldIcon.getURL());
-//     _defaultIcons.addLeaf(key, newIcon.getURL());
-// TODO:    parent->updateCatalogTree();
+     parent->_defaultIcons->deleteLeaf(key, oldIcon->getURL());
+     parent->_defaultIcons->addLeaf(key, newIcon->getURL());
+     parent->updateCatalogTree();
     }
     //e.dropComplete(true);
     e->accept();
@@ -1091,9 +1091,9 @@ void DropButton::dropEvent(QDropEvent *e)
           parent->_iconMap->insert(key, button);
           if (!parent->_update)
           {
-      //     _defaultIcons.deleteLeaf(key, oldIcon.getURL());
-      //     _defaultIcons.addLeaf(key, newIcon.getURL());
-      // TODO:    parent->updateCatalogTree();
+           parent->_defaultIcons->deleteLeaf(key, oldIcon->getURL());
+           parent->_defaultIcons->addLeaf(key, newIcon->getURL());
+           parent->updateCatalogTree();
           }
           //e.dropComplete(true);
           e->accept();
@@ -1106,6 +1106,6 @@ void DropButton::dropEvent(QDropEvent *e)
 }
 
 //    };
-#endif
+
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(IconAdder.class.getName());
 //}

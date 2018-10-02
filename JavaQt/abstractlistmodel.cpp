@@ -83,7 +83,7 @@ AbstractListModel::AbstractListModel(QObject *parent) //: ListModel(parent)
  */
 /*protected*/ void AbstractListModel::fireContentsChanged(QObject* source, int index0, int index1)
 {
-# if 0 // TODO:
+# if 0
 
     Object[] listeners = listenerList.getListenerList();
     ListDataEvent e = null;
@@ -97,6 +97,7 @@ AbstractListModel::AbstractListModel(QObject *parent) //: ListModel(parent)
         }
     }
    #endif
+    emit contentsChanged(new ListDataEvent(this, ListDataEvent::CONTENTS_CHANGED, index0, index1));
 }
 
 
@@ -116,7 +117,7 @@ AbstractListModel::AbstractListModel(QObject *parent) //: ListModel(parent)
  */
 /*protected*/ void AbstractListModel::fireIntervalAdded(QObject* source, int index0, int index1)
 {
-# if 0 // TODO:
+# if 0
 
     Object[] listeners = listenerList.getListenerList();
     ListDataEvent e = null;
@@ -130,6 +131,8 @@ AbstractListModel::AbstractListModel(QObject *parent) //: ListModel(parent)
         }
     }
 #endif
+    emit contentsChanged(new ListDataEvent(this, ListDataEvent::INTERVAL_ADDED, index0, index1));
+
 }
 
 
@@ -150,7 +153,7 @@ AbstractListModel::AbstractListModel(QObject *parent) //: ListModel(parent)
  */
 /*protected*/ void AbstractListModel::fireIntervalRemoved(QObject* source, int index0, int index1)
 {
-# if 0 // TODO:
+# if 0
 
     Object[] listeners = listenerList.getListenerList();
     ListDataEvent e = null;
@@ -164,6 +167,8 @@ AbstractListModel::AbstractListModel(QObject *parent) //: ListModel(parent)
         }
     }
 #endif
+    emit contentsChanged(new ListDataEvent(this, ListDataEvent::INTERVAL_REMOVED, index0, index1));
+
 }
 
 /**

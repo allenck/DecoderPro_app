@@ -28,7 +28,7 @@
 /**
  * Constructor for plain icons and backgrounds
  */
-/*public*/ ClockItemPanel::ClockItemPanel(JmriJFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent) : IconItemPanel(parentFrame, type, family,editor,parent)
+/*public*/ ClockItemPanel::ClockItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent) : IconItemPanel(parentFrame, type, family,editor,parent)
 {
  //super(parentFrame,  type, family, editor);
  setToolTip(tr("Drag an icon from this panel to add it to the control panel"));

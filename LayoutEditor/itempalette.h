@@ -1,6 +1,6 @@
 #ifndef ITEMPALETTE_H
 #define ITEMPALETTE_H
-#include "jmrijframe.h"
+#include "displayframe.h"
 #include <QtXml>
 #include <QFrame>
 #include "liblayouteditor_global.h"
@@ -11,7 +11,7 @@ class NamedIcon;
 class Editor;
 class CatalogTreeNode;
 class ChangeEvent;
-class LIBLAYOUTEDITORSHARED_EXPORT ItemPalette : public JmriJFrame
+class LIBLAYOUTEDITORSHARED_EXPORT ItemPalette : public DisplayFrame
 {
     Q_OBJECT
 public:
@@ -33,7 +33,10 @@ public:
     static QHash<QString, QHash<QString, NamedIcon*>*>* loadFamilyMap(CatalogTreeNode* node);
     static void loadDefaultIcons();
     static QHash<QString, QHash<QString, NamedIcon*>*>* loadDefaultFamilyMap(QDomNodeList families);
-    static QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* loadDefaultIndicatorTOMap(QDomNodeList typeList);
+    static QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*
+    loadDefaultIndicatorTOMap(QDomNodeList typeList);
+    static void buildTabPane(ItemPalette* palette, Editor* editor);
+
     /*public*/ ItemPalette(QString _title, Editor* editor, QWidget* parent = 0);
     /*public*/ void stateChanged(ChangeEvent* e);
     /*public*/ void closePanels(/*WindowEvent* e*/);
@@ -46,9 +49,10 @@ public slots:
     void tabPaneChanged(int);
  private:
   Logger* log;
-  void init();
+  void init(QString title, Editor* ed);
   /*private*/ void makeMenus(Editor* editor);
   void changeEvent(QEvent *);
+/*private*/ ItemPanel* _currentItemPanel;
 
 protected:
   static /*protected*/ bool addFamily(QWidget* frame, QString type, QString family, QHash<QString, NamedIcon*>* iconMap);
@@ -81,10 +85,20 @@ class IPEditItemActionListener : public QObject
 {
  Q_OBJECT
  Editor* editor;
+public:
+ IPEditItemActionListener();
+
 public slots:
  /*public*/ void actionPerformed(/*ActionEvent e*/) ;
 public:
  IPEditItemActionListener* init(Editor* ed);
 };
 
+class IPWindowListener : public WindowListener
+{
+ ItemPalette* palette;
+public:
+ IPWindowListener(ItemPalette* palette);
+ void windowClosing(QCloseEvent*);
+};
 #endif // ITEMPALETTE_H

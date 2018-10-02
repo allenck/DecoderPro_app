@@ -45,6 +45,12 @@ public:
  /*public*/ float getForwardFactor();
  /*public*/ float getReverseFactor();
  /*public*/ float getSpeed(float speedStep, bool isForward);
+ static /*public*/ /*final*/ float MMS_TO_MPH;// = 0.00223694f;
+ static /*public*/ /*final*/ float MMS_TO_KPH;// = 0.0036f;
+ /*public*/ float MMSToScaleSpeed(float mms);
+ /*public*/ QString convertMMSToScaleSpeedWithUnits(float mms);
+ /*public*/ QString convertThrottleSettingToScaleSpeedWithUnits(float throttleSetting, bool isForward);
+ /*public*/ float convertScaleSpeedToMMS(float scaleSpeed);
 
 signals:
 

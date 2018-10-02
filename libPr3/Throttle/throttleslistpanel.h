@@ -10,7 +10,7 @@ class ThrottlesListPanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ThrottlesListPanel(QWidget *parent = 0);
+ explicit ThrottlesListPanel(QWidget *parent = 0);
  /*public*/ ThrottlesTableModel* getTableModel();
  /*public*/ QDomElement getXml();
  /*public*/ void setXml(QDomElement tlp);

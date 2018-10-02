@@ -117,6 +117,7 @@ bool LocoNetMsgDialog::buildMsg()
    return false;
  }
  LlnMon* mon = new LlnMon();
+ mon->setLocoNetTurnoutManager((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"));
  ui->lblMsg->setText(mon->displayMessage(*msg));
  return true;
 }

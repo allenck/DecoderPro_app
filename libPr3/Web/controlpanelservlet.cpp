@@ -117,7 +117,7 @@ ControlPanelServlet::ControlPanelServlet()
 }
 
 //@Override
-/*protected*/  QString ControlPanelServlet::getJsonPanel(QString name)
+/*protected*/  QString ControlPanelServlet::getJsonPanel(QString /*name*/)
 {
  // TODO Auto-generated method stub
  return "ERROR JSON support not implemented";

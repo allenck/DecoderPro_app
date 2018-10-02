@@ -783,3 +783,9 @@ FileUtil::FileUtil(QObject *parent) :
 {
  return FileUtilSupport::getDefault()->findProgramPath();
 }
+
+/*public*/ /*static*/ QString FileUtil::locateFile(QDir start, QString fileName)
+{
+  return FileUtilSupport::getDefault()->locateFile(start, fileName);
+}
+

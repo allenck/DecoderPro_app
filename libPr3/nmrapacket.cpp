@@ -2,6 +2,7 @@
 #include "logger.h"
 #include "loggerfactory.h"
 #include "exceptions.h"
+#include "stringutil.h"
 
 /*static*/ /*final*/ /*public*/ int NmraPacket::NOADDRESS = 1;
 /*static*/ /*final*/ /*public*/ int NmraPacket::LOCO_SHORT_ADDRESS = 2;
@@ -1146,14 +1147,14 @@ else
     static int extractInstruction(QByteArray packet) {
         return 0;
     }
-
+#endif
     /**
      * Convert NMRA packet to a readable form
      */
-    static /*public*/ String format(QByteArray p) {
-        return jmri.util.StringUtil.hexStringFromBytes(p);
+    /*static*/ /*public*/ QString NmraPacket::format(QByteArray p) {
+        return StringUtil::hexStringFromBytes(p);
     }
-#endif
+
 
 /*static*/ Logger* NmraPacket::log = LoggerFactory::getLogger("NmraPacket");
 //}

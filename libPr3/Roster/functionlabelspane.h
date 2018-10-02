@@ -5,6 +5,8 @@
 #include "logger.h"
 #include <QFile>
 #include "libPr3_global.h"
+#include <QSignalMapper>
+#include <QRadioButton>
 
 namespace Ui {
 class FunctionLabelsPane;
@@ -37,6 +39,8 @@ private:
     // now, based on 28 labels
     // The references to maxfunction + 1 are due to F0
     /*private*/ /*final*/ int maxfunction;// = 28;
+    QSignalMapper* shunterModeMapper;
+    QVector<QRadioButton*> shunterMode;
 
 private slots:
     void on_lbl0_editingFinished();
@@ -92,6 +96,8 @@ private slots:
     void OnIconOn15_changed(QString);
     void OnIconOn16_changed(QString);
     void on_btnSave_clicked();
+    void on_shunterRbClicked(int);
+
 protected:
     /*protected*/ QFile* findFile(QString name);
 

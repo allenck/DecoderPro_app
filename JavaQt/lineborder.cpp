@@ -56,7 +56,7 @@ void LineBorder::common(QColor color, int thickness, bool roundedCorners)
     this->thickness = thickness;
     this->_roundedCorners = roundedCorners;
 }
-#if 0
+
 /*public*/ LineBorder::LineBorder(int top, int left, int bottom, int right, QObject* parent)
 : Border(parent){
     this->top = top;
@@ -73,7 +73,7 @@ void LineBorder::common(QColor color, int thickness, bool roundedCorners)
     this->bottom = borderInsets->bottom;
     this->left = borderInsets->left;
 }
-#endif
+
 
 /*public*/ int LineBorder::lineWidth() { return thickness;}
 /*public*/ QColor LineBorder::color() { return lineColor;}

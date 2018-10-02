@@ -198,6 +198,7 @@ void TableColumn::common()
     isResizable = true;
     resizedPostingDisableCount = 0;
     headerValue = QVariant();
+    changeSupport = NULL;
 }
 
 //
@@ -332,8 +333,8 @@ void TableColumn::common()
  *  description: The header renderer.
  */
 /*public*/ void setHeaderRenderer(TableCellRenderer headerRenderer) {
-    TableCellRenderer old = this.headerRenderer;
-    this.headerRenderer = headerRenderer;
+    TableCellRenderer old = this->headerRenderer;
+    this->headerRenderer = headerRenderer;
     firePropertyChange("headerRenderer", old, headerRenderer);
 }
 
@@ -364,8 +365,8 @@ void TableColumn::common()
  *  description: The renderer to use for cell values.
  */
 /*public*/ void setCellRenderer(TableCellRenderer cellRenderer) {
-    TableCellRenderer old = this.cellRenderer;
-    this.cellRenderer = cellRenderer;
+    TableCellRenderer old = this->cellRenderer;
+    this->cellRenderer = cellRenderer;
     firePropertyChange("cellRenderer", old, cellRenderer);
 }
 
@@ -398,8 +399,8 @@ void TableColumn::common()
  *  description: The editor to use for cell values.
  */
 /*public*/ void setCellEditor(TableCellEditor cellEditor){
-    TableCellEditor old = this.cellEditor;
-    this.cellEditor = cellEditor;
+    TableCellEditor old = this->cellEditor;
+    this->cellEditor = cellEditor;
     firePropertyChange("cellEditor", old, cellEditor);
 }
 
@@ -492,7 +493,7 @@ void TableColumn::common()
 /*public*/ int TableColumn::getPreferredWidth() {
     return preferredWidth;
 }
-#if 0
+
 /**
  * Sets the <code>TableColumn</code>'s minimum width to
  * <code>minWidth</code>,
@@ -515,16 +516,16 @@ void TableColumn::common()
  *  bound: true
  *  description: The minimum width of the column.
  */
-/*public*/ void setMinWidth(int minWidth) {
-    int old = this.minWidth;
-    this.minWidth = Math.max(Math.min(minWidth, maxWidth), 0);
-    if (width < this.minWidth) {
-        setWidth(this.minWidth);
+/*public*/ void TableColumn::setMinWidth(int minWidth) {
+    int old = this->minWidth;
+    this->minWidth = qMax(qMin(minWidth, maxWidth), 0);
+    if (width < this->minWidth) {
+        setWidth(this->minWidth);
     }
-    if (preferredWidth < this.minWidth) {
-        setPreferredWidth(this.minWidth);
+    if (preferredWidth < this->minWidth) {
+        setPreferredWidth(this->minWidth);
     }
-    firePropertyChange("minWidth", old, this.minWidth);
+    firePropertyChange("minWidth", old, this->minWidth);
 }
 
 /**
@@ -536,7 +537,7 @@ void TableColumn::common()
  * @see     #setMinWidth
  * @see     #TableColumn(int, int, TableCellRenderer, TableCellEditor)
  */
-/*public*/ int getMinWidth() {
+/*public*/ int TableColumn::getMinWidth() {
     return minWidth;
 }
 
@@ -560,16 +561,16 @@ void TableColumn::common()
  *  bound: true
  *  description: The maximum width of the column.
  */
-/*public*/ void setMaxWidth(int maxWidth) {
-    int old = this.maxWidth;
-    this.maxWidth = Math.max(minWidth, maxWidth);
-    if (width > this.maxWidth) {
-        setWidth(this.maxWidth);
+/*public*/ void TableColumn::setMaxWidth(int maxWidth) {
+    int old = this->maxWidth;
+    this->maxWidth = qMax(minWidth, maxWidth);
+    if (width > this->maxWidth) {
+        setWidth(this->maxWidth);
     }
-    if (preferredWidth > this.maxWidth) {
-        setPreferredWidth(this.maxWidth);
+    if (preferredWidth > this->maxWidth) {
+        setPreferredWidth(this->maxWidth);
     }
-    firePropertyChange("maxWidth", old, this.maxWidth);
+    firePropertyChange("maxWidth", old, this->maxWidth);
 }
 
 /**
@@ -581,7 +582,7 @@ void TableColumn::common()
  * @return  the <code>maxWidth</code> property
  * @see     #setMaxWidth
  */
-/*public*/ int getMaxWidth() {
+/*public*/ int TableColumn::getMaxWidth() {
     return maxWidth;
 }
 
@@ -594,10 +595,10 @@ void TableColumn::common()
  *  bound: true
  *  description: Whether or not this column can be resized.
  */
-/*public*/ void setResizable(boolean isResizable) {
-    boolean old = this.isResizable;
-    this.isResizable = isResizable;
-    firePropertyChange("isResizable", old, this.isResizable);
+/*public*/ void TableColumn::setResizable(bool isResizable) {
+    bool old = this->isResizable;
+    this->isResizable = isResizable;
+    firePropertyChange("isResizable", old, this->isResizable);
 }
 
 /**
@@ -609,10 +610,10 @@ void TableColumn::common()
  * @return  the <code>isResizable</code> property
  * @see     #setResizable
  */
-/*public*/ boolean getResizable() {
+/*public*/ bool TableColumn::getResizable() {
     return isResizable;
 }
-
+#if 0
 /**
  * Resizes the <code>TableColumn</code> to fit the width of its header cell.
  * This method does nothing if the header renderer is <code>NULL</code>
@@ -625,7 +626,7 @@ void TableColumn::common()
  *
  * @see     #setPreferredWidth
  */
-/*public*/ void sizeWidthToFit() {
+/*public*/ void TableColumn::sizeWidthToFit() {
     if (headerRenderer == NULL) {
         return;
     }
@@ -660,7 +661,7 @@ void TableColumn::common()
 /*public*/ void enableResizedPosting() {
     resizedPostingDisableCount--;
 }
-
+#endif
 //
 // Property Change Support
 //
@@ -680,12 +681,13 @@ void TableColumn::common()
  * @param listener  the listener to be added
  *
  */
-/*public*/ synchronized void addPropertyChangeListener(
-                            PropertyChangeListener listener) {
+/*public*/ /*synchronized*/ void TableColumn::addPropertyChangeListener(
+                            PropertyChangeListener* listener) {
     if (changeSupport == NULL) {
-        changeSupport = new SwingPropertyChangeSupport(this);
+        changeSupport = new PropertyChangeSupport(this);
     }
-    changeSupport.addPropertyChangeListener(listener);
+    changeSupport->addPropertyChangeListener(listener);
+    connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /**
@@ -697,13 +699,15 @@ void TableColumn::common()
  *
  */
 
-/*public*/ synchronized void removePropertyChangeListener(
-                            PropertyChangeListener listener) {
+/*public*/ /*synchronized*/ void TableColumn::removePropertyChangeListener(
+                            PropertyChangeListener* listener) {
     if (changeSupport != NULL) {
-        changeSupport.removePropertyChangeListener(listener);
+        changeSupport->removePropertyChangeListener(listener);
+        disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+
     }
 }
-
+#if 0
 /**
  * Returns an array of all the <code>PropertyChangeListener</code>s added
  * to this TableColumn with addPropertyChangeListener().

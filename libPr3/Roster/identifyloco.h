@@ -29,7 +29,6 @@ public slots:
     /*private*/ int cv18val;
     int address;// = -1;
 
-    ProgrammingMode* originalMode;// = Programmer::NONE;
     Logger* log;
 protected:
     /*protected*/ bool shortAddr;

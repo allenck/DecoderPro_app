@@ -61,6 +61,9 @@ public:
  static SystemConnectionMemo* instance();
  static void addPropertyChangeListener(PropertyChangeListener* l);
  static void removePropertyChangeListener(PropertyChangeListener* l);
+ /*public*/ static /*final*/ QString DISABLED;// = "ConnectionDisabled";
+ /*public*/ static /*final*/ QString USER_NAME;// = "ConnectionNameChanged";
+ /*public*/ static /*final*/ QString SYSTEM_PREFIX;// = "ConnectionPrefixChanged";
 
 signals:
  void propertyChange(PropertyChangeEvent*);

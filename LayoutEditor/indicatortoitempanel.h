@@ -10,7 +10,7 @@ public:
     //explicit IndicatorTOItemPanel(QWidget *parent = 0);
     /*final*/ static QStringList STATUS_KEYS;// = {"ClearTrack", "OccupiedTrack", "PositionTrack",
 //                            "AllocatedTrack", "DontUseTrack", "ErrorTrack"};
-    /*public*/ IndicatorTOItemPanel(JmriJFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
+    /*public*/ IndicatorTOItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     /*public*/ void init();
     /*public*/ void init(ActionListener* doneAction);
     /*public*/ void initUpdate(ActionListener* doneAction, QHash<QString, QHash<QString, NamedIcon*>*>* iconMaps);
@@ -74,13 +74,14 @@ public:
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
     QString mimeData();
 };
+
 class EditIconActionListener : public ActionListener
 {
  Q_OBJECT
  QString key;
  IndicatorTOItemPanel* parent;
 public:
-EditIconActionListener* init(QString k, IndicatorTOItemPanel* parent);
+void init(QString k, IndicatorTOItemPanel* parent);
 public slots:
 /*public*/ void actionPerformed(ActionEvent* a = 0);
 };

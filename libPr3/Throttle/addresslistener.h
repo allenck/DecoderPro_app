@@ -16,6 +16,8 @@ class LocoAddress;
     Q_OBJECT
 public:
     AddressListener(QObject* parent = 0) : EventListener(/*parent*/) {}
+
+public slots:
     /**
      * Receive notification that a new address has been selected.
      * @param address The address that is now selected.

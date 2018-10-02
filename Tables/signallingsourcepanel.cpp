@@ -298,8 +298,8 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
     if (section==ENABLE_COLUMN) return tr("Enabled");
     if (section==EDIT_COLUMN) return tr("Edit");
     if (section==DEL_COLUMN) return tr("Delete");
-    return QVariant();
   }
+  return QVariant();
 }
 
 /*public*/ void SignalMastAppearanceModel::dispose()

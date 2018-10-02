@@ -4,11 +4,12 @@
 #include "boundedrangemodel.h"
 #include <QString>
 #include "javaqt_global.h"
+#include "changeevent.h"
 
-class ChangeEvent;
 //class EventListenerList;
 class JAVAQTSHARED_EXPORT DefaultBoundedRangeModel : public BoundedRangeModel
 {
+ Q_OBJECT
 public:
     DefaultBoundedRangeModel();
     /*public*/ DefaultBoundedRangeModel(int value, int extent, int min, int max);
@@ -27,6 +28,10 @@ public:
     /*public*/ void removeChangeListener(ChangeListener* l);
 //    /*public*/ ChangeListener[] getChangeListeners();
     /*public*/ QString toString();
+
+signals:
+    void stateChanged(ChangeEvent*);
+
 private:
     /*private*/ int value;// = 0;
     /*private*/ int extent;// = 0;

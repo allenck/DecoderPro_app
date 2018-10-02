@@ -778,7 +778,7 @@ public URL getURL(URI uri) {
         QFileInfo info(path);
         if(!info.exists())
          //throw FileNotFoundException(path);
-         throw NullPointerException(path);
+         throw NullPointerException(path);  // throw IOException??
         return (new File(path.replace(FileUtil::SEPARATOR, File::separatorChar)))->getCanonicalPath();
     } catch (IOException ex) {
         log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
@@ -810,7 +810,7 @@ public URL getURL(URI uri) {
  depth++;
 // qDebug() << "scanDir scanning: " << start.absolutePath() << "depth: " << depth;
 
- QFileInfoList dirList = start.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot);
+ QFileInfoList dirList = start.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot );
  QStringList dirNames = start.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
  foreach(QFileInfo info, dirList)
  {
@@ -856,6 +856,25 @@ public URL getURL(URI uri) {
    return;
   scanDir(QDir(info.filePath()), paths, depth );
  }
+}
+
+/*public*/ QString FileUtilSupport::locateFile(QDir start, QString fileName)
+{
+ QFileInfoList dirList = start.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+ foreach(QFileInfo info, dirList)
+ {
+  QString fn = info.fileName();
+  QString pn = info.filePath();
+  if(fn == fileName && info.isFile())
+   return info.absoluteFilePath();
+  if(info.isDir())
+  {
+   QString path = locateFile(QDir(info.absoluteFilePath()),fileName);
+   if(path != "")
+    return path;
+  }
+ }
+ return "";
 }
 
 /**

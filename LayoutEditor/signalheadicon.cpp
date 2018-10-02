@@ -119,8 +119,8 @@
  */
 /*public*/ void SignalHeadIcon::setSignalHead(QString pName)
 {
- SignalHead* mHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getBySystemName(pName);
- if (mHead == NULL) mHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getByUserName(pName);
+ SignalHead* mHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName);
+ if (mHead == NULL) mHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName);
  if (mHead == NULL) log->warn("did not find a SignalHead named "+pName);
  else
  {
@@ -732,67 +732,27 @@ void SignalHeadIcon::updateSignal()
  case 3:
  {
   SignalHead* sh = getSignalHead();
-  QVector<int> states;
-  if(qobject_cast<SingleTurnoutSignalHead*>(sh)!=NULL)
-   states = ((SingleTurnoutSignalHead*)sh)->getValidStates();
-  else
-  if(qobject_cast<DoubleTurnoutSignalHead*>(sh)!=NULL)
-   states = ((DoubleTurnoutSignalHead*)sh)->getValidStates();
-  else
-  if(qobject_cast<VirtualSignalHead*>(sh)!=NULL)
-   states = ((DoubleTurnoutSignalHead*)sh)->getValidStates();
-  else
-  {
-   log->debug(tr("Missing cast for ")+ sh->metaObject()->className());
-   Q_ASSERT(false);
+  QVector<int> states = sh->getValidStates();
+  int state = sh->getAppearance();
+  for (int i = 0; i < states.length(); i++) {
+//                    if (log.isDebugEnabled()) log.debug("state= "+state+" states["+i+"]= "+states[i]);
+      if (state == states[i]) {
+          i++;
+          if (i >= states.length()) {
+              i = 0;
+          }
+          state = states[i];
+          break;
+      }
   }
-
-  int state;
-  if(qobject_cast<SingleTurnoutSignalHead*>(sh)!=NULL)
-   state = ((SingleTurnoutSignalHead*)sh)->getAppearance();
-  else
-  if(qobject_cast<DoubleTurnoutSignalHead*>(sh)!=NULL)
-   state = ((DoubleTurnoutSignalHead*)sh)->getAppearance();
-  else
-  if(qobject_cast<VirtualSignalHead*>(sh)!=NULL)
-   state = ((VirtualSignalHead*)sh)->getAppearance();
-  else
-  {
-   log->debug(tr("Missing cast for ")+ sh->metaObject()->className());
-   Q_ASSERT(false);
+  sh->setAppearance(state);
+  if (log->isDebugEnabled()) {
+      log->debug("Set state= " + state);
   }
-
-  for (int i=0; i<states.count(); i++)
-  {
-// if (log->isDebugEnabled()) log->debug("state= "+state+" states["+i+"]= "+states[i]);
-   if (state==states.at(i))
-   {
-    i++;
-    if (i >= states.count()) {
-        i = 0;
-    }
-    state = states.at(i);
-    break;
-   }
-  }
-  if(qobject_cast<SingleTurnoutSignalHead*>(sh)!=NULL)
-   ((SingleTurnoutSignalHead*)sh)->setAppearance(state);
-  else
-  if(qobject_cast<DoubleTurnoutSignalHead*>(sh)!=NULL)
-   ((DoubleTurnoutSignalHead*)sh)->setAppearance(state);
-  else
-  if(qobject_cast<VirtualSignalHead*>(sh)!=NULL)
-   ((VirtualSignalHead*)sh)->setAppearance(state);
-  else
-  {
-   log->debug(tr("Missing cast for ")+ sh->metaObject()->className());
-   Q_ASSERT(false);
-  }
-  if (log->isDebugEnabled()) log->debug("Set state= "+QString::number(state));
+  return;
  }
- return;
  default:
-  log->error("Click in mode "+clickMode);
+  log->error("Click in mode "+QString::number(clickMode));
  }
 }
 

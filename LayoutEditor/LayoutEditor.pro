@@ -451,7 +451,10 @@ SOURCES += \
     rpsmenu.cpp \
     blockcontentsicon.cpp \
     blockcontentsiconxml.cpp \
-    abstractmonframe.cpp
+    abstractmonframe.cpp \
+    multisensoricondialog.cpp \
+    displayframe.cpp \
+    portalitempanel.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -824,7 +827,10 @@ HEADERS += liblayouteditor_global.h \
     rpsmenu.h \
     blockcontentsicon.h \
     blockcontentsiconxml.h \
-    abstractmonframe.h
+    abstractmonframe.h \
+    multisensoricondialog.h \
+    displayframe.h \
+    portalitempanel.h
 
 
 FORMS    += \

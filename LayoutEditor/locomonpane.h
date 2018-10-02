@@ -29,6 +29,7 @@ public slots:
     /*public*/ /*synchronized*/ void message(LocoNetMessage* l);
 
 private:
+    /*private*/ QString systemConnectionPrefix;
     LocoNetSystemConnectionMemo* memo;
     LlnMon* llnmon;// = new Llnmon();
     Logger* log;

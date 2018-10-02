@@ -24,7 +24,7 @@
 }
 
 //@Override
-/*public*/ QJsonValue JsonConsistHttpService::doGet(QString type, QString name, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonConsistHttpService::doGet(QString /*type*/, QString name, QLocale locale) throw (JsonException) {
     if (!this->manager->isConsistManager()) {
         throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
@@ -62,7 +62,7 @@
  *                                        cannot be saved (code 500).
  */
 //@Override
-/*public*/ QJsonObject JsonConsistHttpService::doPost(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
+/*public*/ QJsonObject JsonConsistHttpService::doPost(QString /*type*/, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
     if (!this->manager->isConsistManager()) {
         throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
@@ -126,7 +126,7 @@
 }
 
 //@Override
-/*public*/ void JsonConsistHttpService::doDelete(QString type, QString name, QLocale locale) throw (JsonException) {
+/*public*/ void JsonConsistHttpService::doDelete(QString /*type*/, QString name, QLocale /*locale*/) throw (JsonException) {
     if (!this->manager->isConsistManager()) {
         throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }

@@ -1195,7 +1195,7 @@ YesButtonActionListener::YesButtonActionListener(JDialog* dlg, Section *s)
 
 void YesButtonActionListener::actionPerformed(ActionEvent* )
 {
- InstanceManager::sectionManagerInstance()->deregister(s);
+ ((SectionManager*)InstanceManager::getDefault("SectionManager"))->deregister(s);
  s->dispose();
  dlg->close();
 }

@@ -10,6 +10,7 @@ class ItemDialog : public JDialog
 public:
     //explicit ItemDialog(QWidget *parent = 0);
     /*public*/ ItemDialog(QString type, QString family, QString title, ItemPanel* parent, bool mode);
+ /*public*/ void dispose();
 
 signals:
 
@@ -20,7 +21,10 @@ protected:
     /*protected*/ QString    _family;
     /*protected*/ void sizeLocate();
     /*protected*/ QString getDialogType();
+    /*protected*/ virtual void closeDialogs();
+
 friend class FamilyItemPanel;
+friend class MultiSensorItemPanel;
 };
 
 #endif // ITEMDIALOG_H

@@ -114,9 +114,13 @@ SystemConsoleConfigPanelXml::SystemConsoleConfigPanelXml(QObject *parent) :
      result = false;
  }
 
+
  // As we've had a load request, register the system console with the
  // preference manager
- InstanceManager::configureManagerInstance()->registerPref(new SystemConsoleConfigPanel());
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+         if (cm != NULL) {
+             cm->registerPref(new SystemConsoleConfigPanel());
+         }
 
  return result;
 }
@@ -128,6 +132,6 @@ SystemConsoleConfigPanelXml::SystemConsoleConfigPanelXml(QObject *parent) :
  * @param o       ignored
  */
 //@Override
-/*public*/  void SystemConsoleConfigPanelXml::load(QDomElement element, QObject* o) throw(Exception){
+/*public*/  void SystemConsoleConfigPanelXml::load(QDomElement /*element*/, QObject* /*o*/) throw(Exception){
     Logger::error("Unexpected call of load(Element, Object)");
 }

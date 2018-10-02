@@ -1,6 +1,7 @@
 #ifndef SCRIPTENGINE_H
 #define SCRIPTENGINE_H
 #include <QObject>
+#include "reader.h"
 
 /**
  * <code>ScriptEngine</code> is the fundamental interface whose methods must be
@@ -21,7 +22,6 @@
  * @since 1.6
  */
 class Bindings;
-class Reader;
 class ScriptContext;
 class ScriptEngineFactory;
 /*public*/ /*interface*/ class ScriptEngine : public QObject

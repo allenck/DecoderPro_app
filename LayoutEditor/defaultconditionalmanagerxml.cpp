@@ -392,7 +392,7 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
  */
 /*protected*/ void DefaultConditionalManagerXml::replaceConditionalManager()
 {
- if (((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->metaObject()->className() == ("DefaultConditionalManager"))
+ if (QString(((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->metaObject()->className()) == ("DefaultConditionalManager"))
   return;
  // if old manager exists, remove it from configuration process
  if ((ConditionalManager*)InstanceManager::getNullableDefault("ConditionalManager") != NULL)

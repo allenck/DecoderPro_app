@@ -45,175 +45,175 @@ public:
     QCheckBox *chkLock0;
     DropJLabel *iconOff0;
     DropJLabel *iconOn0;
-    QRadioButton *radioButton_7;
+    QRadioButton *radioButton_0;
     QLabel *label_44;
     QLineEdit *lbl15;
     QCheckBox *chkLock15;
     DropJLabel *iconOff15;
     DropJLabel *iconOn15;
-    QRadioButton *radioButton_6;
+    QRadioButton *radioButton_15;
     QLabel *label_41;
     QLineEdit *lbl1;
     QCheckBox *chkLock1;
     DropJLabel *iconOff1;
     DropJLabel *iconOn1;
-    QRadioButton *radioButton_5;
+    QRadioButton *radioButton_1;
     QLabel *label_43;
     QLineEdit *lbl16;
     QCheckBox *chkLock16;
     DropJLabel *iconOff16;
     DropJLabel *iconOn16;
-    QRadioButton *radioButton_8;
+    QRadioButton *radioButton_16;
     QLabel *label_50;
     QLineEdit *lbl2;
     QCheckBox *chkLock2;
     DropJLabel *iconOff2;
     DropJLabel *iconOn2;
-    QRadioButton *radioButton_10;
+    QRadioButton *radioButton_2;
     QLabel *label_263;
     QLineEdit *lbl17;
     QCheckBox *checkBox_68;
     QLabel *label_250;
     QLabel *label_255;
-    QRadioButton *radioButton_69;
+    QRadioButton *radioButton_17;
     QLabel *label_83;
     QLineEdit *lbl3;
     QCheckBox *chkLock3;
     DropJLabel *iconOff3;
     DropJLabel *iconOn3;
-    QRadioButton *radioButton_17;
+    QRadioButton *radioButton_3;
     QLabel *label_256;
-    QLineEdit *lbl18_2;
+    QLineEdit *lbl18;
     QCheckBox *checkBox_69;
     QLabel *label_279;
     QLabel *label_280;
-    QRadioButton *radioButton_63;
+    QRadioButton *radioButton_18;
     QLabel *label_116;
     QLineEdit *lbl4;
     QCheckBox *chkLock4;
     DropJLabel *iconOff4;
     DropJLabel *iconOn4;
-    QRadioButton *radioButton_44;
+    QRadioButton *radioButton_4;
     QLabel *label_249;
-    QLineEdit *lbl19_2;
+    QLineEdit *lbl19;
     QCheckBox *checkBox_71;
     QLabel *label_278;
     QLabel *label_269;
-    QRadioButton *radioButton_71;
+    QRadioButton *radioButton_19;
     QLabel *label_119;
     QLineEdit *lbl5;
     QCheckBox *chkLock5;
     DropJLabel *iconOff5;
     DropJLabel *iconOn5;
-    QRadioButton *radioButton_40;
+    QRadioButton *radioButton_5;
     QLabel *label_262;
-    QLineEdit *lbl20_2;
+    QLineEdit *lbl20;
     QCheckBox *checkBox_67;
     QLabel *label_268;
     QLabel *label_258;
-    QRadioButton *radioButton_66;
+    QRadioButton *radioButton_20;
     QLabel *label_122;
     QLineEdit *lbl6;
     QCheckBox *chkLock6;
     DropJLabel *iconOff6;
     DropJLabel *iconOn6;
-    QRadioButton *radioButton_43;
+    QRadioButton *radioButton_6;
     QLabel *label_271;
-    QLineEdit *lbl21_2;
+    QLineEdit *lbl21;
     QCheckBox *checkBox_64;
     QLabel *label_252;
     QLabel *label_277;
-    QRadioButton *radioButton_65;
+    QRadioButton *radioButton_21;
     QLabel *label_125;
     QLineEdit *lbl7;
     QCheckBox *chkLock7;
     DropJLabel *iconOff7;
     DropJLabel *iconOn7;
-    QRadioButton *radioButton_39;
+    QRadioButton *radioButton_7;
     QLabel *label_275;
-    QLineEdit *lbl22_2;
+    QLineEdit *lbl22;
     QCheckBox *checkBox_73;
     QLabel *label_251;
     QLabel *label_273;
-    QRadioButton *radioButton_73;
+    QRadioButton *radioButton_22;
     QLabel *label_155;
     QLineEdit *lbl8;
     QCheckBox *chkLock8;
     DropJLabel *iconOff8;
     DropJLabel *iconOn8;
-    QRadioButton *radioButton_38;
+    QRadioButton *radioButton_8;
     QLabel *label_276;
-    QLineEdit *lbl23_2;
+    QLineEdit *lbl23;
     QCheckBox *checkBox_72;
     QLabel *label_281;
     QLabel *label_272;
-    QRadioButton *radioButton_72;
+    QRadioButton *radioButton_23;
     QLabel *label_151;
     QLineEdit *lbl9;
     QCheckBox *chkLock9;
     DropJLabel *iconOff9;
     DropJLabel *iconOn9;
-    QRadioButton *radioButton_34;
+    QRadioButton *radioButton_9;
     QLabel *label_270;
-    QLineEdit *lbl24_2;
+    QLineEdit *lbl24;
     QCheckBox *checkBox_63;
     QLabel *label_257;
     QLabel *label_261;
-    QRadioButton *radioButton_64;
+    QRadioButton *radioButton_24;
     QLabel *label_148;
     QLineEdit *lbl10;
     QCheckBox *chkLock10;
     DropJLabel *iconOff10;
     DropJLabel *iconOn10;
-    QRadioButton *radioButton_37;
+    QRadioButton *radioButton_10;
     QLabel *label_265;
-    QLineEdit *lbl25_2;
+    QLineEdit *lbl25;
     QCheckBox *checkBox_66;
     QLabel *label_267;
     QLabel *label_260;
-    QRadioButton *radioButton_68;
+    QRadioButton *radioButton_25;
     QLabel *label_166;
     QLineEdit *lbl11;
     QCheckBox *chkLock11;
     DropJLabel *iconOff11;
     DropJLabel *iconOn11;
-    QRadioButton *radioButton_42;
+    QRadioButton *radioButton_11;
     QLabel *label_247;
-    QLineEdit *lbl26_2;
+    QLineEdit *lbl26;
     QCheckBox *checkBox_74;
     QLabel *label_254;
     QLabel *label_248;
-    QRadioButton *radioButton_74;
+    QRadioButton *radioButton_26;
     QLabel *label_156;
     QLineEdit *lbl12;
     QCheckBox *chkLock12;
     DropJLabel *iconOff12;
     DropJLabel *iconOn12;
-    QRadioButton *radioButton_35;
+    QRadioButton *radioButton_12;
     QLabel *label_264;
-    QLineEdit *lbl27_2;
+    QLineEdit *lbl27;
     QCheckBox *checkBox_65;
     QLabel *label_266;
     QLabel *label_259;
-    QRadioButton *radioButton_67;
+    QRadioButton *radioButton_27;
     QLabel *label_165;
     QLineEdit *lbl13;
     QCheckBox *chkLock13;
     DropJLabel *iconOff13;
     DropJLabel *iconOn13;
-    QRadioButton *radioButton_41;
+    QRadioButton *radioButton_13;
     QLabel *label_282;
-    QLineEdit *lbl28_2;
+    QLineEdit *lbl28;
     QCheckBox *checkBox_70;
     QLabel *label_253;
     QLabel *label_274;
-    QRadioButton *radioButton_70;
+    QRadioButton *radioButton_28;
     QLabel *label_157;
     QLineEdit *lbl14;
     QCheckBox *chkLock14;
     DropJLabel *iconOff14;
     DropJLabel *iconOn14;
-    QRadioButton *radioButton_36;
+    QRadioButton *radioButton_14;
 
     void setupUi(QWidget *FunctionLabelsPane)
     {
@@ -341,10 +341,10 @@ public:
 
         gridLayout->addWidget(iconOn0, 1, 4, 1, 1);
 
-        radioButton_7 = new QRadioButton(FunctionLabelsPane);
-        radioButton_7->setObjectName(QStringLiteral("radioButton_7"));
+        radioButton_0 = new QRadioButton(FunctionLabelsPane);
+        radioButton_0->setObjectName(QStringLiteral("radioButton_0"));
 
-        gridLayout->addWidget(radioButton_7, 1, 5, 1, 1);
+        gridLayout->addWidget(radioButton_0, 1, 5, 1, 1);
 
         label_44 = new QLabel(FunctionLabelsPane);
         label_44->setObjectName(QStringLiteral("label_44"));
@@ -373,10 +373,10 @@ public:
 
         gridLayout->addWidget(iconOn15, 1, 10, 1, 1);
 
-        radioButton_6 = new QRadioButton(FunctionLabelsPane);
-        radioButton_6->setObjectName(QStringLiteral("radioButton_6"));
+        radioButton_15 = new QRadioButton(FunctionLabelsPane);
+        radioButton_15->setObjectName(QStringLiteral("radioButton_15"));
 
-        gridLayout->addWidget(radioButton_6, 1, 11, 1, 1);
+        gridLayout->addWidget(radioButton_15, 1, 11, 1, 1);
 
         label_41 = new QLabel(FunctionLabelsPane);
         label_41->setObjectName(QStringLiteral("label_41"));
@@ -405,10 +405,10 @@ public:
 
         gridLayout->addWidget(iconOn1, 2, 4, 1, 1);
 
-        radioButton_5 = new QRadioButton(FunctionLabelsPane);
-        radioButton_5->setObjectName(QStringLiteral("radioButton_5"));
+        radioButton_1 = new QRadioButton(FunctionLabelsPane);
+        radioButton_1->setObjectName(QStringLiteral("radioButton_1"));
 
-        gridLayout->addWidget(radioButton_5, 2, 5, 1, 1);
+        gridLayout->addWidget(radioButton_1, 2, 5, 1, 1);
 
         label_43 = new QLabel(FunctionLabelsPane);
         label_43->setObjectName(QStringLiteral("label_43"));
@@ -437,10 +437,10 @@ public:
 
         gridLayout->addWidget(iconOn16, 2, 10, 1, 1);
 
-        radioButton_8 = new QRadioButton(FunctionLabelsPane);
-        radioButton_8->setObjectName(QStringLiteral("radioButton_8"));
+        radioButton_16 = new QRadioButton(FunctionLabelsPane);
+        radioButton_16->setObjectName(QStringLiteral("radioButton_16"));
 
-        gridLayout->addWidget(radioButton_8, 2, 11, 1, 1);
+        gridLayout->addWidget(radioButton_16, 2, 11, 1, 1);
 
         label_50 = new QLabel(FunctionLabelsPane);
         label_50->setObjectName(QStringLiteral("label_50"));
@@ -469,10 +469,10 @@ public:
 
         gridLayout->addWidget(iconOn2, 3, 4, 1, 1);
 
-        radioButton_10 = new QRadioButton(FunctionLabelsPane);
-        radioButton_10->setObjectName(QStringLiteral("radioButton_10"));
+        radioButton_2 = new QRadioButton(FunctionLabelsPane);
+        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
 
-        gridLayout->addWidget(radioButton_10, 3, 5, 1, 1);
+        gridLayout->addWidget(radioButton_2, 3, 5, 1, 1);
 
         label_263 = new QLabel(FunctionLabelsPane);
         label_263->setObjectName(QStringLiteral("label_263"));
@@ -501,10 +501,10 @@ public:
 
         gridLayout->addWidget(label_255, 3, 10, 1, 1);
 
-        radioButton_69 = new QRadioButton(FunctionLabelsPane);
-        radioButton_69->setObjectName(QStringLiteral("radioButton_69"));
+        radioButton_17 = new QRadioButton(FunctionLabelsPane);
+        radioButton_17->setObjectName(QStringLiteral("radioButton_17"));
 
-        gridLayout->addWidget(radioButton_69, 3, 11, 1, 1);
+        gridLayout->addWidget(radioButton_17, 3, 11, 1, 1);
 
         label_83 = new QLabel(FunctionLabelsPane);
         label_83->setObjectName(QStringLiteral("label_83"));
@@ -533,20 +533,20 @@ public:
 
         gridLayout->addWidget(iconOn3, 4, 4, 1, 1);
 
-        radioButton_17 = new QRadioButton(FunctionLabelsPane);
-        radioButton_17->setObjectName(QStringLiteral("radioButton_17"));
+        radioButton_3 = new QRadioButton(FunctionLabelsPane);
+        radioButton_3->setObjectName(QStringLiteral("radioButton_3"));
 
-        gridLayout->addWidget(radioButton_17, 4, 5, 1, 1);
+        gridLayout->addWidget(radioButton_3, 4, 5, 1, 1);
 
         label_256 = new QLabel(FunctionLabelsPane);
         label_256->setObjectName(QStringLiteral("label_256"));
 
         gridLayout->addWidget(label_256, 4, 6, 1, 1);
 
-        lbl18_2 = new QLineEdit(FunctionLabelsPane);
-        lbl18_2->setObjectName(QStringLiteral("lbl18_2"));
+        lbl18 = new QLineEdit(FunctionLabelsPane);
+        lbl18->setObjectName(QStringLiteral("lbl18"));
 
-        gridLayout->addWidget(lbl18_2, 4, 7, 1, 1);
+        gridLayout->addWidget(lbl18, 4, 7, 1, 1);
 
         checkBox_69 = new QCheckBox(FunctionLabelsPane);
         checkBox_69->setObjectName(QStringLiteral("checkBox_69"));
@@ -565,10 +565,10 @@ public:
 
         gridLayout->addWidget(label_280, 4, 10, 1, 1);
 
-        radioButton_63 = new QRadioButton(FunctionLabelsPane);
-        radioButton_63->setObjectName(QStringLiteral("radioButton_63"));
+        radioButton_18 = new QRadioButton(FunctionLabelsPane);
+        radioButton_18->setObjectName(QStringLiteral("radioButton_18"));
 
-        gridLayout->addWidget(radioButton_63, 4, 11, 1, 1);
+        gridLayout->addWidget(radioButton_18, 4, 11, 1, 1);
 
         label_116 = new QLabel(FunctionLabelsPane);
         label_116->setObjectName(QStringLiteral("label_116"));
@@ -597,20 +597,20 @@ public:
 
         gridLayout->addWidget(iconOn4, 5, 4, 1, 1);
 
-        radioButton_44 = new QRadioButton(FunctionLabelsPane);
-        radioButton_44->setObjectName(QStringLiteral("radioButton_44"));
+        radioButton_4 = new QRadioButton(FunctionLabelsPane);
+        radioButton_4->setObjectName(QStringLiteral("radioButton_4"));
 
-        gridLayout->addWidget(radioButton_44, 5, 5, 1, 1);
+        gridLayout->addWidget(radioButton_4, 5, 5, 1, 1);
 
         label_249 = new QLabel(FunctionLabelsPane);
         label_249->setObjectName(QStringLiteral("label_249"));
 
         gridLayout->addWidget(label_249, 5, 6, 1, 1);
 
-        lbl19_2 = new QLineEdit(FunctionLabelsPane);
-        lbl19_2->setObjectName(QStringLiteral("lbl19_2"));
+        lbl19 = new QLineEdit(FunctionLabelsPane);
+        lbl19->setObjectName(QStringLiteral("lbl19"));
 
-        gridLayout->addWidget(lbl19_2, 5, 7, 1, 1);
+        gridLayout->addWidget(lbl19, 5, 7, 1, 1);
 
         checkBox_71 = new QCheckBox(FunctionLabelsPane);
         checkBox_71->setObjectName(QStringLiteral("checkBox_71"));
@@ -629,10 +629,10 @@ public:
 
         gridLayout->addWidget(label_269, 5, 10, 1, 1);
 
-        radioButton_71 = new QRadioButton(FunctionLabelsPane);
-        radioButton_71->setObjectName(QStringLiteral("radioButton_71"));
+        radioButton_19 = new QRadioButton(FunctionLabelsPane);
+        radioButton_19->setObjectName(QStringLiteral("radioButton_19"));
 
-        gridLayout->addWidget(radioButton_71, 5, 11, 1, 1);
+        gridLayout->addWidget(radioButton_19, 5, 11, 1, 1);
 
         label_119 = new QLabel(FunctionLabelsPane);
         label_119->setObjectName(QStringLiteral("label_119"));
@@ -661,20 +661,20 @@ public:
 
         gridLayout->addWidget(iconOn5, 6, 4, 1, 1);
 
-        radioButton_40 = new QRadioButton(FunctionLabelsPane);
-        radioButton_40->setObjectName(QStringLiteral("radioButton_40"));
+        radioButton_5 = new QRadioButton(FunctionLabelsPane);
+        radioButton_5->setObjectName(QStringLiteral("radioButton_5"));
 
-        gridLayout->addWidget(radioButton_40, 6, 5, 1, 1);
+        gridLayout->addWidget(radioButton_5, 6, 5, 1, 1);
 
         label_262 = new QLabel(FunctionLabelsPane);
         label_262->setObjectName(QStringLiteral("label_262"));
 
         gridLayout->addWidget(label_262, 6, 6, 1, 1);
 
-        lbl20_2 = new QLineEdit(FunctionLabelsPane);
-        lbl20_2->setObjectName(QStringLiteral("lbl20_2"));
+        lbl20 = new QLineEdit(FunctionLabelsPane);
+        lbl20->setObjectName(QStringLiteral("lbl20"));
 
-        gridLayout->addWidget(lbl20_2, 6, 7, 1, 1);
+        gridLayout->addWidget(lbl20, 6, 7, 1, 1);
 
         checkBox_67 = new QCheckBox(FunctionLabelsPane);
         checkBox_67->setObjectName(QStringLiteral("checkBox_67"));
@@ -693,10 +693,10 @@ public:
 
         gridLayout->addWidget(label_258, 6, 10, 1, 1);
 
-        radioButton_66 = new QRadioButton(FunctionLabelsPane);
-        radioButton_66->setObjectName(QStringLiteral("radioButton_66"));
+        radioButton_20 = new QRadioButton(FunctionLabelsPane);
+        radioButton_20->setObjectName(QStringLiteral("radioButton_20"));
 
-        gridLayout->addWidget(radioButton_66, 6, 11, 1, 1);
+        gridLayout->addWidget(radioButton_20, 6, 11, 1, 1);
 
         label_122 = new QLabel(FunctionLabelsPane);
         label_122->setObjectName(QStringLiteral("label_122"));
@@ -725,20 +725,20 @@ public:
 
         gridLayout->addWidget(iconOn6, 7, 4, 1, 1);
 
-        radioButton_43 = new QRadioButton(FunctionLabelsPane);
-        radioButton_43->setObjectName(QStringLiteral("radioButton_43"));
+        radioButton_6 = new QRadioButton(FunctionLabelsPane);
+        radioButton_6->setObjectName(QStringLiteral("radioButton_6"));
 
-        gridLayout->addWidget(radioButton_43, 7, 5, 1, 1);
+        gridLayout->addWidget(radioButton_6, 7, 5, 1, 1);
 
         label_271 = new QLabel(FunctionLabelsPane);
         label_271->setObjectName(QStringLiteral("label_271"));
 
         gridLayout->addWidget(label_271, 7, 6, 1, 1);
 
-        lbl21_2 = new QLineEdit(FunctionLabelsPane);
-        lbl21_2->setObjectName(QStringLiteral("lbl21_2"));
+        lbl21 = new QLineEdit(FunctionLabelsPane);
+        lbl21->setObjectName(QStringLiteral("lbl21"));
 
-        gridLayout->addWidget(lbl21_2, 7, 7, 1, 1);
+        gridLayout->addWidget(lbl21, 7, 7, 1, 1);
 
         checkBox_64 = new QCheckBox(FunctionLabelsPane);
         checkBox_64->setObjectName(QStringLiteral("checkBox_64"));
@@ -757,10 +757,10 @@ public:
 
         gridLayout->addWidget(label_277, 7, 10, 1, 1);
 
-        radioButton_65 = new QRadioButton(FunctionLabelsPane);
-        radioButton_65->setObjectName(QStringLiteral("radioButton_65"));
+        radioButton_21 = new QRadioButton(FunctionLabelsPane);
+        radioButton_21->setObjectName(QStringLiteral("radioButton_21"));
 
-        gridLayout->addWidget(radioButton_65, 7, 11, 1, 1);
+        gridLayout->addWidget(radioButton_21, 7, 11, 1, 1);
 
         label_125 = new QLabel(FunctionLabelsPane);
         label_125->setObjectName(QStringLiteral("label_125"));
@@ -789,20 +789,20 @@ public:
 
         gridLayout->addWidget(iconOn7, 8, 4, 1, 1);
 
-        radioButton_39 = new QRadioButton(FunctionLabelsPane);
-        radioButton_39->setObjectName(QStringLiteral("radioButton_39"));
+        radioButton_7 = new QRadioButton(FunctionLabelsPane);
+        radioButton_7->setObjectName(QStringLiteral("radioButton_7"));
 
-        gridLayout->addWidget(radioButton_39, 8, 5, 1, 1);
+        gridLayout->addWidget(radioButton_7, 8, 5, 1, 1);
 
         label_275 = new QLabel(FunctionLabelsPane);
         label_275->setObjectName(QStringLiteral("label_275"));
 
         gridLayout->addWidget(label_275, 8, 6, 1, 1);
 
-        lbl22_2 = new QLineEdit(FunctionLabelsPane);
-        lbl22_2->setObjectName(QStringLiteral("lbl22_2"));
+        lbl22 = new QLineEdit(FunctionLabelsPane);
+        lbl22->setObjectName(QStringLiteral("lbl22"));
 
-        gridLayout->addWidget(lbl22_2, 8, 7, 1, 1);
+        gridLayout->addWidget(lbl22, 8, 7, 1, 1);
 
         checkBox_73 = new QCheckBox(FunctionLabelsPane);
         checkBox_73->setObjectName(QStringLiteral("checkBox_73"));
@@ -821,10 +821,10 @@ public:
 
         gridLayout->addWidget(label_273, 8, 10, 1, 1);
 
-        radioButton_73 = new QRadioButton(FunctionLabelsPane);
-        radioButton_73->setObjectName(QStringLiteral("radioButton_73"));
+        radioButton_22 = new QRadioButton(FunctionLabelsPane);
+        radioButton_22->setObjectName(QStringLiteral("radioButton_22"));
 
-        gridLayout->addWidget(radioButton_73, 8, 11, 1, 1);
+        gridLayout->addWidget(radioButton_22, 8, 11, 1, 1);
 
         label_155 = new QLabel(FunctionLabelsPane);
         label_155->setObjectName(QStringLiteral("label_155"));
@@ -853,20 +853,20 @@ public:
 
         gridLayout->addWidget(iconOn8, 9, 4, 1, 1);
 
-        radioButton_38 = new QRadioButton(FunctionLabelsPane);
-        radioButton_38->setObjectName(QStringLiteral("radioButton_38"));
+        radioButton_8 = new QRadioButton(FunctionLabelsPane);
+        radioButton_8->setObjectName(QStringLiteral("radioButton_8"));
 
-        gridLayout->addWidget(radioButton_38, 9, 5, 1, 1);
+        gridLayout->addWidget(radioButton_8, 9, 5, 1, 1);
 
         label_276 = new QLabel(FunctionLabelsPane);
         label_276->setObjectName(QStringLiteral("label_276"));
 
         gridLayout->addWidget(label_276, 9, 6, 1, 1);
 
-        lbl23_2 = new QLineEdit(FunctionLabelsPane);
-        lbl23_2->setObjectName(QStringLiteral("lbl23_2"));
+        lbl23 = new QLineEdit(FunctionLabelsPane);
+        lbl23->setObjectName(QStringLiteral("lbl23"));
 
-        gridLayout->addWidget(lbl23_2, 9, 7, 1, 1);
+        gridLayout->addWidget(lbl23, 9, 7, 1, 1);
 
         checkBox_72 = new QCheckBox(FunctionLabelsPane);
         checkBox_72->setObjectName(QStringLiteral("checkBox_72"));
@@ -885,10 +885,10 @@ public:
 
         gridLayout->addWidget(label_272, 9, 10, 1, 1);
 
-        radioButton_72 = new QRadioButton(FunctionLabelsPane);
-        radioButton_72->setObjectName(QStringLiteral("radioButton_72"));
+        radioButton_23 = new QRadioButton(FunctionLabelsPane);
+        radioButton_23->setObjectName(QStringLiteral("radioButton_23"));
 
-        gridLayout->addWidget(radioButton_72, 9, 11, 1, 1);
+        gridLayout->addWidget(radioButton_23, 9, 11, 1, 1);
 
         label_151 = new QLabel(FunctionLabelsPane);
         label_151->setObjectName(QStringLiteral("label_151"));
@@ -917,20 +917,20 @@ public:
 
         gridLayout->addWidget(iconOn9, 10, 4, 1, 1);
 
-        radioButton_34 = new QRadioButton(FunctionLabelsPane);
-        radioButton_34->setObjectName(QStringLiteral("radioButton_34"));
+        radioButton_9 = new QRadioButton(FunctionLabelsPane);
+        radioButton_9->setObjectName(QStringLiteral("radioButton_9"));
 
-        gridLayout->addWidget(radioButton_34, 10, 5, 1, 1);
+        gridLayout->addWidget(radioButton_9, 10, 5, 1, 1);
 
         label_270 = new QLabel(FunctionLabelsPane);
         label_270->setObjectName(QStringLiteral("label_270"));
 
         gridLayout->addWidget(label_270, 10, 6, 1, 1);
 
-        lbl24_2 = new QLineEdit(FunctionLabelsPane);
-        lbl24_2->setObjectName(QStringLiteral("lbl24_2"));
+        lbl24 = new QLineEdit(FunctionLabelsPane);
+        lbl24->setObjectName(QStringLiteral("lbl24"));
 
-        gridLayout->addWidget(lbl24_2, 10, 7, 1, 1);
+        gridLayout->addWidget(lbl24, 10, 7, 1, 1);
 
         checkBox_63 = new QCheckBox(FunctionLabelsPane);
         checkBox_63->setObjectName(QStringLiteral("checkBox_63"));
@@ -949,10 +949,10 @@ public:
 
         gridLayout->addWidget(label_261, 10, 10, 1, 1);
 
-        radioButton_64 = new QRadioButton(FunctionLabelsPane);
-        radioButton_64->setObjectName(QStringLiteral("radioButton_64"));
+        radioButton_24 = new QRadioButton(FunctionLabelsPane);
+        radioButton_24->setObjectName(QStringLiteral("radioButton_24"));
 
-        gridLayout->addWidget(radioButton_64, 10, 11, 1, 1);
+        gridLayout->addWidget(radioButton_24, 10, 11, 1, 1);
 
         label_148 = new QLabel(FunctionLabelsPane);
         label_148->setObjectName(QStringLiteral("label_148"));
@@ -981,20 +981,20 @@ public:
 
         gridLayout->addWidget(iconOn10, 11, 4, 1, 1);
 
-        radioButton_37 = new QRadioButton(FunctionLabelsPane);
-        radioButton_37->setObjectName(QStringLiteral("radioButton_37"));
+        radioButton_10 = new QRadioButton(FunctionLabelsPane);
+        radioButton_10->setObjectName(QStringLiteral("radioButton_10"));
 
-        gridLayout->addWidget(radioButton_37, 11, 5, 1, 1);
+        gridLayout->addWidget(radioButton_10, 11, 5, 1, 1);
 
         label_265 = new QLabel(FunctionLabelsPane);
         label_265->setObjectName(QStringLiteral("label_265"));
 
         gridLayout->addWidget(label_265, 11, 6, 1, 1);
 
-        lbl25_2 = new QLineEdit(FunctionLabelsPane);
-        lbl25_2->setObjectName(QStringLiteral("lbl25_2"));
+        lbl25 = new QLineEdit(FunctionLabelsPane);
+        lbl25->setObjectName(QStringLiteral("lbl25"));
 
-        gridLayout->addWidget(lbl25_2, 11, 7, 1, 1);
+        gridLayout->addWidget(lbl25, 11, 7, 1, 1);
 
         checkBox_66 = new QCheckBox(FunctionLabelsPane);
         checkBox_66->setObjectName(QStringLiteral("checkBox_66"));
@@ -1013,10 +1013,10 @@ public:
 
         gridLayout->addWidget(label_260, 11, 10, 1, 1);
 
-        radioButton_68 = new QRadioButton(FunctionLabelsPane);
-        radioButton_68->setObjectName(QStringLiteral("radioButton_68"));
+        radioButton_25 = new QRadioButton(FunctionLabelsPane);
+        radioButton_25->setObjectName(QStringLiteral("radioButton_25"));
 
-        gridLayout->addWidget(radioButton_68, 11, 11, 1, 1);
+        gridLayout->addWidget(radioButton_25, 11, 11, 1, 1);
 
         label_166 = new QLabel(FunctionLabelsPane);
         label_166->setObjectName(QStringLiteral("label_166"));
@@ -1045,20 +1045,20 @@ public:
 
         gridLayout->addWidget(iconOn11, 12, 4, 1, 1);
 
-        radioButton_42 = new QRadioButton(FunctionLabelsPane);
-        radioButton_42->setObjectName(QStringLiteral("radioButton_42"));
+        radioButton_11 = new QRadioButton(FunctionLabelsPane);
+        radioButton_11->setObjectName(QStringLiteral("radioButton_11"));
 
-        gridLayout->addWidget(radioButton_42, 12, 5, 1, 1);
+        gridLayout->addWidget(radioButton_11, 12, 5, 1, 1);
 
         label_247 = new QLabel(FunctionLabelsPane);
         label_247->setObjectName(QStringLiteral("label_247"));
 
         gridLayout->addWidget(label_247, 12, 6, 1, 1);
 
-        lbl26_2 = new QLineEdit(FunctionLabelsPane);
-        lbl26_2->setObjectName(QStringLiteral("lbl26_2"));
+        lbl26 = new QLineEdit(FunctionLabelsPane);
+        lbl26->setObjectName(QStringLiteral("lbl26"));
 
-        gridLayout->addWidget(lbl26_2, 12, 7, 1, 1);
+        gridLayout->addWidget(lbl26, 12, 7, 1, 1);
 
         checkBox_74 = new QCheckBox(FunctionLabelsPane);
         checkBox_74->setObjectName(QStringLiteral("checkBox_74"));
@@ -1077,10 +1077,10 @@ public:
 
         gridLayout->addWidget(label_248, 12, 10, 1, 1);
 
-        radioButton_74 = new QRadioButton(FunctionLabelsPane);
-        radioButton_74->setObjectName(QStringLiteral("radioButton_74"));
+        radioButton_26 = new QRadioButton(FunctionLabelsPane);
+        radioButton_26->setObjectName(QStringLiteral("radioButton_26"));
 
-        gridLayout->addWidget(radioButton_74, 12, 11, 1, 1);
+        gridLayout->addWidget(radioButton_26, 12, 11, 1, 1);
 
         label_156 = new QLabel(FunctionLabelsPane);
         label_156->setObjectName(QStringLiteral("label_156"));
@@ -1109,20 +1109,20 @@ public:
 
         gridLayout->addWidget(iconOn12, 13, 4, 1, 1);
 
-        radioButton_35 = new QRadioButton(FunctionLabelsPane);
-        radioButton_35->setObjectName(QStringLiteral("radioButton_35"));
+        radioButton_12 = new QRadioButton(FunctionLabelsPane);
+        radioButton_12->setObjectName(QStringLiteral("radioButton_12"));
 
-        gridLayout->addWidget(radioButton_35, 13, 5, 1, 1);
+        gridLayout->addWidget(radioButton_12, 13, 5, 1, 1);
 
         label_264 = new QLabel(FunctionLabelsPane);
         label_264->setObjectName(QStringLiteral("label_264"));
 
         gridLayout->addWidget(label_264, 13, 6, 1, 1);
 
-        lbl27_2 = new QLineEdit(FunctionLabelsPane);
-        lbl27_2->setObjectName(QStringLiteral("lbl27_2"));
+        lbl27 = new QLineEdit(FunctionLabelsPane);
+        lbl27->setObjectName(QStringLiteral("lbl27"));
 
-        gridLayout->addWidget(lbl27_2, 13, 7, 1, 1);
+        gridLayout->addWidget(lbl27, 13, 7, 1, 1);
 
         checkBox_65 = new QCheckBox(FunctionLabelsPane);
         checkBox_65->setObjectName(QStringLiteral("checkBox_65"));
@@ -1141,10 +1141,10 @@ public:
 
         gridLayout->addWidget(label_259, 13, 10, 1, 1);
 
-        radioButton_67 = new QRadioButton(FunctionLabelsPane);
-        radioButton_67->setObjectName(QStringLiteral("radioButton_67"));
+        radioButton_27 = new QRadioButton(FunctionLabelsPane);
+        radioButton_27->setObjectName(QStringLiteral("radioButton_27"));
 
-        gridLayout->addWidget(radioButton_67, 13, 11, 1, 1);
+        gridLayout->addWidget(radioButton_27, 13, 11, 1, 1);
 
         label_165 = new QLabel(FunctionLabelsPane);
         label_165->setObjectName(QStringLiteral("label_165"));
@@ -1173,20 +1173,20 @@ public:
 
         gridLayout->addWidget(iconOn13, 14, 4, 1, 1);
 
-        radioButton_41 = new QRadioButton(FunctionLabelsPane);
-        radioButton_41->setObjectName(QStringLiteral("radioButton_41"));
+        radioButton_13 = new QRadioButton(FunctionLabelsPane);
+        radioButton_13->setObjectName(QStringLiteral("radioButton_13"));
 
-        gridLayout->addWidget(radioButton_41, 14, 5, 1, 1);
+        gridLayout->addWidget(radioButton_13, 14, 5, 1, 1);
 
         label_282 = new QLabel(FunctionLabelsPane);
         label_282->setObjectName(QStringLiteral("label_282"));
 
         gridLayout->addWidget(label_282, 14, 6, 1, 1);
 
-        lbl28_2 = new QLineEdit(FunctionLabelsPane);
-        lbl28_2->setObjectName(QStringLiteral("lbl28_2"));
+        lbl28 = new QLineEdit(FunctionLabelsPane);
+        lbl28->setObjectName(QStringLiteral("lbl28"));
 
-        gridLayout->addWidget(lbl28_2, 14, 7, 1, 1);
+        gridLayout->addWidget(lbl28, 14, 7, 1, 1);
 
         checkBox_70 = new QCheckBox(FunctionLabelsPane);
         checkBox_70->setObjectName(QStringLiteral("checkBox_70"));
@@ -1205,10 +1205,10 @@ public:
 
         gridLayout->addWidget(label_274, 14, 10, 1, 1);
 
-        radioButton_70 = new QRadioButton(FunctionLabelsPane);
-        radioButton_70->setObjectName(QStringLiteral("radioButton_70"));
+        radioButton_28 = new QRadioButton(FunctionLabelsPane);
+        radioButton_28->setObjectName(QStringLiteral("radioButton_28"));
 
-        gridLayout->addWidget(radioButton_70, 14, 11, 1, 1);
+        gridLayout->addWidget(radioButton_28, 14, 11, 1, 1);
 
         label_157 = new QLabel(FunctionLabelsPane);
         label_157->setObjectName(QStringLiteral("label_157"));
@@ -1237,10 +1237,10 @@ public:
 
         gridLayout->addWidget(iconOn14, 15, 4, 1, 1);
 
-        radioButton_36 = new QRadioButton(FunctionLabelsPane);
-        radioButton_36->setObjectName(QStringLiteral("radioButton_36"));
+        radioButton_14 = new QRadioButton(FunctionLabelsPane);
+        radioButton_14->setObjectName(QStringLiteral("radioButton_14"));
 
-        gridLayout->addWidget(radioButton_36, 15, 5, 1, 1);
+        gridLayout->addWidget(radioButton_14, 15, 5, 1, 1);
 
 
         retranslateUi(FunctionLabelsPane);
@@ -1273,148 +1273,148 @@ public:
         iconOn0->setToolTip(QApplication::translate("FunctionLabelsPane", "<html><head/><body><p>Image for activated function button</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         iconOn0->setText(QString());
-        radioButton_7->setText(QString());
+        radioButton_0->setText(QString());
         label_44->setText(QApplication::translate("FunctionLabelsPane", "15", Q_NULLPTR));
         chkLock15->setText(QString());
         iconOff15->setText(QString());
         iconOn15->setText(QString());
-        radioButton_6->setText(QString());
+        radioButton_15->setText(QString());
         label_41->setText(QApplication::translate("FunctionLabelsPane", "1", Q_NULLPTR));
         chkLock1->setText(QString());
         iconOff1->setText(QString());
         iconOn1->setText(QString());
-        radioButton_5->setText(QString());
+        radioButton_1->setText(QString());
         label_43->setText(QApplication::translate("FunctionLabelsPane", "16", Q_NULLPTR));
         chkLock16->setText(QString());
         iconOff16->setText(QString());
         iconOn16->setText(QString());
-        radioButton_8->setText(QString());
+        radioButton_16->setText(QString());
         label_50->setText(QApplication::translate("FunctionLabelsPane", "2", Q_NULLPTR));
         chkLock2->setText(QString());
         iconOff2->setText(QString());
         iconOn2->setText(QString());
-        radioButton_10->setText(QString());
+        radioButton_2->setText(QString());
         label_263->setText(QApplication::translate("FunctionLabelsPane", "17", Q_NULLPTR));
         checkBox_68->setText(QString());
         label_250->setText(QString());
         label_255->setText(QString());
-        radioButton_69->setText(QString());
+        radioButton_17->setText(QString());
         label_83->setText(QApplication::translate("FunctionLabelsPane", "3", Q_NULLPTR));
         chkLock3->setText(QString());
         iconOff3->setText(QString());
         iconOn3->setText(QString());
-        radioButton_17->setText(QString());
+        radioButton_3->setText(QString());
         label_256->setText(QApplication::translate("FunctionLabelsPane", "18", Q_NULLPTR));
         checkBox_69->setText(QString());
         label_279->setText(QString());
         label_280->setText(QString());
-        radioButton_63->setText(QString());
+        radioButton_18->setText(QString());
         label_116->setText(QApplication::translate("FunctionLabelsPane", "4", Q_NULLPTR));
         chkLock4->setText(QString());
         iconOff4->setText(QString());
         iconOn4->setText(QString());
-        radioButton_44->setText(QString());
+        radioButton_4->setText(QString());
         label_249->setText(QApplication::translate("FunctionLabelsPane", "19", Q_NULLPTR));
         checkBox_71->setText(QString());
         label_278->setText(QString());
         label_269->setText(QString());
-        radioButton_71->setText(QString());
+        radioButton_19->setText(QString());
         label_119->setText(QApplication::translate("FunctionLabelsPane", "5", Q_NULLPTR));
         chkLock5->setText(QString());
         iconOff5->setText(QString());
         iconOn5->setText(QString());
-        radioButton_40->setText(QString());
+        radioButton_5->setText(QString());
         label_262->setText(QApplication::translate("FunctionLabelsPane", "20", Q_NULLPTR));
         checkBox_67->setText(QString());
         label_268->setText(QString());
         label_258->setText(QString());
-        radioButton_66->setText(QString());
+        radioButton_20->setText(QString());
         label_122->setText(QApplication::translate("FunctionLabelsPane", "6", Q_NULLPTR));
         chkLock6->setText(QString());
         iconOff6->setText(QString());
         iconOn6->setText(QString());
-        radioButton_43->setText(QString());
+        radioButton_6->setText(QString());
         label_271->setText(QApplication::translate("FunctionLabelsPane", "21", Q_NULLPTR));
-        lbl21_2->setText(QString());
+        lbl21->setText(QString());
         checkBox_64->setText(QString());
         label_252->setText(QString());
         label_277->setText(QString());
-        radioButton_65->setText(QString());
+        radioButton_21->setText(QString());
         label_125->setText(QApplication::translate("FunctionLabelsPane", "7", Q_NULLPTR));
         chkLock7->setText(QString());
         iconOff7->setText(QString());
         iconOn7->setText(QString());
-        radioButton_39->setText(QString());
+        radioButton_7->setText(QString());
         label_275->setText(QApplication::translate("FunctionLabelsPane", "22", Q_NULLPTR));
         checkBox_73->setText(QString());
         label_251->setText(QString());
         label_273->setText(QString());
-        radioButton_73->setText(QString());
+        radioButton_22->setText(QString());
         label_155->setText(QApplication::translate("FunctionLabelsPane", "8", Q_NULLPTR));
         chkLock8->setText(QString());
         iconOff8->setText(QString());
         iconOn8->setText(QString());
-        radioButton_38->setText(QString());
+        radioButton_8->setText(QString());
         label_276->setText(QApplication::translate("FunctionLabelsPane", "23", Q_NULLPTR));
         checkBox_72->setText(QString());
         label_281->setText(QString());
         label_272->setText(QString());
-        radioButton_72->setText(QString());
+        radioButton_23->setText(QString());
         label_151->setText(QApplication::translate("FunctionLabelsPane", "9", Q_NULLPTR));
         chkLock9->setText(QString());
         iconOff9->setText(QString());
         iconOn9->setText(QString());
-        radioButton_34->setText(QString());
+        radioButton_9->setText(QString());
         label_270->setText(QApplication::translate("FunctionLabelsPane", "24", Q_NULLPTR));
         checkBox_63->setText(QString());
         label_257->setText(QString());
         label_261->setText(QString());
-        radioButton_64->setText(QString());
+        radioButton_24->setText(QString());
         label_148->setText(QApplication::translate("FunctionLabelsPane", "10", Q_NULLPTR));
         chkLock10->setText(QString());
         iconOff10->setText(QString());
         iconOn10->setText(QString());
-        radioButton_37->setText(QString());
+        radioButton_10->setText(QString());
         label_265->setText(QApplication::translate("FunctionLabelsPane", "25", Q_NULLPTR));
         checkBox_66->setText(QString());
         label_267->setText(QString());
         label_260->setText(QString());
-        radioButton_68->setText(QString());
+        radioButton_25->setText(QString());
         label_166->setText(QApplication::translate("FunctionLabelsPane", "11", Q_NULLPTR));
         chkLock11->setText(QString());
         iconOff11->setText(QString());
         iconOn11->setText(QString());
-        radioButton_42->setText(QString());
+        radioButton_11->setText(QString());
         label_247->setText(QApplication::translate("FunctionLabelsPane", "26", Q_NULLPTR));
         checkBox_74->setText(QString());
         label_254->setText(QString());
         label_248->setText(QString());
-        radioButton_74->setText(QString());
+        radioButton_26->setText(QString());
         label_156->setText(QApplication::translate("FunctionLabelsPane", "12", Q_NULLPTR));
         chkLock12->setText(QString());
         iconOff12->setText(QString());
         iconOn12->setText(QString());
-        radioButton_35->setText(QString());
+        radioButton_12->setText(QString());
         label_264->setText(QApplication::translate("FunctionLabelsPane", "27", Q_NULLPTR));
         checkBox_65->setText(QString());
         label_266->setText(QString());
         label_259->setText(QString());
-        radioButton_67->setText(QString());
+        radioButton_27->setText(QString());
         label_165->setText(QApplication::translate("FunctionLabelsPane", "13", Q_NULLPTR));
         chkLock13->setText(QString());
         iconOff13->setText(QString());
         iconOn13->setText(QString());
-        radioButton_41->setText(QString());
+        radioButton_13->setText(QString());
         label_282->setText(QApplication::translate("FunctionLabelsPane", "28", Q_NULLPTR));
         checkBox_70->setText(QString());
         label_253->setText(QString());
         label_274->setText(QString());
-        radioButton_70->setText(QString());
+        radioButton_28->setText(QString());
         label_157->setText(QApplication::translate("FunctionLabelsPane", "14", Q_NULLPTR));
         chkLock14->setText(QString());
         iconOff14->setText(QString());
         iconOn14->setText(QString());
-        radioButton_36->setText(QString());
+        radioButton_14->setText(QString());
     } // retranslateUi
 
 };

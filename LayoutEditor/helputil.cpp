@@ -18,6 +18,7 @@
 #include "helpbroker.h"
 #include "xmlfilelocationaction.h"
 #include "reportcontextaction.h"
+#include "exceptions.h"
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -160,12 +161,11 @@ HelpUtil::HelpUtil(QObject *parent) :
 
 /*static*/ /*public*/ void HelpUtil::addHelpToComponent(QWidget* component, QString ref)
 {
-#if 1 // TODO:
  if (globalHelpBroker!=NULL)
   globalHelpBroker->enableHelpOnButton(component, ref, NULL);
-#endif
 }
-#if 0
+
+
 /*static*/ /*public*/ void HelpUtil::displayHelpRef(QString ref)
 {
   Logger log("HelpUtil");
@@ -174,14 +174,15 @@ HelpUtil::HelpUtil(QObject *parent) :
    log.debug("can't display "+ref+" help page because help system reference is NULL");
         return;
     }
-//    try {
+//    try
+//    {
         globalHelpBroker->setCurrentID(ref);
         globalHelpBroker->setDisplayed(true);
 //    } catch (BadIDException e) {
-//        log.error("unable to show help page "+ref+" due to "+e);
+//        log.error("unable to show help page "+ref+" due to "+e.ge);
 //    }
 }
-#endif
+
 /*static*/ bool HelpUtil::init = false;
 /*static*/ bool HelpUtil::failed = true;
 

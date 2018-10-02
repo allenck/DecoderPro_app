@@ -7,7 +7,7 @@
 #include <QAction>
 #include "identifyloco.h"
 #include <QToolButton>
-#include "lnpowermanager.h"
+#include "powermanager.h"
 #include "instancemanager.h"
 #include <QLabel>
 #include "roster.h"
@@ -175,7 +175,7 @@ protected:
 protected slots:
     /*protected*/ void startIdentifyLoco();
     /*protected*/ void selectLoco(int dccAddress, bool isLong, int mfgId, int modelId);
-    /*protected*/ void updateProgrammerStatus();
+    /*protected*/ void updateProgrammerStatus(/*@Nullable*/ PropertyChangeEvent* evt);
     /*protected*/ void setNewWindowAction(JmriAbstractAction* newWindowAction);
     /*protected*/ void systemsMenu();
     /*protected*/ void printLoco(bool boo);
@@ -209,14 +209,14 @@ public:
  {
   if(e->getPropertyName() == "Power")
   {
-   LnPowerManager* pmgr = (LnPowerManager*)InstanceManager::getDefault("PowerManager");
-   if(pmgr->isPowerOn())
+   PowerManager* pmgr = (PowerManager*)InstanceManager::getDefault("PowerManager");
+   if(pmgr->getPower()== PowerManager::ON)
    {
     //parent->togglePower = new QToolButton();
     parent->togglePower->setIcon(QIcon(":/resources/icons/throttles/power_green.png") );
     parent->togglePower->setText(tr("Power on"));
    }
-   else if (pmgr->isPowerOff())
+   else if (pmgr->getPower()== PowerManager::OFF)
    {
     //parent->togglePower = new QToolButton( );
     parent->togglePower->setIcon(QIcon(":/resources/icons/throttles/power_red.png"));

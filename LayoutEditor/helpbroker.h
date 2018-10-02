@@ -35,9 +35,9 @@ public:
      /*public*/ virtual QString getCurrentView();
 
      /*public*/ virtual void initPresentation();
-
-     /*public*/ virtual void setDisplayed(boolean bln) throw (UnsupportedOperationException);
-
+#endif
+     /*public*/ virtual void setDisplayed(bool /*bln*/) {} // throw (UnsupportedOperationException);
+#if 0
      /*public*/ virtual bool isDisplayed();
 
      /*public*/ virtual void setLocation(Point point) throw (UnsupportedOperationException);
@@ -61,9 +61,9 @@ public:
      /*public*/ virtual void showID(QString string, QString string1, QString string2) throw (BadIDException);
 
      /*public*/ virtual void setCurrentID(Map::ID id) throw (InvalidHelpSetContextException);
-
-     /*public*/ virtual void setCurrentID(QString string) throw (BadIDException);
-
+#endif
+ /*public*/ virtual void setCurrentID(QString /*string*/) {} // throw (BadIDException);
+#if 0
      /*public*/ virtual Map::ID getCurrentID();
 
      /*public*/ virtual void setCurrentURL(URL url);

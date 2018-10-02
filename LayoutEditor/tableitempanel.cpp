@@ -36,7 +36,7 @@
     * Constructor for all table types.  When item is a bean, the itemType is the name key
     * for the item in jmri.NamedBeanBundle.properties
     */
-/*public*/ TableItemPanel::TableItemPanel(JmriJFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent)
+/*public*/ TableItemPanel::TableItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent)
     : FamilyItemPanel(parentFrame,  type, family, editor, parent)
 {
  //super(parentFrame,  type, family, editor);

@@ -10,6 +10,7 @@
 #include "picklistmodel.h"
 #include "iconadder.h"
 #include <QStatusBar>
+#include "displayframe.h"
 
 //SensorIcon::SensorIcon(QObject *parent) :
 //    PositionableIcon(parent)

@@ -2367,7 +2367,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     return tr("Section");
 }
 
-/*public*/ void Section::vetoableChange(PropertyChangeEvent* evt) //throws java.beans.PropertyVetoException
+/*public*/ void Section::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
 {
     if ("CanDelete" == (evt->getPropertyName())) { //IN18N
         NamedBean* nb = (NamedBean*) VPtr<NamedBean*>::asPtr( evt->getOldValue());
@@ -2396,7 +2396,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
         {
             if (getBlockList()->contains((Block*)nb)) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockInSection", getDisplayName()), e);
+                throw  PropertyVetoException(tr("Block is in use with Section \"%1\"").arg( getDisplayName()), e);
             }
         }
     } else if ("DoDelete" == (evt->getPropertyName())) { //IN18N

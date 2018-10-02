@@ -1028,7 +1028,7 @@ void DefaultSignalMastLogic::setMastAppearance()
                             If the diverg flag has not been set then we will check.
                         */
                         log->debug(advancedAspect.at(i));
-                        if((divergRoute && (divergFlagsAvailable) && (divergAspects.contains(i))) || ((divergRoute && !divergFlagsAvailable)||(!divergRoute)) && (nonDivergAspects.contains(i))){
+                        if((divergRoute && (divergFlagsAvailable) && (divergAspects.contains(i))) || ((divergRoute && (!divergFlagsAvailable))||(!divergRoute)) && (nonDivergAspects.contains(i))){
                             log->debug("In list");
                             if (strSpeed!="")
                             {

@@ -137,12 +137,12 @@ Roster::Roster(QObject *parent) :
  dirty = false;
 try
  {
- // if the rosterFilename passed in is null, create a complete path
- // to the default roster index before attempting to read
- if (filename.isNull() || filename.isEmpty()) {
-     rosterFilename = this->getRosterIndexPath();
- }
- this->readFile(filename);
+  // if the rosterFilename passed in is null, create a complete path
+  // to the default roster index before attempting to read
+  if (filename.isNull() || filename.isEmpty()) {
+      rosterFilename = this->getRosterIndexPath();
+  }
+  this->readFile(filename);
  }
  //catch (IOException | JDOMException e) {{
  catch (FileNotFoundException ex)
@@ -156,12 +156,12 @@ try
 //        } catch (HeadlessException he) {
 //        // ignore inability to display dialog
 //        }
-  QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred  while trying to read the roster index file: %1").arg( rosterFilename));
+  QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred while trying to read the roster index file: %1").arg( rosterFilename) + " "+ ex.getMessage());
  }
  catch (NullPointerException ex)
  {
   log->error("Exception during roster reading: " + rosterFilename);
-  QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred  while trying to read the roster index file: %1").arg( rosterFilename));
+  QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred while trying to read the roster index file: %1").arg( rosterFilename) + " "+ ex.getMessage());
 
  }
 }
@@ -932,7 +932,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  catch (Exception e)
  {
   log->error("Exception during roster reading: "+e.getMessage());
-  QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred  while trying to read the roster index file: %1").arg( defaultRosterFilename()));
+  QMessageBox::critical(0, tr("Error reading Roster Index"), tr("An error occurred while trying to read the roster index file: %1").arg( defaultRosterFilename())+ " "+ e.getMessage());
  }
 }
 #endif

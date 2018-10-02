@@ -35,12 +35,7 @@ public:
      * DccThrottle interface
      */
     /*public*/ virtual int supportedSpeedModes();
-    /**
-     * SlotListener contract. Get notification that an address has changed slot.
-     * This method creates a throttle for all ThrottleListeners of that address
-     * and notifies them via the ThrottleListener.notifyThrottleFound method.
-     */
-    /*public*/ void notifyChangedSlot(LocoNetSlot* s);
+
     /**
      * Address 128 and above is a long address
      **/
@@ -63,7 +58,12 @@ public:
 signals:
     
 public slots:
-
+ /**
+  * SlotListener contract. Get notification that an address has changed slot.
+  * This method creates a throttle for all ThrottleListeners of that address
+  * and notifies them via the ThrottleListener.notifyThrottleFound method.
+  */
+ /*public*/ void notifyChangedSlot(LocoNetSlot* s);
 protected:
  SlotManager* slotManager;
  LnTrafficController* tc;

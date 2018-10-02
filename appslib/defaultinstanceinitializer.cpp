@@ -56,6 +56,7 @@
 #include "jsonserverpreferences.h"
 #include "loconetconsistmanager.h"
 #include "catalogtreemodel.h"
+#include "throttleframemanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -454,6 +455,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
      InstanceManager::store(ctm, type);
      return ctm;
  }
+
+ if (type == "ThrottleFrameManager") {
+     ThrottleFrameManager* tfm = new ThrottleFrameManager();
+     InstanceManager::store(tfm, type);
+     return tfm;
+ }
+
 
 // if(type == "GlobalProgrammerManager")
 // {

@@ -936,7 +936,6 @@ double LayoutEditor::getPaintScale()
       startDel= QPointF((((AnalogClock2Display*)selectedObject)->x()-dLoc.y()),(((AnalogClock2Display*)selectedObject)->x()-dLoc.y()));
       selectedNeedsConnect = false;
      }
-#if 1 // TODO:
      else
      {
       selectedObject = checkMultiSensors(dLoc);
@@ -947,7 +946,6 @@ double LayoutEditor::getPaintScale()
        //selectedNeedsConnect = false;
       }
      }
-#endif
     }
     if (selectedObject==NULL)
     {
@@ -1048,7 +1046,6 @@ double LayoutEditor::getPaintScale()
        break;
       }
      }
-#if 1 //TODO:
 
     for (int i = 0; i<turntableList->size();i++)
     {
@@ -1070,7 +1067,6 @@ double LayoutEditor::getPaintScale()
       }
      }
     }
-#endif
     }
     // initialize starting selection - cancel any previous selection rectangle
     selectionActive = true;
@@ -2107,7 +2103,6 @@ double LayoutEditor::getPaintScale()
       x->setCoordsCenter(QPointF(xNew, yNew));
      }
     }
-#if 1 // TODO:
     // loop over all defined turntables
     if (_turntableSelection!=NULL)
     {
@@ -2122,7 +2117,6 @@ double LayoutEditor::getPaintScale()
                       x->setCoordsCenter( QPointF(xNew, yNew));
                   }
      }
-#endif
      // loop over all defined Anchor Points and End Bumpers
      if (_pointSelection!=NULL)
      {
@@ -2833,7 +2827,6 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    }
   }
  }
-#if 1 // TODO:
  foreach(LayoutSlip* slip, *slipList)
  {
   Turnout* to = slip->getTurnout();
@@ -2863,7 +2856,6 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   }
  }
 }
-#endif
  // check that the unique turnout name corresponds to a defined physical turnout
  Turnout* to = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnoutName);
  if (to == NULL)
@@ -2955,7 +2947,6 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    highlightRect->addToGroup(item);
   }
  }
-#if 1 //TODO:
   if (_slipSelection!=NULL)
   {
   // loop over all defined level crossings
@@ -2976,8 +2967,6 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
     highlightRect->addToGroup(item);
    }
   }
-#endif
-#if 1 //TODO:
   // loop over all defined turntables
   if (_turntableSelection!=NULL)
   {
@@ -2993,7 +2982,6 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
           highlightRect->addToGroup(item);
    }
   }
-#endif
   // loop over all defined Anchor Points and End Bumpers
   if (_pointSelection!=NULL)
   {
@@ -3058,7 +3046,6 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
      _xingSelection->append(x);
    }
   }
- #if 1 // TODO::
   // loop over all defined level crossings
   for (int i = 0; i<slipList->size();i++)
   {
@@ -3071,8 +3058,6 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
        _slipSelection->append(x);
    }
   }
-#endif
-#if 1  // TODO:
   // loop over all defined turntables
   for (int i = 0; i<turntableList->size();i++)
   {
@@ -3085,7 +3070,6 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
         _turntableSelection->append(x);
    }
   }
-#endif
   // loop over all defined Anchor Points and End Bumpers
   for (int i = 0; i<pointList->size();i++)
   {
@@ -3703,7 +3687,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //      g2.setStroke(new BasicStroke(sideTrackWidth,BasicStroke.CAP_BUTT,                                                      BasicStroke.JOIN_ROUND));
  }
 }
-#if 1 // TODO:
 
 /*protected*/ void LayoutEditor::drawTurnouts(EditScene* g2)
 {
@@ -3730,7 +3713,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
   return  QPointF( p1.x()+((p2.x()-p1.x())/4.0),
                   p1.y()+((p2.y()-p1.y())/4.0) );
 }
-#endif
 /*private*/ void LayoutEditor::drawXings(EditScene* g2)
 {
  // loop over all defined level crossings
@@ -4948,7 +4930,6 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   paintTargetPanel(editScene);
 }
 
- #if 1 // TODO:
 /*private*/ void LayoutEditor::amendSelectionGroup(LayoutTurntable* p){
   if (_turntableSelection==NULL){
       _turntableSelection = new QVector <LayoutTurntable*>();
@@ -4969,7 +4950,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   //repaint();
   paintTargetPanel(editScene);
 }
-#endif
+
 /************************ Options setup **********************/
 /**
 *  Control whether target panel items are editable.
@@ -5090,14 +5071,11 @@ double LayoutEditor::toRadians(double degrees)
   case SLIP_CENTER:
       ((LayoutSlip*)foundObject)->showPopUp(event, isEditable());
       break;
-#if 1 // TODO
   case TURNTABLE_CENTER:
       ((LayoutTurntable*)foundObject)->showPopUp(event);
       break;
-#endif
   default: break;
   }
-#if 1 // TODO::
   if(foundPointType>=TURNTABLE_RAY_OFFSET)
   {
    LayoutTurntable* t = (LayoutTurntable*)foundObject;
@@ -5106,7 +5084,6 @@ double LayoutEditor::toRadians(double degrees)
      ((LayoutTurntable*)foundObject)->showRayPopUp(event, foundPointType-TURNTABLE_RAY_OFFSET);
    }
   }
-#endif
  }
  else
  {

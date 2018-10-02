@@ -124,91 +124,91 @@ public:
 
         // functions - note that we use the naming for DCC, though that's not the implication;
         // see also DccThrottle interface
-        virtual bool getF0() {return false;}
+        Q_INVOKABLE virtual bool getF0() {return false;}
         virtual void setF0(bool  /*f0*/) {}
 
-        virtual bool getF1() {return false;}
+        Q_INVOKABLE virtual bool getF1() {return false;}
         virtual void setF1(bool  /*f1*/) {}
 
-        virtual bool getF2() {return false;}
+        Q_INVOKABLE virtual bool getF2() {return false;}
         virtual void setF2(bool  /*f2*/) {}
 
-        virtual bool getF3() {return false;}
+        Q_INVOKABLE virtual bool getF3() {return false;}
         virtual void setF3(bool  /*f3*/) {}
 
-        virtual bool getF4() {return false;}
+        Q_INVOKABLE virtual bool getF4() {return false;}
         virtual void setF4(bool  /*f4*/) {}
 
-        virtual bool getF5() {return false;}
+        Q_INVOKABLE virtual bool getF5() {return false;}
         virtual void setF5(bool  /*f5*/) {}
 
-        virtual bool getF6() {return false;}
+        Q_INVOKABLE virtual bool getF6() {return false;}
         virtual void setF6(bool  /*f6*/) {}
 
-        virtual bool getF7() {return false;}
+        Q_INVOKABLE virtual bool getF7() {return false;}
         virtual void setF7(bool  /*f7*/) {}
 
-        virtual bool getF8() {return false;}
+        Q_INVOKABLE virtual bool getF8() {return false;}
         virtual void setF8(bool  /*f8*/) {}
 
-        virtual bool getF9() {return false;}
+        Q_INVOKABLE virtual bool getF9() {return false;}
         virtual void setF9(bool  /*f9*/) {}
 
-        virtual bool getF10() {return false;}
+        Q_INVOKABLE virtual bool getF10() {return false;}
         virtual void setF10(bool  /*f10*/) {}
 
-        virtual bool getF11() {return false;}
+        Q_INVOKABLE virtual bool getF11() {return false;}
         virtual void setF11(bool  /*f11*/) {}
 
-        virtual bool getF12() {return false;}
+        Q_INVOKABLE virtual bool getF12() {return false;}
         virtual void setF12(bool  /*f12*/) {}
 
-        virtual bool getF13() {return false;}
+        Q_INVOKABLE virtual bool getF13() {return false;}
         virtual void setF13(bool  /*f13*/) {}
 
-        virtual bool getF14() {return false;}
+        Q_INVOKABLE virtual bool getF14() {return false;}
         virtual void setF14(bool  /*f14*/) {}
 
-        virtual bool getF15() {return false;}
+        Q_INVOKABLE virtual bool getF15() {return false;}
         virtual void setF15(bool  /*f15*/) {}
 
-        virtual bool getF16() {return false;}
+        Q_INVOKABLE virtual bool getF16() {return false;}
         virtual void setF16(bool  /*f16*/) {}
 
-        virtual bool getF17() {return false;}
+        Q_INVOKABLE virtual bool getF17() {return false;}
         virtual void setF17(bool  /*f17*/) {}
 
-        virtual bool getF18() {return false;}
+        Q_INVOKABLE virtual bool getF18() {return false;}
         virtual void setF18(bool  /*f18*/) {}
 
-        virtual bool getF19() {return false;}
+        Q_INVOKABLE virtual bool getF19() {return false;}
         virtual void setF19(bool  /*f19*/) {}
 
-        virtual bool getF20() {return false;}
+        Q_INVOKABLE virtual bool getF20() {return false;}
         virtual void setF20(bool  /*f20*/) {}
 
-        virtual bool getF21() {return false;}
+        Q_INVOKABLE virtual bool getF21() {return false;}
         virtual void setF21(bool  /*f21*/) {}
 
-        virtual bool getF22() {return false;}
+        Q_INVOKABLE virtual bool getF22() {return false;}
         virtual void setF22(bool  /*f22*/) {}
 
-        virtual bool getF23() {return false;}
+        Q_INVOKABLE virtual bool getF23() {return false;}
         virtual void setF23(bool  /*f23*/) {}
 
-        virtual bool getF24() {return false;}
+        Q_INVOKABLE virtual bool getF24() {return false;}
         virtual void setF24(bool  /*f24*/) {}
 
-        virtual bool getF25() {return false;}
+        Q_INVOKABLE virtual bool getF25() {return false;}
         virtual void setF25(bool  /*f25*/) {}
 
-        virtual bool getF26() {return false;}
+        Q_INVOKABLE virtual bool getF26() {return false;}
         virtual void setF26(bool  /*f26*/) {}
 
-        virtual bool getF27() {return false;}
+        Q_INVOKABLE virtual bool getF27() {return false;}
         virtual void setF27(bool  /*f27*/) {}
 
-        virtual bool getF28() {return false;}
+        Q_INVOKABLE virtual bool getF28() {return false;}
         virtual void setF28(bool  /*f28*/) {}
 
         // functions momentary status - note that we use the naming for DCC,

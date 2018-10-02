@@ -11,6 +11,8 @@
 #include "signalmastlogicmanager.h"
 #include "createeditblock.h"
 #include "mathutil.h"
+#include "signallingguitools.h"
+
 
 //LayoutSlip::LayoutSlip(QObject *parent) :
 //    LayoutTurnout(parent)
@@ -531,14 +533,14 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     }
 }
 
-void LayoutSlip::removeSML(QString /*signalMast*/){
-#if 0 // TODO:
-    if(signalMast==NULL || signalMast.equals(""))
+void LayoutSlip::removeSML(QString signalMast){
+#if 1 // TODO:
+    if(signalMast==NULL || signalMast == (""))
         return;
-    SignalMast mast = InstanceManager::signalMastManagerInstance().getSignalMast(signalMast);
-    if(jmri.InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() && InstanceManager.signalMastLogicManagerInstance().isSignalMastUsed(mast)){
-        InstanceManager.signalMastLogicManagerInstance().disableLayoutEditorUse(mast);
-        SignallingGuiTools.removeSignalMastLogic(NULL, mast);
+    SignalMast* mast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
+    if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed(mast)){
+        InstanceManager::signalMastLogicManagerInstance()->disableLayoutEditorUse(mast);
+        SignallingGuiTools::removeSignalMastLogic(NULL, mast);
     }
 #endif
 }

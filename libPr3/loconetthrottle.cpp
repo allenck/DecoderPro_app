@@ -30,6 +30,7 @@
 {
  //super(memo);
  this->slot = slot;
+ setObjectName("LocoNetThrottle");
  log = new Logger("LocoNetThrottle");
  mRefreshTimer = NULL;
  network = memo->getLnTrafficController();
@@ -321,9 +322,43 @@
 
 /*protected*/ void LocoNetThrottle::sendFunctionGroup3()
 {
- QByteArray result = NmraPacket::function9Through12Packet(address, (address>=100), getF9(), getF10(), getF11(), getF12());
+ // LocoNet practice is to send F9-F12 as a DCC packet
+ QByteArray result = NmraPacket::function9Through12Packet(address, (address >= 128),
+          getF9(), getF10(), getF11(), getF12());
 
-// TODO:    ((CommandStation*)adapterMemo->get(CommandStation.class)).sendPacket(result, 4); // repeat = 4
+  log->debug(tr("sendFunctionGroup3 sending %1 to LocoNet slot %2").arg(result.constData()).arg(slot->getSlot()));
+  ((CommandStation*) adapterMemo->get("CommandStation"))->sendPacket(result, 4); // repeat = 4
+}
+
+/**
+ * Sends Function Group 4 values - F13 thru F20, using an "OPC_IMM_PACKET" LocoNet
+ * Message.
+ */
+//@Override
+/*protected*/ void LocoNetThrottle::sendFunctionGroup4()
+{
+ // LocoNet practice is to send F13-F20 as a DCC packet
+ QByteArray result = NmraPacket::function13Through20Packet(address, (address >= 128),
+         getF13(), getF14(), getF15(), getF16(),
+         getF17(), getF18(), getF19(), getF20());
+
+ log->debug(tr("sendFunctionGroup3 sending %1 to LocoNet slot %2").arg(result.constData()).arg(slot->getSlot()));
+ ((CommandStation*) adapterMemo->get("CommandStation"))->sendPacket(result, 4); // repeat = 4
+}
+
+/**
+ * Sends Function Group 5 values - F21 thru F28, using an "OPC_IMM_PACKET" LocoNet
+ * Message.
+ */
+//@Override
+/*protected*/ void LocoNetThrottle::sendFunctionGroup5() {
+    // LocoNet practice is to send F21-F28 as a DCC packet
+    QByteArray result = NmraPacket::function21Through28Packet(address, (address >= 128),
+            getF21(), getF22(), getF23(), getF24(),
+            getF25(), getF26(), getF27(), getF28());
+
+    log->debug(tr("sendFunctionGroup3 sending %1 to LocoNet slot %2").arg(result.constData()).arg(slot->getSlot()));
+    ((CommandStation*) adapterMemo->get("CommandStation"))->sendPacket(result, 4); // repeat = 4
 }
 
 /**

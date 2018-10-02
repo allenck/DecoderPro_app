@@ -3,7 +3,7 @@
 #include <QThread>
 #include "lntrafficcontroller.h"
 #include "version.h"
-#include "server.h"
+#include "lntcpserver.h"
 #include "clientrxhandler.h"
 #include <QMessageBox>
 #include "instancemanager.h"
@@ -100,7 +100,7 @@
   //} catch (IOException ex1) {
   //}
 
- Server::getInstance()->removeClient(this);
+ LnTcpServer::getInstance()->removeClient(this);
  log->info("ClientRxHandler: Exiting");
 }
 

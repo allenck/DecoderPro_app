@@ -209,7 +209,7 @@ void SystemConsole::On_appendText(QString text)
 
  // Grab a reference to the system clipboard
  /*final*/ QClipboard* clipboard = /*frame.getToolkit().getSystemClipboard();*/ QApplication::clipboard();
-
+Q_UNUSED(clipboard);
  // Setup the scroll pane
  //QScrollArea* scroll = new QScrollArea(console);
  //frameLayout->addWidget(console, BorderLayout::Center);
@@ -392,7 +392,7 @@ void SystemConsole::On_autoScroll_toggled(bool b)
  // ??
  pref->setSimplePreferenceState(alwaysScrollCheck, b);
 }
-void SystemConsole::On_contextMenu(QPoint pt)
+void SystemConsole::On_contextMenu(QPoint /*pt*/)
 {
  popup->clear();
  QAction* rbMenuItem;
@@ -506,7 +506,7 @@ void SystemConsole::On_setWrapStyleNone()
  * @param ta     Reference to JTextArea
  * @param scroll True to move to end
  */
-/*private*/ void SystemConsole::doAutoScroll(/*final*/ JTextArea* ta, /*final*/ bool scroll)
+/*private*/ void SystemConsole::doAutoScroll(/*final*/ JTextArea* /*ta*/, /*final*/ bool /*scroll*/)
 {
 //    SwingUtilities.invokeLater(() -> {
 //        int len = ta.getText().length();
@@ -524,7 +524,7 @@ void SystemConsole::On_setWrapStyleNone()
  * @param which the stream, either STD_OUT or STD_ERR
  * @return the new OutputStream
  */
-/*private*/ QDataStream* SystemConsole::outStream(/*final*/ int which)
+/*private*/ QDataStream* SystemConsole::outStream(/*final*/ int /*which*/)
 {
 #if 0
     return new QDataStream();
@@ -547,6 +547,7 @@ void SystemConsole::On_setWrapStyleNone()
         }
     };
 #endif
+    return NULL;
 }
 
 /**

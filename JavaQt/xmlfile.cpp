@@ -85,6 +85,12 @@ XmlFile::XmlFile(QObject *parent) :
  return QDomElement();
 }
 
+/*public*/ QString XmlFile::getPathname()
+{
+ return currFile;
+}
+
+
 /**
  * Read a File as XML, and return the root object.
  *
@@ -145,7 +151,8 @@ XmlFile::XmlFile(QObject *parent) :
  */
 /*public*/ QDomElement XmlFile::rootFromInputStream(QDataStream* stream) /*throw (JDOMException)*/
 {
-    return getRoot(verify, stream);
+ currFile = ((QFile*)stream->device())->fileName();
+ return getRoot(verify, stream);
 }
 
 /**

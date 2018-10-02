@@ -15,7 +15,7 @@ class IconItemPanel : public ItemPanel
     Q_OBJECT
 public:
     //explicit IconItemPanel(QWidget *parent = 0);
-    /*public*/ IconItemPanel(JmriJFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent);
+    /*public*/ IconItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent);
     /*public*/ void init();
     /*public*/ virtual void initButtonPanel();
     /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);

@@ -33,7 +33,7 @@ public:
     /*public*/ void registerUserPrefs(QObject* o);
     /*public*/ void deregister(QObject* o);
     /*public*/ static QString adapterName(QObject* o);
-    void locateClassFailed(Throwable* ex, QString adapterName, QObject* o);
+    void locateClassFailed(Throwable ex, QString adapterName, QObject* o);
     /*public*/ bool storeAll(File* file) ;
     /*public*/ void storePrefs() ;
     /*public*/ void storePrefs(File* file) ;
@@ -48,8 +48,8 @@ public:
     /*public*/ bool load(QUrl url) throw (JmriException);
     /*public*/ bool load(File* fi, bool registerDeferred) throw (JmriException) ;
     /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriException) ;
-    /*public*/ bool loadDeferred(File* fi);
-    /*public*/ bool loadDeferred(QUrl url);
+    /*public*/ bool loadDeferred(File* fi) throw (JmriException);
+    /*public*/ bool loadDeferred(QUrl url) throw (JmriException);
     /*public*/ QUrl find(QString f);
     void locateFileFailed(QString f);
     static /*public*/ void creationErrorEncountered(

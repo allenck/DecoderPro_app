@@ -206,7 +206,7 @@ void NamedIcon::init()
 {
  return mDefaultImage;
 }
-#if 0 // TODO:
+#if 0 // not necesary as QraphicsItems can be rotated.
 
 /**
  * The following was based on a text-rotating applet from
@@ -479,6 +479,9 @@ QImage NamedIcon::getImage()
  QImage img;
 
  const char* fmt;
+ if(mURL.endsWith(".jpg"))
+  fmt = "JPG";
+ else
  if(mURL.endsWith(".gif"))
   fmt = "GIF";
  else

@@ -8,6 +8,7 @@
 #include "jtable.h"
 #include <QHeaderView>
 #include "tablecolumn.h"
+#include "pushbuttondelegate.h"
 
 //AutomatTableDataModel::AutomatTableDataModel(QObject *parent) :
 //  AbstractTableModel(parent)
@@ -202,7 +203,7 @@
  */
 void AutomatTableDataModel::setColumnToHoldButton(JTable* table, int column, QPushButton* sample) {
     TableColumnModel* tcm = table->getColumnModel();
-#if 0 // TODO:
+#if 0
     // install a button renderer & editor
     ButtonRenderer buttonRenderer = new ButtonRenderer();
     tcm.getColumn(column).setCellRenderer(buttonRenderer);
@@ -212,6 +213,8 @@ void AutomatTableDataModel::setColumnToHoldButton(JTable* table, int column, QPu
     table.setRowHeight(sample.getPreferredSize().height);
     table.getColumnModel().getColumn(column)
             .setPreferredWidth(sample.getPreferredSize().width);
+#else
+    table->setItemDelegateForColumn(column, new PushButtonDelegate(this));
 #endif
 }
 

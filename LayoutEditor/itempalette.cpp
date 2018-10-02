@@ -39,6 +39,8 @@
 #include "indicatortoitempanel.h"
 #include "backgrounditempanel.h"
 #include "defaultcatalogtreemanagerxml.h"
+#include "displayframe.h"
+#include "portalitempanel.h"
 
 //ItemPalette::ItemPalette(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -62,14 +64,6 @@
 /*static*/ QMap<QString, ItemPanel*>* ItemPalette::_tabIndex = 0;
 /*static*/ QTabWidget* ItemPalette::_tabPane = NULL;
 
-void ItemPalette::init()
-{
- log = new Logger("ItemPalette");
- STRUT_SIZE = 10;
- _iconMaps = NULL;
- resize(551, 600);
- //setMinimumSize(500,600);
-}
 
 void ItemPalette::changeEvent(QEvent * e)
 {
@@ -87,7 +81,7 @@ void ItemPalette::changeEvent(QEvent * e)
  {
   return;     // never loaded
  }
- CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
+ CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  // unfiltered, xml-stored, item palate icon tree
  CatalogTree* tree = manager->getBySystemName("NXPI");
  // discard old version
@@ -175,7 +169,7 @@ void ItemPalette::changeEvent(QEvent * e)
 {
  Logger* log = new Logger("ItemPalette");
  log->setDebugEnabled(true);
- CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
+ CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  CatalogTree* tree = ((DefaultCatalogTreeManager*)manager)->getBySystemName("NXPI");
  if (tree != NULL)
  {
@@ -365,34 +359,68 @@ void ItemPalette::changeEvent(QEvent * e)
  return familyTOMap;
 }
 
-/*public*/ ItemPalette::ItemPalette(QWidget* parent) : JmriJFrame(true, true, parent)
+/*public*/ ItemPalette::ItemPalette(QWidget* parent) : DisplayFrame(true, true, parent)
 {
  // super(true, true);
- init();
+ init("", NULL);
  loadIcons();
 }
 
-/*public*/ ItemPalette::ItemPalette(QString title, Editor* editor, QWidget* parent) : JmriJFrame(title, true, true, parent)
+/*public*/ ItemPalette::ItemPalette(QString title, Editor* editor, QWidget* parent) : DisplayFrame(title, true, true, parent)
 {
  //(title, true, true);
 //        long t = System.currentTimeMillis();
- init();
+ init(title, editor);
+}
+
+void ItemPalette::init(QString title, Editor* ed)
+{
+  log = new Logger("ItemPalette");
+  STRUT_SIZE = 10;
+  _iconMaps = NULL;
+  resize(551, 600);
+  //setMinimumSize(500,600);
+  _currentItemPanel = NULL;
+
+ _tabIndex = new QMap<QString, ItemPanel*>();
+ this->setTitle(title);
  loadIcons();
-//    addWindowListener(new java.awt.event.WindowAdapter() {
-//            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                closePanels(e);
-//                ImageIndexEditor.checkImageIndex();
-//            }
-//        });
+ //addWindowListener(new IPWindowListener(this));
+// @Override
+// public void windowClosing(java.awt.event.WindowEvent e) {
+//     closePanels(e);
+// }
+//});
 
-    makeMenus(editor);
+    makeMenus(ed);
+    buildTabPane(this, ed);
 
-    _tabIndex = new QMap<QString, ItemPanel*>();
+    QVBoxLayout* thisLayout = new QVBoxLayout(this);
+    //setLayout(new BorderLayout(5, 5));
+    thisLayout->addWidget(_tabPane, 0, Qt::AlignCenter);//BorderLayout::CENTER);
+    setLocation(10, 10);
+//    JScrollPane sp = (JScrollPane) _tabPane.getSelectedComponent();
+//    _currentItemPanel = (ItemPanel) sp.getViewport().getView();
+    _currentItemPanel = (ItemPanel*)_tabPane->widget(_tabPane->currentIndex());
+//    if (!jmri.util.ThreadingUtil.isGUIThread()) log.error("Not on GUI thread", new Exception("traceback"));
+    pack();
+}
 
+IPWindowListener::IPWindowListener(ItemPalette *palette) {this->palette = palette;}
+void IPWindowListener::windowClosing(QCloseEvent *)
+{
+ palette->closePanels();
+}
+
+/**
+ * Add the tabs on the Control Panel Editor.
+ */
+/*static*/ void ItemPalette::buildTabPane(ItemPalette* palette, Editor* editor)
+{
     QWidget* itemPaletteWidget = new QWidget;
-    setObjectName(QString::fromUtf8("ItemPaletteWidget"));
-    QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
-    resize(494, 846);
+    itemPaletteWidget->setObjectName(QString::fromUtf8("ItemPaletteWidget"));
+//    QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+    palette->resize(494, 846);
     QVBoxLayout* itemPaletteWidgetLayout = new QVBoxLayout;
     itemPaletteWidget->setLayout(itemPaletteWidgetLayout);
 //    QHBoxLayout* horizontalLayout_ItemPalette = new QHBoxLayout(itemPaletteWidget);
@@ -409,7 +437,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane = new QTabWidget();
     _tabPane->setObjectName(QString::fromUtf8("_tabPane"));
 
-    ItemPanel* itemPanel = new TableItemPanel(this, "Turnout", NULL, PickListModel::turnoutPickModelInstance(), editor, this);
+    ItemPanel* itemPanel = new TableItemPanel(palette, "Turnout", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
     itemPanel->init();
     QScrollArea* scrollArea = new QScrollArea;
     scrollArea->setWidget(itemPanel);
@@ -418,8 +446,8 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea,tr("Turnout"));
     _tabIndex->insert("Turnout", itemPanel);
 
-    itemPanel = new TableItemPanel(this, "Sensor", NULL,
-                                   PickListModel::sensorPickModelInstance(), editor, this);
+    itemPanel = new TableItemPanel(palette, "Sensor", NULL,
+                                   PickListModel::sensorPickModelInstance(), editor, palette);
     itemPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(itemPanel);
@@ -428,7 +456,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("Sensor"));
     _tabIndex->insert("Sensor", itemPanel);
 
-    itemPanel = new SignalHeadItemPanel(this, "SignalHead", NULL, PickListModel::signalHeadPickModelInstance(), editor, this);
+    itemPanel = new SignalHeadItemPanel(palette, "SignalHead", NULL, PickListModel::signalHeadPickModelInstance(), editor, palette);
     itemPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(itemPanel);
@@ -436,12 +464,12 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("Signal Head"));
     _tabIndex->insert("SignalHead", itemPanel);
 
-    itemPanel = new SignalMastItemPanel(this, "SignalMast", NULL, PickListModel::signalMastPickModelInstance(), editor,this);
+    itemPanel = new SignalMastItemPanel(palette, "SignalMast", NULL, PickListModel::signalMastPickModelInstance(), editor,palette);
     itemPanel->init();
     _tabPane->addTab(/*new QScrollArea*/(itemPanel), tr("SignalMast"));
     _tabIndex->insert("SignalMast", itemPanel);
 
-    itemPanel = new MemoryItemPanel(this, "Memory", NULL,PickListModel::memoryPickModelInstance(), editor, this);
+    itemPanel = new MemoryItemPanel(palette, "Memory", NULL,PickListModel::memoryPickModelInstance(), editor, palette);
      itemPanel->init();
      scrollArea = new QScrollArea;
      scrollArea->setWidget(itemPanel);
@@ -449,7 +477,7 @@ void ItemPalette::changeEvent(QEvent * e)
      _tabPane->addTab(scrollArea, tr("Memory"));
     _tabIndex->insert("Memory", itemPanel);
 
-    itemPanel = new ReporterItemPanel(this, "Reporter", NULL, PickListModel::reporterPickModelInstance(), editor, this);
+    itemPanel = new ReporterItemPanel(palette, "Reporter", NULL, PickListModel::reporterPickModelInstance(), editor, palette);
     itemPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(itemPanel);
@@ -457,7 +485,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("Reporter"));
     _tabIndex->insert("Reporter", itemPanel);
 
-    itemPanel = new TableItemPanel(this, "Light", NULL, PickListModel::lightPickModelInstance(), editor, this);
+    itemPanel = new TableItemPanel(palette, "Light", NULL, PickListModel::lightPickModelInstance(), editor, palette);
     itemPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(itemPanel);
@@ -465,7 +493,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("Light"));
     _tabIndex->insert("Light", itemPanel);
 
-    itemPanel = new MultiSensorItemPanel(this, "MultiSensor", NULL, PickListModel::multiSensorPickModelInstance(), editor,this);
+    itemPanel = new MultiSensorItemPanel(palette, "MultiSensor", NULL, PickListModel::multiSensorPickModelInstance(), editor,palette);
      itemPanel->init();
      scrollArea = new QScrollArea;
      scrollArea->setWidget(itemPanel);
@@ -473,7 +501,7 @@ void ItemPalette::changeEvent(QEvent * e)
      _tabPane->addTab(scrollArea, tr("MultiSensor"));
     _tabIndex->insert("MultiSensor", itemPanel);
 
-    ItemPanel* iconPanel = new IconItemPanel(this, "Icon", NULL, editor,this);
+    ItemPanel* iconPanel = new IconItemPanel(palette, "Icon", NULL, editor,palette);
     iconPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(iconPanel);
@@ -481,7 +509,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("Icon"));
     _tabIndex->insert("Icon", itemPanel);
 
-    iconPanel = new BackgroundItemPanel(this, "Background", NULL, editor, this);
+    iconPanel = new BackgroundItemPanel(palette, "Background", NULL, editor, palette);
     iconPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(iconPanel);
@@ -490,7 +518,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabIndex->insert("Background", itemPanel);
 
 
-    iconPanel = new TextItemPanel(this, "Text", NULL, editor,this);
+    iconPanel = new TextItemPanel(palette, "Text", NULL, editor,palette);
     iconPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(iconPanel);
@@ -498,7 +526,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("Text"));
     _tabIndex->insert("Text", itemPanel);
 
-#if 0
+#if 0 //TODO:
     iconPanel = new RPSItemPanel(this, "RPSReporter", NULL, editor);
     iconPanel->init();
     scrollArea = new QScrollArea;
@@ -507,7 +535,7 @@ void ItemPalette::changeEvent(QEvent * e)
     tabPane->addTab(scrollArea, tr("RPSReporter"));
     _tabIndex->insert("RPSReporter", itemPanel);
 #endif
-    iconPanel = new ClockItemPanel(this, "FastClock", NULL, editor,this);
+    iconPanel = new ClockItemPanel(palette, "FastClock", NULL, editor,palette);
     iconPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(iconPanel);
@@ -515,7 +543,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("FastClock"));
     _tabIndex->insert("FastClock", itemPanel);
 
-    itemPanel = new IndicatorItemPanel(this, "IndicatorTrack", NULL, editor,this);
+    itemPanel = new IndicatorItemPanel(palette, "IndicatorTrack", NULL, editor,palette);
     itemPanel->init();
     scrollArea = new QScrollArea;
     scrollArea->setWidget(itemPanel);
@@ -524,7 +552,7 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("IndicatorTrack"));
     _tabIndex->insert("IndicatorTrack", itemPanel);
 
-    itemPanel = new IndicatorTOItemPanel(this, "IndicatorTO", NULL, PickListModel::turnoutPickModelInstance(), editor, this);
+    itemPanel = new IndicatorTOItemPanel(palette, "IndicatorTO", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
      itemPanel->init();
      scrollArea = new QScrollArea();
      scrollArea->setWidget(itemPanel);
@@ -533,36 +561,39 @@ void ItemPalette::changeEvent(QEvent * e)
     _tabPane->addTab(scrollArea, tr("IndicatorTO"));
     _tabIndex->insert("IndicatorTO", itemPanel);
 
-//    _tabPane->addChangeListener(this);
-//    verticalLayout_scrollArea->addWidget(_tabPane);
+    itemPanel = new PortalItemPanel(palette, "Portal", NULL, editor);
+    scrollArea = new QScrollArea();
+    scrollArea->setWidget(itemPanel);
+    scrollArea->setWidgetResizable(true);
+    _tabPane->addTab(scrollArea, tr("Portal"));
+    _tabIndex->insert("Portal", itemPanel);
 
-//    scrollArea->setWidget(scrollAreaWidgetContents);
 
-//    horizontalLayout_ItemPalette->addWidget(scrollArea);
-    itemPaletteWidgetLayout->addWidget(_tabPane);
-    thisLayout->addWidget(itemPaletteWidget);
-    //pack();
-
-    _tabPane->setCurrentIndex(1);
-    //QTimer::singleShot(50, this, SLOT(tabPaneChanged(int)));
-    adjustSize();
-    setHidden(true);
-    connect(_tabPane, SIGNAL(currentChanged(int)), this, SLOT(tabPaneChanged(int)));
-//        System.out.println("Palette built in "+ (System.currentTimeMillis()-t)+ " milliseconds.");
+    //_tabPane->addChangeListener(this);
+    connect(_tabPane, SIGNAL(currentChanged(int)), palette, SLOT(tabPaneChanged(int)));
 }
 
-void ItemPalette::tabPaneChanged(int = 0)
+void ItemPalette::tabPaneChanged(int)
 {
  adjustSize();
 }
 
 /*public*/ void ItemPalette::stateChanged(ChangeEvent* e) {
-//        long t = System.currentTimeMillis();
-    QTabWidget* tp = (QTabWidget*)e->getSource();
-//    QScrollArea* sp = (QScrollArea*)tp->getSelectedComponent();
-//    ItemPanel* p = (ItemPanel)sp->getViewport().getView();
-//    p->init();
-//        System.out.println("Panel "+p._itemType+" built in "+ (System.currentTimeMillis()-t)+ " milliseconds.");
+// if (!jmri.util.ThreadingUtil.isGUIThread()) log.error("Not on GUI thread", new Exception("traceback"));
+ // long t = System.currentTimeMillis();
+ QTabWidget* tp = (QTabWidget*) e->getSource();
+// JScrollPane sp = (JScrollPane) tp.getSelectedComponent();
+// ItemPanel p = (ItemPanel) sp.getViewport().getView();
+ ItemPanel* p = (ItemPanel*)tp->widget(tp->currentIndex());
+ p->init(); // (re)initialize tab pane
+ log->debug("different tab displayed");
+ if (_currentItemPanel != NULL) {
+     _currentItemPanel->closeDialogs();
+ }
+ if (listener != NULL) listener->onInitEvent(DisplayFrame::getPreviewBg(), _tabPane->currentIndex()); // signal tab
+ log->debug(tr("tab redisplayed, previewBgSet updated to %1").arg(DisplayFrame::getPreviewBg()));
+ _currentItemPanel = p;
+ pack();
 }
 
 /*private*/ void ItemPalette::makeMenus(Editor* editor) {
@@ -594,11 +625,16 @@ void ItemPalette::tabPaneChanged(int = 0)
     setMenuBar(menuBar);
     addHelpMenu("package.jmri.jmrit.display.ItemPalette", true);
 }
+IPEditItemActionListener::IPEditItemActionListener()
+{
+
+}
 IPEditItemActionListener* IPEditItemActionListener::init(Editor* ed)
 {
  editor = ed;
  return this;
 }
+
 void IPEditItemActionListener::actionPerformed()
 {
  ImageIndexEditor* ii = ImageIndexEditor::instance(editor);

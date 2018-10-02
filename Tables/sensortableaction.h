@@ -6,6 +6,7 @@
 #include "abstracttableaction.h"
 #include "libtables_global.h"
 
+class QPushButton;
 class ProxySensorManager;
 class QTableView;
 class PropertyChangeEvent;
@@ -61,11 +62,16 @@ private:
     //BeanTableDataModel* m;
     QCheckBox* showDebounceBox;// = new JCheckBox(tr("SensorDebounceCheckBox"));
     bool enabled;
-
+    QString connectionChoice;// = "";
+    QPushButton* addButton;
+    QString  addEntryToolTip;
+    /*CheckedTextField*/ JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
+    QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
 
 private slots:
     /*private*/ void canAddRange();
     void showDebounceChanged(bool);
+    void createPressed();
 
 protected:
     /*protected*/ SensorManager* senManager;// = jmri.InstanceManager.sensorManagerInstance();

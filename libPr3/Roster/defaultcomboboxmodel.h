@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include "abstractlistmodel.h"
+#include "libPr3_global.h"
 
 template <class E>
 class LIBPR3SHARED_EXPORT DefaultComboBoxModel : public AbstractListModel

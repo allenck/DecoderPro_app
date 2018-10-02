@@ -49,7 +49,7 @@ private:
  /*private*/ int _dockX;// = 0;
  /*private*/ int _dockY;// = 0;
  Editor* editor;
- // TODO: jmri.jmrit.throttle.ThrottleFrame tf = null;
+ //  jmri.jmrit.throttle.ThrottleFrame tf = null;
  QActionGroup* locoButtonGroup;// = NULL;
  //QGraphicsItem* item;
  //ThrottleFrame* tf;

@@ -4,11 +4,13 @@
 #include <QDockWidget>
 #include "logger.h"
 #include <QtXml>
+#include <QComboBox>
 
 namespace Ui {
 class AddressPanel;
 }
 
+class BackgroundPanel;
 class LocoAddress;
 class PropertyChangeEvent;
 class RosterEntrySelectorPanel;
@@ -28,10 +30,6 @@ public:
     /*public*/ void addAddressListener(AddressListener* l) ;
     /*public*/ void removeAddressListener(AddressListener* l);
     /*public*/ int getRosterSelectedIndex();
-    /*public*/ void notifyThrottleFound(DccThrottle* t);
-    /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
-    /*public*/ void notifyConsistThrottleFound(DccThrottle* t);
-    /*public*/ void notifyThrottleDisposed();
     /*public*/ RosterEntry* getRosterEntry();
     /*public*/ void setRosterEntry(RosterEntry* entry);
 
@@ -50,6 +48,10 @@ public:
     /*public*/ void setConsistAddress(DccLocoAddress* consistAddress);
  /*public*/ QDomElement getXml();
  /*public*/ void setXml(QDomElement e);
+ /*public*/ void setRosterSelectedIndex(int index);
+ /*public*/ void setBackgroundPanel(BackgroundPanel* bp);
+ /*public*/ void selectRosterEntry();
+
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
@@ -58,10 +60,17 @@ public slots:
     /*public*/ void dispatchAddress();
     /*public*/ void releaseAddress();
     /*public*/ RosterEntrySelectorPanel* getRosterEntrySelector();
+    /*public*/ void notifyThrottleFound(DccThrottle* t);
+    /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
+    /*public*/ void notifyConsistThrottleFound(DccThrottle* t);
+    /*public*/ void notifyThrottleDisposed();
+
 signals:
     void notifyAddressReleased(LocoAddress* currentAddress);
     void notifyAddressThrottleFound(DccThrottle* throttle);
-    void notifyAddressChosen(DccLocoAddress* currentAddress);
+    void notifyAddressChosen(LocoAddress* currentAddress);
+    void notifyConsistAddressChosen(int, bool);
+    void notifyConsistAddressThrottleFound(DccThrottle* throttle);
 private:
     Ui::AddressPanel *ui;
     /*private*/ DccThrottle* throttle;
@@ -78,14 +87,15 @@ private:
 //	/*private*/ JButton dispatchButton;
 //	/*private*/ JButton progButton;
 //	/*private*/ JButton setButton;
-//    /*private*/ RosterEntrySelectorPanel* rosterBox;
-//	/*private*/ JComboBox conRosterBox;
+    /*private*/ RosterEntrySelectorPanel* rosterBox;
+    /*private*/ QComboBox* conRosterBox;
 
     /*private*/ RosterEntry* rosterEntry;
     /*private*/ void notifyListenersOfThrottleRelease();
     Logger* log;
     /*private*/ void changeOfAddress();
     /*private*/ void changeOfConsistAddress();
+    /*private*/ BackgroundPanel* backgroundPanel;
 private slots:
     /*private*/ void consistRosterSelected();
     /*private*/ void rosterItemSelected();

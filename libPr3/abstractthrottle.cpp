@@ -18,6 +18,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  listeners = new QVector<PropertyChangeListener*>();
  re = NULL;
  this->parent = parent;
+ setObjectName("AbstractThrottle");
 
  log = new Logger("AbstractThrottle");
  durationRunning = 0;
@@ -54,11 +55,39 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  * function, but should either make a call to super.setSpeedSetting()
  * to notify the listeners, or should notify the listeners themselves.
  */
+//@Override
 /*public*/ void AbstractThrottle::setSpeedSetting(float speed)
 {
  if(qAbs(this->speedSetting - speed)>0.0001 )
-   notifyPropertyChangeListener("SpeedSetting",(this->speedSetting), (this->speedSetting = speed));
+  setSpeedSetting(speed, false, false);
+}
+
+/**
+ * setSpeedSetting - Implementations should override this method only if they normally suppress
+ * messages to the system if, as far as JMRI can tell, the new message would make no difference
+ * to the system state (eg. the speed is the same, or effectivly the same, as the existing speed).
+ * Then, the boolean options can affect this behaviour.
+ *
+ * @param speed - the new speed
+ * @param allowDuplicates - don't suppress messages
+ * @param allowDuplicatesOnStop - don't suppress messages if the new speed is 'stop'
+ */
+//@Override
+/*public*/ void AbstractThrottle::setSpeedSetting(float speed, bool /*allowDuplicates*/, bool /*allowDuplicatesOnStop*/) {
+    if (qAbs(this->speedSetting - speed) > 0.0001) {
+        notifyPropertyChangeListener("SpeedSetting", this->speedSetting, this->speedSetting = speed);
+    }
     record(speed);
+}
+
+/**
+ * setSpeedSettingAgain - set the speed and don't ever supress the sending of messages to the system
+ *
+ * @param speed - the new speed
+ */
+//@Override
+/*public*/ void AbstractThrottle::setSpeedSettingAgain(float speed) {
+    setSpeedSetting(speed, true, true);
 }
 
 /** direction
@@ -340,8 +369,10 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 /*public*/ void AbstractThrottle::addPropertyChangeListener(PropertyChangeListener* l) {
     log->debug("listeners added " + l->objectName());
     // add only if not already registered
-    if (!listeners->contains(l)) {
-        listeners->append(l);
+    if (!listeners->contains(l))
+    {
+     listeners->append(l);
+     connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     log->debug("listeners size is " + QString("%1").arg(listeners->size()));
 }
@@ -373,11 +404,11 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
   PropertyChangeListener* client = v->at(i);
   if(client == NULL)
       continue;
-  PropertyChangeEvent* event = new PropertyChangeEvent(this, property, oldValue, newValue);
-  if(qobject_cast<ThrottleWindow*>(client))
-  ((ThrottleWindow*)client)->propertyChange(event);
-  if(qobject_cast<AddressPanel*>(client))
-  ((AddressPanel*)client)->propertyChange(event);
+//  PropertyChangeEvent* event = new PropertyChangeEvent(this, property, oldValue, newValue);
+//  if(qobject_cast<ThrottleWindow*>(client))
+//  ((ThrottleWindow*)client)->propertyChange(event);
+//  if(qobject_cast<AddressPanel*>(client))
+//  ((AddressPanel*)client)->propertyChange(event);
  }
  emit propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
 }

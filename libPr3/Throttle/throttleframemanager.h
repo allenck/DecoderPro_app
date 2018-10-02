@@ -17,8 +17,11 @@ class LIBPR3SHARED_EXPORT ThrottleFrameManager : public QObject
 {
     Q_OBJECT
 public:
-    //explicit ThrottleFrameManager(QObject *parent = 0);
-    /*public*/ static ThrottleFrameManager* instance();
+ /*private*/ ThrottleFrameManager(QObject *parent = 0);
+ ~ThrottleFrameManager() {}
+ ThrottleFrameManager(const ThrottleFrameManager&) : QObject() {}
+ QT_DEPRECATED /*public*/ static ThrottleFrameManager* instance();
+
     /*public*/ ThrottleWindow* createThrottleWindow();
     /*public*/ void requestThrottleWindowDestruction(ThrottleWindow* frame);
     /*public*/ void requestAllThrottleWindowsDestroyed();
@@ -35,9 +38,8 @@ public:
 signals:
     void newThrottle(ThrottleWindow*);
 public slots:
-private:
-    /*private*/ static ThrottleFrameManager* _instance;// = null;
 
+private:
     /*private*/ static int NEXT_THROTTLE_KEY;// = KeyEvent.VK_RIGHT;
     /*private*/ static int PREV_THROTTLE_KEY;// = KeyEvent.VK_LEFT;
 
@@ -48,9 +50,8 @@ private:
 
     /*private*/ ThrottlesPreferences* throttlesPref;
     /*private*/ JmriJFrame* throttlePreferencesFrame;
-    /*private*/ /*JmriJFrame*/ JmriJFrame* throttlesListFrame;
+    /*private*/ JmriJFrame* throttlesListFrame;
     /*private*/ ThrottlesListPanel* throttlesListPanel;
-    /*private*/ ThrottleFrameManager(QObject *parent = 0); // can only be created by instance() => /*private*/
     /*private*/ void destroyThrottleWindow(ThrottleWindow* window);
     /*private*/ void requestFocusForNextFrame();
     /*private*/ void requestFocusForPreviousFrame();
@@ -58,5 +59,5 @@ private:
     /*private*/ void buildThrottleListFrame();
 
 };
-
+Q_DECLARE_METATYPE(ThrottleFrameManager)
 #endif // THROTTLEFRAMEMANAGER_H

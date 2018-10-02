@@ -52,7 +52,7 @@ public:
         virtual void dispose() const {}
 
         // Set the Consist Type
-        virtual void setConsistType(int /*consist_type*/) const {}
+        virtual void setConsistType(int /*consist_type*/)  {}
 
         // get the Consist Type
         virtual int getConsistType() const {return 0;}
@@ -77,11 +77,11 @@ public:
             virtual QList<DccLocoAddress*> getConsistList() const { return  QList<DccLocoAddress*>();}
 
         // does the consist contain the specified locomotive address?
-        virtual bool contains(DccLocoAddress* /*address*/) const {return false;}
+        virtual bool contains(DccLocoAddress* /*address*/)  {return false;}
 
         // get the relative direction setting for a specific
         // locomotive in the consist
-        virtual bool getLocoDirection(DccLocoAddress* /*address*/) const {return false;}
+        virtual bool getLocoDirection(DccLocoAddress* /*address*/)  {return false;}
 
             /*
          * Add a Locomotive to a Consist

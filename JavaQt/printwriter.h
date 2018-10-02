@@ -3,7 +3,10 @@
 
 #include "writer.h"
 #include "javaqt_global.h"
+#include "exceptions.h"
 
+class Formatter;
+class PrintStream;
 class JAVAQTSHARED_EXPORT PrintWriter : public Writer
 {
 public:
@@ -21,8 +24,8 @@ private:
 
  /*private*/ /*final*/ bool autoFlush;
  /*private*/ bool trouble;// = false;
-//    /*private*/ Formatter formatter;
-//    /*private*/ PrintStream psOut = null;
+ /*private*/ Formatter* formatter;
+ /*private*/ QTextStream* psOut;// = null;
 
  /**
   * Line separator string.  This is the value of the line.separator
@@ -30,7 +33,7 @@ private:
   */
  /*private*/ /*final*/ QString lineSeparator;
  /*private*/ void newLine();
- /*private*/ void ensureOpen();// //throws IOException
+ /*private*/ void ensureOpen() throw (IOException);
 
 protected:
  /**

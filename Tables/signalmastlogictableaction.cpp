@@ -428,11 +428,11 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      configDeleteColumn(table);
  }
 
- /*public*/ NamedBean* SmlBeanTableDataModel::getBySystemName(QString name) const {
+ /*public*/ NamedBean* SmlBeanTableDataModel::getBySystemName(QString /*name*/) const {
      return NULL;
  }
 
- /*public*/ NamedBean* SmlBeanTableDataModel::getByUserName(QString name) {
+ /*public*/ NamedBean* SmlBeanTableDataModel::getByUserName(QString /*name*/) {
      return NULL;
  }
 
@@ -451,7 +451,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      }
  }
 
- /*public*/ int SmlBeanTableDataModel::rowCount(const QModelIndex &parent) const
+ /*public*/ int SmlBeanTableDataModel::rowCount(const QModelIndex &/*parent*/) const
  {
      return act->signalMastLogicList->size();
  }

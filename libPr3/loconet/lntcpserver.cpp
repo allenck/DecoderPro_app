@@ -1,4 +1,4 @@
-#include "server.h"
+#include "lntcpserver.h"
 #include "properties.h"
 #include "fileutil.h"
 #include "serverlistner.h"
@@ -8,15 +8,16 @@
 #include <QTcpSocket>
 #include "instancemanager.h"
 #include "loconetsystemconnectionmemo.h"
+#include "LnOverTcp/lntcppreferences.h"
 
 //Server::Server(QObject *parent) :
 //  QObject(parent)
 //{
 //}
-Server* Server::self = NULL;
-/*static*/ /*final*/ QString Server::AUTO_START_KEY = "AutoStart";
-/*static*/ /*final*/ QString Server::PORT_NUMBER_KEY = "PortNumber";
-/*static*/ /*final*/ QString Server::SETTINGS_FILE_NAME = "LocoNetOverTcpSettings.ini";
+LnTcpServer* LnTcpServer::self = NULL;
+/*static*/ /*final*/ QString LnTcpServer::AUTO_START_KEY = "AutoStart";
+/*static*/ /*final*/ QString LnTcpServer::PORT_NUMBER_KEY = "PortNumber";
+/*static*/ /*final*/ QString LnTcpServer::SETTINGS_FILE_NAME = "LocoNetOverTcpSettings.ini";
 
 
 /**
@@ -28,7 +29,7 @@ Server* Server::self = NULL;
 // /*public*/ class Server {
 
 
-/*private*/ Server::Server(QObject *parent) :
+/*private*/ LnTcpServer::LnTcpServer(QObject *parent) :
   QTcpServer(parent)
 {
  settingsLoaded = false;
@@ -43,25 +44,64 @@ Server* Server::self = NULL;
  connectionNbr = 1;
  serverSocket = NULL;
 
+ pm = LnTcpPreferences::getDefault();
+ portNumber = pm->getPort();
+// pm.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+//     switch (evt.getPropertyName()) {
+//         case LnTcpPreferences.PORT:
+//             // only change the port if stopped
+//             if (!isEnabled()) {
+//                 portNumber = pm.getPort();
+//             }
+//             break;
+//         default:
+//             // ignore uninteresting property changes
+//             break;
+//     }
+// });
+ connect(pm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
-/*public*/ void Server::setStateListner(ServerListner* l) {
+void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
+{
+ if(evt->getPropertyName() == LnTcpPreferences::PORT)
+ {
+  // only change the port if stopped
+  if (!isEnabled()) {
+      portNumber = pm->getPort();
+  }
+  // ignore uninteresting property changes
+ }
+}
+
+/*public*/ void LnTcpServer::setStateListner(ServerListner* l) {
  stateListner = l;
 }
 
-/*public*/ /*static synchronized*/ Server* Server::getInstance()
-{
- if (self == NULL)
- {
-  self = new Server();
-  if (self->getAutoStart())
-  {
-   self->enable();
-  }
- }
- return self;
+/**
+ * Get the default server instance, creating it if necessary.
+ *
+ * @return the default server instance
+ */
+/*public*/ /*static*/ /*synchronized*/ LnTcpServer* LnTcpServer::getDefault() {
+ LnTcpServer* server = (LnTcpServer*)InstanceManager::getOptionalDefault("LnTcpServer");
+ if(server == NULL)
+  server = (LnTcpServer*)InstanceManager::setDefault("LnTcpServer", new LnTcpServer());
+ return server;
 }
-/*private*/ void Server::loadSettings()
+
+/*public*/ /*static synchronized*/ LnTcpServer* LnTcpServer::getInstance()
+{
+ LnTcpServer* server = (LnTcpServer*)InstanceManager::getOptionalDefault("LnTcpServer");
+ if(server == NULL)
+ {
+  server = new LnTcpServer();
+  (LnTcpServer*)InstanceManager::setDefault("LnTcpServer", server);
+ }
+ return server;
+}
+#if 0
+/*private*/ void LnTcpServer::loadSettings()
 {
  if (!settingsLoaded)
  {
@@ -107,7 +147,7 @@ Server* Server::self = NULL;
 }
 
 
-/*public*/ void Server::saveSettings()
+/*public*/ void LnTcpServer::saveSettings()
 {
 #if 1 // TODO:
     // we can't use the store capabilities of java.util.Properties, as
@@ -142,30 +182,24 @@ Server* Server::self = NULL;
 #endif
  updateServerStateListener();
 }
-
-/*public*/ bool Server::getAutoStart()
+#endif
+/*public*/ bool LnTcpServer::getAutoStart()
 {
- loadSettings();
- return autoStart;
+ return true;
 }
 
-/*public*/ void Server::setAutoStart(bool start)
+/*public*/ void LnTcpServer::setAutoStart(bool start)
 {
- loadSettings();
- autoStart = start;
- settingsChanged = true;
- updateServerStateListener();
+ // do nothing
 }
 
-/*public*/ int Server::getPortNumber()
+/*public*/ int LnTcpServer::getPortNumber()
 {
- loadSettings();
  return portNumber;
 }
 
-/*public*/ void Server::setPortNumber(int port)
+/*public*/ void LnTcpServer::setPortNumber(int port)
 {
- loadSettings();
  if ((port >= 1024) && (port <= 65535))
  {
   portNumber = port;
@@ -174,17 +208,17 @@ Server* Server::self = NULL;
  }
 }
 
-/*public*/ bool Server::isEnabled()
+/*public*/ bool LnTcpServer::isEnabled()
 {
  //return (socketListener != NULL) && (socketListener->isRunning());
  return bIsEnabled;
 }
 
-/*public*/ bool Server::isSettingChanged() {
+/*public*/ bool LnTcpServer::isSettingChanged() {
     return settingsChanged;
 }
 
-/*public*/ void Server::enable()
+/*public*/ void LnTcpServer::enable()
 {
 #if 0
     if (socketListener == NULL) {
@@ -215,6 +249,7 @@ Server* Server::self = NULL;
     }
 #endif
  listen(QHostAddress::Any, portNumber);
+ log->info(tr("LnTcpServer listening on port %1").arg(portNumber));
  connect(this, SIGNAL(newConnection()), this, SLOT(on_newConnection()));
  updateServerStateListener();
  if (this->shutDownTask == NULL)
@@ -231,7 +266,7 @@ Server* Server::self = NULL;
  bIsEnabled = true;
 }
 
-void Server::on_newConnection()
+void LnTcpServer::on_newConnection()
 {
 
  QTcpSocket* socket = nextPendingConnection();
@@ -245,7 +280,7 @@ void Server::on_newConnection()
  }
 }
 
-/*public*/ void Server::disable()
+/*public*/ void LnTcpServer::disable()
 {
 #if 1 // TODO:
  //if (socketListener != NULL)
@@ -287,7 +322,7 @@ void Server::on_newConnection()
 #endif
 }
 
-/*public*/ void Server::updateServerStateListener()
+/*public*/ void LnTcpServer::updateServerStateListener()
 {
 //    if (stateListner != NULL) {
 //        stateListner->notifyServerStateChanged(this);
@@ -295,13 +330,22 @@ void Server::on_newConnection()
  emit serverStateChanged(this);
 }
 
-/*public*/ void Server::updateClientStateListener()
+/*public*/ void LnTcpServer::updateClientStateListener()
 {
 // if (stateListner != NULL)
 // {
 //  stateListner->notifyClientStateChanged(this);
 // }
  emit clientStateChanged(this, clients->count());
+}
+
+/**
+ * Get the port this server is using.
+ *
+ * @return the port
+ */
+/*public*/ int LnTcpServer::getPort() {
+    return this->portNumber;
 }
 #if 0
 class ClientListener implements Runnable {
@@ -328,7 +372,7 @@ class ClientListener implements Runnable {
     }
 };
 #endif
-/*protected*/ void Server::addClient(ClientRxHandler* handler)
+/*protected*/ void LnTcpServer::addClient(ClientRxHandler* handler)
 {
     /*synchronized (clients) */
  {
@@ -337,7 +381,7 @@ class ClientListener implements Runnable {
  updateClientStateListener();
 }
 
-/*protected*/ void Server::removeClient(ClientRxHandler* handler)
+/*protected*/ void LnTcpServer::removeClient(ClientRxHandler* handler)
 {
     /*synchronized (clients)*/
  {
@@ -346,7 +390,7 @@ class ClientListener implements Runnable {
  updateClientStateListener();
 }
 
-/*public*/ int Server::getClientCount()
+/*public*/ int LnTcpServer::getClientCount()
 {
     /*synchronized (clients)*/
  {

@@ -198,6 +198,7 @@ JDialog::JDialog(QWidget *parent) :
     : QDialog(owner)
 {
     //this(owner, "", modal);
+ this->modal = modal;
     dialogInit();
 }
 #if 0
@@ -758,6 +759,7 @@ JDialog::JDialog(QWidget *parent) :
     }
 
     int oldValue = this->defaultCloseOperation;
+    Q_UNUSED(oldValue);
     this->defaultCloseOperation = operation;
     //firePropertyChange("defaultCloseOperation", oldValue, operation);
 }
@@ -1504,3 +1506,5 @@ void JDialog::closeEvent(QCloseEvent* e)
   l->windowClosing(e);
  }
 }
+
+void JDialog::dispose() {close();}

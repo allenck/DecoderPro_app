@@ -47,6 +47,7 @@
 #include "loggerfactory.h"
 #include "abstractxmladapter.h"
 #include <QUrl>
+#include "class.h"
 
 /**
  * Define the current schema version string for the layout-config schema.
@@ -129,10 +130,10 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  {
   QString adapter = adapterName(o);
   if (log->isDebugEnabled()) log->debug("register "+o->objectName()+" adapter "+adapter);
-#if 0 // TODO:
+#if 1
         if (adapter!=NULL)
             try {
-                Class.forName(adapter);
+                Class::forName(adapter);
             } catch (ClassNotFoundException ex) {
                 locateClassFailed(ex, adapter, o);
             } catch (NoClassDefFoundError ex) {
@@ -183,7 +184,6 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
 
 /*public*/ QList<QObject*> ConfigXmlManager::getInstanceList(/*Class<?>*/QString c)
 {
-#if 1 // TODO:
  QList<QObject*> temp =  QList<QObject*>(plist);
  QList<QObject*> returnlist =  QList<QObject*>();
  //temp.addAll(clist.keySet());
@@ -213,9 +213,6 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  if(returnlist.isEmpty())
   return QList<QObject*>();
  return returnlist;
-#else
-    return QList<QObject*>();
-#endif
 }
 
 /*public*/ void ConfigXmlManager::registerConfig(QObject* o, int x)
@@ -338,8 +335,8 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  * Handle failure to load adapter class. Although only a
  * one-liner in this class, it is a separate member to facilitate testing.
  */
-void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QObject* /*o*/) {
-    log->error(ex->getMessage()+" could not load adapter class "+adapterName);
+void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObject* /*o*/) {
+    log->error(ex.getMessage()+" could not load adapter class "+adapterName);
     //if (log->isDebugEnabled()) ex.printStackTrace();
 }
 
@@ -368,9 +365,13 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
  }
 }
 
+//bool compareValue(QObject* o1, QObject* o2)
+//{
+
+//}
+
 /*protected*/ bool ConfigXmlManager::addConfigStore(QDomElement root)
 {
-#if 1 // TODO:
  bool result = true;
  //ArrayList<Map.Entry<Object, Integer>> l = new ArrayList<Map.Entry<Object, Integer>>(clist.entrySet());
 // QList<QHash<QObject*, int> > l =  QList<QHash<QObject*, int> >();
@@ -387,6 +388,7 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
 //        return o1.compareTo(o2);
 //    }});
   QList<QObject*> l = clist.values();
+//  qSort(l.begin(), l.end(), compareValue);
   for (int i=0; i<l.size(); i++)
   {
 //        try {
@@ -402,9 +404,6 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
 //        }
  }
  return result;
-#else
- return false;
-#endif
 }
 
 /*protected*/ bool ConfigXmlManager::addToolsStore(QDomElement root)
@@ -1111,12 +1110,12 @@ File userPrefsFile;*/
 }
 
 //@Override
-/*public*/ bool ConfigXmlManager::loadDeferred(File* fi) {
+/*public*/ bool ConfigXmlManager::loadDeferred(File* fi) throw (JmriException){
     return this->loadDeferred(FileUtil::fileToURL(fi));
 }
 
 //@Override
-/*public*/ bool ConfigXmlManager::loadDeferred(QUrl url/*url*/)
+/*public*/ bool ConfigXmlManager::loadDeferred(QUrl url/*url*/) throw (JmriException)
 {
  bool result = true;
 #if 1
@@ -1273,7 +1272,7 @@ void ConfigXmlManager::locateFileFailed(QString f) {
 /*static*/ /*public*/ void ConfigXmlManager::storingErrorEncountered (
             XmlAdapter* adapter,
             QString operation,
-            Level* level,
+            Level* /*level*/,
             QString description,
             QString systemName,
             QString userName,

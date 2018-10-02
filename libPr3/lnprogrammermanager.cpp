@@ -55,7 +55,7 @@ LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSyste
 /*public*/ QList<ProgrammingMode*> LnProgrammerManager::getDefaultModes()
 {
  QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
- ret.append(DefaultProgrammerManager::OPSBYTEMODE);
+ ret.append(ProgrammingMode::OPSBYTEMODE);
  ret.append(LOCONETSV2MODE);
  ret.append(LOCONETSV1MODE); // the show in interface in order listed here
  return ret;

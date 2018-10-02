@@ -356,13 +356,13 @@ void NXFrame::on_runManual()
      doAction(e->getSource());
  }
 }
-#if 1
+
 /**
  * Callback from RouteFinder.findRoute()
  * if all goes well, WarrantTableFrame.runTrain(warrant) will run the warrant
  */
 //@Override
-/*public*/ void NXFrame::selectedRoute(QList<BlockOrder*> orders)
+/*public*/ void NXFrame::selectedRoute(QList<BlockOrder*> /*orders*/)
 {
  if (log->isDebugEnabled()) log->debug("NXFrame selectedRoute()");
  QString msg =  NULL;
@@ -471,7 +471,7 @@ void NXFrame::on_runManual()
   if (log->isDebugEnabled()) log->debug("Close Frame.");
  }
 }
-#endif
+
 /*private*/ void NXFrame::runManual()
 {
  QString name = _trainName->text();

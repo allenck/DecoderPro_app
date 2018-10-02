@@ -173,6 +173,8 @@ public:
          */
         virtual int getState();
 
+        /*public*/ virtual QString describeState(int /*state*/) {return "";}
+
         /**
          * Get associated comment text.
          */
@@ -255,6 +257,8 @@ public:
      */
     //@CheckReturnValue
     /*public*/ virtual /*default*/ int compareTo(/*@Nonnull*/ NamedBean* n2);
+
+    /*public*/ virtual bool equals(QObject* obj);
 
     /**
      * Compare the suffix of this NamedBean's name with the

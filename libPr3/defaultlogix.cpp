@@ -118,7 +118,7 @@
  *                   of current group of conditionals
  */
 //@Override
-/*public*/ bool DefaultLogix::addConditional(QString systemName, int order) {
+/*public*/ bool DefaultLogix::addConditional(QString systemName, int /*order*/) {
     _conditionalSystemNames->append(systemName);
     return (true);
 }
@@ -766,67 +766,7 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
         }
     }
 }
-#if 0
-/**
-     * Creates a listener of the required type and starts it
-     */
-    private void startListener(JmriSimplePropertyListener listener) {
-        String msg = "(unknown type number " + listener.getType() + ")";
-        NamedBean nb;
-        NamedBeanHandle<?> namedBeanHandle;
 
-        switch (listener.getType()) {
-            case LISTENER_TYPE_FASTCLOCK:
-                Timebase tb = InstanceManager.timebaseInstance();
-                tb.addMinuteChangeListener(listener);
-                return;
-            default:
-                namedBeanHandle = listener.getNamedBean();
-                if (namedBeanHandle == null) {
-                    switch (listener.getType()) {
-                        case LISTENER_TYPE_SENSOR:
-                            msg = "sensor";
-                            break;
-                        case LISTENER_TYPE_TURNOUT:
-                            msg = "turnout";
-                            break;
-                        case LISTENER_TYPE_LIGHT:
-                            msg = "light";
-                            break;
-                        case LISTENER_TYPE_CONDITIONAL:
-                            msg = "conditional";
-                            break;
-                        case LISTENER_TYPE_SIGNALHEAD:
-                            msg = "signalhead";
-                            break;
-                        case LISTENER_TYPE_SIGNALMAST:
-                            msg = "signalmast";
-                            break;
-                        case LISTENER_TYPE_MEMORY:
-                            msg = "memory";
-                            break;
-                        case LISTENER_TYPE_WARRANT:
-                            msg = "warrant";
-                            break;
-                        case LISTENER_TYPE_OBLOCK:
-                            msg = "oblock";
-                            break;
-                        case LISTENER_TYPE_ENTRYEXIT:
-                            msg = "entry exit";
-                            break;
-                        default:
-                            msg = "unknown";
-                    }
-                    break;
-                }
-                nb = (NamedBean) namedBeanHandle.getBean();
-                nb.addPropertyChangeListener(listener, namedBeanHandle.getName(), "Logix " + getDisplayName());
-                return;
-        }
-        log.error("Bad name for " + msg + " \"" + listener.getDevName()
-                + "\" when setting up Logix listener");
-    }
-#endif
 /**
  * Creates a listener of the required type and starts it
  */
@@ -839,282 +779,141 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
  NamedBeanHandle<NamedBean*>* namedBeanHandle;
  switch (listener->getType())
  {
-  case Logix::LISTENER_TYPE_SENSOR:
+  case LISTENER_TYPE_FASTCLOCK:
+  {
+   Timebase* tb = (Timebase*)InstanceManager::getDefault("Timebase");
+   tb->addMinuteChangeListener(listener);
+   return;
+  }
+  default:
    namedBeanHandle = listener->getNamedBean();
-   if (namedBeanHandle==NULL)
+   if (namedBeanHandle == NULL)
    {
-    msg = "sensor";
+    switch (listener->getType())
+    {
+     case LISTENER_TYPE_SENSOR:
+         msg = "sensor";  // NOI18N
+         break;
+     case LISTENER_TYPE_TURNOUT:
+         msg = "turnout";  // NOI18N
+         break;
+     case LISTENER_TYPE_LIGHT:
+         msg = "light";  // NOI18N
+         break;
+     case LISTENER_TYPE_CONDITIONAL:
+         msg = "conditional";  // NOI18N
+         break;
+     case LISTENER_TYPE_SIGNALHEAD:
+         msg = "signalhead";  // NOI18N
+         break;
+     case LISTENER_TYPE_SIGNALMAST:
+         msg = "signalmast";  // NOI18N
+         break;
+     case LISTENER_TYPE_MEMORY:
+         msg = "memory";  // NOI18N
+         break;
+     case LISTENER_TYPE_WARRANT:
+         msg = "warrant";  // NOI18N
+         break;
+     case LISTENER_TYPE_OBLOCK:
+         msg = "oblock";  // NOI18N
+         break;
+     case LISTENER_TYPE_ENTRYEXIT:
+         msg = "entry exit";  // NOI18N
+         break;
+     default:
+         msg = "unknown";  // NOI18N
+    }
     break;
    }
-   nb = (NamedBean*) namedBeanHandle->getBean();
-   nb->addPropertyChangeListener (listener, namedBeanHandle->getName(), "Logix " + getDisplayName());
-   connect(((AbstractNamedBean*)nb)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+   nb = namedBeanHandle->getBean();
+   nb->addPropertyChangeListener(listener, namedBeanHandle->getName(),
+           "Logix " + getDisplayName());  // NOI18N
    return;
-  case Logix::LISTENER_TYPE_TURNOUT:
-   namedBeanHandle = listener->getNamedBean();
-   if (namedBeanHandle==NULL)
-   {
-    msg = "turnout";
-    break;
-   }
-   nb = (NamedBean*) namedBeanHandle->getBean();
-   nb->addPropertyChangeListener (listener, namedBeanHandle->getName(), "Logix " + getDisplayName());
-   connect(((AbstractNamedBean*)nb)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-   return;
-  case Logix::LISTENER_TYPE_LIGHT:
-  {
-   Light* lgt = (Light*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->
-                           getLight(listener->getDevName());
-   if (lgt==NULL)
-   {
-    msg = "light";
-    break;
-   }
-   lgt->addPropertyChangeListener (listener);
-   connect(((AbstractNamedBean*)lgt)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-   return;
-  }
-  case Logix::LISTENER_TYPE_CONDITIONAL:
-  {
-   Conditional* c = ((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->
-                           getConditional(listener->getDevName());
-   if (c==NULL) {
-       msg = "conditional";
-       break;
-   }
-   c->addPropertyChangeListener (listener);
-   connect(((AbstractNamedBean*)c)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-   return;
-  }
-  case Logix::LISTENER_TYPE_SIGNALHEAD:
-  {
-   SignalHead* h = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
-                           getSignalHead(listener->getDevName());
-   if (h==NULL) {
-       msg = "signal head";
-       break;
-   }
-   h->addPropertyChangeListener (listener);
-   connect(((AbstractNamedBean*)h)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-
-   return;
-  }
-  case Logix::LISTENER_TYPE_SIGNALMAST:
-  {
-   SignalMast* f = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->
-                           provideSignalMast(listener->getDevName());
-   if (f==NULL)
-   {
-    msg = "signal mast";
-    break;
-   }
-   f->addPropertyChangeListener (listener);
-   connect(((AbstractNamedBean*)f)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-   return;
-  }
-  case Logix::LISTENER_TYPE_MEMORY:
-  {
-   namedBeanHandle = listener->getNamedBean();
-   if (namedBeanHandle==NULL) {
-       msg = "memory";
-       break;
-   }
-   nb = (NamedBean*) namedBeanHandle->getBean();
-   nb->addPropertyChangeListener (listener, namedBeanHandle->getName(), "Logix " + getDisplayName());
-   connect(((AbstractNamedBean*)nb)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-   return;
-  }
-#if 1
-  case Logix::LISTENER_TYPE_WARRANT:
-  {
-   msg= "warrant";
-   break;
-  }
-#endif
-  case Logix::LISTENER_TYPE_FASTCLOCK:
-  {
-   Timebase* tb = InstanceManager::timebaseInstance();
-   ((SimpleTimebase*)tb)->addMinuteChangeListener (listener);
-   return;
-  }
-#if 1
-  case Logix::LISTENER_TYPE_OBLOCK:
-  {
-   OBlock* b = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->
-                                 provideOBlock(listener->getDevName());
-   if (b==NULL)
-   {
-    msg= "oblock";
-    break;
-   }
-   b->addPropertyChangeListener (listener);
-   connect(((AbstractNamedBean*)b)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-   return;
-  }
-  case Logix::LISTENER_TYPE_ENTRYEXIT:
-  {
-   NamedBean* ex = ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getBySystemName(listener->getDevName());
-   if (ex==NULL)
-   {
-    msg= "entryexit";
-    break;
-   }
-   ex->addPropertyChangeListener (listener);
-   connect(((AbstractNamedBean*)ex)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-  return;
-  }
-#endif
  }
- log->error("Bad name for " +msg+" \""+listener->getDevName()+
-                    "\" when setting up Logix listener");
+ log->error(tr("Bad name for %1 '%2' when setting up Logix listener [ %3 ]").arg(
+       msg).arg(listener->getDevName()).arg(this->getSystemName()));
 }
 
 /**
  * Removes a listener of the required type
  */
-/*private*/ void DefaultLogix::removeListener(JmriSimplePropertyListener* listener) {
-    QString msg = NULL;
-    try {
-        switch (listener->getType()) {
-            case Logix::LISTENER_TYPE_SENSOR:
-        {
-                Sensor* s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
-                                        provideSensor(listener->getDevName());
-                if (s==NULL) {
-                    msg = "sensor";
-                    break;
-                }
-                // remove listener for this Sensor
-                s->removePropertyChangeListener(listener);
-                return;
-        }
-            case Logix::LISTENER_TYPE_TURNOUT:
-        {
-                Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
-                                        provideTurnout(listener->getDevName());
-                if (t==NULL) {
-                    msg = "turnout";
-                    break;
-                }
-                // remove listener for this Turnout
-                t->removePropertyChangeListener(listener);
-                return;
-        }
-            case Logix::LISTENER_TYPE_LIGHT:
-        {
-                Light* lgt = (Light*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->
-                                        getLight(listener->getDevName());
-                if (lgt==NULL) {
-                    msg = "light";
-                    break;
-                }
-                // remove listener for this Light
-                lgt->removePropertyChangeListener(listener);
-                return;
-        }
-            case Logix::LISTENER_TYPE_CONDITIONAL:
-        {
-                Conditional* c = ((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->
-                                        getConditional(listener->getDevName());
-                if (c==NULL) {
-                    msg = "conditional";
-                    break;
-                }
-                // remove listener for this Conditional
-                c->removePropertyChangeListener(listener);
-                return;
-        }
-            case Logix::LISTENER_TYPE_SIGNALHEAD:
-        {
-                SignalHead* h = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->
-                                        getSignalHead(listener->getDevName());
-                if (h==NULL) {
-                    msg = "signal head";
-                    break;
-                }
-                // remove listener for this Signal Head
-                h->removePropertyChangeListener(listener);
-                return;
-        }
-            case Logix::LISTENER_TYPE_SIGNALMAST:
-        {
-                SignalMast* f = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->
-                                        provideSignalMast(listener->getDevName());
-                if (f==NULL) {
-                    msg = "signal mast";
-                    break;
-                }
-                // remove listener for this Signal Head
-                f->removePropertyChangeListener(listener);
-                return;
-        }
-            case Logix::LISTENER_TYPE_MEMORY:
-        {
-                Memory* m = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->
-                                        provideMemory(listener->getDevName());
-                if (m==NULL) {
-                    msg= "memory";
-                    break;
-                }
-                // remove listener for this Memory
-                m->removePropertyChangeListener(listener);
-                return;
-        }
-#if 1
-            case Logix::LISTENER_TYPE_WARRANT:
-        {
-         Warrant* w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->
-                                        provideWarrant(listener->getDevName());
-                if (w==NULL) {
-                    msg= "warrant";
-                    break;
-                }
-                // remove listener for this Memory
-                w->removePropertyChangeListener(listener);
-                return;
-        }
-#endif
-            case Logix::LISTENER_TYPE_FASTCLOCK:
-        {
-                Timebase* tb = InstanceManager::timebaseInstance();
-                ((SimpleTimebase*)tb)->removeMinuteChangeListener (listener);
-                return;
-        }
-#if 1
-   case Logix::LISTENER_TYPE_OBLOCK:
-   {
-    //OBlock* b = InstanceManager::oBlockManagerInstance().
-    OBlock* b = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->
-                                   provideOBlock(listener->getDevName());
-    if (b==NULL)
-    {
-     msg= "oblock";
-     break;
-    }
-    // remove listener for this Memory
-    b->removePropertyChangeListener(listener);
-    return;
-   }
-   case Logix::LISTENER_TYPE_ENTRYEXIT:
-   {
-    NamedBean* ex = ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getBySystemName(listener->getDevName());
-    if (ex==NULL)
-    {
-     msg= "entryexit";
-     break;
-    }
-    ex->removePropertyChangeListener (listener);
-    return;
-   }
-#endif
-  }
- }
- catch (Throwable t)
+/*private*/ void DefaultLogix::removeListener(JmriSimplePropertyListener* listener)
+{
+ QString msg = "";
+ NamedBean* nb;
+ NamedBeanHandle<NamedBean*>* namedBeanHandle;
+ try
  {
-  log->error("Bad name for listener on \""+listener->getDevName()+"\": "+t.getMessage());
+  switch (listener->getType())
+  {
+   case LISTENER_TYPE_FASTCLOCK:
+   {
+    Timebase* tb = (Timebase*)InstanceManager::getDefault("Timebase");
+    tb->removeMinuteChangeListener(listener);
+    return;
+   }
+   case LISTENER_TYPE_ENTRYEXIT:
+   {
+    NamedBean* ex = ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->
+               getNamedBean(listener->getDevName());
+    if (ex == NULL) {
+        msg = "entryexit";  // NOI18N
+        break;
+    }
+    ex->removePropertyChangeListener(listener);
+    return;
+   }
+   default:
+   namedBeanHandle = listener->getNamedBean();
+   if (namedBeanHandle == NULL)
+   {
+    switch (listener->getType())
+    {
+     case LISTENER_TYPE_SENSOR:
+         msg = "sensor";  // NOI18N
+         break;
+     case LISTENER_TYPE_TURNOUT:
+         msg = "turnout";  // NOI18N
+         break;
+     case LISTENER_TYPE_LIGHT:
+         msg = "light";  // NOI18N
+         break;
+     case LISTENER_TYPE_CONDITIONAL:
+         msg = "conditional";  // NOI18N
+         break;
+     case LISTENER_TYPE_SIGNALHEAD:
+         msg = "signalhead";  // NOI18N
+         break;
+     case LISTENER_TYPE_SIGNALMAST:
+         msg = "signalmast";  // NOI18N
+         break;
+     case LISTENER_TYPE_MEMORY:
+         msg = "memory";  // NOI18N
+         break;
+     case LISTENER_TYPE_WARRANT:
+         msg = "warrant";  // NOI18N
+         break;
+     case LISTENER_TYPE_OBLOCK:
+         msg = "oblock";  // NOI18N
+         break;
+     case LISTENER_TYPE_ENTRYEXIT:
+         msg = "entry exit";  // NOI18N
+         break;
+     default:
+         msg = "unknown";  // NOI18N
+    }
+    break;
+   }
+   nb = namedBeanHandle->getBean();
+   nb->removePropertyChangeListener(listener);
+   return;
+  }
+ } catch (Exception ex) {
+     log->error(tr("Bad name for listener on \"%1\": ").arg(listener->getDevName()), ex.getMessage());  // NOI18N
  }
- log->error("Bad name for "+msg+" listener on \""+listener->getDevName()+
-                    "\" when removing");
+ log->error(tr("Bad name for ") + msg + " listener on \"" + listener->getDevName()  // NOI18N
+         + "\" when removing");  // NOI18N
 }
 
 /**
@@ -1314,8 +1113,9 @@ ArrayList <String[]> loopGremlins = NULL;
  *    Returns an empty string if there are none, probably because
  *    "checkLoopCondition" was not invoked before the call, or returned false.
  *
-public ArrayList <String[]> getLoopGremlins() {return(loopGremlins);}
-*/
+ * public ArrayList <String[]> getLoopGremlins() {return(loopGremlins);}
+ */
+
 /**
  * Not needed for Logixs - included to complete implementation of the NamedBean interface.
  */

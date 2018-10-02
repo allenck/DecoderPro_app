@@ -14,6 +14,9 @@
 #include "colorutil.h"
 #include <QPalette>
 #include <QBrush>
+#include "lineborder.h"
+#include "compoundborder.h"
+#include "borderfactory.h"
 
 //PositionablePopupUtil::PositionablePopupUtil(QObject *parent) :
 //    QObject(parent)
@@ -103,8 +106,8 @@ void PositionablePopupUtil::init()
  margin=0;
  borderSize=0;
  borderColor=QColor(Qt::black);
-// borderMargin = BorderFactory.createEmptyBorder(0, 0, 0, 0);
-// outlineBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+ borderMargin = BorderFactory::createEmptyBorder(0, 0, 0, 0);
+ outlineBorder = BorderFactory::createEmptyBorder(0, 0, 0, 0);
 
  italic = NULL;
  bold = NULL;
@@ -198,16 +201,13 @@ void PositionablePopupUtil::display()
 /*public*/ void PositionablePopupUtil::setMargin(int m)
 {
     margin = m;
-//    if (_parent->isOpaque()){
-////        borderMargin = new LineBorder(getBackground(),m);
-//        //_parent.setBorder(new LineBorder(setBackground(), m));
-
-//    } else{
-////        borderMargin = BorderFactory.createEmptyBorder(m, m, m, m);
-//        //_parent.setBorder(BorderFactory.createEmptyBorder(m, m, m, m));
-//    }
+    if (_parent->isOpaque()) {
+        borderMargin = new LineBorder(getBackground(), m);
+    } else {
+        borderMargin = BorderFactory::createEmptyBorder(m, m, m, m);
+    }
     if (_showBorder) {
-//        _parent->setBorder(new CompoundBorder(outlineBorder, borderMargin));
+        _parent->setBorder(new CompoundBorder(outlineBorder, borderMargin));
     }
     ((PositionableLabel*)_parent)->updateSize();
 }
@@ -239,24 +239,24 @@ void PositionablePopupUtil::display()
 /*public*/ void PositionablePopupUtil::setBorderSize(int border){
     borderSize = border;
 
-//    if(borderColor!=NULL){
-//        outlineBorder = new LineBorder(borderColor, borderSize);
-//        _parent->setBorder(new CompoundBorder(outlineBorder, borderMargin));
-//        //setHorizontalAlignment(CENTRE);
-//    }
+    if(borderColor.isValid()){
+        outlineBorder = new LineBorder(borderColor, borderSize);
+        _parent->setBorder(new CompoundBorder(outlineBorder, borderMargin));
+        //setHorizontalAlignment(CENTRE);
+    }
     ((PositionableLabel*)_parent)->updateSize();
 }
 
 /*public*/ void PositionablePopupUtil::setBorder(bool set) {
     _showBorder = set;
-//    if (set) {
-//        if(borderColor!=NULL){
-//            outlineBorder = new LineBorder(borderColor, borderSize);
-//            _parent.setBorder(new CompoundBorder(outlineBorder, borderMargin));
-//         }
-//    } else {
-//        _parent.setBorder(NULL);
-//    }
+    if (set) {
+        if(borderColor.isValid()){
+            outlineBorder = new LineBorder(borderColor, borderSize);
+            _parent->setBorder(new CompoundBorder(outlineBorder, borderMargin));
+         }
+    } else {
+        _parent->setBorder(NULL);
+    }
 }
 
 /*public*/ int PositionablePopupUtil::getBorderSize() {
@@ -265,10 +265,10 @@ void PositionablePopupUtil::display()
 
 /*public*/ void PositionablePopupUtil::setBorderColor(QColor border){
     borderColor = border;
-//    if(borderColor!=NULL && _showBorder){
-//        outlineBorder = new LineBorder(borderColor, borderSize);
-//        _parent.setBorder(new CompoundBorder(outlineBorder, borderMargin));
-//    }
+    if(borderColor.isValid() && _showBorder){
+        outlineBorder = new LineBorder(borderColor, borderSize);
+        _parent->setBorder(new CompoundBorder(outlineBorder, borderMargin));
+    }
 }
 
 /*public*/ QColor PositionablePopupUtil::getBorderColor()

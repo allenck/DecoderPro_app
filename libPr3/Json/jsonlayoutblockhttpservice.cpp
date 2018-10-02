@@ -17,7 +17,7 @@
 }
 
 //@Override
-/*public*/ QJsonValue JsonLayoutBlockHttpService::doGet(QString type, QString name, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonLayoutBlockHttpService::doGet(QString /*type*/, QString name, QLocale /*locale*/) throw (JsonException) {
     QJsonObject root = QJsonObject(); //mapper.createQJsonObject();
     root.insert(JSON::TYPE, JsonLayoutBlock::LAYOUTBLOCK);
     QJsonObject data =  QJsonObject();//root.putObject(JSON::DATA);

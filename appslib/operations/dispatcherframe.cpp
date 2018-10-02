@@ -694,7 +694,7 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
     extraFrame->setVisible(true);
 }
 
-/*private*/ void DispatcherFrame::handleAutoAllocateChanged(ActionEvent* e) {
+/*private*/ void DispatcherFrame::handleAutoAllocateChanged(ActionEvent* /*e*/) {
     setAutoAllocate(autoAllocateBox->isChecked());
     if (optionsMenu != NULL) {
         optionsMenu->initializeMenu();
@@ -952,7 +952,7 @@ void cancelRestart(ActionEvent e) {
 }
 #endif
 // terminate an Active Train from the button in the Dispatcher window
-void DispatcherFrame::terminateTrain(ActionEvent* e) {
+void DispatcherFrame::terminateTrain(ActionEvent* /*e*/) {
     ActiveTrain* at = NULL;
     if (activeTrainsList->size() == 1) {
         at = activeTrainsList->at(0);
@@ -2424,13 +2424,13 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
 //            tr("ButtonNo"));
 //    if (selectedValue == 0) {
     int selectedValue = QMessageBox::question(dispatcherFrame, tr("Warning"), mess, QMessageBox::Yes | QMessageBox::No);
-    if(selectedValue = QMessageBox::Yes)
+    if(selectedValue == QMessageBox::Yes)
     {
-//        try {
+        try {
             fastClockSensor->setState(Sensor::ACTIVE);
-//        } catch (jmri.JmriException reason) {
-//            log->error("Exception when setting fast clock sensor");
-//        }
+        } catch (JmriException reason) {
+            log->error("Exception when setting fast clock sensor");
+        }
     }
 }
 
@@ -2581,7 +2581,7 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     }
 
     //@Override
-    /*public*/ bool ActiveTrainsTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+    /*public*/ bool ActiveTrainsTableModel::setData(const QModelIndex &index, const QVariant &/*value*/, int role)
     {
      if(role == Qt::EditRole)
      {

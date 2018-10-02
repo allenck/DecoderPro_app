@@ -346,6 +346,7 @@ isAdjusting = false;
         }
     }
 #endif
+    emit stateChanged(new ChangeEvent(this));
 }
 
 

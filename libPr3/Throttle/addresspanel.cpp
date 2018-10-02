@@ -19,6 +19,9 @@
 #include "addressedprogrammermanager.h"
 #include "windowpreferences.h"
 #include "locoaddressxml.h"
+#include "joptionpane.h"
+#include "backgroundpanel.h"
+
 
 AddressPanel::AddressPanel(QWidget *parent) :
     QDockWidget(parent),
@@ -103,11 +106,12 @@ AddressPanel::~AddressPanel()
  *
  * @param l
  */
-/*public*/ void AddressPanel::addAddressListener(AddressListener* l) {
-    if (listeners == NULL)
-        listeners = new QList<AddressListener*>(/*2*/);
-    if (!listeners->contains(l))
-        listeners->append(l);
+/*public*/ void AddressPanel::addAddressListener(AddressListener* l)
+{
+ if (listeners == NULL)
+     listeners = new QList<AddressListener*>(/*2*/);
+ if (!listeners->contains(l))
+     listeners->append(l);
 }
 
 /**
@@ -131,7 +135,7 @@ AddressPanel::~AddressPanel()
 /*public*/ int AddressPanel::getRosterSelectedIndex() {
     return getRosterEntrySelector()->getRosterEntryComboBox()->currentIndex();
 }
-#if 0
+
 /**
  * Sets the selected index of the roster combo box. Implemented to support
  * xboxThrottle.py
@@ -139,22 +143,21 @@ AddressPanel::~AddressPanel()
  * selected index without triggering a cascade of events.
  * @param index the index to select in the combo box
  */
-/*public*/ void setRosterSelectedIndex(int index) {
-    if (getRosterEntrySelector().isEnabled() && index >= 0 && index < getRosterEntrySelector().getRosterEntryComboBox().getItemCount()) {
-        getRosterEntrySelector().getRosterEntryComboBox().setSelectedIndex(index);
+/*public*/ void AddressPanel::setRosterSelectedIndex(int index) {
+    if (getRosterEntrySelector()->isEnabled() && index >= 0 && index < getRosterEntrySelector()->getRosterEntryComboBox()->count()) {
+        getRosterEntrySelector()->getRosterEntryComboBox()->setCurrentIndex(index);
     }
-    if ((backgroundPanel != NULL) && (!(rosterBox.getSelectedRosterEntries().length != 0))) {
-        backgroundPanel.setImagePath(NULL);
-        String rosterEntryTitle = getRosterEntrySelector().getSelectedRosterEntries()[0].titleString();
-        RosterEntry re = Roster.instance().entryFromTitle(rosterEntryTitle);
-        if ((re != NULL) && (re.getImagePath()!=NULL)){
-            backgroundPanel.setImagePath(re.getImagePath());
+    if ((backgroundPanel != NULL) && (!(rosterBox->getSelectedRosterEntries()->length() != 0))) {
+        backgroundPanel->setImagePath(NULL);
+        QString rosterEntryTitle = getRosterEntrySelector()->getSelectedRosterEntries()->at(0)->titleString();
+        RosterEntry* re = Roster::instance()->entryFromTitle(rosterEntryTitle);
+        if ((re != NULL) && (re->getImagePath()!=NULL)){
+            backgroundPanel->setImagePath(re->getImagePath());
         }
     }
 }
 
-/*private*/ BackgroundPanel backgroundPanel;
-/*public*/ void setBackgroundPanel(BackgroundPanel bp) {
+/*public*/ void AddressPanel::setBackgroundPanel(BackgroundPanel* bp) {
     backgroundPanel = bp;
 }
 
@@ -163,10 +166,10 @@ AddressPanel::~AddressPanel()
  * button.
  * Implemented to support xboxThrottle.py
  */
-/*public*/ void selectRosterEntry() {
+/*public*/ void AddressPanel::selectRosterEntry() {
     rosterItemSelected();
 }
-#endif
+
 /**
  * Get notification that a throttle has been found as we requested.
  *
@@ -191,8 +194,7 @@ AddressPanel::~AddressPanel()
   bool requestOK =
             InstanceManager::throttleManagerInstance()->requestThrottle(currentAddress->getNumber(), currentAddress->isLongAddress(), (ThrottleListener*)this);
   if (!requestOK)
-//            JOptionPane.showMessageDialog(mainPanel, Bundle.getMessage("AddressInUse"));
-   QMessageBox::warning(mainPanel, tr("Warning"), tr("Address in use by another throttle."));
+   JOptionPane::showMessageDialog(mainPanel, tr("Address in use by another throttle."));
   return;
  }
 
@@ -233,27 +235,26 @@ AddressPanel::~AddressPanel()
   ui->progButton->setEnabled(true);
 
  // send notification of new address
-// for (int i = 0; i < listeners->size(); i++)
-// {
-//  AddressListener* l = listeners->at(i);
-//  if (log->isDebugEnabled())
-//  {
-//   log->debug("Notify address listener of throttle acquired " + QString(l->metaObject()->className()));
-//  }
-//  if (currentAddress != NULL)
-//  {
-//   ((ThrottleWindow*)l)->notifyAddressThrottleFound((DccThrottle*)throttle);
-//  }
-// }
- if (currentAddress != NULL)
+ for (int i = 0; i < listeners->size(); i++)
  {
-  emit notifyAddressThrottleFound((DccThrottle*)throttle);
+  AddressListener* l = listeners->at(i);
+  if (log->isDebugEnabled())
+  {
+   log->debug("Notify address listener of throttle acquired " + QString(l->metaObject()->className()));
+  }
+  if (currentAddress != NULL)
+  {
+//   ((ThrottleWindow*)l)->notifyAddressThrottleFound((DccThrottle*)throttle);
+   connect(this, SIGNAL(notifyAddressThrottleFound(DccThrottle*)), l, SLOT(notifyAddressThrottleFound(DccThrottle*)));
+   emit notifyAddressThrottleFound(throttle);
+   disconnect(this, SIGNAL(notifyAddressThrottleFound(DccThrottle*)), l, SLOT(notifyAddressThrottleFound(DccThrottle*)));
+
+  }
  }
 }
 
-/*public*/ void AddressPanel::notifyFailedThrottleRequest(DccLocoAddress* address, QString reason){
-    //javax.swing.JOptionPane.showMessageDialog(NULL,reason,Bundle.getMessage("FailedSetupRequestTitle"),javax.swing.JOptionPane.WARNING_MESSAGE);
-        QMessageBox::warning(NULL,tr("Warning"), tr("Failed to create Throttle") );
+/*public*/ void AddressPanel::notifyFailedThrottleRequest(DccLocoAddress* /*address*/, QString reason){
+    JOptionPane::showMessageDialog(NULL,reason,tr("Failed to create Throttle"),JOptionPane::WARNING_MESSAGE);
 }
 
 void AddressPanel::OnSetButton_clicked()
@@ -277,7 +278,11 @@ void AddressPanel::OnSetButton_clicked()
    AddressListener* l = listeners->at(i);
    if (log->isDebugEnabled())
     log->debug("Notify address listener of address change " + QString(l->metaObject()->className()));
-  l->notifyConsistAddressThrottleFound(t);
+  //l->notifyConsistAddressThrottleFound(t);
+   connect(this, SIGNAL(notifyConsistAddressThrottleFound(DccThrottle*)), l, SLOT(notifyConsistAddressThrottleFound(DccThrottle*)));
+   emit notifyConsistAddressThrottleFound(t);
+   disconnect(this, SIGNAL(notifyConsistAddressThrottleFound(DccThrottle*)), l, SLOT(notifyConsistAddressThrottleFound(DccThrottle*)));
+
  }
 }
 
@@ -317,6 +322,8 @@ void AddressPanel::OnSetButton_clicked()
  */
 /*public*/ void AddressPanel::setRosterEntry(RosterEntry* entry)
 {
+ if(entry == NULL)
+  return;
  getRosterEntrySelector()->setSelectedRosterEntry(entry);
  addrSelector->setAddress(entry->getDccLocoAddress());
  rosterEntry = entry;
@@ -500,23 +507,20 @@ void AddressPanel::OnSetButton_clicked()
  if (currentAddress == NULL)
   return;	// no address
  // send notification of new address
-// for (int i = 0; i < listeners->size(); i++)
-// {
-//  AddressListener* l = listeners->at(i);
-//  if (log->isDebugEnabled())
-//   log->debug("Notify address listener of address change " + QString(l->metaObject()->className()));
-//  l->notifyAddressChosen(currentAddress);
-// }
- emit notifyAddressChosen(currentAddress);
+ for (int i = 0; i < listeners->size(); i++)
+ {
+  AddressListener* l = listeners->at(i);
+  if (log->isDebugEnabled())
+   log->debug("Notify address listener of address change " + QString(l->metaObject()->className()));
+  connect(this, SIGNAL(notifyAddressChosen(LocoAddress*)), l, SLOT(notifyAddressChosen(LocoAddress*)));
+  emit notifyAddressChosen(currentAddress);
+  disconnect(this, SIGNAL(notifyAddressChosen(LocoAddress*)), l, SLOT(notifyAddressChosen(LocoAddress*)));
+ }
 
- bool requestOK;
-// if(rosterEntry != NULL)
-//  requestOK = InstanceManager::throttleManagerInstance()->requestThrottle(rosterEntry, (ThrottleListener*)this);
-//else
-  requestOK = InstanceManager::throttleManagerInstance()->requestThrottle(getCurrentAddress(), rosterEntry, (ThrottleListener*)this);
+ log->debug("Requesting new slot for address "+currentAddress->toString());
+ bool requestOK = InstanceManager::throttleManagerInstance()->requestThrottle(getCurrentAddress(), rosterEntry, (ThrottleListener*)this);
  if (!requestOK)
-//        JOptionPane.showMessageDialog(mainPanel, Bundle.getMessage("AddressInUse"));
-  QMessageBox::warning(mainPanel, tr("Warning"), tr("Address in use by another throttle."));
+  JOptionPane::showMessageDialog(mainPanel, tr("Address in use by another throttle."));
 }
 
 /*private*/ void AddressPanel::changeOfConsistAddress()
@@ -526,17 +530,20 @@ void AddressPanel::OnSetButton_clicked()
  // send notification of new address
  for (int i = 0; i < listeners->size(); i++)
  {
-        AddressListener* l = listeners->at(i);
-        if (log->isDebugEnabled())
-            log->debug("Notify address listener of address change " + QString(l->metaObject()->className()));
-        l->notifyConsistAddressChosen(consistAddress->getNumber(), consistAddress->isLongAddress());
-    }
+  AddressListener* l = listeners->at(i);
+  if (log->isDebugEnabled())
+      log->debug("Notify address listener of address change " + QString(l->metaObject()->className()));
+  //l->notifyConsistAddressChosen(consistAddress->getNumber(), consistAddress->isLongAddress());
+  connect(this, SIGNAL(notifyConsistAddressChosen(DccLocoAddress*)), l, SLOT(notifyConsistAddressChosen(int,bool)));
+  emit notifyConsistAddressChosen(consistAddress->getNumber(), consistAddress->isLongAddress());
+  disconnect(this, SIGNAL(notifyConsistAddressChosen(DccLocoAddress*)), l, SLOT(notifyConsistAddressChosen(int,bool)));
+ }
 
-    bool requestOK =
-        InstanceManager::throttleManagerInstance()->requestThrottle(consistAddress->getNumber(), consistAddress->isLongAddress(), (ThrottleListener*)this);
-    if (!requestOK)
-        //JOptionPane.showMessageDialog(mainPanel, Bundle.getMessage("AddressInUse"));
-        QMessageBox::warning(mainPanel, tr("Warning"), tr("Address in use by another throttle."));
+ bool requestOK =
+     InstanceManager::throttleManagerInstance()->requestThrottle(consistAddress->getNumber(), consistAddress->isLongAddress(), (ThrottleListener*)this);
+ if (!requestOK)
+     //JOptionPane.showMessageDialog(mainPanel, Bundle.getMessage("AddressInUse"));
+     QMessageBox::warning(mainPanel, tr("Warning"), tr("Address in use by another throttle."));
 }
 
 /**
@@ -590,17 +597,23 @@ void AddressPanel::OnSetButton_clicked()
     notifyThrottleDisposed();
 }
 
-/*private*/ void AddressPanel::notifyListenersOfThrottleRelease() {
-    if (listeners != NULL) {
-        for (int i = 0; i < listeners->size(); i++) {
-            AddressListener* l = listeners->at(i);
-            if (log->isDebugEnabled()) {
-                log->debug("Notify address listener of release " + QString(l->metaObject()->className()));
-            }
-            l->notifyAddressReleased(currentAddress);
-        }
-      notifyAddressReleased(currentAddress);
-    }
+/*private*/ void AddressPanel::notifyListenersOfThrottleRelease()
+{
+ if (listeners != NULL)
+ {
+  for (int i = 0; i < listeners->size(); i++)
+  {
+   AddressListener* l = listeners->at(i);
+   if (log->isDebugEnabled()) {
+       log->debug("Notify address listener of release " + QString(l->metaObject()->className()));
+   }
+   connect(this, SIGNAL(notifyAddressReleased(LocoAddress*)), l, SLOT(notifyAddressReleased(LocoAddress*)));
+   emit notifyAddressReleased(currentAddress);
+   //l->notifyAddressReleased(currentAddress);
+   disconnect(this, SIGNAL(notifyAddressReleased(LocoAddress*)), l, SLOT(notifyAddressReleased(LocoAddress*)));
+
+  }
+ }
 }
 #if 1
 /**

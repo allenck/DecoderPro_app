@@ -60,7 +60,7 @@ public:
     /*public*/ static JFileChooser* userFileChooser();
     /*public*/ static JFileChooser* userFileChooser(QString filter);
     /*public*/ static JFileChooser* userFileChooser(QString filter, QString suffix1);
-    //static /*private*/ Logger log = Logger.getLogger(XmlFile.class.getName());
+    /*public*/ QString getPathname();
 
 signals:
     

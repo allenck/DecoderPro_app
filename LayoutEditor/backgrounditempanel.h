@@ -4,7 +4,8 @@
 #include "jdialog.h"
 #include "actionlistener.h"
 #include "liblayouteditor_global.h"
-
+#include <QVector>
+#include "imagepanel.h"
 
 class ActionListener;
 class ChangeEvent;
@@ -14,7 +15,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT BackgroundItemPanel : public IconItemPanel
     Q_OBJECT
 public:
     //explicit BackgroundItemPanel(QWidget *parent = 0);
-    /*public*/ BackgroundItemPanel(JmriJFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent);
+    /*public*/ BackgroundItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent);
     /*public*/ void init();
 
 signals:
@@ -27,6 +28,7 @@ private:
 
 protected:
     /*protected*/ QWidget* instructions();
+    /*protected*/ QWidget* makeBgButtonPanel(ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*> imgArray, DisplayFrame* parent);
 
 };
 

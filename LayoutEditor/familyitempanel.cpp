@@ -18,6 +18,7 @@
 #include "inputdialog.h"
 #include "icondialog.h"
 #include "dragjlabel.h"
+#include "joptionpane.h"
 
 //FamilyItemPanel::FamilyItemPanel(QWidget *parent) :
 //    ItemPanel(parent)
@@ -32,7 +33,7 @@
     /**
     * Constructor types with multiple families and multiple icon families
     */
-/*public*/ FamilyItemPanel::FamilyItemPanel(JmriJFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent)
+/*public*/ FamilyItemPanel::FamilyItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent)
     : ItemPanel(parentFrame, type, family, editor, parent)
 {
  //super(parentFrame, type, family, editor);
@@ -56,6 +57,7 @@
  {
   QThread::yieldCurrentThread();
   _update = false;
+  _suppressDragging = false;
   _bottom1Panel = makeBottom1Panel();
   _bottom2Panel = makeBottom2Panel();
   initIconFamiliesPanel();
@@ -586,16 +588,7 @@ void FamilyItemPanel::on_showIconsButton_clicked()
     panelLayout->addWidget(cancelButton);
     return panel;
 }
-void FamilyItemPanel::on_newFamilyButton_clicked()
-{
- createNewFamilySet(_itemType);
-}
 
-/*private*/ void FamilyItemPanel::createNewFamilySet(QString type)
-{
- IconDialog* dialog = new IconDialog(type, NULL, this, NULL);
- dialog->sizeLocate();
-}
 
 // add update buttons to  bottom1Panel
 /*protected*/ QWidget* FamilyItemPanel::makeBottom3Panel(ActionListener* doneAction, QWidget* bottom1Panel)
@@ -620,12 +613,65 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
  return bottomPanel;
 }
 
-/*protected*/ void FamilyItemPanel::removeIconFamiliesPanel()
-{
-//    remove(_iconFamilyPanel);
- layout()->removeWidget(_iconFamilyPanel);
- delete _iconFamilyPanel;
- _iconFamilyPanel = NULL;
+/**
+ * Action item for deletion of an icon family.
+ */
+/*protected*/ void FamilyItemPanel::deleteFamilySet() {
+    ItemPalette::removeIconMap(_itemType, _family);
+    _family = "";
+    _currentIconMap = NULL;
+    updateFamiliesPanel();
+}
+
+/**
+ * Replacement panel for _bottom1Panel when no icon families exist for
+ * _itemType.
+ */
+/*private*/ QWidget* FamilyItemPanel::makeCreateNewFamilyPanel() {
+    QWidget* panel = new QWidget();
+    FlowLayout* panelLayout;
+    panel->setLayout(panelLayout = new FlowLayout());
+    QPushButton* newFamilyButton = new QPushButton(tr("New Icon Set"));
+//    newFamilyButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            newFamilyDialog();
+//        }
+//    });
+    connect(newFamilyButton, SIGNAL(clicked(bool)), this, SLOT(newFamilyDialog()));
+    newFamilyButton->setToolTip(tr("Create an additional set of icons for this device"));
+    panelLayout->addWidget(newFamilyButton);
+
+    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+//    cancelButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            updateFamiliesPanel();
+//        }
+//    });
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(updateFamiliesPanel()));
+    panelLayout->addWidget(cancelButton);
+    return panel;
+}
+
+/*protected*/ bool FamilyItemPanel::newFamilyDialog() {
+    QString family = JOptionPane::showInputDialog(_paletteFrame, tr("Enter a name for this icon set."), tr("Create New Icon Set for %1s").arg(_itemType), JOptionPane::QUESTION_MESSAGE);
+    if (family == NULL || family.trimmed().length() == 0) {
+        // bail out
+        return false;
+    }
+    QStringListIterator iter(ItemPalette::getFamilyMaps(_itemType)->keys());
+//    if (!ThreadingUtil.isGUIThread()) log.error("Not on GUI thread", new Exception("traceback"));
+    while (iter.hasNext()) {
+        if (family == (iter.next())) {
+            JOptionPane::showMessageDialog(_paletteFrame,
+                    tr("Family name \"%1\" is the name of another icon set for %2s. Please change the name.").arg(family).arg(_itemType),
+                    tr("Warning"), JOptionPane::WARNING_MESSAGE);
+            return false;
+        }
+    }
+    _dialog = openDialog(_itemType, family, NULL);
+    return true;
 }
 
 /*protected*/ void FamilyItemPanel::openEditDialog()
@@ -636,6 +682,20 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
  dialog->sizeLocate();
 }
 
+/*protected*/ IconDialog* FamilyItemPanel::openDialog(QString type, QString family, QHash<QString, NamedIcon*>* iconMap)
+{
+    IconDialog* dialog = new IconDialog(type, family, this, iconMap);
+    dialog->sizeLocate();
+    return dialog;
+}
+
+//@Override
+/*protected*/ void FamilyItemPanel::closeDialogs() {
+    if (_dialog != NULL) {
+        _dialog->closeDialogs();
+        _dialog->dispose();
+    }
+}
 /**
 * Action of family radio button
 */

@@ -1056,68 +1056,12 @@ void ControlPanelEditor::selectAllAction()
     _fitX = (int)qFloor(minX);
     _fitY = (int)qFloor(minY);
 
-#if 0 //TODO:
-    QFrame* frame = getTargetFrame();
-    QWidget* contentPane = getTargetFrame()->getContentPane();
-    QSize dim = contentPane->size();
-    QSize d = getTargetPanel()->size();
-    getTargetPanel()->resize((int)qCeil(maxX-minX), (int)qCil(maxY-minY));
-
-    JScrollPane scrollPane = getPanelScrollPane();
-    scrollPane.getHorizontalScrollBar().setValue(0);
-    scrollPane.getVerticalScrollBar().setValue(0);
-    JViewport viewPort = scrollPane.getViewport();
-    QSize dv = viewPort.getExtentSize();
-
-    int dX = frame->width()-dv.width();
-    int dY = frame->height()-dv.height();
-    if (_debug) log->debug("zoomToFit: layoutWidth= "+(maxX-minX)+", layoutHeight= "+(maxY-minY)+
-                          "\n\tframeWidth= "+frame.getWidth()+", frameHeight= "+frame.getHeight()+
-                          ", viewWidth= "+dv.width()+", viewHeight= "+dv.height()+
-                          "\n\tconWidth= "+dim.width()+", conHeight= "+dim.height()+
-                          ", panelWidth= "+d.width()+", panelHeight= "+d.height());
-    double ratioX = dv.width()/(maxX-minX);
-    double ratioY = dv.height()/(maxY-minY);
-    double ratio = qMin(ratioX, ratioY);
-    /*
-    if (ratioX<ratioY) {
-        if (ratioX>1.0) {
-            ratio = ratioX;
-        } else {
-            ratio = ratioY;
-        }
-    } else {
-        if (ratioY<1.0) {
-            ratio = ratioX;
-        } else {
-            ratio = ratioY;
-        }
-    } */
-    _fitX = (int)qFloor(minX);
-    _fitY = (int)qFloor(minY);
-    for (int i=0; i<contents.size(); i++) {
-        Positionable p = contents.at(i);
-        p.setLocation(p.getX()-_fitX, p.getY()-_fitY);
-    }
-    setScroll(SCROLL_BOTH);
-    setPaintScale(ratio);
-    setScroll(SCROLL_NONE);
-    scrollNone->setChecked(true);
-    //getTargetPanel().setSize((int)Math.ceil(maxX), (int)Math.ceil(maxY));
-    frame.setSize((int)Math.ceil((maxX-minX)*ratio)+dX, (int)Math.ceil((maxY-minY)*ratio)+dY);
-    scrollPane.getHorizontalScrollBar().setValue(0);
-    scrollPane.getVerticalScrollBar().setValue(0);
-    if (_debug) log.debug("zoomToFit: ratio= "+ratio+", w= "+(maxX-minX)+", h= "+(maxY-minY)+
-                          ", frameWidth= "+frame->width()+", frameHeight= "+frame->height());
-#else
     QRectF dv = editScene->sceneRect();
     double ratioX = dv.width()/(maxX-minX);
     double ratioY = dv.height()/(maxY-minY);
     double ratio = qMin(ratioX, ratioY);
     setPaintScale(ratio);
     getTargetPanel()->views().at(0)->scale(ratio,ratio);
-
-#endif
 }
 
 /*public*/ void ControlPanelEditor::setTitle()

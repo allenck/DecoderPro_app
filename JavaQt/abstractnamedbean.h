@@ -5,6 +5,27 @@
 #include "propertychangesupport.h"
 #include <QSet>
 #include "javaqt_global.h"
+#include "exceptions.h"
+
+class PropertyVetoException : public Exception
+{
+ PropertyChangeEvent* evt;
+public:
+ PropertyVetoException(QString msg, PropertyChangeEvent* evt) : Exception(msg)
+ {
+  this->msg = msg;
+  this->evt = evt;
+ }
+ /**
+  * Gets the vetoed <code>PropertyChangeEvent</code>.
+  *
+  * @return A PropertyChangeEvent describing the vetoed change.
+  */
+ /*public*/ PropertyChangeEvent* getPropertyChangeEvent() {
+     return evt;
+ }
+};
+
 
 class JAVAQTSHARED_EXPORT AbstractNamedBean :  public NamedBean
 {
@@ -50,16 +71,21 @@ public:
     /*public java.util.*/QSet<QString> getPropertyKeys();
     PropertyChangeSupport* pcs;
     /*public*/ void removeProperty(QString key);
+    /*public*/ QString describeState(int state);
+    /*public*/ bool equals(QObject* obj);
+    /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n);
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 
 signals:
 //    void propertyChange(AbstractNamedBean* bean, QString propertyName, QString o, QString n);
 //    void propertyChange( QString propertyName, QVariant o, QVariant n);
     void propertyChange(PropertyChangeEvent*);
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt); //throws java.beans.PropertyVetoException
 
 public slots:
 private:
- Logger log;
+    /*private*/ static Logger* log;// = LoggerFactory::getLogger("AbstractNamedBean");
+
+ void common(QString sys, QString user, QObject *parent);
  QString comment;
  QMap<QString, QVariant>* parameters;
  // implementing classes will typically have a function/listener to get
@@ -75,7 +101,7 @@ private:
  QHash<PropertyChangeListener*, QString>* _Register;
  QHash<PropertyChangeListener*, QString>* listenerRefs;
  QObject* parent;
- friend class LayoutBlock;
+ 
  protected:
   QString mUserName;
   QString mSystemName;
@@ -83,8 +109,10 @@ private:
   AbstractNamedBean(QString sys, QString user, QObject* parent = 0);
   /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
 //  /*protected*/ void firePropertyChange(QString p, QObject* old, QObject* n);
- friend class CatalogTree;
- friend class AbstractCatalogTree;
+ 
+  friend class LayoutBlock;
+  friend class CatalogTree;
+  friend class AbstractCatalogTree;
 };
 
 #endif // ABSTRACTNAMEDBEAN_H

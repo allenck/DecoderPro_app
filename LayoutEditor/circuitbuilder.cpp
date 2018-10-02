@@ -486,8 +486,8 @@ void CircuitBuilder::editCircuitPaths_triggered()
     checkCircuits();
     _editor->setSelectionGroup(NULL);
     _editor->disableMenus();
-    EditScene* targetPane = (EditScene*)_editor->getTargetPanel();
-//    targetPane.setSelectGroupColor(_editGroupColor);
+//    EditScene* targetPane = (EditScene*)_editor->getTargetPanel();
+//    targetPane->setSelectGroupColor(_editGroupColor);
 //    targetPane.setHighlightColor(_editGroupColor);
     _editCircuitFrame = new EditCircuitFrame(tr("Add Detector Circuit"), this, _currentBlock);
    }
@@ -1321,7 +1321,7 @@ protected void removeBlock (OBlock block) {
     }
 }
 /*
-/*public*/ void setAllEditable(boolean state) {
+public void setAllEditable(boolean state) {
     _editable = state;
     for (int i = 0; i<_contents.size(); i++) {
         _contents.get(i).setEditable(state);
@@ -1483,7 +1483,7 @@ void TOPActionListener::actionPerformed(ActionEvent */*e*/)
  */
 //static class convertFrame extends JmriJFrame {
 //    JDialog _dialog;
-convertFrame::convertFrame (QDialog* dialog, CircuitBuilder* parent) :JmriJFrame(false, false)
+convertFrame::convertFrame (QDialog* dialog, CircuitBuilder* parent) : DisplayFrame(false, false)
 {
  //super(false, false);
   _dialog = dialog;
@@ -1723,7 +1723,7 @@ convertFrame::convertFrame (QDialog* dialog, CircuitBuilder* parent) :JmriJFrame
         return false;
 }
 
-/*protected*/ void CircuitBuilder::doMousePressed(QGraphicsSceneMouseEvent* event, Positionable* selection) {
+/*protected*/ void CircuitBuilder::doMousePressed(QGraphicsSceneMouseEvent* /*event*/, Positionable* /*selection*/) {
     if (_editCircuitFrame!=NULL) {
         _editCircuitFrame->toFront();
         _editor->setSelectionGroup(_saveSelectionGroup);
@@ -1735,8 +1735,8 @@ convertFrame::convertFrame (QDialog* dialog, CircuitBuilder* parent) :JmriJFrame
         _editor->setSelectionGroup(_saveSelectionGroup);
     }
 }
-#if 1
-/*public*/ bool CircuitBuilder::doMouseReleased(Positionable* selection, QGraphicsSceneMouseEvent* event) {
+
+/*public*/ bool CircuitBuilder::doMouseReleased(Positionable* selection, QGraphicsSceneMouseEvent* /*event*/) {
     if (_editCircuitFrame!=NULL || _editPathsFrame!=NULL) {
         return true;
     } else if (_editPortalFrame!=NULL) {
@@ -1747,10 +1747,9 @@ convertFrame::convertFrame (QDialog* dialog, CircuitBuilder* parent) :JmriJFrame
     }
     return false;
 }
-#endif
+
 /*protected*/ bool CircuitBuilder::doMouseClicked(QList<Positionable*>* selections, QGraphicsSceneMouseEvent* event)
 {
-#if 1
     if (_editCircuitFrame != NULL || _editPathsFrame != NULL
             || _editPortalFrame != NULL || _editDirectionFrame != NULL) {
         if (selections != NULL && selections->size() > 0) {
@@ -1793,7 +1792,6 @@ convertFrame::convertFrame (QDialog* dialog, CircuitBuilder* parent) :JmriJFrame
         }
         return true;
     }
-#endif
     return false;
 }
 

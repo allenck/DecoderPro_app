@@ -34,9 +34,8 @@
 /*private*/ /*static*/ QList<int> SignallingPanel::blockInputModeValues =  QList<int>() << Block::UNOCCUPIED <<  Block::OCCUPIED;
 /*private*/ /*static*/ QString SignallingPanel::SET_TO_ACTIVE = tr("Active");
 /*private*/ /*static*/ QString SignallingPanel::SET_TO_INACTIVE = tr("Inactive");
-/*private*/ /*static*/ QString SignallingPanel::SET_TO_CLOSED = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText();
-/*private*/ /*static*/ QString SignallingPanel::SET_TO_THROWN =((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getThrownText();
-
+/*private*/ /*static*/ QString SignallingPanel::SET_TO_CLOSED = tr("Closed");//((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText();
+/*private*/ /*static*/ QString SignallingPanel::SET_TO_THROWN = tr("Thrown");//((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getThrownText();
 /*private*/ /*static*/ QString SignallingPanel::SET_TO_UNOCCUPIED = tr("UnOccupied");
 /*private*/ /*static*/ QString SignallingPanel::SET_TO_OCCUPIED = tr("Occupied");
 /*private*/ /*static*/ QString SignallingPanel::SET_TO_ANY = tr("Any State");
@@ -56,7 +55,7 @@ void SignallingPanel::init()
  allowAutoMastGeneration = new QCheckBox(tr("Allow the Logic to Automatically Determine ConflictingSignalMasts"));
  lockTurnouts = new QCheckBox(tr("Lock Turnouts when SignalMast Logic is Active"));
 
- smm = InstanceManager::signalMastManagerInstance();
+ smm = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
 
  nbhm = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
 
@@ -2242,7 +2241,7 @@ void SignallingPanel::editDetails(){
 
     ///*public*/ void setValueAt(Object type,int r,int c) { }
 
-    /*public*/ Qt::ItemFlags AutoBlockModel::flags(const QModelIndex &index) const
+    /*public*/ Qt::ItemFlags AutoBlockModel::flags(const QModelIndex &/*index*/) const
     {
         return Qt::ItemIsEnabled;
     }
@@ -2260,7 +2259,7 @@ void SignallingPanel::editDetails(){
         //super();
     }
 
-    /*public*/ int AutoTurnoutModel::rowCount(const QModelIndex &parent) const{
+    /*public*/ int AutoTurnoutModel::rowCount(const QModelIndex &/*parent*/) const{
         return self->_automaticTurnoutList->size();
     }
 

@@ -16,7 +16,7 @@
      */
     //private static final long serialVersionUID = -8208365926206646918L;
 
-    /*public*/ BusyDialog::BusyDialog(JFrame* frame, QString title, bool modal,QWidget *parent) :
+    /*public*/ BusyDialog::BusyDialog(JFrame* frame, QString title, bool modal,QWidget */*parent*/) :
   JDialog((QWidget*)frame, title, modal) {
         //super(frame, title, modal);
         this->frame = frame;
@@ -25,7 +25,7 @@
 
     /*public*/ void BusyDialog::initComponents() {
 
-// TODO:        setLocationRelativeTo(frame);
+        setLocationRelativeTo((QWidget*)frame);
         resize(QSize(200, 100));
         setMinimumSize(QSize(200, 100));
         //setLayout(new BorderLayout(10, 10));

@@ -22,7 +22,7 @@ RosterMediaPane::RosterMediaPane(RosterEntry* re, QWidget *parent) :
  {
   ui->lblMainImage->setPixmap(QPixmap::fromImage(img).scaledToHeight(200));
   ui->btnRemoveImage->setVisible(true);
-  connect(ui->btnRemoveImage, SIGNAL(clicked()), this, SLOT(on_btnRemoveImage_clicked()));
+  connect(ui->btnRemoveImage, SIGNAL(clicked()), this, SLOT(on_removeAction_triggered()));
  }
  else
   ui->btnRemoveImage->setVisible(false);

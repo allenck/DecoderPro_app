@@ -17,6 +17,7 @@
 #include "simpleprogframe.h"
 #include "runnable.h"
 #include "programmingmode.h"
+#include "sleeperthread.h"
 
 /**
  * Controls a collection of slots, acting as the
@@ -234,12 +235,14 @@ public:
     /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
     /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ QList<ProgrammingMode*> getSupportedModes();
+    /*public*/ Programmer::WriteConfirmMode getWriteConfirmMode(QString addr);
 
 
 signals:
     void changedSlot(LocoNetSlot* s);
     void propertyChange(PropertyChangeEvent*);
     //void programmerException(QString);
+    void notifyChangedSlot(LocoNetSlot*);
 
 public slots:
  void message(LocoNetMessage* m);
@@ -301,6 +304,11 @@ private:
 //             "LOCONETCSOPSWMODE",
 //             Bundle.getMessage("LOCONETCSOPSWMODE"));
  CsOpSwAccess* csOpSwAccessor;
+ /**
+  * Time to wait after programming operation complete on LocoNet
+  * before reporting completion and hence starting next operation
+  */
+ int postProgDelay;// = 100;
 
 private slots:
  /**
@@ -390,89 +398,28 @@ protected:
  /*protected*/ bool checkLackAcceptedBlind (int Byte2);
  /*protected*/ void handleLongAck (LocoNetMessage* m);
  /*protected*/ void loadSlots();
-/*final*/ static /*protected*/ int NUM_SLOTS;// = 128;
+ /*final*/ static /*protected*/ int NUM_SLOTS;// = 128;
+
 protected slots:
  void readNextSlot();
  void On_notifyProgListenerEnd();
  /*synchronized*/ /*protected*/ void timeout();
-
 };
-class NotifyExec : public Runnable
+
+class SendProgrammingReplyDelay : public QObject
 {
-    Q_OBJECT
-public:
+ Q_OBJECT
  ProgListener* p;
  int value;
  int status;
- NotifyExec(ProgListener* p, int value, int status)
- {
-  this->p = p;
-  this->value = value;
-  this->status = status;
- }
- void run()
- {
-//  if(qobject_cast<AbstractIdentify*>(p)!=NULL)
-//   ((AbstractIdentify*)p)->programmingOpReply(value, status);
-//  else
-//  if(qobject_cast<CvValue*>(p)!=NULL)
-//   ((CvValue*)p)->programmingOpReply(value, status);
-//  else
-//  if(qobject_cast<DccConsist*>(p)!=NULL)
-//   ((DccConsist*)p)->programmingOpReply(value, status);
-//  else
-//  if(qobject_cast<SimpleProgFrame*>(p)!=NULL)
-//   ((SimpleProgFrame*)p)->programmingOpReply(value, status);
-//  else
-//  {
-//   qDebug() << QString("Missing cast: ")+ p->metaObject()->className();
-//   Q_ASSERT(false);
-//   //p->programmingOpReply(value, status);
-//  }
-  connect(this, SIGNAL(opReply(int,int)), p, SLOT(programmingOpReply(int,int)));
-  emit opReply(value, status);
- }
-signals:
- void opReply(int, int);
-};
-
-class NotifyDelay : public  QThread
-{
- private:
-  int delay;
-  ProgListener* p;
-  int value;
-  int status;
- public:
-  NotifyDelay(int delay, ProgListener* p, int value, int status)
-  {
-   this->delay = delay;
-   this->p = p;
-   this->value = value;
-   this->status = status;
-  }
+ int delay;
 public:
-  void run()
-  {
-//        synchronized (this)
-   {
-    try
-    {
-     msleep(delay);
-    }
-    catch (InterruptedException* e)
-    {
-//   Thread.currentThread().interrupt(); // retain if needed later
-     QThread::exit(0);
-    }
-   }
-   // to avoid problems, we defer this to Swing thread
+ SendProgrammingReplyDelay(ProgListener* p, int value, int status, int delay);
 
-   NotifyExec* r = new NotifyExec(p, value, status);
-     //javax.swing.SwingUtilities.invokeLater(r);
-    r->start();
-
-  }
+public slots:
+ void timeout();
+signals:
+ void on_programmingOpReply(int value, int status);
 };
 
 #endif // SLOTMANAGER_H

@@ -100,24 +100,24 @@ public void paintBorder(Component c, Graphics g, int x, int y, int width, int he
     g.translate(x, y);
 
     // If the tileIcon failed loading, paint as gray.
-    if (tileIcon != null) {
-        color = (tileIcon.getIconWidth() == -1) ? Color.gray : null;
+    if (tileIcon != NULL) {
+        color = (tileIcon.getIconWidth() == -1) ? Color.gray : NULL;
     }
 
-    if (color != null) {
+    if (color != NULL) {
         g.setColor(color);
-        g.fillRect(0, 0, width - insets.right, insets.top);
-        g.fillRect(0, insets.top, insets.left, height - insets.top);
-        g.fillRect(insets.left, height - insets.bottom, width - insets.left, insets.bottom);
-        g.fillRect(width - insets.right, 0, insets.right, height - insets.bottom);
+        g.fillRect(0, 0, width - insets->right, insets->top);
+        g.fillRect(0, insets->top, insets->left, height - insets->top);
+        g.fillRect(insets->left, height - insets->bottom, width - insets->left, insets->bottom);
+        g.fillRect(width - insets->right, 0, insets->right, height - insets->bottom);
 
-    } else if (tileIcon != null) {
+    } else if (tileIcon != NULL) {
         int tileW = tileIcon.getIconWidth();
         int tileH = tileIcon.getIconHeight();
-        paintEdge(c, g, 0, 0, width - insets.right, insets.top, tileW, tileH);
-        paintEdge(c, g, 0, insets.top, insets.left, height - insets.top, tileW, tileH);
-        paintEdge(c, g, insets.left, height - insets.bottom, width - insets.left, insets.bottom, tileW, tileH);
-        paintEdge(c, g, width - insets.right, 0, insets.right, height - insets.bottom, tileW, tileH);
+        paintEdge(c, g, 0, 0, width - insets->right, insets->top, tileW, tileH);
+        paintEdge(c, g, 0, insets->top, insets->left, height - insets->top, tileW, tileH);
+        paintEdge(c, g, insets->left, height - insets->bottom, width - insets->left, insets->bottom, tileW, tileH);
+        paintEdge(c, g, width - insets->right, 0, insets->right, height - insets->bottom, tileW, tileH);
     }
     g.translate(-x, -y);
     g.setColor(oldColor);
@@ -134,14 +134,14 @@ private void paintEdge(Component c, Graphics g, int x, int y, int width, int hei
     }
     g.dispose();
 }
-
+#endif
 /**
  * Reinitialize the insets parameter with this Border's current Insets.
  * @param c the component for which this border insets value applies
  * @param insets the object to be reinitialized
  * @since 1.3
  */
-public Insets getBorderInsets(Component c, Insets insets) {
+/*public*/ Insets* MatteBorder::getBorderInsets(QWidget* c, Insets* insets) {
     return computeInsets(insets);
 }
 
@@ -149,52 +149,52 @@ public Insets getBorderInsets(Component c, Insets insets) {
  * Returns the insets of the border.
  * @since 1.3
  */
-public Insets getBorderInsets() {
+/*public*/ Insets* MatteBorder::getBorderInsets() {
     return computeInsets(new Insets(0,0,0,0));
 }
 
 /* should be protected once api changes area allowed */
-private Insets computeInsets(Insets insets) {
-    if (tileIcon != null && top == -1 && bottom == -1 &&
+/*private*/ Insets* MatteBorder::computeInsets(Insets* insets) {
+    if (!tileIcon.isNull()  && top == -1 && bottom == -1 &&
         left == -1 && right == -1) {
-        int w = tileIcon.getIconWidth();
-        int h = tileIcon.getIconHeight();
-        insets.top = h;
-        insets.right = w;
-        insets.bottom = h;
-        insets.left = w;
+        int w = tileIcon.actualSize(QSize(64,64)).width();
+        int h = tileIcon.actualSize(QSize(64,64)).height();
+        insets->top = h;
+        insets->right = w;
+        insets->bottom = h;
+        insets->left = w;
     } else {
-        insets.left = left;
-        insets.top = top;
-        insets.right = right;
-        insets.bottom = bottom;
+        insets->left = left;
+        insets->top = top;
+        insets->right = right;
+        insets->bottom = bottom;
     }
     return insets;
 }
 
 /**
- * Returns the color used for tiling the border or null
+ * Returns the color used for tiling the border or NULL
  * if a tile icon is being used.
  * @since 1.3
  */
-public Color getMatteColor() {
+/*public*/ QColor MatteBorder::getMatteColor() {
     return color;
 }
 
 /**
- * Returns the icon used for tiling the border or null
+ * Returns the icon used for tiling the border or NULL
  * if a solid color is being used.
  * @since 1.3
  */
-public Icon getTileIcon() {
+/*public*/ QIcon MatteBorder::getTileIcon() {
     return tileIcon;
 }
 
 /**
  * Returns whether or not the border is opaque.
  */
-/*public*/ bool isBorderOpaque() {
+/*public*/ bool MatteBorder::isBorderOpaque() {
     // If a tileIcon is set, then it may contain transparent bits
-    return color != null;
+    return !color.isValid();
 }
-#endif
+

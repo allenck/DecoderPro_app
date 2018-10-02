@@ -12,6 +12,7 @@ namespace Sprog
   SprogProgrammer(SprogSystemConnectionMemo* memo, QObject* parent = 0);
   /*public*/ QList<ProgrammingMode*> getSupportedModes();
   /*public*/ bool getCanRead();
+  /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
   /*synchronized*/ /*public*/ void writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException);
   /*synchronized*/ /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
   /*synchronized*/ /*public*/ void readCV(int CV, ProgListener* p) throw (ProgrammerException);

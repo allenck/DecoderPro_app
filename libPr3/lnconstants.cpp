@@ -34,8 +34,8 @@ int LnConstants::SND_F7            = 0x04;  /* Sound 3/Function 7 bit */
 int LnConstants::SND_F6            = 0x02;  /* Sound 2/Function 6 bit */
 int LnConstants::SND_F5            = 0x01;  /* Sound 1/Function 5 bit */
 
-//int LnConstants::OPC_SW_ACK_CLOSED = 0x20;  /* command switch closed/open bit   */
-//int LnConstants::OPC_SW_ACK_OUTPUT = 0x10;  /* command switch output on/off bit */
+const int LnConstants::OPC_SW_ACK_CLOSED = 0x20;  /* command switch closed/open bit   */
+const int LnConstants::OPC_SW_ACK_OUTPUT = 0x10;  /* command switch output on/off bit */
 
 int LnConstants::OPC_INPUT_REP_CB  = 0x40;  /* control bit, reserved otherwise      */
 int LnConstants::OPC_INPUT_REP_SW  = 0x20;  /* input is switch input, aux otherwise */
@@ -43,8 +43,8 @@ int LnConstants::OPC_INPUT_REP_HI  = 0x10;  /* input is HI, LO otherwise        
 
 int LnConstants::OPC_SW_REP_SW     = 0x20;  /* switch input, aux input otherwise    */
 int LnConstants::OPC_SW_REP_HI     = 0x10;  /* input is HI, LO otherwise            */
-//int LnConstants::OPC_SW_REP_CLOSED = 0x20;  /* 'Closed' line is ON, OFF otherwise   */
-//int LnConstants::OPC_SW_REP_THROWN = 0x10;  /* 'Thrown' line is ON, OFF otherwise   */
+const int LnConstants::OPC_SW_REP_CLOSED = 0x20;  /* 'Closed' line is ON, OFF otherwise   */
+const int LnConstants::OPC_SW_REP_THROWN = 0x10;  /* 'Thrown' line is ON, OFF otherwise   */
 int LnConstants::OPC_SW_REP_INPUTS = 0x40;  /* sensor inputs, outputs otherwise     */
 
 int LnConstants::OPC_SW_REQ_DIR    = 0x20;  /* switch direction - closed/thrown     */
@@ -52,10 +52,10 @@ int LnConstants::OPC_SW_REQ_OUT    = 0x10;  /* output On/Off                    
 
 int LnConstants::OPC_LOCO_SPD_ESTOP = 0x01; /* emergency stop command               */
 
-//int LnConstants::OPC_MULTI_SENSE_MSG     = 0x60; // byte 1
-//int LnConstants::OPC_MULTI_SENSE_PRESENT = 0x20; // MSG field: transponder seen
-//int LnConstants::OPC_MULTI_SENSE_ABSENT  = 0x00; // MSG field: transponder lost
-//int LnConstants::OPC_MULTI_SENSE_POWER   = 0x60; // MSG field: Power message
+//const int LnConstants::OPC_MULTI_SENSE_MSG     = 0x60; // byte 1
+//const int LnConstants::OPC_MULTI_SENSE_PRESENT = 0x20; // MSG field: transponder seen
+//const int LnConstants::OPC_MULTI_SENSE_ABSENT  = 0x00; // MSG field: transponder lost
+//const int LnConstants::OPC_MULTI_SENSE_POWER   = 0x60; // MSG field: Power message
 
 /* Slot Status byte definitions and macros */
 /***********************************************************************************
@@ -163,13 +163,13 @@ QString LnConstants::DEC_MODE(int s) { // encode decoder type as a string
 //int LnConstants::CFG_SLOT          = 0x7f;      /* This slot holds configuration bits                   */
 
 /* values and macros to decode programming messages */
-int LnConstants::PCMD_RW           = 0x40;      /* 1 = write, 0 = read                                  */
-int LnConstants::PCMD_BYTE_MODE    = 0x20;      /* 1 = byte operation, 0 = bit operation (if possible)  */
-int LnConstants::PCMD_TY1          = 0x10;      /* TY1 Programming type select bit                      */
-int LnConstants::PCMD_TY0          = 0x08;      /* TY0 Programming type select bit                      */
-int LnConstants::PCMD_OPS_MODE     = 0x04;      /* 1 = Ops mode, 0 = Service Mode                       */
-int LnConstants::PCMD_RSVRD1       = 0x02;      /* reserved                                             */
-int LnConstants::PCMD_RSVRD0       = 0x01;      /* reserved                                             */
+//int LnConstants::PCMD_RW           = 0x40;      /* 1 = write, 0 = read                                  */
+//int LnConstants::PCMD_BYTE_MODE    = 0x20;      /* 1 = byte operation, 0 = bit operation (if possible)  */
+//int LnConstants::PCMD_TY1          = 0x10;      /* TY1 Programming type select bit                      */
+//int LnConstants::PCMD_TY0          = 0x08;      /* TY0 Programming type select bit                      */
+//int LnConstants::PCMD_OPS_MODE     = 0x04;      /* 1 = Ops mode, 0 = Service Mode                       */
+//int LnConstants::PCMD_RSVRD1       = 0x02;      /* reserved                                             */
+//int LnConstants::PCMD_RSVRD0       = 0x01;      /* reserved                                             */
 
 /* programming mode mask */
 int LnConstants::PCMD_MODE_MASK    = PCMD_BYTE_MODE | PCMD_OPS_MODE | PCMD_TY1 | PCMD_TY0;
@@ -178,31 +178,31 @@ int LnConstants::PCMD_MODE_MASK    = PCMD_BYTE_MODE | PCMD_OPS_MODE | PCMD_TY1 |
 *  programming modes
 */
 /* Paged mode  byte R/W on Service Track */
-int LnConstants::PAGED_ON_SRVC_TRK       = PCMD_BYTE_MODE;
+//int LnConstants::PAGED_ON_SRVC_TRK       = PCMD_BYTE_MODE;
 
-/* Direct mode byte R/W on Service Track */
-int LnConstants::DIR_BYTE_ON_SRVC_TRK    = PCMD_BYTE_MODE | PCMD_TY0;
+///* Direct mode byte R/W on Service Track */
+//int LnConstants::DIR_BYTE_ON_SRVC_TRK    = PCMD_BYTE_MODE | PCMD_TY0;
 
-/* Direct mode bit  R/W on Service Track */
-int LnConstants::DIR_BIT_ON_SRVC_TRK     = PCMD_TY0;
+///* Direct mode bit  R/W on Service Track */
+//int LnConstants::DIR_BIT_ON_SRVC_TRK     = PCMD_TY0;
 
-/* Physical Register byte R/W on Service Track */
-int LnConstants::REG_BYTE_RW_ON_SRVC_TRK = PCMD_TY1;
+///* Physical Register byte R/W on Service Track */
+//int LnConstants::REG_BYTE_RW_ON_SRVC_TRK = PCMD_TY1;
 
-/* Service Track Reserved function */
-int LnConstants::SRVC_TRK_RESERVED       = PCMD_TY1 | PCMD_TY0;
+///* Service Track Reserved function */
+//int LnConstants::SRVC_TRK_RESERVED       = PCMD_TY1 | PCMD_TY0;
 
-/* Ops mode byte program - no feedback */
-int LnConstants::OPS_BYTE_NO_FEEDBACK    = PCMD_BYTE_MODE | PCMD_OPS_MODE;
+///* Ops mode byte program - no feedback */
+//int LnConstants::OPS_BYTE_NO_FEEDBACK    = PCMD_BYTE_MODE | PCMD_OPS_MODE;
 
-/* Ops mode byte program - feedback */
-int LnConstants::OPS_BYTE_FEEDBACK       = OPS_BYTE_NO_FEEDBACK | PCMD_TY0;
+///* Ops mode byte program - feedback */
+//int LnConstants::OPS_BYTE_FEEDBACK       = OPS_BYTE_NO_FEEDBACK | PCMD_TY0;
 
-/* Ops mode bit program - no feedback */
-int LnConstants::OPS_BIT_NO_FEEDBACK     = PCMD_OPS_MODE;
+///* Ops mode bit program - no feedback */
+//int LnConstants::OPS_BIT_NO_FEEDBACK     = PCMD_OPS_MODE;
 
-/* Ops mode bit program - feedback */
-int LnConstants::OPS_BIT_FEEDBACK        = OPS_BIT_NO_FEEDBACK | PCMD_TY0;
+///* Ops mode bit program - feedback */
+//int LnConstants::OPS_BIT_FEEDBACK        = OPS_BIT_NO_FEEDBACK | PCMD_TY0;
 
 /* Programmer Status error flags */
 int LnConstants::PSTAT_USER_ABORTED  = 0x08;    /* User aborted this command */
@@ -371,25 +371,37 @@ int LnConstants::KEY_IMM_PACKET		= 1<< 21;
 int LnConstants::KEY_WR_SL_DATA		= 1<< 22;
 
 // reverse-engineered constants
-int LnConstants::RE_IPL_MFR_DIGITRAX            = 0x00;
-int LnConstants::RE_IPL_MFR_ALL                 = 0x00;
-int LnConstants::RE_IPL_DIGITRAX_HOST_UT4       = 0x04;
-int LnConstants::RE_IPL_DIGITRAX_HOST_UR92      = 0x5C;
-int LnConstants::RE_IPL_DIGITRAX_HOST_DCS51     = 0x33;
-int LnConstants::RE_IPL_DIGITRAX_HOST_DT402     = 0x2A;
-int LnConstants::RE_IPL_DIGITRAX_HOST_PR3       = 0x23;
-int LnConstants::RE_IPL_DIGITRAX_HOST_ALL       = 0x00;
-int LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24     = 0x18;
-int LnConstants::RE_IPL_DIGITRAX_SLAVE_ALL      = 0x00;
+//int LnConstants::RE_IPL_MFR_DIGITRAX            = 0x00;
+//int LnConstants::RE_IPL_MFR_ALL                 = 0x00;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_LNRP      = 0x01;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_UT4       = 0x04;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_WTL12     = 0x0c;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_DB210OPTO = 0x14;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_DB210     = 0x15;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_DB220     = 0x16;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_DCS210    = 0x1b;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_DCS240    = 0x1c;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_UR92      = 0x5C;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_DCS51     = 0x33;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_DT402     = 0x2A;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_DT500     = 0x32;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_PR3       = 0x23;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_PR4       = 0x24;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_BXP88     = 0x58;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_LNWI      = 0x63;
+//int LnConstants::RE_IPL_DIGITRAX_HOST_ALL       = 0x00;
+//int LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24     = 0x18;
+//int LnConstants::RE_IPL_DIGITRAX_SLAVE_ALL      = 0x00;
 //int LnConstants::RE_IPL_PING_OPERATION          = 0x08;
 //int LnConstants::RE_IPL_IDENTITY_OPERATION      = 0x0f;
-//int LnConstants::RE_LACK_SPEC_CASE1             = 0x50; // special case LACK response for OpSw accesses
-//int LnConstants::RE_LACK_SPEC_CASE2             = 0x00; // special case LACK response for OpSw accesses
+
+const int LnConstants::RE_LACK_SPEC_CASE1             = 0x50; // special case LACK response for OpSw accesses
+int LnConstants::RE_LACK_SPEC_CASE2             = 0x00; // special case LACK response for OpSw accesses
 //int LnConstants::RE_OPC_PR3_MODE                = 0xD3;
-int LnConstants::RE_MULTI_SENSE_DEV_TYPE_PM4X   = 0x00;
-int LnConstants::RE_MULTI_SENSE_DEV_TYPE_BDL16X = 0x01;
-int LnConstants::RE_MULTI_SENSE_DEV_TYPE_SE8    = 0x02;
-int LnConstants::RE_MULTI_SENSE_DEV_TYPE_DS64   = 0x03;
+//const int LnConstants::RE_MULTI_SENSE_DEV_TYPE_PM4X   = 0x00;
+//int LnConstants::RE_MULTI_SENSE_DEV_TYPE_BDL16X = 0x01;
+//int LnConstants::RE_MULTI_SENSE_DEV_TYPE_SE8    = 0x02;
+//int LnConstants::RE_MULTI_SENSE_DEV_TYPE_DS64   = 0x03;
 
 // Below data is assumed, based on firmware files available from RR-Cirkits web site
 int LnConstants::RE_IPL_MFR_RR_CIRKITS          = 87;

@@ -1,9 +1,9 @@
 #ifndef DEFAULTLISTMODEL_H
 #define DEFAULTLISTMODEL_H
 
-#include <QAbstractListModel>
+#include "abstractlistmodel.h"
 #include "javaqt_global.h"
-class JAVAQTSHARED_EXPORT DefaultListModel : public QAbstractListModel
+class JAVAQTSHARED_EXPORT DefaultListModel : public AbstractListModel
 {
     Q_OBJECT
 public:
@@ -18,6 +18,7 @@ public:
     /*public*/ void addElement(QVariant element);
     /*public*/ QVariant remove(int index);
     /*public*/ QVariant elementAt(int index);
+    /*public*/ QListIterator<QVariant> elements();
 
 signals:
 

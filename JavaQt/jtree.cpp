@@ -373,7 +373,6 @@ void JTree::on_clicked(QModelIndex index)
 
 /*public*/ int JTree::getSelectionCount()
 {
- // TODO:
  return selectedIndexes().count();
 }
 /**

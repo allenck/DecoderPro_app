@@ -27,7 +27,7 @@
     this->memo = memo;
     mAddress = pAddress;
     mLongAddr = pLongAddr;
-    mode = DefaultProgrammerManager::OPSBYTEMODE;
+    mode = ProgrammingMode::OPSBYTEMODE;
     log = new Logger("LnOpsModeProgrammer");
 
     // register to listen
@@ -276,7 +276,7 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 /*public*/ QList<ProgrammingMode*> LnOpsModeProgrammer::getSupportedModes()
 {
  QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
- ret.append(DefaultProgrammerManager::OPSBYTEMODE);
+ ret.append(ProgrammingMode::OPSBYTEMODE);
  ret.append(LnProgrammerManager::LOCONETSV1MODE);
  ret.append(LnProgrammerManager::LOCONETSV2MODE);
  return ret;

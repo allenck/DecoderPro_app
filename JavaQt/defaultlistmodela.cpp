@@ -360,7 +360,7 @@
     /*public*/ void DefaultListModelA<T>::addElement(T element) {
         int index = delegate->size();
         delegate->append(element);
-        // TODO:fireIntervalAdded(this, index, index);
+        fireIntervalAdded(this, index, index);
     }
 #if 0
     /**

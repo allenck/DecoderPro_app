@@ -52,8 +52,6 @@ public:
  LocoNetMessage(const LocoNetMessage& original, QObject *parent = 0);
  /** Get a String representation of the entire message in hex */
  QString toString();
-
-
  void setOpCode(int i);
  int getOpCode();
  /** Get a String representation of the op code in hex */
@@ -82,6 +80,8 @@ public:
   */
  /*public*/ bool equals(QObject* o);
  /*public*/ int hashCode();
+ /*public*/ QString toMonitorString();
+ /*public*/ QString toMonitorString(/*@Nonnull*/ QString prefix);
  /**
   * Return a newly created OPC_PEER_XFR message.
   * @param src Source address

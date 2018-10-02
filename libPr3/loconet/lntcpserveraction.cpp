@@ -1,6 +1,6 @@
-#include "serveraction.h"
-#include "server.h"
-#include "serverframe.h"
+#include "lntcpserveraction.h"
+#include "lntcpserver.h"
+#include "lntcpserverframe.h"
 
 //ServerAction::ServerAction(QObject *parent) :
 //  QAction(parent)
@@ -20,28 +20,28 @@
  */
 //private static final long serialVersionUID = -7774780042559216689L;
 
-/*public*/ ServerAction::ServerAction(QString s, QObject *parent) :
- QAction(s, parent)
+/*public*/ LnTcpServerAction::LnTcpServerAction(QString s, QObject *parent) :
+ AbstractAction(s, parent)
 {
  //super(s);
  // Get a server instance to cause the config to be read and the server
  // started if necessary
- Server::getInstance();
+ LnTcpServer::getInstance();
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ ServerAction::ServerAction(QObject *parent) :
-  QAction("LocoNetOverTcp Server", parent)
+/*public*/ LnTcpServerAction::LnTcpServerAction(QObject *parent) :
+  AbstractAction("LocoNetOverTcp Server", parent)
 {
  //this("LocoNetOverTcp Server");
  // Get a server instance to cause the config to be read and the server
  // started if necessary
- Server::getInstance();
+ LnTcpServer::getInstance();
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void ServerAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LnTcpServerAction::actionPerformed(ActionEvent* /*e*/)
 {
- ServerFrame* f = ServerFrame::getInstance();
- f->setVisible(true);
+ LnTcpServer::getDefault()->enable();
+ LnTcpServerFrame::getDefault()->setVisible(true);
 }

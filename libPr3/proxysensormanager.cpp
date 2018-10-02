@@ -223,6 +223,7 @@ QCompleter* ProxySensorManager::getCompleter(QString text)
     completerList.append(systemName);
 
    int iNum = text.toInt(&bOk);
+   Q_UNUSED(iNum);
    if(bOk && systemName.contains(text))
     completerList.append(systemName);
    if(bOk && s->getUserName().contains(text))
