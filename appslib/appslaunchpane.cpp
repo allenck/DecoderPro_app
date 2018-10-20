@@ -14,6 +14,7 @@
 #include "system.h"
 #include "namedicon.h"
 #include "jlabel.h"
+#include "configuremanager.h"
 
 //AppsLaunchPane::AppsLaunchPane(QWidget *parent) :
 //  QWidget(parent)

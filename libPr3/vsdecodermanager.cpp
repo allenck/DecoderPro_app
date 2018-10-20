@@ -20,7 +20,7 @@
 //{
 //}
 /*private*/ /*static*/ /*final*/ QString VSDecoderManager::vsd_property_change_name = "VSDecoder Manager"; //NOI18N
-/*private*/ /*static*/ VSDecoderManagerThread* VSDecoderManager::thread = NULL; // thread for running the manager
+/*private*/ /*static*/ VSDecoderManagerThread* VSDecoderManager::thread = nullptr; // thread for running the manager
 /*private*/ /*static*/ int VSDecoderManager::vsdecoderID = 0;
 
 
@@ -45,7 +45,7 @@ QObject(parent) {
  decodertable =  QMap<QString, VSDecoder*>();
  decoderAddressMap =  QMap<QString, VSDecoder*>();
  profiletable =  QMap<QString, QString>();  // key = profile name, value = path
- managerFrame = NULL;
+ managerFrame = nullptr;
  reportertable =  QStringList();
  // Get preferences
  QString dirname = FileUtil::getUserFilesPath() + "vsdecoder" + File::separator; // NOI18N
@@ -62,7 +62,7 @@ QObject(parent) {
 
 /*public*/ /*static*/ VSDecoderManager* VSDecoderManager::instance()
 {
- if (thread == NULL) {
+ if (thread == nullptr) {
      thread = VSDecoderManagerThread::instance(true);
  }
  return (VSDecoderManagerThread::manager());
@@ -74,7 +74,7 @@ QObject(parent) {
 
 /*public*/ JmriJFrame* VSDecoderManager::provideManagerFrame()
 {
- if (managerFrame == NULL) {
+ if (managerFrame == nullptr) {
      managerFrame = new VSDManagerFrame();
  }
  return (managerFrame);
@@ -107,7 +107,7 @@ QObject(parent) {
   log->debug("Profile " + profile_name + " is in table.  Path = " + path);
   vsd = new VSDecoder(getNextVSDecoderID(), profile_name, path);
   decodertable.insert(vsd->getID(), vsd);  // poss. broken for duplicate profile names
-  if(vsd->getAddress() != NULL)
+  if(vsd->getAddress() != nullptr)
    decoderAddressMap.insert(vsd->getAddress()->toString(), vsd);
   return (vsd);
  }
@@ -115,14 +115,14 @@ QObject(parent) {
  {
   // Don't have enough info to try to load from file.
   log->error("Requested profile not loaded: " + profile_name);
-  return (NULL);
+  return (nullptr);
  }
 }
 
 /*public*/ VSDecoder* VSDecoderManager::getVSDecoder(QString profile_name, QString path) {
     VSDecoder* vsd = new VSDecoder(getNextVSDecoderID(), profile_name, path);
     decodertable.insert(vsd->getID(), vsd); // poss. broken for duplicate profile names
-    if (vsd->getAddress() != NULL) {
+    if (vsd->getAddress() != nullptr) {
         decoderAddressMap.insert(vsd->getAddress()->toString(), vsd);
     }
     return (vsd);
@@ -152,7 +152,7 @@ QObject(parent) {
     } else {
         // Don't have enough info to try to load from file.
         log->error("Requested profile not loaded: " + profile_name);
-        return (NULL);
+        return (nullptr);
     }
 }
 
@@ -176,7 +176,7 @@ QObject(parent) {
  */
 /*public*/ VSDecoder* VSDecoderManager::getVSDecoderByID(QString id) {
     VSDecoder* v = decodertable.value(id);
-    if (v == NULL) {
+    if (v == nullptr) {
         log->debug("No decoder in table! ID = " +id);
     }
     return (decodertable.value(id));
@@ -185,11 +185,11 @@ QObject(parent) {
 /*public*/ VSDecoder* VSDecoderManager::getVSDecoderByAddress(QString sa) {
  if (sa == "") {
         log->debug("Decoder Address is Null");
-        return (NULL);
+        return (nullptr);
     }
     log->debug("Decoder Address: " + sa);
     VSDecoder* rv = decoderAddressMap.value(sa);
-    if (rv == NULL) {
+    if (rv == nullptr) {
         log->debug("Not found.");
     } else {
         log->debug("Found: " + rv->getAddress()->toString());
@@ -246,17 +246,17 @@ QObject(parent) {
 /*public*/ ListeningSpot* VSDecoderManager::getDefaultListenerLocation()
 {
     VSDListener* l = listenerTable.value(getDefaultListenerName());
-    if (l != NULL) {
+    if (l != nullptr) {
         return (l->getLocation());
     } else {
-        return (NULL);
+        return (nullptr);
     }
 }
 
 /*public*/ void VSDecoderManager::setListenerLocation(QString id, ListeningSpot* sp)
 {
     VSDListener* l = listenerTable.value(id);
-    if (l != NULL)
+    if (l != nullptr)
     {
      log->debug("Set listener location " + sp->toString() + " listener: " + l->objectName());
 
@@ -266,7 +266,7 @@ QObject(parent) {
 
 /*public*/ void VSDecoderManager::setDecoderPositionByID(QString id, PhysicalLocation* p) {
     VSDecoder* d = decodertable.value(id);
-    if (d != NULL) {
+    if (d != nullptr) {
         d->setPosition(p);
     }
 }
@@ -275,11 +275,11 @@ QObject(parent) {
     // Find the addressed decoder
     // This is a bit hokey.  Need a better way to index decoder by address
     // OK, this whole LocoAddress vs. DccLocoAddress thing has rendered this SUPER HOKEY.
-    if (a == NULL) {
+    if (a == nullptr) {
         log->warn("Decoder Address is Null");
         return;
     }
-    if (l == NULL) {
+    if (l == nullptr) {
         log->warn("PhysicalLocation is Null");
         return;
     }
@@ -292,17 +292,17 @@ QObject(parent) {
     foreach (VSDecoder* d, decodertable.values()) {
         // Get the Decoder's address protocol.  If it's a DCC_LONG or DCC_SHORT, convert to DCC
         // since the LnReprter can't tell the difference and will always report "DCC".
-        if (d == NULL) {
+        if (d == nullptr) {
             log->debug("VSdecoder NULL pointer!");
             return;
         }
         LocoAddress* pa = d->getAddress();
-        if (pa == NULL) {
+        if (pa == nullptr) {
             log->debug("Vsdecoder" + d->objectName() + " address NULL!");
             return;
         }
         LocoAddress::Protocol p = d->getAddress()->getProtocol();
-        if (p == NULL) {
+        if (p == 0) {
             log->debug("Vsdecoder" + d->objectName() + " address = " + pa->toString() + " protocol NULL!");
             return;
         }
@@ -368,11 +368,11 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
 
 /*protected*/ void VSDecoderManager::registerReporterListener(QString sysName) {
     Reporter* r = InstanceManager::reporterManagerInstance()->getReporter(sysName);
-    if (r == NULL) {
+    if (r == nullptr) {
         return;
     }
     NamedBeanHandle<Reporter*>* h = nbhm->getNamedBeanHandle(sysName, r);
-    if (h == NULL) {
+    if (h == nullptr) {
         return;
     }
     // Make sure we aren't already registered.
@@ -384,12 +384,12 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
 
 /*protected*/ void VSDecoderManager::registerBeanListener(Manager* beanManager, QString sysName) {
     NamedBean* b = beanManager->getBeanBySystemName(sysName);
-    if (b == NULL) {
+    if (b == nullptr) {
         log->debug("No bean by name " + sysName);
         return;
     }
     NamedBeanHandle<NamedBean*>* h = nbhm->getNamedBeanHandle(sysName, b);
-    if (h == NULL) {
+    if (h == nullptr) {
         log->debug("no handle for bean " + b->getDisplayName());
         return;
     }
@@ -403,11 +403,11 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
 
 /*protected*/ void VSDecoderManager::registerReporterListeners() {
     // Walk through the list of reporters
-    foreach (QString sysName,InstanceManager::reporterManagerInstance()->getSystemNameList()) {
+    foreach (QString sysName, static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getSystemNameList()) {
         registerReporterListener(sysName);
     }
-    foreach (QString sysname, InstanceManager::blockManagerInstance()->getSystemNameList()) {
-        registerBeanListener(InstanceManager::blockManagerInstance(), sysname);
+    foreach (QString sysname, static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->getSystemNameList()) {
+        registerBeanListener(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")), sysname);
     }
 }
 
@@ -618,7 +618,7 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
     {
         QDomElement e = nl.at(i).toElement(); //i.next();
         log->debug(e.tagName());
-        if ((pname = e.attribute("name")) != NULL) { // NOI18N
+        if ((pname = e.attribute("name")) != nullptr) { // NOI18N
             profiletable.insert(pname, vf->getName());
             new_entries.append(pname);
         }

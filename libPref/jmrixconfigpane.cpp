@@ -12,6 +12,7 @@
 #include "flowlayout.h"
 #include "connectionconfigmanager.h"
 #include "loggerfactory.h"
+#include "configuremanager.h"
 
 //JmrixConfigPane::JmrixConfigPane(QWidget *parent) :
 //    QWidget(parent)

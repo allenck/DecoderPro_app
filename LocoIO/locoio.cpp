@@ -114,7 +114,7 @@ LocoIO::LocoIO(QObject *parent) :
 
 /*public*/ /*static*/ void LocoIO::probeLocoIOs(LnTrafficController* ln)
 {
- if(ln != NULL)
+ if(ln != nullptr)
  {
   qDebug()<< "probeLocoIOs";
   LocoNetMessage* msg;

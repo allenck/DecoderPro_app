@@ -509,7 +509,7 @@
 
         /*static*/ /*public*/ AudioBuffer* D3Notch::getBuffer(VSDFile* vf, QString filename, QString sname, QString uname) {
             AudioBuffer* buf = NULL ;
-            AudioManager* am = InstanceManager::audioManagerInstance();
+            AudioManager* am = (AudioManager*)InstanceManager::getDefault("AudioManager");
             Logger*log = new Logger("Diesel3Sound");
 
             try {

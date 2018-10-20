@@ -10,6 +10,7 @@
 #include "operationsxml.h"
 #include "instancemanager.h"
 #include "schedulemanager.h"
+#include "file.h"
 
 //OperationsManager::OperationsManager(QObject *parent) :
 //  QObject(parent)
@@ -25,7 +26,7 @@ namespace Operations
 ///*public*/ final class OperationsManager {
 
 
-    /*static*/ /*private*/ OperationsManager* OperationsManager::instance = NULL;
+    /*static*/ /*private*/ OperationsManager* OperationsManager::instance = nullptr;
     //static private final Logger log = LoggerFactory.getLogger(OperationsManager.class);
 
 /*private*/ OperationsManager::OperationsManager(QObject *parent) :
@@ -71,7 +72,7 @@ void OperationsManager::common()
      * @return The OperationsManager default instance.
      */
     /*public*/ /*static*/ OperationsManager* OperationsManager::getInstance() {
-        if (instance == NULL) {
+        if (instance == nullptr) {
             instance = new OperationsManager();
         }
         return instance;
@@ -108,7 +109,7 @@ void OperationsManager::common()
      * @see #getPath()
      */
     /*public*/ QString OperationsManager::getPath(QString name) {
-        if (name != NULL) {
+        if (name != nullptr) {
             return this->getPath() + name;
         }
         return this->getPath();
@@ -136,13 +137,13 @@ void OperationsManager::common()
      * @param shutDownTask The new ShutDownTask or null
      */
     /*public*/ void OperationsManager::setShutDownTask(ShutDownTask* shutDownTask) {
-        if (InstanceManager::shutDownManagerInstance() != NULL) {
-            if (this->shutDownTask != NULL) {
-                InstanceManager::shutDownManagerInstance()->deregister(this->shutDownTask);
+        if (InstanceManager::getDefault("ShutDownManager") != nullptr) {
+            if (this->shutDownTask != nullptr) {
+                ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->deregister(this->shutDownTask);
             }
             this->shutDownTask = shutDownTask;
-            if (this->shutDownTask != NULL) {
-                InstanceManager::shutDownManagerInstance()->_register(this->shutDownTask);
+            if (this->shutDownTask != nullptr) {
+                ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(this->shutDownTask);
             }
         }
     }

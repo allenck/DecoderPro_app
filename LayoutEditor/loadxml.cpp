@@ -843,7 +843,7 @@ void LoadXml::processLayoutEditor(QDomElement e)
    LayoutBlock* block = layoutBlocks.at(i);
    block->initializeLayoutBlock();
   }
-  InstanceManager::layoutBlockManagerInstance()->initializeLayoutBlockPaths();
+  static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->initializeLayoutBlockPaths();
   for (int i=0; i < editor->pointList->count(); i++)
   {
    PositionablePoint* o = editor->pointList->at(i);

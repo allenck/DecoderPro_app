@@ -115,10 +115,10 @@ return (settingRouteColor == QColor() ? false : true);
  allocateToDispatcher = false;
 
 
- if(InstanceManager::configureManagerInstance()!=NULL)
-   ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerUser(this);
+ if(InstanceManager::getDefault("ConfigureManager")!=NULL)
+   static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
  //InstanceManager::layoutBlockManagerInstance()->addPropertyChangeListener(propertyBlockManagerListener);
- LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+ LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 
 //    glassPane.setOpaque(false);
@@ -273,22 +273,22 @@ return (settingRouteColor == QColor() ? false : true);
         //if(source instanceof SignalMast)
         if(qobject_cast<SignalMast*>(source)!=NULL)
         {
-            facing = InstanceManager::layoutBlockManagerInstance()->getFacingBlockByMast((SignalMast*)source, panel);
-            protecting = InstanceManager::layoutBlockManagerInstance()->getProtectedBlockByMast((SignalMast*)source, panel);
+            facing = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getFacingBlockByMast((SignalMast*)source, panel);
+            protecting = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getProtectedBlockByMast((SignalMast*)source, panel);
         }
         else
             //if (source instanceof Sensor)
             if(qobject_cast<Sensor*>(source)!=NULL)
             {
-            facing = InstanceManager::layoutBlockManagerInstance()->getFacingBlockBySensor((Sensor*)source, panel);
-            protecting = InstanceManager::layoutBlockManagerInstance()->getProtectedBlockBySensor((Sensor*)source, panel);
+            facing = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getFacingBlockBySensor((Sensor*)source, panel);
+            protecting = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getProtectedBlockBySensor((Sensor*)source, panel);
         }
         else
                 //if (source instanceof SignalHead)
                 if(qobject_cast<SignalHead*>(source)!=NULL)
                 {
-            facing = InstanceManager::layoutBlockManagerInstance()->getFacingBlock((SignalHead*)source, panel);
-            protecting = InstanceManager::layoutBlockManagerInstance()->getProtectedBlock((SignalHead*)source, panel);
+            facing = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getFacingBlock((SignalHead*)source, panel);
+            protecting = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getProtectedBlock((SignalHead*)source, panel);
         }
         if((facing==NULL) && (protecting==NULL)){
             log->error("Unable to find facing and protecting block");
@@ -691,7 +691,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, LayoutBlock* 
 {
  //This is almost a duplicate of that in the DefaultSignalMastLogicManager
  runWhenStablised=false;
- LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+ LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled())
  {
   throw new JmriException("advanced routing not enabled");

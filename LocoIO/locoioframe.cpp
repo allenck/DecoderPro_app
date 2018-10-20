@@ -15,6 +15,7 @@
 #include "windowmenu.h"
 #include <QStatusBar>
 #include "menu.h"
+#include <QRegExpValidator>
 
 LocoIOFrame::LocoIOFrame(LocoIOAddress* address, LnTrafficController* tc, bool /*bHex*/, Sql* sql, QWidget *parent) :
     QMainWindow(parent),
@@ -23,11 +24,10 @@ LocoIOFrame::LocoIOFrame(LocoIOAddress* address, LnTrafficController* tc, bool /
     ui->setupUi(this);
 
     createActions();
-
+#if 0
     ui->btnSave->setEnabled(false);
     actSaveModule->setEnabled(false);
-
-    ui->btnChangeAddress->setEnabled(false);
+#endif
     ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(tableCustomContextMenuRequested(QPoint)));
     log = new Logger("LocoIOFrame", this);
@@ -46,48 +46,53 @@ LocoIOFrame::LocoIOFrame(LocoIOAddress* address, LnTrafficController* tc, bool /
     rxHex.setPattern("^[0-9a-f]{1,2}\\/[0-9a-f]{1,2}");
     rxHex.setCaseSensitivity(Qt::CaseInsensitive);
     rxDec.setPattern("^[0-9]{1,3}\\/[0-9]{1,3}");
+    opdw = nullptr;
     rv = new  AddressValidator(rxHex);
-    ui->edNewAddr->setValidator(rv);
-    connect(ui->edNewAddr, SIGNAL(textEdited(QString)), this, SLOT(on_edNewAddr_editTextChanged(QString)));
-    connect(ui->edNewAddr, SIGNAL(editingFinished()), this, SLOT(on_edNewAddr_editingFinished()));
+
+    connect(ui->edAddrUnitIn, SIGNAL(editingFinished()), this, SLOT(on_edAddrUnitIn_editingFinished()));
+    connect(ui->edAddrSubUnitIn, SIGNAL(editingFinished()), this, SLOT(on_edAddrUnitIn_editingFinished()));
+    connect(ui->edAddrUnitOut, SIGNAL(editingFinished()), this, SLOT(on_edAddrUnitOut_editingFinished()));
+    connect(ui->edAddrSubUnitOut, SIGNAL(editingFinished()), this, SLOT(on_edAddrUnitOut_editingFinished()));
+    connect(ui->btnReadAll, SIGNAL(clicked(bool)), this, SLOT(on_btnReadAll_clicked()));
+    connect(ui->btnRead, SIGNAL(clicked(bool)), this, SLOT(on_btnRead_clicked()));
+    ui->edAddrUnitIn->setReadOnly(false);
+    ui->edAddrSubUnitIn->setReadOnly(false);
+
+
     //this->locobufferadapter = locobufferadapter;
     this->tc = tc;
     this->sql = sql;
     _address = address;
+    _outAddress = new LocoIOAddress(*address);
     locoIOModules = LocoIOModules::instance();
     p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
     displayHexCheck = QString(this->metaObject()->className())+".HexCheck";
     allowEdits = QString(this->metaObject()->className())+".AllowEdit";
 
+    val = 0;
 
     connect(locoIOModules, SIGNAL(probeCompleted(QList<LocoIOAddress*>)), this, SLOT(onProbeCompleted(QList<LocoIOAddress*>)));
-   // if(data == NULL)
-   //  this->data = new LocoIOData(0x51, 0x1,/*(LnTrafficController*)this->locobufferadapter->packetizer()*/tc);
-   // else
-   //  //this->data = new LocoIOData(data->getUnitAddress(), data->getUnitSubAddress(), data->getTrafficController());
-   //  this->data = new LocoIOData(*data);
+
     this->data = new LocoIOData(_address, this->tc);
-    if(this->sql == NULL)\
+    if(this->sql == nullptr)\
     {
      this->sql = new Sql(data, this);
      connect(this->sql, SIGNAL(error(QString)),this, SLOT(error(QString)));
     }
-    servoWidget =NULL;
-    servoRegistersWidget = NULL;
-    setWindowTitle(createTitle());
-   //    unitAddr = 0x151;
-   //    unitSubAddr = 1;
 
-   // unitAddr = this->data->getUnitAddress();
-   // unitSubAddr = this->data->getUnitSubAddress();
-    ui->lblCurrentAddress->setText(tr("Current address: 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(), 0, 16));
+    servoWidget =nullptr;
+    servoRegistersWidget = nullptr;
+    setWindowTitle(createTitle());
+
     //setupCbAddr();
     //ui->chkHex->setChecked(bHex);
-    ui->chkHex->setChecked(p->getSimplePreferenceState(displayHexCheck));
-    on_chkHex_toggled(ui->chkHex->isChecked());
-    ui->chkAllowEdit->setChecked(p->getSimplePreferenceState(displayHexCheck));
-    on_chkAllowEdit_toggled(ui->chkAllowEdit->isChecked());
+    ui->chkHex->setChecked(bDisplayHex = p->getSimplePreferenceState(displayHexCheck));
+    actDisplayHex->setChecked(p->getSimplePreferenceState(displayHexCheck));
 
+    displayAddresses(ui->chkHex->isChecked());
+    ui->chkAllowEdit->setChecked(p->getSimplePreferenceState(displayHexCheck));
+    actAllowEdits->setChecked(p->getSimplePreferenceState(displayHexCheck));
+    on_chkAllowEdit_toggled(ui->chkAllowEdit->isChecked());
 
     bDirty = false;
 
@@ -99,7 +104,7 @@ LocoIOFrame::LocoIOFrame(LocoIOAddress* address, LnTrafficController* tc, bool /
     connect(this->data, SIGNAL(readAllComplete()), this, SLOT(onReadWriteAllComplete()));
     connect(this->data, SIGNAL(writeAllComplete()),this, SLOT(onReadWriteAllComplete()));
     connect(this->tc,SIGNAL(messageProcessed(LocoNetMessage*,bool)),this, SLOT(onMessageReceived(LocoNetMessage*,bool)));
-    connect(this->data, SIGNAL(configRead(int)), this, SLOT(onConfigRead(int)));
+    connect(this->data, SIGNAL(configRead(int, LocoIOData*)), this, SLOT(onConfigRead(int, LocoIOData*)));
     this->data->getConfig();
     connect(this->data, SIGNAL(probeCompleted(QList<LocoIOAddress*>)), this, SLOT(onProbeCompleted(QList<LocoIOAddress*>)));
     connect(this->data, SIGNAL(ioAborted()), this, SLOT(onIOAborted()));
@@ -116,12 +121,15 @@ LocoIOFrame::LocoIOFrame(LocoIOAddress* address, LnTrafficController* tc, bool /
     connect(ui->rbCheckBlock, SIGNAL(toggled(bool)), mapper, SLOT(map()));
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(onInputStatusRbChanged(int)));
     connect(this->data, SIGNAL(optionByte(int,int)), this, SLOT(onOptionByte(int,int)));
+#if 0
     ui->btnChangeAddress->setEnabled(false);
-
+#endif
     createMenus();
 
     // status bar
+#if 0
     statusBar()->addWidget(ui->lblStatus);
+#endif
 }
 
 LocoIOFrame::~LocoIOFrame()
@@ -142,7 +150,8 @@ void LocoIOFrame::createActions()
  actDisplayHex->setCheckable(true);
  actAllowEdits = new QAction(tr("Allow edits"));
  actAllowEdits->setCheckable(true);
-
+// actChangeAddress = new QAction(tr("ChangeAddress"), this);
+// actChangeAddress->setEnabled(false);
 }
 
 void LocoIOFrame::createMenus()
@@ -165,17 +174,20 @@ void LocoIOFrame::createMenus()
  menubar->addMenu(optionMenu);
  actDisplayHex->setChecked(bDisplayHex);
  optionMenu->addAction(actDisplayHex);
- connect(actDisplayHex, SIGNAL(triggered(bool)), this, SLOT(on_chkHex_toggled(bool)));
+ connect(actDisplayHex, SIGNAL(triggered(bool)), this, SLOT(displayAddresses(bool)));
  optionMenu->addAction(actAllowEdits);
  connect(actAllowEdits, SIGNAL(triggered(bool)), this, SLOT(on_chkAllowEdit_toggled(bool)));
 
  menubar->addMenu(new WindowMenu((WindowInterface*)this,this));
 }
+
 void LocoIOFrame::setupTable()
 {
  bLoading = true;
-// bool bServo = ui->chkServoIO->isChecked();
-// bool bBooster = ui->chkBooster->isChecked();
+ if(!bIsBooster)
+     ui->chkSpecialPorts->setVisible(false);
+ else
+     ui->chkSpecialPorts->setVisible(true);
  if(bIsServo || bIsBooster)
  {
   ui->rbCheckAll->setVisible(true);
@@ -204,7 +216,7 @@ void LocoIOFrame::setupTable()
   ui->tableWidget->setHorizontalHeaderLabels(labels);
  if(bIsServo)
  {
-  if(servoWidget == NULL)
+  if(servoWidget == nullptr)
   {
    servoWidget = new ServoWidget(data, /*locobufferadapter->packetizer()*/tc, ui->tableWidget);
    connect(this, SIGNAL(retranslateControls()), servoWidget, SLOT(retranslateControls()));
@@ -262,6 +274,8 @@ void LocoIOFrame::setupTable()
    }
    if(col == 6)
    {
+    Booster7Widget* b7w = new Booster7Widget(data, col+1, tc, this);
+    ui->tableWidget->setCellWidget(0,col, b7w);
     BoosterOutputWidget* bow = new BoosterOutputWidget(data, col+1, /*locobufferadapter->packetizer()*/tc, this);
     connect(this, SIGNAL(retranslateControls()), bow, SLOT(retranslateControls()));
     ui->tableWidget->setCellWidget(1, col, bow);
@@ -289,9 +303,12 @@ void LocoIOFrame::setupTable()
    }
    if(col == 7)
    {
-    BoosterPanel* bp = new BoosterPanel(this);
+    BoosterPanel* bp = new BoosterPanel(data, col+1, tc, this);
     connect(this, SIGNAL(retranslateControls()), bp, SLOT(retranslateControls()));
     ui->tableWidget->setCellWidget(0,col, bp);
+
+    BoosterButtons* bpp = new BoosterButtons(data, col+1, tc, this);
+    ui->tableWidget->setCellWidget(4,col, bpp);
     break;
    }
   }
@@ -359,7 +376,9 @@ void LocoIOFrame::setupTable()
  if(bIsServo)
  {
   idw->setServoOpt();
+#if 0
   ui->chkModule->setChecked(true);
+#endif
  }
  ui->tableWidget->setCellWidget(4,maxCol, apdw);
  ui->tableWidget->resizeColumnsToContents();
@@ -373,7 +392,7 @@ void LocoIOFrame::setupTable()
 
 void LocoIOFrame::setName(int col, QString s)
 {
- if(bIsServo &&(col > 3 || col <12)) return;
+ if(bIsServo &&(col > 3 && col <12)) return;
  ui->tableWidget->setHorizontalHeaderItem(col, new QTableWidgetItem(s));
 }
 
@@ -384,6 +403,25 @@ void LocoIOFrame::on_btnProbe_clicked()
  //data->startProbe();
  locoIOModules->startProbe();
 }
+void LocoIOFrame::on_btnRead_clicked()
+{
+ bool bok;
+ qint16 unit = ui->edAddrUnitIn->text().toShort(&bok, ui->chkHex->isChecked()?16:10);
+ if(!bok) return;
+ qint16 subUnit = ui->edAddrSubUnitIn->text().toShort(&bok, ui->chkHex->isChecked()?16:10);
+ if(!bok) return;
+ LocoIOAddress addr = LocoIOAddress(unit, subUnit);
+ _address = new LocoIOAddress(addr);
+ data->setUnitAddress(unit);
+ data->setUnitSubAddress(subUnit);
+
+ enableUi(false);
+
+// data->readSV0();
+// data->readSV125();
+ data->getConfig();
+}
+
 void LocoIOFrame::on_btnReadAll_clicked()
 {
  enableUi(false);
@@ -394,12 +432,14 @@ void LocoIOFrame::on_btnReadAll_clicked()
 //   data->setDirty(row,false);
  data->readAllCVs();
 }
+
 void LocoIOFrame::onPropertyChange(PropertyChangeEvent* evt)
 {
  //log->debug(QString("Property change %1 oldVal='%2' newVal='%3'").arg(propertyName).arg(oldVal.toString()).arg(newVal.toString()));
 
  if(evt->getPropertyName() == "StatusChange")
      ui->lblStatus->setText( evt->getNewValue().toString());
+
  if(evt->getPropertyName() == "StatusChange" && evt->getNewValue().toString()== "OK")
  {
   for(int channel =0; channel < data->numRows(); channel++)
@@ -409,13 +449,13 @@ void LocoIOFrame::onPropertyChange(PropertyChangeEvent* evt)
    if(!(config & 0x80))
    { // input or not used
     InputWidget* inWidget = (InputWidget*)ui->tableWidget->cellWidget(0, channel);
-    if(inWidget != NULL)
+    if(inWidget != nullptr)
      inWidget->setToolTip(data->getMode(channel));
    }
    else
    {
     OutputWidget* outWidget = (OutputWidget*)ui->tableWidget->cellWidget(1, channel);
-    if(outWidget != NULL)
+    if(outWidget != nullptr)
      outWidget->setToolTip(data->getMode(channel));
     if(channel > 3 && channel < 8 && bIsServo)
     {
@@ -423,7 +463,7 @@ void LocoIOFrame::onPropertyChange(PropertyChangeEvent* evt)
     }
    }
    RegistersWidget* registersWidget = (RegistersWidget*)ui->tableWidget->cellWidget(2, channel);
-   if(registersWidget != NULL)
+   if(registersWidget != nullptr)
     registersWidget->setToolTip(data->getMode(channel));
   }
  }
@@ -468,7 +508,9 @@ void LocoIOFrame::onPropertyChange(PropertyChangeEvent* evt)
   //locobufferadapter->packetizer()->sendLocoNetMessage(msg);
   tc->sendLocoNetMessage(msg);
   QString v = QString("Unit config changed: Blink Rate = 0x%1, LocoServo =%2").arg((evt->getNewValue().toInt()& 0xF0)>>4, 0, 16).arg((evt->getNewValue().toInt() & 0x80)>>3);
+
   ui->lblStatus->setText(v);
+
  }
 }
 void LocoIOFrame::on_btnCapture_clicked()
@@ -477,7 +519,7 @@ void LocoIOFrame::on_btnCapture_clicked()
  for(int channel = 0; channel<data->numRows()*3; channel++)
  {
   QCheckBox* checkbox = (QCheckBox*)ui->tableWidget->cellWidget(channel, 0);
-  if(checkbox != NULL && checkbox->isChecked())
+  if(checkbox != nullptr && checkbox->isChecked())
   {
    LocoIO::readCV(_address->unitAddress() | 0x100, _address->unitSubAddress(), channel*3+4);
    connect(/*locobufferadapter->packetizer()*/tc,SIGNAL(messageProcessed(LocoNetMessage*,bool)), data, SLOT(message(LocoNetMessage*)));
@@ -490,6 +532,9 @@ void LocoIOFrame::on_btnWriteAll_clicked()
 // bWritingAll=true;
 // data->writeAll();
 // setDirty(false);
+ data->setUnitAddress(_outAddress->unitAddress());
+ data->setUnitSubAddress(_outAddress->unitSubAddress());
+
  data->writeAllCVs();
 }
 
@@ -521,7 +566,9 @@ void LocoIOFrame::on_btnChangeAddress_clicked()
 
   newAddr    = 0x0100 | (newAddr&0x07F);  // range is [1..79, 81..127]
   newSubAddr = newSubAddr & 0x07F;	// range is [1..126]
+#if 0
   ui->btnChangeAddress->setEnabled(false);
+#endif
   if((oldAddr & 0xFF) == 0)
   {
    switch(QMessageBox::warning(this, tr("Warning"), tr("This will set the address of all attached LocoIO, LocoServo and LocoBooster boards"),QMessageBox::Ok | QMessageBox::Cancel))
@@ -550,20 +597,35 @@ void LocoIOFrame::on_btnChangeAddress_clicked()
   _address->setUnitAddress(data->getUnitAddress());
   //unitSubAddr = data->getUnitSubAddress();
   _address->setUnitSubAddress(data->getUnitSubAddress());
-  if(ui->chkHex->isChecked())
-  {
-   ui->lblUnitAddr->setText(tr("New Unit Address 0x"));
-   rv->setRegExp(rxHex);
-   ui->lblCurrentAddress->setText(tr("Current address: 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(),0,16));
-  }
-  else
-  {
-   ui->lblUnitAddr->setText(tr("New Unit Address"));
-   rv->setRegExp(rxDec);
-   ui->lblCurrentAddress->setText(tr("Current address: %1/%2").arg(_address->unitAddress(),0,10).arg(_address->unitSubAddress(),0,10));
-  }
+//  if(ui->chkHex->isChecked())
+//  {
+//#if 0
+//   ui->lblUnitAddr->setText(tr("New Unit Address 0x"));
+//   rv->setRegExp(rxHex);
+//   ui->lblCurrentAddress->setText(tr("Current address: 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(),0,16));
+//#endif
+//   ui->edAddrUnitIn->setText("0x"+QString::number(_address->unitAddress(), 0, 16));
+//   ui->edAddrSubUnitIn->setText(QString::number(_address->unitSubAddress(), 0, 16));
+//   ui->edAddrUnitOut->setText("0x"+QString::number(_outAddress->unitAddress(), 0, 16));
+//   ui->edAddrSubUnitOut->setText(QString::number(_outAddress->unitSubAddress(), 0, 16));
+//  }
+//  else
+//  {
+//#if 0
+//   ui->lblUnitAddr->setText(tr("New Unit Address"));
+//   rv->setRegExp(rxDec);
+//   ui->lblCurrentAddress->setText(tr("Current address: %1/%2").arg(_address->unitAddress(),0,10).arg(_address->unitSubAddress(),0,10));
+//#endif
+//   ui->edAddrUnitIn->setText(QString::number(_address->unitAddress(), 0, 10));
+//   ui->edAddrSubUnitIn->setText(QString::number(_address->unitSubAddress(), 0, 10));
+//   ui->edAddrUnitOut->setText(QString::number(_outAddress->unitAddress(), 0, 10));
+//   ui->edAddrSubUnitOut->setText(QString::number(_outAddress->unitSubAddress(), 0, 10));
+
+//  }
+  displayAddresses(ui->chkHex->isChecked());
   enableUi(true);
   sql->changeAddress(oldAddr, oldSubAddr, _address->unitAddress(), _address->unitSubAddress());
+
   //on_btnProbe_clicked();
 }
 
@@ -589,7 +651,7 @@ void LocoIOFrame::onAddrChanged(const QString &position)
   data->setV1(row, l, a);
   data->setV2(row, l, a);
 
-  int opcode = (l == NULL) ? 0 : l->getOpcode();
+  int opcode = (l == nullptr) ? 0 : l->getOpcode();
   msg->replace(row, "Packet: " + LnConstants::OPC_NAME(opcode) +
                " "        + QString("%1").arg(data->getV1(row),0,16) +
                " "        + QString("%1").arg(data->getV2(row),0,16) +
@@ -643,15 +705,19 @@ void LocoIOFrame::onMessageReceived(LocoNetMessage *m, bool)
   break;
  }
 }
+
 void LocoIOFrame::setDirty(bool bDirty)
 {
  this->bDirty = bDirty;
  setWindowTitle(createTitle());
 }
+
 QString LocoIOFrame::createTitle()
 {
+ ui->edPicVersion->setText(_address->firmwareVersion());
  return _address->moduleType() + (bDirty?"* ":" ") + _address->firmwareVersion() + QString(" 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(), 0, 16) +  QString(" (%1/%2)").arg(_address->unitAddress(),0,10).arg(_address->unitSubAddress(), 0, 10);
 }
+
 void LocoIOFrame::on_btnSave_clicked()
 {
  //enableUi(false);
@@ -670,21 +736,21 @@ void LocoIOFrame::on_btnRestore_clicked()
   moduleName = saveDlg->getModuleName();
   data->setValues(saveDlg->getValues());
  }
- saveDlg = NULL;
+ saveDlg = nullptr;
 }
 void LocoIOFrame::enableUi(bool bEnable)
 {
- ui->btnCapture->setEnabled(bEnable);
- ui->btnChangeAddress->setEnabled(bEnable);
- ui->btnProbe->setEnabled(bEnable);
+ actProbe->setEnabled(bEnable);
  ui->btnReadAll->setEnabled(bEnable);
- ui->btnRestore->setEnabled(bEnable);
+ ui->btnRead->setEnabled(bEnable);
  actRestoreModule->setEnabled(bEnable);
- ui->btnSave->setEnabled(bEnable);
+
  actSaveModule->setEnabled(bEnable);
- ui->btnSetDefaults->setEnabled(bEnable);
  ui->btnWriteAll->setEnabled(bEnable);
+ ui->pbWrite->setEnabled(bEnable);
+ actSetDefaults->setEnabled(bEnable);
 }
+
 void LocoIOFrame::onIOComplete(QList<int>* vals)
 {
  Q_UNUSED(vals)
@@ -701,38 +767,41 @@ void LocoIOFrame::onIOCompleteX2(QList<int>* vals)
  {
   if(bReadingAll )
    data->readAllServo();
-  if(bWritingAll)  // TODO:
+  if(bWritingAll) 
    data->writeAllServo();
   return;
  }
  bReadingAll = bWritingAll = false;
+ data->setUnitAddress(_address->unitAddress());
+ data->setUnitSubAddress(_address->unitSubAddress());
  enableUi(true);
 }
+
 void LocoIOFrame::onIOCompleteServo()
 {
  bReadingAll = bWritingAll = false;
+ data->setUnitAddress(_address->unitAddress());
+ data->setUnitSubAddress(_address->unitSubAddress());
  enableUi(true);
 }
 
 //void LocoIOFrame::on_tableWidget_cellClicked(int row, int)
 //{
 //}
-void LocoIOFrame::onConfigRead(int cfg) //SLOT
+void LocoIOFrame::onConfigRead(int cfg, LocoIOData* data) //SLOT
 {
  this->cfg = cfg;
- //ui->sbBlinkRate->setValue((cfg&0xff)>>4);
-// bool bServo = (data->getIsServo() == 1);
-//bIsServo = data->getIsServo()==1?true:false;
-//bIsBooster = data->getIsBooster()==1?true:false;
-QString moduleType = _address->moduleType();
-bIsServo = bIsBooster = false;
-if(moduleType == "LocoServo")
-{
- bIsServo = true;
-}
-else
- if(moduleType == "LocoBooster")
-  bIsBooster = true;
+ QString moduleType = data->getModuleType(); //_address->moduleType();
+ _address->setModuleType(moduleType);
+ bIsServo = bIsBooster = false;
+ if(moduleType == "LocoServo")
+ {
+  bIsServo = true;
+ }
+ else  if(moduleType == "LocoBooster")
+ {
+   bIsBooster = true;
+ }
 
 // ui->chkServoIO->setChecked(bServo);
 // ui->chkBooster->setChecked(false);
@@ -741,20 +810,24 @@ else
  ui->rbAltCodeForPBs->setChecked(data->getAltCodePBs()==1);
 
  this->setWindowTitle(createTitle());
- setupTable();
- OutPortDefinitionWidget* opdw;
+ //();
+ if(opdw == nullptr)
+     opdw = new OutPortDefinitionWidget(data);
+
  if(bIsBooster)
-  opdw = (OutPortDefinitionWidget*)ui->tableWidget->cellWidget(1,8);
- else
-  opdw = (OutPortDefinitionWidget*)ui->tableWidget->cellWidget(1,16);
+//  opdw = (OutPortDefinitionWidget*)ui->tableWidget->cellWidget(1,8);
+// else
+//  opdw = (OutPortDefinitionWidget*)ui->tableWidget->cellWidget(1,16);
 
  opdw->setBlinkSb((cfg&0xff)>>4);
  if(bIsServo)
   on_chk4PosServo_toggled((cfg & 0x04 )== 0x04);
 
+ setupTable();
 
  on_btnReadAll_clicked();
 }
+
 int LocoIOFrame::decodeText(QLineEdit *ctl)
 {
  QString text = ctl->text();
@@ -809,25 +882,63 @@ void LocoIOFrame::on_chkExtra2_toggled(bool bChecked)
   }
  }
 }
-void LocoIOFrame::on_chkHex_toggled(bool bChecked)
+void LocoIOFrame::displayAddresses(bool bChecked)
 {
  emit displayFormat(bChecked);
+ QString unit, unitOut;
+ QString subUnit, subUnitOut;
  if(bChecked)
  {
-  ui->lblUnitAddr->setText(tr("New Unit Address 0x"));
+  //ui->lblUnitAddr->setText(tr("New Unit Address 0x"));
   rv->setRegExp(rxHex);
-  ui->lblCurrentAddress->setText(tr("Current address: 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(),0,16));
+  //ui->lblCurrentAddress->setText(tr("Current address: 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(),0,16));
+  unit = QString("%1").arg(_address->unitAddress(), 0, 16);
+  subUnit =  QString("%1").arg(_address->unitSubAddress(), 0, 16);
+  ui->lblAddressIn->setText(tr("Address") + " 0x");
+  ui->edAddrUnitIn->setText(unit);
+  ui->edAddrSubUnitIn->setText(subUnit);
+  ui->edAddrUnitIn->setValidator(new QRegExpValidator(QRegExp("/[0-9a-f]+/i"), this));
+  ui->edAddrSubUnitIn->setValidator(new QRegExpValidator(QRegExp("/[0-9a-f]+/i"), this));
+
+  unitOut =  QString("%1").arg(_address->unitAddress(), 0, 16);
+  subUnitOut = QString("%1").arg(_address->unitSubAddress(), 0, 16);
+  ui->lblAddressOut->setText(tr("Address") + " 0x");
+  ui->edAddrUnitOut->setText(unitOut);
+  ui->edAddrSubUnitOut->setText(subUnitOut);
+  ui->edAddrUnitOut->setValidator(new QRegExpValidator(QRegExp("/[0-9a-f]+/i"), this));
+  ui->edAddrSubUnitOut->setValidator(new QRegExpValidator(QRegExp("/[0-9a-f]+/i"), this));
  }
  else
  {
-  ui->lblUnitAddr->setText(tr("New Unit Address"));
+  //ui->lblUnitAddr->setText(tr("New Unit Address"));
   rv->setRegExp(rxDec);
-  ui->lblCurrentAddress->setText(tr("Current address: %1/%2").arg(_address->unitAddress(),0,10).arg(_address->unitSubAddress(),0,10));
+  //ui->lblCurrentAddress->setText(tr("Current address: %1/%2").arg(_address->unitAddress(),0,10).arg(_address->unitSubAddress(),0,10));
+  unit =  QString("%1").arg(_address->unitAddress(), 0, 10);
+  subUnit =  QString("%1").arg(_address->unitSubAddress(), 0, 10);
+  ui->lblAddressIn->setText(tr("Address"));
+  ui->edAddrUnitIn->setText(unit);
+  ui->edAddrSubUnitIn->setText(subUnit);
+  ui->edAddrUnitIn->setValidator(new QRegExpValidator(QRegExp("[0-9]"), this));
+  ui->edAddrSubUnitIn->setValidator(new QRegExpValidator(QRegExp("[0-9]"), this));
+
+  unitOut =  QString("%1").arg(_address->unitAddress(), 0, 10);
+  subUnitOut = QString("%1").arg(_address->unitSubAddress(), 0, 10);
+  ui->lblAddressOut->setText(tr("Address"));
+  ui->edAddrUnitOut->setText(unitOut);
+  ui->edAddrSubUnitOut->setText(subUnitOut);
+  ui->edAddrUnitOut->setValidator(new QRegExpValidator(QRegExp("[0-9]"), this));
+  ui->edAddrSubUnitOut->setValidator(new QRegExpValidator(QRegExp("[0-9]"), this));
 
  }
  //setupCbAddr();
  p->setSimplePreferenceState(displayHexCheck, ui->chkHex->isChecked());
+ bDisplayHex = ui->chkHex->isChecked();
+ actDisplayHex->setChecked(bDisplayHex);
 
+ ui->edAddrUnitIn->setEnabled(true);
+ ui->edAddrUnitIn->setReadOnly(false);
+ ui->edAddrSubUnitIn->setEnabled(true);
+ ui->edAddrSubUnitIn->setReadOnly(false);
 }
 void LocoIOFrame::on_chkAllowEdit_toggled(bool bChecked)
 {
@@ -875,7 +986,7 @@ void LocoIOFrame::on_chkSpecialPorts_toggled(bool bChecked)
 
   if(bChecked)
   {
-   SpecialPort* sp = new SpecialPort(data, port, this);
+   SpecialPort* sp = new SpecialPort(data, port, tc, this);
    if(port != 4)
    {
     ui->tableWidget->setCellWidget(0,column, sp);
@@ -983,60 +1094,146 @@ void LocoIOFrame::on_cbAddr_currentIndexChanged(int index)
  data->getConfig();
 }
 #endif
-void LocoIOFrame::on_edNewAddr_editingFinished()
+//void LocoIOFrame::on_edNewAddr_editingFinished()
+//{
+//#if 0
+// on_edNewAddr_editTextChanged(ui->edNewAddr->text());
+//#endif
+//}
+void LocoIOFrame::on_edAddrUnitOut_editingFinished()
 {
- on_edNewAddr_editTextChanged(ui->edNewAddr->text());
-}
-
-void LocoIOFrame::on_edNewAddr_editTextChanged(QString text)
-{
- int addr=0;
- int subAddr=0;
- int pos=0;
- bool bOk;
- if(bLoadCB)
-  return;
- switch(rv->validate(text, pos))
+ bool bok;
+ qint16 unit = ui->edAddrUnitOut->text().toShort(&bok, ui->chkHex->isChecked()?16:10);
+ if(!bok && unit > 0 && unit != 0x80)
  {
- case QValidator::Acceptable:
-   break;
- case QValidator::Intermediate:
-  return;
- case QValidator::Invalid:
-   return;
+  val = 0;
+  ui->btnWriteAll->setEnabled(false);
+//  actChangeAddress->setEnabled(false);
+  if(ui->edAddrUnitOut->isUndoAvailable())
+   ui->edAddrUnitOut->undo();
+  else
+  restoreOutputAddr();
+ }
+ qint16 subUnit = ui->edAddrSubUnitOut->text().toShort(&bok, ui->chkHex->isChecked()?16:10);
+ if(!bok && subUnit > 0)
+ {
+  val = 0;
+  ui->btnWriteAll->setEnabled(false);
+//  actChangeAddress->setEnabled(false);
+  if(ui->edAddrSubUnitOut->isUndoAvailable())
+   ui->edAddrSubUnitOut->undo();
+  else
+  restoreOutputSubAddr();
  }
 
- int iBase = ui->chkHex->isChecked()?16:10;
- QStringList sl = text.split("/");
- addr = sl.at(0).toInt(&bOk,iBase);
- subAddr = sl.at(1).toInt(&bOk, iBase);
- val = (addr << 16) + subAddr;
- for(int i = 0; i<LocoIOModules::instance()->probedAddresses().count(); i++)
+ val = (unit << 16) + subUnit;
+ ui->btnWriteAll->setEnabled(true);
+// actChangeAddress->setEnabled(true);
+}
+
+void LocoIOFrame::on_edAddrUnitIn_editingFinished()
+{
+ bool bok;
+ qint16 unit = ui->edAddrUnitIn->text().toShort(&bok, ui->chkHex->isChecked()?16:10);
+ if(!bok && unit > 0 && unit != 0x80)
  {
-  LocoIOAddress* a = LocoIOModules::instance()->probedAddresses().at(i);
-  //if(ui->cbAddr->itemData(i).toInt()== val)
-  if(a->unitAddress() == addr && a->unitSubAddress() == subAddr)
-  {
-   //bLoadCB = true;
-   //ui->cbAddr->setCurrentIndex(i);
-   //bLoadCB = false;
-   ui->btnChangeAddress->setEnabled(false);
-   return;
-  }
-  ui->btnChangeAddress->setEnabled(true);
+  if(ui->edAddrUnitIn->isUndoAvailable())
+   ui->edAddrUnitIn->undo();
+  else
+  restoreInputAddr();
+ }
+
+ qint16 subUnit = ui->edAddrSubUnitIn->text().toShort(&bok, ui->chkHex->isChecked()?16:10);
+ if(!bok && subUnit > 0)
+ {
+//  actChangeAddress->setEnabled(false);
+  if(ui->edAddrSubUnitIn->isUndoAvailable())
+   ui->edAddrSubUnitIn->undo();
+  else
+  restoreInputSubAddr();
+ }
+
+ checkInAddressChanged(unit, subUnit);
+}
+
+void LocoIOFrame::checkInAddressChanged(qint16 unit, qint16 subUnit)
+{
+ LocoIOAddress newAddr = LocoIOAddress(unit, subUnit);
+ QList<LocoIOAddress*> probedAddrs = data->getProbedAddresses();
+ if(probedAddrs.contains(&newAddr))
+ {
+  ui->edAddrUnitIn->setStyleSheet("QLineEdit{color:black;}");
+  ui->edAddrSubUnitIn->setStyleSheet("QLineEdit{color:black;}");
 
  }
- bLoadCB = true;
- QString ntext = QString("%1/%2").arg(addr,0,iBase).arg(subAddr,0,iBase);
-// ui->cbAddr->setItemText(0,ntext);
-// ui->cbAddr->setItemData(0, val);
- //ui->cbAddr->addItem(text,val);
- //ui->cbAddr->addItem(text, val);
- //ui->cbAddr->setCurrentIndex(0);
- ui->edNewAddr->setText(ntext);
- ui->btnChangeAddress->setEnabled(true);
- bLoadCB = false;
+ else
+ {
+  ui->edAddrUnitIn->setStyleSheet("QLineEdit{color:red;}");
+  ui->edAddrSubUnitIn->setStyleSheet("QLineEdit{color:red;}");
+ }
+ if(!(*_address == newAddr))
+ {
+  ui->btnReadAll->setEnabled(false);
+ }
+ else
+  ui->btnReadAll->setEnabled(true);
 }
+
+//void LocoIOFrame::on_edNewAddr_editTextChanged(QString text)
+//{
+// int addr=0;
+// int subAddr=0;
+// int pos=0;
+// bool bOk;
+// if(bLoadCB)
+//  return;
+// switch(rv->validate(text, pos))
+// {
+// case QValidator::Acceptable:
+//   break;
+// case QValidator::Intermediate:
+//  return;
+// case QValidator::Invalid:
+//   return;
+// }
+
+// int iBase = ui->chkHex->isChecked()?16:10;
+// QStringList sl = text.split("/");
+// addr = sl.at(0).toInt(&bOk,iBase);
+// subAddr = sl.at(1).toInt(&bOk, iBase);
+// val = (addr << 16) + subAddr;
+// for(int i = 0; i<LocoIOModules::instance()->probedAddresses().count(); i++)
+// {
+//  LocoIOAddress* a = LocoIOModules::instance()->probedAddresses().at(i);
+//  //if(ui->cbAddr->itemData(i).toInt()== val)
+//  if(a->unitAddress() == addr && a->unitSubAddress() == subAddr)
+//  {
+//   //bLoadCB = true;
+//   //ui->cbAddr->setCurrentIndex(i);
+//   //bLoadCB = false;
+//#if 0
+//   ui->btnChangeAddress->setEnabled(false);
+//#endif
+//   return;
+//  }
+//#if 0
+//  ui->btnChangeAddress->setEnabled(true);
+//#endif
+
+// }
+// bLoadCB = true;
+// QString ntext = QString("%1/%2").arg(addr,0,iBase).arg(subAddr,0,iBase);
+//// ui->cbAddr->setItemText(0,ntext);
+//// ui->cbAddr->setItemData(0, val);
+// //ui->cbAddr->addItem(text,val);
+// //ui->cbAddr->addItem(text, val);
+// //ui->cbAddr->setCurrentIndex(0);
+//#if 0
+// ui->edNewAddr->setText(ntext);
+// ui->btnChangeAddress->setEnabled(true);
+//#endif
+// bLoadCB = false;
+//}
 void LocoIOFrame::onIOAborted()
 {
  enableUi(true);
@@ -1084,22 +1281,28 @@ void LocoIOFrame::onChangeModuleType(int iType)
 {
  bIsBooster = false;
  bIsServo = false;
+#if 0
  ui->chkModule->setVisible(false);
  ui->chkModule->setText("LocoIO");
+#endif
  ui->tableWidget->setHorizontalHeaderLabels(labels);
  if(iType == 1)
  {
+#if 0
   ui->chkModule->setVisible(true);
   ui->chkModule->setText("LocoBooster");
   ui->tableWidget->setHorizontalHeaderLabels(boosterLabels);
+#endif
   bIsBooster = true;
   data->setIsBooster(1);
  }
  else
  if(iType == 2)
  {
+#if 0
   ui->chkModule->setVisible(true);
   ui->chkModule->setText("LocoServo");
+#endif
   ui->tableWidget->setHorizontalHeaderLabels(servoLabels);
   bIsServo = true;
   data->setIsServo(1);
@@ -1150,9 +1353,15 @@ void LocoIOFrame::setAddress(int unitAddress, int unitSubAddress)
  //this->unitAddr = unitAddress | 0x100;
  _address->setAddress(unitAddress, unitSubAddress);
  if(ui->chkHex->isChecked())
+#if 0
   ui->lblCurrentAddress->setText(tr("Current address: 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(), 0, 16));
  else
   ui->lblCurrentAddress->setText(tr("Current address: 0%1/%2").arg(_address->unitAddress(),0,10).arg(_address->unitSubAddress(), 0, 10));
+#endif
+ ui->edAddrUnitIn->setText("0x"+QString::number(_address->unitAddress(), 0, 16));
+ ui->edAddrSubUnitIn->setText(QString::number(_address->unitSubAddress(), 0, 16));
+ ui->edAddrUnitOut->setText("0x"+QString::number(_address->unitAddress(), 0, 16));
+ ui->edAddrSubUnitOut->setText(QString::number(_address->unitSubAddress(), 0, 16));
 
  //setupCbAddr();
  this->data->getConfig();
@@ -1287,3 +1496,53 @@ void LocoIOFrame::onOptionByte(int cv, int val)
 
 }
 LocoIOAddress* LocoIOFrame::address() { return _address;}
+
+void LocoIOFrame::restoreOutputAddr()
+{
+   if(ui->chkHex->isChecked())
+   {
+    ui->edAddrUnitOut->setText(QString("%1").arg(_outAddress->unitAddress(), 0, 16));
+   }
+   else
+   {
+    ui->edAddrUnitOut->setText(QString("%1").arg(_outAddress->unitAddress(), 0, 10));
+   }
+}
+void LocoIOFrame::restoreOutputSubAddr()
+{
+   if(ui->chkHex->isChecked())
+   {
+    ui->edAddrSubUnitOut->setText(QString("%1").arg(_outAddress->unitSubAddress(), 0, 16));
+   }
+   else
+   {
+    ui->edAddrSubUnitOut->setText(QString("%1").arg(_outAddress->unitSubAddress(), 0, 10));
+   }
+}
+void LocoIOFrame::restoreInputAddr()
+{
+   if(ui->chkHex->isChecked())
+   {
+    ui->edAddrUnitIn->setText(QString("%1").arg(_address->unitAddress(), 0, 16));
+   }
+   else
+   {
+    ui->edAddrUnitIn->setText(QString("%1").arg(_address->unitAddress(), 0, 10));
+   }
+   ui->btnRead->setEnabled(true);
+   ui->btnReadAll->setEnabled(true);
+}
+void LocoIOFrame::restoreInputSubAddr()
+{
+   if(ui->chkHex->isChecked())
+   {
+    ui->edAddrSubUnitIn->setText(QString("%1").arg(_address->unitSubAddress(), 0, 16));
+   }
+   else
+   {
+    ui->edAddrSubUnitIn->setText(QString("%1").arg(_address->unitSubAddress(), 0, 10));
+   }
+   ui->btnRead->setEnabled(true);
+   ui->btnReadAll->setEnabled(true);
+
+}

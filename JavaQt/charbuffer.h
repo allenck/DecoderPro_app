@@ -5,7 +5,7 @@
 class ReadOnlyBufferException : public Exception
 {
 public:
- ReadOnlyBufferException(QString mag = "") : Exception(msg) {}
+ ReadOnlyBufferException(QString /*mag*/ = "") : Exception(msg) {}
 };
 
 class BufferOverflowException : public Exception

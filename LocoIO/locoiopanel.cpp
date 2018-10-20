@@ -252,6 +252,7 @@ void LocoIOPanel::on_al4UnitAddress()
 {
  try
  {
+  if(addrField == nullptr || subAddrField == nullptr) throw NullPointerException("Invalid address");
   data->setUnitAddress(addrField->text().toInt(0,16), subAddrField->text().toInt(0,16));
  }
  catch (NullPointerException e)

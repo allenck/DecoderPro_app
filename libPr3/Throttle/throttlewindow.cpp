@@ -333,7 +333,7 @@ ThrottleWindow::~ThrottleWindow()
  editMenu->addSeparator();
  editMenu->addAction(new ThrottlesPreferencesAction(tr("Throttles Preferences"),this)); // now in tabbed preferences
 
- if(this->menuBar() == NULL)
+ if(this->menuBar() == nullptr)
   this->setMenuBar(new QMenuBar());
  else
   this->menuBar()->clear();
@@ -341,7 +341,7 @@ ThrottleWindow::~ThrottleWindow()
  this->menuBar()->addMenu(editMenu);
  this->menuBar()->addMenu(viewMenu);
 
- if (powerMgr != NULL)
+ if (powerMgr != nullptr)
  {
   QMenu* powerMenu = new QMenu(tr("Power"));
   QAction* powerOn = new QAction(tr("Power on"), this);

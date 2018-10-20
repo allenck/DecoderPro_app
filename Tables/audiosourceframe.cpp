@@ -387,7 +387,7 @@ void AudioSourceFrame::On_maxDistance_valueChanged()
 {
  AbstractAudioFrame::populateFrame(a);
  AudioSource* s = (AudioSource*) a;
- AudioManager* am = InstanceManager::audioManagerInstance();
+ AudioManager* am = ((AudioManager*)InstanceManager::getDefault("AudioManager"));
  QString ab = s->getAssignedBufferName();
  Audio* b = am->getAudio(ab);
  if (b != NULL)
@@ -414,7 +414,7 @@ void AudioSourceFrame::On_maxDistance_valueChanged()
 }
 
 /*public*/ void AudioSourceFrame::updateBufferList() {
-    AudioManager* am = InstanceManager::audioManagerInstance();
+    AudioManager* am = ((AudioManager*)InstanceManager::getDefault("AudioManager"));
     assignedBuffer->clear();
     assignedBuffer->addItem("Select buffer from list");
     foreach (QString s, am->getSystemNameList(Audio::BUFFER)) {
@@ -438,7 +438,7 @@ void AudioSourceFrame::okPressed(ActionEvent* /*e*/)
  AudioSource* s;
  try
  {
-  AudioManager* am = InstanceManager::audioManagerInstance();
+  AudioManager* am = ((AudioManager*)InstanceManager::getDefault("AudioManager"));
   s = (AudioSource*) am->provideAudio(sName);
   if (s == NULL)
   {

@@ -58,25 +58,9 @@ JmriNamedPaneAction::JmriNamedPaneAction(QObject *parent) :
 }
 void JmriNamedPaneAction::common()
 {
-#if 0
- qRegisterMetaType<LocoStatsPanel>("LocoStatsPanel");
- qRegisterMetaType<SlotMonPane>("SlotMonPane");
- qRegisterMetaType<DS64Panel>("DS64Panel");
- qRegisterMetaType<ClockMonPane>("ClockMonPane");
- qRegisterMetaType<LocoIdPanel>("LocoIdPanel");
- qRegisterMetaType<LocoMonPane>("LocoMonPane");
- qRegisterMetaType<QueryCvDialog>("QueryCvDialog");
- qRegisterMetaType<LocoNetMsgDialog>("LocoNetMsgDialog");
- qRegisterMetaType<CmdStnConfigPane>("CmdStnConfigPane");
- qRegisterMetaType<MessagePanel>("MessagePanel");
- qRegisterMetaType<Pr3SelectPane>("Pr3SelectPane");
- qRegisterMetaType<LoaderPane>("LoaderPane");
- qRegisterMetaType<SoundLoaderPane>("SoundLoaderPane");
- qRegisterMetaType<EditorPane>("EditorPane");
-#endif
  log = new Logger("JmriNamedPaneAction");
- context = NULL;
- cache = NULL;
+ context = nullptr;
+ cache = nullptr;
  hint = WindowInterface::DEFAULT;
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
@@ -110,7 +94,7 @@ void JmriNamedPaneAction::common()
   p->setWindowInterface(wi);
   p->resize(100,80);
   p->initComponents();
-  if(context == NULL)
+  if(context == nullptr)
    context = (LocoNetSystemConnectionMemo*) InstanceManager::getDefault("LocoNetSystemConnectionMemo");
   p->initContext(context);
   p->setVisible(true);
@@ -122,7 +106,7 @@ void JmriNamedPaneAction::common()
  {
   log->warn("could not load pane class: " + paneClass);
   //ex.printStackTrace();
-  return NULL;
+  return nullptr;
  }
 }
 #if 0

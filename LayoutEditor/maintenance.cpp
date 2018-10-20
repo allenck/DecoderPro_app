@@ -157,7 +157,7 @@ Maintenance::Maintenance(QObject *parent) :
    names->append( name);
   }
  }
- iter = QStringListIterator(((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->getSystemNameList());
+ iter = QStringListIterator(static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->getSystemNameList());
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -298,8 +298,8 @@ Maintenance::Maintenance(QObject *parent) :
  QVector <QString>* names = new QVector<QString>();
 
  log->debug("findEmptyPressed");
- QStringListIterator iter(((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->getSystemNameList());
- ConditionalManager* cm = InstanceManager::conditionalManagerInstance();
+ QStringListIterator iter(static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->getSystemNameList());
+ ConditionalManager* cm = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"));
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -533,7 +533,7 @@ Maintenance::Maintenance(QObject *parent) :
   return list;
  }
 
- ConditionalManager* cm = InstanceManager::conditionalManagerInstance();
+ ConditionalManager* cm = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"));
  Conditional* c = ((DefaultConditionalManager*)cm)->getBySystemName(sysName);
  if ( c!=NULL )
  {
@@ -709,12 +709,12 @@ Maintenance::Maintenance(QObject *parent) :
  bool found = false;
  bool empty = true;
  // search for references among each class known to be listeners
- QStringListIterator iter1(((DefaultLogixManager*) InstanceManager::logixManagerInstance())->getSystemNameList());
+ QStringListIterator iter1(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getSystemNameList());
  while (iter1.hasNext())
  {
   // get the next Logix
   QString sName = iter1.next();
-  Logix* x = ((DefaultLogixManager*)InstanceManager::logixManagerInstance())->getBySystemName(sName);
+  Logix* x = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
   if (x==NULL)
   {
    log->error("Error getting Logix  - " + sName);
@@ -731,7 +731,7 @@ Maintenance::Maintenance(QObject *parent) :
     log->error("Null conditional system name");
     break;
    }
-   Conditional* c = ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->getBySystemName(sName);
+   Conditional* c = ((DefaultConditionalManager*)static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager")))->getBySystemName(sName);
    if (c == NULL)
    {
     log->error("Invalid conditional system name - " + sName);
@@ -1153,7 +1153,7 @@ Maintenance::Maintenance(QObject *parent) :
     tempText = QString();
     found = false;
     empty = true;
-    LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+    LayoutBlockManager* lbm = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"));
     iter1 = QStringListIterator(lbm->getSystemNameList());
     while (iter1.hasNext()) {
         // get the next Logix
@@ -1304,13 +1304,13 @@ Maintenance::Maintenance(QObject *parent) :
     tempText = QString();
     found = false;
     empty = true;
-    ConditionalManager* conditionalManager = InstanceManager::conditionalManagerInstance();
+    ConditionalManager* conditionalManager = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"));
     sysNameList = conditionalManager->getSystemNameList();
 
-    iter1 = QStringListIterator(InstanceManager::logixManagerInstance()->getSystemNameList());
+    iter1 = QStringListIterator(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getSystemNameList());
     while (iter1.hasNext()) {
         QString sName = iter1.next();
-        Logix* x =((DefaultLogixManager*) InstanceManager::logixManagerInstance())->getBySystemName(sName);
+        Logix* x =static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
         for (int i=0; i<((DefaultLogix*)x)->getNumConditionals(); i++)  {
             sName = ((DefaultLogix*)x)->getConditionalByNumberOrder(i);
             sysNameList.removeAt(sysNameList.indexOf(sName));

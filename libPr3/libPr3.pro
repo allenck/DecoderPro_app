@@ -573,7 +573,6 @@ SOURCES += \
     blockmanager.cpp \
     entrypoint.cpp \
     reportcontext.cpp \
-    userpreferencesmanager.cpp \
     rostertablemodel.cpp \
     rostergroupselector.cpp \
     Roster/imagedelegate.cpp \
@@ -1133,7 +1132,6 @@ HEADERS += \
     #document.h
     sensorturnoutoperator.h \
     Signal/signalmastrepeater.h \
-    userpreferencesmanager.h \
     #actionlistener.h \
     logix.h \
     defaultlogix.h \

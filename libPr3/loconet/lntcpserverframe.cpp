@@ -209,6 +209,8 @@ LnTcpServerFrame* LnTcpServerFrame::self = NULL;
 //  portNumberLabel->setEnabled(!server->isEnabled());
 // }
  startButton->setEnabled(!server->isEnabled());
+ if(server->isEnabled())
+  startButton->setEnabled(false);
  stopButton->setEnabled(server->isEnabled());
  //saveButton->setEnabled(server->isSettingChanged());
  statusLabel->setText(tr("Server Status: ") + (server->isEnabled() ? "Enabled" : "Disabled"));

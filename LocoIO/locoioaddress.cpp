@@ -43,7 +43,7 @@ bool LocoIOAddress::operator<(const LocoIOAddress  other) const
 
 bool LocoIOAddress::operator ==(const LocoIOAddress other) const
 {
- return other.unitAddress() == (_address >> 16)& 0xFF && _address & 0xFFFF == other.unitSubAddress();
+ return other.unitAddress() == ((_address >> 16)& 0xFF) && (_address & 0xFFFF) == other.unitSubAddress();
 }
 
 void LocoIOAddress::setModuleType(QString type) { _moduleType = type;}

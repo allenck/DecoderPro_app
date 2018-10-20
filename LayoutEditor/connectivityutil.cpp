@@ -44,23 +44,23 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
 /*public*/ ConnectivityUtil::ConnectivityUtil(LayoutEditor* thePanel)
 {
         // operational instance variables
- layoutEditor = NULL;
+ layoutEditor = nullptr;
 
- auxTools = NULL;
- layoutBlockManager = NULL;
- leTools = NULL;
- ts = NULL; // was tr
+ auxTools = nullptr;
+ layoutBlockManager = nullptr;
+ leTools = nullptr;
+ ts = nullptr; // was tr
  prevConnectType = 0;
- prevConnectObject = NULL;
- lb = NULL;
- nlb = NULL;
- plb = NULL;
+ prevConnectObject = nullptr;
+ lb = nullptr;
+ nlb = nullptr;
+ plb = nullptr;
  turnoutConnectivity = true;
 
  layoutEditor = thePanel;
  auxTools = new LayoutEditorAuxTools(layoutEditor);
  leTools = layoutEditor->getLETools();
- layoutBlockManager = InstanceManager::layoutBlockManagerInstance();
+ layoutBlockManager = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"));
 }
 
 
@@ -72,7 +72,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  *	 The companion list can be accessed by "getTurnoutSettingList" immediately after this method
  *	 returns.
  * If both the previous Block or the next Block are specified, follows the connectivity and returns
- *   only those turnouts needed for the transit of this block.  If either are not present (NULL),
+ *   only those turnouts needed for the transit of this block.  If either are not present (nullptr),
  *   returns all turnouts in this block, with settings to enter/exit to whatever block is specified,
  *   and other settings set to CLOSED.
  * Returns an empty list if a connectivity anamoly is discovered--specified blocks are not connected.
@@ -83,13 +83,13 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     companion = new QVector<int>();
     // initialize
     lb = layoutBlockManager->getByUserName(block->getUserName());
-    if (prevBlock!=NULL) {
+    if (prevBlock!=nullptr) {
         plb = layoutBlockManager->getByUserName(prevBlock->getUserName());
     }
-    if (nextBlock!=NULL) {
+    if (nextBlock!=nullptr) {
         nlb = layoutBlockManager->getByUserName(nextBlock->getUserName());
     }
-    if ( (plb==NULL) || (nlb==NULL) ) {
+    if ( (plb==nullptr) || (nlb==nullptr) ) {
         // special search with partial information - not as good, order not assured
         QVector<LayoutTurnout*>* allTurnouts = getAllTurnoutsThisBlock(lb);
         for (int i = 0; i<allTurnouts->size(); i++) {
@@ -324,24 +324,24 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     bool notFound = true;
     for (int i=0; (i<cList->size()) && notFound; i++) {
         LayoutConnectivity* lc = cList->at(i);
-        if ( (lc->getXover() != NULL) && ( ((lc->getBlock1()==lb) && (lc->getBlock2()==plb)) ||
+        if ( (lc->getXover() != nullptr) && ( ((lc->getBlock1()==lb) && (lc->getBlock2()==plb)) ||
                     ((lc->getBlock1()==plb) && (lc->getBlock2()==lb)) ) ) {
             // have a block boundary in a crossover turnout, add turnout to the List
             LayoutTurnout* xt = lc->getXover();
             int setting = Turnout::THROWN;
             list->append(xt);
             // determine setting and setup track segment if there is one
-            ts = NULL;
+            ts = nullptr;
             prevConnectObject = xt;
             switch (lc->getXoverBoundaryType()) {
                 case LayoutConnectivity::XOVER_BOUNDARY_AB:
                     setting = Turnout::CLOSED;
-                    if (((TrackSegment*)xt->getConnectA()!=NULL) && (lb==((TrackSegment*)xt->getConnectA())->getLayoutBlock())) {
+                    if (((TrackSegment*)xt->getConnectA()!=nullptr) && (lb==((TrackSegment*)xt->getConnectA())->getLayoutBlock())) {
                         // block exits Xover at A
                         ts = (TrackSegment*)xt->getConnectA();
                         prevConnectType = LayoutEditor::TURNOUT_A;
                     }
-                    else if (((TrackSegment*)xt->getConnectB()!=NULL) && (lb==((TrackSegment*)xt->getConnectB())->getLayoutBlock())) {
+                    else if (((TrackSegment*)xt->getConnectB()!=nullptr) && (lb==((TrackSegment*)xt->getConnectB())->getLayoutBlock())) {
                         // block exits Xover at B
                         ts = (TrackSegment*)xt->getConnectB();
                         prevConnectType = LayoutEditor::TURNOUT_B;
@@ -349,36 +349,36 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     break;
                 case LayoutConnectivity::XOVER_BOUNDARY_CD:
                     setting = Turnout::CLOSED;
-                    if (((TrackSegment*)xt->getConnectC()!=NULL) && (lb==((TrackSegment*)xt->getConnectC())->getLayoutBlock())) {
+                    if (((TrackSegment*)xt->getConnectC()!=nullptr) && (lb==((TrackSegment*)xt->getConnectC())->getLayoutBlock())) {
                         // block exits Xover at C
                         ts = (TrackSegment*)xt->getConnectC();
                         prevConnectType = LayoutEditor::TURNOUT_C;
                     }
-                    else if (((TrackSegment*)xt->getConnectD()!=NULL) && (lb==((TrackSegment*)xt->getConnectD())->getLayoutBlock())) {
+                    else if (((TrackSegment*)xt->getConnectD()!=nullptr) && (lb==((TrackSegment*)xt->getConnectD())->getLayoutBlock())) {
                         // block exits Xover at D
                         ts = (TrackSegment*)xt->getConnectD();
                         prevConnectType = LayoutEditor::TURNOUT_D;
                     }
                     break;
                 case LayoutConnectivity::XOVER_BOUNDARY_AC:
-                    if (((TrackSegment*)xt->getConnectA()!=NULL) && (lb==((TrackSegment*)xt->getConnectA())->getLayoutBlock())) {
+                    if (((TrackSegment*)xt->getConnectA()!=nullptr) && (lb==((TrackSegment*)xt->getConnectA())->getLayoutBlock())) {
                         // block exits Xover at A
                         ts = (TrackSegment*)xt->getConnectA();
                         prevConnectType = LayoutEditor::TURNOUT_A;
                     }
-                    else if (((TrackSegment*)xt->getConnectC()!=NULL) && (lb==((TrackSegment*)xt->getConnectC())->getLayoutBlock())) {
+                    else if (((TrackSegment*)xt->getConnectC()!=nullptr) && (lb==((TrackSegment*)xt->getConnectC())->getLayoutBlock())) {
                         // block exits Xover at C
                         ts = (TrackSegment*)xt->getConnectC();
                         prevConnectType = LayoutEditor::TURNOUT_C;
                     }
                     break;
                 case LayoutConnectivity::XOVER_BOUNDARY_BD:
-                    if (((TrackSegment*)xt->getConnectB()!=NULL) && (lb==((TrackSegment*)xt->getConnectB())->getLayoutBlock())) {
+                    if (((TrackSegment*)xt->getConnectB()!=nullptr) && (lb==((TrackSegment*)xt->getConnectB())->getLayoutBlock())) {
                         // block exits Xover at B
                         ts = (TrackSegment*)xt->getConnectB();
                         prevConnectType = LayoutEditor::TURNOUT_B;
                     }
-                    else if (((TrackSegment*)xt->getConnectD()!=NULL) && (lb==((TrackSegment*)xt->getConnectD())->getLayoutBlock())) {
+                    else if (((TrackSegment*)xt->getConnectD()!=nullptr) && (lb==((TrackSegment*)xt->getConnectD())->getLayoutBlock())) {
                         // block exits Xover at D
                         ts = (TrackSegment*)xt->getConnectD();
                         prevConnectType = LayoutEditor::TURNOUT_D;
@@ -431,17 +431,17 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
         }
     }
     if (notFound) {
-        if (prevBlock!=NULL)
+        if (prevBlock!=nullptr)
             // could not initialize the connectivity search
             log.error ("Could not find connection between Blocks "+block->getUserName()+" and "+
                     prevBlock->getUserName());
         else
-            log.error("Could not find connection between Blocks "+block->getUserName()+", prevBock is NULL!");
+            log.error("Could not find connection between Blocks "+block->getUserName()+", prevBock is nullptr!");
         return list;
     }
     // search connectivity for turnouts by following TrackSegments to end of Block
-    while (ts!=NULL) {
-        QObject* cObject = NULL;
+    while (ts!=nullptr) {
+        QObject* cObject = nullptr;
         // identify next connection
         if ( (ts->getConnect1() == prevConnectObject) && (ts->getType1() == prevConnectType) ) {
             cType = ts->getType2();
@@ -453,14 +453,14 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
         }
         else {
             log.error("Connectivity error when searching turnouts in Block "+lb->getUserName());
-            ts = NULL;
+            ts = nullptr;
             break;
         }
         if (cType==LayoutEditor::POS_POINT) {
             // reached anchor point or end bumper
             if (((PositionablePoint*)cObject)->getType() == PositionablePoint::END_BUMPER) {
                 // end of line
-                ts = NULL;
+                ts = nullptr;
             }
             else if (((PositionablePoint*)cObject)->getType() == PositionablePoint::ANCHOR) {
                 // proceed to next track segment if within the same Block
@@ -470,9 +470,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 else {
                     ts = ((PositionablePoint*)cObject)->getConnect1();
                 }
-                if ((ts==NULL) || (ts->getLayoutBlock() != lb)) {
+                if ((ts==nullptr) || (ts->getLayoutBlock() != lb)) {
                     // track segment is not in this block
-                    ts = NULL;
+                    ts = nullptr;
                 }
                 else {
                     prevConnectType = cType;
@@ -485,7 +485,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             if ( (cType==LayoutEditor::LEVEL_XING_A) || (cType==LayoutEditor::LEVEL_XING_C) ) {
                 if (((LevelXing*)cObject)->getLayoutBlockAC()!=lb) {
                     // outside of block
-                    ts = NULL;
+                    ts = nullptr;
                 }
                 else {
                     // same block
@@ -495,7 +495,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             else {
                 if (((LevelXing*)cObject)->getLayoutBlockBD()!=lb) {
                     // outside of block
-                    ts = NULL;
+                    ts = nullptr;
                 }
                 else {
                     // same block
@@ -515,19 +515,19 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     case LayoutEditor::TURNOUT_A:
                         if ((lt->getLayoutBlock())!=lb) {
                             // connection is outside of the current block
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if (lt->getLayoutBlockB()==nlb) {
                             // exits Block at B
                             list->append((LayoutTurnout*)cObject);
                             companion->append( (Turnout::CLOSED));
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if ( (lt->getLayoutBlockC()==nlb) && (tType!=LayoutTurnout::LH_XOVER) ) {
                             // exits Block at C, either Double or RH
                             list->append((LayoutTurnout*)cObject);
                             companion->append( (Turnout::THROWN));
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if (lt->getLayoutBlockB()==lb) {
                             // block continues at B
@@ -548,25 +548,25 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         else {
                             // no legal outcome found, print error
                             log.error("Connectivity mismatch at A in turnout "+lt->getTurnoutName());
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         break;
                     case LayoutEditor::TURNOUT_B:
                         if ((lt->getLayoutBlockB())!=lb) {
                             // connection is outside of the current block
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if (lt->getLayoutBlock()==nlb) {
                             // exits Block at A
                             list->append((LayoutTurnout*)cObject);
                             companion->append( (Turnout::CLOSED));
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if ( (lt->getLayoutBlockD()==nlb) && (tType!=LayoutTurnout::RH_XOVER) ) {
                             // exits Block at D, either Double or LH
                             list->append((LayoutTurnout*)cObject);
                             companion->append( (Turnout::THROWN));
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if (lt->getLayoutBlock()==lb) {
                             // block continues at A
@@ -587,25 +587,25 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         else {
                             // no legal outcome found, print error
                             log.error("Connectivity mismatch at B in turnout "+lt->getTurnoutName());
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         break;
                     case LayoutEditor::TURNOUT_C:
                         if ((lt->getLayoutBlockC())!=lb) {
                             // connection is outside of the current block
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if (lt->getLayoutBlockD()==nlb) {
                             // exits Block at D
                             list->append((LayoutTurnout*)cObject);
                             companion->append( (Turnout::CLOSED));
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if ( (lt->getLayoutBlock()==nlb) && (tType!=LayoutTurnout::LH_XOVER) ) {
                             // exits Block at A, either Double or RH
                             list->append((LayoutTurnout*)cObject);
                             companion->append( (Turnout::THROWN));
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if (lt->getLayoutBlockD()==lb) {
                             // block continues at D
@@ -626,25 +626,25 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         else {
                             // no legal outcome found, print error
                             log.error("Connectivity mismatch at C in turnout "+lt->getTurnoutName());
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         break;
                     case LayoutEditor::TURNOUT_D:
                         if ((lt->getLayoutBlockD())!=lb) {
                             // connection is outside of the current block
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if (lt->getLayoutBlockC()==nlb) {
                             // exits Block at C
                             list->append((LayoutTurnout*)cObject);
                             companion->append( (Turnout::CLOSED));
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if ( (lt->getLayoutBlockB()==nlb) && (tType!=LayoutTurnout::RH_XOVER) ) {
                             // exits Block at B, either Double or LH
                             list->append((LayoutTurnout*)cObject);
                             companion->append( (Turnout::THROWN));
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         else if (lt->getLayoutBlockC()==lb) {
                             // block continues at C
@@ -665,7 +665,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         else {
                             // no legal outcome found, print error
                             log.error("Connectivity mismatch at D in turnout "+lt->getTurnoutName());
-                            ts = NULL;
+                            ts = nullptr;
                         }
                         break;
                 }
@@ -675,7 +675,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 // reached RH. LH, or WYE turnout, is it in the current Block?
                 if (lt->getLayoutBlock()!=lb) {
                     // turnout is outside of current block
-                    ts = NULL;
+                    ts = nullptr;
                 }
                 else {
                     // turnout is inside current block, add it to the list
@@ -689,7 +689,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
 //            LayoutSlip* ls = (LayoutSlip)cObject;
 //            if(ls->getLayoutBlock()!=lb){
 //                //Slip is outside of the current block
-//                tr=NULL;
+//                tr=nullptr;
 //            } else {
 //                // turnout is inside current block, add it to the list
 //                list->append(ls);
@@ -734,9 +734,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
  for (int i = 0; i<layoutEditor->pointList->size(); i++) {
         PositionablePoint* p = layoutEditor->pointList->at(i);
-        if ((p->getConnect2()!=NULL) && (p->getConnect1()!=NULL))
+        if ((p->getConnect2()!=nullptr) && (p->getConnect1()!=nullptr))
         {
-                            if ((p->getConnect2()->getLayoutBlock()!=NULL) && (p->getConnect1()->getLayoutBlock()!=NULL)) {
+                            if ((p->getConnect2()->getLayoutBlock()!=nullptr) && (p->getConnect1()->getLayoutBlock()!=nullptr)) {
                                 if ( (((p->getConnect1())->getLayoutBlock()==lBlock) && ((p->getConnect2())->getLayoutBlock()!=lBlock)) ||
                                         (((p->getConnect1())->getLayoutBlock()!=lBlock) && ((p->getConnect2())->getLayoutBlock()==lBlock)) ) {
                                         list->append(p);
@@ -759,20 +759,20 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
         LevelXing* x = layoutEditor->xingList->at(i);
         bool found = false;
         if ( (x->getLayoutBlockAC()==lBlock) || (x->getLayoutBlockBD()==lBlock) ) found = true;
-        else if ( (x->getConnectA()!=NULL) && (((TrackSegment*)x->getConnectA())->getLayoutBlock()==lBlock) )
+        else if ( (x->getConnectA()!=nullptr) && (((TrackSegment*)x->getConnectA())->getLayoutBlock()==lBlock) )
             found = true;
-        else if ( (x->getConnectB()!=NULL) && (((TrackSegment*)x->getConnectB())->getLayoutBlock()==lBlock) )
+        else if ( (x->getConnectB()!=nullptr) && (((TrackSegment*)x->getConnectB())->getLayoutBlock()==lBlock) )
             found = true;
-        else if ( (x->getConnectC()!=NULL) && (((TrackSegment*)x->getConnectC())->getLayoutBlock()==lBlock) )
+        else if ( (x->getConnectC()!=nullptr) && (((TrackSegment*)x->getConnectC())->getLayoutBlock()==lBlock) )
             found = true;
-        else if ( (x->getConnectD()!=NULL) && (((TrackSegment*)x->getConnectD())->getLayoutBlock()==lBlock) )
+        else if ( (x->getConnectD()!=nullptr) && (((TrackSegment*)x->getConnectD())->getLayoutBlock()==lBlock) )
             found = true;
         if (found) {
-            if ( (x->getConnectA()!=NULL) && (((TrackSegment*)x->getConnectA())->getLayoutBlock()!=NULL) &&
-                    (x->getConnectB()!=NULL) && (((TrackSegment*)x->getConnectB())->getLayoutBlock()!=NULL) &&
-                    (x->getConnectC()!=NULL) && (((TrackSegment*)x->getConnectC())->getLayoutBlock()!=NULL) &&
-                    (x->getConnectD()!=NULL) && (((TrackSegment*)x->getConnectD())->getLayoutBlock()!=NULL) &&
-                    (x->getLayoutBlockAC()!=NULL) && (x->getLayoutBlockBD()!=NULL) ) {
+            if ( (x->getConnectA()!=nullptr) && (((TrackSegment*)x->getConnectA())->getLayoutBlock()!=nullptr) &&
+                    (x->getConnectB()!=nullptr) && (((TrackSegment*)x->getConnectB())->getLayoutBlock()!=nullptr) &&
+                    (x->getConnectC()!=nullptr) && (((TrackSegment*)x->getConnectC())->getLayoutBlock()!=nullptr) &&
+                    (x->getConnectD()!=nullptr) && (((TrackSegment*)x->getConnectD())->getLayoutBlock()!=nullptr) &&
+                    (x->getLayoutBlockAC()!=nullptr) && (x->getLayoutBlockBD()!=nullptr) ) {
                 list->append(x);
             }
             else {
@@ -795,25 +795,25 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
         LayoutTurnout* t = layoutEditor->turnoutList->at(i);
         if ( (t->getBlockName()==(lBlockName)) || (t->getBlockBName()==(lBlockName)) ||
                 (t->getBlockCName()==(lBlockName)) || (t->getBlockDName()==(lBlockName)) ) list->append(t);
-        else if ( (t->getConnectA()!=NULL) && (((TrackSegment*)t->getConnectA())->getLayoutBlock()==lBlock) )
+        else if ( (t->getConnectA()!=nullptr) && (((TrackSegment*)t->getConnectA())->getLayoutBlock()==lBlock) )
             list->append(t);
-        else if ( (t->getConnectB()!=NULL) && (((TrackSegment*)t->getConnectB())->getLayoutBlock()==lBlock) )
+        else if ( (t->getConnectB()!=nullptr) && (((TrackSegment*)t->getConnectB())->getLayoutBlock()==lBlock) )
             list->append(t);
-        else if ( (t->getConnectC()!=NULL) && (((TrackSegment*)t->getConnectC())->getLayoutBlock()==lBlock) )
+        else if ( (t->getConnectC()!=nullptr) && (((TrackSegment*)t->getConnectC())->getLayoutBlock()==lBlock) )
             list->append(t);
-        else if ( (t->getConnectD()!=NULL) && (((TrackSegment*)t->getConnectD())->getLayoutBlock()==lBlock) )
+        else if ( (t->getConnectD()!=nullptr) && (((TrackSegment*)t->getConnectD())->getLayoutBlock()==lBlock) )
             list->append(t);
     }
 //    for(LayoutSlip* ls:layoutEditor->slipList){
 //        if(ls->getBlockName()==(lBlockName)){
 //            list->append(ls);
-//        } else if ( (ls->getConnectA()!=NULL) && (((TrackSegment*)ls->getConnectA())->getLayoutBlock()==lBlock) )
+//        } else if ( (ls->getConnectA()!=nullptr) && (((TrackSegment*)ls->getConnectA())->getLayoutBlock()==lBlock) )
 //            list->append(ls);
-//        else if ( (ls->getConnectB()!=NULL) && (((TrackSegment*)ls->getConnectB())->getLayoutBlock()==lBlock) )
+//        else if ( (ls->getConnectB()!=nullptr) && (((TrackSegment*)ls->getConnectB())->getLayoutBlock()==lBlock) )
 //            list->append(ls);
-//        else if ( (ls->getConnectC()!=NULL) && (((TrackSegment*)ls->getConnectC())->getLayoutBlock()==lBlock) )
+//        else if ( (ls->getConnectC()!=nullptr) && (((TrackSegment*)ls->getConnectC())->getLayoutBlock()==lBlock) )
 //            list->append(ls);
-//        else if ( (ls->getConnectD()!=NULL) && (((TrackSegment*)ls->getConnectD())->getLayoutBlock()==lBlock) )
+//        else if ( (ls->getConnectD()!=nullptr) && (((TrackSegment*)ls->getConnectD())->getLayoutBlock()==lBlock) )
 //            list->append(ls);
 //    }
 // djd debugging - lists turnouts for a block
@@ -821,7 +821,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
 //		String txt = "Turnouts for Block "+block.getUserName()+" - ";
 //		for (int k = 0; k<list->size(); k++) {
 //			if (k>0) txt = txt+", ";
-//			if ( (list->get(k)).getTurnout()!=NULL)
+//			if ( (list->get(k)).getTurnout()!=nullptr)
 //				txt = txt+(list->get(k)).getTurnout().getSystemName();
 //			else txt = txt+"???";
 //		}
@@ -838,26 +838,26 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     if (t->getLinkType()==LayoutTurnout::NO_LINK) {
         if ( (t->getTurnoutType()==LayoutTurnout::RH_TURNOUT) || (t->getTurnoutType()==LayoutTurnout::LH_TURNOUT) ||
                                 (t->getTurnoutType()==LayoutTurnout::WYE_TURNOUT) ) {
-            if ( (t->getSignalA1Name()!=NULL) && (t->getSignalA1Name()!=("")) &&
-                    (t->getSignalB1Name()!=NULL) && (t->getSignalB1Name()!=("")) &&
-                            (t->getSignalC1Name()!=NULL) && (t->getSignalC1Name()!=("")) )
+            if ( (t->getSignalA1Name()!=nullptr) && (t->getSignalA1Name()!=("")) &&
+                    (t->getSignalB1Name()!=nullptr) && (t->getSignalB1Name()!=("")) &&
+                            (t->getSignalC1Name()!=nullptr) && (t->getSignalC1Name()!=("")) )
                 return true;
             else return false;
         }
         else if (t->getTurnoutType()==LayoutTurnout::SINGLE_SLIP || t->getTurnoutType()==LayoutTurnout::DOUBLE_SLIP){
-            if ((t->getSignalA1Name()!=NULL) && (t->getSignalA1Name()!=("")) &&
-                 (t->getSignalA2Name()!=NULL) && (t->getSignalA2Name()!=("")) &&
-                   (t->getSignalB1Name()!=NULL) && (t->getSignalB1Name()!=("")) &&
-                    (t->getSignalC1Name()!=NULL) && (t->getSignalC1Name()!=("")) &&
-                     (t->getSignalD1Name()!=NULL) && (t->getSignalD1Name()!=("")) &&
-                      (t->getSignalD2Name()!=NULL) && (t->getSignalD2Name()!=(""))) {
+            if ((t->getSignalA1Name()!=nullptr) && (t->getSignalA1Name()!=("")) &&
+                 (t->getSignalA2Name()!=nullptr) && (t->getSignalA2Name()!=("")) &&
+                   (t->getSignalB1Name()!=nullptr) && (t->getSignalB1Name()!=("")) &&
+                    (t->getSignalC1Name()!=nullptr) && (t->getSignalC1Name()!=("")) &&
+                     (t->getSignalD1Name()!=nullptr) && (t->getSignalD1Name()!=("")) &&
+                      (t->getSignalD2Name()!=nullptr) && (t->getSignalD2Name()!=(""))) {
 
                         if(t->getTurnoutType()==LayoutTurnout::SINGLE_SLIP){
                             return true;
                         }
                         if(t->getTurnoutType()==LayoutTurnout::DOUBLE_SLIP){
-                            if((t->getSignalB2Name()!=NULL) && (t->getSignalB2Name()!=("")) &&
-                                (t->getSignalC2Name()!=NULL) && (t->getSignalC2Name()!=("")) ){
+                            if((t->getSignalB2Name()!=nullptr) && (t->getSignalB2Name()!=("")) &&
+                                (t->getSignalC2Name()!=nullptr) && (t->getSignalC2Name()!=("")) ){
                                     return true;
                             }
                         }
@@ -865,29 +865,29 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             return false;
         }
         else {
-            if ( (t->getSignalA1Name()!=NULL) && (t->getSignalA1Name()!=("")) &&
-                    (t->getSignalB1Name()!=NULL) && (t->getSignalB1Name()!=("")) &&
-                        (t->getSignalC1Name()!=NULL) && (t->getSignalC1Name()!=("")) &&
-                                (t->getSignalD1Name()!=NULL) && (t->getSignalD1Name()!=("")) )
+            if ( (t->getSignalA1Name()!=nullptr) && (t->getSignalA1Name()!=("")) &&
+                    (t->getSignalB1Name()!=nullptr) && (t->getSignalB1Name()!=("")) &&
+                        (t->getSignalC1Name()!=nullptr) && (t->getSignalC1Name()!=("")) &&
+                                (t->getSignalD1Name()!=nullptr) && (t->getSignalD1Name()!=("")) )
                 return true;
             else return false;
         }
     }
     else if (t->getLinkType()==LayoutTurnout::FIRST_3_WAY) {
-        if ( (t->getSignalA1Name()!=NULL) && (t->getSignalA1Name()!=("")) &&
-                    (t->getSignalC1Name()!=NULL) && (t->getSignalC1Name()!=("")) )
+        if ( (t->getSignalA1Name()!=nullptr) && (t->getSignalA1Name()!=("")) &&
+                    (t->getSignalC1Name()!=nullptr) && (t->getSignalC1Name()!=("")) )
             return true;
         else return false;
     }
     else if (t->getLinkType()==LayoutTurnout::SECOND_3_WAY) {
-        if ( (t->getSignalB1Name()!=NULL) && (t->getSignalB1Name()!=("")) &&
-                    (t->getSignalC1Name()!=NULL) && (t->getSignalC1Name()!=("")) )
+        if ( (t->getSignalB1Name()!=nullptr) && (t->getSignalB1Name()!=("")) &&
+                    (t->getSignalC1Name()!=nullptr) && (t->getSignalC1Name()!=("")) )
             return true;
         else return false;
     }
     else if (t->getLinkType()==LayoutTurnout::THROAT_TO_THROAT) {
-        if ( (t->getSignalB1Name()!=NULL) && (t->getSignalB1Name()!=("")) &&
-                    (t->getSignalC1Name()!=NULL) && (t->getSignalC1Name()!=("")) )
+        if ( (t->getSignalB1Name()!=nullptr) && (t->getSignalB1Name()!=("")) &&
+                    (t->getSignalC1Name()!=nullptr) && (t->getSignalC1Name()!=("")) )
             return true;
         else return false;
     }
@@ -901,10 +901,10 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  */
 /*public*/ SignalHead* ConnectivityUtil::getSignalHeadAtAnchor(PositionablePoint* p, Block* block, bool facing)
 {
- if ( (p==NULL) || (block==NULL) )
+ if ( (p==nullptr) || (block==nullptr) )
  {
-  log.error("NULL arguments in call to getSignalHeadAtAnchor");
-  return NULL;
+  log.error("nullptr arguments in call to getSignalHeadAtAnchor");
+  return nullptr;
  }
  LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
 #if 1
@@ -925,7 +925,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  else
  {
   // should never happen
-  return NULL;
+  return nullptr;
  }
 #endif
 }
@@ -937,10 +937,10 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  */
 /*public*/ SignalMast* ConnectivityUtil::getSignalMastAtAnchor(PositionablePoint* p, Block* block, bool facing)
 {
- if ( (p==NULL) || (block==NULL) )
+ if ( (p==nullptr) || (block==nullptr) )
  {
-  log.error("NULL arguments in call to getSignalHeadAtAnchor");
-  return NULL;
+  log.error("nullptr arguments in call to getSignalHeadAtAnchor");
+  return nullptr;
  }
  LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
  if (((p->getConnect1())->getLayoutBlock()==lBlock) && ((p->getConnect2())->getLayoutBlock()!=lBlock))
@@ -960,7 +960,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  else
  {
   // should never happen
-  return NULL;
+  return nullptr;
  }
 }
 
@@ -969,13 +969,13 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
 /*public*/ bool ConnectivityUtil::layoutTurnoutHasSignalMasts(LayoutTurnout* t) {
     QStringList turnoutBlocks = t->getBlockBoundaries();
     bool valid = true;
-    if(turnoutBlocks.at(0)!=NULL && (t->getSignalAMast()==NULL  || t->getSignalAMast()==("")))
+    if(turnoutBlocks.at(0)!=nullptr && (t->getSignalAMast()==nullptr  || t->getSignalAMast()==("")))
         valid = false;
-    if(turnoutBlocks.at(1) !=NULL && (t->getSignalBMast()==NULL  || t->getSignalBMast()==("")))
+    if(turnoutBlocks.at(1) !=nullptr && (t->getSignalBMast()==nullptr  || t->getSignalBMast()==("")))
         valid = false;
-    if(turnoutBlocks.at(2) !=NULL && (t->getSignalCMast()==NULL  || t->getSignalCMast()==("")))
+    if(turnoutBlocks.at(2) !=nullptr && (t->getSignalCMast()==nullptr  || t->getSignalCMast()==("")))
         valid = false;
-    if(turnoutBlocks.at(3) !=NULL && (t->getSignalDMast()==NULL  || t->getSignalDMast()==("")))
+    if(turnoutBlocks.at(3) !=nullptr && (t->getSignalDMast()==nullptr  || t->getSignalDMast()==("")))
         valid = false;
     return valid;
 }
@@ -987,17 +987,17 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  */
 /*public*/ SignalHead* ConnectivityUtil::getSignalHeadAtLevelXing(LevelXing* x, Block* block, bool facing)
 {
- if ( (x==NULL) || (block==NULL) )
+ if ( (x==nullptr) || (block==nullptr) )
  {
-  log.error("NULL arguments in call to getSignalHeadAtLevelXing");
-  return NULL;
+  log.error("nullptr arguments in call to getSignalHeadAtLevelXing");
+  return nullptr;
  }
  LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
- if ( (x->getConnectA()==NULL) || (x->getConnectB()==NULL) ||
-                                        (x->getConnectC()==NULL) || (x->getConnectD()==NULL) )
+ if ( (x->getConnectA()==nullptr) || (x->getConnectB()==nullptr) ||
+                                        (x->getConnectC()==nullptr) || (x->getConnectD()==nullptr) )
  {
   log.error("Missing track around level crossing near Block "+block->getUserName());
-  return NULL;
+  return nullptr;
  }
  if (((TrackSegment*)x->getConnectA())->getLayoutBlock()==lBlock)
  {
@@ -1027,7 +1027,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
   else
    return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(x->getSignalDName());
  }
- return NULL;
+ return nullptr;
 }
 
 /**
@@ -1036,11 +1036,11 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  *		a problem with looking for a signal head.
  */
 /*public*/ bool ConnectivityUtil::blockInternalToLevelXing(LevelXing* x, Block* block) {
-    if ( (x==NULL) || (block==NULL) ) return false;
+    if ( (x==nullptr) || (block==nullptr) ) return false;
     LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
-    if (lBlock==NULL) return false;
-    if ( (x->getConnectA()==NULL) || (x->getConnectB()==NULL) ||
-                    (x->getConnectC()==NULL) || (x->getConnectD()==NULL) ) return false;
+    if (lBlock==nullptr) return false;
+    if ( (x->getConnectA()==nullptr) || (x->getConnectB()==nullptr) ||
+                    (x->getConnectC()==nullptr) || (x->getConnectD()==nullptr) ) return false;
     if ( (x->getLayoutBlockAC()!=lBlock) && (x->getLayoutBlockBD()!=lBlock) ) return false;
     if (((TrackSegment*)x->getConnectA())->getLayoutBlock()==lBlock) return false;
     if (((TrackSegment*)x->getConnectB())->getLayoutBlock()==lBlock) return false;
@@ -1137,16 +1137,16 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  *		ignored if not a facing mode SSL.
  */
 /*public*/ bool ConnectivityUtil::addSensorToSignalHeadLogic(QString name, SignalHead* sh, int where) {
-    if (sh==NULL) {
+    if (sh==nullptr) {
         log.error("Null signal head on entry to addSensorToSignalHeadLogic");
         return false;
     }
-    if ( (name==NULL) || name==("") ) {
+    if ( (name==nullptr) || name==("") ) {
         log.error("Null string for sensor name on entry to addSensorToSignalHeadLogic");
         return false;
     }
     BlockBossLogic* bbLogic = BlockBossLogic::getStoppedObject(((AbstractSignalHead*)sh)->getSystemName());
-    if (bbLogic==NULL) {
+    if (bbLogic==nullptr) {
         log.error("Trouble opening BlockBossLogic for "+((AbstractSignalHead*)sh)->getSystemName());
         return false;
     }
@@ -1154,20 +1154,20 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     if ( ((mode==BlockBossLogic::SINGLEBLOCK) || (mode==BlockBossLogic::TRAILINGMAIN) ||
                 (mode==BlockBossLogic::TRAILINGDIVERGING)) || ((mode==BlockBossLogic::FACING) &&
                     (where==OVERALL)) ) {
-        if ( ( (bbLogic->getSensor1()!=NULL) && (bbLogic->getSensor1())==(name) ) ||
-                ( (bbLogic->getSensor2()!=NULL) && (bbLogic->getSensor2())==(name) ) ||
-                ( (bbLogic->getSensor3()!=NULL) && (bbLogic->getSensor3())==(name) ) ||
-                ( (bbLogic->getSensor4()!=NULL) && (bbLogic->getSensor4())==(name) ) ||
-                ( (bbLogic->getSensor5()!=NULL) && (bbLogic->getSensor5())==(name) ) ) {
+        if ( ( (bbLogic->getSensor1()!=nullptr) && (bbLogic->getSensor1())==(name) ) ||
+                ( (bbLogic->getSensor2()!=nullptr) && (bbLogic->getSensor2())==(name) ) ||
+                ( (bbLogic->getSensor3()!=nullptr) && (bbLogic->getSensor3())==(name) ) ||
+                ( (bbLogic->getSensor4()!=nullptr) && (bbLogic->getSensor4())==(name) ) ||
+                ( (bbLogic->getSensor5()!=nullptr) && (bbLogic->getSensor5())==(name) ) ) {
             bbLogic->retain();
             bbLogic->start();
             return true;
         }
-        if (bbLogic->getSensor1()==NULL) bbLogic->setSensor1(name);
-        else if (bbLogic->getSensor2()==NULL) bbLogic->setSensor2(name);
-        else if (bbLogic->getSensor3()==NULL) bbLogic->setSensor3(name);
-        else if (bbLogic->getSensor4()==NULL) bbLogic->setSensor4(name);
-        else if (bbLogic->getSensor5()==NULL) bbLogic->setSensor5(name);
+        if (bbLogic->getSensor1()==nullptr) bbLogic->setSensor1(name);
+        else if (bbLogic->getSensor2()==nullptr) bbLogic->setSensor2(name);
+        else if (bbLogic->getSensor3()==nullptr) bbLogic->setSensor3(name);
+        else if (bbLogic->getSensor4()==nullptr) bbLogic->setSensor4(name);
+        else if (bbLogic->getSensor5()==nullptr) bbLogic->setSensor5(name);
         else {
             log.error("Error - could not add sensor to SSL for signal head "+((AbstractSignalHead*)sh)->getSystemName()+
                                     " because there is no room in the SSL.");
@@ -1178,14 +1178,14 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     }
     else if (mode==BlockBossLogic::FACING) {
         if (where==DIVERGING) {
-            if ( ( (bbLogic->getWatchedSensor2()!=NULL) && (bbLogic->getWatchedSensor2())==(name) ) ||
-                    ( (bbLogic->getWatchedSensor2Alt()!=NULL) && (bbLogic->getWatchedSensor2Alt())==(name) ) ) {
+            if ( ( (bbLogic->getWatchedSensor2()!=nullptr) && (bbLogic->getWatchedSensor2())==(name) ) ||
+                    ( (bbLogic->getWatchedSensor2Alt()!=nullptr) && (bbLogic->getWatchedSensor2Alt())==(name) ) ) {
                 bbLogic->retain();
                 bbLogic->start();
                 return true;
             }
-            if (bbLogic->getWatchedSensor2()==NULL) bbLogic->setWatchedSensor2(name);
-            else if (bbLogic->getWatchedSensor2Alt()==NULL) bbLogic->setWatchedSensor2Alt(name);
+            if (bbLogic->getWatchedSensor2()==nullptr) bbLogic->setWatchedSensor2(name);
+            else if (bbLogic->getWatchedSensor2Alt()==nullptr) bbLogic->setWatchedSensor2Alt(name);
             else {
                 log.error("Error - could not add watched sensor to SSL for signal head "+((AbstractSignalHead*)sh)->getSystemName()+
                                     " because there is no room in the facing SSL diverging part->");
@@ -1195,14 +1195,14 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             }
         }
         else if (where==CONTINUING) {
-            if ( ( (bbLogic->getWatchedSensor1()!=NULL) && (bbLogic->getWatchedSensor1())==(name) ) ||
-                    ( (bbLogic->getWatchedSensor1Alt()!=NULL) && (bbLogic->getWatchedSensor1Alt())==(name) ) ) {
+            if ( ( (bbLogic->getWatchedSensor1()!=nullptr) && (bbLogic->getWatchedSensor1())==(name) ) ||
+                    ( (bbLogic->getWatchedSensor1Alt()!=nullptr) && (bbLogic->getWatchedSensor1Alt())==(name) ) ) {
                 bbLogic->retain();
                 bbLogic->start();
                 return true;
             }
-            if (bbLogic->getWatchedSensor1()==NULL) bbLogic->setWatchedSensor1(name);
-            else if (bbLogic->getWatchedSensor1Alt()==NULL) bbLogic->setWatchedSensor1Alt(name);
+            if (bbLogic->getWatchedSensor1()==nullptr) bbLogic->setWatchedSensor1(name);
+            else if (bbLogic->getWatchedSensor1Alt()==nullptr) bbLogic->setWatchedSensor1Alt(name);
             else {
                 log.error("Error - could not add watched sensor to SSL for signal head "+((AbstractSignalHead*)sh)->getSystemName()+
                                     " because there is no room in the facing SSL continuing part->");
@@ -1236,16 +1236,16 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  * Returns 'true' if no error, whether any sensors were found or not->
  */
 /*public*/ bool ConnectivityUtil::removeSensorsFromSignalHeadLogic(QStringList* names, SignalHead* sh) {
-    if (sh==NULL) {
+    if (sh==nullptr) {
         log.error("Null signal head on entry to removeSensorsFromSignalHeadLogic");
         return false;
     }
-    if (names==NULL) {
+    if (names==nullptr) {
         log.error("Null QVector of sensor names on entry to removeSensorsFromSignalHeadLogic");
         return false;
     }
     BlockBossLogic* bbLogic = BlockBossLogic::getStoppedObject(((AbstractSignalHead*)sh)->getSystemName());
-    if (bbLogic==NULL)
+    if (bbLogic==nullptr)
     {
      log.error("Trouble opening BlockBossLogic for "+((AbstractSignalHead*)sh)->getSystemName());
         return false;
@@ -1253,26 +1253,26 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     for (int i = 0; i<names->size(); i++)
     {
      QString name = names->at(i);
-     if ( (bbLogic->getSensor1()!=NULL) && (bbLogic->getSensor1())==(name) )
-            bbLogic->setSensor1(NULL);
-     if ( (bbLogic->getSensor2()!=NULL) && (bbLogic->getSensor2())==(name) )
-            bbLogic->setSensor2(NULL);
-     if ( (bbLogic->getSensor3()!=NULL) && (bbLogic->getSensor3())==(name) )
-            bbLogic->setSensor3(NULL);
-     if ( (bbLogic->getSensor4()!=NULL) && (bbLogic->getSensor4())==(name) )
-            bbLogic->setSensor4(NULL);
-     if ( (bbLogic->getSensor5()!=NULL) && (bbLogic->getSensor5())==(name) )
-            bbLogic->setSensor5(NULL);
+     if ( (bbLogic->getSensor1()!=nullptr) && (bbLogic->getSensor1())==(name) )
+            bbLogic->setSensor1(nullptr);
+     if ( (bbLogic->getSensor2()!=nullptr) && (bbLogic->getSensor2())==(name) )
+            bbLogic->setSensor2(nullptr);
+     if ( (bbLogic->getSensor3()!=nullptr) && (bbLogic->getSensor3())==(name) )
+            bbLogic->setSensor3(nullptr);
+     if ( (bbLogic->getSensor4()!=nullptr) && (bbLogic->getSensor4())==(name) )
+            bbLogic->setSensor4(nullptr);
+     if ( (bbLogic->getSensor5()!=nullptr) && (bbLogic->getSensor5())==(name) )
+            bbLogic->setSensor5(nullptr);
      if (bbLogic->getMode()==BlockBossLogic::FACING)
      {
-      if ( (bbLogic->getWatchedSensor1()!=NULL) && (bbLogic->getWatchedSensor1())==(name) )
-       bbLogic->setWatchedSensor1(NULL);
-      if ( (bbLogic->getWatchedSensor1Alt()!=NULL) && (bbLogic->getWatchedSensor1Alt())==(name) )
-                bbLogic->setWatchedSensor1Alt(NULL);
-      if ( (bbLogic->getWatchedSensor2()!=NULL) && (bbLogic->getWatchedSensor2())==(name) )
-                bbLogic->setWatchedSensor2(NULL);
-      if ( (bbLogic->getWatchedSensor2Alt()!=NULL) && (bbLogic->getWatchedSensor2Alt())==(name) )
-                bbLogic->setWatchedSensor2Alt(NULL);
+      if ( (bbLogic->getWatchedSensor1()!=nullptr) && (bbLogic->getWatchedSensor1())==(name) )
+       bbLogic->setWatchedSensor1(nullptr);
+      if ( (bbLogic->getWatchedSensor1Alt()!=nullptr) && (bbLogic->getWatchedSensor1Alt())==(name) )
+                bbLogic->setWatchedSensor1Alt(nullptr);
+      if ( (bbLogic->getWatchedSensor2()!=nullptr) && (bbLogic->getWatchedSensor2())==(name) )
+                bbLogic->setWatchedSensor2(nullptr);
+      if ( (bbLogic->getWatchedSensor2Alt()!=nullptr) && (bbLogic->getWatchedSensor2Alt())==(name) )
+                bbLogic->setWatchedSensor2Alt(nullptr);
      }
     }
     if (bbLogic->getMode()==0) {
@@ -1290,17 +1290,17 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  * If the specified track node can lead to different paths to the next node, for example,
  *       if the specified track node is a turnout entered at its throat, then "cNodeState"
  *       must be specified to choose between the possible paths.
- * Returns a TrackNode if one is reached. Returns NULL if trouble following the track.
+ * Returns a TrackNode if one is reached. Returns nullptr if trouble following the track.
  * .
  */
 /*public*/ TrackNode* ConnectivityUtil::getNextNode(TrackNode* cNode, int cNodeState) {
-    if (cNode==NULL) {
-        log.error("getNextNode called with a NULL Track Node");
-        return NULL;
+    if (cNode==nullptr) {
+        log.error("getNextNode called with a nullptr Track Node");
+        return nullptr;
     }
     if (cNode->reachedEndOfTrack()) {
         log.error("getNextNode - attempt to search past endBumper");
-        return NULL;
+        return nullptr;
     }
     return (getTrackNode(cNode->getNode(), cNode->getNodeType(), cNode->getTrackSegment(), cNodeState));
 }
@@ -1325,18 +1325,18 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  *		treats two THROAT_TO_THROAT turnouts as a single turnout, but with each turnout having a
  *		continuing sense.
  *<P>
- * Returns a TrackNode if a node or end_of-track is reached. Returns NULL if trouble following the track.
+ * Returns a TrackNode if a node or end_of-track is reached. Returns nullptr if trouble following the track.
  */
 /*public*/ TrackNode* ConnectivityUtil::getTrackNode(QObject* cNode, int cNodeType, TrackSegment* /*cTrack*/, int cNodeState) {
     // initialize
-    QObject* node = NULL;
+    QObject* node = nullptr;
     int nodeType = LayoutEditor::NONE;
-    TrackSegment* track = NULL;
+    TrackSegment* track = nullptr;
     bool hitEnd = false;
     //@SuppressWarnings("unused")
     int pType = cNodeType;
     QObject* pObject = cNode;
-    TrackSegment* tTrack = NULL;
+    TrackSegment* tTrack = nullptr;
     switch (cNodeType)
     {
      case LayoutEditor::POS_POINT:
@@ -1345,7 +1345,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
       if (p->getType()==PositionablePoint::END_BUMPER)
       {
        log.error("Attempt to search beyond end of track");
-       return NULL;
+       return nullptr;
       }
       if (p->getConnect1()==tTrack)
        tTrack = p->getConnect2();
@@ -1358,7 +1358,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             if	( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_TURNOUT) ||
                     (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_TURNOUT) ||
                     (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::WYE_TURNOUT) ) {
-                if ( (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==NULL) ||
+                if ( (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==nullptr) ||
                                     (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==("")) ) {
                     // Standard turnout - node type A
                     if (((LayoutTurnout*)cNode)->getContinuingSense()==Turnout::CLOSED) {
@@ -1372,7 +1372,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         }
                         else {
                             log.error("Bad cNodeState argument when searching track-std. normal");
-                            return NULL;
+                            return nullptr;
                         }
                     }
                     else {
@@ -1386,7 +1386,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         }
                         else {
                             log.error("Bad cNodeState argument when searching track-std reversed");
-                            return NULL;
+                            return nullptr;
                         }
                     }
                 }
@@ -1416,7 +1416,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         }
                         else {
                             log.error("Bad cNodeState argument when searching track - THROAT_TO_THROAT");
-                            return NULL;
+                            return nullptr;
                         }
                         pObject = lto;
                     }
@@ -1455,7 +1455,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         }
                         else {
                             log.error("Bad cNodeState argument when searching track - FIRST_3_WAY");
-                            return NULL;
+                            return nullptr;
                         }
                     }
                 }
@@ -1476,12 +1476,12 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     }
                     else {
                         log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
-                        return NULL;
+                        return nullptr;
                     }
                 }
                 else {
                     log.error("Bad cNodeState argument when searching track- XOVER A");
-                    return NULL;
+                    return nullptr;
                 }
             }
             break;
@@ -1492,7 +1492,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_TURNOUT) ||
                     (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_TURNOUT) ||
                     (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::WYE_TURNOUT) ) {
-                if ( (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==NULL) ||
+                if ( (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==nullptr) ||
                             (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==("")) ||
                                 (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::FIRST_3_WAY) ) {
                     tTrack = (TrackSegment*)(((LayoutTurnout*)cNode)->getConnectA());
@@ -1527,7 +1527,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         }
                         else {
                             log.error("Bad cNodeState argument when searching track - THROAT_TO_THROAT - 2");
-                            return NULL;
+                            return nullptr;
                         }
                     }
                     pObject = lto;
@@ -1559,12 +1559,12 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     }
                     else {
                         log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
-                        return NULL;
+                        return nullptr;
                     }
                 }
                 else {
                     log.error("Bad cNodeState argument when searching track - XOVER B or C");
-                    return NULL;
+                    return nullptr;
                 }
             }
             break;
@@ -1585,17 +1585,17 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     }
                     else {
                         log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
-                        return NULL;
+                        return nullptr;
                     }
                 }
                 else {
                     log.error("Bad cNodeState argument when searching track - XOVER D");
-                    return NULL;
+                    return nullptr;
                 }
             }
             else {
                 log.error ("Bad traak node type - TURNOUT_D, but not a crossover turnout");
-                return NULL;
+                return nullptr;
             }
             break;
     }
@@ -1634,7 +1634,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 pType = LayoutEditor::SLIP_C;
             } else {
                 log.error("Request to follow not allowed on a single slip");
-                return NULL;
+                return nullptr;
             }
             break;
         case LayoutEditor::SLIP_C:
@@ -1646,7 +1646,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 pType = LayoutEditor::SLIP_B;
             } else {
                 log.error("Request to follow not allowed on a single slip");
-                return NULL;
+                return nullptr;
             }
             break;
         case LayoutEditor::SLIP_D:
@@ -1660,16 +1660,16 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             break;
         default:
             log.error("Unable to initiate 'getTrackNode'.  Probably bad input Track Node.");
-            return NULL;
+            return nullptr;
     }
 
     // follow track to anchor block boundary, turnout, or level crossing
     bool hasNode = false;
-    QObject* tObject = NULL;
+    QObject* tObject = nullptr;
     int tType = 0;
-    if (tTrack==NULL){
-        log.error("Error tTrack is NULL!");
-        return NULL;
+    if (tTrack==nullptr){
+        log.error("Error tTrack is nullptr!");
+        return nullptr;
     }
     while (!hasNode) {
         if (tTrack->getConnect1()==pObject) {
@@ -1680,9 +1680,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             tObject = tTrack->getConnect1();
             tType = tTrack->getType1();
         }
-        if (tObject==NULL) {
+        if (tObject==nullptr) {
             log.error("Error while following track looking for next node");
-            return NULL;
+            return nullptr;
         }
         if (tType!=LayoutEditor::POS_POINT) {
             node = tObject;
@@ -1699,9 +1699,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             else {
                 TrackSegment* con1 = p->getConnect1();
                 TrackSegment* con2 = p->getConnect2();
-                if ( (con1==NULL) || (con2==NULL) ) {
+                if ( (con1==nullptr) || (con2==nullptr) ) {
                     log.error("Error - Breakin connectivity at Anchor Point when searching for track node");
-                    return NULL;
+                    return nullptr;
                 }
                 if (con1->getLayoutBlock()!=con2->getLayoutBlock()) {
                     node = tObject;
@@ -1723,18 +1723,18 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
 }
 
 /**
- * Returns an "exit block" for the specified track node if there is one, else returns NULL.
+ * Returns an "exit block" for the specified track node if there is one, else returns nullptr.
  * An "exit block" must be different from the block of the track segment in the node.
  * If the node is a PositionablePoint, it is assumed to be a block boundary anchor point->
  * If an "excludedBlock" is entered, that block will not be returned as the exit block of
  *		a Node of type TURNOUT_x->
  */
 /*public*/ Block* ConnectivityUtil::getExitBlockForTrackNode(TrackNode* node, Block* excludedBlock) {
-    if ( (node==NULL) || node->reachedEndOfTrack() ) return NULL;
-    Block* block = NULL;
-    Block* tBlock = NULL;
-    LayoutTurnout* lt = NULL;
-    LevelXing* x = NULL;
+    if ( (node==nullptr) || node->reachedEndOfTrack() ) return nullptr;
+    Block* block = nullptr;
+    Block* tBlock = nullptr;
+    LayoutTurnout* lt = nullptr;
+    LevelXing* x = nullptr;
     switch (node->getNodeType())
     {
     case LayoutEditor::POS_POINT:
@@ -1778,7 +1778,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
         if ( (tBlock!=node->getTrackSegment()->getLayoutBlock()->getBlock()) &&
                 (tBlock!=excludedBlock) ) block = tBlock;
      }
-     if ( (block==NULL) && ((lt->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
+     if ( (block==nullptr) && ((lt->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
                 (lt->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER)) )
      {
         tBlock = ((TrackSegment*)lt->getConnectD())->getLayoutBlock()->getBlock();
@@ -1925,18 +1925,18 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                             ts = (TrackSegment*)lt->getConnectD();
                                             prevConnectType = LayoutEditor::SLIP_A;
                                         } else {
-                                            if((ls->getConnectC()!=NULL) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectC(), (Object)ls)){
+                                            if((ls->getConnectC()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectC(), (Object)ls)){
                                                 prevConnectType = LayoutEditor::SLIP_C;
                                                 setting = LayoutSlip::STATE_AC;
                                                 ts = (TrackSegment*)lt->getConnectC();
-                                            } else if((ls->getConnectD()!=NULL) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectD(), (Object)ls)){
+                                            } else if((ls->getConnectD()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectD(), (Object)ls)){
                                                 prevConnectType = LayoutEditor::SLIP_D;
                                                 setting = LayoutSlip::STATE_AD;
                                                 ts = (TrackSegment*)lt->getConnectD();
                                             }
                                             else {
                                                 log.error("Error - Neither branch at track node leads to requested Block.(LS1)");
-                                                tr=NULL;
+                                                tr=nullptr;
                                             }
                                         }
                                         break;
@@ -1968,18 +1968,18 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                     setting = LayoutSlip::STATE_BC;
                                                     prevConnectType = LayoutEditor::SLIP_B;
                                                 } else {
-                                                    if((ls->getConnectD()!=NULL) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectD(), (Object)ls)){
+                                                    if((ls->getConnectD()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectD(), (Object)ls)){
                                                         prevConnectType = LayoutEditor::SLIP_D;
                                                         setting = LayoutSlip::STATE_BD;
                                                         ts = (TrackSegment*)lt->getConnectD();
-                                                    } else if((ls->getConnectC()!=NULL) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectC(), (Object)ls)){
+                                                    } else if((ls->getConnectC()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectC(), (Object)ls)){
                                                         prevConnectType = LayoutEditor::SLIP_C;
                                                         setting = LayoutSlip::STATE_BC;
                                                         ts = (TrackSegment*)lt->getConnectC();
                                                     }
                                                     else {
                                                         log.error("Error - Neither branch at track node leads to requested Block.(LS2)");
-                                                        tr=NULL;
+                                                        tr=nullptr;
                                                     }
 
 
@@ -1991,7 +1991,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                     setting = LayoutSlip::STATE_BD;
                                                     prevConnectType = LayoutEditor::SLIP_D;
                                                 } else {
-                                                    tr=NULL;
+                                                    tr=nullptr;
                                                 }
                                             }
                                         }
@@ -2026,18 +2026,18 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
 
 
                                                 } else {
-                                                    if((ls->getConnectA()!=NULL) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectA(), (Object)ls)){
+                                                    if((ls->getConnectA()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectA(), (Object)ls)){
                                                         prevConnectType = LayoutEditor::SLIP_A;
                                                         setting = LayoutSlip::STATE_AC;
                                                         ts = (TrackSegment*)lt->getConnectA();
-                                                    } else if((ls->getConnectB()!=NULL) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectB(), (Object)ls)){
+                                                    } else if((ls->getConnectB()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectB(), (Object)ls)){
                                                         prevConnectType = LayoutEditor::SLIP_B;
                                                         setting = LayoutSlip::STATE_BC;
                                                         ts = (TrackSegment*)lt->getConnectB();
                                                     }
                                                     else {
                                                         log.error("Error - Neither branch at track node leads to requested Block.(LS3)");
-                                                        tr=NULL;
+                                                        tr=nullptr;
                                                     }
                                                 }
                                             } else {
@@ -2047,7 +2047,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                     setting = LayoutSlip::STATE_AC;
                                                     prevConnectType = LayoutEditor::SLIP_A;
                                                 } else {
-                                                    tr=NULL;
+                                                    tr=nullptr;
                                                 }
                                             }
                                         }
@@ -2076,28 +2076,28 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                             ts = (TrackSegment*)lt->getConnectA();
                                             prevConnectType = LayoutEditor::SLIP_A;
                                         } else {
-                                            if((ls->getConnectA()!=NULL) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectA(), (Object)ls)){
+                                            if((ls->getConnectA()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectA(), (Object)ls)){
                                                 prevConnectType = LayoutEditor::SLIP_A;
                                                 setting = LayoutSlip::STATE_AD;
                                                 ts = (TrackSegment*)lt->getConnectA();
-                                            } else if((ls->getConnectB()!=NULL) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectB(), (Object)ls)){
+                                            } else if((ls->getConnectB()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)ls->getConnectB(), (Object)ls)){
                                                 prevConnectType = LayoutEditor::SLIP_B;
                                                 setting = LayoutSlip::STATE_BD;
                                                 ts = (TrackSegment*)lt->getConnectB();
                                             }
                                             else {
                                                 log.error("Error - Neither branch at track node leads to requested Block.(LS4)");
-                                                tr=NULL;
+                                                tr=nullptr;
                                             }
                                         }
                                         break;
             default : break;
         }
-        if ( (tr!=NULL) && (ts->getLayoutBlock() != lb) ) {
+        if ( (tr!=nullptr) && (ts->getLayoutBlock() != lb) ) {
             // continuing track segment is not in this block
-            ts = NULL;
+            ts = nullptr;
         }
-        else if (tr==NULL) {
+        else if (tr==nullptr) {
             log.error("Connectivity not complete at Slip "+ls->getDisplayName());
                         turnoutConnectivity = false;
         }
@@ -2116,29 +2116,29 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     ts = (TrackSegment*)lt->getConnectB();
                 }
                 // entering at a throat, determine exit by checking block of connected track segment
-                else if ( (nlb==lt->getLayoutBlockB()) || ((lt->getConnectB()!=NULL) &&
+                else if ( (nlb==lt->getLayoutBlockB()) || ((lt->getConnectB()!=nullptr) &&
                             (nlb==((TrackSegment*)lt->getConnectB())->getLayoutBlock())) ) {
                     // exiting block at continuing track
                     prevConnectType = LayoutEditor::TURNOUT_B;
                     setting = Turnout::CLOSED;
                     ts = (TrackSegment*)lt->getConnectB();
                 }
-                else if ( (nlb==lt->getLayoutBlockC()) || ((lt->getConnectC()!=NULL) &&
+                else if ( (nlb==lt->getLayoutBlockC()) || ((lt->getConnectC()!=nullptr) &&
                             (nlb==((TrackSegment*)lt->getConnectC())->getLayoutBlock())) ) {
                     // exiting block at diverging track
                     prevConnectType = LayoutEditor::TURNOUT_C;
                     ts = (TrackSegment*)lt->getConnectC();
                 }
                 // must stay in block after turnout - check if only one track continues in block
-                else if ((lt->getConnectB()!=NULL) &&  (lb==((TrackSegment*)lt->getConnectB())->getLayoutBlock()) &&
-                        (lt->getConnectC()!=NULL) && (lb!=((TrackSegment*)lt->getConnectC())->getLayoutBlock())) {
+                else if ((lt->getConnectB()!=nullptr) &&  (lb==((TrackSegment*)lt->getConnectB())->getLayoutBlock()) &&
+                        (lt->getConnectC()!=nullptr) && (lb!=((TrackSegment*)lt->getConnectC())->getLayoutBlock())) {
                     // continuing in block on continuing track only
                     prevConnectType = LayoutEditor::TURNOUT_B;
                     setting = Turnout::CLOSED;
                     ts = (TrackSegment*)lt->getConnectB();
                 }
-                else if ((lt->getConnectC()!=NULL) && (lb==((TrackSegment*)lt->getConnectC())->getLayoutBlock()) &&
-                        (lt->getConnectB()!=NULL) && (lb!=((TrackSegment*)lt->getConnectB())->getLayoutBlock())) {
+                else if ((lt->getConnectC()!=nullptr) && (lb==((TrackSegment*)lt->getConnectC())->getLayoutBlock()) &&
+                        (lt->getConnectB()!=nullptr) && (lb!=((TrackSegment*)lt->getConnectB())->getLayoutBlock())) {
                     // continuing in block on diverging track only
                     prevConnectType = LayoutEditor::TURNOUT_C;
                     ts = (TrackSegment*)lt->getConnectC();
@@ -2146,48 +2146,48 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 // both connecting track segments continue in current block, must search further
                 else {
                     // check if continuing track leads to the next block
-                    if ((lt->getConnectB()!=NULL) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectB(),(QObject*)lt)) {
+                    if ((lt->getConnectB()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectB(),(QObject*)lt)) {
                         prevConnectType = LayoutEditor::TURNOUT_B;
                         setting = Turnout::CLOSED;
                         ts = (TrackSegment*)lt->getConnectB();
                     }
                     // check if diverging track leads to the next block
-                    else if ((lt->getConnectC()!=NULL) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectC(),(QObject*)lt)) {
+                    else if ((lt->getConnectC()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectC(),(QObject*)lt)) {
                         prevConnectType = LayoutEditor::TURNOUT_C;
                         ts = (TrackSegment*)lt->getConnectC();
                     }
                     else {
                         log.error("Error - Neither branch at track node leads to requested Block.(1)");
-                        ts = NULL;
+                        ts = nullptr;
                     }
                 }
                 break;
             case LayoutEditor::TURNOUT_B:
                 if ( (tType==LayoutTurnout::LH_XOVER) || (tType==LayoutTurnout::DOUBLE_XOVER) ) {
                     // entering at a throat of a double crossover or a left-handed crossover
-                    if ( (nlb==lt->getLayoutBlock()) || ((lt->getConnectA()!=NULL) &&
+                    if ( (nlb==lt->getLayoutBlock()) || ((lt->getConnectA()!=nullptr) &&
                                 (nlb==((TrackSegment*)lt->getConnectA())->getLayoutBlock())) ) {
                         // exiting block at continuing track
                         prevConnectType = LayoutEditor::TURNOUT_A;
                         setting = Turnout::CLOSED;
                         ts = (TrackSegment*)lt->getConnectB();
                     }
-                    else if ( (nlb==lt->getLayoutBlockD()) || ((lt->getConnectD()!=NULL) &&
+                    else if ( (nlb==lt->getLayoutBlockD()) || ((lt->getConnectD()!=nullptr) &&
                                 (nlb==((TrackSegment*)lt->getConnectD())->getLayoutBlock())) ) {
                         // exiting block at diverging track
                         prevConnectType = LayoutEditor::TURNOUT_D;
                         ts = (TrackSegment*)lt->getConnectD();
                     }
                     // must stay in block after turnout
-                    else if ( ((lt->getConnectA()!=NULL) && (lb==((TrackSegment*)lt->getConnectA())->getLayoutBlock())) &&
-                                ((lt->getConnectD()!=NULL) && (lb!=((TrackSegment*)lt->getConnectD())->getLayoutBlock())) ) {
+                    else if ( ((lt->getConnectA()!=nullptr) && (lb==((TrackSegment*)lt->getConnectA())->getLayoutBlock())) &&
+                                ((lt->getConnectD()!=nullptr) && (lb!=((TrackSegment*)lt->getConnectD())->getLayoutBlock())) ) {
                         // continuing in block on continuing track only
                         prevConnectType = LayoutEditor::TURNOUT_A;
                         setting = Turnout::CLOSED;
                         ts = (TrackSegment*)lt->getConnectA();
                     }
-                    else if ( ((lt->getConnectD()!=NULL) && (lb==((TrackSegment*)lt->getConnectD())->getLayoutBlock())) &&
-                                ((lt->getConnectA()!=NULL) && (lb!=((TrackSegment*)lt->getConnectA())->getLayoutBlock())) ) {
+                    else if ( ((lt->getConnectD()!=nullptr) && (lb==((TrackSegment*)lt->getConnectD())->getLayoutBlock())) &&
+                                ((lt->getConnectA()!=nullptr) && (lb!=((TrackSegment*)lt->getConnectA())->getLayoutBlock())) ) {
                         // continuing in block on diverging track only
                         prevConnectType = LayoutEditor::TURNOUT_D;
                         ts = (TrackSegment*)lt->getConnectD();
@@ -2195,19 +2195,19 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     // both connecting track segments continue in current block, must search further
                     else {
                         // check if continuing track leads to the next block
-                        if ((lt->getConnectA()!=NULL) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectA(),(QObject*)lt)) {
+                        if ((lt->getConnectA()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectA(),(QObject*)lt)) {
                             prevConnectType = LayoutEditor::TURNOUT_A;
                             setting = Turnout::CLOSED;
                             ts = (TrackSegment*)lt->getConnectA();
                         }
                         // check if diverging track leads to the next block
-                        else if ((lt->getConnectD()!=NULL) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectD(),(QObject*)lt)) {
+                        else if ((lt->getConnectD()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectD(),(QObject*)lt)) {
                             prevConnectType = LayoutEditor::TURNOUT_D;
                             ts = (TrackSegment*)lt->getConnectD();
                         }
                         else {
                             log.error("Error - Neither branch at track node leads to requested Block.(2)");
-                            ts = NULL;
+                            ts = nullptr;
                         }
                     }
                 }
@@ -2221,29 +2221,29 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             case LayoutEditor::TURNOUT_C:
                 if ( (tType==LayoutTurnout::RH_XOVER) || (tType==LayoutTurnout::DOUBLE_XOVER) ) {
                     // entering at a throat of a double crossover or a right-handed crossover
-                    if ( (nlb==lt->getLayoutBlockD()) || ((lt->getConnectD()!=NULL) &&
+                    if ( (nlb==lt->getLayoutBlockD()) || ((lt->getConnectD()!=nullptr) &&
                                 (nlb==((TrackSegment*)lt->getConnectD())->getLayoutBlock())) ) {
                         // exiting block at continuing track
                         prevConnectType = LayoutEditor::TURNOUT_D;
                         setting = Turnout::CLOSED;
                         ts = (TrackSegment*)lt->getConnectD();
                     }
-                    else if ( (nlb==lt->getLayoutBlock()) || ((lt->getConnectA()!=NULL) &&
+                    else if ( (nlb==lt->getLayoutBlock()) || ((lt->getConnectA()!=nullptr) &&
                                 (nlb==((TrackSegment*)lt->getConnectA())->getLayoutBlock())) ) {
                         // exiting block at diverging track
                         prevConnectType = LayoutEditor::TURNOUT_A;
                         ts = (TrackSegment*)lt->getConnectA();
                     }
                     // must stay in block after turnout
-                    else if ( ((lt->getConnectD()!=NULL) && (lb==((TrackSegment*)lt->getConnectD())->getLayoutBlock())) &&
-                                ((lt->getConnectA()!=NULL) && (lb!=((TrackSegment*)lt->getConnectA())->getLayoutBlock())) ) {
+                    else if ( ((lt->getConnectD()!=nullptr) && (lb==((TrackSegment*)lt->getConnectD())->getLayoutBlock())) &&
+                                ((lt->getConnectA()!=nullptr) && (lb!=((TrackSegment*)lt->getConnectA())->getLayoutBlock())) ) {
                         // continuing in block on continuing track
                         prevConnectType = LayoutEditor::TURNOUT_D;
                         setting = Turnout::CLOSED;
                         ts = (TrackSegment*)lt->getConnectD();
                     }
-                    else if ( ((lt->getConnectA()!=NULL) && (lb==((TrackSegment*)lt->getConnectA())->getLayoutBlock())) &&
-                                ((lt->getConnectD()!=NULL) && (lb!=((TrackSegment*)lt->getConnectD())->getLayoutBlock())) ) {
+                    else if ( ((lt->getConnectA()!=nullptr) && (lb==((TrackSegment*)lt->getConnectA())->getLayoutBlock())) &&
+                                ((lt->getConnectD()!=nullptr) && (lb!=((TrackSegment*)lt->getConnectD())->getLayoutBlock())) ) {
                         // continuing in block on diverging track
                         prevConnectType = LayoutEditor::TURNOUT_A;
                         ts = (TrackSegment*)lt->getConnectA();
@@ -2251,19 +2251,19 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     // both connecting track segments continue in current block, must search further
                     else {
                         // check if continuing track leads to the next block
-                        if ((lt->getConnectD()!=NULL) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectD(),(QObject*)lt)) {
+                        if ((lt->getConnectD()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectD(),(QObject*)lt)) {
                             prevConnectType = LayoutEditor::TURNOUT_D;
                             setting = Turnout::CLOSED;
                             ts = (TrackSegment*)lt->getConnectD();
                         }
                         // check if diverging track leads to the next block
-                        else if ((lt->getConnectA()!=NULL) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectA(),(QObject*)lt)) {
+                        else if ((lt->getConnectA()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectA(),(QObject*)lt)) {
                             prevConnectType = LayoutEditor::TURNOUT_A;
                             ts = (TrackSegment*)lt->getConnectA();
                         }
                         else {
                             log.error("Error - Neither branch at track node leads to requested Block.(3)");
-                            ts = NULL;
+                            ts = nullptr;
                         }
                     }
                 }
@@ -2276,29 +2276,29 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
             case LayoutEditor::TURNOUT_D:
                 if ( (tType==LayoutTurnout::LH_XOVER) || (tType==LayoutTurnout::DOUBLE_XOVER) ) {
                     // entering at a throat of a double crossover or a left-handed crossover
-                    if ( (nlb==lt->getLayoutBlockC()) || ((lt->getConnectC()!=NULL) &&
+                    if ( (nlb==lt->getLayoutBlockC()) || ((lt->getConnectC()!=nullptr) &&
                                 (nlb==((TrackSegment*)lt->getConnectC())->getLayoutBlock())) ) {
                         // exiting block at continuing track
                         prevConnectType = LayoutEditor::TURNOUT_C;
                         setting = Turnout::CLOSED;
                         ts = (TrackSegment*)lt->getConnectC();
                     }
-                    else if ( (nlb==lt->getLayoutBlockB()) || ((lt->getConnectB()!=NULL) &&
+                    else if ( (nlb==lt->getLayoutBlockB()) || ((lt->getConnectB()!=nullptr) &&
                                 (nlb==((TrackSegment*)lt->getConnectB())->getLayoutBlock())) ) {
                         // exiting block at diverging track
                         prevConnectType = LayoutEditor::TURNOUT_B;
                         ts = (TrackSegment*)lt->getConnectB();
                     }
                     // must stay in block after turnout
-                    else if ( ((lt->getConnectC()!=NULL) && (lb==((TrackSegment*)lt->getConnectC())->getLayoutBlock())) &&
-                                ((lt->getConnectB()!=NULL) && (lb!=((TrackSegment*)lt->getConnectB())->getLayoutBlock())) ) {
+                    else if ( ((lt->getConnectC()!=nullptr) && (lb==((TrackSegment*)lt->getConnectC())->getLayoutBlock())) &&
+                                ((lt->getConnectB()!=nullptr) && (lb!=((TrackSegment*)lt->getConnectB())->getLayoutBlock())) ) {
                         // continuing in block on continuing track
                         prevConnectType = LayoutEditor::TURNOUT_C;
                         setting = Turnout::CLOSED;
                         ts = (TrackSegment*)lt->getConnectC();
                     }
-                    else if ( ((lt->getConnectB()!=NULL) && (lb==((TrackSegment*)lt->getConnectB())->getLayoutBlock())) &&
-                                ((lt->getConnectC()!=NULL) && (lb!=((TrackSegment*)lt->getConnectC())->getLayoutBlock())) ) {
+                    else if ( ((lt->getConnectB()!=nullptr) && (lb==((TrackSegment*)lt->getConnectB())->getLayoutBlock())) &&
+                                ((lt->getConnectC()!=nullptr) && (lb!=((TrackSegment*)lt->getConnectC())->getLayoutBlock())) ) {
                         // continuing in block on diverging track
                         prevConnectType = LayoutEditor::TURNOUT_B;
                         ts = (TrackSegment*)lt->getConnectB();
@@ -2306,19 +2306,19 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     // both connecting track segments continue in current block, must search further
                     else {
                         // check if continuing track leads to the next block
-                        if ((lt->getConnectC()!=NULL) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectC(),(QObject*)lt)) {
+                        if ((lt->getConnectC()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectC(),(QObject*)lt)) {
                             prevConnectType = LayoutEditor::TURNOUT_C;
                             setting = Turnout::CLOSED;
                             ts = (TrackSegment*)lt->getConnectC();
                         }
                         // check if diverging track leads to the next block
-                        else if ((lt->getConnectB()!=NULL) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectB(),(QObject*)lt)) {
+                        else if ((lt->getConnectB()!=nullptr) && trackSegmentLeadsTo((TrackSegment*)lt->getConnectB(),(QObject*)lt)) {
                             prevConnectType = LayoutEditor::TURNOUT_B;
                             ts = (TrackSegment*)lt->getConnectB();
                         }
                         else {
                             log.error("Error - Neither branch at track node leads to requested Block.(2)");
-                            ts = NULL;
+                            ts = nullptr;
                         }
                     }
                 }
@@ -2329,11 +2329,11 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 }
                 break;
         }
-        if ( (ts!=NULL) && (ts->getLayoutBlock() != lb) ) {
+        if ( (ts!=nullptr) && (ts->getLayoutBlock() != lb) ) {
             // continuing track segment is not in this block
-            ts = NULL;
+            ts = nullptr;
         }
-        else if (ts==NULL) {
+        else if (ts==nullptr) {
             log.error("Connectivity not complete at turnout "+lt->getTurnoutName());
                         turnoutConnectivity = false;
         }
@@ -2352,7 +2352,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
  * Returns 'true' if designated Block is connected; returns 'false' if not->
  */
 /*private*/ bool ConnectivityUtil::trackSegmentLeadsTo(TrackSegment* tsg, QObject* ob) {
-    if ( (tsg==NULL) || (ob==NULL) ) {
+    if ( (tsg==nullptr) || (ob==nullptr) ) {
         log.error("Null argument on entry to trackSegmentLeadsTo");
         return false;
     }
@@ -2361,9 +2361,9 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     QVector<TrackSegment*>* posTS = new QVector<TrackSegment*>();
     QVector<QObject*>* posOB = new QVector<QObject*>();
     int conType = 0;
-    QObject* conObj = NULL;
+    QObject* conObj = nullptr;
     // follow track to all exit points outside this block
-    while (curTS!=NULL) {
+    while (curTS!=nullptr) {
         if (curTS->getLayoutBlock()==nlb) return true;
         if (curTS->getLayoutBlock()==lb) {
             // identify next destination along track
@@ -2386,7 +2386,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 // reached anchor point or end bumper
                 if (((PositionablePoint*)conObj)->getType() == PositionablePoint::END_BUMPER) {
                     // end of line without reaching 'nlb'
-                    curTS = NULL;
+                    curTS = nullptr;
                 }
                 else if (((PositionablePoint*)conObj)->getType() == PositionablePoint::ANCHOR) {
                     // proceed to next track segment if within the same Block
@@ -2404,7 +2404,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 if ( (conType==LayoutEditor::LEVEL_XING_A) || (conType==LayoutEditor::LEVEL_XING_C) ) {
                     if (((LevelXing*)conObj)->getLayoutBlockAC()!=lb) {
                         if (((LevelXing*)conObj)->getLayoutBlockAC()==nlb) return true;
-                        else curTS = NULL;
+                        else curTS = nullptr;
                     }
                     else if (conType==LayoutEditor::LEVEL_XING_A) {
                         curTS = (TrackSegment*)((LevelXing*)conObj)->getConnectC();
@@ -2416,7 +2416,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 else {
                     if (((LevelXing*)conObj)->getLayoutBlockBD()!=lb) {
                         if (((LevelXing*)conObj)->getLayoutBlockBD()==nlb) return true;
-                        else curTS = NULL;
+                        else curTS = nullptr;
                     }
                     else if (conType==LayoutEditor::LEVEL_XING_B) {
                         curTS = (TrackSegment*)((LevelXing*)conObj)->getConnectD();
@@ -2438,14 +2438,14 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                         case LayoutEditor::TURNOUT_A:
                             if ((lt->getLayoutBlock())!=lb) {
                                 if (lt->getLayoutBlock()==nlb) return true;
-                                else curTS = NULL;
+                                else curTS = nullptr;
                             }
                             else if ( (lt->getLayoutBlockB()==nlb) || ( (tType!=LayoutTurnout::LH_XOVER) &&
                                                         (lt->getLayoutBlockC()==nlb) ) )return true;
                             else if (lt->getLayoutBlockB()==lb) {
                                 curTS = (TrackSegment*)lt->getConnectB();
                                 if ( (tType!=LayoutTurnout::LH_XOVER) && (lt->getLayoutBlockC()==lb) ) {
-                                    //if (posTS != NULL) {
+                                    //if (posTS != nullptr) {
                                         posTS->append((TrackSegment*)lt->getConnectC());
                                     //}
                                     posOB->append(conObj);
@@ -2454,20 +2454,20 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                             else if ( (tType!=LayoutTurnout::LH_XOVER) && (lt->getLayoutBlockC()==lb) ) {
                                 curTS = (TrackSegment*)lt->getConnectC();
                             }
-                            else curTS = NULL;
+                            else curTS = nullptr;
                             curObj = conObj;
                             break;
                         case LayoutEditor::TURNOUT_B:
                             if ((lt->getLayoutBlockB())!=lb) {
                                 if (lt->getLayoutBlockB()==nlb) return true;
-                                else curTS = NULL;
+                                else curTS = nullptr;
                             }
                             else if ( (lt->getLayoutBlock()==nlb) || ( (tType!=LayoutTurnout::RH_XOVER) &&
                                                                       (lt->getLayoutBlockD()==nlb) ) ) return true;
                             else if (lt->getLayoutBlock()==lb) {
                                 curTS = (TrackSegment*)lt->getConnectA();
                                 if ( (tType!=LayoutTurnout::RH_XOVER) && (lt->getLayoutBlockD()==lb) ) {
-                                    //if (posTS != NULL) {
+                                    //if (posTS != nullptr) {
                                         posTS->append((TrackSegment*)lt->getConnectD());
                                     //}
                                     posOB->append(conObj);
@@ -2476,20 +2476,20 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                             else if ( (tType!=LayoutTurnout::RH_XOVER) && (lt->getLayoutBlockD()==lb) ) {
                                 curTS = (TrackSegment*)lt->getConnectD();
                             }
-                            else curTS = NULL;
+                            else curTS = nullptr;
                             curObj = conObj;
                             break;
                         case LayoutEditor::TURNOUT_C:
                             if ((lt->getLayoutBlockC())!=lb) {
                                 if (lt->getLayoutBlockC()==nlb) return true;
-                                else curTS = NULL;
+                                else curTS = nullptr;
                             }
                             else if ( (lt->getLayoutBlockD()==nlb) || ( (tType!=LayoutTurnout::LH_XOVER) &&
                                                                       (lt->getLayoutBlock()==nlb) ) )return true;
                             else if (lt->getLayoutBlockD()==lb) {
                                 curTS = (TrackSegment*)lt->getConnectD();
                                 if ( (tType!=LayoutTurnout::LH_XOVER) && (lt->getLayoutBlock()==lb) ) {
-                                    //if (posTS != NULL) {
+                                    //if (posTS != nullptr) {
                                         posTS->append((TrackSegment*)lt->getConnectA());
                                     //}
                                     posOB->append(conObj);
@@ -2498,20 +2498,20 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                             else if ( (tType!=LayoutTurnout::LH_XOVER) && (lt->getLayoutBlock()==lb) ) {
                                 curTS = (TrackSegment*)lt->getConnectA();
                             }
-                            else curTS = NULL;
+                            else curTS = nullptr;
                             curObj = conObj;
                             break;
                         case LayoutEditor::TURNOUT_D:
                             if ((lt->getLayoutBlockD())!=lb) {
                                 if (lt->getLayoutBlockD()==nlb) return true;
-                                else curTS = NULL;
+                                else curTS = nullptr;
                             }
                             else if ( (lt->getLayoutBlockC()==nlb) || ( (tType!=LayoutTurnout::RH_XOVER) &&
                                                                       (lt->getLayoutBlockB()==nlb) ) )return true;
                             else if (lt->getLayoutBlockC()==lb) {
                                 curTS = (TrackSegment*)lt->getConnectC();
                                 if ( (tType!=LayoutTurnout::RH_XOVER) && (lt->getLayoutBlockB()==lb) ) {
-                                    //if (posTS != NULL) {
+                                    //if (posTS != nullptr) {
                                         posTS->append((TrackSegment*)lt->getConnectB());
                                     //}
                                     posOB->append(conObj);
@@ -2520,7 +2520,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                             else if ( (tType!=LayoutTurnout::RH_XOVER) && (lt->getLayoutBlockB()==lb) ) {
                                 curTS = (TrackSegment*)lt->getConnectB();
                             }
-                            else curTS = NULL;
+                            else curTS = nullptr;
                             curObj = conObj;
                             break;
                         default : break;
@@ -2531,7 +2531,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                     // reached RH. LH, or WYE turnout
                     if (lt->getLayoutBlock()!=lb) {
                         if (lt->getLayoutBlock()==nlb) return true;
-                        else curTS = NULL;
+                        else curTS = nullptr;
                     }
                     else {
                         if (conType==LayoutEditor::TURNOUT_A) {
@@ -2540,7 +2540,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                             else if (((TrackSegment*)lt->getConnectB())->getLayoutBlock()==lb) {
                                 curTS = (TrackSegment*)lt->getConnectB();
                                 if (((TrackSegment*)lt->getConnectC())->getLayoutBlock()==lb) {
-                                    //if (posTS != NULL) {
+                                    //if (posTS != nullptr) {
                                         posTS->append((TrackSegment*)lt->getConnectC());
                                     //}
                                     posOB->append(conObj);
@@ -2559,7 +2559,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                 int tType = ls->getTurnoutType();
                 if (ls->getLayoutBlock()!=lb){
                     if(ls->getLayoutBlock()==nlb) return true;
-                    else curTS = NULL;
+                    else curTS = nullptr;
                 } else {
                     switch (conType){
                             case LayoutEditor::SLIP_A:
@@ -2574,7 +2574,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                  if (((TrackSegment*)ls->getConnectC())->getLayoutBlock()==lb){
                                                     curTS = (TrackSegment*)ls->getConnectC();
                                                     if (((TrackSegment*)ls->getConnectD())->getLayoutBlock()==lb) {
-                                                        //if (posTS != NULL) {
+                                                        //if (posTS != nullptr) {
                                                             posTS->append((TrackSegment*)ls->getConnectD());
                                                         //}
                                                         posOB->append(conObj);
@@ -2599,7 +2599,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                     if (((TrackSegment*)ls->getConnectC())->getLayoutBlock()==lb){
                                                         curTS = (TrackSegment*)ls->getConnectC();
                                                         if (((TrackSegment*)ls->getConnectD())->getLayoutBlock()==lb) {
-                                                            //if (posTS != NULL) {
+                                                            //if (posTS != nullptr) {
                                                                 posTS->append((TrackSegment*)ls->getConnectD());
                                                             //}
                                                             posOB->append(conObj);
@@ -2624,7 +2624,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                     if (((TrackSegment*)ls->getConnectB())->getLayoutBlock()==lb){
                                                         curTS = (TrackSegment*)ls->getConnectB();
                                                         if (((TrackSegment*)ls->getConnectA())->getLayoutBlock()==lb) {
-                                                            //if (posTS != NULL) {
+                                                            //if (posTS != nullptr) {
                                                                 posTS->append((TrackSegment*)ls->getConnectA());
                                                             //}
                                                             posOB->append(conObj);
@@ -2645,7 +2645,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
                                                     if (((TrackSegment*)ls->getConnectB())->getLayoutBlock()==lb){
                                                         curTS = (TrackSegment*)ls->getConnectB();
                                                         if (((TrackSegment*)ls->getConnectA())->getLayoutBlock()==lb) {
-                                                            //if (posTS != NULL) {
+                                                            //if (posTS != nullptr) {
                                                                 posTS->append((TrackSegment*)ls->getConnectA());
                                                             //}
                                                             posOB->append(conObj);
@@ -2660,11 +2660,11 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
 #endif
 
         }
-        else curTS = NULL;
+        else curTS = nullptr;
 
-        if (curTS==NULL) {
+        if (curTS==nullptr) {
             // reached an end point outside this block that was not 'nlb' - any other paths to follow?
-            //if ( (posTS!=NULL) && (posTS.size()>0) ) {
+            //if ( (posTS!=nullptr) && (posTS.size()>0) ) {
             if (posTS->size()>0) {
                 // paths remain, initialize the next one
                 curTS = posTS->at(0);
@@ -2710,7 +2710,7 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     }
     if (ts->getLayoutBlock() != lb) {
         // track segment is not in this block
-        ts = NULL;
+        ts = nullptr;
     }
     else {
         // track segment is in this block

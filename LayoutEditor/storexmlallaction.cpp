@@ -2,6 +2,7 @@
 #include "file.h"
 #include "instancemanager.h"
 #include <QMessageBox>
+#include "configuremanager.h"
 
 //StoreXmlAllAction::StoreXmlAllAction(QObject *parent) :
 //  StoreXmlConfigAction(parent)

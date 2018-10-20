@@ -103,7 +103,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   for (int i = 0; i < num; i++)
   {
    Positionable* sub = contents.at(i);
-   if (sub != NULL && sub->storeItem())
+   if (sub != nullptr && sub->storeItem())
    {
     try
     {
@@ -292,25 +292,25 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   x = element.attribute("x").toInt();
   y = element.attribute("y").toInt();
   // For compatibility with previous versions, try and see if height and width tags are contained in the file
-  if ((a = element.attribute("height")) != NULL) {
+  if ((a = element.attribute("height")) != nullptr) {
       windowHeight = a.toInt();
       panelHeight = windowHeight - 60;
   }
-  if ((a = element.attribute("width")) != NULL) {
+  if ((a = element.attribute("width")) != nullptr) {
       windowWidth = a.toInt();
       panelWidth = windowWidth - 18;
   }
   // For files created by the new version, retrieve window and panel sizes
-  if ((a = element.attribute("windowheight")) != NULL) {
+  if ((a = element.attribute("windowheight")) != nullptr) {
       windowHeight = a.toInt();
   }
-  if ((a = element.attribute("windowwidth")) != NULL) {
+  if ((a = element.attribute("windowwidth")) != nullptr) {
       windowWidth = a.toInt();
   }
-  if ((a = element.attribute("panelheight")) != NULL) {
+  if ((a = element.attribute("panelheight")) != nullptr) {
       panelHeight = a.toInt();
   }
-  if ((a = element.attribute("panelwidth")) != NULL) {
+  if ((a = element.attribute("panelwidth")) != nullptr) {
       panelWidth = a.toInt();
   }
 
@@ -326,7 +326,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  double yScale = 1.0;
  a = element.attribute("xscale");
  bool bok;
- if (a != NULL)
+ if (a != nullptr)
  {
   try
   {
@@ -340,7 +340,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   }
  }
  a = element.attribute("yscale");
- if (a != NULL)
+ if (a != nullptr)
  {
   try
   {
@@ -355,7 +355,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
  // find the name and default track color
  QString name = "";
- if (element.attribute("name") != NULL)
+ if (element.attribute("name") != nullptr)
  {
   name = element.attribute("name");
  }
@@ -378,21 +378,21 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
  QString defaultColor = "black";
  QString defaultTextColor = "black";
- if (element.attribute("defaulttrackcolor") != NULL)
+ if (element.attribute("defaulttrackcolor") != nullptr)
  {
   defaultColor = element.attribute("defaulttrackcolor");
  }
- if (element.attribute("defaulttextcolor") != NULL)
+ if (element.attribute("defaulttextcolor") != nullptr)
  {
   defaultTextColor = element.attribute("defaulttextcolor");
  }
  QString turnoutCircleColor = "track";  //default to using use default track color for circle color
- if (element.attribute("turnoutcirclecolor") != NULL)
+ if (element.attribute("turnoutcirclecolor") != nullptr)
  {
   turnoutCircleColor = element.attribute("turnoutcirclecolor");
  }
  int turnoutCircleSize = 2;
- if (element.attribute("turnoutcirclesize") != NULL)
+ if (element.attribute("turnoutcirclesize") != nullptr)
  {
   try
   {
@@ -404,7 +404,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   }
  }
  bool turnoutDrawUnselectedLeg = true;
- if ((a = element.attribute("turnoutdrawunselectedleg")) != NULL && a==("no")) {
+ if ((a = element.attribute("turnoutdrawunselectedleg")) != nullptr && a==("no")) {
      turnoutDrawUnselectedLeg = false;
  }
  // create the objects
@@ -424,7 +424,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  // turnout size parameters
  double sz = 20.0;
  a = element.attribute("turnoutbx");
- if (a != NULL)
+ if (a != nullptr)
  {
   try
   {
@@ -437,7 +437,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   }
  }
  a = element.attribute("turnoutcx");
- if (a != NULL) {
+ if (a != nullptr) {
      try {
          sz = a.toFloat();
          panel->setTurnoutCX(sz);
@@ -447,7 +447,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      }
  }
  a = element.attribute("turnoutwid");
- if (a != NULL) {
+ if (a != nullptr) {
      try {
          sz = a.toFloat();;
          panel->setTurnoutWid(sz);
@@ -457,7 +457,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      }
  }
  a = element.attribute("xoverlong");
- if (a != NULL) {
+ if (a != nullptr) {
      try {
          sz = a.toFloat();;
          panel->setXOverLong(sz);
@@ -467,7 +467,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      }
  }
  a = element.attribute("xoverhwid");
- if (a != NULL) {
+ if (a != nullptr) {
      try {
          sz = a.toFloat();;
          panel->setXOverHWid(sz);
@@ -477,7 +477,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      }
  }
  a = element.attribute("xovershort");
- if (a != NULL) {
+ if (a != nullptr) {
      try {
          sz = a.toFloat();;
          panel->setXOverShort(sz);
@@ -489,94 +489,94 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
  // set contents state
  QString slValue = "both";
- if ((a = element.attribute("sliders")) != NULL && a==("no")) {
+ if ((a = element.attribute("sliders")) != nullptr && a==("no")) {
      slValue = "none";
  }
- if ((a = element.attribute("scrollable")) != NULL) {
+ if ((a = element.attribute("scrollable")) != nullptr) {
      slValue = a;
  }
 
  bool edValue = true;
- if ((a = element.attribute("editable")) != NULL && a==("no")) {
+ if ((a = element.attribute("editable")) != nullptr && a==("no")) {
      edValue = false;
  }
 
  bool value = true;
- if ((a = element.attribute("positionable")) != NULL && a==("no")) {
+ if ((a = element.attribute("positionable")) != nullptr && a==("no")) {
      value = false;
  }
  panel->setAllPositionable(value);
 
  value = true;
- if ((a = element.attribute("controlling")) != NULL && a==("no")) {
+ if ((a = element.attribute("controlling")) != nullptr && a==("no")) {
      value = false;
  }
  panel->setAllControlling(value);
 
  value = true;
- if ((a = element.attribute("animating")) != NULL && a==("no")) {
+ if ((a = element.attribute("animating")) != nullptr && a==("no")) {
      value = false;
  }
  panel->setTurnoutAnimation(value);
 
  bool hbValue = true;
- if ((a = element.attribute("showhelpbar")) != NULL && a==("no")) {
+ if ((a = element.attribute("showhelpbar")) != nullptr && a==("no")) {
      hbValue = false;
  }
 
  bool dgValue = false;
- if ((a = element.attribute("drawgrid")) != NULL && a==("yes")) {
+ if ((a = element.attribute("drawgrid")) != nullptr && a==("yes")) {
      dgValue = true;
  }
 
  bool sgaValue = false;
- if ((a = element.attribute("snaponadd")) != NULL && a==("yes")) {
+ if ((a = element.attribute("snaponadd")) != nullptr && a==("yes")) {
      sgaValue = true;
  }
 
  bool sgmValue = false;
- if ((a = element.attribute("snaponmove")) != NULL && a==("yes")) {
+ if ((a = element.attribute("snaponmove")) != nullptr && a==("yes")) {
      sgmValue = true;
  }
 
  bool aaValue = false;
- if ((a = element.attribute("antialiasing")) != NULL && a==("yes")) {
+ if ((a = element.attribute("antialiasing")) != nullptr && a==("yes")) {
      aaValue = true;
  }
 
  value = false;
- if ((a = element.attribute("turnoutcircles")) != NULL && a==("yes")) {
+ if ((a = element.attribute("turnoutcircles")) != nullptr && a==("yes")) {
      value = true;
  }
  panel->setTurnoutCircles(value);
 
  value = false;
- if ((a = element.attribute("tooltipsnotedit")) != NULL && a==("yes")) {
+ if ((a = element.attribute("tooltipsnotedit")) != nullptr && a==("yes")) {
      value = true;
  }
 // TODO:    panel->setTooltipsNotEdit(value);
 
  value = false;
- if ((a = element.attribute("autoblkgenerate")) != NULL && a==("yes")) {
+ if ((a = element.attribute("autoblkgenerate")) != nullptr && a==("yes")) {
      value = true;
  }
  panel->setAutoBlockAssignment(value);
 
  value = true;
- if ((a = element.attribute("tooltipsinedit")) != NULL && a==("no")) {
+ if ((a = element.attribute("tooltipsinedit")) != nullptr && a==("no")) {
      value = false;
  }
 // TODO:    panel->setTooltipsInEdit(value);
  // set default track color
- if ((a = element.attribute("defaulttrackcolor")) != NULL) {
+ if ((a = element.attribute("defaulttrackcolor")) != nullptr) {
      panel->setDefaultTrackColor(a);
  }
  // set default track color
- if ((a = element.attribute("defaultoccupiedtrackcolor")) != NULL) {
+ if ((a = element.attribute("defaultoccupiedtrackcolor")) != nullptr) {
   panel->setDefaultOccupiedTrackColor(a);
  }
  // set default track color
- if ((a = element.attribute("defaultalternativetrackcolor")) != NULL) {
+ if ((a = element.attribute("defaultalternativetrackcolor")) != nullptr) {
    panel->setDefaultAlternativeTrackColor(a);
  }
  try {
@@ -589,7 +589,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      log->warn("Could not parse color attributes!");
  } catch (NullPointerException e) {  // considered normal if the attributes are not present
  }
- if (element.attribute("useDirectTurnoutControl") != NULL)
+ if (element.attribute("useDirectTurnoutControl") != nullptr)
  {
   if (element.attribute("useDirectTurnoutControl")==("yes"))
   {
@@ -609,7 +609,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   QString adapterName = item.attribute("class");
   if (log->isDebugEnabled())
   {
-   QString id = "<NULL>";
+   QString id = "<nullptr>";
    try {
        id = item.attribute("ident");
    } catch (Exception e) {
@@ -669,11 +669,11 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
 
  // register the resulting panel for later configuration
- InstanceManager::configureManagerInstance()->registerUser(panel);
+ static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(panel);
  //if (InstanceManager::transitManagerInstance()->getSystemNameList().size() > 0)
  if(((TransitManager*)InstanceManager::getNullableDefault("TransitManager")))
  {
-  if (element.attribute("openDispatcher") != NULL)
+  if (element.attribute("openDispatcher") != nullptr)
   {
    if (element.attribute("openDispatcher")==("yes"))
    {

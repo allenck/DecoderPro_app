@@ -9985,7 +9985,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   AudioManager::childEvent(arg__1);
 }
-void PythonQtShell_AudioManager::cleanUp()
+void PythonQtShell_AudioManager::cleanup()
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("cleanUp");
@@ -10002,7 +10002,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
     PyErr_Clear();
   }
 }
-  AudioManager::cleanUp();
+  AudioManager::cleanup();
 }
 void PythonQtShell_AudioManager::customEvent(QEvent*  arg__1)
 {
@@ -10711,9 +10711,9 @@ AudioManager* PythonQtWrapper_AudioManager::new_AudioManager(QObject*  parent)
 { 
 return new PythonQtShell_AudioManager(parent); }
 
-void PythonQtWrapper_AudioManager::cleanUp(AudioManager* theWrappedObject)
+void PythonQtWrapper_AudioManager::cleanup(AudioManager* theWrappedObject)
 {
-  ( ((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->promoted_cleanUp());
+  ( ((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->promoted_cleanup());
 }
 
 Audio*  PythonQtWrapper_AudioManager::getAudio(AudioManager* theWrappedObject, QString  arg__1)
@@ -17596,24 +17596,24 @@ void PythonQtWrapper_InstanceManager::addSensorManager(InstanceManager* theWrapp
   //( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addSensorManager(p));
 }
 
-void PythonQtWrapper_InstanceManager::addShutdownManager(InstanceManager* theWrappedObject, ShutDownManager*  p)
-{
-  ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addShutdownManager(p));
-}
+//void PythonQtWrapper_InstanceManager::addShutdownManager(InstanceManager* theWrappedObject, ShutDownManager*  p)
+//{
+//  ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addShutdownManager(p));
+//}
 
-void PythonQtWrapper_InstanceManager::addSignalHeadManager(InstanceManager* theWrappedObject, SignalHeadManager*  p)
-{
-  ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addSignalHeadManager(p));
-}
+//void PythonQtWrapper_InstanceManager::addSignalHeadManager(InstanceManager* theWrappedObject, SignalHeadManager*  p)
+//{
+//  ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_addSignalHeadManager(p));
+//}
 
 AudioManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_audioManagerInstance()
 {
-  return (InstanceManager::audioManagerInstance());
+  return (((AudioManager*)InstanceManager::getDefault("AudioManager")));
 }
 
 CommandStation*  PythonQtWrapper_InstanceManager::static_InstanceManager_commandStationInstance()
 {
-  return (InstanceManager::commandStationInstance());
+  return static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
 }
 
 QString  PythonQtWrapper_InstanceManager::static_InstanceManager_contentsToString()
@@ -17636,20 +17636,20 @@ QList<QObject* >*  PythonQtWrapper_InstanceManager::static_InstanceManager_getLi
   return (InstanceManager::getList(type));
 }
 
-void PythonQtWrapper_InstanceManager::init(InstanceManager* theWrappedObject)
-{
-  ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_init());
-}
+//void PythonQtWrapper_InstanceManager::init(InstanceManager* theWrappedObject)
+//{
+//  ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_init());
+//}
 
 InstanceManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_instance()
 {
   return (InstanceManager::instance());
 }
 
-LayoutBlockManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_layoutBlockManagerInstance()
-{
-  return (InstanceManager::layoutBlockManagerInstance());
-}
+//LayoutBlockManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_layoutBlockManagerInstance()
+//{
+//  return (InstanceManager::layoutBlockManagerInstance());
+//}
 
 MemoryManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_memoryManagerInstance()
 {
@@ -17706,10 +17706,10 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setDefault(QString 
   (InstanceManager::setDefault(type, val));
 }
 
-void PythonQtWrapper_InstanceManager::static_InstanceManager_setLayoutBlockManager(LayoutBlockManager*  p)
-{
-  (InstanceManager::setLayoutBlockManager(p));
-}
+//void PythonQtWrapper_InstanceManager::static_InstanceManager_setLayoutBlockManager(LayoutBlockManager*  p)
+//{
+//  (InstanceManager::setLayoutBlockManager(p));
+//}
 
 void PythonQtWrapper_InstanceManager::static_InstanceManager_setPowerManager(PowerManager*  p)
 {
@@ -17731,10 +17731,10 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setSensorManager(Se
   (InstanceManager::setSensorManager(p));
 }
 
-void PythonQtWrapper_InstanceManager::static_InstanceManager_setShutDownManager(ShutDownManager*  p)
-{
-  (InstanceManager::setShutDownManager(p));
-}
+//void PythonQtWrapper_InstanceManager::static_InstanceManager_setShutDownManager(ShutDownManager*  p)
+//{
+//  (InstanceManager::setShutDownManager(p));
+//}
 
 void PythonQtWrapper_InstanceManager::static_InstanceManager_setSignalHeadManager(SignalHeadManager*  p)
 {
@@ -17746,10 +17746,10 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setSignalMastManage
   (InstanceManager::setSignalMastManager(p));
 }
 
-ShutDownManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_shutDownManagerInstance()
-{
-  return (InstanceManager::shutDownManagerInstance());
-}
+//ShutDownManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_shutDownManagerInstance()
+//{
+//  return (InstanceManager::shutDownManagerInstance());
+//}
 
 SignalHeadManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_signalHeadManagerInstance()
 {

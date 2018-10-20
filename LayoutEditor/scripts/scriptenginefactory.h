@@ -121,7 +121,7 @@ public:
      * value is assigned to the key.
      *
      */
-    /*public*/ virtual QObject* getParameter(QString key) {return NULL;}
+    /*public*/ virtual QObject* getParameter(QString /*key*/) {return NULL;}
 
     /**
      * Returns a String which can be used to invoke a method of a  Java object using the syntax
@@ -175,7 +175,7 @@ public:
      *
      *
      */
-    /*public*/ virtual QString getOutputStatement(QString toDisplay) {return "";}
+    /*public*/ virtual QString getOutputStatement(QString /*toDisplay*/) {return "";}
 
 
     /**

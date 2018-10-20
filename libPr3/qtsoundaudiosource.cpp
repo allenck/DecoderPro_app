@@ -87,13 +87,13 @@ void QtSoundAudioSource::common()
  log = new Logger("QtSoundAudioSource");
  log->setDebugEnabled(true);
  _mixer = QtSoundAudioFactory::getMixer();
- audioOut = NULL;
- loop = NULL;
+ audioOut = nullptr;
+ loop = nullptr;
 
  /**
   * Reference to current active AudioListener
   */
- _activeAudioListener = InstanceManager::audioManagerInstance()->getActiveAudioFactory()->getActiveAudioListener();
+ _activeAudioListener = ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory()->getActiveAudioListener();
 
  /**
   * True if we've been initialised
@@ -103,12 +103,12 @@ void QtSoundAudioSource::common()
  /**
   * Used for playing back sound source
   */
- _clip = NULL;
+ _clip = nullptr;
 
  /**
   * Holds reference to the QtSoundAudioChannel object
   */
- _audioChannel = NULL;
+ _audioChannel = nullptr;
  _jsState = false;
 }
 
@@ -147,7 +147,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 
 // if (audioBuffer instanceof QtSoundAudioBuffer
 //         && audioBuffer.getState() == AudioBuffer.STATE_LOADED)
- if(qobject_cast<QtSoundAudioBuffer*>(audioBuffer)!=NULL && audioBuffer->getState() == AudioBuffer::STATE_LOADED)
+ if(qobject_cast<QtSoundAudioBuffer*>(audioBuffer)!=nullptr && audioBuffer->getState() == AudioBuffer::STATE_LOADED)
  {
   // Cast to QtSoundAudioBuffer to enable easier access to specific methods
   QtSoundAudioBuffer* buffer = (QtSoundAudioBuffer*) audioBuffer;
@@ -220,7 +220,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 //@Override
 /*protected*/ void QtSoundAudioSource::changePosition(QVector3D pos)
 {
- if (_initialised && isBound() && _audioChannel != NULL)
+ if (_initialised && isBound() && _audioChannel != nullptr)
  {
   calculateGain();
   calculatePan();
@@ -231,7 +231,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 /*public*/ void QtSoundAudioSource::setGain(float gain)
 {
  AbstractAudioSource::setGain(gain);
- if (_initialised && isBound() && _audioChannel != NULL)
+ if (_initialised && isBound() && _audioChannel != nullptr)
  {
   calculateGain();
  }
@@ -241,7 +241,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 /*public*/ void QtSoundAudioSource::setPitch(float pitch)
 {
  AbstractAudioSource::setPitch(pitch);
- if (_initialised && isBound() && _audioChannel != NULL)
+ if (_initialised && isBound() && _audioChannel != nullptr)
  {
   calculatePitch();
  }
@@ -251,7 +251,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 /*public*/ void QtSoundAudioSource::setReferenceDistance(float referenceDistance)
 {
  AbstractAudioSource::setReferenceDistance(referenceDistance);
- if (_initialised && isBound() && _audioChannel != NULL)
+ if (_initialised && isBound() && _audioChannel != nullptr)
  {
   calculateGain();
  }
@@ -261,7 +261,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 /*public*/ int QtSoundAudioSource::getState()
 {
  bool old = _jsState;
- _jsState = (this->_clip != NULL ? this->_clip->isActive() : false);
+ _jsState = (this->_clip != nullptr ? this->_clip->isActive() : false);
  if (_jsState != old)
  {
   if (_jsState == true)
@@ -280,12 +280,12 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 /*public*/ void QtSoundAudioSource::stateChanged(QAudio::State oldState)
 {
  AbstractAudioSource::stateChanged(oldState);
- if(oldState != QAudio::ActiveState && loop != NULL && loop->isRunning())
+ if(oldState != QAudio::ActiveState && loop != nullptr && loop->isRunning())
  {
   log->debug(QString("play finished: state = %1").arg(oldState));
   loop->quit();
  }
- if (_initialised && isBound() && _audioChannel != NULL)
+ if (_initialised && isBound() && _audioChannel != nullptr)
  {
   calculateGain();
   calculatePan();
@@ -334,15 +334,15 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  }
  if (_initialised && isBound())
  {
-  if(this->_clip != NULL)
+  if(this->_clip != nullptr)
    this->_clip->stop();
-  if (_audioChannel != NULL)
+  if (_audioChannel != nullptr)
   {
    if (log->isDebugEnabled())
    {
     log->debug("Remove QtSoundAudioChannel for Source " + this->getSystemName());
    }
-   _audioChannel = NULL;
+   _audioChannel = nullptr;
   }
  }
  this->setState(STATE_STOPPED);
@@ -357,7 +357,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  }
  if (_initialised && isBound())
  {
-  if (_audioChannel == NULL)
+  if (_audioChannel == nullptr)
   {
    if (log->isDebugEnabled())
    {
@@ -366,7 +366,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 //   _audioChannel = new QtSoundAudioChannel(this);
   }
 
-  if(this->_clip != NULL)
+  if(this->_clip != nullptr)
    this->_clip->loop(this->getNumLoops());
   this->setState(STATE_PLAYING);
 #if 0
@@ -420,7 +420,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  }
  if (_initialised && isBound())
  {
-  if(this->_clip != NULL)
+  if(this->_clip != nullptr)
    this->_clip->setFramePosition(0);
  }
 }
@@ -457,11 +457,11 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 {
  if (_initialised && isBound())
  {
-  if(this->_clip != NULL)
+  if(this->_clip != nullptr)
   {
    this->_clip->stop();
    this->_clip->close();
-   this->_clip = NULL;
+   this->_clip = nullptr;
   }
  }
  if (log->isDebugEnabled())
@@ -493,7 +493,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  float pan = (float) -qSin(angle);
 
  // If playing, update the pan
- if (_audioChannel != NULL) {
+ if (_audioChannel != nullptr) {
      _audioChannel->setPan(pan);
  }
  if (log->isDebugEnabled()) {
@@ -524,7 +524,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  // Default value to start with (used for no distance attenuation)
  float currentGain = 1.0f;
 
- if (InstanceManager::audioManagerInstance()->getActiveAudioFactory()->isDistanceAttenuated())
+ if (((AudioManager*)InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory()->isDistanceAttenuated())
  {
   // Calculate gain of this source using clamped inverse distance
   // attenuation model
@@ -564,7 +564,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  currentGain *= this->getGain() * _activeAudioListener->getGain() * this->getFadeGain();
 
  // If playing, update the gain
- if (_audioChannel != NULL)
+ if (_audioChannel != nullptr)
  {
   _audioChannel->setGain(currentGain);
   if (log->isDebugEnabled())
@@ -581,7 +581,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
 /*protected*/ void QtSoundAudioSource::calculatePitch()
 {
  // If playing, update the pitch
- if (_audioChannel != NULL) {
+ if (_audioChannel != nullptr) {
      _audioChannel->setPitch(this->getPitch());
  }
 }
@@ -633,9 +633,9 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  */
 /*public*/ QtSoundAudioChannel::QtSoundAudioChannel(QtSoundAudioSource* audio)
 {
- _gainControl = NULL;
- _panControl = NULL;
- _sampleRateControl = NULL;
+ _gainControl = nullptr;
+ _panControl = nullptr;
+ _sampleRateControl = nullptr;
  _initialSampleRate = 0.0;
  _initialGain = 0.0;
  log = new Logger("QtSoundAudioCHannel");
@@ -656,7 +656,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
   }
  } else {
      log->info("Gain control is not supported");
-     this->_gainControl = NULL;
+     this->_gainControl = nullptr;
  }
 
  // Check if changing pan is supported
@@ -668,7 +668,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
      }
  } else {
      log->info("Pan control is not supported");
-     this->_panControl = NULL;
+     this->_panControl = nullptr;
  }
 
  // Check if changing pitch is supported
@@ -682,7 +682,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
      }
  } else {
      log->info("Sample Rate control is not supported");
-     this->_sampleRateControl = NULL;
+     this->_sampleRateControl = nullptr;
      this->_initialSampleRate = 0;
  }
     }
@@ -694,7 +694,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  */
 /*protected*/ void QtSoundAudioChannel::setGain(float gain)
 {
- if (this->_gainControl != NULL)
+ if (this->_gainControl != nullptr)
  {
   // Ensure gain is within limits
   if (gain <= 0.0) {
@@ -724,7 +724,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  */
 /*protected*/ void QtSoundAudioChannel::setPan(float pan)
 {
- if (this->_panControl != NULL)
+ if (this->_panControl != nullptr)
  {
   this->_panControl->setValue(pan);
  }
@@ -743,7 +743,7 @@ bool QtSoundAudioSource::bindAudioBuffer(AudioBuffer* audioBuffer)
  */
 /*protected*/ void QtSoundAudioChannel::setPitch(float pitch)
 {
- if (this->_sampleRateControl != NULL)
+ if (this->_sampleRateControl != nullptr)
  {
   this->_sampleRateControl->setValue(pitch * this->_initialSampleRate);
  }

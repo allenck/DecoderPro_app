@@ -6,6 +6,7 @@
 #include "exceptions.h"
 #include "QTextStream"
 #include "profileproperties.h"
+#include "loggerfactory.h"
 
 /**
  * A JMRI application profile. Profiles allow a JMRI application to load
@@ -73,24 +74,23 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SHARED_PROPERTIES, ("profile/profile.pro
   throw IllegalArgumentException();
  if (path->getName()!=(id))
  {
-  throw new IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
   Logger::error(id + " " + path->getName() + " do not match");
-
+  throw new IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
  }
  if (( File(path, *_PROPERTIES)).canRead())
  {
-  throw new IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
   Logger::error("A profile already exists at " + path->toString());
+  throw new IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
  }
  if (Profile::containsProfile(path))
  {
-  throw new IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
   Logger::error(path->toString() + " contains a profile in a subdirectory.");
+  throw new IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
  }
  if (Profile::inProfile(path))
  {
-  throw new IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
   Logger::error(path->toString() + " is within an existing profile.");
+  throw new IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
  }
  this->name = name;
  this->id = id + "." + ProfileManager::createUniqueId();
@@ -334,14 +334,16 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
  */
 /*public*/ /*static*/ bool Profile::inProfile(File* path)
 {
- if (path->getParentFile() != NULL)
+ if (path->getParentFile() != nullptr)
  {
-        if (Profile::isProfile(path->getParentFile())) {
-            return true;
-        }
-        return Profile::inProfile(path->getParentFile());
-    }
-    return false;
+  if (Profile::isProfile(path->getParentFile()))
+  {
+   log->error(tr("path %1 is in %2").arg(path->getPath()).arg(path->getParentFile()->getPath()));
+   return true;
+  }
+  return Profile::inProfile(path->getParentFile());
+ }
+ return false;
 }
 
 /**
@@ -356,15 +358,17 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
  if (path->isDirectory())
  {
   // Version 2
-  if ((new File(path, *_SHARED_PROPERTIES))->canRead())
+  if ((new File(path, *_SHARED_PROPERTIES))->canRead()) // i.e: "profile/profile.properties"
   {
    return true;
   }
   // Version 1
-  if ((new File(path, *_PROPERTIES))->canRead())
+  if ((new File(path, *_PROPERTIES))->canRead()) // i.e: "profile.properties"
   {
    return true;
   }
  }
  return false;
 }
+
+/*private*/ /*static*/ Logger* Profile::log =  LoggerFactory::getLogger("Profile");

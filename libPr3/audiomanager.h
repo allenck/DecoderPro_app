@@ -169,7 +169,7 @@ public:
         /**
          * Perform any clean-up operations
          */
-        virtual void cleanUp() {}
+        virtual void cleanup() {}
 
 signals:
     

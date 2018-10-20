@@ -25,6 +25,8 @@
 #include "sql.h"
 #include "locoio_global.h"
 #include "addressvalidator.h"
+#include "booster7widget.h"
+#include "boosterbuttons.h"
 
 namespace Ui {
 class LocoIOFrame;
@@ -65,6 +67,7 @@ private:
    // int unitAddr;
    // int unitSubAddr;
     LocoIOAddress * _address;
+    LocoIOAddress * _outAddress;
     Logger* log;
     QStringList* msg;
     bool bDirty;
@@ -108,10 +111,18 @@ private:
     QAction* actCapture;
     QAction* actSetDefaults;
     QAction* actAllowEdits;
+    //QAction* actChangeAddress;
     bool bAllowEdits;
+    void restoreOutputAddr();
+    void restoreOutputSubAddr();
+    void restoreInputAddr();
+    void restoreInputSubAddr();
+    void checkInAddressChanged(qint16 unit, qint16 subUnit);
+    OutPortDefinitionWidget* opdw;
 
 private slots:
  void on_btnProbe_clicked();
+ void on_btnRead_clicked();
  void on_btnReadAll_clicked();
  void onAddrChanged(const QString & position);
  void onPropertyChange(PropertyChangeEvent*);
@@ -124,20 +135,20 @@ private slots:
  void on_btnSave_clicked();
  void on_btnRestore_clicked();
  //void on_tableWidget_cellClicked(int row, int column);
- void onConfigRead(int cfg);
-//    void on_edUnitAddr_editingFinished();
-//    void on_edSubAddr_editingFinished();
+ void onConfigRead(int cfg, LocoIOData*);
+ void on_edAddrUnitOut_editingFinished();
+ void on_edAddrUnitIn_editingFinished();
  void on_chkExtra1_toggled(bool bChecked);
  void on_chkExtra2_toggled(bool bChecked);
- void on_chkHex_toggled(bool bChecked);
+ void displayAddresses(bool bChecked);
  void on_chkAllowEdit_toggled(bool bChecked);
  //void on_chkServoIO_toggled(bool bChecked);
  void on_chk4PosServo_toggled(bool bChecked);
  void onProbeCompleted(QList<LocoIOAddress*> list);
  void on_chkSpecialPorts_toggled(bool bChecked);
 // void on_cbAddr_currentIndexChanged(int index);
- void on_edNewAddr_editTextChanged(QString text);
- void on_edNewAddr_editingFinished();
+// void on_edNewAddr_editTextChanged(QString text);
+// void on_edNewAddr_editingFinished();
  void onIOComplete(QList<int>* vals);
  void onIOCompleteX2(QList<int>* vals);
  void onIOCompleteServo();

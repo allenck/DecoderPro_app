@@ -87,6 +87,8 @@ public:
  /*public*/ QString getClassDescription();
  /*public*/ int getPreferencesSize(QString strClass);
  /*public*/ /*final*/ void readUserPreferences();
+ /*public*/ void initialize();
+
 
 private:
  /*private*/ void readComboBoxLastSelections();

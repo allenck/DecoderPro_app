@@ -716,7 +716,7 @@ void SensorIcon::updateSensor()
  }
  return _editor->getFlag(LayoutEditor::OPTION_CONTROLS, isControlling());
 }
-#if 1 // TODO:
+
 //@Override
 /*public*/ void SensorIcon::doMousePressed(QGraphicsSceneMouseEvent* e)
 {
@@ -782,7 +782,7 @@ void SensorIcon::updateSensor()
  //super.doMouseClicked(e);
  PositionableIcon::doMouseClicked(e);
 }
-#endif
+
 //@Override
 /*public*/ void SensorIcon::dispose() {
     if (namedSensor != NULL) {

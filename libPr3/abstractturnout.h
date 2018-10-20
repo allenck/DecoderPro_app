@@ -18,6 +18,12 @@ class LIBPR3SHARED_EXPORT AbstractTurnout : public Turnout
 public:
  explicit AbstractTurnout(QObject *parent = 0);
  /*public*/ int getKnownState();
+ /*public*/ QString describeState(int state);
+
+     //@Override
+     /*public*/ QString getBeanType() {
+         return tr("Turnout");
+     }
     /**
      * Public access to changing turnout state. Sets the commanded state and,
      * if appropriate starts a TurnoutOperator to do its thing. If there is no
@@ -70,6 +76,8 @@ public:
     /*public*/ void setFeedbackMode(int mode) throw(IllegalArgumentException);
     /*public*/ int getFeedbackMode();
     /*public*/ QString getFeedbackModeName();
+    /*public*/ void requestUpdateFromLayout();
+
     /*public*/ void setInverted(bool inverted);
     /**
      * Get the turnout inverted state. If true, commands sent to the layout are

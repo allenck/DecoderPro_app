@@ -25,7 +25,7 @@ public:
      * @throws NullPointerException if the name is null.
      * @throws IllegalArgumentException if the name is empty String.
      */
-    /*public*/ virtual QObject* put(QString name, QObject* value) {return NULL;}
+    /*public*/ virtual QObject* put(QString /*name*/, QObject* /*value*/) {return NULL;}
 
     /**
      * Adds all the mappings in a given <code>Map</code> to this <code>Bindings</code>.
@@ -53,7 +53,7 @@ public:
      * @throws ClassCastException if key is not String
      * @throws IllegalArgumentException if key is empty String
      */
-    /*public*/ virtual bool containsKey(QObject* key) {return false;}
+    /*public*/ virtual bool containsKey(QObject* /*key*/) {return false;}
 
     /**
      * Returns the value to which this map maps the specified key.  Returns
@@ -76,7 +76,7 @@ public:
      * @throws ClassCastException if key is not String
      * @throws IllegalArgumentException if key is empty String
      */
-    /*public*/ virtual QObject* get(QObject* key)  {return NULL;}
+    /*public*/ virtual QObject* get(QObject* /*key*/)  {return NULL;}
 
     /**
      * Removes the mapping for this key from this map if it is present
@@ -100,7 +100,7 @@ public:
      * @throws ClassCastException if key is not String
      * @throws IllegalArgumentException if key is empty String
      */
-    /*public*/ virtual QObject* remove(QObject* key)  {return NULL;}
+    /*public*/ virtual QObject* remove(QObject* /*key*/)  {return NULL;}
 };
 
 #endif // BINDINGS_H

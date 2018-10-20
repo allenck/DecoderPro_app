@@ -238,8 +238,8 @@ bool LocoNetMessage::checkParity()
  */
 /*public*/ bool LocoNetMessage::equals(QObject* o)
 {
- if (o == NULL) return false;
- if (this == NULL) return false;
+ if (o == nullptr) return false;
+ if (this == nullptr) return false;
  //if (! (o instanceof LocoNetMessage)) return false;
  if(o->objectName() != "LocoNetMessage") return false;
  LocoNetMessage* m = (LocoNetMessage*) o;

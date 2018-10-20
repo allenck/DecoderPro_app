@@ -11,12 +11,9 @@ public:
     Q_INVOKABLE SensorTableTabAction(QString s, QObject* parent);
     ~SensorTableTabAction() {}
     Q_INVOKABLE SensorTableTabAction(const SensorTableTabAction& that) : AbstractTableTabAction(that.text(), that.parent()) {}
+    /*public*/ QString getTableClass();
 
 private:
-//    QWidget* getPane();
-//    BeanTableFrame* currFrame();
-//    void setCurrFrame(BeanTableFrame *frame);
-//    static BeanTableFrame* frame;
 
 
 protected:

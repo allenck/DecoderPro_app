@@ -132,7 +132,7 @@ void PanelPro::handleQuit()
  Apps::setStartupInfo("PanelPro");
 
  setConfigFilename("PanelProConfig2.xml", args);
- JmriJFrame* f = NULL; //new JmriJFrame("PanelPro");
+ JmriJFrame* f = nullptr; //new JmriJFrame("PanelPro");
  //f->setVisible(false);
  //createFrame(new PanelPro(f), f);
  new PanelPro(f);

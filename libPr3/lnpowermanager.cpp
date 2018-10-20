@@ -53,8 +53,8 @@ int LnPowerManager::getPower() { return power;}
 
 // to free resources when no longer used
 void LnPowerManager::dispose() {
-    if (tc!=NULL) tc->removeLocoNetListener(~0, (LocoNetListener*)this);
-    tc = NULL;
+    if (tc!=nullptr) tc->removeLocoNetListener(~0, (LocoNetListener*)this);
+    tc = nullptr;
 }
 
 

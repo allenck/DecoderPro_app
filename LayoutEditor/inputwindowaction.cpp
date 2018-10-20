@@ -100,7 +100,7 @@ IWWindowListener::IWWindowListener(InputWindowAction *parent)
  this->parent = parent;
 }
 
-void IWWindowListener::windowClosing(QCloseEvent *e)
+void IWWindowListener::windowClosing(QCloseEvent */*e*/)
 {
  //parent->pref->setSaveWindowLocation(QString(parent->metaObject()->className()),true);
  parent->pref->setWindowLocation(QString(parent->metaObject()->className()), parent->f->pos());

@@ -1,5 +1,6 @@
 #include "lnturnout.h"
 #include "turnout.h"
+#include "loggerfactory.h"
 
 //LnTurnout::LnTurnout(QObject *parent) :
 //    AbstractTurnout(parent)
@@ -51,7 +52,7 @@ LnTurnout::LnTurnout(QString prefix, int number, LnTrafficController* controller
 {
  // a human-readable turnout number must be specified!
  //super(prefix+"T"+number);  // can't use prefix here, as still in construction
- log.debug(QString("new turnout %1").arg(number));
+ log->debug(QString("new turnout %1").arg(number));
  modeNames.clear();
  modeValues.clear();
  pending = false;
@@ -66,7 +67,7 @@ LnTurnout::LnTurnout(QString prefix, int number, LnTrafficController* controller
   connect(this->controller, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
  }
  else
-  log.warn("No LocoNet connection, turnout won't update");
+  log->warn("No LocoNet connection, turnout won't update");
  // update feedback modes
  _validFeedbackTypes |= Turnout::MONITORING|Turnout::EXACT|Turnout::INDIRECT;
  _activeFeedbackType = Turnout::MONITORING;
@@ -86,7 +87,7 @@ LnTurnout::LnTurnout(QString prefix, int number, LnTrafficController* controller
 //                    justification="Only used during creation of 1st turnout")
  /*private*/ void LnTurnout::initFeedbackModes() {
     if (_validFeedbackNames.length() != _validFeedbackModes.length())
-        log.error("int and string feedback arrays different length");
+        log->error("int and string feedback arrays different length");
     QStringList tempModeNames; // = new String[_validFeedbackNames.length+3];
     QList<int> tempModeValues;// = new int[_validFeedbackNames.length+3];
     for (int i = 0; i<_validFeedbackNames.length(); i++)
@@ -122,7 +123,7 @@ LnTurnout::LnTurnout(QString prefix, int number, LnTrafficController* controller
                 try {
                     sendSetOffMessage(state);
                 } catch (Exception e) {
-                    log.error("Exception occured while sending delayed off to turnout: "+e);
+                    log->error("Exception occured while sending delayed off to turnout: "+e);
                 }
             }
          }, METERINTERVAL);
@@ -144,7 +145,7 @@ LnTurnoutTimerTask::LnTurnoutTimerTask(int state, LnTurnout* turnout)
     try {
         turnout->sendSetOffMessage(state);
     } catch (Exception e) {
-        turnout->log.error("Exception occured while sending delayed off to turnout: "+e.getMessage());
+        turnout->log->error("Exception occured while sending delayed off to turnout: "+e.getMessage());
     }
 }
 void LnTurnout::meterTimerTimeout()
@@ -175,7 +176,7 @@ void LnTurnout::sendOpcSwReqMessage(int state, bool on)
   hiadr |= 0x20;
   // thrown exception if also THROWN
   if ((state & Turnout::THROWN) != 0)
-      log.error("LocoNet turnout logic can't handle both THROWN and CLOSED yet");
+      log->error("LocoNet turnout logic can't handle both THROWN and CLOSED yet");
  }
 
  // load On/Off
@@ -212,7 +213,7 @@ void LnTurnout::sendSetOffMessage(int state) {
          int sw1 = l->getElement(1);
          int sw2 = l->getElement(2);
          if (myAddress(sw1, sw2)) {
-             if (log.isDebugEnabled()) log.debug("SW_REQ received with valid address");
+             if (log->isDebugEnabled()) log->debug("SW_REQ received with valid address");
                  //sort out states
                  int state;
                  if ((sw2 & LnConstants::OPC_SW_REQ_DIR) != 0){
@@ -231,7 +232,7 @@ void LnTurnout::sendSetOffMessage(int state) {
          int sw1 = l->getElement(1);
          int sw2 = l->getElement(2);
          if (myAddress(sw1, sw2)) {
-             if (log.isDebugEnabled()) log.debug("SW_REP received with valid address");
+             if (log->isDebugEnabled()) log->debug("SW_REP received with valid address");
              // see if its a turnout state report
              if ((sw2 & LnConstants::OPC_SW_REP_INPUTS)==0) {
                  // LnConstants.OPC_SW_REP_INPUTS not set, these report outputs
@@ -310,8 +311,8 @@ void LnTurnout::sendSetOffMessage(int state) {
  }
 
  /*protected*/ void LnTurnout::turnoutPushbuttonLockout(bool _pushButtonLockout){
-    if (log.isDebugEnabled())
-        log.debug(QString("Send command to %1 Pushbutton LT%2").arg(_pushButtonLockout ? "Lock" : "Unlock").arg(_number));
+    if (log->isDebugEnabled())
+        log->debug(QString("Send command to %1 Pushbutton LT%2").arg(_pushButtonLockout ? "Lock" : "Unlock").arg(_number));
  }
 
  /*public*/ void LnTurnout::dispose() {
@@ -343,6 +344,4 @@ void LnTurnout::sendSetOffMessage(int state) {
      }
 
  }
-
-
-     //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LnTurnout.class.getName());
+/*private*/ /*final*/ /*static*/ Logger* LnTurnout::log = LoggerFactory::getLogger("LnTurnout");

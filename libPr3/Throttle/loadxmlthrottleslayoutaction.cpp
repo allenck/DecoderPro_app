@@ -8,6 +8,7 @@
 #include "joptionpane.h"
 #include "xmlfile.h"
 #include "throttleslistpanel.h"
+#include "file.h"
 
 /**
  * Load throttles from XML

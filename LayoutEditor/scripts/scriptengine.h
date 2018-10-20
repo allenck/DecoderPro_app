@@ -97,7 +97,7 @@ public:
      * implementations.
      * @throws NullPointerException if either argument is null.
      */
-    /*public*/ virtual QObject* eval(QString script, ScriptContext* context) {return NULL;} //throws ScriptException;
+    /*public*/ virtual QObject* eval(QString /*script*/, ScriptContext* /*context*/) {return NULL;} //throws ScriptException;
 
 
     /**
@@ -113,7 +113,7 @@ public:
      * @throws ScriptException if an error occurs in script.
      * @throws NullPointerException if either argument is null.
      */
-    /*public*/ virtual QObject* eval(Reader* reader , ScriptContext* context){return NULL;} //throws ScriptException;
+    /*public*/ virtual QObject* eval(Reader* /*reader*/ , ScriptContext* /*context*/){return NULL;} //throws ScriptException;
 
     /**
      * Executes the specified script.  The default <code>ScriptContext</code> for the <code>ScriptEngine</code>
@@ -126,7 +126,7 @@ public:
      * @throws ScriptException if error occurs in script.
      * @throws NullPointerException if the argument is null.
      */
-    /*public*/ virtual QObject* eval(QString script) {return NULL;} //throws ScriptException;
+    /*public*/ virtual QObject* eval(QString /*script*/) {return NULL;} //throws ScriptException;
 
     /**
      * Same as <code>eval(String)</code> except that the source of the script is
@@ -139,7 +139,7 @@ public:
      * @throws ScriptException if an error occurs in script.
      * @throws NullPointerException if the argument is null.
      */
-    /*public*/ virtual QObject* eval(Reader* reader) {return NULL;} //throws ScriptException;
+    /*public*/ virtual QObject* eval(Reader* /*reader*/) {return NULL;} //throws ScriptException;
 
     /**
      * Executes the script using the <code>Bindings</code> argument as the <code>ENGINE_SCOPE</code>
@@ -158,7 +158,7 @@ public:
      * @throws ScriptException if an error occurs in script.
      * @throws NullPointerException if either argument is null.
      */
-    /*public*/ virtual QObject* eval(QString script, Bindings* n) {return NULL;} //throws ScriptException;
+    /*public*/ virtual QObject* eval(QString /*script*/, Bindings* /*n*/) {return NULL;} //throws ScriptException;
 
     /**
      * Same as <code>eval(String, Bindings)</code> except that the source of the script
@@ -172,7 +172,7 @@ public:
      * @throws ScriptException if an error occurs.
      * @throws NullPointerException if either argument is null.
      */
-    /*public*/ virtual QObject* eval(Reader* reader , Bindings* n) {return NULL;} //throws ScriptException;
+    /*public*/ virtual QObject* eval(Reader* /*reader*/ , Bindings* /*n*/) {return NULL;} //throws ScriptException;
 
 
 
@@ -188,7 +188,7 @@ public:
      * @throws NullPointerException if key is null.
      * @throws IllegalArgumentException if key is empty.
      */
-    /*public*/ virtual void put(QString key, QObject* value) {}
+    /*public*/ virtual void put(QString /*key*/, QObject* /*value*/) {}
 
 
     /**
@@ -203,7 +203,7 @@ public:
      * @throws NullPointerException if key is null.
      * @throws IllegalArgumentException if key is empty.
      */
-    /*public*/ virtual QObject* get(QString key) {return NULL;}
+    /*public*/ virtual QObject* get(QString /*key*/) {return NULL;}
 
 
     /**
@@ -235,7 +235,7 @@ public:
      * @throws IllegalArgumentException if specified scope is invalid
      *
      */
-    /*public*/ virtual Bindings* getBindings(int scope) { return NULL;}
+    /*public*/ virtual Bindings* getBindings(int /*scope*/) { return NULL;}
 
     /**
      * Sets a scope of named values to be used by scripts.  The possible scopes are:
@@ -263,7 +263,7 @@ public:
      * @throws NullPointerException if the bindings is null and the scope is
      * <code>ScriptContext.ENGINE_SCOPE</code>
      */
-    /*public*/ virtual void setBindings(Bindings* bindings, int scope) {}
+    /*public*/ virtual void setBindings(Bindings* /*bindings*/, int /*scope*/) {}
 
 
     /**
@@ -290,7 +290,7 @@ public:
      * the <code>ScriptEngine</code>.
      * @throws NullPointerException if context is null.
      */
-    /*public*/ virtual void setContext(ScriptContext* context) {}
+    /*public*/ virtual void setContext(ScriptContext* /*context*/) {}
 
     /**
      * Returns a <code>ScriptEngineFactory</code> for the class to which this <code>ScriptEngine</code> belongs.

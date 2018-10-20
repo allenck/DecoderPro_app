@@ -57,6 +57,7 @@
 #include "loconetconsistmanager.h"
 #include "catalogtreemodel.h"
 #include "throttleframemanager.h"
+#include "jmriuserpreferencesmanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -160,7 +161,6 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   ProxyLightManager* lm = new ProxyLightManager();
   InstanceManager::store(lm,type);
   return lm;
-
  }
 
  if (type == "LogixManager") {
@@ -170,7 +170,9 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
  }
 
  if (type == "MemoryManager") {
-     return new DefaultMemoryManager();
+    DefaultMemoryManager* mm = new DefaultMemoryManager();
+    InstanceManager::store(mm,type);
+    return mm;
  }
 
  if (type == "OBlockManager")
@@ -189,7 +191,9 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
 
  if (type == "ProgrammerManager")
  {
-  return new DeferringProgrammerManager();
+  DeferringProgrammerManager* dpm = new DeferringProgrammerManager();
+  InstanceManager::store(dpm,type);
+  return dpm;
  }
 
  if (type == "ReporterManager")
@@ -267,9 +271,9 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
 
  if (type == "Timebase")
  {
-  Timebase* timebase = (Timebase*)new SimpleTimebase(/*this*/);
-  if (InstanceManager::getNullableDefault("ConfigureManager") != NULL)
-   ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(timebase, Manager::TIMEBASE);
+  Timebase* timebase = static_cast<Timebase*>(new SimpleTimebase(/*this*/));
+  if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr)
+   static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(timebase, Manager::TIMEBASE);
   return timebase;
 //        return new SimpleTimebase();
  }
@@ -285,11 +289,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
  {
   ProxyTurnoutManager* tm = new ProxyTurnoutManager();
   InstanceManager::store(tm, type);
+  return tm;
  }
 
  if (type == "VSDecoderManager")
  {
-  return (QObject*)VSDecoderManager::instance();
+  return VSDecoderManager::instance();
  }
 
  if(type == "ConfigureManager")
@@ -460,6 +465,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
      ThrottleFrameManager* tfm = new ThrottleFrameManager();
      InstanceManager::store(tfm, type);
      return tfm;
+ }
+
+ if (type == "UserPreferencesManager") {
+     JmriUserPreferencesManager* jupm = new JmriUserPreferencesManager();
+     jupm->initialize();  // called instead of Java InstanceManagerAutoInitialize
+     InstanceManager::store(jupm, type);
+     return jupm;
  }
 
 

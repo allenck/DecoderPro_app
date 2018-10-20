@@ -16,7 +16,7 @@ LocoNetMenuStartupAction::LocoNetMenuStartupAction(QString title, QObject* paren
 void LocoNetMenuStartupAction::actionPerformed(ActionEvent *)
 {
 
- if(LocoNetMenu::instance() != NULL)
+ if(LocoNetMenu::instance() != nullptr)
  {
   foreach(QAction* act, LocoNetMenu::instance()->actions())
   {

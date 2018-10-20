@@ -6,6 +6,8 @@
 #include "preferences.h"
 #include "profileutils.h"
 #include "class.h"
+#include "configuremanager.h"
+
 /**
  * Records and executes a desired set of defaults for the JMRI InstanceManager
  * and ProxyManagers

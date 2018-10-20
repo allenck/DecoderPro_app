@@ -409,7 +409,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
  table->setItemDelegateForColumn(BeanTableDataModel::DELETECOL, new ItemDelegate(items, this));
 }
 
-/*protected*/ void LogixTableModel::configValueColumn(JTable *table)
+/*protected*/ void LogixTableModel::configValueColumn(JTable */*table*/)
 {
  // do nothing but override BeanTableDataModel::configValueColumn
 }
@@ -1490,7 +1490,7 @@ void LogixTableAction::showSaveReminder() {
  AbstractTableAction::setMessagePreferencesDetails();
 }
 
-void LogixTableAction::deletePressed(ActionEvent *e)
+void LogixTableAction::deletePressed(ActionEvent */*e*/)
 {
  deletePressed("");
 }
@@ -1801,7 +1801,7 @@ void LogixTableAction::variableItemStateChanged(int index)
 
 
 
-LTAEditActionFrameWindowListener::LTAEditActionFrameWindowListener(LogixTableAction * zlta)
+LTAEditActionFrameWindowListener::LTAEditActionFrameWindowListener(LogixTableAction * /*zlta*/)
 {
  this->lta = lta;
 }
@@ -2584,7 +2584,7 @@ ItemDelegate::ItemDelegate(QStringList items, QObject *parent)
 }
 
 
-QWidget* ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & index ) const
+QWidget* ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & /*index*/ ) const
 {
   QComboBox* editor = new QComboBox(parent);
   editor->addItems(Items);

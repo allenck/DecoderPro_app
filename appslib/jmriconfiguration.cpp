@@ -117,8 +117,10 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
  QDomElement oldFragment = XMLUtil::findElement(root, elementName, _namespace);
  if (oldFragment != QDomElement())
  {
-  root.removeChild(oldFragment);
+  //root.removeChild(oldFragment);
+  root.replaceChild(fragment,oldFragment);
  }
+#if 1
  QDomElement ref;// = NULL;
  QDomNodeList list = root.childNodes();
  for (int i = 0; i < list.length(); i++)
@@ -139,8 +141,9 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
       break;
   }
  }
+#endif
  //root.insertBefore(root.getOwnerDocument().importNode(fragment, true), ref);
- root.insertAfter(root.ownerDocument().importNode(fragment,true), ref);
+ //root.insertAfter(root.ownerDocument().importNode(fragment,true), ref);
  try
  {
   this->backup(shared);

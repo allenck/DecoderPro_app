@@ -11,7 +11,7 @@ class LOCOIOSHARED_EXPORT Sql : public QObject
 {
  Q_OBJECT
 public:
- explicit Sql(LocoIOData* data, QObject *parent = 0);
+ explicit Sql(LocoIOData* data, QObject *parent = nullptr);
  void setData(LocoIOData* data);
  bool isOpen();
  bool isValid();

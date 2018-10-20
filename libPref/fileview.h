@@ -15,11 +15,11 @@ signals:
 
 public slots:
 private:
-    /*private*/ QString getName(File* f);
-    /*private*/ QString getDescription(File* f);
-    /*private*/ QString getTypeDescription(File* f);
-    /*private*/ ImageIcon* getIcon(File* f);
-    /*private*/ bool isTraversable(File* f) ;
+    /*private*/ virtual QString getName(File* f);
+    /*private*/ virtual QString getDescription(File* f);
+    /*private*/ virtual QString getTypeDescription(File* f);
+    /*private*/ virtual ImageIcon* getIcon(File* f);
+    /*private*/ virtual bool isTraversable(File* f) ;
 
 };
 

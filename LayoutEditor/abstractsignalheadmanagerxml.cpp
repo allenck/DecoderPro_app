@@ -194,7 +194,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
  AbstractSignalHeadManager* pManager = new AbstractSignalHeadManager();
  InstanceManager::setSignalHeadManager((SignalHeadManager*)pManager);
  // register new one for configuration
- ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerConfig(pManager, Manager::SIGNALHEADS);
+ static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(pManager, Manager::SIGNALHEADS);
 }
 
 /*public*/ int AbstractSignalHeadManagerXml::loadOrder()

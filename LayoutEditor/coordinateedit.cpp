@@ -327,7 +327,7 @@ void ScaleEditAction::on_getScaleEditAction_triggered()
 //            }
 //        };
 }
-TextEditAction::TextEditAction(Positionable *pos, QString title, QObject *parent)
+TextEditAction::TextEditAction(Positionable *pos, QString title, QObject *parent) : AbstractAction(parent)
 {
  this->pos = pos;
  this->title = title;
@@ -1060,7 +1060,7 @@ void CoordinateEdit::on_editTextCancelButton_clicked()
     textX->setText(tr("Scale percentage: %1").arg(oldD*100));
     textX->setVisible(true);
 
-    SpinnerNumberModel* model = new SpinnerNumberModel(100.0,1.0,5000.0,1.0);
+    //SpinnerNumberModel* model = new SpinnerNumberModel(100.0,1.0,5000.0,1.0);
     spinX = new QSpinBox(/*model*/);
     spinX->setValue(100.0);
     spinX->setMaximum(5000);

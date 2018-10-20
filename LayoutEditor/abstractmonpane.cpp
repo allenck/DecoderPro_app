@@ -52,22 +52,18 @@ AbstractMonPane::~AbstractMonPane()
  p->setSimplePreferenceState(alwaysOnTopCheck, alwaysOnTopCheckBox->isChecked());
  p->setSimplePreferenceState(autoScrollCheck, autoScrollCheckBox->isChecked());
  p->setProperty(filterFieldCheck, filterFieldCheck, filterField->text());
+ //JmriPanel::dispose();
  JmriPanel::dispose();
 }
 // you'll also have to add the message(Foo) members to handle info to be logged.
 // these should call nextLine(String line, String raw) with their updates
 
 //@SuppressWarnings("LeakingThisInConstructor")
-/*public*/ AbstractMonPane::AbstractMonPane(QWidget *parent) : JmriPanel(parent)
+/*public*/ AbstractMonPane::AbstractMonPane(QWidget *parent) : JmriPanel(parent)//JmriPanel(parent)
 {
  //super();
  self = this;
  setVisible(false);
- rawDataCheck = QString(this->metaObject()->className())+".RawData";
- timeStampCheck = QString(this->metaObject()->className())+".TimeStamp";
-  alwaysOnTopCheck = QString(this->metaObject()->className())+".alwaysOnTop";
- autoScrollCheck = QString(this->metaObject()->className())+".AutoScroll";
- filterFieldCheck = QString(this->metaObject()->className())+".FilterField";
  // member declarations
  clearButton = new QPushButton();
  freezeButton = new JToggleButton();
@@ -93,10 +89,10 @@ AbstractMonPane::~AbstractMonPane()
  newline = "\n";
 #endif
  log = new Logger("AbstractMonFrame");
- logStream = NULL;
+ logStream = nullptr;
  df = QString("HH:mm:ss.zzz");
  linesBuffer =  QString();
- data = NULL;
+ data = nullptr;
  logFileChooser = new QFileDialog(this, tr("Select Log File"), FileUtil::getUserFilesPath());
 }
 
@@ -104,6 +100,12 @@ AbstractMonPane::~AbstractMonPane()
 /*public*/ void AbstractMonPane::initComponents() throw (Exception)
 {
  p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
+ rawDataCheck = QString(getClassName())+".RawData";
+ timeStampCheck = QString(getClassName())+".TimeStamp";
+ alwaysOnTopCheck = QString(getClassName())+".alwaysOnTop";
+ autoScrollCheck = QString(getClassName())+".AutoScroll";
+ filterFieldCheck = QString(getClassName())+".FilterField";
+
  // the following code sets the frame's initial state
 
  clearButton->setText("Clear screen");
@@ -204,10 +206,12 @@ AbstractMonPane::~AbstractMonPane()
  rawCheckBox->setToolTip("If checked, show the raw traffic in hex");
  rawCheckBox->setChecked(p->getSimplePreferenceState(rawDataCheck));
 
+
  timeCheckBox->setText("Show timestamps");
  timeCheckBox->setVisible(true);
  timeCheckBox->setToolTip("If checked, show timestamps before each message");
  timeCheckBox->setChecked(p->getSimplePreferenceState(timeStampCheck));
+ connect(timeCheckBox, SIGNAL(toggled(bool)), this, SLOT(OnTimestampCheck(bool)));
 
  alwaysOnTopCheckBox->setText("Window always on Top");
  alwaysOnTopCheckBox->setVisible(true);
@@ -320,15 +324,19 @@ AbstractMonPane::~AbstractMonPane()
 //    });
  connect(autoScrollCheckBox, SIGNAL(toggled(bool)), this, SLOT(OnAutoScrollCheckBox(bool)));
 
+ connect(rawCheckBox,SIGNAL(toggled(bool)), this,SLOT(OnRawCheckBox(bool)));
+
   // set file chooser to a default
 //  logFileChooser->setSelectedFile(new QFile("monitorLog.txt"));
 
   // connect to data source
  init();
 }
+
 void AbstractMonPane::OnAutoScrollCheckBox(bool /*bChecked*/)
 {
  //doAutoScroll(monTextPane, autoScrollCheckBox->isChecked());
+ p->setSimplePreferenceState(autoScrollCheck, autoScrollCheckBox->isChecked());
 }
 
 void AbstractMonPane::OnAlwaysOnTopCheckBox(bool bChecked)
@@ -344,6 +352,7 @@ void AbstractMonPane::OnAlwaysOnTopCheckBox(bool bChecked)
   this->setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
   this->show();
  }
+ p->setSimplePreferenceState(alwaysOnTopCheck, alwaysOnTopCheckBox->isChecked());
 }
 
 /**
@@ -402,7 +411,7 @@ void AbstractMonPane::OnAlwaysOnTopCheckBox(bool bChecked)
  }
 #if 1
  // if requested, log to a file.
- if (logStream != NULL)
+ if (logStream != nullptr)
  {
   /*synchronized (logStream)*/
   {
@@ -541,7 +550,7 @@ void AMPRunnable::run()
 /*public*/ /*synchronized*/ void AbstractMonPane::startLogButtonActionPerformed(ActionEvent* /*e*/) {
     // start logging by creating the stream
 #if 0
-    if ( logStream==NULL) {  // successive clicks don't restart the file
+    if ( logStream==nullptr) {  // successive clicks don't restart the file
         // start logging
         try {
             logStream = new PrintStream (new FileOutputStream(logFileChooser.getSelectedFile()));
@@ -550,7 +559,7 @@ void AMPRunnable::run()
         }
     }
 #endif
-    if((data == NULL) || (!data->open(QFile::WriteOnly | QFile::Truncate)))
+    if((data == nullptr) || (!data->open(QFile::WriteOnly | QFile::Truncate)))
      log->error(tr("File open failed ")+ data->fileName());
     stopLogButton->setEnabled(true);
 }
@@ -559,7 +568,7 @@ void AMPRunnable::run()
 {
  // stop logging by removing the stream
 #if 1
- if (logStream!=NULL)
+ if (logStream!=nullptr)
  {
   /*synchronized (logStream) */
   {
@@ -567,7 +576,7 @@ void AMPRunnable::run()
    delete logStream;
    data->close();
   }
-  logStream = NULL;
+  logStream = nullptr;
   stopLogButton->setEnabled(false);
  }
 #endif
@@ -593,7 +602,7 @@ void AMPRunnable::run()
  if(logFileChooser->exec() ==  QDialog::Accepted)
  {
   setCursor(Qt::ArrowCursor);
-  bool loggingNow = (logStream != NULL);
+  bool loggingNow = (logStream != nullptr);
   stopLogButtonActionPerformed(e);  // stop before changing file
   data = new QFile(logFileChooser->selectedFiles().at(0));
   // if we were currently logging, start the new file
@@ -631,3 +640,19 @@ void AMPRunnable::run()
     });
 }
 #endif
+
+/*public*/ QString AbstractMonPane::getClassName()
+{
+ return "";
+}
+
+void AbstractMonPane::OnRawCheckBox(bool)
+{
+ p->setSimplePreferenceState(rawDataCheck, rawCheckBox->isChecked());
+
+}
+
+void AbstractMonPane::OnTimestampCheck(bool)
+{
+p->setSimplePreferenceState(timeStampCheck, timeCheckBox->isChecked());
+}

@@ -4,6 +4,8 @@
 #include "logger.h"
 #include "runnable.h"
 #include "liblayouteditor_global.h"
+//#include "jmrijframe.h"
+
 
 class QFile;
 class JLabel;
@@ -21,26 +23,30 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractMonPane : public JmriPanel
 {
     Q_OBJECT
 public:
-    explicit AbstractMonPane(QWidget *parent = 0);
+    explicit AbstractMonPane(QWidget *parent = nullptr);
  ~AbstractMonPane();
- AbstractMonPane(const AbstractMonPane&) : JmriPanel() {}
+ AbstractMonPane(const AbstractMonPane&) : JmriPanel() {}//JmriPanel() {}
     /*public*/ void dispose();
     /*public*/ void initComponents() throw (Exception);
     /*public*/ void nextLine(QString line, QString raw);
     /*public*/ void setFixedWidthFont();
     /*public*/ QString getHelpTarget();
+    /*public*/ virtual QString getClassName();
 
 signals:
 
 public slots:
-    /*public*/ /*synchronized*/ void clearButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ /*synchronized*/ void startLogButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ /*synchronized*/ void stopLogButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void openFileChooserButtonActionPerformed(ActionEvent*e = 0);
-    /*public*/ void enterButtonActionPerformed(ActionEvent* e = 0);
+    /*public*/ /*synchronized*/ void clearButtonActionPerformed(ActionEvent* e = nullptr);
+    /*public*/ /*synchronized*/ void startLogButtonActionPerformed(ActionEvent* e = nullptr);
+    /*public*/ /*synchronized*/ void stopLogButtonActionPerformed(ActionEvent* e = nullptr);
+    /*public*/ void openFileChooserButtonActionPerformed(ActionEvent*e = nullptr);
+    /*public*/ void enterButtonActionPerformed(ActionEvent* e = nullptr);
     /*public*/ /*synchronized*/ QString getFrameText();
     void OnAutoScrollCheckBox(bool);
     void OnAlwaysOnTopCheckBox(bool);
+    void OnRawCheckBox(bool);
+    void OnTimestampCheck(bool);
+
 private:
     QString rawDataCheck;// = this.getClass().getName()+".RawData";
     QString timeStampCheck;// = this.getClass().getName()+".TimeStamp";

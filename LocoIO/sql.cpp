@@ -19,8 +19,8 @@ Sql::Sql(LocoIOData* data, QObject *parent) :
  if(!QSqlDatabase::isDriverAvailable("QSQLITE"))
  {
   qDebug()<< "QSQLITE driver not available";
-  std::cout << "QSQLITE driver not available";
-  QMessageBox::warning(NULL,"Warning","QSQLITE driver not available. \n"+ sDrivers);
+  //std::cout << "QSQLITE driver not available";
+  QMessageBox::warning(nullptr,"Warning","QSQLITE driver not available. \n"+ sDrivers);
  }
  dbFileName = QDir::homePath() + QDir::separator() + "LocoNetMonitor.db";
  std::cout << dbFileName.toLatin1().constData();
@@ -76,7 +76,7 @@ bool Sql::updateComment(int port, QString type, QString title, QString descripti
  int opCode = 0;
  int isOutput=0;
  LocoIOMode* lim = data->getLIM(port-1);
- if(lim != NULL)
+ if(lim != nullptr)
  {
   opCode = lim->getOpcode();
   isOutput = lim->getOutput();
@@ -105,7 +105,7 @@ bool Sql::updateBasicComments(int port, QString type)
  int opCode = 0;
  int isOutput=0;
  LocoIOMode* lim = data->getLIM(port-1);
- if(lim != NULL)
+ if(lim != nullptr)
  {
   opCode = lim->getOpcode();
   isOutput = lim->getOutput();

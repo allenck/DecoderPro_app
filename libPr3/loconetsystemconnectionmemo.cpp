@@ -265,11 +265,11 @@ void LocoNetSystemConnectionMemo::configureManagers()
  InstanceManager::setReporterManager(
   (ReporterManager*)getReporterManager());
 
- InstanceManager::setConsistManager(
-  getConsistManager());
+ InstanceManager::setConsistManager(new LocoNetConsistManager(this));
 
- InstanceManager::addClockControl(
-  getClockControl());
+ ClockControl* cc = getClockControl();
+ // make sure InstanceManager knows about that
+ InstanceManager::setDefault("ClockControl", cc);
 }
 
 LnPowerManager* LocoNetSystemConnectionMemo::getPowerManager()

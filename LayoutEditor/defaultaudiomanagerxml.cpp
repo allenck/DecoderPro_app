@@ -57,7 +57,7 @@ DefaultAudioManagerXml::DefaultAudioManagerXml(QObject *parent) :
  //@Override
 /*public*/ bool DefaultAudioManagerXml::load(QDomElement audio) throw (Exception){
      // create the master object
-     InstanceManager::audioManagerInstance();
+     ((AudioManager*)InstanceManager::getDefault("AudioManager"));
      // load individual audio objects
      loadAudio(audio);
      return true;

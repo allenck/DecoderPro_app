@@ -765,7 +765,7 @@ void LayoutEditorTools::windowClosing(QCloseEvent* /*e*/)
 }
 void LayoutEditorTools::turnoutNameField_textChanged(QString text)
 {
- turnoutNameField->setCompleter((InstanceManager::layoutBlockManagerInstance()->getCompleter(text, true)));
+ turnoutNameField->setCompleter((static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getCompleter(text, true)));
 }
 void LayoutEditorTools::throatContinuingField_textChanged(QString text)
 {
@@ -2846,7 +2846,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
         QMessageBox::critical(0, tr("Error"), tr("Error - Block name was not entered. Please\nenter the name of a block on the panel."));
         return NULL;
     }
-    LayoutBlock* block = InstanceManager::layoutBlockManagerInstance()->
+    LayoutBlock* block = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->
                                                     getByUserName(str);
     if (block==NULL)
     {
@@ -8864,7 +8864,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
 
  if(block1BoundSignalMast==NULL)
  {
-  if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled() && ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->isSignalMastUsed(oldBlock1SignalMast))
+  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->isSignalMastUsed(oldBlock1SignalMast))
   {
    SignallingGuiTools::removeSignalMastLogic(setSignalMastsAtBoundaryFrame, oldBlock1SignalMast);
   }
@@ -8875,7 +8875,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
  }
  if(block2BoundSignalMast==NULL)
  {
-  if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled() && ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->isSignalMastUsed(oldBlock2SignalMast))
+  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->isSignalMastUsed(oldBlock2SignalMast))
   {
    SignallingGuiTools::removeSignalMastLogic(setSignalMastsAtBoundaryFrame, oldBlock2SignalMast);
   }
@@ -8919,7 +8919,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
    boundary->setEastBoundSignalMast(eastSignalMast->getText());
    boundary->setWestBoundSignalMast(westSignalMast->getText());
    //Then sort out the logic
-   if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
+   if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled())
    {
     SignallingGuiTools::swapSignalMastLogic(setSignalMastsAtBoundaryFrame, block1BoundSignalMast, block2BoundSignalMast);
    }
@@ -9021,7 +9021,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
   }
 
     //If advanced routing is enabled and then this indicates that we are using this for discovering the signalmast logic paths.
-  if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled() && (block1BoundSignalMast!=NULL || block2BoundSignalMast!=NULL))
+  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && (block1BoundSignalMast!=NULL || block2BoundSignalMast!=NULL))
   {
    updateBoundaryBasedSignalMastLogic(oldBlock1SignalMast, oldBlock2SignalMast,
                                                         block1BoundSignalMast,block2BoundSignalMast);
@@ -14363,14 +14363,14 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
 
 void LayoutEditorTools::block1NameField_textChanged(QString text)
 {
- QCompleter* completer = InstanceManager::layoutBlockManagerInstance()->getCompleter(text, true);
+ QCompleter* completer = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getCompleter(text, true);
  if(completer!= NULL)
    block1NameField->setCompleter(completer);
 }
 
 void LayoutEditorTools::block2NameField_textChanged(QString text)
 {
-    QCompleter* completer = InstanceManager::layoutBlockManagerInstance()->getCompleter(text, true);
+    QCompleter* completer = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getCompleter(text, true);
     if(completer!= NULL)
       block2NameField->setCompleter(completer);
 }

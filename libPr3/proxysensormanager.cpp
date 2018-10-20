@@ -47,21 +47,21 @@ ProxySensorManager::ProxySensorManager()
 
 /*public*/ Sensor* ProxySensorManager::provideSensor(QString sName)
 {
- return (Sensor*) provideNamedBean(sName);
- //return (Sensor*) AbstractProxyManager::provideNamedBean(sName);
+ return static_cast<Sensor*>(AbstractProxyManager::provideNamedBean(sName));
 }
-/*protected*/ NamedBean* ProxySensorManager::provideNamedBean(QString name) {
-    NamedBean* t = getNamedBean(name);
-    if (t!=NULL) return t;
-    // Doesn't exist. If the systemName was specified, find that system
-    int index = matchTentative(name);
-    if (index >= 0) return makeBean(index, name, "");
-    log.debug("Did not find manager for name "+name+", defer to default");
-    return makeBean(0,getMgr(0)->makeSystemName(name), "");
-//    int iI = nMgrs()-1;
-//    return makeBean(iI,getMgr(iI)->makeSystemName(name), ""); // use internalManager.
 
-}
+///*protected*/ NamedBean* ProxySensorManager::provideNamedBean(QString name) {
+//    NamedBean* t = getNamedBean(name);
+//    if (t!=nullptr) return t;
+//    // Doesn't exist. If the systemName was specified, find that system
+//    int index = matchTentative(name);
+//    if (index >= 0) return makeBean(index, name, "");
+//    log.debug("Did not find manager for name "+name+", defer to default");
+//    return makeBean(0,getMgr(0)->makeSystemName(name), "");
+////    int iI = nMgrs()-1;
+////    return makeBean(iI,getMgr(iI)->makeSystemName(name), ""); // use internalManager.
+
+//}
 
 /**
  * Locate an instance based on a system name.  Returns null if no
@@ -113,16 +113,16 @@ ProxySensorManager::ProxySensorManager()
 /*public*/ Sensor* ProxySensorManager::newSensor(QString systemName, QString userName) {
     return (Sensor*) newNamedBean(systemName, userName);
 }
-/*public*/ NamedBean* ProxySensorManager::newNamedBean(QString systemName, QString userName) {
-    // if the systemName is specified, find that system
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return makeBean(i, systemName, userName);
+///*public*/ NamedBean* ProxySensorManager::newNamedBean(QString systemName, QString userName) {
+//    // if the systemName is specified, find that system
+//    int i = matchTentative(systemName);
+//    if (i >= 0)
+//        return makeBean(i, systemName, userName);
 
-    // did not find a manager, allow it to default to the primary
-    log.debug("Did not find manager for system name "+systemName+", delegate to primary");
-    return makeBean(0, systemName, userName);
-}
+//    // did not find a manager, allow it to default to the primary
+//    log.debug("Did not find manager for system name "+systemName+", delegate to primary");
+//    return makeBean(0, systemName, userName);
+//}
 
 // null implementation to satisfy the SensorManager interface
 /*public*/ void ProxySensorManager::updateAll() {  }
@@ -170,7 +170,7 @@ ProxySensorManager::ProxySensorManager()
    }
   }
  }
- return NULL;
+ return nullptr;
 }
 
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingActive(){
@@ -235,5 +235,5 @@ QCompleter* ProxySensorManager::getCompleter(QString text)
     return completer;
   }
  }
- return NULL;
+ return nullptr;
 }

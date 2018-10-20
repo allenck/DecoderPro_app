@@ -27,6 +27,7 @@ private:
  bool bSettingValues;
  //LnPacketizer* packetizer;
  LnTrafficController* tc;
+
 private slots:
  void on_rb1On_toggled(bool bChecked);
  void on_rb1Off_toggled(bool bChecked);

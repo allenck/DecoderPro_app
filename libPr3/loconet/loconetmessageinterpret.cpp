@@ -741,7 +741,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                  groupName);
      }
      case 0x08: {
-         return tr("LN_MSG_DUPLEX_NAME_QUERY");
+         return tr("Query Duplex Group Name.");
      }
      case 0x10: {
          return tr("Reported Duplex Group Name=\"%1\", Password=%2, Channel=%3, ID=%4.").arg(
@@ -1319,7 +1319,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
      int sub = pxct2 & 0x70;
      switch (sub) {
          case 0x00: // setup
-             return tr("Download setup message: manufacturer=%1, H/W version={%2, S/W version=%3, device=%4, options={%5.").arg(
+             return tr("Download setup message: manufacturer=%1, H/W version={2, S/W version=%3, device=%4, options=%5.").arg(
                      l->getElement(6)).arg(
                      l->getElement(8)).arg(
                      l->getElement(9)).arg(
@@ -1356,20 +1356,20 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
      return tr("Throttle Semaphore Symbol Control: Loco %1, Semaphore body %2, Vertical arm %3, Diagonal arm %4, Horizontal arm %5; Any lit arms are %6.").arg(
              ((d[0] * 128) + d[1])).arg(
              tr(((d[2] & 0x10) == 0x10)
-                     ? "LN_MSG_THROTTLE_SEMAPHORE_HELPER_LIT"
-                     : "LN_MSG_THROTTLE_SEMAPHORE_HELPER_UNLIT")).arg(
+                     ? "lit"
+                     : "unlit")).arg(
              tr(((d[2] & 0x08) == 0x08)
-                     ? "LN_MSG_THROTTLE_SEMAPHORE_HELPER_LIT"
-                     : "LN_MSG_THROTTLE_SEMAPHORE_HELPER_UNLIT")).arg(
+                     ? "lit"
+                     : "unlit")).arg(
              tr(((d[2] & 0x04) == 0x04)
-                     ? "LN_MSG_THROTTLE_SEMAPHORE_HELPER_LIT"
-                     : "LN_MSG_THROTTLE_SEMAPHORE_HELPER_UNLIT")).arg(
+                     ? "lit"
+                     : "unlit")).arg(
              tr(((d[2] & 0x02) == 0x02)
-                     ? "LN_MSG_THROTTLE_SEMAPHORE_HELPER_LIT"
-                     : "LN_MSG_THROTTLE_SEMAPHORE_HELPER_UNLIT")).arg(
+                     ? "lit"
+                     : "unlit")).arg(
              tr(((d[2] & 0x01) == 0x01)
-                     ? "LN_MSG_THROTTLE_SEMAPHORE_HELPER_BLINKING"
-                     : "LN_MSG_THROTTLE_SEMAPHORE_HELPER_UNBLINKING")
+                     ? "blinking"
+                     : "non-blinking")
      );
  }
 
@@ -1464,26 +1464,26 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
   return src_dev + "=> " + dst_dev + " "
           + operation + " SV" + QString::number(d[1])
           + ((src == 0x50) ? (d[0] != 2 ? ("=0x" + QString::number(d[3], 16)) : "")
-                  : " = " + ((d[0] == 2) ? ((d[2] != 0) ? (d[5] < 10) ? "" + d[5]
-                                          : d[5] + " (0x" + QString::number(d[5], 16) + ")"
-                                  : (d[7] < 10) ? "" + d[7]
+                  : " = " + ((d[0] == 2) ? ((d[2] != 0) ? (d[5] < 10) ? "" + QString::number(d[5],16)
+                                          : QString::number(d[5]) + " (0x" + QString::number(d[5], 16) + ")"
+                                  : (d[7] < 10) ? "" + QString::number(d[7])
                                           : d[7] + " (0x" + QString::number(d[7], 16) + ")")
-                          : (d[7] < 10) ? "" + d[7]
-                                  : d[7] + " (0x" + QString::number(d[7], 16) + ")"))
+                          : (d[7] < 10) ? "" + QString::number(d[7])
+                                  : QString::number(d[7]) + " (0x" + QString::number(d[7], 16) + ")"))
           + ((d[2] != 0) ? " Firmware rev " + dotme(d[2]) : "") + ".\n";
     }
 
     /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretSV2Message(LocoNetMessage* l) {
          // (New Designs)
          QString svReply = "";
-         LnSv2MessageContents* svmc = NULL;
+         LnSv2MessageContents* svmc = nullptr;
          try {
              // assume the message is an SV2 message
              svmc = new LnSv2MessageContents(l);
          } catch (IllegalArgumentException e) {
              // message is not an SV2 message.  Ignore the exception.
          }
-         if (svmc != NULL) {
+         if (svmc != nullptr) {
              // the message was indeed an SV2 message
              try {
                  // get string representation of the message from an
@@ -1640,7 +1640,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                  Reporter* reporter = ((ProxyReporterManager*) InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterSystemName);
 
                  QString uname = reporter->getUserName();
-                 if ((uname != NULL) && (!uname.isEmpty())) {
+                 if ((uname != "") && (!uname.isEmpty())) {
                      return tr("Transponder Find report: address %1 present at %2 (%3) (BDL16x Board %4 RX4 zone %5).").arg(
                              locoAddr).arg(
                              reporterSystemName).arg(
@@ -1748,8 +1748,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                          return tr("LONG_ACK: The Command Station accepted the switch command.");
                      default:
                          return tr("LONG_ACK: Unknown response to 'Request Switch with ACK' command, value %1.").arg(
-                                 tr("0x%1").arg(
-                                         StringUtil::twoHexFromInt(ack1)));
+                                 tr("0x%1").arg(StringUtil::twoHexFromInt(ack1)));
                  }
              case (LnConstants::OPC_SW_REQ):
                  // response for OPC_SW_REQ
@@ -1772,15 +1771,13 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                          return tr("LONG_ACK: Function not implemented, no reply will follow.");
                      default:
                          return tr("LONG_ACK: Unknown response to Write Slot Data message value %1.").arg(
-                                 tr("0x%1").arg(
-                                         StringUtil::twoHexFromInt(ack1)));
+                                 tr("0x%1").arg(StringUtil::twoHexFromInt(ack1)));
                  }
 
              case (LnConstants::OPC_SW_STATE):
                  // response for OPC_SW_STATE
                  return tr("LONG_ACK: Command station response to switch state request %1 (%2).").arg(
-                         tr("0x%1").arg(
-                                 StringUtil::twoHexFromInt(ack1)),
+                         tr("0x%1").arg(StringUtil::twoHexFromInt(ack1)),
                          tr((((ack1 & 0x20) != 0)
                                  ? "Closed"
                                  : "Thrown")));
@@ -1794,8 +1791,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                          return tr("LONG_ACK: The Move Slots command was accepted.");
                      default:
                          return tr("LONG_ACK: Unknown response to Move Slots message %1.").arg(
-                                 tr("0x%1").arg(
-                                         StringUtil::twoHexFromInt(ack1)));
+                                 tr("0x%1").arg(StringUtil::twoHexFromInt(ack1)));
                  }
 
              case LnConstants::OPC_IMM_PACKET:
@@ -2113,7 +2109,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                  Reporter* reporter = ((ProxyReporterManager*) InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterSystemName);
          reporterUserName = "";
          QString uname = reporter->getUserName();
-         if ((uname != NULL) && (!uname.isEmpty())) {
+         if ((uname != "") && (!uname.isEmpty())) {
              reporterUserName = uname;
          }
          int bxpa1Number = 1 + l->getElement(2) + (l->getElement(1) & 0x1F) * 128;
@@ -2208,7 +2204,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
          Sensor* sensor = ((ProxySensorManager*) InstanceManager::getDefault("SensorManager"))->provideSensor(sensorSystemName);
          sensorUserName = "";
          QString uname = sensor->getUserName();
-         if ((uname != NULL) && (!uname.isEmpty())) {
+         if ((uname != "") && (!uname.isEmpty())) {
              sensorUserName = uname;
          }
          int sensorid = (SENSOR_ADR(in1, in2) - 1) * 2
@@ -2239,33 +2235,45 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
          return tr("Sensor %1 (%2) is %3.  (%4; %5, %6).").arg(
                  sensorSystemName, sensorUserName).arg(
                  tr((in2 & LnConstants::OPC_INPUT_REP_HI) != 0
-                         ? "LN_MSG_SENSOR_STATE_HIGH" : "LN_MSG_SENSOR_STATE_LOW")).arg(
+                         ? "Closed (input off)" : "Thrown (input on)")).arg(
                  bdl).arg(
                  otherBoardsNames, otherBoardsInputs);
     }
 
-    /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretOpcSwRep(LocoNetMessage* l, QString turnoutPrefix) {
+    /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretOpcSwRep(LocoNetMessage* l, QString turnoutPrefix) // 0xb1
+{
          int sn1 = l->getElement(1);
          int sn2 = l->getElement(2);
          // get system and user names
          QString turnoutUserName = "";
+         QString sensorUserName = "";
 
          QString turnoutSystemName = turnoutPrefix
                  + QString::number(SENSOR_ADR(sn1, sn2));
+         QString sensorSystemName = "LS"
+                 + QString::number(SENSOR_ADR(sn1, sn2));
          Turnout* turnout = ((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
-
+         Sensor* sensor = ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor(sensorSystemName);
          QString uname = turnout->getUserName();
-         if ((uname != NULL) && (!uname.isEmpty())) {
+         if ((uname != "") && (!uname.isEmpty())) {
              turnoutUserName = uname;
          } else {
              turnoutUserName = "";
          }
+         QString suname = sensor->getUserName();
+         if ((suname != "") && (!suname.isEmpty())) {
+             sensorUserName = suname;
+         } else {
+             sensorUserName = "";
+         }
 
-         if ((sn2 & LnConstants::OPC_SW_REP_INPUTS) != 0) {
-             return tr("Turnout %1 (%2) %3 is %4").arg(
-                     turnoutSystemName).arg(turnoutUserName).arg(
+
+         if ((sn2 & LnConstants::OPC_SW_REP_INPUTS) != 0)
+         { //0x40
+             return tr("Sensor %1 (%2) %3 is %4").arg(
+                     sensorSystemName).arg(sensorUserName).arg(
                      tr(((sn2 & LnConstants::OPC_SW_REP_SW) != 0
-                             ? "Switch input"
+                             ? "Switch feedback input"
                              : "Aux input"))).arg(
                      tr((((sn2 & LnConstants::OPC_SW_REP_HI) != 0)
                              ? "Closed (input off)"
@@ -2294,7 +2302,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
          Turnout* turnout = ((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
 
          QString uname = turnout->getUserName();
-         if ((uname != NULL) && (!uname.isEmpty())) {
+         if ((uname != "") && (!uname.isEmpty())) {
              turnoutUserName = uname;
          } else {
              turnoutUserName = "";
@@ -2321,7 +2329,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
          Turnout* turnout = ((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
 
          QString uname = turnout->getUserName();
-         if ((uname != NULL) && (!uname.isEmpty())) {
+         if ((uname != "") && (!uname.isEmpty())) {
              turnoutUserName = uname;
          } else {
              turnoutUserName = "";
@@ -2331,67 +2339,30 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                  turnoutUserName);
     }
 
-    /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretOpcRqSlData(LocoNetMessage* l) {
-         int slot = l->getElement(2); // slot number for this request
-         QString mode;
-         int command = l->getElement(0);
-         int id1 = l->getElement(11); // ls 7 bits of ID code
-         int id2 = l->getElement(12); // ms 7 bits of ID code
-         /*
-          * These messages share a common data format with the only difference being
-          * whether we are reading or writing the slot data.
-          */
-         if (command == LnConstants::OPC_WR_SL_DATA) {
-             mode = tr("Request");
-         } else {
-             mode = tr("Response");
-         }
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretOpcRqSlData(LocoNetMessage* l)
+{
+  int slot = l->getElement(1) + 128 * l->getElement(2);
 
-         QString result;
-
-         switch (slot) {
-             case LnConstants::FC_SLOT:
-                 result = interpretFastClockSlot(l, mode, id1, id2);
-                 if (result.length() > 0) {
-                     return result;
-                 }
-                 break;
-             case LnConstants::PRG_SLOT:
-                 result = interpretProgSlot(l, mode, id1, id2, command);
-                 if (result.length() > 0) {
-                     return result;
-                 }
-                 break;
-
-             case 0x79:
-             case 0x7a:
-             case 0x7D:
-                 return "";
-             case LnConstants::CFG_EXT_SLOT:
-                 result = interpretCmdStnExtCfgSlotRdWr(l, command);
-                 if (result.length() > 0) {
-                     return result;
-                 }
-                 break;
-
-             // end programming track block
-             case LnConstants::CFG_SLOT:
-                 result = interpretCmdStnCfgSlotRdWr(l, command);
-                 if (result.length() > 0) {
-                     return result;
-                 }
-                 break;
-
-             default:
-                 result = interpretStandardSlotRdWr(l, id1, id2, command, slot);
-                 if (result.length() > 0) {
-                     return result;
-                 }
-                 break;
-         }
-
-         return "";
-    }
+  switch (slot)
+  {
+      // Slots > 120 are all special, but these are the only ones we know to decode.
+      case LnConstants::FC_SLOT:
+          return tr("Request Fast Clock information.");
+      case LnConstants::CFG_SLOT:
+          return tr("Request Command Station OpSwitches (or DCS210/DCS240 check for multiple command stations on LocoNet).");
+      case LnConstants::CFG_EXT_SLOT:
+          return tr("Request Extended Command Station OpSwitches (DCS210/DCS240 only).");
+      case LnConstants::PRG_SLOT:
+          return tr("Request Programming Track information.");
+      case 0x79:
+      case 0x7a:
+      case 0x7d:
+          break;
+      default:
+          return tr("Request data/status for slot %1.").arg(slot);
+  }
+  return "";
+}
 
     /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretOpcMoveSlots(LocoNetMessage* l) {
          int src = l->getElement(1);
@@ -2527,16 +2498,16 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
           Turnout* turnout = ((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
 
           QString uname = turnout->getUserName();
-          if ((uname != NULL) && (!uname.isEmpty())) {
+          if ((uname != "") && (!uname.isEmpty())) {
               turnoutUserName = uname;
           } else {
               turnoutUserName = "";
           }
 
-          QString pointsDirection = ((sw2 & LnConstants::OPC_SW_ACK_CLOSED) != 0
+          QString pointsDirection = ((sw2 & LnConstants::OPC_SW_ACK_CLOSED) != 0 //0x20
                   ? tr("Closed")
                   : tr("Thrown"));
-          QString outputState = ((sw2 & LnConstants::OPC_SW_ACK_OUTPUT) != 0
+          QString outputState = ((sw2 & LnConstants::OPC_SW_ACK_OUTPUT) != 0 // 0x10
                   ? tr("Output On")
                   : tr("Output Off"));
           if (turnoutUserName.length() == 0) {
@@ -2858,7 +2829,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                                      cvNumber));
                  case LnConstants::SRVC_TRK_RESERVED | LnConstants::PCMD_RW:
                  case LnConstants::SRVC_TRK_RESERVED | LnConstants::PCMD_BYTE_MODE | LnConstants::PCMD_RW:
-                     return tr("LN_MSG_SLOT_PROG_MODE_REQUEST_SRVC_TRK_WR_RESERVED").arg(
+                     return tr("Service Track RESERVED MODE Write Detected!: %1.").arg(
                              tr("CV%1 value %2 (%3, %4b)").arg(
                                      cvNumber).arg( cvData).arg( tr("0x%1").arg(
                                              StringUtil::twoHexFromInt(cvData)), StringUtil::to8Bits(cvData, true)));
@@ -3356,8 +3327,8 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
 
          QString locoAdrStr = figureAddressIncludingAliasing(adr, adr2, ss2, id1, id2);
          return tr(((command == LnConstants::OPC_WR_SL_DATA)
-                 ? "Write slot %1 information:\nLoco %2 is %3, %4, operating in %5 SS mode, and is moving %6 at speed %7,\nF0=%8, F1=%9, F2=%10, F3=%11, F4=%12, F5=%13, F6=%14, F7=%15, F8=%16\n%17; %18, %19."
-                 : "Report of slot %1 information:\nLoco %2 is %3, %4, operating in %5 SS mode, and is moving %6 at speed %7,\nF0=%8, F1=%9, F2=%10, F3=%11, F4=%12, F5=%13, F6=%14, F7=%15, F8=%16\n%17; %18, %19.")).arg(
+                 ? "Write slot %1 information:\nLoco %2 is %3, %4, operating in %5 SS mode, and is moving %6 at speed %7,\n               F0=%8, F1=%9, F2=%10, F3=%11, F4=%12, F5=%13, F6=%14, F7=%15, F8=%16\n               %17; %18, %19."
+                 : "Report of slot %1 information:\n               Loco %2 is %3, %4, operating in %5 SS mode, and is moving %6 at speed %7,\n               F0=%8, F1=%9, F2=%10, F3=%11, F4=%12, F5=%13, F6=%14, F7=%15, F8=%16\n               %17; %18, %19.")).arg(
                  slot ).arg(
                  locoAdrStr ).arg(
                  LnConstants::CONSIST_STAT(stat) ).arg(
@@ -3891,7 +3862,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
  * @param a2 Byte containing the lower bits
  * @return 1-4096 address
  */
-/*static*/ /*private*/ int LocoNetMessageInterpret::SENSOR_ADR(int a1, int a2) {
+/*static*/ /*public*/ int LocoNetMessageInterpret::SENSOR_ADR(int a1, int a2) {
     return (((a2 & 0x0f) * 128) + (a1 & 0x7f)) + 1;
 }
 
@@ -4051,7 +4022,7 @@ QString LocoNetMessageInterpret::convertToMixed(int addressLow, int addressHigh)
 }
 
 /*private*/ /*static*/ QString LocoNetMessageInterpret::trackStatusByteToString(int trackStatusByte) {
- return tr("Master supports %1; Track Status: %2/{%3; Programming Track Status: %4").arg(
+ return tr("Master supports %1; Track Status: %2/%3; Programming Track Status: %4").arg(
          (((trackStatusByte & LnConstants::GTRK_MLOK1) != 0)
                  ? tr("LocoNet 1.1")
                  : tr("DT200"))).arg(
@@ -4160,13 +4131,13 @@ QString LocoNetMessageInterpret::convertToMixed(int addressLow, int addressHigh)
 
 /*private*/ /*static*/ QString LocoNetMessageInterpret::getAlmTaskType(int taskTypeByte) {
     if (taskTypeByte == 2) {
-        return tr("LN_MSG_ALM_HELPER_TASK_TYPE_RD");
+        return tr("(RD)");
     } else if (taskTypeByte == 3) {
-        return tr("LN_MSG_ALM_HELPER_TASK_TYPE_WR");
+        return tr("(WR)");
     } else if (taskTypeByte == 0) {
-        return tr("LN_MSG_ALM_HELPER_TASK_TYPE_ID");
+        return tr("(ID)");
     } else {
-        return tr("LN_MSG_ALM_HELPER_TASK_TYPE_UNKONWN").arg(
+        return tr("(Unknown task type %1)").arg(
                 taskTypeByte);
     }
 }

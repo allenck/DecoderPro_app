@@ -9,7 +9,7 @@
 #include <QMap>
 #include <QVariant>
 #include <QSet>
-#include "libPr3_global.h"
+#include "javaqt_global.h"
 #include "bean.h"
 
 /**
@@ -24,11 +24,11 @@
  * @version	$Revision: 20527 $
  */
 class PropertyChangeListener;
-/*public interface*/ class LIBPR3SHARED_EXPORT UserPreferencesManager : public Bean
+/*public interface*/ class JAVAQTSHARED_EXPORT UserPreferencesManager : public Bean
 {
  Q_OBJECT
 public:
-    UserPreferencesManager(QObject* parent = 0) : Bean(parent) {}
+    UserPreferencesManager(QObject* parent = nullptr) : Bean(parent) {}
     ~UserPreferencesManager() {}
     UserPreferencesManager(const UserPreferencesManager&) : Bean() {}
     /*public*/ virtual void setLoading() {}

@@ -54,7 +54,7 @@ private:
  static QTimer*  meterTimer;
  // data members
  /*private*/ void initFeedbackModes();
- Logger log;
+ /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(LnTurnout.class);
  /*private*/ bool myAddress(int a1, int a2);
  //ln turnouts do support inversion
  //method which takes a turnout state as a parameter and adjusts it  as necessary

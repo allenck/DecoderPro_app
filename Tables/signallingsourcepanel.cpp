@@ -48,7 +48,7 @@
         }
 
   //InstanceManager::layoutBlockManagerInstance().addPropertyChangeListener(this);
-  LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+  LayoutBlockManager* lbm = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"));
   connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   setLayout(new /*BorderLayout()*/QVBoxLayout);
@@ -128,7 +128,7 @@ void SignallingSourcePanel::on_addLogic_pressed()
 
 void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
 {
- if (!InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
+ if (!(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled()))
  {
  //    int response = JOptionPane.showConfirmDialog(NULL, tr("EnableLayoutBlockRouting"));
  //    if (response == 0){
@@ -141,7 +141,7 @@ void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
      case QMessageBox::No:
       return;
      case QMessageBox::Yes:
-      InstanceManager::layoutBlockManagerInstance()->enableAdvancedRouting(true);
+      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->enableAdvancedRouting(true);
       QMessageBox::information(NULL, tr("Information"), tr("Layout Block routing has been enabled."));
       break;
      }

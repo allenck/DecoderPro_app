@@ -1,5 +1,8 @@
 #include "lnsensor.h"
 #include "sensor.h"
+#include "loggerfactory.h"
+#include "loconetmessageinterpret.h"
+
 //LnSensor::LnSensor(QObject *parent) :
 //    AbstractSensor(parent)
 //{
@@ -44,7 +47,8 @@ void LnSensor::init(QString systemName, QString prefix)
 {
  // store address forms
  a = new LnSensorAddress(systemName, prefix);
- if (log.isDebugEnabled()) log.debug("create address "+a->toString());
+ log->setDebugEnabled(true);
+ if (log->isDebugEnabled()) log->debug("create address "+a->toString());
 
  // At construction, register for messages
  if(tc != NULL)
@@ -109,32 +113,67 @@ void LnSensor::init(QString systemName, QString prefix)
      * _once_ if anything has changed state (or set the commanded state directly)
      * @param l
      */
-    void LnSensor::message(LocoNetMessage* l) {
-        // parse message type
-        switch (l->getOpCode()) {
-            case LnConstants::OPC_INPUT_REP: {               /* page 9 of Loconet PE */
-                int sw1 = l->getElement(1);
-                int sw2 = l->getElement(2);
-                if (a->matchAddress(sw1, sw2)) {
-                    // save the state
-                    bool state = ((sw2 & 0x10) != 0) ^ _inverted;
-                    if (log.isDebugEnabled())
-                        log.debug("INPUT_REP received with valid address, old state "
-                                    +QString("%1").arg(getRawState())+" new packet "+QString("%1").arg(state));
-                    if ( state && getRawState() != Sensor::ACTIVE) {
-                        if (log.isDebugEnabled()) log.debug("Set ACTIVE");
-                        setOwnState(Sensor::ACTIVE);
-                    } else if ( (!state) && getRawState() != Sensor::INACTIVE) {
-                        if (log.isDebugEnabled()) log.debug("Set INACTIVE");
-                        setOwnState(Sensor::INACTIVE);
-                    }
-                }
-                return;
-            }
-            default:
-                return;
+    void LnSensor::message(LocoNetMessage* l)
+    {
+     int sw1 = l->getElement(1);
+     int sw2 = l->getElement(2);
+     // parse message type
+     switch (l->getOpCode())
+     {
+
+      case LnConstants::OPC_INPUT_REP: // 0xb2
+      {               /* page 9 of Loconet PE */
+       if (a->matchAddress(sw1, sw2))
+       {
+        // save the state
+        bool state = ((sw2 & 0x10) != 0) ^ _inverted;
+        if (log->isDebugEnabled())
+            log->debug("INPUT_REP received with valid address, old state "
+                        +QString("%1").arg(getRawState())+" new packet "+QString("%1").arg(state));
+        if ( state && getRawState() != Sensor::ACTIVE)
+        {
+            if (log->isDebugEnabled()) log->debug(tr("Set %1 ACTIVE").arg(getSystemName()));
+            setOwnState(Sensor::ACTIVE);
         }
-        // reach here only in error
+        else if ( (!state) && getRawState() != Sensor::INACTIVE)
+        {
+            if (log->isDebugEnabled()) log->debug(tr("Set %2 INACTIVE").arg(getSystemName()));
+            setOwnState(Sensor::INACTIVE);
+        }
+       }
+       return;
+      }
+      // Added by ACK to set feedback sensors 10/03/2018
+      case LnConstants::OPC_SW_REP:
+      {
+
+       int addr = (((sw2 & 0x0f) * 128) + (sw1 & 0x7f)) + 1;
+       if(addr == thisAddr)
+       {
+       // save the state
+       bool state = ((sw2 & 0x10) != 0) ^ _inverted;
+       if (log->isDebugEnabled())
+       {
+         log->debug(tr("OPC_SW_REP received with address %1, old state ").arg(addr)
+                       +QString("%1").arg(getRawState())+" new packet "+QString("%1\n").arg(state)+ LocoNetMessageInterpret::interpretOpcSwRep(l, "LS"));
+       }
+       if ( state && getRawState() != Sensor::ACTIVE)
+       {
+           if (log->isDebugEnabled()) log->debug(tr("Set %1 ACTIVE").arg(getSystemName()));
+           setOwnState(Sensor::ACTIVE);
+       }
+       else if ( (!state) && getRawState() != Sensor::INACTIVE)
+       {
+           if (log->isDebugEnabled()) log->debug(tr("Set %2 INACTIVE").arg(getSystemName()));
+           setOwnState(Sensor::INACTIVE);
+       }
+      }
+      return;
+     }
+      default:
+          return;
+     }
+     // reach here only in error
     }
 
     void LnSensor::dispose() {
@@ -142,4 +181,4 @@ void LnSensor::init(QString systemName, QString prefix)
         //super.dispose();
     }
 
-    //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LnSensor::class.getName());
+    /*private*/ /*final*/ /*static*/ Logger* LnSensor::log = LoggerFactory::getLogger("LnSensor");

@@ -217,7 +217,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
  init();
 }
 
-/*public*/ int SHBeanTableDataModel::columnCount(const QModelIndex &parent) const
+/*public*/ int SHBeanTableDataModel::columnCount(const QModelIndex &/*parent*/) const
 {return NUMCOLUMN+3;}
 /*public*/ QVariant SHBeanTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
 {

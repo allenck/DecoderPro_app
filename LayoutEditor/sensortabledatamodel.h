@@ -11,7 +11,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SensorTableDataModel : public BeanTableDataMo
 {
     Q_OBJECT
 public:
-    explicit SensorTableDataModel(QObject *parent = 0);
+    explicit SensorTableDataModel(QObject *parent = nullptr);
 enum COLUMNS
 {
   INVERTCOL = NUMCOLUMN,            // 5

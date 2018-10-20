@@ -8,33 +8,11 @@
 #include <QPalette>
 //#include "libPr3_global.h"
 #include "locoio_global.h"
-//#include "locoiomodules.h"
+#include "locoioaddress.h"
+
 
 class LocoIOAddress;
 class PropertyChangeSupport;
-#if 0 // superceded by LocoIOAddress
-class ProbedAddress
-{
-  public:
-    ProbedAddress(){}
- int unitAddr;
- int unitSubAddr;
- QString firmwareVersion;
- QString moduleType;
- bool operator<(const ProbedAddress  other) const
- {
-  if((unitAddr&0xff) == (other.unitAddr&0xff))
-  {
-   return other.unitSubAddr > unitSubAddr;
-  }
-  return (other.unitAddr&0xff) > (unitAddr&0xff);
- }
- bool operator ==(const ProbedAddress other) const
- {
-    return other.unitAddr == unitAddr && unitSubAddr == other.unitSubAddr;
- }
-};
-#endif
 /* CV usage
  * CV
  *  0       Configuration byte:
@@ -63,9 +41,9 @@ class LOCOIOSHARED_EXPORT LocoIOData : public QObject
 public:
  //explicit LocoIOData(QObject *parent = 0);
  ~LocoIOData();
- /*public*/ LocoIOData(LocoIOAddress* address, LnTrafficController* tc, QObject* parent = 0);
+ /*public*/ LocoIOData(LocoIOAddress* address, LnTrafficController* tc, QObject* parent = nullptr);
  /** Creates a new instance of LocoIOData */
- /*public*/ LocoIOData(int unitAddr, int unitSubAddr, LnTrafficController* tc, QObject* parent = 0);
+ /*public*/ LocoIOData(int unitAddr, int unitSubAddr, LnTrafficController* tc, QObject* parent = nullptr);
  LocoIOData(const LocoIOData&);
  /**
   * Address and SubAddress of this device
@@ -149,6 +127,8 @@ public:
  int getSV7D();
  int getSV7E();
  int getSV7F();
+ void readSV0();
+ void readSV125();
  void readSV7D();
  void writeSV7D();
 
@@ -226,7 +206,8 @@ public:
  QString ssPurple;
  QString ssBlack;
  QString ssLtBlue;
- QList<LocoIOAddress*> probedAddresses;
+ QList<LocoIOAddress*> getProbedAddresses();
+
  void startProbe();
  bool bProbing;
  void emitAll();
@@ -255,7 +236,9 @@ signals:
  void IOCompleteX2(QList<int>*);
  void IOCompleteServo();
  void IOComplete7D();
- void configRead(int value);
+ void IOComplete0();
+ void IOComplete125();
+ void configRead(int value, LocoIOData* data);
  void optionByte(int cv, int value);
  void AddrChanged(int channel, int iOld, int iNew, QString ss);
  void SVChanged(int channel, int iOld, int iNew, QString ss);
@@ -293,17 +276,19 @@ public slots:
  void onCvRead(int cv, int val);
  /*public*/ /*synchronized*/ void message_alt(LocoNetMessage* m);
  /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ QString getFirmwareVersion();
 
 private:
  Logger* log;
  void common(int unitAddr, int unitSubAddr, LnTrafficController* tc);
- /*private*/ int sv0;
+ /*private*/ int sv0, sv0a, sv1, sv2;
  int sv7D;
  int sv7E;
  int sv7F;
  /*private*/ int unitAddress;
  /*private*/ int unitSubAddress;
  /*private*/ LnTrafficController* tc;
+ QList<LocoIOAddress*> probedAddresses;
  /*
   * This data model is shared between several views; each
   * needs to know when the data changes out from under it.
@@ -346,6 +331,11 @@ private:
  QVector<int> writeStateServo;
  int readState7D;
  int writeState7D;
+ int readState0;
+ int writeState0;
+ int readState125;
+ int writeState125;
+
  QVector<bool> _dirty;
  QVector<bool> _x2Dirty;
  QVector<bool> _servoDirty;
@@ -414,6 +404,8 @@ private:
  int readWriteState;
  int readWriteType; // 0 base, 1 extra, 2 servo
  bool checkWriteResponse(int locoIOAddress, int locoIOSubAddress, int cv, int data);
+ QString firmwareVersion;
+ LocoIOAddress* locoIOAddress;
 
 protected:
  /**
@@ -467,6 +459,8 @@ protected:
  void issueNextExtra2Operation();
  void issueNextServoOperation();
  /*protected synchronized*/ void issueNext7DOperation();
+ /*protected synchronized*/ void issueNext0Operation();
+ /*protected synchronized*/ void issueNext125Operation();
 
  /**
   * Internal routine to start timer to protect the mode-change.
@@ -491,6 +485,7 @@ private slots:
  void readWriteNext();
 
 };
+
 class ResponseCheck : public QObject
 {
  Q_OBJECT

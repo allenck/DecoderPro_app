@@ -14,7 +14,7 @@ class LIBTABLESSHARED_EXPORT SlotMonDataModel : public AbstractTableModel
     Q_OBJECT
 public:
     //explicit SlotMonDataModel(QObject *parent = 0);
-    SlotMonDataModel(int row, int column, LocoNetSystemConnectionMemo* memo, QObject *parent = 0);
+ SlotMonDataModel(int, int, LocoNetSystemConnectionMemo* memo, QObject *parent = nullptr);
 
 enum COLUMNS
 {

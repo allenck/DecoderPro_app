@@ -57,7 +57,7 @@ LayoutEditor::LayoutEditor(QString name, bool bTest, QWidget *parent) :
     ui(new Ui::LayoutEditor)
 {
  ui->setupUi(this);
- memo = NULL;
+ memo = nullptr;
  this->bTestMode = bTest;
  layoutName = name;
  init();
@@ -100,11 +100,11 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  numAnchors = 0;
  numEndBumpers = 0;
  numTrackSegments = 0;
- beginObject = NULL; // begin track segment connection object, NULL if none
+ beginObject = nullptr; // begin track segment connection object, nullptr if none
  beginPointType = 0;   // connection type within begin connection object
- foundObject = NULL; // found object, NULL if nothing found
+ foundObject = nullptr; // found object, nullptr if nothing found
  foundPointType = 0;   // connection type within the found object
- newTrack = NULL;
+ newTrack = nullptr;
  numLevelXings = 0;
  numLayoutSlips = 0;
  numLayoutTurntables = 0;
@@ -121,8 +121,8 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  resetDirty();
  // establish link to LayoutEditorAuxTools
  auxTools = new LayoutEditorAuxTools(this);
- tools = NULL;
- if (auxTools==NULL) log.error("Unable to create link to LayoutEditorAuxTools");
+ tools = nullptr;
+ if (auxTools==nullptr) log.error("Unable to create link to LayoutEditorAuxTools");
  // counts used to determine unique internal names
  numAnchors = 0;
  numEndBumpers = 0;
@@ -142,13 +142,13 @@ _contents = new QVector<Positionable*>();
  selectionY = 0.0;
  selectionWidth = 0.0;
  selectionHeight = 0.0;
- _positionableSelection = NULL;
- _turnoutSelection = NULL; //new QVector<LayoutTurnout*>();  // LayoutTurnouts
- _xingSelection = NULL; //new QVector<LevelXing*>();  // LevelXing list
- _slipSelection = NULL; //new QVector<LayoutSlip*>();  // LayoutSlip list
- _turntableSelection = NULL;
- _pointSelection = NULL; //new QVector<PositionablePoint*>();  // PositionablePoint list
- //_labelSelection = NULL; //new QVector<PositionableLabel*>(); // PositionalLabel list
+ _positionableSelection = nullptr;
+ _turnoutSelection = nullptr; //new QVector<LayoutTurnout*>();  // LayoutTurnouts
+ _xingSelection = nullptr; //new QVector<LevelXing*>();  // LevelXing list
+ _slipSelection = nullptr; //new QVector<LayoutSlip*>();  // LayoutSlip list
+ _turntableSelection = nullptr;
+ _pointSelection = nullptr; //new QVector<PositionablePoint*>();  // PositionablePoint list
+ //_labelSelection = nullptr; //new QVector<PositionableLabel*>(); // PositionalLabel list
  _paintScale = 1.0;   // scale for _targetPanel drawing
  openFrame = this;
  // program default turnout size parameters
@@ -164,11 +164,11 @@ _contents = new QVector<Positionable*>();
  xOverLong=xOverLongDefault;   // DOUBLE_XOVER, RH_XOVER, LH_XOVER
  xOverHWid=xOverHWidDefault;
  xOverShort=xOverShortDefault;
- prevSelectedObject = NULL;
+ prevSelectedObject = nullptr;
  _anchorX = 0;
  _anchorY = 0;
 //layoutBlockManager = new LayoutBlockManager(this);
- layoutBlockManager = InstanceManager::layoutBlockManagerInstance();
+ layoutBlockManager = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  blockManger = new BlockManager(this);
  defaultTrackColor =  QColor(Qt::black);;
  defaultOccupiedTrackColor =  QColor(Qt::red);
@@ -181,8 +181,8 @@ _contents = new QVector<Positionable*>();
  turntableList = new QVector<LayoutTurntable*>(); // Turntable list
  noWarnTurntable = false;
 
- _positionableSelection = NULL;//new QVector<Positionable*>();
- //_turnoutSelection = NULL;//new menuAdd_background_image<LayoutTurnout*>();  // LayoutTurnouts
+ _positionableSelection = nullptr;//new QVector<Positionable*>();
+ //_turnoutSelection = nullptr;//new menuAdd_background_image<LayoutTurnout*>();  // LayoutTurnouts
  foundNeedsConnect = false; // true if found point needs a connection
  xingList = new QVector<LevelXing*>();  // LevelXing list
  slipList = new QVector<LayoutSlip*>();  // Layout slip list
@@ -194,18 +194,18 @@ _contents = new QVector<Positionable*>();
  bDirty = false;
  noWarnLevelXing = false;
  noWarnSlip = false;
- selectedObject = NULL;
+ selectedObject = nullptr;
  selectedPointType = 0;
  skipIncludedTurnout = false;
  mainlineTrackWidth = 4.0F;
  sideTrackWidth = 2.0F;
  main = true;
  trackWidth = sideTrackWidth;
- _selectionGroup = NULL;
+ _selectionGroup = nullptr;
  turnoutCirclesWithoutEditMode = false;
  ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
  isDragging = false;
- foundObject = NULL;
+ foundObject = nullptr;
  trackList = new QVector<TrackSegment*>();  // TrackSegment list
  drawGrid =false;
  ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
@@ -219,7 +219,7 @@ _contents = new QVector<Positionable*>();
  iconEditor->setIcon(0, "",":/resources/icons/smallschematics/tracksegments/block.gif");
  iconEditor->complete();
 //makeBackgroundColorMenu(ui->menuSet_Background_color);
- signalIconEditor = NULL;
+ signalIconEditor = nullptr;
  clocks = new QVector<AnalogClock2Display*>();  // fast clocks
  signalHeadImage = new QVector<SignalHeadIcon*>();  // signal head images
  signalMastImage = new QVector<SignalMastIcon*>();  // signal mast images
@@ -229,17 +229,17 @@ _contents = new QVector<Positionable*>();
  skipIncludedTurnout = false;
 
  qApp->processEvents();
- panelGridGroup = NULL;
- trackInProgress = NULL;
- rectItem = NULL;
- highlightRect = NULL;
+ panelGridGroup = nullptr;
+ trackInProgress = nullptr;
+ rectItem = nullptr;
+ highlightRect = nullptr;
  noWarnGlobalDelete = false;
- multiSensorFrame = NULL;
+ multiSensorFrame = nullptr;
  openDispatcherOnLoad = false;
  useDirectTurnoutControl = false; // Uses Left click for closing points, Right click for throwing.
  turnoutDrawUnselectedLeg = true;
 
- if(memo==NULL)
+ if(memo==nullptr)
   memo = new LocoNetSystemConnectionMemo();
  lnSensorManager = memo->getSensorManager();
 
@@ -512,7 +512,7 @@ _contents = new QVector<Positionable*>();
 
  editPanel->setMouseTracking(true);
  editPanel->setScene(editScene);
- _turnoutSelection = NULL;
+ _turnoutSelection = nullptr;
 
 
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(OnScenePos(QGraphicsSceneMouseEvent*)));
@@ -569,15 +569,15 @@ _contents = new QVector<Positionable*>();
  _debug = true;
  _ignore = false;
  _urlMap = new QMap<QString, QString>();
- _newIcon = NULL;
- _delete = NULL;
+ _newIcon = nullptr;
+ _delete = nullptr;
  finder = new LayoutEditorFindItems(this);
  ui->menuOptions->addMenu( setupTurnoutSubMenu());
 
 // register the resulting panel for later configuration
  JmriConfigurationManager* cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
 
- if (cm != NULL) {
+ if (cm != nullptr) {
      cm->registerUser(this);
  }
 
@@ -907,7 +907,7 @@ double LayoutEditor::getPaintScale()
   if (bMeta || (!bAlt && !bShift))
   {
    // if moving an item, identify the item for mouseDragging
-   selectedObject = NULL;
+   selectedObject = nullptr;
    selectedPointType = NONE;
    if (checkSelect(dLoc, false))
    {
@@ -915,12 +915,12 @@ double LayoutEditor::getPaintScale()
     selectedPointType = foundPointType;
     //selectedNeedsConnect = foundNeedsConnect;
     startDel = QPointF(foundLocation.x()-dLoc.x(), foundLocation.y()-dLoc.y());
-    foundObject = NULL;
+    foundObject = nullptr;
    }
    else
    {
     selectedObject = checkMarkers(dLoc);
-    if (selectedObject!=NULL)
+    if (selectedObject!=nullptr)
     {
      selectedPointType = MARKER;
      startDel= QPointF((((LocoIcon*)selectedObject)->x()-dLoc.y()),(((LocoIcon*)selectedObject)->y()-dLoc.y()));
@@ -929,7 +929,7 @@ double LayoutEditor::getPaintScale()
     else
     {
      selectedObject = checkClocks(dLoc);
-     if (selectedObject!=NULL)
+     if (selectedObject!=nullptr)
      {
       selectedPointType = LAYOUT_POS_JCOMP;
       //startDel.setLocation((((PositionableJComponent)selectedObject).getX()-dLoc.getX()),(((PositionableJComponent)selectedObject).getY()-dLoc.getY()));
@@ -939,7 +939,7 @@ double LayoutEditor::getPaintScale()
      else
      {
       selectedObject = checkMultiSensors(dLoc);
-      if (selectedObject!=NULL)
+      if (selectedObject!=nullptr)
       {
        selectedPointType = MULTI_SENSOR;
        startDel= QPointF((((MultiSensorIcon*)selectedObject)->x()-dLoc.y()), (((MultiSensorIcon*)selectedObject)->x()-dLoc.y()));
@@ -947,28 +947,28 @@ double LayoutEditor::getPaintScale()
       }
      }
     }
-    if (selectedObject==NULL)
+    if (selectedObject==nullptr)
     {
      selectedObject = checkSensorIcons(dLoc);
-     if (selectedObject==NULL)
+     if (selectedObject==nullptr)
      {
       selectedObject = checkSignalHeadIcons(dLoc);
-      if (selectedObject==NULL)
+      if (selectedObject==nullptr)
       {
        selectedObject = checkLabelImages(dLoc);
-       if(selectedObject==NULL)
+       if(selectedObject==nullptr)
        {
         selectedObject = checkSignalMastIcons(dLoc);
        }
       }
      }
-     if (selectedObject!=NULL)
+     if (selectedObject!=nullptr)
      {
       selectedPointType = LAYOUT_POS_LABEL;
       //startDel.setLocation((((PositionableLabel*)selectedObject)->getX()-dLoc.getX()),                     (((PositionableLabel*)selectedObject)->getY()-dLoc.getY()));
       startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),(((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
       //if (selectedObject instanceof MemoryIcon)
-      if(qobject_cast<MemoryIcon*>(selectedObject)!= NULL)
+      if(qobject_cast<MemoryIcon*>(selectedObject)!= nullptr)
       {
        MemoryIcon* pm = (MemoryIcon*) selectedObject;
        if (pm->getPopupUtility()->getFixedWidth()==0)
@@ -982,7 +982,7 @@ double LayoutEditor::getPaintScale()
      else
      {
       selectedObject = checkBackgrounds(dLoc);
-      if (selectedObject!=NULL)
+      if (selectedObject!=nullptr)
       {
        selectedPointType = LAYOUT_POS_LABEL;
        //startDel.setLocation((((PositionableLabel)selectedObject).getX()-dLoc.x()),                            (((PositionableLabel)selectedObject).getY()-dLoc.y()));
@@ -996,7 +996,7 @@ double LayoutEditor::getPaintScale()
   else if (bShift && ui->chkTrackSegment->isChecked() /*&& (!event.isPopupTrigger()) */)
   {
    // starting a Track Segment, check for free connection point
-   selectedObject = NULL;
+   selectedObject = nullptr;
    if (checkSelect(dLoc, true))
    {
     // match to a free connection point
@@ -1005,18 +1005,18 @@ double LayoutEditor::getPaintScale()
     beginLocation = foundLocation;
    }
    else {
-    foundObject = NULL;
-    beginObject = NULL;
+    foundObject = nullptr;
+    beginObject = nullptr;
    }
   }
   else if ( (!bShift) && (!bControl) /*&& (!event.isPopupTrigger())*/ && !bPopupTrigger)
   {
    // check if controlling a turnout in edit mode
-    selectedObject = NULL;
+    selectedObject = nullptr;
     if (allControlling())
     {
      // check if mouse is on a turnout
-     selectedObject = NULL;
+     selectedObject = nullptr;
      for (int i = 0; i<turnoutList->size();i++)
      {
       LayoutTurnout* t = turnoutList->at(i);
@@ -1052,7 +1052,7 @@ double LayoutEditor::getPaintScale()
      LayoutTurntable* x = turntableList->at(i);
      for (int k = 0; k<x->getNumberRays(); k++)
      {
-      if (x->getRayConnectOrdered(k)!=NULL)
+      if (x->getRayConnectOrdered(k)!=nullptr)
       {
        // check the A connection point
        QPointF pt = x->getRayCoordsOrdered(k);
@@ -1083,7 +1083,7 @@ double LayoutEditor::getPaintScale()
            (!(event->modifiers()&Qt::AltModifier)) &&(!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
   {
    // not in edit mode - check if mouse is on a turnout (using wider search range)
-   selectedObject = NULL;
+   selectedObject = nullptr;
    for (int i = 0; i<turnoutList->size();i++)
    {
     LayoutTurnout* t = turnoutList->at(i);
@@ -1122,7 +1122,7 @@ double LayoutEditor::getPaintScale()
      LayoutTurntable* x = turntableList->at(i);
      for (int k = 0; k<x->getNumberRays(); k++)
      {
-      if (x->getRayConnectOrdered(k)!=NULL)
+      if (x->getRayConnectOrdered(k)!=nullptr)
       {
        // check the A connection point
        QPointF pt = x->getRayCoordsOrdered(k);
@@ -1144,7 +1144,7 @@ double LayoutEditor::getPaintScale()
  {
   // not in edit mode - check if moving a marker if there are any
   selectedObject = checkMarkers(dLoc);
-  if (selectedObject!=NULL)
+  if (selectedObject!=nullptr)
   {
    selectedPointType = MARKER;
    startDel= QPointF((((LocoIcon*)selectedObject)->getX()-dLoc.x()),
@@ -1156,17 +1156,17 @@ double LayoutEditor::getPaintScale()
  {
   // not in edit mode - check if a marker popup menu is being requested
   LocoIcon* lo = checkMarkers(dLoc);
-  if (lo!=NULL) delayedPopupTrigger = true;
+  if (lo!=nullptr) delayedPopupTrigger = true;
  }
  if (/*!event.isPopupTrigger() &&*/ !isDragging)
  {
   QList <Positionable*> selections = getSelectedItems(event);
   if (selections.size() > 0)
   {
-   if(qobject_cast<SignalHeadIcon*>(selections.at(0))!=  NULL)
+   if(qobject_cast<SignalHeadIcon*>(selections.at(0))!=  nullptr)
     ((SignalHeadIcon*)selections.at(0))->doMousePressed(event);
    else
-   if(qobject_cast<SensorIcon*>(selections.at(0))!=  NULL)
+   if(qobject_cast<SensorIcon*>(selections.at(0))!=  nullptr)
     ((SensorIcon*)selections.at(0))->doMousePressed(event);
    else
     ((PositionableLabel*)selections.at(0))->doMousePressed(event);
@@ -1189,7 +1189,7 @@ double LayoutEditor::getPaintScale()
   QList <Positionable*> selections = getSelectedItems(event);
   if (selections.size() > 0)
   { // don't think this cast is needed as long as doMouseClicked is public
-//   if(qobject_cast<SensorIcon*>(selections.at(0))!= NULL)
+//   if(qobject_cast<SensorIcon*>(selections.at(0))!= nullptr)
 //    ((SensorIcon*)selections.at(0))->doMouseClicked(event);
 //   else
    ((PositionableLabel*)selections.at(0))->doMouseClicked(event);
@@ -1200,14 +1200,14 @@ double LayoutEditor::getPaintScale()
   calcLocation(event->scenePos(), 0, 0);
   if (isEditable())
   {
-   selectedObject = NULL;
+   selectedObject = nullptr;
    selectedPointType = NONE;
    checkPopUp(event);
   }
   else
   {
    LocoIcon* lo = checkMarkers(dLoc);
-   if (lo!=NULL) showPopUp((Positionable*)lo, event);
+   if (lo!=nullptr) showPopUp((Positionable*)lo, event);
   }
  }
  if ((event->modifiers()&Qt::ControlModifier) /*&&*/ /*!event.isPopupTrigger()*/)
@@ -1239,7 +1239,7 @@ double LayoutEditor::getPaintScale()
   {
 
    PositionableLabel* s = checkSensorIcons(dLoc);
-   if (s!=NULL)
+   if (s!=nullptr)
    {
     amendSelectionGroup((Positionable*)s);
    }
@@ -1247,35 +1247,35 @@ double LayoutEditor::getPaintScale()
    else
    {
     PositionableLabel* sh = checkSignalHeadIcons(dLoc);
-    if (sh!=NULL)
+    if (sh!=nullptr)
     {
      amendSelectionGroup((Positionable*)sh);
     }
     else
     {
      PositionableLabel* ms = checkMultiSensors(dLoc);
-     if (ms!=NULL)
+     if (ms!=nullptr)
      {
       amendSelectionGroup((Positionable*)ms);
      }
      else
      {
       PositionableLabel* lb = checkLabelImages(dLoc);
-      if (lb!=NULL)
+      if (lb!=nullptr)
       {
        amendSelectionGroup((Positionable*)lb);
       }
 //      else
 //      {
 //       PositionableLabel* b = checkBackgrounds(dLoc);
-//       if (b!=NULL)
+//       if (b!=nullptr)
 //       {
 //        amendSelectionGroup(b);
 //       }
        else
        {
         PositionableLabel* sm = checkSignalMastIcons(dLoc);
-        if (sm!=NULL)
+        if (sm!=nullptr)
         {
          amendSelectionGroup((Positionable*)sm);
         }
@@ -1299,12 +1299,12 @@ double LayoutEditor::getPaintScale()
 {
  TrackSegment* t = p->getConnect1();
 
- if (t == NULL) {
+ if (t == nullptr) {
      t = p->getConnect2();
  }
 
  //Nothing connected to this bit of track so ignore
- if (t == NULL) {
+ if (t == nullptr) {
      return;
  }
  beginObject = p;
@@ -1329,7 +1329,7 @@ double LayoutEditor::getPaintScale()
      }
      p->removeTrackConnection(t);
 
-     if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL))
+     if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr))
      {
         removePositionablePoint(p);
      }
@@ -1345,7 +1345,7 @@ double LayoutEditor::getPaintScale()
     LayoutTurnout* lt = (LayoutTurnout*) foundObject;
     try
     {
-     if (lt->getConnection(foundPointType) == NULL)
+     if (lt->getConnection(foundPointType) == nullptr)
      {
       lt->setConnection(foundPointType, t, LayoutTrack::TRACK);
 
@@ -1356,7 +1356,7 @@ double LayoutEditor::getPaintScale()
       }
       p->removeTrackConnection(t);
 
-      if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL))
+      if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr))
       {
           removePositionablePoint(p);
       }
@@ -1375,7 +1375,7 @@ double LayoutEditor::getPaintScale()
     LevelXing* lx = (LevelXing*) foundObject;
     try
     {
-     if (lx->getConnection(foundPointType) == NULL)
+     if (lx->getConnection(foundPointType) == nullptr)
      {
       lx->setConnection(foundPointType, t, LayoutTrack::TRACK);
 
@@ -1386,7 +1386,7 @@ double LayoutEditor::getPaintScale()
       }
       p->removeTrackConnection(t);
 
-      if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL)) {
+      if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr)) {
           removePositionablePoint(p);
       }
      }
@@ -1405,7 +1405,7 @@ double LayoutEditor::getPaintScale()
     LayoutSlip* ls = (LayoutSlip*) foundObject;
     try
     {
-     if (ls->getConnection(foundPointType) == NULL)
+     if (ls->getConnection(foundPointType) == nullptr)
      {
       ls->setConnection(foundPointType, t, LayoutTrack::TRACK);
 
@@ -1416,7 +1416,7 @@ double LayoutEditor::getPaintScale()
       }
       p->removeTrackConnection(t);
 
-      if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL)) {
+      if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr)) {
           removePositionablePoint(p);
       }
      }
@@ -1433,7 +1433,7 @@ double LayoutEditor::getPaintScale()
     LayoutTurntable* tt = (LayoutTurntable*) foundObject;
     int ray = foundPointType - LayoutTrack::TURNTABLE_RAY_OFFSET;
 
-    if (tt->getRayConnectIndexed(ray) == NULL)
+    if (tt->getRayConnectIndexed(ray) == nullptr)
     {
      tt->setRayConnect(t, ray);
 
@@ -1444,7 +1444,7 @@ double LayoutEditor::getPaintScale()
      }
      p->removeTrackConnection(t);
 
-     if ((p->getConnect1() == NULL) && (p->getConnect2() == NULL)) {
+     if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr)) {
          removePositionablePoint(p);
      }
     }
@@ -1457,46 +1457,46 @@ double LayoutEditor::getPaintScale()
   }   //switch
   update();
 
-  if (t->getLayoutBlock() != NULL)
+  if (t->getLayoutBlock() != nullptr)
   {
    auxTools->setBlockConnectivityChanged();
   }
  }
- beginObject = NULL;
- foundObject = NULL;
+ beginObject = nullptr;
+ foundObject = nullptr;
 }   //checkPointOfPositionable
 
 /*private*/ void LayoutEditor::checkPointsOfTurnout(LayoutTurnout* lt)
 {
  beginObject = lt;
 
- if (lt->getConnectA() == NULL) {
+ if (lt->getConnectA() == nullptr) {
      beginPointType = LayoutTrack::TURNOUT_A;
      dLoc = lt->getCoordsA();
      checkPointsOfTurnoutSub(lt->getCoordsA());
  }
 
- if (lt->getConnectB() == NULL) {
+ if (lt->getConnectB() == nullptr) {
      beginPointType = LayoutTrack::TURNOUT_B;
      dLoc = lt->getCoordsB();
      checkPointsOfTurnoutSub(lt->getCoordsB());
  }
 
- if (lt->getConnectC() == NULL) {
+ if (lt->getConnectC() == nullptr) {
      beginPointType = LayoutTrack::TURNOUT_C;
      dLoc = lt->getCoordsC();
      checkPointsOfTurnoutSub(lt->getCoordsC());
  }
 
- if ((lt->getConnectD() == NULL) && ((lt->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER) ||
+ if ((lt->getConnectD() == nullptr) && ((lt->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER) ||
                                     (lt->getTurnoutType() == LayoutTurnout::LH_XOVER) ||
                                     (lt->getTurnoutType() == LayoutTurnout::RH_XOVER))) {
      beginPointType = LayoutTrack::TURNOUT_D;
      dLoc = lt->getCoordsD();
      checkPointsOfTurnoutSub(lt->getCoordsD());
  }
- beginObject = NULL;
- foundObject = NULL;
+ beginObject = nullptr;
+ foundObject = nullptr;
 }   //checkPointsOfTurnout
 
 /*private*/ void LayoutEditor::checkPointsOfTurnoutSub(QPointF dLoc)
@@ -1509,22 +1509,22 @@ double LayoutEditor::getPaintScale()
    {
     PositionablePoint* p2 = (PositionablePoint*) foundObject;
 
-    if (((p2->getConnect1() == NULL) && (p2->getConnect2() != NULL)) ||
-        ((p2->getConnect1() != NULL) && (p2->getConnect2() == NULL)))
+    if (((p2->getConnect1() == nullptr) && (p2->getConnect2() != nullptr)) ||
+        ((p2->getConnect1() != nullptr) && (p2->getConnect2() == nullptr)))
     {
      TrackSegment* t = p2->getConnect1();
 
-     if (t == NULL) {
+     if (t == nullptr) {
          t = p2->getConnect2();
      }
 
-     if (t == NULL) {
+     if (t == nullptr) {
          return;
      }
      LayoutTurnout* lt = (LayoutTurnout*) beginObject;
      try
      {
-      if (lt->getConnection(beginPointType) == NULL)
+      if (lt->getConnection(beginPointType) == nullptr)
       {
        lt->setConnection(beginPointType, t, LayoutTrack::TRACK);
        p2->removeTrackConnection(t);
@@ -1537,7 +1537,7 @@ double LayoutEditor::getPaintScale()
        removePositionablePoint(p2);
       }
 
-      if (t->getLayoutBlock() != NULL) {
+      if (t->getLayoutBlock() != nullptr) {
           auxTools->setBlockConnectivityChanged();
       }
      } catch (JmriException e) {
@@ -1571,9 +1571,9 @@ double LayoutEditor::getPaintScale()
 /*private*/ void LayoutEditor::rotateTurnout(LayoutTurnout* t) {
     LayoutTurnout* be = (LayoutTurnout*) beginObject;
 
-    if (((beginPointType == LayoutTrack::TURNOUT_A) && ((be->getConnectB() != NULL) || (be->getConnectC() != NULL))) ||
-        ((beginPointType == LayoutTrack::TURNOUT_B) && ((be->getConnectA() != NULL) || (be->getConnectC() != NULL))) ||
-        ((beginPointType == LayoutTrack::TURNOUT_C) && ((be->getConnectB() != NULL) || (be->getConnectA() != NULL)))) {
+    if (((beginPointType == LayoutTrack::TURNOUT_A) && ((be->getConnectB() != nullptr) || (be->getConnectC() != nullptr))) ||
+        ((beginPointType == LayoutTrack::TURNOUT_B) && ((be->getConnectA() != nullptr) || (be->getConnectC() != nullptr))) ||
+        ((beginPointType == LayoutTrack::TURNOUT_C) && ((be->getConnectB() != nullptr) || (be->getConnectA() != nullptr)))) {
         return;
     }
 
@@ -1667,7 +1667,7 @@ double LayoutEditor::getPaintScale()
 
 /*public*/ void LayoutEditor::mouseReleased(QGraphicsSceneMouseEvent* event)
 {
- //super.setToolTip(NULL);
+ //super.setToolTip(nullptr);
  // initialize mouse position
  calcLocation(event->scenePos(), 0, 0);
  if (isEditable())
@@ -1739,19 +1739,19 @@ double LayoutEditor::getPaintScale()
    }
    else if (ui->chkTrackSegment->isChecked())
    {
-    if ( (beginObject!=NULL) && (foundObject!=NULL) &&
+    if ( (beginObject!=nullptr) && (foundObject!=nullptr) &&
                 (beginObject!=foundObject) )
     {
-     if(trackInProgress != NULL && trackInProgress->scene()!=0)
+     if(trackInProgress != nullptr && trackInProgress->scene()!=0)
      {
       editScene->removeItem(trackInProgress);
-      trackInProgress = NULL;
+      trackInProgress = nullptr;
      }
      addTrackSegment();
      setCursor(Qt::ArrowCursor);
     }
-    beginObject = NULL;
-    foundObject = NULL;
+    beginObject = nullptr;
+    foundObject = nullptr;
     }
 #if 1
 
@@ -1788,20 +1788,20 @@ double LayoutEditor::getPaintScale()
    {
     log.warn("No item selected in panel edit mode");
    }
-   selectedObject = NULL;
+   selectedObject = nullptr;
    //repaint();
    paintTargetPanel(editScene);
   }
   else if ( (/*event->isPopupTrigger() ||*/ delayedPopupTrigger)  && !isDragging)
   {
-   selectedObject = NULL;
+   selectedObject = nullptr;
    selectedPointType = NONE;
    //whenReleased = event.getWhen();
    checkPopUp(event);
    delayedPopupTrigger = false;
   }
    // check if controlling turnouts
-  else if ( ( selectedObject!=NULL) && (selectedPointType==TURNOUT_CENTER)
+  else if ( ( selectedObject!=nullptr) && (selectedPointType==TURNOUT_CENTER)
              && allControlling() /*&& (!(event->modifiers()&Qt::ControlModifier))*/ /*&& (!(event->modifiers()&Qt::AltModifier)) *//*&& (!event.isPopupTrigger())*/
              && (!(event->modifiers()&Qt::ShiftModifier))
              && (!(event->modifiers()&Qt::ControlModifier)) )
@@ -1810,7 +1810,7 @@ double LayoutEditor::getPaintScale()
    LayoutTurnout* t = (LayoutTurnout*)selectedObject;
    t->toggleTurnout();
   }
-  else if ( ( selectedObject!=NULL) && ((selectedPointType == LayoutTrack::SLIP_CENTER) ||
+  else if ( ( selectedObject!=nullptr) && ((selectedPointType == LayoutTrack::SLIP_CENTER) ||
                                         (selectedPointType == LayoutTrack::SLIP_LEFT) ||
                                         (selectedPointType == LayoutTrack::SLIP_RIGHT))/* &&
                allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
@@ -1820,7 +1820,7 @@ double LayoutEditor::getPaintScale()
    LayoutSlip* t = (LayoutSlip*)selectedObject;
    t->toggleState(selectedPointType);
   }
-  else if ( ( selectedObject!=NULL) && (selectedPointType>=TURNTABLE_RAY_OFFSET) /*&&
+  else if ( ( selectedObject!=nullptr) && (selectedPointType>=TURNTABLE_RAY_OFFSET) /*&&
                allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
                    (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
   {
@@ -1828,7 +1828,7 @@ double LayoutEditor::getPaintScale()
    LayoutTurntable* t =  (LayoutTurntable*)selectedObject;
    t->setPosition(selectedPointType-TURNTABLE_RAY_OFFSET);
   }
-  else if ((selectedObject != NULL) && (selectedPointType == LayoutTrack::TURNOUT_CENTER) /*&&
+  else if ((selectedObject != nullptr) && (selectedPointType == LayoutTrack::TURNOUT_CENTER) /*&&
                          allControlling() && (event.isMetaDown()) && (!event.isAltDown()) &&
                          (!event.isShiftDown()) && (!event.isControlDown()) && isDragging)*/
            && (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) && isDragging)
@@ -1836,24 +1836,24 @@ double LayoutEditor::getPaintScale()
         //controlling layout, in edit mode
         checkPointsOfTurnout((LayoutTurnout*) selectedObject);
   }
-  else if ((selectedObject != NULL) && (selectedPointType == LayoutTrack::POS_POINT) /*&&
+  else if ((selectedObject != nullptr) && (selectedPointType == LayoutTrack::POS_POINT) /*&&
                allControlling() && (event.isMetaDown()) && (!event.isAltDown()) &&
                (!event.isShiftDown()) && (!event.isControlDown()) && isDragging) */
            && (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) && isDragging)
   {
     PositionablePoint* p = (PositionablePoint*) selectedObject;
 
-    if ((p->getConnect1() == NULL) || (p->getConnect2() == NULL)) {
+    if ((p->getConnect1() == nullptr) || (p->getConnect2() == nullptr)) {
         checkPointOfPositionable(p);
     }
    }
 
-   if ( (ui->chkTrackSegment->isChecked()) && (beginObject!=NULL) && (foundObject!=NULL) )
+   if ( (ui->chkTrackSegment->isChecked()) && (beginObject!=nullptr) && (foundObject!=nullptr) )
    {
     // user let up shift key before releasing the mouse when creating a track segment
     setCursor(Qt::ArrowCursor);
-    beginObject = NULL;
-    foundObject = NULL;
+    beginObject = nullptr;
+    foundObject = nullptr;
     //repaint();
     paintTargetPanel(editScene);
    }
@@ -1861,7 +1861,7 @@ double LayoutEditor::getPaintScale()
    createSelectionGroups();
   }
   // check if controlling turnouts out of edit mode
-  else if ( ( selectedObject!=NULL) && (selectedPointType==TURNOUT_CENTER) /*&&
+  else if ( ( selectedObject!=nullptr) && (selectedPointType==TURNOUT_CENTER) /*&&
             allControlling() && (!event.isMetaDown())*/ && (!(event->modifiers()&Qt::AltModifier)) /*&& (!event.isPopupTrigger()) */&&
                 (!(event->modifiers()&Qt::ShiftModifier)) && (!delayedPopupTrigger) )
   {
@@ -1870,7 +1870,7 @@ double LayoutEditor::getPaintScale()
    t->toggleTurnout();
   }
     // check if controlling turnouts out of edit mode
-    else if ( ( selectedObject!=NULL) && ((selectedPointType == LayoutTrack::SLIP_CENTER) ||
+    else if ( ( selectedObject!=nullptr) && ((selectedPointType == LayoutTrack::SLIP_CENTER) ||
                                           (selectedPointType == LayoutTrack::SLIP_LEFT) ||
                                           (selectedPointType == LayoutTrack::SLIP_RIGHT)) /*&&
             allControlling() && (!event.isMetaDown())*/ && (!(event->modifiers()&Qt::AltModifier))/* && (!event.isPopupTrigger())*/ &&
@@ -1881,7 +1881,7 @@ double LayoutEditor::getPaintScale()
    t->toggleState(selectedPointType);
   }
 #if 1
-  else if ( ( selectedObject!=NULL) && (selectedPointType>=TURNTABLE_RAY_OFFSET)/* &&
+  else if ( ( selectedObject!=nullptr) && (selectedPointType>=TURNTABLE_RAY_OFFSET)/* &&
             allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier)) && (!event.isPopupTrigger())*/ &&
                 (!(event->modifiers()&Qt::ShiftModifier)) && (!delayedPopupTrigger) )
   {
@@ -1893,7 +1893,7 @@ double LayoutEditor::getPaintScale()
    else if ( (/*event.isPopupTrigger() ||*/ delayedPopupTrigger) && (!isDragging) )
    {
     LocoIcon* lo = checkMarkers(dLoc);
-    if (lo!=NULL) showPopUp((Positionable*)lo, event);
+    if (lo!=nullptr) showPopUp((Positionable*)lo, event);
     else
     {
      if (checkSelect(dLoc, false))
@@ -1915,21 +1915,21 @@ double LayoutEditor::getPaintScale()
      }
 
      AnalogClock2Display* c = checkClocks(dLoc);
-     if (c!=NULL)
+     if (c!=nullptr)
      {
        showPopUp((Positionable*)c, event);
      }
      else
      {
       SignalMastIcon* sm = checkSignalMastIcons(dLoc);
-      if (sm!=NULL)
+      if (sm!=nullptr)
       {
        showPopUp((Positionable*)sm, event);
       }
       else
       {
        PositionableLabel* im = checkLabelImages(dLoc);
-       if(im!=NULL)
+       if(im!=nullptr)
        {
         showPopUp((Positionable*)im, event);
        }
@@ -1947,11 +1947,11 @@ double LayoutEditor::getPaintScale()
 //            whenReleased = event->getWhen();
     }
    }
-   if (selectedObject!=NULL)
+   if (selectedObject!=nullptr)
    {
     // An object was selected, deselect it
     prevSelectedObject = selectedObject;
-    selectedObject = NULL;
+    selectedObject = nullptr;
    }
    isDragging = false;
    delayedPopupTrigger = false;
@@ -1974,7 +1974,7 @@ double LayoutEditor::getPaintScale()
  }
  QPointF newPos = QPointF(dLoc.x() + startDel.y(), dLoc.y() + startDel.y());
 
- if ((selectedObject!=NULL) && (/*event.isMetaDown() ||*/ ((event->modifiers()&Qt::MetaModifier)!=0) || (selectedPointType==MARKER)))
+ if ((selectedObject!=nullptr) && (/*event.isMetaDown() ||*/ ((event->modifiers()&Qt::MetaModifier)!=0) || (selectedPointType==MARKER)))
   {
    // marker moves regardless of editMode or positionable
    PositionableLabel* pl = (PositionableLabel*)selectedObject;
@@ -1993,7 +1993,7 @@ double LayoutEditor::getPaintScale()
 
   if (isEditable())
   {
-   if ((selectedObject!=NULL) && (/*event.isMetaDown() ||*/ !(event->modifiers()&Qt::AltModifier))|| allPositionable())
+   if ((selectedObject!=nullptr) && (/*event.isMetaDown() ||*/ !(event->modifiers()&Qt::AltModifier))|| allPositionable())
    {
     // moving a point
     if (snapToGridOnMove)
@@ -2004,19 +2004,19 @@ double LayoutEditor::getPaintScale()
      newPos.setX(xx);
      newPos.setY(yy);
     }
-    if (_pointSelection!=NULL || _turnoutSelection!=NULL || _positionableSelection!=NULL /*|| _labelSelection != NULL*/)
+    if (_pointSelection!=nullptr || _turnoutSelection!=nullptr || _positionableSelection!=nullptr /*|| _labelSelection != nullptr*/)
     {
      int offsetx = xLoc - _lastX;
      int offsety = yLoc - _lastY;
      //We should do a move based upon a selection group.
      int xNew;
      int yNew;
-     if (_positionableSelection!=NULL)
+     if (_positionableSelection!=nullptr)
      {
       for (int i = 0; i<_positionableSelection->size(); i++)
       {
        Positionable* c = _positionableSelection->at(i);
-       if ((/*c instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(c)!=NULL) && (c->getPopupUtility()->getFixedWidth()==0))
+       if ((/*c instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(c)!=nullptr) && (c->getPopupUtility()->getFixedWidth()==0))
        {
         MemoryIcon* pm = (MemoryIcon*) c;
         xNew = (pm->getOriginalX()+offsetx);
@@ -2034,7 +2034,7 @@ double LayoutEditor::getPaintScale()
       c->updateScene();
      }
     }
-//    if(_labelSelection != NULL)
+//    if(_labelSelection != nullptr)
 //    {
 //     for(int i=0; i < _labelSelection->size(); i++)
 //     {
@@ -2048,7 +2048,7 @@ double LayoutEditor::getPaintScale()
 //      l->setLocation(xNew,yNew);
 //     }
 //    }
-    if(_labelImage != NULL)
+    if(_labelImage != nullptr)
     {
       for(int i=0; i < _labelImage->size(); i++)
       {
@@ -2062,7 +2062,7 @@ double LayoutEditor::getPaintScale()
        l->setLocation(xNew,yNew);
       }
     }
-    if (_turnoutSelection!=NULL)
+    if (_turnoutSelection!=nullptr)
     {
      for (int i = 0; i<_turnoutSelection->size();i++)
      {
@@ -2075,7 +2075,7 @@ double LayoutEditor::getPaintScale()
       t->setCoordsCenter( QPointF(xNew, yNew));
      }
     }
-    if (_xingSelection!=NULL)
+    if (_xingSelection!=nullptr)
     {
      // loop over all defined level crossings
      for (int i = 0; i<_xingSelection->size();i++)
@@ -2089,7 +2089,7 @@ double LayoutEditor::getPaintScale()
       x->setCoordsCenter(QPointF(xNew, yNew));
      }
     }
-    if (_slipSelection!=NULL)
+    if (_slipSelection!=nullptr)
     {
      // loop over all defined level crossings
      for (int i = 0; i<_slipSelection->size(); i++)
@@ -2104,7 +2104,7 @@ double LayoutEditor::getPaintScale()
      }
     }
     // loop over all defined turntables
-    if (_turntableSelection!=NULL)
+    if (_turntableSelection!=nullptr)
     {
      for (int i = 0; i<_turntableSelection->size();i++)
      {
@@ -2118,7 +2118,7 @@ double LayoutEditor::getPaintScale()
                   }
      }
      // loop over all defined Anchor Points and End Bumpers
-     if (_pointSelection!=NULL)
+     if (_pointSelection!=nullptr)
      {
       for (int i = 0; i<_pointSelection->size();i++)
       {
@@ -2248,10 +2248,10 @@ double LayoutEditor::getPaintScale()
        l->setLocation(xint, yint);
        isDragging = true;
 
-//       if(l->item != NULL)
+//       if(l->item != nullptr)
 //       {
 //        editScene->removeItem(l->item);
-//        l->item = NULL;
+//        l->item = nullptr;
 //       }
 
 //       if(l->isIcon())
@@ -2307,7 +2307,7 @@ double LayoutEditor::getPaintScale()
       break;
      }
      case MARKER:
-      if(qobject_cast<LocoIcon*>(selectedObject)!= NULL)
+      if(qobject_cast<LocoIcon*>(selectedObject)!= nullptr)
       {
        LocoIcon* l = (LocoIcon*)selectedObject;
        int xint = (int)newPos.x();
@@ -2333,11 +2333,11 @@ double LayoutEditor::getPaintScale()
    paintTargetPanel(editScene);
    }
    else
-   if ( (beginObject!=NULL) && event->modifiers()&Qt::ShiftModifier && ui->chkTrackSegment->isChecked() )
+   if ( (beginObject!=nullptr) && event->modifiers()&Qt::ShiftModifier && ui->chkTrackSegment->isChecked() )
   {
    // dragging from first end of Track Segment
    currentLocation= QPointF(xLoc,yLoc);
-   bool needResetCursor = (foundObject!=NULL);
+   bool needResetCursor = (foundObject!=nullptr);
    if (checkSelect(currentLocation, true))
    {
    // have match to free connection point, change cursor
@@ -2377,31 +2377,31 @@ double LayoutEditor::getPaintScale()
 //   yLabel.setText(Integer.toQString(yLoc));
 //  }
  QList <Positionable*> selections = getSelectedItems(event);
- Positionable* selection = NULL;
+ Positionable* selection = nullptr;
  int numSel = selections.size();
  if (numSel > 0)
  {
   selection = selections.at(0);
  }
-// if (selection!=NULL && selection.getDisplayLevel()>BKG && selection.showTooltip())
+// if (selection!=nullptr && selection.getDisplayLevel()>BKG && selection.showTooltip())
 // {
 //  showToolTip(selection, event);
 // }
 // else
 // {
-//  super.setToolTip(NULL);
+//  super.setToolTip(nullptr);
 // }
  if (numSel != _prevNumSel)
  {
   //repaint();
   //highLightSelection(editScene);
-  if(highlightRect != NULL && highlightRect->scene() != 0)
+  if(highlightRect != nullptr && highlightRect->scene() != 0)
   {
    editScene->removeItem(highlightRect);
   }
   highlightRect = new QGraphicsItemGroup();
 
-  if(qobject_cast<PositionableLabel*>(selection) != NULL)
+  if(qobject_cast<PositionableLabel*>(selection) != nullptr)
   {
    PositionableLabel* l = (PositionableLabel*)selection;
    QGraphicsRectItem* item = new QGraphicsRectItem(l->_itemGroup->boundingRect());
@@ -2411,7 +2411,7 @@ double LayoutEditor::getPaintScale()
    editScene->addItem(highlightRect);
   }
   else
-  if(qobject_cast<LayoutTurnout*>(selection) != NULL)
+  if(qobject_cast<LayoutTurnout*>(selection) != nullptr)
   {
    LayoutTurnout* t = (LayoutTurnout*)selection;
    QGraphicsRectItem* item = new QGraphicsRectItem(t->item->boundingRect());
@@ -2435,13 +2435,13 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  while (duplicate)
  {
   name = "A"+QString::number(numAnchors);
-  if (findPositionablePointByName(name)==NULL) duplicate = false;
+  if (findPositionablePointByName(name)==nullptr) duplicate = false;
   if (duplicate) numAnchors ++;
  }
  // create object
  PositionablePoint* o = new PositionablePoint(name,
                      PositionablePoint::ANCHOR, currentPoint, this);
- //if (o!=NULL) {
+ //if (o!=nullptr) {
  pointList->append(o);
  setDirty(true);
  //}
@@ -2454,7 +2454,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
         bool duplicate = true;
         while (duplicate) {
             name = "A" + numAnchors;
-            if (finder->findPositionablePointByName(name) == NULL) {
+            if (finder->findPositionablePointByName(name) == nullptr) {
                 duplicate = false;
             }
             if (duplicate) {
@@ -2464,7 +2464,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
         // create object
         PositionablePoint* o = new PositionablePoint(name,
                 PositionablePoint::ANCHOR, p, this);
-        //if (o!=NULL) {
+        //if (o!=nullptr) {
         pointList->append(o);
         setDirty(true);
         //}
@@ -2480,13 +2480,13 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
     bool duplicate = true;
     while (duplicate) {
         name = "EB"+numEndBumpers;
-        if (findPositionablePointByName(name)==NULL) duplicate = false;
+        if (findPositionablePointByName(name)==nullptr) duplicate = false;
         if (duplicate) numEndBumpers ++;
     }
     // create object
     PositionablePoint* o = new PositionablePoint(name,
                         PositionablePoint::END_BUMPER, currentPoint, this);
-    //if (o!=NULL) {
+    //if (o!=nullptr) {
     pointList->append(o);
     setDirty(true);
     //}
@@ -2504,13 +2504,13 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  while (duplicate)
  {
   name = "T"+QString::number(numTrackSegments);
-  if (findTrackSegmentByName(name)==NULL) duplicate = false;
+  if (findTrackSegmentByName(name)==nullptr) duplicate = false;
   if (duplicate) numTrackSegments ++;
  }
  // create object
  newTrack = new TrackSegment(name,beginObject,beginPointType,
                  foundObject,foundPointType,ui->chkDashed->isChecked(), ui->chkMainline->isChecked(),this);
- if (newTrack!=NULL)
+ if (newTrack!=nullptr)
  {
   trackList->append(newTrack);
   setDirty(true);
@@ -2519,7 +2519,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
   setLink(newTrack,TRACK,foundObject,foundPointType);
   // check on layout block
   LayoutBlock* b = provideLayoutBlock(ui->edBlockName->text().trimmed());
-  if (b!=NULL)
+  if (b!=nullptr)
   {
    newTrack->setLayoutBlock(b);
    auxTools->setBlockConnectivityChanged();
@@ -2557,20 +2557,20 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  while (duplicate)
  {
   name = "X"+QString("%1").arg(numLevelXings);
-  if (findLevelXingByName(name)==NULL)
+  if (findLevelXingByName(name)==nullptr)
    duplicate = false;
   if (duplicate)
    numLevelXings ++;
  }
  // create object
  LevelXing* o = new LevelXing(name,currentPoint,this);
- if (o!=NULL)
+ if (o!=nullptr)
  {
   xingList->append(o);
   setDirty(true);
   // check on layout block
   LayoutBlock* b = provideLayoutBlock(ui->edBlockName->text().trimmed());
-  if (b!=NULL)
+  if (b!=nullptr)
   {
    o->setLayoutBlockAC(b);
    o->setLayoutBlockBD(b);
@@ -2624,7 +2624,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  while (duplicate)
  {
   name = "SL"+QString("%1").arg(numLayoutSlips);
-  if (findLayoutSlipByName(name)==NULL) duplicate = false;
+  if (findLayoutSlipByName(name)==nullptr) duplicate = false;
   if (duplicate) numLayoutSlips ++;
  }
  // create object
@@ -2634,7 +2634,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 
  // check on layout block
  LayoutBlock* b = provideLayoutBlock(ui->edBlockName->text().trimmed());
- if (b!=NULL)
+ if (b!=nullptr)
  {
   o->setLayoutBlock(b);
   // check on occupancy sensor
@@ -2719,7 +2719,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  while (duplicate)
  {
   name = "TO"+QString("%1").arg(numLayoutTurnouts);
-  if (findLayoutTurnoutByName(name)==NULL) duplicate = false;
+  if (findLayoutTurnoutByName(name)==nullptr) duplicate = false;
   if (duplicate) numLayoutTurnouts ++;
  }
  addLayoutTurnout(name, type, rot, currentPoint);
@@ -2729,12 +2729,12 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 {
  // create object
  LayoutTurnout* o = new LayoutTurnout(name,type,                                   currentPoint,rot,xScale,yScale,this);
- //if (o!=NULL) {
+ //if (o!=nullptr) {
  turnoutList->append(o);
  setDirty(true);
  // check on layout block
  LayoutBlock* b = provideLayoutBlock(ui->edBlockName->text().trimmed());
- if (b!=NULL)
+ if (b!=nullptr)
  {
   o->setLayoutBlock(b);
   // check on occupancy sensor
@@ -2785,7 +2785,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   return false;
  }
  // ensure that this turnout is unique among Layout Turnouts
- LayoutTurnout* t = NULL;
+ LayoutTurnout* t = nullptr;
  for (int i=0;i<turnoutList->size();i++)
  {
   t = turnoutList->at(i);
@@ -2794,15 +2794,15 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   /*Only check for the second turnout if the type is a double cross over
    otherwise the second turnout is used to throw an additional turnout at
    the same time.*/
-  Turnout* to2 = NULL;
+  Turnout* to2 = nullptr;
   if(t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER)
   {
    to2 = t->getSecondTurnout();
   }
-  if (to!=NULL)
+  if (to!=nullptr)
   {
    if ( (to->getSystemName()==(turnoutName.toUpper())) ||
-                ((to->getUserName()!=NULL) && (to->getUserName()==(turnoutName))) )
+                ((to->getUserName()!=nullptr) && (to->getUserName()==(turnoutName))) )
    {
 //              JOptionPane.showMessageDialog(openPane,
 //                        java.text.MessageFormat.format(rb.getQString("Error4"),
@@ -2813,10 +2813,10 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
     return false;
    }
   }
-  if (to2!=NULL)
+  if (to2!=nullptr)
   {
    if ( (to2->getSystemName()==(turnoutName.toUpper())) ||
-                ((to2->getUserName()!=NULL) && (to2->getUserName()==(turnoutName))) )
+                ((to2->getUserName()!=nullptr) && (to2->getUserName()==(turnoutName))) )
    {
 //                JOptionPane.showMessageDialog(openPane,
 //                        java.text.MessageFormat.format(rb.getQString("Error4"),
@@ -2830,9 +2830,9 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
  foreach(LayoutSlip* slip, *slipList)
  {
   Turnout* to = slip->getTurnout();
-  if(to!=NULL)
+  if(to!=nullptr)
   {
-   if(to->getSystemName()==(turnoutName) || (to->getUserName()!=NULL && to->getUserName()==(turnoutName)))
+   if(to->getSystemName()==(turnoutName) || (to->getUserName()!=nullptr && to->getUserName()==(turnoutName)))
   {
 //                JOptionPane.showMessageDialog(openPane,
 //                        java.text.MessageFormat.format(rb.getQString("Error4"),
@@ -2843,9 +2843,9 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   }
  }
  to=slip->getTurnoutB();
- if(to!=NULL)
+ if(to!=nullptr)
   {
-   if(to->getSystemName()==(turnoutName) || (to->getUserName()!=NULL && to->getUserName()==(turnoutName)))
+   if(to->getSystemName()==(turnoutName) || (to->getUserName()!=nullptr && to->getUserName()==(turnoutName)))
   {
 //                JOptionPane.showMessageDialog(openPane,
 //                        java.text.MessageFormat.format(rb.getQString("Error4"),
@@ -2858,7 +2858,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 }
  // check that the unique turnout name corresponds to a defined physical turnout
  Turnout* to = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnoutName);
- if (to == NULL)
+ if (to == nullptr)
  {
         // There is no turnout corresponding to this name
 //        JOptionPane.showMessageDialog(openPane,
@@ -2880,13 +2880,13 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 //  g.setStroke(new java.awt.BasicStroke(2.0f));
  QColor color = QColor(204,207,88);
  QPen pen(color,2.0);
- if(highlightRect != NULL && highlightRect->scene() != 0)
+ if(highlightRect != nullptr && highlightRect->scene() != 0)
  {
   g->removeItem(highlightRect);
  }
  highlightRect = new QGraphicsItemGroup();
 
- if (_positionableSelection!=NULL)
+ if (_positionableSelection!=nullptr)
  {
   for (int i = 0; i<_positionableSelection->size(); i++)
   {
@@ -2896,11 +2896,11 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    SensorIcon* si;
    LocoIcon* li;
    MemoryIcon* mi;
-   if((si = qobject_cast<SensorIcon*>(c))!=NULL)
+   if((si = qobject_cast<SensorIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(si->getX(), si->getY(), si->maxWidth(), si->maxHeight()));
-   else if((li = qobject_cast<LocoIcon*>(c))!=NULL)
+   else if((li = qobject_cast<LocoIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(li->getX(), li->getY(), li->maxWidth(), li->maxHeight()));
-   else if((mi = qobject_cast<MemoryIcon*>(c))!=NULL)
+   else if((mi = qobject_cast<MemoryIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(mi->getX(), mi->getY(), mi->maxWidth(), mi->maxHeight()));
 
    item->setPen(pen);
@@ -2908,7 +2908,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   }
  }
  // loop over all defined turnouts
- if (_turnoutSelection!=NULL)
+ if (_turnoutSelection!=nullptr)
  {
   for (int i = 0; i<_turnoutSelection->size();i++)
   {
@@ -2927,7 +2927,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    highlightRect->addToGroup(item);
   }
  }
- if (_xingSelection!=NULL)
+ if (_xingSelection!=nullptr)
  {
   // loop over all defined level crossings
   for (int i = 0; i<_xingSelection->size();i++)
@@ -2947,7 +2947,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    highlightRect->addToGroup(item);
   }
  }
-  if (_slipSelection!=NULL)
+  if (_slipSelection!=nullptr)
   {
   // loop over all defined level crossings
    for (int i = 0; i<_slipSelection->size();i++)
@@ -2968,7 +2968,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    }
   }
   // loop over all defined turntables
-  if (_turntableSelection!=NULL)
+  if (_turntableSelection!=nullptr)
   {
    for (int i = 0; i<_turntableSelection->size();i++)
    {
@@ -2983,7 +2983,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    }
   }
   // loop over all defined Anchor Points and End Bumpers
-  if (_pointSelection!=NULL)
+  if (_pointSelection!=nullptr)
   {
    for (int i = 0; i<_pointSelection->size();i++)
    {
@@ -3008,7 +3008,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   {
    Positionable* c = contents.at(i);
    PositionableLabel* pl = qobject_cast<PositionableLabel*>(c);
-   if(pl == NULL)
+   if(pl == nullptr)
    {
     qDebug() << "Error casting to PositionableLabel";
     continue;
@@ -3016,7 +3016,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    upperLeft = pl->getLocation();
    if (selectRect.contains(upperLeft))
    {
-    if (_positionableSelection==NULL) _positionableSelection = new QVector<Positionable*>();
+    if (_positionableSelection==nullptr) _positionableSelection = new QVector<Positionable*>();
     if(!_positionableSelection->contains(c))
      _positionableSelection->append(c);
    }
@@ -3028,7 +3028,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    QPointF center = t->getCoordsCenter();
    if (selectRect.contains(center))
    {
-    if (_turnoutSelection==NULL) _turnoutSelection = new QVector<LayoutTurnout*>();
+    if (_turnoutSelection==nullptr) _turnoutSelection = new QVector<LayoutTurnout*>();
     if(!_turnoutSelection->contains(t))
      _turnoutSelection->append(t);
    }
@@ -3040,7 +3040,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    QPointF center = x->getCoordsCenter();
    if (selectRect.contains(center))
    {
-    if (_xingSelection==NULL)
+    if (_xingSelection==nullptr)
      _xingSelection = new QVector<LevelXing*>();
     if(!_xingSelection->contains(x))
      _xingSelection->append(x);
@@ -3053,7 +3053,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    QPointF center = x->getCoordsCenter();
    if (selectRect.contains(center))
   {
-   if (_slipSelection==NULL) _slipSelection = new QVector<LayoutSlip*>();
+   if (_slipSelection==nullptr) _slipSelection = new QVector<LayoutSlip*>();
    if(!_slipSelection->contains(x))
        _slipSelection->append(x);
    }
@@ -3065,7 +3065,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    QPointF center = x->getCoordsCenter();
    if (selectRect.contains(center))
    {
-    if (_turntableSelection==NULL) _turntableSelection = new QVector<LayoutTurntable*>();
+    if (_turntableSelection==nullptr) _turntableSelection = new QVector<LayoutTurntable*>();
     if(!_turntableSelection->contains(x))
         _turntableSelection->append(x);
    }
@@ -3077,7 +3077,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    QPointF coord = p->getCoords();
    if (selectRect.contains(coord))
    {
-    if (_pointSelection==NULL)
+    if (_pointSelection==nullptr)
      _pointSelection = new QVector<PositionablePoint*>();
     if(!_pointSelection->contains(p))
      _pointSelection->append(p);
@@ -3090,7 +3090,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 //   QPointF coord = l->getLocation();
 //   if (selectRect.contains(coord))
 //   {
-//    if (_labelSelection==NULL)
+//    if (_labelSelection==nullptr)
 //    _labelSelection = new QVector<PositionableLabel*>();
 //    if(!_labelSelection->contains(l))
 //      _labelSelection->append(l);
@@ -3102,13 +3102,13 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 
 
 /*private*/ void LayoutEditor::clearSelectionGroups(){
-  _pointSelection=NULL;
-//  _turntableSelection=NULL;
-  _xingSelection=NULL;
-//  _slipSelection=NULL;
-  _turnoutSelection=NULL;
-  _positionableSelection=NULL;
-  _labelSelection=NULL;
+  _pointSelection=nullptr;
+//  _turntableSelection=nullptr;
+  _xingSelection=nullptr;
+//  _slipSelection=nullptr;
+  _turnoutSelection=nullptr;
+  _positionableSelection=nullptr;
+  _labelSelection=nullptr;
 }
 /**
 * Return a List of all items whose bounding rectangle contain the mouse position.
@@ -3157,14 +3157,14 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 }
 
 /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByName(QString name) {
-  if (name.length()<=0) return NULL;
+  if (name.length()<=0) return nullptr;
   for (int i = 0; i<pointList->size(); i++) {
       PositionablePoint* p = pointList->at(i);
       if (p->getID()==(name)) {
           return p;
       }
   }
-  return NULL;
+  return nullptr;
 }
 /*public*/ PositionablePoint* LayoutEditor::findPositionablePointAtTrackSegments(TrackSegment* tr1, TrackSegment* tr2) {
   for (int i = 0; i<pointList->size(); i++) {
@@ -3174,7 +3174,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
           return p;
       }
   }
-  return NULL;
+  return nullptr;
 }
 void LayoutEditor::setDirty(bool b) {bDirty = b;}
 bool LayoutEditor::isDirty() {return bDirty;}
@@ -3193,14 +3193,14 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
 /*public*/ TrackSegment* LayoutEditor::findTrackSegmentByName(QString name)
 {
-  if (name.length()<=0) return NULL;
+  if (name.length()<=0) return nullptr;
   for (int i = 0; i<trackList->size(); i++) {
       TrackSegment* t = trackList->at(i);
       if (t->getID()==(name)) {
           return t;
       }
   }
-  return NULL;
+  return nullptr;
 }
 /**
 * Adds a link in the 'to' object to the 'from' object
@@ -3284,7 +3284,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  }
  // get a validated sensor corresponding to this name and assigned to block
  Sensor* s = blk->validateSensor(sensorName,openFrame);
- if (s==NULL)
+ if (s==nullptr)
  {
   // There is no sensor corresponding to this name
   return false;
@@ -3293,7 +3293,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 }
 /*public*/ LevelXing* LayoutEditor::findLevelXingByName(QString name)
  {
-  if (name.length()<=0) return NULL;
+  if (name.length()<=0) return nullptr;
   for (int i = 0; i<xingList->size(); i++)
   {
    LevelXing* x = xingList->at(i);
@@ -3302,11 +3302,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
     return x;
    }
   }
-  return NULL;
+  return nullptr;
 }
 /*public*/ LayoutSlip* LayoutEditor::findLayoutSlipByName(QString name)
 {
- if (name.length()<=0) return NULL;
+ if (name.length()<=0) return nullptr;
  for (int i = 0; i<slipList->size(); i++)
  {
   LayoutSlip* x = slipList->at(i);
@@ -3315,7 +3315,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
    return x;
   }
  }
- return NULL;
+ return nullptr;
 }
 /**
  * @deprecated As of 3.9.2, ... use getFinder().find...
@@ -3327,7 +3327,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
 /*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutByName(QString name)
 {
- if (name.length()<=0) return NULL;
+ if (name.length()<=0) return nullptr;
  for (int i = 0; i<turnoutList->size(); i++)
  {
   LayoutTurnout* t = turnoutList->at(i);
@@ -3336,12 +3336,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
    return t;
   }
  }
- return NULL;
+ return nullptr;
 }
 
 /*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutByTurnoutName(QString name)
 {
- if (name.length()<=0) return NULL;
+ if (name.length()<=0) return nullptr;
  for (int i = 0; i<turnoutList->size(); i++)
  {
   LayoutTurnout* t = turnoutList->at(i);
@@ -3350,7 +3350,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
    return t;
   }
  }
- return NULL;
+ return nullptr;
 }
 /*public*/ QList <Positionable*> LayoutEditor::getContents()
 {
@@ -3414,20 +3414,20 @@ bool LayoutEditor::isDirty() {return bDirty;}
  // check if this Layout Block already exists
 //  LayoutBlock* blk = InstanceManager::layoutBlockManagerInstance().getByUserName(blockID);
  LayoutBlock* blk = layoutBlockManager->getByUserName(blockID);
- if (blk==NULL)
+ if (blk==nullptr)
  {
   log.error("LayoutBlock '"+blockID+"' not found when panel loaded");
-  return NULL;
+  return nullptr;
  }
  blk->addLayoutEditor(this);
  return blk;
 }
 /*public*/ QObject* LayoutEditor::findObjectByTypeAndName(int type,QString name)
 {
-  if (name.length()<=0) return NULL;
+  if (name.length()<=0) return nullptr;
   switch (type) {
       case NONE:
-          return NULL;
+          return nullptr;
       case POS_POINT:
           return findPositionablePointByName(name);
       case TURNOUT_A:
@@ -3453,11 +3453,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
       break;
   }
   log.error("did not find Object '"+name+"' of type "+type);
-  return NULL;
+  return nullptr;
 }
 /*public*/ LayoutBlock* LayoutEditor::getAffectedBlock(QObject* o, int type) {
-  if (o==NULL)
-   return NULL;
+  if (o==nullptr)
+   return nullptr;
   switch (type) {
       case TURNOUT_A:
           return ((LayoutTurnout*)o)->getLayoutBlock();
@@ -3488,12 +3488,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
       case TRACK:
           return ((TrackSegment*)o)->getLayoutBlock();
   }
-  return NULL;
+  return nullptr;
 }
 
 /*protected*/ QPointF LayoutEditor::getCoords(QObject* o, int type)
 {
- if (o != NULL)
+ if (o != nullptr)
  {
   switch (type)
   {
@@ -3531,7 +3531,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  }
  else
  {
-  log.error("NULL connection point of type "+QString("%1").arg(type));
+  log.error("nullptr connection point of type "+QString("%1").arg(type));
  }
  return ( QPointF(0.0,0.0));
 }
@@ -3549,16 +3549,16 @@ bool LayoutEditor::isDirty() {return bDirty;}
   if(!autoAssignBlocks)
   {
    // nothing entered
-   return NULL;
+   return nullptr;
   }
   else
   {
    //blk = InstanceManager::layoutBlockManagerInstance().createNewLayoutBlock();
    blk = layoutBlockManager->createNewLayoutBlock();
-   if (blk == NULL)
+   if (blk == nullptr)
    {
     log.error("Unable to create a layout block");
-    return NULL;
+    return nullptr;
    }
    // initialize the new block
    blk->initializeLayoutBlock();
@@ -3573,14 +3573,14 @@ bool LayoutEditor::isDirty() {return bDirty;}
   // check if this Layout Block already exists
   //blk = InstanceManager::layoutBlockManagerInstance().getByUserName(s);
   blk = layoutBlockManager->getByUserName(s);
-  if (blk == NULL)
+  if (blk == nullptr)
   {
-   //blk = InstanceManager::layoutBlockManagerInstance().createNewLayoutBlock(NULL,s);
+   //blk = InstanceManager::layoutBlockManagerInstance().createNewLayoutBlock(nullptr,s);
    blk = layoutBlockManager->createNewLayoutBlock("",s);
-   if (blk == NULL)
+   if (blk == nullptr)
    {
     log.error("Failure to create LayoutBlock '"+s+"'.");
-    return NULL;
+    return nullptr;
    }
    else
    {
@@ -3603,7 +3603,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 * Returns an array list of track segments matching the block name.
 */
 /*public*/ QVector<TrackSegment*>* LayoutEditor::findTrackSegmentByBlock(QString name) {
-  if (name.length()<=0) return NULL;
+  if (name.length()<=0) return nullptr;
   QVector<TrackSegment*>* ts = new QVector<TrackSegment*>();
   for (int i = 0; i<trackList->size(); i++) {
       TrackSegment* t = trackList->at(i);
@@ -3733,7 +3733,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   setTrackStrokeWidth(x->isMainline());
   QColor mainColour;
   QColor subColour;
-  if (b!=NULL)
+  if (b!=nullptr)
   {
    mainColour = b->getBlockColor();
    subColour = b->getBlockTrackColor();
@@ -3743,16 +3743,16 @@ bool LayoutEditor::isDirty() {return bDirty;}
    mainColour = defaultTrackColor;
    subColour = defaultTrackColor;
   }
-  if(x->item != NULL && x->item->scene()!=0)
+  if(x->item != nullptr && x->item->scene()!=0)
   {
    g2->removeItem(x->item);
-   x->item = NULL;
+   x->item = nullptr;
   }
-  if(x->rects != NULL)
+  if(x->rects != nullptr)
   {
    Q_ASSERT(x->rects->scene()!=0);
    g2->removeItem(x->rects);
-   x->rects = NULL;
+   x->rects = nullptr;
   }
   x->item = new QGraphicsItemGroup();
 
@@ -4050,10 +4050,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
   for (int i = 0; i<turntableList->size();i++)
   {
    LayoutTurntable* x = turntableList->at(i);
-   if(x->item != NULL && x->item->scene()!=0)
+   if(x->item != nullptr && x->item->scene()!=0)
    {
     g2->removeItem(x->item);
-    x->item = NULL;
+    x->item = nullptr;
    }
    x->item = new QGraphicsItemGroup();
 
@@ -4074,11 +4074,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
    {
     QPointF pt = x->getRayCoordsOrdered(j);
     TrackSegment* t = x->getRayConnectOrdered(j);
-    if (t!=NULL)
+    if (t!=nullptr)
     {
      setTrackStrokeWidth(/*g2,*/t->getMainline());
      LayoutBlock* b = t->getLayoutBlock();
-     if (b!=NULL) color = (b->getBlockColor());
+     if (b!=nullptr) color = (b->getBlockColor());
      else color = (defaultTrackColor);
     }
     else
@@ -4134,7 +4134,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
       circle->setPen(QPen(defaultTrackColor,1));
       x->item->addToGroup(circle);
       pt = x->getCoordsA();
-      if (x->getConnectA()==NULL) {
+      if (x->getConnectA()==nullptr) {
           //g2.setColor(QColor::red);
        color = Qt::red;
       }
@@ -4148,7 +4148,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
       rect->setPen(QPen(color, 1));
       x->item->addToGroup(rect);
       pt = x->getCoordsB();
-      if (x->getConnectB()==NULL) {
+      if (x->getConnectB()==nullptr) {
           //g2.setColor(QColor::red);
        color = Qt::red;
       }
@@ -4162,7 +4162,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
       rect->setPen(QPen(color, 1));
       x->item->addToGroup(rect);
       pt = x->getCoordsC();
-      if (x->getConnectC()==NULL) {
+      if (x->getConnectC()==nullptr) {
           //g2.setColor(QColor::red);
        color = Qt::red;
       }
@@ -4176,7 +4176,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
       rect->setPen(QPen(color, 1));
       x->item->addToGroup(rect);
       pt = x->getCoordsD();
-      if (x->getConnectD()==NULL) {
+      if (x->getConnectD()==nullptr) {
           //g2.setColor(QColor::red);
        color = Qt::red;
       }
@@ -4208,7 +4208,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
       for (int j = 0; j<x->getNumberRays();j++)
       {
           pt = x->getRayCoordsOrdered(j);
-          if (x->getRayConnectOrdered(j)==NULL) {
+          if (x->getRayConnectOrdered(j)==nullptr) {
               //g2.setColor(QColor::red);
            color = Qt::red;
           }
@@ -4249,10 +4249,10 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 // for(int i=0; i < markerImage->size(); i++)
 // {
 //   LocoIcon* l = markerImage->at(i) ;
-//   if(l->item != NULL)
+//   if(l->item != nullptr)
 //   {
 //    g2->removeItem(l->item);
-//    l->item = NULL;
+//    l->item = nullptr;
 //   }
 //   QPixmap pixmap = QPixmap::fromImage(QImage((l->getIcon()->getOriginalImage())));
 //   l->item = g2->addPixmap(pixmap);
@@ -4315,12 +4315,12 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 {
  // check for segment in progress
 
- if ( isEditable() && (beginObject!=NULL) && ui->chkTrackSegment->isChecked() )
+ if ( isEditable() && (beginObject!=nullptr) && ui->chkTrackSegment->isChecked() )
  {
 //      g2.setColor(defaultTrackColor);
 //      setTrackStrokeWidth(g2,false);
 //      g2.draw(new Line2D.Double(beginLocation,currentLocation));
-  if(trackInProgress != NULL && trackInProgress->scene()!=0)
+  if(trackInProgress != nullptr && trackInProgress->scene()!=0)
   {
    g2->removeItem(trackInProgress);
   }
@@ -4362,7 +4362,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 //      g2.setColor(defaultTrackColor);
 //      g2.setStroke(new BasicStroke(1.0F,BasicStroke.CAP_BUTT,BasicStroke.JOIN_ROUND));
 //      g2.draw(new Rectangle2D.Double (selectionX, selectionY, selectionWidth, selectionHeight));
-   if(rectItem != NULL)
+   if(rectItem != nullptr)
    {
     Q_ASSERT(rectItem->scene()!=0);
     editScene->removeItem(rectItem);
@@ -4383,11 +4383,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   for (int i = 0;i<memoryLabelList->size();i++)
   {
    MemoryIcon* l = memoryLabelList->at(i);
-   if(l->_itemGroup != NULL && l->_itemGroup->scene() != 0)
+   if(l->_itemGroup != nullptr && l->_itemGroup->scene() != 0)
    {
     Q_ASSERT(l->_itemGroup->scene()!=0);
     g2->removeItem(l->_itemGroup);
-    l->_itemGroup = NULL;
+    l->_itemGroup = nullptr;
    }
    l->_itemGroup = new MyGraphicsItemGroup();
    l->_itemGroup->setName("drawMemoryRects");
@@ -4404,13 +4404,13 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 /*private*/ void LayoutEditor::drawPanelGrid(EditScene* g2)
 {
   //Dimension dim = getSize();
-  if(panelGridGroup!=NULL)
+  if(panelGridGroup!=nullptr)
   {
    Q_ASSERT(panelGridGroup->scene()!=0);
    g2->removeItem(panelGridGroup);
    //g2->destroyItemGroup(panelGridGroup);
   }
-  panelGridGroup = NULL;
+  panelGridGroup = nullptr;
   if(!isEditable() || !drawGrid)
    return;
   panelGridGroup = new QGraphicsItemGroup();
@@ -4484,7 +4484,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 #endif
 
 /*private*/ bool LayoutEditor::checkSelect(QPointF loc, bool requireUnconnected) {
-    return checkSelect(loc, requireUnconnected, NULL);
+    return checkSelect(loc, requireUnconnected, nullptr);
 }
 
 /*private*/ bool LayoutEditor::checkSelect(QPointF loc, bool requireUnconnected, QObject* avoid)
@@ -4496,9 +4496,9 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   if(p != avoid)
   {
    if ( (p!=selectedObject) && !requireUnconnected ||
-               (p->getConnect1()==NULL) ||
+               (p->getConnect1()==nullptr) ||
                ((p->getType()!=PositionablePoint::END_BUMPER) &&
-                                           (p->getConnect2()==NULL)) )
+                                           (p->getConnect2()==nullptr)) )
    {
     QPointF pt = p->getCoords();
     QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
@@ -4508,7 +4508,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
      foundLocation = pt;
      foundObject = p;
      foundPointType = POS_POINT;
-     foundNeedsConnect = ((p->getConnect1()==NULL)||(p->getConnect2()==NULL));
+     foundNeedsConnect = ((p->getConnect1()==nullptr)||(p->getConnect2()==nullptr));
      return true;
     }
    }
@@ -4535,7 +4535,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
      return true;
     }
    }
-   if (!requireUnconnected || (t->getConnectA()==NULL))
+   if (!requireUnconnected || (t->getConnectA()==nullptr))
    {
     // check the A connection point
     QPointF pt = t->getCoordsA();
@@ -4546,11 +4546,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
      foundLocation = pt;
      foundObject = t;
      foundPointType = TURNOUT_A;
-     foundNeedsConnect = (t->getConnectA()==NULL);
+     foundNeedsConnect = (t->getConnectA()==nullptr);
      return true;
     }
    }
-   if (!requireUnconnected || (t->getConnectB()==NULL))
+   if (!requireUnconnected || (t->getConnectB()==nullptr))
    {
     // check the B connection point
     QPointF pt = t->getCoordsB();
@@ -4561,11 +4561,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
      foundLocation = pt;
      foundObject = t;
      foundPointType = TURNOUT_B;
-     foundNeedsConnect = (t->getConnectB()==NULL);
+     foundNeedsConnect = (t->getConnectB()==nullptr);
      return true;
     }
    }
-   if (!requireUnconnected || (t->getConnectC()==NULL))
+   if (!requireUnconnected || (t->getConnectC()==nullptr))
    {
     // check the C connection point
     QPointF pt = t->getCoordsC();
@@ -4576,14 +4576,14 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
      foundLocation = pt;
      foundObject = t;
      foundPointType = TURNOUT_C;
-     foundNeedsConnect = (t->getConnectC()==NULL);
+     foundNeedsConnect = (t->getConnectC()==nullptr);
      return true;
     }
    }
    if (( (t->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ||
           (t->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
           (t->getTurnoutType()==LayoutTurnout::LH_XOVER) ) && (
-          !requireUnconnected || (t->getConnectD()==NULL)))
+          !requireUnconnected || (t->getConnectD()==nullptr)))
    {
     // check the D connection point, double crossover turnouts only
     QPointF pt = t->getCoordsD();
@@ -4594,7 +4594,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
      foundLocation = pt;
      foundObject = t;
      foundPointType = TURNOUT_D;
-     foundNeedsConnect = (t->getConnectD()==NULL);
+     foundNeedsConnect = (t->getConnectD()==nullptr);
      return true;
     }
    }
@@ -4622,7 +4622,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
       return true;
      }
     }
-    if (!requireUnconnected || (x->getConnectA()==NULL))
+    if (!requireUnconnected || (x->getConnectA()==nullptr))
     {
      // check the A connection point
      QPointF pt = x->getCoordsA();
@@ -4633,11 +4633,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
       foundLocation = pt;
       foundObject = x;
       foundPointType = LEVEL_XING_A;
-      foundNeedsConnect = (x->getConnectA()==NULL);
+      foundNeedsConnect = (x->getConnectA()==nullptr);
       return true;
      }
     }
-    if (!requireUnconnected || (x->getConnectB()==NULL))
+    if (!requireUnconnected || (x->getConnectB()==nullptr))
     {
      // check the B connection point
      QPointF pt = x->getCoordsB();
@@ -4648,11 +4648,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
       foundLocation = pt;
       foundObject = x;
       foundPointType = LEVEL_XING_B;
-      foundNeedsConnect = (x->getConnectB()==NULL);
+      foundNeedsConnect = (x->getConnectB()==nullptr);
       return true;
      }
     }
-    if (!requireUnconnected || (x->getConnectC()==NULL))
+    if (!requireUnconnected || (x->getConnectC()==nullptr))
     {
      // check the C connection point
      QPointF pt = x->getCoordsC();
@@ -4663,11 +4663,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
       foundLocation = pt;
       foundObject = x;
       foundPointType = LEVEL_XING_C;
-      foundNeedsConnect = (x->getConnectC()==NULL);
+      foundNeedsConnect = (x->getConnectC()==nullptr);
       return true;
      }
     }
-    if (!requireUnconnected || (x->getConnectD()==NULL))
+    if (!requireUnconnected || (x->getConnectD()==nullptr))
     {
      // check the D connection point
      QPointF pt = x->getCoordsD();
@@ -4678,7 +4678,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
       foundLocation = pt;
       foundObject = x;
       foundPointType = LEVEL_XING_D;
-      foundNeedsConnect = (x->getConnectD()==NULL);
+      foundNeedsConnect = (x->getConnectD()==nullptr);
       return true;
      }
     }
@@ -4706,7 +4706,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
           return true;
       }
      }
-     if (!requireUnconnected || (x->getConnectA()==NULL))
+     if (!requireUnconnected || (x->getConnectA()==nullptr))
      {
           // check the A connection point
           QPointF pt = x->getCoordsA();
@@ -4717,11 +4717,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
               foundLocation = pt;
               foundObject = x;
               foundPointType = SLIP_A;
-              foundNeedsConnect = (x->getConnectA()==NULL);
+              foundNeedsConnect = (x->getConnectA()==nullptr);
               return true;
           }
       }
-      if (!requireUnconnected || (x->getConnectB()==NULL)) {
+      if (!requireUnconnected || (x->getConnectB()==nullptr)) {
           // check the B connection point
           QPointF pt = x->getCoordsB();
           QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
@@ -4731,11 +4731,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
               foundLocation = pt;
               foundObject = x;
               foundPointType = SLIP_B;
-              foundNeedsConnect = (x->getConnectB()==NULL);
+              foundNeedsConnect = (x->getConnectB()==nullptr);
               return true;
           }
       }
-      if (!requireUnconnected || (x->getConnectC()==NULL))
+      if (!requireUnconnected || (x->getConnectC()==nullptr))
       {
           // check the C connection point
           QPointF pt = x->getCoordsC();
@@ -4746,11 +4746,11 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
               foundLocation = pt;
               foundObject = x;
               foundPointType = SLIP_C;
-              foundNeedsConnect = (x->getConnectC()==NULL);
+              foundNeedsConnect = (x->getConnectC()==nullptr);
               return true;
           }
       }
-      if (!requireUnconnected || (x->getConnectD()==NULL))
+      if (!requireUnconnected || (x->getConnectD()==nullptr))
       {
           // check the D connection point
           QPointF pt = x->getCoordsD();
@@ -4761,7 +4761,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
               foundLocation = pt;
               foundObject = x;
               foundPointType = SLIP_D;
-              foundNeedsConnect = (x->getConnectD()==NULL);
+              foundNeedsConnect = (x->getConnectD()==nullptr);
               return true;
           }
       }
@@ -4787,7 +4787,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
               }
           }
           for (int k = 0; k<x->getNumberRays(); k++) {
-              if (!requireUnconnected || (x->getRayConnectOrdered(k)==NULL)) {
+              if (!requireUnconnected || (x->getRayConnectOrdered(k)==nullptr)) {
                   QPointF pt = x->getRayCoordsOrdered(k);
                   QRectF r = QRectF(
                           pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
@@ -4796,7 +4796,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
                       foundLocation = pt;
                       foundObject = x;
                       foundPointType = TURNTABLE_RAY_OFFSET+x->getRayIndex(k);
-                      foundNeedsConnect = (x->getRayConnectOrdered(k)==NULL);
+                      foundNeedsConnect = (x->getRayConnectOrdered(k)==nullptr);
                       return true;
                   }
               }
@@ -4825,7 +4825,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
  for(int i=0; i < _labelImage->size(); i++)
  {
   PositionableLabel* l = _labelImage->at(i);
-  if(l->getItem() != NULL)
+  if(l->getItem() != nullptr)
   {
    QPointF pt = l->getItem()->mapFromParent(loc);
    if(l->getItem()->contains(pt))
@@ -4838,12 +4838,12 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   }
  }
  // no connection point found
- foundObject = NULL;
+ foundObject = nullptr;
  return false;
 }
 /*private*/ void LayoutEditor::amendSelectionGroup(Positionable* p)
 {
- if (_positionableSelection==NULL)
+ if (_positionableSelection==nullptr)
  {
    _positionableSelection = new QVector <Positionable*>();
  }
@@ -4861,14 +4861,14 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   _positionableSelection->append(p);
  if (_positionableSelection->isEmpty())
  {
-  _positionableSelection=NULL;
+  _positionableSelection=nullptr;
  }
   //repaint();
   paintTargetPanel(editScene);
 }
 
 /*private*/ void LayoutEditor::amendSelectionGroup(LayoutTurnout* p){
-  if (_turnoutSelection==NULL){
+  if (_turnoutSelection==nullptr){
       _turnoutSelection = new QVector <LayoutTurnout*>();
   }
   bool removed = false;
@@ -4882,14 +4882,14 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   if(!removed)
       _turnoutSelection->append(p);
   if (_turnoutSelection->size()==0){
-      _turnoutSelection=NULL;
+      _turnoutSelection=nullptr;
   }
   //repaint();
   paintTargetPanel(editScene);
 }
 
 /*private*/ void LayoutEditor::amendSelectionGroup(PositionablePoint* p){
-  if (_pointSelection==NULL){
+  if (_pointSelection==nullptr){
       _pointSelection = new QVector <PositionablePoint*>();
   }
   bool removed = false;
@@ -4903,14 +4903,14 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   if(!removed)
       _pointSelection->append(p);
   if (_pointSelection->size()==0){
-      _pointSelection=NULL;
+      _pointSelection=nullptr;
   }
   //repaint();
   paintTargetPanel(editScene);
 }
 
 /*private*/ void LayoutEditor::amendSelectionGroup(LevelXing* p){
-  if (_xingSelection==NULL){
+  if (_xingSelection==nullptr){
       _xingSelection = new QVector <LevelXing*>();
   }
   bool removed = false;
@@ -4924,14 +4924,14 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   if(!removed)
       _xingSelection->append(p);
   if (_xingSelection->size()==0){
-      _xingSelection=NULL;
+      _xingSelection=nullptr;
   }
   //repaint();
   paintTargetPanel(editScene);
 }
 
 /*private*/ void LayoutEditor::amendSelectionGroup(LayoutTurntable* p){
-  if (_turntableSelection==NULL){
+  if (_turntableSelection==nullptr){
       _turntableSelection = new QVector <LayoutTurntable*>();
   }
   bool removed = false;
@@ -4945,7 +4945,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   if(!removed)
       _turntableSelection->append(p);
   if (_turntableSelection->size()==0){
-      _turntableSelection=NULL;
+      _turntableSelection=nullptr;
   }
   //repaint();
   paintTargetPanel(editScene);
@@ -4969,7 +4969,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   }
   if (!_editable)
   {
-//      _highlightcomponent = NULL;
+//      _highlightcomponent = nullptr;
    _selectionGroup =new  QList<Positionable*>();
   }
 }
@@ -5088,70 +5088,70 @@ double LayoutEditor::toRadians(double degrees)
  else
  {
   TrackSegment* tr = checkTrackSegments(dLoc);
-  if (tr!=NULL)
+  if (tr!=nullptr)
   {
    tr->showPopUp(event);
   }
   else
   {
    SensorIcon* s = checkSensorIcons(dLoc);
-   if (s!=NULL)
+   if (s!=nullptr)
    {
     showPopUp((Positionable*)s, event);
    }
    else
    {
     LocoIcon* lo = checkMarkers(dLoc);
-    if (lo!=NULL)
+    if (lo!=nullptr)
     {
      showPopUp((Positionable*)lo, event);
     }
     else
     {
      SignalHeadIcon* sh = checkSignalHeadIcons(dLoc);
-     if (sh!=NULL)
+     if (sh!=nullptr)
      {
       showPopUp((Positionable*)sh, event);
      }
      else
      {
       AnalogClock2Display* c = checkClocks(dLoc);
-      if (c!=NULL)
+      if (c!=nullptr)
       {
        showPopUp((Positionable*)c, event);
       }
       else
       {
        MultiSensorIcon* ms = checkMultiSensors(dLoc);
-       if (ms!=NULL)
+       if (ms!=nullptr)
        {
         showPopUp((Positionable*)ms, event);
        }
        else
        {
         PositionableLabel* lb = checkLabelImages(dLoc);
-        if (lb!=NULL)
+        if (lb!=nullptr)
         {
          showPopUp((Positionable*)lb, event);
         }
         else
         {
          PositionableLabel* b = checkBackgrounds(dLoc);
-         if (b!=NULL)
+         if (b!=nullptr)
          {
           showPopUp((Positionable*)b, event);
          }
          else
          {
           SignalMastIcon* sm = checkSignalMastIcons(dLoc);
-          if (sm!=NULL)
+          if (sm!=nullptr)
           {
             showPopUp((Positionable*)sm, event);
           }
           else
           {
            MemoryIcon* mi = checkMemoryMarkerIcons(dLoc);
-           if(mi != NULL)
+           if(mi != nullptr)
             showPopUp((Positionable*)mi, event);
           }
          }
@@ -5175,7 +5175,7 @@ double LayoutEditor::toRadians(double degrees)
 // }
  QMenu* popup = new QMenu();
  PositionableLabel* positionableLabel = qobject_cast<PositionableLabel*>(p);
- Q_ASSERT(positionableLabel != NULL);
+ Q_ASSERT(positionableLabel != nullptr);
 // SensorIcon* pSensor = qobject_cast<SensorIcon*>(p);
 // LocoIcon* locoIcon = qobject_cast<LocoIcon*>(p);
 // MemoryIcon* memoryIcon = qobject_cast<MemoryIcon*>(p);
@@ -5216,7 +5216,7 @@ double LayoutEditor::toRadians(double degrees)
    popupSet = positionableLabel->setTextEditMenu(popup);
 
    PositionablePopupUtil* util = ((PositionableLabel*)p)->getPopupUtility();
-   if (util!=NULL)
+   if (util!=nullptr)
    {
     util->setFixedTextMenu(popup);
     util->setTextMarginMenu(popup);
@@ -5252,7 +5252,7 @@ double LayoutEditor::toRadians(double degrees)
  { // icon is not editable
   positionableLabel->showPopUp(popup);
   PositionablePopupUtil* util = positionableLabel->getPopupUtility();
-  if(util!=NULL)
+  if(util!=nullptr)
    util->setAdditionalViewPopUpMenu(popup);
  }
 #if 0 // TODO:
@@ -5290,37 +5290,37 @@ double LayoutEditor::toRadians(double degrees)
    return tr;
   }
  }
- return NULL;
+ return nullptr;
 }
 /*protected*/ bool LayoutEditor::showAlignPopup()
 {
- if (_positionableSelection!=NULL)
+ if (_positionableSelection!=nullptr)
  {
   return true;
  }
- else if (_pointSelection!=NULL)
+ else if (_pointSelection!=nullptr)
  {
   return true;
  }
- else if (_turnoutSelection!=NULL && !_turnoutSelection->isEmpty())
+ else if (_turnoutSelection!=nullptr && !_turnoutSelection->isEmpty())
  {
      return true;
  }
  #if 1 // TODO:
- else if (_turntableSelection!=NULL)
+ else if (_turntableSelection!=nullptr)
  {
      return true;
  }
  #endif
- else if (_xingSelection!=NULL)
+ else if (_xingSelection!=nullptr)
  {
      return true;
  }
- else if (_slipSelection!=NULL && !_slipSelection->isEmpty())
+ else if (_slipSelection!=nullptr && !_slipSelection->isEmpty())
  {
      return true;
  }
-// else if(_labelSelection !=NULL)
+// else if(_labelSelection !=nullptr)
 //  return true;
  return false;
 }
@@ -5356,7 +5356,7 @@ double LayoutEditor::toRadians(double degrees)
  return false;
 }
 /*public*/ QPointF LayoutEditor::getEndCoords(QObject* o, int type) {
-             if(o == NULL)
+             if(o == nullptr)
              return QPointF(0,0);
   switch (type) {
       case POS_POINT:
@@ -5414,7 +5414,7 @@ QGraphicsView* LayoutEditor::panel()
   {
 //   int selectedValue = JOptionPane.showOptionDialog(this,
 //              rb.getQString("Question2"),rb.getQString("WarningTitle"),
-//              JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,NULL,
+//              JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,nullptr,
 //              new Object[]{rb.getQString("ButtonYes"),rb.getQString("ButtonNo"),
 //              rb.getQString("ButtonYesPlus")},rb.getQString("ButtonNo"));
       int selectedValue = QMessageBox::warning(this, "Warning", "Do you want to delete this point? Ignore will suppress future warnings and continue.",QMessageBox::Yes | QMessageBox::No | QMessageBox::Ignore);
@@ -5425,13 +5425,13 @@ QGraphicsView* LayoutEditor::panel()
       }
   }
   // remove from selection information
-  if (selectedObject==o) selectedObject = NULL;
-  if (prevSelectedObject==o) prevSelectedObject = NULL;
+  if (selectedObject==o) selectedObject = nullptr;
+  if (prevSelectedObject==o) prevSelectedObject = nullptr;
   // remove connections if any
   TrackSegment* t = o->getConnect1();
-  if (t!=NULL) removeTrackSegment(t);
+  if (t!=nullptr) removeTrackSegment(t);
   t = o->getConnect2();
-  if (t!=NULL) removeTrackSegment(t);
+  if (t!=nullptr) removeTrackSegment(t);
   // delete from array
   for (int i = 0; i<pointList->size();i++)
   {
@@ -5454,18 +5454,18 @@ QGraphicsView* LayoutEditor::panel()
 */
 /*protected*/ void LayoutEditor::removeTrackSegment(TrackSegment* o) {
   // save affected blocks
-  LayoutBlock* block1 = NULL;
-  LayoutBlock* block2 = NULL;
+  LayoutBlock* block1 = nullptr;
+  LayoutBlock* block2 = nullptr;
   LayoutBlock* block = o->getLayoutBlock();
   // remove any connections
   int type = o->getType1();
   if (type==POS_POINT) {
       PositionablePoint* p = (PositionablePoint*)(o->getConnect1());
-      if (p!=NULL) {
+      if (p!=nullptr) {
           p->removeTrackConnection(o);
-          if (p->getConnect1()!=NULL)
+          if (p->getConnect1()!=nullptr)
               block1 = p->getConnect1()->getLayoutBlock();
-          else if (p->getConnect2()!=NULL)
+          else if (p->getConnect2()!=nullptr)
               block1 = p->getConnect2()->getLayoutBlock();
       }
   }
@@ -5476,11 +5476,11 @@ QGraphicsView* LayoutEditor::panel()
   type = o->getType2();
   if (type==POS_POINT) {
       PositionablePoint* p = (PositionablePoint*)(o->getConnect2());
-      if (p!=NULL) {
+      if (p!=nullptr) {
           p->removeTrackConnection(o);
-          if (p->getConnect1()!=NULL)
+          if (p->getConnect1()!=nullptr)
               block2 = p->getConnect1()->getLayoutBlock();
-          else if (p->getConnect2()!=NULL)
+          else if (p->getConnect2()!=nullptr)
               block2 = p->getConnect2()->getLayoutBlock();
       }
   }
@@ -5497,14 +5497,14 @@ QGraphicsView* LayoutEditor::panel()
       }
   }
   // update affected blocks
-  if (block!=NULL) {
+  if (block!=nullptr) {
       // decrement Block use count
       block->decrementUse();
       auxTools->setBlockConnectivityChanged();
       block->updatePaths();
   }
-  if ( (block1!=NULL) && (block1!=block) ) block1->updatePaths();
-  if ( (block2!=NULL) && (block2!=block) && (block2!=block1) ) block2->updatePaths();
+  if ( (block1!=nullptr) && (block1!=block) ) block1->updatePaths();
+  if ( (block2!=nullptr) && (block2!=block) && (block2!=block1) ) block2->updatePaths();
   //
   o->invalidate(editScene);
   setDirty(true);
@@ -5521,7 +5521,7 @@ QGraphicsView* LayoutEditor::panel()
  {
 //     int selectedValue = JOptionPane.showOptionDialog(this,
 //             tr("Question4r"), tr("WarningTitle"),
-//             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, NULL,
+//             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, nullptr,
 //             new Object[]{tr("ButtonYes"), tr("ButtonNo"),
 //                 tr("ButtonYesPlus")}, tr("ButtonNo"));
   int selectedValue = QMessageBox::question(this, tr("Warning"), tr("Are you sure you want to remove this turntable from the panel?"),QMessageBox::Yes | QMessageBox::No);
@@ -5535,15 +5535,15 @@ QGraphicsView* LayoutEditor::panel()
  }
  // remove from selection information
  if (selectedObject == o) {
-     selectedObject = NULL;
+     selectedObject = nullptr;
  }
  if (prevSelectedObject == o) {
-     prevSelectedObject = NULL;
+     prevSelectedObject = nullptr;
  }
  // remove connections if any
  for (int j = 0; j < o->getNumberRays(); j++) {
      TrackSegment* t = o->getRayConnectOrdered(j);
-     if (t != NULL) {
+     if (t != nullptr) {
          substituteAnchor(o->getRayCoordsIndexed(j), o, t);
      }
  }
@@ -5562,48 +5562,48 @@ QGraphicsView* LayoutEditor::panel()
  return (false);
 }
 /*private*/ void LayoutEditor::disconnect(QObject* o, int type) {
-  if (o==NULL) return;
+  if (o==nullptr) return;
   switch (type) {
       case TURNOUT_A:
-          ((LayoutTurnout*)o)->setConnectA(NULL,NONE);
+          ((LayoutTurnout*)o)->setConnectA(nullptr,NONE);
           break;
       case TURNOUT_B:
-          ((LayoutTurnout*)o)->setConnectB(NULL,NONE);
+          ((LayoutTurnout*)o)->setConnectB(nullptr,NONE);
           break;
       case TURNOUT_C:
-          ((LayoutTurnout*)o)->setConnectC(NULL,NONE);
+          ((LayoutTurnout*)o)->setConnectC(nullptr,NONE);
           break;
       case TURNOUT_D:
-          ((LayoutTurnout*)o)->setConnectD(NULL,NONE);
+          ((LayoutTurnout*)o)->setConnectD(nullptr,NONE);
           break;
       case LEVEL_XING_A:
-          ((LevelXing*)o)->setConnectA(NULL,NONE);
+          ((LevelXing*)o)->setConnectA(nullptr,NONE);
           break;
       case LEVEL_XING_B:
-          ((LevelXing*)o)->setConnectB(NULL,NONE);
+          ((LevelXing*)o)->setConnectB(nullptr,NONE);
           break;
       case LEVEL_XING_C:
-          ((LevelXing*)o)->setConnectC(NULL,NONE);
+          ((LevelXing*)o)->setConnectC(nullptr,NONE);
           break;
       case LEVEL_XING_D:
-          ((LevelXing*)o)->setConnectD(NULL,NONE);
+          ((LevelXing*)o)->setConnectD(nullptr,NONE);
           break;
       case SLIP_A:
-          ((LayoutSlip*)o)->setConnectA(NULL,NONE);
+          ((LayoutSlip*)o)->setConnectA(nullptr,NONE);
           break;
       case SLIP_B:
-          ((LayoutSlip*)o)->setConnectB(NULL,NONE);
+          ((LayoutSlip*)o)->setConnectB(nullptr,NONE);
           break;
       case SLIP_C:
-          ((LayoutSlip*)o)->setConnectC(NULL,NONE);
+          ((LayoutSlip*)o)->setConnectC(nullptr,NONE);
           break;
       case SLIP_D:
-          ((LayoutSlip*)o)->setConnectD(NULL,NONE);
+          ((LayoutSlip*)o)->setConnectD(nullptr,NONE);
           break;
       default:
 #if 1 // TODO:
           if (type>=TURNTABLE_RAY_OFFSET) {
-              ((LayoutTurntable*)o)->setRayConnect(NULL,type-TURNTABLE_RAY_OFFSET);
+              ((LayoutTurntable*)o)->setRayConnect(nullptr,type-TURNTABLE_RAY_OFFSET);
           }
 #endif
    break;
@@ -5621,8 +5621,8 @@ QGraphicsView* LayoutEditor::panel()
   double w = s->maxWidth();
   double h = s->maxHeight();
   QRectF r =  QRectF(x ,y ,w ,h);
-  if(s->getItem() == NULL)
-   return NULL;
+  if(s->getItem() == nullptr)
+   return nullptr;
   QRectF r2 =s->getItem()->boundingRect();
   // Test this detection rectangle
   if (r.contains(loc))
@@ -5636,7 +5636,7 @@ QGraphicsView* LayoutEditor::panel()
    return s;
   }
  }
- return NULL;
+ return nullptr;
 }
 
 /*private*/ SignalMastIcon* LayoutEditor::checkSignalMastIcons(QPointF loc) {
@@ -5654,12 +5654,12 @@ QGraphicsView* LayoutEditor::panel()
          return s;
      }
  }
- return NULL;
+ return nullptr;
 }
 #endif
 /*private*/ PositionableLabel* LayoutEditor::checkLabelImages(QPointF loc)
 {
- PositionableLabel* l =NULL;
+ PositionableLabel* l =nullptr;
  int level = 0;
  for (int i=_contents->size()-1; i>=0; i--)
  {
@@ -5679,7 +5679,7 @@ QGraphicsView* LayoutEditor::panel()
    h = s->getFont().pointSizeF();
 
    w = (h*2*(s->getUnRotatedText().length()))/3;
-   if(s->getItem() != NULL)
+   if(s->getItem() != nullptr)
    {
     QPointF pt = s->getItem()->mapFromParent(loc);
     if(s->getItem()->contains(pt))
@@ -5716,11 +5716,11 @@ QGraphicsView* LayoutEditor::panel()
              return s;
          }
      }
-     return NULL;
+     return nullptr;
  }
 MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 {
- MemoryIcon* l =NULL;
+ MemoryIcon* l =nullptr;
  int level = 0;
  for (int i=memoryLabelList->size()-1; i>=0; i--)
  {
@@ -5741,7 +5741,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
      h = s->getFont().pointSizeF();
 
      w = (h*2*(s->getText().length()))/3;
-     if(s->getItem() != NULL)
+     if(s->getItem() != nullptr)
      {
       QPointF pt = s->getItem()->mapFromParent(loc);
       if(s->getItem()->contains(pt))
@@ -5768,7 +5768,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 {
   NamedIcon* icon = NamedIcon::getIconByName(name);
   PositionableLabel* l = new PositionableLabel(icon, (Editor*)this);
-  l->setPopupUtility(NULL);        // no text
+  l->setPopupUtility(nullptr);        // no text
   l->setPositionable(false);
   l->setShowTooltip(false);
   l->setSize(icon->getIconWidth(), icon->getIconHeight());
@@ -5784,15 +5784,15 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  void LayoutEditor::addSignalHead() {
      // check for valid signal head entry
      QString tName = ui->edSignalHeadIcon->text().trimmed();
-     SignalHead* mHead = NULL;
+     SignalHead* mHead = nullptr;
      if ( (tName!=("")) ) {
          mHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tName);
-         /*if (mHead == NULL)
+         /*if (mHead == nullptr)
              mHead = InstanceManager.signalHeadManagerInstance().getByUserName(tName);
          else */
          ui->edSignalHeadIcon->setText(tName);
      }
-     if (mHead == NULL) {
+     if (mHead == nullptr) {
          // There is no signal head corresponding to this name
 //         JOptionPane.showMessageDialog(thisPanel,
 //                 java.text.MessageFormat.format(rb.getQString("Error9"),
@@ -5827,8 +5827,8 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 
  SignalHead* LayoutEditor::getSignalHead(QString name) {
      SignalHead* sh = InstanceManager::signalHeadManagerInstance()->getBySystemName(name);
-     if (sh == NULL) sh = InstanceManager::signalHeadManagerInstance()->getByUserName(name);
-     if (sh == NULL) log.warn("did not find a SignalHead named "+name);
+     if (sh == nullptr) sh = InstanceManager::signalHeadManagerInstance()->getByUserName(name);
+     if (sh == nullptr) log.warn("did not find a SignalHead named "+name);
      return sh;
  }
 
@@ -5842,7 +5842,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 }   //containsSignalHead
 
 /*public*/ void LayoutEditor::removeSignalHead(SignalHead* head) {
-    SignalHeadIcon* h = NULL;
+    SignalHeadIcon* h = nullptr;
     int index = -1;
 
     for (int i = 0; (i < signalList->size()) && (index == -1); i++) {
@@ -5857,7 +5857,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
     if (index != (-1)) {
         signalList->remove(index);
 
-        if (h != NULL) {
+        if (h != nullptr) {
             h->remove();
             h->dispose();
         }
@@ -5869,12 +5869,12 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  void LayoutEditor::addSignalMast() {
      // check for valid signal head entry
      QString tName = ui->edSignalMastIcon->text().trimmed();
-     SignalMast* mMast = NULL;
+     SignalMast* mMast = nullptr;
      if ( (tName!=("")) ) {
          mMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(tName);
          ui->edSignalMastIcon->setText(tName);
      }
-     if (mMast == NULL) {
+     if (mMast == nullptr) {
          // There is no signal head corresponding to this name
 //         JOptionPane.showMessageDialog(thisPanel,
 //                 java.text.MessageFormat.format(rb.getQString("Error9"),
@@ -5899,8 +5899,8 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 
  SignalMast* LayoutEditor::getSignalMast(QString name) {
      SignalMast* sh = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name);
-     if (sh == NULL) sh = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getByUserName(name);
-     if (sh == NULL) log.warn("did not find a SignalMast named "+name);
+     if (sh == nullptr) sh = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getByUserName(name);
+     if (sh == nullptr) log.warn("did not find a SignalMast named "+name);
      return sh;
  }
 /**
@@ -5934,42 +5934,42 @@ void LayoutEditor::addLabel()
 /*public*/ void LayoutEditor::putItem(Positionable* l)
 {
   Editor::putItem(l);
-  if (qobject_cast<SensorIcon*>(l)!= NULL)
+  if (qobject_cast<SensorIcon*>(l)!= nullptr)
   {
    sensorImage->append((SensorIcon*)l);
    sensorList->append((SensorIcon*)l);
   }
-  else if (qobject_cast<LocoIcon*>(l)!= NULL)
+  else if (qobject_cast<LocoIcon*>(l)!= nullptr)
   {
    markerImage->append((LocoIcon*)l);
   }
-  else if (qobject_cast<SignalHeadIcon*>(l)!=NULL)
+  else if (qobject_cast<SignalHeadIcon*>(l)!=nullptr)
   {
       signalHeadImage->append((SignalHeadIcon*)l);
       signalList->append((SignalHeadIcon*)l);
   }
-  else if (qobject_cast<SignalMastIcon*>(l)!=NULL)
+  else if (qobject_cast<SignalMastIcon*>(l)!=nullptr)
   {
       signalMastImage->append((SignalMastIcon*)l);
       signalMastList->append((SignalMastIcon*)l);
   }
   else
    //if (l instanceof MemoryIcon*)
-  if(qobject_cast<MemoryIcon*>(l)!= NULL)
+  if(qobject_cast<MemoryIcon*>(l)!= nullptr)
   {
    memoryLabelList->append((MemoryIcon*)l);
   }
-  else if (qobject_cast<AnalogClock2Display*>(l)!=NULL)
+  else if (qobject_cast<AnalogClock2Display*>(l)!=nullptr)
   {
    clocks->append((AnalogClock2Display*)l);
   }
-  else if (qobject_cast<MultiSensorIcon*>(l) != NULL)
+  else if (qobject_cast<MultiSensorIcon*>(l) != nullptr)
   {
    multiSensors->append((MultiSensorIcon*)l);
   }
   else
   //if (l instanceof PositionableLabel*)
-  if(qobject_cast<PositionableLabel*>(l)!= NULL)
+  if(qobject_cast<PositionableLabel*>(l)!= nullptr)
   {
    if ( !(((PositionableLabel*)l)->isBackground()) )
   {
@@ -6016,13 +6016,13 @@ void LayoutEditor::addLabel()
 
 // this is trial code to see if it works.
  PositionableLabel* pl = qobject_cast<PositionableLabel*> (l);
- if(pl != NULL)
+ if(pl != nullptr)
  {
-  if(pl->item != NULL)
+  if(pl->item != nullptr)
   {
    Q_ASSERT(pl->item->scene()!=0);
    editScene->removeItem(pl->item);
-   pl->item = NULL;
+   pl->item = nullptr;
   }
   if(pl->isIcon())
   {
@@ -6173,7 +6173,7 @@ void LayoutEditor::repaint()
  for (int i=sensorImage->size()-1; i>=0; i--)
  {
   SensorIcon* s = qobject_cast<SensorIcon*>(sensorImage->at(i));
-  if(s == NULL)
+  if(s == nullptr)
    continue;
   double x = s->getX();
   double y = s->getY();
@@ -6186,7 +6186,7 @@ void LayoutEditor::repaint()
       return s;
   }
  }
- return NULL;
+ return nullptr;
 }
 /**
 * Add a sensor indicator to the Draw Panel
@@ -6216,17 +6216,17 @@ void LayoutEditor::addSensor(QString name)
   l->setSensor(name);
   l->setDisplayLevel(SENSORS);
   //Sensor xSensor = l.getSensor();
-  if (l->getSensor() != NULL)
+  if (l->getSensor() != nullptr)
   {
-   if ( (l->getNamedSensor()->getName()==NULL) || (!(l->getNamedSensor()->getName()==(ui->edSensorIcon->text().trimmed()))) )
+   if ( (l->getNamedSensor()->getName()==nullptr) || (!(l->getNamedSensor()->getName()==(ui->edSensorIcon->text().trimmed()))) )
     ui->edSensorIcon->setText(l->getNamedSensor()->getName());
   }
   NamedBeanHandle<Sensor*>* s = l->getNamedSensor();
   QString sensorName = "";
-  if(s != NULL)
+  if(s != nullptr)
    sensorName = s->getName();
   ui->edSensorIcon->setText(sensorName);
-  if(l->getNamedBean() != NULL)
+  if(l->getNamedBean() != nullptr)
    l->setTooltip(l->getNamedBean()->getSystemName());
   setNextLocation(l);
   setDirty(true);
@@ -6247,7 +6247,7 @@ void LayoutEditor::addSensor(QString name)
 // if (showCoordinates())
 // {
 //  QMenu* edit = new QMenu(tr("Edit Location"));
-//  if ((/*p instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(p)!= NULL) && (((MemoryIcon*)p)->getPopupUtility()->getFixedWidth()==0))
+//  if ((/*p instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(p)!= nullptr) && (((MemoryIcon*)p)->getPopupUtility()->getFixedWidth()==0))
 //  {
 //   MemoryIcon* pm = (MemoryIcon*) p;
 //   edit->addAction(new QAction("x= " + QString("%1").arg(pm->getOriginalX()),this));
@@ -6258,9 +6258,9 @@ void LayoutEditor::addSensor(QString name)
 //  else
 //  {
 ////   SensorIcon* ps;
-////   if((ps = qobject_cast<SensorIcon*>(p))!= NULL)
+////   if((ps = qobject_cast<SensorIcon*>(p))!= nullptr)
 //   PositionableLabel* ps;
-//   if((ps = qobject_cast<PositionableLabel*>(p))!= NULL)
+//   if((ps = qobject_cast<PositionableLabel*>(p))!= nullptr)
 //   {
 //    edit->addMenu(new QMenu("x= " + QString("%1").arg(ps->getX())));
 //    edit->addMenu(new QMenu("y= " + QString("%1").arg(ps->getY())));
@@ -6283,7 +6283,7 @@ void LayoutEditor::addSensor(QString name)
 //{
 //  QMenu* edit = new QMenu(tr("Edit Level"));
 //  SensorIcon* ps = qobject_cast<SensorIcon*>(p);
-//  if(ps != NULL)
+//  if(ps != nullptr)
 //   edit->addAction(new QAction(tr("level= ") + QString("%1").arg(ps->getDisplayLevel()),this));
 //  CoordinateEdit* coordinateEdit = new CoordinateEdit();
 //  edit->addAction(CoordinateEdit::getLevelEditAction(p, coordinateEdit));
@@ -6298,7 +6298,7 @@ void LayoutEditor::addSensor(QString name)
 // QAction* lockItem = new QAction(tr("Lock Position"),this);
 // lockItem->setCheckable(true);
 // PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
-// if(pl != NULL)
+// if(pl != nullptr)
 //  lockItem->setChecked(!pl->isPositionable());
 
 ////  lockItem.addActionListener(new ActionListener(){
@@ -6322,10 +6322,10 @@ void LayoutEditor::addSensor(QString name)
 //void MyLayoutEditor::On_lockPosition_triggered(bool bChecked)
 //{
 //   PositionableLabel* pl = qobject_cast<PositionableLabel*>(saveP);
-//   if(pl != NULL)
+//   if(pl != nullptr)
 //    pl->setPositionable(!bChecked);
 //  SensorIcon* ps = qobject_cast<SensorIcon*>(saveP);
-//   if(ps != NULL)
+//   if(ps != nullptr)
 //    ps->setPositionable(!bChecked);
 //}
 
@@ -6359,13 +6359,13 @@ void LayoutEditor::addSensor(QString name)
    return b;
   }
  }
- return NULL;
+ return nullptr;
 }
 /*protected*/ void LayoutEditor::setSelectionsScale(double s, Positionable* p)
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
- Q_ASSERT(pl != NULL);
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ Q_ASSERT(pl != nullptr);
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
@@ -6381,8 +6381,8 @@ void LayoutEditor::addSensor(QString name)
 /*protected*/ void LayoutEditor::setSelectionsRotation(int k, Positionable* p)
 {
   PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
-  Q_ASSERT(pl != NULL);
-  if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+  Q_ASSERT(pl != nullptr);
+  if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
   {
    for (int i=0; i<_selectionGroup->size(); i++)
    {
@@ -6420,35 +6420,35 @@ void LayoutEditor::On_removeMenuAction_triggered()
  Positionable* comp = currComp;
  //comp->remove();
  SensorIcon* si = qobject_cast<SensorIcon*>(comp);
- if(si != NULL)
+ if(si != nullptr)
  {
   Q_ASSERT(si->_itemGroup->scene()!=0);
   editScene->removeItem(si->_itemGroup);
-  si->_itemGroup = NULL;
+  si->_itemGroup = nullptr;
   si->remove();
  }
  LocoIcon* li = qobject_cast<LocoIcon*>(comp);
- if(li != NULL)
+ if(li != nullptr)
  {
   Q_ASSERT(li->_itemGroup->scene()!=0);
   editScene->removeItem(li->_itemGroup);
-  li->_itemGroup = NULL;
+  li->_itemGroup = nullptr;
   li->remove();
  }
  MemoryIcon* mi = qobject_cast<MemoryIcon*>(comp);
- if(mi != NULL)
+ if(mi != nullptr)
  {
   Q_ASSERT(mi->_itemGroup->scene()!=0);
   editScene->removeItem(mi->_itemGroup);
-  mi->_itemGroup = NULL;
+  mi->_itemGroup = nullptr;
   mi->remove();
  }
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(comp);
- if(pl != NULL)
+ if(pl != nullptr)
  {
   Q_ASSERT(pl->_itemGroup->scene()!=0);
   editScene->removeItem(pl->_itemGroup);
-  pl->_itemGroup = NULL;
+  pl->_itemGroup = nullptr;
   pl->remove();
  }
  removeSelections(comp);
@@ -6456,9 +6456,9 @@ void LayoutEditor::On_removeMenuAction_triggered()
 /*protected*/ void LayoutEditor::removeSelections(Positionable* p)
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
- Q_ASSERT(pl != NULL);
+ Q_ASSERT(pl != nullptr);
 
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
@@ -6484,7 +6484,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
      return s;
  }
 }
-return NULL;
+return nullptr;
 }
 /*private*/ LocoIcon* LayoutEditor::checkMarkers(QPointF loc)
 {
@@ -6505,11 +6505,11 @@ return NULL;
           return l;
       }
   }
-  return NULL;
+  return nullptr;
 }
 void LayoutEditor::on_actionAdd_loco_triggered()
 {
- InputDialog* dlg = new InputDialog("Enter loco id", "0", NULL, this);
+ InputDialog* dlg = new InputDialog("Enter loco id", "0", nullptr, this);
  if(dlg->exec() == QDialog::Accepted)
  {
   QString nameID= dlg->value();
@@ -6544,7 +6544,7 @@ void LayoutEditor::on_actionAdd_loco_triggered()
  */
 /*public*/ void LayoutEditor::addBackground()
 {
- if (inputFileChooser == NULL)
+ if (inputFileChooser == nullptr)
  {
      inputFileChooser = new JFileChooser(System::getProperty(
                                              "user.dir") + File::separator + "resources" + File::separator +
@@ -6617,7 +6617,7 @@ void LayoutEditor::on_actionAdd_loco_triggered()
  for (int i = markerImage->size(); i >0 ; i--)
  {
   LocoIcon* il = markerImage->at(i-1);
-   if ( (il != NULL) && (il->isActive()) )
+   if ( (il != nullptr) && (il->isActive()) )
    {
      markerImage->remove(i-1);
      il->remove();
@@ -6659,17 +6659,17 @@ MemoryIcon* LayoutEditor::addMemory(QString text)
  MemoryIcon* l = new MemoryIcon("<memory>", this);
  l->setMemory(ui->edMemoryLabel->text().trimmed());
  Memory* xMemory = l->getMemory();
- if (xMemory != NULL)
+ if (xMemory != nullptr)
  {
   QString userName = xMemory->getUserName();
-  if ( (xMemory->getUserName() == NULL) ||
+  if ( (xMemory->getUserName() == nullptr) ||
              (!(xMemory->getUserName()==(text)))  )
   {
    // put the system name in the memory field
    ui->edMemoryLabel->setText(xMemory->getSystemName());
   }
  }
- if(xMemory != NULL)
+ if(xMemory != nullptr)
   l->setTooltip(xMemory->getSystemName());
  setNextLocation(l);
  l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
@@ -6739,7 +6739,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
   for (int i = 0; i<_contents->size(); i++)
   {
    Positionable* pos = _contents->at(i);
-   if(qobject_cast<PositionableLabel*>(pos)!= NULL)
+   if(qobject_cast<PositionableLabel*>(pos)!= nullptr)
     ((PositionableLabel*)pos)->setControlling(state);
   }
  }
@@ -6756,7 +6756,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
 // {
 //      int selectedValue = JOptionPane.showOptionDialog(this,
 //          rb.getQString("Question6"),rb.getQString("WarningTitle"),
-//          JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,NULL,
+//          JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,nullptr,
 //          new Object[]{rb.getQString("ButtonYes"),rb.getQString("ButtonNo"),
 //          rb.getQString("ButtonYesPlus")},rb.getQString("ButtonNo"));
 //      if (selectedValue == 1) return;   // return without creating if "No" response
@@ -6773,26 +6773,26 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
    case QMessageBox::No:
     return; // return without creating if "No" response
   }
-  if(_positionableSelection!=NULL)
+  if(_positionableSelection!=nullptr)
   {
    for(int i=0; i<_positionableSelection->count(); i++)
    {
     Positionable* comp = _positionableSelection->at(i);
-    if(qobject_cast<SensorIcon*>(comp) != NULL)
+    if(qobject_cast<SensorIcon*>(comp) != nullptr)
     {
      SensorIcon* si = qobject_cast<SensorIcon*>(comp);
      Q_ASSERT(si->_itemGroup->scene()!=0);
      editScene->removeItem(si->_itemGroup);
      remove(si);
     }
-    else if(qobject_cast<LocoIcon*>(comp) != NULL)
+    else if(qobject_cast<LocoIcon*>(comp) != nullptr)
     {
      LocoIcon* li = qobject_cast<LocoIcon*>(comp);
      Q_ASSERT(li->_itemGroup->scene()!=0);
      editScene->removeItem(li->_itemGroup);
      remove(li);
     }
-    else if(qobject_cast<MemoryIcon*>(comp) != NULL)
+    else if(qobject_cast<MemoryIcon*>(comp) != nullptr)
     {
      MemoryIcon*mi = qobject_cast<MemoryIcon*>(comp);
      Q_ASSERT(mi->_itemGroup->scene()!=0);
@@ -6801,7 +6801,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
     }
    }
   }
-  if(_pointSelection!=NULL)
+  if(_pointSelection!=nullptr)
   {
    bool oldPosPoint = noWarnPositionablePoint;
    noWarnPositionablePoint = true;
@@ -6813,7 +6813,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
    noWarnPositionablePoint = oldPosPoint;
   }
 
-  if(_xingSelection!=NULL)
+  if(_xingSelection!=nullptr)
   {
    bool oldLevelXing = noWarnLevelXing;
    noWarnLevelXing = true;
@@ -6824,7 +6824,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
    }
    noWarnLevelXing = oldLevelXing;
   }
-  if(_slipSelection!=NULL){
+  if(_slipSelection!=nullptr){
       bool oldSlip = noWarnSlip;
       noWarnSlip = true;
       for(int i=0; i < _slipSelection->count(); i++)
@@ -6835,7 +6835,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
       noWarnSlip = oldSlip;
   }
 #if 1 //TODO:
-  if(_turntableSelection!=NULL){
+  if(_turntableSelection!=nullptr){
       bool oldTurntable = noWarnTurntable;
       noWarnTurntable = true;
       foreach(LayoutTurntable* point, *_turntableSelection){
@@ -6844,7 +6844,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
       noWarnTurntable = oldTurntable;
   }
 #endif
-  if(_turnoutSelection!=NULL)
+  if(_turnoutSelection!=nullptr)
   {
    bool oldTurnout = noWarnLayoutTurnout;
    noWarnLayoutTurnout = true;
@@ -6870,7 +6870,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
   {
 //      int selectedValue = JOptionPane.showOptionDialog(this,
 //              rb.getQString("Question1"),rb.getQString("WarningTitle"),
-//              JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,NULL,
+//              JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,nullptr,
 //              new Object[]{rb.getQString("ButtonYes"),rb.getQString("ButtonNo"),
 //              rb.getQString("ButtonYesPlus")},rb.getQString("ButtonNo"));
 //      if (selectedValue == 1) return(false);   // return without removing if "No" response
@@ -6891,30 +6891,30 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
    }
   }
   // remove from selection information
-  if (selectedObject==o) selectedObject = NULL;
-  if (prevSelectedObject==o) prevSelectedObject = NULL;
+  if (selectedObject==o) selectedObject = nullptr;
+  if (prevSelectedObject==o) prevSelectedObject = nullptr;
   // remove connections if any
   TrackSegment* t = (TrackSegment*)o->getConnectA();
-  if (t!=NULL) removeTrackSegment(t);
+  if (t!=nullptr) removeTrackSegment(t);
   t = (TrackSegment*)o->getConnectB();
-  if (t!=NULL) removeTrackSegment(t);
+  if (t!=nullptr) removeTrackSegment(t);
   t = (TrackSegment*)o->getConnectC();
-  if (t!=NULL) removeTrackSegment(t);
+  if (t!=nullptr) removeTrackSegment(t);
   t = (TrackSegment*)o->getConnectD();
-  if (t!=NULL) removeTrackSegment(t);
+  if (t!=nullptr) removeTrackSegment(t);
   // decrement Block use count(s)
   LayoutBlock* b = o->getLayoutBlock();
-  if (b!=NULL) b->decrementUse();
+  if (b!=nullptr) b->decrementUse();
   if ( (o->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ||
           (o->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
               (o->getTurnoutType()==LayoutTurnout::LH_XOVER) )
   {
    LayoutBlock* b2 = o->getLayoutBlockB();
-   if ( (b2!=NULL) && (b2!=b) ) b2->decrementUse();
+   if ( (b2!=nullptr) && (b2!=b) ) b2->decrementUse();
    LayoutBlock* b3 = o->getLayoutBlockC();
-   if ( (b3!=NULL) && (b3!=b) && (b3!=b2) ) b3->decrementUse();
+   if ( (b3!=nullptr) && (b3!=b) && (b3!=b2) ) b3->decrementUse();
    LayoutBlock* b4 = o->getLayoutBlockD();
-   if ( (b4!=NULL) && (b4!=b) &&
+   if ( (b4!=nullptr) && (b4!=b) &&
                   (b4!=b2) && (b4!=b3) ) b4->decrementUse();
   }
   // delete from array
@@ -6951,7 +6951,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
 /*protected*/ bool LayoutEditor::removeLayoutSlip (LayoutTurnout* o)
 {
  //if(!(o instanceof LayoutSlip)){
- if(qobject_cast<LayoutSlip*>(o)==NULL)
+ if(qobject_cast<LayoutSlip*>(o)==nullptr)
  {
      return false;
  }
@@ -6960,7 +6960,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
  {
 //     int selectedValue = JOptionPane.showOptionDialog(this,
 //             rb.getQString("Question5"),rb.getQString("WarningTitle"),
-//             JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,NULL,
+//             JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,nullptr,
 //             new Object[]{rb.getQString("ButtonYes"),rb.getQString("ButtonNo"),
 //             rb.getQString("ButtonYesPlus")},rb.getQString("ButtonNo"));
 //     if (selectedValue == 1) return(false);   // return without creating if "No" response
@@ -6982,20 +6982,20 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
 
  }
  // remove from selection information
- if (selectedObject==o) selectedObject = NULL;
- if (prevSelectedObject==o) prevSelectedObject = NULL;
+ if (selectedObject==o) selectedObject = nullptr;
+ if (prevSelectedObject==o) prevSelectedObject = nullptr;
  // remove connections if any
  TrackSegment* t = (TrackSegment*)o->getConnectA();
- if (t!=NULL) removeTrackSegment(t);
+ if (t!=nullptr) removeTrackSegment(t);
  t = (TrackSegment*)o->getConnectB();
- if (t!=NULL) removeTrackSegment(t);
+ if (t!=nullptr) removeTrackSegment(t);
  t = (TrackSegment*)o->getConnectC();
- if (t!=NULL) removeTrackSegment(t);
+ if (t!=nullptr) removeTrackSegment(t);
  t = (TrackSegment*)o->getConnectD();
- if (t!=NULL) removeTrackSegment(t);
+ if (t!=nullptr) removeTrackSegment(t);
  // decrement block use count if any blocks in use
  LayoutBlock* lb = o->getLayoutBlock();
- if (lb != NULL) lb->decrementUse();
+ if (lb != nullptr) lb->decrementUse();
 
  // delete from array
  for (int i = 0; i<slipList->size();i++)
@@ -7024,7 +7024,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
   {
 //      int selectedValue = JOptionPane.showOptionDialog(this,
 //              rb.getQString("Question3"),rb.getQString("WarningTitle"),
-//              JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,NULL,
+//              JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,nullptr,
 //              new Object[]{rb.getQString("ButtonYes"),rb.getQString("ButtonNo"),
 //              rb.getQString("ButtonYesPlus")},rb.getQString("ButtonNo"));
 //      if (selectedValue == 1) return(false);   // return without creating if "No" response
@@ -7044,22 +7044,22 @@ switch(QMessageBox::question(this,tr("Warning"),tr("Are you sure that you want t
   }
  }
  // remove from selection information
- if (selectedObject==o) selectedObject = NULL;
- if (prevSelectedObject==o) prevSelectedObject = NULL;
+ if (selectedObject==o) selectedObject = nullptr;
+ if (prevSelectedObject==o) prevSelectedObject = nullptr;
  // remove connections if any
  TrackSegment* t = (TrackSegment*)o->getConnectA();
- if (t!=NULL) removeTrackSegment(t);
+ if (t!=nullptr) removeTrackSegment(t);
  t = (TrackSegment*)o->getConnectB();
- if (t!=NULL) removeTrackSegment(t);
+ if (t!=nullptr) removeTrackSegment(t);
  t = (TrackSegment*)o->getConnectC();
- if (t!=NULL) removeTrackSegment(t);
+ if (t!=nullptr) removeTrackSegment(t);
  t = (TrackSegment*)o->getConnectD();
- if (t!=NULL) removeTrackSegment(t);
+ if (t!=nullptr) removeTrackSegment(t);
   // decrement block use count if any blocks in use
  LayoutBlock* lb = o->getLayoutBlockAC();
- if (lb != NULL) lb->decrementUse();
+ if (lb != nullptr) lb->decrementUse();
  LayoutBlock* lbx = o->getLayoutBlockBD();
- if (lbx!=NULL && lb!=NULL && lbx!=lb) lb->decrementUse();
+ if (lbx!=nullptr && lb!=nullptr && lbx!=lb) lb->decrementUse();
  // delete from array
  for (int i = 0; i<xingList->size();i++)
  {
@@ -7093,7 +7093,7 @@ void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
 /*public*/ void LayoutEditor::setHiddenMenu(Positionable* p, QMenu* popup)
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
- Q_ASSERT(pl != NULL);
+ Q_ASSERT(pl != nullptr);
 //  if (p.getDisplayLevel() == BKG || p instanceof PositionableShape) {
 //      return;
 //  }
@@ -7129,8 +7129,8 @@ void LayoutEditor::On_actionHidden_toggled(bool bState)
 /*protected*/ void LayoutEditor::setSelectionsHidden(bool enabled, Positionable* p)
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
- Q_ASSERT(pl != NULL);
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ Q_ASSERT(pl != nullptr);
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
@@ -7454,7 +7454,7 @@ void LayoutEditor::on_actionAdd_background_image_2_triggered()
   for (int i=0; i<_contents->size(); i++)
   {
    Positionable* p = _contents->at(i);
-   if (qobject_cast<PositionableLabel*>(p)!= NULL)
+   if (qobject_cast<PositionableLabel*>(p)!= nullptr)
    {
     PositionableLabel* l = (PositionableLabel*)p;
     if (l->isBackground())
@@ -7491,7 +7491,7 @@ void LayoutEditor::on_actionLoad_XML_triggered()
 // connect(&xml, SIGNAL(newSensor(QString,int,int)), this, SLOT(on_newSensor(QString,int,int)));
  setCursor(Qt::WaitCursor);
 //  xml.loadfile(QDir::homePath() + "/.jmri/mylayout.xml");
- bool bResult = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->load(new File(QDir::homePath() + "/.jmri/mylayout.xml"));
+ bool bResult = static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->load(new File(QDir::homePath() + "/.jmri/mylayout.xml"));
  layoutFile = QDir::homePath() + "/.jmri/mylayout.xml";
  setCursor(Qt::ArrowCursor);
 // ui->actionSave->setEnabled(true);
@@ -7512,7 +7512,7 @@ void LayoutEditor::on_newSensor(QString name, int x, int y)
 void LayoutEditor::setFilename(QString path)
 {
  layoutFile = path;
- if(path != NULL)
+ if(path != nullptr)
   ui->actionSave->setEnabled(true);
 }
 #if 1
@@ -7662,14 +7662,15 @@ void LayoutEditor::on_actionDelete_this_panel_triggered()
  xingList->clear();
  slipList->clear();
  //turntableList->clear();
- highlightRect = NULL;
- panelGridGroup = NULL;
+ highlightRect = nullptr;
+ panelGridGroup = nullptr;
  ui->actionLoad_Other_XML->setEnabled(true);
  ui->actionLoad_XML->setEnabled(true);
 // ui->actionSave->setEnabled(false);
 // ui->actionSave_as->setEnabled(false);
- InstanceManager::setLayoutBlockManager(new LayoutBlockManager());
+// ?? InstanceManager::setLayoutBlockManager(new LayoutBlockManager());
 }
+
 /*public*/ void LayoutEditor::loadFailed() {
  _loadFailed = true;
 }
@@ -7679,26 +7680,26 @@ void LayoutEditor::on_actionDelete_this_panel_triggered()
 /*public*/ NamedIcon* LayoutEditor::loadFailed(QString /*msg*/, QString url) {
  if (_debug) log.debug("loadFailed _ignore= "+_ignore);
  QString goodUrl = _urlMap->value(url);
- if (goodUrl!=NULL) {
+ if (goodUrl!=nullptr) {
      return NamedIcon::getIconByName(goodUrl);
  }
  if (_ignore) {
      _loadFailed = true;
      return new NamedIcon(url, url);
  }
- _newIcon = NULL;
+ _newIcon = nullptr;
  _delete = false;
  // TODO: new UrlErrorDialog(msg, url);
 
  if (_delete) {
      if (_debug) log.debug("loadFailed _delete= "+_delete);
-     return NULL;
+     return nullptr;
  }
- if (_newIcon==NULL) {
+ if (_newIcon==nullptr) {
      _loadFailed = true;
      _newIcon =new NamedIcon(url, url);
  }
- if (_debug) log.debug("loadFailed icon NULL= "+(_newIcon==NULL));
+ if (_debug) log.debug("loadFailed icon nullptr= "+(_newIcon==nullptr));
  return _newIcon;
 }
 
@@ -7733,7 +7734,7 @@ int LayoutEditor::getTurnoutType(QString name)
          if (p->getEastBoundSignal()==(signalName))
              return p;
      }
-     return NULL;
+     return nullptr;
  }
 
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByWestBoundSignal(QString signalName){
@@ -7742,7 +7743,7 @@ int LayoutEditor::getTurnoutType(QString name)
          if (p->getWestBoundSignal()==(signalName))
              return p;
      }
-     return NULL;
+     return nullptr;
  }
 
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByEastBoundSignalMast(QString signalMastName){
@@ -7751,7 +7752,7 @@ int LayoutEditor::getTurnoutType(QString name)
          if (p->getEastBoundSignalMast()==(signalMastName))
              return p;
      }
-     return NULL;
+     return nullptr;
  }
 
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByWestBoundSignalMast(QString signalMastName){
@@ -7761,7 +7762,7 @@ int LayoutEditor::getTurnoutType(QString name)
              return p;
 
      }
-     return NULL;
+     return nullptr;
  }
  /*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutBySignalMast(QString signalMastName){
      for(int i = 0; i<turnoutList->size(); i++){
@@ -7772,7 +7773,7 @@ int LayoutEditor::getTurnoutType(QString name)
              (t->getSignalDMast()==(signalMastName)))
              return t;
      }
-     return NULL;
+     return nullptr;
  }
  /*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutBySensor(QString sensorName){
      for(int i = 0; i<turnoutList->size(); i++){
@@ -7783,7 +7784,7 @@ int LayoutEditor::getTurnoutType(QString name)
              (t->getSensorD()==(sensorName)))
              return t;
      }
-     return NULL;
+     return nullptr;
  }
 
  /*public*/ LevelXing* LayoutEditor::findLevelXingBySignalMast(QString signalMastName){
@@ -7795,7 +7796,7 @@ int LayoutEditor::getTurnoutType(QString name)
              (l->getSignalDMastName()==(signalMastName)))
              return l;
      }
-     return NULL;
+     return nullptr;
  }
 
  /*public*/ LevelXing* LayoutEditor::findLevelXingBySensor(QString sensorName){
@@ -7807,7 +7808,7 @@ int LayoutEditor::getTurnoutType(QString name)
              (l->getSensorDName()==(sensorName)))
              return l;
      }
-     return NULL;
+     return nullptr;
  }
 
  /*public*/ LayoutSlip* LayoutEditor::findLayoutSlipBySignalMast(QString signalMastName)
@@ -7820,7 +7821,7 @@ int LayoutEditor::getTurnoutType(QString name)
        (l->getSignalDMast()==(signalMastName)))
     return l;
   }
-  return NULL;
+  return nullptr;
  }
 
  /*public*/ LayoutSlip* LayoutEditor::findLayoutSlipBySensor(QString sensorName){
@@ -7831,7 +7832,7 @@ int LayoutEditor::getTurnoutType(QString name)
              (l->getSensorD()==(sensorName)))
              return l;
      }
-     return NULL;
+     return nullptr;
  }
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByEastBoundSensor(QString sensorName){
      for (int i = 0; i<pointList->size(); i++) {
@@ -7839,7 +7840,7 @@ int LayoutEditor::getTurnoutType(QString name)
          if (p->getEastBoundSensor()==sensorName)
              return p;
      }
-     return NULL;
+     return nullptr;
  }
 
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByWestBoundSensor(QString sensorName){
@@ -7849,7 +7850,7 @@ int LayoutEditor::getTurnoutType(QString name)
              return p;
 
      }
-     return NULL;
+     return nullptr;
  }
  void LayoutEditor::on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool bState)
  {
@@ -7858,7 +7859,7 @@ int LayoutEditor::getTurnoutType(QString name)
 
  void LayoutEditor::on_actionSet_Signals_at_Block_Boundary_triggered()
  {
-  if (tools == NULL)
+  if (tools == nullptr)
   {
    tools = new LayoutEditorTools(this);
   }
@@ -7867,7 +7868,7 @@ int LayoutEditor::getTurnoutType(QString name)
 
  void LayoutEditor::on_actionSet_Signals_at_Turnout_triggered()
  {
-  if (tools == NULL)
+  if (tools == nullptr)
   {
    tools = new LayoutEditorTools(this);
   }
@@ -7876,7 +7877,7 @@ int LayoutEditor::getTurnoutType(QString name)
 
  void LayoutEditor::on_actionSet_Signals_at_Crossover_triggered()
  {
-  if (tools == NULL)
+  if (tools == nullptr)
   {
    tools = new LayoutEditorTools(this);
   }
@@ -7885,7 +7886,7 @@ int LayoutEditor::getTurnoutType(QString name)
 
  void LayoutEditor::on_actionSet_Signals_at_Level_Crossing_triggered()
  {
-  if (tools == NULL)
+  if (tools == nullptr)
   {
    tools = new LayoutEditorTools(this);
   }
@@ -7894,7 +7895,7 @@ int LayoutEditor::getTurnoutType(QString name)
 
  void LayoutEditor::on_actionSet_Signals_at_Slip_triggered()
  {
-  if (tools == NULL)
+  if (tools == nullptr)
   {
    tools = new LayoutEditorTools(this);
   }
@@ -7903,7 +7904,7 @@ int LayoutEditor::getTurnoutType(QString name)
 
  void LayoutEditor::on_actionSet_Signals_at_Throat_to_Throat_Turnouts_triggered()
  {
-  if (tools == NULL)
+  if (tools == nullptr)
   {
    tools = new LayoutEditorTools(this);
   }
@@ -7912,7 +7913,7 @@ int LayoutEditor::getTurnoutType(QString name)
 
  void LayoutEditor::on_actionSet_Signals_at_Three_Way_Turnout()
  {
-  if (tools == NULL)
+  if (tools == nullptr)
   {
    tools = new LayoutEditorTools(this);
   }
@@ -7921,7 +7922,7 @@ int LayoutEditor::getTurnoutType(QString name)
 
  void LayoutEditor::on_actionEntry_Exit_triggered()
  {
-  if (tools == NULL)
+  if (tools == nullptr)
   {
    tools = new LayoutEditorTools(this);
   }
@@ -7934,29 +7935,29 @@ int LayoutEditor::getTurnoutType(QString name)
   addClock();
  }
  /*public*/ ConnectivityUtil* LayoutEditor::getConnectivityUtil() {
-     if (conTools == NULL) {
+     if (conTools == nullptr) {
          conTools = new ConnectivityUtil(/*thisPanel*/this);
      }
-     if (conTools==NULL) log.error("Unable to establish link to Connectivity Tools for Layout Editor panel "+layoutName);
+     if (conTools==nullptr) log.error("Unable to establish link to Connectivity Tools for Layout Editor panel "+layoutName);
      return conTools;
  }
  /*public*/ LayoutEditorTools* LayoutEditor::getLETools() {
-     if (tools == NULL) {
+     if (tools == nullptr) {
          tools = new LayoutEditorTools(/*thisPanel*/this);
      }
-     if (tools==NULL) log.error("Unable to establish link to Layout Editor Tools for Layout Editor panel "+layoutName);
+     if (tools==nullptr) log.error("Unable to establish link to Layout Editor Tools for Layout Editor panel "+layoutName);
      return tools;
  }
 /*public*/ void LayoutEditor::addToPopUpMenu(NamedBean* nb, QMenu* item, int menu)
 {
- if(nb==NULL || item==NULL){
+ if(nb==nullptr || item==nullptr){
      return;
  }
  //if(nb instanceof Sensor)
- if(qobject_cast<Sensor*>(nb)!=NULL)
+ if(qobject_cast<Sensor*>(nb)!=nullptr)
  {
      foreach(SensorIcon* si, *sensorList){
-         if(si->getNamedBean()==nb && si->getPopupUtility()!=NULL){
+         if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
              switch(menu){
                  case VIEWPOPUPONLY : si->getPopupUtility()->addViewPopUpMenu(item); break;
                  case EDITPOPUPONLY : si->getPopupUtility()->addEditPopUpMenu(item); break;
@@ -7968,10 +7969,10 @@ int LayoutEditor::getTurnoutType(QString name)
  }
  else
   //if (nb instanceof SignalHead)
-  if(qobject_cast<SignalHead*>(nb)!=NULL)
+  if(qobject_cast<SignalHead*>(nb)!=nullptr)
   {
      foreach(SignalHeadIcon* si, *signalList){
-         if(si->getNamedBean()==nb && si->getPopupUtility()!=NULL){
+         if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
              switch(menu){
                  case VIEWPOPUPONLY : si->getPopupUtility()->addViewPopUpMenu(item); break;
                  case EDITPOPUPONLY : si->getPopupUtility()->addEditPopUpMenu(item); break;
@@ -7983,10 +7984,10 @@ int LayoutEditor::getTurnoutType(QString name)
  }
  else
  //if (nb instanceof SignalMast)
- if(qobject_cast<SignalMast*>(nb)!=NULL)
+ if(qobject_cast<SignalMast*>(nb)!=nullptr)
   {
      foreach(SignalMastIcon* si,*signalMastList){
-         if(si->getNamedBean()==nb && si->getPopupUtility()!=NULL){
+         if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
              switch(menu){
                  case VIEWPOPUPONLY : si->getPopupUtility()->addViewPopUpMenu(item); break;
                  case EDITPOPUPONLY : si->getPopupUtility()->addEditPopUpMenu(item); break;
@@ -7998,11 +7999,11 @@ int LayoutEditor::getTurnoutType(QString name)
  }
  else
  //if (nb instanceof Memory)
- if(qobject_cast<Memory*>(nb)!=NULL)
+ if(qobject_cast<Memory*>(nb)!=nullptr)
  {
   foreach(MemoryIcon* si, *memoryLabelList)
   {
-   if(si->getNamedBean()==nb && si->getPopupUtility()!=NULL)
+   if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr)
    {
     switch(menu)
     {
@@ -8016,7 +8017,7 @@ int LayoutEditor::getTurnoutType(QString name)
  }
  else
  //if (nb instanceof Turnout)
- if(qobject_cast<Turnout*>(nb)!=NULL)
+ if(qobject_cast<Turnout*>(nb)!=nullptr)
  {
   foreach(LayoutTurnout* ti, *turnoutList)
   {
@@ -8055,7 +8056,7 @@ void LayoutEditor::startMultiSensor() {
  multiLocX = xLoc;
  multiLocY = yLoc;
 #if 1
- if (multiSensorFrame == NULL) {
+ if (multiSensorFrame == nullptr) {
      // create a common edit frame
      multiSensorFrame = new MultiSensorIconFrame(this);
      multiSensorFrame->initComponents();
@@ -8070,7 +8071,7 @@ void LayoutEditor::startMultiSensor() {
  l->setLocation(multiLocX,multiLocY);
  setDirty(true);
  putItem((Positionable*)l);
- //multiSensorFrame = NULL;
+ //multiSensorFrame = nullptr;
 }
 void LayoutEditor::on_btnChange_clicked()
 {
@@ -8086,7 +8087,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 {
  XmlFile* xmlfile = new XmlFile;
  QFile* file = xmlfile->findFile(name);
- if (file == NULL)
+ if (file == nullptr)
  {
   log.info("No " + name + " file to backup");
  }
@@ -8096,7 +8097,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 
   QString backupName = xmlfile->backupFileName(info.absoluteFilePath());
   QFile* backupFile = xmlfile->findFile(backupName);
-  if (backupFile != NULL)
+  if (backupFile != nullptr)
   {
    if (backupFile->remove())
    {
@@ -8130,7 +8131,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  upperLeftY = pt.y();
 
  UserPreferencesManager* prefsMgr =(UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
- if(prefsMgr != NULL)
+ if(prefsMgr != nullptr)
  {
   QString windowFrameRef = getWindowFrameRef();
   //the restore code for this isn't working…
@@ -8357,7 +8358,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
   while (duplicate)
   {
    name = "TUR" + QString::number(numLayoutTurntables);
-   if (finder->findLayoutTurntableByName(name) == NULL)
+   if (finder->findLayoutTurntableByName(name) == nullptr)
    {
     duplicate = false;
    }
@@ -8367,7 +8368,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
    }
  }
  LayoutTurntable* x = new LayoutTurntable(name, pt, this);
- //if (x != NULL) {
+ //if (x != nullptr) {
  turntableList->append(x);
  setDirty(true);
  //}

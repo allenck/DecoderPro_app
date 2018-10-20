@@ -37,7 +37,7 @@
  setWindowTitle("Lcd Clock");
  resize(60,32);
 
- clock = (SimpleTimebase*)InstanceManager::timebaseInstance();
+ clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
  h1 = new JLabel();
  h2 = new JLabel();
  m1 = new JLabel();

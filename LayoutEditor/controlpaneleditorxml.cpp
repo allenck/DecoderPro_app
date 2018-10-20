@@ -353,10 +353,10 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  panel->getTargetFrame()->setVisible(true);    // always show the panel
 
  // register the resulting panel for later configuration
- if(InstanceManager::configureManagerInstance() == NULL) // added ACK
-     InstanceManager::setConfigureManager((ConfigureManager*)new ConfigXmlManager());
-
- ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerUser(panel);
+ ConfigureManager* cm = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+ if (cm != nullptr) {
+     cm->registerUser(panel);
+ }
 
  // reset the size and position, in case the display caused it to change
  panel->getTargetFrame()->move(x,y);

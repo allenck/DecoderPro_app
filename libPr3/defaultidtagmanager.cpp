@@ -80,7 +80,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 //                return true;
 //            }
 //  });
-  ((DefaultShutDownManager*)InstanceManager::shutDownManagerInstance())->_register(new DefaultIdTagShutdownTask("Writing IdTags", this));
+  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(new DefaultIdTagShutdownTask("Writing IdTags", this));
   _initialised = true;
  }
 }

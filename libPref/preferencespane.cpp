@@ -11,6 +11,7 @@
 //#include "createbuttonpanel.h"
 #include "guilafconfigpane.h"
 
+
 PreferencesPane::PreferencesPane(QWidget *parent) :
     QWidget(parent)
 {
@@ -75,7 +76,7 @@ void PreferencesPane::preferencesSavePressed() {
 void PreferencesPane::saveContents()
 {
  // remove old prefs that are registered in ConfigManager
- InstanceManager::configureManagerInstance()->removePrefItems();
+ ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->removePrefItems();
  // put the new GUI items on the persistance list
 // InstanceManager::configureManagerInstance()->registerPref(guiPrefs);
 
@@ -91,7 +92,7 @@ void PreferencesPane::saveContents()
   file = new QFile(FileUtil::getUserFilesPath()+configFilename);
  }
 
- InstanceManager::configureManagerInstance()->storePrefs(new File(file->fileName()));
+ ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->storePrefs(new File(file->fileName()));
 }
 
 /*protected*/ void PreferencesPane::loadPreferenceFile() //throw (JmriException)
@@ -117,7 +118,7 @@ void PreferencesPane::saveContents()
  }
  try
  {
-  configOK = InstanceManager::configureManagerInstance()->load(file);
+  configOK = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->load(file);
  }
  catch (JmriException e) \
  {

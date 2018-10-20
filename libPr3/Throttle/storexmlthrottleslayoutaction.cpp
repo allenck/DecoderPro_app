@@ -7,6 +7,7 @@
 #include "throttlewindow.h"
 #include "throttleframemanager.h"
 #include "throttleslistpanel.h"
+#include "file.h"
 
 /**
  * Save throttles to XML

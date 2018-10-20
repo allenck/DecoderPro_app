@@ -114,6 +114,7 @@ AbstractTableAction::AbstractTableAction(QObject *parent) :
  f->adjustSize();
  f->setVisible(true);
 }
+
 ATABeanTableFrame::ATABeanTableFrame(AbstractTableAction *act)
 {
  this->act = act;

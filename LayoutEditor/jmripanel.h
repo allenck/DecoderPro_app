@@ -5,15 +5,18 @@
 #include "exceptions.h"
 #include <QMenu>
 #include <QFrame>
-#include "javaqt_global.h"
+#include "liblayouteditor_global.h"
+#include "jpanel.h"
 
+class UserPreferencesManager;
 class Logger;
 class WindowInterface;
-class JAVAQTSHARED_EXPORT JmriPanel : public QFrame
+class LIBLAYOUTEDITORSHARED_EXPORT JmriPanel : public JPanel
 {
     Q_OBJECT
 public:
-    explicit JmriPanel(QWidget *parent = 0);
+    explicit JmriPanel(QWidget *parent = nullptr);
+ virtual ~JmriPanel() {}
     /*public*/ virtual QString getHelpTarget();
     /*public*/ virtual QString getTitle() ;
     /*public*/ virtual bool isMultipleInstances();
@@ -27,6 +30,10 @@ public:
     /*public*/ QSize getPreferredSize();
     /*public*/ QSize getMaximumSize();
 
+    /*public*/ void setSavePosition(bool save);
+    /*public*/ void setFrameLocation();
+    /*public*/ void setFrameRef(QString initref);
+
 signals:
 
 public slots:
@@ -34,6 +41,13 @@ private:
     /*private*/ WindowInterface* wi;// = NULL;
     void reSizeToFitOnScreen();
     Logger* log;
+    bool reuseFrameSavedPosition;
+    bool reuseFrameSavedSized;
+    QString windowFrameRef;
+    void moveEvent(QMoveEvent*);
+    void resizeEvent(QResizeEvent*);
+    /*private*/ void saveWindowSize(UserPreferencesManager* p);
+
 };
 
 #endif // JMRIJPANEL_H

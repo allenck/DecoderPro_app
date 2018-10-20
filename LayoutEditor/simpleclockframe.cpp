@@ -22,15 +22,15 @@ SimpleClockFrame::SimpleClockFrame(QWidget *parent) :
  changed = false;
  showTime = false;
  threeDigits = new DecimalFormat("0.000");	// 3 digit precision for speedup factor
- timeSourceBox = NULL;
- clockStartBox = NULL;
+ timeSourceBox = nullptr;
+ clockStartBox = nullptr;
 
- synchronizeCheckBox = NULL;
- correctCheckBox = NULL;
- displayCheckBox = NULL;
- showStartupCheckBox = NULL;
- startStoppedCheckBox = NULL;
- startSetTimeCheckBox = NULL;
+ synchronizeCheckBox = nullptr;
+ correctCheckBox = nullptr;
+ displayCheckBox = nullptr;
+ showStartupCheckBox = nullptr;
+ startStoppedCheckBox = nullptr;
+ startSetTimeCheckBox = nullptr;
 
  factorField = new JTextField(5);
  hoursField = new JTextField(2);
@@ -97,8 +97,8 @@ SimpleClockFrame::~SimpleClockFrame()
  l->setSpacing(2);
 
  // Determine current state of the clock
- clock = (SimpleTimebase*)InstanceManager::timebaseInstance();
- if (clock==NULL)
+ clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
+ if (clock==nullptr)
  {
   // could not initialize clock
   log->error("Could not obtain a timebase instance.");
@@ -126,7 +126,7 @@ SimpleClockFrame::~SimpleClockFrame()
  timeSourceBox->addItem(tr("Internal Computer Clock"));
 
  hardwareName = ((ClockControl*)InstanceManager::getDefault("ClockControl"))->getHardwareClockName();
- if (hardwareName!=NULL) timeSourceBox->addItem(hardwareName);
+ if (hardwareName!=nullptr) timeSourceBox->addItem(hardwareName);
  timeSourceBox->setToolTip(tr("Select time source for the fast clock."));
 //    timeSourceBox.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
@@ -741,11 +741,11 @@ void SimpleClockFrame::closeEvent(QCloseEvent * e
  if (changed)
  {
   // remind to save
-//  javax.swing.JOptionPane.showMessageDialog(NULL,
+//  javax.swing.JOptionPane.showMessageDialog(nullptr,
 //                tr("Reminder1")+"\n"+tr("Reminder2"),
 //                    tr("ReminderTitle"),
 //                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-  QMessageBox::information(NULL, tr("Reminder"),tr("Please remember to save your changes to disk.")+"\n"+tr("( Select 'Store panels...' in the Panels menu. )") );
+  QMessageBox::information(nullptr, tr("Reminder"),tr("Please remember to save your changes to disk.")+"\n"+tr("( Select 'Store panels...' in the Panels menu. )") );
   changed = false;
  }
  setVisible(false);

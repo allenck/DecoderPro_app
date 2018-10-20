@@ -19,6 +19,7 @@
 #include "sortorder.h"
 #include "metatypes.h"
 #include "class.h"
+#include "configuremanager.h"
 
 //JmriUserPreferencesManager::JmriUserPreferencesManager()
 //{
@@ -61,18 +62,8 @@
  * @return the default UserPreferencesManager
  */
 /*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getDefault() {
-    //return InstanceManager::getOptionalDefault("UserPreferencesManager").orElseGet(() -> {
- JmriUserPreferencesManager* manager;
- manager =(JmriUserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
- if(manager == NULL)
- {
-  manager = new JmriUserPreferencesManager();
-  manager->readUserPreferences();
-  return (UserPreferencesManager* )InstanceManager::setDefault("UserPreferencesManager", manager);
-//    });
+    return (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  }
- return manager;
-}
 
 
 /*public*/ JmriUserPreferencesManager::JmriUserPreferencesManager()
@@ -236,7 +227,7 @@
     if ( classPreferenceList->contains(strClass)) {
         return  classPreferenceList->value(strClass)->getPreferenceName(n);
     }
-    return NULL;
+    return "";
 }
 
 //@Override
@@ -249,7 +240,7 @@
             }
         }
     }
-    return NULL;
+    return "";
 
 }
 
@@ -395,7 +386,7 @@
 //                title,
 //                type);
 // TODO:
-        QMessageBox::information(NULL, title, "message");  // need to add container
+        QMessageBox::information(nullptr, title, "message");  // need to add container
         if (remember->isChecked()) {
             this->setPreferenceState(strClass, item, true);
         }
@@ -496,7 +487,7 @@
 
 //@Override
 /*public*/ void JmriUserPreferencesManager::setSaveWindowSize(QString strClass, bool b) {
-    if ((strClass == NULL) || (strClass == ("jmri.util.JmriJFrame"))) {
+    if ((strClass == "") || (strClass == ("jmri.util.JmriJFrame"))) {
         return;
     }
     if (!windowDetails->contains(strClass)) {
@@ -508,7 +499,7 @@
 
 //@Override
 /*public*/ void JmriUserPreferencesManager::setSaveWindowLocation(QString strClass, bool b) {
-    if ((strClass == NULL) || (strClass == ("jmri.util.JmriJFrame"))) {
+    if ((strClass == "") || (strClass == ("jmri.util.JmriJFrame"))) {
         return;
     }
     if (!windowDetails->contains(strClass)) {
@@ -520,7 +511,7 @@
 
 //@Override
 /*public*/ void JmriUserPreferencesManager::setWindowLocation(QString strClass, QPoint location) {
-    if ((strClass == NULL) || (strClass == ("jmri.util.JmriJFrame"))) {
+    if ((strClass == "") || (strClass == ("jmri.util.JmriJFrame"))) {
         return;
     }
     if (!windowDetails->contains(strClass)) {
@@ -532,7 +523,7 @@
 
 //@Override
 /*public*/ void JmriUserPreferencesManager::setWindowSize(QString strClass, QSize dim) {
-    if ((strClass == NULL) || (strClass == ("jmri.util.JmriJFrame"))) {
+    if ((strClass == nullptr) || (strClass == ("jmri.util.JmriJFrame"))) {
         return;
     }
     if (!windowDetails->contains(strClass)) {
@@ -758,7 +749,7 @@
     if ( classPreferenceList->contains(strClass)) {
         return  classPreferenceList->value(strClass)->getChoiceName(n);
     }
-    return NULL;
+    return nullptr;
 }
 
 //@Override
@@ -771,7 +762,7 @@
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 //@Override
@@ -840,7 +831,7 @@
 /*public*/ void JmriUserPreferencesManager::setTableColumnPreferences(QString table, QString column, int order, int width, SortOrder sort, bool hidden) {
 #if 1
  JmriJTablePersistenceManager* manager = (JmriJTablePersistenceManager*)InstanceManager::getNullableDefault("JmriJTablePersistenceManager");
-    if (manager != NULL) {
+    if (manager != nullptr) {
         manager->setTableColumnPreferences(table, column, order, width, sort, hidden);
     }
 #endif
@@ -850,10 +841,10 @@
 /*public*/ int JmriUserPreferencesManager::getTableColumnOrder(QString table, QString column) {
 #if 1
  JmriJTablePersistenceManager* manager = (JmriJTablePersistenceManager*)InstanceManager::getNullableDefault("JmriJTablePersistenceManager");
- if (manager != NULL)
+ if (manager != nullptr)
  {
   TableColumnPreferences* preferences = manager->getTableColumnPreferences(table, column);
-  if (preferences != NULL) {
+  if (preferences != nullptr) {
       return preferences->getOrder();
   }
  }
@@ -865,9 +856,9 @@
 /*public*/ int JmriUserPreferencesManager::getTableColumnWidth(QString table, QString column) {
 #if 1
  JmriJTablePersistenceManager* manager = (JmriJTablePersistenceManager*)InstanceManager::getNullableDefault("JmriJTablePersistenceManager");
-    if (manager != NULL) {
+    if (manager != nullptr) {
         TableColumnPreferences* preferences = manager->getTableColumnPreferences(table, column);
-        if (preferences != NULL) {
+        if (preferences != nullptr) {
             return preferences->getWidth();
         }
     }
@@ -879,9 +870,9 @@
 /*public*/ int JmriUserPreferencesManager::getTableColumnSort(QString table, QString column) {
 #if 1
  JmriJTablePersistenceManager* manager = (JmriJTablePersistenceManager*)InstanceManager::getNullableDefault("JmriJTablePersistenceManager");
-    if (manager != NULL) {
+    if (manager != nullptr) {
         TableColumnPreferences* preferences = manager->getTableColumnPreferences(table, column);
-        if (preferences != NULL) {
+        if (preferences != nullptr) {
             return preferences->getSort();
         }
     }
@@ -895,9 +886,9 @@
 {
 #if 1
  JmriJTablePersistenceManager* manager = (JmriJTablePersistenceManager*)InstanceManager::getNullableDefault("JmriJTablePersistenceManager");
- if (manager != NULL) {
+ if (manager != nullptr) {
      TableColumnPreferences* preferences = manager->getTableColumnPreferences(table, column);
-     if (preferences != NULL) {
+     if (preferences != nullptr) {
          return preferences->getHidden();
      }
  }
@@ -909,7 +900,7 @@
 /*public*/ QString JmriUserPreferencesManager::getTableColumnAtNum(QString table, int i) {
 #if 1
     JmriJTablePersistenceManager* manager = (JmriJTablePersistenceManager*)InstanceManager::getNullableDefault("JmriJTablePersistenceManager");
-    if (manager != NULL) {
+    if (manager != nullptr) {
         QMap<QString, TableColumnPreferences*>* map = manager->getTableColumnPreferences(table);
         //for (Map.Entry<QString, TableColumnPreferences> entry : map.entrySet())
         QMapIterator<QString, TableColumnPreferences*> entry(*map);
@@ -939,7 +930,7 @@
 /*public*/ QStringList JmriUserPreferencesManager::getTablesColumnList(QString table) {
 #if 1
     JmriJTablePersistenceManager* manager = (JmriJTablePersistenceManager*)InstanceManager::getNullableDefault("JmriJTablePersistenceManager");
-    if (manager != NULL) {
+    if (manager != nullptr) {
         QMap<QString, TableColumnPreferences*>* map = manager->getTableColumnPreferences(table);
         return QStringList(map->keys());
     }
@@ -971,11 +962,11 @@
 {
  this->allowSave = false;
  this->loading = true;
- File* perNodeConfig = NULL;
+ File* perNodeConfig = nullptr;
  try {
      perNodeConfig = FileUtil::getFile(FileUtil::PROFILE + /*Profile::PROFILE*/"profile" + "/" + NodeIdentity::identity() + "/" + /*Profile::UI_CONFIG*/"user-interface.xml"); // NOI18N
      if (!perNodeConfig->canRead()) {
-         perNodeConfig = NULL;
+         perNodeConfig = nullptr;
      }
  } catch (FileNotFoundException ex) {
      // ignore - this only means that sharedConfig does not exist.
@@ -983,7 +974,7 @@
  catch (IOException ex) {
     // ignore - this only means that sharedConfig does not exist.
  }
- if (perNodeConfig != NULL)
+ if (perNodeConfig != nullptr)
  {
   file = perNodeConfig;
   this->readComboBoxLastSelections();
@@ -1213,7 +1204,6 @@
 
 /*private*/ void JmriUserPreferencesManager::readWindowDetails()
 {
-#if 1
  // TODO: COMPLETE!
  QDomElement element = this->readElement(WINDOWS_ELEMENT, WINDOWS_NAMESPACE);
  if (element != QDomElement())
@@ -1228,7 +1218,7 @@
    try
    {
     bool ok;
-    if (window.attribute("locX") != NULL && window.attribute("locX") != NULL)
+    if (window.attribute("locX") != "" && window.attribute("locX") != "")
     {
      double x = window.attribute("locX").toDouble(&ok);
      if(!ok) throw DataConversionException();
@@ -1236,7 +1226,7 @@
      if(!ok) throw DataConversionException();
      this->setWindowLocation(reference, QPoint((int) x, (int) y));
     }
-    if (window.attribute("width") != NULL && window.attribute("height") != NULL)
+    if (window.attribute("width") != "" && window.attribute("height") != "")
     {
      double width = window.attribute("width").toDouble(&ok);
      if(!ok) throw DataConversionException();
@@ -1302,11 +1292,9 @@
    }
   } // foreach window
  }
-#endif
 }
 
 /*private*/ void JmriUserPreferencesManager::saveWindowDetails() {
-#if 1
  this->setChangeMade(false);
  if (this->allowSave)
  {
@@ -1320,6 +1308,8 @@
     entry.next();
     QDomElement window = doc.createElement("window");
     window.setAttribute("class", entry.key());
+    if(entry.key() == "LocoMonPane" && entry.value()->getLocation().x() ==0)
+     log->debug("x=0");
     if (entry.value()->saveLocation)
     {
      try
@@ -1347,7 +1337,6 @@
     if (!entry.value()->parameters.isEmpty())
     {
      QDomElement properties = doc.createElement("properties");
-#if 1 // TODO:
 
      //entry.value().parameters.entrySet().stream().map((property) -> {
      //foreach(QVariant property , entry.value()->parameters.values())
@@ -1367,7 +1356,7 @@
        QDomElement elem;
        propertyElement.appendChild(elem = doc.createElement("value"));
        QString qtClass = value.typeName();
-       QString javaClass = "??";
+       QString javaClass = "java.lang.String";
        if(qtClass == "QString") javaClass = "java.lang.String";
        elem.setAttribute("class", javaClass);
        //elem.setText(value.toString());
@@ -1379,7 +1368,6 @@
 //           });
        properties.appendChild(propertyElement);
       }
-#endif
      window.appendChild(properties);
     }
     element.appendChild(window);
@@ -1388,7 +1376,6 @@
    this->resetChangeMade();
   }
  }
-#endif
 }
 
 /**
@@ -1409,14 +1396,14 @@
 
 /*protected*/ void JmriUserPreferencesManager::saveElement(/*@NonNULL*/ QDomElement element)
 {
-#if 1
+
     if(log->isDebugEnabled()) log->trace(tr("Saving %1 element.").arg(element.tagName()));
     try {
         ProfileUtils::getUserInterfaceConfiguration(ProfileManager::getDefault()->getActiveProfile())->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), false);
     } catch (JDOMException ex) {
         log->error("Unable to save user preferences"/*, ex*/);
     }
-#endif
+
 }
 
 /*private*/ void JmriUserPreferencesManager::savePreferences() {
@@ -1428,11 +1415,15 @@
   JmriJTablePersistenceManager* manager =
     (JmriJTablePersistenceManager*)InstanceManager::getOptionalDefault("JmriJTablePersistenceManager");
     //->ifPresent((manager) -> {
-  if(manager != NULL)
+  if(manager != nullptr)
         manager->savePreferences(ProfileManager::getDefault()->getActiveProfile());
 //    });
 }
 
+//@Override
+    /*public*/ void JmriUserPreferencesManager::initialize() {
+        this->readUserPreferences();
+    }
 /**
  * Holds details about the specific class.
  */
@@ -1483,7 +1474,7 @@
         try {
             return preferenceList->value(n)->getItem();
         } catch (IndexOutOfBoundsException ioob) {
-            return NULL;
+            return "";
         }
     }
 
@@ -1495,7 +1486,7 @@
         try {
             return multipleChoiceList.value(n)->getItem();
         } catch (IndexOutOfBoundsException ioob) {
-            return NULL;
+            return "";
         }
     }
 //};

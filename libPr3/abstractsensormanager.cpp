@@ -140,7 +140,7 @@ bool AbstractSensorManager::isNumber(QString s)
  // doesn't exist, make a new one
  s = createNewSensor(systemName, userName);
 
- emit newSensorCreated(this, s);
+ //emit newSensorCreated(this, s);
 
  //  if that failed, blame it on the input arguements
  if (s == NULL) throw new IllegalArgumentException();
@@ -148,7 +148,7 @@ bool AbstractSensorManager::isNumber(QString s)
  // save in the maps
  Register(s);
  emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->size())));
- emit newSensorCreated(this, s);
+ //emit newSensorCreated(this, s);
  return s;
 }
 

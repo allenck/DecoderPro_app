@@ -115,19 +115,19 @@ bool SaveXml::store(QString filename)
  root.appendChild(storeMemories(InstanceManager::memoryManagerInstance()));
  root.appendChild(storeSignalHeads(InstanceManager::signalHeadManagerInstance()));
  root.appendChild(storeSignalMasts(InstanceManager::signalMastManagerInstance()));
- root.appendChild(storeLogix(InstanceManager::logixManagerInstance()));
- root.appendChild(storeAudio((DefaultAudioManager*)InstanceManager::audioManagerInstance()));
- root.appendChild(storeConditionals(InstanceManager::conditionalManagerInstance()));
+ root.appendChild(storeLogix(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))));
+ root.appendChild(storeAudio((DefaultAudioManager*)InstanceManager::getDefault("DefaultAudioManager")));
+ root.appendChild(storeConditionals(static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))));
  root.appendChild((storeBlocks(InstanceManager::blockManagerInstance())));
  root.appendChild(storeOBlocks(InstanceManager::getDefault("OBlockManager")));
- root.appendChild(storeLayoutBlock(InstanceManager::layoutBlockManagerInstance()));
+ root.appendChild(storeLayoutBlock(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))));
  root.appendChild(storeSections(InstanceManager::sectionManagerInstance()));
- root.appendChild(storeBlockBossLogic(NULL));
+ root.appendChild(storeBlockBossLogic(nullptr));
  root.appendChild(storeRoutes(InstanceManager::routeManagerInstance()));
  root.appendChild(storeWarrants(InstanceManager::getDefault("WarrantManager")));
  root.appendChild(storeSignalMastLogic(InstanceManager::signalMastLogicManagerInstance()));
  root.appendChild(storeSignalGroups(InstanceManager::signalGroupManagerInstance()));
- root.appendChild(storeTimebase(InstanceManager::timebaseInstance()));
+ root.appendChild(storeTimebase(static_cast<Timebase*>(InstanceManager::getDefault("Timebase"))));
 
  //Element panel = doc.createElement("LayoutEditor");
  QDomElement panel =doc.createElement("LayoutEditor");

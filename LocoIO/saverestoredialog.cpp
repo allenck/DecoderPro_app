@@ -19,7 +19,7 @@ SaveRestoreDialog::SaveRestoreDialog(bool bSaveMode, LocoIOData* data, QWidget *
   *vals << data->getUnitConfig() << data->getUnitAddress() << data->getUnitSubAddress();
   for(int channel = 0; channel < 48; channel++)
   {
-   *vals << data->getV1(channel) << data->getV2(channel), data->getSV(channel);
+   *vals << data->getV1(channel) << data->getV2(channel) << data->getSV(channel);
   }
  }
  getSettings();

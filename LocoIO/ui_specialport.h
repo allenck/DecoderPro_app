@@ -41,8 +41,8 @@ public:
         SpecialPort->setFont(font);
         verticalLayout = new QVBoxLayout(SpecialPort);
         verticalLayout->setSpacing(2);
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
         lblInput = new QLabel(SpecialPort);
         lblInput->setObjectName(QStringLiteral("lblInput"));
         QPalette palette;
@@ -84,6 +84,7 @@ public:
 
         rbInput = new QRadioButton(SpecialPort);
         rbInput->setObjectName(QStringLiteral("rbInput"));
+        rbInput->setChecked(true);
 
         verticalLayout->addWidget(rbInput);
 

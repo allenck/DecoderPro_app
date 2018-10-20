@@ -44,7 +44,7 @@ public:
 //    /*static*/ /*final java.util.regex.Matcher*/ QRegExp numberMatcher("\\d++");// = java.util.regex.Pattern.compile("\\d++").matcher("");
 
 signals:
-    void newSensorCreated(AbstractSensorManager*, Sensor* s);
+    //void newSensorCreated(AbstractSensorManager*, Sensor* s);
     void propertyChange(PropertyChangeEvent *e);
 
 public slots:

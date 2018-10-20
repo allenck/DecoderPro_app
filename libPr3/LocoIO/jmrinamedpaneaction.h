@@ -12,10 +12,10 @@ class LIBPR3SHARED_EXPORT JmriNamedPaneAction : public JmriAbstractAction
 {
  Q_OBJECT
 public:
- explicit JmriNamedPaneAction(QObject *parent = 0);
+ explicit JmriNamedPaneAction(QObject *parent = nullptr);
  /*public*/ JmriNamedPaneAction(QString s, WindowInterface* wi, QString paneClass);
  /*public*/ JmriNamedPaneAction(QString s, QIcon i, WindowInterface* wi, QString paneClass);
- /*public*/ JmriNamedPaneAction(QString s, QString p,QObject *parent = 0);
+ /*public*/ JmriNamedPaneAction(QString s, QString p,QObject *parent = nullptr);
  /*public*/ JmriPanel* makePanel();
 
 signals:
@@ -25,13 +25,13 @@ public slots:
 
 private:
  Logger* log;
- WindowInterface* wi;
+ //WindowInterface* wi;
  void common();
  JmriPanel* cache;
 
 protected:
  /*protected*/ QString paneClass;
-/*protected*/ QObject* context;// = NULL;
+// /*protected*/ QObject* context;// = NULL;
  /*protected*/ WindowInterface::Hint hint;// = WindowInterface.Hint.DEFAULT;
 };
 

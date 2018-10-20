@@ -33,7 +33,7 @@ void SensorTableDataModel::common()
  setObjectName("SensorTableDataModel");
  log = new Logger("SensorDataModel");
  deleteMapper = new QSignalMapper();
- table = NULL;
+ table = nullptr;
  init();
 }
 
@@ -41,18 +41,18 @@ void SensorTableDataModel::common()
 {
  //super();
  common();
- senManager = (SensorManager*)manager;
- ProxySensorManager* proxy = NULL;
- AbstractSensorManager* mgr = NULL;
- if(qobject_cast<ProxySensorManager*>(senManager) != NULL)
+ senManager = manager;
+ ProxySensorManager* proxy = nullptr;
+ AbstractSensorManager* mgr = nullptr;
+ if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
  {
-  proxy = (ProxySensorManager*)senManager;
+  proxy = static_cast<ProxySensorManager*>(senManager);
   proxy->removePropertyChangeListener((PropertyChangeListener*) this);
   disconnect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else
  {
-  mgr = (AbstractSensorManager*)senManager;
+  mgr = static_cast<AbstractSensorManager*>(senManager);
   mgr->removePropertyChangeListener((PropertyChangeListener*) this);
   disconnect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -66,7 +66,7 @@ void SensorTableDataModel::common()
   {
    // if object has been deleted, it's not here; ignore it
    NamedBean* b = getBySystemName(sysNameList.at(i));
-   if (b!=NULL)
+   if (b!=nullptr)
    {
     b->removePropertyChangeListener((PropertyChangeListener*)this);
     AbstractNamedBean* anb = (AbstractNamedBean*)b;
@@ -78,12 +78,12 @@ void SensorTableDataModel::common()
 // getManager()->addPropertyChangeListener((PropertyChangeListener*)this);
 // //ProxySensorManager* mgr = (ProxySensorManager*)getManager();
 // connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- if(proxy != NULL)
+ if(proxy != nullptr)
  {
   proxy->addPropertyChangeListener((PropertyChangeListener*) this);
   connect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
- if(mgr != NULL)
+ if(mgr != nullptr)
  {
   mgr->addPropertyChangeListener((PropertyChangeListener*) this);
   connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -96,7 +96,7 @@ void SensorTableDataModel::common()
 /*public*/ QString SensorTableDataModel::getValue(QString name) const
 {
  Sensor* sen;
- if(qobject_cast<ProxySensorManager*>(senManager)!= NULL)
+ if(qobject_cast<ProxySensorManager*>(senManager)!= nullptr)
   sen = ((ProxySensorManager*)senManager)->getBySystemName(name);
  else
   sen = (Sensor*)senManager->getBeanBySystemName(name);
@@ -120,7 +120,7 @@ void SensorTableDataModel::common()
   {
    // if object has been deleted, it's not here; ignore it
    NamedBean* b = getBySystemName(sysNameList.at(i));
-   if (b!=NULL)
+   if (b!=nullptr)
    {
     b->removePropertyChangeListener((PropertyChangeListener*)this);
     AbstractNamedBean* anb = (AbstractNamedBean*)b;
@@ -136,13 +136,13 @@ void SensorTableDataModel::common()
 }
 /*protected*/ Manager* SensorTableDataModel::getManager()
 {
- if (senManager==NULL)
+ if (senManager==nullptr)
   senManager=(ProxySensorManager*)InstanceManager::sensorManagerInstance();
  return senManager;
 }
 /*protected*/ NamedBean* SensorTableDataModel::getBySystemName(QString name) const
 {
- if(qobject_cast<ProxySensorManager*>(senManager) != NULL)
+ if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
   return ((ProxySensorManager*)senManager)->getBeanBySystemName(name);
  else
   return ((SensorManager*)senManager)->getBySystemName(name);
@@ -201,11 +201,11 @@ void SensorTableDataModel::common()
  {
   QString name = sysNameList.at(row);
   Sensor* s;
-  if(qobject_cast<ProxySensorManager*>(senManager)!= NULL)
-   s= ((ProxySensorManager*)senManager)->getBySystemName(name);
+  if(qobject_cast<ProxySensorManager*>(senManager)!= nullptr)
+   s= static_cast<ProxySensorManager*>(senManager)->getBySystemName(name);
   else
-   s = ((AbstractSensorManager*)senManager)->getBySystemName(name);
-  if(((AbstractSensor*)s)->useDefaultTimerSettings())
+   s = static_cast<ProxySensorManager*>(senManager)->getBySystemName(name);
+  if(s->useDefaultTimerSettings())
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
   else
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
@@ -243,7 +243,7 @@ void SensorTableDataModel::common()
    log->debug("row is greater than name list");
    return "";
   }
-  if (s == NULL)
+  if (s == nullptr)
   {
    log->debug("error NULL sensor!");
    return "error";
@@ -280,13 +280,13 @@ void SensorTableDataModel::common()
   return false;
  }
  QString name = sysNameList.at(row);
- AbstractSensor* s;
- if(qobject_cast<ProxySensorManager*>(senManager) != 0)
-  s = (AbstractSensor*)((ProxySensorManager*)senManager)->getBySystemName(name);
+ Sensor* s;
+ if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
+  s = static_cast<ProxySensorManager*>(senManager)->getBySystemName(name);
  else
-  s = (AbstractSensor*)((AbstractSensorManager*)senManager)->getBySystemName(name);
+  s = static_cast<ProxySensorManager*>(senManager)->getBySystemName(name);
 
- if (s == NULL)
+ if (s == nullptr)
  {
   log->debug("error NULL sensor!");
   return false;
@@ -336,6 +336,7 @@ void SensorTableDataModel::common()
  if ((e->getPropertyName().indexOf("inverted")>=0) || (e->getPropertyName().indexOf("GlobalTimer")>=0) ||
         (e->getPropertyName().indexOf("ActiveTimer")>=0) || (e->getPropertyName().indexOf("InActiveTimer")>=0)){
   return true;
+  if(e->getPropertyName() == "KnownState") return true;
  }
  else return BeanTableDataModel::matchPropertyName(e);
 }
@@ -351,7 +352,7 @@ void SensorTableDataModel::common()
 
 /*public*/ void SensorTableDataModel::showDebounce(bool show)
 {
- if(table == NULL) return;
+ if(table == nullptr) return;
 //    XTableColumnModel columnModel = (XTableColumnModel)table.getColumnModel();
 //    TableColumn column  = columnModel.getColumnByModelIndex(USEGLOBALDELAY);
 //    columnModel.setColumnVisible(column, show);
@@ -414,7 +415,7 @@ void SensorTableDataModel::OnDelete(int row)
  QString name = sysNameList.at(row);
  ProxySensorManager* mgr = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
  NamedBean* bean = mgr->getBeanBySystemName(name);
- if(bean != NULL)
+ if(bean != nullptr)
  {
   mgr->deregister(bean);
   sysNameList.removeAt(row);

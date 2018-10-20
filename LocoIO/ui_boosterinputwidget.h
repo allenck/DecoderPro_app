@@ -46,8 +46,8 @@ public:
         BoosterInputWidget->resize(20, 317);
         verticalLayout = new QVBoxLayout(BoosterInputWidget);
         verticalLayout->setSpacing(2);
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
         lblfiller = new QLabel(BoosterInputWidget);
         lblfiller->setObjectName(QStringLiteral("lblfiller"));
         lblfiller->setMaximumSize(QSize(16777215, 20));
@@ -63,6 +63,7 @@ public:
 
         rbBlockDetectionActiveLow = new QRadioButton(BoosterInputWidget);
         rbBlockDetectionActiveLow->setObjectName(QStringLiteral("rbBlockDetectionActiveLow"));
+        rbBlockDetectionActiveLow->setChecked(true);
 
         verticalLayout->addWidget(rbBlockDetectionActiveLow);
 

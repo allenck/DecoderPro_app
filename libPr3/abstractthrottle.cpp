@@ -16,7 +16,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  active = true;
  adapterMemo = memo;
  listeners = new QVector<PropertyChangeListener*>();
- re = NULL;
+ re = nullptr;
  this->parent = parent;
  setObjectName("AbstractThrottle");
 
@@ -357,7 +357,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
     log->debug("remove listeners size is " + QString("%1").arg(listeners->size()));
     if ((listeners->size()==0))
     {
-        log->debug("Listener Size is 0 so will call the dispose in the InstanceManger with an empty throttleListenr NULL value");
+        log->debug("Listener Size is 0 so will call the dispose in the InstanceManger with an empty throttleListenr nullptr value");
 // TODO:
 //        InstanceManager::throttleManagerInstance().disposeThrottle(this, new ThrottleListener(){
 //            /*public*/ void notifyFailedThrottleRequest(DccLocoAddress address, String reason){ }
@@ -402,7 +402,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  for (int i=0; i < cnt; i++)
  {
   PropertyChangeListener* client = v->at(i);
-  if(client == NULL)
+  if(client == nullptr)
       continue;
 //  PropertyChangeEvent* event = new PropertyChangeEvent(this, property, oldValue, newValue);
 //  if(qobject_cast<ThrottleWindow*>(client))
@@ -426,7 +426,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 //    /*public*/ void AbstractThrottle::dispose() {
 //        if (!active) log.error("Dispose called when not active");
 //        log.warn("Dispose called without knowing the original throttle listener");
-//        InstanceManager.throttleManagerInstance().disposeThrottle(this, NULL);
+//        InstanceManager.throttleManagerInstance().disposeThrottle(this, nullptr);
 //    }
 
 /*public*/ void AbstractThrottle::dispose(ThrottleListener* l) {
@@ -438,7 +438,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 //    /*public*/ void dispatch() {
 //        if (!active) log.warn("dispatch called when not active");
 //        log.warn("dispatch called without knowing the original throttle listener");
-//        InstanceManager.throttleManagerInstance().dispatchThrottle(this, NULL);
+//        InstanceManager.throttleManagerInstance().dispatchThrottle(this, nullptr);
 //    }
 
 /*public*/ void AbstractThrottle::dispatch(ThrottleListener* l) {
@@ -450,7 +450,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 //    /*public*/ void release() {
 //        if (!active) log.warn("release called when not active");
 //        log.warn("Release called without knowing the original throttle listener");
-//        InstanceManager.throttleManagerInstance().releaseThrottle(this, NULL);
+//        InstanceManager.throttleManagerInstance().releaseThrottle(this, nullptr);
 //    }
 
 /*public*/ void AbstractThrottle::release(ThrottleListener* l) {
@@ -751,17 +751,17 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
             getF13(), getF14(), getF15(), getF16(),
             getF17(), getF18(), getF19(), getF20());
 
-    //if the result returns as NULL, we should quit.
+    //if the result returns as nullptr, we should quit.
     if (result.isNull())
         return;
     CommandStation* c;
-    if((adapterMemo!=NULL) && (adapterMemo->get("CommandStation")!=NULL))
+    if((adapterMemo!=nullptr) && (adapterMemo->get("CommandStation")!=nullptr))
         c = (CommandStation*)adapterMemo->get("CommandStation");
     else
-        c = (CommandStation*)InstanceManager::commandStationInstance();
+        c = (CommandStation*)InstanceManager::getDefault("CommandStation");
 
     // send it 3 times
-    if (c != NULL)
+    if (c != nullptr)
         c->sendPacket(result,3);
     else
         Logger::error("Can't send F13-F20 since no command station defined");
@@ -782,17 +782,17 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
             a->getNumber(), a->isLongAddress(),
             getF21(), getF22(), getF23(), getF24(),
             getF25(), getF26(), getF27(), getF28());
-    //if the result returns as NULL, we should quit.
+    //if the result returns as nullptr, we should quit.
     if (result.isNull())
         return;
     CommandStation* c;
-    if((adapterMemo!=NULL) && (adapterMemo->get("CommandStation")!=NULL))
+    if((adapterMemo!=nullptr) && (adapterMemo->get("CommandStation")!=nullptr))
         c = (CommandStation*)adapterMemo->get("CommandStation");
     else
-        c = (CommandStation*)InstanceManager::commandStationInstance();
+        c = (CommandStation*)InstanceManager::getDefault("CommandStation");
 
     // send it 3 times
-    if (c != NULL)
+    if (c != nullptr)
         c->sendPacket(result,3);
     else
         Logger::error("Can't send F21-F28 since no command station defined");
@@ -1126,7 +1126,7 @@ if(speedStepMode!=Mode)
  }
 
 /*protected*/ void AbstractThrottle::record(float speed){
-    if(re==NULL)
+    if(re==nullptr)
         return;
     if(speed==0){
         stopClock();
@@ -1151,7 +1151,7 @@ void AbstractThrottle::stopClock() {
 
 /*protected*/ void AbstractThrottle::finishRecord()
 {
- if(re==NULL)
+ if(re==nullptr)
  {
   return;
  }
@@ -1177,7 +1177,7 @@ void AbstractThrottle::stopClock() {
      re->store();
  else
      log->warn("Roster Entry " + re->getId() + " running time not saved as entry is already open for editing");
- re=NULL;
+ re=nullptr;
 }
 
 

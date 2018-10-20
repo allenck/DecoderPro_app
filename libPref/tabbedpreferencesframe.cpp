@@ -26,7 +26,7 @@
 
 /*public*/ QString TabbedPreferencesFrame::getTitle()
 {
- return InstanceManager::tabbedPreferencesInstance()->getTitle();
+ return ((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->getTitle();
 }
 
 /*public*/ bool TabbedPreferencesFrame::isMultipleInstances() { return true; }

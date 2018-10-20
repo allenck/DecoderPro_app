@@ -14,6 +14,7 @@
 #include "system.h"
 #include "addprofiledialog.h"
 #include "jfilechooser.h"
+#include <QApplication>
 
 //ProfileManagerDialog::ProfileManagerDialog(QWidget *parent) :
 //    JDialog(parent)
@@ -230,6 +231,7 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
  countDown = -1;
  countDownLbl->setVisible(false);
  //if (profiles->currentItem() != NULL)
+
  accept();
  if(profiles->currentIndex() != QModelIndex())
  {
@@ -327,7 +329,7 @@ void ProfileManagerDialog::timeout()
   setVisible(false);
   QModelIndex m = profiles->currentIndex();
   ProfileManager::defaultManager()->setActiveProfile(ProfileManager::defaultManager()->getProfiles().at(m.row()));
-  if(ProfileManager::defaultManager()->getActiveProfile() != NULL)
+  if(ProfileManager::defaultManager()->getActiveProfile() != nullptr)
    log->info("Automatically starting with profile " + ProfileManager::defaultManager()->getActiveProfile()->getId() + " after timeout.");
   timer->stop();
   countDown = -1;
@@ -346,8 +348,8 @@ void ProfileManagerDialog::timeout()
  */
 /*public*/ /*static*/ Profile* ProfileManagerDialog::getStartingProfile(JFrame* f) throw (IOException)
 {
- if (ProfileManager::getStartingProfile() == NULL
-  || (System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile") == NULL && !ProfileManager::defaultManager()->isAutoStartActiveProfile()))
+ if (ProfileManager::getStartingProfile() == nullptr
+  || (System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile") == "" && !ProfileManager::defaultManager()->isAutoStartActiveProfile()))
  {
   ProfileManagerDialog* pmd = new ProfileManagerDialog(f, true);
   //pmd->setLocationRelativeTo(f);

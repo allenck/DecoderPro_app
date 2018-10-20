@@ -894,7 +894,7 @@ File userPrefsFile;*/
    if(!prefix.isEmpty())
     adapterName = adapterName.replace("ConnectionConfigXml", newClassName);
    int tId = QMetaType::type(newClassName.toLatin1());
-   if(tId = 0)
+   if(tId == 0)
     log->error(QString("No type id for %1 (%2)").arg(newClassName).arg(adapterName));
   }
   if (log->isDebugEnabled()) log->debug("load " + item.tagName() + " via "+adapterName);

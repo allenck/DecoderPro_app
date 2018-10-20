@@ -31,6 +31,7 @@ public:
     /*public*/ void setDividerLocation(int loc);
     /*public*/ int getDividerLocation();
     /*public*/ QString getClassName();
+    /*public*/ void setWindowSize();
 
 public slots:
     void On_newItem_triggered();

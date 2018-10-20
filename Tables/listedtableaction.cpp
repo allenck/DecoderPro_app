@@ -91,7 +91,6 @@ void ListedTableAction::common()
 
 /*public*/ void ListedTableAction::actionPerformed()
 {
-#if 1
     // create the JTable model, with changes for specific NamedBean
     /* create the frame in a seperate thread outside of swing so that we do not
      hog the swing thread which is also used for connection traffic */
@@ -111,15 +110,11 @@ void ListedTableAction::common()
 
             f->setDividerLocation(dividerLocation);
             f->setVisible(true);
+            f->setFrameLocation();
 //        }
 //    };
 //    Thread thr = new Thread(r, "Listed Table Generation");
 //    thr.start();
-#else
- if(libTables == NULL)
-  libTables = new LibTables();
- libTables->show(text());
-#endif
 }
 
 ///*public*/ void actionPerformed(ActionEvent e) {

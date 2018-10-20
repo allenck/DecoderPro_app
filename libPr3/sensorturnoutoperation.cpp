@@ -26,7 +26,7 @@
  setFeedbackModes(feedbackModes);
 }
 
-    /**
+/**
  * constructor with default values - this creates the "defining instance" of
  * the operation type hence it cannot be deleted
  */

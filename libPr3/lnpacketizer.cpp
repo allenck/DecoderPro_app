@@ -67,7 +67,8 @@ void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
 
  // set the error correcting code byte(s) before transmittal
  m->setParity();
- emit sendMessage(m);
+ LocoNetMessage* msgcopy = new LocoNetMessage(*m);
+ emit sendMessage(msgcopy);
 }
 /**
  * Break connection to existing LnPortController object. Once broken,
@@ -75,11 +76,11 @@ void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
  * @param p previously connected port
  */
 /*public*/ void LnPacketizer::disconnectPort(LnPortController* p) {
- istream = NULL;
- ostream = NULL;
+ istream = nullptr;
+ ostream = nullptr;
  if (controller != p)
      log->warn("disconnectPort: disconnect called from non-connected LnPortController");
- controller = NULL;
+ controller = nullptr;
 }
 #ifdef USE_THREAD
  /**

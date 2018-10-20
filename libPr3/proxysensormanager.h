@@ -70,14 +70,16 @@ public:
 signals:
  void propertyChange(PropertyChangeEvent *e);
  void newSensorCreated(AbstractSensorManager*,Sensor*);
+
 private:
  Logger log;
+
 protected:
  ///*private*/ AbstractManager* getInternal();
  virtual /*protected*/ Manager* makeInternalManager() const;
  virtual /*protected*/ Sensor* makeBean(int i, QString systemName, QString userName);
- /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
- /*protected*/ NamedBean* provideNamedBean(QString name);
+ // /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
+ // /*protected*/ NamedBean* provideNamedBean(QString name);
 
  friend class AbstractProxyManager;
 };

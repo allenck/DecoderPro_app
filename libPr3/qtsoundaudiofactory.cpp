@@ -135,7 +135,7 @@ QtSoundAudioFactory::QtSoundAudioFactory(QObject *parent) :
  AbstractAudioFactory::cleanup();
 
  // Get the active AudioManager
- AudioManager* am = InstanceManager::audioManagerInstance();
+ AudioManager* am = (AudioManager*)InstanceManager::getDefault("AudioManager");
 
  // Retrieve list of Audio Objects and remove the sources
  QStringList audios = am->getSystemNameList();

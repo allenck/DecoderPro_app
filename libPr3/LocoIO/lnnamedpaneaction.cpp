@@ -44,16 +44,16 @@ LnNamedPaneAction::LnNamedPaneAction(QObject *parent) :
 /*public*/ JmriPanel* LnNamedPaneAction::makePanel()
 {
  JmriPanel* p = JmriNamedPaneAction::makePanel();
- if (p == NULL)
+ if (p == nullptr)
  {
-  return NULL;
+  return nullptr;
  }
 
  //try {
  ((LnPanelInterface*) p)->initComponents(memo);
 //     return p;
 // } catch (Exception ex) {
- if(p == NULL)
+ if(p == nullptr)
  {
   log->warn("could not init pane class: " + paneClass /*+ " due to:" + ex.getMessage()*/);
      //ex.printStackTrace();

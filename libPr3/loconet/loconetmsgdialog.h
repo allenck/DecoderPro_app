@@ -20,6 +20,7 @@ public:
  ~LocoNetMsgDialog();
  LocoNetMsgDialog(const LocoNetMsgDialog&) : JmriPanel() {}
  LocoNetMessage* locoNetMessage();
+ QString getTitle();
 
 private:
  Ui::LocoNetMsgDialog *ui;

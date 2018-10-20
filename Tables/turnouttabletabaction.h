@@ -12,10 +12,7 @@ public:
     Q_INVOKABLE TurnoutTableTabAction(QString s, QObject *parent);
     ~TurnoutTableTabAction() {}
     Q_INVOKABLE TurnoutTableTabAction(const TurnoutTableTabAction& that) : AbstractTableTabAction(that.text(), that.parent()) {}
-    BeanTableFrame* currFrame();
-    void setCurrFrame(BeanTableFrame *frame);
-    static BeanTableFrame* frame;
-    QWidget* getPane();
+    /*public*/ QString getTableClass();
 
 signals:
 

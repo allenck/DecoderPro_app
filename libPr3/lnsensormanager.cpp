@@ -112,6 +112,7 @@ void LnSensorManager::dispose() {
 Sensor* LnSensorManager::createNewSensor(QString systemName, QString userName)
 {
  LnSensor* s = new LnSensor(systemName, userName, tc, prefix);
+ s->thisAddr = systemName.mid(2).toInt();
  s->AbstractNamedBean::setUserName(userName);
  if(defaultSensorState!=Sensor::UNKNOWN){
      try {

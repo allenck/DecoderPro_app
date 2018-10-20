@@ -32,7 +32,7 @@ JmriJFrameInterface::JmriJFrameInterface(QWidget *parent) :   WindowInterface(pa
 
  // display cached frame if available
  JmriJFrame* frame = frames.value(child);
- if (frame != NULL)
+ if (frame != nullptr)
  {
   frame->setVisible(true);
   return;

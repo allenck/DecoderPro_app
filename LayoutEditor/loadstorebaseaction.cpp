@@ -3,6 +3,7 @@
 #include "configxmlmanager.h"
 #include "fileutil.h"
 #include "jfilechooser.h"
+#include "jmriconfigurationmanager.h"
 
 LoadStoreBaseAction::LoadStoreBaseAction(QObject *parent) :
     AbstractAction(parent)
@@ -34,8 +35,8 @@ LoadStoreBaseAction::LoadStoreBaseAction(QObject *parent) :
  this->s = s;
  //super(s);
  // ensure that an XML config manager exists
- if (InstanceManager::configureManagerInstance()==NULL)
-        InstanceManager::setConfigureManager((ConfigureManager*)new ConfigXmlManager());
+ if (static_cast<ConfigureManager*>(InstanceManager::getOptionalDefault("ConfigureManager"))==NULL)
+       InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
 }
 
 

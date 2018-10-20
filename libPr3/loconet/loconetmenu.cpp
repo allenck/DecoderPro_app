@@ -20,10 +20,10 @@
  * @version $Revision: 28746 $
  */
 // /*public*/ class LocoNetMenu extends JMenu {
-LocoNetMenu* LocoNetMenu::_instance = NULL;
+LocoNetMenu* LocoNetMenu::_instance = nullptr;
 /*public*/ LocoNetMenu* LocoNetMenu::instance(LocoNetSystemConnectionMemo* memo, QWidget* parent)
 {
- if(_instance == NULL)
+ if(_instance == nullptr)
   _instance = new LocoNetMenu(memo, parent);
  return _instance;
 }
@@ -46,12 +46,12 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
  //super();
  this->parent = parent;
  this->memo = memo;
- if(LocoNetMenu::_instance == NULL)
+ if(LocoNetMenu::_instance == nullptr)
   LocoNetMenu::_instance = this;
 
  //ResourceBundle rb = LocoNetBundle.bundle();
 
- if (memo != NULL)
+ if (memo != nullptr)
  {
   setTitle(memo->getUserName());
  } else {
@@ -65,7 +65,7 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
    << new LocoNetMenuItem(tr("Monitor Slots"), "jmri.jmrix.loconet.slotmon.SlotMonPane")
    << new LocoNetMenuItem(tr("Clock Monitor"), "jmri.jmrix.loconet.clockmon.ClockMonPane")
    << new LocoNetMenuItem(tr("Monitor LocoNet Stats"), "jmri.jmrix.loconet.locostats.LocoStatsPanel")
-   << NULL
+   << nullptr
    << new LocoNetMenuItem(tr("Configure BDL16/BDL162/BDL168"), "jmri.jmrix.loconet.bdl16.BDL16Panel")
    << new LocoNetMenuItem(tr("Configure LocoIO"), "jmri.jmrix.loconet.locoio.LocoIOPanel")
    << new LocoNetMenuItem(tr("Configure PM4/PM42"), "jmri.jmrix.loconet.pm4.PM4Panel")
@@ -76,21 +76,21 @@ LocoNetMenu* LocoNetMenu::_instance = NULL;
    << new LocoNetMenuItem(tr("Configure Duplex Group"), "jmri.jmrix.loconet.duplexgroup.swing.DuplexGroupTabbedPanel")
    //new Item("Start LocoNet Server",  "jmri.jmrix.loconet.locormi.LnMessageServerPanel"),
    //<< new LocoNetMenuItem("Start LocoNetOverTCP Server","jmri.jmrix.loconet.loconetovertcp.ServerPanel")
-   << NULL
+   << nullptr
    << new LocoNetMenuItem(tr("Send Throttle Messages"), "jmri.jmrix.loconet.swing.throttlemsg.MessagePanel")
    //<< new LocoNetMenuItem(tr("Send LocoNet Packet"), "jmri.jmrix.loconet.locogen.LocoGenPanel")
    << new LocoNetMenuItem(tr("Send LocoNet Packet"), "LocoNetMsgDialog")
    << new LocoNetMenuItem(tr("Select PR3 Mode"), "jmri.jmrix.loconet.pr3.swing.Pr3SelectPane")
-   << NULL
+   << nullptr
    << new LocoNetMenuItem(tr("Download Firmware"), "jmri.jmrix.loconet.downloader.LoaderPane")
    << new LocoNetMenuItem(tr("Download Sounds"), "jmri.jmrix.loconet.soundloader.SoundLoaderPane")
    << new LocoNetMenuItem(tr("Edit SPJ Sound File"), "jmri.jmrix.loconet.soundloader.EditorPane")
-   << NULL
+   << nullptr
    << new LocoNetMenuItem(tr("Query Cv"), "QueryCvDialog");
  LnNamedPaneAction* act;
  foreach (LocoNetMenuItem* item, panelItems)
  {
-  if (item == NULL)
+  if (item == nullptr)
   {
    addSeparator();
   }

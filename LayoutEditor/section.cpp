@@ -124,7 +124,7 @@ Section::Section(QObject *parent) :
  mState = FREE;
  mOccupancy = UNOCCUPIED;
  mOccupancyInitialized = false;
- mFirstBlock = NULL;
+ mFirstBlock = nullptr;
 //    OCCUPIED = Block::OCCUPIED;
 //    UNOCCUPIED = Block::UNOCCUPIED;
  mBlockListeners = new QList<PropertyChangeListener*>();
@@ -134,16 +134,16 @@ Section::Section(QObject *parent) :
  initializationNeeded = false;
  blockNameList = new QVector<QString>();
  tempSensorName = "";
- listener = NULL;
+ listener = nullptr;
  blockIndex = 0;  // index of last block returned
  mForwardBlockingSensorName = "";
  mForwardBlockingSensorName = "";
- mLastBlock = NULL;
+ mLastBlock = nullptr;
  mReverseBlockingSensorName = "";
- mForwardBlockingNamedSensor = NULL;
- mForwardStoppingNamedSensor = NULL;
- mReverseStoppingNamedSensor = NULL;
- mReverseBlockingNamedSensor = NULL;
+ mForwardBlockingNamedSensor = nullptr;
+ mForwardStoppingNamedSensor = nullptr;
+ mReverseStoppingNamedSensor = nullptr;
+ mReverseBlockingNamedSensor = nullptr;
  sectionType = USERDEFINED;
 }
 
@@ -155,14 +155,14 @@ Section::Section(QObject *parent) :
 //    mReverseEntryPoints = new QList<EntryPoint>();
 //    mState = FREE;
 //    mOccupancy = UNOCCUPIED;
-//    mFirstBlock = NULL;
+//    mFirstBlock = nullptr;
 //    OCCUPIED = Block::OCCUPIED;
 //    UNOCCUPIED = Block::UNOCCUPIED;
 //    nbhm = InstanceManager::getDefault("NamedBeanHandleManager");
 //    initializationNeeded = false;
 //    blockNameList = new QVector<QString>();
 // tempSensorName = "";
-// listener = NULL;
+// listener = nullptr;
 // blockIndex = 0;  // index of last block returned
 //}
 
@@ -183,9 +183,9 @@ Section::Section(QObject *parent) :
         // update the forward/reverse blocking sensors as needed
         if (state==FORWARD) {
             try {
-                if ( (getForwardBlockingSensor()!=NULL) && (getForwardBlockingSensor()->getState()!=Sensor::INACTIVE) )
+                if ( (getForwardBlockingSensor()!=nullptr) && (getForwardBlockingSensor()->getState()!=Sensor::INACTIVE) )
                     getForwardBlockingSensor()->setState(Sensor::INACTIVE);
-                if ( (getReverseBlockingSensor()!=NULL) && (getReverseBlockingSensor()->getState()!=Sensor::ACTIVE) )
+                if ( (getReverseBlockingSensor()!=nullptr) && (getReverseBlockingSensor()->getState()!=Sensor::ACTIVE) )
                     getReverseBlockingSensor()->setKnownState(Sensor::ACTIVE);
             } catch (JmriException* reason) {
                 log.error ("Exception when setting Sensors for Section "+getSystemName());
@@ -193,9 +193,9 @@ Section::Section(QObject *parent) :
         }
         else if (state==REVERSE) {
             try {
-                if ( (getReverseBlockingSensor()!=NULL) && (getReverseBlockingSensor()->getState()!=Sensor::INACTIVE) )
+                if ( (getReverseBlockingSensor()!=nullptr) && (getReverseBlockingSensor()->getState()!=Sensor::INACTIVE) )
                     getReverseBlockingSensor()->setKnownState(Sensor::INACTIVE);
-                if ( (getForwardBlockingSensor()!=NULL) && (getForwardBlockingSensor()->getState()!=Sensor::ACTIVE) )
+                if ( (getForwardBlockingSensor()!=nullptr) && (getForwardBlockingSensor()->getState()!=Sensor::ACTIVE) )
                     getForwardBlockingSensor()->setKnownState(Sensor::ACTIVE);
             } catch (JmriException reason) {
                 log.error ("Exception when setting Sensors for Section "+getSystemName());
@@ -203,9 +203,9 @@ Section::Section(QObject *parent) :
         }
         else if (state==FREE) {
             try {
-                if ( (getForwardBlockingSensor()!=NULL) && (getForwardBlockingSensor()->getState()!=Sensor::ACTIVE) )
+                if ( (getForwardBlockingSensor()!=nullptr) && (getForwardBlockingSensor()->getState()!=Sensor::ACTIVE) )
                     getForwardBlockingSensor()->setKnownState(Sensor::ACTIVE);
-                if ( (getReverseBlockingSensor()!=NULL) && (getReverseBlockingSensor()->getState()!=Sensor::ACTIVE) )
+                if ( (getReverseBlockingSensor()!=nullptr) && (getReverseBlockingSensor()->getState()!=Sensor::ACTIVE) )
                     getReverseBlockingSensor()->setKnownState(Sensor::ACTIVE);
             } catch (JmriException reason) {
                 log.error ("Exception when setting Sensors for Section "+getSystemName());
@@ -245,45 +245,45 @@ Section::Section(QObject *parent) :
 /**
  * Access methods for forward and reverse blocking sensors
  *	The set methods return a Sensor object if successful, or else they
- *		return "NULL";
+ *		return "nullptr";
  */
 /*public*/ QString Section::getForwardBlockingSensorName() {
-    if(mForwardBlockingNamedSensor!=NULL)
+    if(mForwardBlockingNamedSensor!=nullptr)
         return mForwardBlockingNamedSensor->getName();
     return mForwardBlockingSensorName;
 
 }
 /*public*/ Sensor* Section::getForwardBlockingSensor() {
-    if(mForwardBlockingNamedSensor!=NULL){
+    if(mForwardBlockingNamedSensor!=nullptr){
         return mForwardBlockingNamedSensor->getBean();
     }
-    if ((mForwardBlockingSensorName!=NULL) &&
+    if ((mForwardBlockingSensorName!=nullptr) &&
                         (!mForwardBlockingSensorName.isEmpty()) ) {
         Sensor* s = (Sensor*)InstanceManager::sensorManagerInstance()->
                                             getSensor(mForwardBlockingSensorName);
-        if (s==NULL) {
+        if (s==nullptr) {
             log.error("Missing Sensor - "+mForwardBlockingSensorName+" - when initializing Section - "+
                                 getSystemName());
-            return NULL;
+            return nullptr;
         }
         mForwardBlockingNamedSensor = nbhm->getNamedBeanHandle(mForwardBlockingSensorName, s);
         return s;
     }
-    return NULL;
+    return nullptr;
 }
 
 /*public*/ Sensor* Section::setForwardBlockingSensorName(QString forwardSensor) {
-    if ( (forwardSensor==NULL) || (forwardSensor.length()<=0) ) {
+    if ( (forwardSensor==nullptr) || (forwardSensor.length()<=0) ) {
         mForwardBlockingSensorName = "";
-        mForwardBlockingNamedSensor = NULL;
-        return NULL;
+        mForwardBlockingNamedSensor = nullptr;
+        return nullptr;
     }
     tempSensorName = forwardSensor;
     Sensor* s = validateSensor();
-    if (s==NULL) {
+    if (s==nullptr) {
         // sensor name not correct or not in sensor table
         log.error("Sensor name - "+forwardSensor+" invalid when setting forward sensor in Section "+getSystemName());
-        return NULL;
+        return nullptr;
     }
     nbhm->getNamedBeanHandle(tempSensorName, s);
     mForwardBlockingSensorName = tempSensorName;
@@ -295,22 +295,22 @@ Section::Section(QObject *parent) :
     mForwardBlockingSensorName = forwardSensor;
 }
 /*public*/ QString Section::getReverseBlockingSensorName() {
-    if(mReverseBlockingNamedSensor!=NULL)
+    if(mReverseBlockingNamedSensor!=nullptr)
         return mReverseBlockingNamedSensor->getName();
     return mReverseBlockingSensorName;
 }
 /*public*/ Sensor* Section::setReverseBlockingSensorName(QString reverseSensor) {
-    if ( (reverseSensor==NULL) || (reverseSensor.length()<=0) ) {
-        mReverseBlockingNamedSensor = NULL;
+    if ( (reverseSensor==nullptr) || (reverseSensor.length()<=0) ) {
+        mReverseBlockingNamedSensor = nullptr;
         mReverseBlockingSensorName = "";
-        return NULL;
+        return nullptr;
     }
     tempSensorName = reverseSensor;
     Sensor* s = validateSensor();
-    if (s==NULL) {
+    if (s==nullptr) {
         // sensor name not correct or not in sensor table
         log.error("Sensor name -"+reverseSensor+"invalid when setting reverse sensor in Section "+getSystemName());
-        return NULL;
+        return nullptr;
     }
     mReverseBlockingNamedSensor = nbhm->getNamedBeanHandle(tempSensorName, s);
     mReverseBlockingSensorName = tempSensorName;
@@ -321,22 +321,22 @@ Section::Section(QObject *parent) :
     mReverseBlockingSensorName = reverseSensor;
 }
 /*public*/ Sensor* Section::getReverseBlockingSensor() {
-    if(mReverseBlockingNamedSensor!=NULL){
+    if(mReverseBlockingNamedSensor!=nullptr){
         return mReverseBlockingNamedSensor->getBean();
     }
-    if ((mReverseBlockingSensorName!=NULL) &&
+    if ((mReverseBlockingSensorName!=nullptr) &&
                         (mReverseBlockingSensorName!=("")) ) {
         Sensor* s = InstanceManager::sensorManagerInstance()->
                                             getSensor(mReverseBlockingSensorName);
-        if (s==NULL) {
+        if (s==nullptr) {
             log.error("Missing Sensor - "+mReverseBlockingSensorName+" - when initializing Section - "+
                                 getSystemName());
-            return NULL;
+            return nullptr;
         }
         mReverseBlockingNamedSensor = nbhm->getNamedBeanHandle(mReverseBlockingSensorName, s);
         return s;
     }
-    return NULL;
+    return nullptr;
 }
 /*public*/ Block* Section::getLastBlock() {
     return mLastBlock;
@@ -346,11 +346,11 @@ Section::Section(QObject *parent) :
     // check if anything entered
     if (tempSensorName.length()<1) {
         // no sensor specified
-        return NULL;
+        return nullptr;
     }
     // get the sensor corresponding to this name
     Sensor* s = InstanceManager::sensorManagerInstance()->getSensor(tempSensorName);
-    if (s==NULL) return NULL;
+    if (s==nullptr) return nullptr;
     if ( tempSensorName!=(s->getUserName()) ) {
         tempSensorName = tempSensorName.toUpper();
     }
@@ -360,43 +360,43 @@ Section::Section(QObject *parent) :
 /**
  * Access methods for forward and reverse stopping sensors
  *	The set methods return a Sensor object if successful, or else they
- *		return "NULL";
+ *		return "nullptr";
  */
 /*public*/ QString Section::getForwardStoppingSensorName() {
-    if(mForwardStoppingNamedSensor!=NULL)
+    if(mForwardStoppingNamedSensor!=nullptr)
         return mForwardStoppingNamedSensor->getName();
     return mForwardStoppingSensorName;
 }
 /*public*/ Sensor* Section::getForwardStoppingSensor() {
-    if(mForwardStoppingNamedSensor!=NULL){
+    if(mForwardStoppingNamedSensor!=nullptr){
         return mForwardStoppingNamedSensor->getBean();
     }
-    if (( mForwardStoppingSensorName!=NULL) &&
+    if (( mForwardStoppingSensorName!=nullptr) &&
                         (mForwardStoppingSensorName!=("")) ) {
         Sensor* s = InstanceManager::sensorManagerInstance()->
                                             getSensor(mForwardStoppingSensorName);
-        if (s==NULL) {
+        if (s==nullptr) {
             log.error("Missing Sensor - "+mForwardStoppingSensorName+" - when initializing Section - "+
                                 getSystemName());
-            return NULL;
+            return nullptr;
         }
         mForwardStoppingNamedSensor = nbhm->getNamedBeanHandle(mForwardStoppingSensorName, s);
         return s;
     }
-    return NULL;
+    return nullptr;
 }
 /*public*/ Sensor* Section::setForwardStoppingSensorName(QString forwardSensor) {
-    if ( (forwardSensor==NULL) || (forwardSensor.length()<=0) ) {
-        mForwardStoppingNamedSensor = NULL;
+    if ( (forwardSensor==nullptr) || (forwardSensor.length()<=0) ) {
+        mForwardStoppingNamedSensor = nullptr;
         mForwardStoppingSensorName = "";
-        return NULL;
+        return nullptr;
     }
     tempSensorName = forwardSensor;
     Sensor* s = validateSensor();
-    if (s==NULL) {
+    if (s==nullptr) {
         // sensor name not correct or not in sensor table
         log.error("Sensor name -"+forwardSensor+"invalid when setting forward sensor in Section "+getSystemName());
-        return NULL;
+        return nullptr;
     }
     mForwardStoppingNamedSensor = nbhm->getNamedBeanHandle(tempSensorName, s);
     mForwardStoppingSensorName = tempSensorName;
@@ -406,22 +406,22 @@ Section::Section(QObject *parent) :
     mForwardStoppingSensorName = forwardSensor;
 }
 /*public*/ QString Section::getReverseStoppingSensorName() {
-    if(mReverseStoppingNamedSensor!=NULL)
+    if(mReverseStoppingNamedSensor!=nullptr)
         return mReverseStoppingNamedSensor->getName();
     return mReverseStoppingSensorName;
 }
 /*public*/ Sensor* Section::setReverseStoppingSensorName(QString reverseSensor) {
-    if ( (reverseSensor==NULL) || (reverseSensor.length()<=0) ) {
-        mReverseStoppingNamedSensor = NULL;
+    if ( (reverseSensor==nullptr) || (reverseSensor.length()<=0) ) {
+        mReverseStoppingNamedSensor = nullptr;
         mReverseStoppingSensorName = "";
-        return NULL;
+        return nullptr;
     }
     tempSensorName = reverseSensor;
     Sensor* s = validateSensor();
-    if (s==NULL) {
+    if (s==nullptr) {
         // sensor name not correct or not in sensor table
         log.error("Sensor name -"+reverseSensor+"invalid when setting reverse sensor in Section "+getSystemName());
-        return NULL;
+        return nullptr;
     }
     mReverseStoppingNamedSensor = nbhm->getNamedBeanHandle(tempSensorName, s);
     mReverseStoppingSensorName = tempSensorName;
@@ -431,22 +431,22 @@ Section::Section(QObject *parent) :
     mReverseStoppingSensorName = reverseSensor;
 }
 /*public*/ Sensor* Section::getReverseStoppingSensor() {
-    if(mReverseStoppingNamedSensor!=NULL){
+    if(mReverseStoppingNamedSensor!=nullptr){
         return mReverseStoppingNamedSensor->getBean();
     }
-    if ( (mReverseStoppingSensorName!=NULL) &&
+    if ( (mReverseStoppingSensorName!=nullptr) &&
                         (mReverseStoppingSensorName!=("")) ) {
         Sensor* s = InstanceManager::sensorManagerInstance()->
                                             getSensor(mReverseStoppingSensorName);
-        if (s==NULL) {
+        if (s==nullptr) {
             log.error("Missing Sensor - "+mReverseStoppingSensorName+" - when initializing Section - "+
                                 getSystemName());
-            return NULL;
+            return nullptr;
         }
         mReverseStoppingNamedSensor = nbhm->getNamedBeanHandle(mReverseStoppingSensorName, s);
         return s;
     }
-    return NULL;
+    return nullptr;
 }
 
 /**
@@ -500,7 +500,7 @@ connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockC
  for (int i = 0; i<blockNameList->size(); i++)
  {
   Block* b = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(blockNameList->at(i));
-  if (b==NULL)
+  if (b==nullptr)
   {
    log.error("Missing Block - "+blockNameList->at(i)+" - when initializing Section - "+
                        getSystemName());
@@ -511,7 +511,7 @@ connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockC
       }
       mBlockEntries->append(b);
       mLastBlock = b;
-      PropertyChangeListener* listener = NULL;
+      PropertyChangeListener* listener = nullptr;
       //b->addPropertyChangeListener(listener = new PropertyChangeListener() );//{
 //#if 0
 //                    // TODO::
@@ -612,7 +612,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     if (initializationNeeded) initializeBlocks();
     if ( (seqNumber<mBlockEntries->size()) && (seqNumber>=0) )
         return mBlockEntries->at(seqNumber);
-    return NULL;
+    return nullptr;
 }
 /**
  * Get the sequence number of a Block
@@ -630,7 +630,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 /*public*/ void Section::removeAllBlocksFromSection () {
     for (int i = mBlockEntries->size();i>0;i--) {
         Block* b = mBlockEntries->at(i-1);
-        if (b!=NULL) {
+        if (b!=nullptr) {
             b->removePropertyChangeListener(mBlockListeners->at(i-1));
         }
         mBlockListeners->removeAt(i-1);
@@ -648,11 +648,11 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  * Gets Blocks in order
  *	If state is FREE or FORWARD, returns Blocks in forward order
  *  If state is REVERSE, returns Blocks in reverse order
- *	First call getEntryBlock, then call getNextBlock until NULL is returned.
+ *	First call getEntryBlock, then call getNextBlock until nullptr is returned.
  */
 /*public*/ Block* Section::getEntryBlock() {
     if (initializationNeeded) initializeBlocks();
-    if (mBlockEntries->size() <=0) return NULL;
+    if (mBlockEntries->size() <=0) return nullptr;
     if (mState==REVERSE) blockIndex=mBlockEntries->size();
     else blockIndex = 1;
     return mBlockEntries->at(blockIndex-1);
@@ -661,7 +661,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     if (initializationNeeded) initializeBlocks();
     if (mState==REVERSE) blockIndex --;
     else blockIndex ++;
-    if ( (blockIndex>mBlockEntries->size()) || (blockIndex<=0) ) return NULL;
+    if ( (blockIndex>mBlockEntries->size()) || (blockIndex<=0) ) return nullptr;
     return mBlockEntries->at(blockIndex-1);
 }
 /*public*/ bool Section::containsBlock(Block* b) {
@@ -671,7 +671,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     return false;
 }
 /*public*/ bool Section::connectsToBlock(Block* b) {
-    EntryPoint* ep = NULL;
+    EntryPoint* ep = nullptr;
     for (int i = 0; i<mForwardEntryPoints->size(); i++) {
         ep = mForwardEntryPoints->at(i);
         if (ep->getFromBlock()==b) return true;
@@ -690,7 +690,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     if (initializationNeeded) initializeBlocks();
     QString s = mFirstBlock->getSystemName();
     QString uName = mFirstBlock->getUserName();
-    if ( (uName!=NULL) && (uName!=("")) )
+    if ( (uName!=nullptr) && (uName!=("")) )
         return (s+"( "+uName+" )");
     return s;
 }
@@ -698,7 +698,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     if (initializationNeeded) initializeBlocks();
     QString s = mLastBlock->getSystemName();
     QString uName = mLastBlock->getUserName();
-    if ( (uName!=NULL) && (uName!=("")) )
+    if ( (uName!=nullptr) && (uName!=("")) )
         return (s+"( "+uName+" )");
     return s;
 }
@@ -707,10 +707,10 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  * Access methods for EntryPoints within the Section
  */
 /*public*/ void Section::addToForwardList(EntryPoint* ep) {
-    if (ep!=NULL) mForwardEntryPoints->append(ep);
+    if (ep!=nullptr) mForwardEntryPoints->append(ep);
 }
 /*public*/ void Section::addToReverseList(EntryPoint* ep) {
-    if (ep!=NULL) mReverseEntryPoints->append(ep);
+    if (ep!=nullptr) mReverseEntryPoints->append(ep);
 }
 /*public*/ void Section::removeEntryPoint(EntryPoint* ep) {
     for (int i = mForwardEntryPoints->size();i>0;i--) {
@@ -762,10 +762,10 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 }
 /**
  * Returns the EntryPoint for entry from specified Section for travel in specified direction
- *   Returns 'NULL' if not found.
+ *   Returns 'nullptr' if not found.
  */
 /*public*/ EntryPoint* Section::getEntryPointFromSection(Section* s, int dir) {
-    EntryPoint* ep = NULL;
+    EntryPoint* ep = nullptr;
     if (dir == FORWARD) {
         for (int i = 0; i<mForwardEntryPoints->size(); i++) {
             ep = mForwardEntryPoints->at(i);
@@ -778,14 +778,14 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             if (s->containsBlock(ep->getFromBlock())) return ep;
         }
     }
-    return NULL;
+    return nullptr;
 }
 /**
  * Returns the EntryPoint for exit to specified Section for travel in specified direction
- *   Returns 'NULL' if not found.
+ *   Returns 'nullptr' if not found.
  */
 /*public*/ EntryPoint* Section::getExitPointToSection(Section* s, int dir) {
-    EntryPoint* ep = NULL;
+    EntryPoint* ep = nullptr;
     if (dir == REVERSE) {
         for (int i = 0; i<mForwardEntryPoints->size(); i++) {
             ep = mForwardEntryPoints->at(i);
@@ -798,14 +798,14 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             if (s->containsBlock(ep->getFromBlock())) return ep;
         }
     }
-    return NULL;
+    return nullptr;
 }
 /**
  * Returns the EntryPoint for entry from specified Block for travel in specified direction
- *   Returns 'NULL' if not found.
+ *   Returns 'nullptr' if not found.
  */
 /*public*/ EntryPoint* Section::getEntryPointFromBlock(Block* b, int dir) {
-    EntryPoint* ep = NULL;
+    EntryPoint* ep = nullptr;
     if (dir == FORWARD) {
         for (int i = 0; i<mForwardEntryPoints->size(); i++) {
             ep = mForwardEntryPoints->at(i);
@@ -818,14 +818,14 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             if (b == ep->getFromBlock()) return ep;
         }
     }
-    return NULL;
+    return nullptr;
 }
 /**
  * Returns the EntryPoint for exit to specified Block for travel in specified direction
- *   Returns 'NULL' if not found.
+ *   Returns 'nullptr' if not found.
  */
 /*public*/ EntryPoint* Section::getExitPointToBlock(Block* b, int dir) {
-    EntryPoint* ep = NULL;
+    EntryPoint* ep = nullptr;
     if (dir == REVERSE) {
         for (int i = 0; i<mForwardEntryPoints->size(); i++) {
             ep = mForwardEntryPoints->at(i);
@@ -838,7 +838,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             if (b == ep->getFromBlock()) return ep;
         }
     }
-    return NULL;
+    return nullptr;
 }
 //#if LAYOUTS
 /**
@@ -854,7 +854,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  LayoutBlock* aBlock = ((TrackSegment*)t->getConnectA())->getLayoutBlock();
  LayoutBlock* bBlock = ((TrackSegment*)t->getConnectB())->getLayoutBlock();
  LayoutBlock* cBlock = ((TrackSegment*)t->getConnectC())->getLayoutBlock();
- if ( (aBlock==NULL) || (bBlock==NULL) || (cBlock==NULL) )
+ if ( (aBlock==nullptr) || (bBlock==nullptr) || (cBlock==nullptr) )
  {
   log.error("All blocks not assigned for track segments connecting to turnout - "+
                                     t->getTurnout()->getSystemName()+".");
@@ -862,47 +862,47 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  }
 
  Block* exBlock = checkDualDirection(aBlock,bBlock,cBlock);
- if ( (exBlock!=NULL) || ( (aBlock==bBlock) && (aBlock==cBlock) ) )
+ if ( (exBlock!=nullptr) || ( (aBlock==bBlock) && (aBlock==cBlock) ) )
  {
   // using Entry Points directly will lead to a problem, try following track - first from A following B
   int dir = EntryPoint::UNKNOWN;
-  Block* tBlock = NULL;
+  Block* tBlock = nullptr;
   TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(),false, Turnout::CLOSED);
-  while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) )
+  while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) )
   {
    tn = cUtil->getNextNode(tn, 0);
    tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock);
   }
-  if (tBlock==NULL)
+  if (tBlock==nullptr)
   {
    // try from A following C
    tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(), false, Turnout::THROWN);
-   while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) )
+   while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) )
    {
     tn = cUtil->getNextNode(tn, 0);
     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock);
    }
   }
-  if (tBlock!=NULL)
+  if (tBlock!=nullptr)
   {
-   LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-   if (lb!=NULL) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
+   LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+   if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
   }
   if (dir == EntryPoint::UNKNOWN)
   {
    // try from B following A
-   tBlock = NULL;
+   tBlock = nullptr;
    tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
                                     false, Turnout::CLOSED);
-   while ( (tBlock==NULL) && (tn!=NULL && (!tn->reachedEndOfTrack())) )
+   while ( (tBlock==nullptr) && (tn!=nullptr && (!tn->reachedEndOfTrack())) )
    {
     tn = cUtil->getNextNode(tn, 0);
     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock);
    }
-   if (tBlock!=NULL)
+   if (tBlock!=nullptr)
    {
-    LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-    if (lb!=NULL) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
+    LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+    if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
    }
   }
   if (dir == EntryPoint::UNKNOWN)
@@ -937,7 +937,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
   }
  }
  LayoutBlock* tBlock = t->getLayoutBlock();
- if (tBlock==NULL)
+ if (tBlock==nullptr)
  {
   log.error("Block not assigned for turnout "+t->getTurnout()->getSystemName());
   return EntryPoint::UNKNOWN;
@@ -995,7 +995,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     LayoutBlock* bBlock = ((TrackSegment*)t->getConnectB())->getLayoutBlock();
     LayoutBlock* cBlock = ((TrackSegment*)t->getConnectC())->getLayoutBlock();
     LayoutBlock* dBlock = ((TrackSegment*)t->getConnectD())->getLayoutBlock();
-    if ( (aBlock==NULL) || (bBlock==NULL) || (cBlock==NULL) || (dBlock==NULL) ) {
+    if ( (aBlock==nullptr) || (bBlock==nullptr) || (cBlock==nullptr) || (dBlock==nullptr) ) {
         log.error("All blocks not assigned for track segments connecting to crossover turnout - "+
                                     t->getTurnout()->getSystemName()+".");
         return EntryPoint::UNKNOWN;
@@ -1006,33 +1006,33 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
         return EntryPoint::UNKNOWN;
     }
     if ( (containsBlock(aBlock->getBlock())) || (containsBlock(bBlock->getBlock())) ) {
-        LayoutBlock* exBlock = NULL;
+        LayoutBlock* exBlock = nullptr;
         if (aBlock==bBlock) {
             if ( (t->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) && (cBlock==dBlock) ) exBlock = cBlock;
         }
-        if (exBlock!=NULL) {
+        if (exBlock!=nullptr) {
             // set direction by tracking from a or b
             int dir = EntryPoint::UNKNOWN;
-            Block* tBlock = NULL;
+            Block* tBlock = nullptr;
             TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(), false, Turnout::CLOSED);
-            while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+            while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
             }
-            if (tBlock!=NULL) {
-                LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-                if (lb!=NULL) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
+            if (tBlock!=nullptr) {
+                LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
                 tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
                                     false, Turnout::CLOSED);
-                while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+                while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                     tn = cUtil->getNextNode(tn, 0);
                     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
                 }
-                if (tBlock!=NULL) {
-                    LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-                    if (lb!=NULL) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
+                if (tBlock!=nullptr) {
+                    LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                    if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
                 }
             }
             if (dir == EntryPoint::UNKNOWN) {
@@ -1069,33 +1069,33 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
         }
     }
     if ( (containsBlock(dBlock->getBlock())) || (containsBlock(cBlock->getBlock())) ) {
-        LayoutBlock* exBlock = NULL;
+        LayoutBlock* exBlock = nullptr;
         if (dBlock==cBlock) {
             if ( (t->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) && (bBlock==aBlock) ) exBlock = aBlock;
         }
-        if (exBlock!=NULL) {
+        if (exBlock!=nullptr) {
             // set direction by tracking from c or d
             int dir = EntryPoint::UNKNOWN;
-            Block* tBlock = NULL;
+            Block* tBlock = nullptr;
             TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_D, (TrackSegment*)t->getConnectD(),  false, Turnout::CLOSED);
-            while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+            while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
             }
-            if (tBlock!=NULL) {
-                LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-                if (lb!=NULL) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
+            if (tBlock!=nullptr) {
+                LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
                 tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_C, (TrackSegment*)t->getConnectC(),
                                     false, Turnout::CLOSED);
-                while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+                while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                     tn = cUtil->getNextNode(tn, 0);
                     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
                 }
-                if (tBlock!=NULL) {
-                    LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-                    if (lb!=NULL) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
+                if (tBlock!=nullptr) {
+                    LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                    if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
                 }
             }
             if (dir == EntryPoint::UNKNOWN) {
@@ -1147,7 +1147,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     LayoutBlock* bBlock = ((TrackSegment*)t->getConnectB())->getLayoutBlock();
     LayoutBlock* cBlock = ((TrackSegment*)t->getConnectC())->getLayoutBlock();
     LayoutBlock* dBlock = ((TrackSegment*)t->getConnectD())->getLayoutBlock();
-    if ( (aBlock==NULL) || (bBlock==NULL) || (cBlock==NULL) || (dBlock==NULL) ) {
+    if ( (aBlock==nullptr) || (bBlock==nullptr) || (cBlock==nullptr) || (dBlock==nullptr) ) {
         log.error("All blocks not assigned for track segments connecting to crossover turnout - "+
                                     t->getTurnout()->getSystemName()+".");
         return EntryPoint::UNKNOWN;
@@ -1158,34 +1158,34 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
         return EntryPoint::UNKNOWN;
     }
     if ( (containsBlock(aBlock->getBlock())) || (containsBlock(cBlock->getBlock())) ) {
-        LayoutBlock* exBlock = NULL;
+        LayoutBlock* exBlock = nullptr;
         if (aBlock==cBlock) {
             if ( (t->getTurnoutType()==LayoutTurnout::DOUBLE_SLIP) && (bBlock==dBlock) ) exBlock = bBlock;
         }
-        if (exBlock!=NULL) {
+        if (exBlock!=nullptr) {
             // set direction by tracking from a or b
             int dir = EntryPoint::UNKNOWN;
-            Block* tBlock = NULL;
+            Block* tBlock = nullptr;
             TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::SLIP_A, (TrackSegment*)t->getConnectA(),
                                     false, LayoutSlip::STATE_AC);
-            while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+            while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
             }
-            if (tBlock!=NULL) {
-                LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-                if (lb!=NULL) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
+            if (tBlock!=nullptr) {
+                LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
                 tn = new TrackNode((QObject*)t, LayoutEditor::SLIP_C, (TrackSegment*)t->getConnectC(),
                                     false, LayoutSlip::STATE_AC);
-                while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+                while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                     tn = cUtil->getNextNode(tn, 0);
                     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
                 }
-                if (tBlock!=NULL) {
-                    LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-                    if (lb!=NULL) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
+                if (tBlock!=nullptr) {
+                    LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                    if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
                 }
             }
             if (dir == EntryPoint::UNKNOWN) {
@@ -1215,34 +1215,34 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     }
 
     if ( (containsBlock(dBlock->getBlock())) || (containsBlock(bBlock->getBlock())) ) {
-        LayoutBlock* exBlock = NULL;
+        LayoutBlock* exBlock = nullptr;
         if (dBlock==bBlock) {
             if ( (t->getTurnoutType()==LayoutTurnout::DOUBLE_SLIP) && (cBlock==aBlock) ) exBlock = aBlock;
         }
-        if (exBlock!=NULL) {
+        if (exBlock!=nullptr) {
             // set direction by tracking from c or d
             int dir = EntryPoint::UNKNOWN;
-            Block* tBlock = NULL;
+            Block* tBlock = nullptr;
             TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::SLIP_D, (TrackSegment*)t->getConnectD(),
                                     false, LayoutSlip::STATE_BD);
-            while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+            while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
             }
-            if (tBlock!=NULL) {
-                LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-                if (lb!=NULL) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
+            if (tBlock!=nullptr) {
+                LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
                 tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
                                     false, LayoutSlip::STATE_BD);
-                while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+                while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                     tn = cUtil->getNextNode(tn, 0);
                     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
                 }
-                if (tBlock!=NULL) {
-                    LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(tBlock->getUserName());
-                    if (lb!=NULL) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
+                if (tBlock!=nullptr) {
+                    LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                    if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
                 }
             }
             if (dir == EntryPoint::UNKNOWN) {
@@ -1308,29 +1308,29 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 {
  #if 1 // TODO:
     SignalHead* b1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(b1Name);
-    SignalHead* b2Head = NULL;
-    SignalHead* c1Head = NULL;
-    SignalHead* c2Head = NULL;
+    SignalHead* b2Head = nullptr;
+    SignalHead* c1Head = nullptr;
+    SignalHead* c2Head = nullptr;
     bool success = true;
-    if ( (b2Name!=NULL) && (b2Name!=("")) ) {
+    if ( (b2Name!=nullptr) && (b2Name!=("")) ) {
         b2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(b2Name);
     }
-    if ( (c1Name!=NULL) && (c1Name!=("")) ) {
+    if ( (c1Name!=nullptr) && (c1Name!=("")) ) {
         c1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(c1Name);
     }
-    if ( (c2Name!=NULL) && (c2Name!=("")) ) {
+    if ( (c2Name!=nullptr) && (c2Name!=("")) ) {
         c2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(c2Name);
     }
-    if (b2Head!=NULL) {
+    if (b2Head!=nullptr) {
         if (!checkDirectionSensor(b1Head, direction, ConnectivityUtil::OVERALL, cUtil)) success = false;
     }
     else {
         if (!checkDirectionSensor(b1Head, direction, ConnectivityUtil::CONTINUING, cUtil)) success = false;
     }
-    if (c2Head!=NULL) {
+    if (c2Head!=nullptr) {
         if (!checkDirectionSensor(c2Head, direction, ConnectivityUtil::OVERALL, cUtil)) success = false;
     }
-    else if (c1Head!=NULL) {
+    else if (c1Head!=nullptr) {
         if (!checkDirectionSensor(c1Head, direction, ConnectivityUtil::DIVERGING, cUtil)) success = false;
     }
     return success;
@@ -1363,7 +1363,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 /**
@@ -1403,30 +1403,30 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 /*private*/ bool Section::setDirectionSensorByConnectivity(TrackNode* tNode, TrackNode* altNode, SignalHead* sh, Block* cBlock, ConnectivityUtil* cUtil) {
     bool successful = false;
     TrackNode* tn = tNode;
-    if ( (tn!=NULL) && (sh!=NULL) ) {
-        Block* tBlock = NULL;
-        LayoutBlock* lb = NULL;
+    if ( (tn!=nullptr) && (sh!=nullptr) ) {
+        Block* tBlock = nullptr;
+        LayoutBlock* lb = nullptr;
         int dir = EntryPoint::UNKNOWN;
-        while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+        while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
             tn = cUtil->getNextNode(tn, 0);
-            tBlock = cUtil->getExitBlockForTrackNode(tn, NULL);
+            tBlock = cUtil->getExitBlockForTrackNode(tn, nullptr);
         }
-        if (tBlock!=NULL) {
-            lb = InstanceManager::layoutBlockManagerInstance()->
+        if (tBlock!=nullptr) {
+            lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->
                                                         getByUserName(tBlock->getUserName());
-            if (lb!=NULL)
+            if (lb!=nullptr)
                 dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
         }
         else {
             tn = altNode;
-            while ( (tBlock==NULL) && (tn!=NULL) && (!tn->reachedEndOfTrack()) ) {
+            while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
-                tBlock = cUtil->getExitBlockForTrackNode(tn, NULL);
+                tBlock = cUtil->getExitBlockForTrackNode(tn, nullptr);
             }
-            if (tBlock!=NULL) {
-                lb = InstanceManager::layoutBlockManagerInstance()->
+            if (tBlock!=nullptr) {
+                lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->
                                                         getByUserName(tBlock->getUserName());
-                if (lb!=NULL) {
+                if (lb!=nullptr) {
                     dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
                     if (dir == EntryPoint::REVERSE) dir = EntryPoint::FORWARD;
                     else if (dir == EntryPoint::FORWARD) dir = EntryPoint::REVERSE;
@@ -1463,19 +1463,19 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  int missingSignalsTurnouts = 0;
  int missingSignalsLevelXings = 0;
  int errorCount = 0;
- if (panel==NULL)
+ if (panel==nullptr)
  {
   log.error("Null Layout Editor panel on call to 'placeDirectionSensors'");
   return 1;
  }
  if (initializationNeeded) initializeBlocks();
- if ( (mForwardBlockingSensorName==NULL) || (mForwardBlockingSensorName==("")) ||
-            (mReverseBlockingSensorName==NULL) || (mReverseBlockingSensorName==("")) )
+ if ( (mForwardBlockingSensorName==nullptr) || (mForwardBlockingSensorName==("")) ||
+            (mReverseBlockingSensorName==nullptr) || (mReverseBlockingSensorName==("")) )
  {
   log.error("Missing direction sensor in Section "+getSystemName());
   return 1;
  }
- LayoutBlockManager* layoutBlockManager = InstanceManager::layoutBlockManagerInstance();
+ LayoutBlockManager* layoutBlockManager = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  ConnectivityUtil* cUtil = panel->getConnectivityUtil();
  for (int i = 0; i<mBlockEntries->size(); i++)
  {
@@ -1485,12 +1485,12 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
   for (int j = 0; j<anchorList->size(); j++)
   {
    PositionablePoint* p = anchorList->at(j);
-   if ( (p->getEastBoundSignal()!=NULL) && (p->getWestBoundSignal()!=NULL) &&
+   if ( (p->getEastBoundSignal()!=nullptr) && (p->getWestBoundSignal()!=nullptr) &&
                     (p->getEastBoundSignal()!=("")) && (p->getWestBoundSignal()!=("")) )
    {
     // have a signalled block boundary
     SignalHead* sh = cUtil->getSignalHeadAtAnchor(p, cBlock, false);
-    if (sh==NULL)
+    if (sh==nullptr)
     {
      log.warn("Unexpected missing signal head at boundary of Block "+cBlock->getUserName());
      errorCount ++;
@@ -1533,10 +1533,10 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
   if (cUtil->isInternalLevelXingAC(x, cBlock))
   {
          // have an internal AC level crossing - is it signaled?
-         if ( ((x->getSignalAName()!=NULL) && (x->getSignalAName()!=(""))) ||
-                 ((x->getSignalCName()!=NULL) && (x->getSignalCName()!=(""))) ) {
+         if ( ((x->getSignalAName()!=nullptr) && (x->getSignalAName()!=(""))) ||
+                 ((x->getSignalCName()!=nullptr) && (x->getSignalCName()!=(""))) ) {
              // have a signaled AC level crossing internal to this block
-             if ( (x->getSignalAName()!=NULL) && (x->getSignalAName()!=("")) ) {
+             if ( (x->getSignalAName()!=nullptr) && (x->getSignalAName()!=("")) ) {
                  // there is a signal at A in the level crossing
                  TrackNode* tn = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_A,
                                      (TrackSegment*)x->getConnectA(), false, 0);
@@ -1546,7 +1546,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                                  x->getSignalAName());
                  if (!setDirectionSensorByConnectivity(tn, altNode, sh, cBlock, cUtil)) errorCount ++;
              }
-             if ( (x->getSignalCName()!=NULL) && (x->getSignalCName()!=("")) ) {
+             if ( (x->getSignalCName()!=nullptr) && (x->getSignalCName()!=("")) ) {
                  // there is a signal at C in the level crossing
                  TrackNode* tn = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_C,
                                      (TrackSegment*)x->getConnectC(), false, 0);
@@ -1562,7 +1562,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
          // have a level crossing with AC spanning a block boundary, with A in this Block
          int direction = getDirectionForBlocks(alBlock, clBlock);
          if (direction != EntryPoint::UNKNOWN) {
-             if ( (x->getSignalCName()!=NULL) && (x->getSignalCName()!=("")) ) {
+             if ( (x->getSignalCName()!=nullptr) && (x->getSignalCName()!=("")) ) {
                  SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalCName());
                  if (!checkDirectionSensor(sh, direction, ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
@@ -1576,7 +1576,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
          // have a level crossing with AC spanning a block boundary, with C in this Block
          int direction = getDirectionForBlocks(clBlock, alBlock);
          if (direction != EntryPoint::UNKNOWN) {
-             if ( (x->getSignalAName()!=NULL) && (x->getSignalAName()!=("")) ) {
+             if ( (x->getSignalAName()!=nullptr) && (x->getSignalAName()!=("")) ) {
                  SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalAName());
                  if (!checkDirectionSensor(sh, direction, ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
@@ -1588,10 +1588,10 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
      }
      if (cUtil->isInternalLevelXingBD(x, cBlock)) {
          // have an internal BD level crossing - is it signaled?
-         if ( ((x->getSignalBName()!=NULL) && (x->getSignalBName()!=(""))) ||
-                 ((x->getSignalDName()!=NULL) && (x->getSignalDName()!=(""))) ) {
+         if ( ((x->getSignalBName()!=nullptr) && (x->getSignalBName()!=(""))) ||
+                 ((x->getSignalDName()!=nullptr) && (x->getSignalDName()!=(""))) ) {
              // have a signaled BD level crossing internal to this block
-             if ( (x->getSignalBName()!=NULL) && (x->getSignalBName()!=("")) ) {
+             if ( (x->getSignalBName()!=nullptr) && (x->getSignalBName()!=("")) ) {
                  // there is a signal at B in the level crossing
                  TrackNode* tn = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_B,
                                      (TrackSegment*)x->getConnectB(), false, 0);
@@ -1601,7 +1601,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                                  x->getSignalBName());
                  if (!setDirectionSensorByConnectivity(tn, altNode, sh, cBlock, cUtil)) errorCount ++;
              }
-             if ( (x->getSignalDName()!=NULL) && (x->getSignalDName()!=("")) ) {
+             if ( (x->getSignalDName()!=nullptr) && (x->getSignalDName()!=("")) ) {
                  // there is a signal at C in the level crossing
                  TrackNode* tn = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_D,
                                      (TrackSegment*)x->getConnectD(), false, 0);
@@ -1617,7 +1617,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
          // have a level crossing with BD spanning a block boundary, with B in this Block
          int direction = getDirectionForBlocks(blBlock, dlBlock);
          if (direction != EntryPoint::UNKNOWN) {
-             if ( (x->getSignalDName()!=NULL) && (x->getSignalDName()!=("")) ) {
+             if ( (x->getSignalDName()!=nullptr) && (x->getSignalDName()!=("")) ) {
                  SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalDName());
                  if (!checkDirectionSensor(sh, direction, ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
@@ -1631,7 +1631,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
          // have a level crossing with BD spanning a block boundary, with D in this Block
          int direction = getDirectionForBlocks(dlBlock, blBlock);
          if (direction != EntryPoint::UNKNOWN) {
-             if ( (x->getSignalBName()!=NULL) && (x->getSignalBName()!=("")) ) {
+             if ( (x->getSignalBName()!=nullptr) && (x->getSignalBName()!=("")) ) {
                  SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalBName());
                  if (!checkDirectionSensor(sh, direction, ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
@@ -1660,9 +1660,9 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                     else {
                         SignalHead* aHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                         t->getSignalA1Name());
-                        SignalHead* a2Head = NULL;
+                        SignalHead* a2Head = nullptr;
                         QString a2Name = t->getSignalA2Name();
-                        if ( (a2Name!=NULL) && (a2Name!=("")) ) {
+                        if ( (a2Name!=nullptr) && (a2Name!=("")) ) {
                             a2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(a2Name);
                         }
                         SignalHead* bHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
@@ -1674,7 +1674,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                             // Note: need allocation to traverse this turnout
                             if (!checkDirectionSensor(aHead, direction,
                                                 ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
-                            if (a2Head!=NULL) {
+                            if (a2Head!=nullptr) {
                                 if (!checkDirectionSensor(a2Head, direction,
                                                 ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                             }
@@ -1697,7 +1697,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                     (((TrackSegment*)t->getConnectC())->getLayoutBlock()->getBlock()==cBlock) )	) {
                                 // continuing track segment is in this block, normal continuing sense - or -
                                 //		diverging track segment is in this block, reverse continuing sense.
-                                if (a2Head==NULL) {
+                                if (a2Head==nullptr) {
                                     // single head at throat
                                     if (!checkDirectionSensor(aHead, direction,
                                                 ConnectivityUtil::CONTINUING, cUtil)) errorCount ++;
@@ -1716,7 +1716,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                     (((TrackSegment*)t->getConnectB())->getLayoutBlock()->getBlock()==cBlock) )	) {
                                 // diverging track segment is in this block, normal continuing sense - or -
                                 //		continuing track segment is in this block, reverse continuing sense.
-                                if (a2Head==NULL) {
+                                if (a2Head==nullptr) {
                                     // single head at throat
                                     if (!checkDirectionSensor(aHead, direction,
                                                 ConnectivityUtil::DIVERGING, cUtil)) errorCount ++;
@@ -1735,20 +1735,20 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                 else if (t->getLinkType()!=LayoutTurnout::NO_LINK) {
                     // special linked turnout
                     LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(t->getLinkedTurnoutName(),panel);
-                    if (tLinked==NULL) log.error("NULL Layout Turnout linked to turnout "+t->getTurnout()->getSystemName());
+                    if (tLinked==nullptr) log.error("nullptr Layout Turnout linked to turnout "+t->getTurnout()->getSystemName());
                     else if (t->getLinkType()==LayoutTurnout::THROAT_TO_THROAT) {
                         SignalHead* b1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalB1Name());
-                        SignalHead* b2Head = NULL;
+                        SignalHead* b2Head = nullptr;
                         QString hName = t->getSignalB2Name();
-                        if ( (hName!=NULL) && (hName!=("")) ) {
+                        if ( (hName!=nullptr) && (hName!=("")) ) {
                             b2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
                         SignalHead* c1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalC1Name());
-                        SignalHead* c2Head = NULL;
+                        SignalHead* c2Head = nullptr;
                         hName = t->getSignalC2Name();
-                        if ( (hName!=NULL) && (hName!=("")) ) {
+                        if ( (hName!=nullptr) && (hName!=("")) ) {
                             c2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
                         int direction = getDirectionStandardTurnout(t,cUtil);
@@ -1760,12 +1760,12 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                 // Note: need allocation to traverse this turnout
                                 if (!checkDirectionSensor(b1Head, altDirection,
                                                 ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
-                                if (b2Head!=NULL)
+                                if (b2Head!=nullptr)
                                     if (!checkDirectionSensor(b2Head, altDirection,
                                                 ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                 if (!checkDirectionSensor(c1Head, altDirection,
                                                 ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
-                                if (c2Head!=NULL)
+                                if (c2Head!=nullptr)
                                     if (!checkDirectionSensor(c2Head, altDirection,
                                                 ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                             }
@@ -1774,15 +1774,15 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                 b1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             tLinked->getSignalB1Name());
                                 hName = tLinked->getSignalB2Name();
-                                b2Head = NULL;
-                                if ( (hName!=NULL) && (hName!=("")) ) {
+                                b2Head = nullptr;
+                                if ( (hName!=nullptr) && (hName!=("")) ) {
                                     b2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                                 }
                                 c1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             tLinked->getSignalC1Name());
-                                c2Head = NULL;
+                                c2Head = nullptr;
                                 hName = tLinked->getSignalC2Name();
-                                if ( (hName!=NULL) && (hName!=("")) ) {
+                                if ( (hName!=nullptr) && (hName!=("")) ) {
                                     c2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                                 }
                                 if ( ((t->getContinuingSense()==Turnout::CLOSED) &&
@@ -1790,7 +1790,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                         ((t->getContinuingSense()==Turnout::THROWN) &&
                                         (((TrackSegment*)t->getConnectC())->getLayoutBlock()->getBlock()==cBlock)) ) {
                                     // continuing track segment is in this block
-                                    if (b2Head!=NULL) {
+                                    if (b2Head!=nullptr) {
                                         if (!checkDirectionSensor(b1Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                     }
@@ -1798,7 +1798,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                         if (!checkDirectionSensor(b1Head, direction,
                                                         ConnectivityUtil::CONTINUING, cUtil)) errorCount ++;
                                     }
-                                    if (c2Head!=NULL) {
+                                    if (c2Head!=nullptr) {
                                         if (!checkDirectionSensor(c1Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                     }
@@ -1812,7 +1812,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                         ((t->getContinuingSense()==Turnout::THROWN) &&
                                         (((TrackSegment*)t->getConnectB())->getLayoutBlock()->getBlock()==cBlock)) ) {
                                     // diverging track segment is in this block
-                                    if (b2Head!=NULL) {
+                                    if (b2Head!=nullptr) {
                                         if (!checkDirectionSensor(b2Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                     }
@@ -1820,7 +1820,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                         if (!checkDirectionSensor(b1Head, direction,
                                                         ConnectivityUtil::DIVERGING, cUtil)) errorCount ++;
                                     }
-                                    if (c2Head!=NULL) {
+                                    if (c2Head!=nullptr) {
                                         if (!checkDirectionSensor(c2Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                     }
@@ -1835,14 +1835,14 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                     else if (t->getLinkType()==LayoutTurnout::FIRST_3_WAY) {
                         SignalHead* a1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                             t->getSignalA1Name());
-                        SignalHead* a2Head = NULL;
+                        SignalHead* a2Head = nullptr;
                         QString hName = t->getSignalA2Name();
-                        if ( (hName!=NULL) && (hName!=("")) ) {
+                        if ( (hName!=nullptr) && (hName!=("")) ) {
                             a2Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
-                        SignalHead* a3Head = NULL;
+                        SignalHead* a3Head = nullptr;
                         hName = t->getSignalA3Name();
-                        if ( (hName!=NULL) && (hName!=("")) ) {
+                        if ( (hName!=nullptr) && (hName!=("")) ) {
                             a3Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
                         SignalHead* cHead = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
@@ -1856,7 +1856,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                 // Note: need allocation to traverse this turnout
                                 if (!checkDirectionSensor(a1Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
-                                if ( (a2Head!=NULL) && (a3Head!=NULL) ) {
+                                if ( (a2Head!=nullptr) && (a3Head!=nullptr) ) {
                                     if (!checkDirectionSensor(a2Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                     if (!checkDirectionSensor(a3Head, direction,
@@ -1874,7 +1874,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                 }
                                 else if (((TrackSegment*)t->getConnectC())->getLayoutBlock()->getBlock()==cBlock) {
                                     // diverging track segment is in this Block
-                                    if (a2Head!=NULL) {
+                                    if (a2Head!=nullptr) {
                                         if (!checkDirectionSensor(a2Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                     }
@@ -1893,9 +1893,9 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                                                                             t->getSignalC1Name());
                         SignalHead* a1Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                                         tLinked->getSignalA1Name());
-                        SignalHead* a3Head = NULL;
+                        SignalHead* a3Head = nullptr;
                         QString hName = tLinked->getSignalA3Name();
-                        if ( (hName!=NULL) && (hName!=("")) ) {
+                        if ( (hName!=nullptr) && (hName!=("")) ) {
                             a3Head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(hName);
                         }
                         int direction = getDirectionStandardTurnout(t,cUtil);
@@ -1912,7 +1912,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                             }
                             if (((TrackSegment*)t->getConnectC())->getLayoutBlock()->getBlock()==cBlock) {
                                 // diverging track segment is in this Block
-                                if (a3Head!=NULL) {
+                                if (a3Head!=nullptr) {
                                     if (!checkDirectionSensor(a3Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                 }
@@ -1924,7 +1924,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                             }
                             else if (((TrackSegment*)t->getConnectB())->getLayoutBlock()->getBlock()==cBlock) {
                                 // continuing track segment is in this Block
-                                if (a3Head!=NULL) {
+                                if (a3Head!=nullptr) {
                                     if (!checkDirectionSensor(a1Head, direction,
                                                         ConnectivityUtil::OVERALL, cUtil)) errorCount ++;
                                 }
@@ -1954,7 +1954,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                             }
                             else {
                                 if (!placeSensorInCrossover(t->getSignalB1Name(),t->getSignalB2Name(),
-                                        NULL,NULL,altDirection,cUtil)) errorCount ++;
+                                        nullptr,nullptr,altDirection,cUtil)) errorCount ++;
                             }
                         }
                         if (((TrackSegment*)t->getConnectB())->getLayoutBlock()->getBlock()==cBlock) {
@@ -1965,7 +1965,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                             }
                             else {
                                 if (!placeSensorInCrossover(t->getSignalA1Name(),t->getSignalA2Name(),
-                                        NULL,NULL,direction,cUtil)) errorCount ++;
+                                        nullptr,nullptr,direction,cUtil)) errorCount ++;
                             }
                         }
                         if (((TrackSegment*)t->getConnectC())->getLayoutBlock()->getBlock()==cBlock) {
@@ -1976,7 +1976,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                             }
                             else {
                                 if (!placeSensorInCrossover(t->getSignalD1Name(),t->getSignalD2Name(),
-                                        NULL,NULL,direction,cUtil)) errorCount ++;
+                                        nullptr,nullptr,direction,cUtil)) errorCount ++;
                             }
                         }
                         if (((TrackSegment*)t->getConnectD())->getLayoutBlock()->getBlock()==cBlock) {
@@ -1987,7 +1987,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                             }
                             else {
                                 if (!placeSensorInCrossover(t->getSignalC1Name(),t->getSignalC2Name(),
-                                        NULL,NULL,altDirection,cUtil)) errorCount ++;
+                                        nullptr,nullptr,altDirection,cUtil)) errorCount ++;
                             }
                         }
                     }
@@ -2032,7 +2032,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  if ( (missingSignalsBB+missingSignalsTurnouts+missingSignalsLevelXings) > 0 )
  {
   QString s = "Section - "+getSystemName();
-  if ( (getUserName()!=NULL) && (getUserName()!=("")) )
+  if ( (getUserName()!=nullptr) && (getUserName()!=("")) )
     s = s+"("+getUserName()+")";
   if (missingSignalsBB>0)
   {
@@ -2063,13 +2063,13 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 }
 /*private*/ LayoutTurnout* Section::getLayoutTurnoutFromTurnoutName(QString turnoutName, LayoutEditor* panel) {
     Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnoutName);
-    if (t==NULL) return NULL;
-    LayoutTurnout* lt = NULL;
+    if (t==nullptr) return nullptr;
+    LayoutTurnout* lt = nullptr;
     for (int i=0; i<panel->turnoutList->size(); i++) {
         lt = panel->turnoutList->at(i);
         if (lt->getTurnout()==t) return lt;
     }
-    return NULL;
+    return nullptr;
 }
 //#endif // LAYOUTS
 #if 1
@@ -2082,7 +2082,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  * Returns 'true' if successful, 'false' otherwise.
  */
 /*public*/ bool Section::checkSignals(JmriJFrame* /*frame*/, LayoutEditor* panel) {
-    if (panel==NULL) {
+    if (panel==nullptr) {
         log.error("Null Layout Editor panel on call to 'checkSignals'");
         return false;
     }
@@ -2113,7 +2113,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  *		and otherwise checks internal consistency of the Section.
  * An appropriate error message is logged if a problem is found.
  * This method assumes that Block Paths are correctly initialized.
- * If a Layout Editor panel is available, lePanel!=NULL, the initialization
+ * If a Layout Editor panel is available, lePanel!=nullptr, the initialization
  *		of Blocks is checked.
  * Returns an empty string "", if everything checks out.  Returns
  *		a string describing the error if an error is found.
@@ -2121,11 +2121,11 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 /*public*/ QString Section::validate(LayoutEditor* lePanel) {
     if (initializationNeeded) initializeBlocks();
     // validate Paths and Bean Settings if a Layout Editor panel is available
-    if (lePanel!=NULL) {
+    if (lePanel!=nullptr) {
         for (int i=0; i<(mBlockEntries->size()-1); i++) {
-            LayoutBlock* lBlock = InstanceManager::layoutBlockManagerInstance()->getByUserName(
+            LayoutBlock* lBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(
                             getBlockBySequenceNumber(i)->getUserName());
-            if (lBlock==NULL) {
+            if (lBlock==nullptr) {
                 log.error("Layout Block "+getBlockBySequenceNumber(i)->getUserName()+
                                 " not found.  Paths not checked.");
             }
@@ -2214,7 +2214,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 }
 #endif
 /*private*/ bool Section::connected(Block* b1, Block* b2) {
-    if ( (b1!=NULL) && (b2!=NULL) ) {
+    if ( (b1!=nullptr) && (b2!=nullptr) ) {
         QList<Path*> paths = b1->getPaths()->toList();
         for (int i = 0; i<paths.size(); i++) {
             if (paths.at(i)->getBlock() == b2) return true;
@@ -2232,8 +2232,8 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 /*public*/ void Section::setAlternateColor(bool set) {
     for (int i=0; i<mBlockEntries->size(); i++) {
         Block* b = mBlockEntries->at(i);
-        LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(b->getUserName());
-        if (lb!=NULL) lb->setUseExtraColor(set);
+        LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(b->getUserName());
+        if (lb!=nullptr) lb->setUseExtraColor(set);
     }
 }
 
@@ -2260,7 +2260,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             }
             if (beenSet) {
                 LayoutBlock* lb = lbm->getByUserName(b->getUserName());
-                if (lb != NULL) {
+                if (lb != nullptr) {
                     lb->setUseExtraColor(set);
                 }
             }
@@ -2272,7 +2272,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             }
             if (beenSet) {
                 LayoutBlock* lb = lbm->getByUserName(b->getUserName());
-                if (lb != NULL) {
+                if (lb != nullptr) {
                     lb->setUseExtraColor(set);
                 }
             }
@@ -2350,8 +2350,8 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 /*public*/ void Section::suppressNameUpdate(bool set) {
     for (int i=0; i<mBlockEntries->size(); i++) {
         Block* b = mBlockEntries->at(i);
-        LayoutBlock* lb = InstanceManager::layoutBlockManagerInstance()->getByUserName(b->getUserName());
-        if (lb!=NULL) lb->setSuppressNameUpdate(set);
+        LayoutBlock* lb = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(b->getUserName());
+        if (lb!=nullptr) lb->setSuppressNameUpdate(set);
     }
 }
 #endif
@@ -2372,7 +2372,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
     if ("CanDelete" == (evt->getPropertyName())) { //IN18N
         NamedBean* nb = (NamedBean*) VPtr<NamedBean*>::asPtr( evt->getOldValue());
         //if (nb instanceof Sensor) {
-        if(qobject_cast<Sensor*>(nb)!= NULL)
+        if(qobject_cast<Sensor*>(nb)!= nullptr)
         {
             if (nb == (getForwardBlockingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
@@ -2392,7 +2392,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             }
         }
         //if (nb instanceof Block) {
-        if(qobject_cast<Block*>(nb) != NULL)
+        if(qobject_cast<Block*>(nb) != nullptr)
         {
             if (getBlockList()->contains((Block*)nb)) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());

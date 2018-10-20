@@ -514,7 +514,7 @@ for (int i = 0; i < routeList.size(); i++)
  // if old manager exists, remove it from configuration process
  if (current != NULL)
  {
-  InstanceManager::configureManagerInstance()->deregister(
+  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(
              current);
  }
 
@@ -523,7 +523,7 @@ for (int i = 0; i < routeList.size(); i++)
  DefaultRouteManager* pManager = DefaultRouteManager::instance();
  InstanceManager::store((QObject*)pManager, "RouteManager");
  // register new one for configuration
- InstanceManager::configureManagerInstance()->registerConfig((QObject*)pManager, Manager::ROUTES);
+ static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)pManager, Manager::ROUTES);
 }
 
 /*public*/ int DefaultRouteManagerXml::loadOrder() {

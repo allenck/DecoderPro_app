@@ -94,13 +94,13 @@ void QtSoundAudioListener::common()
 /*private*/ void QtSoundAudioListener::recalculateSources()
 {
  // Loop through each AudioSource and recalculate their gain & pan
- AudioManager* am = InstanceManager::audioManagerInstance();
+ AudioManager* am = (AudioManager*)InstanceManager::getDefault("AudioManager");
  foreach (QString sysName, am->getSystemNameList())
  {
   Audio* audio = am->getBySystemName(sysName);
   if (audio->getSubType() == Audio::SOURCE
 //          && audio instanceof QtSoundAudioSource)
-      && qobject_cast<QtSoundAudioSource*>(audio)!= NULL)
+      && qobject_cast<QtSoundAudioSource*>(audio)!= nullptr)
   {
    ((QtSoundAudioSource*) audio)->calculateGain();
    ((QtSoundAudioSource*) audio)->calculatePan();

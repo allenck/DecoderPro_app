@@ -84,7 +84,7 @@ ProgDefault::setDefaultProgFile(element.attribute("defaultFile"));
         else
             PaneProgFrame::setShowCvNumbers(false);
     }
-    InstanceManager::configureManagerInstance()->registerPref(new ProgrammerConfigPane(/*true*/));
+    ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref(new ProgrammerConfigPane(/*true*/));
     return result;
 }
 

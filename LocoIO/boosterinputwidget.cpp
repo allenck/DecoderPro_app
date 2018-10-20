@@ -1,5 +1,8 @@
 #include "boosterinputwidget.h"
 #include "ui_boosterinputwidget.h"
+#include "loconetmessageinterpret.h"
+#include "instancemanager.h"
+#include "proxysensormanager.h"
 
 BoosterInputWidget::BoosterInputWidget(LocoIOData* data, int port, /*LnPacketizer* packetizer*/LnTrafficController* tc,QWidget *parent) :
     QWidget(parent),
@@ -13,6 +16,10 @@ BoosterInputWidget::BoosterInputWidget(LocoIOData* data, int port, /*LnPacketize
  this->tc = tc;
  connect(this->tc, SIGNAL(messageProcessed(LocoNetMessage*,bool)), this, SLOT(onMessageReceived(LocoNetMessage*,bool)));
  connect(data, SIGNAL(SVChanged(int,int,int,QString)), this, SLOT(onSVChanged(int,int,int,QString)));
+
+ Sensor* sensor = (Sensor*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("LS"+QString::number(data->getAddr(channel)));
+ if(sensor)
+  ui->edStatus->setStyleSheet(QString("QLineEdit { background-color : %1}").arg((sensor->getKnownState()==Sensor::ACTIVE) ? "black" : "yellow"));
 
 }
 
@@ -32,6 +39,7 @@ void BoosterInputWidget::on_rbBlockDetectionActiveLow_toggled(bool bChecked)
  data->setV2(channel,0x10, data->ssWhite);
  data->setSV(channel, 0x1f, data->ssWhite);
 }
+
 void BoosterInputWidget::onMessageReceived(LocoNetMessage *msg, bool b)
 {
  Q_UNUSED(b)
@@ -46,13 +54,26 @@ void BoosterInputWidget::onMessageReceived(LocoNetMessage *msg, bool b)
  int opc = 0;
 // if(ui->rbDoubleInput->isChecked())
 //  return;
+ int in1 = msg->getElement(1);
+ int in2 = msg->getElement(2);
+
+ if(msg->getOpCode() == LnConstants::OPC_INPUT_REP)
+ {
+     int contactNum = ((LocoNetMessageInterpret::SENSOR_ADR(in1, in2) - 1) * 2 + ((in2 & LnConstants::OPC_INPUT_REP_SW) != 0 ? 2 : 1));
+     int addr1 = data->getAddr(channel);
+     if(contactNum != addr1)
+         return;
+     ui->edStatus->setStyleSheet(QString("QLineEdit { background-color : %1}").arg(in2 & ((LnConstants::OPC_INPUT_REP_HI) != 0)
+             ? "black" : "yellow"));
+ }
+
  if(ui->rbBlockDetectionActiveLow->isChecked() )
   opc = LnConstants::OPC_INPUT_REP;
  if(msg->checkParity())
  {
   if(msg->getOpCode() != opc)
    return;
-  if(!msg->getElement(1) == data->getV1(channel))
+  if(!(msg->getElement(1) == data->getV1(channel)))
   //if(msg->getElement(1)!= 0x31)
    return;
  }
@@ -67,6 +88,7 @@ void BoosterInputWidget::onMessageReceived(LocoNetMessage *msg, bool b)
  }
  ui->edStatus->setPalette(p);
 }
+
 void BoosterInputWidget::onPropertyChange(QString propertyName, QVariant oldVal, QVariant newVal)
 {
  Q_UNUSED(oldVal)
@@ -80,7 +102,7 @@ void BoosterInputWidget::onPropertyChange(QString propertyName, QVariant oldVal,
   setValues();
  }
 }
-void BoosterInputWidget::onSVChanged(int channel, int iOld, int iNew,QString ss)
+void BoosterInputWidget::onSVChanged(int channel, int iOld, int iNew, QString ss)
 {
  Q_UNUSED(iOld)
  Q_UNUSED(iNew)

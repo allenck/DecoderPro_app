@@ -63,8 +63,8 @@
 class PythonQtShell_AbstractAutomaton : public AbstractAutomaton
 {
 public:
-    PythonQtShell_AbstractAutomaton(QObject*  parent = 0):AbstractAutomaton(parent),_wrapper(NULL) {};
-    PythonQtShell_AbstractAutomaton(QString  name, QObject*  parent = 0):AbstractAutomaton(name, parent),_wrapper(NULL) {};
+    PythonQtShell_AbstractAutomaton(QObject*  parent = 0):AbstractAutomaton(parent),_wrapper(nullptr) {};
+    PythonQtShell_AbstractAutomaton(QString  name, QObject*  parent = 0):AbstractAutomaton(name, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AbstractAutomaton();
 
@@ -132,7 +132,7 @@ void delete_AbstractAutomaton(AbstractAutomaton* obj) { delete obj; }
 class PythonQtShell_AbstractManager : public AbstractManager
 {
 public:
-    PythonQtShell_AbstractManager(QObject*  parent = 0):AbstractManager(parent),_wrapper(NULL) {};
+    PythonQtShell_AbstractManager(QObject*  parent = 0):AbstractManager(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AbstractManager();
 
@@ -215,9 +215,9 @@ void delete_AbstractManager(AbstractManager* obj) { delete obj; }
 class PythonQtShell_AbstractNamedBean : public AbstractNamedBean
 {
 public:
-    PythonQtShell_AbstractNamedBean(QObject*  parent = 0):AbstractNamedBean(parent),_wrapper(NULL) {};
-    PythonQtShell_AbstractNamedBean(QString  sys, QObject*  parent = 0):AbstractNamedBean(sys, parent),_wrapper(NULL) {};
-    PythonQtShell_AbstractNamedBean(QString  sys, QString  user, QObject*  parent = 0):AbstractNamedBean(sys, user, parent),_wrapper(NULL) {};
+    PythonQtShell_AbstractNamedBean(QObject*  parent = 0):AbstractNamedBean(parent),_wrapper(nullptr) {}
+    PythonQtShell_AbstractNamedBean(QString  sys, QObject*  parent = 0):AbstractNamedBean(sys, parent),_wrapper(nullptr) {}
+    PythonQtShell_AbstractNamedBean(QString  sys, QString  user, QObject*  parent = 0):AbstractNamedBean(sys, user, parent),_wrapper(nullptr) {}
 
    ~PythonQtShell_AbstractNamedBean();
 
@@ -315,7 +315,7 @@ PropertyChangeSupport*  py_get_pcs(AbstractNamedBean* theWrappedObject){ return 
 class PythonQtShell_AbstractProxyManager : public AbstractProxyManager
 {
 public:
-    PythonQtShell_AbstractProxyManager(QObject*  parent = 0):AbstractProxyManager(parent),_wrapper(NULL) {};
+    PythonQtShell_AbstractProxyManager(QObject*  parent = 0):AbstractProxyManager(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AbstractProxyManager();
 
@@ -413,9 +413,9 @@ QList<Manager* >*  py_get_mgrs(AbstractProxyManager* theWrappedObject){ return t
 class PythonQtShell_AbstractSensor : public AbstractSensor
 {
 public:
-    PythonQtShell_AbstractSensor(QObject*  parent = 0):AbstractSensor(parent),_wrapper(NULL) {};
-    PythonQtShell_AbstractSensor(QString  systemName, QObject*  parent = 0):AbstractSensor(systemName, parent),_wrapper(NULL) {};
-    PythonQtShell_AbstractSensor(QString  systemName, QString  userName, QObject*  parent = 0):AbstractSensor(systemName, userName, parent),_wrapper(NULL) {};
+    PythonQtShell_AbstractSensor(QObject*  parent = 0):AbstractSensor(parent),_wrapper(nullptr) {}
+    PythonQtShell_AbstractSensor(QString  systemName, QObject*  parent = 0):AbstractSensor(systemName, parent),_wrapper(nullptr) {}
+    PythonQtShell_AbstractSensor(QString  systemName, QString  userName, QObject*  parent = 0):AbstractSensor(systemName, userName, parent),_wrapper(nullptr) {}
 
    ~PythonQtShell_AbstractSensor();
 
@@ -512,7 +512,7 @@ void delete_AbstractSensor(AbstractSensor* obj) { delete obj; }
 class PythonQtShell_AbstractSensorManager : public AbstractSensorManager
 {
 public:
-    PythonQtShell_AbstractSensorManager(QObject*  parent = 0):AbstractSensorManager(parent),_wrapper(NULL) {};
+    PythonQtShell_AbstractSensorManager(QObject*  parent = 0):AbstractSensorManager(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AbstractSensorManager();
 
@@ -645,9 +645,9 @@ void delete_AbstractSerialPortController(AbstractSerialPortController* obj) { de
 class PythonQtShell_AbstractTurnout : public AbstractTurnout
 {
 public:
-    PythonQtShell_AbstractTurnout(QObject*  parent = 0):AbstractTurnout(parent),_wrapper(NULL) {};
-    PythonQtShell_AbstractTurnout(QString  systemName, QObject*  parent = 0):AbstractTurnout(systemName, parent),_wrapper(NULL) {};
-    PythonQtShell_AbstractTurnout(QString  systemName, QString  userName, QObject*  parent = 0):AbstractTurnout(systemName, userName, parent),_wrapper(NULL) {};
+    PythonQtShell_AbstractTurnout(QObject*  parent = 0):AbstractTurnout(parent),_wrapper(nullptr) {};
+    PythonQtShell_AbstractTurnout(QString  systemName, QObject*  parent = 0):AbstractTurnout(systemName, parent),_wrapper(nullptr) {};
+    PythonQtShell_AbstractTurnout(QString  systemName, QString  userName, QObject*  parent = 0):AbstractTurnout(systemName, userName, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AbstractTurnout();
 
@@ -851,8 +851,8 @@ void delete_AbstractTurnout(AbstractTurnout* obj) { delete obj; }
 class PythonQtShell_Audio : public Audio
 {
 public:
-    PythonQtShell_Audio(QString  systemName, QObject*  parent = 0):Audio(systemName, parent),_wrapper(NULL) {};
-    PythonQtShell_Audio(QString  systemName, QString  userName, QObject*  parent = 0):Audio(systemName, userName, parent),_wrapper(NULL) {};
+    PythonQtShell_Audio(QString  systemName, QObject*  parent = 0):Audio(systemName, parent),_wrapper(nullptr) {};
+    PythonQtShell_Audio(QString  systemName, QString  userName, QObject*  parent = 0):Audio(systemName, userName, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_Audio();
 
@@ -917,8 +917,8 @@ void delete_Audio(Audio* obj) { delete obj; }
 class PythonQtShell_AudioBuffer : public AudioBuffer
 {
 public:
-    PythonQtShell_AudioBuffer(QString  systemName, QObject*  parent = 0):AudioBuffer(systemName, parent),_wrapper(NULL) {};
-    PythonQtShell_AudioBuffer(QString  systemName, QString  userName, QObject*  parent = 0):AudioBuffer(systemName, userName, parent),_wrapper(NULL) {};
+    PythonQtShell_AudioBuffer(QString  systemName, QObject*  parent = 0):AudioBuffer(systemName, parent),_wrapper(nullptr) {};
+    PythonQtShell_AudioBuffer(QString  systemName, QString  userName, QObject*  parent = 0):AudioBuffer(systemName, userName, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AudioBuffer();
 
@@ -1019,9 +1019,9 @@ void delete_AudioBuffer(AudioBuffer* obj) { delete obj; }
 class PythonQtShell_AudioListener : public AudioListener
 {
 public:
-    PythonQtShell_AudioListener(QObject*  parent = 0):AudioListener(parent),_wrapper(NULL) {};
-    PythonQtShell_AudioListener(QString  systemName, QObject*  parent = 0):AudioListener(systemName, parent),_wrapper(NULL) {};
-    PythonQtShell_AudioListener(QString  systemName, QString  userName, QObject*  parent = 0):AudioListener(systemName, userName, parent),_wrapper(NULL) {};
+    PythonQtShell_AudioListener(QObject*  parent = 0):AudioListener(parent),_wrapper(nullptr) {};
+    PythonQtShell_AudioListener(QString  systemName, QObject*  parent = 0):AudioListener(systemName, parent),_wrapper(nullptr) {};
+    PythonQtShell_AudioListener(QString  systemName, QString  userName, QObject*  parent = 0):AudioListener(systemName, userName, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AudioListener();
 
@@ -1126,14 +1126,14 @@ void delete_AudioListener(AudioListener* obj) { delete obj; }
 class PythonQtShell_AudioManager : public AudioManager
 {
 public:
-    PythonQtShell_AudioManager(QObject*  parent = 0):AudioManager(parent),_wrapper(NULL) {};
+    PythonQtShell_AudioManager(QObject*  parent = 0):AudioManager(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AudioManager();
 
 virtual void Register(NamedBean*  s);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void childEvent(QChildEvent*  arg__1);
-virtual void cleanUp();
+virtual void cleanup();
 virtual void customEvent(QEvent*  arg__1);
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
@@ -1166,7 +1166,7 @@ virtual char  typeLetter();
 
 class PythonQtPublicPromoter_AudioManager : public AudioManager
 { public:
-inline void promoted_cleanUp() { AudioManager::cleanUp(); }
+inline void promoted_cleanup() { AudioManager::cleanup(); }
 inline Audio*  promoted_getAudio(QString  arg__1) { return AudioManager::getAudio(arg__1); }
 inline Audio*  promoted_getBySystemName(QString  arg__1) { return AudioManager::getBySystemName(arg__1); }
 inline Audio*  promoted_getByUserName(QString  arg__1) { return AudioManager::getByUserName(arg__1); }
@@ -1184,7 +1184,7 @@ public:
 public slots:
 AudioManager* new_AudioManager(QObject*  parent = 0);
 void delete_AudioManager(AudioManager* obj) { delete obj; } 
-   void cleanUp(AudioManager* theWrappedObject);
+   void cleanup(AudioManager* theWrappedObject);
    Audio*  getAudio(AudioManager* theWrappedObject, QString  arg__1);
    Audio*  getBySystemName(AudioManager* theWrappedObject, QString  arg__1);
    Audio*  getByUserName(AudioManager* theWrappedObject, QString  arg__1);
@@ -1203,9 +1203,9 @@ void delete_AudioManager(AudioManager* obj) { delete obj; }
 class PythonQtShell_AudioSource : public AudioSource
 {
 public:
-    PythonQtShell_AudioSource(QObject*  parent = 0):AudioSource(parent),_wrapper(NULL) {};
-    PythonQtShell_AudioSource(QString  systemName, QObject*  parent = 0):AudioSource(systemName, parent),_wrapper(NULL) {};
-    PythonQtShell_AudioSource(QString  systemName, QString  userName, QObject*  parent = 0):AudioSource(systemName, userName, parent),_wrapper(NULL) {};
+    PythonQtShell_AudioSource(QObject*  parent = 0):AudioSource(parent),_wrapper(nullptr) {};
+    PythonQtShell_AudioSource(QString  systemName, QObject*  parent = 0):AudioSource(systemName, parent),_wrapper(nullptr) {};
+    PythonQtShell_AudioSource(QString  systemName, QString  userName, QObject*  parent = 0):AudioSource(systemName, userName, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_AudioSource();
 
@@ -1424,7 +1424,7 @@ void delete_AudioSource(AudioSource* obj) { delete obj; }
 class PythonQtShell_CommandStation : public CommandStation
 {
 public:
-    PythonQtShell_CommandStation(QObject*  parent = 0):CommandStation(parent),_wrapper(NULL) {};
+    PythonQtShell_CommandStation(QObject*  parent = 0):CommandStation(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_CommandStation();
 
@@ -1465,8 +1465,8 @@ void delete_CommandStation(CommandStation* obj) { delete obj; }
 class PythonQtShell_DccLocoAddress : public DccLocoAddress
 {
 public:
-    PythonQtShell_DccLocoAddress(const DccLocoAddress&  l, QObject*  parent = 0):DccLocoAddress(l, parent),_wrapper(NULL) {};
-    PythonQtShell_DccLocoAddress(int  number, bool  isLong, QObject*  parent = 0):DccLocoAddress(number, isLong, parent),_wrapper(NULL) {};
+    PythonQtShell_DccLocoAddress(const DccLocoAddress&  l, QObject*  parent = 0):DccLocoAddress(l, parent),_wrapper(nullptr) {};
+    PythonQtShell_DccLocoAddress(int  number, bool  isLong, QObject*  parent = 0):DccLocoAddress(number, isLong, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_DccLocoAddress();
 
@@ -1509,7 +1509,7 @@ void delete_DccLocoAddress(DccLocoAddress* obj) { delete obj; }
 class PythonQtShell_DccThrottle : public DccThrottle
 {
 public:
-    PythonQtShell_DccThrottle():DccThrottle(),_wrapper(NULL) {};
+    PythonQtShell_DccThrottle():DccThrottle(),_wrapper(nullptr) {};
 
    ~PythonQtShell_DccThrottle();
 
@@ -1674,9 +1674,9 @@ void delete_DccThrottle(DccThrottle* obj) { delete obj; }
 class PythonQtShell_Editor : public Editor
 {
 public:
-    PythonQtShell_Editor(QString  name, QWidget*  parent):Editor(name, parent),_wrapper(NULL) {};
-    PythonQtShell_Editor(QString  name, bool  saveSize, bool  savePosition, QWidget*  parent = 0):Editor(name, saveSize, savePosition, parent),_wrapper(NULL) {};
-    PythonQtShell_Editor(QWidget*  parent = 0):Editor(parent),_wrapper(NULL) {};
+    PythonQtShell_Editor(QString  name, QWidget*  parent):Editor(name, parent),_wrapper(nullptr) {};
+    PythonQtShell_Editor(QString  name, bool  saveSize, bool  savePosition, QWidget*  parent = 0):Editor(name, saveSize, savePosition, parent),_wrapper(nullptr) {};
+    PythonQtShell_Editor(QWidget*  parent = 0):Editor(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_Editor();
 
@@ -1864,7 +1864,7 @@ int  py_get_frameLocationY(Editor* theWrappedObject){ return theWrappedObject->f
 class PythonQtShell_InstanceManager : public InstanceManager
 {
 public:
-    PythonQtShell_InstanceManager(QObject*  parent = 0):InstanceManager(parent),_wrapper(NULL) {};
+    PythonQtShell_InstanceManager(QObject*  parent = 0):InstanceManager(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_InstanceManager();
 
@@ -1882,9 +1882,9 @@ class PythonQtPublicPromoter_InstanceManager : public InstanceManager
 //static inline void promoted_addPropertyChangeListener(PropertyChangeListener*  l) { InstanceManager::addPropertyChangeListener(l); }
 //inline void promoted_addReporterManager(ReporterManager*  p) { InstanceManager::addReporterManager(p); }
 //inline void promoted_addSensorManager(SensorManager*  p) { InstanceManager::addSensorManager(p); }
-inline void promoted_addShutdownManager(ShutDownManager*  p) { InstanceManager::addShutdownManager(p); }
-inline void promoted_addSignalHeadManager(SignalHeadManager*  p) { InstanceManager::addSignalHeadManager(p); }
-inline void promoted_init() { InstanceManager::init(); }
+//inline void promoted_addShutdownManager(ShutDownManager*  p) { InstanceManager::addShutdownManager(p); }
+//inline void promoted_addSignalHeadManager(SignalHeadManager*  p) { InstanceManager::addSignalHeadManager(p); }
+//inline void promoted_init() { InstanceManager::init(); }
 inline void promoted_notifyPropertyChangeListener(QString  property, QVariant  oldValue, QVariant  newValue) { InstanceManager::notifyPropertyChangeListener(property, oldValue, newValue); }
 };
 
@@ -1919,15 +1919,15 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    SensorManager*  static_InstanceManager_sensorManagerInstance();
    void static_InstanceManager_setCommandStation(CommandStation*  p);
    void static_InstanceManager_setDefault(QString  type, QObject*  val);
-   void static_InstanceManager_setLayoutBlockManager(LayoutBlockManager*  p);
+   //void static_InstanceManager_setLayoutBlockManager(LayoutBlockManager*  p);
    void static_InstanceManager_setPowerManager(PowerManager*  p);
    //void static_InstanceManager_setProgrammerManager(ProgrammerManager*  p);
    void static_InstanceManager_setReporterManager(ReporterManager*  p);
    void static_InstanceManager_setSensorManager(SensorManager*  p);
-   void static_InstanceManager_setShutDownManager(ShutDownManager*  p);
+   //void static_InstanceManager_setShutDownManager(ShutDownManager*  p);
    void static_InstanceManager_setSignalHeadManager(SignalHeadManager*  p);
    void static_InstanceManager_setSignalMastManager(SignalMastManager*  p);
-   ShutDownManager*  static_InstanceManager_shutDownManagerInstance();
+   //ShutDownManager*  static_InstanceManager_shutDownManagerInstance();
    SignalHeadManager*  static_InstanceManager_signalHeadManagerInstance();
    SignalMastManager*  static_InstanceManager_signalMastManagerInstance();
    void static_InstanceManager_store(QObject*  item, QString  type);
@@ -1940,10 +1940,10 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
 class PythonQtShell_JmriJFrame : public JmriJFrame
 {
 public:
-    PythonQtShell_JmriJFrame(QString  name, QWidget*  parent = 0):JmriJFrame(name, parent),_wrapper(NULL) {};
-    PythonQtShell_JmriJFrame(QString  name, bool  saveSize, bool  savePosition, QWidget*  parent = 0):JmriJFrame(name, saveSize, savePosition, parent),_wrapper(NULL) {};
-    PythonQtShell_JmriJFrame(QWidget*  parent = 0):JmriJFrame(parent),_wrapper(NULL) {};
-    PythonQtShell_JmriJFrame(bool  saveSize, bool  savePosition, QWidget*  parent = 0):JmriJFrame(saveSize, savePosition, parent),_wrapper(NULL) {};
+    PythonQtShell_JmriJFrame(QString  name, QWidget*  parent = 0):JmriJFrame(name, parent),_wrapper(nullptr) {};
+    PythonQtShell_JmriJFrame(QString  name, bool  saveSize, bool  savePosition, QWidget*  parent = 0):JmriJFrame(name, saveSize, savePosition, parent),_wrapper(nullptr) {};
+    PythonQtShell_JmriJFrame(QWidget*  parent = 0):JmriJFrame(parent),_wrapper(nullptr) {};
+    PythonQtShell_JmriJFrame(bool  saveSize, bool  savePosition, QWidget*  parent = 0):JmriJFrame(saveSize, savePosition, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_JmriJFrame();
 
@@ -2008,8 +2008,8 @@ void delete_JmriJFrame(JmriJFrame* obj) { delete obj; }
 class PythonQtShell_LayoutBlockManager : public LayoutBlockManager
 {
 public:
-    PythonQtShell_LayoutBlockManager(QObject*  parent = 0):LayoutBlockManager(parent),_wrapper(NULL) {};
-    PythonQtShell_LayoutBlockManager(const LayoutBlockManager&  arg__1):LayoutBlockManager(arg__1),_wrapper(NULL) {};
+    PythonQtShell_LayoutBlockManager(QObject*  parent = 0):LayoutBlockManager(parent),_wrapper(nullptr) {};
+    PythonQtShell_LayoutBlockManager(const LayoutBlockManager&  arg__1):LayoutBlockManager(arg__1),_wrapper(nullptr) {};
 
    ~PythonQtShell_LayoutBlockManager();
 
@@ -2077,9 +2077,9 @@ void delete_LayoutBlockManager(LayoutBlockManager* obj) { delete obj; }
 class PythonQtShell_Light : public Light
 {
 public:
-    PythonQtShell_Light(QObject*  parent = 0):Light(parent),_wrapper(NULL) {};
-    PythonQtShell_Light(QString  sysName, QObject*  parent = 0):Light(sysName, parent),_wrapper(NULL) {};
-    PythonQtShell_Light(QString  sysName, QString  userName, QObject*  parent = 0):Light(sysName, userName, parent),_wrapper(NULL) {};
+    PythonQtShell_Light(QObject*  parent = 0):Light(parent),_wrapper(nullptr) {};
+    PythonQtShell_Light(QString  sysName, QObject*  parent = 0):Light(sysName, parent),_wrapper(nullptr) {};
+    PythonQtShell_Light(QString  sysName, QString  userName, QObject*  parent = 0):Light(sysName, userName, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_Light();
 
@@ -2190,7 +2190,7 @@ void delete_Light(Light* obj) { delete obj; }
 class PythonQtShell_LnPacketizer : public LnPacketizer
 {
 public:
-    PythonQtShell_LnPacketizer(QObject*  parent = 0):LnPacketizer(parent),_wrapper(NULL) {};
+    PythonQtShell_LnPacketizer(QObject*  parent = 0):LnPacketizer(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_LnPacketizer();
 
@@ -2263,8 +2263,8 @@ void delete_LnPortController(LnPortController* obj) { delete obj; }
 class PythonQtShell_LnSensor : public LnSensor
 {
 public:
-    PythonQtShell_LnSensor(QString  systemName, LnTrafficController*  tc = NULL, QString  prefix = "L", QObject*  parent = 0):LnSensor(systemName, tc, prefix, parent),_wrapper(NULL) {};
-    PythonQtShell_LnSensor(QString  systemName, QString  userName, LnTrafficController*  tc = NULL, QString  prefix = "L", QObject*  parent = 0):LnSensor(systemName, userName, tc, prefix, parent),_wrapper(NULL) {};
+    PythonQtShell_LnSensor(QString  systemName, LnTrafficController*  tc = nullptr, QString  prefix = "L", QObject*  parent = 0):LnSensor(systemName, tc, prefix, parent),_wrapper(nullptr) {};
+    PythonQtShell_LnSensor(QString  systemName, QString  userName, LnTrafficController*  tc = nullptr, QString  prefix = "L", QObject*  parent = 0):LnSensor(systemName, userName, tc, prefix, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_LnSensor();
 
@@ -2321,8 +2321,8 @@ class PythonQtWrapper_LnSensor : public QObject
 { Q_OBJECT
 public:
 public slots:
-LnSensor* new_LnSensor(QString  systemName, LnTrafficController*  tc = NULL, QString  prefix = "L", QObject*  parent = 0);
-LnSensor* new_LnSensor(QString  systemName, QString  userName, LnTrafficController*  tc = NULL, QString  prefix = "L", QObject*  parent = 0);
+LnSensor* new_LnSensor(QString  systemName, LnTrafficController*  tc = nullptr, QString  prefix = "L", QObject*  parent = 0);
+LnSensor* new_LnSensor(QString  systemName, QString  userName, LnTrafficController*  tc = nullptr, QString  prefix = "L", QObject*  parent = 0);
 void delete_LnSensor(LnSensor* obj) { delete obj; } 
    void dispose(LnSensor* theWrappedObject);
    void requestUpdateFromLayout(LnSensor* theWrappedObject) const;
@@ -2336,7 +2336,7 @@ void delete_LnSensor(LnSensor* obj) { delete obj; }
 class PythonQtShell_LnTrafficController : public LnTrafficController
 {
 public:
-    PythonQtShell_LnTrafficController():LnTrafficController(),_wrapper(NULL) {};
+    PythonQtShell_LnTrafficController():LnTrafficController(),_wrapper(nullptr) {};
 
    ~PythonQtShell_LnTrafficController();
 
@@ -2382,7 +2382,7 @@ void delete_LnTrafficController(LnTrafficController* obj) { delete obj; }
 class PythonQtShell_LnTurnout : public LnTurnout
 {
 public:
-    PythonQtShell_LnTurnout(QString  prefix, int  number, LnTrafficController*  controller, QObject*  parent = 0):LnTurnout(prefix, number, controller, parent),_wrapper(NULL) {};
+    PythonQtShell_LnTurnout(QString  prefix, int  number, LnTrafficController*  controller, QObject*  parent = 0):LnTurnout(prefix, number, controller, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_LnTurnout();
 
@@ -2489,7 +2489,7 @@ void delete_LnTurnout(LnTurnout* obj) { delete obj; }
 class PythonQtShell_LocoAddress : public LocoAddress
 {
 public:
-    PythonQtShell_LocoAddress():LocoAddress(),_wrapper(NULL) {};
+    PythonQtShell_LocoAddress():LocoAddress(),_wrapper(nullptr) {};
 
    ~PythonQtShell_LocoAddress();
 
@@ -2528,7 +2528,7 @@ void delete_LocoAddress(LocoAddress* obj) { delete obj; }
 class PythonQtShell_LocoNetInterface : public LocoNetInterface
 {
 public:
-    PythonQtShell_LocoNetInterface(QObject*  parent = 0):LocoNetInterface(parent),_wrapper(NULL) {};
+    PythonQtShell_LocoNetInterface(QObject*  parent = 0):LocoNetInterface(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_LocoNetInterface();
 
@@ -2566,10 +2566,10 @@ void delete_LocoNetInterface(LocoNetInterface* obj) { delete obj; }
 class PythonQtShell_LocoNetMessage : public LocoNetMessage
 {
 public:
-    PythonQtShell_LocoNetMessage(QVector<char >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(NULL) {};
-    PythonQtShell_LocoNetMessage(QVector<int >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(NULL) {};
-    PythonQtShell_LocoNetMessage(const LocoNetMessage&  original, QObject*  parent = 0):LocoNetMessage(original, parent),_wrapper(NULL) {};
-    PythonQtShell_LocoNetMessage(int  len, QObject*  parent = 0):LocoNetMessage(len, parent),_wrapper(NULL) {};
+    PythonQtShell_LocoNetMessage(QVector<char >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(nullptr) {};
+    PythonQtShell_LocoNetMessage(QVector<int >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(nullptr) {};
+    PythonQtShell_LocoNetMessage(const LocoNetMessage&  original, QObject*  parent = 0):LocoNetMessage(original, parent),_wrapper(nullptr) {};
+    PythonQtShell_LocoNetMessage(int  len, QObject*  parent = 0):LocoNetMessage(len, parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_LocoNetMessage();
 
@@ -2632,7 +2632,7 @@ QVector<int >  py_get__dataBytes(LocoNetMessage* theWrappedObject){ return theWr
 class PythonQtShell_Manager : public Manager
 {
 public:
-    PythonQtShell_Manager(QObject*  parent = 0):Manager(parent),_wrapper(NULL) {};
+    PythonQtShell_Manager(QObject*  parent = 0):Manager(parent),_wrapper(nullptr) {};
 
    ~PythonQtShell_Manager();
 

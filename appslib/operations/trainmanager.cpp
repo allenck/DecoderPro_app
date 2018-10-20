@@ -88,12 +88,12 @@ namespace Operations
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ TrainManager* TrainManager::_instance = NULL;
+ /*private*/ /*static*/ TrainManager* TrainManager::_instance = nullptr;
 
  /*public*/ /*static*/ /*synchronized*/ TrainManager* TrainManager::instance()
  {
   Logger* log = new Logger("TrainManager");
-  if (_instance == NULL)
+  if (_instance == nullptr)
   {
       if (log->isDebugEnabled()) {
           log->debug("TrainManager creating instance");
@@ -311,7 +311,7 @@ namespace Operations
  /*public*/ void TrainManager::dispose() {
      _trainHashTable.clear();
      _id = 0;
-     _instance = NULL;	// we need to reset the instance for testing purposes
+     _instance = nullptr;	// we need to reset the instance for testing purposes
  }
 
 
@@ -334,7 +334,7 @@ namespace Operations
      }
  }
  log->debug(tr("Train (%1) doesn't exist").arg(name));
- return NULL;
+ return nullptr;
 }
 
 /*public*/ Train* TrainManager::getTrainById(QString id) {
@@ -354,7 +354,7 @@ namespace Operations
 */
 /*public*/ Train* TrainManager::newTrain(QString name) {
  Train* train = getTrainByName(name);
- if (train == NULL) {
+ if (train == nullptr) {
      _id++;
      train = new Train(QString::number(_id), name);
      int oldSize = _trainHashTable.size();
@@ -385,7 +385,7 @@ namespace Operations
 * Forget a NamedBean Object created outside the manager.
 */
 /*public*/ void TrainManager::deregister(Train* train) {
- if (train == NULL) {
+ if (train == nullptr) {
      return;
  }
  train->dispose();
@@ -400,7 +400,7 @@ namespace Operations
          foreach (QString loadName, train->getLoadNames()) {
              if (loadName==(oldLoadName)) {
                  train->deleteLoadName(oldLoadName);
-                 if (newLoadName != NULL) {
+                 if (newLoadName != "") {
                      train->addLoadName(newLoadName);
                  }
              }
@@ -409,7 +409,7 @@ namespace Operations
              if (splitLoad.length() > 1) {
                  if (splitLoad[0]==(type) && splitLoad[1]==(oldLoadName)) {
                      train->deleteLoadName(loadName);
-                     if (newLoadName != NULL) {
+                     if (newLoadName != "") {
                          train->addLoadName(type + CarLoad::SPLIT_CHAR + newLoadName);
                      }
                  }
@@ -451,7 +451,7 @@ namespace Operations
   * destination.
   */
  /*public*/ Train* TrainManager::getTrainForCar(Car* car, PrintWriter* buildReport) {
-     return getTrainForCar(car, NULL, buildReport);
+     return getTrainForCar(car, nullptr, buildReport);
  }
 
  /**
@@ -483,7 +483,7 @@ namespace Operations
              return train;
          }
      }
-     return NULL;
+     return nullptr;
  }
 
  /**
@@ -820,7 +820,7 @@ namespace Operations
              continue; // train wasn't built so skip
          }
          Route* route = train->getRoute();
-         if (route == NULL) {
+         if (route == nullptr) {
              continue; // no route for this train
          }
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
@@ -932,7 +932,7 @@ namespace Operations
 
  void TrainManager::onError(QString title, QString msg)
  {
-  QMessageBox::critical(NULL, title, msg);
+  QMessageBox::critical(nullptr, title, msg);
  }
 
  MyBuild::MyBuild(QList<Train*> trains, TrainManager *parent)
@@ -970,7 +970,7 @@ namespace Operations
 //                            MessageFormat.format(Bundle.getMessage("CanNotPrintManifest"),
 //                                    new Object[]{isPrintPreviewEnabled() ? Bundle.getMessage("preview") : Bundle
 //                                                .getMessage("print")}), JOptionPane.ERROR_MESSAGE);
-     QMessageBox::critical(NULL, tr("Can not %1 manifest").arg(isPrintPreviewEnabled()?tr("preview"):tr("print")), tr("Need to build train (%1) before you can %2 manifest").arg(train->getName()).arg(isPrintPreviewEnabled()?tr("preview"):tr("print")) );
+     QMessageBox::critical(nullptr, tr("Can not %1 manifest").arg(isPrintPreviewEnabled()?tr("preview"):tr("print")), tr("Need to build train (%1) before you can %2 manifest").arg(train->getName()).arg(isPrintPreviewEnabled()?tr("preview"):tr("print")) );
     }
    }
   }
@@ -990,7 +990,7 @@ namespace Operations
 //                                    .getMessage("TerminateTrain"), new Object[]{train.getName(), train.getDescription()}),
 //                            JOptionPane.YES_NO_OPTION);
 //                    if (response == JOptionPane.YES_OPTION) {
-                 int response = QMessageBox::question(NULL, tr("Terminate Train (%1) %2?").arg(train->getName()).arg(train->getDescription()), tr("Warning, train manifest hasn't been printed!"), QMessageBox::Yes | QMessageBox::No);
+                 int response = QMessageBox::question(nullptr, tr("Terminate Train (%1) %2?").arg(train->getName()).arg(train->getDescription()), tr("Warning, train manifest hasn't been printed!"), QMessageBox::Yes | QMessageBox::No);
                  if(response == QMessageBox::Yes)
                  {
                      train->terminate();
@@ -1019,21 +1019,21 @@ namespace Operations
           if ((a = e.attribute (Xml::BUILD_MESSAGES)) != "") {
                  _buildMessages = a==(Xml::_TRUE);
              }
-             if ((a = e.attribute (Xml::BUILD_REPORT)) != NULL) {
+             if ((a = e.attribute (Xml::BUILD_REPORT)) != "") {
                  _buildReport = a==(Xml::_TRUE);
              }
-             if ((a = e.attribute (Xml::PRINT_PREVIEW)) != NULL) {
+             if ((a = e.attribute (Xml::PRINT_PREVIEW)) != "") {
                  _printPreview = a==(Xml::_TRUE);
              }
-             if ((a = e.attribute (Xml::OPEN_FILE)) != NULL) {
+             if ((a = e.attribute (Xml::OPEN_FILE)) != "") {
                  _openFile = a==(Xml::_TRUE);
              }
-             if ((a = e.attribute (Xml::RUN_FILE)) != NULL) {
+             if ((a = e.attribute (Xml::RUN_FILE)) != "") {
                  _runFile = a==(Xml::_TRUE);
              }
 
              // verify that the Trains Window action is valid
-             if ((a = e.attribute (Xml::TRAIN_ACTION)) != NULL
+             if ((a = e.attribute (Xml::TRAIN_ACTION)) != ""
                      && (a==(TrainsTableFrame::MOVE) || a==(TrainsTableFrame::RESET)
                      || a==(TrainsTableFrame::TERMINATE) || a==(
                              TrainsTableFrame::CONDUCTOR))) {
@@ -1041,7 +1041,7 @@ namespace Operations
              }
 
              // TODO This here is for backwards compatibility, remove after next major release
-             if ((a = e.attribute (Xml::COLUMN_WIDTHS)) != NULL) {
+             if ((a = e.attribute (Xml::COLUMN_WIDTHS)) != "") {
                  QStringList widths = a.split(" ");
                  for (int i = 0; i < widths.length(); i++) {
                      try {
@@ -1057,30 +1057,30 @@ namespace Operations
          QDomElement eRowColorOptions = options.firstChildElement(Xml::ROW_COLOR_OPTIONS);
          if (eRowColorOptions != QDomElement())
          {
-             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_MANUAL)) != NULL) {
+             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_MANUAL)) != nullptr) {
                  _rowColorManual = a==(Xml::_TRUE);
              }
-             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_BUILD_FAILED)) != NULL) {
+             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_BUILD_FAILED)) != nullptr) {
                  _rowColorBuildFailed = a;
              }
-             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_BUILT)) != NULL) {
+             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_BUILT)) != nullptr) {
                  _rowColorBuilt = a;
              }
-             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_TRAIN_EN_ROUTE)) != NULL) {
+             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_TRAIN_EN_ROUTE)) != nullptr) {
                  _rowColorTrainEnRoute = a;
              }
-             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_TERMINATED)) != NULL) {
+             if ((a = eRowColorOptions.attribute (Xml::ROW_COLOR_TERMINATED)) != nullptr) {
                  _rowColorTerminated = a;
              }
          }
 
          e = options.firstChildElement(Xml::TRAIN_SCHEDULE_OPTIONS);
          if (e != QDomElement()) {
-             if ((a = e.attribute (Xml::ACTIVE_ID)) != NULL) {
+             if ((a = e.attribute (Xml::ACTIVE_ID)) != "") {
                  _trainScheduleActiveId = a;
              }
              // TODO This here is for backwards compatibility, remove after next major release
-             if ((a = e.attribute (Xml::COLUMN_WIDTHS)) != NULL) {
+             if ((a = e.attribute (Xml::COLUMN_WIDTHS)) != "") {
                  QStringList widths = a.split(" ");
                  //_tableScheduleColumnWidths =  QList<int>();
                  QVector<int> temp = QVector<int>(widths.length());

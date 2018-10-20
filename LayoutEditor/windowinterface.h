@@ -30,7 +30,7 @@
  {
   Q_OBJECT
  public:
-     WindowInterface(QWidget* parent = 0) : QObject(parent) {}
+     WindowInterface(QWidget* parent = nullptr) : QObject(parent) {}
 //     WindowInterface(const WindowInterface&) : QObject() {}
 //     virtual ~WindowInterface() {}
      /**
@@ -84,7 +84,7 @@
      *
      * @return a Frame or null
      */
-    /*public*/ virtual JFrame* getFrame() {return NULL;}
+    /*public*/ virtual JFrame* getFrame() {return nullptr;}
 
      friend class WindowMenu;
 };

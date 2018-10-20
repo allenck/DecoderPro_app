@@ -10,9 +10,7 @@ public:
     /*public*/ LightTableTabAction(QObject* parent = 0) ;
     ~LightTableTabAction() {}
     LightTableTabAction(const LightTableTabAction& that) : AbstractTableTabAction(that.text(), that.parent()) {}
-    BeanTableFrame* currFrame();
-    void setCurrFrame(BeanTableFrame *frame);
-    QWidget* getPanel();
+    /*public*/ QString getTableClass();
 
 private:
     BeanTableFrame *frame;

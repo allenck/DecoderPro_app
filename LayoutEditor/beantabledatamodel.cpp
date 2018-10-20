@@ -288,7 +288,6 @@ void BeanTableDataModel::setManager(Manager *) {}
 /*public*/ int BeanTableDataModel::getDisplayDeleteMsg()
 {
  return ((UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption(getMasterClassName(),"deleteInUse");
-//    return QMessageBox::question(NULL, tr("Question"), tr("Are you sure you want to delete %1?").arg("??"), QMessageBox::Yes|QMessageBox::No);
 }
 
 /*public*/ void BeanTableDataModel::setDisplayDeleteMsg(int boo)
@@ -374,7 +373,7 @@ void BeanTableDataModel::setManager(Manager *) {}
    //endRemoveRows();
   }
   //fireTableRowsUpdated(row, row);
-  setPersistentButtons();
+  //setPersistentButtons();
   return true;
  }
  return false;
@@ -856,7 +855,7 @@ class PopupListener extends MouseAdapter {
 /*protected*/ void BeanTableDataModel::showPopup(QPoint p)
 {
  QModelIndex index= _table->indexAt(p);
- row = index.row();
+ row = ((QSortFilterProxyModel*)_table->getModel())->mapToSource(index).row();
 // JTable* source = (JTable)e.getSource();
 //    TableSorter tmodel = ((TableSorter)source.getModel());
 //    int row = source.rowAtPoint( e.getPoint() );
@@ -957,16 +956,16 @@ void BeanTableDataModel::On_renameBean_triggered()
 //                                           "Rename UserName From " + oldName, "Rename " + getBeanType(),
 //                                           0, JOptionPane.INFORMATION_MESSAGE, NULL,
 //                                           renameBeanOption, renameBeanOption[2] );
- InputDialog* dlg = new InputDialog("Rename UserName From " + oldName, oldName, NULL);
+ InputDialog* dlg = new InputDialog("Rename UserName From '" + oldName+ "' to:", oldName, NULL);
  dlg->setWindowTitle("Rename " + getBeanType());
  if(dlg->exec() != QDialog::Accepted ) return;
 
  QString value = dlg->value().trimmed();
- //name not changed.
- return;
 
  if(value==(oldName))
  {
+  //name not changed.
+  return;
  }
  else
  {
@@ -1030,6 +1029,7 @@ void BeanTableDataModel::On_removeName_triggered()
 {
  removeName(row);
 }
+
 /*public*/ void BeanTableDataModel::removeName(int row){
     NamedBean* nBean = getBySystemName(sysNameList.at(row));
 //    QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
@@ -1039,7 +1039,7 @@ void BeanTableDataModel::On_removeName_triggered()
 //        msg, AbstractTableAction.rb.getString("UpdateToSystemNameTitle"),
 //        JOptionPane.YES_NO_OPTION);
 //    if(optionPane == JOptionPane.YES_OPTION)
-    if(QMessageBox::question(NULL, tr("Update usage to SystemName"), tr("Do you want to update references to this %1\nto use the SystemName?"), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
+    if(QMessageBox::question(NULL, tr("Update usage to SystemName").arg(getBeanType()), tr("Do you want to update references to this %1\nto use the SystemName?").arg(getBeanType()), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
     {
      nbMan->updateBeanFromUserToSystem(nBean);
     }

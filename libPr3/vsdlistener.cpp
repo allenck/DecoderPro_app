@@ -32,7 +32,7 @@ void VSDListener::common()
 {
  log = new Logger("VSDListener");
 
- AudioManager* am = InstanceManager::audioManagerInstance();
+ AudioManager* am = (AudioManager*)InstanceManager::getDefault("AudioManager");
     //try {
  _listener = (AudioListener*) am->provideAudio(ListenerSysNamePrefix + _sysname);
  log->debug("Listener Created: " + _listener->objectName());
@@ -53,7 +53,7 @@ QObject(parent) {
 QObject(parent) {
  common();
     // Initialize the AudioManager (if it isn't already) and get the Listener.
-    AudioManager* am = InstanceManager::audioManagerInstance();
+    AudioManager* am = (AudioManager*)InstanceManager::getDefault("AudioManager");
     am->init();
     _listener = am->getActiveAudioFactory()->getActiveAudioListener();
 

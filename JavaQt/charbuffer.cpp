@@ -161,8 +161,8 @@ CharBuffer::CharBuffer(int mark, int pos, int lim, int cap, QObject* parent) : B
  *          If the preconditions on the <tt>offset</tt> and <tt>length</tt>
  *          parameters do not hold
  */
-/*public*/ /*static*/ CharBuffer* CharBuffer::wrap(QByteArray array,
-                                int offset, int length)
+/*public*/ /*static*/ CharBuffer* CharBuffer::wrap(QByteArray /*array*/,
+                                int /*offset*/, int /*length*/)
 {
     try {
 //        return new HeapCharBuffer(array, offset, length);

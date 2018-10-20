@@ -14,6 +14,7 @@
 #include "exceptions.h"
 #include <QTabBar>
 #include <QToolButton>
+#include "configuremanager.h"
 
 //ConnectionPreferencesPanel::ConnectionPreferencesPanel(QWidget *parent) :
 //    QTabWidget(parent)
@@ -68,7 +69,7 @@ void ConnectionsPreferencesPanel::common(TabbedPreferences* preferences)
  addIcon =  QIcon(":/resources/icons/misc/gui3/Add16x16.png");
  if (this->preferences != NULL)
  {
-  QObjectList connList = InstanceManager::configureManagerInstance()
+  QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))
                 ->getInstanceList("ConnectionConfig");
   if (!connList .isEmpty())
   {

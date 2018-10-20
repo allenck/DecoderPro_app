@@ -98,19 +98,34 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
 //    if (clickAttr != "")
 //        SwingSettings.setNonStandardMouseEvent(clickAttr==("yes"));
     GuiLafConfigPane* g = new GuiLafConfigPane();
-    InstanceManager::configureManagerInstance()->registerPref(g);
+    ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref(g);
 
     QString fontsize = e.attribute("fontsize");
     if (fontsize != "")
     {
      int size = fontsize.toInt();
      GuiLafConfigPane::setFontSize(size);
-     InstanceManager::tabbedPreferencesInstance()->setUIFontSize(size);
+     this->setUIFontSize(size);
     }
 
     return result;
 }
 
+/*public*/ void GuiLafConfigPaneXml::setUIFontSize(float size) {
+#if 0 // TODO:
+ Enumeration<Object> keys = UIManager.getDefaults().keys();
+ Font f;
+ while (keys.hasMoreElements()) {
+     Object key = keys.nextElement();
+     Object value = UIManager.get(key);
+
+     if (value instanceof FontUIResource) {
+         f = UIManager.getFont(key).deriveFont(((Font) value).getStyle(), size);
+         UIManager.put(key, f);
+     }
+ }
+#endif
+}
 /**
  *  Change the look-and-feel to the specified class.
  *  Alert the user if there were problems loading the PLAF.

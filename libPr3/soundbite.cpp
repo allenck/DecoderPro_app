@@ -83,7 +83,7 @@ void SoundBite::common()
 
 /*public*/ /*final*/ bool SoundBite::init(VSDFile* vf, BufferMode mode)
 {
- AudioManager* am = InstanceManager::audioManagerInstance();
+ AudioManager* am = (AudioManager*)InstanceManager::getDefault("AudioManager");
  if (!initialized)
  {
      //try {

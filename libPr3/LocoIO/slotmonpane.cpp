@@ -12,7 +12,7 @@ SlotMonPane::SlotMonPane(QWidget *parent) :
   LnPanel(parent)
 {
  log = new Logger("SlotMonPane");
- showAllCheckBox = new QCheckBox();
+ showUnusedCheckBox = new QCheckBox();
  showSystemCheckBox = new QCheckBox();
  estopAllButton = new QPushButton(tr("Estop All"));
  clearAllButton = new QPushButton(tr("Clear All Non-InUse Slots"));
@@ -48,10 +48,10 @@ SlotMonPane::SlotMonPane(QWidget *parent) :
     slotTable->setItemDelegateForColumn(SlotMonDataModel::DISPCOLUMN, new PushButtonDelegate);
 
     // configure items for GUI
-    showAllCheckBox->setText(tr("Show unused slots"));
-    showAllCheckBox->setVisible(true);
-    showAllCheckBox->setChecked(false);
-    showAllCheckBox->setToolTip(tr("TooltipSlotMonShowUnused"));
+    showUnusedCheckBox->setText(tr("Show unused slots"));
+    showUnusedCheckBox->setVisible(true);
+    showUnusedCheckBox->setChecked(false);
+    showUnusedCheckBox->setToolTip(tr("if checked, even empty/idle slots will appear"));
 
     showSystemCheckBox->setText(tr("Show system slots"));
     showSystemCheckBox->setVisible(true);
@@ -67,7 +67,7 @@ SlotMonPane::SlotMonPane(QWidget *parent) :
 //            slotModel.fireTableDataChanged();
 //        }
 //    });
-    connect(showAllCheckBox, SIGNAL(clicked()), this, SLOT(On_showAllCheckBox_clicked()));
+    connect(showUnusedCheckBox, SIGNAL(clicked()), this, SLOT(On_showAllCheckBox_clicked()));
 //    showSystemCheckBox.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //            slotModel.showSystemSlots(showSystemCheckBox.isSelected());
@@ -109,7 +109,7 @@ SlotMonPane::SlotMonPane(QWidget *parent) :
 //    });
     connect(clearAllButton, SIGNAL(clicked()), slotModel, SLOT(clearAllSlots()));
     // adjust model to default settings
-    slotModel->showAllSlots(showAllCheckBox->isChecked());
+    slotModel->showAllSlots(showUnusedCheckBox->isChecked());
     slotModel->showSystemSlots(showSystemCheckBox->isChecked());
 
     // general GUI config
@@ -118,10 +118,10 @@ SlotMonPane::SlotMonPane(QWidget *parent) :
 
     // install items in GUI
     QWidget* pane1 = new QWidget();
-    FlowLayout* panelLayout;
-    pane1->setLayout(panelLayout = new FlowLayout());
+    QHBoxLayout* panelLayout;
+    pane1->setLayout(panelLayout = new QHBoxLayout());
 
-    panelLayout->addWidget(showAllCheckBox);
+    panelLayout->addWidget(showUnusedCheckBox);
     panelLayout->addWidget(showSystemCheckBox);
     panelLayout->addWidget(estopAllButton);
     panelLayout->addWidget(clearAllButton);
@@ -138,7 +138,7 @@ SlotMonPane::SlotMonPane(QWidget *parent) :
 
 void SlotMonPane::On_showAllCheckBox_clicked()
 {
- slotModel->showAllSlots(showAllCheckBox->isChecked());
+ slotModel->showAllSlots(showUnusedCheckBox->isChecked());
  slotModel->fireTableDataChanged();
 
 }
@@ -159,12 +159,31 @@ void SlotMonPane::On_showSystemCheckBox_clicked()
 
 /*public*/ void SlotMonPane::dispose() {
     slotModel->dispose();
-    slotModel = NULL;
-    slotTable = NULL;
+    slotModel = nullptr;
+    slotTable = nullptr;
     //slotScroll = NULL;
     LnPanel::dispose();
 }
 #if 0
+/*private*/ void SlotMonPane::filter() {
+        RowFilter<SlotMonDataModel, Integer> rf = new RowFilter<SlotMonDataModel, Integer>() {
+            @Override
+            public boolean include(RowFilter.Entry<? extends SlotMonDataModel, ? extends Integer> entry) {
+                int slotNum = entry.getIdentifier();
+                // default filter is IN-USE and regular systems slot
+                boolean include = entry.getModel().getSlot(entry.getIdentifier()).slotStatus() == LnConstants.LOCO_IN_USE && (slotNum > 0 && slotNum < 121);
+                if (!include && showUnusedCheckBox.isSelected() && (slotNum > 0 && slotNum < 121)) {
+                    include = true;
+                }
+                if (!include && showSystemCheckBox.isSelected() && (slotNum == 0 || slotNum > 120)) {
+                    include = true;
+                }
+                return include;
+            }
+        };
+        sorter.setRowFilter(rf);
+    }
+
 /**
  * Nested class to create one of these using old-style defaults
  */

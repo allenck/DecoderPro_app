@@ -13,6 +13,8 @@
 #include <QMenu>
 #include "savemenu.h"
 #include "mysortfilterproxymodel.h"
+#include "userpreferencesmanager.h"
+#include "instancemanager.h"
 
 //AbstractTableTabAction::AbstractTableTabAction(QObject *parent) :
 //    AbstractTableAction(parent)
@@ -57,11 +59,12 @@ AbstractTableTabAction::~AbstractTableTabAction()
  QGridLayout* dataPanelLayout;
  dataPanel->setLayout(dataPanelLayout = new QGridLayout());
  //if (getManager() instanceof jmri.managers.AbstractProxyManager)
- if(qobject_cast<AbstractProxyManager*>(getManager())!= NULL)
+ if(qobject_cast<AbstractProxyManager*>(getManager())!= nullptr)
  {
-  AbstractProxyManager* proxy = (AbstractProxyManager*) getManager();
-  QList<Manager*> managerList = proxy->getManagerList();
+  AbstractProxyManager* proxy = static_cast<AbstractProxyManager*>(getManager());
+  QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
   AbstractTableAction* a = getNewTableAction("All");
+  Q_UNUSED(a);
   tabbedTableArray.append(new TabbedTableItem("All", true, getManager(), getNewTableAction("All")));
   for(int x = 0; x<managerList.size(); x++)
   {
@@ -87,9 +90,12 @@ AbstractTableTabAction::~AbstractTableTabAction()
 //            setMenuBar(f);
 //        }
 //    });
- connect(dataTabs, SIGNAL(currentChanged(int)), this, SLOT(On_dataTabs_currentChanged(int)));
  dataPanelLayout->addWidget(dataTabs,0,0); //,/* BorderLayout.CENTER*/0, Qt::AlignCenter);
  init = true;
+// if(!getTableClass().isEmpty())
+// currTab = ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getProperty(getClassName()+"." + getTableClass(),"currTab").toInt();
+// dataTabs->setCurrentIndex(currTab);
+ connect(dataTabs, SIGNAL(currentChanged(int)), this, SLOT(On_dataTabs_currentChanged(int)));
 }
 
 void AbstractTableTabAction::On_dataTabs_currentChanged(int iTab)
@@ -99,11 +105,12 @@ void AbstractTableTabAction::On_dataTabs_currentChanged(int iTab)
  tabbedTableArray.at(iTab)->bottomBox->setVisible(true);
  currTab = iTab;
  setMenuBar(f);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setProperty(getClassName()+"."+getTableClass(),"currTab",currTab);
 }
 
-/*abstract*/ /*protected*/ Manager* AbstractTableTabAction::getManager() {return NULL;}
+/*abstract*/ /*protected*/ Manager* AbstractTableTabAction::getManager() {return nullptr;}
 
-/*abstract*/ /*protected*/ AbstractTableAction* AbstractTableTabAction::getNewTableAction(QString /*choice*/) {return NULL;}
+/*abstract*/ /*protected*/ AbstractTableAction* AbstractTableTabAction::getNewTableAction(QString /*choice*/) {return nullptr;}
 
 //@Override
 /*public*/ QWidget* AbstractTableTabAction::getPanel()
@@ -124,9 +131,9 @@ void AbstractTableTabAction::On_dataTabs_currentChanged(int iTab)
     log->warn("This should not have happened");
 }
 
-void AbstractTableTabAction::actionPerformed(ActionEvent *e)
+void AbstractTableTabAction::actionPerformed(ActionEvent */*e*/)
 {
- if(currFrame() != NULL)
+ if(currFrame() != nullptr)
  {
   currFrame()->setVisible(true);
   return;
@@ -147,6 +154,7 @@ void AbstractTableTabAction::actionPerformed(ActionEvent *e)
   centralWidgetLayout->addWidget(tabbedTableArray.at(i)->bottomBox);
   tabbedTableArray.at(i)->bottomBox->setVisible(i == currTab);
  }
+ currTab = 0;
  f->pack();
  f->setVisible(true);
 }
@@ -244,7 +252,7 @@ void AbstractTableTabAction::actionPerformed(ActionEvent *e)
 
 void TabbedTableItem::createDataModel()
 {
- if (manager!=NULL)
+ if (manager!=nullptr)
   tableAction->setManager(manager);
  dataModel = (BeanTableDataModel*)tableAction->getTableDataModel();
  //        dataModel->updateNameList();
@@ -341,9 +349,8 @@ void TabbedTableItem::addPanelModel()
 /*protected*/ void TabbedTableItem::addToBottomBox(QWidget* comp)
 {
  QHBoxLayout* bottomBoxLayout;
- if(bottomBox->layout() == NULL)
+ if(bottomBox->layout() == nullptr)
  {
-
   bottomBox->setLayout(bottomBoxLayout = new QHBoxLayout);
  }
  else
@@ -352,7 +359,7 @@ void TabbedTableItem::addPanelModel()
  {
   bottomBoxLayout->addStrut(bottomStrutWidth);
   ++bottomBoxIndex;
-  bottomBoxLayout->insertWidget(bottomBoxIndex, comp/*, bottomBoxIndex*/);
+  bottomBoxLayout->insertWidget(bottomBoxIndex, comp);
   ++bottomBoxIndex;
  }
  catch (IllegalArgumentException ex)
@@ -363,14 +370,14 @@ void TabbedTableItem::addPanelModel()
 
 /*protected*/ void TabbedTableItem::dispose()
 {
- if (dataModel != NULL)
+ if (dataModel != nullptr)
  {
 //  dataModel->saveTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
   dataModel->stopPersistingTable(dataTable);
   dataModel->dispose();
  }
- dataModel = NULL;
- dataTable = NULL;
+ dataModel = nullptr;
+ dataTable = nullptr;
  //dataScroll = NULL;
 }
 
@@ -453,11 +460,11 @@ void AbstractTableTabAction::On_printAction_triggered()
   QString footerFormat = QString(f->getTitle() + " page %1");
   if (item->getStandardTableModel())
   {
-   item->getDataTable()->print(JTable::FIT_WIDTH, NULL, footerFormat);
+   item->getDataTable()->print(JTable::FIT_WIDTH, nullptr, footerFormat);
   }
   else
   {
-   item->getAAClass()->print(JTable::FIT_WIDTH, NULL, footerFormat);
+   item->getAAClass()->print(JTable::FIT_WIDTH, nullptr, footerFormat);
   }
  } catch (PrinterException e1)
  {

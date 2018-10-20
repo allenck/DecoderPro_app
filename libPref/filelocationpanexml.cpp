@@ -89,7 +89,7 @@ FileLocationPaneXml::FileLocationPaneXml(QObject* parent) :
  {
   FileUtil::setScriptsPath(value);
  }
- InstanceManager::configureManagerInstance()->registerPref(new FileLocationPane());
+ ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref(new FileLocationPane());
  return result;
 }
 

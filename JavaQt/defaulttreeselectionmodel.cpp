@@ -50,8 +50,8 @@
     uniquePaths = new QHash<TreePath*, bool>();
     lastPaths = new QHash<TreePath*, bool>();
     tempPaths = QVector<TreePath*>(); //[1];
-    tempPaths.append(NULL);
-    rowMapper = NULL;
+    tempPaths.append(nullptr);
+    rowMapper = nullptr;
     selection = QVector<TreePath*>();
 }
 #if 0
@@ -94,7 +94,7 @@
        selectionMode != TreeSelectionModel::CONTIGUOUS_TREE_SELECTION &&
        selectionMode != TreeSelectionModel::DISCONTIGUOUS_TREE_SELECTION)
         selectionMode = TreeSelectionModel::DISCONTIGUOUS_TREE_SELECTION;
-    if(oldMode != selectionMode && changeSupport != NULL)
+    if(oldMode != selectionMode && changeSupport != nullptr)
         changeSupport->firePropertyChange(SELECTION_MODE_PROPERTY,
                                          (oldMode),
                                          (selectionMode));
@@ -117,13 +117,13 @@
   * @param path new path to select
   */
 /*public*/ void DefaultTreeSelectionModel::setSelectionPath(TreePath* path) {
-    if(path == NULL)
+    if(path == nullptr)
         setSelectionPaths(QVector<TreePath*>());
     else {
         QVector<TreePath*>          newPaths = QVector<TreePath*>();
 
         newPaths.append( path);
-        newPaths.append(NULL);
+        newPaths.append(nullptr);
         setSelectionPaths(newPaths);
     }
 }
@@ -456,7 +456,7 @@
     if (!selection.isEmpty() && selection.length() > 0) {
         return selection.at(0);
     }
-    return NULL;
+    return nullptr;
 }
 
 /**
@@ -491,7 +491,7 @@
   * is in the current selection.
   */
 /*public*/ bool DefaultTreeSelectionModel::isPathSelected(TreePath* path) {
-    return (path != NULL) ? (uniquePaths->value(path) != NULL) : false;
+    return (path != nullptr) ? (uniquePaths->value(path) != 0) : false;
 }
 
 /**
@@ -514,9 +514,9 @@
             newness.replace(counter, false);
 
         TreeSelectionEvent*     event = new TreeSelectionEvent
-            (this, selection, newness, leadPath, NULL);
+            (this, selection, newness, leadPath, nullptr);
 
-        leadPath = NULL;
+        leadPath = nullptr;
         leadIndex = leadRow = -1;
         uniquePaths->clear();
         selection = QVector<TreePath*>();
@@ -563,7 +563,7 @@
  QVector<TreeSelectionListener*> rslt = QVector<TreeSelectionListener*>();
  QVector<QObject*> olist = listenerList->getListenerList();
  foreach (QObject* obj, olist) {
-  if(qobject_cast<TreeSelectionListener*>(obj) != NULL)
+  if(qobject_cast<TreeSelectionListener*>(obj) != nullptr)
     rslt.append((TreeSelectionListener*)obj);
  }
  return rslt;
@@ -583,7 +583,7 @@
     // those that are interested in this event
     for (int i = listeners.length()-2; i>=0; i-=2) {
         //if (listeners.at(i)=="TreeSelectionListener")
-     if(qobject_cast<TreeSelectionListener*>(listeners.at(i)) != NULL)
+     if(qobject_cast<TreeSelectionListener*>(listeners.at(i)) != nullptr)
         {
             // Lazily create the event:
             // if (e == NULL)
@@ -652,7 +652,7 @@
 /*public*/ QVector<int> DefaultTreeSelectionModel::getSelectionRows() {
     // This is currently rather expensive.  Needs
     // to be better support from ListSelectionModel to speed this up.
-    if (rowMapper != NULL && !selection.isEmpty() && selection.length() > 0) {
+    if (rowMapper != nullptr && !selection.isEmpty() && selection.length() > 0) {
         QVector<int>      rows = rowMapper->getRowsForPaths(selection);
 
         if (!rows.isEmpty()) {
@@ -723,7 +723,7 @@
  */
 /*public*/ void DefaultTreeSelectionModel::resetRowSelection() {
     listSelectionModel->clearSelection();
-    if(!selection.isEmpty() && rowMapper != NULL) {
+    if(!selection.isEmpty() && rowMapper != nullptr) {
         int               aRow;
         int               validCount = 0;
         QVector<int>             rows = rowMapper->getRowsForPaths(selection);
@@ -738,7 +738,7 @@
         if(leadIndex != -1 && !rows.isEmpty()) {
             leadRow = rows[leadIndex];
         }
-        else if (leadPath != NULL) {
+        else if (leadPath != nullptr) {
             // Lead selection path doesn't have to be in the selection.
             tempPaths.replace(0, leadPath);
             rows = rowMapper->getRowsForPaths(tempPaths);
@@ -781,7 +781,7 @@
  */
 /*public*/ /*synchronized*/ void DefaultTreeSelectionModel::addPropertyChangeListener(
                             PropertyChangeListener* listener) {
-    if (changeSupport == NULL) {
+    if (changeSupport == nullptr) {
         changeSupport = new PropertyChangeSupport(this);
     }
     changeSupport->addPropertyChangeListener(listener);
@@ -797,7 +797,7 @@
 
 /*public*/ /*synchronized*/ void DefaultTreeSelectionModel::removePropertyChangeListener(
                             PropertyChangeListener* listener) {
-    if (changeSupport == NULL) {
+    if (changeSupport == nullptr) {
         return;
     }
     changeSupport->removePropertyChangeListener(listener);
@@ -817,7 +817,7 @@
  * @since 1.4
  */
 /*public*/ QList<PropertyChangeListener*>* DefaultTreeSelectionModel::getPropertyChangeListeners() {
-    if (changeSupport == NULL) {
+    if (changeSupport == nullptr) {
         return new QList<PropertyChangeListener*>();
     }
     return changeSupport->getPropertyChangeListeners();
@@ -879,7 +879,7 @@
  * or this object has no RowMapper.
  */
 /*protected*/ bool DefaultTreeSelectionModel::arePathsContiguous(QVector<TreePath*> paths) {
-    if(rowMapper == NULL || paths.length() < 2)
+    if(rowMapper == nullptr || paths.length() < 2)
         return true;
 
     else {
@@ -928,7 +928,7 @@
  * contiguous set of <code>TreePath</code>s.
  */
 /*protected*/ bool DefaultTreeSelectionModel::canPathsBeAdded(QVector<TreePath*> paths) {
-    if(paths.isEmpty() || paths.length() == 0 || rowMapper == NULL ||
+    if(paths.isEmpty() || paths.length() == 0 || rowMapper == nullptr ||
        selection == QVector<TreePath*>() || selectionMode ==
        TreeSelectionModel::DISCONTIGUOUS_TREE_SELECTION)
         return true;
@@ -952,7 +952,7 @@
             min = max = rowMapper->getRowsForPaths(tempPath).at(0);
         }
         for(counter = paths.length() - 1; counter >= 0; counter--) {
-            if(paths[counter] != NULL) {
+            if(paths[counter] != nullptr) {
                 tempPath.replace(0, paths.at(counter));
                 QVector<int>   rows = rowMapper->getRowsForPaths(tempPath);
                 if (rows.isEmpty()) {
@@ -979,7 +979,7 @@
  * This is rather expensive.
  */
 /*protected*/ bool DefaultTreeSelectionModel::canPathsBeRemoved(QVector<TreePath*> paths) {
-    if(rowMapper == NULL || selection.isEmpty() ||
+    if(rowMapper == nullptr || selection.isEmpty() ||
        selectionMode == TreeSelectionModel::DISCONTIGUOUS_TREE_SELECTION)
         return true;
     else {
@@ -995,7 +995,7 @@
         /* Determine the rows for the removed entries. */
         lastPaths->clear();
         for (counter = 0; counter < pathCount; counter++) {
-            if (paths[counter] != NULL) {
+            if (paths[counter] != nullptr) {
                 lastPaths->insert(paths[counter], true);
             }
         }
@@ -1055,9 +1055,9 @@
  * Updates the leadIndex instance variable.
  */
 /*protected*/ void DefaultTreeSelectionModel::updateLeadIndex() {
-    if(leadPath != NULL) {
+    if(leadPath != nullptr) {
         if(selection.isEmpty()) {
-            leadPath = NULL;
+            leadPath = nullptr;
             leadIndex = leadRow = -1;
         }
         else {
@@ -1098,7 +1098,7 @@
     QString       retBuffer;// = new StringBuffer();
     QVector<int>              rows;
 
-    if(rowMapper != NULL)
+    if(rowMapper != nullptr)
         rows = rowMapper->getRowsForPaths(selection);
     else
         rows = QVector<int>();
@@ -1142,7 +1142,7 @@
     clone.tempPaths = new TreePath[1];
     return clone;
 #else
- return NULL;
+ return nullptr;
 #endif
 }
 #if 0

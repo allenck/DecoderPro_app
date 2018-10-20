@@ -118,7 +118,7 @@ private slots:
  void on_btnSave_clicked();
  void on_btnRestore_clicked();
  //void on_tableWidget_cellClicked(int row, int column);
- void onConfigRead(int cfg);
+ void onConfigRead(int cfg, LocoIOData* data);
 //    void on_edUnitAddr_editingFinished();
 //    void on_edSubAddr_editingFinished();
  void on_chkExtra1_toggled(bool bChecked);

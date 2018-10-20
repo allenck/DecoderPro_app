@@ -34,7 +34,7 @@ private:
     double aspect;
     double iconAspect;
 
-    SimpleTimebase* clock;
+    Timebase* clock;
  Logger* log;
     QVector<NamedIcon*> tubes;// = new QVector<NamedIcon*>(10, NULL);
     QVector<NamedIcon*> baseTubes;// = new QVector<NamedIcon*>(10, NULL);

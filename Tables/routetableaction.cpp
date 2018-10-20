@@ -2234,9 +2234,9 @@ void RouteTableAction::exportPressed(/*ActionEvent* e*/)  // SLOT[]
     }
     QString uName = _userName->text();
     QString logixSystemName = LOGIX_SYS_NAME+sName;
-    Logix* logix = InstanceManager::logixManagerInstance()->getBySystemName(logixSystemName);
+    Logix* logix = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(logixSystemName);
     if (logix == NULL) {
-        logix = InstanceManager::logixManagerInstance()->createNewLogix(logixSystemName, uName);
+        logix = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->createNewLogix(logixSystemName, uName);
         if (logix == NULL) {
             log->error("Failed to create Logix "+logixSystemName+", "+uName);
             return;
@@ -2389,7 +2389,7 @@ void RouteTableAction::exportPressed(/*ActionEvent* e*/)  // SLOT[]
             actionList->append(new DefaultConditionalAction(Conditional::ACTION_OPTION_ON_CHANGE_TO_FALSE,
                                   Conditional::ACTION_SET_SENSOR, sensorSystemName, Sensor::INACTIVE, ""));
 
-            Conditional* c = ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->createNewConditional(cSystemName, cUserName);
+            Conditional* c = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->createNewConditional(cSystemName, cUserName);
             c->setStateVariables(variableList);
             c->setLogicType(Conditional::ALL_AND, "");
             c->setAction(actionList);
@@ -2446,7 +2446,7 @@ void RouteTableAction::exportPressed(/*ActionEvent* e*/)  // SLOT[]
         }
 
        // add new Conditionals for action on 'locks'
-        Conditional* c = ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->createNewConditional(cSystemName, cUserName);
+        Conditional* c = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->createNewConditional(cSystemName, cUserName);
         c->setStateVariables(variableList);
         c->setLogicType(Conditional::ALL_AND, "");
         c->setAction(actionList);
@@ -2465,10 +2465,10 @@ void RouteTableAction::exportPressed(/*ActionEvent* e*/)  // SLOT[]
 }
 
 bool RouteTableAction::removeConditionals(QString cSystemName, Logix* logix) {
-    Conditional* c = ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->getBySystemName(cSystemName);
+    Conditional* c = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->getBySystemName(cSystemName);
     if (c != NULL) {
         logix->deleteConditional(cSystemName);
-        ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->deleteConditional(c);
+        static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->deleteConditional(c);
         return true;
     }
     return false;
@@ -2487,7 +2487,7 @@ int RouteTableAction::makeSensorConditional(JmriBeanComboBox* jmriBox, QComboBox
         }
         QString cSystemName = prefix+numConds+"T";
         QString cUserName = jmriBox->getSelectedDisplayName()+numConds+"C "+uName;
-        Conditional* c = ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->createNewConditional(cSystemName, cUserName);
+        Conditional* c = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->createNewConditional(cSystemName, cUserName);
         c->setStateVariables(varList);
         int option = onChange ? Conditional::ACTION_OPTION_ON_CHANGE : Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE;
         c->setAction(cloneActionList(actionList, option));
@@ -2512,7 +2512,7 @@ int RouteTableAction::makeTurnoutConditional(JmriBeanComboBox* jmriBox, QComboBo
         }
         QString cSystemName = prefix+numConds+"T";
         QString cUserName = jmriBox->getSelectedDisplayName()+numConds+"C "+uName;
-        Conditional* c = ((DefaultConditionalManager*)InstanceManager::conditionalManagerInstance())->createNewConditional(cSystemName, cUserName);
+        Conditional* c = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->createNewConditional(cSystemName, cUserName);
         c->setStateVariables(varList);
         int option = onChange ? Conditional::ACTION_OPTION_ON_CHANGE : Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE;
         c->setAction(cloneActionList(actionList, option));

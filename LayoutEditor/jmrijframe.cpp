@@ -120,7 +120,7 @@
 #if 1
  generateWindowRef();
  if (QString(metaObject()->className())==("JmriJFrame")){
-     if ((this->windowTitle()==NULL) || (this->windowTitle()==("")))
+     if ((this->windowTitle()==nullptr) || (this->windowTitle()==("")))
          return;
  }
  setFrameLocation();
@@ -145,9 +145,9 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  //setMinimumSize(100,20); // already done in JFrame!
  setLocation(20,50);
  setMaximumHeight(w->height() - 100);
- task = NULL;
+ task = nullptr;
  modifiedFlag = false;
- windowMenu = NULL;
+ windowMenu = nullptr;
  installEventFilter(this);
  mShown = false;
 
@@ -198,6 +198,7 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  * This method should be overriden to provide the full java classname
  * so that preferences can be stored in a manner that either this app or the original
  * Java code can interpret save preferences equally.
+ */
 /*public*/ QString JmriJFrame::getClassName()
 {
  return QString(metaObject()->className());
@@ -213,7 +214,7 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
   *
   * This function will insure that size and location are saved for the subclass in
   * the preferences.
-  * /
+  */
 /*public*/ void JmriJFrame::setFrameRef(QString initref)
 {
  int refNo = 1;
@@ -222,7 +223,7 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  for(int i = 0; i<frameList->size();i++)
  {
   JmriJFrame* j = frameList->at(i);
-  if(j == NULL)
+  if(j == nullptr)
    continue;
   if(j!=this && j->getWindowFrameRef()==(ref))
   {
@@ -245,10 +246,10 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
 //    }
 }
 #endif
-void JmriJFrame::setFrameLocation()
+/*public*/ void JmriJFrame::setFrameLocation()
 {
  UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
- if ((prefsMgr != NULL) && (prefsMgr->isWindowPositionSaved(windowFrameRef)))
+ if ((prefsMgr != nullptr) && (prefsMgr->isWindowPositionSaved(windowFrameRef)))
  {
   //QSize screen = getToolkit().getScreenSize();
   QDesktopWidget* desktop = QApplication::desktop();
@@ -266,7 +267,7 @@ void JmriJFrame::setFrameLocation()
   {
 #ifdef Q_OS_LINUX
    if (log->isDebugEnabled()) log->debug("setFrameLocation 2nd clause sets preferredSize to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
-            this->setMinimumSize(prefsMgr->getWindowSize(windowFrameRef));
+            this->resize(prefsMgr->getWindowSize(windowFrameRef));
 #endif
 #ifdef Q_OS_WIN32
   if (log->isDebugEnabled()) log->debug("setFrameLocation 2nd clause sets size to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
@@ -314,7 +315,7 @@ void JmriJFrame::setFrameLocation()
  for(int i = 0; i<frameList->size();i++)
  {
   JmriJFrame* j = frameList->at(i);
-  if(j == NULL)
+  if(j == nullptr)
    continue;
   if(j != this && j->getWindowFrameRef() == (ref))
   {
@@ -402,7 +403,7 @@ void JmriJFrame::reSizeToFitOnScreen()
   log->debug("reSizeToFitOnScreen sets height "+QString::number(height)+" width "+QString::number(width));
 }
 
-void JmriJFrame::offSetFrameOnScreen(JmriJFrame* f)
+void JmriJFrame::offSetFrameOnScreen(JmriJFrame* /*f*/)
 {
 /* We use the frame that we are moving away from insets, as at this point
 our own insets have not been correctly built and always return a size of zero */
@@ -456,7 +457,7 @@ our own insets have not been correctly built and always return a size of zero */
 {
  // only works if no menu present?
  QMenuBar* bar = menuBar();
-// if (bar == NULL)
+// if (bar == nullptr)
 //   bar = new QMenuBar();
  // add Window menu
 
@@ -469,7 +470,7 @@ our own insets have not been correctly built and always return a size of zero */
 }
 //void JmriJFrame::on_menuWindow_aboutToShow()
 //{
-// if(WindowMenu != NULL)
+// if(WindowMenu != nullptr)
 // {
 //  windowMenu->clear();
 //  PanelMenu::instance()->updatePanelMenu(windowMenu);
@@ -743,7 +744,7 @@ private bool escapeKeyActionClosesWindow = false;
         JmriJFrame* j = list->at(i);
         if (j->title()==(name)) return j;
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -755,7 +756,7 @@ private bool escapeKeyActionClosesWindow = false;
         return;
     // resize frame to account for menubar
     QMenuBar* jMenuBar = menuBar();
-    if (jMenuBar != NULL) {
+    if (jMenuBar != nullptr) {
         int jMenuBarHeight = jMenuBar->sizeHint().height();
         QSize dimension = size();
         dimension.setHeight(size().height() + jMenuBarHeight);
@@ -770,7 +771,7 @@ private bool escapeKeyActionClosesWindow = false;
 /*public*/ void JmriJFrame::setSavePosition(bool save){
     reuseFrameSavedPosition=save;
     UserPreferencesManager* prefsMgr = (UserPreferencesManager* )InstanceManager::getDefault("UserPreferencesManager");
-    if (prefsMgr != NULL) {
+    if (prefsMgr != nullptr) {
         prefsMgr->setSaveWindowLocation(windowFrameRef, save);
     } else {
         log->warn("setSavePosition() UserPreferencesManager() not initialised" );
@@ -783,7 +784,7 @@ private bool escapeKeyActionClosesWindow = false;
 /*public*/ void JmriJFrame::setSaveSize(bool save){
     reuseFrameSavedSized=save;
     UserPreferencesManager* prefsMgr = (UserPreferencesManager* )InstanceManager::getDefault("UserPreferencesManager");
-    if (prefsMgr != NULL) {
+    if (prefsMgr != nullptr) {
         prefsMgr->setSaveWindowSize(windowFrameRef, save);
     } else {
         log->warn("setSaveSize() UserPreferencesManager() not initialised" );
@@ -840,7 +841,7 @@ private bool escapeKeyActionClosesWindow = false;
 //            new String[]{Bundle.getMessage("WarnYesSave"),Bundle.getMessage("WarnNoClose")},
 //            Bundle.getMessage("WarnYesSave")
 //        );
-  switch(QMessageBox::question(NULL, tr("Warning"), tr("This window contains changed values.\nDo you want to save them?\nYes, save values and close\nNo, just close"), QMessageBox::Yes | QMessageBox::No))
+  switch(QMessageBox::question(nullptr, tr("Warning"), tr("This window contains changed values.\nDo you want to save them?\nYes, save values and close\nNo, just close"), QMessageBox::Yes | QMessageBox::No))
   {
   case QMessageBox::Yes:
    // user wants to save
@@ -873,7 +874,7 @@ private bool escapeKeyActionClosesWindow = false;
 /*public*/ void windowDeiconified(java.awt.event.WindowEvent e) {}
 #endif
 //@Override
-/*public*/ void JmriJFrame::windowClosing(QCloseEvent* e) {
+/*public*/ void JmriJFrame::windowClosing(QCloseEvent* /*e*/) {
     handleModified();
 }
 
@@ -889,7 +890,7 @@ private bool escapeKeyActionClosesWindow = false;
 
 /*protected*/ void JmriJFrame::setShutDownTask()
 {
- if (InstanceManager::shutDownManagerInstance()!=NULL)
+ if (InstanceManager::getDefault("ShutDownManager")!=nullptr)
  {
 //  task = new AbstractShutDownTask(windowTitle())
 //  {
@@ -900,7 +901,7 @@ private bool escapeKeyActionClosesWindow = false;
 //   }
 //  };
   task = (AbstractShutDownTask*)new MyAbstractShutDownTask(windowTitle(),this);
-  InstanceManager::shutDownManagerInstance()->_register(task);
+  static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->_register(task);
  }
 }
 MyAbstractShutDownTask::MyAbstractShutDownTask(QString windowTitle, JmriJFrame *frame, QObject *parent) : AbstractShutDownTask(windowTitle, parent)
@@ -924,7 +925,7 @@ bool MyAbstractShutDownTask::execute()
 /*public*/ void JmriJFrame::dispose()
 {
  UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
- if (p != NULL)
+ if (p != nullptr)
  {
   if (reuseFrameSavedPosition)
    p->setWindowLocation(windowFrameRef, this->pos());
@@ -939,14 +940,14 @@ bool MyAbstractShutDownTask::execute()
   }
  }
  //log->debug("dispose "+windowTitle());
- if (windowInterface != NULL)
+ if (windowInterface != nullptr)
  {
   windowInterface->dispose();
  }
- if (task != NULL)
+ if (task != nullptr)
  {
-  InstanceManager::shutDownManagerInstance()->deregister(task);
-  task = NULL;
+  static_cast<ShutDownManager*>(InstanceManager::getDefault("SutDownManager"))->deregister(task);
+  task = nullptr;
  }
  /*synchronized (list)*/
  {
@@ -1120,7 +1121,7 @@ QString JmriJFrame::getTitle() { return windowTitle();}
 
 QWidget* JmriJFrame::getContentPane()
 {
- if(centralWidget() == NULL)
+ if(centralWidget() == nullptr)
  {
   QWidget* centralWidget = new QWidget();
   centralWidget->resize(300,300);
@@ -1155,7 +1156,7 @@ void JmriJFrame::setContentPane(QWidget * p)
  * @see #getEscapeKeyAction()
  * @see #setEscapeKeyClosesWindow(boolean)
  */
-/*public*/ void JmriJFrame::setEscapeKeyAction(AbstractAction* action) {
+/*public*/ void JmriJFrame::setEscapeKeyAction(AbstractAction* /*action*/) {
 #if 0 // TODO:
     JRootPane root = this.getRootPane();
     KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -1181,7 +1182,7 @@ void JmriJFrame::setContentPane(QWidget * p)
 /*public*/ AbstractAction* JmriJFrame::getEscapeKeyAction()
 {
 // TODO:    return (AbstractAction*) this->getRootPane().getActionMap().get(escapeKeyAction);
- return NULL;
+ return nullptr;
 }
 
 /**
@@ -1228,7 +1229,7 @@ void JmriJFrame::setContentPane(QWidget * p)
  * @see #setEscapeKeyAction
  */
 /*public*/ bool JmriJFrame::getEscapeKeyClosesWindow() {
-    return (escapeKeyActionClosesWindow && getEscapeKeyAction() != NULL);
+    return (escapeKeyActionClosesWindow && getEscapeKeyAction() != nullptr);
 }
 
 bool JmriJFrame::eventFilter(QObject *target, QEvent *event)
@@ -1261,7 +1262,7 @@ void JmriJFrame::moveEvent(QMoveEvent *e) { componentMoved(e);}
 /*public*/ void JmriJFrame::componentMoved(QMoveEvent* /*e*/)
 {
     UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-    if ((p != NULL) && (reuseFrameSavedPosition) && isVisible()) {
+    if ((p != nullptr) && (reuseFrameSavedPosition) && isVisible()) {
         p->setWindowLocation(windowFrameRef, this->pos());
     }
 }
@@ -1269,7 +1270,7 @@ void JmriJFrame::moveEvent(QMoveEvent *e) { componentMoved(e);}
 /*public*/ void JmriJFrame::componentResized(QResizeEvent* /*e*/)
 {
     UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-    if ((p != NULL) && (reuseFrameSavedSized) && isVisible()) {
+    if ((p != nullptr) && (reuseFrameSavedSized) && isVisible()) {
         saveWindowSize(p);
     }
 }

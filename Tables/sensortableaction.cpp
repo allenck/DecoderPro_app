@@ -12,11 +12,11 @@
 #include <QMessageBox>
 #include "jframe.h"
 #include "flowlayout.h"
-#include "../LayoutEditor/beantabledatamodel.h"
+#include "beantabledatamodel.h"
 #include <QMenu>
 #include <QMenuBar>
-#include "../LayoutEditor/sensortabledatamodel.h"
-#include "../LayoutEditor/beantableframe.h"
+#include "sensortabledatamodel.h"
+#include "beantableframe.h"
 #include "jtable.h"
 #include <QLabel>
 #include "connectionnamefromsystemname.h"
@@ -48,7 +48,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 /*public*/ SensorTableAction::SensorTableAction(QString actionName, QObject *parent) : AbstractTableAction(actionName, parent)
 {
     //super(actionName);
- addFrame = NULL;
+ addFrame = nullptr;
 // if(parent == NULL)
 //  return;
 
@@ -65,13 +65,13 @@ SensorTableAction::SensorTableAction(QObject *parent) :
  showDebounceBox = new QCheckBox(tr("Show Sensor Debounce Information"));
  senManager = InstanceManager::sensorManagerInstance();
  enabled = true;
- m = NULL;
+ m = nullptr;
  connectionChoice = "";
  hardwareAddressTextField = new /*CheckedTextField*/JTextField(20);
  statusBar = new QLabel(tr("Enter a Hardware Address and (optional) User Name.")/*, JLabel.LEADING*/);
 
  // disable ourself if there is no primary sensor manager available
- if (senManager==NULL)
+ if (senManager==nullptr)
  {
   setEnabled(false);
  }
@@ -80,8 +80,8 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
 /*public*/ void SensorTableAction::setManager(Manager* man)
 {
- senManager = (SensorManager*)man;
- if (m!=NULL)
+ senManager = static_cast<SensorManager*>(man);
+ if (m!=nullptr)
   m->setManager(senManager);;
 }
 
@@ -107,12 +107,12 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 {
  p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
 
- if (addFrame==NULL)
+ if (addFrame==nullptr)
  {
   addFrame = new JmriJFrame(tr("Add Sensor"));
   //addFrame.addHelpMenu("package.jmri.jmrit.beantable.SensorAddEdit", true);
   QVBoxLayout* addFrameLayout = (QVBoxLayout*)addFrame->getContentPane()->layout();
-  if(addFrameLayout == NULL)
+  if(addFrameLayout == nullptr)
   {
    QWidget* centralWidget = new QWidget;
    addFrameLayout = new QVBoxLayout(centralWidget);
@@ -136,11 +136,11 @@ SensorTableAction::SensorTableAction(QObject *parent) :
   STRangeActionListener* rangeListener = new STRangeActionListener(this);
   if (QString(InstanceManager::sensorManagerInstance()->metaObject()->className()).contains("ProxySensorManager"))
   {
-   ProxySensorManager* proxy = (ProxySensorManager*) InstanceManager::sensorManagerInstance();
+   ProxySensorManager* proxy = ((ProxySensorManager*) InstanceManager::sensorManagerInstance());
    QList<Manager*> managerList = proxy->getManagerList();
    for(int x = 0; x<managerList.size(); x++)
    {
-    QString manuName = ConnectionNameFromSystemName::getConnectionName(((AbstractManager*)managerList.at(x))->getSystemPrefix());
+    QString manuName = ConnectionNameFromSystemName::getConnectionName(static_cast<AbstractManager*>(managerList.at(x))->getSystemPrefix());
     bool addToPrefix = true;
     //Simple test not to add a system with a duplicate System prefix
     for (int i = 0; i<prefixBox->count(); i++)
@@ -151,7 +151,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
     if (addToPrefix)
      prefixBox->addItem(manuName);
     }
-    if(p->getComboBoxLastSelection(systemSelectionCombo)!=NULL)
+    if(p->getComboBoxLastSelection(systemSelectionCombo)!=nullptr)
      prefixBox->setCurrentIndex(prefixBox->findText(p->getComboBoxLastSelection(systemSelectionCombo)));
    }
    else
@@ -195,7 +195,7 @@ void STRangeActionListener::actionPerformed()
 void SensorTableAction::cancelPressed(ActionEvent* /*e*/) {
     addFrame->setVisible(false);
     addFrame->dispose();
-    addFrame = NULL;
+    addFrame = nullptr;
 }
 
 void SensorTableAction::okPressed()
@@ -226,7 +226,7 @@ void SensorTableAction::okPressed()
  }
  QString sensorPrefix = ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText());
 
- QString sName = NULL;
+ QString sName = nullptr;
  QString curAddress = sysName->text();
 
  for (int x = 0; x < numberOfSensors; x++)
@@ -248,7 +248,7 @@ void SensorTableAction::okPressed()
   }
   //We have found another turnout with the same address, therefore we need to go onto the next address.
   sName = sensorPrefix + InstanceManager::sensorManagerInstance()->typeLetter() + curAddress;
-  Sensor* s = NULL;
+  Sensor* s = nullptr;
   try
   {
    s =((ProxySensorManager*) InstanceManager::sensorManagerInstance())->provideSensor(sName);
@@ -258,18 +258,18 @@ void SensorTableAction::okPressed()
    handleCreateException(sName);
    return; // without creating
   }
-  if (s != NULL)
+  if (s != nullptr)
   {
    QString user = userName->text();
    if ((x != 0) && user != "" && user!=(""))
    {
     user = userName->text() + ":" + QString::number(x);
    }
-   if (user != "" && user!=("") && (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) == NULL))
+   if (user != "" && user!=("") && (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) == nullptr))
    {
     s->setUserName(user);
    }
-   else if (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) != NULL && !p->getPreferenceState(getClassName(), "duplicateUserName"))
+   else if (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) != nullptr && !p->getPreferenceState(getClassName(), "duplicateUserName"))
    {
     ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
                showErrorMessage("Duplicate UserName", "The username " + user + " specified is already in use and therefore will not be set", getClassName(), "duplicateUserName", false, true);
@@ -329,7 +329,7 @@ void SensorTableAction::createPressed(/*ActionEvent e*/) {
             //statusBar->setForeground(QColor(Qt::red));
             return;
         }
-        if (curAddress == NULL) {
+        if (curAddress == nullptr) {
             log->debug("Error converting HW or getNextValidAddress");
             errorMessage = (tr("WarningInvalidEntry"));
             //statusBar->setForeground(QColor(Qt::red));
@@ -341,7 +341,7 @@ void SensorTableAction::createPressed(/*ActionEvent e*/) {
 
         // Compose the proposed system name from parts:
         sName = sensorPrefix + InstanceManager::sensorManagerInstance()->typeLetter() + curAddress;
-        Sensor* s = NULL;
+        Sensor* s = nullptr;
         try {
             s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(sName);
         } catch (IllegalArgumentException ex) {
@@ -358,9 +358,9 @@ void SensorTableAction::createPressed(/*ActionEvent e*/) {
         if ((x != 0) && !user.isEmpty()) {
             user = userName->text() + ":" + x; // add :x to user name starting with 2nd item
         }
-        if (!user.isEmpty() && (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) == NULL)) {
+        if (!user.isEmpty() && (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) == nullptr)) {
             s->setUserName(user);
-        } else if (!user.isEmpty() && ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) != NULL && !p->getPreferenceState(getClassName(), "duplicateUserName")) {
+        } else if (!user.isEmpty() && ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) != nullptr && !p->getPreferenceState(getClassName(), "duplicateUserName")) {
             ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
                     showErrorMessage(tr("Error"), tr("The specified user name \"%1\" is already in use and therefore will not be set.").arg(user), getClassName(), "duplicateUserName", false, true);
         }
@@ -378,7 +378,7 @@ void SensorTableAction::createPressed(/*ActionEvent e*/) {
     }
 
     // provide feedback to user
-    if (errorMessage == NULL)
+    if (errorMessage == nullptr)
     {
      statusBar->setText("<font color='gray'"+statusMessage+ "</font>");
         //statusBar->setForeground(QColor(Qt::gray));
@@ -390,7 +390,7 @@ void SensorTableAction::createPressed(/*ActionEvent e*/) {
     p->setComboBoxLastSelection(systemSelectionCombo, prefixBox->currentText());
     addFrame->setVisible(false);
     addFrame->dispose();
-    addFrame = NULL;
+    addFrame = nullptr;
     //addButton.removePropertyChangeListener(colorChangeListener);
 }
 
@@ -398,12 +398,12 @@ void SensorTableAction::createPressed(/*ActionEvent e*/) {
 {
  range->setEnabled(false);
  range->setChecked(false);
- connectionChoice = (QString) prefixBox->currentText(); // store in Field for CheckedTextField
- if (connectionChoice == NULL) {
+ connectionChoice =  prefixBox->currentText(); // store in Field for CheckedTextField
+ if (connectionChoice == nullptr) {
      // Tab All or first time opening, default tooltip
      connectionChoice = "TBD";
  }
- if(qobject_cast<ProxySensorManager*>(senManager)!=NULL)
+ if(qobject_cast<ProxySensorManager*>(senManager)!=nullptr)
  {
   ProxySensorManager* proxy = (ProxySensorManager*) senManager;
   QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
@@ -466,7 +466,7 @@ void SensorTableAction::handleCreateException(QString sysName) {
 //    int retval = JOptionPane.showOptionDialog(_who,
 //                                      tr("SensorGlobalDebounceMessageBox") , tr("SensorGlobalDebounceMessageTitle"),
 //                                      0, JOptionPane.INFORMATION_MESSAGE, NULL,
-//                                      new Object[]{"Cancel", "OK", active, inActive}, NULL );
+//                                      new Object[]{"Cancel", "OK", active, inActive}, nullptr );
     int retval = QMessageBox::information(_who, tr("Sensor Debounce Timer"), tr("Duration is in Milliseconds"), QMessageBox::Cancel | QMessageBox::Ok );
     if (retval != QMessageBox::Yes) {
         return;
@@ -574,7 +574,7 @@ DefaultStateActionListener::DefaultStateActionListener(JmriJFrame *finalF, Senso
  this->act = act;
 }
 
-void DefaultStateActionListener::actionPerformed(ActionEvent *e)
+void DefaultStateActionListener::actionPerformed(ActionEvent */*e*/)
 {
  act->setDefaultState(finalF);
 }
@@ -583,10 +583,12 @@ void SensorTableAction::showDebounceChanged(bool bChecked)
 {
     SensorTableDataModel* a = (SensorTableDataModel*)m;
     a->showDebounce(/*showDebounceBox->isChecked()*/bChecked);
+    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setSimplePreferenceState(getClassName()+".SensorTableAction"+".showDebounce", bChecked);
 }
 
 
-/*public*/ void SensorTableAction::addToFrame(BeanTableFrame* f) {
+/*public*/ void SensorTableAction::addToFrame(BeanTableFrame* f)
+{
     f->addToBottomBox(showDebounceBox, "SensorTableAction");
     showDebounceBox->setToolTip(tr("Show extra columns for configuring sensor debounce timers"));
 //    showDebounceBox.addActionListener(new ActionListener() {
@@ -594,6 +596,7 @@ void SensorTableAction::showDebounceChanged(bool bChecked)
 //            showDebounceChanged();
 //        }
 //    });
+    showDebounceBox->setChecked(((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getSimplePreferenceState(getClassName()+".SensorTableAction"+".showDebounce"));
     connect(showDebounceBox, SIGNAL(clicked(bool)), this, SLOT(showDebounceChanged(bool)) );
 }
 

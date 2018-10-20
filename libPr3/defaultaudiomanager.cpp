@@ -11,7 +11,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 {
  setObjectName("DefaultAudioManager");
  log = new Logger("DefaultAudioManager");
- audioShutDownTask = NULL;
+ audioShutDownTask = nullptr;
  registerSelf();
 }
 /**
@@ -41,7 +41,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 /**
  * Reference to the currently active AudioFactory
  */
-/*private*/ /*static*/ AudioFactory* DefaultAudioManager::activeAudioFactory = NULL;
+/*private*/ /*static*/ AudioFactory* DefaultAudioManager::activeAudioFactory = nullptr;
 
 /*private*/ /*static*/ bool DefaultAudioManager::_initialised = false;
 
@@ -60,15 +60,15 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 /*protected*/ Audio* DefaultAudioManager::createNewAudio(QString systemName, QString userName) /*throws AudioException*/
 {
 
- if (activeAudioFactory == NULL)
+ if (activeAudioFactory == nullptr)
  {
   log->debug("Initialise in createNewAudio");
   init();
  }
 
- Audio* a = NULL;
+ Audio* a = nullptr;
  log->debug("sysName: " + systemName + " userName: " + userName);
- if (userName != NULL && _tuser->contains(userName))
+ if (userName != "" && _tuser->contains(userName))
  {
   throw new AudioException("Duplicate name");
  }
@@ -158,13 +158,13 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
         log->debug("Try to initialise JoalAudioFactory");
 #endif
   // If JOAL fails, fall-back to JavaSound
-  if (activeAudioFactory == NULL || !activeAudioFactory->init())
+  if (activeAudioFactory == nullptr || !activeAudioFactory->init())
   {
    activeAudioFactory = new QtSoundAudioFactory();
    log->debug("Try to initialise JavaSoundAudioFactory");
 
    // Finally, if JavaSound fails, fall-back to a Null sound system
-   if (activeAudioFactory == NULL || !activeAudioFactory->init())
+   if (activeAudioFactory == nullptr || !activeAudioFactory->init())
    {
     activeAudioFactory = new NullAudioFactory();
     log->debug("Try to initialise NullAudioFactory");
@@ -177,7 +177,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
   try
   {
    Audio* s = createNewAudio("IAL$", "Default Audio Listener");
-   if(s != NULL)
+   if(s != nullptr)
     Register(s);
   }
   catch (AudioException ex)
@@ -187,7 +187,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 
   // Finally, create and register a shutdown task to ensure clean exit
 #if 1
-  if (audioShutDownTask == NULL)
+  if (audioShutDownTask == nullptr)
   {
    audioShutDownTask = new AudioShutDownTask("AudioFactory Shutdown");
 //   {
@@ -200,9 +200,9 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 //    };
    }
 #endif
-   if (InstanceManager::shutDownManagerInstance() != NULL)
+   if (InstanceManager::getNullableDefault("ShutDownManager") != nullptr)
    {
-    InstanceManager::shutDownManagerInstance()->_register(audioShutDownTask);
+    ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(audioShutDownTask);
    }
 
   _initialised = true;
@@ -216,9 +216,10 @@ AudioShutDownTask::AudioShutDownTask(QString name) : QuietShutDownTask(name)
 {
 
 }
+
 bool AudioShutDownTask::doAction()
 {
- InstanceManager::audioManagerInstance()->cleanUp();
+ ((AudioManager*)InstanceManager::getDefault("AudioManager"))->cleanup();
  return true;
 }
 
@@ -274,10 +275,10 @@ bool AudioShutDownTask::doAction()
  * @return reference to currently active AudioManager
  */
 /*public*/ /*static*/ DefaultAudioManager* DefaultAudioManager::instance() {
-    if (_instance == NULL) {
+    if (_instance == nullptr) {
         _instance = new DefaultAudioManager();
     }
     return _instance;
 }
 
-/*private*/ /*volatile*/ /*static*/ DefaultAudioManager* DefaultAudioManager::_instance = NULL;
+/*private*/ /*volatile*/ /*static*/ DefaultAudioManager* DefaultAudioManager::_instance = nullptr;

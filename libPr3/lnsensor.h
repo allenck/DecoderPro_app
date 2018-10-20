@@ -48,7 +48,7 @@ private:
   * Common initialization for both constructors
   */
  void init(QString systemName, QString prefix);
- Logger log;
+ /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger(LnSensor.class);
 
 };
 

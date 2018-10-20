@@ -697,7 +697,7 @@ double LevelXing::round (double x) {
 
   boundaryBetween = getBlockBoundaries();
   bool blockBoundaries = false;
-  if (InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
+  if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled())
   {
    if(blockACAssigned && !blockBDAssigned)
    {

@@ -17,7 +17,7 @@
 #include <QScreen>
 #include <QNetworkInterface>
 #include <QNetworkAddressEntry>
-
+#include "configuremanager.h"
 
 /**
  * Provide the JMRI context info.
@@ -47,14 +47,14 @@
     addString("JMRI Version: " + Version::name() + "   ");
     addString("JMRI configuration file name: "
             + System::getProperty("org.jmri.apps.Apps.configFilename") + "   ");
-    if (JmriJFrame::getFrameList()->at(0) != NULL) {
+    if (JmriJFrame::getFrameList()->at(0) != nullptr) {
         addString("JMRI main window name: "
                 + JmriJFrame::getFrameList()->at(0)->getTitle() + "   ");
     }
 
     addString("JMRI Application: " + QApplication::applicationName() + "   ");
     //ConnectionConfig[] connList = InstanceManager.getDefault(ConnectionConfigManager.class).getConnections();
-    QObjectList connList = InstanceManager::configureManagerInstance()->getInstanceList("ConnectionConfig");
+    QObjectList connList = static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
     if (!connList.isEmpty()) {
         for (int x = 0; x < connList.length(); x++) {
             ConnectionConfig* conn = (ConnectionConfig*)connList.at(x);
@@ -80,12 +80,12 @@
     addString("Roster index location: " + roster + "   ");
 
     File* panel = LoadXmlUserAction::getCurrentFile();
-    addString("Current panel file: " + (panel == NULL ? "[none]" : panel->getPath()) + "   ");
+    addString("Current panel file: " + (panel == nullptr ? "[none]" : panel->getPath()) + "   ");
 
     //String operations = jmri.jmrit.operations.setup.OperationsSetupXml.getFileLocation();
     //addString("Operations files location: "+operations+"  ");
-    AudioFactory* af = InstanceManager::audioManagerInstance()->getActiveAudioFactory();
-    QString audio = af != NULL ? af->objectName() : "[not initialised]";
+    AudioFactory* af = ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
+    QString audio = af != nullptr ? af->objectName() : "[not initialised]";
     addString("Audio factory type: " + audio + "   ");
 
     addProperty("java.version");

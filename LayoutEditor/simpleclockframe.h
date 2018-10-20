@@ -11,7 +11,7 @@ class JTextField;
 class QCheckBox;
 class QComboBox;
 class DecimalFormat;
-class SimpleTimebase;
+class Timebase;
 class LIBLAYOUTEDITORSHARED_EXPORT SimpleClockFrame : public JmriJFrame
 {
     Q_OBJECT
@@ -30,7 +30,7 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 private:
-    /*private*/ SimpleTimebase* clock;
+    /*private*/ Timebase* clock;
     /*private*/ QString hardwareName;// = null;
     //private boolean synchronize = true;
     //private boolean correct = true;

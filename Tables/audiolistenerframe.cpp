@@ -151,7 +151,7 @@ void  AudioListenerFrame::okPressed(ActionEvent* /*e*/)
  AudioListener* l;
  try
  {
-  l = (AudioListener*) InstanceManager::audioManagerInstance()->provideAudio(sName);
+  l = (AudioListener*) ((AudioManager*)InstanceManager::getDefault("AudioManager"))->provideAudio(sName);
   l->setUserName(user);
   l->setPosition(position->getValue());
   l->setVelocity(velocity->getValue());

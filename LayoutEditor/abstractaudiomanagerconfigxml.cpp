@@ -574,5 +574,5 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
 
 //@Override
 /*public*/ int AbstractAudioManagerConfigXML::loadOrder() {
- return InstanceManager::audioManagerInstance()->getXMLOrder();
+ return ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getXMLOrder();
 }

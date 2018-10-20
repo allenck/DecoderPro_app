@@ -7,16 +7,17 @@
 #include "signalspeedmap.h"
 #include "rosterentry.h"
 
+
 AbstractTurnout::AbstractTurnout(QObject *parent) :
     Turnout(parent)
 {
  _validFeedbackNames =  QStringList();
  _validFeedbackModes =  QList<int>();
- _validFeedbackNames << QString("DIRECT")<< QString("ONESENSOR")<< QString("TWOSENSOR") ;
+ _validFeedbackNames << QString("DIRECT")<< QString("ONESENSOR")<< QString("TWOSENSOR")<< QString("DELAYED") ;
 
- _validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR;
+ _validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR<<Turnout::DELAYED;
  _activeFeedbackType = Turnout::DIRECT;
- _validFeedbackTypes = Turnout::DIRECT | Turnout::ONESENSOR | Turnout::TWOSENSOR;
+ _validFeedbackTypes = Turnout::DIRECT | Turnout::ONESENSOR | Turnout::TWOSENSOR | Turnout::DELAYED;
  _knownState = UNKNOWN;
 
  _commandedState = UNKNOWN;
@@ -39,6 +40,7 @@ AbstractTurnout::AbstractTurnout(QObject *parent) :
  myTurnoutOperation = NULL;
  log = new Logger("AbstractTurnout");
 }
+
 /**
  * Abstract base for the Turnout interface.
  * <P>
@@ -204,7 +206,17 @@ _reportLocked = true;
   forwardCommandChangeToLayout(s);
   // optionally handle feedback
   if (_activeFeedbackType == Turnout::DIRECT)
+  {
    newKnownState(s);
+  }
+  else if (_activeFeedbackType == DELAYED)
+  {
+   newKnownState(INCONSISTENT);
+#if 0 // TODO:
+   jmri.util.ThreadingUtil.runOnLayoutDelayed( () -> { newKnownState(s); },
+            DELAYED_FEEDBACK_INTERVAL );
+#endif
+  }
  }
  else
  {
@@ -300,6 +312,15 @@ void AbstractTurnout::setKnownStateToCommanded()
 /*public*/ int AbstractTurnout::getState() {
     return getKnownState();
 }
+//@Override
+    //@CheckReturnValue
+ /*public*/ QString AbstractTurnout::describeState(int state) {
+     switch (state) {
+         case THROWN: return tr("Thrown");
+         case CLOSED: return tr("Closed");
+         default: return Turnout::describeState(state);
+     }
+ }
 
 /* Type of turnout control - defaults to 0 for 'steady state' */
 
@@ -338,7 +359,7 @@ void AbstractTurnout::setKnownStateToCommanded()
    return;
   }
  }
- throw new IllegalArgumentException("Unexpected mode: " + mode);
+ throw IllegalArgumentException("Unexpected mode: " + mode);
 }
 
 /*public*/ void AbstractTurnout::setFeedbackMode(int mode) throw(IllegalArgumentException) {
@@ -370,6 +391,18 @@ void AbstractTurnout::setKnownStateToCommanded()
  }
  log->error("Unexpected internal mode: "
          + QString::number(_activeFeedbackType));
+}
+
+//@Override
+/*public*/ void AbstractTurnout::requestUpdateFromLayout() {
+    if (_activeFeedbackType == ONESENSOR || _activeFeedbackType == TWOSENSOR) {
+        Sensor* s1 = getFirstSensor();
+        if (s1 != NULL) s1->requestUpdateFromLayout();
+    }
+    if (_activeFeedbackType == TWOSENSOR) {
+        Sensor* s2 = getSecondSensor();
+        if (s2 != NULL) s2->requestUpdateFromLayout();
+    }
 }
 
 /*public*/ void AbstractTurnout::setInverted(bool inverted)
@@ -642,9 +675,9 @@ void AbstractTurnout::setKnownStateToCommanded()
 {
  if (getFirstSensor() != NULL)
  {
-  ((AbstractSensor*)getFirstSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
-  AbstractSensor* anb = (AbstractSensor*)getFirstSensor();
-  disconnect(anb, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  (getFirstSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
+  Sensor* anb = getFirstSensor();
+  disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
  }
 
  _firstNamedSensor = s;
@@ -653,8 +686,8 @@ void AbstractTurnout::setKnownStateToCommanded()
  if (getFirstSensor() != NULL)
  {
   ((AbstractNamedBean*)getFirstSensor())->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "Feedback Sensor for " + getDisplayName());
-  AbstractSensor* anb = (AbstractSensor*)getFirstSensor();
-  connect(anb, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  Sensor* anb = getFirstSensor();
+  connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -706,8 +739,8 @@ void AbstractTurnout::setKnownStateToCommanded()
  if (getSecondSensor() != NULL)
  {
   ((AbstractSensor*)getSecondSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
-  AbstractNamedBean* anb = (AbstractNamedBean*)getSecondSensor();
-  disconnect(anb, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  Sensor* anb = getSecondSensor();
+  disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
  }
 
  _secondNamedSensor = s;
@@ -716,8 +749,8 @@ void AbstractTurnout::setKnownStateToCommanded()
  if (getSecondSensor() != NULL)
  {
   ((AbstractNamedBean*)getSecondSensor())->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "Feedback Sensor for " + getDisplayName());
-  AbstractNamedBean* anb = (AbstractNamedBean*)getSecondSensor();
-  connect(anb, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  Sensor* anb = getSecondSensor();
+  connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
  }
 }
 

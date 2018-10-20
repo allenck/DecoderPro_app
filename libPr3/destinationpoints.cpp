@@ -139,7 +139,7 @@ void DestinationPoints::setEntryExitType(int type){
             int now =  e->getNewValue().toInt();
 
             if (now==Block::OCCUPIED){
-                LayoutBlock* lBlock = InstanceManager::layoutBlockManagerInstance()->getLayoutBlock(blk);
+                LayoutBlock* lBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(blk);
                 //If the block was previously active or inactive then we will
                 //reset the useExtraColor, but not if it was previously unknown or inconsistent.
                 lBlock->setUseExtraColor(false);
@@ -160,7 +160,7 @@ void DestinationPoints::setEntryExitType(int type){
         int now =  e->getNewValue().toInt();
 
         if (now==Block::OCCUPIED){
-            LayoutBlock* lBlock = InstanceManager::layoutBlockManagerInstance()->getLayoutBlock(blk);
+            LayoutBlock* lBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(blk);
             //If the block was previously active or inactive then we will
             //reset the useExtraColor, but not if it was previously unknown or inconsistent.
             lBlock->setUseExtraColor(false);
@@ -749,13 +749,13 @@ void DestinationPoints::activeBean(bool reverseDirection)
      log->debug("reverse set destination is set going for " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());
     try
     {
-     if(!InstanceManager::layoutBlockManagerInstance()->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, src->getSourceProtecting(), src->getStart()))
+     if(!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, src->getSourceProtecting(), src->getStart()))
      {
       startlBlock = getFacing();
       protectLBlock = getProtecting();
       if(log->isDebugEnabled())
        log->debug("That didn't work so try  " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());
-      if(!InstanceManager::layoutBlockManagerInstance()->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, src->getSourceProtecting(), src->getStart()))
+      if(!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, src->getSourceProtecting(), src->getStart()))
       {
        log->error("No route found");
        //JOptionPane.showMessageDialog(NULL, "No Valid path found");
@@ -765,7 +765,7 @@ void DestinationPoints::activeBean(bool reverseDirection)
        return;
       }
      }
-     else if(InstanceManager::layoutBlockManagerInstance()->getLayoutBlockConnectivityTools()->checkValidDest(getFacing(), getProtecting(), src->getSourceProtecting(), src->getStart()))
+     else if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(getFacing(), getProtecting(), src->getSourceProtecting(), src->getStart()))
      {
       //Both paths are valid, so will go for setting the shortest
       int distance = startlBlock->getBlockHopCount(destinationLBlock->getBlock(), protectLBlock->getBlock());
@@ -798,7 +798,7 @@ void DestinationPoints::activeBean(bool reverseDirection)
    }
    try
    {
-    routeDetails = InstanceManager::layoutBlockManagerInstance()->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
+    routeDetails = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
    }
    catch (JmriException e)
    {

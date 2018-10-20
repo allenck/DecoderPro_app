@@ -10,7 +10,7 @@ PR3SystemConnectionMemo::PR3SystemConnectionMemo(QObject *parent) :
 
  mode = PR3MODE;
  log = new Logger("PR3SystemConnectionMemo");
- restoreToLocoNetInterfaceModeTask = NULL;
+ restoreToLocoNetInterfaceModeTask = nullptr;
 
 }
 void PR3SystemConnectionMemo::configureManagersPR2()
@@ -32,7 +32,7 @@ void PR3SystemConnectionMemo::configureManagersPR2()
  // Establish a ShutDownTask so that the PR3 should be be returned to
  // LocoNet Interface mode at shutdown
          // Finally, create and register a shutdown task to ensure clean exit
- if (restoreToLocoNetInterfaceModeTask == NULL)
+ if (restoreToLocoNetInterfaceModeTask == nullptr)
  {
      restoreToLocoNetInterfaceModeTask = new Pr3ShutDownTask("Restore PR3 to LocoNet Interface Mode", this);
 //     {    // NOI18N
@@ -59,7 +59,7 @@ void PR3SystemConnectionMemo::configureManagersPR2()
 //         }
 //     };
 
-     if (InstanceManager::getNullableDefault("ShutDownManager") != NULL) {
+     if (InstanceManager::getNullableDefault("ShutDownManager") != nullptr) {
          ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(restoreToLocoNetInterfaceModeTask);
      } else {
          log->warn("The PR3 will not be automatically returned to 'LocoNet interface' mode upon quit!"); // NOI18N
@@ -80,7 +80,7 @@ void PR3SystemConnectionMemo::configureManagersPR2()
         // try to change from "standalone programmer" to "LocoNet interface" mode
         LnTrafficController* tc;
         tc = pr3SystemConnectionMemo->getLnTrafficController();
-        if (tc != NULL) {
+        if (tc != nullptr) {
             LocoNetMessage* msg = new LocoNetMessage(6);
             msg->setOpCode(0xD3);
             msg->setElement(1, 0x10);
@@ -101,32 +101,9 @@ void PR3SystemConnectionMemo::configureManagersPR2()
  {
   mode = MS100MODE;
 
-  tm = new LocoNetThrottledTransmitter(getLnTrafficController(), mTurnoutExtraSpace);
-  log->debug(QString("ThrottleTransmitted configured with :")+(mTurnoutExtraSpace?"true":"false"));
-
-  InstanceManager::store((QObject*)LocoNetSystemConnectionMemo::getPowerManager(), "PowerManager");
-
-  InstanceManager::setTurnoutManager((TurnoutManager*)getTurnoutManager());
-
-  InstanceManager::setLightManager((LightManager*)getLightManager());
-
-  InstanceManager::setSensorManager(getSensorManager());
-
-  InstanceManager::setThrottleManager(LocoNetSystemConnectionMemo::getThrottleManager());
-
-  if (getProgrammerManager()->isAddressedModePossible())
-  {
-      InstanceManager::setAddressedProgrammerManager(getProgrammerManager());
-  }
-  if (getProgrammerManager()->isGlobalProgrammerAvailable()) {
-      InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
-  }
-
-  InstanceManager::setReporterManager((ReporterManager*)getReporterManager());
-
-  InstanceManager::addClockControl((ClockControl*)getClockControl());
-
+  LocoNetSystemConnectionMemo::configureManagers();
  }
+
  /*public*/ void PR3SystemConnectionMemo::dispose()
  {
   InstanceManager::deregister(this, "PR3SystemConnectionMemo");

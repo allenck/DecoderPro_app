@@ -5,7 +5,7 @@
 #include "defaultlogix.h"
 #include "instancemanager.h"
 
-/*static*/ DefaultLogixManager* DefaultLogixManager::_instance = NULL;
+/*static*/ DefaultLogixManager* DefaultLogixManager::_instance = nullptr;
 
 DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     LogixManager(parent)
@@ -45,7 +45,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
 
 /**
  * Method to create a new Logix if the Logix does not exist
- *   Returns NULL if a Logix with the same systemName or userName
+ *   Returns nullptr if a Logix with the same systemName or userName
  *       already exists, or if there is trouble creating a new Logix.
  */
 /*public*/ Logix* DefaultLogixManager::createNewLogix(QString systemName, QString userName) {
@@ -53,11 +53,11 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     Logix* x;
     if (userName!= "" ) {
         x = getByUserName(userName);
-        if (x!=NULL) return NULL;
+        if (x!=nullptr) return nullptr;
     }
     x = getBySystemName(systemName);
-    if (x==NULL) x = getBySystemName(systemName.toUpper());   // for compatibility?
-    if (x!=NULL) return NULL;
+    if (x==nullptr) x = getBySystemName(systemName.toUpper());   // for compatibility?
+    if (x!=nullptr) return nullptr;
     // Logix does not exist, create a new Logix
     x = (Logix*)new DefaultLogix(systemName,userName);
     // save in the maps
@@ -100,11 +100,11 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     // delete conditionals if there are any
     int numConditionals = x->getNumConditionals();
     if (numConditionals>0) {
-        Conditional* c = NULL;
+        Conditional* c = nullptr;
         for (int i = 0;i<numConditionals;i++) {
-            c = InstanceManager::conditionalManagerInstance()->getBySystemName(
+            c = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->getBySystemName(
                     x->getConditionalByNumberOrder(i));
-            InstanceManager::conditionalManagerInstance()->deleteConditional(c);
+            static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->deleteConditional(c);
         }
     }
     // delete the Logix
@@ -119,7 +119,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
 /*public*/ void DefaultLogixManager::activateAllLogixs() {
     // Guarantee Initializer executes first.
     Logix* x = getBySystemName(/*LRouteTableAction::LOGIX_INITIALIZER*/"RTXINITIALIZER");
-    if (x!=NULL) {
+    if (x!=nullptr) {
         x->activateLogix();
     }
     // iterate thru all Logixs that exist
@@ -127,15 +127,15 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     while (iter.hasNext()) {
         // get the next Logix
         QString sysName = iter.next();
-        if (sysName==NULL) {
-            log->error("System name NULL when activating Logixs");
+        if (sysName==nullptr) {
+            log->error("System name nullptr when activating Logixs");
             break;
         }
         if (sysName==(/*LRouteTableAction.LOGIX_INITIALIZER*/"RTXINITIALIZER")) {
             continue;
         }
         x = getBySystemName(sysName);
-        if (x==NULL) {
+        if (x==nullptr) {
             log->error("Error getting Logix *"+sysName+"* when activating Logixs");
             break;
         }
@@ -156,11 +156,11 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
 /**
  * Method to get an existing Logix.  First looks up assuming that
  *      name is a User Name.  If this fails looks up assuming
- *      that name is a System Name.  If both fail, returns NULL.
+ *      that name is a System Name.  If both fail, returns nullptr.
  */
 /*public*/ Logix* DefaultLogixManager::getLogix(QString name) {
     Logix* x = getByUserName(name);
-    if (x!=NULL) return x;
+    if (x!=nullptr) return x;
     return getBySystemName(name);
 }
 
@@ -178,7 +178,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
 /*public*/ void DefaultLogixManager::setLoadDisabled(bool s) {loadDisabled = s;}
 
 /*static*/ /*public*/ DefaultLogixManager* DefaultLogixManager::instance() {
-    if (_instance == NULL) {
+    if (_instance == nullptr) {
         _instance = new DefaultLogixManager();
     }
     return (_instance);

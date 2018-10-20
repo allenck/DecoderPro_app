@@ -245,7 +245,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  Q_ASSERT(lastRow < rows);
  beginInsertRows(QModelIndex(), firstRow, lastRow);
  endInsertRows();
- setPersistentButtons();
+ //setPersistentButtons();
 }
 
 /**

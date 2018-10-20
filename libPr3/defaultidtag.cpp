@@ -2,6 +2,7 @@
 #include "instancemanager.h"
 #include "defaultidtagmanager.h"
 #include "rosterentry.h"
+#include "clockcontrol.h"
 
 //DefaultIdTag::DefaultIdTag(QObject *parent) :
 //    AbstractIdTag(parent)
@@ -36,7 +37,7 @@
 {
         //super(systemName.toUpperCase());
     init();
-        setWhereLastSeen(NULL);
+        setWhereLastSeen(nullptr);
     }
 
 /*public*/ DefaultIdTag::DefaultIdTag(QString systemName, QString userName, QObject *parent)
@@ -44,7 +45,7 @@
 {
         //super(systemName.toUpperCase(), userName);
     init();
-        setWhereLastSeen(NULL);
+        setWhereLastSeen(nullptr);
     }
 void DefaultIdTag::init()
 {
@@ -58,17 +59,17 @@ void DefaultIdTag::init()
  Reporter* oldWhere = this->_whereLastSeen;
  QDateTime oldWhen = this->_whenLastSeen;
  this->_whereLastSeen = r;
- if (r!=NULL)
+ if (r!=nullptr)
  {
   this->_whenLastSeen = ((DefaultIdTagManager*)InstanceManager::getDefault("DefaultIdTagManager"))->isFastClockUsed()?
-  InstanceManager::clockControlInstance()->getTime():
+  ((ClockControl*)InstanceManager::getDefault("ClockControl"))->getTime():
   QDateTime::currentDateTime();
  }
  else
  {
   this->_whenLastSeen = QDateTime();
  }
- setCurrentState(r!=NULL?IdTag::SEEN:IdTag::UNSEEN);
+ setCurrentState(r!=nullptr?IdTag::SEEN:IdTag::UNSEEN);
  firePropertyChange("whereLastSeen", VPtr<Reporter>::asQVariant(oldWhere), VPtr<Reporter>::asQVariant(this->_whereLastSeen)); //NOI18N
  emit propertyChange(new PropertyChangeEvent(this, "whereLastSeen", VPtr<Reporter>::asQVariant(oldWhere), VPtr<Reporter>::asQVariant(this->_whereLastSeen))); //NOI18N
 
@@ -103,18 +104,18 @@ void DefaultIdTag::init()
  QDomElement e1;
  e.appendChild(e1 = doc.createElement("systemName"));
  e1.appendChild(doc.createTextNode(this->mSystemName)); //NOI18N
- if (this->mUserName!=NULL && this->mUserName.length()>0)
+ if (this->mUserName!=nullptr && this->mUserName.length()>0)
  {
   // e.setAttribute("userName", this.mUserName); // not needed from 2.11.1
   e.appendChild(e1 = doc.createElement("userName"));
   e1.appendChild(doc.createTextNode(this->mUserName)); //NOI18N
  }
- if (this->getComment()!=NULL && this->getComment().length()>0)
+ if (this->getComment()!=nullptr && this->getComment().length()>0)
  {
   e.appendChild(e1 = doc.createElement("comment"));
   e1.appendChild(doc.createTextNode(this->getComment())); //NOI18N
  }
- if (this->getWhereLastSeen()!=NULL && storeState)
+ if (this->getWhereLastSeen()!=nullptr && storeState)
  {
   e.appendChild(e1 = doc.createElement("whereLastSeen"));
   e1.appendChild(doc.createTextNode(this->getWhereLastSeen()->getSystemName())); //NOI18N

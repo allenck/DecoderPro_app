@@ -15,8 +15,8 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
     : AbstractManager(parent)
 {
  mgrs = new /*java.util.ArrayList*/QList<Manager*>();
- internalManager = NULL;
- defaultManager = NULL;
+ internalManager = nullptr;
+ defaultManager = nullptr;
  registerSelf();
 }
 /**
@@ -85,13 +85,13 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
     initInternal();
 
     QList<Manager*> retval =  QList<Manager*>();
-    if (defaultManager != NULL) { retval.append(defaultManager); }
+    if (defaultManager != nullptr) { retval.append(defaultManager); }
     foreach (Manager* manager, *mgrs) {
         if (manager != defaultManager && manager != internalManager) {
             retval.append(manager);
         }
     }
-    if (internalManager != NULL && internalManager != defaultManager) {
+    if (internalManager != nullptr && internalManager != defaultManager) {
         retval.append(internalManager);
     }
     return retval;
@@ -106,7 +106,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  * Returns the set default or, if not present, the internal manager as defacto default
  */
 /*public*/ Manager* AbstractProxyManager::getDefaultManager() {
-    if (defaultManager != NULL) return defaultManager;
+    if (defaultManager != nullptr) return defaultManager;
 
     return getInternalManager();
 }
@@ -120,15 +120,16 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
   log.warn(tr("Manager already present: %1").arg(m->metaObject()->className()));
   return;
  }
- mgrs->append((AbstractManager*)(m));
- AbstractManager* am = (AbstractManager*)m;
+ mgrs->append(static_cast<AbstractManager*>(m));
+
+ AbstractManager* am = static_cast<AbstractManager*>(m);
  //if(log.isDebugEnabled()) log.debug(tr("added manager ") +((AbstractManager*)m)->objectName());
  connect(am->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 }
 
 /*private*/ Manager* AbstractProxyManager::initInternal()
 {
- if (internalManager == NULL) {
+ if (internalManager == nullptr) {
      log.debug("create internal manager when first requested");
      internalManager = makeInternalManager();
  }
@@ -137,7 +138,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 
 /*abstract protected*/ Manager* AbstractProxyManager::makeInternalManager() const
 {
- return NULL;
+ return nullptr;
 }
 
 /**
@@ -151,7 +152,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 /*public*/ NamedBean* AbstractProxyManager::getNamedBean(QString name)
 {
  NamedBean* t = getBeanByUserName(name);
- if (t != NULL) return t;
+ if (t != nullptr) return t;
  return getBeanBySystemName(name);
 }
 
@@ -165,12 +166,12 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  * via casts.
  *
  * @param name
- * @return Never NULL under normal circumstances
+ * @return Never nullptr under normal circumstances
  */
 /*protected*/ NamedBean* AbstractProxyManager::provideNamedBean(QString name)
 {
  NamedBean* t = getNamedBean(name);
- if (t!=NULL) return t;
+ if (t!=nullptr) return t;
  // Doesn't exist. If the systemName was specified, find that system
  int index = matchTentative(name);
  if (index >= 0) return makeBean(index, name, "");
@@ -193,20 +194,20 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 //// if(qobject_cast<ProxyReporterManager*>(this)!=NULL)
 ////  return ProxyReporterManager::makeBean(index, systemName, userName);
 
- return NULL; // Should not get here! this should be overriden by the actual class
+ return nullptr; // Should not get here! this should be overriden by the actual class
 }
 
 //@Override
 /*public*/ NamedBean* AbstractProxyManager::getBeanBySystemName(QString systemName)
 {
- NamedBean* t = NULL;
+ NamedBean* t = nullptr;
  foreach (Manager* m, *this->mgrs) {
      NamedBean* b = m->getBeanBySystemName(systemName);
-     if (b != NULL) {
+     if (b != nullptr) {
          return b;
      }
  }
- return NULL;
+ return nullptr;
 }
 
 //@Override
@@ -214,11 +215,11 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 {
  foreach (Manager* m, *this->mgrs) {
      NamedBean* b = m->getBeanByUserName(userName);
-     if (b != NULL) {
+     if (b != nullptr) {
          return b;
      }
  }
- return NULL;
+ return nullptr;
 }
 
 
@@ -269,7 +270,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
     for (int i=0; i<mgrs->size(); i++)
         mgrs->value(i)->dispose();
     mgrs->clear();
-    if (internalManager != NULL) internalManager->dispose(); // don't make if not made yet
+    if (internalManager != nullptr) internalManager->dispose(); // don't make if not made yet
 }
 
 /**
@@ -367,7 +368,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 /*public*/ char AbstractProxyManager::typeLetter()
 {
  Manager* mgr = getMgr(0);
- if(qobject_cast<ProxySensorManager*>(this)!=NULL)
+ if(qobject_cast<ProxySensorManager*>(this)!=nullptr)
      return ((AbstractSensorManager*)mgr)->typeLetter();
  return mgr->typeLetter();
 }

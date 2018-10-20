@@ -24,7 +24,7 @@
 {
  if (myTurnout->getCurrentOperator()!= this)
  {
-  //throw new TurnoutOperatorException();
+  throw  TurnoutOperatorException();
  }
 }
 

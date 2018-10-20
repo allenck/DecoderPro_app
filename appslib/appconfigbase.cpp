@@ -9,6 +9,7 @@
 #include <QLabel>
 #include "apps.h"
 #include "managingpreferencespanel.h"
+#include "configuremanager.h"
 
 AppConfigBase::AppConfigBase(QWidget *parent) :
     JmriPanel(parent)
@@ -138,7 +139,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
   {
 //   if (JOptionPane.showConfirmDialog(NULL, MessageFormat.format(tr("MessageSerialPortWarning"), new Object[]{port, configPane.getCurrentProtocolName()}), tr("MessageSerialPortNotValid"), JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) != JOptionPane.YES_OPTION)
 
-   if(QMessageBox::warning(NULL, tr("Serial port isn't valid, save anyway?" ), tr("%1} is not a valid serial port for system connection %2. Do you want to save anyway?").arg(port).arg(configPane->getCurrentProtocolName()),QMessageBox::Yes | QMessageBox::No)!= QMessageBox::Yes)
+   if(QMessageBox::warning(nullptr, tr("Serial port isn't valid, save anyway?" ), tr("%1} is not a valid serial port for system connection %2. Do you want to save anyway?").arg(port).arg(configPane->getCurrentProtocolName()),QMessageBox::Yes | QMessageBox::No)!= QMessageBox::Yes)
    {
     return false;
    }
@@ -156,7 +157,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 {
  // remove old prefs that are registered in ConfigManager
  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
- if (cm != NULL)
+ if (cm != nullptr)
  {
   cm->removePrefItems();
  }
@@ -166,7 +167,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  {
   this->registerWithConfigureManager(panel);
  }//);
- if (cm != NULL)
+ if (cm != nullptr)
  {
   cm->storePrefs();
  }
@@ -177,12 +178,12 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  if (panel->isPersistant())
  {
   ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
- if (cm != NULL) {
+ if (cm != nullptr) {
      cm->registerPref(panel);
  }
 }
  //if (panel instanceof ManagingPreferencesPanel)
- if(qobject_cast<ManagingPreferencesPanel*>(panel) != NULL)
+ if(qobject_cast<ManagingPreferencesPanel*>(panel) != nullptr)
  {
   log->debug(tr("Iterating over managed panels within %1/%2").arg(panel->getPreferencesItemText()).arg( panel->getTabbedPreferencesTitle()));
 //     ((ManagingPreferencesPanel*) panel).getPreferencesPanels().stream().forEach((managed) -> {
@@ -211,7 +212,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  if (!checkDups())
  {
 //  if (!(JOptionPane.showConfirmDialog(NULL, tr("MessageLongDupsWarning"), tr("MessageShortDupsWarning"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION))
-  if(QMessageBox::warning(NULL, tr("Duplicates, save anyway?"), tr("You have duplicates in ports or connections. This can cause problems. Do you want to save anyway?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+  if(QMessageBox::warning(nullptr, tr("Duplicates, save anyway?"), tr("You have duplicates in ports or connections. This can cause problems. Do you want to save anyway?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
   {
    return;
   }
@@ -243,7 +244,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 //            NULL,
 //            options,
 //            NULL);
-  int retVal = QMessageBox::warning(NULL, tr("Restart %1?").arg(QApplication::applicationName()), tr("Restart now?"), QMessageBox::Yes | QMessageBox::No);
+  int retVal = QMessageBox::warning(nullptr, tr("Restart %1?").arg(QApplication::applicationName()), tr("Restart now?"), QMessageBox::Yes | QMessageBox::No);
   switch (retVal)
   {
    case QMessageBox::Yes:

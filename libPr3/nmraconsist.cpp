@@ -53,7 +53,7 @@
             locoAddress->isLongAddress(),
             consistAddress->getNumber(),
             directionNormal);
-    InstanceManager::commandStationInstance()->sendPacket(contents, 4);
+    static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"))->sendPacket(contents, 4);
     notifyConsistListeners(locoAddress, ConsistListener::OPERATION_SUCCESS);
 
 }
@@ -74,6 +74,6 @@
             locoAddress->isLongAddress(),
             0, //set to 0 to remove
             true);//always normal direction
-    InstanceManager::commandStationInstance()->sendPacket(contents, 4);
+    static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"))->sendPacket(contents, 4);
     notifyConsistListeners(locoAddress, ConsistListener::OPERATION_SUCCESS);
 }

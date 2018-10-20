@@ -3,6 +3,7 @@
 #include "jfilechooser.h"
 #include "startupactionsmanager.h"
 #include "instancemanager.h"
+#include "file.h"
 
 AbstractFileModelFactory::AbstractFileModelFactory()
 {

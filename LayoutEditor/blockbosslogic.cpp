@@ -1028,7 +1028,7 @@ void BlockBossLogic::doApproach() {
     if (smap == NULL) {
         smap = new QHash<QString,BlockBossLogic*>();
         umap = new QHash<QString,BlockBossLogic*>();
-        ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerConfig(new BlockBossLogic(), Manager::BLOCKBOSS);
+        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(new BlockBossLogic(), Manager::BLOCKBOSS);
     }
 }
 

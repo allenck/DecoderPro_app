@@ -8,12 +8,12 @@
 #include <QList>
 #include <QVector>
 #include "logger.h"
-#include "timebase.h"
+//#include "timebase.h"
 #include "powermanager.h"
 #include "sensormanager.h"
-#include "configuremanager.h"
+//#include "configuremanager.h"
 #include "programmermanager.h"
-#include "clockcontrol.h"
+//#include "clockcontrol.h"
 #include "turnoutmanager.h"
 //#include "lightmanager.h"
 #include "reportermanager.h"
@@ -33,10 +33,10 @@
 #include "conditionalmanager.h"
 #include "shutdownmanager.h"
 #include "logixmanager.h"
-#include "consistmanager.h"
+//#include "consistmanager.h"
 #include "dccconsistmanager.h"
 #include "instanceinitializer.h"
-#include "commandstation.h"
+//#include "commandstation.h"
 #include "abstractproxymanager.h"
 #include "proxyreportermanager.h"
 #include "proxysensormanager.h"
@@ -176,9 +176,9 @@ static QObject* setDefault(QString type, QObject* val);
 static QString contentsToString();
 Q_DECL_DEPRECATED static PowerManager* powerManagerInstance();
 Q_DECL_DEPRECATED static void setPowerManager(PowerManager* p);
-Q_DECL_DEPRECATED static Timebase* timebaseInstance();
-Q_DECL_DEPRECATED static ConfigureManager* configureManagerInstance();
-Q_DECL_DEPRECATED static void setConfigureManager(ConfigureManager* p);
+//Q_DECL_DEPRECATED static Timebase* timebaseInstance();
+//Q_DECL_DEPRECATED static ConfigureManager* configureManagerInstance();
+//Q_DECL_DEPRECATED static void setConfigureManager(ConfigureManager* p);
 
 static SensorManager* sensorManagerInstance();
 static TurnoutManager* turnoutManagerInstance();
@@ -195,42 +195,42 @@ Q_DECL_DEPRECATED static SignalSystemManager* signalSystemManagerInstance();
 static void setSignalSystemManager(SignalSystemManager* p);
 Q_DECL_DEPRECATED static SignalGroupManager* signalGroupManagerInstance() ;
 static void setSignalGroupManager(SignalGroupManager* p);
-Q_DECL_DEPRECATED static ConsistManager* consistManagerInstance();
+//Q_DECL_DEPRECATED static ConsistManager* consistManagerInstance();
 static void setConsistManager(ConsistManager* p);
 Q_DECL_DEPRECATED static BlockManager* blockManagerInstance();
 Q_DECL_DEPRECATED static SectionManager* sectionManagerInstance();
-static SensorManager* sensorManager;
+//static SensorManager* sensorManager;
 static InstanceManager* instance();
 static SignalMastLogicManager* signalMastLogicManagerInstance();
 static /*public*/  bool containsDefault(/*@Nonnull*/ QString type);
 
 Q_DECL_DEPRECATED static RouteManager* routeManagerInstance();
 
-static /*public*/ LayoutBlockManager* layoutBlockManagerInstance();
-Q_DECL_DEPRECATED static ConditionalManager* conditionalManagerInstance();
-Q_DECL_DEPRECATED static LogixManager* logixManagerInstance();
+//static /*public*/ LayoutBlockManager* layoutBlockManagerInstance();
+//Q_DECL_DEPRECATED static ConditionalManager* conditionalManagerInstance();
+//Q_DECL_DEPRECATED static LogixManager* logixManagerInstance();
 
-Q_DECL_DEPRECATED static TransitManager* transitManagerInstance();
-Q_DECL_DEPRECATED static ShutDownManager* shutDownManagerInstance();
-Q_DECL_DEPRECATED static TabbedPreferences* tabbedPreferencesInstance();
-Q_DECL_DEPRECATED static ClockControl* clockControlInstance();
-Q_DECL_DEPRECATED static void addClockControl(ClockControl* cc);
-Q_DECL_DEPRECATED static CommandStation* commandStationInstance();
+//Q_DECL_DEPRECATED static TransitManager* transitManagerInstance();
+//Q_DECL_DEPRECATED static ShutDownManager* shutDownManagerInstance();
+//Q_DECL_DEPRECATED static TabbedPreferences* tabbedPreferencesInstance();
+//Q_DECL_DEPRECATED static ClockControl* clockControlInstance();
+//Q_DECL_DEPRECATED static void addClockControl(ClockControl* cc);
+//Q_DECL_DEPRECATED static CommandStation* commandStationInstance();
 
 Q_DECL_DEPRECATED static ReporterManager* reporterManagerInstance();
 static MemoryManager* memoryManagerInstance();
-Q_DECL_DEPRECATED static AudioManager* audioManagerInstance();
+//Q_DECL_DEPRECATED static AudioManager* audioManagerInstance();
 //static RosterIconFactory* rosterIconFactoryInstance();
-Q_DECL_DEPRECATED static CatalogTreeManager* catalogTreeManagerInstance();
+//Q_DECL_DEPRECATED static CatalogTreeManager* catalogTreeManagerInstance();
 static void setSensorManager(SensorManager* p);
 static void setLightManager(LightManager* p);
 static void setThrottleManager(ThrottleManager* p);
 Q_DECL_DEPRECATED static void setSignalHeadManager(SignalHeadManager* p);
-static /*public*/ void setLayoutBlockManager(LayoutBlockManager* p);
-static void setConditionalManager(ConditionalManager* p);
-static void setLogixManager(LogixManager* p);
-Q_DECL_DEPRECATED static void setShutDownManager(ShutDownManager* p);
-static void setTabbedPreferences(TabbedPreferences* p);
+//static /*public*/ void setLayoutBlockManager(LayoutBlockManager* p);
+//static void setConditionalManager(ConditionalManager* p);
+//static void setLogixManager(LogixManager* p);
+//Q_DECL_DEPRECATED static void setShutDownManager(ShutDownManager* p);
+//static void setTabbedPreferences(TabbedPreferences* p);
 QT_DEPRECATED static void setCommandStation(CommandStation* p);
 QT_DEPRECATED static /*public*/ void setAddressedProgrammerManager(AddressedProgrammerManager* p);
 static void setReporterManager(ReporterManager* p);
@@ -246,26 +246,26 @@ private:
  //Logger* log;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("InstanceManager");
  static void setRootInstance();
- static ConfigureManager* configureManager;
- /*private*/ ClockControl* clockControl;// = NULL;
- SectionManager* sectionManager;
- TransitManager* transitManager;
- TurnoutManager* turnoutManager;
- LightManager* lightManager;
+ //static ConfigureManager* configureManager;
+ ///*private*/ ClockControl* clockControl;// = NULL;
+ //SectionManager* sectionManager;
+ //TransitManager* transitManager;
+ //TurnoutManager* turnoutManager;
+ //LightManager* lightManager;
  // data members to hold contact with the property listeners
  static QVector<PropertyChangeListener*> listeners;
- CatalogTreeManager* catalogTreeManager;
- AudioManager* audioManager;
- MemoryManager* memoryManager;
+ //CatalogTreeManager* catalogTreeManager;
+ //AudioManager* audioManager;
+ //MemoryManager* memoryManager;
  //RosterIconFactory* rosterIconFactory;
- Timebase* timebase;
- SignalHeadManager* signalHeadManager;
- ConditionalManager* conditionalManager;
- ReporterManager* reporterManager;
- ShutDownManager* shutdownManager;
+ //Timebase* timebase;
+ //SignalHeadManager* signalHeadManager;
+ //ConditionalManager* conditionalManager;
+ //ReporterManager* reporterManager;
+ //ShutDownManager* shutdownManager;
  LogixManager* logixManager;
 
- TabbedPreferences* tabbedPreferencesManager;
+ //TabbedPreferences* tabbedPreferencesManager;
  //VSDecoderManager vsdecoderManager;
  //static InstanceInitializer* initializer;// = new jmri.managers.DefaultInstanceInitializer();
  static QMutex mutex;
@@ -281,17 +281,17 @@ protected:
 //     justification="Protected access to allow changes during JUnit testing.")
  static InstanceManager* root;
 
- void addConfigureManager(ConfigureManager* p);
+ //void addConfigureManager(ConfigureManager* p);
  //void addTurnoutManager(TurnoutManager* p);
  void notifyPropertyChangeListener(QString property, QVariant oldValue, QVariant newValue);
- void init();
+ //void init();
  //void addSensorManager(SensorManager* p);
- void addLightManager(LightManager* p);
- void addSignalHeadManager(SignalHeadManager* p);
- void addConditionalManager(ConditionalManager* p);
- void addLogixManager(LogixManager* p);
- void addShutdownManager(ShutDownManager* p);
- void addTabbedPreferences(TabbedPreferences* p);
+ //void addLightManager(LightManager* p);
+// void addSignalHeadManager(SignalHeadManager* p);
+// void addConditionalManager(ConditionalManager* p);
+// void addLogixManager(LogixManager* p);
+// void addShutdownManager(ShutDownManager* p);
+// void addTabbedPreferences(TabbedPreferences* p);
  //void addReporterManager(ReporterManager* p);
  // /*public*/ static /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
  friend class RosterFrame;

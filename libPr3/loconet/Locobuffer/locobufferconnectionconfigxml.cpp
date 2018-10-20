@@ -34,5 +34,5 @@ LocobufferConnectionConfigXml::LocobufferConnectionConfigXml(QObject *parent) :
 }
 
 /*protected*/ void LocobufferConnectionConfigXml::_register() {
-    InstanceManager::configureManagerInstance()->registerPref(new LocobufferConnectionConfig(adapter));
+    static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(new LocobufferConnectionConfig(adapter));
 }

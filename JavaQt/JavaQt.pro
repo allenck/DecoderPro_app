@@ -24,7 +24,6 @@ SOURCES += javaqt.cpp \
     gridbaglayout.cpp \
     jtextarea.cpp \
     jseparator.cpp \
-    jmripanel.cpp \
     abstractaction.cpp \
     gridbagconstraints.cpp \
     insets.cpp \
@@ -169,7 +168,8 @@ SOURCES += javaqt.cpp \
     changeevent.cpp \
     appcontext.cpp \
     imagepanel.cpp \
-    bufferedimage.cpp
+    bufferedimage.cpp \
+    userpreferencesmanager.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -178,7 +178,6 @@ HEADERS += javaqt.h\
     gridbaglayout.h \
     jtextarea.h \
     jseparator.h \
-    jmripanel.h \
     abstractaction.h \
     logger.h \
     gridbagconstraints.h \
@@ -373,7 +372,8 @@ HEADERS += javaqt.h\
     appcontext.h \
     initeventlistener.h \
     imagepanel.h \
-    bufferedimage.h
+    bufferedimage.h \
+    userpreferencesmanager.h
 
 unix {
     target.path = /usr/lib

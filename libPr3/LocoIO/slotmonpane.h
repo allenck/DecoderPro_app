@@ -29,7 +29,7 @@ private:
  /**
   * Controls whether not-in-use slots are shown
   */
- QCheckBox* showAllCheckBox;// = new QCheckBox();
+ QCheckBox* showUnusedCheckBox;// = new QCheckBox();
  /**
   * Controls whether system slots (120-127) are shown
   */
@@ -43,6 +43,8 @@ private:
  JTable* slotTable;
  //JScrollPane slotScroll;
  Logger* log;
+ // /*private*/ void filter();
+
 };
 Q_DECLARE_METATYPE(SlotMonPane)
 #endif // SLOTMONPANE_H

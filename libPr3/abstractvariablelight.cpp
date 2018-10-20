@@ -52,7 +52,7 @@
 {
  //super(systemName, userName);
  init();
- if (internalClock == NULL)
+ if (internalClock == nullptr)
  {
   initClocks();
  }
@@ -62,7 +62,7 @@
 {
  //super(systemName);
  init();
- if (internalClock == NULL)
+ if (internalClock == nullptr)
  {
   initClocks();
  }
@@ -71,11 +71,11 @@ void AbstractVariableLight::init()
 {
  log = new Logger("AbstractVariableLight");
  mTransitionTargetIntensity = 0.0;
- mLastTransitionDate = NULL;
+ mLastTransitionDate = nullptr;
  mNextTransitionTs = 0;
- internalClock = NULL;
- alarmSyncUpdate = NULL;
- minuteChangeListener = NULL;
+ internalClock = nullptr;
+ alarmSyncUpdate = nullptr;
+ minuteChangeListener = nullptr;
  mTransitionDuration = 0.0;
 }
 /**
@@ -231,11 +231,11 @@ void AbstractVariableLight::init()
  */
 /*private*/ void AbstractVariableLight::initClocks()
 {
- if (minuteChangeListener != NULL) return; // already done
+ if (minuteChangeListener != nullptr) return; // already done
 
  // Create a Timebase listener for the Minute change events
- internalClock = InstanceManager::timebaseInstance();
- if (internalClock == NULL)
+ internalClock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
+ if (internalClock == nullptr)
  {
   log->error("No Timebase Instance");
  }

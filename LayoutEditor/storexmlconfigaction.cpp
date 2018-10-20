@@ -59,16 +59,16 @@ void StoreXmlConfigAction::common()
  *<LI>adds .xml extension if needed
  *<LI>if that file exists, check with user
  *</OL>
- * Returns NULL if selection failed for any reason
+ * Returns nullptr if selection failed for any reason
  */
 /*public*/ /*static*/ File* StoreXmlConfigAction::getFileCustom(JFileChooser* fileChooser)
 {
  Logger* log = new Logger("StoreXmlConfigAction");
  //fileChooser.rescanCurrentDirectory();
- int retVal = fileChooser->showDialog(NULL, NULL);
+ int retVal = fileChooser->showDialog(nullptr, nullptr);
  if (retVal != JFileChooser::APPROVE_OPTION)
  {
-  return NULL;  // give up if no file selected
+  return nullptr;  // give up if no file selected
  }
  File* file = fileChooser->getSelectedFile();
  if (fileChooser->getFileFilter() != fileChooser->getAcceptAllFileFilter())
@@ -86,12 +86,12 @@ void StoreXmlConfigAction::common()
  {
   log->debug("Save file: " + file->getPath());
  }
- //        if (selectedValue != JOptionPane.OK_OPTION) return NULL;
+ //        if (selectedValue != JOptionPane.OK_OPTION) return nullptr;
 #if 0 // Not necessary since QFileDialog also does this.
         switch(QMessageBox::question(0, tr("Overwrite file?"), tr("File ")+fileName+tr(" already exists, overwrite it?"),QMessageBox::Save | QMessageBox::Cancel ))
         {
         case QMessageBox::Cancel:
-            return NULL;
+            return nullptr;
         default:
          break;
         }
@@ -103,15 +103,15 @@ void StoreXmlConfigAction::common()
 /*public*/ void StoreXmlConfigAction::actionPerformed(/*ActionEvent* e*/)
 {
  File* file = getFileName(this->getConfigFileChooser());
- if (file==NULL) return;
+ if (file==nullptr) return;
 
  // and finally store
- bool results = ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->storeConfig(file);
+ bool results = static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->storeConfig(file);
  //System.out.println(results);
  log->debug(results?"store was successful":"Error Storing Information!");
  if (!results)
  {
-  QMessageBox::information(NULL,   tr("Errors experienced during store."),
+  QMessageBox::information(nullptr,   tr("Errors experienced during store."),
              tr("The storing of your information is incomplete and may result in missing items")+"\n"
              +tr("The console window contains error details."));
  }

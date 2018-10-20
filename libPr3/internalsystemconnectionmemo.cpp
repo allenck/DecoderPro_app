@@ -38,13 +38,13 @@
  setObjectName("InternalSystemConnectionMemo");
 
  configured = false;
- turnoutManager = NULL;
- lightManager = NULL;
- sensorManager = NULL;
- reporterManager = NULL;
- throttleManager = NULL;
- powerManager = NULL;
- programManager = NULL;
+ turnoutManager = nullptr;
+ lightManager = nullptr;
+ sensorManager = nullptr;
+ reporterManager = nullptr;
+ throttleManager = nullptr;
+ powerManager = nullptr;
+ programManager = nullptr;
  log = LoggerFactory::getLogger("InternalSystemConnectionMemo");
 
  //super("I", "Internal");
@@ -70,7 +70,7 @@
 
 /*public*/ InternalLightManager* InternalSystemConnectionMemo::getLightManager()
 {
- if (lightManager == NULL)
+ if (lightManager == nullptr)
  {
      log->debug("Create InternalLightManager by request");
      lightManager = new InternalLightManager();
@@ -80,18 +80,20 @@
  return lightManager;
 }
 
-/*public*/ InternalSensorManager* InternalSystemConnectionMemo::getSensorManager() {
-    if (sensorManager == NULL) {
-        log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
-        sensorManager = new InternalSensorManager(getSystemPrefix());
-        // special due to ProxyManager support
-        InstanceManager::setSensorManager(sensorManager);
-    }
-    return sensorManager;
+/*public*/ InternalSensorManager* InternalSystemConnectionMemo::getSensorManager()
+{
+ if (sensorManager == nullptr)
+ {
+  log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
+  sensorManager = new InternalSensorManager(getSystemPrefix());
+  // special due to ProxyManager support
+  InstanceManager::setSensorManager(sensorManager);
+ }
+ return sensorManager;
 }
 
 /*public*/ InternalReporterManager* InternalSystemConnectionMemo::getReporterManager() {
-    if (reporterManager == NULL) {
+    if (reporterManager == nullptr) {
         log->debug("Create InternalReporterManager by request");
         reporterManager = new InternalReporterManager();
         // special due to ProxyManager support
@@ -101,7 +103,7 @@
 }
 
 /*public*/ InternalTurnoutManager* InternalSystemConnectionMemo::getTurnoutManager() {
-    if (turnoutManager == NULL) {
+    if (turnoutManager == nullptr) {
         log->debug(tr("Create InternalTurnoutManager \"%1\" by request").arg( getSystemPrefix()));
         turnoutManager = new InternalTurnoutManager(getSystemPrefix());
         // special due to ProxyManager support
@@ -111,7 +113,7 @@
 }
 
 /*public*/ DebugThrottleManager* InternalSystemConnectionMemo::getThrottleManager() {
-    if (throttleManager == NULL) {
+    if (throttleManager == nullptr) {
         log->debug("Create DebugThrottleManager by request");
         // Install a debug throttle manager
         throttleManager = new DebugThrottleManager(this);
@@ -121,7 +123,7 @@
 }
 
 /*public*/ DefaultPowerManager* InternalSystemConnectionMemo::getPowerManager() {
-    if (powerManager == NULL) {
+    if (powerManager == nullptr) {
         log->debug("Create DefaultPowerManager by request");
         powerManager = new DefaultPowerManager();
         InstanceManager::store(powerManager, "PowerManager");
@@ -130,7 +132,7 @@
 }
 
 /*public*/ DebugProgrammerManager* InternalSystemConnectionMemo::getProgrammerManager() {
-    if (programManager == NULL) {
+    if (programManager == nullptr) {
         log->debug("Create DebugProgrammerManager by request");
         // Install a debug programmer
         programManager = new DebugProgrammerManager(this);
@@ -183,7 +185,7 @@
 //@Override
 /*public*/ QObject* InternalSystemConnectionMemo::get(/*Class<?>*/ QString className) {
     if (getDisabled()) {
-        return NULL;
+        return nullptr;
     }
 
     if (!configured) configureManagers();
@@ -216,24 +218,24 @@
     if (className == ("TurnoutManager")) {
         return (TurnoutManager*) getTurnoutManager();
     }
-    return NULL; // nothing, by default
+    return nullptr; // nothing, by default
 }
 
 //@Override
 ///*protected*/ ResourceBundle getActionModelResourceBundle() {
 //    //No actions to add at start up
-//    return NULL;
+//    return nullptr;
 //}
 
 //@Override
 /*public*/ void InternalSystemConnectionMemo::dispose() {
-    if (sensorManager != NULL) {
+    if (sensorManager != nullptr) {
         sensorManager->dispose();
-        sensorManager = NULL;
+        sensorManager = nullptr;
     }
-    if (turnoutManager != NULL) {
+    if (turnoutManager != nullptr) {
         turnoutManager->dispose();
-        turnoutManager = NULL;
+        turnoutManager = nullptr;
     }
     SystemConnectionMemo::dispose();
 }

@@ -70,6 +70,8 @@ QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/
    javaClassName = "jmri.jmrix.loconet.hexfile.configurexml.ConnectionConfigXml";
   else if(className == "LocobufferConnectionConfigXml" )
    javaClassName = "jmri.jmrix.loconet.locobuffer.configurexml.ConnectionConfigXml";
+  else if(className == "LocobufferUsbConnectionConfigXml" )
+   javaClassName = "jmri.jmrix.loconet.locobufferusb.configurexml.ConnectionConfigXml";
   else if(className == "ConnectionConfigXml" )
    javaClassName = "jmri.jmrix.loconet.pr3.configurexml.ConnectionConfigXml";
   else if(className == "SprogConnectionConfigXml" )

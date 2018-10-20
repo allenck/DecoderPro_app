@@ -1150,7 +1150,7 @@ WarrantPickModel::WarrantPickModel (QObject *parent) : PickListModel(parent)
 //class ConditionalPickModel extends PickListModel {
 ConditionalPickModel::ConditionalPickModel (QObject* parent) : PickListModel(parent)
 {
- manager = InstanceManager::conditionalManagerInstance();
+ manager = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"));
  _name = tr("Conditional Table");
 }
 /*public*/ Manager* ConditionalPickModel::getManager() {

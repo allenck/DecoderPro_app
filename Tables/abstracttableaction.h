@@ -28,8 +28,8 @@ public:
     virtual /*public*/ void addToFrame(BeanTableFrame* f);
 //    /*public*/ void addToPanel(AbstractTableTabAction f);
     virtual /*public*/ void setMenuBar(BeanTableFrame* f);
-    virtual/*public*/ QWidget* getPanel();
-    /*public*/ void dispose();
+    virtual /*public*/ QWidget* getPanel();
+    virtual /*public*/ void dispose();
     virtual /*public*/ QString getClassDescription();
     virtual /*public*/ void setMessagePreferencesDetails();
     virtual/*public*/ bool includeAddButton();

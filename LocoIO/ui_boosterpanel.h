@@ -24,22 +24,35 @@ class Ui_BoosterPanel
 {
 public:
     QVBoxLayout *verticalLayout;
+    QLabel *label_10;
     QLabel *label;
     QLabel *label_2;
     QLabel *label_3;
+    QLabel *label_11;
+    QLabel *label_4;
+    QLabel *label_5;
+    QLabel *lblBoosterStatus;
+    QLabel *label_6;
+    QLabel *label_7;
+    QLabel *label_9;
+    QLabel *label_8;
 
     void setupUi(QWidget *BoosterPanel)
     {
         if (BoosterPanel->objectName().isEmpty())
             BoosterPanel->setObjectName(QStringLiteral("BoosterPanel"));
-        BoosterPanel->resize(144, 92);
+        BoosterPanel->resize(147, 244);
         QFont font;
         font.setPointSize(7);
         BoosterPanel->setFont(font);
         verticalLayout = new QVBoxLayout(BoosterPanel);
-        verticalLayout->setSpacing(2);
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        label_10 = new QLabel(BoosterPanel);
+        label_10->setObjectName(QStringLiteral("label_10"));
+        label_10->setFont(font);
+
+        verticalLayout->addWidget(label_10);
+
         label = new QLabel(BoosterPanel);
         label->setObjectName(QStringLiteral("label"));
 
@@ -55,6 +68,55 @@ public:
 
         verticalLayout->addWidget(label_3);
 
+        label_11 = new QLabel(BoosterPanel);
+        label_11->setObjectName(QStringLiteral("label_11"));
+        label_11->setFont(font);
+
+        verticalLayout->addWidget(label_11);
+
+        label_4 = new QLabel(BoosterPanel);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setFont(font);
+
+        verticalLayout->addWidget(label_4);
+
+        label_5 = new QLabel(BoosterPanel);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setFont(font);
+
+        verticalLayout->addWidget(label_5);
+
+        lblBoosterStatus = new QLabel(BoosterPanel);
+        lblBoosterStatus->setObjectName(QStringLiteral("lblBoosterStatus"));
+        lblBoosterStatus->setFont(font);
+        lblBoosterStatus->setStyleSheet(QStringLiteral("QLabel { color:green}"));
+
+        verticalLayout->addWidget(lblBoosterStatus);
+
+        label_6 = new QLabel(BoosterPanel);
+        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setFont(font);
+
+        verticalLayout->addWidget(label_6);
+
+        label_7 = new QLabel(BoosterPanel);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setFont(font);
+
+        verticalLayout->addWidget(label_7);
+
+        label_9 = new QLabel(BoosterPanel);
+        label_9->setObjectName(QStringLiteral("label_9"));
+        label_9->setFont(font);
+
+        verticalLayout->addWidget(label_9);
+
+        label_8 = new QLabel(BoosterPanel);
+        label_8->setObjectName(QStringLiteral("label_8"));
+        label_8->setFont(font);
+
+        verticalLayout->addWidget(label_8);
+
 
         retranslateUi(BoosterPanel);
 
@@ -64,9 +126,18 @@ public:
     void retranslateUi(QWidget *BoosterPanel)
     {
         BoosterPanel->setWindowTitle(QApplication::translate("BoosterPanel", "Form", Q_NULLPTR));
+        label_10->setText(QString());
         label->setText(QApplication::translate("BoosterPanel", "5 = Feedback of Booster input", Q_NULLPTR));
         label_2->setText(QApplication::translate("BoosterPanel", "6 = Feedback of Booster output", Q_NULLPTR));
         label_3->setText(QApplication::translate("BoosterPanel", "7 = On-Off Booster output", Q_NULLPTR));
+        label_11->setText(QString());
+        label_4->setText(QString());
+        label_5->setText(QString());
+        lblBoosterStatus->setText(QApplication::translate("BoosterPanel", "Booster OK", Q_NULLPTR));
+        label_6->setText(QString());
+        label_7->setText(QString());
+        label_9->setText(QString());
+        label_8->setText(QString());
     } // retranslateUi
 
 };

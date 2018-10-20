@@ -33,6 +33,7 @@ private:
     Logger* log;
     QVBoxLayout* centralWidgetLayout;
     int currTab;
+    virtual QString getTableClass() {return "";}
 protected:
     /*protected*/ QWidget* dataPanel;
     /*protected*/ QTabWidget* dataTabs;

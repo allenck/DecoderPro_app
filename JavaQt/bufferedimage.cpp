@@ -2,7 +2,7 @@
 
 BufferedImage::BufferedImage()
 {
-
+ properties =  QHash<QString, QVariant>();
 }
 /**
  *

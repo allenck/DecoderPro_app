@@ -134,7 +134,7 @@ void InputWidget::setValues()
   }
   break;
  case 0x17:
-  if(val2 == 0x70)
+  if(val2 == 0x70 | val2 == 0x71)
   {
    ui->rbSwitchPointFeedback->setChecked(true); // Turnout Feedback, single sensor"
    ui->chkDirectControl->setEnabled(false);
@@ -170,7 +170,7 @@ void InputWidget::setValues()
   }
   break;
  case 0x37:
-  if(val2 == 0x70)
+  if(val2 == 0x70 | val2 == 0x71)
   {
    ui->rbContact1PointFeedback->setChecked(true); // Turnout Feedback, dual sensor, #1"
    ui->chkDirectControl->setEnabled(false);
@@ -533,7 +533,7 @@ void InputWidget::onMessageReceived(LocoNetMessage *msg, bool b)
 
       if((in2 & LnConstants::OPC_SW_REP_HI) == 0)
        //p.setColor(QPalette::Base, Qt::red);
-       sColor = data->ssRed;
+       sColor = "lightGray";
       else
        //p.setColor(QPalette::Base, Qt::green);
        sColor = "green";

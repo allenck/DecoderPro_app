@@ -52,7 +52,7 @@ JmriClockPropertyListener::JmriClockPropertyListener(QString propName, int type,
  _endTimes->replace(0, fixMidnight(endTime));
  _rangeList->replace(0, false);
  numRanges = 1;
- _fastClock = InstanceManager::timebaseInstance();
+ _fastClock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
  QDateTime currentTime = _fastClock->getTime();
  _currentMinutes = (currentTime.time().hour()*60) + currentTime.time().minute();
 }

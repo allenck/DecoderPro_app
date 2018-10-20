@@ -11,6 +11,7 @@
 #include "gridbagconstraints.h"
 #include <QCheckBox>
 #include "connectionconfigmanager.h"
+#include "configuremanager.h"
 
 AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
     ConnectionConfig(parent)
@@ -30,7 +31,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
  gbLayout->setObjectName("gbLayout");
  cL = new GridBagConstraints();
  cR = new GridBagConstraints();
- _details = NULL;
+ _details = nullptr;
 }
 /**
  * Abstract base class for common implementation of the ConnectionConfig
@@ -86,7 +87,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
     this->optionDisplayName = name;
     this->optionSelection = optionSelection;
     this->advanced = advanced;
-    label = NULL;
+    label = nullptr;
 }
 
 /*protected*/ QString AbstractConnectionConfig::Option::getDisplayName() {
@@ -95,7 +96,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
 
 /*public*/ QLabel* AbstractConnectionConfig::Option::getLabel()
 {
- if (label == NULL)
+ if (label == nullptr)
  {
   label = new QLabel(getDisplayName());//, JLabel.LEFT);
   label->setAlignment(Qt::AlignLeft);
@@ -118,17 +119,17 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
 /*public*/ QString AbstractConnectionConfig::Option::getItem()
 {
  //if (optionSelection instanceof JComboBox)
- if(qobject_cast<QComboBox*>(optionSelection)!= NULL)
+ if(qobject_cast<QComboBox*>(optionSelection)!= nullptr)
  {
   return ((QComboBox*) optionSelection)->currentText();
  }
  else
  //if (optionSelection instanceof JTextField)
- if(qobject_cast<JTextField*>(optionSelection)!= NULL)
+ if(qobject_cast<JTextField*>(optionSelection)!= nullptr)
  {
   return ((JTextField) optionSelection).text();
  }
- return NULL;
+ return nullptr;
 }
 
 /**
@@ -168,7 +169,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
   }
  }
 
- if (adapter->getSystemConnectionMemo() != NULL)
+ if (adapter->getSystemConnectionMemo() != nullptr)
  {
   cR->gridy = i;
   cL->gridy = i;
@@ -229,7 +230,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
     this->setInstance();
     ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref(this);
     ConnectionConfigManager* ccm = (ConnectionConfigManager*)InstanceManager::getNullableDefault("ConnectionConfigManager");
-    if (ccm != NULL) {
+    if (ccm != nullptr) {
         ccm->add(this);
     }
 }
@@ -237,7 +238,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
 //@Override
 /*public*/ void AbstractConnectionConfig::dispose() {
     ConnectionConfigManager* ccm = (ConnectionConfigManager*)InstanceManager::getNullableDefault("ConnectionConfigManager");
-    if (ccm != NULL) {
+    if (ccm != nullptr) {
         ccm->remove(this);
     }
 }

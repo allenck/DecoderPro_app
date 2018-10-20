@@ -21,7 +21,7 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  SHORT_TIMEOUT = 8000;   // DCS240 reads
  lastMessage = -1;
  mCanRead = true;
- throttledTransmitter = NULL;
+ throttledTransmitter = nullptr;
  mTurnoutNoRetry = false;
  mProgPowersOff = false;
  mProgEndSequence = false;
@@ -33,9 +33,9 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  _progConfirm = false;
  _confirmVal =0;
  mServiceMode = true;
- _usingProgrammer = NULL;
+ _usingProgrammer = nullptr;
  //_mode = Programmer::PAGEMODE;
- mPowerTimer = NULL;
+ mPowerTimer = nullptr;
  nextReadSlot = 0;
  _slots.reserve(128);
  csOpSwProgrammingMode = new ProgrammingMode(
@@ -127,7 +127,7 @@ void SlotManager::sendPacket(QByteArray packet, int sendCount)
     m->setElement(9,0);
     for (int i=0; i<packet.length()-1; i++) m->setElement(5+i, packet[i]&0x7F);
 
-    if (throttledTransmitter != NULL)
+    if (throttledTransmitter != nullptr)
         throttledTransmitter->sendLocoNetMessage(m);
     else
      tc->sendLocoNetMessage(m);
@@ -240,13 +240,13 @@ void SlotManager::notify(LocoNetSlot* s)
     for (int i=0; i < cnt; i++)
     {
         SlotListener* client = v->at(i);
-        if(qobject_cast<SlotMonitor*>(client) != NULL)
+        if(qobject_cast<SlotMonitor*>(client) != nullptr)
             ((SlotMonitor*)client)->notifyChangedSlot(s);
         else
-         if(qobject_cast<ThrottleWindow*>(client) != NULL)
+         if(qobject_cast<ThrottleWindow*>(client) != nullptr)
            ((ThrottleWindow*)client)->notifyChangedSlot(s);
          else
-          if(qobject_cast<LnClockControl*>(client) != NULL)
+          if(qobject_cast<LnClockControl*>(client) != nullptr)
            ((LnClockControl*)client)->notifyChangedSlot(s);
          else
           {
@@ -266,16 +266,16 @@ void SlotManager::notify(LocoNetSlot* s)
 void SlotManager::message(LocoNetMessage* m)
 {
  // LACK processing for resend of immediate command
- if (!mTurnoutNoRetry && immedPacket != NULL && m->getOpCode() == LnConstants::OPC_LONG_ACK && m->getElement(1) == 0x6D && m->getElement(2) == 0x00)
+ if (!mTurnoutNoRetry && immedPacket != nullptr && m->getOpCode() == LnConstants::OPC_LONG_ACK && m->getElement(1) == 0x6D && m->getElement(2) == 0x00)
  {
   // LACK reject, resend immediately
   tc->sendLocoNetMessage(immedPacket);
-  immedPacket = NULL;
+  immedPacket = nullptr;
  }
  if (m->getOpCode() == LnConstants::OPC_IMM_PACKET/*0xED*/ && m->getElement(1) == 0x0B && m->getElement(2) == 0x7F )
   immedPacket = m;
  else
-  immedPacket = NULL;
+  immedPacket = nullptr;
 
 
  // slot specific message?
@@ -303,7 +303,7 @@ void SlotManager::message(LocoNetMessage* m)
   for (int j = 0; j < 120; j++)
   {
    LocoNetSlot* _slot = slot(j);
-   if ( _slot == NULL ) continue;
+   if ( _slot == nullptr ) continue;
    if ( (_slot->locoAddr() != addr)
                 || (_slot->slotStatus() == LnConstants::LOCO_FREE) ) continue;
    // found!
@@ -570,7 +570,7 @@ void SlotManager::respondToAddrRequest(LocoNetMessage* m, int i)
      int addr = _slots[i]->locoAddr();
      log->debug(tr("LOCO_ADR resp is slot %1 for addr %2").arg(i).arg(addr)); // NOI18N
      SlotListener* l = mLocoAddrHash.value((addr));
-     if (l != NULL) {
+     if (l != nullptr) {
          // only notify once per request
          mLocoAddrHash.remove((addr));
          // and send the notification
@@ -932,7 +932,7 @@ void SlotManager::doRead(int CV, ProgListener* p, int progByte) throw(Programmer
 void SlotManager::useProgrammer(ProgListener* p) // throws jmri.ProgrammerException
 {
  // test for only one!
- if (_usingProgrammer != NULL && _usingProgrammer != p)
+ if (_usingProgrammer != nullptr && _usingProgrammer != p)
  {
   if (log->isInfoEnabled())
    log->info(QString("programmer already in use by %1").arg(_usingProgrammer->objectName()));
@@ -992,8 +992,8 @@ void SlotManager::notifyProgListenerEnd(int value, int status)
  restartEndOfProgrammingTimer();
  // and send the reply
  ProgListener* p = _usingProgrammer;
- _usingProgrammer = NULL;
- if (p!=NULL) sendProgrammingReply(p, value, status);
+ _usingProgrammer = nullptr;
+ if (p!=nullptr) sendProgrammingReply(p, value, status);
 }
 
 /**
@@ -1007,7 +1007,7 @@ void SlotManager::notifyProgListenerLack(int status)
  restartEndOfProgrammingTimer();
  // and send the reply
  sendProgrammingReply(_usingProgrammer, -1, status);
- _usingProgrammer = NULL;
+ _usingProgrammer = nullptr;
 }
 
 /**
@@ -1047,7 +1047,7 @@ void SlotManager::sendProgrammingReply(ProgListener* p, int value, int status)
  */
 /*protected*/ void SlotManager::stopEndOfProgrammingTimer()
 {
-    if (mPowerTimer!=NULL) mPowerTimer->stop();
+    if (mPowerTimer!=nullptr) mPowerTimer->stop();
 }
 
 /**
@@ -1058,7 +1058,7 @@ void SlotManager::restartEndOfProgrammingTimer()
 {
  if (mProgEndSequence)
  {
-  if (mPowerTimer==NULL)
+  if (mPowerTimer==nullptr)
   {
    mPowerTimer = new QTimer();
 //   2000, new java.awt.event.ActionListener()
@@ -1165,14 +1165,14 @@ void SlotManager::setSystemConnectionMemo(LocoNetSystemConnectionMemo* memo)
 
 QString SlotManager::getUserName()
 {
- if(adaptermemo==NULL)
+ if(adaptermemo==nullptr)
   return "LocoNet";
  return adaptermemo->getUserName();
 }
 
 QString SlotManager::getSystemPrefix()
 {
- if(adaptermemo==NULL)
+ if(adaptermemo==nullptr)
   return "L";
  return adaptermemo->getSystemPrefix();
 }
@@ -1204,7 +1204,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
         //handle Command Station OpSw programming here
         QStringList parts = cvNum.split("\\.");
         if ((parts[0]==("csOpSw")) && (parts.length()==2)) {
-            if (csOpSwAccessor == NULL) {
+            if (csOpSwAccessor == nullptr) {
                 csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
             } else {
                 csOpSwAccessor->setProgrammerListener(p);

@@ -38,36 +38,9 @@
 /*protected*/ QString SensorTableTabAction::helpTarget() {
     return "package.jmri.jmrit.beantable.SensorTable";
 }
-#if 0
-BeanTableFrame* SensorTableTabAction::currFrame()
-{
- return SensorTableTabAction::frame;
-}
 
-void SensorTableTabAction::setCurrFrame(BeanTableFrame *frame)
+//@Override
+/*public*/ QString SensorTableTabAction::getTableClass()
 {
- this->frame = frame;
- SensorTableTabAction::frame = frame;
- AbstractTableAction::f = frame;
+ return "SensorTableTabAction";
 }
-
-QWidget* SensorTableTabAction::getPane()
-{
- createModel();
- f = new ATABeanTableFrame(this);
- f->setProperty("type", "BeanTableFrame");
- setCurrFrame(f);
- QWidget* centralWidget = new QWidget;
- centralWidgetLayout = new QVBoxLayout;
- centralWidget->setLayout(centralWidgetLayout);
- f->setCentralWidget(centralWidget);
- centralWidgetLayout->addWidget(dataTabs);
- for(int i=0; i < tabbedTableArray.size(); i++)
- {
-  centralWidgetLayout->addWidget(tabbedTableArray.at(i)->bottomBox);
-  tabbedTableArray.at(i)->bottomBox->setVisible(i == currTab);
- }
- f->pack();
- return f;
-}
-#endif

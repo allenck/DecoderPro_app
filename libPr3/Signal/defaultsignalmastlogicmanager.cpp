@@ -46,7 +46,7 @@
     propertyBlockManagerListener = new PropertyBlockManagerListener(this);
     registerSelf();
 //    InstanceManager::layoutBlockManagerInstance()->addPropertyChangeListener(propertyBlockManagerListener);
-    connect(InstanceManager::layoutBlockManagerInstance(), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockManagerListener, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockManagerListener, SLOT(propertyChange(PropertyChangeEvent*)));
     //_speedMap = jmri.implementation.SignalSpeedMap.getMap();
 }
 
@@ -217,8 +217,8 @@
  * information.  Override to change that.
  **/
 /*protected*/ void DefaultSignalMastLogicManager::registerSelf() {
-     if (InstanceManager::configureManagerInstance()!=NULL) {
-        ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerConfig(this, Manager::SIGNALMASTLOGICS);
+     if (static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))!=NULL) {
+        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(this, Manager::SIGNALMASTLOGICS);
         log->debug("register for config");
     }
 }
@@ -226,8 +226,8 @@
 // abstract methods to be extended by subclasses
 // to free resources when no longer used
 /*public*/ void DefaultSignalMastLogicManager::dispose() {
-    if (InstanceManager::configureManagerInstance()!= NULL)
-        InstanceManager::configureManagerInstance()->deregister(this);
+    if (static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))!= NULL)
+        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(this);
     signalMastLogic.clear();
 }
 
@@ -317,7 +317,7 @@
  firePropertyChange("autoSignalMastGenerateStart", QVariant(), QVariant(source->getDisplayName()));
 
  QHash<NamedBean*, QList<NamedBean*> > validPaths =  QHash<NamedBean*, QList<NamedBean*> >();
- LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+ LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled())
  {
   //log.debug("advanced routing not enabled");
@@ -377,7 +377,7 @@
 /*public*/ void DefaultSignalMastLogicManager::automaticallyDiscoverSignallingPairs() throw (JmriException)
 {
  runWhenStablised=false;
- LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+ LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled()){
   throw new JmriException("advanced routing not enabled");
  }

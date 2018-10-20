@@ -5,6 +5,7 @@
 #include "loadxmlthrottleslayoutaction.h"
 #include "throttlewindow.h"
 #include "throttleframemanager.h"
+#include "file.h"
 
 /**
  * Create a new throttle.
@@ -16,7 +17,7 @@
 /*public*/ LoadDefaultXmlThrottlesLayoutAction::LoadDefaultXmlThrottlesLayoutAction(QString s, WindowInterface* wi) : JmriAbstractAction(s, wi){
     //super(s, wi);
     // disable the ourselves if there is no throttle Manager
-    if (InstanceManager::getNullableDefault("ThrottleManager") == NULL) {
+    if (InstanceManager::getNullableDefault("ThrottleManager") == nullptr) {
         setEnabled(false);
     }
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
@@ -27,7 +28,7 @@
 {
     //super(s, i, wi);
     // disable the ourselves if there is no throttle Manager
- if (InstanceManager::getNullableDefault("ThrottleManager") == NULL) {
+ if (InstanceManager::getNullableDefault("ThrottleManager") == nullptr) {
         setEnabled(false);
     }
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
@@ -42,7 +43,7 @@
 /*public*/ LoadDefaultXmlThrottlesLayoutAction::LoadDefaultXmlThrottlesLayoutAction(QString s, QObject* parent) : JmriAbstractAction(s, parent) {
     //super(s);
     // disable the ourselves if there is no throttle Manager
- if (InstanceManager::getNullableDefault("ThrottleManager") == NULL) {
+ if (InstanceManager::getNullableDefault("ThrottleManager") == nullptr) {
         setEnabled(false);
     }
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));

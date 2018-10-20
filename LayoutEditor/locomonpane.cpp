@@ -1,17 +1,25 @@
 #include "locomonpane.h"
 #include "loconetsystemconnectionmemo.h"
-#include "llnmon.h"
-
-/*static*/ LocoMonPane* LocoMonPane::_instance = NULL;
+//#include "llnmon.h"
+#include "instancemanager.h"
+#include "userpreferencesmanager.h"
+#include <QDesktopWidget>
+#include <QApplication>
+#include <QMoveEvent>
 
 LocoMonPane::LocoMonPane(QWidget *parent) :
     AbstractMonPane(parent)
 {
- llnmon = new LlnMon();
+ //llnmon = new LlnMon();
  log = new Logger("LocoMonPane");
- memo = NULL;
- _instance = this;
+ log->setDebugEnabled(true);
+ memo = nullptr;
+ setFrameRef("LocoMonPane");
+
+ move(10, 30);
+ setMinimumHeight(400);
 }
+
 /**
  * LocoNet Monitor pane displaying (and logging) LocoNet messages
  * @author	   Bob Jacobsen   Copyright (C) 2001, 2008, 2010
@@ -37,7 +45,7 @@ void LocoMonPane::closeEvent(QCloseEvent *)
 /*public*/ QString LocoMonPane::getTitle()
 {
  QString uName = "";
- if (memo!=NULL)
+ if (memo!=nullptr)
  {
   uName = memo->getUserName();
   if ("LocoNet" != (uName))
@@ -54,7 +62,7 @@ void LocoMonPane::closeEvent(QCloseEvent *)
 
 /*public*/ void LocoMonPane::dispose()
 {
- if(memo->getLnTrafficController()!=NULL)
+ if(memo->getLnTrafficController()!=nullptr)
  {
   // disconnect from the LnTrafficController
 //        memo->getLnTrafficController()->removeLocoNetListener(~0,this);
@@ -70,7 +78,7 @@ void LocoMonPane::closeEvent(QCloseEvent *)
 /*public*/ void LocoMonPane::initContext(QObject* context) throw (Exception)
 {
  //if (context instanceof LocoNetSystemConnectionMemo )
- if(qobject_cast<LocoNetSystemConnectionMemo*>(context) != NULL)
+ if(qobject_cast<LocoNetSystemConnectionMemo*>(context) != nullptr)
  {
   initComponents((LocoNetSystemConnectionMemo*) context);
  }
@@ -80,21 +88,24 @@ void LocoMonPane::closeEvent(QCloseEvent *)
 {
  this->memo = memo;
  // connect to the LnTrafficController
- if(memo->getLnTrafficController()==NULL)
+ if(memo->getLnTrafficController()==nullptr)
  {
   log->error("No traffic controller is available");
   return;
  }
  //memo->getLnTrafficController()->addLocoNetListener(~0, this);
  connect(memo->getLnTrafficController(), SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
- if(memo->provides("TurnoutManager"))
-  llnmon->setLocoNetTurnoutManager((LnTurnoutManager*)memo->get("TurnoutManager"));
- if(memo->provides("SensorManager"))
-  llnmon->setLocoNetSensorManager((LnSensorManager*)memo->get("SensorManager"));
- if(memo->provides("ReporterManager"))
-  llnmon->setLocoNetReporterManager((LnReporterManager*)memo->get("ReporterManager"));
+// if(memo->provides("TurnoutManager"))
+//  llnmon->setLocoNetTurnoutManager((LnTurnoutManager*)memo->get("TurnoutManager"));
+// if(memo->provides("SensorManager"))
+//  llnmon->setLocoNetSensorManager((LnSensorManager*)memo->get("SensorManager"));
+// if(memo->provides("ReporterManager"))
+//  llnmon->setLocoNetReporterManager((LnReporterManager*)memo->get("ReporterManager"));
  //AbstractMonPane::initComponents();
  systemConnectionPrefix = memo->getSystemPrefix();
+
+ move(30, 30);
+ setFrameLocation();
 }
 
 
@@ -110,17 +121,7 @@ void LocoMonPane::closeEvent(QCloseEvent *)
  nextLine(/*llnmon->displayMessage(*l)*/formatted, raw );
 }
 
-LocoMonPane* LocoMonPane::instance() { return _instance; }
-#if 0
-/**
- * Nested class to create one of these using old-style defaults
- */
-static /*public*/ class Default extends jmri.jmrix.loconet.swing.LnNamedPaneAction {
-    /*public*/ Default() {
-        super(LocoNetBundle.bundle().getString("MenuItemLocoNetMonitor"),
-            new jmri.util.swing.sdi.JmriJFrameInterface(),
-            LocoMonPane.class.getName(),
-            jmri.InstanceManager.getDefault(LocoNetSystemConnectionMemo.class));
-    }
+QString LocoMonPane::getClassName()
+{
+ return "jmri.jmrix.loconet.locomon.LocoMonPane";
 }
-#endif

@@ -2,13 +2,21 @@
 #include "logger.h"
 #include <QDesktopWidget>
 #include <QApplication>
+#include "userpreferencesmanager.h"
+#include "instancemanager.h"
+#include "windowinterface.h"
 
 JmriPanel::JmriPanel(QWidget *parent) :
-    QFrame(parent)
+    JPanel(parent)
 {
- wi = NULL;
+ wi = nullptr;
  log = new Logger("JmriPanel");
+
+ reuseFrameSavedPosition = true;
+ reuseFrameSavedSized = true;
+ windowFrameRef = "";
 }
+
 /**
  * JPanel extension to handle automatic creation
  * of window title and help reference.
@@ -74,6 +82,7 @@ JmriPanel::JmriPanel(QWidget *parent) :
 /*public*/ void JmriPanel::setWindowInterface(WindowInterface* w)
 {
  wi = w;
+ setParent(wi->getFrame());
 }
 
 /**
@@ -244,4 +253,124 @@ void JmriPanel::reSizeToFitOnScreen()
  if (log->isDebugEnabled())
      log->debug("getPreferredSize (sizeHint) returns width "+QString::number(sizeHint().width())+" height "+QString::number(sizeHint().height()));
  return sizeHint();
+}
+
+/**
+ * Set whether the frame Position is saved or not after it has been created.
+ */
+/*public*/ void JmriPanel::setSavePosition(bool save){
+    reuseFrameSavedPosition=save;
+    UserPreferencesManager* prefsMgr = (UserPreferencesManager* )InstanceManager::getDefault("UserPreferencesManager");
+    if (prefsMgr != nullptr) {
+        prefsMgr->setSaveWindowLocation(windowFrameRef, save);
+    } else {
+        log->warn("setSavePosition() UserPreferencesManager() not initialised" );
+    }
+}
+
+/*public*/ void JmriPanel::setFrameLocation()
+{
+ UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+ if ((prefsMgr != nullptr) && (prefsMgr->isWindowPositionSaved(windowFrameRef)))
+ {
+  //QSize screen = getToolkit().getScreenSize();
+  QDesktopWidget* desktop = QApplication::desktop();
+  QSize screen = desktop->screen()->size();
+  if ((reuseFrameSavedPosition) && (!((prefsMgr->getWindowLocation(windowFrameRef).x()>=screen.width()) ||
+            (prefsMgr->getWindowLocation(windowFrameRef).y()>=screen.height()))))
+  {
+   if (log->isDebugEnabled()) log->debug("setFrameLocation 1st clause sets location to "+QString::number(prefsMgr->getWindowLocation(windowFrameRef).x()) + ","+QString::number(prefsMgr->getWindowLocation(windowFrameRef).y()));
+   this->move(prefsMgr->getWindowLocation(windowFrameRef));
+  }
+
+  /* Simple case that if either height or width are zero, then we should
+        not set them */
+  if ((reuseFrameSavedSized) &&(!((prefsMgr->getWindowSize(windowFrameRef).width()==0.0) || (prefsMgr->getWindowSize(windowFrameRef).height()==0.0))))
+  {
+#ifdef Q_OS_LINUX
+   if (log->isDebugEnabled())
+    log->debug("setFrameLocation 2nd clause sets preferredSize to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
+   this->resize(prefsMgr->getWindowSize(windowFrameRef));
+#endif
+#ifdef Q_OS_WIN32
+  if (log->isDebugEnabled()) log->debug("setFrameLocation 2nd clause sets size to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
+            //this->set(prefsMgr->getWindowSize(windowFrameRef));
+#endif
+  }
+#if 0
+  /* We just check to make sure that having set the location
+  that we do not have anther frame with the same class name and title
+  in the same location, if it is we offset */
+  for(int i = 0; i<frameList->size();i++)
+  {
+   JmriJFrame* j = frameList->at(i);
+   if(j->getClassName()== getClassName()  && (j->isMinimized()) && (j->isVisible())
+           && j->windowTitle()==(windowTitle()))
+   {
+    if ((j->pos().x()==this->pos().x()) && (j->pos().y()==this->pos().y()))
+    {
+     if (log->isDebugEnabled()) log->debug("setFrameLocation 3rd clause calls offSetFrameOnScreen("+j->windowTitle()+")");
+     offSetFrameOnScreen(j);
+    }
+   }
+  }
+#endif
+ }
+}
+
+void JmriPanel::moveEvent(QMoveEvent*)
+{
+ UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ if ((p != nullptr) && (reuseFrameSavedPosition) && isVisible()) {
+     p->setWindowLocation(windowFrameRef, this->pos());
+ }
+
+}
+
+void JmriPanel::resizeEvent(QResizeEvent*)
+{
+ UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ if ((p != nullptr) && (reuseFrameSavedSized) && isVisible()) {
+     saveWindowSize(p);
+ }
+
+}
+
+/*private*/ void JmriPanel::saveWindowSize(UserPreferencesManager* p) {
+//        if (SystemType.isLinux()) {
+//            // try to determine if user has resized the window
+//            log.debug("getSize() width: {}, height: {}", super.getSize().getWidth(), super.getSize().getHeight());
+//            log.debug("getPreferredSize() width: {}, height: {}", super.getPreferredSize().getWidth(), super.getPreferredSize().getHeight());
+//            if (Math.abs(super.getPreferredSize().getWidth() - (super.getSize().getWidth() + 4)) > 5
+//                    || Math.abs(super.getPreferredSize().getHeight() - (super.getSize().getHeight() + 3)) > 5) {
+//                // adjust the new window size to be slight wider and higher than actually returned
+//                Dimension size = new Dimension((int) super.getSize().getWidth() + 4, (int) super.getSize().getHeight() + 3);
+//                log.debug("setting new window size {}", size);
+//                p.setWindowSize(windowFrameRef, size);
+//            } else {
+//                p.setWindowSize(windowFrameRef, super.getPreferredSize());
+//            }
+//        } else {
+        p->setWindowSize(windowFrameRef, /*super.getSize()*/size());
+//        }
+}
+/*public*/ void JmriPanel::setFrameRef(QString initref)
+{
+ int refNo = 1;
+ QString ref = initref;
+#if 0
+ for(int i = 0; i<frameList->size();i++)
+ {
+  JmriJFrame* j = frameList->at(i);
+  if(j == nullptr)
+   continue;
+  if(j!=this && j->getWindowFrameRef()==(ref))
+  {
+      ref = initref+":"+QString::number(refNo);
+      refNo++;
+  }
+ }
+#endif
+ this->windowFrameRef = ref;
+ setFrameLocation();
 }

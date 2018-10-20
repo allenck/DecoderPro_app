@@ -25,7 +25,7 @@
 {
  //super(editor);
  log = new Logger("AnalogClock2Display");
- clock = InstanceManager::timebaseInstance();
+ clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
 
  rate = (int) ((SimpleTimebase*)clock)->userGetRate();
 

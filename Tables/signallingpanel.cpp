@@ -518,7 +518,7 @@ void SignallingPanel::on_destMastBox_currentSelectionChanged(int)
  {
   try
   {
-   bool valid = InstanceManager::layoutBlockManagerInstance()->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedBean(),
+   bool valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedBean(),
                             destMastBox->getSelectedBean());
    if(!valid)
     //JOptionPane.showMessageDialog(NULL, tr("ErrorUnReachableDestination"));
@@ -568,7 +568,7 @@ void SignallingPanel::on_useLayoutEditor_toggled(bool)
  if (useLayoutEditor->isChecked())
  {
   //jFrame->pack();
-  if (!InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
+  if (!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
   {
 //   int response;
 //   response = JOptionPane.showConfirmDialog(NULL, tr("EnableLayoutBlockRouting"));
@@ -576,7 +576,7 @@ void SignallingPanel::on_useLayoutEditor_toggled(bool)
    {
    case QMessageBox::Yes:
     {
-     InstanceManager::layoutBlockManagerInstance()->enableAdvancedRouting(true);
+     static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->enableAdvancedRouting(true);
        //JOptionPane.showMessageDialog(NULL, tr("LayoutBlockRoutingEnabled"));
      QMessageBox::information(this, tr("Information"), tr(" Please close and reopen this window for the changes to take effect."));
     }
@@ -599,7 +599,7 @@ void SignallingPanel::on_useLayoutEditor_toggled(bool)
    }
    try
    {
-    valid = InstanceManager::layoutBlockManagerInstance()->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedBean(),
+    valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedBean(),
                 destMastBox->getSelectedBean());
     if(!valid)
     {
@@ -997,7 +997,7 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
   bool valid = false;
   try
   {
-   valid = InstanceManager::layoutBlockManagerInstance()->getLayoutBlockConnectivityTools()->checkValidDest(sourceMast,
+   valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMast,
                 destMast);
   if(!valid)
   {

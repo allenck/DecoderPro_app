@@ -160,7 +160,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      //Considered normal if it doesn't exists
  }
  // get attributes
- QObjectList loadedPanel =  InstanceManager::configureManagerInstance()->getInstanceList("LayoutEditor");
+ QObjectList loadedPanel =  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->getInstanceList("LayoutEditor");
 
  //@SuppressWarnings("unchecked")
  QDomNodeList panelList = element.elementsByTagName("layoutPanel");

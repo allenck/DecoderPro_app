@@ -562,11 +562,11 @@ QString LlnMon::convertToMixed(int addressLow, int addressHigh)
 QString LlnMon::format(LocoNetMessage l)
 {
  QString result;
- bool showStatus = false; /* show track status in this message? */
+// bool showStatus = false; /* show track status in this message? */
 
- int minutes; // temporary time values
- int hours;
- int frac_mins;
+// int minutes; // temporary time values
+// int hours;
+// int frac_mins;
  //qDebug()<< QString("opcode 0x%1").arg(l.getOpCode() & 0xff,0,16);
  /*
   * 2 Byte MESSAGE OPCODES

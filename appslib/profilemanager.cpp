@@ -1023,7 +1023,7 @@ QString ProfileManager::FileFilter1::getDescription()
  */
 /*public*/ /*static*/ Profile* ProfileManager::getStartingProfile() /*throws IOException*/
 {
- if (ProfileManager::getDefault()->getActiveProfile() == NULL)
+ if (ProfileManager::getDefault()->getActiveProfile() == nullptr)
  {
   ProfileManager::getDefault()->readActiveProfile();
   // Automatically start with only profile if only one profile
@@ -1034,7 +1034,7 @@ QString ProfileManager::FileFilter1::getDescription()
   }
   else if (!ProfileManager::getDefault()->isAutoStartActiveProfile())
   {
-   return NULL;
+   return nullptr;
   }
  }
  return ProfileManager::defaultManager()->getActiveProfile();

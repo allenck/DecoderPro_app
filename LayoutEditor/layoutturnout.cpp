@@ -115,7 +115,7 @@
  log = new Logger("LayoutTurnout");
  this->version = version;
  setObjectName(id);
- editLayoutTurnoutFrame = NULL;
+ editLayoutTurnoutFrame = nullptr;
  editOpen = false;
  turnoutName = "";   // should be the name (system or user) of
                                     //	an existing physical turnout
@@ -128,9 +128,9 @@
  blockBName = "";  // Xover - name for second block, if there is one
  blockCName = "";  // Xover - name for third block, if there is one
  blockDName = "";  // Xover - name for fourth block, if there is one
- blockB = NULL;
- blockC = NULL;
- blockD = NULL;
+ blockB = nullptr;
+ blockC = nullptr;
+ blockD = nullptr;
 
  signalA1Name = ""; // signal 1 (continuing) (throat for RH, LH, WYE)
  signalA2Name = ""; // signal 2 (diverging) (throat for RH, LH, WYE)
@@ -146,15 +146,15 @@
  signalBMast = ""; // Continuing
  signalCMast = ""; // diverging
  signalDMast = ""; // single or double crossover only
- sensorANamed = NULL; // Throat
- sensorBNamed = NULL; // Continuing
- sensorCNamed = NULL; // diverging
- sensorDNamed = NULL; // single or double crossover only
+ sensorANamed = nullptr; // Throat
+ sensorBNamed = nullptr; // Continuing
+ sensorCNamed = nullptr; // diverging
+ sensorDNamed = nullptr; // single or double crossover only
  type = RH_TURNOUT;
- connectA = NULL;		// throat of LH, RH, RH Xover, LH Xover, and WYE turnouts
- connectB = NULL;		// straight leg of LH and RH turnouts
- connectC = NULL;
- connectD = NULL;		// double xover, RH Xover, LH Xover only
+ connectA = nullptr;		// throat of LH, RH, RH Xover, LH Xover, and WYE turnouts
+ connectB = nullptr;		// straight leg of LH and RH turnouts
+ connectC = nullptr;
+ connectD = nullptr;		// double xover, RH Xover, LH Xover only
  continuingSense = Turnout::CLOSED;
  disabled = false;
  hidden = false;
@@ -164,11 +164,11 @@
  dispC =  QPointF(20.0,10.0);
  linkedTurnoutName = ""; // name of the linked Turnout (as entered in tool)
  linkType = NO_LINK;
- popup = NULL;
-// JCheckBoxMenuItem* disableItem = NULL;
-// JCheckBoxMenuItem* disableWhenOccupiedItem = NULL;
- tools = NULL;
- circle = NULL;
+ popup = nullptr;
+// JCheckBoxMenuItem* disableItem = nullptr;
+// JCheckBoxMenuItem* disableWhenOccupiedItem = nullptr;
+ tools = nullptr;
+ circle = nullptr;
 
  turnoutNameField = new JTextField(16);
  blockBNameField = new JTextField(16);
@@ -178,7 +178,7 @@
  hiddenBox = new QCheckBox(tr("Hide Turnout"));
  editOpen = false;
  additionalTurnout = new QCheckBox(tr("Use Two Physical Addresses"));
- editLayoutTurnoutFrame = NULL;
+ editLayoutTurnoutFrame = nullptr;
  blockNameField = new JTextField(16);
  connect(blockNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockNameField_textEdited(QString)));
  connect(blockBNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockBNameField_textEdited(QString)));
@@ -190,22 +190,22 @@
  active = true;
  editAdditionalMenu = new QVector<QObject*>();
  viewAdditionalMenu = new QVector<QObject*>();
- secondNamedTurnout = NULL;
- item = NULL;
- rects = NULL;
- signalAMastNamed = NULL; // Throat
- signalBMastNamed = NULL; // Continuing
- signalCMastNamed = NULL; // diverging
- signalDMastNamed = NULL; // single or double crossover only
+ secondNamedTurnout = nullptr;
+ item = nullptr;
+ rects = nullptr;
+ signalAMastNamed = nullptr; // Throat
+ signalBMastNamed = nullptr; // Continuing
+ signalCMastNamed = nullptr; // diverging
+ signalDMastNamed = nullptr; // single or double crossover only
 
 
     instance = this;
-    namedTurnout = NULL;
+    namedTurnout = nullptr;
     turnoutName = "";
-    mTurnoutListener = NULL;
+    mTurnoutListener = nullptr;
     disabled = false;
     disableWhenOccupied = false;
-    block = NULL;
+    block = nullptr;
     blockName = "";
     layoutEditor = myPanel;
     ident = id;
@@ -250,11 +250,11 @@
      dispC.setX(layoutEditor->getXOverLong());
      dispC.setY(layoutEditor->getXOverHWid());
 
-        blockB = NULL;
+        blockB = nullptr;
         blockBName = "";
-        blockC = NULL;
+        blockC = nullptr;
         blockCName = "";
-        blockD = NULL;
+        blockD = nullptr;
         blockDName = "";
     }
     else if (type==RH_XOVER)
@@ -266,11 +266,11 @@
      dispC.setX(layoutEditor->getXOverLong());
      dispC.setY(layoutEditor->getXOverHWid());
 
-        blockB = NULL;
+        blockB = nullptr;
         blockBName = "";
-        blockC = NULL;
+        blockC = nullptr;
         blockCName = "";
-        blockD = NULL;
+        blockD = nullptr;
         blockDName = "";
     }
     else if (type==LH_XOVER)
@@ -282,11 +282,11 @@
      dispC.setX(layoutEditor->getXOverShort());
      dispC.setY(layoutEditor->getXOverHWid());
 
-        blockB = NULL;
+        blockB = nullptr;
         blockBName = "";
-        blockC = NULL;
+        blockC = nullptr;
         blockCName = "";
-        blockD = NULL;
+        blockD = nullptr;
         blockDName = "";
     }
     rotateCoords(rot);
@@ -338,12 +338,12 @@
 /*public*/ QString LayoutTurnout::getName() {return ident;}
 /*public*/ bool LayoutTurnout::useBlockSpeed() { return _useBlockSpeed; }
 /*public*/ QString LayoutTurnout::getTurnoutName() {
-    if (namedTurnout!=NULL)
+    if (namedTurnout!=nullptr)
         return namedTurnout->getName();
     return turnoutName;
 }
 /*public*/ QString LayoutTurnout::getSecondTurnoutName() {
-    if (secondNamedTurnout!=NULL)
+    if (secondNamedTurnout!=nullptr)
         return secondNamedTurnout->getName();
     return secondTurnoutName;
 }
@@ -374,7 +374,7 @@
 /*public*/ void LayoutTurnout::setSignalD2Name(QString signalName) {signalD2Name = signalName;}
 
 /*public*/ QString LayoutTurnout::getSignalAMastName() {
-        if (signalAMastNamed != NULL) {
+        if (signalAMastNamed != nullptr) {
             return signalAMastNamed->getName();
         }
         return "";
@@ -383,7 +383,7 @@
 /*public*/ void LayoutTurnout::setSignalAMast(QString signalMast) {signalAMast = signalMast;}
 /*public*/ QString LayoutTurnout::getSignalBMastName()
 {
- if (signalBMastNamed != NULL)
+ if (signalBMastNamed != nullptr)
  {
   return signalBMastNamed->getName();
  }
@@ -393,7 +393,7 @@
 /*public*/ void LayoutTurnout::setSignalBMast(QString signalMast) {signalBMast = signalMast;}
 /*public*/ QString LayoutTurnout::getSignalCMastName()
 {
- if (signalCMastNamed != NULL)
+ if (signalCMastNamed != nullptr)
  {
   return signalCMastNamed->getName();
  }
@@ -403,7 +403,7 @@
 /*public*/ void LayoutTurnout::setSignalCMast(QString signalMast) {signalCMast = signalMast;}
 /*public*/ QString LayoutTurnout::getSignalDMastName()
 {
- if (signalDMastNamed != NULL)
+ if (signalDMastNamed != nullptr)
  {
   return signalDMastNamed->getName();
  }
@@ -414,116 +414,116 @@
 
 /*public*/ QString LayoutTurnout::getSensorAName()
 {
- if (sensorANamed != NULL) {
+ if (sensorANamed != nullptr) {
      return sensorANamed->getName();
  }
  return "";
 }
 /*public*/ QString LayoutTurnout::getSensorA() {
-    if(sensorANamed!=NULL)
+    if(sensorANamed!=nullptr)
         return sensorANamed->getName();
     return "";
 }
 
 /*public*/ void LayoutTurnout::setSensorA(QString sensorName)
 {
-    if(sensorName==NULL || sensorName==(""))
+    if(sensorName==nullptr || sensorName==(""))
     {
-        sensorANamed=NULL;
+        sensorANamed=nullptr;
         return;
     }
 
     Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
-    if (sensor != NULL) {
+    if (sensor != nullptr) {
         sensorANamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
     } else {
-        sensorANamed=NULL;
+        sensorANamed=nullptr;
     }
 }
 
 /*public*/ QString LayoutTurnout::getSensorB() {
-    if(sensorBNamed!=NULL)
+    if(sensorBNamed!=nullptr)
         return sensorBNamed->getName();
     return "";
 }
 
 /*public*/ QString LayoutTurnout::getSensorBName()
 {
- if (sensorBNamed != NULL) {
+ if (sensorBNamed != nullptr) {
      return sensorBNamed->getName();
  }
  return "";
 }
 /*public*/ void LayoutTurnout::setSensorB(QString sensorName)
 {
- if(sensorName==NULL || sensorName==(""))
+ if(sensorName==nullptr || sensorName==(""))
  {
-  sensorBNamed=NULL;
+  sensorBNamed=nullptr;
   return;
  }
 
  Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
- if (sensor != NULL)
+ if (sensor != nullptr)
  {
   sensorBNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
  }
  else
  {
-  sensorBNamed=NULL;
+  sensorBNamed=nullptr;
  }
 }
 
 /*public*/ QString LayoutTurnout::getSensorCName()
 {
- if (sensorCNamed != NULL) {
+ if (sensorCNamed != nullptr) {
      return sensorCNamed->getName();
  }
  return "";
 }
 /*public*/ QString LayoutTurnout::getSensorC() {
-    if(sensorCNamed!=NULL)
+    if(sensorCNamed!=nullptr)
         return sensorCNamed->getName();
     return "";
 }
 
 /*public*/ void LayoutTurnout::setSensorC(QString sensorName) {
-    if(sensorName==NULL || sensorName==("")){
-        sensorCNamed=NULL;
+    if(sensorName==nullptr || sensorName==("")){
+        sensorCNamed=nullptr;
         return;
     }
 
     Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
-    if (sensor != NULL) {
+    if (sensor != nullptr) {
         sensorCNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
     } else {
-        sensorCNamed=NULL;
+        sensorCNamed=nullptr;
     }
 }
 
 /*public*/ QString LayoutTurnout::getSensorDName()
 {
- if (sensorDNamed != NULL) {
+ if (sensorDNamed != nullptr) {
      return sensorDNamed->getName();
  }
  return "";
 }
 /*public*/ QString LayoutTurnout::getSensorD() {
-    if(sensorDNamed!=NULL)
+    if(sensorDNamed!=nullptr)
         return sensorDNamed->getName();
     return "";
 }
 
 /*public*/ void LayoutTurnout::setSensorD(QString sensorName) {
-    if(sensorName==NULL || sensorName==("")){
-        sensorDNamed=NULL;
+    if(sensorName==nullptr || sensorName==("")){
+        sensorDNamed=nullptr;
         return;
     }
 
     Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
-    if (sensor != NULL) {
+    if (sensor != nullptr) {
         sensorDNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
     } else {
-        sensorDNamed=NULL;
+        sensorDNamed=nullptr;
     }
 }
 
@@ -540,13 +540,13 @@
 
 /*public*/ Turnout* LayoutTurnout::getTurnout()
 {
- if (namedTurnout==NULL)
+ if (namedTurnout==nullptr)
  {
   // set physical turnout if possible and needed
   setTurnout(turnoutName); // turnoutName should be the name (system or user) of
   //	an existing physical turnout
-  if (namedTurnout==NULL)
-   return NULL;
+  if (namedTurnout==nullptr)
+   return nullptr;
  }
  return namedTurnout->getBean();
 }
@@ -555,11 +555,11 @@
 
 /*public*/ void LayoutTurnout::setTurnout(QString tName)
 {
- if (namedTurnout!=NULL) deactivateTurnout();
+ if (namedTurnout!=nullptr) deactivateTurnout();
  turnoutName = tName;
  Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
                         getTurnout(turnoutName);
- if (turnout!=NULL)
+ if (turnout!=nullptr)
  {
   namedTurnout = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(turnoutName, turnout);
   activateTurnout();
@@ -567,20 +567,20 @@
  else
  {
   turnoutName = "";
-  namedTurnout = NULL;
+  namedTurnout = nullptr;
  }
 }
 
 /*public*/ Turnout* LayoutTurnout::getSecondTurnout()
 {
- if (secondNamedTurnout==NULL)
+ if (secondNamedTurnout==nullptr)
  {
   // set physical turnout if possible and needed
   setSecondTurnout(secondTurnoutName);
 
-  if (secondNamedTurnout==NULL)
+  if (secondNamedTurnout==nullptr)
   {
-   return NULL;
+   return nullptr;
   }
  }
  return secondNamedTurnout->getBean();
@@ -588,21 +588,21 @@
 
 /*public*/ void LayoutTurnout::setSecondTurnout(QString tName)
 {
- if(tName!=NULL && tName==(secondTurnoutName))
+ if(tName!=nullptr && tName==(secondTurnoutName))
  {
   return;
  }
 
- if (secondNamedTurnout!=NULL) deactivateTurnout();
+ if (secondNamedTurnout!=nullptr) deactivateTurnout();
  QString oldSecondTurnoutName = secondTurnoutName;
  secondTurnoutName = tName;
- Turnout* turnout = NULL;
- if(tName!=NULL)
+ Turnout* turnout = nullptr;
+ if(tName!=nullptr)
  {
   turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
                         getTurnout(secondTurnoutName);
  }
- if (turnout!=NULL)
+ if (turnout!=nullptr)
  {
   secondNamedTurnout = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(secondTurnoutName, turnout);
         activateTurnout();
@@ -610,25 +610,25 @@
  else
  {
   secondTurnoutName = "";
-  secondNamedTurnout = NULL;
+  secondNamedTurnout = nullptr;
  }
  if ( (type == RH_TURNOUT) || (type ==LH_TURNOUT) || (type == WYE_TURNOUT) ){
-  if(oldSecondTurnoutName!=NULL && oldSecondTurnoutName!=(""))
+  if(oldSecondTurnoutName!=nullptr && oldSecondTurnoutName!=(""))
   {
    Turnout* oldTurnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
                         getTurnout(oldSecondTurnoutName);
    LayoutTurnout* oldLinked = layoutEditor->findLayoutTurnoutByTurnoutName(oldTurnout->getSystemName());
-   if(oldLinked==NULL)
+   if(oldLinked==nullptr)
     oldLinked = layoutEditor->findLayoutTurnoutByTurnoutName(oldTurnout->getUserName());
-   if((oldLinked!=NULL) && oldLinked->getSecondTurnout()==getTurnout())
-    oldLinked->setSecondTurnout(NULL);
+   if((oldLinked!=nullptr) && oldLinked->getSecondTurnout()==getTurnout())
+    oldLinked->setSecondTurnout(nullptr);
   }
-  if(turnout!=NULL)
+  if(turnout!=nullptr)
   {
    LayoutTurnout* newLinked = layoutEditor->findLayoutTurnoutByTurnoutName(turnout->getSystemName());
-   if(newLinked==NULL)
+   if(newLinked==nullptr)
     newLinked = layoutEditor->findLayoutTurnoutByTurnoutName(turnout->getUserName());
-   if(newLinked!=NULL)
+   if(newLinked!=nullptr)
    {
     newLinked->setSecondTurnout(turnoutName);
    }
@@ -720,17 +720,17 @@
 /*public*/ LayoutBlock* LayoutTurnout::getLayoutBlock() {return block;}
 /*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockB()
 {
- if (blockB!=NULL) return blockB;
+ if (blockB!=nullptr) return blockB;
  return block;
 }
 /*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockC()
 {
- if (blockC!=NULL) return blockC;
+ if (blockC!=nullptr) return blockC;
  return block;
 }
 /*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockD()
 {
- if (blockD!=NULL) return blockD;
+ if (blockD!=nullptr) return blockD;
  return block;
 }
 /*public*/ QPointF LayoutTurnout::getCoordsCenter() {return center;}
@@ -778,38 +778,38 @@
 // updates connectivity for blocks assigned to this turnout and connected track segments
 /*private*/ void LayoutTurnout::updateBlockInfo()
 {
- LayoutBlock* bA = NULL;
- LayoutBlock* bB = NULL;
- LayoutBlock* bC = NULL;
- LayoutBlock* bD = NULL;
+ LayoutBlock* bA = nullptr;
+ LayoutBlock* bB = nullptr;
+ LayoutBlock* bC = nullptr;
+ LayoutBlock* bD = nullptr;
  layoutEditor->auxTools->setBlockConnectivityChanged();
- if (block!=NULL) block->updatePaths();
- if (connectA!=NULL)
+ if (block!=nullptr) block->updatePaths();
+ if (connectA!=nullptr)
  {
   bA = ((TrackSegment*)connectA)->getLayoutBlock();
-  if ((bA!=NULL) && (bA!=block)) bA->updatePaths();
+  if ((bA!=nullptr) && (bA!=block)) bA->updatePaths();
  }
- if ((blockB!=NULL) && (blockB!=block) && (blockB!=bA)) blockB->updatePaths();
- if (connectB!=NULL)
+ if ((blockB!=nullptr) && (blockB!=block) && (blockB!=bA)) blockB->updatePaths();
+ if (connectB!=nullptr)
  {
   bB = ((TrackSegment*)connectB)->getLayoutBlock();
-  if ((bB!=NULL) && (bB!=block) && (bB!=bA) && (bB!=blockB)) bB->updatePaths();
+  if ((bB!=nullptr) && (bB!=block) && (bB!=bA) && (bB!=blockB)) bB->updatePaths();
  }
- if ((blockC!=NULL) && (blockC!=block) && (blockC!=bA) &&
+ if ((blockC!=nullptr) && (blockC!=block) && (blockC!=bA) &&
          (blockC!=bB) && (blockC!=blockB)) blockC->updatePaths();
- if (connectC!=NULL)
+ if (connectC!=nullptr)
  {
   bC = ((TrackSegment*)connectC)->getLayoutBlock();
-  if ((bC!=NULL) && (bC!=block) && (bC!=bA) && (bC!=blockB) && (bC!=bB) &&
+  if ((bC!=nullptr) && (bC!=block) && (bC!=bA) && (bC!=blockB) && (bC!=bB) &&
           (bC!=blockC)) bC->updatePaths();
  }
- if ((blockD!=NULL) && (blockD!=block) && (blockD!=bA) &&
+ if ((blockD!=nullptr) && (blockD!=block) && (blockD!=bA) &&
          (blockD!=bB) && (blockD!=blockB) && (blockD!=bC) &&
              (blockD!=blockC)) blockD->updatePaths();
- if (connectD!=NULL)
+ if (connectD!=nullptr)
  {
   bD = ((TrackSegment*)connectD)->getLayoutBlock();
-  if ((bD!=NULL) && (bD!=block) && (bD!=bA) && (bD!=blockB) && (bD!=bB) &&
+  if ((bD!=nullptr) && (bD!=block) && (bD!=bA) && (bD!=blockB) && (bD!=bB) &&
       (bD!=blockC) && (bD!=bC) && (bD!=blockD)) bD->updatePaths();
  }
 }
@@ -867,13 +867,13 @@
  */
 /*public*/ void LayoutTurnout::setLayoutBlock (LayoutBlock* b) {
     block = b;
-    if (b!=NULL) blockName = b->getID();
+    if (b!=nullptr) blockName = b->getID();
     else blockName = "";
 }
 /*public*/ void LayoutTurnout::setLayoutBlockB (LayoutBlock* b) {
     if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
         blockB = b;
-        if (b!=NULL) blockBName = b->getID();
+        if (b!=nullptr) blockBName = b->getID();
         else blockBName = "";
     }
     else {
@@ -883,7 +883,7 @@
 /*public*/ void LayoutTurnout::setLayoutBlockC (LayoutBlock* b) {
     if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
         blockC = b;
-        if (b!=NULL) blockCName = b->getID();
+        if (b!=nullptr) blockCName = b->getID();
         else blockCName = "";
     }
     else {
@@ -893,7 +893,7 @@
 /*public*/ void LayoutTurnout::setLayoutBlockD (LayoutBlock* b) {
     if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
         blockD = b;
-        if (b!=NULL) blockDName = b->getID();
+        if (b!=nullptr) blockDName = b->getID();
         else blockDName = "";
     }
     else {
@@ -934,39 +934,39 @@
  *  Defaults to not mainline if connecting track segment is missing
  */
 /*public*/ bool LayoutTurnout::isMainlineA() {
-    if (connectA != NULL)
+    if (connectA != nullptr)
         return ((TrackSegment*)connectA)->getMainline();
     else {
         // if no connection, depends on type of turnout
         if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
             // All crossovers - straight continuing is B
-            if (connectB != NULL)
+            if (connectB != nullptr)
                 return ((TrackSegment*)connectB)->getMainline();
         }
         // must be RH, LH, or WYE turnout - A is the switch throat
-        else if ( ((connectB != NULL) &&
+        else if ( ((connectB != nullptr) &&
                 (((TrackSegment*)connectB)->getMainline())) ||
-                    ((connectC != NULL) &&
+                    ((connectC != nullptr) &&
                         (((TrackSegment*)connectC)->getMainline())) )
             return true;
     }
     return false;
 }
 /*public*/ bool LayoutTurnout::isMainlineB() {
-    if (connectB != NULL)
+    if (connectB != nullptr)
         return ((TrackSegment*)connectB)->getMainline();
     else {
         // if no connection, depends on type of turnout
         if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
             // All crossovers - straight continuing is A
-            if (connectA != NULL)
+            if (connectA != nullptr)
                 return ((TrackSegment*)connectA)->getMainline();
         }
         // must be RH, LH, or WYE turnout - A is the switch throat,
         //		B is normally the continuing straight
         else if (continuingSense == Turnout::CLOSED) {
             // user hasn't changed the continuing turnout state
-            if (connectA != NULL)
+            if (connectA != nullptr)
                 // if throat is mainline, this leg must be also
                 return ((TrackSegment*)connectA)->getMainline();
         }
@@ -974,20 +974,20 @@
     return false;
 }
 /*public*/ bool LayoutTurnout::isMainlineC() {
-    if (connectC != NULL)
+    if (connectC != nullptr)
         return ((TrackSegment*)connectC)->getMainline();
     else {
         // if no connection, depends on type of turnout
         if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
             // All crossovers - straight continuing is D
-            if (connectD != NULL)
+            if (connectD != nullptr)
                 return ((TrackSegment*)connectD)->getMainline();
         }
         // must be RH, LH, or WYE turnout - A is the switch throat,
         //		B is normally the continuing straight
         else if (continuingSense == Turnout::THROWN) {
             // user has changed the continuing turnout state
-            if (connectA != NULL)
+            if (connectA != nullptr)
                 // if throat is mainline, this leg must be also
                 return ((TrackSegment*)connectA)->getMainline();
         }
@@ -996,9 +996,9 @@
 }
 /*public*/ bool LayoutTurnout::isMainlineD() {
     // this is a crossover turnout
-    if (connectD != NULL)
+    if (connectD != nullptr)
         return ((TrackSegment*)connectD)->getMainline();
-    else if (connectC != NULL)
+    else if (connectC != nullptr)
         return ((TrackSegment*)connectC)->getMainline();
     return false;
 }
@@ -1189,7 +1189,7 @@
  */
 /*private*/ void LayoutTurnout::activateTurnout()
 {
- if (namedTurnout!=NULL)
+ if (namedTurnout!=nullptr)
  {
   //namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener =
 //          new PropertyChangeListener(), namedTurnout->getName(),"Layout Editor Turnout");
@@ -1201,7 +1201,7 @@
   AbstractTurnout* t = (AbstractTurnout*)namedTurnout->getBean();
   connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
  }
- if (secondNamedTurnout!=NULL)
+ if (secondNamedTurnout!=nullptr)
  {
   secondNamedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener, secondNamedTurnout->getName(), "Layout Editor Turnout");
   connect(secondNamedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
@@ -1209,14 +1209,14 @@
 }
 /*private*/ void LayoutTurnout::deactivateTurnout()
 {
- if (mTurnoutListener!=NULL)
+ if (mTurnoutListener!=nullptr)
  {
   namedTurnout->getBean()->removePropertyChangeListener(mTurnoutListener);
-  if(secondNamedTurnout!=NULL)
+  if(secondNamedTurnout!=nullptr)
   {
    secondNamedTurnout->getBean()->removePropertyChangeListener(mTurnoutListener);
   }
-  mTurnoutListener = NULL;
+  mTurnoutListener = nullptr;
  }
 }
 
@@ -1226,7 +1226,7 @@
  */
 /*public*/ void LayoutTurnout::toggleTurnout()
 {
- if ((getTurnout()!=NULL) && (!disabled))
+ if ((getTurnout()!=nullptr) && (!disabled))
  {
   if (disableWhenOccupied)
   {
@@ -1242,13 +1242,13 @@
   if (((AbstractTurnout*)getTurnout())->getKnownState()==Turnout::CLOSED)
   {
    ((AbstractTurnout*)getTurnout())->setCommandedState(Turnout::THROWN);
-   if(getSecondTurnout()!=NULL)
+   if(getSecondTurnout()!=nullptr)
     ((AbstractTurnout*)getSecondTurnout())->setCommandedState(Turnout::THROWN);
   }
   else
   {
    ((AbstractTurnout*)getTurnout())->setCommandedState(Turnout::CLOSED);
-   if(getSecondTurnout()!=NULL)
+   if(getSecondTurnout()!=nullptr)
     ((AbstractTurnout*)getSecondTurnout())->setCommandedState(Turnout::CLOSED);
   }
  }
@@ -1258,7 +1258,7 @@
 {
  if ((type==RH_TURNOUT) || (type==LH_TURNOUT) || (type==WYE_TURNOUT))
  {
-  if(block == NULL) return false;
+  if(block == nullptr) return false;
   if(block->getOccupancy()==LayoutBlock::OCCUPIED)
   {
    log->debug("Block " + blockName + "is Occupied");
@@ -1335,7 +1335,7 @@
  if (tBlockName.length()>0)
  {
   block = p->getLayoutBlock(tBlockName);
-  if (block!=NULL)
+  if (block!=nullptr)
   {
    blockName = tBlockName;
    block->incrementUse();
@@ -1348,7 +1348,7 @@
  if (tBlockBName.length()>0)
  {
   blockB = p->getLayoutBlock(tBlockBName);
-  if (blockB!=NULL)
+  if (blockB!=nullptr)
   {
    blockBName = tBlockBName;
    if (block!=blockB) blockB->incrementUse();
@@ -1361,7 +1361,7 @@
  if (tBlockCName.length()>0)
  {
   blockC = p->getLayoutBlock(tBlockCName);
-  if (blockC!=NULL)
+  if (blockC!=nullptr)
   {
    blockCName = tBlockCName;
    if ( (block!=blockC) && (blockB!=blockC) ) blockC->incrementUse();
@@ -1374,7 +1374,7 @@
  if (tBlockDName.length()>0)
  {
   blockD = p->getLayoutBlock(tBlockDName);
-  if (blockD!=NULL)
+  if (blockD!=nullptr)
   {
    blockDName = tBlockDName;
    if ( (block!=blockD) && (blockB!=blockD) &&
@@ -1389,7 +1389,7 @@
  if (tSecondTurnoutName.length()>0)
  {
   Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(tSecondTurnoutName);
-  if (turnout!=NULL)
+  if (turnout!=nullptr)
   {
    secondNamedTurnout =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(tSecondTurnoutName, turnout);
    secondTurnoutName = tSecondTurnoutName;
@@ -1398,23 +1398,23 @@
   {
    log->error("bad 2nd turnoutname '"+tSecondTurnoutName+"' in layoutturnout "+ident);
    secondTurnoutName = "";
-   secondNamedTurnout = NULL;
+   secondNamedTurnout = nullptr;
   }
  }
  if (tTurnoutName.length()>0)
  {
-  Turnout* turnout = NULL;
+  Turnout* turnout = nullptr;
   ProxyTurnoutManager* mgr = (ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance();
   for(int i=0; i < mgr->nMgrs(); i++)
   {
    turnout = (Turnout*)mgr->getMgr(i)->getBeanBySystemName(tTurnoutName);
-   if (turnout != NULL) break;
+   if (turnout != nullptr) break;
    turnout = (Turnout*)mgr->getMgr(i)->getBeanByUserName(tTurnoutName);
-   if (turnout != NULL) break;
+   if (turnout != nullptr) break;
   }
   //Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
 //                            getTurnout(tTurnoutName);
-  if (turnout!=NULL)
+  if (turnout!=nullptr)
   {
    namedTurnout = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(tTurnoutName, turnout);
    turnoutName = tTurnoutName;
@@ -1424,7 +1424,7 @@
   {
    log->error("bad turnoutname '"+tTurnoutName+"' in layoutturnout "+ident);
    turnoutName = "";
-   namedTurnout = NULL;
+   namedTurnout = nullptr;
   }
  }
 }
@@ -1434,7 +1434,7 @@
  */
 /*protected*/ void LayoutTurnout::showPopUp(QGraphicsSceneMouseEvent* /*e*/, bool editable)
 {
- if (popup != NULL )
+ if (popup != nullptr )
  {
   popup->clear();
  }
@@ -1482,7 +1482,7 @@
   actionIdent = new QAction(ident, this);
   popup->addAction(actionIdent);
 
-  if (getTurnout()==NULL)
+  if (getTurnout()==nullptr)
   {
    //popup.add(tr("NoTurnout"));
    actionNoTurnout = new QAction(tr("No Turnout set"), this);
@@ -1496,8 +1496,8 @@
   }
 
   // Rotate if there are no track connections
-  if ( (connectA==NULL) && (connectB==NULL) &&
-                (connectC==NULL) && (connectD==NULL) )
+  if ( (connectA==nullptr) && (connectB==nullptr) &&
+                (connectC==nullptr) && (connectD==nullptr) )
   {
 //   JMenuItem rotateItem = new JMenuItem(tr("Rotate")+"...");
   QAction* rotateItem = new QAction(tr("Rotate..."),this);
@@ -1537,7 +1537,7 @@
 //        });
   }
 
-//  if (disableItem==NULL)
+//  if (disableItem==nullptr)
 //   disableItem = new JCheckBoxMenuItem(tr("Disabled"));
 //  disableItem.setSelected(disabled);
 //  popup.add(disableItem);
@@ -1552,7 +1552,7 @@
   popup->addAction(disableItemAct);
   connect(disableItemAct, SIGNAL(toggled(bool)), this, SLOT(setDisabled(bool)));
 
-//    if (disableWhenOccupiedItem==NULL)
+//    if (disableWhenOccupiedItem==nullptr)
 //        disableWhenOccupiedItem = new JCheckBoxMenuItem(tr("DisabledWhenOccupied"));
 //    disableWhenOccupiedItem.setSelected(disableWhenOccupied);
 //    popup.add(disableWhenOccupiedItem);
@@ -1572,9 +1572,9 @@
   if ( (type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER) )
   {
    // check if extra blocks have been entered
-   if (blockB!=NULL) popup->addAction(new QAction(tr("Block2ID")+": "+blockBName,this));
-   if (blockC!=NULL) popup->addAction(new QAction(tr("Block3ID")+": "+blockCName,this));
-   if (blockD!=NULL) popup->addAction(new QAction(tr("Block4ID")+": "+blockDName,this));
+   if (blockB!=nullptr) popup->addAction(new QAction(tr("Block2ID")+": "+blockBName,this));
+   if (blockC!=nullptr) popup->addAction(new QAction(tr("Block3ID")+": "+blockCName,this));
+   if (blockD!=nullptr) popup->addAction(new QAction(tr("Block4ID")+": "+blockDName,this));
   }
   if (hidden) popup->addAction(new QAction(tr("Hidden"),this));
   else popup->addAction(new QAction(tr("Not Hidden"),this));
@@ -1610,11 +1610,11 @@
   QAction* removeAction = new QAction(tr("Remove"),this);
   popup ->addAction(removeAction);
   connect(removeAction, SIGNAL(triggered()), this, SLOT(on_removeAction_triggered()));
-  if (getTurnout()!=NULL)
+  if (getTurnout()!=nullptr)
   {
 //        popup.add(new AbstractAction(tr("SetSignals")) {
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                if (tools == NULL) {
+//                if (tools == nullptr) {
 //                    tools = new LayoutEditorTools(layoutEditor);
 //                }
 //                if ( (getTurnoutType()==DOUBLE_XOVER) || (getTurnoutType()==RH_XOVER) ||
@@ -1734,7 +1734,7 @@
    {
 //            popup.add(new AbstractAction(tr("SetSignalMasts")) {
 //                /*public*/ void actionPerformed(ActionEvent e) {
-//                    if (tools == NULL) {
+//                    if (tools == nullptr) {
 //                        tools = new LayoutEditorTools(layoutEditor);
 //                    }
 
@@ -1747,7 +1747,7 @@
    popup->addAction(setSignalMastsAct);
 //            popup.add(new AbstractAction(tr("SetSensors")) {
 //                /*public*/ void actionPerformed(ActionEvent e) {
-//                    if (tools == NULL) {
+//                    if (tools == nullptr) {
 //                        tools = new LayoutEditorTools(layoutEditor);
 //                    }
 
@@ -1808,7 +1808,7 @@ void LayoutTurnout::on_viewRoutingAct_triggered()
 
 void LayoutTurnout::on_setSignalMastsAct_triggered()
 {
- if (tools == NULL)
+ if (tools == nullptr)
  {
    tools = new LayoutEditorTools(layoutEditor);
  }
@@ -1817,7 +1817,7 @@ void LayoutTurnout::on_setSignalMastsAct_triggered()
 
 void LayoutTurnout::on_setSensorsAct_triggered()
 {
- if (tools == NULL) {
+ if (tools == nullptr) {
     tools = new LayoutEditorTools(layoutEditor);
  }
 
@@ -1826,7 +1826,7 @@ void LayoutTurnout::on_setSensorsAct_triggered()
 
 void LayoutTurnout::on_setSignalsAct_triggered()
 {
- if (tools == NULL)
+ if (tools == nullptr)
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
@@ -1863,14 +1863,14 @@ boundaryBetween = QVector<QString>(4);
  if ((type==WYE_TURNOUT) || (type ==RH_TURNOUT) || (type == LH_TURNOUT))
  {
   //This should only be needed where we are looking at a single turnout.
-  if(block!=NULL)
+  if(block!=nullptr)
   {
-   LayoutBlock* aLBlock = NULL;
-   LayoutBlock* bLBlock = NULL;
-   LayoutBlock* cLBlock = NULL;
+   LayoutBlock* aLBlock = nullptr;
+   LayoutBlock* bLBlock = nullptr;
+   LayoutBlock* cLBlock = nullptr;
 #if 1 //TODO
    //if (connectA instanceof TrackSegment)
-   if(qobject_cast<TrackSegment*>(connectA)!= NULL)
+   if(qobject_cast<TrackSegment*>(connectA)!= nullptr)
    {
     aLBlock =((TrackSegment*)connectA)->getLayoutBlock();
     if(aLBlock!=block)
@@ -1888,7 +1888,7 @@ boundaryBetween = QVector<QString>(4);
    }
 
    //if (connectB instanceof TrackSegment)
-   if(qobject_cast<TrackSegment*>(connectB)!= NULL)
+   if(qobject_cast<TrackSegment*>(connectB)!= nullptr)
    {
     bLBlock =((TrackSegment*)connectB)->getLayoutBlock();
     if(bLBlock!=block)
@@ -1905,14 +1905,14 @@ boundaryBetween = QVector<QString>(4);
     }
    }
    //if ((connectC instanceof TrackSegment) && (((TrackSegment)connectC).getLayoutBlock()!=block))
-   if(qobject_cast<TrackSegment*>(connectC)!= NULL && (((TrackSegment*)connectC)->getLayoutBlock()!=block))
+   if(qobject_cast<TrackSegment*>(connectC)!= nullptr && (((TrackSegment*)connectC)->getLayoutBlock()!=block))
    {
     cLBlock = ((TrackSegment*)connectC)->getLayoutBlock();
     if(cLBlock!=block)
     {
 //     try
 //     {
-      if(cLBlock != NULL)
+      if(cLBlock != nullptr)
       {
       boundaryBetween.replace(2,cLBlock->getDisplayName()+ " - " + block->getDisplayName());
       }
@@ -1931,28 +1931,28 @@ boundaryBetween = QVector<QString>(4);
  {
   QVector<LayoutBlock*> localblks =  QVector<LayoutBlock*>();
   localblks.reserve(4);
-  if(block!=NULL)
+  if(block!=nullptr)
    localblks.append(block);
-  if(blockB!=NULL)
+  if(blockB!=nullptr)
    localblks.append(blockB);
-  if(blockC!=NULL)
+  if(blockC!=nullptr)
    localblks.append(blockC);
-  if(blockD!=NULL)
+  if(blockD!=nullptr)
    localblks.append(blockD);
 
-  LayoutBlock* aLBlock = NULL;
-  LayoutBlock* bLBlock = NULL;
-  LayoutBlock* cLBlock = NULL;
-  LayoutBlock* dLBlock = NULL;
-  if(block!=NULL)
+  LayoutBlock* aLBlock = nullptr;
+  LayoutBlock* bLBlock = nullptr;
+  LayoutBlock* cLBlock = nullptr;
+  LayoutBlock* dLBlock = nullptr;
+  if(block!=nullptr)
   {
    //if (connectA instanceof TrackSegment)
-   if(qobject_cast<TrackSegment*>(connectA)!=NULL)
+   if(qobject_cast<TrackSegment*>(connectA)!=nullptr)
    {
     aLBlock =((TrackSegment*)connectA)->getLayoutBlock();
     if(aLBlock!=block)
     {
-     if(aLBlock != NULL)
+     if(aLBlock != nullptr)
       boundaryBetween.replace(0,aLBlock->getDisplayName()+ " - " + block->getDisplayName());
      else      //Can be considered normal if tracksegement hasn't yet been allocated a block
       log->debug("TrackSegement at connection A doesn't contain a layout block");
@@ -1961,7 +1961,7 @@ boundaryBetween = QVector<QString>(4);
     {
 //     try
 //     {
-      if(blockB !=NULL)
+      if(blockB !=nullptr)
       boundaryBetween.replace(0,block->getDisplayName()+ " - " + blockB->getDisplayName());
 //     }
 //     catch (NullPointerException e)
@@ -1974,7 +1974,7 @@ boundaryBetween = QVector<QString>(4);
    }
 
 //   if (connectB instanceof TrackSegment)
-   if(qobject_cast<TrackSegment*>(connectB)!=NULL)
+   if(qobject_cast<TrackSegment*>(connectB)!=nullptr)
    {
     bLBlock =((TrackSegment*)connectB)->getLayoutBlock();
 
@@ -1995,7 +1995,7 @@ boundaryBetween = QVector<QString>(4);
      //This is an interal block on the turnout
 //     try
 //     {
-      if(blockB!= NULL)
+      if(blockB!= nullptr)
        boundaryBetween.replace(1,blockB->getDisplayName()+ " - " + block->getDisplayName());
 //     }
 //     catch (NullPointerException e)
@@ -2007,7 +2007,7 @@ boundaryBetween = QVector<QString>(4);
     }
    }
    //if (connectC instanceof TrackSegment)
-   if(qobject_cast<TrackSegment*>(connectC)!=NULL)
+   if(qobject_cast<TrackSegment*>(connectC)!=nullptr)
    {
     cLBlock =((TrackSegment*)connectC)->getLayoutBlock();
     if (cLBlock!=block && cLBlock!=blockB && cLBlock!=blockC)
@@ -2037,7 +2037,7 @@ boundaryBetween = QVector<QString>(4);
     }
    }
    //if (connectD instanceof TrackSegment)
-   if(qobject_cast<TrackSegment*>(connectD)!=NULL)
+   if(qobject_cast<TrackSegment*>(connectD)!=nullptr)
    {
     dLBlock =((TrackSegment*)connectD)->getLayoutBlock();
     if (dLBlock!=block && dLBlock!=blockB && dLBlock!=blockC && dLBlock!=blockD)
@@ -2078,7 +2078,7 @@ boundaryBetween = QVector<QString>(4);
  */
 /*protected*/ void LayoutTurnout::editLayoutTurnout()
 {
-// if(editLayoutTurnoutFrame == NULL)
+// if(editLayoutTurnoutFrame == nullptr)
 // {
 //  editLayoutTurnoutFrame = new EditTurnout(this,layoutEditor);
 //  editOpen = true;
@@ -2094,7 +2094,7 @@ boundaryBetween = QVector<QString>(4);
  }
 #if 1 // see EditTurnout for implementation:
  // Initialize if needed
- if (editLayoutTurnoutFrame == NULL)
+ if (editLayoutTurnoutFrame == nullptr)
  {
   editLayoutTurnoutFrame = new JmriJFrame( tr("Edit Turnout"), false, true );
   editLayoutTurnoutFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutTurnout", true);
@@ -2255,7 +2255,7 @@ boundaryBetween = QVector<QString>(4);
  turnoutNameField->setText(turnoutName);
 
 
- if(secondNamedTurnout!=NULL)
+ if(secondNamedTurnout!=nullptr)
  {
   additionalTurnout->setChecked(true);
   secondTurnoutLabel->setEnabled(true);
@@ -2275,7 +2275,7 @@ boundaryBetween = QVector<QString>(4);
 
 // editLayoutTurnoutFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 //         /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//             turnoutEditCancelPressed(NULL);
+//             turnoutEditCancelPressed(nullptr);
 //         }
 //     });
  editLayoutTurnoutFrame->addWindowListener(new ETWindowListener(this));
@@ -2309,26 +2309,26 @@ void LayoutTurnout::on_additionalTurnout_toggled(bool)
  }
 }
 
-void LayoutTurnout::turnoutEditBlockPressed(ActionEvent* a)
+void LayoutTurnout::turnoutEditBlockPressed(ActionEvent* /*a*/)
 {
  // check if a block name has been entered
  if (blockName!=(blockNameField->text().trimmed()))
  {
   // block has changed, if old block exists, decrement use
-  if ((block != NULL) && (block != blockB) && (block != blockC)
+  if ((block != nullptr) && (block != blockB) && (block != blockC)
           && (block != blockD))
   {
    block->decrementUse();
   }
-  // get new block, or NULL if block has been removed
+  // get new block, or nullptr if block has been removed
   blockName = blockNameField->text().trimmed();
   block = layoutEditor->provideLayoutBlock(blockName);
-  if (block == NULL)
+  if (block == nullptr)
   {
    blockName = "";
   }
   // decrement use if block was already counted
-  if ((block != NULL) && ((block == blockB) || (block == blockC)
+  if ((block != nullptr) && ((block == blockB) || (block == blockC)
           || (block == blockD)))
   {
    block->decrementUse();
@@ -2337,7 +2337,7 @@ void LayoutTurnout::turnoutEditBlockPressed(ActionEvent* a)
   needsBlockUpdate = true;
  }
  // check if a block exists to edit
- if (block == NULL)
+ if (block == nullptr)
  {
 //     JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
 //             rb.getString("Error1"),
@@ -2350,24 +2350,24 @@ void LayoutTurnout::turnoutEditBlockPressed(ActionEvent* a)
  layoutEditor->setDirty();
 }
 
-void LayoutTurnout::turnoutEditBlockBPressed(ActionEvent* a)
+void LayoutTurnout::turnoutEditBlockBPressed(ActionEvent* /*a*/)
 {
  // check if a block name has been entered
  if (blockBName != (blockBNameField->text().trimmed()))
  {
   // block has changed, if old block exists, decrement use
-  if ((blockB != NULL) && (block != blockB) && (blockB != blockC)
+  if ((blockB != nullptr) && (block != blockB) && (blockB != blockC)
           && (blockB != blockD)) {
       blockB->decrementUse();
   }
-  // get new block, or NULL if block has been removed
+  // get new block, or nullptr if block has been removed
   blockBName = blockBNameField->text().trimmed();
   blockB = layoutEditor->provideLayoutBlock(blockBName);
-  if (blockB == NULL) {
+  if (blockB == nullptr) {
       blockBName = "";
   }
   // decrement use if block was already counted
-  if ((blockB != NULL) && ((block == blockB) || (blockB == blockC)
+  if ((blockB != nullptr) && ((block == blockB) || (blockB == blockC)
           || (blockB == blockD))) {
       blockB->decrementUse();
   }
@@ -2375,7 +2375,7 @@ void LayoutTurnout::turnoutEditBlockBPressed(ActionEvent* a)
   needsBlockUpdate = true;
  }
  // check if a block exists to edit
- if (blockB == NULL) {
+ if (blockB == nullptr) {
 //     JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
 //             rb.getString("Error1"),
 //             rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
@@ -2387,22 +2387,22 @@ void LayoutTurnout::turnoutEditBlockBPressed(ActionEvent* a)
  layoutEditor->setDirty();
 }
 
-void LayoutTurnout::turnoutEditBlockCPressed(ActionEvent* a) {
+void LayoutTurnout::turnoutEditBlockCPressed(ActionEvent* /*a*/) {
     // check if a block name has been entered
     if (blockCName != (blockCNameField->text().trimmed())) {
         // block has changed, if old block exists, decrement use
-        if ((blockC != NULL) && (block != blockC) && (blockB != blockC)
+        if ((blockC != nullptr) && (block != blockC) && (blockB != blockC)
                 && (blockC != blockD)) {
             blockC->decrementUse();
         }
-        // get new block, or NULL if block has been removed
+        // get new block, or nullptr if block has been removed
         blockCName = blockCNameField->text().trimmed();
         blockC = layoutEditor->provideLayoutBlock(blockCName);
-        if (blockC == NULL) {
+        if (blockC == nullptr) {
             blockCName = "";
         }
         // decrement use if block was already counted
-        if ((blockC != NULL) && ((block == blockC) || (blockB == blockC)
+        if ((blockC != nullptr) && ((block == blockC) || (blockB == blockC)
                 || (blockC == blockD))) {
             blockD->decrementUse();
         }
@@ -2410,7 +2410,7 @@ void LayoutTurnout::turnoutEditBlockCPressed(ActionEvent* a) {
         needsBlockUpdate = true;
     }
     // check if a block exists to edit
-    if (blockC == NULL) {
+    if (blockC == nullptr) {
 //        JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
 //                rb.getString("Error1"),
 //                rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
@@ -2422,22 +2422,22 @@ void LayoutTurnout::turnoutEditBlockCPressed(ActionEvent* a) {
     layoutEditor->setDirty();
 }
 
-void LayoutTurnout::turnoutEditBlockDPressed(ActionEvent* a) {
+void LayoutTurnout::turnoutEditBlockDPressed(ActionEvent* /*a*/) {
     // check if a block name has been entered
     if (blockDName!=(blockDNameField->text().trimmed())) {
         // block has changed, if old block exists, decrement use
-        if ((blockD != NULL) && (block != blockD) && (blockB != blockD)
+        if ((blockD != nullptr) && (block != blockD) && (blockB != blockD)
                 && (blockC != blockD)) {
             blockD->decrementUse();
         }
-        // get new block, or NULL if block has been removed
+        // get new block, or nullptr if block has been removed
         blockDName = blockDNameField->text().trimmed();
         blockD = layoutEditor->provideLayoutBlock(blockDName);
-        if (blockD == NULL) {
+        if (blockD == nullptr) {
             blockDName = "";
         }
         // decrement use if block was already counted
-        if ((blockD != NULL) && ((block == blockD) || (blockB == blockD)
+        if ((blockD != nullptr) && ((block == blockD) || (blockB == blockD)
                 || (blockC == blockD))) {
             blockD->decrementUse();
         }
@@ -2445,7 +2445,7 @@ void LayoutTurnout::turnoutEditBlockDPressed(ActionEvent* a) {
         needsBlockUpdate = true;
     }
     // check if a block exists to edit
-    if (blockD == NULL) {
+    if (blockD == nullptr) {
 //        JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
 //                rb.getString("Error1"),
 //                rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
@@ -2457,7 +2457,7 @@ void LayoutTurnout::turnoutEditBlockDPressed(ActionEvent* a) {
     layoutEditor->setDirty();
 }
 
-void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
+void LayoutTurnout::turnoutEditDonePressed(ActionEvent* /*a*/) {
     // check if Turnout changed
     if (turnoutName!=(turnoutNameField->text().trimmed())) {
         // turnout has changed
@@ -2466,7 +2466,7 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
                 editLayoutTurnoutFrame)) {
             setTurnout(newName);
         } else {
-            namedTurnout = NULL;
+            namedTurnout = nullptr;
             turnoutName = "";
             turnoutNameField->setText("");
         }
@@ -2483,7 +2483,7 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
                     setSecondTurnout(newName);
                 } else {
                     additionalTurnout->setChecked(false);
-                    secondNamedTurnout = NULL;
+                    secondNamedTurnout = nullptr;
                     secondTurnoutName = "";
                     //secondTurnoutNameField.setText("");
                 }
@@ -2493,7 +2493,7 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
             }
         }
     } else {
-        setSecondTurnout(NULL);
+        setSecondTurnout(nullptr);
     }
     // set the continuing route Turnout State
     if ((type == RH_TURNOUT) || (type == LH_TURNOUT) || (type == WYE_TURNOUT)) {
@@ -2505,18 +2505,18 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
     // check if Block changed
     if (blockName!=(blockNameField->text().trimmed())) {
         // block has changed, if old block exists, decrement use
-        if ((block != NULL) && (block != blockB) && (block != blockC)
+        if ((block != nullptr) && (block != blockB) && (block != blockC)
                 && (block != blockD)) {
             block->decrementUse();
         }
-        // get new block, or NULL if block has been removed
+        // get new block, or nullptr if block has been removed
         blockName = blockNameField->text().trimmed();
         block = layoutEditor->provideLayoutBlock(blockName);
-        if (block == NULL) {
+        if (block == nullptr) {
             blockName = "";
         }
         // decrement use if block was already counted
-        if ((block != NULL) && ((block == blockB) || (block == blockC)
+        if ((block != nullptr) && ((block == blockB) || (block == blockC)
                 || (block == blockD))) {
             block->decrementUse();
         }
@@ -2527,18 +2527,18 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
         // check if Block 2 changed
         if (blockBName!=(blockBNameField->text().trimmed())) {
             // block has changed, if old block exists, decrement use
-            if ((blockB != NULL) && (block != blockB) && (blockB != blockC)
+            if ((blockB != nullptr) && (block != blockB) && (blockB != blockC)
                     && (blockB != blockD)) {
                 blockB->decrementUse();
             }
-            // get new block, or NULL if block has been removed
+            // get new block, or nullptr if block has been removed
             blockBName = blockBNameField->text().trimmed();
             blockB = layoutEditor->provideLayoutBlock(blockBName);
-            if (blockB == NULL) {
+            if (blockB == nullptr) {
                 blockBName = "";
             }
             // decrement use if block was already counted
-            if ((blockB != NULL) && ((block == blockB) || (blockB == blockC)
+            if ((blockB != nullptr) && ((block == blockB) || (blockB == blockC)
                     || (blockB == blockD))) {
                 blockB->decrementUse();
             }
@@ -2548,19 +2548,19 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
         // check if Block 3 changed
         if (blockCName!=(blockCNameField->text().trimmed())) {
             // block has changed, if old block exists, decrement use
-            if ((blockC != NULL) && (block != blockC) && (blockB != blockC)
+            if ((blockC != nullptr) && (block != blockC) && (blockB != blockC)
                     && (blockC != blockD)) {
                 blockC->decrementUse();
             }
-            // get new block, or NULL if block has been removed
+            // get new block, or nullptr if block has been removed
             blockCName = blockCNameField->text().trimmed();
             blockC = layoutEditor->provideLayoutBlock(blockCName);
-            if (blockC == NULL) {
+            if (blockC == nullptr) {
                 blockCName = "";
             }
 
             // decrement use if block was already counted
-            if ((blockC != NULL) && ((block == blockC) || (blockB == blockC)
+            if ((blockC != nullptr) && ((block == blockC) || (blockB == blockC)
                     || (blockC == blockD))) {
                 blockC->decrementUse();
             }
@@ -2570,18 +2570,18 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
         // check if Block 4 changed
         if (blockDName!=(blockDNameField->text().trimmed())) {
             // block has changed, if old block exists, decrement use
-            if ((blockD != NULL) && (block != blockD) && (blockB != blockD)
+            if ((blockD != nullptr) && (block != blockD) && (blockB != blockD)
                     && (blockC != blockD)) {
                 blockD->decrementUse();
             }
-            // get new block, or NULL if block has been removed
+            // get new block, or nullptr if block has been removed
             blockDName = blockDNameField->text().trimmed();
             blockD = layoutEditor->provideLayoutBlock(blockDName);
-            if (blockD == NULL) {
+            if (blockD == nullptr) {
                 blockDName = "";
             }
             // decrement use if block was already counted
-            if ((blockD != NULL) && ((block == blockD) || (blockB == blockD)
+            if ((blockD != nullptr) && ((block == blockD) || (blockB == blockD)
                     || (blockC == blockD))) {
                 blockD->decrementUse();
             }
@@ -2598,7 +2598,7 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
     editOpen = false;
     editLayoutTurnoutFrame->setVisible(false);
     editLayoutTurnoutFrame->dispose();
-    editLayoutTurnoutFrame = NULL;
+    editLayoutTurnoutFrame = nullptr;
     if (needsBlockUpdate) {
         updateBlockInfo();
         reCheckBlockBoundary();
@@ -2609,11 +2609,11 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* a) {
     }
 }
 
-void LayoutTurnout::turnoutEditCancelPressed(ActionEvent* a) {
+void LayoutTurnout::turnoutEditCancelPressed(ActionEvent* /*a*/) {
     editOpen = false;
     editLayoutTurnoutFrame->setVisible(false);
     editLayoutTurnoutFrame->dispose();
-    editLayoutTurnoutFrame = NULL;
+    editLayoutTurnoutFrame = nullptr;
     if (needsBlockUpdate) {
         updateBlockInfo();
     }
@@ -2626,31 +2626,31 @@ void LayoutTurnout::turnoutEditCancelPressed(ActionEvent* a) {
 void LayoutTurnout::on_blockNameField_textEdited(QString text)
 {
  QCompleter* completer;
- if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != NULL)
+ if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
  blockNameField->setCompleter(completer);
 }
 void LayoutTurnout::on_blockBNameField_textEdited(QString text)
 {
  QCompleter* completer;
- if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != NULL)
+ if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
  blockBNameField->setCompleter(completer);
 }
 void LayoutTurnout::on_blockCNameField_textEdited(QString text)
 {
  QCompleter* completer;
- if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != NULL)
+ if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
  blockCNameField->setCompleter(completer);
 }
 void LayoutTurnout::on_blockDNameField_textEdited(QString text)
 {
  QCompleter* completer;
- if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != NULL)
+ if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
  blockDNameField->setCompleter(completer);
 }
 
 /*public*/ void LayoutTurnout::reCheckBlockBoundary()
 {
- if(connectA==NULL && connectB==NULL && connectC==NULL)
+ if(connectA==nullptr && connectB==nullptr && connectC==nullptr)
  {
   if ((type==RH_TURNOUT) || (type==LH_TURNOUT) || (type==WYE_TURNOUT))
   {
@@ -2665,13 +2665,13 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
    signalAMast = "";
    signalBMast = "";
    signalCMast = "";
-   sensorANamed=NULL;
-   sensorBNamed=NULL;
-   sensorCNamed=NULL;
+   sensorANamed=nullptr;
+   sensorBNamed=nullptr;
+   sensorCNamed=nullptr;
    return;
 
   }
-  else if (((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)) && connectD==NULL)
+  else if (((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)) && connectD==nullptr)
   {
    if(getSignalAMast()!=(""))
         removeSML(getSignalAMast());
@@ -2685,20 +2685,20 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
    signalBMast = "";
    signalCMast = "";
    signalDMast = "";
-   sensorANamed=NULL;
-   sensorBNamed=NULL;
-   sensorCNamed=NULL;
-   sensorDNamed=NULL;
+   sensorANamed=nullptr;
+   sensorBNamed=nullptr;
+   sensorCNamed=nullptr;
+   sensorDNamed=nullptr;
    return;
   }
  }
 
- if(connectA==NULL || connectB==NULL || connectC==NULL)
+ if(connectA==nullptr || connectB==nullptr || connectC==nullptr)
  {
   //could still be in the process of rebuilding.
   return;
  }
- else if ((connectD == NULL) && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)))
+ else if ((connectD == nullptr) && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)))
  {
   //could still be in the process of rebuilding.
   return;
@@ -2710,49 +2710,49 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  TrackSegment* trkD;
 
 //    if(connectA instanceof TrackSegment){
- if(qobject_cast<TrackSegment*>(connectA)!= NULL)
+ if(qobject_cast<TrackSegment*>(connectA)!= nullptr)
  {
   trkA = (TrackSegment*)connectA;
   if(trkA->getLayoutBlock()==block)
   {
    signalAMast = "";
-   sensorANamed=NULL;
+   sensorANamed=nullptr;
    if(!(getSignalAMast()==("")))
    removeSML(getSignalAMast());
   }
  }
 //    if(connectB instanceof TrackSegment){
- if(qobject_cast<TrackSegment*>(connectB)!= NULL)
+ if(qobject_cast<TrackSegment*>(connectB)!= nullptr)
  {
   trkB = (TrackSegment*)connectB;
   if(trkB->getLayoutBlock()==block || trkB->getLayoutBlock()==blockB)
   {
    signalBMast = "";
-   sensorBNamed=NULL;
+   sensorBNamed=nullptr;
    if(!(getSignalBMast()==("")))
     removeSML(getSignalBMast());
   }
  }
 //    if(connectC instanceof TrackSegment) {
- if(qobject_cast<TrackSegment*>(connectC)!= NULL)
+ if(qobject_cast<TrackSegment*>(connectC)!= nullptr)
  {
   trkC = (TrackSegment*)connectC;
   if(trkC->getLayoutBlock()==block || trkC->getLayoutBlock()==blockB || trkC->getLayoutBlock()==blockC)
   {
    signalCMast = "";
-   sensorCNamed=NULL;
+   sensorCNamed=nullptr;
    if(!(getSignalCMast()==("")))
     removeSML(getSignalCMast());
   }
  }
-//    if(connectD!=NULL && connectD instanceof TrackSegment && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER))){
- if(connectD != NULL && qobject_cast<TrackSegment*>(connectD)!= NULL && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)))
+//    if(connectD!=nullptr && connectD instanceof TrackSegment && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER))){
+ if(connectD != nullptr && qobject_cast<TrackSegment*>(connectD)!= nullptr && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)))
  {
   trkD = (TrackSegment*)connectD;
   if(trkD->getLayoutBlock()==block || trkD->getLayoutBlock()==blockB || trkD->getLayoutBlock()==blockC || trkD->getLayoutBlock()==blockD)
   {
    signalDMast = "";
-   sensorDNamed=NULL;
+   sensorDNamed=nullptr;
    if(!(getSignalDMast()==("")))
     removeSML(getSignalDMast());
   }
@@ -2761,11 +2761,11 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
 
 void LayoutTurnout::removeSML(QString signalMast){
 #if 1
-    if(signalMast==NULL || signalMast==(""))
+    if(signalMast==nullptr || signalMast==(""))
         return;
     SignalMast* mast = InstanceManager::signalMastManagerInstance()->getSignalMast(signalMast);
-    if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed(mast)){
-        SignallingGuiTools::removeSignalMastLogic(NULL, mast);
+    if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed(mast)){
+        SignallingGuiTools::removeSignalMastLogic(nullptr, mast);
     }
 #endif
 }
@@ -2817,7 +2817,7 @@ void LayoutTurnout::remove()
  popup->addSeparator();
  foreach(QObject* mi, *editAdditionalMenu)
  {
-  if(qobject_cast<QAction*>(mi)!= NULL)
+  if(qobject_cast<QAction*>(mi)!= nullptr)
    popup->addAction((QAction*)mi);
   else
    popup->addMenu((QMenu*)mi);
@@ -2831,7 +2831,7 @@ void LayoutTurnout::remove()
  popup->addSeparator();
  foreach(QObject* mi, *viewAdditionalMenu)
  {
-  if(qobject_cast<QAction*>(mi)!= NULL)
+  if(qobject_cast<QAction*>(mi)!= nullptr)
    popup->addAction((QAction*)mi);
   else
    popup->addMenu((QMenu*)mi);
@@ -2887,16 +2887,16 @@ void LayoutTurnout::on_rotateItemAction_triggered()
 }
 void LayoutTurnout::invalidate(QGraphicsScene *g2)
 {
- if(item != NULL && item->scene() != 0)
+ if(item != nullptr && item->scene() != 0)
  {
   g2->removeItem(item);
-  item = NULL;
+  item = nullptr;
  }
- if(rects != NULL && rects->scene() != 0)
+ if(rects != nullptr && rects->scene() != 0)
  {
   Q_ASSERT(rects->scene()!=0);
   g2->removeItem(rects);
-  rects = NULL;
+  rects = nullptr;
  }
 }
 void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
@@ -2904,7 +2904,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
  QColor color;
  QGraphicsItemGroup* group = new QGraphicsItemGroup();
  LayoutBlock* b = getLayoutBlock();
- if (b!=NULL)
+ if (b!=nullptr)
  {
   //g2.setColor(b->getBlockColor());
   color = b->getBlockColor();
@@ -2919,7 +2919,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
   {
    //  double crossover turnout
    Turnout* t1 = getTurnout();
-   if (t1==NULL)
+   if (t1==nullptr)
    {
     // no physical turnout linked - draw A corner
     editor->setTrackStrokeWidth(isMainlineA());
@@ -2940,7 +2940,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
 
     // change block if needed
     b = getLayoutBlockB();
-    if (b!=NULL)
+    if (b!=nullptr)
      //g2.setColor(b->getBlockColor());
      color = b->getBlockColor();
     else
@@ -2964,7 +2964,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
 
     // change block if needed
      b = getLayoutBlockC();
-    if (b!=NULL) color = b->getBlockColor();
+    if (b!=nullptr) color = b->getBlockColor();
     else color = editor->defaultTrackColor;
     // draw C corner
     editor->setTrackStrokeWidth(isMainlineC());
@@ -2984,7 +2984,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
 
     // change block if needed
     b = getLayoutBlockD();
-    if (b!=NULL) color = (b->getBlockColor());
+    if (b!=nullptr) color = (b->getBlockColor());
     else color = (editor->defaultTrackColor);
     // draw D corner
     editor->setTrackStrokeWidth(isMainlineD());
@@ -3020,7 +3020,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
      group->addToGroup(line1);
 
      editor->setTrackStrokeWidth(false);
-     if (b!=NULL) color=(b->getBlockTrackColor());
+     if (b!=nullptr) color=(b->getBlockTrackColor());
 //      g2.draw(new Line2D.Double(t.getCoordsA(),
 //                              third(t.getCoordsA(),t.getCoordsC())));
      QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(getCoordsA(),editor->third(getCoordsA(),getCoordsC())), 0);
@@ -3029,7 +3029,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
      group->addToGroup(line2);
 
      b = getLayoutBlockB();
-     if (b!=NULL) color=(b->getBlockColor());
+     if (b!=nullptr) color=(b->getBlockColor());
      else color=(editor->defaultTrackColor);
      editor->setTrackStrokeWidth(isMainlineB());
 //      g2.draw(new Line2D.Double(t.getCoordsB(),
@@ -3039,7 +3039,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
      //g2->addItem(line3);
      group->addToGroup(line3);
      editor->setTrackStrokeWidth(false);
-     if (b!=NULL) color=(b->getBlockTrackColor());
+     if (b!=nullptr) color=(b->getBlockTrackColor());
 //      g2.draw(new Line2D.Double(t.getCoordsB(),
 //                              third(t.getCoordsB(),t.getCoordsD())));
      QGraphicsLineItem* line4 = new QGraphicsLineItem(QLineF(getCoordsB(),editor->third(getCoordsB(),getCoordsD())), 0);
@@ -3047,7 +3047,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
      //g2->addItem(line4);
      group->addToGroup(line4);
      b = getLayoutBlockC();
-     if (b!=NULL) color=(b->getBlockColor());
+     if (b!=nullptr) color=(b->getBlockColor());
      else color=(editor->defaultTrackColor);
      editor->setTrackStrokeWidth(isMainlineC());
 //      g2.draw(new Line2D.Double(t.getCoordsC(),
@@ -3058,7 +3058,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
      group->addToGroup(line5);
 
      editor->setTrackStrokeWidth(false);
-     if (b!=NULL) color=(b->getBlockTrackColor());
+     if (b!=nullptr) color=(b->getBlockTrackColor());
 //      g2.draw(new Line2D.Double(t.getCoordsC(),
 //                              third(t.getCoordsC(),t.getCoordsA())));
      QGraphicsLineItem* line6 = new QGraphicsLineItem(QLineF(getCoordsC(),editor->third(getCoordsC(),getCoordsA())), 0);
@@ -3067,7 +3067,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
      group->addToGroup(line6);
 
      b = getLayoutBlockD();
-     if (b!=NULL) color=(b->getBlockColor());
+     if (b!=nullptr) color=(b->getBlockColor());
      else color=(editor->defaultTrackColor);
      editor->setTrackStrokeWidth(isMainlineD());
 //      g2.draw(new Line2D.Double(t.getCoordsD(),
@@ -3078,7 +3078,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
      group->addToGroup(line7);
 
      editor->setTrackStrokeWidth(false);
-     if (b!=NULL) color=(b->getBlockTrackColor());
+     if (b!=nullptr) color=(b->getBlockTrackColor());
 //      g2.draw(new Line2D.Double(t.getCoordsD(),
 //                              third(t.getCoordsD(),t.getCoordsB())));
      QGraphicsLineItem* line8 = new QGraphicsLineItem(QLineF(getCoordsD(),editor->third(getCoordsD(),getCoordsB())), 0);
@@ -3090,7 +3090,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
   else if (state == Turnout::THROWN)
   {
    // diverting (crossed) path
-   if (b!=NULL) color=(b->getBlockTrackColor());
+   if (b!=nullptr) color=(b->getBlockTrackColor());
    editor->setTrackStrokeWidth(isMainlineA());
 //  g2.draw(new Line2D.Double(t.getCoordsA(),
 //                          third(t.getCoordsA(),t.getCoordsB())));
@@ -3100,7 +3100,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line1);
 
    editor->setTrackStrokeWidth(false);
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
 //  g2.draw(new Line2D.Double(t.getCoordsA(),t.getCoordsCenter()));
    QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(getCoordsA(),getCoordsCenter()), 0);
    line2->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3108,7 +3108,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line2);
 
    b = getLayoutBlockB();
-   if (b!=NULL) color=(b->getBlockTrackColor());
+   if (b!=nullptr) color=(b->getBlockTrackColor());
    else color=(editor->defaultTrackColor);
    editor->setTrackStrokeWidth(isMainlineB());
 //  g2.draw(new Line2D.Double(t.getCoordsB(),
@@ -3118,7 +3118,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    //g2->addItem(line3);
    group->addToGroup(line3);
    editor->setTrackStrokeWidth(false);
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
 
 //  g2.draw(new Line2D.Double(t.getCoordsB(),t.getCoordsCenter()));
    QGraphicsLineItem* line4 = new QGraphicsLineItem(QLineF(getCoordsB(),getCoordsCenter()), 0);
@@ -3127,7 +3127,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line4);
 
    b = getLayoutBlockC();
-   if (b!=NULL) color=(b->getBlockTrackColor());
+   if (b!=nullptr) color=(b->getBlockTrackColor());
    else color=(editor->defaultTrackColor);
    editor->setTrackStrokeWidth(isMainlineC());
 //  g2.draw(new Line2D.Double(t.getCoordsC(),
@@ -3138,7 +3138,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line5);
 
    editor->setTrackStrokeWidth(false);
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
 //  g2.draw(new Line2D.Double(t.getCoordsC(),t.getCoordsCenter()));
    QGraphicsLineItem* line6 = new QGraphicsLineItem(QLineF(getCoordsC(),getCoordsCenter()), 0);
    line6->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3147,7 +3147,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
 
    b = getLayoutBlockD();
 
-   if (b!=NULL) color=(b->getBlockTrackColor());
+   if (b!=nullptr) color=(b->getBlockTrackColor());
    else color=(editor->defaultTrackColor);
    editor->setTrackStrokeWidth(isMainlineD());
 //  g2.draw(new Line2D.Double(t.getCoordsD(),
@@ -3157,7 +3157,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    //g2->addItem(line7);
    group->addToGroup(line7);
    editor->setTrackStrokeWidth(false);
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
 //  g2.draw(new Line2D.Double(t.getCoordsD(),t.getCoordsCenter()));
    QGraphicsLineItem* line8 = new QGraphicsLineItem(QLineF(getCoordsD(),getCoordsCenter()), 0);
    line8->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3184,7 +3184,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line2);
 
    b = getLayoutBlockB();
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
    else color=(editor->defaultTrackColor);
    editor->setTrackStrokeWidth(isMainlineB());
 //      g2.draw(new Line2D.Double(t.getCoordsB(),
@@ -3203,7 +3203,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line4);
 
    b = getLayoutBlockC();
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
    else color=(editor->defaultTrackColor);
    editor->setTrackStrokeWidth(isMainlineC());
 //      g2.draw(new Line2D.Double(t.getCoordsC(),
@@ -3222,7 +3222,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line6);
 
    b = getLayoutBlockD();
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
    else color=(editor->defaultTrackColor);
    editor->setTrackStrokeWidth(isMainlineD());
 //      g2.draw(new Line2D.Double(t.getCoordsD(),
@@ -3248,7 +3248,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
   //  LH and RH crossover turnouts
   int ttype = getTurnoutType();
   Turnout* t1 = getTurnout();
-  if (t1==NULL)
+  if (t1==nullptr)
   {
    // no physical turnout linked - draw A corner
    editor->setTrackStrokeWidth(isMainlineA());
@@ -3271,7 +3271,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    }
    // change block if needed
    b = getLayoutBlockB();
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
    else color=(editor->defaultTrackColor);
      // draw B corner
    editor->setTrackStrokeWidth(isMainlineB());
@@ -3291,7 +3291,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    }
    // change block if needed
    b = getLayoutBlockC();
-   if (b!=NULL) color=(b->getBlockColor());
+   if (b!=nullptr) color=(b->getBlockColor());
    else color=(editor->defaultTrackColor);
      // draw C corner
    editor->setTrackStrokeWidth(isMainlineC());
@@ -3312,7 +3312,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    }
   // change block if needed
   b = getLayoutBlockD();
-  if (b!=NULL) color=(b->getBlockColor());
+  if (b!=nullptr) color=(b->getBlockColor());
   else color=(editor->defaultTrackColor);
   // draw D corner
   editor->setTrackStrokeWidth(isMainlineD());
@@ -3349,7 +3349,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
   if (ttype == LayoutTurnout::RH_XOVER)
   {
    editor->setTrackStrokeWidth(false);
-   if (b!=NULL) color=(b->getBlockTrackColor());
+   if (b!=nullptr) color=(b->getBlockTrackColor());
 //              g2.draw(new Line2D.Double(t.getCoordsCenter(), third(t.getCoordsCenter(), midpoint(t.getCoordsA(),t.getCoordsB()))));
    QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(getCoordsCenter(), editor->third(getCoordsCenter(),editor->midpoint(getCoordsA(),getCoordsB()))),0);
    line2->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3357,7 +3357,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line2);
   }
   b = getLayoutBlockB();
-  if (b!=NULL) color=(b->getBlockColor());
+  if (b!=nullptr) color=(b->getBlockColor());
   else color=(editor->defaultTrackColor);
   editor->setTrackStrokeWidth(isMainlineB());
 //          g2.draw(new Line2D.Double(t.getCoordsB(), midpoint(t.getCoordsA(),t.getCoordsB())));
@@ -3369,7 +3369,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
   if (ttype == LayoutTurnout::LH_XOVER)
   {
    editor->setTrackStrokeWidth(false);
-   if (b!=NULL) color=(b->getBlockTrackColor());
+   if (b!=nullptr) color=(b->getBlockTrackColor());
 //              g2.draw(new Line2D.Double(t.getCoordsCenter(), third(t.getCoordsCenter(),midpoint(t.getCoordsA(),t.getCoordsB()))));
    QGraphicsLineItem* line4 = new QGraphicsLineItem(QLineF(getCoordsCenter(), editor->third(getCoordsCenter(),editor->midpoint(getCoordsA(),getCoordsB()))),0);
    line4->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3377,7 +3377,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
    group->addToGroup(line4);
   }
   b = getLayoutBlockC();
-  if (b!=NULL) color=(b->getBlockColor());
+  if (b!=nullptr) color=(b->getBlockColor());
   else color=(editor->defaultTrackColor);
   editor->setTrackStrokeWidth(isMainlineC());
 //          g2.draw(new Line2D.Double(t.getCoordsC(), midpoint(t.getCoordsC(),t.getCoordsD())));
@@ -3387,7 +3387,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
   group->addToGroup(line5);
   if (ttype == LayoutTurnout::RH_XOVER) {
   editor->setTrackStrokeWidth(false);
-  if (b!=NULL) color=(b->getBlockTrackColor());
+  if (b!=nullptr) color=(b->getBlockTrackColor());
 //   g2.draw(new Line2D.Double(t.getCoordsCenter(),  third(t.getCoordsCenter(),midpoint(t.getCoordsC(),t.getCoordsD()))));
   QGraphicsLineItem* line6 = new QGraphicsLineItem(QLineF(getCoordsCenter(),  editor->third(getCoordsCenter(), editor->midpoint(getCoordsC(), getCoordsD()))),0);
   line6->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3395,7 +3395,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
   group->addToGroup(line6);
  }
  b = getLayoutBlockD();
- if (b!=NULL) color=(b->getBlockColor());
+ if (b!=nullptr) color=(b->getBlockColor());
  else color=(editor->defaultTrackColor);
  editor->setTrackStrokeWidth(isMainlineD());
 //  g2.draw(new Line2D.Double(t.getCoordsD(),  midpoint(t.getCoordsC(),t.getCoordsD())));
@@ -3405,7 +3405,7 @@ void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
  group->addToGroup(line7);
  if (ttype == LayoutTurnout::LH_XOVER) {
  editor->setTrackStrokeWidth(false);
- if (b!=NULL) color=(b->getBlockTrackColor());
+ if (b!=nullptr) color=(b->getBlockTrackColor());
 //  g2.draw(new Line2D.Double(t.getCoordsCenter(), third(t.getCoordsCenter(),midpoint(t.getCoordsC(),t.getCoordsD()))));
  QGraphicsLineItem* line8 = new QGraphicsLineItem(QLineF(getCoordsCenter(), editor->third(getCoordsCenter(),editor->midpoint(getCoordsC(),getCoordsD()))),0);
  line8->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3440,7 +3440,7 @@ line3->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
  group->addToGroup(line3);
 }
 b = getLayoutBlockB();
-if (b!=NULL) color=(b->getBlockColor());
+if (b!=nullptr) color=(b->getBlockColor());
 else color=(editor->defaultTrackColor);
 editor->setTrackStrokeWidth(isMainlineB());
 if (ttype == LayoutTurnout::LH_XOVER)
@@ -3465,7 +3465,7 @@ else if (ttype == LayoutTurnout::RH_XOVER)
  group->addToGroup(line1);
 }
 b = getLayoutBlockC();
-if (b!=NULL) color=(b->getBlockColor());
+if (b!=nullptr) color=(b->getBlockColor());
 else color=(editor->defaultTrackColor);
 editor->setTrackStrokeWidth(isMainlineC());
 if (ttype == LayoutTurnout::RH_XOVER)
@@ -3491,7 +3491,7 @@ else if (ttype == LayoutTurnout::LH_XOVER)
  group->addToGroup(line1);
 }
 b = getLayoutBlockD();
-if (b!=NULL) color=(b->getBlockColor());
+if (b!=nullptr) color=(b->getBlockColor());
 else color=(editor->defaultTrackColor);
 editor->setTrackStrokeWidth(isMainlineD());
 if (ttype == LayoutTurnout::LH_XOVER)
@@ -3544,7 +3544,7 @@ else
   group->addToGroup(line1);
  }
  b = getLayoutBlockB();
- if (b!=NULL) color=(b->getBlockColor());
+ if (b!=nullptr) color=(b->getBlockColor());
  else color=(editor->defaultTrackColor);
  editor->setTrackStrokeWidth(isMainlineB());
  if (ttype == LayoutTurnout::LH_XOVER)
@@ -3570,7 +3570,7 @@ else
   group->addToGroup(line1);
  }
  b = getLayoutBlockC();
- if (b!=NULL) color=(b->getBlockColor());
+ if (b!=nullptr) color=(b->getBlockColor());
  else color=(editor->defaultTrackColor);
  editor->setTrackStrokeWidth(isMainlineC());
  if (ttype == LayoutTurnout::RH_XOVER)
@@ -3596,7 +3596,7 @@ else
    group->addToGroup(line1);
   }
   b = getLayoutBlockD();
-  if (b!=NULL) color=(b->getBlockColor());
+  if (b!=nullptr) color=(b->getBlockColor());
   else color=(editor->defaultTrackColor);
   editor->setTrackStrokeWidth(isMainlineD());
   if (ttype == LayoutTurnout::LH_XOVER)
@@ -3629,7 +3629,7 @@ else
 {
  // LH, RH, or WYE Turnouts
  Turnout* t2 = getTurnout();
- if (t2==NULL)
+ if (t2==nullptr)
  {
   // no physical turnout linked - draw connected
   editor->setTrackStrokeWidth(isMainlineA());
@@ -3679,7 +3679,7 @@ else
     {
      //line from diverging leg halfway to center
      editor->setTrackStrokeWidth(isMainlineC());
-     if (b!=NULL) color=(b->getBlockTrackColor());
+     if (b!=nullptr) color=(b->getBlockTrackColor());
 //      g2.draw(new Line2D.Double(t.getCoordsC(), midpoint(t.getCoordsCenter(),t.getCoordsC())));
      QGraphicsLineItem* line3 = new QGraphicsLineItem(QLineF(getCoordsC(), editor->midpoint(getCoordsCenter(),getCoordsC())),0);
      line3->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3699,7 +3699,7 @@ else
     {
      //line from continuing leg halfway to center
      editor->setTrackStrokeWidth(isMainlineB());
-     if (b!=NULL) color=(b->getBlockTrackColor());
+     if (b!=nullptr) color=(b->getBlockTrackColor());
 //      g2.draw(new Line2D.Double(t.getCoordsB(), midpoint(t.getCoordsCenter(),t.getCoordsB())));
      QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(getCoordsB(), editor->midpoint(getCoordsCenter(),getCoordsB())),0);
      line2->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3720,7 +3720,7 @@ else
        if (editor->turnoutDrawUnselectedLeg)
        {
         editor->setTrackStrokeWidth(isMainlineC());
-        if (b!=NULL) color=(b->getBlockTrackColor());
+        if (b!=nullptr) color=(b->getBlockTrackColor());
 //         g2.draw(new Line2D.Double(t.getCoordsC(), midpoint(t.getCoordsCenter(),t.getCoordsC())));
         QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(getCoordsC(), editor->midpoint(getCoordsCenter(),getCoordsC())),0);
         line2->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3738,7 +3738,7 @@ else
        if (editor->turnoutDrawUnselectedLeg)
        {
         editor->setTrackStrokeWidth(isMainlineB());
-        if (b!=NULL) color=(b->getBlockTrackColor());
+        if (b!=nullptr) color=(b->getBlockTrackColor());
 //         g2.draw(new Line2D.Double(t.getCoordsB(), midpoint(t.getCoordsCenter(),t.getCoordsB())));
         QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(getCoordsB(), editor->midpoint(getCoordsCenter(),getCoordsB())),0);
         line2->setPen(QPen(color,editor->trackWidth,Qt::SolidLine));
@@ -3774,7 +3774,7 @@ void LayoutTurnout::drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2)
  QGraphicsItemGroup* group = new QGraphicsItemGroup();
 
  QPointF pt = getCoordsCenter();
-//      g2.setColor(turnoutCircleColor != NULL ? turnoutCircleColor : defaultTrackColor);
+//      g2.setColor(turnoutCircleColor != nullptr ? turnoutCircleColor : defaultTrackColor);
 //      g2.draw(new Ellipse2D.Double (
 //                      pt.x()-SIZE2, pt.y()-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2));
 
@@ -3784,7 +3784,7 @@ void LayoutTurnout::drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2)
  group->addToGroup(ellipse);
 
  pt = getCoordsA();
- if (getConnectA()==NULL) {
+ if (getConnectA()==nullptr) {
   //g2.setColor(Color.red);
   color = QColor(Qt::red);
  }
@@ -3798,7 +3798,7 @@ void LayoutTurnout::drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2)
  group->addToGroup(rectItem1);
 
  pt = getCoordsB();
- if (getConnectB()==NULL) {
+ if (getConnectB()==nullptr) {
   //g2.setColor(Color.red);
   color = QColor(Qt::red);
  }
@@ -3812,7 +3812,7 @@ void LayoutTurnout::drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2)
  group->addToGroup(rectItem2);
 
  pt = getCoordsC();
- if (getConnectC()==NULL)
+ if (getConnectC()==nullptr)
  {
   //g2.setColor(Color.red);
   color = QColor(Qt::red);
@@ -3835,7 +3835,7 @@ void LayoutTurnout::drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2)
     )
  {
   pt = getCoordsD();
-  if (getConnectD()==NULL)
+  if (getConnectD()==nullptr)
   {
    //g2.setColor(Color.red);
    color = QColor(Qt::red);
@@ -3858,10 +3858,10 @@ void LayoutTurnout::drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2)
 {
  QPointF pt = getCoordsCenter();
  double size = LayoutEditor::SIZE * editor->turnoutCircleSize;
-//          g2.setColor(turnoutCircleColor != NULL ? turnoutCircleColor : defaultTrackColor);
+//          g2.setColor(turnoutCircleColor != nullptr ? turnoutCircleColor : defaultTrackColor);
 //          g2.draw(new Ellipse2D.Double (
 //                          pt.x()-size, pt.y()-size, size+size, size+size));
- if(circle != NULL)
+ if(circle != nullptr)
   g2->removeItem(circle);
  circle = new QGraphicsEllipseItem(pt.x()-size, pt.y()-size, size+size, size+size,0);
  circle->setPen( QPen( editor->turnoutCircleColor.isValid() ? editor->turnoutCircleColor : editor->defaultTrackColor, 1, Qt::SolidLine ) );

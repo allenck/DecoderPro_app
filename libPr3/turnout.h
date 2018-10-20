@@ -187,7 +187,12 @@ public:
          * with minimal delay (for use with systems that wait for responses
          * returned by from the command station).
          */
-        const static int _SIGNAL        = 64;
+        const static int _SIGNAL;//        = 64;
+        /**
+         * Constant representing "automatic delayed feedback" . This is DIRECT feedback
+         * with a fixed delay before the feedback (known state) takes effect.
+         */
+        /*public*/ const static /*final*/ int DELAYED;// = 128;
 
         /**
          * Get a representation of the feedback type.  This is the OR of
@@ -231,6 +236,11 @@ public:
          */
         virtual int getFeedbackMode() {return 0;}
         /**
+         * Request an update from the layout soft/hardware. May not even happen, and
+         * if it does it will happen later; listen for the result.
+         */
+        virtual /*public*/ void requestUpdateFromLayout() {}
+        /**
          * Get the indicator for whether automatic operation (retry) has been
          * inhibited for this turnout
          */
@@ -251,6 +261,18 @@ public:
         virtual void setTurnoutOperation(TurnoutOperation* /*toper*/) {}
 
         /**
+         * return the inverted state of the specified state
+         * @param inState the specified state
+         * @return the inverted state
+         */
+        /*public*/ static int invertTurnoutState(int inState) {
+            int result = CLOSED;
+            if (result == inState) {
+                result = THROWN;
+            }
+            return result;
+        }
+        /**
          * Provide Sensor objects needed for some feedback types.
          *
          * Since we defined two feeedback methods that require monitoring,
@@ -261,9 +283,9 @@ public:
          * Sensor-based feedback will not function until these
          * sensors have been provided.
          */
-        virtual void provideFirstFeedbackSensor(NamedBeanHandle<Sensor>* /*s*/) {}
-        virtual void provideFirstFeedbackSensor(QString /*pName*/) {} // throws JmriException;
-        virtual void provideSecondFeedbackSensor(QString /*pName*/) {} // throws JmriException;
+        //virtual void provideFirstFeedbackSensor(NamedBeanHandle<Sensor>* /*s*/) {}
+        virtual void provideFirstFeedbackSensor(QString /*pName*/) throw (JmriException) {}
+        virtual void provideSecondFeedbackSensor(QString /*pName*/) throw (JmriException) {}
 
 
         /**
@@ -405,6 +427,17 @@ public:
         virtual bool canLock(int /*turnoutLockout*/) {return false;}
 
         /**
+         * Provide the possible locking modes for a turnout.
+         * These may require additional configuration, e.g.
+         * setting of a decoder definition for PUSHBUTTONLOCKOUT,
+         * before {@link #canLock(int)} will return true.
+         *
+         * @return One of 0 for none, CABLOCKOUT, PUSHBUTTONLOCKOUT
+         * or CABLOCKOUT | PUSHBUTTONLOCKOUT for both
+         */
+        /*public*/ virtual int getPossibleLockModes() {return 0;}
+
+        /**
          * Lock a turnout. Must specify the type of lock.
          *<P>
          * If true turnout is to be locked.
@@ -448,12 +481,12 @@ public:
         virtual float getDivergingLimit() {return 0;}
 
         virtual QString getDivergingSpeed() {return "";}
-        virtual void setDivergingSpeed(QString /*s*/) const {} // throws JmriException;
+        virtual void setDivergingSpeed(QString /*s*/) const throw (JmriException) {}
 
         virtual float getStraightLimit()  {return 0;}
 
         virtual QString getStraightSpeed() {return "";}
-        virtual void setStraightSpeed(QString /*s*/) const {} // throws JmriException;
+        virtual void setStraightSpeed(QString /*s*/) const  throw (JmriException) {}
 
 signals:
     

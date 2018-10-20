@@ -45,9 +45,9 @@
  mDelayField = new QVector<JTextField*>(MAXSEQUENCE);
  mRunButton = new JToggleButton("Go");
  log = new Logger("SendPacketFrame");
- mNextEcho= NULL;
- timer = NULL;
- cs = NULL;
+ mNextEcho= nullptr;
+ timer = nullptr;
+ cs = nullptr;
 }
 
 // internal members to hold sequence widgets
@@ -124,8 +124,8 @@
     connect(mRunButton, SIGNAL(), this, SLOT(runButtonActionPerformed()));
 
     // get the CommandStation reference
-    cs = InstanceManager::commandStationInstance();
-    if (cs == NULL) {
+    cs = static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
+    if (cs == nullptr) {
         log->error("No CommandStation object available");
     }
 
@@ -145,7 +145,7 @@
  * Internal routine to handle timer starts & restarts
  */
 /*protected*/ void SendPacketFrame::restartTimer(int delay) {
-    if (timer == NULL) {
+    if (timer == nullptr) {
         timer = new QTimer; //(delay, new java.awt.event.ActionListener() {
 
 //            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
@@ -224,7 +224,7 @@ void SendPacketFrame::sendNextItem() {
         QByteArray m = createPacket(mPacketField->at(mNextSequenceElement)->text());
         // send it
         mNextEcho = m;
-        if (m != NULL) {
+        if (m != nullptr) {
             cs->sendPacket(m, 1);
         } else {
             log->warn("Message invalid: " + mPacketField->at(mNextSequenceElement)->text());
@@ -250,7 +250,7 @@ QByteArray SendPacketFrame::createPacket(QString s) {
     // gather bytes in result
     QByteArray b = StringUtil::bytesFromHexString(s);
     if (b.length() == 0) {
-        return NULL;  // no such thing as a zero-length message
+        return nullptr;  // no such thing as a zero-length message
     }
     return b;
 }

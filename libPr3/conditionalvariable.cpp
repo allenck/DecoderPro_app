@@ -79,9 +79,9 @@ void ConditionalVariable::common()
  _guiName = "";       // Contains the user name of the referenced conditional
  setObjectName("ConditionalVariable");
 
- _namedBean = NULL;
+ _namedBean = nullptr;
  nbhm = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
-//private NamedBeanHandle<Sensor> _namedSensorBean = NULL;
+//private NamedBeanHandle<Sensor> _namedSensorBean = nullptr;
  _triggersActions = true;
  _state = Conditional::UNKNOWN;        // tri-state
 
@@ -103,7 +103,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_SENSOR:
   {
    Sensor* sn = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(_name);
-   if (sn == NULL) {
+   if (sn == nullptr) {
        log->error("invalid sensor name= \""+_name+"\" in state variable");
        return;
    }
@@ -113,7 +113,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_TURNOUT:
   {
         Turnout* tn = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(_name);
-        if (tn == NULL) {
+        if (tn == nullptr) {
             log->error("invalid turnout name= \""+_name+"\" in state variable");
             return;
         }
@@ -123,7 +123,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_MEMORY:
   {
         Memory* my = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(_name);
-        if (my == NULL) {
+        if (my == nullptr) {
             log->error("invalid memory name= \""+_name+"\" in state variable");
             return;
         }
@@ -133,7 +133,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_LIGHT:
   {
         Light* l = (Light*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(_name);
-        if (l == NULL) {
+        if (l == nullptr) {
             log->error("invalid light name= \""+_name+"\" in state variable");
             return;
         }
@@ -143,7 +143,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_SIGNALHEAD:
   {
         SignalHead* s = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(_name);
-        if (s == NULL) {
+        if (s == nullptr) {
             log->error("invalid signalhead name= \""+_name+"\" in state variable");
             return;
         }
@@ -153,7 +153,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_SIGNALMAST:
   {
    SignalMast* sm = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_name);
-   if (sm == NULL) {
+   if (sm == nullptr) {
        log->error("invalid signalmast name= \""+_name+"\" in state variable");
        return;
    }
@@ -163,7 +163,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_ENTRYEXIT:
   {
     NamedBean* nb = (NamedBean*)((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getBySystemName(_name);
-    if(nb == NULL){
+    if(nb == nullptr){
         log->error("invalid entry exit name= \""+_name+"\" in state variable");
         return;
     }
@@ -173,7 +173,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_CONDITIONAL:
   {
    Conditional* c = ((ConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->getConditional(_name);
-   if(c == NULL){
+   if(c == nullptr){
        log->error("invalid conditiona; name= \""+_name+"\" in state variable");
        return;
    }
@@ -183,7 +183,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_WARRANT:
   {
    Warrant* w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getWarrant(_name);
-   if(w == NULL){
+   if(w == nullptr){
        log->error("invalid warrant name= \""+_name+"\" in state variable");
        return;
    }
@@ -193,7 +193,7 @@ void ConditionalVariable::common()
   case Conditional::ITEM_TYPE_OBLOCK:
   {
    OBlock* b = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock(_name);
-   if(b == NULL)
+   if(b == nullptr)
    {
     log->error("invalid block name= \""+_name+"\" in state variable");
     return;
@@ -244,7 +244,7 @@ void ConditionalVariable::common()
 }
 
 /*public*/ QString ConditionalVariable::getName() {
-    if (_namedBean!=NULL){
+    if (_namedBean!=nullptr){
         return _namedBean->getName();
     }
     /* As we have a trigger for something using the variable, then hopefully
@@ -257,7 +257,7 @@ void ConditionalVariable::common()
 /*public*/ void ConditionalVariable::setName(QString name)
 {
  _name = name;
- NamedBean* bean = NULL;
+ NamedBean* bean = nullptr;
  int itemType = Conditional::TEST_TO_ITEM[_type];
 
  switch (itemType)
@@ -299,14 +299,14 @@ void ConditionalVariable::common()
  default : log->error("Type "+QString::number(itemType)+" not set for " + _name);
  }
 
- //Once all refactored, we should probably register an error if the bean is returned NULL.
- if (bean!=NULL)
+ //Once all refactored, we should probably register an error if the bean is returned nullptr.
+ if (bean!=nullptr)
  {
   _namedBean = nbhm->getNamedBeanHandle(_name, bean);
  }
  else
  {
-  _namedBean = NULL;
+  _namedBean = nullptr;
  }
 }
 
@@ -315,13 +315,13 @@ void ConditionalVariable::common()
 }
 
 /*public*/ NamedBean* ConditionalVariable::getBean(){
-    if (_namedBean!=NULL){
+    if (_namedBean!=nullptr){
         return (NamedBean*) _namedBean->getBean();
     } 
     setName(_name); //ReApply name as that will create namedBean, save replicating it here
-    if(_namedBean!=NULL)
+    if(_namedBean!=nullptr)
         return (NamedBean*) _namedBean->getBean();
-    return NULL;
+    return nullptr;
 }
 
 /*public*/ QString ConditionalVariable::getDataString() {
@@ -431,7 +431,7 @@ void ConditionalVariable::common()
      {
       //Sensor sn = InstanceManager::sensorManagerInstance().provideSensor(getName());
       Sensor* sn = (Sensor*) getBean();
-      if (sn == NULL) {
+      if (sn == nullptr) {
         log->error("invalid sensor name= \""+getName()+"\" in state variable");
         return (false);
       }
@@ -447,7 +447,7 @@ void ConditionalVariable::common()
     case Conditional::ITEM_TYPE_TURNOUT:
     {
             Turnout* t = (Turnout*) getBean();
-            if (t == NULL) {
+            if (t == nullptr) {
                 log->error("invalid turnout name= \""+getName()+"\" in state variable");
                 return (false);
             }
@@ -463,7 +463,7 @@ void ConditionalVariable::common()
     case Conditional::ITEM_TYPE_LIGHT:
     {
             Light* lgt = (Light*) getBean();
-            if (lgt == NULL) {
+            if (lgt == nullptr) {
                 log->error("invalid light name= \""+getName()+"\" in state variable");
                 return (false);
             }
@@ -479,7 +479,7 @@ void ConditionalVariable::common()
     case Conditional::ITEM_TYPE_SIGNALMAST:
     {
             SignalMast* f = (SignalMast*) getBean();
-            if (f == NULL) {
+            if (f == nullptr) {
                 log->error("invalid signal mast name= \""+getName()+"\" in state variable");
                 return (false);
             }
@@ -491,7 +491,7 @@ void ConditionalVariable::common()
                     result = f->getHeld();
                     break;
                 case Conditional::TYPE_SIGNAL_MAST_ASPECT_EQUALS:
-                    if (f->getAspect() == NULL) result = false;
+                    if (f->getAspect() == nullptr) result = false;
                     else if (f->getAspect()==(_dataString)) result = true;
                     else result = false; 
             }
@@ -500,7 +500,7 @@ void ConditionalVariable::common()
     case Conditional::ITEM_TYPE_SIGNALHEAD:
     {
             SignalHead* h = (SignalHead*) getBean();
-            if (h == NULL) {
+            if (h == nullptr) {
                 log->error("invalid signal head name= \""+getName()+"\" in state variable");
                 return (false);
             }
@@ -556,12 +556,12 @@ void ConditionalVariable::common()
     case Conditional::ITEM_TYPE_MEMORY:
     {
             Memory* m = (Memory*) getBean();
-            if (m == NULL) {
+            if (m == nullptr) {
                 log->error("invalid memory name= \""+getName()+"\" in state variable");
                 return (false);
             }
-            QString value1 = NULL;
-            QString value2 = NULL;
+            QString value1 = nullptr;
+            QString value2 = nullptr;
             if (m->getValue()!=QVariant()) {
                 value1 = m->getValue().toString();
             }
@@ -570,7 +570,7 @@ void ConditionalVariable::common()
             if ((_type == Conditional::TYPE_MEMORY_COMPARE) ||
                     (_type == Conditional::TYPE_MEMORY_COMPARE_INSENSITIVE)) {
                 Memory* m2 = InstanceManager::memoryManagerInstance()->provideMemory(_dataString);
-                if (m2 == NULL) {
+                if (m2 == nullptr) {
                     log->error("invalid data memory name= \""+_dataString+"\" in state variable");
                     return (false);
                 }
@@ -586,9 +586,9 @@ void ConditionalVariable::common()
         case Conditional::ITEM_TYPE_CONDITIONAL:
     {
             Conditional* c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getBySystemName(getName());
-            if (c ==NULL) {
+            if (c ==nullptr) {
                 c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getByUserName(getName());
-                if (c == NULL) {
+                if (c == nullptr) {
                     log->error("invalid conditional name= \""+getName()+"\" in state variable");
                     return (false);
                 }
@@ -606,7 +606,7 @@ void ConditionalVariable::common()
         case Conditional::ITEM_TYPE_WARRANT:
     {
      Warrant* w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getWarrant(getName());
-            if (w == NULL) {
+            if (w == nullptr) {
                 log->error("invalid Warrant name= \""+getName()+"\" in state variable");
                 return (false);
             }
@@ -635,7 +635,7 @@ void ConditionalVariable::common()
     }
         case Conditional::ITEM_TYPE_CLOCK:
     {
-            Timebase* fastClock = InstanceManager::timebaseInstance();
+            Timebase* fastClock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
             QDateTime currentTime = fastClock->getTime();
             int currentMinutes = (currentTime.time().hour()*60) + currentTime.time().minute();
             int beginTime = fixMidnight(_num1);
@@ -657,7 +657,7 @@ void ConditionalVariable::common()
         case Conditional::ITEM_TYPE_OBLOCK:
     {
      OBlock* b = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock(getName());
-            if (b == NULL) {
+            if (b == nullptr) {
                 log->error("invalid OBlock name= \""+getName()+"\" in state variable");
                 return (false);
             }
@@ -691,11 +691,11 @@ void ConditionalVariable::common()
 }
 
 bool ConditionalVariable::compare(QString value1, QString value2, bool caseInsensitive) {
-    if (value1==NULL) {
-        if (value2==NULL) return true;
+    if (value1==nullptr) {
+        if (value2==nullptr) return true;
         else return false;
     } else {
-        if (value2==NULL) return false;
+        if (value2==nullptr) return false;
         value1 = value1.trimmed();
         value2 = value2.trimmed();
     }

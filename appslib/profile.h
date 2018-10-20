@@ -6,6 +6,7 @@
 #include "javaqt_global.h"
 #include "exceptions.h"
 
+class Logger;
 class File;
 class JAVAQTSHARED_EXPORT Profile : public QObject
 {
@@ -38,6 +39,7 @@ signals:
 
 public slots:
 private:
+    /*private*/ static Logger* log;// = new LoggerFactory::getLogger("Profile");
     void common(File* path, bool isReadable);
     /*private*/ QString name;
     /*private*/ QString id;

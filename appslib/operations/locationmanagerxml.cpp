@@ -29,13 +29,13 @@ OperationsXml(parent)
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ LocationManagerXml* LocationManagerXml::_instance = NULL;
+ /*private*/ /*static*/ LocationManagerXml* LocationManagerXml::_instance = nullptr;
 
 
  /*public*/ /*static*/ /*synchronized*/ LocationManagerXml* LocationManagerXml::instance()
 {
  Logger* log = new Logger("LocationManagerXml");
-     if (_instance == NULL) {
+     if (_instance == nullptr) {
          if (log->isDebugEnabled()) {
              log->debug("LocationManagerXml creating instance");
          }
@@ -56,7 +56,7 @@ OperationsXml(parent)
      }
      // This is taken in large part from "Java and XML" page 368
      File* file = new File(findFile(name)->fileName());
-     if (file == NULL) {
+     if (file == nullptr) {
          file = new File(name);
      }
      // create root element
@@ -97,7 +97,7 @@ OperationsXml(parent)
  /*public*/ void LocationManagerXml::readFile(QString name) throw (JDOMException, IOException)
 {
      // suppress rootFromName(name) warning message by checking to see if file exists
-     if (findFile(name) == NULL) {
+     if (findFile(name) == nullptr) {
          log->debug(tr("%1 file could not be found").arg(name));
          return;
      }
@@ -125,7 +125,7 @@ OperationsXml(parent)
 
 
  /*public*/ void LocationManagerXml::dispose(){
-     _instance = NULL;
+     _instance = nullptr;
  }
 
 }

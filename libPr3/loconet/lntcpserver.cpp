@@ -14,7 +14,7 @@
 //  QObject(parent)
 //{
 //}
-LnTcpServer* LnTcpServer::self = NULL;
+LnTcpServer* LnTcpServer::self = nullptr;
 /*static*/ /*final*/ QString LnTcpServer::AUTO_START_KEY = "AutoStart";
 /*static*/ /*final*/ QString LnTcpServer::PORT_NUMBER_KEY = "PortNumber";
 /*static*/ /*final*/ QString LnTcpServer::SETTINGS_FILE_NAME = "LocoNetOverTcpSettings.ini";
@@ -34,15 +34,15 @@ LnTcpServer* LnTcpServer::self = NULL;
 {
  settingsLoaded = false;
  settingsChanged = false;
- service = NULL;
+ service = nullptr;
  clients = new QLinkedList<ClientRxHandler*>();
  log = new Logger("Server");
  portNumber = 1234;
- stateListner = NULL;
- socketListener = NULL;
+ stateListner = nullptr;
+ socketListener = nullptr;
  bIsEnabled = false;
  connectionNbr = 1;
- serverSocket = NULL;
+ serverSocket = nullptr;
 
  pm = LnTcpPreferences::getDefault();
  portNumber = pm->getPort();
@@ -85,7 +85,7 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
  */
 /*public*/ /*static*/ /*synchronized*/ LnTcpServer* LnTcpServer::getDefault() {
  LnTcpServer* server = (LnTcpServer*)InstanceManager::getOptionalDefault("LnTcpServer");
- if(server == NULL)
+ if(server == nullptr)
   server = (LnTcpServer*)InstanceManager::setDefault("LnTcpServer", new LnTcpServer());
  return server;
 }
@@ -93,7 +93,7 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
 /*public*/ /*static synchronized*/ LnTcpServer* LnTcpServer::getInstance()
 {
  LnTcpServer* server = (LnTcpServer*)InstanceManager::getOptionalDefault("LnTcpServer");
- if(server == NULL)
+ if(server == nullptr)
  {
   server = new LnTcpServer();
   (LnTcpServer*)InstanceManager::setDefault("LnTcpServer", server);
@@ -252,7 +252,7 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
  log->info(tr("LnTcpServer listening on port %1").arg(portNumber));
  connect(this, SIGNAL(newConnection()), this, SLOT(on_newConnection()));
  updateServerStateListener();
- if (this->shutDownTask == NULL)
+ if (this->shutDownTask == nullptr)
  {
 //  this.shutDownTask = new QuietShutDownTask("LocoNetOverTcpServer") {
 //         @Override
@@ -270,7 +270,7 @@ void LnTcpServer::on_newConnection()
 {
 
  QTcpSocket* socket = nextPendingConnection();
- if(socket != NULL)
+ if(socket != nullptr)
  {
   QString remoteAddress = socket->peerAddress().toString();
   ClientRxHandler* rxHandler;
@@ -283,13 +283,13 @@ void LnTcpServer::on_newConnection()
 /*public*/ void LnTcpServer::disable()
 {
 #if 1 // TODO:
- //if (socketListener != NULL)
+ //if (socketListener != nullptr)
 // {
 //  socketListener.interrupt();
 //  socketListener = NULL;
   try
   {
-   if (serverSocket != NULL) {
+   if (serverSocket != nullptr) {
        serverSocket->close();
    }
   }
@@ -315,8 +315,8 @@ void LnTcpServer::on_newConnection()
    }
  }
 // this->service.stop();
- if (this->shutDownTask != NULL && InstanceManager::shutDownManagerInstance() != NULL) {
-     InstanceManager::shutDownManagerInstance()->deregister(this->shutDownTask);
+ if (this->shutDownTask != nullptr && static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager")) != nullptr) {
+     static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->deregister(this->shutDownTask);
  }
  bIsEnabled = false;
 #endif
@@ -332,7 +332,7 @@ void LnTcpServer::on_newConnection()
 
 /*public*/ void LnTcpServer::updateClientStateListener()
 {
-// if (stateListner != NULL)
+// if (stateListner != nullptr)
 // {
 //  stateListner->notifyClientStateChanged(this);
 // }
@@ -368,7 +368,7 @@ class ClientListener implements Runnable {
                 log->error("Server: IO Exception: ", ex);
             }
         }
-        serverSocket = NULL;
+        serverSocket = nullptr;
     }
 };
 #endif

@@ -113,19 +113,20 @@ void ListedTableFrame::common()
   /* Here we add all the tables into the panel*/
   TabbedTableItemListArray* item = tabbedTableItemListArrayArray->value(x);
   try {
-  LTFTabbedTableItem* itemModel = new LTFTabbedTableItem(item->getClassAsString(), item->getItemString(), item->getStandardTableModel(), this);
-  itemBeingAdded = itemModel;
-  //detailpanel->add(itemModel->getPanel(), itemModel->getClassAsString());
-  //detailPanelLayout->addWidget(itemModel->getPanel());
-  detailpanel->addWidget(itemModel->getPanel());
-  tabbedTableArray->append(itemModel);
-  itemBeingAdded->getAAClass()->addToFrame(this);
-  } catch (Exception ex) {
- //detailpanel->layout()->addWidget(errorPanel(item->getItemString()), item->getClassAsString());
-  //detailPanelLayout->addWidget(errorPanel(item->getItemString()));
-  log->error("Error when adding " + item->getClassAsString() + " to display\n" /*+ ex*/);
- //ex.printStackTrace();
-  removeItem->append(item);
+   LTFTabbedTableItem* itemModel = new LTFTabbedTableItem(item->getClassAsString(), item->getItemString(), item->getStandardTableModel(), this);
+   itemBeingAdded = itemModel;
+   //detailpanel->add(itemModel->getPanel(), itemModel->getClassAsString());
+   //detailPanelLayout->addWidget(itemModel->getPanel());
+   detailpanel->addWidget(itemModel->getPanel());
+   tabbedTableArray->append(itemModel);
+   itemBeingAdded->getAAClass()->addToFrame(this);
+  }
+  catch (Exception ex) {
+  //detailpanel->layout()->addWidget(errorPanel(item->getItemString()), item->getClassAsString());
+   //detailPanelLayout->addWidget(errorPanel(item->getItemString()));
+   log->error("Error when adding " + item->getClassAsString() + " to display\n" /*+ ex*/);
+  //ex.printStackTrace();
+   removeItem->append(item);
   }
   detailpanel->adjustSize();
   setHidden(true);
@@ -160,11 +161,14 @@ void ListedTableFrame::common()
  connect(cardHolder, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int, int)));
 
  cardHolder->setMinimumWidth(8);
-    if (lastdivider != 0) {
-        cardHolder->setMinimumWidth(lastdivider);
-    } else { //Else if no specific size has been given we set it to the lists preferred width
-        //cardHolder->setDividerLocation(listScroller.getPreferredSize().width);
-    }
+ if (lastdivider != 0) {
+     cardHolder->setMinimumWidth(lastdivider);
+ }
+ else
+ { //Else if no specific size has been given we set it to the lists preferred width
+     //cardHolder->setDividerLocation(listScroller.getPreferredSize().width);
+  cardHolder->setMidLineWidth(8);
+ }
 #if 0
     cardHolder.addPropertyChangeListener(new PropertyChangeListener() {
         //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
@@ -383,7 +387,7 @@ void ListedTableFrame::On_viewMenu_triggered(QObject* obj)
 
 LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool stdModel, ListedTableFrame* frame)
 {
-    this->frame = frame;
+ this->frame = frame;
  dataModel = NULL;
  dataTable = NULL;
     dataPanel = new QWidget();
@@ -785,4 +789,10 @@ void ListedTableFrame::On_listSelection(QModelIndex ix)
 {
  int row = ix.row();
  actionList->selectListItem(row);
+}
+
+void ListedTableFrame::setWindowSize()
+{
+ QSize size = pref->getWindowSize(windowFrameRef);
+ resize(size);
 }

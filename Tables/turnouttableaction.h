@@ -11,6 +11,7 @@ class TurnoutOperationConfig;
 class TurnoutOperation;
 class ItemListener;
 class TTComboBoxDelegate;
+class TTEditDelegate;
 class Turnout;
 class ActionEvent;
 class JmriJFrame;
@@ -192,7 +193,7 @@ public slots:
     TTComboBoxDelegate* lockDecColDelegate;
     TTComboBoxDelegate* opsEditColDelegate;
     TTComboBoxDelegate* opsOnOffColDelegate;
-    TTComboBoxDelegate* sensorsColDelegate;
+    TTEditDelegate* sensorsColDelegate;
 
  protected:
     /*protected*/ QString getMasterClassName();
@@ -201,7 +202,7 @@ public slots:
  protected slots:
 
 };  // end of custom data model
-//};
+
 class TTComboBoxDelegate : public QItemDelegate
 {
 Q_OBJECT
@@ -220,6 +221,23 @@ private:
   QStringList items;
   bool editable;
 };
+
+class TTEditDelegate : public QItemDelegate
+{
+Q_OBJECT
+public:
+  TTEditDelegate( TurnoutTableAction* self);
+
+  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  void setEditorData(QWidget *editor, const QModelIndex &index) const;
+  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+private:
+  TurnoutTableAction* self;
+};
+
 class ItemListener1 : public ActionListener
 {
  Q_OBJECT

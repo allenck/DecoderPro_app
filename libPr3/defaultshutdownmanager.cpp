@@ -7,6 +7,8 @@
 #include "appsbase.h"
 #include <QGuiApplication>
 #include <QWindow>
+#include <QApplication>
+#include <QProcess>
 
 /*static*/ bool DefaultShutDownManager::shuttingDown = false;
 
@@ -129,69 +131,76 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
  * @return false if shutdown or restart failed.
  */
 //@SuppressFBWarnings(value = "DM_EXIT", justification = "OK to directly exit standalone main")
-/*protected*/ bool DefaultShutDownManager::shutdown(int status, bool _exit) {
-    if (!shuttingDown) {
-        QDateTime start =  QDateTime::currentDateTime();
-        long timeout = 30; // all shut down tasks must complete within n seconds
-        setShuttingDown(true);
-        // trigger parallel tasks (see jmri.ShutDownTask#isParallel())
-        if (!this->runShutDownTasks(true)) {
-            return false;
-        }
-        log.debug(tr("parallel tasks completed executing %1 milliseconds after starting shutdown").arg( /*QDateTime::currentDateTime() - start.getTime()*/start.msecsTo(QDateTime::currentDateTime())));
-        // trigger non-parallel tasks
-        if (!this->runShutDownTasks(false)) {
-            return false;
-        }
-        log.debug(tr("sequential tasks completed executing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
+/*protected*/ bool DefaultShutDownManager::shutdown(int status, bool _exit)
+{
+ if (!shuttingDown)
+ {
+  QDateTime start =  QDateTime::currentDateTime();
+  long timeout = 30; // all shut down tasks must complete within n seconds
+  setShuttingDown(true);
+  // trigger parallel tasks (see jmri.ShutDownTask#isParallel())
+  if (!this->runShutDownTasks(true)) {
+      return false;
+  }
+  log.debug(tr("parallel tasks completed executing %1 milliseconds after starting shutdown").arg( /*QDateTime::currentDateTime() - start.getTime()*/start.msecsTo(QDateTime::currentDateTime())));
+  // trigger non-parallel tasks
+  if (!this->runShutDownTasks(false)) {
+      return false;
+  }
+  log.debug(tr("sequential tasks completed executing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
 
-        // close any open windows by triggering a closing event
-        // this gives open windows a final chance to perform any cleanup
+  // close any open windows by triggering a closing event
+  // this gives open windows a final chance to perform any cleanup
 //        if (!GraphicsEnvironment.isHeadless())
 //        {
 //            Arrays.asList(Frame.getFrames()).stream().forEach((frame) ->
-         foreach(QWindow* frame, QGuiApplication::allWindows())
-            {
-                // do not run on thread, or in parallel, as System.exit()
-                // will get called before windows can close
-                if (frame->isActive())
-                { // dispose() has not been called
-                    log.debug(tr("Closing frame \"%1\", title: \"%2\"").arg(frame->metaObject()->className(), frame->title()));
-                    QDateTime timer = QDateTime::currentDateTime();
-                    //frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                    frame->close();
-                    log.debug(tr("Frame \"%1\" took %2 milliseconds to close").arg(frame->metaObject()->className()).arg(timer.msecsTo(QDateTime::currentDateTime()))); // new Date().getTime() - timer.getTime());
-                }
-            } //);
+   foreach(QWindow* frame, QGuiApplication::allWindows())
+   {
+    // do not run on thread, or in parallel, as System.exit()
+    // will get called before windows can close
+    if (frame->isActive())
+    { // dispose() has not been called
+     log.debug(tr("Closing frame \"%1\", title: \"%2\"").arg(frame->metaObject()->className(), frame->title()));
+     QDateTime timer = QDateTime::currentDateTime();
+     //frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+     frame->close();
+     log.debug(tr("Frame \"%1\" took %2 milliseconds to close").arg(frame->metaObject()->className()).arg(timer.msecsTo(QDateTime::currentDateTime()))); // new Date().getTime() - timer.getTime());
+    }
+   } //);
 //        }
 
-        log.debug(tr("windows completed closing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
+  log.debug(tr("windows completed closing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
 #if 0
-        // wait for parallel tasks to complete
-        /*synchronized (start)*/ {
-            while (new ArrayList<>(this.tasks).stream().anyMatch((task) -> (task.isParallel() && !task.isComplete())))
-            {
-                try {
-                    start.wait(100);
-                } catch (InterruptedException ex) {
-                    // do nothing
-                }
-                if ((new Date().getTime() - start.getTime()) > (timeout * 1000)) { // milliseconds
-                    log.warn("Terminating without waiting for all tasks to complete");
-                    break;
-                }
-            }
-        }
+  // wait for parallel tasks to complete
+  /*synchronized (start)*/ {
+      while (new ArrayList<>(this.tasks).stream().anyMatch((task) -> (task.isParallel() && !task.isComplete())))
+      {
+          try {
+              start.wait(100);
+          } catch (InterruptedException ex) {
+              // do nothing
+          }
+          if ((new Date().getTime() - start.getTime()) > (timeout * 1000)) { // milliseconds
+              log.warn("Terminating without waiting for all tasks to complete");
+              break;
+          }
+      }
+  }
 #endif
-        // success
-        log.debug(tr("Shutdown took %1 milliseconds.").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
-        log.info("Normal termination complete");
-        // and now terminate forcefully
-        if (_exit) {
-            exit(status);
-        }
-    }
-    return false;
+  // success
+  log.debug(tr("Shutdown took %1 milliseconds.").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
+  log.info("Normal termination complete");
+  // and now terminate forcefully
+  if (_exit) {
+   if(status == 100)
+   {
+    qApp->quit();
+    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+      exit(status);
+   }
+  }
+ }
+ return false;
 }
 
 /*private*/ bool DefaultShutDownManager::runShutDownTasks(bool isParallel) {

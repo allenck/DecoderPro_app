@@ -71,7 +71,7 @@ RosterConfigPaneXml::RosterConfigPaneXml(QObject *parent) :
  {
   RosterEntry::setDefaultOwner(element.attribute("ownerDefault"));
  }
- InstanceManager::configureManagerInstance()->registerPref(new RosterConfigPane());
+ static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(new RosterConfigPane());
  return result;
 }
 
@@ -88,5 +88,5 @@ RosterConfigPaneXml::RosterConfigPaneXml(QObject *parent) :
     if (element.attribute("directory") != "") {
         Roster::setFileLocation(element.attribute("directory"));
     }
-    InstanceManager::configureManagerInstance()->registerPref(new RosterConfigPane());
+    static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(new RosterConfigPane());
 }

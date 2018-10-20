@@ -180,21 +180,24 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
  * if they are of the same absolute type.
  */
 /*protected*/ void DefaultLogixManagerXml::replaceLogixManager() {
-    LogixManager* instance = InstanceManager::logixManagerInstance();
+    LogixManager* instance = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"));
     const char*  className = instance->metaObject()->className();
     if (className == "DefaultLogixManager")
         return;
     // if old manager exists, remove it from configuration process
-    if (InstanceManager::logixManagerInstance() != NULL)
-        ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->deregister(InstanceManager::logixManagerInstance() );
+    if (static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) != NULL)
+        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) );
 
     // register new one with InstanceManager
     DefaultLogixManager* pManager = DefaultLogixManager::instance();
-    InstanceManager::setLogixManager((LogixManager*)pManager);
+    InstanceManager::store(pManager, "LogixManager");
     // register new one for configuration
-    ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerConfig(pManager, Manager::LOGIXS);
+    ConfigureManager* cmOD = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+    if (cmOD != nullptr) {
+     cmOD->registerConfig(pManager, Manager::LOGIXS);
+    }
 }
 
 /*public*/ int DefaultLogixManagerXml::loadOrder(){
-    return ((DefaultLogixManager*)InstanceManager::logixManagerInstance())->getXMLOrder();
+    return ((DefaultLogixManager*)static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")))->getXMLOrder();
 }

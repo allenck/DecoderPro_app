@@ -314,7 +314,7 @@ void AudioBufferFrame::okPressed(ActionEvent* /*e*/)
  AudioBuffer* b;
  try
  {
-  AudioManager* am = InstanceManager::audioManagerInstance();
+  AudioManager* am = ((AudioManager*)InstanceManager::getDefault("AudioManager"));
   b = (AudioBuffer*) am->provideAudio(sName);
   if (b == NULL)
   {

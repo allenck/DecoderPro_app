@@ -38,7 +38,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
  LayoutBlock* destFacingBlock = NULL;
  LayoutBlock* destProtectBlock = NULL;
  QList<LayoutEditor*>* layout = PanelMenu::instance()->getLayoutEditorPanelList();
- LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+ LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
  for(int i = 0; i<layout->size(); i++)
  {
   if(log->isDebugEnabled())
@@ -107,7 +107,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 /*public*/ QList<LayoutBlock*> LayoutBlockConnectivityTools::getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean, bool validateOnly, int pathMethod) throw (JmriException)
 {
         QList<LayoutEditor*>* layout = PanelMenu::instance()->getLayoutEditorPanelList();
-        LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         LayoutBlock* facingBlock = NULL;
         LayoutBlock* protectingBlock = NULL;
         LayoutBlock* destFacingBlock = NULL;
@@ -149,7 +149,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     /*public*/ List<NamedBean> getBeansInPath(List<LayoutBlock> blocklist, LayoutEditor panel, Class<?> T){
         QList<NamedBean> beansInPath = new QList<NamedBean>();
         if(blocklist.size()>=2){
-            LayoutBlockManager lbm = InstanceManager::layoutBlockManagerInstance();
+            LayoutBlockManager lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
             for(int x = 1; x<blocklist.size(); x++){
                 LayoutBlock facingBlock = blocklist.get(x-1);
                 LayoutBlock protectingBlock = blocklist.get(x);
@@ -187,7 +187,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
      * @throws Jmri.Exception if any Block is NULL;
      */
 /*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destBlockn1) throw (JmriException) {
-        LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         if (!lbm->isAdvancedRoutingEnabled()){
             log->info("Advanced routing has not been enabled therefore we cannot use this function");
             throw new JmriException("Advanced routing has not been enabled therefore we cannot use this function");
@@ -268,7 +268,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             return false;
         }
         try{
-            return checkValidDest(facing, protecting, InstanceManager::layoutBlockManagerInstance()->getLayoutBlock(dest->getFacing()), InstanceManager::layoutBlockManagerInstance()->getLayoutBlock(dest->getProtecting()));
+            return checkValidDest(facing, protecting, static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(dest->getFacing()), static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(dest->getProtecting()));
         } catch (JmriException e){
             throw e;
         }
@@ -297,7 +297,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     */
 /*public*/ QList<LayoutBlock*> LayoutBlockConnectivityTools::getLayoutBlocks(LayoutBlock* sourceLayoutBlock, LayoutBlock* destinationLayoutBlock, LayoutBlock* protectingLayoutBlock, bool validateOnly, int pathMethod) throw (JmriException){
         lastErrorMessage= "Unknown Error Occured";
-        LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         if (!lbm->isAdvancedRoutingEnabled()){
             log->info("Advanced routing has not been enabled therefore we cannot use this function");
             throw new JmriException("Advanced routing has not been enabled therefore we cannot use this function");
@@ -351,7 +351,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
                 bt->addIndex(nextBlockIndex);
                 if(log->isDebugEnabled()) log->debug("block index returned " + QString::number(nextBlockIndex) + " Blocks in route size " + QString::number(blocksInRoute.size()));
                 //Sets the old next block to be our current block.
-                currentLBlock = InstanceManager::layoutBlockManagerInstance()->getLayoutBlock(nextBlock);
+                currentLBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(nextBlock);
 
                 offSet =  QList<int>();
 
@@ -359,7 +359,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 
                 currentBlock = nextBlock;
                 nextBlock = currentLBlock->getRouteNextBlockAtIndex(nextBlockIndex);
-                LayoutBlock* nextLBlock = InstanceManager::layoutBlockManagerInstance()->getLayoutBlock(nextBlock);
+                LayoutBlock* nextLBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(nextBlock);
                 if(log->isDebugEnabled()){
                     log->debug("Blocks in route size " + blocksInRoute.size());
                     log->debug(nextBlock->getDisplayName() + " " + destBlock->getDisplayName());
@@ -440,11 +440,11 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     //We need to take into account if the returned block has a signalmast attached.
     int LayoutBlockConnectivityTools::findBestHop(/*final*/ Block* preBlock, /*final*/ Block* currentBlock, Block* destBlock, int direction, QList<int> offSet, bool validateOnly, int pathMethod)
     {
-//        Logger* lBlockManLog = org.apache.log4j.Logger.getLogger(InstanceManager::layoutBlockManagerInstance().getClass().getName());
+//        Logger* lBlockManLog = org.apache.log4j.Logger.getLogger(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager")).getClass().getName());
 //        org.apache.log4j.Level currentLevel = lBlockManLog.getLevel();
         int blockindex = 0;
         Block* block;
-        LayoutBlock* currentLBlock = InstanceManager::layoutBlockManagerInstance()->getLayoutBlock(currentBlock);
+        LayoutBlock* currentLBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(currentBlock);
         QVector<int> blkIndexTested =  QVector<int>(5);
         if(log->isDebugEnabled())
             log->debug("In find best hop current " + currentLBlock->getDisplayName() + " previous " + preBlock->getDisplayName());
@@ -457,7 +457,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             }
             if (blockindex!=-1){
                 block = currentLBlock->getRouteNextBlockAtIndex(blockindex);
-                LayoutBlock* lBlock = InstanceManager::layoutBlockManagerInstance()->getLayoutBlock(block);
+                LayoutBlock* lBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(block);
                 if ((block == currentBlock) && (currentLBlock->getThroughPathIndex(preBlock, destBlock)==-1)){
                     lastErrorMessage="block " + block->getDisplayName() + " is directly attached, however the route to the destination block " + destBlock->getDisplayName() + " can not be directly used";
                     log->debug(lastErrorMessage);
@@ -478,11 +478,11 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 //                    lBlockManLog.setLevel(org.apache.log4j.Level.FATAL);
                     switch(pathMethod){
                         case MASTTOMAST :
-                        signal = (NamedBean*)InstanceManager::layoutBlockManagerInstance()->getFacingSignalMast(currentBlock, blocktoCheck); break;
+                        signal = (NamedBean*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getFacingSignalMast(currentBlock, blocktoCheck); break;
                         case HEADTOHEAD :
-                        signal = (NamedBean*)InstanceManager::layoutBlockManagerInstance()->getFacingSignalHead(currentBlock, blocktoCheck); break;
+                        signal = (NamedBean*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getFacingSignalHead(currentBlock, blocktoCheck); break;
                         default :
-                        signal = (NamedBean*) InstanceManager::layoutBlockManagerInstance()->getFacingSignalObject(currentBlock, blocktoCheck); break;
+                        signal = (NamedBean*) static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getFacingSignalObject(currentBlock, blocktoCheck); break;
                     }
 //                    lBlockManLog.setLevel(currentLevel);
                     if (signal==NULL){
@@ -515,7 +515,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     *   If no editor is provided, then all editors are considered
     */
     /*public*/ QHash<NamedBean*, QList<NamedBean*> > LayoutBlockConnectivityTools::discoverValidBeanPairs(LayoutEditor* editor, QString T){
-        LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         QHash<NamedBean*, QList<NamedBean*> > retPairs =  QHash<NamedBean*, QList<NamedBean*> >();
         QList<FacingProtecting*> beanList = generateBlocksWithBeans(editor, T);
         for(int i = 0; i<beanList.size(); i++){
@@ -550,7 +550,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     */
     /*public*/ QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T) throw (JmriException)
     {
-        LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         LayoutBlock* lFacing = lbm->getFacingBlockByNamedBean(source, editor);
         LayoutBlock* lProtecting = lbm->getProtectedBlockByNamedBean(source, editor);
         try {
@@ -562,7 +562,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 
     QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList) throw (JmriException)
     {
-     LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+     LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
      if(!lbm->isAdvancedRoutingEnabled())
      {
       throw new JmriException("advanced routing not enabled");
@@ -608,7 +608,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 
 
     QList<FacingProtecting*> LayoutBlockConnectivityTools::generateBlocksWithBeans(LayoutEditor* editor, QString T){
-        LayoutBlockManager* lbm = InstanceManager::layoutBlockManagerInstance();
+        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         QList<FacingProtecting*> beanList =  QList<FacingProtecting*>();
 
         QStringList lblksSysName = lbm->getSystemNameList();

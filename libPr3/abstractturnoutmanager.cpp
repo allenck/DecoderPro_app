@@ -37,16 +37,16 @@ char AbstractTurnoutManager::typeLetter() { return 'T'; }
 Turnout* AbstractTurnoutManager::provideTurnout(QString name)
 {
     Turnout* t = getTurnout(name);
-    if (t!=NULL) return t;
+    if (t!=nullptr) return t;
     if (name.startsWith(getSystemPrefix().mid(0,1)+QString(typeLetter())))
-        return newTurnout(name, NULL);
+        return newTurnout(name, nullptr);
     else
-        return newTurnout(makeSystemName(name), NULL);
+        return newTurnout(makeSystemName(name), nullptr);
 }
 
 Turnout* AbstractTurnoutManager::getTurnout(QString name) {
     Turnout* t = getByUserName(name);
-    if (t!=NULL) return t;
+    if (t!=nullptr) return t;
 
     return getBySystemName(name);
 }
@@ -54,17 +54,17 @@ Turnout* AbstractTurnoutManager::getTurnout(QString name) {
 Turnout* AbstractTurnoutManager::getBySystemName(QString name)
 {
  NamedBean* bean = _tsys->value(name);
- //return NULL;
+ //return nullptr;
  return (Turnout*)bean;
 // if(turnoutMap.contains(name))
 //     return (Turnout*)turnoutMap.value(name);
-// return (Turnout*)NULL;
+// return (Turnout*)nullptr;
 }
 
 Turnout* AbstractTurnoutManager::getByUserName(QString key)
 {
  NamedBean* bean = _tuser->value(key);
- //return NULL;
+ //return nullptr;
  return (Turnout*)bean;
 // int addr = userName.toInt();
 // QMapIterator<QString, Turnout*> i(turnoutMap);
@@ -73,41 +73,39 @@ Turnout* AbstractTurnoutManager::getByUserName(QString key)
 //  i.next();
 //  if(((LnTurnout*)i.value())->getNumber() == addr)
 //   return (Turnout*)i.value();
-//  return (Turnout*)NULL;
+//  return (Turnout*)nullptr;
 // }
-// return NULL;
+// return nullptr;
 }
 
 Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName)
 {
- //if (log->isDebugEnabled()) log->debug(QString("newTurnout: %1").arg(( (systemName==NULL) ? "NULL" : systemName)));
- if (systemName == NULL)
- {
-  log->error(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName==NULL) ? "NULL" : userName)));
-  throw new IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName==NULL) ? "NULL" : userName)));
- }
+ // add normalize? see AbstractSensor
+ if (log->isDebugEnabled()) log->debug(QString("newTurnout: %1").arg(( (systemName=="") ? "null" : systemName)));
+
  // is system name in correct format?
- QString neededPrefix = QString("%1%2").arg(getSystemPrefix().mid(0,1)).arg(QString(typeLetter()));
- if (!systemName.startsWith(neededPrefix))
+ if (!systemName.startsWith(getSystemPrefix() + typeLetter())
+                 || !(systemName.length() > (getSystemPrefix() + typeLetter()).length()))
  {
-  log->error(QString("Invalid system name for turnout: %1").arg(systemName
-                        +" needed "+ neededPrefix));
-  throw new IllegalArgumentException(QString("Invalid system name for turnout: %1  needed %2").arg(systemName).arg(neededPrefix));
+     log->error(tr("Invalid system name for turnout: %1 needed %2%3").arg(
+             systemName).arg(getSystemPrefix()).arg(typeLetter()));
+     throw new IllegalArgumentException("Invalid system name for turnout: " + systemName
+             + " needed " + getSystemPrefix() + typeLetter());
  }
 
  // return existing if there is one
  Turnout* s;
- if ( (userName!=NULL) && ((s = getByUserName(userName)) != NULL))
+ if ( (userName!=nullptr) && ((s = getByUserName(userName)) != nullptr))
  {
   if (getBySystemName(systemName)!=s)
    log->error(QString("inconsistent user (%1) and system name (%2) results; userName related to (%3)").arg(userName).arg(systemName).arg(s->getSystemName()));
   return s;
  }
- if ( (s = getBySystemName(systemName)) != NULL)
+ if ( (s = getBySystemName(systemName)) != nullptr)
  {
-  if ((s->getUserName() == NULL) && (userName != NULL))
+  if ((s->getUserName() == nullptr) && (userName != nullptr))
    s->setUserName(userName);
-  else if (userName != NULL) log->warn(QString("Found turnout via system name (%1) with non-NULL user name (%2)").arg(systemName).arg(userName));
+  else if (userName != nullptr) log->warn(QString("Found turnout via system name (%1) with non-nullptr user name (%2)").arg(systemName).arg(userName));
   return s;
  }
 
@@ -115,11 +113,11 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  s = createNewTurnout(systemName, userName);
 
  // if that failed, blame it on the input arguements
- //if (s == NULL) throw new IllegalArgumentException(QString("Unable to create turnout from %1").arg(systemName));
- if(s == NULL)
+ //if (s == nullptr) throw new IllegalArgumentException(QString("Unable to create turnout from %1").arg(systemName));
+ if(s == nullptr)
  {
   log->error(QString("Unable to create turnout from %1 %2").arg(systemName).arg(userName));
-  return NULL;
+  return nullptr;
  }
 
  emit newTurnoutCreated(this, s);
@@ -187,7 +185,7 @@ int AbstractTurnoutManager::askControlType(QString systemName) { Q_UNUSED(system
 /**
  * Internal method to invoke the factory, after all the
  * logic for returning an existing method has been invoked.
- * @return never NULL
+ * @return never nullptr
  */
 //Turnout AbstractTurnoutManager::createNewTurnout(QString systemName, QString userName);
 
@@ -200,7 +198,7 @@ int AbstractTurnoutManager::askControlType(QString systemName) { Q_UNUSED(system
 QStringList AbstractTurnoutManager::getValidOperationTypes()
 {
 
- if (InstanceManager::commandStationInstance()!=NULL)
+ if (InstanceManager::getDefault("CommandStation")!=nullptr)
  {
   return QString("Sensor,Raw,NoFeedback").split(",");
  }
@@ -208,8 +206,6 @@ QStringList AbstractTurnoutManager::getValidOperationTypes()
  {
   return  QString("Sensor,NoFeedback").split(",");
  }
-
- return QStringList();
 }
 
 /**
@@ -244,11 +240,11 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
     } catch (JmriException *ex) {
 //        InstanceManager::getDefault("UserPreferencesManager")->
 //            showInfoMessage(QString("Error","Unable to convert %1 to a valid Hardware Address %2").arg(curAddress).arg(ex);
-        return NULL;
+        return nullptr;
     }
 
     Turnout* t = getBySystemName(tmpSName);
-    if(t==NULL){
+    if(t==nullptr){
         return curAddress;
     }
 
@@ -260,22 +256,22 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
 //        log->error("Unable to convert %1 Hardware Address to a number").arg(curAddress);
 //        InstanceManager.getDefault(jmri.UserPreferencesManager.class).
 //                            showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);
-        return NULL;
+        return nullptr;
     }
     //The Number of Output Bits of the previous turnout will help determine the next
     //valid address.
     iName = iName + t->getNumberOutputBits();
-    //Check to determine if the systemName is in use, return NULL if it is,
+    //Check to determine if the systemName is in use, return nullptr if it is,
     //otherwise return the next valid address.
     t = getBySystemName(prefix+typeLetter()+iName);
-    if(t!=NULL){
+    if(t!=nullptr){
         for(int x = 1; x<10; x++){
             iName = iName + t->getNumberOutputBits();
             t = getBySystemName(prefix+typeLetter()+iName);
-            if(t==NULL)
+            if(t==nullptr)
                 return QString("%1").arg(iName);
         }
-        return NULL;
+        return nullptr;
     } else {
         return QString("%1").arg(iName);
     }
@@ -283,11 +279,11 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
 
 
 
-//    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NP_NULL_PARAM_DEREF", justification="We are validating user input however the value is stored in its original format")
+//    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NP_nullptr_PARAM_DEREF", justification="We are validating user input however the value is stored in its original format")
 void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed) //throws JmriException
 {
-//    if(speed==NULL)
-//        throw new JmriException("Value of requested turnout default closed speed can not be NULL");
+//    if(speed==nullptr)
+//        throw new JmriException("Value of requested turnout default closed speed can not be nullptr");
  if(defaultClosedSpeed ==(speed))
   return;
  if (speed.contains("Block"))
@@ -318,8 +314,8 @@ void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed) //throws JmriE
 }
 void AbstractTurnoutManager::setDefaultThrownSpeed(QString speed)// throws JmriException
 {
-//    if(speed==NULL)
-//        throw new JmriException("Value of requested turnout default thrown speed can not be NULL");
+//    if(speed==nullptr)
+//        throw new JmriException("Value of requested turnout default thrown speed can not be nullptr");
  if (defaultThrownSpeed ==(speed))
   return;
  if (speed.contains("Block"))

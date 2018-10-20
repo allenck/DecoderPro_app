@@ -52,7 +52,7 @@ public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* evt);
 
 private:
- Logger* log;
+ /*private*/ static Logger* log;// = LoggerFactory::getLogger("LocoIOTableModel");
  /*private*/ LocoIOData* liodata;
  /*private*/ bool inHex;
  /**

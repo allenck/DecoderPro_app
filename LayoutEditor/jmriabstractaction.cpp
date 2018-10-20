@@ -12,7 +12,7 @@ JmriAbstractAction::JmriAbstractAction(QObject *parent) :
 /**
  * Abstract base for actions that will work with multiple JMRI GUIs.
  *
- * An opaque Object can be passed as a context, but NULL is also possible.
+ * An opaque Object can be passed as a context, but nullptr is also possible.
  *
  * <b>NOTE</b> Either {@link jmri.util.swing.JmriAbstractAction#actionPerformed(java.awt.event.ActionEvent)
  * }
@@ -38,7 +38,7 @@ JmriAbstractAction::JmriAbstractAction(QObject *parent) :
  //super(s);
  common();
  this->wi = wi;
- if (wi == NULL)
+ if (wi == nullptr)
  {
   Logger::error(tr("Cannot create '%1' action with NULL WindowInterface"/*, new Exception()*/).arg(s));
  }
@@ -74,8 +74,8 @@ JmriAbstractAction::JmriAbstractAction(QObject *parent) :
 void JmriAbstractAction::common()
 {
  //hint = WindowInterface::DEFAULT;
- context = NULL;
- cache = NULL;
+ context = nullptr;
+ cache = nullptr;
  //connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
@@ -105,7 +105,7 @@ void JmriAbstractAction::common()
  // we don't make a new panel if the window interface is
  //      single instance (not multiple instance),
  // of if the existing panel is single instance (not multiple instance)
- if (cache == NULL
+ if (cache == nullptr
          || (wi->multipleInstances() && cache->isMultipleInstances()))
  {
   try
@@ -116,14 +116,14 @@ void JmriAbstractAction::common()
 Logger::error("Exception creating panel: " + ex.getMessage());
    return;
   }
-  if (cache == NULL)
+  if (cache == nullptr)
   {
    Logger::error("Unable to make panel");
    return;
   }
  }
 
- if(static_cast<JmriJFrameInterface*>(wi) != NULL)
+ if(static_cast<JmriJFrameInterface*>(wi) != nullptr)
   ((JmriJFrameInterface*)wi)->show(cache, this, WindowInterface::DEFAULT);  // no real context, this is new content
 
  wi->show(cache, this, WindowInterface::DEFAULT);  // no real context, this is new content
@@ -131,10 +131,10 @@ Logger::error("Exception creating panel: " + ex.getMessage());
 
 /*public*/  void JmriAbstractAction::dispose()
 {
- if (cache != NULL)
+ if (cache != nullptr)
  {
   cache->dispose();
-  cache = NULL;
+  cache = nullptr;
  }
 }
 
@@ -151,5 +151,5 @@ Logger::error("Exception creating panel: " + ex.getMessage());
 
 /*public*/  JmriPanel* JmriAbstractAction::makePanel() {
     Logger::error("makePanel must be overridden"/*, new Exception()*/);
-    return NULL;
+    return nullptr;
 }

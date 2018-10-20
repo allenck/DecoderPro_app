@@ -120,7 +120,7 @@ class TTAWindowListener : public WindowListener
  Q_OBJECT
  TableFrame* frame;
  TTAWindowListener(TableFrame* frame) { this->frame = frame;}
- void windowClosing(QCloseEvent *e) { frame->dispose();}
+ void windowClosing(QCloseEvent */*e*/) { frame->dispose();}
  friend class TableFrame;
 };
 

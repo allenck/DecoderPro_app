@@ -1,5 +1,6 @@
 #include "lightcontrol.h"
 #include "turnout.h"
+#include "timebase.h"
 
 LightControl::LightControl(QObject *parent) :
     QObject(parent)
@@ -70,22 +71,22 @@ void LightControl::common()
     _timedSensorName = "";     // trigger Sensor if TIMED_ON_CONTROL
     _controlSensor2Name = ""; // second controlling sensor if TWO_SENSOR_CONTROL
     // operational instance variables - not saved between runs
-    _parentLight = NULL;        // Light that is being controlled
+    _parentLight = nullptr;        // Light that is being controlled
     _active = false;
-     _namedControlSensor = NULL;
-    _sensorListener = NULL;
-    _namedControlSensor2 = NULL;
-    _sensor2Listener = NULL;
-    _timebaseListener = NULL;
-    _clock = NULL;
+     _namedControlSensor = nullptr;
+    _sensorListener = nullptr;
+    _namedControlSensor2 = nullptr;
+    _sensor2Listener = nullptr;
+    _timebaseListener = nullptr;
+    _clock = nullptr;
     _timeOn = 0;
     _timeOff = 0;
-    _controlTurnout = NULL;
-    _turnoutListener = NULL;
-    _namedTimedControlSensor = NULL;
-     _timedSensorListener = NULL;
-    _timedControlTimer = NULL;
-    _timedControlListener = NULL;
+    _controlTurnout = nullptr;
+    _turnoutListener = nullptr;
+    _namedTimedControlSensor = nullptr;
+     _timedSensorListener = nullptr;
+    _timedControlTimer = nullptr;
+    _timedControlListener = nullptr;
     _lightOnTimerActive = false;
 
     nbhm = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
@@ -101,7 +102,7 @@ void LightControl::common()
 /*public*/ int LightControl::getControlSensorSense() {return _controlSensorSense;}
 
 /*public*/ QString LightControl::getControlSensorName() {
-    if (_namedControlSensor!=NULL)
+    if (_namedControlSensor!=nullptr)
         return _namedControlSensor->getName();
     return _controlSensorName;
 }
@@ -123,7 +124,7 @@ void LightControl::common()
 /*public*/ void LightControl::setControlTurnoutState(int state) {_turnoutState = state;}
 
 /*public*/ QString LightControl::getControlTimedOnSensorName() {
-    if(_namedTimedControlSensor!=NULL)
+    if(_namedTimedControlSensor!=nullptr)
         return _namedTimedControlSensor->getName();
     return _timedSensorName;
 }
@@ -133,7 +134,7 @@ void LightControl::common()
 /*public*/ void LightControl::setTimedOnDuration(int duration) {_timeOnDuration = duration;}
 
 /*public*/ QString LightControl::getControlSensor2Name() {
-    if (_namedControlSensor2!=NULL)
+    if (_namedControlSensor2!=nullptr)
         return _namedControlSensor2->getName();
     return _controlSensor2Name;
 }
@@ -153,13 +154,13 @@ void LightControl::common()
         // activate according to control type
         switch (_controlType) {
             case Light::SENSOR_CONTROL:
-                _namedControlSensor = NULL;
+                _namedControlSensor = nullptr;
                 if (_controlSensorName.length()>0){
                     Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
                                             provideSensor(_controlSensorName);
                     _namedControlSensor = nbhm->getNamedBeanHandle(_controlSensorName, sen);
                 }
-                if (_namedControlSensor!=NULL) {
+                if (_namedControlSensor!=nullptr) {
                     // if sensor state is currently known, set light accordingly
                     int kState = _namedControlSensor->getBean()->getKnownState();
                     if (kState==Sensor::ACTIVE) {
@@ -225,8 +226,8 @@ void LightControl::common()
                 break;
 
             case Light::FAST_CLOCK_CONTROL:
-                if (_clock==NULL) {
-                    _clock = InstanceManager::timebaseInstance();
+                if (_clock==nullptr) {
+                    _clock = (Timebase*)InstanceManager::getDefault("Timebase");
                 }
                 // set up time as minutes in a day
                 _timeOn = _fastClockOnHour * 60 + _fastClockOnMin;
@@ -248,7 +249,7 @@ void LightControl::common()
             case Light::TURNOUT_STATUS_CONTROL:
                 _controlTurnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
                                         provideTurnout(_controlTurnoutName);
-                if (_controlTurnout!=NULL) {
+                if (_controlTurnout!=nullptr) {
                     // set light based on current turnout state if known
                     int tState = _controlTurnout->getKnownState();
                     if (tState==Turnout::CLOSED) {
@@ -317,7 +318,7 @@ void LightControl::common()
                                         provideSensor(_timedSensorName);
                     _namedTimedControlSensor = nbhm->getNamedBeanHandle(_timedSensorName, sen);
                 }
-                if (_namedTimedControlSensor!=NULL) {
+                if (_namedTimedControlSensor!=nullptr) {
                     // set initial state off
                     _parentLight->setState(Light::OFF);
                     // listen for change in timed control sensor state
@@ -332,7 +333,7 @@ void LightControl::common()
 //                                            // Turn light on
 //                                            _parentLight->setState(Light.ON);
 //                                            // Create a timer if one does not exist
-//                                            if (_timedControlTimer==NULL) {
+//                                            if (_timedControlTimer==nullptr) {
 //                                                _timedControlListener = new TimeLight();
 //                                                _timedControlTimer = new Timer(_timeOnDuration,
 //                                                        _timedControlListener);
@@ -355,8 +356,8 @@ void LightControl::common()
                 }
                 break;
             case Light::TWO_SENSOR_CONTROL:
-                _namedControlSensor = NULL;
-                _namedControlSensor2 = NULL;
+                _namedControlSensor = nullptr;
+                _namedControlSensor2 = nullptr;
                 if (_controlSensorName.length()>0){
                     Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
                                             provideSensor(_controlSensorName);
@@ -367,7 +368,7 @@ void LightControl::common()
                                             provideSensor(_controlSensor2Name);
                     _namedControlSensor2 = nbhm->getNamedBeanHandle(_controlSensor2Name, sen);
                 }
-                if ( (_namedControlSensor!=NULL) && (_namedControlSensor2!=NULL) ) {
+                if ( (_namedControlSensor!=nullptr) && (_namedControlSensor2!=nullptr) ) {
                     // if sensor state is currently known, set light accordingly
                     int kState = _namedControlSensor->getBean()->getKnownState();
                     int kState2 = _namedControlSensor2->getBean()->getKnownState();
@@ -453,7 +454,7 @@ void LightControl::common()
  */
 //@SuppressWarnings("deprecation")
 /*private*/ void LightControl::updateClockControlLight() {
-    if (_clock!=NULL) {
+    if (_clock!=nullptr) {
         QDateTime now = _clock->getTime();
         int timeNow = now.time().hour() * 60 + now.time().minute();
         int state = _parentLight->getState();
@@ -493,48 +494,48 @@ void LightControl::common()
         // deactivate according to control type
         switch (_controlType) {
             case Light::SENSOR_CONTROL:
-                if (_sensorListener!=NULL) {
+                if (_sensorListener!=nullptr) {
                     _namedControlSensor->getBean()->removePropertyChangeListener(_sensorListener);
-                    _sensorListener = NULL;
+                    _sensorListener = nullptr;
                 }
                 break;
             case Light::FAST_CLOCK_CONTROL:
-                if ( (_clock!=NULL) && (_timebaseListener!=NULL) ) {
+                if ( (_clock!=nullptr) && (_timebaseListener!=nullptr) ) {
                     _clock->removeMinuteChangeListener(_timebaseListener);
-                    _timebaseListener = NULL;
+                    _timebaseListener = nullptr;
                 }
                 break;
             case Light::TURNOUT_STATUS_CONTROL:
-                if (_turnoutListener!=NULL) {
+                if (_turnoutListener!=nullptr) {
                     _controlTurnout->removePropertyChangeListener(_turnoutListener);
-                    _turnoutListener = NULL;
+                    _turnoutListener = nullptr;
                 }
                 break;
             case Light::TIMED_ON_CONTROL:
-                if (_timedSensorListener!=NULL) {
+                if (_timedSensorListener!=nullptr) {
                     _namedTimedControlSensor->getBean()->removePropertyChangeListener(_timedSensorListener);
-                    _timedSensorListener = NULL;
+                    _timedSensorListener = nullptr;
                 }
                 if (_lightOnTimerActive) {
                     _timedControlTimer->stop();
                     _lightOnTimerActive = false;
                 }
-                if (_timedControlTimer!=NULL) {
-                    if (_timedControlListener!=NULL) {
+                if (_timedControlTimer!=nullptr) {
+                    if (_timedControlListener!=nullptr) {
 //                        _timedControlTimer->removeActionListener(_timedControlListener);
-                        _timedControlListener = NULL;
+                        _timedControlListener = nullptr;
                     }
-                    _timedControlTimer = NULL;
+                    _timedControlTimer = nullptr;
                 }
                 break;
             case Light::TWO_SENSOR_CONTROL:
-                if (_sensorListener!=NULL) {
+                if (_sensorListener!=nullptr) {
                     _namedControlSensor->getBean()->removePropertyChangeListener(_sensorListener);
-                    _sensorListener = NULL;
+                    _sensorListener = nullptr;
                 }
-                if (_sensor2Listener!=NULL) {
+                if (_sensor2Listener!=nullptr) {
                     _namedControlSensor2->getBean()->removePropertyChangeListener(_sensor2Listener);
-                    _sensor2Listener = NULL;
+                    _sensor2Listener = nullptr;
                 }
                 break;
             default:

@@ -123,7 +123,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
 //@SuppressWarnings("unchecked")
 /*public*/ void LayoutBlockManagerXml::loadLayoutBlocks(QDomElement layoutblocks)
 {
- LayoutBlockManager* tm = InstanceManager::layoutBlockManagerInstance();
+ LayoutBlockManager* tm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if (layoutblocks.attribute("blockrouting")!="")
  {
   if (layoutblocks.attribute("blockrouting")==("yes"))
@@ -224,19 +224,20 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
 /*protected*/ void LayoutBlockManagerXml::replaceLayoutBlockManager()
 {
 #if 1 // Java code has this deprecated!
- if (InstanceManager::layoutBlockManagerInstance() != NULL && QString(InstanceManager::layoutBlockManagerInstance()->metaObject()->className())
+ if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")) != NULL && QString(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->metaObject()->className())
             == ("LayoutBlockManager"))
   return;
  // if old manager exists, remove it from configuration process
- if (InstanceManager::layoutBlockManagerInstance() != NULL)
+ if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")) != NULL)
   // TODO: imlement ConfigXmlManager
-  InstanceManager::configureManagerInstance()->deregister(
-            InstanceManager::layoutBlockManagerInstance() );
+  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(
+            static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")) );
 
  // register new one with InstanceManager
- LayoutBlockManager* pManager = LayoutBlockManager::instance();
- InstanceManager::setLayoutBlockManager(pManager);
+ LayoutBlockManager* pManager = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  // register new one for configuration
- InstanceManager::configureManagerInstance()->registerConfig(pManager, Manager::LAYOUTBLOCKS);
+ ConfigureManager* cm =static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"));
+ if(cm != nullptr)
+  cm->registerConfig(pManager, Manager::LAYOUTBLOCKS);
 #endif
 }

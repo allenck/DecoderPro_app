@@ -2,8 +2,8 @@
 #include "locoio.h"
 #include "llnmon.h"
 #include <QtAlgorithms>   // for qSort()
-#include "locoioaddress.h"
 #include "sleeperthread.h"
+#include "loconetmessageinterpret.h"
 
 const int LocoIOData::LocoBufferAddress  = 0x0150;
 /*static*/ const int LocoIOData::NONE = 0;
@@ -65,7 +65,7 @@ void LocoIOData::common(int unitAddr, int unitSubAddr, LnTrafficController *tc)
  /**
   * Per-port SV data
   */
- /*private*/ /*LocoIOMode[]*/ lim =  QVector<LocoIOMode*>(_numRows, NULL);
+ /*private*/ /*LocoIOMode[]*/ lim =  QVector<LocoIOMode*>(_numRows, nullptr);
 //    /*private*/ /*LocoIOMode[]*/ x2lim =  QVector<LocoIOMode*>(_numRows, NULL);
 
  /*private*/ /*int[]*/ addr    =  QVector<int>(_numRows*2, 0);
@@ -92,7 +92,7 @@ void LocoIOData::common(int unitAddr, int unitSubAddr, LnTrafficController *tc)
  bDirty=false;
  bX2Dirty = false;
  bServoDirty = false;
- vals = NULL;
+ vals = nullptr;
  b3ByteRead = true;
  bProbing = false;
  /**
@@ -166,7 +166,7 @@ void LocoIOData::common(int unitAddr, int unitSubAddr, LnTrafficController *tc)
  addPropertyChangeListener((PropertyChangeListener*)this);
  this->tc = tc;
  // for now, we're always listening to LocoNet
- if (this->tc!=NULL)
+ if (this->tc!=nullptr)
  {
   //this->tc->addLocoNetListener(~0, (LocoNetListener*)this);
   connect(this->tc, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
@@ -468,7 +468,7 @@ void LocoIOData::setIsBooster(int val)
  {
   LocoIOMode* lim = getLIM(channel);
   LocoIOModeList l;
-  if(lim  != NULL)
+  if(lim  != nullptr)
   {
    QString ssNew = ss==ssBlueGreen?ssGreen:ss;
    setV1(channel, l.addressToValue1(lim,value),ssNew);
@@ -564,10 +564,32 @@ int LocoIOData::getSV7D() { return sv7D;}
 int LocoIOData::getSV7E() { return sv7E;}
 int LocoIOData::getSV7F() { return sv7F;}
 
+void LocoIOData::readSV0()
+{
+ readState0 = READVALUE1; //READ;
+ writeState0 = NONE;
+
+ lastOpCv = -1;
+ issueNext0Operation();
+ connect(this, SIGNAL(IOComplete0()), this, SLOT(readWriteNext()));
+}
+
+void LocoIOData::readSV125()
+{
+ readState125 = READVALUE1; //READ;
+ writeState125 = NONE;
+
+ lastOpCv = -1;
+ issueNext0Operation();
+ connect(this, SIGNAL(IOComplete0()), this, SLOT(readWriteNext()));
+}
+
+
 void LocoIOData::readSV7D()
 {
  readState7D = READ;
  writeState7D = NONE;
+ lastOpCv = -1;
  issueNext7DOperation();
 }
 
@@ -604,12 +626,12 @@ void LocoIOData::writeSV7D()
 }
 
 /*public*/ void LocoIOData::setLIM(int channel, QString s) {
-    if (validmodes != NULL) {
+    if (validmodes != nullptr) {
         setLIM(channel, validmodes->getLocoIOModeFor(s));
     }
 }
 /*public*/ void LocoIOData::setLIM(int channel) {
-    if (validmodes != NULL)
+    if (validmodes != nullptr)
     {
      setLIM(channel, validmodes->getLocoIOModeFor(getSV(channel),getV1(channel),getV2(channel)));
     }
@@ -623,7 +645,7 @@ void LocoIOData::writeSV7D()
 /*public*/ LocoIOMode* LocoIOData::getLIM(int channel)
 {
  if(channel >= lim.count())
-     return NULL;
+     return nullptr;
  return lim[channel];
 }
 /*public*/ void LocoIOData::readValues(int channel)
@@ -641,7 +663,7 @@ void LocoIOData::writeSV7D()
  v1[channel]=0;
  v2[channel]=0;
  lastOpCv = -1;
- vals = NULL;
+ vals = nullptr;
  issueNextOperation();
 }
 /*public*/ void LocoIOData::readX2Values(int channel) {
@@ -657,9 +679,10 @@ void LocoIOData::writeSV7D()
     x2v1[channel]=0;
     x2v2[channel]=0;
     lastOpCv = -1;
-    vals = NULL;
+    vals = nullptr;
     issueNextExtra2Operation();
 }
+
 /*public*/ void LocoIOData::readServoValues(int iServo) {
     log->debug(tr("read channel %1").arg(iServo));
     for(int row=0; row < _numRowsServo; row++)
@@ -673,7 +696,7 @@ void LocoIOData::writeSV7D()
     servoP2[iServo]=0;
     servoSpd[iServo]=0;
     lastOpCv = -1;
-    vals = NULL;
+    vals = nullptr;
     issueNextServoOperation();
 }
 
@@ -683,7 +706,7 @@ void LocoIOData::writeSV7D()
 
 /*public*/ void LocoIOData::writeValues(int channel)
 {
- vals = NULL;
+ vals = nullptr;
  for(int row=0; row < _numRows*2; row++)
  {
   readState[row]= NONE;
@@ -695,7 +718,7 @@ void LocoIOData::writeSV7D()
 }
 /*public*/ void LocoIOData::writeX2Values(int channel)
 {
- vals = NULL;
+ vals = nullptr;
  for(int row=0; row < _numRows; row++)
  {
   readStateX2[row]= NONE;
@@ -706,7 +729,7 @@ void LocoIOData::writeSV7D()
 }
 /*public*/ void LocoIOData::writeServoValues(int channel)
 {
- vals = NULL;
+ vals = nullptr;
  for(int row=0; row < _numRowsServo; row++)
  {
   readStateServo[row]= NONE;
@@ -729,10 +752,10 @@ void LocoIOData::writeSV7D()
   readState[row] = READ;
   writeState[row] = NONE;
   if(row < 16)
-   lim[row] = NULL;
+   lim[row] = nullptr;
  }
  lastOpCv = -1;
- vals = NULL;
+ vals = nullptr;
  reading = true;  // false means write in progress
  issueNextOperation();
 }
@@ -751,7 +774,7 @@ void LocoIOData::writeSV7D()
   //x2lim[row] = NULL;
  }
  lastOpCv = -1;
- vals = NULL;
+ vals = nullptr;
  reading = true;  // false means write in progress
  issueNextExtra2Operation();
 }
@@ -765,7 +788,7 @@ void LocoIOData::writeSV7D()
   writeStateServo[row] = NONE;
  }
  lastOpCv = -1;
- vals = NULL;
+ vals = nullptr;
  reading = true;  // false means write in progress
  issueNextServoOperation();
 }
@@ -802,18 +825,20 @@ void LocoIOData::readWriteNext()
    readAllX2();
    break;
   case 1:
+   readWriteState = 2;
    if(getIsServo()==1)
    {
-    readWriteState = 2;
     readAllServo();
-    break;
    }
+   break;
   case 2:
    readWriteState = 3;
    readSV7D();
    break;
   case 3:
+   readWriteState = 4;
    emit readAllComplete();
+   break;
   default:
    readWriteState = -1;
    bReadingAll = false;
@@ -866,7 +891,7 @@ void LocoIOData::readWriteNext()
  {
   writeState[row] = WRITE;
  }
- vals = NULL;
+ vals = nullptr;
  //connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
 
  issueNextOperation();
@@ -878,7 +903,7 @@ void LocoIOData::readWriteNext()
  {
   writeStateX2[row] = WRITE;
  }
- vals = NULL;
+ vals = nullptr;
  //connect(timer, SIGNAL(timeout()), this, SLOT(timeoutX2()));
  issueNextExtra2Operation();
 }
@@ -889,7 +914,7 @@ void LocoIOData::readWriteNext()
  {
   writeStateServo[row] = WRITE;
  }
- vals = NULL;
+ vals = nullptr;
  //connect(timer, SIGNAL(timeout()), this, SLOT(timeoutServo()));
  issueNextServoOperation();
 }
@@ -966,33 +991,33 @@ void LocoIOData::readWriteNext()
     probeTimer->stop();
     stopTimer();
     log->debug( QString("probe %1 %2").arg(src).arg(packet[4]));
-    LocoIOAddress paddr(src, packet.at(4));
+    locoIOAddress = new LocoIOAddress(src, packet.at(4));
 //    paddr.unitAddr = src;
 //    paddr.unitSubAddr = packet[4];
-    QString fw = ((packet[2] != 0) ? dotme(packet[2]) : "1.3.2");
+    firmwareVersion = ((packet[2] != 0) ? dotme(packet[2]) : "1.3.2");
     //setLIOVersion(fw);
-    paddr.setFirmwareVersion(fw);
+    locoIOAddress->setFirmwareVersion(firmwareVersion);
     if(packet[2] == 0)
-     paddr.setModuleType("<unknown>");
+     locoIOAddress->setModuleType("<unknown>");
     else
      if(packet[2] >=1 && packet[2]<=4)
-      paddr.setModuleType("LocoBooster");
+      locoIOAddress->setModuleType("LocoBooster");
      else
       if(packet[2] >=100 && packet[2]<=104)
-       paddr.setModuleType("LocoServo");
+       locoIOAddress->setModuleType("LocoServo");
       else
        if(packet[2] >=141 && packet[2]<=151)
-        paddr.setModuleType("LocoIO");
+        locoIOAddress->setModuleType("LocoIO");
        else
-        paddr.setModuleType("<unknown>");
+        locoIOAddress->setModuleType("<unknown>");
     bool bFound = false;
     foreach(LocoIOAddress* other, probedAddresses)
     {
-     if(*other == paddr )
+     if(*other == *locoIOAddress )
       bFound = true;
     }
     if(!bFound)
-     probedAddresses.append(&paddr);
+     probedAddresses.append(locoIOAddress);
     probeTimer->start(TIMEOUT*2);
     timeoutcounter=1;
 //   mutex1.unlock();
@@ -1007,6 +1032,8 @@ void LocoIOData::readWriteNext()
     if((m->getElement(7) == 0) && bReadingConfig )
     {
      sv0 = (packet[2] != 0) ? packet[5] : packet[7];
+     sv1 = (packet[2] != 0) ? packet[4] : packet[6];
+     sv2 = (packet[2] != 0) ? packet[3] : packet[5];
      QString fw = ((packet[2] != 0) ? dotme(packet[2]) : "1.3.2");
      setLIOVersion(fw);
      if(packet[2] == 0)
@@ -1040,9 +1067,11 @@ void LocoIOData::readWriteNext()
         }
         else
          moduleType = "<unknown>";
+
+
      bReadingConfig = false;
      //mutex1.unlock();
-     emit configRead((packet[2] != 0) ? packet[5] : packet[7]);
+     emit configRead((packet[2] != 0) ? packet[5] : packet[7],this);
      return; // done
     }
     if(bReadingOption)
@@ -1052,7 +1081,7 @@ void LocoIOData::readWriteNext()
     }
     if(bSettingOption)
      bSettingOption = false;
-    if(vals != NULL)
+    if(vals != nullptr)
     {
      vals->replace(m->getElement(7),  (packet[2] != 0) ? packet[5] : packet[7]);
      emit cvRead(m->getElement(7),  (packet[2] != 0) ? packet[5] : packet[7]);
@@ -1071,8 +1100,8 @@ void LocoIOData::readWriteNext()
      if(packet[1] != lastOpCv)
      {
       qDebug()<< tr("read %1 expecting %2").arg(packet[1]).arg(lastOpCv);
-      LlnMon mon;
-      qDebug()<< mon.displayMessage(*m);
+      //LlnMon mon;
+      qDebug()<< LocoNetMessageInterpret::interpretMessage(m, "LT", "LS", "LR");
       if(lastOpCv >0)
        sendReadCommand(unitAddress, unitSubAddress, lastOpCv);
       //mutex1.unlock();
@@ -1088,6 +1117,12 @@ void LocoIOData::readWriteNext()
      int data1 = (packet[2] != 0) ? packet[6] : -1;
      int data2 = (packet[2] != 0) ? packet[7] : -1;
 
+     if(lastOpCv == 0)
+     {
+      sv0a = data;
+      sv1 = data1;
+      sv2 = data2;
+     } else
      if (lastOpCv>=0 && lastOpCv<=98) // LocoIO SVs
      {
 
@@ -1141,7 +1176,7 @@ void LocoIOData::readWriteNext()
        if(channel < 16)
        {
         LocoIOMode* lim = validmodes->getLocoIOModeFor(getSV(channel), getV1(channel), getV2(channel));
-        if (lim == NULL)
+        if (lim == nullptr)
         {
          setMode(channel, "<none>");
          setAddr(channel, 0, ssWhite);
@@ -1161,7 +1196,7 @@ void LocoIOData::readWriteNext()
        break;
       }
       default:
-       log->warn("OPC_PEER_XFR: Type (" + QString("%1").arg(type) + ") is not {0,1,2} for channel " + channel);
+       log->warn("OPC_PEER_XFR: Type (" + QString("%1").arg(type) + ") is not {0,1,2} for channel " + QString::number(channel));
        break;
       }
      }
@@ -1209,7 +1244,7 @@ void LocoIOData::readWriteNext()
        break;
       }
       default:
-       log->warn("OPC_PEER_XFR: Type (" + QString("%1").arg(type) + ") is not {0,1,2} for channel " + iServo);
+       log->warn("OPC_PEER_XFR: Type (" + QString("%1").arg(type) + ") is not {0,1,2} for channel " + QString::number(iServo));
        break;
       }
      }
@@ -1288,7 +1323,7 @@ void LocoIOData::readWriteNext()
        setX2Addr(channel, data1+1, ssBlueGreen);
        break;
       default:
-       log->warn("OPC_PEER_XFR: Type (" + QString("%1").arg(type) + ") is not {0,1,2} for channel " + channel);
+       log->warn("OPC_PEER_XFR: Type (" + QString("%1").arg(type) + ") is not {0,1,2} for channel " + QString::number(channel));
        break;
       }
      }
@@ -1327,6 +1362,7 @@ void LocoIOData::readWriteNext()
    qDebug()<< "LocoIOData: SV programming message 2 ";
   }
  }
+ break;
  case LnConstants::OPC_INPUT_REP: // Block Sensors and other general sensor codes
   if (log->isDebugEnabled())
   {
@@ -1337,7 +1373,7 @@ void LocoIOData::readWriteNext()
   {
    if (capture[i])
    {
-    if (log->isDebugEnabled()) log->debug("row set for capture: "+i);
+    if (log->isDebugEnabled()) log->debug("row set for capture: "+QString::number(i));
     // This is a capture request, get address bytes
     int val1 = m->getElement(1);
     int val2 = m->getElement(2);
@@ -1465,7 +1501,7 @@ void LocoIOData::readWriteNext()
        setSV(channel, data);
        // Now that we have all the pieces, recalculate mode
        LocoIOMode* lim = validmodes->getLocoIOModeFor(getSV(channel), getV1(channel), getV2(channel));
-       if (lim == NULL)
+       if (lim == nullptr)
        {
         setMode(channel, "<none>");
         setAddr(channel, 0);
@@ -1540,7 +1576,7 @@ void LocoIOData::readWriteNext()
      {
       if (log->isDebugEnabled())
       {
-       log->debug("row set for capture: " + i);
+       log->debug("row set for capture: " + QString::number(i));
       }
       // This is a capture request, get address bytes
       int val1 = m->getElement(1);
@@ -1702,7 +1738,7 @@ void LocoIOData::readWriteNext()
 {
  //mutex2.lock();
  //QMutexLocker locker(&mutex2N);
- vals = NULL;
+ vals = nullptr;
  readWriteType = 0;
  bool bResult;
  // stop the timer while we figure this out
@@ -1823,7 +1859,7 @@ void LocoIOData::readWriteNext()
  lastOpCv = -1;
  currentPin = 0;
  //mutex2.unlock();
- emit IOComplete(NULL);
+ emit IOComplete(nullptr);
 }
 /**
  * Look through the table to find the next thing that
@@ -1833,7 +1869,7 @@ void LocoIOData::readWriteNext()
 {
  //mutex2.lock();
  QMutexLocker locker(&mutexEx2);
- vals = NULL;
+ vals = nullptr;
  readWriteType = 1;
 
  // stop the timer while we figure this out
@@ -1942,14 +1978,14 @@ void LocoIOData::readWriteNext()
  lastOpCv = -1;
  currentPin = 0;
  //mutex2.unlock();
- emit IOCompleteX2(NULL);
+ emit IOCompleteX2(nullptr);
 }
 /*protected synchronized*/ void LocoIOData::issueNextServoOperation()
 {
  //mutex2.lock();
  QMutexLocker locker(&mutex2S);
  bool bResult;
- vals = NULL;
+ vals = nullptr;
  readWriteType = 2;
  // stop the timer while we figure this out
  stopTimer();
@@ -2066,12 +2102,13 @@ void LocoIOData::readWriteNext()
  //mutex2.unlock();
  emit IOCompleteServo();
 }
+
 /*protected synchronized*/ void LocoIOData::issueNext7DOperation()
 {
  //mutex2.lock();
  QMutexLocker locker(&mutex7D);
 
- vals = NULL;
+ vals = nullptr;
  readWriteType = 0;
  // stop the timer while we figure this out
  stopTimer();
@@ -2183,6 +2220,244 @@ void LocoIOData::readWriteNext()
  emit IOComplete7D();
 }
 
+/*protected synchronized*/ void LocoIOData::issueNext0Operation()
+{
+ //mutex2.lock();
+ QMutexLocker locker(&mutex7D);
+
+ vals = nullptr;
+ readWriteType = 0;
+ // stop the timer while we figure this out
+ stopTimer();
+ SleeperThread::msleep(20); // necessary to allow servoio to echo command
+ // find the first item that needs to be read
+// for (int i=0; i<_numRows*2; i++)
+// {
+//  currentPin = i;
+  if (readState0 != NONE)
+  {
+   // yes, needs read.  Find what kind
+   // System.out.println("iNO: readState[" + i + "] = " + readState[i]);
+   switch (readState0)
+   {
+   case READVALUE1:
+   case READINGVALUE1:
+    // set new state, send read, then done
+    readState0 = READINGVALUE1;
+    lastOpCv = 0;
+    setStatus("read SV"+QString("%1").arg(lastOpCv));
+    sendReadCommand(unitAddress, unitSubAddress, lastOpCv);
+    //mutex2.unlock();
+    return;
+   case READVALUE2:
+   case READINGVALUE2:
+    // set new state, send read, then done
+    readState0 = READINGVALUE2;
+    lastOpCv = 1;
+    setStatus("read SV"+QString("%1").arg(lastOpCv));
+    sendReadCommand(unitAddress, unitSubAddress, lastOpCv);
+    //mutex2.unlock();
+    return;
+   case READMODE:
+   case READINGMODE:
+    // set new state, send read, then done
+    readState0 = READINGMODE;
+    lastOpCv = 2;
+    setStatus("read SV"+QString("%1").arg(lastOpCv));
+    sendReadCommand(unitAddress, unitSubAddress, lastOpCv);
+    //mutex2.unlock();
+    return;
+   default:
+    log->error("found an unexpected state: "+QString("%1").arg(readState7D));
+    //mutex2.unlock();
+    return;
+   }
+  }
+ //}
+ // no reads, so continue to check writes
+// for (int i=0; i<_numRows*2; i++)
+// {
+//  currentPin = i;
+#if 0
+  if (writeState0 != NONE)
+  {
+   // yes, needs read.  Find what kind
+   // System.out.println("iNO: writeState[" + i + "] = " + readState[i]);
+   switch (writeState0)
+   {
+   case WRITEVALUE1:
+   case WRITINGVALUE1:
+    // set new state, send read, then done
+    writeState0 = WRITINGVALUE1;
+    lastOpCv = 0;
+    setStatus("write SV"+QString("%1").arg(lastOpCv));
+    sendWriteCommand(unitAddress, unitSubAddress, lastOpCv, getSV7D());
+    //setV1(i,v1[i] & 0xFF, ssLightYellow);
+    //mutex2.unlock();
+    return;
+   case WRITEVALUE2:
+   case WRITINGVALUE2:
+    // set new state, send read, then done
+    writeState0 = WRITINGVALUE2;
+    lastOpCv = 1;
+    setStatus("write SV"+QString("%1").arg(lastOpCv));
+    sendWriteCommand(unitAddress, unitSubAddress, lastOpCv, getSV7E());
+    //setV2(i,v2[i] & 0xFF, ssLightYellow);
+    //mutex2.unlock();
+    return;
+   case WRITEMODE:
+   case WRITINGMODE:
+    // set new state, send write, then done
+    writeState0 = WRITINGMODE;
+    lastOpCv = 2;
+    setStatus("write SV"+QString("%1").arg(lastOpCv));
+    sendWriteCommand(unitAddress, unitSubAddress, lastOpCv, getSV7F());
+
+    //setSV(i,sv[i] & 0xFF, ssLightYellow);
+    //mutex2.unlock();
+    return;
+
+   default:
+    log->error("found an unexpected state: "+QString("%1").arg(writeState7D));
+     //mutex2.unlock();
+     return;
+    }
+  }
+#endif
+// }
+ // nothing of interest found, so just end gracefully
+ //  if (log->isDebugEnabled()) log->debug("No operation needed");
+ setStatus("OK");
+ if(b3ByteRead)
+  READ= READMODE;
+ else
+  READ = READVALUE1;  // starting state
+ WRITE = WRITEVALUE1;  // starting state
+ lastOpCv = -1;
+ currentPin = 0;
+ //mutex2.unlock();
+ emit IOComplete0();
+}
+
+/*protected synchronized*/ void LocoIOData::issueNext125Operation()
+{
+ //mutex2.lock();
+ QMutexLocker locker(&mutex7D);
+
+ vals = nullptr;
+ readWriteType = 0;
+ // stop the timer while we figure this out
+ stopTimer();
+ SleeperThread::msleep(20); // necessary to allow servoio to echo command
+ // find the first item that needs to be read
+// for (int i=0; i<_numRows*2; i++)
+// {
+//  currentPin = i;
+  if (readState125 != NONE)
+  {
+   // yes, needs read.  Find what kind
+   // System.out.println("iNO: readState[" + i + "] = " + readState[i]);
+   switch (readState125)
+   {
+   case READVALUE1:
+   case READINGVALUE1:
+    // set new state, send read, then done
+    readState125 = READINGVALUE1;
+    lastOpCv = 125;
+    setStatus("read SV"+QString("%1").arg(lastOpCv));
+    sendReadCommand(unitAddress, unitSubAddress, lastOpCv);
+    //mutex2.unlock();
+    return;
+   case READVALUE2:
+   case READINGVALUE2:
+    // set new state, send read, then done
+    readState125 = READINGVALUE2;
+    lastOpCv = 126;
+    setStatus("read SV"+QString("%1").arg(lastOpCv));
+    sendReadCommand(unitAddress, unitSubAddress, lastOpCv);
+    //mutex2.unlock();
+    return;
+   case READMODE:
+   case READINGMODE:
+    // set new state, send read, then done
+    readState125 = READINGMODE;
+    lastOpCv = 127;
+    setStatus("read SV"+QString("%1").arg(lastOpCv));
+    sendReadCommand(unitAddress, unitSubAddress, lastOpCv);
+    //mutex2.unlock();
+    return;
+   default:
+    log->error("found an unexpected state: "+QString("%1").arg(readState7D));
+    //mutex2.unlock();
+    return;
+   }
+  }
+ //}
+ // no reads, so continue to check writes
+// for (int i=0; i<_numRows*2; i++)
+// {
+//  currentPin = i;
+#if 0
+  if (writeState125 != NONE)
+  {
+   // yes, needs read.  Find what kind
+   // System.out.println("iNO: writeState[" + i + "] = " + readState[i]);
+   switch (writeState125)
+   {
+   case WRITEVALUE1:
+   case WRITINGVALUE1:
+    // set new state, send read, then done
+    writeState125 = WRITINGVALUE1;
+    lastOpCv = 0;
+    setStatus("write SV"+QString("%1").arg(lastOpCv));
+    sendWriteCommand(unitAddress, unitSubAddress, lastOpCv, getSV7D());
+    //setV1(i,v1[i] & 0xFF, ssLightYellow);
+    //mutex2.unlock();
+    return;
+   case WRITEVALUE2:
+   case WRITINGVALUE2:
+    // set new state, send read, then done
+    writeState125 = WRITINGVALUE2;
+    lastOpCv = 1;
+    setStatus("write SV"+QString("%1").arg(lastOpCv));
+    sendWriteCommand(unitAddress, unitSubAddress, lastOpCv, getSV7E());
+    //setV2(i,v2[i] & 0xFF, ssLightYellow);
+    //mutex2.unlock();
+    return;
+   case WRITEMODE:
+   case WRITINGMODE:
+    // set new state, send write, then done
+    writeState125 = WRITINGMODE;
+    lastOpCv = 2;
+    setStatus("write SV"+QString("%1").arg(lastOpCv));
+    sendWriteCommand(unitAddress, unitSubAddress, lastOpCv, getSV7F());
+
+    //setSV(i,sv[i] & 0xFF, ssLightYellow);
+    //mutex2.unlock();
+    return;
+
+   default:
+    log->error("found an unexpected state: "+QString("%1").arg(writeState7D));
+     //mutex2.unlock();
+     return;
+    }
+  }
+#endif
+// }
+ // nothing of interest found, so just end gracefully
+ //  if (log->isDebugEnabled()) log->debug("No operation needed");
+ setStatus("OK");
+ if(b3ByteRead)
+  READ= READMODE;
+ else
+  READ = READVALUE1;  // starting state
+ WRITE = WRITEVALUE1;  // starting state
+ lastOpCv = -1;
+ currentPin = 0;
+ //mutex2.unlock();
+ emit IOComplete125();
+
+}
 /**
  * Internal routine to handle a timeout during read/write
  * by retrying the same operation.
@@ -2268,7 +2543,7 @@ void LocoIOData::readWriteNext()
  * Internal routine to stop timer, as all is well
  */
 /*protected*/ void LocoIOData::stopTimer() {
-    if (timer!=NULL) timer->stop();
+    if (timer!=nullptr) timer->stop();
 }
 
 /**
@@ -2277,7 +2552,7 @@ void LocoIOData::readWriteNext()
 /*protected*/ void LocoIOData::restartTimer(int delay)
 {
  Q_ASSERT(delay > 0);
- if(timer == NULL)
+ if(timer == nullptr)
  {
   timer = new QTimer();
   connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
@@ -2413,7 +2688,7 @@ void ResponseCheck::processWriteResponse(LocoNetMessage *l)
                       : (d[7] < 10) ? "" + QString("%1").arg(d[7])
                       :  QString("%1").arg(d[7]) + " (0x" + QString("%1").arg(d[7],0,16) + ")"))
           + ((d[2] != 0) ? tr(" Firmware rev ") + dotme(d[2]) : "") + ".\n");
-   if(dst_l == svUnitAddr & 0xFF && operation == "Write" && d[1] == svCv && d[7] == svData)
+   if((dst_l == (svUnitAddr & 0xFF)) && (operation == "Write") && (d[1] == svCv) && (d[7] == svData))
    {
     bResult = true;
     emit finished();
@@ -2451,18 +2726,18 @@ void ResponseCheck::process()
  stopTimer();
  tc->removeLocoNetListener(~0, (LocoNetListener*)this);
 
- // NULL references, so that they can be gc'd even if this isn't.
-//    addr = NULL;
-//    mode = NULL;
-//    sv  = NULL;
-//    v1  = NULL;
-//    v2  = NULL;
-//    lim = NULL;
+ // nullptr references, so that they can be gc'd even if this isn't.
+//    addr = nullptr;
+//    mode = nullptr;
+//    sv  = nullptr;
+//    v1  = nullptr;
+//    v2  = nullptr;
+//    lim = nullptr;
  /*private*/ /*int[]*/ addr    =  QVector<int>(_numRows*2, 0);
  /*private*/ /*int[]*/ sv      = QVector<int>(_numRows*2, 0);
  /*private*/ /*int[]*/ v1      =  QVector<int>(_numRows*2, 0);
  /*private*/ /*int[]*/ v2      =  QVector<int>(_numRows*2, 0);
- /*private*/ /*LocoIOMode[]*/ lim =  QVector<LocoIOMode*>(_numRows*2, NULL);
+ /*private*/ /*LocoIOMode[]*/ lim =  QVector<LocoIOMode*>(_numRows*2, nullptr);
  mode =  QStringList();
 }
     //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LocoIOData.class.getName());
@@ -2476,7 +2751,7 @@ void LocoIOData::setDefaults()
   if(cv == 2)
    setUnitSubAddress(_defaults[cv]);
  }
- emit IOComplete(NULL);
+ emit IOComplete(nullptr);
 }
 void LocoIOData::setValues(QList<int>* vals)
 {
@@ -2488,7 +2763,7 @@ void LocoIOData::setValues(QList<int>* vals)
   if(cv == 2)
    setUnitSubAddress(vals->at(cv));
  }
- emit IOComplete(NULL);
+ emit IOComplete(nullptr);
 }
 
 void LocoIOData::getCVs()
@@ -2509,7 +2784,7 @@ QList<int>* LocoIOData::defaults() {return &_defaults;}
 
 void LocoIOData::onCvRead(int cv, int val)
 {
- if(vals !=NULL)
+ if(vals !=nullptr)
  {
   vals->replace(cv,val);
  }
@@ -2525,7 +2800,7 @@ void LocoIOData::setCVs(QVector<int>* cvs)
  {
   sendWriteCommand(unitAddress, unitSubAddress, cv, cvs->at(cv));
  }
- emit IOComplete(NULL);
+ emit IOComplete(nullptr);
 }
 
 void LocoIOData::setDirty(bool bDirty)
@@ -2579,6 +2854,7 @@ void LocoIOData::getConfig()
  lastOpCv=0;
  sendReadCommand(unitAddress | 0x100, unitSubAddress, 0);
 }
+
 void LocoIOData::getOption(int cv)
 {
  bReadingOption = true;
@@ -2637,3 +2913,7 @@ void LocoIOData::translateModeList()
   validmodes = new LocoIOModeList();
 }
 LnTrafficController* LocoIOData::getTrafficController() { return tc;}
+
+QList<LocoIOAddress*> LocoIOData::getProbedAddresses() {return probedAddresses;}
+
+QString LocoIOData::getFirmwareVersion() {return firmwareVersion;}

@@ -37,13 +37,13 @@ log = new Logger("EngineManger");
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ EngineManager* EngineManager::_instance = NULL;
+ /*private*/ /*static*/ EngineManager* EngineManager::_instance = nullptr;
 
  /*public*/ /*static*/ /*synchronized*/ EngineManager* EngineManager::instance()
 {
  Logger* log = new Logger("EngineManger");
 
-     if (_instance == NULL) {
+     if (_instance == nullptr) {
          if (log->isDebugEnabled()) {
              log->debug("EngineManager creating instance");
          }
@@ -81,7 +81,7 @@ log = new Logger("EngineManger");
   */
  /*public*/ Engine* EngineManager::newEngine(QString engineRoad, QString engineNumber) {
      Engine* engine = getByRoadAndNumber(engineRoad, engineNumber);
-     if (engine == NULL) {
+     if (engine == nullptr) {
          engine = new Engine(engineRoad, engineNumber);
          _register(engine);
      }
@@ -96,7 +96,7 @@ log = new Logger("EngineManger");
      */
     /*public*/ Consist* EngineManager::newConsist(QString name) {
         Consist* consist = getConsistByName(name);
-        if (consist == NULL) {
+        if (consist == nullptr) {
             consist = new Consist(name);
             int oldSize = _consistHashTable.size();
             _consistHashTable.insert(name, consist);
@@ -107,7 +107,7 @@ log = new Logger("EngineManger");
 
     /*public*/ void EngineManager::deleteConsist(QString name) {
         Consist* consist = getConsistByName(name);
-        if (consist != NULL) {
+        if (consist != nullptr) {
             consist->dispose();
             int oldSize = _consistHashTable.size();
             _consistHashTable.remove(name);
@@ -121,7 +121,7 @@ log = new Logger("EngineManger");
 
     /*public*/ void EngineManager::replaceConsistName(QString oldName, QString newName) {
         Consist* oldConsist = getConsistByName(oldName);
-        if (oldConsist != NULL) {
+        if (oldConsist != nullptr) {
             Consist* newConsist = new Consist(newName);
             // keep the lead engine
             Engine* leadEngine = (Engine*) oldConsist->getLead();
@@ -235,7 +235,7 @@ log = new Logger("EngineManger");
         // get engines by moves list
         foreach (RollingStock* rs, *getByMovesList()) {
             Engine* engine = (Engine*) rs;
-            if (engine->getTrack() != NULL && (engine->getTrain() == NULL || engine->getTrain() == train)) {
+            if (engine->getTrack() != nullptr && (engine->getTrain() == nullptr || engine->getTrain() == train)) {
                 out.append(engine);
             }
         }
@@ -298,7 +298,7 @@ log = new Logger("EngineManger");
             for (int i = 0; i < consists.count(); i++)
             {
                  QDomElement consist  = consists.at(i).toElement();
-                if ((a = consist.attribute (Xml::NAME)) != NULL) {
+                if ((a = consist.attribute (Xml::NAME)) != "") {
                     newConsist(a);
                 }
             }

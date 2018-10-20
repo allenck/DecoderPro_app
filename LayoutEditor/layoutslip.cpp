@@ -538,7 +538,7 @@ void LayoutSlip::removeSML(QString signalMast){
     if(signalMast==NULL || signalMast == (""))
         return;
     SignalMast* mast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
-    if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed(mast)){
+    if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed(mast)){
         InstanceManager::signalMastLogicManagerInstance()->disableLayoutEditorUse(mast);
         SignallingGuiTools::removeSignalMastLogic(NULL, mast);
     }

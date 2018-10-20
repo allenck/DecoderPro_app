@@ -157,11 +157,11 @@ QObject(parent) {
  if (log->isDebugEnabled())
  {
   log->debug("VSDecoder Init Complete.  Audio Objects Created:");
-  foreach (QString s, InstanceManager::audioManagerInstance()->getSystemNameList(Audio::SOURCE))
+  foreach (QString s, ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getSystemNameList(Audio::SOURCE))
   {
    log->debug("\tSource: " + s);
   }
-  foreach (QString s, InstanceManager::audioManagerInstance()->getSystemNameList(Audio::BUFFER))
+  foreach (QString s, ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getSystemNameList(Audio::BUFFER))
   {
    log->debug("\tBuffer: " + s);
   }

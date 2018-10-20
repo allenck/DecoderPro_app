@@ -122,7 +122,7 @@ namespace Operations
  /*public*/ void TrainManagerXml::readFile(QString name) //throw (JDOMException,IOException)
  {
   // suppress rootFromName(name) warning message by checking to see if file exists
-  if (findFile(name) == NULL) {
+  if (findFile(name) == nullptr) {
       log->debug(name + " file could not be found");
       fileLoaded = true; // set flag, could be the first time
       return;

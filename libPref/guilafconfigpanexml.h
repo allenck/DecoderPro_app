@@ -14,6 +14,7 @@ public:
     /*public*/ bool load(QDomElement e) throw (Exception);
     /*public*/ void updateLookAndFeel(QString name, QString className);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ void setUIFontSize(float size);
 
 signals:
 

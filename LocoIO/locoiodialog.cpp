@@ -58,14 +58,14 @@ LocoIODialog::LocoIODialog(LocoIOAddress* address, LnTrafficController* tc, bool
 //  //this->data = new LocoIOData(data->getUnitAddress(), data->getUnitSubAddress(), data->getTrafficController());
 //  this->data = new LocoIOData(*data);
  this->data = new LocoIOData(_address, this->tc);
- if(this->sql == NULL)\
+ if(this->sql == nullptr)\
  {
   this->sql = new Sql(data, this);
   connect(this->sql, SIGNAL(error(QString)),this, SLOT(error(QString)));
  }
- servoWidget =NULL;
- servoRegistersWidget = NULL;
- setWindowTitle(_address->moduleType());
+ servoWidget =nullptr;
+ servoRegistersWidget = nullptr;
+ setWindowTitle(data->getModuleType());
 //    unitAddr = 0x151;
 //    unitSubAddr = 1;
 
@@ -90,7 +90,7 @@ LocoIODialog::LocoIODialog(LocoIOAddress* address, LnTrafficController* tc, bool
  connect(this->data, SIGNAL(readAllComplete()), this, SLOT(onReadWriteAllComplete()));
  connect(this->data, SIGNAL(writeAllComplete()),this, SLOT(onReadWriteAllComplete()));
  connect(this->tc,SIGNAL(messageProcessed(LocoNetMessage*,bool)),this, SLOT(onMessageReceived(LocoNetMessage*,bool)));
- connect(this->data, SIGNAL(configRead(int)), this, SLOT(onConfigRead(int)));
+ connect(this->data, SIGNAL(configRead(int LocoIOData*)), this, SLOT(onConfigRead(int, LocoIOData*)));
  this->data->getConfig();
  connect(this->data, SIGNAL(probeCompleted(QList<LocoIOAddress*>)), this, SLOT(onProbeCompleted(QList<LocoIOAddress*>)));
  connect(this->data, SIGNAL(ioAborted()), this, SLOT(onIOAborted()));
@@ -132,6 +132,7 @@ void LocoIODialog::setupTable()
 
  ui->tableWidget->clear();
  ui->tableWidget->setColumnCount(17);
+ ui->chk4PosServo->setVisible(false);
  for(int i=0; i<ui->tableWidget->columnCount(); i++)
   ui->tableWidget->setColumnHidden(i,false);
  if(bIsServo)
@@ -143,7 +144,9 @@ void LocoIODialog::setupTable()
   ui->tableWidget->setHorizontalHeaderLabels(labels);
  if(bIsServo)
  {
-  if(servoWidget == NULL)
+  ui->chk4PosServo->setVisible(true);
+
+  if(servoWidget == nullptr)
   {
    servoWidget = new ServoWidget(data, /*locobufferadapter->packetizer()*/tc, ui->tableWidget);
    connect(this, SIGNAL(retranslateControls()), servoWidget, SLOT(retranslateControls()));
@@ -228,7 +231,7 @@ void LocoIODialog::setupTable()
    }
    if(col == 7)
    {
-    BoosterPanel* bp = new BoosterPanel(this);
+    BoosterPanel* bp = new BoosterPanel(data, col+1, tc, this);
     connect(this, SIGNAL(retranslateControls()), bp, SLOT(retranslateControls()));
     ui->tableWidget->setCellWidget(0,col, bp);
     break;
@@ -352,13 +355,13 @@ void LocoIODialog::onPropertyChange(PropertyChangeEvent* evt)
    if(!(config & 0x80))
    { // input or not used
     InputWidget* inWidget = (InputWidget*)ui->tableWidget->cellWidget(0, channel);
-    if(inWidget != NULL)
+    if(inWidget != nullptr)
      inWidget->setToolTip(data->getMode(channel));
    }
    else
    {
     OutputWidget* outWidget = (OutputWidget*)ui->tableWidget->cellWidget(1, channel);
-    if(outWidget != NULL)
+    if(outWidget != nullptr)
      outWidget->setToolTip(data->getMode(channel));
     if(channel > 3 && channel < 8 && bIsServo)
     {
@@ -366,7 +369,7 @@ void LocoIODialog::onPropertyChange(PropertyChangeEvent* evt)
     }
    }
    RegistersWidget* registersWidget = (RegistersWidget*)ui->tableWidget->cellWidget(2, channel);
-   if(registersWidget != NULL)
+   if(registersWidget != nullptr)
     registersWidget->setToolTip(data->getMode(channel));
   }
  }
@@ -420,7 +423,7 @@ void LocoIODialog::on_btnCapture_clicked()
  for(int channel = 0; channel<data->numRows()*3; channel++)
  {
   QCheckBox* checkbox = (QCheckBox*)ui->tableWidget->cellWidget(channel, 0);
-  if(checkbox != NULL && checkbox->isChecked())
+  if(checkbox != nullptr && checkbox->isChecked())
   {
    LocoIO::readCV(_address->unitAddress() | 0x100, _address->unitSubAddress(), channel*3+4);
    connect(/*locobufferadapter->packetizer()*/tc,SIGNAL(messageProcessed(LocoNetMessage*,bool)), data, SLOT(message(LocoNetMessage*)));
@@ -532,7 +535,7 @@ void LocoIODialog::onAddrChanged(const QString &position)
   data->setV1(row, l, a);
   data->setV2(row, l, a);
 
-  int opcode = (l == NULL) ? 0 : l->getOpcode();
+  int opcode = (l == nullptr) ? 0 : l->getOpcode();
   msg->replace(row, "Packet: " + LnConstants::OPC_NAME(opcode) +
                " "        + QString("%1").arg(data->getV1(row),0,16) +
                " "        + QString("%1").arg(data->getV2(row),0,16) +
@@ -612,7 +615,7 @@ void LocoIODialog::on_btnRestore_clicked()
   moduleName = saveDlg->getModuleName();
   data->setValues(saveDlg->getValues());
  }
- saveDlg = NULL;
+ saveDlg = nullptr;
 }
 void LocoIODialog::enableUi(bool bEnable)
 {
@@ -657,14 +660,14 @@ void LocoIODialog::onIOCompleteServo()
 //void LocoIODialog::on_tableWidget_cellClicked(int row, int)
 //{
 //}
-void LocoIODialog::onConfigRead(int cfg) //SLOT
+void LocoIODialog::onConfigRead(int cfg, LocoIOData* data) //SLOT
 {
  this->cfg = cfg;
  //ui->sbBlinkRate->setValue((cfg&0xff)>>4);
 // bool bServo = (data->getIsServo() == 1);
 //bIsServo = data->getIsServo()==1?true:false;
 //bIsBooster = data->getIsBooster()==1?true:false;
-QString moduleType = _address->moduleType();
+QString moduleType = data->getModuleType();
 bIsServo = bIsBooster = false;
 if(moduleType == "LocoServo")
 {
@@ -680,7 +683,7 @@ else
  ui->rbFixCodeForPBs->setChecked(data->getAltCodePBs()!=1);
  ui->rbAltCodeForPBs->setChecked(data->getAltCodePBs()==1);
 
- this->setWindowTitle(_address->moduleType());
+ this->setWindowTitle(data->getModuleType());
  setupTable();
  OutPortDefinitionWidget* opdw;
  if(bIsBooster)
@@ -814,7 +817,7 @@ void LocoIODialog::on_chkSpecialPorts_toggled(bool bChecked)
 
   if(bChecked)
   {
-   SpecialPort* sp = new SpecialPort(data, port, this);
+   SpecialPort* sp = new SpecialPort(data, port, tc,this);
    if(port != 4)
    {
     ui->tableWidget->setCellWidget(0,column, sp);
@@ -1026,11 +1029,13 @@ void LocoIODialog::onChangeModuleType(int iType)
  ui->chkModule->setVisible(false);
  ui->chkModule->setText("LocoIO");
  ui->tableWidget->setHorizontalHeaderLabels(labels);
+ ui->chk4PosServo->setVisible(false);
  if(iType == 1)
  {
   ui->chkModule->setVisible(true);
   ui->chkModule->setText("LocoBooster");
   ui->tableWidget->setHorizontalHeaderLabels(boosterLabels);
+  ui->chk4PosServo->setVisible(false);
   bIsBooster = true;
   data->setIsBooster(1);
  }
@@ -1041,6 +1046,7 @@ void LocoIODialog::onChangeModuleType(int iType)
   ui->chkModule->setText("LocoServo");
   ui->tableWidget->setHorizontalHeaderLabels(servoLabels);
   bIsServo = true;
+  ui->chk4PosServo->setVisible(true);
   data->setIsServo(1);
 //  data->getOption(177);
 //  return; // onOptionByte will run setup table, etc.

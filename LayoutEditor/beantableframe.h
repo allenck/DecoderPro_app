@@ -28,7 +28,7 @@ private:
     void extras();
 
 protected:
-    /*protected*/ void addToBottomBox(QWidget* comp, QString c);
+    virtual /*protected*/ void addToBottomBox(QWidget* comp, QString c);
     /*protected*/ QWidget* getBottomBox();
 friend class SensorTableAction;
 friend class TurnoutTableAction;

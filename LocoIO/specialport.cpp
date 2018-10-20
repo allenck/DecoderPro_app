@@ -1,7 +1,10 @@
 #include "specialport.h"
 #include "ui_specialport.h"
+#include "lnconstants.h"
+#include "instancemanager.h"
+#include "powermanager.h"
 
-SpecialPort::SpecialPort(LocoIOData* data, int port, QWidget *parent) :
+SpecialPort::SpecialPort(LocoIOData* data, int port, LnTrafficController* tc, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SpecialPort)
 {
@@ -9,10 +12,11 @@ SpecialPort::SpecialPort(LocoIOData* data, int port, QWidget *parent) :
  Q_ASSERT(port >=1 && port <=4);
  channel = port -1;
  this->data = data;
+ this->tc = tc;
  bSettingValues = true;
  if(port == 4)
  {
-  ui->rbOutput->setVisible(true);
+  ui->rbOutput->setVisible(false);
   ui->lblOutput->setVisible(true);
   ui->lblInput->setVisible(false);
   ui->rbInput->setVisible(false);
@@ -26,7 +30,7 @@ SpecialPort::SpecialPort(LocoIOData* data, int port, QWidget *parent) :
   else
    ui->rbOutput->setChecked(true);
  }
- else
+ else   // Ports 1-3
  {
   ui->rbOutput->setVisible(false);
   ui->lblOutput->setVisible(false);
@@ -39,8 +43,8 @@ SpecialPort::SpecialPort(LocoIOData* data, int port, QWidget *parent) :
    data->setV2(channel, 0, data->ssWhite);
    data->setSV(channel, 44 + channel, data->ssWhite);
   }
-  else
-   ui->rbInput->setChecked(true);
+//  else
+//   ui->rbInput->setChecked(true);
  }
  switch(port)
  {
@@ -58,8 +62,18 @@ SpecialPort::SpecialPort(LocoIOData* data, int port, QWidget *parent) :
   break;
  case 4:
   ui->lblOutput->setText("S\nT\nA\nT\nU\nS\n");
+  switch( static_cast<PowerManager*>(InstanceManager::getDefault("PowerManager"))->getPower())
+  {
+  case PowerManager::ON:
+   ui->lblOutput->setStyleSheet("QLabel { background-color : green; color : black; }");
+      break;
+  case PowerManager::OFF:
+      ui->lblOutput->setStyleSheet("QLabel { background-color : yellow; red : black; }");
+      break;
+  default:
   ui->lblOutput->setStyleSheet("QLabel { background-color : yellow; color : black; }");
   break;
+  }
  }
  bSettingValues = false;
  connect(data, SIGNAL(SVChanged(int,int,int,QString)), this, SLOT(onSvChanged(int,int,int, QString)));
@@ -73,6 +87,7 @@ void SpecialPort::setStatus(QString ss)
 {
  ui->lblOutput->setStyleSheet(QString("QLabel { background-color : %1; color : black; }").arg(ss));
 }
+
 void SpecialPort::on_rbInput_toggled(bool bChecked)
 {
  Q_UNUSED(bChecked)
@@ -83,6 +98,7 @@ void SpecialPort::on_rbInput_toggled(bool bChecked)
  data->setV2(channel, 0, data->ssWhite);
  data->setSV(channel, 44 + channel, data->ssWhite);
 }
+
 void SpecialPort::on_rbOutput_toggled(bool bChecked)
 {
  Q_UNUSED(bChecked)
@@ -107,7 +123,53 @@ void SpecialPort::onSvChanged(int channel, int iOld, int iNew, QString ss)
  }
  bSettingValues = false;
 }
+
 void SpecialPort::retranslateControls()
 {
  ui->retranslateUi(this);
+}
+
+void SpecialPort::resetControls()
+{
+    qApp->processEvents();
+
+}
+
+void SpecialPort::setValues()
+{
+    bSettingValues = true;
+    //int config = data->getSV(channel);
+    int val1 = data->getV1(channel);
+    int val2 = data->getV2(channel);
+    Q_UNUSED(val1);
+    Q_UNUSED(val2);
+    resetControls();
+    switch(channel)
+    {
+     case 0:
+     {
+        LocoNetMessage* msg = new LocoNetMessage(2);
+        msg->setOpCode(LnConstants::OPC_IDLE);
+        tc->sendLocoNetMessage(msg);
+        break;
+     }
+    }
+    data->setLIM(channel);
+    setToolTip(data->getMode(channel));
+    bSettingValues = false;
+}
+
+void SpecialPort::onMessageReceived(LocoNetMessage* msg, bool /*b*/)
+{
+    int op = msg->getOpCode();
+    switch(op)
+    {
+    case LnConstants::OPC_GPON:
+        ui->lblOutput->setStyleSheet(QString("QLineEdit { background-color :  %1}").arg("green"));
+        break;
+    case LnConstants::OPC_GPOFF:
+    case LnConstants::OPC_IDLE:
+        ui->lblOutput->setStyleSheet(QString("QLineEdit { background-color :  %1}").arg("red"));
+        break;
+    }
 }

@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include "lnconstants.h"
 #include "jtable.h"
+#include "loggerfactory.h"
 
 //LocoIOTableModel::LocoIOTableModel(QObject *parent) :
 //    AbstractTableModel(parent)
@@ -339,7 +340,7 @@ switch (col) {
 //    table.setRowHeight(sample.getPreferredSize().height);
 //    table.getColumnModel().getColumn(column)
 //        .setPreferredWidth((sample.getPreferredSize().width)+4);
- if(buttonMap->value(column) == NULL)
+ if(buttonMap->value(column) == nullptr)
   buttonMap->insert(column, new QSignalMapper);
  table->setItemDelegateForColumn(column, new LMPBDelegate(buttonMap->value(column)));
  connect(buttonMap->value(column), SIGNAL(mapped(QObject*)), this, SLOT(OnButtonClicked(QObject*)));
@@ -359,7 +360,7 @@ LMPBDelegate::LMPBDelegate(QSignalMapper* mapper, QObject *parent) : QItemDelega
 QWidget* LMPBDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & index ) const
 {
  QPushButton* editor = new QPushButton(index.data().toString(),parent);
- if(mapper != NULL)
+ if(mapper != nullptr)
  {
   QModelIndex* pIndex = new QModelIndex(index);
   mapper->setMapping(editor,(QObject*)pIndex);
@@ -371,3 +372,4 @@ void LMPBDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewI
 {
  editor->setGeometry(option.rect);
 }
+/*private*/ /*static*/ Logger* LocoIOTableModel::log =  LoggerFactory::getLogger("LocoIOTableModel");

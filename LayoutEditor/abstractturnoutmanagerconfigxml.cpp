@@ -45,7 +45,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
  QDomElement turnouts = doc.createElement("turnouts");
  setStoreElementClass(turnouts);
  TurnoutManager* tm = (TurnoutManager*) o;
- if (tm!=NULL)
+ if (tm!=nullptr)
  {
   TurnoutOperationManagerXml* tomx = new TurnoutOperationManagerXml();
   QDomElement opElem = tomx->store(doc, TurnoutOperationManager::getInstance());
@@ -68,7 +68,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   while (iter.hasNext())
   {
    QString sname = iter.next();
-   if (sname==NULL) log->error("System name NULL during store");
+   if (sname==nullptr) log->error("System name nullptr during store");
    log->debug("system name is "+sname);
    Turnout* t = ((AbstractTurnoutManager*)tm)->getBySystemName(sname);
    QDomElement elem = doc.createElement("turnout");
@@ -84,9 +84,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    elem.setAttribute("feedback", ((AbstractTurnout*)t)->getFeedbackModeName());
    NamedBeanHandle<Sensor*>* s;
    s = ((AbstractTurnout*)t)->getFirstNamedSensor();
-   if (s!=NULL) elem.setAttribute("sensor1", s->getName());
+   if (s!=nullptr) elem.setAttribute("sensor1", s->getName());
    s = ((AbstractTurnout*)t)->getSecondNamedSensor();
-   if (s!=NULL) elem.setAttribute("sensor2", s->getName());
+   if (s!=nullptr) elem.setAttribute("sensor2", s->getName());
 
    // include turnout inverted
    elem.setAttribute("inverted", ((AbstractTurnout*)t)->getInverted()?"true":"false");
@@ -127,20 +127,20 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    if (iType!=0) elem.setAttribute("controlType",iType);
 
    // add operation stuff
-   QString opstr = NULL;
+   QString opstr = nullptr;
    TurnoutOperation* op = ((AbstractTurnout*)t)->getTurnoutOperation();
    if (((AbstractTurnout*)t)->getInhibitOperation())
    {
     opstr = "Off";
    }
-   else if (op==NULL)
+   else if (op==nullptr)
    {
     opstr = "Default";
    }
    else if (op->isNonce())
    {	// nonce operation appears as subelement
     TurnoutOperationXml* adapter = TurnoutOperationXml::getAdapter(op);
-    if (adapter != NULL)
+    if (adapter != nullptr)
     {
      QDomElement nonceOpElem = adapter->store(doc,op);
      if (!opElem.isNull())
@@ -153,17 +153,17 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    {
     opstr = op->getName();
    }
-   if (opstr != NULL)
+   if (opstr != nullptr)
    {
     elem.setAttribute("automate", opstr);
    }
-   if((((AbstractTurnout*)t)->getDivergingSpeed()!=NULL) && (((AbstractTurnout*)t)->getDivergingSpeed()!=("")) && !((AbstractTurnout*)t)->getDivergingSpeed().contains("Global"))
+   if((((AbstractTurnout*)t)->getDivergingSpeed()!=nullptr) && (((AbstractTurnout*)t)->getDivergingSpeed()!=("")) && !((AbstractTurnout*)t)->getDivergingSpeed().contains("Global"))
    {
     QDomElement e1;
     elem.appendChild(e1=doc.createElement("divergingSpeed"));
     e1.appendChild(doc.createTextNode(((AbstractTurnout*)t)->getDivergingSpeed()));
    }
-   if((((AbstractTurnout*)t)->getStraightSpeed()!=NULL) && (((AbstractTurnout*)t)->getStraightSpeed()!=("")) && !((AbstractTurnout*)t)->getStraightSpeed().contains("Global"))
+   if((((AbstractTurnout*)t)->getStraightSpeed()!=nullptr) && (((AbstractTurnout*)t)->getStraightSpeed()!=("")) && !((AbstractTurnout*)t)->getStraightSpeed().contains("Global"))
    {
     QDomElement e2;
     elem.appendChild(e2=doc.createElement("straightSpeed"));
@@ -223,7 +223,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   if (!turnouts.firstChildElement("defaultclosedspeed").isNull())
   {
    QString closedSpeed = turnouts.firstChildElement("defaultclosedspeed").text();
-   if (closedSpeed!=NULL && closedSpeed!=(""))
+   if (closedSpeed!=nullptr && closedSpeed!=(""))
    {
     tm->setDefaultClosedSpeed(closedSpeed);
    }
@@ -239,7 +239,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   if (!turnouts.firstChildElement("defaultthrownspeed").isNull())
   {
    QString thrownSpeed = turnouts.firstChildElement("defaultthrownspeed").text();
-   if (thrownSpeed!=NULL && thrownSpeed!=(""))
+   if (thrownSpeed!=nullptr && thrownSpeed!=(""))
    {
     tm->setDefaultThrownSpeed(thrownSpeed);
    }
@@ -254,21 +254,21 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
  {
   QDomElement elem = turnoutList.at(i).toElement();
   QString sysName = getSystemName(elem);
-  if ( sysName == NULL )
+  if ( sysName == nullptr )
   {
-   log->error("unexpected NULL in systemName "+elem.tagName());
+   log->error("unexpected nullptr in systemName "+elem.tagName());
    result = false;
    break;
   }
   QString userName = getUserName(elem);
-  if (log->isDebugEnabled()) log->debug("create turnout: ("+sysName+")("+(userName==NULL?"<NULL>":userName)+")");
+  if (log->isDebugEnabled()) log->debug("create turnout: ("+sysName+")("+(userName==nullptr?"<nullptr>":userName)+")");
   Turnout* t = tm->getBySystemName(sysName);
-  if (t==NULL)
+  if (t==nullptr)
   {
    t = tm->newTurnout(sysName, userName);
    //Nothing is logged in the console window as the newTurnoutFunction already does this.
-                //log->error("Could not create turnout: '"+sysName+"' user name: '"+(userName==NULL?"":userName)+"'");
-   if (t==NULL)
+                //log->error("Could not create turnout: '"+sysName+"' user name: '"+(userName==nullptr?"":userName)+"'");
+   if (t==nullptr)
    {
     result = false;
     continue;
@@ -276,7 +276,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    //result = false;
    //continue;
   }
-  else if (userName!=NULL)
+  else if (userName!=nullptr)
    t->setUserName(userName);
 
   // Load common parts
@@ -285,7 +285,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   // now add feedback if needed
   QString a;
   a = elem.attribute("feedback");
-  if (a!=NULL)
+  if (a!=nullptr)
   {
    try
    {
@@ -293,12 +293,12 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    }
    catch (IllegalArgumentException e)
    {
-    log->error("Can not set feedback mode: '"+a+"' for turnout: '"+sysName+"' user name: '"+(userName==NULL?"":userName)+"'");
+    log->error("Can not set feedback mode: '"+a+"' for turnout: '"+sysName+"' user name: '"+(userName==nullptr?"":userName)+"'");
     result = false;
    }
   }
   a = elem.attribute("sensor1");
-  if (a!=NULL)
+  if (a!=nullptr)
   {
    try
    {
@@ -310,7 +310,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    }
   }
   a = elem.attribute("sensor2");
-  if (a!=NULL)
+  if (a!=nullptr)
   {
    try
    {
@@ -327,14 +327,14 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
 
   // check for turnout decoder
   a = turnoutList.at(i).toElement().attribute("decoder");
-  if (a!=NULL)
+  if (a!=nullptr)
   {
    ((AbstractTurnout*)t)->setDecoderName(a);
   }
 
   // check for turnout lock mode
   a = turnoutList.at(i).toElement().attribute("lockMode");
-  if (a != NULL)
+  if (a != nullptr)
   {
    if (a==("both"))
     ((AbstractTurnout*)t)->enableLockOperation(Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT, true);
@@ -352,7 +352,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
 
   // check for turnout locked
   a = turnoutList.at(i).toElement().attribute("locked");
-  if (a!=NULL)
+  if (a!=nullptr)
   {
    ((AbstractTurnout*)t)->setLocked(Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT, a==("true"));
   }
@@ -360,7 +360,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
 
   // number of bits, if present - if not, defaults to 1
   a = turnoutList.at(i).toElement().attribute("numBits");
-  if (a==NULL)
+  if (a==nullptr)
   {
   ((AbstractTurnout*)t)->setNumberOutputBits(1);
   }
@@ -381,7 +381,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
 
   // control type, if present - if not, defaults to 0
   a = turnoutList.at(i).toElement().attribute("controlType");
-  if (a==NULL)
+  if (a==nullptr)
   {
    ((AbstractTurnout*)t)->setControlType(0);
   }
@@ -415,7 +415,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   else
   {
    a = turnoutList.at(i).toElement().attribute("automate");
-   if (a!=NULL)
+   if (a!=nullptr)
    {
     QString str = a;
     if (str==("Off"))
@@ -438,7 +438,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    if (!elem.firstChildElement("divergingSpeed").isNull())
    {
     QString speed = elem.firstChildElement("divergingSpeed").text();
-    if (speed!=NULL && speed!=("") && !speed.contains("Global"))
+    if (speed!=nullptr && speed!=("") && !speed.contains("Global"))
     {
      ((AbstractTurnout*)t)->setDivergingSpeed(speed);
     }
@@ -455,7 +455,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    if (!elem.firstChildElement("straightSpeed").isNull())
    {
     QString speed = elem.firstChildElement("straightSpeed").text();
-    if (speed!=NULL && speed!=("") && !speed.contains("Global"))
+    if (speed!=nullptr && speed!=("") && !speed.contains("Global"))
     {
      ((AbstractTurnout*)t)->setStraightSpeed(speed);
     }

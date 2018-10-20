@@ -290,7 +290,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     panel->setVisible(true);    // always show the panel
 
     // register the resulting panel for later configuration
-    ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->registerUser(panel);
+    static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(panel);
 
     // reset the size and position, in case the display caused it to change
     //panel->getTargetFrame().setLocation(x,y);

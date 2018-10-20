@@ -25,6 +25,7 @@
 #include "droptarget.h"
 #include "itempalette.h"
 #include "borderlayout.h"
+#include "file.h"
 
 //IconAdder::IconAdder(QString name, QWidget *parent) :
 //    QDialog(parent),
@@ -111,7 +112,7 @@ void IconAdder::init()
 //@SuppressWarnings("unchecked")
 /*public*/ void IconAdder::initDefaultIcons()
 {
- CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
+ CatalogTreeManager* manager = static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"));
  CatalogTree* tree = ((DefaultCatalogTreeManager*)manager)->getBySystemName("NXDI");
  if (tree != NULL)
  {
@@ -839,7 +840,7 @@ void IconAdder::closeCatalog()
 */
 /*private*/ void IconAdder::updateCatalogTree()
 {
- CatalogTreeManager* manager = InstanceManager::catalogTreeManagerInstance();
+ CatalogTreeManager* manager = static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"));
  // unfiltered, xml-stored, default icon tree
  CatalogTree* tree = manager->getBySystemName("NXDI");
  if (tree == NULL)

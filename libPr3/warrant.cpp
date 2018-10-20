@@ -33,7 +33,7 @@
 
 //static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.logix.WarrantBundle");
 // permanent members.
-/*private*/ /*static*/ SignalSpeedMap* Warrant::_speedMap = NULL;
+/*private*/ /*static*/ SignalSpeedMap* Warrant::_speedMap = nullptr;
 
 /*public*/ /*static*/ /*final*/ QString Warrant::Stop = "Stop";   // NOI18N
 /*public  static final*/ QString Warrant::EStop = "EStop";     // NOI18N
@@ -61,17 +61,17 @@
 //        _idxTrailingOrder = -1;
  _orders = _savedOrders;
  _runBlind = false;
- _viaOrder = NULL;
- _avoidOrder = NULL;
- _dccAddress = NULL;
+ _viaOrder = nullptr;
+ _avoidOrder = nullptr;
+ _dccAddress = nullptr;
  _runMode = 0;
- _stoppingSignal = NULL;
- _stoppingBlock = NULL;
+ _stoppingSignal = nullptr;
+ _stoppingBlock = nullptr;
 
  _debug = log->isDebugEnabled();
 }
 /*public*/ /*final*/ /*static*/ SignalSpeedMap* Warrant::getSpeedMap() {
-    if (_speedMap==NULL) {
+    if (_speedMap==nullptr) {
         _speedMap = SignalSpeedMap::getMap();
     }
     return _speedMap;
@@ -116,7 +116,7 @@
     _orders = orders;
 }
 /*protected*/ QList<BlockOrder*>* Warrant::getOrders() {
-    if (/*_orders!=NULL &&*/ _orders->size()>0) {
+    if (/*_orders!=nullptr &&*/ _orders->size()>0) {
         return _orders;
     }
     return getBlockOrders();
@@ -126,7 +126,7 @@
 * Return permanently saved Origin
 */
 /*public*/ BlockOrder* Warrant::getfirstOrder() {
-    if (_orders->size()==0) { return NULL; }
+    if (_orders->size()==0) { return nullptr; }
     return new BlockOrder(_orders->at(0));
 }
 
@@ -134,7 +134,7 @@
 * Return permanently saved Destination
 */
 /*public*/ BlockOrder* Warrant::getLastOrder() {
-    if (_orders->size()==0) { return NULL; }
+    if (_orders->size()==0) { return nullptr; }
     return new BlockOrder(_orders->at(_savedOrders->size()-1));
 }
 
@@ -142,13 +142,13 @@
 * Return permanently saved BlockOrder that must be included in the route
 */
 /*public*/ BlockOrder* Warrant::getViaOrder() {
-    if (_viaOrder==NULL) { return NULL; }
+    if (_viaOrder==nullptr) { return nullptr; }
     return new BlockOrder(_viaOrder);
 }
 /*public*/ void Warrant::setViaOrder(BlockOrder* order) { _viaOrder = order; }
 
 /*public*/ BlockOrder* Warrant::getAvoidOrder() {
-    if (_avoidOrder==NULL) { return NULL; }
+    if (_avoidOrder==nullptr) { return nullptr; }
     return new BlockOrder(_avoidOrder);
 }
 /*public*/ void Warrant::setAvoidOrder(BlockOrder* order) { _avoidOrder = order; }
@@ -207,7 +207,7 @@
     if (index>=0 && index<_orders->size()) {
         return _orders->at(index);
     }
-    return NULL;
+    return nullptr;
 }
 /**
 * Call is only valid when in MODE_LEARN and MODE_RUN
@@ -215,10 +215,10 @@
 /*protected*/ OBlock* Warrant::getBlockAt(int idx) {
 
     BlockOrder* bo = getBlockOrderAt(idx);
-    if (bo!=NULL) {
+    if (bo!=nullptr) {
         return bo->getBlock();
     }
-    return NULL;
+    return nullptr;
 }
 /**
 * Call is only valid when in MODE_LEARN and MODE_RUN
@@ -226,7 +226,7 @@
 /*private*/ int Warrant::getBlockStateAt(int idx) {
 
     OBlock* b = getBlockAt(idx);
-    if (b!= NULL) {
+    if (b!= nullptr) {
         return b->getState();
     }
     return  OBlock::UNKNOWN;
@@ -258,7 +258,7 @@
         return false;
     }
     RosterEntry* train = Roster::instance()->entryFromTitle(id);
-    if (train != NULL) {
+    if (train != nullptr) {
         _dccAddress = train->getDccLocoAddress();
     } else {
         int index = id.indexOf('(');
@@ -268,7 +268,7 @@
         } else {
             numId = id;
         }
-        QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, numId, NULL, NULL, NULL, NULL );
+        QList<RosterEntry*> l = Roster::instance()->matchingList(nullptr, nullptr, numId, nullptr, nullptr, nullptr, nullptr );
         if (l.size() > 0) {
             try {
                 _dccAddress = l.at(0)->getDccLocoAddress();
@@ -301,10 +301,10 @@
 
 /*public*/ void Warrant::setDccAddress(DccLocoAddress* address) {
     _dccAddress = address;
-    QString id = NULL;
-    if (address!=NULL) {
+    QString id = nullptr;
+    if (address!=nullptr) {
         id = address->toString();
-        if (_trainId!=NULL) {
+        if (_trainId!=nullptr) {
             id = _trainId;
         }
     }
@@ -317,7 +317,7 @@
  */
 /*public*/ bool Warrant::setDccAddress(QString id) {
     _train = Roster::instance()->entryFromTitle(id);
-    if (_train == NULL) {
+    if (_train == nullptr) {
         int index = id.indexOf('(');
         QString numId;
         if (index >= 0) {
@@ -326,12 +326,12 @@
             numId = id;
         }
         try {
-            QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, numId, NULL, NULL, NULL, NULL);
+            QList<RosterEntry*> l = Roster::instance()->matchingList(nullptr, nullptr, numId, nullptr, nullptr, nullptr, nullptr);
             if (l.size() > 0) {
                 _train = l.at(0);
                 _trainId = _train->getId();
             } else {
-                _train = NULL;
+                _train = nullptr;
                 _trainId = "";
                 bool isLong = true;
                 if ((index + 1) < id.length()
@@ -343,7 +343,7 @@
                 _trainId = _dccAddress->toString();
            }
         } catch (NumberFormatException e) {
-            _dccAddress = NULL;
+            _dccAddress = nullptr;
             return false;
         }
     } else {
@@ -377,15 +377,15 @@
     } catch (NumberFormatException nfe) {
         return tr("Throttle adjustment factor must be a decimal number.");
     }
-    return NULL;
+    return nullptr;
 }
 /*protected*/ DccThrottle* Warrant::getThrottle()
 {
- if (_engineer!=NULL)
+ if (_engineer!=nullptr)
  {
      return _engineer->getThrottle();
  }
- return NULL;
+ return nullptr;
 }
 /*protected*/ void Warrant::setCalibrater(Calibrater* c) {
     _calibrater = c;
@@ -440,7 +440,7 @@
 
 /*protected*/ QString Warrant::getRunModeMessage()
 {
- QString modeDesc = NULL;
+ QString modeDesc = nullptr;
  switch (_runMode) {
      case MODE_NONE:
          return tr("Warrant \"%1\" not set for running.").arg( getDisplayName());
@@ -473,7 +473,7 @@
    {
     return tr("Blank Warrant");
    }
-   if (getDccAddress()==NULL)
+   if (getDccAddress()==nullptr)
    {
     return tr("Locomotive not Assigned.");
    }
@@ -490,7 +490,7 @@
     return tr("Learn Mode in Blk %1.").arg(getCurrentBlockOrder()->getBlock()->getDisplayName());
   case Warrant::MODE_RUN:
   {
-            if (_engineer==NULL) {
+            if (_engineer==nullptr) {
                 return tr("Engineer and throttle Gone");
             }
             QString key;
@@ -509,7 +509,7 @@
                 case Warrant::ABORT:
                     if (!_commands->isEmpty() &&
                             _engineer->getCurrentCommandIndex()>=_commands->size()-1) {
-                        _engineer = NULL;
+                        _engineer = nullptr;
                         return tr("End Of Script. ");
                     }
                     return tr("Train script aborted.");
@@ -540,7 +540,7 @@
   case Warrant::MODE_MANUAL:
   {
    BlockOrder* bo = getCurrentBlockOrder();
-   if (bo!=NULL)
+   if (bo!=nullptr)
    {
 //                return java.text.MessageFormat.format(rb.getString("ManualRunning"),
 //                        bo.getBlock().getDisplayName());
@@ -559,35 +559,35 @@
 /*public*/ void Warrant::stopWarrant(bool abort)
 {
     _delayStart = false;
-    if (_stoppingSignal != NULL) {
+    if (_stoppingSignal != nullptr) {
         log->error("signal " + _stoppingSignal->getSystemName());
         //_stoppingSignal.removePropertyChangeListener(this);
         AbstractNamedBean* ass = (AbstractNamedBean*)_stoppingSignal;
         disconnect(ass->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        _stoppingSignal = NULL;
+        _stoppingSignal = nullptr;
     }
-    if (_stoppingBlock != NULL) {
+    if (_stoppingBlock != nullptr) {
         //_stoppingBlock.removePropertyChangeListener(this);
      disconnect(_stoppingBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        _stoppingBlock = NULL;
+        _stoppingBlock = nullptr;
     }
-    if (_shareTOBlock != NULL) {
+    if (_shareTOBlock != nullptr) {
         //_shareTOBlock.removePropertyChangeListener(this);
      disconnect(_shareTOBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        _shareTOBlock = NULL;
+        _shareTOBlock = nullptr;
     }
-    if (_student != NULL) {
+    if (_student != nullptr) {
         _student->dispose();     // releases throttle
-        _student = NULL;
+        _student = nullptr;
     }
-    _calibrater = NULL;
-    if (_engineer != NULL) {
+    _calibrater = nullptr;
+    if (_engineer != nullptr) {
         if (abort) {
             _engineer->abort();
             log->info(getDisplayName() + " Aborted.");
         }
         _engineer->releaseThrottle();
-        _engineer = NULL;
+        _engineer = nullptr;
     }
     deAllocate();
     int oldMode = _runMode;
@@ -599,7 +599,7 @@
 }
 
 /*public*/ int Warrant::getCurrentCommandIndex() {
-    if (_engineer!=NULL) {
+    if (_engineer!=nullptr) {
         return _engineer->getCurrentCommandIndex();
     }
     return 0;
@@ -624,42 +624,42 @@
                              QList <ThrottleSetting*>* commands, bool runBlind)
 {
  if(_debug) log->debug("setRunMode("+QString::number(mode)+")  _runMode= "+QString::number(_runMode)+" for warrant= "+getDisplayName());
- QString msg = NULL;
+ QString msg = nullptr;
  int oldMode = _runMode;
  if (mode == MODE_NONE)
  {
   _delayStart = false;
-  if (_stoppingSignal!=NULL)
+  if (_stoppingSignal!=nullptr)
   {
    log->error("signal "+_stoppingSignal->getSystemName());
    //_stoppingSignal.removePropertyChangeListener(this);
    AbstractNamedBean* abstractStoppingSignal = (AbstractNamedBean*)_stoppingSignal;
    disconnect(abstractStoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
-            _stoppingSignal = NULL;
+            _stoppingSignal = nullptr;
   }
-  if (_stoppingBlock!=NULL)
+  if (_stoppingBlock!=nullptr)
   {
    //_stoppingBlock->removePropertyChangeListener(this);
    disconnect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
 
-   _stoppingBlock = NULL;
+   _stoppingBlock = nullptr;
   }
-  if (_student !=NULL)
+  if (_student !=nullptr)
   {
    _student->dispose();
-            _student = NULL;
+            _student = nullptr;
   }
-  if (_engineer!=NULL && _engineer->getRunState() != Warrant::ABORT)
+  if (_engineer!=nullptr && _engineer->getRunState() != Warrant::ABORT)
   {
             _engineer->abort();
-            _engineer = NULL;
+            _engineer = nullptr;
         }
         deAllocate();
         _runMode = mode;
         _idxCurrentOrder = 0;
         _orders = _savedOrders;
     } else if (_runMode!=MODE_NONE) {
-        QString modeDesc = NULL;
+        QString modeDesc = nullptr;
         switch (_runMode) {
             case MODE_LEARN:
                 modeDesc = tr("Recording");
@@ -680,7 +680,7 @@
         if (!_routeSet && runBlind) {
             //msg = java.text.MessageFormat.format(rb.getString("BlindRouteNotSet"),getDisplayName());
             msg = tr("Warrant \"%1\" cannot run without block detection when the route is not completely set.").arg(getDisplayName());
-            return NULL;
+            return nullptr;
         }
         if (mode == MODE_LEARN) {
             // start is OK if block 0 is occupied (or dark - in which case user is responsible)
@@ -689,7 +689,7 @@
                 msg = tr("Train does not occupy the starting block of Warrant \"%1\".").arg(getDisplayName());
                 log->error("Block "+getBlockAt(0)->getDisplayName()+", state= "+getBlockStateAt(0)+" err="+msg);
                 return msg;
-            } else if (student == NULL) {
+            } else if (student == nullptr) {
                 //msg = java.text.MessageFormat.format(rb.getString("noLearnThrottle"), getDisplayName());
                 msg = tr("No learning throttle for \"{0}\" in learning mode.").arg(getDisplayName());
                 log->error(msg);
@@ -719,11 +719,11 @@
         if (mode!=MODE_MANUAL) {
              _tempRunBlind = runBlind;
              if (!_delayStart) {
-                 if (address==NULL) {
+                 if (address==nullptr) {
                      address = _dccAddress;
                  }
                  msg = acquireThrottle(address);
-                 if (msg!=NULL){
+                 if (msg!=nullptr){
                      return msg;
                  }
              }
@@ -736,14 +736,14 @@
 }
 
 /*private*/ QString Warrant::acquireThrottle(DccLocoAddress* address) {
-    QString msg = NULL;
-    if (address == NULL)  {
+    QString msg = nullptr;
+    if (address == nullptr)  {
         //msg = java.text.MessageFormat.format(rb.getString("NoAddress"),getDisplayName());
         msg = tr("Warrant \"%1\" has no train address.").arg(getDisplayName());
         log->error(msg);
         return msg;
     }
-    if (InstanceManager::throttleManagerInstance()==NULL) {
+    if (InstanceManager::throttleManagerInstance()==nullptr) {
         msg = tr("Throttle Manager not available.");
         log->error(msg);
         return msg;
@@ -767,7 +767,7 @@
     if(_debug) log->debug("controlRunTrain= "+QString::number(idx)+" runMode= "+QString::number(_runMode)+" for warrant= "+getDisplayName());
     bool ret = true;
     int oldIndex = MODE_MANUAL;
-    if (_engineer == NULL) {
+    if (_engineer == nullptr) {
         switch (idx) {
             case HALT:
             case RESUME:
@@ -778,7 +778,7 @@
                     // let WarrantFrame do the abort
                     firePropertyChange("abortLearn", QVariant(oldIndex), QVariant(_idxCurrentOrder));
                 } else {
-                    QString msg = setRunMode(Warrant::MODE_NONE, NULL, NULL, NULL, false);
+                    QString msg = setRunMode(Warrant::MODE_NONE, nullptr, nullptr, nullptr, false);
                 }
                 break;
         }
@@ -804,8 +804,8 @@
 
 /*public*/ void Warrant::notifyThrottleFound(DccThrottle* throttle)
 {
-    if (throttle == NULL) {
-        log->warn("notifyThrottleFound: NULL throttle(?)!");
+    if (throttle == nullptr) {
+        log->warn("notifyThrottleFound: nullptr throttle(?)!");
         return;
     }
 
@@ -849,16 +849,16 @@
 */
 /*public*/ QString Warrant::allocateRoute(QList <BlockOrder*>* orders) {
     if (_totalAllocated) {
-        return NULL;
+        return nullptr;
     }
-    if (orders==NULL) {
+    if (orders==nullptr) {
         _orders = _savedOrders;
     } else {
         _orders = orders;
     }
     _allocated = false;
     _totalAllocated = true;
-    OBlock* block = NULL;
+    OBlock* block = nullptr;
     QString msg = "";
     // Check route is in usable
     for (int i=0; i<_orders->size(); i++) {
@@ -880,7 +880,7 @@
         block = bo->getBlock();
         int state = block->getState();
         msg = block->allocate(this);
-        if (msg!=NULL) {
+        if (msg!=nullptr) {
             _totalAllocated = false;
             break;
         } else {
@@ -925,8 +925,8 @@
 * of the first block that failed allocation to this warrant.  When running with
 * block detection, only the first block must be allocated and have its path set.
 * @param delay - delay in seconds, between setting signals and throwing turnouts
-* @param orders - BlockOrder list of route.  If NULL, use permanent warrant copy.
-* @return message of block that failed allocation to this warrant or NULL
+* @param orders - BlockOrder list of route.  If nullptr, use permanent warrant copy.
+* @return message of block that failed allocation to this warrant or nullptr
 */
 /*public*/ QString Warrant::setRoute(int /*delay*/, QList <BlockOrder*>* /*orders*/)
 {
@@ -949,7 +949,7 @@
   else
   {
    msg = bo->setPath(this);
-   if (msg!=NULL)
+   if (msg!=nullptr)
    {
     if (i==0) { _routeSet = false; }
     break;
@@ -977,7 +977,7 @@
     // we assume our train is occupying the first block
     _routeSet = true;
     _message = allocateRoute(&orders);
-    if (_message != NULL) {
+    if (_message != nullptr) {
         _routeSet = false;
         return _message;
     }
@@ -985,7 +985,7 @@
     _totalAllocated = true;
     BlockOrder* bo = _orders->at(0);
     _message = bo->setPath(this);
-    if (_message != NULL) {
+    if (_message != nullptr) {
         return _message;
     }
     for (int i = 1; i < _orders->size(); i++) {
@@ -996,16 +996,16 @@
             break;
         }
         _message = bo->setPath(this);
-        if (_message != NULL) {
+        if (_message != nullptr) {
             _routeSet = false;
             break;
         }
     }
 //        firePropertyChange("setRoute", Boolean.valueOf(false), Boolean.valueOf(_routeSet));
-    if (_message != NULL) {
+    if (_message != nullptr) {
         log->info("Paths for route of warrant \"" + getDisplayName() + "\" not set at " + _message);
     }
-    return NULL;
+    return nullptr;
 }   // setRoute
 
 /**
@@ -1019,7 +1019,7 @@
         return msg;
     }
     msg = bo->setPath(this);
-    if (msg!=NULL) {
+    if (msg!=nullptr) {
         return msg;
     }
     int state = block->getState();
@@ -1044,11 +1044,11 @@
  BlockOrder* bo = _orders->at(0);
  OBlock* block = bo->getBlock();
  QString msg = block->allocate(this);
- if (msg!=NULL) {
+ if (msg!=nullptr) {
      return msg;
  }
  msg = bo->setPath(this);
- if (msg!=NULL) {
+ if (msg!=nullptr) {
      return msg;
  }
  int state = block->getState();
@@ -1088,12 +1088,12 @@
 /*public*/ QString Warrant::checkForContinuation() {
     Warrant* w = getfirstOrder()->getBlock()->getWarrant();
     if (this==(w)) {
-        return NULL;
+        return nullptr;
     }
     // another warrant has the starting block
     if (w->getLastOrder()->getBlock()==(getfirstOrder()->getBlock())
             && _dccAddress==(w->getDccAddress()) ) {
-        return NULL;
+        return nullptr;
     }
     //return java.text.MessageFormat.format(rb.getString("OriginBlockNotSet"), w.getDisplayName());
     return tr("Unable to allocate originating block.\n\"%1\".").arg(w->getDisplayName());
@@ -1108,35 +1108,35 @@
         return;
     }
     QString property = evt->getPropertyName();
-    QString msg = NULL;
+    QString msg = nullptr;
     if (_debug) log->debug("propertyChange \""+property+"\" new= "+evt->getNewValue().toString()+
                                         " source= "+((NamedBean*)evt->getSource())->getDisplayName()
                                         +" for warrant= "+getDisplayName());
-    if (_stoppingSignal != NULL && _stoppingSignal==evt->getSource()) {
+    if (_stoppingSignal != nullptr && _stoppingSignal==evt->getSource()) {
         if (property==("Aspect") || property==("Appearance")) {
             // signal blocking warrant has changed. Should (MUST) be the next block.
             //_stoppingSignal.removePropertyChangeListener(this);
             AbstractNamedBean* signal = (AbstractNamedBean*)_stoppingSignal;
             disconnect(signal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-            _stoppingSignal = NULL;
-            if (_engineer!=NULL) {
+            _stoppingSignal = nullptr;
+            if (_engineer!=nullptr) {
                 _engineer->synchNotify(getBlockAt(_idxCurrentOrder)); // notify engineer of control point
                 _engineer->rampSpeedTo(getCurrentSpeedAt(_idxCurrentOrder) ,0);
             }
             return;
         }
-    } else if (property==("state") && _stoppingBlock!=NULL && _stoppingBlock==evt->getSource()) {
+    } else if (property==("state") && _stoppingBlock!=nullptr && _stoppingBlock==evt->getSource()) {
         // starting block is allocated but not occupied
         if (_delayStart) {	// wait for arrival of train to begin the run
             if ( ((evt->getNewValue()).toInt() & OBlock::OCCUPIED) != 0 ) {
                 // train arrived at starting block
                 Warrant* w = _stoppingBlock->getWarrant();
-                if (this==(w) || w==NULL) {
+                if (this==(w) || w==nullptr) {
                     if (checkStoppingBlock()) {
                         msg = acquireThrottle(_dccAddress);
-                        if (msg!=NULL){
+                        if (msg!=nullptr){
                             log->error("Abort warrant \""+ getDisplayName()+"\" "+msg);
-                            if (_engineer!=NULL) {
+                            if (_engineer!=nullptr) {
                                 _engineer->abort();
                             }
                         }
@@ -1164,15 +1164,15 @@
         disconnect(w,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
         if (checkStoppingBlock()) {
             msg = acquireThrottle(_dccAddress);
-            if (msg!=NULL) {
+            if (msg!=nullptr) {
                 log->error("Abort warrant \""+ getDisplayName()+"\" "+msg);
-                if (_engineer!=NULL) {
+                if (_engineer!=nullptr) {
                     _engineer->abort();
                 }
             }
         }
     }
-    if (msg!=NULL) {
+    if (msg!=nullptr) {
         log->error(msg);
     }
  }
@@ -1186,19 +1186,19 @@
     if (msg=="") {
         int idx = getIndexOfBlock(_stoppingBlock, 0);
         msg = _orders->at(idx)->setPath(this);
-        if (msg!=NULL) {
+        if (msg!=nullptr) {
             log->warn("StoppingBlock path warrant \""+ getDisplayName()+"\" "+msg);
         } else {
             if (idx==_idxCurrentOrder) {
                 _stoppingBlock->setValue(_trainName);
                 _stoppingBlock->setState(_stoppingBlock->getState() | OBlock::RUNNING);
             }
-            if (_engineer!=NULL) {
+            if (_engineer!=nullptr) {
                 _engineer->synchNotify(_stoppingBlock); // notify engineer of control point
                 _engineer->rampSpeedTo(getNextSpeed(), 0);
 
             } else {
-                _stoppingBlock = NULL;
+                _stoppingBlock = nullptr;
             }
              return true;
         }
@@ -1221,7 +1221,7 @@
  _shareTOBlock->removePropertyChangeListener((PropertyChangeListener*)this);
 
  if (_debug) log->debug("_shareTOBlock= "+_shareTOBlock->getDisplayName()+" Cleared.");
- _shareTOBlock = NULL;
+ _shareTOBlock = nullptr;
  QString msg = _orders->at(_idxCurrentOrder+1)->setPath(this);
  if (msg=="")
  {
@@ -1298,7 +1298,7 @@
         firePropertyChange("blockChange", QVariant(_idxCurrentOrder), QVariant(_idxCurrentOrder+1));
     }
     if (activeIdx == _idxCurrentOrder+1) {
-        if (_engineer!=NULL && _engineer->getRunState()==WAIT_FOR_CLEAR) {
+        if (_engineer!=nullptr && _engineer->getRunState()==WAIT_FOR_CLEAR) {
             // Ordinarily block just occupied would be this train, but train is stopped! - must be a rouge entry.
             rougeEntry = true;
             log->warn("Rouge entering next Block "+block->getDisplayName());
@@ -1328,14 +1328,14 @@
         // If Auto running, let script finish according to recorded times.
         // End of script will deallocate warrant.
         currentSpeed = getCurrentSpeedAt(_idxCurrentOrder);
-        if (_engineer!=NULL) {
+        if (_engineer!=nullptr) {
             _engineer->synchNotify(block); // notify engineer of control point
             _engineer->rampSpeedTo(currentSpeed, 0);
         }
 
         if (_runMode==MODE_MANUAL) {
-            QString msg = setRunMode(Warrant::MODE_NONE, NULL, NULL, NULL, false);
-            if (msg!=NULL) {
+            QString msg = setRunMode(Warrant::MODE_NONE, nullptr, nullptr, nullptr, false);
+            if (msg!=nullptr) {
                 deAllocate();
             }
         }
@@ -1343,7 +1343,7 @@
         if (allocateNextBlock(getBlockAt(_idxCurrentOrder+1))) {
             currentSpeed = getNextSpeed();
         }
-        if (_engineer!=NULL) {
+        if (_engineer!=nullptr) {
             _engineer->synchNotify(block); // notify engineer of control point
             _engineer->rampSpeedTo(currentSpeed, 0);
         }
@@ -1407,14 +1407,14 @@
         }
         if (_runMode==MODE_RUN || _runMode==MODE_MANUAL) {
             //  at last block
-            if (_engineer!=NULL) {
+            if (_engineer!=nullptr) {
                 block->setValue(_trainName);
                 block->setState(block->getState() | OBlock::RUNNING);
                 _engineer->synchNotify(block); // notify engineer of control point
                 _engineer->rampSpeedTo(getCurrentSpeedAt(_idxCurrentOrder), 0);
             } else if (_idxCurrentOrder+1 == _orders->size()){
                 // this would be a very weird case
-                setRunMode(Warrant::MODE_NONE, NULL, NULL, NULL, false);
+                setRunMode(Warrant::MODE_NONE, nullptr, nullptr, nullptr, false);
             }
        }
     } else if (idx==_idxCurrentOrder+1) {
@@ -1422,7 +1422,7 @@
         // Since it is the next block ahead of the train, we can move.
         // Presumably we have stopped at the exit of the current block.
         if (_runMode==MODE_RUN) {
-            if (_engineer!=NULL && allocateNextBlock(block)) {
+            if (_engineer!=nullptr && allocateNextBlock(block)) {
                 _engineer->synchNotify(block); // notify engineer of control point
                 _engineer->rampSpeedTo(getCurrentSpeedAt(_idxCurrentOrder+1), 0);
             }
@@ -1435,16 +1435,16 @@
 // called when stopping or signal listeners fire.  Also error condition restarts
 /*private*/ void Warrant::restart()
 {
- if (_engineer==NULL)
+ if (_engineer==nullptr)
  {
      controlRunTrain(ABORT);
      return;
  }
  BlockOrder* bo = getBlockOrderAt(_idxCurrentOrder);
 //        enterBlock(bo.getBlock().getState());
- if (_stoppingBlock==NULL && _stoppingSignal==NULL && _shareTOBlock==NULL)
+ if (_stoppingBlock==nullptr && _stoppingSignal==nullptr && _shareTOBlock==nullptr)
  {
-  if (_engineer!=NULL)
+  if (_engineer!=nullptr)
   {
    _engineer->setWaitforClear(false);
   }
@@ -1455,7 +1455,7 @@
  // does next block belong to us
  bo = getBlockOrderAt(_idxCurrentOrder+1);
  QString nextNextSpeed;
- if (bo!=NULL)
+ if (bo!=nullptr)
  {
   if (!allocateNextBlock(bo))
   {
@@ -1516,7 +1516,7 @@
     if (_runMode != Warrant::MODE_RUN || _idxCurrentOrder==_orders->size()-1) {
         return true;
     }
-    if (_engineer==NULL) {
+    if (_engineer==nullptr) {
         controlRunTrain(ABORT);
         return false;
     }
@@ -1655,7 +1655,7 @@
         maxSpeed = blkSpeedInfo->getMaxSpeed();
         nextSpeedType = getPermissibleSpeedAt(blkOrder);
         BlockOrder* nextBlkOrder = getBlockOrderAt(index+1);
-        if (nextBlkOrder!=NULL) {
+        if (nextBlkOrder!=nullptr) {
             nextSpeedType = getMinSpeedType(nextBlkOrder, nextSpeedType);
 
             float distAdj =  nextBlkOrder->getEntranceSpace();
@@ -1761,7 +1761,7 @@
  */
 /*private*/ void Warrant::getBlockSpeedTimes() {
     _speedTimeMap =   QMap<QString, BlockSpeedInfo*>();
-    QString blkName = NULL;
+    QString blkName = nullptr;
     float firstSpeed = 0.0f;    // used for entrance
     float maxSpeed = 0.0f;
     float lastSpeed = 0.0f;
@@ -1831,7 +1831,7 @@
     QString speed = bo->getPermissibleEntranceSpeed();
     QString exitSpeed = bo->getPermissibleExitSpeed();
     long speedOffset = 1000*getSpeedChangeWait(_idxCurrentOrder);
-    if (speed!=NULL) {
+    if (speed!=nullptr) {
         // speed change from signals
         if (speed==("Stop")) {
             _stoppingSignal = bo->getSignal();
@@ -1842,9 +1842,9 @@
                 "\" exit speed on Warrant \""+getDisplayName()+
                 "\".\n Set speed change Delay to "+speedOffset+"ms for entrance into "+
                 getBlockOrderAt(index)->getBlock()->getDisplayName()+
-                (_stoppingSignal==NULL ? ".": " _stoppingSignal= \""+_stoppingSignal->getDisplayName()+"\""));
+                (_stoppingSignal==nullptr ? ".": " _stoppingSignal= \""+_stoppingSignal->getDisplayName()+"\""));
     } else {
-        if (_exitSpeed!=NULL) {
+        if (_exitSpeed!=nullptr) {
             // saved exit speed from last block
             speed = _exitSpeed;
         } else {
@@ -1863,15 +1863,15 @@
  * @return
  */
 /*private*/ bool Warrant::allocateNextBlock(OBlock* block) {
-    if (block==NULL) {
+    if (block==nullptr) {
         return false;
     }
     QString blockMsg = block->allocate(this);
-    if ( blockMsg != NULL || (block->getState() & OBlock::OCCUPIED)>0) {
+    if ( blockMsg != nullptr || (block->getState() & OBlock::OCCUPIED)>0) {
         _stoppingBlock = block;
         //_stoppingBlock->addPropertyChangeListener(this);
         connect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
-        log->info((blockMsg!=NULL ? blockMsg : (block->getDisplayName()+" Occupied."))+" Warrant \""+getDisplayName()+
+        log->info((blockMsg!=nullptr ? blockMsg : (block->getDisplayName()+" Occupied."))+" Warrant \""+getDisplayName()+
                 "\" sets _stoppingBlock= \""+_stoppingBlock->getDisplayName()+"\"");
         return false;
     }
@@ -1882,7 +1882,7 @@
  *  Called by:
  *      restart()
  *      moveIntoNextBlock() to get max speed permitted
- * @return a speed type or NULL for continue at current type
+ * @return a speed type or nullptr for continue at current type
  */
 /*private*/ QString Warrant::getPermissibleSpeedAt(BlockOrder* bo) {
     OBlock* nextBlock = bo->getBlock();
@@ -1905,7 +1905,7 @@
     /*      or should we do alternate?
     String blkSpeed = nextBlock.getBlockSpeed();
     if (blkSpeed=="") {
-        blkSpeed = NULL;
+        blkSpeed = nullptr;
     }
     nextSpeed = _engineer.minSpeedType(nextSpeed, blkSpeed);
     */
@@ -1919,8 +1919,8 @@
  * @return true if block is allocated to this warrant
  */
 /*private*/ bool Warrant::allocateNextBlock(BlockOrder* bo) {
-    if (bo == NULL) {
-        log->info("allocateNextBlock: BlockOrder NULL");
+    if (bo == nullptr) {
+        log->info("allocateNextBlock: BlockOrder nullptr");
         return false;
     }
     OBlock* block = bo->getBlock();
@@ -1958,12 +1958,12 @@
         nextSpeed = bo->getPermissibleEntranceSpeed();
         exitSpeed = bo->getPermissibleExitSpeed();
         long speedOffset = 1000*getSpeedChangeWait(_idxCurrentOrder+1);
-        if (nextSpeed==NULL) {
+        if (nextSpeed==nullptr) {
             bo = getBlockOrderAt(_idxCurrentOrder);
             nextSpeed = bo->getPermissibleExitSpeed();
             speedOffset = 1000*getSpeedChangeWait(_idxCurrentOrder);
        }
-        if (nextSpeed!=NULL ) {
+        if (nextSpeed!=nullptr ) {
             if (nextSpeed==("Stop")) {
                 _stoppingSignal = bo->getSignal();
                 //_stoppingSignal.addPropertyChangeListener(this);
@@ -1972,7 +1972,7 @@
             if(_debug) log->debug("signal indicates \""+nextSpeed+"\" entrance speed and \""+exitSpeed+
                     "\" exit speed on Warrant \""+getDisplayName()+"\".\n Set change speed Delay to "+
                     QString::number(speedOffset)+"ms for entrance into "+nextBlock->getDisplayName()+
-                    (_stoppingSignal==NULL ? ".": " _stoppingSignal= \""+_stoppingSignal->getDisplayName()+"\""));
+                    (_stoppingSignal==nullptr ? ".": " _stoppingSignal= \""+_stoppingSignal->getDisplayName()+"\""));
         } else if ((nextBlock->getState() & OBlock::OCCUPIED) != 0) {
             // Rule 292 - "visible" obstacle ahead. no signals or they didn't detect it.
             nextSpeed = "Stop";
@@ -2000,12 +2000,12 @@
         log->info("Block can't be allocated. Warrant \""+getDisplayName()+
                 "\" sets _stoppingBlock= \""+_stoppingBlock->getDisplayName()+"\"");
     }
-    if (nextSpeed!=NULL) {
+    if (nextSpeed!=nullptr) {
         if ("Stop"!=(nextSpeed)) {
             _currentSpeed = nextSpeed;
         }
     } else {
-        if (_exitSpeed!=NULL) {
+        if (_exitSpeed!=nullptr) {
             // saved exit speed from last block
             nextSpeed = _exitSpeed;
         } else {

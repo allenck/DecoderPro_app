@@ -11,11 +11,11 @@ class LIBLAYOUTEDITORSHARED_EXPORT JmriAbstractAction : public AbstractAction
  Q_OBJECT
 public:
  //explicit JmriAbstractAction();
- JmriAbstractAction(QObject *parent = 0);
+ JmriAbstractAction(QObject *parent = nullptr);
  /*public*/  JmriAbstractAction(QString s, WindowInterface* wi);
  /*public*/  JmriAbstractAction(QString s, QIcon i, WindowInterface* wi);
  /*public*/  void setContext(QObject* context);
- /*public*/  JmriAbstractAction(QString s,QObject *parent);
+ /*public*/  JmriAbstractAction(QString s, QObject *parent);
  /*public*/  void setWindowInterface(WindowInterface* wi);
  /*public*/  void setName(QString name);
  ///*public*/  JmriAbstractAction* setHint(WindowInterface::Hint hint);

@@ -194,7 +194,7 @@
  * @exception  IOException  If the stream does not support mark(),
  *                          or if some other I/O error occurs
  */
-/*public*/ void Reader::mark(int readAheadLimit) throw (IOException) {
+/*public*/ void Reader::mark(int /*readAheadLimit*/) throw (IOException) {
     throw IOException("mark() not supported");
 }
 

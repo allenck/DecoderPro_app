@@ -16714,7 +16714,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   return Turnout::isConsistentState();
 }
-void PythonQtShell_Turnout::provideFirstFeedbackSensor(QString  arg__1)
+void PythonQtShell_Turnout::provideFirstFeedbackSensor(QString  arg__1) throw (JmriException)
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("provideFirstFeedbackSensor");
@@ -16733,7 +16733,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   Turnout::provideFirstFeedbackSensor(arg__1);
 }
-void PythonQtShell_Turnout::provideSecondFeedbackSensor(QString  arg__1)
+void PythonQtShell_Turnout::provideSecondFeedbackSensor(QString  arg__1) throw (JmriException)
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("provideSecondFeedbackSensor");
@@ -16866,7 +16866,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   Turnout::setDecoderName(arg__1);
 }
-void PythonQtShell_Turnout::setDivergingSpeed(QString  arg__1) const
+void PythonQtShell_Turnout::setDivergingSpeed(QString  arg__1) const throw (JmriException)
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("setDivergingSpeed");
@@ -17075,7 +17075,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
 }
   Turnout::setState(arg__1);
 }
-void PythonQtShell_Turnout::setStraightSpeed(QString  arg__1) const
+void PythonQtShell_Turnout::setStraightSpeed(QString  arg__1) const throw (JmriException)
 {
 if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
   static PyObject* name = PyString_FromString("setStraightSpeed");

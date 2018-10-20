@@ -66,7 +66,7 @@ bool DefaultClockControl::requiresIntegerRate() {return false;}
  */
 void DefaultClockControl::setRate(double /*newRate*/) {return;}
 double DefaultClockControl::getRate() {
-    return InstanceManager::timebaseInstance()->getRate();
+    return static_cast<Timebase*>(InstanceManager::getDefault("Timebase"))->getRate();
 }
 
 /**
@@ -76,7 +76,7 @@ double DefaultClockControl::getRate() {
  */
 void DefaultClockControl::setTime(QDateTime /*now*/){return;}
 QDateTime DefaultClockControl::getTime() {
-    return InstanceManager::timebaseInstance()->getTime();
+    return static_cast<Timebase*>(InstanceManager::getDefault("Timebase"))->getTime();
 }
 
 /**

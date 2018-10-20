@@ -49,7 +49,7 @@ private:
   */
  /*private*/ QHash<TreePath*, bool>*    uniquePaths;
  /*private*/ QHash<TreePath*, bool>*    lastPaths;
- /*private*/ QVector<TreePath*>                      tempPaths;
+ /*private*/ QVector<TreePath*>         tempPaths;
 
 protected:
 

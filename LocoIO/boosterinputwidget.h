@@ -28,6 +28,7 @@ private:
  void setValues();
  void resetControls();
  bool bSettingValues;
+
 private slots:
  void on_rbBlockDetectionActiveLow_toggled(bool bChecked);
  void onMessageReceived(LocoNetMessage *msg, bool b);

@@ -69,6 +69,7 @@ public:
     /*public*/ void windowClosing(QCloseEvent* e);
     /*public*/ virtual QString getClassName();
     /*public*/ void addNotify();
+    /*public*/ void setFrameLocation();
 
 signals:
 
@@ -78,7 +79,6 @@ private:
     static /*volatile*/ QList<JmriJFrame*>* frameList;// = new QList<JmriJFrame*>();
     void reSizeToFitOnScreen();
     QString windowFrameRef;
-    void setFrameLocation();
     void offSetFrameOnScreen(JmriJFrame* f);
     /*private*/ AbstractShutDownTask* task;// = NULL;
  Logger* log;
@@ -121,6 +121,7 @@ protected:
     friend class SlipTurnoutTextEdit;
     friend class RosterFrame;
     friend class JmriJFrameWindowListener;
+    friend class ListedTableFrame;
 };
 class MyAbstractShutDownTask : public AbstractShutDownTask
 {

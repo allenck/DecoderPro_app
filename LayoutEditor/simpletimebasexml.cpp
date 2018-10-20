@@ -40,24 +40,24 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
  */
 /*public*/ QDomElement SimpleTimebaseXml::store(QObject* /*o*/) {
 
-    Timebase* clock = InstanceManager::timebaseInstance();
+    Timebase* clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
 
     QDomElement elem = doc.createElement("timebase");
     elem.setAttribute("class", /*getClass().getName()*/"jmri.jmrit.simpleclock.configurexml.SimpleTimebaseXml");
 
-    if (!((SimpleTimebase*)clock)->getStartTime().isNull())
-        elem.setAttribute("time", ((SimpleTimebase*)clock)->getStartTime().toString());
-    elem.setAttribute("rate", ((SimpleTimebase*)clock)->userGetRate());
-    elem.setAttribute("run", (!((SimpleTimebase*)clock)->getStartStopped()?"yes":"no"));
-    elem.setAttribute("master", (((SimpleTimebase*)clock)->getInternalMaster()?"yes":"no"));
-    if (!((SimpleTimebase*)clock)->getInternalMaster())
-        elem.setAttribute("mastername",((SimpleTimebase*)clock)->getMasterName());
-    elem.setAttribute("sync", (((SimpleTimebase*)clock)->getSynchronize()?"yes":"no"));
-    elem.setAttribute("correct", (((SimpleTimebase*)clock)->getCorrectHardware()?"yes":"no"));
-    elem.setAttribute("display", (((SimpleTimebase*)clock)->use12HourDisplay()?"yes":"no"));
-    elem.setAttribute("startstopped", (((SimpleTimebase*)clock)->getStartStopped()?"yes":"no"));
-    elem.setAttribute("startsettime", (((SimpleTimebase*)clock)->getStartSetTime()?"yes":"no"));
-    elem.setAttribute("startclockoption",((SimpleTimebase*)clock)->getStartClockOption());
+    if (!clock->getStartTime().isNull())
+        elem.setAttribute("time", clock->getStartTime().toString());
+    elem.setAttribute("rate", clock->userGetRate());
+    elem.setAttribute("run", (!clock->getStartStopped()?"yes":"no"));
+    elem.setAttribute("master", (clock->getInternalMaster()?"yes":"no"));
+    if (!clock->getInternalMaster())
+        elem.setAttribute("mastername",clock->getMasterName());
+    elem.setAttribute("sync", (clock->getSynchronize()?"yes":"no"));
+    elem.setAttribute("correct", (clock->getCorrectHardware()?"yes":"no"));
+    elem.setAttribute("display", (clock->use12HourDisplay()?"yes":"no"));
+    elem.setAttribute("startstopped", (clock->getStartStopped()?"yes":"no"));
+    elem.setAttribute("startsettime", (clock->getStartSetTime()?"yes":"no"));
+    elem.setAttribute("startclockoption",clock->getStartClockOption());
 
     return elem;
 }
@@ -70,49 +70,49 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
 /*public*/ bool SimpleTimebaseXml::load(QDomElement element) throw (Exception)
 {
  bool result = true;
- Timebase* clock = InstanceManager::timebaseInstance();
+ Timebase* clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
  QString val,val2;
  if (element.attribute("master")!="")
  {
   val = element.attribute("master");
-  if (val==("yes")) ((SimpleTimebase*)clock)->setInternalMaster(true,false);
+  if (val==("yes")) clock->setInternalMaster(true,false);
   if (val==("no"))
   {
-   ((SimpleTimebase*)clock)->setInternalMaster(false,false);
+   clock->setInternalMaster(false,false);
       if (element.attribute("mastername")!="")
-    ((SimpleTimebase*)clock)->setMasterName(element.attribute("mastername"));
+    clock->setMasterName(element.attribute("mastername"));
   }
  }
  if (element.attribute("sync")!="")
  {
   val = element.attribute("sync");
-  if (val==("yes")) ((SimpleTimebase*)clock)->setSynchronize(true,false);
-  if (val==("no")) ((SimpleTimebase*)clock)->setSynchronize(false,false);
+  if (val==("yes")) clock->setSynchronize(true,false);
+  if (val==("no")) clock->setSynchronize(false,false);
  }
  if (element.attribute("correct")!="")
  {
   val = element.attribute("correct");
-  if (val==("yes")) ((SimpleTimebase*)clock)->setCorrectHardware(true,false);
-  if (val==("no")) ((SimpleTimebase*)clock)->setCorrectHardware(false,false);
+  if (val==("yes")) clock->setCorrectHardware(true,false);
+  if (val==("no")) clock->setCorrectHardware(false,false);
  }
  if (element.attribute("display")!="")
  {
   val = element.attribute("display");
-  if (val==("yes")) ((SimpleTimebase*)clock)->set12HourDisplay(true,false);
-  if (val==("no")) ((SimpleTimebase*)clock)->set12HourDisplay(false,false);
+  if (val==("yes")) clock->set12HourDisplay(true,false);
+  if (val==("no")) clock->set12HourDisplay(false,false);
  }
  if (element.attribute("run")!="")
  {
   val = element.attribute("run");
   if (val==("yes"))
   {
-   ((SimpleTimebase*)clock)->setRun(true);
-   ((SimpleTimebase*)clock)->setStartStopped(false);
+   clock->setRun(true);
+   clock->setStartStopped(false);
   }
   if (val==("no"))
   {
-   ((SimpleTimebase*)clock)->setRun(false);
-   ((SimpleTimebase*)clock)->setStartStopped(true);
+   clock->setRun(false);
+   clock->setStartStopped(true);
   }
  }
  if (element.attribute("rate")!="")
@@ -126,9 +126,9 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
    result = false;
   }
   else
-   ((SimpleTimebase*)clock)->userSetRate(r);
+   clock->userSetRate(r);
 //   try {
-//                ((SimpleTimebase*)clock)->userSetRate(r);
+//                clock->userSetRate(r);
 //            } catch (jmri.TimebaseRateException e1) {
 //                log->error("Cannot restore rate: "+r+" "+e1);
 //                result = false;
@@ -151,8 +151,8 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
      QDateTime t = QDateTime::fromString(removeTimeZone(val2), format);
      if(t.isValid())
      {
-      ((SimpleTimebase*)clock)->setStartSetTime(true, t);
-      ((SimpleTimebase*)clock)->setTime(t);
+      clock->setStartSetTime(true, t);
+      clock->setTime(t);
      }
      //} catch(ParseException e) {
      else
@@ -172,7 +172,7 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
      QDateTime t = QDateTime::fromString(removeTimeZone(val2), format);
      log->debug("input datetime = " + t.toString());
      if(t.isValid())
-      ((SimpleTimebase*)clock)->setStartSetTime(false, t);
+      clock->setStartSetTime(false, t);
      //} catch(ParseException e) {
      else
     {
@@ -191,8 +191,8 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
   QDateTime t = QDateTime::fromString(removeTimeZone(val2), format);
   if(t.isValid())
   {
-   ((SimpleTimebase*)clock)->setStartSetTime(true, t);
-   ((SimpleTimebase*)clock)->setTime(t);
+   clock->setStartSetTime(true, t);
+   clock->setTime(t);
   }
   else
   {
@@ -206,10 +206,10 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
  {
   bool bOk;
   int option = element.attribute("startclockoption").toInt(&bOk);
-  ((SimpleTimebase*)clock)->setStartClockOption(option);
-  ((SimpleTimebase*)clock)->initializeClock();
+  clock->setStartClockOption(option);
+  clock->initializeClock();
  }
- ((SimpleTimebase*)clock)->initializeHardwareClock();
+ clock->initializeHardwareClock();
  return result;
 }
 

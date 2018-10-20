@@ -24,7 +24,7 @@
  */
 // /*public*/ class SlotMonDataModel extends javax.swing.table.AbstractTableModel implements SlotListener  {
 
-SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionMemo* memo, QObject *parent)
+SlotMonDataModel::SlotMonDataModel(int /*row*/, int /*column*/, LocoNetSystemConnectionMemo* memo, QObject *parent)
     : AbstractTableModel(parent)
 {
  this->memo = memo;
@@ -49,8 +49,9 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
  * This should probably use a local cache instead
  * of counting/searching each time.
  */
-/*public*/ int SlotMonDataModel::rowCount(const QModelIndex &parent) const
+/*public*/ int SlotMonDataModel::rowCount(const QModelIndex &/*parent*/) const
 {
+
  if (_allSlots)
  {
   // will show the entire set, so don't bother counting
@@ -77,7 +78,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
 }
 
 
-/*public*/ int SlotMonDataModel::columnCount(const QModelIndex &parent) const
+/*public*/ int SlotMonDataModel::columnCount(const QModelIndex &/*parent*/) const
 { return NUMCOLUMN;}
 
 /*public*/ QVariant  SlotMonDataModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -178,7 +179,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
  if(role == Qt::DisplayRole)
  {
   QString      t;
-  if (s == NULL) log->error("slot pointer was null for slot row: "+QString::number(row)+" col: "+QString::number(col));
+  if (s == nullptr) log->error("slot pointer was null for slot row: "+QString::number(row)+" col: "+QString::number(col));
 
   switch (col)
   {
@@ -187,7 +188,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
    case ESTOPCOLUMN:  //
     return tr("E Stop");          // will be name of button in default GUI
    case ADDRCOLUMN:  //
-    s->locoAddr();
+    return s->locoAddr();
    case SPDCOLUMN:  //
     switch (s->consistStatus())
     {
@@ -352,7 +353,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
    log->debug("Start estop in slot "+QString::number(row));
    // check for in use
    LocoNetSlot* s = memo->getSlotManager()->slot(slotNum(row));
-   if (s == NULL)
+   if (s == nullptr)
    {
     log->error("slot pointer was null for slot row: "+QString::number(row)+" col: "+QString::number(col));
     return false;
@@ -369,7 +370,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
 //                                              JOptionPane.WARNING_MESSAGE,
 //                                              null, options, options[1]);
 //            if (result == 1) return;
-    if(QMessageBox::warning(NULL, tr("Warning"), tr("E-Stopping a consist MID or SUB will mess up the consist.\n\nAre you sure you want to do that?"),QMessageBox::Ok | QMessageBox::Cancel)==QMessageBox::Cancel)
+    if(QMessageBox::warning(nullptr, tr("Warning"), tr("E-Stopping a consist MID or SUB will mess up the consist.\n\nAre you sure you want to do that?"),QMessageBox::Ok | QMessageBox::Cancel)==QMessageBox::Cancel)
      return false;
 
    }
@@ -386,7 +387,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
    log->debug("Start freeing slot "+QString::number(row));
    // check for in use
    LocoNetSlot* s = memo->getSlotManager()->slot(slotNum(row));
-   if (s == NULL)
+   if (s == nullptr)
    {
     log->error("slot pointer was null for slot row: "+QString::number(row)+" col: "+QString::number(col));
     return false;
@@ -409,7 +410,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
 //                                      JOptionPane.WARNING_MESSAGE,
 //                                      null, options, options[1]);
 //    if (result == 1) return;
-     if(QMessageBox::warning(NULL, tr("Warning"), tr("Freeing a consist member will destroy the consist.\n\nAre you sure you want to do that?"),QMessageBox::Ok | QMessageBox::Cancel)==QMessageBox::Cancel)
+     if(QMessageBox::warning(nullptr, tr("Warning"), tr("Freeing a consist member will destroy the consist.\n\nAre you sure you want to do that?"),QMessageBox::Ok | QMessageBox::Cancel)==QMessageBox::Cancel)
          return false;
    }
    // send status to free
@@ -435,7 +436,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
   {
    log->debug("F0-F4 change requested "+QString::number(row));
    LocoNetSlot* s = memo->getSlotManager()->slot(slotNum(row));
-   if (s == NULL)
+   if (s == nullptr)
    {
     log->error("slot pointer was null for slot row: "+QString::number(row)+" col: "+QString::number(col));
     return false;
@@ -497,7 +498,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
   {
    log->debug("F5-F8 change requested "+QString::number(row));
    LocoNetSlot* s = memo->getSlotManager()->slot(slotNum(row));
-   if (s == NULL)
+   if (s == nullptr)
    {
     log->error("slot pointer was null for slot row: "+QString::number(row)+" col: "+QString::number(col));
     return false;
@@ -561,7 +562,7 @@ SlotMonDataModel::SlotMonDataModel(int row, int column, LocoNetSystemConnectionM
 
   if ((s->slotStatus() != LnConstants::LOCO_IN_USE) && (s->consistStatus() == LnConstants::CONSIST_NO))
   {
-   log->debug(QString("Freeing %1 from slot %2, old status: {%3").arg(s->locoAddr()).arg(s->getSlot()).arg(s->slotStatus()));
+   log->debug(QString("Freeing %1 from slot %2, old status: %3").arg(s->locoAddr()).arg(s->getSlot()).arg(s->slotStatus()));
    memo->getLnTrafficController()->sendLocoNetMessage(
            s->writeStatus(LnConstants::LOCO_FREE
            ));

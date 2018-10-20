@@ -44,5 +44,5 @@ ProfileFileView::ProfileFileView(QObject *parent) :
     if (!isTraversable(f)) {
         return new ImageIcon(FileUtil::findURL("program:resources/jmri16x16.gif")); // NOI18N
     }
-    return NULL;
+    return nullptr;
 }

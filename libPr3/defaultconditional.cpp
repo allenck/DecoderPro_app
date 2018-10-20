@@ -285,7 +285,7 @@
 
   if (enabled)
   {
-  if (evt != NULL)
+  if (evt != nullptr)
   {
    // check if the current listener wants to (NOT) trigger actions
    enabled = wantsToTrigger(evt);
@@ -318,7 +318,7 @@ bool DefaultConditional::wantsToTrigger(PropertyChangeEvent* evt) {
                 return _variableList->at(i)->doTriggerActions();
             }
         }
-        if (userName != NULL) {
+        if (userName != nullptr) {
             for (int i=0; i<_variableList->size(); i++) {
                 if (userName ==(_variableList->at(i)->getName())) {
                     return _variableList->at(i)->doTriggerActions();
@@ -391,7 +391,7 @@ bool DefaultConditional::wantsToTrigger(PropertyChangeEvent* evt) {
     }  catch ( JmriException je) {
         return tr("ParseError6") + je.getMessage();
     }
-    return NULL;
+    return nullptr;
 }
 #endif
 /**
@@ -414,7 +414,7 @@ throw (JmriException)
     s = s.toUpper();
 
     BitSet* argsUsed = new BitSet(_variableList->size());
-    DataPair* dp = NULL;
+    DataPair* dp = nullptr;
     bool leftArg = false;
     bool rightArg = false;
     int oper = Conditional::OPERATOR_NONE;
@@ -600,22 +600,22 @@ throw (JmriException)
   {
    // need to take this action
    actionNeeded++;
-   SignalHead* h = NULL;
-   SignalMast* f = NULL;
-   Logix* x = NULL;
-   Light* lgt = NULL;
-   Warrant* w = NULL;
-   OBlock* b = NULL;
-   NamedBean* nb = NULL;
-   if (action->getNamedBean() != NULL)
+   SignalHead* h = nullptr;
+   SignalMast* f = nullptr;
+   Logix* x = nullptr;
+   Light* lgt = nullptr;
+   Warrant* w = nullptr;
+   OBlock* b = nullptr;
+   NamedBean* nb = nullptr;
+   if (action->getNamedBean() != nullptr)
    {
     nb = (NamedBean*) action->getNamedBean()->getBean();
    }
    int value = 0;
-   QTimer* timer = NULL;
+   QTimer* timer = nullptr;
    int type = ((DefaultConditionalAction*)action)->getType();
    QString devName = getDeviceName(action);
-   if (devName==NULL)
+   if (devName==nullptr)
    {
     errorList->append("invalid memory name in action - "+devName);
     continue;
@@ -628,7 +628,7 @@ throw (JmriException)
     case Conditional::ACTION_SET_TURNOUT:
     {
      Turnout* t =(Turnout*) nb;
-     if (t == NULL)
+     if (t == nullptr)
      {
       errorList->append("invalid turnout name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -656,7 +656,7 @@ throw (JmriException)
      {
       // Create a timer if one does not exist
       timer = ((DefaultConditionalAction*)action)->getTimer();
-      if (timer==NULL)
+      if (timer==nullptr)
       {
        ((DefaultConditionalAction*)action)->setListener(new TimeTurnout(i,this));
        //timer = new QTimer(2000, ((DefaultConditionalAction*)action)->getListener());
@@ -681,17 +681,17 @@ throw (JmriException)
      break;
     case Conditional::ACTION_CANCEL_TURNOUT_TIMERS:
     {
-     ConditionalManager* cmg = InstanceManager::conditionalManagerInstance();
+     ConditionalManager* cmg = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"));
      QStringListIterator iter( cmg->getSystemNameList());
      while (iter.hasNext())
      {
       QString sname = iter.next();
-      if (sname==NULL)
-          errorList->append("Conditional system name NULL during cancel turnput timers for "
+      if (sname==nullptr)
+          errorList->append("Conditional system name nullptr during cancel turnput timers for "
                                   + ((DefaultConditionalAction*)action)->getDeviceName());
       Conditional* c = cmg->getBySystemName(sname);
-      if (c==NULL)
-          errorList->append("Conditional NULL during cancel turnout timers for "
+      if (c==nullptr)
+          errorList->append("Conditional nullptr during cancel turnout timers for "
                                   + ((DefaultConditionalAction*)action)->getDeviceName());
       else
       {
@@ -704,7 +704,7 @@ throw (JmriException)
     case Conditional::ACTION_LOCK_TURNOUT:
     {
      Turnout* tl = (Turnout*) nb;
-     if (tl == NULL)
+     if (tl == nullptr)
      {
       errorList->append("invalid turnout name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -732,7 +732,7 @@ throw (JmriException)
     }
     case Conditional::ACTION_SET_SIGNAL_APPEARANCE:
      h = (SignalHead*) nb;
-     if (h == NULL)
+     if (h == nullptr)
      {
       errorList->append("invalid signal head name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -743,7 +743,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_SIGNAL_HELD:
      h = (SignalHead*) nb;
-     if (h == NULL)
+     if (h == nullptr)
      {
       errorList->append("invalid signal head name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -754,7 +754,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_CLEAR_SIGNAL_HELD:
      h = (SignalHead*) nb;
-     if (h == NULL) {
+     if (h == nullptr) {
          errorList->append("invalid signal head name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
@@ -765,7 +765,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_SIGNAL_DARK:
      h = (SignalHead*) nb;
-     if (h == NULL)
+     if (h == nullptr)
      {
       errorList->append("invalid signal head name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -777,7 +777,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_SIGNAL_LIT:
      h = (SignalHead*) nb;
-     if (h == NULL) {
+     if (h == nullptr) {
          errorList->append("invalid signal head name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
@@ -789,7 +789,7 @@ throw (JmriException)
     case Conditional::ACTION_TRIGGER_ROUTE:
     {
      Route* r = (Route*) nb;
-     if (r == NULL) {
+     if (r == nullptr) {
          errorList->append("invalid route name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
@@ -802,7 +802,7 @@ throw (JmriException)
     case Conditional::ACTION_SET_SENSOR:
     {
      Sensor* sn = (Sensor*) nb;
-     if (sn == NULL)
+     if (sn == nullptr)
      {
       errorList->append("invalid sensor name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -837,7 +837,7 @@ throw (JmriException)
      {
       // Create a timer if one does not exist
       timer = ((DefaultConditionalAction*)action)->getTimer();
-      if (timer==NULL)
+      if (timer==nullptr)
       {
        ((DefaultConditionalAction*)action)->setListener(new TimeSensor(i, this));
        //timer = new QTimer(2000, ((DefaultConditionalAction*)action)->getListener());
@@ -861,17 +861,17 @@ throw (JmriException)
      break;
     case Conditional::ACTION_CANCEL_SENSOR_TIMERS:
     {
-     ConditionalManager* cm = InstanceManager::conditionalManagerInstance();
+     ConditionalManager* cm = static_cast<ConditionalManager*>(InstanceManager::getDefault("CondtionalManager"));
      QStringListIterator itr( cm->getSystemNameList());
      while (itr.hasNext())
      {
       QString sname = itr.next();
-      if (sname==NULL)
-          errorList->append("Conditional system name NULL during cancel sensor timers for "
+      if (sname==nullptr)
+          errorList->append("Conditional system name nullptr during cancel sensor timers for "
                                   + ((DefaultConditionalAction*)action)->getDeviceName());
-      Conditional* c = ((DefaultConditionalManager*)cm)->getBySystemName(sname);
-      if (c==NULL)
-          errorList->append("Conditional NULL during cancel sensor timers for "
+      Conditional* c = cm->getBySystemName(sname);
+      if (c==nullptr)
+          errorList->append("Conditional nullptr during cancel sensor timers for "
                                   + ((DefaultConditionalAction*)action)->getDeviceName());
       else
       {
@@ -883,7 +883,7 @@ throw (JmriException)
     }
     case Conditional::ACTION_SET_LIGHT:
      lgt = (Light*)nb;
-     if (lgt == NULL)
+     if (lgt == nullptr)
      {
       errorList->append("invalid light name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -904,7 +904,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_LIGHT_INTENSITY:
      lgt = (Light*)nb;
-     if (lgt == NULL)
+     if (lgt == nullptr)
      {
       errorList->append("invalid light name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -928,7 +928,7 @@ throw (JmriException)
      break;
    case Conditional::ACTION_SET_LIGHT_TRANSITION_TIME:
     lgt = (Light*)nb;
-    if (lgt == NULL)
+    if (lgt == nullptr)
     {
          errorList->append("invalid light name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
     }
@@ -953,7 +953,7 @@ throw (JmriException)
    case Conditional::ACTION_SET_MEMORY:
    {
      Memory* m = (Memory*) nb;
-     if (m == NULL) {
+     if (m == nullptr) {
          errorList->append("invalid memory name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else {
@@ -965,14 +965,14 @@ throw (JmriException)
    case Conditional::ACTION_COPY_MEMORY:
    {
      Memory* mFrom = (Memory*) nb;
-    if (mFrom == NULL)
+    if (mFrom == nullptr)
     {
         errorList->append("invalid memory name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
     }
     else
     {
      Memory* mTo = getMemory(((DefaultConditionalAction*)action)->getActionString());
-     if (mTo == NULL)
+     if (mTo == nullptr)
      {
       errorList->append("invalid memory name in action - "+((DefaultConditionalAction*)action)->getActionString());
      }
@@ -985,8 +985,8 @@ throw (JmriException)
     break;
    }
    case Conditional::ACTION_ENABLE_LOGIX:
-    x = ((DefaultLogixManager*)InstanceManager::logixManagerInstance())->getLogix(devName);
-    if (x == NULL) {
+    x = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
+    if (x == nullptr) {
         errorList->append("invalid logix name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
     }
     else {
@@ -995,8 +995,8 @@ throw (JmriException)
     }
     break;
    case Conditional::ACTION_DISABLE_LOGIX:
-    x = ((DefaultLogixManager*)InstanceManager::logixManagerInstance())->getLogix(devName);
-    if (x == NULL) {
+    x = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
+    if (x == nullptr) {
         errorList->append("invalid logix name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
     }
     else {
@@ -1008,7 +1008,7 @@ throw (JmriException)
    case Conditional::ACTION_PLAY_SOUND:
        if (!(getActionString(action) ==(""))) {
            Sound sound = ((DefaultConditionalAction*)action)->getSound();
-           if (sound == NULL) {
+           if (sound == nullptr) {
                sound = new jmri.jmrit.Sound(jmri.util.FileUtil.getExternalFilename(getActionString(action)));
            }
            sound.play();
@@ -1024,24 +1024,24 @@ throw (JmriException)
 #endif
    case Conditional::ACTION_SET_FAST_CLOCK_TIME:
    {
-    QDateTime date = InstanceManager::timebaseInstance()->getTime();
+    QDateTime date = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"))->getTime();
 //                    date.setHours(((DefaultConditionalAction*)action)->getActionData()/60);
 //                    date.setMinutes(((DefaultConditionalAction*)action)->getActionData() - ((((DefaultConditionalAction*)action)->getActionData()/60)*60));
 //                    date.setSeconds(0);
     date.setTime(QTime(((DefaultConditionalAction*)action)->getActionData()/60,((DefaultConditionalAction*)action)->getActionData() - ((((DefaultConditionalAction*)action)->getActionData()/60)*60),0));
-    InstanceManager::timebaseInstance()->userSetTime(date);
+    static_cast<Timebase*>(InstanceManager::getDefault("Timebase"))->userSetTime(date);
     actionCount++;
     break;
    }
    case Conditional::ACTION_START_FAST_CLOCK:
    {
-    InstanceManager::timebaseInstance()->setRun(true);
+    static_cast<Timebase*>(InstanceManager::getDefault("Timebase"))->setRun(true);
     actionCount++;
     break;
    }
    case Conditional::ACTION_STOP_FAST_CLOCK:
    {
-    InstanceManager::timebaseInstance()->setRun(false);
+    static_cast<Timebase*>(InstanceManager::getDefault("Timebase"))->setRun(false);
     actionCount++;
     break;
    }
@@ -1123,14 +1123,14 @@ throw (JmriException)
 #endif
    case Conditional::ACTION_ALLOCATE_WARRANT_ROUTE:
      w = (Warrant*) nb;
-     if (w == NULL)
+     if (w == nullptr)
      {
       errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
      {
-      QString msg = w->allocateRoute(NULL);
-      if (msg !=NULL)
+      QString msg = w->allocateRoute(nullptr);
+      if (msg !=nullptr)
       {
        log->info("Warrant "+((DefaultConditionalAction*)action)->getDeviceName()+" - "+msg);
       }
@@ -1139,7 +1139,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_DEALLOCATE_WARRANT_ROUTE:
      w = (Warrant*) nb;
-     if (w == NULL)
+     if (w == nullptr)
      {
       errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -1151,14 +1151,14 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_ROUTE_TURNOUTS:
      w = (Warrant*) nb;
-     if (w == NULL)
+     if (w == nullptr)
      {
          errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
      {
-      QString msg = w->setRoute(0, NULL);
-      if (msg!=NULL)
+      QString msg = w->setRoute(0, nullptr);
+      if (msg!=nullptr)
       {
        log->info("Warrant "+((DefaultConditionalAction*)action)->getDeviceName()+" unable to Set Route - "+msg);
       }
@@ -1167,14 +1167,14 @@ throw (JmriException)
      break;
     case Conditional::ACTION_THROTTLE_FACTOR:
      w = (Warrant*) nb;
-     if (w == NULL)
+     if (w == nullptr)
      {
       errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
      {
       QString msg = w->setThrottleFactor(getActionString(action));
-      if (msg!=NULL)
+      if (msg!=nullptr)
       {
        log->info("Warrant "+((DefaultConditionalAction*)action)->getDeviceName()+" unable to Set Throttle Factor - "+msg);
       }
@@ -1183,7 +1183,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_TRAIN_ID:
      w = (Warrant*) nb;
-     if (w == NULL)
+     if (w == nullptr)
      {
       errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -1200,7 +1200,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_TRAIN_NAME:
      w = (Warrant*) nb;
-     if (w == NULL)
+     if (w == nullptr)
      {
       errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -1212,15 +1212,15 @@ throw (JmriException)
      break;
     case Conditional::ACTION_AUTO_RUN_WARRANT:
      w = (Warrant*) nb;
-     if (w == NULL)
+     if (w == nullptr)
      {
       errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
      {
-      QString err = w->setRoute(0, NULL);
-      err = w->setRunMode(Warrant::MODE_RUN, NULL, NULL, NULL, false);
-      if (err!=NULL) {
+      QString err = w->setRoute(0, nullptr);
+      err = w->setRunMode(Warrant::MODE_RUN, nullptr, nullptr, nullptr, false);
+      if (err!=nullptr) {
           errorList->append("runAutoTrain error - "+err);
       }
       actionCount++;
@@ -1228,15 +1228,15 @@ throw (JmriException)
      break;
     case Conditional::ACTION_MANUAL_RUN_WARRANT:
      w = (Warrant*) nb;
-     if (w == NULL)
+     if (w == nullptr)
      {
       errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
      {
-      QString err = w->setRoute(0, NULL);
-      err = w->setRunMode(Warrant::MODE_MANUAL, NULL, NULL, NULL, false);
-      if (err!=NULL)
+      QString err = w->setRoute(0, nullptr);
+      err = w->setRunMode(Warrant::MODE_MANUAL, nullptr, nullptr, nullptr, false);
+      if (err!=nullptr)
       {
        errorList->append("runManualTrain error - "+err);
       }
@@ -1245,7 +1245,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_CONTROL_TRAIN:
      w = (Warrant*) nb;
-     if (w == NULL) {
+     if (w == nullptr) {
          errorList->append("invalid Warrant name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
@@ -1260,7 +1260,7 @@ throw (JmriException)
 
     case Conditional::ACTION_SET_SIGNALMAST_ASPECT:
      f = (SignalMast*) nb;
-     if (f == NULL)
+     if (f == nullptr)
      {
       errorList->append("invalid signal mast name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -1272,7 +1272,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_SIGNALMAST_HELD:
      f = (SignalMast*) nb;
-     if (f == NULL) {
+     if (f == nullptr) {
          errorList->append("invalid signal mast name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else {
@@ -1282,7 +1282,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_CLEAR_SIGNALMAST_HELD:
      f = (SignalMast*) nb;
-     if (f == NULL)
+     if (f == nullptr)
      {
       errorList->append("invalid signal mast name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -1294,7 +1294,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_SIGNALMAST_DARK:
      f = (SignalMast*) nb;
-     if (f == NULL) {
+     if (f == nullptr) {
          errorList->append("invalid signal head name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
@@ -1305,7 +1305,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_SIGNALMAST_LIT:
      f = (SignalMast*) nb;
-     if (f == NULL)
+     if (f == nullptr)
      {
       errorList->append("invalid signal head name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -1318,7 +1318,7 @@ throw (JmriException)
 #if 1
     case Conditional::ACTION_SET_BLOCK_VALUE:
      b = (OBlock*) nb;
-     if (b == NULL)
+     if (b == nullptr)
      {
       errorList->append("invalid block name in action - " + action->getDeviceName());
      }
@@ -1330,7 +1330,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_BLOCK_ERROR:
      b = (OBlock*) nb;
-     if (b == NULL) {
+     if (b == nullptr) {
          errorList->append("invalid block name in action - " + action->getDeviceName());
      } else {
          b->setError(true);
@@ -1339,7 +1339,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_CLEAR_BLOCK_ERROR:
      b = (OBlock*) nb;
-     if (b == NULL) {
+     if (b == nullptr) {
          errorList->append("invalid block name in action - " + action->getDeviceName());
      } else {
          b->setError(false);
@@ -1347,18 +1347,18 @@ throw (JmriException)
      break;
     case Conditional::ACTION_DEALLOCATE_BLOCK:
      b = (OBlock*)nb;
-     if (b == NULL)
+     if (b == nullptr)
      {
          errorList->append("invalid block name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else {
-         b->deAllocate(NULL);
+         b->deAllocate(nullptr);
          actionCount++;
      }
      break;
     case Conditional::ACTION_SET_BLOCK_OUT_OF_SERVICE:
      b = (OBlock*)nb;
-     if (b == NULL)
+     if (b == nullptr)
      {
       errorList->append("invalid block name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
@@ -1370,7 +1370,7 @@ throw (JmriException)
      break;
     case Conditional::ACTION_SET_BLOCK_IN_SERVICE:
      b = (OBlock*)nb;
-     if (b == NULL) {
+     if (b == nullptr) {
          errorList->append("invalid block name in action - "+((DefaultConditionalAction*)action)->getDeviceName());
      }
      else
@@ -1417,7 +1417,7 @@ DataPair::DataPair()
 {
     result = false;
     indexCount = 0;         // index reached when parsing completed
-    argsUsed = NULL;
+    argsUsed = nullptr;
 }
 
 /*static*/ /*private*/ bool DefaultConditional::_skipErrorDialog = false;
@@ -1467,12 +1467,12 @@ class ErrorDialog : public  QDialog {
 #endif
 /*private*/ QString DefaultConditional::getDeviceName(ConditionalAction* action) {
     QString devName = ((DefaultConditionalAction*)action)->getDeviceName();
-    if (devName!=NULL && devName.length()>0 && devName.at(0)== '@') {
+    if (devName!=nullptr && devName.length()>0 && devName.at(0)== '@') {
         QString memName = devName.mid(1);
         Memory* m = getMemory(memName);
-        if (m == NULL) {
+        if (m == nullptr) {
             log->error(getDisplayName()+" invalid memory name in action - "+devName);
-            return NULL;
+            return nullptr;
         }
         devName = m->getValue().toString();
     }
@@ -1481,10 +1481,10 @@ class ErrorDialog : public  QDialog {
 
 /*private*/ QString DefaultConditional::getActionString(ConditionalAction* action) {
     QString devAction = ((DefaultConditionalAction*)action)->getActionString();
-    if (devAction!=NULL && devAction.length()>0 && devAction.at(0)== '@') {
+    if (devAction!=nullptr && devAction.length()>0 && devAction.at(0)== '@') {
         QString memName = devAction.mid(1);
         Memory* m = getMemory(memName);
-        if (m == NULL) {
+        if (m == nullptr) {
             log->error(getDisplayName()+" action \""+((DefaultConditionalAction*)action)->getDeviceName()+
                       "\" has invalid memory name in actionString - "+((DefaultConditionalAction*)action)->getActionString());
             return "";
@@ -1498,7 +1498,7 @@ class ErrorDialog : public  QDialog {
 */
 /*private*/ Memory* DefaultConditional::getMemory(QString name) {
     Memory* m = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->getMemory(name);
-    if (m==NULL) {
+    if (m==nullptr) {
         QString sName = name.toUpper().trimmed();
         m = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->getMemory(sName);
     }
@@ -1518,7 +1518,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
     if(!bOk)
     {
      Memory* mem = getMemory(sNumber);
-     if (mem == NULL)
+     if (mem == nullptr)
      {
             log->error("invalid memory name for action time variable - "+sNumber+
                       ", for Action \""+((DefaultConditionalAction*)action)->getTypeString()+
@@ -1561,7 +1561,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
                 else {
                     // check if same sensor by a different name
                     Sensor* sn = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(devName);
-                    if (sn == NULL) {
+                    if (sn == nullptr) {
                         log->error(getDisplayName()+" Unknown sensor *"+((DefaultConditionalAction*)action)->getDeviceName()+" in cancelSensorTimer.");
                     }
                     else if (sname ==(((AbstractSensor*)sn)->getSystemName()) ||
@@ -1593,7 +1593,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
                 else {
                     // check if same turnout by a different name
                     Turnout* tn = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(devName);
-                    if (tn == NULL) {
+                    if (tn == nullptr) {
                         log->error(getDisplayName()+" Unknown turnout *"+((DefaultConditionalAction*)action)->getDeviceName()+" in cancelTurnoutTimer.");
                     }
                     else if (sname ==(((AbstractTurnout*)tn)->getSystemName()) ||
@@ -1643,7 +1643,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
         ConditionalAction* action = self->_actionList->at(mIndex);
         QString devName = self->getDeviceName(action);
         Sensor* sn = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(devName);
-        if (sn==NULL) {
+        if (sn==nullptr) {
             self->log->error(self->getDisplayName()+" Invalid delayed sensor name - "+((DefaultConditionalAction*)action)->getDeviceName());
         }
         else {
@@ -1678,7 +1678,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
         ConditionalAction* action = self->_actionList->at(mIndex);
         QString devName = self->getDeviceName(action);
         Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(devName);
-        if (t==NULL) {
+        if (t==nullptr) {
             self->log->error(self->getDisplayName()+" Invalid delayed turnout name - "+((DefaultConditionalAction*)action)->getDeviceName());
         }
         else {

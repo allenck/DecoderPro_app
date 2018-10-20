@@ -61,7 +61,7 @@ class LIBPR3SHARED_EXPORT SlotManager : public  AbstractProgrammer
 {
  Q_OBJECT
 public:
-    SlotManager(LnTrafficController* tc, QObject *parent = 0);
+    SlotManager(LnTrafficController* tc, QObject *parent = nullptr);
     /**
      * Send a DCC packet to the rails. This implements the CommandStation interface.
      * @param packet

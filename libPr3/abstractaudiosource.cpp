@@ -35,7 +35,7 @@
      */
 ///*private*/ /*static*/ final long serialVersionUID = -984900360787361666L;
 
-/*private*/ /*static*/ /*final*/ AudioFactory* AbstractAudioSource::activeAudioFactory = InstanceManager::instance()->audioManagerInstance()->getActiveAudioFactory();
+/*private*/ /*static*/ /*final*/ AudioFactory* AbstractAudioSource::activeAudioFactory = ((AudioManager*) InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
 
 /*private*/ /*static*/ float AbstractAudioSource::metersPerUnit = 1; //AbstractAudioSource::activeAudioFactory->getActiveAudioListener()->getMetersPerUnit();
 
@@ -195,7 +195,7 @@ _rollOffFactor = 1.0;
 {
  if (!_queued)
  {
-  AudioManager* am = InstanceManager::audioManagerInstance();
+  AudioManager* am = (AudioManager*)InstanceManager::getDefault("AudioManager");
   Audio* a = am->getBySystemName(bufferSystemName);
   if (a->getSubType() == Audio::BUFFER)
   {

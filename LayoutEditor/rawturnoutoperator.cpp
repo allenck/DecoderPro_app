@@ -46,7 +46,7 @@
  }
  if(c==NULL)
  {
-  c = InstanceManager::commandStationInstance();
+  c = static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
   log->error("No match against the command station for " + sysName + ", so will use the default");
  }
  interval = i;

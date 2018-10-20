@@ -66,7 +66,7 @@
  common();
 
  // disable ourself if there is no primary Audio manager available
- if (InstanceManager::audioManagerInstance() == NULL)
+ if (((AudioManager*)InstanceManager::getDefault("AudioManager")) == nullptr)
  {
   setEnabled(false);
  }
@@ -84,9 +84,9 @@
 void AudioTableAction::common()
 {
  log = new Logger("AudioTableAction");
- bufferFrame = NULL;
- sourceFrame = NULL;
- listenerFrame = NULL;
+ bufferFrame = nullptr;
+ sourceFrame = nullptr;
+ listenerFrame = nullptr;
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
@@ -149,9 +149,9 @@ void AudioTableAction::common()
 /*protected*/ void AudioTableAction::createModel()
 {
  // ensure that the AudioFactory has been initialised
- if (InstanceManager::audioManagerInstance()->getActiveAudioFactory() == NULL)
+ if (((AudioManager*)InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory() == nullptr)
  {
-  InstanceManager::audioManagerInstance()->init();
+  ((AudioManager*)InstanceManager::getDefault("AudioManager"))->init();
  }
  listener = new AudioListenerTableDataModel(this);
  buffers = new AudioBufferTableDataModel(this);
@@ -185,7 +185,7 @@ void AudioTableAction::common()
 
 void AudioTableAction::addSourcePressed(ActionEvent* /*e*/)
 {
- if (sourceFrame == NULL)
+ if (sourceFrame == nullptr)
  {
   sourceFrame = new AudioSourceFrame(tr("Add Audio Source"), sources);
  }
@@ -197,7 +197,7 @@ void AudioTableAction::addSourcePressed(ActionEvent* /*e*/)
 
 void AudioTableAction::addBufferPressed(ActionEvent* /*e*/)
 {
- if (bufferFrame == NULL)
+ if (bufferFrame == nullptr)
  {
   bufferFrame = new AudioBufferFrame(tr("Add Audio Buffer"), buffers);
  }
@@ -213,11 +213,11 @@ void AudioTableAction::addBufferPressed(ActionEvent* /*e*/)
 
 // ResourceBundle rbapps = ResourceBundle.getBundle("apps.AppsBundle");
  QList<QAction*> subElements = menuBar->actions();
- QMenu* fileMenu = NULL;
+ QMenu* fileMenu = nullptr;
  for (int i = 0; i < menuBar->actions().count(); i++)
  {
  //if (menuBar->actionAt(i) instanceof JMenu)
-  if(qobject_cast<QMenu*>(menuBar->actions().at(i)) != NULL)
+  if(qobject_cast<QMenu*>(menuBar->actions().at(i)) != nullptr)
   {
    if( ((QMenu*) menuBar->actions().at(i))->title()==(tr("File")))
    {
@@ -226,7 +226,7 @@ void AudioTableAction::addBufferPressed(ActionEvent* /*e*/)
   }
  }
 
- if (fileMenu == NULL) {
+ if (fileMenu == nullptr) {
      return;
  }
 
@@ -237,7 +237,7 @@ void AudioTableAction::addBufferPressed(ActionEvent* /*e*/)
   for (int x = 0; x < popsubElements.length(); x++)
   {
 //   if (popsubElements[x] instanceof JMenuItem)
-   if(qobject_cast<QMenu*>(popsubElements.at(x))!= NULL)
+   if(qobject_cast<QMenu*>(popsubElements.at(x))!= nullptr)
    {
     if (((QMenu*) popsubElements[x])->title()==(tr("Print Table")))\
     {
@@ -261,7 +261,7 @@ void AudioTableAction::addBufferPressed(ActionEvent* /*e*/)
 //        case Audio::LISTENER:
  if(st == Audio::LISTENER)
  {
-  if (listenerFrame == NULL)
+  if (listenerFrame == nullptr)
   {
    listenerFrame = new AudioListenerFrame(tr("Add Audio Listener"), listener);
   }
@@ -283,7 +283,7 @@ void AudioTableAction::addBufferPressed(ActionEvent* /*e*/)
  else if(st == Audio::BUFFER)
  {
 //    case Audio::BUFFER:
-  if (bufferFrame == NULL)
+  if (bufferFrame == nullptr)
   {
    bufferFrame = new AudioBufferFrame(tr("Add/Edit Audio Buffer"), buffers);
   }
@@ -304,7 +304,7 @@ void AudioTableAction::addBufferPressed(ActionEvent* /*e*/)
  else if(st == Audio::SOURCE)
  {
 //        case Audio::SOURCE:
-  if (sourceFrame == NULL)
+  if (sourceFrame == nullptr)
   {
    sourceFrame = new AudioSourceFrame(tr("Add Audio Source"), sources);
   }
@@ -385,7 +385,7 @@ connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(prope
 
 //@Override
 /*public*/ Manager* AudioTableDataModel::getManager() {
-    return (Manager*)InstanceManager::audioManagerInstance();
+    return (Manager*)((AudioManager*)InstanceManager::getDefault("AudioManager"));
 }
 /*public int AudioTableDataModel::getDisplayDeleteMsg() { return InstanceManager.getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
 public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption(getClassName(), "delete", boo); }*/
@@ -397,12 +397,12 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
 
 //@Override
 /*public*/ NamedBean* AudioTableDataModel::getBySystemName(QString name) const {
-    return InstanceManager::audioManagerInstance()->getBySystemName(name);
+    return ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getBySystemName(name);
 }
 
 //@Override
 /*public*/ NamedBean* AudioTableDataModel::getByUserName(QString name) {
-    return InstanceManager::audioManagerInstance()->getByUserName(name);
+    return ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getByUserName(name);
 }
 
 /**
@@ -419,7 +419,7 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
   {
    // if object has been deleted, it's not here; ignore it
    NamedBean* b = getBySystemName(sysNameList.at(i));
-   if (b != NULL)
+   if (b != nullptr)
    {
    // b.removePropertyChangeListener(this);
     disconnect(b);
@@ -479,8 +479,8 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
 //@Override
 /*public*/ QString AudioTableDataModel::getValue(QString systemName)  const
 {
- Audio* m = InstanceManager::audioManagerInstance()->getBySystemName(systemName);
- return (m != NULL) ? m->toString() : "";
+ Audio* m = ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getBySystemName(systemName);
+ return (m != nullptr) ? m->toString() : "";
 }
 
 //@Override
@@ -498,13 +498,13 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
    case USERNAMECOL:  // return user name
        // sometimes, the TableSorter invokes this on rows that no longer exist, so we check
        a = (Audio*)getBySystemName(sysNameList.at(row));
-       return (a != NULL) ? a->getUserName() : NULL;
+       return (a != nullptr) ? a->getUserName() : "";
    case VALUECOL:
        a = (Audio*)getBySystemName(sysNameList.at(row));
-       return (a != NULL) ? getValue(a->getSystemName()) : NULL;
+       return (a != nullptr) ? getValue(a->getSystemName()) : "";
    case COMMENTCOL:
        a = (Audio*)getBySystemName(sysNameList.at(row));
-       return (a != NULL) ? a->getComment() : NULL;
+       return (a != nullptr) ? a->getComment() : "";
    case DELETECOL:
        return (subType != Audio::LISTENER) ? tr("Delete") : "";
    case EDITCOL:

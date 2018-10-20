@@ -47,7 +47,7 @@ public:
      * the specified <code>Bindings</code> is null.
      *
      */
-    /*public*/ virtual void setBindings(Bindings bindings, int scope) {}
+    /*public*/ virtual void setBindings(Bindings /*bindings*/, int /*scope*/) {}
 
     /**
      * Gets the <code>Bindings</code>  associated with the given scope in this
@@ -60,7 +60,7 @@ public:
      * @throws IllegalArgumentException If no <code>Bindings</code> is defined for the
      * specified scope value in <code>ScriptContext</code> of this type.
      */
-    /*public*/ virtual Bindings* getBindings(int scope) {return NULL;}
+    /*public*/ virtual Bindings* getBindings(int /*scope*/) {return NULL;}
 
     /**
      * Sets the value of an attribute in a given scope.
@@ -73,7 +73,7 @@ public:
      *         if the name is empty or if the scope is invalid.
      * @throws NullPointerException if the name is null.
      */
-    /*public*/ virtual void setAttribute(QString name, QObject* value, int scope) {}
+    /*public*/ virtual void setAttribute(QString /*name*/, QObject* /*value*/, int /*scope*/) {}
 
     /**
      * Gets the value of an attribute in a given scope.
@@ -87,7 +87,7 @@ public:
      *         if the name is empty or if the value of scope is invalid.
      * @throws NullPointerException if the name is null.
      */
-    /*public*/ virtual QObject* getAttribute(QString name, int scope) {return NULL;}
+    /*public*/ virtual QObject* getAttribute(QString /*name*/, int /*scope*/) {return NULL;}
 
     /**
      * Remove an attribute in a given scope.
@@ -100,7 +100,7 @@ public:
      *         if the name is empty or if the scope is invalid.
      * @throws NullPointerException if the name is null.
      */
-    /*public*/ virtual QObject* removeAttribute(QString name, int scope) {return NULL;}
+    /*public*/ virtual QObject* removeAttribute(QString /*name*/, int /*scope*/) {return NULL;}
 
     /**
      * Retrieves the value of the attribute with the given name in
@@ -115,7 +115,7 @@ public:
      * @throws NullPointerException if the name is null.
      * @throws IllegalArgumentException if the name is empty.
      */
-    /*public*/ virtual QObject* getAttribute(QString name) {return NULL;}
+    /*public*/ virtual QObject* getAttribute(QString /*name*/) {return NULL;}
 
 
     /**
@@ -127,7 +127,7 @@ public:
      * @throws NullPointerException if name is null.
      * @throws IllegalArgumentException if name is empty.
      */
-    /*public*/ virtual int getAttributesScope(QString name) {return 0;}
+    /*public*/ virtual int getAttributesScope(QString /*name*/) {return 0;}
 
     /**
      * Returns the <code>Writer</code> for scripts to use when displaying output.
@@ -149,7 +149,7 @@ public:
      *
      * @param writer The new <code>Writer</code>.
      */
-    /*public*/ virtual void setWriter(Writer* writer) {}
+    /*public*/ virtual void setWriter(Writer* /*writer*/) {}
 
 
     /**
@@ -157,7 +157,7 @@ public:
      *
      * @param writer The <code>Writer</code>.
      */
-    /*public*/ virtual void setErrorWriter(Writer* writer) {}
+    /*public*/ virtual void setErrorWriter(Writer* /*writer*/) {}
 
     /**
      * Returns a <code>Reader</code> to be used by the script to read
@@ -173,7 +173,7 @@ public:
      * .
      * @param reader The new <code>Reader</code>.
      */
-    /*public*/ virtual void setReader(Reader* reader) {}
+    /*public*/ virtual void setReader(Reader* /*reader*/) {}
 
     /**
      * Returns immutable <code>List</code> of all the valid values for

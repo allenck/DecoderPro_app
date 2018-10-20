@@ -12,6 +12,7 @@ class LocoNetMessageInterpret : public QObject
 public:
  explicit LocoNetMessageInterpret(QObject *parent = nullptr);
  /*public*/ static QString interpretMessage(LocoNetMessage* l, QString turnoutPrefix, QString sensorPrefix, QString reporterPrefix);
+ static /*public*/ int SENSOR_ADR(int a1, int a2);
 
 
  /*public*/ static QString getDeviceNameFromIPLInfo(int manuf, int type);
@@ -76,7 +77,6 @@ private:
  /*private*/ static QString interpretOpcPr3Mode(LocoNetMessage* l);
  /*private*/ static QString interpretIb2Special(LocoNetMessage* l);
  /*private*/ static QString interpretIb2F9_to_F12(LocoNetMessage* l);
- static /*private*/ int SENSOR_ADR(int a1, int a2);
  /*public*/ static QString dotme(int val);
  /*private*/ static QString idString(int id1, int id2);
  /*private*/ static QString getAlmTaskType(int taskTypeByte);
@@ -93,7 +93,7 @@ protected:
  /*protected*/ static QString directionOfTravelString(bool isForward);
  /*protected*/ static QVector<QString> interpretF5_F8toStrings(int snd);
 
-
+friend class LnSensor;
 };
 
 #endif // LOCONETMESSAGEINTERPRET_H

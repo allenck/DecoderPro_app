@@ -2,13 +2,18 @@
 #include "ui_loconetmsgdialog.h"
 #include "llnmon.h"
 #include "instancemanager.h"
+#include <QWidget>
+#include <QRegExpValidator>
+#include <qregexp.h>
 
 LocoNetMsgDialog::LocoNetMsgDialog(QWidget *parent) :
     JmriPanel(parent),
     ui(new Ui::LocoNetMsgDialog)
 {
  ui->setupUi(this);
- msg = NULL;
+ this->setObjectName("LocoNetMsgDialog");
+ //setWindowTitle(tr("Send LocoNet Packet"));
+// msg = nullptr;
  for(int i=LnConstants::OPC_GPBUSY; i < LnConstants::OPC_WR_SL_DATA; i++)
  {
   QString text = LnConstants::OPC_NAME(i);
@@ -27,6 +32,7 @@ void LocoNetMsgDialog::on_cbOpcode_currentIndexChanged(int i)
 {
  opCode = ui->cbOpcode->itemData(i).toInt();
  ui->lineEdit->setText(QString("%1").arg(opCode,0,16));
+ ui->lineEdit->setValidator(new QRegExpValidator(QRegExp("/[0-9a-f]+/i"),this));
  setMaxSize();
  //ui->lineEdit->setMaxLength(maxSize*2);
  ui->btnOk->setEnabled(false);
@@ -84,7 +90,8 @@ void LocoNetMsgDialog::on_lineEdit_textEdited(QString text)
   }
   setMaxSize();
  }
- if(ui->lineEdit->text().trimmed().length() == maxSize*2 - 2)
+ int len = ui->lineEdit->text().trimmed().length();
+ if((len == maxSize*2 - 2) ||( maxSize == 64 && len >6))
   ui->btnOk->setEnabled(true);
  buildMsg();
 }
@@ -96,7 +103,7 @@ void LocoNetMsgDialog::on_btnOk_clicked()
   //accept();
   LocoNetSystemConnectionMemo* memo = (LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo");
   memo->getLnTrafficController()->sendLocoNetMessage(msg);
-  close();
+  ((QWidget*)parent())->close();
  }
 }
 
@@ -121,3 +128,5 @@ bool LocoNetMsgDialog::buildMsg()
  ui->lblMsg->setText(mon->displayMessage(*msg));
  return true;
 }
+
+QString LocoNetMsgDialog::getTitle() {return this->windowTitle();}

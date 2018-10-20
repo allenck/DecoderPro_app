@@ -1455,7 +1455,6 @@ void LayoutBlock::setBlockMetric(){
 //            tr("ButtonOKPlus")},tr("ButtonOK"));
 //     if (response!=0)
      QMessageBox messageBox;
-     QPushButton* okButton = messageBox.addButton(tr("Ok"),QMessageBox::ActionRole);
      QPushButton*okPlusButton = messageBox.addButton(tr("OK - Stop Warnings"),QMessageBox::ActionRole);
      messageBox.setText(tr("Warning - Connectivities for block \"%1\" in panels \"%2\" and \"%3\" are not compatible.").arg(blockName).arg(tPanel->getLayoutName()).arg(panel->getLayoutName()));
      messageBox.setIcon(QMessageBox::Question);

@@ -140,7 +140,7 @@ void TabbedPreferencesAction::common()
 //  thr->start();
   connect(r, SIGNAL(waitChange(bool)), this, SLOT(setWait(bool)));
   connect(r, SIGNAL(showPreferences()), this, SLOT(showPreferences()));
-  InstanceManager::tabbedPreferencesInstance()->startInit();
+  ((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->startInit();
   r->start();
  }
  else
@@ -153,7 +153,7 @@ void TPRunnable::run()
  try
  {
   emit waitChange(true);
-  while(InstanceManager::tabbedPreferencesInstance()->init()!=0x02)
+  while(((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->init()!=0x02)
   {
    QThread::sleep(50);
   }

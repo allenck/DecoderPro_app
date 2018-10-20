@@ -87,8 +87,8 @@ QString AbstractManager::makeSystemName(QString s)
 // to free resources when no longer used
 void AbstractManager::dispose()
 {
-    if (InstanceManager::configureManagerInstance()!= NULL)
-        ((ConfigXmlManager*)InstanceManager::configureManagerInstance())->deregister((QObject*)this);
+    if (((ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager"))!= nullptr)
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->deregister((QObject*)this);
     _tsys = new QHash<QString, NamedBean*>();   // stores known Turnout instances by system name
     _tuser = new QHash<QString, NamedBean*>();   // stores known Turnout instances by user name
 
@@ -121,7 +121,6 @@ QObject* AbstractManager::getInstanceBySystemName(QString systemName)
  */
 QObject* AbstractManager::getInstanceByUserName(QString userName) {
     return _tuser->value(userName);
-    //return NULL;
 }
 
     /**

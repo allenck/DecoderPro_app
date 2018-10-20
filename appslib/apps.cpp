@@ -128,13 +128,14 @@ bool Apps::configDeferredLoadOK = false;
  //super(true);
  //long start = System.nanoTime();
  start = QDateTime::currentMSecsSinceEpoch();
- _buttonSpace = NULL;
+ _buttonSpace = nullptr;
+ prefsAction = nullptr;
  cs4 = new QLabel("?", this);
  cs4->setObjectName("cs4");
  cs5 = new QLabel();
  cs6 = new QLabel();
  cs7 = new QLabel();
- connection = QVector<ConnectionConfig*>(4,NULL);
+ connection = QVector<ConnectionConfig*>(4,nullptr);
 
  new Metatypes();
 
@@ -163,7 +164,6 @@ bool Apps::configDeferredLoadOK = false;
 #endif
  // install shutdown manager
  //InstanceManager::instance()->setShutDownManager(new DefaultShutDownManager());
-
 
  // install shutdown manager
  InstanceManager::setDefault("ShutDownManager", new DefaultShutDownManager());
@@ -253,7 +253,7 @@ bool Apps::configDeferredLoadOK = false;
   // Apps.setConfigFilename() does not reset the system property
   configFilename = FileUtil::getProfilePath() +   /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml";
   System::setProperty("org.jmri.Apps.configFilename", /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml");
-  if(ProfileManager::getDefault()->getActiveProfile() != NULL)
+  if(ProfileManager::getDefault()->getActiveProfile() != nullptr)
   {
    log->info(tr("Starting with profile %1").arg(  ProfileManager::getDefault()->getActiveProfile()->getId()));
 //  }
@@ -777,6 +777,7 @@ void Apps::On_handleQuit()
 }
 /*public*/ void Apps::doPreferences()
 {
+ if (prefsAction == nullptr) prefsAction = new TabbedPreferencesAction();
  ((TabbedPreferencesAction*)prefsAction)->actionPerformed();
 }
 

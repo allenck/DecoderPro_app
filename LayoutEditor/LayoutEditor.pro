@@ -454,7 +454,8 @@ SOURCES += \
     abstractmonframe.cpp \
     multisensoricondialog.cpp \
     displayframe.cpp \
-    portalitempanel.cpp
+    portalitempanel.cpp \
+    jmripanel.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -830,7 +831,8 @@ HEADERS += liblayouteditor_global.h \
     abstractmonframe.h \
     multisensoricondialog.h \
     displayframe.h \
-    portalitempanel.h
+    portalitempanel.h \
+    jmripanel.h
 
 
 FORMS    += \

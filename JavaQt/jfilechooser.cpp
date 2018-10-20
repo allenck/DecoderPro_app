@@ -17,12 +17,12 @@ JFileChooser::JFileChooser(int dialogType, QObject *parent) :
 void JFileChooser::common()
 {
  pcs = new PropertyChangeSupport(this);
- dialog = NULL;
+ dialog = nullptr;
  dialogType = OPEN_DIALOG;
  approveButtonText = "";
  currentDirectoryPath = "";
  selectionMode = FILES_AND_DIRECTORIES;
- selectedFile = NULL;
+ selectedFile = nullptr;
  files = QStringList();
  currentDirectory =  new File(QDir::currentPath());
 }
@@ -111,7 +111,7 @@ void JFileChooser::common()
 /*public*/ int JFileChooser::showDialog(QWidget* parent, QString approveButtonText)
         /*throws HeadlessException*/
 {
- if (dialog != NULL)
+ if (dialog != nullptr)
  {
   // Prevent to show second instance of dialog if the previous one still exists
   return JFileChooser::ERROR_OPTION;
@@ -143,7 +143,7 @@ void JFileChooser::common()
     selectedFile = new File(files.at(0));
     break;
    }
-   selectedFile = NULL;
+   selectedFile = nullptr;
    returnValue = CANCEL_OPTION;
    break;
   }
@@ -161,7 +161,7 @@ void JFileChooser::common()
  // installUI invoked after the showDialog method.
 // dialog.getContentPane().removeAll();
  delete dialog;
- dialog = NULL;
+ dialog = nullptr;
  return returnValue;
 }
 
@@ -233,7 +233,7 @@ void JFileChooser::common()
  dialog->setViewMode(QFileDialog::Detail);
  dialog->setDirectory(currentDirectoryPath);
  dialog->setNameFilter(fileFilter);
- if(dialogType == SAVE_DIALOG && selectedFile != NULL)
+ if(dialogType == SAVE_DIALOG && selectedFile != nullptr)
   dialog->selectFile(selectedFile->getAbsolutePath());
  if(selectedFilter != "" )
    dialog->selectNameFilter(selectedFilter);
@@ -266,7 +266,7 @@ void JFileChooser::common()
 }
 /*public*/ void JFileChooser::setDialogTitle(QString title)
 {
- if(dialog != NULL)
+ if(dialog != nullptr)
   dialog->setLabelText(QFileDialog::FileName, title);
 }
 
@@ -278,7 +278,7 @@ void JFileChooser::common()
 /*public*/void JFileChooser::setApproveButtonText(QString text)
 {
  this->approveButtonText = text;
- if(dialog != NULL)
+ if(dialog != nullptr)
   dialog->setLabelText(QFileDialog::Accept, this->approveButtonText);
 }
 /*public*/ int JFileChooser::showOpenDialog(QWidget* parent) /*throws HeadlessException*/
@@ -371,20 +371,20 @@ QString JFileChooser::getFileFilter() { return selectedFilter;}
 /*public*/ void JFileChooser::setCurrentDirectory(File* dir) {
     File* oldValue = currentDirectory;
 
-    if (dir != NULL && !dir->exists()) {
+    if (dir != nullptr && !dir->exists()) {
         dir = currentDirectory;
     }
-    if (dir == NULL) {
+    if (dir == nullptr) {
      dir = /*getFileSystemView().getDefaultDirectory();*/ new File(QDir::currentPath());
     }
-    if (currentDirectory != NULL) {
+    if (currentDirectory != nullptr) {
         /* Verify the toString of object */
         if (this->currentDirectory==(dir)) {
             return;
         }
     }
 // TODO:
-//    File* prev = NULL;
+//    File* prev = nullptr;
 //    while (!isTraversable(dir) && prev != dir) {
 //        prev = dir;
 //        dir = getFileSystemView().getParentDirectory(dir);

@@ -10,8 +10,8 @@ class LocoIOAddress : public QObject
  QString _moduleType;
 
 public:
- LocoIOAddress(QObject* parent = 0);
- LocoIOAddress(qint16 unitAddress, qint16 unitSubAddress, QObject* parent = 0);
+ LocoIOAddress(QObject* parent = nullptr);
+ LocoIOAddress(qint16 unitAddress, qint16 unitSubAddress, QObject* parent = nullptr);
  ~LocoIOAddress() {}
  LocoIOAddress(const LocoIOAddress&) : QObject() {}
  void setAddress(qint16 unitAddress, qint16 unitSubAddress);

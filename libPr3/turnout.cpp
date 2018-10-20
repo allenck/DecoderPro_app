@@ -5,6 +5,8 @@ const int Turnout::TWOSENSOR = 32;
 const int Turnout::INDIRECT = 4;
 const int Turnout::MONITORING     = 8;
 const int Turnout::EXACT    = 2;
+const int Turnout::_SIGNAL = 64;
+const int Turnout::DELAYED = 128;
 //const /*static*/ int Turnout::CLOSED       = 0x02;
 //const /*static*/ int Turnout::THROWN       = 0x04;
 

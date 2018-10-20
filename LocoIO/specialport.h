@@ -13,7 +13,7 @@ class SpecialPort : public QWidget
  Q_OBJECT
     
 public:
- explicit SpecialPort(LocoIOData* data, int port, QWidget *parent = 0);
+ explicit SpecialPort(LocoIOData* data, int port, LnTrafficController* tc, QWidget *parent = 0);
  ~SpecialPort();
 public slots:
  void retranslateControls();
@@ -24,9 +24,15 @@ private:
  Ui::SpecialPort *ui;
  int channel;
  LocoIOData* data;
+ LnTrafficController* tc;
  bool bSettingValues;
+ void resetControls();
+ void setValues();
+
 private slots:
  void onSvChanged(int channel, int iOld, int iNew, QString ss);
+ void onMessageReceived(LocoNetMessage* msg, bool b);
+
 };
 
 #endif // SPECIALPORT_H

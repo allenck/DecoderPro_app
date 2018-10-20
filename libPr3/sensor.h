@@ -159,9 +159,12 @@ public:
          * returns null if there is no direct reporter.
          */
         virtual Reporter* getReporter() const /*=0*/ {return NULL;}
+    int thisAddr;
+
 signals:
     
 public slots:
+private:
     
 };
 

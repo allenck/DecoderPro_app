@@ -1,4 +1,4 @@
-#include "turnouttableaction.h"
+﻿#include "turnouttableaction.h"
 #include "turnoutmanager.h"
 #include "turnout.h"
 #include "instancemanager.h"
@@ -104,7 +104,7 @@ void TurnoutTableAction::common()
  showTurnoutSpeedBox = new QCheckBox("Show Turnout Speed Details");
  doAutomationBox = new QCheckBox("Automatic retry");
 
-
+ p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  // disable ourself if there is no primary turnout manager available
  if (turnManager==NULL) {
      setEnabled(false);
@@ -180,19 +180,6 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  this->self = self;
  log = new Logger("TTBeanTableDataModel");
  init();
- if(qobject_cast<AbstractProxyManager*>(self->turnManager)!= NULL)
- {
-  QList<Manager*> managerList = ((AbstractProxyManager*)self->turnManager)->getManagerList();
-  for(int x = 0; x<managerList.size(); x++)
-  {
-   connect(((AbstractTurnoutManager*)managerList.at(x))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  }
-  foreach (Manager* mgr, *((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->mgrs) {
-  connect((SensorManager*)mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  }
- }
- else
-  connect(self->turnManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 //@Override
@@ -213,8 +200,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     case LOCKCOL: return "Locked";
     case KNOWNCOL: return "Feedback";
     case MODECOL: return "Mode";
-    case SENSOR1COL: return "Sensor 1";
-    case SENSOR2COL: return "Sensor 2";
+    case SENSOR1COL: return "Sensor 1(T)";
+    case SENSOR2COL: return "Sensor 2(C)";
     case OPSONOFFCOL: return "Automate";
     case OPSEDITCOL: return "";
     case LOCKOPRCOL: return "Lock Mode";
@@ -765,7 +752,6 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     //Hide the following columns by default
     XTableColumnModel* columnModel = (XTableColumnModel*)_table->getColumnModel();
     _table->createDefaultColumnsFromModel();
-#if 1
     TableColumn* column  = columnModel->getColumnByModelIndex(STRAIGHTCOL);
     columnModel->setColumnVisible(column, false);
     column  = columnModel->getColumnByModelIndex(DIVERGCOL);
@@ -786,12 +772,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     columnModel->setColumnVisible(column, false);
     column  = columnModel->getColumnByModelIndex(LOCKDECCOL);
     columnModel->setColumnVisible(column, false);
-#endif
     setColumnToHoldButton(_table, EDITCOL);
     setColumnToHoldDelegate(_table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), self));
-    QStringList sensors = InstanceManager::sensorManagerInstance()->getSystemNameList();
-    qSort(sensors.begin(), sensors.end(), SystemNameComparator::compare);
-    sensorsColDelegate = new TTComboBoxDelegate(sensors, self);
+    sensorsColDelegate = new TTEditDelegate(self);
     setColumnToHoldDelegate(_table, SENSOR1COL, sensorsColDelegate);
     setColumnToHoldDelegate(_table, SENSOR2COL, sensorsColDelegate);
     setColumnToHoldDelegate(_table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), self));
@@ -800,10 +783,10 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     setColumnToHoldDelegate(_table, STRAIGHTCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self,true));
     setColumnToHoldDelegate(_table, DIVERGCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self, true));
     setColumnToHoldDelegate(_table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),self));
-  self->showFeedbackChanged();
-  self->showLockChanged();
-  self->showTurnoutSpeedChanged();
-  self->On_doAutomationBox_toggled(false);
+  //self->showFeedbackChanged();
+  //self->showLockChanged();
+  //self->showTurnoutSpeedChanged();
+  //self->On_doAutomationBox_toggled(false);
 
   BeanTableDataModel::configureTable(_table);
 }
@@ -817,6 +800,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     if (e->getPropertyName()==("feedbackchange")) return true;
     if (e->getPropertyName()==("TurnoutDivergingSpeedChange")) return true;
     if (e->getPropertyName()==("TurnoutStraightSpeedChange")) return true;
+    if (e->getPropertyName()==("KnownState")) return true;
+    if (e->getPropertyName()==("CommandedState")) return true;
     else return BeanTableDataModel::matchPropertyName(e);
 }
 
@@ -837,12 +822,6 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  else if (e->getPropertyName()==("DefaultTurnoutThrownSpeedChange"))
  {
   self->updateThrownList();
- }
- else if (e->getPropertyName()==("length"))
- {
-  QStringList sensors = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSystemNameList();
-  qSort(sensors.begin(), sensors.end(), SystemNameComparator::compare);
-  sensorsColDelegate->setItems(sensors, "");
  }
  else
  {
@@ -978,7 +957,7 @@ TableSorter sorter;
 
 /*protected*/ void TurnoutTableAction::addPressed(ActionEvent* /*e*/)
 {
- p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ //p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 
  if (addFrame==NULL)
  {
@@ -1211,12 +1190,9 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
 }
 
 void TurnoutTableAction::editButton(Turnout* t){
-#if 1
     TurnoutEditAction* beanEdit = new TurnoutEditAction();
     beanEdit->setBean(t);
     beanEdit->actionPerformed(NULL);
-#endif
-
 }
 
 /**
@@ -1259,10 +1235,10 @@ void TurnoutTableAction::editButton(Turnout* t){
 //    TurnoutOperation myOp;
 //    Turnout* myTurnout;
 
-TurnoutOperationEditor::TurnoutOperationEditor(TurnoutTableAction* tta, JFrame* parent, TurnoutOperation* op, Turnout* t, /*QComboBox* box*/QString val ) : JDialog(parent)
+TurnoutOperationEditor::TurnoutOperationEditor(TurnoutTableAction* /*tta*/, JFrame* parent, TurnoutOperation* op, Turnout* t, /*QComboBox* box*/QString /*val*/ ) : JDialog(parent)
 {
  //super(parent);
- /*final*/ TurnoutOperationEditor* self = this;
+ ///*final*/ TurnoutOperationEditor* self = this;
  myOp = op;
 // myOp.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
 //            /*public*/ void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -1466,8 +1442,9 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                showFeedbackChanged();
 //            }
 //        });
+ showFeedbackBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showFeedback"));
+ showFeedbackChanged();
  connect(showFeedbackBox, SIGNAL(toggled(bool)), this, SLOT(showFeedbackChanged()));
- showFeedbackBox->setChecked(false);
  f->addToBottomBox(showLockBox, /*this.getClass().getName()*/metaObject()->className());
  showLockBox->setToolTip(tr("Show extra columns for configuring turnout lock?"));
 //    showLockBox.addActionListener(new ActionListener() {
@@ -1475,24 +1452,30 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                showLockChanged();
 //            }
 //        });
+ showLockBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showLockBox"));
+ showLockChanged();
  connect(showLockBox, SIGNAL(toggled(bool)), this, SLOT(showLockChanged()));
  showLockBox->setChecked(false);
  f->addToBottomBox(doAutomationBox, /*this.getClass().getName()*/metaObject()->className());
- doAutomationBox->setChecked(TurnoutOperationManager::getInstance()->getDoOperations());
+ //doAutomationBox->setChecked(TurnoutOperationManager::getInstance()->getDoOperations());
+
 //    doAutomationBox.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //                TurnoutOperationManager.getInstance().setDoOperations(doAutomationBox.isSelected());
 //        }
 //        });
+ doAutomationBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".doAutomation"));
+ On_doAutomationBox_toggled(doAutomationBox->isChecked());
  connect(doAutomationBox, SIGNAL(toggled(bool)), this, SLOT(On_doAutomationBox_toggled(bool)));
- doAutomationBox->setChecked(false);
+ //doAutomationBox->setChecked(false);
  f->addToBottomBox(showTurnoutSpeedBox, /*this.getClass().getName()*/metaObject()->className());
- showTurnoutSpeedBox->setToolTip(tr("Show extra columns for configuring turnout Speeds, when used with Signalling?"));
+ showTurnoutSpeedBox->setToolTip(tr("Show extra columns for configuring turnout Speeds, when used with Signaling?"));
 //    showTurnoutSpeedBox.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                showTurnoutSpeedChanged();
 //            }
 //        });
+ showTurnoutSpeedBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showTurnoutSpeed"));
     connect(showTurnoutSpeedBox, SIGNAL(toggled(bool)), this, SLOT(showTurnoutSpeedChanged()));
     showTurnoutSpeedBox->setChecked(false);
 }
@@ -1511,6 +1494,8 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                showFeedbackChanged();
 //            }
 //        });
+ showFeedbackBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showFeedback"));
+ showFeedbackChanged();
  connect(showFeedbackBox, SIGNAL(toggled(bool)), this, SLOT(showFeedbackChanged()));
  f->addToBottomBox(showLockBox, systemPrefix);
  showLockBox->setToolTip(tr("Show extra columns for configuring turnout lock?"));
@@ -1519,35 +1504,42 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
  //                showLockChanged();
  //            }
  //        });
+ showLockBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showLockBox"));
+ showLockChanged();
  connect(showLockBox, SIGNAL(toggled(bool)), this, SLOT(showLockChanged()));
  f->addToBottomBox(doAutomationBox, systemPrefix);
- doAutomationBox->setChecked(TurnoutOperationManager::getInstance()->getDoOperations());
+ //doAutomationBox->setChecked(TurnoutOperationManager::getInstance()->getDoOperations());
 //    doAutomationBox.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //                TurnoutOperationManager.getInstance().setDoOperations(doAutomationBox.isSelected());
 //        }
 //    });
+ doAutomationBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".doAutomation"));
+ On_doAutomationBox_toggled(doAutomationBox->isChecked());
  connect(doAutomationBox, SIGNAL(toggled(bool)), this, SLOT(On_doAutomationBox_toggled(bool)));
-
  f->addToBottomBox(showTurnoutSpeedBox, systemPrefix);
-    showTurnoutSpeedBox->setToolTip(tr("Show extra columns for configuring turnout Speeds, when used with Signalling?"));
+ showTurnoutSpeedBox->setToolTip(tr("Show extra columns for configuring turnout Speeds, when used with Signalling?"));
 //    showTurnoutSpeedBox.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                showTurnoutSpeedChanged();
 //            }
 //        });
+ showTurnoutSpeedBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showTurnoutSpeed"));
+   showTurnoutSpeedChanged();
  connect(showTurnoutSpeedBox, SIGNAL(toggled(bool)), this, SLOT(showTurnoutSpeedChanged()));
 }
+
 void TurnoutTableAction::On_doAutomationBox_toggled(bool b)
 {
  TurnoutOperationManager::getInstance()->setDoOperations(doAutomationBox->isChecked());
+ p->setSimplePreferenceState(this->getClassName()+".doAutomation", b);
 }
 
 void TurnoutTableAction::showFeedbackChanged()
 {
  bool showFeedback = showFeedbackBox->isChecked();
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
-    TableColumn* column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::KNOWNCOL);
+//    TableColumn* column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::KNOWNCOL);
 //    columnModel->setColumnVisible(column, showFeedback);
 //    column  = columnModel->getColumnByModelIndex(MODECOL);
  table->setColumnHidden(TurnoutTableDataModel::MODECOL, !showFeedback);
@@ -1564,6 +1556,8 @@ void TurnoutTableAction::showFeedbackChanged()
 //    column  = columnModel->getColumnByModelIndex(OPSEDITCOL);
  table->setColumnHidden(TurnoutTableDataModel::OPSEDITCOL, !showFeedback);
 //    columnModel->setColumnVisible(column, showFeedback);
+ p->setSimplePreferenceState(this->getClassName()+".showFeedback", showFeedback);
+
 }
 
 void TurnoutTableAction::showLockChanged()
@@ -1576,6 +1570,7 @@ void TurnoutTableAction::showLockChanged()
 //    column  = columnModel->getColumnByModelIndex(LOCKOPRCOL);
     table->setColumnHidden(TurnoutTableDataModel::LOCKOPRCOL, !showLock);
 //    columnModel->setColumnVisible(column, showLock);
+    p->setSimplePreferenceState(this->getClassName()+".showLockBox", showLock);
 }
 
 //bool showTurnoutSpeed = false;
@@ -1589,6 +1584,7 @@ void TurnoutTableAction::showLockChanged()
 //    column  = columnModel->getColumnByModelIndex(DIVERGCOL);
     table->setColumnHidden(TurnoutTableDataModel::DIVERGCOL, !showTurnoutSpeed);
 //    columnModel->setColumnVisible(column, showTurnoutSpeed);
+    p->setSimplePreferenceState(this->getClassName()+".showTurnoutSpeed", showTurnoutSpeed);
 }
 
 //@Override
@@ -1953,4 +1949,37 @@ void TTComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptio
 void TTComboBoxDelegate::setItems(QStringList items, QString /*current*/)
 {
  this->items = items;
+}
+
+TTEditDelegate::TTEditDelegate(TurnoutTableAction *self)
+{
+ this->self = self;
+}
+QWidget* TTEditDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
+{
+ QStringList sensors = InstanceManager::sensorManagerInstance()->getSystemNameList();
+ qSort(sensors.begin(), sensors.end(), SystemNameComparator::compare);
+
+ QLineEdit* editor = new QLineEdit(parent);
+ QCompleter* completer = new QCompleter(sensors);
+ completer->setCaseSensitivity(Qt::CaseInsensitive);
+ editor->setCompleter(completer);
+ return editor;
+}
+void TTEditDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+ QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+ QString value = index.model()->data(index, Qt::EditRole).toString();
+ //comboBox->setCurrentIndex(value);
+ lineEdit->setText(value);
+}
+void TTEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+  QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+  model->setData(index, lineEdit->text(), Qt::EditRole);
+}
+
+void TTEditDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+{
+  editor->setGeometry(option.rect);
 }

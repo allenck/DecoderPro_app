@@ -55,23 +55,49 @@ Q_GLOBAL_STATIC(DefaultInstanceInitializer, initializer)
 // /*static*/ QHash<QString,QObjectList*>* InstanceManager::managerLists = new QHash<QString,QObjectList*>();
 Q_GLOBAL_STATIC(ManagerLists, managerLists)
 //Logger InstanceManager::log;
-SensorManager* InstanceManager::sensorManager=NULL;
-ConfigureManager* InstanceManager::configureManager =NULL;
+//SensorManager* InstanceManager::sensorManager=nullptr;
+//ConfigureManager* InstanceManager::configureManager =nullptr;
 //SensorManager* InstanceManager::sensorManagerInstance();
 //TurnoutManager* InstanceManager::turnoutManagerInstance();
-InstanceManager* InstanceManager::root=NULL;
+InstanceManager* InstanceManager::root=nullptr;
 QVector<PropertyChangeListener*> InstanceManager::listeners;
 QMutex InstanceManager::mutex;// = QMutex();
 //Logger InstanceManager::log = Logger("InstanceManager");
 
+/* *************************************************************************** */
 
+/**
+ * Default constructor for the InstanceManager.
+ */
 InstanceManager::InstanceManager(QObject *parent) :
     QObject(parent)
 {
  setObjectName("InstanceManager");
- root = this;
- init();
+ //root = this;
+ //init();
 }
+#if 0 // TODO:
+/**
+ * Get a list of all registered objects of type T.
+ *
+ * @param <T>  type of the class
+ * @param type class Object for type T
+ * @return a list of registered T instances with the manager or an empty
+ *         list
+ */
+//@SuppressWarnings("unchecked") // the cast here is protected by the structure of the managerLists
+//@Nonnull
+/*public*/ <T> List<T> getInstances(@Nonnull Class<T> type) {
+    log.trace("Get list of type {}", type.getName());
+    synchronized (type) {
+        if (managerLists.get(type) == null) {
+            managerLists.put(type, new ArrayList<>());
+            pcs.fireIndexedPropertyChange(getListPropertyName(type), 0, null, null);
+        }
+        return (List<T>) managerLists.get(type);
+    }
+}
+#endif
 /**
  * Provides methods for locating various interface implementations.
  * These form the base for locating JMRI objects, including the key managers.
@@ -131,15 +157,19 @@ InstanceManager::InstanceManager(QObject *parent) :
 void InstanceManager::store(QObject* item, QString type)
 {
  QHash<QString,QObjectList*>* mgrLists = managerLists;
+ if(mgrLists->count()>190)
+ {
+  log->debug(tr("adding %1 when count is %2").arg("type").arg(mgrLists->count()));
+ }
  Q_UNUSED(mgrLists);
  //log->debug(tr("Store item of type %1").arg(type));
- if (item == NULL) {
+ if (item == nullptr) {
      NullPointerException npe =  NullPointerException();
      Logger::error(tr("Should not store null value of type %1").arg(type));
      throw npe;
  }
  QObjectList* l =  managerLists->value(type);
- if (l==NULL)
+ if (l==nullptr)
  {
    l = new QObjectList();
    managerLists->insert(type, l);
@@ -152,13 +182,13 @@ void InstanceManager::storeBefore( int index, QObject* item, QString type)
  QHash<QString,QObjectList*>* mgrLists = managerLists;
  Q_UNUSED(mgrLists);
  log->debug(tr("Store item of type %1").arg(type));
- if (item == NULL) {
+ if (item == nullptr) {
      NullPointerException npe =  NullPointerException();
      log->error(tr("Should not store null value of type %1").arg(type));
      throw npe;
  }
  QObjectList* l =  managerLists->value(type);
- if (l==NULL)
+ if (l==nullptr)
  {
    l = new QObjectList();
    managerLists->insert(type, l);
@@ -175,10 +205,10 @@ QObjectList* InstanceManager::getList(QString type)
 {
 // QStringList k = managerLists->keys();
 // QList<QObjectList*> ol = managerLists->values();
- if (managerLists!=NULL)
+ if (managerLists!=nullptr)
  {
   QObjectList* objectList =  managerLists->value(type);
-  if(objectList != NULL)
+  if(objectList != nullptr)
    return objectList;
  }
  return new QObjectList();;
@@ -190,7 +220,7 @@ QObjectList* InstanceManager::getList(QString type)
  */
 void InstanceManager::reset(QString type)
 {
- if (managerLists == NULL) return;
+ if (managerLists == nullptr) return;
     //managerLists.put(type, NULL);
  managerLists->remove(type);
 }
@@ -203,9 +233,9 @@ void InstanceManager::reset(QString type)
  */
 void InstanceManager::deregister(QObject* item, QString type)
 {
- if (managerLists == NULL) return;
+ if (managerLists == nullptr) return;
  QObjectList* l = managerLists->value(type);
- if(l!=NULL)
+ if(l!=nullptr)
   l->removeOne(item);
 }
 
@@ -222,7 +252,7 @@ void InstanceManager::deregister(QObject* item, QString type)
 //    return Objects.requireNonNull(InstanceManager.getNullableDefault(type),
 //            "Required nonnull default for " + type.getName() + " does not exist.");
     QObject* o = InstanceManager::getNullableDefault(type);
-    if(o == NULL)
+    if(o == nullptr)
      Logger::error( "Required nonnull default for " + type + " does not exist.");
     else
     {
@@ -288,9 +318,9 @@ template<class T>
   }
   catch (ClassNotFoundException ex)
   {
-   obj1 = NULL;
+   obj1 = nullptr;
   }
-   if(obj1 != NULL && obj1->metaObject()->indexOfMethod("isAssignableFromType")>=0)
+   if(obj1 != nullptr && obj1->metaObject()->indexOfMethod("isAssignableFromType")>=0)
    {
 //      try {
           //l.add(type.getConstructor((Class[]) null).newInstance((Object[]) null));
@@ -307,7 +337,7 @@ template<class T>
 //        log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
         //@SuppressWarnings("unchecked")
         QObject* obj = initializer->getDefault(type);
-        if (obj != NULL)
+        if (obj != nullptr)
         {
 //          log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
           l->append(obj);
@@ -315,7 +345,7 @@ template<class T>
         }
 
         // don't have, can't make
-        return NULL;
+        return nullptr;
     }
     return l->at(l->size() - 1);
 }
@@ -357,7 +387,7 @@ template<class T>
 QObject* InstanceManager::setDefault(QString type, QObject* val)
 {
     QObjectList* l = getList(type);
-    if (l == NULL || (l->size()<1) ) {
+    if (l == nullptr || (l->size()<1) ) {
         store(val, type);
         l = getList(type);
     }
@@ -405,7 +435,7 @@ QString InstanceManager::contentsToString()
      {
       retval.append("    ");
 //      retval.append(o->objectName());
-      if(o != NULL)
+      if(o != nullptr)
        retval.append(o->metaObject()->className());
       retval.append("\n");
      }
@@ -458,14 +488,13 @@ TurnoutManager* InstanceManager::turnoutManagerInstance()
  return (TurnoutManager*)getDefault("TurnoutManager");
 }
 
-LightManager* InstanceManager::lightManagerInstance()  { return instance()->lightManager; }
-
+#if 0
 ConfigureManager* InstanceManager::configureManagerInstance()
 {
  //return (ConfigureManager* ) getDefault("ConfigureManager");
  return (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
 }
-
+#endif
 ThrottleManager* InstanceManager::throttleManagerInstance()  {
     return (ThrottleManager*)getDefault(/*ThrottleManager.class*/  "ThrottleManager");
 }
@@ -498,7 +527,7 @@ SignalHeadManager* InstanceManager::signalHeadManagerInstance()
 SignalMastManager* InstanceManager::signalMastManagerInstance()
 {
  SignalMastManager* m = (SignalMastManager*)getDefault("SignalMastManager");
-// if (m == NULL)
+// if (m == nullptr)
 // {
 //  m = (SignalMastManager*)initializer->getDefault("SignalMastManager");
 //  setSignalMastManager(m);
@@ -514,7 +543,7 @@ void InstanceManager::setSignalMastManager(SignalMastManager* p)
 SignalSystemManager* InstanceManager::signalSystemManagerInstance()
 {
  SignalSystemManager* m = (SignalSystemManager*)getDefault("SignalSystemManager");
- if (m == NULL)
+ if (m == nullptr)
  {
   m = (SignalSystemManager*)initializer->getDefault("SignalSystemManager");
   setSignalSystemManager(m);
@@ -528,7 +557,7 @@ void InstanceManager::setSignalSystemManager(SignalSystemManager* p) {
 
 SignalGroupManager* InstanceManager::signalGroupManagerInstance()  {
  SignalGroupManager* m = (SignalGroupManager*)getDefault("DefaultSignalGroupManager");
- if (m == NULL) {
+ if (m == nullptr) {
      m = (SignalGroupManager*)initializer->getDefault("SignalGroupManager");
      setSignalGroupManager(m);
  }
@@ -542,7 +571,7 @@ void InstanceManager::setSignalGroupManager(SignalGroupManager* p) {
 BlockManager* InstanceManager::blockManagerInstance()
 {
  BlockManager* o = (BlockManager*)getDefault("BlockManager");
- if (o != NULL) return o;
+ if (o != nullptr) return o;
  o = (BlockManager*)initializer->getDefault("BlockManager");
  store(o, "BlockManager");
  return o;
@@ -560,21 +589,19 @@ BlockManager* InstanceManager::blockManagerInstance()
 
 SectionManager* InstanceManager::sectionManagerInstance()
 {
- if (instance()->sectionManager != NULL)
-  return instance()->sectionManager;
-    instance()->sectionManager = (SectionManager*)((DefaultInstanceInitializer*)initializer)->getDefault("SectionManager");
-    return instance()->sectionManager;
+ return (SectionManager*)getDefault("SectionManager");
 }
 
+#if 0
 TransitManager* InstanceManager::transitManagerInstance()  {
-    if (instance()->transitManager != NULL) return instance()->transitManager;
+    if (instance()->transitManager != nullptr) return instance()->transitManager;
     instance()->transitManager = (TransitManager*)((DefaultInstanceInitializer*)initializer)->getDefault("TransitManager");
     return instance()->transitManager;
 }
-
+#endif
  SignalMastLogicManager* InstanceManager::signalMastLogicManagerInstance()  {
      SignalMastLogicManager* r = (SignalMastLogicManager*)getDefault("SignalMastLogicManager");
-    if (r != NULL) return r;
+    if (r != nullptr) return r;
     r = (SignalMastLogicManager*)initializer->getDefault("SignalMastLogicManager");
     store(r, "SignalMastLogicManager");
     return r;
@@ -583,7 +610,7 @@ TransitManager* InstanceManager::transitManagerInstance()  {
 RouteManager* InstanceManager::routeManagerInstance()
 {
     RouteManager* r = (RouteManager*)getDefault("RouteManager");
-    if (r != NULL) return r;
+    if (r != nullptr) return r;
     r = (RouteManager*)initializer->getDefault("RouteManager");
     store(r, "RouteManager");
     return r;
@@ -596,14 +623,14 @@ RouteManager* InstanceManager::routeManagerInstance()
 ////    static public jmri.jmrit.display.layoutEditor.LayoutBlockManager layoutBlockManagerInstance()  {
 ////        return getDefault(jmri.jmrit.display.layoutEditor.LayoutBlockManager.class);
 ////    }
-
+#if 0
  /*static*/ /*public*/ LayoutBlockManager* InstanceManager::layoutBlockManagerInstance()
  {
   return (LayoutBlockManager*)getDefault("LayoutBlockManager");
  }
 
 ConditionalManager* InstanceManager::conditionalManagerInstance()  {
-    if (instance()->conditionalManager != NULL) return instance()->conditionalManager;
+    if (instance()->conditionalManager != nullptr) return instance()->conditionalManager;
     //instance()->conditionalManager = (ConditionalManager*)initializer->getDefault("ConditionalManager");
     instance()->conditionalManager = (ConditionalManager*)new DefaultConditionalManager();
     return instance()->conditionalManager;
@@ -611,7 +638,7 @@ ConditionalManager* InstanceManager::conditionalManagerInstance()  {
 
 LogixManager* InstanceManager::logixManagerInstance()
 {
- if (instance()->logixManager != NULL) return instance()->logixManager;
+ if (instance()->logixManager != nullptr) return instance()->logixManager;
  //instance()->logixManager = (LogixManager*)initializer->getDefault("LogixManager");
  instance()->logixManager = (LogixManager*)new DefaultLogixManager();
  return instance()->logixManager;
@@ -632,7 +659,7 @@ TabbedPreferences* InstanceManager::tabbedPreferencesInstance()
 Timebase* InstanceManager::timebaseInstance()
 {
 
- if (instance()->timebase != NULL) return instance()->timebase;
+ if (instance()->timebase != nullptr) return instance()->timebase;
  //instance()->timebase = dynamic_cast<Timebase*>(initializer->getDefault("Timebase"));
  instance()->timebase = (Timebase*)((DefaultInstanceInitializer*)initializer)->getDefault("Timebase");
     return instance()->timebase;
@@ -640,7 +667,7 @@ Timebase* InstanceManager::timebaseInstance()
 
 ClockControl* InstanceManager::clockControlInstance()
 {
- if (instance()->clockControl != NULL)
+ if (instance()->clockControl != nullptr)
   return (ClockControl*)instance()->clockControl;
  instance()->clockControl = (ClockControl*)((DefaultInstanceInitializer*)initializer)->getDefault("ClockControl");
   return (ClockControl*)instance()->clockControl;
@@ -654,32 +681,48 @@ ConsistManager* InstanceManager::consistManagerInstance() { return (ConsistManag
 CommandStation* InstanceManager::commandStationInstance()  {
     return (CommandStation*)getDefault("CommandStation");
 }
-
-ReporterManager* InstanceManager::reporterManagerInstance()  { return instance()->reporterManager; }
-
+#endif
+ReporterManager* InstanceManager::reporterManagerInstance()  { return (ReporterManager*) getDefault("ReporterManager"); }
+#if 0
 CatalogTreeManager* InstanceManager::catalogTreeManagerInstance()
 {
- if (instance()->catalogTreeManager == NULL) instance()->catalogTreeManager = (CatalogTreeManager*)((DefaultInstanceInitializer*)initializer)->getDefault("CatalogTreeManager");
+ if (instance()->catalogTreeManager == nullptr) instance()->catalogTreeManager = (CatalogTreeManager*)((DefaultInstanceInitializer*)initializer)->getDefault("CatalogTreeManager");
   return instance()->catalogTreeManager;
 }
+#endif
+/* ****************************************************************************
+ *                   Primary Accessors - Left (for now)
+ *
+ *          These are so extensively used that we're leaving for later
+ *                      Please don't create any more of these
+ * ****************************************************************************/
+/**
+ * May eventually be deprecated, use @{link #getDefault} directly.
+ *
+ * @return the default light manager. May not be the only instance.
+ */
+LightManager* InstanceManager::lightManagerInstance()  { return (LightManager*) getDefault("LightManager");}
 
+
+/**
+ * May eventually be deprecated, use @{link #getDefault} directly.
+ *
+ * @return the default memory manager. May not be the only instance.
+ */
 MemoryManager* InstanceManager::memoryManagerInstance()
 {
- if (instance()->memoryManager == NULL)
-  //instance()->memoryManager = (MemoryManager*)initializer->getDefault("MemoryManager");
-     instance()->memoryManager = (MemoryManager*)new DefaultMemoryManager();
- return (MemoryManager*)instance()->memoryManager;
+ return static_cast<MemoryManager*>(getDefault("MemoryManager"));
 }
-
+#if 0
 AudioManager* InstanceManager::audioManagerInstance()
 {
-// if (instance()->audioManager == NULL)
+// if (instance()->audioManager == nullptr)
 //  instance()->audioManager = DefaultAudioManager::instance();
 // return instance()->audioManager;
  return (AudioManager*)getDefault("AudioManager");
 
 }
-#if 0
+
 RosterIconFactory* InstanceManager::rosterIconFactoryInstance()  {
     if (instance()->rosterIconFactory == NULL) instance()->rosterIconFactory = RosterIconFactory::instance();
     return instance()->rosterIconFactory;
@@ -692,7 +735,7 @@ RosterIconFactory* InstanceManager::rosterIconFactoryInstance()  {
 
 InstanceManager* InstanceManager::instance()
 {
- if (root==NULL)
+ if (root==nullptr)
  {
   setRootInstance();
  }
@@ -701,7 +744,7 @@ InstanceManager* InstanceManager::instance()
 
 void InstanceManager::setRootInstance()
 {
- if(root!=NULL)
+ if(root!=nullptr)
   return;
  root = new InstanceManager();
 }
@@ -709,7 +752,7 @@ void InstanceManager::setRootInstance()
 //    public InstanceManager() {
 //        init();
 //    }
-
+#if 0
     // This is a separate, protected member so it
     // can be overridden in unit tests
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",justification="Only used during system initialization")
@@ -717,23 +760,23 @@ void InstanceManager::init()
 {
  log = new Logger("InstanceManager");
  //sensorManager = NULL;
- configureManager = NULL;
- timebase = NULL;
- sectionManager = NULL;
- transitManager = NULL;
- turnoutManager = NULL;
- lightManager = NULL;
- catalogTreeManager = NULL;
- audioManager = NULL;
- memoryManager = NULL;
+ //configureManager = nullptr;
+ //timebase = nullptr;
+ //sectionManager = nullptr;
+ //transitManager = nullptr;
+ //turnoutManager = nullptr;
+ //lightManager = nullptr;
+ //catalogTreeManager = nullptr;
+ //audioManager = nullptr;
+ //memoryManager = nullptr;
      //rosterIconFactory = NULL;
- clockControl = NULL;
- signalHeadManager = NULL;
- conditionalManager = NULL;
- reporterManager = NULL;
- shutdownManager = NULL;
- logixManager = NULL;
- tabbedPreferencesManager = NULL;
+ //clockControl = nullptr;
+ //signalHeadManager = nullptr;
+ //conditionalManager = nullptr;
+ //reporterManager = nullptr;
+ //shutdownManager = nullptr;
+ //logixManager = nullptr;
+ //tabbedPreferencesManager = nullptr;
 #if 0
  qRegisterMetaType<CreateButtonModel>("CreateButtonModel");
  qRegisterMetaType<DefaultShutDownManager>("DefaultShutDownManager");
@@ -741,23 +784,28 @@ void InstanceManager::init()
  //    vsdecoderManager = NULL;
  //initializer = new DefaultInstanceInitializer();
  //managerLists = new  QHash<QString,QObjectList*>();
- sensorManager = (SensorManager*)new ProxySensorManager();
- store(sensorManager, "SensorManager");
- turnoutManager = (TurnoutManager*)new ProxyTurnoutManager();
- store(turnoutManager, "TurnoutManager");
- lightManager = (LightManager*)new ProxyLightManager();
- store(lightManager, "LightManager");
- reporterManager = (ReporterManager*)new ProxyReporterManager();
- store(reporterManager, "ReporterManager");
+ //sensorManager = (SensorManager*)new ProxySensorManager();
+ //store(sensorManager, "SensorManager");
+ //turnoutManager = (TurnoutManager*)new ProxyTurnoutManager();
+ //store(turnoutManager, "TurnoutManager");
+ //lightManager = (LightManager*)new ProxyLightManager();
+ //store(lightManager, "LightManager");
+ //reporterManager = (ReporterManager*)new ProxyReporterManager();
+ //store(reporterManager, "ReporterManager");
  //log->setDebugEnabled(true);
 }
-
+#endif
 void InstanceManager::setSensorManager(SensorManager* p)
 {
- //log->debug(" setSensorManager");
- ((AbstractProxyManager*) getDefault("SensorManager"))->addManager(p);
- //store(p, SensorManager.class);
+ log->debug(" setSensorManager");
+ SensorManager* apm = static_cast<SensorManager*>(getDefault("SensorManager"));
+ if (qobject_cast<AbstractProxyManager*>(apm)!= nullptr) { // <?> due to type erasure
+     ((ProxySensorManager*) apm)->addManager(p);
+ } else {
+     log->error("Incorrect setup: SensorManager default isn't an AbstractProxyManager<Sensor>");
+ }
 }
+
 //void InstanceManager::addSensorManager(SensorManager* p)
 //{
 // //SensorManager* sensorManager = instance()->sensorManager;
@@ -772,9 +820,13 @@ void InstanceManager::setSensorManager(SensorManager* p)
 // management) before this can be deprecated in favor of
 // store(p, TurnoutManager.class)
 void InstanceManager::setTurnoutManager(TurnoutManager* p) {
- //log->debug(" setTurnoutManager");
- ((AbstractProxyManager*) getDefault("TurnoutManager"))->addManager(p);
- //store(p, TurnoutManager.class);
+ log->debug(" setTurnoutManager");
+ TurnoutManager* apm = static_cast<TurnoutManager*>(getDefault("TurnoutManager"));
+ if (qobject_cast<AbstractProxyManager*>(apm) != nullptr) { // <?> due to type erasure
+     ((ProxyTurnoutManager*) apm)->addManager(p);
+ } else {
+     log->error("Incorrect setup: TurnoutManager default isn't an AbstractProxyManager<Turnout>");
+ }
 }
 
 //void InstanceManager::addTurnoutManager(TurnoutManager* p) {
@@ -788,6 +840,7 @@ void InstanceManager::setLightManager(LightManager* p) {
  //store(p, LightManager.class);
 }
 
+#if 0
 void InstanceManager::addLightManager(LightManager* p) {
     ((AbstractProxyManager*)instance()->lightManager)->addManager(p);
 }
@@ -795,28 +848,31 @@ void InstanceManager::addLightManager(LightManager* p) {
 
 void InstanceManager::setConfigureManager(ConfigureManager* p)
 {
- instance()->addConfigureManager(p);
-}
-void InstanceManager::addConfigureManager(ConfigureManager* p)
-{
- if (p!=configureManager && configureManager!=NULL && log->isDebugEnabled()) log->debug(QString("ConfigureManager instance is being replaced: %1").arg("?"));
- if (p!=configureManager && configureManager==NULL && log->isDebugEnabled()) log->debug(QString("ConfigureManager instance is being installed: %1").arg("?"));
- configureManager = p;
+ log->debug(" setConfigureManager");
+ setDefault("ConfigureManager", p);
+
 }
 
+void InstanceManager::addConfigureManager(ConfigureManager* p)
+{
+ if (p!=configureManager && configureManager!=nullptr && log->isDebugEnabled()) log->debug(QString("ConfigureManager instance is being replaced: %1").arg("?"));
+ if (p!=configureManager && configureManager==nullptr && log->isDebugEnabled()) log->debug(QString("ConfigureManager instance is being installed: %1").arg("?"));
+ configureManager = p;
+}
+#endif
 void InstanceManager::setThrottleManager(ThrottleManager* p)
 {
     store(p, "ThrottleManager");
-    instance()->notifyPropertyChangeListener("throttlemanager", QVariant(), QVariant());
+    //instance()->notifyPropertyChangeListener("throttlemanager", QVariant(), QVariant());
 }
 
 void InstanceManager::setSignalHeadManager(SignalHeadManager* p) {
-    instance()->addSignalHeadManager(p);
+    setDefault("SignalHeadManager", p);
 }
-
+#if 0
 void InstanceManager::addSignalHeadManager(SignalHeadManager* p) {
-    if (p!=signalHeadManager && signalHeadManager!=NULL && log->isDebugEnabled()) log->debug(QString("SignalHeadManager instance is being replaced: %1").arg(p->getSystemPrefix()));
-    if (p!=signalHeadManager && signalHeadManager==NULL && log->isDebugEnabled()) log->debug(QString("SignalHeadManager instance is being installed: %1").arg(p->getSystemPrefix()));
+    if (p!=signalHeadManager && signalHeadManager!=nullptr && log->isDebugEnabled()) log->debug(QString("SignalHeadManager instance is being replaced: %1").arg(p->getSystemPrefix()));
+    if (p!=signalHeadManager && signalHeadManager==nullptr && log->isDebugEnabled()) log->debug(QString("SignalHeadManager instance is being installed: %1").arg(p->getSystemPrefix()));
     signalHeadManager = p;
 }
 
@@ -835,26 +891,27 @@ void InstanceManager::addSignalHeadManager(SignalHeadManager* p) {
 /*static*/ /*public*/ void InstanceManager::setLayoutBlockManager(LayoutBlockManager* p) {
 store(p, "LayoutBlockManager");
 }
-#if 1
 void InstanceManager::setConditionalManager(ConditionalManager* p) {
     instance()->addConditionalManager(p);
 }
+
 /*protected*/ void InstanceManager::addConditionalManager(ConditionalManager* p) {
-    if (p!=conditionalManager && conditionalManager!=NULL && log->isDebugEnabled()) log->debug(QString("ConditionalManager instance is being replaced%1: ").arg(p->getSystemPrefix()));
-    if (p!=conditionalManager && conditionalManager==NULL && log->isDebugEnabled()) log->debug(QString("ConditionalManager instance is being installed: %1").arg(p->getSystemPrefix()));
+    if (p!=conditionalManager && conditionalManager!=nullptr && log->isDebugEnabled()) log->debug(QString("ConditionalManager instance is being replaced%1: ").arg(p->getSystemPrefix()));
+    if (p!=conditionalManager && conditionalManager==nullptr && log->isDebugEnabled()) log->debug(QString("ConditionalManager instance is being installed: %1").arg(p->getSystemPrefix()));
     conditionalManager = p;
 }
-#endif
+
 void InstanceManager::setLogixManager(LogixManager* p) {
     instance()->addLogixManager(p);
 }
+
 /*protected*/ void InstanceManager::addLogixManager(LogixManager* p)
 {
- if (p!=logixManager && logixManager!=NULL && log->isDebugEnabled()) log->debug("LogixManager instance is being replaced: "+p->objectName());
- if (p!=logixManager && logixManager==NULL && log->isDebugEnabled()) log->debug("LogixManager instance is being installed: "+p->objectName());
+ if (p!=logixManager && logixManager!=nullptr && log->isDebugEnabled()) log->debug("LogixManager instance is being replaced: "+p->objectName());
+ if (p!=logixManager && logixManager==nullptr && log->isDebugEnabled()) log->debug("LogixManager instance is being installed: "+p->objectName());
  logixManager = p;
 }
-#if 1
+
 /**
  * @deprecated Since 3.7.4, use @{link #store} directly.
  */
@@ -864,22 +921,22 @@ void InstanceManager::setShutDownManager(ShutDownManager* p) {
     setDefault("ShutDownManager", p);
 }
 void InstanceManager::addShutdownManager(ShutDownManager* p) {
-    if (p!=shutdownManager && shutdownManager!=NULL && log->isDebugEnabled()) log->debug(QString("ShutDownManager instance is being replaced: %1").arg(p->objectName()));
-    if (p!=shutdownManager && shutdownManager==NULL && log->isDebugEnabled()) log->debug(QString("ShutDownManager instance is being installed: %1").arg(p->objectName()));
+    if (p!=shutdownManager && shutdownManager!=nullptr && log->isDebugEnabled()) log->debug(QString("ShutDownManager instance is being replaced: %1").arg(p->objectName()));
+    if (p!=shutdownManager && shutdownManager==nullptr && log->isDebugEnabled()) log->debug(QString("ShutDownManager instance is being installed: %1").arg(p->objectName()));
     shutdownManager = p;
 }
-#endif
+
 void InstanceManager::setTabbedPreferences(TabbedPreferences* p) {
     instance()->addTabbedPreferences(p);
 }
 void InstanceManager::addTabbedPreferences(TabbedPreferences* p) {
     tabbedPreferencesManager = p;
 }
-
+#endif
 
 void InstanceManager::setConsistManager(ConsistManager* p) {
     store(p, "ConsistManager");
-    instance()->notifyPropertyChangeListener("consistmanager", QVariant(), QVariant());
+    //instance()->notifyPropertyChangeListener("consistmanager", QVariant(), QVariant());
 }
 
 //
