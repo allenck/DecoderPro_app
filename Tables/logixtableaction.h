@@ -59,7 +59,7 @@ class LIBTABLESSHARED_EXPORT LogixTableAction : public AbstractTableAction
     Q_OBJECT
 public:
     //explicit LogixTableAction(QObject *parent = 0);
-    Q_INVOKABLE /*public*/ LogixTableAction(QString s = "Logix Table", QObject *parent = 0);
+    Q_INVOKABLE /*public*/ LogixTableAction(QString s = "Logix Table", QObject *parent = nullptr);
     ~LogixTableAction() {}
     LogixTableAction(const LogixTableAction&);
     /*public*/ static QString formatTime(int hour, int minute);

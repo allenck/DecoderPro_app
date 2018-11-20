@@ -35,6 +35,7 @@ namespace Operations
   /*public*/ void createDefaultCsvManifestDirectory();
   /*public*/ File* getManifestFile(QString name, QString ext);
   /*public*/ File* createManifestFile(QString name, QString ext);
+  Q_INVOKABLE /*public*/ void initialize();
 
  signals:
 
@@ -48,7 +49,7 @@ namespace Operations
   /*private*/ QString switchListFileName;// = Bundle.getMessage("location") + " (";
   /*private*/ QString fileType;// = ").txt"; // NOI18N
   /*private*/ QString fileTypeCsv;// = ").csv"; // NOI18N
-  /*private*/ static TrainManagerXml* _instance;// = null;
+//  /*private*/ static TrainManagerXml* _instance;// = null;
   Logger* log;
   // the directories under operations
   /*private*/ static /*final*/ QString BUILD_STATUS;// = "buildstatus"; // NOI18N

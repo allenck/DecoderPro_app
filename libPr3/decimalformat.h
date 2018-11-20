@@ -6,18 +6,14 @@
 
 class LIBPR3SHARED_EXPORT DecimalFormat //: public QObject
 {
-    //Q_OBJECT
+ //Q_OBJECT
 public:
-    explicit DecimalFormat(QString tmplt/*, QObject *parent = 0*/);
+    explicit DecimalFormat(QString tmplt/*, QObject *parent = nullptr*/);
     QString format(int num);
     QString format(double num);
 
-signals:
-
-public slots:
 private:
  QString tmplt;
- //QObject* parent;
 
 };
 

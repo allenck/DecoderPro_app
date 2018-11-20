@@ -78,7 +78,7 @@ void BlockContentsIcon::common()
 //@Override
 /*public*/ void BlockContentsIcon::resetDefaultIcon()
 {
-    defaultIcon = new NamedIcon("resources/icons/misc/X-red.gif",
+    defaultIcon = new NamedIcon(":/resources/icons/misc/X-red.gif",
             "resources/icons/misc/X-red.gif");
 }
 

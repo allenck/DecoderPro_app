@@ -31,6 +31,7 @@
 #include "xtablecolumnmodel.h"
 #include "turnouteditaction.h"
 #include "systemnamecomparator.h"
+#include <QSpinBox>
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -87,11 +88,18 @@ void TurnoutTableAction::common()
   return;
 
  addFrame = NULL;
- sysName = new JTextField(40);
- userName = new JTextField(40);
+ userNameTextField = new JTextField(40);
+ hardwareAddressTextField = new JTextField(20);
+ statusBar = new QLabel(tr("Enter a Hardware Address and (optional) User Name."));
+
+
  prefixBox = new QComboBox();
- numberToAdd = new JTextField(5);
- range = new QCheckBox("Add a range");
+ numberToAddSpinner = new QSpinBox();
+ numberToAddSpinner->setMinimum(1);
+ numberToAddSpinner->setMaximum(100);
+ numberToAddSpinner->setSingleStep(1);
+ numberToAddSpinner->setValue(1);
+ rangeBox = new QCheckBox("Add a range");
  sysNameLabel = new QLabel("Hardware Address");
  userNameLabel = new QLabel(tr("User Name"));
  systemSelectionCombo = this->getName()+".SystemSelected";
@@ -128,7 +136,7 @@ void TurnoutTableAction::common()
  speedListThrown.append(defaultThrownSpeedText);
  speedListClosed.append(useBlockSpeed);
  speedListThrown.append(useBlockSpeed);
- QVector<QString> _speedMap = SignalSpeedMap::getMap()->getValidSpeedNames();
+ QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
  for(int i = 0; i<_speedMap.size(); i++)
  {
   if (!speedListClosed.contains(_speedMap.at(i)))
@@ -1011,10 +1019,14 @@ TableSorter sorter;
   {
    prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(turnManager->getSystemPrefix()));
   }
-  sysName->setName("sysName");
-  userName->setName("userName");
+  hardwareAddressTextField->setName("sysName");
+  userNameTextField->setName("userName");
   prefixBox->setObjectName("prefixBox");
-  centralWidgetLayout->addWidget(new AddNewHardwareDevicePanel(sysName, userName, prefixBox, numberToAdd, range, "OK", listener, cancelListener, rangeListener));
+  addButton = new QPushButton(tr("Create"));
+  connect(addButton, SIGNAL(clicked(bool)), this, SLOT(createPressed()));
+
+  centralWidgetLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBar));
+
   canAddRange(NULL);
  }
  addFrame->adjustSize();
@@ -1027,7 +1039,7 @@ OkListener::OkListener(TurnoutTableAction *self)
 }
 void OkListener::actionPerformed(ActionEvent */*e*/)
 {
- self->okPressed();
+ self->createPressed();
 }
 ToCancelActionListener::ToCancelActionListener(TurnoutTableAction *self) { this->self = self;}
 void ToCancelActionListener::actionPerformed(ActionEvent *e)
@@ -1670,21 +1682,21 @@ void TurnoutTableAction::cancelPressed(ActionEvent* /*e*/) {
     addFrame = NULL;
 }
 
-void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
+void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
 {
  // Test if bit already in use as a light
  //int iName=0;
  int numberOfTurnouts = 1;
 
- if(range->isChecked())
+ if(rangeBox->isChecked())
  {
   try
   {
-   numberOfTurnouts = numberToAdd->text().toInt();
+   numberOfTurnouts = numberToAddSpinner->value();
   }
   catch (NumberFormatException ex)
   {
-   log->error("Unable to convert " + numberToAdd->text() + " to a number");
+   log->error(QString("Unable to convert ") + QString::number(numberToAddSpinner->value()) + " to a number");
    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage("Error","Number to turnouts to Add must be a number!",""+ex.getMessage(), "",true, false);
    return;
   }
@@ -1697,10 +1709,26 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
  }
 
  QString sName = NULL;
- QString curAddress = sysName->text();
- //String[] turnoutList = turnManager->formatRangeOfAddresses(sysName.getText(), numberOfTurnouts, getTurnoutPrefixFromName());
- //if (turnoutList == NULL)
- //    return;
+ QString curAddress = hardwareAddressTextField->text().trimmed();
+ // initial check for empty entry
+ if (curAddress.length() < 1)
+ {
+   statusBar->setText(tr("You must provide a Hardware Address to start."));
+   statusBar->setStyleSheet("QLabel { color: red}");
+   hardwareAddressTextField->setStyleSheet("QLabel { background-color: red}");
+   addButton->setEnabled(false);
+   return;
+ }
+ else
+ {
+  hardwareAddressTextField->setStyleSheet("QLabel { background-color: white}");
+  addButton->setEnabled(true);
+ }
+
+ // Add some entry pattern checking, before assembling sName and handing it to the turnoutManager
+ QString statusMessage = tr("New %1(s) added:").arg(tr("Turnout"));
+ QString errorMessage = "";
+ QString lastSuccessfulAddress = tr("NONE");
  int iType = 0;
  int iNum=1;
  bool useLastBit = false;
@@ -1716,11 +1744,18 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
   {
    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
                    showErrorMessage("Error","Unable to convert '" + curAddress + "' to a valid Hardware Address",""+ex.getMessage(), "",true, false);
+   // directly add to statusBar (but never called?)
+   statusBar->setText(tr("Error Converting HW address %1").arg(curAddress));
+   statusBar->setStyleSheet("QLabel { color: red}");
    return;
   }
-  if (curAddress==NULL)
+  if (curAddress=="")
   {
    //The next address is already in use, therefore we stop.
+   log->debug(tr("Error converting HW or getNextValidAddress"));
+   errorMessage = (tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip)."));
+   statusBar->setStyleSheet("QLabel { color: red}");
+   // The next address returned an error, therefore we stop this attempt and go to the next address.
    break;
   }
   //We have found another turnout with the same address, therefore we need to go onto the next address.
@@ -1744,7 +1779,14 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
     QPushButton* buttonYesPlus = new QPushButton(tr("Yes - Stop Warnings"));
     msgBox->addButton(buttonYesPlus, QMessageBox::ActionRole);
     int selectedValue= msgBox->exec();
-    if (selectedValue == QMessageBox::No) return;   // return without creating if "No" response
+    if (selectedValue == QMessageBox::No)
+    {
+     // Show error message in statusBar
+     errorMessage = tr("Turnout \"%1\" not created as name matched a Light").arg(sName);
+     statusBar->setText(errorMessage);
+     statusBar->setStyleSheet("QLabel { color: gray}");
+     return;   // return without creating if "No" response
+    }
     if (msgBox->clickedButton() == buttonYesPlus)
     {
      // Suppress future warnings, and continue
@@ -1757,7 +1799,7 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
   if(!useLastBit)
   {
    iNum = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->askNumControlBits(sName);
-   if((((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->isNumControlBitsSupported(sName)) && (range->isChecked()))
+   if((((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->isNumControlBitsSupported(sName)) && (rangeBox->isChecked()))
    {
 //                if(JOptionPane.showConfirmDialog(addFrame,
 //                                             "Do you want to use the last setting for all turnouts in this range? ","Use Setting",
@@ -1775,6 +1817,10 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
   if (iNum==0)
   {
    // User specified more bits, but bits are not available - return without creating
+   // Display message in statusBar
+   errorMessage = tr("2 Bits requested but not supported. Stopped after \"%1\".").arg( lastSuccessfulAddress);
+   statusBar->setText(errorMessage);
+   statusBar->setStyleSheet("QLabel { color: red}");
    return;
   }
   else
@@ -1789,12 +1835,16 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
    {
     // user input no good
     handleCreateException(sName);
+    // add to statusBar as well
+    errorMessage = tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip).");
+    statusBar->setText(errorMessage);
+    statusBar->setStyleSheet("QLabel { color: red}");
     return; // without creating
    }
 
    if (t != NULL)
    {
-    QString user = userName->text();
+    QString user = userNameTextField->text();
     if ((x!=0) && user != NULL && user!=(""))
      user = user+":"+x;
     if (user != NULL && user!=("") && (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getByUserName(user)==NULL)) t->setUserName(user);
@@ -1810,7 +1860,7 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
     if(!useLastType)
     {
      iType = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->askControlType(sName);
-     if((((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->isControlTypeSupported(sName)) && (range->isChecked()))
+     if((((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->isControlTypeSupported(sName)) && (rangeBox->isChecked()))
      {
 //                        if (JOptionPane.showConfirmDialog(addFrame,
 //                                             "Do you want to use the last setting for all turnouts in this range? ","Use Setting",
@@ -1827,12 +1877,26 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
    }
   }
  }
+ // provide feedback to user
+ if (errorMessage == "") {
+     statusBar->setText(statusMessage);
+     statusBar->setStyleSheet("QLabel { color: gray}");
+ }
+ else
+ {
+  statusBar->setText(errorMessage);
+     // statusBar.setForeground(Color.red); // handled when errorMassage is set, to differentiate in urgency
+ }
  p->addComboBoxLastSelection(systemSelectionCombo,  prefixBox->currentText());
+ addFrame->setVisible(false);
+ addFrame->dispose();
+ addFrame = nullptr;
+ //addButton.removePropertyChangeListener(colorChangeListener);
 }
 
 /*private*/ void TurnoutTableAction::canAddRange(ActionEvent* /*e*/){
-    range->setEnabled(false);
-    range->setChecked(false);
+    rangeBox->setEnabled(false);
+    rangeBox->setChecked(false);
     if (QString(turnManager->metaObject()->className()).contains("ProxyTurnoutManager"))
     {
         ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) turnManager;
@@ -1841,13 +1905,13 @@ void TurnoutTableAction::okPressed(ActionEvent* /*e*/)
         for(int x = 0; x<managerList.size(); x++){
             TurnoutManager* mgr = (TurnoutManager*) managerList.at(x);
             if (mgr->getSystemPrefix()==(systemPrefix) && mgr->allowMultipleAdditions(systemPrefix)){
-                range->setEnabled(true);
+                rangeBox->setEnabled(true);
                 return;
             }
         }
     }
     else if (turnManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()))){
-        range->setEnabled(true);
+        rangeBox->setEnabled(true);
     }
 }
 

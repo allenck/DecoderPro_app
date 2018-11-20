@@ -10,6 +10,7 @@
 #include "track.h"
 #include "carload.h"
 #include "traincommon.h"
+#include "instancemanager.h"
 
 //LocationManager::LocationManager(QObject *parent) :
 //  QObject(parent)
@@ -39,7 +40,8 @@ QObject(parent)
   _maxLocationNameLength = 0;
    _maxTrackNameLength = 0;
    _maxLocationAndTrackNameLength = 0;
-
+   setProperty("InstanceManagerAutoDefault", "true");
+   setProperty("InstanceManagerAutoInitialize", "true");
  }
 
  /**
@@ -49,20 +51,7 @@ QObject(parent)
 
  /*public*/ /*static*/ /*synchronized*/ LocationManager* LocationManager::instance()
 {
- Logger* log = new Logger("LocationManager");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("LocationManager creating instance");
-         }
-         // create and load
-         _instance = new LocationManager();
-//         OperationsSetupXml.instance(); // load setup
-         LocationManagerXml::instance(); // load locations
-     }
-     if (Control::showInstance) {
-         log->debug(tr("LocationManager returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
+ return static_cast<LocationManager*>(InstanceManager::getDefault("LocationManager"));
  }
 
  /*public*/ void LocationManager::dispose() {
@@ -449,9 +438,14 @@ QObject(parent)
      pcs->firePropertyChange(p, old, n);
  }
 
+//@Override
+/*public*/ void LocationManager::initialize()
+{
+ InstanceManager::getDefault("OperationsSetupXml"); // load setup
+ InstanceManager::getDefault("LocationManagerXml"); // load locations
+}
 
 }
 
 /* @(#)LocationManager.java */
-
 

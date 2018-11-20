@@ -86,8 +86,8 @@ void ManagerDefaultsConfigPane::propertyChange(PropertyChangeEvent * e)
  }
 
  // this doesn't find non-migrated systems, how do we handle that eventually?
- QList<SystemConnectionMemo*>* connList = (QList<SystemConnectionMemo*>*)InstanceManager::getList("SystemConnectionMemo");
- if (connList != NULL)
+ QObjectList connList = InstanceManager::getList("SystemConnectionMemo");
+ if (!connList.isEmpty())
  {
   reloadConnections(connList);
  }
@@ -97,7 +97,7 @@ void ManagerDefaultsConfigPane::propertyChange(PropertyChangeEvent * e)
  }
 }
 
-void ManagerDefaultsConfigPane::reloadConnections(QList<SystemConnectionMemo*>* connList)
+void ManagerDefaultsConfigPane::reloadConnections(QObjectList connList)
 {
  log->debug(" reloadConnections");
  ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
@@ -119,9 +119,9 @@ void ManagerDefaultsConfigPane::reloadConnections(QList<SystemConnectionMemo*>* 
  {
   groups.replace(i, new QButtonGroup());
  }
- for (int x = 0; x < connList->size(); x++)
+ for (int x = 0; x < connList.size(); x++)
  {
-  SystemConnectionMemo* memo = connList->at(x);
+  SystemConnectionMemo* memo = (SystemConnectionMemo*)connList.at(x);
   QString name = memo->getUserName();
   matrixLayout->addWidget(new QLabel(name));
   int i = 0;
@@ -132,7 +132,7 @@ void ManagerDefaultsConfigPane::reloadConnections(QList<SystemConnectionMemo*>* 
     QRadioButton* r = new SelectionButton(name, item.managerClass, this);
     matrixLayout->addWidget(r, row, col++);
     groups[i]->addButton(r);
-    if (x == connList->size() - 1 && manager->getDefault(item.managerClass) == NULL) {
+    if (x == connList.size() - 1 && manager->getDefault(item.managerClass) == NULL) {
      r->setChecked(true);
     }
    }

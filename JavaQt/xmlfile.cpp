@@ -9,7 +9,7 @@
 #include <QDataStream>
 
 QString XmlFile::dtdLocation = "/xml/DTD/";
-bool XmlFile::verify = false;
+//bool XmlFile::validate = false;
 bool XmlFile::include = true;
 QDomDocument XmlFile::doc = QDomDocument();
 
@@ -30,6 +30,9 @@ XmlFile::XmlFile(QObject *parent) :
     QObject(parent)
 {
  log = new Logger("XmlFile");
+ dtdLocation = defaultDtdLocation;
+ validate = defaultValidate;
+
 }
 /**
  * Handle common aspects of XML files. <P> JMRI needs to be able to operate
@@ -152,7 +155,7 @@ XmlFile::XmlFile(QObject *parent) :
 /*public*/ QDomElement XmlFile::rootFromInputStream(QDataStream* stream) /*throw (JDOMException)*/
 {
  currFile = ((QFile*)stream->device())->fileName();
- return getRoot(verify, stream);
+ return getRoot(validate, stream);
 }
 
 /**
@@ -224,7 +227,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @param file File to be created.
  * @param doc Document to be written out. This should never be NULL.
  */
-/*public*/ void XmlFile::writeXML(QFile* file, QDomDocument doc) throw (FileNotFoundException)
+/*public*/ void XmlFile::writeXML(QFile* file, QDomDocument doc) const throw (FileNotFoundException)
 {
  QFileInfo info(file->fileName());
  // ensure parent directory exists
@@ -292,7 +295,7 @@ XmlFile::XmlFile(QObject *parent) :
  * "decoders/Mine.xml")
  * @return NULL if file found, otherwise the located File
  */
-/*protected*/ QFile* XmlFile::findFile(QString name)
+/*protected*/ QFile* XmlFile::findFile(QString name) const
 {
  QFile* fp =  new QFile(FileUtil::getUserFilesPath() + name);
  if (fp->exists())
@@ -339,7 +342,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @param name Last part of file pathname i.e. subdir/name, without the
  * pathname for either the xml or preferences directory.
  */
-/*public*/ void XmlFile::makeBackupFile(QString name)
+/*public*/ void XmlFile::makeBackupFile(QString name) const
 {
  QFile* file = findFile(name);
  if (file == NULL)
@@ -378,7 +381,7 @@ XmlFile::XmlFile(QObject *parent) :
  * date embedded in the backup name.
  * @return true if successful.
  */
-/*public*/ bool XmlFile::makeBackupFile(QString directory, File* file)
+/*public*/ bool XmlFile::makeBackupFile(QString directory, File* file) const
 {
  if (file == NULL)
  {
@@ -480,7 +483,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @return Complete filename, including path information into preferences
  * directory
  */
-/*public*/ QString XmlFile::backupFileName(QString name) {
+/*public*/ QString XmlFile::backupFileName(QString name) const {
     QString f = name + ".bak";
     if (log->isDebugEnabled()) {
         log->debug("backup file name is: " + f);
@@ -488,7 +491,7 @@ XmlFile::XmlFile(QObject *parent) :
     return f;
 }
 
-/*public*/ QString XmlFile::createFileNameWithDate(QString name) {
+/*public*/ QString XmlFile::createFileNameWithDate(QString name)  const{
     // remove .xml extension
     QStringList fileName = name.split(".xml");
     QString f = fileName.at(0) + "_" + getDate() + ".xml";
@@ -503,7 +506,7 @@ XmlFile::XmlFile(QObject *parent) :
  * hour minute second. The date is fixed length and always returns a date
  * represented by 14 characters.
  */
-/*private*/ QString XmlFile::getDate() {
+/*private*/ QString XmlFile::getDate() const{
     //Calendar now = Calendar.getInstance();
     QDateTime now = QDateTime::currentDateTime();
 //    int month = now.get(Calendar.MONTH) + 1;
@@ -599,12 +602,57 @@ XmlFile::XmlFile(QObject *parent) :
     return FileUtil::getProgramPath() + "xml" + QDir::separator();
 }
 
-/*static*/ /*public*/ bool XmlFile::getVerify() {
-    return verify;
+/**
+ * Whether to, by global default, validate the file being read. Public so it
+ * can be set by scripting and for debugging.
+ *
+ * @return the default level of validation to apply to a file
+ */
+/*static*/ /*public*/ XmlFile::Validate XmlFile::getDefaultValidate() {
+    return defaultValidate;
 }
 
-/*static*/ /*public*/ void XmlFile::setVerify(bool v) {
-    verify = v;
+/*static*/ /*public*/ void XmlFile::setDefaultValidate(XmlFile::Validate v) {
+    defaultValidate = v;
+}
+
+/*static*/ /*private*/ XmlFile::Validate XmlFile::defaultValidate = XmlFile::Validate::None;
+
+/*public*/ XmlFile::Validate XmlFile::getValidate() {
+    return validate;
+}
+
+/*public*/ void XmlFile::setValidate(Validate v) {
+    validate = v;
+}
+
+/**
+ * Get the default standard location for DTDs in new XML documents. Public
+ * so it can be set by scripting and for debug.
+ *
+ * @return the default DTD location
+ */
+/*static*/ /*public*/ QString XmlFile::getDefaultDtdLocation() {
+    return defaultDtdLocation;
+}
+
+/*static*/ /*public*/ void XmlFile::setDefaultDtdLocation(QString v) {
+    defaultDtdLocation = v;
+}
+
+/*static*/ /*public*/ QString XmlFile::defaultDtdLocation = "/xml/DTD/";
+
+/**
+ * Get the location for DTDs in this XML document.
+ *
+ * @return the DTD location
+ */
+/*public*/ QString XmlFile::getDtdLocation() {
+    return dtdLocation;
+}
+
+/*public*/ void XmlFile::setDtdLocation(QString v) {
+    dtdLocation = v;
 }
 
 /**

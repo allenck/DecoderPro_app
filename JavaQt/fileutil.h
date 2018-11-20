@@ -28,6 +28,7 @@ public:
     static /*public*/ bool isPortableFilename(QString filename);
     static /*public*/ QTextStream* findInputStream(QString path);
     static /*public*/ QTextStream* findInputStream(QString path, /*@NonNull*/ QStringList searchPaths);
+    /*public*/ static QString pathFromPortablePath(QString path);
 
     /**
      * Portable reference to items in the JMRI program directory.

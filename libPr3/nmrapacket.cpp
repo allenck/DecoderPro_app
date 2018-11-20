@@ -9,6 +9,10 @@
 /*static*/ /*final*/ /*public*/ int NmraPacket::LOCO_LONG_ADDRESS = 4;
 /*static*/ /*final*/ /*public*/ int NmraPacket::ACCESSORY_SHORT_ADDRESS = 8;
 
+/*static*/ /*final*/ /*public*/ int NmraPacket::accIdLowLimit = 1;
+    /*static*/ /*final*/ /*public*/ int NmraPacket::accIdHighLimit = 2044;
+    /*static*/ /*final*/ /*public*/ int NmraPacket::accIdAltHighLimit = 2048;
+
 //NmraPacket::NmraPacket()
 //{
 //}

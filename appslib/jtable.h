@@ -346,6 +346,7 @@ friend class WarrantPreferencesPanel;
 friend class SortManager;
 friend class LocationsTableModel;
 };
+
 /**
 * SortManager provides support for managing the selection and variable
 * row heights when sorting is enabled. This information is encapsulated

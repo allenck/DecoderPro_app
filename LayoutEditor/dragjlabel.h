@@ -3,6 +3,7 @@
 #include "jlabel.h"
 #include "exceptions.h"
 #include "logger.h"
+#include "namedicon.h"
 
 class DataFlavor;
 class DragJLabel : public QLabel

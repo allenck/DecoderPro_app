@@ -88,7 +88,7 @@ private slots:
     void on_actionPower_On_triggered();
     void on_actionPower_Off_triggered();
     void on_listView_clicked();
-    void on_menuWindow_aboutToShow();
+    //void on_menuWindow_aboutToShow();
     void on_actionAddress_Panel_toggled(bool bChecked);
     void on_actionControl_Panel_toggled(bool bChecked);
     void on_actionFunction_Panel_toggled(bool bChecked);

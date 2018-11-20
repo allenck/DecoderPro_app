@@ -2,6 +2,7 @@
 #define XMLFILEVALIDATEACTION_H
 #include "jmriabstractaction.h"
 #include "exceptions.h"
+#include "xmlfile.h"
 
 class File;
 class JFileChooser;
@@ -26,6 +27,8 @@ private:
  void common();
  void readFile(File* file) ;//throw (JDOMException, IOException);
  Logger* log;
+ XmlFile* xmlfile;// = new XmlFile() {}
+
 
 protected:
  /*protected*/ void processFile(File* file);

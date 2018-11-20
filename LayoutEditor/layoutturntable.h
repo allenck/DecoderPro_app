@@ -116,6 +116,7 @@ public:
  /*public*/  int getPosition();
  /*public*/  double diffAngle(double a, double b);
  /*public*/  bool isActive();
+ /*public*/ QRectF getBounds();
 
 signals:
 

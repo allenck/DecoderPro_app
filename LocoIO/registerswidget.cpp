@@ -351,7 +351,7 @@ void RegistersWidget::labelCheck(int channel)
  LocoIOMode* mode = modelist->getLocoIOModeFor(data->getSV(channel), data->getV1(channel), data->getV2(channel));
  if(mode != NULL && (mode->getOpcode() == LnConstants::OPC_INPUT_REP))
  {
-  Manager* mgr = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->mgrs->at(0);
+  Manager* mgr = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->mgrs.at(0);
   QStringList l = mgr->getSystemNameList();
   QString heading = QString::number(port);
   foreach (QString s, l)
@@ -367,9 +367,9 @@ void RegistersWidget::labelCheck(int channel)
  }
  else if(mode != NULL && (mode->getOpcode() == LnConstants::OPC_SW_REQ))
  {
-  Manager* mgr = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->mgrs->at(0);
+  Manager* mgr = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->mgrs.at(0);
   QStringList l = mgr->getSystemNameList();
-  Manager* mgr2 = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->mgrs->at(0);
+  Manager* mgr2 = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->mgrs.at(0);
   QStringList l2 = mgr2->getSystemNameList();
   foreach (QString s, l2)
   {

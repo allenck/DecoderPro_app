@@ -510,15 +510,15 @@ void SlipIconAdder::slipUpdate(int slip)
   _turnoutMap->remove("lowereast");
   //We need to reset the icons back for a slip
   setIcon(3, "LowerWestToUpperEast",
-            ":/resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif");
+            "resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif");
   setIcon(2, "UpperWestToLowerEast",
-            ":/resources/icons/smallschematics/tracksegments/os-slip-upper-west-lower-east.gif");
+            "resources/icons/smallschematics/tracksegments/os-slip-upper-west-lower-east.gif");
   setIcon(4, "LowerWestToLowerEast",
-            ":/resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif");
+            "resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif");
   setIcon(0, "BeanStateInconsistent",
-            ":/resources/icons/smallschematics/tracksegments/os-slip-error-full.gif");
+            "resources/icons/smallschematics/tracksegments/os-slip-error-full.gif");
   setIcon(1, "BeanStateUnknown",
-            ":/resources/icons/smallschematics/tracksegments/os-slip-unknown-full.gif");
+            "resources/icons/smallschematics/tracksegments/os-slip-unknown-full.gif");
  }
 
  if (slip==0x04)
@@ -529,15 +529,15 @@ void SlipIconAdder::slipUpdate(int slip)
   _delete(3);
   _delete(2);
   setIcon(3, "Upper",
-        ":/resources/icons/smallschematics/tracksegments/os-3way-upper.gif");
+        "resources/icons/smallschematics/tracksegments/os-3way-upper.gif");
   setIcon(2, "Middle",
-        ":/resources/icons/smallschematics/tracksegments/os-3way-middle.gif");
+        "resources/icons/smallschematics/tracksegments/os-3way-middle.gif");
   setIcon(4, "Lower",
         "resources/icons/smallschematics/tracksegments/os-3way-lower.gif");
   setIcon(0, "BeanStateInconsistent",
-        ":/resources/icons/smallschematics/tracksegments/os-3way-error.gif");
+        "resources/icons/smallschematics/tracksegments/os-3way-error.gif");
   setIcon(1, "BeanStateUnknown",
-        ":/resources/icons/smallschematics/tracksegments/os-3way-unknown.gif");
+        "resources/icons/smallschematics/tracksegments/os-3way-unknown.gif");
   upperWestToUpperEastButton->setChecked(true);
  }
  else if (slip == 0x08)
@@ -545,16 +545,16 @@ void SlipIconAdder::slipUpdate(int slip)
   //We need to setup the base icons for a Scissor.
   _delete(5);
   setIcon(3, "LowerWestToUpperEast",
-    ":/resources/icons/smallschematics/tracksegments/os-double-crossover-lower-west-upper-east.gif");
+    "resources/icons/smallschematics/tracksegments/os-double-crossover-lower-west-upper-east.gif");
   setIcon(2, "UpperWestToLowerEast",
-    ":/resources/icons/smallschematics/tracksegments/os-double-crossover-upper-west-lower-east.gif");
+    "resources/icons/smallschematics/tracksegments/os-double-crossover-upper-west-lower-east.gif");
   setIcon(4, "LowerWestToLowerEast",
-    ":/resources/icons/smallschematics/tracksegments/os-double-crossover-closed.gif");
+    "resources/icons/smallschematics/tracksegments/os-double-crossover-closed.gif");
 
   setIcon(0, "BeanStateInconsistent",
-    ":/resources/icons/smallschematics/tracksegments/os-double-crossover-error.gif");
+    "resources/icons/smallschematics/tracksegments/os-double-crossover-error.gif");
   setIcon(1, "BeanStateUnknown",
-    ":/resources/icons/smallschematics/tracksegments/os-double-crossover-unknown.gif");
+    "resources/icons/smallschematics/tracksegments/os-double-crossover-unknown.gif");
 
   upperWestToUpperEastButton->setChecked(true);
  }
@@ -564,9 +564,9 @@ void SlipIconAdder::slipUpdate(int slip)
   case 0x00:
    _delete(4);
    setIcon(4, "LowerWestToLowerEast",
-        ":/resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif");
+        "resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif");
    setIcon(5, "UpperWestToUpperEast",
-        ":/resources/icons/smallschematics/tracksegments/os-slip-upper-west-upper-east.gif");
+        "resources/icons/smallschematics/tracksegments/os-slip-upper-west-upper-east.gif");
    break;
   case 0x02:
    _delete(5);
@@ -702,13 +702,13 @@ void SlipIconAdder::updateSingleSlipRoute(bool single)
  {
   upperWestToUpperEastButton->setChecked(true);
   setIcon(4, "Slip",
-            ":/resources/icons/smallschematics/tracksegments/os-slip-upper-west-upper-east.gif");
+            "resources/icons/smallschematics/tracksegments/os-slip-upper-west-upper-east.gif");
  }
  else
  {
   lowerWestToLowerEastButton->setChecked(true);
   setIcon(4, "Slip",
-            ":/resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif");
+            "resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif");
  }
  makeIconPanel(true);
 }

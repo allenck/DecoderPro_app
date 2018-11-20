@@ -13,7 +13,7 @@ class APPSLIBSHARED_EXPORT AppsLaunchPane : public QWidget
 {
  Q_OBJECT
 public:
- explicit AppsLaunchPane(QWidget *parent = 0);
+ explicit AppsLaunchPane(QWidget *parent = nullptr);
  /*public*/ static void ynstrument(QString path);
 // static /*public*/ QString getConnection1() __attribute__ ((deprecated));
 // static /*public*/ QString getConnection2() __attribute__ ((deprecated));

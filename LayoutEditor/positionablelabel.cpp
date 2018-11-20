@@ -629,9 +629,9 @@ void IEFWindowListener::windowClosing(QCloseEvent */*e*/)
 /**
  * For item popups in Control Panel Editor
  */
-/*protected*/ void PositionableLabel::makePaletteFrame(QString title)
+/*protected*/ DisplayFrame *PositionableLabel::makePaletteFrame(QString title)
 {
- ItemPalette::loadIcons();
+ ItemPalette::loadIcons(_editor);
 
  _paletteFrame = new DisplayFrame(title, false, false);
 //    _paletteFrame->setLocationRelativeTo(this);
@@ -641,6 +641,7 @@ void IEFWindowListener::windowClosing(QCloseEvent */*e*/)
 //            ImageIndexEditor.checkImageIndex();   // write maps to tree
 //            }
 //    });
+ return _paletteFrame;
 }
 
 /**

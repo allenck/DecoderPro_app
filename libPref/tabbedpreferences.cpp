@@ -179,7 +179,7 @@ int TabbedPreferences::startInit()
 //            tr("ButtonSave"),
 //            new ImageIcon(
 //                    FileUtil::findExternalFilename("program:resources/icons/misc/gui3/SaveIcon.png")));
- save = new QPushButton( QIcon(FileUtil::getExternalFilename("program:resources/icons/misc/gui3/SaveIcon.png")),tr("Save"));
+ save = new QPushButton( QIcon(FileUtil::getExternalFilename(":/resources/icons/misc/gui3/SaveIcon.png")),tr("Save"));
 //    save.addActionListener((ActionEvent e) -> {
 //        savePressed(invokeSaveOptions());
 //    });

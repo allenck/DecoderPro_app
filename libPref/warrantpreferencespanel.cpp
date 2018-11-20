@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include "box.h"
 #include <QHeaderView>
+#include "joptionpane.h"
 
 //WarrantPreferencesPanel::WarrantPreferencesPanel(QWidget *parent) :
 //  PreferencesPanel(parent)
@@ -81,7 +82,7 @@
  panelLayout->addWidget(leftPanel);
  panelLayout->addWidget(rightPanel);
  thisLayout->addWidget(panel);
- thisLayout->addWidget(applyPanel());
+ //thisLayout->addWidget(applyPanel());
 }
 
 ///*private*/ void WarrantPreferencesPanel::setGUI()
@@ -266,13 +267,13 @@
 //            javax.swing.border.TitledBorder.TOP));
 //    panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
- _speedNameMap =  QList<QPair<QString, float>* >();
+ _speedNameMap =  QList<QPair<QString, float> >();
  QMapIterator<QString, float> it = WarrantPreferences::getDefault()->getSpeedNameEntryIterator();
  while (it.hasNext())
  {
   it.next();
   //Entry<String, float> ent = it.next();
-  _speedNameMap.append(new QPair<QString, float>(it.key(), it.value()));
+  _speedNameMap.append(QPair<QString, float>(it.key(), it.value()));
  }
  _speedNameModel =  new SpeedNameTableModel(this);
  _speedNameTable = new JTable(_speedNameModel);
@@ -397,17 +398,16 @@
    QMessageBox::warning(NULL, tr("warning"), tr("Select a row from the table to add or delete a row"));
       return;
   }
-  _speedNameMap.insert(row, new QPair<QString, float>("", 0.0));
+  _speedNameMap.append(QPair<QString, float>("", 0.0));
   _speedNameModel->fireTableDataChanged();
 }
 
 /*private*/ void WarrantPreferencesPanel::deleteSpeedNameRow()
  {
-  int row = _speedNameTable->currentIndex().row();
-  if (row<0) {
-//        JOptionPane.showMessageDialog(NULL, tr("selectRow"),
-//                tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
-   QMessageBox::warning(NULL, tr("warning"), tr("Select a row from the table to add or delete a row"));
+  int row = _speedNameTable->getSelectedRow();
+  if (row < 0) {
+      JOptionPane::showMessageDialog(nullptr, tr("Select a row from the table to add or delete a row"),
+              tr("Warning"), JOptionPane::WARNING_MESSAGE);
       return;
   }
   _speedNameMap.removeAt(row);
@@ -486,7 +486,7 @@ void ButtonActionListener::actionPerformed(ActionEvent *e)
 /*private*/ QWidget* WarrantPreferencesPanel::timeIncrementPanel(bool vertical)
 {
  _timeIncre =  new JTextField(5);
- _timeIncre->setText(QString::number(WarrantPreferences::getDefault()->getTimeIncre()));
+ _timeIncre->setText(QString::number(WarrantPreferences::getDefault()->getTimeIncrement()));
  QWidget* p = new QWidget();
  QVBoxLayout* pLayout = new QVBoxLayout(p);
  pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, _timeIncre, tr("Ramp Step Time (milliseconds)"), "Length of time in milliseconds between each speed change when ramping speed"));
@@ -496,7 +496,7 @@ void ButtonActionListener::actionPerformed(ActionEvent *e)
 
 /*private*/ QWidget* WarrantPreferencesPanel::throttleIncrementPanel(bool vertical) {
     _rampIncre =  new JTextField(5);
-    _rampIncre->setText(QString::number(WarrantPreferences::getDefault()->getThrottleIncre()));
+    _rampIncre->setText(QString::number(WarrantPreferences::getDefault()->getThrottleIncrement()));
     QWidget* p = new QWidget();
     QVBoxLayout* pLayout = new QVBoxLayout(p);
     pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, _rampIncre, tr("Ramp Step throttle increment"),"Throttle setting increment for each speed change when ramping speed"));
@@ -584,7 +584,7 @@ private QWidget* throttleIncrementPanel(bool vertical) {
      _isDirty = true;
  }
 
- int time = _preferences->getTimeIncre();
+ int time = _preferences->getTimeIncrement();
 
  time =_timeIncre->text().toInt(&bok);
  if (time < 200)
@@ -593,28 +593,28 @@ private QWidget* throttleIncrementPanel(bool vertical) {
 //            JOptionPane.showMessageDialog(NULL, tr("timeWarning"),
 //                    tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
    QMessageBox::warning(NULL, tr("Warning"), tr("between speed changes must be at least 200 milliseconds."));
-   _timeIncre->setText(QString::number(_preferences->getTimeIncre()));
+   _timeIncre->setText(QString::number(_preferences->getTimeIncrement()));
   }
   if(!bok)
   {
-   _timeIncre->setText(QString::number(_preferences->getTimeIncre()));
+   _timeIncre->setText(QString::number(_preferences->getTimeIncrement()));
   }
-  if (_preferences->getTimeIncre() != time)
+  if (_preferences->getTimeIncrement() != time)
   {
-   _preferences->setTimeIncre(time);
+   _preferences->setTimeIncrement(time);
    _isDirty = true;
   }
 
-  float scale = _preferences->getThrottleIncre();
+  float scale = _preferences->getThrottleIncrement();
 
   scale = _rampIncre->text().toFloat(&bok);
   if(!bok)
   {
-   _rampIncre->setText(QString::number(_preferences->getThrottleIncre()));
+   _rampIncre->setText(QString::number(_preferences->getThrottleIncrement()));
   }
-  if (_preferences->getThrottleIncre() != scale)
+  if (_preferences->getThrottleIncrement() != scale)
   {
-      _preferences->setThrottleIncre(scale);
+      _preferences->setThrottleIncrement(scale);
       _isDirty = true;
   }
 
@@ -642,9 +642,9 @@ private QWidget* throttleIncrementPanel(bool vertical) {
   {
    for (int i=0; i<_speedNameMap.size(); i++)
    {
-    QPair<QString, float>* dp = _speedNameMap.value(i);
-    QString name = dp->first;
-    if (_preferences->getSpeedNameValue(name)==NULL || _preferences->getSpeedNameValue(name)!= dp->second)
+    QPair<QString, float> dp = _speedNameMap.value(i);
+    QString name = dp.first;
+    if (_preferences->getSpeedNameValue(name)==NULL || _preferences->getSpeedNameValue(name)!= dp.second)
     {
         different = true;
         break;
@@ -685,7 +685,7 @@ private QWidget* throttleIncrementPanel(bool vertical) {
     _isDirty = true;
  }
 }
-
+#if 0
 /*private*/ QWidget* WarrantPreferencesPanel::applyPanel()
 {
  QWidget* panel = new QWidget();
@@ -714,7 +714,7 @@ void WarrantPreferencesPanel::on_applyB_clicked()
   WarrantPreferences::getDefault()->apply();
  }
 }
-
+#endif
 
 /**
  * Get the Preferences Item identifier.
@@ -796,6 +796,7 @@ void WarrantPreferencesPanel::on_applyB_clicked()
 /*public*/ QString WarrantPreferencesPanel::getPreferencesTooltip() {
     return tr("Needed to compute speed and distance for warrants");
 }
+
 
 /**
  * Save any changes to preferences.
@@ -917,17 +918,17 @@ void WarrantPreferencesPanel::on_applyB_clicked()
    Logger::error("row is greater than aspect speedNames size");
    return "";
   }
-  QPair<QString, float>* data = panel->_speedNameMap.at(row);
-  if (data == NULL)
+  QPair<QString, float> data = panel->_speedNameMap.value(row);
+  if (data == QPair<QString, float>())
   {
    Logger::error("Aspect speedName data is NULL!");
    return "";
   }
   if (col==0)
   {
-   return data->first;
+   return data.first;
   }
-  return data->second;
+  return data.second;
  }
  return QVariant();
     }
@@ -939,18 +940,18 @@ void WarrantPreferencesPanel::on_applyB_clicked()
  {
   int row = index.row();
   int col = index.column();
-  QPair<QString, float>* data = panel->_speedNameMap.at(row);
+  QPair<QString, float> data = panel->_speedNameMap.value(row);
   QString str = value.toString();
   QString msg = NULL;
-  if (str==NULL || data==NULL)
+  if (str==NULL || data==QPair<QString, float>())
   {
       msg = tr("No data found");
   }
-  if (data!=NULL)
+  if (data!=QPair<QString, float>())
   {
    if (col==0)
    {
-    data->first = value.toString();
+    data.first = value.toString();
    }
    else
    {
@@ -962,7 +963,7 @@ void WarrantPreferencesPanel::on_applyB_clicked()
     }
     else
     {
-     data->second =(f);
+     data.second =(f);
     }
     if(!bOk)
     {

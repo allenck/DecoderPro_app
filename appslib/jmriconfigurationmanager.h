@@ -1,6 +1,8 @@
 #ifndef JMRICONFIGURATIONMANAGER_H
 #define JMRICONFIGURATIONMANAGER_H
 #include "configxmlmanager.h"
+#include "xmlfile.h"
+#include "jdialog.h"
 
 class Profile;
 class InitializationException;
@@ -37,6 +39,9 @@ public:
  /*public*/ bool loadDeferred( QUrl file)  throw (JmriException);
  /*public*/ QUrl find(QString filename);
  /*public*/ bool makeBackup(File* file);
+ /*public*/ QHash<PreferencesManager*, InitializationException*> getInitializationExceptions();
+ /*public*/ void setValidate(Validate v);
+ /*public*/ XmlFile::Validate getValidate();
 
 private:
  /*private*/ void initializeProvider( PreferencesManager* provider, Profile* profile);
@@ -46,5 +51,27 @@ private:
  /*private*/ /*final*/ QList<PreferencesManager*>* initialized;// = new ArrayList<>();
 
 };
+
+/*private*/ /*static*/ /*final*/ class ErrorDialog : public JDialog {
+ Q_OBJECT
+
+public:
+    enum Result {
+        EXIT_PROGRAM,
+        RESTART_PROGRAM,
+        NEW_PROFILE,
+        EDIT_CONNECTIONS,
+    };
+    Result result;// = Result.EXIT_PROGRAM;
+    ErrorDialog(QStringList list);
+
+public slots:
+    void onExitProgram();
+    void onRestartProgram();
+    void onNewProfile();
+    void onEditConnections();
+
+};
+
 Q_DECLARE_METATYPE(JmriConfigurationManager)
 #endif // JMRICONFIGURATIONMANAGER_H

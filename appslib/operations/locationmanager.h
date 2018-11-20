@@ -20,7 +20,7 @@ namespace Operations
  public:
   explicit LocationManager(QObject *parent = 0);
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "locationsListLength"; // NOI18N
-  /*public*/ static /*synchronized*/ LocationManager* instance();
+  QT_DEPRECATED /*public*/ static /*synchronized*/ LocationManager* instance();
   /*public*/ void dispose();
   /*public*/ int getNumberOfLocations() ;
   /*public*/ Location* getLocationByName(QString name);
@@ -44,6 +44,7 @@ namespace Operations
   /*public*/ QList<Track*> getTracks(QString type);
   /*public*/ QList<Track*> getTracksByMoves(QString type);
   /*public*/ void resetMoves();
+  Q_INVOKABLE/*public*/ void initialize();
 
  signals:
 

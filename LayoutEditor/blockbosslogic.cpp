@@ -130,6 +130,8 @@
 /*public*/ BlockBossLogic::BlockBossLogic(QObject *parent) : Siglet(parent)
 {
  setObjectName("BlockBossLogic");
+ setProperty("JavaClassName", "jmri.jmrit.blockboss.BlockBossLogic");
+
  mode = 0;
  nbhm = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
  log = new Logger("BlockBossLogic");

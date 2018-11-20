@@ -29,8 +29,8 @@ LnSensorManagerXml::LnSensorManagerXml(QObject *parent) :
     log->error("Invalid method called");
 }
 
-/*public*/ bool LnSensorManagerXml::load(QDomElement sensors) throw (JmriConfigureXmlException) {
+/*public*/ bool LnSensorManagerXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) {
     // load individual sensors
-    loadSensors(sensors);
+    loadSensors(shared);
     return true;
 }

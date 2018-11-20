@@ -352,7 +352,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
  }
  else if (self->_itemType==("Sensor"))
  {
-  SensorIcon* s = new SensorIcon(new   NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
+  SensorIcon* s = new SensorIcon(new   NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
             "resources/icons/smallschematics/tracksegments/circuit-error.gif"), self->_editor);
   QHashIterator<QString, NamedIcon*> iter(*iconMap);
   while (iter.hasNext())

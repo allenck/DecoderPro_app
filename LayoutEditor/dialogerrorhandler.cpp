@@ -44,9 +44,9 @@ DialogErrorHandler::DialogErrorHandler(QObject *parent) :
   {
    m += "<br> in adaptor of type " + QString(e->adapter->metaObject()->className());
   }
-  if (e->exception != NULL)
+  //if (e->exception != NULL)
   {
-    m += "<br> Exception: " + e->exception->getMessage();
+    m += "<br> Exception: " + e->exception.getMessage();
   }
   m += "</html>";
 

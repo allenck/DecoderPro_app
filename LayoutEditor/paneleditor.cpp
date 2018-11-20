@@ -39,6 +39,7 @@ PanelEditor::PanelEditor(QWidget *parent) :
  ui->setupUi(this);
  init("NoName");
  setTitle();
+
 }
 
 PanelEditor::~PanelEditor()
@@ -119,13 +120,15 @@ PanelEditor::~PanelEditor()
 {
  log = new Logger("PanelEditor");
  setObjectName("PanelEditor");
+ setProperty("JavaClassName", "jmri.jmrit.display.panelEditor.PanelEditor");
+
  log->setDebugEnabled(false);
  _debug = log->isDebugEnabled();
- _multiItemCopyGroup = NULL;  // items gathered inside fence
+ _multiItemCopyGroup = nullptr;  // items gathered inside fence
  pasteItemFlag = false;
  _delete = false;
  _showCoordinates = true;
- _currentSelection = NULL;
+ _currentSelection = nullptr;
  delayedPopupTrigger = false;
  addItemViaMouseClick = false;
  _lastX = _lastY = 0;
@@ -189,7 +192,7 @@ PanelEditor::~PanelEditor()
  connect(deleteItem, SIGNAL(triggered()), this, SLOT(on_actionDelete_this_panel_triggered()));
  PanelMenu* pMenu = PanelMenu::instance();
  ui->menuWindow->addMenu(pMenu);
- connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
+// connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
 // dlg = NULL;
 // addRHTurnoutDlg = NULL;
 // addLHTurnoutDlg = NULL;
@@ -221,11 +224,12 @@ PanelEditor::~PanelEditor()
     editPanel->setRenderHint(QPainter::Antialiasing);
     panelWidth = 600;
     panelHeight =400;
-    editScene = new EditScene(QRectF(0, 0, panelWidth, panelHeight), this);
-    _targetPanel = editScene;
-
-
-    editPanel->setScene(editScene);
+    if(editScene == nullptr)
+    {
+     editScene = new EditScene(QRectF(0, 0, panelWidth, panelHeight), this);
+     //_targetPanel = editScene;
+     editPanel->setScene(editScene);
+    }
     connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(mouseMoved(QGraphicsSceneMouseEvent*)));
     connect(editScene, SIGNAL(sceneMousePress(QGraphicsSceneMouseEvent*)), this, SLOT(mousePressed(QGraphicsSceneMouseEvent*)));
     connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)), this, SLOT(mouseReleased(QGraphicsSceneMouseEvent*)));
@@ -267,20 +271,24 @@ private void hiddenCheckBoxListener(){
     }
 
 }
-
+#endif
 /**
- * After construction, initialize all the widgets to their saved config settings.
+ * After construction, initialize all the widgets to their saved config
+ * settings.
  */
-/*public*/ void initView() {
+//@Override
+/*public*/ void PanelEditor::initView() {
+#if 0
     editableBox.setSelected(isEditable());
     positionableBox.setSelected(allPositionable());
     controllingBox.setSelected(allControlling());
     //showCoordinatesBox.setSelected(showCoordinates());
-    showTooltipBox.setSelected(showTooltip());
+    showTooltipBox.setSelected(showToolTip());
     hiddenBox.setSelected(showHidden());
     menuBox.setSelected(getTargetFrame().getJMenuBar().isVisible());
+#endif
 }
-
+#if 0
 static class ComboBoxItem {
     QString name;
     ComboBoxItem(QString n) {
@@ -815,7 +823,7 @@ protected void paintTargetPanel(Graphics g) {
  // if (jmri.util.swing.SwingSettings.getNonStandardMouseEvent())
  //        mouseClicked(event);
  //_targetPanel.repaint(); // needed for ToolTip
- paint(_targetPanel);
+ paint(editScene);
 
 }
 
@@ -905,7 +913,7 @@ protected void paintTargetPanel(Graphics g) {
   if (allPositionable() && _selectionGroup==NULL && bRightButton)
   {
    drawSelectRect(event->scenePos().x(), event->scenePos().y());
-   paint(_targetPanel);
+   paint(editScene);
    return;
   }
  }
@@ -956,13 +964,13 @@ protected void paintTargetPanel(Graphics g) {
   //_highlightcomponent = QRectF(((PositionableLabel*)selection)->getX(), ((PositionableLabel*)selection)->getY(), ((PositionableLabel*)selection)->maxWidth(), ((PositionableLabel*)selection)->maxHeight());
   _highlightcomponent = ((PositionableLabel*)selection)->getBounds();
   //_targetPanel->repaint();
-  paint(_targetPanel);
+  paint(editScene);
  }
  else
  {
   _highlightcomponent = QRectF();
   //_targetPanel->repaint();
-  paint(_targetPanel);
+  paint(editScene);
  }
 // if (selection!=NULL && ((PositionableLabel*)selection)->getDisplayLevel()>BKG && ((PositionableLabel*)selection)->showTooltip())
 // {
@@ -1592,9 +1600,9 @@ void PanelEditor::drawLabelImages(EditScene* g2)
 //    }
     if(l->isIcon())
     {
-     pixmap = QPixmap::fromImage(((JLabel*)l)->getIcon()->getOriginalImage());
+     pixmap = QPixmap::fromImage(((JLabel*)l)->getIcon()->getImage());
      if(pixmap.isNull())
-      log->debug(QString("LocoIcon null pixmap: %1").arg(((JLabel*)l)->getIcon()->getURL()));
+      log->debug(QString("LocoIcon null pixmap: %1").arg(((JLabel*)l)->getIcon()->getDescription()));
      QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap);
      item->setPos(l->getX(), l->getY());
      l->_itemGroup->addToGroup(item);
@@ -1826,15 +1834,15 @@ void PanelEditor::on_addIcon_triggered()
 void PanelEditor::on_addTextLabel_triggered()
 {
  QPointF pt = QPoint(_lastX, _lastY);
- if(addTextLabelDlg == NULL)
-  addTextLabelDlg = new InputDialog("Enter text, then press OK","",NULL,this);
+ if(addTextLabelDlg == nullptr)
+  addTextLabelDlg = new InputDialog("Enter text, then press OK","",nullptr,this);
  if(addTextLabelDlg->exec() == QDialog::Accepted)
  {
   PositionableLabel* label = new PositionableLabel(addTextLabelDlg->value(),this);
   label->setLocation(pt.x(), pt.y());
   putItem((Positionable*)label);
  }
- addTextLabelDlg=NULL;
+ addTextLabelDlg=nullptr;
 }
 void PanelEditor::on_addMultiSensor_triggered()
 {
@@ -1865,11 +1873,11 @@ void PanelEditor::on_actionDelete_this_panel_triggered()
   dispose(true);
  }
 }
-void PanelEditor::on_menuWindow_aboutToShow()
-{
- ui->menuWindow->clear();
- PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
-}
+//void PanelEditor::on_menuWindow_aboutToShow()
+//{
+// //ui->menuWindow->clear();
+// PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
+//}
 void PanelEditor::closeEvent(QCloseEvent *)
 {
 // if(dlg != NULL)
@@ -1892,7 +1900,7 @@ void PanelEditor::closeEvent(QCloseEvent *)
 //  addMemoryDlg->close();
 // if(addIconDlg != NULL)
 //   addIconDlg->close();
- if(addTextLabelDlg != NULL)
+ if(addTextLabelDlg != nullptr)
   addTextLabelDlg->close();
 }
 void PanelEditor::repaint() {}
@@ -1917,3 +1925,4 @@ void PanelEditor::on_actionOpenEditor_triggered()
 {
  changeView("ControlPanelEditor");
 }
+

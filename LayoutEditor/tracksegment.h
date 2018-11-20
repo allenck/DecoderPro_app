@@ -122,6 +122,8 @@ public:
      HIDECONALL = 0x04  //Used by layout editor for hiding all
     };
     /*public*/ int showConstructionLine;// = SHOWCON;
+    /*public*/ QRectF getBounds();
+
 signals:
     
 public slots:

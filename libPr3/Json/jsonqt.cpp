@@ -1,7 +1,7 @@
 #include "jsonqt.h"
 
 
-/* Collection of wrappers mapping Json functions to Qt
+/* Collection of wrappers mapping Json functions to Qt*/
 
 /**
  * @brief JsonNode::path

@@ -28,6 +28,7 @@
    // super(s);
  common();
     _who = who;
+    xmlfile = new XmlFile();
 }
 
 /*public*/ XmlFileValidateAction::XmlFileValidateAction(QString  s, WindowInterface* wi)
@@ -69,7 +70,13 @@ void XmlFileValidateAction::common()
         log->debug("located file " + file->getPath() + " for XML processing");
     }
     // handle the file (later should be outside this thread?)
-    bool original = XmlFile::verify;
+    try {
+        xmlfile->setValidate(XmlFile::Validate::CheckDtdThenSchema);
+        readFile(file);
+    } catch (Exception ex) {
+        showFailResults(_who, ex.getMessage());
+        return;
+    }
 #if 0
     try {
         XmlFile::verify = true;
@@ -159,11 +166,11 @@ void XmlFileValidateAction::common()
  */
 void XmlFileValidateAction::readFile(File* file) //throw (JDOMException, IOException)
 {
-    XmlFile* xf = new XmlFile();
+
 //    {
 //    };   // odd syntax is due to XmlFile being abstract
 
-    xf->rootFromFile(file);
+ xmlfile->rootFromFile(file);
 
 }
 

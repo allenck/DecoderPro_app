@@ -111,6 +111,8 @@
  autoAllocate = NULL;
  optionsMenu = NULL;
  atFrame = NULL;
+ setProperty("InstanceManagerAutoDefault", "yes");
+
 
  _autoTrainsFrame = NULL;
  fastClock = (Timebase*)InstanceManager::getNullableDefault("Timebase");
@@ -239,7 +241,7 @@
                         aat->setSoundDecoder(info->getSoundDecoder());
                         aat->setMaxTrainLength(info->getMaxTrainLength());
                         if (!aat->initialize()) {
-                            log->error("ERROR initializing autorunning for train {}", at->getTrainName());
+                            log->error(tr("ERROR initializing autorunning for train %1").arg(at->getTrainName()));
 //                            JOptionPane.showMessageDialog(dispatcherFrame, Bundle.getMessage(
 //                                    "Error27", at->getTrainName()), Bundle.getMessage("InformationTitle"),
 //                                    JOptionPane.INFORMATION_MESSAGE);

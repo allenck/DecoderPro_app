@@ -15,6 +15,7 @@
 #include "flowlayout.h"
 #include "dccthrottle.h"
 #include "signalspeedmap.h"
+#include "instancemanager.h"
 
 //Calibrater::Calibrater(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -182,7 +183,7 @@ JmriJFrame(false, false, parent)
   if (log->isDebugEnabled()) log->debug("Made speed profile setting for "+ _warrant->getTrainId()+
           ": "+(_isForward ? "Forward":"Reverse")+" step= "+QString::number(qRound(_maxSpeed*1000))+", speed= "+QString::number(_rawSpeed*1000));
   _warrant->getRosterEntry()->updateFile();
-  Roster::writeRosterFile();
+  Roster::writeRoster();
  }
  dispose();
 }
@@ -241,7 +242,7 @@ JmriJFrame(false, false, parent)
  float spFactor = 0.0f;
  float spSpeed = 0.0f;
  DccThrottle* throttle = _warrant->getThrottle();
- float scale = SignalSpeedMap::getMap()->getLayoutScale();
+ float scale = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getLayoutScale();
  float scaleSpeed = _rawSpeed*scale;          // prototype m/s
  if (!init)
  {
@@ -283,7 +284,7 @@ JmriJFrame(false, false, parent)
   _maxSpeed = speedSetting;     // now is the actual setting
  }
  QString speedUnits;
- if ( SignalSpeedMap::getMap()->getInterpretation() == SignalSpeedMap::SPEED_KMPH) {
+ if ( static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getInterpretation() == SignalSpeedMap::SPEED_KMPH) {
      speedUnits = "kmph";
      scaleSpeed = 3.6f*scaleSpeed;
      spSpeed = spSpeed*scale*3.6f/1000;

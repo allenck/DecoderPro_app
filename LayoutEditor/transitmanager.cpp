@@ -8,6 +8,8 @@ TransitManager::TransitManager(QObject *parent) :
  paddedNumber = new DecimalFormat("0000");
  lastAutoTransitRef = 0;
  registerSelf();
+ setProperty("InstanceManagerAutoDefault", "yes");
+
 }
 /*static*/ TransitManager* TransitManager::_instance = NULL;
 

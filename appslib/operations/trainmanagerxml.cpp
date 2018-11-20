@@ -6,6 +6,7 @@
 #include "trainmanager.h"
 #include "trainschedulemanager.h"
 #include "operationsmanager.h"
+#include "instancemanager.h"
 
 //TrainManagerXml::TrainManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -46,30 +47,19 @@ namespace Operations
           + OperationsXml::getOperationsDirectoryName() + File::separator + CSV_SWITCH_LISTS + File::separator;
   defaultCsvManifestDirectory = OperationsXml::getFileLocation()
           + OperationsXml::getOperationsDirectoryName() + File::separator + CSV_MANIFESTS + File::separator;
+  setProperty("InstanceManagerAutoDefault", "true");
+  setProperty("InstanceManagerAutoInitialize", "true");
+
  }
 
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ TrainManagerXml* TrainManagerXml::_instance = NULL;
+// /*private*/ /*static*/ TrainManagerXml* TrainManagerXml::_instance = NULL;
 
  /*public*/ /*static*/ /*synchronized*/ TrainManagerXml* TrainManagerXml::instance()
  {
-  Logger* log = new Logger("TrainManagerXml");
-  if (_instance == NULL)
-  {
-   if (log->isDebugEnabled())
-   {
-    log->debug("TrainManagerXml creating instance");
-   }
-   // create and load
-   _instance = new TrainManagerXml();
-   _instance->load();
-  }
-//    if (Control::showInstance) {
-//        log->debug("TrainManagerXml returns instance " /*+ _instance*/);
-//    }
-  return _instance;
+  return static_cast<TrainManagerXml*>(InstanceManager::getDefault("TrainManagerXml"));
  }
      //@Override
  /*public*/ void TrainManagerXml::writeFile(QString name) //throw FileNotFoundException, IOException
@@ -273,7 +263,11 @@ namespace Operations
     }
 
     /*public*/ void TrainManagerXml::dispose(){
-        _instance = NULL;
+//        _instance = NULL;
     }
 
-}
+    /*public*/ void TrainManagerXml::initialize()
+    {
+     load();
+    }
+} // end Namespace

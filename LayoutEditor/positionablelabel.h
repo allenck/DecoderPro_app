@@ -237,7 +237,7 @@ protected:
 /*protected*/ NamedIcon* makeTextOverlaidIcon(QString text, NamedIcon* ic);
 /*protected*/ void makeIconEditorFrame(QObject* pos, QString name, bool table, /*AddPanelIconDialog*/IconAdder* editor);
 /*protected*/ void editIcon();
-/*protected*/ void makePaletteFrame(QString title);
+/*protected*/ DisplayFrame* makePaletteFrame(QString title);
 
  friend class LayoutEditor;
  friend class Editor;
@@ -263,6 +263,7 @@ protected:
  friend class PositionablePropertiesUtil;
  friend class IEFWindowListener;
  friend class BlockContentsIcon;
+ friend class ConvertFrame;
 };
 class IEFWindowListener : public WindowListener
 {

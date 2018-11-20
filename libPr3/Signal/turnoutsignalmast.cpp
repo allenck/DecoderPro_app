@@ -37,7 +37,7 @@ void TurnoutSignalMast::configureFromName(QString systemName) {
     QStringList parts = systemName.split(":");
     if (parts.length() < 3) {
         log->error("SignalMast system name needs at least three parts: "+systemName);
-        throw new IllegalArgumentException("System name needs at least three parts: "+systemName);
+        throw  IllegalArgumentException("System name needs at least three parts: "+systemName);
     }
     if (parts.at(0)!=("IF$tsm")) {
         log->warn("SignalMast system name should start with IF: "+systemName);
@@ -46,6 +46,8 @@ void TurnoutSignalMast::configureFromName(QString systemName) {
     QString mast = parts.at(2);
 
     mast = mast.mid(0, mast.indexOf("("));
+    setMastType(mast);
+
     QString tmp = parts.at(2).mid(parts.at(2).indexOf("($")+2, parts.at(2).indexOf(")"));
     try {
         int autoNumber = tmp.toInt();
@@ -61,42 +63,79 @@ void TurnoutSignalMast::configureFromName(QString systemName) {
 }
 
 //@Override
-/*public*/ void TurnoutSignalMast::setAspect(QString aspect) {
-    // check it's a choice
-    if ( !map->checkAspect(aspect)) {
-        // not a valid aspect
-        log->warn("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
-        throw new IllegalArgumentException("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
-    }  else if (disabledAspects->contains(aspect)){
-        log->warn("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
-        throw new IllegalArgumentException("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
-    }
+/*public*/ void TurnoutSignalMast::setAspect(QString aspect)
+{
+ // check it's a choice
+ if ( !map->checkAspect(aspect))
+ {
+    // not a valid aspect
+    log->warn("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
+    throw new IllegalArgumentException("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
+ }
+ else if (disabledAspects->contains(aspect))
+ {
+    log->warn("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
+    throw new IllegalArgumentException("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
+ }
 
-    if(_resetPreviousStates){
-        //Clear all the current states, this will result in the signalmast going blank for a very short time.
-        foreach(QString appearances, turnouts.keys()){
-            if(!isAspectDisabled(appearances)){
-                int setState = Turnout::CLOSED;
-                if(turnouts.value(appearances)->getTurnoutState()==Turnout::CLOSED)
-                    setState = Turnout::THROWN;
-                if(turnouts.value(appearances)->getTurnout()->getKnownState()!=setState){
-                    turnouts.value(appearances)->getTurnout()->setCommandedState(setState);
-                }
-            }
-        }
+ if(_resetPreviousStates)
+ {
+  //Clear all the current states, this will result in the signalmast going blank for a very short time.
+  foreach(QString appearances, turnouts.keys())
+  {
+   if(!isAspectDisabled(appearances))
+   {
+    int setState = Turnout::CLOSED;
+    if(turnouts.value(appearances)->getTurnoutState()==Turnout::CLOSED)
+        setState = Turnout::THROWN;
+    if(turnouts.value(appearances)->getTurnout()->getKnownState()!=setState){
+        turnouts.value(appearances)->getTurnout()->setCommandedState(setState);
     }
-    Turnout* turnToSet = turnouts.value(aspect)->getTurnout();
-    int stateToSet = turnouts.value(aspect)->getTurnoutState();
-    //Set the new signal mast state
-    if(turnToSet!=NULL){
-        turnToSet->setCommandedState(stateToSet);
-    } else {
-        log->error("Trying to set a state " + aspect + " on signal mast " + getDisplayName() + " which has not been configured");
-    }
-    AbstractSignalMast::setAspect(aspect);
+   }
+  }
+ }
+ if(turnouts.value(aspect) == nullptr)
+ {
+  log->error("Trying to set a state " + aspect + " on signal mast " + getDisplayName() + " which has not been configured");
+  return;
+ }
+ Turnout* turnToSet = turnouts.value(aspect)->getTurnout();
+ int stateToSet = turnouts.value(aspect)->getTurnoutState();
+ //Set the new signal mast state
+ if(turnToSet!=NULL){
+     turnToSet->setCommandedState(stateToSet);
+ }
+ else
+ {
+     log->error("Trying to set a state " + aspect + " on signal mast " + getDisplayName() + " which has not been configured");
+ }
+ AbstractSignalMast::setAspect(aspect);
 }
 
+/*public*/ void TurnoutSignalMast::setUnLitTurnout(QString turnoutName, int turnoutState) {
+    unLit = new TurnoutAspect(turnoutName, turnoutState);
+}
 
+/*public*/ QString TurnoutSignalMast::getUnLitTurnoutName() {
+    if (unLit != nullptr) {
+        return unLit->getTurnoutName();
+    }
+    return nullptr;
+}
+
+/*public*/ Turnout* TurnoutSignalMast::getUnLitTurnout() {
+    if (unLit != nullptr) {
+        return unLit->getTurnout();
+    }
+    return nullptr;
+}
+
+/*public*/ int TurnoutSignalMast::getUnLitTurnoutState() {
+    if (unLit != nullptr) {
+        return unLit->getTurnoutState();
+    }
+    return -1;
+}
 
 //@Override
 /*public*/ void TurnoutSignalMast::setLit(bool state) {

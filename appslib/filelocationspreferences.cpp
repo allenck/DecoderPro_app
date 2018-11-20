@@ -42,12 +42,12 @@ FileLocationsPreferences::FileLocationsPreferences()
       {
           //QString message = "UserFilesIsNotDir"; // NOI18N
           userFiles = FileUtil::getAbsoluteFilename(userFiles);
-          throw new InitializationException(tr( "User files location \"%1\" is not a directory.").arg( userFiles),QString( "User files location \"%1\" is not a directory.").arg( userFiles),NULL);
+          throw InitializationException(tr( "User files location \"%1\" is not a directory.").arg( userFiles),QString( "User files location \"%1\" is not a directory.").arg( userFiles),NULL);
       }
   } catch (FileNotFoundException ex) {
      // QString message = "UserFilesDoesNotExist"; // NOI18N
       userFiles = FileUtil::getAbsoluteFilename(userFiles);
-      throw new InitializationException(tr("User files location \"%1\" does not exist.").arg(userFiles), QString("User files location \"%1\" does not exist.").arg(userFiles),NULL);
+      throw  InitializationException(tr("User files location \"%1\" does not exist.").arg(userFiles), QString("User files location \"%1\" does not exist.").arg(userFiles),NULL);
   }
   try {
       if (!FileUtil::getFile(scripts)->isDirectory()) {
@@ -55,12 +55,12 @@ FileLocationsPreferences::FileLocationsPreferences()
           scripts = FileUtil::getAbsoluteFilename(scripts);
           if(!QDir(scripts).exists())
            throw FileNotFoundException(scripts);
-          throw new InitializationException(tr("Scripts location \"%1\" is not a directory.").arg(scripts), QString("Scripts location \"%1\" is not a directory.").arg(scripts),NULL);
+          throw  InitializationException(tr("Scripts location \"%1\" is not a directory.").arg(scripts), QString("Scripts location \"%1\" is not a directory.").arg(scripts),NULL);
       }
   } catch (FileNotFoundException ex) {
-      QString message = "ScriptsDoesNotExist"; // NOI18N
+      QString message = "Scripts Does Not Exist"; // NOI18N
       scripts = FileUtil::getAbsoluteFilename(scripts);
-      throw new InitializationException(tr("Scripts location \"%1\" does not exist.").arg(scripts), QString("Scripts location \"%1\" does not exist.").arg(scripts), NULL);
+      throw  InitializationException(tr("Scripts location \"%1\" does not exist.").arg(scripts), QString("Scripts location \"%1\" does not exist.").arg(scripts), NULL);
   }
 
   QString jmriprogram = shared->get(JMRIPROGRAM, FileUtil::PROFILE);
@@ -77,14 +77,14 @@ FileLocationsPreferences::FileLocationsPreferences()
        jmriprogram = FileUtil::getAbsoluteFilename(jmriprogram);
        if(!QDir(jmriprogram).exists())
         throw FileNotFoundException(jmriprogram);
-       throw new InitializationException(tr("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram), QString("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram),NULL);
+       throw InitializationException(tr("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram), QString("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram),NULL);
    }
   }
   catch (FileNotFoundException ex)
   {
       //QString message = "ScriptsDoesNotExist"; // NOI18N
       jmriprogram = FileUtil::getAbsoluteFilename(jmriprogram);
-      throw new InitializationException(tr("JmriProgram location \"%1\" does not exist.").arg(jmriprogram), QString("JmriProgram location \"%1\" does not exist.").arg(jmriprogram), NULL);
+      throw InitializationException(tr("JmriProgram location \"%1\" does not exist.").arg(jmriprogram), QString("JmriProgram location \"%1\" does not exist.").arg(jmriprogram), NULL);
   }
   FileUtil::setProgramPath(FileUtil::getAbsoluteFilename(jmriprogram));
  }

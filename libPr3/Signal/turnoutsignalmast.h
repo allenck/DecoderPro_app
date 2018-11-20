@@ -15,6 +15,10 @@ public:
     /*public*/ TurnoutSignalMast(QString systemName, QString userName = "", QObject *parent = 0) ;
     void configureFromName(QString systemName) ;
     /*public*/ void setAspect(QString aspect);
+    /*public*/ void setUnLitTurnout(QString turnoutName, int turnoutState);
+    /*public*/ QString getUnLitTurnoutName();
+    /*public*/ Turnout* getUnLitTurnout();
+    /*public*/ int getUnLitTurnoutState();
     /*public*/ void setLit(bool state);
     /*public*/ QString getTurnoutName(QString appearance);
     /*public*/ int getTurnoutState(QString appearance);
@@ -72,6 +76,7 @@ private:
  QHash<QString, TurnoutAspect*> turnouts;// =  QHash<QString, TurnoutAspect>();
 
  bool _resetPreviousStates;// = false;
+ TurnoutAspect* unLit = nullptr;
 
 
 };

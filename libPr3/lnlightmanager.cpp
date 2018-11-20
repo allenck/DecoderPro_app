@@ -5,6 +5,8 @@
 {
  _trafficController = tc;
  this->prefix = prefix;
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
 }
 
 

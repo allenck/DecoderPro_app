@@ -3,6 +3,7 @@
 #include "qmath.h"
 #include "fileutil.h"
 #include "file.h"
+#include "loggerfactory.h"
 
 //NamedIcon::NamedIcon(QObject *parent) :
 //    QIcon(parent)
@@ -69,26 +70,33 @@
  * @param pUrl URL of image file to load
  * @param pName Human-readable name for the icon
  */
-/*public*/ NamedIcon::NamedIcon(QString pUrl, QString pName, QObject *parent) : ImageIcon(FileUtil::findExternalFilename(pUrl), pName, parent)
+/*public*/ NamedIcon::NamedIcon(QString pUrl, QString pName, QObject *parent)
+    //: ImageIcon(FileUtil::findExternalFilename(pUrl), pName, parent)
+    : ImageIcon(FileUtil::pathFromPortablePath(pUrl), pName, parent)
 {
  init();
- if(pUrl.at(1) == 0)
-  pUrl = QString(pUrl);
-//    super(FileUtil.findExternalFilename(pUrl));
+ QString instring = pUrl;
  QUrl u = FileUtil::findExternalFilename(pUrl);
  if (u.isEmpty())
  {
   log->warn("Could not load image from " + pUrl + " (file does not exist)");
  }
 
- mURL = /*FileUtil::getPortableFilename(pUrl);*/ u.path();
  mDefaultImage = getImage();
  if (mDefaultImage.isNull())
  {
-  log->warn("Could not load image from " + pUrl +"("+ FileUtil::getAbsoluteFilename(pUrl)+ ") (image is NULL)");
+     log->warn(tr("Could not load image from %1 (image is null)").arg(pUrl));
  }
  mName = pName;
- mURL = FileUtil::getPortableFilename(pUrl);
+ if(pUrl.startsWith(":/"))
+     mURL = pUrl;
+ else
+ {
+ QString portableFileName = FileUtil::findExternalFilename(pUrl).toString();
+     if(portableFileName == "")
+         log->error(tr("error converting '%1'").arg(portableFileName));
+     mURL = FileUtil::getPortableFilename(portableFileName);
+ }
  mRotation = 0;
 }
 
@@ -103,12 +111,10 @@ void NamedIcon::init()
 {
  mName="";
  mURL="";
- mDefaultImage = QImage();
  _deg = 0;
  _scale = 1.0;
 // _transformS = new AffineTransform();    // scaling
 // _transformF = new AffineTransform();    // Fliped or Mirrored
- log = new Logger("NamedIcon");
  log->setDebugEnabled(true);
 }
 
@@ -126,13 +132,14 @@ void NamedIcon::init()
   return NULL;
  }
  QUrl u = FileUtil::findExternalFilename(pName);
- if (!u.isValid())
- {
-  return NULL;
- }
+// if (!u.isValid())
+// {
+//  return NULL;
+// }
+ QString newPath = u.path().replace("//", "");
 // else
 //  return new NamedIcon(u.fileName(), pName);
- return new NamedIcon(pName, pName);
+ return new NamedIcon(newPath, pName);
 }
 
 /**
@@ -469,7 +476,7 @@ int NamedIcon::getIconHeight()
  }
  return 0;
 }
-
+#if 0
 QImage NamedIcon::getImage()
 {
  if(this == NULL)
@@ -502,8 +509,10 @@ QImage NamedIcon::getImage()
   log->debug( "unable to load " + mURL + " ("+ filename + ")");
  return img;
 }
+#endif
 void NamedIcon::setImage(QImage img)
 {
  mDefaultImage = img;
 }
 
+/*private*/ /*final*/ /*static*/ Logger* NamedIcon::log = LoggerFactory::getLogger("NamedIcon");

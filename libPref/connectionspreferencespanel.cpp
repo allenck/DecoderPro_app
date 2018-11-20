@@ -170,7 +170,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  QToolButton* tabCloseButton = new QToolButton();
  tabCloseButton->setIcon(deleteIcon);
  QString ss;
- tabCloseButton->setStyleSheet(ss = QString("QToolButton { border-image: url(%1) 2; } QToolButton:hover { border-image: url(%2) 2; }").arg(FileUtil::getExternalFilename("program:resources/icons/misc/gui3/Delete-bw16x16.png")).arg(FileUtil::getExternalFilename("program:resources/icons/misc/gui3/Delete16x16.png")));
+ tabCloseButton->setStyleSheet(ss = QString("QToolButton { border-image: url(%1) 2; } QToolButton:hover { border-image: url(%2) 2; }").arg(FileUtil::getExternalFilename(":/resources/icons/misc/gui3/Delete-bw16x16.png")).arg(FileUtil::getExternalFilename(":/resources/icons/misc/gui3/Delete16x16.png")));
  tabCloseButton->resize(deleteButtonSize);
  //tabCloseButton.setBorderPainted(false);
     //tabCloseButton.setRolloverIcon(deleteIconRollOver);

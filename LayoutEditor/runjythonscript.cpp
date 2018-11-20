@@ -167,7 +167,7 @@ void RunJythonScript::invoke(File* file)
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* RunJythonScript::makePanel()
 {
- throw new IllegalArgumentException("Should not be invoked");
+ throw  IllegalArgumentException("Should not be invoked");
 }
 
 void RunJythonScript::On_stdErr(const QString& s)

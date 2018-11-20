@@ -1,15 +1,9 @@
 #ifndef VETOABLEPROPERTYCHANGELISTENER_H
 #define VETOABLEPROPERTYCHANGELISTENER_H
 #include "eventlistener.h"
-#include "exceptions.h"
+#include "propertyvetoexception.h"
 
 class PropertyChangeEvent;
-class PropertyVetoException : public Exception
-{
- PropertyVetoException(QString msg = "") : Exception(msg) {}
- ~PropertyVetoException() throw() {}
- PropertyVetoException(const PropertyVetoException&) : Exception() {}
-};
 
 class VetoableChangeListener : public EventListener
 {
@@ -17,9 +11,7 @@ class VetoableChangeListener : public EventListener
 public:
  VetoableChangeListener(QObject* parent = 0);
 public slots:
- virtual void vetoableChange(PropertyChangeEvent* evt)
-                            throw (PropertyVetoException);
-
+ virtual void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 };
 
 

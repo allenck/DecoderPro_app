@@ -210,7 +210,7 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
        re->deleteAttribute(group);
    }
    re->updateFile();
-   Roster::writeRosterFile();
+   Roster::writeRoster();
 
   }
  }

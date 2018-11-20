@@ -8,6 +8,7 @@
 #include "internalreportermanager.h"
 #include "internallightmanager.h"
 #include "loggerfactory.h"
+#include "internalconsistmanager.h"
 
 //InternalSystemConnectionMemo::InternalSystemConnectionMemo()
 //{
@@ -33,7 +34,7 @@
  */
 // /*public*/ class InternalSystemConnectionMemo extends jmrix.SystemConnectionMemo implements InstanceManagerAutoDefault {
 
-/*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo() : SystemConnectionMemo("I", "Internal")
+/*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(QObject *parent) : SystemConnectionMemo("I", "Internal", parent)
 {
  setObjectName("InternalSystemConnectionMemo");
 
@@ -45,11 +46,12 @@
  throttleManager = nullptr;
  powerManager = nullptr;
  programManager = nullptr;
- log = LoggerFactory::getLogger("InternalSystemConnectionMemo");
 
  //super("I", "Internal");
  InstanceManager::store(this, "InternalSystemConnectionMemo"); // also register as specific type
- Register();
+ QObjectList l = InstanceManager::getList("InternalSystemConnectionMemo");
+
+ _register();
 }
 
 
@@ -60,13 +62,23 @@
  * We don't call configureManagers in that case, as it causes an infinite loop.
  */
 /*public*/ void InternalSystemConnectionMemo::configureManagers() {
- log = new Logger("InternalSystemConnectionMemo");
     log->debug("Do configureManagers - doesn't pre-build anything");
     if (configured) log->warn("configureManagers called for a second time"/*, new Exception("traceback")*/);
     configured = true;
 
 }
 
+//@Override
+/*public*/ InternalConsistManager* InternalSystemConnectionMemo::getConsistManager()
+{
+    if (consistManager == nullptr) {
+        log->debug("Create InternalConsistManager by request");
+        consistManager = new InternalConsistManager();
+        // special due to ProxyManager support
+        InstanceManager::store(consistManager,"ConsistManager");
+    }
+    return consistManager;
+}
 
 /*public*/ InternalLightManager* InternalSystemConnectionMemo::getLightManager()
 {
@@ -150,9 +162,6 @@
 
     if (!configured) configureManagers();
 
-    if (type == ("ProgrammerManager")) {
-        return true;
-    }
     if (type == ("GlobalProgrammerManager")) {
         return getProgrammerManager()->isGlobalProgrammerAvailable();
     }
@@ -177,6 +186,9 @@
     }
     if (type == ("TurnoutManager")) {
         return true;
+    }
+    if (type == ("ConsistManager")) {
+      return true;
     }
     return false; // nothing, by default
 }
@@ -218,6 +230,10 @@
     if (className == ("TurnoutManager")) {
         return (TurnoutManager*) getTurnoutManager();
     }
+    if (className == ("ConsistManager")) {
+        return (ConsistManager*) getConsistManager();
+    }
+
     return nullptr; // nothing, by default
 }
 

@@ -65,11 +65,11 @@ Q_DECLARE_METATYPE(JmriJTablePersistenceManager)
 {
 
     int order;
-    int width;
+    int preferredWidth;
     SortOrder sort;
     bool hidden;
  public:
-    /*public*/ TableColumnPreferences(int order, int width, SortOrder sort, bool hidden) ;
+    /*public*/ TableColumnPreferences(int order, int preferredWidth, SortOrder sort, bool hidden) ;
     /*public*/ int getOrder() ;
     /*public*/ int getWidth();
     /*public*/ SortOrder getSort();

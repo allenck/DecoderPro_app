@@ -16,7 +16,8 @@ SOURCES += ftdilib.cpp \
 
 HEADERS += ftdilib.h\
     ftdilib_global.h \
-    ftdithread.h
+    ftdithread.h \
+    WinTypes.h
 
 symbian {
     MMP_RULES += EXPORTUNFROZEN

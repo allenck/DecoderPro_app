@@ -7,14 +7,18 @@
 #include "catalogtreemanager.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
+#include "itempalette.h"
+#include "defaultcatalogtreemanagerxml.h"
+#include "instancemanager.h"
 
-/*private*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::_instance = NULL;
+/*private*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::_instance = nullptr;
 
 DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     CatalogTreeManager(parent)
 {
  _tsys = new QMap<QString, CatalogTree*>();
  _tuser = new QMap<QString, CatalogTree*>();
+ _indexChanged= false;
 }
 
 /**
@@ -182,11 +186,70 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
         }
     }
 #endif
-    return NULL;
+    return nullptr;
 }
 
-/*public*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::DefaultCatalogTreeManagerinstance() {
- return (DefaultCatalogTreeManager*)InstanceManager::getDefault("DefaultCatalogTreeManager");
+/*public*/ /*static*/ DefaultCatalogTreeManager* DefaultCatalogTreeManager::instance() {
+ return static_cast<DefaultCatalogTreeManager*>(InstanceManager::getDefault("DefaultCatalogTreeManager"));
+}
+
+//@Override
+/*public*/ QString DefaultCatalogTreeManager::getBeanTypeHandled() {
+    return tr("Catalog");
+}
+
+//@Override
+/*public*/ void DefaultCatalogTreeManager::storeImageIndex() {
+    ItemPalette::storeIcons();
+
+    log->debug("Start writing CatalogTree info");
+    try {
+         DefaultCatalogTreeManagerXml().writeCatalogTrees();
+        indexChanged(false);
+    } catch (IOException ioe) {
+        log->error("Exception writing CatalogTrees: ", ioe);
+    }
+}
+
+/*public*/ bool DefaultCatalogTreeManager::isIndexChanged() {
+    return _indexChanged;
+}
+
+//@Override
+/*public*/ /*final*/ /*synchronized*/ void DefaultCatalogTreeManager::indexChanged(bool changed) {
+    _indexChanged = changed;
+    if(InstanceManager::getOptionalDefault("ShutDownManager") != nullptr)
+    {
+     ShutDownManager* sdm = static_cast<ShutDownManager*>(InstanceManager::getOptionalDefault("ShutDownManager"));
+
+     if (changed)
+     {
+
+      if (_shutDownTask == nullptr) {
+          _shutDownTask = (ShutDownTask*)new DCTSwingShutDownTask("PanelPro Save default icon check",
+                  tr("Index Changed"),
+                  tr("Save And Quit"), nullptr, this);
+//          {
+//              @Override
+//              public boolean checkPromptNeeded() {
+//                  return !_indexChanged;
+//              }
+
+//              @Override
+//              public boolean doPrompt() {
+//                  storeImageIndex();
+//                  return true;
+//              }
+//          };
+          sdm->_register(_shutDownTask);
+      }
+  } else {
+      if (_shutDownTask != nullptr) {
+          sdm->deregister(_shutDownTask);
+          _shutDownTask = nullptr;
+      }
+     }
+ }//);
 }
 
 void DefaultCatalogTreeManager::Register(CatalogTree * tree)

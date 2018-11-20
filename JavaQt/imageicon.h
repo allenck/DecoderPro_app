@@ -9,12 +9,11 @@ class JAVAQTSHARED_EXPORT ImageIcon : public QObject
 {
     Q_OBJECT
 public:
-    explicit ImageIcon(QObject *parent = 0);
-    /*public*/ ImageIcon(QString filename, QString description, QObject *parent = 0);
-    /*public*/ ImageIcon(QUrl location, QString description="",QObject *parent = 0);
-    /*public*/ ImageIcon(QImage image, QString description, QObject *parent = 0);
-
-    /*public*/ ImageIcon(QImage image, QObject *parent = 0);
+    explicit ImageIcon(QObject *parent = nullptr);
+    /*public*/ ImageIcon(QString filename, QString description ="", QObject *parent = nullptr);
+    /*public*/ ImageIcon(QUrl location, QString description="",QObject *parent = nullptr);
+    /*public*/ ImageIcon(QImage image, QString description, QObject *parent = nullptr);
+    /*public*/ ImageIcon(QImage image, QObject *parent = nullptr);
     /*public*/ QString toString();
     QString location();
     QString description();

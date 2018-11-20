@@ -3,13 +3,18 @@
 #include <QComboBox>
 #include <rosterentry.h> // for VPtr
 #include "roster.h"
+#include "instancemanager.h"
 
 NceConsistRoster::NceConsistRoster(QObject *parent) :
     XmlFile(parent)
 {
  log = new Logger("NceConsistRoster");
  _list =  QList<NceConsistRosterEntry*>();
-dirty = false;}
+dirty = false;
+setProperty("InstanceManagerAutoDefault", "true");
+setProperty("InstanceManagerAutoInitialize", "true");
+
+}
 /**
  * NCE Consist Roster manages and manipulates a roster of consists.
  * <P>
@@ -42,9 +47,9 @@ dirty = false;}
 // /*public*/ class NceConsistRoster extends XmlFile {
 
 /** record the single instance of Roster **/
-/*private*/ /*static*/ NceConsistRoster* NceConsistRoster::_instance = NULL;
+///*private*/ /*static*/ NceConsistRoster* NceConsistRoster::_instance = NULL;
 
-/*public*/ /*synchronized*/ /*static*/ void NceConsistRoster::resetInstance() { _instance = NULL; }
+///*public*/ /*synchronized*/ /*static*/ void NceConsistRoster::resetInstance() { _instance = NULL; }
 
 /**
  * Locate the single instance of Roster, loading it if need be
@@ -52,21 +57,7 @@ dirty = false;}
  */
 /*public*/ /*static*/ /*synchronized*/ NceConsistRoster* NceConsistRoster::instance()
 {
-    Logger* log = new Logger("NceConsistRoster");
-    if (_instance == NULL) {
-        if (log->isDebugEnabled()) log->debug("ConsistRoster creating instance");
-        // create and load
-        _instance = new NceConsistRoster();
-        if(_instance->checkFile(defaultNceConsistRosterFilename())){
-            try {
-                _instance->readFile(defaultNceConsistRosterFilename());
-            } catch (Exception e) {
-                log->error("Exception during ConsistRoster reading: "+e.getMessage());
-            }
-        }
-    }
-    if (log->isDebugEnabled()) log->debug(tr("ConsistRoster returns instance ")+QString::number((long)_instance,16));
-    return _instance;
+ return static_cast<NceConsistRoster*>(InstanceManager::getDefault("NceConsistRoster"));
 }
 
 /**
@@ -397,7 +388,7 @@ bool NceConsistRoster::isDirty() {return dirty;}
     _list.clear();
     // and read new
     try {
-        _instance->readFile(defaultNceConsistRosterFilename());
+        readFile(defaultNceConsistRosterFilename());
     } catch (Exception e) {
         log->error("Exception during ConsistRoster reading: "+e.getMessage());
     }
@@ -448,3 +439,19 @@ bool NceConsistRoster::isDirty() {return dirty;}
     firePropertyChange("change", QVariant(), VPtr<NceConsistRosterEntry>::asQVariant(r));
 }
 
+//@Override
+/*public*/ void NceConsistRoster::initialize()
+{
+    if (checkFile(defaultNceConsistRosterFilename()))
+    {
+     try
+     {
+            readFile(defaultNceConsistRosterFilename());
+     } catch (IOException  e) {
+      log->error(tr("Exception during ConsistRoster reading: %1").arg(e.getMessage()));
+     }
+     catch ( JDOMException e) {
+      log->error(tr("Exception during ConsistRoster reading: %1").arg(e.getMessage()));
+    }
+  }
+}

@@ -1165,7 +1165,7 @@ void RosterFrame::on_actionDelete_Loco_triggered()
    re->deleteAttribute(group);
    re->updateFile();
   }
-  Roster::writeRosterFile();
+  Roster::writeRoster();
 
   // backup the file & delete it
   if (rosterGroup == "")
@@ -1737,7 +1737,7 @@ void RosterFrame::closeEvent(QCloseEvent * e)
 {
  saveWindowDetails();
  //Save any changes made in the roster entry details
- Roster::writeRosterFile();
+ Roster::writeRoster();
  if (_allowQuit && frameInstances.size() == 1)
  {
   handleQuit(e);

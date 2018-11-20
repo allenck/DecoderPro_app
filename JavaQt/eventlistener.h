@@ -5,7 +5,7 @@
 #include "javaqt_global.h"
 class JAVAQTSHARED_EXPORT EventListener : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
     explicit EventListener(QObject *parent = 0);
     

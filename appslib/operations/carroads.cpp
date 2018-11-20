@@ -25,6 +25,7 @@ namespace Operations {
  {
   log = new Logger("CarRoads");
   maxNameLengthSubType = 0;
+  setProperty("InstanceManagerAutoDefault", "yes");
 
  }
 

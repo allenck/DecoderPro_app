@@ -24,6 +24,8 @@ namespace Operations
 
  /*public*/ EngineLengths::EngineLengths(QObject* parent) : RollingStockAttribute(parent)
  {
+ setProperty("InstanceManagerAutoDefault", "yes");
+
  }
 
  /**

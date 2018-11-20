@@ -1037,7 +1037,7 @@ void DefaultSignalMastLogic::setMastAppearance()
                                     speed =  (strSpeed.toFloat());
                                 }catch (NumberFormatException nx) {
                                     try{
-                                        speed = SignalSpeedMap::getMap()->getSpeed(strSpeed);
+                                        speed = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(strSpeed);
                                     } catch (Exception ex){
                                         //Considered Normal if the speed does not appear in the map
                                     }

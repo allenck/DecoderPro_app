@@ -162,9 +162,9 @@ void JFrame::reSizeToFitOnScreen()
 
   int widthInset = 0;
   int heightInset = 0;
-  if(menuBar()!= NULL)
+  if(menuBar()!= nullptr)
    heightInset += menuBar()->height();
-  if(statusBar() != NULL)
+  if(statusBar() != nullptr)
    heightInset+= statusBar()->height();
 
   // calculate size as screen size minus space needed for offsets
@@ -217,7 +217,7 @@ void JFrame::dispose()
 
 QWidget* JFrame:: getContentPane()
 {
- if(centralWidget() == NULL)
+ if(centralWidget() == nullptr)
  {
   QWidget* centralWidget = new QWidget();
   centralWidget->setLayout(new QVBoxLayout);
@@ -364,15 +364,15 @@ void JFrame::setLocation(QPoint p)
  */
 /*public*/ QWidget* JFrame::getTopLevelAncestor()
 {
- for(QObject* p = this; p != NULL; p = p->parent())
+ for(QObject* p = this; p != nullptr; p = p->parent())
  {
   //if(p instanceof Window || p instanceof Applet)
-     if(qobject_cast<JFrame*>(p)!=NULL)
+     if(qobject_cast<JFrame*>(p)!=nullptr)
   {
    return (QWidget*)p;
   }
  }
- return NULL;
+ return nullptr;
 }
 void JFrame::setMenuBar(QMenuBar *menubar)
 {
@@ -390,28 +390,44 @@ void JFrame::closeEvent(QCloseEvent* e)
 //  else
   l->windowClosing(e);
  }
+ switch (defaultCloseOperation) {
+  case HIDE_ON_CLOSE:
+      setVisible(false);
+      break;
+  case DISPOSE_ON_CLOSE:
+      dispose();
+      deleteLater();
+      break;
+  case EXIT_ON_CLOSE:
+      // This needs to match the checkExit call in
+      // setDefaultCloseOperation
+      exit(0);
+  case DO_NOTHING_ON_CLOSE:
+  default:
+  break;
 }
 
-/*public*/ void JFrame::windowClosing(QCloseEvent* /*e*/)
-{
-    handleModified();
-    switch (defaultCloseOperation) {
-     case HIDE_ON_CLOSE:
-         setVisible(false);
-         break;
-     case DISPOSE_ON_CLOSE:
-         dispose();
-         break;
-     case EXIT_ON_CLOSE:
-         // This needs to match the checkExit call in
-         // setDefaultCloseOperation
-         exit(0);
-         break;
-     case DO_NOTHING_ON_CLOSE:
-     default:
-     break;
- }
 }
+
+///*public*/ void JFrame::windowClosing(QCloseEvent* /*e*/)
+//{
+//    //handleModified();
+//    switch (defaultCloseOperation) {
+//     case HIDE_ON_CLOSE:
+//         setVisible(false);
+//         break;
+//     case DISPOSE_ON_CLOSE:
+//         dispose();
+//         break;
+//     case EXIT_ON_CLOSE:
+//         // This needs to match the checkExit call in
+//         // setDefaultCloseOperation
+//         exit(0);
+//     case DO_NOTHING_ON_CLOSE:
+//     default:
+//     break;
+// }
+//}
 
 void JFrame::addWindowListener(WindowListener* l)
 {
@@ -429,7 +445,7 @@ void JFrame::addWindowListener(WindowListener* l)
  * @see #getWindowListeners
  */
 /*public*/ /*synchronized*/ void JFrame::removeWindowListener(WindowListener* l) {
-    if (l == NULL) {
+    if (l == nullptr) {
         return;
     }
     //windowListener = AWTEventMulticaster.remove(windowListener, l);

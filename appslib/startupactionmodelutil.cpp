@@ -173,7 +173,7 @@ entry.next();
  try {
      clazz = Class::forName(strClass);
  } catch (ClassNotFoundException ex) {
-     log->error("Did not find class \"{}\"", strClass);
+     log->error(tr("Did not find class \"%1\"").arg(strClass));
      throw ex;
  }
  actions->remove(clazz);

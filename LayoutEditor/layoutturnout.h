@@ -306,6 +306,7 @@ public:
  /*public*/ void setVersion(int v);
  virtual /*public*/ QObject* getConnection(int location) throw (JmriException);
  virtual /*public*/ void setConnection(int location, QObject* o, int type) throw (JmriException);
+ /*public*/ QRectF getBounds();
 
 signals:
  void propertyChange(PropertyChangeEvent*);

@@ -1,10 +1,12 @@
 #include "abstractxmladapter.h"
+#include "errormemo.h"
 
 AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
  :    XmlAdapter()
 {
  this->parent = parent;
  doc = QDomDocument();
+ errorHandler = XmlAdapter::getDefaultExceptionHandler();
 }
 /**
  * Abstract class to provide basic error handling for XmlAdapter
@@ -31,24 +33,24 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
  * @throws JmriConfigureXmlException in place for later expansion;
  *         should be propagated upward to higher-level error handling
  */
-/*public*/ void AbstractXmlAdapter::creationErrorEncountered (
-            Level* level,
+/*public*/ void AbstractXmlAdapter::handleException (
             QString description,
             QString systemName,
+            QString operation,
             QString userName,
-            Throwable* exception
-        ) throw (JmriConfigureXmlException)
+            Exception exception
+        ) /*throw (JmriConfigureXmlException)*/
 {
-    ConfigXmlManager::creationErrorEncountered(
-            NULL, NULL,
-            description, systemName, userName, exception
-    );
+ if (errorHandler != nullptr)
+ {
+  this->errorHandler->handle(new ErrorMemo(this, operation, description, systemName, userName, exception));
+ }
 }
 
 //@Override
 /*public*/ bool AbstractXmlAdapter::load(QDomElement /*e*/) throw (Exception)
 {
-    throw new UnsupportedOperationException("Either load(one of the other load methods must be implemented.");
+    throw new UnsupportedOperationException("One of the other load methods must be implemented.");
 }
 
 //@Override
@@ -58,7 +60,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
 }
 
 //@Override
-/*public*/ void AbstractXmlAdapter::load(QDomElement shared, QDomElement /*perNode*/, QObject* o) //throws Exception
+/*public*/ void AbstractXmlAdapter::load(QDomElement /*shared*/, QDomElement /*perNode*/, QObject* /*o*/) //throws Exception
 {
 //    this->load(shared, o);
 }

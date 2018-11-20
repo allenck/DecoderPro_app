@@ -586,12 +586,12 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 /*protected*/ NamedIcon* PositionableLabelXml::getNamedIcon(QString childName, QDomElement element,
                                         QString name, Editor* ed)
 {
- NamedIcon* icon = NULL;
+ NamedIcon* icon = nullptr;
  QDomElement elem = element.firstChildElement(childName);
  if (!elem.isNull())
  {
   QString iconName = elem.attribute("url");
-  //iconName.replace("program:", ":/");
+  //iconName.replace("program:", ":");
   icon = NamedIcon::getIconByName(iconName);
   if (icon==NULL)
   {

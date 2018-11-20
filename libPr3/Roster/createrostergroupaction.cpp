@@ -84,7 +84,7 @@ CreateRosterGroupAction::CreateRosterGroupAction(QObject *parent) :
      }
     }
     Roster::instance()->addRosterGroupList(entry);
-    Roster::writeRosterFile();
+    Roster::writeRoster();
 }
 
 // never invoked, because we overrode actionPerformed above

@@ -186,27 +186,61 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
  *                                     <code>newIndex</code> are not in [0,
  *                                     getColumnCount() - 1]
  */
-/*public*/ void XTableColumnModel::moveColumn(int oldIndex, int newIndex)
-{
- if ((oldIndex < 0) || (oldIndex >= DefaultTableColumnModel::getColumnCount())
-            || (newIndex < 0) || (newIndex >= DefaultTableColumnModel::getColumnCount()))
- {
-  throw new IllegalArgumentException("moveColumn() - Index out of range");
- }
+//@Override
+/*public*/ void XTableColumnModel::moveColumn(int columnIndex, int newIndex) {
+    moveColumn(columnIndex, newIndex, true);
+}
 
- TableColumn* fromColumn = tableColumns.at(oldIndex);
- TableColumn* toColumn = tableColumns.at(newIndex);
+/**
+ * Moves the column from {@code columnIndex} to {@code newIndex}. Posts
+ * {@code columnMoved} event. Will not move any columns if
+ * {@code columnIndex} equals {@code newIndex}. This method also posts a
+ * {@code columnMoved} event to its listeners if a visible column moves.
+ *
+ * @param columnIndex index of column to be moved
+ * @param newIndex    new index of the column
+ * @param onlyVisible true if this should only move a visible column; false
+ *                    to move any column
+ * @exception IllegalArgumentException if either {@code oldIndex} or
+ *                                     {@code newIndex} are not in [0,
+ *                                     getColumnCount(onlyVisible) - 1]
+ */
+/*public*/ void XTableColumnModel::moveColumn(int columnIndex, int newIndex, bool onlyVisible) {
+    if ((columnIndex < 0) || (columnIndex >= getColumnCount(onlyVisible))
+            || (newIndex < 0) || (newIndex >= getColumnCount(onlyVisible))) {
+        throw  IllegalArgumentException("moveColumn() - Index out of range");
+    }
 
- int allColumnsOldIndex = allTableColumns.indexOf(fromColumn);
- int allColumnsNewIndex = allTableColumns.indexOf(toColumn);
+    if (onlyVisible) {
+        if (columnIndex != newIndex) {
+            // columnIndex and newIndex are indexes of visible columns, so need
+            // to get index of column in list of all columns
+            int allColumnsColumnIndex = allTableColumns.indexOf(tableColumns.value(columnIndex));
+            int allColumnsNewIndex = allTableColumns.indexOf(tableColumns.value(newIndex));
 
- if (oldIndex != newIndex)
- {
-  allTableColumns.remove(allColumnsOldIndex);
-  allTableColumns.insert(allColumnsNewIndex, fromColumn);
- }
+            TableColumn* column = allTableColumns.at(allColumnsColumnIndex);
+            allTableColumns.remove(allColumnsColumnIndex);
+            allTableColumns.insert(allColumnsNewIndex, column);
+        }
 
- DefaultTableColumnModel::moveColumn(oldIndex, newIndex);
+        DefaultTableColumnModel::moveColumn(columnIndex, newIndex);
+    } else {
+        if (columnIndex != newIndex) {
+            // columnIndex and newIndex are indexes of all columns, so need
+            // to get index of column in list of visible columns
+            int visibleColumnIndex = tableColumns.indexOf(allTableColumns.value(columnIndex));
+            int visibleNewIndex = tableColumns.indexOf(allTableColumns.value(newIndex));
+
+            TableColumn* column = allTableColumns.at(columnIndex);
+            allTableColumns.remove(columnIndex);
+            allTableColumns.insert(newIndex, column);
+            // call super moveColumn if both indexes are visible
+            if (visibleColumnIndex != -1 && visibleNewIndex != -1) {
+                DefaultTableColumnModel::moveColumn(visibleColumnIndex, visibleNewIndex);
+            }
+        }
+
+    }
 }
 
 /**

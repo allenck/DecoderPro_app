@@ -12,6 +12,7 @@ public:
  /*public*/ void setStringConverter(TableStringConverter* stringConverter);
  /*public*/ TableStringConverter* getStringConverter();
  /*public*/ Comparator/*<?>*/* getComparator(int column);
+ QAbstractItemModel* sourceModel();
 
 private:
  /*private*/ static /*final*/ Comparator* COMPARABLE_COMPARATOR;// = new ComparableComparator();
@@ -24,6 +25,7 @@ private:
   * For toString conversions.
   */
  /*private*/ TableStringConverter* stringConverter;
+ QAbstractItemModel* model;
 
 protected:
  /*protected*/ bool useToString(int column);

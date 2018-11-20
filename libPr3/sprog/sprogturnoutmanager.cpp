@@ -47,7 +47,7 @@ using namespace Sprog;
     // validate the System Name leader characters
     if (!systemName.startsWith(getSystemPrefix() + "T")) {
         // here if an illegal sprog turnout system name
-        log->error("illegal character in header field of sprog turnout system name: {}", systemName);
+        log->error(tr("illegal character in header field of sprog turnout system name: %1").arg(systemName));
         return (0);
     }
     // name must be in the STnnnnn format (S is user configurable)

@@ -17,6 +17,7 @@
  throttles = new QHash<DccLocoAddress*, JsonThrottle*>();
  services = new QHash<JsonThrottle*, QList<JsonThrottleSocketService*>*>();
  mapper = ObjectMapper();
+ setProperty("InstanceManagerAutoDefault", "yes");
 
 }
 

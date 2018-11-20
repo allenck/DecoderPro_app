@@ -71,6 +71,8 @@ void JsonServer::common()
     port = settings->getPort();
     timeout = settings->getHeartbeatInterval();
     clients = new QLinkedList<JsonClientRxHandler*>();
+    setProperty("InstanceManagerAutoDefault", "yes");
+
 }
 
 JSShutDownTask::JSShutDownTask(QString title, JsonServer* js) :QuietShutDownTask(title, js)

@@ -132,7 +132,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 #if 1
     catch (ClassNotFoundException /*| InstantiationException | IllegalAccessException*/ ex)
     {
-     log-> error(tr("Unable to create %1 for %2").arg(className).arg(shared.tagName()), ex.getMessage());
+     log-> error(tr("Unable to create %1 for %2").arg(className).arg(shared.tagName()), ex);
      QString english = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
      QString localized = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
      this->addInitializationException(profile, new InitializationException(english, localized, NULL));
@@ -157,9 +157,9 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
       //if (exceptions.get(0) instanceof InitializationException)
    if(qobject_cast<InitializationException*>(exceptions->at(0)) != NULL)
    {
-       throw (InitializationException*) exceptions->at(0);
+       throw (InitializationException) *exceptions->at(0);
    } else {
-       throw new InitializationException(exceptions->at(0));
+       throw  InitializationException(*exceptions->at(0));
    }
 #endif
   }
@@ -169,7 +169,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 //      QString localized = Bundle.getMessage("ErrorMultipleConnections"); // NOI18N
    QString english = tr("Unable to create connection \"%1\" (%2).");
    QString localized = tr("Unable to create connection \"%1\" (%2).");
-//      throw new InitializationException(english, localized);
+      throw  InitializationException(english, localized, nullptr);
   }
 #endif
   log-> debug("Initialized...");

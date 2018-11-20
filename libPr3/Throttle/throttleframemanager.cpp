@@ -3,7 +3,7 @@
 #include "instancemanager.h"
 #include "throttlewindow.h"
 #include "throttlespreferences.h"
-#include "listthrottles.h"
+//#include "listthrottles.h"
 #include "throttlespreferencespane.h"
 #include "throttleslistpanel.h"
 #include <QBoxLayout>

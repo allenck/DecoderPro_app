@@ -107,8 +107,8 @@ void CatalogPanel::common()
  log = new Logger("CatalogPanel");
  log->setDebugEnabled(true);
  _noMemory = false;
- _model = NULL;
- _preview = NULL;
+ _model = nullptr;
+ _preview = nullptr;
 }
 #if 0
 /*public*/ void setToolTipText(QString tip) {
@@ -190,8 +190,8 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 
 /*public*/ void CatalogPanel::updatePanel()
 {
- if (log->isDebugEnabled()) log->debug(QString("updatePanel: _dTree.isSelectionEmpty()= ")+(_dTree->currentIndex().isValid()?"no":"yes") + ", _dTree.getSelectionPath() is NULL " +((_dTree->currentIndex().data().toString()==NULL)?"yes":"no"));
- if (!_dTree->isSelectionEmpty() && _dTree->getSelectionPath()!=NULL ) {
+ if (log->isDebugEnabled()) log->debug(QString("updatePanel: _dTree.isSelectionEmpty()= ")+(_dTree->currentIndex().isValid()?"no":"yes") + ", _dTree.getSelectionPath() is NULL " +((_dTree->currentIndex().data().toString()==nullptr)?"yes":"no"));
+ if (!_dTree->isSelectionEmpty() && _dTree->getSelectionPath()!=nullptr ) {
  {
 //  try
 //  {
@@ -215,7 +215,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 {
  CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  CatalogTree* tree = manager->getBySystemName(systemName);
- if (tree == NULL)
+ if (tree == nullptr)
  {
   tree = manager->newCatalogTree(systemName, userName);
   tree->insertNodes(path);
@@ -288,12 +288,12 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 /*private*/ CatalogTreeNode* CatalogPanel::getCorrespondingNode(CatalogTreeNode* node)
 {
  QVector<TreeNode*>* nodes = node->getPath();
- CatalogTreeNode* cNode = NULL;
+ CatalogTreeNode* cNode = nullptr;
  for (int i=0; i<_branchModel->size(); i++)
  {
   CatalogTreeNode* cRoot = (CatalogTreeNode*)_branchModel->at(i)->getRoot();
   cNode = match(cRoot, nodes, 1);
-  if (cNode != NULL)
+  if (cNode != nullptr)
   {
    break;
   }
@@ -313,7 +313,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
   return cRoot;
  }
  QVectorIterator<CatalogTreeNode*>* e = (QVectorIterator<CatalogTreeNode*>*)cRoot->children();
- CatalogTreeNode* result = NULL;
+ CatalogTreeNode* result = nullptr;
  while (e->hasNext())
  {
   CatalogTreeNode* cNode = e->next();
@@ -333,12 +333,12 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 /*private*/ CatalogTree* CatalogPanel::getCorespondingModel(CatalogTreeNode* node)
 {
  QVector<TreeNode*>* nodes = node->getPath();
- CatalogTree* model = NULL;
+ CatalogTree* model = nullptr;
  for (int i=0; i<_branchModel->size(); i++)
  {
   model = _branchModel->at(i);
   CatalogTreeNode* cRoot = (CatalogTreeNode*)model->getRoot();
-  if (match(cRoot, nodes, 1) != NULL)
+  if (match(cRoot, nodes, 1) != nullptr)
   {
    break;
   }
@@ -567,7 +567,7 @@ void CatalogPanel::grayButtonClicked()
 /*protected*/ void CatalogPanel::resetPanel()
 {
 //    _selectedImage = NULL;
- if (_preview == NULL)
+ if (_preview == nullptr)
  {
   return;
  }
@@ -578,7 +578,7 @@ void CatalogPanel::grayButtonClicked()
  QObjectList l = _preview->children();
  foreach(QObject* o, l)
  {
-  if(qobject_cast<QWidget*>(o) !=NULL)
+  if(qobject_cast<QWidget*>(o) !=nullptr)
    delete o;
  }
  if(_preview->layout())
@@ -603,13 +603,13 @@ void CatalogPanel::grayButtonClicked()
 {
  resetPanel();
  CatalogTreeNode* node = getSelectedNode();
- if (node == NULL) {
-     return NULL;
+ if (node == nullptr) {
+     return nullptr;
  }
  QVector<CatalogTreeLeaf*>* leaves = node->getLeaves();
 
- if (leaves == NULL || leaves->isEmpty()) {
-     return NULL;
+ if (leaves == nullptr || leaves->isEmpty()) {
+     return nullptr;
  }
  int numCol = 1;
  while (numCol * numCol < leaves->size()) {
@@ -681,11 +681,11 @@ void CatalogPanel::grayButtonClicked()
   c.insets = new Insets(5, 5, 0, 0);
 
 //            JLabel image = NULL;
-  DragJLabel* nameLabel = NULL;
+  DragJLabel* nameLabel = nullptr;
   if (_noDrag)
   {
 //                image = new JLabel();
-   nameLabel = new DragJLabel(/*info.fileName()*/NULL);
+   nameLabel = new DragJLabel(/*info.fileName()*/nullptr);
   }
   else
   {
@@ -789,13 +789,13 @@ void CatalogPanel::grayButtonClicked()
  while (true)
  {
   //if (comp instanceof Frame )
-  if(qobject_cast<JFrame*>(comp)!= NULL)
+  if(qobject_cast<JFrame*>(comp)!= nullptr)
   {
    return (JFrame*)comp;
   }
-  if (comp==NULL)
+  if (comp==nullptr)
   {
-   return NULL;
+   return nullptr;
   }
   comp = (QWidget*)comp->parent();
  }
@@ -804,7 +804,7 @@ void CatalogPanel::grayButtonClicked()
 /*public*/ /*static*/ void CatalogPanel::packParentFrame(QWidget* comp)
 {
  JFrame* frame = getParentFrame(comp);
- if (frame!=NULL)
+ if (frame!=nullptr)
  {
   frame->pack();
  }
@@ -897,7 +897,7 @@ void CatalogPanel::grayButtonClicked()
 {
  if(_dTree->currentIndex().isValid())
   return (CatalogTreeNode*)_dTree->currentIndex().internalPointer();
- return NULL;
+ return nullptr;
 }
 
 
@@ -912,10 +912,10 @@ void CatalogPanel::rename(NamedIcon* icon)
     QString name = JOptionPane::showInputDialog(getParentFrame(this),
                                           tr("newIconName %1").arg(icon->getName()),
                                           JOptionPane::QUESTION_MESSAGE);
-    if (name != NULL && name.length() > 0) {
+    if (name != nullptr && name.length() > 0) {
         CatalogTreeNode* node = getSelectedNode();
         CatalogTreeLeaf* leaf = node->getLeaf(icon->getName(), icon->getURL());
-        if (leaf != NULL) {
+        if (leaf != nullptr) {
             leaf->setName(name);
         }
         //getParentFrame(this).invalidate();
@@ -929,14 +929,14 @@ void CatalogPanel::rename(NamedIcon* icon)
 *  icon changing method rather than DnD.
 *
 public NamedIcon* CatalogPanel::getSelectedIcon() {
-    if (_selectedImage != NULL) {
+    if (_selectedImage != nullptr) {
         QLabel* l = (QLabel*)_selectedImage.getComponent(0);
         // deselect
         //setSelectionBackground(_currentBackground); Save for use as alternative to DnD.
         _selectedImage = NULL;
         return (NamedIcon)l.getIcon();
     }
-    return NULL;
+    return nullptr;
 } */
 
 ///*private*/ void CatalogPanel::showPopUp(MouseEvent e, NamedIcon* icon) {
@@ -945,7 +945,7 @@ public NamedIcon* CatalogPanel::getSelectedIcon() {
     if (log->isDebugEnabled()) log->debug("showPopUp "+icon->toString());
     QMenu* popup = new QMenu();
     popup->addAction(new QAction(icon->getName(),this));
-    popup->addAction(new QAction(icon->getURL()));
+    popup->addAction(new QAction(icon->getURL(),this));
     popup->addSeparator();
 
 //    popup.add(new AbstractAction(tr("Rename Icon")) {

@@ -42,6 +42,7 @@ private slots:
     void renameNode();
     void deleteNode();
     void openItem_triggered();
+    friend class InstanceManager;
 };
 class IIEWindowListener : public WindowListener
 {

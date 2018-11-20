@@ -122,10 +122,10 @@ void AbstractSignalMast::common()
 }
 
 void AbstractSignalMast::configureSignalSystemDefinition(QString name) {
-    systemDefn = ((DefaultSignalSystemManager*)InstanceManager::signalSystemManagerInstance())->getSystem(name);
+    systemDefn = static_cast<SignalSystemManager*>( InstanceManager::getDefault("SignalSystemManager"))->getSystem(name);
     if (systemDefn == NULL) {
         log->error("Did not find signal definition: "+name);
-        //throw new IllegalArgumentException("Signal definition not found: "+name);
+//        throw  IllegalArgumentException("Signal definition not found: "+name);
     }
 }
 
@@ -154,6 +154,15 @@ void AbstractSignalMast::configureAspectTable(QString signalSystemName, QString 
     }
     return v;
 }
+
+/**
+  * {@inheritDoc }
+  */
+ /*public*/ QString AbstractSignalMast::getMastType() { return mastType; }
+ /*public*/ void AbstractSignalMast::setMastType(/*@Nonnull*/ QString type) {
+     //Objects.requireNonNull(type, "MastType cannot be null");
+     mastType = type;
+ }
 
 /**
 * returns a list of all the known aspects for this mast, including those that have been disabled

@@ -15,6 +15,7 @@
 #include "location.h"
 #include "track.h"
 #include "locationtrackpair.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -34,6 +35,8 @@ namespace Operations
  {
   log = new Logger("ScheduleManager");
   pcs = new PropertyChangeSupport(this);
+  setProperty("InstanceManagerAutoDefault", "yes");
+
 
   //CarTypes::instance().addPropertyChangeListener(this);
   connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -43,27 +46,19 @@ namespace Operations
   // stores known Schedule instances by id
   _scheduleHashTable = QHash<QString, Schedule*>();
 
+  setProperty("InstanceManagerAutoDefault", "true");
+  setProperty("InstanceManagerAutoInitialize", "true");
+
  }
 
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ ScheduleManager* ScheduleManager::_instance = NULL;
+// /*private*/ /*static*/ ScheduleManager* ScheduleManager::_instance = NULL;
 
  /*public*/ /*static*/ /*synchronized*/ ScheduleManager* ScheduleManager::instance()
  {
- Logger* log = new Logger("ScheduleManager");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("ScheduleManager creating instance");
-         }
-         // create and load
-         _instance = new ScheduleManager();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("ScheduleManager returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
+  return static_cast<ScheduleManager*>(InstanceManager::getDefault("ScheduleManager"));
  }
 
  /*public*/ void ScheduleManager::dispose() {
@@ -398,4 +393,12 @@ namespace Operations
      pcs->firePropertyChange(p, old, n);
  }
 
+ //@Override
+ /*public*/ void ScheduleManager::initialize() {
+     //InstanceManager::getDefault("CarTypes").addPropertyChangeListener(this);
+ connect(static_cast<CarTypes*>(InstanceManager::getDefault("CarTypes"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //InstanceManager::getDefault("CarRoads").addPropertyChangeListener(this);
+ connect(static_cast<CarRoads*>(InstanceManager::getDefault("CarRoads"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
+ }
 }

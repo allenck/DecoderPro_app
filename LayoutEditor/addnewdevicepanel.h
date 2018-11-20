@@ -15,6 +15,11 @@ public:
     //explicit AddDevicePanel(QWidget *parent = 0);
     /*public*/ AddNewDevicePanel(JTextField* sys, JTextField* userName,QString addButtonLabel, ActionListener* listener, ActionListener* cancelListener, QWidget *parent = 0);
     /*public*/ void addLabels(QString labelSystemName, QString labelUserName);
+ /**
+      * Activate the OK button without user key activity.
+      */
+     /*public*/ void setOK();
+     /*public*/ void setSystemNameFieldIneditable();
 
 signals:
 

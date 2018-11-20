@@ -1,7 +1,9 @@
 #include "newpanelaction.h"
 #include "layouteditoraction.h"
 #include "paneleditoraction.h"
-#include <QMessageBox>
+#include "joptionpane.h"
+#include "controlpaneleditoraction.h"
+#include "switchboardeditoraction.h"
 
 NewPanelAction::NewPanelAction(QObject *parent) :
   AbstractAction(tr("New Panel..."),parent)
@@ -32,7 +34,7 @@ NewPanelAction::NewPanelAction(QObject *parent) :
 }
 
 ///*public*/ NewPanelAction() {
-//    this(Bundle.getMessage("MenuItemNew"));
+//    this(tr("MenuItemNew"));
 //}
 void NewPanelAction::common()
 {
@@ -42,25 +44,22 @@ void NewPanelAction::common()
 /*public*/ void NewPanelAction::actionPerformed(ActionEvent* /*e*/)
 {
  // allow user to choose a panel editor
-// int response = JOptionPane.showOptionDialog(null,
-//         Bundle.getMessage("ChoiceText1") + "\n" + Bundle.getMessage("ChoiceText2") + "\n"
-//         + Bundle.getMessage("ChoiceText3"), Bundle.getMessage("ChooseEditor"),
-//         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-//         new Object[]{Bundle.getMessage("Cancel"), Bundle.getMessage("LayoutEditor"),
-//             Bundle.getMessage("PanelEditor")},
-//         Bundle.getMessage("PanelEditor"));
- QMessageBox* box = new
- QMessageBox(QMessageBox::Question, tr("Choose Editor"), tr("Please choose an editor for your new panel.") + "\n" + tr("Click 'Panel Editor' for the iconic PanelPro editor.") + "\n" + tr("Click 'Control Panel Editor' for another panel editor."));
- QPushButton* panelButton = box->addButton(tr("Panel Editor"),QMessageBox::AcceptRole);
- QPushButton* controlPanelButton = box->addButton(tr("Control Panel Editor"),QMessageBox::AcceptRole);
- box->addButton(QMessageBox::Cancel);
- box->exec();
- if(box->clickedButton() == (QAbstractButton*)panelButton)
- {
-  LayoutEditorAction(this).actionPerformed(NULL);
- }
- else if (box->clickedButton() == (QAbstractButton*)controlPanelButton)
- {
-  PanelEditorAction(this).actionPerformed(NULL);
- }
-}
+ int response = JOptionPane::showOptionDialog(nullptr,
+                 tr("Please choose an editor for your new panel:") + "\n" + tr("Click 'Panel Editor' for the iconic PanelPro editor.") + "\n"
+                 + tr("Click 'Control Panel Editor' for another panel editor.") + "\n" + tr("Click 'Layout Editor' for the drawing editor.") + "\n"
+                         + tr("Click 'Switchboard Editor' for a compact control panel."),
+                 tr("ChooseEditor"),
+                 JOptionPane::YES_NO_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
+                  QVariantList{tr("SwitchboardEditor"), tr("LayoutEditor"),
+                         tr("ControlPanelEditor"), tr("PanelEditor"),
+                         tr("ButtonCancel")},
+                 tr("PanelEditor")); // title
+         if (response == 3) {
+             PanelEditorAction(this).actionPerformed(nullptr);
+         } else if (response == 2) {
+              ControlPanelEditorAction(this).actionPerformed(nullptr);
+         } else if (response == 1) {
+              LayoutEditorAction(this).actionPerformed(nullptr);
+         } else if (response == 0) {
+              SwitchboardEditorAction(this).actionPerformed(nullptr);
+         }}

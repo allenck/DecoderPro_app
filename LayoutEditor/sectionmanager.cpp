@@ -9,9 +9,14 @@ SectionManager::SectionManager(QObject *parent) :
     AbstractManager(parent)
 {
  setObjectName("SectionManager");
+ setProperty("JavaClassName", "jmri.managers.SectionManager");
+ setProperty("InstanceManagerAutoDefault", "true");
+
  lastAutoSectionRef = 0;
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
+ setProperty("InstanceManagerAutoDefault", "yes");
+
 }
 /**
  * Basic Implementation of a SectionManager.

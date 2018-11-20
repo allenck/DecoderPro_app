@@ -65,7 +65,10 @@ LnSensorManager::LnSensorManager(LnTrafficController* tc, QString prefix, QObjec
     AbstractSensorManager(parent)
 {
  setObjectName("LnSensorManager");
- registerSelf();
+ setProperty("JavaClassName", "jmri.jmrix.loconet.LnSensorManager");
+
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
  this->prefix = prefix.mid(0,1);
  this->tc = tc;
  busy = false;

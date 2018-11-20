@@ -75,7 +75,7 @@ TableColumnModel(parent)
  connect(aColumn, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
  invalidateWidthCache();
 
- // Post columnAdded event notification
+// // Post columnAdded event notification
  fireColumnAdded(new TableColumnModelEvent(this, 0, getColumnCount() - 1));
 }
 
@@ -248,6 +248,8 @@ TableColumnModel(parent)
  */
 /*public*/ TableColumn* DefaultTableColumnModel::getColumn(int columnIndex)
 {
+ if(columnIndex >= tableColumns.size())
+  return nullptr;
  return tableColumns.at(columnIndex);
 }
 

@@ -1426,8 +1426,8 @@ public void setAllEditable(boolean state) {
     //if (pos instanceof TurnoutIcon)
  if(qobject_cast<TurnoutIcon*>(pos)!= NULL)
  {
-  makePalettteFrame("IndicatorTO");
-  _trackTOPanel = new IndicatorTOItemPanel(_convertFrame, "IndicatorTO", NULL, NULL, _editor, (QWidget*)this);
+  _convertFrame = new ConvertFrame("IndicatorTO", (PositionableLabel*)pos, this);
+  _trackTOPanel = new IndicatorTOItemPanel(_convertFrame->_paletteFrame, "IndicatorTO", NULL, NULL, _editor, (QWidget*)this);
   _convertDialog->layout()->addWidget(_trackTOPanel);
 //        ActionListener updateAction = new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent a) {
@@ -1438,8 +1438,8 @@ public void setAllEditable(boolean state) {
      _trackTOPanel->init(updateAction);
      _convertDialog->layout()->addWidget(_trackTOPanel);
     } else {
-        makePalettteFrame("IndicatorTrack");
-        _trackPanel = new IndicatorItemPanel(_convertFrame, "IndicatorTrack", NULL, _editor, (QWidget*)this);
+        _convertFrame = new ConvertFrame("IndicatorTrack", (PositionableLabel*)pos, this);
+        _trackPanel = new IndicatorItemPanel(_convertFrame->_paletteFrame, "IndicatorTrack", NULL, _editor, (QWidget*)this);
 //            _convertDialog->add(_trackPanel);
 //        ActionListener updateAction = new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent a) {
@@ -1467,34 +1467,27 @@ void TOPActionListener::actionPerformed(ActionEvent */*e*/)
   parent->convertSeg();
 }
 
-/*private*/ void CircuitBuilder::makePalettteFrame(QString title) {
-    ItemPalette::loadIcons();
-//    _convertDialog = new JmriJFrame(_editor, tr("EditItem"), Bundle.getMessage(title)), true);
-    _convertDialog = new QDialog();
-    _convertDialog->setWindowTitle( tr("Edit %1 Icon").arg(title));
-    _convertFrame = new convertFrame(_convertDialog, this);
-
-//    _convertDialog->setLocationRelativeTo(_editor);
-//    _convertDialog->toFront();
-}
-
 /*
  * gimmick to get JDialog to re-layout contents and repaint
  */
 //static class convertFrame extends JmriJFrame {
 //    JDialog _dialog;
-convertFrame::convertFrame (QDialog* dialog, CircuitBuilder* parent) : DisplayFrame(false, false)
+ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder* circuitBuilder) : JmriJFrame(false, false)
 {
  //super(false, false);
-  _dialog = dialog;
-  this->parent = parent;
+ ItemPalette::loadIcons(circuitBuilder->_editor);
+ _paletteFrame = pos->makePaletteFrame(title);
+ _dialog = new JDialog(circuitBuilder->_editor, tr("Edit Item %1").arg(title), true);
+
+ _dialog->setLocationRelativeTo(circuitBuilder->_editor);
+ _dialog->toFront();
 }
 
-/*public*/ void convertFrame::pack() {
-    JmriJFrame::pack();
-//        _dialog->pack();
+/*public*/ void ConvertFrame::dispose() {
+    _dialog->dispose();
 }
 //};
+
 
 /*private*/ void CircuitBuilder::convertTO() {
     IndicatorTurnoutIcon* t = new IndicatorTurnoutIcon(_editor);

@@ -15,6 +15,7 @@ public:
  /*public*/ void addColumn(TableColumn* column);
  /*public*/ void removeColumn(TableColumn* column);
  /*public*/ void moveColumn(int oldIndex, int newIndex);
+ /*public*/ void moveColumn(int columnIndex, int newIndex, bool onlyVisible);
  /*public*/ int getColumnCount(bool onlyVisible);
  /*public*/ QListIterator<TableColumn*> getColumns(bool onlyVisible);
  /*public*/ int getColumnIndex(QVariant identifier, bool onlyVisible);

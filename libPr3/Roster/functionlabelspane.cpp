@@ -353,7 +353,7 @@ void FunctionLabelsPane::on_btnSave_clicked()
 // QTextStream stream (&file);
 // stream.setCodec("UTF-8");
 // doc.save(stream,2);
- Roster::writeRosterFile();
+ Roster::writeRoster();
 }
 
 /**

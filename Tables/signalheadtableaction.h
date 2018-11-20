@@ -40,11 +40,11 @@ signals:
     void propertyChange(PropertyChangeEvent *);
 public slots:
     void typeChanged();
-    void okPressed(ActionEvent* e = 0);
-    void cancelPressed(ActionEvent*  e = 0);
-    void updatePressed(ActionEvent* e = 0);
-    void on_editMenuWindow_aboutToShow();
-    void on_addMenuWindow_aboutToShow();
+    void okPressed(ActionEvent* e = nullptr);
+    void cancelPressed(ActionEvent*  e = nullptr);
+    void updatePressed(ActionEvent* e = nullptr);
+    //void on_editMenuWindow_aboutToShow();
+    //void on_addMenuWindow_aboutToShow();
     static QString getName();
 
 private:

@@ -5,6 +5,8 @@ DefaultMemoryManager::DefaultMemoryManager(QObject *parent) :
     AbstractMemoryManager(parent)
 {
  setObjectName("DefaultMemoryManager");
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
 }
 /**
  * Provide the concrete implementation for the Internal Memory Manager.

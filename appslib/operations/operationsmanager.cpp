@@ -11,6 +11,7 @@
 #include "instancemanager.h"
 #include "schedulemanager.h"
 #include "file.h"
+#include "trainschedulemanager.h"
 
 //OperationsManager::OperationsManager(QObject *parent) :
 //  QObject(parent)
@@ -26,45 +27,44 @@ namespace Operations
 ///*public*/ final class OperationsManager {
 
 
-    /*static*/ /*private*/ OperationsManager* OperationsManager::instance = nullptr;
+//    /*static*/ /*private*/ OperationsManager* OperationsManager::instance = nullptr;
     //static private final Logger log = LoggerFactory.getLogger(OperationsManager.class);
 
-/*private*/ OperationsManager::OperationsManager(QObject *parent) :
+/*public*/ OperationsManager::OperationsManager(QObject *parent) :
     QObject(parent)
 {
  //this("operations"); // NOI18N
  operationsFolderName = "operations";
- common();
+ setProperty("InstanceManagerAutoDefault", "true");
+ setProperty("InstanceManagerAutoInitialize", "true");
+
+ //common();
 }
 
-/*private*/ OperationsManager::OperationsManager(QString operationsFolderName, QObject *parent) :
-QObject(parent) {
-        this->operationsFolderName = operationsFolderName;
- common();
-}
-void OperationsManager::common()
+void OperationsManager::initialize()
 {
-        // ensure the default instance of all operations managers
-        // are initialized by calling their instance() methods
-        // Is there a different, more optimal order for this?
-        CarManager::instance();
-        EngineManager::instance();
-        TrainManager::instance();
-        LocationManager::instance();
-        RouteManager::instance();
-        ScheduleManager::instance();
-    //        TrainScheduleManager::instance();
-        this->setShutDownTask(this->getDefaultShutDownTask());
-        // auto backup?
-        if (Setup::isAutoBackupEnabled()) {
-            try {
-                AutoBackup* backup = new AutoBackup();
-                backup->autoBackup();
-            } catch (Exception ex) {
-                log->debug("Auto backup after enabling Auto Backup flag."/*, ex*/);
-            }
-        }
-    }
+ // ensure the default instance of all operations managers
+ // are initialized by calling their instance() methods
+ // Is there a different, more optimal order for this?
+ CarManager::instance();
+ EngineManager::instance();
+ TrainManager::instance();
+ LocationManager::instance();
+ RouteManager::instance();
+ ScheduleManager::instance();
+ TrainScheduleManager::instance();
+ this->setShutDownTask(this->getDefaultShutDownTask());
+ // auto backup?
+ if (Setup::isAutoBackupEnabled()) {
+     try {
+         AutoBackup* backup = new AutoBackup();
+         backup->autoBackup();
+     } catch (Exception ex) {
+         log->debug("Auto backup after enabling Auto Backup flag."/*, ex*/);
+     }
+ }
+
+}
 
     /**
      * Get the OperationsManager.
@@ -72,19 +72,7 @@ void OperationsManager::common()
      * @return The OperationsManager default instance.
      */
     /*public*/ /*static*/ OperationsManager* OperationsManager::getInstance() {
-        if (instance == nullptr) {
-            instance = new OperationsManager();
-        }
-        return instance;
-    }
-
-    /**
-     * Override the default OperationsManager. Used for unit testing.
-     *
-     * @param operationsFolderName
-     */
-    /*protected*/ /*static*/ void OperationsManager::setInstance(QString operationsFolderName) {
-        instance = new OperationsManager(operationsFolderName);
+        return static_cast<OperationsManager*>(InstanceManager::getDefault("OperationsManager"));
     }
 
     /**

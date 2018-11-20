@@ -140,7 +140,7 @@ BeanItemPanel* BlockEditAction::physcialDetails() {
 
  defaultBlockSpeedText = (tr("UseGlobal") + " " + ((BlockManager*) InstanceManager::getDefault("BlockManager"))->getDefaultSpeed());
     speedList.append(defaultBlockSpeedText);
-    QVector<QString> _speedMap = SignalSpeedMap::getMap()->getValidSpeedNames();
+    QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
     for (int i = 0; i < _speedMap.size(); i++) {
         if (!speedList.contains(_speedMap.at(i))) {
             speedList.append(_speedMap.at(i));

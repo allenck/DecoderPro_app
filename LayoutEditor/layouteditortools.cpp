@@ -25,6 +25,7 @@
 #include <QCompleter>
 #include <QGroupBox>
 #include "borderlayout.h"
+#include "jmribeancombobox.h"
 
 //LayoutEditorTools::LayoutEditorTools(QObject *parent) :
 //    QObject(parent)
@@ -193,7 +194,7 @@
  turnoutMastNameField = new JTextField(16);
  signalMastTurnoutPanel = new QWidget();
  turnoutBlocks =  QVector<QString>(4);
- usedMasts = new QList<NamedBean*>();
+ usedMasts = QList<NamedBean*>();
 
  // operational variables for Set Signals at Double Crossover Turnout tool
  setSignalsAtXoverFrame = NULL;
@@ -245,7 +246,11 @@
  setSensorsFrame = NULL;
  turnoutSensorFrame = NULL;
 
- turnoutSensorNameField = new JTextField(16);
+ //turnoutSensorNameField = new JTextField(16);
+ sensorsTurnoutComboBox = new JmriBeanComboBox(
+    InstanceManager::turnoutManagerInstance(),
+    nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+
  changeSensorIcon = NULL;
 
  turnoutSenBlocks = QVector<QString>(4);
@@ -578,7 +583,7 @@
 
 // display dialog for Set Signals at Turnout tool
 /*public*/ void LayoutEditorTools::setSignalsAtTurnoutFromMenu( LayoutTurnout* to,
-                MultiIconEditor* theEditor, JmriJFrame* theFrame )
+                MultiIconEditor* theEditor, JFrame* theFrame )
 {
     turnoutFromMenu = true;
     layoutTurnout = to;
@@ -586,7 +591,7 @@
     turnoutNameField->setText(to->getTurnoutName());
     setSignalsAtTurnout(theEditor,theFrame);
 }
-/*public*/ void LayoutEditorTools::setSignalsAtTurnout( MultiIconEditor* theEditor, JmriJFrame* theFrame )
+/*public*/ void LayoutEditorTools::setSignalsAtTurnout( MultiIconEditor* theEditor, JFrame* theFrame )
 {
  signalIconEditor = theEditor;
  signalFrame = theFrame;
@@ -1714,7 +1719,7 @@ else if (throatDivergingHead==NULL)
  *      An error message also results if a signal head with the entered name is not
  *      found in the SignalTable.
  */
-/*public*/ SignalHead* LayoutEditorTools::getSignalHeadFromEntry(JTextField* signalName, bool requireEntry, JmriJFrame* frame)
+/*public*/ SignalHead* LayoutEditorTools::getSignalHeadFromEntry(JTextField* signalName, bool requireEntry, JFrame* frame)
 {
  QString str = signalName->text().trimmed();
  if ( (str==NULL) || (str==("")) )
@@ -2414,7 +2419,7 @@ else if (throatDivergingHead==NULL)
 
 
 // display dialog for Set Signals at Block Boundary tool
-/*public*/ void LayoutEditorTools::setSignalsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JmriJFrame* theFrame )
+/*public*/ void LayoutEditorTools::setSignalsAtBlockBoundaryFromMenu(PositionablePoint* p, MultiIconEditor* theEditor, JFrame *theFrame )
 {
     boundaryFromMenu = true;
     boundary = p;
@@ -2424,7 +2429,7 @@ else if (throatDivergingHead==NULL)
     return;
 }
 
-/*public*/ void LayoutEditorTools::setSignalsAtBlockBoundary( MultiIconEditor* theEditor, JmriJFrame* theFrame )
+/*public*/ void LayoutEditorTools::setSignalsAtBlockBoundary( MultiIconEditor* theEditor, JFrame* theFrame )
 {
  signalIconEditor = theEditor;
  signalFrame = theFrame;
@@ -8848,8 +8853,8 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
 
 void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
     createListUsedSignalMasts();
-    usedMasts->removeAt(usedMasts->indexOf(eastSignalMast->getBean()));
-    usedMasts->removeAt(usedMasts->indexOf(westSignalMast->getBean()));
+    usedMasts.removeAt(usedMasts.indexOf(eastSignalMast->getBean()));
+    usedMasts.removeAt(usedMasts.indexOf(westSignalMast->getBean()));
     eastSignalMast->getCombo()->excludeItems(usedMasts);
     westSignalMast->getCombo()->excludeItems(usedMasts);
 }
@@ -9622,48 +9627,48 @@ QPoint LayoutEditorTools::southEastToNorthWest(QPoint p, PositionableIcon* l, in
 
 
 void LayoutEditorTools::createListUsedSignalMasts(){
-    usedMasts = new QList<NamedBean*>();
+    usedMasts = QList<NamedBean*>();
     for (int i=0;i<layoutEditor->pointList->size();i++) {
         PositionablePoint* po = layoutEditor->pointList->at(i);
         //We allow the same sensor to be allocated in both directions.
         if (po!=boundary){
             if (po->getEastBoundSignalMast()!=NULL && po->getEastBoundSignalMast()!=(""))
-                usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getEastBoundSignalMast()));
+                usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getEastBoundSignalMast()));
             if (po->getWestBoundSignalMast()!=NULL && po->getWestBoundSignalMast()!=(""))
-                usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getWestBoundSignalMast()));
+                usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getWestBoundSignalMast()));
         }
     }
 
     foreach (LayoutTurnout* to , *layoutEditor->turnoutList) {
         if (to->getSignalAMast()!=NULL && to->getSignalAMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalAMast()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalAMast()));
         if (to->getSignalBMast()!=NULL && to->getSignalBMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalBMast()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalBMast()));
         if (to->getSignalCMast()!=NULL && to->getSignalCMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalCMast()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalCMast()));
         if (to->getSignalDMast()!=NULL && to->getSignalDMast()!=("") )
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalDMast()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalDMast()));
     }
     foreach (LevelXing* x, *layoutEditor->xingList) {
         if (x->getSignalAMastName()!=NULL && x->getSignalAMastName()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalAMastName()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalAMastName()));
         if (x->getSignalBMastName()!=NULL && x->getSignalBMastName()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalBMastName()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalBMastName()));
         if (x->getSignalCMastName()!=NULL && x->getSignalCMastName()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalCMastName()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalCMastName()));
         if (x->getSignalDMastName()!=NULL && x->getSignalDMastName()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalDMastName()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(x->getSignalDMastName()));
     }
 #if 1
     for (LayoutSlip* sl : *layoutEditor->slipList) {
         if (sl->getSignalAMast()!=NULL && sl->getSignalAMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalAMast()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalAMast()));
         if (sl->getSignalBMast()!=NULL && sl->getSignalBMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalBMast()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalBMast()));
         if (sl->getSignalCMast()!=NULL && sl->getSignalCMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalCMast()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalCMast()));
         if (sl->getSignalDMast()!=NULL && sl->getSignalDMast()!=(""))
-            usedMasts->append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalDMast()));
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalDMast()));
     }
 #endif
 }
@@ -9671,10 +9676,10 @@ void LayoutEditorTools::createListUsedSignalMasts(){
 void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
     turnoutSignalMastsGetSaved(NULL);
     createListUsedSignalMasts();
-    usedMasts->removeAt(usedMasts->indexOf(turnoutSignalMastA->getBean()));
-    usedMasts->removeAt(usedMasts->indexOf(turnoutSignalMastB->getBean()));
-    usedMasts->removeAt(usedMasts->indexOf(turnoutSignalMastC->getBean()));
-    usedMasts->removeAt(usedMasts->indexOf(turnoutSignalMastD->getBean()));
+    usedMasts.removeAt(usedMasts.indexOf(turnoutSignalMastA->getBean()));
+    usedMasts.removeAt(usedMasts.indexOf(turnoutSignalMastB->getBean()));
+    usedMasts.removeAt(usedMasts.indexOf(turnoutSignalMastC->getBean()));
+    usedMasts.removeAt(usedMasts.indexOf(turnoutSignalMastD->getBean()));
     turnoutSignalMastA->getCombo()->excludeItems(usedMasts);
     turnoutSignalMastB->getCombo()->excludeItems(usedMasts);
     turnoutSignalMastC->getCombo()->excludeItems(usedMasts);
@@ -10441,10 +10446,10 @@ return;
 void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
  slipSignalMastsGetSaved(NULL);
  createListUsedSignalMasts();
- usedMasts->removeOne(slipSignalMastA->getBean());
- usedMasts->removeOne(slipSignalMastB->getBean());
- usedMasts->removeOne(slipSignalMastC->getBean());
- usedMasts->removeOne(slipSignalMastD->getBean());
+ usedMasts.removeOne(slipSignalMastA->getBean());
+ usedMasts.removeOne(slipSignalMastB->getBean());
+ usedMasts.removeOne(slipSignalMastC->getBean());
+ usedMasts.removeOne(slipSignalMastD->getBean());
  slipSignalMastA->getCombo()->excludeItems(usedMasts);
  slipSignalMastB->getCombo()->excludeItems(usedMasts);
  slipSignalMastC->getCombo()->excludeItems(usedMasts);
@@ -10955,10 +10960,10 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
 {
  xingSignalMastsGetSaved(NULL);
  createListUsedSignalMasts();
- usedMasts->removeOne(xingSignalMastA->getBean());
- usedMasts->removeOne(xingSignalMastB->getBean());
- usedMasts->removeOne(xingSignalMastC->getBean());
- usedMasts->removeOne(xingSignalMastD->getBean());
+ usedMasts.removeOne(xingSignalMastA->getBean());
+ usedMasts.removeOne(xingSignalMastB->getBean());
+ usedMasts.removeOne(xingSignalMastC->getBean());
+ usedMasts.removeOne(xingSignalMastD->getBean());
  xingSignalMastA->getCombo()->excludeItems(usedMasts);
  xingSignalMastB->getCombo()->excludeItems(usedMasts);
  xingSignalMastC->getCombo()->excludeItems(usedMasts);
@@ -11445,7 +11450,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
  layoutTurnout = to;
  turnout = to->getTurnout();
  //turnoutMastNameField->setText(to->getTurnoutName());
- turnoutSensorNameField->setText(to->getTurnoutName());
+ sensorsTurnoutComboBox->setText(to->getTurnoutName());
  turnoutSenBlocks =  QVector<QString>(4);
  for(int i = 0; i<blocks.length(); i++)
  {
@@ -11478,22 +11483,12 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
         turnoutSensorC = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
         turnoutSensorD = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
 
-        if (turnoutSensorFromMenu) {
-            QLabel* turnoutSensorNameLabel = new QLabel( tr("Turnout")+" "+
-                tr("Name")+" : "+layoutTurnout->getTurnoutName());
-            panel1->layout()->addWidget(turnoutSensorNameLabel);
-            turnoutSensorA->setTextField(layoutTurnout->getSensorA());
-            turnoutSensorB->setTextField(layoutTurnout->getSensorB());
-            turnoutSensorC->setTextField(layoutTurnout->getSensorC());
-            turnoutSensorD->setTextField(layoutTurnout->getSensorD());
-        }
-        else {
-            QLabel* turnoutSensorNameLabel = new QLabel( tr("Turnout")+" "+
+        turnoutSensorNameLabel = new QLabel( tr("Turnout")+" "+
                                                             tr("Name") );
-            panel1->layout()->addWidget(turnoutSensorNameLabel);
-            panel1->layout()->addWidget(turnoutSensorNameField);
-            turnoutSensorNameField->setToolTip(tr("SensorsTurnoutNameHint"));
-        }
+        panel1->layout()->addWidget(turnoutSensorNameLabel);
+        panel1->layout()->addWidget(sensorsTurnoutComboBox);
+        sensorsTurnoutComboBox->setToolTip(tr("Enter name (system or user) of turnout where sensors are needed."));
+
         centralWidgetLayout->addWidget(panel1);
         QFrame* line1 = new QFrame();
         line1->setObjectName(QString::fromUtf8("line"));
@@ -11927,7 +11922,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     QString str = "";
     turnout = NULL;
     layoutTurnout = NULL;
-    str = turnoutSensorNameField->text();
+    str = sensorsTurnoutComboBox->currentText();
     if ( (str==NULL) || (str==("")) ) {
 //        JOptionPane.showMessageDialog(setSensorsFrame,tr("SensorsError1"),
 //                            tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -11945,7 +11940,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     }
     else if ( (turnout->getUserName()==NULL) || (turnout->getUserName()==("")) ||
                             turnout->getUserName()!=(str) ) {
-        turnoutSensorNameField->setText(str);
+        sensorsTurnoutComboBox->setText(str);
     }
     for (int i=0;i<layoutEditor->turnoutList->size();i++) {
         t = layoutEditor->turnoutList->at(i);

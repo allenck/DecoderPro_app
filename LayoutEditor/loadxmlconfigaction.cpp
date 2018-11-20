@@ -65,12 +65,12 @@ void LoadXmlConfigAction::common()
 {
  bool results = false;
  File* file = getFile(fileChooser);
- if (file != NULL)
+ if (file != nullptr)
  {
   try
   {
    ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
-   if (cm == NULL)
+   if (cm == nullptr)
    {
        log->error("Failed to get default configure manager");
    }
@@ -108,9 +108,9 @@ void LoadXmlConfigAction::common()
 {
  Logger* log = new Logger("LoadXmlConfigAction");
  //fileChooser.rescanCurrentDirectory();
- int retVal = fileChooser->showDialog(NULL, "");
+ int retVal = fileChooser->showDialog(nullptr, "");
  if (retVal != JFileChooser::APPROVE_OPTION) {
-     return NULL;  // give up if no file selected
+     return nullptr;  // give up if no file selected
  }
  if (log->isDebugEnabled()) {
      log->debug("Open file: " + fileChooser->getSelectedFile()->getPath());

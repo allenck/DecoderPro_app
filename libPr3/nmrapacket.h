@@ -8,7 +8,9 @@ class LIBPR3SHARED_EXPORT NmraPacket
 {
 public:
  /*public*/ static QByteArray idlePacket();
-
+ static /*final*/ /*public*/ int accIdLowLimit;// = 1;
+     static /*final*/ /*public*/ int accIdHighLimit;// = 2044;
+     static /*final*/ /*public*/ int accIdAltHighLimit;// = 2048;
     /*public*/ static QByteArray accDecoderPkt(int addr, int active, int outputChannel);
     /*public*/ static QByteArray accDecoderPkt(int number, bool closed);
     /*public*/ static QByteArray function9Through12Packet(int address, bool longAddr, bool f9, bool f10, bool f11, bool f12 );

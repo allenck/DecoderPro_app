@@ -8,6 +8,7 @@ namespace Operations
  class TrainManager;
  class TrainSwitchLists : public TrainCommon
  {
+  Q_OBJECT
  public:
   TrainSwitchLists(QObject* parent = 0);
   /*public*/ void buildSwitchList(Location* location);

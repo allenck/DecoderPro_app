@@ -2,14 +2,15 @@
 #define ERRORHANDLER_H
 
 #include <QObject>
-#include "errormemo.h"
 
+//class Logger;
 class ErrorMemo;
 class ErrorHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit ErrorHandler(QObject *parent = 0);
+    explicit ErrorHandler(QObject *parent =nullptr);
+ ~ErrorHandler() {}
     /*public*/ void handle(ErrorMemo* e);
     /*public*/ void done();
 
@@ -17,7 +18,7 @@ signals:
 
 public slots:
 private:
- Logger log;
+ //Logger* log;
 };
 
 #endif // ERRORHANDLER_H

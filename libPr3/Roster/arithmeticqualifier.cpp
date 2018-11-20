@@ -75,7 +75,7 @@ Test::Test(QString relation, QObject *parent) : QObject(parent) {this->relation 
      case Test::NE:
         return "ne";
     default:
-       Logger::error("Unexpected switch value: {}", Test::toString(test));
+       Logger::error(tr("Unexpected switch value: %1").arg(Test::toString(test)));
         return "invalid";
     }
 }
@@ -116,7 +116,7 @@ Test::Test(QString relation, QObject *parent) : QObject(parent) {this->relation 
   case Test::NE:
     return now != value;
   default:
-    log->error("Unexpected switch value: {}",  Test::toString(test));
+    log->error(tr("Unexpected switch value: %1").arg(Test::toString(test)));
     return false;
  }
 

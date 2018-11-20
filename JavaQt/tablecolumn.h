@@ -118,7 +118,7 @@ protected:
  /*@Deprecated
  transient*/ /*protected*/ int     resizedPostingDisableCount;
 
-
+ friend class JTable;
 };
 
 #endif // TABLECOLUMN_H

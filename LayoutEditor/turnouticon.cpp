@@ -38,7 +38,7 @@
  log = new Logger("TurnoutIcon");
  //log->setDebugEnabled(true);
  _control = true;
- namedTurnout = NULL;
+ namedTurnout = nullptr;
  _iconStateMap = new QHash <int, NamedIcon*>();
  _name2stateMap = new QHash <QString, int>();
  _name2stateMap->insert("BeanStateUnknown", (Turnout::UNKNOWN));

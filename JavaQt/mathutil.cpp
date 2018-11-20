@@ -4,6 +4,7 @@ MathUtil::MathUtil()
 {
 
 }
+
 /**
 *
 * useful math methods
@@ -13,6 +14,21 @@ MathUtil::MathUtil()
 
 //@CheckReturnValue
 ///*public*/ final class MathUtil {
+
+/**
+ * @param a the first double
+ * @param b the second double
+ * @return true if a is equal to b
+ */
+/*public*/ /*static*/ bool MathUtil::equals(qreal a, qreal b) {
+    //return (Double.doubleToLongBits(a) == Double.doubleToLongBits(b));
+ return qFuzzyCompare(a,b);
+}
+/*public*/ /*static*/ /*final*/ QPointF zeroPoint2D = QPointF();
+// /*public*/ /*static*/ /*final*/ QPointF infinityPoint2D = MathUtil::infinityPoint2D();
+// /*public*/ /*static*/ /*final*/ QRectF zeroRectangle2D = MathUtil::zeroRectangle2D();
+// /*public*/ /*static*/ /*final*/ QRectF zeroToInfinityRectangle2D = MathUtil::zeroToInfinityRectangle2D();
+// /*public*/ /*static*/ /*final*/ QRectF infinityRectangle2D = MathUtil::infinityRectangle2D();
 
 //return a double between a & b for t:0 ==> a and t:1 ==> b
 /*public*/ /*static*/ double MathUtil::lerp(double a, double b, double t) {
@@ -95,4 +111,55 @@ MathUtil::MathUtil()
     double px = pt.x() - p1.x();
     double py = pt.y() - p1.y();
     return qSqrt(px * px + py * py);
+}
+
+/**
+ * @return a new rectangle {0.0, 0.0, 0.0, 0.0}
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::zeroRectangle2D() {
+    return QRectF(0.0, 0.0, 0.0, 0.0);
+}
+
+/**
+ * @return a new rectangle {0.0, 0.0, POSITIVE_INFINITY, POSITIVE_INFINITY}
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::zeroToInfinityRectangle2D() {
+    return QRectF(0.0, 0.0, INFINITY, INFINITY);
+}
+
+/**
+ * @return a new rectangle {NEGATIVE_INFINITY, NEGATIVE_INFINITY,
+ *         POSITIVE_INFINITY, POSITIVE_INFINITY}
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::infinityRectangle2D() {
+    return QRectF(-INFINITY, -INFINITY, INFINITY, INFINITY);
+}
+
+/**
+ * inset a rectangle
+ *
+ * @param r the rectangle
+ * @param i the inset (positive make it smaller, negative, bigger)
+ * @return the inset rectangle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::inset(/*@Nonnull*/ QRectF r, double i) {
+    return QRectF(r.x() + i, r.y() + i, r.width() - (2 * i), r.height() - (2 * i));
+}
+
+/**
+ * inset a rectangle
+ *
+ * @param r the rectangle
+ * @param h the horzontial inset (positive make it smaller, negative,
+ *          bigger)
+ * @param v the vertical inset (positive make it smaller, negative, bigger)
+ * @return the inset rectangle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::inset(/*@Nonnull*/ QRectF r, double h, double v) {
+    return QRectF(r.x() + h, r.y() + v, r.width() - (2 * h), r.height() - (2 * v));
 }

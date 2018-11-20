@@ -584,7 +584,7 @@ BeanItemPanel* TurnoutEditAction::speed()
  speedListClosed.append(useBlockSpeed);
  speedListThrown.append(useBlockSpeed);
 
- QVector<QString> _speedMap = SignalSpeedMap::getMap()->getValidSpeedNames();
+ QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
  for (int i = 0; i < _speedMap.size(); i++)
  {
   if (!speedListClosed.contains(_speedMap.at(i)))

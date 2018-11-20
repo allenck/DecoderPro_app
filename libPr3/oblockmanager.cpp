@@ -5,6 +5,9 @@ OBlockManager::OBlockManager(QObject *parent) :
     AbstractManager(parent)
 {
  setObjectName("OBlockManager");
+ setProperty("JavaClassName", "jmri.jmrit.logix.OBlockManager");
+ setProperty("InstanceManagerAutoDefault", "yes");
+
  registerSelf();
 }
 /**

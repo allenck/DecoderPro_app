@@ -442,23 +442,29 @@ void SignalMastIcon::updateItem() {
   case 0 :
   {
    QVector <QString> aspects = ((AbstractSignalMast*)mMast)->getValidAspects();
+   if(aspects.count() <1)
+   {
+    log->warn(tr("no valid aspects for mast %1").arg(getSignalMast()->getDisplayName()));
+    return;
+   }
    int idx = aspects.indexOf(((AbstractSignalMast*)mMast)->getAspect()) + 1;
-   if (idx >= aspects.size()) {
+   if (idx >= aspects.size())
+   {
     idx = 0;
-  }
-  ((AbstractSignalMast*)mMast)->setAspect(aspects.at(idx));
+   }
+   ((AbstractSignalMast*)mMast)->setAspect(aspects.at(idx));
    displayState(mastState());
- }
- return;
-case 1 :
-    ((AbstractSignalMast*)getSignalMast())->setLit(!((AbstractSignalMast*)getSignalMast())->getLit());
+  }
+  return;
+ case 1 :
+    ((AbstractSignalMast*)getSignalMast())->setLit(! ((AbstractSignalMast*)getSignalMast())->getLit());
     return;
-case 2 :
-    ((AbstractSignalMast*)getSignalMast())->setHeld(!((AbstractSignalMast*)getSignalMast())->getHeld());
+ case 2 :
+    ((AbstractSignalMast*)getSignalMast())->setHeld(! ((AbstractSignalMast*)getSignalMast())->getHeld());
     return;
-default:
+ default:
     log->error("Click in mode "+clickMode);
-}
+ }
 }
 
 
@@ -506,15 +512,15 @@ default:
  }
  if (isText())
  {
-        if (((AbstractSignalMast*)mMast)->getHeld()) {
-            if (isText()) PositionableIcon::setText(tr("<held>"));
-            return;
-        }
-        else if (getLitMode() && !((AbstractSignalMast*)getSignalMast())->getLit()){
-            PositionableIcon::setText(tr("<dark>"));
-            return;
-        }
-        PositionableIcon::setText(state);
+  if (((AbstractSignalMast*)mMast)->getHeld()) {
+      if (isText()) PositionableIcon::setText(tr("<held>"));
+      return;
+  }
+  else if (getLitMode() && !((AbstractSignalMast*)getSignalMast())->getLit()){
+      PositionableIcon::setText(tr("<dark>"));
+      return;
+  }
+  PositionableIcon::setText(state);
  }
  if (isIcon())
  {
@@ -542,7 +548,7 @@ default:
      s= FileUtil::getProgramPath()+s; // TODO: make configurable
     // tiny global cache, due to number of icons
    if (_iconMap==NULL) getIcons();
-   NamedIcon* n = _iconMap->value(state);
+   NamedIcon* n = _iconMap->value(s);
    PositionableIcon::setIcon(n);
    _editor->addToTarget((Positionable*)this);
    updateSize();

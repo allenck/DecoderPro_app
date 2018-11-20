@@ -20,6 +20,7 @@ signals:
 public slots:
 private:
     BeanTableDataModel*		dataModel;
+    void common();
     JTable*			dataTable;
     //JScrollPane 		dataScroll;
     QWidget* bottomBox;		// panel at bottom for extra buttons etc

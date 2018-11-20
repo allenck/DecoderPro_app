@@ -131,7 +131,7 @@ void CopyRosterGroupAction::common()
 
     // rename the roster grouping
     Roster::instance()->copyRosterGroupList(group, entry);
-    Roster::writeRosterFile();
+    Roster::writeRoster();
 }
 
 // never invoked, because we overrode actionPerformed above

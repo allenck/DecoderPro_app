@@ -214,7 +214,9 @@
      else
      {
       qDebug() << "class not found: " << className;
-      throw(ClassNotFoundException(className));
+      if(className == "AbstractProxyManagerXml" || className == "AbstractTurnoutManagerXml")
+       qDebug() << "stop";
+      throw ClassNotFoundException(className);
      }
     }
 

@@ -228,7 +228,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
             == ("LayoutBlockManager"))
   return;
  // if old manager exists, remove it from configuration process
- if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")) != NULL)
+ if (InstanceManager::getDefault("LayoutBlockManager") != NULL)
   // TODO: imlement ConfigXmlManager
   static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(
             static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")) );
@@ -236,7 +236,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
  // register new one with InstanceManager
  LayoutBlockManager* pManager = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  // register new one for configuration
- ConfigureManager* cm =static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"));
+ ConfigureManager* cm =static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
  if(cm != nullptr)
   cm->registerConfig(pManager, Manager::LAYOUTBLOCKS);
 #endif

@@ -12,7 +12,7 @@ class LIBPR3SHARED_EXPORT ProxySensorManager : public AbstractProxyManager/*, pu
 {
  Q_OBJECT
 public:
- ProxySensorManager();
+ ProxySensorManager(QObject* parent = nullptr);
  /*public*/ Sensor* getSensor(QString name);
  /*public*/ Sensor* provideSensor(QString sName);
  /**

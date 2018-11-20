@@ -25,6 +25,11 @@ Logger::Logger(const Logger & other) : QObject()
 {
  LoggerBase::error(s, ex);
 }
+/*static*/ void Logger::error(QString s, Throwable ex)
+{
+ LoggerBase::error(s, ex);
+}
+
 bool Logger::isDebugEnabled()
 { return bDebugEnabled;}
 

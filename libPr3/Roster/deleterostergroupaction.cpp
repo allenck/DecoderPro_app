@@ -113,7 +113,7 @@ void DeleteRosterGroupAction::common()
 
  // delete the roster grouping
  Roster::instance()->delRosterGroupList(group);
- Roster::writeRosterFile();
+ Roster::writeRoster();
 }
 
 /**

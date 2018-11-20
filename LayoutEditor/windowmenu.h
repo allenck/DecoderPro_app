@@ -18,6 +18,8 @@ signals:
 
 public slots:
     void menuSelected();
+    void onItem(QWidget *iFrame);
+
 private:
     /*private*/ QFrame* parentFrame;	// Keep note of the window containing the menu
     /*private*/ QList<JmriJFrame*>* framesList;	// Keep the list of windows, in order to find out which window was selected

@@ -146,12 +146,12 @@
  }
  catch (IOException e)
  {
-  log->error("error reading file \""+file->fileName(), e.getMessage());
+  log->error("error reading file \""+file->fileName(), e);
   return NULL;
  }
  catch (JDOMException e)
  {
-  log->error("error parsing file \""+file->fileName(), e.getMessage());
+  log->error("error parsing file \""+file->fileName(), e);
   return NULL;
  }
  return map;

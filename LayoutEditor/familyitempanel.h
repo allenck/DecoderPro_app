@@ -24,6 +24,7 @@ signals:
 
 public slots:
     void on_showIconsButton_clicked();
+    void on_newFamilyButton_clicked();
 
 private:
     QWidget*    _bottom1Panel;  // Typically _showIconsButton and editIconsButton

@@ -36,6 +36,7 @@ namespace Operations
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ void load(QDomElement root);
   /*public*/ void createDefaultSchedules();
+  Q_INVOKABLE     /*public*/ void initialize();
 
  signals:
 
@@ -44,7 +45,7 @@ namespace Operations
 
  private:
   Logger* log;
-  /*private*/ static TrainScheduleManager* _instance;// = null;
+//  /*private*/ static TrainScheduleManager* _instance;// = null;
   /*private*/ int _id;// = 0;
   /*private*/ QList<TrainSchedule*> getList();
 

@@ -4,6 +4,11 @@
 #include "signalsystem.h"
 #include "fileutil.h"
 #include <QVector>
+#include <QUrl>
+#include "loggerfactory.h"
+#include "warrantpreferences.h"
+#include "propertychangeevent.h"
+#include "instancemanager.h"
 
 /*static*/ /*private*/ SignalSpeedMap* SignalSpeedMap::_map = NULL;
 /*static*/ /*private*/ bool SignalSpeedMap::_percentNormal = false;
@@ -14,12 +19,62 @@
 /*static*/ /*private*/ QMap<QString, QString>* SignalSpeedMap::_headTable = NULL; //QMap<QString, QString>();
 
 SignalSpeedMap::SignalSpeedMap(QObject *parent) :
-    QObject(parent)
+    Bean(parent)
 {
- log = new Logger("SignalSpeedMap");
  _stepIncrement = 0.04f;       // ramp step throttle increment
  _throttleFactor = 0.75f;
+ _table = new QMap<QString, float>();
+ _headTable;// = new QMap<QString, QString>();
+ setProperty("InstanceManagerAutoDefault", "true");
+ setProperty("InstanceManagerAutoInitialize", "true");
 
+
+ loadMap();
+// this.warrantPreferencesListener = (PropertyChangeEvent evt) -> {
+//     WarrantPreferences preferences = WarrantPreferences.getDefault();
+//     SignalSpeedMap map = SignalSpeedMap.this;
+//     switch (evt.getPropertyName()) {
+//         case WarrantPreferences.APPEARANCES:
+//             map.setAppearances(preferences.getAppearances());
+//             break;
+//         case WarrantPreferences.LAYOUT_SCALE:
+//             map.setLayoutScale(preferences.getLayoutScale());
+//             break;
+//         case WarrantPreferences.SPEED_NAMES:
+//         case WarrantPreferences.INTERPRETATION:
+//             map.setAspects(preferences.getSpeedNames(), preferences.getInterpretation());
+//             break;
+//         case WarrantPreferences.THROTTLE_SCALE:
+//             map.setDefaultThrottleFactor(preferences.getThrottleScale());
+//             break;
+//         case WarrantPreferences.TIME_INCREMENT:
+//         case WarrantPreferences.RAMP_INCREMENT:
+//             map.setRampParams(preferences.getThrottleIncrement(), preferences.getTimeIncrement());
+//             break;
+//         default:
+//         // ignore other properties
+//     }
+// };
+
+}
+
+void SignalSpeedMap::warrantPreferences_PropertyChange(PropertyChangeEvent * evt)
+{
+     WarrantPreferences* preferences = WarrantPreferences::getDefault();
+     //SignalSpeedMap map = SignalSpeedMap.this;
+     QString propertyName = evt->getPropertyName();
+     if(propertyName == WarrantPreferences::APPEARANCES)
+       setAppearances(preferences->getAppearances());
+     else if(propertyName ==  WarrantPreferences::LAYOUT_SCALE)
+       setLayoutScale(preferences->getLayoutScale());
+     else if(propertyName ==  WarrantPreferences::SPEED_NAMES || propertyName ==  WarrantPreferences::INTERPRETATION)
+      setAspects(preferences->getSpeedNames(), preferences->getInterpretation());
+     else if(propertyName ==   WarrantPreferences::THROTTLE_SCALE)
+      setDefaultThrottleFactor(preferences->getThrottleScale());
+      else if(propertyName ==  WarrantPreferences::TIME_INCREMENT ||
+       propertyName ==  WarrantPreferences::RAMP_INCREMENT)
+      setRampParams(preferences->getThrottleIncrement(), preferences->getTimeIncrement());
+         // ignore other properties
 }
 
 /**
@@ -33,99 +88,125 @@ SignalSpeedMap::SignalSpeedMap(QObject *parent) :
 ///*public*/ class SignalSpeedMap {
 
 
-/*static*/ /*public*/ SignalSpeedMap* SignalSpeedMap::getMap()
+//@Override
+/*public*/ void SignalSpeedMap::initialize()
 {
-    if(_table == NULL)
-     _table = new QMap<QString, float>();
-    if(_headTable == NULL)
-     _headTable = new QMap<QString, QString>();
-    if (_map == NULL) {
-
-        loadMap();
+ WarrantPreferences* wp = static_cast<WarrantPreferences*>(   InstanceManager::getOptionalDefault("WarrantPreferences"));
+ if(wp != nullptr)
+ {
+  //wp.addPropertyChangeListener(this.warrantPreferencesListener);
+   connect(wp, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(warrantPreferences_PropertyChange(PropertyChangeEvent*)));
+ }
+//    InstanceManager.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+//        if (evt.getPropertyName().equals(InstanceManager.getDefaultsPropertyName(WarrantPreferences.class))) {
+//            InstanceManager.getDefault(WarrantPreferences.class).addPropertyChangeListener(this.warrantPreferencesListener);
+//        }
+//    });
+   connect(InstanceManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+}
+void SignalSpeedMap::propertyChange(PropertyChangeEvent *evt)
+{
+ if (evt->getPropertyName()==(InstanceManager::getDefaultsPropertyName("WarrantPreferences")))
+ {
+  WarrantPreferences* wp = static_cast<WarrantPreferences*>(InstanceManager::getDefault("WarrantPreferences"));
+   connect(wp, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(warrantPreferences_PropertyChange(PropertyChangeEvent*)));
+ }
+}
+void SignalSpeedMap::loadMap()
+{
+ QStringList list = QStringList() << "" << "xml/signals";
+    QUrl path = FileUtil::findURL("signalSpeeds.xml", list);
+    XmlFile* xf = new XmlFile();
+    try {
+        loadRoot(xf->rootFromURL(&path));
     }
-    return _map;
+    catch (FileNotFoundException e)
+    {
+     log->warn(tr("signalSpeeds file (%1) doesn't exist in XmlFile search path.").arg(path.toString()));
+        throw  IllegalArgumentException("signalSpeeds file (" + path.toDisplayString() + ") doesn't exist in XmlFile search path.");
+    }
+    catch (JDOMException  e) {
+     log->error(tr("error reading file \"%1\" due to: %2").arg(path.toDisplayString().arg(e.getMessage())));
+    }
+    catch (IOException e) {
+     log->error(tr("error reading file \"%1\" due to: %2").arg(path.toDisplayString().arg(e.getMessage())));
+    }
+
 }
 
-/*static*/ void SignalSpeedMap::loadMap() {
- Logger* log = new Logger("SignalSpeedMap");
- _map = new SignalSpeedMap();
-
- QString path = FileUtil::getProgramPath()+QString("xml") + QDir::separator()
-   + "signals" + QDir::separator()
-   + "signalSpeeds.xml";
- XmlFile* xf = new XmlFile();
- QDomElement root;
- try {
-  root = xf->rootFromName(path);
-  log->debug("root = "+ root.tagName()+ " name = "+root.attribute("name"));
+/*public*/ void SignalSpeedMap::loadRoot(/*@Nonnull*/ QDomElement root) {
+ try
+ {
   QDomElement e = root.firstChildElement("interpretation");
   QString sval = e.text().toUpper();
-  if (sval==("PERCENTNORMAL")) {
-   _percentNormal = true;
-  }
-  else if (sval==("PERCENTTHROTTLE")) {
-   _percentNormal = false;
-  }
-  else {
-   throw new JDOMException("invalid content for interpretation: "+sval);
-  }
-  if (log->isDebugEnabled()) log->debug("_percentNormal "+_percentNormal);
+  if(sval== "PERCENTNORMAL")
+          _interpretation = PERCENT_NORMAL;
+   else if(sval== "PERCENTTHROTTLE")
+          _interpretation = PERCENT_THROTTLE;
+   else
+     throw JDOMException("invalid content for interpretation: " + sval);
+
+  log->debug(tr("_interpretation= %1").arg(_interpretation));
 
   e = root.firstChildElement("msPerIncrement");
-  _sStepDelay = 250;
-  try {
-   _sStepDelay = e.text().toInt();
-  } catch (NumberFormatException nfe) {
-   throw new JDOMException("invalid content for msPerIncrement: "+e.text());
+  _sStepDelay = 1000;
+  bool bok;
+      _sStepDelay = e.text().toInt(&bok);
+  if(!bok)
+  {
+      throw JDOMException("invalid content for msPerIncrement: " + e.text());
   }
-  if (_sStepDelay < 200) {
-   _sStepDelay = 200;
-   log->warn("\"msPerIncrement\" must be at lewast 200 milliseconds.");
+  if (_sStepDelay < 200)
+  {
+      _sStepDelay = 200;
+      log->warn("\"msPerIncrement\" must be at least 200 milliseconds.");
   }
-  if (log->isDebugEnabled()) log->debug("_sStepDelay = "+_sStepDelay);
+  log->debug(tr("_sStepDelay = %1").arg(_sStepDelay));
 
   e = root.firstChildElement("stepsPerIncrement");
-  _numSteps = 1;
-  try {
-   _numSteps = e.text().toInt();
-  } catch (NumberFormatException nfe) {
-   throw new JDOMException("invalid content for msPerIncrement: "+e.text());
-  }
-  if (_numSteps < 1) {
-   _numSteps = 1;
-  }
-  if (log->isDebugEnabled()) log->debug("_numSteps = "+_numSteps);
 
-  //@SuppressWarnings("unchecked")
+  _numSteps = e.text().toInt(&bok);
+  if(!bok)
+  {
+      throw  JDOMException("invalid content for stepsPerIncrement: " + e.text());
+  }
+  if (_numSteps < 1)
+  {
+      _numSteps = 1;
+  }
+
   QDomNodeList list = root.firstChildElement("aspectSpeeds").childNodes();
-  for (int i = 0; i < list.size(); i++) {
-   QString name = list.at(i).toElement().tagName();
-   float speed = 0.0;
-   try {
-    speed = list.at(i).toElement().text().toFloat();
-   } catch (NumberFormatException nfe) {
-    log->error("invalid content for "+name+" = "+list.at(i).toElement().text());
-    throw new JDOMException("invalid content for "+name+" = "+list.at(i).toElement().text());
-   }
-   if (log->isDebugEnabled()) log->debug("Add "+name+", "+speed+" to AspectSpeed Table");
-   _table->insert(name, speed);
+  _table->clear();
+  for (int i = 0; i < list.size(); i++)
+  {
+      QString name = list.at(i).toElement().tagName();
+      float speed;
+      bool bok;
+          speed = list.at(i).toElement().text().toFloat(&bok);
+      if(!bok)
+      {
+       log->error(tr("invalid content for %1 = %2").arg(name).arg(list.at(i).toElement().text()));
+       throw  JDOMException("invalid content for " + name + " = " + list.at(i).toElement().text());
+      }
+      log->debug(tr("Add %1, %2 to AspectSpeed Table").arg(name).arg(speed));
+      _table->insert(name, speed);
   }
 
-  //@SuppressWarnings("unchecked")
-  QDomNodeList l = root.firstChildElement("appearanceSpeeds").childNodes();
-  for (int i = 0; i < l.size(); i++) {
-   QString name = l.at(i).toElement().tagName();
-   QString speed = l.at(i).toElement().text();
-   _headTable->insert((name), speed);
-   if (log->isDebugEnabled()) log->debug("Add "+name+"="+(name)+", "+speed+" to AppearanceSpeed Table");
+  /*synchronized (this._headTable)*/ {
+      _headTable->clear();
+      QDomNodeList l = root.firstChildElement("appearanceSpeeds").childNodes();
+      for (int i = 0; i < l.size(); i++)
+      {
+          QString name = l.at(i).toElement().tagName();
+          QString speed = l.at(i).toElement().text();
+          _headTable->insert((name), speed);
+          log->debug(tr("Add %1=%2, %3 to AppearanceSpeed Table").arg(name).arg( (name)).arg(speed)); // TODO: expand 2nd name (appearanceSpeeds) parameter string
+      }
   }
- } catch (JDOMException e) {
-  log->error("error reading file \"" + path + "\" due to: " + e.getMessage());
- } catch (FileNotFoundException e) {
-  log->error("signalSpeeds file (" + path + ") doesn't exist in XmlFile search path.");
-  throw new IllegalArgumentException("signalSpeeds file (" + path + ") doesn't exist in XmlFile search path.");
- } catch (IOException ioe) {
-  log->error("error reading file \"" + path + "\" due to: " + ioe.getMessage());
+ }
+ catch (JDOMException e)
+ {
+        log->error(tr("error reading speed map elements due to: %1").arg(e.getMessage()));
  }
 }
 
@@ -180,10 +261,10 @@ SignalSpeedMap::SignalSpeedMap(QObject *parent) :
   // not a valid aspect
   log->warn("attempting to set invalid speed: "+name);
   //java.util.Enumeration<String> e = _table->keys();
-  //throw new IllegalArgumentException("attempting to get speed from invalid name: "+name);
+  throw IllegalArgumentException("attempting to get speed from invalid name: \""+name + "\"");
  }
  float speed = _table->value(name);
- if (speed==NULL)
+ if (speed==0)
  {
   return 0.0f;
  }
@@ -220,6 +301,29 @@ SignalSpeedMap::SignalSpeedMap(QObject *parent) :
 /*public*/ int SignalSpeedMap::getNumSteps() {
     return _numSteps;
 }
+
+/*public*/ void SignalSpeedMap::setAspects(/*@Nonnull*/ QMap<QString, float> map, int interpretation) {
+        QMap<QString, float> oldMap = QMap<QString, float>(*this->_table);
+        int oldInterpretation = this->_interpretation;
+        this->_table->clear();
+        //this->_table.putAll(map);
+        QMapIterator<QString, float> iter(map);
+        while(iter.hasNext())
+        {
+         iter.next();
+         this->_table->insert(iter.key(),iter.value());
+        }
+        this->_interpretation = interpretation;
+        if (interpretation != oldInterpretation) {
+            this->firePropertyChange("interpretation", oldInterpretation, interpretation);
+        }
+        if (map != (oldMap))
+        {
+//         QMap<QString,QVariant> newMap = QMap<QString,float>(map);
+//            this->firePropertyChange("aspects", oldMap,  newMap);
+        }
+    }
+
 /*public*/ void SignalSpeedMap::setAspectTable(QMapIterator<QString, float> iter, int interpretation)
 {
     _table = new  QMap<QString, float>();
@@ -231,6 +335,22 @@ SignalSpeedMap::SignalSpeedMap(QObject *parent) :
     }
     _interpretation = interpretation;
 }
+/*public*/ void SignalSpeedMap::setAppearances(/*@Nonnull*/ QMap<QString, QString> map) {
+        /*synchronized (this._headTable)*/ {
+            QMap<QString, QString> old = QMap<QString, QString>(*_headTable);
+            _headTable->clear();
+            //_headTable.putAll(map);
+            QMapIterator<QString, QString> iter(map);
+            while(iter.hasNext())
+            {
+             iter.next();
+             _headTable->insert(iter.key(), iter.value());
+            }
+            if (map != (old)) {
+//                this->firePropertyChange("Appearances", old,  QMap<QString, QVariant>(*_headTable));
+            }
+        }
+    }
 /*public*/ void SignalSpeedMap::setAppearanceTable(QMapIterator<QString, QString> iter) {
     _headTable =  new QMap<QString, QString>();
     while (iter.hasNext() )
@@ -262,3 +382,5 @@ SignalSpeedMap::SignalSpeedMap(QObject *parent) :
 /*public*/ void SignalSpeedMap::setMap(SignalSpeedMap* map) {
     _map = map;
 }
+
+/*static*/ /*private*/ /*final*/ Logger* SignalSpeedMap::log = LoggerFactory::getLogger("SignalSpeedMap");

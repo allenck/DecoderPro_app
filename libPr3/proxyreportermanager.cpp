@@ -8,7 +8,8 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
     AbstractProxyManager(parent)
 {
  setObjectName("ProxyReporterManager");
- registerSelf();
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
 }
 
 /**

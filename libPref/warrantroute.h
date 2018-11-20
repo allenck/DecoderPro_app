@@ -9,6 +9,7 @@
 #include "jdialog.h"
 #include "libpref_global.h"
 
+class SpeedUtil;
 class DefaultMutableTreeNode;
 class DefaultTreeModel;
 class Warrant;
@@ -39,6 +40,8 @@ public:
  /*public*/ void showWarning(QString msg);
  /*public*/ BlockOrder* getViaBlockOrder();
  /*public*/ BlockOrder* getAvoidBlockOrder();
+ /*public*/ QWidget* calculatePanel(bool vertical);
+ /*public*/ QWidget* makePickListPanel();
 
 signals:
 
@@ -47,6 +50,7 @@ public slots:
  void on_dccNumBox();
  void on_rosterBoxCurrentIndexChanged(QString);
  /*public*/ void actionPerformed(ActionEvent* /*e*/); // actionEvent required!
+ void onButton();
 
 private:
  RouteLocation* _focusedField;
@@ -65,6 +69,7 @@ private:
  /*private*/ QComboBox* _rosterBox;// = new JComboBox<String>();
  /*private*/ JTextField* _dccNumBox;// = new JTextField();
  /*private*/ JTextField* _trainNameBox;// = new JTextField(6);
+ /*private*/ /*final*/ QPushButton* _viewProfile;// = new JButton(Bundle.getMessage("ViewProfile"));
  /*private*/ void getRoster();
  /*private*/ QWidget* makeLabelCombo(QString title, QComboBox* box, QString tooltip);
  static /*private*/ QString pathIsValid(OBlock* block, QString pathName);
@@ -79,10 +84,17 @@ private:
  /*private*/ bool setViaBlock() ;
  /*private*/ bool setAvoidBlock();
  /*private*/ void showTempWarrant(QList<BlockOrder*>* orders);
+ /*private*/ QPushButton* _calculateButton;
+ /*private*/ JmriJFrame* _pickListFrame;
+
 private slots:
+ /*private*/ void calculate();
 
 protected:
- static /*protected*/ QWidget* makeTextBoxPanel(bool vertical, QWidget* textField, QString label, QString tooltip);
+ static /*protected*/ QWidget* makeTextBoxPanel(bool vertical, QWidget* comp, QString label, QString tooltip);
+ static /*protected*/ QWidget* makeTextAndButtonPanel(QWidget* comp, QWidget* button, QString label, QString tooltip);
+ static /*protected*/ QWidget* makeTextBoxPanel(QWidget* textField, QString label, QString tooltip);
+ /*protected*/ QWidget* makeTrainIdPanel(QWidget* comp);
 
 protected:
  /*protected*/ RouteLocation*  _origin;// = new RouteLocation(Location::ORIGIN);
@@ -109,6 +121,8 @@ protected:
  /*protected*/ void pickRoute(QList <DefaultMutableTreeNode*>* destNodes, DefaultTreeModel* routeTree);
  /*protected*/ void showRoute(DefaultMutableTreeNode* destNode, DefaultTreeModel* tree);
  /*protected*/ QWidget* makeRouteTablePanel();
+ /*protected*/ QWidget* makeBlockPanels(bool add);
+/*protected*/ SpeedUtil* _speedUtil;
 
 protected slots:
  /*protected*/ void clearTempWarrant();

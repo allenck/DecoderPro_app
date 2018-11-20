@@ -44,6 +44,7 @@ public:
     /*public*/ QString makeSystemName(QString s) ;
     /*public*/ QStringList getSystemNameArray() ;
     /*public*/ QStringList getSystemNameList();
+    /*public*/ QSet<NamedBean*> getNamedBeanSet();
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
     /*public*/ void Register(NamedBean* n) ;

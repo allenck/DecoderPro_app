@@ -75,7 +75,7 @@ void WiThrottlePreferences::common()
         try {
             setPort(a.toInt());
         } catch (DataConversionException ex) {
-            log->error("Port {} is invalid.", a);
+            log->error(tr("Port %1 is invalid.").arg(a));
         }
         this->asLoadedPort = this->getPort();
     }

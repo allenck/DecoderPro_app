@@ -26,7 +26,7 @@
 #include "jmriconfigurationmanager.h"
 #include "defaultshutdownmanager.h"
 #include "defaultcatalogtreemanager.h"
-#include "layoutblockmanager.h"
+//#include "layoutblockmanager.h"
 #include "warrantmanager.h"
 #include "oblockmanager.h"
 #include "portalmanager.h"
@@ -58,6 +58,12 @@
 #include "catalogtreemodel.h"
 #include "throttleframemanager.h"
 #include "jmriuserpreferencesmanager.h"
+#include "panelmenu.h"
+#include "turnoutoperationmanager.h"
+#include "filehistory.h"
+#include "entryexitpairs.h"
+#include "systemconnectionmemomanager.h"
+#include "listedtableframe.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -109,6 +115,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
  {
   return DefaultAudioManager::instance();
  }
+
  if (type == "BlockManager")
  {
   BlockManager* bm = new BlockManager();
@@ -149,12 +156,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   return tm;
  }
 
- if (type == "LayoutBlockManager")
- {
-  LayoutBlockManager* bm = new LayoutBlockManager();
-  InstanceManager::store(bm,type);
-  return bm;
- }
+// if (type == "LayoutBlockManager")
+// {
+//  LayoutBlockManager* bm = new LayoutBlockManager();
+//  InstanceManager::store(bm,type);
+//  return bm;
+// }
 
  if (type == "LightManager")
  {
@@ -210,6 +217,11 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
  if (type == "RouteManager") {
      return new DefaultRouteManager();
  }
+
+ if (type == "PanelMenu") {
+  PanelMenu* pm =  new PanelMenu();
+  InstanceManager::store(pm, type);
+  return pm; }
 
  if (type == "SensorManager")
  {
@@ -284,6 +296,19 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   return tm;
 
  }
+ if (type == "EntryExitPairs") {
+  EntryExitPairs* eep =new EntryExitPairs();
+  InstanceManager::store(eep,type);
+  return eep;
+
+ }
+
+ if (type == "SystemConnectionMemoManager") {
+  SystemConnectionMemoManager* scmm =new SystemConnectionMemoManager();
+  InstanceManager::store(scmm,type);
+  return scmm;
+
+ }
 
  if (type == "TurnoutManager")
  {
@@ -319,6 +344,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   WarrantManager* wm = new WarrantManager();
   InstanceManager::store(wm,type);
   return wm;
+ }
+
+ if(type == "StartupActionModelUtil")
+ {
+  StartupActionModelUtil* samu = new StartupActionModelUtil();
+  InstanceManager::store(samu,type);
+  return samu;
  }
 
  if(type == "StartupActionsManager")
@@ -361,6 +393,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   InstanceManager::store(flp,type);
   return flp;
  }
+ if(type == "FileHistory")
+ {
+  FileHistory* fh = new FileHistory();
+  InstanceManager::store(fh,type);
+  return fh;
+ }
 
  if(type == "GuiLafPreferencesManager")
  {
@@ -388,12 +426,14 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   InstanceManager::store(wtp,type);
   return wtp;
  }
- if(type == "InternalSystemConnectionMemo")
+
+ if(type == "InternalSystemConnectionMemo") // is optional getNullableDefault will store it
  {
   InternalSystemConnectionMemo* itcm = new InternalSystemConnectionMemo();
   InstanceManager::store(itcm,type);
   return itcm;
  }
+
  if(type == "ManagerDefaultSelector")
  {
   ManagerDefaultSelector* mds = new ManagerDefaultSelector();
@@ -430,24 +470,21 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   InstanceManager::store(supf,type);
   return supf;
  }
+
  if(type == "PerformFileModelFactory")
  {
   PerformFileModelFactory* supf = new PerformFileModelFactory();
   InstanceManager::store(supf,type);
   return supf;
  }
-// if(type == "StartupActionModelUtil")
-// {
-//  StartupActionModelUtil* supf = new StartupActionModelUtil();
-//  InstanceManager::store(supf,type);
-//  return supf;
-// }
+
  if(type == "RestartStartupActionFactory")
  {
   RestartStartupActionFactory* rsaf = new RestartStartupActionFactory();
   InstanceManager::store(rsaf,type);
   return rsaf;
  }
+
  if(type == "JsonServerPreferences")
  {
   JsonServerPreferences* jsp = new JsonServerPreferences();
@@ -475,16 +512,23 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
  }
 
 
-// if(type == "GlobalProgrammerManager")
+ if(type == "TurnoutOperationManager")
+ {
+  TurnoutOperationManager* tom = new TurnoutOperationManager();
+  InstanceManager::store(tom,type);
+  return tom;
+ }
+
+// if(type == "SignalSpeedMap")
 // {
-//  DefaultProgrammerManager* dpm = new DefaultProgrammerManager();
-//  InstanceManager::store(dpm,type);
-//  return dpm;
+//  SignalSpeedMap* ssm = new SignalSpeedMap();
+//  InstanceManager::store(ssm,type);
+//  return ssm;
 // }
 
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);
- log->error("DefaultInstanceInitializer: Cannot create object of type " + type);
- return NULL;
+ log->warn("DefaultInstanceInitializer: Cannot create object of type " + type);
+ return nullptr;
 }
 

@@ -7,7 +7,7 @@
 #include <QLabel>
 #include "vptr.h"
 
-StartupPauseFactory::StartupPauseFactory()
+StartupPauseFactory::StartupPauseFactory() : StartupModelFactory()
 {
  setObjectName("StartupPauseFactory");
 }

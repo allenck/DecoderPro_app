@@ -33,7 +33,7 @@ public:
     /*public*/ void removeEntry(RosterEntry* e);
     /*public*/ int numEntries();
     /*public*/ void dispose();
-    /*public*/ Q_DECL_DEPRECATED static void writeRosterFile();
+    /*public*/ Q_DECL_DEPRECATED static void writeRoster();
     /*public*/ void reindex();
     /*public*/ void reloadRosterFile();
     /*public*/ void setRosterIndexFileName(QString fileName);

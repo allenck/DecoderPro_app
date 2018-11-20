@@ -281,7 +281,7 @@ throw (ClassNotFoundException)
     } catch (MimeTypeParseException mtpe)
     {
         log->error("MimeType Parse Exception: " + mtpe.getMessage());
-        throw new IllegalArgumentException("MimeType Parse Exception: " + mtpe.getMessage());
+        throw  IllegalArgumentException("MimeType Parse Exception: " + mtpe.getMessage());
     }
 
     this->representationClass  = representationClass;
@@ -323,7 +323,7 @@ throw (ClassNotFoundException)
         mimeType = new MimeType(primaryType, subType, params);
     } catch (MimeTypeParseException mtpe) {
         log->error("MimeType Parse Exception: " + mtpe.getMessage());
-        throw new IllegalArgumentException("MimeType Parse Exception: " + mtpe.getMessage());
+        throw  IllegalArgumentException("MimeType Parse Exception: " + mtpe.getMessage());
     }
 
     this->representationClass  = representationClass;
@@ -373,10 +373,10 @@ throw (ClassNotFoundException)
         initialize(mimeType, humanPresentableName, /*this->getClass().getClassLoader()*/NULL);
     } catch (MimeTypeParseException mtpe) {
         log->error("failed to parse:" + mimeType);
-        throw new IllegalArgumentException("failed to parse:" + mimeType);
+        throw  IllegalArgumentException("failed to parse:" + mimeType);
     } catch (ClassNotFoundException cnfe) {
         log->error("can't find specified class: " + cnfe.getMessage());
-        throw new IllegalArgumentException("can't find specified class: " + cnfe.getMessage());
+        throw  IllegalArgumentException("can't find specified class: " + cnfe.getMessage());
     }
 }
 #if 0
@@ -443,7 +443,7 @@ throw (ClassNotFoundException)
         initialize(mimeType, "text/plain", /*this->getClass().getClassLoader()*/NULL);
     } catch (MimeTypeParseException mtpe) {
         log->error("failed to parse:" + mimeType);
-        throw new IllegalArgumentException("failed to parse:" + mimeType);
+        throw  IllegalArgumentException("failed to parse:" + mimeType);
     }
 }
 
@@ -478,7 +478,7 @@ throw (ClassNotFoundException)
   if ("application/x-java-serialized-object"==(this->mimeType->getBaseType()))
   {
    log->error("no representation class specified for:" + mimeType);
-   throw new IllegalArgumentException("no representation class specified for:" + mimeType);
+   throw  IllegalArgumentException("no representation class specified for:" + mimeType);
   }
   else
    representationClass = /*InputStream.class*/ NULL; // default

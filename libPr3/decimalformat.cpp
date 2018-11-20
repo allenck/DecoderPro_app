@@ -1,9 +1,8 @@
 #include "decimalformat.h"
 
-DecimalFormat::DecimalFormat(QString tmplt/*, QObject *parent*/) //: QObject(parent)
+DecimalFormat::DecimalFormat(QString tmplt) //, QObject *parent) : QObject(parent)
 {
  this->tmplt = tmplt;
-    //this->parent = parent;
 }
 
 QString DecimalFormat::format(int num)

@@ -5,6 +5,7 @@
 #include "trainmanifesttext.h"
 #include "trainswitchlisttext.h"
 #include "version.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -13,6 +14,8 @@ namespace Operations
  {
   log = new Logger("OperationsSetupXml");
   operationsFileName = "Operations.xml"; // NOI18N
+  setProperty("InstanceManagerAutoDefault", "true");
+  setProperty("InstanceManagerAutoInitialize", "true");
 
  }
  /**
@@ -29,24 +32,11 @@ namespace Operations
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ OperationsSetupXml* OperationsSetupXml::_instance = NULL;
+// /*private*/ /*static*/ OperationsSetupXml* OperationsSetupXml::_instance = NULL;
 
  /*public*/ /*static*/ /*synchronized*/ OperationsSetupXml* OperationsSetupXml::instance()
  {
-  Logger* log = new Logger("OperationsSetupXml");
-
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("OperationsSetupXml creating instance");
-         }
-         // create and load
-         _instance = new OperationsSetupXml();
-         _instance->load();
-     }
-     if (Control::showInstance) {
-      log->debug(tr("OperationsSetupXml returns instance %1").arg( _instance->metaObject()->className()));
-     }
-     return _instance;
+  return static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml"));
  }
 
  /*public*/ void OperationsSetupXml::writeFile(QString name) throw (FileNotFoundException, IOException) {
@@ -142,6 +132,11 @@ namespace Operations
  //static Logger log = LoggerFactory.getLogger(OperationsSetupXml.class.getName());
 
  /*public*/ void OperationsSetupXml::dispose(){
-     _instance = NULL;
+//     _instance = NULL;
+ }
+
+ //@Override
+ /*public*/ void OperationsSetupXml::initialize() {
+     load();
  }
 }

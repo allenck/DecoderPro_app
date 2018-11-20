@@ -6,6 +6,7 @@
 MySortFilterProxyModel::MySortFilterProxyModel(AbstractTableModel * m )
     : RowSorter()
 {
+ setObjectName("MySortFilterProxyModel");
  setSourceModel(m);
 }
 

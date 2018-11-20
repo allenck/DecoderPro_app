@@ -910,7 +910,7 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
    return;
   }
  } catch (Exception ex) {
-     log->error(tr("Bad name for listener on \"%1\": ").arg(listener->getDevName()), ex.getMessage());  // NOI18N
+     log->error(tr("Bad name for listener on \"%1\": ").arg(listener->getDevName()), ex);  // NOI18N
  }
  log->error(tr("Bad name for ") + msg + " listener on \"" + listener->getDevName()  // NOI18N
          + "\" when removing");  // NOI18N

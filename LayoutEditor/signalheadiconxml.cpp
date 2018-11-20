@@ -138,8 +138,7 @@
      name = attr;
  }
 
- AbstractSignalHead* sh =(AbstractSignalHead*)((AbstractSignalHeadManager*) InstanceManager::signalHeadManagerInstance())->getSignalHead(name);
-
+ SignalHead* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
  if (sh != NULL)
  {
   l->setSignalHead(new NamedBeanHandle<SignalHead*>(name, (SignalHead*)sh));

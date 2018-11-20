@@ -75,9 +75,9 @@ public:
         /*public*/ virtual bool isEditable()  {return false;}
 
         /*public*/ virtual void setShowTooltip(bool /*set*/) {}
-        /*public*/ virtual bool showTooltip() {return false;}
+        /*public*/ virtual bool showToolTip() {return false;}
 //        /*public*/ virtual void setTooltip(ToolTip tip);
-//        /*public*/ virtual ToolTip getTooltip();
+    /*public*/ virtual QString getTooltip() {}
 
         /*public*/ virtual void setViewCoordinates(bool /*enabled*/) {}
         /*public*/ virtual bool getViewCoordinates() {return false;}

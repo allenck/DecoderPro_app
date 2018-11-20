@@ -6,6 +6,7 @@
 
 ServletUtil::ServletUtil(QObject *parent) : QObject(parent)
 {
+ setProperty("InstanceManagerAutoDefault", "yes");
 
 }
 /**

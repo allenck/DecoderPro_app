@@ -17,7 +17,7 @@ public:
     ~ManagerDefaultsConfigPane();
     ManagerDefaultsConfigPane(const ManagerDefaultsConfigPane&);
     /*public*/ void update();
-    void reloadConnections(QList<SystemConnectionMemo*>* connList);
+    void reloadConnections(QObjectList connList);
     virtual
     /*public*/ QString getPreferencesItem() ;
     virtual /*public*/ QString getPreferencesItemText();

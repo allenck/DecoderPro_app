@@ -29,7 +29,7 @@
         try {
             f->initComponents();
         } catch (Exception ex) {
-            log->error("Exception in startup", ex.getMessage());
+            log->error("Exception in startup", ex);
         }
         f->setVisible(true);
     }

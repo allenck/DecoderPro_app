@@ -20,6 +20,8 @@ namespace Operations
    QObject(parent)
  {
   pcs = new PropertyChangeSupport(this);
+  setProperty("InstanceManagerAutoDefault", "yes");
+
  }
 
  /*static*/ Setup* Setup::_instance = NULL;
@@ -2871,7 +2873,7 @@ namespace Operations
              bool ok;
                  setBuildReportFontSize(size.toInt(&ok));
              if(!ok) {
-                 Logger::error("Build report font size ({}) isn't a valid number", a);
+                 Logger::error(tr("Build report font size (%1) isn't a valid number").arg(a));
              }
          }
          if ((a = operations.firstChildElement(Xml::BUILD_REPORT).attribute(Xml::ALWAYS_PREVIEW)) != NULL) {

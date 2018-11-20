@@ -22,9 +22,11 @@
 //public class MemoryIcon extends jmri.jmrit.display.MemoryIcon {
 
 
-/*public*/ MemoryIcon::MemoryIcon(QString s, Editor* panel, QObject* parent) : DisplayMemoryIcon(s, panel, parent)
+/*public*/ MemoryIcon::MemoryIcon(QString s, Editor* panel, QObject* parent)
+ : DisplayMemoryIcon(s, panel, parent)
 {
  //super(s, panel);
+ QString instring = s;
  log = new Logger("MemoryIcon");
 
  log->debug(tr("MemoryIcon ctor= ") + this->metaObject()->className());
@@ -71,7 +73,7 @@
 
 /*public*/ void MemoryIcon::displayState()
 {
- log->debug("displayState()");
+ if(log->isDebugEnabled()) log->debug("displayState()");
 
  if (namedMemory == NULL) {  // use default if not connected yet
      setIcon(defaultIcon);
@@ -88,7 +90,7 @@
 
 /*protected*/ void MemoryIcon::displayState(QVariant key)
 {
- log->debug(tr("displayState(%1)").arg(key.toString()));
+ if(log->isDebugEnabled()) log->debug(tr("displayState(%1)").arg(key.toString()));
 if (key != QVariant()) {
     if (map == NULL) {
         QVariant val = key;

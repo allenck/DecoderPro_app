@@ -18,12 +18,13 @@ namespace Operations
   /*public*/ void setOperationsFileName(QString name) ;
   /*public*/ QString getOperationsFileName();
   /*public*/ void dispose();
+  Q_INVOKABLE /*public*/ void initialize();
 
  signals:
 
  public slots:
  private:
-  /*private*/ static OperationsSetupXml* _instance;// = NULL;
+//  /*private*/ static OperationsSetupXml* _instance;// = NULL;
   /*private*/ QString operationsFileName;// = "Operations.xml"; // NOI18N
   Logger * log;
  };

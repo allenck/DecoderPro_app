@@ -4,6 +4,8 @@
 #include "abstractmanager.h"
 #include "logger.h"
 #include "libPr3_global.h"
+#include <QSet>
+
 class LIBPR3SHARED_EXPORT AbstractProxyManager :  public AbstractManager
 {
     Q_OBJECT
@@ -27,6 +29,8 @@ public:
      * @return Null if nothing by that name exists
      */
     virtual /*public*/ NamedBean* getNamedBean(QString name);
+    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/;
+
     virtual /*public*/ NamedBean* getBeanBySystemName(QString systemName);
     virtual /*public*/ NamedBean* getBeanByUserName(QString userName);
     /**
@@ -92,7 +96,9 @@ public:
      */
     /*public*/ virtual QStringList getSystemNameList();
     /*public*/ virtual QStringList getUserNameList();
-    /*private java.util.ArrayList*/QList<Manager*>* mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
+    QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList() ;
+    QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList();
+    /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet();
 
 signals:
     virtual void propertyChange(PropertyChangeEvent *e);
@@ -100,10 +106,13 @@ public slots:
     virtual void on_propertyChange(PropertyChangeEvent *e);
 
 private:
-    Logger log;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractProxyManager");
     /*private*/ Manager* initInternal();
     /*private*/ Manager* internalManager; //= null;
     /*private*/ Manager* defaultManager;
+    /*private*/ QStringList addedOrderList;// = QStringList();
+    /*private*/ QSet<NamedBean*> namedBeanSet;// = null;
+    /*private java.util.ArrayList*/QList<Manager*> mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
 
 protected:
     /**
@@ -144,6 +153,9 @@ protected:
      * here considered to be an error that must be reported.
      */
     /*protected*/ virtual int match(QString systemname);
+    /*protected*/ void updateOrderList();
+    /*protected*/ void updateNamedBeanSet();
+
 
  friend class ProxyReporterManager;
  friend class ProxySensorManager;
@@ -163,6 +175,8 @@ protected:
  friend class MultiSensorIconWidget;
  friend class AddEditLightDialog;
  friend class ReporterPickModel;
+ friend class RegistersWidget;
+ friend class PythonQtWrapper_AbstractProxyManager;
 };
 
 #endif // ABSTRACTPROXYMANAGER_H

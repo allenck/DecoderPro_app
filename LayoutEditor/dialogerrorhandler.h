@@ -1,6 +1,8 @@
 #ifndef DIALOGERRORHANDLER_H
 #define DIALOGERRORHANDLER_H
+
 #include "errorhandler.h"
+
 #include "liblayouteditor_global.h"
 
 class LIBLAYOUTEDITORSHARED_EXPORT DialogErrorHandler : public ErrorHandler

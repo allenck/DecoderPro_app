@@ -435,6 +435,7 @@ bool systemNameComparator(QString o1, QString o2)
 
 /*public*/ void PickListModel::propertyChange(PropertyChangeEvent* e)
 {
+ if(log->isDebugEnabled()) log->debug(tr("property name = %1").arg(e->getPropertyName()));
  if (e->getPropertyName()==("length"))
  {
   // a NamedBean added or deleted

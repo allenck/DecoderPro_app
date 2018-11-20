@@ -2295,3 +2295,12 @@ static {
 }
 //}
 #endif
+/*public*/ QString File::fileName()
+{
+ return QFileInfo(path).fileName();
+}
+
+/*public*/ QString File::absoluteFilePath()
+{
+ return QFileInfo(path).absoluteFilePath();
+}

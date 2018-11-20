@@ -2,6 +2,7 @@
 #define INTERNALSYSTEMCONNECTIONMEMO_H
 #include "systemconnectionmemo.h"
 
+class InternalConsistManager;
 class InternalLightManager;
 class InternalSensorManager;
 class InternalReporterManager;
@@ -13,9 +14,12 @@ class InternalSystemConnectionMemo : public SystemConnectionMemo
 {
  Q_OBJECT
 public:
- InternalSystemConnectionMemo();
+ InternalSystemConnectionMemo(QObject* parent = nullptr);
+ ~InternalSystemConnectionMemo() {}
+ InternalSystemConnectionMemo(const InternalSystemConnectionMemo&) : SystemConnectionMemo() {}
  /*public*/ bool isAssignableFromType() {return true;}
  /*public*/ void configureManagers();
+ /*public*/ InternalConsistManager* getConsistManager();
  /*public*/ InternalLightManager* getLightManager() ;
  /*public*/ InternalSensorManager* getSensorManager() ;
  /*public*/ InternalReporterManager* getReporterManager();
@@ -30,6 +34,7 @@ public:
 private:
  bool configured;// = false;
  /*private*/ static /*final*/ Logger* log;// = LoggerFactory::getLogger("InternalSystemConnectionMemo");
+ /*private*/ InternalConsistManager* consistManager;
  /*private*/ InternalLightManager* lightManager;
  /*private*/ InternalSensorManager* sensorManager;
  /*private*/ InternalReporterManager* reporterManager;
@@ -39,5 +44,5 @@ private:
  /*private*/ DebugProgrammerManager* programManager;
 
 };
-
+Q_DECLARE_METATYPE(InternalSystemConnectionMemo)
 #endif // INTERNALSYSTEMCONNECTIONMEMO_H

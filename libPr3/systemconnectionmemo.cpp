@@ -8,6 +8,8 @@
 #include "loggerfactory.h"
 #include "startupactionmodelutil.h"
 #include "systemconnectionmemomanager.h"
+#include "nmraconsistmanager.h"
+#include "addressedprogrammermanager.h"
 
 /**
  * Lightweight abstract class to denote that a system is active,
@@ -25,13 +27,13 @@
 /*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::USER_NAME = "ConnectionNameChanged";
 /*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::SYSTEM_PREFIX = "ConnectionPrefixChanged";
 
-QVector<PropertyChangeListener*>* SystemConnectionMemo::listeners = new QVector<PropertyChangeListener*>();
-QStringList* SystemConnectionMemo::userNames = new QStringList();
-QStringList* SystemConnectionMemo::sysPrefixes = new QStringList();
+//QVector<PropertyChangeListener*>* SystemConnectionMemo::listeners = new QVector<PropertyChangeListener*>();
+//QStringList* SystemConnectionMemo::userNames = new QStringList();
+//QStringList* SystemConnectionMemo::sysPrefixes = new QStringList();
 //QString SystemConnectionMemo::userName = "";
 //QString SystemConnectionMemo::prefix = "";
-SystemConnectionMemo* SystemConnectionMemo::_instance = NULL;
-SystemConnectionMemo* SystemConnectionMemo::instance() {return _instance;}
+//SystemConnectionMemo* SystemConnectionMemo::_instance = NULL;
+//SystemConnectionMemo* SystemConnectionMemo::instance() {return _instance;}
 
 //SystemConnectionMemo::SystemConnectionMemo(QObject *parent) : QObject(parent)
 //{
@@ -45,31 +47,25 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
 {
  disabled = false;
  disabledAsLoaded = /*null*/ false; // Boolean can be true, false, or null
- _instance = this;
+// _instance = this;
 
 
  log->debug(tr("SystemConnectionMemo created for prefix \"%1\" user name \"%2\"").arg(prefix).arg(userName));
- initialise();
- if(!setSystemPrefix(prefix))
- {
-  for (int x = 2; x<50; x++)
-  {
-   if(setSystemPrefix(prefix+QString("%1").arg(x)))
-   {
-    break;
-   }
-  }
+ //initialise();
+ if (!setSystemPrefix(prefix)) {
+     int x = 2;
+     while (!setSystemPrefix(prefix + QString::number(x))) {
+         x++;
+     }
+     log->debug(tr("created system prefix %1").arg(prefix + QString::number(x)));
  }
 
- if(!setUserName(userName))
- {
-  for (int x = 2; x<50; x++)
-  {
-   if(setUserName(userName+QString("%1").arg(x)))
-   {
-    break;
-   }
-  }
+ if (!setUserName(userName)) {
+     int x = 2;
+     while (!setUserName(userName + QString::number(x))) {
+         x++;
+     }
+     log->debug(tr("created user name %1").arg(prefix + QString::number(x)));
  }
  addToActionList();
  // reset to null so these get set by the first setPrefix/setUserName
@@ -81,60 +77,60 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
 /**
  * Provides a method to reserve System Names and prefixes at creation
  */
-void SystemConnectionMemo::initialise(){
-    log->debug("initialise called");
-//    if (!initialised){
-//        addUserName("Internal");
-//        addSystemPrefix("I");
-//        initialised = true;
+//void SystemConnectionMemo::initialise(){
+//    log->debug("initialise called");
+////    if (!initialised){
+////        addUserName("Internal");
+////        addSystemPrefix("I");
+////        initialised = true;
+////    }
+//}
+
+//bool SystemConnectionMemo::addUserName(QString userName){
+//    if (userNames == NULL)
+//        userNames = new QStringList();
+//    if (userNames->contains(userName))
+//        return false;
+
+//    userNames->append(userName);
+//    return true;
+//}
+
+////This should probably throwing an exception
+//bool SystemConnectionMemo::addSystemPrefix(QString systemPrefix)
+//{
+// if (sysPrefixes->contains(systemPrefix))
+//     return false;
+// sysPrefixes->append(systemPrefix);
+// return true;
+//}
+
+//void SystemConnectionMemo::removeUserName(QString userName){
+// if(!userNames->isEmpty())
+// {
+//  if (userNames->contains(userName)){
+//   int index = userNames->indexOf(userName);
+//   userNames->removeAt(index);
+//  }
+// }
+//}
+
+//void SystemConnectionMemo::removeSystemPrefix(QString systemPrefix){
+//    if(!sysPrefixes->isEmpty())
+//    {
+//        if (sysPrefixes->contains(systemPrefix)){
+//            int index = sysPrefixes->indexOf(systemPrefix);
+//            sysPrefixes->removeAt(index);
+//        }
 //    }
-}
-
-bool SystemConnectionMemo::addUserName(QString userName){
-    if (userNames == NULL)
-        userNames = new QStringList();
-    if (userNames->contains(userName))
-        return false;
-
-    userNames->append(userName);
-    return true;
-}
-
-//This should probably throwing an exception
-bool SystemConnectionMemo::addSystemPrefix(QString systemPrefix)
-{
- if (sysPrefixes->contains(systemPrefix))
-     return false;
- sysPrefixes->append(systemPrefix);
- return true;
-}
-
-void SystemConnectionMemo::removeUserName(QString userName){
- if(!userNames->isEmpty())
- {
-  if (userNames->contains(userName)){
-   int index = userNames->indexOf(userName);
-   userNames->removeAt(index);
-  }
- }
-}
-
-void SystemConnectionMemo::removeSystemPrefix(QString systemPrefix){
-    if(!sysPrefixes->isEmpty())
-    {
-        if (sysPrefixes->contains(systemPrefix)){
-            int index = sysPrefixes->indexOf(systemPrefix);
-            sysPrefixes->removeAt(index);
-        }
-    }
-}
+//}
 
 /**
  * Store in InstanceManager with
  * proper ID for later retrieval as a
  * generic system
  */
-void SystemConnectionMemo::Register()
+void SystemConnectionMemo::_register()
 {
  log->debug(tr("register as SystemConnectionMemo, really of type %1").arg(this->metaObject()->className()));
 
@@ -147,36 +143,32 @@ void SystemConnectionMemo::Register()
  */
 QString SystemConnectionMemo::getSystemPrefix() { return prefix; }
 
-//This should probably throwing an exception
+/**
+ * Set the system prefix.
+ *
+ * @param systemPrefix prefix to use for this system connection
+ * @throws java.lang.NullPointerException if systemPrefix is null
+ * @return true if the system prefix could be set
+ */
 bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
 {
- if (systemPrefix == "")
-  throw new NullPointerException();
- if (systemPrefix == (prefix))
- {
-  if (this->prefixAsLoaded == "")
-  {
-   this->prefixAsLoaded = systemPrefix;
-  }
-  return true;
- }
- QString oldPrefix = prefix;
- if(addSystemPrefix(systemPrefix))
- {
-  prefix = systemPrefix;
-  if (SystemConnectionMemoManager::getDefault()->isSystemPrefixAvailable(systemPrefix))
-  {
-     prefix = systemPrefix;
-     if (this->prefixAsLoaded == "")
-     {
+ // return true if systemPrefix is not being changed
+ if (systemPrefix == (prefix)) {
+     if (this->prefixAsLoaded.isNull()) {
          this->prefixAsLoaded = systemPrefix;
      }
-     //this.propertyChangeSupport.firePropertyChange(SYSTEM_PREFIX, oldPrefix, systemPrefix);
-     emit propertyChange(new PropertyChangeEvent(this, SYSTEM_PREFIX, oldPrefix, systemPrefix));
      return true;
-  }
  }
- log->debug(tr("setSystemPrefix false for \"%1\"").arg( systemPrefix));
+ QString oldPrefix = prefix;
+ if (SystemConnectionMemoManager::getDefault()->isSystemPrefixAvailable(systemPrefix)) {
+     prefix = systemPrefix;
+     if (this->prefixAsLoaded.isNull()) {
+         this->prefixAsLoaded = systemPrefix;
+     }
+     notifyPropertyChangeListener(SYSTEM_PREFIX, oldPrefix, systemPrefix);
+     return true;
+ }
+ log->debug(tr("setSystemPrefix false for \"%1\"").arg(systemPrefix));
  return false;
 }
 
@@ -238,10 +230,9 @@ QObject* SystemConnectionMemo::get(QString T) {
 
 void SystemConnectionMemo::dispose(){
     removeFromActionList();
-    removeUserName(userName);
-    removeSystemPrefix(prefix);
-//    InstanceManager::deregister(this, "SystemConnectionMemo");
-    notifyPropertyChangeListener("ConnectionRemoved", QVariant(userName), QVariant());
+//    removeUserName(userName);
+//    removeSystemPrefix(prefix);
+ SystemConnectionMemoManager::getDefault()->deregister(this);
 }
 
 bool SystemConnectionMemo::getDisabled()
@@ -258,21 +249,21 @@ void SystemConnectionMemo::setDisabled(bool disabled)
  notifyPropertyChangeListener("ConnectionDisabled", oldDisabled, disabled);
 }
 
-/*static*/void SystemConnectionMemo::removePropertyChangeListener(PropertyChangeListener* l)
-{
- if (listeners->contains(l))
- {
-  int i = listeners->indexOf(l);
-  listeners->remove(i);
- }
-}
+///*static*/void SystemConnectionMemo::removePropertyChangeListener(PropertyChangeListener* l)
+//{
+// if (listeners->contains(l))
+// {
+//  int i = listeners->indexOf(l);
+//  listeners->remove(i);
+// }
+//}
 
-/*static*/ void SystemConnectionMemo::addPropertyChangeListener(PropertyChangeListener* l) {
-    // add only if not already registered
-    if ( !listeners->contains(l)) {
-        listeners->append(l);
-    }
-}
+///*static*/ void SystemConnectionMemo::addPropertyChangeListener(PropertyChangeListener* l) {
+//    // add only if not already registered
+//    if ( !listeners->contains(l)) {
+//        listeners->append(l);
+//    }
+//}
 
 /**
  * Trigger the notification of all PropertyChangeListeners
@@ -294,9 +285,9 @@ void SystemConnectionMemo::notifyPropertyChangeListener(QString property, QVaria
 //        PropertyChangeListener* client = v->at(i);
 //        client->propertyChange( new PropertyChangeEvent(this, property, oldValue, newValue));
 //    }
- foreach (PropertyChangeListener* listener, *listeners) {
-  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
- }
+// foreach (PropertyChangeListener* listener, *listeners) {
+//  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+// }
     emit propertyChange(new PropertyChangeEvent(this,  property, oldValue, newValue));
 }
 
@@ -357,6 +348,28 @@ void SystemConnectionMemo::removeFromActionList()
 /*public*/ bool SystemConnectionMemo::isRestartRequired()
 {
  return this->isDirty();
+}
+
+/**
+ * Provide access to the Consist Manager for this particular connection.
+ * <p>
+ * NOTE: Consist manager defaults to NULL
+ */
+/*public*/ ConsistManager* SystemConnectionMemo::getConsistManager() {
+    if (consistManager == nullptr) {
+        // a consist manager doesn't exist, so we can create it.
+        if (provides("CommandStation")) {
+            setConsistManager(new NmraConsistManager(get("CommandStation")));
+        } else if (provides("AddressedProgrammerManager")) {
+            setConsistManager(new DccConsistManager(get("AddressedProgrammerManager")));
+        }
+    }
+    return consistManager;
+}
+
+/*public*/ void SystemConnectionMemo::setConsistManager(ConsistManager* c) {
+    consistManager = c;
+    InstanceManager::store(consistManager, "ConsistManager");
 }
 
 

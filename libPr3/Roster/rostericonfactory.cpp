@@ -10,6 +10,8 @@ RosterIconFactory::RosterIconFactory(QObject *parent) :
 RosterIconFactory::RosterIconFactory(int h, QObject *parent) : QObject(parent)
 {
  iconHeight = h;
+ setProperty("InstanceManagerAutoDefault", "yes");
+
 }
 /*static*/ RosterIconFactory* RosterIconFactory::_instance = NULL;
 

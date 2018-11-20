@@ -14,6 +14,8 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  turnoutOperations = new QMap<QString,TurnoutOperation*>();
  operationTypes = new QLinkedList<TurnoutOperation*>(); // array of the defining instances of each class, held in order of appearance
  pcs = new PropertyChangeSupport(this);
+ setProperty("InstanceManagerAutoDefault", "yes");
+
 }
 /**
  * class to look after the collection of TurnoutOperation subclasses
@@ -224,9 +226,9 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
      thisClass = (TurnoutOperation*)new SensorTurnoutOperation();
 
     if (log->isDebugEnabled()) { log->debug("loaded TurnoutOperation class "+thisClassName); }
-} catch (ClassNotFoundException e1) { log->error("during loadOperationTypes", e1.getMessage()); }
-  catch (InstantiationException e2) { log->error("during loadOperationTypes", e2.getMessage()); }
-  catch (IllegalAccessException e3) { log->error("during loadOperationTypes", e3.getMessage()); }
+} catch (ClassNotFoundException e1) { log->error("during loadOperationTypes", e1); }
+  catch (InstantiationException e2) { log->error("during loadOperationTypes", e2); }
+  catch (IllegalAccessException e3) { log->error("during loadOperationTypes", e3); }
   }
  }
 #endif

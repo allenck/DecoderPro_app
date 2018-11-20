@@ -3,6 +3,7 @@
 #include "abstractmanager.h"
 #include "libPr3_global.h"
 
+class RosterSpeedProfile;
 class Warrant;
 class LIBPR3SHARED_EXPORT WarrantManager : public AbstractManager
 {
@@ -25,8 +26,23 @@ public:
 
 signals:
  void propertyChange(PropertyChangeEvent *e);
+private:
+ static Logger* log;
+ /*private*/ QMap<QString, RosterSpeedProfile*>* _mergeProfiles = nullptr;
+ /*private*/ QMap<QString, RosterSpeedProfile*>* _sessionProfiles = nullptr;
+
 public slots:
 
+protected:
+ /*protected*/ RosterSpeedProfile* getMergeProfile(QString id);
+ /*protected*/ RosterSpeedProfile* getSessionProfile(QString id);
+ /*protected*/ void setSpeedProfiles(QString id, RosterSpeedProfile* merge, RosterSpeedProfile* session);
+ /*protected*/ QMap<QString, RosterSpeedProfile*>* getMergeProfiles();
+ /*protected*/ QMap<QString, RosterSpeedProfile*>* getSessionProfiles();
+
+ friend class SpeedUtil;
+ friend class WarrantShutdownTask;
+ friend class MergePrompt;
 };
 Q_DECLARE_METATYPE(WarrantManager)
 #endif // WARRANTMANAGER_H

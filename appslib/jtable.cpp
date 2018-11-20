@@ -20,6 +20,9 @@
 #include "tablemodelevent.h"
 #include "vptr.h"
 #include "sizesequence.h"
+#include "defaulttablecolumnmodel.h"
+#include "mysortfilterproxymodel.h"
+#include "tablerowsorter.h"
 
 //JTable::JTable(QWidget *parent) :
 //  QTableView(parent)
@@ -1080,6 +1083,8 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  QAbstractItemModel* m = getModel();
  if (m != NULL)
  {
+  if(m == nullptr)
+   return;
   // Remove any current columns
   TableColumnModel* cm = getColumnModel();
   while (cm->getColumnCount() > 0)
@@ -1093,6 +1098,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
   for(int i = 0; i < m->columnCount(QModelIndex()); i++)
   {
    TableColumn* newColumn = new TableColumn(i);
+   newColumn->setHeaderValue(m->headerData(i,Qt::Horizontal));
    cm->addColumn(newColumn);
   }
   log->debug(QString("Column model contains %1 columns.").arg(cm->getColumnCount()));
@@ -9631,7 +9637,13 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
 
 /*private*/ void JTable::On_columnResized(int col, int oldWidth, int newWidth)
 {
-
+ TableColumnModel* tm = getColumnModel();
+ if(col > tm->getColumnCount()) return;
+ TableColumn* tc = tm->getColumn(col);
+ if(tc == nullptr)
+  return;
+ tc->firePropertyChange("preferredWidth", oldWidth, newWidth);
+ emit propertyChange(new PropertyChangeEvent(tc, "preferredWidth", oldWidth, newWidth));
 }
 
 /*private*/ void JTable::sectionClicked(int logicalindex) // SLOT

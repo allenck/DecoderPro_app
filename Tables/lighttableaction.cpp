@@ -45,7 +45,7 @@
     //super(s);
     common();
     // disable ourself if there is no primary Light manager available
-    if (lightManager == NULL) {
+    if (lightManager == nullptr) {
         setEnabled(false);
     }
 }
@@ -58,11 +58,11 @@
 void LightTableAction::common()
 {
  setObjectName("LightTableAction");
- lightManager = InstanceManager::lightManagerInstance();
+ lightManager = static_cast<LightManager*>(InstanceManager::getNullableDefault("LightManager"));
  oneDigit = new DecimalFormat("0");
  oneDotTwoDigit = new DecimalFormat("0.00");
- addFrame = NULL;
- curLight = NULL;
+ addFrame = nullptr;
+ curLight = nullptr;
  lightCreatedOrUpdated = false;
  noWarn = false;
  inEditMode = false;
@@ -79,17 +79,17 @@ void LightTableAction::common()
  fieldNumToAdd = new JTextField(5);
  labelNumToAdd = new QLabel("   " + tr("Number to Add:"));
  systemSelectionCombo = QString(this->metaObject()->className()) + ".SystemSelected";
- panel1a = NULL;
- varPanel = NULL;
+ panel1a = nullptr;
+ varPanel = nullptr;
  systemNameLabel = new QLabel(tr("System Name") + " ");
  fixedSystemName = new QLabel("xxxxxxxxxxx");
  userName = new JTextField(10);
  userNameLabel = new QLabel(tr("User Name") + " ");
- lightControlTableModel = NULL;
- create = NULL;
- update = NULL;
- cancel = NULL;
- addControl = NULL;
+ lightControlTableModel = nullptr;
+ create = nullptr;
+ update = nullptr;
+ cancel = nullptr;
+ addControl = nullptr;
 
  controlList = new QList<LightControl*>();
  sensorControl = tr("By Sensor");
@@ -113,12 +113,12 @@ void LightTableAction::common()
  fieldTransitionTime = new JTextField(5);
 
  // items for add/edit Light Control window
- addControlFrame = NULL;
- typeBox = NULL;
+ addControlFrame = nullptr;
+ typeBox = nullptr;
  typeBoxLabel = new QLabel(tr("Control Type"));
  defaultControlIndex = 0;
  inEditControlMode = false;
- lc = NULL;
+ lc = nullptr;
  field1a = new JTextField(10);  // Sensor
  field1a2 = new JTextField(10);  // Sensor 2
  field1b = new JTextField(8);  // Fast Clock
@@ -234,7 +234,7 @@ LTBeanTableDataModel::LTBeanTableDataModel(LightTableAction* lta)
 /*public*/ QString LTBeanTableDataModel::getValue(QString name) const
 {
  int val;
- if(qobject_cast<ProxyLightManager*>(lta->lightManager) != NULL)
+ if(qobject_cast<ProxyLightManager*>(lta->lightManager) != nullptr)
   val = ((ProxyLightManager*)lta->lightManager)->getBySystemName(name)->getState();
  else
   val = lta->lightManager->getBySystemName(name)->getState();
@@ -301,7 +301,7 @@ LTBeanTableDataModel::LTBeanTableDataModel(LightTableAction* lta)
 
 //            /*public*/ void run() {
                 // set up to edit
-                lta->addPressed(NULL);
+                lta->addPressed(nullptr);
                 lta->fixedSystemName->setText(data(index(row, SYSNAMECOL),Qt::DisplayRole).toString());
                 lta->editPressed(); // don't really want to stop Light w/o user action
 //            }
@@ -430,9 +430,9 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
 {
     if (inEditMode) {
         // cancel Edit and reactivate the edited light
-        cancelPressed(NULL);
+        cancelPressed(nullptr);
     }
-    if (addFrame == NULL) {
+    if (addFrame == nullptr) {
         addFrame = new JmriJFrame(tr("Add Light"), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.LightAddEdit", true);
         addFrame->setLocation(100, 30);
@@ -650,7 +650,7 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
     if(qobject_cast<AbstractProxyManager*>(InstanceManager::lightManagerInstance()) != NULL)
     {
         ProxyLightManager* proxy = (ProxyLightManager*) InstanceManager::lightManagerInstance();
-        QList<Manager*> managerList = proxy->getManagerList();
+        QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
         for (int i = 0; i < managerList.size(); i++) {
             QString manuName = ConnectionNameFromSystemName::getConnectionName(managerList.at(i)->getSystemPrefix());
             prefixBox->addItem(manuName);
@@ -682,6 +682,45 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
     fieldNumToAdd->setText("");
     fieldNumToAdd->setEnabled(false);
     labelNumToAdd->setEnabled(false);
+
+    if (connectionChoice == "")
+    {
+           // Tab All or first time opening, keep default tooltip
+           connectionChoice = "TBD";
+    }
+    // Update tooltip in the Add Light pane to match system connection selected from combobox.
+    log->debug(tr("Connection choice = [%1]").arg(connectionChoice));
+    // get tooltip from ProxyLightManager
+    if (QString(lightManager->metaObject()->className()).contains("ProxyLightManager")) {
+        ProxyLightManager* proxy = (ProxyLightManager*)lightManager;
+        QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
+        QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName(connectionChoice);
+        for (Manager* mgr : managerList) {
+            if (mgr->getSystemPrefix()==(systemPrefix)) {
+                // get tooltip from ProxyLightManager
+                addEntryToolTip = mgr->getEntryToolTip();
+                log->debug("L Add box set");
+                break;
+            }
+        }
+    } else if (lightManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName(connectionChoice))) {
+        addRangeBox->setEnabled(true);
+        log->debug("L add box enabled2");
+        // get tooltip from light manager
+        addEntryToolTip = lightManager->getEntryToolTip();
+        log->debug("LightManager tip");
+    }
+    log->debug(tr("DefaultLightManager tip: %1").arg(addEntryToolTip));
+    // show Hardware address field tooltip in the Add Light pane to match system connection selected from combobox
+#if 0
+    if (addEntryToolTip != null) {
+        hardwareAddressTextField.setToolTipText("<html>"
+                + Bundle.getMessage("AddEntryToolTipLine1", connectionChoice, Bundle.getMessage("Lights"))
+                + "<br>" + addEntryToolTip + "</html>");
+    }
+    hardwareAddressTextField.setBackground(Color.yellow); // reset
+    create.setEnabled(true); // too severe to start as disabled (false) until we fully support validation
+#endif
     addFrame->adjustSize();
     addFrame->setVisible(true);
 }

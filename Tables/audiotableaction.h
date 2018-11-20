@@ -81,6 +81,7 @@ AudioTableAction* act;
  /*public*/ void setDisplayDeleteMsg(int boo);
 /*public*/ NamedBean* getBySystemName(QString name) const;
 /*public*/ NamedBean* getByUserName(QString name);
+/*public*/ int rowCount(const QModelIndex &parent) const;
 /*public*/ int columnCount(const QModelIndex &parent) const;
 /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 /*public*/ QString getValue(QString systemName) const ;

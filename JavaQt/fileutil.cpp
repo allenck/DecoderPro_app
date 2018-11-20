@@ -320,7 +320,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @param path
  */
 /*static*/ /*public*/ QUrl FileUtil::findExternalFilename(QString path) {
-    return FileUtil::findURL(FileUtil::getExternalFilename(path));
+   return FileUtilSupport::getDefault()->findExternalFilename(path);
 }
 
 /**
@@ -789,3 +789,7 @@ FileUtil::FileUtil(QObject *parent) :
   return FileUtilSupport::getDefault()->locateFile(start, fileName);
 }
 
+/*public*/ /*static*/ QString FileUtil::pathFromPortablePath(QString path)
+{
+ return FileUtilSupport::getDefault()->pathFromPortablePath(path);
+}

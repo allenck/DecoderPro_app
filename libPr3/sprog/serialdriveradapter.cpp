@@ -201,7 +201,7 @@ void SerialDriverAdapter::common()
   return handlePortNotFound(p, portName, log);
  }
  catch (IOException ex) {
-     log->error(tr("Unexpected exception while opening port %1").arg(portName), ex.getMessage());
+     log->error(tr("Unexpected exception while opening port %1").arg(portName), ex);
      return "Unexpected error while opening port " + portName + ": " + ex.getMessage();
  }
  return ""; // indicates OK return
@@ -217,7 +217,7 @@ void SerialDriverAdapter::bytesWritten(qint64 bytes)
     try {
         activeSerialPort->setFlowControl(mode);
     } catch (UnsupportedCommOperationException ex) {
-        log->error("Unexpected exception while setting COM port handshake mode,", ex.getMessage());
+        log->error("Unexpected exception while setting COM port handshake mode,", ex);
     }
 }
 

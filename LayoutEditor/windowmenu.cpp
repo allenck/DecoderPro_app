@@ -2,6 +2,7 @@
 #include "windowinterface.h"
 #include "jmrijframe.h"
 #include "panelmenu.h"
+#include <QSignalMapper>
 
 WindowMenu::WindowMenu(QWidget *parent) :
     QMenu(parent)
@@ -41,40 +42,74 @@ WindowMenu::WindowMenu(QWidget *parent) :
 //            }
 //        }
 //    });
-#if 0
- addSeparator();
+#if 1
+ //addSeparator();
 
- int framesNumber = framesList.size();
+ int framesNumber = framesList->size();
+ QSignalMapper* sm = new QSignalMapper();
  for (int i = 0; i < framesNumber; i++)
  {
-  JmriJFrame* iFrame = framesList.at(i);
+  JmriJFrame* iFrame = framesList->at(i);
   windowName = iFrame->windowTitle();
   if(windowName==("")) windowName = "Untitled";
-  JCheckBoxMenuItem newItem = new JCheckBoxMenuItem(new AbstractAction(windowName) {
-            /*public*/ void actionPerformed(ActionEvent e) {
-                JMenuItem selectedItem = (JMenuItem)e.getSource();
-                // Since different windows can have the same name, look for the position of the selected menu item
-                int itemCount = getItemCount();
-                // Skip possible other items at the top of the menu (e.g. "Minimize")
-                int firstItem = itemCount - framesList.size();
-                for (int i = firstItem; i < itemCount; i++) {
-                    if(selectedItem == getItem(i)) {
-                        i -= firstItem;
-                        // Retrieve the corresponding window
-                        if(i < framesList.size()) {	// "i" should always be < framesList.size(), but it's better to make sure
-                            framesList.get(i).setVisible(true);
-                            framesList.get(i).setExtendedState(Frame.NORMAL);
-                            return;
-                        }
-                    }
-                }
-            }
-        });
-        if(iFrame == parentFrame) newItem.setState(true);
-        add(newItem);
+  AbstractAction* newItem = new AbstractAction(windowName, this);
+  sm->setMapping(newItem, iFrame);
+  connect(newItem, SIGNAL(triggered()), sm, SLOT(map()));
+
+//  {
+//            /*public*/ void actionPerformed(ActionEvent e) {
+//                JMenuItem selectedItem = (JMenuItem)e.getSource();
+//                // Since different windows can have the same name, look for the position of the selected menu item
+//                int itemCount = getItemCount();
+//                // Skip possible other items at the top of the menu (e.g. "Minimize")
+//                int firstItem = itemCount - framesList.size();
+//                for (int i = firstItem; i < itemCount; i++) {
+//                    if(selectedItem == getItem(i)) {
+//                        i -= firstItem;
+//                        // Retrieve the corresponding window
+//                        if(i < framesList.size()) {	// "i" should always be < framesList.size(), but it's better to make sure
+//                            framesList.get(i).setVisible(true);
+//                            framesList.get(i).setExtendedState(Frame.NORMAL);
+//                            return;
+//                        }
+//                    }
+//                }
+//            }
+//        });
+// ??        if(iFrame == parentFrame) newItem->setState(true);
+        addAction(newItem);
     }
 #endif
- PanelMenu::instance()->updatePanelMenu(this);
+ connect(sm, SIGNAL(mapped(QWidget*)), this, SLOT(onItem(QWidget*)));
+ //PanelMenu::instance()->updatePanelMenu(this);
+}
+
+
+void WindowMenu::onItem(QWidget* iFrame)
+{
+#if 0
+           /*public*/ void actionPerformed(ActionEvent e) {
+               JMenuItem selectedItem = (JMenuItem)e.getSource();
+               // Since different windows can have the same name, look for the position of the selected menu item
+               int itemCount = getItemCount();
+               // Skip possible other items at the top of the menu (e.g. "Minimize")
+               int firstItem = itemCount - framesList.size();
+               for (int i = firstItem; i < itemCount; i++) {
+                   if(selectedItem == getItem(i)) {
+                       i -= firstItem;
+                       // Retrieve the corresponding window
+                       if(i < framesList.size()) {	// "i" should always be < framesList.size(), but it's better to make sure
+                           framesList.get(i).setVisible(true);
+                           framesList.get(i).setExtendedState(Frame.NORMAL);
+                           return;
+                       }
+                   }
+               }
+           }
+       });
+ #endif
+ JmriJFrame* jFrame = static_cast<JmriJFrame*>(iFrame);
+ jFrame->setVisible(true);
 }
 
 ///*public*/ void menuDeselected(MenuEvent e) {}

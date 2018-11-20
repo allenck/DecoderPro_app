@@ -23,7 +23,7 @@ win32_msvc: {
 APPNAME = "LocoNetMonitor"
 APPVERSION = 0.1
 
-PREFIX = /home/allen/Projects/PythonQt3.0
+PREFIX = /home/allen/Projects/PythonQt-master
 
 #QT       -= gui
 QT       += core xml  gui printsupport   sql network  multimedia #webkitwidgets
@@ -69,7 +69,7 @@ DEFINES += LIBPR3_LIBRARY
 win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
  ENABLE_SCRIPTING = "Y"
 }
-unix:exists(/home/allen/Projects/PythonQt3.0/lib/libPythonQt.so) {
+unix:exists(/home/allen/Projects/PythonQt3.0/lib/libPythonQt_d.so) {
  ENABLE_SCRIPTING = "Y"
 }
 #CONFIG += scripts
@@ -197,7 +197,7 @@ SOURCES += \
     simpletimebase.cpp \
     loconetthrottle.cpp \
     Throttle/throttlewindow.cpp \
-    Throttle/listthrottles.cpp \
+    #Throttle/listthrottles.cpp \
     Roster/functionlabelsmediadlg.cpp \
     Roster/locofile.cpp \
     Roster/cvtablemodel.cpp \
@@ -810,81 +810,21 @@ SOURCES += \
     loconet/lntcpserverframe.cpp \
     loconet/lntcpserveraction.cpp \
     lnsv2messagecontents.cpp \
-    loconet/loconetmessageinterpret.cpp
-#    loconet/HexFile/debugprogrammermanager.cpp \
-#    loconet/HexFile/debugthrottle.cpp \
-#    loconet/HexFile/debugthrottlemanager.cpp \
-#    loconet/HexFile/hexfileconnectionconfig.cpp \
-#    loconet/HexFile/hexfileconnectionconfigxml.cpp \
-#    loconet/HexFile/hexfileframe.cpp \
-#    loconet/HexFile/hexfileserver.cpp \
-#    loconet/HexFile/lnhexfileport.cpp \
-#    loconet/HexFile/progdebugger.cpp \
-#    loconet/LnOverTcp/lnovertcpconnectionconfig.cpp \
-#    loconet/LnOverTcp/lnovertcpconnectionconfigxml.cpp \
-#    loconet/Locobuffer/locobufferconnectionconfig.cpp \
-#    loconet/Locobuffer/locobufferconnectionconfigxml.cpp \
-#    loconet/LocobufferUsb/locobufferusbconnectionconfig.cpp \
-#    loconet/LocobufferUsb/locobufferusbconnectionconfigxml.cpp \
-#    loconet/Pr3/connectionconfigxml.cpp \
-#    loconet/Pr3/pr3connectionconfig.cpp \
-#    loconet/branchto.cpp \
-#    loconet/branchtoeditor.cpp \
-#    loconet/channelstart.cpp \
-#    loconet/channelstarteditor.cpp \
-#    loconet/clientrxhandler.cpp \
-#    loconet/defaultmutabletreemodel.cpp \
-#    loconet/delaysound.cpp \
-#    loconet/delaysoundeditor.cpp \
-#    loconet/editorfilepane.cpp \
-#    loconet/editorframe.cpp \
-#    loconet/editorpane.cpp \
-#    loconet/editortabledatamodel.cpp \
-#    loconet/endsound.cpp \
-#    loconet/endsoundeditor.cpp \
-#    loconet/fourbytemacro.cpp \
-#    loconet/fourbytemacroeditor.cpp \
-#    loconet/generatetrigger.cpp \
-#    loconet/generatetriggereditor.cpp \
-#    loconet/initiatesound.cpp \
-#    loconet/initiatesoundeditor.cpp \
-#    loconet/jeditorpane.cpp \
-#    loconet/jmriserver.cpp \
-#    loconet/lncomponentfactory.cpp \
-#    loconet/lnnetworkportcontroller.cpp \
-#    loconet/lnovertcppacketizer.cpp \
-#    loconet/lntcpdriveradapter.cpp \
-#    loconet/loaderengine.cpp \
-#    loconet/loadmodifier.cpp \
-#    loconet/loadmodifiereditor.cpp \
-#    loconet/loconetmenu.cpp \
-#    loconet/loconetmsgdialog.cpp \
-#    loconet/maskcompare.cpp \
-#    loconet/maskcompareeditor.cpp \
-#    loconet/monitoringlabel.cpp \
-#    loconet/play.cpp \
-#    loconet/playeditor.cpp \
-#    loconet/qtsoundaudioclip.cpp \
-#    loconet/querycvdialog.cpp \
-#    loconet/sdfbuffer.cpp \
-#    loconet/sdfconstants.cpp \
-#    loconet/sdfeditorpane.cpp \
-#    loconet/sdfmacro.cpp \
-#    loconet/sdfmacroeditor.cpp \
-#    loconet/sdlversion.cpp \
-#    loconet/sdlversioneditor.cpp \
-#    loconet/server.cpp \
-#    loconet/serveraction.cpp \
-#    loconet/serverframe.cpp \
-#    loconet/skemestart.cpp \
-#    loconet/skemestarteditor.cpp \
-#    loconet/skipontrigger.cpp \
-#    loconet/skipontriggereditor.cpp \
-#    loconet/soundloaderpane.cpp \
-#    loconet/spjfile.cpp \
-#    loconet/twobytemacro.cpp \
-#    loconet/twobytemacroeditor.cpp \
-#    loconet/wavbuffer.cpp
+    loconet/loconetmessageinterpret.cpp \
+    internalconsistmanager.cpp \
+    powermanager.cpp \
+    Signal/signalmastaddpane.cpp \
+    Signal/dccsignalmastaddpane.cpp \
+    Signal/lncpsignalmast.cpp \
+    Signal/turnoutsignalmastaddpane.cpp \
+    Signal/virtualsignalmastaddpane.cpp \
+    Signal/signalheadsignalmastaddpane.cpp \
+    Signal/matrixsignalmast.cpp \
+    Signal/matrixsignalmastxml.cpp \
+    Signal/matrixsignalmastaddpane.cpp \
+    Signal/dccsignalheadxml.cpp \
+    warrantshutdowntask.cpp \
+    mergeprompt.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1040,7 +980,7 @@ HEADERS += \
     simpletimebase.h \
     loconetthrottle.h \
     Throttle/throttlewindow.h \
-    Throttle/listthrottles.h \
+    #Throttle/listthrottles.h \
     Roster/functionlabelsmediadlg.h \
     Roster/locofile.h \
     Roster/cvtablemodel.h \
@@ -1697,7 +1637,20 @@ HEADERS += \
     loconet/lntcpserverframe.h \
     loconet/lntcpserveraction.h \
     lnsv2messagecontents.h \
-    loconet/loconetmessageinterpret.h
+    loconet/loconetmessageinterpret.h \
+    internalconsistmanager.h \
+    Signal/signalmastaddpane.h \
+    Signal/dccsignalmastaddpane.h \
+    Signal/lncpsignalmast.h \
+    Signal/turnoutsignalmastaddpane.h \
+    Signal/virtualsignalmastaddpane.h \
+    Signal/signalheadsignalmastaddpane.h \
+    Signal/matrixsignalmast.h \
+    Signal/matrixsignalmastxml.h \
+    Signal/matrixsignalmastaddpane.h \
+    Signal/dccsignalheadxml.h \
+    warrantshutdowntask.h \
+    mergeprompt.h
 
  !contains(FTDI, 1) {
     HEADERS +=
@@ -1779,7 +1732,7 @@ RESOURCES += \
 
 FORMS += \
     Throttle/throttlewindow.ui \
-    Throttle/listthrottles.ui \
+    #Throttle/listthrottles.ui \
     Roster/functionlabelsmediadlg.ui \
     Roster/rosterentrypane.ui \
     Roster/functionlabelspane.ui \
@@ -1868,8 +1821,7 @@ else:unix: LIBS += -L$$PWD/../Tables/ -lTables
 INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
 
-DISTFILES += \
-    WiThrottle/abstractwithrottlepreferences.o
+DISTFILES +=
 
 contains(WEBAPP, 1) {
 

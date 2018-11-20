@@ -4,7 +4,8 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     MemoryManager(parent)
 {
  lastAutoMemoryRef = 0;
- registerSelf();
+ //registerSelf();
+ setProperty("JavaClassName", "jmri.managers.AbstractMemoryManager");
 }
 /**
  * Abstract partial implementation of a MemoryManager.

@@ -51,7 +51,7 @@ public:
      * be looking them up.
      * @return requested CatalogTree object (never null)
      */
-    /*public*/ virtual CatalogTree* newCatalogTree(QString /*systemName*/, QString /*userName*/) {return NULL;}
+    /*public*/ virtual CatalogTree* newCatalogTree(QString /*systemName*/, QString /*userName*/) {return nullptr;}
 
     /**
      * Get a list of all CatalogTree objects' system names.
@@ -59,6 +59,8 @@ public:
     /*public*/  QStringList getSystemNameList() {return QStringList();}
 
     /*public*/ virtual void Register(CatalogTree*) {}
+
+    /*public*/ virtual void storeImageIndex() {}
 signals:
 
 public slots:

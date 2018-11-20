@@ -170,13 +170,13 @@ Buffer::Buffer(int mark, int pos, int lim, int cap, QObject* parent) : QObject(p
 
 
     if (cap < 0)
-        throw new IllegalArgumentException("Negative capacity: " + QString::number(cap));
+        throw  IllegalArgumentException("Negative capacity: " + QString::number(cap));
     this->_capacity = cap;
     limit(lim);
     position(pos);
     if (mark >= 0) {
         if (mark > pos)
-            throw new IllegalArgumentException("mark > position: ("
+            throw  IllegalArgumentException("mark > position: ("
                                                + QString::number(mark) + " > " + QString::number(pos) + ")");
         this->_mark = mark;
     }
@@ -215,7 +215,7 @@ Buffer::Buffer(int mark, int pos, int lim, int cap, QObject* parent) : QObject(p
  */
 /*public*/ /*final*/ Buffer* Buffer::position(int newPosition) {
     if ((newPosition > _limit) || (newPosition < 0))
-        throw new IllegalArgumentException();
+        throw  IllegalArgumentException();
     _position = newPosition;
     if (_mark > _position) _mark = -1;
     return this;
@@ -246,7 +246,7 @@ Buffer::Buffer(int mark, int pos, int lim, int cap, QObject* parent) : QObject(p
  */
 /*public*/ /*final*/ Buffer* Buffer::limit(int newLimit) {
     if ((newLimit > _capacity) || (newLimit < 0))
-        throw new IllegalArgumentException();
+        throw  IllegalArgumentException();
     _limit = newLimit;
     if (_position > _limit) _position = _limit;
     if (_mark > _limit) _mark = -1;

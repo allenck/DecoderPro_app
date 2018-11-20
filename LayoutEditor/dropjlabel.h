@@ -4,15 +4,16 @@
 #include "logger.h"
 #include "liblayouteditor_global.h"
 
+class NamedIcon;
 class DropTargetDropEvent;
 class DataFlavor;
 class LIBLAYOUTEDITORSHARED_EXPORT DropJLabel : public QLabel
 {
     Q_OBJECT
 public:
-    explicit DropJLabel(QWidget *parent = 0);
-    DropJLabel (NamedIcon* _icon, QWidget *parent = 0);
-    DropJLabel (NamedIcon* _icon,  QHash <QString, NamedIcon*>* iconMap, bool update, QWidget *parent = 0);
+    explicit DropJLabel(QWidget *parent = nullptr);
+    DropJLabel (NamedIcon* _icon, QWidget *parent = nullptr);
+    DropJLabel (NamedIcon* _icon,  QHash <QString, NamedIcon*>* iconMap, bool update, QWidget *parent = nullptr);
 //    /*public*/ void dragExit(DropTargetEvent dte);
 //    /*public*/ void dragEnter(DropTargetDragEvent dtde);
     void dragEnterEvent(QDragEnterEvent *event);

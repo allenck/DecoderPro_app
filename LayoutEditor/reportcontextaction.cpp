@@ -157,5 +157,5 @@ void ReportContextAction::addProperty(QString prop) {
 
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* ReportContextAction::makePanel() {
-    throw new IllegalArgumentException("Should not be invoked");
+    throw  IllegalArgumentException("Should not be invoked");
 }

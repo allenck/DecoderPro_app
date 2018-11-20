@@ -195,7 +195,7 @@ void MultiIndexProgrammerFacade::parseCV(QString cv)
                     state = PROGRAMMING;
                     prog->writeCV(_cv, _val, (ProgListener*)this);
                 } catch (ProgrammerException e) {
-                    log->error("Exception doing final write", e.getMessage());
+                    log->error("Exception doing final write", e);
                 }
             } else {
                 try {
@@ -204,7 +204,7 @@ void MultiIndexProgrammerFacade::parseCV(QString cv)
                     state = FINISHWRITE;
                     prog->writeCV(indexSI, tempSI, (ProgListener*)this);
                 } catch (ProgrammerException e) {
-                    log->error("Exception doing write SI for write", e.getMessage());
+                    log->error("Exception doing write SI for write", e);
                 }
             }
             break;

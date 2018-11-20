@@ -86,7 +86,7 @@ JWSShutdownTask::JWSShutdownTask(QString text, JsonWebSocket *jws) : QuietShutDo
     try {
         this->handler->onMessage(string);
     } catch (IOException e) {
-        log->error("Error on WebSocket message:\n{}", e.getMessage());
+        log->error("Error on WebSocket message:\n", e);
         this->connection->getSocket()->close();
         ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->deregister(this->shutDownTask);
     }

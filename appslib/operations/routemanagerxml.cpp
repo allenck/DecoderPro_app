@@ -3,6 +3,7 @@
 #include <QtXml>
 #include "routemanager.h"
 #include "file.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -23,30 +24,19 @@ OperationsXml(parent)
 {
  log = new Logger("RouteManagerXml");
  operationsFileName = "OperationsRouteRoster.xml"; // NOI18N
+ setProperty("InstanceManagerAutoDefault", "true");
+ setProperty("InstanceManagerAutoInitialize", "true");
 
 }
 
 /**
  * record the single instance *
  */
-/*private*/ /*static*/ RouteManagerXml* RouteManagerXml::_instance = NULL;
+///*private*/ /*static*/ RouteManagerXml* RouteManagerXml::_instance = NULL;
 
 /*public*/ /*static*/ /*synchronized*/ RouteManagerXml* RouteManagerXml::instance()
 {
- Logger* log = new Logger("RouteManagerXml");
-    if (_instance == NULL) {
-        if (log->isDebugEnabled()) {
-            log->debug("RouteManagerXml creating instance");
-        }
-        // create and load
-        _instance = new RouteManagerXml();
-        _instance->load();
-        log->debug("Routes have been loaded!");
-    }
-    if (Control::showInstance) {
-        log->debug("RouteManagerXml returns instance {}"/*, _instance*/);
-    }
-    return _instance;
+return static_cast<RouteManagerXml*>(InstanceManager::getDefault("RouteManagerXml"));
 }
 
 /*public*/ void RouteManagerXml::writeFile(QString name) //throws java.io.FileNotFoundException, java.io.IOException
@@ -110,19 +100,24 @@ OperationsXml(parent)
 
     // clear dirty bit
     setDirty(false);
-}
+ }
 
-/*public*/ void RouteManagerXml::setOperationsFileName(QString name) {
-    operationsFileName = name;
-}
+ /*public*/ void RouteManagerXml::setOperationsFileName(QString name) {
+     operationsFileName = name;
+ }
 
-/*public*/ QString RouteManagerXml::getOperationsFileName() {
-    return operationsFileName;
-}
+ /*public*/ QString RouteManagerXml::getOperationsFileName() {
+     return operationsFileName;
+ }
 
 
-/*public*/ void RouteManagerXml::dispose(){
-    _instance = NULL;
-}
+ /*public*/ void RouteManagerXml::dispose(){
+//    _instance = NULL;
+ }
+
+ //@Override
+ /*public*/ void RouteManagerXml::initialize() {
+     load();
+ }
 
 } // end namespace

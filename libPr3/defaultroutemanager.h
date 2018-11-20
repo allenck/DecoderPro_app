@@ -1,6 +1,7 @@
 #ifndef DEFAULTROUTEMANAGER_H
 #define DEFAULTROUTEMANAGER_H
-#include "routemanager.h"
+
+#include "../libPr3/routemanager.h"
 #include "route.h"
 #include "defaultroute.h"
 #include "decimalformat.h"

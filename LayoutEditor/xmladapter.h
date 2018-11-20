@@ -1,11 +1,13 @@
 #ifndef XMLADAPTER_H
 #define XMLADAPTER_H
+
 #include <QObject>
 #include <QtXml>
 #include "exceptions.h"
 #include "configxmlmanager.h"
 #include "level.h"
 #include "liblayouteditor_global.h"
+#include "dialogerrorhandler.h"
 
 /**
  * Interface assumed during configuration operations.
@@ -110,32 +112,85 @@ public:
   return QDomElement();
  }
 
- /*public*/ virtual int loadOrder() { return 0;}
+/*public*/ virtual int loadOrder() { return 0;}
 
-    /**
-     * Invoke common handling of errors that
-     * happen during the "load" process.
-     *
-     * This is part of the interface to ensure that
-     * all the necessary classes provide it; eventually
-     * it will be coupled to a reporting mechanism of some
-     * sort.
-     *
-     * @param description description of error encountered
-     * @param systemName System name of bean being handled, may be null
-     * @param userName used name of the bean being handled, may be null
-     * @param exception Any exception being handled in the processing, may be null
-     * @throws JmriConfigureXmlException in place for later expansion;
-     *         should be propagated upward to higher-level error handling
-     */
-    /*public*/ virtual void creationErrorEncountered (
-                Level* /*level*/,
-                QString /*description*/,
-                QString /*systemName*/,
-                QString /*userName*/,
-                Throwable* /*exception*/
-            ) throw (JmriConfigureXmlException) {}
+/**
+ * Invoke common handling of errors that
+ * happen during the "load" process.
+ *
+ * This is part of the interface to ensure that
+ * all the necessary classes provide it; eventually
+ * it will be coupled to a reporting mechanism of some
+ * sort.
+ *
+ * @param description description of error encountered
+ * @param systemName System name of bean being handled, may be null
+ * @param userName used name of the bean being handled, may be null
+ * @param exception Any exception being handled in the processing, may be null
+ * @throws JmriConfigureXmlException in place for later expansion;
+ *         should be propagated upward to higher-level error handling
+ */
+QT_DEPRECATED/*public*/ virtual void creationErrorEncountered (
+            QString description,
+            QString systemName,
+            QString userName,
+            Exception exception
+        ) /*throw (JmriConfigureXmlException)*/
+ {
+  this->handleException(description, nullptr, systemName, userName, exception);
+ }
 
+ /**
+      * Provide a simple handler for errors.
+      *
+      * Calls the configured {@link jmri.configurexml.ErrorHandler} with an
+      * {@link jmri.configurexml.ErrorMemo} created using the provided
+      * parameters.
+      *
+      * @param description description of error encountered
+      * @param operation   the operation being performed, may be null
+      * @param systemName  system name of bean being handled, may be null
+      * @param userName    user name of the bean being handled, may be null
+      * @param exception   Any exception being handled in the processing, may be
+      *                    null
+      * @throws JmriConfigureXmlException in place for later expansion; should be
+      *                                   propagated upward to higher-level error
+      *                                   handling
+      */
+      virtual/*public*/ void handleException(
+             /*@Nonnull*/ QString /*description*/,
+             /*@Nullable*/ QString /*operation*/,
+             /*@Nullable*/ QString /*systemName*/,
+             /*@Nullable*/ QString /*userName*/,
+             /*@Nullable*/ Exception /*exception*/){ }/*throws JmriConfigureXmlException*/
+
+     /**
+      * Set the error handler that will handle any errors encountered while
+      * parsing the XML. If not specified, the default error handler will be
+      * used.
+      *
+      * @param errorHandler the error handler or null to ignore parser errors
+      */
+     /*public*/ void setExceptionHandler(ErrorHandler* errorHandler);
+
+     /**
+      * Get the current error handler.
+      *
+      * @return the error handler or null if no error handler is assigned
+      */
+     /*public*/ ErrorHandler* getExceptionHandler();
+
+     /**
+      * Get the default error handler.
+      *
+      * @return the default error handler
+      */
+     /*public*/ static ErrorHandler* getDefaultExceptionHandler() {
+//         if (GraphicsEnvironment.isHeadless()) {
+//             return new ErrorHandler();
+//         }
+         return new DialogErrorHandler();
+     }
     /*public*/ virtual void setConfigXmlManager(ConfigXmlManager* /*c*/) {}
     friend class PanelEditorXml;
     friend class AbstractSignalHeadManagerXml;

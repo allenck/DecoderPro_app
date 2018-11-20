@@ -75,6 +75,8 @@ public:
     /*public*/ static /*final*/ QString pathSeparator;// = "" + pathSeparatorChar;
     /*public*/ bool rename(QString newName);
     /*public*/ QDateTime lastModified();
+    /*public*/ QString fileName();
+    /*public*/ QString absoluteFilePath();
 
 signals:
 

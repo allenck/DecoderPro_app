@@ -207,12 +207,12 @@ void AppsBase::init()
   catch (IOException ex)
   {
    // GUI should show message here
-   log->error("Profiles not configurable. Using fallback per-application configuration. Error: {}", ex.getMessage());
+   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex.getMessage()));
   }
   catch (IllegalArgumentException ex)
   {
    // GUI should show message here
-   log->error("Profiles not configurable. Using fallback per-application configuration. Error: {}", ex.getMessage());
+   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex.getMessage()));
   }
  }
  try
@@ -381,23 +381,23 @@ void AppsBase::init()
     // as a special case, register a ShutDownTask to write out blocks
     ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->
       _register(new WriteBlocksShutDownTask("Writing Blocks", this));
-     #if 0 // done
+#if 0 // done
     {
 
-                /*public*/ bool execute() {
-                    // Save block values prior to exit, if necessary
-                    log->debug("Start writing block info");
-                    try {
-                        new BlockValueFile().writeBlockValues();
-                    } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: "+jde); }
-                    catch (java.io.IOException ioe) {
-                        log->error("Exception writing blocks: " + ioe);
-                    }
+     /*public*/ bool execute() {
+         // Save block values prior to exit, if necessary
+         log->debug("Start writing block info");
+         try {
+             new BlockValueFile().writeBlockValues();
+         } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: "+jde); }
+         catch (java.io.IOException ioe) {
+             log->error("Exception writing blocks: " + ioe);
+         }
 
-                    // continue shutdown
-                    return true;
-                }
-            });
+         // continue shutdown
+         return true;
+     }
+ });
 #endif
 }
 WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) : AbstractShutDownTask(text)

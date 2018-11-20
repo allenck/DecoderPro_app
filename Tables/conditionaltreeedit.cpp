@@ -2924,7 +2924,7 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
 
      Logix* x = _logixManager->getBySystemName(logixName);
      if (x ==  NULL) {
-         log->error("Logix '{}' not found while building the conditional list", logixName);  // NOI18N
+         log->error(tr("Logix '%1' not found while building the conditional list").arg( logixName));  // NOI18N
          return;
      }
      if (x->getNumConditionals() == 0) {

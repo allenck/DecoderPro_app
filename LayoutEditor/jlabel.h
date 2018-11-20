@@ -9,6 +9,7 @@
 #include "liblayouteditor_global.h"
 
 class NamedIcon;
+class ImageIcon;
 class LIBLAYOUTEDITORSHARED_EXPORT JLabel : public Positionable
 {
     Q_OBJECT
@@ -55,22 +56,22 @@ public:
  *           <code>LEADING</code> or
  *           <code>TRAILING</code>.
  */
-/*public*/ JLabel(QString text, NamedIcon* icon, int horizontalAlignment,QWidget *parent = 0);
-    /**
-     * Creates a <code>JLabel</code> instance with the specified
-     * text and horizontal alignment.
-     * The label is centered vertically in its display area.
-     *
-     * @param text  The text to be displayed by the label.
-     * @param horizontalAlignment  One of the following constants
-     *           defined in <code>SwingConstants</code>:
-     *           <code>LEFT</code>,
-     *           <code>CENTER</code>,
-     *           <code>RIGHT</code>,
-     *           <code>LEADING</code> or
-     *           <code>TRAILING</code>.
-     */
-    /*public*/ JLabel(QString text, int horizontalAlignment,QWidget *parent = 0);
+/*public*/ JLabel(QString text, ImageIcon* icon, int horizontalAlignment,QWidget *parent = nullptr);
+/**
+ * Creates a <code>JLabel</code> instance with the specified
+ * text and horizontal alignment.
+ * The label is centered vertically in its display area.
+ *
+ * @param text  The text to be displayed by the label.
+ * @param horizontalAlignment  One of the following constants
+ *           defined in <code>SwingConstants</code>:
+ *           <code>LEFT</code>,
+ *           <code>CENTER</code>,
+ *           <code>RIGHT</code>,
+ *           <code>LEADING</code> or
+ *           <code>TRAILING</code>.
+ */
+/*public*/ JLabel(QString text, int horizontalAlignment,QWidget *parent = nullptr);
 
 /**
  * Creates a <code>JLabel</code> instance with the specified text.
@@ -79,7 +80,7 @@ public:
  *
  * @param text  The text to be displayed by the label.
  */
-/*public*/ JLabel(QString text,QWidget *parent = 0);
+/*public*/ JLabel(QString text,QWidget *parent = nullptr);
 /**
  * Creates a <code>JLabel</code> instance with the specified
  * image and horizontal alignment.
@@ -103,8 +104,10 @@ public:
  * The label's contents, once set, will be displayed on the leading edge
  * of the label's display area.
  */
-/*public*/ JLabel(NamedIcon* image, QWidget *parent = 0);
-/*public*/ JLabel(QWidget *parent = 0);
+/*public*/ JLabel(ImageIcon* image, QWidget *parent = nullptr);
+/*public*/ JLabel(NamedIcon* image, QWidget *parent = nullptr);
+
+/*public*/ JLabel(QWidget *parent = nullptr);
     /**
      * Creates a <code>JLabel</code> instance with the specified image.
      * The label is centered vertically and horizontally
@@ -127,7 +130,7 @@ public:
  * @return an Icon
  * @see #setIcon
  */
-/*public*/ NamedIcon* getIcon();
+/*public*/ ImageIcon* getIcon();
     /**
      * Defines the icon this component will display.  If
      * the value of icon is NULL, nothing is displayed.
@@ -145,7 +148,7 @@ public:
      *    attribute: visualUpdate true
      *  description: The icon this component will display.
      */
-    /*public*/ void setIcon(NamedIcon *icon) ;
+    /*public*/ void setIcon(ImageIcon *icon) ;
     /**
      * Returns the icon used by the label when it's disabled.
      * If no disabled icon has been set this will forward the call to
@@ -160,7 +163,7 @@ public:
      * @see ImageIcon
      */
     //@Transient
-    /*public*/ NamedIcon* getDisabledIcon() ;
+    /*public*/ ImageIcon* getDisabledIcon() ;
     /**
      * Set the icon to be displayed if this JLabel is "disabled"
      * (JLabel.setEnabled(false)).
@@ -175,7 +178,7 @@ public:
      *    attribute: visualUpdate true
      *  description: The icon to display if the label is disabled.
      */
-    /*public*/ void setDisabledIcon(NamedIcon* disabledIcon);
+    /*public*/ void setDisabledIcon(ImageIcon* disabledIcon);
     /**
      * Specify a keycode that indicates a mnemonic key.
      * This property is used when the label is part of a larger component.
@@ -329,8 +332,8 @@ private:
  /*private*/ int mnemonicIndex;// = -1;
 
  /*private*/ QString text;// = "";         // "" rather than null,  for BeanBox
-/*private*/ NamedIcon* defaultIcon;// = NULL;
-/*private*/ NamedIcon* disabledIcon;// = null;
+/*private*/ ImageIcon* defaultIcon;// = NULL;
+/*private*/ ImageIcon* disabledIcon;// = null;
 /*private*/ bool disabledIconSet;// = false;
 
 /*private*/ int verticalAlignment;// = CENTER;

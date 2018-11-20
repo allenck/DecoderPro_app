@@ -476,6 +476,8 @@
     dialog->show();
     int rslt = dialog->exec();
     //dialog->/*dispose*/close();
+    if(rslt == QDialog::Rejected)
+        return QVariant();
 
     QVariant value = pane->getInputValue();
 

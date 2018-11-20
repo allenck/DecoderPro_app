@@ -35,16 +35,16 @@ public:
  /*public*/ LayoutEditorTools(LayoutEditor* thePanel, QObject *parent = 0);
 // display dialog for Set Signals at Turnout* tool
 /*public*/ void setSignalsAtTurnoutFromMenu( LayoutTurnout* to,
-                MultiIconEditor* theEditor, JmriJFrame* theFrame ) ;
-/*public*/ void setSignalsAtTurnout( MultiIconEditor* theEditor, JmriJFrame* theFrame );
+                MultiIconEditor* theEditor, JFrame* theFrame ) ;
+/*public*/ void setSignalsAtTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ bool reachedEndBumper();
     /*public*/ bool isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p);
-    /*public*/ void setSignalsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JmriJFrame* theFrame );
-    /*public*/ void setSignalsAtBlockBoundary( MultiIconEditor* theEditor, JmriJFrame* theFrame );
+    /*public*/ void setSignalsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JFrame* theFrame );
+    /*public*/ void setSignalsAtBlockBoundary( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void removeSignalHeadFromPanel(QString signalName);
     /*public*/ void removeAssignment(SignalMast* mast);
     /*public*/ void removeAssignment(SignalHead* head);
-    /*public*/ SignalHead* getSignalHeadFromEntry(JTextField* signalName,bool requireEntry, JmriJFrame* frame);
+    /*public*/ SignalHead* getSignalHeadFromEntry(JTextField* signalName,bool requireEntry, JFrame* frame);
     /*public*/ bool isHeadOnPanel(SignalHead* head);
     /*public*/ SignalHead* getHeadFromName(QString str);
     /*public*/ void setSignalHeadOnPanel(int rotation, QString headName,int xLoc, int yLoc);
@@ -271,14 +271,18 @@ private:
 
     QWidget* signalMastTurnoutPanel;// = new QWidget();
     /*private*/ QVector<QString> turnoutBlocks;// = new QVector<QString>(4);
-    QList<NamedBean*>* usedMasts;// = new QList<NamedBean*>();
+    QList<NamedBean*> usedMasts;// = new QList<NamedBean*>();
 
     bool setSensorsOpen;// =false;
     bool turnoutSensorFromMenu;// = false;
     /*private*/ JmriJFrame* setSensorsFrame;// = NULL;
     /*private*/ JFrame* turnoutSensorFrame;// = NULL;
+    QLabel* turnoutSensorNameLabel;
 
-    /*private*/ JTextField* turnoutSensorNameField;// = new JTextField(16);
+    /*private*/ JmriBeanComboBox* sensorsTurnoutComboBox;// = new JmriBeanComboBox(
+//    InstanceManager.turnoutManagerInstance(),
+//    null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
+
     /*private*/ QPushButton* setSensorsDone;
     /*private*/ QPushButton* getSavedSensors;
     /*private*/ QPushButton* setSensorsCancel;

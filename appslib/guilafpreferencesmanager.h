@@ -67,7 +67,7 @@ private:
  /*private*/ int getCalcFontSize(int oldSize);
  /*private*/ void setDirty(bool dirty);
  /*private*/ void setRestartRequired(bool restartRequired);
-
+ Q_PROPERTY(MEMBER InstanceManagerAutoDefault )
 };
 
 #endif // GUILAFPREFERENCESANAGER_H

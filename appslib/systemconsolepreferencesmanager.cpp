@@ -66,7 +66,7 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
     {
         preferences->sync();
     } catch (BackingStoreException ex) {
-        log->error("Unable to save preferences->", ex.getMessage());
+        log->error("Unable to save preferences->", ex);
     }
 }
 

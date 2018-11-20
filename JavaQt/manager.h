@@ -7,6 +7,8 @@
 #include "namedbean.h"
 #include <QList>
 #include "javaqt_global.h"
+#include "vetoablechangelistener.h"
+#include <QSet>
 
 class QString;
 class QStringList;
@@ -109,7 +111,40 @@ public:
 
     virtual QStringList getSystemNameArray()  {return QStringList();}
     virtual QStringList getSystemNameList()  {return QStringList();}
-    virtual /*public*/ QList<NamedBean*>* getNamedBeanList() {return NULL;}
+    /**
+      * This provides an
+      * {@linkplain java.util.Collections#unmodifiableList unmodifiable} List
+      * of system names.
+      * <p>
+      * Note: this is ordered by the original add order, used for ConfigureXML
+      * <p>
+      * Note: Access via {@link getNamedBeanSet} is faster.
+      * <p>
+      * Note: This is a live list, it will be updated as beans are added and removed.
+      * @return Unmodifiable access to a list of system names
+      * @deprecated 4.11.5 - use direct access via
+      *                  {@link getNamedBeanSet}
+      */
+//     @Deprecated // 4.11.5
+//     @CheckReturnValue
+//     @Nonnull
+     QT_DEPRECATED /*public*/ /*default*/ virtual QStringList getSystemNameAddedOrderList() { return getSystemNameList(); }
+
+     QT_DEPRECATED virtual /*public*/ QList<NamedBean*>* getNamedBeanList() {return NULL;}
+     /**
+      * This provides an
+      * {@linkplain java.util.Collections#unmodifiableSet unmodifiable}
+      * SortedSet of NamedBeans in system-name order.
+      * <p>
+      * Note: This is the fastest of the accessors, and is the only long-term form.
+      * <p>
+      * Note: This is a live set; the contents are kept up to date
+      * @return Unmodifiable access to a SortedSet of NamedBeans
+      */
+     //@CheckReturnValue
+     //@Nonnull
+     /*public*/ /*SortedSet<E>*/virtual QSet<NamedBean*> getNamedBeanSet() {return QSet<NamedBean*>();}
+
         /**
          * Locate an instance based on a system name.  Returns null if no
          * instance already exists.
@@ -147,6 +182,19 @@ public:
          */
         virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/)  {}
 
+        /**
+         * Add a VetoableChangeListener to the listener list.
+         *
+         * @param l the listener
+         */
+        /*public*/ virtual void addVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* l) {}
+
+        /**
+         * Remove a VetoableChangeListener to the listener list.
+         *
+         * @param l the listener
+         */
+        /*public*/ virtual void removeVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* l) {}
         /**
          * Remember a NamedBean Object created outside the manager.
          * <P>
@@ -263,7 +311,7 @@ public:
         virtual /*public*/ QString getEntryToolTip() {return "";}
 
 signals:
-    
+    void vetoablePropertyChange(PropertyChangeEvent*);
 public slots:
 
 private:

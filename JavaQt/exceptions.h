@@ -104,6 +104,15 @@ public:
 QString getMessage();
     QString msg;
 };
+class JAVAQTSHARED_EXPORT IIOException : public Exception
+{
+public:
+    IIOException(QString msg = "");
+    ~IIOException() throw()
+    {}
+QString getMessage();
+    QString msg;
+};
 
 class JAVAQTSHARED_EXPORT LocoNetMessageException : public Exception
 {

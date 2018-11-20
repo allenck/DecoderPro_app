@@ -121,6 +121,7 @@ private:
 protected:
     /*protected*/ QStringList getChoices();
 friend class TabbedPreferencesFrame;
+friend class EditConnectionPreferences;
 };
 
 /*static*/ class PreferencesCatItems : public QObject
@@ -155,7 +156,7 @@ public:
     void disableSubCategory(QString sub);
     int getSortOrder();
     void setSortOrder(int sortOrder);
-
+ friend class EditConnectionPreferences;
 };
 
 /*static*/ class TabDetails : public QObject

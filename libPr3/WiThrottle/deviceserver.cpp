@@ -470,7 +470,7 @@ void DeviceServer::handleMessage(QString msg)
    else
    {
     keepReading = false;
-    log->error("readLine failure limit exceeded, ending thread run loop for device '{}'", getName());
+    log->error(tr("readLine failure limit exceeded, ending thread run loop for device '%1").arg(getName()));
    }
   }
 // } while (keepReading);	//	'til we tell it to stop
@@ -966,7 +966,7 @@ void  ServerRxHandler::on_textMessageReceived(QString msg)
  try {
      clientSocket->close();
  } catch (IOException ex1) {
-     log->error("close, which closing clientSocket", ex1.getMessage());
+     log->error("close, which closing clientSocket", ex1);
  }
 }
 void ServerRxHandler::displayError(QAbstractSocket::SocketError socketError)

@@ -33,6 +33,7 @@
     this->insertResourceNodes("resources", FileUtil::getProgramPath()+ resourceRoot, dRoot);
     FileUtil::createDirectory(FileUtil::getProgramPath() + "resources");
     this->insertFileNodes("files", fileRoot, dRoot);
+    setProperty("InstanceManagerAutoDefault", "yes");
 
 }
 

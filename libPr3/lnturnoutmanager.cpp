@@ -8,11 +8,13 @@ LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTraffi
 
 {
  setObjectName("LnTurnoutManager");
+ setProperty("JavaClassName", "jmri.jmrix.loconet.LnTurnoutManager");
  this->fastcontroller = fastcontroller;
  this->throttledcontroller = throttledcontroller;
  this->prefix = prefix.mid(0,1);
  this->mTurnoutNoRetry = mTurnoutNoRetry;
- registerSelf();
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
  lastSWREQ = NULL;
 
  if (fastcontroller != NULL)

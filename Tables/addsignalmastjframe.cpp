@@ -21,10 +21,10 @@
 //private static final long serialVersionUID = -6193330521542648003L;
 
 /*public*/ AddSignalMastJFrame::AddSignalMastJFrame(QWidget* parent)
-: JmriJFrame(tr("TitleAddSignalMast"), false, true)
+: JmriJFrame(tr("Add Signal Mast"), false, true)
 {
     //super(Bundle.getMessage("TitleAddSignalMast"), false, true);
-    AddSignalMastPanel* sigMastPanel = NULL;
+    AddSignalMastPanel* sigMastPanel = nullptr;
 
 
     addHelpMenu("package.jmri.jmrit.beantable.SignalMastAddEdit", true);
@@ -35,7 +35,7 @@
 }
 
 /*public*/ AddSignalMastJFrame::AddSignalMastJFrame(SignalMast* mast, QWidget* parent)
-    : JmriJFrame(tr("TitleAddSignalMast"), false, true)
+    : JmriJFrame(tr("Add Signal Mast"), false, true)
 {
     //super(Bundle.getMessage("TitleAddSignalMast"), false, true);
 
@@ -49,8 +49,6 @@
 
 /*public*/ void AddSignalMastJFrame::refresh() {
     if (sigMastPanel != NULL) {
-        sigMastPanel->updateSelectedDriver();
-        sigMastPanel->refreshHeadComboBox();
-
+        sigMastPanel->refresh();
     }
 }

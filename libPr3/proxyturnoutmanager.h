@@ -130,7 +130,7 @@ private:
 protected:
  virtual /*protected*/ Manager* makeInternalManager() const ;
  virtual/*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName);
- /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
+ ///*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
 
  friend class AbstractProxyManager;
 };

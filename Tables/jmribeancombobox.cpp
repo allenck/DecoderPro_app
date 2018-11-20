@@ -11,10 +11,12 @@
 #include "abstractmanager.h"
 #include "proxyreportermanager.h"
 
-//JmriBeanComboBox::JmriBeanComboBox(QObject *parent) :
-//    QComboBox(parent)
-//{
-//}
+JmriBeanComboBox::JmriBeanComboBox(QWidget* parent) :
+    QComboBox(parent)
+{
+ common(nullptr, nullptr, DISPLAYNAME);
+}
+
 ///*public*/ class JmriBeanComboBox extends JComboBox implements java.beans.PropertyChangeListener{
 
 /*
@@ -24,20 +26,7 @@
 /*public*/ JmriBeanComboBox::JmriBeanComboBox(Manager* manager, QWidget *parent) : QComboBox(parent)
 {
     //this(manager, NULL, DISPLAYNAME);
- log = new Logger("JmriBeanComboBox");
-  exclude = new QList<NamedBean*>();
-  _firstBlank = false;
- _manager = manager;
- displayToBean = new QHash<QString, NamedBean*>();
-
- setSelectedBean(NULL);
- _displayOrder = DISPLAYNAME;
- _lastSelected = "";
- //((AbstractManager*)_manager)->addPropertyChangeListener((PropertyChangeListener*)this);
- AbstractManager* abstractManager = (AbstractManager*)_manager;
- connect(abstractManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- //setKeySelectionManager(new beanSelectionManager());
- _lastSelected = "";
+ common(manager, nullptr, DISPLAYNAME);
 }
 
 /*
@@ -49,16 +38,21 @@
 /*public*/ JmriBeanComboBox::JmriBeanComboBox(Manager* manager, NamedBean* nBean, int displayOrder, QWidget *parent)
     : QComboBox(parent)
 {
+ common(manager, nBean, displayOrder);
+}
+
+void JmriBeanComboBox::common(Manager *manager, NamedBean *nBean, int displayOrder)
+{
  log = new Logger("JmriBeanComboBox");
- exclude = new QList<NamedBean*>();
+ exclude = QList<NamedBean*>();
  _displayOrder = displayOrder;
  _firstBlank = false;
- _manager = manager;
+ if(manager!= nullptr)
+  setManager(manager);
  displayToBean = new QHash<QString, NamedBean*>();
 
  setSelectedBean(nBean);
  //setEditable(true);
- ((AbstractManager*)_manager)->addPropertyChangeListener((PropertyChangeListener*)this);
  //setKeySelectionManager(new beanSelectionManager());
  _lastSelected = "";
 }
@@ -75,113 +69,124 @@
  else if (e->getPropertyName()==("DisplayListName"))
   refreshCombo();
 }
+/*public*/ Manager* JmriBeanComboBox::getManager() {
+        return _manager;
+}
+
+/*public*/ void JmriBeanComboBox::setManager(Manager* manager)
+{
+ this->_manager = manager;
+ //((AbstractManager*)_manager)->addPropertyChangeListener((PropertyChangeListener*)this);
+ connect((AbstractManager*)_manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ refreshCombo();
+}
+
 
 /*public*/ void JmriBeanComboBox::refreshCombo()
 {
- updateComboBox(QString::number(currentIndex()));
+ updateComboBox(currentText());
 }
 
-void JmriBeanComboBox::updateComboBox(QString select)
+void JmriBeanComboBox::updateComboBox(QString inSelect)
 {
  if(_manager == NULL) return;
  displayToBean = new QHash<QString, NamedBean*>();
  clear();
- QStringList* nameList;
- if(qobject_cast<ProxyTurnoutManager*>(_manager)!= 0)
-   nameList = new QStringList(((ProxyTurnoutManager*)_manager)->getSystemNameArray());
- else if(qobject_cast<ProxySensorManager*>(_manager)!= 0)
-   nameList = new QStringList(((ProxySensorManager*)_manager)->getSystemNameArray());
- else if(qobject_cast<ProxyReporterManager*>(_manager)!= 0)
-   nameList = new QStringList(((ProxyReporterManager*)_manager)->getSystemNameArray());
- else if(qobject_cast<AbstractSignalHeadManager*>(_manager)!= 0)
-   nameList = new QStringList(((AbstractSignalHeadManager*)_manager)->getSystemNameArray());
- else if(qobject_cast<DefaultSignalMastManager*>(_manager)!= 0)
-   nameList = new QStringList(((DefaultSignalMastManager*)_manager)->getSystemNameArray());
- else if(qobject_cast<BlockManager*>(_manager) != NULL)
-  nameList = new QStringList(((AbstractManager*)_manager)->getSystemNameArray());
- else if(qobject_cast<AbstractManager*>(_manager) != NULL)
-  nameList = new QStringList(((AbstractManager*)_manager)->getSystemNameArray());
- else
-     Q_ASSERT(false);
+ QStringList displayList = getDisplayList();
 
- qSort(nameList->begin(), nameList->end(), SystemNameComparator::compare);
-
- foreach(NamedBean* bean , *exclude)
- {
-  if(bean!=NULL)
-   nameList->removeOne(bean->getSystemName());
+ for (int i = 0; i < displayList.length(); i++) {
+     addItem(displayList[i]);
+     if ((inSelect != "") && (displayList[i]==(inSelect))) {
+         setCurrentIndex(i);
+     }
  }
-
-
- QVector<QString> displayList =  QVector<QString>(nameList->size()); //[nameList.size()];
-
- if(_displayOrder==SYSTEMNAME)
- {
-  displayList = nameList->toVector();//->toArray(displayList);
+ if (_firstBlank) {
+     QComboBox::insertItem(0, "");
+     if (_lastSelected == "" || _lastSelected == ("")) {
+         setCurrentIndex(0);
+     }
  }
- else
- {
-  //for(String name: nameList){
-  for(int i = 0; i<nameList->size(); i++)
-  {
-   QString name = nameList->at(i);
-   NamedBean* nBean = NULL;
-   nBean = ((AbstractManager*)_manager)->getBeanBySystemName(name);
+}
 
-   if (nBean!=NULL)
-   {
-    switch(_displayOrder)
-    {
-    case DISPLAYNAME :
-     displayList.replace(i, nBean->getDisplayName());
-     break;
+/**
+ * Get the display list used by this combo box.
+ *
+ * @return the display list used by this combo box
+ */
+/*public*/ QStringList JmriBeanComboBox::getDisplayList() {
+    // working through names in this code is slow, as is making a list and
+    // then removing items.  Should be completely rewritten to use the
+    // native Manager interfaces
 
-    case USERNAME :
-     if(nBean->getUserName()!=NULL && nBean->getUserName()!=(""))
-      displayList.replace(i, nBean->getUserName());
-     else
-      displayList.replace(i, name);
-      break;
-
-    case USERNAMESYSTEMNAME :
-     if(nBean->getUserName()!=NULL && nBean->getUserName()!=(""))
-        displayList.replace(i, nBean->getUserName() + " - " + name);
-     else
-        displayList.replace(i, name);
-     break;
-
-    case SYSTEMNAMEUSERNAME :
-    if(nBean->getUserName()!=NULL && nBean->getUserName()!=(""))
-        displayList.replace(i, name + " - " + nBean->getUserName());
-    else
-        displayList.replace(i, name);
-    break;
-
-    default :
-      displayList.replace(i, nBean->getDisplayName());
+    QStringList nameList = QStringList();
+    for (QObject* obj : _manager->getNamedBeanSet()) {
+        nameList.append(((NamedBean*)obj)->getSystemName());
     }
-    displayToBean->insert(displayList.at(i), nBean);
-   }
-  }
- }
-//    java.util.Arrays.sort(displayList);
 
- for(int i = 0; i<displayList.size(); i++)
- {
-  addItem(displayList.at(i));
-  if ((select!=NULL) && (displayList.at(i)==(select)))
-  {
-   setCurrentIndex(i);
-  }
- }
- if(_firstBlank)
- {
-  insertItem(0, "");
-  if (_lastSelected==NULL || _lastSelected==(""))
-  {
-   setCurrentIndex(0);
-  }
- }
+    //exclude.stream().filter((bean) -> (bean != null)).forEachOrdered((bean) -> {
+    foreach(NamedBean* bean, exclude)
+    {
+     if(bean != nullptr)
+        nameList.removeOne(bean->getSystemName());
+    }//);
+
+    QVector<QString> displayList = QVector<QString>(nameList.size());
+
+    if (_displayOrder == DisplayOptions::SYSTEMNAME) {
+        displayList = nameList.toVector();//nameList.toArray(displayList);
+    } else {
+        for (int i = 0; i < nameList.size(); i++) {
+            QString name = nameList.at(i);
+            NamedBean* nBean = _manager->getBeanBySystemName(name);
+
+            if (nBean != nullptr) {
+                QString uname = nBean->getUserName();
+                switch (_displayOrder) {
+                    case USERNAME:
+                        if (uname != "" ) {
+                            displayList.replace(i, uname);
+                        } else {
+                            displayList.replace(i,  name);
+                        }
+                        break;
+
+                    case USERNAMESYSTEMNAME:
+                        if (uname != "" ) {
+                            displayList.replace(i, nBean->getUserName() + " - " + name);
+                        } else {
+                            displayList.replace(i, name);
+                        }
+                        break;
+
+                    case SYSTEMNAMEUSERNAME:
+                        if (uname != "") {
+                            displayList.replace(i, name + " - " + nBean->getUserName());
+                        } else {
+                            displayList.replace(i, name);
+                        }
+                        break;
+
+                    case DISPLAYNAME:
+                    default:
+                        displayList.replace(i, nBean->getDisplayName());
+                }
+                displayToBean->insert(displayList[i], nBean);
+            }
+        }
+    }
+    //java.util.Arrays.sort(displayList, new AlphanumComparator());
+    qSort(displayList.begin(), displayList.end());
+    return displayList.toList();
+}
+
+/**
+ * Get the selected namedBean.
+ *
+ * @return the selected bean or null if there is no selection
+ */
+/*public*/ NamedBean* JmriBeanComboBox::getSelectedBean() {
+    QString selectedName =  currentText();
+    return displayToBean->value(selectedName);
 }
 
 /**
@@ -222,6 +227,84 @@ void JmriBeanComboBox::updateComboBox(QString select)
 }
 
 /**
+ * Get the User Name of the selection in this JmriBeanComboBox (based on
+ * typed in text or drop down list).
+ *
+ * @return the username or null if no selection
+ */
+/*public*/ QString JmriBeanComboBox::getUserName() {
+    QString result = "";
+    NamedBean* b;
+
+    if (isEditable()) {
+        result = NamedBean::normalizeUserName(getText());
+        if (result == "") {
+            result = "";
+        }
+
+        b = getNamedBean();
+    } else {
+        b = getSelectedBean();
+    }
+    if (nullptr != b) {
+        result = b->getUserName();
+    }
+    return result;
+}   //getUserName
+
+/**
+ * Get the display name for the selection in this JmriBeanComboBox (based on
+ * typed in text or drop down list).
+ *
+ * @return the display name or null if no selection
+ */
+//@CheckReturnValue
+/*public*/ QString JmriBeanComboBox::getDisplayName() {
+    QString result = "";
+    NamedBean* b;
+
+    if (isEditable()) {
+        result = NamedBean::normalizeUserName(getText());
+        if (result == "") {
+            result = "";
+        }
+        b = getNamedBean();
+    } else {
+        b = getSelectedBean();
+    }
+    if (nullptr != b) {
+        result = b->getDisplayName();
+    }
+    return result;
+}   //getDisplayName
+
+/**
+ * Get the text from the editor for this JmriBeanComboBox.
+ *
+ * @return the text
+ */
+/*public*/ QString JmriBeanComboBox::getText() {
+   // return getEditor().getItem().toString();
+ return QComboBox::currentText();
+}   // getText
+
+/**
+ * Set the text from the editor for this JmriBeanComboBox
+ *
+ * @param inText the text to set
+ */
+/*public*/ void JmriBeanComboBox::setText(QString inText) {
+    //getEditor().setItem(inText);
+ setCurrentText(inText);
+    if ((inText != "") && !inText.isEmpty()) {
+        setSelectedBeanByName(inText);
+    } else {
+        setCurrentIndex(-1);
+    }
+    validateText();
+}   // setText
+
+/**
 * Insert a blank entry at the top of the list
 * @param blank true to insert, false to remove
 */
@@ -239,11 +322,6 @@ void JmriBeanComboBox::updateComboBox(QString select)
     _firstBlank = blank;
 }
 
-
-/*public*/ NamedBean* JmriBeanComboBox::getSelectedBean(){
-    QString selectedName = currentText();
-    return displayToBean->value(selectedName);
-}
 
 /*public*/ void JmriBeanComboBox::setSelectedBean(NamedBean* nBean){
     QString selectedItem = "";
@@ -293,13 +371,184 @@ void JmriBeanComboBox::updateComboBox(QString select)
     setSelectedBean(nBean);
 }
 
-/*public*/ void JmriBeanComboBox::excludeItems(QList<NamedBean*>* exclude){
+/*public*/ void JmriBeanComboBox::excludeItems(QList<NamedBean*> exclude){
     this->exclude = exclude;
     _lastSelected = getSelectedDisplayName();
     updateComboBox(_lastSelected);
 }
 
+/*public*/ QList<NamedBean*> JmriBeanComboBox::getExcludeItems() {
+        return this->exclude;
+}
+#if 0
+/*public*/ void setItemEnabled(int inIndex, bool inEnabled) {
+    ListSelectionModel lsm = getEnabledItems();
+    if (lsm != null) {
+        if (inEnabled) {
+            lsm.addSelectionInterval(inIndex, inIndex);
+        } else {
+            lsm.removeSelectionInterval(inIndex, inIndex);
+        }
+    }
+}
 
+/*public*/ bool isItemEnabled(int inIndex) {
+    bool result = false;
+    ListSelectionModel lsm = getEnabledItems();
+    if (lsm != null) {
+        result = lsm.isSelectedIndex(inIndex);
+    }
+    return result;
+}
+
+/*public*/ void enableItem(int inIndex) {
+    setItemEnabled(inIndex, true);
+}
+
+/*public*/ void disableItem(int inIndex) {
+    setItemEnabled(inIndex, false);
+}
+
+/*public*/ void setEnabledColor(Color inEnabledColor) {
+    getEnabledComboBoxRenderer().setEnabledColor(inEnabledColor);
+}
+
+/*public*/ QColor getEnabledColor() {
+    return getEnabledComboBoxRenderer().getEnabledColor();
+}
+
+/*public*/ void setDisabledColor(QColor inDisabledColor) {
+    getEnabledComboBoxRenderer().setDisabledColor(inDisabledColor);
+}
+
+/*public*/ QColor getDisabledColor() {
+    return getEnabledComboBoxRenderer().getDisabledColor();
+}
+
+/*public*/ void setEnabledBackgroundColor(QColor inEnabledBackgroundColor) {
+    getEnabledComboBoxRenderer().setEnabledBackgroundColor(inEnabledBackgroundColor);
+}
+
+/*public*/ QColor getEnabledBackgroundColor() {
+    return getEnabledComboBoxRenderer().getEnabledBackgroundColor();
+}
+
+/*public*/ void setDisabledBackgroundColor(QColor inDisabledBackgroundColor) {
+    getEnabledComboBoxRenderer().setDisabledBackgroundColor(inDisabledBackgroundColor);
+}
+
+/*public*/ QColor getDisabledBackgroundColor() {
+    return getEnabledComboBoxRenderer().getDisabledBackgroundColor();
+}
+#endif
+/*public*/ void JmriBeanComboBox::setValidateMode(bool inValidateMode) {
+    if (_validateMode != inValidateMode) {
+        _validateMode = inValidateMode;
+    }
+}
+
+/*public*/ bool JmriBeanComboBox::isValidateMode() {
+    return _validateMode;
+}
+
+// this is called to validate that the text in the textfield
+// is a valid member of the managed data.
+// note:  if _validateMode is true
+//           if text is valid set textfield background to green else red
+//       if _validateMode is false
+//           if text is valid set textfield background to green else yellow
+/*private*/ void JmriBeanComboBox::validateText() {
+//    ComboBoxEditor cbe = getEditor();
+//    JTextComponent c = (JTextComponent) cbe.getEditorComponent();
+//    String comboBoxText = cbe.getItem().toString();
+ QString comboBoxText = currentText();
+
+    if (isEditable() && !comboBoxText.isEmpty()) {
+//        setOpaque(true);
+        if (nullptr != getNamedBean()) {
+            //c.setBackground(new Color(0xBDECB6));   //pastel green
+         setStyleSheet("QComboBox {background: 0xBDECB6}");
+        } else if (_validateMode) {
+            //c.setBackground(new Color(0xFFC0C0));   //pastel red
+         setStyleSheet("QComboBox {background: 0xFFC0C0}");
+
+        } else {
+            //c.setBackground(new Color(0xFDFD96));   //pastel yellow
+         setStyleSheet("QComboBox {background: 0xFDFD96}");
+
+        }
+    } else {
+//        setOpaque(false);
+        //c.setBackground(new Color(0xFFFFFF));   //white (pastel grey?)
+     setStyleSheet("QComboBox {background: 0xFFFFFF}");
+
+    }
+}   //validateText
+
+/**
+ * Get the bean for ether the typed in text or selected item from this
+ * ComboBox.
+ *
+ * @return the selected bean or null if no selection
+ */
+//@SuppressWarnings("unchecked")  // Uses Manager instead of Manager<E> and List<NamedBean>
+                                // instead of List<E>, which can only really be made
+                                // safe and efficient with the class being generic
+/*public*/ NamedBean* JmriBeanComboBox::getNamedBean() {
+    NamedBean* result;
+
+    Manager* uDaManager = getManager();
+
+    QString comboBoxText = NamedBean::normalizeUserName(currentText());
+    if (comboBoxText != "") {
+
+        //try user name
+        result = uDaManager->getBeanByUserName(comboBoxText);
+
+        if (nullptr == result) {
+            //try system name
+            //note: don't use getBeanBySystemName here
+            //throws an IllegalArgumentException if text is invalid
+            result = uDaManager->getNamedBean(comboBoxText);
+        }
+
+        if (nullptr == result) {
+            //quick search to see if text matches anything in the drop down list
+            QStringList displayList = getDisplayList();
+            bool found = false;  //assume failure (pessimist!)
+
+            for (QString item : displayList) {
+                if (item == (comboBoxText)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {    //if we found it there then...
+                //walk the namedBeanList...
+                QList<NamedBean*>* namedBeanList = uDaManager->getNamedBeanList();
+
+                for (NamedBean* namedBean : *namedBeanList) {
+                    //checking to see if it matches "<sname> - <uname>" or "<uname> - <sname>"
+                    QString uname = namedBean->getUserName();
+                    QString sname = namedBean->getSystemName();
+
+                    if (("" != uname)) {
+                        QString usname = uname + " - " + sname;
+                        QString suname = sname + " - " + uname;
+
+                        if (comboBoxText == (usname) || comboBoxText == (suname)) {
+                            result = namedBean;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    return nullptr;
+}   //getBean
 
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(JmriBeanComboBox.class.getName());
 //}

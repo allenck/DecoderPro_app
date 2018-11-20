@@ -7,8 +7,10 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
-#include "jtextfield.h"
+#include <QSpinBox>
 #include "flowlayout.h"
+#include "jtextfield.h"
+#include <QFont>
 
 //AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(QWidget *parent) :
 //    QWidget(parent)
@@ -16,7 +18,8 @@
 //}
 ///*public*/ class AddNewHardwareDevicePanel extends jmri.util.swing.JmriPanel {
 
-/*public*/ AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, QComboBox* prefixBox, JTextField* endRange, QCheckBox* addRange, QString addButtonLabel, ActionListener* okListener, ActionListener* cancelListener, ActionListener* rangeListener, QWidget* parent) : QWidget(parent)
+/*public*/ AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, QComboBox* prefixBox, QSpinBox* endRange, QCheckBox* addRange,
+            QPushButton* addButton, ActionListener* cancelListener, ActionListener* rangeListener, QLabel* statusBar, QWidget *parent) : QWidget(parent)
 {
  setObjectName("AddNewHardwareDevicePanel");
  sysNameLabel = new QLabel(tr("System:"));
@@ -25,6 +28,9 @@
  userNameLabel = new QLabel(tr("User Name:"));
  finishLabel = new QLabel(tr("Number to Add:"));
  QVBoxLayout* thisLayout;
+
+ if(statusBar == nullptr)
+  statusBar = new QLabel("");
  setLayout(thisLayout = new QVBoxLayout(this/*, BoxLayout.Y_AXIS*/));
  _endRange=endRange;
  _range=addRange;
@@ -66,15 +72,28 @@
  g->addWidget(userName,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
  //add(p);
  thisLayout->addLayout(g);
+
+ finishLabel->setEnabled(false);
+ _endRange->setEnabled(false);
+
+ // add status bar above buttons
+ QWidget* panelStatus = new QWidget();
+ panelStatus->setLayout(new FlowLayout());
+ //statusBar->setFont(statusBar->getFont().deriveFont(0.9f * sysAddressLabel.getFont().getSize())); // a bit smaller
+ QFont f = statusBar->font();
+ f.setPointSizeF(sysAddressLabel->font().pointSizeF()*.9);
+ statusBar->setFont(f);
+ statusBar->setStyleSheet("QLabel {color: gray}");
+ panelStatus->layout()->addWidget(statusBar);
+ thisLayout->addWidget(panelStatus);
+
  QWidget* panelBottom = new QWidget();
  FlowLayout* panelBottomLayout = new FlowLayout(panelBottom);
-QPushButton* ok;
  panelBottomLayout->addWidget(cancel = new QPushButton(tr("Cancel")));
  connect(cancel, SIGNAL(clicked(bool)), cancelListener, SLOT(actionPerformed()));
- thisLayout->addWidget(ok = new QPushButton(addButtonLabel),0,Qt::AlignHCenter);
-//        ok.addActionListener(listener);
- connect(ok, SIGNAL(clicked()), okListener, SLOT(actionPerformed()));
-//        addRange .addItemListener(
+ panelBottom->layout()->addWidget(addButton);
+ thisLayout->addWidget(panelBottom);
+
  connect(addRange, SIGNAL(clicked()), this, SLOT(rangeState()));
 //        new ItemListener() {
 //            /*public*/ void itemStateChanged(ItemEvent e){
@@ -84,8 +103,6 @@ QPushButton* ok;
  //prefixBox.addActionListener(rangeListener);
  connect(prefixBox, SIGNAL(currentIndexChanged(int)), rangeListener, SLOT(actionPerformed()));
 
- finishLabel->setEnabled(false);
- _endRange->setEnabled(false);
        /* System.out.println(jmri.InstanceManager.getList(jmri.jmrix.SystemConnectionMemo.class));
         java.util.List<Object> list
             = jmri.InstanceManager.getList(jmri.jmrix.SystemConnectionMemo.class);

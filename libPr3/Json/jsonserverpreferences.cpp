@@ -59,7 +59,7 @@
             log->info(tr("Migrating from old JsonServer preferences in %1 to new format in %2.").arg(fileName).arg(FileUtil::getAbsoluteFilename("profile:profile")));
             sharedPreferences->sync();
         } catch (BackingStoreException ex) {
-            log->error("Unable to write JsonServer preferences.", ex.getMessage());
+            log->error("Unable to write JsonServer preferences.", ex);
         }
     }
 }
@@ -88,7 +88,7 @@
             this->asLoadedHeartbeatInterval = this->getHeartbeatInterval();
         } catch (DataConversionException e) {
             this->setHeartbeatInterval(15000);
-            log->error("Unable to read heartbeat interval. Setting to default value.", e.getMessage());
+            log->error("Unable to read heartbeat interval. Setting to default value.", e);
         }
     }
     a = child.attribute(PORT,"2056");
@@ -98,7 +98,7 @@
             this->asLoadedPort = this->getPort();
         } catch (DataConversionException e) {
             this->setPort(2056);
-            log->error("Unable to read port. Setting to default value.", e.getMessage());
+            log->error("Unable to read port. Setting to default value.", e);
         }
     }
 }

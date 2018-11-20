@@ -2,14 +2,24 @@
 #include "signalmast.h"
 #include "signalheadsignalmast.h"
 #include "signalmastrepeater.h"
+#include "instancemanager.h"
+#include "signalheadmanager.h"
+#include "vetoablechangesupport.h"
 
 DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
     SignalMastManager(parent)
 {
  setObjectName("DefaultSignalMastManager");
+ setProperty("JavaClassName", "jmri.managers.DefaultSignalMastManager");
+
  log = new Logger("DefaultSignalMastManager");
  repeaterList = new QList<SignalMastRepeater*>();
  registerSelf();
+ //jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
+ connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoableChange(PropertyChangeEvent)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
+ connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoableChange(PropertyChangeEvent)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+
 }
 /**
  * Default implementation of a SignalMastManager.

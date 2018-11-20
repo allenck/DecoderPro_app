@@ -1,4 +1,10 @@
 #include "blockmanager.h"
+#include "instancemanager.h"
+#include "sensormanager.h"
+#include "reportermanager.h"
+#include "powermanager.h"
+#include "vptr.h"
+#include "nosuchmethoderror.h"
 
 /*static*/ BlockManager* BlockManager::_instance = NULL;
 
@@ -6,11 +12,29 @@ BlockManager::BlockManager(QObject *parent) :
     AbstractManager(parent)
 {
  setObjectName("BlockManager");
+ setProperty("JavaClassName", "jmri.BlockManager");
+ setProperty("InstanceManagerAutoDefault", "true");
+
  registerSelf();
  saveBlockPath = true;
  lastAutoBlockRef = 0;
  defaultSpeed = "Normal";
  paddedNumber = new DecimalFormat("0000");
+
+ static_cast<SensorManager*>(InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+
+static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ //connect(static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //InstanceManager.getList(PowerManager.class).forEach((pm) -> {
+ foreach(QObject* pm, InstanceManager::getList("PowerManager"))
+ {
+     //static_cast<PowerManager*>(pm)->addPropertyChangeListener(this);
+  //connect(static_cast<PowerManager*>(pm)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ }//);
+ powerManagerChangeName = InstanceManager::getListPropertyName("PowerManager");
+ //InstanceManager.addPropertyChangeListener(this);
+ connect(InstanceManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 /**
  * Basic Implementation of a BlockManager.
@@ -223,3 +247,50 @@ QCompleter* BlockManager::getCompleter(QString text)
 }
 
 
+/**
+ * Listen for changes to the power state from any power managers
+ * in use in order to track how long it's been since power was applied
+ * to the layout. This information is used in {@link Block#goingActive()}
+ * when deciding whether to restore a block's last value.
+ *
+ * Also listen for additions/removals or PowerManagers
+ *
+ * @param e - the change event
+ */
+
+//@Override
+/*public*/ void BlockManager::propertyChange(PropertyChangeEvent* e) {
+    AbstractManager::propertyChange(e);
+    if (PowerManager::POWER == (e->getPropertyName())) {
+        try {
+            PowerManager* pm = (PowerManager*) e->getSource();
+            if (pm->getPower() == PowerManager::ON) {
+                lastTimeLayoutPowerOn = /*Instant::now()*/ QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+            }
+        } catch (JmriException  xe) {
+            // do nothing
+        }
+     catch (NoSuchMethodError xe)
+     {
+      // do nothing
+     }
+    }
+    if (powerManagerChangeName == (e->getPropertyName())) {
+        if (e->getNewValue() == QVariant()) {
+            // powermanager has been removed
+            PowerManager* pm = VPtr<PowerManager>::asPtr( e->getOldValue());
+            //pm.removePropertyChangeListener(this);
+            disconnect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        } else {
+            // a powermanager has been added
+         PowerManager* pm = VPtr<PowerManager>::asPtr( e->getOldValue());
+            //pm.addPropertyChangeListener(this);
+         connect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
+        }
+    }
+}
+/*public*/ void BlockManager::vetoableChange(PropertyChangeEvent* evt)
+{
+ AbstractManager::vetoableChange(evt);
+}

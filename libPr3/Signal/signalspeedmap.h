@@ -7,13 +7,17 @@
 #include "logger.h"
 #include <QStringList>
 #include "libPr3_global.h"
+#include "bean.h"
 
+class QDomElement;
 class SignalSystem;
-class LIBPR3SHARED_EXPORT SignalSpeedMap : public QObject
+class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean
 {
     Q_OBJECT
 public:
     explicit SignalSpeedMap(QObject *parent = 0);
+ ~SignalSpeedMap() {}
+ SignalSpeedMap(const SignalSpeedMap&): Bean() {}
  enum SPEEDS
  {
   PERCENT_NORMAL = 1,
@@ -21,8 +25,9 @@ public:
   SPEED_MPH = 3,
   SPEED_KMPH = 4
  };
-    static /*public*/ SignalSpeedMap* getMap();
-    static void loadMap();
+    //static /*public*/ SignalSpeedMap* getMap();
+ Q_INVOKABLE /*public*/ void initialize();
+    void loadMap();
     /*public*/ bool checkSpeed(QString name);
     /*public*/ QString getAspectSpeed(QString aspect, SignalSystem* system);
     /*public*/ QString getAspectExitSpeed(QString aspect, SignalSystem* system);
@@ -46,10 +51,16 @@ public:
     /*public*/ QStringListIterator getAppearanceIterator();
     /*public*/ QStringListIterator getSpeedIterator();
     /*public*/ bool isAssignableFromType() {return true;}
+    /*public*/ void loadRoot(/*@Nonnull*/ QDomElement root);
+    /*public*/ void setAspects(/*@Nonnull*/ QMap<QString, float> map, int interpretation);
+    /*public*/ void setAppearances(/*@Nonnull*/ QMap<QString, QString> map);
 
     signals:
 
     public slots:
+    void warrantPreferences_PropertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*);
+
     private:
     static /*private*/ SignalSpeedMap* _map;
     static /*private*/ QMap<QString, float>* _table;// =  QMap<String, float>();
@@ -62,7 +73,8 @@ public:
     /*private*/ float _throttleFactor;// = 0.75f;
     /*private*/ float _scale;
  private:
-  Logger* log;
-};
+  static Logger* log;
 
+};
+Q_DECLARE_METATYPE(SignalSpeedMap)
 #endif // SIGNALSPEEDMAP_H

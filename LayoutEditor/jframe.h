@@ -44,10 +44,10 @@ public:
      */
     EXIT_ON_CLOSE = 3
  };
-    virtual /*public*/ void windowClosing(QCloseEvent* e);
+    //virtual /*public*/ void windowClosing(QCloseEvent* e);
 
-    explicit JFrame(QWidget *parent = 0);
-    JFrame(QString _title, QWidget *parent = 0);
+    explicit JFrame(QWidget *parent = nullptr);
+    JFrame(QString _title, QWidget *parent = nullptr);
     ~JFrame();
     JFrame(const JFrame& ) : QMainWindow() {}
     /*public*/ QSize getPreferredSize();
@@ -93,7 +93,7 @@ private:
 protected:
     /*protected*/ void frameInit();
  QList<WindowListener*>* listeners;// = new QList<WindowListener*>*();
- virtual void handleModified() {}
+ //virtual void handleModified() {}
 // /*protected*/ bool reuseFrameSavedPosition;// = true;
 // /*protected*/ bool reuseFrameSavedSized;// = true;
  friend class ControlPanelEditorXml;

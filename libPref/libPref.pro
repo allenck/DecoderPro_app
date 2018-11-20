@@ -61,7 +61,8 @@ SOURCES += libpref.cpp \
     calibrater.cpp \
     webserverpreferences.cpp \
     webserverpreferencespanel.cpp \
-    startupactionspreferencespanel.cpp
+    startupactionspreferencespanel.cpp \
+    speedutil.cpp
 
 
 HEADERS += libpref.h\
@@ -118,7 +119,8 @@ HEADERS += libpref.h\
     calibrater.h \
     webserverpreferences.h \
     webserverpreferencespanel.h \
-    startupactionspreferencespanel.h
+    startupactionspreferencespanel.h \
+    speedutil.h
 
 
 unix:!symbian {

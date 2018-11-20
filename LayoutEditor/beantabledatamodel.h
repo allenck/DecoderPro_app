@@ -7,6 +7,7 @@
 #include "liblayouteditor_global.h"
 #include <QItemDelegate>
 
+
 class RowSorter;
 class QMenu;
 class QTableView;
@@ -115,10 +116,14 @@ protected:
  virtual /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
  /*protected*/ void printColumns(HardcopyWriter* w, QStringList columnStrings, int columnSize);
  /*protected*/ void addMouseListenerToHeader(JTable* table);
+ /*protected*/ void showTableHeaderPopup(QMouseEvent* e, JTable* table);
 
 protected slots:
  void On_itemClicked(QModelIndex);
  /*protected*/ void showPopup(QPoint p);
+ /*protected*/ void showTableHeaderPopup(const QPoint&);
+ void onColumnSelected(QObject* obj);
+
 
 friend class LogixTableAction;
 friend class RouteTableDataModel;
@@ -140,5 +145,6 @@ friend class AbstractTableAction;
 friend class TurnoutTableDataModel;
 friend class SignalMastTableAction;
 };
+
 
 #endif // BEANTABLEDATAMODEL_H

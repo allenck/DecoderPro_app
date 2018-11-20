@@ -13,7 +13,7 @@ TARGET = DecoderPro3
 TEMPLATE = app
 
 win32:PREFIX = "C:/Program Files (x86)/local"
-unix:PREFIX = /home/allen/Projects/PythonQt3.0x
+unix:PREFIX = /home/allen/Projects/PythonQt-master
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -78,7 +78,7 @@ win32:exists($$PREFIX/lib/PythonQt.dll){
  ENABLE_SCRIPTING = "Y"
 }
 
-unix:exists($$PREFIX/lib/libPythonQt.so){
+unix:exists($$PREFIX/lib/libPythonQt_d.so){
  ENABLE_SCRIPTING = "Y"
 }
 
@@ -87,7 +87,7 @@ equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
     win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
-    else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
+    else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt_d -lPythonQt_QtAll_d
 
     PREFIX = /usr/local
     INCLUDEPATH += $$PREFIX/include/PythonQt
@@ -111,4 +111,6 @@ else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
+
+DISTFILES +=
 

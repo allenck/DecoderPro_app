@@ -8,8 +8,10 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(QObject *parent) :
     SignalGroupManager()
 {
  setObjectName("DefaultSignalGroupManager");
+ setProperty("JavaClassName", "jmri.managers.DefaultSignalGroupManager");
+
  log = new Logger("DefaultSignalGroupManager");
- registerSelf();
+ //registerSelf();
 }
 /**
  * Default implementation of a SignalGroupManager.

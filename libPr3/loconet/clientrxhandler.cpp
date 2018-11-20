@@ -40,8 +40,8 @@
  //connect(clientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 
  //tc = ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo"))->getLnTrafficController();
- QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
- foreach (QObject* memo, *list)
+ QObjectList list = InstanceManager::getList("SystemConnectionMemo");
+ foreach (QObject* memo, list)
  {
   if(qobject_cast<LocoNetSystemConnectionMemo*>(memo) != NULL)
   {
@@ -231,7 +231,7 @@ void ClientRxHandler::on_readyRead()
  try {
      clientSocket->close();
  } catch (IOException ex1) {
-     log->error("close, which closing clientSocket", ex1.getMessage());
+     log->error("close, which closing clientSocket", ex1);
  }
 }
 void ClientRxHandler::displayError(QAbstractSocket::SocketError socketError)

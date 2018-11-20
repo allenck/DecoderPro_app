@@ -1,4 +1,4 @@
-#include "layouteditor.h"
+﻿#include "layouteditor.h"
 #include "ui_layouteditor.h"
 #include <QGraphicsRectItem>
 #include "instancemanager.h"
@@ -9,7 +9,7 @@
 #include "settrackwidthdlg.h"
 #include "addreporterdlg.h"
 #include <QFileDialog>
-#include "loadxml.h"
+//#include "loadxml.h"
 #include <QColor>
 #include "savexml.h"
 #include "memoryiconcoordinateedit.h"
@@ -48,6 +48,12 @@
 #include <QSignalMapper>
 #include "jfilechooser.h"
 #include "system.h"
+#include "layouttrackdrawingoptions.h"
+#include "jmribeancombobox.h"
+#include "loggerfactory.h"
+#include "joptionpane.h"
+#include "mathutil.h"
+#include <QScrollBar>
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -108,21 +114,25 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  numLevelXings = 0;
  numLayoutSlips = 0;
  numLayoutTurntables = 0;
+ //zoom
+ minZoom = 0.25;
+ maxZoom = 8.0;
 
- if(PanelMenu::instance()->isPanelNameUsed(name))
+
+ if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
-  log.warn("File contains a panel with the same name (" + name + ") as an existing panel");
+  log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
  }
- PanelMenu::instance()->addEditorPanel(this);
- PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
- connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
+// PanelMenu::instance()->addEditorPanel(this);
+// PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
+ //connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
 
  HelpUtil::instance()->helpMenu(menuBar(), "package.jmri.jmrit.display.LayoutEditor", true);
  resetDirty();
  // establish link to LayoutEditorAuxTools
  auxTools = new LayoutEditorAuxTools(this);
  tools = nullptr;
- if (auxTools==nullptr) log.error("Unable to create link to LayoutEditorAuxTools");
+ if (auxTools==nullptr) log->error("Unable to create link to LayoutEditorAuxTools");
  // counts used to determine unique internal names
  numAnchors = 0;
  numEndBumpers = 0;
@@ -198,9 +208,9 @@ _contents = new QVector<Positionable*>();
  selectedPointType = 0;
  skipIncludedTurnout = false;
  mainlineTrackWidth = 4.0F;
- sideTrackWidth = 2.0F;
+ sidelineTrackWidth = 2.0F;
  main = true;
- trackWidth = sideTrackWidth;
+ trackWidth = sidelineTrackWidth;
  _selectionGroup = nullptr;
  turnoutCirclesWithoutEditMode = false;
  ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
@@ -211,21 +221,50 @@ _contents = new QVector<Positionable*>();
  ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
  antialiasingOn = false;
  noWarnPositionablePoint= false;
- _labelImage = new QVector<PositionableLabel*>(); // layout positionable label images
  memoryLabelList = new QVector<MemoryIcon*>(); // Memory Label List
- backgroundImage = new QVector<PositionableLabel*>();  // background images
- sensorImage = new QVector<SensorIcon*>();  // sensor images
- iconEditor = new MultiIconEditor(1);
- iconEditor->setIcon(0, "",":/resources/icons/smallschematics/tracksegments/block.gif");
- iconEditor->complete();
+
 //makeBackgroundColorMenu(ui->menuSet_Background_color);
  signalIconEditor = nullptr;
  clocks = new QVector<AnalogClock2Display*>();  // fast clocks
+ markerImage = new QVector<LocoIcon*>(); // marker images
+ multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
+ backgroundImage = new QVector<PositionableLabel*>();  // background images
+ labelImage = new QList<PositionableLabel*>();         //positionable label images
+ blockContentsLabelList = new QList<BlockContentsIcon*>(); //BlockContentsIcon Label List
+ zoomMenu = new QMenu(tr("Zoom"));
+ zoom025Item = new QAction("x 0.25");
+ zoom025Item->setCheckable(true);
+ zoom05Item = new QAction("x 0.5");
+ zoom05Item->setCheckable(true);
+ zoom075Item = new QAction("x 0.75");
+ zoom075Item->setCheckable(true);
+ noZoomItem = new QAction(tr("No Zoom"));
+ noZoomItem->setCheckable(true);
+ zoom15Item = new QAction("x 1.5");
+ zoom15Item->setCheckable(true);
+ zoom20Item = new QAction("x 2.0");
+ zoom20Item->setCheckable(true);
+ zoom30Item = new QAction("x 3.0");
+ zoom30Item->setCheckable(true);
+ zoom40Item = new QAction("x 4.0");
+ zoom50Item = new QAction("x 5.0");
+ zoom50Item->setCheckable(true);
+ zoom60Item = new QAction("x 6.0");
+ zoom60Item->setCheckable(true);
+ zoom70Item = new QAction("x 7.0");
+ zoom70Item->setCheckable(true);
+ zoom80Item = new QAction("x 8.0");
+ zoom80Item->setCheckable(true);
+
+ _labelImage = new QVector<PositionableLabel*>(); // layout positionable label images
+ sensorImage = new QVector<SensorIcon*>();  // sensor images
  signalHeadImage = new QVector<SignalHeadIcon*>();  // signal head images
+
+ layoutTrackList = QList<LayoutTrack*>();         // LayoutTrack list
+
  signalMastImage = new QVector<SignalMastIcon*>();  // signal mast images
  signalList = new QVector<SignalHeadIcon*>();  // Signal Head Icons
  signalMastList = new QVector<SignalMastIcon*>();  // Signal Head Icons
- multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
  skipIncludedTurnout = false;
 
  qApp->processEvents();
@@ -251,32 +290,84 @@ _contents = new QVector<Positionable*>();
  isDragging = false;
  _defaultToolTip = "";
 
+ ui->signalMastComboBox->setManager(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager")));
+ ui->signalHeadComboBox->setManager(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")));
+ ui->sensorComboBox->setManager(static_cast<SensorManager*>(InstanceManager::getDefault("SensorManager")));
+ ui->textMemoryComboBox->setManager(static_cast<MemoryManager*>(InstanceManager::getDefault("MemoryManager")));
+ ui->blockSensorComboBox->setManager(static_cast<SensorManager*>(InstanceManager::getDefault("SensorManager")));
+ ui->turnoutNameComboBox->setManager(static_cast<TurnoutManager*>(InstanceManager::getDefault("TurnoutManager")));
+ ui->extraTurnoutNameComboBox->setManager(static_cast<TurnoutManager*>(InstanceManager::getDefault("TurnoutManager")));
+ ui->blockIDComboBox->setManager(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")));
+ ui->blockContentsComboBox->setManager(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")));
+
+ setupComboBox(ui->turnoutNameComboBox, false, true);
+ ui-> turnoutNameComboBox->setToolTip(tr("Enter name of physical turnout."));
+// ui->turnoutNameComboBox->setEnabledColor(QColor(Qt::darkGreen));
+// ui->turnoutNameComboBox->setDisabledColor(QColor(Qt::red));
+
+ setupComboBox(ui->extraTurnoutNameComboBox, false, true);
+ ui->extraTurnoutNameComboBox->setToolTip(tr("Enter name of second physical turnout."));
+
+ //the blockPanel is enabled/disabled via selectionListAction above
+ setupComboBox(ui->blockIDComboBox, false, true);
+ ui->blockIDComboBox->setToolTip(tr("Enter name of Block for new turnout, level crossing, or track segment."));
+
+ setupComboBox(ui->blockSensorComboBox, false, true);
+ ui->blockSensorComboBox->setToolTip(tr("Enter name of occupancy sensor for this block; no entry means don't change."));
+
+ setupComboBox(ui->textMemoryComboBox, true, false);
+ ui->textMemoryComboBox->setToolTip(tr("Enter name of memory variable to be displayed in a new memory label."));
+
+ ui->blockContentsButton->setToolTip(tr("Select to add a Block label when next clicking with shift down."));
+
+ setupComboBox(ui->blockContentsComboBox, true, false);
+ ui->blockContentsComboBox->setToolTip(tr("Select to add a Block label when next clicking with shift down."));
+ connect(ui->blockContentsComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(blockContentsComboBoxChanged()));
+
+ ui->multiSensorButton->setToolTip(tr("Select to add a MultiSensor when next clicking with shift down."));
+
+ //Signal Mast & text
+ ui->signalMastButton->setToolTip(tr("Select to add a Signal Mast icon when next clicking with shift down."));
+ setupComboBox(ui->signalMastComboBox, true, false);
+
+ //sensor icon & text
+ ui->sensorButton->setToolTip(tr("Select to add a Sensor icon when next clicking with shift down."));
+
+ setupComboBox(ui->sensorComboBox, true, false);
+ ui->sensorComboBox->setToolTip(tr("Enter name of Sensor represented by a new Sensor icon."));
+
+ ui->signalButton->setToolTip(tr("Select to add a Signal Head icon when next clicking with shift down."));
+
+ setupComboBox(ui->signalHeadComboBox, true, false);
+ ui->signalHeadComboBox->setToolTip(tr("Enter name of Signal Head represented by a new signal head icon."));
+
  buttonGroup = new QButtonGroup(this);
  buttonGroup->addButton(ui->chkAnchorPoint);
 
- buttonGroup->addButton(ui->chkDoubleXover);
+ buttonGroup->addButton(ui->doubleXoverButton);
  buttonGroup->addButton(ui->chkEndBumper);
- buttonGroup->addButton(ui->chkIconLabel);
- buttonGroup->addButton(ui->chkLevelCrossing);
- buttonGroup->addButton(ui->chkLH);
- buttonGroup->addButton(ui->chkLHXover);
- buttonGroup->addButton(ui->chkMemoryLabel);
- buttonGroup->addButton(ui->chkMultisensor);
- buttonGroup->addButton(ui->chkRH);
- buttonGroup->addButton(ui->chkRHXover);
- buttonGroup->addButton(ui->chkSensorIcon);
- buttonGroup->addButton(ui->chkSignalHeadIcon);
- buttonGroup->addButton(ui->chkSignalMastIcon);
- buttonGroup->addButton(ui->chkTextLabel);
- buttonGroup->addButton(ui->chkTrackSegment);
- buttonGroup->addButton(ui->chkDoubleSlip);
- buttonGroup->addButton(ui->chkSingleSlip);
- buttonGroup->addButton(ui->chkWYE);
+ buttonGroup->addButton(ui->iconLabelButton);
+ buttonGroup->addButton(ui->levelXingButton);
+ buttonGroup->addButton(ui->turnoutLHButton);
+ buttonGroup->addButton(ui->lhXoverButton);
+ buttonGroup->addButton(ui->memoryButton);
+ buttonGroup->addButton(ui->multiSensorButton);
+ buttonGroup->addButton(ui->turnoutRHButton);
+ buttonGroup->addButton(ui->rhXoverButton);
+ buttonGroup->addButton(ui->sensorButton);
+ buttonGroup->addButton(ui->signalButton);
+ buttonGroup->addButton(ui->signalMastButton);
+ buttonGroup->addButton(ui->textLabelButton);
+ buttonGroup->addButton(ui->trackButton);
+ buttonGroup->addButton(ui->layoutDoubleSlipButton);
+ buttonGroup->addButton(ui->layoutSingleSlipButton);
+ buttonGroup->addButton(ui->turnoutWYEButton);
  //trkBtnGrp = new QButtonGroup(this);
  //trkBtnGrp->addButton(ui->chkDashed);
  //trkBtnGrp->addButton(ui->chkMainline);
  paintScale = 1.0;
  editPanel = new QGraphicsView(ui->centralWidget);
+ editPanel->setObjectName("LayoutEditor_editPanel");
  ui->verticalLayout->removeWidget(ui->editPanel);
  ui->verticalLayout->removeWidget(ui->textEdit);
  ui->verticalLayout->addWidget(editPanel);
@@ -317,7 +408,8 @@ _contents = new QVector<Positionable*>();
 
  //editScene = new EditScene(QRectF(-100, -100, 400, 400), this);
  editScene = new EditScene(QRectF(0, 0, panelWidth, panelHeight), this);
- _targetPanel = editScene;
+ editScene->setObjectName("LayoutEditor_editScene");
+ //_targetPanel = editScene;
  defaultBackgroundColor =  editScene->backgroundBrush().color();//QColor(Qt::lightGray);
 
 #if 0
@@ -524,6 +616,15 @@ _contents = new QVector<Positionable*>();
 // connect(trackColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTrackColorSelected(QAction*)));
 // connect(textColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTextColorSelected(QAction*)));
 // connect(backgroundColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(on_colorBackgroundMenuItemSelected(QAction*)));
+ connect(ui->actionBoth_scrollbars, SIGNAL(triggered(bool)), this, SLOT(onActionBoth_scrollbars()));
+ connect(ui->actionNo_scrollbars, SIGNAL(triggered(bool)), this, SLOT(onActionNo_scrollbars()));
+ connect(ui->actionHorizontal_only, SIGNAL(triggered(bool)), this, SLOT(onActionHorizontal_scrollbars()));
+ connect(ui->actionVertical_only, SIGNAL(triggered(bool)), this, SLOT(onActionVertical_scrollbars()));
+ connect(ui->actionCalculate_bounds, SIGNAL(triggered(bool)), this, SLOT(onCalculateBounds()));
+ connect(ui->actionZoom_Out, SIGNAL(triggered(bool)), this, SLOT(onZoomOut()));
+ connect(ui->actionZoom_In, SIGNAL(triggered(bool)), this, SLOT(onZoomIn()));
+ connect(ui->actionZoom_to_fit, SIGNAL(triggered(bool)), this, SLOT(zoomToFit()));
+
 
  sensorIconEditor = new MultiIconEditor(4);
  sensorIconEditor->setIcon(0, "Active:",":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
@@ -531,14 +632,13 @@ _contents = new QVector<Positionable*>();
  sensorIconEditor->setIcon(2, "Inconsistent:", ":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
  sensorIconEditor->setIcon(3, "Unknown:",":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
  sensorIconEditor->complete();
- sensorFrame = new JFrame(tr("Edit Sensor Icons"));
- QWidget* sensorFrameContentPane = new QWidget;
- sensorFrame->setCentralWidget(sensorFrameContentPane);
- QVBoxLayout* sensorFrameLayout = new QVBoxLayout(sensorFrameContentPane);
- sensorFrameLayout->addWidget(new QLabel("  "+tr("Select new file, then click on icon to change.")+"  ")/*,BorderLayout::North*/,0,Qt::AlignTop);
- // sensorFrame.getContentPane().add(sensorIconEditor);
- sensorFrameLayout->addWidget(sensorIconEditor/*,BorderLayout::Center*/,0,Qt::AlignCenter);
- sensorFrame->adjustSize();
+
+ //Signal icon & text
+ ui->signalButton->setToolTip(tr("Select to add a Signal Head icon when next clicking with shift down."));
+
+ setupComboBox(ui->signalHeadComboBox, true, false);
+ ui->signalHeadComboBox->setToolTip(tr("Enter name of Signal Head represented by a new signal head icon."));
+
  signalIconEditor = new MultiIconEditor(10);
  signalIconEditor->setIcon(0, "Red:",":/resources/icons/smallschematics/searchlights/left-red-short.gif");
  signalIconEditor->setIcon(1, "Flash red:", ":/resources/icons/smallschematics/searchlights/left-flashred-short.gif");
@@ -551,17 +651,97 @@ _contents = new QVector<Positionable*>();
  signalIconEditor->setIcon(8, "Lunar",":/resources/icons/smallschematics/searchlights/left-lunar-short-marker.gif");
  signalIconEditor->setIcon(9, "Flash Lunar",":/resources/icons/smallschematics/searchlights/left-flashlunar-short-marker.gif");
  signalIconEditor->complete();
- markerImage = new QVector<LocoIcon*>(); // marker images
- signalFrame = new JmriJFrame("<LayoutEditor>");
- QWidget* centralWidget = new QWidget();
- centralWidget->setLayout(new QVBoxLayout());
- signalFrame->setCentralWidget(centralWidget);
+
+ sensorFrame = new JFrame(tr("Edit Sensor Icons"));
+ QWidget* sensorFrameContentPane = sensorFrame->getContentPane();
+ //QVBoxLayout* sensorFrameLayout = new QVBoxLayout(sensorFrameContentPane);
+ ((QVBoxLayout*)sensorFrameContentPane->layout())->addWidget(new QLabel("  "+tr("Select new file, then click on icon to change.")+"  ")/*,BorderLayout::North*/,0,Qt::AlignTop);
+ // sensorFrame.getContentPane().add(sensorIconEditor);
+ ((QVBoxLayout*)sensorFrameContentPane->layout())->addWidget(sensorIconEditor/*,BorderLayout::Center*/,0,Qt::AlignCenter);
+ sensorFrame->pack();
+ sensorFrame->setVisible(false);
+
+ signalFrame = new JFrame(tr("Edit Signal Icons"));
+ QWidget* centralWidget = signalFrame->getContentPane();
+ //centralWidget->setLayout(new QVBoxLayout());
  centralWidget->layout()->addWidget(new QLabel("</html>Select new image from file,<br>then click an upper preview icon to change it.</html>"));
  centralWidget->layout()->addWidget(signalIconEditor);
  signalFrame->resize(600, 400);
- signalFrame->setAllowInFrameServlet(false);
- signalFrame->adjustSize();
+ //signalFrame->setAllowInFrameServlet(false);
+ signalFrame->pack();
  signalFrame->setVisible(false);
+
+ //icon label
+ ui->iconLabelButton->setToolTip(tr("Select to add a general purpose icon when next clicking with shift down."));
+
+ //change icons...
+ //this is enabled/disabled via selectionListAction above
+// changeIconsButton.addActionListener((ActionEvent event) -> {
+//     if (sensorButton->isChecked()) {
+//         sensorFrame.setVisible(true);
+//     } else if (signalButton->isChecked()) {
+//         signalFrame.setVisible(true);
+//     } else if (iconLabelButton->isChecked()) {
+//         iconFrame.setVisible(true);
+//     } else {
+//         //explain to the user why nothing happens
+//         JOptionPane.showMessageDialog(null, Bundle.getMessage("ChangeIconNotApplied"),
+//                 Bundle.getMessage("ChangeIcons"), JOptionPane.INFORMATION_MESSAGE);
+//     }
+// });
+ connect(ui->changeIconsButton, SIGNAL(clicked(bool)), this, SLOT(onChangeIconsButton()));
+
+ iconEditor = new MultiIconEditor(1);
+ iconEditor->setIcon(0, "",":/resources/icons/smallschematics/tracksegments/block.gif");
+ iconEditor->complete();
+ iconFrame = new JFrame(tr("Edit Icon"));
+ QWidget* iconFrameCentralWidget = getContentPane();
+ QVBoxLayout* iconFrameLayout = new QVBoxLayout(iconFrameCentralWidget);
+ iconFrameLayout->addWidget(iconEditor);
+ iconFrame->pack();
+
+ // Turnout Properties
+ connect(ui->turnoutRHButton, SIGNAL(toggled(bool)), this, SLOT(onTurnoutProperties()));
+ connect(ui->turnoutLHButton, SIGNAL(toggled(bool)), this, SLOT(onTurnoutProperties()));
+ connect(ui->turnoutWYEButton, SIGNAL(toggled(bool)), this, SLOT(onTurnoutProperties()));
+ connect(ui->doubleXoverButton, SIGNAL(toggled(bool)), this, SLOT(onTurnoutProperties()));
+ connect(ui->rhXoverButton, SIGNAL(toggled(bool)), this, SLOT(onTurnoutProperties()));
+ connect(ui->lhXoverButton, SIGNAL(toggled(bool)), this, SLOT(onTurnoutProperties()));
+ connect(ui->layoutSingleSlipButton, SIGNAL(toggled(bool)), this, SLOT(onTurnoutProperties()));
+ connect(ui->layoutDoubleSlipButton, SIGNAL(toggled(bool)), this, SLOT(onTurnoutProperties()));
+ connect(ui->layoutSingleSlipButton, SIGNAL(toggled(bool)), this, SLOT(onSecondTurnoutProperties()));
+ connect(ui->layoutDoubleSlipButton, SIGNAL(toggled(bool)), this, SLOT(onSecondTurnoutProperties()));
+ connect(ui->trackButton, SIGNAL(toggled(bool)), this, SLOT(onTrackSegmentProperties()));
+ connect(ui->turnoutRHButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->turnoutLHButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->turnoutWYEButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->doubleXoverButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->rhXoverButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->lhXoverButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->layoutSingleSlipButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->layoutDoubleSlipButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->levelXingButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->trackButton, SIGNAL(toggled(bool)), this, SLOT(onBlockProperties()));
+ connect(ui->signalMastButton, SIGNAL(toggled(bool)), this, SLOT(onMiscFields()));
+ connect(ui->sensorButton,SIGNAL(toggled(bool)), this, SLOT(onMiscFields()));
+ connect(ui->signalButton, SIGNAL(toggled(bool)), this, SLOT(onMiscFields()));
+ connect(ui->textLabelButton,SIGNAL(toggled(bool)), this, SLOT(onMiscFields()));
+ connect(ui->memoryButton,SIGNAL(toggled(bool)), this, SLOT(onMiscFields()));
+ connect(ui->blockContentsButton,SIGNAL(toggled(bool)), this, SLOT(onMiscFields()));
+
+ onTrackSegmentProperties();
+ onSecondTurnoutProperties();
+ onTrackSegmentProperties();
+ onBlockProperties();
+
+
+ ui->changeIconsButton->setToolTip(tr("Select to change icons used to represent Sensors, Signal Heads or Label (whichever is checked at the right)."));
+ ui->changeIconsButton->setEnabled(false);
+connect(ui->sensorButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()));
+connect(ui->signalButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()));
+connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()));
+
+
  autoAssignBlocks = true;
  tooltipsInEditMode = false;
  tooltipsWithoutEditMode = false;
@@ -584,13 +764,135 @@ _contents = new QVector<Positionable*>();
  // confirm that panel hasn't already been loaded
  if (PanelMenu::instance()->isPanelNameUsed(name))
  {
-  log.warn("File contains a panel with the same name (" + name + ") as an existing panel");
+  log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
  }
 }
 
+ void LayoutEditor::onChangeIcons()
+ {
+  ui->changeIconsButton->setEnabled(ui->sensorButton->isChecked() || ui->signalButton->isChecked() || ui->iconLabelButton->isChecked());
+  onMiscFields();
+ }
+
+ void LayoutEditor::onTurnoutProperties()
+ {
+  bool e = (ui->turnoutRHButton->isChecked()
+            || ui->turnoutLHButton->isChecked()
+            || ui->turnoutWYEButton->isChecked()
+            || ui->doubleXoverButton->isChecked()
+            || ui->rhXoverButton->isChecked()
+            || ui->lhXoverButton->isChecked()
+            || ui->layoutSingleSlipButton->isChecked()
+            || ui->layoutDoubleSlipButton->isChecked());
+  log->debug(tr("turnoutPropertiesPanel is %1").arg(e ? "enabled" : "disabled"));
+
+              //  for (Component i : turnoutNamePanel.getComponents())
+//  {
+//      i.setEnabled(e);
+//  }
+  ui->turnoutNameComboBox->setEnabled(e);
+  ui->turnoutNameLabel->setEnabled(e);
+
+//  for (Component i : rotationPanel.getComponents()) {
+//      i.setEnabled(e);
+//  }
+  ui->rotationComboBox->setEnabled(e);
+
+  onMiscFields();
+
+ }
+ void LayoutEditor::onSecondTurnoutProperties()
+ {
+  //second turnout property
+     bool e = (ui->layoutSingleSlipButton->isChecked() || ui->layoutDoubleSlipButton->isChecked());
+     log->debug(tr("extraTurnoutPanel is %1").arg(e ? "enabled" : "disabled"));
+
+//     for (Component i : extraTurnoutPanel.getComponents()) {
+//         i.setEnabled(e);
+//     }
+     ui->extraTurnoutLabel->setEnabled(e);
+     ui->extraTurnoutNameComboBox->setEnabled(e);
+     onMiscFields();
+
+ }
+void LayoutEditor::onTrackSegmentProperties()
+{
+     //track Segment properties
+    bool e = ui->trackButton->isChecked();
+     log->debug(tr("trackSegmentPropertiesPanel is %1").arg(e ? "enabled" : "disabled"));
+
+//     for (Component i : trackSegmentPropertiesPanel.getComponents()) {
+//         i.setEnabled(e);
+//     }
+     ui->chkDashed->setEnabled(e);
+     ui->chkMainline->setEnabled(e);
+     ui->levelXingButton->setEnabled(e);
+     onMiscFields();
+
+}
+
+void LayoutEditor::onBlockProperties()
+{
+     //block properties
+     bool e = (ui->turnoutRHButton->isChecked()
+             || ui->turnoutLHButton->isChecked()
+             || ui->turnoutWYEButton->isChecked()
+             || ui->doubleXoverButton->isChecked()
+             || ui->rhXoverButton->isChecked()
+             || ui->lhXoverButton->isChecked()
+             || ui->layoutSingleSlipButton->isChecked()
+             || ui->layoutDoubleSlipButton->isChecked()
+             || ui->levelXingButton->isChecked()
+             || ui->trackButton->isChecked());
+     log->debug(tr("blockPanel is %1").arg(e ? "enabled" : "disabled"));
+
+#if 0 //dock panel?
+     if (ui->blockPropertiesPanel != null) {
+         for (Component i : blockPropertiesPanel.getComponents()) {
+             i.setEnabled(e);
+         }
+
+         if (e) {
+             blockPropertiesPanel.setBackground(Color.lightGray);
+         } else {
+             blockPropertiesPanel.setBackground(new Color(238, 238, 238));
+         }
+     } else
+#endif
+     {
+         ui->blockNameLabel->setEnabled(e);
+//         blockIDComboBox.setEnabled(e);
+         ui->blockSensorNameLabel->setEnabled(e);
+//         ui->blockSensorLabel.setEnabled(e);
+         ui->blockSensorComboBox->setEnabled(e);
+     }
+     onMiscFields();
+}
+
+void LayoutEditor::onMiscFields()
+{
+     //enable/disable text label, memory & block contents text fields
+     ui->textLabelTextField->setEnabled(ui->textLabelButton->isChecked());
+     ui->textMemoryComboBox->setEnabled(ui->memoryButton->isChecked());
+//     ui->blockContentsComboBox->setEnabled(ui->blockContentsButton->isChecked());
+
+     //enable/disable signal mast, sensor & signal head text fields
+     ui->signalMastComboBox->setEnabled(ui->signalMastButton->isChecked());
+     ui->sensorComboBox->setEnabled(ui->sensorButton->isChecked());
+     ui->signalHeadComboBox->setEnabled(ui->signalButton->isChecked());
+
+}
+
+void LayoutEditor::blockContentsComboBoxChanged()
+{
+ if (highlightSelectedBlockFlag) {
+     highlightBlockInComboBox(ui->blockContentsComboBox);
+ }
+
+}
 /*public*/ void LayoutEditor::setSize(int w, int h)
 {
- log.debug("Frame size now w=" + QString::number(w) + ", h=" + QString::number(h));
+ log->debug("Frame size now w=" + QString::number(w) + ", h=" + QString::number(h));
  Editor::resize(w, h);
 }
 
@@ -606,7 +908,7 @@ _contents = new QVector<Positionable*>();
  turnoutOptionsMenu->addAction(turnoutCirclesOnItem);
 // turnoutCirclesOnItem.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
-//         turnoutCirclesWithoutEditMode = turnoutCirclesOnItem.isSelected();
+//         turnoutCirclesWithoutEditMode = turnoutCirclesOnItem->isChecked();
 //         repaint();
 //     }
 // });
@@ -663,11 +965,11 @@ _contents = new QVector<Positionable*>();
  turnoutDrawUnselectedLegItem->setChecked(turnoutDrawUnselectedLeg);
 
  //add show grid menu item
-  autoAssignBlocksItem = new QAction(tr("Automatically Assign Blocks to Track"));
+  autoAssignBlocksItem = new QAction(tr("Automatically Assign Blocks to Track"), this);
   autoAssignBlocksItem->setCheckable(true);
   turnoutOptionsMenu->addAction(autoAssignBlocksItem);
 //  autoAssignBlocksItem.addActionListener((ActionEvent event) -> {
-//      autoAssignBlocks = autoAssignBlocksItem.isSelected();
+//      autoAssignBlocks = autoAssignBlocksItem->isChecked();
 //  });
   connect(autoAssignBlocksItem, SIGNAL(triggered(bool)), this, SLOT(on_autoAssignBlocksItem_triggered(bool)));
   autoAssignBlocksItem->setChecked(autoAssignBlocks);
@@ -675,13 +977,13 @@ _contents = new QVector<Positionable*>();
   //
   //add hideTrackSegmentConstructionLines menu item
   //
-  hideTrackSegmentConstructionLines = new QAction(tr("Hide Track Construction Lines"));
+  hideTrackSegmentConstructionLines = new QAction(tr("Hide Track Construction Lines"), this);
   hideTrackSegmentConstructionLines->setCheckable(true);
   ui->menuOptions->addAction(hideTrackSegmentConstructionLines);
  // hideTrackSegmentConstructionLines.addActionListener((ActionEvent event) -> {
 //      int show = TrackSegment.SHOWCON;
 
-//      if (hideTrackSegmentConstructionLines.isSelected()) {
+//      if (hideTrackSegmentConstructionLines->isChecked()) {
 //          show = TrackSegment.HIDECONALL;
 //      }
 
@@ -696,13 +998,13 @@ _contents = new QVector<Positionable*>();
   //
   //add "use direct turnout control" menu item
   //
-  useDirectTurnoutControlItem = new QAction(tr("Use Direct Turnout Control"));   //IN18N
+  useDirectTurnoutControlItem = new QAction(tr("Use Direct Turnout Control"), this);   //IN18N
   useDirectTurnoutControlItem->setCheckable(true);
   turnoutOptionsMenu->addAction(useDirectTurnoutControlItem);
 //  useDirectTurnoutControlItem.addActionListener((ActionEvent event) -> {
 //      useDirectTurnoutControl = false;
 
-//      if (useDirectTurnoutControlItem.isSelected()) {
+//      if (useDirectTurnoutControlItem->isChecked()) {
 //          useDirectTurnoutControl = true;
 //      }
 //  });
@@ -841,6 +1143,49 @@ void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
          || (savedShowHelpBar != showHelpBar));
  targetWindowClosing(save);
 }
+
+/**
+ * Set up editable JmriBeanComboBoxes
+ *
+ * @param inComboBox     the editable JmriBeanComboBoxes to set up
+ * @param inValidateMode boolean: if true, valid text == green, invalid text
+ *                       == red background; if false, valid text == green,
+ *                       invalid text == yellow background
+ * @param inEnable       boolean to enable / disable the JmriBeanComboBox
+ */
+/*public*/ /*static*/ void LayoutEditor::setupComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox, bool inValidateMode, bool inEnable) {
+    setupComboBox(inComboBox, inValidateMode, inEnable, !inValidateMode);
+}
+
+/**
+ * Set up editable JmriBeanComboBoxes
+ *
+ * @param inComboBox     the editable JmriBeanComboBoxes to set up
+ * @param inValidateMode boolean: if true, valid text == green, invalid text
+ *                       == red background; if false, valid text == green,
+ *                       invalid text == yellow background
+ * @param inEnable       boolean to enable / disable the JmriBeanComboBox
+ * @param inFirstBlank   boolean to enable / disable the first item being
+ *                       blank
+ */
+/*public*/ /*static*/ void LayoutEditor::setupComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox, bool inValidateMode, bool inEnable, bool inFirstBlank) {
+    log->debug("LE setupComboBox called");
+
+    inComboBox->setEnabled(inEnable);
+    inComboBox->setEditable(true);
+    inComboBox->setValidateMode(inValidateMode);
+    inComboBox->setCurrentText("");
+
+    // This has to be set before calling setupComboBoxMaxRows
+    // (otherwise if inFirstBlank then the  number of rows will be wrong)
+    inComboBox->setFirstItemBlank(inFirstBlank);
+
+    // set the max number of rows that will fit onscreen
+//    JComboBoxUtil.setupComboBoxMaxRows(inComboBox);
+
+    inComboBox->setCurrentIndex(-1);
+}
+
 void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 {
  calcLocation(e->scenePos(), 0,0);
@@ -993,7 +1338,7 @@ double LayoutEditor::getPaintScale()
     }
    }
   }
-  else if (bShift && ui->chkTrackSegment->isChecked() /*&& (!event.isPopupTrigger()) */)
+  else if (bShift && ui->trackButton->isChecked() /*&& (!event.isPopupTrigger()) */)
   {
    // starting a Track Segment, check for free connection point
    selectedObject = nullptr;
@@ -1362,7 +1707,7 @@ double LayoutEditor::getPaintScale()
       }
      }
     } catch (JmriException e) {
-       log.debug("Unable to set location");
+       log->debug("Unable to set location");
     }
     break;
    }
@@ -1392,7 +1737,7 @@ double LayoutEditor::getPaintScale()
      }
     }
     catch (JmriException e) {
-       log.debug("Unable to set location");
+       log->debug("Unable to set location");
     }
     break;
    }
@@ -1421,7 +1766,7 @@ double LayoutEditor::getPaintScale()
       }
      }
     } catch (JmriException e) {
-       log.debug("Unable to set location");
+       log->debug("Unable to set location");
    }
    break;
   }
@@ -1451,7 +1796,7 @@ double LayoutEditor::getPaintScale()
    }
    else
    {
-    log.debug("No valid point, so will quit");
+    log->debug("No valid point, so will quit");
     return;
    }
   }   //switch
@@ -1541,7 +1886,7 @@ double LayoutEditor::getPaintScale()
           auxTools->setBlockConnectivityChanged();
       }
      } catch (JmriException e) {
-         log.debug("Unable to set location");
+         log->debug("Unable to set location");
      }
     }
     break;
@@ -1561,7 +1906,7 @@ double LayoutEditor::getPaintScale()
    }
 
    default: {
-       log.warn(tr("Unexpected foundPointType %1  in checkPointsOfTurnoutSub").arg(foundPointType));
+       log->warn(tr("Unexpected foundPointType %1  in checkPointsOfTurnoutSub").arg(foundPointType));
        break;
    }
   }   //switch
@@ -1693,39 +2038,39 @@ double LayoutEditor::getPaintScale()
     currentPoint.setX(xLoc);
     currentPoint.setY(yLoc);
    }
-   if (ui->chkRH->isChecked())
+   if (ui->turnoutRHButton->isChecked())
    {
     addLayoutTurnout(LayoutTurnout::RH_TURNOUT);
    }
-   else if (ui->chkLH->isChecked())
+   else if (ui->turnoutLHButton->isChecked())
    {
     addLayoutTurnout(LayoutTurnout::LH_TURNOUT);
    }
-   else if (ui->chkWYE->isChecked())
+   else if (ui->turnoutWYEButton->isChecked())
    {
     addLayoutTurnout(LayoutTurnout::WYE_TURNOUT);
    }
-   else if (ui->chkDoubleXover->isChecked())
+   else if (ui->doubleXoverButton->isChecked())
    {
     addLayoutTurnout(LayoutTurnout::DOUBLE_XOVER);
    }
-   else if (ui->chkRHXover->isChecked())
+   else if (ui->rhXoverButton->isChecked())
    {
     addLayoutTurnout(LayoutTurnout::RH_XOVER);
    }
-   else if (ui->chkLHXover->isChecked())
+   else if (ui->lhXoverButton->isChecked())
    {
     addLayoutTurnout(LayoutTurnout::LH_XOVER);
    }
-   else if (ui->chkLevelCrossing->isChecked())
+   else if (ui->levelXingButton->isChecked())
    {
     addLevelXing();
    }
-   else if (ui->chkSingleSlip->isChecked())
+   else if (ui->layoutSingleSlipButton->isChecked())
    {
     addLayoutSlip(LayoutSlip::SINGLE_SLIP);
    }
-   else if (ui->chkDoubleSlip->isChecked())
+   else if (ui->layoutDoubleSlipButton->isChecked())
    {
     addLayoutSlip(LayoutSlip::DOUBLE_SLIP);
    }
@@ -1737,7 +2082,7 @@ double LayoutEditor::getPaintScale()
    {
     addAnchor();
    }
-   else if (ui->chkTrackSegment->isChecked())
+   else if (ui->trackButton->isChecked())
    {
     if ( (beginObject!=nullptr) && (foundObject!=nullptr) &&
                 (beginObject!=foundObject) )
@@ -1755,38 +2100,38 @@ double LayoutEditor::getPaintScale()
     }
 #if 1
 
-   else if (ui->chkMultisensor->isChecked())
+   else if (ui->multiSensorButton->isChecked())
    {
     startMultiSensor();
    }
 #endif
-    else if (ui->chkSensorIcon->isChecked())
+    else if (ui->sensorButton->isChecked())
     {
         addSensor();
     }
 #if 1
-    else if (ui->chkSignalHeadIcon->isChecked()) {
+    else if (ui->signalButton->isChecked()) {
         addSignalHead();
     }
 #endif
-    else if (ui->chkTextLabel->isChecked()) {
+    else if (ui->textLabelButton->isChecked()) {
         addLabel();
     }
 
-    else if (ui->chkMemoryLabel->isChecked()) {
+    else if (ui->memoryButton->isChecked()) {
         addMemory();
     }
-   else if (ui->chkIconLabel->isChecked()) {
+   else if (ui->iconLabelButton->isChecked()) {
         addIcon();
     }
 #if 1
-    else if (ui->chkSignalMastIcon->isChecked()) {
+    else if (ui->signalMastButton->isChecked()) {
         addSignalMast();
     }
 #endif
    else
    {
-    log.warn("No item selected in panel edit mode");
+    log->warn("No item selected in panel edit mode");
    }
    selectedObject = nullptr;
    //repaint();
@@ -1848,7 +2193,7 @@ double LayoutEditor::getPaintScale()
     }
    }
 
-   if ( (ui->chkTrackSegment->isChecked()) && (beginObject!=nullptr) && (foundObject!=nullptr) )
+   if ( (ui->trackButton->isChecked()) && (beginObject!=nullptr) && (foundObject!=nullptr) )
    {
     // user let up shift key before releasing the mouse when creating a track segment
     setCursor(Qt::ArrowCursor);
@@ -2333,7 +2678,7 @@ double LayoutEditor::getPaintScale()
    paintTargetPanel(editScene);
    }
    else
-   if ( (beginObject!=nullptr) && event->modifiers()&Qt::ShiftModifier && ui->chkTrackSegment->isChecked() )
+   if ( (beginObject!=nullptr) && event->modifiers()&Qt::ShiftModifier && ui->trackButton->isChecked() )
   {
    // dragging from first end of Track Segment
    currentLocation= QPointF(xLoc,yLoc);
@@ -2470,6 +2815,171 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
         //}
         return o;
     }
+
+//
+//
+//
+/*private*/ void LayoutEditor::selectZoomMenuItem(double zoomFactor) {
+    //this will put zoomFactor on 100% increments
+    //(so it will more likely match one of these values)
+    int newZoomFactor = ((int) qRound(zoomFactor)) * 100;
+    noZoomItem->setChecked(newZoomFactor == 100);
+    zoom20Item->setChecked(newZoomFactor == 200);
+    zoom30Item->setChecked(newZoomFactor == 300);
+    zoom40Item->setChecked(newZoomFactor == 400);
+    zoom50Item->setChecked(newZoomFactor == 500);
+    zoom60Item->setChecked(newZoomFactor == 600);
+    zoom70Item->setChecked(newZoomFactor == 700);
+    zoom80Item->setChecked(newZoomFactor == 800);
+
+    //this will put zoomFactor on 50% increments
+    //(so it will more likely match one of these values)
+    newZoomFactor = ((int) (zoomFactor * 2)) * 50;
+    zoom05Item->setChecked(newZoomFactor == 50);
+    zoom15Item->setChecked(newZoomFactor == 150);
+
+    //this will put zoomFactor on 25% increments
+    //(so it will more likely match one of these values)
+    newZoomFactor = ((int) (zoomFactor * 4)) * 25;
+    zoom025Item->setChecked(newZoomFactor == 25);
+    zoom075Item->setChecked(newZoomFactor == 75);
+}//
+//
+//
+/*public*/ double LayoutEditor::setZoom(double zoomFactor) {
+    //TODO: add code to re-calculate minZoom (so panel never smaller than view)
+    double newZoom = MathUtil::pin(zoomFactor, minZoom, maxZoom);
+
+    if (!MathUtil::equals(newZoom, getPaintScale())) {
+        log->debug(tr("zoom: %1").arg(zoomFactor));
+        setPaintScale(newZoom);
+//        adjustScrollBars();
+
+        //zoomLabel->setText(QString("x%1$,.2f").arg(newZoom));
+        selectZoomMenuItem(newZoom);
+
+        //save the window specific saved zoom user preference
+        UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager")); //.ifPresent((prefsMgr) -> {
+        if(prefsMgr)
+            prefsMgr->setProperty(getWindowFrameRef(), "zoom", zoomFactor);
+        //});
+    }
+    return getPaintScale();
+}
+
+/*public*/ double LayoutEditor::getZoom() {
+    return getPaintScale();
+}
+
+/*private*/ double LayoutEditor::zoomIn() {
+    return setZoom(getZoom() * 1.1);
+}
+
+/*private*/ double LayoutEditor::zoomOut() {
+    return setZoom(getZoom() / 1.1);
+}
+
+void LayoutEditor::onZoomIn()
+{
+ //setPaintScale(getPaintScale()* 1.1);
+ xScale = xScale*1.1;
+ yScale = yScale*1.1;
+ editPanel->scale(xScale, yScale);
+
+}
+void LayoutEditor::onZoomOut()
+{
+ //setPaintScale(getPaintScale()/ 1.1);
+ xScale = xScale/1.1;
+ yScale = yScale/1.1;
+ editPanel->scale(xScale, yScale);
+
+}
+
+//
+// TODO: make this public? (might be useful!)
+//
+/*private*/ QRectF LayoutEditor::calculateMinimumLayoutBounds() {
+
+ return editScene->sceneRect();
+}
+
+void LayoutEditor::onCalculateBounds()
+{
+ QRectF bounds = calculateMinimumLayoutBounds();
+ log->info(tr("calculated bounds = %1 %2 %3 %4").arg(bounds.x()).arg(bounds.y()).arg(bounds.width()).arg(bounds.height()));
+ log->info(tr("scene bounds = %1 %2 %3 %4").arg(editScene->itemsBoundingRect().x()).arg(editScene->itemsBoundingRect().y()).arg(editScene->itemsBoundingRect().width()).arg(editScene->itemsBoundingRect().height()));
+}
+
+/**
+ * resize panel bounds
+ *
+ * @param forceFlag if false only grow bigger
+ * @return the new (?) panel bounds
+ */
+/*private*/ QRectF LayoutEditor::resizePanelBounds(bool forceFlag) {
+    QRectF panelBounds = getPanelBounds();
+    QRectF layoutBounds = calculateMinimumLayoutBounds();
+    if (forceFlag) {
+        panelBounds = layoutBounds;
+    } else {
+        panelBounds.united(layoutBounds);
+    }
+
+    // don't let origin go negative
+    panelBounds = panelBounds.intersected(MathUtil::zeroToInfinityRectangle2D());
+
+    // make sure it includes the origin
+//    panelBounds.united(MathUtil::zeroPoint2D());
+
+    log->debug(tr("resizePanelBounds: %1, %2, %3, %4").arg(panelBounds.x()).arg(panelBounds.y()).arg(panelBounds.width()).arg(panelBounds.height()));
+
+    setPanelBounds(panelBounds);
+
+    return panelBounds;
+}
+
+/*private*/ double LayoutEditor::zoomToFit() {
+    QRectF layoutBounds = resizePanelBounds(true);
+
+    // calculate the bounds for the scroll pane
+//    QScrollArea* scrollPane = getPanelScrollPane();
+//    QRectF scrollBounds = QRectF(0,0, scrollPane->viewportSizeHint().x(), scrollPane->viewportSizeHint().y());//scrollPane->vgetViewportBorderBounds();
+    QWidget* scrollPane = editPanel->viewport();
+    QRectF scrollBounds = QRectF(0,0, scrollPane->sizeHint().width(), scrollPane->sizeHint().height());
+
+    // don't let origin go negative
+    scrollBounds = scrollBounds.intersected(MathUtil::zeroToInfinityRectangle2D());
+
+    // calculate the horzontial and vertical scales
+    double scaleWidth = scrollPane->width() / layoutBounds.width();
+    double scaleHeight = scrollPane->height() / layoutBounds.height();
+
+    // set the new zoom to the smallest of the two
+    double result = setZoom(qMin(scaleWidth, scaleHeight));
+
+//    // set the new zoom (return value may be different)
+//    result = setZoom(result);
+
+    // calculate new scroll bounds
+//    scrollBounds = scrollBounds.adjust(0,0, result.x(), result.y());//MathUtil::scale(layoutBounds, result);
+
+    // don't let origin go negative
+//    scrollBounds = scrollBounds.intersected(MathUtil::zeroToInfinityRectangle2D());
+
+    // and scroll to it
+    //scrollPane->scrollRectToVisible(MathUtil::rectangle2DToRectangle(scrollBounds));
+    //scrollPane->ensureVisible(scrollBounds.x(), scrollBounds.y());
+    if(result == xScale)
+     return result;
+//    if(xScale > 1.0)
+//     editPanel->scale(1.0/xScale, 1.0/yScale);
+
+    editPanel->scale(result, result);
+    xScale = yScale = result;
+    return result;
+}
+
 /**
  * Add an End Bumper point.
  */
@@ -2518,13 +3028,13 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
   setLink(newTrack,TRACK,beginObject,beginPointType);
   setLink(newTrack,TRACK,foundObject,foundPointType);
   // check on layout block
-  LayoutBlock* b = provideLayoutBlock(ui->edBlockName->text().trimmed());
+  LayoutBlock* b = provideLayoutBlock(ui->blockNameLabel->text().trimmed());
   if (b!=nullptr)
   {
    newTrack->setLayoutBlock(b);
    auxTools->setBlockConnectivityChanged();
    // check on occupancy sensor
-   QString sensorName = (ui->edOccupancySensor->text().trimmed());
+   QString sensorName = (ui->blockSensorNameLabel->text().trimmed());
    if (sensorName.length()>0)
    {
     if (!validateSensor(sensorName,b/*,this*/))
@@ -2533,7 +3043,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
     }
     else
     {
-     ui->edOccupancySensor->setText( b->getOccupancySensorName() );
+     ui->blockSensorNameLabel->setText( b->getOccupancySensorName() );
     }
    }
    newTrack->updateBlockInfo();
@@ -2541,7 +3051,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  }
  else
  {
-  log.error("Failure to create a new Track Segment");
+  log->error("Failure to create a new Track Segment");
  }
 }
 
@@ -2569,13 +3079,13 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
   xingList->append(o);
   setDirty(true);
   // check on layout block
-  LayoutBlock* b = provideLayoutBlock(ui->edBlockName->text().trimmed());
+  LayoutBlock* b = provideLayoutBlock(ui->blockNameLabel->text().trimmed());
   if (b!=nullptr)
   {
    o->setLayoutBlockAC(b);
    o->setLayoutBlockBD(b);
    // check on occupancy sensor
-   QString sensorName = (ui->edOccupancySensor->text().trimmed());
+   QString sensorName = (ui->blockSensorNameLabel->text().trimmed());
    if (sensorName.length()>0)
    {
     if (!validateSensor(sensorName,b/*,this*/))
@@ -2583,7 +3093,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
      b->setOccupancySensorName("");
     }
     else {
-     ui->edOccupancySensor->setText( b->getOccupancySensorName() );
+     ui->blockSensorNameLabel->setText( b->getOccupancySensorName() );
     }
    }
   }
@@ -2596,7 +3106,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 /*public*/ void LayoutEditor::addLayoutSlip(int type)
 {
  double rot = 0.0;
- QString s = ui->edRotation->text().trimmed();
+ QString s = ui->rotationComboBox->currentText().trimmed();
  if (s.length()<1)
  {
   rot = 0.0;
@@ -2633,12 +3143,12 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  setDirty(true);
 
  // check on layout block
- LayoutBlock* b = provideLayoutBlock(ui->edBlockName->text().trimmed());
+ LayoutBlock* b = provideLayoutBlock(ui->blockNameLabel->text().trimmed());
  if (b!=nullptr)
  {
   o->setLayoutBlock(b);
   // check on occupancy sensor
-  QString sensorName = (ui->edOccupancySensor->text().trimmed());
+  QString sensorName = (ui->blockSensorNameLabel->text().trimmed());
   if (sensorName.length()>0)
   {
    if (!validateSensor(sensorName,b/*,this*/))
@@ -2647,39 +3157,39 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
    }
    else
    {
-    ui->edOccupancySensor->setText( b->getOccupancySensorName() );
+    ui->blockSensorNameLabel->setText( b->getOccupancySensorName() );
    }
   }
  }
- QString turnoutName = ui->edTurnoutName->text().trimmed();
+ QString turnoutName = ui->turnoutNameComboBox->currentText().trimmed();
  if ( validatePhysicalTurnout(turnoutName/*, this*/) )
  {
   // turnout is valid and unique.
   o->setTurnout(turnoutName);
   if (o->getTurnout()->getSystemName()==(turnoutName.toUpper()))
   {
-   ui->edTurnoutName->setText(turnoutName.toUpper());
+   ui->turnoutNameComboBox->setText(turnoutName.toUpper());
   }
  }
  else
  {
   o->setTurnout("");
-  ui->edTurnoutName->setText("");
+  ui->turnoutNameComboBox->setText("");
  }
- turnoutName = ui->edExtraName->text().trimmed();
+ turnoutName = ui->turnoutNameComboBox->currentText().trimmed();
  if ( validatePhysicalTurnout(turnoutName/*, this*/) )
  {
   // turnout is valid and unique.
   o->setTurnoutB(turnoutName);
   if (o->getTurnoutB()->getSystemName()==(turnoutName.toUpper()))
   {
-   ui->edExtraName->setText(turnoutName.toUpper());
+   ui->extraTurnoutNameComboBox->setText(turnoutName.toUpper());
   }
  }
  else
  {
   o->setTurnoutB("");
-  ui->edExtraName->setText("");
+  ui->turnoutNameComboBox->setText("");
  }
 }
 
@@ -2690,7 +3200,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 {
  // get the rotation entry
  double rot = 0.0;
- QString s = ui->edRotation->text().trimmed();
+ QString s = ui->rotationComboBox->currentText().trimmed();
  if (s.length()<1)
  {
   rot = 0.0;
@@ -2733,12 +3243,12 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
  turnoutList->append(o);
  setDirty(true);
  // check on layout block
- LayoutBlock* b = provideLayoutBlock(ui->edBlockName->text().trimmed());
+ LayoutBlock* b = provideLayoutBlock(ui->blockNameLabel->text().trimmed());
  if (b!=nullptr)
  {
   o->setLayoutBlock(b);
   // check on occupancy sensor
-  QString sensorName = (ui->edOccupancySensor->text().trimmed());
+  QString sensorName = (ui->blockSensorNameLabel->text().trimmed());
   if (sensorName.length()>0)
   {
    if (!validateSensor(sensorName,b/*,this*/))
@@ -2747,27 +3257,27 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    }
    else
    {
-    ui->edOccupancySensor->setText( b->getOccupancySensorName() );
+    ui->blockSensorNameLabel->setText( b->getOccupancySensorName() );
    }
   }
  }
  // set default continuing route Turnout State
  o->setContinuingSense(Turnout::CLOSED);
  // check on a physical turnout
- QString turnoutName = ui->edTurnoutName->text().trimmed();
+ QString turnoutName = ui->turnoutNameComboBox->currentText().trimmed();
  if ( validatePhysicalTurnout(turnoutName/*, this*/) )
  {
   // turnout is valid and unique.
   o->setTurnout(turnoutName);
   if (o->getTurnout()->getSystemName()==(turnoutName.toUpper()))
   {
-   ui->edTurnoutName->setText(turnoutName.toUpper());
+   ui->turnoutNameComboBox->setText(turnoutName.toUpper());
   }
  }
  else
  {
   o->setTurnout("");
-  ui->edTurnoutName->setText("");
+  ui->turnoutNameComboBox->setText("");
  }
  return o;
 }
@@ -2789,7 +3299,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
  for (int i=0;i<turnoutList->size();i++)
  {
   t = turnoutList->at(i);
-  log.debug("LT '"+t->getName()+"', Turnout tested '"+t->getTurnoutName()+"' ");
+  log->debug("LT '"+t->getName()+"', Turnout tested '"+t->getTurnoutName()+"' ");
   Turnout* to = t->getTurnout();
   /*Only check for the second turnout if the type is a double cross over
    otherwise the second turnout is used to throw an additional turnout at
@@ -3128,7 +3638,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 //            }
 
    rect= ((PositionableLabel*)p)->getBounds();
-   //if (_debug && !_dragging) log.debug("getSelectedItems: rect= ("+rect.x+","+rect.y+
+   //if (_debug && !_dragging) log->debug("getSelectedItems: rect= ("+rect.x+","+rect.y+
    //                      ") width= "+rect.width+", height= "+rect.height+
    //                                    " isPositionable= "+p.isPositionable());
    QRectF rect2D(rect.x()*_paintScale, rect.y()*_paintScale, rect.width()*_paintScale,                                                        rect.height()*_paintScale);
@@ -3152,7 +3662,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
     }
    }
   }
-  //if (_debug)  log.debug("getSelectedItems at ("+x+","+y+") "+selections.size()+" found,");
+  //if (_debug)  log->debug("getSelectedItems at ("+x+","+y+") "+selections.size()+" found,");
   return selections->toList();
 }
 
@@ -3217,7 +3727,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
    }
    else
    {
-    log.error("Attempt to set a non-TRACK connection to a Positionable Point");
+    log->error("Attempt to set a non-TRACK connection to a Positionable Point");
    }
    break;
   case TURNOUT_A:
@@ -3258,7 +3768,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
       break;
   case TRACK:
       // should never happen, Track Segment links are set in ctor
-      log.error("Illegal request to set a Track Segment link");
+      log->error("Illegal request to set a Track Segment link");
       break;
   default:
       if ( (toPointType>=TURNTABLE_RAY_OFFSET) && (fromPointType==TRACK) )
@@ -3416,7 +3926,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  LayoutBlock* blk = layoutBlockManager->getByUserName(blockID);
  if (blk==nullptr)
  {
-  log.error("LayoutBlock '"+blockID+"' not found when panel loaded");
+  log->error("LayoutBlock '"+blockID+"' not found when panel loaded");
   return nullptr;
  }
  blk->addLayoutEditor(this);
@@ -3452,7 +3962,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
            return findLayoutTurntableByName(name);
       break;
   }
-  log.error("did not find Object '"+name+"' of type "+type);
+  log->error("did not find Object '"+name+"' of type "+type);
   return nullptr;
 }
 /*public*/ LayoutBlock* LayoutEditor::getAffectedBlock(QObject* o, int type) {
@@ -3531,7 +4041,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  }
  else
  {
-  log.error("nullptr connection point of type "+QString("%1").arg(type));
+  log->error("nullptr connection point of type "+QString("%1").arg(type));
  }
  return ( QPointF(0.0,0.0));
 }
@@ -3557,7 +4067,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
    blk = layoutBlockManager->createNewLayoutBlock();
    if (blk == nullptr)
    {
-    log.error("Unable to create a layout block");
+    log->error("Unable to create a layout block");
     return nullptr;
    }
    // initialize the new block
@@ -3579,7 +4089,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
    blk = layoutBlockManager->createNewLayoutBlock("",s);
    if (blk == nullptr)
    {
-    log.error("Failure to create LayoutBlock '"+s+"'.");
+    log->error("Failure to create LayoutBlock '"+s+"'.");
     return nullptr;
    }
    else
@@ -3683,7 +4193,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  }
  else
  {
-  trackWidth = sideTrackWidth;
+  trackWidth = sidelineTrackWidth;
 //      g2.setStroke(new BasicStroke(sideTrackWidth,BasicStroke.CAP_BUTT,                                                      BasicStroke.JOIN_ROUND));
  }
 }
@@ -4065,7 +4575,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //   g2.draw(new Ellipse2D.Double (
 //       c.x()-r, c.y()-r, r+r, r+r));
    QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(c.x()-r, c.y()-r, r+r, r+r);
-   circle->setPen(QPen(defaultTrackColor, sideTrackWidth));
+   circle->setPen(QPen(defaultTrackColor, sidelineTrackWidth));
    x->item->addToGroup(circle);
 
    // draw ray tracks
@@ -4315,7 +4825,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 {
  // check for segment in progress
 
- if ( isEditable() && (beginObject!=nullptr) && ui->chkTrackSegment->isChecked() )
+ if ( isEditable() && (beginObject!=nullptr) && ui->trackButton->isChecked() )
  {
 //      g2.setColor(defaultTrackColor);
 //      setTrackStrokeWidth(g2,false);
@@ -5783,14 +6293,15 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
   */
  void LayoutEditor::addSignalHead() {
      // check for valid signal head entry
-     QString tName = ui->edSignalHeadIcon->text().trimmed();
+  QString newName = ui->signalHeadComboBox->getDisplayName();
+
      SignalHead* mHead = nullptr;
-     if ( (tName!=("")) ) {
-         mHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(tName);
+     if ( (newName!=("")) ) {
+         mHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(newName);
          /*if (mHead == nullptr)
              mHead = InstanceManager.signalHeadManagerInstance().getByUserName(tName);
          else */
-         ui->edSignalHeadIcon->setText(tName);
+         ui->signalHeadComboBox->setCurrentText(newName);
      }
      if (mHead == nullptr) {
          // There is no signal head corresponding to this name
@@ -5798,12 +6309,12 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 //                 java.text.MessageFormat.format(rb.getQString("Error9"),
 //                 new Object[]{tName}),
 //                 rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
-             QMessageBox::critical(this, tr("Error"),tr("Error - Cannot create a signal head icon because there is no signal head defined for - \"%1\". Please enter the name of a Signal Head in\nthe Signal Table and try again.").arg(tName) );
+             QMessageBox::critical(this, tr("Error"),tr("Error - Cannot create a signal head icon because there is no signal head defined for - \"%1\". Please enter the name of a Signal Head in\nthe Signal Table and try again.").arg(newName) );
          return;
      }
      // create and set up signal icon
      SignalHeadIcon* l = new SignalHeadIcon(this);
-     l->setSignalHead(tName);
+     l->setSignalHead(newName);
      l->setIcon(tr("Red"), signalIconEditor->getIcon(0));
      l->setIcon(tr("Flashing rea"), signalIconEditor->getIcon(1));
      l->setIcon(tr("Yellow"), signalIconEditor->getIcon(2));
@@ -5828,7 +6339,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  SignalHead* LayoutEditor::getSignalHead(QString name) {
      SignalHead* sh = InstanceManager::signalHeadManagerInstance()->getBySystemName(name);
      if (sh == nullptr) sh = InstanceManager::signalHeadManagerInstance()->getByUserName(name);
-     if (sh == nullptr) log.warn("did not find a SignalHead named "+name);
+     if (sh == nullptr) log->warn("did not find a SignalHead named "+name);
      return sh;
  }
 
@@ -5868,11 +6379,11 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 
  void LayoutEditor::addSignalMast() {
      // check for valid signal head entry
-     QString tName = ui->edSignalMastIcon->text().trimmed();
+     QString newName = ui->signalMastComboBox->getDisplayName();
      SignalMast* mMast = nullptr;
-     if ( (tName!=("")) ) {
-         mMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(tName);
-         ui->edSignalMastIcon->setText(tName);
+     if ( (newName!=("")) ) {
+         mMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(newName);
+         ui->signalMastComboBox->setText(newName);
      }
      if (mMast == nullptr) {
          // There is no signal head corresponding to this name
@@ -5880,12 +6391,12 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 //                 java.text.MessageFormat.format(rb.getQString("Error9"),
 //                 new Object[]{tName}),
 //                 rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
-             QMessageBox::critical(0, tr("Error"),tr("Error - Cannot create a signal mast icon because there is no signal mast defined for - \"%1\". Please enter the name of a Signal mast in                                              the Signal Table and try again.").arg(tName) );
+             QMessageBox::critical(0, tr("Error"),tr("Error - Cannot create a signal mast icon because there is no signal mast defined for - \"%1\". Please enter the name of a Signal mast in                                              the Signal Table and try again.").arg(newName) );
          return;
      }
      // create and set up signal icon
      SignalMastIcon* l = new SignalMastIcon(this);
-     l->setSignalMast(tName);
+     l->setSignalMast(newName);
      setNextLocation(l);
      setDirty(true);
      putSignalMast(l);
@@ -5900,7 +6411,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  SignalMast* LayoutEditor::getSignalMast(QString name) {
      SignalMast* sh = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name);
      if (sh == nullptr) sh = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getByUserName(name);
-     if (sh == nullptr) log.warn("did not find a SignalMast named "+name);
+     if (sh == nullptr) log->warn("did not find a SignalMast named "+name);
      return sh;
  }
 /**
@@ -5908,7 +6419,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 */
 void LayoutEditor::addLabel()
 {
- PositionableLabel* l = addLabel(ui->edTextLabel->text().trimmed());
+ PositionableLabel* l = addLabel(ui->textLabelTextField->text().trimmed());
  setDirty(true);
  l->setForeground(defaultTextColor);
  l->setLocation(dLoc.x(),dLoc.y());
@@ -5997,10 +6508,10 @@ void LayoutEditor::addLabel()
 //  addToTarget(l);
 ////  if (!_contents->append((Positionable*)l))
 ////  {
-////      log.error("Unable to add "+l->getNameString()+" to _contents");
+////      log->error("Unable to add "+l->getNameString()+" to _contents");
 ////  }
 //  _contents->append(l);
-//  /*if (_debug)*/ log.debug(tr("putItem ")+pl->getNameString()+" to _contents. level= "+QString("%1").arg(pl->getDisplayLevel()));
+//  /*if (_debug)*/ log->debug(tr("putItem ")+pl->getNameString()+" to _contents. level= "+QString("%1").arg(pl->getDisplayLevel()));
 //}
 
 #if 0
@@ -6152,7 +6663,7 @@ void LayoutEditor::addLabel()
   if(index >= 0)
    _contents->remove(index);
   else
-   Logger::error(tr("Unable to remove Positionable from contents"));
+   log->error(tr("Unable to remove Positionable from contents"));
   if (found)
   {
    setDirty(true);
@@ -6193,17 +6704,15 @@ void LayoutEditor::repaint()
 */
 void LayoutEditor::addSensor()
 {
-  if (ui->edSensorIcon->text().trimmed().length()<=0)
+ QString newName = ui->sensorComboBox->getDisplayName();
+  if (newName.isEmpty())
   {
 //      JOptionPane.showMessageDialog(this,rb.getQString("Error10"),
 //                  rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
    QMessageBox::critical(0, "Error", "Sensor name must be specified!");
    return;
   }
-  addSensor(ui->edSensorIcon->text().trimmed());
- }
-void LayoutEditor::addSensor(QString name)
-{
+
   SensorIcon* l = new SensorIcon(new NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",                                              ":/resources/icons/smallschematics/tracksegments/circuit-error.gif"),this);
 //        l.setActiveIcon(sensorIconEditor.getIcon(0));
 //        l.setInactiveIcon(sensorIconEditor.getIcon(1));
@@ -6218,14 +6727,16 @@ void LayoutEditor::addSensor(QString name)
   //Sensor xSensor = l.getSensor();
   if (l->getSensor() != nullptr)
   {
-   if ( (l->getNamedSensor()->getName()==nullptr) || (!(l->getNamedSensor()->getName()==(ui->edSensorIcon->text().trimmed()))) )
-    ui->edSensorIcon->setText(l->getNamedSensor()->getName());
+   if (newName != (l->getNamedSensor()->getName()))
+   {
+       ui->sensorComboBox->setText(l->getNamedSensor()->getName());
+   }
   }
   NamedBeanHandle<Sensor*>* s = l->getNamedSensor();
   QString sensorName = "";
   if(s != nullptr)
    sensorName = s->getName();
-  ui->edSensorIcon->setText(sensorName);
+  ui->sensorComboBox->setText(sensorName);
   if(l->getNamedBean() != nullptr)
    l->setTooltip(l->getNamedBean()->getSystemName());
   setNextLocation(l);
@@ -6294,7 +6805,7 @@ void LayoutEditor::addSensor(QString name)
 //{
 // saveP = p;
 ////  JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(tr("LockPosition"));
-////  lockItem.setSelected(!p.isPositionable());
+////  lockItem->setChecked(!p.isPositionable());
 // QAction* lockItem = new QAction(tr("Lock Position"),this);
 // lockItem->setCheckable(true);
 // PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
@@ -6305,8 +6816,8 @@ void LayoutEditor::addSensor(QString name)
 ////      Positionable comp;
 ////      JCheckBoxMenuItem checkBox;
 ////      /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-////          comp.setPositionable(!checkBox.isSelected());
-////          setSelectionsPositionable(!checkBox.isSelected(), comp);
+////          comp.setPositionable(!checkBox->isChecked());
+////          setSelectionsPositionable(!checkBox->isChecked(), comp);
 ////      }
 ////      ActionListener init(Positionable pos, JCheckBoxMenuItem cb) {
 ////          comp = pos;
@@ -6645,40 +7156,31 @@ void LayoutEditor::on_actionAdd_Turntable_triggered()
 */
 void LayoutEditor::addMemory()
 {
- if (ui->edMemoryLabel->text().trimmed().length()<=0)
- {
-//     JOptionPane.showMessageDialog(this, rb.getQString("Error11"),
-//                 rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
-              QMessageBox::critical(this, tr("Error"), tr("Memory label text must be entered!"));
-  return;
- }
- addMemory(ui->edMemoryLabel->text().trimmed());
-}
-MemoryIcon* LayoutEditor::addMemory(QString text)
-  {
- MemoryIcon* l = new MemoryIcon("<memory>", this);
- l->setMemory(ui->edMemoryLabel->text().trimmed());
- Memory* xMemory = l->getMemory();
- if (xMemory != nullptr)
- {
-  QString userName = xMemory->getUserName();
-  if ( (xMemory->getUserName() == nullptr) ||
-             (!(xMemory->getUserName()==(text)))  )
-  {
-   // put the system name in the memory field
-   ui->edMemoryLabel->setText(xMemory->getSystemName());
-  }
- }
- if(xMemory != nullptr)
-  l->setTooltip(xMemory->getSystemName());
- setNextLocation(l);
- l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
- l->setDisplayLevel(LABELS);
- l->setForeground(defaultTextColor);
- setDirty(true);
- putItem((Positionable*)l);
- return l;
-}
+ QString memoryName = ui->textMemoryComboBox->getDisplayName();
+
+         if (memoryName.isEmpty()) {
+             JOptionPane::showMessageDialog(this, tr("Error - Cannot create a memory label because no memory variable is entered in the\nMemory text field. Please enter the name of a memory variable and try again."),
+                     tr("Error"), JOptionPane::ERROR_MESSAGE);
+             return;
+         }
+         MemoryIcon* l = new MemoryIcon(" ", this);
+         l->setMemory(memoryName);
+         Memory* xMemory = l->getMemory();
+
+         if (xMemory != nullptr) {
+             QString uname = xMemory->getDisplayName();
+             if (uname != (memoryName)) {
+                 //put the system name in the memory field
+                 ui->textMemoryComboBox->setText(xMemory->getSystemName());
+             }
+         }
+         setNextLocation(l);
+         l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
+         l->setDisplayLevel(Editor::LABELS);
+         l->setForeground(defaultTextColor);
+         unionToPanelBounds(l->getBounds());
+         putItem(l); // note: this calls unionToPanelBounds & setDirty()
+     } //addMemory
 /**
 * Add a Reporter Icon to the panel
 */
@@ -7098,13 +7600,13 @@ void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
 //      return;
 //  }
 //  JCheckBoxMenuItem hideItem = new JCheckBoxMenuItem(tr("SetHidden"));
-//  hideItem.setSelected(p->isHidden());
+//  hideItem->setChecked(p->isHidden());
 //  hideItem.addActionListener(new ActionListener(){
 //      Positionable comp;
 //      JCheckBoxMenuItem checkBox;
 //      /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//          comp.setHidden(checkBox.isSelected());
-//          setSelectionsHidden(checkBox.isSelected(), comp);
+//          comp.setHidden(checkBox->isChecked());
+//          setSelectionsHidden(checkBox->isChecked(), comp);
 //      }
 //      ActionListener init(Positionable pos, JCheckBoxMenuItem cb) {
 //          comp = pos;
@@ -7123,7 +7625,7 @@ void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
 void LayoutEditor::On_actionHidden_toggled(bool bState)
 {
  Positionable* comp =saveP;
- //comp.setHidden(checkBox.isSelected());
+ //comp.setHidden(checkBox->isChecked());
  setSelectionsHidden(bState, comp);
 }
 /*protected*/ void LayoutEditor::setSelectionsHidden(bool enabled, Positionable* p)
@@ -7140,10 +7642,10 @@ void LayoutEditor::On_actionHidden_toggled(bool bState)
 }
 void LayoutEditor::on_actionEdit_track_width_triggered()
 {
- SetTrackWidthDlg dlg(sideTrackWidth, mainlineTrackWidth, this);
+ SetTrackWidthDlg dlg(sidelineTrackWidth, mainlineTrackWidth, this);
  if(dlg.exec() == QDialog::Accepted)
  {
-  sideTrackWidth = dlg.sidetrackWidth();
+  sidelineTrackWidth = dlg.sidetrackWidth();
   mainlineTrackWidth = dlg.mainlineTrackWidth();
  }
 }
@@ -7175,7 +7677,7 @@ void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString na
 //            }
 //        }   //actionPerformed
 //    };
-    QAction* r = new QAction(getColourIcon(color),name);
+    QAction* r = new QAction(getColourIcon(color),name,this);
     r->setCheckable(true);
     backgroundColorButtonMapper->setMapping(r, backgroundColorCount);
     //r.addActionListener(a);
@@ -7208,7 +7710,7 @@ void LayoutEditor::addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /
 //            }
 //        }   //actionPerformed
 //    };
-    //JRadioButtonMenuItem r = new JRadioButtonMenuItem(name);
+    //QAction r = new QAction(name);
     QAction* r = new QAction(getColourIcon(color), name, this);
     r->setCheckable(true);
     trackColorButtonMapper->setMapping(r, trackColorCount);
@@ -7466,7 +7968,7 @@ void LayoutEditor::on_actionAdd_background_image_2_triggered()
   }
   return left;
 }
-#endif
+
 void LayoutEditor::on_actionLoad_Other_XML_triggered()
 {
  setCursor(Qt::WaitCursor);
@@ -7508,14 +8010,14 @@ void LayoutEditor::on_newSensor(QString name, int x, int y)
 
  addSensor(name);
 }
-
+#endif
 void LayoutEditor::setFilename(QString path)
 {
  layoutFile = path;
  if(path != nullptr)
   ui->actionSave->setEnabled(true);
 }
-#if 1
+
 void LayoutEditor::on_actionSave_triggered()
 {
  if(layoutFile.isEmpty())
@@ -7531,22 +8033,6 @@ void LayoutEditor::on_actionSave_triggered()
  setCursor(Qt::ArrowCursor);
 }
 
-//void LayoutEditor::on_actionSave_as_triggered()
-//{
-// QString path = QFileDialog::getSaveFileName(this,tr("Save file as"),layoutFile);
-// if(path.isEmpty())
-// {
-//  QMessageBox::warning(this, tr("Warning"), tr("No file name specified"));
-//  return;
-// }
-// setCursor(Qt::WaitCursor);
-// SaveXml saveXml(this);  // TODO: get rid of this; use Jmri code to save
-// saveXml.store(path);
-// layoutFile = path;
-// setCursor(Qt::ArrowCursor);
-
-//}
-#endif
 void LayoutEditor::on_actionSnap_to_grid_when_adding_toggled(bool bState)
 {
  snapToGridOnAdd = bState;
@@ -7678,7 +8164,7 @@ void LayoutEditor::on_actionDelete_this_panel_triggered()
 *
 */
 /*public*/ NamedIcon* LayoutEditor::loadFailed(QString /*msg*/, QString url) {
- if (_debug) log.debug("loadFailed _ignore= "+_ignore);
+ if (_debug) log->debug("loadFailed _ignore= "+QString(_ignore?"ignore":"accept"));
  QString goodUrl = _urlMap->value(url);
  if (goodUrl!=nullptr) {
      return NamedIcon::getIconByName(goodUrl);
@@ -7692,14 +8178,14 @@ void LayoutEditor::on_actionDelete_this_panel_triggered()
  // TODO: new UrlErrorDialog(msg, url);
 
  if (_delete) {
-     if (_debug) log.debug("loadFailed _delete= "+_delete);
+     if (_debug) log->debug("loadFailed _delete= "+_delete);
      return nullptr;
  }
  if (_newIcon==nullptr) {
      _loadFailed = true;
      _newIcon =new NamedIcon(url, url);
  }
- if (_debug) log.debug("loadFailed icon nullptr= "+(_newIcon==nullptr));
+ if (_debug) log->debug("loadFailed icon nullptr= "+(_newIcon==nullptr));
  return _newIcon;
 }
 
@@ -7708,11 +8194,11 @@ void LayoutEditor::on_actionAdd_loco_from_roster_triggered()
  locoMarkerFromRoster();
 }
 
-void LayoutEditor::on_menuWindow_aboutToShow()
-{
- ui->menuWindow->clear();
- PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
-}
+//void LayoutEditor::on_menuWindow_aboutToShow()
+//{
+// ui->menuWindow->clear();
+// PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
+//}
 
 int LayoutEditor::getTurnoutType(QString name)
 {
@@ -7938,14 +8424,14 @@ int LayoutEditor::getTurnoutType(QString name)
      if (conTools == nullptr) {
          conTools = new ConnectivityUtil(/*thisPanel*/this);
      }
-     if (conTools==nullptr) log.error("Unable to establish link to Connectivity Tools for Layout Editor panel "+layoutName);
+     if (conTools==nullptr) log->error("Unable to establish link to Connectivity Tools for Layout Editor panel "+layoutName);
      return conTools;
  }
  /*public*/ LayoutEditorTools* LayoutEditor::getLETools() {
      if (tools == nullptr) {
          tools = new LayoutEditorTools(/*thisPanel*/this);
      }
-     if (tools==nullptr) log.error("Unable to establish link to Layout Editor Tools for Layout Editor panel "+layoutName);
+     if (tools==nullptr) log->error("Unable to establish link to Layout Editor Tools for Layout Editor panel "+layoutName);
      return tools;
  }
 /*public*/ void LayoutEditor::addToPopUpMenu(NamedBean* nb, QMenu* item, int menu)
@@ -8073,8 +8559,20 @@ void LayoutEditor::startMultiSensor() {
  putItem((Positionable*)l);
  //multiSensorFrame = nullptr;
 }
-void LayoutEditor::on_btnChange_clicked()
+
+void LayoutEditor::onChangeIconsButton()
 {
+ if (ui->sensorButton->isChecked()) {
+     sensorFrame->setVisible(true);
+ } else if (ui->signalButton->isChecked()) {
+     signalFrame->setVisible(true);
+ } else if (ui->iconLabelButton->isChecked()) {
+     iconFrame->setVisible(true);
+ } else {
+     //explain to the user why nothing happens
+     JOptionPane::showMessageDialog(nullptr, tr("This only works when a Sensor, Signal Head or\nLabel is selected to the right of this button."),
+             tr("Change Icons"), JOptionPane::INFORMATION_MESSAGE);
+ }
 
 }
 void LayoutEditor::closeEvent(QCloseEvent *)
@@ -8089,7 +8587,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  QFile* file = xmlfile->findFile(name);
  if (file == nullptr)
  {
-  log.info("No " + name + " file to backup");
+  log->info("No " + name + " file to backup");
  }
  else
  {
@@ -8101,16 +8599,16 @@ void LayoutEditor::closeEvent(QCloseEvent *)
   {
    if (backupFile->remove())
    {
-    log.debug("deleted backup file " + backupName);
+    log->debug("deleted backup file " + backupName);
    }
   }
   if (file->rename(backupName))
   {
-   log.debug("created new backup file " + backupName);
+   log->debug("created new backup file " + backupName);
   }
   else
   {
-   log.error("could not create backup file " + backupName);
+   log->error("could not create backup file " + backupName);
   }
  }
 }
@@ -8119,13 +8617,16 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 {
  // save current panel location and size
  QSize dim = size();
+
  // Compute window size based on LayoutEditor size
  windowHeight = dim.height();
  windowWidth = dim.width();
+
  // Compute layout size based on LayoutPane size
  QSizeF dimF = getTargetPanelSize();
- panelHeight = (int) (dimF.height() / getPaintScale());
- panelWidth = (int) (dimF.width() / getPaintScale());
+ panelHeight = (int) (dimF.height() / getZoom());
+ panelWidth = (int) (dimF.width() / getZoom());
+
  QPoint pt = getLocationOnScreen();
  upperLeftX = pt.x();
  upperLeftY = pt.y();
@@ -8134,6 +8635,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if(prefsMgr != nullptr)
  {
   QString windowFrameRef = getWindowFrameRef();
+
   //the restore code for this isn't working…
   prefsMgr->setWindowLocation(windowFrameRef, QPoint(upperLeftX, upperLeftY));
   prefsMgr->setWindowSize(windowFrameRef, QSize(windowWidth, windowHeight));
@@ -8144,12 +8646,12 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 
    if ((prefsWindowLocation.x() != upperLeftX) || (prefsWindowLocation.y() != upperLeftY))
    {
-    log.error("setWindowLocation failure.");
+    log->error("setWindowLocation failure.");
    }
    QSize prefsWindowSize = prefsMgr->getWindowSize(windowFrameRef);
 
    if ((prefsWindowSize.width() != windowWidth) || (prefsWindowSize.height() != windowHeight)) {
-       log.error("setWindowSize failure.");
+       log->error("setWindowSize failure.");
    }
   }
 
@@ -8160,12 +8662,12 @@ void LayoutEditor::closeEvent(QCloseEvent *)
    QRectF windowRectangle2D =  QRectF(upperLeftX, upperLeftY, windowWidth, windowHeight);
    prefsMgr->setProperty(windowFrameRef, "windowRectangle2D", windowRectangle2D);
    QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "windowRectangle2D");
-   log.info(tr("testing prefsProp: ") + prefsProp.toString());
+   log->info(tr("testing prefsProp: ") + prefsProp.toString());
   }
  } //);
 
- log.debug("setCurrentPositionAndSize Position - " + QString::number(upperLeftX) + "," + QString::number(upperLeftY) + " WindowSize - " + QString::number(windowWidth) + "," + QString::number(windowHeight) + " PanelSize - " + QString::number(panelWidth) + "," + QString::number(panelHeight));
- setDirty(true);
+ log->debug("setCurrentPositionAndSize Position - " + QString::number(upperLeftX) + "," + QString::number(upperLeftY) + " WindowSize - " + QString::number(windowWidth) + "," + QString::number(windowHeight) + " PanelSize - " + QString::number(panelWidth) + "," + QString::number(panelHeight));
+ setDirty();
 }
 
 /*public*/ bool LayoutEditor::getOpenDispatcherOnLoad() {
@@ -8177,7 +8679,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 }
 /*public*/ void LayoutEditor::setDirectTurnoutControl(bool boo) {
     useDirectTurnoutControl = boo;
-// TODO:     useDirectTurnoutControlItem.setSelected(useDirectTurnoutControl);
+// TODO:     useDirectTurnoutControlItem->setChecked(useDirectTurnoutControl);
 
 }
 
@@ -8185,27 +8687,74 @@ void LayoutEditor::closeEvent(QCloseEvent *)
     return useDirectTurnoutControl;
 }
 
-/*public*/ void LayoutEditor::setLayoutDimensions(int windowW, int windowH, int x, int y, int panelW, int panelH) {
+
+/*public*/ void LayoutEditor::setLayoutDimensions(int windowWidth, int windowHeight, int x, int y, int panelWidth, int panelHeight, bool merge) {
     upperLeftX = x;
     upperLeftY = y;
-    windowWidth = windowW;
-    windowHeight = windowH;
-    panelWidth = panelW;
-    panelHeight = panelH;
-    setTargetPanelSize(panelWidth, panelHeight);
     setLocation(upperLeftX, upperLeftY);
+
+    this->windowWidth = windowWidth;
+    this->windowHeight = windowHeight;
     setSize(windowWidth, windowHeight);
-    log.debug(
-        "setLayoutDimensions Position - " + QString::number(upperLeftX) + "," + QString::number(upperLeftY) + " windowSize - " + QString::number(windowWidth) + "," + QString::number(windowHeight) + " panelSize - " + QString::number(panelWidth) + "," +
-        QString::number(panelHeight));
+
+    QRectF panelBounds = QRectF(0.0, 0.0, panelWidth, panelHeight);
+
+    if (merge) {
+        panelBounds.united(calculateMinimumLayoutBounds());
+    }
+    setPanelBounds(panelBounds);
 }   //setLayoutDimensions
+
+/*public*/ QRectF LayoutEditor::getPanelBounds() {
+        return QRectF(0.0, 0.0, panelWidth, panelHeight);
+}
+
+/*public*/ void LayoutEditor::setPanelBounds(QRectF newBounds) {
+    // don't let origin go negative
+ newBounds = newBounds.intersected(MathUtil::zeroToInfinityRectangle2D());
+
+    if (getPanelBounds() !=(newBounds)) {
+        panelWidth = (int) newBounds.width();
+        panelHeight = (int) newBounds.height();
+
+        int newTargetWidth = (int) (panelWidth * getZoom());
+        int newTargetHeight = (int) (panelHeight * getZoom());
+
+        QSizeF targetPanelSize = getTargetPanelSize();
+        int oldTargetWidth = (int) targetPanelSize.width();
+        int oldTargetHeight = (int) targetPanelSize.height();
+
+        if ((newTargetWidth != oldTargetWidth) || (newTargetHeight != oldTargetHeight)) {
+            setTargetPanelSize(newTargetWidth, newTargetHeight);
+//            adjustScrollBars();
+        }
+    }
+    log->debug(tr("setPanelBounds((%1, %2, %3, %4)").arg(newBounds.x()).arg(newBounds.y()).arg(newBounds.width()).arg(newBounds.height()));
+}
+
+// this will grow the panel bounds based on items added to the layout
+/*public*/ QRectF LayoutEditor::unionToPanelBounds(/*@Nonnull*/ QRectF bounds) {
+    QRectF result = getPanelBounds();
+#if 0
+    // make room to expand
+    QRectF b = MathUtil.inset(bounds, gridSize1st * gridSize2nd / -2.0);
+
+    // don't let origin go negative
+    b = b.createIntersection(MathUtil.zeroToInfinityRectangle2D);
+
+    result.add(b);
+
+    setPanelBounds(result);
+#endif
+    return result;
+}
 
 /*public*/ void LayoutEditor::setMainlineTrackWidth(int w) {
     mainlineTrackWidth = w;
 }
 
 /*public*/ void LayoutEditor::setSideTrackWidth(int w) {
-    sideTrackWidth = w;
+    sidelineTrackWidth = w;
 }
 /*public*/ void LayoutEditor::setDefaultTrackColor(QString color) {
     defaultTrackColor = ColorUtil::stringToColor(color);
@@ -8275,7 +8824,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (drawGrid != state)
  {
   drawGrid = state;
-  //showGridItem.setSelected(drawGrid);
+  //showGridItem->setChecked(drawGrid);
   ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
   on_actionShow_grid_in_edit_mode_toggled(state);
  }
@@ -8285,7 +8834,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (snapToGridOnAdd != state)
  {
   snapToGridOnAdd = state;
-  //snapToGridOnAddItem.setSelected(snapToGridOnAdd);
+  //snapToGridOnAddItem->setChecked(snapToGridOnAdd);
   ui->actionSnap_to_grid_when_adding->setChecked(snapToGridOnAdd);
   on_actionSnap_to_grid_when_adding_toggled(state);
  }
@@ -8296,7 +8845,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (snapToGridOnMove != state)
  {
   snapToGridOnMove = state;
-  //snapToGridOnMoveItem.setSelected(snapToGridOnMove);
+  //snapToGridOnMoveItem->setChecked(snapToGridOnMove);
   ui->actionSnap_to_grid_when_moving->setChecked(snapToGridOnMove);
   on_actionSnap_to_grid_when_moving_toggled(state);
  }
@@ -8307,10 +8856,49 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (antialiasingOn != state)
  {
   antialiasingOn = state;
-  //antialiasingOnItem.setSelected(antialiasingOn);
+  //antialiasingOnItem->setChecked(antialiasingOn);
   ui->actionEnable_antialiasing_smoother_lines->setChecked(antialiasingOn);
   on_actionEnable_antialiasing_smoother_lines_toggled(state);
  }
+}
+
+
+//
+//highlight the block selected by the specified combo Box
+//
+/*private*/ bool LayoutEditor::highlightBlockInComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox) {
+    Block* block = nullptr;
+    if (inComboBox != nullptr) {
+        block = (Block*) inComboBox->getNamedBean();
+    }
+    return highlightBlock(block);
+}
+
+/**
+ * highlight the specified block
+ *
+ * @param inBlock the block
+ * @return true if block was highlighted
+ */
+//@SuppressWarnings("unchecked") // Annotate the List<Block> l assignment
+                               // First, make JmriBeanComboBox generic on <E extends NamedBean> (and manager) to fix this.
+/*public*/ bool LayoutEditor::highlightBlock(/*@Nullable*/ Block* inBlock) {
+    bool result = false; //assume failure (pessimist!)
+
+   ui-> blockIDComboBox->setSelectedBean(inBlock);
+
+    LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
+    QSet<NamedBean*> l = ui->blockIDComboBox->getManager()->getNamedBeanSet();
+    for (NamedBean* nb : l) {
+        Block* b = (Block*) nb;
+        LayoutBlock* lb = lbm->getLayoutBlock(b);
+        if (lb != nullptr) {
+            bool enable = ((inBlock != nullptr) && b ==(inBlock));
+            lb->setUseExtraColor(enable);
+            result |= enable;
+        }
+    }
+    return result;
 }
 
 /*public*/ void LayoutEditor::setTurnoutCircles(bool state)
@@ -8318,7 +8906,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (turnoutCirclesWithoutEditMode != state)
  {
   turnoutCirclesWithoutEditMode = state;
-  //turnoutCirclesOnItem.setSelected(turnoutCirclesWithoutEditMode);
+  //turnoutCirclesOnItem->setChecked(turnoutCirclesWithoutEditMode);
   ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
   on_actionShow_turnout_circles_toggled(state);
  }
@@ -8430,7 +9018,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
   }
  }
  auxTools->initializeBlockConnectivity();
- log.debug("Initializing Block Connectivity for " + layoutName);
+ log->debug("Initializing Block Connectivity for " + layoutName);
  // reset the panel changed bit
  resetDirty();
 }
@@ -8531,3 +9119,116 @@ void LayoutEditor::on_okMove_clicked()
 {
  return "jmri.jmrit.display.layoutEditor.LayoutEditor";
 }
+
+/*============================================*\
+|* LayoutTrackDrawingOptions accessor methods *|
+\*============================================*/
+
+//@Nonnull
+/*public*/ LayoutTrackDrawingOptions* LayoutEditor::getLayoutTrackDrawingOptions() {
+    if (layoutTrackDrawingOptions == nullptr) {
+        layoutTrackDrawingOptions = new LayoutTrackDrawingOptions(getLayoutName());
+        // integrate LayoutEditor drawing options with previous drawing options
+        layoutTrackDrawingOptions->setMainBlockLineWidth((int) mainlineTrackWidth);
+        layoutTrackDrawingOptions->setSideBlockLineWidth((int) sidelineTrackWidth);
+        layoutTrackDrawingOptions->setMainRailWidth((int) mainlineTrackWidth);
+        layoutTrackDrawingOptions->setSideRailWidth((int) sidelineTrackWidth);
+        layoutTrackDrawingOptions->setMainRailColor(defaultTrackColor);
+        layoutTrackDrawingOptions->setSideRailColor(defaultTrackColor);
+    }
+    return layoutTrackDrawingOptions;
+}
+
+/*public*/ void LayoutEditor::setLayoutTrackDrawingOptions(LayoutTrackDrawingOptions* ltdo) {
+    layoutTrackDrawingOptions = ltdo;
+
+    // integrate LayoutEditor drawing options with previous drawing options
+    mainlineTrackWidth = layoutTrackDrawingOptions->getMainBlockLineWidth();
+    sidelineTrackWidth = layoutTrackDrawingOptions->getSideBlockLineWidth();
+    defaultTrackColor = layoutTrackDrawingOptions->getMainRailColor();
+    redrawPanel();
+}
+
+#if 0 // not necessary; QGraphicsView does this!
+/*private*/ void LayoutEditor::adjustScrollBars() {
+   QScrollArea* scrollPane = getPanelScrollPane();
+   //JViewport viewPort = scrollPane.getViewport();
+   //Dimension viewSize = viewPort.getViewSize();
+   QSize viewSize = scrollPane->size();
+   QSize panelSize = _targetPanel->size();
+
+   if ((panelWidth != (int) panelSize.width())
+           || (panelHeight != (int) panelSize.height())) {
+       log->debug(tr("viewSize: %1, %2, panelSize: %3, %4, panelWidth: %5, panelHeight: %6").arg(
+               viewSize.x()).arg(viewSize.y()).arg(panelSize.x()).arg(panelSize.y()).arg(panelWidth).arg(panelHeight));
+   }
+
+   QScrollBar* horScroll = scrollPane->horizontalScrollBar();
+   int w = (int) qMax((panelWidth * getZoom()) - viewSize.width(), 0.0);
+   int x = qMin(horScroll->value(), w);
+   horScroll->setMaximum(w);
+   horScroll->setValue(x);
+
+   QScrollBar* vertScroll = scrollPane->verticalScrollBar();
+   int h = (int) qMax((panelHeight * getZoom()) - viewSize.height(), 0.0);
+   int y = qMin(vertScroll->value(), h);
+   vertScroll->setMaximum(h);
+   vertScroll->setValue(y);
+
+   log->debug(tr("w: %1, x: %2, h: %3, y: %4").arg(w).arg(x).arg(h).arg(y));
+}
+#endif
+/**
+ * @return the point {0, 0}
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF LayoutEditor::zeroPoint2D() {
+    return QPointF(0, 0);
+}
+
+void LayoutEditor::onActionBoth_scrollbars()
+{
+ editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+ editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+}
+void LayoutEditor::onActionNo_scrollbars()
+{
+ editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+ editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+}
+
+void LayoutEditor::onActionHorizontal_scrollbars()
+{
+ editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+ editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+}
+
+void LayoutEditor::onActionVertical_scrollbars()
+{
+ editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+ editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+}
+
+//    protected void rename(String inFrom, String inTo) {
+//
+//    }
+//@Override
+/*public*/ void LayoutEditor::dispose() {
+    if (sensorFrame != nullptr) {
+        sensorFrame->dispose();
+        sensorFrame = nullptr;
+    }
+    if (signalFrame != nullptr) {
+        signalFrame->dispose();
+        signalFrame = nullptr;
+    }
+    if (iconFrame != nullptr) {
+        iconFrame->dispose();
+        iconFrame = nullptr;
+    }
+    Editor::dispose();
+}
+
+//initialize logging
+    /*private*/ /*transient*/ /*final*/ /*static*/ Logger* LayoutEditor::log
+            = LoggerFactory::getLogger("LayoutEditor");

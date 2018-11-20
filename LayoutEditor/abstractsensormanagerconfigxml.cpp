@@ -179,7 +179,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   QString sysName = getSystemName(sensorList.at(i).toElement());
   if (sysName == NULL)
   {
-   creationErrorEncountered (Level::_ERROR,
+   creationErrorEncountered (
                                   "Unexpected missing system name while loading sensors",
                                   NULL,NULL,NULL);
    result = false;
@@ -198,7 +198,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
 
   if (s==NULL)
   {
-   creationErrorEncountered (Level::_ERROR,
+   creationErrorEncountered (
                                   "Could not create sensor",
                                   sysName,userName,NULL);
    result = false;

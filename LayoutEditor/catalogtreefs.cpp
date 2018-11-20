@@ -26,7 +26,7 @@
  this->systemName = sysName;
  this->userName = userName;
  parameters = new QMap<QString, QString>();
- log->setDebugEnabled(true);
+ log->setDebugEnabled(false);
 }
 
 /*public*/ void CatalogTreeFS::setFilter(QStringList filter)

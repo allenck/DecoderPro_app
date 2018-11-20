@@ -6,26 +6,7 @@
 #include <QSet>
 #include "javaqt_global.h"
 #include "exceptions.h"
-
-class PropertyVetoException : public Exception
-{
- PropertyChangeEvent* evt;
-public:
- PropertyVetoException(QString msg, PropertyChangeEvent* evt) : Exception(msg)
- {
-  this->msg = msg;
-  this->evt = evt;
- }
- /**
-  * Gets the vetoed <code>PropertyChangeEvent</code>.
-  *
-  * @return A PropertyChangeEvent describing the vetoed change.
-  */
- /*public*/ PropertyChangeEvent* getPropertyChangeEvent() {
-     return evt;
- }
-};
-
+#include "propertyvetoexception.h"
 
 class JAVAQTSHARED_EXPORT AbstractNamedBean :  public NamedBean
 {

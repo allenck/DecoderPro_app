@@ -774,7 +774,28 @@
  double y = center.y() - dispB.y();
  return  QPointF(x,y);
 }
+/**
+ * @return the bounds of this turnout
+ */
+//@Override
+/*public*/ QRectF LayoutTurnout::getBounds() {
+// QRectF result;
 
+// QPointF pointA = getCoordsA();
+// result = QRectF(pointA.x(), pointA.y(), 0, 0);
+// //result.united(getCoordsB());
+// result.adjust(0,0,getCoordsB().x(),getCoordsB().y());
+// result.united(getCoordsC());
+// if ((getTurnoutType() == DOUBLE_XOVER)
+//     || (getTurnoutType() == LH_XOVER)
+//     || (getTurnoutType() == RH_XOVER)
+//     || (getTurnoutType() == SINGLE_SLIP)
+//     || (getTurnoutType() == DOUBLE_SLIP)) {
+//  result.united(getCoordsD());
+// }
+// return result;
+ return item->boundingRect();
+}
 // updates connectivity for blocks assigned to this turnout and connected track segments
 /*private*/ void LayoutTurnout::updateBlockInfo()
 {

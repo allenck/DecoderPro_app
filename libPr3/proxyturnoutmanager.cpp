@@ -7,7 +7,8 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     : AbstractProxyManager(parent)
 {
  setObjectName("ProxyTurnoutManager");
- registerSelf();
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
 }
 /**
  * Implementation of a TurnoutManager that can serves as a proxy
@@ -32,9 +33,36 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * Revise superclass behavior: support TurnoutOperations
  */
 //@Override
-/*public*/ void ProxyTurnoutManager::addManager(Manager* m) {
+/*public*/ void ProxyTurnoutManager::addManager(Manager* m)
+{
+    // check for already present
+    for (Manager* check : mgrs)
+    {
+     if (m == check) { // can't use contains(..) because of Comparator.equals is on the prefix
+         // already present, complain and skip
+         log.warn(tr("Manager already present: %1").arg(m->metaObject()->className())); // NOI18N
+         return;
+     }
+    }
     AbstractProxyManager::addManager(m);
-    TurnoutOperationManager::getInstance()->loadOperationTypes();
+
+    //TurnoutOperationManager::getInstance()->loadOperationTypes();
+    if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
+
+//    propertyVetoListenerList.stream().forEach((l) -> {
+//        m.addVetoableChangeListener(l);
+//    });
+//    propertyListenerList.stream().forEach((l) -> {
+//        m.addPropertyChangeListener(l);
+//    });
+
+//    m.addDataListener(this);
+    updateOrderList();
+//    updateNamedBeanSet();
+
+    if (log.isDebugEnabled()) {
+        log.debug(QString("added manager ") + m->metaObject()->className());
+    }
 }
 
 /**
@@ -107,16 +135,16 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 /*public*/ Turnout* ProxyTurnoutManager::newTurnout(QString systemName, QString userName) {
     return (Turnout*) newNamedBean(systemName, userName);
 }
-/*public*/ NamedBean* ProxyTurnoutManager::newNamedBean(QString systemName, QString userName) {
-    // if the systemName is specified, find that system
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return makeBean(i, systemName, userName);
+///*public*/ NamedBean* ProxyTurnoutManager::newNamedBean(QString systemName, QString userName) {
+//    // if the systemName is specified, find that system
+//    int i = matchTentative(systemName);
+//    if (i >= 0)
+//        return makeBean(i, systemName, userName);
 
-    // did not find a manager, allow it to default to the primary
-    log.debug("Did not find manager for system name "+systemName+", delegate to primary");
-    return makeBean(1, systemName, userName);
-}
+//    // did not find a manager, allow it to default to the primary
+//    log.debug("Did not find manager for system name "+systemName+", delegate to primary");
+//    return makeBean(1, systemName, userName);
+//}
 
 /**
  * Get text to be used for the Turnout.CLOSED state in user communication.

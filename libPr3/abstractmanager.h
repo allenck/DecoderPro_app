@@ -5,7 +5,7 @@
 #include "manager.h"
 //#include "propertychangesupport.h"
 #include "javaqt_global.h"
-#include "exceptions.h"
+#include "propertyvetoexception.h"
 
 /**
  * Abstract partial implementation for all Manager-type classes.
@@ -17,6 +17,7 @@
  * @version	$Revision: 19272 $
  */
 //class Manager;
+class VetoableChangeSupport;
 class PropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyChangeEvent;
@@ -83,19 +84,27 @@ public:
      * By default, register this manager to store as configuration
      * information.  Override to change that.
      **/
-    void registerSelf();
-    /*public*/ QList<NamedBean*>* getNamedBeanList();
+    QT_DEPRECATED /*public*/ QList<NamedBean*>* getNamedBeanList();
+    /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet();
+
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName); //throws NamedBean.BadSystemNameException
+    VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
+    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l);
+    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
 
 signals:
     void beanDeleted(NamedBean* s);
     void beanCreated(NamedBean* s);
     void propertyChange(PropertyChangeEvent* e);
+    void vetoablePropertyChange(PropertyChangeEvent *evt);
 
 public slots:
     virtual void on_propertyChange(PropertyChangeEvent* e);
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt); //throw PropertyVetoException
+    /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt); //throw PropertyVetoException
+protected:
+    /*protected*/void registerSelf();
+
 private:
 friend class SectionTableDataModel;
 friend class ReporterPickModel;
@@ -125,6 +134,8 @@ QObject* getInstanceBySystemName(QString systemName);
  */
 QObject* getInstanceByUserName(QString userName);
 void firePropertyChange(QString p, QVariant old, QVariant n);
+/*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) /*throws PropertyVetoException*/;
+
 protected slots:
 
 friend class AbstractProxyManager;

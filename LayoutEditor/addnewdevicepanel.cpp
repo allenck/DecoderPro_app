@@ -85,15 +85,34 @@ void AddNewDevicePanel::sysName_textEdited(QString txt)
  if (txt.length() > 0)
  {
   ok->setEnabled(true);
-  //ok.setToolTipText(null);
+  ok->setToolTip("");
  }
 }
 
 void AddNewDevicePanel::reset() {
     ok->setEnabled(false);
-    ok->setToolTip(tr("ToolTipWillActivate"));
+    ok->setToolTip(tr("This button will be active after you type text into the text box"));
 }
+/**
+ * Activate the OK button without user key activity.
+ */
+/*public*/ void AddNewDevicePanel::setOK() {
+    ok->setEnabled(true);
+    ok->setToolTip("");
+}
+
+/**
+ * Lock the System Name JTextField.
+ */
+/*public*/ void AddNewDevicePanel::setSystemNameFieldIneditable() {
+    sysName->setEnabled(false);
+//    sysName.setBorder(null);
+//    sysName->setDisabledTextColor(QColor(Qt::black));
+}
+
 /*public*/ void AddNewDevicePanel::addLabels(QString labelSystemName, QString labelUserName) {
         sysNameLabel->setText(labelSystemName);
         userNameLabel->setText(labelUserName);
-    }
+}
+
+

@@ -16,12 +16,13 @@ public:
  /*public*/ void setOperationsFileName(QString name) ;
  /*public*/ QString getOperationsFileName() ;
  /*public*/ void dispose();
+ Q_INVOKABLE /*public*/ void initialize();
 
 signals:
 
 public slots:
 private:
- /*private*/ static RouteManagerXml* _instance;// = null;
+// /*private*/ static RouteManagerXml* _instance;// = null;
  Logger* log;
  /*private*/ QString operationsFileName;// = "OperationsRouteRoster.xml"; // NOI18N
 

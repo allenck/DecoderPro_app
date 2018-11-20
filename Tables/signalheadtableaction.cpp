@@ -661,7 +661,7 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
   QMenuBar* menuBar = new QMenuBar();
   addFrame->setMenuBar(menuBar);
   menuBar->addMenu(addWindowMenu);
-  connect(addWindowMenu, SIGNAL(aboutToShow()), this, SLOT(on_addMenuWindow_aboutToShow()));
+  //connect(addWindowMenu, SIGNAL(aboutToShow()), this, SLOT(on_addMenuWindow_aboutToShow()));
   //PanelMenu::instance()->addEditorPanel((Editor*)this);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.SignalAddEdit", true);
   //addFrame->getContentPane().setLayout(new BorderLayout());
@@ -1629,7 +1629,7 @@ void SignalHeadTableAction::makeEditSignalWindow()
   editFrame->setMenuBar(menuBar);
   editWindowMenu = new QMenu("Window");
   menuBar->addMenu(editWindowMenu);
-  connect(editWindowMenu, SIGNAL(aboutToShow()), this, SLOT(on_editMenuWindow_aboutToShow()));
+  //connect(editWindowMenu, SIGNAL(aboutToShow()), this, SLOT(on_editMenuWindow_aboutToShow()));
   QFont font = QFont();
   font.setPointSize(8);
   editFrame->setFont(font);
@@ -2455,16 +2455,16 @@ void ukAspectChange(boolean edit){
 /* @(#)SignalHeadTableAction.java */
 
 
-void SignalHeadTableAction::on_editMenuWindow_aboutToShow()
-{
- editWindowMenu->clear();
- PanelMenu::instance()->updatePanelMenu(editWindowMenu);
-}
-void SignalHeadTableAction::on_addMenuWindow_aboutToShow()
-{
- addWindowMenu->clear();
- PanelMenu::instance()->updatePanelMenu(addWindowMenu);
-}
+//void SignalHeadTableAction::on_editMenuWindow_aboutToShow()
+//{
+// editWindowMenu->clear();
+// PanelMenu::instance()->updatePanelMenu(editWindowMenu);
+//}
+//void SignalHeadTableAction::on_addMenuWindow_aboutToShow()
+//{
+// addWindowMenu->clear();
+// PanelMenu::instance()->updatePanelMenu(addWindowMenu);
+//}
 /**
  * Sets whether the {@code Action} is enabled. The default is {@code true}.
  *

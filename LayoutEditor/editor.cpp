@@ -66,6 +66,9 @@
 #include "border.h"
 #include "borderfactory.h"
 #include "compoundborder.h"
+#include "signalheadmanager.h"
+#include "signalmastmanager.h"
+#include "joptionpane.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -157,10 +160,13 @@ void Editor::commonInit()
  _scrollState = SCROLL_NONE;
  _editable = true;
  _selectRect = QRect();
- _selectRectItemGroup = NULL;
+ _selectRectItemGroup = nullptr;
  _highlightcomponent = QRect();
  _dragging = false;
  _selectionGroup = new QList<Positionable*>();  // items gathered inside fence
+ _toolTip = "";
+ _selectRectStroke = Qt::DashLine;
+
 
  xLoc = 0;     // x coord of selected Positionable
  yLoc = 0;     // y coord of selected Positionable
@@ -169,18 +175,21 @@ void Editor::commonInit()
  showCloseInfoMessage = true;	//display info message when closing panel
  _paintScale = 1.0;   // scale for _targetPanel drawing
  _targetFrame = (JFrame*)this;
+ _targetPanel = nullptr;
+ editScene = nullptr;
+ _targetPanel = nullptr;
+ editPanel = nullptr;
  _highlightColor =  QColor(204, 207, 88);
  _selectGroupColor =  QColor(204, 207, 88);
  _selectRectColor = QColor(Qt::red);
  _selectRectStroke = Qt::DashLine;
  _selectRectItemGroup = new QGraphicsItemGroup();
- editPanel = NULL;
  frameLocationX = 0;
  frameLocationY = 0;
  _iconEditorFrame = new QHash <QString, JFrameItem*>();
  _spinCols = new SpinnerNumberModel(3,1,100,1);
   panelMenuIsVisible = true;
-  editors->append(this);
+
 }
 
 /*public*/ Editor::Editor(QString name, bool saveSize, bool savePosition, QWidget* parent) : JmriJFrame("<Editor>", parent)
@@ -195,6 +204,19 @@ void Editor::commonInit()
  _debug = log->isDebugEnabled();
  _defaultToolTip = /*new ToolTip(NULL, 0, 0)*/ "";
  setVisible(false);
+ static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ //connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ //connect(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ //connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ InstanceManager::memoryManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ //connect(InstanceManager::memoryManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ //connect(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ editors->append(this);
 }
 
 /*public*/ Editor::Editor(QString name, QWidget* parent) : JmriJFrame(name, parent)
@@ -211,6 +233,15 @@ void Editor::commonInit()
  this->savePosition = true;
 }
 
+/**
+ * Set <strong>white</strong> as the default background color for panels created using the <strong>New Panel</strong> menu item.
+ * Overriden by LE to use a different default background color and set other initial defaults.
+ */
+/*public*/ void Editor::newPanelDefaults() {
+ if(editPanel !=nullptr)
+    setBackgroundColor(QColor(Qt::white));
+}
+
 /*public*/ void Editor::loadFailed()
 {
  _loadFailed = true;
@@ -220,9 +251,9 @@ void Editor::commonInit()
 */
 /*public*/ NamedIcon* Editor::loadFailed(QString msg, QString url)
 {
- if (_debug) log->debug("loadFailed _ignore= "+_ignore);
+ log->debug("loadFailed _ignore= "+QString(_ignore?"true":"false"));
  QString goodUrl = _urlMap->value(url);
- if (goodUrl!=NULL)
+ if (goodUrl!="")
  {
   return NamedIcon::getIconByName(goodUrl);
  }
@@ -231,29 +262,29 @@ void Editor::commonInit()
   _loadFailed = true;
   return new NamedIcon(url, url);
  }
- _newIcon = NULL;
+ _newIcon = nullptr;
  _delete = false;
 
- new UrlErrorDialog(msg, url);
+ (new UrlErrorDialog(msg, url))->setVisible(true);
 
 if (_delete)
 {
- if (_debug) log->debug("loadFailed _delete= "+_delete);
-  return NULL;
+ log->debug("loadFailed _delete= "+_delete);
+  return nullptr;
 }
-if (_newIcon==NULL)
+if (_newIcon==nullptr)
 {
  _loadFailed = true;
  _newIcon =new NamedIcon(url, url);
 }
-if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
+ log->debug(QString("loadFailed icon nullptr= ")+ QString(_newIcon==nullptr?"true":"false"));
  return _newIcon;
 }
 
 
 /*public*/ void Editor::disposeLoadData()
 {
- _urlMap = NULL;
+ _urlMap = nullptr;
 }
 
 /*public*/ bool Editor::loadOK()
@@ -277,15 +308,49 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 * An Editor may or may not choose to use 'this' as its frame or
 * the interior class 'TargetPane' for its targetPanel
 */
-/*protected*/ void Editor::setTargetPanel(EditScene* targetPanel, JmriJFrame* frame) {
-    if (targetPanel == NULL){
-       // _targetPanel = new TargetPane();
-        _targetPanel = editScene = new EditScene();
-    } else {
+/*protected*/ void Editor::setTargetPanel(JLayeredPane* targetPanel, JmriJFrame* frame) {
         _targetPanel = targetPanel;
+#if 0
+    // If on a headless system, set heavyweight components to null
+    // and don't attach mouse and keyboard listeners to the panel
+    if (GraphicsEnvironment.isHeadless()) {
+        _panelScrollPane = null;
+        _targetFrame = null;
+        return;
     }
-    _targetPanel->setObjectName("editScene");
-    if (frame == NULL) {
+#endif
+    if (frame == nullptr) {
+        _targetFrame = this;
+    } else {
+        _targetFrame = frame;
+    }
+    _targetFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
+    if(targetPanel != nullptr);
+    _panelScrollPane = new QScrollArea(_targetPanel);
+    QWidget* contentPane = frame->getContentPane();
+    if(contentPane->layout() == nullptr)
+     QVBoxLayout* contentPaneLayout = new QVBoxLayout(contentPane);
+    contentPane->layout()->addWidget(_panelScrollPane);
+    _panelScrollPane->setWidget(targetPanel);
+#if 0
+    _targetFrame.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            targetWindowClosingEvent(e);
+        }
+    });
+    _targetPanel.addMouseListener(this);
+    _targetPanel.addMouseMotionListener(this);
+    _targetPanel.setFocusable(true);
+    _targetPanel.addKeyListener(this);
+#endif
+    _targetFrame->pack();
+}
+
+/*protected*/ void Editor::setTargetPanel(EditScene* targetPanel, JmriJFrame* frame) {
+         editScene = new EditScene();
+    editScene->setObjectName("editScene");
+    if (frame == nullptr) {
         _targetFrame = this;
     } else {
         _targetFrame = frame;
@@ -296,18 +361,20 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 //    contentPane->layout()->addWidget(_panelScrollPane);
 
     //_targetFrame->centralWidget()->layout()->addWidget(_targetPanel);
-    if(_targetFrame->centralWidget() == NULL)
+    if(_targetFrame->centralWidget() == nullptr)
     {
         QWidget* centralWidget = new QWidget();
         centralWidget->setLayout(new QVBoxLayout());
+        _targetFrame->setCentralWidget(centralWidget);
     }
+
     editPanel = new QGraphicsView(_targetFrame->centralWidget());
     editPanel->setObjectName("graphicsView");
     _targetFrame->centralWidget()->setObjectName("centralWidget");
     _targetFrame->centralWidget()->layout()->addWidget(editPanel);
     editPanel->setMouseTracking(true);
     editPanel->setRenderHint(QPainter::Antialiasing);
-    editPanel->setScene(_targetPanel);
+    editPanel->setScene(editScene);
     setBackgroundColor(defaultBackgroundColor);
 
 //    _targetFrame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -315,31 +382,40 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 //            targetWindowClosingEvent(e);
 //        }
 //    });
+    _targetFrame->addWindowListener(new TFWindowListener(this));
 //    _targetPanel.addMouseListener(this);
 //    _targetPanel.addMouseMotionListener(this);
 //    _targetPanel.setFocusable(true);
 //    _targetPanel.addKeyListener(this);
     _targetFrame->pack();
 }
+
+Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = editor;}
+/*public*/ void Editor::TFWindowListener::windowClosing(QCloseEvent* e) {
+    editor->targetWindowClosingEvent(e);
+}
+
 #endif
 /*protected*/ void Editor::setTargetPanelSize(int w, int h) {
         if (_debug) log->debug("setTargetPanelSize now w="+QString::number(w)+", h="+QString::number(h));
     //_targetPanel->setSize(w, h);
-    _targetPanel->setSceneRect(QRectF(0,0,w,h));
+        if(editScene == nullptr) editScene = new EditScene();
+    editScene->setSceneRect(QRectF(0,0,w,h));
     //_targetPanel.invalidate();
     editPanel->resize(w,h);
 }
 
 /*protected*/ QSizeF Editor::getTargetPanelSize() {
-    return _targetPanel->sceneRect().size();
+    return editScene->sceneRect().size();
 }
 
 /*public*/  QGraphicsScene* Editor::getTargetPanel() {
-    return _targetPanel;
+    //return editPanel->scene();
+ return editScene;
 }
-///*protected*/ const JScrollPane* Editor::getPanelScrollPane() {
-//    return _panelScrollPane;
-//}
+/*public*/ const QScrollArea* Editor::getPanelScrollPane() {
+    return _panelScrollPane;
+}
 
 /*public*/  JFrame* Editor::getTargetFrame() {
     return _targetFrame;
@@ -347,7 +423,11 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 
 /*public*/ QColor Editor::getBackgroundColor()
 {
- QBrush b = editPanel->backgroundBrush();
+ QBrush b;
+ if(editPanel)
+  b = editPanel->backgroundBrush();
+ else
+  b= _targetPanel->palette().brush(QWidget::backgroundRole());
  if(b == Qt::NoBrush)
   return QColor(Qt::white);
  QColor c = b.color();
@@ -356,7 +436,8 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 
 /*public*/ void Editor::setBackgroundColor(QColor color)
 {
- editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
+ if(editPanel)
+  editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
 }
 
 /*public*/ void Editor::clearBackgroundColor(){
@@ -390,7 +471,8 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 //        _tooltipTimer.setRepeats(false);
 //        _tooltipTimer.start();
 //    }
- _toolTip = tt;
+ //_toolTip = tt;
+ QWidget::setToolTip(tt);
 }
 
 #if 0
@@ -463,7 +545,7 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 }
 /*protected*/ void Editor::deselectSelectionGroup()
 {
- if (_selectionGroup == NULL)
+ if (_selectionGroup == nullptr)
  {
   return;
  }
@@ -607,7 +689,8 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
         _contents->at(i)->setShowTooltip(state);
     }
 }
-/*public*/ bool Editor::showTooltip() {
+
+/*public*/ bool Editor::showToolTip() {
     return _showTooltip;
 }
 
@@ -671,7 +754,8 @@ if (_debug) log->debug("loadFailed icon NULL= "+(_newIcon==NULL));
 }
 #if 1
 /*protected*/ void Editor::setScroll(int state) {
-    if (_debug) log->debug("setScroll "+state);
+ if(editPanel == nullptr) return; // TODO: handle for when JLayeredPane is used
+    if (_debug) log->debug("setScroll "+ QString::number(state));
     switch (state) {
         case SCROLL_NONE:
             editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
@@ -743,7 +827,7 @@ void Editor::closeEvent(QCloseEvent */*e*/)
  if (showCloseInfoMessage)
  {
   QString name = "Panel";
-  QString message = NULL;
+  QString message = nullptr;
   if(save)
   {
 //   message = tr("Reminder1")+" "+tr("Reminder2")+
@@ -754,43 +838,53 @@ void Editor::closeEvent(QCloseEvent */*e*/)
   else
   {
    //message = tr("PanelCloseQuestion") +"\n" + tr("PanelCloseHelp");
-   if(this->window() != NULL)
+   if(this->window() != nullptr)
     name = this->window()->windowTitle();
    message = tr("Do you want to hide or delete \"%1\"?\nUse Panels->Show Panel to display hidden panels.").arg(name);
   }
-   QMessageBox* msg = new QMessageBox(QMessageBox::Question,tr("Reminder"), message,QMessageBox::NoButton, _targetFrame);
-  QPushButton* hideButton = new QPushButton(tr("HidePanel"));
-  msg->addButton(hideButton,QMessageBox::YesRole);
-  QPushButton* deletePanelButton = new QPushButton(tr("Delete Panel"));
-  msg->addButton(deletePanelButton, QMessageBox::NoRole);
-  QPushButton* dontShowButton = new QPushButton(tr("Don't show this again"));
-  msg->addButton(dontShowButton, QMessageBox::ActionRole);
-  msg->exec();
-  if(msg->clickedButton() == hideButton)
+  if (_targetFrame->window() != nullptr)
   {
-   _targetFrame->setVisible(false);   // doesn't remove the editor!
-   PanelMenu::instance()->updateEditorPanel(this);
+   name = ((JFrame*) _targetFrame->window())->getTitle();
   }
-  else if(msg->clickedButton() == deletePanelButton)
+  if (!static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->isShuttingDown())
   {
-   if (deletePanel() )
-   { // disposes everything
-    dispose(true);
-   }
-  }
-  else if(msg->clickedButton() == dontShowButton)
-  {
-   showCloseInfoMessage = false;
-   _targetFrame->setVisible(false);   // doesn't remove the editor!
-   PanelMenu::instance()->updateEditorPanel(this);
-  }
-  else
-  {
-   _targetFrame->setVisible(false);   // doesn't remove the editor!
-   PanelMenu::instance()->updateEditorPanel(this);
-  }
+    //new Object[]{Bundle.getMessage("ButtonHide"), Bundle.getMessage("ButtonDeletePanel"),
+   //Bundle.getMessage("ButtonDontShow")}, Bundle.getMessage("ButtonHide"));
+   QVariantList vl = QVariantList() << tr("Hide Panel") << tr("Delete Panel") << tr("Don't show this again");
+   int selectedValue = JOptionPane::showOptionDialog(_targetFrame,
+             message, tr("Reminder"),
+             JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE,
+             QIcon(), vl, tr("Hide Panel"));
+     switch (selectedValue) {
+         case 0:
+             _targetFrame->setVisible(false);   // doesn't remove the editor!
+             static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->updateEditorPanel(this);
+             break;
+         case 1:
+             if (deletePanel()) { // disposes everything
+                 dispose(true);
+             }
+             break;
+         case 2:
+             showCloseInfoMessage = false;
+             _targetFrame->setVisible(false);   // doesn't remove the editor!
+             static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->updateEditorPanel(this);
+             break;
+         default:    // dialog closed - do nothing
+             _targetFrame->setDefaultCloseOperation(JDialog::DO_NOTHING_ON_CLOSE);
+     }
+     log->debug(tr("targetWindowClosing: selectedValue= %1").arg(selectedValue));
+    } else {
+        _targetFrame->setVisible(false);
+    }
+ }
+ else
+ {
+  _targetFrame->setVisible(false);   // doesn't remove the editor!
+  static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->updateEditorPanel(this);
  }
 }
+
 /**
  * Called from TargetPanel's paint method for additional drawing by editor
  * view
@@ -809,10 +903,10 @@ JFrame* frame = getTargetFrame();
 //QColor background = getBackgroundColor();
 //    try {
  Editor* ed = (Editor*)Class::forName(className); //.newInstance();
- if(ed == NULL)
+ if(ed == nullptr)
  {
   log->error(tr("Failed to load editor %1").arg(className));
-  return NULL;
+  return nullptr;
  }
 
  ed->setName(getName());
@@ -829,7 +923,7 @@ JFrame* frame = getTargetFrame();
  ed->setAllEditable(isEditable());
  ed->setAllPositionable(allPositionable());
  //ed.setShowCoordinates(showCoordinates());
- ed->setAllShowTooltip(showTooltip());
+ ed->setAllShowTooltip(showToolTip());
  ed->setAllControlling(allControlling());
  ed->setShowHidden(isVisible());
  ed->setPanelMenu(frame->menuBar()->isVisible());
@@ -869,7 +963,7 @@ JFrame* frame = getTargetFrame();
  //JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(tr("LockPosition"));
  //lockItem.setSelected(!p.isPositionable());
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
- if(pl == NULL) return;
+ if(pl == nullptr) return;
  QAction* lockItemAction = new QAction(tr("Lock Position"), this);
  lockItemAction->setCheckable(true);
  lockItemAction->setChecked(!((PositionableLabel*)p)->isPositionable());
@@ -905,7 +999,7 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
 {
     //if (showCoordinates()) {
  QMenu* edit = new QMenu(tr("Edit Location"));
- if ((/*p instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(p)!= NULL) && (((MemoryIcon*)p)->getPopupUtility()->getFixedWidth()==0))
+ if ((/*p instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(p)!= nullptr) && (((MemoryIcon*)p)->getPopupUtility()->getFixedWidth()==0))
  {
   MemoryIcon* pm = (MemoryIcon*) p;
   edit->addAction(new QAction("x= " + QString("%1").arg(pm->getOriginalX()),this));
@@ -964,7 +1058,7 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
 {
  QMenu* edit = new QMenu(tr("Edit Level"));
  PositionableLabel* ps = qobject_cast<PositionableLabel*>(p);
- if(ps != NULL)
+ if(ps != nullptr)
   edit->addAction(new QAction(tr("level= ") + QString("%1").arg(ps->getDisplayLevel()),this));
  edit->addAction(CoordinateEdit::getLevelEditAction(p, this));
  popup->addMenu(edit);
@@ -975,10 +1069,10 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
 */
 /*public*/ void Editor::setHiddenMenu(Positionable* p, QMenu* popup)
 {
- if(qobject_cast<PositionableLabel*>(p)!= NULL)
+ if(qobject_cast<PositionableLabel*>(p)!= nullptr)
  {
     PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
-    Q_ASSERT(pl != NULL);
+    Q_ASSERT(pl != nullptr);
    //  if (p.getDisplayLevel() == BKG || p instanceof PositionableShape) {
    //      return;
    //  }
@@ -1025,7 +1119,7 @@ void Editor::On_actionHidden_toggled(bool bState) // [slot]
  QMenu* edit = new QMenu(tr("Edit Tooltip"));
  QAction* showTooltipItem = new QAction(tr("Show Tooltip"), this);
  showTooltipItem->setCheckable(true);
- showTooltipItem->setChecked(p->showTooltip());
+ showTooltipItem->setChecked(p->showToolTip());
 // showTooltipItem.addActionListener(new ActionListener(){
 //     Positionable comp;
 //     JCheckBoxMenuItem checkBox;
@@ -1038,7 +1132,7 @@ void Editor::On_actionHidden_toggled(bool bState) // [slot]
 //         return this;
 //     }
 // }.init(p, showTooltipItem));
- ShowToolTipActionListener* showToolTipActionListener = new ShowToolTipActionListener( p,  p->showTooltip(), this);
+ ShowToolTipActionListener* showToolTipActionListener = new ShowToolTipActionListener( p,  p->showToolTip(), this);
  connect(showTooltipItem, SIGNAL(triggered()), showToolTipActionListener, SLOT(actionPerformed()));
 
  edit->addAction(showTooltipItem);
@@ -1145,20 +1239,20 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 /*protected*/ LocoIcon* Editor::selectLoco(QString rosterEntryTitle)
 {
  if (""==(rosterEntryTitle))
-        return NULL;
+        return nullptr;
     return selectLoco(Roster::instance()->entryFromTitle(rosterEntryTitle));
 }
 
 /*protected*/ LocoIcon* Editor::selectLoco(RosterEntry* entry) {
-    LocoIcon* l = NULL;
-    if (entry==NULL) {
-        return NULL;
+    LocoIcon* l = nullptr;
+    if (entry==nullptr) {
+        return nullptr;
     }
     // try getting road number, else use DCC address
     QString rn = entry->getRoadNumber();
     if ((rn.isNull()) || rn.isEmpty())
         rn = entry->getDccAddress();
-    if (rn != NULL){
+    if (rn != nullptr){
         l = addLocoIcon(rn);
         l->setRosterEntry(entry);
     }
@@ -1203,7 +1297,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
         locoFrame.setLocation(_targetFrame.getLocation());
     locoFrame.setVisible(true);
 #endif
-    InputDialog* dlg = new InputDialog("Enter loco id", "0", NULL, this);
+    InputDialog* dlg = new InputDialog("Enter loco id", "0", nullptr, this);
     if(dlg->exec() == QDialog::Accepted)
     {
      QString nameID= dlg->value();
@@ -1227,7 +1321,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  {
   Positionable* il = _contents->at(i);
   //if (il instanceof LocoIcon)
-  if(qobject_cast<LocoIcon*>(il)!= NULL)
+  if(qobject_cast<LocoIcon*>(il)!= nullptr)
   {
    ((LocoIcon*)il)->remove();
   }
@@ -1242,7 +1336,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 {
     NamedIcon* icon = NamedIcon::getIconByName(name);
     PositionableLabel* l = new PositionableLabel(icon, this);
-    l->setPopupUtility(NULL);        // no text
+    l->setPopupUtility(nullptr);        // no text
     l->setPositionable(false);
     l->setShowTooltip(false);
     l->setSize(icon->getIconWidth(), icon->getIconHeight());
@@ -1273,7 +1367,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  {
   Positionable* p = _contents->at(i);
   //if (p instanceof PositionableLabel)
-  if(qobject_cast<PositionableLabel*>(p)!= NULL)
+  if(qobject_cast<PositionableLabel*>(p)!= nullptr)
   {
    PositionableLabel* l = (PositionableLabel*)p;
    if (l->isBackground())
@@ -1323,7 +1417,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(l);
  //l->invalidate();
- if(pl != NULL)
+ if(pl != nullptr)
  {
   pl->setPositionable(true);
   //pl->setVisible(true);
@@ -1340,7 +1434,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  //      log->error("Unable to add "+l->getNameString()+" to _contents");
  //  }
  _contents->append(l);
- if(pl != NULL)
+ if(pl != nullptr)
  //if( log->isDebugEnabled())
   log->debug(tr("putItem ")+pl->getNameString()+" to _contents. level= "+QString("%1").arg(pl->getDisplayLevel()));
 }
@@ -1456,13 +1550,13 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  editScene->addItem(pl->_itemGroup);
 #else
 
-   if(l != NULL)
+   if(l != nullptr)
    {
     bAdded = l->updateScene();
-    if(l->_itemGroup != NULL && l->_itemGroup->parentObject() != NULL)
+    if(l->_itemGroup != nullptr && l->_itemGroup->parentObject() != nullptr)
      log->debug(tr("Item already has a parent %1 ").arg(l->getNameString()));
     editScene->addItem(l->_itemGroup);
-    if(l->_itemGroup != NULL && l->_itemGroup->name() == "")
+    if(l->_itemGroup != nullptr && l->_itemGroup->name() == "")
      l->_itemGroup->setName(l->getGroupName());
    }
    else
@@ -1479,13 +1573,13 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 
 /*static*/ const /*public*/ QStringList Editor::ICON_EDITORS = QStringList() <<
 "Sensor"<< "RightTurnout"<< "LeftTurnout"<< "SlipTOEditor"<< "SignalHead"<< "SignalMast"<< "Memory"<< "Light"<< "Reporter"<< "Background"<< "MultiSensor"<< "Icon"<< "Text";
-#if 0
+#if 1
 /**
 * @param name Icon editor's name
 */
-/*public*/ JFrameItem getIconFrame(QString name) {
-    JFrameItem frame = _iconEditorFrame.get(name);
-    if (frame==NULL) {
+/*public*/ JFrameItem* Editor::getIconFrame(QString name) {
+    JFrameItem* frame = _iconEditorFrame->value(name);
+    if (frame==nullptr) {
         if ("Sensor"==(name)) {
             addSensorEditor();
         } else if ("RightTurnout"==(name)) {
@@ -1517,17 +1611,17 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
             return NULL;
         }
         // frame added in the above switch
-        frame = _iconEditorFrame.get(name);
+        frame = _iconEditorFrame->value(name);
 
-        if (frame==NULL) { // addTextEditor does not create a usable frame
-            return NULL;
+        if (frame==nullptr) { // addTextEditor does not create a usable frame
+            return nullptr;
         }
         //frame.setLocationRelativeTo(this);
-        frame.setLocation(frameLocationX, frameLocationY);
+        frame->setLocation(frameLocationX, frameLocationY);
         frameLocationX += DELTA;
         frameLocationY += DELTA;
     }
-    frame.setVisible(true);
+    frame->setVisible(true);
     return frame;
 }
 #endif
@@ -1557,11 +1651,11 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 {
  IconAdder* editor = new IconAdder("RightTurnout");
  editor->setIcon(3, "TurnoutStateClosed",
-        ":/resources/icons/smallschematics/tracksegments/os-righthand-west-closed.gif");
+        "resources/icons/smallschematics/tracksegments/os-righthand-west-closed.gif");
  editor->setIcon(2, "TurnoutStateThrown",
-        ":/resources/icons/smallschematics/tracksegments/os-righthand-west-thrown.gif");
+        "resources/icons/smallschematics/tracksegments/os-righthand-west-thrown.gif");
  editor->setIcon(0, "BeanStateInconsistent",
-        ":/resources/icons/smallschematics/tracksegments/os-righthand-west-error.gif");
+        "resources/icons/smallschematics/tracksegments/os-righthand-west-error.gif");
  editor->setIcon(1, "BeanStateUnknown",
         "resources/icons/smallschematics/tracksegments/os-righthand-west-unknown.gif");
 
@@ -1588,13 +1682,13 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 {
  IconAdder* editor = new IconAdder("LeftTurnout");
  editor->setIcon(3, "TurnoutStateClosed",
-        ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif");
+        "resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif");
  editor->setIcon(2, "TurnoutStateThrown",
-        ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-thrown.gif");
+        "resources/icons/smallschematics/tracksegments/os-lefthand-east-thrown.gif");
  editor->setIcon(0, "BeanStateInconsistent",
-        ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-error.gif");
+        "resources/icons/smallschematics/tracksegments/os-lefthand-east-error.gif");
  editor->setIcon(1, "BeanStateUnknown",
-        ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif");
+        "resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif");
 
  JFrameItem* frame = makeAddIconFrame("LeftTurnout", true, true, editor);
  frame->resize(400,800);
@@ -1619,9 +1713,9 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 {
     SlipIconAdder* editor = new SlipIconAdder("SlipTOEditor");
     editor->setIcon(3, "LowerWestToUpperEast",
-        ":/resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif");
+        "resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif");
     editor->setIcon(2, "UpperWestToLowerEast",
-        ":/resources/icons/smallschematics/tracksegments/os-slip-upper-west-lower-east.gif");
+        "resources/icons/smallschematics/tracksegments/os-slip-upper-west-lower-east.gif");
     editor->setIcon(4, "LowerWestToLowerEast",
         "resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif");
     editor->setIcon(5, "UpperWestToUpperEast",
@@ -1697,25 +1791,25 @@ void AddPanelIconActionListener::actionPerformed(ActionEvent *)
 {
  IconAdder* editor = new IconAdder("SignalHead");
  editor->setIcon(0, ("Red"),
-        ":/resources/icons/smallschematics/searchlights/left-red-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-red-marker.gif");
  editor->setIcon(1, ("Yellow"),
-        ":/resources/icons/smallschematics/searchlights/left-yellow-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-yellow-marker.gif");
  editor->setIcon(2, ("Green"),
-        ":/resources/icons/smallschematics/searchlights/left-green-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-green-marker.gif");
  editor->setIcon(3, ("Dark"),
-        ":/resources/icons/smallschematics/searchlights/left-dark-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-dark-marker.gif");
  editor->setIcon(4, ("Held"),
-        ":/resources/icons/smallschematics/searchlights/left-held-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-held-marker.gif");
  editor->setIcon(5, ("Lunar"),
         "resources/icons/smallschematics/searchlights/left-lunar-marker.gif");
  editor->setIcon(6, ("Flashing Red"),
-        ":/resources/icons/smallschematics/searchlights/left-flashred-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-flashred-marker.gif");
  editor->setIcon(7, ("Flashing Yellow"),
-        ":/resources/icons/smallschematics/searchlights/left-flashyellow-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-flashyellow-marker.gif");
  editor->setIcon(8, ("Flashing Green"),
-        ":/resources/icons/smallschematics/searchlights/left-flashgreen-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-flashgreen-marker.gif");
  editor->setIcon(9, ("Flashing Lunar"),
-        ":/resources/icons/smallschematics/searchlights/left-flashlunar-marker.gif");
+        "resources/icons/smallschematics/searchlights/left-flashlunar-marker.gif");
  return editor;
 }
 
@@ -1858,6 +1952,7 @@ void Editor::MemoryIconAdder::addAdditionalButtons(QWidget* p)
     p2->layout()->addWidget(bBox);
     p1Layout->addWidget(p2,0,Qt::AlignHCenter);
     pLayout->addWidget(p1);
+
     p1 = new QWidget();
     p1->setContentsMargins(0,0,0,0);
     p1->setLayout(new QVBoxLayout(p1/*, BoxLayout.X_AXIS*/));
@@ -1866,6 +1961,7 @@ void Editor::MemoryIconAdder::addAdditionalButtons(QWidget* p)
     ((QBoxLayout*)pLayout)->addWidget(p1,0, Qt::AlignHCenter);
 
 }
+
 void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
 {
  IconAdder::valueChanged(e);
@@ -1896,13 +1992,13 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
 {
  IconAdder* editor = new IconAdder("Light");
  editor->setIcon(3, "LightStateOff",
-        ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif");
+        "resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif");
  editor->setIcon(2, "LightStateOn",
-        ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-thrown.gif");
+        "resources/icons/smallschematics/tracksegments/os-lefthand-east-thrown.gif");
  editor->setIcon(0, "BeanStateInconsistent",
-        ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-error.gif");
+        "resources/icons/smallschematics/tracksegments/os-lefthand-east-error.gif");
  editor->setIcon(1, "BeanStateUnknown",
-        ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif");
+        "resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif");
 
  JFrameItem* frame = makeAddIconFrame("Light", true, true, editor);
  _iconEditorFrame->insert("Light", frame);
@@ -1984,7 +2080,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
 /*protected*/ void Editor::addIconEditor()
 {
  IconAdder* editor = new IconAdder("Icon");
- editor->setIcon(0, "plainIcon",":/resources/icons/smallschematics/tracksegments/block.gif");
+ editor->setIcon(0, "plainIcon","resources/icons/smallschematics/tracksegments/block.gif");
  JFrameItem* frame = makeAddIconFrame("Icon", true, false, editor);
  //frame->resize(350,400);
  //frame->setMinimumHeight(300);
@@ -2009,7 +2105,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
  */
 /*protected*/ SensorIcon* Editor::putSensor()
 {
- SensorIcon* l = new SensorIcon(new NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
+ SensorIcon* l = new SensorIcon(new NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
                         "resources/icons/smallschematics/tracksegments/circuit-error.gif"), this);
  IconAdder* editor = getIconEditor("Sensor");
  QHash <QString, NamedIcon*>* map = ((IconAdder*)editor)->getIconMap();
@@ -2024,7 +2120,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
 //        l.setInconsistentIcon(editor.getIcon("BeanStateInconsistent"));
 //        l.setUnknownIcon(editor.getIcon("BeanStateUnknown"));
  NamedBean* b = editor->getTableSelection();
- if (b!=NULL)
+ if (b!=nullptr)
  {
   l->setSensor(b->getDisplayName());
  }
@@ -2193,7 +2289,7 @@ void Editor::addSlip()
  return l;
 }
 /*protected*/ BlockContentsIcon* Editor::putBlockContents() {
-    BlockContentsIcon* result = new BlockContentsIcon(new NamedIcon("resources/icons/misc/X-red.gif",
+    BlockContentsIcon* result = new BlockContentsIcon(new NamedIcon(":resources/icons/misc/X-red.gif",
             "resources/icons/misc/X-red.gif"), this);
     IconAdder* blockIconEditor = getIconEditor("BlockLabel");
     result->setBlock(blockIconEditor->getTableSelection()->getDisplayName());
@@ -2254,9 +2350,9 @@ void Editor::putBackground() {
  IconAdder* iconEditor = getIconEditor("Icon");
  QString url = iconEditor->getIcon("plainIcon")->getURL();
  NamedIcon* icon = NamedIcon::getIconByName(url);
- if (_debug) log->debug(tr("putIcon: ")+(icon==NULL?"NULL":"icon")+" url= "+url);
+ if (_debug) log->debug(tr("putIcon: ")+(icon==nullptr?"NULL":"icon")+" url= "+url);
     PositionableLabel* l = new PositionableLabel(icon, this);
-    l->setPopupUtility(NULL);        // no text
+    l->setPopupUtility(nullptr);        // no text
     l->setDisplayLevel(ICONS);
     //setNextLocation(l);
     l->setLocation(_lastX, _lastY);
@@ -2318,12 +2414,30 @@ void Editor::putBackground() {
 {
  #if 1
  QString name = "";
- if (((QWidget*)_targetPanel->parent())->window() !=NULL)
+ if(_targetPanel != nullptr)
  {
-  name=((JFrame*)((QWidget*)_targetPanel->parent())->window())->getTitle();
+  if (((QWidget*)_targetPanel)->window() !=nullptr)
+  {
+   //name=((JFrame*)((QWidget*)_targetPanel)->window())->getTitle();
+   name = _targetFrame->getTitle();
+  }
  }
- if (name==NULL || name==("")) JmriJFrame::setTitle(tr("Editor"));
- else JmriJFrame::setTitle(name+" "+tr("Editor"));
+ else
+  if(editScene != nullptr)
+  {
+   if (((QWidget*)editScene->parent())->window() !=nullptr)
+   {
+    name=((JFrame*)((QWidget*)editScene->parent())->window())->getTitle();
+   }
+
+  }
+  else return;
+
+ if (name==nullptr || name==(""))
+  JmriJFrame::setTitle(tr("Editor"));
+ else
+  JmriJFrame::setTitle(name+" "+tr("Editor"));
+
  //Iterator <JFrameItem> iter = _iconEditorFrame.values().iterator();
  QListIterator<JFrameItem*> iter(_iconEditorFrame->values());
  while (iter.hasNext()) {
@@ -2343,7 +2457,7 @@ void Editor::putBackground() {
  JFrameItem* frame = new JFrameItem(name, editor);
  frame->setMinimumSize(300, 600);
 #if 1
- if (editor != NULL)
+ if (editor != nullptr)
  {
 //  QWidget* p = new QWidget();
   QVBoxLayout* pLayout= new QVBoxLayout;
@@ -2500,7 +2614,7 @@ AddIconFrameWindowListener::AddIconFrameWindowListener(Editor *editor)
 void SearchItemActionListener::actionPerformed(ActionEvent */*e*/)
 {
     QDir* dir = DirectorySearcher::instance()->searchFS();
-if (dir != NULL) {
+if (dir != nullptr) {
     ea->addDirectoryToCatalog(dir);
 }
 
@@ -2527,11 +2641,11 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 #endif
 /*protected*/ void Editor::removeFromTarget(Positionable* l)
 {
- if(l->_itemGroup != NULL && l->_itemGroup->scene()!= NULL)
+ if(l->_itemGroup != nullptr && l->_itemGroup->scene()!= nullptr)
  editScene->removeItem(l->_itemGroup);
- if(l->_handleGroup != NULL && l->_handleGroup)
+ if(l->_handleGroup != nullptr && l->_handleGroup)
   editScene->removeItem(l->_handleGroup);
- _currentSelection = NULL; // added ACK
+ _currentSelection = nullptr; // added ACK
 }
 
 /*public*/ bool Editor::removeFromContents(Positionable* l)
@@ -2565,8 +2679,14 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 
 /*public*/ void Editor::dispose(bool clear)
 {
-#if 1 // TODO:
  if (_debug) log->debug(tr("Editor delete and dispose done. clear= ")+(clear?"true":"false"));
+ dispose();
+}
+/**
+ * Dispose of the editor.
+ */
+//@Override
+/*public*/ void Editor::dispose() {
  QListIterator <JFrameItem*> iter( _iconEditorFrame->values());
  while (iter.hasNext())
  {
@@ -2579,35 +2699,34 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
  PanelMenu::instance()->deletePanel(this);
  editors->removeOne(this);
  setVisible(false);
- if (clear)
- {
-  _contents->clear();
- }
+ _contents->clear();
  //removeAll();
  while ( QWidget* w = findChild<QWidget*>() )
      delete w;
  //super.dispose();
  JmriJFrame::dispose();
-#endif
 }
 
-#if 0
+#if 1
 /****************** Mouse Methods ***********************/
 
-/*public*/ void showToolTip(Positionable selection, MouseEvent event) {
-    ToolTip tip = selection.getTooltip();
-    QString txt = tip.getText();
-    if (txt==NULL) {
-        tip.setText(selection.getNameString());
+/*public*/ void Editor::showToolTip(Positionable* selection, QGraphicsSceneMouseEvent* event) {
+#if 1
+    QString tip = selection->getTooltip();
+    QString txt = tip/*.getText()*/;
+    if (txt=="") {
+        //tip.setText(selection.getNameString());
+     tip = selection->getNameString();
     }
-    tip.setLocation(selection.getX()+selection.getWidth()/2, selection.getY()+selection.getHeight());
-    setToolTip(tip);
+    //tip.setLocation(selection.getX()+selection.getWidth()/2, selection.getY()+selection.getHeight());
+    //setToolTip(tip);
+#endif
 }
 #endif
 /*protected*/ int Editor::getItemX(Positionable* p, int deltaX)
 {
  //if ((p instanceof MemoryIcon) && (p.getPopupUtility().getFixedWidth()==0)) {
- if(qobject_cast<MemoryIcon*>(p)!= NULL /*&& ((MemoryIcon*)p)->getFixedWidth == 0)*/)
+ if(qobject_cast<MemoryIcon*>(p)!= nullptr /*&& ((MemoryIcon*)p)->getFixedWidth == 0)*/)
  {
   MemoryIcon* pm = (MemoryIcon*) p;
   return pm->getOriginalX() + (int)qRound(deltaX/getPaintScale());
@@ -2623,7 +2742,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 /*protected*/ int Editor::getItemY(Positionable* p, int deltaY)
 {
  //if ((p instanceof MemoryIcon) && (p.getPopupUtility().getFixedWidth()==0)) {
- if(qobject_cast<MemoryIcon*>(p)!= NULL /*&& ((MemoryIcon*)p)->getFixedWidth == 0)*/)
+ if(qobject_cast<MemoryIcon*>(p)!= nullptr /*&& ((MemoryIcon*)p)->getFixedWidth == 0)*/)
  {
   MemoryIcon* pm = (MemoryIcon*) p;
   return pm->getOriginalY() + (int)qRound(deltaY/getPaintScale());
@@ -2710,14 +2829,14 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
   // don't allow negative placement, icon can become unreachable
   if (xObj < 0) xObj = 0;
   if (yObj < 0) yObj = 0;
-  if(qobject_cast<Positionable*>(p) != NULL)
+  if(qobject_cast<Positionable*>(p) != nullptr)
    ((Positionable*)p)->setLocation(xObj, yObj);
   else p->setLocation((double)xObj, (double)yObj);
   // and show!
  }
  //addToTarget(p);
  p->updateScene();
- if(qobject_cast<AnalogClock2Display*>(p)!=NULL)
+ if(qobject_cast<AnalogClock2Display*>(p)!=nullptr)
   ((AnalogClock2Display*)p)->update();
 }
 
@@ -2942,7 +3061,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 */
 /*protected*/ void Editor::makeSelectionGroup(QGraphicsSceneMouseEvent* event)
 {
- if (!(event->modifiers()&Qt::ControlModifier) || _selectionGroup==NULL)
+ if (!(event->modifiers()&Qt::ControlModifier) || _selectionGroup==nullptr)
  {
   _selectionGroup = new QList<Positionable*>();
  }
@@ -3004,7 +3123,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 /*protected*/ void Editor::modifySelectionGroup(Positionable* selection, QGraphicsSceneMouseEvent* event)
 {
 #if 1
- if (!event->modifiers()&Qt::ControlModifier || _selectionGroup==NULL)
+ if (!event->modifiers()&Qt::ControlModifier || _selectionGroup==nullptr)
  {
   _selectionGroup = new QList<Positionable*>();
  }
@@ -3034,7 +3153,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 
 /*protected*/ bool Editor::setTextAttributes(Positionable* p, QMenu* popup)
 {
- if (((PositionableLabel*)p)->getPopupUtility()==NULL)
+ if (((PositionableLabel*)p)->getPopupUtility()==nullptr)
  {
   return false;
  }
@@ -3126,7 +3245,7 @@ void TextAttrDialog::doneButton_clicked()
 {
  PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
  _decorator->getText(_pos);
- if (editor->_selectionGroup==NULL)
+ if (editor->_selectionGroup==nullptr)
  {
   editor->setAttributes(util, _pos, _decorator->isOpaque());
  }
@@ -3149,7 +3268,7 @@ void TextAttrDialog::doneButton_clicked()
     ((PositionableLabel*)p)->setPopupUtility(newUtil->clone(p, ((PositionableLabel*)p)->getTextComponent()));
    ((PositionableLabel*)p)->setOpaque(isOpaque);
     //if (p instanceof PositionableLabel)
-    if(qobject_cast<PositionableLabel*>(p)!= NULL)
+    if(qobject_cast<PositionableLabel*>(p)!= nullptr)
     {
         PositionableLabel* pos = (PositionableLabel*)p;
         if (!pos->isText() || (pos->isText() && pos->isIcon())) {
@@ -3178,7 +3297,7 @@ void TextAttrDialog::doneButton_clicked()
                 pos->setBorder(new CompoundBorder(outlineBorder, borderMargin));
                 pos->setOpaque(isOpaque);
                 pos->rotate(deg);
-                if(pos->_itemGroup != NULL)
+                if(pos->_itemGroup != nullptr)
                 {
 //                 getTargetPanel()->invalidate(pos->_itemGroup->boundingRect());
                  addToTarget(pos);
@@ -3189,21 +3308,21 @@ void TextAttrDialog::doneButton_clicked()
     ((PositionableLabel*)p)->updateSize();
     ((PositionableLabel*)p)->repaint();
     //if (p instanceof PositionableIcon)
-    if(qobject_cast<PositionableIcon*>(p)!=NULL)
+    if(qobject_cast<PositionableIcon*>(p)!=nullptr)
     {
      NamedBean* bean = ((PositionableIcon*)p)->getNamedBean();
-        if (bean!=NULL) {
+        if (bean!=nullptr) {
             ((PositionableIcon*)p)->displayState(bean->getState());
         }
     }
 }
 
 /*protected*/ void Editor::setSelectionsAttributes(PositionablePopupUtil* util, Positionable* pos, bool isOpaque) {
-    if (_selectionGroup!=NULL && _selectionGroup->contains(pos)) {
+    if (_selectionGroup!=nullptr && _selectionGroup->contains(pos)) {
         for (int i=0; i<_selectionGroup->size(); i++) {
             Positionable* p = _selectionGroup->at(i);
             //if ( p instanceof PositionableLabel )
-            if(qobject_cast<PositionableLabel*>(p)!= NULL)
+            if(qobject_cast<PositionableLabel*>(p)!= nullptr)
             {
                 setAttributes(util, p, isOpaque);
             }
@@ -3214,7 +3333,7 @@ void TextAttrDialog::doneButton_clicked()
 /*protected*/ void Editor::setSelectionsHidden(bool enabled, Positionable* p)
 
 {
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++) {
       ((PositionableLabel*)_selectionGroup->at(i))->setHidden(enabled);
@@ -3224,7 +3343,7 @@ void TextAttrDialog::doneButton_clicked()
 #if 1
 /*protected*/ bool Editor::setSelectionsPositionable(bool enabled, Positionable* p)
 {
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
@@ -3240,14 +3359,14 @@ void TextAttrDialog::doneButton_clicked()
 #endif
 /*protected*/ void Editor::removeSelections(Positionable* p)
 {
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
    Positionable* p = _selectionGroup->at(i);
-   if(qobject_cast<PositionableLabel*>(p) != NULL)
+   if(qobject_cast<PositionableLabel*>(p) != nullptr)
     ((PositionableLabel*)p)->remove();
-   if(qobject_cast<PositionableJComponent*>(p) != NULL)
+   if(qobject_cast<PositionableJComponent*>(p) != nullptr)
    {
     removeFromTarget(p);
     ((PositionableJComponent*)p)->remove();
@@ -3259,7 +3378,7 @@ void TextAttrDialog::doneButton_clicked()
 
 /*protected*/ void Editor::setSelectionsScale(double s, Positionable* p)
 {
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
@@ -3274,7 +3393,7 @@ void TextAttrDialog::doneButton_clicked()
 
 /*protected*/ void Editor::setSelectionsRotation(int k, Positionable* p)
 {
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
@@ -3293,13 +3412,13 @@ void TextAttrDialog::doneButton_clicked()
 
 /*protected*/ void Editor::setSelectionsDockingLocation(Positionable* p)
 {
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
    Positionable* pos = _selectionGroup->at(i);
    //if (pos instanceof LocoIcon)
-   if(qobject_cast<LocoIcon*>(pos) != NULL)
+   if(qobject_cast<LocoIcon*>(pos) != nullptr)
    {
     ((LocoIcon*)pos)->setDockingLocation(((PositionableLabel*)pos)->getX(), ((PositionableLabel*)pos)->getY());
    }
@@ -3307,7 +3426,7 @@ void TextAttrDialog::doneButton_clicked()
  }
  else
  //if (p instanceof LocoIcon)
- if(qobject_cast<LocoIcon*>(p) != NULL)
+ if(qobject_cast<LocoIcon*>(p) != nullptr)
  {
   ((LocoIcon*)p)->setDockingLocation(((PositionableLabel*)p)->getX(), ((PositionableLabel*)p)->getY());
  }
@@ -3315,27 +3434,27 @@ void TextAttrDialog::doneButton_clicked()
 
 /*protected*/ void Editor::dockSelections(Positionable* p)
 {
- if (_selectionGroup!=NULL && _selectionGroup->contains(p))
+ if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
    Positionable* pos = _selectionGroup->at(i);
    //if (pos instanceof LocoIcon)
-   if(qobject_cast<LocoIcon*>(pos) != NULL)
+   if(qobject_cast<LocoIcon*>(pos) != nullptr)
    {
     ((LocoIcon*)pos)->dock();
    }
   }
  }
  //else if (p instanceof LocoIcon)
- else if(qobject_cast<LocoIcon*>(p) != NULL)
+ else if(qobject_cast<LocoIcon*>(p) != nullptr)
  {
   ((LocoIcon*)p)->dock();
  }
 }
 
 /*protected*/ bool Editor::showAlignPopup(Positionable* p) {
-    if (_selectionGroup!=NULL && _selectionGroup->contains(p)) {
+    if (_selectionGroup!=nullptr && _selectionGroup->contains(p)) {
         return true;
     } else {
         return false;
@@ -3388,7 +3507,7 @@ void TextAttrDialog::doneButton_clicked()
 #endif
 /*public*/ void Editor::drawSelectRect(int x, int y)
 {
-    if(editScene && _selectRectItemGroup != NULL && _selectRectItemGroup->scene() != 0)
+    if(editScene && _selectRectItemGroup != nullptr && _selectRectItemGroup->scene() != 0)
      editScene->removeItem(_selectRectItemGroup);
 
     int aX = getAnchorX();
@@ -3470,10 +3589,12 @@ abstract /*public*/ void mouseExited(MouseEvent event);
  * set up target panel, frame etc.
  */
 abstract /*protected*/ void init(QString name);
+#endif
 /*
  * Closing of Target frame window.
  */
-abstract /*protected*/ void targetWindowClosingEvent(java.awt.event.WindowEvent e);
+/*abstract*/ /*protected*/ void Editor::targetWindowClosingEvent(QCloseEvent* e) {}
+#if 0
 /**
  * Called from TargetPanel's paint method for additional drawing by editor view
  */
@@ -3528,10 +3649,10 @@ abstract /*protected*/ void copyItem(Positionable p);
     paintTargetPanel(g2d);
 //    java.awt.Stroke stroke = g2d.getStroke();
 //    Color color = g2d.getColor();
-    if(_selectRectItemGroup != NULL && _selectRectItemGroup->scene() != 0)
+    if(_selectRectItemGroup != nullptr && _selectRectItemGroup->scene() != 0)
     {
 //     g2d->removeItem(_selectRectItemGroup);
-//     //_selectRectItemGroup = NULL;
+//     //_selectRectItemGroup = nullptr;
 //     _selectRectItemGroup = new QGraphicsItemGroup();
      QList<QGraphicsItem*> list = _selectRectItemGroup->childItems();
      foreach (QGraphicsItem* it, list)
@@ -3552,13 +3673,13 @@ abstract /*protected*/ void copyItem(Positionable p);
      statusBar()->showMessage(tr("select x = %1, y = %2, w = %3, h = %4").arg(_selectRect.x()).arg(_selectRect.y()).arg(_selectRect.width()).arg(_selectRect.height()));
 
     }
-    if (_selectionGroup!=NULL)
+    if (_selectionGroup!=nullptr)
     {
 //        g2d.setColor(_selectGroupColor);
 //        g2d.setStroke(new java.awt.BasicStroke(2.0f));
      foreach (Positionable* p, *_selectionGroup)
      {
-      if (qobject_cast<PositionableShape*>(p) ==NULL)
+      if (qobject_cast<PositionableShape*>(p) ==nullptr)
       {
 //       g.drawRect(_selectionGroup->get(i).getX(), _selectionGroup->get(i).getY(),
 //                           _selectionGroup->get(i).maxWidth(), _selectionGroup->get(i).maxHeight());
@@ -3712,17 +3833,17 @@ abstract public void mouseExited(MouseEvent event);
   // this is cheating. Should be able to figure out how to access metadata
   if(type == "ControlPanelEditor")
   {
-   if(qobject_cast<ControlPanelEditor*>(e) != NULL)
+   if(qobject_cast<ControlPanelEditor*>(e) != nullptr)
     result.append(e);
   }
   if(type == "PanelEditor")
   {
-   if(qobject_cast<PanelEditor*>(e) != NULL)
+   if(qobject_cast<PanelEditor*>(e) != nullptr)
     result.append(e);
   }
 //  if(type == "LayoutEditor")
 //  {
-//   if(qobject_cast<LayoutEditor*>(e) != NULL)
+//   if(qobject_cast<LayoutEditor*>(e) != nullptr)
 //    result.append(e);
 //  }
  }
@@ -3743,7 +3864,7 @@ abstract public void mouseExited(MouseEvent event);
             return e;
         }
     }
-    return NULL;
+    return nullptr;
 }
 //class UrlErrorDialog extends JDialog {
 
@@ -3837,7 +3958,7 @@ UrlErrorDialog::UrlErrorDialog(QString msg, QString url, Editor* _targetFrame) :
 void UrlErrorDialog::doneButton_clicked()
 {
  parent->_newIcon = NamedIcon::getIconByName(_urlField->text());
- if (parent->_newIcon != NULL) {
+ if (parent->_newIcon != nullptr) {
      parent->_urlMap->insert(_badUrl, _urlField->text());
  }
  dispose();
@@ -3855,3 +3976,38 @@ void UrlErrorDialog::cancelButton_clicked()
  dispose();
 }
 //}
+//@Override
+/*public*/ void Editor::vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ {
+    NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
+    if ("CanDelete" == (evt->getPropertyName())) { //IN18N
+        QString message; // = new StringBuilder();
+        message.append(tr("s in use with Editor Panel <b>%1</b>").arg(getName())); //IN18N
+        message.append("<br>");
+        bool found = false;
+        int count = 0;
+        for (Positionable* p : *_contents) {
+            if (nb == (p->getNamedBean())) {
+                found = true;
+                count++;
+            }
+        }
+        if (found) {
+            message.append(tr("Is in use with Editor Panel <b>{0}</b>").arg(count));
+            message.append("<br>");
+            message.append(tr("These items and references will be removed.")); //IN18N
+            message.append("<br>");
+            throw PropertyVetoException(message, evt);
+        }
+    } else if ("DoDelete" == (evt->getPropertyName())) { //IN18N
+        QList<Positionable*> toDelete = QList<Positionable*>();
+        for (Positionable* p : *_contents) {
+            if (nb == (p->getNamedBean())) {
+                toDelete.append(p);
+            }
+        }
+        for (Positionable* p : toDelete) {
+            removeFromContents(p);
+            _targetPanel->repaint();
+        }
+    }
+}

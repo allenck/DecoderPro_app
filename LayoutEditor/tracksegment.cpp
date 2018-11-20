@@ -944,7 +944,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
    drawingStroke = QPen(color,editor->mainlineTrackWidth,Qt::DashLine, Qt::SquareCap,Qt::BevelJoin);
   else
 //    drawingStroke = new BasicStroke(sideTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
-   drawingStroke =  QPen(color,editor->sideTrackWidth,Qt::DashLine, Qt::SquareCap,Qt::BevelJoin);
+   drawingStroke =  QPen(color,editor->sidelineTrackWidth,Qt::DashLine, Qt::SquareCap,Qt::BevelJoin);
 
   //g2.setStroke(drawingStroke);
   //g2.draw(new Arc2D.Double(t.getCX(), t.getCY(), t.getCW(), t.getCH(), t->getStartadj(), t.getTmpAngle(), Arc2D.OPEN));
@@ -1241,4 +1241,26 @@ double TrackSegment::degToRad(double degrees)
     } else {
         return true;
     }
+}
+
+/**
+ * @return the bounds of this track segment
+ */
+//@Override
+/*public*/ QRectF TrackSegment::getBounds() {
+//    QRectF result;
+
+//    QPointF ep1 = center, ep2 = center;
+//    if (getConnect1() != null) {
+//        ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
+//    }
+//    if (getConnect2() != null) {
+//        ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
+//    }
+
+//    result = QRectF(ep1.x(), ep1.y(), 0, 0);
+//    result.add(ep2);
+
+//    return result;
+ return item->boundingRect();
 }

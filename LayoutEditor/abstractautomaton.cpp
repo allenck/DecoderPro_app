@@ -290,7 +290,7 @@ void AbstractAutomaton::defaultName() {
  */
 /*public*/ void AbstractAutomaton::waitMsec( int milliseconds )
 {
- QDateTime time;
+ //QDateTime time;
  qint64 target = /*System.currentTimeMillis()*/QDateTime::currentMSecsSinceEpoch()+ milliseconds;
  while (true)
  {

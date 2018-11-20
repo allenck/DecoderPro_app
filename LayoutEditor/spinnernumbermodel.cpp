@@ -92,7 +92,7 @@ SpinnerNumberModel::SpinnerNumberModel(QObject *parent) :
      */
     /*public*/ SpinnerNumberModel::SpinnerNumberModel(QVariant value, QVariant minimum, QVariant maximum, QVariant stepSize) {
     if ((value == QVariant()) || (stepSize == QVariant())) {
-            throw new IllegalArgumentException("value and stepSize must be non-null");
+            throw  IllegalArgumentException("value and stepSize must be non-null");
         }
 //    if (!(((minimum == QVariant()) || (minimum.compareTo(value) <= 0)) &&
 //              ((maximum == null) || (maximum.compareTo(value) >= 0)))) {

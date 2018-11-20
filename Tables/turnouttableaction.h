@@ -6,6 +6,7 @@
 #include "jdialog.h"
 #include "libtables_global.h"
 
+class QSpinBox;
 class JTable;
 class TurnoutOperationConfig;
 class TurnoutOperation;
@@ -40,7 +41,7 @@ public:
 signals:
 
 public slots:
-    void okPressed(ActionEvent* e = 0);
+    void createPressed(ActionEvent* e = 0);
     void cancelPressed(ActionEvent* e = 0);
     void showFeedbackChanged();
     void showLockChanged();
@@ -65,14 +66,17 @@ private:
     /*private*/ void updateClosedList();
     /*private*/ void updateThrownList();
     JmriJFrame* addFrame;// = NULL;
-    JTextField* sysName;// = new JTextField(40);
-    JTextField* userName;// = new JTextField(40);
+    JTextField* userNameTextField;// = new JTextField(40);
+    JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
+    QLabel* statusBar;
+
     QComboBox* prefixBox;// = new QComboBox();
-    JTextField* numberToAdd;// = new JTextField(5);
-    QCheckBox* range;// = new QCheckBox("Add a range");
+    QSpinBox* numberToAddSpinner;// = new JTextField(5);
+    QCheckBox* rangeBox;// = new QCheckBox("Add a range");
     QLabel* sysNameLabel;// = new JLabel("Hardware Address");
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
+    QPushButton* addButton;
     QString userNameError;// = this.getName()+".DuplicateUserName";
     UserPreferencesManager* p;
     Logger* log;

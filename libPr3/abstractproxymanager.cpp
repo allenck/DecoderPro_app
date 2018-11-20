@@ -10,14 +10,20 @@
 #include "abstractlightmanager.h"
 #include "abstractreportermanager.h"
 #include "lnturnoutmanager.h"
+#include "loggerfactory.h"
+#include "namedbeancomparator.h"
+
 
 AbstractProxyManager::AbstractProxyManager(QObject *parent)
     : AbstractManager(parent)
 {
- mgrs = new /*java.util.ArrayList*/QList<Manager*>();
+ mgrs = QList<Manager*>();
  internalManager = nullptr;
  defaultManager = nullptr;
- registerSelf();
+ addedOrderList = QStringList();
+ log->setDebugEnabled(true);
+
+ //registerSelf();
 }
 /**
  * Implementation of a Manager that can serves as a proxy
@@ -47,15 +53,16 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 {
  // make sure internal present
  initInternal();
- return mgrs->size();
+ return mgrs.size();
 }
 
 /*protected*/ Manager* AbstractProxyManager::getMgr(int index)
 {
  // make sure internal present
  initInternal();
- if (index < mgrs->size())
-  return mgrs->value(index);
+
+ if (index < mgrs.size())
+  return mgrs.value(index);
  else
  {
   throw  IllegalArgumentException("illegal index "+QString::number(index));
@@ -70,7 +77,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 {
  // make sure internal present
  initInternal();
- QList<Manager*> retval = QList<Manager*>(*mgrs);
+ QList<Manager*> retval = QList<Manager*>(mgrs);
  return retval;
 }
 
@@ -86,7 +93,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 
     QList<Manager*> retval =  QList<Manager*>();
     if (defaultManager != nullptr) { retval.append(defaultManager); }
-    foreach (Manager* manager, *mgrs) {
+    foreach (Manager* manager, mgrs) {
         if (manager != defaultManager && manager != internalManager) {
             retval.append(manager);
         }
@@ -114,23 +121,31 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 /*public*/ void AbstractProxyManager::addManager(Manager* m)
 {
  // check for already present
- if (mgrs->contains(m))
+ if (mgrs.contains(m))
  {
   // already present, complain and skip
-  log.warn(tr("Manager already present: %1").arg(m->metaObject()->className()));
+  log->warn(tr("Manager already present: %1").arg(m->metaObject()->className()));
   return;
  }
- mgrs->append(static_cast<AbstractManager*>(m));
+ mgrs.append(static_cast<AbstractManager*>(m));
 
+ if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
  AbstractManager* am = static_cast<AbstractManager*>(m);
- //if(log.isDebugEnabled()) log.debug(tr("added manager ") +((AbstractManager*)m)->objectName());
  connect(am->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+
+ updateOrderList();
+ //updateNamedBeanSet();
+
+ if (log->isDebugEnabled())
+ {
+     log->debug(QString("added manager ") + QString(m->metaObject()->className()));
+ }
 }
 
 /*private*/ Manager* AbstractProxyManager::initInternal()
 {
  if (internalManager == nullptr) {
-     log.debug("create internal manager when first requested");
+     log->debug("create internal manager when first requested");
      internalManager = makeInternalManager();
  }
  return internalManager;
@@ -157,6 +172,28 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 }
 
 /**
+ * Enforces, and as a user convenience converts to, the standard form for a system name
+ * for the NamedBeans handled by this manager and its submanagers.
+ * <p>
+ * Attempts to match by system prefix first.
+ * <p>
+ *
+ * @param inputName System name to be normalized
+ * @throws NamedBean.BadSystemNameException If the inputName can't be converted to normalized form
+ * @return A system name in standard normalized form
+ */
+//@Override
+//@CheckReturnValue
+/*public*/ /*@Nonnull*/ QString AbstractProxyManager::normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/ {
+    int index = matchTentative(inputName);
+    if (index >= 0) {
+        return getMgr(index)->normalizeSystemName(inputName);
+    }
+    log->debug("normalizeSystemName did not find manager for name " + inputName + ", defer to default");
+    return getMgr(0)->normalizeSystemName(inputName);
+}
+
+/**
  * Locate via user name, then system name if needed.
  * If that fails, create a new NamedBean: If the name
  * is a valid system name, it will be used for the new
@@ -175,7 +212,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  // Doesn't exist. If the systemName was specified, find that system
  int index = matchTentative(name);
  if (index >= 0) return makeBean(index, name, "");
- log.debug("Did not find manager for name "+name+", defer to default");
+ log->debug("Did not find manager for name "+name+", defer to default");
 //    int iI = nMgrs()-1;
 //    return makeBean(iI,getMgr(iI)->makeSystemName(name), "");
  QString newSysName = getMgr(0)->makeSystemName(name);
@@ -201,7 +238,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 /*public*/ NamedBean* AbstractProxyManager::getBeanBySystemName(QString systemName)
 {
  NamedBean* t = nullptr;
- foreach (Manager* m, *this->mgrs) {
+ foreach (Manager* m, this->mgrs) {
      NamedBean* b = m->getBeanBySystemName(systemName);
      if (b != nullptr) {
          return b;
@@ -213,7 +250,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 //@Override
 /*public*/ NamedBean* AbstractProxyManager::getBeanByUserName(QString userName)
 {
- foreach (Manager* m, *this->mgrs) {
+ foreach (Manager* m, this->mgrs) {
      NamedBean* b = m->getBeanByUserName(userName);
      if (b != nullptr) {
          return b;
@@ -261,15 +298,15 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
         return makeBean(i, systemName, userName);
 
     // did not find a manager, allow it to default to the primary
-    log.debug("Did not find manager for system name "+systemName+", delegate to primary");
+    log->debug("Did not find manager for system name "+systemName+", delegate to primary");
     int iI = nMgrs()-1;
     return makeBean(iI, systemName, userName);
 }
 
 /*public*/ void AbstractProxyManager::dispose() {
-    for (int i=0; i<mgrs->size(); i++)
-        mgrs->value(i)->dispose();
-    mgrs->clear();
+    for (int i=0; i<mgrs.size(); i++)
+        mgrs.value(i)->dispose();
+    mgrs.clear();
     if (internalManager != nullptr) internalManager->dispose(); // don't make if not made yet
 }
 
@@ -280,14 +317,13 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  */
 /*protected*/ int AbstractProxyManager::matchTentative(QString systemname)
 {
- Q_ASSERT(mgrs->count()> 0);
+ //Q_ASSERT(mgrs->count()> 0);
  for (int i = 0; i<nMgrs(); i++)
  {
   if ( systemname.startsWith(((AbstractManager*)getMgr(i))->getSystemPrefix()+((AbstractManager*)getMgr(i))->typeLetter()))
   {
    return i;
   }
-  //return -1;
  }
  return -1;
 }
@@ -416,6 +452,68 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
     QStringList arr = ts->toList();
     return arr;
 }
+
+/*protected*/ void AbstractProxyManager::updateOrderList() {
+    if (addedOrderList.isEmpty()) return; // only maintain if requested
+    addedOrderList.clear();
+    for (Manager* m : mgrs) {
+        //addedOrderList.addAll(m.getSystemNameAddedOrderList());
+     for(QString name : m->getSystemNameAddedOrderList() )
+      addedOrderList.append(name);
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+//@Deprecated  // will be removed when Manager method is removed due to @Override
+/*public*/ QStringList AbstractProxyManager::getSystemNameAddedOrderList() {
+    addedOrderList = QStringList();  // need to start maintaining it
+    updateOrderList();
+    //return Collections.unmodifiableList(addedOrderList);
+    return addedOrderList;
+}
+
+/** {@inheritDoc} */
+//@Override
+//@Deprecated  // will be removed when Manager method is removed due to @Override
+//@Nonnull
+/*public*/ QList<NamedBean*>* AbstractProxyManager::getNamedBeanList() {
+    // by doing this in order by manager and from each managers ordered sets, its finally in order
+    QList<NamedBean*>* tl = new QList<NamedBean*>();
+    for (Manager*  m : mgrs) {
+        //tl.addAll(m.getNamedBeanSet());
+     foreach(NamedBean* bean, m->getNamedBeanSet())
+      tl->append(bean);
+    }
+    //return Collections.unmodifiableList(tl);
+    return tl;
+}
+
+
+/*protected*/ void AbstractProxyManager::updateNamedBeanSet()
+{
+ //if (namedBeanSet.isEmpty()) return; // only maintain if requested
+ namedBeanSet.clear();
+ for (Manager* m : mgrs)
+ {
+  //namedBeanSet.addAll(m.getNamedBeanSet());
+  foreach(NamedBean* bean, m->getNamedBeanSet())
+     namedBeanSet.insert(bean);
+ }
+}
+
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractProxyManager::getNamedBeanSet() {
+    namedBeanSet = QSet<NamedBean*>();//new TreeSet<>(new NamedBeanComparator());
+    updateNamedBeanSet();
+    //return Collections.unmodifiableSortedSet(namedBeanSet);
+    QList<NamedBean*> list = namedBeanSet.toList();
+    qSort(list.begin(), list.end(), NamedBeanComparator::compare);
+    return list.toSet();
+}
+
 /**
  * Get a list of all user names.
  */
@@ -444,5 +542,5 @@ void AbstractProxyManager::on_propertyChange(PropertyChangeEvent *e)
 {
  //emit this->propertyChange(e);
 }
-    // initialize logging
-    //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractProxyManager.class.getName());
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* AbstractProxyManager::log = LoggerFactory::getLogger("AbstractProxyManager");

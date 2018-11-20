@@ -8,7 +8,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 {
  log = new Logger("ProxyLightManager");
  setObjectName("ProxyLightManager");
- registerSelf();
+ //registerSelf();
 }
 /**
  * Implementation of a LightManager that can serves as a proxy

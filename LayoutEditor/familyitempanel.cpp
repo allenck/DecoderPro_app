@@ -589,6 +589,10 @@ void FamilyItemPanel::on_showIconsButton_clicked()
     return panel;
 }
 
+void FamilyItemPanel::on_newFamilyButton_clicked()
+{
+ newFamilyDialog();
+}
 
 // add update buttons to  bottom1Panel
 /*protected*/ QWidget* FamilyItemPanel::makeBottom3Panel(ActionListener* doneAction, QWidget* bottom1Panel)

@@ -25,6 +25,7 @@ signals:
     void propertyChange(PropertyChangeEvent *e);
 public slots:
 friend class PropertyChangeSupport;
+friend class VetoablePropertyChangeSupport;
 };
 
 #endif // ABSTRACTSIGNALHEADMANAGER_H

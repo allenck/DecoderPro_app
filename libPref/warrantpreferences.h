@@ -12,18 +12,22 @@ class LIBPREFSHARED_EXPORT WarrantPreferences : public AbstractPreferencesManage
  Q_OBJECT
 public:
  explicit WarrantPreferences(QObject *parent = 0);
- /*public*/ static /*final*/ QString layoutParams;// = "layoutParams";   // NOI18N
+ /*public*/ enum Shutdown {NO_MERGE, PROMPT, MERGE_ALL};
+ /*public*/ static /*final*/ QString LAYOUT_PARAMS;// = "layoutParams";   // NOI18N
  /*public*/ static /*final*/ QString LAYOUT_SCALE;// = "layoutScale";     // NOI18N
- /*public*/ static /*final*/ QString SearchDepth;// = "searchDepth";     // NOI18N
- /*public*/ static /*final*/ QString SpeedMapParams;// = "speedMapParams"; // NOI18N
- /*public*/ static /*final*/ QString RampPrefs;// = "rampPrefs";         // NOI18N
- /*public*/ static /*final*/ QString TimeIncrement;// = "timeIncrement"; // NOI18N
- /*public*/ static /*final*/ QString ThrottleScale;// = "throttleScale"; // NOI18N
- /*public*/ static /*final*/ QString RampIncrement;// = "rampIncrement"; // NOI18N
- /*public*/ static /*final*/ QString StepIncrements;// = "stepIncrements"; // NOI18N
- /*public*/ static /*final*/ QString SpeedNamePrefs;// = "speedNames";   // NOI18N
- /*public*/ static /*final*/ QString Interpretation;// = "interpretation"; // NOI18N
- /*public*/ static /*final*/ QString AppearancePrefs;// = "appearancePrefs"; // NOI18N
+ /*public*/ static /*final*/ QString SEARCH_DEPTH;// = "searchDepth";     // NOI18N
+ /*public*/ static /*final*/ QString SPEED_MAP_PARAMS;// = "speedMapParams"; // NOI18N
+ /*public*/ static /*final*/ QString RAMP_PREFS;// = "rampPrefs";         // NOI18N
+ /*public*/ static /*final*/ QString TIME_INCREMENT;// = "timeIncrement"; // NOI18N
+ /*public*/ static /*final*/ QString THROTTLE_SCALE;// = "throttleScale"; // NOI18N
+ /*public*/ static /*final*/ QString RAMP_INCREMENT;// = "rampIncrement"; // NOI18N
+ /*public*/ static /*final*/ QString STEP_INCREMENTS;// = "stepIncrements"; // NOI18N
+ /*public*/ static /*final*/ QString SPEED_NAME_PREFS;// = "speedNames";   // NOI18N
+ /*public*/ static /*final*/ QString SPEED_NAMES;// = SPEED_NAME_PREFS;
+ /*public*/ static /*final*/ QString INTERPRETATION;// = "interpretation"; // NOI18N
+ /*public*/ static /*final*/ QString APPEARANCE_PREFS;// = "appearancePrefs"; // NOI18N
+ /*public*/ static /*final*/ QString APPEARANCES;// = "appearances"; // NOI18N
+
  /*public*/ void savePreferences(Profile* profile);
 
  WarrantPreferences(QString fileName, QObject *parent = 0);
@@ -38,6 +42,12 @@ public:
  QT_DEPRECATED /*public*/ void apply();
  /*public*/ float getThrottleScale();
  /*public*/ void initialize(Profile* profile) throw (InitializationException);
+ /*public*/ QMap<QString, QString> getAppearances();
+ /*public*/ QMap<QString, float> getSpeedNames();
+ /*protected*/ void setShutdown(Shutdown set);
+ /*public*/ Shutdown getShutdown();
+ /*public*/ float getLayoutScale();
+ /*public*/ void setLayoutScale(float scale);
 
 signals:
 
@@ -56,22 +66,20 @@ private:
  /*private*/ float _throttleIncr;// = 0.04f;    // throttle increment for each ramp speed change
  /*private*/ void loadSpeedMapFromOldXml();
  /*private*/ void setNXFrame() ;
- /*private*/ void setSpeedMap();
+ // /*private*/ void setSpeedMap();
  QT_DEPRECATED float getScale();
  QT_DEPRECATED void setScale(float s);
- /*public*/ float getLayoutScale();
- /*public*/ void setLayoutScale(float scale);
  void setThrottleScale(float f);
  int getSearchDepth();
  void setSearchDepth(int d) ;
- int getTimeIncre();
- void setTimeIncre(int t);
- float getThrottleIncre() ;
- void setThrottleIncre(float ti);
+ int getTimeIncrement();
+ void setTimeIncrement(int t);
+ float getThrottleIncrement() ;
+ void setThrottleIncrement(float ti);
  QMapIterator<QString, float> getSpeedNameEntryIterator();
  int getSpeedNamesSize();
  float getSpeedNameValue(QString key);
- void setSpeedNames(QList<QPair<QString, float>* > speedNameMap);
+ void setSpeedNames(QMap<QString, float> map);
  QMapIterator<QString, QString> getAppearanceEntryIterator();
  int getAppearancesSize() ;
  QString getAppearanceValue(QString key);
@@ -81,8 +89,16 @@ private:
  Logger* log;
  XmlFile* xmlFile;
  QDomDocument doc;
+ /*private*/ void setAppearances(QMap<QString, QString> map);
+ Shutdown _shutdown;
+
+protected:
+ /*protected*/ void setSpeedNames(QList<QPair<QString, float>> speedNameMap);
 
 friend class WarrantPreferencesPanel;
+friend class NXFrame;
+friend class SignalSpeedMap;
+friend class SpeedUtil;
 };
 Q_DECLARE_METATYPE(WarrantPreferences)
 

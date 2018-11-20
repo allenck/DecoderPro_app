@@ -9,12 +9,13 @@
 #include "profilemanager.h"
 #include "fileutil.h"
 
+
 WarrantPreferences::WarrantPreferences(QObject *parent) :
   AbstractPreferencesManager(parent)
 {
  _scale = 87.1f;
  _searchDepth = 20;
-  _throttleScale = 0.5f;
+  _throttleScale = 0.90f;
   log = new Logger("WarrantPreferences");
 
  _interpretation = SignalSpeedMap::PERCENT_NORMAL;    // Interpretation of values in speed name table
@@ -25,18 +26,20 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
 
 ///*public*/ class WarrantPreferences  {
 
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::layoutParams = "layoutParams";   // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::LAYOUT_PARAMS = "layoutParams";   // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::LAYOUT_SCALE = "layoutScale";    // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SearchDepth = "searchDepth";     // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SpeedMapParams = "speedMapParams"; // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::RampPrefs = "rampPrefs";         // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::TimeIncrement = "timeIncrement"; // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::ThrottleScale = "throttleScale"; // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::RampIncrement = "rampIncrement"; // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::StepIncrements = "stepIncrements"; // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SpeedNamePrefs = "speedNames";   // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::Interpretation = "interpretation"; // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::AppearancePrefs = "appearancePrefs"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SEARCH_DEPTH = "searchDepth";     // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_MAP_PARAMS = "speedMapParams"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::RAMP_PREFS = "rampPrefs";         // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::TIME_INCREMENT = "timeIncrement"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::THROTTLE_SCALE = "throttleScale"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::RAMP_INCREMENT = "rampIncrement"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::STEP_INCREMENTS = "stepIncrements"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_NAME_PREFS = "speedNames";   // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_NAMES = SPEED_NAME_PREFS;
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::INTERPRETATION = "interpretation"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::APPEARANCE_PREFS = "appearancePrefs"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::APPEARANCES = "appearances"; // NOI18N
 
 
 WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
@@ -68,7 +71,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   try {
       preferences->initialize(ProfileManager::getDefault()->getActiveProfile());
   } catch (InitializationException ex) {
-      Logger::error("Error initializing default WarrantPreferences", ex.getMessage());
+      Logger::error("Error initializing default WarrantPreferences", ex);
   }
  }//);
  return preferences;
@@ -79,26 +82,26 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
  _fileName = name;
  WarrantPreferencesXml* prefsXml = new WarrantPreferencesXml();
  File* file = new File(_fileName);
- QDomElement root = QDomElement();
- if(file->exists() && file->length() > 0)
+ QDomElement root;
+ try
  {
-  //try {
-  root = prefsXml->rootFromFile(file);
-  if(root.toElement().isNull())
+   root = prefsXml->rootFromFile(file);
+   if(root.toElement().isNull())
   {
    log->debug("Could not find Warrant preferences file.  Normal if preferences have not been saved before.");
    root = QDomElement();
   }
-//         catch (Exception eb) {
-//         Logger::error("Exception while loading warrant preferences: " + eb.getMessage());
-//         root = QDomElement();
-//     }
+ }
+ catch (Exception eb)
+ {
+   Logger::error("Exception while loading warrant preferences: " + eb.getMessage());
+   root = QDomElement();
  }
  if (!root.isNull())
  {
   log->info(tr("Found Warrant preferences file: %1").arg(_fileName));
-  loadLayoutParams(root.firstChildElement(layoutParams));
-  if (!loadSpeedMap(root.firstChildElement(SpeedMapParams)))
+  loadLayoutParams(root.firstChildElement(LAYOUT_PARAMS));
+  if (!loadSpeedMap(root.firstChildElement(SPEED_MAP_PARAMS)))
   {
    loadSpeedMapFromOldXml();
    Logger::error("Unable to read ramp parameters. Setting to default values.");
@@ -126,7 +129,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   Logger::error("Unable to read layout scale. Setting to default value.");
   }
  }
- if ((a = child.attribute(SearchDepth)) != NULL)
+ if ((a = child.attribute(SEARCH_DEPTH)) != NULL)
  {
   bool bok;
   setSearchDepth(a.toInt(&bok));
@@ -140,8 +143,8 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
 
 /*private*/ void WarrantPreferences::loadSpeedMapFromOldXml()
 {
- SignalSpeedMap* map = SignalSpeedMap::getMap();
- if (map==NULL)
+ SignalSpeedMap* map = static_cast<SignalSpeedMap*>(InstanceManager::getNullableDefault("SignalSpeedMap"));
+ if (map==nullptr)
  {
   Logger::error("Cannot find signalSpeeds.xml file.");
   return;
@@ -161,8 +164,8 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   QString name = en.next();
   _headAppearances.insert(name, map->getAppearanceSpeed(name));
  }
- setTimeIncre(map->getStepDelay());
- setThrottleIncre(map->getStepIncrement());
+ setTimeIncrement(map->getStepDelay());
+ setThrottleIncrement(map->getStepIncrement());
 }
 
 /*public*/ bool WarrantPreferences::loadSpeedMap(QDomElement child)
@@ -170,28 +173,28 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
  if (child.isNull()) {
      return false;
  }
- QDomElement rampParms = child.firstChildElement(StepIncrements);
+ QDomElement rampParms = child.firstChildElement(STEP_INCREMENTS);
  if (rampParms.isNull()) {
      return false;
  }
  QString a;
- if ((a = rampParms.attribute(TimeIncrement)) != NULL) {
+ if ((a = rampParms.attribute(TIME_INCREMENT)) != NULL) {
      bool bok;
-         setTimeIncre(a.toInt(&bok));
+         setTimeIncrement(a.toInt(&bok));
          if(!bok) {
-         setTimeIncre(750);
+         setTimeIncrement(750);
          Logger::error("Unable to read ramp time increment. Setting to default value (750ms).");
      }
  }
- if ((a = rampParms.attribute(RampIncrement)) != NULL) {
+ if ((a = rampParms.attribute(RAMP_INCREMENT)) != NULL) {
      bool bok;
-         setThrottleIncre(a.toFloat(&bok));
+         setThrottleIncrement(a.toFloat(&bok));
          if(!bok) {
-         setThrottleIncre(0.05f);
+         setThrottleIncrement(0.05f);
          Logger::error("Unable to read ramp throttle increment. Setting to default value (0.05).");
      }
  }
- if ((a = rampParms.attribute(ThrottleScale)) != NULL) {
+ if ((a = rampParms.attribute(THROTTLE_SCALE)) != NULL) {
      bool bok;
          setThrottleScale(a.toFloat(&bok));
          if(!bok) {
@@ -200,7 +203,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
      }
  }
 
- rampParms = child.firstChildElement(SpeedNamePrefs);
+ rampParms = child.firstChildElement(SPEED_NAME_PREFS);
  if (rampParms.isNull()) {
      return false;
  }
@@ -211,7 +214,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
          setInterpretation(2);
      }
  }
- if ((a = rampParms.attribute(Interpretation)) != NULL) {
+ if ((a = rampParms.attribute(INTERPRETATION)) != NULL) {
      bool bok;
          setInterpretation(a.toInt(&bok));
          if(!bok) {
@@ -219,33 +222,42 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
          Logger::error("Unable to read interpetation of Speed Map. Setting to default value % normal.");
      }
  }
- _speedNames =  QMap<QString, float>();
+ QMap<QString, float> map =  QMap<QString, float>();
  QDomNodeList list = rampParms.childNodes();
- for (int i = 0; i < list.size(); i++) {
+ for (int i = 0; i < list.size(); i++)
+ {
      QString name = list.at(i).toElement().tagName();
      float speed = 0;
      bool bok;
          speed =  list.at(i).toElement().text().toFloat(&bok);
          if(!bok) {
-         Logger::error(SpeedNamePrefs+" has invalid content for "+name+" = "+list.at(i).toElement().text());
+         Logger::error(SPEED_NAME_PREFS+" has invalid content for "+name+" = "+list.at(i).toElement().text());
      }
      if (log->isDebugEnabled()) log->debug("Add "+name+", "+QString::number(speed)+" to AspectSpeed Table");
-     _speedNames.insert(name, speed);
+     map.insert(name, speed);
  }
+ this->setSpeedNames(map);
 
- rampParms = child.firstChildElement(AppearancePrefs);
+ rampParms = child.firstChildElement(APPEARANCE_PREFS);
  if (rampParms.isNull()) {
      return false;
  }
- _headAppearances = QMap<QString, QString>();
+ QMap<QString, QString> heads = QMap<QString, QString>();
  list = rampParms.childNodes();
  for (int i = 0; i < list.size(); i++) {
      QString name = (list.at(i).toElement().tagName());
      QString speed = list.at(i).toElement().text();
-     _headAppearances.insert(name, speed);
+     heads.insert(name, speed);
  }
+ this->setAppearances(heads);
 
- setSpeedMap();
+ // Now set SignalSpeedMap members.
+ SignalSpeedMap* speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
+ speedMap->setRampParams(_throttleIncr, _msIncrTime);
+ speedMap->setDefaultThrottleFactor(_throttleScale);
+ speedMap->setLayoutScale(_scale);
+ speedMap->setAspects( QMap<QString, float>(this->_speedNames), _interpretation);
+ speedMap->setAppearances( QMap<QString, QString>(this->_headAppearances));
  return true;
 }
 
@@ -300,22 +312,22 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
 
 /*public*/ bool WarrantPreferences::store(QDomElement root)
 {
- QDomElement prefs = doc.createElement(layoutParams);
+ QDomElement prefs = doc.createElement(LAYOUT_PARAMS);
  try
  {
   prefs.setAttribute(LAYOUT_SCALE, QString::number(getScale()));
-  prefs.setAttribute(SearchDepth, QString::number(getSearchDepth()));
+  prefs.setAttribute(SEARCH_DEPTH, QString::number(getSearchDepth()));
   root.appendChild(prefs);
 
-  prefs = doc.createElement(SpeedMapParams);
-  QDomElement rampPrefs = doc.createElement(StepIncrements);
-  rampPrefs.setAttribute(TimeIncrement, QString::number(getTimeIncre()));
-  rampPrefs.setAttribute(RampIncrement, QString::number(getThrottleIncre()));
-  rampPrefs.setAttribute(ThrottleScale, QString::number(getThrottleScale()));
+  prefs = doc.createElement(SPEED_MAP_PARAMS);
+  QDomElement rampPrefs = doc.createElement(STEP_INCREMENTS);
+  rampPrefs.setAttribute(TIME_INCREMENT, QString::number(getTimeIncrement()));
+  rampPrefs.setAttribute(RAMP_INCREMENT, QString::number(getThrottleIncrement()));
+  rampPrefs.setAttribute(THROTTLE_SCALE, QString::number(getThrottleScale()));
   prefs.appendChild(rampPrefs);
 
-  rampPrefs = doc.createElement(SpeedNamePrefs);
-  rampPrefs.setAttribute(Interpretation, QString::number(getInterpretation()));
+  rampPrefs = doc.createElement(SPEED_NAME_PREFS);
+  rampPrefs.setAttribute(INTERPRETATION, QString::number(getInterpretation()));
 
   QMapIterator<QString, float>  it = getSpeedNameEntryIterator();
   while (it.hasNext())
@@ -328,7 +340,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   }
   prefs.appendChild(rampPrefs);
 
-  rampPrefs = doc.createElement(AppearancePrefs);
+  rampPrefs = doc.createElement(APPEARANCE_PREFS);
   QDomElement step =  doc.createElement("SignalHeadStateRed");
   step.appendChild(doc.createTextNode(_headAppearances.value(tr("Red"))));
   rampPrefs.appendChild(step);
@@ -384,15 +396,15 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
     frame->updatePanel(_interpretation);
     frame->closeFrame();
 }
-/*private*/ void WarrantPreferences::setSpeedMap() {
-    SignalSpeedMap* map = new SignalSpeedMap();
-    map->setAspectTable(getSpeedNameEntryIterator(), _interpretation);
-    map->setAppearanceTable(getAppearanceEntryIterator());
-    map->setRampParams(_throttleIncr, _msIncrTime);
-    map->setDefaultThrottleFactor(_throttleScale);
-    map->setLayoutScale(_scale);
-    map->setMap(map);
-}
+///*private*/ void WarrantPreferences::setSpeedMap() {
+//    SignalSpeedMap* map = new SignalSpeedMap();
+//    map->setAspectTable(getSpeedNameEntryIterator(), _interpretation);
+//    map->setAppearanceTable(getAppearanceEntryIterator());
+//    map->setRampParams(_throttleIncr, _msIncrTime);
+//    map->setDefaultThrottleFactor(_throttleScale);
+//    map->setLayoutScale(_scale);
+//    map->setMap(map);
+//}
 
 /**
  * @return the scale
@@ -444,17 +456,17 @@ void WarrantPreferences::setSearchDepth(int d) {
     _searchDepth = d;
 }
 
-int WarrantPreferences::getTimeIncre() {
+int WarrantPreferences::getTimeIncrement() {
     return _msIncrTime;
 }
-void WarrantPreferences::setTimeIncre(int t) {
+void WarrantPreferences::setTimeIncrement(int t) {
     _msIncrTime = t;
 }
 
-float WarrantPreferences::getThrottleIncre() {
+float WarrantPreferences::getThrottleIncrement() {
     return _throttleIncr;
 }
-void WarrantPreferences::setThrottleIncre(float ti) {
+void WarrantPreferences::setThrottleIncrement(float ti) {
     _throttleIncr = ti;
 }
 //@Override
@@ -466,6 +478,13 @@ void WarrantPreferences::setThrottleIncre(float ti) {
         this->setInitialized(profile, true);
     }
 }
+/*protected*/ void WarrantPreferences::setShutdown(Shutdown set) {
+    _shutdown = set;
+}
+/*public*/ WarrantPreferences::Shutdown WarrantPreferences::getShutdown() {
+    return _shutdown;
+}
+
 //@Override
 /*public*/ void WarrantPreferences::savePreferences(Profile* profile) {
     this->save();
@@ -488,13 +507,46 @@ int WarrantPreferences::getSpeedNamesSize() {
 float WarrantPreferences::getSpeedNameValue(QString key) {
     return _speedNames.value(key);
 }
-void WarrantPreferences::setSpeedNames(QList<QPair<QString, float>* > speedNameMap)
+
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QMap<QString, float> WarrantPreferences::getSpeedNames() {
+    return QMap<QString, float>(this->_speedNames);
+}
+
+// Called when preferences is updated from panel
+void WarrantPreferences::setSpeedNames(QMap<QString, float> map)
 {
- _speedNames =  QMap<QString, float>();
- for (int i=0; i<speedNameMap.size(); i++) {
-     QPair<QString, float>* dp = speedNameMap.at(i);
-     _speedNames.insert(dp->first, dp->second);
- }
+ _speedNames.clear();
+QMapIterator<QString, float>iter (map);
+while(iter.hasNext())
+ _speedNames.insert(iter.key(),iter.value());
+}
+
+// Called when preferences is updated from panel
+/*protected*/ void WarrantPreferences::setSpeedNames(QList<QPair<QString, float>> speedNameMap) {
+    QMap<QString, float> map = QMap<QString, float>();
+    for (int i = 0; i < speedNameMap.size(); i++) {
+        QPair<QString, float> dp = speedNameMap.at(i);
+        map.insert(dp.first, dp.second);
+    }
+    QMap<QString, float> old = QMap<QString, float>(_speedNames);
+    QVariantMap qvOld = QVariantMap();
+    QMapIterator<QString, float> iter(_speedNames);
+    while(iter.hasNext())
+    {
+     iter.next();
+     qvOld.insert(iter.key(),iter.value());
+    }
+    this->setSpeedNames(map);
+    QVariantMap qvMap = QVariantMap();
+    QMapIterator<QString, float> iter1(_speedNames);
+    while(iter1.hasNext())
+    {
+     iter1.next();
+     qvMap.insert(iter1.key(),iter1.value());
+    this->firePropertyChange(SPEED_NAMES, qvOld, qvMap);
+    }
 }
 
 QMapIterator<QString, QString> WarrantPreferences::getAppearanceEntryIterator()
@@ -517,6 +569,30 @@ QString WarrantPreferences::getAppearanceValue(QString key)
 {
  return _headAppearances.value(key);
 }
+
+/**
+ * Get a map of signal head appearances.
+ *
+ * @return a map of appearances or an empty map if none are defined
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QMap<QString, QString> WarrantPreferences::getAppearances() {
+    return QMap<QString, QString>(this->_headAppearances);
+}
+
+// Only called directly at load time
+/*private*/ void WarrantPreferences::setAppearances(QMap<QString, QString> map) {
+    this->_headAppearances.clear();
+    //this->_headAppearances.putAll(map);
+  QMapIterator<QString, QString> iter(map);
+  while(iter.hasNext())
+  {
+   iter.next();
+   this->_headAppearances.insert(iter.key(), iter.value());
+  }
+ }
+
 void WarrantPreferences::setAppearances(QList<QPair<QString, QString>* > appearanceMap)
 {
  _headAppearances =  QMap<QString, QString>();

@@ -17,7 +17,7 @@ namespace Operations
  public:
   explicit CarManager(QObject *parent = 0);
   /*public*/ static /*final*/ QString KERNEL_LISTLENGTH_CHANGED_PROPERTY;// = "KernelListLength"; // NOI18N
-  /*public*/ static /*synchronized*/ CarManager* instance();
+  QT_DEPRECATED/*public*/ static /*synchronized*/ CarManager* instance();
   /*public*/ Car* newCar(QString road, QString number);
   /*public*/ Car* getById(QString id);
   /*public*/ Car* getByRoadAndNumber(QString road, QString number);
@@ -47,10 +47,11 @@ namespace Operations
   /*public*/ QList<Car*>* getCarsLocationUnknown() ;
   /*public*/ void load(QDomElement root) ;
   /*public*/ void store(QDomElement root, QDomDocument doc);
+  Q_INVOKABLE/*public*/ void initialize();
 
 
  private:
-  /*private*/ static CarManager* _instance;// = NULL;
+  // /*private*/ static CarManager* _instance;// = NULL;
   Logger* log;
   enum SORTOPTIONS
   {

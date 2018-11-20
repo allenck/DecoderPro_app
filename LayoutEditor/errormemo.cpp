@@ -13,13 +13,12 @@
  */
 
 //public class ErrorMemo {
-/*public*/ ErrorMemo::ErrorMemo(
-        XmlAdapter* adapter,
+/*public*/ ErrorMemo::ErrorMemo(XmlAdapter* adapter,
         QString operation,
         QString description,
         QString systemName,
         QString userName,
-        Throwable* exception, QObject *parent)  : QObject(parent)
+        Exception exception, QObject *parent)  : QObject(parent)
 {
     this->level = level;
     this->adapter = adapter;
@@ -31,13 +30,12 @@
     title = "loading";
 }
 
-/*public*/ ErrorMemo::ErrorMemo(
-       XmlAdapter* adapter,
+/*public*/ ErrorMemo::ErrorMemo(XmlAdapter* adapter,
         QString operation,
         QString description,
         QString systemName,
         QString userName,
-        Throwable* exception,
+        Exception exception,
         QString title, QObject *parent)  : QObject(parent)
 {
     //this(level, adapter, operation, description, systemName, userName, exception);

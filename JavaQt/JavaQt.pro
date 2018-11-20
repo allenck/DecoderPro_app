@@ -169,7 +169,16 @@ SOURCES += javaqt.cpp \
     appcontext.cpp \
     imagepanel.cpp \
     bufferedimage.cpp \
-    userpreferencesmanager.cpp
+    userpreferencesmanager.cpp \
+    imageio.cpp \
+    jlayeredpane.cpp \
+    jmricolorchooser.cpp \
+    vetoablechangesupport.cpp \
+    propertyvetoexception.cpp \
+    nosuchmethoderror.cpp \
+    namedbeancomparator.cpp \
+    runtimeexception.cpp \
+    abstractinstanceinitializer.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -373,7 +382,22 @@ HEADERS += javaqt.h\
     initeventlistener.h \
     imagepanel.h \
     bufferedimage.h \
-    userpreferencesmanager.h
+    userpreferencesmanager.h \
+    imageio.h \
+    jlayeredpane.h \
+    jmricolorchooser.h \
+    vetoablechangesupport.h \
+    propertyvetoexception.h \
+    nosuchmethoderror.h \
+    namedbeancomparator.h \
+    runtimeexception.h \
+    windowadapter.h \
+    instancemanagerautodefault.h \
+    instancemanagerautoinitialize.h \
+    abstractinstanceinitializer.h \
+    instanceinitializer.h \
+    instancemanagerautodefault.h \
+    instancemanagerautoinitialize.h
 
 unix {
     target.path = /usr/lib

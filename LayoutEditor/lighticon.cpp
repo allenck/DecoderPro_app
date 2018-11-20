@@ -26,7 +26,7 @@
 
 //public class LightIcon extends PositionableLabel implements java.beans.PropertyChangeListener {
 
-/*public*/ LightIcon::LightIcon(Editor* editor, QObject *parent) : PositionableIcon(new NamedIcon(":/resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif",  "resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif"), editor, (Positionable*)this)
+/*public*/ LightIcon::LightIcon(Editor* editor, QObject *parent) : PositionableIcon(new NamedIcon("resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif",  "resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif"), editor, (Positionable*)this)
 {
     // super ctor call to make sure this is an icon label
     //super(new NamedIcon("resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif",
@@ -39,13 +39,13 @@
  _icon = true;
 
  setPopupUtility(NULL);
- offLName = ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif";
+ offLName = "resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif";
  off = new NamedIcon(offLName, offLName);
- onLName = ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-thrown.gif";
+ onLName = "resources/icons/smallschematics/tracksegments/os-lefthand-east-thrown.gif";
  on = new NamedIcon(onLName, onLName);
- inconsistentLName = ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-error.gif";
+ inconsistentLName = "resources/icons/smallschematics/tracksegments/os-lefthand-east-error.gif";
  inconsistent = new NamedIcon(inconsistentLName, inconsistentLName);
- unknownLName = ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif";
+ unknownLName = "resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif";
  unknown = new NamedIcon(unknownLName, unknownLName);
  _namedIcon = unknown;
  _editor = editor;

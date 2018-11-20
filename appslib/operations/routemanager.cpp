@@ -11,6 +11,7 @@
 #include "xml.h"
 #include "routelocation.h"
 #include "locationmanager.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -34,29 +35,19 @@ namespace Operations
  {
   pcs = new ::PropertyChangeSupport(this);
   log = new ::Logger("RouteManager");
+  setProperty("InstanceManagerAutoDefault", "true");
+  setProperty("InstanceManagerAutoInitialize", "true");
+
  }
 
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ RouteManager* RouteManager::_instance = NULL;
+// /*private*/ /*static*/ RouteManager* RouteManager::_instance = NULL;
 
  /*public*/ /*static synchronized*/ RouteManager* RouteManager::instance()
-{
- Logger* log = new Logger("RouteManager");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("RouteManager creating instance");
-         }
-         // create and load
-         _instance = new RouteManager();
-         OperationsSetupXml::instance(); // load setup
-         RouteManagerXml::instance(); // load routes
-     }
-     if (Control::showInstance) {
-         log->debug(tr("RouteManager returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
+ {
+  return static_cast<RouteManager*>(InstanceManager::getDefault("RouteManager"));
  }
 
  /*public*/ void RouteManager::dispose() {
@@ -332,36 +323,42 @@ namespace Operations
      RouteManagerXml::instance()->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
-/**
- * Locate via user name, then system name if needed. Does not create a new
- * one if nothing found
- *
- * @param name User name or system name to match
- * @return null if no match found
- */
-//@CheckForNull
-/*public*/ Route* getRoute(/*@Nonnull*/ QString /*name*/) {return NULL;}
+ /**
+  * Locate via user name, then system name if needed. Does not create a new
+  * one if nothing found
+  *
+  * @param name User name or system name to match
+  * @return null if no match found
+  */
+ //@CheckForNull
+ /*public*/ Route* getRoute(/*@Nonnull*/ QString /*name*/) {return NULL;}
 
-//@CheckForNull
-/*public*/ Route* getByUserName(/*@Nonnull*/ QString /*s*/) {return NULL;}
+ //@CheckForNull
+ /*public*/ Route* getByUserName(/*@Nonnull*/ QString /*s*/) {return NULL;}
 
-//@CheckForNull
-/*public*/ Route* getBySystemName(/*@Nonnull*/ QString /*s*/) {return NULL;}
+ //@CheckForNull
+ /*public*/ Route* getBySystemName(/*@Nonnull*/ QString /*s*/) {return NULL;}
 
-/**
- * Get a list of all Route system names.
- *
- * @return the list of route system names or an empty list
- */
-//@Nonnull
-//@Override
-/*public*/ QList<QString> getSystemNameList() {return QList<QString>();}
+ /**
+  * Get a list of all Route system names.
+  *
+  * @return the list of route system names or an empty list
+  */
+ //@Nonnull
+ //@Override
+ /*public*/ QList<QString> getSystemNameList() {return QList<QString>();}
 
-/**
- * Delete Route by removing it from the manager. The Route must first be
- * deactivated so it stops processing.
- *
- * @param r the route to remove
- */
-void deleteRoute(/*@Nonnull*/ Route* /*r*/) {}
+ /**
+  * Delete Route by removing it from the manager. The Route must first be
+  * deactivated so it stops processing.
+  *
+  * @param r the route to remove
+  */
+ void deleteRoute(/*@Nonnull*/ Route* /*r*/) {}
+
+ //@Override
+ /*public*/ void RouteManager::initialize() {
+     static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
+     static_cast<RouteManagerXml*>(InstanceManager::getDefault("RouteManagerXml")); // load routes
+ }
 }

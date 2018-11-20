@@ -195,7 +195,7 @@ JmriPreferencesProvider::JmriPreferencesProvider(File* path, bool shared)
   }
   catch (BackingStoreException ex)
   {
-   log->error("Unable to read preferences", ex.getMessage());
+   log->error("Unable to read preferences", ex);
   }
  }
 }
@@ -312,7 +312,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
  }
  catch (BackingStoreException e)
  {
-  log->error(tr("Unable to sync on creation of node %1").arg(name), e.getMessage());
+  log->error(tr("Unable to sync on creation of node %1").arg(name), e);
  }
 }
 
@@ -325,7 +325,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
   flush();
  } catch (BackingStoreException e)
  {
-  log->error(tr("Unable to flush after putting %1").arg(key), e.getMessage());
+  log->error(tr("Unable to flush after putting %1").arg(key), e);
  }
 }
 
@@ -343,7 +343,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
  flush();
  }
  catch (BackingStoreException e) {
-     log->error(tr("Unable to flush after removing %1").arg(key), e.getMessage());
+     log->error(tr("Unable to flush after removing %1").arg(key), e);
  }
 }
 

@@ -52,7 +52,7 @@ void VirtualSignalMast::configureFromName(QString systemName)
     QStringList parts = systemName.split(":");
     if (parts.length() < 3) {
         log->error("SignalMast system name needs at least three parts: "+systemName);
-        throw new IllegalArgumentException("System name needs at least three parts: "+systemName);
+        throw  IllegalArgumentException("System name needs at least three parts: "+systemName);
     }
     if (parts.at(0)!=("IF$vsm")) {
         log->warn("SignalMast system name should start with IF: "+systemName);
@@ -62,6 +62,7 @@ void VirtualSignalMast::configureFromName(QString systemName)
     QString mast = parts.at(2);
     // new style
     mast = mast.mid(0, mast.indexOf("("));
+    setMastType(mast);
     QString tmp = parts.at(2).mid(parts.at(2).indexOf("($")+2, parts.at(2).indexOf(")"));
     try {
         int autoNumber = tmp.toInt();
@@ -81,10 +82,10 @@ void VirtualSignalMast::configureFromName(QString systemName)
     if ( !map->checkAspect(aspect)) {
         // not a valid aspect
         log->warn("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
-        throw new IllegalArgumentException("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
+        throw  IllegalArgumentException("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
     }  else if (disabledAspects->contains(aspect)){
         log->warn("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
-        throw new IllegalArgumentException("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
+        throw  IllegalArgumentException("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
     }
     AbstractSignalMast::setAspect(aspect);
 }

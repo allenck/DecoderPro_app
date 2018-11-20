@@ -101,6 +101,7 @@ namespace Operations
   /*public*/ void setTrainSecheduleActiveId(QString id);
   /*public*/ void addStartUpScript(QString pathname) ;
   /*public*/ void deleteStartUpScript(QString pathname);
+  Q_INVOKABLE /*public*/ void initialize();
 
  signals:
 
@@ -157,7 +158,7 @@ namespace Operations
   // Scripts
   /*protected*/ QStringList _startUpScripts;// = new ArrayQStringList(); // list of script pathnames to run at start up
   /*protected*/ QStringList _shutDownScripts;// = new ArrayQStringList(); // list of script pathnames to run at shut down
-  /*private*/ static TrainManager* _instance;// = null;
+//  /*private*/ static TrainManager* _instance;// = null;
  friend class MyBuild;
  };
 

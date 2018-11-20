@@ -580,9 +580,9 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
 //    SortOrder sort;
 //    bool hidden;
 
-/*public*/ TableColumnPreferences::TableColumnPreferences(int order, int width, SortOrder sort, bool hidden) {
+/*public*/ TableColumnPreferences::TableColumnPreferences(int order, int preferredWidth, SortOrder sort, bool hidden) {
      this->order = order;
-     this->width = width;
+     this->preferredWidth = preferredWidth;
      this->sort = sort;
      this->hidden = hidden;
 }
@@ -592,7 +592,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
 }
 
 /*public*/ int TableColumnPreferences::getWidth() {
-    return  this->width;
+    return  this->preferredWidth;
 }
 
 /*public*/ SortOrder TableColumnPreferences::getSort() {
@@ -628,33 +628,20 @@ log = new Logger("JTableListener");
 /*public*/ void JTableListener::propertyChange(PropertyChangeEvent* evt)
 {
     //if (evt.getSource() instanceof JTable)
- if(qobject_cast<JTable*>(evt->getSource()) != NULL)
+ if(qobject_cast<JTable*>(evt->getSource()) != nullptr)
  {
-#if 0
-        switch (evt->getPropertyName()) {
-            case "name": // NOI18N
-                break;
-            case "Frame.active": // NOI18N
-                break;
-            case "ancestor": // NOI18N
-                break;
-            case "selectionForeground": // NOI18N
-                break;
-            case "selectionBackground": // NOI18N
-                break;
-            case "JComponent_TRANSFER_HANDLER": // NOI18N
-                break;
-            case "transferHandler": // NOI18N
-                break;
-            default:
-#endif
-                // log unrecognized events
-                log->trace(tr("Got propertyChange %1 for table %2 (\"%3\" -> \"%4\")").arg(evt->getPropertyName()).arg(this->table->getName()).arg(evt->getOldValue().toString()).arg(evt->getNewValue().toString()));
-//            }
-
+  if(!(evt->getPropertyName() ==  "name" || // NOI18N
+     evt->getPropertyName() == "Frame.active" || // NOI18N
+     evt->getPropertyName() == "ancestor"|| // NOI18N
+     evt->getPropertyName() == "selectionForeground" || // NOI18N
+     evt->getPropertyName() == "selectionBackground" || // NOI18N
+     evt->getPropertyName() == "JComponent_TRANSFER_HANDLER" || // NOI18N
+     evt->getPropertyName() == "transferHandler"))  // NOI18N
+   // log unrecognized events
+   log->trace(tr("Got propertyChange %1 for table %2 (\"%3\" -> \"%4\")").arg(evt->getPropertyName()).arg(this->table->getName()).arg(evt->getOldValue().toString()).arg(evt->getNewValue().toString()));
  }
  //else if (evt.getSource() instanceof TableColumn)
- else if(qobject_cast<TableColumn*>(evt->getSource())!= NULL)
+ else if(qobject_cast<TableColumn*>(evt->getSource())!= nullptr)
  {
         TableColumn* column = ((TableColumn*) evt->getSource());
         QString name = column->getIdentifier().toString();

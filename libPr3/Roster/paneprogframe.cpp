@@ -361,7 +361,7 @@ PaneProgFrame::~PaneProgFrame()
   }
  catch (Exception e)
  {
-  log->error("Exception while loading decoder XML file: "+df->getFilename(), e.getMessage());
+  log->error("Exception while loading decoder XML file: "+df->getFilename(), e);
  }
 
  if(XmlInclude::scanForInclude(decoderRoot))
@@ -495,7 +495,7 @@ PaneProgFrame::~PaneProgFrame()
  }
  catch (Exception e)
  {
-  log->error("exception reading programmer file: "+filename, e.getMessage());
+  log->error("exception reading programmer file: "+filename, e);
   // provide traceback too
 //        e.printStackTrace();
  }
@@ -1665,7 +1665,7 @@ bool PaneProgFrame::doWrite()
 
  // and store an updated roster file
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
- Roster::writeRosterFile();
+ Roster::writeRoster();
 
  // save date changed, update
  _rPane->updateGUI(_rosterEntry);

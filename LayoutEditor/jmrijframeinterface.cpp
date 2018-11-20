@@ -55,7 +55,7 @@ JmriJFrameInterface::JmriJFrameInterface(QWidget *parent) :   WindowInterface(pa
  if (!list.isEmpty())
  {
   QMenuBar* bar = frame->menuBar();
-  if (bar == NULL) bar = new QMenuBar();
+  if (bar == nullptr) bar = new QMenuBar();
   foreach (QMenu* menu, list)
   {
    bar->addMenu(menu);
@@ -82,9 +82,9 @@ JmriJFrameInterface::JmriJFrameInterface(QWidget *parent) :   WindowInterface(pa
 //            }
 //        });
  }
- FIWindowListener* windowListener = new FIWindowListener( child, this);
- frame->addWindowListener(windowListener);
- PanelMenu::instance()->addEditorPanel((Editor*)frame);
+// FIWindowListener* windowListener = new FIWindowListener( child, this);
+// frame->addWindowListener(windowListener);
+// PanelMenu::instance()->addEditorPanel((Editor*)frame);
  // pack and show
  frame->setVisible(true);
  frame->setLocation(10, 100);
@@ -114,5 +114,5 @@ this->c = c;
 //@Override
 /*public*/ JFrame* JmriJFrameInterface::getFrame()
 {
- return NULL;
+ return nullptr;
 }

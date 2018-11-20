@@ -10,7 +10,7 @@ class NceConsistRoster : public XmlFile
     Q_OBJECT
 public:
     explicit NceConsistRoster(QObject *parent = 0);
-    /*public*/ /*synchronized*/ static void resetInstance();
+//    /*public*/ /*synchronized*/ static void resetInstance();
     /*public*/ static /*synchronized*/ NceConsistRoster* instance();
     /*public*/ void addEntry(NceConsistRosterEntry* e) ;
     /*public*/ void removeEntry(NceConsistRosterEntry* e);
@@ -36,13 +36,14 @@ public:
     /*public*/ static QString defaultNceConsistRosterFilename();
     /*public*/ /*static*/ void setNceConsistRosterFileName(QString name);
     /*public*/ void entryIdChanged(NceConsistRosterEntry* r);
+    Q_INVOKABLE /*public*/ void initialize();
 
 signals:
     void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
     /** record the single instance of Roster **/
-    /*private*/ static NceConsistRoster* _instance;// = NULL;
+    ///*private*/ static NceConsistRoster* _instance;// = NULL;
     void writeFile(QString name) throw (FileNotFoundException, IOException);
     void readFile(QString name) throw (JDOMException, IOException);
     /*private*/ bool dirty;// = false;

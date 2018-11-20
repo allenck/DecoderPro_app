@@ -23,6 +23,8 @@ LnReporterManager::LnReporterManager(LnTrafficController* tc, QString prefix, QO
  setObjectName("LnReporterManager");
  this->prefix = prefix;
  this->tc = tc;
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
  if (tc != NULL)
  {
   tc->addLocoNetListener(~0, (LocoNetListener*)this);

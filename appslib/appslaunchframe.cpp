@@ -44,14 +44,14 @@
  *
  */
 ///*private*/ static final long serialVersionUID = 8986597544309635883L;
-/*static*/ QString profileFilename = "";
+/*static*/ QString AppsLaunchFrame::profileFilename = "";
 
 /*public*/ AppsLaunchFrame::AppsLaunchFrame(AppsLaunchPane* containedPane, QString name, QWidget* parent) : JmriJFrame(name, parent) {
     //super(name);
  log = new Logger("AppsLaunchFrame");
 
     // Create a WindowInterface object based on this frame (maybe pass it in?)
-    JFrameInterface* wi = NULL; //new JFrameInterface((QWidget*)this);
+    JFrameInterface* wi = nullptr; //new JFrameInterface((QWidget*)this);
     QWidget* centralWidget = new QWidget;
     QVBoxLayout* centralWidgetLayout = new QVBoxLayout;
     setCentralWidget(centralWidget);
@@ -69,7 +69,7 @@
     thisLayout->addWidget(containedPane);
 
     // handle window close
-//    setDefaultCloseOperation(JmriJFrame::HIDE_ON_CLOSE);
+    setDefaultCloseOperation(JmriJFrame::HIDE_ON_CLOSE);
 
     // pack and center this frame
     adjustSize();
@@ -265,7 +265,7 @@
         menuBar->addMenu(helpMenu);
 
     } catch (Throwable e3) {
-        log->error("Unexpected error creating help.", e3.getMessage());
+        log->error("Unexpected error creating help.", e3);
     }
 
 }

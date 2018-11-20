@@ -10,6 +10,7 @@ namespace Operations
  class Location;
  class APPSLIBSHARED_EXPORT YardmasterFrame : public OperationsFrame
  {
+  Q_OBJECT
  public:
   YardmasterFrame(Location *location, QWidget* parent = 0);
 

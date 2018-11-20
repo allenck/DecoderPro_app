@@ -208,7 +208,7 @@ void AbstractRosterItemAction::addToEntryToRoster()
 {
  // add the new entry to the roster & write it out
  Roster::instance()->addEntry(mToEntry);
- Roster::writeRosterFile();
+ Roster::writeRoster();
 }
 
 // never invoked, because we overrode actionPerformed above

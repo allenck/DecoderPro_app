@@ -120,7 +120,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
   //root.removeChild(oldFragment);
   root.replaceChild(fragment,oldFragment);
  }
-#if 1
+  sXml = doc.toString();
  QDomElement ref;// = NULL;
  QDomNodeList list = root.childNodes();
  for (int i = 0; i < list.length(); i++)
@@ -141,7 +141,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
       break;
   }
  }
-#endif
+
  //root.insertBefore(root.getOwnerDocument().importNode(fragment, true), ref);
  //root.insertAfter(root.ownerDocument().importNode(fragment,true), ref);
  try

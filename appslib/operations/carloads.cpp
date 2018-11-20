@@ -39,6 +39,8 @@ namespace Operations
   _emptyName = tr("E");
   _loadName = tr("L");
   log = new Logger("CarLoads");
+  setProperty("InstanceManagerAutoDefault", "yes");
+
  }
 
 /**

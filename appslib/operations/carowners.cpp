@@ -24,6 +24,7 @@ namespace Operations
 
  /*public*/ CarOwners::CarOwners(QObject* parent) : RollingStockAttribute(parent)
  {
+ setProperty("InstanceManagerAutoDefault", "yes");
 
  }
 

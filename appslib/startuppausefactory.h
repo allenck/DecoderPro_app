@@ -5,6 +5,7 @@
 
 class StartupPauseFactory : public StartupModelFactory
 {
+ Q_OBJECT
 public:
  StartupPauseFactory();
  /*public*/ QString /*Class<? extends StartupModel>*/ getModelClass() ;

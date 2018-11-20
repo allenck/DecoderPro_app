@@ -2,7 +2,7 @@
 #include "editor.h"
 #include "exceptions.h"
 #include "layouteditor.h"
-#include "Throttle/listthrottles.h"
+//#include "Throttle/listthrottles.h"
 #include "Roster/rosterframe.h"
 #include "Throttle/throttlewindow.h"
 #include "paneleditor.h"
@@ -18,12 +18,8 @@
 #endif
 #include "automattableaction.h"
 #include "filehistoryaction.h"
+#include "switchboardeditoraction.h"
 
-/*static*/ /*private*/ PanelMenu*  PanelMenu::thisMenu = NULL;
-//PanelMenu::PanelMenu(QObject *parent) :
-//    Qmenu(parent)
-//{
-//}
 /**
  * Create the default "Panels" menu for use in a menubar.
  *
@@ -36,14 +32,15 @@
  */
 //public class PanelMenu extends JMenu {
 /**
- * The single PanelMenu must now be accessed via the instance() method
+ * The single PanelMenu must accessed using
+ * {@link jmri.InstanceManager#getDefault(java.lang.Class)}.
  */
-/*private*/ PanelMenu::PanelMenu(QWidget *parent) : QMenu(parent)
+/*public*/ PanelMenu::PanelMenu(QWidget *parent) : QMenu(parent)
 {
  log = new Logger("PanelMenu");
- panelsSubMenu	= NULL;
+ panelsSubMenu	= nullptr;
  noPanelsItem  = new QAction(tr("(No Panels Available)"), this);
- thisMenu = NULL;
+ //thisMenu = nullptr;
  panelsList = new QList<Editor*>();
  actionGroup = new QActionGroup(this);
  this->setTitle(tr("Panels"));
@@ -51,10 +48,19 @@
  // new panel is a submenu
  //add(new jmri.jmrit.display.NewPanelAction());
  QMenu* newPanel = new QMenu(tr("New Panel..."));
+ PanelEditorAction* panelEditorAction;
+ ControlPanelEditorAction* controlPanelEditorAction;
+ LayoutEditorAction* layoutEditorAction;
+ SwitchboardEditorAction* switchboardEditorAction;
+ newPanel->addAction(panelEditorAction = new PanelEditorAction(tr("Panel Editor"),parent));
+ panelEditorAction->setCheckable(true);
+ newPanel->addAction(controlPanelEditorAction = new ControlPanelEditorAction(tr("Control Panel Editor"),parent));
+ controlPanelEditorAction->setCheckable(true);
+ newPanel->addAction(layoutEditorAction = new LayoutEditorAction(tr("Layout Editor"),parent));
+ layoutEditorAction->setCheckable(true);
+ newPanel->addAction(switchboardEditorAction =new SwitchboardEditorAction(tr("Switchboard Editor"),parent));
+ switchboardEditorAction->setCheckable(true);
 
- newPanel->addAction(new PanelEditorAction(tr("Panel Editor"),parent));
- newPanel->addAction(new ControlPanelEditorAction(tr("Control Panel Editor"),parent));
- newPanel->addAction(new LayoutEditorAction(tr("Layout Editor"),parent));
  addMenu(newPanel);
 
  addAction(new LoadXmlUserAction(tr("Open Panels..."),parent));
@@ -81,10 +87,15 @@
 
 /**
  * Provide method to reference this panel menu
+ *
+ * @return get the single instance of this menu
+ * @deprecated since 4.9.3; use
+ * {@link jmri.InstanceManager#getDefault(java.lang.Class)} instead
  */
+//@Deprecated
 /*static*/ /*public*/ PanelMenu* PanelMenu::instance() {
-    if (thisMenu==NULL) thisMenu = new PanelMenu();
-    return thisMenu;
+ return static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"));
+
 }
 
 /**
@@ -127,6 +138,8 @@
  */
 /*public*/ void PanelMenu::addEditorPanel(/*final*/ Editor* panel)
 {
+ if(qobject_cast<Editor*>(panel) == nullptr)
+  throw InvalidDnDOperationException(tr("Panel %1 is not an Editor panel").arg(QString(panel->metaObject()->className())));
  // If this is the first panel, remove the 'No Panels' menu item
  if (panelsList->size()==0) {
         panelsSubMenu->removeAction(noPanelsItem);
@@ -201,7 +214,7 @@ PanelActionListener::PanelActionListener(Editor *panel, PanelMenu* pm)
 /*public*/ void PanelActionListener::actionPerformed(ActionEvent* /*e*/)
 {
     //if (panel instanceof LayoutEditor) {
- if(qobject_cast<LayoutEditor*>(panel)!= NULL)
+ if(qobject_cast<LayoutEditor*>(panel)!= nullptr)
  {
         panel->setVisible(true);
         panel->update();
@@ -232,21 +245,28 @@ void PanelMenu::on_panelSelected(QAction* act)
   QObject* o = panelsList->at(i);
   if (o == panel)
   {
-#if 0
-//        JCheckBoxMenuItem r = (JCheckBoxMenuItem)panelsSubMenu->getItem(i);
+#if 1
+   //QAction* r = (JCheckBoxMenuItem)panelsSubMenu->getItem(i);
    //if (panel instanceof LayoutEditor)
-      QAction* r = new QAction()
-   if(qobject_cast<LayoutEditor*>(panel) != NULL)
+   QObjectList ol = panelsSubMenu->children();
+   if(ol.isEmpty()) return;
+   log->debug(tr("panelsList has %1 entries; panelsSubMenu has %2 entries.").arg(panelsList->count()).arg(ol.count()));
+   QAction* r = new QAction(this);
+   if(qobject_cast<QAction*>(ol.at(0)) != nullptr)
    {
-    if (panel->isVisible()) r.setSelected(true);
-        else r.setSelected(false);
+    r = qobject_cast<QAction*>(ol.at(0));
+    if(qobject_cast<LayoutEditor*>(panel) != nullptr)
+    {
+     if (panel->isVisible()) r->setChecked(true);
+         else r->setChecked(false);
+    }
+    else
+    {
+     if (panel->getTargetFrame()->isVisible()) r->setChecked(true);
+      else r->setChecked(false);
+    }
+    return;
    }
-   else
-   {
-    if (panel->getTargetFrame().isVisible()) r.setSelected(true);
-     else r.setSelected(false);
-   }
-   return;
 #endif
   }
  }
@@ -295,12 +315,12 @@ void PanelMenu::on_panelSelected(QAction* act)
 
 /*public*/ Editor* PanelMenu::getEditorByName (QString name)
 {
- if (panelsList->size()==0) return NULL;
+ if (panelsList->size()==0) return nullptr;
  for (int i = 0; (i<panelsList->size()); i++)
  {
   try
   {
-   if(qobject_cast<Editor*>(panelsList->at(i)) != NULL)
+   if(qobject_cast<Editor*>(panelsList->at(i)) != nullptr)
    {
     Editor* editor = panelsList->at(i);
     if (editor->getTargetFrame()->windowTitle()==(name))
@@ -313,7 +333,7 @@ void PanelMenu::on_panelSelected(QAction* act)
   {
   }
  }
- return NULL;
+ return nullptr;
 }
 
 /*public*/ QList<Editor*>* PanelMenu::getEditorPanelList()
@@ -328,7 +348,7 @@ void PanelMenu::on_panelSelected(QAction* act)
  {
 //  try
 //  {
-  if(qobject_cast<LayoutEditor*>(panelsList->at(i)) != NULL)
+  if(qobject_cast<LayoutEditor*>(panelsList->at(i)) != nullptr)
   {
    LayoutEditor* le = (LayoutEditor*)panelsList->at(i);
    lePanelsList->append(le);
@@ -343,60 +363,60 @@ void PanelMenu::on_panelSelected(QAction* act)
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PanelMenu.class.getName());
 //}
 
-void PanelMenu::updatePanelMenu(QMenu *menu )
-{
- QActionGroup* actGrp = new QActionGroup(this);
- for(int i=0; i < panelsList->count(); i++)
- {
-  Editor* panel = panelsList->at(i);
-  QString pName = panel->metaObject()->className();
-  QAction* act;
-  QVariant var;
-  if(pName == "ListThrottles")
-  {
-   ListThrottles* pt = (ListThrottles*)panel;
-   act = new QAction(pt->getTitle(), this);
-   var = VPtr<ListThrottles>::asQVariant(pt);
-  }
-  else
-  if(pName == "ThrottleWindow")
-  {
-   ThrottleWindow* pt = (ThrottleWindow*)panel;
-   act = new QAction(pt->getTitle(), this);
-   var = VPtr<ThrottleWindow>::asQVariant(pt);
-  }
-  else
-  if(pName == "RosterTable")
-  {
-   RosterFrame* pt = (RosterFrame*)panel;
-   act = new QAction(pt->getTitle(), this);
-   var = VPtr<RosterFrame>::asQVariant(pt);
-  }
-  else
-  if(pName == "JmriJFrame")
-  {
-   JmriJFrame* pt = (JmriJFrame*)panel;
-   act = new QAction(pt->getTitle(), this);
-   var = VPtr<JmriJFrame>::asQVariant(pt);
-  }
-  else if(pName == "RosterFrame")
-  {
-   JmriJFrame* pt = (JmriJFrame*)panel;
-   act = new QAction(pt->getTitle(), this);
-   var = VPtr<JmriJFrame>::asQVariant(pt);
-  }
-  else
-  {
-   act = new QAction(panel->getTitle(), this);
-   var = VPtr<Editor>::asQVariant(panel);
-  }
-  act->setCheckable(true);
-  act->setChecked(panel->isVisible());
-  actGrp->addAction(act);
-  act->setData(var);
-//    r.addActionListener(a);
-  menu->addAction(act);
- }
- connect(actGrp, SIGNAL(triggered(QAction*)), this, SLOT(on_panelSelected(QAction*)));
- //menu->show();
-}
+//void PanelMenu::updatePanelMenu(QMenu *menu )
+//{
+// QActionGroup* actGrp = new QActionGroup(this);
+// for(int i=0; i < panelsList->count(); i++)
+// {
+//  Editor* panel = panelsList->at(i);
+//  QString pName = panel->metaObject()->className();
+//  QAction* act;
+//  QVariant var;
+//  if(pName == "ListThrottles")
+//  {
+//   ListThrottles* pt = (ListThrottles*)panel;
+//   act = new QAction(pt->getTitle(), this);
+//   var = VPtr<ListThrottles>::asQVariant(pt);
+//  }
+//  else
+//  if(pName == "ThrottleWindow")
+//  {
+//   ThrottleWindow* pt = (ThrottleWindow*)panel;
+//   act = new QAction(pt->getTitle(), this);
+//   var = VPtr<ThrottleWindow>::asQVariant(pt);
+//  }
+//  else
+//  if(pName == "RosterTable")
+//  {
+//   RosterFrame* pt = (RosterFrame*)panel;
+//   act = new QAction(pt->getTitle(), this);
+//   var = VPtr<RosterFrame>::asQVariant(pt);
+//  }
+//  else
+//  if(pName == "JmriJFrame")
+//  {
+//   JmriJFrame* pt = (JmriJFrame*)panel;
+//   act = new QAction(pt->getTitle(), this);
+//   var = VPtr<JmriJFrame>::asQVariant(pt);
+//  }
+//  else if(pName == "RosterFrame")
+//  {
+//   JmriJFrame* pt = (JmriJFrame*)panel;
+//   act = new QAction(pt->getTitle(), this);
+//   var = VPtr<JmriJFrame>::asQVariant(pt);
+//  }
+//  else
+//  {
+//   act = new QAction(panel->getTitle(), this);
+//   var = VPtr<Editor>::asQVariant(panel);
+//  }
+//  act->setCheckable(true);
+//  act->setChecked(panel->isVisible());
+//  actGrp->addAction(act);
+//  act->setData(var);
+////    r.addActionListener(a);
+//  menu->addAction(act);
+// }
+// connect(actGrp, SIGNAL(triggered(QAction*)), this, SLOT(on_panelSelected(QAction*)));
+// //menu->show();
+//}

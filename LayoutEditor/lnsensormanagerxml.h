@@ -12,7 +12,7 @@ public:
  LnSensorManagerXml(const LnSensorManagerXml&) :AbstractSensorManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement sensors);
     /*public*/ void load(QDomElement element, QObject* o) throw (JmriConfigureXmlException) ;
-    /*public*/ bool load(QDomElement sensors) throw (JmriConfigureXmlException);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException);
 
 signals:
 

@@ -438,7 +438,14 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
  fireTableRowsUpdated(0, sysNameList.size()-1);
 }
 
-    //@Override
+//@Override
+
+/*public*/ int AudioTableDataModel::rowCount(const QModelIndex &parent) const
+{
+    return sysNameList.size();
+}
+
+//@Override
 /*public*/ int AudioTableDataModel::columnCount(const QModelIndex &/*parent*/) const
 {
  return EDITCOL + 1;

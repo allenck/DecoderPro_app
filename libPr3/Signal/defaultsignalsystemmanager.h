@@ -1,6 +1,6 @@
 #ifndef DEFAULTSIGNALSYSTEMMANAGER_H
 #define DEFAULTSIGNALSYSTEMMANAGER_H
-#include "abstractmanager.h"
+#include "signalsystemmanager.h"
 #include "xmlfile.h"
 #include "libPr3_global.h"
 
@@ -8,14 +8,14 @@ class XmlFile;
 class SignalSystem;
 class QDomElement;
 class DefaultSignalSystem;
-class LIBPR3SHARED_EXPORT DefaultSignalSystemManager : public AbstractManager
+class LIBPR3SHARED_EXPORT DefaultSignalSystemManager : public SignalSystemManager
 {
     Q_OBJECT
 public:
     //explicit DefaultSignalSystemManager(QObject *parent = 0);
     /*public*/ DefaultSignalSystemManager(QObject *parent = 0);
     ~DefaultSignalSystemManager() {}
-    DefaultSignalSystemManager(const DefaultSignalSystemManager&) : AbstractManager() {}
+    DefaultSignalSystemManager(const DefaultSignalSystemManager&) : SignalSystemManager() {}
     /*public*/ int getXMLOrder();
     QString getSystemPrefix() ;
     /*public*/ char typeLetter() ;

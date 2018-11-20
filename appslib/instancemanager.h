@@ -92,6 +92,28 @@
  * @author          Matthew Harris copyright (c) 2009
  * @version			$Revision: 22528 $
  */
+/*private*/ enum InitializationState {
+    NOTSET, // synonymous with no value for this stored
+    NOTSTARTED,
+    STARTED,
+    FAILED,
+    DONE
+};
+
+/*static*/ /*private*/ /*final*/ class StateHolder {
+
+   InitializationState state;
+   Exception* exception;
+public:
+   StateHolder(InitializationState state, Exception* exception) {
+       this->state = state;
+       this->exception = exception;
+   }
+   friend class InstanceManager;
+};
+
+class SignalSpeedMap;
+class PrintWriter;
 class RouteManager;
 class BlockManager;
 class SectionManager;
@@ -117,9 +139,9 @@ public:
  * @param type The class Object for the item's type.  This will be used
  *               as the key to retrieve the object later.
  */
-//    static public <T> void store(T item, Class<T> type);
-static void store(QObject* item, QString type);
-static void storeBefore( int index, QObject* item, QString type);
+ //template<class T>
+ static /*public*/  void store(/*@Nonnull*/ QObject* item, /*@Nonnull Class<T> */ QString type);
+//static void storeBefore( int index, QObject* item, QString type);
 
 /**
  * Retrieve a list of all objects of type T that were
@@ -127,7 +149,8 @@ static void storeBefore( int index, QObject* item, QString type);
  * @param type The class Object for the items' type.
  */
 //static public <T> List<Object> getList(Class<T> type)
-static QObjectList* getList(QString type);
+//template<class T>
+static QObjectList getList(QString type);
 /**
  * Deregister all objects of a particular type.
  * @param type The class Object for the items to be removed.
@@ -158,6 +181,10 @@ static QObject* getDefault(QString type);
 static /*public*/ QObject* getNullableDefault(QString type);
 static /*public*/ QObject* getOptionalDefault(QString type);
 /*public*/ static QString getDefaultsPropertyName(QString clazz);
+/*public*/ static QString getListPropertyName(/*Class<?>*/QString clazz);
+/*public*/ static InstanceManager* getDefault();
+/*public*/ QObject* getInstance(/*@Nonnull Class<T>*/QString type);
+
 
 /**
  * Set an object of type T as the default for that type.
@@ -235,14 +262,21 @@ QT_DEPRECATED static void setCommandStation(CommandStation* p);
 QT_DEPRECATED static /*public*/ void setAddressedProgrammerManager(AddressedProgrammerManager* p);
 static void setReporterManager(ReporterManager* p);
 static void removePropertyChangeListener(PropertyChangeListener* l);
+//template<class T>
+/*public*/ /*<T>*/ QObjectList getInstances(/*@Nonnull Class<T>*/ QString type);
+//template<class T>
+/*public*/  void clear(/*@Nonnull*/ /*Class<T>*/QString type);
+/*public*/ /*<T>*/ void remove(/*@Nonnull T*/QObject* item, /*@Nonnull Class<T>*/QString type);
 
 
 signals:
   void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
-//    static private HashMap<Class<?>,ArrayList<Object>> managerLists;
-//static QHash<QString,QObjectList*>* managerLists;
+ QHash<QString,QObjectList> managerLists;
+ /*private*/ /*final*/ QMap</*Class<?>*/QString, QObject*> initializers;// = new HashMap<>();
+ PropertyChangeSupport* pcs;
+ /*private*/ /*final*/ QMap</*Class<?>*/QString, StateHolder*> initState;// = new HashMap<>();
  //Logger* log;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("InstanceManager");
  static void setRootInstance();
@@ -269,6 +303,18 @@ private:
  //VSDecoderManager vsdecoderManager;
  //static InstanceInitializer* initializer;// = new jmri.managers.DefaultInstanceInitializer();
  static QMutex mutex;
+ // support checking for overlapping intialization
+ /*private*/ void setInitializationState(QString type, InitializationState state);
+ /*private*/ InitializationState getInitializationState(QString type) ;
+ /*private*/ Exception getInitializationException(QString type);
+ // support creating a file with initialization summary information
+ /*private*/ static /*final*/ bool traceFileActive;// = log.isTraceEnabled(); // or manually force true
+ /*private*/ static /*final*/ bool traceFileAppend;// = false; // append from run to run
+ /*private*/ int traceFileIndent = 1; // used to track overlap, but note that threads are parallel
+ /*private*/ static /*final*/ QString traceFileName;// = "instanceManagerSequence.txt";  // use a standalone name
+ /*private*/ static PrintWriter* traceFileWriter;
+ /*private*/ void traceFilePrint(QString msg);
+
 protected:
 
  /**
@@ -295,6 +341,15 @@ protected:
  //void addReporterManager(ReporterManager* p);
  // /*public*/ static /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
  friend class RosterFrame;
+ friend class SignalSpeedMap;
 };
 
+/**
+ * A class for lazy initialization of the singleton class InstanceManager.
+ * https://www.ibm.com/developerworks/library/j-jtp03304/
+ */
+/*private*/ /*static*/ class LazyInstanceManager {
+public:
+    /*public*/ static InstanceManager* instanceManager;// = new InstanceManager();
+};
 #endif // INSTANCEMANAGER_H

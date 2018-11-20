@@ -73,7 +73,7 @@ if(mtpl == NULL)
     if(isValidToken(primary)) {
         primaryType = primary.toLower();
     } else {
-        log->error("Primary type is invalid.", primaryType);
+        log->error(tr("Primary type is invalid. %1").arg(primaryType));
         throw new MimeTypeParseException("Primary type is invalid.");
     }
 
@@ -165,7 +165,7 @@ MimeTypeParameterList(rawdata.mid(semIndex));
 
     //    check to see if primary is valid
     if(!isValidToken(primaryType)) {
-        log->error("Primary type is invalid.", primaryType);
+     log->error(tr("Primary type is invalid. %1").arg(primaryType));
         throw new MimeTypeParseException("Primary type is invalid.");
     }
 

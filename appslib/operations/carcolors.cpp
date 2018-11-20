@@ -19,6 +19,8 @@ namespace Operations
 
  /*public*/ CarColors::CarColors(QObject* parent) :RollingStockAttribute(parent)
  {
+ setProperty("InstanceManagerAutoDefault", "yes");
+
  }
 
  /**

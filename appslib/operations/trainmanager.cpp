@@ -18,6 +18,7 @@
 #include "setup.h"
 #include <QThread>
 #include "car.h"
+#include "instancemanager.h"
 
 //TrainManager::TrainManager(QObject *parent) :
 //  QObject(parent)
@@ -60,6 +61,9 @@ namespace Operations
   _printPreview = false; // when true, preview train manifest
   _openFile = false; // when true, open CSV file manifest
   _runFile = false; // when true, run CSV file manifest
+  setProperty("InstanceManagerAutoDefault", "true");
+  setProperty("InstanceManagerAutoInitialize", "true");
+
 
   // Trains window row colors
   _rowColorManual = true; // when true train colors are manually assigned
@@ -88,25 +92,11 @@ namespace Operations
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ TrainManager* TrainManager::_instance = nullptr;
+// /*private*/ /*static*/ TrainManager* TrainManager::_instance = nullptr;
 
  /*public*/ /*static*/ /*synchronized*/ TrainManager* TrainManager::instance()
  {
-  Logger* log = new Logger("TrainManager");
-  if (_instance == nullptr)
-  {
-      if (log->isDebugEnabled()) {
-          log->debug("TrainManager creating instance");
-      }
-      // create and load
-      _instance = new TrainManager();
-      OperationsSetupXml::instance(); // load setup
-      TrainManagerXml::instance(); // load trains
-  }
-  if (Control::showInstance) {
-      log->debug("TrainManager returns instance " /*+ _instance*/);
-  }
-  return _instance;
+  return static_cast<TrainManager*>(InstanceManager::getDefault("TrainManager"));
  }
 
  /**
@@ -311,7 +301,7 @@ namespace Operations
  /*public*/ void TrainManager::dispose() {
      _trainHashTable.clear();
      _id = 0;
-     _instance = nullptr;	// we need to reset the instance for testing purposes
+//     _instance = nullptr;	// we need to reset the instance for testing purposes
  }
 
 
@@ -1217,5 +1207,10 @@ namespace Operations
  /*private*/ void TrainManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      TrainManagerXml::instance()->setDirty(true);
      pcs->firePropertyChange(p, old, n);
+ }
+ //@Override
+ /*public*/ void initialize() {
+     static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
+     static_cast<TrainManagerXml*>(InstanceManager::getDefault("TrainManagerXml")); // load trains
  }
 } // end namespace

@@ -33,17 +33,17 @@ AbstractSensorManager::AbstractSensorManager(QObject *parent) :
 /*public*/ Sensor* AbstractSensorManager::provideSensor(QString name)
 {
  Sensor* t = getSensor(name);
- if (t!=NULL) return t;
+ if (t!=nullptr) return t;
  if (isNumber(name))
-     return newSensor(makeSystemName(name), NULL);
+     return newSensor(makeSystemName(name), nullptr);
  else
-     return newSensor(name, NULL);
+     return newSensor(name, nullptr);
 }
 
 /*public*/ Sensor* AbstractSensorManager::getSensor(QString name)
 {
  Sensor* t = getByUserName(name);
- if (t!=NULL) return t;
+ if (t!=nullptr) return t;
 
  return getBySystemName(name);
 }
@@ -73,7 +73,7 @@ bool AbstractSensorManager::isNumber(QString s)
   key = makeSystemName(key);
  QString name = normalizeSystemName(key);
  if(!_tsys->contains(name))
-  return NULL;
+  return nullptr;
  NamedBean* bean = _tsys->value(name);
  Sensor* s = (Sensor*)(bean);
 //        Sensor * s = sensorMap.value(key);
@@ -87,8 +87,8 @@ bool AbstractSensorManager::isNumber(QString s)
 
 /*public*/ Sensor* AbstractSensorManager::getByUserName(QString key)
 {
- if(_tuser == NULL)
-  return NULL;
+ if(_tuser == nullptr)
+  return nullptr;
  return dynamic_cast<Sensor*>(_tuser->value(key));
 }
 
@@ -100,13 +100,13 @@ bool AbstractSensorManager::isNumber(QString s)
 {
  QString systemName = normalizeSystemName(sysName);
  if (log->isDebugEnabled()) log->debug("newSensor:"
-                                     +( (systemName==NULL) ? "NULL" : systemName)
-                                     +";"+( (userName==NULL) ? "NULL" : userName));
- if (systemName == NULL)
+                                     +( (systemName=="") ? "NULL" : systemName)
+                                     +";"+( (userName=="") ? "NULL" : userName));
+ if (systemName == nullptr)
  {
   log->error("SystemName cannot be NULL. UserName was "
-             +( (userName==NULL) ? "NULL" : userName));
-  throw new IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName==NULL) ? "NULL" : userName)));
+             +( (userName=="") ? "null" : userName));
+  throw IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName=="") ? "NULL" : userName)));
  }
  // is system name in correct format?
  QString neededPrefix = QString("%1%2").arg(getSystemPrefix().mid(0,1)).arg(QString(typeLetter()));
@@ -114,24 +114,24 @@ bool AbstractSensorManager::isNumber(QString s)
  {
   log->error("Invalid system name for sensor: "+systemName
                         +" needed "+neededPrefix);
-  //throw new IllegalArgumentException(QString("Invalid system name for turnout: %1  needed %2").arg(systemName).arg(neededPrefix));
-  systemName.replace(sysName.mid(0,1),getSystemPrefix().mid(0,1));
-  qDebug() << tr("Sensor name changed from %1 to %2").arg(sysName).arg(systemName);
+  throw  IllegalArgumentException(QString("Invalid system name for turnout: %1  needed %2").arg(systemName).arg(neededPrefix));
+//  systemName.replace(sysName.mid(0,1),getSystemPrefix().mid(0,1));
+//  qDebug() << tr("Sensor name changed from %1 to %2").arg(sysName).arg(systemName);
  }
 
  // return existing if there is one
- Sensor* s = NULL;
- if ( (userName!=NULL) && ((s = getByUserName(userName)) != NULL))
+ Sensor* s = nullptr;
+ if ( (userName!=nullptr) && ((s = getByUserName(userName)) != nullptr))
  {
   if (getBySystemName(systemName)!=s)
    log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
   return s;
  }
- if ( (s = getBySystemName(systemName)) != NULL)
+ if ( (s = getBySystemName(systemName)) != nullptr)
  {
-  if ((s->getUserName() == NULL) && (userName != NULL))
+  if ((s->getUserName() == nullptr) && (userName != nullptr))
     s->setUserName(userName);
-  else if (userName != NULL)
+  else if (userName != nullptr)
    log->warn("Found sensor via system name ("+systemName
                                 +") with non-NULL user name ("+userName+")");
   return s;
@@ -143,7 +143,7 @@ bool AbstractSensorManager::isNumber(QString s)
  //emit newSensorCreated(this, s);
 
  //  if that failed, blame it on the input arguements
- if (s == NULL) throw new IllegalArgumentException();
+ if (s == nullptr) throw  IllegalArgumentException();
 
  // save in the maps
  Register(s);
@@ -199,7 +199,7 @@ bool AbstractSensorManager::isNumber(QString s)
 //            return NULL;
 //        }
  Sensor* s = getBySystemName(tmpSName);
- if(s==NULL)
+ if(s==nullptr)
  {
   return curAddress;
  }
@@ -219,17 +219,17 @@ bool AbstractSensorManager::isNumber(QString s)
  //Check to determine if the systemName is in use, return NULL if it is,
  //otherwise return the next valid address.
  s = getBySystemName(prefix+typeLetter()+iName);
- if(s!=NULL)
+ if(s!=nullptr)
  {
   for(int x = 1; x<10; x++)
   {
    iName++;
    s = getBySystemName(prefix+typeLetter()+iName);
-   if(s==NULL)
+   if(s==nullptr)
 //                    return Integer.toString(iName);
     return QString("%1").arg(iName);
   }
-  return NULL;
+  return nullptr;
  }
  else
  {

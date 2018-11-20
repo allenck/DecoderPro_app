@@ -135,6 +135,7 @@ public:
     /*public*/ void setSignalDMast(QString signalMast);
     /*public*/ QObject* getConnection(int location) throw (JmriException);
     /*public*/ void setConnection(int location, QObject* o, int type) throw (JmriException);
+    /*public*/ QRectF getBounds();
 
 signals:
     

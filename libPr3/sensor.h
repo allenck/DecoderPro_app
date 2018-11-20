@@ -87,6 +87,13 @@ public:
         virtual bool getInverted() const /*=0*/ { return false;}
 
         /**
+         * Determine if sensor can be inverted. When a turnout is inverted the
+         * {@link #ACTIVE} and {@link #INACTIVE} states are inverted on the layout.
+         *
+         * @return true if can be inverted; false otherwise
+         */
+        virtual /*public*/ bool canInvert() {return false;}
+        /**
          * Request a call-back when the bound KnownState property changes.
          */
         virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) const /*=0*/{}

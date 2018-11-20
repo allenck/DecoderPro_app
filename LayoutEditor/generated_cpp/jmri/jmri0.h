@@ -63,8 +63,8 @@
 class PythonQtShell_AbstractAutomaton : public AbstractAutomaton
 {
 public:
-    PythonQtShell_AbstractAutomaton(QObject*  parent = 0):AbstractAutomaton(parent),_wrapper(nullptr) {};
-    PythonQtShell_AbstractAutomaton(QString  name, QObject*  parent = 0):AbstractAutomaton(name, parent),_wrapper(nullptr) {};
+    PythonQtShell_AbstractAutomaton(QObject*  parent = nullptr):AbstractAutomaton(parent),_wrapper(nullptr) {}
+    PythonQtShell_AbstractAutomaton(QString  name, QObject*  parent = nullptr):AbstractAutomaton(name, parent),_wrapper(nullptr) {}
 
    ~PythonQtShell_AbstractAutomaton();
 
@@ -204,7 +204,7 @@ void delete_AbstractManager(AbstractManager* obj) { delete obj; }
    QStringList  getUserNameList(AbstractManager* theWrappedObject);
    QString  makeSystemName(AbstractManager* theWrappedObject, QString  s);
    void on_propertyChange(AbstractManager* theWrappedObject, PropertyChangeEvent*  e);
-   void registerSelf(AbstractManager* theWrappedObject);
+   //void registerSelf(AbstractManager* theWrappedObject);
    void removePropertyChangeListener(AbstractManager* theWrappedObject, PropertyChangeListener*  l);
 };
 
@@ -402,8 +402,8 @@ void delete_AbstractProxyManager(AbstractProxyManager* obj) { delete obj; }
    NamedBean*  provideNamedBean(AbstractProxyManager* theWrappedObject, QString  name);
    void removePropertyChangeListener(AbstractProxyManager* theWrappedObject, PropertyChangeListener*  l);
    char  typeLetter(AbstractProxyManager* theWrappedObject);
-void py_set_mgrs(AbstractProxyManager* theWrappedObject, QList<Manager* >*  mgrs){ theWrappedObject->mgrs = mgrs; }
-QList<Manager* >*  py_get_mgrs(AbstractProxyManager* theWrappedObject){ return theWrappedObject->mgrs; }
+void py_set_mgrs(AbstractProxyManager* theWrappedObject, QList<Manager* >  mgrs){ theWrappedObject->mgrs = mgrs; }
+QList<Manager* >  py_get_mgrs(AbstractProxyManager* theWrappedObject){ return theWrappedObject->mgrs; }
 };
 
 
@@ -1897,17 +1897,17 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    void static_InstanceManager_addPropertyChangeListener(PropertyChangeListener*  l);
    void addReporterManager(InstanceManager* theWrappedObject, ReporterManager*  p);
    void addSensorManager(InstanceManager* theWrappedObject, SensorManager*  p);
-   void addShutdownManager(InstanceManager* theWrappedObject, ShutDownManager*  p);
-   void addSignalHeadManager(InstanceManager* theWrappedObject, SignalHeadManager*  p);
+   //void addShutdownManager(InstanceManager* theWrappedObject, ShutDownManager*  p);
+   //void addSignalHeadManager(InstanceManager* theWrappedObject, SignalHeadManager*  p);
    AudioManager*  static_InstanceManager_audioManagerInstance();
    CommandStation*  static_InstanceManager_commandStationInstance();
    QString  static_InstanceManager_contentsToString();
    void static_InstanceManager_deregister(QObject*  item, QString  type);
    QObject*  static_InstanceManager_getDefault(QString  type);
-   QList<QObject* >*  static_InstanceManager_getList(QString  type);
-   void init(InstanceManager* theWrappedObject);
+   QList<QObject* >  static_InstanceManager_getList(QString  type);
+   //void init(InstanceManager* theWrappedObject);
    InstanceManager*  static_InstanceManager_instance();
-   LayoutBlockManager*  static_InstanceManager_layoutBlockManagerInstance();
+   //LayoutBlockManager*  static_InstanceManager_layoutBlockManagerInstance();
    MemoryManager*  static_InstanceManager_memoryManagerInstance();
    void notifyPropertyChangeListener(InstanceManager* theWrappedObject, QString  property, QVariant  oldValue, QVariant  newValue);
    PowerManager*  static_InstanceManager_powerManagerInstance();

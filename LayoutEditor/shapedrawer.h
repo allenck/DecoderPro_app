@@ -10,12 +10,12 @@ class Positionable;
 class QMenu;
 class DrawFrame;
 class ControlPanelEditor;
-class ShapeDrawer : public QWidget
+class ShapeDrawer : public QObject
 {
     Q_OBJECT
 public:
     //explicit ShapeDrawer(QObject *parent = 0);
-    /*public*/ ShapeDrawer(ControlPanelEditor* ed, QWidget *parent = 0);
+    /*public*/ ShapeDrawer(ControlPanelEditor* ed, QObject *parent = 0);
     /*public*/ virtual QMenu* makeMenu();
     ///*public*/ void saveSelectionGroup(QList<Positionable*>* selectionGroup);
     /*public*/ bool doMousePressed(QGraphicsSceneMouseEvent* event, Positionable* pos);

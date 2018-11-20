@@ -100,7 +100,7 @@ void BlockTableAction::common()
 
  defaultBlockSpeedText = ("Use Global " + ((BlockManager*)InstanceManager::blockManagerInstance())->getDefaultSpeed());
  speedList.append(defaultBlockSpeedText);
- QVector<QString> _speedMap = SignalSpeedMap::getMap()->getValidSpeedNames();
+ QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
  for (int i = 0; i < _speedMap.size(); i++) {
      if (!speedList.contains(_speedMap.at(i))) {
          speedList.append(_speedMap.at(i));
@@ -637,7 +637,7 @@ void BlockTableAction::common()
 
  QString defaultBlockSpeedText = ("Use Global " + ((BlockManager*)InstanceManager::blockManagerInstance())->getDefaultSpeed());
  speedList.append(defaultBlockSpeedText);
- QVector<QString> _speedMap = SignalSpeedMap::getMap()->getValidSpeedNames();
+ QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
  for (int i = 0; i < _speedMap.size(); i++) {
      if (!speedList.contains(_speedMap.at(i))) {
          speedList.append(_speedMap.at(i));

@@ -40,14 +40,14 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
 //        log->debug(tr("registering connection %1").arg(memo->getUserName()));
 
         // check for special case
-        /*QList<SystemConnectionMemo*>*/QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
-        int size = list->size();
+        /*QList<SystemConnectionMemo*>*/QObjectList list = InstanceManager::getList("SystemConnectionMemo");
+        int size = list.size();
         //if (size > 0 && (list.at(size - 1) instanceof InternalSystemConnectionMemo))
-        if(size > 0 && qobject_cast<InternalSystemConnectionMemo*>(list->at(size-1)) != NULL)
+        if(size > 0 && qobject_cast<InternalSystemConnectionMemo*>(list.at(size-1)) != NULL)
         {
             // last is internal, so insert before that one
             log->debug("   putting one before end");
-            SystemConnectionMemo* internal = (SystemConnectionMemo*)list->at(size - 1);
+            SystemConnectionMemo* internal = (SystemConnectionMemo*)list.at(size - 1);
             InstanceManager::deregister(internal, "SystemConnectionMemo");
             InstanceManager::store(memo, "SystemConnectionMemo");
             InstanceManager::store(internal, "SystemConnectionMemo");
@@ -64,17 +64,19 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
         firePropertyChange("ConnectionRemoved", VPtr<SystemConnectionMemo>::asQVariant(memo), QVariant());
     }
 
-    /*public*/ /*synchronized*/ SystemConnectionMemo* SystemConnectionMemoManager::getSystemConnectionMemo(/*@Nonnull*/ QString systemPrefix,/* @Nonnull*/ QString userName) {
-        foreach( QObject* memo, *InstanceManager::getList("SystemConnectionMemo")) {
-            if (((SystemConnectionMemo*)memo)->getSystemPrefix() == (systemPrefix) && ((SystemConnectionMemo*)memo)->getUserName() == (userName)) {
-                return (SystemConnectionMemo*)memo;
-            }
-        }
-        return NULL;
-    }
+    /*public*/ /*synchronized*/ SystemConnectionMemo* SystemConnectionMemoManager::getSystemConnectionMemo(/*@Nonnull*/ QString systemPrefix,/* @Nonnull*/ QString userName)
+{
+ foreach( QObject* memo, InstanceManager::getList("SystemConnectionMemo"))
+ {
+     if (((SystemConnectionMemo*)memo)->getSystemPrefix() == (systemPrefix) && ((SystemConnectionMemo*)memo)->getUserName() == (userName)) {
+         return (SystemConnectionMemo*)memo;
+     }
+ }
+ return NULL;
+}
 
-    /*public*/ /*synchronized*/ SystemConnectionMemo* SystemConnectionMemoManager::getSystemConnectionMemoForUserName(/*@Nonnull */QString userName) {
-        foreach (QObject* memo, *InstanceManager::getList("SystemConnectionMemo")) {
+/*public*/ /*synchronized*/ SystemConnectionMemo* SystemConnectionMemoManager::getSystemConnectionMemoForUserName(/*@Nonnull */QString userName) {
+        foreach (QObject* memo, InstanceManager::getList("SystemConnectionMemo")) {
             if (((SystemConnectionMemo*)memo)->getUserName() == (userName)) {
                 return (SystemConnectionMemo*)memo;
             }
@@ -83,7 +85,7 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
     }
 
     /*public*/ /*synchronized*/ SystemConnectionMemo* SystemConnectionMemoManager::getSystemConnectionMemoForSystemPrefix(/*@Nonnull*/ QString systemPrefix) {
-        foreach (QObject* memo, *InstanceManager::getList("SystemConnectionMemo")) {
+        foreach (QObject* memo, InstanceManager::getList("SystemConnectionMemo")) {
             if (((SystemConnectionMemo*)memo)->getSystemPrefix() == (systemPrefix)) {
                 return (SystemConnectionMemo*)memo;
             }
@@ -99,7 +101,7 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
      */
     /*public*/ /*synchronized*/ bool SystemConnectionMemoManager::isUserNameAvailable(/*@Nonnull*/ QString userName) {
 //        return InstanceManager::getList("SystemConnectionMemo".stream().noneMatch((memo) -> (userName.equals(memo.getUserName())));
-     foreach (QObject* memo, *InstanceManager::getList("SystemConnectionMemo"))
+     foreach (QObject* memo, InstanceManager::getList("SystemConnectionMemo"))
      {
       if (userName == ((SystemConnectionMemo*)memo)->getUserName())
        return false;
@@ -116,19 +118,19 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
      */
     /*public*/ /*synchronized*/ bool SystemConnectionMemoManager::isSystemPrefixAvailable(/*@Nonnull*/ QString systemPrefix) {
 //        return InstanceManager.getList(SystemConnectionMemo.class).stream().noneMatch((memo) -> (memo.getSystemPrefix().equals(systemPrefix)));
- foreach (QObject* memo, *InstanceManager::getList("SystemConnectionMemo"))
+ foreach (QObject* memo, InstanceManager::getList("SystemConnectionMemo"))
  {
   if (systemPrefix == ((SystemConnectionMemo*)memo)->getSystemPrefix())
    return false;
  }
  return true;}
 
-    /**
-     * Get the default instance of this manager.
-     *
-     * @return the default instance, created if needed
-     */
-    /*public*/ /*static*/ SystemConnectionMemoManager* SystemConnectionMemoManager::getDefault() {
+/**
+ * Get the default instance of this manager.
+ *
+ * @return the default instance, created if needed
+ */
+/*public*/ /*static*/ SystemConnectionMemoManager* SystemConnectionMemoManager::getDefault() {
 //        return InstanceManager::getOptionalDefault(SystemConnectionMemoManager.class).orElseGet(() -> {
 //            return InstanceManager.setDefault(SystemConnectionMemoManager.class, new SystemConnectionMemoManager());
 //        });

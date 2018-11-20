@@ -16,12 +16,13 @@ namespace Operations
   /*public*/ void setOperationsFileName(QString name);
   /*public*/ QString getOperationsFileName();
   /*public*/ void dispose();
+  Q_INVOKABLE  /*public*/ void initialize();
 
  signals:
 
  public slots:
  private:
-  /*private*/ static EngineManagerXml* _instance;// = null;
+//  /*private*/ static EngineManagerXml* _instance;// = null;
   Logger* log;
   /*private*/ QString operationsFileName;// = "OperationsEngineRoster.xml"; // NOI18N
 

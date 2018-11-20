@@ -26,6 +26,12 @@ LoggerBase::LoggerBase(const LoggerBase & other) : QObject()
  qDebug() << tr("Error: ") << s << ex.toString();
  ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s);
 }
+/*static*/ void LoggerBase::error(QString s, Throwable ex)
+{
+ qDebug() << tr("Error: ") << s << ex.getMessage();
+ ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s);
+}
+
 //bool Logger::isDebugEnabled()
 //{ return bDebugEnabled;}
 

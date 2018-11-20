@@ -2,12 +2,13 @@
 #include "internalsystemconnectionmemo.h"
 #include "instancemanager.h"
 
-ProxySensorManager::ProxySensorManager()
+ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(parent)
 {
  setObjectName("ProxySensorManager");
  //qDebug() << "ProxySensorManger created";
- internalManager = makeInternalManager();
- registerSelf();
+ //internalManager = makeInternalManager();
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
 }
 /**
  * Implementation of a SensorManager that can serves as a proxy
@@ -25,7 +26,19 @@ ProxySensorManager::ProxySensorManager()
 
 /*protected*/ Manager* ProxySensorManager::makeInternalManager() const
 {
-  return ((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
+ QObjectList l = InstanceManager::getList("InternalSystemConnectionMemo");
+ InternalSystemConnectionMemo* memo;
+ if(!l.isEmpty())
+ {
+  memo = (InternalSystemConnectionMemo*)l.at(l.size()-1);
+ }
+ else
+  memo =(InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
+ SensorManager* manager = memo->getSensorManager();
+ l = InstanceManager::getList("InternalSystemConnectionMemo");
+ if(l.isEmpty())
+  InstanceManager::store(memo,"InternalSystemConnectionMemo");
+ return manager;
 }
 
 /**

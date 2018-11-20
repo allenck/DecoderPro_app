@@ -34,7 +34,7 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
 
     QDomElement element = doc.createElement("signalmasticon");
 
-    element.setAttribute("signalmast", p->getPName());
+    element.setAttribute("signalmast", p->getNamedSignalMast()->getName());
     storeCommonAttributes((Positionable*)p, element);
     element.setAttribute("clickmode", p->getClickMode());
     element.setAttribute("litmode", p->getLitMode());
@@ -119,8 +119,7 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
   if (log->isDebugEnabled()) log->debug("Load SignalMast "+name);
  }
 
- SignalMast* sh = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(name);
-
+ SignalMast* sh = static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->getSignalMast(name);
  if (sh != NULL)
  {
   l->setSignalMast(new NamedBeanHandle<SignalMast*>(name, sh));
@@ -168,4 +167,5 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
 
  ed->putItem((Positionable*)l);
 }
+
 SignalMastIcon* SignalMastIconXml::getIcon() { return l;}

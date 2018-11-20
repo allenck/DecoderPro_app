@@ -9,6 +9,7 @@
 #include <QWindow>
 #include <QApplication>
 #include <QProcess>
+#include "loggerfactory.h"
 
 /*static*/ bool DefaultShutDownManager::shuttingDown = false;
 
@@ -62,7 +63,7 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
  }
  else
  {
-  log.error(tr("already contains ")+s->metaObject()->className());
+  log->error(tr("already contains ")+s->metaObject()->className());
  }
 }
 
@@ -79,8 +80,9 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
  }
  else
  {
-  //throw new IllegalArgumentException("task not registered");
-  Logger::error("task not registered");
+  log->error("task not registered");
+  throw IllegalArgumentException("task not registered");
+
  }
 }
 
@@ -142,12 +144,12 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
   if (!this->runShutDownTasks(true)) {
       return false;
   }
-  log.debug(tr("parallel tasks completed executing %1 milliseconds after starting shutdown").arg( /*QDateTime::currentDateTime() - start.getTime()*/start.msecsTo(QDateTime::currentDateTime())));
+  log->debug(tr("parallel tasks completed executing %1 milliseconds after starting shutdown").arg( /*QDateTime::currentDateTime() - start.getTime()*/start.msecsTo(QDateTime::currentDateTime())));
   // trigger non-parallel tasks
   if (!this->runShutDownTasks(false)) {
       return false;
   }
-  log.debug(tr("sequential tasks completed executing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
+  log->debug(tr("sequential tasks completed executing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
 
   // close any open windows by triggering a closing event
   // this gives open windows a final chance to perform any cleanup
@@ -160,16 +162,16 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
     // will get called before windows can close
     if (frame->isActive())
     { // dispose() has not been called
-     log.debug(tr("Closing frame \"%1\", title: \"%2\"").arg(frame->metaObject()->className(), frame->title()));
+     log->debug(tr("Closing frame \"%1\", title: \"%2\"").arg(frame->metaObject()->className(), frame->title()));
      QDateTime timer = QDateTime::currentDateTime();
      //frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
      frame->close();
-     log.debug(tr("Frame \"%1\" took %2 milliseconds to close").arg(frame->metaObject()->className()).arg(timer.msecsTo(QDateTime::currentDateTime()))); // new Date().getTime() - timer.getTime());
+     log->debug(tr("Frame \"%1\" took %2 milliseconds to close").arg(frame->metaObject()->className()).arg(timer.msecsTo(QDateTime::currentDateTime()))); // new Date().getTime() - timer.getTime());
     }
    } //);
 //        }
 
-  log.debug(tr("windows completed closing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
+  log->debug(tr("windows completed closing %1 milliseconds after starting shutdown").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
 #if 0
   // wait for parallel tasks to complete
   /*synchronized (start)*/ {
@@ -181,23 +183,23 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
               // do nothing
           }
           if ((new Date().getTime() - start.getTime()) > (timeout * 1000)) { // milliseconds
-              log.warn("Terminating without waiting for all tasks to complete");
+              log->warn("Terminating without waiting for all tasks to complete");
               break;
           }
       }
   }
 #endif
   // success
-  log.debug(tr("Shutdown took %1 milliseconds.").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
-  log.info("Normal termination complete");
+  log->debug(tr("Shutdown took %1 milliseconds.").arg(start.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - start.getTime());
+  log->info("Normal termination complete");
   // and now terminate forcefully
   if (_exit) {
    if(status == 100)
    {
     qApp->quit();
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-      exit(status);
    }
+   exit(status);
   }
  }
  return false;
@@ -208,20 +210,20 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
     foreach (ShutDownTask* task,  QVector<ShutDownTask*>(*tasks))
     {
         if (task->isParallel() == isParallel) {
-            log.debug(tr("Calling task \"%1\"").arg(task->getName()));
+            log->debug(tr("Calling task \"%1\"").arg(task->getName()));
             QDateTime timer = QDateTime::currentDateTime();
             try {
                 setShuttingDown(task->execute()); // if a task aborts the shutdown, stop shutting down
                 if (!shuttingDown) {
-                    log.info(tr("Program termination aborted by \"%1\"").arg(task->getName()));
+                    log->info(tr("Program termination aborted by \"%1\"").arg(task->getName()));
                     return false;  // abort early
                 }
             } catch (Exception e) {
-                log.error(tr("Error during processing of ShutDownTask \"%1\"").arg(task->getName()+ e.getMessage()));
+                log->error(tr("Error during processing of ShutDownTask \"%1\"").arg(task->getName()+ e.getMessage()));
             } catch (Throwable e) {
                 // try logging the error
-                log.error("Unrecoverable error during processing of ShutDownTask \"{}\"", task->getName() + e.getMessage());
-                log.error("Terminating abnormally");
+                log->error(tr("Unrecoverable error during processing of ShutDownTask \"%1\"").arg(task->getName()), e);
+                log->error("Terminating abnormally");
                 // also dump error directly to System.err in hopes its more observable
 #if 0
                 System.err.println("Unrecoverable error during processing of ShutDownTask \"" + task.getName() + "\"");
@@ -231,7 +233,7 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
 #endif
                 exit(1);
             }
-            log.debug(tr("Task \"%1\" took %2 milliseconds to execute").arg(task->getName()).arg(timer.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - timer.getTime());
+            log->debug(tr("Task \"%1\" took %2 milliseconds to execute").arg(task->getName()).arg(timer.msecsTo(QDateTime::currentDateTime()))); //new Date().getTime() - timer.getTime());
         }
     }
     return true;
@@ -250,4 +252,5 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
 /*private*/ /*static*/ void DefaultShutDownManager::setShuttingDown(bool state) {
     shuttingDown = state;
 }
+/*private*/ /*final*/ /*static*/ Logger* DefaultShutDownManager::log = LoggerFactory::getLogger("DefaultShutDownManager");
 

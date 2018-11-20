@@ -1,0 +1,52 @@
+# profile to include and link PythonQt
+
+message(pythonqt.prf called by $${TARGET})
+
+# Change this variable to your python version (2.6, 2.7, 3.3, ...)
+
+win32:PYTHONQT_VERSION=master
+unix:PYTHONQT_VERSION=master
+
+win32:PREFIX = "C:/Program Files (x86)/local"
+unix:PREFIX = /home/allen/Projects/PythonQt-$$(PYTHONQT_VERSION)
+
+# check if debug or release
+CONFIG(debug, debug|release) {
+  DEBUG_EXT = _d
+} else {
+  DEBUG_EXT =
+}
+
+win32:exists($$PREFIX/lib/PythonQt$$(DEBUG_EXT).dll){
+ ENABLE_SCRIPTING = "Y"
+ message($$PREFIX/lib/PythonQt$$(DEBUG_EXT).dll + "exists")
+} else:win32: {
+ message($$PREFIX/lib/PythonQt$$(DEBUG_EXT).dll + "not found")
+ENABLE_SCRIPTING = "N"
+}
+
+unix:exists($$PREFIX/lib/libPythonQt$$(DEBUG_EXT).so){
+ ENABLE_SCRIPTING = "Y"
+} else:unix: {
+ message($$PREFIX/lib/libPythonQt.so$$(DEBUG_EXT) + "not found")
+ ENABLE_SCRIPTING = "N"
+}
+
+CONFIG += scripts
+equals(ENABLE_SCRIPTING, "Y") {
+    DEFINES += SCRIPTING_ENABLED
+
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
+    else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt_d -lPythonQt_QtAll_d
+
+    INCLUDEPATH += /usr/local/include/PythonQt
+    DEPENDPATH += /usr/local/include/PythonQt
+#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
+
+ include(../python.prf)
+ message(PythonQt: python scripts are enabled)
+
+}
+else {
+ message(PanelPro::Python scripts will be disabled)
+}

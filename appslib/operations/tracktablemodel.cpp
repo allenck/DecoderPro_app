@@ -390,7 +390,7 @@ namespace Operations
          updateList();
          fireTableDataChanged();
      }
-     if (e->getSource()->metaObject()->className()==("Track")
+     if (QString(e->getSource()->metaObject()->className())==("Track")
              && (e->getPropertyName()==(Track::LOADS_CHANGED_PROPERTY)
              || e->getPropertyName()==(Track::ROADS_CHANGED_PROPERTY)
              || e->getPropertyName()==(Track::DESTINATION_OPTIONS_CHANGED_PROPERTY)

@@ -335,7 +335,7 @@ if (p == NULL) {
   } 
   catch (Exception e)
   { 
-   log->error("Exception while loading decoder XML file: "+decoderFile->getFilename(), e.getMessage()); return; 
+   log->error("Exception while loading decoder XML file: "+decoderFile->getFilename(), e); return;
   } // NOI18N
   modelElem = decoderFile->getModelElement();
 
@@ -404,7 +404,7 @@ if (p == NULL) {
  }
  catch (Exception e)
  {
-  log->error("exception reading programmer file: ", e.getMessage()); // NOI18N
+  log->error("exception reading programmer file: ", e); // NOI18N
  }
 }
 void PaneProgDp3Action::On_saveBasicRoster()
@@ -542,7 +542,7 @@ void PaneProgDp3Action::saveRosterEntry() /*throws jmri.JmriException*/
  }
  // and store an updated roster file
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
- Roster::writeRosterFile();
+ Roster::writeRoster();
 
  // show OK status
  statusLabel->setText(tr("StateSaveOK").arg(filename));

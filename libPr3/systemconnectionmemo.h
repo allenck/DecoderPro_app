@@ -19,6 +19,7 @@
  * @author		Bob Jacobsen  Copyright (C) 2010
  * @version             $Revision: 18843 $
  */
+class ConsistManager;
 class ResourceBundle;
 class Manager;
 class LIBPR3SHARED_EXPORT SystemConnectionMemo : public QObject
@@ -34,7 +35,7 @@ public:
   * proper ID for later retrieval as a
   * generic system
   */
- void Register();
+ void _register();
  /**
   * Provides access to the system prefix string.
   * This was previously called the "System letter"
@@ -58,12 +59,14 @@ public:
  void setDisabled(bool disabled);
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired();
- static SystemConnectionMemo* instance();
- static void addPropertyChangeListener(PropertyChangeListener* l);
- static void removePropertyChangeListener(PropertyChangeListener* l);
+ //static SystemConnectionMemo* instance();
+// static void addPropertyChangeListener(PropertyChangeListener* l);
+// static void removePropertyChangeListener(PropertyChangeListener* l);
  /*public*/ static /*final*/ QString DISABLED;// = "ConnectionDisabled";
  /*public*/ static /*final*/ QString USER_NAME;// = "ConnectionNameChanged";
  /*public*/ static /*final*/ QString SYSTEM_PREFIX;// = "ConnectionPrefixChanged";
+ /*public*/ ConsistManager* getConsistManager();
+ /*public*/ void setConsistManager(ConsistManager* c);
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -78,23 +81,24 @@ private:
  /*private*/ QString userNameAsLoaded;
 
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("SystemConnectionMemo");
- const static bool initialised = false;
+ //const static bool initialised = false;
  /**
   * Provides a method to reserve System Names and prefixes at creation
   */
- static void initialise();
- static bool addUserName(QString userName);
- static bool addSystemPrefix(QString systemPrefix);
- static void removeUserName(QString userName);
- static void removeSystemPrefix(QString systemPrefix);
+ //static void initialise();
+ // static bool addUserName(QString userName);
+ // static bool addSystemPrefix(QString systemPrefix);
+ // static void removeUserName(QString userName);
+ // static void removeSystemPrefix(QString systemPrefix);
  //bool mDisabled;
  // data members to hold contact with the property listeners
- static QVector<PropertyChangeListener*>* listeners;
- static SystemConnectionMemo* _instance;
+// static QVector<PropertyChangeListener*>* listeners;
+ //static SystemConnectionMemo* _instance;
+ /*private*/ ConsistManager* consistManager = nullptr;
 
 protected:
- static QStringList* userNames; // = new ArrayList<String>();
- static QStringList* sysPrefixes; // = new ArrayList<String>();
+// static QStringList* userNames; // = new ArrayList<String>();
+// static QStringList* sysPrefixes; // = new ArrayList<String>();
  void notifyPropertyChangeListener(QString property, QVariant oldValue, QVariant newValue);
  virtual ResourceBundle* getActionModelResourceBundle() {return NULL;}
  void addToActionList();

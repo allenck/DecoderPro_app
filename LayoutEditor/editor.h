@@ -16,6 +16,7 @@
 #include "iconadder.h"
 #include "spinnernumbermodel.h"
 #include "flowlayout.h"
+#include "jlayeredpane.h"
 
 #if 0
 class UrlErrorDialog : QDialog {
@@ -165,6 +166,7 @@ static class ToolTipTimer : QTimer {
 };
 #endif
 
+class JLayeredPane;
 class BlockContentsIcon;
 class Class;
 class CircuitBuilder;
@@ -223,6 +225,7 @@ public:
     const /*public*/ static int OPTION_HIDDEN = 3;
     const /*public*/ static int OPTION_TOOLTIP= 4;
     /*final*/ /*public*/ static QColor HIGHLIGHT_COLOR;// =  QColor(204, 207, 88);
+    /*public*/ void newPanelDefaults();
 
     //    const /*public*/ static int OPTION_COORDS = 5;
     /*public*/ void loadFailed();
@@ -246,21 +249,18 @@ public:
     * Wait TOOLTIPSHOWDELAY then show tooltip.  Wait TOOLTIPDISMISSDELAY and disaappear
     */
 //    /*public*/ void actionPerformed(ActionEvent event);
-    /*public*/ void setAllEditable(bool state);
+    /*public*/ virtual void setAllEditable(bool state);
     // accessor routines for persistent information
     /*public*/ bool isEditable() ;
-    /*public*/ void setUseGlobalFlag(bool set);
+    /*public*/ virtual void setUseGlobalFlag(bool set);
     /*public*/ virtual bool useGlobalFlag();
     /*public*/ bool getFlag(int whichOption, bool localFlag);
     /*public*/ void setGlobalSetsLocalFlag(bool set) ;
-    /*public*/ void setAllPositionable(bool state) ;
     /*public*/ bool allPositionable();
     /*public*/ void setAllControlling(bool state) ;
     /*public*/ bool allControlling();
-    /*public*/ void setShowHidden(bool state);
     /*public*/ bool showHidden();
-    /*public*/ void setAllShowTooltip(bool state);
-    /*public*/ bool showTooltip();
+    /*public*/ bool showToolTip();
     /*public*/ void setShowCoordinates(bool state);
     /*public*/ bool showCoordinates();
     /*public*/ Q_DECL_DEPRECATED void setPanelMenu(bool state);
@@ -280,7 +280,8 @@ public:
     /*public*/ virtual void putItem(Positionable* l);
     /*public*/ bool removeFromContents(Positionable* l);
     /*public*/ bool deletePanel();
-    /*public*/ void dispose(bool clear);
+    QT_DEPRECATED/*public*/ void dispose(bool clear);
+    /*public*/ void dispose();
     /*public*/ const static int VIEWPOPUPONLY = 0x00;
     /*public*/ const static int EDITPOPUPONLY = 0x01;
     /*public*/ const static int BOTHPOPUPS = 0x02;
@@ -315,11 +316,18 @@ public:
     /*public*/ static Editor* getEditor(QString name);
     /*public*/ void setScroll(QString strState);
     /*public*/ QString getScrollable();
+    /*public*/ JFrameItem* getIconFrame(QString name);
+    /*public*/ void showToolTip(Positionable* selection, QGraphicsSceneMouseEvent* event);
+    /*public*/ const QScrollArea* getPanelScrollPane();
 
 signals:
     
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent *);
+    /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/;
+    /*public*/ void setAllPositionable(bool state) ;
+    /*public*/ void setShowHidden(bool state);
+    /*public*/ void setAllShowTooltip(bool state);
 
 private:
     /*private*/ bool _debug;// = false;
@@ -329,7 +337,7 @@ private:
     bool showCloseInfoMessage;// = true;	//display info message when closing panel
     void commonInit();
     /*private*/ JFrame*      _targetFrame;
-//    /*private*/ JScrollPane _panelScrollPane;
+    /*private*/ QScrollArea* _panelScrollPane;
     // Option menu items
     /*private*/ bool _positionable;// = true;
     /*private*/ bool _controlLayout;// = true;
@@ -348,7 +356,6 @@ private:
     QMap<QString, QString>* _urlMap;// = new QMap<QString, QString>();
     //ToolTipTimer* _tooltipTimer;
     QGraphicsView* editPanel;
-    EditScene* _targetPanel;
     EditScene* editScene;
     QGraphicsItemGroup* _selectRectItemGroup;
     QString name;
@@ -384,7 +391,7 @@ private slots:
 
  protected:
     /*protected*/ QVector <Positionable*>* _contents;// = new QVector<Positionable*>();
-//    /*protected*/ JLayeredPane _targetPanel;
+    /*protected*/ JLayeredPane* _targetPanel;
     /*protected*/ int _scrollState;// = SCROLL_NONE;
     /*protected*/ bool _editable;// = true;
     // mouse methods variables
@@ -419,16 +426,14 @@ private slots:
     * An Editor may or may not choose to use 'this' as its frame or
     * the interior class 'TargetPane' for its targetPanel
     */
+    /*protected*/ void setTargetPanel(JLayeredPane* targetPanel, JmriJFrame* frame);
     /*protected*/ void setTargetPanel(EditScene* targetPanel, JmriJFrame* frame);
     /*protected*/ void setTargetPanelSize(int w, int h);
     /*protected*/ QSizeF getTargetPanelSize();
 
-//    /*protected*/ const JScrollPane* getPanelScrollPane();
 
 //    ToolTipTimer* _tooltipTimer;
   /*protected*/ virtual void targetWindowClosing(bool save);
-  /*abstract*/ /*protected*/ virtual void targetWindowClosingEvent(QCloseEvent* /*e*/) {}
-
   /*protected*/ LocoIcon* selectLoco(QString rosterEntryTitle);
   /*protected*/ LocoIcon* selectLoco(RosterEntry* entry);
   /*protected*/ PositionableLabel* addLabel(QString text);
@@ -461,9 +466,16 @@ private slots:
 //  /*protected*/ void setSecondSelectionGroup(QList<Positionable*> list);
   /*abstract*/ /*protected*/ virtual void init(QString name);
   /*protected*/ void addRpsReporter();
-  /*protected*/ void setScroll(int state);
+  /*protected*/ virtual void setScroll(int state);
   /*protected*/ BlockContentsIcon* putBlockContents();
-
+  /*abstract*/ virtual /*protected*/ void targetWindowClosingEvent(QCloseEvent* e);
+  class TFWindowListener : public WindowListener
+  {
+   Editor *editor;
+  public:
+   TFWindowListener(Editor* editor);
+   /*public*/ void windowClosing(QCloseEvent*e);
+  };
   class SignalHeadActionListener : public ActionListener
   {
       Editor* editor;
@@ -483,7 +495,7 @@ private slots:
       Editor* editor;
   public:
       MultisensorIconActionListener(Editor* editor) { this->editor = editor;}
-   void actionPerformed(ActionEvent */*e*/= 0) { editor->addMultiSensor();}
+   void actionPerformed(ActionEvent */*e*/= nullptr) { editor->addMultiSensor();}
   };
   class MemoryIconAdder : public IconAdder
   {
@@ -494,6 +506,11 @@ private slots:
     QSpinBox* spinner;// = new QSpinBox(/*_spinCols*/);
   public:
     MemoryIconAdder(Editor* editor);
+    /**
+     * After construction, initialize all the widgets to their saved config
+     * settings.
+     */
+    virtual /*abstract*/ /*public*/ void initView() {}
 
   protected:
     /*protected*/ void addAdditionalButtons(QWidget* p);
@@ -538,6 +555,14 @@ protected slots:
   /*protected*/ Positionable* putIcon();
   /*public*/ MultiSensorIcon* addMultiSensor();
   virtual /*abstract*/ /*protected*/ void setNextLocation(Positionable* /*obj*/){}
+  /**
+   * Editor Views should make calls to this class (Editor) to set popup menu
+   * items. See 'Popup Item Methods' above for the calls.
+   *
+   * @param p     the item containing or requiring the context menu
+   * @param event the event triggering the menu
+   */
+  virtual /*abstract*/ /*protected*/ void showPopUp(Positionable* p, QMouseEvent* event) {}
   /*protected*/ bool setSelectionsPositionable(bool enabled, Positionable* p);
   virtual /*abstract*/ /*protected*/ void paintTargetPanel(QGraphicsScene* g);
   /*protected*/ void deselectSelectionGroup();
@@ -575,6 +600,7 @@ protected slots:
   friend class PositionablePolygon;
   friend class PolygonAction;
   friend class UrlErrorDialog;
+  friend class NewPanelEditor;
 public:
   class AddRightTOActionListener : public ActionListener
   {
@@ -584,7 +610,7 @@ public:
    {
     this->parent = parent;
    }
-   void actionPerformed(ActionEvent *e = 0)
+   void actionPerformed(ActionEvent *e = nullptr)
    {
     Q_UNUSED(e);
     parent->  addTurnoutR();
@@ -669,7 +695,7 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  void actionPerformed(ActionEvent *e = nullptr)
   {
    Q_UNUSED(e);
    parent->  putIcon();
@@ -683,13 +709,14 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  void actionPerformed(ActionEvent *e = nullptr)
   {
    Q_UNUSED(e);
    parent->  putMemory();
   }
  };
  friend class AddIconFrameWindowListener;
+ friend class SwitchboardEditor;
 };
 class TextAttributesActionListener : public QObject
 {
@@ -792,5 +819,176 @@ public slots:
 protected:
 
     /*protected*/ QWidget* makeDoneButtonPanel();
+    friend class SwitchboardEditor;
 };
+
+/**
+  * Special internal class to allow drawing of layout to a JLayeredPane. This
+  * is the 'target' pane where the layout is displayed.
+  */
+ /*public*/ class TargetPane : public JLayeredPane
+{
+ Q_OBJECT
+  int h = 100;
+  int w = 150;
+
+   /*public*/ TargetPane() {
+      setLayout(nullptr);
+  }
+
+  //@Override
+   /*public*/ void setSize(int width, int height) {
+//            log.debug("size now w={}, h={}", width, height);
+      this->h = height;
+      this->w = width;
+      //LayeredPane::setSize(width, height);
+   resize(w,h);
+  }
+#if 0
+  @Override
+   /*public*/ Dimension getSize() {
+      return new Dimension(w, h);
+  }
+
+  @Override
+   /*public*/ Dimension getPreferredSize() {
+      return new Dimension(w, h);
+  }
+
+  @Override
+   /*public*/ Dimension getMinimumSize() {
+      return getPreferredSize();
+  }
+
+  @Override
+   /*public*/ Dimension getMaximumSize() {
+      return getPreferredSize();
+  }
+
+  @Override
+   /*public*/ Component add(Component c, int i) {
+      int hnew = Math.max(this.h, c.getLocation().y + c.getSize().height);
+      int wnew = Math.max(this.w, c.getLocation().x + c.getSize().width);
+      if (hnew > h || wnew > w) {
+//                log.debug("size was {},{} - i =", w, h, i);
+          setSize(wnew, hnew);
+      }
+      return super.add(c, i);
+  }
+
+  @Override
+   /*public*/ void add(Component c, Object o) {
+      super.add(c, o);
+      int hnew = Math.max(h, c.getLocation().y + c.getSize().height);
+      int wnew = Math.max(w, c.getLocation().x + c.getSize().width);
+      if (hnew > h || wnew > w) {
+          // log.debug("adding of {} with Object - i=", c.getSize(), o);
+          setSize(wnew, hnew);
+      }
+  }
+
+  private Color _highlightColor = HIGHLIGHT_COLOR;
+  private Color _selectGroupColor = HIGHLIGHT_COLOR;
+  private Color _selectRectColor = Color.red;
+  private transient Stroke _selectRectStroke = DASHED_LINE;
+
+   /*public*/ void setHighlightColor(Color color) {
+      _highlightColor = color;
+  }
+
+   /*public*/ void setSelectGroupColor(Color color) {
+      _selectGroupColor = color;
+  }
+
+   /*public*/ void setSelectRectColor(Color color) {
+      _selectRectColor = color;
+  }
+
+   /*public*/ void setSelectRectStroke(Stroke stroke) {
+      _selectRectStroke = stroke;
+  }
+
+   /*public*/ void setDefaultColors() {
+      _highlightColor = HIGHLIGHT_COLOR;
+      _selectGroupColor = HIGHLIGHT_COLOR;
+      _selectRectColor = Color.red;
+      _selectRectStroke = DASHED_LINE;
+  }
+
+  @Override
+   /*public*/ void paint(Graphics g) {
+      Graphics2D g2d = null;
+      if (g instanceof Graphics2D) {
+          g2d = (Graphics2D) g;
+          g2d.scale(_paintScale, _paintScale);
+      }
+
+      super.paint(g);
+      paintTargetPanel(g);
+
+      Stroke stroke = new BasicStroke();
+      if (g2d != null) {
+          stroke = g2d.getStroke();
+      }
+      Color color = g.getColor();
+      if (_selectRect != null) {
+          //Draw a rectangle on top of the image.
+          if (g2d != null) {
+              g2d.setStroke(_selectRectStroke);
+          }
+          g.setColor(_selectRectColor);
+          g.drawRect(_selectRect.x, _selectRect.y, _selectRect.width, _selectRect.height);
+      }
+      if (_selectionGroup != null) {
+          g.setColor(_selectGroupColor);
+          if (g2d != null) {
+              g2d.setStroke(new BasicStroke(2.0f));
+          }
+          for (Positionable p : _selectionGroup) {
+              if (!(p instanceof PositionableShape)) {
+                  g.drawRect(p.getX(), p.getY(), p.maxWidth(), p.maxHeight());
+              } else {
+                  PositionableShape s = (PositionableShape) p;
+                  s.drawHandles();
+              }
+          }
+      }
+      //Draws a border around the highlighted component
+      if (_highlightcomponent != null) {
+          g.setColor(_highlightColor);
+          if (g2d != null) {
+              g2d.setStroke(new BasicStroke(2.0f));
+          }
+          g.drawRect(_highlightcomponent.x, _highlightcomponent.y,
+                  _highlightcomponent.width, _highlightcomponent.height);
+      }
+      g.setColor(color);
+      if (g2d != null) {
+          g2d.setStroke(stroke);
+      }
+      if (_tooltip != null) {
+          _tooltip.paint(g2d, _paintScale);
+      }
+  }
+
+   /*public*/ void setBackgroundColor(Color col) {
+      setBackground(col);
+      setOpaque(true);
+      JmriColorChooser.addRecentColor(col);
+  }
+
+   /*public*/ void clearBackgroundColor() {
+      setOpaque(false);
+  }
+
+   /*public*/ Color getBackgroundColor() {
+      if (isOpaque()) {
+          return getBackground();
+      }
+      return null;
+  }
+#endif
+  friend class SwitchboardEditor;
+  friend class Editor;
+ };
 #endif // EDITOR_H

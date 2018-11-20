@@ -12,7 +12,7 @@ public:
     /*public*/ QDomElement store(QObject* o);
     /*public*/ QDomElement store(QObject* o, QDomElement sensors);
     /*abstract*/ /*public*/virtual void setStoreElementClass(QDomElement sensors) = 0;
-    /*abstract*/ /*public*/ virtual bool load(QDomElement sensors) throw (JmriConfigureXmlException) =0;
+ /*abstract*/ /*public*/ virtual bool load(QDomElement sensors) throw (JmriConfigureXmlException) {}
     /*public*/ bool loadSensors(QDomElement sensors) throw (JmriConfigureXmlException);
     /*public*/ int loadOrder();
 

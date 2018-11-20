@@ -27,7 +27,7 @@ ListThrottles::ListThrottles(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *par
  ui->toolBar->addAction(emergencyStop);
 
  pmgr=(PowerManager*)InstanceManager::getDefault("PowerManager");
- if(this->pmgr != NULL)
+ if(this->pmgr != nullptr)
  {
   //LnPowerManager* pmgr = memo->getPowerManager();
   pmgr->addPropertyChangeListener((PropertyChangeListener*)this);
@@ -120,7 +120,7 @@ void ListThrottles::refreshList()
    connect(tw, SIGNAL(throttleWindowupdate(PropertyChangeEvent*)), this, SLOT(onThrottleWindowChanged(PropertyChangeEvent*)));
    Throttle* t = tw->getThrottle();
    QString text = tw->getTitle();
-   if(t != NULL)
+   if(t != nullptr)
     text.append((((LocoNetThrottle*)t)->getIsForward()?tr("Forward"):tr("Reverse")) + " " + QString("%1%").arg((int)(((LocoNetThrottle*)t)->getSpeedSetting()*100)));
    //QListWidgetItem* item =new QListWidgetItem(text);
 

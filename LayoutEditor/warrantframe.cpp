@@ -34,6 +34,7 @@
 #include "tablecolumn.h"
 #include "tablecolumnmodel.h"
 #include "defaulttablecolumnmodel.h"
+#include "speedutil.h"
 
 #include <QSizePolicy>
 //WarrantFrame::WarrantFrame(QWidget *parent) :
@@ -1462,6 +1463,15 @@ void doAction(Object obj) {
      }
      setThrottleCommand(cmd, value, bName);
  }
+
+/*protected*/ void WarrantFrame::setSpeedCommand(float speed, bool isForward) {
+    if (_warrant->getSpeedUtil()->profileHasSpeedInfo()) {
+        _speed = _warrant->getSpeedUtil()->getTrackSpeed(speed, isForward);  // mm/ms
+    } else {
+        _speed = 0.0;
+    }
+    setThrottleCommand("speed", QString::number(speed, 'g',2));
+}
 
  /*private*/ void WarrantFrame::setThrottleCommand(QString cmd, QString value, QString bName) {
      qint64 endTime = QDateTime::currentMSecsSinceEpoch();

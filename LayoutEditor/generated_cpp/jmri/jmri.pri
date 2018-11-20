@@ -1,4 +1,3 @@
-iic723@knobacres
 HEADERS += \
            $$PWD/jmri0.h \
            $$PWD/jmri1.h \

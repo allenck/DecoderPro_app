@@ -1,12 +1,14 @@
 #ifndef CONFIGXMLMANAGER_H
 #define CONFIGXMLMANAGER_H
+
 #include "xmlfile.h"
 #include <QUrl>
 #include "xmladapter.h"
-#include "errorhandler.h"
+
 #include "level.h"
 #include "configuremanager.h"
 #include "liblayouteditor_global.h"
+
 class File;
 class XmlAdapter;
 class ErrorHandler;
@@ -14,7 +16,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT ConfigXmlManager : public ConfigureManager
 {
     Q_OBJECT
 public:
-    explicit ConfigXmlManager(QObject *parent = 0);
+    explicit ConfigXmlManager(QObject *parent = nullptr);
     ~ConfigXmlManager();
     /**
      * Define the current DTD version string for the layout-config DTD.
@@ -34,14 +36,14 @@ public:
     /*public*/ void deregister(QObject* o);
     /*public*/ static QString adapterName(QObject* o);
     void locateClassFailed(Throwable ex, QString adapterName, QObject* o);
-    /*public*/ bool storeAll(File* file) ;
+    /*public*/ bool storeAll(File* file) const;
     /*public*/ void storePrefs() ;
     /*public*/ void storePrefs(File* file) ;
     /*public*/ void storeUserPrefs(File* file);
     /*public*/ void setPrefsLocation(File* prefsFile);
     /*public*/ bool storeConfig(File* file);
     /*public*/ bool storeUser(File* file) ;
-    /*public*/ bool makeBackup(File* file);
+    /*public*/ bool makeBackup(File* file) const;
     static /*public*/ QDomElement elementFromObject(QObject* o);
     static /*public*/ QDomElement elementFromObject(QObject* object, bool shared);
     /*public*/ bool load(File* fi) throw (JmriException) ;
@@ -58,7 +60,7 @@ public:
             QString description,
             QString systemName,
             QString userName,
-            Throwable* exception);
+            Exception exception);
     static /*public*/ void storingErrorEncountered(
             XmlAdapter* adapter,
             QString operation,
@@ -66,7 +68,7 @@ public:
             QString description,
             QString systemName,
             QString userName,
-            Throwable* exception
+            Exception exception
             );
     /*static*/ /*public*/ void setErrorHandler(ErrorHandler handler);
 
@@ -85,7 +87,7 @@ private:
     QMap<int, QDomElement> loadDeferredList;// = new QList<QDomElement>();
     File* prefsFile;
     QString defaultBackupDirectory;// = FileUtil.getUserFilesPath()+"backupPanels";
-    /*private*/ void storeVersion(QDomElement root);
+    /*private*/ void storeVersion(QDomElement root) const;
     /*private*/ static /*final*/ QString fileLocation;// = "layout"+File.separator;
     static ErrorHandler* handler;// = new ErrorHandler();
     static /*public*/ void setErrorHandler(ErrorHandler* handler);
@@ -94,14 +96,14 @@ private:
 
 protected:
 
-    /*protected*/ QDomElement initStore() ;
+    /*protected*/ QDomElement initStore() const;
     /*protected*/ void addPrefsStore(QDomElement root) ;
-    /*protected*/ bool addConfigStore(QDomElement root) ;
-    /*protected*/ bool addToolsStore(QDomElement root);
-    /*protected*/ bool addUserStore(QDomElement root);
-    /*protected*/ void addUserPrefsStore(QDomElement root);
-    /*protected*/ void includeHistory(QDomElement root);
-    /*protected*/ bool finalStore(QDomElement root, File* file);
+    /*protected*/ bool addConfigStore(QDomElement root) const;
+    /*protected*/ bool addToolsStore(QDomElement root) const;
+    /*protected*/ bool addUserStore(QDomElement root) const;
+    /*protected*/ void addUserPrefsStore(QDomElement root) const;
+    /*protected*/ void includeHistory(QDomElement root) const;
+    /*protected*/ bool finalStore(QDomElement root, File* file) const;
     /*protected*/ QList<QDomElement> getLoadDeferredList();
 
 friend class Apps;

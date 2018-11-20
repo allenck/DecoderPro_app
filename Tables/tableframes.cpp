@@ -522,7 +522,7 @@ void TableFrames::on_openSignal_triggered()
  //_oBlockModel->buttonMap->insert(OBlockTableModel::REPORT_CURRENTCOL,NULL);
 
 //    _oBlockTable.getColumnModel().getColumn(OBlockTableModel::SPEEDCOL).setCellEditor(new DefaultCellEditor(box));
- _oBlockTable->setItemDelegateForColumn(OBlockTableModel::SPEEDCOL, new OBSComboBoxDelegate(_oBlockModel, SignalSpeedMap::getMap()->getValidSpeedNames().toList()));
+ _oBlockTable->setItemDelegateForColumn(OBlockTableModel::SPEEDCOL, new OBSComboBoxDelegate(_oBlockModel, ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList()));
  _oBlockModel->buttonMap.append(OBlockTableModel::SPEEDCOL);
 //    _oBlockTable.getColumnModel().getColumn(OBlockTableModel::PERMISSIONCOL).setCellRenderer(
 //            new MyBooleanRenderer(tr("Permissive"), tr("Absolute")));

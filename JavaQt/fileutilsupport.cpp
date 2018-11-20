@@ -313,14 +313,18 @@ public URL getURL(URI uri) {
  * @return Storage format representation
  * @since 3.5.5
  */
-/*public*/ QString FileUtilSupport::getPortableFilename(QString filename, bool ignoreUserFilesPath, bool ignoreProfilePath) {
-    if (this->isPortableFilename(filename)) {
-        // if this already contains prefix, run through conversion to normalize
-        return getPortableFilename(getExternalFilename(filename), ignoreUserFilesPath, ignoreProfilePath);
-    } else {
-        // treat as pure filename
-        return getPortableFilename(new File(filename), ignoreUserFilesPath, ignoreProfilePath);
-    }
+/*public*/ QString FileUtilSupport::getPortableFilename(QString filename, bool ignoreUserFilesPath, bool ignoreProfilePath)
+{
+ if (this->isPortableFilename(filename))
+ {
+  // if this already contains prefix, run through conversion to normalize
+  return getPortableFilename(getExternalFilename(filename), ignoreUserFilesPath, ignoreProfilePath);
+ }
+ else
+ {
+  // treat as pure filename
+  return getPortableFilename(new File(filename), ignoreUserFilesPath, ignoreProfilePath);
+ }
 }
 
 /**
@@ -508,7 +512,7 @@ public URL getURL(URI uri) {
  try {
      this->programPath = (path)->getCanonicalPath() + File::separator;
  } catch (IOException ex) {
-     log->error("Unable to get JMRI program directory.", ex.getMessage());
+     log->error("Unable to get JMRI program directory.", ex);
  }
  if ((old != NULL && old != (this->programPath))
          || (this->programPath != NULL && this->programPath !=(old)))
@@ -719,71 +723,104 @@ public URL getURL(URI uri) {
  * @since 2.7.2
  */
 //@SuppressWarnings("deprecation")
-/*private*/ QString FileUtilSupport::pathFromPortablePath(/*@Nonnull*/ QString path) {
-    if (path.startsWith(FileUtil::PROGRAM))
-    {
-        if ((new File(path.mid(FileUtil::PROGRAM.length())))->isAbsolute())
-        {
-            path = path.mid(FileUtil::PROGRAM.length());
-        } else {
-            path = path.replace(FileUtil::PROGRAM, Matcher::quoteReplacement(this->getProgramPath()));
-        }
-    }
-    else if (path.startsWith(FileUtil::PREFERENCES))
-    {
-        if ((new File(path.mid(FileUtil::PREFERENCES.length())))->isAbsolute())
-        {
-            path = path.mid(FileUtil::PREFERENCES.length());
-        }
-        else
-        {
-            path = path.replace(FileUtil::PREFERENCES, Matcher::quoteReplacement(this->getUserFilesPath()));
-        }
-    }
-    else if (path.startsWith(FileUtil::PROFILE))
-    {
-        if ((new File(path.mid(FileUtil::PROFILE.length())))->isAbsolute()) {
-            path = path.mid(FileUtil::PROFILE.length());
-        } else {
-            path = path.replace(FileUtil::PROFILE, Matcher::quoteReplacement(this->getProfilePath()));
-        }
-    } else if (path.startsWith(FileUtil::SCRIPTS)) {
-        if ((new File(path.mid(FileUtil::SCRIPTS.length())))->isAbsolute()) {
-            path = path.mid(FileUtil::SCRIPTS.length());
-        } else {
-            path = path.replace(FileUtil::SCRIPTS, Matcher::quoteReplacement(this->getScriptsPath()));
-        }
-    } else if (path.startsWith(FileUtil::SETTINGS)) {
-        if ((new File(path.mid(FileUtil::SETTINGS.length())))->isAbsolute()) {
-            path = path.mid(FileUtil::SETTINGS.length());
-        } else {
-            path = path.replace(FileUtil::SETTINGS, Matcher::quoteReplacement(this->getPreferencesPath()));
-        }
-    }
-    else if (path.startsWith(FileUtil::HOME)) {
-        if ((new File(path.mid(FileUtil::HOME.length())))->isAbsolute()) {
-            path = path.mid(FileUtil::HOME.length());
-        } else {
-            path = path.replace(FileUtil::HOME, Matcher::quoteReplacement(this->getHomePath()));
-        }
-    }
-    else if (!(new File(path))->isAbsolute()) {
-        return "";
-    }
-    try {
-        // if path cannot be converted into a canonical path, return null
-     Q_ASSERT(path != "/");
-     Q_ASSERT(!path.endsWith("//"));
-        //log->debug(tr("Using %1").arg(path));
-        QFileInfo info(path);
-        if(!info.exists())
-         //throw FileNotFoundException(path);
-         throw NullPointerException(path);  // throw IOException??
-        return (new File(path.replace(FileUtil::SEPARATOR, File::separatorChar)))->getCanonicalPath();
-    } catch (IOException ex) {
-        log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
-        return "";
-    }
+/*public*/ QString FileUtilSupport::pathFromPortablePath(/*@Nonnull*/ QString path)
+{
+ QString path_save = path;
+ if(path.startsWith(":/"))
+ {
+  if(!QFileInfo(path).exists())
+  {
+   path = path_save.replace(":/", Matcher::quoteReplacement(this->getProgramPath()));
+   if(!QFileInfo(path).exists())
+    path = path_save;
+  }
+  return path;
+
+ } else
+ if (path.startsWith(FileUtil::PROGRAM))
+ {
+  if ((new File(path.mid(FileUtil::PROGRAM.length())))->isAbsolute())
+  {
+   path = path.mid(FileUtil::PROGRAM.length());
+  }
+  else
+  {
+   path = path_save.replace(FileUtil::PROGRAM, Matcher::quoteReplacement(this->getProgramPath()));
+   if(!QFileInfo(path).exists())
+   {
+    path = path_save.replace(FileUtil::PROGRAM, ":/");
+    if(path.startsWith(":/jython"))
+     path.replace(":/jython", userFilesPath+"../jython");
+   }
+   else
+    if(!QFileInfo(path).exists())
+    log->info(tr("unable to find %1 specified as %2").arg(path).arg(path_save));
+  }
+ }
+ else if (path.startsWith(FileUtil::PREFERENCES))
+ {
+  if ((new File(path.mid(FileUtil::PREFERENCES.length())))->isAbsolute())
+  {
+      path = path.mid(FileUtil::PREFERENCES.length());
+  }
+  else
+  {
+      path = path.replace(FileUtil::PREFERENCES, Matcher::quoteReplacement(this->getUserFilesPath()));
+  }
+ }
+ else if (path.startsWith(FileUtil::PROFILE))
+ {
+  if ((new File(path.mid(FileUtil::PROFILE.length())))->isAbsolute()) {
+      path = path.mid(FileUtil::PROFILE.length());
+  } else {
+      path = path.replace(FileUtil::PROFILE, Matcher::quoteReplacement(this->getProfilePath()));
+  }
+ }
+ else if (path.startsWith(FileUtil::SCRIPTS))
+ {
+  if ((new File(path.mid(FileUtil::SCRIPTS.length())))->isAbsolute()) {
+      path = path.mid(FileUtil::SCRIPTS.length());
+  } else {
+      path = path.replace(FileUtil::SCRIPTS, Matcher::quoteReplacement(this->getScriptsPath()));
+  }
+ }
+ else if (path.startsWith(FileUtil::SETTINGS))
+ {
+  if ((new File(path.mid(FileUtil::SETTINGS.length())))->isAbsolute()) {
+      path = path.mid(FileUtil::SETTINGS.length());
+  } else {
+      path = path.replace(FileUtil::SETTINGS, Matcher::quoteReplacement(this->getPreferencesPath()));
+  }
+ }
+ else if (path.startsWith(FileUtil::HOME))
+ {
+  if ((new File(path.mid(FileUtil::HOME.length())))->isAbsolute()) {
+      path = path.mid(FileUtil::HOME.length());
+  } else {
+      path = path.replace(FileUtil::HOME, Matcher::quoteReplacement(this->getHomePath()));
+  }
+ }
+ else if (!(new File(path))->isAbsolute()) {
+     path = FileUtil::getProgramPath() + path;
+ }
+ try {
+     // if path cannot be converted into a canonical path, return null
+  Q_ASSERT(path != "/");
+  Q_ASSERT(!path.endsWith("//"));
+     //log->debug(tr("Using %1").arg(path));
+     QFileInfo info(path);
+     if(!info.exists())
+     {
+      //throw FileNotFoundException(path);
+      QString msg = tr("can't convert '%1' to '%2'").arg(path_save).arg(path);
+      log->error(msg);
+      throw NullPointerException(msg);  // throw IOException??
+     }
+     return (new File(path.replace(FileUtil::SEPARATOR, File::separatorChar)))->getCanonicalPath();
+ } catch (IOException ex) {
+     log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
+     return "";
+ }
 }
 /**
  * Find a suitable path to JRMI distributed files, either in a source download or an executable distribution.
@@ -820,9 +857,9 @@ public URL getURL(URI uri) {
 //   qDebug() << fn;
   if(fn == "xml")
   {
-   qDebug() << "scanDir found directory: " << info.fileName();
+   qDebug() << "scanDir found directory: " << info.path();
    QStringList names = QDir(info.filePath()).entryList(filters,QDir::Files);
-   if(names.contains("catalog.xml") && names.contains("names.xml") && names.contains("decoderIndex.xml"))
+   if(names.contains("catalog.xml") && names.contains("names.xml") && names.contains("decoderIndex.xml") && !(info.filePath().contains(".jmri")))
    {
     paths->append(info.path());
     names = QDir(info.absolutePath() + File::separator + "web").entryList(filters,QDir::AllDirs);
@@ -897,7 +934,8 @@ public URL getURL(URI uri) {
 //            }
 //        }
 //        return builder.toString();
-    if(url.path() == "") throw NullPointerException();
+    if(url.path() == "")
+     throw NullPointerException("invalid URL");
     QFile* f = new QFile(url.path());
     if(f->open(QIODevice::ReadOnly))
     {
@@ -905,9 +943,11 @@ public URL getURL(URI uri) {
      builder = stream.readAll();
      return builder;
     }
-    } catch (NullPointerException ex) {
+ }
+ catch (NullPointerException ex) {
         return NULL;
-    }
+ }
+ return "";
 }
 
 /**
@@ -1095,7 +1135,7 @@ public URL getURL(URI uri) {
       if(!f.open(QIODevice::ReadOnly)) throw IOException(f.fileName());
       return new QTextStream(&f);
         } catch (IOException ex) {
-            log->error(ex.getLocalizedMessage(), ex.getMessage());
+            log->error(ex.getLocalizedMessage(), ex);
         }
     }
     return NULL;
@@ -1220,6 +1260,8 @@ public URL getURL(URI uri) {
     File* file;
     if (locations == FileUtil::Location::ALL || locations == FileUtil::Location::USER) {
         // attempt to return path from preferences directory
+        if(path.startsWith(":/"))
+         return path;
         file = new File(this->getUserFilesPath(), path);
         if (file->exists()) {
             //return file.toURI();
@@ -1237,20 +1279,27 @@ public URL getURL(URI uri) {
             //return file.toURI();
          return file->getPath();
         }
-    }
-    if (locations == FileUtil::Location::ALL || locations == FileUtil::Location::INSTALLED) {
-        // attempt to return path from current working directory
-        file = new File(path);
+        // attempt to return path from resources directory
+        file = new File(":/", path);
         if (file->exists()) {
             //return file.toURI();
          return file->getPath();
         }
+    }
+    if (locations == FileUtil::Location::ALL || locations == FileUtil::Location::INSTALLED) {
+        // attempt to return path from current working directory
         // attempt to return path from JMRI distribution directory
         file = new File(this->getProgramPath() + path);
         if (file->exists()) {
             //return file.toURI();
          return file->getPath();
         }
+        file = new File(path);
+        if (file->exists()) {
+            //return file.toURI();
+         return file->getPath();
+        }
+
     }
 #if 0
     if (locations == FileUtil::Location::ALL || locations == FileUtil::Location::INSTALLED) {
@@ -1375,7 +1424,7 @@ public URL getURL(URI uri) {
             //return file.toURL();
          return file;
         } catch (MalformedURLException ex) {
-            log->error(ex.getLocalizedMessage(), ex.getMessage());
+            log->error(ex.getLocalizedMessage(), ex);
         }
     }
     return QUrl();

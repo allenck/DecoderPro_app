@@ -4,6 +4,8 @@
 PortalManager::PortalManager(QObject *parent) :
   AbstractManager(parent)
 {
+ setProperty("InstanceManagerAutoDefault", "yes");
+
 }
 /**
  * Basic Implementation of a PortalManager.

@@ -33,6 +33,8 @@ namespace Operations
  {
   log = new Logger("CarTypes");
   maxNameLengthSubType = 0;
+  setProperty("InstanceManagerAutoDefault", "yes");
+
  }
 
 

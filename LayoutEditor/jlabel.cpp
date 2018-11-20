@@ -104,7 +104,7 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  *           <code>LEADING</code> or
  *           <code>TRAILING</code>.
  */
-/*public*/ JLabel::JLabel(QString text, NamedIcon* icon, int horizontalAlignment, QWidget *parent)
+/*public*/ JLabel::JLabel(QString text, ImageIcon* icon, int horizontalAlignment, QWidget *parent)
  : Positionable(text, parent)
 {
  init();
@@ -136,7 +136,7 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  //this(text, NULL, horizontalAlignment);
  init();
  setText(text);
- setIcon(NULL);
+ setIcon(nullptr);
  setHorizontalAlignment(horizontalAlignment);
 }
 
@@ -188,14 +188,21 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  *
  * @param image  The image to be displayed by the label.
  */
-/*public*/ JLabel::JLabel(NamedIcon* image, QWidget *parent)
+/*public*/ JLabel::JLabel(ImageIcon* image, QWidget *parent)
  : Positionable(parent) {
     //this(NULL, image, CENTER);
     init();
     setText("");
     setIcon(image);
     setHorizontalAlignment(CENTER);
-
+}
+/*public*/ JLabel::JLabel(NamedIcon* image, QWidget *parent)
+ : Positionable(parent) {
+    //this(NULL, image, CENTER);
+    init();
+    setText("");
+    setIcon((ImageIcon*)image);
+    setHorizontalAlignment(CENTER);
 }
 
 /**
@@ -222,8 +229,8 @@ mnemonic = '\0';
 mnemonicIndex = -1;
 
 text = "";         // "" rather than NULL, for BeanBox
-defaultIcon = NULL;
-disabledIcon = NULL;
+defaultIcon = nullptr;
+disabledIcon = nullptr;
 disabledIconSet = false;
 isAlignmentXSet = false;
 
@@ -354,7 +361,7 @@ _y = 0;
  * @return an Icon
  * @see #setIcon
  */
-/*public*/ NamedIcon* JLabel::getIcon() {
+/*public*/ ImageIcon* JLabel::getIcon() {
     return defaultIcon;
 }
 
@@ -375,11 +382,12 @@ _y = 0;
  *    attribute: visualUpdate true
  *  description: The icon this component will display.
  */
-/*public*/ void JLabel::setIcon(NamedIcon* icon) {
-    NamedIcon* oldValue = defaultIcon;
+/*public*/ void JLabel::setIcon(ImageIcon* icon) {
+    ImageIcon* oldValue = defaultIcon;
     defaultIcon = icon;
-    if(icon != NULL)
-     QLabel::setPixmap(QPixmap::fromImage(/*icon->getImage()*/icon->getOriginalImage()));
+    if(icon != nullptr)
+     //QLabel::setPixmap(QPixmap::fromImage(/*icon->getImage()*/icon->getOriginalImage()));
+     QLabel::setPixmap(QPixmap::fromImage(icon->getImage()));
 
 
     /* If the default icon has really changed and we had
@@ -388,7 +396,7 @@ _y = 0;
      * clear the disabledIcon field.
      */
     if ((defaultIcon != oldValue) && !disabledIconSet) {
-        disabledIcon = NULL;
+        disabledIcon = nullptr;
     }
 
 //    firePropertyChange("icon", oldValue, defaultIcon);
@@ -429,8 +437,8 @@ _y = 0;
  * @see ImageIcon
  */
 //@Transient
-/*public*/ NamedIcon* JLabel::getDisabledIcon() {
-    if (!disabledIconSet && disabledIcon == NULL && defaultIcon != NULL) {
+/*public*/ ImageIcon* JLabel::getDisabledIcon() {
+    if (!disabledIconSet && disabledIcon == nullptr && defaultIcon != nullptr) {
 //        disabledIcon = UIManager.getLookAndFeel().getDisabledIcon(this, defaultIcon);
 //        if (disabledIcon != NULL) {
 //            firePropertyChange("disabledIcon", NULL, disabledIcon);
@@ -454,10 +462,10 @@ _y = 0;
  *    attribute: visualUpdate true
  *  description: The icon to display if the label is disabled.
  */
-/*public*/ void JLabel::setDisabledIcon(NamedIcon* disabledIcon) {
-    NamedIcon* oldValue = this->disabledIcon;
+/*public*/ void JLabel::setDisabledIcon(ImageIcon* disabledIcon) {
+    ImageIcon* oldValue = this->disabledIcon;
     this->disabledIcon = disabledIcon;
-    disabledIconSet = (disabledIcon != NULL);
+    disabledIconSet = (disabledIcon != nullptr);
 //    firePropertyChange("disabledIcon", oldValue, disabledIcon);
 //    if (disabledIcon != oldValue) {
 //        if (disabledIcon == NULL || oldValue == NULL ||
@@ -609,7 +617,7 @@ _y = 0;
         return key;
     }
     else {
-        throw new IllegalArgumentException(message);
+        throw  IllegalArgumentException(message);
     }
 }
 
@@ -629,7 +637,7 @@ _y = 0;
         return key;
     }
     else {
-        throw new IllegalArgumentException(message);
+        throw  IllegalArgumentException(message);
     }
 }
 #if 0 // TODO:

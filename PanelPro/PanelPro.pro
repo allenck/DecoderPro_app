@@ -26,6 +26,8 @@ else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
 
+include(../jmri_libs.prf)
+
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
@@ -40,7 +42,7 @@ HEADERS += \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
-else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix: LIBS += -L$$PWD/../libPr3 -lPr3
 
 INCLUDEPATH += $$PWD/../libPr3
 DEPENDPATH += $$PWD/../libPr3
@@ -86,14 +88,14 @@ win32:exists($$PREFIX/lib/PythonQt.dll){
 unix:exists($$PREFIX/lib/libPythonQt_d.so){
  ENABLE_SCRIPTING = "Y"
 } else:unix: {
- message($$PREFIX/lib/libPythonQt.so + "not found")
+ message($$PREFIX/lib/libPythonQt.so_d + "not found")
 }
-#CONFIG += scripts
+CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
     win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
-    else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
+    else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt_d -lPythonQt_QtAll_d
 
     INCLUDEPATH += /usr/local/include/PythonQt
     DEPENDPATH += /usr/local/include/PythonQt

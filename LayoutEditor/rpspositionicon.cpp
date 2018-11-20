@@ -10,17 +10,17 @@
  */
 ///*public*/ class RpsPositionIcon extends PositionableLabel implements MeasurementListener {
 
-    /*public*/ RpsPositionIcon::RpsPositionIcon(Editor* editor) : PositionableLabel(new NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
+    /*public*/ RpsPositionIcon::RpsPositionIcon(Editor* editor) : PositionableLabel(new NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
                                                                                  "resources/icons/smallschematics/tracksegments/circuit-error.gif"), editor){
         // super ctor call to make sure this is an icon label
 //        super(new NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
 //                "resources/icons/smallschematics/tracksegments/circuit-error.gif"), editor);
  // display icon for a correct reading
- activeName = "resources/icons/smallschematics/tracksegments/circuit-occupied.gif";
+ activeName = ":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif";
  active = new NamedIcon(activeName, activeName);
 
  // display icon if the last reading not OK
- errorName = "resources/icons/smallschematics/tracksegments/circuit-error.gif";
+ errorName = ":/resources/icons/smallschematics/tracksegments/circuit-error.gif";
  error = new NamedIcon(errorName, errorName);
 
         _control = true;

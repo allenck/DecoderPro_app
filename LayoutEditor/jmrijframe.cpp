@@ -924,7 +924,7 @@ bool MyAbstractShutDownTask::execute()
  */
 /*public*/ void JmriJFrame::dispose()
 {
- UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ UserPreferencesManager* p = static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"));
  if (p != nullptr)
  {
   if (reuseFrameSavedPosition)
@@ -949,10 +949,11 @@ bool MyAbstractShutDownTask::execute()
   static_cast<ShutDownManager*>(InstanceManager::getDefault("SutDownManager"))->deregister(task);
   task = nullptr;
  }
+
  /*synchronized (list)*/
  {
   //QMutexLocker locker(&mutex);
-  if(frameList->indexOf(this) >=0);
+  if(frameList->contains(this) )
    frameList->removeOne(this);
  }
  JFrame::dispose();
@@ -1254,7 +1255,7 @@ bool JmriJFrame::eventFilter(QObject *target, QEvent *event)
 JmriJFrameWindowListener::JmriJFrameWindowListener(JmriJFrame *frame) { this->frame = frame;}
 void JmriJFrameWindowListener::windowClosing(QCloseEvent *)
 {
- frame->handleModified();
+ this->frame->handleModified();
  frame->dispose();
 }
 void JmriJFrame::resizeEvent(QResizeEvent *e) { componentResized(e);}

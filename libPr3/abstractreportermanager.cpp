@@ -5,8 +5,10 @@
 AbstractReporterManager::AbstractReporterManager(QObject *parent) :
     ReporterManager(parent)
 {
+ setProperty("JavaClassName", "jmri.managers.AbstractReporterManager");
+
  log = new Logger("AbstractReporterManager");
- registerSelf();
+ //registerSelf();
 }
 /**
  * Abstract partial implementation of a ReporterManager.

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QVariant>
 #include "javaqt_global.h"
-
+#include "exceptions.h"
 class JAVAQTSHARED_EXPORT Logger : public QObject
 {
  Q_OBJECT
@@ -12,6 +12,7 @@ public:
  explicit Logger(QString name = "", QObject *parent = 0);
  Logger(const Logger&);
  static void error(QString s, QVariant ex = QVariant());
+ static void error(QString s, Throwable ex);
  void warn(QString s);
  void info(QString s);
  void trace(QString s);

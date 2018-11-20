@@ -289,7 +289,7 @@ void StartupActionsManager::loadPreferencesmanagers()
   else
   {
    // get an error with a stack trace if this occurs
-   log->error("model does not have a name.", (new Exception())->getMessage());
+   log->error("model does not have a name."/*, (new Exception())->getMessage()*/);
   }
  }//);
  try

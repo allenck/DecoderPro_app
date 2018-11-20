@@ -69,8 +69,8 @@ JmriLocalEntityResolver::JmriLocalEntityResolver()
             if (stream != NULL) {
                 return new InputSource(stream);
             } else {
-                log->error("did not find type 1 DTD file: {}", filename);
-                return NULL;
+                log->error(tr("did not find type 1 DTD file: %1").arg(filename));
+                return nullptr;
             }
         } else if (path != NULL && !path.contains("/")) {  // path doesn't contain "/", so is just name
             // type 2
@@ -80,8 +80,8 @@ JmriLocalEntityResolver::JmriLocalEntityResolver()
             if (stream != NULL) {
                 return new InputSource(stream);
             } else {
-                log->error("did not find type 2 entity file: {}", filename);
-                return NULL;
+                log->error(tr("did not find type 2 entity file: %1").arg(filename));
+                return nullptr;
             }
         } else if (scheme == ("file")) {
             if (path != NULL) {

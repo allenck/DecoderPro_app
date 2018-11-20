@@ -342,7 +342,7 @@ bool Apps::configDeferredLoadOK = false;
    }
    catch (JmriException e)
    {
-    log->error("Unhandled problem loading configuration", e.getMessage());
+    log->error("Unhandled problem loading configuration", e);
     configOK = false;
    }
    log->debug(tr("end load config file, OK=%1").arg(configOK?"yes":"No"));
@@ -528,9 +528,11 @@ bool Apps::configDeferredLoadOK = false;
  }
  log->debug("Done with doPreferences, start statusPanel");
 
- // do final activation
+ // Before starting to load preferences, make sure some managers are created.
+ // This is needed because these aren't particularly well-behaved during
+ // creation.
  ((LogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
- ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
+ InstanceManager::getDefault("LayoutBlockManager");
  DefaultCatalogTreeManagerXml().readCatalogTrees();
 
  StartupActionsManager* mgr = (StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager");
@@ -689,7 +691,7 @@ void AppsFileDrop::filesDropped(QList<File *> files)
 /*public*/ /*static*/ void Apps::ynstrument(QString path) {
     Jynstrument* it = JynstrumentFactory::createInstrument(path, _jynstrumentSpace);
     if (it == NULL) {
-        log->error("Error while creating Jynstrument {}", path);
+        log->error(tr("Error while creating Jynstrument %1").arg(path));
         return;
     }
     ThrottleWindow::setTransparent(it);
@@ -1068,7 +1070,7 @@ void Apps::On_handleQuit()
  pane1->setLayout(pane1Layout = new QHBoxLayout); //(pane1, BoxLayout.X_AXIS));
  log->debug(tr("Fetch main logo: %1").arg(logo()));
  // TODO: pane1Layout->addWidget(new QLabel(new ImageIcon(getToolkit().getImage(logo()), "JMRI logo"), JLabel.LEFT));
- pane1Layout->addWidget(new JLabel("JMRI logo", new NamedIcon(logo(), "JMRI logo"),JLabel::LEFT),0, Qt::AlignCenter);
+ pane1Layout->addWidget(new JLabel("JMRI logo", new ImageIcon(logo(), "JMRI logo"),JLabel::LEFT),0, Qt::AlignCenter);
  //    pane1Layout->addWidget(Box.createRigidArea(new Dimension(15, 0))); // Some spacing between logo and status panel
 
  log->debug("start labels");

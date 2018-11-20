@@ -42,8 +42,11 @@ public:
     QCompleter* getCompleter(QString text);
 signals:
     void newBlockCreated(Block*);
-    void propertyChange(PropertyChangeEvent *e);
+    //void propertyChange(PropertyChangeEvent *e);
+
 public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void vetoableChange(PropertyChangeEvent*);
 private:
  /*private*/ bool saveBlockPath;// = true;
     DecimalFormat* paddedNumber;// =  DecimalFormat("0000");
@@ -51,6 +54,9 @@ private:
     int lastAutoBlockRef;// = 0;
     QString defaultSpeed;// = "Normal";
  Logger log;
+ QString powerManagerChangeName;
+ /*private*/ /*Instant*/qint64 lastTimeLayoutPowerOn; // the most recent time any power manager had a power ON event
+
  friend class PropertyChangeSupport;
 };
 Q_DECLARE_METATYPE(BlockManager)

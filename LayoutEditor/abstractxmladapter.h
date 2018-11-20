@@ -9,13 +9,13 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractXmlAdapter : public XmlAdapter
     Q_OBJECT
 public:
     explicit AbstractXmlAdapter(QObject *parent = 0);
-    /*public*/ void creationErrorEncountered (
-                Level* level,
+    /*public*/ void handleException (
                 QString description,
+                QString operation,
                 QString systemName,
                 QString userName,
-                Throwable* exception
-            ) throw (JmriConfigureXmlException);
+                Exception exception
+            ) /*throw (JmriConfigureXmlException)*/;
     /*public*/ bool loadDeferred() ;
     /*public*/ int loadOrder();
     /*public*/ void setConfigXmlManager(ConfigXmlManager* c) ;
@@ -33,6 +33,7 @@ private:
   protected:
     /*protected*/ ConfigXmlManager* getConfigXmlManager() ;
  QObject *parent;
+ /*private*/ ErrorHandler* errorHandler;// = XmlAdapter::getDefaultExceptionHandler();
 };
 
 #endif // ABSTRACTXMLADAPTER_H

@@ -41,7 +41,7 @@ signals:
 public slots:
  /*public*/ void itemStateChanged(/*ItemEvent e*/int);
  void on_rampIncre_leaveField();
- void on_applyB_clicked();
+ // void on_applyB_clicked();
 private:
  static int STRUT_SIZE;// = 10;
 
@@ -54,7 +54,7 @@ private:
  /*private*/ JTextField*  _rampIncre;
  /*private*/ JTextField*  _throttleScale;
  /*private*/ int _interpretation;// = SignalSpeedMap::PERCENT_NORMAL;
- /*private*/ QList<QPair<QString, float>* > _speedNameMap;
+ /*private*/ QList<QPair<QString, float> > _speedNameMap;
  /*private*/ SpeedNameTableModel* _speedNameModel;
  /*private*/ JTable*  _speedNameTable;
  /*private*/ QList<QPair<QString, QString>* > _appearanceMap;
@@ -76,7 +76,7 @@ private:
  /*private*/ QWidget* timeIncrementPanel(bool vertical) ;
  /*private*/ QWidget* throttleIncrementPanel(bool vertical);
  /*private*/ void setValues();
- /*private*/ QWidget* applyPanel() ;
+ // /*private*/ QWidget* applyPanel() ;
  /*private*/ void deleteSpeedNameRow();
 
 public slots:

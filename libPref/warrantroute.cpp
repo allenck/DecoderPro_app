@@ -29,6 +29,9 @@
 #include "jtree.h"
 #include <QGroupBox>
 #include "defaulttablecolumnmodel.h"
+#include "box.h"
+#include "joptionpane.h"
+#include "picklistmodel.h"
 
 //WarrantRoute::WarrantRoute(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -75,6 +78,7 @@
   _pickRouteDialog = NULL;
   _tempWarrant = NULL;
   log = new Logger("WarrantRoute");
+  _viewProfile = new QPushButton(tr("View Speed Profile"));
 
   getRoster();
  }
@@ -143,6 +147,105 @@ void WarrantRoute::on_dccNumBox()
 {
  setTrainInfo(_dccNumBox->text());
 }
+
+/*public*/ QWidget* WarrantRoute::calculatePanel(bool vertical)
+{
+    _calculateButton->setMaximumSize(_calculateButton->sizeHint());
+//    _calculateButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            calculate();
+//        }
+//    });
+    connect(_calculateButton, SIGNAL(clicked(bool)), this, SLOT(calculate()));
+    QWidget* p = new QWidget();
+    QHBoxLayout* pLayout = new QHBoxLayout(p);
+//        p.add(Box.createHorizontalGlue());
+    pLayout->addWidget(makeTextBoxPanel(vertical, _calculateButton, "CalculateRoute", ""));
+//        p.add(Box.createHorizontalGlue());
+    return p;
+}
+
+/*public*/ QWidget* WarrantRoute::makePickListPanel()
+{
+    QPushButton* button = new QPushButton(tr("OBlock Pick List"));
+    button->setMaximumSize(_calculateButton->sizeHint());
+//    button.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if (_pickListFrame !=null) {
+//                _pickListFrame.dispose();
+//            }
+//            _pickListFrame = new JmriJFrame();
+//            PickListModel<OBlock> model = PickListModel.oBlockPickModelInstance();
+//            _pickListFrame.add(new JScrollPane(model.makePickTable()));
+//            _pickListFrame.pack();
+//            _pickListFrame.setVisible(true);
+//        }
+//    });
+    connect(button, SIGNAL(clicked(bool)), this, SLOT(onButton()));
+    QWidget* p = new QWidget();
+    QHBoxLayout* pLayout = new QHBoxLayout(p);
+    pLayout->addWidget(button);
+    return p;
+}
+
+void WarrantRoute::onButton()
+{
+ if (_pickListFrame !=nullptr) {
+     _pickListFrame->dispose();
+ }
+ _pickListFrame = new JmriJFrame();
+ PickListModel* model = PickListModel::oBlockPickModelInstance();
+ QScrollArea* sa;
+ _pickListFrame->setCentralWidget(sa =new QScrollArea(/*model.makePickTable()*/));
+ sa->setWidget(model->makePickTable());
+ sa->setWidgetResizable(true);
+ _pickListFrame->pack();
+ _pickListFrame->setVisible(true);
+
+}
+
+/* ************************* Train ID info: Loco Address, etc **********************/
+/**
+ * Make panel containing TextFields for Train name and address and ComboBox
+ * for Roster entries
+ *
+ * @param comp optional panel to add
+ * @return panel
+ */
+/*protected*/ QWidget* WarrantRoute::makeTrainIdPanel(QWidget* comp) {
+    QWidget* trainPanel = new QWidget();
+    //trainPanel.setLayout(new BoxLayout(trainPanel, BoxLayout.LINE_AXIS));
+    QHBoxLayout* trainPanelLayout = new QHBoxLayout(trainPanel);
+    trainPanelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+
+    QWidget* panel = new QWidget();
+    //panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+    QVBoxLayout* panelLayout = new QVBoxLayout(panel);
+    panelLayout->addWidget(makeTextBoxPanel(false, _trainNameBox, "TrainName", "noTrainName"));
+    panelLayout->addWidget(makeTextBoxPanel(false, _rosterBox, "Roster", ""));
+    panelLayout->addWidget(Box::createVerticalStrut(2));
+    panelLayout->addWidget(makeTextBoxPanel(false, _dccNumBox, "DccAddress", ""));
+    QWidget* p = new QWidget();
+    //p.setLayout(new BoxLayout(p, BoxLayout.LINE_AXIS));
+    QHBoxLayout* pLayout = new QHBoxLayout(p);
+    pLayout->addWidget(_viewProfile);
+    panelLayout->addWidget(p);
+    if (comp != nullptr) {
+        panelLayout->addWidget(comp);
+    }
+    trainPanelLayout->addWidget(panel);
+    trainPanelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+
+//    _dccNumBox->addActionListener((ActionEvent e) -> {
+//        setTrainInfo(_dccNumBox.getText());
+//    });
+    connect(_dccNumBox, SIGNAL(leaveField()), this, SLOT(on_dccNumBox()));
+    return trainPanel;
+}
+
+
  /*private*/ void WarrantRoute::getRoster()
 {
      QList<RosterEntry*> list = Roster::instance()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -313,6 +416,14 @@ void WarrantRoute::on_rosterBoxCurrentIndexChanged(QString selection)
      return setTrainInfo(_dccNumBox->text());
  }
 
+/*private*/ void WarrantRoute::calculate() {
+    QString msg = findRoute();
+    if (msg != "") {
+        JOptionPane::showMessageDialog(this, msg,
+                tr("Warning"), JOptionPane::WARNING_MESSAGE);
+    }
+}
+
 /******************************* route info *******************/
  /**
   * Does the action on each of the 4 RouteLocation panels
@@ -389,6 +500,51 @@ void WarrantRoute::doAction(QObject* obj)
   oPanel = _avoid->makePanel(tr("Avoid Location"), tr("Route of the warrant should exclude this location (Optional)."), tr("Path Name"), NULL, this);
   panelLayout->addWidget(oPanel);
   return panel;
+}
+
+/*protected*/ QWidget* WarrantRoute::makeBlockPanels(bool add)
+{
+    QWidget* panel = new QWidget();
+    //panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+    QVBoxLayout* panelLayout = new QVBoxLayout(panel);
+
+    QWidget* oPanel = _origin->makePanel("OriginBlock", "OriginToolTip", "PathName", "ExitPortalName", this);
+    panelLayout->addWidget(oPanel);
+
+    oPanel = _destination->makePanel("DestBlock", "DestToolTip", "PathName", "EntryPortalName", this);
+    panelLayout->addWidget(oPanel);
+
+    oPanel = _via->makePanel("ViaBlock", "ViaToolTip", "PathName", "", this);
+
+    QWidget* aPanel = _avoid->makePanel("AvoidBlock", "AvoidToolTip", "PathName", "", this);
+
+    if (add)
+    {
+        QWidget* pLeft = new QWidget();
+        //pLeft.setLayout(new BoxLayout(pLeft, BoxLayout.PAGE_AXIS));
+        QVBoxLayout* pLeftLayout = new QVBoxLayout(pLeft);
+        pLeftLayout->addWidget(oPanel);
+        pLeftLayout->addWidget(aPanel);
+
+        QWidget* pRight = new QWidget();
+        //pRight.setLayout(new BoxLayout(pRight, BoxLayout.PAGE_AXIS));
+        QVBoxLayout* pRightLayout = new QVBoxLayout(pRight);
+
+        pRightLayout->addWidget(searchDepthPanel(true));
+        pRightLayout->addWidget(makePickListPanel());
+        pRightLayout->addWidget(calculatePanel(true));
+
+        QWidget* p = new QWidget();
+        //p.setLayout(new BoxLayout(p, BoxLayout.LINE_AXIS));
+        QHBoxLayout* pLayout = new QHBoxLayout(p);
+        pLayout->addWidget(pLeft);
+        pLayout->addWidget(pRight);
+        panelLayout->addWidget(p);
+    } else {
+        panelLayout->addWidget(oPanel);
+        panelLayout->addWidget(aPanel);
+    }
+    return panel;
 }
 
  /*private*/ QWidget* WarrantRoute::makeLabelCombo(QString title, QComboBox* box, QString tooltip)
@@ -1388,6 +1544,105 @@ if(role == Qt::EditRole)
  return false;
 }
  //};
+/**
+ * Puts label message to the Left
+ *
+ * @param vertical Label orientation true = above, false = left
+ * @param comp     Component to put into JPanel
+ * @param label    Bundle keyword for label message
+ * @param tooltip  Bundle keyword for tooltip message
+ * @return Panel containing Component
+ */
+/*static*/ /*protected*/ QWidget* WarrantRoute::makeTextBoxPanel(bool vertical, QWidget* comp, QString label, QString tooltip)
+{
+    QWidget* panel = new QWidget();
+    QLabel* l = new QLabel(label);
+    QBoxLayout* panelLayout;
+    if (vertical) {
+        //panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+      panelLayout = new QVBoxLayout(panel);
+        //l.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        //comp.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+        panelLayout->addWidget(l, 0, Qt::AlignCenter);
+    } else {
+        //panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+     panelLayout = new QHBoxLayout(panel);
+//        l.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+//        comp.setAlignmentX(JComponent.RIGHT_ALIGNMENT);
+        panel->layout()->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+        panelLayout->addWidget(l, 0, Qt::AlignLeft);
+    }
+    //panelLayout.add(l);
+    if (!vertical) {
+        panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+    }
+    comp->setMaximumSize(QSize(300, comp->sizeHint().height()));
+    comp->setMinimumSize(QSize(30, comp->sizeHint().height()));
+    //panelLayout.add(comp);
+    if (vertical) {
+     panelLayout->addWidget(comp, 0, Qt::AlignCenter);
+        panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+    } else {
+     panelLayout->addWidget(comp, 0, Qt::AlignRight);
+        panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+    }
+//    if (comp instanceof JTextField || comp instanceof JComboBox) {
+//        comp.setBackground(Color.white);
+//    }
+    if (tooltip != "") {
+        QString tipText = (tooltip);
+        panel->setToolTip(tipText);
+        comp->setToolTip(tipText);
+        l->setToolTip(tipText);
+    }
+    panel->setMaximumSize(QSize(350, comp->sizeHint().height()));
+    panel->setMinimumSize(QSize(80, comp->sizeHint().height()));
+    return panel;
+}
+
+/**
+ * Puts label message to the Left, 2nd component (button) to the right
+ *
+ * @param comp     Component to put into JPanel
+ * @param button   2nd Component for panel, usually a button
+ * @param label    Bundle keyword for label message
+ * @param tooltip  Bundle keyword for tooltip message
+ * @return Panel containing Component
+ */
+/*static*/ /*protected*/ QWidget* WarrantRoute::makeTextAndButtonPanel(QWidget* comp, QWidget* button, QString label, QString tooltip) {
+    QWidget* panel = new QWidget();
+    //panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+    QHBoxLayout* panelLayout = new QHBoxLayout(panel);
+    QWidget* l = new QLabel((label));
+    //l.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+    //comp.setAlignmentX(JComponent.RIGHT_ALIGNMENT);
+    panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+    panelLayout->addWidget(l, 0, Qt::AlignLeft);
+    panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+    panelLayout->addWidget(Box::createHorizontalGlue());
+
+    panelLayout->addWidget(comp, 0, Qt::AlignRight);
+#if 0 // TODO:
+    if (comp instanceof JTextField || comp instanceof JComboBox) {
+        comp.setBackground(Color.white);
+    }
+#endif
+    //button.setAlignmentX(JComponent.RIGHT_ALIGNMENT);
+    panelLayout->addWidget(button, 0, Qt::AlignRight);
+    panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+
+    if (tooltip != "") {
+        QString tipText = (tooltip); // note caller translates
+        panel->setToolTip(tipText);
+        button->setToolTip(tipText);
+        comp->setToolTip(tipText);
+        l->setToolTip(tipText);
+    }
+    panel->setMaximumSize(QSize(350, comp->sizeHint().height()));
+    panel->setMinimumSize(QSize(80, comp->sizeHint().height()));
+    return panel;
+}
 
  /**
  *
@@ -1396,52 +1651,37 @@ if(role == Qt::EditRole)
  * @param label String label message
  * @return
  */
-/*static*/ /*protected*/ QWidget* WarrantRoute::makeTextBoxPanel(bool vertical, QWidget* textField, QString label, QString tooltip)
+/*static*/ /*protected*/ QWidget* WarrantRoute::makeTextBoxPanel(QWidget* comp, QString label, QString tooltip)
  {
-QWidget* panel = new QWidget();
-QBoxLayout* panelLayout;// = new QVBoxLayout(panel);
-QLabel* l = new QLabel(label);
-if (vertical)
+ QWidget* panel = new QWidget();
+ //panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+ QHBoxLayout* panelLayout = new QHBoxLayout(panel);
+ panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+ //comp->setAlignmentX(JComponent.LEFT_ALIGNMENT);
+ comp->setMaximumSize(QSize(300, comp->sizeHint().height()));
+ comp->setMinimumSize(QSize(30, comp->sizeHint().height()));
+ panelLayout->addWidget(comp, 0,Qt::AlignLeft);
+ //if (comp instanceof JTextField || comp instanceof JComboBox)
+ if(qobject_cast<JTextField*>(comp) || qobject_cast<QComboBox*>(comp))
  {
-  panel->setLayout(panelLayout = new QVBoxLayout); //(panel, BoxLayout.PAGE_AXIS));
-  l->setAlignment(Qt::AlignVCenter);
-//  textField->setAlignment(Qt::AlignVCenter);
-  panelLayout->addStrut(STRUT_SIZE);
+//     comp->setBackground(Color.white);
+     QLabel* l = new QLabel((label));
+//     l.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+     l->setToolTip((tooltip));
+     panelLayout->addWidget(l,0, Qt::AlignLeft);
  }
- else \
+ //else if (comp instanceof AbstractButton)
+ if(qobject_cast<QPushButton*>(comp))
  {
-  panel->setLayout(panelLayout = new QHBoxLayout); //(panel, BoxLayout.LINE_AXIS));
-  l->setAlignment(Qt::AlignLeft);
-  if(qobject_cast<JTextField*>(textField)!= NULL)
-   ((JTextField*)textField)->setAlignment(Qt::AlignRight);
-  panelLayout->addStrut(STRUT_SIZE);
+     ((QPushButton*) comp)->setText((label));
  }
- panelLayout->addWidget(l);
- if (!vertical)
- {
-    panelLayout->addStrut(STRUT_SIZE);
+ panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+ if (tooltip != "") {
+     QString tipText = (tooltip);
+     panel->setToolTip(tipText);
+     comp->setToolTip(tipText);
  }
- textField->setMaximumSize( QSize(300, textField->sizeHint().height()));
- textField->setMinimumSize( QSize(30, textField->sizeHint().height()));
- panelLayout->addWidget(textField);
- if (vertical)
- {
-  panelLayout->addStrut(STRUT_SIZE);
- }
- else
- {
-  panelLayout->addStrut(STRUT_SIZE);
- }
-//if (textField instanceof JTextField || textField instanceof JComboBox)
- if(qobject_cast<JTextField*>(textField)!=NULL)
- {
-//  textField->setBackground(QColor(Qt::white));
- }
- if (tooltip!=NULL)
- {
-  panel->setToolTip(tooltip);
-  textField->setToolTip(tooltip);
-  l->setToolTip(tooltip);
- }
+ panel->setMaximumSize(QSize(350, comp->sizeHint().height()));
+ panel->setMinimumSize(QSize(80, comp->sizeHint().height()));
  return panel;
 }

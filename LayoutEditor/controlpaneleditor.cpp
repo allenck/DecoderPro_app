@@ -76,6 +76,7 @@ ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
     Editor(parent)
 {
  init("NoName");
+
 }
 /**
  * Provides a simple editor for adding jmri.jmrit.display items
@@ -128,18 +129,20 @@ ControlPanelEditor::~ControlPanelEditor()
 {
  log = new Logger("ControlPanelEditor");
  setObjectName("ControlPanelEditor");
+ setProperty("JavaClassName", "jmri.jmrit.display.controlPanelEditor.ControlPanelEditor");
+
  _debug = true;
  setAcceptDrops(true);
  _fitX = 0;
  _fitY = 0;
  _clickTime = 0;
- _warrantMenu = NULL;
- _circuitMenu = NULL;
- _editorMenu = NULL;
- _drawMenu = NULL;
- _markerMenu = NULL;
- //libTables = NULL;
- _portalIconMap = NULL;
+ _warrantMenu = nullptr;
+ _circuitMenu = nullptr;
+ _editorMenu = nullptr;
+ _drawMenu = nullptr;
+ _markerMenu = nullptr;
+ //libTables = nullptr;
+ _portalIconMap = nullptr;
 
  useGlobalFlagBox = new QAction(tr("Override individual Position & Control settings "),this);
  useGlobalFlagBox->setCheckable(true);
@@ -151,7 +154,7 @@ ControlPanelEditor::~ControlPanelEditor()
  hiddenBox->setCheckable(true);
  disableShapeSelect = new QAction(tr("Disable Selecting Shapes"), this);
  disableShapeSelect->setCheckable(true);
- scrollBoth = new QAction(tr("Both scrollbars"));
+ scrollBoth = new QAction(tr("Both scrollbars"), this);
  scrollBoth->setCheckable(true);
  scrollNone = new QAction(tr("No scrollbars"), this);
  scrollNone->setCheckable(true);
@@ -164,15 +167,15 @@ ControlPanelEditor::~ControlPanelEditor()
  _regular = true;	// true when TO_ARROW shows entry into ToBlock
  _hide = false;	// true when arrow should NOT show entry into ToBlock
  _disablePortalSelection = true;		// only select PortalIcon in CircuitBuilder
- _secondSelectionGroup = NULL;
+ _secondSelectionGroup = nullptr;
  setVisible(false);
  _debug = log->isDebugEnabled();
 //    java.awt.Container contentPane = this.getContentPane();
 //    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
- QWidget* contentPane = getContentPane();
- contentPane->setObjectName("contentPane");
- contentPane->setLayout(new QVBoxLayout());
- //this->setCentralWidget(contentPane);
+// QWidget* contentPane = getContentPane();
+// contentPane->setObjectName("contentPane");
+// contentPane->setLayout(new QVBoxLayout());
+// //this->setCentralWidget(contentPane);
 
  // make menus
  setGlobalSetsLocalFlag(false);
@@ -193,8 +196,13 @@ ControlPanelEditor::~ControlPanelEditor()
  setMenuBar(_menuBar);
  addHelpMenu("package.jmri.jmrit.display.ControlPanelEditor", true);
 
- Editor::setTargetPanel(NULL, NULL);
+ Editor::setTargetPanel((EditScene*)nullptr, nullptr);
  Editor::setTargetPanelSize(300, 300);
+// if(editScene == nullptr)
+// {
+//  editScene = new EditScene();
+//  editPanel = new QGraphicsView(editScene);
+// }
  editScene = (EditScene*)Editor::getTargetPanel();
  editScene->setObjectName("editScene");
  _itemPalette = new ItemPalette(tr("Item Palette"), this);
@@ -253,7 +261,7 @@ void ControlPanelEditor::on_itemPallette()
 //}
 
 /*protected*/ void ControlPanelEditor::makeCircuitMenu() {
-    if (_circuitMenu==NULL) {
+    if (_circuitMenu==nullptr) {
         _circuitMenu = _circuitBuilder->makeMenu();
     }
     _menuBar->insertMenu(_menuBar->actions().at(0),_circuitMenu/*, 0*/);
@@ -271,7 +279,7 @@ void ControlPanelEditor::on_itemPallette()
 }
 /*protected*/ void ControlPanelEditor::makeDrawMenu()
 {
- if (_drawMenu==NULL)
+ if (_drawMenu==nullptr)
  {
   _drawMenu = _shapeDrawer->makeMenu();
   _drawMenu->addAction(disableShapeSelect);
@@ -341,14 +349,14 @@ void ControlPanelEditor::on_disableShapeSelect(bool)
 /*protected*/ void ControlPanelEditor::makeWarrantMenu(bool edit)
 {
  _warrantMenu = WarrantTableAction::makeWarrantMenu(edit, this);
- if (_warrantMenu == NULL)
+ if (_warrantMenu == nullptr)
  {
   _warrantMenu = new QMenu(tr("Warrants"),this);
   QAction* aboutItem = new QAction(tr("About Warrants"),this);
-  HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.Warrant", NULL);
+  HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.Warrant", nullptr);
   _warrantMenu->addAction(aboutItem);
   aboutItem = new QAction(tr("About OBlocks&Portals"),this);
-  HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", NULL);
+  HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", nullptr);
   _warrantMenu->addAction(aboutItem);
   aboutItem = new QAction(tr("Open Circuit Menu"),this);
   _warrantMenu->addAction(aboutItem);
@@ -422,7 +430,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
 //                setAllPositionable(positionableBox.isSelected());
 //            }
 //        });
- connect(positionableBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setAllPositionable(bool)));
+ connect(positionableBox, SIGNAL(toggled(bool)), this, SLOT(setAllPositionable(bool)));
  positionableBox->setChecked(allPositionable());
  // controlable item
  _optionMenu->addAction(controllingBox);
@@ -431,7 +439,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
 //                setAllControlling(controllingBox.isSelected());
 //            }
 //        });
- connect(controllingBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setAllControlling(bool)));
+ connect(controllingBox, SIGNAL(toggled(bool)), this, SLOT(setAllControlling(bool)));
  controllingBox->setChecked(allControlling());
  // hidden item
  _optionMenu->addAction(hiddenBox);
@@ -440,7 +448,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
 //                setShowHidden(hiddenBox.isSelected());
 //            }
 //        });
- connect(hiddenBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setShowHidden(bool)));
+ connect(hiddenBox, SIGNAL(toggled(bool)), this, SLOT(setShowHidden(bool)));
  hiddenBox->setChecked(showHidden());
 
  _optionMenu->addAction(showTooltipBox);
@@ -449,8 +457,8 @@ void ControlPanelEditor::on_makeCircuitMenu()
 //            setAllShowTooltip(showTooltipBox.isSelected());
 //        }
 //    });
- connect(showTooltipBox, SIGNAL(toggled(bool)), (Editor*)parent(), SLOT(setAllShowTooltip(bool)));
- showTooltipBox->setChecked(showTooltip());
+ connect(showTooltipBox, SIGNAL(toggled(bool)), this, SLOT(setAllShowTooltip(bool)));
+ showTooltipBox->setChecked(showToolTip());
 #if 1  // QGraphicsView already has scrollbars
  // Show/Hide Scroll Bars
  QMenu* scrollMenu = new QMenu(tr("Panel scrollbars"));
@@ -730,7 +738,7 @@ Tutorial recommended method not satisfactory.
 void ControlPanelEditor::actionCut()
 {
  copyToClipboard();
- removeSelections(NULL);
+ removeSelections(nullptr);
 }
 void ControlPanelEditor::selectAllAction()
 {
@@ -812,7 +820,7 @@ void ControlPanelEditor::selectAllAction()
 * the list of positionables (_clipGroup) for pasting
 */
 /*private*/ void ControlPanelEditor::copyToClipboard() {
-    if (_selectionGroup!=NULL) {
+    if (_selectionGroup!=nullptr) {
         QList <Positionable*>* dragGroup = new QList <Positionable*>();
 
         for (int i=0; i<_selectionGroup->size(); i++) {
@@ -832,16 +840,16 @@ void ControlPanelEditor::selectAllAction()
         if (_debug) log->debug("copyToClipboard: setContents _selectionGroup, size= "+_selectionGroup->size());
 
     } else {
-        _clipGroup = NULL;
+        _clipGroup = nullptr;
     }
 }
 
 /*public*/ QList <Positionable*>* ControlPanelEditor::getClipGroup()
 {
- if (_debug) log->debug(QString("getClipGroup: _clipGroup")+(_clipGroup==NULL?"=NULL":", size= "+_clipGroup->size()));
- if (_clipGroup==NULL)
+ if (_debug) log->debug(QString("getClipGroup: _clipGroup")+(_clipGroup==nullptr?"=nullptr":", size= "+_clipGroup->size()));
+ if (_clipGroup==nullptr)
  {
-  return NULL;
+  return nullptr;
  }
  QList<Positionable*>* clipGrp = new QList<Positionable*>();
  for (int i=0; i<_clipGroup->size(); i++)
@@ -864,22 +872,22 @@ void ControlPanelEditor::selectAllAction()
 {
  if (edit)
  {
-  if (_editorMenu!=NULL)
+  if (_editorMenu!=nullptr)
   {
    _menuBar->removeAction(_editorMenu->menuAction());
    //_editorMenu->setVisible(false);
   }
-  if (_markerMenu!=NULL)
+  if (_markerMenu!=nullptr)
   {
    _menuBar->removeAction(_markerMenu->menuAction());
  //  _markerMenu->setVisible(false);
   }
-  if (_warrantMenu!=NULL)
+  if (_warrantMenu!=nullptr)
   {
    _menuBar->removeAction(_warrantMenu->menuAction());
    //_warrantMenu->setVisible(false);
   }
-  if (_drawMenu==NULL)
+  if (_drawMenu==nullptr)
   {
    makeDrawMenu();
   }
@@ -888,7 +896,7 @@ void ControlPanelEditor::selectAllAction()
    _menuBar->insertMenu(_menuBar->actions().at(0), _drawMenu/*, 0*/);
    //_drawMenu->setVisible(true);
   }
-  if (_circuitMenu==NULL)
+  if (_circuitMenu==nullptr)
   {
    makeCircuitMenu();
   }
@@ -897,10 +905,10 @@ void ControlPanelEditor::selectAllAction()
    _menuBar->insertMenu(_menuBar->actions().at(0), _circuitMenu/*, 0*/);
    //_circuitMenu->setVisible(true);
   }
-  if(_warrantMenu == NULL)
+  if(_warrantMenu == nullptr)
    makeWarrantMenu(edit);
 
-  if (_iconMenu==NULL)
+  if (_iconMenu==nullptr)
   {
    makeIconMenu();
   }
@@ -909,7 +917,7 @@ void ControlPanelEditor::selectAllAction()
    _menuBar->insertMenu(_menuBar->actions().at(0), _iconMenu/*, 0*/);
    //_iconMenu->setVisible(true);
   }
-  if (_zoomMenu==NULL)
+  if (_zoomMenu==nullptr)
   {
    makeZoomMenu();
   }
@@ -918,7 +926,7 @@ void ControlPanelEditor::selectAllAction()
    _menuBar->insertMenu(_menuBar->actions().at(0),_zoomMenu/*, 0*/);
    //_zoomMenu->setVisible(true);
   }
-  if (_optionMenu==NULL)
+  if (_optionMenu==nullptr)
   {
     makeOptionMenu();
   }
@@ -927,7 +935,7 @@ void ControlPanelEditor::selectAllAction()
    _menuBar->insertMenu(_menuBar->actions().at(0),_optionMenu/*, 0*/);
    //_optionMenu->setVisible(true);
   }
-  if (_editMenu==NULL)
+  if (_editMenu==nullptr)
   {
    makeEditMenu();
   }
@@ -936,7 +944,7 @@ void ControlPanelEditor::selectAllAction()
    _menuBar->insertMenu(_menuBar->actions().at(0),_editMenu/*, 0*/);
    //_editMenu->setVisible(true);
   }
-  if (_fileMenu==NULL)
+  if (_fileMenu==nullptr)
   {
     makeFileMenu();
   }
@@ -948,42 +956,42 @@ void ControlPanelEditor::selectAllAction()
  }
  else
  {
-  if (_fileMenu!=NULL)
+  if (_fileMenu!=nullptr)
   {
    _menuBar->removeAction(_fileMenu->menuAction());
    //_fileMenu->setVisible(false);
   }
-  if (_editMenu!=NULL)
+  if (_editMenu!=nullptr)
   {
    _menuBar->removeAction(_editMenu->menuAction());
    //_editMenu->setVisible(false);
   }
-  if (_optionMenu!=NULL)
+  if (_optionMenu!=nullptr)
   {
    _menuBar->removeAction(_optionMenu->menuAction());
    //_menuBar->setVisible(false);
   }
-  if (_zoomMenu!=NULL)
+  if (_zoomMenu!=nullptr)
   {
    _menuBar->removeAction(_zoomMenu->menuAction());
    //_zoomMenu->setVisible(false);
   }
-  if (_iconMenu!=NULL)
+  if (_iconMenu!=nullptr)
   {
    _menuBar->removeAction(_iconMenu->menuAction());
    //_iconMenu->setVisible(false);
   }
-  if (_warrantMenu!=NULL)
+  if (_warrantMenu!=nullptr)
   {
    _menuBar->removeAction(_warrantMenu->menuAction());
    //_warrantMenu->setVisible(false);
   }
-  if (_circuitMenu!=NULL)
+  if (_circuitMenu!=nullptr)
   {
    _menuBar->removeAction(_circuitMenu->menuAction());
    //_circuitMenu->setVisible(false);
   }
-  if (_drawMenu!=NULL)
+  if (_drawMenu!=nullptr)
   {
    _menuBar->removeAction(_drawMenu->menuAction());
    //_drawMenu->setVisible(false);
@@ -992,7 +1000,7 @@ void ControlPanelEditor::selectAllAction()
   {
    makeWarrantMenu(edit);
   }
-  if (_markerMenu==NULL)
+  if (_markerMenu==nullptr)
   {
    makeMarkerMenu();
   }
@@ -1001,7 +1009,7 @@ void ControlPanelEditor::selectAllAction()
    _menuBar->insertMenu(_menuBar->actions().at(0),_markerMenu/*, 0*/);
    //_markerMenu->setVisible(true);
   }
-  if (_editorMenu==NULL)
+  if (_editorMenu==nullptr)
   {
    _editorMenu = new QMenu(tr("Edit"));
 //            _editorMenu.add(new AbstractAction(tr("OpenEditor")) {
@@ -1067,7 +1075,7 @@ void ControlPanelEditor::selectAllAction()
 /*public*/ void ControlPanelEditor::setTitle()
 {
  QString name = getName();
- if (name==NULL || name.length()==0)
+ if (name==nullptr || name.length()==0)
  {
   name = tr("Control Panel");
  }
@@ -1096,7 +1104,7 @@ void ControlPanelEditor::selectAllAction()
     positionableBox->setChecked(allPositionable());
     controllingBox->setChecked(allControlling());
     //showCoordinatesBox.setSelected(showCoordinates());
-    showTooltipBox->setChecked(showTooltip());
+    showTooltipBox->setChecked(showToolTip());
     hiddenBox->setChecked(showHidden());
 //    switch (_scrollState) {
 //        case SCROLL_NONE:
@@ -1121,7 +1129,7 @@ void ControlPanelEditor::selectAllAction()
         return getCopySelection(event);
     }
     QList <Positionable*>* selections = getSelectedItems(event);
-    Positionable* selection = NULL;
+    Positionable* selection = nullptr;
     if (selections->size() > 0)
     {
         //if (event.isShiftDown() && selections->size() > 1)
@@ -1141,15 +1149,15 @@ void ControlPanelEditor::selectAllAction()
             }
         } else if (selection->getDisplayLevel()<=BKG)
         {
-            selection = NULL;
+            selection = nullptr;
         }
     }
     return selection;
 }
 
 /*protected*/ Positionable* ControlPanelEditor::getCopySelection(QGraphicsSceneMouseEvent* event) {
-    if (_selectionGroup==NULL) {
-        return NULL;
+    if (_selectionGroup==nullptr) {
+        return nullptr;
     }
     double x = event->scenePos().x();
     double y = event->scenePos().y();
@@ -1164,7 +1172,7 @@ void ControlPanelEditor::selectAllAction()
             return p;
         }
     }
-    return NULL;
+    return nullptr;
 }
 #if 0
 /*********** KeyListener *********/
@@ -1173,7 +1181,7 @@ void ControlPanelEditor::selectAllAction()
 #endif
 /*public*/ void ControlPanelEditor::keyPressEvent(QKeyEvent* e)
 {
- if (_selectionGroup==NULL) {
+ if (_selectionGroup==nullptr) {
      return;
  }
  int x = 0;
@@ -1240,7 +1248,7 @@ void ControlPanelEditor::selectAllAction()
 
  _currentSelection = getCurrentSelection(event);
 
- if(qobject_cast<MemoryInputIcon*>(_currentSelection) != NULL ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != NULL|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= NULL)
+ if(qobject_cast<MemoryInputIcon*>(_currentSelection) != nullptr ||qobject_cast<MemorySpinnerIcon*>(_currentSelection) != nullptr|| qobject_cast<MemoryComboIcon*>(_currentSelection)!= nullptr)
  {
   ((PositionableJPanel*)_currentSelection)->widget->mousePressEvent(event);
   return;
@@ -1250,13 +1258,13 @@ void ControlPanelEditor::selectAllAction()
  if (!(event->buttons()&Qt::RightButton) && !(event->modifiers()&Qt::MetaModifier) && !(event->modifiers()&Qt::AltModifier) && !circuitBuilder)
  {
   _shapeDrawer->doMousePressed(event, _currentSelection);
-  if (_currentSelection != NULL)
+  if (_currentSelection != nullptr)
   {
    _currentSelection->doMousePressed(event);
    if (isEditable())
    {
     if (!event->modifiers()&Qt::ControlModifier
-            && (_selectionGroup != NULL && !_selectionGroup->contains(_currentSelection)))
+            && (_selectionGroup != nullptr && !_selectionGroup->contains(_currentSelection)))
     {
      if (_pastePending)
      {
@@ -1276,13 +1284,16 @@ void ControlPanelEditor::selectAllAction()
    deselectSelectionGroup();
   }
  }
- else if (_currentSelection == NULL || (_selectionGroup != NULL && !_selectionGroup->contains(_currentSelection)))
+ else if (_currentSelection == nullptr || (_selectionGroup != nullptr && !_selectionGroup->contains(_currentSelection)))
  {
   deselectSelectionGroup();
  }
  _circuitBuilder->doMousePressed(event, _currentSelection);
 
- _targetPanel->repaint(); // needed for ToolTip
+ if(_targetPanel != nullptr)
+  _targetPanel->repaint(); // needed for ToolTip
+ else if(editScene != nullptr)
+  editScene->repaint();
 // paint(editScene);
 }
 
@@ -1293,10 +1304,10 @@ void ControlPanelEditor::selectAllAction()
  bool bAltDown = event->modifiers() & Qt::AltModifier;
  bool bShiftDown = event->modifiers()& Qt::ShiftModifier;
 
- //setToolTip(NULL); // ends tooltip if displayed
+ //setToolTip(nullptr); // ends tooltip if displayed
  if (_debug) log->debug("mouseReleased at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+") dragging= "+(_dragging?"yes":"no")
-                           +" pastePending= "+(_pastePending?"yes":"no")+" selectRect "+(_selectRect==QRectF()?"=":"!")+"= NULL");
- //" _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup->size()));
+                           +" pastePending= "+(_pastePending?"yes":"no")+" selectRect "+(_selectRect==QRectF()?"=":"!")+"= nullptr");
+ //" _selectionGroup= "+(_selectionGroup==nullptr?"NULL":_selectionGroup->size()));
  dragPos = QPointF();
  if (_dragging)
  {
@@ -1307,10 +1318,10 @@ void ControlPanelEditor::selectAllAction()
  //if ((event.isPopupTrigger() || event.isMetaDown() || event.isAltDown()) && !_dragging)
  if(/*(event->buttons()& Qt::RightButton)*/(bPopupTrigger || /*(event->modifiers()&Qt::MetaModifier)*/ bMetaDown) && !_dragging)
  {
-  if (selection!=NULL)
+  if (selection!=nullptr)
   {
    //_highlightcomponent = QRectF();
-   if(qobject_cast<MemoryInputIcon*>(selection) != NULL ||qobject_cast<MemorySpinnerIcon*>(selection) != NULL|| qobject_cast<MemoryComboIcon*>(selection)!= NULL )
+   if(qobject_cast<MemoryInputIcon*>(selection) != nullptr ||qobject_cast<MemorySpinnerIcon*>(selection) != nullptr|| qobject_cast<MemoryComboIcon*>(selection)!= nullptr )
    {
     _highlightcomponent = selection->getBounds(QRectF());
     //((PositionableLabel*)selection)->_itemGroup->setFocus();
@@ -1319,7 +1330,7 @@ void ControlPanelEditor::selectAllAction()
 //     qDebug() << tr("_highlightcomponent width = %1").arg(_highlightcomponent.width());
 //   }
 //   else
-    if(qobject_cast<PositionableJPanel*>(selection)!=NULL)
+    if(qobject_cast<PositionableJPanel*>(selection)!=nullptr)
     {
      _highlightcomponent = selection->getBounds(QRectF());
 //     if(_highlightcomponent.width() > 1000)
@@ -1347,7 +1358,7 @@ void ControlPanelEditor::selectAllAction()
  }
  else
  {
-  if (selection!=NULL)
+  if (selection!=nullptr)
   {
    //if (!event.isControlDown() && !event.isShiftDown())
    if(!(event->modifiers()&Qt::ControlModifier) && !(event->modifiers()& Qt::ShiftModifier))
@@ -1366,7 +1377,7 @@ void ControlPanelEditor::selectAllAction()
    {
     _selectRect = QRectF();
    }
-   if (selection!=NULL && !_circuitBuilder->doMouseReleased(selection, event))
+   if (selection!=nullptr && !_circuitBuilder->doMouseReleased(selection, event))
    {
     if (!_dragging)
     {
@@ -1384,7 +1395,7 @@ void ControlPanelEditor::selectAllAction()
    pasteItems();
   }
  }
- _currentSelection = NULL;
+ _currentSelection = nullptr;
  _selectRect = QRectF();
 
  // if not sending MouseClicked, do it here
@@ -1392,7 +1403,10 @@ void ControlPanelEditor::selectAllAction()
  mouseClicked(event);
 
  _dragging = false;
- _targetPanel->repaint(); // needed for ToolTip
+ if(_targetPanel != nullptr)
+  _targetPanel->repaint(); // needed for ToolTip
+ else if(editScene != nullptr)
+  editScene->repaint(); // needed for ToolTip
  //paint(editScene);
 //        if (_debug) log.debug("mouseReleased at ("+event.getX()+","+event.getY()+
 //        " _selectionGroup= "+(_selectionGroup==NULL?"NULL":_selectionGroup->size()));
@@ -1427,13 +1441,13 @@ void ControlPanelEditor::selectAllAction()
  //if (event.isPopupTrigger() || event.isMetaDown() || event.isAltDown())
  if((event->buttons()&Qt::RightButton)!=0 || (event->modifiers()&Qt::MetaModifier)!= 0 ||(event->modifiers()&Qt::AltModifier)!=0)
  {
-  if (selection!=NULL)
+  if (selection!=nullptr)
   {
    _highlightcomponent = QRectF();
    showPopUp(selection, event);
   }
  }
- else if (selection!=NULL)
+ else if (selection!=nullptr)
  {
    //if (!_circuitBuilder.doMouseClicked(selection, event) &&
 //                    !event.isControlDown() && !event.isShiftDown() )
@@ -1449,7 +1463,7 @@ void ControlPanelEditor::selectAllAction()
   if(!isEditable())
   {
    deselectSelectionGroup();
-   _currentSelection = NULL;
+   _currentSelection = nullptr;
    _highlightcomponent = QRectF();
   }
  //_targetPanel->repaint(); // needed for ToolTip
@@ -1460,7 +1474,7 @@ void ControlPanelEditor::selectAllAction()
 /*public*/ void ControlPanelEditor::mouseDragged(QGraphicsSceneMouseEvent* event)
 {
     //if (_debug) log.debug("mouseDragged at ("+event.getX()+","+event.getY()+")");
- setToolTip(NULL); // ends tooltip if displayed
+ setToolTip(nullptr); // ends tooltip if displayed
 
  if (_circuitBuilder->doMouseDragged(_currentSelection, event) ) {  // is  preventing dragging! ACK
      return;
@@ -1469,13 +1483,13 @@ void ControlPanelEditor::selectAllAction()
  if(!(event->buttons()& Qt::RightButton)  && !(event->modifiers()& Qt::MetaModifier) && !(event->modifiers()& Qt::AltModifier) && !_shapeDrawer->doMouseDragged(event) && (isEditable() || qobject_cast<LocoIcon*>(_currentSelection)!=0))
  {
   moveIt:
-  if (_currentSelection!=NULL && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable()))
+  if (_currentSelection!=nullptr && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable()))
   {
    int deltaX = event->scenePos().x() - _lastX;
    int deltaY = event->scenePos().y() - _lastY;
    int minX = getItemX(_currentSelection, deltaX);
    int minY = getItemY(_currentSelection, deltaY);
-   if (_selectionGroup!=NULL && _selectionGroup->contains(_currentSelection))
+   if (_selectionGroup!=nullptr && _selectionGroup->contains(_currentSelection))
    {
     for (int i=0; i<_selectionGroup->size(); i++)
     {
@@ -1502,7 +1516,7 @@ void ControlPanelEditor::selectAllAction()
 //        }
 
     }
-    if (_selectionGroup!=NULL && _selectionGroup->contains(_currentSelection))
+    if (_selectionGroup!=nullptr && _selectionGroup->contains(_currentSelection))
     {
      for (int i=0; i<_selectionGroup->size(); i++)
      {
@@ -1538,7 +1552,7 @@ void ControlPanelEditor::selectAllAction()
 //    else
 //    {
     }
-    else if ((isEditable() && _selectionGroup==NULL))
+    else if ((isEditable() && _selectionGroup==nullptr))
     {
      drawSelectRect(event->scenePos().x(), event->scenePos().y());
     }
@@ -1546,7 +1560,10 @@ void ControlPanelEditor::selectAllAction()
   _dragging = true;
   _lastX = event->scenePos().x();
   _lastY = event->scenePos().y();
+  if(_targetPanel != nullptr)
   _targetPanel->repaint(); // needed for ToolTip
+ else if(editScene != nullptr)
+  editScene->repaint(); // needed for ToolTip
   //paint(editScene);
 
 }
@@ -1567,22 +1584,28 @@ void ControlPanelEditor::selectAllAction()
  if(!((event->modifiers()&Qt::ShiftModifier) && (event->modifiers()&Qt::ControlModifier)) &&!(_shapeDrawer->doMouseMoved(event)))
  {
   Positionable* selection = getCurrentSelection(event);
-  if (selection != NULL && selection->getDisplayLevel() > BKG && selection->showTooltip()) {
+  if (selection != nullptr && selection->getDisplayLevel() > BKG && selection->showToolTip()) {
       //showToolTip(selection, event);
       //selection.highlightlabel(true);
   } else {
      // setToolTip("");
   }
  }
- paint(_targetPanel);
- _targetPanel->repaint();
+ paint(editScene);
+ if(_targetPanel != nullptr)
+  _targetPanel->repaint(); // needed for ToolTip
+ else if(editScene != nullptr)
+  editScene->repaint();
  //paint(editScene);
 
 }
 
 //@Override
 /*public*/ void ControlPanelEditor::mouseEntered(QGraphicsSceneMouseEvent * /*event*/) {
-    _targetPanel->repaint();
+    if(_targetPanel != nullptr)
+  _targetPanel->repaint(); // needed for ToolTip
+ else if(editScene != nullptr)
+  editScene->repaint();
 }
 
 //@Override
@@ -1668,16 +1691,16 @@ void ControlPanelEditor::selectAllAction()
 * a new location.
 */
 /*protected*/ void ControlPanelEditor::copyItem(Positionable* p) {
-    if (_debug) log->debug("Enter copyItem: _selectionGroup "+(_selectionGroup!=NULL ?
-                                              "size= "+QString::number(_selectionGroup->size()) : "NULL"));
+    if (_debug) log->debug("Enter copyItem: _selectionGroup "+(_selectionGroup!=nullptr ?
+                                              "size= "+QString::number(_selectionGroup->size()) : "null"));
     // If popup menu hit again, Paste selections and make another copy
     if (_pastePending) {
         pasteItems();
     }
-    if (_selectionGroup!=NULL && !_selectionGroup->contains(p)) {
+    if (_selectionGroup!=nullptr && !_selectionGroup->contains(p)) {
         _selectionGroup = new QList<Positionable*>();
     }
-    if (_selectionGroup==NULL) {
+    if (_selectionGroup==nullptr) {
         _selectionGroup = new QList <Positionable*>();
         _selectionGroup->append(p);
     }
@@ -1692,14 +1715,14 @@ void ControlPanelEditor::selectAllAction()
 }
 
 void ControlPanelEditor::pasteItems() {
-    if (_selectionGroup!=NULL) {
+    if (_selectionGroup!=nullptr) {
         for (int i=0; i<_selectionGroup->size(); i++) {
             Positionable* pos = _selectionGroup->at(i);
             //if (pos instanceof PositionableIcon)
-            if(qobject_cast<PositionableIcon*>(pos)!=NULL)
+            if(qobject_cast<PositionableIcon*>(pos)!=nullptr)
             {
                 NamedBean* bean = ((PositionableIcon*)pos)->getNamedBean();
-                if (bean!=NULL) {
+                if (bean!=nullptr) {
                     ((PositionableIcon*)pos)->displayState(bean->getState());
                 }
             }
@@ -1717,8 +1740,8 @@ void ControlPanelEditor::pasteItems() {
 */
 void ControlPanelEditor::abortPasteItems() {
     if (_debug) log->debug("abortPasteItems: _selectionGroup"+
-                          (_selectionGroup==NULL?"=NULL":(".size="+QString::number(_selectionGroup->size()))));
-    if (_selectionGroup!=NULL) {
+                          (_selectionGroup==nullptr?"=NULL":(".size="+QString::number(_selectionGroup->size()))));
+    if (_selectionGroup!=nullptr) {
         for (int i=0; i<_selectionGroup->size(); i++) {
             _selectionGroup->at(i)->setVisible(false);
             _selectionGroup->at(i)->remove();
@@ -1815,7 +1838,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
   //if(qobject_cast<PositionableLabel*>(p)!= NULL)
    popupSet = p->setTextEditMenu(popup);
   //if (p instanceof PositionableLabel)
-  if(qobject_cast<PositionableLabel*>(p)!=NULL)
+  if(qobject_cast<PositionableLabel*>(p)!=nullptr)
   {
    PositionableLabel* pl = (PositionableLabel*)p;
    if (!pl->isIcon())
@@ -1823,7 +1846,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
     popupSet |= setTextAttributes(p, popup);
    }
   }
-  else if (qobject_cast<PositionableJPanel*>(p) != NULL)
+  else if (qobject_cast<PositionableJPanel*>(p) != nullptr)
   {
    popupSet |= setTextAttributes(p, popup);
   }
@@ -1833,7 +1856,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
    popupSet = false;
   }
   p->setDisableControlMenu(popup);
-  if (util!=NULL)
+  if (util!=nullptr)
   {
    util->setAdditionalEditPopUpMenu(popup);
   }
@@ -1848,7 +1871,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
  else
  {
   p->showPopUp(popup);
-  if (util!=NULL)
+  if (util!=nullptr)
   {
    util->setAdditionalViewPopUpMenu(popup);
   }
@@ -1881,12 +1904,12 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
     _highlightcomponent = QRectF();
 //    TargetPane targetPane = (TargetPane)getTargetPanel();
 //    targetPane.setDefaultColors();
-    setSelectionGroup(NULL);
+    setSelectionGroup(nullptr);
     _disablePortalSelection = true;
 }
 
 /*protected*/ void ControlPanelEditor::highlight(Positionable* pos) {
-    if (pos==NULL) {
+    if (pos==nullptr) {
         _highlightcomponent = QRectF();
     } else {
         _highlightcomponent =  QRectF(pos->getX(), pos->getY(),
@@ -1897,7 +1920,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
 
 /*public*/ void ControlPanelEditor::setSelectionGroup(QList<Positionable*>* group) {
     _highlightcomponent = QRectF();
-//        _currentSelection = NULL;		need non-NULL for Portal dragging in CircuitBuilder
+//        _currentSelection = nullptr;		need non-NULL for Portal dragging in CircuitBuilder
     _selectionGroup = group;
     //repaint();
 }
@@ -1923,14 +1946,14 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
 
 /*protected*/ NamedIcon* ControlPanelEditor::getPortalIcon(QString name)
 {
- if (_portalIconMap == NULL || _portalIconMap->isEmpty())
+ if (_portalIconMap == nullptr || _portalIconMap->isEmpty())
  {		// set defaults
      makePortalIconMap();
  }
  return _portalIconMap->value(name);
 }
 /*public*/ QHash<QString, NamedIcon*>* ControlPanelEditor::getPortalIconMap() {
- if (_portalIconMap == NULL || _portalIconMap->isEmpty())
+ if (_portalIconMap == nullptr || _portalIconMap->isEmpty())
  {		// set defaults
   makePortalIconMap();
  }
@@ -1945,7 +1968,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
  {
   Positionable* pos = it.next();
   //f (pos instanceof PortalIcon)
-  if(qobject_cast<PortalIcon*>(pos) != NULL)
+  if(qobject_cast<PortalIcon*>(pos) != nullptr)
   {
    ((PortalIcon*) pos)->initMap();
   }

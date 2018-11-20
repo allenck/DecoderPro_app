@@ -7,6 +7,7 @@ SystemConsoleConfigPanelXml::SystemConsoleConfigPanelXml(QObject *parent) :
   AbstractXmlAdapter(parent)
 {
  log = new Logger("SystemConsoleConfigPanelXml");
+ setProperty("JavaPackageName", "apps.configurexml.SystemConsoleConfigPanelXml");
 }
 /**
  * Handle XML persistence of SystemConsoleConfigPanel objects.

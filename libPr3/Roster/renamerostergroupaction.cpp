@@ -128,7 +128,7 @@ void RenameRosterGroupAction::common()
 
     // rename the roster grouping
     Roster::instance()->renameRosterGroupList(group, entry);
-    Roster::writeRosterFile();
+    Roster::writeRoster();
 }
 
 // never invoked, because we overrode actionPerformed above

@@ -1,11 +1,20 @@
 #include "warrantmanager.h"
 #include "warrant.h"
+#include "rosterspeedprofile.h"
+#include "instancemanager.h"
+#include "shutdownmanager.h"
+#include "shutdowntask.h"
+#include "warrantshutdowntask.h"
+#include "loggerfactory.h"
 
 WarrantManager::WarrantManager(QObject *parent) :
     AbstractManager(parent)
 {
  setObjectName("WarrantManager");
- registerSelf();
+ setProperty("JavaClassName", "jmri.managers.WarrantManager");
+ setProperty("InstanceManagerAutoDefault", "yes");
+
+ //registerSelf();
 }
 /**
  * Basic Implementation of a WarrantManager.
@@ -113,3 +122,42 @@ WarrantManager::WarrantManager(QObject *parent) :
     }
     return (_instance);
 }
+
+/*protected*/ void WarrantManager::setSpeedProfiles(QString id, RosterSpeedProfile* merge, RosterSpeedProfile* session) {
+    if (_mergeProfiles == nullptr) {
+        _mergeProfiles = new QMap<QString, RosterSpeedProfile*>();
+        _sessionProfiles = new QMap<QString, RosterSpeedProfile*>();
+        if (InstanceManager::getNullableDefault("ShutDownManager") != nullptr) {
+            ShutDownTask* shutDownTask = new WarrantShutdownTask("WarrantRosterSpeedProfileCheck");
+                    static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->_register(shutDownTask);
+        } else {
+            log->error("No ShutDownManager for WarrantRosterSpeedProfileCheck");
+        }
+    }
+    if (id != nullptr && merge != nullptr) {
+        _mergeProfiles->insert(id, merge);
+        _sessionProfiles->insert(id, session);
+    }
+}
+
+/*protected*/ RosterSpeedProfile*  WarrantManager::getMergeProfile(QString id) {
+    if (_mergeProfiles == nullptr) {
+        return nullptr;
+    }
+    return _mergeProfiles->value(id);
+}
+/*protected*/ RosterSpeedProfile* WarrantManager::getSessionProfile(QString id) {
+    if (_sessionProfiles == nullptr) {
+        return nullptr;
+    }
+    return _sessionProfiles->value(id);
+}
+
+
+/*protected*/ QMap<QString, RosterSpeedProfile*>* WarrantManager::getMergeProfiles() {
+    return _mergeProfiles;
+}
+/*protected*/ QMap<QString, RosterSpeedProfile*>* WarrantManager::getSessionProfiles() {
+    return _sessionProfiles;
+}
+/*private*/ /*final*/ /*static*/ Logger* WarrantManager::log = LoggerFactory::getLogger("WarrantManager");

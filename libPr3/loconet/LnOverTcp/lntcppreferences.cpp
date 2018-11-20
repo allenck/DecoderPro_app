@@ -81,7 +81,7 @@
         sharedPreferences->sync();
         setIsDirty(false);  //  Resets only when stored
     } catch (BackingStoreException ex) {
-        log->error("Exception while saving web server preferences", ex.getMessage());
+        log->error("Exception while saving web server preferences", ex);
     }
 }
 

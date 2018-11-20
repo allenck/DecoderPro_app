@@ -13,7 +13,7 @@ public:
   bool isMissingNode(){  return QJsonValue::isNull() || QJsonValue::isUndefined(); }
 
  int asInt() {return QJsonValue::toInt();}
- QString asText() {return QJsonValue::toString();}
+ //QString asText() {return QJsonValue::toString();}
  bool asBoolean() {return QJsonValue::toBool();}
  bool asBoolean(bool bDefault) {return QJsonValue::toBool(bDefault);}
  bool asDouble() {return QJsonValue::toDouble();}

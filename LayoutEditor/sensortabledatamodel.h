@@ -36,7 +36,7 @@ signals:
 public slots:
  void OnDelete(int);
 private:
- Manager* senManager;// = InstanceManager.sensorManagerInstance();
+ SensorManager* senManager;// = InstanceManager.sensorManagerInstance();
  void common();
  Logger * log;
  QSignalMapper* deleteMapper;

@@ -4,6 +4,7 @@
 #include <QObject>
 #include "loggerfactory.h"
 #include  <QPointF>
+#include <QRectF>
 
 class LayoutTrack : public QObject
 {
@@ -44,6 +45,10 @@ public:
  /*public*/ QPointF center;// =  QPointF(50.0, 50.0);
  /*public*/ static void setDefaultTrackColor(QColor color);
  /*public*/ bool isHidden();
+ /**
+  * @return the bounds of this track
+  */
+ /*public*/ /*abstract*/virtual QRectF getBounds() {return QRectF();}
 
  /**
   * Get the hidden state of the track element.

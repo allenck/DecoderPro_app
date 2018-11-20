@@ -27,8 +27,8 @@ LnOverTcpConnectionConfig::LnOverTcpConnectionConfig(QObject *parent) :
 {
  //super(p);
  setObjectName("LnOverTcpConnectionConfig");
+ setProperty("JavaClassName", "jmri.jmrix.loconet,loconetovertcp.ConnectionConfig");
 }
-
 /**
  * Ctor for a functional Swing object with no prexisting adapter
  */

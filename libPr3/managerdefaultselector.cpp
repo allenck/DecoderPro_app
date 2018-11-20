@@ -7,6 +7,7 @@
 #include "profileutils.h"
 #include "class.h"
 #include "configuremanager.h"
+#include "systemconnectionmemomanager.h"
 
 /**
  * Records and executes a desired set of defaults for the JMRI InstanceManager
@@ -33,6 +34,8 @@
 
 /*public*/ ManagerDefaultSelector::ManagerDefaultSelector(QObject *parent) : AbstractPreferencesManager(parent)
 {
+ setProperty("JavaClassName", "jmri.managers.ManagerDefaultSelector");
+
  defaults = QMap<QString, QString>();
  // Define set of items that we remember defaults for, manually maintained because
  // there are lots of JMRI-internal types of no interest to the user and/or not system-specific.
@@ -47,8 +50,9 @@
  if(log == NULL)
   log = LoggerFactory::getLogger("ManagerDefaultSelector");
 
- SystemConnectionMemo::addPropertyChangeListener((PropertyChangeListener*)this);
- connect(SystemConnectionMemo::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //SystemConnectionMemoManager::addPropertyChangeListener((PropertyChangeListener*)this);
+ SystemConnectionMemoManager* mgr = SystemConnectionMemoManager::getDefault();
+ connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 //    SystemConnectionMemo::addPropertyChangeListener((PropertyChangeEvent e) ->
@@ -89,11 +93,11 @@
  else if (e->getPropertyName()=="ConnectionAdded")
  {
   // check for special case of anything else then Internal
-  QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
-  if (list->size() == 2 && qobject_cast<InternalSystemConnectionMemo*>(list->at(0)) != 0 ) // ACK change from 1 to 0; Internal is last!
+  QObjectList list = InstanceManager::getList("SystemConnectionMemo");
+  if (list.size() == 2 && qobject_cast<InternalSystemConnectionMemo*>(list.at(0)) != 0 ) // ACK change from 1 to 0; Internal is last!
   {
    log->debug("First real system added, reset defaults");
-   QString name = ((SystemConnectionMemo*)list->at(1))->getUserName();
+   QString name = ((SystemConnectionMemo*)list.at(1))->getUserName();
    removeConnectionAsDefault(name);
   }
  }
@@ -173,15 +177,15 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
 /*public*/ InitializationException* ManagerDefaultSelector::configure()
 {
  InitializationException* error =  NULL;
- QObjectList* connList = InstanceManager::getList("SystemConnectionMemo");
- log->debug(tr("configure defaults into InstanceManager from %1 memos, %2 defaults").arg(connList->size()).arg(defaults.keys().size()));
+ QObjectList connList = InstanceManager::getList("SystemConnectionMemo");
+ log->debug(tr("configure defaults into InstanceManager from %1 memos, %2 defaults").arg(connList.size()).arg(defaults.keys().size()));
  foreach (QString c, defaults.keys())
  {
   // 'c' is the class to load
   QString connectionName = this->defaults.value(c);
   // have to find object of that type from proper connection
   bool found = false;
-  foreach (QObject* memo, *connList)
+  foreach (QObject* memo, connList)
   {
    QString testName = ((SystemConnectionMemo*)memo)->getUserName();
    if (testName == (connectionName))
@@ -287,7 +291,7 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
  }
  catch (BackingStoreException ex)
  {
-  log->error("Unable to save preferences for Default Selector.", ex.getMessage());
+  log->error("Unable to save preferences for Default Selector.", ex);
  }
 }
 

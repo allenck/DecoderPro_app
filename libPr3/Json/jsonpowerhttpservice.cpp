@@ -36,7 +36,7 @@
                 break;
         }
     } catch (JmriException e) {
-        log->error("Unable to get Power state.", e.getMessage());
+        log->error("Unable to get Power state.", e);
         throw  JsonException(500, tr("Error accessing power status."));
     } catch (NullPointerException e) {
         // No PowerManager is defined; just report it as UNKNOWN

@@ -50,8 +50,6 @@
 #include "../libPr3/loconet/Locobuffer/locobufferconnectionconfig.h"
 #include "../libPr3/loconet/LocobufferUsb/locobufferusbconnectionconfig.h"
 #include "../libPr3/loconet/HexFile/hexfileconnectionconfig.h"
-#include "../libPr3/loconet/LnOverTcp/lnovertcpconnectionconfig.h"
-#include "../libPr3/loconet/HexFile/hexfileconnectionconfig.h"
 #include "../libPr3/loconet/HexFile/hexfileconnectionconfigxml.h"
 #include "../libPr3/loconet/LnOverTcp/lnovertcpconnectionconfig.h"
 #include "../libPr3/loconet/LnOverTcp/lnovertcpconnectionconfigxml.h"
@@ -273,6 +271,13 @@
 #include "throttleframemanager.h"
 #include "lntcppreferencespanel.h"
 #include "lntcpserveraction.h"
+#include "switchboardeditorxml.h"
+#include "layouttrackdrawingoptionsxml.h"
+#include "internalsystemconnectionmemo.h"
+#include "systemconsoleconfigpanel.h"
+#include "systemconsoleconfigpanelxml.h"
+#include "matrixsignalmastxml.h"
+#include "signalspeedmap.h"
 
 bool Metatypes::done = false;
 
@@ -283,7 +288,6 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<CreateButtonModel>("CreateButtonModel");
  //qRegisterMetaType<DefaultUserMessagePreferencesXml>("DefaultUserMessagePreferencesXml");
  qRegisterMetaType<ConnectionConfigXml>("ConnectionConfigXml");
- qRegisterMetaType<HexFileConnectionConfigXml>("HexFileConnectionConfigXml");
  qRegisterMetaType<ProgrammerConfigPaneXml>("ProgrammerConfigPaneXml");
  qRegisterMetaType<FileLocationPaneXml>("FileLocationPaneXml");
  qRegisterMetaType<GuiLafConfigPaneXml>("GuiLafConfigPanelXml");
@@ -405,7 +409,6 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<RosterFrameAction>("RosterFrameAction");
  qRegisterMetaType<PaneProgDp3Action>("PaneProgDp3Action");
  qRegisterMetaType<LnLightManagerXml>("LnLightManagerXml");
- qRegisterMetaType<DefaultCatalogTreeManagerXml>("DefaultCatalogTreeManagerXml");
  qRegisterMetaType<LnSensorManagerXml>("LnSensorManagerXml");
  qRegisterMetaType<InternalReporterManagerXml>("InternalReporterManagerXml");
  qRegisterMetaType<InternalReporterManagerXml>("InternalReporterManagerXml");
@@ -457,7 +460,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<DefaultCatalogTreeManager>("DefaultCatalogTreeManager");
  qRegisterMetaType<TransitManager>("TransitManager");
  qRegisterMetaType<SectionManager>("SectionManager");
- qRegisterMetaType<CatalogTreeManager>("CatalogTreeManager");
+ //qRegisterMetaType<CatalogTreeManager>("CatalogTreeManager");
  qRegisterMetaType<SystemConnectionMemo>("SystemConnectionMemo");
  //qRegisterMetaType<ConfigureManager>("ConfigureManager");
  qRegisterMetaType<Operations::TrainManifestText>("TrainManifestText");
@@ -467,7 +470,7 @@ Metatypes::Metatypes(QObject *parent) :
  //qRegisterMetaType<ListedTableFrame>("ListedTableFrame");
  qRegisterMetaType<LightTableTabAction>("LightTableTabAction");
  qRegisterMetaType<SignalMastTableAction>("SignalMastTableAction");
- qRegisterMetaType<SignalGroupManager>("SignalGroupManager");
+ //qRegisterMetaType<SignalGroupManager>("SignalGroupManager");
  qRegisterMetaType<ReporterTableAction>("ReporterTableAction");
  qRegisterMetaType<MemoryTableAction>("MemoryTableAction");
  qRegisterMetaType<IdTagTableAction>("IdTagTableAction");
@@ -559,6 +562,13 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<Sprog::SprogCSConnectionConfigXml>("SprogCSConnectionConfigXml");
  qRegisterMetaType<LnTcpPreferencesPanel>("LnTcpPreferencesPanel");
  qRegisterMetaType<LnTcpServerAction>("LnTcpServerAction");
+ qRegisterMetaType<SwitchboardEditorXml>("SwitchboardEditorXml");
+ qRegisterMetaType<LayoutTrackDrawingOptionsXml>("LayoutTrackDrawingOptionsXml");
+ //qRegisterMetaType<InternalSystemConnectionMemo>("InternalSystemConnectionMemo");
+ qRegisterMetaType<SystemConsoleConfigPanel>("SystemConsoleConfigPanel");
+ qRegisterMetaType<SystemConsoleConfigPanelXml>("SystemConsoleConfigPanelXml");
+ qRegisterMetaType<MatrixSignalMastXml>("MatrixSignalMastXml");
+ qRegisterMetaType<SignalSpeedMap>("SignalSpeedMap");
 
  Metatypes::done = true;
 }

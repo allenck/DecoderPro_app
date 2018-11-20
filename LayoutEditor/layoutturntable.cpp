@@ -105,6 +105,21 @@
     radius = r;
 }
 
+/**
+ * @return the bounds of this turntable
+ */
+//@Override
+/*public*/ QRectF LayoutTurntable::getBounds() {
+//    QRectF result;
+
+//    result = QRectF(center.x(), center.y(), 0, 0);
+//    for (int k = 0; k < getNumberRays(); k++) {
+//        result.united(getRayCoordsOrdered(k));
+//    }
+//    return result;
+ return item->boundingRect();
+}
+
 /*protected*/ RayTrack* LayoutTurntable::addRay(double angle)
 {
  RayTrack* ray = new RayTrack(angle, getNewIndex(), this);

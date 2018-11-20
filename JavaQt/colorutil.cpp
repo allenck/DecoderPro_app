@@ -141,7 +141,8 @@ ColorUtil::ColorUtil()
     } else if (color== Qt::cyan) {
         return "cyan";
     }
-    return "";
+    else
+    return QString("rgb(%1,%2,%3,%4").arg(color.red()).arg(color.green()).arg(color.blue()).arg(color.alpha());
 }
 /**
  * set the alpha component of a color

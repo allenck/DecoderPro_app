@@ -148,7 +148,7 @@ void LocoIOFrame::createActions()
  actDisplayHex = new QAction(tr("Display values in hex."), this);
  actDisplayHex->setToolTip("Display CV and addresses as decimal or hexadecimal");
  actDisplayHex->setCheckable(true);
- actAllowEdits = new QAction(tr("Allow edits"));
+ actAllowEdits = new QAction(tr("Allow edits"),this);
  actAllowEdits->setCheckable(true);
 // actChangeAddress = new QAction(tr("ChangeAddress"), this);
 // actChangeAddress->setEnabled(false);

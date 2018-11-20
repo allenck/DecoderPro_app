@@ -4,6 +4,7 @@
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
 
+class QSpinBox;
 class QVBoxLayout;
 class ReporterManager;
 class JTextField;
@@ -26,21 +27,25 @@ private:
     void common();
     JmriJFrame* addFrame = NULL;
     QVBoxLayout* addFrameLayout;
-    JTextField* sysName;// = new JTextField(10);
-    JTextField* userName;// = new JTextField(20);
+    JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
+    //JTextField* sysName;// = new JTextField(10);
+    JTextField* userNameTextField;// = new JTextField(20);
     QComboBox* prefixBox;// = new JComboBox<String>();
-    JTextField* numberToAdd;// = new JTextField(10);
+    QSpinBox* numberToAdd;// = new JTextField(10);
     QCheckBox* range;// = new JCheckBox(tr("AddRangeBox"));
     QLabel* sysNameLabel;// = new JLabel("Hardware Address");
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
+    QPushButton* addButton;
     QString userNameError;// = this.getClass().getName() + ".DuplicateUserName";
+    QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
+
     UserPreferencesManager* pref;
     Logger* log;
 
 private slots:
     void cancelPressed(ActionEvent* e = 0);
-    void okPressed(ActionEvent* e = 0);
+    void createPressed(ActionEvent* e = 0);
     /*private*/ void canAddRange(ActionEvent* e = 0);
 
 

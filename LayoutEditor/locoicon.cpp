@@ -387,7 +387,7 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
   QPixmap pixmap = QPixmap::fromImage(getIcon()->getOriginalImage());
   if(pixmap.isNull())
   {
-   log.debug(QString("LocoIcon null pixmap: %1").arg(JLabel::getIcon()->getURL()));
+   log.debug(QString("LocoIcon null pixmap: %1").arg(JLabel::getIcon()->getDescription()));
    return false;
   }
   if(_itemGroup != NULL)

@@ -131,7 +131,7 @@ bool RemoveRosterEntryToGroupAction::userOK(QString entry)
    log->info("Preparing to remove " + re->getId() + " from " + group);
    re->deleteAttribute(Roster::getRosterGroupProperty(group));
    re->updateFile();
-   Roster::writeRosterFile();
+   Roster::writeRoster();
    rosterBox->getRosterEntryComboBox()->update();
   }
  }

@@ -95,6 +95,7 @@ void ImageIcon::init()
 {
  init();
  //image = Toolkit.getDefaultToolkit().getImage(filename);
+ if(description == "") description = filename;
  image = QImage(filename);
  if (image.isNull())
  {
@@ -139,6 +140,8 @@ void ImageIcon::init()
  * @see #ImageIcon(QString)
  */
 /*public*/ ImageIcon::ImageIcon(QUrl location, QString description, QObject* parent) : QObject(parent) {
+ if(description == "") description = filename;
+
     init();
     //image = Toolkit.getDefaultToolkit().getImage(location);
     image = QImage(location.toString());
@@ -180,6 +183,8 @@ QString ImageIcon::description() { return _description;}
  */
 /*public*/ ImageIcon::ImageIcon(QImage image, QString description, QObject *parent) : QObject(parent)
 {
+ if(description == "") description = filename;
+
  init();
  //this(image);
  this->image = image;

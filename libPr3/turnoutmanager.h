@@ -10,7 +10,7 @@ class TurnoutManager :  public AbstractManager
 {
     Q_OBJECT
 public:
-    explicit TurnoutManager(QObject *parent = 0) : AbstractManager(parent) {}
+    explicit TurnoutManager(QObject *parent = nullptr) : AbstractManager(parent) {}
     /**
          * Locate via user name, then system name if needed.
          * If that fails, create a new turnout. If the name

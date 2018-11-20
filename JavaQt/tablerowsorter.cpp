@@ -126,8 +126,11 @@
  *        <code>NULL</code> is treated as an empty model
  */
 /*public*/ TableRowSorter::TableRowSorter(QAbstractItemModel* model) {
+ setObjectName("TableRowSorter");
     setModel(model);
 }
+
+QAbstractItemModel* TableRowSorter::sourceModel() {return model;}
 
 /**
  * Sets the <code>TableModel</code> to use as the underlying model
@@ -139,6 +142,7 @@
 /*public*/ void TableRowSorter::setModel(QAbstractItemModel* model) {
     tableModel = model;
     setModelWrapper(new TableRowSorterModelWrapper(this));
+    setSourceModel(model);
 }
 
 /**

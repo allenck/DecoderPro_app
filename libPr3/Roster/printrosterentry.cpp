@@ -64,7 +64,7 @@
  }
  catch (Exception e)
  {
-  log->error("exception reading programmer file: "+filename, e.getMessage());
+  log->error("exception reading programmer file: "+filename, e);
   // provide traceback too
   //e.printStackTrace();
   return;

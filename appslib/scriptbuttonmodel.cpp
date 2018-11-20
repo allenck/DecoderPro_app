@@ -57,7 +57,7 @@ ScriptButtonModel::ScriptButtonModel()
         try {
             JmriScriptEngineManager::getDefault()->eval(model->getScript());
         } catch (/*ScriptException | */IOException ex) {
-            model->log->error(tr("Unable to run script %1.").arg(model->getScript()->toString()), ex.getMessage());
+            model->log->error(tr("Unable to run script %1.").arg(model->getScript()->toString()), ex);
         }
     }
 

@@ -19,12 +19,14 @@ class PanelEditor : public Editor
     Q_OBJECT
 
 public:
-    explicit PanelEditor(QWidget *parent = 0);
-    /*public*/ PanelEditor(QString name, QWidget *parent=0);
+    explicit PanelEditor(QWidget *parent = nullptr);
+    /*public*/ PanelEditor(QString name, QWidget *parent=nullptr);
 
     ~PanelEditor();
  PanelEditor(const PanelEditor&) :Editor() {}
     /*public*/ bool _debug;
+ /*public*/ void initView();
+
 public slots:
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
     /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event);
@@ -56,7 +58,7 @@ public slots:
     void on_addIcon_triggered();
     void on_addTextLabel_triggered();
     void on_actionDelete_this_panel_triggered();
-    void on_menuWindow_aboutToShow();
+    //void on_menuWindow_aboutToShow();
     void on_addMultiSensor_triggered();
     void on_addBackground_triggered();
     void on_actionOpenEditor_triggered();

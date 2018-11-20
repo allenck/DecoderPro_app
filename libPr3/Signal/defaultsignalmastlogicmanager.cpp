@@ -6,7 +6,7 @@
 #include "defaultsignalmastlogic.h"
 #include "../LayoutEditor/configxmlmanager.h"
 
-/*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = SignalSpeedMap::getMap();
+/*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
 
 //DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) :
 //    SignalMastLogicManager(parent)
@@ -37,8 +37,9 @@
 /*public*/ DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) : SignalMastLogicManager(parent)
 {
  setObjectName("DefaultSignalMastLogicManager");
+ setProperty("JavaClassName", "jmri.managers.DefaultSignalMastLogicManager");
     log = new Logger("DefaultSignalMastLogicManager");
-    _speedMap = SignalSpeedMap::getMap();
+    _speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
     signalMastLogic =  QList<SignalMastLogic*>();
     pcs = new PropertyChangeSupport(this);
     signalLogicDelay = 500L;
@@ -278,6 +279,11 @@
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ QSet<NamedBean*> DefaultSignalMastLogicManager::getNamedBeanSet(){
+    throw new UnsupportedOperationException("Not supported yet.");
+}
 /*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::addPropertyChangeListener(PropertyChangeListener* l) {
     QMutexLocker locker(&mutex);
 

@@ -50,7 +50,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
   panel.setAttribute("panelheight", (editor->getTargetPanel()->height()));
   panel.setAttribute("panelwidth", (editor->getTargetPanel()->width()));
 
-  panel.setAttribute("showtooltips", (editor->showTooltip()) ? "yes" : "no");
+  panel.setAttribute("showtooltips", (editor->showToolTip()) ? "yes" : "no");
   panel.setAttribute("controlling", (editor->allControlling()) ? "yes" : "no");
   if (editor->getBackgroundColor() != QColor())
   {
@@ -99,7 +99,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
     }
     catch (Exception ex)
     {
-     log->error(tr("Error storing panel element: %1").arg(ex.getMessage()), ex.getMessage());
+     log->error(tr("Error storing panel element: "), ex);
     }
    }
   }
@@ -141,7 +141,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
   panel.insert("panelheight", frame->getContentPane()->height());
   panel.insert("panelwidth", frame->getContentPane()->width());
 
-  panel.insert("showtooltips", editor->showTooltip());
+  panel.insert("showtooltips", editor->showToolTip());
   panel.insert("controlling", editor->allControlling());
   if (editor->getBackgroundColor() != QColor())
   {
@@ -162,7 +162,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
         // but when a panel element has a reference to the panel or to itself as a property, this leads
         // to infinite recursion
     } catch (Exception ex) {
-        log->error("Error storing panel element: " + ex.getMessage(), ex.getMessage());
+        log->error("Error storing panel element: " , ex);
     }
   }
   root.insert("panel", panel);
@@ -184,7 +184,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
 //        return "ERROR " + e.getLocalizedMessage();
 //    }
  catch (IOException e) {
-     log->error("IOException", e.getMessage());
+     log->error("IOException", e);
      return "ERROR " + e.getLocalizedMessage();
  }
 }

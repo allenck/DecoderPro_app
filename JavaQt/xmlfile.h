@@ -26,7 +26,7 @@ public:
     /*public*/ QDomElement rootFromInputStream(QDataStream* stream) /*throw (JDOMException)*/;
     /*public*/ QDomElement rootFromURL(QUrl* url) throw (JDOMException);
     /*public*/ void writeXML(File* file, QDomDocument doc) throw (FileNotFoundException);
-    /*public*/ void writeXML(QFile* file, QDomDocument doc) throw (FileNotFoundException);
+    /*public*/ void writeXML(QFile* file, QDomDocument doc) const throw (FileNotFoundException);
 
     /**
      * Specify a standard prefix for DTDs in new XML documents
@@ -34,19 +34,38 @@ public:
     static /*public*/ /*final*/ QString dtdLocation;// = "/xml/DTD/";
     static QDomDocument doc;
     static /*public*/ void dumpElement(QDomElement name);
-    /*public*/ void makeBackupFile(QString name);
-    /*public*/ bool makeBackupFile(QString directory, File* file);
+    /*public*/ void makeBackupFile(QString name) const;
+    /*public*/ bool makeBackupFile(QString directory, File* file) const;
     /*public*/ void revertBackupFile(QString name);
-    /*public*/ QString backupFileName(QString name);
-    /*public*/ QString createFileNameWithDate(QString name);
+    /*public*/ QString backupFileName(QString name) const;
+    /*public*/ QString createFileNameWithDate(QString name) const;
     static /*public*/ QDomDocument newDocument(QDomElement root, QString dtd);
     static /*public*/ QDomDocument newDocument(QDomElement root);
     static /*public*/ void addDefaultInfo(QDomElement root);
     static /*public*/ QString xmlDir();
-    static bool verify;// = false;
+    //static bool validate;// = false;
     static bool include;// = true;
-    static /*public*/ bool getVerify();
-    static /*public*/ void setVerify(bool v);
+    /*public*/ enum Validate {
+        /**
+         * Don't validate input
+         */
+        None,
+        /**
+         * Require that the input specifies a Schema which validates
+         */
+        RequireSchema,
+        /**
+         * Validate against DTD if present (no DTD passes too)
+         */
+        CheckDtd,
+        /**
+         * Validate against DTD if present, else Schema must be present and
+         * valid
+         */
+        CheckDtdThenSchema
+    };
+    /*public*/ Validate getValidate();
+    /*public*/ void setValidate(Validate v);
     /**
      * Provide a JFileChooser initialized to the default user location, and with
      * a default filter.
@@ -61,6 +80,18 @@ public:
     /*public*/ static JFileChooser* userFileChooser(QString filter);
     /*public*/ static JFileChooser* userFileChooser(QString filter, QString suffix1);
     /*public*/ QString getPathname();
+    static /*public*/ Validate getDefaultValidate();
+    static /*public*/ void setDefaultValidate(Validate v);
+    static /*public*/ QString getDefaultDtdLocation();
+    static /*public*/ void setDefaultDtdLocation(QString v);
+    static /*public*/ QString defaultDtdLocation;// = "/xml/DTD/";
+    /*public*/ QString getDtdLocation();
+    /*public*/ void setDtdLocation(QString v);
+    /**
+     * Specify validation operations on input. The available choices are
+     * restricted to what the underlying SAX Xerces and JDOM implementations
+     * allow.
+     */
 
 signals:
     
@@ -68,15 +99,19 @@ public slots:
     
 private:
  Logger* log;
- /*private*/ QString getDate();
+ /*private*/ QString getDate() const;
  QString currFile;
 QDomElement docElem;
+static /*private*/ Validate defaultValidate;// = Validate.None;
+/*private*/ Validate validate;// = defaultValidate;
+
 protected:
  ///*protected*/ QDomElement getRoot(bool verify, InputStreamReader reader) throw (JDOMException);
  /*protected*/ bool checkFile(QString name);
-/*protected*/ QFile* findFile(QString name);
- /*protected*/ QDomElement getRoot(bool verify, QDataStream* stream) /*throw (JDOMException)*/;
+/*protected*/ QFile* findFile(QString name) const;
+ /*protected*/ QDomElement getRoot(bool validate, QDataStream* stream) /*throw (JDOMException)*/;
  friend class LayoutEditor;
+ friend class ConfigXmlManager;
 };
 
 #endif // XMLFILE_H

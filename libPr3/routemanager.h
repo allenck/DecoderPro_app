@@ -1,5 +1,6 @@
 #ifndef ROUTEMANAGER_H
 #define ROUTEMANAGER_H
+
 #include "abstractmanager.h"
 #include "route.h"
 #include "libPr3_global.h"
@@ -32,7 +33,7 @@ class LIBPR3SHARED_EXPORT RouteManager : public AbstractManager
     Q_OBJECT
 public:
     //explicit RouteManager(QObject *parent = 0);
- RouteManager(QObject* parent = 0) : AbstractManager(parent) {}
+ RouteManager(QObject* parent = nullptr) : AbstractManager(parent) {}
     // to free resources when no longer used
  /*public*/ virtual void dispose() {}
 
@@ -41,7 +42,7 @@ public:
      *   Returns null if a Route with the same systemName or userName
      *       already exists, or if there is trouble creating a new Route.
      */
- /*public*/ virtual Route* provideRoute(QString /*systemName*/, QString /*userName*/) {return NULL;}
+ /*public*/ virtual Route* provideRoute(QString /*systemName*/, QString /*userName*/) {return nullptr;}
 
     /**
      * For use with User GUI, to allow the auto generation of systemNames,
@@ -50,7 +51,7 @@ public:
      *   Returns null if a Route with the same userName
      *       already exists, or if there is trouble creating a new Route.
      */
-    /*public*/ virtual Route* newRoute(QString /*userName*/) {return NULL;}
+    /*public*/ virtual Route* newRoute(QString /*userName*/) {return nullptr;}
 
     /**
      * Locate via user name, then system name if needed.
@@ -59,10 +60,10 @@ public:
      * @param name
      * @return null if no match found
      */
-    /*public*/ virtual Route* getRoute(QString /*name*/) {return NULL;}
+    /*public*/ virtual Route* getRoute(QString /*name*/) {return nullptr;}
 
-    /*public*/ virtual Route* getByUserName(QString /*s*/){return NULL;}
-    /*public*/ virtual Route* getBySystemName(QString /*s*/) {return NULL;}
+    /*public*/ virtual Route* getByUserName(QString /*s*/){return nullptr;}
+    /*public*/ virtual Route* getBySystemName(QString /*s*/) {return nullptr;}
 
     /**
      * Get a list of all Route system names.

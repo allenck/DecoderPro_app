@@ -23,7 +23,7 @@
 //    implements SignalSystemManager, java.beans.PropertyChangeListener {
 
 /*public*/ DefaultSignalSystemManager::DefaultSignalSystemManager(QObject *parent)
-    : AbstractManager(parent)
+    : SignalSystemManager(parent)
 {
     //super();
     log = new Logger("DefaultSignalSystemManager");

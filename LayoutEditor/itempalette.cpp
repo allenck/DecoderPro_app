@@ -41,6 +41,7 @@
 #include "defaultcatalogtreemanagerxml.h"
 #include "displayframe.h"
 #include "portalitempanel.h"
+#include "editor.h"
 
 //ItemPalette::ItemPalette(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -76,7 +77,6 @@ void ItemPalette::changeEvent(QEvent * e)
 */
 /*public*/ /*static*/ void ItemPalette::storeIcons()
 {
-  Logger* log = new Logger("ItemPalette");
  if (_iconMaps==NULL)
  {
   return;     // never loaded
@@ -122,7 +122,6 @@ void ItemPalette::changeEvent(QEvent * e)
 
 /*static*/ CatalogTreeNode* ItemPalette::store3levelMap(QString type, QHash<QString, QHash<QString, NamedIcon*>*>* familyMap)
 {
- Logger* log = new Logger("ItemPalette");
  CatalogTreeNode* typeNode = new CatalogTreeNode(type);
  QHashIterator<QString, QHash<QString, NamedIcon*>*>  iter (*familyMap);
  while (iter.hasNext())
@@ -146,7 +145,7 @@ void ItemPalette::changeEvent(QEvent * e)
  return typeNode;
 }
 
-/*static*/ /*public*/ void ItemPalette::loadIcons()
+/*static*/ /*public*/ void ItemPalette::loadIcons(Editor *ed)
 {
  if (_iconMaps==NULL)
  {
@@ -157,17 +156,16 @@ void ItemPalette::changeEvent(QEvent * e)
   _indicatorTOMaps =
             new QMap<QString, QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*>();
 
-  if (!loadSavedIcons())
+  if (!loadSavedIcons(ed))
   {
-   loadDefaultIcons();
+   loadDefaultIcons(ed);
   }
 //            System.out.println("Palette icons loaded in "+ (System.currentTimeMillis()-t)+ " milliseconds.");
  }
 }
 
-/*static*/ bool ItemPalette::loadSavedIcons()
+/*static*/ bool ItemPalette::loadSavedIcons(Editor* ed)
 {
- Logger* log = new Logger("ItemPalette");
  log->setDebugEnabled(true);
  CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  CatalogTree* tree = ((DefaultCatalogTreeManager*)manager)->getBySystemName("NXPI");
@@ -186,7 +184,7 @@ void ItemPalette::changeEvent(QEvent * e)
    if (typeName==("IndicatorTO"))
    {
     QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* familyTOMap =
-                                loadIndicatorFamilyMap(node);
+                                loadIndicatorFamilyMap(node,ed);
     if (log->isDebugEnabled()) log->debug("Add "+QString::number(familyTOMap->size())+
                     " indicatorTO families to item type "+typeName+" to _indicatorTOMaps.");
     _indicatorTOMaps->insert(typeName, familyTOMap);
@@ -194,7 +192,7 @@ void ItemPalette::changeEvent(QEvent * e)
    else
    {
     QHash<QString, QHash<QString, NamedIcon*>*>* familyMap =
-                                loadFamilyMap(node);
+                                loadFamilyMap(node,ed);
     _iconMaps->insert(typeName, familyMap);
     if (log->isDebugEnabled()) log->debug("Add item type "+typeName+" to _iconMaps.");
    }
@@ -212,7 +210,7 @@ void ItemPalette::changeEvent(QEvent * e)
 }
 
 /*static*/ QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*
-                                    ItemPalette::loadIndicatorFamilyMap(CatalogTreeNode* node)
+                                    ItemPalette::loadIndicatorFamilyMap(CatalogTreeNode* node, Editor* ed)
 {
     QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* familyMap =
                             new QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>();
@@ -221,14 +219,13 @@ void ItemPalette::changeEvent(QEvent * e)
     while (ee->hasNext()) {
         CatalogTreeNode* famNode = (CatalogTreeNode*)ee->next();
         QString name = famNode->getUserObject().toString();
-        familyMap->insert(name, loadFamilyMap(famNode));
+        familyMap->insert(name, loadFamilyMap(famNode,ed));
         QThread::yieldCurrentThread();
     }
     return familyMap;
 }
 
-/*static*/ QHash<QString, QHash<QString, NamedIcon*>*>* ItemPalette::loadFamilyMap(CatalogTreeNode* node) {
-    Logger* log = new Logger("ItemPalette");
+/*static*/ QHash<QString, QHash<QString, NamedIcon*>*>* ItemPalette::loadFamilyMap(CatalogTreeNode* node, Editor *ed) {
 
     QHash <QString, QHash<QString, NamedIcon*>*>* familyMap =
              new QHash <QString, QHash<QString, NamedIcon*>*> ();
@@ -257,14 +254,13 @@ void ItemPalette::changeEvent(QEvent * e)
     return familyMap;
 }
 
-/*static*/ void ItemPalette::loadDefaultIcons()
+/*static*/ void ItemPalette::loadDefaultIcons(Editor *ed)
 {
- Logger* log = new Logger("ItemPalette");
  QFile* file = new QFile(FileUtil::getProgramPath()+ QString("xml")+QDir::separator()+"defaultPanelIcons.xml");
  if (!file->exists())
  {
   log->error("defaultPanelIcons file doesn't exist: "+file->fileName());
-  throw new IllegalArgumentException("defaultPanelIcons file doesn't exist: "+file->fileName());
+  throw  IllegalArgumentException("defaultPanelIcons file doesn't exist: "+file->fileName());
  }
  try
  {
@@ -282,14 +278,14 @@ void ItemPalette::changeEvent(QEvent * e)
    if (typeName==("IndicatorTO"))
    {
     QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* familyTOMap =
-                                    loadDefaultIndicatorTOMap(families);
+                                    loadDefaultIndicatorTOMap(families,ed);
     _indicatorTOMaps->insert(typeName, familyTOMap);
     if (log->isDebugEnabled()) log->debug("Add "+QString::number(familyTOMap->size())+
                         " indicatorTO families to item type "+typeName+" to _indicatorTOMaps.");
    }
    else
    {
-    QHash<QString, QHash<QString, NamedIcon*>*>* familyMap = loadDefaultFamilyMap(families);
+    QHash<QString, QHash<QString, NamedIcon*>*>* familyMap = loadDefaultFamilyMap(families, ed);
     _iconMaps->insert(typeName, familyMap);
     if (log->isDebugEnabled()) log->debug("Add "+QString::number(familyMap->size())+
                                             " families to item type "+typeName+" to _iconMaps.");
@@ -307,9 +303,30 @@ void ItemPalette::changeEvent(QEvent * e)
  }
 }
 
-/*static*/ QHash<QString, QHash<QString, NamedIcon*>*>* ItemPalette::loadDefaultFamilyMap(QDomNodeList families)
+/*static*/ void ItemPalette::loadFamilies(QString typeName, QDomNodeList families, Editor* ed)
 {
- Logger* log = new Logger("ItemPalette");
+ // detect this is a 4 level map collection.
+ // not very elegant (i.e. extensible), but maybe all that's needed.
+ if (typeName == ("IndicatorTO")) {
+     QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* familyTOMap
+             = loadDefaultIndicatorTOMap(families, ed);
+     _indicatorTOMaps->insert(typeName, familyTOMap);
+     if (log->isDebugEnabled()) {
+         log->debug(tr("Add %1 indicatorTO families to item type %2 to _indicatorTOMaps.").arg(
+                 familyTOMap->size()).arg(typeName));
+     }
+ } else {
+     QHash<QString, QHash<QString, NamedIcon*>*>* familyMap = loadDefaultFamilyMap(families, ed);
+     _iconMaps->insert(typeName, familyMap);
+     if (log->isDebugEnabled()) {
+         log->debug(tr("Add %1 families to item type \"%2\" to _iconMaps.").arg(
+                 familyMap->size()).arg(typeName));
+     }
+ }
+}
+
+/*static*/ QHash<QString, QHash<QString, NamedIcon*>*>* ItemPalette::loadDefaultFamilyMap(QDomNodeList families, Editor *ed)
+{
 
  QHash<QString, QHash<QString, NamedIcon*>*>* familyMap =
             new QHash<QString, QHash<QString, NamedIcon*>*> ();
@@ -330,9 +347,27 @@ void ItemPalette::changeEvent(QEvent * e)
     log->warn("loadDefaultIcons: iconName= "+iconName+" in family "+familyName+" has no image file.");
    }
    if(fileName.startsWith("resources"))
-       fileName = FileUtil::getProgramPath() + fileName;
-   NamedIcon* icon = new NamedIcon(fileName, fileName);
-   iconMap->insert(iconName, icon);
+       //fileName = FileUtil::getProgramPath() + fileName;
+    fileName = ":/"+ fileName;
+
+   NamedIcon* icon;
+   try
+   {
+   icon = new NamedIcon(fileName, fileName);
+   }
+   catch (Exception e)
+   {
+    icon = nullptr;
+   }
+   if (icon == nullptr)
+   {
+       icon = ed->loadFailed(iconName, fileName);
+       if (icon == nullptr) {
+           log->info(tr("%1 removed for url= %2").arg(iconName).arg(fileName));
+       }
+   }
+   if (icon != nullptr)
+    iconMap->insert(iconName, icon);
   }
   familyMap->insert(familyName, iconMap);
   if (log->isDebugEnabled()) log->debug("Add "+QString::number(iconMap->size())+" icons to family "+familyName);
@@ -340,9 +375,8 @@ void ItemPalette::changeEvent(QEvent * e)
  return familyMap;
 }
 
-/*static*/ QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* ItemPalette::loadDefaultIndicatorTOMap(QDomNodeList typeList)
+/*static*/ QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* ItemPalette::loadDefaultIndicatorTOMap(QDomNodeList typeList, Editor *ed)
 {
- Logger* log = new Logger("ItemPalette");
 
  QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* familyTOMap =
          new QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*> ();     // Map of all families of type, typeName
@@ -351,7 +385,7 @@ void ItemPalette::changeEvent(QEvent * e)
   QString familyName = typeList.at(k).toElement().tagName();
   //@SuppressWarnings("unchecked")
   QDomNodeList types = typeList.at(k).toElement().childNodes();
-  QHash<QString, QHash<QString, NamedIcon*>*>* familyMap = loadDefaultFamilyMap(types);
+  QHash<QString, QHash<QString, NamedIcon*>*>* familyMap = loadDefaultFamilyMap(types, ed);
   familyTOMap->insert(familyName, familyMap);
   if (log->isDebugEnabled()) log->debug(tr("Add ")+QString::number(familyMap->size())+
                          " IndicatorTO sub-families to item type "+familyName+" to IndicatorTO families.");
@@ -363,7 +397,7 @@ void ItemPalette::changeEvent(QEvent * e)
 {
  // super(true, true);
  init("", NULL);
- loadIcons();
+ //loadIcons();
 }
 
 /*public*/ ItemPalette::ItemPalette(QString title, Editor* editor, QWidget* parent) : DisplayFrame(title, true, true, parent)
@@ -375,7 +409,6 @@ void ItemPalette::changeEvent(QEvent * e)
 
 void ItemPalette::init(QString title, Editor* ed)
 {
-  log = new Logger("ItemPalette");
   STRUT_SIZE = 10;
   _iconMaps = NULL;
   resize(551, 600);
@@ -384,7 +417,7 @@ void ItemPalette::init(QString title, Editor* ed)
 
  _tabIndex = new QMap<QString, ItemPanel*>();
  this->setTitle(title);
- loadIcons();
+ loadIcons(ed);
  //addWindowListener(new IPWindowListener(this));
 // @Override
 // public void windowClosing(java.awt.event.WindowEvent e) {
@@ -394,8 +427,9 @@ void ItemPalette::init(QString title, Editor* ed)
 
     makeMenus(ed);
     buildTabPane(this, ed);
+    QWidget* centralWidget = new QWidget();
 
-    QVBoxLayout* thisLayout = new QVBoxLayout(this);
+    QVBoxLayout* thisLayout = new QVBoxLayout(centralWidget);
     //setLayout(new BorderLayout(5, 5));
     thisLayout->addWidget(_tabPane, 0, Qt::AlignCenter);//BorderLayout::CENTER);
     setLocation(10, 10);
@@ -403,6 +437,7 @@ void ItemPalette::init(QString title, Editor* ed)
 //    _currentItemPanel = (ItemPanel) sp.getViewport().getView();
     _currentItemPanel = (ItemPanel*)_tabPane->widget(_tabPane->currentIndex());
 //    if (!jmri.util.ThreadingUtil.isGUIThread()) log.error("Not on GUI thread", new Exception("traceback"));
+    setCentralWidget(centralWidget);
     pack();
 }
 
@@ -562,6 +597,7 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     _tabIndex->insert("IndicatorTO", itemPanel);
 
     itemPanel = new PortalItemPanel(palette, "Portal", NULL, editor);
+    itemPanel->init();
     scrollArea = new QScrollArea();
     scrollArea->setWidget(itemPanel);
     scrollArea->setWidgetResizable(true);
@@ -716,7 +752,6 @@ void IPEditItemActionListener::actionPerformed()
 * Removing a Family of icons from the device type
 */
 /*static*/ /*protected*/ void ItemPalette::removeIconMap(QString type, QString family) {
-    Logger* log = new Logger("ItemPalette");
     if (log->isDebugEnabled()) log->debug("removeIconMap for family \""+family+" \" in type \""+type+"\"");
     _iconMaps->value(type)->remove(family);
     ImageIndexEditor::indexChanged(true);
@@ -735,7 +770,6 @@ void IPEditItemActionListener::actionPerformed()
 * Getting a clone of the Family of icons for a given device type and family
 */
 /*static*/ /*protected*/ QHash<QString, NamedIcon*>* ItemPalette::getIconMap(QString type, QString family) {
-    Logger* log = new Logger("ItemPalette");
 
     QHash <QString, QHash<QString, NamedIcon*>*>* itemMap = _iconMaps->value(type);
     if (itemMap==NULL) {
@@ -786,7 +820,6 @@ void IPEditItemActionListener::actionPerformed()
 
 // Currently only needed for IndicatorTO type
 /*static protected*/ void ItemPalette::removeLevel4IconMap(QString type, QString family, QString key) {
-    Logger* log = new Logger("ItemPalette");
     if (log->isDebugEnabled()) log->debug("removelvl4IconMap for indicator family \""+family+" \" in type \""+type+
                                         "\" with key = \""+key+"\"");
     if (key!=NULL) {
@@ -909,5 +942,4 @@ void IPEditItemActionListener::actionPerformed()
  return panel;
 }
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ItemPalette.class.getName());
-//}
+/*private*/ /*final*/ /*static*/ Logger* ItemPalette::log = LoggerFactory::getLogger("ItemPalette");

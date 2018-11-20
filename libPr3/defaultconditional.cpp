@@ -1009,16 +1009,16 @@ throw (JmriException)
        if (!(getActionString(action) ==(""))) {
            Sound sound = ((DefaultConditionalAction*)action)->getSound();
            if (sound == nullptr) {
-               sound = new jmri.jmrit.Sound(jmri.util.FileUtil.getExternalFilename(getActionString(action)));
+               sound = new Sound(FileUtil::getExternalFilename(getActionString(action)));
            }
            sound.play();
            actionCount++;
        }
        break;
    case Conditional::ACTION_RUN_SCRIPT:
-       if (!(getActionString(action) ==(""))) {
-           jmri.util.PythonInterp.runScript(jmri.util.FileUtil.getExternalFilename(getActionString(action)));
-           actionCount++;
+    if (!(getActionString(action) == (""))) {
+        JmriScriptEngineManager::getDefault()->runScript(new File(FileUtil::getExternalFilename(getActionString(action))));
+        actionCount++;
        }
        break;
 #endif

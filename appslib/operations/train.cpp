@@ -2846,7 +2846,7 @@ if (roads.length() == 0) {
  void Train::on_error(QString title, QString msg)
  {
   emit error(title,msg);
-  log->error(title, msg);
+  log->error(title, QVariant(msg));
  }
 
  /**

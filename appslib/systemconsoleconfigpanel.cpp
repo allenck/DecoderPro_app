@@ -58,6 +58,8 @@
   PreferencesPanel(parent)
 {
  setObjectName("SystemConsoleConfigPanel");
+ setProperty("JavaPackageName", "apps.SystemConsoleConfigPanel");
+
  fontStyleBold = new JToggleButton("B");
 
  fontStyleItalic = new JToggleButton("I");

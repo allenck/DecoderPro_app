@@ -10,6 +10,7 @@
 #include "propertychangesupport.h"
 #include "vptr.h"
 #include "propertychangeevent.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -32,29 +33,19 @@ namespace Operations
   _id = 0;
   _scheduleHashTable = QHash<QString, TrainSchedule*>();
   pcs = new PropertyChangeSupport(this);
+  setProperty("InstanceManagerAutoDefault", "true");
+  setProperty("InstanceManagerAutoInitialize", "true");
 
  }
 
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ TrainScheduleManager* TrainScheduleManager::_instance = NULL;
+// /*private*/ /*static*/ TrainScheduleManager* TrainScheduleManager::_instance = NULL;
 
  /*public*/ /*static*/ /*synchronized*/ TrainScheduleManager* TrainScheduleManager::instance()
  {
-  Logger* log = new Logger("TrainScheduleManger");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("TrainScheduleManager creating instance");
-         }
-         // create and load
-         _instance = new TrainScheduleManager();
-         TrainManagerXml::instance(); // load trains
-     }
-     if (Control::showInstance) {
-         log->debug(tr("TrainScheduleManager returns instance ") + _instance->metaObject()->className());
-     }
-     return _instance;
+  return static_cast<TrainScheduleManager*>(InstanceManager::getDefault("TrainScheduleManager"));
  }
 
  /*public*/ void TrainScheduleManager::dispose() {
@@ -304,4 +295,8 @@ namespace Operations
      pcs->firePropertyChange(p, old, n);
  }
 
+ //@Override
+ /*public*/ void TrainScheduleManager::initialize() {
+     InstanceManager::getDefault("TrainManagerXml"); // load trains
+ }
 }

@@ -32,6 +32,13 @@ this->msg = msg;
 }
 QString IOException::getMessage() {return msg;}
 
+IIOException::IIOException(QString msg)
+{
+this->msg = msg;
+}
+QString IIOException::getMessage() {return msg;}
+
+
 LocoNetMessageException::LocoNetMessageException()
 {
 }

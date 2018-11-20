@@ -71,6 +71,7 @@ private:
 
     QLabel* status1;// = new JLabel(tr("LightCreateInst"));
     QLabel* status2;// = new JLabel("");
+    QString connectionChoice = "";
 
     // parts for supporting variable intensity, transition
     QLabel* labelMinIntensity;// = new JLabel(tr("LightMinIntensity") + "  ");
@@ -125,12 +126,13 @@ private:
     /*private*/ void addEditControlWindow();
     void setUpControlType(QString ctype);
     /*private*/ bool setControlInformation(LightControl* g);
+    QString addEntryToolTip;
 
 private slots:
-    void createPressed(ActionEvent* e = 0);
+    void createPressed(ActionEvent* e = nullptr);
     void editPressed();
-    void updatePressed(ActionEvent* e = 0);
-    void cancelPressed(ActionEvent* e = 0);
+    void updatePressed(ActionEvent* e = nullptr);
+    void cancelPressed(ActionEvent* e = nullptr);
     void controlTypeChanged();
 
 protected:

@@ -1,4 +1,5 @@
 #include "errorhandler.h"
+#include "errormemo.h"
 
 ErrorHandler::ErrorHandler(QObject *parent) :
     QObject(parent)
@@ -25,7 +26,7 @@ ErrorHandler::ErrorHandler(QObject *parent) :
     if (e->userName!=NULL && e->userName!=("")) m += " User name \""+e->userName+"\"";
     if (e->operation!=NULL) m += " while "+e->operation;
     if (e->adapter!=NULL) m += tr(" in adaptor of type ")+e->adapter->metaObject()->className();
-    if (e->exception!=NULL) m += " Exception: "+e->exception->getMessage();
+     m += " Exception: "+e->exception.getMessage();
 
 //    if (e->exception != NULL) log.log(e->level, m, e->exception);
 //    else log.log(e->level, m);

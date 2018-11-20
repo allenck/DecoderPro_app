@@ -14,6 +14,7 @@
 #include "opath.h"
 #include "trackertableaction.h"
 #include "sleeperthread.h"
+#include "speedutil.h"
 
 //Warrant::Warrant(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -67,12 +68,13 @@
  _runMode = 0;
  _stoppingSignal = nullptr;
  _stoppingBlock = nullptr;
+ _speedUtil = new SpeedUtil(_orders);
 
  _debug = log->isDebugEnabled();
 }
 /*public*/ /*final*/ /*static*/ SignalSpeedMap* Warrant::getSpeedMap() {
     if (_speedMap==nullptr) {
-        _speedMap = SignalSpeedMap::getMap();
+        _speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
     }
     return _speedMap;
 }
@@ -84,6 +86,14 @@
 }
 /*public*/ void Warrant::setState(int /*state*/)
 {
+}
+
+/*public*/ SpeedUtil* Warrant::getSpeedUtil() {
+    return _speedUtil;
+}
+
+/*public*/ void Warrant::setSpeedUtil(SpeedUtil* su) {
+    _speedUtil = su;
 }
 
 /**

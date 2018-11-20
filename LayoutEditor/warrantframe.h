@@ -139,7 +139,7 @@ private:
     /*private*/ void setThrottleCommand(QString cmd, QString value, QString bName);
     /*private*/ bool save();
     /*private*/ QWidget* makeThrottleTablePanel();
-
+    float _speed;
 
 private slots:
     void on_deleteButtonClicked();
@@ -152,6 +152,7 @@ private slots:
     /*protected*/ void stopRunTrain();
     /*protected*/ Warrant* getWarrant();
     /*protected*/ void setThrottleCommand(QString cmd, QString value);
+    /*protected*/ void setSpeedCommand(float speed, bool isForward);
     /*protected*/ void setWarrant(Warrant* w);
     /*protected*/ void setStatusText(QString msg, QColor c);
 

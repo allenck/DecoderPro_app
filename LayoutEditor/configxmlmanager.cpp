@@ -48,6 +48,7 @@
 #include "abstractxmladapter.h"
 #include <QUrl>
 #include "class.h"
+#include "errorhandler.h"
 
 /**
  * Define the current schema version string for the layout-config schema.
@@ -63,7 +64,7 @@ ConfigXmlManager::ConfigXmlManager(QObject *parent) :
     ConfigureManager(parent)
 {
  setObjectName("ConfigXmlManager");
- if(log != NULL)
+ if(log != nullptr)
   log->setDebugEnabled(true);
  plist =  QList<QObject*> ();
  //clist =  QHash<QObject*, int>();
@@ -84,7 +85,7 @@ ConfigXmlManager::ConfigXmlManager(QObject *parent) :
 }
 ConfigXmlManager::~ConfigXmlManager()
 {
- delete log;
+ //delete log;
 }
 
 /**
@@ -110,9 +111,14 @@ ConfigXmlManager::~ConfigXmlManager()
 /*public*/ void ConfigXmlManager::registerPref(QObject* o)
 {
  // skip if already present, leaving in original order
- if (plist.contains(o)) return;
- confirmAdapterAvailable(o);
-
+ if (plist.contains(o))
+ {
+  return;
+ }
+ if (log != nullptr && log->isDebugEnabled())
+ {
+  confirmAdapterAvailable(o);
+ }
  // and add to list
  plist.append(o);
 }
@@ -126,7 +132,7 @@ ConfigXmlManager::~ConfigXmlManager()
  */
 void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
 {
- if (log != NULL && log->isDebugEnabled())
+ if (log != nullptr && log->isDebugEnabled())
  {
   QString adapter = adapterName(o);
   if (log->isDebugEnabled()) log->debug("register "+o->objectName()+" adapter "+adapter);
@@ -221,20 +227,23 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  //if (clist.contains(o)) return;
  if(clist.values().contains(o)) return;
 
- confirmAdapterAvailable(o);
+ if (log != nullptr && log->isDebugEnabled()) {
+  confirmAdapterAvailable(o);
+ }
 
  // and add to list
- //clist.add(o);
- //clist.insert(o, x);
  clist.insertMulti(x, o);
 }
+
 /*public*/ void ConfigXmlManager::registerTool(QObject* o)
 {
 
  // skip if already present, leaving in original order
  if (tlist.contains(o)) return;
 
- confirmAdapterAvailable(o);
+ if (log != nullptr && log->isDebugEnabled()) {
+  confirmAdapterAvailable(o);
+ }
 
  // and add to list
  tlist.append(o);
@@ -251,7 +260,9 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  // skip if already present, leaving in original order
  if (ulist.contains(o)) return;
 
- confirmAdapterAvailable(o);
+ if (log != nullptr && log->isDebugEnabled()) {
+  confirmAdapterAvailable(o);
+ }
 
  // and add to list
  ulist.append(o);
@@ -263,7 +274,9 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  // skip if already present, leaving in original order
  if (uplist.contains(o)) return;
 
- confirmAdapterAvailable(o);
+ if (log != nullptr && log->isDebugEnabled()) {
+  confirmAdapterAvailable(o);
+ }
 
  // and add to list
  uplist.append(o);
@@ -300,15 +313,33 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  */
 /*public*/ /*static*/ QString ConfigXmlManager::adapterName(QObject* o)
 {
- Logger log("ConfigXmlManager");
  //QString className = o->objectName();
  QString className = o->metaObject()->className();
  if(className == "LayoutEditor")
   className = "LayoutEditor";
  if(className == "Pr3ConnectionConfig")
   className = "ConnectionConfig";
- if (log.isDebugEnabled()) log.debug("handle object of class "+className);
+ if (log != nullptr && log->isDebugEnabled()) log->debug("handle object of class "+className);
+ if(o->property("JavaClassName") != QVariant())
+ {
+  className = o->property("JavaClassName").toString();
+ }
  int lastDot = className.lastIndexOf(".");
+#if 1 // TODO: determine what Java classname shold be; probably set a property
+ if (lastDot > 0) {
+   // found package-class boundary OK
+   QString result = className.mid(0, lastDot)
+           + ".configurexml."
+           + className.mid(lastDot + 1, className.length())
+           + "Xml";
+   log->trace(tr("adapter class name is %1").arg(result));
+   return result;
+} else {
+   // no last dot found!
+   log->error("No package name found, which is not yet handled! "+ className);
+   return nullptr;
+}
+#endif
  QString result = className + "Xml";
  return result;
 
@@ -340,7 +371,7 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
     //if (log->isDebugEnabled()) ex.printStackTrace();
 }
 
-/*protected*/ QDomElement ConfigXmlManager::initStore()
+/*protected*/ QDomElement ConfigXmlManager::initStore() const
 {
  //doc = newDocument(root);
  doc = QDomDocument();
@@ -370,7 +401,7 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
 
 //}
 
-/*protected*/ bool ConfigXmlManager::addConfigStore(QDomElement root)
+/*protected*/ bool ConfigXmlManager::addConfigStore(QDomElement root) const
 {
  bool result = true;
  //ArrayList<Map.Entry<Object, Integer>> l = new ArrayList<Map.Entry<Object, Integer>>(clist.entrySet());
@@ -406,7 +437,7 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
  return result;
 }
 
-/*protected*/ bool ConfigXmlManager::addToolsStore(QDomElement root)
+/*protected*/ bool ConfigXmlManager::addToolsStore(QDomElement root) const
 {
  bool result = true;
  for (int i=0; i<tlist.size(); i++)
@@ -422,13 +453,13 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
   {
    result = false;
    storingErrorEncountered (((XmlAdapter*)o), "storing to file", Level::_ERROR,
-                                      "Unknown error (Exception)", NULL,NULL,(Throwable*)e);
+                                      "Unknown error (Exception)", NULL,NULL,e);
   }
  }
  return result;
 }
 
-/*protected*/ bool ConfigXmlManager::addUserStore(QDomElement root)
+/*protected*/ bool ConfigXmlManager::addUserStore(QDomElement root)const
 {
  bool result = true;
  for (int i=0; i<ulist.size(); i++)
@@ -440,17 +471,17 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
    if (!e.isNull())
     root.appendChild(e);
   }
-  catch (Exception* e)
+  catch (Exception e)
   {
    result = false;
    storingErrorEncountered ((XmlAdapter*)o, "storing to file", Level::_ERROR,
-                                      "Unknown error (Exception)", NULL,NULL,(Throwable*)e);
+                                      "Unknown error (Exception)", NULL,NULL,e);
   }
  }
  return result;
 }
 
-/*protected*/ void ConfigXmlManager::addUserPrefsStore(QDomElement root)
+/*protected*/ void ConfigXmlManager::addUserPrefsStore(QDomElement root) const
 {
  for (int i=0; i<uplist.size(); i++)
  {
@@ -461,14 +492,14 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
  }
 }
 
-/*protected*/ void ConfigXmlManager::includeHistory(QDomElement root)
+/*protected*/ void ConfigXmlManager::includeHistory(QDomElement root) const
 {
  // add history to end of document
  if (InstanceManager::getDefault("FileHistory") != NULL)
   root.appendChild(FileHistoryXml::storeDirectly((FileHistory*)InstanceManager::getDefault("FileHistory"),doc));
 }
 
-/*protected*/ bool ConfigXmlManager::finalStore(QDomElement root, File* file)
+/*protected*/ bool ConfigXmlManager::finalStore(QDomElement root, File* file) const
 {
  try
  {
@@ -488,16 +519,16 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
 
   writeXML(new QFile(file->getPath()), doc);
  }
- catch (FileNotFoundException* ex3)
+ catch (FileNotFoundException ex3)
  {
-  storingErrorEncountered (NULL, "storing to file "+file->getPath(), Level::_ERROR, "File not found " + file->getPath(), NULL,NULL,(Throwable*)ex3);
-  log->error("FileNotFound error writing file: "+ex3->getMessage());
+  storingErrorEncountered (nullptr, "storing to file "+file->getPath(), Level::_ERROR, "File not found " + file->getPath(), NULL,NULL,ex3);
+  log->error("FileNotFound error writing file: "+ex3.getMessage());
   return false;
  }
- catch (IOException* ex2)
+ catch (IOException ex2)
  {
-  storingErrorEncountered (NULL, "storing to file "+file->getPath(), Level::_ERROR, "IO error writing file " + file->getPath(), NULL,NULL,(Throwable*)ex2);
-  log->error("IO error writing file: "+ex2->getMessage());
+  storingErrorEncountered (NULL, "storing to file "+file->getPath(), Level::_ERROR, "IO error writing file " + file->getPath(), NULL,NULL,ex2);
+  log->error("IO error writing file: "+ex2.getMessage());
   return false;
  }
  return true;
@@ -507,7 +538,7 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
  * Writes config, tools and user to a file.
  * @param file
  */
-/*public*/ bool ConfigXmlManager::storeAll(File* file)
+/*public*/ bool ConfigXmlManager::storeAll(File* file) const
 {
 
  bool result = true;
@@ -622,7 +653,7 @@ File userPrefsFile;*/
  return result;
 }
 
-/*public*/ bool ConfigXmlManager::makeBackup(File* file)
+/*public*/ bool ConfigXmlManager::makeBackup(File* file) const
 {
  return makeBackupFile(defaultBackupDirectory, file);
 }
@@ -641,9 +672,12 @@ File userPrefsFile;*/
 * @return An XML element representing object
 */
 /*static*/ /*public*/ QDomElement ConfigXmlManager::elementFromObject(QObject* o, bool shared) {
- Logger log("ConfigXmlManager");
- QString aName = adapterName(o);
- log.debug("store using "+aName);
+ //Logger log("ConfigXmlManager");
+ //QString aName = adapterName(o);
+ QString aName = QString(o->metaObject()->className()) + "Xml";
+ if(QString(o->metaObject()->className()) == "Pr3ConnectionConfig")
+  aName = "Pr3ConnectionConfigXml";
+ log->debug("store using "+aName);
  QObject* adapter = NULL;
 // try
 // {
@@ -680,12 +714,12 @@ File userPrefsFile;*/
  QString className = o->metaObject()->className();
 
  {
-  log.error(tr("Cannot store configuration for ")+className);
+  log->error(tr("Cannot store configuration for ")+className);
   return QDomElement();
  }
 }
 
-/*private*/ void ConfigXmlManager::storeVersion(QDomElement root)
+/*private*/ void ConfigXmlManager::storeVersion(QDomElement root) const
 {
  // add version at front
 // root.addContent(0,
@@ -797,37 +831,38 @@ File userPrefsFile;*/
  //QMap<QDomElement, int> loadlist = QMap<QDomElement, int>();
  QMap<int, QDomElement> loadlist_s = QMap<int, QDomElement>();
 
- bool verify = XmlFile::getVerify();
- //try{
- //root = super.rootFromURL(url);
- XmlFile::setVerify(true);
- root = doc.documentElement(); // get the root element of the document
- // get the objects to load
- QDomNodeList items = root.childNodes();
- for (int i = 0; i<items.size(); i++)
- {
-  //Put things into an ordered list
-  QDomElement item = items.at(i).toElement();
-  if (item.attribute("class") == NULL)
+ //bool verify = XmlFile::getValidate();
+// try
+// {
+  //root = super.rootFromURL(url);
+  XmlFile::setValidate(validate);
+  root = doc.documentElement(); // get the root element of the document
+  // get the objects to load
+  QDomNodeList items = root.childNodes();
+  for (int i = 0; i<items.size(); i++)
   {
-   // this is an element that we're not meant to read
-   if (log->isDebugEnabled()) log->debug("skipping " + item.tagName());
-    continue;
-  }
-  QString adapterName = item.attribute("class");
-  if (log->isDebugEnabled()) log->debug("attempt to get adapter "+adapterName + " for " + item.tagName());
-  XmlAdapter* adapter = NULL;
+   //Put things into an ordered list
+   QDomElement item = items.at(i).toElement();
+   if (item.attribute("class") == nullptr)
+   {
+    // this is an element that we're not meant to read
+    if (log->isDebugEnabled()) log->debug("skipping " + item.tagName());
+     continue;
+   }
+   QString adapterName = item.attribute("class");
+   if (log->isDebugEnabled()) log->debug("attempt to get adapter "+adapterName + " for " + item.attribute("name"));
+   XmlAdapter* adapter = nullptr;
 
-//  adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
-//  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
-//   adapter = new DefaultUserMessagePreferencesXml();
-//  else
-  {
+ //  adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
+ //  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
+ //   adapter = new DefaultUserMessagePreferencesXml();
+ //  else
+   {
    QString classname;
    if(configXmlMap.contains(adapterName))
-   classname = configXmlMap.value(adapterName);
+    classname = configXmlMap.value(adapterName);
    else
-   classname = adapterName.mid(adapterName.lastIndexOf(".")+1);
+    classname = adapterName.mid(adapterName.lastIndexOf(".")+1);
    int typeId = QMetaType::type(classname.toLocal8Bit());
    if(typeId == 0)
    {
@@ -840,8 +875,9 @@ File userPrefsFile;*/
    adapter = (XmlAdapter*)QMetaType::create(typeId);
 #endif
    adapter->setObjectName(classname);
+   adapter->setProperty("JavaClassName", adapterName);
   }
-  if(adapter == NULL)
+  if(adapter == nullptr)
   {
    log->error("ConfigXmlManager: Cannot create instance of " + adapterName);
    continue;
@@ -851,7 +887,7 @@ File userPrefsFile;*/
   //loadlist.insert(item, order);
   loadlist_s.insertMulti(order, item);
  }
-#if 0
+#if 0 // not necessary since loadList is a QMap
         ArrayList<Map.Entry<QDomElement, Integer>> l = new ArrayList<Map.Entry<QDomElement, Integer>>(loadlist.entrySet());
         Collections.sort(l, new Comparator<Map.Entry<QDomElement, Integer>>(){
 
@@ -898,191 +934,134 @@ File userPrefsFile;*/
     log->error(QString("No type id for %1 (%2)").arg(newClassName).arg(adapterName));
   }
   if (log->isDebugEnabled()) log->debug("load " + item.tagName() + " via "+adapterName);
-  XmlAdapter* adapter = NULL;
-  //try {
-  //adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
-//  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
-//   adapter = new DefaultUserMessagePreferencesXml();
-//  else
+  XmlAdapter* adapter = nullptr;
+  try
   {
-   QString classname;
-   if(configXmlMap.contains(adapterName))
-    classname = configXmlMap.value(adapterName);
-   else
-    classname = adapterName.mid(adapterName.lastIndexOf(".")+1);
-   if(classname == "ConnectionConfigXml")
+   //adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
+ //  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
+ //   adapter = new DefaultUserMessagePreferencesXml();
+ //  else
    {
-    QStringList sl = adapterName.split(".");
-    QString prefix;
-    if(sl.at(3) == "pr3")
+    QString classname;
+    if(configXmlMap.contains(adapterName))
+     classname = configXmlMap.value(adapterName);
+    else
+     classname = adapterName.mid(adapterName.lastIndexOf(".")+1);
+    if(classname == "ConnectionConfigXml")
     {
-     //prefix = "Pr3";
+     QStringList sl = adapterName.split(".");
+     QString prefix;
+     if(sl.at(3) == "pr3")
+     {
+      //prefix = "Pr3";
+     }
+     // because the Java classes all use the same name, we have to make these ConnectionConfigXml adapter names unique. ACK
+     else if(sl.at(3) == "hexfile")
+      prefix = "HexFile";
+     else if(sl.at(3) == "loconetovertcp")
+      prefix = "LnOverTcp";
+     else if(sl.at(3) == "locobufferusb")
+      prefix = "LocobufferUsb";
+     else if(sl.at(3) == "locobuffer")
+      prefix = "Locobuffer";
+      QString newClassName = prefix+"ConnectionConfigXml";
+      if(!prefix.isEmpty())
+       classname = newClassName;
     }
-    // because the Java classes all use the same name, we have to make these ConnectionConfigXml adapter names unique. ACK
-    else if(sl.at(3) == "hexfile")
-     prefix = "HexFile";
-    else if(sl.at(3) == "loconetovertcp")
-     prefix = "LnOverTcp";
-    else if(sl.at(3) == "locobufferusb")
-     prefix = "LocobufferUsb";
-    else if(sl.at(3) == "locobuffer")
-     prefix = "Locobuffer";
-     QString newClassName = prefix+"ConnectionConfigXml";
-     if(!prefix.isEmpty())
-      classname = newClassName;
+    int typeId = QMetaType::type(classname.toLocal8Bit());
+    if(typeId == 0)
+    {
+     log->error("ConfigXmlManager: No typeId for " + adapterName);
+     continue;
+    }
+ #if QT_VERSION < 0x050000
+    adapter = (XmlAdapter*)QMetaType::construct(typeId);
+ #else
+    adapter = (XmlAdapter*)QMetaType::create(typeId);
+ #endif
+    adapter->setObjectName(classname);
+    adapter->setProperty("JavaClassName", adapterName);
    }
-   int typeId = QMetaType::type(classname.toLocal8Bit());
-   if(typeId == 0)
+   if(adapter == nullptr)
    {
-    log->error("ConfigXmlManager: No typeId for " + adapterName);
+    log->error("ConfigXmlManager: Cannot create instance of " + adapterName);
     continue;
    }
-#if QT_VERSION < 0x050000
-   adapter = (XmlAdapter*)QMetaType::construct(typeId);
-#else
-   adapter = (XmlAdapter*)QMetaType::create(typeId);
-#endif
-   adapter->setObjectName(classname);
-  }
-  if(adapter == NULL)
-  {
-   log->error("ConfigXmlManager: Cannot create instance of " + adapterName);
-   continue;
-  }
-  // get version info
-  //loadVersion(root, adapter);
+   // get version info
+   //loadVersion(root, adapter);
 
-  // and do it
-  if (adapter->loadDeferred() && registerDeferred)
-  {
-   // register in the list for deferred load
-
-   loadDeferredList.insert(adapter->loadOrder(), item);
-   if (log->isDebugEnabled()) log->debug("deferred load registered for " + item.tagName() + " "  + adapterName);
-  }
-  else
-  {
-   bool loadStatus = adapter->load(item, item);
-   if (log->isDebugEnabled()) log->debug("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
-
-   // if any adaptor load fails, then the entire load has failed
-   if (!loadStatus)
+   // and do it
+   if (adapter->loadDeferred() && registerDeferred)
    {
-    result = false;
-    log->error("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
+    // register in the list for deferred load
+
+    loadDeferredList.insert(adapter->loadOrder(), item);
+    if (log->isDebugEnabled()) log->debug("deferred load registered for " + item.tagName() + " "  + adapterName);
    }
+   else
+   {
+    bool loadStatus = adapter->load(item, item);
+    if (log->isDebugEnabled()) log->debug("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
+
+    // if any adaptor load fails, then the entire load has failed
+    if (!loadStatus)
+    {
+     result = false;
+     log->error("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
+    }
+   }
+   qApp->processEvents();
   }
-  qApp->processEvents();
- }
-//   catch (Exception e)
-//   {
-//    creationErrorEncountered(adapter, "load(" + url.getFile() + ")", Level::_ERROR,
-//                        "Unexpected error (Exception)", NULL, NULL, e);
 
-//                result = false;  // keep going, but return false to signal problem
-//            } catch (Throwable et) {
-//                creationErrorEncountered(adapter, "in load(" + url.getFile() + ")", Level::_ERROR,
-//                        "Unexpected error (Throwable)", NULL, NULL, et);
+  catch (IllegalArgumentException e)
+  {
+    creationErrorEncountered(adapter, "load(" + url.path() + ")",
+                        "Unexpected error (IllegalArgumentException)", nullptr, nullptr, e);
 
-//                result = false;  // keep going, but return false to signal problem
-//            }
-//        }
+       result = false;  // keep going, but return false to signal problem
+  }
+//  catch (Throwable et)
+//  {
+//   creationErrorEncountered(adapter, "in load(" + url.path() + ")",
+//                       "Unexpected error (Throwable)", nullptr, nullptr, et);
 
-//    } catch (FileNotFoundException e1) {
-//        // this returns false to indicate un-success, but not enough
-//        // of an error to require a message
-//        creationErrorEncountered(NULL, "opening file " + url.getFile(), Level::ERROR,
-//                "File not found", NULL, NULL, e1);
-//        result = false;
-//    } catch (JDOMException e) {
-//        creationErrorEncountered(NULL, "parsing file " + url.getFile(), Level::ERROR,
-//                "Parse error", NULL, NULL, e);
-//        result = false;
-//    } catch (Exception e) {
-//        creationErrorEncountered(NULL, "loading from file " + url.getFile(), Level.ERROR,
-//                "Unknown error (Exception)", NULL, NULL, e);
-//        result = false;
-//    } finally {
-//        // no matter what, close error reporting
-//        handler.done();
-//    }
- // no matter what, close error reporting
- XmlFile::setVerify(verify);
- handler->done();
-
-
-    /*try {
-        root = super.rootFromFile(fi);
-        // get the objects to load
-        List<QDomElement> items = root.getChildren();
-        for (int i = 0; i<items.size(); i++) {
-            // get the class, hence the adapter object to do loading
-            QDomElement item = items.get(i);
-            if (itemattribute("class") == NULL) {
-                // this is an element that we're not meant to read
-                continue;
-            }
-            QString adapterName = itemattribute("class");
-            log->debug("load via "+adapterName);
-            XmlAdapter adapter = NULL;
-
-            try {
-                adapter = (XmlAdapter)Class.forName(adapterName).newInstance();
-
-                // get version info
-                // loadVersion(root, adapter);
-
-                // and do it
-                if (adapter.loadDeferred() && registerDeferred) {
-                    // register in the list for deferred load
-                    loadDeferredList.add(item);
-                    log->debug("deferred load registered for " + adapterName);
-                } else {
-                    bool loadStatus = adapter.load(item);
-                    log->debug("load status for "+adapterName+" is "+loadStatus);
-
-                    // if any adaptor load fails, then the entire load has failed
-                    if (!loadStatus)
-                        result = false;
-                }
-            } catch (Exception e) {
-                creationErrorEncountered (adapter, "load("+fi.getName()+")",Level.ERROR,
-                                          "Unexpected error (Exception)",NULL,NULL,e);
-
-                result = false;  // keep going, but return false to signal problem
-            } catch (Throwable et) {
-                creationErrorEncountered (adapter, "in load("+fi.getName()+")", Level.ERROR,
-                                          "Unexpected error (Throwable)",NULL,NULL,et);
-
-                result = false;  // keep going, but return false to signal problem
-            }
-        }
-
-
-    } catch (java.io.FileNotFoundException e1) {
+//   result = false;  // keep going, but return false to signal problem
+//  }
+  catch (FileNotFoundException e1)
+  {
         // this returns false to indicate un-success, but not enough
         // of an error to require a message
-        creationErrorEncountered (NULL, "opening file "+fi.getName(), Level.ERROR,
-                                  "File not found", NULL,NULL,e1);
+        creationErrorEncountered(nullptr, "opening file " + url.path(),
+                "File not found", nullptr, nullptr, e1);
         result = false;
-    } catch (org.jdom.JDOMException e) {
-        creationErrorEncountered (NULL, "parsing file "+fi.getName(), Level.ERROR,
-                                  "Parse error", NULL,NULL,e);
+  }
+  catch (JDOMException e)
+  {
+        creationErrorEncountered(nullptr, "parsing file " + url.path(),
+                "Parse error", nullptr, nullptr, e);
         result = false;
-    } catch (java.lang.Exception e) {
-        creationErrorEncountered (NULL, "loading from file "+fi.getName(), Level.ERROR,
-                                  "Unknown error (Exception)", NULL,NULL,e);
+  }
+  catch (Exception e)
+  {
+        creationErrorEncountered(nullptr, "loading from file " + url.path(),
+                "Unknown error (Exception)", nullptr, nullptr, e);
         result = false;
-    } finally {
+  } /*finally */
+
+  {
         // no matter what, close error reporting
-        handler.done();
-    }*/
+        handler->done();
+  }
+  // no matter what, close error reporting
+  //XmlFile::setValidate(validate);
+  handler->done();
+ }
 
     // loading complete, as far as it got, make history entry
  FileHistory* r = (FileHistory*)InstanceManager::getDefault("FileHistory");
- if (r!=NULL)
+ if (r!=nullptr)
  {
-  FileHistory* included = NULL;
+  FileHistory* included = nullptr;
   if (!root.isNull())
   {
    qDebug() << "root = " << root.tagName() << " file = " << url.path() << " " << root.firstChild().toElement().tagName();
@@ -1095,17 +1074,7 @@ File userPrefsFile;*/
  } else {
      log->info("Not recording file history");
  }
- XmlFile::setVerify(verify);
 
-#if 0
- if (!result) return false;
-
- // all loaded, initialize objects as necessary
- ((DefaultLogixManager*)InstanceManager::logixManagerInstance())->activateAllLogixs();
- //InstanceManager::layoutBlockManagerInstance()->initializeLayoutBlockPaths();
- ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
-//    new DefaultCatalogTreeManagerXml().readCatalogTrees();
-#endif
  return result;
 }
 
@@ -1118,7 +1087,6 @@ File userPrefsFile;*/
 /*public*/ bool ConfigXmlManager::loadDeferred(QUrl url/*url*/) throw (JmriException)
 {
  bool result = true;
-#if 1
  // Now process the load-later list
  log->debug("Start processing deferred load list (size): "+QString::number(loadDeferredList.size()));
  if (!loadDeferredList.isEmpty())
@@ -1131,9 +1099,9 @@ File userPrefsFile;*/
    QDomElement item = iter.next().value();
    QString adapterName = item.attribute("class");
    log->debug("deferred load via "+adapterName);
-   XmlAdapter* adapter = NULL;
-//   try
-//   {
+   XmlAdapter* adapter = nullptr;
+   try
+   {
     //adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
     QString classname = adapterName.mid(adapterName.lastIndexOf(".")+1,-1);
     int typeId = QMetaType::type(classname.toLocal8Bit());
@@ -1142,8 +1110,10 @@ File userPrefsFile;*/
 #else
     adapter = (XmlAdapter*)QMetaType::create(typeId);
 #endif
+    adapter->setProperty("JavaClassName", adapterName);
+
     bool loadStatus;
-    if(adapter != NULL)
+    if(adapter != nullptr)
     {
      loadStatus = adapter->load(item);
      log->debug("deferred load status for "+adapterName+" is "+(loadStatus?"true":"false"));
@@ -1158,23 +1128,22 @@ File userPrefsFile;*/
     // if any adaptor load fails, then the entire load has failed
     if (!loadStatus)
      result = false;
-//   }
-//   catch (Exception* e)
-//   {
-//    creationErrorEncountered(adapter, "deferred load(" + url.path() + ")", Level::ERROR,
-//                                         "Unexpected error (Exception)", NULL, NULL,(Throwable*) e);
-//    result = false;  // keep going, but return false to signal problem
-//   }
+   }
+   catch (Exception* e)
+   {
+    creationErrorEncountered(adapter, "deferred load(" + url.path() + ")",
+                                         "Unexpected error (Exception)", NULL, NULL, e);
+    result = false;  // keep going, but return false to signal problem
+   }
 //   catch (Throwable* et)
 //   {
-//    creationErrorEncountered(adapter, "in deferred load(" + url.path() + ")", Level::ERROR,
+//    creationErrorEncountered(adapter, "in deferred load(" + url.path() + ")",
 //                        "Unexpected error (Throwable)", NULL, NULL, et);
 //    result = false;  // keep going, but return false to signal problem
 //   }
   }
  }
  log->debug(QString("Done processing deferred load list with result: ")+(result?"true":"false"));
-#endif
  return result;
 }
 
@@ -1238,7 +1207,7 @@ void ConfigXmlManager::locateFileFailed(QString f) {
             QString description,
             QString systemName,
             QString userName,
-            Throwable* exception)
+            Exception exception)
 {
     // format and log a message (note reordered from arguments)
     ErrorMemo* e = new ErrorMemo(
@@ -1276,7 +1245,7 @@ void ConfigXmlManager::locateFileFailed(QString f) {
             QString description,
             QString systemName,
             QString userName,
-            Throwable* exception)
+            Exception exception)
 {
     // format and log a message (note reordered from arguments)
     ErrorMemo* e = new ErrorMemo(

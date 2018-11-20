@@ -12,18 +12,30 @@ class LIBTABLESSHARED_EXPORT JmriBeanComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    //explicit JmriBeanComboBox(QObject *parent = 0);
-    /*public*/ JmriBeanComboBox(Manager* manager, QWidget *parent = 0);
-    /*public*/ JmriBeanComboBox(Manager* manager, NamedBean* nBean, int displayOrder, QWidget *parent = 0);
+    explicit JmriBeanComboBox(QWidget *parent = nullptr);
+    /*public*/ JmriBeanComboBox(Manager* manager, QWidget *parent = nullptr);
+    /*public*/ JmriBeanComboBox(Manager* manager, NamedBean* nBean, int displayOrder, QWidget *parent = nullptr);
     /*public*/ void refreshCombo();
-    void updateComboBox(QString select);
+    /*public*/ QStringList getDisplayList();
     /*public*/ QString getSelectedUserName();
     /*public*/ QString getSelectedSystemName();
     /*public*/ QString getSelectedDisplayName();
     /*public*/ void setFirstItemBlank(bool blank);
     /*public*/ NamedBean* getSelectedBean();
     /*public*/ void setSelectedBean(NamedBean* nBean);
-    /*public*/ void excludeItems(QList<NamedBean*>* exclude);
+    /*public*/ void excludeItems(QList<NamedBean*> exclude);
+    /*public*/ QList<NamedBean*> getExcludeItems();
+    /*public*/ void setValidateMode(bool inValidateMode);
+    /*public*/ bool isValidateMode();
+    /*public*/ NamedBean* getNamedBean();
+    /*public*/ Manager* getManager();
+    /*public*/ void setManager(Manager*);
+    /*public*/ QString getUserName();
+    /*public*/ QString getDisplayName();
+    /*public*/ QString getText();
+    /*public*/ void setText(QString inText);
+
+
 #if 0
     /**
     * constant used to format the entries in the combo box using the displayname
@@ -163,9 +175,45 @@ private:
     Manager* _manager;
 
     QHash<QString, NamedBean*>* displayToBean;// = new QHash<QString, NamedBean*>();
-    QList<NamedBean*>* exclude;// = new QList<NamedBean*>();
+    QList<NamedBean*> exclude;// = new QList<NamedBean*>();
     Logger* log;
+    /**
+     * validate mode determines if entry validation is performed when text is
+     * typed into an editable JmriBeanComboBox
+     */
+    /*private*/ bool _validateMode = false;
+    /*private*/ void validateText();
+    void updateComboBox(QString select);
+    void common(Manager* manager, NamedBean* nBean, int displayOrder);
 
 };
+#if 0
+/*static*/ class EnabledComboBoxRenderer //extends BasicComboBoxRenderer
+{
 
+//    /*private*/ ListSelectionModel _enabledItems;
+    /*private*/ QColor _enabledColor = super.getForeground();
+    /*private*/ QColor _disabledColor = Color.lightGray;
+    /*private*/ QColor _enabledBackgroundColor = super.getBackground();
+    /*private*/ QColor _disabledBackgroundColor = super.getBackground();
+public:
+    /*public*/ EnabledComboBoxRenderer();
+//    /*public*/ EnabledComboBoxRenderer(ListSelectionModel inEnabledItems);
+//    /*public*/ void setEnabledItems(ListSelectionModel inEnabledItems) ;
+//    /*public*/ ListSelectionModel getEnabledItems();
+    /*public*/ void setItemEnabled(int inIndex, bool inEnabled);
+    /*public*/ bool isItemEnabled(int inIndex);
+    /*public*/ void setEnabledColor(QColor inEnabledColor);
+    /*public*/ QColor getEnabledColor();
+    /*public*/ void setDisabledColor(QColor inDisabledColor);
+    /*public*/ QColor getDisabledColor();
+    /*public*/ void setEnabledBackgroundColor(QColor inEnabledBackgroundColor);
+    /*public*/ QColor getEnabledBackgroundColor();
+    /*public*/ void setDisabledBackgroundColor(QColor inDisabledBackgroundColor);
+    /*public*/ Color getDisabledBackgroundColor();
+    //@Override
+//    /*public*/ Component getListCellRendererComponent(JList inList, Object inValue,
+//            int inIndex, boolean isSelected, boolean inCellHasFocus) ;
+};
+#endif
 #endif // JMRIBEANCOMBOBOX_H

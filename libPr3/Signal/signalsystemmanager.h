@@ -1,6 +1,6 @@
 #ifndef SIGNALSYSTEMMANAGER_H
 #define SIGNALSYSTEMMANAGER_H
-#include "manager.h"
+#include "abstractmanager.h"
 #include "signalsystem.h"
 
 /**
@@ -29,10 +29,11 @@
  * @author   Bob Jacobsen Copyright (C) 2009
  * @version	$Revision: 17977 $
  */
-/*public*/ /*interface*/ class LIBPR3SHARED_EXPORT SignalSystemManager : public Manager
+/*public*/ /*interface*/ class LIBPR3SHARED_EXPORT SignalSystemManager : public AbstractManager
 {
  Q_OBJECT
  public:
+    SignalSystemManager(QObject* parent = nullptr) : AbstractManager(parent) {}
     /*public*/ virtual SignalSystem* getSystem(QString name) = 0;
 
     /*public*/ virtual SignalSystem* getBySystemName(QString name) = 0;

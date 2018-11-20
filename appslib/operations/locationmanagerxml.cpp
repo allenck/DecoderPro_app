@@ -4,6 +4,7 @@
 #include "locationmanager.h"
 #include "logger.h"
 #include "schedulemanager.h"
+#include "instancemanager.h"
 
 //LocationManagerXml::LocationManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -24,29 +25,20 @@ OperationsXml(parent)
 {
  log = new Logger("LocationManagerXml"); log->setDebugEnabled(true);
  operationsFileName = "OperationsLocationRoster.xml";
+ setProperty("InstanceManagerAutoDefault", "true");
+ setProperty("InstanceManagerAutoInitialize", "true");
+
 }
 
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ LocationManagerXml* LocationManagerXml::_instance = nullptr;
+ //  /*private*/ /*static*/ LocationManagerXml* LocationManagerXml::_instance = nullptr;
 
 
  /*public*/ /*static*/ /*synchronized*/ LocationManagerXml* LocationManagerXml::instance()
-{
- Logger* log = new Logger("LocationManagerXml");
-     if (_instance == nullptr) {
-         if (log->isDebugEnabled()) {
-             log->debug("LocationManagerXml creating instance");
-         }
-         // create and load
-         _instance = new LocationManagerXml();
-         _instance->load();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("LocationManagerXml returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
+ {
+  return static_cast<LocationManagerXml*>(InstanceManager::getDefault("LocationManagerXml"));
  }
 
 /*public*/ void LocationManagerXml::writeFile(QString name) throw (FileNotFoundException, IOException)
@@ -123,9 +115,12 @@ OperationsXml(parent)
      return operationsFileName;
  }
 
-
- /*public*/ void LocationManagerXml::dispose(){
-     _instance = nullptr;
+//@Override
+ /*public*/ void LocationManagerXml::initialize() {
+     this->load();
  }
 
+ /*public*/ void LocationManagerXml::dispose(){
+     //_instance = nullptr;
+ }
 }

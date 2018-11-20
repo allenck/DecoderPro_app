@@ -22,14 +22,17 @@
     //this("Multiple Tabbed");
 }
 
+//@Override
 /*protected*/ Manager* SensorTableTabAction::getManager() {
     return InstanceManager::sensorManagerInstance();
 }
 
+//@Override
 /*protected*/ QString SensorTableTabAction::getClassName() {
-    return "SensorTableAction";
+    return "jmri.jmrit.beantable.SensorTableAction";
 }
 
+//@Override
 /*protected*/ AbstractTableAction* SensorTableTabAction::getNewTableAction(QString choice) {
     return new SensorTableAction(choice, this);
 }

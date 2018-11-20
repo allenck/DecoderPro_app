@@ -155,7 +155,7 @@ void SignalMastTableAction::On_repeatersTriggered()
 }
 #endif
 /*protected*/ QString SignalMastTableAction::getClassName() {
-    return "SignalMastTableAction";
+    return "jmri.jmrit.beantable.SignalMastTableAction";
 }
 
 /*public*/ QString SignalMastTableAction::getClassDescription() {

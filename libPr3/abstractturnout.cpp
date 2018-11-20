@@ -927,15 +927,13 @@ void AbstractTurnout::setKnownStateToCommanded()
     }catch (NumberFormatException nx) {
         //considered normal if the speed is not a number.
     }
-#if 1 // TODO:
-    try{
-        return SignalSpeedMap::getMap()->getSpeed(speed);
-    } catch (Exception ex){
-        return -1;
+    try
+    {
+      return static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
     }
-#else
- return -1;
-#endif
+    catch (Exception ex) {
+      return -1;
+    }
 }
 
 /*public*/ QString AbstractTurnout::getDivergingSpeed() {
@@ -990,17 +988,14 @@ void AbstractTurnout::setKnownStateToCommanded()
  {
         //considered normal if the speed is not a number.
  }
-#if 1 // TODO:
  try
  {
-  return SignalSpeedMap::getMap()->getSpeed(speed);
+    return static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
  }
  catch (Exception ex)
  {
   return -1;
  }
-#endif
- return -1;
 }
 
 /*public*/ QString AbstractTurnout::getStraightSpeed() {

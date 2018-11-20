@@ -29,7 +29,7 @@
  */
 //private static final long serialVersionUID = 5470543428367047464L;
 //static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.display.DisplayBundle");
-/*static*/ File*  LoadXmlUserAction::currentFile = NULL;
+/*static*/ File*  LoadXmlUserAction::currentFile = nullptr;
 
 /*public*/ LoadXmlUserAction::LoadXmlUserAction(QObject *parent) :
   LoadXmlConfigAction(tr("Open Panels..."), parent)
@@ -72,8 +72,8 @@ void LoadXmlUserAction::common()
 //             + rb.getString("CheckPreferences") + "\n"
 //             + rb.getString("ConsoleWindowHasInfo"),
 //             rb.getString("PanelLoadError"), JOptionPane.ERROR_MESSAGE);
-  QMessageBox::critical(NULL, tr("Error Opening Panel!"), tr("Panel experienced errors during load.")+ "\n" + tr("Check your system Preferences.") + "\n" + tr("The console window contains error details."));
-     currentFile = NULL;
+  QMessageBox::critical(nullptr, tr("Error Opening Panel!"), tr("Panel experienced errors during load.")+ "\n" + tr("Check your system Preferences.") + "\n" + tr("The console window contains error details."));
+     currentFile = nullptr;
  }
 }
 

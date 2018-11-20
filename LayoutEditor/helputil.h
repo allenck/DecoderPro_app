@@ -48,7 +48,7 @@ public slots:
 private:
     explicit HelpUtil(QObject *parent = 0);
     static HelpUtil* thisMenu;
-    Logger* log;
+    static Logger* log;
     HelpFrame* _frame;
 };
 
@@ -79,6 +79,7 @@ private:
   QList<WebHistoryItem> historyList;
   int currHistoryItem;
   QString loadHtml(QString path);
+  static Logger* log;
 
 private slots:
   void previous();
@@ -100,7 +101,7 @@ private slots:
  private:
   QString ref;
   MyWebView* view;
-  Logger* log;
+  static Logger* log;
   QString loadHtml(QString path);
 
  };

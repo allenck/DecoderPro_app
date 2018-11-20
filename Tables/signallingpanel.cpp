@@ -125,7 +125,7 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*fra
   }
   else
   {
-   QString speed = SignalSpeedMap::getMap()->getNamedSpeed(pathSpeed);
+   QString speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getNamedSpeed(pathSpeed);
    if (speed != NULL)
         mastSpeed->setText(tr("PathSpeed") + " : " + speed);
    else
@@ -1129,7 +1129,7 @@ int blockModeFromBox(JComboBox box) {
 
     if (result<0) {
         log.warn("unexpected mode string in sensorMode: "+mode);
-        throw new IllegalArgumentException();
+        throw  IllegalArgumentException();
     }
     return result;
 }

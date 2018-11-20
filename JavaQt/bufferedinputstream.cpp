@@ -108,7 +108,7 @@
   this->in = in;
 
     if (size <= 0) {
-        throw new IllegalArgumentException("Buffer size <= 0");
+        throw  IllegalArgumentException("Buffer size <= 0");
     }
     buf = QByteArray(size, '\0');
 }

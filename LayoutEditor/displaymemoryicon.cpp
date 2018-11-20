@@ -107,7 +107,7 @@ updateBlockValue = false;
 
 /*public*/ void DisplayMemoryIcon::resetDefaultIcon() {
     defaultIcon = new NamedIcon(":/resources/icons/misc/X-red.gif",
-                        ":/resources/icons/misc/X-red.gif");
+                        "resources/icons/misc/X-red.gif");
 }
 
 /*public*/ void DisplayMemoryIcon::setDefaultIcon(NamedIcon* n) {

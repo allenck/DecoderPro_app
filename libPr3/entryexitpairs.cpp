@@ -102,6 +102,7 @@ return (settingRouteColor == QColor() ? false : true);
 /*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/)
 {
  setObjectName("EntryExitPairs");
+ setProperty("JavaClassName", "jmri.jmrit.entryexit.EntryExitPairs");
  routingMethod = LayoutBlockConnectivityTools::METRIC;
  routeClearOption = PROMPTUSER;
  turnoutSetDelay = 0;
@@ -113,6 +114,7 @@ return (settingRouteColor == QColor() ? false : true);
  settingTimer = 2000;
  settingRouteColor = QColor();
  allocateToDispatcher = false;
+ setProperty("InstanceManagerAutoDefault", "yes");
 
 
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
@@ -242,6 +244,23 @@ return (settingRouteColor == QColor() ? false : true);
 
 /*public*/ QStringList EntryExitPairs::getSystemNameList() {
     return getEntryExitList();
+}
+
+/**
+ * Implemented to support the Conditional combo box name list
+ * @since 4.9.3
+ * @return a list of Destination Point beans
+ */
+//@Override
+/*public*/ QSet<NamedBean*> EntryExitPairs::getNamedBeanSet() {
+    QSet<NamedBean*> beanList = QSet<NamedBean*>();//new TreeSet<>(new jmri.util.NamedBeanComparator());
+    for (Source* e : nxpair->values()) {
+        QStringList uidList = e->getDestinationUniqueId();
+        for (QString uid : uidList) {
+            beanList.insert(e->getByUniqueId(uid)); //DestinationPoints
+        }
+    }
+    return beanList;
 }
 
 /*public*/ void EntryExitPairs::Register(NamedBean* /*n*/) {

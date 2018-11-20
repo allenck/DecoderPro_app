@@ -380,7 +380,7 @@ static /*public*/ void setLight(Locale locale, String name, JsonNode data) throw
         data.insert(JSON::LENGTH, location->getLength());
         data.insert(JSON::COMMENT, location->getComment());
     } catch (NullPointerException e) {
-        log->error("Unable to get location id [{}].", id);
+        log->error(tr("Unable to get location id [%1].").arg(id));
         throw new JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::LOCATION).arg(id));
     }
     root.insert(JSON::DATA, data);

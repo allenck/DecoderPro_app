@@ -53,9 +53,11 @@
 //    } catch (InterruptedException ie) {
 //        Thread.currentThread().interrupt(); // retain if needed later
 //    }
+ setWindowIcon(QIcon(":/resources/jmri32x32.gif"));
+
 
     //JLabel* l = new JLabel((NamedIcon*)new ImageIcon(splashIm, "JMRI splash screen"));
-    JLabel* l = new JLabel(new NamedIcon(FileUtil::findURL("resources/logo.gif", FileUtil::INSTALLED).toString(),"JMRI splash screen"));
+    JLabel* l = new JLabel(new ImageIcon(FileUtil::findURL("resources/logo.gif", FileUtil::INSTALLED).toString(),"JMRI splash screen"));
 //    l.setOpaque(true);
 
  if (splashMsg != NULL)

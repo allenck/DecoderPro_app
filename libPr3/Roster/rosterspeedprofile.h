@@ -7,6 +7,7 @@
 #include <QtXml>
 #include "libPr3_global.h"
 
+class SpeedStep;
 class SpeedSetting;
 class Logger;
 class Section;
@@ -19,6 +20,8 @@ class LIBPR3SHARED_EXPORT RosterSpeedProfile : public QObject
 {
  Q_OBJECT
 public:
+
+public:
  //explicit RosterSpeedProfile(QObject *parent = 0);
  /*public*/ RosterSpeedProfile(RosterEntry* re, QObject *parent = 0);
  /*public*/ RosterEntry* getRosterEntry();
@@ -27,6 +30,9 @@ public:
  /*public*/ float getOverRunTimeReverse();
  /*public*/ void setOverRunTimeReverse(float dt) ;
  /*public*/ void clearCurrentProfile();
+ /*public*/ void deleteStep(int step);
+ /*public*/ bool hasForwardSpeeds();
+ /*public*/ bool hasReverseSpeeds();
  /*public*/ void setSpeed(int speedStep, float forward, float reverse);
  /*public*/ void setForwardSpeed(float speedStep, float forward);
  /*public*/ void setReverseSpeed(float speedStep, float reverse);
@@ -42,6 +48,7 @@ public:
  /*public*/ void store(QDomElement e);
  /*public*/ void load(QDomElement e);
  /*public*/ int getProfileSize();
+ /*public*/ QMap<int, SpeedStep*> getProfileSpeeds();
  /*public*/ float getForwardFactor();
  /*public*/ float getReverseFactor();
  /*public*/ float getSpeed(float speedStep, bool isForward);
@@ -51,6 +58,7 @@ public:
  /*public*/ QString convertMMSToScaleSpeedWithUnits(float mms);
  /*public*/ QString convertThrottleSettingToScaleSpeedWithUnits(float throttleSetting, bool isForward);
  /*public*/ float convertScaleSpeedToMMS(float scaleSpeed);
+ /*public*/ float getThrottleSetting(float speed, bool isForward);
 
 signals:
 
@@ -60,36 +68,16 @@ private:
 
  float overRunTimeReverse;// = 0.0;
  float overRunTimeForward;// = 0.0;
+ bool _hasForwardSpeeds = false;
+ bool _hasReverseSpeeds = false;
  float distanceRemaining;// = 0;
  float distanceTravelled;// = 0;
- /*static*/ class SpeedStep
+ inline bool isEqual(double x, double y)
  {
-
-  float forward;// = 0.0;
-  float reverse;// = 0.0;
-public:
-  SpeedStep()
-  {
-   forward = 0.0;
-   reverse = 0.0;
-  }
-
-  void setForwardSpeed(float speed) {
-      forward = speed;
-  }
-
-  void setReverseSpeed(float speed) {
-      reverse = speed;
-  }
-
-  float getForwardSpeed() {
-      return forward;
-  }
-
-  float getReverseSpeed() {
-      return reverse;
-  }
- };
+   const double epsilon = 1e-5/* some small number such as 1e-5 */;
+   return std::abs(x - y) <= epsilon * std::abs(x);
+   // see Knuth section 4.2.2 pages 217-218
+ }
 
  QMap<int, SpeedStep*> speeds;// = new TreeMap<Integer, SpeedStep>();
  int higherKey(int key);
@@ -138,5 +126,36 @@ private slots:
  /*synchronized*/ void setNextStep();
 
 };
+/*static*/ class SpeedStep
+{
 
+ float forward;// = 0.0;
+ float reverse;// = 0.0;
+
+ SpeedStep()
+ {
+  forward = 0.0;
+  reverse = 0.0;
+ }
+
+ void setForwardSpeed(float speed) {
+     forward = speed;
+ }
+
+ void setReverseSpeed(float speed) {
+     reverse = speed;
+ }
+
+ float getForwardSpeed() {
+     return forward;
+ }
+
+ float getReverseSpeed() {
+     return reverse;
+ }
+ friend class SpeedUtil;
+ friend class RosterSpeedProfile;
+ friend class SpeedTableModel;
+ friend class MergePrompt;
+};
 #endif // ROSTERSPEEDPROFILE_H

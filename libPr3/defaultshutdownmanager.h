@@ -24,7 +24,7 @@ signals:
     
 public slots:
 private:
-    Logger log;
+    static Logger* log;
     QVector<ShutDownTask*>* tasks;// = new QVector<ShutDownTask*>();
     static bool shuttingDown;// = false;
     /*private*/ bool runShutDownTasks(bool isParallel);

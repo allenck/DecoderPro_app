@@ -42,7 +42,7 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt
  cf = NULL;
 
  this->sm = sm; // doesn't full register, but fine for this purpose.
- Register(); // registers general type
+ _register(); // registers general type
  InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
 
  // create and register the LnComponentFactory
@@ -75,7 +75,7 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
 
  //setSlotManager(sm);
  this->sm = NULL;
- Register(); // registers general type
+ _register(); // registers general type
  InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
 
  // create and register the LnComponentFactory

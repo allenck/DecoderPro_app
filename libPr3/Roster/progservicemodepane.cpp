@@ -85,9 +85,9 @@ void ProgServiceModePane::init()
 
 /*protected*/ QList<GlobalProgrammerManager*>* ProgServiceModePane::getMgrList()
 {
- QObjectList* objectList = InstanceManager::getList("GlobalProgrammerManager");
+ QObjectList objectList = InstanceManager::getList("GlobalProgrammerManager");
  QList<GlobalProgrammerManager*>* list = new  QList<GlobalProgrammerManager*>();
- foreach (QObject* o, *objectList)
+ foreach (QObject* o, objectList)
  {
   GlobalProgrammerManager* mgr = (GlobalProgrammerManager*)o;
   list->append(mgr);

@@ -41,6 +41,7 @@ namespace Operations
   /*public*/ QComboBox* getSpursByScheduleComboBox(Schedule* schedule);
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
+  Q_INVOKABLE /*public*/ void initialize();
 
  signals:
 

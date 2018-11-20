@@ -49,7 +49,7 @@ public:
 /*public*/ NamedBean* getNamedBeanAtEndBumper(Block* facingBlock, LayoutEditor* panel);
 /*public*/ SignalMast* getSignalMastAtEndBumper(Block* facingBlock, LayoutEditor* panel);
 /*public*/ LayoutBlock* getByUserName(QString key);
-static LayoutBlockManager* _instance;// = NULL;
+//static LayoutBlockManager* _instance;// = NULL;
 static /*public*/ LayoutBlockManager* instance();
 /*public*/ LayoutBlock* getFacingBlockByMast(SignalMast* signalMast, LayoutEditor* panel);
 /*public*/ LayoutBlock* getFacingBlockByMast(QString signalMastName, LayoutEditor* panel);
@@ -130,6 +130,8 @@ protected:
 /*protected*/ bool _enableAdvancedRouting;// = false;
 friend class MyRunnable;
 };
+Q_DECLARE_METATYPE(LayoutBlockManager)
+
 class MyRunnable : public Runnable
 {
  Q_OBJECT
@@ -142,5 +144,4 @@ signals:
 private:
  Logger* log;
 };
-Q_DECLARE_METATYPE(LayoutBlockManager)
 #endif // LAYOUTBLOCKMANAGER_H

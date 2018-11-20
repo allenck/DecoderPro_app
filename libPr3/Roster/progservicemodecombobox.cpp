@@ -72,8 +72,8 @@
 {
  //return InstanceManager::getList("GlobalProgrammerManager");
  QList<GlobalProgrammerManager*> list;
- QObjectList* objectList = InstanceManager::getList("GlobalProgrammerManager");
- foreach(QObject* o, *objectList)
+ QObjectList objectList = InstanceManager::getList("GlobalProgrammerManager");
+ foreach(QObject* o, objectList)
  {
   GlobalProgrammerManager* globalProgrammerManager = (GlobalProgrammerManager*)o;
   list.append(globalProgrammerManager);

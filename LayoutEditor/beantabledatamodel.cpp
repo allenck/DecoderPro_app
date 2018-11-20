@@ -29,6 +29,7 @@
 #include "pushbuttondelegate.h"
 #include "buttoncolumndelegate.h"
 #include "jtablepersistencemanager.h"
+#include <QSignalMapper>
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -50,6 +51,7 @@
 {
  //super();
  log = new Logger("BeanTableDataModel");
+ setObjectName("BeanTableDataModel");
  sysNameList = QStringList();
  noWarnDelete = false;
  buttonMap = QList<int>();
@@ -569,8 +571,11 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
  this->persistTable(table);
 
 // loadTableColumnDetails(table);
+
  table->setContextMenuPolicy(Qt::CustomContextMenu);
  connect(table, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showPopup(QPoint)));
+ table->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+ connect(table->horizontalHeader(), SIGNAL(customContextMenuRequested(QPoint)), this,SLOT(showTableHeaderPopup(const QPoint &)));
  //setPersistentButtons();
 }
 
@@ -805,7 +810,8 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 //    table->setRowSorter(sorter);
     table->horizontalHeader()->sectionsMovable(); //table->getTableHeader().setReorderingAllowed(true);
     table->setColumnModel(new XTableColumnModel());
-    table->createDefaultColumnsFromModel();
+    //table->createDefaultColumnsFromModel();
+    //table->resizeColumnsToContents();
 
 //    addMouseListenerToHeader(table);
     return table;
@@ -829,7 +835,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 // table.getTableHeader().setReorderingAllowed(true);
  table->resizeRowsToContents();
  table->setColumnModel(new XTableColumnModel());
-// table.createDefaultColumnsFromModel();
+ table->createDefaultColumnsFromModel();
 
 // addMouseListenerToHeader(table);
  return table;
@@ -1051,7 +1057,6 @@ void BeanTableDataModel::On_moveBean_triggered()
  moveBean(row);
 }
 
-#if 1
 /*public*/ void BeanTableDataModel::moveBean(int row)
 {
  /*final*/ NamedBean* t = getBySystemName(sysNameList.at(row));
@@ -1115,23 +1120,38 @@ void BeanTableDataModel::On_moveBean_triggered()
     //JOptionPane.showMessageDialog(NULL, getBeanType() + " " + AbstractTableAction.rb.getString("UpdateComplete"));
  }
 }
-#if 0
-protected void showTableHeaderPopup(MouseEvent e, JTable table){
-    JPopupMenu popupMenu = new JPopupMenu();
-    XTableColumnModel tcm = (XTableColumnModel)table.getColumnModel();
-    for (int i = 0; i < tcm.getColumnCount(false); i++) {
-        TableColumn tc = tcm.getColumnByModelIndex(i);
-        String columnName = table.getModel().getColumnName(i);
-        if(columnName!=NULL && !columnName==("")){
-            JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(table.getModel().getColumnName(i), tcm.isColumnVisible(tc));
-            menuItem.addActionListener(new headerActionListener(tc, tcm));
-            popupMenu.add(menuItem);
-        }
 
+/*protected*/ void BeanTableDataModel::showTableHeaderPopup(const QPoint &){
+    QMenu* popupMenu = new QMenu();
+    QSignalMapper* mapper = new QSignalMapper(this);
+    XTableColumnModel* tcm = (XTableColumnModel*)_table->getColumnModel();
+    for (int i = 0; i < tcm->getColumnCount(false); i++) {
+        TableColumn* tc = tcm->getColumnByModelIndex(i);
+        QString columnName = _table->getModel()->headerData(i, Qt::Horizontal).toString();
+        if(!columnName.isEmpty()){
+            QAction* menuItem = new QAction(_table->getModel()->headerData(i, Qt::Horizontal).toString(), this);
+            menuItem->setCheckable(true);
+            menuItem->setChecked(/*tcm->isColumnVisible(tc)*/!_table->isColumnHidden(i));
+//            menuItem.addActionListener(new headerActionListener(tc, tcm));
+            popupMenu->addAction(menuItem);
+            mapper->setMapping(menuItem, tc);
+            connect(menuItem, SIGNAL(toggled(bool)), mapper, SLOT(map()));
+        }
+      connect(mapper, SIGNAL(mapped(QObject*)), this, SLOT(onColumnSelected(QObject*)));
     }
-    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+    //popupMenu.show(e.getComponent(), e.getX(), e.getY());
+    popupMenu->exec(QCursor::pos());
 }
 
+void BeanTableDataModel::onColumnSelected(QObject* obj)
+{
+ TableColumn* tc = qobject_cast<TableColumn*>(obj);
+ XTableColumnModel* tcm = (XTableColumnModel*)_table->getColumnModel();
+ int column = tc->getModelIndex();
+  //tcm->setColumnVisible(tc, !tcm->isColumnVisible(tc));
+ _table->setColumnHidden(column, !_table->isColumnHidden(column));
+}
+#if 0
 static class headerActionListener implements ActionListener {
     TableColumn tc;
     XTableColumnModel tcm;
@@ -1191,7 +1211,7 @@ class TableHeaderListener extends MouseAdapter {
 /*public*/ void BeanTableDataModel::saveTableColumnDetails(JTable* table){
     saveTableColumnDetails(table, getMasterClassName());
 }
-#endif
+
 /*public*/ void BeanTableDataModel::saveTableColumnDetails(JTable* table, QString beantableref)
 {
  UserPreferencesManager* p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");

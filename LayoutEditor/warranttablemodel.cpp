@@ -413,11 +413,11 @@ BeanTableDataModel(parent)
 //         return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                 "resources/icons/smallschematics/tracksegments/circuit-green.gif",
 //                 "occupied"));
-     return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-green.gif");
+     return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-green.gif");
 //         return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                 "resources/icons/smallschematics/tracksegments/circuit-occupied.gif",
 //                 "occupied"));
-     return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
+     return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
 
     }
     else
@@ -425,7 +425,7 @@ BeanTableDataModel(parent)
 //         return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                 "resources/icons/smallschematics/tracksegments/circuit-empty.gif",
 //                 "off"));
-     return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-empty.gif");
+     return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-empty.gif");
 
     }
    }
@@ -435,12 +435,12 @@ BeanTableDataModel(parent)
 //            return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                    "resources/icons/smallschematics/tracksegments/circuit-empty.gif",
 //                    "off"));
-     return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-empty.gif");
+     return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-empty.gif");
     }
 //        return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                "resources/icons/smallschematics/tracksegments/circuit-occupied.gif",
 //                "occupied"));
-    return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
+    return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
    case SET_COLUMN:
    {
     //NamedIcon* icon;
@@ -449,25 +449,24 @@ BeanTableDataModel(parent)
     if (w->hasRouteSet() && w->isTotalAllocated())
     {
 //         return VPtr<NamedIcon>::asQVariant(new NamedIcon(
-     path  =    FileUtil::getProgramPath() +  "resources/icons/smallschematics/tracksegments/circuit-green.gif";
+     path  =    ":/resources/icons/smallschematics/tracksegments/circuit-green.gif";
      name =      "off";
     }
     else if (w->hasRouteSet() && w->isAllocated())
     {
 //         return  VPtr<NamedIcon>::asQVariant(
      //icon =new NamedIcon(
-     path  =        FileUtil::getProgramPath() + "resources/icons/smallschematics/tracksegments/circuit-occupied.gif";
+     path  =         ":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif";
      name =         "occupied";
     }
     else
     {
 //         return VPtr<NamedIcon>::asQVariant(
        //icon =    new NamedIcon(
-     path  =        FileUtil::getProgramPath() +"resources/icons/smallschematics/tracksegments/circuit-empty.gif";
+     path  =        ":/resources/icons/smallschematics/tracksegments/circuit-empty.gif";
      name =        "occupied";
     }
     return QIcon(path);
-    return QVariant();
    }
     case AUTO_RUN_COLUMN:
     {
@@ -476,12 +475,12 @@ BeanTableDataModel(parent)
 //            return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                    "resources/icons/smallschematics/tracksegments/circuit-error.gif",
 //                    "red"));
-      return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-error.gif");
+      return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
      }
 //        return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                "resources/icons/smallschematics/tracksegments/circuit-empty.gif",
 //                "off"));
-     return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-empty.gif");
+     return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-empty.gif");
   }
   case MANUAL_RUN_COLUMN:
   {
@@ -490,12 +489,12 @@ BeanTableDataModel(parent)
 //            return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                    "resources/icons/smallschematics/tracksegments/circuit-error.gif",
 //                    "red"));
-    return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-error.gif");
+    return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
    }
 //        return VPtr<NamedIcon>::asQVariant(new NamedIcon(
 //                "resources/icons/smallschematics/tracksegments/circuit-empty.gif",
 //                "off"));
-   return QIcon(FileUtil::getProgramPath()+"resources/icons/smallschematics/tracksegments/circuit-empty.gif");
+   return QIcon(":/resources/icons/smallschematics/tracksegments/circuit-empty.gif");
   }
   case CONTROL_COLUMN:
   {

@@ -19,6 +19,7 @@
 #include "xmlfilelocationaction.h"
 #include "reportcontextaction.h"
 #include "exceptions.h"
+#include "loggerfactory.h"
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -27,7 +28,6 @@ HelpUtil::HelpUtil(QObject *parent) :
     QObject(parent)
 {
  thisMenu = NULL;
- log = new Logger("HelpUtil");
  _frame = NULL;
 
 }
@@ -77,7 +77,7 @@ HelpUtil::HelpUtil(QObject *parent) :
  QAction* item = makeHelpMenuItem(ref);
  if (item == NULL)
  {
-  Logger::error("Can't make help menu item for "+ref/*, parent*/);
+  log->error("Can't make help menu item for "+ref/*, parent*/);
   return NULL;
  }
  helpMenu->addAction(item);
@@ -168,10 +168,9 @@ HelpUtil::HelpUtil(QObject *parent) :
 
 /*static*/ /*public*/ void HelpUtil::displayHelpRef(QString ref)
 {
-  Logger log("HelpUtil");
   if (globalHelpBroker == NULL)
   {
-   log.debug("can't display "+ref+" help page because help system reference is NULL");
+   log->debug("can't display "+ref+" help page because help system reference is NULL");
         return;
     }
 //    try
@@ -188,7 +187,6 @@ HelpUtil::HelpUtil(QObject *parent) :
 
 /*static*/ /*public*/ bool HelpUtil::initOK()
 {
- Logger log("HelpUtil");
  if (!init)
  {
   init = true;
@@ -276,7 +274,6 @@ void HUAbstractAction::actionPerformed()
 #endif
 HelpFrame::HelpFrame(QString ref)
 {
- log = new Logger("HelpFrame");
  this->ref = ref.replace(".", QDir::separator());
  QWidget* centralWidget = new QWidget;
  centralWidget->setLayout(new QVBoxLayout);
@@ -534,3 +531,8 @@ void MyWebView::addHistory(const QUrl & url)
  historyList.append(hItem);
  currHistoryItem++;
 }
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* HelpUtil::log = LoggerFactory::getLogger("HelpUtil");
+/*private*/ /*final*/ /*static*/ Logger* HelpFrame::log = LoggerFactory::getLogger("HelpUtil");
+/*private*/ /*final*/ /*static*/ Logger* MyWebView::log = LoggerFactory::getLogger("HelpUtil");

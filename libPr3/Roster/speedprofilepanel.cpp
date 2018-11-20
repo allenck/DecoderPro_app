@@ -18,6 +18,10 @@
 #include "layoutblockmanager.h"
 #include "systemnamecomparator.h"
 #include "proxysensormanager.h"
+#include "loggerfactory.h"
+#include "tablecolumnmodel.h"
+#include "tablecolumn.h"
+#include <QScrollBar>
 
 //SpeedProfilePanel::SpeedProfilePanel(QWidget *parent) :
 //  JmriPanel(parent)
@@ -159,6 +163,73 @@
 //         });
  connect(testButton, SIGNAL(clicked()), this, SLOT(on_testButton_clicked()));
  setButtonStates(true);
+}
+/**
+ * @param speedProfile a RosterSpeedProfile
+ * @param anomalies Map of keys where profile is not monotonic increasing.
+ */
+/*public*/ SpeedProfilePanel::SpeedProfilePanel(RosterSpeedProfile* speedProfile, QMap<int, bool>* anomalies, QWidget* parent)
+ : JmriPanel(parent)
+{
+    SpeedTableModel* model = new SpeedTableModel(speedProfile, anomalies);
+    _table = new JTable(model);
+    int tablewidth = 0;
+    for (int i = 0; i < model->getColumnCount(); i++) {
+        TableColumn* column = _table->getColumnModel()->getColumn(i);
+        int width = model->getPreferredWidth(i);
+        column->setPreferredWidth(width);
+        tablewidth += width;
+    }
+    if (anomalies != nullptr) {
+#if 0
+        _table.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent ke) {
+                char ch = ke.getKeyChar();
+                if (ch == KeyEvent.VK_DELETE || ch == KeyEvent.VK_X) {
+                    deleteRow();
+                }
+            }
+            @Override
+            public void keyPressed(KeyEvent e) {}
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+#endif
+//        _table->getColumnModel()->getColumn(SpeedTableModel::FORWARD_SPEED_COL).setCellRenderer(new ColorCellRenderer());
+//        _table.getColumnModel().getColumn(SpeedTableModel.REVERSE_SPEED_COL).setCellRenderer(new ColorCellRenderer());
+    }
+    _table->setAutoResizeMode(JTable::AUTO_RESIZE_OFF);
+    //QScrollArea* pane = new JScrollPane(_table);
+    int barWidth = 5+_table->verticalScrollBar()->sizeHint().width();
+    tablewidth += barWidth;
+//    pane.setPreferredSize(new Dimension(tablewidth, tablewidth));
+    _table->resize(QSize(tablewidth, tablewidth));
+    if (anomalies != nullptr) {
+        QScrollBar* bar = _table->verticalScrollBar();
+        bar->setValue(50);       // important to "prime" the setting for bar.getMaximum()
+        int numRows = model->rowCount(QModelIndex());
+        int key = 1000;
+        QListIterator<int> iter( anomalies->keys());
+        while (iter.hasNext()) {
+            int k = iter.next();
+            if (k < key) {
+                key = k;
+            }
+        }
+#if 0
+        QMap<int, SpeedProfilePanel::SpeedStep*> speeds = speedProfile->getProfileSpeeds();
+        QMapIterator<int, SpeedStep*> entry = speeds.higherEntry(key);
+        if (entry == nullptr) {
+            entry = speeds.lowerEntry(key);
+        }
+        int row = model->getRow(entry);
+
+        int pos = (int)(((float)row)*bar->maximum() / numRows + .5);
+        bar->setValue(pos);
+#endif
+    }
+    layout()->addWidget(_table);
 }
 
 void SpeedProfilePanel::setupProfile()
@@ -543,7 +614,7 @@ void SpeedProfilePanel::stopLoco()
   updateSpeedProfileWithResults();
   setButtonStates(true);
   re->updateFile();
-  Roster::writeRosterFile();
+  Roster::writeRoster();
   t->setSpeedSetting(0.0);
   return;
  }
@@ -785,3 +856,180 @@ LayoutBlock* BlockSensorComboBox::getBlock()
 {
  return sensorMap.value(currentText());
 }
+//static class SpeedTableModel extends javax.swing.table.AbstractTableModel {
+//        static final int STEP_COL = 0;
+//        static final int THROTTLE_COL = 1;
+//        static final int FORWARD_SPEED_COL = 2;
+//        static final int REVERSE_SPEED_COL = 3;
+//        static final int NUMCOLS = 4;
+
+//        java.text.DecimalFormat threeDigit = new java.text.DecimalFormat("0.000");
+//        ArrayList<Map.Entry<Integer, SpeedStep>> speedArray = new  ArrayList<>();
+//        RosterSpeedProfile profile;
+//        Boolean _editable;
+//        HashMap<Integer, Boolean> _anomaly;
+
+        SpeedTableModel::SpeedTableModel(RosterSpeedProfile* sp, QMap<int, bool>* anomaly, QObject* parent)
+         : AbstractTableModel(parent){
+        threeDigit = new DecimalFormat("0.000");
+        speedArray = QList<QMapIterator<int, SpeedStep*> >();
+
+            profile = sp;
+            _editable = (anomaly != nullptr); // allow mergeProfile editing
+            _anomaly = anomaly;
+            QMap<int, SpeedStep*> speeds = sp->getProfileSpeeds();
+            QMapIterator<int, SpeedStep*> entry(speeds);
+            while (entry.hasNext()) {
+             entry.next();
+                speedArray.append(entry);
+                //entry = speeds.higherEntry(entry.getKey());
+            }
+        }
+
+        void SpeedTableModel::setEditable(bool set ) {
+            _editable = set;
+        }
+
+        QMap<int, bool>* SpeedTableModel::getAnomalies() {
+            return _anomaly;
+        }
+
+        QMapIterator<int, SpeedStep*> SpeedTableModel::getEntry(int row) {
+            return speedArray.at(row);
+        }
+
+        int SpeedTableModel::getRow(QMapIterator<int, SpeedStep*> entry) {
+//            return speedArray.indexOf(entry);
+         return 0;
+        }
+
+        //@Override
+        /*public*/ int SpeedTableModel::columnCount(const QModelIndex &parent) const
+        {
+            return NUMCOLS;
+        }
+
+        //@Override
+        /*public*/ int SpeedTableModel::rowCount(const QModelIndex &parent) const
+        {
+            return speedArray.size();
+        }
+
+        //@Override
+        /*public*/ QVariant SpeedTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+        {
+         if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
+         {
+            switch (section) {
+                case STEP_COL:
+                    return tr("step");
+                case THROTTLE_COL:
+                    return tr("throttlesetting");
+                case FORWARD_SPEED_COL:
+                    return tr("forward");
+                case REVERSE_SPEED_COL:
+                    return tr("reverse");
+                default:
+                    // fall out
+                    break;
+            }
+         }
+            return QVariant();
+        }
+//        @Override
+//        public Class<?> getColumnClass(int col) {
+//            return String.class;
+//        }
+
+        /*public*/ int SpeedTableModel::getPreferredWidth(int col) {
+            switch (col) {
+                case STEP_COL:
+                    return  JTextField(3).getPreferredSize().width();
+                case THROTTLE_COL:
+                    return  JTextField(5).getPreferredSize().width();
+                case FORWARD_SPEED_COL:
+                case REVERSE_SPEED_COL:
+                    return  JTextField(8).getPreferredSize().width();
+                default:
+                    // fall out
+                    break;
+            }
+            return  JTextField(8).getPreferredSize().width();
+        }
+
+        //@Override
+        /*public*/ Qt::ItemFlags SpeedTableModel::flags(const QModelIndex &index) const
+        {
+         int col = index.column();
+            if (_editable && (col == FORWARD_SPEED_COL | col == REVERSE_SPEED_COL)) {
+                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+            }
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        }
+
+        //@Override
+        /*public*/ QVariant SpeedTableModel::data(const QModelIndex &index, int role) const
+        {
+         if(role == Qt::DisplayRole)
+         {
+            QMapIterator<int, SpeedStep*> entry = speedArray.at(index.row());
+            switch (index.column()) {
+                case STEP_COL:
+                    return qRound((float)(entry.key()*126)/1000);
+                case THROTTLE_COL:
+                    return (float)(entry.key())/1000;
+                case FORWARD_SPEED_COL:
+                {
+                    float speed = entry.value()->getForwardSpeed();
+                    return threeDigit->format(speed);
+                }
+                case REVERSE_SPEED_COL:
+                {
+                 float speed = entry.value()->getReverseSpeed();
+                    return threeDigit->format(speed);
+                }
+                default:
+                    // fall out
+                    break;
+            }
+         }
+            return QVariant();
+        }
+
+        //@Override
+        /*public*/ bool SpeedTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+        {
+         int row = index.row();
+         if(role == Qt::EditRole)
+         {
+            if (!_editable)
+            {
+                return false;
+            }
+            QMapIterator<int, SpeedStep*> entry = speedArray.at(row);
+            bool bok;
+            try {
+            switch (index.column())
+            {
+                case FORWARD_SPEED_COL:
+                    entry.value()->setForwardSpeed(value.toFloat(&bok));
+                    if(!bok) throw NumberFormatException();
+                    return true;
+                case REVERSE_SPEED_COL:
+                    entry.value()->setReverseSpeed(value.toFloat(&bok));
+                    if(!bok) throw NumberFormatException();
+                    return true;
+                default:
+                    // fall out
+                    break;
+            }
+            } catch (NumberFormatException nfe) {
+                SpeedProfilePanel::log->error(tr("SpeedTableModel (%1, %2) value=%3").arg(row).arg(index.column()).arg(value.toString()));
+            }
+            return false;
+         }
+        }
+    //};
+
+    /*private*/ /*final*/ /*static*/ Logger* SpeedProfilePanel::log = LoggerFactory::getLogger("SpeedProfilePanel");
+

@@ -9,7 +9,7 @@ class LIBPR3SHARED_EXPORT SensorManager : public AbstractManager
 {
     Q_OBJECT
 public:
-    explicit SensorManager(QObject *parent = 0) : AbstractManager(parent) {}
+    explicit SensorManager(QObject *parent = nullptr) : AbstractManager(parent) {}
     /**
      * Interface for controlling sensors.
      *

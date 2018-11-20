@@ -13,14 +13,19 @@
 InternalSensorManager::InternalSensorManager()
 {
  setObjectName("InternalSensorManager");
+ setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
+
  prefix = "I";
- registerSelf(); // Added by ACK
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
 }
 /*public*/ InternalSensorManager::InternalSensorManager(QString prefix) {
     //super();
  setObjectName("InternalSensorManager");
+ setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
+
  this->prefix = prefix;
- registerSelf(); // Added by ACK
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 
 }
 

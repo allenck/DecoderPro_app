@@ -1,12 +1,16 @@
 #include "abstractsignalheadmanager.h"
 #include "signalhead.h"
 #include "abstractsignalhead.h"
+#include "instancemanager.h"
 
 AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
     SignalHeadManager(parent)
 {
  setObjectName("AbstractSignalHeadManager");
-    registerSelf();
+    //registerSelf();
+ setProperty("JavaClassName", "jmri.managers.AbstractSignalHeadManager");
+ // TODO: InstanceManager::turnoutManagerInstance()->addVetoableChangeListener(this);
+
 }
 /**
  * Abstract partial implementation of a SignalHeadManager.

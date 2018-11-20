@@ -735,7 +735,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
  catch (Throwable e)
  {
    //amrtc->log->fatal("Transmit thread terminated prematurely by: "+e.getLocalizedMessage(), e.getMessage());
-   amrtc->log->error("Transmit thread terminated prematurely by: "+e.getLocalizedMessage(), e.getMessage());
+   amrtc->log->error("Transmit thread terminated prematurely by: "+e.getLocalizedMessage(), e);
 
    emit finished();
  }

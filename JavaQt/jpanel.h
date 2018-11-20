@@ -10,7 +10,9 @@ public:
  JPanel(QWidget* parent = nullptr);
  /*public*/ void setBorder(Border* border);
  /*public*/ virtual QString getTitle() {return "";}
+ /*public*/ void setBackground(QColor color);
 
-
+// void paintEvent(QPaintEvent*);
+// void virtual paintComponent(QPainter*);
 };
 #endif // JPANEL_H

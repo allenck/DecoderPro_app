@@ -176,7 +176,7 @@ void AbstractActionModelFactory::on_selected(/*ListSelectionEvent* e*/QModelInde
       foreach(Class* clazz, ((SystemConnectionAction*) action)->getSystemConnectionMemoClasses())
       {
 //                         InstanceManager::getList(SystemConnectionMemo.class).stream().forEach((memo) ->
-       foreach(QObject* memo, *InstanceManager::getList("SystemConnectionMemo"))
+       foreach(QObject* memo, InstanceManager::getList("SystemConnectionMemo"))
        {
         if (clazz->isAssignableFrom(memo->metaObject()->className()))
         {
@@ -190,15 +190,15 @@ void AbstractActionModelFactory::on_selected(/*ListSelectionEvent* e*/QModelInde
     }
     catch (ClassNotFoundException  ex)
     {
-     log->error("Unable to create Action", ex.getMessage());
+     log->error("Unable to create Action", ex);
     }
     catch ( InstantiationException  ex)
     {
-     log->error("Unable to create Action", ex.getMessage());
+     log->error("Unable to create Action", ex);
     }
     catch ( IllegalAccessException ex)
     {
-     log->error("Unable to create Action", ex.getMessage());
+     log->error("Unable to create Action", ex);
     }
    }
   }

@@ -9,6 +9,7 @@ namespace Operations
  class Location;
  class APPSLIBSHARED_EXPORT YardmasterPanel : public CommonConductorYardmasterPanel
  {
+  Q_OBJECT
  public:
   YardmasterPanel(QWidget* parent = 0);
   /*public*/ YardmasterPanel(Location* location ,QWidget* parent = 0);

@@ -109,7 +109,7 @@ public:
     /*public*/ void flip(int flip/*, Component comp*/);
     int getIconWidth();
     int getIconHeight();
-    QImage getImage();
+    //QImage getImage();
     /*public*/ QImage getOriginalImage();
     void setImage(QImage);
     QString getFilename() {return filename;}
@@ -126,7 +126,7 @@ void init();
 /*private*/ double _scale;// = 1.0;
 ///*private*/ AffineTransform _transformS;// = new AffineTransform();    // scaling
 ///*private*/ AffineTransform _transformF;// = new AffineTransform();    // Fliped or Mirrored
-Logger* log;
+static Logger* log;
 /**
  * Valid values are <UL>
  * <LI>0 - no rotation

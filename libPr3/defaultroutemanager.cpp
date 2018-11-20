@@ -6,6 +6,7 @@
 DefaultRouteManager::DefaultRouteManager(QObject *parent) : RouteManager(parent)
 {
  setObjectName("DefaultRouteManager");
+ setProperty("JavaClassName", "jmri.managers.DefaultRouteManager");
  lastAutoRouteRef = 0;
  //_instance = NULL;
  this->parent = parent;

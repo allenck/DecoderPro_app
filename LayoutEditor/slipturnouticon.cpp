@@ -45,48 +45,48 @@
 /*static*/ bool SlipTurnoutIcon::LOWERWESTtoLOWEREAST = false;
 /*static*/ bool SlipTurnoutIcon::UPPERWESTtoUPPEREAST = true;
 
-/*public*/ SlipTurnoutIcon::SlipTurnoutIcon(Editor* editor, QObject */*parent*/) : PositionableLabel(new NamedIcon("program:resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif",
+/*public*/ SlipTurnoutIcon::SlipTurnoutIcon(Editor* editor, QObject */*parent*/) : PositionableLabel(new NamedIcon("resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif",
                                                                                                                "resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif"), editor)
 {
     // super ctor call to make sure this is an icon label
     //super(new NamedIcon("resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif",
 //                        "resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif"), editor);
- namedTurnoutWest = NULL;
- namedTurnoutWestLower = NULL;
- namedTurnoutEast = NULL;
- namedTurnoutEastLower = NULL;
+ namedTurnoutWest = nullptr;
+ namedTurnoutWestLower = nullptr;
+ namedTurnoutEast = nullptr;
+ namedTurnoutEastLower = nullptr;
  debug = false;
  log = new Logger("SlipTurnoutIcon");
  turnoutType = DOUBLESLIP;
  singleSlipRoute = false;
  // display icons
- lowerWestToUpperEastLName = "program:resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif";
+ lowerWestToUpperEastLName = "resources/icons/smallschematics/tracksegments/os-slip-lower-west-upper-east.gif";
  lowerWestToUpperEast = new NamedIcon(lowerWestToUpperEastLName, lowerWestToUpperEastLName);
- upperWestToLowerEastLName = "program:resources/icons/smallschematics/tracksegments/os-slip-upper-west-lower-east.gif";
+ upperWestToLowerEastLName = "resources/icons/smallschematics/tracksegments/os-slip-upper-west-lower-east.gif";
  upperWestToLowerEast = new NamedIcon(upperWestToLowerEastLName, upperWestToLowerEastLName);
- lowerWestToLowerEastLName = "program:resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif";
+ lowerWestToLowerEastLName = "resources/icons/smallschematics/tracksegments/os-slip-lower-west-lower-east.gif";
  lowerWestToLowerEast = new NamedIcon(lowerWestToLowerEastLName, lowerWestToLowerEastLName);
- upperWestToUpperEastLName = "program:resources/icons/smallschematics/tracksegments/os-slip-upper-west-upper-east.gif";
+ upperWestToUpperEastLName = "resources/icons/smallschematics/tracksegments/os-slip-upper-west-upper-east.gif";
  upperWestToUpperEast = new NamedIcon(upperWestToUpperEastLName, upperWestToUpperEastLName);
- inconsistentLName = "program:resources/icons/smallschematics/tracksegments/os-slip-error-full.gif";
+ inconsistentLName = "resources/icons/smallschematics/tracksegments/os-slip-error-full.gif";
  inconsistent = new NamedIcon(inconsistentLName, inconsistentLName);
- unknownLName = "program:resources/icons/smallschematics/tracksegments/os-slip-unknown-full.gif";
+ unknownLName = "resources/icons/smallschematics/tracksegments/os-slip-unknown-full.gif";
  unknown = new NamedIcon(unknownLName, unknownLName);
  tristate = false;
  lowerWestToUpperEastText = tr("Lower West To Upper East");
  upperWestToLowerEastText = tr("Upper West To Lower East");
  lowerWestToLowerEastText = tr("Lower West To Lower East");
  upperWestToUpperEastText = tr("Upper West To Upper East");
- tristateItem = NULL;
+ tristateItem = nullptr;
  firstStraight = false;
  _turnoutSetting = new QHash <Turnout*, int>();
  busy = false;
- _iconEditor = NULL;
+ _iconEditor = nullptr;
 
  _control = true;
  displayState(turnoutState());
  debug = log->isDebugEnabled();
- setPopupUtility(NULL);
+ setPopupUtility(nullptr);
 }
 
 /**
@@ -100,11 +100,11 @@
  */
  /*public*/ void SlipTurnoutIcon::setTurnout(QString pName, int turn)
 {
- if (InstanceManager::turnoutManagerInstance()!=NULL)
+ if (InstanceManager::turnoutManagerInstance()!=nullptr)
  {
   Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
              provideTurnout(pName);
-  if (turnout != NULL)
+  if (turnout != nullptr)
   {
    setTurnout(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, turnout), turn);
   }
@@ -135,14 +135,14 @@
  switch(turn)
  {
   case WEST:
-   if (namedTurnoutWest != NULL)
+   if (namedTurnoutWest != nullptr)
    {
      //getTurnout(WEST)->removePropertyChangeListener(this);
     AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
     disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    namedTurnoutWest = to;
-   if (namedTurnoutWest != NULL)
+   if (namedTurnoutWest != nullptr)
    {
     displayState(turnoutState());
     //getTurnout(WEST)->addPropertyChangeListener(this, namedTurnoutWest->getName(), "Panel Editor Turnout");
@@ -151,7 +151,7 @@
    }
    break;
   case EAST:
-   if (namedTurnoutEast != NULL)
+   if (namedTurnoutEast != nullptr)
    {
     //getTurnout(EAST)->removePropertyChangeListener(this);
     AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
@@ -159,7 +159,7 @@
 
    }
    namedTurnoutEast = to;
-   if (namedTurnoutEast != NULL)
+   if (namedTurnoutEast != nullptr)
    {
     displayState(turnoutState());
     //getTurnout(EAST)->addPropertyChangeListener(this, namedTurnoutEast->getName(), "Panel Editor Turnout");
@@ -169,14 +169,14 @@
    }
    break;
   case LOWERWEST:
-   if (namedTurnoutWestLower != NULL)
+   if (namedTurnoutWestLower != nullptr)
    {
     //getTurnout(LOWERWEST)->removePropertyChangeListener(this);
     AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWERWEST);
     disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    namedTurnoutWestLower = to;
-   if (namedTurnoutWestLower != NULL)
+   if (namedTurnoutWestLower != nullptr)
    {
     displayState(turnoutState());
     //getTurnout(LOWERWEST)->addPropertyChangeListener(this, namedTurnoutWestLower->getName(), "Panel Editor Turnout");
@@ -186,14 +186,14 @@
    }
    break;
   case LOWEREAST:
-   if (namedTurnoutEastLower != NULL)
+   if (namedTurnoutEastLower != nullptr)
    {
     //getTurnout(LOWEREAST)->removePropertyChangeListener(this);
     AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWEREAST);
     disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    namedTurnoutEastLower = to;
-   if (namedTurnoutEastLower != NULL)
+   if (namedTurnoutEastLower != nullptr)
    {
     //displayState(turnoutState());
     //getTurnout(LOWEREAST)->addPropertyChangeListener(this, namedTurnoutEastLower->getName(), "Panel Editor Turnout");
@@ -293,7 +293,7 @@
         case WEST : return namedTurnoutWest->getBean();
         case LOWEREAST : return namedTurnoutEastLower->getBean();
         case LOWERWEST : return namedTurnoutWestLower->getBean();
-        default: return NULL;
+        default: return nullptr;
     }
     /*if(west)
         return namedTurnoutWest.getBean();
@@ -306,7 +306,7 @@
         case WEST : return namedTurnoutWest;
         case LOWEREAST : return namedTurnoutEastLower;
         case LOWERWEST : return namedTurnoutWestLower;
-        default : return NULL;
+        default : return nullptr;
     }
 }
 
@@ -370,25 +370,25 @@
 //@Override
 /*public*/ int SlipTurnoutIcon::maxHeight() {
     return qMax(
-            qMax( (lowerWestToUpperEast!=NULL) ? lowerWestToUpperEast->getIconHeight() : 0,
-                    (upperWestToLowerEast!=NULL) ? upperWestToLowerEast->getIconHeight() : 0),
+            qMax( (lowerWestToUpperEast!=nullptr) ? lowerWestToUpperEast->getIconHeight() : 0,
+                    (upperWestToLowerEast!=nullptr) ? upperWestToLowerEast->getIconHeight() : 0),
             qMax(
-            qMax( (upperWestToUpperEast!=NULL) ? upperWestToUpperEast->getIconHeight() : 0,
-                    (lowerWestToLowerEast!=NULL) ? lowerWestToLowerEast->getIconHeight() : 0),
-            qMax((unknown!=NULL) ? unknown->getIconHeight() : 0,
-                    (inconsistent!=NULL) ? inconsistent->getIconHeight() : 0))
+            qMax( (upperWestToUpperEast!=nullptr) ? upperWestToUpperEast->getIconHeight() : 0,
+                    (lowerWestToLowerEast!=nullptr) ? lowerWestToLowerEast->getIconHeight() : 0),
+            qMax((unknown!=nullptr) ? unknown->getIconHeight() : 0,
+                    (inconsistent!=nullptr) ? inconsistent->getIconHeight() : 0))
         );
 }
 //@Override
 /*public*/ int SlipTurnoutIcon::maxWidth() {
     return qMax(
-            qMax( (lowerWestToUpperEast!=NULL) ? lowerWestToUpperEast->getIconWidth() : 0,
-                    (upperWestToLowerEast!=NULL) ? upperWestToLowerEast->getIconWidth() : 0),
+            qMax( (lowerWestToUpperEast!=nullptr) ? lowerWestToUpperEast->getIconWidth() : 0,
+                    (upperWestToLowerEast!=nullptr) ? upperWestToLowerEast->getIconWidth() : 0),
             qMax(
-            qMax( (upperWestToUpperEast!=NULL) ? upperWestToUpperEast->getIconWidth() : 0,
-                    (lowerWestToLowerEast!=NULL) ? lowerWestToLowerEast->getIconWidth() : 0),
-            qMax((unknown!=NULL) ? unknown->getIconWidth() : 0,
-                    (inconsistent!=NULL) ? inconsistent->getIconWidth() : 0))
+            qMax( (upperWestToUpperEast!=nullptr) ? upperWestToUpperEast->getIconWidth() : 0,
+                    (lowerWestToLowerEast!=nullptr) ? lowerWestToLowerEast->getIconWidth() : 0),
+            qMax((unknown!=nullptr) ? unknown->getIconWidth() : 0,
+                    (inconsistent!=nullptr) ? inconsistent->getIconWidth() : 0))
         );
 }
 
@@ -412,7 +412,7 @@ int SlipTurnoutIcon::turnoutState() {
     //if either turnout is not entered then the state to report
     //back will be unknown
     int state=0x00;
-    if (namedTurnoutWest != NULL){
+    if (namedTurnoutWest != nullptr){
         if (((AbstractTurnout*)getTurnout(WEST))->getKnownState()==Turnout::UNKNOWN)
             return Turnout::UNKNOWN;
         if (((AbstractTurnout*)getTurnout(WEST))->getKnownState()==Turnout::INCONSISTENT)
@@ -421,7 +421,7 @@ int SlipTurnoutIcon::turnoutState() {
     }
     else return Turnout::UNKNOWN;
     //We add 1 to the value of the west turnout to help identify the states for both turnouts
-    if (namedTurnoutEast != NULL) {
+    if (namedTurnoutEast != nullptr) {
         if (((AbstractTurnout*)getTurnout(EAST))->getKnownState()==Turnout::UNKNOWN)
             return Turnout::UNKNOWN;
         if (((AbstractTurnout*)getTurnout(EAST))->getKnownState()==Turnout::INCONSISTENT)
@@ -434,13 +434,13 @@ int SlipTurnoutIcon::turnoutState() {
     else return Turnout::UNKNOWN;
     if ((turnoutType==SCISSOR) && (!singleSlipRoute)){
         //We simply need to check that the opposite turnout is set the same
-        if (namedTurnoutEastLower!=NULL){
+        if (namedTurnoutEastLower!=nullptr){
             if (((AbstractTurnout*)getTurnout(LOWEREAST))->getKnownState()==Turnout::UNKNOWN)
                 return Turnout::UNKNOWN;
             if (((AbstractTurnout*)getTurnout(LOWEREAST))->getKnownState()==Turnout::INCONSISTENT)
                 return Turnout::INCONSISTENT;
         } else return Turnout::UNKNOWN;
-        if (namedTurnoutWestLower!=NULL){
+        if (namedTurnoutWestLower!=nullptr){
             if (((AbstractTurnout*)getTurnout(LOWERWEST))->getKnownState()==Turnout::UNKNOWN)
                 return Turnout::UNKNOWN;
             if (((AbstractTurnout*)getTurnout(LOWERWEST))->getKnownState()==Turnout::INCONSISTENT)
@@ -489,14 +489,14 @@ int SlipTurnoutIcon::turnoutState() {
 
 /*public*/ QString SlipTurnoutIcon::getNameString() {
     QString name;
-    if (namedTurnoutWest == NULL) name = tr("Not Connected");
+    if (namedTurnoutWest == nullptr) name = tr("Not Connected");
     else name = namedTurnoutWest->getName();
-    if (namedTurnoutEast != NULL)
+    if (namedTurnoutEast != nullptr)
         name = name + " " + namedTurnoutEast->getName();
     if ((getTurnoutType()==SCISSOR) && (!getSingleSlipRoute())){
-        if (namedTurnoutWestLower != NULL)
+        if (namedTurnoutWestLower != nullptr)
             name = name + " " + namedTurnoutWestLower->getName();
-        if (namedTurnoutEastLower != NULL)
+        if (namedTurnoutEastLower != nullptr)
             name = name + " " + namedTurnoutEastLower->getName();
     }
     return name;
@@ -703,7 +703,7 @@ void SlipTurnoutIcon::displayState(int state) {
 
 /*protected*/ void SlipTurnoutIcon::edit()
 {
- if (_iconEditor==NULL)
+ if (_iconEditor==nullptr)
  {
   _iconEditor = new SlipIconAdder();
  }
@@ -766,7 +766,7 @@ STOWindowListener::STOWindowListener(SlipTurnoutIcon *parent)
 void STOWindowListener::windowClosing(QCloseEvent */*e*/)
 {
  delete parent->_iconEditor;
- parent->_iconEditor = NULL;
+ parent->_iconEditor = nullptr;
 }
 
 void SlipTurnoutIcon::updateTurnout()
@@ -809,8 +809,8 @@ void SlipTurnoutIcon::updateTurnout()
  setTurnout(_iconEditor->getTurnout("west"), WEST);
  setTurnout(_iconEditor->getTurnout("east"), EAST);
  _iconEditorFrame->dispose();
- _iconEditorFrame = NULL;
- _iconEditor = NULL;
+ _iconEditorFrame = nullptr;
+ _iconEditor = nullptr;
  invalidate();
 }
 
@@ -822,7 +822,7 @@ void SlipTurnoutIcon::updateTurnout()
 {
  if (!_editor->getFlag(Editor::OPTION_CONTROLS, isControlling())) return;
  if (e->modifiers()&Qt::MetaModifier || e->modifiers()&Qt::AltModifier ) return;
- if ((namedTurnoutWest==NULL) || (namedTurnoutEast==NULL))
+ if ((namedTurnoutWest==nullptr) || (namedTurnoutEast==nullptr))
  {
   log->error("No turnout connection, can't process click");
   return;
@@ -1049,12 +1049,12 @@ break;
  {
   // add tristate option if turnout has feedback
   bool returnstate=false;
-  if (namedTurnoutWest != NULL && ((AbstractTurnout*)getTurnout(WEST))->getFeedbackMode() != Turnout::DIRECT)
+  if (namedTurnoutWest != nullptr && ((AbstractTurnout*)getTurnout(WEST))->getFeedbackMode() != Turnout::DIRECT)
   {
    addTristateEntry(popup);
    returnstate = true;
   }
-  if (namedTurnoutEast != NULL && ((AbstractTurnout*)getTurnout(EAST))->getFeedbackMode() != Turnout::DIRECT)
+  if (namedTurnoutEast != nullptr && ((AbstractTurnout*)getTurnout(EAST))->getFeedbackMode() != Turnout::DIRECT)
   {
    addTristateEntry(popup);
    returnstate = true;
@@ -1176,37 +1176,37 @@ void SlipTurnoutIcon::on_slipTurnoutTextEdit()
 }
 
 /*public*/ void SlipTurnoutIcon::dispose() {
-    if (namedTurnoutWest != NULL) {
+    if (namedTurnoutWest != nullptr) {
      //getTurnout(WEST).removePropertyChangeListener(this);
      AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
      disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
-    namedTurnoutWest = NULL;
-    if (namedTurnoutEast != NULL) {
+    namedTurnoutWest = nullptr;
+    if (namedTurnoutEast != nullptr) {
        // getTurnout(EAST).removePropertyChangeListener(this);
         AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
         disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     }
-    namedTurnoutEast = NULL;
-    if (namedTurnoutWestLower != NULL) {
+    namedTurnoutEast = nullptr;
+    if (namedTurnoutWestLower != nullptr) {
         //getTurnout(WEST).removePropertyChangeListener(this);
         AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
         disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
-    namedTurnoutWestLower = NULL;
-    if (namedTurnoutEastLower != NULL) {
+    namedTurnoutWestLower = nullptr;
+    if (namedTurnoutEastLower != nullptr) {
         //getTurnout(EAST).removePropertyChangeListener(this);
         AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
         disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
-    namedTurnoutEastLower = NULL;
-    lowerWestToUpperEast = NULL;
-    upperWestToLowerEast = NULL;
-    lowerWestToLowerEast = NULL;
-    upperWestToUpperEast = NULL;
-    inconsistent = NULL;
-    unknown = NULL;
+    namedTurnoutEastLower = nullptr;
+    lowerWestToUpperEast = nullptr;
+    upperWestToLowerEast = nullptr;
+    lowerWestToLowerEast = nullptr;
+    upperWestToUpperEast = nullptr;
+    inconsistent = nullptr;
+    unknown = nullptr;
 
     PositionableLabel::dispose();
 }

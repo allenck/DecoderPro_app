@@ -278,7 +278,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
    this->profileLocation->setText(chooser->getSelectedFile()->getCanonicalPath());
    this->profileNameActionPerformed();
   } catch (IOException ex) {
-      Logger::error("Error selecting profile location", ex.getMessage());
+      Logger::error("Error selecting profile location", ex);
   }
  }
 }
@@ -334,12 +334,12 @@ ProfileManager::defaultManager()->addProfile(p);
  catch (IOException /*IllegalArgumentException*/ ex)
  {
 //        JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error Creating Profile", JOptionPane.ERROR_MESSAGE);
-  log->error("Error saving profile", ex.getMessage());
+  log->error("Error saving profile", ex);
  }
  catch (IllegalArgumentException ex)
  {
   JOptionPane::showMessageDialog(this, ex.getLocalizedMessage(), "Error Creating Profile", JOptionPane::ERROR_MESSAGE);
-  log->error("Error saving profile", ex.getMessage());
+  log->error("Error saving profile", ex);
  }
 }
 

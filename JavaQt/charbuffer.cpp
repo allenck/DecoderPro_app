@@ -125,7 +125,7 @@ CharBuffer::CharBuffer(int mark, int pos, int lim, int cap, QObject* parent) : B
  */
 /*public*/ /*static*/ CharBuffer* CharBuffer::allocate(int capacity) {
     if (capacity < 0)
-        throw new IllegalArgumentException();
+        throw  IllegalArgumentException();
 //    return new HeapCharBuffer(capacity, capacity);
     return NULL;
 }
@@ -562,7 +562,7 @@ abstract char getUnchecked(int index);   // package-private
  */
 /*public*/ CharBuffer* CharBuffer::put(CharBuffer* src) {
     if (src == this)
-        throw new IllegalArgumentException();
+        throw  IllegalArgumentException();
     if (isReadOnly())
         throw  ReadOnlyBufferException();
     int n = src->remaining();

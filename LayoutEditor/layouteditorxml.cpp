@@ -598,7 +598,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
  // Set editor's option flags, load content after
  // this so that individual item flags are set as saved
-// TODO:    panel->initView();
+ panel->initView();
 
  // load the contents
  QDomNodeList items = element.childNodes();
@@ -609,36 +609,40 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   QString adapterName = item.attribute("class");
   if (log->isDebugEnabled())
   {
-   QString id = "<nullptr>";
-   try {
-       id = item.attribute("ident");
-   } catch (Exception e) {
-   }
-   log->debug("Load " + id + " for [" + panel->getName() + "] via " + adapterName);
-  }
-//  try
-//  {
-  XmlAdapter* adapter;// = (XmlAdapter*) Class.forName(adapterName).newInstance();
-  QString className = adapterName.mid(adapterName.lastIndexOf(".") +1);
-  int typeId = QMetaType::type(className.toLocal8Bit());
-  if(typeId > 0)
-  {
-#if QT_VERSION < 0x050000
-
-   adapter = (XmlAdapter*) QMetaType::construct(typeId);
-#else
-   adapter = (XmlAdapter*) QMetaType::create(typeId);
-#endif
-   // and do it
-   adapter->load(item, panel);
-   if (!panel->loadOK())
+   QString id = "<null>";
+   try
    {
-    result = false;
+    id = item.attribute("name");
+    log->debug("Load " + id + " for [" + panel->getName() + "] via " + adapterName);
+   }
+   catch (Exception e) {
    }
   }
-  else
+  try
   {
-   log->error("Exception while loading " + item.tagName() + ":" + tr(" xml adapter not found %1").arg(adapterName));
+   XmlAdapter* adapter;// = (XmlAdapter*) Class.forName(adapterName).newInstance();
+   QString className = adapterName.mid(adapterName.lastIndexOf(".") +1);
+   int typeId = QMetaType::type(className.toLocal8Bit());
+   if(typeId > 0)
+   {
+ #if QT_VERSION < 0x050000
+
+    adapter = (XmlAdapter*) QMetaType::construct(typeId);
+ #else
+    adapter = (XmlAdapter*) QMetaType::create(typeId);
+ #endif
+    adapter->setProperty("JavaClassName", adapterName);
+    // and do it
+    adapter->load(item, panel);
+    if (!panel->loadOK())
+    {
+     result = false;
+    }
+   }
+  }
+  catch (ClassNotFoundException e)
+  {
+   log->error("Exception while loading " + item.tagName() + ":" + e.getMessage());
    result = false;
          //e.printStackTrace();
   }

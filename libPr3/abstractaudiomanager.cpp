@@ -109,10 +109,10 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
           + " needed either " + getSystemPrefix() + typeLetter() + Audio::BUFFER // NOI18N
           + " or " + getSystemPrefix() + typeLetter() + Audio::SOURCE // NOI18N
           + " or " + getSystemPrefix() + typeLetter() + Audio::LISTENER);        // NOI18N
-//  throw new AudioException("Invalid system name for Audio: " + systemName
-//          + " needed either " + getSystemPrefix() + typeLetter() + Audio::BUFFER
-//          + " or " + getSystemPrefix() + typeLetter() + Audio::SOURCE
-//          + " or " + getSystemPrefix() + typeLetter() + Audio::LISTENER);
+  throw  AudioException("Invalid system name for Audio: " + systemName
+          + " needed either " + getSystemPrefix() + typeLetter() + Audio::BUFFER
+          + " or " + getSystemPrefix() + typeLetter() + Audio::SOURCE
+          + " or " + getSystemPrefix() + typeLetter() + Audio::LISTENER);
  }
 
  // return existing if there is one

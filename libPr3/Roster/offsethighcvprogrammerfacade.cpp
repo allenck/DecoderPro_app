@@ -140,7 +140,7 @@
                 state = ProgState::PROGRAMMING;
                 prog->readCV(_cv % modulo, (ProgListener*)this);
             } catch (ProgrammerException e) {
-                log->error("Exception doing final read", e.getMessage());
+                log->error("Exception doing final read", e);
             }
             break;
         case FINISHWRITE:
@@ -148,7 +148,7 @@
                 state = ProgState::PROGRAMMING;
                 prog->writeCV(""+(_cv % modulo), _val, (ProgListener*)this);
             } catch (ProgrammerException e) {
-                log->error("Exception doing final write", e.getMessage());
+                log->error("Exception doing final write", e);
             }
             break;
         default:

@@ -5,6 +5,11 @@
 #include "actionlistener.h"
 #include "abstracttableaction.h"
 #include "libtables_global.h"
+#include "propertychangeevent.h"
+#include <QVariant>
+#include<QPushButton>
+#include "propertychangelistener.h"
+#include <QSpinBox>
 
 class QPushButton;
 class ProxySensorManager;
@@ -47,17 +52,20 @@ public slots:
 private:
     JmriJFrame* addFrame;// = NULL;
 
-    JTextField* sysName;// = new JTextField(40);
-    JTextField* userName;// = new JTextField(40);
+    JTextField* hardwareAddressTextField;// = new JTextField(40);
+    JTextField* userNameField;// = new JTextField(40);
     QComboBox* prefixBox;// = new JComboBox();
     JTextField* numberToAdd;// = new JTextField(5);
-    QCheckBox* range;// = new JCheckBox("Add a range");
+    QSpinBox* numberToAddSpinner;// = new JSpinner(rangeSpinner);
+    QCheckBox* rangeBox;// = new JCheckBox("Add a range");
     QLabel* sysNameLabel;// = new JLabel("Hardware Address");
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
     QString userNameError;// = this.getClass().getName()+".DuplicateUserName";
+    QLabel* statusBarLabel;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
+
     UserPreferencesManager* p;
-    void handleCreateException(QString sysName);
+    void handleCreateException(QString hardwareAddressTextField);
     BeanTableFrame* f;
     //BeanTableDataModel* m;
     QCheckBox* showDebounceBox;// = new JCheckBox(tr("SensorDebounceCheckBox"));
@@ -65,7 +73,6 @@ private:
     QString connectionChoice;// = "";
     QPushButton* addButton;
     QString  addEntryToolTip;
-    /*CheckedTextField*/ JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
     QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
 
 private slots:
@@ -84,7 +91,6 @@ protected:
 
 protected slots:
     /*protected*/ void addPressed();
-    void okPressed();
     void cancelPressed(ActionEvent* e = 0);
 
 
@@ -95,6 +101,7 @@ friend class DebounceActionListener;
 friend class SensorWidget;
 friend class SensorTableWidget;
 friend class DefaultStateActionListener;
+friend class ColorChangeListener;
 };
 
 class STOkButtonActionListener : public ActionListener
@@ -149,5 +156,26 @@ public:
 public slots:
  void actionPerformed(ActionEvent *e = 0);
 };
+class ColorChangeListener : PropertyChangeListener
+{
+    Q_OBJECT
+    SensorTableAction* sensorTableAction;
+public:
+    ColorChangeListener(SensorTableAction* sensorTableAction)
+    {
+        this->sensorTableAction = sensorTableAction;
+    }
+public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent) {
+        QString property = propertyChangeEvent->getPropertyName();
+        if ("background" == (property)) {
+            if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
+                sensorTableAction->addButton->setEnabled(true);
+            } else { // invalid
+                sensorTableAction->addButton->setEnabled(false);
+            }
+        }
+    }
 
+};
 #endif // SENSORTABLEACTION_H

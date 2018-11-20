@@ -42,7 +42,7 @@
 /*static*/ int ListedTableFrame::lastdivider = 0;
 
 /*public*/ ListedTableFrame::ListedTableFrame(QWidget* parent)
- : BeanTableFrame(tr("Listed Table"), parent)
+ : BeanTableFrame(tr("Listed Table Access"), parent)
 {
 //this(tr("TitleListedTable"));
  common();
@@ -180,6 +180,7 @@ void ListedTableFrame::common()
         }
     });
 #endif
+    connect(cardHolder, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int, int)));
  //    cardHolder->setOneTouchExpandable(true);
  getContentPane()->layout()->addWidget(cardHolder);
  adjustSize();
@@ -189,7 +190,7 @@ void ListedTableFrame::common()
 void ListedTableFrame::splitterMoved(int pos, int /*index*/)
 {
  lastdivider = pos;
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setProperty("jmri.jmrit.beantable.ListedTableFrame","dividerLocation", pos);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setProperty(getClassName(),"dividerLocation", pos);
 }
 
 /*public*/ QString ListedTableFrame::getClassName()
@@ -362,12 +363,25 @@ void ListedTableFrame::On_viewMenu_triggered(QObject* obj)
  }
  //cardHolder.setDividerLocation(loc);
  //cardHolder->moveSplitter(loc,0);
+ QList<int> sizes = cardHolder->sizes();
+ if(sizes.count()==2)
+ {
+  int totalSize = sizes.at(0) +sizes.at(1);
+  sizes.replace(0,loc);
+  sizes.replace(1, totalSize-loc);
+  cardHolder->setSizes(sizes);
+ }
  lastdivider = loc;
+ static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))
+                 ->setProperty(getClassName(), "dividerLocation", loc);
 }
 
 /*public*/ int ListedTableFrame::getDividerLocation()
 {
- return lastdivider;
+ QList<int> sizes = cardHolder->sizes();
+ lastdivider = sizes.at(0);
+ return static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))
+                                ->getProperty(getClassName(), "dividerLocation").toInt();
 }
 
 //static class TabbedTableItem {

@@ -58,6 +58,7 @@ public:
  /*public*/ QUrl findURL(/*@Nonnull*/ QString path, FileUtil::Location locations);
  /*public*/ QUrl findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString locateFile(QDir start, QString fileName);
+ /*public*/ QString pathFromPortablePath(/*@Nonnull*/ QString path);
 
 private:
  /*private*/ static /*final*/ QString homePath;// = System.getProperty("user.home") + File.separator; // NOI18N
@@ -79,7 +80,6 @@ private:
  Logger* log;
  // default instance
  /*volatile*/ /*private*/ static FileUtilSupport* defaultInstance;// = null;
- /*private*/ QString pathFromPortablePath(/*@Nonnull*/ QString path);
  /*private*/ void scanDir(QDir start, QStringList *paths, int depth);
 
 

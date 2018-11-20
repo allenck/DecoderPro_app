@@ -139,16 +139,16 @@ AbstractPreferences::AbstractPreferences()
 
     if (parent==NULL) {
         if (name != (""))
-            throw new IllegalArgumentException("Root name '"+name+
+            throw  IllegalArgumentException("Root name '"+name+
                                                "' must be \"\"");
         this->_absolutePath = "/";
         root = this;
     } else {
         if (name.indexOf('/') != -1)
-            throw new IllegalArgumentException("Name '" + name +
+            throw  IllegalArgumentException("Name '" + name +
                                              "' contains '/'");
         if (name == (""))
-          throw new IllegalArgumentException("Illegal name: empty string");
+          throw  IllegalArgumentException("Illegal name: empty string");
 
         root = parent->root;
         _absolutePath = (parent==root ? ("/" + name)
@@ -182,9 +182,9 @@ AbstractPreferences::AbstractPreferences()
  if (key.isNull() || value.isNull())
      throw new NullPointerException();
  if (key.length() > MAX_KEY_LENGTH)
-     throw new IllegalArgumentException("Key too long: "+key);
+     throw  IllegalArgumentException("Key too long: "+key);
  if (value.length() > MAX_VALUE_LENGTH)
-     throw new IllegalArgumentException("Value too long: "+value);
+     throw  IllegalArgumentException("Value too long: "+value);
 
 //    /*synchronized*/(lock) {
  if (removed)

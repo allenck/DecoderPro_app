@@ -84,6 +84,26 @@ public:
     /*public*/ virtual SignalAppearanceMap* getAppearanceMap() {return NULL;}
 
     /**
+     * Set the specific mast type for this mast.
+     * This is the
+     * type that appears in the SystemName and filename, i.e. "SL-3-high"
+     * for the
+     * <a href="http://jmri.org/xml/signals/AAR-1946/appearance-SL-3-high.xml">AAR-1946/appearance-SL-3-high.xml</a>
+     * definition.
+     */
+    /*public*/ virtual void setMastType(/*@Nonnull*/ QString type) {}
+
+    /**
+     * Get the specific mast type for this mast.
+     * This is the
+     * type that appears in the SystemName and filename, i.e. "SL-3-high"
+     * for the
+     * <a href="http://jmri.org/xml/signals/AAR-1946/appearance-SL-3-high.xml">AAR-1946/appearance-SL-3-high.xml</a>
+     * definition.
+     */
+    /*public*/ virtual QString getMastType() {return "";}
+
+    /**
      * Lit is a bound parameter. It controls
      * whether the signal head's lamps are lit or left dark.
      */

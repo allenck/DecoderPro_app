@@ -16,7 +16,7 @@ DEFINES += APPSLIB_LIBRARY
 win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
  ENABLE_SCRIPTING = "Y"
 }
-unix:exists(/home/allen/Projects/PythonQt3.0/lib/libPythonQt.so) {
+unix:exists(/home/allen/Projects/PythonQt-master/lib/libPythonQt_d.so) {
  ENABLE_SCRIPTING = "Y"
 }
 #CONFIG += scripts
@@ -434,7 +434,9 @@ SOURCES += appslib.cpp \
     operations/yardmasterbytrackframe.cpp \
     operations/yardmasterbytrackaction.cpp \
     jynstrumentpopupmenu.cpp \
-    preferencesbean.cpp
+    preferencesbean.cpp \
+    editconnectionpreferencesdialog.cpp \
+    editconnectionpreferences.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -784,7 +786,6 @@ HEADERS += appslib.h\
     jtablepersistencemanager.h \
     instancemanager.h \
     defaultinstanceinitializer.h \
-    instanceinitializer.h \
     mysortfilterproxymodel.h \
     xmlfilevalidateaction.h \
     logixloadaction.h \
@@ -804,7 +805,6 @@ HEADERS += appslib.h\
     startupactionfactory.h \
     systemconnectionaction.h \
     metadata.h \
-    instancemanagerautodefault.h \
     startuppausefactory.h \
     startuppausemodel.h \
     abstractstartupmodel.h \
@@ -841,7 +841,9 @@ HEADERS += appslib.h\
     operations/yardmasterbytrackframe.h \
     operations/yardmasterbytrackaction.h \
     jynstrumentpopupmenu.h \
-    preferencesbean.h
+    preferencesbean.h \
+    editconnectionpreferencesdialog.h \
+    editconnectionpreferences.h
 
 unix:!symbian {
     maemo5 {
@@ -886,8 +888,7 @@ else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
 INCLUDEPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 
-OTHER_FILES += \
-    libappslib.so.1.0.0
+OTHER_FILES +=
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/release/ -lLocoIO
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/debug/ -lLocoIO

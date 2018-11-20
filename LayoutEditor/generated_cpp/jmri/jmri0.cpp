@@ -1001,10 +1001,10 @@ void PythonQtWrapper_AbstractManager::on_propertyChange(AbstractManager* theWrap
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_on_propertyChange(e));
 }
 
-void PythonQtWrapper_AbstractManager::registerSelf(AbstractManager* theWrappedObject)
-{
-  ( theWrappedObject->registerSelf());
-}
+//void PythonQtWrapper_AbstractManager::registerSelf(AbstractManager* theWrappedObject)
+//{
+//  ( theWrappedObject->registerSelf());
+//}
 
 void PythonQtWrapper_AbstractManager::removePropertyChangeListener(AbstractManager* theWrappedObject, PropertyChangeListener*  l)
 {
@@ -17436,7 +17436,7 @@ bool  PythonQtWrapper_Editor::showHidden(Editor* theWrappedObject)
 
 bool  PythonQtWrapper_Editor::showTooltip(Editor* theWrappedObject)
 {
-  return ( theWrappedObject->showTooltip());
+  return ( theWrappedObject->showToolTip());
 }
 
 void PythonQtWrapper_Editor::targetWindowClosing(Editor* theWrappedObject, bool  save)
@@ -17631,7 +17631,7 @@ QObject*  PythonQtWrapper_InstanceManager::static_InstanceManager_getDefault(QSt
   return (InstanceManager::getDefault(type));
 }
 
-QList<QObject* >*  PythonQtWrapper_InstanceManager::static_InstanceManager_getList(QString  type)
+QList<QObject* >  PythonQtWrapper_InstanceManager::static_InstanceManager_getList(QString  type)
 {
   return (InstanceManager::getList(type));
 }

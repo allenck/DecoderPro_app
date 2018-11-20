@@ -1,6 +1,7 @@
 #include "defaultsignalsystem.h"
 #include "exceptions.h"
 #include "signalspeedmap.h"
+#include "instancemanager.h"
 
 //DefaultSignalSystem::DefaultSignalSystem(QObject *parent) :
 //    SignalSystem(parent)
@@ -133,7 +134,7 @@
                     aspectSpeed = speed.toFloat();
                 }catch (NumberFormatException nx) {
                     try{
-                        aspectSpeed = SignalSpeedMap::getMap()->getSpeed(speed);
+                        aspectSpeed = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
                     } catch (Exception ex){
                         //Considered Normal if the speed does not appear in the map
                     }
@@ -147,7 +148,7 @@
     }
     if(maximumLineSpeed ==0.0f){
         //no speeds configured so will use the default.
-        maximumLineSpeed = SignalSpeedMap::getMap()->getSpeed("Maximum");
+        maximumLineSpeed = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed("Maximum");
     }
     return maximumLineSpeed;
 }

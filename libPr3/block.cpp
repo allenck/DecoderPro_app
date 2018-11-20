@@ -496,7 +496,7 @@ QString Block::getStateString()
    Q_UNUSED(f);
    if(!bOk)
    {
-    f = SignalSpeedMap::getMap()->getSpeed(s);
+    f = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(s);
     if(f == 0.0)
      log->error(tr("Block %1 has invalid speed '%2'").arg(getDisplayName()).arg(s));
    }

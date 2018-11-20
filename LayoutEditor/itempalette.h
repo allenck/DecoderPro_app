@@ -26,16 +26,17 @@ public:
     static QMap<QString, QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*>* _indicatorTOMaps;
     /*public*/ static void storeIcons();
     static CatalogTreeNode* store3levelMap(QString type, QHash<QString, QHash<QString, NamedIcon*>*>* familyMap);
-    static /*public*/ void loadIcons();
-    static bool loadSavedIcons();
+    static /*public*/ void loadIcons(Editor* ed);
+    static bool loadSavedIcons(Editor* ed);
     static QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*
-                                        loadIndicatorFamilyMap(CatalogTreeNode* node);
-    static QHash<QString, QHash<QString, NamedIcon*>*>* loadFamilyMap(CatalogTreeNode* node);
-    static void loadDefaultIcons();
-    static QHash<QString, QHash<QString, NamedIcon*>*>* loadDefaultFamilyMap(QDomNodeList families);
+                                        loadIndicatorFamilyMap(CatalogTreeNode* node, Editor* ed);
+    static QHash<QString, QHash<QString, NamedIcon*>*>* loadFamilyMap(CatalogTreeNode* node, Editor* ed);
+    static void loadDefaultIcons(Editor* ed);
+    static QHash<QString, QHash<QString, NamedIcon*>*>* loadDefaultFamilyMap(QDomNodeList families, Editor* ed);
     static QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*
-    loadDefaultIndicatorTOMap(QDomNodeList typeList);
+    loadDefaultIndicatorTOMap(QDomNodeList typeList, Editor*ed);
     static void buildTabPane(ItemPalette* palette, Editor* editor);
+    static void loadFamilies(QString typeName, QDomNodeList families, Editor* ed);
 
     /*public*/ ItemPalette(QString _title, Editor* editor, QWidget* parent = 0);
     /*public*/ void stateChanged(ChangeEvent* e);
@@ -48,7 +49,8 @@ signals:
 public slots:
     void tabPaneChanged(int);
  private:
-  Logger* log;
+    /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ItemPalette");
+
   void init(QString title, Editor* ed);
   /*private*/ void makeMenus(Editor* editor);
   void changeEvent(QEvent *);

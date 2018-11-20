@@ -27,6 +27,8 @@ namespace Operations
  /*public*/ EngineTypes::EngineTypes(QObject *parent) :
 RollingStockAttribute(parent) {
   log = new Logger("EngineTypes");
+  setProperty("InstanceManagerAutoDefault", "yes");
+
  }
 
  /**

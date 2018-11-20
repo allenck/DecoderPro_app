@@ -47,7 +47,7 @@ ControlPanelServlet::ControlPanelServlet()
    panel.setAttribute("panelheight", (editor->getTargetPanel()->height()));
    panel.setAttribute("panelwidth", (editor->getTargetPanel()->width()));
 
-   panel.setAttribute("showtooltips", (editor->showTooltip()) ? "yes" : "no");
+   panel.setAttribute("showtooltips", (editor->showToolTip()) ? "yes" : "no");
    panel.setAttribute("controlling", (editor->allControlling()) ? "yes" : "no");
    if (editor->getBackgroundColor() != QColor())
    {
@@ -95,7 +95,7 @@ ControlPanelServlet::ControlPanelServlet()
      }
      catch (Exception ex)
      {
-         log->error("Error storing panel element: " + ex.getMessage(), ex.getLocalizedMessage());
+         log->error("Error storing panel element: " + ex.getMessage(), ex);
      }
     }
    }

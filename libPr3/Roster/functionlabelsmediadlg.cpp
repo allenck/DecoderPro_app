@@ -90,6 +90,6 @@ void FunctionLabelsMediaDlg::on_btnSave_clicked()
 // doc.save(stream,2);
 
  // NOTE: this doesn't save the loco file.
- Roster::writeRosterFile();
+ Roster::writeRoster();
 }
 

@@ -93,7 +93,7 @@
  RosterEntry* re = roster->entryFromTitle(selEntry);
  QString selGroup = Roster::getRosterGroupProperty( selections->currentText());
  re->putAttribute(selGroup, "yes");
- Roster::writeRosterFile();
+ Roster::writeRoster();
  re->updateFile();
  actionPerformed(event);
 }

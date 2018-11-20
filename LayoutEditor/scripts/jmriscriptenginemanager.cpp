@@ -423,7 +423,7 @@
           properties->setProperty("python.path", path + (FileUtil::getScriptsPath() + (File::pathSeparator) + (FileUtil::getAbsoluteFilename("program:jython"))));
           execJython = /*Boolean.valueOf*/(properties->getProperty("jython.exec", /*Boolean.toString(false)*/ "false").toLower()== "true");
       } catch (IOException ex) {
-          log->error("Found, but unable to read python.properties: {}", ex.getMessage());
+          log->error("Found, but unable to read python.properties: {}", ex);
           properties = NULL;
       }
 #if 0

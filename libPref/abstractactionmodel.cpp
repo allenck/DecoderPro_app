@@ -152,13 +152,13 @@
  } catch (ClassNotFoundException ex) {
      log->error(tr("Could not find specified class: %1").arg(className));
  } catch (IllegalAccessException ex) {
-     log->error(tr("Unexpected access exception for class: %1").arg(className), ex.getMessage());
+     log->error(tr("Unexpected access exception for class: %1").arg(className), ex);
      throw JmriException(ex.getMessage());
  } catch (InstantiationException ex) {
-     log->error(tr("Could not instantiate specified class: %1").arg(className), ex.getMessage());
+     log->error(tr("Could not instantiate specified class: %1").arg(className), ex);
      throw JmriException(ex.getMessage());
  } catch (Exception ex) {
-     log->error(tr("Error while performing startup action for class: %1").arg(className), ex.getMessage());
+     log->error(tr("Error while performing startup action for class: %1").arg(className), ex);
      throw JmriException(ex.getMessage());
  }
 }

@@ -9,6 +9,7 @@
 #include "xml.h"
 #include "stringutil.h"
 #include <QComboBox>
+#include "instancemanager.h"
 
 //EngineManager::EngineManager(QObject *parent) :
 //  RollingStockManager(parent)
@@ -31,32 +32,19 @@ namespace Operations
   RollingStockManager(parent)
 {
 _consistHashTable = QHash<QString, Consist*>();   	// stores Consists by number
-log = new Logger("EngineManger");
+log = new Logger("EngineManger");        setProperty("InstanceManagerAutoDefault", "true");
+setProperty("InstanceManagerAutoInitialize", "true");
+
  }
 
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ EngineManager* EngineManager::_instance = nullptr;
+// /*private*/ /*static*/ EngineManager* EngineManager::_instance = nullptr;
 
  /*public*/ /*static*/ /*synchronized*/ EngineManager* EngineManager::instance()
-{
- Logger* log = new Logger("EngineManger");
-
-     if (_instance == nullptr) {
-         if (log->isDebugEnabled()) {
-             log->debug("EngineManager creating instance");
-         }
-         // create and load
-         _instance = new EngineManager();
-         OperationsSetupXml::instance();					// load setup
-         // create manager to load engines and their attributes
-         EngineManagerXml::instance();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("EngineManager returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
+ {
+  return static_cast<EngineManager*>(InstanceManager::getDefault("EngineManager"));
  }
 
  /**
@@ -388,5 +376,10 @@ log = new Logger("EngineManger");
         EngineManagerXml::instance()->setDirty(true);
         RollingStockManager::firePropertyChange(p, old, n);
     }
+ //@Override
+ /*public*/ void EngineManager::initialize() {
+  static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
+  static_cast<EngineManagerXml*>(InstanceManager::getDefault("EngineManagerXml")); // load routes
+ }
 
 }

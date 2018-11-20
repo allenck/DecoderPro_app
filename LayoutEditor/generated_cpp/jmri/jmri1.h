@@ -334,7 +334,7 @@ inline void promoted_setViewCoordinates(bool  arg__1) { Positionable::setViewCoo
 inline void promoted_setVisible(bool  b) { Positionable::setVisible(b); }
 inline void promoted_showHidden() { Positionable::showHidden(); }
 inline bool  promoted_showPopUp(QMenu*  arg__1) { return Positionable::showPopUp(arg__1); }
-inline bool  promoted_showTooltip() { return Positionable::showTooltip(); }
+inline bool  promoted_showTooltip() { return Positionable::showToolTip(); }
 inline bool  promoted_storeItem() { return Positionable::storeItem(); }
 inline bool  promoted_updateScene() { return Positionable::updateScene(); }
 inline void promoted_updateSize() { Positionable::updateSize(); }

@@ -123,7 +123,7 @@
    re->deleteAttribute(group);
    re->updateFile();
   }
-  Roster::writeRosterFile();
+  Roster::writeRoster();
 
   // backup the file & delete it
   if (rosterGroup == NULL)

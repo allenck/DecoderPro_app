@@ -221,7 +221,7 @@ LocoIOPanel::LocoIOPanel(QWidget *parent) :
  try {
      data->setUnitAddress(0x51, 0x00);
  } catch (NullPointerException e) {
-     log->error("Caught NullPointerException", e.getMessage());
+     log->error("Caught NullPointerException", e);
  }
 
 }
@@ -257,7 +257,7 @@ void LocoIOPanel::on_al4UnitAddress()
  }
  catch (NullPointerException e)
  {
-  log->error("Caught NullPointerException", e.getMessage());
+  log->error("Caught NullPointerException", e);
  }
 }
 

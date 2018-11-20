@@ -38,6 +38,7 @@ namespace Operations
   /*public*/ void dispose();
   /*public*/ int getConsistMaxNameLength();
   /*public*/ QList<Engine*> getAvailableTrainList(Train* train);
+  Q_INVOKABLE  /*public*/ void initialize();
 
 
  signals:

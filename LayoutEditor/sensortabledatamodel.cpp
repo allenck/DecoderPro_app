@@ -29,7 +29,7 @@ SensorTableDataModel::SensorTableDataModel(QObject *parent) :
 //    }
 void SensorTableDataModel::common()
 {
- senManager = (AbstractSensorManager*)InstanceManager::sensorManagerInstance();
+ senManager = (SensorManager*)InstanceManager::sensorManagerInstance();
  setObjectName("SensorTableDataModel");
  log = new Logger("SensorDataModel");
  deleteMapper = new QSignalMapper();
@@ -46,7 +46,7 @@ void SensorTableDataModel::common()
  AbstractSensorManager* mgr = nullptr;
  if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
  {
-  proxy = static_cast<ProxySensorManager*>(senManager);
+  proxy = (ProxySensorManager*)(senManager);
   proxy->removePropertyChangeListener((PropertyChangeListener*) this);
   disconnect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -137,7 +137,7 @@ void SensorTableDataModel::common()
 /*protected*/ Manager* SensorTableDataModel::getManager()
 {
  if (senManager==nullptr)
-  senManager=(ProxySensorManager*)InstanceManager::sensorManagerInstance();
+  senManager= InstanceManager::sensorManagerInstance();
  return senManager;
 }
 /*protected*/ NamedBean* SensorTableDataModel::getBySystemName(QString name) const
@@ -202,9 +202,9 @@ void SensorTableDataModel::common()
   QString name = sysNameList.at(row);
   Sensor* s;
   if(qobject_cast<ProxySensorManager*>(senManager)!= nullptr)
-   s= static_cast<ProxySensorManager*>(senManager)->getBySystemName(name);
+   s= ((ProxySensorManager*)senManager)->getBySystemName(name);
   else
-   s = static_cast<ProxySensorManager*>(senManager)->getBySystemName(name);
+   s = ((ProxySensorManager*)senManager)->getBySystemName(name);
   if(s->useDefaultTimerSettings())
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
   else
@@ -282,9 +282,9 @@ void SensorTableDataModel::common()
  QString name = sysNameList.at(row);
  Sensor* s;
  if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
-  s = static_cast<ProxySensorManager*>(senManager)->getBySystemName(name);
+  s = ((ProxySensorManager*)senManager)->getBySystemName(name);
  else
-  s = static_cast<ProxySensorManager*>(senManager)->getBySystemName(name);
+  s = ((ProxySensorManager*)senManager)->getBySystemName(name);
 
  if (s == nullptr)
  {

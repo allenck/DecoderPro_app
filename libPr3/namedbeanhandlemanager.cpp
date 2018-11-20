@@ -9,6 +9,8 @@ NamedBeanHandleManager::NamedBeanHandleManager(QObject *parent) :
     namedBeanHandles = new QList<QObject*>();
     pcs = new PropertyChangeSupport(this);
     registerSelf();
+    setProperty("InstanceManagerAutoDefault", "yes");
+
 }
 /**
  * Instance for controlling the issuing of NamedBeanHandles.

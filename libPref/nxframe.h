@@ -6,6 +6,7 @@
 #include "sleeperthread.h"
 #include "libpref_global.h"
 
+class WarrantPreferences;
 class QVBoxLayout;
 class QRadioButton;
 class QCheckBox;
@@ -26,6 +27,7 @@ public:
  /*public*/ void init();
  /*public*/ void updatePanel(int interp);
  /*public*/ void selectedRoute(QList<BlockOrder*> orders);
+ /*public*/ static float INCRE_RATE;// = 1.08f;  // multiplier to increase throttle increments
 
 signals:
 
@@ -33,13 +35,22 @@ public slots:
  void on_runAuto();
  void on_runManual();
  /*public*/ void propertyChange(PropertyChangeEvent* e);
+ void onMaxSpeed();
+ void onSpeedUnits();
+ void onOriginUnits();
+ void onDestUnits();
 
 private:
  /*private*/ float _scale;// = 87.1f;
 
  JTextField* _trainName;// = new JTextField(6);
  JTextField* _maxSpeedBox;// = new JTextField(6);
+ /*private*/ QPushButton* _speedUnits;
  JTextField* _minSpeedBox;// = new JTextField(6);
+ /*private*/ /*final*/ JTextField* _originDist;// = new JTextField(6);
+ /*private*/ QPushButton* _originUnits;
+ /*private*/ /*final*/ JTextField* _destDist;// = new JTextField(6);
+ /*private*/ QPushButton* _destUnits;
  QRadioButton* _forward;// = new JRadioButton();
  QRadioButton* _reverse;// = new JRadioButton();
  QCheckBox*  _stageEStop;// = new JCheckBox();
@@ -49,7 +60,11 @@ private:
  JTextField *_rampInterval;// = new JTextField(6);
  QRadioButton* _runAuto;// = new JRadioButton(Bundle.getMessage("RunAuto"));
  QRadioButton* _runManual;// = new JRadioButton(Bundle.getMessage("RunManual"));
- QWidget*      _autoRunPanel;
+ /*private*/ QWidget* _routePanel;// = new JPanel();
+ /*private*/ QWidget* _autoRunPanel;
+ /*private*/ /*final*/ QWidget*  __trainHolder;// = new JPanel();
+ /*private*/ QWidget*  _switchPanel;
+ /*private*/ QWidget*  _trainPanel;
  QWidget*      _manualPanel;
 //  static boolean _addTracker = false;
  /*private*/ bool _haltStart;// = false;
@@ -57,22 +72,39 @@ private:
  /*private*/ float _minSpeed;// = 0.05f;
  /*private*/ float _intervalTime;// = 0.0f;     // milliseconds
  /*private*/ float _throttleIncr;// = 0.0f;
+ /*private*/ float _maxThrottle;// = 0.75f;
+ /*private*/ float _startDist;   // mm start distance to portal
+ /*private*/ float _stopDist;    // mm stop distance from portal
+ /*private*/ float _totalLen;    // route length of warrant
+
+ /*private*/ /*final*/ JTextField* _maxThrottleBox;// = new JTextField(6);
+ /*private*/ /*final*/ QCheckBox* _noRamp;// = new JCheckBox();
+ /*private*/ /*final*/ QCheckBox* _shareRouteBox;// = new JCheckBox();
+
  /*private*/ static NXFrame* _instance;
  QVBoxLayout* controlPanelLayout;
  /*private*/ void makeMenus();
- /*private*/ QWidget* makeAutoRunPanel(int interpretation);
+ /*private*/ QWidget* makeAutoRunPanel();
  /*private*/ QWidget* makeSwitchPanel();
  /*private*/ void enableAuto(bool enable);
  /*private*/ bool makeAndRunWarrant();
  /*private*/ void runManual();
  /*private*/ QString getBoxData();
+ /*private*/ float getPathLength(BlockOrder* bo);
  /*private*/ float getTotalLength(float defaultBlockLen);
+ /*private*/ QString getTotalLength();
+ /*private*/ float getUpRampLength();
+ /*private*/ float getDownRampLength();
  /*private*/ float getRampLength(float totalLen, RosterSpeedProfile* speedProfile);
  /*private*/ QString makeCommands(Warrant* w);
+ /*private*/ QPushButton* getButton(QString text);
+ /*private*/ WarrantPreferences* updatePreferences();
 
 protected:
  /*protected*/ QWidget* _controlPanel;
  /*protected*/ void closeFrame();
+ /*protected*/ void setThrottleIncrement(float increment);
+
  friend class NXWindowListener;
  friend class WarrantPreferences;
  friend class WarrantTableFrame;

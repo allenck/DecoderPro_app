@@ -3044,7 +3044,7 @@ if (_wrapper && (((PyObject*)_wrapper)->ob_refcnt > 0)) {
     PyErr_Clear();
   }
 }
-  return Positionable::showTooltip();
+  return Positionable::showToolTip();
 }
 bool  PythonQtShell_Positionable::storeItem()
 {

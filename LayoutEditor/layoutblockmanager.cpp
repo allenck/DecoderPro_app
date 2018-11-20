@@ -11,12 +11,14 @@
 #include "virtualsignalmast.h"
 #include "blockvaluefile.h"
 
-LayoutBlockManager*LayoutBlockManager::_instance = NULL;
+//LayoutBlockManager* LayoutBlockManager::_instance = NULL;
 
 LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     AbstractManager(parent)
 {
  setObjectName("LayoutBlockManager");
+ setProperty("JavaClassName", "jmri.jmrit.display.layoutEditor.LayoutBlockManager");
+ setProperty("InstanceManagerAutoDefault", "yes");
  blkNum = 1;
  _enableAdvancedRouting = false;
  initialized = false;
@@ -169,10 +171,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     return (LayoutBlock*)_tuser->value(key);
 }
 /*static*/ /*public*/ LayoutBlockManager* LayoutBlockManager::instance() {
-    if (_instance == NULL) {
-        _instance = new LayoutBlockManager();
-    }
-    return (_instance);
+    return static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
 }
 /**
  * Method to find a LayoutBlock with a specified Sensor assigned as its

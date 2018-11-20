@@ -34,6 +34,7 @@ namespace Operations {
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ Route* copyRoute(Route* route, QString routeName, bool invert);
+  Q_INVOKABLE /*public*/ void initialize();
 
  signals:
  

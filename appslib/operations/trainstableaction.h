@@ -9,6 +9,7 @@ namespace Operations
  class TrainsTableFrame;
  class APPSLIBSHARED_EXPORT TrainsTableAction : public AbstractAction
  {
+  Q_OBJECT
  public:
   TrainsTableAction(QObject* parent);
   /*public*/ TrainsTableAction(QString s, QObject* parent);

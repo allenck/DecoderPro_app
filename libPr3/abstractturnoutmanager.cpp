@@ -3,15 +3,18 @@
 #include "exceptions.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
+#include "userpreferencesmanager.h"
+#include "signalspeedmap.h"
 
 AbstractTurnoutManager::AbstractTurnoutManager(QObject *parent) :
     TurnoutManager(parent)
 {
  defaultClosedSpeed = "Normal";
  defaultThrownSpeed = "Restricted";
- registerSelf(); //??
+ //registerSelf(); //??
  TurnoutOperationManager::getInstance();		// force creation of an instance
- // TODO: ((SensorManager*)InstanceManager::sensorManagerInstance())->addVetoableChangeListener(this);
+ // ((SensorManager*)InstanceManager::sensorManagerInstance())->addVetoableChangeListener(this);
+ // TODO:: connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
 }
 /**
  * Abstract partial implementation of a TurnoutManager.
@@ -89,7 +92,7 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  {
      log->error(tr("Invalid system name for turnout: %1 needed %2%3").arg(
              systemName).arg(getSystemPrefix()).arg(typeLetter()));
-     throw new IllegalArgumentException("Invalid system name for turnout: " + systemName
+     throw IllegalArgumentException("Invalid system name for turnout: " + systemName
              + " needed " + getSystemPrefix() + typeLetter());
  }
 
@@ -116,8 +119,7 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  //if (s == nullptr) throw new IllegalArgumentException(QString("Unable to create turnout from %1").arg(systemName));
  if(s == nullptr)
  {
-  log->error(QString("Unable to create turnout from %1 %2").arg(systemName).arg(userName));
-  return nullptr;
+  throw IllegalArgumentException(tr("Unable to create turnout from %1 %2").arg(systemName).arg(userName));
  }
 
  emit newTurnoutCreated(this, s);
@@ -224,57 +226,61 @@ QString AbstractTurnoutManager::createSystemName(QString curAddress, QString pre
     Q_UNUSED(i);
     } catch (NumberFormatException *ex)
     {
-     log->error("Hardware Address passed should be a number", "ex");
-     //throw new JmriException("Hardware Address passed should be a number");
+     log->warn(tr("Hardware Address passed should be a number, was %1").arg(curAddress));
+     throw  JmriException("Hardware Address passed should be a number");
     }
     return prefix+typeLetter()+curAddress;
 }
 
 QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString prefix)// throws JmriException
 {
-    //If the hardware address past does not already exist then this can
-    //be considered the next valid address.
-    QString tmpSName = "";
-    try {
-        tmpSName = createSystemName(curAddress, prefix);
-    } catch (JmriException *ex) {
-//        InstanceManager::getDefault("UserPreferencesManager")->
-//            showInfoMessage(QString("Error","Unable to convert %1 to a valid Hardware Address %2").arg(curAddress).arg(ex);
-        return nullptr;
-    }
+ //If the hardware address past does not already exist then this can
+ //be considered the next valid address.
+ QString tmpSName = "";
+ try {
+     tmpSName = createSystemName(curAddress, prefix);
+ }
+ catch (JmriException *ex)
+ {
+  static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage(tr("Error"),tr("Unable to convert %1 to a valid Hardware Address %2").arg(curAddress),nullptr, "", true, false);
+  return nullptr;
+ }
 
-    Turnout* t = getBySystemName(tmpSName);
-    if(t==nullptr){
-        return curAddress;
-    }
+ Turnout* t = getBySystemName(tmpSName);
+ if(t==nullptr)
+ {
+  return curAddress;
+ }
 
-    // This bit deals with handling the curAddress, and how to get the next address.
-    int iName = 0;
-    try {
-        iName = curAddress.toInt();
-    } catch (NumberFormatException *ex) {
-//        log->error("Unable to convert %1 Hardware Address to a number").arg(curAddress);
-//        InstanceManager.getDefault(jmri.UserPreferencesManager.class).
-//                            showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);
-        return nullptr;
-    }
-    //The Number of Output Bits of the previous turnout will help determine the next
-    //valid address.
-    iName = iName + t->getNumberOutputBits();
-    //Check to determine if the systemName is in use, return nullptr if it is,
-    //otherwise return the next valid address.
-    t = getBySystemName(prefix+typeLetter()+iName);
-    if(t!=nullptr){
-        for(int x = 1; x<10; x++){
-            iName = iName + t->getNumberOutputBits();
-            t = getBySystemName(prefix+typeLetter()+iName);
-            if(t==nullptr)
-                return QString("%1").arg(iName);
-        }
-        return nullptr;
-    } else {
-        return QString("%1").arg(iName);
-    }
+ // This bit deals with handling the curAddress, and how to get the next address.
+ int iName = 0;
+ bool bok;
+     iName = curAddress.toInt(&bok);
+ if(!bok)
+ {
+  log->error(tr("Unable to convert %1 Hardware Address to a number").arg(curAddress));
+  static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage(tr("Error"),tr("Unable to convert ") + curAddress + tr(" to a valid Hardware Address"),nullptr, "", true, false);
+  return nullptr;
+ }
+ //The Number of Output Bits of the previous turnout will help determine the next
+ //valid address.
+ iName = iName + t->getNumberOutputBits();
+ //Check to determine if the systemName is in use, return nullptr if it is,
+ //otherwise return the next valid address.
+ t = getBySystemName(prefix+typeLetter()+iName);
+ if(t!=nullptr)
+ {
+  for(int x = 1; x<10; x++)
+  {
+   iName = iName + t->getNumberOutputBits();
+   t = getBySystemName(prefix+typeLetter()+iName);
+   if(t==nullptr)
+       return QString("%1").arg(iName);
+  }
+  return nullptr;
+ } else {
+     return QString("%1").arg(iName);
+ }
 }
 
 
@@ -294,24 +300,26 @@ void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed) //throws JmriE
  }
  else
  {
-  try
-  {
+  bool bok;
    //Float.parseFloat(speed);
-   speed.toFloat();
-  }
-  catch (NumberFormatException *nx)
+   speed.toFloat(&bok);
+  if(!bok)
   {
-//            try{
-//                jmri.implementation.SignalSpeedMap.getMap().getSpeed(speed);
-//            } catch (Exception ex){
-//                throw new JmriException("Value of requested turnout default closed speed is not valid");
-//            }
+   try
+   {
+    static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
+   }
+   catch (Exception ex)
+   {
+    throw JmriException("Value of requested turnout default closed speed is not valid");
+   }
   }
  }
  QString oldSpeed = defaultClosedSpeed;
  defaultClosedSpeed = speed;
  firePropertyChange("DefaultTurnoutClosedSpeedChange", oldSpeed, speed);
 }
+
 void AbstractTurnoutManager::setDefaultThrownSpeed(QString speed)// throws JmriException
 {
 //    if(speed==nullptr)
@@ -327,18 +335,16 @@ void AbstractTurnoutManager::setDefaultThrownSpeed(QString speed)// throws JmriE
  }
  else
  {
-  try
-  {
+  bool bok;
    //Float.parseFloat(speed);
-   speed.toFloat();
-  }
-  catch (NumberFormatException *nx)
+   speed.toFloat(&bok);
+  if(!bok)
   {
-//            try{
-//                jmri.implementation.SignalSpeedMap.getMap().getSpeed(speed);
-//            } catch (Exception ex){
-//                throw new JmriException("Value of requested turnout default thrown speed is not valid");
-//            }
+   try{
+       static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
+   } catch (Exception ex){
+       throw  JmriException("Value of requested turnout default thrown speed is not valid");
+   }
   }
  }
  QString oldSpeed = defaultThrownSpeed;

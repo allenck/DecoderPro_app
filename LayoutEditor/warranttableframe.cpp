@@ -362,7 +362,7 @@ void WarrantTableFrame::on_nxButtonClicked()
     try {
         f->initComponents();
         f->concatenate(startW, endW);
-    } catch (Exception ex ) { log->error("error making CreateWarrantFrame", ex.getMessage());}
+    } catch (Exception ex ) { log->error("error making CreateWarrantFrame", ex);}
     f->setVisible(true);
     if (_concatDialog!=NULL) {
         _concatDialog->close();

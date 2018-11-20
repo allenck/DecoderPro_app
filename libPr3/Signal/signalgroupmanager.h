@@ -37,7 +37,7 @@ public:
     SignalGroupManager(QObject* parent = 0) : AbstractManager(parent) {}
     ~SignalGroupManager() {}
     SignalGroupManager(const SignalGroupManager&) : AbstractManager() {}
-    /*public*/ virtual SignalGroup* getSignalGroup(QString /*name*/) {return NULL;}
+    /*public*/ virtual SignalGroup* getSignalGroup(QString /*name*/) {return nullptr;}
 
     /*public*/ virtual SignalGroup* getBySystemName(QString name) {return (SignalGroup* ) AbstractManager::getBeanBySystemName(name);}
 
@@ -46,7 +46,7 @@ public:
 
     ///*public*/ SignalGroup provideSignalGroup(String systemName, String userName) = 0;
 
-    /*public*/ virtual SignalGroup* newSignalGroup(QString /*sys*/) {return NULL;}
+    /*public*/ virtual SignalGroup* newSignalGroup(QString /*sys*/) {return nullptr;}
 
 
     /*public*/ virtual SignalGroup* provideSignalGroup(QString /*systemName*/, QString /*userName*/) {return NULL;}

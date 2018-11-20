@@ -863,7 +863,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  * Uses writeFile(QString), a protected method that can write to
  * a specific location.
  */
-/*public*/ /*static*/ void Roster::writeRosterFile()
+/*public*/ /*static*/ void Roster::writeRoster()
 {
  Logger log = Logger("Roster");
  Roster::instance()->makeBackupFile(defaultRosterFilename());

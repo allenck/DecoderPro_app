@@ -13,6 +13,7 @@ namespace Operations
  {
   Q_OBJECT
  public:
+  explicit OperationsManager(QObject *parent = 0);
   /*public*/ ShutDownTask* getDefaultShutDownTask();
   /*public*/ static OperationsManager* getInstance();
   /*public*/ QString getPath();
@@ -20,16 +21,14 @@ namespace Operations
   /*public*/ File* getFile(QString name);
   /*public*/ void setShutDownTask(ShutDownTask* shutDownTask);
   /*public*/ QString getOperationsFolderName();
+  Q_INVOKABLE   void initialize();
 
  signals:
 
  public slots:
  private:
-  explicit OperationsManager(QObject *parent = 0);
   /*private*/ ShutDownTask* shutDownTask;// = null;
-  static /*private*/ OperationsManager* instance;// = null;
-  /*private*/ OperationsManager(QString operationsFolderName, QObject *parent = 0);
-  void common();
+//  static /*private*/ OperationsManager* instance;// = null;
   Logger* log;
 
   class MyQuietShutdownTask : public QuietShutDownTask
@@ -41,7 +40,6 @@ namespace Operations
 
  protected:
   /*protected*/ /*final*/ QString operationsFolderName;
-  /*protected*/ static void setInstance(QString operationsFolderName);
 
  };
 }

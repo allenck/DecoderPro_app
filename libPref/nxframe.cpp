@@ -20,6 +20,11 @@
 #include "opath.h"
 #include "oblock.h"
 #include "calibrater.h"
+#include "box.h"
+#include "warrantpreferences.h"
+#include "speedutil.h"
+#include "instancemanager.h"
+#include "joptionpane.h"
 
 //NXFrame::NXFrame(QWidget *parent) :
 //  WarrantRoute(parent)
@@ -51,8 +56,9 @@
 
 //    /*private*/ static final long serialVersionUID = -8971792418011219112L;
 
+/*public*/ /*static*/ float NXFrame::INCRE_RATE = 1.08f;  // multiplier to increase throttle increments
 
-/*private*/ /*static*/ NXFrame* NXFrame::_instance = NULL;
+/*private*/ /*static*/ NXFrame* NXFrame::_instance = nullptr;
 
 /*static*/ /*public*/ NXFrame* NXFrame::getInstance()
 {
@@ -79,7 +85,9 @@
  _trainName = new JTextField(6);
  _maxSpeedBox = new JTextField(6);
  _minSpeedBox = new JTextField(6);
- _forward = new   QRadioButton();
+ _originDist = new JTextField(6);
+ _destDist = new JTextField(6);
+ _destUnits;_forward = new   QRadioButton();
  _reverse = new   QRadioButton();
  _stageEStop = new   QCheckBox();
  _haltStartBox = new   QCheckBox();
@@ -94,86 +102,62 @@
  _intervalTime = 0.0f;     // milliseconds
  _throttleIncr = 0.0f;
  _controlPanel = NULL;
+ _maxThrottle = 0.75f;
+ _maxThrottleBox = new JTextField(6);
+ _noRamp = new QCheckBox();
+ _shareRouteBox = new QCheckBox();
+ _routePanel = new QWidget();
+  __trainHolder = new QWidget();
+
 }
-#if 1
+
+/*private*/ WarrantPreferences* NXFrame::updatePreferences()
+{
+    WarrantPreferences* preferences = WarrantPreferences::getDefault();
+    setScale(preferences->getLayoutScale());
+    setTimeInterval(preferences->getTimeIncrement());
+    setThrottleIncrement(preferences->getThrottleIncrement());
+    if (log->isDebugEnabled()) log->debug(tr("Ramp parameters: deltaTime=%1 deltaThrottle=%2").arg(_intervalTime).arg(_throttleIncr));
+    return preferences;
+}
+
 /*public*/ void NXFrame::init()
 {
-    makeMenus();
-    QWidget* mainPanel = new QWidget();
-    QVBoxLayout* mainPanelLayout = new QVBoxLayout(mainPanel);
-    //mainPanel->setLayout(new BorderLayout(10, 10));
-    _controlPanel = new QWidget();
-    controlPanelLayout = new QVBoxLayout(_controlPanel);
-    //_controlPanel.setLayout(new BoxLayout(_controlPanel, BoxLayout.Y_AXIS));
-//    controlPanelLayout->addWidget(Box.createVerticalGlue());
-    controlPanelLayout->addWidget(makeBlockPanels());
-    controlPanelLayout->addWidget(searchDepthPanel(false));
+ if (log->isDebugEnabled()) log->debug("newInstance");
+         updatePreferences();
+ makeMenus();
 
-    _autoRunPanel = makeAutoRunPanel(SignalSpeedMap::getMap()->getInterpretation());
-//    _maxSpeedBox.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            getBoxData();
-//        }
-//    });
-    connect(_maxSpeedBox, SIGNAL(leaveField()), this, SLOT(getBoxData()));
-    _manualPanel = new QWidget();
-    QHBoxLayout* manualPanelLayout = new QHBoxLayout(_manualPanel);
-    //_manualPanel.setLayout(new BoxLayout(_manualPanel, BoxLayout.X_AXIS));
-    manualPanelLayout->addStrut(2 * STRUT_SIZE);
-    manualPanelLayout->addWidget(makeTextBoxPanel(false, _trainName, "TrainName", "noTrainName"));
-    manualPanelLayout->addStrut(2 * STRUT_SIZE);
+ _routePanel = new QWidget();
+ //_routePanel.setLayout(new BoxLayout(_routePanel, BoxLayout.PAGE_AXIS));
+ QVBoxLayout* _routePanelLayout = new QVBoxLayout(_routePanel);
+ _routePanelLayout->addWidget(Box::createVerticalGlue());
+ _routePanelLayout->addWidget(makeBlockPanels(true));
 
-    controlPanelLayout->addWidget(_autoRunPanel);
-    controlPanelLayout->addWidget(_manualPanel);
-    _manualPanel->setVisible(false);
-    controlPanelLayout->addStrut(STRUT_SIZE);
+ _forward->setChecked(true);
+ _stageEStop->setChecked(false);
+ _haltStartBox->setChecked(false);
+ _runAuto->setChecked(true);
 
-    _forward->setChecked(true);
-    _stageEStop->setChecked(false);
-    _haltStartBox->setChecked(_haltStart);
-    _calibrateBox->setChecked(false);
-    _rampInterval->setText(QString::number(_intervalTime / 1000));
-    QWidget* p = new QWidget();
-    FlowLayout* pLayout = new FlowLayout(p);
-    //Layout.add(Box.createGlue());
-    QPushButton* button = new QPushButton(  tr("Run NX Warrant"));
-//    button.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            makeAndRunWarrant();
-//        }
-//    });
-    connect(button, SIGNAL(clicked()), this, SLOT(makeAndRunWarrant()));
-    pLayout->addWidget(button);
-    //pLayout->addStrut(2*STRUT_SIZE));
-    button = new QPushButton(  tr("Cancel"));
-//    button.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            closeFrame();
-//        }
-//    });
-    connect(button, SIGNAL(clicked()), this, SLOT(closeFrame()));
-    pLayout->addWidget(button);
-    //p.add(Box.createGlue());
-    controlPanelLayout->addWidget(p);
+ _autoRunPanel = makeAutoRunPanel();
+ _switchPanel = makeSwitchPanel();
 
-    controlPanelLayout->addStrut(STRUT_SIZE);
-    controlPanelLayout->addWidget(makeSwitchPanel());
+ QWidget*  mainPanel = new QWidget();
+ //mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+ QVBoxLayout* mainPanelLayout = new QVBoxLayout(mainPanel);
+ mainPanelLayout->addWidget(_routePanel);
+ getContentPane()->layout()->addWidget(mainPanel);
 
-    mainPanelLayout->addWidget(_controlPanel);
-    //getContentPane().add(mainPanel);
-    QWidget* centralWidget = new QWidget;
-    setCentralWidget(centralWidget);
-    QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);
-    centralWidgetLayout->addWidget(mainPanel);
-//    addWindowListener(new java.awt.event.WindowAdapter() {
-//        @Override
-//        /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//            closeFrame();
-//        }
-//    });
-    addWindowListener(new NXWindowListener(this));
-    setAlwaysOnTop(true);
-    adjustSize();
+#if 0 // TODO:
+ addWindowListener(new WindowAdapter() {
+     @Override
+     public void windowClosing(java.awt.event.WindowEvent e) {
+         closeFrame();
+     }
+ });
+#endif
+ setAlwaysOnTop(true);
+ setVisible(true);
+ pack();
 }
 
 /*public*/ void NXFrame::updatePanel(int interp) {
@@ -187,10 +171,9 @@
         i++;
     }
     controlPanelLayout->removeWidget(_autoRunPanel);
-    _autoRunPanel = makeAutoRunPanel(interp);
+    _autoRunPanel = makeAutoRunPanel();
     controlPanelLayout->insertWidget(i, _autoRunPanel);
 }
-#endif
 
 /*private*/ QWidget* NXFrame::makeSwitchPanel() {
     QButtonGroup* bg = new QButtonGroup();
@@ -220,6 +203,19 @@
     return pp;
 }
 
+/*private*/ QPushButton* NXFrame::getButton(QString text)
+{
+ QPushButton* button = new QPushButton();
+ QFont f = QFont("sans_serif",12);
+ button->setFont(f); //new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+ button->setText(text);
+ button->setChecked(true);
+ int bWidth =  JTextField(2).getPreferredSize().width();
+ int bHeight =  JTextField(2).getPreferredSize().height();
+ button->setMaximumSize(QSize(bWidth, bHeight));
+ return button;
+}
+
 void NXFrame::on_runAuto()
 {
  enableAuto(true);
@@ -230,50 +226,117 @@ void NXFrame::on_runManual()
  enableAuto(false);
 }
 
-/*private*/ QWidget* NXFrame::makeAutoRunPanel(int interpretation) {
-    QWidget* p1 = new QWidget();
-    //p1.setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));
-    QVBoxLayout* p1Layout = new QVBoxLayout(p1);
-    float maxSpeed;
-    float throttleIncr;
-    QString maxSpeedLabel;
-    QString throttleIncrLabel;
-    float factor;
-    switch ( interpretation) {
-        case SignalSpeedMap::PERCENT_NORMAL:
-        case SignalSpeedMap::PERCENT_THROTTLE:
-            maxSpeed = _maxSpeed;
-            maxSpeedLabel = "MaxSpeed";
-            throttleIncr = _throttleIncr;
-            throttleIncrLabel = tr("Ramp Step throttle increment");
-            break;
-        case SignalSpeedMap::SPEED_MPH:
-            factor =  SignalSpeedMap::getMap()->getDefaultThrottleFactor();
-            maxSpeed = qRound(_maxSpeed*factor*_scale*2.2369363f*1000)/1000;
-            maxSpeedLabel = "MaxMph";
-            throttleIncr = qRound(_throttleIncr*factor*_scale*2.2369363f*1000)/1000;
-            throttleIncrLabel = tr("Ramp Speed increment Mph");
-            break;
-        case SignalSpeedMap::SPEED_KMPH:
-            factor =  SignalSpeedMap::getMap()->getDefaultThrottleFactor();
-            maxSpeed = qRound(_maxSpeed*factor*_scale*3.6f*1000)/1000;
-            maxSpeedLabel = "MaxKMph";
-            throttleIncr = qRound(_throttleIncr*factor*_scale*3.6f*1000)/1000;
-            throttleIncrLabel = tr("Ramp Speed increment KMph");
-            break;
-        default:
-            maxSpeed = _maxSpeed;
-            maxSpeedLabel =tr("Max Throttle Setting");
-            throttleIncr = _throttleIncr;
-            throttleIncrLabel = tr("Ramp Step throttle increment");
-    }
-    p1Layout->addWidget(WarrantFrame::makeTextBoxPanel(false, _maxSpeedBox, maxSpeedLabel,   NULL));
-    p1Layout->addWidget(makeTextBoxPanel(false, _rampInterval, "rampInterval",   NULL));
-    p1Layout->addWidget(makeTextBoxPanel(false, _minSpeedBox, throttleIncrLabel, "ToolTipRampIncrement"));
-    _maxSpeedBox->setText(QString::number(maxSpeed));
-    _minSpeedBox->setText(QString::number(throttleIncr));
+/*private*/ QWidget* NXFrame::makeAutoRunPanel()
+{
+ QWidget* p1 = new QWidget();
+ //p1.setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));
+ QVBoxLayout* p1Layout = new QVBoxLayout(p1);
+ _speedUnits = getButton("Mph");
+// _maxThrottleBox.addActionListener((ActionEvent evt)-> {
+//     maxThrottleEventAction();
+// });
+ connect(_maxThrottleBox, SIGNAL(leaveField()), this, SLOT(maxThrottleEventAction()));
 
-    QWidget* p2 = makeTrainPanel();
+// _maxSpeedBox.addActionListener((ActionEvent evt)-> {
+//     boolean isForward = _forward.isSelected();
+//     RosterSpeedProfile profile = _speedUtil.getSpeedProfile();
+//     if (profile != null) {
+//         NumberFormat formatter = NumberFormat.getNumberInstance();
+//         float num = 0;
+//         try {
+//             num =  formatter.parse(_maxSpeedBox.getText()).floatValue();
+//         } catch (java.text.ParseException pe) {
+//             _maxSpeedBox.setText("");
+//             return;
+//         }
+//         if (_speedUnits.getText().equals("Mph")) {
+//             num = num * 447.04f / _scale;
+//         } else {
+//             num = num * 277.7778f / _scale;
+//         }
+//         float throttle = profile.getThrottleSetting(num, isForward);
+//         if (throttle > 0.0f) {
+//             _maxThrottleBox.setText(formatter.format(throttle));
+//             return;
+//         }
+//     }
+//     _maxSpeedBox.setText(Bundle.getMessage("NoData"));
+// });
+ connect(_maxSpeedBox, SIGNAL(leaveField()), this, SLOT(onMaxSpeed()));
+
+// _speedUnits.addActionListener((ActionEvent evt)-> {
+//     NumberFormat formatter = NumberFormat.getNumberInstance();
+//     float num = 0;
+//     try {
+//         num =  formatter.parse(_maxSpeedBox.getText()).floatValue();
+//     } catch (java.text.ParseException pe) {
+//         return;
+//     }
+//     if (_speedUnits.getText().equals("Mph")) {
+//         _speedUnits.setText("Kmph");
+//         num = Math.round(num * 160.9344f);
+//         _maxSpeedBox.setText(formatter.format(num / 100));
+//     } else {
+//         num = Math.round(num * 62.137119f);
+//         _speedUnits.setText("Mph");
+//         _maxSpeedBox.setText(formatter.format(num / 100));
+//     }
+// });
+ connect(_speedUnits, SIGNAL(clicked(bool)), this, SLOT(onSpeedUnits()));
+
+ p1Layout->addWidget(makeTextBoxPanel(false, _maxThrottleBox, tr("Max Throttle Setting"), ""));
+ p1Layout->addWidget(makeTextAndButtonPanel(_maxSpeedBox, _speedUnits, tr("Scale Speed"), tr("If speed Profile data exists for the selected direction, this will be the maximum scale speed.")));
+
+ _originUnits = getButton("In");
+ _destUnits = getButton("In");
+
+// _originUnits.addActionListener((ActionEvent evt)-> {
+//     NumberFormat formatter = NumberFormat.getNumberInstance();
+//     float num = 0;
+//     try {
+//         num =  formatter.parse(_originDist.getText()).floatValue();
+//     } catch (java.text.ParseException pe) {
+//         // errors reported later
+//     }
+//     if (_originUnits.getText().equals("In")) {
+//         _originUnits.setText("Cm");
+//         num = Math.round(num * 254f);
+//         _originDist.setText(formatter.format(num / 100));
+//     } else {
+//         num = Math.round(num * 100f / 2.54f);
+//         _originUnits.setText("In");
+//         _originDist.setText(formatter.format(num / 100));
+//     }
+// });
+ connect(_originUnits, SIGNAL(clicked(bool)), this, SLOT(onOriginUnits()));
+
+ //_destUnits.setActionCommand("In");
+ _destUnits->setText(tr("In"));
+// _destUnits.addActionListener((ActionEvent evt)-> {
+//     NumberFormat formatter = NumberFormat.getNumberInstance();
+//     float num = 0;
+//     try {
+//         num =  formatter.parse(_destDist.getText()).floatValue();
+//     } catch (java.text.ParseException pe) {
+//         // errors reported later
+//     }
+//     if (_destUnits.getText().equals("In")) {
+//         _destUnits.setText("Cm");
+//         _destDist.setText(formatter.format(num * 2.54f));
+//     } else {
+//         _destUnits.setText("In");
+//         _destDist.setText(formatter.format(num / 2.54f));
+//     }
+// });
+connect(_destUnits, SIGNAL(clicked(bool)), this, SLOT(onDestUnits()));
+
+ p1Layout->addWidget(makeTextAndButtonPanel(_originDist, _originUnits, "startDistance", "ToolTipStartDistance"));
+ p1Layout->addWidget(makeTextAndButtonPanel(_destDist, _destUnits, "stopDistance", tr("Distance from where the train enters the entry portal of the destination block to its stopping point.")));
+
+ //__trainHolder.setLayout(new BoxLayout(__trainHolder, BoxLayout.PAGE_AXIS));
+   QVBoxLayout* __trainHolderLayout = new QVBoxLayout(__trainHolder);
+ _trainPanel = makeTrainIdPanel(nullptr);
+ __trainHolderLayout->addWidget(_trainPanel);
 
     QWidget* autoRunPanel = new QWidget();
     //autoRunPanel.setLayout(new BoxLayout(autoRunPanel, BoxLayout.Y_AXIS));
@@ -283,8 +346,8 @@ void NXFrame::on_runManual()
     QHBoxLayout* ppLayout = new QHBoxLayout(pp);
     ppLayout->addStrut(STRUT_SIZE);
     ppLayout->addWidget(p1);
-    ppLayout->addStrut(STRUT_SIZE);
-    ppLayout->addWidget(p2);
+    ppLayout->addWidget(Box::createHorizontalGlue());
+    ppLayout->addWidget(__trainHolder);
     ppLayout->addStrut(STRUT_SIZE);
     autoRunPanelLayout->addWidget(pp);
 
@@ -298,8 +361,15 @@ void NXFrame::on_runManual()
      //p1Layout->addWidget(Box.createHorizontalGlue());
      p1Layout->addWidget(makeTextBoxPanel(false, _forward, "forward",   NULL));
     p1Layout->addWidget(makeTextBoxPanel(false, _reverse, "reverse",   NULL));
-//     p1Layout->addWidget(Box.createHorizontalGlue());
-     pp = new QWidget();
+    p1Layout->addWidget(Box::createHorizontalGlue());
+
+    QWidget* p2 = new QWidget();
+    //p2.setLayout(new BoxLayout(p2, BoxLayout.LINE_AXIS));
+    QHBoxLayout* p2Layout = new QHBoxLayout(p2);
+    p2Layout->addWidget(Box::createHorizontalGlue());
+    p2Layout->addWidget(makeTextBoxPanel(_noRamp, tr("Don't Ramp Speed Changes"), "Warrant makes immediate speed changes when entering the approach block"));
+
+    pp = new QWidget();
      //pp.setLayout(new BoxLayout(pp, BoxLayout.X_AXIS));
      QHBoxLayout* ppLayout = new QHBoxLayout(pp);
      ppLayout->addStrut(STRUT_SIZE);
@@ -320,6 +390,93 @@ void NXFrame::on_runManual()
     pppLayout->addStrut(STRUT_SIZE);
     autoRunPanelLayout->addWidget(ppp);
     return autoRunPanel;
+}
+
+void NXFrame::onMaxSpeed()
+{
+ bool isForward = _forward->isChecked();
+ RosterSpeedProfile* profile = _speedUtil->getSpeedProfile();
+ if (profile != nullptr) {
+     //NumberFormat formatter = NumberFormat.getNumberInstance();
+     float num = 0;
+     try {
+         num =  _maxSpeedBox->text().toFloat();
+     } catch (ParseException pe) {
+         _maxSpeedBox->setText("");
+         return;
+     }
+     if (_speedUnits->text()==("Mph")) {
+         num = num * 447.04f / _scale;
+     } else {
+         num = num * 277.7778f / _scale;
+     }
+     float throttle = profile->getThrottleSetting(num, isForward);
+     if (throttle > 0.0f) {
+         _maxThrottleBox->setText(QString::number(throttle, 'g', 2));
+         return;
+     }
+ }
+ _maxSpeedBox->setText(tr("No data"));
+}
+
+void NXFrame::onSpeedUnits()
+{
+ //NumberFormat formatter = NumberFormat.getNumberInstance();
+ float num = 0;
+ try {
+     num =  _maxSpeedBox->text().toFloat();
+ } catch (ParseException pe) {
+     return;
+ }
+ if (_speedUnits->text() == ("Mph")) {
+     _speedUnits->setText("Kmph");
+     num = qRound(num * 160.9344f);
+     _maxSpeedBox->setText(QString::number(num / 100,'g',2));
+ } else {
+     num = qRound(num * 62.137119f);
+     _speedUnits->setText("Mph");
+     _maxSpeedBox->setText(QString::number(num / 100, 'g',2));
+ }
+
+}
+
+void NXFrame::onOriginUnits()
+{
+ //NumberFormat formatter = NumberFormat.getNumberInstance();
+ float num = 0;
+ try {
+     num =  _originDist->text().toFloat();
+ } catch (ParseException pe) {
+     // errors reported later
+ }
+ if (_originUnits->text() == ("In")) {
+     _originUnits->setText("Cm");
+     num = qRound(num * 254.0);
+     _originDist->setText(QString::number(num / 100, 'g', 2));
+ } else {
+     num = qRound(num * 100.0 / 2.54);
+     _originUnits->setText("In");
+     _originDist->setText(QString::number(num / 100, 'g',2));
+ }
+
+}
+
+void NXFrame::onDestUnits()
+{
+ //NumberFormat formatter = NumberFormat.getNumberInstance();
+ float num = 0;
+ try {
+     num =  _destDist->text().toFloat();
+ } catch (ParseException pe) {
+     // errors reported later
+ }
+ if (_destUnits->text()==("In")) {
+     _destUnits->setText("Cm");
+     _destDist->setText(QString::number(num * 2.54,'g', 2));
+ } else {
+     _destUnits->setText("In");
+     _destDist->setText(QString::number(num / 2.54,'g',2));
+ }
 }
 
 /*private*/ void NXFrame::makeMenus()
@@ -524,6 +681,15 @@ void NXFrame::on_runManual()
     return _haltStart;
 }
 
+/**
+ * for the convenience of testing
+ * @param increment the throttle increment
+ */
+/*protected*/ void NXFrame::setThrottleIncrement(float increment) {
+    this->_throttleIncr = increment;
+}
+
+
 /*public*/ void NXFrame::setScale(float s) {
     _scale = s;
 }
@@ -550,16 +716,16 @@ void NXFrame::on_runManual()
  }
  QString speedErr;
  float factor;
- switch ( SignalSpeedMap::getMap()->getInterpretation())
+ switch ( static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getInterpretation())
  {
   case SignalSpeedMap::SPEED_MPH:
-       factor =  SignalSpeedMap::getMap()->getDefaultThrottleFactor();
+       factor =  static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getDefaultThrottleFactor();
       _maxSpeed = maxSpeed/(factor*_scale*2.2369363f);
       _minSpeed = minSpeed/(factor*_scale*2.2369363f);
       speedErr =   tr("Miles per hour");
       break;
   case SignalSpeedMap::SPEED_KMPH:
-      factor =  SignalSpeedMap::getMap()->getDefaultThrottleFactor();
+      factor =  static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getDefaultThrottleFactor();
       _maxSpeed = maxSpeed/(factor*_scale*3.6f);
       _minSpeed = minSpeed/(factor*_scale*3.6f);
       speedErr =   tr("Kilometers per hour");
@@ -623,11 +789,154 @@ void NXFrame::on_runManual()
  if (log->isDebugEnabled()) log->debug("Route length= "+QString::number(totalLen));
  return totalLen;
 }
+
+/*private*/ float NXFrame::getPathLength(BlockOrder* bo) {
+    float len = bo->getPath()->getLengthMm();
+    if (len <= 0) {
+        QString sLen = JOptionPane::showInputDialog(this,
+                tr("Path %1 in block %2 has length zero.\n Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName())
+                + tr("\nPlease enter a length in millimeters for path %1 in block %2.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()),
+                tr("Warning"), JOptionPane::WARNING_MESSAGE);
+        try {
+            //len = NumberFormat.getNumberInstance().parse(sLen).floatValue();
+         bool bok;
+         len = sLen.toFloat(&bok);
+         if(!bok) throw ParseException("parse error on block length");
+        } catch (ParseException  pe) {
+            len = -1.0f;
+        } catch (NullPointerException  npe) {
+            len = -1.0f;
+        }
+    }
+   return len;
+}
+
+/*
+ * Return length of warrant route in mm.  Assume start and end is in the middle of first
+ * and last blocks.  Use a default length for blocks with unspecified length.
+ */
+/*private*/ QString NXFrame::getTotalLength() {
+    _totalLen = 0.0f;
+    QList<BlockOrder*>* orders = getOrders();
+    _totalLen = _startDist;
+    for (int i = 1; i < orders->size() - 1; i++) {
+        BlockOrder* bo = orders->at(i);
+        float len = getPathLength(bo);
+        if (len <= 0) {
+            return tr("Path %1 in block %2 has length zero.\nCannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName());
+         }
+        _totalLen += len;
+    }
+    _totalLen += _stopDist;
+    return nullptr;
+}
+/*private*/ float NXFrame::getUpRampLength() {
+    float speed = 0.0f;     // throttle setting
+    float rampLength = 0.0f;
+    int numSteps = 0;
+    float incre = _throttleIncr;
+    float momentumTime = _speedUtil->getMomentumTime(incre, true);
+    while (speed < _maxThrottle) {
+        float dist = _speedUtil->getTrackSpeed(speed + incre/2,  _forward->isChecked()) * momentumTime;
+        if (_intervalTime > momentumTime) {
+            dist += _speedUtil->getTrackSpeed(speed + incre, _forward->isChecked()) * (_intervalTime - momentumTime);
+        }
+        if (rampLength + dist <= _totalLen / 2) {
+            if ((speed + incre) > _maxThrottle) {
+                dist = dist * (_maxThrottle - speed) / incre;
+                speed = _maxThrottle;
+            } else {
+                speed += incre;
+            }
+            rampLength += dist;
+            numSteps++;
+            if (log->isDebugEnabled()) {
+                log->debug(tr("step %1 incr= %2, dist= %3 upRampLength= %4 ").arg(numSteps).arg(incre).arg(dist).arg(rampLength));
+            }
+            incre *= INCRE_RATE;
+        } else {
+            if (log->isDebugEnabled()) {
+                log->debug(tr("cannot reach max Speed and have enough length to decelerate. _maxThrottle set to %1").arg(
+                        _maxThrottle));
+                _maxThrottle = speed;      // modify
+            }
+            break;
+        }
+    }
+    if (log->isDebugEnabled()) {
+        log->debug(tr("%1 speed steps of delta= %2 for upRampLength= %3 to maxThrottle= %4").arg(
+                numSteps).arg(_throttleIncr).arg(rampLength).arg(_maxThrottle));
+    }
+    return rampLength;
+}
+
+/*private*/ float NXFrame::getDownRampLength() {
+
+    float speed = 0;     // throttle setting
+    float rampLength = 0.0f;
+    int numSteps = 0;
+    float incre = _throttleIncr;
+    bool isForward = _forward->isChecked();
+    float momentumTime = _speedUtil->getMomentumTime(incre, false);
+    while (speed + incre <= _maxThrottle) {
+        speed += incre;
+        incre *= INCRE_RATE;
+    }
+    speed = _maxThrottle;     // throttle setting
+    float maxIncre = incre;
+    while (speed > 0.0f) {
+        float dist = _speedUtil->getTrackSpeed(speed - incre/2, isForward) * momentumTime;
+        if (_intervalTime > momentumTime) {
+            dist += _speedUtil->getTrackSpeed(speed - incre, isForward) * (_intervalTime - momentumTime);
+        }
+       if (dist <= 0.0f) {
+           break;
+       }
+       if (rampLength + dist >= _totalLen / 2) {
+           // remove first step's distance
+           float d = _speedUtil->getTrackSpeed(_maxThrottle, isForward) * momentumTime;
+                   if (_intervalTime > momentumTime) {
+                       d += _speedUtil->getTrackSpeed(_maxThrottle - incre, isForward) * (_intervalTime - momentumTime);
+                   }
+           if (rampLength >= d) {
+               rampLength -= d;
+           } else {
+               rampLength = 0.0f;
+           }
+          _maxThrottle -= maxIncre;      // modify
+          maxIncre /= INCRE_RATE;
+          numSteps--;
+          if (log->isDebugEnabled()) {
+              log->debug(tr("cannot reach max Speed and have enough length to decelerate. _maxThrottle set to %1").arg(
+                      _maxThrottle));
+          }
+       }
+       if (speed >= 0.0f) {
+           rampLength += dist;
+       } else {
+           rampLength += (speed + incre) * dist / incre;
+           speed = 0.0f;
+       }
+       speed -= incre;
+       numSteps++;
+       if (log->isDebugEnabled()) {
+                log->debug(tr("step %1 incr= %2, to speed= %3, dist= %4 dnRampLength= %5").arg(
+                        numSteps).arg(incre).arg(speed).arg(dist).arg(rampLength));
+       }
+       incre /= INCRE_RATE;
+    }
+    if (log->isDebugEnabled()) {
+        log->debug(tr("%1 speed steps of delta= %2 for dnRampLength= %3 from maxThrottle= %4").arg(
+                numSteps).arg(_throttleIncr).arg(rampLength).arg(_maxThrottle));
+    }
+    return rampLength;
+}
+
 /*private*/ float NXFrame::getRampLength(float totalLen, RosterSpeedProfile* speedProfile) {
     float speed = 0.0f;
     float rampLength = 0.0f;
     int numSteps = 0;
-    float factor =  SignalSpeedMap::getMap()->getDefaultThrottleFactor();
+    float factor =  static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getDefaultThrottleFactor();
     while (speed<=_maxSpeed) {
         float dist;
         if (speedProfile !=   NULL) {
@@ -661,9 +970,12 @@ void NXFrame::on_runManual()
     QList<BlockOrder*>* orders = getOrders();
     BlockOrder* bo = orders->at(nextIdx++);
     QString blockName = bo->getBlock()->getDisplayName();
+    bool isForward = _forward->isChecked();
+//        getProfileForDirection(isForward);  // establish a SpeedProfile and present anomaly dialog. if needed
+    bool hasProfileSpeeds = _speedUtil->profileHasSpeedInfo();
 
     w->addThrottleCommand(new ThrottleSetting(0, "F0", "true", blockName));
-    if (_forward->isChecked()) {
+    if (isForward) {
         w->addThrottleCommand(new ThrottleSetting(1000, "Forward", "true", blockName));
         w->addThrottleCommand(new ThrottleSetting(1000, "F2", "true", blockName));
         w->addThrottleCommand(new ThrottleSetting(2500, "F2", "false", blockName));
@@ -677,9 +989,35 @@ void NXFrame::on_runManual()
         w->addThrottleCommand(new ThrottleSetting(500, "F1", "true", blockName));
     }
 
+    QString msg = getTotalLength();
+    if (msg != "") {
+        return msg;
+    }
+    float increment = _throttleIncr;
+    float momentumTime = _speedUtil->getMomentumTime(increment, false);
+    float upRampLength;
+    float dnRampLength ;
+    if (_intervalTime >= momentumTime) {   // do longer ramp first
+        dnRampLength = getDownRampLength();
+        upRampLength = getUpRampLength();
+    } else {
+        upRampLength = getUpRampLength();
+        dnRampLength = getDownRampLength();
+    }
+
+    if (log->isDebugEnabled()) {
+        if (hasProfileSpeeds) {
+            log->debug(tr("maxThrottle= %1 (%2 meters per sec), scale= %3").arg(
+                    _maxThrottle).arg(_speedUtil->getTrackSpeed(_maxThrottle,isForward)).arg(_scale));
+        } else {
+            log->debug(tr("maxThrottle= %1 scale= %2 no SpeedProfile data").arg(_maxThrottle).arg(_scale));
+        }
+        log->debug(tr("Route length= %1, upRampLength= %2, dnRampLength= %3, startDist=#4, stopDist=%5").arg(
+                _totalLen).arg(upRampLength).arg(dnRampLength).arg(_startDist).arg(_stopDist));
+    }
+
     // estimate for blocks of zero length - an estimate of ramp length
-    bool isForward = _forward->isChecked();
-    float scaleFactor =  SignalSpeedMap::getMap()->getDefaultThrottleFactor();
+    float scaleFactor =  static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getDefaultThrottleFactor();
     RosterEntry* ent = getTrain();
     RosterSpeedProfile* speedProfile =   NULL;
     if (ent!=  NULL) {

@@ -20,6 +20,8 @@ DirectorySearcher::DirectorySearcher(QObject *parent) :
  _waitText = new JTextField();
  _quitLooking = false;
  _previewDialog = NULL;
+ setProperty("InstanceManagerAutoDefault", "yes");
+
 }
 /**
  * A file system directory searcher to locate Image files to include in an Image Catalog.

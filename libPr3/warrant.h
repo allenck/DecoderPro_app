@@ -5,6 +5,7 @@
 #include "engineer.h"
 #include "libPr3_global.h"
 
+class SpeedUtil;
 class CommandDelay;
 class BlockSpeedInfo;
 class Calibrater;
@@ -60,6 +61,8 @@ public:
     /*public*/ /*final*/ static SignalSpeedMap* getSpeedMap();
     /*public*/ int getState() ;
     /*public*/ void setState(int state);
+    /*public*/ SpeedUtil* getSpeedUtil();
+    /*public*/ void setSpeedUtil(SpeedUtil* su);
     /*public*/ QList<BlockOrder*>* getBlockOrders();
     /*public*/ void addBlockOrder(BlockOrder* order);
     /*public*/ BlockOrder* getfirstOrder();
@@ -166,6 +169,7 @@ private:
     /*private*/ bool moveIntoNextBlock(int position);
     /*private*/ QString getPermissibleSpeedAt(BlockOrder* bo);
     /*private*/ bool allocateNextBlock(BlockOrder* bo);
+    SpeedUtil* _speedUtil;
 
 Logger* log;
 protected:

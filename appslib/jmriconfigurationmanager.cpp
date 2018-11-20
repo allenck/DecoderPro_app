@@ -12,6 +12,15 @@
 #include <QApplication>
 #include <QLayout>
 #include <QLabel>
+#include "configxmlmanager.h"
+#include <QBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include "appsbase.h"
+#include "editconnectionpreferencesdialog.h"
+#include "joptionpane.h"
+#include "tabbedpreferencesaction.h"
+#include "vptr.h"
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -149,7 +158,7 @@
 //        log.debug("Saving preferences for {}", o.getClass().getName());
 //        o.savePreferences(profile);
 //    });
- foreach (QObject* o, *InstanceManager::getList("PreferencesManager"))
+ foreach (QObject* o, InstanceManager::getList("PreferencesManager"))
  {
   log->debug(tr("Saving preferences for %1").arg(o->metaObject()->className()));
   ((PreferencesManager*)o)->savePreferences(profile);
@@ -203,16 +212,16 @@
 //@Override
 /*public*/ bool JmriConfigurationManager::load(QUrl file, bool registerDeferred)  throw (JmriException)
 {
- log->debug(tr("loading %1 ...").arg(file.fileName()));
+ log->debug(tr("loading %1 ...").arg(file.path()));
  try {
   if (file.isEmpty()
           || (File(file.toDisplayString()).getName() == ("ProfileConfig.xml")) //NOI18N
           || (File(file.toDisplayString()).getName() == (/*Profile::CONFIG*/"profile.xml")))
   {
    Profile* profile = ProfileManager::getDefault()->getActiveProfile();
-   QObjectList* providers =  InstanceManager::getList("PreferencesManager");
+   QObjectList providers =  InstanceManager::getList("PreferencesManager");
    //providers.stream().forEach((provider) -> {
-   foreach(QObject* provider, *providers)
+   foreach(QObject* provider, providers)
    {
     this->initializeProvider((PreferencesManager*)provider, profile);
    }//);
@@ -220,7 +229,10 @@
    if (!this->initializationExceptions->isEmpty())
    {
 //                if (!GraphicsEnvironment.isHeadless()) {
-    QList<QString>* errors = new QList<QString>();
+
+    bool isUnableToConnect = false;
+
+    QStringList* errors = new QStringList();
     //this.initialized.forEach((provider) ->
     foreach(PreferencesManager* provider, *this->initialized)
     {
@@ -235,33 +247,71 @@
          errors->append(this->initializationExceptions->value(provider)->getLocalizedMessage());
      }
     } //);
-    QObject* list = NULL;
+    JList* list = NULL;
     if (errors->size() == 1) {
 //                        list = *errors->at(0);
     } else {
         list = new JList(*errors);
     }
-#if 0
-    JOptionPane.showMessageDialog(NULL,
-            new Object[]{
-                (list instanceof JList) ? Bundle.getMessage("InitExMessageListHeader") : NULL,
-                list,
-                "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
-                Bundle.getMessage("InitExMessageLogs"), // NOI18N
-                Bundle.getMessage("InitExMessagePrefs"), // NOI18N
-            },
-            Bundle.getMessage("InitExMessageTitle", Application.getApplicationName()), // NOI18N
-            JOptionPane.ERROR_MESSAGE);
-    (new TabbedPreferencesAction()).actionPerformed();
-#else
-     QMessageBox box(QMessageBox::Critical, tr("Error initializing %1").arg(QApplication::applicationName()), QString("<html><br></html>") + tr("Please check the logs for more details.") + tr("The Preferences window will open so this can be fixed."));
-     if(errors->size()==1)
-       box.layout()->addWidget(new QLabel(errors->at(0)));
-     else
-      box.layout()->addWidget(new JList(*errors));
-     box.exec();
-#endif
-//                }
+    QStringList* errorList = errors;
+
+    if (isUnableToConnect)
+    {
+     if (errors->size() > 1)
+     {
+         errorList->insert(0, tr("The following errors occurred in the order listed:"));
+     }
+     errorList->append("");
+     errorList->append(tr("Please check the logs for more details.")); // NOI18N
+
+     ErrorDialog* dialog = new ErrorDialog(*errorList);
+
+     switch (dialog->result)
+     {
+      case ErrorDialog::NEW_PROFILE:
+      {
+          AddProfileDialog* apd = new AddProfileDialog((QFrame*)nullptr, true, false);
+          apd->setLocationRelativeTo(nullptr);
+          apd->setVisible(true);
+          // Restart program
+          AppsBase::handleRestart();
+          break;
+      }
+      case ErrorDialog::EDIT_CONNECTIONS:
+         if (EditConnectionPreferencesDialog::showDialog()) {
+              // Restart program
+              AppsBase::handleRestart();
+              break;
+          } else {
+              // Quit program
+              AppsBase::handleQuit();
+              break;
+          }
+
+      case ErrorDialog::RESTART_PROGRAM:
+          // Restart program
+          AppsBase::handleRestart();
+          break;
+
+      case ErrorDialog::EXIT_PROGRAM:
+      default:
+          // Exit program
+             AppsBase::handleQuit();
+     }
+    }
+    QVariantList vl = QVariantList() << (list!=nullptr? tr("The following errors occurred in the order listed:"): "") << VPtr<JList>::asQVariant(list) << "<html><br></html>" << tr("Please check the logs for more details.") << tr("The Preferences window will open so this can be fixed.");
+    JOptionPane::showMessageDialog(nullptr,
+//         new Object[]{
+//             (list instanceof JList) ? tr("InitExMessageListHeader") : nullptr,
+//             list,
+//             "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
+//             tr("InitExMessageLogs"), // NOI18N
+//             tr("InitExMessagePrefs"), // NOI18N
+//         },
+         vl,
+         tr("Error initializing %1").arg(QApplication::applicationDisplayName()), // NOI18N
+         JOptionPane::ERROR_MESSAGE);
+ (new TabbedPreferencesAction())->actionPerformed();
 
    }
    if (!file.isEmpty() && (File(file.toDisplayString())).getName() == ("ProfileConfig.xml"))
@@ -339,4 +389,138 @@
   this->initialized->append(provider);
   log->debug(tr("Initialized provider %1").arg(provider->metaObject()->className()));
  }
+}
+
+/*public*/ QHash<PreferencesManager*, InitializationException*> JmriConfigurationManager::getInitializationExceptions() {
+    return QHash<PreferencesManager*, InitializationException*> (*initializationExceptions);
+}
+
+//@Override
+/*public*/ void JmriConfigurationManager::setValidate(Validate v) {
+    legacy->setValidate(v);
+}
+
+//@Override
+/*public*/ XmlFile::Validate JmriConfigurationManager::getValidate() {
+    return legacy->getValidate();
+}
+
+
+
+//private static final class ErrorDialog extends JDialog {
+
+//    enum Result {
+//        EXIT_PROGRAM,
+//        RESTART_PROGRAM,
+//        NEW_PROFILE,
+//        EDIT_CONNECTIONS,
+//    }
+
+
+//    Result result = Result.EXIT_PROGRAM;
+
+ErrorDialog::ErrorDialog(QStringList list) : JDialog()
+{
+    //super();
+    result = Result::EXIT_PROGRAM;
+
+    setTitle(tr("JMRI is unable to connect"));
+    setModal(true);
+    QWidget* contentPanel = new QWidget();
+    //contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+    QVBoxLayout* contentPanelLayout = new QVBoxLayout(contentPanel);
+    QWidget* panel = new QWidget();
+    QHBoxLayout* panelLayout = new QHBoxLayout(panel);
+    panelLayout->addWidget(new QLabel(tr("The following errors occurred in the order listed:")));
+    contentPanelLayout->addWidget(panel);
+
+    QWidget* marginPanel = new QWidget();
+    QVBoxLayout* marginPanelLayout = new QVBoxLayout(marginPanel);
+//    marginPanel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+//    marginPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5,5,5,5));
+    contentPanelLayout->addWidget(marginPanel);
+    QFrame* borderPanel = new QFrame();
+    QVBoxLayout* borderPanelLayout= new QVBoxLayout(borderPanel);
+//    borderPanel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+//    borderPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black));
+    marginPanelLayout->addWidget(borderPanel);
+    panel = new QWidget();
+//    panel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+//    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//    panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5,5,5,5));
+    for (QString s : list) {
+        // Remove html
+        s = s.replace("\\<html\\>.*\\<\\/html\\>", "");
+        QLabel* label = new QLabel(s);
+        //label.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        panelLayout->addWidget(label, 0, Qt::AlignHCenter);
+    }
+    borderPanelLayout->addWidget(panel);
+
+    panel = new QWidget();
+    QPushButton* button = new QPushButton(tr("Exit program"));
+//    button.addActionListener((ActionEvent a) -> {
+//        result = Result.EXIT_PROGRAM;
+//        dispose();
+//    });
+    connect(button, SIGNAL(clicked()), this, SLOT(onExitProgram()));
+    panelLayout->addWidget(button);
+
+    button = new QPushButton(tr("Restart program"));
+//    button.addActionListener((ActionEvent a) -> {
+//        result = Result.RESTART_PROGRAM;
+//        dispose();
+//    });
+    connect(button, SIGNAL(clicked()), this, SLOT(onRestartProgram()));
+    panelLayout->addWidget(button);
+
+    button = new QPushButton(tr("Start with new profile"));
+//    button.addActionListener((ActionEvent a) -> {
+//        result = Result.NEW_PROFILE;
+//        dispose();
+//    });
+    connect(button, SIGNAL(clicked()), this, SLOT(onRestartProgram()));
+    panelLayout->addWidget(button);
+
+    button = new QPushButton(tr("Edit connections"));
+//    button.addActionListener((ActionEvent a) -> {
+//        result = Result.EDIT_CONNECTIONS;
+//        dispose();
+//    });
+    connect(button, SIGNAL(clicked()), this, SLOT(onRestartProgram()));
+    panelLayout->addWidget(button);
+
+    contentPanelLayout->addWidget(panel);
+
+    //setContentPane(contentPanel);
+    setLayout(new QVBoxLayout());
+    layout()->addWidget(contentPanel);
+    pack();
+
+    // Center dialog on screen
+    setLocationRelativeTo(nullptr);
+    setVisible(true);
+}
+
+void ErrorDialog::onExitProgram()
+{
+ result = Result::EXIT_PROGRAM;
+ dispose();
+}
+
+void ErrorDialog::onRestartProgram()
+{
+ result = Result::RESTART_PROGRAM;
+ dispose();
+}
+
+void ErrorDialog::onNewProfile()
+{
+ result = Result::NEW_PROFILE;
+ dispose();
+}
+void ErrorDialog::onEditConnections()
+{
+ result = Result::EDIT_CONNECTIONS;
+ dispose();
 }

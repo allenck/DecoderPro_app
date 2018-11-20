@@ -52,17 +52,24 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 // if(parent == NULL)
 //  return;
 
- sysName = new JTextField(40);
- userName = new JTextField(40);
+ hardwareAddressTextField = new JTextField(40);
+ userNameField = new JTextField(40);
  prefixBox = new QComboBox();
  numberToAdd = new JTextField(5);
  numberToAdd->setValidator(new QIntValidator(1,100));
- range = new QCheckBox(tr("Add a range:"));
+ numberToAddSpinner = new QSpinBox(/*rangeSpinner*/);
+ numberToAddSpinner->setMinimum(1);
+ numberToAddSpinner->setMaximum(100);
+ numberToAddSpinner->setValue(1);
+ numberToAddSpinner->setSingleStep(1);
+ rangeBox = new QCheckBox(tr("Add a range:"));
  sysNameLabel = new QLabel("Hardware Address:");
  userNameLabel = new QLabel(tr("User Name:"));
  systemSelectionCombo = QString( metaObject()->className())+".SystemSelected";
  userNameError = QString( metaObject()->className())+".DuplicateUserName";
  showDebounceBox = new QCheckBox(tr("Show Sensor Debounce Information"));
+ statusBarLabel = new QLabel(tr("Enter a Hardware Address and (optional) User Name.")/*, JLabel.LEADING*/);
+
  senManager = InstanceManager::sensorManagerInstance();
  enabled = true;
  m = nullptr;
@@ -78,6 +85,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 }
 // /*public*/ SensorTableAction() { this("Sensor Table");}
 
+//@Override
 /*public*/ void SensorTableAction::setManager(Manager* man)
 {
  senManager = static_cast<SensorManager*>(man);
@@ -89,15 +97,18 @@ SensorTableAction::SensorTableAction(QObject *parent) :
  * Create the JTable DataModel, along with the changes
  * for the specific case of Sensors
  */
+//@Override
 /*protected*/ void SensorTableAction::createModel()
 {
- m = new SensorTableDataModel(senManager);
+ m = new SensorTableDataModel(senManager,nullptr);
 }
 
+//@Override
 /*protected*/ void SensorTableAction::setTitle() {
     f->setTitle(tr("Sensor Table"));
 }
 
+//@Override
 /*protected*/ QString SensorTableAction::helpTarget() {
     return "package.jmri.jmrit.beantable.SensorTable";
 }
@@ -137,7 +148,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
   if (QString(InstanceManager::sensorManagerInstance()->metaObject()->className()).contains("ProxySensorManager"))
   {
    ProxySensorManager* proxy = ((ProxySensorManager*) InstanceManager::sensorManagerInstance());
-   QList<Manager*> managerList = proxy->getManagerList();
+   QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
    for(int x = 0; x<managerList.size(); x++)
    {
     QString manuName = ConnectionNameFromSystemName::getConnectionName(static_cast<AbstractManager*>(managerList.at(x))->getSystemPrefix());
@@ -150,32 +161,62 @@ SensorTableAction::SensorTableAction(QObject *parent) :
     }
     if (addToPrefix)
      prefixBox->addItem(manuName);
-    }
-    if(p->getComboBoxLastSelection(systemSelectionCombo)!=nullptr)
-     prefixBox->setCurrentIndex(prefixBox->findText(p->getComboBoxLastSelection(systemSelectionCombo)));
    }
-   else
+   if(p->getComboBoxLastSelection(systemSelectionCombo)!= "")
+     prefixBox->setCurrentIndex(prefixBox->findText(p->getComboBoxLastSelection(systemSelectionCombo)));
+  }
+  else
   {
    prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSystemPrefix()));
   }
-  sysName->setObjectName("sysName");
-  userName->setObjectName("userName");
+  hardwareAddressTextField->setObjectName("sysName");
+  userNameField->setObjectName("userName");
   prefixBox->setObjectName("prefixBox");
   addButton = new QPushButton("Create");
   connect(addButton, SIGNAL(clicked()), this, SLOT(createPressed()));
-  addFrameLayout->addWidget(new AddNewHardwareDevicePanel(sysName, userName, prefixBox, numberToAdd, range, "OK", listener, cancelListener, rangeListener));
+  // Define PropertyChangeListener
+//  colorChangeListener = new PropertyChangeListener()
+//  {
+//      @Override
+//      public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//          String property = propertyChangeEvent.getPropertyName();
+//          if ("background".equals(property)) {
+//              if ((Color) propertyChangeEvent.getNewValue() == Color.white) { // valid entry
+//                  addButton.setEnabled(true);
+//              } else { // invalid
+//                  addButton.setEnabled(false);
+//              }
+//          }
+//      }
+//  };
+  ColorChangeListener* colorChangeListener = new ColorChangeListener(this);
+//  TODO: hardwareAddressTextField->addPropertyChangeListener(colorChangeListener);
+
+  // create panel
+  addFrame->layout()->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameField, prefixBox,
+      numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBarLabel));
+// tooltip for hwAddressTextField will be assigned later by canAddRange()
   canAddRange();
  }
+ hardwareAddressTextField->setObjectName("hwAddressTextField"); // for GUI test NOI18N
+ hardwareAddressTextField->setStyleSheet("QEditLine {background-color: yellow}");
+ addButton->setEnabled(false); // start as disabled (false) until a valid entry is typed in
+ addButton->setObjectName("createButton"); // for GUI test NOI18N
+ // reset statusBar text
+ statusBar->setText(tr("HardwareAddStatusEnter"));
+ statusBar->setStyleSheet("QLabel {color: gray}");
+
  addFrame->pack();
  addFrame->setVisible(true);
 }
+
 STOkButtonActionListener::STOkButtonActionListener(SensorTableAction *act)
 {
  this->act = act;
 }
 void STOkButtonActionListener::actionPerformed()
 {
- act->okPressed();
+ act->createPressed();
 }
 STCancelActionListener::STCancelActionListener(SensorTableAction *act) { this->act = act;}
 void STCancelActionListener::actionPerformed()
@@ -198,14 +239,19 @@ void SensorTableAction::cancelPressed(ActionEvent* /*e*/) {
     addFrame = nullptr;
 }
 
-void SensorTableAction::okPressed()
+/**
+ * Respond to Create new item pressed on Add Sensor pane
+ *
+ * @param e the click event
+ */
+void SensorTableAction::createPressed()
 {
  /*String user = userName.getText();
  if (user==("")) user=NULL;*/
 
  int numberOfSensors = 1;
 
- if(range->isChecked())
+ if(rangeBox->isChecked())
  {
 //        try {
   numberOfSensors = numberToAdd->text().toInt();
@@ -227,8 +273,21 @@ void SensorTableAction::okPressed()
  QString sensorPrefix = ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText());
 
  QString sName = nullptr;
- QString curAddress = sysName->text();
+ QString curAddress = hardwareAddressTextField->text();
 
+ // initial check for empty entry
+ if (curAddress.length() < 1)
+ {
+     statusBar->setText(tr("You must provide a Hardware Address to start."));
+     statusBar->setStyleSheet("QLabel {color: red}");
+     hardwareAddressTextField->setStyleSheet("QEditLine {background-color: red}");
+     return;
+ } else {
+     hardwareAddressTextField->setStyleSheet("QEditLine {background-color: white}");
+ }
+
+ QString statusMessage = tr("New %1(s) added:").arg(tr("Sensor"));
+ QString errorMessage = "";
  for (int x = 0; x < numberOfSensors; x++)
  {
   try
@@ -246,158 +305,64 @@ void SensorTableAction::okPressed()
    //The next address is already in use, therefore we stop.
    break;
   }
-  //We have found another turnout with the same address, therefore we need to go onto the next address.
-  sName = sensorPrefix + InstanceManager::sensorManagerInstance()->typeLetter() + curAddress;
-  Sensor* s = nullptr;
-  try
-  {
-   s =((ProxySensorManager*) InstanceManager::sensorManagerInstance())->provideSensor(sName);
-  } catch (IllegalArgumentException ex)
-  {
-   // user input no good
-   handleCreateException(sName);
-   return; // without creating
-  }
-  if (s != nullptr)
-  {
-   QString user = userName->text();
-   if ((x != 0) && user != "" && user!=(""))
-   {
-    user = userName->text() + ":" + QString::number(x);
-   }
-   if (user != "" && user!=("") && (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) == nullptr))
-   {
-    s->setUserName(user);
-   }
-   else if (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) != nullptr && !p->getPreferenceState(getClassName(), "duplicateUserName"))
-   {
-    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-               showErrorMessage("Duplicate UserName", "The username " + user + " specified is already in use and therefore will not be set", getClassName(), "duplicateUserName", false, true);
-   }
-  }
-  int addr = curAddress.toInt();
-  addr ++;
-  curAddress = QString::number(addr);
+
+  // Compose the proposed system name from parts:
+ sName = sensorPrefix + InstanceManager::sensorManagerInstance()->typeLetter() + curAddress;
+ Sensor* s = nullptr;
+ try {
+     s = InstanceManager::sensorManagerInstance()->provideSensor(sName);
+ } catch (IllegalArgumentException ex) {
+     // user input no good
+     handleCreateException(sName);
+     // Show error message in statusBar
+     errorMessage = tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip).");
+     statusBar->setText(errorMessage);
+     statusBar->setStyleSheet("QLabel {color: gray}");
+     return;   // return without creating
  }
- p->addComboBoxLastSelection(systemSelectionCombo,  prefixBox->currentText());
+
+ QString user = userNameField->text().trimmed();
+ if ((x != 0) && !user.isEmpty()) {
+     user = userNameField->text() + ":" + x; // add :x to user name starting with 2nd item
+ }
+ if (!user.isEmpty() && (InstanceManager::sensorManagerInstance()->getByUserName(user) == nullptr)) {
+     s->setUserName(user);
+ } else if (!user.isEmpty() && InstanceManager::sensorManagerInstance()->getByUserName(user) != nullptr && !p->getPreferenceState(getClassName(), "duplicateUserName")) {
+     static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->
+             showErrorMessage(tr("Error"), tr("The specified user name \"%1\" is already in use and therefore will not be set.").arg(user), getClassName(), "duplicateUserName", false, true);
+ }
+
+ // add first and last names to statusMessage user feedback string
+ if (x == 0 || x == numberOfSensors - 1) {
+     statusMessage = statusMessage + " " + sName + " (" + user + ")";
+ }
+ if (x == numberOfSensors - 2) {
+     statusMessage = statusMessage + " " + tr("up to") + " ";
+ }
+ // only mention first and last of range added
+
+ // end of for loop creating range of Sensors }
 }
+ // provide feedback to user
+         if (errorMessage == "") {
+             statusBar->setText(statusMessage);
+             statusBar->setStyleSheet("QLabel {color: gray}");
+         } else {
+             statusBar->setText(errorMessage);
+             // statusBar.setForeground(Color.red); // handled when errorMassage is set to differentiate urgency
+         }
 
-/**
- * Respond to Create new item pressed on Add Sensor pane
- *
- * @param e the click event
- */
-void SensorTableAction::createPressed(/*ActionEvent e*/) {
-
-    int numberOfSensors = 1;
-
-    if (range->isChecked()) {
-        numberOfSensors =  numberToAdd->text().toInt();
-    }
-    if (numberOfSensors >= 65) { // limited by JSpinnerModel to 100
-        if (JOptionPane::showConfirmDialog(addFrame,
-                tr("You are about to add %2 %1 into the configuration.\nAre you sure?").arg( tr("Sensors")).arg( numberOfSensors),
-                tr("WarningTitle"),
-                JOptionPane::YES_NO_OPTION) == 1) {
-            return;
-        }
-    }
-    QString sensorPrefix = ConnectionNameFromSystemName::getPrefixFromName(prefixBox->currentText());
-    QString sName = "";
-    QString curAddress = hardwareAddressTextField->text().trimmed();
-    // initial check for empty entry
-    if (curAddress.length() < 1) {
-        statusBar->setText("<font color='red'"+tr("You must provide a Hardware Address to start.")+ "</font>");
-        //statusBar->setForeground(QColor(Qt::red));
-        hardwareAddressTextField->setBackground(QColor(Qt::red));
-        return;
-    } else {
-        hardwareAddressTextField->setBackground(QColor(Qt::white));
-    }
-
-    // Add some entry pattern checking, before assembling sName and handing it to the sensorManager
-    QString statusMessage = tr("New %1(s) added:").arg(tr("BeanNameSensor"));
-    QString errorMessage = "";
-    for (int x = 0; x < numberOfSensors; x++) {
-        try {
-            curAddress = InstanceManager::sensorManagerInstance()->getNextValidAddress(curAddress, sensorPrefix);
-        } catch (JmriException ex) { ((UserPreferencesManager*)
-            InstanceManager::getDefault("UserPreferencesManager"))->
-                    showErrorMessage(tr("Error"), tr("The specified user name \"%1\" is already in use and therefore will not be set.").arg(curAddress), "" + ex.getMessage(), "", true, false);
-            // directly add to statusBar (but never called?)
-            statusBar->setText("<font color='red'"+tr("ErrorConvertHW %1").arg(curAddress)+ "</font>");
-            //statusBar->setForeground(QColor(Qt::red));
-            return;
-        }
-        if (curAddress == nullptr) {
-            log->debug("Error converting HW or getNextValidAddress");
-            errorMessage = (tr("WarningInvalidEntry"));
-            //statusBar->setForeground(QColor(Qt::red));
-            statusBar->setText("<font color='gray'"+statusBar->text()+ "</font>");
-
-            // The next address returned an error, therefore we stop this attempt and go to the next address.
-            break;
-        }
-
-        // Compose the proposed system name from parts:
-        sName = sensorPrefix + InstanceManager::sensorManagerInstance()->typeLetter() + curAddress;
-        Sensor* s = nullptr;
-        try {
-            s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(sName);
-        } catch (IllegalArgumentException ex) {
-            // user input no good
-            handleCreateException(sName);
-            // Show error message in statusBar
-            errorMessage = tr("WarningInvalidEntry");
-            statusBar->setText("<font color='gray'"+errorMessage+ "</font>");
-            //statusBar->setForeground(QColor(Qt::gray));
-            return;   // return without creating
-        }
-
-        QString user = userName->text().trimmed();
-        if ((x != 0) && !user.isEmpty()) {
-            user = userName->text() + ":" + x; // add :x to user name starting with 2nd item
-        }
-        if (!user.isEmpty() && (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) == nullptr)) {
-            s->setUserName(user);
-        } else if (!user.isEmpty() && ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(user) != nullptr && !p->getPreferenceState(getClassName(), "duplicateUserName")) {
-            ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-                    showErrorMessage(tr("Error"), tr("The specified user name \"%1\" is already in use and therefore will not be set.").arg(user), getClassName(), "duplicateUserName", false, true);
-        }
-
-        // add first and last names to statusMessage user feedback string
-        if (x == 0 || x == numberOfSensors - 1) {
-            statusMessage = statusMessage + " " + sName + " (" + user + ")";
-        }
-        if (x == numberOfSensors - 2) {
-            statusMessage = statusMessage + " " + tr("ItemCreateUpTo") + " ";
-        }
-        // only mention first and last of range added
-
-        // end of for loop creating range of Sensors
-    }
-
-    // provide feedback to user
-    if (errorMessage == nullptr)
-    {
-     statusBar->setText("<font color='gray'"+statusMessage+ "</font>");
-        //statusBar->setForeground(QColor(Qt::gray));
-    } else {
-        statusBar->setText(errorMessage);
-        // statusBar.setForeground(Color.red); // handled when errorMassage is set to differentiate urgency
-    }
-
-    p->setComboBoxLastSelection(systemSelectionCombo, prefixBox->currentText());
-    addFrame->setVisible(false);
-    addFrame->dispose();
-    addFrame = nullptr;
-    //addButton.removePropertyChangeListener(colorChangeListener);
+         p->setComboBoxLastSelection(systemSelectionCombo,  prefixBox->currentText());
+         addFrame->setVisible(false);
+         addFrame->dispose();
+         addFrame = nullptr;
+         //addButton.removePropertyChangeListener(colorChangeListener);
 }
 
 /*private*/ void SensorTableAction::canAddRange()
 {
- range->setEnabled(false);
- range->setChecked(false);
+ rangeBox->setEnabled(false);
+ rangeBox->setChecked(false);
  connectionChoice =  prefixBox->currentText(); // store in Field for CheckedTextField
  if (connectionChoice == nullptr) {
      // Tab All or first time opening, default tooltip
@@ -412,7 +377,7 @@ void SensorTableAction::createPressed(/*ActionEvent e*/) {
   {
    if (mgr->getSystemPrefix() == (systemPrefix))
    {
-       range->setEnabled( ((SensorManager*)mgr)->allowMultipleAdditions(systemPrefix));
+       rangeBox->setEnabled( ((SensorManager*)mgr)->allowMultipleAdditions(systemPrefix));
        // get tooltip from ProxySensorManager
        addEntryToolTip = mgr->getEntryToolTip();
        log->debug("S add box enabled1");
@@ -422,7 +387,7 @@ void SensorTableAction::createPressed(/*ActionEvent e*/) {
  }
  else if (senManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName(connectionChoice)))
  {
-  range->setEnabled(true);
+  rangeBox->setEnabled(true);
   log->debug("S add box enabled2");
   // get tooltip from sensor manager
   addEntryToolTip = senManager->getEntryToolTip();

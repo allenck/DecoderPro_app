@@ -1380,3 +1380,18 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
  g2->addItem(rects);
 }
 
+/**
+ * @return the bounds of this crossing
+ */
+//@Override
+/*public*/ QRectF LevelXing::getBounds() {
+//    QRectF result;
+
+//    QPointF pointA = getCoordsA();
+//    result = QRectF(pointA.x(), pointA.y(), 0, 0);
+//    result.united(getCoordsB());
+//    result.united(getCoordsC());
+//    result.united(getCoordsD());
+//    return result;
+ return item->boundingRect();
+}

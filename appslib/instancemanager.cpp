@@ -46,14 +46,37 @@
 #include <QStringList>
 #include "loggerfactory.h"
 #include "class.h"
+#include <QVariant>
+#include "vptr.h"
+#include "stringutils.h"
+#include "printwriter.h"
+// classes derived from InstanceInitializer
+#include "abstractinstanceinitializer.h"
+#include "jsonserverpreferences.h"
+#include "defaultcatalogtreemanager.h"
+#include "imageindexeditor.h"
+#include "decoderindexfile.h"
+#include "panelmenu.h"
+#include "trackertableaction.h"
+#include "enginemodels.h"
+#include "namefile.h"
+#include "withrottlepreferences.h"
+//#include "server.h"
+//#include "serverframe.h"
+#include "defaultidtagmanager.h"
+#include "defaultinstanceinitializer.h"
+#include "deferringprogrammermanager.h"
+#include "jmriuserpreferencesmanager.h"
+//#include "webserverpreferencesinstanceinitializer.h"
+
+
 class ManagerLists : public QHash<QString,QObjectList*>
 {
 
 };
 // /*static*/ InstanceInitializer* InstanceManager::initializer = (InstanceInitializer*)new DefaultInstanceInitializer();
 Q_GLOBAL_STATIC(DefaultInstanceInitializer, initializer)
-// /*static*/ QHash<QString,QObjectList*>* InstanceManager::managerLists = new QHash<QString,QObjectList*>();
-Q_GLOBAL_STATIC(ManagerLists, managerLists)
+//Q_GLOBAL_STATIC(ManagerLists, managerLists)
 //Logger InstanceManager::log;
 //SensorManager* InstanceManager::sensorManager=nullptr;
 //ConfigureManager* InstanceManager::configureManager =nullptr;
@@ -73,10 +96,33 @@ InstanceManager::InstanceManager(QObject *parent) :
     QObject(parent)
 {
  setObjectName("InstanceManager");
+ managerLists = QHash<QString,QObjectList>();
+ initializers = QMap</*Class<?>*/QString, QObject*>();
+#if 0
+ // Load all classes that are derived from InstanceInitializer java class
+ initializers.insert("AbstractInstanceInializer", new AbstractInstanceInitializer());
+ initializers.insert("JsonServerPreferences", new JsonServerPreferences());
+ initializers.insert("DefaultCatalogTreeManager", new DefaultCatalogTreeManager());
+ initializers.insert("ImageIndexEditor", new ImageIndexEditor());
+ initializers.insert("DecoderIndexFile", new DecoderIndexFile());
+ initializers.insert("PanelMenu", new PanelMenu());
+ initializers.insert("TrackerTableAction", new TrackerTableAction());
+ initializers.insert("EngineModels", new Operations::EngineModels());
+ initializers.insert("WiThrottlePreferences", new WiThrottlePreferences());
+// initializers.insert("Server", new Server());
+// initializers.insert("ServerFrame", new ServerFrame());
+ initializers.insert("DefaultIdTagManager", new DefaultIdTagManager());
+ initializers.insert("DefaultInstanceInitializer", new DefaultInstanceInitializer());
+ initializers.insert("DeferringProgrammerManager", new DeferringProgrammerManager());
+ initializers.insert("JmriUserPreferencesManager", new JmriUserPreferencesManager());
+// initializers.insert("WebServerPreferencesInstanceInitializer", new WebServerPreferencesInstanceInitializer());
+#endif
+ pcs = new PropertyChangeSupport(this);
+ initState = QMap</*Class<?>*/QString, StateHolder*>();
  //root = this;
  //init();
 }
-#if 0 // TODO:
+#if 1 // TODO:
 /**
  * Get a list of all registered objects of type T.
  *
@@ -87,14 +133,16 @@ InstanceManager::InstanceManager(QObject *parent) :
  */
 //@SuppressWarnings("unchecked") // the cast here is protected by the structure of the managerLists
 //@Nonnull
-/*public*/ <T> List<T> getInstances(@Nonnull Class<T> type) {
-    log.trace("Get list of type {}", type.getName());
-    synchronized (type) {
-        if (managerLists.get(type) == null) {
-            managerLists.put(type, new ArrayList<>());
-            pcs.fireIndexedPropertyChange(getListPropertyName(type), 0, null, null);
+//template<class T>
+/*public*/ /*<T>*/ QObjectList InstanceManager::getInstances(/*@Nonnull Class<T>*/ QString type) {
+    if(log->isTraceEnabled())
+     log->trace(tr("Get list of type %1").arg(type/*.getName()*/));
+    /*synchronized (type)*/ {
+        if (managerLists.value(type) == QObjectList()) {
+            managerLists.insert(type, QObjectList());
+            pcs->fireIndexedPropertyChange(getListPropertyName(type), 0, QVariant(), QVariant());
         }
-        return (List<T>) managerLists.get(type);
+        return  managerLists.value(type);
     }
 }
 #endif
@@ -148,70 +196,57 @@ InstanceManager::InstanceManager(QObject *parent) :
 
 
 /**
- * Store an object of a particular type for later
- * retrieval via {@link #getDefault} or {@link #getList}.
+ * Store an object of a particular type for later retrieval via
+ * {@link #getDefault} or {@link #getList}.
+ *
+ * @param <T>  The type of the class
  * @param item The object of type T to be stored
- * @param type The class Object for the item's type.  This will be used
- *               as the key to retrieve the object later.
+ * @param type The class Object for the item's type. This will be used as
+ *             the key to retrieve the object later.
  */
-void InstanceManager::store(QObject* item, QString type)
-{
- QHash<QString,QObjectList*>* mgrLists = managerLists;
- if(mgrLists->count()>190)
- {
-  log->debug(tr("adding %1 when count is %2").arg("type").arg(mgrLists->count()));
- }
- Q_UNUSED(mgrLists);
- //log->debug(tr("Store item of type %1").arg(type));
- if (item == nullptr) {
-     NullPointerException npe =  NullPointerException();
-     Logger::error(tr("Should not store null value of type %1").arg(type));
-     throw npe;
- }
- QObjectList* l =  managerLists->value(type);
- if (l==nullptr)
- {
-   l = new QObjectList();
-   managerLists->insert(type, l);
- }
- l->append(item);
+//template<class T>
+/*static*/ /*public*/  void InstanceManager::store(/*@Nonnull*/ QObject* item, /*@Nonnull Class<T> */ QString type) {
+    log->debug(tr("Store item of type %1").arg(type));
+    if (item == nullptr) {
+     QString msg = tr("Should not store null value of type %1").arg(type);
+     log->error(msg);
+        NullPointerException npe =  NullPointerException(msg);
+        throw npe;
+    }
+    QObjectList l = getList(type);
+    l.append(item);
+    getDefault()->managerLists.insert(type, l);
+    getDefault()->pcs->fireIndexedPropertyChange(getListPropertyName(type), l.indexOf(item), QVariant(), VPtr<QObject>::asQVariant(item));
 }
 
-void InstanceManager::storeBefore( int index, QObject* item, QString type)
-{
- QHash<QString,QObjectList*>* mgrLists = managerLists;
- Q_UNUSED(mgrLists);
- log->debug(tr("Store item of type %1").arg(type));
- if (item == nullptr) {
-     NullPointerException npe =  NullPointerException();
-     log->error(tr("Should not store null value of type %1").arg(type));
-     throw npe;
- }
- QObjectList* l =  managerLists->value(type);
- if (l==nullptr)
- {
-   l = new QObjectList();
-   managerLists->insert(type, l);
- }
- l->insert(index, item);
-}
+//void InstanceManager::storeBefore( int index, QObject* item, QString type)
+//{
+// //QHash<QString,QObjectList*>* mgrLists = managerLists;
+// //Q_UNUSED(mgrLists);
+// log->debug(tr("Store item of type %1").arg(type));
+// if (item == nullptr) {
+//     NullPointerException npe =  NullPointerException();
+//     log->error(tr("Should not store null value of type %1").arg(type));
+//     throw npe;
+// }
+// QObjectList* l =  InstanceManager::instance()->managerLists.value(type);
+// if (l==nullptr)
+// {
+//   l = new QObjectList();
+//   InstanceManager::instance()->managerLists.insert(type, l);
+// }
+// l->insert(index, item);
+//}
 
 /**
  * Retrieve a list of all objects of type T that were
  * registered with {@link #store}.
  * @param type The class Object for the items' type.
  */
-QObjectList* InstanceManager::getList(QString type)
+//template<class T>
+/*static*/ QObjectList InstanceManager::getList(QString type)
 {
-// QStringList k = managerLists->keys();
-// QList<QObjectList*> ol = managerLists->values();
- if (managerLists!=nullptr)
- {
-  QObjectList* objectList =  managerLists->value(type);
-  if(objectList != nullptr)
-   return objectList;
- }
- return new QObjectList();;
+ return getDefault()->getInstances(type);
 }
 
 /**
@@ -220,9 +255,7 @@ QObjectList* InstanceManager::getList(QString type)
  */
 void InstanceManager::reset(QString type)
 {
- if (managerLists == nullptr) return;
-    //managerLists.put(type, NULL);
- managerLists->remove(type);
+ getDefault()->clear(type);
 }
 
 /**
@@ -233,12 +266,41 @@ void InstanceManager::reset(QString type)
  */
 void InstanceManager::deregister(QObject* item, QString type)
 {
- if (managerLists == nullptr) return;
- QObjectList* l = managerLists->value(type);
- if(l!=nullptr)
-  l->removeOne(item);
+ if (InstanceManager::instance()->managerLists.isEmpty()) return;
+ QObjectList l =InstanceManager::instance()-> managerLists.value(type);
+ if(!l.isEmpty())
+  l.removeOne(item);
 }
 
+/**
+ * Remove an object of a particular type that had earlier been registered
+ * with {@link #store}. If item was previously registered, this will remove
+ * item and fire an indexed property change event for the property matching
+ * the output of {@link #getListPropertyName(java.lang.Class)} for type.
+ *
+ * @param <T>  The type of the class
+ * @param item The object of type T to be deregistered
+ * @param type The class Object for the item's type
+ */
+/*public*/ /*<T>*/ void InstanceManager::remove(/*@Nonnull T*/QObject* item, /*@Nonnull Class<T>*/QString type) {
+    log->debug(tr("Remove item type %!").arg(type));
+   QObjectList l = getList(type);
+    int index = l.indexOf(item);
+    if (index != -1) { // -1 means items was not in list, and therefor, not registered
+        l.removeOne(item);
+//        if (item instanceof Disposable) {
+//            dispose((Disposable) item);
+//        }
+    }
+    // if removing last item, re-initialize later
+    if (l.isEmpty()) {
+        setInitializationState(type, InitializationState::NOTSET);
+    }
+    if (index != -1) { // -1 means items was not in list, and therefor, not registered
+        // fire property change last
+        pcs->fireIndexedPropertyChange(getListPropertyName(type), index, VPtr<QObject>::asQVariant(item), QVariant());
+    }
+}
 /**
  * Retrieve the last object of type T that was
  * registered with {@link #store}.
@@ -299,17 +361,44 @@ template<class T>
 //static /*public*/ <T> T getNullableDefault(@Nonnull Class<T> type) {
 /*static*/ /*public*/ QObject* InstanceManager::getNullableDefault(QString type)
 {
-// if( log->isTraceEnabled())
-//  log->trace(tr("getOptionalDefault of type %1").arg(type/*.getName()*/));
-    //ArrayList<T> l = (ArrayList<T>) getList(type);
- QHash<QString,QObjectList*>* mgrList = managerLists;
- Q_UNUSED(mgrList);
- QObjectList* l = getList(type);
- if (l->isEmpty())
+ return getDefault()->getInstance(type);
+}
+
+//@CheckForNull
+/*public*/ QObject* InstanceManager::getInstance(/*@Nonnull Class<T>*/QString type)
+{
+ if( log->isTraceEnabled())
+  log->trace(tr("getOptionalDefault of type %1").arg(type/*.getName()*/));
+ QObjectList l = getList(type);
+ if (l.isEmpty())
  {
+  // example of tracing where something is being initialized
+  // log.error("jmri.implementation.SignalSpeedMap init", new Exception());
+  if (traceFileActive)
+  {
+      traceFilePrint("Start initialization: " + type/*.toString()*/);
+      traceFileIndent++;
+  }
+
+  // check whether already working on this type
+  InitializationState working = getInitializationState(type);
+  Exception except = getInitializationException(type);
+  setInitializationState(type, InitializationState::STARTED);
+  if (working == InitializationState::STARTED)
+  {
+   log->error(tr("Proceeding to initialize %1 while already in initialization").arg(type),  Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
+   log->error(tr("    Prior initialization:"), except);
+   if (traceFileActive) {
+       traceFilePrint("*** Already in process ***");
+   }
+  }
+  else if (working == InitializationState::DONE)
+  {
+   log->error(tr("Proceeding to initialize %1 but initialization is marked as complete").arg(type),  Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
+  }
+
   // see if can autocreate
-  //log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
-#if 1
+  log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
         //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
   QObject* obj1;
   try
@@ -320,35 +409,65 @@ template<class T>
   {
    obj1 = nullptr;
   }
-   if(obj1 != nullptr && obj1->metaObject()->indexOfMethod("isAssignableFromType")>=0)
+  if(obj1 != nullptr )
+  {
+   QVariant property= obj1->property("InstanceManagerAutoDefault");
+   if(property != QVariant())
    {
-//      try {
-          //l.add(type.getConstructor((Class[]) null).newInstance((Object[]) null));
-    l->append((QObject*)obj1);
-    log->debug(tr("      auto-created default of %1").arg(type/*.getName()*/));
-//      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-//          log.error("Exception creating auto-default object", e); // unexpected
-//          return null;
-//      }
-    return l->value(l->size() - 1);
-   }
-#endif
-        // see if initializer can handle
-//        log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
-        //@SuppressWarnings("unchecked")
-        QObject* obj = initializer->getDefault(type);
-        if (obj != nullptr)
-        {
-//          log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
-          l->append(obj);
-          return l->at(l->size() - 1);
-        }
-
-        // don't have, can't make
-        return nullptr;
+   try
+   {
+    property = obj1->property("InstanceManagerAutoInitialize");
+    if(property != QVariant())
+    {
+     int methodIndex = obj1->metaObject()->indexOfMethod(QMetaObject::normalizedSignature("initialize()"));
+     if(methodIndex >= 0)
+     {
+      //QMetaMethod  method = obj1->metaObject()->method(methodIndex);
+      QMetaObject::invokeMethod(obj1, QMetaObject::normalizedSignature("initialize()"), Qt::DirectConnection);
+     }
+     else throw NoSuchMethodException(tr("no method initialize found for type %1").arg(type));
+     log->debug(tr("      auto-created default of %1").arg(type/*.getName()*/));
     }
-    return l->at(l->size() - 1);
+    l.append((QObject*)obj1);
+     store(obj1, type);
+     return l.value(l.size() - 1);
+
+ //      try {
+           //l.add(type.getConstructor((Class[]) null).newInstance((Object[]) null));
+   }
+ //      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+ //          log.error("Exception creating auto-default object", e); // unexpected
+ //          return null;
+ //      }
+    catch (NoSuchMethodException e)
+    {
+     log->error("Exception creating auto-default object", e); // unexpected
+     return nullptr;
+    }
+   }
+  }
+  // see if initializer can handle
+  log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
+  //@SuppressWarnings("unchecked")
+//  if(initializers.contains(type))
+//  {
+   //QObject* obj = initializers.value(type);//->getDefault(type);//initializer->getDefault(type);
+   QObject* obj = initializer->getDefault(type);
+   if (obj != nullptr)
+   {
+    log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
+    l.append(obj);
+    store(obj,type);
+    //return l->at(l->size() - 1);
+    return obj;
+   }
+//  }
+  // don't have, can't make
+  return nullptr;
+ }
+ return l.at(l.size() - 1);
 }
+
 /**
  * Retrieve the last object of type T that was registered with
  * {@link #store(java.lang.Object, java.lang.Class)} wrapped in an
@@ -386,14 +505,14 @@ template<class T>
  */
 QObject* InstanceManager::setDefault(QString type, QObject* val)
 {
-    QObjectList* l = getList(type);
-    if (l == nullptr || (l->size()<1) ) {
+    QObjectList l = getList(type);
+    if (!l.isEmpty() ) {
         store(val, type);
         l = getList(type);
     }
-    int i = l->indexOf(val);
-    l->removeAt(i);
-    l->append(val);
+    int i = l.indexOf(val);
+    l.removeAt(i);
+    l.append(val);
     return val;
 }
 
@@ -406,42 +525,43 @@ QObject* InstanceManager::setDefault(QString type, QObject* val)
  *         false otherwise
  */
 /*static*/ /*public*/  bool InstanceManager::containsDefault(/*@Nonnull*/ QString type) {
-    QObjectList* l = getList(type);
-    return !l->isEmpty();
+    QObjectList l = getList(type);
+    return !l.isEmpty();
 }
 
 /**
  * Dump generic content of InstanceManager
  * by type.
  */
-QString InstanceManager::contentsToString()
+/*static*/ QString InstanceManager::contentsToString()
 {
-    QString retval;
-    QHashIterator<QString,QObjectList*> i(*managerLists);
-//    for (Class<?> c : managerLists.keySet()) {
-    while(i.hasNext())
-    {
-     i.next();
-#if 1
-     QString  c = i.key();
-     retval.append("List of");
-     retval.append(c);
-     retval.append(" with ");
-     //retval.append(Integer.toString(getList(c).size()));
-     retval.append(QString("%1").arg(getList(c)->size()));
-     retval.append(" objects\n");
-     QList<QObject*>* list = getList(c);
-     foreach (QObject* o , *list)
-     {
+ QString retval;
+ //getDefault()->managerLists.keys().stream().forEachOrdered((c) ->
+ foreach(QString c, getDefault()->managerLists.keys())
+ {
+  retval.append("List of ");
+  retval.append(c);
+  retval.append(" with ");
+  retval.append(QString::number(getList(c).size()));
+  retval.append(" objects\n");
+  //getList(c).stream().forEachOrdered((o) ->
+  foreach (QObject* o, getList(c))
+  {
+   try
+   {
       retval.append("    ");
-//      retval.append(o->objectName());
-      if(o != nullptr)
-       retval.append(o->metaObject()->className());
+      retval.append(o->metaObject()->className());
       retval.append("\n");
-     }
-#endif
-    }
-    return retval;
+   }
+   catch (std::exception)
+   {
+    retval.append("    ");
+    retval.append("????????");
+    retval.append("\n");
+   }
+  }//);
+  } //);
+ return retval;
 }
 
 PowerManager* InstanceManager::powerManagerInstance()
@@ -460,24 +580,6 @@ ProgrammerManager* InstanceManager::programmerManagerInstance()
  return (ProgrammerManager*)getDefault("ProgrammerManager");
 }
 
-//void InstanceManager::setProgrammerManager(ProgrammerManager* p) {
-//    if(p->isAddressedModePossible() )
-//        store(p, "AddressedProgrammerManager");
-//    if(p->isGlobalProgrammerAvailable() )
-//        store(p, "GlobalProgrammerManager");
-
-////  Now that we have a programmer manager, install the default
-////  Consist manager if Ops mode is possible, and there isn't a
-////  consist manager already.
-// //if(programmerManagerInstance()->isAddressedModePossible()
-// if(p->isAddressedModePossible()
-//    && consistManagerInstance() == NULL)
-// {
-//    setConsistManager(new DccConsistManager());
-// }
-// instance()->notifyPropertyChangeListener("programmermanager", QVariant(), QVariant());
-//}
-
 SensorManager* InstanceManager::sensorManagerInstance()
 {
  return (SensorManager*)getDefault("SensorManager");
@@ -488,13 +590,6 @@ TurnoutManager* InstanceManager::turnoutManagerInstance()
  return (TurnoutManager*)getDefault("TurnoutManager");
 }
 
-#if 0
-ConfigureManager* InstanceManager::configureManagerInstance()
-{
- //return (ConfigureManager* ) getDefault("ConfigureManager");
- return (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
-}
-#endif
 ThrottleManager* InstanceManager::throttleManagerInstance()  {
     return (ThrottleManager*)getDefault(/*ThrottleManager.class*/  "ThrottleManager");
 }
@@ -539,7 +634,6 @@ void InstanceManager::setSignalMastManager(SignalMastManager* p)
     store(p, "SignalMastManager");
 }
 
-#if 1
 SignalSystemManager* InstanceManager::signalSystemManagerInstance()
 {
  SignalSystemManager* m = (SignalSystemManager*)getDefault("SignalSystemManager");
@@ -567,7 +661,7 @@ SignalGroupManager* InstanceManager::signalGroupManagerInstance()  {
 void InstanceManager::setSignalGroupManager(SignalGroupManager* p) {
     store(p, "SignalGroupManager");
 }
-#endif
+
 BlockManager* InstanceManager::blockManagerInstance()
 {
  BlockManager* o = (BlockManager*)getDefault("BlockManager");
@@ -1020,6 +1114,18 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
 /*public*/ /*static*/ QString InstanceManager::getDefaultsPropertyName(QString clazz) {
     return "default-" + clazz/*.getName()*/;
 }
+
+/**
+ * Get the property name included in the
+ * {@link java.beans.PropertyChangeEvent} thrown when the list for a
+ * specific class is changed.
+ *
+ * @param clazz the class being listened for
+ * @return the property name
+ */
+/*public*/ /*static*/ QString InstanceManager::getListPropertyName(/*Class<?>*/QString clazz) {
+    return "list-" + clazz/*.getName()*/;
+}
 /* ****************************************************************************
  *                   Old Style Setters - Deprecated and migrated,
  *                                       just here for other users
@@ -1056,5 +1162,89 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
 // static public void setPowerManager(PowerManager p) {
 //     store(p, PowerManager.class);
 // }
+/**
+  * Clear all managed instances of a particular type from this
+  * InstanceManager.
+  *
+  * @param type the type to clear
+  */
+//template<class T>
+ /*public*/  void InstanceManager::clear(/*@Nonnull*/ /*Class<T>*/QString type) {
+     log->trace(tr("Clearing managers of %1").arg(type));
+     QObjectList toClear = QObjectList(getInstances(type));
+     //toClear.forEach((o) ->
+     foreach(QObject* o, toClear)
+     {
+         remove(o, type);
+     }//);
+     setInitializationState(type, InitializationState::NOTSET); // initialization will have to be redone
+     managerLists.insert(type, QObjectList());
+ }
+/**
+  * Get the default instance of the InstanceManager. This is used for
+  * verifying the source of events fired by the InstanceManager.
+  *
+  * @return the default instance of the InstanceManager, creating it if
+  *         needed
+  */
+ //@Nonnull
+ /*public*/ /*static*/ InstanceManager* InstanceManager::getDefault() {
+     return LazyInstanceManager::instanceManager;
+ }
+/*public*/ /*static*/ InstanceManager* LazyInstanceManager::instanceManager = new InstanceManager();
+
+/*private*/ void InstanceManager::setInitializationState(QString type, InitializationState state) {
+    log->trace(tr("set state %1 for %2").arg(type).arg(state));
+    if (state == InitializationState::STARTED) {
+        initState.insert(type, new StateHolder(state, new Exception("Thread " + QThread::currentThread()->objectName())));
+    } else {
+        initState.insert(type, new StateHolder(state, nullptr));
+    }
+}
+
+/*private*/ InitializationState InstanceManager::getInitializationState(QString type) {
+    StateHolder* holder = initState.value(type);
+    if (holder == nullptr) {
+        return InitializationState::NOTSET;
+    }
+    return holder->state;
+}
+
+/*private*/ Exception InstanceManager::getInitializationException(QString type) {
+    StateHolder* holder = initState.value(type);
+    if (holder == nullptr) {
+        return Exception();
+    }
+    return holder->exception;
+}
+
 /* *************************************************************************** */
 /*private*/ /*final*/ /*static*/ Logger* InstanceManager::log = LoggerFactory::getLogger("InstanceManager");
+
+// support creating a file with initialization summary information
+/*private*/ /*static*/ /*final*/ bool InstanceManager::traceFileActive = InstanceManager::log->isTraceEnabled(); // or manually force true
+/*private*/ /*static*/ /*final*/ bool InstanceManager::traceFileAppend = false; // append from run to run
+/*private*/ /*static*/ /*final*/ QString InstanceManager::traceFileName = "instanceManagerSequence.txt";  // use a standalone name
+/*private*/ /*static*/ PrintWriter* InstanceManager::traceFileWriter = nullptr;
+
+//static {
+//        PrintWriter tempWriter = null;
+//        try {
+//            tempWriter = (traceFileActive
+//                    ? new PrintWriter(new BufferedWriter(new FileWriter(new File(traceFileName), traceFileAppend)))
+//                    : null);
+//        } catch (java.io.IOException e) {
+//            log.error("failed to open log file", e);
+//        } finally {
+//            traceFileWriter = tempWriter;
+//        }
+//    }
+/*private*/ void InstanceManager::traceFilePrint(QString msg) {
+    QString pad = StringUtils::repeat(" ", traceFileIndent * 2);
+    QString threadName = "[" + QThread::currentThread()->objectName() + "]";
+    QString threadNamePad = StringUtils::repeat(" ", qMax(25 - threadName.length(), 0));
+    QString text = threadName + threadNamePad + "|" + pad + msg;
+//    traceFileWriter->println(text);
+//    traceFileWriter->flush();
+    log->trace(text);
+}

@@ -34,10 +34,10 @@
  int startAddress = sysName.lastIndexOf("T");
  address= sysName.mid(startAddress+1, sysName.length()).toInt();
  QString prefix = t->getSystemName().mid(0, startAddress);
- QObjectList* connList = InstanceManager::getList("CommandStation");
- for(int x = 0; x < connList->size(); x++)
+ QObjectList connList = InstanceManager::getList("CommandStation");
+ for(int x = 0; x < connList.size(); x++)
  {
-  CommandStation* station = (CommandStation*) connList->at(x);
+  CommandStation* station = (CommandStation*) connList.at(x);
   if(station->getSystemPrefix()==(prefix))
   {
    c = station;

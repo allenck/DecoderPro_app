@@ -12,7 +12,7 @@ public:
     /*public*/ void refresh();
 
 private:
-    AddSignalMastPanel* sigMastPanel;// = null;
+    AddSignalMastPanel* sigMastPanel = nullptr;
 
 };
 

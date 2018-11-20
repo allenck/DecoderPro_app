@@ -50,13 +50,13 @@ private:
     Light* light;// = null;
     Logger* log;
     // display icons
-    QString offLName;// = ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif";
+    QString offLName;// = "resources/icons/smallschematics/tracksegments/os-lefthand-east-closed.gif";
     NamedIcon* off;// = new NamedIcon(offLName, offLName);
-    QString onLName;// = ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-thrown.gif";
+    QString onLName;// = "resources/icons/smallschematics/tracksegments/os-lefthand-east-thrown.gif";
     NamedIcon* on;// = new NamedIcon(onLName, onLName);
-    QString inconsistentLName;// = ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-error.gif";
+    QString inconsistentLName;// = "resources/icons/smallschematics/tracksegments/os-lefthand-east-error.gif";
     NamedIcon* inconsistent;// = new NamedIcon(inconsistentLName, inconsistentLName);
-    QString unknownLName;// = ":/resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif";
+    QString unknownLName;// = "resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif";
     NamedIcon* unknown;// = new NamedIcon(unknownLName, unknownLName);
     /*protected*/ void rotateOrthogonal();
 

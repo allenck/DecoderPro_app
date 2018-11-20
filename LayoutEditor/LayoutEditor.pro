@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml   printsupport dbus webenginewidgets #webkitwidgets webkit
+QT       += core gui xml   printsupport dbus webengine webenginewidgets #webkitwidgets webkit
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport  printsupport  gui  #webkitwidgets webkit
 
@@ -16,10 +16,10 @@ DEFINES += LIBLAYOUTEDITOR_LIBRARY
 unix:PREFIX = /home/allen/Projects/PythonQt-master
 win32:PREFIX = "C:/Program Files (x86)/local"
 
-win32:exists($$PREFIX/lib/PythonQt.dll){
+win32:exists($$PREFIX/lib/PythonQt_d.dll){
 ENABLE_SCRIPTING = "Y"
 }
-unix:exists($$PREFIX/lib/libPythonQt.so){
+unix:exists($$PREFIX/lib/libPythonQt_d.so){
 ENABLE_SCRIPTING = "Y"
 }
 equals(ENABLE_SCRIPTING, "Y") {
@@ -41,6 +41,7 @@ equals(ENABLE_SCRIPTING, "Y") {
     scripts/scriptengine.cpp \
     scripts/pythoninterpreter.cpp \
     scripts/scriptcontext.cpp
+
  HEADERS +=     jythonsiglet.h \
     jythonautomaton.h \
     jythonautomatonaction.h \
@@ -120,7 +121,6 @@ SOURCES += \
     addreporterdlg.cpp \
     reportericon.cpp \
     layoutblockconnectivitytools.cpp \
-    loadxml.cpp \
     editlevelxingdlg.cpp \
     layoutslip.cpp \
     savexml.cpp \
@@ -231,16 +231,12 @@ SOURCES += \
     itempalette.cpp \
     itempanel.cpp \
     familyitempanel.cpp \
-    #defaultmutabletreenode.cpp \
-    #catalogtreenode.cpp \
     defaultcatalogtreemanager.cpp \
     signalheaditempanel.cpp \
     tableitempanel.cpp \
     imageindexeditor.cpp \
     catalogpanel.cpp \
-    #defaulttreemodel.cpp \
     catalogtreeindex.cpp \
-    #treepath.cpp \
     abstractcatalogtree.cpp \
     clockitempanel.cpp \
     iconitempanel.cpp \
@@ -455,7 +451,14 @@ SOURCES += \
     multisensoricondialog.cpp \
     displayframe.cpp \
     portalitempanel.cpp \
-    jmripanel.cpp
+    jmripanel.cpp \
+    switchboardeditoraction.cpp \
+    switchboardeditor.cpp \
+    switchboardeditorxml.cpp \
+    beanswitch.cpp \
+    layouttrackdrawingoptionsxml.cpp \
+    layouttrackdrawingoptions.cpp \
+    newpaneleditor.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -491,7 +494,6 @@ HEADERS += liblayouteditor_global.h \
     addreporterdlg.h \
     reportericon.h \
     layoutblockconnectivitytools.h \
-    loadxml.h \
     editlevelxingdlg.h \
     layoutslip.h \
     savexml.h \
@@ -679,7 +681,6 @@ HEADERS += liblayouteditor_global.h \
     analogclockframe.h \
     icondialog.h \
     itemdialog.h \
-    #componentpeer.h \
     slipiconadder.h \
     transferhandler.h \
     multisensoriconadder.h \
@@ -832,7 +833,14 @@ HEADERS += liblayouteditor_global.h \
     multisensoricondialog.h \
     displayframe.h \
     portalitempanel.h \
-    jmripanel.h
+    jmripanel.h \
+    switchboardeditoraction.h \
+    switchboardeditor.h \
+    switchboardeditorxml.h \
+    beanswitch.h \
+    layouttrackdrawingoptionsxml.h \
+    layouttrackdrawingoptions.h \
+    newpaneleditor.h
 
 
 FORMS    += \
@@ -850,7 +858,6 @@ FORMS    += \
     editlevelxingdlg.ui \
     paneleditor.ui \
     addpaneleditordialog.ui \
-    #catalogpane.ui \
     multisensoriconwidget.ui \
     sensorentrywidget.ui \
     itempalettewidget.ui \
@@ -868,6 +875,7 @@ unix:!symbian {
 
 RESOURCES += \
     LayoutEditor.qrc
+##include(../jmri_libs.prf)
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
@@ -887,8 +895,7 @@ win32_msvc: {
  QMAKE_CFLAGS_DEBUG += /wd4290
 }
 
-OTHER_FILES += \
-    libLayoutEditor.so.1.0
+OTHER_FILES +=
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
@@ -906,8 +913,7 @@ else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
 INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
 DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
 
-DISTFILES += \
-    drawroundrect.o
+DISTFILES +=
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt

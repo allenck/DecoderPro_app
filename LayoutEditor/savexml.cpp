@@ -1597,7 +1597,7 @@ QDomElement SaveXml::storeLnTurnouts(TurnoutManager *t)
 {
  ProxyTurnoutManager* pt = (ProxyTurnoutManager*)t;
  LnTurnoutManagerXml* xml = new LnTurnoutManagerXml();
- return xml->store((QObject*)pt->mgrs->at(0));
+ return xml->store((QObject*)pt->mgrs.at(0));
 }
 QDomElement SaveXml::storeLogix(LogixManager *m)
 {

@@ -7,6 +7,7 @@
 #include "actionlistener.h"
 #include "displayframe.h"
 
+class ConvertFrame;
 class QGraphicsSceneMouseEvent;
 class EditPortalDirection;
 class JDialog;
@@ -102,7 +103,7 @@ private:
     IndicatorItemPanel* _trackPanel;
     IndicatorTOItemPanel* _trackTOPanel;
     PositionableLabel* _oldIcon;
-    DisplayFrame* _convertFrame;     // must be modal dialog to halt convetIcons loop
+    ConvertFrame* _convertFrame;     // must be modal dialog to halt convetIcons loop
     QDialog* _convertDialog;     // must be modal dialog to halt convetIcons loop
     /*private*/ bool editingOK();
     /*private*/ QList<Positionable*>* makeSelectionGroup(OBlock* block, bool showPort);
@@ -115,7 +116,6 @@ private:
     /*private*/ void closeCircuitBuilder();
     /*private*/ void removePortalIcons();
     /*private*/ void convertIcon(Positionable* pos);
-    /*private*/ void makePalettteFrame(QString title);
     /*private*/ void convertTO();
     /*private*/ void setIconGroup(OBlock* block, QList<Positionable*>* selections);
     /*private*/ void finishConvert(Positionable* pos);
@@ -189,7 +189,7 @@ protected slots:
  friend class EditPortalFrame;
  friend class EditPortalDirection;
  friend class PortalIcon;
-
+ friend class ConvertFrame;
 };
 
 class TOPActionListener : public ActionListener
@@ -203,13 +203,16 @@ public:
 public slots:
  void actionPerformed(ActionEvent *e = 0);
 };
-/*static*/ class convertFrame : public DisplayFrame {
-    Q_OBJECT
-    QDialog* _dialog;
-    CircuitBuilder* parent;
+
+class ConvertFrame : public JmriJFrame {
+Q_OBJECT
+    JDialog* _dialog;
+    DisplayFrame* _paletteFrame;
+    CircuitBuilder* circuitBuilder;
 public:
-    convertFrame (QDialog* dialog, CircuitBuilder* parent) ;
-    /*public*/ void pack();
+    ConvertFrame(QString title, PositionableLabel* pos,CircuitBuilder* circuitBuilder) ;
+    /*public*/ void dispose();
+    friend class CircuitBuilder;
 };
 
 class EditCircuitActionListener : public ActionListener

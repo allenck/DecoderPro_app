@@ -5,7 +5,10 @@
 #include "propertychangelistener.h"
 #include <QComboBox>
 #include <QMap>
+#include "abstracttablemodel.h"
+#include "decimalformat.h"
 
+class SpeedStep;
 class LayoutBlock;
 class QElapsedTimer;
 class Sensor;
@@ -36,6 +39,7 @@ class SpeedProfilePanel : public JmriPanel
  Q_OBJECT
 public:
  explicit SpeedProfilePanel(QWidget *parent = 0);
+ /*public*/ SpeedProfilePanel(RosterSpeedProfile* speedProfile, QMap<int, bool>* anomalies, QWidget* parent = nullptr);
 
 signals:
 
@@ -57,6 +61,7 @@ private:
  QPushButton* testButton;// = new QPushButton(tr("ButtonTest"));
  JTextField* lengthField;// = new JTextField(10);
  JTextField* speedStepFrom;// = new JTextField(10);
+ JTable* _table;
 
  // Start or finish sensor
  //BeanSelectCreatePanel* sensorAPanel;// = new BeanSelectCreatePanel(InstanceManager::sensorManagerInstance(), NULL);
@@ -83,7 +88,7 @@ private:
  int finishSpeedStep;
  RosterSpeedProfile* rosterSpeedProfile;
  void setupProfile();
- Logger* log;
+ static Logger* log;
  QTimer* overRunTimer;// = NULL;
  void setButtonStates(bool state);
  PropertyChangeListener* startListener;// = NULL;
@@ -149,6 +154,7 @@ protected:
 friend class FinishListener;
 friend class StartListenerA;
 friend class StartListenerB;
+friend class SpeedTableModel;
 };
 /*static*/ class SensorDetails : public QObject
 {
@@ -196,7 +202,40 @@ public:
  FinishListener(SpeedProfilePanel* panel);
 public slots:
  void propertyChange(PropertyChangeEvent *e);
+private:
 
+};
+/*static*/ class SpeedTableModel : public AbstractTableModel
+{
+    Q_OBJECT
+
+    DecimalFormat* threeDigit;// = new java.text.DecimalFormat("0.000");
+    QList<QMapIterator<int, SpeedStep*> > speedArray;// = new  ArrayList<>();
+    RosterSpeedProfile* profile;
+    bool _editable;
+    QMap<int, bool>* _anomaly;
+public:
+    enum COLUMNS
+    {
+     STEP_COL = 0,
+     THROTTLE_COL = 1,
+     FORWARD_SPEED_COL = 2,
+     REVERSE_SPEED_COL = 3,
+     NUMCOLS = 4
+    };
+    SpeedTableModel(RosterSpeedProfile* sp, QMap<int, bool>* anomaly, QObject* parent = nullptr);
+    void setEditable(bool set );
+    QMap<int, bool>* getAnomalies();
+    QMapIterator<int, SpeedStep*> getEntry(int row);
+    int getRow(QMapIterator<int, SpeedStep*> entry);
+    int rowCount(const QModelIndex &parent) const;
+    /*public*/ int columnCount(const QModelIndex &parent) const;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    //public Class<?> getColumnClass(int col);
+    /*public*/ int getPreferredWidth(int col);
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
 
 #endif // SPEEDPROFILEPANEL_H

@@ -8,6 +8,7 @@
 #include <QColor>
 #include "libPr3_global.h"
 
+class DestinationPoints;
 class SignalMastLogicManager;
 class LayoutBlock;
 class LayoutEditor;
@@ -131,6 +132,7 @@ public:
     /*public*/ QColor getSettingRouteColor();
     /*public*/ void setSettingRouteColor(QColor col);
     /*public*/ bool isAssignableFromType() {return true;}
+    /*public*/ QSet<NamedBean*> getNamedBeanSet();
 
 signals:
     void propertyChange(PropertyChangeEvent*);

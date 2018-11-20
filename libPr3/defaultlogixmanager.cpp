@@ -11,9 +11,24 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     LogixManager(parent)
 {
  setObjectName("DefaultLogixManager");
+ setProperty("JavaClassName", "jmri.managers.DefaultLogixManager");
+
  log = new Logger("DefaultLogixManager");
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
+#if 0
+ jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
+         jmri.InstanceManager.sensorManagerInstance().addVetoableChangeListener(this);
+         jmri.InstanceManager.memoryManagerInstance().addVetoableChangeListener(this);
+         jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
+         jmri.InstanceManager.getDefault(jmri.SignalMastManager.class).addVetoableChangeListener(this);
+         jmri.InstanceManager.getDefault(jmri.BlockManager.class).addVetoableChangeListener(this);
+         jmri.InstanceManager.lightManagerInstance().addVetoableChangeListener(this);
+         jmri.InstanceManager.getDefault(jmri.ConditionalManager.class).addVetoableChangeListener(this);
+         InstanceManager.getDefault(jmri.jmrit.logix.WarrantManager.class).addVetoableChangeListener(this);
+         InstanceManager.getDefault(jmri.jmrit.logix.OBlockManager.class).addVetoableChangeListener(this);
+         InstanceManager.getDefault(jmri.jmrit.entryexit.EntryExitPairs.class).addVetoableChangeListener(this);
+#endif
 }
 /**
  * Basic Implementation of a LogixManager.

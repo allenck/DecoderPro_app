@@ -26,8 +26,8 @@
 
 //    /*public*/ final static ResourceBundle rbcp = ControlPanelEditor.rbcp;
 
-/*public*/ ShapeDrawer::ShapeDrawer(ControlPanelEditor* ed, QWidget *parent) :
-QWidget(parent)
+/*public*/ ShapeDrawer::ShapeDrawer(ControlPanelEditor* ed, QObject *parent) :
+QObject(parent)
 {
     _editor = ed;
     _creatingNewShape = false;

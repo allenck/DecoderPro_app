@@ -14,6 +14,7 @@
 #include "carload.h"
 #include "carloads.h"
 #include <QComboBox>
+#include "instancemanager.h"
 
 //CarManager::CarManager(QObject *parent) :
 //  RollingStockManager(parent)
@@ -37,29 +38,18 @@ RollingStockManager(parent)
  {
   log = new Logger("CarManager");
   _kernelHashTable = QHash<QString, Kernel*>();
+  setProperty("InstanceManagerAutoDefault", "true");
+  setProperty("InstanceManagerAutoInitialize", "true");
+
  }
 
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ CarManager* CarManager::_instance = NULL;
+ // /*private*/ /*static*/ CarManager* CarManager::_instance = NULL;
 
  /*public*/ /*static*/ /*synchronized*/ CarManager* CarManager::instance() {
- Logger* log = new Logger("CarManager");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("CarManager creating instance");
-         }
-         // create and load
-         _instance = new CarManager();
-         OperationsSetupXml::instance(); // load setup
-         // create manager to load cars and their attributes
-         CarManagerXml::instance();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("CarManager returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
+  return static_cast<CarManager*>(InstanceManager::getDefault("CarManager"));
  }
 
  /**
@@ -646,5 +636,12 @@ RollingStockManager(parent)
      CarManagerXml::instance()->setDirty(true);
      RollingStockManager::firePropertyChange(p, old, n);
  }
+
+//Override
+   /*public*/ void CarManager::initialize() {
+       InstanceManager::getDefault("OperationsSetupXml"); // load setup
+       // create manager to load cars and their attributes
+       InstanceManager::getDefault("CarManagerXml");
+   }
 
 }

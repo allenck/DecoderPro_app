@@ -24,6 +24,20 @@
 #include "decimalformat.h"
 #include "actionevent.h"
 #include "jmriuserpreferencesmanager.h"
+#include "signalmastaddpane.h"
+#include <QGridLayout>
+#include <QFormLayout>
+#include "flowlayout.h"
+#include "signalsystemmanager.h"
+#include "connectionnamefromsystemname.h"
+#include "dccsignalmast.h"
+#include "lncpsignalmast.h"
+#include "joptionpane.h"
+#include "exceptions.h"
+#include "runtimeexception.h"
+#include <QFile>
+#include <QUrl>
+#include "loggerfactory.h"
 
 //AddSignalMastPanel::AddSignalMastPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -43,484 +57,365 @@
 /*public*/ AddSignalMastPanel::AddSignalMastPanel(QWidget *parent) :
     QWidget(parent)
 {
- init();
+ log->debug("AddSignalMastPanel()");
+  init();
+}
+
+void AddSignalMastPanel::init()
+{
+ // head matter
+ userName = new JTextField(20); // N11N
+ sigSysBox = new QComboBox();  // the basic signal system
+ mastBox = new QComboBox(); //new String[]{tr("MastEmpty")}); // the mast within the system NOI18N
+ mastBox->addItem(tr("select a System first"));
+ mastBoxPassive = false; // if true, mastBox doesn't process updates
+ panes =QList<SignalMastAddPane*>();
+
+ // center pane, which holds the specific display
+ centerPanel = new QStackedWidget();
+ centerPanel->setMaximumHeight(400);
+ //cl = new QFormLayout();
+ centerPanelLabel = new QLabel();
+
+ // rest of structure
+ signalHeadPanel = new QGroupBox();
+ signalHeadPanel->setLayout(new QVBoxLayout());
+ cancel = new QPushButton(tr("Cancel")); // NOI18N
+ apply = new QPushButton(tr("Apply")); // NOI18N
+ create = new QPushButton(tr("Create")); // NOI18N
+ // connection to preferences
+ prefs = static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"));
+ systemSelectionCombo = QString("jmri.jmrit.beantable.signalmast.AddSignalMastPanel") + ".SignallingSystemSelected"; // NOI18N
+ mastSelectionCombo = QString("jmri.jmrit.beantable.signalmast.AddSignalMastPanel")+ ".SignallingMastSelected"; // NOI18N
+ driverSelectionCombo = QString("jmri.jmrit.beantable.signalmast.AddSignalMastPanel") + ".SignallingDriverSelected"; // NOI18N
+
+ // signal system definition variables
+ mastFiles = QList<File*>(); // signal system definition files
+ mapNameToShowSize = QMap<QString, int>();
+ mapTypeToName = QMap<QString, QString>();
 
 
 
+ // get the list of possible signal types (as shown by panes)
+ // SignalMastAddPane::SignalMastAddPaneProvider::getInstancesCollection().forEach(
+ //     (provider)->
+ foreach(SignalMastAddPane::SignalMastAddPaneProvider* provider, SignalMastAddPane::SignalMastAddPaneProvider::getInstancesCollection())
+ {
+  if (provider->isAvailable()) {
+      panes.append(provider->getNewPane());
+  }
+ }
+ //);
+
+ { // scoping for temporary variables
+
+  QVector<QString> tempMastNamesArray = QVector<QString>(panes.size());
+  int i = 0;
+  for (SignalMastAddPane* pane : panes) {
+      tempMastNamesArray.replace(i++, pane->getPaneName());
+  }
+  signalMastDriver = new QComboBox(/*tempMastNamesArray*/);
+  signalMastDriver->addItems(tempMastNamesArray.toList());
+ }
+
+ //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+ QVBoxLayout* thisLayout = new QVBoxLayout(this);
+
+ QWidget* p;
+ p = new QWidget(centerPanelLabel);
+ QGridLayout* pLayout = new QGridLayout(p/*5, 2*/);
+
+ QLabel* l = new QLabel(tr("User Name")+ ": ");  // NOI18N
+ pLayout->addWidget(l,0,0);
+ pLayout->addWidget(userName, 0,1);
+
+ l = new QLabel(tr("Signal System") + ": "); // NOI18N
+ pLayout->addWidget(l,1,0);
+ pLayout->addWidget(sigSysBox,1,1);
+
+ l = new QLabel(tr("Mast Type") + ": "); // NOI18N
+ pLayout->addWidget(l,2,0);
+ pLayout->addWidget(mastBox, 2,1);
+
+ l = new QLabel(tr("Driver Type") + ": "); // NOI18N
+ pLayout->addWidget(l,3,0);
+ pLayout->addWidget(signalMastDriver,3,1);
+
+ thisLayout->addWidget(p);
+
+ // central region
+ //centerPanel->setLayout(cl);
+ for (SignalMastAddPane* pane : panes) {
+     //cl->addRow(pane->getPaneName(), pane); // assumes names are systemwide-unique
+  centerPanel->addWidget(pane);
+ }
+ thisLayout->addWidget(centerPanelLabel);
+ thisLayout->addWidget(centerPanel);
+// signalMastDriver.addItemListener(new ItemListener(){
+//     public void itemStateChanged(ItemEvent evt) {
+//             log.trace("about to call selection() from signalMastDriver itemStateChanged");
+//             selection((String)evt.getItem());
+//         }
+// });
+ connect(signalMastDriver, SIGNAL(currentIndexChanged(int)), this, SLOT(onSignalMastDriverSelected()));
+
+ // button region
+ QWidget* buttonHolder = new QWidget();
+ QHBoxLayout* buttonHolderLayout;
+ buttonHolder->setLayout(buttonHolderLayout =new QHBoxLayout(/*FlowLayout::TRAILING*/));
+ cancel->setVisible(true);
+ buttonHolderLayout->addWidget(cancel);
+// cancel.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         cancelPressed();
+//     } // Cancel button
+// });
+ connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancelPressed()));
+ cancel->setVisible(true);
+ buttonHolderLayout->addWidget(create);
+// create.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         okPressed();
+//     } // Create button on add new mast pane
+// });
+ connect(create, SIGNAL(clicked(bool)),this, SLOT(okPressed()));
+ create->setVisible(true);
+ buttonHolderLayout->addWidget(apply);
+// apply.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         okPressed();
+//     } // Apply button on Edit existing mast pane
+// });
+ connect(apply, SIGNAL(clicked(bool)), this, SLOT(okPressed(ActionEvent*)));
+ apply->setVisible(false);
+ thisLayout->addWidget(buttonHolder,0,Qt::AlignRight); // add bottom row of buttons (to me)
+
+ // default to 1st pane
+ currentPane = panes.at(0);
+ centerPanelLabel->setText(currentPane->getPaneName());
+
+ // load the list of signal systems
+ SignalSystemManager* man = static_cast<SignalSystemManager*>(InstanceManager::getDefault("SignalSystemManager"));
+ QSet<NamedBean*> systems = man->getNamedBeanSet();
+ for (NamedBean* system : systems) {
+     sigSysBox->addItem(((SignalSystem*)system)->getUserName());
+ }
+ if (prefs->getComboBoxLastSelection(systemSelectionCombo) != nullptr) {
+     sigSysBox->setCurrentText(prefs->getComboBoxLastSelection(systemSelectionCombo));
+ }
+ log->trace(tr("  preferences set %1 into sigSysBox").arg(sigSysBox->currentIndex()));
+
+ loadMastDefinitions();
+
+ // select the 1st one
+ selection(panes.at(0)->getPaneName());  // there has to be at least one, so we can do the update
+
+ // set a remembered signalmast type, if present
+ if (prefs->getComboBoxLastSelection(driverSelectionCombo) != nullptr) {
+     signalMastDriver->setCurrentText(prefs->getComboBoxLastSelection(driverSelectionCombo));
+ }
+
+// sigSysBox.addItemListener(new ItemListener() {
+//     @Override
+//     public void itemStateChanged(ItemEvent e) {
+//         loadMastDefinitions();
+//         updateSelectedDriver();
+//     }
+// });
+ connect(sigSysBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sigSysBox_currentIndexChanged(int)));
+}
+
+/**
+ * Select a particular signal implementation to display
+ */
+void AddSignalMastPanel::selection(QString view) {
+    log->trace(tr(" selection(%1) start").arg(view));
+    // find the new pane
+    for (SignalMastAddPane* pane : panes) {
+        if (pane->getPaneName() == (view)) {
+            currentPane = pane;
+            centerPanel->setCurrentWidget(currentPane);
+            centerPanelLabel->setText(currentPane->getPaneName());
+        }
+    }
+
+    // update that selected pane before display
+    updateSelectedDriver();
+
+    // and show
+ //   cl->show(centerPanel, view);
+    log->trace(tr(" selection(%1) end").arg(view));
 }
 
 /*public*/ AddSignalMastPanel::AddSignalMastPanel(SignalMast* mast, QWidget *parent) :
     QWidget(parent)
 {
-    init();
-    inEditMode=true;
-    this->mast=mast;
-    sigSysBox->setEnabled(false);
-    mastBox->setEnabled(false);
-    signalMastDriver->setEnabled(false);
-    userName->setText(mast->getUserName());
-    userName->setEnabled(false);
-    //sigSysBox->setCurrentIndex(sigSysBox->findText(((AbstractSignalMast*)mast)->getSignalSystem()->getSystemName()));
-   sigSysBox->setCurrentIndex(sigSysBox->findText(((AbstractSignalMast*)mast)->getSignalSystem()->getUserName()));
-   loadMastDefinitions();
+ init();
+ log->debug(tr("AddSignalMastPanel(%1) start").arg(mast->getDisplayName()));
 
-    QString mastType = "appearance-" + extractMastTypeFromMast(((AbstractSignalMast*)mast)->getSystemName())+".xml";
-    for(int i = 0; i<mastNames->size(); i++)
-    {
-     if (mastNames->at(i).fileName().endsWith(mastType))
-     {
-      mastBox->setCurrentIndex(i);
-      break;
-     }
-    }
-    mastNames->at(mastBox->currentIndex()).fileName();
+ // switch buttons
+ apply->setVisible(true);
+ create->setVisible(false);
 
-    signalMastDriver->setEnabled(false);
+ this->mast = mast;
 
-    systemPrefixBoxLabel->setEnabled(true);
-    systemPrefixBox->setEnabled(true);
-    dccAspectAddressLabel->setEnabled(true);
-    dccAspectAddressField->setEnabled(true);
+ // can't change some things from original settings
+ sigSysBox->setEnabled(false);
+ mastBox->setEnabled(false);
+ signalMastDriver->setEnabled(false);
+ userName->setEnabled(false);
 
-    //if(mast instanceof SignalHeadSignalMast)
-    if(qobject_cast<SignalHeadSignalMast*>(mast)!=NULL)
-    {
-        signalMastDriver->setCurrentIndex(signalMastDriver->findText(tr("Signal Head Controlled Mast")));
-        updateSelectedDriver();
+ //load prior content
+ userName->setText(mast->getUserName());
+ log->trace(tr("Prior content system name: %1  mast type: %2").arg( mast->getSignalSystem()->getUserName()).arg(mast->getMastType()));
+ if (mast->getMastType() == nullptr) log->error("MastType was null, and never should be");
+ sigSysBox->setCurrentText(mast->getSignalSystem()->getUserName());  // signal system
 
-        signalHeadPanel->setVisible(false);
-
-        QStringList* disabled = ((SignalHeadSignalMast*)mast)->getDisabledAspects();
-        if(disabled!=NULL){
-            foreach(QString aspect, *disabled){
-                if(disabledAspects->contains(aspect)){
-                    disabledAspects->value(aspect)->setChecked(true);
-                }
-            }
-        }
-
-    }
-    //else if(mast instanceof jmri.implementation.TurnoutSignalMast)
-    if(qobject_cast<TurnoutSignalMast*>(mast)!=NULL)
-    {
-
-     signalMastDriver->setCurrentIndex(signalMastDriver->findText(tr("Turnout Controlled Mast")));
-
-     updateSelectedDriver();
-     SignalAppearanceMap* appMap = ((TurnoutSignalMast*)mast)->getAppearanceMap();
-     TurnoutSignalMast* tmast = (TurnoutSignalMast*) mast;
-
-     if(appMap!=NULL)
-     {
-      QStringListIterator aspects (appMap->getAspects());
-      while(aspects.hasNext())
-      {
-        QString key = aspects.next();
-        TurnoutAspectPanel* turnPanel = turnoutAspect->value(key);
-        turnPanel->setSelectedTurnout(tmast->getTurnoutName(key));
-        turnPanel->setTurnoutState(tmast->getTurnoutState(key));
-        turnPanel->setAspectDisabled(tmast->isAspectDisabled(key));
-      }
-     }
-     if(tmast->resetPreviousStates())
-      resetPreviousState->setChecked(true);
-    }
-    //else if (mast instanceof jmri.implementation.VirtualSignalMast)
-    if(qobject_cast<VirtualSignalMast*>(mast)!=NULL)
-    {
-     signalMastDriver->setCurrentIndex(signalMastDriver->findText(tr("Virtual Mast")));
-     updateSelectedDriver();
-     QStringList* disabled = ((VirtualSignalMast*)mast)->getDisabledAspects();
-     if(disabled!=NULL)
-     {
-      foreach(QString aspect, *disabled)
-      {
-       if(disabledAspects->contains(aspect))
-       {
-        disabledAspects->value(aspect)->setChecked(true);
-       }
-      }
-     }
-    }
-#if 0 // TODO: if DCCSignalMast implemented
-    //else if (mast instanceof jmri.implementation.DccSignalMast)
-    if(qobject_cast<DccSignalMast*>(mast)!=NULL)
-    {
-        //if(mast instanceof jmri.jmrix.loconet.LNCPSignalMast)
-        if(qobject_cast<LNCPSignalMast*>(mast)!=NULL)
-        {
-            signalMastDriver->setCurrentIndex(signalMastDriver->findText(tr("LNCPMast")));
-        } else {
-            signalMastDriver->setCurrentIndex(signalMastDriver->findText(tr("DCCMast")));
-        }
-
-        updateSelectedDriver();
-        SignalAppearanceMap* appMap = mast->getAppearanceMap();
-        DccSignalMast* dmast = (DccSignalMast) mast;
-
-        if(appMap!=NULL){
-            java.util.Enumeration<QString> aspects = appMap.getAspects();
-            while(aspects.hasMoreElements()){
-                QString key = aspects.nextElement();
-                DCCAspectPanel dccPanel = dccAspect.get(key);
-                dccPanel.setAspectId(dmast.getOutputForAppearance(key));
-                dccPanel.setAspectDisabled(dmast.isAspectDisabled(key));
-            }
-        }
-        java.util.List<Object> connList = jmri.InstanceManager.getList(jmri.CommandStation.class);
-        if(connList!=NULL){
-            for(int x = 0; x < connList.size(); x++){
-                jmri.CommandStation station = (jmri.CommandStation) connList.get(x);
-                systemPrefixBox.addItem(station.getUserName());
-            }
-        } else {
-            systemPrefixBox.addItem("None");
-        }
-        dccAspectAddressField.setText(QString::number(dmast.getDccSignalMastAddress()));
-        systemPrefixBox->setCheckedItem(dmast.getCommandStation().getUserName());
-
-        systemPrefixBoxLabel->setEnabled(false);
-        systemPrefixBox->setEnabled(false);
-        dccAspectAddressLabel->setEnabled(false);
-        dccAspectAddressField->setEnabled(false);
-    }
-#endif
-    cancel->setVisible(true);
-//    cancel.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            ((jmri.util.JmriJFrame)getTopLevelAncestor()).dispose();
-//        }
-//    });
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
-}
-
-QString AddSignalMastPanel::extractMastTypeFromMast(QString name){
-    QStringList parts = name.split(":");
-    return parts.at(2).mid(0, parts.at(2).indexOf("("));
-}
-void AddSignalMastPanel::init()
-{
-    log = new Logger("AddSignalMastPanel");
-    systemSelectionCombo = QString()+ this->metaObject()->className()+".SignallingSystemSelected";
-    mastSelectionCombo = QString()+this->metaObject()->className()+".SignallingMastSelected";
-    driverSelectionCombo = QString()+this->metaObject()->className()+".SignallingDriverSelected";
-    alreadyUsed = new QList<NamedBean*>();
-    signalMastDriver = new QComboBox();
-    QStringList l1 = QStringList();
-    l1 <<  tr("Signal Head Controlled Mast")<< tr("Turnout Controlled Mast")<< tr("Virtual Mast");
-    signalMastDriver->addItems(l1);
-    prefs = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-    signalHeadPanel = new QGroupBox();
-    turnoutMastPanel = new QWidget();
-    dccMastPanel = new QWidget();
-    systemPrefixBoxLabel = new QLabel(tr("System") + ":");
-    systemPrefixBox = new QComboBox();
-    dccAspectAddressLabel = new QLabel(tr("DCC Accessory Address"));
-    dccAspectAddressField = new JTextField(5);
-
-    cancel = new QPushButton(tr("Cancel"));
-
-    mast = NULL;
-
-    userName = new JTextField(20);
-    sigSysBox = new QComboBox();
-    mastBox = new QComboBox();
-    includeUsed = new QCheckBox(tr("Include previously used Signal Heads"));
-    resetPreviousState = new QCheckBox(tr("Reset previous appearance."));
-
-    mastNames = new QList<QFileInfo>();
-
-    disabledAspects = new QMap<QString, QCheckBox*>(); // need 10
-    disabledAspectsPanel = new QGroupBox();
-    inEditMode = false;
-    map = new QMap<QString, int>();
-    headList = new QList<JmriBeanComboBox*>(); // need 5
-
-    turnoutAspect = new QMap<QString, TurnoutAspectPanel*>(); // need 1o
-    dccAspect = new QMap<QString, DCCAspectPanel*>(); // need 10
-    paddedNumber = new DecimalFormat("0000");
-
-    // Define panel
-
-    //Only allow the creation of DCC SignalMast if a command station instance is present, otherwise it will not work, so no point in adding it.
-    if(InstanceManager::getList("CommandStation")!=NULL)
-    {
-     signalMastDriver->addItem(tr("DCC Signal Mast Decoder"));
-     QObjectList* connList = InstanceManager::getList("CommandStation");
-     for(int x = 0; x < connList->size(); x++)
-     {
-      //if(connList.get(x) instanceof jmri.jmrix.loconet.SlotManager)
-      if(qobject_cast<SlotManager*>(connList->at(x)))
-      {
-       signalMastDriver->addItem(tr("LNCP Signal Mast Decoder"));
-       break;
-      }
-     }
-    }
-
-    refreshHeadComboBox();
-    setLayout(new QVBoxLayout(this/*, BoxLayout.Y_AXIS*/));
-
-    QWidget* p;
-    p = new QWidget();
-    QFont font;
-    font.setPointSize(9);
-    p->setFont(font);
-    QGridLayout* g;
-    p->setLayout(g = new QGridLayout()); //jmri.util.javaworld.GridLayout2(4,2));
-    g->setSpacing(1);
-    QLabel* l = new QLabel(tr("User Name:"));
-    g->addWidget(l,0,0);
-    g->addWidget(userName, 0,1);
-
-    l = new QLabel(tr("Signal system")+": ");
-    g->addWidget(l,1,0);
-    g->addWidget(sigSysBox, 1,1);
-
-    l = new QLabel(tr("Mast type")+": ");
-    g->addWidget(l,2,0);
-    g->addWidget(mastBox, 2, 1);
-
-    layout()->addWidget(p);
-
-    l = new QLabel(tr("Select Mast Driver")+": ");
-    g->addWidget(l, 3,0);
-    g->addWidget(signalMastDriver, 3,1);
-    layout()->addWidget(p);
-
-
-    //TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
-    signalHeadPanel = new QGroupBox();
-    signalHeadPanel->setTitle("Signal Heads");
-    signalHeadPanel->setLayout(new QVBoxLayout());
-    signalHeadPanel->setVisible(false);
-    layout()->addWidget(signalHeadPanel);
-
-    //TitledBorder disableborder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
-    disabledAspectsPanel = new QGroupBox();
-    disabledAspectsPanel->setTitle("Disable Specific Aspects");
-    disabledAspectsPanel->setLayout(disabledAspectsPanelLayout = new QGridLayout());
-    layout()->addWidget(disabledAspectsPanel);
-
-    turnoutMastScroll = new QScrollArea();
-    turnoutMastScroll->setVisible(false);
-    layout()->addWidget(turnoutMastScroll);
-    turnoutMastScroll->setWidget(turnoutMastPanel);
-
-    dccMastScroll = new QScrollArea();
-    dccMastScroll->setVisible(false);
-    layout()->addWidget(dccMastScroll);
-    dccMastScroll->setWidget(dccMastPanel);
-
-    QPushButton* ok;
-    QWidget* buttonHolder = new QWidget();
-    buttonHolder->setLayout(new QHBoxLayout());
-    buttonHolder->layout()->addWidget(ok = new QPushButton(tr("OK")));
-   //    ok.addActionListener(new ActionListener() {
-   //        /*public*/ void actionPerformed(ActionEvent e) {
-   //            okPressed(e);
-   //        }
-   //    });
-    connect(ok, SIGNAL(clicked()), this, SLOT(okPressed()));
-    cancel->setVisible(false);
-    buttonHolder->layout()->addWidget(cancel);
-
-    layout()->addWidget(buttonHolder);
-
-    if(prefs->getComboBoxLastSelection(driverSelectionCombo)!=NULL)
-           signalMastDriver->setCurrentIndex(signalMastDriver->findText(prefs->getComboBoxLastSelection(driverSelectionCombo)));
-
-   //    signalMastDriver.addActionListener(new ActionListener() {
-   //        /*public*/ void actionPerformed(ActionEvent e) {
-   //            updateSelectedDriver();
-   //        }
-   //    });
-    connect(signalMastDriver, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSelectedDriver()));
-   //    includeUsed.addActionListener(new ActionListener() {
-   //        /*public*/ void actionPerformed(ActionEvent e) {
-   //            refreshHeadComboBox();
-   //        }
-   //    });
-    connect(includeUsed, SIGNAL(toggled(bool)), this, SLOT(refreshHeadComboBox()));
-    // load the list of systemssignalMastDriver
-    SignalSystemManager* man = InstanceManager::signalSystemManagerInstance();
-    QStringList names = ((DefaultSignalSystemManager*)man)->getSystemNameArray();
-    for (int i = 0; i < names.count(); i++)
-    {
-     //qDebug() << ((DefaultSignalSystem*)((DefaultSignalSystemManager*)man)->getSystem(names.at(i)))->getUserName();
-     sigSysBox->addItem(((DefaultSignalSystem*)((DefaultSignalSystemManager*)man)->getSystem(names.at(i)))->getUserName());
-    }
-    if(prefs->getComboBoxLastSelection(systemSelectionCombo)!=NULL)
-     sigSysBox->setCurrentIndex(sigSysBox->findText(prefs->getComboBoxLastSelection(systemSelectionCombo)));
-    if(sigSysBox->currentIndex() < 0) sigSysBox->setCurrentIndex(0);
-    qDebug() << QString("sigSysBox current text = %1, index %2").arg(sigSysBox->currentText()).arg(sigSysBox->currentIndex());
-    loadMastDefinitions();
-    updateSelectedDriver();
-    updateHeads();
-    refreshHeadComboBox();
-   // sigSysBox.addItemListener(new ItemListener(){
-   //        /*public*/ void itemStateChanged(ItemEvent e) {
-   //            loadMastDefinitions();
-   //            updateSelectedDriver();
-   //        }
-   //    });
-    connect(sigSysBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sigSysBox_currentIndexChanged(int)));
-}
-/*protected*/ void AddSignalMastPanel::updateSelectedDriver() // SLOT[]
-{
- if(mastBox->currentIndex() <0) return;
- signalHeadPanel->setVisible(false);
- turnoutMastScroll->setVisible(false);
- disabledAspectsPanel->setVisible(false);
- dccMastScroll->setVisible(false);
- if(tr("Turnout Controlled Mast")==(signalMastDriver->currentText()))
+ // select and show
+ for (SignalMastAddPane* pane : panes)
  {
-  updateTurnoutAspectPanel();
-  turnoutMastScroll->setVisible(true);
+  if (pane->canHandleMast(mast))
+  {
+   currentPane = pane;
+   // set the driver combobox
+   signalMastDriver->setCurrentText(pane->getPaneName());
+   log->trace("About to call selection() from SignalMastAddPane loop in AddSignalMastPanel(SignalMast mast)");
+   selection(pane->getPaneName());
+
+   // Ensure that the mast type is set
+   mastBoxPassive = false;
+   if (mapTypeToName.value(mast->getMastType()) == nullptr ) {
+       log->error(tr("About to set mast to null, which shouldn't happen. mast.getMastType() is %1").arg(mast->getMastType()),
+                Exception("Traceback Exception")); // NOI18N
+   }
+   log->trace(tr("set mastBox to \"%1\" from \"%2\"").arg( mapTypeToName.value(mast->getMastType())).arg(mast->getMastType())); // NOI18N
+   mastBox->setCurrentText(mapTypeToName.value(mast->getMastType()));
+
+   pane->setMast(mast);
+   break;
+  }
  }
- else if(tr("Signal Head Controlled Mast")==(signalMastDriver->currentText()))
- {
-  updateHeads();
-  updateDisabledOption();
-  signalHeadPanel->setVisible(true);
-  disabledAspectsPanel->setVisible(true);
- }
- else if(tr("Virtual Mast")==(signalMastDriver->currentText()))
- {
-  updateDisabledOption();
-  disabledAspectsPanel->setVisible(true);
- }
- else if ((tr("DCC Signal Mast Decoder")==(signalMastDriver->currentText())) || (tr("LNCP Signal Mast Decoder")==(signalMastDriver->currentText())))
- {
-  updateDCCMastPanel();
-  dccMastScroll->setVisible(true);
- }
- //validate();
-// if (getTopLevelAncestor()!=NULL)
-// {
-//  ((jmri.util.JmriJFrame)getTopLevelAncestor()).setSize(((jmri.util.JmriJFrame)getTopLevelAncestor()).getPreferredSize());
-//        ((jmri.util.JmriJFrame)getTopLevelAncestor()).pack();
-// }
-// repaint();
-}
 
+ // set mast type, suppress notification
+ mastBoxPassive = true;
+ QString newMastType = mapTypeToName.value(mast->getMastType());
+ log->debug(tr("Setting type to %1").arg(newMastType)); // NOI18N
+ mastBox->setCurrentText(newMastType);
+ mastBoxPassive = false;
 
-void AddSignalMastPanel::updateDisabledOption(){
-    QString mastType = mastNames->at(mastBox->currentIndex()).baseName();
-    mastType =  mastType.mid(11, mastType.indexOf(".xml"));
-    DefaultSignalAppearanceMap* sigMap = DefaultSignalAppearanceMap::getMap(sigsysname, mastType);
-    QStringListIterator aspects (sigMap->getAspects());
-    disabledAspects = new QMap<QString, QCheckBox*>(); // need 5
-
-    while(aspects.hasNext()){
-        QString aspect = aspects.next();
-        QCheckBox* disabled = new QCheckBox(aspect);
-        disabledAspects->insert(aspect, disabled);
-    }
-    //disabledAspectsPanel->clear();
-    QLayoutItem * item;
-    QLayout * sublayout;
-    QWidget * widget;
-    while ((item = disabledAspectsPanelLayout->takeAt(0)))
-    {
-     if ((sublayout = item->layout()) != 0) {/* do the same for sublayout*/}
-     else if ((widget = item->widget()) != 0) {widget->hide(); delete widget;}
-     else {delete item;}
-    }
-    delete disabledAspectsPanelLayout;
-
-    disabledAspectsPanel->setLayout(disabledAspectsPanelLayout = new QGridLayout());
-    disabledAspectsPanelLayout->setSpacing(1);
-    for(int i=0; i< disabledAspects->size(); i++)
-    {
-     QString aspect = disabledAspects->keys().at(i);
-
-     //disabledAspectsPanel.add(disabledAspects->get(aspect));
-     disabledAspectsPanelLayout->addWidget(disabledAspects->value(aspect), i, 0);
-    }
+ log->debug(tr("AddSignalMastPanel(%1) end").arg(mast->getDisplayName()));
 }
 
 void AddSignalMastPanel::loadMastDefinitions()
 {
+ log->trace(" loadMastDefinitions() start");
 //    // need to remove itemListener before addItem() or item event will occur
 //    if(mastBox.getItemListeners().length >0) {
 //        mastBox.removeItemListener(mastBox.getItemListeners()[0]);
 //    }
+ disconnect(mastBox, SIGNAL(currentIndexChanged(int)));
  mastBox->clear();
  try
  {
-  mastNames = new QList<QFileInfo>();
-  SignalSystemManager* man = InstanceManager::signalSystemManagerInstance();
+  mastFiles = QList<File*>();
+  SignalSystemManager* man = static_cast<SignalSystemManager*>(InstanceManager::getDefault("SignalSystemManager"));
 
   // get the signals system name from the user name in combo box
-  qDebug() << QString("sigSysBox current text = %1, index %2").arg(sigSysBox->currentText()).arg(sigSysBox->currentIndex());
-  if(sigSysBox->currentIndex() < 0) sigSysBox->setCurrentIndex(0);
-  QString u = (QString) sigSysBox->currentText();
-  sigsysname = ((DefaultSignalSystem*)((DefaultSignalSystemManager*)man)->getByUserName(u))->getSystemName();
+  QString u = sigSysBox->currentText();
+  sigsysname = man->getByUserName(u)->getSystemName();
+  log->trace(tr("     loadMastDefinitions with sigsysname %1").arg(sigsysname)); // NOI18N
+  mapNameToShowSize = QMap<QString, int>();
+  mapTypeToName = QMap<QString, QString>();
 
-   map = new QMap<QString, int>();
+  // do file IO to get all the appearances
+  // gather all the appearance files
+  // Look for the default system defined ones first
+  QList<File*> programDirArray = QList<File*>();
+  QUrl pathProgramDir = FileUtil::findURL("xml/signals/" + sigsysname, FileUtil::Location::INSTALLED); // NOI18N
+  if (!pathProgramDir.isEmpty()) programDirArray =  File(pathProgramDir.toString(QUrl::RemoveScheme)).listFiles();
+  if (programDirArray.isEmpty()) programDirArray = QList<File*>();
 
-   // do file IO to get all the appearances
-   // gather all the appearance files
-   //Look for the default system defined ones first
-   QList<QFileInfo> apps =  QDir(QString("")+"xml"+QDir::separator()+"signals"+QDir::separator()+sigsysname).entryInfoList();
-   if(!apps.isEmpty())
+  QList<File*> profileDirArray = QList<File*>();
+  QUrl pathProfileDir = FileUtil::findURL("resources/signals/" + sigsysname, FileUtil::Location::USER); // NOI18N
+  if (!pathProfileDir.isEmpty()) profileDirArray =  File(pathProfileDir.toString(QUrl::RemoveScheme)).listFiles();
+  if (profileDirArray.isEmpty()) profileDirArray = QList<File*>();
+
+  // create a composite list of files
+  //  QList<File*> apps = Arrays.copyOf(programDirArray, programDirArray.length + profileDirArray.length);
+  QList<File*> apps = QList<File*>(programDirArray);
+//  System.arraycopy(profileDirArray, 0, apps, programDirArray.length, profileDirArray.length);
+  foreach (File* f, profileDirArray)
+  {
+   apps.append(f);
+  }
+  if(!apps.isEmpty())
+  {
+   for (File* app : apps)
    {
-    for (int j=0; j<apps.count(); j++)
+    if (app->fileName().startsWith("appearance")
+                            && app->fileName().endsWith(".xml"))
     {
-     if (apps.at(j).fileName().startsWith("appearance")
-                            && apps.at(j).fileName().endsWith(".xml"))
-     {
-      log->debug("   found file: "+apps.at(j).fileName());
+      log->debug("   found file: "+app->fileName());
       // load it and get name
-      mastNames->append(apps.at(j));
+      mastFiles.append(app);
 
       XmlFile* xf = new XmlFile();
-      QDomElement root = xf->rootFromFile(new QFile(apps.at(j).absoluteFilePath()));
+      QDomElement root = xf->rootFromFile(new QFile(app->absoluteFilePath()));
       QString name = root.firstChildElement("name").text();
       mastBox->addItem(name);
-
-      map->insert(name, (root.firstChildElement("appearances")
-                        .firstChildElement("appearance")
-                        .elementsByTagName("show")
-                        .size()));
-     }
-     }
+      log->trace(tr("mapTypeToName adding key \"%1\" value \"%2\"").arg( app->getName().mid(11, app->getName().indexOf(".xml"))).arg(name)); // NOI18N
+      mapTypeToName.insert(app->getName().mid(11, app->getName().indexOf(".xml")), name); // NOI18N
+      mapNameToShowSize.insert(name, root.firstChildElement("appearances") // NOI18N
+                                      .firstChildElement("appearance") // NOI18N
+                                      .elementsByTagName("show") // NOI18N
+                                      .size());
     }
-   } catch (JDOMException e) {
-        mastBox->addItem("Failed to create definition, did you select a system?");
-        log->warn("in loadMastDefinitions"+ e.getMessage());
-   } catch (IOException e) {
-        mastBox->addItem("Failed to read definition, did you select a system?");
-        log->warn("in loadMastDefinitions" + e.getMessage());
    }
+  }
+  else {
+   log->error("Unexpected null list of signal definition files"); // NOI18N
+  }
+ } catch (JDOMException e)
+ {
+  mastBox->addItem("Failed to create definition, did you select a system?");
+  log->warn("in loadMastDefinitions"+ e.getMessage());
+ } catch (IOException e) {
+  mastBox->addItem("Failed to read definition, did you select a system?");
+  log->warn("in loadMastDefinitions" + e.getMessage());
+ }
 
-   try
-   {
-    QList<QFileInfo> apps =  QDir(FileUtil::getUserFilesPath()+"resources"+QDir::separator()
-                +"signals"+QDir::separator()+sigsysname).entryInfoList();
+ try
+ {
+  QStringList paths = QStringList() << "xml"<< "resources";
+  QUrl path = FileUtil::findURL(QString("signals/") + sigsysname, FileUtil::Location::USER, paths ); // NOI18N
+  if (!path.isEmpty())
+  {
+   QList<File*> apps =  File(path.toString(QUrl::RemoveScheme)).listFiles();
     if(!apps.isEmpty())
     {
-        for (int j=0; j<apps.count(); j++)
+     for (File* app : apps)
      {
-       if (apps.at(j).fileName().startsWith("appearance")
-                            && apps.at(j).fileName().endsWith(".xml"))
+       if (app->fileName().startsWith("appearance")
+                            && app->fileName().endsWith(".xml"))
        {
-        log->debug("   found file: "+apps.at(j).fileName());
+        log->debug("   found file: "+app->fileName());
         // load it and get name
         //If the mast file name already exists no point in re-adding it
-        if(!mastNames->contains(apps.at(j)))
+        if(!mastFiles.contains(app))
         {
-         mastNames->append(apps[j]);
+         mastFiles.append(app);
 
          XmlFile* xf = new XmlFile();
-         QDomElement root = xf->rootFromFile(new QFile(apps.at(j).filePath()));
+         QDomElement root = xf->rootFromFile(new QFile(app->getPath()));
          QString name = root.firstChildElement("name").text();
          //if the mast name already exist no point in readding it.
-         if(!map->contains(name))
+         if(!map.contains(name))
          {
           mastBox->addItem(name);
-          map->insert(name, (root.firstChildElement("appearances")
+          map.insert(name, (root.firstChildElement("appearances")
                                 .firstChildElement("appearance")
                                 .elementsByTagName("show")
                                 .size()));
@@ -529,8 +424,12 @@ void AddSignalMastPanel::loadMastDefinitions()
      }
     }
    }
-
-  } catch (JDOMException e) {
+   else
+    {
+     log->warn("No mast definition files found");
+    }
+  }
+ } catch (JDOMException e) {
         log->warn("in loadMastDefinitions"+ e.getMessage());
  } catch (IOException e) {
         //Can be considered normal
@@ -546,826 +445,184 @@ void AddSignalMastPanel::loadMastDefinitions()
 
     if(prefs->getComboBoxLastSelection(mastSelectionCombo+":"+((QString) sigSysBox->currentText()))!=NULL)
         mastBox->setCurrentIndex(mastBox->findText(prefs->getComboBoxLastSelection(mastSelectionCombo+":"+((QString) sigSysBox->currentText()))));
-
+ log->trace(" loadMastDefinitions() end");
 }
 
+/**
+ * Update contents of Add/Edit mast panel appropriate for chosen Driver
+ * type.
+ * <p>
+ * Invoked when selecting a Signal Mast Driver in {@link #loadMastDefinitions}
+ */
+/*protected*/ void AddSignalMastPanel::updateSelectedDriver() {
+    log->trace(" updateSelectedDriver() start");
 
-void AddSignalMastPanel::updateHeads()
-{
- if(tr("Signal Head Controlled Mast")!=(signalMastDriver->currentText()))
-  return;
- if (mastBox->currentText()=="")
-  return;
- int count = map->value(mastBox->currentText());
- headList = new QList<JmriBeanComboBox*>();  //need count
- QLayoutItem * item;
- QLayout * sublayout;
- QWidget * widget;
- while ((item = signalHeadPanel->layout()->takeAt(0))) {
-     if ((sublayout = item->layout()) != 0) {/* do the same for sublayout*/}
-     else if ((widget = item->widget()) != 0) {widget->hide(); delete widget;}
-     else {delete item;}
- }
- delete signalHeadPanel->layout();
- QGridLayout* g;
- signalHeadPanel->setLayout(g = new QGridLayout()); //jmri.util.javaworld.GridLayout2(count+1,1));
- for(int i = 0; i<count; i++)
- {
-  JmriBeanComboBox* head = new JmriBeanComboBox((Manager*)InstanceManager::signalHeadManagerInstance());
-  head->excludeItems(alreadyUsed);
-  headList->append(head);
-  g->addWidget(head, i,0);
- }
- includeUsed = new QCheckBox(tr("Include previously used Signal Heads"));
- g->addWidget(includeUsed,count,0);
- connect(includeUsed, SIGNAL(toggled(bool)), this, SLOT(refreshHeadComboBox()));
+    if (mastBox->currentIndex() < 0) return; // no mast selected yet
+    QString mastFile = mastFiles.value(mastBox->currentIndex())->getName();
+    QString mastType = mastFile.mid(11, mastFile.indexOf(".xml"));
+    mastType = mastType.mid(0, mastType.indexOf(".xml"));
+    DefaultSignalAppearanceMap* sigMap = DefaultSignalAppearanceMap::getMap(sigsysname, mastType);
+    SignalSystem* sigsys = static_cast<SignalSystemManager*>( InstanceManager::getDefault("SignalSystemManager"))->getSystem(sigsysname);
+    currentPane->setAspectNames(sigMap, sigsys);
+    // clear mast info
+    currentPane->setMast(nullptr);
 
+    currentPane->update();
+    if (window() != nullptr && qobject_cast<JFrame*>(window())) {
+        ((JFrame*)window())->pack();
+    } else {
+        log->debug(tr("Can't call pack() on %1").arg(window()->metaObject()->className()));
+    }
+    log->trace(" updateSelectedDriver() end");
 }
-#if 1
-void AddSignalMastPanel::okPressed(ActionEvent* /*e*/)
-{
- QString mastname = mastNames->at(mastBox->currentIndex()).baseName();
+/**
+ * Check of user name done when creating new SignalMast.
+ * In case of error, it looks a message and (if not headless) shows a dialog.
+ * @return true if OK to proceed
+ */
+bool AddSignalMastPanel::checkUserName(QString nam) {
+    if (!(nam.isEmpty())) {
+        // user name provided, check if that name already exists
+        NamedBean* nB =  static_cast<SignalSystemManager*>( InstanceManager::getDefault("SignalSystemManager"))->getByUserName(nam);
+        if (nB != nullptr) {
+            issueWarningUserName(nam);
+            return false;
+        }
+        // Check to ensure that the username doesn't exist as a systemname.
+        nB = static_cast<SignalSystemManager*>( InstanceManager::getDefault("SignalSystemManager"))->getBySystemName(nam);
+        if (nB != nullptr) {
+            issueWarningUserNameAsSystem(nam);
+            return false;
+        }
+    }
+    return true;
+}
 
- QString user = userName->text().trimmed();
- if(user==(""))
- {
-//  int i = JOptionPane.showConfirmDialog(NULL, "No Username has been defined, this may cause issues when editing the mast later.\nAre you sure that you want to continue?",
-//            "No UserName Given",
-//            JOptionPane.YES_NO_OPTION);
-//        if(i !=0) {
-//            return;
-//        }
-//    }
-  switch(QMessageBox::question(0, tr("No userName Given"), tr("No Username has been defined, this may cause issues when editing the mast later.\nAre you sure that you want to continue?"), QMessageBox::Yes | QMessageBox::No))
-  {
-  default:
-  case QMessageBox::No:
-   return;
-  case QMessageBox::Yes:
-   break;
-  }
- }
- if(mast==NULL)
- {
-   if(tr("Signal Head Controlled Mast")==(signalMastDriver->currentText()))
-   {
-    if((!checkSignalHeadUse()) || (!checkUserName(userName->text())))
-    {
+void AddSignalMastPanel::issueWarningUserName(QString nam) {
+    log->error(tr("User Name \"%1\" is already in use").arg(nam)); // NOI18N
+    //if (!GraphicsEnvironment.isHeadless()) {
+        QString msg = tr("User Name \"%1\" is already in use").arg(nam); // NOI18N
+        JOptionPane::showMessageDialog(nullptr, msg,
+                tr("Warning"), // NOI18N
+                JOptionPane::ERROR_MESSAGE);
+    //}
+}
+
+void AddSignalMastPanel::issueWarningUserNameAsSystem(QString nam) {
+ QString msg = tr("User Name \"%1\" already exists as a System name").arg(nam);
+    log->error(msg);
+    //if (!GraphicsEnvironment.isHeadless()) {
+        JOptionPane::showMessageDialog(nullptr, msg,
+                tr("Warning"),
+                JOptionPane::ERROR_MESSAGE);
+    //}
+}
+void AddSignalMastPanel::okPressed()
+{
+ log->trace(" okPressed() start");
+ bool success = false;
+
+ // get and validate entered global information
+ if ( (mastBox->currentIndex() < 0) || ( mastFiles.value(mastBox->currentIndex()) == nullptr) ) {
+     issueDialogFailMessage( RuntimeException("There's something wrong with the mast type selection"));
      return;
-    }
-
-    QString build = "";
-    build.append("IF$shsm:"
-            +sigsysname
-            +":"+mastname.mid(11,mastname.length()-4));
-    foreach(JmriBeanComboBox* head , *headList)
-    {
-     build.append("("+StringUtil::parenQuote(head->currentText())+")");
-    }
-    QString name = build;
-    log->debug("add signal: "+name);
-    SignalMast* m = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(name);
-    if(m!=NULL){
-//        JOptionPane.showMessageDialog(NULL, java.text.MessageFormat.format(tr("DuplicateMast"),
-//                new Object[]{ m.getDisplayName() }) , tr("DuplicateMastTitle"), JOptionPane.INFORMATION_MESSAGE);
-        QMessageBox::critical(0, tr("Duplicate Signal Mast"), tr("The creation of this SignalMast will cause a duplication of Signal Mast \"%1\"\nTherefore the SignalMast has not been created").arg(m->getDisplayName()));
-        return;
-    }
-    try {
-        m = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(name);
-    } catch (IllegalArgumentException ex) {
-        // user input no good
-        handleCreateException(name);
-        return; // without creating
-    }
-    if (user!=("")) m->setUserName(user);
-
-    foreach(QString aspect, disabledAspects->keys())
-    {
-     if(disabledAspects->value(aspect)->isChecked())
-      ((SignalHeadSignalMast*)m)->setAspectDisabled(aspect);
-     else
-      ((SignalHeadSignalMast*)m)->setAspectEnabled(aspect);
-    }
-   }
-   else if(tr("Turnout Controlled Mast")==(signalMastDriver->currentText()))
-   {
-    if(!checkUserName(userName->text()))
-        return;
-    QString name = "IF$tsm:"
-            +sigsysname
-            +":"+mastname.mid(11,mastname.length()-4);
-    name += "($"+(paddedNumber->format(TurnoutSignalMast::getLastRef()+1))+")";
-    TurnoutSignalMast* turnMast = new TurnoutSignalMast(name);
-    foreach(QString aspect, turnoutAspect->keys())
-    {
-     turnoutAspect->value(aspect)->setReference(name + ":" + aspect);
-     turnoutMastPanel->layout()->addWidget(turnoutAspect->value(aspect)->getPanel());
-     if(turnoutAspect->value(aspect)->isAspectDisabled())
-      turnMast->setAspectDisabled(aspect);
-     else
-     {
-      turnMast->setAspectEnabled(aspect);
-      turnMast->setTurnout(aspect, turnoutAspect->value(aspect)->getTurnoutName(), turnoutAspect->value(aspect)->getTurnoutState());
+ }
+ QString mastname = mastFiles.value(mastBox->currentIndex())->getName();
+ QString user = (userName->text() != "" ? NamedBean::normalizeUserName(userName->text()) : ""); // NOI18N
+ //if (!GraphicsEnvironment.isHeadless()) {
+     if ( user.isEmpty()) {
+         int i = issueNoUserNameGiven();
+         if (i != 0) {
+             return;
+         }
      }
-     turnoutMastScroll->setWidget(turnoutMastPanel);
-    }
-    turnMast->resetPreviousStates(resetPreviousState->isChecked());
-    if (user!=("")) turnMast->setUserName(user);
-    ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->Register(turnMast);
-   }
-   else if(tr("Virtual Mast")==(signalMastDriver->currentText()))
-   {
-    if(!checkUserName(userName->text()))
-        return;
-    QString name = "IF$vsm:"
-            +sigsysname
-            +":"+mastname.mid(11,mastname.length()-4);
-    name += "($"+(paddedNumber->format(VirtualSignalMast::getLastRef()+1))+")";
-    VirtualSignalMast* virtMast = new VirtualSignalMast(name);
-    if (user!=("")) virtMast->setUserName(user);
-    ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->Register(virtMast);
+ //}
 
-    foreach(QString aspect, disabledAspects->keys())
-    {
-        if(disabledAspects->value(aspect)->isChecked())
-            virtMast->setAspectDisabled(aspect);
-        else
-            virtMast->setAspectEnabled(aspect);
+ // ask top-most pane to make a signal
+ try {
+     success = currentPane->createMast(sigsysname,mastname,user);
+ } catch (RuntimeException ex) {
+     issueDialogFailMessage(ex);
+     return; // without clearing panel, so user can try again
+ }
+ if (!success) {
+     // should have already provided user feedback via dialog
+     return;
+ }
 
+ clearPanel();
+ log->trace(" okPressed() end");
+}
+
+int AddSignalMastPanel::issueNoUserNameGiven() {
+        return JOptionPane::showConfirmDialog(nullptr, "No Username has been defined, this may cause issues when editing the mast later.\nAre you sure that you want to continue?",  // NOI18N
+                "No UserName Given",  // NOI18N
+                JOptionPane::YES_NO_OPTION);
     }
-   }
-#if 0
-   else if((tr("DCC Signal Mast Decoder")==(signalMastDriver->currentText())) || (tr("LNCPMast")==(signalMastDriver->currentText()))){
-    if(!checkUserName(userName.getText())){
-        return;
-    }
-    if(!validateDCCAddress()){
-        return;
-    }
-    QString systemNameText = ConnectionNameFromSystemName.getPrefixFromName((QString) systemPrefixBox->currentText());
-    //if we return a NULL string then we will set it to use internal, thus picking up the default command station at a later date.
-    if(systemNameText==("\0"))
-        systemNameText = "I";
-    if(tr("LNCPMast")==(signalMastDriver->currentText())){
-        systemNameText = systemNameText+ "F$lncpsm:";
+
+void AddSignalMastPanel::issueDialogFailMessage(RuntimeException ex) {
+// This is intrinsically swing, so pop a dialog
+log->error("Failed during createMast", ex); // NOI18N
+JOptionPane::showMessageDialog(this,
+    tr("Failed during createMast %1").arg(ex.getMessage()), // NOI18N
+    tr("Create Failed"),  // title of box // NOI18N
+    JOptionPane::ERROR_MESSAGE);
+}
+
+/**
+* Called when an already-initialized AddSignalMastPanel is being
+* displayed again, right before it's set visible.
+*/
+/*public*/ void AddSignalMastPanel::refresh() {
+ log->trace(" refresh() start");
+ // add new cards (new panes)
+ for(int i = centerPanel->count(); i >= 0; i --)
+ {
+  centerPanel->removeWidget(centerPanel->widget(i));
+ }
+ for (SignalMastAddPane* pane : panes) {
+     //cl->addRow(pane->getPaneName(), pane); // assumes names are systemwide-unique
+  centerPanel->addWidget(pane);
+ }
+
+ // select pane to match current combobox
+ log->trace("about to call selection from refresh");
+ selection(signalMastDriver->itemText(signalMastDriver->currentIndex()));
+ log->trace(" refresh() end");
+}
+
+/**
+ * Respond to the Cancel button.
+ */
+void AddSignalMastPanel::cancelPressed() {
+    log->trace(" cancelPressed() start");
+    clearPanel();
+    log->trace(" cancelPressed() end");
+}
+
+/**
+ * Close and dispose() panel.
+ * <p>
+ * Called at end of okPressed() and from Cancel
+ */
+void AddSignalMastPanel::clearPanel() {
+    log->trace(" clearPanel() start");
+    if (qobject_cast<JmriJFrame*>(window())) {
+        static_cast<JmriJFrame*>( window())->dispose();
     } else {
-        systemNameText = systemNameText+ "F$dsm:";
+        log->warn(tr("Unexpected top level ancestor: %1").arg(window()->windowTitle())); // NOI18N
     }
-    QString name = systemNameText
-            +sigsysname
-            +":"+mastname.substring(11,mastname.length()-4);
-    name += "("+dccAspectAddressField.getText()+")";
-    DccSignalMast dccMast;
-    if(tr("LNCPMast")==(signalMastDriver->currentText())){
-        dccMast = new jmri.jmrix.loconet.LNCPSignalMast(name);
-    } else {
-        dccMast = new DccSignalMast(name);
-    }
-
-    for(QString aspect: dccAspect.keySet()){
-        dccMastPanel.add(dccAspect.get(aspect).getPanel());
-        if(dccAspect.get(aspect).isAspectDisabled())
-            dccMast.setAspectDisabled(aspect);
-        else {
-            dccMast.setAspectEnabled(aspect);
-            dccMast.setOutputForAppearance(aspect, dccAspect.get(aspect).getAspectId());
-        }
-    }
-    if (!user==("")) dccMast.setUserName(user);
-    InstanceManager.signalMastManagerInstance().register(dccMast);
-
-   }
-#endif
-   prefs->addComboBoxLastSelection(systemSelectionCombo, (QString) sigSysBox->currentText());
-   prefs->addComboBoxLastSelection(driverSelectionCombo, (QString) signalMastDriver->currentText());
-   prefs->addComboBoxLastSelection(mastSelectionCombo+":"+((QString) sigSysBox->currentText()), (QString) mastBox->currentText());
-   refreshHeadComboBox();
-  }
-  else  // Edit the supplied mast.
-  {
-   if(tr("Signal Head Controlled Mast")==(signalMastDriver->currentText()))
-   {
-    SignalHeadSignalMast* headMast = (SignalHeadSignalMast*) mast;
-    foreach(QString aspect, disabledAspects->keys())
-    {
-        if(disabledAspects->value(aspect)->isChecked())
-            headMast->setAspectDisabled(aspect);
-        else
-            headMast->setAspectEnabled(aspect);
-    }
-   }
-   else if(tr("Turnout Controlled Mast")==(signalMastDriver->currentText()))
-   {
-    QString name = "IF$tsm:"
-        +sigsysname
-        +":"+mastname.mid(11,mastname.length()-4);
-    TurnoutSignalMast* turnMast = (TurnoutSignalMast*) mast;
-    foreach(QString aspect, turnoutAspect->keys())
-    {
-        turnoutAspect->value(aspect)->setReference(name + ":" + aspect);
-        turnMast->setTurnout(aspect, turnoutAspect->value(aspect)->getTurnoutName(), turnoutAspect->value(aspect)->getTurnoutState());
-        turnoutMastPanel->layout()->addWidget(turnoutAspect->value(aspect)->getPanel());
-        if(turnoutAspect->value(aspect)->isAspectDisabled())
-            turnMast->setAspectDisabled(aspect);
-        else
-            turnMast->setAspectEnabled(aspect);
-    }
-    turnMast->resetPreviousStates(resetPreviousState->isChecked());
-   }
-   else if(tr("Virtual Mast")==(signalMastDriver->currentText())){
-    VirtualSignalMast* virtMast = (VirtualSignalMast*) mast;
-    foreach(QString aspect, disabledAspects->keys())
-    {
-        if(disabledAspects->value(aspect)->isChecked())
-            virtMast->setAspectDisabled(aspect);
-        else
-            virtMast->setAspectEnabled(aspect);
-    }
-   }
-#if 0
-   else if((tr("DCC Signal Mast Decoder")==(signalMastDriver->currentText())) || (tr("LNCPMast")==(signalMastDriver->currentText())))
-   {
-    DccSignalMast dccMast = (DccSignalMast) mast;
-    for(QString aspect: dccAspect.keySet())
-    {
-        dccMastPanel.add(dccAspect.get(aspect).getPanel());
-        if(dccAspect.get(aspect).isAspectDisabled())
-            dccMast.setAspectDisabled(aspect);
-        else
-        {
-            dccMast.setAspectEnabled(aspect);
-            dccMast.setOutputForAppearance(aspect, dccAspect.get(aspect).getAspectId());
-        }
-    }
-   }
-#endif
-  }
+    userName->setText(""); // clear user name
+    window()->setVisible(false);
+    log->trace(" clearPanel() end");
 }
 
-
-bool AddSignalMastPanel::checkUserName(QString nam)
-{
-if (!((nam==NULL) || (nam==(""))))
-{
- // user name changed, check if new name already exists
-        NamedBean* nB = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getByUserName(nam);
- if (nB != NULL)
- {
-  log->error("User name is not unique " + nam);
-//            QString msg = java.text.MessageFormat.format(rb
-//                    .getQString("WarningUserName"), new Object[] { ("" + nam) });
-//            JOptionPane.showMessageDialog(NULL, msg,
-//                        tr("WarningTitle"),
-//                            JOptionPane.ERROR_MESSAGE);
-  QMessageBox::warning(0, tr("Warning"), tr("User Name \" %1 \" has already been used.").arg(nam));
-  return false;
- }
- //Check to ensure that the username doesn't exist as a systemname.
- nB = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getBySystemName(nam);
- if (nB!=NULL)
- {
-  log->error("User name is not unique " + nam + " It already exists as a System name");
-//        QString msg = java.text.MessageFormat.format(rb
-//                .getQString("WarningUserNameAsSystem"), new Object[] { ("" + nam) });
-//        JOptionPane.showMessageDialog(NULL, msg,
-//                    tr("WarningTitle"),
-//                        JOptionPane.ERROR_MESSAGE);
-  QMessageBox::warning(0, tr("Warning"), tr("User Name \" %1 \" has already been used as a System Name.").arg(nam));     return false;
-  }
- }
- return true;
-}
-
-bool AddSignalMastPanel::checkSystemName(QString /*nam*/){
-    return false;
-}
-
-bool AddSignalMastPanel::checkSignalHeadUse()
-{
- for(int i = 0; i<headList->size(); i++)
- {
-  JmriBeanComboBox* head = headList->at(i);
-        NamedBean* h = headList->at(i)->getSelectedBean();
-        for(int j = i; j<headList->size(); j++){
-            JmriBeanComboBox* head2check = headList->at(j);
-            if((head2check != head) && (head2check->getSelectedBean()==h)){
-                if(!duplicateHeadAssigned(headList->at(i)->getSelectedDisplayName()))
-                    return false;
-            }
-        }
-        if(includeUsed->isChecked()){
-            QString isUsed = SignalHeadSignalMast::isHeadUsed((SignalHead*)h);
-            if((isUsed!=NULL) && (!headAssignedElseWhere(h->getDisplayName(), isUsed))){
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-bool AddSignalMastPanel::duplicateHeadAssigned(QString head)
-{
-//    int i = JOptionPane.showConfirmDialog(NULL, java.text.MessageFormat.format(tr("DuplicateHeadAssign"),
-//                new Object[]{ head }),
-//        tr("DuplicateHeadAssignTitle"),
-//        JOptionPane.YES_NO_OPTION);
-
-//    if(i ==0) {
-//        return true;
-//    }
-    switch(QMessageBox::question(0, tr("Duplicate Assignment"), tr("You have selected Signal Head \"%1\" to be used in two\ndifferent places on the Signal Mast are you sure?,").arg(head),QMessageBox::Yes | QMessageBox::No))
-    {
-    case QMessageBox::Yes:
-     return true;
-    default:
-    case QMessageBox::No:
-     break;
-    }
-
-    return false;
-}
-
-bool AddSignalMastPanel::headAssignedElseWhere(QString head, QString mast){
-//    int i = JOptionPane.showConfirmDialog(NULL, java.text.MessageFormat.format(tr("AlreadyAssinged"),
-//                new Object[]{ head, mast }),
-//        tr("DuplicateHeadAssignTitle"),
-//        JOptionPane.YES_NO_OPTION);
-//    if(i ==0) {
-//        return true;
-//    }
-    switch(QMessageBox::question(0, tr("Duplicate Assignment"), tr("You have selected Signal Head \"%1\"his head has already been assigned to Signal Mast \"%2\"are you sure you want to do this?").arg(head).arg(mast),QMessageBox::Yes | QMessageBox::No))
-    {
-    case QMessageBox::Yes:
-     return true;
-    default:
-        break;
-    }
-
-    return false;
-}
-#endif
-void AddSignalMastPanel::refreshHeadComboBox() // SLOT[]
-{
- if(tr("Signal Head Controlled Mast")!=(signalMastDriver->currentText()))
-  return;
- if(includeUsed->isChecked())
- {
-  alreadyUsed = new QList<NamedBean*>();
- }
- else
- {
-  QList<SignalHead*>* alreadyUsedHeads = SignalHeadSignalMast::getSignalHeadsUsed();
-  alreadyUsed = new QList<NamedBean*>();
-  foreach(SignalHead* head, *alreadyUsedHeads)
-  {
-    alreadyUsed->append(head);
-  }
- }
-
- foreach(JmriBeanComboBox* head,  *headList)
- {
-  head->excludeItems(alreadyUsed);
- }
-}
-void AddSignalMastPanel::handleCreateException(QString sysName) {
-//    javax.swing.JOptionPane.showMessageDialog(AddSignalMastPanel.this,
-//            java.text.MessageFormat.format(
-//                tr("ErrorSignalMastAddFailed"),
-//                new Object[] {sysName}),
-//            tr("ErrorTitle"),
-//            javax.swing.JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(0, tr("Error"), tr("Could not create signal mast \"%1\" to add it. Check that number/name is OK.").arg(sysName));
-}
-
-void AddSignalMastPanel::updateTurnoutAspectPanel()
-{
- if(tr("Turnout Controlled Mast")!=(signalMastDriver->currentText()))
-        return;
- turnoutAspect = new QMap<QString, TurnoutAspectPanel*>(); // need 10
- QString mastType = mastNames->value(mastBox->currentIndex()).baseName();
- mastType =  mastType.mid(11, mastType.indexOf(".xml"));
- DefaultSignalAppearanceMap* sigMap = DefaultSignalAppearanceMap::getMap(sigsysname, mastType);
- QStringListIterator aspects( sigMap->getAspects());
- while(aspects.hasNext())
- {
-  QString aspect = aspects.next();
-  TurnoutAspectPanel* aPanel = new TurnoutAspectPanel(aspect);
-  turnoutAspect->insert(aspect, aPanel);
- }
- if(turnoutMastPanel != NULL && turnoutMastPanel->layout() != NULL)
- {
-  for(int i=0; i < turnoutMastPanel->layout()->count(); i++)
-  turnoutMastPanel->layout()->removeItem(turnoutMastPanel->layout()->itemAt(i));
- }
- else
- {
-  turnoutMastPanel= new QWidget();
-  QGridLayout* g;
-  turnoutMastPanel->setLayout(g = new QGridLayout()); // turnoutAspect.size()+1,2));
- }
- int i = 0;
- foreach(QString aspect, turnoutAspect->keys())
- {
-  //turnoutMastPanel.add(turnoutAspect.get(aspect).getPanel());
-  ((QGridLayout*)turnoutMastPanel->layout())->addWidget(turnoutAspect->value(aspect)->getPanel(), i++, 0);
- }
-//static
- //turnoutMastPanel.add(resetPreviousState);
- ((QGridLayout*)turnoutMastPanel->layout())->addWidget(resetPreviousState, i, 0);
-  turnoutMastScroll->setWidget(turnoutMastPanel);
-}
-
-TurnoutAspectPanel::TurnoutAspectPanel(QString aspect)
-{
- this->aspect = aspect;
- init();
-}
-void TurnoutAspectPanel::init()
-{
- log = new Logger("TurnoutAspectPanel");
- panel = NULL;
-
- beanBox = new BeanSelectCreatePanel((Manager*)InstanceManager::turnoutManagerInstance(), NULL);
- disabledCheck = new QCheckBox("Disable Aspect");
-
- stateThrown = ((AbstractTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText();
- stateClosed = ((AbstractTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText();
- turnoutStates = QStringList() << stateClosed << stateThrown;
- turnoutStateValues =  QList<int>() << Turnout::CLOSED<< Turnout::THROWN;
-
- turnoutState = new QComboBox();
- turnoutState ->addItems(turnoutStates);
- turnoutStateLabel = new QLabel("Set State");
- //QString aspect = "";
-}
-
-TurnoutAspectPanel::TurnoutAspectPanel(QString turnoutName, int /*state*/)
-{
- init();
- if(turnoutName==NULL || turnoutName==(""))
-  return;
- beanBox->setDefaultNamedBean(((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnoutName));
-}
-
-void TurnoutAspectPanel::setReference(QString reference){
-    beanBox->setReference(reference);
-}
-
-int TurnoutAspectPanel::getTurnoutState(){
-    return turnoutStateValues[turnoutState->currentIndex()];
-}
-
-void TurnoutAspectPanel::setSelectedTurnout(QString name){
-    if(name==NULL || name==(""))
-        return;
-    beanBox->setDefaultNamedBean(((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(name));
-}
-
-void TurnoutAspectPanel::setTurnoutState(int state)
-{
- if(state==Turnout::CLOSED)
- {
-  //turnoutState->setCheckedItem(stateClosed);
-  turnoutState->setCurrentIndex(turnoutState->findText(stateClosed));
- }
- else
- {
-  //turnoutState->setCheckedItem(stateThrown);
-  turnoutState->setCurrentIndex(turnoutState->findText(stateThrown));
- }
-}
-
-void TurnoutAspectPanel::setAspectDisabled(bool boo){
-    disabledCheck->setChecked(boo);
-    if(boo){
-        beanBox->setEnabled(false);
-        turnoutStateLabel->setEnabled(false);
-        turnoutState->setEnabled(false);
-    }
-    else {
-        beanBox->setEnabled(true);
-        turnoutStateLabel->setEnabled(true);
-        turnoutState->setEnabled(true);
-    }
-}
-
-bool TurnoutAspectPanel::isAspectDisabled(){
-    return disabledCheck->isChecked();
-}
-
-QString TurnoutAspectPanel::getTurnoutName(){
-    return beanBox->getDisplayName();
-}
-
-NamedBean* TurnoutAspectPanel::getTurnout(){
-    try {
-        return beanBox->getNamedBean();
-    } catch (JmriException ex){
-        log->warn("skipping creation of turnout");
-        return NULL;
-    }
-}
-
-
-QWidget* TurnoutAspectPanel::getPanel()
-{
-if(panel==NULL)
-{
- panel = new QGroupBox(aspect);
- panel->setObjectName(aspect);
- panel->setLayout(new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
- QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(panel->sizePolicy().hasHeightForWidth());
- panel->setSizePolicy(sizePolicy);
- QWidget* turnDetails = new QWidget();
- turnDetails->setLayout(new QHBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
- turnDetails->layout()->addWidget(beanBox);
- turnDetails->layout()->addWidget(turnoutStateLabel);
- turnDetails->layout()->addWidget(turnoutState);
- panel->layout()->addWidget(turnDetails);
- panel->layout()->addWidget(disabledCheck);
-        //TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
-//     QGroupBox* border = new QGroupBox();
-//     border->setTitle(aspect);
-//     panel->layout()->addWidget(border);
-
-//            disabledCheck.addActionListener(new ActionListener() {
-//                /*public*/ void actionPerformed(ActionEvent e) {
-//                    setAspectDisabled(disabledCheck->isChecked());
-//                }
-//            });
- connect(disabledCheck, SIGNAL(toggled(bool)), this, SLOT(setAspectDisabled(bool)));
-}
-return panel;
-}
-
-
-
-
-void AddSignalMastPanel::updateDCCMastPanel(){
-#if 0
-    if((!tr("DCCMast")==(signalMastDriver->currentText())) && (!tr("LNCPMast")==(signalMastDriver->currentText())))
-        return;
-    dccAspect = new HashMap<QString, DCCAspectPanel>(10);
-    java.util.List<Object> connList = jmri.InstanceManager.getList(jmri.CommandStation.class);
-    systemPrefixBox.removeAllItems();
-    if(connList!=NULL){
-        for(int x = 0; x < connList.size(); x++){
-            jmri.CommandStation station = (jmri.CommandStation) connList.get(x);
-            if(tr("LNCPMast")==(signalMastDriver->currentText())){
-                if(station instanceof jmri.jmrix.loconet.SlotManager){
-                    systemPrefixBox.addItem(station.getUserName());
-                }
-            } else {
-                systemPrefixBox.addItem(station.getUserName());
-            }
-        }
-    } else {
-        systemPrefixBox.addItem("None");
-    }
-    QString mastType = mastNames.get(mastBox.getSelectedIndex()).getName();
-    mastType =  mastType.substring(11, mastType.indexOf(".xml"));
-    jmri.implementation.DefaultSignalAppearanceMap sigMap = jmri.implementation.DefaultSignalAppearanceMap.getMap(sigsysname, mastType);
-    java.util.Enumeration<QString> aspects = sigMap.getAspects();
-    while(aspects.hasMoreElements()){
-        QString aspect = aspects.nextElement();
-        DCCAspectPanel aPanel = new DCCAspectPanel(aspect);
-        dccAspect.put(aspect, aPanel);
-    }
-    dccMastPanel.removeAll();
-    dccMastPanel.setLayout(new jmri.util.javaworld.GridLayout2(dccAspect.size()+3,2));
-    dccMastPanel.add(systemPrefixBoxLabel);
-    dccMastPanel.add(systemPrefixBox);
-    dccMastPanel.add(dccAspectAddressLabel);
-    dccMastPanel.add(dccAspectAddressField);
-    if(dccAddressListener==NULL){
-        dccAddressListener = new FocusListener() {
-            /*public*/ void focusLost(FocusEvent e){
-                if(dccAspectAddressField.getText()==("")){
-                    return;
-                }
-                validateDCCAddress();
-            }
-            /*public*/ void focusGained(FocusEvent e){ }
-
-        };
-
-        dccAspectAddressField.addFocusListener(dccAddressListener);
-    }
-
-    if(mast==NULL){
-        systemPrefixBoxLabel->setEnabled(true);
-        systemPrefixBox->setEnabled(true);
-        dccAspectAddressLabel->setEnabled(true);
-        dccAspectAddressField->setEnabled(true);
-    }
-
-    for(QString aspect: dccAspect.keySet()){
-        dccMastPanel.add(dccAspect.get(aspect).getPanel());
-    }
-    if((dccAspect.size() & 1) == 1)
-        dccMastPanel.add(new JLabel());
-    dccMastPanel.add(new JLabel(tr("DCCMastCopyAspectId")));
-    dccMastPanel.add(copyFromMastSelection());
-#endif
-}
-
-
-/*static*/ bool AddSignalMastPanel::validateAspectId(QString strAspect){
-    Logger* log = new Logger("AddSignalMastPanel");
-    int aspect = -1;
-    try{
-        aspect=strAspect.trimmed().toInt();
-    } catch (NumberFormatException e){
-        //JOptionPane.showMessageDialog(NULL, tr("DCCMastAspectNumber"));
-        QMessageBox::critical(0, tr("Error"), tr("Aspect ID must be a number"));
-        return false;
-    }
-
-    if (aspect < 0 || aspect>31) {
-//        JOptionPane.showMessageDialog(NULL, tr("DCCMastAspectOutOfRange"));
-        QMessageBox::critical(0, tr("Error"), tr("SignalMast aspect should be in the range of 0 to 31"));
-        log->error(tr("invalid aspect ") + QString::number(aspect));
-        return false;
-    }
-    return true;
-}
-
-bool AddSignalMastPanel::validateDCCAddress(){
-    if(dccAspectAddressField->text()==("")){
-        //JOptionPane.showMessageDialog(NULL, tr("DCCMastAddressBlank"));
-        QMessageBox::critical(0, tr("Error"), tr("A DCC Address must be entered"));
-        return false;
-    }
-    int address =-1;
-//    try{
-    bool bOk;
-        address=dccAspectAddressField->text().trimmed().toInt(&bOk);
-//    } catch (NumberFormatException e){
-        if(!bOk)
-        {
-        //JOptionPane.showMessageDialog(NULL, tr("DCCMastAddressNumber"));
-        QMessageBox::critical(0, tr("Error"), tr("DCC Address must be a number"));
-        return false;
-        }
-//    }
-
-    if (address < 1 || address>2048) {
-        //JOptionPane.showMessageDialog(NULL, tr("SignalMast address should be in the range of 1 to 2044"));
-        QMessageBox::critical(0, tr("error"), tr(""));
-        log->error("invalid address " + address);
-        return false;
-    }
-#if 0
-    if(DccSignalMast::isDCCAddressUsed(address)!=NULL){
-        QString msg = java.text.MessageFormat.format(rb
-            .getQString("DCCMastAddressAssigned"), new Object[] { dccAspectAddressField.getText(), DccSignalMast.isDCCAddressUsed(address)});
-        JOptionPane.showMessageDialog(NULL, msg);
-        return false;
-    }
-#endif
-    return true;
-}
-
-QComboBox* AddSignalMastPanel::copyFromMastSelection(){
-    mastSelect = new QComboBox();
-    QStringList names = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSystemNameList();
-    foreach(QString name, names)
-    {
-#if 0
-        if(qobject_cast<DccSignalMast*>(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getNamedBean(name)!= NULL) &&
-            ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(name)->getSignalSystem()->getSystemName()==(sigsysname)) {
-            mastSelect->addItem(((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getNamedBean(name)->getDisplayName());
-        }
-#endif
-    }
-    if(mastSelect->count()==0){
-        mastSelect->setEnabled(false);
-    } else {
-        mastSelect->insertItem(0,"");
-//        mastSelect->setCheckedIndex(0);
-
-//        mastSelect.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                JComboBox eb = (JComboBox) e.getSource();
-//                QString sourceMast = (QString)eb->currentText();
-//                if(sourceMast!=NULL && !sourceMast==(""))
-//                    copyFromAnotherDCCMastAspect(sourceMast);
-//            }
-//        });
-        connect(mastSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(on_mastSelect_CurrentIndexChanged(int)));
-    }
-    return mastSelect;
-}
-void AddSignalMastPanel::on_mastSelect_CurrentIndexChanged(int)
-{
-    QString sourceMast = mastSelect->currentText();
-    if(sourceMast!=NULL && sourceMast!=(""))
-     copyFromAnotherDCCMastAspect(sourceMast);
-}
-
-void AddSignalMastPanel::copyFromAnotherDCCMastAspect(QString /*strMast*/){
-#if 0
-    DccSignalMast mast = (DccSignalMast)InstanceManager.signalMastManagerInstance().getNamedBean(strMast);
-    for(QString aspect: dccAspect.keySet()){
-        dccAspect.get(aspect).setAspectId(mast.getOutputForAppearance(aspect));
-    }
-#endif
-}
-
-
-
-DCCAspectPanel::DCCAspectPanel(QString aspect)
-{
- this->aspect = aspect;
- panel = NULL;
- disabledCheck = new QCheckBox("Disable Aspect");
- aspectLabel = new QLabel("Set Aspect Id");
- aspectId = new JTextField(5);
- log = new Logger("DCCAspectPanel");
-}
-
-void DCCAspectPanel::setAspectDisabled(bool boo) // SLOT[]
-{
- disabledCheck->setChecked(boo);
- if(boo)
- {
-  aspectLabel->setEnabled(false);
-  aspectId->setEnabled(false);
- }
- else
- {
-  aspectLabel->setEnabled(true);
-  aspectId->setEnabled(true);
- }
-}
-
-bool DCCAspectPanel::isAspectDisabled()
-{
- return disabledCheck->isChecked();
-}
-
-int DCCAspectPanel::getAspectId(){
-    try {
-        QString value = aspectId->text();
-        return (value).toInt();
-
-    } catch (Exception ex) {
-        log->error("failed to convert DCC number");
-    }
-    return -1;
-}
-
-void DCCAspectPanel::setAspectId(int i){
-    aspectId->setText(QString::number(i));
-}
-
-
-QWidget* DCCAspectPanel::getPanel()
-{
- if(panel==NULL)
- {
-    panel = new QWidget();
-    panel->setLayout(new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
-    QWidget* dccDetails = new QWidget();
-    dccDetails->layout()->addWidget(aspectLabel);
-    dccDetails->layout()->addWidget(aspectId);
-    panel->layout()->addWidget(dccDetails);
-    panel->layout()->addWidget(disabledCheck);
-    //TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
-    QGroupBox* border = new QGroupBox();
-    border->setTitle(aspect);
-    panel->layout()->addWidget(border);
-    //aspectId.addFocusListener(new FocusListener() {
-    connect(aspectId, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-//            /*public*/ void focusLost(FocusEvent e){
-//                if(aspectId.getText()==("")){
-//                    return;
-//                }
-//                if(!validateAspectId(aspectId.getText()))
-//                    aspectId.requestFocusInWindow();
-//            }
-//            /*public*/ void focusGained(FocusEvent e){ }
-
-//        });
-    //            disabledCheck->addActionListener(new ActionListener()
-    //            {
-    //                /*public*/ void actionPerformed(ActionEvent* /*e*/) {
-    //                    setAspectDisabled(disabledCheck->isChecked());
-    //                }
-    //            });
-    connect(disabledCheck, SIGNAL(toggled(bool)), this, SLOT(setAspectDisabled(bool)));
-  }
-  return panel;
- }
-
-//    static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.beantable.BeanTableBundle");
-//    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AddSignalMastPanel.class.getName());
+//void AddSignalMastPanel::on_mastSelect_CurrentIndexChanged(int)
+//{
+//    QString sourceMast = mastSelect->currentText();
+//    if(sourceMast!=NULL && sourceMast!=(""))
+//     copyFromAnotherDCCMastAspect(sourceMast);
 //}
-
 
 /* @(#)SensorTableAction.java */
 void AddSignalMastPanel::sigSysBox_currentIndexChanged(int) // SLOT[]
@@ -1373,3 +630,12 @@ void AddSignalMastPanel::sigSysBox_currentIndexChanged(int) // SLOT[]
  loadMastDefinitions();
  updateSelectedDriver();
 }
+
+void AddSignalMastPanel::onSignalMastDriverSelected()
+{
+ log->trace("about to call selection() from signalMastDriver itemStateChanged");
+ selection(signalMastDriver-> currentText());
+
+}
+
+/*private*/ /*final*/ /*static*/ Logger* AddSignalMastPanel::log = LoggerFactory::getLogger("AddSignalMastPanel");

@@ -20,6 +20,8 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
     ON     = 2,
     OFF    = 4
  };
+ static /*final*/ QString POWER;// = "Power"; // NOI18N
+
 
     virtual void 	setPower(int /*v*/) {} // 	throws JmriException;
     virtual int	 	getPower() {return 0;} //  	throws JmriException;

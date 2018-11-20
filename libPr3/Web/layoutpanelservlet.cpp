@@ -47,7 +47,7 @@ LayoutPanelServlet::LayoutPanelServlet()
   panel.setAttribute("width", (editor->getLayoutWidth()));
   panel.setAttribute("panelheight", (editor->getLayoutHeight()));
   panel.setAttribute("panelwidth", (editor->getLayoutWidth()));
-  panel.setAttribute("showtooltips", (editor->showTooltip()) ? "yes" : "no");
+  panel.setAttribute("showtooltips", (editor->showToolTip()) ? "yes" : "no");
   panel.setAttribute("controlling", (editor->allControlling()) ? "yes" : "no");
   panel.setAttribute("xscale", ((float) editor->getXScale()));
   panel.setAttribute("yscale", ((float) editor->getYScale()));
@@ -109,7 +109,7 @@ LayoutPanelServlet::LayoutPanelServlet()
     }
     catch (Exception ex)
     {
-     log->error("Error storing panel element: " + ex.getMessage(), ex.getLocalizedMessage());
+     log->error("Error storing panel element: " + ex.getMessage(), ex);
     }
    }
   }

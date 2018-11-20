@@ -36,6 +36,9 @@ public:
     /*public*/ bool allowUnLit();
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
     /*public*/ QString getBeanType();
+    /*public*/ QString getMastType();
+    /*public*/ void setMastType(/*@Nonnull*/ QString type);
+
 signals:
 
 public slots:
@@ -47,7 +50,9 @@ private:
     SignalSystem* systemDefn;
     QStringList* disabledAspects;// = new QStringList(1);
     void common();
-    bool _allowUnLit;
+    bool _allowUnLit = false;
+    QString mastType;
+
 protected:
     /*protected*/ QString aspect;// = NULL;
     /*protected*/ QString speed;// = NULL;
@@ -55,6 +60,7 @@ protected:
 friend class SignalHeadSignalMast;
 friend class TurnoutSignalMast;
 friend class VirtualSignalMast;
+friend class MatrixSignalMast;
 };
 
 #endif // ABSTRACTSIGNALMAST_H

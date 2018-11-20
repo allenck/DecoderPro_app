@@ -57,7 +57,7 @@ void SprogSystemConnectionMemo::common(SprogConstants::SprogMode sm)
 
  sprogMode = sm;  // static
  sprogVersion = new SprogVersion(new SprogType(SprogType::UNKNOWN));
- Register();
+ _register();
  InstanceManager::store(this, "SprogSystemConnectionMemo"); // also register as specific type
  InstanceManager::store(cf = new SprogComponentFactory(this), "ComponentFactory");
 }

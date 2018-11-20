@@ -6,7 +6,7 @@
 #include "../Roster/roster.h"
 #include "../Roster/rosterentry.h"
 #include <QSettings>
-#include "listthrottles.h"
+//#include "listthrottles.h"
 #include "../LayoutEditor/panelmenu.h"
 #include "../LayoutEditor/editor.h"
 #include "instancemanager.h"
@@ -124,7 +124,7 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  throttleToolBar = ui->toolBar;
  connect(listViewAct, SIGNAL(triggered()), this, SLOT(on_listView_clicked()));
  PanelMenu::instance()->addEditorPanel((Editor*)this);
- connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
+ //connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
  bAltFunc = false;
  addressPanel->addAddressListener((AddressListener*)controlPanel);
  addressPanel->addAddressListener((AddressListener*)functionPanel);
@@ -556,11 +556,11 @@ void ThrottleWindow::on_listView_clicked()
  ThrottleFrameManager::instance()->showThrottlesList();
 }
 
-void ThrottleWindow::on_menuWindow_aboutToShow()
-{
- ui->menuWindow->clear();
- PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
-}
+//void ThrottleWindow::on_menuWindow_aboutToShow()
+//{
+// ui->menuWindow->clear();
+// PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
+//}
 QString ThrottleWindow::getTitle()
 {
  return windowTitle();

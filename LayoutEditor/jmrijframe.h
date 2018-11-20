@@ -19,10 +19,10 @@ class LIBLAYOUTEDITORSHARED_EXPORT JmriJFrame : public JFrame
     Q_OBJECT
 public:
     //explicit JmriJFrame(QWidget *parent = 0);
-    /*public*/ JmriJFrame(bool saveSize, bool savePosition, QWidget *parent = 0);
-    /*public*/ JmriJFrame(QWidget *parent = 0);
-    /*public*/ JmriJFrame(QString name, QWidget *parent = 0);
-    /*public*/ JmriJFrame(QString name, bool saveSize, bool savePosition, QWidget *parent = 0);
+    /*public*/ JmriJFrame(bool saveSize, bool savePosition, QWidget *parent = nullptr);
+    /*public*/ JmriJFrame(QWidget *parent = nullptr);
+    /*public*/ JmriJFrame(QString name, QWidget *parent = nullptr);
+    /*public*/ JmriJFrame(QString name, bool saveSize, bool savePosition, QWidget *parent = nullptr);
     /*public*/ ~JmriJFrame();
 //    /*public*/ void pack();
 //    /*public*/ QSize getPreferredSize();
@@ -70,6 +70,7 @@ public:
     /*public*/ virtual QString getClassName();
     /*public*/ void addNotify();
     /*public*/ void setFrameLocation();
+    QMenu* windowMenu;
 
 signals:
 
@@ -85,7 +86,6 @@ private:
  /*private*/ bool modifiedFlag;// = false;
  QString name;
  //QMutex mutex;
- QMenu* windowMenu;
  /*private*/ static QString escapeKeyAction;// = "escapeKeyAction";
  /*private*/ bool escapeKeyActionClosesWindow;// = false;
  //void closeEvent(QCloseEvent *);
@@ -108,7 +108,7 @@ protected:
     /*protected*/ QMap<QString, QVariant>* properties;// = new QMap<QString, QObject>();
 //    /*protected*/ /*transient*/ WindowInterface windowInterface = NULL;
     /*protected*/ void setShutDownTask();
-    /*protected*/ void handleModified();
+    /*protected*/ virtual void handleModified();
     /*protected*/ virtual void storeValues();
 
     friend class LayoutEditorTools;

@@ -21,6 +21,7 @@ namespace Operations
 
  /*public*/ CarLengths::CarLengths(QObject* parent) : RollingStockAttribute(parent)
  {
+ setProperty("InstanceManagerAutoDefault", "yes");
 
  }
 

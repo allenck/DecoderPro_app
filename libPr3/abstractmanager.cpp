@@ -6,6 +6,9 @@
 #include "abstractcatalogtree.h"
 #include "systemnamecomparator.h"
 #include "jmriconfigurationmanager.h"
+#include "vetoablechangesupport.h"
+#include "namedbeancomparator.h"
+
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -22,10 +25,10 @@ AbstractManager::AbstractManager(QObject *parent)
  _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
  _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
 
- //registerSelf(); // this fumction must be called by the subclass in order to work!
+ //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
 
  pcs = new PropertyChangeSupport((QObject*)this);
-
+ vcs = new VetoableChangeSupport((QObject*)this);
 }
 
 //abstract public class AbstractManager
@@ -45,13 +48,13 @@ AbstractManager::AbstractManager(QObject *parent)
  * By default, register this manager to store as configuration
  * information.  Override to change that.
  **/
-void AbstractManager::registerSelf()
+/*protected*/ void AbstractManager::registerSelf()
 {
   log->debug(tr("registerSelf for config of type %1").arg(this->metaObject()->className()));
   ConfigureManager* cm;
   try
   {
-   cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   cm = (ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager");
   }
   catch(ClassNotFoundException ex) { cm = NULL;}
   if (cm != NULL) {
@@ -275,8 +278,19 @@ QStringList AbstractManager::getSystemNameList()
 
 /*public*/ QList<NamedBean*>* AbstractManager::getNamedBeanList() {
         return new QList<NamedBean*>(_tsys->values());
-    }
-QStringList AbstractManager::getUserNameList()
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractManager::getNamedBeanSet() {
+    //return Collections.unmodifiableSortedSet(_beans);
+ //return QList<NamedBean*>(_tsys->values().toSet());
+ QList<NamedBean*> list = QList<NamedBean*>(_tsys->values());
+ qSort(list.begin(), list.end(), NamedBeanComparator::compare);
+ return list.toSet();
+}
+
+QStringList AbstractManager::AbstractManager::getUserNameList()
 {
     QStringList arr;// = new QStringList();
     QStringList out;// = new QStringList();
@@ -312,11 +326,76 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 }
 
 
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ /*synchronized*/ void AbstractManager::addVetoableChangeListener(VetoableChangeListener* l) {
+    vcs->addVetoableChangeListener(l);
+    //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ /*synchronized*/ void AbstractManager::removeVetoableChangeListener(VetoableChangeListener* l) {
+    vcs->removeVetoableChangeListener(l);
+}
+
+/**
+ * Method to inform all registered listerners of a vetoable change. If the
+ * propertyName is "CanDelete" ALL listeners with an interest in the bean
+ * will throw an exception, which is recorded returned back to the invoking
+ * method, so that it can be presented back to the user. However if a
+ * listener decides that the bean can not be deleted then it should throw an
+ * exception with a property name of "DoNotDelete", this is thrown back up
+ * to the user and the delete process should be aborted.
+ *
+ * @param p   The programmatic name of the property that is to be changed.
+ *            "CanDelete" will enquire with all listerners if the item can
+ *            be deleted. "DoDelete" tells the listerner to delete the item.
+ * @param old The old value of the property.
+ * @param n   The new value of the property.
+ * @throws PropertyVetoException - if the recipients wishes the delete to be
+ *                               aborted.
+ */
+//@OverridingMethodsMustInvokeSuper
+/*protected*/ void AbstractManager::fireVetoableChange(QString p, QVariant old, QVariant n) /*throws PropertyVetoException*/
+{
+    PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, n);
+#if 0
+    if (p ==("CanDelete"))
+    { //IN18N
+        QString message;// = new StringBuilder();
+        for (VetoableChangeListener vc : vcs.getVetoableChangeListeners()) {
+            try {
+                vc.vetoableChange(evt);
+            } catch (PropertyVetoException e) {
+                if (e.getPropertyChangeEvent().getPropertyName().equals("DoNotDelete")) { //IN18N
+                    log.info(e.getMessage());
+                    throw e;
+                }
+                message.append(e.getMessage());
+                message.append("<hr>"); //IN18N
+            }
+        }
+        throw new PropertyVetoException(message.toString(), evt);
+    } else {
+        try {
+            vcs.fireVetoableChange(evt);
+        } catch (PropertyVetoException e) {
+            log.error("Change vetoed.", e);
+        }
+    }
+#endif
+    emit vetoablePropertyChange(evt);
+}
+
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) //throw PropertyVetoException
 {
-#if 0 // TODO:
+#if 1 // TODO:
     if ("CanDelete" == (evt->getPropertyName())) { //IN18N
         QString message;// = new StringBuilder();
         message.append(tr("Found in the following <b>%1s</b>").arg(getBeanTypeHandled()))
@@ -325,8 +404,8 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
         for (NamedBean* nb : _tsys->values()) {
             try {
                 nb->vetoableChange(evt);
-            } catch (/*PropertyVetoException*/ Exception e) {
-                if (e.getPropertyChangeEvent().getPropertyName() == ("DoNotDelete")) { //IN18N
+            } catch (PropertyVetoException e) {
+                if (e.getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { //IN18N
                     throw e;
                 }
                 found = true;
@@ -336,14 +415,14 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
             }
         }
         message.append("</ul>")
-                .append(Bundle.getMessage("VetoWillBeRemovedFrom", getBeanTypeHandled()));
+                .append(tr("It will be removed from the %1s").arg(getBeanTypeHandled()));
         if (found) {
-            throw new PropertyVetoException(message.toString(), evt);
+            throw  PropertyVetoException(message, evt);
         }
     } else {
-        for (NamedBean nb : _tsys.values()) {
+        for (NamedBean* nb : _tsys->values()) {
             try {
-                nb.vetoableChange(evt);
+                nb->vetoableChange(evt);
             } catch (PropertyVetoException e) {
                 throw e;
             }

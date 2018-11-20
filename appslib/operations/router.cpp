@@ -42,6 +42,8 @@ namespace Operations
      _buildReport = NULL; // build report
      _addtoReport = false;
      _addtoReportVeryDetailed = false;
+     setProperty("InstanceManagerAutoDefault", "yes");
+
 
     }
 

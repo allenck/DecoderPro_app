@@ -8,6 +8,9 @@
 #include "locationmanagerxml.h"
 #include "enginelengths.h"
 #include "enginetypes.h"
+#include "instancemanager.h"
+//#include "locationmanager.h"
+#include "operationssetupxml.h"
 
 //EngineManagerXml::EngineManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -29,30 +32,19 @@ namespace Operations
  {
   log = new Logger("EngineManagerXml");
   operationsFileName = "OperationsEngineRoster.xml"; // NOI18N
+  setProperty("InstanceManagerAutoDefault", "true");
+  setProperty("InstanceManagerAutoInitialize", "true");
 
  }
 
  /**
   * record the single instance *
   */
- /*private*/ /*static*/ EngineManagerXml*  EngineManagerXml::_instance = NULL;
+// /*private*/ /*static*/ EngineManagerXml*  EngineManagerXml::_instance = NULL;
 
  /*public*/ /*static*/ /*synchronized*/ EngineManagerXml* EngineManagerXml::instance()
-{
- Logger*   log = new Logger("EngineManagerXml");
-
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("EngineManagerXml creating instance");
-         }
-         // create and load
-         _instance = new EngineManagerXml();
-         _instance->load();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("EngineManagerXml returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
+ {
+  return static_cast<EngineManagerXml*>(InstanceManager::getDefault("EngineManagerXml"));
  }
 
  /*public*/ void EngineManagerXml::writeFile(QString name) //throws java.io.FileNotFoundException, java.io.IOException
@@ -125,7 +117,8 @@ namespace Operations
      // clear dirty bit
      setDirty(false);
      // clear location dirty flag, locations get modified during the loading of cars and locos
-     LocationManagerXml::instance()->setDirty(false);
+     //LocationManagerXml::instance()->setDirty(false);
+     static_cast<LocationManagerXml*>(InstanceManager::getDefault("LocationManagerXml"))->setDirty(false);
  }
 
  /*public*/ void EngineManagerXml::setOperationsFileName(QString name) {
@@ -136,8 +129,14 @@ namespace Operations
      return operationsFileName;
  }
 
+ //@Override
+ /*public*/ void EngineManagerXml::initialize() {
+     load();
+ }
 
  /*public*/ void EngineManagerXml::dispose(){
-     _instance = NULL;
+//     _instance = NULL;
  }
+
+
 } // end namespace

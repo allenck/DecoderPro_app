@@ -469,7 +469,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     }
 
     QActionGroup* enableButtonGroup = new QActionGroup(this);
-    QAction* r = new QAction(tr("Enable All Logix"));  // NOI18N
+    QAction* r = new QAction(tr("Enable All Logix"),this);  // NOI18N
     r->setCheckable(true);
 //    r.addActionListener(new ActionListener() {
 //        @Override
@@ -482,7 +482,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     r->setChecked(true);
     menu->addAction(r);
 
-    r = new QAction(tr("Disable All Logix"));  // NOI18N
+    r = new QAction(tr("Disable All Logix"),this);  // NOI18N
 //    r.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent e) {
@@ -496,7 +496,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     menu->addSeparator();
 
     QActionGroup* modeButtonGroup = new QActionGroup(this);
-    r = new QAction(tr("Use Traditional  Pick Lists"));  // NOI18N
+    r = new QAction(tr("Use Traditional  Pick Lists"), this);  // NOI18N
     r->setCheckable(true);
 //    r.addItemListener(new ItemListener() {
 //        @Override
@@ -509,7 +509,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     menu->addAction(r);
     r->setChecked(_selectionMode == SelectionMode::USEMULTI);
 
-    r = new QAction(tr("Use Single Pick Lists"));  // NOI18N
+    r = new QAction(tr("Use Single Pick Lists"),this);  // NOI18N
     r->setCheckable(true);
 //    r.addItemListener(new ItemListener() {
 //        @Override
@@ -522,7 +522,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     menu->addAction(r);
     r->setChecked(_selectionMode == SelectionMode::USESINGLE);
 
-    r = new QAction(tr("Use Combo Name Boxes"));  // NOI18N
+    r = new QAction(tr("Use Combo Name Boxes"), this);  // NOI18N
     r->setCheckable(true);
 //    r.addItemListener(new ItemListener() {
 //        @Override
@@ -538,7 +538,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     menu->addSeparator();
 
     QActionGroup* viewButtonGroup = new QActionGroup(this);
-    r = new QAction(tr("List Edit"));  // NOI18N
+    r = new QAction(tr("List Edit"),this);  // NOI18N
     r->setCheckable(true);
 //    r.addItemListener(new ItemListener() {
 //        @Override
@@ -551,7 +551,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     menu->addAction(r);
     r->setChecked(_editMode == EditMode::LISTEDIT);
 
-    r = new QAction(tr("Tree Edit"));  // NOI18N
+    r = new QAction(tr("Tree Edit"), this);  // NOI18N
     r->setCheckable(true);
 //    r.addItemListener(new ItemListener() {
 //        @Override
@@ -569,7 +569,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     menu = new QMenu(tr("Tools"));  // NOI18N
 //    menu.setMnemonic(KeyEvent.VK_T);
 
-    QAction* item = new QAction(tr("Open PickList Tables"));  // NOI18N
+    QAction* item = new QAction(tr("Open PickList Tables"), this);  // NOI18N
 //    item.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent e) {
@@ -579,7 +579,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     connect(item, SIGNAL(triggered()), this, SLOT(openPickListTable()));
     menu->addAction(item);
 
-    item = new QAction(tr("Find Orphans"));  // NOI18N
+    item = new QAction(tr("Find Orphans"), this);  // NOI18N
 //    item.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent e) {
@@ -589,7 +589,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     connect(item, SIGNAL(triggered()),this, SLOT(findOrphansPressed()));
     menu->addAction(item);
 
-    item = new QAction(tr("Empty Conditionals"));  // NOI18N
+    item = new QAction(tr("Empty Conditionals"), this);  // NOI18N
 //    item.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent e) {
@@ -599,7 +599,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     connect(item, SIGNAL(triggered()),this, SLOT(findEmptyPressed()));
     menu->addAction(item);
 
-    item = new QAction(tr("Cross Reference"));  // NOI18N
+    item = new QAction(tr("Cross Reference"), this);  // NOI18N
 //    item.addActionListener(new ActionListener() {
 //        BeanTableFrame parent;
 
@@ -617,7 +617,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
     connect(item, SIGNAL(triggered()), listener, SLOT(actionPerformed()));
     menu->addAction(item);
 
-    item = new QAction(tr("Display Where Used"));  // NOI18N
+    item = new QAction(tr("Display Where Used"), this);  // NOI18N
 //    item.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent e) {
@@ -750,7 +750,7 @@ void LogixTableAction::setEditorMode(EditMode newMode) {
  * Open a new Pick List to drag Actions from to form Logix Conditionals.
  */
 void LogixTableAction::openPickListTable() {
-    if (_pickTables == NULL) {
+    if (_pickTables == nullptr) {
         _pickTables = new PickFrame(tr("Pick List"));  // NOI18N
     } else {
         _pickTables->setVisible(true);
