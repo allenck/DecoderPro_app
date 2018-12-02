@@ -48,19 +48,19 @@ VirtualSignalHeadXml::VirtualSignalHeadXml(QObject *parent) :
  * @param element Top level Element to unpack.
  * @return true if successful
  */
-/*public*/ bool VirtualSignalHeadXml::load(QDomElement element) throw (Exception) {
+/*public*/ bool VirtualSignalHeadXml::load(QDomElement shared, QDomElement perNode) {
     // put it together
-    QString sys = getSystemName(element);
-    QString uname = getUserName(element);
+    QString sys = getSystemName(shared);
+    QString uname = getUserName(shared);
     SignalHead* h;
     if (uname == NULL)
         h = (SignalHead*)new VirtualSignalHead(sys);
     else
         h = (SignalHead*)new VirtualSignalHead(sys, uname);
 
-    loadCommon(h, element);
+    loadCommon(h, shared);
 
-    ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->Register(h);
+    static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
     return true;
 }
 

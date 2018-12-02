@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SectionManagerXml : public AbstractNamedBeanM
 {
     Q_OBJECT
 public:
-    explicit SectionManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit SectionManagerXml(QObject *parent = 0);
  ~SectionManagerXml() {}
  SectionManagerXml(const SectionManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);

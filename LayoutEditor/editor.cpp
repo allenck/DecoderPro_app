@@ -2108,7 +2108,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
  SensorIcon* l = new SensorIcon(new NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
                         "resources/icons/smallschematics/tracksegments/circuit-error.gif"), this);
  IconAdder* editor = getIconEditor("Sensor");
- QHash <QString, NamedIcon*>* map = ((IconAdder*)editor)->getIconMap();
+ QMap <QString, NamedIcon*>* map = ((IconAdder*)editor)->getIconMap();
  QStringListIterator e( map->keys());
  while (e.hasNext())
  {
@@ -2147,7 +2147,7 @@ void Editor::addTurnoutL() {
 {
  TurnoutIcon* l = new TurnoutIcon(this);
  l->setTurnout(editor->getTableSelection()->getDisplayName());
- QHash <QString, NamedIcon*>* map = ((IconAdder*)editor)->getIconMap();
+ QMap <QString, NamedIcon*>* map = ((IconAdder*)editor)->getIconMap();
  QStringListIterator e(map->keys());
  while (e.hasNext())
  {
@@ -2220,7 +2220,7 @@ void Editor::addSlip()
  SignalHeadIcon* l = new SignalHeadIcon(this);
  IconAdder* editor = getIconEditor("SignalHead");
  l->setSignalHead(editor->getTableSelection()->getDisplayName());
- QHash <QString, NamedIcon*>* map = editor->getIconMap();
+ QMap <QString, NamedIcon*>* map = editor->getIconMap();
  QStringListIterator e(map->keys());
  while (e.hasNext())
  {

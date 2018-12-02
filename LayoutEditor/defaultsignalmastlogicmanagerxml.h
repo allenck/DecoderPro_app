@@ -9,7 +9,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultSignalMastLogicManagerXml : public Abs
 {
     Q_OBJECT
 public:
-    explicit DefaultSignalMastLogicManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit DefaultSignalMastLogicManagerXml(QObject *parent = 0);
 
     /*public*/ QDomElement store(QObject* o);
  ~DefaultSignalMastLogicManagerXml() {}

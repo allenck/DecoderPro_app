@@ -1827,6 +1827,7 @@ void PaneProgFrame::on_btnWriteAllSheets()
   writeAllButton->setText(tr("Write all sheets"));
  }
 }
+
 void PaneProgFrame::on_actionSave_triggered()
 {
  storeFile();

@@ -34,12 +34,12 @@ private:
 
 protected:
     /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor);
-    /*protected*/ void makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey);
+    /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
     /*protected*/ void initIconFamiliesPanel();
     /*protected*/ void setFamily(QString family);
     /*protected*/ void setSelections();
-    /*protected*/ IconDialog* openDialog(QString type, QString family, QHash<QString, NamedIcon*>* iconMap);
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map);
+    /*protected*/ IconDialog* openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map);
 friend class MultiSensorSelectionModel;
 friend class MSIconDragJLabel;
 friend class MultiSensorIconDialog;
@@ -74,11 +74,11 @@ friend class MSIconDragJLabel;
 /*protected*/ class MSIconDragJLabel : public DragJLabel
 {
  Q_OBJECT
-  QHash <QString, NamedIcon*>* iconMap;
+  QMap <QString, NamedIcon*>* iconMap;
   MultiSensorItemPanel* self;
  public:
         //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-        /*public*/ MSIconDragJLabel(DataFlavor* flavor, QHash <QString, NamedIcon*>* map, MultiSensorItemPanel* self);
+        /*public*/ MSIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, MultiSensorItemPanel* self);
         /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
   /*public*/ QObject* getTransferData(DataFlavor* flavor)throw (UnsupportedFlavorException,IOException);
 };

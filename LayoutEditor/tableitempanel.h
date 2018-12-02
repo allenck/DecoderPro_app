@@ -19,7 +19,7 @@ public:
     //explicit TableItemPanel(QWidget *parent = 0);
     /*public*/ TableItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     /*public*/ void init();
-    /*public*/ void init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap);
+    /*public*/ void init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap);
     /*public*/ NamedBean* getTableSelection();
     /*public*/ void setSelection(NamedBean* bean) ;
     /*public*/ void valueChanged(/*ListSelectionEvent* e*/);
@@ -45,7 +45,7 @@ protected:
     /*protected*/ NamedBean* getNamedBean();
 protected slots:
     /*protected*/ void makeAddToTableWindow();
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map);
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map);
 
 friend class SignalHeadItemPanel;
 friend class TIconDragJLabel;
@@ -60,9 +60,9 @@ friend class AddTableActionListener;
 {
  Q_OBJECT
  TableItemPanel* self;
- QHash<QString, NamedIcon*>* iconMap;
+ QMap<QString, NamedIcon*>* iconMap;
 public:
- /*public*/ TIconDragJLabel(DataFlavor* flavor, QHash <QString, NamedIcon*>* map, TableItemPanel* self);
+ /*public*/ TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, TableItemPanel* self);
  /*public*/ bool isDataFlavorSupported(DataFlavor* flavor) ;
  /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) ;
  QString mimeData();

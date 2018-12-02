@@ -60,18 +60,17 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
     void on_showDarkIconAct_toggled(bool);
     void on_editLogicAction_triggered();
     /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public*/ Q_DECL_DEPRECATED void propertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
 
  private:
     //    private SignalHead mHead;
     /*private*/ NamedBeanHandle<SignalHead*>* namedHead;
 
-    QHash <QString, NamedIcon*>* _saveMap;
+    QMap<QString, NamedIcon*>* _saveMap;
     Logger* log;
     /*private*/ bool isValidState(QString key);
     QButtonGroup* litButtonGroup;// = NULL;
     SignalHeadItemPanel* _itemPanel;
-    /*private*/ void setIcons(QHash<QString, NamedIcon*>* map);
+    /*private*/ void setIcons(QMap<QString, NamedIcon *> *map);
     PropertyChangeSupport* pcs;
     void addPropertyChangeListener(PropertyChangeListener*);
     void removePropertyChangeListener(PropertyChangeListener*);

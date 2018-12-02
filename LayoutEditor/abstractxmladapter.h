@@ -23,7 +23,7 @@ public:
     virtual void setDoc(QDomDocument doc);
     /*public*/ bool load(QDomElement e) throw (Exception);
     /*public*/ bool load(QDomElement shared, QDomElement perNode); //throws Exception
-    /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o); //throws Exception
+    /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o)throw (JmriConfigureXmlException);
 
 signals:
 

@@ -6,7 +6,7 @@ class VirtualSignalMastXml : public AbstractNamedBeanManagerConfigXML
 {
     Q_OBJECT
 public:
-    explicit VirtualSignalMastXml(QObject *parent = 0);
+    Q_INVOKABLE explicit VirtualSignalMastXml(QObject *parent = 0);
  ~VirtualSignalMastXml() {}
  VirtualSignalMastXml(const VirtualSignalMastXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);

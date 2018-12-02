@@ -15,8 +15,8 @@
 /*static*/ /*private*/ int SignalSpeedMap::_sStepDelay = 0;
 /*static*/ /*private*/ int SignalSpeedMap::_numSteps =4;
 /*static*/ /*private*/ int SignalSpeedMap::_interpretation = 0;
-/*static*/ /*private*/ QMap<QString, float>* SignalSpeedMap::_table = NULL; //  QMap<QString, float>();
-/*static*/ /*private*/ QMap<QString, QString>* SignalSpeedMap::_headTable = NULL; //QMap<QString, QString>();
+/*static*/ /*private*/ QMap<QString, float>* SignalSpeedMap::_table = new QMap<QString, float>();
+/*static*/ /*private*/ QMap<QString, QString>* SignalSpeedMap::_headTable =  new QMap<QString, QString>();
 
 SignalSpeedMap::SignalSpeedMap(QObject *parent) :
     Bean(parent)
@@ -24,7 +24,7 @@ SignalSpeedMap::SignalSpeedMap(QObject *parent) :
  _stepIncrement = 0.04f;       // ramp step throttle increment
  _throttleFactor = 0.75f;
  _table = new QMap<QString, float>();
- _headTable;// = new QMap<QString, QString>();
+ _headTable = new QMap<QString, QString>();
  setProperty("InstanceManagerAutoDefault", "true");
  setProperty("InstanceManagerAutoInitialize", "true");
 
@@ -336,21 +336,21 @@ void SignalSpeedMap::loadMap()
     _interpretation = interpretation;
 }
 /*public*/ void SignalSpeedMap::setAppearances(/*@Nonnull*/ QMap<QString, QString> map) {
-        /*synchronized (this._headTable)*/ {
-            QMap<QString, QString> old = QMap<QString, QString>(*_headTable);
-            _headTable->clear();
-            //_headTable.putAll(map);
-            QMapIterator<QString, QString> iter(map);
-            while(iter.hasNext())
-            {
-             iter.next();
-             _headTable->insert(iter.key(), iter.value());
-            }
-            if (map != (old)) {
+ /*synchronized (this._headTable)*/ {
+  QMap<QString, QString> old = QMap<QString, QString>(*_headTable);
+  _headTable->clear();
+  //_headTable.putAll(map);
+  QMapIterator<QString, QString> iter(map);
+  while(iter.hasNext())
+  {
+   iter.next();
+   _headTable->insert(iter.key(), iter.value());
+  }
+  if (map != (old)) {
 //                this->firePropertyChange("Appearances", old,  QMap<QString, QVariant>(*_headTable));
-            }
-        }
-    }
+  }
+ }
+}
 /*public*/ void SignalSpeedMap::setAppearanceTable(QMapIterator<QString, QString> iter) {
     _headTable =  new QMap<QString, QString>();
     while (iter.hasNext() )

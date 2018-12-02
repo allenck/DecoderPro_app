@@ -50,19 +50,20 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
 //@Override
 /*public*/ bool AbstractXmlAdapter::load(QDomElement /*e*/) throw (Exception)
 {
-    throw new UnsupportedOperationException("One of the other load methods must be implemented.");
+ throw new UnsupportedOperationException("One of the other load methods must be implemented.");
 }
 
 //@Override
-/*public*/ bool AbstractXmlAdapter::load(QDomElement shared, QDomElement /*perNode*/) //throws Exception
+/*public*/ bool AbstractXmlAdapter::load(QDomElement shared, QDomElement perNode) //throws Exception
 {
-    return this->load(shared);
+ Q_UNUSED(perNode);
+ return this->load(shared);
 }
 
 //@Override
-/*public*/ void AbstractXmlAdapter::load(QDomElement /*shared*/, QDomElement /*perNode*/, QObject* /*o*/) //throws Exception
+/*public*/ void AbstractXmlAdapter::load(QDomElement shared, QDomElement /*perNode*/, QObject* o) throw (JmriConfigureXmlException)
 {
-//    this->load(shared, o);
+ //this->load(shared, o);
 }
 
 /**

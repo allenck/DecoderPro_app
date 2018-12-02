@@ -253,7 +253,7 @@ MultiSensorIconEntry::MultiSensorIconEntry(NamedIcon *icon, NamedBeanHandle<Sens
  UIActionListener* updateAction = new UIActionListener(this);
  //connect(updateAction, SIGNAL(triggered()), this, SLOT(updateItem()));
  // duplicate _iconMap map with unscaled and unrotated icons
- QHash<QString, NamedIcon*>* map = new QHash<QString, NamedIcon*>();
+ QMap<QString, NamedIcon*>* map = new QMap<QString, NamedIcon*>();
  map->insert("SensorStateInactive", inactive);
  map->insert("BeanStateInconsistent", inconsistent);
  map->insert("BeanStateUnknown", unknown);
@@ -276,7 +276,7 @@ MultiSensorIconEntry::MultiSensorIconEntry(NamedIcon *icon, NamedBeanHandle<Sens
 void MultiSensorIcon::updateItem()
 {
 #if 1
- QHash <QString, NamedIcon*>* iconMap = _itemPanel->getIconMap();
+ QMap <QString, NamedIcon*>* iconMap = _itemPanel->getIconMap();
  QList<NamedBean*>* selections = _itemPanel->getTableSelections();
  QList<int> positions = _itemPanel->getPositions();
  if (selections==NULL) {

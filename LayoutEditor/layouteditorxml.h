@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditorXml : public AbstractXmlAdapter
 {
  Q_OBJECT
 public:
- explicit LayoutEditorXml(QObject *parent = 0);
+ Q_INVOKABLE explicit LayoutEditorXml(QObject *parent = 0);
  ~LayoutEditorXml() {}
  LayoutEditorXml(const LayoutEditorXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

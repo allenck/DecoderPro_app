@@ -26,6 +26,8 @@
 #include <QGroupBox>
 #include "borderlayout.h"
 #include "jmribeancombobox.h"
+#include "joptionpane.h"
+#include <QVariant>
 
 //LayoutEditorTools::LayoutEditorTools(QObject *parent) :
 //    QObject(parent)
@@ -3001,29 +3003,42 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
   return;
  }
  xoverTurnoutName = layoutTurnout->getTurnoutName();
- setSignalsAtXoverTurnout(theEditor,theFrame);
+ setSignalsAtXoverTurnoutFromMenuFlag = true;
+ setSignalsAtXoverTurnout(theEditor, theFrame);
+ setSignalsAtXoverTurnoutFromMenuFlag = false;
 }
 
 /*public*/ void LayoutEditorTools::setSignalsAtXoverTurnout( MultiIconEditor* theEditor, JFrame* theFrame )
 {
  signalIconEditor = theEditor;
  signalFrame = theFrame;
- if (!xoverFromMenu)
+ if (!setSignalsAtXoverTurnoutFromMenuFlag)
  {
-  QStringList * tList = new QStringList();
-  foreach(LayoutTurnout* t, *layoutEditor->turnoutList)
+  QList<LayoutTurnout*> xovers = QList<LayoutTurnout*>();
+  for (LayoutTrack* lt : layoutEditor->getLayoutTurnouts())
   {
-   if ( ( (t->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ||
-             (t->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
-             (t->getTurnoutType()==LayoutTurnout::LH_XOVER) ))
-    tList->append(t->getName());
+   if(qobject_cast<LayoutTurnout*>(lt))
+   {
+    LayoutTurnout* layoutTurnout = qobject_cast<LayoutTurnout*>(lt);
+   if ((layoutTurnout->getTurnoutType() == LayoutTurnout::RH_XOVER)
+           || (layoutTurnout->getTurnoutType() == LayoutTurnout::LH_XOVER)
+           || (layoutTurnout->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER)) {
+       xovers.append(layoutTurnout);
+   }
+   }
   }
-
-  //xoverTurnoutName = JOptionPane.showInputDialog(layoutEditor,
-  //                                      tr("EnterXOverTurnout")+" :");
-  InputDialog* dlg = new InputDialog(tr("Enter name of crossover turnout:")+" :",xoverTurnoutName, tList);
-  if(dlg->exec() == QDialog::Accepted)
-   xoverTurnoutName = dlg->value();
+  QComboBox* jcb = new QComboBox();
+  //xovers.toArray(new LayoutTurnout[xovers.size()]));
+  //jcb->addItems(xovers);
+  foreach (LayoutTurnout* lt, xovers) {
+   jcb->addItem(lt->getName(), VPtr<LayoutTurnout>::asQVariant(lt));
+  }
+  jcb->setEditable(true);
+  JOptionPane::showMessageDialog(layoutEditor, VPtr<QComboBox>::asQVariant(jcb),
+          tr("Enter name of crossover turnout"),
+          JOptionPane::QUESTION_MESSAGE);
+  LayoutTurnout* layoutTurnout = VPtr<LayoutTurnout>::asPtr(jcb->currentData());
+  xoverTurnoutName = layoutTurnout->getTurnoutName();
 
   if (xoverTurnoutName.length()<3) return;  // cancelled
  }

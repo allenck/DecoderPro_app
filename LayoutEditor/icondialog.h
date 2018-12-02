@@ -11,7 +11,7 @@ class IconDialog : public ItemDialog
     Q_OBJECT
 public:
     //explicit IconDialog(QWidget *parent = 0);
-    /*public*/ IconDialog(QString type, QString family, ItemPanel* parent, QHash <QString, NamedIcon*>* iconMap );
+    /*public*/ IconDialog(QString type, QString family, ItemPanel* parent, QMap <QString, NamedIcon*>* iconMap );
 
 signals:
 
@@ -24,7 +24,7 @@ private:
     /*private*/ bool		_newIconSet;// = false;
     Logger* log;
 protected:
-    /*protected*/ QHash <QString, NamedIcon*>*  _iconMap;
+    /*protected*/ QMap <QString, NamedIcon*>*  _iconMap;
     /*protected*/ QWidget*       _iconPanel;
     /*protected*/ CatalogPanel*  _catalog;
     /*protected*/ JTextField*    _familyName;
@@ -38,9 +38,9 @@ protected:
     /*protected*/ void deleteFamilySet();
     /*protected*/ void makeDoneButtonPanel(QWidget* buttonPanel);
 //    /*protected*/ void makeCreateButtonPanel(QWidget* buttonPanel);
-    /*protected*/ QWidget* makeIconPanel(QHash<QString, NamedIcon*>* iconMap);
+    /*protected*/ QWidget* makeIconPanel(QMap<QString, NamedIcon *> *iconMap);
     void checkIconSizes();
-    /*protected*/ QHash<QString, NamedIcon*>* clone(QHash<QString, NamedIcon*>* map);
+    /*protected*/ QMap<QString, NamedIcon *> *clone(QMap<QString, NamedIcon *> *map);
 };
 
 #endif // ICONDIALOG_H

@@ -68,7 +68,7 @@
 * Init for update of existing indicator turnout
 * _bottom3Panel has "Update Panel" button put into _bottom1Panel
 */
-/*public*/ void IndicatorTOItemPanel::initUpdate(ActionListener* doneAction, QHash<QString, QHash<QString, NamedIcon*>*>* iconMaps)
+/*public*/ void IndicatorTOItemPanel::initUpdate(ActionListener* doneAction, QMap<QString, QMap<QString, NamedIcon*>*>* iconMaps)
 {
  checkCurrentMaps(iconMaps);   // is map in families?, does user want to add it? etc
  TableItemPanel::init(doneAction, NULL);
@@ -85,12 +85,12 @@
 * families. if so, return.  if not, does user want to add it to families?
 * if so, add.  If not, save for return when updated.
 */
-/*private*/ void IndicatorTOItemPanel::checkCurrentMaps(QHash<QString, QHash<QString, NamedIcon*>*>* iconMaps)
+/*private*/ void IndicatorTOItemPanel::checkCurrentMaps(QMap<QString, QMap<QString, NamedIcon*>*>* iconMaps)
 {
  _updateGroupsMap = iconMaps;
  if (_family!=NULL && _family.trimmed().length()>0)
  {
-  QHash<QString, QHash<QString, NamedIcon*>*>* map = ItemPalette::getLevel4FamilyMaps(_itemType)->value(_family);
+  QMap<QString, QMap<QString, NamedIcon*>*>* map = ItemPalette::getLevel4FamilyMaps(_itemType)->value(_family);
   if (map!=NULL)
   {
    return;     // Must assume no family names were changed
@@ -148,7 +148,7 @@
  QVBoxLayout* iconFamilyPanelLayout;
  _iconFamilyPanel->setLayout(iconFamilyPanelLayout = new QVBoxLayout); //(_iconFamilyPanel/*, BoxLayout.Y_AXIS*/));
 
- QHash <QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* families =
+ QMap <QString, QMap<QString, QMap<QString, NamedIcon*>*>*>* families =
                         ItemPalette::getLevel4FamilyMaps(_itemType);
  if (families!=NULL && families->size()>0)
  {
@@ -213,7 +213,7 @@
 /**
 * Make matrix of icons - each row has a button to change icons
 */
-/*protected*/ void IndicatorTOItemPanel::addIcons2Panel(QHash<QString, QHash<QString, NamedIcon*>*>* map) {
+/*protected*/ void IndicatorTOItemPanel::addIcons2Panel(QMap<QString, QMap<QString, NamedIcon*>*>* map) {
     QGridLayout* gridbag = new QGridLayout();
     _iconPanel->setLayout(gridbag);
 
@@ -226,7 +226,7 @@
     c.gridheight = 1;
     c.gridy = -1;
     //Iterator<Entry<String, Hashtable<String, NamedIcon>>> it = map.entrySet().iterator();
-    QHashIterator<QString, QHash<QString, NamedIcon*>*> it(*map);
+    QMapIterator<QString, QMap<QString, NamedIcon*>*> it(*map);
     while (it.hasNext()) {
         c.gridx = 0;
         c.gridy++;
@@ -241,8 +241,8 @@
         //_iconPanel->layout()->addWidget(panel);
         gridbag->addWidget(panel, c.gridy, c.gridx, 1,1);
         c.gridx++;
-        QHash<QString, NamedIcon*>* iconMap = it.value();
-        QHashIterator<QString, NamedIcon*> iter(* iconMap);
+        QMap<QString, NamedIcon*>* iconMap = it.value();
+        QMapIterator<QString, NamedIcon*> iter(* iconMap);
         QGroupBox* panel1;
         QString  gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
         while(iter.hasNext())
@@ -450,7 +450,7 @@ void IndicatorTOItemPanel::createNewFamily()
  {
   _tablePanel->setVisible(false);
  }
- _iconGroupsMap = new QHash<QString, QHash<QString, NamedIcon*>*>();
+ _iconGroupsMap = new QMap<QString, QMap<QString, NamedIcon*>*>();
  for (int i=0; i<STATUS_KEYS.length(); i++)
  {
   _iconGroupsMap->insert(STATUS_KEYS.at(i), makeNewIconMap("Turnout"));
@@ -479,7 +479,7 @@ _iconPanel = new QWidget();
 /**
 *  _iconGroupsMap holds edit changes when done is pressed
 */
-/*protected*/ void IndicatorTOItemPanel::updateIconGroupsMap(QString key, QHash<QString, NamedIcon*>* iconMap) {
+/*protected*/ void IndicatorTOItemPanel::updateIconGroupsMap(QString key, QMap<QString, NamedIcon*>* iconMap) {
     _iconGroupsMap->insert(key, iconMap);
 }
 
@@ -542,7 +542,7 @@ _iconPanel = new QWidget();
     _detectPanel->setPaths(paths);
 }
 
-/*public*/ QHash <QString, QHash<QString, NamedIcon*>*>* IndicatorTOItemPanel::getIconMaps()
+/*public*/ QMap <QString, QMap<QString, NamedIcon*>*>* IndicatorTOItemPanel::getIconMaps()
 {
  if (_iconGroupsMap==NULL)
  {
@@ -559,7 +559,7 @@ _iconPanel = new QWidget();
  return _iconGroupsMap;
 }
 
-/*protected*/ DragJLabel* IndicatorTOItemPanel::getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map) {
+/*protected*/ DragJLabel* IndicatorTOItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map) {
     return new ITOIconDragJLabel(flavor, this);
 }
 
@@ -586,7 +586,7 @@ _iconPanel = new QWidget();
   return NULL;
  }
 
- QHash <QString, QHash <QString, NamedIcon*>*>* iconMap = parent->getIconMaps();
+ QMap <QString, QMap <QString, NamedIcon*>*>* iconMap = parent->getIconMaps();
  if (iconMap==NULL)
  {
   parent->log-> error("IconDragJLabel.getTransferData: iconMap is NULL!");
@@ -601,12 +601,12 @@ _iconPanel = new QWidget();
  t->setTurnout(bean->getSystemName());
  t->setFamily(parent->_family);
 #if 1
- QHashIterator<QString, QHash<QString, NamedIcon*>*> it(* iconMap);
+ QMapIterator<QString, QMap<QString, NamedIcon*>*> it(* iconMap);
  while (it.hasNext())
  {
   /*  QHash<QString, QHash<QString, NamedIcon*>*> entry =*/ it.next();
   QString status = it.key();
-  QHashIterator<QString, NamedIcon*> iter( *it.value());
+  QMapIterator<QString, NamedIcon*> iter( *it.value());
   while (iter.hasNext())
   {
    /*QHash<QString, NamedIcon*>* ent =*/ iter.next();
@@ -637,11 +637,11 @@ QString ITOIconDragJLabel::mimeData()
  icon->setFamily(parent->getFamilyName());
  icon->setStatus(0);
  //QHash<QString, NamedIcon*>* iconMap = parent->getIconMap();
- QHashIterator<QString, QHash<QString, NamedIcon*>*> it(*parent->_iconGroupsMap);
+ QMapIterator<QString, QMap<QString, NamedIcon*>*> it(*parent->_iconGroupsMap);
  while(it.hasNext())
  {
   it.next();
-  QHashIterator<QString, NamedIcon*> iter(*it.value());
+  QMapIterator<QString, NamedIcon*> iter(*it.value());
   while (iter.hasNext())
   {
    iter.next();

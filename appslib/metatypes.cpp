@@ -278,6 +278,8 @@
 #include "systemconsoleconfigpanelxml.h"
 #include "matrixsignalmastxml.h"
 #include "signalspeedmap.h"
+#include "dccsignalheadxml.h"
+#include "tripleoutoutsignalheadxml.h"
 
 bool Metatypes::done = false;
 
@@ -569,6 +571,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SystemConsoleConfigPanelXml>("SystemConsoleConfigPanelXml");
  qRegisterMetaType<MatrixSignalMastXml>("MatrixSignalMastXml");
  qRegisterMetaType<SignalSpeedMap>("SignalSpeedMap");
+ qRegisterMetaType<DccSignalHeadXml>("DccSignalHeadXml");
+ qRegisterMetaType<TripleOutputSignalHeadXml>("TripleOutputSignalHeadXml");
 
  Metatypes::done = true;
 }

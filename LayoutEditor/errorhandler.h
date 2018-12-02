@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-//class Logger;
+class Logger;
 class ErrorMemo;
 class ErrorHandler : public QObject
 {
@@ -18,7 +18,7 @@ signals:
 
 public slots:
 private:
- //Logger* log;
+ static Logger* log;
 };
 
 #endif // ERRORHANDLER_H

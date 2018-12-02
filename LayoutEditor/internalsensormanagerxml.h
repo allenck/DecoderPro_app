@@ -6,7 +6,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT InternalSensorManagerXml : public AbstractSen
 {
     Q_OBJECT
 public:
-    explicit InternalSensorManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit InternalSensorManagerXml(QObject *parent = 0);
  ~InternalSensorManagerXml() {}
  InternalSensorManagerXml(const InternalSensorManagerXml&) : AbstractSensorManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement sensors) ;

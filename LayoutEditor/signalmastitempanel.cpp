@@ -38,7 +38,7 @@ void SignalMastItemPanel::init()
  _showIconsButton->setEnabled(false);
  _showIconsButton->setToolTip(tr("Select a row from the table to show the icons for the item"));
 }
-void SignalMastItemPanel::init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap)
+void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
  TableItemPanel::init(doneAction, iconMap);
 }
@@ -89,7 +89,7 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QHash<QString, NamedI
  _iconPanel->setVisible(false);
 }
 
-/*protected*/ void SignalMastItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/) {
+/*protected*/ void SignalMastItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/) {
     if (_update) {
         return;
     }
@@ -181,7 +181,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
   return;
  }
  _family = _mast->getSignalSystem()->getSystemName();
- _currentIconMap = new QHash<QString, NamedIcon*>();  QStringListIterator e(_mast->getAppearanceMap()->getAspects());
+ _currentIconMap = new QMap<QString, NamedIcon*>();  QStringListIterator e(_mast->getAppearanceMap()->getAspects());
  while (e.hasNext())
  {
   QString s = _mast->getAppearanceMap()->getProperty(e.next(), "imagelink");

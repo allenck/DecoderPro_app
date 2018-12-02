@@ -16,9 +16,9 @@ public:
     //explicit FamilyItemPanel(QWidget *parent = 0);
     /*public*/ FamilyItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent = 0);
     /*public*/ void init() ;
-    /*public*/ void init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap) ;
+    /*public*/ void init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap) ;
     /*public*/ void virtual init(ActionListener* doneAction);
-    /*public*/ virtual QHash<QString, NamedIcon*>* getIconMap();
+    /*public*/ virtual QMap<QString, NamedIcon *> *getIconMap();
 
 signals:
 
@@ -31,7 +31,7 @@ private:
     QWidget*    _bottom2Panel;  // createIconFamilyButton - when all families deleted
     QPushButton*   _showIconsButton;
     QPushButton*   _updateButton;
-    /*private*/ void checkCurrentMap(QHash<QString, NamedIcon*>* iconMap);
+    /*private*/ void checkCurrentMap(QMap<QString, NamedIcon*>* iconMap);
     Logger* log;
     IconDialog* _dialog;
 
@@ -42,22 +42,22 @@ protected:
     /*protected*/ QWidget*    _iconFamilyPanel;
     /*protected*/ QWidget*    _iconPanel;     // panel contained in _iconFamilyPanel - all icons in family
     /*protected*/ QWidget*    _dragIconPanel; // contained in _iconFamilyPanel - sample to drag to control panel
-    /*protected*/ QHash<QString, NamedIcon*>* _currentIconMap;
+    /*protected*/ QMap<QString, NamedIcon*>* _currentIconMap;
     /*protected*/ void makeBottomPanel(ActionListener* doneAction);
     /*protected*/ virtual void initIconFamiliesPanel();
     /*protected*/ QWidget* makeFamilyButtons (QStringListIterator it, bool setDefault);
     /*protected*/ void addFamilyPanels(QWidget* familyPanel);
     /*protected*/ void addCreatePanels() ;
-    /*protected*/ void addIconsToPanel(QHash<QString, NamedIcon*>* iconMap);
-    /*abstract*/ virtual /*protected*/ DragJLabel* getDragger(DataFlavor* /*flavor*/, QHash <QString, NamedIcon*>* /*map*/) {return NULL;}
-    /*protected*/ virtual void makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey);
+    /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon *> *iconMap);
+    /*abstract*/ virtual /*protected*/ DragJLabel* getDragger(DataFlavor* /*flavor*/, QMap <QString, NamedIcon*>* /*map*/) {return nullptr;}
+    /*protected*/ virtual void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
     /*protected*/ virtual QWidget* makeBottom1Panel();
     /*protected*/ void hideIcons();
     /*protected*/ void showIcons();
     /*protected*/ virtual QWidget* makeBottom2Panel();
     /*protected*/ virtual QWidget* makeBottom3Panel(ActionListener* doneAction, QWidget* bottom1Panel) ;
     /*protected*/ virtual void setFamily(QString family) ;
-    /*protected*/ virtual IconDialog* openDialog(QString type, QString family, QHash<QString, NamedIcon*>* iconMap);
+    /*protected*/ virtual IconDialog* openDialog(QString type, QString family, QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void closeDialogs();
     /*protected*/ void deleteFamilySet();
     /*protected*/ bool _suppressDragging;

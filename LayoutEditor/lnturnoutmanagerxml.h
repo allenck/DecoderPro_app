@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LnTurnoutManagerXml : public AbstractTurnoutM
 {
     Q_OBJECT
 public:
-    explicit LnTurnoutManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit LnTurnoutManagerXml(QObject *parent = 0);
  ~LnTurnoutManagerXml() {}
  LnTurnoutManagerXml(const LnTurnoutManagerXml&) : AbstractTurnoutManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement turnouts) ;

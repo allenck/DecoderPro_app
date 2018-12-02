@@ -54,9 +54,9 @@
  setObjectName("IndicatorTurnoutIcon");
 }
 
-QHash<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::initMaps()
+QMap<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::initMaps()
 {
- QHash<QString, QHash<int, NamedIcon*>*>* iconMaps = new QHash<QString, QHash<int, NamedIcon*>*>();
+ QMap<QString, QHash<int, NamedIcon*>*>* iconMaps = new QMap<QString, QHash<int, NamedIcon*>*>();
  iconMaps->insert("ClearTrack", new QHash <int, NamedIcon*>());
  iconMaps->insert("OccupiedTrack", new QHash <int, NamedIcon*>());
  iconMaps->insert("PositionTrack", new QHash <int, NamedIcon*>());
@@ -66,11 +66,11 @@ QHash<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::initMaps()
  return iconMaps;
 }
 
-QHash<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::cloneMaps(IndicatorTurnoutIcon* pos)
+QMap<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::cloneMaps(IndicatorTurnoutIcon* pos)
 {
- QHash<QString, QHash<int, NamedIcon*>*>* iconMaps = initMaps();
+ QMap<QString, QHash<int, NamedIcon*>*>* iconMaps = initMaps();
 #if 1
- QHashIterator<QString,QHash<int, NamedIcon*>*> it(*_iconMaps);
+ QMapIterator<QString,QHash<int, NamedIcon*>*> it(*_iconMaps);
  while (it.hasNext())
  {
   /*QHash<int, NamedIcon*>* entry =*/ it.next();
@@ -104,7 +104,7 @@ QHash<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::cloneMaps(Indicat
 
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP",
 //        justification="OK until Java 1.6 allows more efficient return of copy")
-/*public*/ QHash<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::getIconMaps()
+/*public*/ QMap<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::getIconMaps()
 {
     return _iconMaps;
 }
@@ -477,20 +477,20 @@ QHash<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::cloneMaps(Indicat
 //    };
  ITOUpdateActionListener* updateAction = new ITOUpdateActionListener(this);
  // Convert _iconMaps state (ints) to Palette's bean names
- QHash<QString, QHash<QString, NamedIcon*>*>* iconMaps =
-                 new QHash<QString, QHash<QString, NamedIcon*>*>();
- iconMaps->insert("ClearTrack", new QHash <QString, NamedIcon*>());
- iconMaps->insert("OccupiedTrack", new QHash <QString, NamedIcon*>());
- iconMaps->insert("PositionTrack", new QHash <QString, NamedIcon*>());
- iconMaps->insert("AllocatedTrack", new QHash <QString, NamedIcon*>());
- iconMaps->insert("DontUseTrack", new QHash <QString, NamedIcon*>());
- iconMaps->insert("ErrorTrack", new QHash <QString, NamedIcon*>());
- QHashIterator<QString, QHash<int, NamedIcon*>*> it(*_iconMaps);
+ QMap<QString, QMap<QString, NamedIcon*>*>* iconMaps =
+                 new QMap<QString, QMap<QString, NamedIcon*>*>();
+ iconMaps->insert("ClearTrack", new QMap <QString, NamedIcon*>());
+ iconMaps->insert("OccupiedTrack", new QMap <QString, NamedIcon*>());
+ iconMaps->insert("PositionTrack", new QMap <QString, NamedIcon*>());
+ iconMaps->insert("AllocatedTrack", new QMap <QString, NamedIcon*>());
+ iconMaps->insert("DontUseTrack", new QMap <QString, NamedIcon*>());
+ iconMaps->insert("ErrorTrack", new QMap <QString, NamedIcon*>());
+ QMapIterator<QString, QHash<int, NamedIcon*>*> it(*_iconMaps);
 
  while (it.hasNext())
  {
   /*Entry<QString, QHash<int, NamedIcon*>> entry =*/ it.next();
-  QHash <QString, NamedIcon*>* clone = iconMaps->value(it.key());
+  QMap <QString, NamedIcon*>* clone = iconMaps->value(it.key());
   QHashIterator<int, NamedIcon*> iter(*it.value());
   while (iter.hasNext())
   {
@@ -550,17 +550,17 @@ void IndicatorTurnoutIcon::updateItem()
  _pathUtil->setShowTrain(_TOPanel->getShowTrainName());
  _iconFamily = _TOPanel->getFamilyName();
  _pathUtil->setPaths(_TOPanel->getPaths());
- QHash<QString, QHash<QString, NamedIcon*>*>* iconMap = _TOPanel->getIconMaps();
+ QMap<QString, QMap<QString, NamedIcon*>*>* iconMap = _TOPanel->getIconMaps();
 #if 1
  if (iconMap!=NULL)
  {
-  QHashIterator<QString, QHash<QString, NamedIcon*>*> it(* iconMap);
+  QMapIterator<QString, QMap<QString, NamedIcon*>*> it(* iconMap);
   while (it.hasNext())
   {
    /*Entry<String, QHash<QString, NamedIcon*>*> entry =*/ it.next();
    QString status = it.key();
    QHash <int, NamedIcon*>* oldMap = _iconMaps->value(it.key());
-   QHashIterator<QString, NamedIcon*> iter(*it.value() );
+   QMapIterator<QString, NamedIcon*> iter(*it.value() );
    while (iter.hasNext())
    {
     /*Entry<String, NamedIcon> ent =*/ iter.next();

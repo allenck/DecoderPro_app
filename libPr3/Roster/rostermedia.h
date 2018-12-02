@@ -24,6 +24,9 @@ private:
     Logger* log;
     QString fileName;
     void processFile(QString fileName);
+    void dragEnterEvent(QDragEnterEvent*);
+    void dragMoveEvent(QDragMoveEvent*);
+    void dropEvent(QDropEvent*);
 
 private slots:
     void on_customContexMenuRequest(QPoint);

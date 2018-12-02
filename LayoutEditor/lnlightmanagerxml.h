@@ -7,8 +7,9 @@
 
 class LIBLAYOUTEDITORSHARED_EXPORT LnLightManagerXml : public AbstractLightManagerConfigXML
 {
+ Q_OBJECT
 public:
-    LnLightManagerXml(QObject *parent = 0);
+    Q_INVOKABLE LnLightManagerXml(QObject *parent = 0);
     ~LnLightManagerXml();
     LnLightManagerXml(const LnLightManagerXml&) : AbstractLightManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement lights);

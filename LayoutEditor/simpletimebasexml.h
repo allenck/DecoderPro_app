@@ -8,7 +8,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SimpleTimebaseXml : public AbstractXmlAdapter
 {
     Q_OBJECT
 public:
-    explicit SimpleTimebaseXml(QObject *parent = 0);
+    Q_INVOKABLE explicit SimpleTimebaseXml(QObject *parent = 0);
     ~SimpleTimebaseXml();
  SimpleTimebaseXml(const SimpleTimebaseXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);

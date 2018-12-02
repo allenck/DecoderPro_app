@@ -102,10 +102,11 @@
     }
 
     //dccMastPanel.removeAll();
-    QObjectList ol = dccMastPanelLayout->children();
+    QObjectList ol = dccMastPanel->children();
     foreach (QObject* obj, ol) {
      if(qobject_cast<QWidget*>(obj))
-     dccMastPanelLayout->removeWidget(qobject_cast<QWidget*>(obj));
+      dccMastPanelLayout->removeWidget(qobject_cast<QWidget*>(obj));
+     obj->deleteLater();
     }
     delete dccMastPanelLayout;
     dccMastPanel->setLayout(dccMastPanelLayout = new QVBoxLayout());

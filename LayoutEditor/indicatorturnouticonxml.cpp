@@ -53,8 +53,8 @@ IndicatorTurnoutIconXml::IndicatorTurnoutIconXml(QObject *parent) :
  elem.appendChild(doc.createTextNode(show));
  element.appendChild(elem);
 
- QHash<QString, QHash<int, NamedIcon*>*>* iconMaps = p->getIconMaps();
- QHashIterator<QString, QHash<int, NamedIcon*>*> it( *iconMaps);
+ QMap<QString, QHash<int, NamedIcon*>*>* iconMaps = p->getIconMaps();
+ QMapIterator<QString, QHash<int, NamedIcon*>*> it( *iconMaps);
  QDomElement el = doc.createElement("iconmaps");
  QString family = p->getFamily();
  if (family!=NULL)

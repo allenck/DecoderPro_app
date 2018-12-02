@@ -8,7 +8,7 @@ class IndicatorTrackIconXml : public PositionableLabelXml
 {
     Q_OBJECT
 public:
-    explicit IndicatorTrackIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit IndicatorTrackIconXml(QObject *parent = 0);
  ~IndicatorTrackIconXml() {}
  IndicatorTrackIconXml(const IndicatorTrackIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o) ;

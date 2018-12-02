@@ -68,7 +68,7 @@
 * Init for update of existing indicator turnout
 * _bottom3Panel has "Update Panel" button put into _bottom1Panel
 */
-/*public*/ void TableItemPanel::init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap)
+/*public*/ void TableItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
     FamilyItemPanel::init(doneAction, iconMap);
     thisLayout->addWidget(initTablePanel(_model, _editor)/*, 0*/);
@@ -299,7 +299,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
     return _model->getBeanAt(row);
 }
 
-/*protected*/ DragJLabel* TableItemPanel::getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map) {
+/*protected*/ DragJLabel* TableItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map) {
     return new TIconDragJLabel(flavor, map,this);
 }
 
@@ -307,7 +307,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
 //    Hashtable<String, NamedIcon> iconMap;
 
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-/*public*/ TIconDragJLabel::TIconDragJLabel(DataFlavor* flavor, QHash<QString, NamedIcon*>* map, TableItemPanel* self) : DragJLabel(flavor,self)
+/*public*/ TIconDragJLabel::TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, TableItemPanel* self) : DragJLabel(flavor,self)
 {
  //DragJLabel(flavor,(QWidget*)self);
  iconMap = map;
@@ -340,7 +340,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
  {
   TurnoutIcon* t = new TurnoutIcon(self->_editor);
   t->setTurnout(bean->getDisplayName());
-  QHashIterator<QString, NamedIcon*> iter(* iconMap);
+  QMapIterator<QString, NamedIcon*> iter(* iconMap);
   while (iter.hasNext())
   {
    iter.next();
@@ -354,7 +354,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
  {
   SensorIcon* s = new SensorIcon(new   NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
             "resources/icons/smallschematics/tracksegments/circuit-error.gif"), self->_editor);
-  QHashIterator<QString, NamedIcon*> iter(*iconMap);
+  QMapIterator<QString, NamedIcon*> iter(*iconMap);
   while (iter.hasNext())
   {
    iter.next();
@@ -395,7 +395,7 @@ QString TIconDragJLabel::mimeData()
   _dataFlavor = new DataFlavor(icon = new TurnoutIcon(NULL),"TurnoutIcon");
   icon->setTurnout(bean->getSystemName());
   icon->setFamily(self->_family);
-  QHashIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
+  QMapIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
   while (iter.hasNext())
   {
     iter.next();
@@ -415,7 +415,7 @@ QString TIconDragJLabel::mimeData()
   _dataFlavor = new DataFlavor(icon = new SensorIcon(NULL),"SensorIcon");\
   icon->setSensor(bean->getSystemName());
   icon->setFamily(self->_family);
-  QHashIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
+  QMapIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
   while (iter.hasNext())
   {
     iter.next();
@@ -434,7 +434,7 @@ QString TIconDragJLabel::mimeData()
   _dataFlavor = new DataFlavor(icon = new LightIcon(self->_editor),"LightIcon");\
   icon->setLight(bean->getSystemName());
   icon->setFamily(self->_family);
-  QHashIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
+  QMapIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
   while (iter.hasNext())
   {
     iter.next();

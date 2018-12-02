@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT BlockBossLogicXml : public AbstractXmlAdapter
 {
     Q_OBJECT
 public:
-    explicit BlockBossLogicXml(QObject *parent = 0);
+    Q_INVOKABLE explicit BlockBossLogicXml(QObject *parent = 0);
     ~BlockBossLogicXml();
  BlockBossLogicXml(const BlockBossLogicXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);

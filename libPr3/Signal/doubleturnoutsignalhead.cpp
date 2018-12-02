@@ -2,6 +2,7 @@
 #include "turnout.h"
 #include "signalhead.h"
 
+
 //DoubleTurnoutSignalHead::DoubleTurnoutSignalHead(QObject *parent) :
 //    DefaultSignalHead(parent)
 //{
@@ -114,5 +115,94 @@ log = new Logger("DoubleTurnoutSignalHead");
 
 /*public*/ NamedBeanHandle<Turnout*>* DoubleTurnoutSignalHead::getRed() {return mRed;}
 /*public*/ NamedBeanHandle<Turnout*>* DoubleTurnoutSignalHead::getGreen() {return mGreen;}
-/*public*/ void DoubleTurnoutSignalHead::setRed(NamedBeanHandle<Turnout*>* t) {mRed=t;}
-/*public*/ void DoubleTurnoutSignalHead::setGreen(NamedBeanHandle<Turnout*>* t) {mGreen=t;}
+
+/*public*/ void DoubleTurnoutSignalHead::setRed(NamedBeanHandle<Turnout*>* t)
+{
+ if(mRed != nullptr)
+  disconnect(mRed->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ mRed=t;
+ if(mRed != nullptr)
+  connect(mRed->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+}
+
+/*public*/ void DoubleTurnoutSignalHead::setGreen(NamedBeanHandle<Turnout*>* t)
+{
+ if(mGreen != nullptr)
+  disconnect(mGreen->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
+ mGreen=t;
+ if(mGreen != nullptr)
+  connect(mGreen->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
+}
+
+//@Override
+bool DoubleTurnoutSignalHead::isTurnoutUsed(Turnout* t)
+{
+    if (getRed() != nullptr && t->equals(getRed()->getBean())) {
+        return true;
+    }
+    if (getGreen() != nullptr && t->equals(getGreen()->getBean())) {
+        return true;
+    }
+    return false;
+}
+
+
+//private PropertyChangeListener turnoutChangeListener = new PropertyChangeListener() {
+//    @Override
+/*public*/ void DoubleTurnoutSignalHead::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
+    if (propertyChangeEvent->getPropertyName()==("KnownState")) {
+        if (propertyChangeEvent->getSource() == (mRed->getBean()) && propertyChangeEvent->getNewValue() == (mRedCommanded)) {
+            return; // ignore change that we commanded
+        }
+        if (propertyChangeEvent->getSource() == (mGreen->getBean()) && propertyChangeEvent->getNewValue() == (mGreenCommanded)) {
+            return; // ignore change that we commanded
+        }
+        if (readUpdateTimer == nullptr) {
+//            readUpdateTimer = new QTimer(200, (ActionEvent actionEvent) ->
+//                    readOutput());
+            //readUpdateTimer.setRepeats(false);
+         readUpdateTimer = new QTimer();
+         readUpdateTimer->setInterval(200);
+         readUpdateTimer->setSingleShot(true);
+         connect(readUpdateTimer, SIGNAL(timeout()), this, SLOT(readOutput()));
+            readUpdateTimer->start();
+        } else {
+            readUpdateTimer->start(200);
+        }
+    }
+}
+//};
+
+/**
+* Checks if the turnouts' output state matches the commanded output state; if not, then
+* changes the appearance to match the output's current state.
+*/
+void DoubleTurnoutSignalHead::readOutput() {
+ if ((mAppearance == FLASHGREEN)
+         || (mAppearance == FLASHYELLOW)
+         || (mAppearance == FLASHRED)
+         || (mAppearance == FLASHLUNAR)) {
+     // If we are actively flashing right now, then we ignore external changes, since
+     // those might be coming from ourselves and will be overwritten shortly.
+     return;
+ }
+ int red = mRed->getBean()->getKnownState();
+ int green = mGreen->getBean()->getKnownState();
+ if (mRedCommanded == red && mGreenCommanded == green) return;
+ // The turnouts' known state has diverged from what we set. We attempt to decode the
+ // actual state to an appearance. This is a lossy operation, but the user has done
+ // something very explicitly to make this happen, like manually clicking the turnout throw
+ // button, or setting up an external signaling logic system.
+ if (red == Turnout::CLOSED && green == Turnout::CLOSED) {
+     setAppearance(DARK);
+ } else if (red == Turnout::THROWN && green == Turnout::CLOSED) {
+     setAppearance(RED);
+ } else if (red == Turnout::THROWN && green == Turnout::THROWN) {
+     setAppearance(YELLOW);
+ } else if (red == Turnout::CLOSED && green == Turnout::THROWN) {
+     setAppearance(GREEN);
+ }
+}
+

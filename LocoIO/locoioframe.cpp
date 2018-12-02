@@ -16,6 +16,8 @@
 #include <QStatusBar>
 #include "menu.h"
 #include <QRegExpValidator>
+#include "jdialog.h"
+#include <QIcon>
 
 LocoIOFrame::LocoIOFrame(LocoIOAddress* address, LnTrafficController* tc, bool /*bHex*/, Sql* sql, QWidget *parent) :
     QMainWindow(parent),
@@ -50,11 +52,15 @@ LocoIOFrame::LocoIOFrame(LocoIOAddress* address, LnTrafficController* tc, bool /
     rv = new  AddressValidator(rxHex);
 
     connect(ui->edAddrUnitIn, SIGNAL(editingFinished()), this, SLOT(on_edAddrUnitIn_editingFinished()));
+    connect(ui->edAddrSubUnitIn, SIGNAL(textEdited(QString)), this, SLOT(on_edAddrUnitIn_textEdited(QString)));
     connect(ui->edAddrSubUnitIn, SIGNAL(editingFinished()), this, SLOT(on_edAddrUnitIn_editingFinished()));
+    connect(ui->edAddrSubUnitIn, SIGNAL(textEdited(QString)), this, SLOT(on_edAddrSubUnitIn_textEdited(QString)));
     connect(ui->edAddrUnitOut, SIGNAL(editingFinished()), this, SLOT(on_edAddrUnitOut_editingFinished()));
     connect(ui->edAddrSubUnitOut, SIGNAL(editingFinished()), this, SLOT(on_edAddrUnitOut_editingFinished()));
     connect(ui->btnReadAll, SIGNAL(clicked(bool)), this, SLOT(on_btnReadAll_clicked()));
     connect(ui->btnRead, SIGNAL(clicked(bool)), this, SLOT(on_btnRead_clicked()));
+    connect(ui->pbWrite, SIGNAL(clicked(bool)), this, SLOT(on_btnChangeAddress_clicked()));
+    connect(ui->pbInit, SIGNAL(clicked(bool)), this, SLOT(on_btnSetDefaults_clicked()));
     ui->edAddrUnitIn->setReadOnly(false);
     ui->edAddrSubUnitIn->setReadOnly(false);
 
@@ -566,9 +572,9 @@ void LocoIOFrame::on_btnChangeAddress_clicked()
 
   newAddr    = 0x0100 | (newAddr&0x07F);  // range is [1..79, 81..127]
   newSubAddr = newSubAddr & 0x07F;	// range is [1..126]
-#if 0
-  ui->btnChangeAddress->setEnabled(false);
-#endif
+
+  ui->pbInit->setEnabled(false);
+
   if((oldAddr & 0xFF) == 0)
   {
    switch(QMessageBox::warning(this, tr("Warning"), tr("This will set the address of all attached LocoIO, LocoServo and LocoBooster boards"),QMessageBox::Ok | QMessageBox::Cancel))
@@ -597,31 +603,31 @@ void LocoIOFrame::on_btnChangeAddress_clicked()
   _address->setUnitAddress(data->getUnitAddress());
   //unitSubAddr = data->getUnitSubAddress();
   _address->setUnitSubAddress(data->getUnitSubAddress());
-//  if(ui->chkHex->isChecked())
-//  {
-//#if 0
-//   ui->lblUnitAddr->setText(tr("New Unit Address 0x"));
-//   rv->setRegExp(rxHex);
-//   ui->lblCurrentAddress->setText(tr("Current address: 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(),0,16));
-//#endif
-//   ui->edAddrUnitIn->setText("0x"+QString::number(_address->unitAddress(), 0, 16));
-//   ui->edAddrSubUnitIn->setText(QString::number(_address->unitSubAddress(), 0, 16));
-//   ui->edAddrUnitOut->setText("0x"+QString::number(_outAddress->unitAddress(), 0, 16));
-//   ui->edAddrSubUnitOut->setText(QString::number(_outAddress->unitSubAddress(), 0, 16));
-//  }
-//  else
-//  {
-//#if 0
-//   ui->lblUnitAddr->setText(tr("New Unit Address"));
-//   rv->setRegExp(rxDec);
-//   ui->lblCurrentAddress->setText(tr("Current address: %1/%2").arg(_address->unitAddress(),0,10).arg(_address->unitSubAddress(),0,10));
-//#endif
-//   ui->edAddrUnitIn->setText(QString::number(_address->unitAddress(), 0, 10));
-//   ui->edAddrSubUnitIn->setText(QString::number(_address->unitSubAddress(), 0, 10));
-//   ui->edAddrUnitOut->setText(QString::number(_outAddress->unitAddress(), 0, 10));
-//   ui->edAddrSubUnitOut->setText(QString::number(_outAddress->unitSubAddress(), 0, 10));
+  if(ui->chkHex->isChecked())
+  {
+#if 0
+   ui->lblUnitAddr->setText(tr("New Unit Address 0x"));
+   rv->setRegExp(rxHex);
+   ui->lblCurrentAddress->setText(tr("Current address: 0x%1/%2").arg(_address->unitAddress(),0,16).arg(_address->unitSubAddress(),0,16));
+#endif
+   ui->edAddrUnitIn->setText("0x"+QString::number(_address->unitAddress(), 0, 16));
+   ui->edAddrSubUnitIn->setText(QString::number(_address->unitSubAddress(), 0, 16));
+   ui->edAddrUnitOut->setText("0x"+QString::number(_outAddress->unitAddress(), 0, 16));
+   ui->edAddrSubUnitOut->setText(QString::number(_outAddress->unitSubAddress(), 0, 16));
+  }
+  else
+  {
+#if 0
+   ui->lblUnitAddr->setText(tr("New Unit Address"));
+   rv->setRegExp(rxDec);
+   ui->lblCurrentAddress->setText(tr("Current address: %1/%2").arg(_address->unitAddress(),0,10).arg(_address->unitSubAddress(),0,10));
+#endif
+   ui->edAddrUnitIn->setText(QString::number(_address->unitAddress(), 0, 10));
+   ui->edAddrSubUnitIn->setText(QString::number(_address->unitSubAddress(), 0, 10));
+   ui->edAddrUnitOut->setText(QString::number(_outAddress->unitAddress(), 0, 10));
+   ui->edAddrSubUnitOut->setText(QString::number(_outAddress->unitSubAddress(), 0, 10));
 
-//  }
+  }
   displayAddresses(ui->chkHex->isChecked());
   enableUi(true);
   sql->changeAddress(oldAddr, oldSubAddr, _address->unitAddress(), _address->unitSubAddress());
@@ -682,8 +688,54 @@ void LocoIOFrame::on_btnHide_clicked()
 
 void LocoIOFrame::on_btnSetDefaults_clicked()
 {
- enableUi(false);
+ dlg = new JDialog(this,tr("PIC Initialization"), true);
+ QVBoxLayout* dlgLayout = new QVBoxLayout(dlg);
+ dlg->setStyleSheet("QDialog { background-color: #ff9999;}");
+ QHBoxLayout * hl1 = new QHBoxLayout();
+ QIcon icon =style()->standardIcon(QStyle::SP_MessageBoxWarning);
+ QLabel* iconLabel = new QLabel();
+ iconLabel->setPixmap(icon.pixmap(64,64));
+ QLabel* lbl1 = new QLabel(tr("This is an initialization of the SV registers in a not or bad programm EPROM in PIC"));
+ lbl1->setWordWrap(true);
+ hl1->addWidget(iconLabel);
+ hl1->addWidget(lbl1);
+ dlgLayout->addLayout(hl1);
+ QHBoxLayout * hl2 = new QHBoxLayout();
+ QPushButton* initPICBtn = new QPushButton(tr("Init PIC"));
+ hl2->addStrut(64);
+ QLabel* lbl2 = new QLabel(tr("Do NOT connect other LocoHDL modules on the Loconet during initialization"));
+ lbl2->setWordWrap(true);
+ lbl2->setStyleSheet("QLabel {color: red;}");
+ hl2->addWidget(lbl2);
+ hl2->addWidget(initPICBtn);
+ dlgLayout->addLayout(hl2);
+ QHBoxLayout * hl3 = new QHBoxLayout();
+ QPushButton* cancelBtn = new QPushButton(tr("Cancel"));
+ hl3->addStrut(64);
+ QLabel* lbl3 = new QLabel(tr("All LocoHdlModules connected to the LocoBuffer or Intellibox will be set to the base address of 81 abd Sub-Address 1"));
+ lbl3->setStyleSheet("QLabel {color: red;}");
+ lbl3->setWordWrap(true);
+ hl3->addWidget(lbl3);
+ hl3->addWidget(cancelBtn);
+ dlgLayout->addLayout(hl3);
+ connect(initPICBtn, SIGNAL(clicked(bool)), this, SLOT(onDlgInit()));
+ connect(cancelBtn, SIGNAL(clicked(bool)), this, SLOT(onDlgCancel()));
+ int rtn = dlg->exec();
+ if(rtn == QDialog::Accepted)
+ {
+  enableUi(false);
  data->setDefaults();
+ }
+}
+
+void LocoIOFrame::onDlgCancel()
+{
+ dlg->reject();
+}
+
+void LocoIOFrame::onDlgInit()
+{
+ dlg->accept();
 }
 
 void LocoIOFrame::onMessageReceived(LocoNetMessage *m, bool)
@@ -1129,6 +1181,16 @@ void LocoIOFrame::on_edAddrUnitOut_editingFinished()
  val = (unit << 16) + subUnit;
  ui->btnWriteAll->setEnabled(true);
 // actChangeAddress->setEnabled(true);
+}
+
+void LocoIOFrame::on_edAddrUnitIn_textEdited(QString txt)
+{
+ ui->edAddrUnitOut->setText(txt);
+}
+
+void LocoIOFrame::on_edAddrSubUnitIn_textEdited(QString txt)
+{
+ ui->edAddrSubUnitOut->setText(txt);
 }
 
 void LocoIOFrame::on_edAddrUnitIn_editingFinished()

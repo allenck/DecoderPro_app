@@ -11,7 +11,7 @@ public:
     //explicit IndicatorItemPanel(QWidget *parent = 0);
     /*public*/ IndicatorItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent);
     /*public*/ void init();
-    /*public*/ void init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap = 0);
+    /*public*/ void init(ActionListener* doneAction, QMap<QString, NamedIcon *> *iconMap = 0);
     /*public*/ void dispose();
     /*public*/ bool getShowTrainName();
     /*public*/ void setShowTrainName(bool show);
@@ -28,16 +28,16 @@ private:
     /*private*/ DetectionPanel*  _detectPanel;
     Logger* log;
 protected:
-    /*protected*/ void makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey);
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map);
+    /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map);
 friend class IndicatorDragJLabel;
 };
 /*protected*/ class IndicatorDragJLabel : public DragJLabel {
     Q_OBJECT
     IndicatorItemPanel* self;
-    QHash <QString, NamedIcon*>* iconMap;
+    QMap <QString, NamedIcon*>* iconMap;
 public:
-    /*public*/ IndicatorDragJLabel(DataFlavor* flavor, QHash<QString, NamedIcon*>* map,IndicatorItemPanel* self) ;
+    /*public*/ IndicatorDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map,IndicatorItemPanel* self) ;
     /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) ;
   QString mimeData();

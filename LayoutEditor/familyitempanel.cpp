@@ -77,7 +77,7 @@
 * Init for update of existing track block
 * _bottom3Panel has "Update Panel" button put into _bottom1Panel
 */
-/*public*/ void FamilyItemPanel::init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap)
+/*public*/ void FamilyItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
  _update = true;
  if (iconMap!=NULL)
@@ -122,29 +122,29 @@
 * families. if so, return.  if not, does user want to add it to families?
 * if so, add.  If not, save for return when updated.
 */
-/*private*/ void FamilyItemPanel::checkCurrentMap(QHash<QString, NamedIcon*>* iconMap)
+/*private*/ void FamilyItemPanel::checkCurrentMap(QMap<QString, NamedIcon*>* iconMap)
 {
  _currentIconMap = iconMap;
  if (log->isDebugEnabled()) log->debug("checkCurrentMap: for type \""+_itemType+"\", family \""+_family+"\"");
  if (_family!="" && _family.trimmed().length()>0)
  {
-  QHash<QString, NamedIcon*>* map = ItemPalette::getIconMap(_itemType, _family);
+  QMap<QString, NamedIcon*>* map = ItemPalette::getIconMap(_itemType, _family);
   if (map!=NULL)
   {
    return;     // Must assume no family names were changed
   }
  }
- QHash <QString, QHash<QString, NamedIcon*>*>* families = ItemPalette::getFamilyMaps(_itemType);
+ QMap <QString, QMap<QString, NamedIcon*>*>* families = ItemPalette::getFamilyMaps(_itemType);
  if(families == NULL)
   return;
- QListIterator<  QHash<QString, NamedIcon*>*>  it(families->values());
+ QListIterator<  QMap<QString, NamedIcon*>*>  it(families->values());
 #if 1
  while (it.hasNext())
  {
-  QHash<QString, NamedIcon*>*  entry = it.next();
+  QMap<QString, NamedIcon*>*  entry = it.next();
   if (entry->values().size()==iconMap->size())
   {
-   QHashIterator<QString, NamedIcon*> iter(*entry);
+   QMapIterator<QString, NamedIcon*> iter(*entry);
    bool match = true;
    while (iter.hasNext())
    {
@@ -202,7 +202,7 @@
  _iconFamilyPanel->setLayout(iconFamilyPanelLayout = new QVBoxLayout);//(_iconFamilyPanel/*, BoxLayout.Y_AXIS*/));
  iconFamilyPanelLayout->setObjectName("iconFamilyPanelLayout");
 
- QHash <QString, QHash<QString, NamedIcon*>*>* families = ItemPalette::getFamilyMaps(_itemType);
+ QMap<QString, QMap<QString, NamedIcon*>*>* families = ItemPalette::getFamilyMaps(_itemType);
  if (families!=NULL && families->size()>0)
  {
   QWidget*  familyPanel = makeFamilyButtons(QStringListIterator(families->keys()), (_currentIconMap==NULL));
@@ -344,7 +344,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
  _bottom2Panel->setVisible(true);
 }
 
-/*protected*/ void FamilyItemPanel::addIconsToPanel(QHash<QString, NamedIcon*>* iconMap)
+/*protected*/ void FamilyItemPanel::addIconsToPanel(QMap<QString, NamedIcon*>* iconMap)
 {
  if (iconMap==NULL)
  {
@@ -366,7 +366,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
  c->gridy = 0;
 
  int cnt = iconMap->size();
- QHashIterator<QString, NamedIcon*> it(*iconMap);
+ QMapIterator<QString, NamedIcon*> it(*iconMap);
  while (it.hasNext())
  {
   //Entry<String, NamedIcon> entry = it.next();
@@ -421,7 +421,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
 
 //abstract protected JLabel getDragger(DataFlavor flavor, QHash <String, NamedIcon> map);
 
-/*protected*/ void FamilyItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey)
+/*protected*/ void FamilyItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString displayKey)
 {
  if (_update)
  {
@@ -453,7 +453,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
    } catch (ClassNotFoundException cnfe)
    {
        //cnfe.printStackTrace();
-       //label = new QLabel();
+       label = new DragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR));
 
    }
    label->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
@@ -686,7 +686,7 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
  dialog->sizeLocate();
 }
 
-/*protected*/ IconDialog* FamilyItemPanel::openDialog(QString type, QString family, QHash<QString, NamedIcon*>* iconMap)
+/*protected*/ IconDialog* FamilyItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap)
 {
     IconDialog* dialog = new IconDialog(type, family, this, iconMap);
     dialog->sizeLocate();
@@ -754,7 +754,7 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
  * return icon set to panel icon display class
  * @return updating map
  */
-/*public*/ QHash<QString, NamedIcon*>* FamilyItemPanel::getIconMap()
+/*public*/ QMap<QString, NamedIcon*>* FamilyItemPanel::getIconMap()
 {
  if (_currentIconMap==NULL)
  {

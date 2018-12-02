@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PositionablePointXml : public AbstractXmlAdap
 {
  Q_OBJECT
 public:
- explicit PositionablePointXml(QObject *parent = 0);
+ Q_INVOKABLE explicit PositionablePointXml(QObject *parent = 0);
  ~PositionablePointXml() {}
  PositionablePointXml(const PositionablePointXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

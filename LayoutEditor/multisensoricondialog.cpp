@@ -19,7 +19,7 @@
  * delete the family.
  */
 /*public*/ MultiSensorIconDialog::MultiSensorIconDialog(QString type, QString family, FamilyItemPanel* parent,
-        QHash<QString, NamedIcon*>* iconMap) : IconDialog(type, family, parent, iconMap)
+        QMap<QString, NamedIcon*>* iconMap) : IconDialog(type, family, parent, iconMap)
 {
     //super(type, family, parent, iconMap);
 }

@@ -871,9 +871,9 @@ void BlockBossLogic::doTrailingMain() {
     if (watchSensor5!=NULL && ((AbstractSensor*)watchSensor5->getBean())->getKnownState() != Sensor::INACTIVE)
         appearance = SignalHead::RED;
 
-    if (watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState() != Turnout::CLOSED)
+    if (watchTurnout!=NULL && watchTurnout->getBean()->getKnownState() != Turnout::CLOSED)
         appearance = SignalHead::RED;
-    if (watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getCommandedState() != Turnout::CLOSED)
+    if (watchTurnout!=NULL && watchTurnout->getBean()->getCommandedState() != Turnout::CLOSED)
         appearance = SignalHead::RED;
 
     // check if signal if held, forcing a red aspect by this calculation
@@ -919,9 +919,9 @@ void BlockBossLogic::doTrailingDiverging() {
     if (watchSensor5!=NULL && ((AbstractSensor*)watchSensor5->getBean())->getKnownState() != Sensor::INACTIVE)
         appearance = SignalHead::RED;
 
-    if (watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState() != Turnout::THROWN)
+    if (watchTurnout!=NULL && watchTurnout->getBean()->getKnownState() != Turnout::THROWN)
         appearance = SignalHead::RED;
-    if (watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getCommandedState() != Turnout::THROWN)
+    if (watchTurnout!=NULL && watchTurnout->getBean()->getCommandedState() != Turnout::THROWN)
         appearance = SignalHead::RED;
 
     // check if signal if held, forcing a red aspect by this calculation
@@ -944,9 +944,9 @@ void BlockBossLogic::doFacing() {
 
     // find downstream appearance, being pessimistic if we're not sure of the state
     int s = SignalHead::GREEN;
-    if (watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState() != Turnout::THROWN)
+    if (watchTurnout!=NULL && watchTurnout->getBean()->getKnownState() != Turnout::THROWN)
         s = slowerOf(s, fastestColor1());
-    if (watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState() != Turnout::CLOSED)
+    if (watchTurnout!=NULL && watchTurnout->getBean()->getKnownState() != Turnout::CLOSED)
         s = slowerOf(s, fastestColor2());
 
     // check for yellow, flashing yellow overriding green
@@ -959,10 +959,10 @@ void BlockBossLogic::doFacing() {
         appearance = s;
 
     // if limited speed and green or flashing yellow, reduce to yellow
-    if (watchTurnout!=NULL && limitSpeed1 && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState()!=Turnout::THROWN)
+    if (watchTurnout!=NULL && limitSpeed1 && watchTurnout->getBean()->getKnownState()!=Turnout::THROWN)
         appearance = slowerOf(appearance, SignalHead::YELLOW);
 
-    if (watchTurnout!=NULL && limitSpeed2 && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState()!=Turnout::CLOSED)
+    if (watchTurnout!=NULL && limitSpeed2 && watchTurnout->getBean()->getKnownState()!=Turnout::CLOSED)
         appearance = slowerOf(appearance, SignalHead::YELLOW);
 
 
@@ -978,24 +978,24 @@ void BlockBossLogic::doFacing() {
     if (watchSensor5!=NULL && ((AbstractSensor*)watchSensor5->getBean())->getKnownState() != Sensor::INACTIVE)
         appearance = SignalHead::RED;
 
-    if ((watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState() == Turnout::CLOSED)
+    if ((watchTurnout!=NULL && watchTurnout->getBean()->getKnownState() == Turnout::CLOSED)
             && ((watchedSensor1!=NULL && ((AbstractSensor*)watchedSensor1->getBean())->getKnownState() != Sensor::INACTIVE)))
         appearance = SignalHead::RED;
-    if ((watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState() == Turnout::CLOSED) && ((watchedSensor1Alt!=NULL && ((AbstractSensor*)watchedSensor1Alt->getBean())->getKnownState() != Sensor::INACTIVE)))
+    if ((watchTurnout!=NULL && watchTurnout->getBean()->getKnownState() == Turnout::CLOSED) && ((watchedSensor1Alt!=NULL && ((AbstractSensor*)watchedSensor1Alt->getBean())->getKnownState() != Sensor::INACTIVE)))
         appearance = SignalHead::RED;
-    if (watchTurnout!=NULL && (((AbstractTurnout*)watchTurnout->getBean())->getKnownState() == Turnout::THROWN) && ((watchedSensor2!=NULL && ((AbstractSensor*)watchedSensor2->getBean())->getKnownState() != Sensor::INACTIVE)))
+    if (watchTurnout!=NULL && (watchTurnout->getBean()->getKnownState() == Turnout::THROWN) && ((watchedSensor2!=NULL && ((AbstractSensor*)watchedSensor2->getBean())->getKnownState() != Sensor::INACTIVE)))
         appearance = SignalHead::RED;
-    if ((watchTurnout!=NULL && ((AbstractTurnout*)watchTurnout->getBean())->getKnownState() == Turnout::THROWN) && ((watchedSensor2Alt!=NULL && ((AbstractSensor*)watchedSensor2Alt->getBean())->getKnownState() != Sensor::INACTIVE)))
+    if ((watchTurnout!=NULL && watchTurnout->getBean()->getKnownState() == Turnout::THROWN) && ((watchedSensor2Alt!=NULL && ((AbstractSensor*)watchedSensor2Alt->getBean())->getKnownState() != Sensor::INACTIVE)))
         appearance = SignalHead::RED;
 
     // check if turnout in motion, if so force redwwwwwwwwwwww
-    if (watchTurnout!=NULL && (((AbstractTurnout*)watchTurnout->getBean())->getKnownState() != ((AbstractTurnout*)watchTurnout->getBean())->getCommandedState()) )
+    if (watchTurnout!=NULL && (watchTurnout->getBean()->getKnownState() != watchTurnout->getBean()->getCommandedState()) )
         appearance = SignalHead::RED;
-    if (watchTurnout!=NULL && (((AbstractTurnout*)watchTurnout->getBean())->getKnownState() != Turnout::THROWN) && (((AbstractTurnout*)watchTurnout->getBean())->getKnownState() != Turnout::CLOSED) )  // checking for other states
+    if (watchTurnout!=NULL && (watchTurnout->getBean()->getKnownState() != Turnout::THROWN) && (watchTurnout->getBean()->getKnownState() != Turnout::CLOSED) )  // checking for other states
         appearance = SignalHead::RED;
 
     // check if signal if held, forcing a red aspect by this calculation
-    if (((DefaultSignalHead*)outputs.at(0))->getHeld())
+    if (static_cast<SignalHead*>(outputs.at(0))->getHeld())
         appearance = SignalHead::RED;
 
     // handle approach lighting
@@ -1003,21 +1003,26 @@ void BlockBossLogic::doFacing() {
 
     // show result if changed
     if (appearance != oldAppearance)
-        ((DefaultSignalHead*)outputs.at(0))->setAppearance(appearance);
+        static_cast<SignalHead*>(outputs.at(0))->setAppearance(appearance);
 }
 
 /**
  * Handle the approach lighting logic for all modes
  */
-void BlockBossLogic::doApproach() {
-    if (approachSensor1 != NULL && ((AbstractSensor*)approachSensor1->getBean())->getKnownState() == Sensor::INACTIVE) {
-        // should not be lit
-        if (((DefaultSignalHead*)driveSignal->getBean())->getLit()) ((DefaultSignalHead*)driveSignal->getBean())->setLit(false);
-    } else {
-        // should be lit
-        if (!((DefaultSignalHead*)driveSignal->getBean())->getLit()) ((DefaultSignalHead*)driveSignal->getBean())->setLit(true);
-    }
-    return;
+void BlockBossLogic::doApproach()
+{
+ if ((approachSensor1 != nullptr) && (approachSensor1->getBean()->getKnownState() == Sensor::INACTIVE))
+ {
+  // should not be lit
+  if (driveSignal->getBean()->getLit())
+   driveSignal->getBean()->setLit(false);
+ }
+ else {
+  // should be lit
+  if (!driveSignal->getBean()->getLit())
+   driveSignal->getBean()->setLit(true);
+ }
+ return;
 }
 
 

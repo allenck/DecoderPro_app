@@ -16,7 +16,7 @@ public:
     /*public*/ IndicatorTrackIcon(Editor* editor, QObject *parent = 0);
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(Positionable* p);
-    /*public*/ QHash<QString, NamedIcon*>* getIconMap();
+    /*public*/ QMap<QString, NamedIcon *> *getIconMap();
      /*public*/ void setOccSensor(QString pName);
      /*public*/ void setOccSensorHandle(NamedBeanHandle<Sensor*>* senHandle);
      /*public*/ Sensor* getOccSensor();

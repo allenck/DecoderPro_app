@@ -28,8 +28,8 @@ signals:
 
 public slots:
 private:
-    QHash<QString, NamedIcon*>* _iconMap;
-    QHash<QString, NamedIcon*>* _tmpIconMap;
+    QMap<QString, NamedIcon*>* _iconMap;
+    QMap<QString, NamedIcon*>* _tmpIconMap;
     QWidget* _iconPanel;
     QPushButton* _catalogButton;
     CatalogPanel* _catalog;
@@ -46,7 +46,7 @@ protected:
     /*protected*/ int _level;// = Editor::ICONS;      // sub classes can override (e.g. Background)
     /*protected*/ virtual QWidget* instructions();
     /*protected*/ void initIconFamiliesPanel();
-    /*protected*/ virtual void addIconsToPanel(QHash<QString, NamedIcon*>* iconMap);
+    /*protected*/ virtual void addIconsToPanel(QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void removeIconFamiliesPanel();
     /*protected*/ void updateFamiliesPanel();
     /*protected*/ QString setIconName(QString name);

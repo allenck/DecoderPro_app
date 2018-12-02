@@ -7,7 +7,7 @@ class LightIconXml : public PositionableLabelXml
 {
     Q_OBJECT
 public:
-    explicit LightIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit LightIconXml(QObject *parent = 0);
  ~LightIconXml() {}
  LightIconXml(const LightIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

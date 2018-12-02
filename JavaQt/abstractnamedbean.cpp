@@ -201,7 +201,8 @@ QString AbstractNamedBean::getDisplayName()
 
 
 /*protected*/ void AbstractNamedBean::firePropertyChange(QString p, QVariant old, QVariant n) {
- if (pcs!=NULL) pcs->firePropertyChange(p,old,n);
+ if (pcs!=NULL)
+     pcs->firePropertyChange(p,old,n);
 }
 ///*protected*/ void AbstractNamedBean::firePropertyChange(QString p, QObject* old, QObject* n) {
 // if (pcs!=NULL) pcs->firePropertyChange(p,old,n);

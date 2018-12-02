@@ -52,8 +52,8 @@ IndicatorTrackIconXml::IndicatorTrackIconXml(QObject *parent) :
         elem.appendChild(doc.createTextNode(show));
         element.appendChild(elem);
 
-        QHash<QString, NamedIcon*>* iconMap = p->getIconMap();
-        QHashIterator<QString, NamedIcon*> it(*iconMap);
+        QMap<QString, NamedIcon*>* iconMap = p->getIconMap();
+        QMapIterator<QString, NamedIcon*> it(*iconMap);
         elem = doc.createElement("iconmap");
         QString family = p->getFamily();
         if (family!="") {

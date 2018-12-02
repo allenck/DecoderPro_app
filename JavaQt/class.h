@@ -4,7 +4,7 @@
 #include "exceptions.h"
 
 class ClassLoader;
-
+class Logger;
 class Class : QObject
 {
  Q_OBJECT
@@ -27,6 +27,7 @@ private:
  /*private*/ static /*native*/ void registerNatives();
  /*private*/ Class(ClassLoader* loader);
  ClassLoader* classLoader;
+ static Logger* log;
 };
 
 #endif // CLASS_H

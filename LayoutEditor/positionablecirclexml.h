@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PositionableCircleXml : public PositionableSh
 {
     Q_OBJECT
 public:
-    explicit PositionableCircleXml(QObject *parent = 0);
+    Q_INVOKABLE explicit PositionableCircleXml(QObject *parent = 0);
  ~PositionableCircleXml() {}
  PositionableCircleXml(const PositionableCircleXml&) :PositionableShapeXml() {}
     /*public*/ QDomElement store(QObject* o);

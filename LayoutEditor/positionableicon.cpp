@@ -52,11 +52,12 @@ PositionableIcon::PositionableIcon(QWidget *parent) :
  _control = true;
 //    setPopupUtility(NULL);
 }
+
 void PositionableIcon::common(Editor* editor, Positionable* parent)
 {
  _scale = 1.0;			// getScale, come from net result found in one of the icons
  _rotate = 0;
- _iconMap = new QHash <QString, NamedIcon*>;
+ _iconMap = new QMap<QString, NamedIcon*>;
  this->parent = parent;
  this->_editor = editor;
  _icon = true;
@@ -103,7 +104,7 @@ void PositionableIcon::common(Editor* editor, Positionable* parent)
 //        while (iter.hasNext()) {
 //            max = Math.max(iter.next().getIconHeight(), max);
 //        }
-  QHashIterator<QString, NamedIcon*> it(*_iconMap);
+  QMapIterator<QString, NamedIcon*> it(*_iconMap);
   while(it.hasNext())
   {
    it.next();
@@ -122,7 +123,7 @@ void PositionableIcon::common(Editor* editor, Positionable* parent)
 //        while (iter.hasNext()) {
 //            max = Math.max(iter.next().getIconWidth(), max);
 //        }
-  QHashIterator<QString, NamedIcon*> it(*_iconMap);
+  QMapIterator<QString, NamedIcon*> it(*_iconMap);
   while(it.hasNext())
   {
    it.next();
@@ -145,7 +146,7 @@ void PositionableIcon::common(Editor* editor, Positionable* parent)
 //        Entry<QString, NamedIcon> entry = it.next();
 //        entry.getValue().setRotation(entry.getValue().getRotation()+1, this);
 //    }
- QHashIterator<QString, NamedIcon*> it(*_iconMap);
+ QMapIterator<QString, NamedIcon*> it(*_iconMap);
  while(it.hasNext())
  {
   it.next();
@@ -164,7 +165,7 @@ void PositionableIcon::common(Editor* editor, Positionable* parent)
 //        Entry<QString, NamedIcon> entry = it.next();
 //        entry.getValue().scale(s, this);
 //    }
-    QHashIterator<QString, NamedIcon*> it(*_iconMap);
+    QMapIterator<QString, NamedIcon*> it(*_iconMap);
     while(it.hasNext())
     {
      it.next();
@@ -227,10 +228,9 @@ void PositionableIcon::common(Editor* editor, Positionable* parent)
 #endif
 }
 
-/*protected*/ QHash<QString, NamedIcon*>* PositionableIcon::cloneMap(QHash<QString, NamedIcon*>* map,
-                                                         PositionableLabel* pos)
+/*protected*/ QMap<QString, NamedIcon*>* PositionableIcon::cloneMap(QMap<QString, NamedIcon*>* map, PositionableLabel* pos)
 {
- QHash<QString, NamedIcon*>* clone = new QHash<QString, NamedIcon*>();
+ QMap<QString, NamedIcon*>* clone = new QMap<QString, NamedIcon*>();
 // if (map!=NULL)
 // {
 //  Iterator<Entry<QString, NamedIcon>> it = map.entrySet().iterator();
@@ -242,7 +242,7 @@ void PositionableIcon::common(Editor* editor, Positionable* parent)
 // }
  if(map != NULL)
  {
-  QHashIterator<QString, NamedIcon*> it(*map);
+  QMapIterator<QString, NamedIcon*> it(*map);
   while (it.hasNext())
   {
    it.next();

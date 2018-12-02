@@ -13,7 +13,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DropJLabel : public QLabel
 public:
     explicit DropJLabel(QWidget *parent = nullptr);
     DropJLabel (NamedIcon* _icon, QWidget *parent = nullptr);
-    DropJLabel (NamedIcon* _icon,  QHash <QString, NamedIcon*>* iconMap, bool update, QWidget *parent = nullptr);
+    DropJLabel (NamedIcon* _icon,  QMap <QString, NamedIcon*>* iconMap, bool update, QWidget *parent = nullptr);
 //    /*public*/ void dragExit(DropTargetEvent dte);
 //    /*public*/ void dragEnter(DropTargetDragEvent dtde);
     void dragEnterEvent(QDragEnterEvent *event);
@@ -38,7 +38,7 @@ signals:
 public slots:
 private:
     /*private*/ DataFlavor* _dataFlavor;
-    /*private*/ QHash <QString, NamedIcon*>*   _iconMap;
+    /*private*/ QMap <QString, NamedIcon*>*   _iconMap;
     /*private*/ bool 		_update;
     /*private*/ void accept(DropTargetDropEvent* e, NamedIcon* newIcon);
  Logger* log;

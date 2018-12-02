@@ -8,7 +8,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SensorIconXml : public PositionableLabelXml
 {
     Q_OBJECT
 public:
-    explicit SensorIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit SensorIconXml(QObject *parent = 0);
  ~SensorIconXml() {}
  SensorIconXml(const SensorIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

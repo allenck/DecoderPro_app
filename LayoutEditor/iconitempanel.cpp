@@ -85,7 +85,7 @@
 */
 /*protected*/ void IconItemPanel::initIconFamiliesPanel()
 {
- QHash <QString, QHash<QString, NamedIcon*>*>* families = ItemPalette::getFamilyMaps(_itemType);
+ QMap <QString, QMap<QString, NamedIcon*>*>* families = ItemPalette::getFamilyMaps(_itemType);
  if (families!=NULL && families->size()>0)
  {
   if (families->size()!=1)
@@ -111,12 +111,12 @@
 /**
 *  Note caller must create _iconPanel before calling
 */
-/*protected*/ void IconItemPanel::addIconsToPanel(QHash<QString, NamedIcon*>* iconMap)
+/*protected*/ void IconItemPanel::addIconsToPanel(QMap<QString, NamedIcon*>* iconMap)
 {
  _iconPanel = new QWidget();
  _iconPanel->setLayout(new QHBoxLayout());
  //Iterator<Entry<QString, NamedIcon*>*> it = iconMap.entrySet().iterator();
- QHashIterator<QString, NamedIcon*> it(*iconMap);
+ QMapIterator<QString, NamedIcon*> it(*iconMap);
  while (it.hasNext())
  {
   //Entry<String, NamedIcon> entry = it.next();

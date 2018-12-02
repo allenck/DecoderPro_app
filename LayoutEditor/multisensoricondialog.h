@@ -7,7 +7,7 @@ class MultiSensorIconDialog : public IconDialog
 {
 public:
  /*public*/ MultiSensorIconDialog(QString type, QString family, FamilyItemPanel* parent,
-         QHash<QString, NamedIcon*>* iconMap);
+         QMap<QString, NamedIcon *> *iconMap);
 
 
 public slots:

@@ -5802,6 +5802,85 @@ double LayoutEditor::toRadians(double degrees)
  }
  return nullptr;
 }
+#if 0
+/*private*/ Stream<LayoutTrack> getLayoutTracksOfClass(Class<? extends LayoutTrack> layoutTrackClass) {
+    return layoutTrackList.stream()
+            .filter(layoutTrackClass::isInstance)
+            .map(layoutTrackClass::cast);
+}
+#else
+/*private*/ QList<LayoutTrack*> LayoutEditor::getLayoutTracksOfClass(QString type)
+{
+ QList<LayoutTrack*> list = QList<LayoutTrack*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
+ {
+  if(QString(metaObject()->className()) == type)
+   list.append(lt);
+ }
+ return list;
+}
+#endif
+
+/*public*/ QList<LayoutTrack*> LayoutEditor::getPositionablePoints() {
+    return getLayoutTracksOfClass("PositionablePoint");
+//    )
+//            .map(PositionablePoint.class::cast)
+//            .collect(Collectors.toCollection(ArrayList<PositionablePoint>::new));
+}
+
+/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutSlips() {
+    return getLayoutTracksOfClass("LayoutSlip");
+//    )
+//            .map(LayoutSlip.class::cast)
+//            .collect(Collectors.toCollection(ArrayList<LayoutSlip>::new));
+}
+
+/*public*/ QList<LayoutTrack*> LayoutEditor::getTrackSegments() {
+    return getLayoutTracksOfClass("TrackSegment");
+//            .map(TrackSegment.class::cast)
+//            .collect(Collectors.toCollection(ArrayList<TrackSegment>::new));
+}
+
+/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTurnouts() {
+//    return layoutTrackList.stream() // next line excludes LayoutSlips
+//            .filter((o) -> (!(o instanceof LayoutSlip) && (o instanceof LayoutTurnout)))
+//            .map(LayoutTurnout.class::cast).map(LayoutTurnout.class::cast)
+//            .collect(Collectors.toCollection(ArrayList<LayoutTurnout>::new));
+ QList<LayoutTrack*> list = QList<LayoutTrack*>();
+ foreach (LayoutTrack* lt, layoutTrackList)
+ {
+  if(qobject_cast<LayoutSlip*>(lt))
+   continue;
+  list.append(lt);
+ }
+ return list;
+}
+
+/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTurntables() {
+    return getLayoutTracksOfClass("LayoutTurntable");
+//    )
+//            .map(LayoutTurntable.class::cast)
+//            .collect(Collectors.toCollection(ArrayList<LayoutTurntable>::new));
+}
+
+/*public*/ QList<LayoutTrack*> LayoutEditor::getLevelXings() {
+    return getLayoutTracksOfClass("LevelXing");
+//    )
+//            .map(LevelXing.class::cast)
+//            .collect(Collectors.toCollection(ArrayList<LevelXing>::new));
+}
+
+/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTracks() {
+    return layoutTrackList;
+}
+
+/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTurnoutsAndSlips() {
+    return getLayoutTracksOfClass("LayoutTurnout");
+//    )
+//            .map(LayoutTurnout.class::cast)
+//            .collect(Collectors.toCollection(ArrayList<LayoutTurnout>::new));
+}
+
 /*protected*/ bool LayoutEditor::showAlignPopup()
 {
  if (_positionableSelection!=nullptr)

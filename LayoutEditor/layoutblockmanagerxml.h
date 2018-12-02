@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlockManagerXml : public AbstractNamedB
 {
     Q_OBJECT
 public:
-    explicit LayoutBlockManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit LayoutBlockManagerXml(QObject *parent = 0);
  ~LayoutBlockManagerXml() {}
  LayoutBlockManagerXml(const LayoutBlockManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject*o);

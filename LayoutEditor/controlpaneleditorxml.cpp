@@ -17,6 +17,7 @@
 #include "positionableroundrectxml.h"
 #include "signalmasticonxml.h"
 #include "portalicon.h"
+#include "class.h"
 
 ControlPanelEditorXml::ControlPanelEditorXml(QObject* parent) :
     AbstractXmlAdapter(parent)
@@ -78,7 +79,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  panel.setAttribute("shapeSelect",  (p->getShapeSelect() ? "yes" : "no"));
 
  QDomElement elem = doc.createElement("icons");
- QHash<QString, NamedIcon*>* map = p->getPortalIconMap();
+ QMap<QString, NamedIcon*>* map = p->getPortalIconMap();
  elem.appendChild(storeIcon("visible", map->value(PortalIcon::VISIBLE)));
  elem.appendChild(storeIcon("path_edit", map->value(PortalIcon::PATH)));
  elem.appendChild(storeIcon("hidden", map->value(PortalIcon::HIDDEN)));
@@ -244,7 +245,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  QDomElement icons = element.firstChildElement("icons");
  if (icons != QDomElement())
  {
-  QHash<QString, NamedIcon*>* portalIconMap = new QHash<QString, NamedIcon*>();
+  QMap<QString, NamedIcon*>* portalIconMap = new QMap<QString, NamedIcon*>();
   portalIconMap->insert(PortalIcon::VISIBLE, loadIcon("visible", icons, panel));
   portalIconMap->insert(PortalIcon::PATH, loadIcon("path_edit", icons, panel));
   portalIconMap->insert(PortalIcon::HIDDEN, loadIcon("hidden", icons, panel));
@@ -272,11 +273,14 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
   }
   else
    log->debug("load via "+adapterName);
+  XmlAdapter* adapter = nullptr;
+  QString aName = adapterName.mid(adapterName.lastIndexOf(".") +1);
+
   try
   {
+#if 0
+
 //            XmlAdapter* adapter = (XmlAdapter)Class.forName(adapterName).newInstance();
-   XmlAdapter* adapter;
-   QString aName = adapterName.mid(adapterName.lastIndexOf(".") +1);
    int typeId = QMetaType::type(aName.toLocal8Bit());
    if(typeId > 0)
    {
@@ -285,6 +289,10 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
   #else
     adapter = (XmlAdapter*)QMetaType::create(typeId);
   #endif
+   }
+#else
+   adapter = (XmlAdapter*)Class::forName(aName)->newInstance();
+#endif
     if(adapter != NULL && qobject_cast<XmlAdapter*>(adapter) != NULL)
     {
      adapter->load(item, panel);
@@ -292,7 +300,6 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
      {
       result = false;
      }
-    }
    }
    else
    {

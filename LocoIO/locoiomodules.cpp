@@ -100,7 +100,7 @@ void LocoIOModules::onMessageReceived(LocoNetMessage* m)
       paddr->setModuleType("LocoBooster");
      else if(packet[2] >=100 && packet[2]<=104)
       paddr->setModuleType("LocoServo");
-     else if(packet[2] >=141 && packet[2]<=151)
+     else if(packet[2] >=141 && packet[2]<=153)
       paddr->setModuleType("LocoIO");
      else paddr->setModuleType("<unknown>");
      bool bFound = false;

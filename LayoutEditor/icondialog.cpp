@@ -28,7 +28,7 @@
 /**
 * Constructor for existing family to change icons, add/delete icons, or to delete the family
 */
-/*public*/ IconDialog::IconDialog(QString type, QString family, ItemPanel* parent, QHash <QString, NamedIcon*>* iconMap ) : ItemDialog(type, family,                                                                                                                          tr("Show Icons for %1").arg(type), parent, true)
+/*public*/ IconDialog::IconDialog(QString type, QString family, ItemPanel* parent, QMap<QString, NamedIcon *> *iconMap ) : ItemDialog(type, family,                                                                                                                          tr("Show Icons for %1").arg(type), parent, true)
 {
 //    super(type, family,
 //          tr("Show Icons for %1").arg(type), parent, true);
@@ -257,7 +257,7 @@ void IconDialog::doneAction()
  fl->addWidget(cancelButton);
 }
 #endif
-/*protected*/ QWidget* IconDialog::makeIconPanel(QHash<QString, NamedIcon*>* iconMap)
+/*protected*/ QWidget* IconDialog::makeIconPanel(QMap<QString, NamedIcon*>* iconMap)
 {
  if (iconMap==NULL)
  {
@@ -287,7 +287,7 @@ void IconDialog::doneAction()
 
  if (log->isDebugEnabled()) log->debug("makeIconPanel: for "+QString::number(iconMap->size())+" icons. gridwidth= "+QString::number(gridwidth));
  int panelWidth = 0;
- QHashIterator<QString, NamedIcon*> it(*iconMap);
+ QMapIterator<QString, NamedIcon*> it(*iconMap);
  while (it.hasNext())
  {
   it.next();
@@ -413,13 +413,13 @@ void IconDialog::checkIconSizes()
  if (log-> isDebugEnabled()) log-> debug("Size: width= "+QString::number(lastWidth)+", height= "+QString::number(lastHeight));
 }
 
-/*protected*/ QHash<QString, NamedIcon*>* IconDialog::clone(QHash<QString, NamedIcon*>* map)
+/*protected*/ QMap<QString, NamedIcon*>* IconDialog::clone(QMap<QString, NamedIcon*>* map)
 {
- QHash<QString, NamedIcon*>* clone = NULL;
+ QMap<QString, NamedIcon*>* clone = NULL;
  if (map!=NULL)
  {
-  clone = new QHash<QString, NamedIcon*>();
-  QHashIterator<QString, NamedIcon*> it(*map);
+  clone = new QMap<QString, NamedIcon*>();
+  QMapIterator<QString, NamedIcon*> it(*map);
   while (it.hasNext())
   {
    it.next();

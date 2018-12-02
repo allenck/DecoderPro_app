@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurnoutXml : public AbstractXmlAdapter
 {
  Q_OBJECT
 public:
- explicit LayoutTurnoutXml(QObject *parent = 0);
+ Q_INVOKABLE explicit LayoutTurnoutXml(QObject *parent = 0);
  ~LayoutTurnoutXml() {}
  LayoutTurnoutXml(const LayoutTurnoutXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);
@@ -19,5 +19,5 @@ signals:
 public slots:
 
 };
-
+Q_DECLARE_METATYPE(LayoutTurnoutXml)
 #endif // LAYOUTTURNOUTXML_H

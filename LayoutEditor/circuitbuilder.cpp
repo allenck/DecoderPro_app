@@ -1495,14 +1495,14 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
     t->setTurnout( ((TurnoutIcon*)_oldIcon)->getNamedTurnout());
     t->setFamily(_trackTOPanel->getFamilyName());
 
-    QHash <QString, QHash <QString, NamedIcon*>*>* iconMap = _trackTOPanel->getIconMaps();
-    QHashIterator<QString, QHash<QString, NamedIcon*>*> it(*iconMap);
+    QMap <QString, QMap <QString, NamedIcon*>*>* iconMap = _trackTOPanel->getIconMaps();
+    QMapIterator<QString, QMap<QString, NamedIcon*>*> it(*iconMap);
     while (it.hasNext())
     {
         //Entry<String, QHash<String, NamedIcon>> entry = it.next();
         it.next();
         QString status = it.key();
-        QHashIterator<QString, NamedIcon*> iter(* it.value());
+        QMapIterator<QString, NamedIcon*> iter(* it.value());
         while (iter.hasNext())
         {
             //Entry<String, NamedIcon> ent = iter.next();
@@ -1521,9 +1521,9 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
     t->setOccBlockHandle(new NamedBeanHandle<OBlock*>(_currentBlock->getSystemName(), _currentBlock));
     t->setFamily(_trackPanel->getFamilyName());
 
-    QHash<QString, NamedIcon*>* iconMap = _trackPanel->getIconMap();
+    QMap<QString, NamedIcon*>* iconMap = _trackPanel->getIconMap();
     if (iconMap!=NULL) {
-        QHashIterator<QString, NamedIcon*> it( * iconMap);
+        QMapIterator<QString, NamedIcon*> it( * iconMap);
         while (it.hasNext()) {
             //QHash<QString, NamedIcon*>* entry = it.next();
             it.next();

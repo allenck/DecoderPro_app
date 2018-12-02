@@ -49,7 +49,7 @@ protected:
     /*protected*/ bool   _update;// = false;    // Editing existing icon, do not allow icon dragging. set in init()
     /*protected*/ bool   _initialized;// = false;    // Has init() been run
     /*protected*/ void initIconFamiliesPanel();
-    /*protected*/ void addIconsToPanel(QHash<QString, NamedIcon*>* iconMap);
+    /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon*>* iconMap);
     /*protected*/ void setFamily(QString family);
     /*protected*/ void removeIconFamiliesPanel();
     /*protected*/ void removeIconMap(QString family);
@@ -57,7 +57,7 @@ protected:
     /*protected*/ void reset();
     /*protected*/ void updateFamiliesPanel();
     /*protected*/ /*final*/ bool isUpdate();
-    static /*protected*/ QHash<QString, NamedIcon*>* makeNewIconMap(QString type);
+    static /*protected*/ QMap<QString, NamedIcon*>* makeNewIconMap(QString type);
 friend class TIconDragJLabel;
 friend class ItemDialog;
 friend class IconDialog;

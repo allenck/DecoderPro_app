@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AnalogClock2DisplayXml : public AbstractXmlAd
 {
     Q_OBJECT
 public:
-    explicit AnalogClock2DisplayXml(QObject *parent = 0);
+    Q_INVOKABLE explicit AnalogClock2DisplayXml(QObject *parent = 0);
     ~AnalogClock2DisplayXml();
  AnalogClock2DisplayXml(const AnalogClock2DisplayXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);

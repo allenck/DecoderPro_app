@@ -12,6 +12,7 @@
 #include "quadoutputsignalheadxml.h"
 #include "se8csignalhead.h"
 #include "se8csignalheadxml.h"
+#include "class.h"
 
 AbstractSignalHeadManagerXml::AbstractSignalHeadManagerXml(QObject *parent) :
     AbstractNamedBeanManagerConfigXML(parent)
@@ -52,7 +53,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
      QString sname = iter.next();
      if (sname=="") log->error("System name NULL during store");
      log->debug("system name is "+sname);
-     SignalHead* sub = ((AbstractSignalHeadManager*)sm)->getBySystemName(sname);
+     SignalHead* sub = sm->getBySystemName(sname);
      try
      {
       QDomElement e = ConfigXmlManager::elementFromObject(sub);
@@ -110,54 +111,27 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
 //@SuppressWarnings("unchecked")
 /*public*/ void AbstractSignalHeadManagerXml::loadSignalHeads(QDomElement signalheads)
 {
-   InstanceManager::getDefault("SignalHeadManager");
+ InstanceManager::getDefault("SignalHeadManager");
 
-   // load the contents
-   QDomNodeList items = signalheads.childNodes();
-   if (log->isDebugEnabled()) log->debug("Found "+QString::number(items.size())+" signal heads");
-   for (int i = 0; i<items.size(); i++) {
-       // get the class, hence the adapter object to do loading
-       QDomElement item = items.at(i).toElement();
-       QString adapterName = item.attribute("class");
-       log->debug("load via "+adapterName);
-       //try {
-//           XmlAdapter* adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
-//           // and do it
-//           adapter->load(item);
-           if(adapterName == "jmri.implementation.configurexml.VirtualSignalHeadXml")
-           {
-               VirtualSignalHeadXml* adapter = new VirtualSignalHeadXml();
-               adapter->load(item);
-           }
-           else if(adapterName == "jmri.implementation.configurexml.DoubleTurnoutSignalHeadXml")
-           {
-               DoubleTurnoutSignalHeadXml* adapter = new DoubleTurnoutSignalHeadXml();
-               adapter->load(item);
-           }
-           else if(adapterName == "jmri.implementation.configurexml.SingleTurnoutSignalHeadXml")
-           {
-               SingleTurnoutSignalHeadXml* adapter = new SingleTurnoutSignalHeadXml();
-               adapter->load(item);
-           }
-           else if(adapterName == "jmri.implementation.configurexml.SingleTurnoutSignalHeadXml")
-           {
-               TripleTurnoutSignalHeadXml* adapter = new TripleTurnoutSignalHeadXml();
-               adapter->load(item);
-           }
-           else if(adapterName == "jmri.implementation.configurexml.QuadOutputSignalHeadXml")
-           {
-               QuadOutputSignalHeadXml* adapter = new QuadOutputSignalHeadXml();
-               adapter->load(item);
-           }
-           else if(adapterName == "jmri.jmrix.loconet.configurexml.SE8cSignalHeadXml")
-           {
-               SE8cSignalHeadXml* adapter = new SE8cSignalHeadXml();
-               adapter->load(item);
-           }
-           else
-//       } catch (Exception e) {
-           /*public*/log->error("Exception while loading "+item.tagName()/*+":"+e.getMessage()*/);
-           //e.printStackTrace();
+ // load the contents
+ QDomNodeList items = signalheads.childNodes();
+ if (log->isDebugEnabled()) log->debug("Found "+QString::number(items.size())+" signal heads");
+ for (int i = 0; i<items.size(); i++)
+ {
+  // get the class, hence the adapter object to do loading
+  QDomElement item = items.at(i).toElement();
+  QString adapterName = item.attribute("class");
+  log->debug("load via "+adapterName);
+  try
+  {
+      XmlAdapter* adapter = (XmlAdapter*)Class::forName(adapterName)->newInstance();
+      // and do it
+      adapter->load(item, QDomElement());
+
+  } catch (Exception e) {
+      log->error("Exception while loading "+item.tagName(),e);
+      //e.printStackTrace();
+  }
  }
 }
 

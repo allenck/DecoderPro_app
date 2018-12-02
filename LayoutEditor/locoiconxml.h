@@ -6,7 +6,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LocoIconXml : public PositionableLabelXml
 {
     Q_OBJECT
 public:
-    explicit LocoIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit LocoIconXml(QObject *parent = 0);
  ~LocoIconXml() {}
  LocoIconXml(const LocoIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

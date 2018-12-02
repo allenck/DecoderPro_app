@@ -520,6 +520,7 @@ void WarrantPreferences::setSpeedNames(QMap<QString, float> map)
  _speedNames.clear();
 QMapIterator<QString, float>iter (map);
 while(iter.hasNext())
+ iter.next();
  _speedNames.insert(iter.key(),iter.value());
 }
 

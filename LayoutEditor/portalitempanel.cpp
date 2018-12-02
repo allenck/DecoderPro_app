@@ -54,10 +54,10 @@
 }
 
 /*private*/ void PortalItemPanel::setDefaults() {
-    QHash<QString, NamedIcon*>* map = getIconMap();
+    QMap<QString, NamedIcon*>* map = getIconMap();
     ((ControlPanelEditor*) _editor)->setDefaultPortalIcons(PositionableIcon::cloneMap(map, NULL));
 }
 
 //@Override
-/*protected*/ void PortalItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/) {
+/*protected*/ void PortalItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/) {
 }

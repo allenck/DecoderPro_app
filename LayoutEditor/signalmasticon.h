@@ -62,6 +62,9 @@ public slots:
     void setAspect(int);
     void propertyChange(PropertyChangeEvent *e);
     /*public*/ void useIconSet(QString icon);
+    void onWhenNotLit();
+    void onShowDarkIcon();
+
 private:
     /*private*/ SignalMast* mMast;
     /*private*/ NamedBeanHandle<SignalMast*>* namedMast;
@@ -72,6 +75,7 @@ private:
     QString pName;
     /*private*/ void setImageTypeList(QSignalMapper* iconTypeGroup, QMenu* iconSetMenu, /*final*/ QString item);
     SignalMastItemPanel* _itemPanel;
+    QActionGroup* litButtonGroup;
 protected:
 //    /*protected*/ void editItem();
     QString _useIconSet;// = "default";

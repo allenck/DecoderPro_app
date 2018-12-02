@@ -262,7 +262,6 @@ SOURCES += \
     Signal/abstractsignalmast.cpp \
     Signal/defaultsignalsystem.cpp \
     Signal/defaultsignalsystemmanager.cpp \
-    Signal/lnse8csignalhead.cpp \
     Signal/se8csignalhead.cpp \
     memorymanager.cpp \
     Signal/defaultsignalmastlogicmanager.cpp \
@@ -824,7 +823,10 @@ SOURCES += \
     Signal/matrixsignalmastaddpane.cpp \
     Signal/dccsignalheadxml.cpp \
     warrantshutdowntask.cpp \
-    mergeprompt.cpp
+    mergeprompt.cpp \
+    Signal/dccsignalhead.cpp \
+    Signal/tripleoutputsignalhead.cpp \
+    Signal/tripleoutoutsignalheadxml.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1059,7 +1061,6 @@ HEADERS += \
     Signal/abstractsignalmast.h \
     Signal/defaultsignalsystem.h \
     Signal/defaultsignalsystemmanager.h \
-    Signal/lnse8csignalhead.h \
     Signal/se8csignalhead.h \
     memorymanager.h \
     Signal/singleturnoutsignalhead.h \
@@ -1650,7 +1651,10 @@ HEADERS += \
     Signal/matrixsignalmastaddpane.h \
     Signal/dccsignalheadxml.h \
     warrantshutdowntask.h \
-    mergeprompt.h
+    mergeprompt.h \
+    Signal/dccsignalhead.h \
+    Signal/tripleoutputsignalhead.h \
+    Signal/tripleoutoutsignalheadxml.h
 
  !contains(FTDI, 1) {
     HEADERS +=

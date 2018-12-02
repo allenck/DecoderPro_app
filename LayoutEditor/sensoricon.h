@@ -168,7 +168,7 @@ private slots:
 protected:
  /*protected*/ QHash <QString, int>* _name2stateMap;       // name to state
  /*protected*/ QHash <int, QString>* _state2nameMap;       // state to name
- /*protected*/ QHash<QString, NamedIcon*>* cloneMap(QHash<QString, NamedIcon*>* map, SensorIcon* pos);
+ /*protected*/ QMap<QString, NamedIcon*>* cloneMap(QMap<QString, NamedIcon*>* map, SensorIcon* pos);
  /*protected*/ void editItem();
 protected slots:
  /*protected*/ void edit();

@@ -7,7 +7,7 @@ class LIBPR3SHARED_EXPORT HexFileConnectionConfigXml : public AbstractSerialConn
 {
     Q_OBJECT
 public:
-    explicit HexFileConnectionConfigXml(QObject *parent = 0);
+    Q_INVOKABLE explicit HexFileConnectionConfigXml(QObject *parent = 0);
     ~HexFileConnectionConfigXml() {}
     HexFileConnectionConfigXml(const HexFileConnectionConfigXml&) : AbstractSerialConnectionConfigXml() {}
     /*public*/ QDomElement store(QObject* o);

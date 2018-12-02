@@ -61,7 +61,7 @@
  SignalHeadIcon* pos = (SignalHeadIcon*)p;
  pos->setSignalHead(getNamedSignalHead()->getName());
  //Enumeration <QString> e = _iconMap.keys();
- QHashIterator<QString, NamedIcon*> e(*_iconMap);
+ QMapIterator<QString, NamedIcon*> e(*_iconMap);
  while (e.hasNext())
  {
   e.next();
@@ -88,7 +88,7 @@
  namedHead = sh;
  if (namedHead != NULL)
  {
-  _iconMap = new QHash <QString, NamedIcon*>();
+  _iconMap = new QMap<QString, NamedIcon*>();
   SignalHead* signalHead = getSignalHead();
   setObjectName(signalHead->getSystemName());
   if(qobject_cast<SingleTurnoutSignalHead*>(signalHead)!=NULL)
@@ -100,7 +100,7 @@
   if(qobject_cast<VirtualSignalHead*>(signalHead)!=NULL)
    _validKey = ((VirtualSignalHead*)signalHead)->getValidStateNames();
   else
-   _validKey = ((DefaultSignalHead*)getSignalHead())->getValidStateNames();
+   _validKey = getSignalHead()->getValidStateNames();
 
   displayState(headState());
   //getSignalHead()->addPropertyChangeListener((PropertyChangeListener*)this);
@@ -194,25 +194,30 @@
 /*public*/ int SignalHeadIcon::headState()
 {
  if (getSignalHead()==NULL) return 0;
- else return ((DefaultSignalHead*)getSignalHead())->getAppearance();
+ else return getSignalHead()->getAppearance();
 }
 
 // update icon as state of turnout changes
 /*public*/ void SignalHeadIcon::propertyChange(PropertyChangeEvent* e)
 {
- if (log->isDebugEnabled()) log->debug("property change: "+e->getPropertyName() +" current state: "+QString::number(headState()));
-  displayState(headState());
-//    _editor->getTargetPanel().repaint();
- //_editor->addToTarget((Positionable*)this);
+// if (log->isDebugEnabled() && (getSignalHead()->getSystemName() == "LH15" ||getSignalHead()->getSystemName() == "LH1")) log->debug(getSignalHead()->getSystemName() + " property change: "+e->getPropertyName() +" current state: " + QString::number(headState()) + " oldValue: " + e->getOldValue().toString() + " newValue: " + e->getNewValue().toString());
+ if(e->getPropertyName() == "flash")
+ {
+  if(e->getNewValue().toBool())
+  {
+   displayState(headState());
+  }
+  else
+  {
+   displayState(0);
+  }
   updateScene();
-}
-
-/*public*/ void SignalHeadIcon::propertyChange(QString /*propertyName*/, QVariant /*oldValue*/, QVariant /*newValue*/)
-{
+  return;
+ }
  displayState(headState());
 //    _editor->getTargetPanel().repaint();
  //_editor->addToTarget((Positionable*)this);
- updateScene();
+  updateScene();
 }
 
 /*public*/ QString SignalHeadIcon::getNameString()
@@ -409,9 +414,9 @@ void SignalHeadIcon::on_editLogicAction_triggered()
  }
  else
  {
-  QString appearance = ((DefaultSignalHead*)getSignalHead())->getAppearanceName(state);
+  QString appearance = getSignalHead()->getAppearanceName(state);
   if (log->isDebugEnabled()) log->debug("Display state "+QString::number(state)+" for "+getNameString() + " "+appearance);
-  if (((DefaultSignalHead*)getSignalHead())->getHeld())
+  if (getSignalHead()->getHeld())
   {
    if (isText()) PositionableIcon::setText(tr("<held>"));
    if (isIcon())
@@ -422,8 +427,8 @@ void SignalHeadIcon::on_editLogicAction_triggered()
    }
    return;
   }
-  //else if (getLitMode() && !((DefaultSignalHead*)getSignalHead())->getLit())
-  else if (getLitMode() && !((DefaultSignalHead*)getSignalHead())->isFlashOn())
+  //else if (getLitMode() && !getSignalHead()->getLit())
+  else if (getLitMode() && !getSignalHead()->getLit())
   {
    if (isText()) PositionableIcon::setText(tr("<dark>"));
    if (isIcon())
@@ -434,26 +439,15 @@ void SignalHeadIcon::on_editLogicAction_triggered()
    }
    return;
   }
-  else if (getLitMode() && ((DefaultSignalHead*)getSignalHead())->isFlashOn()) // added by ACK
-  {
-   if (isText()) PositionableIcon::setText(((DefaultSignalHead*)getSignalHead())->getAppearanceName(state));
-   if (isIcon())
-   {
-    QString appearance = ((DefaultSignalHead*)getSignalHead())->getAppearanceName(state);
-    PositionableIcon::setIcon(_iconMap->value(appearance));
-     //_editor->addToTarget((Positionable*)this);
-    updateScene();
-   }
-   return;
-  }
+
  }
  if (isText())
  {
-  PositionableIcon::setText(((DefaultSignalHead*)getSignalHead())->getAppearanceName(state));
+  PositionableIcon::setText(getSignalHead()->getAppearanceName(state));
  }
  if (isIcon())
  {
-  NamedIcon* icon =_iconMap->value(((DefaultSignalHead*)getSignalHead())->getAppearanceName(state));
+  NamedIcon* icon =_iconMap->value(getSignalHead()->getAppearanceName(state));
   if (icon!=NULL)
   {
    PositionableIcon::setIcon(icon);
@@ -498,8 +492,8 @@ void SignalHeadIcon::on_editLogicAction_triggered()
 
  // _iconMap keys with local names - Let SignalHeadItemPanel figure this out
  // duplicate _iconMap map with unscaled and unrotated icons
- QHash<QString, NamedIcon*>* map = new QHash<QString, NamedIcon*>();
- QHashIterator<QString, NamedIcon*> it(*_iconMap);
+ QMap<QString, NamedIcon*>* map = new QMap<QString, NamedIcon*>();
+ QMapIterator<QString, NamedIcon*> it(*_iconMap);
  while (it.hasNext())
  {
   //QHash<QString, NamedIcon*> entry =
@@ -520,17 +514,16 @@ void SignalHeadIcon::on_editLogicAction_triggered()
 
 void SignalHeadIcon::updateItem()
 {
-#if 1
  _saveMap = _iconMap; 	// setSignalHead() clears _iconMap.  we need a copy for setIcons()
  setSignalHead(_itemPanel->getTableSelection()->getSystemName());
  setFamily(_itemPanel->getFamilyName());
- QHash<QString, NamedIcon*>* map1 = _itemPanel->getIconMap();
+ QMap<QString, NamedIcon*>* map1 = _itemPanel->getIconMap();
  if (map1!=NULL)
  {
   // map1 may be keyed with NamedBean names.  Convert to local name keys.
   // However perhaps keys are local - See above
-  QHash<QString, NamedIcon*>* map2 = new QHash<QString, NamedIcon*>();
-  QHashIterator<QString, NamedIcon*> it(* map1);
+  QMap<QString, NamedIcon*>* map2 = new QMap<QString, NamedIcon*>();
+  QMapIterator<QString, NamedIcon*> it(* map1);
   while (it.hasNext())
   {
    /*         Entry<String, NamedIcon> entry =*/ it.next();
@@ -545,7 +538,6 @@ void SignalHeadIcon::updateItem()
  _itemPanel->dispose();
  _itemPanel = NULL;
  invalidate();
-#endif
 }
 
 /*public*/ bool SignalHeadIcon::setEditIconMenu(QMenu* popup)
@@ -583,11 +575,10 @@ void SignalHeadIcon::updateItem()
  * replace the icons in _iconMap with those from map, but
  * preserve the scale and rotation.
 */
-/*private*/ void SignalHeadIcon::setIcons(QHash<QString, NamedIcon*>* map)
+/*private*/ void SignalHeadIcon::setIcons(QMap<QString, NamedIcon*>* map)
 {
- QHash<QString, NamedIcon*>* tempMap = new QHash<QString, NamedIcon*>();
-#if 1
- QHashIterator<QString, NamedIcon*> it(*map);
+ QMap<QString, NamedIcon*>* tempMap = new QMap<QString, NamedIcon*>();
+ QMapIterator<QString, NamedIcon*> it(*map);
  while (it.hasNext())
  {
  /*       Entry<String, NamedIcon> entry =*/ it.next();
@@ -602,13 +593,11 @@ void SignalHeadIcon::updateItem()
   }
   tempMap->insert(name, icon);
  }
-#endif
  _iconMap = tempMap;
 }
 
 void SignalHeadIcon::updateSignal()
 {
-#if 1
  _saveMap = _iconMap; 	// setSignalHead() clears _iconMap.  we need a copy for setIcons()
  setSignalHead(_iconEditor->getTableSelection()->getDisplayName());
  setIcons(_iconEditor->getIconMap());
@@ -617,7 +606,6 @@ void SignalHeadIcon::updateSignal()
  _iconEditorFrame = NULL;
  _iconEditor = NULL;
  invalidate();
-#endif
 }
 
 
@@ -684,50 +672,35 @@ void SignalHeadIcon::updateSignal()
  {
   case 0 :
   {
-   int newAppearance;
-   switch (((DefaultSignalHead*)getSignalHead())->getAppearance())
+   switch (getSignalHead()->getAppearance())
    {
     case SignalHead::RED:
     case SignalHead::FLASHRED:
-        //((DefaultSignalHead*)getSignalHead())->setAppearance(SignalHead::YELLOW);
-     newAppearance = SignalHead::YELLOW;
+        getSignalHead()->setAppearance(SignalHead::YELLOW);
+     //newAppearance = SignalHead::YELLOW;
         break;
     case SignalHead::YELLOW:
     case SignalHead::FLASHYELLOW:
-        //((DefaultSignalHead*)getSignalHead())->setAppearance(SignalHead::GREEN);
-       newAppearance = SignalHead::GREEN;
+        getSignalHead()->setAppearance(SignalHead::GREEN);
+       //newAppearance = SignalHead::GREEN;
         break;
     case SignalHead::GREEN:
     case SignalHead::FLASHGREEN:
-        //((DefaultSignalHead*)getSignalHead())->setAppearance(SignalHead::RED);
-       newAppearance = SignalHead::RED;
+        getSignalHead()->setAppearance(SignalHead::RED);
+       //newAppearance = SignalHead::RED;
         break;
     default:
-     //((DefaultSignalHead*)getSignalHead())->setAppearance(SignalHead::RED);
-       newAppearance = SignalHead::RED;
+     getSignalHead()->setAppearance(SignalHead::RED);
+       //newAppearance = SignalHead::RED;
         break;
    }
-   SignalHead* sh = getSignalHead();
-   if(qobject_cast<SingleTurnoutSignalHead*>(sh)!=NULL)
-    ((SingleTurnoutSignalHead*)sh)->setAppearance(newAppearance);
-   else
-   if(qobject_cast<DoubleTurnoutSignalHead*>(sh)!=NULL)
-    ((DoubleTurnoutSignalHead*)sh)->setAppearance(newAppearance);
-   else
-   if(qobject_cast<VirtualSignalHead*>(sh)!=NULL)
-    ((VirtualSignalHead*)sh)->setAppearance(newAppearance);
-   else
-   {
-    log->debug(tr("Missing cast for ")+ sh->metaObject()->className());
-    Q_ASSERT(false);
-   }
-  }
-  break;
+   return;
+ }
  case 1 :
-  ((DefaultSignalHead*)getSignalHead())->setLit(!((DefaultSignalHead*)getSignalHead())->getLit());
+  getSignalHead()->setLit(!getSignalHead()->getLit());
   return;
  case 2 :
-  ((DefaultSignalHead*)getSignalHead())->setHeld(!((DefaultSignalHead*)getSignalHead())->getHeld());
+  getSignalHead()->setHeld(!getSignalHead()->getHeld());
  return;
  case 3:
  {
@@ -735,7 +708,7 @@ void SignalHeadIcon::updateSignal()
   QVector<int> states = sh->getValidStates();
   int state = sh->getAppearance();
   for (int i = 0; i < states.length(); i++) {
-//                    if (log.isDebugEnabled()) log.debug("state= "+state+" states["+i+"]= "+states[i]);
+//  if (log.isDebugEnabled()) log.debug("state= "+state+" states["+i+"]= "+states[i]);
       if (state == states[i]) {
           i++;
           if (i >= states.length()) {

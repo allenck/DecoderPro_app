@@ -14,7 +14,7 @@ WarrantManager::WarrantManager(QObject *parent) :
  setProperty("JavaClassName", "jmri.managers.WarrantManager");
  setProperty("InstanceManagerAutoDefault", "yes");
 
- //registerSelf();
+ registerSelf();
 }
 /**
  * Basic Implementation of a WarrantManager.

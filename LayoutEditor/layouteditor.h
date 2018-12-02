@@ -386,6 +386,14 @@ public:
     /*public*/ QVector<SignalMastIcon*>* signalMastList;// = new QVector<SignalMastIcon*>();  // Signal Head Icons
     /*public*/ QVector<MultiSensorIcon*>* multiSensors; // = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
     /*public*/ void dispose();
+    /*public*/ QList<LayoutTrack *> getPositionablePoints();
+    /*public*/ QList<LayoutTrack *> getLayoutSlips();
+    /*public*/ QList<LayoutTrack *> getTrackSegments();
+    /*public*/ QList<LayoutTrack *> getLayoutTurnouts();
+    /*public*/ QList<LayoutTrack *> getLayoutTurntables();
+    /*public*/ QList<LayoutTrack *> getLevelXings();
+    /*public*/ QList<LayoutTrack *> getLayoutTracks();
+    /*public*/ QList<LayoutTrack *> getLayoutTurnoutsAndSlips();
 
 
 
@@ -451,6 +459,8 @@ private:
  /*private*/ QVector<PositionablePoint*>* _pointSelection; //new QVector<PositionablePoint>();  // PositionablePoint list
  QVector<PositionableLabel*>* _labelSelection; //new QVector<PositionableLabel>();  // PositionableLabel list
  /*private*/ /*transient*/ QList<LayoutTrack*> layoutTrackList;// = QList<LayoutTrack*>();         // LayoutTrack list
+/*private*/ QList<LayoutTrack*> getLayoutTracksOfClass(QString type);
+
 
  /*private*/ void clearSelectionGroups();
  QWidget* openFrame;

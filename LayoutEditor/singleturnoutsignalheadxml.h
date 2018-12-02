@@ -8,7 +8,7 @@ class SingleTurnoutSignalHeadXml : public AbstractNamedBeanManagerConfigXML
 {
     Q_OBJECT
 public:
-    explicit SingleTurnoutSignalHeadXml(QObject *parent = 0);
+    Q_INVOKABLE explicit SingleTurnoutSignalHeadXml(QObject *parent = 0);
     ~SingleTurnoutSignalHeadXml() {}
     SingleTurnoutSignalHeadXml(const SingleTurnoutSignalHeadXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);

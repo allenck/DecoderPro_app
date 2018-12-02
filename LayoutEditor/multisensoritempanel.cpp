@@ -57,7 +57,7 @@
 
     int size = 6;
     if (_family!=NULL) {
-        QHash<QString, NamedIcon*>* map = ItemPalette::getIconMap(_itemType, _family);
+        QMap<QString, NamedIcon*>* map = ItemPalette::getIconMap(_itemType, _family);
         size = map->size();
     }
     _selectionModel->setPositionRange(size-3);
@@ -89,7 +89,7 @@
     _selectionModel->setPositionRange(size-3);
 }
 
-/*protected*/ void MultiSensorItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString /*displayKey*/) {
+/*protected*/ void MultiSensorItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString /*displayKey*/) {
     TableItemPanel::makeDndIconPanel(iconMap, "second");
 }
 
@@ -152,8 +152,8 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
     }
 }
 
-//@Override
-/*protected*/ IconDialog* MultiSensorItemPanel::openDialog(QString type, QString family, QHash<QString, NamedIcon*>* iconMap)
+//@OverrideQMap
+/*protected*/ IconDialog* MultiSensorItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap)
 {
  IconDialog* dialog = new MultiSensorIconDialog(type, family, this, iconMap);
  dialog->sizeLocate();
@@ -314,7 +314,7 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
     }
 
 
-/*protected*/ DragJLabel* MultiSensorItemPanel::getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map) {
+/*protected*/ DragJLabel* MultiSensorItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map) {
     return new MSIconDragJLabel(flavor, map,this);
 }
 
@@ -322,7 +322,7 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
 //    Hashtable <String, NamedIcon> iconMap;
 
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-/*public*/ MSIconDragJLabel::MSIconDragJLabel(DataFlavor* flavor, QHash<QString, NamedIcon*>* map, MultiSensorItemPanel* self) : DragJLabel(flavor, self)
+/*public*/ MSIconDragJLabel::MSIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, MultiSensorItemPanel* self) : DragJLabel(flavor, self)
 {
  //super(flavor);
  iconMap = map;

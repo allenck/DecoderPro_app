@@ -42,77 +42,56 @@
 {
  int oldAppearance = mAppearance;
  mAppearance = newAppearance;
- if ( mLit && ((newAppearance == SignalHead::FLASHGREEN) ||
-        (newAppearance == SignalHead::FLASHYELLOW) ||
-        (newAppearance == SignalHead::FLASHRED) ||
-        (newAppearance == SignalHead::FLASHLUNAR) ) )
-  startFlash();
- if ( (!mLit) || ( (newAppearance != SignalHead::FLASHGREEN) &&
-        (newAppearance != SignalHead::FLASHYELLOW) &&
-        (newAppearance != SignalHead::FLASHRED) &&
-        (newAppearance != SignalHead::FLASHLUNAR) ) )
-  stopFlash();
+ appearanceSetsFlashTimer(newAppearance);
 
-    /* there are circumstances (admittedly rare) where signals and turnouts can get out of sync
-     * allow 'newAppearance' to be set to resync these cases - P Cressman
-    if (oldAppearance != newAppearance) */
-#if 0
- {
-  if(qobject_cast<VirtualSignalHead*>(this)!=NULL)
-  {
-    ((VirtualSignalHead*)this)->updateOutput();
-    newAppearance = mAppearance;
-  }
-  else if(qobject_cast<SingleTurnoutSignalHead*>(this)!=NULL)
-    ((SingleTurnoutSignalHead*)this)->updateOutput();
-  else if(qobject_cast<DoubleTurnoutSignalHead*>(this)!=NULL)
-    ((DoubleTurnoutSignalHead*)this)->updateOutput();
-  else
-  {
-   log->warn(tr("missing cast for %1").arg(this->metaObject()->className()));
-  //updateOutput();
-  }
-  // notify listeners, if any
-  firePropertyChange("Appearance", QVariant(oldAppearance), QVariant(newAppearance));
-  AbstractSignalHead::setAppearance(newAppearance);
-  updateOutput();
- }
-#else
+ /* there are circumstances (admittedly rare) where signals and turnouts can get out of sync
+  * allow 'newAppearance' to be set to resync these cases - P Cressman
+  * if (oldAppearance != newAppearance) */
  updateOutput();
+
  // notify listeners, if any
- firePropertyChange("Appearance", QVariant(oldAppearance), QVariant(newAppearance));
- //emit propertyChange(new PropertyChangeEvent((QObject*)this, "Appearance", QVariant(oldAppearance), QVariant(newAppearance)));
-#endif
+ firePropertyChange("Appearance", oldAppearance, newAppearance);
+}
+
+/**
+ * Call to set timer when updating the appearance.
+ *
+ * @param newAppearance the new appearance
+ */
+/*protected*/ void DefaultSignalHead::appearanceSetsFlashTimer(int newAppearance)
+{
+ if (mLit && ((newAppearance == FLASHGREEN)
+         || (newAppearance == FLASHYELLOW)
+         || (newAppearance == FLASHRED)
+         || (newAppearance == FLASHLUNAR)))
+ {
+  startFlash();
+ }
+ if ((!mLit) || ((newAppearance != FLASHGREEN)
+         && (newAppearance != FLASHYELLOW)
+         && (newAppearance != FLASHRED)
+         && (newAppearance != FLASHLUNAR)))
+ {
+  stopFlash();
+ }
 }
 
 /*public*/ void DefaultSignalHead::setLit(bool newLit)
 {
+ if(getSystemName() == "LH15" || getSystemName() == "LH1")
+  log->debug(tr("setLit called curr mLit = %1, new = %2").arg(mLit).arg(newLit));
  bool oldLit = mLit;
  mLit = newLit;
  if (oldLit != newLit)
  {
-  if ( mLit && ((mAppearance == SignalHead::FLASHGREEN) ||
-                (mAppearance == SignalHead::FLASHYELLOW) ||
-                (mAppearance == SignalHead::FLASHRED) ||
-                (mAppearance == SignalHead::FLASHLUNAR) ) )
+  if ( mLit && ((mAppearance == SignalHead::FLASHGREEN)
+                || (mAppearance == SignalHead::FLASHYELLOW)
+                || (mAppearance == SignalHead::FLASHRED)
+                || (mAppearance == SignalHead::FLASHLUNAR) ) )
             startFlash();
-  if (!mLit) stopFlash();
-#if 0
-  if(qobject_cast<VirtualSignalHead*>(this)!=NULL)
-          ((VirtualSignalHead*)this)->updateOutput();
-  else if(qobject_cast<SingleTurnoutSignalHead*>(this)!=NULL)
-          ((SingleTurnoutSignalHead*)this)->updateOutput();
-  else if(qobject_cast<DoubleTurnoutSignalHead*>(this)!=NULL)
-          ((DoubleTurnoutSignalHead*)this)->updateOutput();
-  else
-  {
-   log->warn(tr("missing cast for %1").arg(this->metaObject()->className()));
-   //updateOutput();
-  }
-#else
+  if (!mLit)
+   stopFlash();
   updateOutput();
-#endif
-
   // notify listeners, if any
   firePropertyChange("Lit", QVariant(oldLit), QVariant(newLit));
  }
@@ -175,43 +154,18 @@
 
 /*private*/ void DefaultSignalHead::timeout()
 {
- int oldFlash = mFlashOn;
-    if (mFlashOn)
-    {
-     mFlashOn = false;
-    }
-    else
-    {
-     mFlashOn = true;
-    }
-#if 0
-    if(qobject_cast<SingleTurnoutSignalHead*>(this)!=NULL)
-    {
-     ((SingleTurnoutSignalHead*)this)->updateOutput();
-    }
-    else
-    if(qobject_cast<DoubleTurnoutSignalHead*>(this)!=NULL)
-     ((DoubleTurnoutSignalHead*)this)->updateOutput();
-    else
-    if(qobject_cast<VirtualSignalHead*>(this)!=NULL)
-     ((VirtualSignalHead*)this)->updateOutput();
-    else
-    {
-     log->debug(tr("Missing cast for ")+ this->metaObject()->className());
-     Q_ASSERT(false);
-    }
+ int oldMFlash = mFlashOn;
+ mFlashOn = !mFlashOn;
 
-#else
-    updateOutput();
-    firePropertyChange("flash", QVariant(oldFlash), QVariant(mFlashOn));
-#endif
+ updateOutput();
+ firePropertyChange("flash", oldMFlash, mFlashOn);
 }
 
 /*
  * Stop the timer that controls flashing.
  *
  * This is only a resource-saver; the actual use of
- * flashing happens elsewere
+ * flashing happens elsewhere
  */
 /*protected*/ void DefaultSignalHead::stopFlash()
 {
@@ -252,7 +206,7 @@
     return validStateNames;
 }
 
-bool DefaultSignalHead::isTurnoutUsed(Turnout* t)
+bool DefaultSignalHead::isTurnoutUsed(Turnout* /*t*/)
 {
  return false;
 }

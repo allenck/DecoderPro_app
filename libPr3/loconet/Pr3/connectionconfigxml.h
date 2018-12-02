@@ -7,7 +7,7 @@ class LIBPR3SHARED_EXPORT  ConnectionConfigXml : public AbstractSerialConnection
 {
     Q_OBJECT
 public:
-    explicit ConnectionConfigXml(QObject *parent = 0);
+    Q_INVOKABLE explicit ConnectionConfigXml(QObject *parent = 0);
     ~ConnectionConfigXml() {}
     ConnectionConfigXml(const ConnectionConfigXml&) : AbstractSerialConnectionConfigXml() {}
 signals:

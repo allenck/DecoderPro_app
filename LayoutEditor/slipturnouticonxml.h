@@ -7,7 +7,7 @@ class SlipTurnoutIconXml : public PositionableLabelXml
 {
     Q_OBJECT
 public:
-    explicit SlipTurnoutIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit SlipTurnoutIconXml(QObject *parent = 0);
  ~SlipTurnoutIconXml() {}
  SlipTurnoutIconXml(const SlipTurnoutIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

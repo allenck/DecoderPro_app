@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractSignalHeadManagerXml : public Abstrac
 {
     Q_OBJECT
 public:
-    explicit AbstractSignalHeadManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit AbstractSignalHeadManagerXml(QObject *parent = 0);
     ~AbstractSignalHeadManagerXml();
  AbstractSignalHeadManagerXml(const AbstractSignalHeadManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);

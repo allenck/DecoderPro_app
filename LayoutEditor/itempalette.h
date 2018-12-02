@@ -21,20 +21,19 @@ public:
     static QTabWidget* _tabPane;
     static QMap<QString, ItemPanel*>* _tabIndex;
 
-    static QMap<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>* _iconMaps;
+    static QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>* _iconMaps;
     // for now, special case 4 level maps since IndicatorTO is the only case.
-    static QMap<QString, QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*>* _indicatorTOMaps;
+    static QMap<QString, QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>*>* _indicatorTOMaps;
     /*public*/ static void storeIcons();
-    static CatalogTreeNode* store3levelMap(QString type, QHash<QString, QHash<QString, NamedIcon*>*>* familyMap);
+    static CatalogTreeNode* store3levelMap(QString type, QMap<QString, QMap<QString, NamedIcon *> *> *familyMap);
     static /*public*/ void loadIcons(Editor* ed);
     static bool loadSavedIcons(Editor* ed);
-    static QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*
+    static QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>*
                                         loadIndicatorFamilyMap(CatalogTreeNode* node, Editor* ed);
-    static QHash<QString, QHash<QString, NamedIcon*>*>* loadFamilyMap(CatalogTreeNode* node, Editor* ed);
+    static QMap<QString, QMap<QString, NamedIcon*>*>* loadFamilyMap(CatalogTreeNode* node, Editor* ed);
     static void loadDefaultIcons(Editor* ed);
-    static QHash<QString, QHash<QString, NamedIcon*>*>* loadDefaultFamilyMap(QDomNodeList families, Editor* ed);
-    static QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*
-    loadDefaultIndicatorTOMap(QDomNodeList typeList, Editor*ed);
+    static QMap<QString, QMap<QString, NamedIcon *> *> *loadDefaultFamilyMap(QDomNodeList families, Editor* ed);
+    static QMap<QString, QMap<QString, QMap<QString, NamedIcon *> *> *> *loadDefaultIndicatorTOMap(QDomNodeList typeList, Editor*ed);
     static void buildTabPane(ItemPalette* palette, Editor* editor);
     static void loadFamilies(QString typeName, QDomNodeList families, Editor* ed);
 
@@ -57,21 +56,18 @@ public slots:
 /*private*/ ItemPanel* _currentItemPanel;
 
 protected:
-  static /*protected*/ bool addFamily(QWidget* frame, QString type, QString family, QHash<QString, NamedIcon*>* iconMap);
-  static /*protected*/ QHash<QString, QHash<QString, NamedIcon*>*>* getFamilyMaps(QString type);
+  static /*protected*/ bool addFamily(QWidget* frame, QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
+  static /*protected*/ QMap<QString, QMap<QString, NamedIcon *> *> *getFamilyMaps(QString type);
   static /*protected*/ void removeIconMap(QString type, QString family);
-  static /*protected*/ QHash<QString, NamedIcon*>* getIconMap(QString type, QString family);
-  static /*protected*/ QHash<QString, NamedIcon*>* cloneMap(QHash<QString, NamedIcon*>* map);
+  static /*protected*/ QMap<QString, NamedIcon*>* getIconMap(QString type, QString family);
+  static /*protected*/ QMap<QString, NamedIcon*>* cloneMap(QMap<QString, NamedIcon*>* map);
   static /*protected*/ QWidget* makeBannerPanel(QString labelText, QWidget* field);
-  static /*protected*/ bool addLevel4Family(JmriJFrame* frame, QString type, QString family,
-                                 QHash<QString, QHash<QString, NamedIcon*>*>* iconMap);
+  static /*protected*/ bool addLevel4Family(JmriJFrame* frame, QString type, QString family, QMap<QString, QMap<QString, NamedIcon*>*>* iconMap);
   static /*protected*/ void addLevel4FamilyMap(QString type, QString family,
-                                 QString key, QHash<QString, NamedIcon*>* iconMap);
-  static /*protected*/ QHash<QString, QHash<QString, QHash<QString, NamedIcon*>*>*>*
-                              getLevel4FamilyMaps(QString type);
+                                 QString key, QMap<QString, NamedIcon*>* iconMap);
+  static /*protected*/ QMap<QString, QMap<QString, QMap<QString, NamedIcon *> *> *> *getLevel4FamilyMaps(QString type);
   // Currently only needed for IndicatorTO type
-  static /*protected*/ QHash<QString, QHash<QString, NamedIcon*>*>*
-                              getLevel4Family(QString type, QString family) ;
+  static /*protected*/ QMap<QString, QMap<QString, NamedIcon *> *> *getLevel4Family(QString type, QString family) ;
   static /*protected*/ void removeLevel4IconMap(QString type, QString family, QString key);
 
 friend class FamilyItemPanel;

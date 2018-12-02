@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TrackSegmentXml : public AbstractXmlAdapter
 {
  Q_OBJECT
 public:
- explicit TrackSegmentXml(QObject *parent = 0);
+ Q_INVOKABLE explicit TrackSegmentXml(QObject *parent = 0);
  ~TrackSegmentXml() {}
  TrackSegmentXml(const TrackSegmentXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

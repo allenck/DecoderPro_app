@@ -58,7 +58,7 @@
     QWidget(parent)
 {
  log->debug("AddSignalMastPanel()");
-  init();
+ init();
 }
 
 void AddSignalMastPanel::init()
@@ -93,8 +93,6 @@ void AddSignalMastPanel::init()
  mastFiles = QList<File*>(); // signal system definition files
  mapNameToShowSize = QMap<QString, int>();
  mapTypeToName = QMap<QString, QString>();
-
-
 
  // get the list of possible signal types (as shown by panes)
  // SignalMastAddPane::SignalMastAddPaneProvider::getInstancesCollection().forEach(
@@ -189,7 +187,7 @@ void AddSignalMastPanel::init()
 //         okPressed();
 //     } // Apply button on Edit existing mast pane
 // });
- connect(apply, SIGNAL(clicked(bool)), this, SLOT(okPressed(ActionEvent*)));
+ connect(apply, SIGNAL(clicked(bool)), this, SLOT(okPressed()));
  apply->setVisible(false);
  thisLayout->addWidget(buttonHolder,0,Qt::AlignRight); // add bottom row of buttons (to me)
 
@@ -468,8 +466,8 @@ void AddSignalMastPanel::loadMastDefinitions()
     currentPane->setMast(nullptr);
 
     currentPane->update();
-    if (window() != nullptr && qobject_cast<JFrame*>(window())) {
-        ((JFrame*)window())->pack();
+    if (window() != nullptr && qobject_cast<JmriJFrame*>(window())) {
+        ((JmriJFrame*)window())->pack();
     } else {
         log->debug(tr("Can't call pack() on %1").arg(window()->metaObject()->className()));
     }

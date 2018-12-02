@@ -48,7 +48,10 @@ public slots:
     static QString getName();
 
 private:
- BeanSelectCreatePanel* to1;
+    /*private*/ JTextField* systemNameTextField;// = new JTextField(5);
+    /*private*/ JTextField* userNameTextField;// = new JTextField(10);
+    /*private*/ JTextField* ato1TextField;// = new JTextField(5);
+    BeanSelectCreatePanel* to1;
  BeanSelectCreatePanel* to2;
  BeanSelectCreatePanel* to3;
  BeanSelectCreatePanel* to4;
@@ -60,8 +63,9 @@ private:
  QString acelaAspect;// = tr("Acela Aspect");
  QString se8c4Aspect;// = tr("SE8c 4 Aspect");
  QString quadOutput;// = tr("Quad Output");
- QString tripleTurnout;// = tr("Triple Output");
- QString doubleTurnout;// = tr("Double Output");
+ /*private*/ QString tripleOutput;// = Bundle.getMessage("StringTripleOutput");
+ /*private*/ QString tripleTurnout;// = Bundle.getMessage("StringTripleTurnout");
+ /*private*/ QString doubleTurnout;// = Bundle.getMessage("StringDoubleTurnout");
  QString virtualHead;// = tr("Virtual");
  QString grapevine;// = tr("Grapevine ");
  QString acela;// = tr("Acela Aspect");
@@ -72,9 +76,6 @@ private:
  QStringList selections;
  QLabel* systemNameLabel;// = new QLabel("");
  QLabel* userNameLabel;// = new QLabel("");
- JTextField* systemName;// = new JTextField(5);
- JTextField* userName;// = new JTextField(10);
- JTextField* ato1;// = new JTextField(5);
  void hideAllOptions();
  QString gbStyleSheet;
  QGroupBox* v1Panel;// = new QWidget();
@@ -131,6 +132,13 @@ private:
  QComboBox* prefixBox;// = new QComboBox();
  QLabel* prefixBoxLabel;// = new QLabel("System : ");
  QLabel* vtLabel;// = new QLabel("");
+ /*private*/ QGroupBox* v1Border;// = BorderFactory.createTitledBorder(blackline);
+ /*private*/ QGroupBox* v2Border;// = BorderFactory.createTitledBorder(blackline);
+ /*private*/ QGroupBox* v3Border;// = BorderFactory.createTitledBorder(blackline);
+ /*private*/ QGroupBox* v4Border;// = BorderFactory.createTitledBorder(blackline);
+ /*private*/ QGroupBox* v5Border;// = BorderFactory.createTitledBorder(blackline);
+ /*private*/ QGroupBox* v6Border;// = BorderFactory.createTitledBorder(blackline);
+ /*private*/ QGroupBox* v7Border;// = BorderFactory.createTitledBorder(blackline);
  FlowLayout* defaultFlow;// = new QFormLayout();
  Logger* log;
  int ukSignalAspectsFromBox(QComboBox* box);
@@ -211,10 +219,15 @@ private:
  void handleSE8cEditSignal();
  void handleSE8cUpdatePressed();
 
+ /*private*/ int turnoutStateFromBox(QComboBox* box);
+ /*private*/ void setTurnoutStateInBox(QComboBox* box, int state, QList<int> iTurnoutStates);
+ int signalheadTypeFromBox(QComboBox* box);
+ void setSignalheadTypeInBox (QComboBox* box, int state, QList<int>iSignalheadTypes);
+
 protected:
-    /*protected*/ Turnout* getTurnoutFromPanel(BeanSelectCreatePanel* bp, QString reference);
-     /*protected*/ Turnout* updateTurnoutFromPanel(BeanSelectCreatePanel* bp, QString reference, Turnout* oldTurnout, QString title);
-     /*protected*/ QString getClassName();
+ /*protected*/ Turnout* getTurnoutFromPanel(BeanSelectCreatePanel* bp, QString reference);
+ /*protected*/ Turnout* updateTurnoutFromPanel(BeanSelectCreatePanel* bp, QString reference, Turnout* oldTurnout, QString title);
+ /*protected*/ QString getClassName();
  /*protected*/ void setTitle();
  /*protected*/ QString helpTarget();
  /*protected*/ void createModel();

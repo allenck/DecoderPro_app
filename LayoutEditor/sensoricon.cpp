@@ -265,7 +265,7 @@ void SensorIcon::common()
 
 void SensorIcon::makeIconMap()
 {
- _iconMap = new QHash <QString, NamedIcon*>();
+ _iconMap = new QMap<QString, NamedIcon*>();
  _name2stateMap = new QHash <QString, int>();
  _name2stateMap->insert("BeanStateUnknown", /*Sensor::UNKNOWN*/0x01);
  _name2stateMap->insert("BeanStateInconsistent", /*(Sensor::INCONSISTENT)*/0x08);
@@ -550,8 +550,8 @@ void SensorIcon::on_editSensorItemAction_triggered()
 //    };
  UpdateActionListener* updateAction = new UpdateActionListener(this);
  // duplicate _iconMap map with unscaled and unrotated icons
- QHash<QString, NamedIcon*>* map = new QHash<QString, NamedIcon*>();
- QHashIterator<QString, NamedIcon*> it(*_iconMap);
+ QMap<QString, NamedIcon*>* map = new QMap<QString, NamedIcon*>();
+ QMapIterator<QString, NamedIcon*> it(*_iconMap);
  while (it.hasNext())
  {
   //Entry<QString, NamedIcon> entry = it.next();
@@ -573,13 +573,13 @@ void SensorIcon::on_editSensorItemAction_triggered()
 
 void SensorIcon::updateItem()
 {
- QHash<QString, NamedIcon*>* oldMap = cloneMap(_iconMap, this);
+ QMap<QString, NamedIcon*>* oldMap = cloneMap(_iconMap, this);
  setSensor(_itemPanel->getTableSelection()->getSystemName());
  _iconFamily = _itemPanel->getFamilyName();
- QHash <QString, NamedIcon*>* iconMap = _itemPanel->getIconMap();
+ QMap <QString, NamedIcon*>* iconMap = _itemPanel->getIconMap();
  if (iconMap!=NULL)
  {
-  QHashIterator<QString, NamedIcon*> it(*iconMap);
+  QMapIterator<QString, NamedIcon*> it(*iconMap);
   while (it.hasNext())
   {
    //Entry<QString, NamedIcon> entry = it.next();
@@ -665,11 +665,11 @@ void EditActionListener::actionPerformed(ActionEvent */*a*/ )
 void SensorIcon::updateSensor()
 {
 #if 1 // TODO:
- QHash<QString, NamedIcon*>* oldMap = cloneMap(_iconMap, this);
+ QMap<QString, NamedIcon*>* oldMap = cloneMap(_iconMap, this);
  setSensor(_iconEditor->getTableSelection()->getDisplayName());
- QHash <QString, NamedIcon*>* iconMap = _iconEditor->getIconMap();
+ QMap <QString, NamedIcon*>* iconMap = _iconEditor->getIconMap();
 
- QHashIterator<QString, NamedIcon*> it(*iconMap);
+ QMapIterator<QString, NamedIcon*> it(*iconMap);
  while (it.hasNext())
  {
   it.next();
@@ -796,10 +796,10 @@ void SensorIcon::updateSensor()
    PositionableIcon::dispose();
 }
 
-/*protected*/ QHash<QString, NamedIcon*>* SensorIcon::cloneMap(QHash<QString, NamedIcon*>* map,
+/*protected*/ QMap<QString, NamedIcon*>* SensorIcon::cloneMap(QMap<QString, NamedIcon*>* map,
                                                          SensorIcon* pos)
 {
- QHash<QString, NamedIcon*>* clone = new QHash<QString, NamedIcon*>();
+ QMap<QString, NamedIcon*>* clone = new QMap<QString, NamedIcon*>();
  if (map!=NULL)
  {
 //  Iterator<Entry<Integer, NamedIcon>> it = map.entrySet().iterator();
@@ -812,7 +812,7 @@ void SensorIcon::updateSensor()
 //        pos->setIcon(pos->_state2nameMap.get(entry.getKey()), _iconMap.get(entry.getKey()));
 //    }
 //  }
-  QHashIterator<QString, NamedIcon*> it(*map);
+  QMapIterator<QString, NamedIcon*> it(*map);
   while(it.hasNext())
   {
    it.next();

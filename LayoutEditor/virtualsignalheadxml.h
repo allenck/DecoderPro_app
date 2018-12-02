@@ -7,11 +7,11 @@ class LIBLAYOUTEDITORSHARED_EXPORT VirtualSignalHeadXml : public AbstractNamedBe
 {
     Q_OBJECT
 public:
-    explicit VirtualSignalHeadXml(QObject *parent = 0);
+    Q_INVOKABLE explicit VirtualSignalHeadXml(QObject *parent = 0);
  ~VirtualSignalHeadXml() {}
  VirtualSignalHeadXml(const VirtualSignalHeadXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement element) throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception) ;
 
 signals:

@@ -16,7 +16,7 @@ private slots:
 
 
 protected:
- /*protected*/ void makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey);
+ /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
 
 };
 

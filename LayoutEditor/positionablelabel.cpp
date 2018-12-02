@@ -82,7 +82,7 @@ void PositionableLabel::common(Positionable* parent)
  _icon = false;
  _text = false;
  _control = false;
- _namedIcon =NULL;
+ _namedIcon = nullptr;
  _foreground = QColor(Qt::white);
  _background = QColor(Qt::transparent);
  _preferredSize = QSize(10,20);  // TODO:
@@ -1240,18 +1240,19 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
  return true;
 }
 
-void PositionableLabel::setIcon(NamedIcon* s) // TODO: this function not in Java
+void PositionableLabel::setIcon(NamedIcon* s)
 {
- if(s != NULL && _itemGroup != NULL)
- {
-  //_degrees = s->getRotation();
-  //_itemGroup->setRotation(_itemGroup->rotation() - _namedIcon->getRotation());
-  currRotation = 0;
- }
- else
-  if(s == NULL)
-   if(log->isDebugEnabled()) log->debug("setIcon called with NULL icon");
+// if(s != NULL && _itemGroup != NULL)
+// {
+//  //_degrees = s->getRotation();
+//  //_itemGroup->setRotation(_itemGroup->rotation() - _namedIcon->getRotation());
+//  currRotation = 0;
+// }
+// else
+//  if(s == NULL)
+//   if(log->isDebugEnabled()) log->debug("setIcon called with NULL icon");
  _namedIcon = s;
+ JLabel::setIcon(s);
 }
 
 NamedIcon* PositionableLabel::getIcon() { return _namedIcon;}

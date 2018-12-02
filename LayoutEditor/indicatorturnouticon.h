@@ -11,7 +11,7 @@ class IndicatorTurnoutIcon : public TurnoutIcon
     Q_OBJECT
 public:
     //explicit IndicatorTurnoutIcon(QObject *parent = 0);
-    QHash<QString, QHash<int, NamedIcon*>*>* _iconMaps;
+    QMap<QString, QHash<int, NamedIcon*>*>* _iconMaps;
     /*public*/ IndicatorTurnoutIcon(Editor* editor, QObject *parent = 0);
     /*public*/ void setOccSensor(QString pName);
    /*public*/ void setOccSensorHandle(NamedBeanHandle<Sensor*>* sen);
@@ -38,9 +38,9 @@ public:
     /*public*/ void setPaths(QStringList paths) ;
     /*public*/ void addPath(QString path) ;
     /*public*/ void removePath(QString path);
-    /*public*/ QHash<QString, QHash<int, NamedIcon*>*>* getIconMaps();
+    /*public*/ QMap<QString, QHash<int, NamedIcon *> *> *getIconMaps();
     /*public*/ void dispose();
-    QHash<QString, QHash<int, NamedIcon*>*>* cloneMaps(IndicatorTurnoutIcon* pos);
+    QMap<QString, QHash<int, NamedIcon *> *> *cloneMaps(IndicatorTurnoutIcon* pos);
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(Positionable* p);
 
@@ -56,7 +56,7 @@ private:
     /*private*/ IndicatorTOItemPanel* _TOPanel;
     /*private*/QString _status;
     Logger* log;
-    QHash<QString, QHash<int, NamedIcon*>*>* initMaps();
+    QMap<QString, QHash<int, NamedIcon *> *> *initMaps();
     /*private*/ void setStatus(OBlock* block, int state);
 protected:
     /*protected*/ void rotateOrthogonal();

@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultLogixManagerXml : public AbstractNamed
 {
     Q_OBJECT
 public:
-    explicit DefaultLogixManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit DefaultLogixManagerXml(QObject *parent = 0);
  ~DefaultLogixManagerXml() {}
  DefaultLogixManagerXml(const DefaultLogixManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);

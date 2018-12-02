@@ -59,7 +59,7 @@
 */
 /*protected*/ void ItemPanel::initIconFamiliesPanel(){
 }
-/*protected*/ void ItemPanel::addIconsToPanel(QHash<QString, NamedIcon*>* iconMap){
+/*protected*/ void ItemPanel::addIconsToPanel(QMap<QString, NamedIcon *> *iconMap){
 }
 /*protected*/ void ItemPanel::setFamily(QString family) {
 }
@@ -111,11 +111,11 @@
 /*static*/ /*final*/ QStringList ItemPanel::INDICATOR_TRACK  = QStringList() <<"ClearTrack"<< "OccupiedTrack" << "AllocatedTrack" <<
                                             "PositionTrack"<< "DontUseTrack"<< "ErrorTrack";
 
-/*static*/ /*protected*/ QHash<QString, NamedIcon*>* ItemPanel::makeNewIconMap(QString type)
+/*static*/ /*protected*/ QMap<QString, NamedIcon*>* ItemPanel::makeNewIconMap(QString type)
 {
 Logger* log = new Logger("ItemPanel");
 
-    QHash <QString, NamedIcon*>* newMap = new QHash <QString, NamedIcon*>();
+    QMap <QString, NamedIcon*>* newMap = new QMap <QString, NamedIcon*>();
     QStringList names = QStringList();
     if (type==("Turnout")) {
         names = TURNOUT;

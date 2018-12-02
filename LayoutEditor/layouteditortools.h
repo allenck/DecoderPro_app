@@ -345,26 +345,30 @@ private:
     QWidget*sensorSlipPanel;// = new QWidget();
 
     // operational variables for Set SignalMast at Level Crossing tool
-        /*private*/ JmriJFrame* signalMastsAtXingFrame;// = null;
-        /*private*/ bool setSignalMastsAtXingOpen;// = false;
-        /*private*/ JTextField* blockANameMastField;// = new JTextField(16);
-        /*private*/ JTextField* blockCNameMastField;// = new JTextField(16);
+    /*private*/ JmriJFrame* signalMastsAtXingFrame;// = null;
+    /*private*/ bool setSignalMastsAtXingOpen;// = false;
+    /*private*/ JTextField* blockANameMastField;// = new JTextField(16);
+    /*private*/ JTextField* blockCNameMastField;// = new JTextField(16);
 
-        /*private*/ QPushButton* getSavedXingSignalMasts;// = null;
-        /*private*/ QPushButton*  setXingSignalMastsDone;// = null;
-        /*private*/ QPushButton*  setXingSignalMastsCancel;// = null;
+    /*private*/ QPushButton* getSavedXingSignalMasts;// = null;
+    /*private*/ QPushButton*  setXingSignalMastsDone;// = null;
+    /*private*/ QPushButton*  setXingSignalMastsCancel;// = null;
 
-        /*private*/ bool xingMastFromMenu;// = false;
-        /*private*/ QVector<QString>* xingBlocks;// = new String[4];
+    /*private*/ bool xingMastFromMenu;// = false;
+    /*private*/ QVector<QString>* xingBlocks;// = new String[4];
 
-        BeanDetails* xingSignalMastA;
-        BeanDetails* xingSignalMastB;
-        BeanDetails* xingSignalMastC;
-        BeanDetails* xingSignalMastD;
+    BeanDetails* xingSignalMastA;
+    BeanDetails* xingSignalMastB;
+    BeanDetails* xingSignalMastC;
+    BeanDetails* xingSignalMastD;
 
-        QWidget* signalMastLevelXingPanel;// = new JPanel();
+    QWidget* signalMastLevelXingPanel;// = new JPanel();
 
-        //Border blackline = BorderFactory.createLineBorder(Color.black);
+    //Border blackline = BorderFactory.createLineBorder(Color.black);
+    // operational variables for Set Signals at Double Crossover Turnout tool
+    /*private*/ JmriJFrame setSignalsAtXoverTurnoutFrame = nullptr;
+    /*private*/ bool setSignalsAtXoverTurnoutOpenFlag = false;
+    /*private*/ bool setSignalsAtXoverTurnoutFromMenuFlag = false;
 
     Logger* log;
     /*private*/ bool hitEndBumper;// = false;

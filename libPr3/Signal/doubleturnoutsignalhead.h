@@ -21,15 +21,24 @@ public:
 signals:
 
 public slots:
+ /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
+ virtual void readOutput();
+
 private:
 
     NamedBeanHandle<Turnout*>* mRed;
     NamedBeanHandle<Turnout*>* mGreen;
     Logger* log;
+    QTimer* readUpdateTimer;
+    bool isTurnoutUsed(Turnout* t);
+    int mRedCommanded;
+    int mGreenCommanded;
+
 protected:
     //friend class DefaultSignalHead;
  friend class TripleTurnoutSignalHead;
  friend class QuadOutputSignalHead;
+ friend class TripleOutputSignalHead;
 };
 
 #endif // DOUBLETURNOUTSIGNALHEAD_H

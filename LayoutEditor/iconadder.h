@@ -70,7 +70,7 @@ public:
     /*public*/ void makeIconPanel(bool useDefaults);
     /*public*/ void setPickList(PickListModel* tableModel);
     /*public*/ void setSelection(NamedBean* bean);
-    /*public*/ QHash <QString, NamedIcon*>* getIconMap();
+    /*public*/ QMap<QString, NamedIcon *> *getIconMap();
     /*public*/ virtual void complete(ActionListener* addIconAction, bool changeIcon,
                              bool addToTable, bool update);
     /*public*/ bool addIconIsEnabled();

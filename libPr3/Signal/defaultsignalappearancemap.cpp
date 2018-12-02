@@ -25,10 +25,10 @@
 {
  //super(systemName, userName);
  log = new Logger("DefaultSignalAppearanceMap");
- aspectAttributeMap = new QHash<QString, QHash<QString, QString> >();
- aspectImageMap = new QHash<QString, QHash<QString, QString> >();
- specificMaps = new QHash<int, QString>();
- aspectRelationshipMap = new QHash<QString, QVector<QString> >();
+ aspectAttributeMap = new QMap<QString, QHash<QString, QString> >();
+ aspectImageMap = new QMap<QString, QHash<QString, QString> >();
+ specificMaps = new QMap<int, QString>();
+ aspectRelationshipMap = new QMap<QString, QVector<QString> >();
  table = new QMap<QString, QVector<int>* >();
 }
 
@@ -36,10 +36,10 @@
 {
  //super(systemName);
  log = new Logger("DefaultSignalAppearanceMap");
- aspectAttributeMap = new QHash<QString, QHash<QString, QString> >();
- aspectImageMap = new QHash<QString, QHash<QString, QString> >();
- specificMaps = new QHash<int, QString>();
- aspectRelationshipMap = new QHash<QString, QVector<QString> >();
+ aspectAttributeMap = new QMap<QString, QHash<QString, QString> >();
+ aspectImageMap = new QMap<QString, QHash<QString, QString> >();
+ specificMaps = new QMap<int, QString>();
+ aspectRelationshipMap = new QMap<QString, QVector<QString> >();
  table = new QMap<QString, QVector<int>* >();
 }
 
@@ -114,7 +114,7 @@
     else if (sval==("FLASHYELLOW")) ival = SignalHead::FLASHYELLOW;
     else if (sval==("FLASHRED")) ival = SignalHead::FLASHRED;
     else if (sval==("DARK")) ival = SignalHead::DARK;
-    else throw new JDOMException("invalid content: "+sval);
+    else throw JDOMException("invalid content: "+sval);
 
     appearances->replace(j, ival);
    }

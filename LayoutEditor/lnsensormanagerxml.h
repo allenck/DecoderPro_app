@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LnSensorManagerXml : public AbstractSensorMan
 {
     Q_OBJECT
 public:
-    explicit LnSensorManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit LnSensorManagerXml(QObject *parent = 0);
  ~LnSensorManagerXml() {}
  LnSensorManagerXml(const LnSensorManagerXml&) :AbstractSensorManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement sensors);

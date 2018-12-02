@@ -32,6 +32,7 @@ namespace Ui {
 class LocoIOFrame;
 }
 
+class JDialog;
 class UserPreferencesManager;
 class LocoIOModules;
 class LocoIOAddress;
@@ -119,6 +120,7 @@ private:
     void restoreInputSubAddr();
     void checkInAddressChanged(qint16 unit, qint16 subUnit);
     OutPortDefinitionWidget* opdw;
+    JDialog* dlg;
 
 private slots:
  void on_btnProbe_clicked();
@@ -164,6 +166,11 @@ private slots:
  void onInputStatusRbChanged(int i);
  void onUpdateComments();
  void onOptionByte(int, int);
+ void onDlgInit();
+ void onDlgCancel();
+ void on_edAddrUnitIn_textEdited(QString);
+ void on_edAddrSubUnitIn_textEdited(QString);
+
 };
 
 #endif // LOCOIOFRAME_H

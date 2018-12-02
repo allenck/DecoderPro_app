@@ -7,7 +7,7 @@ class MemoryIconXml : public PositionableLabelXml
 {
     Q_OBJECT
 public:
-    explicit MemoryIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit MemoryIconXml(QObject *parent = 0);
  ~MemoryIconXml() {}
  MemoryIconXml(const MemoryIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

@@ -7,7 +7,7 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
     SignalHeadManager(parent)
 {
  setObjectName("AbstractSignalHeadManager");
-    //registerSelf();
+ registerSelf();
  setProperty("JavaClassName", "jmri.managers.AbstractSignalHeadManager");
  // TODO: InstanceManager::turnoutManagerInstance()->addVetoableChangeListener(this);
 

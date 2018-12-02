@@ -454,7 +454,7 @@ void TurnoutIcon::on_tristateItem_toggled(bool bState)
 //    };
  UpdateTurnoutActionListener* updateAction = new UpdateTurnoutActionListener(this);
  // duplicate icon map with state names rather than int states and unscaled and unrotated
- QHash<QString, NamedIcon*>* strMap = new QHash<QString, NamedIcon*>();
+ QMap<QString, NamedIcon*>* strMap = new QMap<QString, NamedIcon*>();
  QHashIterator<int, NamedIcon*> it(*_iconStateMap);
   while (it.hasNext())
   {
@@ -488,10 +488,10 @@ void TurnoutIcon::updateItem()
  QHash<int, NamedIcon*>* oldMap = cloneMap(_iconStateMap, this);
  setTurnout(_itemPanel->getTableSelection()->getSystemName());
  _iconFamily = _itemPanel->getFamilyName();
- QHash <QString, NamedIcon*>* iconMap = _itemPanel->getIconMap();
+ QMap <QString, NamedIcon*>* iconMap = _itemPanel->getIconMap();
  if (iconMap!=NULL)
  {
-  QHashIterator<QString, NamedIcon*> it(*iconMap);
+  QMapIterator<QString, NamedIcon*> it(*iconMap);
   while (it.hasNext())
   {
    it.next();
@@ -554,9 +554,9 @@ void TurnoutIcon::updateTurnout()
 {
  QHash<int, NamedIcon*>* oldMap = cloneMap(_iconStateMap, this);
  setTurnout(_iconEditor->getTableSelection()->getDisplayName());
- QHash <QString, NamedIcon*>* iconMap = _iconEditor->getIconMap();
+ QMap <QString, NamedIcon*>* iconMap = _iconEditor->getIconMap();
 
- QHashIterator<QString, NamedIcon*> it(*iconMap);
+ QMapIterator<QString, NamedIcon*> it(*iconMap);
  while (it.hasNext())
  {
   it.next();

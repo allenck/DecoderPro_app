@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultRouteManagerXml : public AbstractNamed
 {
  Q_OBJECT
 public:
- explicit DefaultRouteManagerXml(QObject *parent = 0);
+ Q_INVOKABLE explicit DefaultRouteManagerXml(QObject *parent = 0);
  ~DefaultRouteManagerXml() {}
  DefaultRouteManagerXml(const DefaultRouteManagerXml&) : AbstractNamedBeanManagerConfigXML(){}
  /*public*/ QDomElement store(QObject* o);

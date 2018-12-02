@@ -1661,7 +1661,7 @@ void ControlPanelEditor::selectAllAction()
     paint(editScene);
 
 }
-
+#endif
 
 /*************** implementation of Abstract Editor methods ***********/
 
@@ -1669,21 +1669,22 @@ void ControlPanelEditor::selectAllAction()
  * The target window has been requested to close, don't delete it at this
  *   time.  Deletion must be accomplished via the Delete this panel menu item.
  */
-/*protected*/ void targetWindowClosingEvent(java.awt.event.WindowEvent e) {
-    jmri.jmrit.catalog.ImageIndexEditor.checkImageIndex();
+/*protected*/ void ControlPanelEditor::targetWindowClosingEvent(QCloseEvent* e) {
+    ImageIndexEditor::checkImageIndex();
     targetWindowClosing(true);
 }
 
+#if 0
 /*protected*/ void paintTargetPanel(Graphics g) {
 }
-
+#endif
 /**
  * Set an object's location when it is created.
  */
-/*public*/ void setNextLocation(Positionable obj) {
-    obj.setLocation(0, 0);
+/*public*/ void ControlPanelEditor::setNextLocation(Positionable* obj) {
+    obj->setLocation(0, 0);
 }
-#endif
+
 /**
 * Set up selections for a paste.  Note a copy of _selectionGroup is made that is
 * NOT in the _contents.  This disconnected ArrayList is added to the _contents
@@ -1931,7 +1932,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
 
 /*private*/ void ControlPanelEditor::makePortalIconMap()
 {
- _portalIconMap =  new QHash<QString, NamedIcon*>();
+ _portalIconMap =  new QMap<QString, NamedIcon*>();
  _portalIconMap->insert(PortalIcon::VISIBLE,
          new NamedIcon("resources/icons/throttles/RoundRedCircle20.png", "resources/icons/throttles/RoundRedCircle20.png"));
  _portalIconMap->insert(PortalIcon::PATH,
@@ -1952,7 +1953,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
  }
  return _portalIconMap->value(name);
 }
-/*public*/ QHash<QString, NamedIcon*>* ControlPanelEditor::getPortalIconMap() {
+/*public*/ QMap<QString, NamedIcon*>* ControlPanelEditor::getPortalIconMap() {
  if (_portalIconMap == nullptr || _portalIconMap->isEmpty())
  {		// set defaults
   makePortalIconMap();
@@ -1960,7 +1961,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
  return _portalIconMap;
 }
 
-/*public*/ void ControlPanelEditor::setDefaultPortalIcons(QHash<QString, NamedIcon*>* map)
+/*public*/ void ControlPanelEditor::setDefaultPortalIcons(QMap<QString, NamedIcon*>* map)
 {
  _portalIconMap = map;
  QVectorIterator<Positionable*> it(  *_contents);

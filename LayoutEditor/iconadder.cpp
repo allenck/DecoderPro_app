@@ -578,10 +578,10 @@ void IconAdder::checkIconSizes()
 /**
 * Returns a new QHash of only the icons selected for display.
 */
-/*public*/ QHash <QString, NamedIcon*>* IconAdder::getIconMap()
+/*public*/ QMap <QString, NamedIcon*>* IconAdder::getIconMap()
 {
  if (log->isDebugEnabled()) log->debug("getIconMap: _allowDeletes= "+_allowDeletes);
- QHash <QString, NamedIcon*>* iconMap = new QHash <QString, NamedIcon*>();
+ QMap <QString, NamedIcon*>* iconMap = new QMap <QString, NamedIcon*>();
  QStringListIterator iter(_iconMap->keys());
  while (iter.hasNext())
  {

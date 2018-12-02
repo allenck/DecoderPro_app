@@ -37,19 +37,19 @@ public slots:
 private:
  Logger* log;
 protected:
-    /*protected*/ QHash<QString, QHash<QString, QString> >* aspectAttributeMap;
+    /*protected*/ QMap<QString, QHash<QString, QString> >* aspectAttributeMap;
             //= new QHash<QString, QHash<QString, QString>>();
 
-    /*protected*/ QHash<QString, QHash<QString, QString> >* aspectImageMap;
+    /*protected*/ QMap<QString, QHash<QString, QString> >* aspectImageMap;
             //= new QHash<QString, QHash<QString, QString>>();
 
     static QMap<QString, DefaultSignalAppearanceMap*>* maps;
             //= new QMap<QString, DefaultSignalAppearanceMap>();
 
-    /*protected*/ QHash<int, QString>* specificMaps;
+    /*protected*/ QMap<int, QString>* specificMaps;
            // = new QHash<int, QString>();
 
-    /*protected*/ QHash<QString, QVector<QString> >* aspectRelationshipMap;
+    /*protected*/ QMap<QString, QVector<QString> >* aspectRelationshipMap;
            // = new QHash<QString, QStringList>();
     /*protected*/ SignalSystem* systemDefn;
 /*protected*/ QMap<QString, QVector<int>* >* table;// = new QMap<QString, QList<int> >();

@@ -1,5 +1,7 @@
 #include "errorhandler.h"
 #include "errormemo.h"
+#include "loggerfactory.h"
+#include "exceptions.h"
 
 ErrorHandler::ErrorHandler(QObject *parent) :
     QObject(parent)
@@ -28,8 +30,13 @@ ErrorHandler::ErrorHandler(QObject *parent) :
     if (e->adapter!=NULL) m += tr(" in adaptor of type ")+e->adapter->metaObject()->className();
      m += " Exception: "+e->exception.getMessage();
 
-//    if (e->exception != NULL) log.log(e->level, m, e->exception);
-//    else log.log(e->level, m);
+//    if (e->exception != Throwable())
+//    {
+//     log->error(m, e->exception);
+//    }
+//    else {
+     log->error(m);
+//    }
 }
 
 /**
@@ -40,6 +47,5 @@ ErrorHandler::ErrorHandler(QObject *parent) :
  */
 /*public*/ void ErrorHandler::done() {}
 
-//    // initialize logging
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ErrorHandler.class.getName());
-//}
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* ErrorHandler::log = LoggerFactory::getLogger("ErrorHandler");

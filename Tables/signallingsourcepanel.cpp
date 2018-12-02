@@ -14,6 +14,7 @@
 #include "jtextfield.h"
 #include "defaultsignalmastlogicmanager.h"
 #include "signallingaction.h"
+#include "joptionpane.h"
 
 //SignallingSourcePanel::SignallingSourcePanel(QWidget *parent) :
 //    QWidget(parent)
@@ -30,7 +31,7 @@
 //    static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.signalling.SignallingBundle");
 
 
-/*public*/ SignallingSourcePanel::SignallingSourcePanel(/*final*/ SignalMast* sourceMast, QWidget* parent) : QWidget(parent)
+/*public*/ SignallingSourcePanel::SignallingSourcePanel(/*final*/ SignalMast* sourceMast, QWidget* parent) : JmriPanel(parent)
 {
  //super();
  fixedSourceMastLabel = new QLabel();
@@ -49,7 +50,9 @@
 
   //InstanceManager::layoutBlockManagerInstance().addPropertyChangeListener(this);
   LayoutBlockManager* lbm = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"));
-  connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(lbm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
 
   setLayout(new /*BorderLayout()*/QVBoxLayout);
 
@@ -80,10 +83,10 @@
   signalAppearanceTable->setSelectionMode(QAbstractItemView::SingleSelection);
   //signalAppearanceTable.setPreferredScrollableViewportSize(new java.awt.Dimension(600,120));
   _AppearanceModel->configureTable(signalAppearanceTable);
-  _SignalAppearanceScrollPane = new QScrollArea();
-  _SignalAppearanceScrollPane->setWidget(signalAppearanceTable);
+//  _SignalAppearanceScrollPane = new QScrollArea();
+//  _SignalAppearanceScrollPane->setWidget(signalAppearanceTable);
   _AppearanceModel->fireTableDataChanged();
-  layout()->addWidget(_SignalAppearanceScrollPane/*, BorderLayout.CENTER)*/);
+  layout()->addWidget(/*_SignalAppearanceScrollPane*/signalAppearanceTable/*, BorderLayout.CENTER)*/);
 
   QWidget* footer = new QWidget();
   footer->setLayout(new QHBoxLayout());
@@ -119,6 +122,20 @@
   layout()->addWidget(footer/*, BorderLayout.SOUTH*/);
 }
 
+/**
+ * Remove references to and from this object, so that it can eventually be
+ * garbage-collected.
+ */
+//@Override
+/*public*/ void SignallingSourcePanel::dispose()
+{
+    //static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->removePropertyChangeListener(this);
+ disconnect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    //InstanceManager.getDefault(jmri.SignalMastLogicManager.class).removePropertyChangeListener(this);
+ disconnect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    JmriPanel::dispose();
+}
+
 void SignallingSourcePanel::on_addLogic_pressed()
 {
  SignallingAction* sigLog = new SignallingAction();
@@ -151,28 +168,35 @@ void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
  signalMastLogicFrame->setMinimumSize(QSize());
  QWidget* panel1 = new QWidget();
  panel1->setLayout(new QHBoxLayout());
- sourceLabel = new JLabel("Discovering Signalmasts");
+ sourceLabel = new QLabel("Discovering Signalmasts");
  panel1->layout()->addWidget(sourceLabel);
- signalMastLogicFrame->layout()->addWidget(sourceLabel);
+ if(signalMastLogicFrame->getContentPane()->layout() == nullptr)
+ {
+  signalMastLogicFrame->getContentPane()->setLayout(new QVBoxLayout());
+ }
+ signalMastLogicFrame->getContentPane()->layout()->addWidget(/*sourceLabel*/panel1);
  signalMastLogicFrame->pack();
  signalMastLogicFrame->setVisible(true);
 
  QList<LayoutEditor*>* layout = PanelMenu::instance()->getLayoutEditorPanelList();
- //InstanceManager::signalMastLogicManagerInstance().addPropertyChangeListener(this);
- DefaultSignalMastLogicManager* smlm = (DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance();
- connect(smlm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- for(int i = 0; i<layout->size(); i++){
-    try{
-        ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->discoverSignallingDest(sourceMast, layout->at(i));
-    } catch (JmriException ex) {
-        signalMastLogicFrame->setVisible(false);
-        //JOptionPane.showMessageDialog(NULL, ex.toString());
-        QMessageBox::critical(NULL, tr("Error"), ex.getMessage());
-    }
+ if(layout->size() > 0)
+ {
+  for(int i = 0; i<layout->size(); i++)
+  {
+   try
+   {
+       ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->discoverSignallingDest(sourceMast, layout->at(i));
+   }
+   catch (JmriException ex) {
+       signalMastLogicFrame->setVisible(false);
+       JOptionPane::showMessageDialog(NULL, ex.toString());
+   }
+  }
  }
- //InstanceManager::signalMastLogicManagerInstance().removePropertyChangeListener(this);
- //SignalMastLogicManager*sml = InstanceManager::signalMastLogicManagerInstance();
- disconnect(smlm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ else {
+   // don't take the trouble of searching
+   JOptionPane::showMessageDialog(nullptr, tr("Cannot search for Pairs as there are\nno Layout Editor panels available."));  // NOI18N
+ }
 }
 
 /*public*/ void SignallingSourcePanel::propertyChange(PropertyChangeEvent* e) // [slot]
@@ -198,11 +222,11 @@ void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
 /*private*/ void SignallingSourcePanel::updateDetails()
 {
  SignalMastLogic* old = sml;
- sml = InstanceManager::signalMastLogicManagerInstance()->getSignalMastLogic(sourceMast);
+ sml = static_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(sourceMast);
  if (sml!=NULL)
  {
-    _signalMastList = ((DefaultSignalMastLogic*)sml)->getDestinationList();
-    _AppearanceModel->updateSignalMastLogic(old, sml);
+  _signalMastList = sml->getDestinationList();
+  _AppearanceModel->updateSignalMastLogic(old, sml);
  }
 }
 
@@ -217,7 +241,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
   {
    //sml.addPropertyChangeListener(this);
    DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)self->sml;
-   connect(sml, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+   connect(sml->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
   }
  }
 
@@ -225,11 +249,11 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
  {
   if(smlOld!=NULL)
    //smlOld.removePropertyChangeListener(this);
-   disconnect(smlOld, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+   disconnect(smlOld->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
 
   if(smlNew!=NULL)
    //smlNew.addPropertyChangeListener(this);
-   disconnect(smlNew, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+   disconnect(smlNew->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
 
    fireTableDataChanged();
  }
@@ -308,7 +332,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
   {
    DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)self->sml;
         //sml.removePropertyChangeListener(this);
-   disconnect(sml, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+   disconnect(sml->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
   }
 }
 
@@ -322,7 +346,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
    if(length==0)
    {
     //((DefaultSignalMastLogic*)self->sml)->removePropertyChangeListener(this);
-    disconnect(((DefaultSignalMastLogic*)self->sml), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    disconnect(((DefaultSignalMastLogic*)self->sml->pcs), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     self->sml = NULL;
    }
         //fireTableDataChanged();
@@ -385,7 +409,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
     return Qt::ItemIsSelectable;
 }
 
-/*protected*/ void SignalMastAppearanceModel::editPair(int /*r*/)
+/*protected*/ void SignalMastAppearanceModel::editPair(int row)
  {
     #if 0
     class WindowMaker implements Runnable {
@@ -402,6 +426,10 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
     WindowMaker t = new WindowMaker(r);
     javax.swing.SwingUtilities.invokeLater(t);
 #endif
+    SignallingAction* sigLog = new SignallingAction();
+    sigLog->setMast(self->sourceMast, self->_signalMastList.at(row));
+    sigLog->actionPerformed(/*NULL*/);
+
 }
 
 /*protected*/ void SignalMastAppearanceModel::deletePair(int r){

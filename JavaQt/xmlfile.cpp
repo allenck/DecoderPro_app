@@ -154,8 +154,8 @@ XmlFile::XmlFile(QObject *parent) :
  */
 /*public*/ QDomElement XmlFile::rootFromInputStream(QDataStream* stream) /*throw (JDOMException)*/
 {
- currFile = ((QFile*)stream->device())->fileName();
- return getRoot(validate, stream);
+ //currFile = ((QFile*)stream->device())->fileName();
+ return getRoot(stream);
 }
 
 /**
@@ -184,6 +184,23 @@ XmlFile::XmlFile(QObject *parent) :
  * Get the root element from an XML document in a stream.
  */
 /*protected*/ QDomElement XmlFile::getRoot(bool verify, QDataStream* stream) /*throw (JDOMException)*/
+{
+ if (log->isDebugEnabled())
+ {
+  log->debug("getRoot from stream");
+ }
+ //SAXBuilder builder = getBuilder(verify);  // argument controls validation
+  //doc = builder.build(new BufferedInputStream(stream));
+ doc = QDomDocument();
+ doc.setContent(stream->device());
+ // find root
+ return doc.documentElement();
+}
+
+/**
+ * Get the root element from an XML document in a stream.
+ */
+/*protected*/ QDomElement XmlFile::getRoot(QDataStream* stream) /*throw (JDOMException)*/
 {
  if (log->isDebugEnabled())
  {

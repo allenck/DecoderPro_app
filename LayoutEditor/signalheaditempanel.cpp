@@ -59,7 +59,7 @@
  return topPanel;
 }
 
-/*protected*/ void SignalHeadItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey)
+/*protected*/ void SignalHeadItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString displayKey)
 {
  TableItemPanel::makeDndIconPanel(iconMap, "SignalHeadStateRed");
 }
@@ -79,9 +79,9 @@
  _showIconsButton->setText(tr("Hide Icons"));
 }
 
-/*protected*/ void SignalHeadItemPanel::addIconsToPanel(QHash<QString, NamedIcon*>* allIconsMap)
+/*protected*/ void SignalHeadItemPanel::addIconsToPanel(QMap<QString, NamedIcon *> *allIconsMap)
 {
- QHash<QString, NamedIcon*>* iconMap = getFilteredIconMap(allIconsMap);
+ QMap<QString, NamedIcon*>* iconMap = getFilteredIconMap(allIconsMap);
  if (iconMap==NULL)
  {
   iconMap = ItemPalette::getIconMap(_itemType, _family);
@@ -126,7 +126,7 @@
 //       hideIcons();
 }
 
-/*protected*/ QHash<QString, NamedIcon*>* SignalHeadItemPanel::getFilteredIconMap(QHash<QString, NamedIcon*>* allIconsMap)
+/*protected*/ QMap<QString, NamedIcon *> *SignalHeadItemPanel::getFilteredIconMap(QMap<QString, NamedIcon*>* allIconsMap)
 {
  if (allIconsMap==NULL)
  {
@@ -150,8 +150,8 @@
   {
    return allIconsMap;
   }
-  QHash<QString, NamedIcon*>* iconMap = new QHash<QString, NamedIcon*>();
-  QHashIterator<QString, NamedIcon*>  it(*allIconsMap);
+  QMap<QString, NamedIcon*>* iconMap = new QMap<QString, NamedIcon*>();
+  QMapIterator<QString, NamedIcon*>  it(*allIconsMap);
   while (it.hasNext())
   {
          //Entry<String, NamedIcon> entry = it.next();
@@ -176,7 +176,7 @@
   return allIconsMap;
 }
 #if 1
-/*protected*/ DragJLabel* SignalHeadItemPanel::getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map) {
+/*protected*/ DragJLabel* SignalHeadItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map) {
     return new SHIconDragJLabel(flavor, map, this);
 }
 
@@ -184,7 +184,7 @@
 //    Hashtable <String, NamedIcon> iconMap;
 
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-/*public*/ SHIconDragJLabel::SHIconDragJLabel(DataFlavor* flavor, QHash <QString, NamedIcon*>* map, SignalHeadItemPanel* self) : DragJLabel(flavor)
+/*public*/ SHIconDragJLabel::SHIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, SignalHeadItemPanel* self) : DragJLabel(flavor)
 {
     //super(flavor);
     iconMap = map;
@@ -211,8 +211,8 @@
 
  SignalHeadIcon* sh = new SignalHeadIcon(self->_editor);
  sh->setSignalHead(bean->getDisplayName());
- QHash <QString, NamedIcon*>* map = self->getFilteredIconMap(iconMap);
- QHashIterator<QString, NamedIcon*> iter(* map);
+ QMap <QString, NamedIcon*>* map = self->getFilteredIconMap(iconMap);
+ QMapIterator<QString, NamedIcon*> iter(* map);
  while (iter.hasNext())
  {
   iter.next();
@@ -233,8 +233,8 @@ QString SHIconDragJLabel::mimeData()
  }
  SignalHeadIcon* icon; _dataFlavor = new DataFlavor(icon = new SignalHeadIcon(self->_editor), "SignalHeadIcon");
  icon->setSignalHead(bean->getDisplayName());
- QHash <QString, NamedIcon*>* map = /*self->getFilteredIconMap*/(iconMap);
- QHashIterator<QString, NamedIcon*> iter(* map);
+ QMap <QString, NamedIcon*>* map = /*self->getFilteredIconMap*/(iconMap);
+ QMapIterator<QString, NamedIcon*> iter(* map);
  while (iter.hasNext())
  {
   iter.next();

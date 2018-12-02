@@ -325,7 +325,7 @@
  catch (/*URISyntax*/Exception ex)
  {
      log->error(tr("Unable to get File* for %1").arg(file.toDisplayString()));
-     throw new JmriException(ex.getMessage()+ex.getLocalizedMessage());
+     throw JmriException(ex.getMessage()+ex.getLocalizedMessage());
  }
  return this->legacy->load(file, registerDeferred);
  // return true; // always return true once legacy support is dropped

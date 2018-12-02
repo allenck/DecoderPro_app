@@ -24,7 +24,7 @@
 /*public*/ TurnoutSignalMastAddPane::TurnoutSignalMastAddPane(QWidget *parent)
  : SignalMastAddPane(parent)
 {
- turnoutMastPanel = new JPanel();
+ turnoutMastPanel = new QWidget();
  turnoutMastPanel->setLayout(new QVBoxLayout());
  resetPreviousState = new QCheckBox(tr("Reset previous Aspect"));
  allowUnLit = new QCheckBox();
@@ -42,22 +42,22 @@
  turnoutUnLitState->addItems(turnoutStates);
  paddedNumber = new DecimalFormat("0000");
 
-    //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+ //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
  QVBoxLayout* thisLayout = new QVBoxLayout(this);
-    // lit/unlit controls
-    QWidget* p = new QWidget();
-    //p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-    QHBoxLayout* pLayout = new QHBoxLayout(p);
-    pLayout->addWidget(new QLabel(tr("This Mast can be unlit") + ": "));
-    pLayout->addWidget(allowUnLit);
-    //p.setAlignmentX(Component.LEFT_ALIGNMENT);
-    thisLayout->addWidget(p);
+ // lit/unlit controls
+ QWidget* p = new QWidget();
+ //p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
+ QHBoxLayout* pLayout = new QHBoxLayout(p);
+ pLayout->addWidget(new QLabel(tr("This Mast can be unlit") + ": "));
+ pLayout->addWidget(allowUnLit);
+ //p.setAlignmentX(Component.LEFT_ALIGNMENT);
+ thisLayout->addWidget(p, 0, Qt::AlignLeft);
 
-    turnoutMastScroll = new QScrollArea(/*turnoutMastPanel*/);
-    turnoutMastScroll->setWidget(turnoutMastPanel);
-    turnoutMastScroll->setWidgetResizable(true);
-    //turnoutMastScroll.setBorder(BorderFactory.createEmptyBorder());
-    thisLayout->addWidget(turnoutMastScroll);
+ turnoutMastScroll = new QScrollArea(/*turnoutMastPanel*/);
+ turnoutMastScroll->setWidget(turnoutMastPanel);
+ turnoutMastScroll->setWidgetResizable(true);
+ //turnoutMastScroll.setBorder(BorderFactory.createEmptyBorder());
+ thisLayout->addWidget(turnoutMastScroll);
 
 }
 
@@ -70,30 +70,37 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ void TurnoutSignalMastAddPane::setAspectNames(/*@Nonnull*/
-        SignalAppearanceMap* map, SignalSystem* sigSystem)
+        SignalAppearanceMap* map, SignalSystem* /*sigSystem*/)
 {
     QStringListIterator aspects = map->getAspects();
     log->debug("setAspectNames(...)");
 
-    turnoutAspect.clear();
-    while (aspects.hasNext()) {
-        QString aspect = aspects.next();
-        TurnoutAspectPanel* aPanel = new TurnoutAspectPanel(aspect, this);
-        turnoutAspect.insert(aspect, aPanel);
-    }
-
     //turnoutMastPanel.removeAll();
-    QObjectList ol = turnoutMastPanel->layout()->children();
+    QObjectList ol = turnoutMastPanel->children();
     foreach(QObject* obj, ol)
     {
      if(qobject_cast<QWidget*>(obj))
+     {
       turnoutMastPanel->layout()->removeWidget(qobject_cast<QWidget*>(obj));
+      if(!qobject_cast<QCheckBox*>(obj))
+       obj->deleteLater();
+     }
     }
+
+    turnoutAspect.clear();
+    while (aspects.hasNext())
+    {
+     QString aspect = aspects.next();
+     TurnoutAspectPanel* aPanel = new TurnoutAspectPanel(aspect, this);
+     turnoutAspect.insert(aspect, aPanel);
+    }
+
     delete turnoutMastPanel->layout();
     turnoutMastPanel->setLayout(new QVBoxLayout());
-    for (QString aspect : turnoutAspect.keys()) {
-        log->trace(tr("   aspect: %1").arg(aspect));
-        turnoutMastPanel->layout()->addWidget(turnoutAspect.value(aspect)->getPanel());
+    for (QString aspect : turnoutAspect.keys())
+    {
+     log->trace(tr("   aspect: %1").arg(aspect));
+     turnoutMastPanel->layout()->addWidget(turnoutAspect.value(aspect)->getPanel());
     }
 
     turnoutMastPanel->layout()->addWidget(resetPreviousState);
@@ -225,12 +232,14 @@
 
 TurnoutAspectPanel::TurnoutAspectPanel(QString aspect, TurnoutSignalMastAddPane* pane) {
  this->pane = pane;
+ setObjectName("TurnoutAspectPanel" + aspect);
  common();
     this->aspect = aspect;
 }
 
-TurnoutAspectPanel::TurnoutAspectPanel(QString turnoutName, int state, TurnoutSignalMastAddPane* pane) {
+TurnoutAspectPanel::TurnoutAspectPanel(QString turnoutName, int /*state*/, TurnoutSignalMastAddPane* pane) {
  this->pane = pane;
+ setObjectName("TurnoutAspectPanel" + turnoutName);
  common();
     if (turnoutName.isEmpty()) {
         return;
@@ -315,6 +324,7 @@ QGroupBox* TurnoutAspectPanel::getPanel()
   panel = new QGroupBox();
   //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
   QVBoxLayout* panelLayout = new QVBoxLayout(panel);
+  panel->resize(300,200);
   QWidget* turnDetails = new QWidget();
   QHBoxLayout* turnDetailsLayout = new QHBoxLayout(turnDetails);
   turnDetailsLayout->addWidget(beanBox);

@@ -65,7 +65,6 @@ private:
     Logger* log;
     /*private*/ static SignalSpeedMap* _speedMap;// = SignalSpeedMap.getMap();
     QList<SignalMastLogic*> signalMastLogic;// = new QList<SignalMastLogic*>();
-    //PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     long signalLogicDelay;// = 500L;
     bool runWhenStablised;// = false;
     QMutex mutex;
@@ -75,6 +74,7 @@ protected:
     /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
     /*protected*/ PropertyBlockManagerListener* propertyBlockManagerListener;// = new PropertyBlockManagerListener();
  friend class PropertyBlockManagerListener;
+ friend class SignallingSourcePanel;
 };
 Q_DECLARE_METATYPE(DefaultSignalMastLogicManager)
 

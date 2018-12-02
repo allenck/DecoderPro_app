@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultMemoryManagerXml : public AbstractMemo
 {
  Q_OBJECT
 public:
- explicit DefaultMemoryManagerXml(QObject *parent = 0);
+ Q_INVOKABLE explicit DefaultMemoryManagerXml(QObject *parent = 0);
  ~DefaultMemoryManagerXml() {}
  DefaultMemoryManagerXml(const DefaultMemoryManagerXml&) : AbstractMemoryManagerConfigXML() {}
  /*public*/ void setStoreElementClass(QDomElement memories);

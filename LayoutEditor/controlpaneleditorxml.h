@@ -9,7 +9,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT ControlPanelEditorXml : public AbstractXmlAda
 {
     Q_OBJECT
 public:
-    explicit ControlPanelEditorXml(QObject *parent = 0);
+    Q_INVOKABLE explicit ControlPanelEditorXml(QObject *parent = 0);
     ~ControlPanelEditorXml();
  ControlPanelEditorXml(const ControlPanelEditorXml&) :AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o) ;

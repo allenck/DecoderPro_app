@@ -10,7 +10,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIconXml : public PositionableLabelX
 public:
     //explicit SignalHeadIconXml(QObject *parent = 0);
     static /*final*/ QMap<QString,QString> _nameMap;// = new QMap<QString,QString>();
-    /*public*/ SignalHeadIconXml(QObject *parent = 0);
+    Q_INVOKABLE /*public*/ SignalHeadIconXml(QObject *parent = 0);
     ~SignalHeadIconXml() {}
     SignalHeadIconXml(const SignalHeadIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

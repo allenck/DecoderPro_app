@@ -9,7 +9,7 @@ class DoubleTurnoutSignalHeadXml : public AbstractNamedBeanManagerConfigXML
     Q_OBJECT
 public:
     //explicit DoubleTurnoutSignalHeadXml(QObject *parent = 0);
-    /*public*/ DoubleTurnoutSignalHeadXml(QObject* parent = 0);
+    Q_INVOKABLE /*public*/ DoubleTurnoutSignalHeadXml(QObject* parent = 0);
  ~DoubleTurnoutSignalHeadXml() {}
  DoubleTurnoutSignalHeadXml(const DoubleTurnoutSignalHeadXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);

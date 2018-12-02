@@ -51,7 +51,7 @@ void DropJLabel::init(NamedIcon* icon)
  _update = false;
 
 }
-DropJLabel::DropJLabel (NamedIcon* icon,  QHash <QString, NamedIcon*>* iconMap, bool update,QWidget *parent) : QLabel(/*icon,*/ parent)
+DropJLabel::DropJLabel (NamedIcon* icon,  QMap<QString, NamedIcon *> *iconMap, bool update, QWidget *parent) : QLabel(/*icon,*/ parent)
 {
  log = new Logger("DropJLabel");
  log->setDebugEnabled(true);

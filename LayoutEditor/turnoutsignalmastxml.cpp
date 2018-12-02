@@ -93,17 +93,40 @@ TurnoutSignalMastXml::TurnoutSignalMastXml(QObject *parent) :
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool TurnoutSignalMastXml::load(QDomElement element) throw (Exception)
+/*public*/ bool TurnoutSignalMastXml::load(QDomElement shared, QDomElement /*perNode*/)
 {
- QString sys = getSystemName(element);
+ QString sys = getSystemName(shared);
  TurnoutSignalMast* m = new TurnoutSignalMast(sys);
 
- if (getUserName(element) != NULL)
-  m->setUserName(getUserName(element));
+ if (getUserName(shared) != NULL)
+  m->setUserName(getUserName(shared));
 
- loadCommon(m, element);
+ loadCommon(m, shared);
 
- QDomNodeList list = element.elementsByTagName("aspect");
+ if (shared.firstChildElement("unlit") != QDomElement())
+ {
+  QDomElement unlit = shared.firstChildElement("unlit");
+  if (unlit.attribute("allowed") != "")
+  {
+   if (unlit.attribute("allowed") == ("no"))
+   {
+    m->setAllowUnLit(false);
+   }
+   else
+   {
+    m->setAllowUnLit(true);
+    QString turnout = unlit.firstChildElement("turnout").text();
+    QString turnoutState = unlit.firstChildElement("turnoutstate").text();
+    int turnState = Turnout::THROWN;
+    if (turnoutState == ("closed")) {
+        turnState = Turnout::CLOSED;
+    }
+       m->setUnLitTurnout(turnout, turnState);
+   }
+  }
+ }
+
+ QDomNodeList list = shared.elementsByTagName("aspect");
  for (int i = 0; i < list.size(); i++)
  {
   QDomElement e = list.at(i).toElement();
@@ -115,7 +138,7 @@ TurnoutSignalMastXml::TurnoutSignalMastXml(QObject *parent) :
    turnState = Turnout::CLOSED;
   m->setTurnout(aspect, turnout, turnState);
  }
- QDomElement e = element.firstChildElement("disabledAspects");
+ QDomElement e = shared.firstChildElement("disabledAspects");
  if(!e.isNull())
  {
   list = e.elementsByTagName("disabledAspect");
@@ -125,13 +148,13 @@ TurnoutSignalMastXml::TurnoutSignalMastXml(QObject *parent) :
    m->setAspectDisabled(aspect.text());
   }
  }
- if (( !element.firstChildElement("resetPreviousStates").isNull()) &&
-        element.firstChildElement("resetPreviousStates").text()==("yes") )
+ if (( !shared.firstChildElement("resetPreviousStates").isNull()) &&
+        shared.firstChildElement("resetPreviousStates").text()==("yes") )
  {
   m->resetPreviousStates(true);
  }
 
- ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->Register(m);
+ static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->Register(m);
 
  return true;
 }

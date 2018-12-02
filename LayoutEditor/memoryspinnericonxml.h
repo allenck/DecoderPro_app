@@ -8,7 +8,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT MemorySpinnerIconXml : public PositionableLab
 {
     Q_OBJECT
 public:
-    explicit MemorySpinnerIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit MemorySpinnerIconXml(QObject *parent = 0);
  ~MemorySpinnerIconXml() {}
  MemorySpinnerIconXml(const MemorySpinnerIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

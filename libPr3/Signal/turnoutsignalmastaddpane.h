@@ -66,7 +66,7 @@ Q_OBJECT
     TurnoutSignalMastAddPane* pane;
 public:
     TurnoutAspectPanel(QString aspect, TurnoutSignalMastAddPane* pane);
-    TurnoutAspectPanel(QString turnoutName, int state, TurnoutSignalMastAddPane* pane);
+    TurnoutAspectPanel(QString turnoutName, int, TurnoutSignalMastAddPane* pane);
 
 private:
     void setReference(QString reference);

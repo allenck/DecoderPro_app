@@ -104,7 +104,7 @@ void AnalogClock2Display::common()
  _icon = true;
  _text = false;
  _namedIcon = clockIcon;
- _iconMap = new QHash <QString, NamedIcon*>();
+ _iconMap = new QMap <QString, NamedIcon*>();
 
     // request callback to update time
 //    clock->addMinuteChangeListener(new PropertyChangeListener()

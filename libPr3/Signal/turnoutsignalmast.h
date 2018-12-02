@@ -73,7 +73,7 @@ public slots:
 private:
     static int lastRef;// = 0;
  Logger* log;
- QHash<QString, TurnoutAspect*> turnouts;// =  QHash<QString, TurnoutAspect>();
+ QMap<QString, TurnoutAspect*> turnouts;// =  QHash<QString, TurnoutAspect>();
 
  bool _resetPreviousStates;// = false;
  TurnoutAspect* unLit = nullptr;

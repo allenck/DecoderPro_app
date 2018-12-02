@@ -39,12 +39,12 @@ private:
  Logger log;
  void common(Editor* editor, Positionable* parent);
 protected:
- /*protected*/ QHash<QString, NamedIcon*>* _iconMap;
+ /*protected*/ QMap<QString, NamedIcon*>* _iconMap;
  /*protected*/ QString  _iconFamily;
  /*protected*/ double _scale;// = 1.0;			// getScale, come from net result found in one of the icons
  /*protected*/ int _rotate;// = 0;
  /*protected*/ void rotateOrthogonal();
- /*protected*/ static QHash<QString, NamedIcon*>* cloneMap(QHash<QString, NamedIcon*>* map, PositionableLabel* pos);
+ /*protected*/ static QMap<QString, NamedIcon*>* cloneMap(QMap<QString, NamedIcon*>* map, PositionableLabel* pos);
  friend class PortalItemPanel;
 };
 

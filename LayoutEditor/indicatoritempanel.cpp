@@ -45,7 +45,7 @@
 * Init for update of existing track block
 * _bottom3Panel has "Update Panel" button put into _bottom1Panel
 */
-/*public*/ void IndicatorItemPanel::init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap) {
+/*public*/ void IndicatorItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap) {
     FamilyItemPanel::init(doneAction, iconMap);
     _detectPanel= new DetectionPanel(this);
     //((BorderLayout*)layout())->addWidget(_detectPanel, BorderLayout::North);
@@ -67,7 +67,7 @@
     }
 }
 
-/*protected*/ void IndicatorItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString /*displayKey*/) {
+/*protected*/ void IndicatorItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString /*displayKey*/) {
     FamilyItemPanel::makeDndIconPanel(iconMap, "ClearTrack");
 }
 
@@ -111,7 +111,7 @@ public void setErrSensor(QString name) {
 
 /*******************************************************/
 
-/*protected*/ DragJLabel* IndicatorItemPanel::getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map) {
+/*protected*/ DragJLabel* IndicatorItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map) {
     return new IndicatorDragJLabel(flavor, map, this);
 }
 
@@ -119,7 +119,7 @@ public void setErrSensor(QString name) {
 //    Hashtable <QString, NamedIcon> iconMap;
 
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-/*public*/ IndicatorDragJLabel::IndicatorDragJLabel(DataFlavor* flavor, QHash<QString, NamedIcon*>* map, IndicatorItemPanel* self) : DragJLabel(flavor, self)
+/*public*/ IndicatorDragJLabel::IndicatorDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, IndicatorItemPanel* self) : DragJLabel(flavor, self)
 {
  //super(flavor);
  iconMap = map;
@@ -163,7 +163,7 @@ QString IndicatorDragJLabel::mimeData()
  icon->setShowTrain(self->getShowTrainName());
  icon->setFamily(self->getFamilyName());
  icon->setLevel(Editor::TURNOUTS);
- QHashIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
+ QMapIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
  while (iter.hasNext())
  {
    iter.next();

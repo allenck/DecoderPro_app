@@ -415,10 +415,17 @@ void RosterFrame::updateInfo()
 }
 void RosterFrame::on_btnLabelsMedia_clicked()
 {
+#if 0
  if(rosterEntry == NULL) return;
  FunctionLabelsMediaDlg* dlg = new FunctionLabelsMediaDlg(rosterEntry);
  dlg->show();
+#else
+ log->debug("Open programmer pressed");
+ ui->edit->setChecked(true);
+ startProgrammer(nullptr, rosterEntry, "dp3" + File::separator + "MediaPane");
+#endif
 }
+
 void RosterFrame::on_btnThrottle_clicked()
 {
  QList<Editor*>* list = PanelMenu::instance()->getEditorPanelList();
@@ -1986,9 +1993,8 @@ bool RosterFrame::checkIfEntrySelected()
   return;
  }
  if (!checkIfEntrySelected())
- {
   return;
- }
+
  //try
  {
   setCursor(Qt::WaitCursor);
@@ -1997,7 +2003,7 @@ bool RosterFrame::checkIfEntrySelected()
   JFrame* progFrame = NULL;
   if (ui->edit->isChecked())
   {
-   progFrame = new PaneProgFrame(decoderFile, re, title, "programmers" + File::separator + filename + ".xml", NULL, false);
+   progFrame = new PaneProgFrame(decoderFile, re, title, FileUtil::getProgramPath()+ File::separator+ "xml" + File::separator + "programmers" + File::separator + filename + ".xml", NULL, false);
 //         {
 //             /**
 //              *
@@ -2012,7 +2018,7 @@ bool RosterFrame::checkIfEntrySelected()
   }
   else if (ui->service->isChecked())
   {
-   progFrame = new PaneServiceProgFrame(decoderFile, re, title, "programmers" + File::separator + filename + ".xml", modePanel->getProgrammer());
+   progFrame = new PaneServiceProgFrame(decoderFile, re, title, FileUtil::getProgramPath()+ File::separator+ "xml" + File::separator + "programmers" + File::separator + filename + ".xml", modePanel->getProgrammer());
 //   {
 
 //       /**

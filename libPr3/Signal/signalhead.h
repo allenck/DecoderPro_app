@@ -94,7 +94,7 @@ public:
         FLASHGREEN  = 0x20,
         LUNAR       = 0x40,
         FLASHLUNAR  = 0x80,
-        HELD 		= 0x0100
+        HELD 	     	= 0x0100
       };
 
 
@@ -102,11 +102,19 @@ public:
          * Appearance is a bound parameter.
          */
         virtual int  getAppearance() {return 0;}
-        virtual void setAppearance(int /*newAppearance*/) {}
-      virtual QString getAppearanceName() {return "";}
-        virtual QString getAppearanceName(int /*appearance*/) {return "";}
 
-        /**
+      /**
+       * Set the Signal Head Appearance.
+       *
+       * @param newAppearance integer representing a valid Appearance for this head
+       */
+      /*public*/ virtual void setAppearance(int /*newAppearance*/) {}
+
+      /*public*/ virtual QString getAppearanceName() {return "";}
+
+      /*public*/ virtual QString getAppearanceName(int /*appearance*/) {return "";}
+
+      /**
          * Lit is a bound parameter. It controls
          * whether the signal head's lamps are lit or left dark.
          */
@@ -122,7 +130,7 @@ public:
         virtual void setHeld(bool /*newHeld*/) {}
 
         virtual QVector<int> getValidStates() {return QVector<int>();}
-      virtual QVector<QString> getValidStateNames() {return QVector<QString>();}
+        virtual QVector<QString> getValidStateNames() {return QVector<QString>();}
 
 signals:
     

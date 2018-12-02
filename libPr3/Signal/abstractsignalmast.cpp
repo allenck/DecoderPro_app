@@ -125,7 +125,7 @@ void AbstractSignalMast::configureSignalSystemDefinition(QString name) {
     systemDefn = static_cast<SignalSystemManager*>( InstanceManager::getDefault("SignalSystemManager"))->getSystem(name);
     if (systemDefn == NULL) {
         log->error("Did not find signal definition: "+name);
-//        throw  IllegalArgumentException("Signal definition not found: "+name);
+        throw  IllegalArgumentException("Signal definition not found: "+name);
     }
 }
 

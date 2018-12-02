@@ -19,21 +19,21 @@ private:
     Logger* log;
 protected:
     /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor);
-    /*protected*/ void makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey);
-    /*protected*/ void addIconsToPanel(QHash<QString, NamedIcon*>* allIconsMap);
-    /*protected*/ QHash<QString, NamedIcon*>* getFilteredIconMap(QHash<QString, NamedIcon*>* allIconsMap);
+    /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
+    /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon*>* allIconsMap);
+    /*protected*/ QMap<QString, NamedIcon*>* getFilteredIconMap(QMap<QString, NamedIcon *> *allIconsMap);
 //    /*protected*/ QLabel* getDragger(DataFlavor flavor, QHash<QString, NamedIcon*>* map);
     /*protected*/ void showIcons();
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QHash<QString, NamedIcon*>* map);
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map);
 friend class SHIconDragJLabel;
 };
 /*protected*/ class SHIconDragJLabel : public DragJLabel {
-    QHash <QString, NamedIcon*>* iconMap;
+    QMap <QString, NamedIcon*>* iconMap;
     Logger* log;
     SignalHeadItemPanel* self;
  public:
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-    /*public*/ SHIconDragJLabel(DataFlavor* flavor, QHash <QString, NamedIcon*>* map, SignalHeadItemPanel* self);
+    /*public*/ SHIconDragJLabel(DataFlavor* flavor, QMap <QString, NamedIcon*>* map, SignalHeadItemPanel* self);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
     QString mimeData();
 };

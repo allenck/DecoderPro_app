@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PositionableEllipseXml : public PositionableS
 {
     Q_OBJECT
 public:
-    explicit PositionableEllipseXml(QObject *parent = 0);
+    Q_INVOKABLE explicit PositionableEllipseXml(QObject *parent = 0);
  ~PositionableEllipseXml() {}
  PositionableEllipseXml(const PositionableEllipseXml&) :PositionableShapeXml() {}
     /*public*/ QDomElement store(QObject* o);

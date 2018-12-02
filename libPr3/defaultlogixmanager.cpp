@@ -4,6 +4,11 @@
 #include "logix.h"
 #include "defaultlogix.h"
 #include "instancemanager.h"
+#include "entryexitpairs.h"
+#include "oblockmanager.h"
+#include "warrantmanager.h"
+#include "signalheadmanager.h"
+#include "signalmastmanager.h"
 
 /*static*/ DefaultLogixManager* DefaultLogixManager::_instance = nullptr;
 
@@ -16,19 +21,29 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  log = new Logger("DefaultLogixManager");
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
-#if 0
- jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
-         jmri.InstanceManager.sensorManagerInstance().addVetoableChangeListener(this);
-         jmri.InstanceManager.memoryManagerInstance().addVetoableChangeListener(this);
-         jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
-         jmri.InstanceManager.getDefault(jmri.SignalMastManager.class).addVetoableChangeListener(this);
-         jmri.InstanceManager.getDefault(jmri.BlockManager.class).addVetoableChangeListener(this);
-         jmri.InstanceManager.lightManagerInstance().addVetoableChangeListener(this);
-         jmri.InstanceManager.getDefault(jmri.ConditionalManager.class).addVetoableChangeListener(this);
-         InstanceManager.getDefault(jmri.jmrit.logix.WarrantManager.class).addVetoableChangeListener(this);
-         InstanceManager.getDefault(jmri.jmrit.logix.OBlockManager.class).addVetoableChangeListener(this);
-         InstanceManager.getDefault(jmri.jmrit.entryexit.EntryExitPairs.class).addVetoableChangeListener(this);
-#endif
+
+ //jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
+ connect(InstanceManager::turnoutManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //jmri.InstanceManager.sensorManagerInstance().addVetoableChangeListener(this);
+ connect(InstanceManager::sensorManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //jmri.InstanceManager.memoryManagerInstance().addVetoableChangeListener(this);
+ connect(InstanceManager::memoryManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
+ connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //jmri.InstanceManager.getDefault(jmri.SignalMastManager.class).addVetoableChangeListener(this);
+ connect(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //jmri.InstanceManager.getDefault(jmri.BlockManager.class).addVetoableChangeListener(this);
+ connect(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //jmri.InstanceManager.lightManagerInstance().addVetoableChangeListener(this);
+ connect(InstanceManager::lightManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //jmri.InstanceManager.getDefault(jmri.ConditionalManager.class).addVetoableChangeListener(this);
+ connect(static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //InstanceManager.getDefault(jmri.jmrit.logix.WarrantManager.class).addVetoableChangeListener(this);
+ connect(static_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //InstanceManager.getDefault(jmri.jmrit.logix.OBlockManager.class).addVetoableChangeListener(this);
+ connect(static_cast<OBlockManager*>(InstanceManager::getDefault("OBlockManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ //InstanceManager.getDefault(jmri.jmrit.entryexit.EntryExitPairs.class).addVetoableChangeListener(this);
+ connect(static_cast<EntryExitPairs*>(InstanceManager::getDefault("EntryExitPairs")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
 }
 /**
  * Basic Implementation of a LogixManager.

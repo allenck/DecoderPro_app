@@ -17,7 +17,8 @@
     /*public*/ SwitchboardEditorXml::SwitchboardEditorXml(QObject *parent )
  : AbstractXmlAdapter (parent)
 {
-    }
+}
+
 /**
  * Default implementation for storing the contents of a SwitchboardEditor.
  * Storing of beanswitch properties for use on web panel
@@ -79,7 +80,8 @@
  * @return true if successful
  */
 //@Override
-/*public*/ bool SwitchboardEditorXml::load(QDomElement shared, QDomElement /*perNode*/) {
+/*public*/ bool SwitchboardEditorXml::load(QDomElement shared, QDomElement perNode) {
+ Q_UNUSED(perNode);
     bool result = true;
     // find coordinates
     int x = 0;
@@ -275,7 +277,7 @@
 }
 
 //@Override
-/*public*/ int loadOrder() {
+/*public*/ int SwitchboardEditorXml::loadOrder() {
     return Manager::PANELFILES;
 }
 

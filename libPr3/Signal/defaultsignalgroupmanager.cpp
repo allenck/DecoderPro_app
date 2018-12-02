@@ -11,7 +11,7 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(QObject *parent) :
  setProperty("JavaClassName", "jmri.managers.DefaultSignalGroupManager");
 
  log = new Logger("DefaultSignalGroupManager");
- //registerSelf();
+ registerSelf();
 }
 /**
  * Default implementation of a SignalGroupManager.

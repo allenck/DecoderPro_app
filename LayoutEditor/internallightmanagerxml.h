@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT InternalLightManagerXml : public AbstractLigh
 {
  Q_OBJECT
 public:
- explicit InternalLightManagerXml(QObject *parent = 0);
+ Q_INVOKABLE explicit InternalLightManagerXml(QObject *parent = 0);
  ~InternalLightManagerXml() {}
  InternalLightManagerXml(const InternalLightManagerXml&) : AbstractLightManagerConfigXML() {}
  /*public*/ void setStoreElementClass(QDomElement lights);

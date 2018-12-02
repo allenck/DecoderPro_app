@@ -7,7 +7,7 @@ class LIBPR3SHARED_EXPORT LocobufferConnectionConfigXml : public AbstractSerialC
 {
     Q_OBJECT
 public:
-    explicit LocobufferConnectionConfigXml(QObject *parent = 0);
+    Q_INVOKABLE explicit LocobufferConnectionConfigXml(QObject *parent = 0);
     ~LocobufferConnectionConfigXml() {}
  LocobufferConnectionConfigXml(const LocobufferConnectionConfigXml&) : AbstractSerialConnectionConfigXml() {}
 signals:

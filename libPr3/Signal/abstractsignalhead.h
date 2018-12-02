@@ -22,12 +22,9 @@ public:
     /*public*/ static QVector<int> getDefaultValidStates();
     /*public*/ static const QVector<QString> getDefaultValidStateNames();
     /*public*/ static const QString getDefaultStateName(int appearance);
-    /*public*/ virtual QVector<int> getValidStates();
-    /*public*/ virtual QVector<QString> getValidStateNames();
-    virtual void setAppearance(int appearance);
-    virtual void setHeld(bool b) {mHeld = b;}
-    virtual void setLit(bool b) {mLit = b;}
- /*public*/ QString getBeanType();
+    /*public*/ QVector<int> getValidStates();
+    /*public*/ QVector<QString> getValidStateNames();
+    /*public*/ QString getBeanType();
 
 signals:
     //void propertyChange(QString propertyName, QVariant oldValue, QVariant newValue);

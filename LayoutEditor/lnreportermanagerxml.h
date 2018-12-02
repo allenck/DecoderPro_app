@@ -5,8 +5,9 @@
 
 class LIBLAYOUTEDITORSHARED_EXPORT LnReporterManagerXml : public AbstractReporterManagerConfigXML
 {
+ Q_OBJECT
 public:
-    LnReporterManagerXml(QObject* parent = 0);
+    Q_INVOKABLE LnReporterManagerXml(QObject* parent = 0);
     ~LnReporterManagerXml() {}
     LnReporterManagerXml(const LnReporterManagerXml&) : AbstractReporterManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement sensors);

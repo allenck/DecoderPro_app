@@ -32,8 +32,8 @@ public:
     /*public*/ void resetEditor();
     /*public*/ QList <Positionable*>* getClipGroup();
     /*public*/ void setTitle();
-    /*public*/ void setDefaultPortalIcons(QHash<QString, NamedIcon*>* map);
-    /*public*/ QHash<QString, NamedIcon*>* getPortalIconMap();
+    /*public*/ void setDefaultPortalIcons(QMap<QString, NamedIcon *> *map);
+    /*public*/ QMap<QString, NamedIcon *> *getPortalIconMap();
     /*public*/ bool getShapeSelect() ;
     /*public*/ void setShapeSelect(bool set) ;
     /*public*/ ShapeDrawer* getShapeDrawer();
@@ -42,6 +42,7 @@ public:
  /*public*/ void mouseExited(QGraphicsSceneMouseEvent * event);
  /*public*/ void keyPressEvent(QKeyEvent* e);
  /*public*/ void keyReleaseEvent(QKeyEvent* e);
+ /*public*/ void setNextLocation(Positionable* obj);
 
 signals:
     void selectionRect(QRectF, QGraphicsSceneMouseEvent*);
@@ -85,7 +86,7 @@ private:
  int _fitX;// = 0;
  int _fitY;// = 0;
  /*private*/ void makeFileMenu();
- /*private*/ QHash<QString, NamedIcon*>* _portalIconMap;
+ /*private*/ QMap<QString, NamedIcon*>* _portalIconMap;
  /*private*/ void makePortalIconMap();
  /*private*/ bool _regular;// = true;	// true when TO_ARROW shows entry into ToBlock
  /*private*/ bool _hide;// = false;	// true when arrow should NOT show entry into ToBlock
@@ -153,6 +154,7 @@ protected:
 /*protected*/ NamedIcon* getPortalIcon(QString name);
 /*protected*/ void paintTargetPanel(QGraphicsScene* g);
 /*protected*/ void setSecondSelectionGroup(QList<Positionable*>* list);
+/*protected*/ void targetWindowClosingEvent(QCloseEvent* e);
 
 
 friend class CircuitBuilder;

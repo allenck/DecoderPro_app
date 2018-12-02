@@ -8,6 +8,7 @@
 #include <QScrollArea>
 #include "QAbstractTableModel"
 #include "jtable.h"
+#include "jmripanel.h"
 
 class SignalMastLogic;
 class SignalMast;
@@ -15,12 +16,13 @@ class JmriJFrame;
 class SignalMastAppearanceModel;
 class PropertyChangeEvent;
 
-class SignallingSourcePanel : public QWidget
+class SignallingSourcePanel : public JmriPanel
 {
     Q_OBJECT
 public:
     //explicit SignallingSourcePanel(QWidget *parent = 0);
     /*public*/ SignallingSourcePanel(/*final*/ SignalMast* sourceMast, QWidget* parent = 0);
+ /*public*/ void dispose();
 
 signals:
 
@@ -38,7 +40,7 @@ private:
     QPushButton* discoverPairs;// = new QPushButton(rb.getString("ButtonDiscover"));
 
     SignalMastAppearanceModel* _AppearanceModel;
-    QScrollArea* _SignalAppearanceScrollPane;
+    //QScrollArea* _SignalAppearanceScrollPane;
     JmriJFrame* signalMastLogicFrame;// = NULL;
     QLabel* sourceLabel;// = new JLabel();
     /*private*/ QList <SignalMast*> _signalMastList;

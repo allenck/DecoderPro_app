@@ -19,6 +19,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
  _tsys = new QMap<QString, CatalogTree*>();
  _tuser = new QMap<QString, CatalogTree*>();
  _indexChanged= false;
+ registerSelf();
 }
 
 /**

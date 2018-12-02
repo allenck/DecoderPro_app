@@ -11,7 +11,7 @@ class IndicatorTurnoutIconXml : public PositionableLabelXml
 {
     Q_OBJECT
 public:
-    explicit IndicatorTurnoutIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit IndicatorTurnoutIconXml(QObject *parent = 0);
  ~IndicatorTurnoutIconXml() {}
  IndicatorTurnoutIconXml(const IndicatorTurnoutIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TurnoutIconXml : public PositionableLabelXml
 {
     Q_OBJECT
 public:
-    explicit TurnoutIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit TurnoutIconXml(QObject *parent = 0);
  ~TurnoutIconXml() {}
  TurnoutIconXml(const TurnoutIconXml&) : PositionableLabelXml() {}
     static /*final*/ QMap<QString,QString>* _nameMap;// = new QMap<QString,QString>();

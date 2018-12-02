@@ -100,11 +100,11 @@ tr("Flashing Lunar");
  */
 /*public*/ void AbstractSignalHead::setState(int s) { setAppearance(s); }
 
-void AbstractSignalHead::setAppearance(int appearance)
-{
- firePropertyChange("appearance", QVariant(), QVariant(appearance));
- //emit propertyChange(new PropertyChangeEvent((QObject*)this,"appearance", QVariant(), QVariant(appearance)));
-}
+//void AbstractSignalHead::setAppearance(int appearance)
+//{
+// firePropertyChange("appearance", QVariant(), QVariant(appearance));
+// //emit propertyChange(new PropertyChangeEvent((QObject*)this,"appearance", QVariant(), QVariant(appearance)));
+//}
 
 /**
  * Implement a shorter name for getAppearance.

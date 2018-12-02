@@ -78,7 +78,7 @@ public:
       * @throws Exception when a error prevents creating the objects as as
       *                   required by the input XML.
       */
-     /*public*/ virtual void load(QDomElement /*shared*/, QDomElement /*perNode*/, QObject* /*o*/) {} //throws Exception;
+ /*public*/ virtual void load(QDomElement /*shared*/, QDomElement /*perNode*/, QObject* /*o*/) throw (JmriConfigureXmlException) {}
 
  /**
      * Store the

@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LIBLAYOUTEDITORSHARED_EXPORT PositionableRect
 {
     Q_OBJECT
 public:
-    explicit PositionableRectangleXml(QObject *parent = 0);
+    Q_INVOKABLE explicit PositionableRectangleXml(QObject *parent = 0);
  ~PositionableRectangleXml() {}
  PositionableRectangleXml(const PositionableRectangleXml&) : PositionableShapeXml() {}
     /*public*/ QDomElement store(QObject* o);

@@ -814,7 +814,8 @@ public URL getURL(URI uri) {
       //throw FileNotFoundException(path);
       QString msg = tr("can't convert '%1' to '%2'").arg(path_save).arg(path);
       log->error(msg);
-      throw NullPointerException(msg);  // throw IOException??
+      //throw NullPointerException(msg);  // throw IOException??
+      throw IOException(msg);
      }
      return (new File(path.replace(FileUtil::SEPARATOR, File::separatorChar)))->getCanonicalPath();
  } catch (IOException ex) {
@@ -1054,7 +1055,12 @@ public URL getURL(URI uri) {
  {
   foreach (File* file, source->listFiles())
   {
-   FileUtil::copy(file, new File(dest, file->getName()));
+   if (dest->exists())
+   {
+       QFile(dest->path).remove();
+   }
+   //FileUtil::copy(file, new File(dest, file->getName()));
+   QFile::copy(file->path, dest->path);
   }
  }
  else

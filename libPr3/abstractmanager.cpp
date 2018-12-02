@@ -52,16 +52,11 @@ AbstractManager::AbstractManager(QObject *parent)
 {
   log->debug(tr("registerSelf for config of type %1").arg(this->metaObject()->className()));
   ConfigureManager* cm;
-  try
-  {
-   cm = (ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager");
-  }
-  catch(ClassNotFoundException ex) { cm = NULL;}
+  cm = (ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager");
   if (cm != NULL) {
       cm->registerConfig(this, getXMLOrder());
       log->debug(tr("registering for config of type %1").arg(this->metaObject()->className()));
   }
-
 }
 /*public*/ QString AbstractManager::normalizeSystemName(/*@Nonnull*/ QString inputName) {return "";} //throws NamedBean.BadSystemNameException
 

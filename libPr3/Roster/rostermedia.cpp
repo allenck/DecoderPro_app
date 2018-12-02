@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDragEnterEvent>
 
 RosterMediaPane::RosterMediaPane(RosterEntry* re, QWidget *parent) :
     QWidget(parent),
@@ -15,6 +16,8 @@ RosterMediaPane::RosterMediaPane(RosterEntry* re, QWidget *parent) :
  this->re = re;
  log = new Logger("RosterMedia");
  ui->lblMainImage->setContextMenuPolicy(Qt::CustomContextMenu);
+ ui->lblMainImage->setAcceptDrops(true);
+ ui->lblIconImage->setAcceptDrops(true);
 
  // tab 2
  QImage img(re->getImagePath());
@@ -115,10 +118,13 @@ void RosterMediaPane::dropImage(QString fileName)
  connect(ui->btnRemoveImage, SIGNAL(clicked()), this, SLOT(on_removeAction_triggered()));
 
  QFileInfo info(fileName);
- if(info.absolutePath()+QDir::separator() != FileUtil::getUserResourcePath())
+ //if(info.absolutePath()+QDir::separator() != FileUtil::getUserResourcePath())
+ if(info.absolutePath()+QDir::separator() != LocoFile::getFileLocation())
  {
-  log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(FileUtil::getUserResourcePath()));
-  if(QFile::exists(FileUtil::getUserResourcePath()+ info.fileName()))
+  //  log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(FileUtil::getUserResourcePath()));
+  log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(LocoFile::getFileLocation()));
+  //if(QFile::exists(FileUtil::getUserResourcePath()+ info.fileName()))
+  if(QFile::exists(LocoFile::getFileLocation() + info.fileName()))
   {
    switch(QMessageBox::question(this, tr("File already exists"), tr("The file already exists. Do you want to replace it?"), QMessageBox::Yes | QMessageBox::No))
    {
@@ -129,20 +135,25 @@ void RosterMediaPane::dropImage(QString fileName)
     return;
    }
   }
-  QFile::copy(fileName, FileUtil::getUserResourcePath()+ info.fileName());
-  fileName= FileUtil::getUserResourcePath()+ info.fileName();
+  //QFile::copy(fileName, FileUtil::getUserResourcePath()+ info.fileName());
+  QFile::copy(fileName, LocoFile::getFileLocation()+ info.fileName());
+  //fileName= FileUtil::getUserResourcePath()+ info.fileName();
+  this->fileName= LocoFile::getFileLocation()+ info.fileName();
+  re->setImagePath(this->fileName);
  }
 }
+
 void RosterMediaPane::dropIcon(QString fileName)
 {
  ui->btnRemoveIcon->setVisible(true);
  connect(ui->btnRemoveIcon, SIGNAL(clicked()), this, SLOT(on_removeIcon_triggered()));
 
  QFileInfo info(fileName);
- if(info.absolutePath()+QDir::separator() != FileUtil::getUserResourcePath())
+ //if(info.absolutePath()+QDir::separator() != FileUtil::getUserResourcePath())
+ if(info.absolutePath()+QDir::separator() != LocoFile::getFileLocation())
  {
-  log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(FileUtil::getUserResourcePath()));
-  if(QFile::exists(FileUtil::getUserResourcePath()+ info.fileName()))
+//  log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(FileUtil::getUserResourcePath()));
+  log->debug(tr("Must move image from '%1' to '%2'").arg(info.absolutePath()).arg(LocoFile::getFileLocation()));
   {
    switch(QMessageBox::question(this, tr("File already exists"), tr("The file already exists. Do you want to replace it?"), QMessageBox::Yes | QMessageBox::No))
    {
@@ -153,12 +164,49 @@ void RosterMediaPane::dropIcon(QString fileName)
     return;
    }
   }
-  QFile::copy(fileName, FileUtil::getUserResourcePath()+ info.fileName());
-  fileName= FileUtil::getUserResourcePath()+ info.fileName();
+//  QFile::copy(fileName, FileUtil::getUserResourcePath()+ info.fileName());
+  QFile::copy(fileName, LocoFile::getFileLocation()+ info.fileName());
+//  fileName= FileUtil::getUserResourcePath()+ info.fileName();
+  this->fileName= LocoFile::getFileLocation() + info.fileName();
+  re->setIconPath(this->fileName);
  }
 }
 
 void RosterMediaPane::on_edWebReference_textEdited(QString text)
 {
  re->setURL(text);
+}
+
+void RosterMediaPane::dragEnterEvent(QDragEnterEvent *evt)
+{
+ QRect iconImageRect = ui->lblIconImage->geometry();
+ QRect mainImageRect = ui->lblMainImage->geometry();
+ QPoint mousePos = ui->lblIconImage->mapFromGlobal(evt->pos());
+ if(iconImageRect.contains(mousePos) || mainImageRect.contains(mousePos))
+ {
+  if(!evt->mimeData()->text().isEmpty())
+   evt->accept();
+ }
+}
+
+void RosterMediaPane::dragMoveEvent(QDragMoveEvent */*evt*/)
+{
+
+}
+
+void RosterMediaPane::dropEvent(QDropEvent * evt)
+{
+ QRect iconImageRect = ui->lblIconImage->geometry();
+ QRect mainImageRect = ui->lblMainImage->geometry();
+ QPoint mousePos = ui->lblIconImage->mapFromGlobal(evt->pos());
+ QString text = evt->mimeData()->text();
+ if(text.startsWith("file://"))
+ {
+  text.remove("\r\n");
+  //ImageIcon* icon = new ImageIcon(text.mid(7),text.mid(7));
+  if(mainImageRect.contains(mousePos))
+   dropImage(text);
+  if(iconImageRect.contains(mousePos))
+   dropIcon(text);
+ }
 }

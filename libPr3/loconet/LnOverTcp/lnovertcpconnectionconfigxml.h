@@ -7,7 +7,7 @@ class LIBPR3SHARED_EXPORT LnOverTcpConnectionConfigXml : public AbstractNetworkC
 {
  Q_OBJECT
 public:
- explicit LnOverTcpConnectionConfigXml(QObject *parent = 0);
+ Q_INVOKABLE explicit LnOverTcpConnectionConfigXml(QObject *parent = 0);
  ~LnOverTcpConnectionConfigXml() {}
  LnOverTcpConnectionConfigXml(const LnOverTcpConnectionConfigXml&) : AbstractNetworkConnectionConfigXml() {}
 signals:

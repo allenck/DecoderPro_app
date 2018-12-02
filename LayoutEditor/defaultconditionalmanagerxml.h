@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultConditionalManagerXml : public Abstrac
 {
     Q_OBJECT
 public:
-    explicit DefaultConditionalManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit DefaultConditionalManagerXml(QObject *parent = 0);
  ~DefaultConditionalManagerXml() {}
  DefaultConditionalManagerXml(const DefaultConditionalManagerXml&) :  AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);

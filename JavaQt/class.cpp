@@ -2,6 +2,7 @@
 #include "classloader.h"
 #include "exceptions.h"
 #include <QDebug>
+#include "loggerfactory.h"
 
 /**
  * Instances of the class {@code Class} represent classes and
@@ -209,13 +210,15 @@
    #else
       obj = (QObject*)QMetaType::create(id);
    #endif
+      if(obj)
+       obj->setObjectName(className);
       return (Class*)obj;
     }
      else
      {
       qDebug() << "class not found: " << className;
-      if(className == "AbstractProxyManagerXml" || className == "AbstractTurnoutManagerXml")
-       qDebug() << "stop";
+//      if(className == "AbstractProxyManagerXml" || className == "AbstractTurnoutManagerXml")
+//       qDebug() << "stop";
       throw ClassNotFoundException(className);
      }
     }
@@ -406,6 +409,13 @@
         }
 #endif
         Class* clazz = (Class*)((QObject*)this)->metaObject()->newInstance();
+        if(clazz == nullptr)
+        {
+          QString msg = tr("Constructor may need Q_INVOKABLE %1").arg(metaObject()->className());
+          log->error(msg);
+//          throw InvocationTargetException(msg);
+          return this;
+        }
         return clazz;
     }
 #if 0
@@ -3646,3 +3656,4 @@
          return TypeAnnotationParser.buildAnnotatedInterfaces(getRawTypeAnnotations(), getConstantPool(), this);
     }
 #endif
+/*static*/ /*private*/ Logger * Class::log = LoggerFactory::getLogger("Class");

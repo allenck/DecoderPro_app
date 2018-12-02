@@ -8,7 +8,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalMastIconXml : public PositionableLabelX
 {
     Q_OBJECT
 public:
-    explicit SignalMastIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit SignalMastIconXml(QObject *parent = 0);
  ~SignalMastIconXml() {}
  SignalMastIconXml(const SignalMastIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

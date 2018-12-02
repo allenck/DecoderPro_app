@@ -44,7 +44,8 @@ SignalMastIcon::SignalMastIcon(QWidget* parent) :
     _useIconSet = "default";
     clickMode = 0;
     litMode = false;
-    mMast = NULL;
+    mMast = nullptr;
+    namedMast = nullptr;
     _displayLevel = Editor::SIGNALS;
 }
 
@@ -79,7 +80,7 @@ SignalMastIcon::SignalMastIcon(QWidget* parent) :
  {
   //mMast->removePropertyChangeListener((PropertyChangeListener*)this);
   AbstractSignalMast* aMast =  (AbstractSignalMast*)mMast;
-  disconnect(aMast, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(aMast->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  mMast = sh->getBean();
  if (mMast != NULL)
@@ -116,7 +117,7 @@ pName=sh->getName();
 
 
 /*private*/ void SignalMastIcon::getIcons() {
-    _iconMap = new QHash<QString, NamedIcon*>();
+    _iconMap = new QMap<QString, NamedIcon*>();
 #if 1
     QListIterator<QString> e(((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getAspects());
     bool error = false;
@@ -129,7 +130,7 @@ pName=sh->getName();
 //            java.text.MessageFormat.format(Bundle.getMessage("SignalMastIconLoadError"),
 //            new Object[]{mMast.getDisplayName()}),
 //            Bundle.getMessage("SignalMastIconLoadErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(0, tr("Error with Icons"), tr("Not all states will be shown on the panel\n                                                          Check console output for details"));
+        QMessageBox::critical(0, tr("Error with Icons"), tr("Not all states will be shown on the panel\nCheck console output for details"));
     }
     //Add in specific appearances for dark and held
     loadIcons("$dark");
@@ -160,11 +161,11 @@ pName=sh->getName();
    n = new NamedIcon(s, s);
   } catch (NullPointerException e)
   {
-      JOptionPane::showMessageDialog(NULL, tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s, getNameString()), tr("Error with Icons"), JOptionPane::ERROR_MESSAGE);
+      JOptionPane::showMessageDialog(nullptr, tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s, getNameString()), tr("Error with Icons"), JOptionPane::ERROR_MESSAGE);
       log->error(tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s).arg(getNameString()));
       return true;
   }
-  _iconMap->insert(s, n);
+  _iconMap->insert(aspect, n);
   if(_rotate!=0)
   {
    n->rotate(_rotate, this);
@@ -185,7 +186,7 @@ pName=sh->getName();
 
 /*public*/ SignalMast* SignalMastIcon::getSignalMast(){
     if (namedMast==NULL)
-        return NULL;
+        return nullptr;
     return namedMast->getBean();
 }
 
@@ -198,7 +199,7 @@ pName=sh->getName();
  * @return An aspect from the SignalMast
  */
 /*public*/ QString SignalMastIcon::mastState() {
-    if (mMast==NULL) return "<empty>";
+    if (mMast==nullptr) return "<empty>";
     else return ((AbstractSignalMast*)mMast)->getAspect();
 }
 
@@ -214,8 +215,8 @@ pName=sh->getName();
 
 /*public*/ QString SignalMastIcon::getNameString() {
     QString name;
-    if (mMast == NULL) name = tr("<Not connected>");
-    else if (mMast->getUserName() == NULL)
+    if (mMast == nullptr) name = tr("<Not connected>");
+    else if (mMast->getUserName() == nullptr)
         name = mMast->getSystemName();
     else
         name = mMast->getUserName()+" ("+mMast->getSystemName()+")";
@@ -225,111 +226,153 @@ pName=sh->getName();
 /**
  * Pop-up just displays the name
  */
-/*public*/ bool SignalMastIcon::showPopUp(QMenu* popup) {
-    if (isEditable()) {
-
-        QMenu* clickMenu = new QMenu(tr("When Clicked"));
-        //QButtonGroup* clickButtonGroup = new QButtonGroup();
-#if 1
+/*public*/ bool SignalMastIcon::showPopUp(QMenu* popup)
+{
+ if (isEditable())
+ {
+  QMenu* clickMenu = new QMenu(tr("When Clicked"));
+  //QButtonGroup* clickButtonGroup = new QButtonGroup();
 //        JRadioButtonMenuItem r;
 //        r = new JRadioButtonMenuItem(tr("Change Aspect"));
 //        r.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) { setClickMode(0); }
 //        });
 //        clickButtonGroup.add(r);
-        QAction* changeAspectAct = new QAction(tr("Change Aspect"), this);
-        changeAspectAct->setCheckable(true);
-        if (clickMode == 0)  changeAspectAct->setChecked(true);
-        else changeAspectAct->setChecked(false);
-        clickMenu->addAction(changeAspectAct);
-        connect(changeAspectAct, SIGNAL(toggled(bool)), this, SLOT(setClickMode0()));
+  QAction* changeAspectAct = new QAction(tr("Change Aspect"), this);
+  changeAspectAct->setCheckable(true);
+  if (clickMode == 0)  changeAspectAct->setChecked(true);
+  else changeAspectAct->setChecked(false);
+  clickMenu->addAction(changeAspectAct);
+  connect(changeAspectAct, SIGNAL(toggled(bool)), this, SLOT(setClickMode0()));
 
 //        r = new JRadioButtonMenuItem(Bundle.getMessage("AlternateLit"));
 //        r.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) { setClickMode(1); }
 //        });
 //        clickButtonGroup.add(r);
-        QAction* alternateLitAct = new QAction(tr("Alternate Lit"), this);
-        alternateLitAct->setCheckable(true);
-        if (clickMode == 1)  alternateLitAct->setChecked(true);
-        else alternateLitAct->setChecked(false);
-        clickMenu->addAction(alternateLitAct);
-        connect(alternateLitAct, SIGNAL(toggled(bool)), this, SLOT(setClickMode1()));
+  QAction* alternateLitAct = new QAction(tr("Alternate Lit"), this);
+  alternateLitAct->setCheckable(true);
+  if (clickMode == 1)  alternateLitAct->setChecked(true);
+  else alternateLitAct->setChecked(false);
+  clickMenu->addAction(alternateLitAct);
+  connect(alternateLitAct, SIGNAL(toggled(bool)), this, SLOT(setClickMode1()));
 //        r = new JRadioButtonMenuItem(Bundle.getMessage("AlternateHeld"));
 //        r.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) { setClickMode(2); }
 //        });
 //        clickButtonGroup.add(r);
-        QAction* alternateHeldAct = new QAction(tr("Alternate Held"), this);
-        alternateHeldAct->setCheckable(true);
-        if (clickMode == 2)  alternateHeldAct->setChecked(true);
-        else alternateHeldAct->setChecked(false);
-        clickMenu->addAction(alternateHeldAct);
-        connect(alternateHeldAct, SIGNAL(toggled(bool)), this, SLOT(setClickMode2()));
-        popup->addMenu(clickMenu);
+  QAction* alternateHeldAct = new QAction(tr("Alternate Held"), this);
+  alternateHeldAct->setCheckable(true);
+  if (clickMode == 2)  alternateHeldAct->setChecked(true);
+  else alternateHeldAct->setChecked(false);
+  clickMenu->addAction(alternateHeldAct);
+  connect(alternateHeldAct, SIGNAL(toggled(bool)), this, SLOT(setClickMode2()));
+  popup->addMenu(clickMenu);
 
-        QStringListIterator en (((DefaultSignalSystem*) ((AbstractSignalMast*)mMast)->getSignalSystem())->getImageTypeList());
-        if(en.hasNext())
-        {
-         QMenu* iconSetMenu = new QMenu(tr("Use SignalMast Icon Set"));
-         QSignalMapper* iconTypeGroup = new QSignalMapper();
-         setImageTypeList(iconTypeGroup, iconSetMenu, "default");
-         while (en.hasNext())
-         {
-          setImageTypeList(iconTypeGroup, iconSetMenu, en.next());
-         }
-         popup->addMenu(iconSetMenu);
-         connect(iconTypeGroup, SIGNAL(mapped(QString)), this, SLOT(useIconSet(QString)));
-        }
-        popup->addAction(new SignallingSourceAction(tr("Signal Mast Logic"), mMast));
-        QMenu* aspect = new QMenu(tr("Change Aspect"));
-        QVector <QString> aspects = ((AbstractSignalMast*)mMast)->getValidAspects();
-        QSignalMapper* mapper = new QSignalMapper();
-        for (int i=0; i<aspects.size(); i++)
-        {
-            /*final*/ int index = i;
+  // add menu to select handling of lit parameter
+  QMenu* litMenu = new QMenu(tr("When Not Lit"));
+  litButtonGroup = new QActionGroup(this);
+  QAction* r = new QAction(tr("ShowAppearance"), this);
+  r->setCheckable(true);
+  //r.setIconTextGap(10);
+//        r.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                setLitMode(false);
+//                displayState(mastState());
+//            }
+//        });
+  connect(r, SIGNAL(triggered(bool)), this, SLOT(onWhenNotLit()));
+  litButtonGroup->addAction(r);
+  if (!litMode) {
+      r->setChecked(true);
+  } else {
+      r->setChecked(false);
+  }
+  litMenu->addAction(r);
+  r = new QAction(tr("Show Dark Icon"),this);
+  r->setCheckable(true);
+  //r.setIconTextGap(10);
+//        r.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                setLitMode(true);
+//                displayState(mastState());
+//            }
+//        });
+  litButtonGroup->addAction(r);
+  if (litMode) {
+      r->setChecked(true);
+  } else {
+      r->setChecked(false);
+  }
+  litMenu->addAction(r);
+  popup->addMenu(litMenu);
+
+  if(mMast->getSignalSystem()!=nullptr)
+  {
+   QStringListIterator en  (mMast->getSignalSystem()->getImageTypeList());
+   if(en.hasNext())
+   {
+    QMenu* iconSetMenu = new QMenu(tr("Use SignalMast Icon Set"));
+    QSignalMapper* iconTypeGroup = new QSignalMapper();
+    setImageTypeList(iconTypeGroup, iconSetMenu, "default");
+    while (en.hasNext())
+    {
+     setImageTypeList(iconTypeGroup, iconSetMenu, en.next());
+    }
+    popup->addMenu(iconSetMenu);
+    connect(iconTypeGroup, SIGNAL(mapped(QString)), this, SLOT(useIconSet(QString)));
+   }
+  }
+  popup->addAction(new SignallingSourceAction(tr("Signal Mast Logic"), mMast));
+  QMenu* aspect = new QMenu(tr("Change Aspect"));
+  QVector <QString> aspects = mMast->getValidAspects();
+  QSignalMapper* mapper = new QSignalMapper();
+  for (int i=0; i<aspects.size(); i++)
+  {
+      /*final*/ int index = i;
 //            aspect.add(new AbstractAction(aspects.elementAt(index)){
 //                /*public*/ void actionPerformed(ActionEvent e) {
 //                    mMast.setAspect(aspects.elementAt(index));
 //                }
 //            });
-            QAction* aspectAct = new QAction(aspects.at(i), this);
-            mapper->setMapping(aspectAct, index);
-            connect(aspectAct, SIGNAL(triggered()), mapper, SLOT(map()));
-            aspect->addAction(aspectAct);
-        }
-        popup->addMenu(aspect);
-        connect(mapper, SIGNAL(mapped(int)), this, SLOT(setAspect(int)));
-#endif
-    }
-    else
-    {
-     QMenu* aspect = new QMenu(tr("Change Aspect"));
-     /*final*/ QVector <QString> aspects = mMast->getValidAspects();
-     QSignalMapper* mapper = new QSignalMapper();
-     for (int i=0; i<aspects.size(); i++)
-     {
-      /*final*/ int index = i;
+      QAction* aspectAct = new QAction(aspects.at(i), this);
+      mapper->setMapping(aspectAct, index);
+      connect(aspectAct, SIGNAL(triggered()), mapper, SLOT(map()));
+      aspect->addAction(aspectAct);
+  }
+  popup->addMenu(aspect);
+  connect(mapper, SIGNAL(mapped(int)), this, SLOT(setAspect(int)));
+ }
+ else
+ {
+  QMenu* aspect = new QMenu(tr("Change Aspect"));
+  /*final*/ QVector <QString> aspects = mMast->getValidAspects();
+  QSignalMapper* mapper = new QSignalMapper();
+  for (int i=0; i<aspects.size(); i++)
+  {
+   /*final*/ int index = i;
 //            popup.add(new AbstractAction(aspects.elementAt(index)){
 //                /*public*/ void actionPerformed(ActionEvent e) {
 //                    mMast->setAspect(aspects.elementAt(index));
 //                }
 //            });
-        QAction* aspectAct = new QAction(aspects.at(i), this);
-        mapper->setMapping(aspectAct, index);
-        connect(aspectAct, SIGNAL(triggered()), mapper, SLOT(map()));
-        aspect->addAction(aspectAct);
+     QAction* aspectAct = new QAction(aspects.at(i), this);
+     mapper->setMapping(aspectAct, index);
+     connect(aspectAct, SIGNAL(triggered()), mapper, SLOT(map()));
+     aspect->addAction(aspectAct);
 
-     }
-     popup->addMenu(aspect);
-     connect(mapper, SIGNAL(mapped(int)), this, SLOT(setAspect(int)));
-    }
-    return true;
+  }
+  popup->addMenu(aspect);
+  connect(mapper, SIGNAL(mapped(int)), this, SLOT(setAspect(int)));
+ }
+ return true;
 }
 void SignalMastIcon::setAspect(int i)
 {
- QVector <QString> aspects = ((AbstractSignalMast*)mMast)->getValidAspects();
- ((AbstractSignalMast*)mMast)->setAspect(aspects.at(i));
+ QVector <QString> aspects = mMast->getValidAspects();
+ mMast->setAspect(aspects.at(i));
 }
 void SignalMastIcon::setClickMode0()
 {
@@ -343,9 +386,19 @@ void SignalMastIcon::setClickMode2()
 {
  setClickMode(2);
 }
+void SignalMastIcon::onWhenNotLit()
+{
+ setLitMode(false);
+ displayState(mastState());
+}
+
+void SignalMastIcon::onShowDarkIcon()
+{
+ setLitMode(true);
+ displayState(mastState());
+}
 
 /*private*/ void SignalMastIcon::setImageTypeList(QSignalMapper* iconTypeGroup, QMenu* iconSetMenu, /*final*/ QString item){
-#if 1
 //    JRadioButtonMenuItem im;
 //    im = new JRadioButtonMenuItem(item);
 //    im.addActionListener(new ActionListener() {
@@ -358,7 +411,6 @@ void SignalMastIcon::setClickMode2()
     else im->setChecked(false);
     iconSetMenu->addAction(im);
     connect(im, SIGNAL(toggled(bool)), iconTypeGroup, SLOT(map()));
-#endif
 }
 
 /*public*/ bool SignalMastIcon::setRotateOrthogonalMenu(QMenu* /*popup*/){
@@ -381,7 +433,6 @@ void SignalMastIcon::setClickMode2()
 
 /*protected*/ void SignalMastIcon::editItem()
 {
-#if 1
  makePaletteFrame(tr("Edit %1 Item").arg("Signal Mast"));
  _itemPanel = new SignalMastItemPanel(_paletteFrame, "SignalMast", getFamily(), PickListModel::signalMastPickModelInstance(), _editor);
 //    ActionListener updateAction = new ActionListener() {
@@ -396,24 +447,16 @@ void SignalMastIcon::setClickMode2()
  _paletteFrame->layout()->addWidget(_itemPanel);
  _paletteFrame->pack();
  _paletteFrame->setVisible(true);
-#else
-    AddPanelIconDialog* dlg = new AddPanelIconDialog("SignalMast", _editor->pos(), _editor);
-    dlg->setSignalMastIcon(this);
-    dlg->show();
-
-#endif
 }
 
 void SignalMastIcon::updateItem() {
-#if 1
     setSignalMast(_itemPanel->getTableSelection()->getSystemName());
     setFamily(_itemPanel->getFamilyName());
     _paletteFrame->dispose();
-    _paletteFrame = NULL;
+    _paletteFrame = nullptr;
     _itemPanel->dispose();
-    _itemPanel = NULL;
+    _itemPanel = nullptr;
     invalidate();
-#endif
 }
 
 /**
@@ -432,7 +475,7 @@ void SignalMastIcon::updateItem() {
 {
  //if (e.isMetaDown() || e.isAltDown() ) return;
     if((e->modifiers() & Qt::MetaModifier) != 0 || (e->modifiers() & Qt::AltModifier) != 0) return;
- if (getSignalMast()==NULL)
+ if (getSignalMast()==nullptr)
  {
   log->error("No turnout connection, can't process click");
   return;
@@ -469,14 +512,14 @@ void SignalMastIcon::updateItem() {
 
 
 /*public*/ void SignalMastIcon::useIconSet(QString icon){
-    if (icon==NULL){
+    if (icon==nullptr){
         icon = "default";
     }
     if(_useIconSet==(icon)){
         return;
     }
     //clear the old icon map out.
-    _iconMap=NULL;
+    _iconMap=nullptr;
     _useIconSet = icon;
     getIcons();
     displayState(mastState());
@@ -501,7 +544,7 @@ void SignalMastIcon::updateItem() {
  updateSize();
  if (debug)
  {
-  if (mMast == NULL)
+  if (mMast == nullptr)
   {
    log->debug("Display state "+state+", disconnected");
   }
@@ -524,14 +567,14 @@ void SignalMastIcon::updateItem() {
  }
  if (isIcon())
  {
-  if ((state !="" ) && (mMast!=NULL))
+  if ((state !="" ) && (mMast!=nullptr))
   {
    QString s = ((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getImageLink(state, _useIconSet);
-   if ((((AbstractSignalMast*)mMast)->getHeld()) && (((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getSpecificAppearance(SignalAppearanceMap::HELD)!=NULL))
+   if ((((AbstractSignalMast*)mMast)->getHeld()) && (((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getSpecificAppearance(SignalAppearanceMap::HELD)!=nullptr))
    {
     s = ((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getImageLink("$held", _useIconSet);
    }
-   else if((((AbstractSignalMast*)mMast)->getLit()) && (((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getSpecificAppearance(SignalAppearanceMap::DARK)!=NULL))
+   else if((((AbstractSignalMast*)mMast)->getLit()) && (((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getSpecificAppearance(SignalAppearanceMap::DARK)!=nullptr))
    {
     s = ((AbstractSignalMast*)mMast)->getAppearanceMap()->getImageLink("$dark", _useIconSet);
    }
@@ -547,8 +590,8 @@ void SignalMastIcon::updateItem() {
    if(s.startsWith("resources"))
      s= FileUtil::getProgramPath()+s; // TODO: make configurable
     // tiny global cache, due to number of icons
-   if (_iconMap==NULL) getIcons();
-   NamedIcon* n = _iconMap->value(s);
+   if (_iconMap==nullptr) getIcons();
+   NamedIcon* n = _iconMap->value(state);
    PositionableIcon::setIcon(n);
    _editor->addToTarget((Positionable*)this);
    updateSize();
@@ -557,7 +600,7 @@ void SignalMastIcon::updateItem() {
  }
  else
  {
-  PositionableIcon::setIcon(NULL);
+  PositionableIcon::setIcon(nullptr);
  }
  return;
 }
@@ -575,14 +618,14 @@ void SignalMastIcon::updateItem() {
 
 /*public*/ void SignalMastIcon::rotate(int deg){
     PositionableIcon::rotate(deg);
-    if (mMast!=NULL) {
+    if (mMast!=nullptr) {
         displayState(mastState());
     }
 }
 
 /*public*/ void SignalMastIcon::setScale(double s) {
     PositionableIcon::setScale(s);
-    if (mMast!=NULL) {
+    if (mMast!=nullptr) {
         displayState(mastState());
     }
 }
@@ -621,13 +664,13 @@ void SignalMastIcon::updateItem() {
 
 /*public*/ bool SignalMastIcon::updateScene() // TODO: this function not in Java
 {
- QGraphicsPixmapItem* item = NULL;
- if(_itemGroup != NULL)
+ QGraphicsPixmapItem* item = nullptr;
+ if(_itemGroup != nullptr)
  {
   QList<QGraphicsItem*> itemList = _itemGroup->childItems();
   foreach(QGraphicsItem* it, itemList)
   {
-   if(qgraphicsitem_cast<QGraphicsPixmapItem*>(it) != NULL)
+   if(qgraphicsitem_cast<QGraphicsPixmapItem*>(it) != nullptr)
    {
     _itemGroup->setRotation(_itemGroup->rotation() - currRotation);
     item = qgraphicsitem_cast<QGraphicsPixmapItem*>(it);
@@ -639,9 +682,9 @@ void SignalMastIcon::updateItem() {
  _itemGroup->setName("signaMastIcon");
 
 
- QString aspect = ((AbstractSignalMast*)getSignalMast())->getAspect();
+ QString aspect = getSignalMast()->getAspect();
  QPixmap pixmap = QPixmap::fromImage(getIcon(aspect)->getImage());
- if(item != NULL)
+ if(item != nullptr)
   item->setPixmap(pixmap);
  else
   item = new QGraphicsPixmapItem(pixmap,_itemGroup);

@@ -513,10 +513,11 @@ void RosterEntry::init()
 //    return functionLabels[fn];
   if(functionLabels.isEmpty()) return "";
   if (fn < 0 || fn > MAXFNNUM) {
-   throw new IllegalArgumentException("number out of range: " + fn);
+   throw IllegalArgumentException("number out of range: " + QString::number(fn));
   }
   return functionLabels.at(fn);
 }
+
 /**
  * Define label for a specific sound
  *
@@ -544,7 +545,7 @@ void RosterEntry::init()
      return "";
     }
     if (fn < 0 || fn > MAXSOUNDNUM) {
-        throw new IllegalArgumentException("number out of range: " + fn);
+        throw IllegalArgumentException("number out of range: " + QString::number(fn));
     }
     return soundLabels[fn];
 }
@@ -559,9 +560,10 @@ void RosterEntry::init()
 
  QString old = functionImages.at(fn);
  functionImages.replace(fn, s);
-// firePropertyChange("functionImage"+QString::number(fn), old, s);
+ firePropertyChange("functionImage"+QString::number(fn), old, s);
 
- QString dropFolder = FileUtil::getUserFilesPath();
+ //QString dropFolder = FileUtil::getUserFilesPath();
+ QString dropFolder = LocoFile::getFileLocation();
  File* source = new File(s);
  if(!source->exists())
  {
@@ -600,8 +602,10 @@ void RosterEntry::init()
 
  QString old = functionSelectedImages.at(fn);
  functionSelectedImages.replace(fn,s);
-// firePropertyChange("functionSelectedImage"+QString::number(fn), old, s);
- QString dropFolder = FileUtil::getUserFilesPath();
+ firePropertyChange("functionSelectedImage"+QString::number(fn), old, s);
+
+ //QString dropFolder = FileUtil::getUserFilesPath();
+ QString dropFolder = LocoFile::getFileLocation();
  File* source = new File(s);
  File* dest = new File(s);
  if (dropFolder != NULL && source->getPath() != "")
@@ -627,6 +631,7 @@ void RosterEntry::init()
   return functionSelectedImages.at(fn);
  return "";
 }
+
 /**
  * Define whether a specific function is lockable.
  * @param fn function number, starting with 0
@@ -650,28 +655,10 @@ void RosterEntry::init()
  */
 /*public*/ bool RosterEntry::getFunctionLockable(int fn) {
     if (functionLockables.isEmpty()) return true;
-//    if (fn <0 || fn >MAXFNNUM)
-//        throw new IllegalArgumentException("number out of range: "+fn);
+    if (fn <0 || fn >MAXFNNUM)
+        throw IllegalArgumentException("number out of range: "+QString::number(fn));
  return functionLockables.at(fn);
 }
-
-///*public*/ void RosterEntry::putAttribute(QString key, QString value) {
-//    QString oldValue = getAttribute(key);
-//    if (attributePairs == NULL) attributePairs = new QMap<QString,QString>();
-//    attributePairs->insert(key, value);
-//    firePropertyChange("attributeUpdated:"+key, oldValue, value);
-//}
-///*public*/ QString RosterEntry::getAttribute(QString key) {
-//    if (attributePairs == NULL) return NULL;
-//    return attributePairs->value(key);
-//}
-
-///*public*/ void RosterEntry::deleteAttribute(QString key) {
-//    if (attributePairs != NULL) {
-//        attributePairs->remove(key);
-//        firePropertyChange("attributeDeleted", key, 0);
-//    }
-//}
 
 /**
  * Provide access to the set of attributes.  This

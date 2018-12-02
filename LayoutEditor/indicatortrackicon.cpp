@@ -48,7 +48,7 @@
 
  _pathUtil = new IndicatorTrackPaths();
  _status = "ClearTrack";
- _iconMap = new QHash<QString, NamedIcon*>();
+ _iconMap = new QMap<QString, NamedIcon*>();
 }
 
 /*public*/ Positionable* IndicatorTrackIcon::deepClone() {
@@ -67,7 +67,7 @@
     return PositionableIcon::finishClone((Positionable*)pos);
 }
 
-/*public*/ QHash<QString, NamedIcon*>* IndicatorTrackIcon::getIconMap() {
+/*public*/ QMap<QString, NamedIcon*>* IndicatorTrackIcon::getIconMap() {
     return cloneMap(_iconMap, this);
 }
 
@@ -105,7 +105,7 @@
  {
   if (_iconMap==NULL)
   {
-  _iconMap = new QHash<QString, NamedIcon*>();
+  _iconMap = new QMap<QString, NamedIcon*>();
   }
   AbstractSensor* sensor = (AbstractSensor*)getOccSensor();
 //         sensor->addPropertyChangeListener(this, namedOccSensor->getName(), "Indicator Track");
@@ -151,7 +151,7 @@
  {
   if (_iconMap==NULL)
   {
-   _iconMap = new QHash<QString, NamedIcon*>();
+   _iconMap = new QMap<QString, NamedIcon*>();
   }
   block = getOccBlock();
   block->addPropertyChangeListener((PropertyChangeListener*)this, namedOccBlock->getName(), "Indicator Track");
@@ -312,9 +312,9 @@ void IndicatorTrackIcon::displayState(QString status)
  ItiActionListener* updateAction = new ItiActionListener(this);
 
  // duplicate _iconMap map with unscaled and unrotated icons
- QHash<QString, NamedIcon*>* map = new QHash<QString, NamedIcon*>();
+ QMap<QString, NamedIcon*>* map = new QMap<QString, NamedIcon*>();
  //Iterator<Entry<QString, NamedIcon*>> it = _iconMap.entrySet().iterator();
- QHashIterator<QString, NamedIcon*> it(*_iconMap);
+ QMapIterator<QString, NamedIcon*> it(*_iconMap);
  while (it.hasNext())
  {
   it.next();
@@ -364,11 +364,11 @@ void IndicatorTrackIcon::updateItem() {
     _pathUtil->setShowTrain(_trackPanel->getShowTrainName());
     _iconFamily = _trackPanel->getFamilyName();
     _pathUtil->setPaths(_trackPanel->getPaths());
-    QHash<QString, NamedIcon*>* iconMap = _trackPanel->getIconMap();
+    QMap<QString, NamedIcon*>* iconMap = _trackPanel->getIconMap();
     if (iconMap!=NULL) {
-        QHash<QString, NamedIcon*>* oldMap = cloneMap(_iconMap, this);
+        QMap<QString, NamedIcon*>* oldMap = cloneMap(_iconMap, this);
         //Iterator<Entry<QString, NamedIcon*>> it = iconMap.entrySet().iterator();
-        QHashIterator<QString, NamedIcon*> it(*_iconMap);
+        QMapIterator<QString, NamedIcon*> it(*_iconMap);
         while (it.hasNext())
         {
             it.next();

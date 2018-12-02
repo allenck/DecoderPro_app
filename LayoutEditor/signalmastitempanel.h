@@ -11,7 +11,7 @@ public:
     //explicit SignalMastItemPanel(QWidget *parent = 0);
     /*public*/ SignalMastItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     void init();
-    void init(ActionListener* doneAction, QHash<QString, NamedIcon*>* iconMap);
+    void init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap);
 
 signals:
 
@@ -26,7 +26,7 @@ private:
 protected:
     /*protected*/ QWidget* instructions();
     /*protected*/ void initIconFamiliesPanel();
-    /*protected*/ void makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey);
+    /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
     /*protected*/ QWidget* makeBottom1Panel();
     /*protected*/ QWidget* makeBottom2Panel();
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor);

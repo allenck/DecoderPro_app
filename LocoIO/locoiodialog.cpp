@@ -90,7 +90,7 @@ LocoIODialog::LocoIODialog(LocoIOAddress* address, LnTrafficController* tc, bool
  connect(this->data, SIGNAL(readAllComplete()), this, SLOT(onReadWriteAllComplete()));
  connect(this->data, SIGNAL(writeAllComplete()),this, SLOT(onReadWriteAllComplete()));
  connect(this->tc,SIGNAL(messageProcessed(LocoNetMessage*,bool)),this, SLOT(onMessageReceived(LocoNetMessage*,bool)));
- connect(this->data, SIGNAL(configRead(int LocoIOData*)), this, SLOT(onConfigRead(int, LocoIOData*)));
+ connect(this->data, SIGNAL(configRead(int, LocoIOData*)), this, SLOT(onConfigRead(int, LocoIOData*)));
  this->data->getConfig();
  connect(this->data, SIGNAL(probeCompleted(QList<LocoIOAddress*>)), this, SLOT(onProbeCompleted(QList<LocoIOAddress*>)));
  connect(this->data, SIGNAL(ioAborted()), this, SLOT(onIOAborted()));

@@ -8,7 +8,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PanelEditorXml : public AbstractXmlAdapter
 {
     Q_OBJECT
 public:
-    explicit PanelEditorXml(QObject *parent = 0);
+    Q_INVOKABLE explicit PanelEditorXml(QObject *parent = 0);
  ~PanelEditorXml() {}
  PanelEditorXml(const PanelEditorXml&) :AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);

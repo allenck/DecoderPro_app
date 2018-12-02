@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PositionableRoundRectXml : public Positionabl
 {
     Q_OBJECT
 public:
-    explicit PositionableRoundRectXml(QObject *parent = 0);
+    Q_INVOKABLE explicit PositionableRoundRectXml(QObject *parent = 0);
  ~PositionableRoundRectXml() {}
  PositionableRoundRectXml(const PositionableRoundRectXml&) : PositionableShapeXml() {}
     /*public*/ QDomElement store(QObject* o);

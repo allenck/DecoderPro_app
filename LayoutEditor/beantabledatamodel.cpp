@@ -143,7 +143,7 @@ void BeanTableDataModel::setManager(Manager *) {}
    try
    {
     fireTableRowsUpdated(row, row);
-    //fireTableDataChanged();
+    fireTableDataChanged();
    }
    catch (Exception ex)
    {
@@ -376,6 +376,7 @@ void BeanTableDataModel::setManager(Manager *) {}
   }
   //fireTableRowsUpdated(row, row);
   //setPersistentButtons();
+  _table->update();
   return true;
  }
  return false;

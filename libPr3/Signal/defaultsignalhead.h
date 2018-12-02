@@ -40,6 +40,7 @@ protected:
     /*protected*/ void startFlash();
     /*protected*/ void stopFlash();
     bool isTurnoutUsed(Turnout* t);
+    /*protected*/ void appearanceSetsFlashTimer(int newAppearance);
 
  Logger* log;
 };

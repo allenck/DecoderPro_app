@@ -10,7 +10,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT BlockManagerXml : public AbstractMemoryManage
 {
     Q_OBJECT
 public:
-    explicit BlockManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit BlockManagerXml(QObject *parent = 0);
     ~BlockManagerXml();
  BlockManagerXml(const BlockManagerXml&) : AbstractMemoryManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement memories);

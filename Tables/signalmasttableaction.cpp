@@ -56,8 +56,6 @@ SignalMastTableAction::SignalMastTableAction(QObject*parent)
     return "package.jmri.jmrit.beantable.SignalMastTable";
 }
 
-
-
 /*public*/ void SignalMastTableAction::actionPerformed(ActionEvent* /*e*/) {
     // create the JTable model, with changes for specific NamedBean
     createModel();

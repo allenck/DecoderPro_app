@@ -106,10 +106,10 @@ static /*private*/ Validate defaultValidate;// = Validate.None;
 /*private*/ Validate validate;// = defaultValidate;
 
 protected:
- ///*protected*/ QDomElement getRoot(bool verify, InputStreamReader reader) throw (JDOMException);
  /*protected*/ bool checkFile(QString name);
-/*protected*/ QFile* findFile(QString name) const;
- /*protected*/ QDomElement getRoot(bool validate, QDataStream* stream) /*throw (JDOMException)*/;
+ /*protected*/ QFile* findFile(QString name) const;
+ QT_DEPRECATED /*protected*/ QDomElement getRoot(bool validate, QDataStream* stream) /*throw (JDOMException)*/;
+ /*protected*/ QDomElement getRoot(QDataStream* stream) /*throw (JDOMException)*/;
  friend class LayoutEditor;
  friend class ConfigXmlManager;
 };

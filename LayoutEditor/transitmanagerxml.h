@@ -6,7 +6,7 @@ class TransitManagerXml : public AbstractNamedBeanManagerConfigXML
 {
  Q_OBJECT
 public:
- TransitManagerXml();
+ Q_INVOKABLE TransitManagerXml();
  ~TransitManagerXml() {}
  TransitManagerXml(const TransitManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
  /*public*/ QDomElement  store(QObject* o);

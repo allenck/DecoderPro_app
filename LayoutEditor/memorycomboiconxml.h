@@ -8,7 +8,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT MemoryComboIconXml : public PositionableLabel
 {
     Q_OBJECT
 public:
-    explicit MemoryComboIconXml(QObject *parent = 0);
+    Q_INVOKABLE explicit MemoryComboIconXml(QObject *parent = 0);
  ~MemoryComboIconXml() {}
  MemoryComboIconXml(const MemoryComboIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);

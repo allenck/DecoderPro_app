@@ -66,7 +66,7 @@ protected:
  /*protected*/ QHash <int, QString>* _state2nameMap;       // state to name
  QString  _iconFamily;
  /*protected*/ void rotateOrthogonal();
- /*protected*/ QHash<int, NamedIcon*>* cloneMap(QHash<int,  NamedIcon*>* map,                                                         TurnoutIcon* pos);
+ /*protected*/ QHash<int, NamedIcon *> *cloneMap(QHash<int, NamedIcon *> *map,                                                         TurnoutIcon* pos);
  TableItemPanel* _itemPanel;
  bool momentary;// = false;
  bool directControl;// = false;

@@ -60,7 +60,7 @@ public:
             QString description,
             QString systemName,
             QString userName,
-            Exception exception);
+            Throwable exception);
     static /*public*/ void storingErrorEncountered(
             XmlAdapter* adapter,
             QString operation,
@@ -68,7 +68,7 @@ public:
             QString description,
             QString systemName,
             QString userName,
-            Exception exception
+            Throwable exception
             );
     /*static*/ /*public*/ void setErrorHandler(ErrorHandler handler);
 

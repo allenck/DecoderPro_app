@@ -9,13 +9,15 @@
 #include "virtualsignalmast.h"
 #include "virtualsignalmastxml.h"
 #include "dccsignalmastxml.h"
+#include "class.h"
 
 DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
     AbstractNamedBeanManagerConfigXML(parent)
 {
- log = new Logger("DefaultSignalMastManagerXML");
+ log = new Logger("DefaultSignalMastManagerXml");
  setObjectName("DefaultSignalMastManagerXml");
 }
+
 /**
  * Handle XML configuration for a DefaultSignalMastManager objects.
  *
@@ -31,7 +33,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
  * Default implementation for storing the contents of a
  * DefaultSignalMastManager
  * @param o Object to store, of type TripleTurnoutSignalHead
- * @return Element containing the complete info
+ * @return QDomElement containing the complete info
  */
 /*public*/ QDomElement DefaultSignalMastManagerXml::store(QObject* o)
 {
@@ -39,240 +41,225 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
 
     QDomElement element = doc.createElement("signalmasts");
     element.setAttribute("class", "jmri.managers.configurexml.DefaultSignalMastManagerXml");
-    if(m!=NULL){
-        // include contents
-        QStringList names = m->getSystemNameList();
-        for (int i = 0; i < names.size(); i++) {
-            //QDomElement e = doc.createElement("signalmast");
-            SignalMast* p = m->getSignalMast(names.at(i));
-            try {
-                QDomElement e = ConfigXmlManager::elementFromObject(p);
-                if (!e.isNull()) element.appendChild(e);
-            } catch (Exception e) {
-                log->error("Error storing signalmast: "+e.getMessage());
-                //e.printStackTrace();
-            }
+    if(m!=nullptr)
+    {
+     // include contents
+     QStringList names = m->getSystemNameList();
+     for (int i = 0; i < names.size(); i++)
+     {
+      //QDomQDomElement e = doc.createElement("signalmast");
+      SignalMast* p = m->getSignalMast(names.at(i));
+      try {
+          QDomElement e = ConfigXmlManager::elementFromObject(p);
+          if (!e.isNull()) element.appendChild(e);
+      } catch (Exception e) {
+          log->error("Error storing signalmast: "+e.getMessage());
+          //e.printStackTrace();
+      }
 
 
-            /*e.setAttribute("systemName", p.getSystemName()); // deprecated for 2.9.* series
-            e.appendChild(doc.createElement("systemName").appendChild(p.getSystemName()));
-            storeCommon(p, e);
-            element.appendChild(e);*/
+      /*e.setAttribute("systemName", p.getSystemName()); // deprecated for 2.9.* series
+      e.appendChild(doc.createElement("systemName").appendChild(p.getSystemName()));
+      storeCommon(p, e);
+      element.appendChild(e);*/
+     }
+     QList<SignalMastRepeater*>* repeaterList = m->getRepeaterList();
+     if(repeaterList->size()>0)
+     {
+      //QDomElement repeatElem= doc.createElement("signalmastrepeaters");
+      foreach(SignalMastRepeater* smr, *repeaterList)
+      {
+       if(smr->getMasterMast()!=nullptr && smr->getSlaveMast()!=nullptr)
+       {
+        QDomElement e = doc.createElement("signalmastrepeater");
+        QDomElement e1;
+        e.appendChild(e1=doc.createElement("masterMast"));
+        e1.appendChild(doc.createTextNode(smr->getMasterMastName()));
+        QDomElement e2;
+        e.appendChild(e2=doc.createElement("slaveMast"));
+        e2.appendChild(doc.createTextNode(smr->getSlaveMastName()));
+        QDomElement e3;
+        e.appendChild(e3=doc.createElement("enabled"));
+        e3.appendChild(doc.createTextNode(smr->getEnabled()?"true":"false"));
+        QDomElement e4;
+        switch (smr->getDirection())
+        {
+         case 1 : e.appendChild(e4=doc.createElement("update"));
+            e4.appendChild(doc.createTextNode("MasterToSlave"));
+            break;
+         case 2 : e.appendChild(e4=doc.createElement("update"));
+            e4.appendChild(doc.createTextNode("SlaveToMaster"));
+            break;
+            default : e.appendChild(e4=doc.createElement("update"));
+            e4.appendChild(doc.createTextNode("BothWay"));
+            break;
         }
-#if 1
-        QList<SignalMastRepeater*>* repeaterList = m->getRepeaterList();
-        if(repeaterList->size()>0){
-            //Element repeatElem= doc.createElement("signalmastrepeaters");
-            foreach(SignalMastRepeater* smr, *repeaterList){
-                if(smr->getMasterMast()!=NULL && smr->getSlaveMast()!=NULL){
-                    QDomElement e = doc.createElement("signalmastrepeater");
-                    QDomElement e1;
-                    e.appendChild(e1=doc.createElement("masterMast"));
-                    e1.appendChild(doc.createTextNode(smr->getMasterMastName()));
-                    QDomElement e2;
-                    e.appendChild(e2=doc.createElement("slaveMast"));
-                    e2.appendChild(doc.createTextNode(smr->getSlaveMastName()));
-                    QDomElement e3;
-                    e.appendChild(e3=doc.createElement("enabled"));
-                    e3.appendChild(doc.createTextNode(smr->getEnabled()?"true":"false"));
-                    QDomElement e4;
-                    switch (smr->getDirection())
-                    {
-                     case 1 : e.appendChild(e4=doc.createElement("update"));
-                        e4.appendChild(doc.createTextNode("MasterToSlave"));
-                        break;
-                     case 2 : e.appendChild(e4=doc.createElement("update"));
-                        e4.appendChild(doc.createTextNode("SlaveToMaster"));
-                        break;
-                        default : e.appendChild(e4=doc.createElement("update"));
-                        e4.appendChild(doc.createTextNode("BothWay"));
-                        break;
-                    }
-                    element.appendChild(e);
-                }
-            }
-            //element.add(repeatElem);
-        }
-#endif
+        element.appendChild(e);
+       }
+      }
+      //element.add(repeatElem);
+     }
     }
     return element;
 }
 
 /**
  * Create a DefaultSignalMastManager
- * @param element Top level Element to unpack.
+ * @param QDomElement Top level QDomElement to unpack.
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool DefaultSignalMastManagerXml::load(QDomElement element) throw (Exception)
+/*public*/ bool DefaultSignalMastManagerXml::load(QDomElement shared, QDomElement perNode)
 {
  // loop over contained signalmast elements
- QDomNodeList list = element.elementsByTagName("signalmast");
+ QDomNodeList list = shared.elementsByTagName("signalmast");
 
  for (int i = 0; i < list.size(); i++)
  {
   QDomElement e = list.at(i).toElement();
-  if(e.attribute("class")==NULL)
+  if (e.attribute("class") == "")
   {
    SignalMast* m;
    QString sys = getSystemName(e);
-   m = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())
-                ->provideSignalMast(sys);
-
-    if (getUserName(e) != NULL)
-        m->setUserName(getUserName(e));
-
-    loadCommon(m, e);
-  }
-  else
-  {
-   QString adapterName = e.attribute("class");
-   log->debug("load via "+adapterName);
    try
    {
-//                XmlAdapter* adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
-//                // and do it
-//                adapter.load(e);
-     if(adapterName =="jmri.implementation.configurexml.SignalHeadSignalMastXml")
-     {
-      SignalHeadSignalMastXml* xml = new SignalHeadSignalMastXml();
-      xml->load(e);
-     }
-     else if(adapterName =="jmri.implementation.configurexml.TurnoutSignalMastXml")
-     {
-      TurnoutSignalMastXml* xml = new TurnoutSignalMastXml();
-      xml->load(e);
-     }
-     else if(adapterName =="jmri.implementation.configurexml.VirtualSignalMastXml")
-     {
-      VirtualSignalMastXml* xml = new VirtualSignalMastXml();
-      xml->load(e);
-     }
-     else
-     throw Exception(tr("Adapter name %1 not found").arg(adapterName));
+    m = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))
+            ->provideSignalMast(sys);
+
+    if (getUserName(e) != "") {
+        m->setUserName(getUserName(e));
     }
-    catch (Exception ex)
-    {
-        log->error("Exception while loading "+e.tagName()+":"+ex.getMessage());
-        //ex.printStackTrace();
-    }
+
+    loadCommon(m, e);
+   }
+   catch (IllegalArgumentException ex) {
+       log->warn(tr("Failed to provide SignalMast \"%1\" in load").arg(sys));
    }
   }
-
-
-  list = element.elementsByTagName("turnoutsignalmast");
-  if(!list.isEmpty())
-  {
-   for (int i = 0; i < list.size(); i++)
-   {
-    QDomElement e = list.at(i).toElement();
-    QString adapterName = e.attribute("class");
-    log->debug("load via "+adapterName);
-    try
-    {
-//                XmlAdapter adapter = (XmlAdapter)Class.forName(adapterName).newInstance();
-//                // and do it
-//                adapter.load(e);
-     if(adapterName == "jmri.implementation.configurexml.SignalHeadSignalMastXml")
-     {
-        SignalHeadSignalMastXml* xml = new SignalHeadSignalMastXml();
-        xml->load(e);
-     }
-     else
-     if(adapterName == "jmri.implementation.configurexml.TurnoutSignalMastXml")
-     {
-        TurnoutSignalMastXml* xml = new TurnoutSignalMastXml();
-        xml->load(e);
-     }
-     else
-     if(adapterName == "jmri.implementation.configurexml.VirtualSignalMastXml")
-     {
-        VirtualSignalMastXml* xml = new VirtualSignalMastXml();
-        xml->load(e);
-     }
-    }
-    catch (Exception ex)
-    {
-     log->error("Exception while loading "+e.tagName()+":"+ex.getMessage());
-    //ex.printStackTrace();
-    }
+  else {
+   QString adapterName = e.attribute("class");
+   log->debug("load via " + adapterName);
+   try {
+       XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
+       // and do it
+       adapter->load(e, QDomElement());
+   } catch (Exception ex) {
+       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
    }
   }
-
-  list = element.elementsByTagName("virtualsignalmast");
-  if(!list.isEmpty()){
-        for (int i = 0; i < list.size(); i++) {
-            QDomElement e = list.at(i).toElement();
-            QString adapterName = e.attribute("class");
-            log->debug("load via "+adapterName);
-            try {
-//                XmlAdapter adapter = (XmlAdapter)Class.forName(adapterName).newInstance();
-//                // and do it
-//                adapter.load(e);
-                if(adapterName == "jmri.implementation.configurexml.VirtualSignalMastXml")
-                {
-                    VirtualSignalMastXml* xml = new VirtualSignalMastXml();
-                    xml->load(e);
-                }
-            } catch (Exception ex) {
-                log->error("Exception while loading "+e.tagName()+":"+ex.getMessage());
-                //ex.printStackTrace();
-            }
-        }
-    }
-
-    list = element.elementsByTagName("dccsignalmast");
-    if(!list.isEmpty()){
-        for (int i = 0; i < list.size(); i++) {
-            QDomElement e = list.at(i).toElement();
-            QString adapterName = e.attribute("class");
-            log->debug("load via "+adapterName);
-            try {
-//                XmlAdapter adapter = (XmlAdapter)Class.forName(adapterName).newInstance();
-//                // and do it
-//                adapter.load(e);
-             if(adapterName == "jmri.implementation.configurexml.DccSignalMastXml")
-             {
-                 DccSignalMastXml* xml = new DccSignalMastXml();
-                 xml->load(e);
-             }
-            } catch (Exception ex) {
-                log->error("Exception while loading "+e.tagName()+":"+ex.getMessage());
-                //ex.printStackTrace();
-            }
-        }
-    }
-#if 1
-    list = element.elementsByTagName("signalmastrepeater");
-    if(!list.isEmpty())
-    {
-     DefaultSignalMastManager* m = (DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance();
-     for (int i = 0; i < list.size(); i++)
-     {
-      QDomElement e = list.at(i).toElement();
-      QString masterName = e.firstChildElement("masterMast").text();
-      QString slaveName = e.firstChildElement("slaveMast").text();
-      SignalMastRepeater* smr = new SignalMastRepeater(masterName, slaveName);
-      if(!e.firstChildElement("enabled").isNull() && e.firstChildElement("enabled").text()==("false"))
-        smr->setEnabled(false);
-    if(!e.firstChildElement("update").isNull()){
-        if(e.firstChildElement("update").text()==("MasterToSlave"))
-            smr->setDirection(SignalMastRepeater::MASTERTOSLAVE);
-        else if (e.firstChildElement("update").text()==("SlaveToMaster"))
-            smr->setDirection(SignalMastRepeater::SLAVETOMASTER);
-    }
-    try
-    {
-        m->addRepeater(smr);
-    } catch (JmriException ex)
-    {
-        log->error("Unable to add mast repeater " + masterName + " : " + slaveName);
-    }
-   }
-  m->initialiseRepeaters();
  }
-#endif
-    return true;
+
+ list = shared.elementsByTagName("turnoutsignalmast");
+ if (!list.isEmpty())
+ {
+  for (int i = 0; i < list.size(); i++)
+  {
+   QDomElement e = list.at(i).toElement();
+   QString adapterName = e.attribute("class");
+   log->debug("load via " + adapterName);
+   try {
+       XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
+       // and do it
+       adapter->load(e, QDomElement());
+   } catch (Exception ex) {
+       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+   }
+  }
+ }
+
+ list = shared.elementsByTagName("virtualsignalmast");
+ if (!list.isEmpty())
+ {
+  for (int i = 0; i < list.size(); i++)
+  {
+   QDomElement e = list.at(i).toElement();
+   QString adapterName = e.attribute("class");
+    log->debug("load via " + adapterName);
+    try {
+        XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
+        // and do it
+        adapter->load(e, QDomElement());
+    } catch (Exception ex) {
+     log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+    }
+  }
+ }
+
+ list = shared.elementsByTagName("matrixsignalmast");
+ if (!list .isEmpty()) {
+     for (int i = 0; i < list.size(); i++) {
+         QDomElement e = list.at(i).toElement();
+         QString adapterName = e.attribute("class");
+         log->debug("load via " + adapterName);
+         try {
+             XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
+             // and do it
+             adapter->load(e, QDomElement());
+         } catch (Exception ex) {
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+         }
+     }
+ }
+
+ list = shared.elementsByTagName("dccsignalmast");
+ if (!list.isEmpty()) {
+     for (int i = 0; i < list.size(); i++) {
+         QDomElement e = list.at(i).toElement();
+         QString adapterName = e.attribute("class");
+         log->debug("load via " + adapterName);
+         try {
+             XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
+             // and do it
+             adapter->load(e, QDomElement());
+         } catch (Exception ex) {
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+         }
+     }
+ }
+
+ list = shared.elementsByTagName("olcbsignalmast");
+ if (!list.isEmpty()) {
+     for (int i = 0; i < list.size(); i++) {
+         QDomElement e = list.at(i).toElement();
+         QString adapterName = e.attribute("class");
+         log->debug("load via " + adapterName);
+         try {
+             XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
+             // and do it
+             adapter->load(e, QDomElement());
+         } catch (Exception ex) {
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+         }
+     }
+ }
+
+ list = shared.elementsByTagName("signalmastrepeater");
+ if (!list.isEmpty()) {
+     DefaultSignalMastManager* m = (DefaultSignalMastManager*) InstanceManager::getDefault("SignalMastManager");
+     for (int i = 0; i < list.size(); i++) {
+         QDomElement e = list.at(i).toElement();
+         QString masterName = e.firstChildElement("masterMast").text();
+         QString slaveName = e.firstChildElement("slaveMast").text();
+         SignalMastRepeater* smr = new SignalMastRepeater(masterName, slaveName);
+         if (e.firstChildElement("enabled") != QDomElement() && e.firstChildElement("enabled").text()==("false")) {
+             smr->setEnabled(false);
+         }
+         if (e.firstChildElement("update") != QDomElement()) {
+             if (e.firstChildElement("update").text() == ("MasterToSlave")) {
+                 smr->setDirection(SignalMastRepeater::MASTERTOSLAVE);
+             } else if (e.firstChildElement("update").text() == ("SlaveToMaster")) {
+                 smr->setDirection(SignalMastRepeater::SLAVETOMASTER);
+             }
+         }
+         try {
+             m->addRepeater(smr);
+         } catch (JmriException ex) {
+             log->error("Unable to add mast repeater " + masterName + " : " + slaveName);
+         }
+     }
+     m->initialiseRepeaters();
+ }
+ return true;
 }
 
 /*public*/ void DefaultSignalMastManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception) {

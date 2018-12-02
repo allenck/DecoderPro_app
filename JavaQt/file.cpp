@@ -611,9 +611,9 @@ int File::getPrefixLength() {
  */
 /*public*/ QString File::getCanonicalPath() /*throws IOException*/
 {
-    if (isInvalid()) {
-        throw new IOException("Invalid file path");
-    }
+ if (isInvalid()) {
+     throw  IOException("Invalid file path");
+ }
 //    return fs.canonicalize(fs.resolve(this));
  QString p = QFileInfo(path).canonicalFilePath();
  return p;
@@ -1357,9 +1357,9 @@ int File::getPrefixLength() {
 //    if (security != null) {
 //        security.checkWrite(path);
 //    }
-    if (isInvalid()) {
-        return false;
-    }
+//    if (isInvalid()) {
+//        return false;
+//    }
 //    return fs.createDirectory(this);
     QDir d = QDir();
     return d.mkdir(path);

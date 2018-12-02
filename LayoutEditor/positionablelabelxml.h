@@ -9,7 +9,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PositionableLabelXml : public AbstractXmlAdap
 {
     Q_OBJECT
 public:
-    explicit PositionableLabelXml(QObject *parent = 0);
+    Q_INVOKABLE explicit PositionableLabelXml(QObject *parent = 0);
     /*public*/ QDomElement store(QObject* o);
  ~PositionableLabelXml() {}
  PositionableLabelXml(const PositionableLabelXml&) : AbstractXmlAdapter() {}
