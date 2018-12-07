@@ -148,12 +148,12 @@ QString RosterGroupTableAction::helpTarget() {
 }
 
 void RosterGroupTableAction::comboSelected(/*ActionEvent* e,*/ QString group) {
-    Roster* roster = Roster::instance();
-    m->setGroup(roster->getRosterGroupPrefix() + group);
+    Roster* roster = Roster::getDefault();
+    m->setGroup(Roster::ROSTER_GROUP_PREFIX + group);
     m->fireTableDataChanged();
 
 }
 
 /*public*/ JmriPanel* RosterGroupTableAction::makePanel() {
-    throw new IllegalArgumentException("Should not be invoked");
+    throw  IllegalArgumentException("Should not be invoked");
 }

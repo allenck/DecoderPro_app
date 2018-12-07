@@ -31,7 +31,7 @@
 #include "abstractsignalheadmanager.h"
 #include "multisensoricon.h"
 #include "multisensoriconframe.h"
-#include "rfidsensormanager.h"
+#include "rfid/rfidsensormanager.h"
 #include "helputil.h"
 #include <QCloseEvent>
 #include "layoutturntable.h"

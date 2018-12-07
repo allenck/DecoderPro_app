@@ -79,12 +79,12 @@ CreateRosterGroupAction::CreateRosterGroupAction(QObject *parent) :
      foreach (RosterEntry* re, *rosterEntries)
      {
       log->debug("Adding RosterEntry " + re->getId() + " to new group " + entry);
-      re->putAttribute(Roster::instance()->getRosterGroupPrefix() + entry, "yes");
+      re->putAttribute(Roster::ROSTER_GROUP_PREFIX + entry, "yes");
       re->updateFile();
      }
     }
-    Roster::instance()->addRosterGroupList(entry);
-    Roster::writeRoster();
+    Roster::getDefault()->addRosterGroup(entry);
+    Roster::getDefault()->writeRoster();
 }
 
 // never invoked, because we overrode actionPerformed above

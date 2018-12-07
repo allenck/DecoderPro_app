@@ -353,7 +353,7 @@ void FunctionLabelsPane::on_btnSave_clicked()
 // QTextStream stream (&file);
 // stream.setCodec("UTF-8");
 // doc.save(stream,2);
- Roster::writeRoster();
+ Roster::getDefault()->writeRoster();
 }
 
 /**
@@ -599,7 +599,7 @@ void FunctionLabelsPane::on_btnSave_clicked()
 void FunctionLabelsPane::onRightClick(DropJLabel * l)
 {
 // QString iconPath;
- NamedIcon* icon;
+// NamedIcon* icon;
 //  icon = l->icon();
 // if(icon != NULL)
 //  iconPath = icon->getURL();

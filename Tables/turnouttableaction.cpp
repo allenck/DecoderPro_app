@@ -273,6 +273,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 {
  int row = index.row();
  int col = index.column();
+ if(row < 0)
+     return 0;
  QString name = sysNameList.at(row);
  TurnoutManager* manager = self->turnManager;
  AbstractTurnout* t;

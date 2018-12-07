@@ -161,7 +161,7 @@ KLSPIdentifyLoco::KLSPIdentifyLoco(Programmer* programmer, KnownLocoSelPane *who
 /*protected*/ void KnownLocoSelPane::selectLoco(int dccAddress)
 {
  // locate that loco
- QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, QString::number(dccAddress),
+ QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, QString::number(dccAddress),
                                             NULL, NULL, NULL, NULL);
  if (log->isDebugEnabled()) log->debug("selectLoco found "+QString::number(l.size())+" matches");
  if (l.size() > 0)
@@ -172,7 +172,7 @@ KLSPIdentifyLoco::KLSPIdentifyLoco(Programmer* programmer, KnownLocoSelPane *who
   QString group = locoBox->getSelectedRosterGroup();
   if (group != NULL && group!=(Roster::ALLENTRIES))
   {
-   QList<RosterEntry*> entries = Roster::instance()->getEntriesWithAttributeKeyValue(Roster::getRosterGroupProperty(group), "yes");
+   QList<RosterEntry*> entries = Roster::getDefault()->getEntriesWithAttributeKeyValue(Roster::getRosterGroupProperty(group), "yes");
    if (entries.contains(r))
    {
     locoBox->setSelectedRosterEntry(r);

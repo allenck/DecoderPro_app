@@ -2,7 +2,7 @@
 #include "pr3systemconnectionmemo.h"
 #include "lnpacketizer.h"
 #include "LocoIO/lncommandstationtype.h"
-#include "lnpr2packetizer.h"
+#include "loconet/PR2/lnpr2packtizer.h"
 #include "instancemanager.h"
 
 PR3Adapter::PR3Adapter(QObject* parent)
@@ -60,7 +60,7 @@ void PR3Adapter::configure()
   ((PR3SystemConnectionMemo*)this->getSystemConnectionMemo())->setLnTrafficController(packets);
   // do the common manager config
   ((PR3SystemConnectionMemo*)this->getSystemConnectionMemo())->configureCommandStation(commandStationType,
-                                                  mTurnoutNoRetry, mTurnoutExtraSpace);
+                                                  mTurnoutNoRetry, mTurnoutExtraSpace, mTranspondingAvailable);
   ((PR3SystemConnectionMemo*) this->getSystemConnectionMemo())->configureManagersPR2();
 
   // start operation
@@ -90,7 +90,7 @@ void PR3Adapter::configure()
   ((PR3SystemConnectionMemo*)this->getSystemConnectionMemo())->setLnTrafficController(packets);
   // do the common manager config
   ((PR3SystemConnectionMemo*)this->getSystemConnectionMemo())->configureCommandStation(commandStationType,
-                                              mTurnoutNoRetry, mTurnoutExtraSpace);
+                                              mTurnoutNoRetry, mTurnoutExtraSpace, mTranspondingAvailable);
 
   ((PR3SystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagersMS100();
 

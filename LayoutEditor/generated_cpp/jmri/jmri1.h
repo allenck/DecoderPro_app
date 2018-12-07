@@ -29,7 +29,7 @@
 #include <qstringlist.h>
 #include <qvector.h>
 #include <reportermanager.h>
-#include <rfidsensormanager.h>
+#include <rfid/rfidsensormanager.h>
 #include <routemanager.h>
 #include <sensor.h>
 #include <sensormanager.h>

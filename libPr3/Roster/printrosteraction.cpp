@@ -75,7 +75,7 @@ void PrintRosterAction::common()
 /*public*/ void PrintRosterAction::actionPerformed(ActionEvent* /*e*/)
 {
  // obtain a HardcopyWriter to do this
- Roster* r = Roster::instance();
+ Roster* r = Roster::getDefault();
  QString title = "DecoderPro Roster";
  QString rosterGroup = r->getDefaultRosterGroup();
  // rosterGroup may legitimately be NULL

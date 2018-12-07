@@ -38,7 +38,7 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
 
 /*public*/ int RosterGroupTableModel::rowCount(const QModelIndex &parent) const
 {
- return Roster::instance()->numEntries();
+ return Roster::getDefault()->numEntries();
 }
 
 /*public*/ int RosterGroupTableModel::columnCount(const QModelIndex &parent) const
@@ -116,7 +116,7 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
 /*public*/ QVariant RosterGroupTableModel::data(const QModelIndex &index, int role) const
 {
  int row = index.row();
- RosterEntry* re = Roster::instance()->getEntry(row);
+ RosterEntry* re = Roster::getDefault()->getEntry(row);
 
  if(role == Qt::CheckStateRole)
  {
@@ -200,7 +200,7 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
  {
   int row = index.row();
   int col = index.column();
-  RosterEntry* re = Roster::instance()->getEntry(row);
+  RosterEntry* re = Roster::getDefault()->getEntry(row);
   if ((col == ADDTOGROUPCOL) && (group!=("")))
   {
    if (value.toInt()== Qt::Checked)
@@ -210,7 +210,7 @@ RosterGroupTableModel::RosterGroupTableModel(QObject *parent) :
        re->deleteAttribute(group);
    }
    re->updateFile();
-   Roster::writeRoster();
+   Roster::getDefault()->writeRoster();
 
   }
  }

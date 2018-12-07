@@ -338,7 +338,7 @@ return this->getPanels(locale, JSON::XML);
     }
 //        InstanceManager::getList("SystemConnectionMemo").stream().map((instance) -> instance)
 //                .filter((memo) -> (!memo.getDisabled() && !prefixes.contains(memo.getSystemPrefix()))).forEach((memo) ->
-    foreach(QObject* obj, InstanceManager::getList("SystemConnectionMemo"))
+    foreach(QObject* obj, *InstanceManager::getList("SystemConnectionMemo"))
     {
      SystemConnectionMemo* memo = (SystemConnectionMemo*)obj;
         QJsonObject connection = QJsonObject(); //mapper.createObjectNode().put(JSON::TYPE, JSON::SYSTEM_CONNECTION);

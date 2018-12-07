@@ -89,7 +89,7 @@ void RenameRosterGroupAction::common()
 //                "Rename Roster Group",
 //                JOptionPane.INFORMATION_MESSAGE,
 //                NULL,
-//                Roster::instance().getRosterGroupList().toArray(),
+//                Roster::getDefault().getRosterGroupList().toArray(),
 //                NULL);
      InputDialog dlg(tr("<html><b>Rename roster group</b><br>Select the roster group to rename.</html>"), group, NULL, _who);
      dlg.setWindowTitle(tr("Rename Roster Group"));
@@ -117,7 +117,7 @@ void RenameRosterGroupAction::common()
     {
         return;
     }
-    else if (Roster::instance()->getRosterGroupList().contains(entry))
+    else if (Roster::getDefault()->getRosterGroupList().contains(entry))
     {
 //        JOptionPane.showMessageDialog(_who,
 //                "<html><b>Unable to rename roster group</b><br>The roster group named \"" + entry + "\" already exists.",
@@ -127,8 +127,8 @@ void RenameRosterGroupAction::common()
     }
 
     // rename the roster grouping
-    Roster::instance()->renameRosterGroupList(group, entry);
-    Roster::writeRoster();
+    Roster::getDefault()->renameRosterGroupList(group, entry);
+    Roster::getDefault()->writeRoster();
 }
 
 // never invoked, because we overrode actionPerformed above

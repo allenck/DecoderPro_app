@@ -53,7 +53,7 @@
 
 /*public*/ void RosterEntryToGroupAction::actionPerformed(ActionEvent* event)
 {
- roster = Roster::instance();
+ roster = Roster::getDefault();
 
  selections = new RosterGroupComboBox();
  selections->setObjectName("selections");
@@ -93,7 +93,7 @@
  RosterEntry* re = roster->entryFromTitle(selEntry);
  QString selGroup = Roster::getRosterGroupProperty( selections->currentText());
  re->putAttribute(selGroup, "yes");
- Roster::writeRoster();
+ Roster::getDefault()->writeRoster();
  re->updateFile();
  actionPerformed(event);
 }
@@ -104,7 +104,7 @@ void RosterEntryToGroupAction::rosterEntryUpdate()
  {
   rosterEntry->clear();
  }
- QString group = roster->getRosterGroupPrefix() + selections->currentText();
+ QString group = Roster::ROSTER_GROUP_PREFIX + selections->currentText();
  for (int i = 0; i < roster->numEntries(); i++)
  {
   RosterEntry* r = roster->getEntry(i);

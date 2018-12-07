@@ -8,6 +8,7 @@
 #include "QMessageBox"
 #include "roster.h"
 #include "../../LayoutEditor/inputdialog.h"
+#include "bean.h"
 
 //DeleteRosterItemAction::DeleteRosterItemAction(QObject *parent) :
 //    QAction(parent)
@@ -74,8 +75,8 @@
 /*public*/ void DeleteRosterItemAction::actionPerformed(ActionEvent* event)
 {
 
- Roster* roster = Roster::instance();
- QString rosterGroup = Roster::instance()->getDefaultRosterGroup();
+ Roster* roster = Roster::getDefault();
+ QString rosterGroup = Roster::getDefault()->getDefaultRosterGroup();
  QList<RosterEntry*>* entries;
  // rosterGroup may legitimately be NULL
  // but getProperty returns NULL if the property cannot be found, so
@@ -123,7 +124,7 @@
    re->deleteAttribute(group);
    re->updateFile();
   }
-  Roster::writeRoster();
+  Roster::getDefault()->writeRoster();
 
   // backup the file & delete it
   if (rosterGroup == NULL)
@@ -165,7 +166,7 @@
               +selections->currentText());
     if (retval != QDialog::Accepted) return NULL;
     QList<RosterEntry*>* entries = new QList<RosterEntry*>;
-    entries->append( (RosterEntry*) Roster::instance()->getEntryForId(selections->currentText()));
+    entries->append( (RosterEntry*) Roster::getDefault()->getEntryForId(selections->currentText()));
     return entries;
 }
 

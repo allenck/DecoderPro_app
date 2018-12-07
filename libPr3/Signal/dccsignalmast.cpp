@@ -87,12 +87,12 @@ void DccSignalMast::common()
  } else {
      QString commandStationPrefix = parts[0].mid(0, parts[0].indexOf("$") - 1);
      //QList<CommandStation*>* connList = InstanceManager::getList("CommandStation");
-     QObjectList connList = InstanceManager::getList("CommandStation");
-     if (!connList.isEmpty())
+     QObjectList* connList = InstanceManager::getList("CommandStation");
+     if (!connList->isEmpty())
      {
-      for (int x = 0; x < connList.size(); x++)
+      for (int x = 0; x < connList->size(); x++)
       {
-       CommandStation* station = (CommandStation*)connList.at(x);
+       CommandStation* station = (CommandStation*)connList->at(x);
        if (station->getSystemPrefix()==(commandStationPrefix))
        {
         c = station;

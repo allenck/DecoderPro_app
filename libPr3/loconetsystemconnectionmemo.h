@@ -52,7 +52,7 @@ public:
  void setLnTrafficController(LnTrafficController* lt);
 // void configureCommandStation(bool mCanRead, bool mProgPowersOff,
 //  QString name, bool mTurnoutNoRetry, bool mTurnoutExtraSpace);
- /*public*/ void configureCommandStation(LnCommandStationType* type, bool mTurnoutNoRetry, bool mTurnoutExtraSpace);
+ /*public*/ void configureCommandStation(LnCommandStationType* type, bool mTurnoutNoRetry, bool mTurnoutExtraSpace, bool mTranspondingAvailable);
  /**
   * Provides access to the SlotManager for this
   * particular connection.
@@ -64,7 +64,7 @@ public:
  void setProgrammerManager(DefaultProgrammerManager* p);
  /*public*/ bool provides(QString type);
  /*public*/ Manager*  get(QString T);
- void configureManagers();
+ virtual void configureManagers();
  LnPowerManager* getPowerManager();
 
  ThrottleManager* getThrottleManager();

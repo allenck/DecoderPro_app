@@ -15,8 +15,9 @@ class RfidReply;
 
 /*public interface*/ class RfidListener : public AbstractMRListener
 {
+public:
     /*public*/ virtual void message(RfidMessage* m);
-    /*public*/ virtual void reply(RfidReply m);
+    /*public*/ virtual void reply(RfidReply* m);
 };
 
 #endif // RFIDLISTENER_H

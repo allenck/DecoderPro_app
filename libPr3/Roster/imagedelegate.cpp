@@ -21,7 +21,7 @@ void ImageDelegate::paint(QPainter * painter, const QStyleOptionViewItem & optio
  QModelIndex ix = sorter->mapToSource(index);
  RosterTableModel* model = (RosterTableModel*)ix.model();
  int row = index.data(Qt::DisplayRole).toInt();
- RosterEntry* re = Roster::instance()->getGroupEntry(model->getRosterGroup(), row);
+ RosterEntry* re = Roster::getDefault()->getGroupEntry(model->getRosterGroup(), row);
  QString iconPath = re->getImagePath();
  if(!QFile(iconPath).exists()) return;
  QPixmap pm(iconPath);

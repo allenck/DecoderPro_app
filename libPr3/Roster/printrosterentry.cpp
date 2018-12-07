@@ -14,7 +14,7 @@
 #include "jframe.h"
 #include <QBoxLayout>
 #include <QCheckBox>
-#include "functionlabelspane.h"
+#include "functionlabelpane.h"
 #include <QList>
 #include "flowlayout.h"
 #include "rostermedia.h"
@@ -38,7 +38,7 @@
  _rMPane         = NULL;
  _parent         = NULL;
  _rosterEntry = rosterEntry;
- _flPane = new FunctionLabelsPane(rosterEntry);
+ _flPane = new FunctionLabelPane(rosterEntry);
  _rMPane = new RosterMediaPane(rosterEntry);
  _parent = parent;
  log = new Logger("PrintRosterEntry");
@@ -154,7 +154,7 @@
 
 /*public*/ bool  PrintRosterEntry::isBusy() { return false; }
 
-/*public*/  PrintRosterEntry::PrintRosterEntry(RosterEntry* rosterEntry, QList<QWidget*> paneList, FunctionLabelsPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent)
+/*public*/  PrintRosterEntry::PrintRosterEntry(RosterEntry* rosterEntry, QList<QWidget*> paneList, FunctionLabelPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent)
 {
  _rosterEntry = rosterEntry;
  _paneList = paneList;

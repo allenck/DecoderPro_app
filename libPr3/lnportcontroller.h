@@ -65,6 +65,9 @@ protected:
  // There are also "PR3 standalone programmer" and "Stand-alone LocoNet"
  // in pr3/PR3Adapter
  QList<LnCommandStationType*> commandStationTypes;
+
+protected:
+ /*protected*/ bool mTranspondingAvailable = false;
 };
 
 #endif // LNPORTCONTROLLER_H

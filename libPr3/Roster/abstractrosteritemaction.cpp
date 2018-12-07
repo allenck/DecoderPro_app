@@ -109,7 +109,7 @@ bool AbstractRosterItemAction::selectExistingFromEntry()
  if (retval!= QDialog::Accepted) return false;  // user didn't select
 
  // find the file for the selected entry to copy
- setExistingEntry((RosterEntry*) Roster::instance()->getEntryForId(selections->currentText()));
+ setExistingEntry((RosterEntry*) Roster::getDefault()->getEntryForId(selections->currentText()));
 
  return true;
 }
@@ -147,7 +147,7 @@ bool AbstractRosterItemAction::selectNewToEntryID()
    }
 
    // check for duplicate
-   if (0 == Roster::instance()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, mToID).size()) break;
+   if (0 == Roster::getDefault()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, mToID).size()) break;
 
    // here it is a duplicate, reprompt
     //JOptionPane.showMessageDialog(mParent,
@@ -207,8 +207,8 @@ bool AbstractRosterItemAction::selectNewToFile()
 void AbstractRosterItemAction::addToEntryToRoster()
 {
  // add the new entry to the roster & write it out
- Roster::instance()->addEntry(mToEntry);
- Roster::writeRoster();
+ Roster::getDefault()->addEntry(mToEntry);
+ Roster::getDefault()->writeRoster();
 }
 
 // never invoked, because we overrode actionPerformed above

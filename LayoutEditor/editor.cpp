@@ -1197,7 +1197,7 @@ void Editor::On_removeMenuAction_triggered()
     rosterBox = new  RosterEntrySelectorPanel(locoRosterFrame);
     rosterBox->setVisible(true);
     formLayout->addWidget(rosterBox);
-   // RosterEntryComboBox* reCombo = new RosterEntryComboBox(Roster::instance(), Roster::instance()->getDefaultRosterGroup(), "", "", "", "", "", "", "", locoRosterFrame);
+   // RosterEntryComboBox* reCombo = new RosterEntryComboBox(Roster::getDefault(), Roster::getDefault()->getDefaultRosterGroup(), "", "", "", "", "", "", "", locoRosterFrame);
    // reCombo->setEnabled(true);
     //reCombo->setCurrentIndex(0);
    // formLayout->addWidget(reCombo);
@@ -1240,7 +1240,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 {
  if (""==(rosterEntryTitle))
         return nullptr;
-    return selectLoco(Roster::instance()->entryFromTitle(rosterEntryTitle));
+    return selectLoco(Roster::getDefault()->entryFromTitle(rosterEntryTitle));
 }
 
 /*protected*/ LocoIcon* Editor::selectLoco(RosterEntry* entry) {

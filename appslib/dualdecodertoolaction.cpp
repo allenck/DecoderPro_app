@@ -38,13 +38,13 @@ void DualDecoderToolAction::common()
 {
  // disable ourself if programming is not possible
  bool enabled = false;
- if ((!InstanceManager::getList("GlobalProgrammerManager").isEmpty())
-     && (InstanceManager::getList("GlobalProgrammerManager").size() > 0))
+ if ((!InstanceManager::getList("GlobalProgrammerManager")->isEmpty())
+     && (InstanceManager::getList("GlobalProgrammerManager")->size() > 0))
  {
      enabled = true;
  }
- if ((!InstanceManager::getList("AddressedProgrammerManager").isEmpty())
-     && (InstanceManager::getList("AddressedProgrammerManager").size() > 0))
+ if ((!InstanceManager::getList("AddressedProgrammerManager")->isEmpty())
+     && (InstanceManager::getList("AddressedProgrammerManager")->size() > 0))
  {
      enabled = true;
  }

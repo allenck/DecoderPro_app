@@ -907,8 +907,8 @@ QString ProfileManager::FileFilter1::getDescription()
         }
     }
     if (exportExternalRoster) {
-        FileUtil::copy(new File(Roster::defaultRosterFilename()), new File(tempProfilePath, "roster.xml")); // NOI18N
-        FileUtil::copy(new File(Roster::getFileLocation(), "roster"), new File(tempProfilePath, "roster")); // NOI18N
+     FileUtil::copy(new File(Roster::getDefault()->getRosterIndexPath()), new File(tempProfilePath, "roster.xml")); // NOI18N
+     FileUtil::copy(new File(Roster::getDefault()->getRosterLocation(), "roster"), new File(tempProfilePath, "roster")); // NOI18N
         QDomElement roster = doc.documentElement().firstChildElement("roster"); // NOI18N
         roster.removeAttribute("directory"); // NOI18N
     }

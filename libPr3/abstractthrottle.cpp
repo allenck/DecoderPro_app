@@ -1188,6 +1188,43 @@ void AbstractThrottle::stopClock() {
  /*public*/ BasicRosterEntry* AbstractThrottle::getRosterEntry(){
     return re;
  }
+
+/*protected*/ int AbstractThrottle::intSpeed(float speed) {
+    return this->intSpeed(speed, 127);
+}                                       // non-stop values in 128 speed
+
+/**
+ * Get an integer speed for the given raw speed value.
+ *
+ * @param speed the speed as a percentage of maximum possible speed.
+ *              Negative values indicate a need for an emergency stop.
+ * @param steps number of possible speeds. Values less than 2 will cause
+ *              errors.
+ * @return an integer in the range 0-steps
+ */
+/*protected*/ int AbstractThrottle::intSpeed(float speed, int steps) {
+    // test that speed is < 0 for emergency stop since calculation of
+    // value returns 0 for some values of -1 < rawSpeed < 0
+    if (speed < 0) {
+        return 1; // emergency stop
+    }
+    // since Emergency Stop (estop) is speed 1, and a negative speed
+    // is used for estop, subtract 1 from steps to avoid the estop
+    // Use ceil() to prevent smaller positive values from being 0
+    int value = (int) qCeil((steps - 1) * speed);
+    if (value < 0) {
+        // if we get here, something is wrong and needs to be reported.
+        Exception ex =  Exception("Error calculating speed. Please send logs to the JMRI developers.");
+        log->error(ex.getMessage(), ex);
+        return 1;
+    } else if (value >= steps) {
+        return steps; // maximum possible speed
+    } else if (value > 0) {
+        return value + 1; // add 1 to the value to avoid the estop
+    } else {
+        return 0; // non-emergency stop
+    }
+}
 //    // initialize logging
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractThrottle.class.getName());
 

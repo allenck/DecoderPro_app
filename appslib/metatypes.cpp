@@ -280,6 +280,12 @@
 #include "signalspeedmap.h"
 #include "dccsignalheadxml.h"
 #include "tripleoutoutsignalheadxml.h"
+#include "../libPr3/loconet/PR2/pr2connectionconfigxml.h"
+#include "../libPr3/loconet/PR2/pr2connectionconfig.h"
+#include "../libPr3/rfid/rfidsensormanagerxml.h"
+#include "../libPr3/rfid/rfidreportermanagerxml.h"
+#include "../libPr3/rfid/rfidserialconnectionconfig.h"
+#include "../libPr3/rfid/rfidserialconnectionconfigxml.h".h"
 
 bool Metatypes::done = false;
 
@@ -573,6 +579,12 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SignalSpeedMap>("SignalSpeedMap");
  qRegisterMetaType<DccSignalHeadXml>("DccSignalHeadXml");
  qRegisterMetaType<TripleOutputSignalHeadXml>("TripleOutputSignalHeadXml");
+ qRegisterMetaType<Pr2ConnectionConfigXml>("Pr2ConnectionConfigXml");
+ qRegisterMetaType<Pr2ConnectionConfig>("Pr2ConnectionConfig");
+ qRegisterMetaType<RfidReporterManagerXml>("RfidReporterManagerXml");
+ qRegisterMetaType<RfidSensorManagerXml>("RfidSensorManagerXml");
+ qRegisterMetaType<RfidSerialConnectionConfig>("RfidSerialConnectionConfig");
+ qRegisterMetaType<RfidSerialConnectionConfigXml>("RfidSerialConnectionConfigXml");
 
  Metatypes::done = true;
 }

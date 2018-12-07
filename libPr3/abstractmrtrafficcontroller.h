@@ -9,11 +9,12 @@
 #include "abstractportcontroller.h"
 #include "runnable.h"
 #include <QLinkedList>
+#include "rfid/rfidinterface.h"
 
 class AbstractMRListener;
 class AbstractMRMessage;
 class AbstractMRReply;
-class AbstractMRTrafficController : public QObject
+class AbstractMRTrafficController : public RfidInterface
 {
     Q_OBJECT
 public:

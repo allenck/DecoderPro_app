@@ -65,7 +65,7 @@ void RosterGroupComboBox::common(Roster* roster, QString selection)
  */
 /*public*/ RosterGroupComboBox::RosterGroupComboBox(QString selection, QWidget *parent) : RosterGroupSelector(parent)
 {
-  common(Roster::instance(), selection);
+  common(Roster::getDefault(), selection);
 }
 
 /**
@@ -86,7 +86,7 @@ void RosterGroupComboBox::common(Roster* roster, QString selection)
 /*public*/ RosterGroupComboBox::RosterGroupComboBox(QWidget *parent)
  : RosterGroupSelector(parent)
 {
- common(Roster::instance(), Roster::instance()->getDefaultRosterGroup());
+ common(Roster::getDefault(), Roster::getDefault()->getDefaultRosterGroup());
 }
 
 /**

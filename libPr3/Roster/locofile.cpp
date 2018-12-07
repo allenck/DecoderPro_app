@@ -4,8 +4,8 @@
 #include "fileutil.h"
 #include "roster.h"
 #include "file.h"
-
-/*static*/ /*private*/ QString LocoFile::fileLocation = FileUtil::getUserFilesPath()+"roster"+QDir::separator();
+#include "variablevalue.h"
+#include "loggerfactory.h"
 
 LocoFile::LocoFile(QObject *parent) :
     XmlFile(parent)
@@ -44,10 +44,10 @@ LocoFile::LocoFile(QObject *parent) :
  *                 intended, but not required, that this be empty.
  */
 //@SuppressWarnings("unchecked")
-/*public*/ /*static*/ void LocoFile::loadCvModel(QDomElement loco, CvTableModel* cvModel, IndexedCvTableModel* iCvModel){
+/*public*/ /*static*/ void LocoFile::loadCvModel(QDomElement loco, CvTableModel* cvModel, QString /*family*/){
     CvValue* cvObject;
-    Logger* log = new Logger("LocoFile");
     // get the CVs and load
+    QString rosterName = loco.attribute("id");
     QDomElement values = loco.firstChildElement("values");
 
     // Ugly hack because of bug 1898971 in JMRI 2.1.2 - contents may be directly inside the
@@ -57,85 +57,130 @@ LocoFile::LocoFile(QObject *parent) :
         QDomNodeList elementList = loco.elementsByTagName("CVvalue");
         if (!elementList.isEmpty()) values = loco;
     }
+  if(values.isNull())
+  {
+    //for (Element element : values.getChildren("CVvalue"))
+    QDomNodeList nl = values.elementsByTagName("CVvalue");
+    for(int i=0; i < nl.size(); i++)
+    {
+     QDomElement element = nl.at(i).toElement();
+     // locate the row
+     if (element.attribute("name") == "") {
+         if (log->isDebugEnabled()) {
+             log->debug("unexpected null in name " + element.tagName()); // + " " + element.getAttributes());
+         }
+         break;
+     }
+     if (element.attribute("value") == "") {
+         if (log->isDebugEnabled()) {
+             log->debug("unexpected null in value " + element.tagName()); // + " " + element.getAttributes());
+         }
+         break;
+     }
 
-    if (!values.isNull()) {
-        // get the CV values and load
-        QDomNodeList elementList = values.elementsByTagName("CVvalue");
-        if (log->isDebugEnabled()) log->debug("Found "+QString("%1").arg(elementList.size())+" CVvalues");
+     QString name = element.attribute("name");
+     QString value = element.attribute("value");
+     log->debug(tr("CV named %1 has value: %2").arg(name).arg(value));
 
-        for (int i=0; i<elementList.size(); i++) {
-            // locate the row
-            if ( elementList.at(i).toElement().attribute("name") == NULL) {
-                if (log->isDebugEnabled()) log->debug("unexpected NULL in name "/*+((elementList.at(i)))+" "+((elementList.at(i))).attributes()*/);
-                break;
-            }
-            if ( elementList.at(i).toElement().attribute("value") == NULL) {
-                if (log->isDebugEnabled()) log->debug("unexpected NULL in value "/*+((elementList.at(i)))+" "+((elementList.at(i).toElement())).attributes()*/);
-                break;
-            }
-
-            QString name = ((elementList.at(i).toElement())).attribute("name");
-            QString value = ((elementList.at(i).toElement())).attribute("value");
-            if (log->isDebugEnabled()) log->debug("CV: "+QString::number(i)+"th entry, CV number "+name+" has value: "+value);
-
-            int cv = name.toInt();
-            cvObject = cvModel->allCvMap()->value(name);
-            if (cvObject == NULL) {
-                log->warn("CV "+QString::number(cv)+" was in loco file, but not defined by the decoder definition");
-                cvModel->addCV(name, false, false, false);
-                cvObject = cvModel->allCvMap()->value(name);
-            }
-            cvObject->setValue((value).toInt());
-            cvObject->setState(CvValue::FROMFILE);
-        }
-        elementList = values.elementsByTagName("indexedCVvalue");
-        if (log->isDebugEnabled()) log->debug("Found "+QString::number(elementList.size())+" indexedCVvalues");
-        for (int i=0; i<elementList.size(); i++) {
-            if ( ((elementList.at(i).toElement())).attribute("name") == NULL)
-            {
-                if (log->isDebugEnabled()) log->debug("unexpected NULL in name "/*+((elementList.at(i).toElement()))+" "+((elementList.at(i).toElement())).attributes()*/);
-                break;
-            }
-            if ( ((elementList.at(i).toElement())).attribute("value") == NULL) {
-                if (log->isDebugEnabled()) log->debug("unexpected NULL in value "/*+((elementList.at(i).toElement()))+" "+((elementList.at(i).toElement())).attributes()*/);
-                break;
-            }
-
-            QString name  = ((elementList.at(i).toElement())).attribute("name");
-            int piCv  =(((elementList.at(i).toElement())).attribute("piCv").toInt());
-            int piVal = (((elementList.at(i).toElement())).attribute("piVal").toInt());
-            int siCv  = (((elementList.at(i).toElement())).attribute("siCv").toInt());
-            int siVal = (((elementList.at(i).toElement())).attribute("siVal").toInt());
-            int iCv   = (((elementList.at(i).toElement())).attribute("iCv").toInt());
-            QString value = ((elementList.at(i).toElement())).attribute("value");
-            if (log->isDebugEnabled()) log->debug("CV: "+QString::number(i)+"th entry, CV number "+name+" has value: "+value);
-
-            // cvObject = (iCvModel->allIndxCvVector().elementAt(i));
-            cvObject = iCvModel->getMatchingIndexedCV(name);
-            if (log->isDebugEnabled())
-                log->debug("Matched name "+name+" with CV "+(cvObject->iCv()));
-
-            if (cvObject == NULL) {
-                log->warn("Indexed CV "+name+" was in loco file, but not defined by the decoder definition");
-                log->debug("attempt to add "+QString::number(i)+" "+name+" "+QString::number(piCv)+" "+QString::number(piVal)+" "+QString::number(siCv)+" "+QString::number(siVal)+" "+QString::number(iCv));
-                //iCvModel->addIndxCV(i, name, piCv, piVal, siCv, siVal, iCv, false, false, false);
-                cvModel->addCV(name, false, false, false);
-                cvObject = (iCvModel->allIndxCvVector()->at(i));
-            }
-            cvObject->setValue((value).toInt());
-            if ( cvObject->getInfoOnly() ) {
-                cvObject->setState(CvValue::READ);
-            } else {
-                cvObject->setState(CvValue::FROMFILE);
-            }
-        }
-    } else log->error("no values element found in config file; CVs not configured");
+     cvObject = cvModel->allCvMap()->value(name);
+     if (cvObject == nullptr) {
+         // need to disable this warning as ESU files do not generate CV entries until panel load time
+         // log.warn("CV "+name+" was in loco file, but not defined by the decoder definition");
+         cvModel->addCV(name, false, false, false);
+         cvObject = cvModel->allCvMap()->value(name);
+     }
+     cvObject->setValue((value).toInt());
+     cvObject->setState(CvValue::FROMFILE);
+    }
+} else {
+ log->error(tr("no values element found in config file; CVs not configured for ID=\"%1\"").arg( rosterName));
+}
 
     // ugly hack - set CV17 back to fromFile if present
     // this is here because setting CV17, then CV18 seems to set
     // CV17 to Edited.  This needs to be understood & fixed.
     cvObject = cvModel->allCvMap()->value("17");
     if (cvObject!=NULL) cvObject->setState(CvValue::FROMFILE);
+}
+
+/**
+ * Load a VariableTableModel from the locomotive element in the File
+ *
+ * @param loco    A JDOM Element containing the locomotive definition
+ * @param varModel An existing VariableTableModel object
+ */
+/*public*/ /*static*/ void LocoFile::loadVariableModel(QDomElement loco, VariableTableModel* varModel) {
+
+    QDomElement values = loco.firstChildElement("values");
+
+    if (values.isNull()) {
+        log->error(tr("no values element found in config file; Variable values not loaded for \"%1\"").arg(loco.attribute("id")));
+        return;
+    }
+
+    QDomElement decoderDef = values.firstChildElement("decoderDef");
+
+    if (decoderDef.isNull()) {
+        log->error(tr("no decoderDef element found in config file; Variable values not loaded for \"%1\"").arg(loco.attribute("id")));
+        return;
+    }
+
+
+    // get the Variable values and load
+    if (log->isDebugEnabled()) {
+        log->debug("Found " + QString::number(decoderDef.elementsByTagName("varValue").size()) + " varValue elements");
+    }
+
+    // preload an index
+    QMap<QString, VariableValue*> map = QMap<QString, VariableValue*>();
+    for (int i = 0; i < varModel->getRowCount(); i++) {
+        log->debug(tr("  map put %1 to %2").arg(varModel->getItem(i)).arg(varModel->getVariable(i)->getCvDescription()));
+        map.insert(varModel->getItem(i), varModel->getVariable(i));
+        map.insert(varModel->getLabel(i), varModel->getVariable(i));
+    }
+
+    //for (Element element : decoderDef.getChildren("varValue"))
+    QDomNodeList nl = decoderDef.elementsByTagName("varValue");
+    for(int i=0; i < nl.size(); i++)
+    {
+     QDomElement element = nl.at(i).toElement();
+        // locate the row
+        if (element.attribute("item") == "") {
+            if (log->isDebugEnabled()) {
+                log->debug(tr("unexpected null in item %1 %2").arg(element.tagName()).arg( element.tagName()));
+            }
+            break;
+        }
+        if (element.attribute("value") == "") {
+            if (log->isDebugEnabled()) {
+                log->debug(tr("unexpected null in value %1 %2").arg(element.tagName()).arg(element.tagName()));
+            }
+            break;
+        }
+
+        QString item = element.attribute("item");
+        QString value = element.attribute("value");
+        log->debug(tr("Variable \"%1\" has value: %2").arg(item).arg(value));
+
+        VariableValue* var = map.value(item);
+        if (var != nullptr) {
+            var->setValue(value);
+        } else {
+            if (selectMissingVarResponse(item) == MessageResponse::REPORT) {
+                log->warn(tr("Did not find locofile variable \"%1\" in decoder definition, not loading").arg(item));
+            }
+        }
+    }
+}
+
+/**
+ * Determine if a missing variable in decoder definition should be logged
+ * @param var Name of missing variable
+ * @return Decision on how to handle
+ */
+/*protected*/ /*static*/ LocoFile::MessageResponse LocoFile::selectMissingVarResponse(QString var) {
+    if (var.startsWith("ESU Function Row")) return LocoFile::MessageResponse::IGNORE; // from jmri.jmrit.symbolicprog.FnMapPanelESU
+    return LocoFile::MessageResponse::REPORT;
 }
 
 /**
@@ -345,15 +390,13 @@ LocoFile::LocoFile(QObject *parent) :
  * by default.
  */
 
-/*static*/ /*public*/ QString LocoFile::getFileLocation() { return fileLocation; }
-
-/*static*/ /*public*/ void LocoFile::setFileLocation(QString loc) {
-    fileLocation = loc;
-    if (!fileLocation.endsWith(QDir::separator()))
-        fileLocation = fileLocation+QDir::separator();
+/*static*/ /*public*/ QString LocoFile::getFileLocation()
+{
+ return Roster::getDefault()->getRosterLocation() + "roster" + File::separator;
 }
 
+
 //    // initialize logging
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LocoFile.class.getName());
+/*static*/ Logger* LocoFile::log = LoggerFactory::getLogger("LocoFile");
 
 //}

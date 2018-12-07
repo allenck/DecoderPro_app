@@ -1176,6 +1176,8 @@ QString SlotManager::getSystemPrefix()
   return "L";
  return adaptermemo->getSystemPrefix();
 }
+/*public*/ void SlotManager::setTranspondingAvailable(bool val) { transpondingAvailable = val; }
+/*public*/ bool SlotManager::getTranspondingAvailable() { return transpondingAvailable; }
 
 LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
 {

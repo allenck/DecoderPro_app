@@ -20,6 +20,10 @@ private:
  // /*private*/ control members
  /*private*/ bool opened;// = false;
  Logger* log;
+
+protected:
+ /*protected*/ bool mTranspondingAvailable = false;
+
 };
 
 #endif // LNTCPDRIVERADAPTER_H

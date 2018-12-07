@@ -3,6 +3,7 @@
 #include "abstractreportermanager.h"
 #include "rfidreporter.h"
 
+class RfidMessage;
 class LIBPR3SHARED_EXPORT RfidReporterManager : public AbstractReporterManager
 {
     Q_OBJECT
@@ -11,6 +12,7 @@ public:
     /*public*/ RfidReporterManager(QString prefix, QObject *parent = 0);
     /*public*/ QString getSystemPrefix();
     Reporter* createNewReporter(QString systemName, QString userName);
+    /*public*/ void message(RfidMessage* m);
 
 signals:
     

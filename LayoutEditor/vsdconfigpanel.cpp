@@ -447,7 +447,7 @@ if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
     if (_rosterEntry->getFileName() != NULL) {
         // set the loco file name in the roster entry
         _rosterEntry->readFile();  // read, but don't yet process
-        _rosterEntry->loadCvModel(cvModel, iCvModel);
+        _rosterEntry->loadCvModel(variableModel, cvModel);
     }
 
     // id has to be set!
@@ -466,7 +466,7 @@ if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
     variableModel->setFileDirty(false);
 
     // and store an updated roster file
-    Roster::writeRoster();
+    Roster::getDefault()->writeRoster();
 
     return true;
 }

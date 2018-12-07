@@ -26,17 +26,17 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(p
 
 /*protected*/ Manager* ProxySensorManager::makeInternalManager() const
 {
- QObjectList l = InstanceManager::getList("InternalSystemConnectionMemo");
+ QObjectList* l = InstanceManager::getList("InternalSystemConnectionMemo");
  InternalSystemConnectionMemo* memo;
- if(!l.isEmpty())
+ if(!l->isEmpty())
  {
-  memo = (InternalSystemConnectionMemo*)l.at(l.size()-1);
+  memo = (InternalSystemConnectionMemo*)l->at(l->size()-1);
  }
  else
   memo =(InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
  SensorManager* manager = memo->getSensorManager();
  l = InstanceManager::getList("InternalSystemConnectionMemo");
- if(l.isEmpty())
+ if(l->isEmpty())
   InstanceManager::store(memo,"InternalSystemConnectionMemo");
  return manager;
 }

@@ -111,7 +111,7 @@ void LocoNetSystemConnectionMemo::setLnTrafficController(LnTrafficController* lt
  * @param mTurnoutNoRetry Is the user configuration set for no turnout operation retries?
  * @param mTurnoutExtraSpace Is the user configuration set for extra time between turnout operations?
  */
-/*public*/ void LocoNetSystemConnectionMemo::configureCommandStation(LnCommandStationType* type, bool mTurnoutNoRetry, bool mTurnoutExtraSpace) {
+/*public*/ void LocoNetSystemConnectionMemo::configureCommandStation(LnCommandStationType* type, bool mTurnoutNoRetry, bool mTurnoutExtraSpace, bool mTranspondingAvailable) {
     // store arguments
     this->mTurnoutNoRetry = mTurnoutNoRetry;
     this->mTurnoutExtraSpace = mTurnoutExtraSpace;
@@ -123,6 +123,7 @@ void LocoNetSystemConnectionMemo::setLnTrafficController(LnTrafficController* lt
 
     sm->setCommandStationType(type);
     sm->setSystemConnectionMemo(this);
+    sm->setTranspondingAvailable(mTranspondingAvailable);
 
     // store as CommandStation object
     InstanceManager::setCommandStation((CommandStation*)sm);

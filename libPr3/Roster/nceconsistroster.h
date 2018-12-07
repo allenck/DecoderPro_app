@@ -31,7 +31,7 @@ public:
             QString loco3Address, QString loco4Address, QString loco5Address,
             QString loco6Address, QString id );
     /*public*/ void dispose();
-    /*public*/ static void writeRosterFile();
+    /*public*/ void writeRosterFile();
     /*public*/ void reloadRosterFile();
     /*public*/ static QString defaultNceConsistRosterFilename();
     /*public*/ /*static*/ void setNceConsistRosterFileName(QString name);

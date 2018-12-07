@@ -38,10 +38,10 @@
  setTitle("Connection");
 
  // now add an item for each available manager
- QObjectList managers = InstanceManager::getList("PowerManager");
- if (!managers.isEmpty())
+ QObjectList* managers = InstanceManager::getList("PowerManager");
+ if (!managers->isEmpty())
  {
-  foreach (QObject* obj, managers)
+  foreach (QObject* obj, *managers)
   {
    PowerManager* mgr = (PowerManager*) obj;
    if (mgr != NULL)
@@ -97,12 +97,12 @@ void PowerManagerMenu::setDefault()
   }
  }
  // find PowerManager and return
- QObjectList managers = InstanceManager::getList("PowerManager");
- foreach (QObject* obj, managers)
+ QObjectList* managers = InstanceManager::getList("PowerManager");
+ foreach (QObject* obj, *managers)
  {
   PowerManager* mgr = (PowerManager*) obj;
   if (name==(mgr->getUserName())) return mgr;
  }
  // should not happen
- return NULL;
+ return nullptr;
 }

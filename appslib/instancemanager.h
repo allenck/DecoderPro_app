@@ -150,7 +150,7 @@ public:
  */
 //static public <T> List<Object> getList(Class<T> type)
 //template<class T>
-static QObjectList getList(QString type);
+static QObjectList *getList(QString type);
 /**
  * Deregister all objects of a particular type.
  * @param type The class Object for the items to be removed.
@@ -263,7 +263,7 @@ QT_DEPRECATED static /*public*/ void setAddressedProgrammerManager(AddressedProg
 static void setReporterManager(ReporterManager* p);
 static void removePropertyChangeListener(PropertyChangeListener* l);
 //template<class T>
-/*public*/ /*<T>*/ QObjectList getInstances(/*@Nonnull Class<T>*/ QString type);
+/*public*/ /*<T>*/ QObjectList* getInstances(/*@Nonnull Class<T>*/ QString type);
 //template<class T>
 /*public*/  void clear(/*@Nonnull*/ /*Class<T>*/QString type);
 /*public*/ /*<T>*/ void remove(/*@Nonnull T*/QObject* item, /*@Nonnull Class<T>*/QString type);
@@ -273,7 +273,7 @@ signals:
   void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
- QHash<QString,QObjectList> managerLists;
+ QHash<QString,QObjectList*> managerLists;
  /*private*/ /*final*/ QMap</*Class<?>*/QString, QObject*> initializers;// = new HashMap<>();
  PropertyChangeSupport* pcs;
  /*private*/ /*final*/ QMap</*Class<?>*/QString, StateHolder*> initState;// = new HashMap<>();

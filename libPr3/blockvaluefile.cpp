@@ -74,7 +74,7 @@ BlockValueFile::BlockValueFile(QObject *parent) :
       {
        if(blockList.at(i).toElement().attribute("valueClass")==("jmri.jmrit.roster.RosterEntry"))
        {
-        RosterEntry* re = Roster::instance()->getEntryForId((v1));
+        RosterEntry* re = Roster::getDefault()->getEntryForId((v1));
         if(re!=NULL)
          //v.setValue(re);
          v= VPtr<RosterEntry>::asQVariant(re);

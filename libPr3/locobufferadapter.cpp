@@ -319,7 +319,7 @@ void LocoBufferAdapter::dataReady()
  // do the common manager config
 
  ((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo())->configureCommandStation(commandStationType,
-                                                mTurnoutNoRetry, mTurnoutExtraSpace);
+                                                mTurnoutNoRetry, mTurnoutExtraSpace, mTranspondingAvailable);
  ((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagers();
 
  // start operation

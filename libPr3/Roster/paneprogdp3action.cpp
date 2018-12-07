@@ -482,7 +482,7 @@ void PaneProgDp3Action::updateDccAddress()
 bool PaneProgDp3Action::checkDuplicate()
 {
  // check its not a duplicate
- QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, rosterIdField->text());
+ QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, rosterIdField->text());
  bool oops = false;
  for (int i=0; i<l.size(); i++)
  {
@@ -520,7 +520,7 @@ void PaneProgDp3Action::saveRosterEntry() /*throws jmri.JmriException*/
     re->setDecoderFamily(decoderFile->getFamily());
     re->setDecoderModel(decoderFile->getModel());
     re->setId(rosterIdField->text());
-    Roster::instance()->addEntry(re);
+    Roster::getDefault()->addEntry(re);
  }
 
  updateDccAddress();
@@ -542,7 +542,7 @@ void PaneProgDp3Action::saveRosterEntry() /*throws jmri.JmriException*/
  }
  // and store an updated roster file
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
- Roster::writeRoster();
+ Roster::getDefault()->writeRoster();
 
  // show OK status
  statusLabel->setText(tr("StateSaveOK").arg(filename));
@@ -748,7 +748,7 @@ void ThisProgPane::On_readAllButton_clicked(bool bSelected)
        //re->writeFile(cvModel, iCvModel, variableModel );
        // note that we're leaving the filename NULL
        // add the new roster entry to the in-memory roster
-       Roster::instance()->addEntry(pane->re);
+       Roster::getDefault()->addEntry(pane->re);
    } else {
        try{
            pane->saveRosterEntry();

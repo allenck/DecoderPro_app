@@ -9,7 +9,7 @@ class PaneProgPane;
 class QCheckBox;
 class JmriJFrame;
 class RosterMediaPane;
-class FunctionLabelsPane;
+class FunctionLabelPane;
 class RosterEntry;
 class PrintRosterEntry : public PaneContainer
 {
@@ -22,7 +22,7 @@ public:
     /*public*/ void enableButtons(bool enable);
     /*public*/ void paneFinished();
     /*public*/ bool isBusy();
-    /*public*/ PrintRosterEntry(RosterEntry* rosterEntry, QList<QWidget*> paneList, FunctionLabelsPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent);
+    /*public*/ PrintRosterEntry(RosterEntry* rosterEntry, QList<QWidget*> paneList, FunctionLabelPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent);
     /*public*/ void doPrintPanes(bool preview);
     /*public*/ void printPanes(/*final*/ bool preview);
     /*public*/ void printInfoSection(HardcopyWriter* w);
@@ -36,7 +36,7 @@ private:
     RosterEntry* _rosterEntry;
 
     QList<QWidget*>        _paneList;//        = new ArrayList<JPanel>();
-    FunctionLabelsPane*   _flPane;//         = null;
+    FunctionLabelPane*   _flPane;//         = null;
     RosterMediaPane*     _rMPane;//        = null;
     JmriJFrame*          _parent;//         = null;
     Logger* log;

@@ -4,6 +4,7 @@
 #include "instancemanager.h"
 #include "joptionpane.h"
 #include "connectionstatus.h"
+#include "serialport.h"
 
 Option::Option()
 {
@@ -216,6 +217,43 @@ QString AbstractSerialPortController::getOptionState(QString option)
  }
  return mPort;
 }
+/**
+ * Set the control leads and flow control. This handles any necessary
+ * ordering.
+ *
+ * @param serialPort Port to be updated
+ * @param flow       flow control mode from (@link purejavacomm.SerialPort}
+ * @param rts        Set RTS active if true
+ * @param dtr        set DTR active if true
+ */
+/*protected*/ void AbstractSerialPortController::configureLeadsAndFlowControl(SerialPort* serialPort, int flow, bool rts, bool dtr) {
+    // (Jan 2018) PJC seems to mix termios and ioctl access, so it's not clear
+    // what's preserved and what's not. Experimentally, it seems necessary
+    // to write the control leads, set flow control, and then write the control
+    // leads again.
+    serialPort->setRTS(rts);
+    serialPort->setDTR(dtr);
+
+    try {
+        if (flow != SerialPort::FLOWCONTROL_NONE) {
+            serialPort->setFlowControlMode(flow);
+        }
+    } catch (UnsupportedCommOperationException e) {
+        log->warn("Could not set flow control, ignoring");
+    }
+    if (flow!=SerialPort::FLOWCONTROL_RTSCTS_OUT) serialPort->setRTS(rts);  // not connected in some serial ports and adapters
+    serialPort->setDTR(dtr);
+}
+
+/**
+ * Set the flow control, while also setting RTS and DTR to active.
+ *
+ * @param serialPort Port to be updated
+ * @param flow       flow control mode from (@link purejavacomm.SerialPort}
+ */
+/*protected*/ void AbstractSerialPortController::configureLeadsAndFlowControl(SerialPort* serialPort, int flow) {
+    configureLeadsAndFlowControl(serialPort, flow, true, true);
+}
 
 /**
  * Set the baud rate.  This records it for later.
@@ -283,6 +321,88 @@ QStringList AbstractSerialPortController::validBaudRates()
     // no match
     log->error("no match to ("+ currentBaudRate +") in currentBaudNumber");
     return -1;
+}
+/**
+ * Set event logging
+ */
+/*protected*/ void AbstractSerialPortController::setPortEventLogging(SerialPort* port) {
+    // arrange to notify later
+#if 0 // TODO:
+    try {
+        port.addEventListener(new SerialPortEventListener() {
+            @Override
+            public void serialEvent(SerialPortEvent e) {
+                int type = e.getEventType();
+                switch (type) {
+                    case SerialPortEvent.DATA_AVAILABLE:
+                        log.info("SerialEvent: DATA_AVAILABLE is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
+                        log.info("SerialEvent: OUTPUT_BUFFER_EMPTY is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.CTS:
+                        log.info("SerialEvent: CTS is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.DSR:
+                        log.info("SerialEvent: DSR is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.RI:
+                        log.info("SerialEvent: RI is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.CD:
+                        log.info("SerialEvent: CD is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.OE:
+                        log.info("SerialEvent: OE (overrun error) is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.PE:
+                        log.info("SerialEvent: PE (parity error) is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.FE:
+                        log.info("SerialEvent: FE (framing error) is " + e.getNewValue()); // NOI18N
+                        return;
+                    case SerialPortEvent.BI:
+                        log.info("SerialEvent: BI (break interrupt) is " + e.getNewValue()); // NOI18N
+                        return;
+                    default:
+                        log.info("SerialEvent of unknown type: " + type + " value: " + e.getNewValue()); // NOI18N
+                        return;
+                }
+            }
+        }
+        );
+    } catch (java.util.TooManyListenersException ex) {
+        log.warn("cannot set listener for SerialPortEvents; was one already set?");
+    }
+
+    try {
+        port.notifyOnFramingError(true);
+    } catch (Exception e) {
+        log.debug("Could not notifyOnFramingError: " + e); // NOI18N
+    }
+
+    try {
+        port.notifyOnBreakInterrupt(true);
+    } catch (Exception e) {
+        log.debug("Could not notifyOnBreakInterrupt: " + e); // NOI18N
+    }
+
+    try {
+        port.notifyOnParityError(true);
+    } catch (Exception e) {
+        log.debug("Could not notifyOnParityError: " + e); // NOI18N
+    }
+
+    try {
+        port.notifyOnOverrunError(true);
+    } catch (Exception e) {
+        log.debug("Could not notifyOnOverrunError: " + e); // NOI18N
+    }
+
+    port.notifyOnCarrierDetect(true);
+    port.notifyOnCTS(true);
+    port.notifyOnDSR(true);
+#endif
 }
 
 //@SuppressWarnings("unchecked")

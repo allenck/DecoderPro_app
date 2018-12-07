@@ -3,7 +3,7 @@
 #include "rosterentry.h"
 #include "roster.h"
 #include "dcclocoaddress.h"
-#include "functionlabelsmediadlg.h"
+//#include "functionlabelsmediadlg.h"
 #include "../LayoutEditor/panelmenu.h"
 #include "../LayoutEditor/editor.h"
 #include "paneprogframe.h"
@@ -248,7 +248,7 @@ void RosterFrame::common()
  cbProgrammers->addItem("Tutorial");
  cbProgrammers->addItem("Zimo");
  connect(cbProgrammers, SIGNAL(currentIndexChanged(QString)), this, SLOT(On_cbProgrammers_currentIndexChanged(QString)));
- roster = Roster::instance();
+ roster = Roster::getDefault();
  //roster->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(roster, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -590,10 +590,10 @@ void RosterFrame::on_actionNew_Throttle_triggered()
  }
 #endif
  // for debugging:
- QVector<QString> rosterGroupList = Roster::instance()->getRosterGroupList();
+ QVector<QString> rosterGroupList = Roster::getDefault()->getRosterGroupList();
  bool bHide = prefsMgr->getSimplePreferenceState(this->getClassName() + ".hideGroups");
 
-    if ((!prefsMgr->getSimplePreferenceState(this->getClassName() + ".hideGroups")) && !Roster::instance()->getRosterGroupList().isEmpty())
+    if ((!prefsMgr->getSimplePreferenceState(this->getClassName() + ".hideGroups")) && !Roster::getDefault()->getRosterGroupList().isEmpty())
     {
      hideGroupsPane(false);
     }
@@ -641,7 +641,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 //                      rtable.resetColumnWidths();
 //                  }
 //              });
-    connect(Roster::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent* )), this, SLOT(on_RosterChange(PropertyChangeEvent*)));
+    connect(Roster::getDefault()->pcs, SIGNAL(propertyChange(PropertyChangeEvent* )), this, SLOT(on_RosterChange(PropertyChangeEvent*)));
 #if 0
     PropertyChangeListener* propertyChangeListener = new PropertyChangeListener() {
         @Override
@@ -1023,7 +1023,7 @@ void RosterFrame::updateProgMode() // SLOT
   //We remove the propertychangelistener if we had a previously selected entry;
 //  rosterEntry->removePropertyChangeListener(rosterEntryUpdateListener);
  }
- QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, QString::number(dccAddress), NULL, NULL, NULL, NULL);
+ QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, QString::number(dccAddress), NULL, NULL, NULL, NULL);
  if (log->isDebugEnabled())
  {
   log->debug("selectLoco found " + QString::number(l.size()) + " matches");
@@ -1090,7 +1090,7 @@ void RosterFrame::updateProgMode() // SLOT
 //  connect(rosterEntry->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), rosterEntryUpdateListener, SLOT(propertyChange(PropertyChangeEvent*)));
   updateInfo();
   //rtable.moveTableViewToSelected();
-  int row = Roster::instance()->getGroupIndex(model->getRosterGroup(), rosterEntry);
+  int row = Roster::getDefault()->getGroupIndex(model->getRosterGroup(), rosterEntry);
   QModelIndex index = model->index(row, 0, QModelIndex());
   QModelIndex ixSort = sorter->mapFromSource(index);
   ui->rtable->selectRow(ixSort.row());
@@ -1113,8 +1113,8 @@ void RosterFrame::on_togglePower_clicked()
 
 void RosterFrame::on_actionDelete_Loco_triggered()
 {
- Roster* roster = Roster::instance();
- QString rosterGroup = Roster::instance()->getDefaultRosterGroup();
+ Roster* roster = Roster::getDefault();
+ QString rosterGroup = Roster::getDefault()->getDefaultRosterGroup();
  QVector<RosterEntry*> entries;
  // rosterGroup may legitimately be NULL
  // but getProperty returns NULL if the property cannot be found, so
@@ -1172,7 +1172,7 @@ void RosterFrame::on_actionDelete_Loco_triggered()
    re->deleteAttribute(group);
    re->updateFile();
   }
-  Roster::writeRoster();
+  Roster::getDefault()->writeRoster();
 
   // backup the file & delete it
   if (rosterGroup == "")
@@ -1206,7 +1206,7 @@ void RosterFrame::on_actionDelete_Loco_triggered()
    // create a dialog to select the roster entry
    //JComboBox selections = new RosterEntryComboBox(rosterGroup);
    QComboBox* selections = new QComboBox();
-   Roster* roster = Roster::instance();
+   Roster* roster = Roster::getDefault();
    QList<RosterEntry*> list = roster->getEntriesInGroup(rosterGroup);
    foreach (RosterEntry* re, list) \
    {
@@ -1331,7 +1331,7 @@ void RosterFrame::on_groupChange(PropertyChangeEvent * pce)
 
 void RosterFrame::on_RosterChange(PropertyChangeEvent * e)
 {
- if (e->getPropertyName() == ("RosterGroupAdded") && Roster::instance()->getRosterGroupList().size() == 1)
+ if (e->getPropertyName() == ("RosterGroupAdded") && Roster::getDefault()->getRosterGroupList().size() == 1)
  {
   // if the pane is hidden, show it when 1st group is created
   hideGroupsPane(false);
@@ -1386,7 +1386,7 @@ void RosterFrame::on_tableClicked(QModelIndex index)
 {
  QModelIndex ix = sorter->mapToSource(index);
  int row = ix.row();
- rosterEntry = Roster::instance()->getGroupEntry(model->getRosterGroup(), row);
+ rosterEntry = Roster::getDefault()->getGroupEntry(model->getRosterGroup(), row);
  updateInfo();
 }
 
@@ -1431,7 +1431,7 @@ void RosterFrame::On_newLoco_clicked()
 RosterEntryUpdateListener::RosterEntryUpdateListener(RosterFrame* f)
 {
  this->f = f;
- connect(Roster::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(Roster::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 void RosterEntryUpdateListener::propertyChange(PropertyChangeEvent * e)
@@ -1744,7 +1744,7 @@ void RosterFrame::closeEvent(QCloseEvent * e)
 {
  saveWindowDetails();
  //Save any changes made in the roster entry details
- Roster::writeRoster();
+ Roster::getDefault()->writeRoster();
  if (_allowQuit && frameInstances.size() == 1)
  {
   handleQuit(e);
@@ -1828,11 +1828,12 @@ void RosterFrame::On_Quit()
  pre->printPanes(boo);
 }
 
-//Matches the first argument in the array against a locally know method
+//Matches the first argument in the array against a locally-known method
 //@Override
 /*public*/ void RosterFrame::remoteCalls(QStringList args)
 {
- args.replace(0, args.at(0).toLower());
+ QString args0 = args.at(0).toLower();
+ args.replace(0, args0);
  if (args.at(0)==("identifyloco"))
  {
   startIdentifyLoco();
@@ -1899,7 +1900,7 @@ void RosterFrame::On_Quit()
   {
       copyLoco();
   }
- } else if (args.at(0)==("deleteloco"))
+ } else if (args.at(0)==("deleteloco")) // deletefromroster
  {
   if (checkIfEntrySelected())
   {
@@ -1945,6 +1946,7 @@ void RosterFrame::On_Quit()
  {
 //     rtable.resetColumnWidths();
  }
+#if 0
  else if(args.at(0) == "labelsandmedia")
  {
   //editMediaButton();
@@ -1971,6 +1973,7 @@ void RosterFrame::On_Quit()
  {
   deleteLoco();
  }
+#endif
  else
  {
   log->error("remote calls method " + args.at(0) + " not found");
@@ -2043,7 +2046,7 @@ bool RosterFrame::checkIfEntrySelected()
  }
 // finally
 // {
-//  setCursor(Qt::ArrowCursor);
+  setCursor(Qt::ArrowCursor);
 // }
  inStartProgrammer = false;
 }
@@ -2170,7 +2173,7 @@ void RosterFrame::on_currentMapped(QAction *act) //SLOT[]
  {
   QModelIndex ix = sorter->mapToSource(sorter->index(row,0));
   int row = ix.row();
-  rosterEntry = Roster::instance()->getGroupEntry(model->getRosterGroup(), row);
+  rosterEntry = Roster::getDefault()->getGroupEntry(model->getRosterGroup(), row);
   updateInfo();
 }
      QMenu* popupMenu = new QMenu();
@@ -2295,7 +2298,7 @@ void RosterFrame::actionPerformed(QObject* o)
   {
    QModelIndex sourceIx = sorter->mapToSource(rows.at(idx));
    QModelIndex ix = model->index(sourceIx.row(), sourceIx.column());
-   selectedRosterEntries->append( Roster::instance()->getEntryForId(model->data(ix,Qt::DisplayRole).toString()));
+   selectedRosterEntries->append( Roster::getDefault()->getEntryForId(model->data(ix,Qt::DisplayRole).toString()));
   }
  }
  return selectedRosterEntries;

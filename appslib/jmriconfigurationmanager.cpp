@@ -158,7 +158,7 @@
 //        log.debug("Saving preferences for {}", o.getClass().getName());
 //        o.savePreferences(profile);
 //    });
- foreach (QObject* o, InstanceManager::getList("PreferencesManager"))
+ foreach (QObject* o, *InstanceManager::getList("PreferencesManager"))
  {
   log->debug(tr("Saving preferences for %1").arg(o->metaObject()->className()));
   ((PreferencesManager*)o)->savePreferences(profile);
@@ -219,9 +219,9 @@
           || (File(file.toDisplayString()).getName() == (/*Profile::CONFIG*/"profile.xml")))
   {
    Profile* profile = ProfileManager::getDefault()->getActiveProfile();
-   QObjectList providers =  InstanceManager::getList("PreferencesManager");
+   QObjectList* providers =  InstanceManager::getList("PreferencesManager");
    //providers.stream().forEach((provider) -> {
-   foreach(QObject* provider, providers)
+   foreach(QObject* provider, *providers)
    {
     this->initializeProvider((PreferencesManager*)provider, profile);
    }//);

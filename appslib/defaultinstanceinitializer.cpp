@@ -64,6 +64,7 @@
 #include "entryexitpairs.h"
 #include "systemconnectionmemomanager.h"
 #include "listedtableframe.h"
+#include "lnprogrammermanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {

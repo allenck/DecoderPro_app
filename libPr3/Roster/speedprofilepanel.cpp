@@ -614,7 +614,7 @@ void SpeedProfilePanel::stopLoco()
   updateSpeedProfileWithResults();
   setButtonStates(true);
   re->updateFile();
-  Roster::writeRoster();
+  Roster::getDefault()->writeRoster();
   t->setSpeedSetting(0.0);
   return;
  }

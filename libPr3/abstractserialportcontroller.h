@@ -9,6 +9,7 @@
 //#include "systemconnectionmemo.h"
 #include "serialportadapter.h"
 
+class SerialPort;
 class LIBPR3SHARED_EXPORT AbstractSerialPortController : public  SerialPortAdapter
 {
     Q_OBJECT
@@ -89,6 +90,10 @@ protected:
  /*Each port adapter should handle this and it should be abstract.
   However this is in place until all the other code has been refactored */
  /*protected*/ virtual void resetupConnection();
+/*protected*/ void configureLeadsAndFlowControl(SerialPort* serialPort, int flow, bool rts, bool dtr);
+/*protected*/ void configureLeadsAndFlowControl(SerialPort* serialPort, int flow);
+/*protected*/ void setPortEventLogging(SerialPort* port);
+
 };
 
 #endif // ABSTRACTSERIALPORTCONTROLLER_H

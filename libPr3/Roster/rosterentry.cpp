@@ -12,6 +12,10 @@
 #include "../../LayoutEditor/jlabel.h"
 #include "rosterspeedprofile.h"
 #include "rostergroup.h"
+#include "variabletablemodel.h"
+#include "joptionpane.h"
+#include "locofile.h"
+#include "loggerfactory.h"
 
 QString RosterEntry::_defaultOwner = "";
 /*public*/ /*static*/ /*final*/ QString RosterEntry::ID = "id"; // NOI18N
@@ -192,7 +196,7 @@ void RosterEntry::init()
     _id = s;
     if (!oldID.isEmpty() || oldID!=(s))
     {
-        Roster::instance()->entryIdChanged(this);
+        Roster::getDefault()->entryIdChanged(this);
 //TODO:        firePropertyChange("id", oldID, s);
     }
 }
@@ -561,9 +565,9 @@ void RosterEntry::init()
  QString old = functionImages.at(fn);
  functionImages.replace(fn, s);
  firePropertyChange("functionImage"+QString::number(fn), old, s);
-
- //QString dropFolder = FileUtil::getUserFilesPath();
- QString dropFolder = LocoFile::getFileLocation();
+#if 0
+ QString dropFolder = FileUtil::getUserFilesPath();
+ //QString dropFolder = LocoFile::getFileLocation();
  File* source = new File(s);
  if(!source->exists())
  {
@@ -583,6 +587,7 @@ void RosterEntry::init()
      }
  }
  functionImages.replace(fn, dest->getPath());
+#endif
 }
 /*public*/ QString RosterEntry::getFunctionImage(int fn)
 {
@@ -603,7 +608,7 @@ void RosterEntry::init()
  QString old = functionSelectedImages.at(fn);
  functionSelectedImages.replace(fn,s);
  firePropertyChange("functionSelectedImage"+QString::number(fn), old, s);
-
+#if 0
  //QString dropFolder = FileUtil::getUserFilesPath();
  QString dropFolder = LocoFile::getFileLocation();
  File* source = new File(s);
@@ -623,6 +628,7 @@ void RosterEntry::init()
   }
  }
  functionSelectedImages.replace(fn, dest->getPath());
+#endif
 }
 
 /*public*/ QString RosterEntry::getFunctionSelectedImage(int fn)
@@ -921,7 +927,6 @@ void RosterEntry::init()
     }
 #endif
 }
-#if 1
 
 /**
  * Write the contents of this RosterEntry to a file.
@@ -963,7 +968,7 @@ void RosterEntry::init()
         QMessageBox::critical(0, tr("Error Saving Roster Entry"), tr("An error occurred writing the roster file, may not be complete: "));
     }
 }
-#endif
+
 /**
  * Mark the date updated, e.g. from storing this roster entry
  */
@@ -976,28 +981,37 @@ void RosterEntry::init()
 }
 
 /**
- * Load a pre-existing CvTableModel object with the CV contents
- * of this entry
- * @param cvModel Model to load, must exist
+ * Load pre-existing Variable and CvTableModel object with the contents of
+ * this entry.
+ *
+ * @param varModel the variable model to load
+ * @param cvModel  CV contents to load
  */
-/*public*/ void RosterEntry::loadCvModel(CvTableModel* cvModel, IndexedCvTableModel* iCvModel) {
-    if (cvModel == NULL) log->error("loadCvModel must be given a non-NULL argument");
-    if (mRootElement.isNull()) log->error("loadCvModel called before readFile() succeeded");
-    try{
-        LocoFile::loadCvModel(mRootElement.firstChildElement("locomotive"), cvModel, iCvModel);
+/*public*/ void RosterEntry::loadCvModel(VariableTableModel* varModel, CvTableModel* cvModel) {
+    if (cvModel == nullptr) {
+        log->error("loadCvModel must be given a non-null argument");
+        return;
     }
-    catch (Exception ex)
-    {
-     log->error(tr("Error reading roster entry ")/*, ex.msg()*/);
-//        try {
-//            JOptionPane.showMessageDialog(NULL,
-//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorReadingText"),
-//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorReadingTitle"),
-//                    JOptionPane.ERROR_MESSAGE);
-//        } catch (HeadlessException he) {
-//            // silently ignore inability to display dialog
-//        }
+    if (mRootElement.isNull()) {
+        log->error("loadCvModel called before readFile() succeeded");
+        return;
+    }
+    try {
+        if (varModel != nullptr) {
+            LocoFile::loadVariableModel(mRootElement.firstChildElement("locomotive"), varModel);
+        }
 
+        LocoFile::loadCvModel(mRootElement.firstChildElement("locomotive"), cvModel, getDecoderFamily());
+    } catch (Exception ex) {
+        log->error("Error reading roster entry", ex);
+        try {
+            JOptionPane::showMessageDialog(nullptr,
+                    tr("An error occurred while trying to read the roster index file: "),
+                    tr("Error Reading Roster Index"),
+                    JOptionPane::ERROR_MESSAGE);
+        } catch (HeadlessException he) {
+            // silently ignore inability to display dialog
+        }
     }
 }
 
@@ -1649,3 +1663,5 @@ void RosterEntry::setRfidTag(QString tag)
 /*public*/ /*static*/ void RosterEntry::setDefaultOwner(QString n) {
     _defaultOwner = n;
 }
+
+/*private*/ /*final*/ /*static*/ Logger* RosterEntry::log = LoggerFactory::getLogger("RosterEntry");

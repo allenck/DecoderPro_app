@@ -4,6 +4,7 @@
 
 class AbstractMRMessage : public AbstractMessage
 {
+ Q_OBJECT
 public:
  AbstractMRMessage(QObject* parent = 0);
  /*public*/ AbstractMRMessage(int i, QObject* parent = 0 );

@@ -248,7 +248,7 @@ void WarrantRoute::onButton()
 
  /*private*/ void WarrantRoute::getRoster()
 {
-     QList<RosterEntry*> list = Roster::instance()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+     QList<RosterEntry*> list = Roster::getDefault()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 //     _rosterBox.setRenderer(new jmri.jmrit.roster.swing.RosterEntryListCellRenderer());
      _rosterBox->addItem(" ");
      _rosterBox->addItem(tr("Address not in Roster."));
@@ -291,7 +291,7 @@ void WarrantRoute::on_rosterBoxCurrentIndexChanged(QString selection)
   {
    log->debug("setTrainInfo for: " + name);
   }
-  _train = Roster::instance()->entryFromTitle(name);
+  _train = Roster::getDefault()->entryFromTitle(name);
   if (_train == NULL) {
       if (name==NULL || name.trimmed().length()==0) {
        _trainId = "";
@@ -317,7 +317,7 @@ void WarrantRoute::on_rosterBoxCurrentIndexChanged(QString selection)
               numId = name;
           }
       }
-      QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, numId, NULL, NULL, NULL, NULL);
+      QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, numId, NULL, NULL, NULL, NULL);
       if (l.size() > 0) {
           _train = l.at(0);
       } else {

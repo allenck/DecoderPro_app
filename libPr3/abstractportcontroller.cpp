@@ -2,7 +2,7 @@
 #include "exceptions.h"
 #include "systemconnectionmemo.h"
 #include "sleeperthread.h"
-
+#include <QDataStream>
 
 /*protected*/ AbstractPortController::AbstractPortController(SystemConnectionMemo* connectionMemo, QObject *parent)
     : NetworkPortAdapter(parent)
@@ -190,10 +190,10 @@ return QStringList();
 * connections is handled by the ConnectionConfig code in each
 * connector.  this is here as we implement the serialdriveradpter.
 */
-/*public*/ QString AbstractPortController::getManufacturer() { return mManufacturer; }
+/*public*/ QString AbstractPortController::getManufacturer() { return manufacturerName; }
 /*public*/ void AbstractPortController::setManufacturer(QString manufacturer) {
-log->debug("update manufacturer from \""+mManufacturer+"\" to \""+manufacturer + "\"");
- mManufacturer = manufacturer;
+log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacturer + "\"");
+ manufacturerName = manufacturer;
 }
 
 /*public*/ bool AbstractPortController::getDisabled() { return mDisabled; }
@@ -280,6 +280,24 @@ log->debug("update manufacturer from \""+mManufacturer+"\" to \""+manufacturer +
  return this->isDirty();
 }
 
+/**
+ * Service method to purge a stream of initial contents
+ * while opening the connection.
+ */
+ //@SuppressFBWarnings(value = "SR_NOT_CHECKED", justification = "skipping all, don't care what skip() returns")
+ /*protected*/ void AbstractPortController::purgeStream(/*@Nonnull*/ QDataStream* serialStream) //throw (IOException)
+{
+#if 0
+    int count = serialStream->available();
+    log.debug("input stream shows " + count + " bytes available");
+    while (count > 0) {
+        serialStream.skip(count);
+        count = serialStream.available();
+    #else
+ while(!serialStream->atEnd())
+  serialStream->skipRawData(1);
+#endif
+}
 /**
  * Get the {@link jmri.jmrix.SystemConnectionMemo} associated with this
  * object.

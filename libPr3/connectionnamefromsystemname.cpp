@@ -56,7 +56,7 @@
  */
 //@CheckForNull
 /*static*/ /*public*/ SystemConnectionMemo* ConnectionNameFromSystemName::getSystemConnectionMemoFromSystemPrefix(/*@Nonnull */QString systemPrefix) {
-    foreach (QObject* memo,  InstanceManager::getList("SystemConnectionMemo")) {
+    foreach (QObject* memo,  *InstanceManager::getList("SystemConnectionMemo")) {
         if (((SystemConnectionMemo*)memo)->getSystemPrefix()==(systemPrefix)) {
             return (SystemConnectionMemo*)memo;
         }
@@ -72,7 +72,7 @@
  */
 //@CheckForNull
 /*static*/ /*public*/ SystemConnectionMemo* ConnectionNameFromSystemName::getSystemConnectionMemoFromUserName(/*@Nonnull*/ QString userName) {
-    foreach (QObject* memo, InstanceManager::getList("SystemConnectionMemo")) {
+    foreach (QObject* memo, *InstanceManager::getList("SystemConnectionMemo")) {
         if (((SystemConnectionMemo*)memo)->getUserName() == (userName)) {
             return (SystemConnectionMemo*)memo;
         }

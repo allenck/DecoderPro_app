@@ -4,12 +4,12 @@
 
 RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
 {
- //RosterEntryComboBox(Roster::instance(), Roster::instance()->getDefaultRosterGroup(), "", "", "", "", "", "", "", parent);
+ //RosterEntryComboBox(Roster::getDefault(), Roster::getDefault()->getDefaultRosterGroup(), "", "", "", "", "", "", "", parent);
  _currentSelection = NULL;
  _nonSelectedItem = "Select Loco";
         //setRenderer(new jmri.jmrit.roster.swing.RosterEntryListCellRenderer());
- _roster = Roster::instance();
- _group = Roster::instance()->getDefaultRosterGroup();
+ _roster = Roster::getDefault();
+ _group = Roster::getDefault()->getDefaultRosterGroup();
  _roadName = "";
  _roadNumber = "";
  _dccAddress = "";
@@ -63,12 +63,12 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
  */
 /*public*/ RosterEntryComboBox::RosterEntryComboBox(Roster* roster,QWidget *parent) : QComboBox(parent)
 {
- //RosterEntryComboBox(roster, Roster::instance()->getDefaultRosterGroup(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, parent);
+ //RosterEntryComboBox(roster, Roster::getDefault()->getDefaultRosterGroup(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, parent);
  _currentSelection = NULL;
  _nonSelectedItem = "Select Loco";
            //setRenderer(new jmri.jmrit.roster.swing.RosterEntryListCellRenderer());
  _roster = roster;
- _group = Roster::instance()->getDefaultRosterGroup();
+ _group = Roster::getDefault()->getDefaultRosterGroup();
  _roadName = "";
  _roadNumber = "";
  _dccAddress = "";
@@ -96,11 +96,11 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
  */
 /*public*/ RosterEntryComboBox::RosterEntryComboBox(QString rosterGroup, QWidget* parent) : QComboBox(parent)
 {
- //RosterEntryComboBox(Roster::instance(), rosterGroup, NULL, NULL, NULL, NULL, NULL, NULL, NULL, parent);
+ //RosterEntryComboBox(Roster::getDefault(), rosterGroup, NULL, NULL, NULL, NULL, NULL, NULL, NULL, parent);
     _currentSelection = NULL;
     _nonSelectedItem = "Select Loco";
               //setRenderer(new jmri.jmrit.roster.swing.RosterEntryListCellRenderer());
-    _roster = Roster::instance();
+    _roster = Roster::getDefault();
     _group = rosterGroup;
     _roadName = "";
     _roadNumber = "";
@@ -178,8 +178,8 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
         QString decoderVersionID,
         QString id, QWidget* parent) : QComboBox(parent)
 {
-//    RosterEntryComboBox(Roster::instance(),
-//            Roster::instance()->getDefaultRosterGroup(),
+//    RosterEntryComboBox(Roster::getDefault(),
+//            Roster::getDefault()->getDefaultRosterGroup(),
 //            roadName,
 //            roadNumber,
 //            dccAddress,
@@ -190,8 +190,8 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
     _currentSelection = NULL;
     _nonSelectedItem = "Select Loco";
               //setRenderer(new jmri.jmrit.roster.swing.RosterEntryListCellRenderer());
-    _roster = Roster::instance();
-    _group = Roster::instance()->getDefaultRosterGroup();
+    _roster = Roster::getDefault();
+    _group = Roster::getDefault()->getDefaultRosterGroup();
     _roadName = roadName;
     _roadNumber = roadNumber;
     _dccAddress = dccAddress;
@@ -236,7 +236,7 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
         QString id , QWidget* parent) : QComboBox(parent)
 {
 //    RosterEntryComboBox(roster,
-//            Roster::instance()->getDefaultRosterGroup(),
+//            Roster::getDefault()->getDefaultRosterGroup(),
 //            roadName,
 //            roadNumber,
 //            dccAddress,
@@ -249,7 +249,7 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
     _nonSelectedItem = "Select Loco";
               //setRenderer(new jmri.jmrit.roster.swing.RosterEntryListCellRenderer());
     _roster = roster;
-    _group = Roster::instance()->getDefaultRosterGroup();
+    _group = Roster::getDefault()->getDefaultRosterGroup();
     _roadName = roadName;
     _roadNumber = roadNumber;
     _dccAddress = dccAddress;
@@ -293,7 +293,7 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
         QString decoderVersionID,
         QString id, QWidget* parent) : QComboBox(parent)
 {
-//    RosterEntryComboBox(Roster::instance(),
+//    RosterEntryComboBox(Roster::getDefault(),
 //            rosterGroup,
 //            roadName,
 //            roadNumber,
@@ -305,7 +305,7 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
     _currentSelection = NULL;
     _nonSelectedItem = "Select Loco";
               //setRenderer(new jmri.jmrit.roster.swing.RosterEntryListCellRenderer());
-    _roster = Roster::instance();
+    _roster = Roster::getDefault();
     _group = rosterGroup;
     _roadName = roadName;
     _roadNumber = roadNumber;

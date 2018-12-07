@@ -629,7 +629,7 @@ File userPrefsFile;*/
  //QString aName = adapterName(o);
  QString aName = QString(o->metaObject()->className()) + "Xml";
  if(QString(o->metaObject()->className()) == "Pr3ConnectionConfig")
-  aName = "Pr3ConnectionConfigXml";
+  aName = "ConnectionConfigXml";
  log->debug(tr("store %1 using %2").arg(o->metaObject()->className()).arg(aName));
  QObject* adapter = NULL;
 
@@ -847,6 +847,8 @@ File userPrefsFile;*/
     prefix = "Sprog";
    else if(sl.at(3) == "sprogCS")
     prefix = "SprogCS";
+   else if(sl.at(3) == "pr2")
+    prefix = "Pr2";
 
    QString newClassName = prefix+"ConnectionConfigXml";
    if(!prefix.isEmpty())

@@ -18,9 +18,9 @@
  * Create a combo box with all roster entries in the default Roster::
  */
 /*public*/ GlobalRosterEntryComboBox::GlobalRosterEntryComboBox(QWidget *parent) :
-        RosterEntryComboBox(Roster::instance(), Roster::ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL, parent)
+        RosterEntryComboBox(Roster::getDefault(), Roster::ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL, parent)
 {
-    //super(Roster::instance(), Roster::_ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+    //super(Roster::getDefault(), Roster::_ALLENTRIES, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /**
@@ -51,7 +51,7 @@
         QString decoderMfgID,
         QString decoderVersionID,
         QString id, QWidget* parent) :
-    RosterEntryComboBox(Roster::instance(),
+    RosterEntryComboBox(Roster::getDefault(),
             Roster::ALLENTRIES,
             roadName,
             roadNumber,

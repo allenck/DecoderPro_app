@@ -12,22 +12,30 @@ class LIBPR3SHARED_EXPORT LocoFile : public XmlFile
 {
     Q_OBJECT
 public:
+ enum MessageResponse
+ {
+  IGNORE,
+  REPORT
+ };
     explicit LocoFile(QObject *parent = 0);
     /*public*/ QString titleString();
-    /*public*/ static void loadCvModel(QDomElement loco, CvTableModel* cvModel, IndexedCvTableModel* iCvModel);
+    /*public*/ static void loadCvModel(QDomElement loco, CvTableModel* cvModel, QString family);
+ /*public*/ static void loadVariableModel(QDomElement loco, VariableTableModel* varModel);
  /*public*/ void writeFile(File* pFile, QDomElement pRootElement, RosterEntry* pEntry);
     /*public*/ void writeFile(QFile* file, CvTableModel* cvModel, IndexedCvTableModel* iCvModel, VariableTableModel* variableModel, RosterEntry* r);
     /*public*/ void writeFile(QFile* pFile, QDomElement pRootElement, RosterEntry* pEntry);
     /*public*/ void writeFile(QFile* pFile, QDomElement existingElement, QDomElement newLocomotive);
-    static /*public*/ void setFileLocation(QString loc);
     static /*public*/ QString getFileLocation();
 
 signals:
 
 public slots:
 private:
- static /*private*/ QString fileLocation;// = FileUtil::getUserFilesPath()+"roster"+File.separator;
- Logger* log;
+ static Logger* log;
+
+protected:
+ /*protected*/ static MessageResponse selectMissingVarResponse(QString var);
+friend class RosterEntry;
 };
 
 #endif // LOCOFILE_H

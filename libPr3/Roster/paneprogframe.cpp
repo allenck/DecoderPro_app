@@ -17,7 +17,7 @@
 #include "paneprogpane.h"
 #include <QDesktopWidget>
 #include "rostermedia.h"
-#include "functionlabelspane.h"
+#include "functionlabelpane.h"
 #include "busyglasspane.h"
 #include "shortaddrvariablevalue.h"
 #include "longaddrvariablevalue.h"
@@ -117,7 +117,8 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
  saveDefaults();
 
  // finally fill the CV values from the specific loco file
- if (_rosterEntry->getFileName() != NULL) _rosterEntry->loadCvModel(cvModel, iCvModel);
+ if (_rosterEntry->getFileName() != nullptr)
+  _rosterEntry->loadCvModel(variableModel, cvModel);
 
  // mark file state as consistent
  variableModel->setFileDirty(false);
@@ -588,13 +589,13 @@ void PaneProgFrame::closeEvent(QCloseEvent * e)
   }
  }
  // Check for a "<new loco>" roster entry; if found, remove it
- QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, tr("<new loco>"));
+ QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, tr("<new loco>"));
  if (l.size() > 0 && log->isDebugEnabled()) log->debug("Removing "+QString::number(l.size())+" <new loco> entries");
 int x = l.size()+1;
  while (l.size() > 0 )
  {
-  Roster::instance()->removeEntry(l.at(0));
-  l = Roster::instance()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, tr("<new loco>"));
+  Roster::getDefault()->removeEntry(l.at(0));
+  l = Roster::getDefault()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, tr("<new loco>"));
   x--;
   if (x==0)
   {
@@ -856,7 +857,7 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
     QFrame* frame = new QFrame();
     QVBoxLayout* frameLayout = new QVBoxLayout();
     frame->setLayout(frameLayout);
-    _flPane = new FunctionLabelsPane(r);
+    _flPane = new FunctionLabelPane(r);
     frameLayout->addWidget(_flPane);
     // add the store button
     QPushButton* store = new QPushButton(tr("Save to Roster"));
@@ -1665,7 +1666,7 @@ bool PaneProgFrame::doWrite()
 
  // and store an updated roster file
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
- Roster::writeRoster();
+ Roster::getDefault()->writeRoster();
 
  // save date changed, update
  _rPane->updateGUI(_rosterEntry);

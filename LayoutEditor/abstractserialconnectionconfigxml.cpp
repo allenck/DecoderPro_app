@@ -1,5 +1,6 @@
 #include "abstractserialconnectionconfigxml.h"
 #include "serialportadapter.h"
+#include "connectionconfig.h"
 
 AbstractSerialConnectionConfigXml::AbstractSerialConnectionConfigXml(QObject *parent) :
     AbstractConnectionConfigXml(parent)
@@ -28,6 +29,10 @@ AbstractSerialConnectionConfigXml::AbstractSerialConnectionConfigXml(QObject *pa
 {
  getInstance(); // over-ridden during migration
 }
+/*protected*/ void AbstractSerialConnectionConfigXml::_register(ConnectionConfig* c) {
+        c->_register();
+}
+
 QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/)
 {
  return this->store(o);
@@ -121,7 +126,7 @@ QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/
      ConfigXmlManager::creationErrorEncountered(
              NULL, "opening connection",
              status,
-             NULL, NULL, NULL
+             "", "", Exception()
      );
      // now force end to operation
      log->debug("load failed");

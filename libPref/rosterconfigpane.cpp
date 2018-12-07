@@ -63,10 +63,10 @@
     //p->setLayout(pLayout = new FlowLayout());
     pLayout->addWidget(new QLabel(tr("Move Location")));
 
-    pLayout->addWidget(filename = new QLabel(Roster::getFileLocation()));
+    pLayout->addWidget(filename = new QLabel(Roster::getDefault()->getRosterLocation()));
     // don't show default location, so it's not deemed a user selection
     // and saved
-    if (FileUtil::getUserFilesPath()==(Roster::getFileLocation()))
+    if (FileUtil::getUserFilesPath()==(Roster::getDefault()->getRosterLocation()))
     {
         filename->setText("");
     }
@@ -241,7 +241,7 @@ if (getTopLevelAncestor() != NULL) {
 
 /*private*/ bool RosterConfigPane::isFileLocationChanged() {
     return (this->getSelectedItem() == NULL || this->getSelectedItem()==(""))
-            ? Roster::getFileLocation()!=(FileUtil::getUserFilesPath())
-            : Roster::getFileLocation()!=(this->getSelectedItem());
+            ? Roster::getDefault()->getRosterLocation()!=(FileUtil::getUserFilesPath())
+            : Roster::getDefault()->getRosterLocation()!=(this->getSelectedItem());
 }
 #endif

@@ -236,6 +236,8 @@ public:
     /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ QList<ProgrammingMode*> getSupportedModes();
     /*public*/ Programmer::WriteConfirmMode getWriteConfirmMode(QString addr);
+    /*public*/ void setTranspondingAvailable(bool val);
+    /*public*/ bool getTranspondingAvailable();
 
 
 signals:
@@ -309,6 +311,8 @@ private:
   * before reporting completion and hence starting next operation
   */
  int postProgDelay;// = 100;
+ bool transpondingAvailable = false;
+
 
 private slots:
  /**

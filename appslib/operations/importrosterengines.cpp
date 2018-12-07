@@ -55,7 +55,7 @@ namespace Operations
      // Now get engines from the JMRI roster
      int enginesAdded = 0;
 
-     QList<RosterEntry*> engines = Roster::instance()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+     QList<RosterEntry*> engines = Roster::getDefault()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
      QString textId;
 
      foreach (RosterEntry* re, engines) {

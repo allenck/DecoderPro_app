@@ -62,10 +62,10 @@ void DccSignalHead::configureHead(QString sys) {
     if (sys.contains("$")) {
         dccSignalDecoderAddress = (sys.mid(sys.indexOf("$") + 1, sys.length())).toInt();
         QString commandStationPrefix = sys.mid(0, sys.indexOf("$") - 1);
-        QObjectList connList = (InstanceManager::getList("CommandStation"));
+        QObjectList* connList = (InstanceManager::getList("CommandStation"));
 
-        for (int x = 0; x < connList.size(); x++) {
-            CommandStation* station = static_cast<CommandStation*>(connList.at(x));
+        for (int x = 0; x < connList->size(); x++) {
+            CommandStation* station = static_cast<CommandStation*>(connList->at(x));
             if (station->getSystemPrefix() == (commandStationPrefix)) {
                 c = station;
                 break;

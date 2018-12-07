@@ -16,7 +16,7 @@ class PaneProgFrame;
 }
 
 class RosterMediaPane;
-class FunctionLabelsPane;
+class FunctionLabelPane;
 class DecoderFile;
 class RosterEntry;
 class Programmer;
@@ -148,7 +148,7 @@ private:
     BusyGlassPane*       glassPane;
     QWidget* modePane;
     QWidget* tempPane; // passed around during construction
-    FunctionLabelsPane* _flPane;
+    FunctionLabelPane* _flPane;
     RosterMediaPane* _rMPane;
 
     QList<QWidget*>    activeComponents;// = new ArrayList<JComponent>();

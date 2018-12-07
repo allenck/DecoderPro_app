@@ -481,8 +481,8 @@
            exportExternalUserFiles = true;
     }
    }
-   if (!(new File(Roster::getFileLocation()))->getCanonicalPath().startsWith(p->getPath()->getCanonicalPath())
-           && !Roster::getFileLocation().startsWith(FileUtil::getUserFilesPath()))
+   if (!(new File(Roster::getDefault()->getRosterLocation()))->getCanonicalPath().startsWith(p->getPath()->getCanonicalPath())
+           && !Roster::getDefault()->getRosterLocation().startsWith(FileUtil::getUserFilesPath()))
    {
 //                int result = JOptionPane.showConfirmDialog(this,
 //                        tr("ProfilePreferencesPanel.btnExportProfile.externalRosterMessage"),

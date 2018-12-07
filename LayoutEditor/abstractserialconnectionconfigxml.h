@@ -15,6 +15,8 @@ public:
     /*public*/ QDomElement store(QObject* object);
     /*public*/ bool load(QDomElement shared, QDomElement perNode);// //throws Exception
     /*public*/ virtual QString javaClass() {return "";}
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+
 signals:
 
 public slots:
@@ -28,7 +30,10 @@ protected:
     virtual /*protected*/ void getInstance(QObject* object);
     /*protected*/ void extendElement(QDomElement e);
 //    /*protected*/ void unpackElement(QDomElement e);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+
+protected:
+    /*protected*/ void _register(ConnectionConfig* c);
+
 };
 
 #endif // ABSTRACTSERIALCONNECTIONCONFIGXML_H

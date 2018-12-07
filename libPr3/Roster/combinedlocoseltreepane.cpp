@@ -643,7 +643,7 @@ void CombinedLocoSelTreePane::updateForDecoderNotID(int pMfgID, int pModelID) {
 void CombinedLocoSelTreePane::setDecoderSelectionFromLoco(QString loco)
 {
     // if there's a valid loco entry...
-    RosterEntry* locoEntry = Roster::instance()->entryFromTitle(loco);
+    RosterEntry* locoEntry = Roster::getDefault()->entryFromTitle(loco);
     if ( locoEntry == NULL) return;
 //    dTree->removeTreeSelectionListener(dListener);
     dTree->clearSelection();

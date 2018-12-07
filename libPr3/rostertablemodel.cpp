@@ -45,7 +45,7 @@
 
  this->editable = editable;
  //Roster.instance().addPropertyChangeListener(this);
- connect(Roster::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*) ));
+ connect(Roster::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*) ));
 }
 
 void RosterTableModel::common()
@@ -73,7 +73,7 @@ void RosterTableModel::common()
         //if (e.getSource() instanceof RosterEntry)
      if(qobject_cast<RosterEntry*>(e->getSource()) != NULL)
         {
-            int row = Roster::instance()->getGroupIndex(rosterGroup, (RosterEntry*) e->getSource());
+            int row = Roster::getDefault()->getGroupIndex(rosterGroup, (RosterEntry*) e->getSource());
             fireTableRowsUpdated(row, row);
         } else {
             fireTableDataChanged();
@@ -84,7 +84,7 @@ void RosterTableModel::common()
     }
     else if (e->getPropertyName().startsWith("attribute") && qobject_cast<RosterEntry*>(e->getSource() ))
     { // NOI18N
-        int row = Roster::instance()->getGroupIndex(rosterGroup, (RosterEntry*) e->getSource());
+        int row = Roster::getDefault()->getGroupIndex(rosterGroup, (RosterEntry*) e->getSource());
         fireTableRowsUpdated(row, row);
     } else if (e->getPropertyName() == (Roster::ROSTER_GROUP_ADDED) && e->getNewValue().toString() == (rosterGroup)) {
         fireTableDataChanged();
@@ -94,7 +94,7 @@ void RosterTableModel::common()
 //@Override
  /*public*/ int RosterTableModel::rowCount(const QModelIndex &parent) const
 {
-    return Roster::instance()->numGroupEntries(rosterGroup);
+    return Roster::getDefault()->numGroupEntries(rosterGroup);
 }
 
 //@Override
@@ -191,7 +191,7 @@ void RosterTableModel::common()
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
     if (editable) {
-        RosterEntry* re = Roster::instance()->getGroupEntry(rosterGroup, row);
+        RosterEntry* re = Roster::getDefault()->getGroupEntry(rosterGroup, row);
         if (re != NULL)
         {
             //return (!re->isOpen());
@@ -226,7 +226,7 @@ ImageIcon* RosterTableModel::getIcon(RosterEntry* re)
  if(role == Qt::DisplayRole)
  {
     // get roster entry for row
-    RosterEntry* re = Roster::instance()->getGroupEntry(rosterGroup, row);
+    RosterEntry* re = Roster::getDefault()->getGroupEntry(rosterGroup, row);
     if (re == NULL) {
         log->debug("roster entry is NULL!");
         return QVariant();
@@ -274,7 +274,7 @@ ImageIcon* RosterTableModel::getIcon(RosterEntry* re)
  if(role == Qt::EditRole)
  {
     // get roster entry for row
-    RosterEntry* re = Roster::instance()->getGroupEntry(rosterGroup, row);
+    RosterEntry* re = Roster::getDefault()->getGroupEntry(rosterGroup, row);
     if (re == NULL) {
         log->warn("roster entry is NULL!");
         return false;
@@ -361,13 +361,13 @@ ImageIcon* RosterTableModel::getIcon(RosterEntry* re)
 
  /*public*/ /*final*/ void RosterTableModel::setRosterGroup(QString rosterGroup)
 {
-    foreach (RosterEntry*re, Roster::instance()->getEntriesInGroup(rosterGroup))
+    foreach (RosterEntry*re, Roster::getDefault()->getEntriesInGroup(rosterGroup))
     {
         //re->removePropertyChangeListener(this);
      disconnect(re, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     this->rosterGroup = rosterGroup;
-    foreach (RosterEntry* re, Roster::instance()->getEntriesInGroup(rosterGroup))
+    foreach (RosterEntry* re, Roster::getDefault()->getEntriesInGroup(rosterGroup))
     {
         //re->addPropertyChangeListener(this);
      connect(re, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

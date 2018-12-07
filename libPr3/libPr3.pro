@@ -156,15 +156,15 @@ SOURCES += \
     commonturnoutoperation.cpp \
     nofeedbackturnoutoperator.cpp \
     abstractidtag.cpp \
-    rfidreporter.cpp \
+    rfid/rfidreporter.cpp \
     defaultidtagmanager.cpp \
     defaultidtag.cpp \
     defaultshutdownmanager.cpp \
     shutdownmanager.cpp \
-    rfidsensormanager.cpp \
-    rfidsensor.cpp \
+    rfid/rfidsensormanager.cpp \
+    rfid/rfidsensor.cpp \
     sensor.cpp \
-    rfidreportermanager.cpp \
+    rfid/rfidreportermanager.cpp \
     basicrosterentry.cpp \
     abstractthrottle.cpp \
     commandstation.cpp \
@@ -177,7 +177,7 @@ SOURCES += \
     proglistener.cpp \
     throttlemanager.cpp \
     consistlistener.cpp \
-    rfidusb.cpp \
+    rfid/rfidusb.cpp \
     defaultroutemanager.cpp \
     defaultroute.cpp \
     decimalformat.cpp \
@@ -198,7 +198,7 @@ SOURCES += \
     loconetthrottle.cpp \
     Throttle/throttlewindow.cpp \
     #Throttle/listthrottles.cpp \
-    Roster/functionlabelsmediadlg.cpp \
+    #Roster/functionlabelsmediadlg.cpp \
     Roster/locofile.cpp \
     Roster/cvtablemodel.cpp \
     Roster/indexedcvtablemodel.cpp \
@@ -239,7 +239,7 @@ SOURCES += \
     Roster/watchinglabel.cpp \
     Roster/vartextfield.cpp \
     Roster/fnmappanel.cpp \
-    Roster/functionlabelspane.cpp \
+    #Roster/functionlabelspane.cpp \
     Roster/paneprogframe.cpp \
     Roster/paneopsprogframe.cpp \
     Roster/rosterframe.cpp \
@@ -357,7 +357,6 @@ SOURCES += \
     LocoIO/lnpanel.cpp \
     LocoIO/cmdstnconfigpane.cpp \
     LocoIO/lncommandstationtype.cpp \
-    lnpr2packetizer.cpp \
     Roster/qualifieradder.cpp \
     Roster/field.cpp \
     Roster/fnmappanelesu.cpp \
@@ -826,7 +825,37 @@ SOURCES += \
     mergeprompt.cpp \
     Signal/dccsignalhead.cpp \
     Signal/tripleoutputsignalhead.cpp \
-    Signal/tripleoutoutsignalheadxml.cpp
+    Signal/tripleoutoutsignalheadxml.cpp \
+    loconet/PR2/pr2adapter.cpp \
+    loconet/PR2/pr2systemconnectionmemo.cpp \
+    loconet/PR2/lnpr2powermanager.cpp \
+    loconet/PR2/lnpr2throttlemanager.cpp \
+    loconet/PR2/pr2throttle.cpp \
+    loconet/PR2/pr2connectionconfig.cpp \
+    loconet/PR2/pr2connectionconfigxml.cpp \
+    loconet/PR2/lnpr2packetizer.cpp \
+    rfid/rfidtrafficcontroller.cpp \
+    rfid/rfidsystemconnectionmemo.cpp \
+    rfid/rfidcomponentfactory.cpp \
+    rfid/rfidmenu.cpp \
+    rfid/rfidnamedpaneaction.cpp \
+    rfid/rfidconnectiontypelist.cpp \
+    rfid/standalonetrafficcontroller.cpp \
+    rfid/rfidprotocol.cpp \
+    rfid/standalonereply.cpp \
+    rfid/rfidreply.cpp \
+    rfid/rfidreportermanagerxml.cpp \
+    rfid/rfidsensormanagerxml.cpp \
+    rfid/rfidserialconnectionconfigxml.cpp \
+    rfid/rfidserialconnectionconfig.cpp \
+    rfid/rfidserialdriveradapter.cpp \
+    rfid/standalonesensormanager.cpp \
+    rfid/standalonereportermanager.cpp \
+    rfid/timeoutrfidreporter.cpp \
+    rfid/rfidportcontroller.cpp \
+    rfid/coreidrfidprotocol.cpp \
+    rfid/timeoutrfidsensor.cpp \
+    rfid/rfidmessage.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -925,23 +954,22 @@ HEADERS += \
     nofeedbackturnoutoperation.h \
     commonturnoutoperation.h \
     nofeedbackturnoutoperator.h \
-    rfidinteface.h \
     message.h \
     idtag.h \
     abstractidtag.h \
     idtagmanager.h \
-    rfidreporter.h \
+    rfid/rfidreporter.h \
     defaultidtagmanager.h \
     defaultidtag.h \
     clockcontrol.h \
     abstractportcontroller.h \
     shutdownmanager.h \
     defaultshutdownmanager.h \
-    rfidsensormanager.h \
-    rfidsensor.h \
-    rfidlistener.h \
+    rfid/rfidsensormanager.h \
+    rfid/rfidsensor.h \
+    rfid/rfidlistener.h \
     abstractmrlistener.h \
-    rfidreportermanager.h \
+    rfid/rfidreportermanager.h \
     throttle.h \
     basicrosterentry.h \
     abstractthrottle.h \
@@ -958,7 +986,7 @@ HEADERS += \
     proglistener.h \
     consistlistener.h \
     memory.h \
-    rfidusb.h \
+    rfid/rfidusb.h \
     routemanager.h \
     route.h \
     defaultroutemanager.h \
@@ -983,7 +1011,7 @@ HEADERS += \
     loconetthrottle.h \
     Throttle/throttlewindow.h \
     #Throttle/listthrottles.h \
-    Roster/functionlabelsmediadlg.h \
+    #Roster/functionlabelsmediadlg.h \
     Roster/locofile.h \
     Roster/cvtablemodel.h \
     Roster/indexedcvtablemodel.h \
@@ -1028,7 +1056,7 @@ HEADERS += \
     Roster/watchinglabel.h \
     Roster/vartextfield.h \
     Roster/fnmappanel.h \
-    Roster/functionlabelspane.h \
+    #Roster/functionlabelspane.h \
     Roster/paneprogframe.h \
     Roster/paneopsprogframe.h \
     Roster/rosterframe.h \
@@ -1168,7 +1196,6 @@ HEADERS += \
     LocoIO/lnpanel.h \
     LocoIO/cmdstnconfigpane.h \
     LocoIO/lncommandstationtype.h \
-    lnpr2packetizer.h \
     Roster/qualifieradder.h \
     Roster/field.h \
     Roster/fnmappanelesu.h \
@@ -1654,7 +1681,40 @@ HEADERS += \
     mergeprompt.h \
     Signal/dccsignalhead.h \
     Signal/tripleoutputsignalhead.h \
-    Signal/tripleoutoutsignalheadxml.h
+    Signal/tripleoutoutsignalheadxml.h \
+    loconet/PR2/pr2adapter.h \
+    loconet/PR2/pr2systemconnectionmemo.h \
+    loconet/PR2/lnpr2powermanager.h \
+    loconet/PR2/lnpr2throttlemanager.h \
+    loconet/PR2/pr2throttle.h \
+    loconet/PR2/pr2connectionconfig.h \
+    loconet/PR2/pr2connectionconfigxml.h \
+    loconet/PR2/lnpr2packtizer.h \
+    rfid/rfidinterface.h \
+    rfid/rfidtrafficcontroller.h \
+    rfid/rfidsystemconnectionmemo.h \
+    rfid/rfidcomponentfactory.h \
+    rfid/rfidmenu.h \
+    rfid/rfidnamedpaneaction.h \
+    rfid/rfidpanelinterface.h \
+    rfid/rfidconnectiontypelist.h \
+    connectiontypelist.h \
+    rfid/standalonetrafficcontroller.h \
+    rfid/standalonemessage.h \
+    rfid/rfidprotocol.h \
+    rfid/standalonereply.h \
+    rfid/rfidreply.h \
+    rfid/rfidreportermanagerxml.h \
+    rfid/rfidsensormanagerxml.h \
+    rfid/rfidserialconnectionconfigxml.h \
+    rfid/rfidserialconnectionconfig.h \
+    rfid/rfidserialdriveradapter.h \
+    rfid/standalonesensormanager.h \
+    rfid/standalonereportermanager.h \
+    rfid/timeoutrfidreporter.h \
+    rfid/rfidportcontroller.h \
+    rfid/coreidrfidprotocol.h \
+    rfid/timeoutrfidsensor.h
 
  !contains(FTDI, 1) {
     HEADERS +=
@@ -1737,9 +1797,9 @@ RESOURCES += \
 FORMS += \
     Throttle/throttlewindow.ui \
     #Throttle/listthrottles.ui \
-    Roster/functionlabelsmediadlg.ui \
+    #Roster/functionlabelsmediadlg.ui \
     Roster/rosterentrypane.ui \
-    Roster/functionlabelspane.ui \
+    #Roster/functionlabelspane.ui \
     Roster/paneprogframe.ui \
     Roster/rosterframe.ui \
     Roster/factoryresetaction.ui \

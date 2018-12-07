@@ -36,7 +36,7 @@
  */
 //abstract /*public*/ class AbstractMRTrafficController {
 
-/*public*/ AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) : QObject(parent)
+/*public*/ AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) : RfidInterface(parent)
 {
  log = new Logger("AbstractMRTrafficController");
  if (log->isDebugEnabled()) log->debug("setting instance: "+QString("%1").arg(this->objectName()));

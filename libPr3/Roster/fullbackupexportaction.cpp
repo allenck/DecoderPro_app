@@ -65,7 +65,7 @@ void FullBackupExportAction::common()
 
 /*public*/ void FullBackupExportAction::actionPerformed(ActionEvent* /*e*/)
 {
- Roster* roster = Roster::instance();
+ Roster* roster = Roster::getDefault();
 #if 1
  //ZipOutputStream* zipper = NULL;
  zipper = NULL;
@@ -108,9 +108,17 @@ void FullBackupExportAction::common()
    RosterEntry* entry = roster->getEntry(index);
    copyFileToStream(entry->getPathName(), "roster", outFile, entry->getId());
   }
+  QDir dir(LocoFile::getFileLocation());
+  QStringList nameFilters;
+  nameFilters << "*.jpg" << "*.png" << "*.gif" << "*.svn" << "*.ico";
+  QFileInfoList infoList = dir.entryInfoList(nameFilters, QDir::Files);
+  foreach(QFileInfo info, infoList)
+  {
+   copyFileToStream(info.filePath(), "", outFile, "");
+  }
 
     // Now the full roster entry
-  copyFileToStream(Roster::defaultRosterFilename(), "", outFile, "");
+  copyFileToStream(Roster::getDefault()->getRosterIndexPath(), "", outFile, "");
 
   zipper->setComment("Roster file saved from DecoderPro " + Version::name());
 

@@ -1,4 +1,5 @@
 #include "rfidreportermanager.h"
+#include "rfidmessage.h"
 
 //RfidReporterManager::RfidReporterManager(QObject *parent) :
 //    AbstractReporterManager(parent)
@@ -28,6 +29,12 @@
 /*public*/ QString RfidReporterManager::getSystemPrefix() {
     return prefix;
 }
+
+//@Override
+/*public*/ void RfidReporterManager::message(RfidMessage* m) {
+    log->warn("Unexpected message received: " + m->toString());
+}
+
 Reporter* RfidReporterManager::createNewReporter(QString systemName, QString userName)
 {
  RfidReporter* r = new RfidReporter(systemName, userName, this);

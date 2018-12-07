@@ -154,7 +154,6 @@ public:
      /*public*/ int getSpeedStepMode();
      /*public*/ void setRosterEntry(BasicRosterEntry* re);
      /*public*/ BasicRosterEntry* getRosterEntry();
-                                                                    // non-stop values in 128 speed
 
 signals:
     void propertyChange(PropertyChangeEvent*);
@@ -210,6 +209,8 @@ protected:
      /*protected*/ void startClock();
      void stopClock();
      /*protected*/ void finishRecord();
+     /*protected*/ int intSpeed(float speed);     // non-stop values in 128 speed
+     /*protected*/ int intSpeed(float speed, int steps);
 
 
 };

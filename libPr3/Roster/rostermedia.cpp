@@ -38,7 +38,7 @@ RosterMediaPane::RosterMediaPane(RosterEntry* re, QWidget *parent) :
   {
    ui->lblIconImage->setPixmap(QPixmap::fromImage(icon).scaledToHeight(100));
    ui->btnRemoveIcon->setVisible(true);
-   connect(ui->btnRemoveIcon, SIGNAL(clicked()), this, SLOT(on_btnRemoveIcon_clicked()));
+   connect(ui->btnRemoveIcon, SIGNAL(clicked()), this, SLOT(on_removeIcon_triggered()));
   }
   else
    ui->btnRemoveIcon->setVisible(false);

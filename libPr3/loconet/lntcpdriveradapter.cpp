@@ -60,7 +60,7 @@ LnNetworkPortController(new LocoNetSystemConnectionMemo(), parent)
  ((LocoNetSystemConnectionMemo*)getSystemConnectionMemo())->setLnTrafficController(packets);
  // do the common manager config
  ((LocoNetSystemConnectionMemo*)getSystemConnectionMemo())->configureCommandStation(commandStationType,
-         mTurnoutNoRetry, mTurnoutExtraSpace);
+         mTurnoutNoRetry, mTurnoutExtraSpace, mTranspondingAvailable);
  ((LocoNetSystemConnectionMemo*)getSystemConnectionMemo())->configureManagers();
 
  // start operation

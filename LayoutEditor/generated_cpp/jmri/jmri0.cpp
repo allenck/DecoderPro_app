@@ -17631,7 +17631,7 @@ QObject*  PythonQtWrapper_InstanceManager::static_InstanceManager_getDefault(QSt
   return (InstanceManager::getDefault(type));
 }
 
-QList<QObject* >  PythonQtWrapper_InstanceManager::static_InstanceManager_getList(QString  type)
+QList<QObject* >*  PythonQtWrapper_InstanceManager::static_InstanceManager_getList(QString  type)
 {
   return (InstanceManager::getList(type));
 }

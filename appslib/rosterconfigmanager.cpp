@@ -66,7 +66,7 @@ void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
   catch (IllegalArgumentException ex)
   {
    this->setInitialized(profile, true);
-   throw new InitializationException(
+   throw InitializationException(
 //                    Bundle.getMessage(Locale.ENGLISH, "IllegalRosterLocation", preferences.get(DIRECTORY, this->getDirectory())),
 //                    ex.getMessage(),
 //                    ex);

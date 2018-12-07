@@ -3,6 +3,7 @@
 #include "roster.h"
 #include "instancemanager.h"
 #include "rosterentry.h"
+#include "rosterconfigmanager.h"
 
 RosterConfigPaneXml::RosterConfigPaneXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -57,19 +58,20 @@ RosterConfigPaneXml::RosterConfigPaneXml(QObject *parent) :
  * @param element Top level Element to unpack.
  * @return true if successful
  */
-/*public*/ bool RosterConfigPaneXml::load(QDomElement element) throw (Exception)
+/*public*/ bool RosterConfigPaneXml::load(QDomElement shared, QDomElement /*perNode*/)
 {
  bool result = true;
- if (element.attribute("directory") != "")
+ if (shared.attribute("directory") != "")
  {
-  Roster::setFileLocation(element.attribute("directory"));
+  static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->setDirectory(shared.attribute("directory"));
   if (log->isDebugEnabled()) {
-      log->debug("set roster location (1): " + element.attribute("directory"));
+      log->debug("set roster location (1): " + shared.attribute("directory"));
   }
  }
- if (element.attribute("ownerDefault") != "")
+ if (shared.attribute("ownerDefault") != "")
  {
-  RosterEntry::setDefaultOwner(element.attribute("ownerDefault"));
+  static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->setDefaultOwner(shared.attribute("ownerDefault"));
+
  }
  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(new RosterConfigPane());
  return result;
@@ -86,7 +88,7 @@ RosterConfigPaneXml::RosterConfigPaneXml(QObject *parent) :
         log->debug("set roster location (2): " + element.attribute("directory"));
     }
     if (element.attribute("directory") != "") {
-        Roster::setFileLocation(element.attribute("directory"));
+        Roster::getDefault()->setRosterLocation(element.attribute("directory"));
     }
     static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(new RosterConfigPane());
 }

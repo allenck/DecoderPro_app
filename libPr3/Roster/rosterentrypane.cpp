@@ -89,7 +89,7 @@ void RosterEntryPane::updateGUI(RosterEntry* re)
 /*public*/ bool RosterEntryPane::checkDuplicate()
 {
     // check its not a duplicate
-    QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, ui->edID->text());
+    QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, NULL, NULL, NULL, NULL, ui->edID->text());
     bool oops = false;
     for (int i=0; i<l.size(); i++) {
         if (re!=l.at(i)) oops =true;

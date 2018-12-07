@@ -1,5 +1,6 @@
 #include "rfidsensormanager.h"
 #include "rfidsensor.h"
+#include "loggerfactory.h"
 
 RfidSensorManager::RfidSensorManager(QObject *parent) :
     AbstractSensorManager(parent)
@@ -45,10 +46,10 @@ RfidSensorManager::RfidSensorManager(QObject *parent) :
 //    }
 
 /*public*/ void RfidSensorManager::message(/*RfidMessage*/QString m) {
-    log.warn("Unexpected message received"+m);
+    log->warn("Unexpected message received "+m);
 }
 
-//    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(RfidSensorManager.class.getName());
+/*private*/ /*static*/ /*final*/ Logger* RfidSensorManager::log = LoggerFactory::getLogger("RfidSensorManager");
 
 //}
 Sensor* RfidSensorManager::createNewSensor(QString systemName, QString userName)

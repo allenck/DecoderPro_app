@@ -133,7 +133,7 @@ LocoIconXml::LocoIconXml(QObject* parent) :
   try
   {
    rosterId = element.attribute("rosterentry");
-   RosterEntry* entry = Roster::instance()->entryFromTitle(rosterId);
+   RosterEntry* entry = Roster::getDefault()->entryFromTitle(rosterId);
    l->setRosterEntry(entry);
   }
   catch (Exception e)

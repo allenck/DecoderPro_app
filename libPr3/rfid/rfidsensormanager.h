@@ -1,7 +1,7 @@
 #ifndef RFIDSENSORMANAGER_H
 #define RFIDSENSORMANAGER_H
 #include "abstractsensormanager.h"
-//#include "rfidtrafficcontroller.h"
+#include "rfidtrafficcontroller.h"
 #include "libPr3_global.h"
 
 class LIBPR3SHARED_EXPORT RfidSensorManager : public AbstractSensorManager
@@ -19,7 +19,7 @@ signals:
 public slots:
 private:
  /*private*/ QString prefix;
- Logger log;
+ static Logger* log;
  Sensor* createNewSensor(QString systemName, QString userName);
  //RfidTrafficController* tc;
 };

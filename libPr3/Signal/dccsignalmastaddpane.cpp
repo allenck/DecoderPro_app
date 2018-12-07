@@ -89,10 +89,10 @@
     }
 
     systemPrefixBox->clear();
-    QObjectList connList = InstanceManager::getList("CommandStation");
-    if (!connList.isEmpty()) {
-        for (int x = 0; x < connList.size(); x++) {
-            CommandStation* station = (CommandStation*)connList.at(x);
+    QObjectList* connList = InstanceManager::getList("CommandStation");
+    if (!connList->isEmpty()) {
+        for (int x = 0; x < connList->size(); x++) {
+            CommandStation* station = (CommandStation*)connList->at(x);
             if (usableCommandStation(station)) {
                 systemPrefixBox->addItem(station->getUserName());
             }
@@ -176,10 +176,10 @@
 
         }
     }
-    QObjectList connList = InstanceManager::getList("CommandStation");
-    if (!connList.isEmpty()) {
-        for (int x = 0; x < connList.size(); x++) {
-            CommandStation* station = (CommandStation*)connList.at(x);
+    QObjectList* connList = InstanceManager::getList("CommandStation");
+    if (!connList->isEmpty()) {
+        for (int x = 0; x < connList->size(); x++) {
+            CommandStation* station = (CommandStation*)connList->at(x);
             if (usableCommandStation(station)) {
                 systemPrefixBox->addItem(station->getUserName());
             }

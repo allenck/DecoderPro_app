@@ -162,7 +162,7 @@ void ProgOpsModePane::init()
 
     // create the programmer display combo box
     QVector<AddressedProgrammerManager*> v = QVector<AddressedProgrammerManager*>();
-    for (QObject* pm : InstanceManager::getList("AddressedProgrammerManager")) {
+    for (QObject* pm : *InstanceManager::getList("AddressedProgrammerManager")) {
         v.append((AddressedProgrammerManager*)pm);
     }
     thisLayout->addWidget(progBox = new QComboBox(/*v*/));

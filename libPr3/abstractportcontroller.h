@@ -7,6 +7,7 @@
 #include "libPr3_global.h"
 //#include "serialportadapter.h"
 #include "loconet/networkportadapter.h"
+#include "exceptions.h"
 
 class LIBPR3SHARED_EXPORT Option
 {
@@ -26,6 +27,10 @@ class LIBPR3SHARED_EXPORT Option
   QString displayText;
   QStringList options;
   bool advancedOption; // = true;
+
+ protected:
+  /*protected*/ QString manufacturerName;// = null;
+
 };
 
 class LIBPR3SHARED_EXPORT AbstractPortController : public NetworkPortAdapter
@@ -115,12 +120,14 @@ protected:
  /*protected*/ bool opened;
  /*protected*/ void setOpened();
  /*protected*/ void setClosed();
- /*protected*/ QString mManufacturer;
  /*protected*/ bool mDisabled;
  /*protected*/ bool allowConnectionRecovery;
  /*protected*/ int reconnectinterval;
  /*protected*/ int retryAttempts;
  /*protected*/ static void safeSleep(long milliseconds, QString s);
+ /*protected*/ QString manufacturerName;// = null;
+ /*protected*/ void purgeStream(/*@Nonnull*/ QDataStream* serialStream);
+
  friend class LnNetworkPortController;
 };
 

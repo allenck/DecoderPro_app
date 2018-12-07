@@ -41,7 +41,7 @@
 #include "controlpaneleditor.h"
 #include "controlpaneleditorxml.h"
 #include "rfidsensormanagerxml.h"
-#include "rfidsensormanager.h"
+#include "rfid/rfidsensormanager.h"
 #include "signalgroupmanager.h"
 #include "defaultsignalgroupmanager.h"
 #include "defaultsignalgroupmanagerxml.h"

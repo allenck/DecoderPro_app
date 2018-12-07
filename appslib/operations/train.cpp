@@ -3366,7 +3366,7 @@ if (roads.length() == 0) {
     if (getLeadEngine() != NULL)
     {
      // first try and find a match based on loco road number
-     QList<RosterEntry*> entries = Roster::instance()->matchingList(NULL, getLeadEngine()->getNumber(),
+     QList<RosterEntry*> entries = Roster::getDefault()->matchingList(NULL, getLeadEngine()->getNumber(),
              NULL, NULL, NULL, NULL, NULL);
      if (entries.size() > 0) {
          entry = entries.at(0);
@@ -3374,7 +3374,7 @@ if (roads.length() == 0) {
      if (entry == NULL)
      {
       // now try finding a match based on DCC address
-      entries = Roster::instance()->matchingList(NULL, NULL, getLeadEngine()->getNumber(), NULL,
+      entries = Roster::getDefault()->matchingList(NULL, NULL, getLeadEngine()->getNumber(), NULL,
               NULL, NULL, NULL);
       if (entries.size() > 0) {
           entry = entries.at(0);

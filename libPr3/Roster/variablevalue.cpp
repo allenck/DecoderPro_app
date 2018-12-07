@@ -1,4 +1,5 @@
 #include "variablevalue.h"
+#include "loggerfactory.h"
 
 //VariableValue::VariableValue(QObject *parent) :
 //    AbstractValue(parent)
@@ -60,6 +61,48 @@
 void VariableValue::updatedTextField() {
     logit->error("unexpected use of updatedTextField()"/*, new Exception("traceback")*/);
 }
+
+/**
+ * Provide a user-readable description of the CVs accessed by this variable.
+ * <p>
+ * Default is a single CV number
+ */
+/*public*/ QString VariableValue::getCvDescription() {
+    return "CV" + _cvNum;
+}
+
+/**
+ * Set the value from a single number.
+ *
+ * In some cases, e.g. speed tables, this will result in complex behavior,
+ * where setIntValue(getIntValue()) results in something unexpected.
+ */
+//abstract public void setIntValue(int i);
+
+/**
+ * Set value from a String value.
+ * <p>
+ * The current implementation is a stand-in.  Note that
+ * e.g. Speed Tables don't use a single Int, so will
+ * just be skipped. The solution to that is to overload this in
+ * complicated variable types.
+ */
+/*public*/ void VariableValue::setValue(QString value) {
+    bool bok;
+        int val = value.toInt(&bok);
+        if(bok)
+         setIntValue(val);
+    else
+        logit->debug(tr("skipping set of non-integer value \"%1\"").arg(value));
+}
+
+/**
+ * Get the value as a single number.
+ *
+ * In some cases, e.g. speed tables, this will result in complex behavior,
+ * where setIntValue(getIntValue()) results in something unexpected.
+ */
+// /*abstract*/ /*public*/ int getIntValue() {return 0;}
 
 /**
  * Always read the contents of this Variable
@@ -144,7 +187,6 @@ void VariableValue::updatedTextField() {
     _state = UNKNOWN;
     _busy = false;
     this->parent = parent;
-    logit = new Logger("VariableValue");
     setObjectName("VariableValue");
 }
 
@@ -330,3 +372,7 @@ void VariableValue::setSV(int cv)
 {
  _cvNum = cv;
 }
+
+// initialize logging
+    /*private*/ /*final*/ /*static*/ Logger* VariableValue::logit = LoggerFactory::getLogger("VariableValue");
+

@@ -11,7 +11,7 @@ public:
  ~RosterConfigPaneXml() {}
  RosterConfigPaneXml(const RosterConfigPaneXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);
-  /*public*/ bool load(QDomElement element) throw (Exception);
+  /*public*/ bool load(QDomElement element, QDomElement perNode);
  /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
 
 signals:

@@ -52,9 +52,10 @@ setProperty("InstanceManagerAutoInitialize", "true");
 ///*public*/ /*synchronized*/ /*static*/ void NceConsistRoster::resetInstance() { _instance = NULL; }
 
 /**
- * Locate the single instance of Roster, loading it if need be
- * @return The valid Roster object
+ * @return The NCE consist roster object
+ * @deprecated JMRI Since 4.4 instance() shouldn't be used, convert to JMRI multi-system support structure
  */
+//@Deprecated
 /*public*/ /*static*/ /*synchronized*/ NceConsistRoster* NceConsistRoster::instance()
 {
  return static_cast<NceConsistRoster*>(InstanceManager::getDefault("NceConsistRoster"));
@@ -369,10 +370,10 @@ bool NceConsistRoster::isDirty() {return dirty;}
 /**
  * Store the roster in the default place, including making a backup if needed
  */
-/*public*/ /*static*/ void NceConsistRoster::writeRosterFile() {
-    NceConsistRoster::instance()->makeBackupFile(defaultNceConsistRosterFilename());
+/*public*/ void NceConsistRoster::writeRosterFile() {
+    makeBackupFile(defaultNceConsistRosterFilename());
     try {
-        NceConsistRoster::instance()->writeFile(defaultNceConsistRosterFilename());
+        writeFile(defaultNceConsistRosterFilename());
     } catch (Exception e) {
         Logger::error("Exception while writing the new ConsistRoster file, may not be complete: "+e.getMessage());
     }
@@ -398,7 +399,7 @@ bool NceConsistRoster::isDirty() {return dirty;}
 /**
  * Return the filename String for the default ConsistRoster file, including location.
  */
-/*public*/ /*static*/ QString NceConsistRoster::defaultNceConsistRosterFilename() { return Roster::getFileLocation()+NceConsistRosterFileName;}
+/*public*/ /*static*/ QString NceConsistRoster::defaultNceConsistRosterFilename() { return Roster::getDefault()->getRosterLocation()+NceConsistRosterFileName;}
 
 /*public*/ /*static*/ void NceConsistRoster::setNceConsistRosterFileName(QString name) { NceConsistRosterFileName = name; }
 /*private*/ /*static*/ QString NceConsistRoster::NceConsistRosterFileName = "ConsistRoster.xml";

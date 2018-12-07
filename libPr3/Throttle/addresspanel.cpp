@@ -150,7 +150,7 @@ AddressPanel::~AddressPanel()
     if ((backgroundPanel != NULL) && (!(rosterBox->getSelectedRosterEntries()->length() != 0))) {
         backgroundPanel->setImagePath(NULL);
         QString rosterEntryTitle = getRosterEntrySelector()->getSelectedRosterEntries()->at(0)->titleString();
-        RosterEntry* re = Roster::instance()->entryFromTitle(rosterEntryTitle);
+        RosterEntry* re = Roster::getDefault()->entryFromTitle(rosterEntryTitle);
         if ((re != NULL) && (re->getImagePath()!=NULL)){
             backgroundPanel->setImagePath(re->getImagePath());
         }
@@ -213,7 +213,7 @@ AddressPanel::~AddressPanel()
             (ThrottleFrameManager::instance()->getThrottlesPreferences()->isEnablingRosterSearch()) &&
             addrSelector->getAddress() != NULL )
  {
-  QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, QString::number(addrSelector->getAddress()->getNumber()), NULL, NULL, NULL, NULL);
+  QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, QString::number(addrSelector->getAddress()->getNumber()), NULL, NULL, NULL, NULL);
   if (l.size()>0)
   {
    rosterEntry = l.at(0);
@@ -462,7 +462,7 @@ void AddressPanel::OnSetButton_clicked()
  {
 #if 1
     QString rosterEntryTitle = ui->rosterBox->getRosterEntryComboBox()->currentText();
-    NceConsistRosterEntry* cre = NceConsistRoster::instance()
+    NceConsistRosterEntry* cre = static_cast<NceConsistRoster*>(InstanceManager::getDefault("NceConsistRoster"))
             ->entryFromTitle(rosterEntryTitle);
 
     DccLocoAddress* a = new DccLocoAddress(cre->getLoco1DccAddress().toInt(), cre->isLoco1LongAddress());

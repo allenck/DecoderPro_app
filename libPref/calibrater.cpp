@@ -183,7 +183,7 @@ JmriJFrame(false, false, parent)
   if (log->isDebugEnabled()) log->debug("Made speed profile setting for "+ _warrant->getTrainId()+
           ": "+(_isForward ? "Forward":"Reverse")+" step= "+QString::number(qRound(_maxSpeed*1000))+", speed= "+QString::number(_rawSpeed*1000));
   _warrant->getRosterEntry()->updateFile();
-  Roster::writeRoster();
+  Roster::getDefault()->writeRoster();
  }
  dispose();
 }

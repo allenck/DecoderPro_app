@@ -34,7 +34,7 @@
 /*public*/ void XmlFileLocationAction::actionPerformed(ActionEvent* ev) {
 
     /*final*/ QString user = FileUtil::getUserFilesPath();
-    /*final*/ QString roster = Roster::getFileLocation();
+    /*final*/ QString roster = Roster::getDefault()->getRosterLocation();
     /*final*/ QString profile = FileUtil::getProfilePath();
     /*final*/ QString settings = FileUtil::getPreferencesPath();
     /*final*/ QString scripts = FileUtil::getScriptsPath();

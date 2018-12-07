@@ -11,7 +11,6 @@ class LIBPR3SHARED_EXPORT VariableValue : public AbstractValue
 public:
     //explicit VariableValue(QObject *parent = 0);
     /*public*/ QString getTextValue();
-    virtual void updatedTextField();
     static /*public*/ bool considerChanged(CvValue* c);
 
     /*public*/ VariableValue(QString label, QString comment, QString cvName, bool readOnly,
@@ -55,6 +54,9 @@ public:
     /*abstract*/ /*public*/ virtual QVector<CvValue*>* usesCVs() { return NULL;}
     /*abstract*/ /*public*/ virtual void setCvState(int state) {Q_UNUSED(state)}
     void setSV(int cv);
+    /*public*/ QString getCvDescription();
+    /*public*/ void setValue(QString value);
+
 
 signals:
  //void notifyPropertyChange(PropertyChangeEvent *e);
@@ -64,7 +66,7 @@ private:
     /*private*/ QString _label;
     /*private*/ QString _item;
     /*private*/ QString _cvName;
- Logger* logit;
+ static Logger* logit;
  /*private*/ QString _comment;
  /*private*/ bool _readOnly;
  /*private*/ bool _infoOnly;
@@ -75,6 +77,8 @@ private:
  /*private*/ int _state;// = UNKNOWN;
  /*private*/ bool _busy;// = false;
  QObject *parent;
+ void updatedTextField();
+
 protected:
  /*protected*/ QMap<QString, CvValue*>* _cvMap;   // Vector of CV objects used to look up CVs
  /*protected*/ QLabel* _status;// = null;
@@ -85,8 +89,10 @@ protected:
  /*protected*/ int maskVal(QString maskString);
  /*protected*/ int offsetVal(QString maskString);
  /*protected*/ int newValue(int oldCv, int newVal, QString maskString);
+
  friend class IndexedPairVariableValue;
  friend class VariableTableModel;
+ friend class MyDccAddressVarHandler2;
 };
 
 #endif // VARIABLEVALUE_H

@@ -186,8 +186,8 @@ bool CombinedLocoSelPane::isDecoderSelected() {
  pane2aLayout->addWidget(new QLabel(tr("Use locomotive settings for:")));
  //locoBox->setNonSelectedItem(tr("<none - new loco>"));
  locoBox->setCurrentIndex(0);
- //Roster::instance()->addPropertyChangeListener(this);
- connect(Roster::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //Roster::getDefault()->addPropertyChangeListener(this);
+ connect(Roster::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  pane2aLayout->addWidget(locoBox);
  locoBox->setVisible(true);
 // locoBox.addPropertyChangeListener(RosterEntrySelector::SELECTED_ROSTER_ENTRIES, new PropertyChangeListener() {
@@ -442,7 +442,7 @@ CLSIdentifyDecoder::CLSIdentifyDecoder(Programmer* programmer, CombinedLocoSelPa
  // raise the button again
  idloco->setChecked(false);
  // locate that loco
- QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, QString::number(dccAddress),
+ QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, QString::number(dccAddress),
                                             NULL, NULL, NULL, NULL);
  if (log->isDebugEnabled()) log->debug("selectLoco found "+QString::number(l.size())+" matches");
  if (l.size() > 0)
@@ -649,7 +649,7 @@ void CombinedLocoSelPane::updateForDecoderNotID(int pMfgID, int pModelID)
 
  // note that we're leaving the filename NULL
  // add the new roster entry to the in-memory roster
- Roster::instance()->addEntry(re);
+ Roster::getDefault()->addEntry(re);
 
  startProgrammer(decoderFile, re, programmerBox->currentText());
  setCursor(Qt::ArrowCursor);

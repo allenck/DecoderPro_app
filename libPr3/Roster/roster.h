@@ -18,7 +18,6 @@ class LIBPR3SHARED_EXPORT Roster : public XmlFile
 public:
     explicit Roster(QObject *parent = 0);
     /** record the single instance of Roster **/
-    static /*transient*/ Roster* _instance;// = null;
     // should be private except that JUnit testing creates multiple Roster objects
     /*public*/ Roster(QString rosterFilename);
     /*public*/ /*synchronized*/ Q_DECL_DEPRECATED static void resetInstance();
@@ -28,23 +27,17 @@ public:
      */
     /*public*/ static /*synchronized*/ Roster* instance();
     /*public*/ static /*synchronized*/ Roster* getDefault();
-    /*public*/ Q_DECL_DEPRECATED static /*synchronized*/ void installNullInstance();
     /*public*/ void addEntry(RosterEntry* e);
     /*public*/ void removeEntry(RosterEntry* e);
     /*public*/ int numEntries();
     /*public*/ void dispose();
-    /*public*/ Q_DECL_DEPRECATED static void writeRoster();
+    /*public*/ void writeRoster();
     /*public*/ void reindex();
-    /*public*/ void reloadRosterFile();
     /*public*/ void setRosterIndexFileName(QString fileName);
     /*public*/ QString getRosterIndexFileName() ;
     /*public*/ QString getRosterIndexPath();
-    /*public*/ Q_DECL_DEPRECATED static QString defaultRosterFilename();
     /*public*/ void setRosterLocation(QString f);
     /*public*/ QString getRosterLocation();
-    /*public*/ Q_DECL_DEPRECATED static void setFileLocation(QString f);
-    /*public*/ Q_DECL_DEPRECATED static QString getFileLocation();
-    /*public*/ Q_DECL_DEPRECATED static void setRosterFileName(QString name);
     /*public*/ void entryIdChanged(RosterEntry* r);
     static /*public*/ QString makeValidFilename(QString entry);
     /*public*/ RosterEntry* entryFromTitle(QString title );
@@ -84,12 +77,9 @@ public:
     static QString _rosterGroupPrefix;// = "RosterGroup:";
     /*public*/ static QString getRosterGroupName(QString rosterGroup);
     /*public*/ static QString getRosterGroupProperty(QString name);
-    /*public*/ Q_DECL_DEPRECATED QString getRosterGroupPrefix();
-    /*public*/ Q_DECL_DEPRECATED void addRosterGroupList(QString str);
     /*public*/ void delRosterGroupList(QString str);
     /*public*/ void copyRosterGroupList(QString oldName, QString newName);
     /*public*/ void renameRosterGroupList(QString oldName, QString newName);
-    /*public*/ Q_DECL_DEPRECATED void getRosterGroupList(int i);
     /*public*/ QVector<QString> getRosterGroupList();
     /*public*/ static QString AllEntries(QLocale /*locale*/);
 
@@ -145,14 +135,20 @@ public:
     /*public*/ QMap<QString, RosterGroup*> getRosterGroups();
     /*public*/ void rosterGroupRenamed(QString oldName, QString newName);
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    /*public*/ void addRosterGroup(RosterGroup* rg);
+    /*public*/ void addRosterGroup(QString str);
 
 signals:
     //void propertyChange(QString text, QObject* o, QObject* n);
-    void propertyChange(PropertyChangeEvent* e);
 
 public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent *evt);
+    /*public*/ void reloadRosterFile();
+
+
 private:
- Logger* log;
+ static Logger* log;
+ void common();
  ///*private*/ UserPreferencesManager preferences;
  /*private*/ QString defaultRosterGroup;// = NULL;
  bool readFile(QString name);
@@ -166,7 +162,6 @@ private:
  QDomDocument doc;
  /*private*/ static QString rosterFileName;// = "roster.xml";
  /*private*/ static QString fileLocation;//  = FileUtil.getUserFilesPath();
-  /*private*/ void addRosterGroupList(QString str, bool notify);
   /*private*/ void delRosterGroupList(QString rg, bool notify);
   static QStringList getAllFileNames();
   /*private*/ /*final*/ QMap<QString, RosterGroup*> rosterGroups;// = new HashMap<>();

@@ -27,7 +27,7 @@ BlockManager::BlockManager(QObject *parent) :
 static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  //InstanceManager.getList(PowerManager.class).forEach((pm) -> {
- foreach(QObject* pm, InstanceManager::getList("PowerManager"))
+ foreach(QObject* pm, *InstanceManager::getList("PowerManager"))
  {
      //static_cast<PowerManager*>(pm)->addPropertyChangeListener(this);
   //connect(static_cast<PowerManager*>(pm)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

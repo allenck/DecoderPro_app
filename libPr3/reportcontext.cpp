@@ -76,7 +76,7 @@
     QString prog = System::getProperty("user.dir");
     addString("Program directory: " + prog + "   ");
 
-    QString roster = Roster::defaultRosterFilename();
+    QString roster = Roster::getDefault()->getRosterIndexPath();
     addString("Roster index location: " + roster + "   ");
 
     File* panel = LoadXmlUserAction::getCurrentFile();

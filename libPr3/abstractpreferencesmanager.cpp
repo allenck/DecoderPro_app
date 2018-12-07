@@ -189,7 +189,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Prefer
 #endif
  foreach (/*Class<? extends PreferencesManager>*/QString clazz , classes->toList())
  {
-  foreach (QObject* instance,  InstanceManager::getList(clazz))
+  foreach (QObject* instance,  *InstanceManager::getList(clazz))
   {
    if (((PreferencesManager*)instance)->isInitializedWithExceptions(profile))
    {

@@ -893,12 +893,12 @@ void WarrantFrame::on_deleteButtonClicked()
             if (index >= 0) {
                 name = name.mid(0, index);
             }
-            QList<RosterEntry*> l = Roster::instance()->matchingList(NULL, NULL, name, NULL, NULL, NULL, NULL );
+            QList<RosterEntry*> l = Roster::getDefault()->matchingList(NULL, NULL, name, NULL, NULL, NULL, NULL );
             if (l.size() > 0) {
                 _train = l.at(0);
             }
         } else {
-            _train = Roster::instance()->entryFromTitle(name);
+            _train = Roster::getDefault()->entryFromTitle(name);
         }
         if (_train !=NULL) {
             _trainNameBox->setText(_train->getRoadNumber());

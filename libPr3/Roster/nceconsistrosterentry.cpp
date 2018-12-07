@@ -1,5 +1,6 @@
 #include "nceconsistrosterentry.h"
 #include "nceconsistroster.h"
+#include "instancemanager.h"
 
 NceConsistRosterEntry::NceConsistRosterEntry(QObject *parent) :
     QObject(parent)
@@ -103,7 +104,7 @@ void NceConsistRosterEntry::init()
     QString oldID = _id;
     _id = s;
     if (oldID!=(s))
-        NceConsistRoster::instance()->entryIdChanged(this);
+        static_cast<NceConsistRoster*>(InstanceManager::getDefault("NceConsistRoster"))->entryIdChanged(this);
 }
 /*public*/ QString NceConsistRosterEntry::getId() { return _id; }
 

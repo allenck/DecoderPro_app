@@ -35,7 +35,7 @@
  * @return the list of entries or an empty list.
  */
 /*public*/ QList<RosterEntry*> RosterGroup::getEntries() {
-    return Roster::instance()->getEntriesInGroup(this->getName());
+    return Roster::getDefault()->getEntriesInGroup(this->getName());
 }
 
 /**
@@ -58,23 +58,23 @@
  */
 /*public*/ void RosterGroup::setName(QString newName)
 {
- if (Roster::instance()->getRosterGroups().contains(newName))
+ if (Roster::getDefault()->getRosterGroups().contains(newName))
  {
   return;
  }
  QString oldName = this->name;
  QString oldGroup = Roster::getRosterGroupProperty(oldName);
  QString newGroup = Roster::getRosterGroupProperty(newName);
- //Roster::instance()->getRosterGroups().insert(newName, Roster::instance()->getRosterGroups().remove(oldName));
- Roster::instance()->getRosterGroups().insert(newName, new RosterGroup(newName)); // not sure about this ACK
- Roster::instance()->getRosterGroups().remove(oldName);
+ //Roster::getDefault()->getRosterGroups().insert(newName, Roster::getDefault()->getRosterGroups().remove(oldName));
+ Roster::getDefault()->getRosterGroups().insert(newName, new RosterGroup(newName)); // not sure about this ACK
+ Roster::getDefault()->getRosterGroups().remove(oldName);
  foreach (RosterEntry* re, this->getEntries())
  {
   re->putAttribute(newGroup, "yes"); // NOI18N
   re->deleteAttribute(oldGroup);
  }
  this->name = newName;
- Roster::instance()->rosterGroupRenamed(oldName, newName);
+ Roster::getDefault()->rosterGroupRenamed(oldName, newName);
 }
 
 //@Override

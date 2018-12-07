@@ -97,7 +97,7 @@ void DeleteRosterGroupAction::common()
 //             Roster.instance().getRosterGroupList().toArray(),
 //             null);
   QComboBox* box = new QComboBox();
-  box->addItems( Roster::instance()->getRosterGroupList().toList());
+  box->addItems( Roster::getDefault()->getRosterGroupList().toList());
   InputDialog* dlg = new InputDialog("<html><b>Delete roster group</b><br>Roster entries in the group are not deleted.</html>", box, "Delete Roster Group");
   group = dlg->value();
  }
@@ -112,8 +112,8 @@ void DeleteRosterGroupAction::common()
  }
 
  // delete the roster grouping
- Roster::instance()->delRosterGroupList(group);
- Roster::writeRoster();
+ Roster::getDefault()->delRosterGroupList(group);
+ Roster::getDefault()->writeRoster();
 }
 
 /**

@@ -153,7 +153,7 @@ public:
     /*public*/ QString getFunctionSelectedImage(int fn);
     /*public*/ void setFunctionLockable(int fn, bool lockable);
     /*public*/ bool getFunctionLockable(int fn);
-    /*public*/ void loadCvModel(CvTableModel* cvModel, IndexedCvTableModel* iCvModel);
+    /*public*/ void loadCvModel(VariableTableModel* varModel, CvTableModel* cvModel);
     /*public*/ void writeFile(CvTableModel* cvModel, IndexedCvTableModel* iCvModel, VariableTableModel* variableModel);
     /*public*/ void changeDateUpdated();
     /*public*/ void setOpen(bool boo);
@@ -175,7 +175,7 @@ public slots:
 private:
     static /*private*/ QString _defaultOwner;// = "";
     void init();
-    Logger* log;
+    static Logger* log;
     bool loadedOnce;// = false;
     /**
      * Store the root element of the JDOM tree representing this

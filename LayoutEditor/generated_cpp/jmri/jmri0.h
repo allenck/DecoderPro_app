@@ -1904,7 +1904,7 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    QString  static_InstanceManager_contentsToString();
    void static_InstanceManager_deregister(QObject*  item, QString  type);
    QObject*  static_InstanceManager_getDefault(QString  type);
-   QList<QObject* >  static_InstanceManager_getList(QString  type);
+   QList<QObject *> *static_InstanceManager_getList(QString  type);
    //void init(InstanceManager* theWrappedObject);
    InstanceManager*  static_InstanceManager_instance();
    //LayoutBlockManager*  static_InstanceManager_layoutBlockManagerInstance();

@@ -77,7 +77,7 @@ void FullBackupImportAction::common()
  FileUtil::createDirectory(LocoFile::getFileLocation());
 
  // make sure instance loaded
- Roster::instance();
+ Roster::getDefault();
 
  // set up to read import file
  //ZipInputStream zipper = NULL;
@@ -135,6 +135,20 @@ void FullBackupImportAction::common()
    inputFile->open(QIODevice::ReadOnly);
 
    QByteArray ba = inputFile->readAll();
+   QString fn = zipper->getCurrentFileName();
+   if(fn.endsWith(".jpg", Qt::CaseInsensitive) || fn.endsWith(".png", Qt::CaseInsensitive) || fn.endsWith(".gif", Qt::CaseInsensitive) || fn.endsWith(".svn", Qt::CaseInsensitive) || fn.endsWith(".ico", Qt::CaseInsensitive))
+   {
+    QFile fOut(LocoFile::getFileLocation()+ fn);
+    if(fOut.open(QIODevice::WriteOnly))
+    {
+     fOut.write(ba);
+     fOut.close();
+    }
+    inputFile->close();
+    f = zipper->goToNextFile();
+    continue;
+   }
+
 
    QDomElement lroot = xfile->rootFromInputStream(new QDataStream(ba)).cloneNode().toElement();
    if (lroot.firstChildElement("locomotive") == QDomElement())
@@ -177,29 +191,26 @@ void FullBackupImportAction::common()
 //    }
 
     // see if duplicate
-    RosterEntry* currentEntry = Roster::instance()->getEntryForId(mToID);
+    RosterEntry* currentEntry = Roster::getDefault()->getEntryForId(mToID);
 
     if (currentEntry != NULL)
     {
-//        retval = JOptionPane.showOptionDialog(mParent,
-//                Bundle.getMessage("ConfirmImportDup", mToID),
-//                Bundle.getMessage("ConfirmImport"),
-//                0,
-//                JOptionPane.INFORMATION_MESSAGE,
-//                NULL,
-//                new Object[]{Bundle.getMessage("CancelImports"),
-//                    Bundle.getMessage("Skip"),
-//                    Bundle.getMessage("OK")},
-//                NULL);
-     retval = QMessageBox::question(_parent, tr("Confirm Import"), tr("This will replace an existing roster entry\n                                                                      by the same name:                                                                     \"%1\"").arg(mToID), QMessageBox::Yes | QMessageBox::No);
-//     if (retval == QMessageBox::Yes) {
-//         break;
-//     }
-     if (retval == QMessageBox::No)
+     QVariantList vl;
+     vl << tr("Cancel Imports") << tr("Skip") << tr("OK");
+     retval = JOptionPane::showOptionDialog(mParent,
+             tr("This will replace an existing roster entry\nby the same name:\"%1\"").arg(mToID),
+             tr("Confirm Import"),
+             0,
+             JOptionPane::INFORMATION_MESSAGE,
+             QIcon(),
+             vl,
+             QVariant());
+     if (retval == 0)
      {
-      inputFile->close();
-      f = zipper->goToNextFile();  // that's the roster file
-      continue;
+         break;
+     }
+     if (retval == 1) {
+         continue;
      }
 
      // turn file into backup
@@ -207,7 +218,7 @@ void FullBackupImportAction::common()
      df->makeBackupFile(LocoFile::getFileLocation() + currentEntry->getFileName());
 
      // delete entry
-     Roster::instance()->removeEntry(currentEntry);
+     Roster::getDefault()->removeEntry(currentEntry);
 
     }
 
@@ -215,7 +226,7 @@ void FullBackupImportAction::common()
     addToEntryToRoster();
 
     // use the new roster
-    Roster::instance()->reloadRosterFile();
+    Roster::getDefault()->reloadRosterFile();
    }
    catch (JDOMException ex) {
        //ex.printStackTrace();

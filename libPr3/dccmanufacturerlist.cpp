@@ -1,4 +1,5 @@
 #include "dccmanufacturerlist.h"
+#include "rfid/rfidconnectiontypelist.h"
 
 DCCManufacturerList::DCCManufacturerList(QObject *parent) :
     QObject(parent)
@@ -167,7 +168,7 @@ QString     DCCManufacturerList::MRC = "MRC";
 //             POWERLINE <<
 //             PROTRAK <<
 //             QSI <<
-//             RFID <<
+             RFID <<
 //             ROCO <<
              SPROG;
 //             SRCP <<
@@ -213,7 +214,11 @@ QString     DCCManufacturerList::MRC = "MRC";
 //        if(System==(POWERLINE)) { return new jmri.jmrix.powerline.SerialConnectionTypeList().getAvailableProtocolClasses(); }
 //        if(System==(PROTRAK)) { return new jmri.jmrix.grapevine.SerialConnectionTypeList().getAvailableProtocolClasses(); }
 //        if(System==(QSI)) { return new jmri.jmrix.qsi.QSIConnectionTypeList().getAvailableProtocolClasses(); }
-//        if(System==(RFID)) { return new jmri.jmrix.rfid.RfidConnectionTypeList().getAvailableProtocolClasses(); }
+        if(System==(RFID))
+        { //return new RfidConnectionTypeList().getAvailableProtocolClasses();
+         RfidConnectionTypeList* list = new RfidConnectionTypeList();
+         return list->getAvailableProtocolClasses();
+        }
 //        if(System==(ROCO)) { return new jmri.jmrix.lenz.LenzConnectionTypeList().getAvailableProtocolClasses(); }
         if(System==(SPROG)) { return (new SprogConnectionTypeList())->getAvailableProtocolClasses();  }
 //        if(System==(SRCP)) { return new jmri.jmrix.srcp.SRCPConnectionTypeList().getAvailableProtocolClasses(); }

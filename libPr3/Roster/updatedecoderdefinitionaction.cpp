@@ -91,9 +91,9 @@ foreach (RosterEntry* entry, list)
  }
 
  // write updated roster
- Roster::getDefault()->makeBackupFile(Roster::defaultRosterFilename());
+ Roster::getDefault()->makeBackupFile(Roster::getDefault()->getRosterIndexPath());
  try {
-     Roster::getDefault()->writeFile(Roster::defaultRosterFilename());
+     Roster::getDefault()->writeFile(Roster::getDefault()->getRosterIndexPath());
  } catch (IOException ex) {
      Logger::error("Exception while writing the new roster file, may not be complete: " + ex.getMessage());
  }

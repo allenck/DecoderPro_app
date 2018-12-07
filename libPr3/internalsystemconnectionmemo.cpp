@@ -49,7 +49,7 @@
 
  //super("I", "Internal");
  InstanceManager::store(this, "InternalSystemConnectionMemo"); // also register as specific type
- QObjectList l = InstanceManager::getList("InternalSystemConnectionMemo");
+ QObjectList* l = InstanceManager::getList("InternalSystemConnectionMemo");
 
  _register();
 }

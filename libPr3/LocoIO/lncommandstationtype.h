@@ -29,6 +29,7 @@ public:
             COMMAND_STATION_LOCOCENTRAL, // "LocoCentral"
 
             COMMAND_STATION_PR3_ALONE,//   ("PR3 standalone programmer",   true,   false,  "LnThrottleManager",    "SlotManager"),  // NOI18N
+            COMMAND_STATION_PR2_ALONE, //"PR2 standalone programmer", true, false, "LnThrottleManager", "SlotManager"), // NOI18N
             COMMAND_STATION_STANDALONE  //("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager");  // NOI18N
     };
     //explicit LnCommandStationType(QObject *parent = 0);

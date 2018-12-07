@@ -43,7 +43,7 @@ RosterIconFactory::RosterIconFactory(int h, QObject *parent) : QObject(parent)
 
 ImageIcon* RosterIconFactory::getIcon(QString id) {
     if (id == "") return NULL;
-    RosterEntry* re = Roster::instance()->entryFromTitle(id);
+    RosterEntry* re = Roster::getDefault()->entryFromTitle(id);
     if (re==NULL) return NULL;
     return getIcon(re);
 }

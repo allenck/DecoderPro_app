@@ -3,8 +3,8 @@
 #include "memorymanager.h"
 #include "lnsensormanager.h"
 #include "defaultidtagmanager.h"
-#include "rfidsensormanager.h"
-#include "rfidreportermanager.h"
+#include "rfid/rfidsensormanager.h"
+#include "rfid/rfidreportermanager.h"
 #include "defaultroutemanager.h"
 #include "lightmanager.h"
 #include "../libPr3/Signal/signalheadmanager.h"
@@ -68,6 +68,7 @@
 #include "deferringprogrammermanager.h"
 #include "jmriuserpreferencesmanager.h"
 //#include "webserverpreferencesinstanceinitializer.h"
+#include "vptr.h"
 
 
 class ManagerLists : public QHash<QString,QObjectList*>
@@ -96,7 +97,7 @@ InstanceManager::InstanceManager(QObject *parent) :
     QObject(parent)
 {
  setObjectName("InstanceManager");
- managerLists = QHash<QString,QObjectList>();
+ managerLists = QHash<QString,QObjectList*>();
  initializers = QMap</*Class<?>*/QString, QObject*>();
 #if 0
  // Load all classes that are derived from InstanceInitializer java class
@@ -134,12 +135,12 @@ InstanceManager::InstanceManager(QObject *parent) :
 //@SuppressWarnings("unchecked") // the cast here is protected by the structure of the managerLists
 //@Nonnull
 //template<class T>
-/*public*/ /*<T>*/ QObjectList InstanceManager::getInstances(/*@Nonnull Class<T>*/ QString type) {
+/*public*/ /*<T>*/ QObjectList* InstanceManager::getInstances(/*@Nonnull Class<T>*/ QString type) {
     if(log->isTraceEnabled())
      log->trace(tr("Get list of type %1").arg(type/*.getName()*/));
     /*synchronized (type)*/ {
-        if (managerLists.value(type) == QObjectList()) {
-            managerLists.insert(type, QObjectList());
+        if (managerLists.value(type) == nullptr) {
+            managerLists.insert(type, new QObjectList());
             pcs->fireIndexedPropertyChange(getListPropertyName(type), 0, QVariant(), QVariant());
         }
         return  managerLists.value(type);
@@ -213,10 +214,10 @@ InstanceManager::InstanceManager(QObject *parent) :
         NullPointerException npe =  NullPointerException(msg);
         throw npe;
     }
-    QObjectList l = getList(type);
-    l.append(item);
+    QObjectList* l = getList(type);
+    l->append(item);
     getDefault()->managerLists.insert(type, l);
-    getDefault()->pcs->fireIndexedPropertyChange(getListPropertyName(type), l.indexOf(item), QVariant(), VPtr<QObject>::asQVariant(item));
+    getDefault()->pcs->fireIndexedPropertyChange(getListPropertyName(type), l->indexOf(item), QVariant(), VPtr<QObject>::asQVariant(item));
 }
 
 //void InstanceManager::storeBefore( int index, QObject* item, QString type)
@@ -244,7 +245,7 @@ InstanceManager::InstanceManager(QObject *parent) :
  * @param type The class Object for the items' type.
  */
 //template<class T>
-/*static*/ QObjectList InstanceManager::getList(QString type)
+/*static*/ QObjectList* InstanceManager::getList(QString type)
 {
  return getDefault()->getInstances(type);
 }
@@ -267,9 +268,9 @@ void InstanceManager::reset(QString type)
 void InstanceManager::deregister(QObject* item, QString type)
 {
  if (InstanceManager::instance()->managerLists.isEmpty()) return;
- QObjectList l =InstanceManager::instance()-> managerLists.value(type);
- if(!l.isEmpty())
-  l.removeOne(item);
+ QObjectList* l =InstanceManager::instance()-> managerLists.value(type);
+ if(!l->isEmpty())
+  l->removeOne(item);
 }
 
 /**
@@ -284,16 +285,16 @@ void InstanceManager::deregister(QObject* item, QString type)
  */
 /*public*/ /*<T>*/ void InstanceManager::remove(/*@Nonnull T*/QObject* item, /*@Nonnull Class<T>*/QString type) {
     log->debug(tr("Remove item type %!").arg(type));
-   QObjectList l = getList(type);
-    int index = l.indexOf(item);
+   QObjectList* l = getList(type);
+    int index = l->indexOf(item);
     if (index != -1) { // -1 means items was not in list, and therefor, not registered
-        l.removeOne(item);
+        l->removeOne(item);
 //        if (item instanceof Disposable) {
 //            dispose((Disposable) item);
 //        }
     }
     // if removing last item, re-initialize later
-    if (l.isEmpty()) {
+    if (l->isEmpty()) {
         setInitializationState(type, InitializationState::NOTSET);
     }
     if (index != -1) { // -1 means items was not in list, and therefor, not registered
@@ -315,7 +316,7 @@ void InstanceManager::deregister(QObject* item, QString type)
 //            "Required nonnull default for " + type.getName() + " does not exist.");
     QObject* o = InstanceManager::getNullableDefault(type);
     if(o == nullptr)
-     Logger::error( "Required nonnull default for " + type + " does not exist.");
+     log->error( "Required nonnull default for " + type + " does not exist.");
     else
     {
      if(o->objectName() == "")
@@ -369,8 +370,8 @@ template<class T>
 {
  if( log->isTraceEnabled())
   log->trace(tr("getOptionalDefault of type %1").arg(type/*.getName()*/));
- QObjectList l = getList(type);
- if (l.isEmpty())
+ QObjectList* l = getList(type);
+ if (l->isEmpty())
  {
   // example of tracing where something is being initialized
   // log.error("jmri.implementation.SignalSpeedMap init", new Exception());
@@ -428,9 +429,9 @@ template<class T>
      else throw NoSuchMethodException(tr("no method initialize found for type %1").arg(type));
      log->debug(tr("      auto-created default of %1").arg(type/*.getName()*/));
     }
-    l.append((QObject*)obj1);
+    l->append((QObject*)obj1);
      store(obj1, type);
-     return l.value(l.size() - 1);
+     return l->value(l->size() - 1);
 
  //      try {
            //l.add(type.getConstructor((Class[]) null).newInstance((Object[]) null));
@@ -456,7 +457,7 @@ template<class T>
    if (obj != nullptr)
    {
     log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
-    l.append(obj);
+    l->append(obj);
     store(obj,type);
     //return l->at(l->size() - 1);
     return obj;
@@ -465,7 +466,7 @@ template<class T>
   // don't have, can't make
   return nullptr;
  }
- return l.at(l.size() - 1);
+ return l->at(l->size() - 1);
 }
 
 /**
@@ -503,17 +504,22 @@ template<class T>
  * Now, we do that moving the item to the back of the list;
  * see the {@link #getDefault} method
  */
-QObject* InstanceManager::setDefault(QString type, QObject* val)
+/*static*/ QObject* InstanceManager::setDefault(QString type, QObject* item)
 {
-    QObjectList l = getList(type);
-    if (!l.isEmpty() ) {
-        store(val, type);
-        l = getList(type);
-    }
-    int i = l.indexOf(val);
-    l.removeAt(i);
-    l.append(val);
-    return val;
+ log->trace(tr("setDefault for type %1").arg(type));
+  if (item == nullptr) {
+      NullPointerException npe =  NullPointerException();
+      log->error(tr("Should not set default of type %1 to null value").arg(type));
+      throw npe;
+  }
+  QObject* oldDefault = containsDefault(type) ? getNullableDefault(type) : nullptr;
+  QObjectList* l = getList(type);
+  l->removeOne(item);
+  l->append(item);
+  if (oldDefault == nullptr || oldDefault != (item)) {
+      getDefault()->pcs->firePropertyChange(getDefaultsPropertyName(type), VPtr<QObject>::asQVariant(oldDefault), VPtr<QObject>::asQVariant(item));
+  }
+  return getDefault(type);
 }
 
 /**
@@ -525,8 +531,8 @@ QObject* InstanceManager::setDefault(QString type, QObject* val)
  *         false otherwise
  */
 /*static*/ /*public*/  bool InstanceManager::containsDefault(/*@Nonnull*/ QString type) {
-    QObjectList l = getList(type);
-    return !l.isEmpty();
+    QObjectList* l = getList(type);
+    return !l->isEmpty();
 }
 
 /**
@@ -542,10 +548,10 @@ QObject* InstanceManager::setDefault(QString type, QObject* val)
   retval.append("List of ");
   retval.append(c);
   retval.append(" with ");
-  retval.append(QString::number(getList(c).size()));
+  retval.append(QString::number(getList(c)->size()));
   retval.append(" objects\n");
   //getList(c).stream().forEachOrdered((o) ->
-  foreach (QObject* o, getList(c))
+  foreach (QObject* o, *getList(c))
   {
    try
    {
@@ -1171,14 +1177,14 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
 //template<class T>
  /*public*/  void InstanceManager::clear(/*@Nonnull*/ /*Class<T>*/QString type) {
      log->trace(tr("Clearing managers of %1").arg(type));
-     QObjectList toClear = QObjectList(getInstances(type));
+     QObjectList* toClear = new QObjectList(*getInstances(type));
      //toClear.forEach((o) ->
-     foreach(QObject* o, toClear)
+     foreach(QObject* o, *toClear)
      {
          remove(o, type);
      }//);
      setInitializationState(type, InitializationState::NOTSET); // initialization will have to be redone
-     managerLists.insert(type, QObjectList());
+     managerLists.insert(type, new QObjectList());
  }
 /**
   * Get the default instance of the InstanceManager. This is used for

@@ -201,7 +201,7 @@ HexFileFrame::HexFileFrame(QWidget *parent) :
 
  // do the common manager config
  ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->configureCommandStation(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS100),   // full featured by default
-                                        false, false);
+                                        false, false, false);
  ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->configureManagers();
  LnSensorManager* lnSensorManager = (LnSensorManager*)((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getSensorManager();
  lnSensorManager->setDefaultSensorState(port->getOptionState("SensorDefaultState"));

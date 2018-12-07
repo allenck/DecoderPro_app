@@ -120,7 +120,7 @@ void CopyRosterGroupAction::common()
     {
      return;
     }
-    else if (Roster::instance()->getRosterGroupList().contains(entry))
+    else if (Roster::getDefault()->getRosterGroupList().contains(entry))
     {
 //        JOptionPane.showMessageDialog(_who,
 //                "<html><b>Unable to duplicate roster group</b><br>The roster group named \"" + entry + "\" already exists.",
@@ -130,8 +130,8 @@ void CopyRosterGroupAction::common()
     }
 
     // rename the roster grouping
-    Roster::instance()->copyRosterGroupList(group, entry);
-    Roster::writeRoster();
+    Roster::getDefault()->copyRosterGroupList(group, entry);
+    Roster::getDefault()->writeRoster();
 }
 
 // never invoked, because we overrode actionPerformed above

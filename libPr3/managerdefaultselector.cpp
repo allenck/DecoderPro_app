@@ -93,11 +93,11 @@
  else if (e->getPropertyName()=="ConnectionAdded")
  {
   // check for special case of anything else then Internal
-  QObjectList list = InstanceManager::getList("SystemConnectionMemo");
-  if (list.size() == 2 && qobject_cast<InternalSystemConnectionMemo*>(list.at(0)) != 0 ) // ACK change from 1 to 0; Internal is last!
+  QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
+  if (list->size() == 2 && qobject_cast<InternalSystemConnectionMemo*>(list->at(0)) != 0 ) // ACK change from 1 to 0; Internal is last!
   {
    log->debug("First real system added, reset defaults");
-   QString name = ((SystemConnectionMemo*)list.at(1))->getUserName();
+   QString name = ((SystemConnectionMemo*)list->at(1))->getUserName();
    removeConnectionAsDefault(name);
   }
  }
@@ -177,15 +177,15 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
 /*public*/ InitializationException* ManagerDefaultSelector::configure()
 {
  InitializationException* error =  NULL;
- QObjectList connList = InstanceManager::getList("SystemConnectionMemo");
- log->debug(tr("configure defaults into InstanceManager from %1 memos, %2 defaults").arg(connList.size()).arg(defaults.keys().size()));
+ QObjectList* connList = InstanceManager::getList("SystemConnectionMemo");
+ log->debug(tr("configure defaults into InstanceManager from %1 memos, %2 defaults").arg(connList->size()).arg(defaults.keys().size()));
  foreach (QString c, defaults.keys())
  {
   // 'c' is the class to load
   QString connectionName = this->defaults.value(c);
   // have to find object of that type from proper connection
   bool found = false;
-  foreach (QObject* memo, connList)
+  foreach (QObject* memo, *connList)
   {
    QString testName = ((SystemConnectionMemo*)memo)->getUserName();
    if (testName == (connectionName))

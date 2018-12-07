@@ -86,10 +86,10 @@ void ManagerDefaultsConfigPane::propertyChange(PropertyChangeEvent * e)
  }
 
  // this doesn't find non-migrated systems, how do we handle that eventually?
- QObjectList connList = InstanceManager::getList("SystemConnectionMemo");
- if (!connList.isEmpty())
+ QObjectList* connList = InstanceManager::getList("SystemConnectionMemo");
+ if (!connList->isEmpty())
  {
-  reloadConnections(connList);
+  reloadConnections(*connList);
  }
  else
  {

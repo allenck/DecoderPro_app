@@ -420,8 +420,8 @@ void RosterGroupsPanel::on_addGroupBtn()
         _tree->setItemsExpandable(false);
         _tree->setRootIsDecorated(false);
         setSelectionToGroup(selectedRosterGroup);
-//        Roster::instance().addPropertyChangeListener(new PropertyChangeListener());
-        connect(Roster::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+//        Roster::getDefault().addPropertyChangeListener(new PropertyChangeListener());
+        connect(Roster::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
     }
     return _tree;
 }
@@ -513,7 +513,7 @@ void RosterGroupsPanel::on_clicked(QModelIndex index)
 /*private*/ void RosterGroupsPanel::setRosterGroups(DefaultMutableTreeNode* root) {
     root->removeAllChildren();
     root->add(new DefaultMutableTreeNode(Roster::ALLENTRIES));
-    foreach (QString g, Roster::instance()->getRosterGroupList()) {
+    foreach (QString g, Roster::getDefault()->getRosterGroupList()) {
         root->add(new DefaultMutableTreeNode(g));
     }
 }
@@ -741,7 +741,7 @@ MyTreeSelectionListener::MyTreeSelectionListener(RosterGroupsPanel *panel)
  if (e->getNewLeadSelectionPath() == NULL)
  {
   // if there are no Roster Groups set selection to "All Entries"
-  if (Roster::instance()->getRosterGroupList().isEmpty())
+  if (Roster::getDefault()->getRosterGroupList().isEmpty())
   {
    list =panel->_model->getPathToRoot(panel->_groups->getFirstChild());
    ol->clear();

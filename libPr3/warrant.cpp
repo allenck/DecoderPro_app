@@ -267,7 +267,7 @@
     if (id=="" || id.trimmed().length()==0) {
         return false;
     }
-    RosterEntry* train = Roster::instance()->entryFromTitle(id);
+    RosterEntry* train = Roster::getDefault()->entryFromTitle(id);
     if (train != nullptr) {
         _dccAddress = train->getDccLocoAddress();
     } else {
@@ -278,7 +278,7 @@
         } else {
             numId = id;
         }
-        QList<RosterEntry*> l = Roster::instance()->matchingList(nullptr, nullptr, numId, nullptr, nullptr, nullptr, nullptr );
+        QList<RosterEntry*> l = Roster::getDefault()->matchingList(nullptr, nullptr, numId, nullptr, nullptr, nullptr, nullptr );
         if (l.size() > 0) {
             try {
                 _dccAddress = l.at(0)->getDccLocoAddress();
@@ -326,7 +326,7 @@
  * @return
  */
 /*public*/ bool Warrant::setDccAddress(QString id) {
-    _train = Roster::instance()->entryFromTitle(id);
+    _train = Roster::getDefault()->entryFromTitle(id);
     if (_train == nullptr) {
         int index = id.indexOf('(');
         QString numId;
@@ -336,7 +336,7 @@
             numId = id;
         }
         try {
-            QList<RosterEntry*> l = Roster::instance()->matchingList(nullptr, nullptr, numId, nullptr, nullptr, nullptr, nullptr);
+            QList<RosterEntry*> l = Roster::getDefault()->matchingList(nullptr, nullptr, numId, nullptr, nullptr, nullptr, nullptr);
             if (l.size() > 0) {
                 _train = l.at(0);
                 _trainId = _train->getId();

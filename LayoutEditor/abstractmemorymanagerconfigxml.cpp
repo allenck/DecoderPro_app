@@ -162,7 +162,7 @@ void AbstractMemoryManagerConfigXML::loadValue(QDomElement memory, Memory* m)
   QString adapter = memory.attribute("valueClass");
   if (adapter==("jmri.jmrit.roster.RosterEntry"))
   {
-   RosterEntry* re = Roster::instance()->getEntryForId(value);
+   RosterEntry* re = Roster::getDefault()->getEntryForId(value);
    ((AbstractMemory*)m)->setValue(VPtr<RosterEntry>::asQVariant(re));
    return;
   }

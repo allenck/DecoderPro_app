@@ -297,7 +297,7 @@
      * using:
      *
      *  <pre> {@code
-     * /*public*/ synchronized Object poll(long timeout, TimeUnit unit)
+     * public synchronized Object poll(long timeout, TimeUnit unit)
      *     throws InterruptedException {
      *   while (empty) {
      *     unit.timedWait(this, timeout);
