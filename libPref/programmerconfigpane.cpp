@@ -24,7 +24,7 @@
 //private final ResourceBundle apb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
 /*public*/ ProgrammerConfigPane::ProgrammerConfigPane(QWidget* parent)
-    : PreferencesPanel(parent)
+    : QWidget(parent)
 {
  common();
 }
@@ -37,7 +37,7 @@ void /*private*/ ProgrammerConfigPane::common()
 {
  setObjectName("ProgrammerConfigPane");
  QBoxLayout* thisLayout;
- setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.PAGE_AXIS));
+ setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.PAGE AXIS));
  QWidget* p = new QWidget();
  FlowLayout* pLayout;
  p->setLayout(pLayout = new FlowLayout());
@@ -135,3 +135,5 @@ void /*private*/ ProgrammerConfigPane::common()
 /*public*/ bool ProgrammerConfigPane::isRestartRequired() {
     return this->isDirty();
 }
+
+/*public*/ QString ProgrammerConfigPane::className() {return "ProgrammerConfigPane";}

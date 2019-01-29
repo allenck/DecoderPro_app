@@ -38,7 +38,7 @@ public:
                 MultiIconEditor* theEditor, JFrame* theFrame ) ;
 /*public*/ void setSignalsAtTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ bool reachedEndBumper();
-    /*public*/ bool isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p);
+    /*public*/ static bool isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p);
     /*public*/ void setSignalsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void setSignalsAtBlockBoundary( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void removeSignalHeadFromPanel(QString signalName);
@@ -61,8 +61,8 @@ QString headName, JmriJFrame* frame);
     /*public*/ void removeAssignment(Sensor* sensor);
     /*public*/ void setSignalMastsAtTurnouts();
     /*public*/ bool isSensorAssignedAnywhere(Sensor* sensor);
-    /*public*/ void removeSensorAssignment(Sensor* sensor);
-    /*public*/ void removeSensorFromPanel(QString sensorName);
+    /*public*/ bool removeSensorAssignment(Sensor* sensor);
+    /*public*/ bool removeSensorFromPanel(Sensor *sensor);
     /*public*/ Sensor* getSensorFromEntry(QString sensorName, bool requireEntry,
                                           JmriJFrame* frame);
     /*public*/ Sensor* getSensorFromName(QString str);
@@ -305,9 +305,12 @@ private:
     /*private*/ QPushButton* getAnchorSavedSensors;// = NULL;
     /*private*/ QPushButton* changeSensorAtBoundaryIcon;// = NULL;
     /*private*/ QPushButton* setSensorsAtBoundaryDone;// = NULL;
+    void setBoundarySensor(Sensor* newSensor, Sensor* currSensor, BeanDetails* beanDetail, QString direction);
     /*private*/ QPushButton* setSensorsAtBoundaryCancel;// = NULL;
     /*private*/ bool setSensorsAtBoundaryOpen;// = false;
     /*private*/ JmriJFrame* setSensorsAtBoundaryFrame;// = NULL;
+    /*private*/ bool setSensorsAtBlockBoundaryOpenFlag = false;
+    /*private*/ bool setSensorsAtBlockBoundaryFromMenuFlag = false;
 
     /*private*/ JFrame* sensorFrame;// = NULL;
 
@@ -367,10 +370,11 @@ private:
     //Border blackline = BorderFactory.createLineBorder(Color.black);
     // operational variables for Set Signals at Double Crossover Turnout tool
     /*private*/ JmriJFrame setSignalsAtXoverTurnoutFrame = nullptr;
+    /*private*/ JmriJFrame setSensorsAtBlockBoundaryFrame = nullptr;
     /*private*/ bool setSignalsAtXoverTurnoutOpenFlag = false;
     /*private*/ bool setSignalsAtXoverTurnoutFromMenuFlag = false;
 
-    Logger* log;
+    static Logger* log;
     /*private*/ bool hitEndBumper;// = false;
      /*private*/ bool getBlockInformation();
     /*private*/ LayoutBlock* getBlockFromEntry(JTextField* blockNameField);
@@ -397,7 +401,7 @@ private:
     void refreshSignalMastAtTurnoutComboBox();
     /*private*/ int isMastAssignedHere(SignalMast* mast, LayoutTurnout* lTurnout);
     /*private*/ bool getTurnoutSensorInformation();
-    bool sensorAssignedElseWhere(QString sensor);
+    bool sensorAssignedElseWhere(Sensor* sensor);
     /*private*/ bool getSimpleBlockInformation();
     /*private*/ void placeEastBoundIcon(PositionableIcon* icon, bool right, double fromPoint);
     /*private*/ void placeWestBoundIcon(PositionableIcon* icon, bool right, double fromPoint);

@@ -1,8 +1,8 @@
 #include "propertychangelistenermap.h"
 #include "propertychangelistenerproxy.h"
 
-PropertyChangeListenerMap::PropertyChangeListenerMap(QObject *parent) :
-    ChangeListenerMap(parent)
+PropertyChangeListenerMap::PropertyChangeListenerMap() :
+    ChangeListenerMap()
 {
 }
 /**

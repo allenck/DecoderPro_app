@@ -36,6 +36,7 @@
 
  //this(false);
  this->editable = false;
+ connect(Roster::getDefault()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*) ));
 }
 
  /*public*/ RosterTableModel::RosterTableModel(bool editable, QObject* parent)
@@ -45,7 +46,7 @@
 
  this->editable = editable;
  //Roster.instance().addPropertyChangeListener(this);
- connect(Roster::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*) ));
+ connect(Roster::getDefault()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*) ));
 }
 
 void RosterTableModel::common()

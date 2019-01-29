@@ -216,7 +216,7 @@ template<class T>
 }
 
 //template<class T>
-/*public*/ char NamedBeanHandleManager::typeLetter() {
+/*public*/ char NamedBeanHandleManager::typeLetter(){
     throw new UnsupportedOperationException("Not supported yet.");
 }
 

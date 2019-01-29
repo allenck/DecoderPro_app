@@ -174,7 +174,7 @@ void DeviceServer::on_newConnection()
   txHandler = new ServerTxHandler(remoteAddress, socket, connectionNbr);
   connect(this, SIGNAL(sendPacket(QString)), txHandler, SLOT(sendMessage(QString)));
 
-  emit deviceConnected(new WiDevice(deviceName, remoteAddress, deviceUDID));
+  emit deviceConnected(new WiDevice(deviceName, remoteAddress, deviceUDID, this));
 
   handler = new JsonClientHandler(new JsonConnection(socket));
 
@@ -226,7 +226,7 @@ void DeviceServer::on_newConnection()
 
 void DeviceServer::on_disconnected( QString address )
 {
- emit deviceDisconnected(new WiDevice("", address, ""));
+ emit deviceDisconnected(new WiDevice("", address, "", this));
 }
 
 void DeviceServer::handleMessage(QString msg)
@@ -343,7 +343,7 @@ void DeviceServer::handleMessage(QString msg)
    {  //  Prefix for deviceName
     deviceName = inPackage.mid(1);
     log->info("Received Name: " + deviceName);
-    emit deviceInfoChanged(new WiDevice(deviceName, device->peerAddress().toString(),deviceUDID ));
+    emit deviceInfoChanged(new WiDevice(deviceName, device->peerAddress().toString(),deviceUDID, this ));
 
     if (WiThrottleManager::withrottlePreferencesInstance()->isUseEStop())
     {
@@ -362,7 +362,7 @@ void DeviceServer::handleMessage(QString msg)
      for (int i = 0; i < listeners->size(); i++)
      {
           DeviceListener* l = listeners->value(i);
-          l->notifyDeviceInfoChanged(new WiDevice(deviceName, device->peerAddress().toString(), deviceUDID));
+          l->notifyDeviceInfoChanged(new WiDevice(deviceName, device->peerAddress().toString(), deviceUDID, this));
      }
      // break;
     }
@@ -526,7 +526,7 @@ void DeviceServer::handleMessage(QString msg)
 
     }
 #endif
-    emit deviceDisconnected(new WiDevice(deviceName, device->peerAddress().toString(), deviceUDID));
+    emit deviceDisconnected(new WiDevice(deviceName, device->peerAddress().toString(), deviceUDID, this));
     emit finished();
 }
 

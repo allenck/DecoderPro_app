@@ -107,7 +107,7 @@ void DefaultConditionalAction::common()
    }
    break;
   case Conditional::ITEM_TYPE_SIGNALMAST:
-   bean = (NamedBean*)((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(_deviceName);
+   bean = (NamedBean*)static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_deviceName);
    if (bean == NULL)
    {
         log->error("invalid signal mast name= \""+_deviceName+"\" in conditional action");
@@ -115,7 +115,7 @@ void DefaultConditionalAction::common()
    }
    break;
   case Conditional::ITEM_TYPE_SIGNALHEAD:
-   bean = (NamedBean*)((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(_deviceName);
+   bean = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(_deviceName);
    if (bean == NULL)
    {
         log->error("invalid signal head name= \""+_deviceName+"\" in conditional action");
@@ -188,10 +188,10 @@ void DefaultConditionalAction::common()
                 bean = (NamedBean*) ((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
                 break;
             case Conditional::ITEM_TYPE_SIGNALMAST:
-                bean = (NamedBean*) ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(_deviceName);
+                bean = (NamedBean*) static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_deviceName);
                 break;
             case Conditional::ITEM_TYPE_SIGNALHEAD:
-                bean = (NamedBean*) ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(_deviceName);
+                bean = (NamedBean*) static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(_deviceName);
                 break;
         }
     } catch (NumberFormatException ex){

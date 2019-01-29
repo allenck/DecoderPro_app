@@ -12,6 +12,8 @@ class JAVAQTSHARED_EXPORT Profile : public QObject
 {
     Q_OBJECT
 public:
+ /*public*/ static /*final*/ QString EXTENSION;// = ".jmri"; // NOI18N
+
     Profile(File* path, QObject *parent = 0) throw (IOException);
     /*public*/ Profile(QString name, QString id, File* path, QObject *parent = 0);
     /*public*/ QString getName();
@@ -40,7 +42,7 @@ signals:
 public slots:
 private:
     /*private*/ static Logger* log;// = new LoggerFactory::getLogger("Profile");
-    void common(File* path, bool isReadable);
+    void common(File* path, QString id, bool isReadable);
     /*private*/ QString name;
     /*private*/ QString id;
     /*private*/ File* path;

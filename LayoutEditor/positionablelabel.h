@@ -17,6 +17,7 @@
 #include "picklistmodel.h"
 #include "windowlistener.h"
 
+class ItemPanel;
 class PropertyChangeEvent;
 class JFrameItem;
 class IconAdder;
@@ -161,6 +162,8 @@ QString getToolTip();
  /*public*/ virtual void setBackground(QColor bg);
  MyGraphicsProxyWidget* widget;
  /* public*/ void setStyleSheet();
+ /*public*/ void finishItemUpdate(DisplayFrame* paletteFrame, ItemPanel* itemPanel);
+
 signals:
  void propertyChange(PropertyChangeEvent*);
 public slots:
@@ -259,7 +262,7 @@ protected:
  friend class SlipTurnoutIcon;
  friend class ReporterIcon;
  friend class IndicatorTurnoutIcon;
- friend class DragDecoratorLabel;
+ friend class DPDragDecoratorLabel;
  friend class PositionablePropertiesUtil;
  friend class IEFWindowListener;
  friend class BlockContentsIcon;

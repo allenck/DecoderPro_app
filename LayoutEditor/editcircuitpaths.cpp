@@ -64,6 +64,7 @@ JmriJFrame(parent)
 //    border.setLayout(new java.awt.BorderLayout(10,10));
 //    border.add(contentPane);
 //    setContentPane(border);
+    setCentralWidget(contentPane);
     pack();
 //    if (_firstInstance) {
 //        setLocationRelativeTo(_parent->_editor);

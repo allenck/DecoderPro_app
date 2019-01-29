@@ -271,7 +271,7 @@ FunctionPanel::~FunctionPanel()
     //mainPanel->removeAll();
     //setContentPane(mainPanel);
  setWidget(mainPanel);
-    //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    //setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
  FlowLayout* mainPanelLayout;
  mainPanel->setLayout(mainPanelLayout = new FlowLayout(/*FlowLayout::Center,*/5,5));
  functionButton = QList< FunctionButton*>();//[NUM_FUNCTION_BUTTONS];

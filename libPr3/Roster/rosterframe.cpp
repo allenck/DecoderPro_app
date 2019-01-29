@@ -250,7 +250,7 @@ void RosterFrame::common()
  connect(cbProgrammers, SIGNAL(currentIndexChanged(QString)), this, SLOT(On_cbProgrammers_currentIndexChanged(QString)));
  roster = Roster::getDefault();
  //roster->addPropertyChangeListener((PropertyChangeListener*)this);
- connect(roster, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(roster->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  list = roster->getEntriesMatchingCriteria("","","","","","","","");
 // ui->rtable->setColumnCount(10);
@@ -305,7 +305,7 @@ void RosterFrame::common()
 //         }
 //     }
 // });
- InstanceManager* instanceManager = InstanceManager::instance();
+ InstanceManager* instanceManager = InstanceManager::getDefault();
  connect(instanceManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(On_InstanceManagerPropertyChange(PropertyChangeEvent*)));
  signalMapper = new QSignalMapper(this);
  signalMapper->setMapping(ui->service, 0);
@@ -390,6 +390,8 @@ void RosterFrame::on_tableWidget_cellClicked(int row, int /*col*/)
 #endif
 void RosterFrame::updateInfo()
 {
+ if(rosterEntry == nullptr)
+  return;
  ui->lblID->setText(rosterEntry->getId());
  ui->lblRoadName->setText(rosterEntry->getRoadName());
  ui->lblRoadNumber->setText(rosterEntry->getRoadNumber());
@@ -714,7 +716,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 //            }
 //        }
 //    });
- connect(InstanceManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(On_InstanceManagerPropertyChange(PropertyChangeEvent*)));
+ connect(InstanceManager::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(On_InstanceManagerPropertyChange(PropertyChangeEvent*)));
 // getSplitPane().addPropertyChangeListener(propertyChangeListener);
 // if (ProgDefault::getDefaultProgFile() != NULL)
 // {

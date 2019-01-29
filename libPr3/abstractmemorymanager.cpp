@@ -20,7 +20,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     return Manager::MEMORIES;
 }
 
-/*public*/ char AbstractMemoryManager::typeLetter() { return 'M'; }
+/*public*/ char AbstractMemoryManager::typeLetter() const { return 'M'; }
 
 /*public*/ Memory* AbstractMemoryManager::provideMemory(QString sName)
 {

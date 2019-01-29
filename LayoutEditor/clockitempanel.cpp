@@ -14,6 +14,8 @@
 #include <QDrag>
 #include <QMimeData>
 #include "borderlayout.h"
+#include "box.h"
+
 
 //ClockItemPanel::ClockItemPanel(QWidget *parent) :
 //    IconItemPanel(parent)
@@ -28,33 +30,44 @@
 /**
  * Constructor for plain icons and backgrounds
  */
-/*public*/ ClockItemPanel::ClockItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent) : IconItemPanel(parentFrame, type, family,editor,parent)
+/*public*/ ClockItemPanel::ClockItemPanel(DisplayFrame* parentFrame, QString type, Editor* editor, QWidget *parent) : IconItemPanel(parentFrame, type, editor,parent)
 {
  //super(parentFrame,  type, family, editor);
  setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
+ setObjectName("ClockItemPanel");
 }
 
 /*protected*/ QWidget* ClockItemPanel::instructions()
 {
- //QWidget* blurb = new QWidget();
- QVBoxLayout* blurbLayout = new QVBoxLayout;
- //blurb->setLayout(new QVBoxLayout(blurb/*, BoxLayout.Y_AXIS*/));
-    //blurb.add(Box.createVerticalStrut(ItemPalette.STRUT_SIZE));
- blurbLayout->addStrut(ItemPalette::STRUT_SIZE);
-    blurbLayout->addWidget(new QLabel(tr("Drag the icon below to add a fast clock to your control panel.")));
-    //blurb.add(Box.createVerticalStrut(ItemPalette.STRUT_SIZE));
- blurbLayout->addStrut(ItemPalette::STRUT_SIZE);
+ QWidget* blurb = new QWidget();
+ QVBoxLayout* blurbLayout;
+ blurb->setLayout(blurbLayout = new QVBoxLayout());//(blurb, BoxLayout.Y_AXIS));
+ blurbLayout->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
+ blurbLayout->addWidget(new QLabel(tr("Drag the icon below to add a %1 to your Control Panel.").arg( tr("FastClock"))));
+ blurbLayout->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
  QWidget* panel = new QWidget();
- //panel->setLayout(new QVBoxLayout);
- //panel->layout()->addWidget(blurb);
- panel->setLayout(blurbLayout);
+ QHBoxLayout* panelLayout = new QHBoxLayout(panel);
+ panelLayout->addWidget(blurb);
  return panel;
 }
 
 /*protected*/ void ClockItemPanel::addIconsToPanel(QHash<QString, NamedIcon*>* iconMap)
 {
- _iconPanel = new QWidget();
- _iconPanel->setLayout(new QHBoxLayout);
+ if (_iconPanel == nullptr) {
+     _iconPanel = new ImagePanel();
+//     _iconPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+ } else {
+     //_iconPanel.removeAll();
+  QObjectList ol = _iconPanel->layout()->children();
+  foreach(QObject* obj, ol)
+  {
+   if(qobject_cast<QWidget*>(obj))
+    _iconPanel->layout()->removeWidget(qobject_cast<QWidget*>(obj));
+//   if(qobject_cast<QLayout*>(obj))
+//    delete obj;
+  }
+ }
+// _iconPanel->setLayout(new QHBoxLayout);
  //Iterator<Entry<String, NamedIcon*>> it = iconMap.entrySet().iterator();
  QHashIterator<QString, NamedIcon*> it(*iconMap);
  while (it.hasNext())

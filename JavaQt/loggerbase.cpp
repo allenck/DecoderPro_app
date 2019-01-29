@@ -5,7 +5,7 @@
 //#include "systemconsole.h"
 
 //QString Logger::name;
-LoggerBase::LoggerBase(QString name, QObject *parent) :
+LoggerBase::LoggerBase(QString /*name*/, QObject *parent) :
     QObject(parent)
 {
 // bDebugEnabled = false;
@@ -15,7 +15,7 @@ LoggerBase::LoggerBase(QString name, QObject *parent) :
 // this->parent = parent;
 }
 
-LoggerBase::LoggerBase(const LoggerBase & other) : QObject()
+LoggerBase::LoggerBase(const LoggerBase & /*other*/) : QObject()
 {
 // this->bDebugEnabled = other.bDebugEnabled;
 // this->bInfoEnabled = other.bInfoEnabled;

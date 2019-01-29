@@ -4,16 +4,18 @@
 #include <QRadioButton>
 #include "libpref_global.h"
 
+class Logger;
 class PropertyChangeEvent;
 class SystemConnectionMemo;
 class QVBoxLayout;
 class QGridLayout;
 class QButtonGroup;
-class LIBPREFSHARED_EXPORT ManagerDefaultsConfigPane : public PreferencesPanel
+class LIBPREFSHARED_EXPORT ManagerDefaultsConfigPane : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
 public:
-    explicit ManagerDefaultsConfigPane(QWidget *parent = 0);
+    Q_INVOKABLE explicit ManagerDefaultsConfigPane(QWidget *parent = 0);
     ~ManagerDefaultsConfigPane();
     ManagerDefaultsConfigPane(const ManagerDefaultsConfigPane&);
     /*public*/ void update();
@@ -38,7 +40,7 @@ public:
     virtual
     /*public*/ bool isRestartRequired();
 
-
+    /*public*/ QString className();
 signals:
 
 public slots:

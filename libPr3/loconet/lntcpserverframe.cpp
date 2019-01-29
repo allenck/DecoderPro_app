@@ -92,6 +92,7 @@ JmriJFrame(QString("LocoNetOverTcp Server"), parent)
   //getContentPane().add(panel);
   centralWidgetLayout->addLayout(panelLayout);
  }
+ updateServerStatus();
 
 // startButton.addActionListener(new ActionListener() {
 //     /*public*/ void actionPerformed(ActionEvent a) {
@@ -168,7 +169,6 @@ void LnTcpServerFrame::on_stopButton_clicked()
 //        justification = "Only used during system initialization")
 /*public*/ void LnTcpServerFrame::windowClosing(QCloseEvent* e) {
     setVisible(false);
-    self = NULL;
     this->server->setStateListner(NULL);
     dispose();
     JmriJFrame::windowClosing(e);
@@ -177,8 +177,9 @@ void LnTcpServerFrame::on_stopButton_clicked()
 /*public*/ void LnTcpServerFrame::dispose() {
     JmriJFrame::dispose();
 }
-LnTcpServerFrame* LnTcpServerFrame::self = NULL;
 
+
+//@Deprecated
 /*static*/ /*public*/ /*synchronized*/ LnTcpServerFrame* LnTcpServerFrame::getInstance()
 {
  return getDefault();
@@ -199,7 +200,7 @@ LnTcpServerFrame* LnTcpServerFrame::self = NULL;
 
 /*private*/ void LnTcpServerFrame::updateServerStatus()
 {
- LnTcpServer* server = LnTcpServer::getInstance();
+ LnTcpServer* server = LnTcpServer::getDefault();
 // autoStartCheckBox->setChecked(server->getAutoStart());
 // autoStartCheckBox->setEnabled(!server->isEnabled());
 // if (portNumber != NULL)
@@ -209,15 +210,14 @@ LnTcpServerFrame* LnTcpServerFrame::self = NULL;
 //  portNumberLabel->setEnabled(!server->isEnabled());
 // }
  startButton->setEnabled(!server->isEnabled());
- if(server->isEnabled())
-  startButton->setEnabled(false);
  stopButton->setEnabled(server->isEnabled());
  //saveButton->setEnabled(server->isSettingChanged());
- statusLabel->setText(tr("Server Status: ") + (server->isEnabled() ? "Enabled" : "Disabled"));
+ statusLabel->setText(tr("Server Status: ") + (server->isEnabled() ? tr("Enabled") : tr("Disabled")));
+ updateClientStatus();
 }
 
 /*private*/ void LnTcpServerFrame::updateClientStatus() {
-    clientStatus->setText("   Client Count: " + QString::number(LnTcpServer::getInstance()->getClientCount()));
+    clientStatus->setText(tr("   Client Count: ") + QString::number(LnTcpServer::getDefault()->getClientCount()));
 }
 
 /*public*/ void LnTcpServerFrame::notifyServerStateChanged(LnTcpServer* /*s*/)

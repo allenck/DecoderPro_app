@@ -74,8 +74,8 @@
  * Public method to validate system name format
  *   returns 'true' if system name has a valid format, else returns 'false'
  */
-/*public*/ bool LnLightManager::validSystemNameFormat(QString systemName) {
- return (getBitFromSystemName(systemName)!=0);
+/*public*/ Manager::NameValidity LnLightManager::validSystemNameFormat(QString systemName) {
+ return (getBitFromSystemName(systemName) != 0) ? NameValidity::VALID : NameValidity::INVALID;
 }
 
 /**

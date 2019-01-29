@@ -246,7 +246,7 @@ void WebServerPreferences::common()
  }
  a = child.attribute(RAILROAD_NAME);
  if (a != NULL) {
-     setRailRoadName(a);
+     setRailroadName(a);
  }
  QDomElement df = child.firstChildElement(DISALLOWED_FRAMES);
  if (df != QDomElement())
@@ -302,7 +302,7 @@ void WebServerPreferences::common()
     if (getPort() != prefs->getPort()) {
         return true;
     }
-    return getRailRoadName()!=(prefs->getRailRoadName());
+    return getRailroadName()!=(prefs->getRailroadName());
 }
 
 /*public*/ void WebServerPreferences::apply(WebServerPreferences* prefs) {
@@ -313,7 +313,7 @@ void WebServerPreferences::common()
     this->setReadonlyPower(prefs->isReadonlyPower());
     setDisallowedFrames(prefs->getDisallowedFrames());
     setPort(prefs->getPort());
-    setRailRoadName(prefs->getRailRoadName());
+    setRailroadName(prefs->getRailroadName());
 }
 
 /*public*/ /*final*/ void WebServerPreferences::openFile(QString fileName) throw (FileNotFoundException) {
@@ -346,7 +346,7 @@ void WebServerPreferences::common()
  sharedPreferences->putBoolean(SIMPLE, this->isSimple());
  sharedPreferences->putBoolean(ALLOW_REMOTE_CONFIG, this->allowRemoteConfig());
  sharedPreferences->putBoolean(READONLY_POWER, this->isReadonlyPower());
- sharedPreferences->put(RAILROAD_NAME, getRailRoadName());
+ sharedPreferences->put(RAILROAD_NAME, getRailroadName());
  sharedPreferences->putBoolean(DISABLE_FRAME_SERVER, this->isDisableFrames());
  sharedPreferences->putBoolean(REDIRECT_FRAMES, this->redirectFramesToPanels);
  try
@@ -506,14 +506,14 @@ void WebServerPreferences::common()
 /**
  * @return the railRoadName
  */
-/*public*/ QString WebServerPreferences::getRailRoadName() {
+/*public*/ QString WebServerPreferences::getRailroadName() {
     return railRoadName;
 }
 
 /**
  * @param railRoadName the railRoadName to set
  */
-/*public*/ void WebServerPreferences::setRailRoadName(QString railRoadName)
+/*public*/ void WebServerPreferences::setRailroadName(QString railRoadName)
 {
  QString old = this->railRoadName;
  if ((old != NULL && old!=(railRoadName)) || railRoadName != NULL)
@@ -536,7 +536,7 @@ void WebServerPreferences::common()
  * @return true if user has not set the railroad name.
  */
 /*public*/ bool WebServerPreferences::isDefaultRailroadName() {
-    return this->getRailRoadName()==(tr("My JMRI Railroad"));
+    return this->getRailroadName()==(tr("My JMRI Railroad"));
 }
 
 /**

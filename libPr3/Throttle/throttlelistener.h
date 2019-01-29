@@ -25,7 +25,7 @@ class DccLocoAddress;
 {
  Q_OBJECT
 public:
- ThrottleListener(QObject *parent = 0) : EventListener(parent) {}
+ ThrottleListener() : EventListener() {}
 public slots:
     /**
      * Get notification that a throttle has been found as you requested.

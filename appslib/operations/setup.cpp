@@ -608,7 +608,7 @@ namespace Operations
  {
   if (railroadName == NULL)
   {
-   return ((WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences"))->getRailRoadName();
+   return ((WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences"))->getRailroadName();
   }
   return railroadName;
  }

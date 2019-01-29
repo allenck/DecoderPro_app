@@ -1920,16 +1920,16 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    void static_InstanceManager_setCommandStation(CommandStation*  p);
    void static_InstanceManager_setDefault(QString  type, QObject*  val);
    //void static_InstanceManager_setLayoutBlockManager(LayoutBlockManager*  p);
-   void static_InstanceManager_setPowerManager(PowerManager*  p);
+   //void static_InstanceManager_setPowerManager(PowerManager*  p);
    //void static_InstanceManager_setProgrammerManager(ProgrammerManager*  p);
    void static_InstanceManager_setReporterManager(ReporterManager*  p);
    void static_InstanceManager_setSensorManager(SensorManager*  p);
    //void static_InstanceManager_setShutDownManager(ShutDownManager*  p);
    void static_InstanceManager_setSignalHeadManager(SignalHeadManager*  p);
-   void static_InstanceManager_setSignalMastManager(SignalMastManager*  p);
+   //void static_InstanceManager_setSignalMastManager(SignalMastManager*  p);
    //ShutDownManager*  static_InstanceManager_shutDownManagerInstance();
-   SignalHeadManager*  static_InstanceManager_signalHeadManagerInstance();
-   SignalMastManager*  static_InstanceManager_signalMastManagerInstance();
+   //SignalHeadManager*  static_InstanceManager_signalHeadManagerInstance();
+   //SignalMastManager*  static_InstanceManager_signalMastManagerInstance();
    void static_InstanceManager_store(QObject*  item, QString  type);
 };
 

@@ -3,6 +3,8 @@
 #include "lnpacketizer.h"
 #include "runnable.h"
 
+class LnTcpRcvHandler;
+class LnTcpXmtHandler;
 class QTcpSocket;
 class LnNetworkPortController;
 class LnOverTcpPacketizer : public LnPacketizer
@@ -26,6 +28,7 @@ private:
  friend class LnTcpRcvHandler;
  friend class LnTcpXmtHandler;
 };
+
 class LnTcpRcvHandler : public QThread
 {
 Q_OBJECT

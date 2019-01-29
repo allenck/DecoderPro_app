@@ -35,9 +35,9 @@ ServletUtil::ServletUtil(QObject *parent) : QObject(parent)
  */
 /*public*/ QString ServletUtil::getRailroadName(bool inComments) {
     if (inComments) {
-        return "-->" + WebServerPreferences::getDefault()->getRailRoadName() + "<!--"; // NOI18N
+        return "-->" + WebServerPreferences::getDefault()->getRailroadName() + "<!--"; // NOI18N
     }
-    return WebServerPreferences::getDefault()->getRailRoadName();
+    return WebServerPreferences::getDefault()->getRailroadName();
 }
 
 /**

@@ -7,9 +7,12 @@
 #include <QTcpServer>
 #include "quietshutdowntask.h"
 #include "propertychangeevent.h"
+//#include <QtZeroConf/qzeroconf.h>
+#include "zeroconfservice.h"
+
 
 class LnTcpPreferences;
-class ZeroConfService;
+class QZeroConf;
 class QuietShutDownTask;
 class ServerListner;
 //class QTcpServer;
@@ -47,6 +50,8 @@ signals:
 public slots:
  void on_newConnection();
  void propertyChange(PropertyChangeEvent*);
+ void servicePublished();
+ void error(QZeroConf::error_t);
 
 private:
  static LnTcpServer* self;
@@ -57,7 +62,8 @@ private:
  ServerListner* stateListner;
  bool settingsChanged;// = false;
  QuietShutDownTask* shutDownTask;
- ZeroConfService* service;// = null;
+ //QZeroConf* service;// = null;
+ ZeroConfService* service = nullptr;
  static /*final*/ QString AUTO_START_KEY;// = "AutoStart";
  static /*final*/ QString PORT_NUMBER_KEY;// = "PortNumber";
  static /*final*/ QString SETTINGS_FILE_NAME;// = "LocoNetOverTcpSettings.ini";
@@ -69,6 +75,7 @@ private:
  Logger* log;
  /*private*/ int portNumber;// = 1234;
  bool bIsEnabled;
+ QString buildName(void);
 
 protected:
  /*protected*/ void addClient(ClientRxHandler* handler) ;

@@ -31,6 +31,7 @@
 {
  center =  QPointF(50.0, 50.0);
  hidden = false;
+ propertyChangeSupport = new PropertyChangeSupport(this);
 
 }
 

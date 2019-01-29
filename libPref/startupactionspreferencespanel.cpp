@@ -31,7 +31,7 @@ bool compareItems(QObject* o1, QObject* o2)
 /**
  * Creates new form StartupActionsPreferencesPanel
  */
-/*public*/ StartupActionsPreferencesPanel::StartupActionsPreferencesPanel(QWidget* parent)  : PreferencesPanel(parent)
+/*public*/ StartupActionsPreferencesPanel::StartupActionsPreferencesPanel(QWidget* parent)  : QWidget(parent)
 {
  initComponents();
     //this->actionsTbl.getSelectionModel().addListSelectionListener((ListSelectionEvent e) ->
@@ -81,7 +81,7 @@ void StartupActionsPreferencesPanel::on_listSelected(QModelIndex index)
 void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
 {
  StartupModel* model = ((StartupModelFactory*)factory)->newModel();
- ((StartupModelFactory*)factory)->editModel(model, this->getTopLevelAncestor());
+ ((StartupModelFactory*)factory)->editModel(model, this->window());
  if (model->isValid()) {
      ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);
  }
@@ -427,4 +427,7 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
   StartupModel* model = VPtr<StartupModel>::asPtr(evt->getNewValue());
  }
 }
+
+/*public*/ QString StartupActionsPreferencesPanel::className() {return "StartupActionsPreferencesPanel";}
+
 //}

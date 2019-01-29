@@ -28,7 +28,7 @@ public:
      * Public method to validate system name format
      *   returns 'true' if system name has a valid format, else returns 'false'
      */
-    /*public*/ bool validSystemNameFormat(QString systemName);
+    /*public*/ NameValidity validSystemNameFormat(QString systemName);
     /**
      * Public method to validate system name for configuration
      *   returns 'true' if system name has a valid meaning in current configuration,

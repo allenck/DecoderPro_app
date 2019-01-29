@@ -5,8 +5,8 @@
 class Pr2ConnectionConfig : public AbstractSerialConnectionConfig
 {
 public:
- /*public*/ Pr2ConnectionConfig(QObject* parent = nullptr);
- /*public*/ Pr2ConnectionConfig(SerialPortAdapter* p, QObject* parent= nullptr);
+ Q_INVOKABLE /*public*/ Pr2ConnectionConfig(QObject* parent = nullptr);
+ Q_INVOKABLE /*public*/ Pr2ConnectionConfig(SerialPortAdapter* p, QObject* parent= nullptr);
  ~Pr2ConnectionConfig() {}
  Pr2ConnectionConfig(const Pr2ConnectionConfig&) : AbstractSerialConnectionConfig() {}
  /*public*/ QString name();

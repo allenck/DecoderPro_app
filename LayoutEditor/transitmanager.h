@@ -15,7 +15,7 @@ public:
     TransitManager(const TransitManager&) : AbstractManager() {}
     int getXMLOrder();
     QString getSystemPrefix();
-    char typeLetter();
+    char typeLetter() ;
 
     /**
      * Method to create a new Transit if the Transit does not exist

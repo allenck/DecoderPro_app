@@ -2,6 +2,9 @@
 #define ABSTRACTCONFIGURATIONPROVIDER_H
 
 #include <QObject>
+
+
+class Logger;
 class Profile;
 class AuxiliaryConfiguration;
 class File;
@@ -18,6 +21,7 @@ public slots:
 private:
  /*private*/ bool privateBackedUp;// = false;
  /*private*/ bool sharedBackedUp;// = false;
+ static Logger* log;
 
 protected:
  /*protected*/ /*final*/ Profile* project;

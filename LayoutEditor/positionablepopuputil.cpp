@@ -340,7 +340,9 @@ void PositionablePopupUtil::display()
         ((PositionableJPanel*)_textComponent)->setOpaque(false);
     }
 }
-
+/*public*/ void PositionablePopupUtil::setSuppressRecentColor(bool b) {
+       _suppressRecentColor = b;
+   }
 /*public*/ bool PositionablePopupUtil::hasBackground() {
     return _hasBackground;
 }

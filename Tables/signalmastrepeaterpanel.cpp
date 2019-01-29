@@ -32,7 +32,7 @@
 /*public*/ SignalMastRepeaterPanel::SignalMastRepeaterPanel(QWidget* parent) : JmriPanel(parent)
 {
     //super();
-    dsmm = (DefaultSignalMastManager*) InstanceManager::signalMastManagerInstance();
+    dsmm = static_cast<DefaultSignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
     //dsmm.addPropertyChangeListener(this);
     connect(dsmm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 

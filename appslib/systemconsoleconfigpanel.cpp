@@ -55,7 +55,7 @@
 
 
 /*public*/  SystemConsoleConfigPanel::SystemConsoleConfigPanel(QWidget *parent) :
-  PreferencesPanel(parent)
+  QWidget(parent)
 {
  setObjectName("SystemConsoleConfigPanel");
  setProperty("JavaPackageName", "apps.SystemConsoleConfigPanel");

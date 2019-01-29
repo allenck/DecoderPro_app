@@ -411,7 +411,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
          QDomElement m = mastList.at(i).toElement();
          QString mast = m.firstChildElement("mastName").text();
          QString state = m.firstChildElement("mastState").text();
-         SignalMast* mst = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(mast);
+         SignalMast* mst = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(mast);
          if(mst!=NULL)
              list.insert(mst, state);
          else if (debug)

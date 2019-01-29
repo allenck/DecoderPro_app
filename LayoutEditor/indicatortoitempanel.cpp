@@ -13,6 +13,7 @@
 #include "dataflavor.h"
 #include "indicatorturnouticonxml.h"
 #include "manager.h"
+#include "imagepanel.h"
 
 //IndicatorTOItemPanel::IndicatorTOItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -39,6 +40,7 @@
  _updateGroupsMap = NULL;
  _tablePanel = NULL;
  _detectPanel = NULL;
+ setObjectName("IndicatorTOItemPanel");
 }
 
 /**
@@ -152,51 +154,39 @@
                         ItemPalette::getLevel4FamilyMaps(_itemType);
  if (families!=NULL && families->size()>0)
  {
+  _familyButtonPanel = makeFamilyButtons(families->keys());
 
-  QWidget* familyPanel = makeFamilyButtons(QStringListIterator(families->keys()), (_updateGroupsMap==NULL));
+  if (_iconGroupsMap == nullptr)
+  {
+      _iconGroupsMap = families->value(_family);
+  }
+  // make _iconPanel + _dragIconPanel before calls to add icons
+  addFamilyPanels(_familyButtonPanel);
 
-  if (_updateGroupsMap==NULL)
+  if (_iconGroupsMap == nullptr)
   {
-   _iconGroupsMap = families->value(_family);
+      log->error("_iconGroupsMap is null in initIconFamiliesPanel");
+      _family = nullptr;
+  } else {
+      addIcons2Panel(_iconGroupsMap); // need to have family iconMap identified before calling
+      makeDndIconPanel(_iconGroupsMap->value("ClearTrack"), "TurnoutStateClosed");
   }
-  else
-  {
-   _iconGroupsMap = _updateGroupsMap;
-  }
-  // make _iconPanel & _dragIconPanel before calls to add icons
-  addFamilyPanels(familyPanel);
-  if (_iconGroupsMap==NULL)
-  {
-//            JOptionPane.showMessageDialog(_paletteFrame,
-//                    java.text.MessageFormat.format(tr("FamilyNotFound"),
-//                                                   tr(_itemType), _family),
-//                    ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
-   QMessageBox::warning(_paletteFrame, tr("Warning"), tr("Icon Set \"%2\" not found in type \"%1\".").arg(_itemType).arg(_family));
-   _family = "";
-  }
-  else
-  {
-   addIcons2Panel(_iconGroupsMap);  // need to have family iconMap identified before calling
-   makeDndIconPanel(_iconGroupsMap->value("ClearTrack"), "TurnoutStateClosed");
-  }
+ } else {
+     familiesMissing();
  }
- else
- {
-  addCreatePanels();
-  createNewFamily();
- }
- if (log-> isDebugEnabled()) log-> debug("initIconFamiliesPanel done");
+//        updateBackgrounds(); // create array of backgrounds
+ log->debug("initIconFamiliesPanel done");
 }
 
-/*protected*/ void IndicatorTOItemPanel::updateFamiliesPanel()
-{
- _iconFamilyPanel->layout()->removeWidget(_iconPanel);
- _iconPanel = new QWidget();
-    addIcons2Panel(_iconGroupsMap);
-    ((QVBoxLayout*)_iconFamilyPanel->layout())->addWidget(_iconPanel/*, 0*/);
-    _iconPanel->setVisible(true);
-    reset();
-}
+///*protected*/ void IndicatorTOItemPanel::updateFamiliesPanel()
+//{
+// _iconFamilyPanel->layout()->removeWidget(_iconPanel);
+// _iconPanel = new QWidget();
+//    addIcons2Panel(_iconGroupsMap);
+//    ((QVBoxLayout*)_iconFamilyPanel->layout())->addWidget(_iconPanel/*, 0*/);
+//    _iconPanel->setVisible(true);
+//    reset();
+//}
 
 /*protected*/ void IndicatorTOItemPanel::resetFamiliesPanel() {
     layout()->removeWidget(_iconFamilyPanel);
@@ -443,37 +433,18 @@ void IndicatorTOItemPanel::onShowIconsButtons()
  }
 }
 
-void IndicatorTOItemPanel::createNewFamily()
+void IndicatorTOItemPanel::createNewFamily(QString family)
 {
- removeIconFamiliesPanel();
- if (_tablePanel!=NULL)
- {
-  _tablePanel->setVisible(false);
- }
- _iconGroupsMap = new QMap<QString, QMap<QString, NamedIcon*>*>();
- for (int i=0; i<STATUS_KEYS.length(); i++)
- {
-  _iconGroupsMap->insert(STATUS_KEYS.at(i), makeNewIconMap("Turnout"));
- }
- _iconFamilyPanel = new QWidget();
- _iconFamilyPanel->setLayout(new QVBoxLayout(_iconFamilyPanel/*, BoxLayout.Y_AXIS*/));
-_iconPanel = new QWidget();
- addIcons2Panel(_iconGroupsMap);
- _iconFamilyPanel->layout()->addWidget(_iconPanel/*, 0*/);
- _iconPanel->setVisible(true);
- if (_dragIconPanel!=NULL)
- {
-  _dragIconPanel->setVisible(false);
- }
- _bottom1Panel->setVisible(false);
- _bottom2Panel->setVisible(true);
- if (_detectPanel!=NULL)
- {
-  _detectPanel->setVisible(false);
- }
- //thisLayout->addWidget(_iconFamilyPanel/*, 0*/);
- thisLayout->insertWidget(0, _iconFamilyPanel);
- reset();
+ log->debug(tr("createNewFamily for %1. family = \"%2\"").arg(_itemType).arg(family));
+         _iconGroupsMap = new QMap<QString, QMap<QString, NamedIcon*>*>();
+         for (int i = 0; i < STATUS_KEYS.length(); i++) {
+             _iconGroupsMap->insert(STATUS_KEYS[i], makeNewIconMap("Turnout")); // NOI18N
+         }
+         ItemPalette::addLevel4Family(_editor, _itemType, family, _iconGroupsMap);
+         _tablePanel->setVisible(true);
+         initIconFamiliesPanel();
+         setFamily(family);
+         reset();
 }
 
 /**
@@ -489,7 +460,7 @@ _iconPanel = new QWidget();
  if (log-> isDebugEnabled()) log-> debug("setFamily: for type \""+_itemType+"\", family \""+family+"\"");
  ((QVBoxLayout*) _iconFamilyPanel->layout())->removeWidget(_iconPanel);
  delete _iconPanel;
- _iconPanel = new QWidget();
+ _iconPanel = new ImagePanel();
  _iconPanel->setObjectName("iconPanel");
  //_iconPanel->setLayout(new FlowLayout);
  ((QVBoxLayout*)_iconFamilyPanel->layout())->insertWidget(0, _iconPanel);
@@ -497,7 +468,7 @@ _iconPanel = new QWidget();
  {
   ((QVBoxLayout*)_iconFamilyPanel->layout())->removeWidget(_dragIconPanel);
   delete _dragIconPanel;
-  _dragIconPanel = new QWidget();
+  _dragIconPanel = new ImagePanel();
   ((QVBoxLayout*)_iconFamilyPanel->layout())->insertWidget(0,_dragIconPanel);
  }
  _iconGroupsMap = ItemPalette::getLevel4Family(_itemType, _family);
@@ -559,7 +530,7 @@ _iconPanel = new QWidget();
  return _iconGroupsMap;
 }
 
-/*protected*/ DragJLabel* IndicatorTOItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map) {
+/*protected*/ DragJLabel* IndicatorTOItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon *icon) {
     return new ITOIconDragJLabel(flavor, this);
 }
 
@@ -579,7 +550,7 @@ _iconPanel = new QWidget();
  {
   return NULL;
  }
- NamedBean* bean = parent->getNamedBean();
+ NamedBean* bean = parent->getDeviceNamedBean();
  if (bean==NULL)
  {
   parent->log-> error("IconDragJLabel.getTransferData: NamedBean is NULL!");

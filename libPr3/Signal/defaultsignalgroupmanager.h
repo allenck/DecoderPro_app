@@ -12,7 +12,7 @@ public:
     DefaultSignalGroupManager(const DefaultSignalGroupManager&) : SignalGroupManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ SignalGroup* getSignalGroup(QString name);
     /*public*/ SignalGroup* getBySystemName(QString key);
     /*public*/ SignalGroup* getByUserName(QString key);

@@ -10,6 +10,7 @@
 #include "apps.h"
 #include "managingpreferencespanel.h"
 #include "configuremanager.h"
+#include "jtabbedpane.h"
 
 AppConfigBase::AppConfigBase(QWidget *parent) :
     JmriPanel(parent)
@@ -165,7 +166,8 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  //this->getPreferencesPanels()->values().stream().forEach((panel) ->
  foreach(PreferencesPanel* panel, this->getPreferencesPanels()->values())
  {
-  this->registerWithConfigureManager(panel);
+  Q_UNUSED(panel);
+//  this->registerWithConfigureManager(panel);
  }//);
  if (cm != nullptr)
  {
@@ -179,17 +181,17 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  {
   ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
  if (cm != nullptr) {
-     cm->registerPref(panel);
+     cm->registerPref((QObject*)panel);
  }
 }
  //if (panel instanceof ManagingPreferencesPanel)
- if(qobject_cast<ManagingPreferencesPanel*>(panel) != nullptr)
+ if(dynamic_cast<ManagingPreferencesPanel*>(panel) != nullptr)
  {
   log->debug(tr("Iterating over managed panels within %1/%2").arg(panel->getPreferencesItemText()).arg( panel->getTabbedPreferencesTitle()));
 //     ((ManagingPreferencesPanel*) panel).getPreferencesPanels().stream().forEach((managed) -> {
   foreach (PreferencesPanel* managed, *((ManagingPreferencesPanel*) panel)->getPreferencesPanels())
   {
-   log->debug(tr("Registering %1 with the ConfigureManager").arg(managed->metaObject()->className()));
+//   log->debug(tr("Registering %1 with the ConfigureManager").arg(managed->metaObject()->className()));
    this->registerWithConfigureManager(managed);
   }
  }

@@ -14,7 +14,7 @@ namespace Sprog
 /*public*/ /*interface*/class SprogSlotListener : public EventListener {
  Q_OBJECT
 public:
- SprogSlotListener(QObject* parent = 0);
+ SprogSlotListener();
 public slots:
     // This and the Loconet equivalent should probably be re-factored
     // to a higher place in the hierarchy

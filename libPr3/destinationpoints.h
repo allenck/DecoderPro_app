@@ -2,7 +2,10 @@
 #define DESTINATIONPOINTS_H
 #include "abstractnamedbean.h"
 #include "runnable.h"
+#include "jframe.h"
+#include "entryexitpairs.h"
 
+class QPushButton;
 class QFrame;
 class EntryExitPairs;
 class LayoutBlock;
@@ -27,7 +30,7 @@ public:
     void setRouteFrom(bool set);
     bool isRouteToPointSet();
     LayoutBlock* getFacing();
-    LayoutBlock* getProtecting();
+    QList<LayoutBlock *> getProtecting();
     int getEntryExitType();
     void setEntryExitType(int type);
     /*public*/ void dispose();
@@ -35,10 +38,17 @@ public:
     /*public*/ bool isActive();
     /*public*/ void setState(int state);
     void setActiveEntryExit(bool boo);
+    /*synchronized*/ void activeBean(bool reverseDirection, bool showMessage);
+    /*public*/ void setInterlockRoute(bool reverseDirection);
 
 signals:
 
 public slots:
+    void on_jButton_Clear();
+    void on_jButton_Cancel();
+    void on_jButton_Exit();
+    /*public*/ void propertyChange(PropertyChangeEvent* e);
+
 private:
     /*transient*/ PointDetails* point;// = null;
     bool uniDirection;// = true;
@@ -61,20 +71,26 @@ private:
     QVariant lastSeenActiveBlockObject;
     /*synchronized*/ void removeBlockFromRoute(LayoutBlock* lBlock);
     void setRoute(bool state);
-    /*private*/ QFrame* cancelClearFrame;
+    /*private*/ JFrame* cancelClearFrame;
     /*transient*/ /*private*/ QThread* threadAutoClearFrame;// = NULL;
-    void cancelClearOptionBox();
+    QPushButton* jButton_Stack;// = new JButton(Bundle.getMessage("Stack"));  // NOI18Nvoid cancelClearOptionBox();
     void cancelClearInterlock(int cancelClear);
     void activeBean(bool reverseDirection);
-Logger* log;
-QMutex mutex;
+    Logger* log;
+    QMutex mutex;
+    void handleNoCurrentRoute(bool reverse, QString message);
+    void cancelClearOptionBox();
+
 protected slots:
     /*protected*/ void blockStateUpdated(PropertyChangeEvent* e);
     void propertyBlockListener(PropertyChangeEvent*);
     void propertyChangeListener(PropertyChangeEvent*);
 friend class Source;
 friend class PointDetails;
+friend class MessageTimeOut;
+friend class DPRunnable;
 };
+
 class DPRunnable : public Runnable {
     Q_OBJECT
     DestinationPoints* p;
@@ -82,6 +98,25 @@ public:
     DPRunnable(DestinationPoints* p);
 
     /*public*/ void run();
+};
+
+class MessageTimeOut : public Runnable {
+ Q_OBJECT
+ DestinationPoints* dp;
+public:
+    MessageTimeOut(DestinationPoints* dp){this->dp = dp;
+    }
+    /*public*/ void run() {
+        try {
+            //Set a timmer before this window is automatically closed to 30 seconds
+            //Thread.sleep(dp->NXMESSAGEBOXCLEARTIMEOUT*1000);
+      sleep(dp->NXMESSAGEBOXCLEARTIMEOUT);
+            dp->cancelClearFrame->setVisible(false);
+            dp->cancelClearInterlock(EntryExitPairs::EXITROUTE);
+        } catch (InterruptedException ex) {
+            dp->log->debug("Flash timer cancelled");
+        }
+    }
 };
 
 #endif // DESTINATIONPOINTS_H

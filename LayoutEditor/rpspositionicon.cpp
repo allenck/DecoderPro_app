@@ -38,25 +38,25 @@
 #endif
     }
 
-#if 0
-    /*public*/ NamedIcon getActiveIcon() {
+
+    /*public*/ NamedIcon* RpsPositionIcon::getActiveIcon() {
         return active;
     }
 
-    /*public*/ void setActiveIcon(NamedIcon i) {
+    /*public*/ void RpsPositionIcon::setActiveIcon(NamedIcon* i) {
         active = i;
         displayState();
     }
 
-    /*public*/ NamedIcon getErrorIcon() {
+    /*public*/ NamedIcon* RpsPositionIcon::getErrorIcon() {
         return error;
     }
 
-    /*public*/ void setErrorIcon(NamedIcon i) {
+    /*public*/ void RpsPositionIcon::setErrorIcon(NamedIcon* i) {
         error = i;
         displayState();
     }
-
+#if 0
     //@Override
     /*public*/ String getNameString() {
         return "RPS Position Readout";
@@ -189,30 +189,28 @@
 
     JCheckBoxMenuItem momentaryItem;
 
-    // true if valid message received last
-    boolean state = false;
-
+#endif
     /**
      * Drive the current state of the display from whether a valid measurement
      * has been received
      */
-    void displayState() {
+    void RpsPositionIcon::displayState() {
 
         if (state) {
             if (isIcon()) {
-                super.setIcon(active);
+                PositionableLabel::setIcon(active);
             }
         } else {
             if (isIcon()) {
-                super.setIcon(error);
+                PositionableLabel::setIcon(error);
             }
         }
 
         updateSize();
-        revalidate();
+        update();
         return;
     }
-
+#if 0
     //@Override
     /*public*/ int maxHeight() {
         return getPreferredSize().height;

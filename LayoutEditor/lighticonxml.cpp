@@ -2,11 +2,12 @@
 #include "lighticon.h"
 #include "editor.h"
 #include "abstractlight.h"
+#include "loggerfactory.h"
 
 LightIconXml::LightIconXml(QObject *parent) :
     PositionableLabelXml(parent)
 {
- log = new Logger("LightIconXml");
+
 }
 /**
  * Handle configuration for display.LightIcon objects.
@@ -129,9 +130,10 @@ LightIconXml::LightIconXml(QObject *parent) :
 
  p->putItem((Positionable*)l);
  // load individual item's option settings after editor has set its global settings
- Q_ASSERT(l->getLight()!=NULL);
+ //Q_ASSERT(l->getLight()!=NULL);
 }
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LightIconXml.class.getName());
-//}
 LightIcon* LightIconXml::getIcon() { return l;}
+/*static*/ Logger* LightIconXml::log = LoggerFactory::getLogger("LightIconXml");
+//}
+

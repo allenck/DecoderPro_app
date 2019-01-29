@@ -140,7 +140,7 @@ void TabbedPreferencesAction::common()
 //  thr->start();
   connect(r, SIGNAL(waitChange(bool)), this, SLOT(setWait(bool)));
   connect(r, SIGNAL(showPreferences()), this, SLOT(showPreferences()));
-  ((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->startInit();
+  ((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->init();
   r->start();
  }
  else
@@ -203,5 +203,5 @@ QString TabbedPreferencesAction::helpTarget()
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* makePanel()
 {
- throw new IllegalArgumentException("Should not be invoked");
+ throw  IllegalArgumentException("Should not be invoked");
 }

@@ -2,7 +2,7 @@
 #include "guilafconfigpane.h"
 
 GuiLocalePreferencesPanel::GuiLocalePreferencesPanel(QWidget *parent) :
-    PreferencesSubPanel(parent)
+    QWidget(parent)
 {
  parent = NULL;
  setObjectName("GuiLocalePreferencesPanel");
@@ -24,7 +24,7 @@ GuiLocalePreferencesPanel::GuiLocalePreferencesPanel(QWidget *parent) :
 /*public*/ void GuiLocalePreferencesPanel::setParent(PreferencesPanel* parent)
 {
  //if (parent instanceof GuiLafConfigPane) {
- if(qobject_cast<GuiLafConfigPane*>(parent)!=NULL)
+ if((GuiLafConfigPane*)(parent)!=NULL)
  {
   this->parent = (GuiLafConfigPane*) parent;
  }
@@ -84,3 +84,5 @@ GuiLocalePreferencesPanel::GuiLocalePreferencesPanel(QWidget *parent) :
 /*public*/ bool GuiLocalePreferencesPanel::isRestartRequired() {
     return this->getParent()->isRestartRequired();
 }
+
+/*public*/ QString GuiLocalePreferencesPanel::className() {return "GuiLocalePreferencesPanel";}

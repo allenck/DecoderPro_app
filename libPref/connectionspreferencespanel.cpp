@@ -15,6 +15,8 @@
 #include <QTabBar>
 #include <QToolButton>
 #include "configuremanager.h"
+#include "loggerfactory.h"
+#include "jtabbedpane.h"
 
 //ConnectionPreferencesPanel::ConnectionPreferencesPanel(QWidget *parent) :
 //    QTabWidget(parent)
@@ -27,7 +29,7 @@
 // /*public*/ class ConnectionsPreferencesPanel extends JTabbedPane implements PreferencesPanel {
 
 //    /*private*/ static final ResourceBundle rb = ResourceBundle.getBundle("apps.AppsConfigBundle"); // NOI18N
-//    /*private*/ static final Logger log = LoggerFactory.getLogger(ConnectionsPreferencesPanel.class);
+/*private*/ /*static*/ /*final*/ Logger* ConnectionsPreferencesPanel::log = LoggerFactory::getLogger("ConnectionsPreferencesPanel");
 
 
 /*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(TabbedPreferences* preferences, QWidget* parent)
@@ -36,24 +38,15 @@
  //super();
  common(preferences);
 }
+
 void ConnectionsPreferencesPanel::common(TabbedPreferences* preferences)
 {
  setObjectName("ConnectionsPreferencesPanel");
- setMinimumSize(400,400);
- setContentsMargins(0,0,0,0);
- setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
- QVBoxLayout* thisLayout = new QVBoxLayout;
- setLayout(thisLayout);
- //QWidget* panel = new QWidget;
- //QHBoxLayout* panelLayout = new QHBoxLayout;
- //panel->setLayout(panelLayout);
- tabWidget = new MyTabWidget();
- tabWidget->setMinimumSize(400,400);
- tabWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
- //panelLayout->addWidget(tabWidget);
- //thisLayout->addWidget(panel);
- thisLayout->addWidget(tabWidget);
- log = new Logger("ConnectionPreferencesPanel");
+ resize(400,400);
+ //setContentsMargins(0,0,0,0);
+ //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+// tabWidget->setMinimumSize(400,400);
+setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
  restartRequired = false;
   bDeleteFlag= false;
 
@@ -85,12 +78,11 @@ void ConnectionsPreferencesPanel::common(TabbedPreferences* preferences)
    addConnection(0, JmrixConfigPane::createNewPanel());
 
    //this->addChangeListener(addTabListener);
-   connect(tabWidget, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
+   connect(this, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
    newConnectionTab();
-   tabWidget->setCurrentIndex(0);
+   setCurrentIndex(0);
   }
-  connect(tabWidget, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
-
+  connect(this, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
  }
 }
 
@@ -116,7 +108,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  {
    //QIcon icon = /*pane.getIconAt(sel);*/ tabIcon(sel);
    //if (icon == addIcon)
-   QString _tabText = tabWidget->tabText(sel);
+   QString _tabText = tabText(sel);
    if(_tabText == "" && !bDeleteFlag)
    {
     addConnectionTab();
@@ -134,10 +126,10 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
 
 /*private*/ void ConnectionsPreferencesPanel::activeTab()
 {
- for (int i = 0; i < tabWidget->count() - 1; i++)
+ for (int i = 0; i < count() - 1; i++)
  {
   //QWidget* panel = (QWidget) this->getTabComponentAt(i);
-  QWidget* panel = tabWidget->widget(i);
+  QWidget* panel = widget(i);
   //panel.invalidate();
   //Component[] comp = panel.getComponents();
   QObjectList comp = panel->children();
@@ -147,7 +139,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
    if(qobject_cast<QPushButton*>(o) != NULL)
    {
     QPushButton* c = (QPushButton*)o;
-    if (i == tabWidget->currentIndex())
+    if (i == currentIndex())
     {
      c->setVisible(true);
     }
@@ -235,9 +227,9 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  tabTitleLayout->addWidget(tabCloseButton, 0, /*BorderLayout.EAST*/ Qt::AlignRight);
 
  this->configPanes.append(configPane);
- //int iTab = tabWidget->addTab(p, title);
- int iTab = tabWidget->insertTab(tabPosition, p, title);
- tabWidget->setTabButton(iTab, tabCloseButton);
+ this->addTab(title, p);
+ //int iTab = this->insertTab(tabPosition, p, title);
+ setTabButton(count()-1, tabCloseButton);
     //this->setTabComponentAt(tabPosition, tabTitle);
  //tabWidget->insertTab(tabPosition,tabTitle, title);
 
@@ -247,7 +239,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  CloseButtonListener* cbl = new CloseButtonListener(tabPosition, this);
  connect(tabCloseButton, SIGNAL(clicked()), cbl, SLOT(actionPerformed()));
 
- tabWidget->setTabToolTip(tabPosition, title);
+ setTabToolTip(tabPosition, title);
 
 
  if (ConnectionStatus::instance()->isConnectionOk(
@@ -295,21 +287,17 @@ void CloseButtonListener::actionPerformed(ActionEvent *)
 
 void ConnectionsPreferencesPanel::addConnectionTab()
 {
- int curTab = this->indexOfTab("");
-
- //this->removeTab(this->indexOfTab(""));
- tabWidget->removeTab(curTab);
+ //this->removeTabAt(this->indexOfTab(addIcon));
+ this->removeTabAt(this->indexOfTab(""));
  addConnection(configPanes.size(), JmrixConfigPane::createNewPanel());
  newConnectionTab();
-
 }
 
 /*private*/ void ConnectionsPreferencesPanel::newConnectionTab()
 {
- int itab = tabWidget->addTab(new QWidget,  addIcon, "");
- tabWidget->setTabToolTip(itab, tr("Add New Connection"));
- tabWidget->setCurrentIndex(tabWidget->count() - 2);
- log->debug(tr("Tab count = %1").arg(tabWidget->count()));
+ this->addTab("", addIcon, new QWidget(), tr("Add New Connection"));
+ this->setSelectedIndex(this->count() - 2);
+ log->debug(tr("Tab count = %1").arg(count()));
 }
 
 /*private*/ void ConnectionsPreferencesPanel::removeTab(/*ActionEvent* e, */int x)
@@ -327,9 +315,9 @@ void ConnectionsPreferencesPanel::addConnectionTab()
 //                JOptionPane.YES_NO_OPTION);
 //        if (n != JOptionPane.YES_OPTION) {
   bDeleteFlag = true;
-  if(tabWidget->tabText(x) != "")
+  if(tabText(x) != "")
   {
-   if(QMessageBox::question(NULL, tr("Delete Connection"), tr("Do you really want to delete connection %1?").arg(tabWidget->tabText(i)),QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+   if(QMessageBox::question(NULL, tr("Delete Connection"), tr("Do you really want to delete connection %1?").arg(tabText(i)),QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
    {
     bDeleteFlag = false;
     return;
@@ -339,7 +327,7 @@ void ConnectionsPreferencesPanel::addConnectionTab()
 
   //this->removeChangeListener(addTabListener);
   //this->remove(i); // was x
-  tabWidget->removeTab(i);
+  removeTabAt(i);
  //preferences->getItems().removeOne((PreferencesPanel*)configPane);
   try
   {
@@ -350,20 +338,20 @@ void ConnectionsPreferencesPanel::addConnectionTab()
    log->error("Caught NULL Pointer Exception while removing connection tab");
   }
   this->configPanes.removeAt(i);
-  if (tabWidget->count() == 1)
+  if (count() == 1)
   {
    addConnectionTab();
   }
   if (x != 0)
   {
-    tabWidget->setCurrentIndex(x - 1);
+    setCurrentIndex(x - 1);
   }
   else
   {
-   tabWidget->setCurrentIndex(0);
+   setCurrentIndex(0);
   }
   //this->addChangeListener(addTabListener);
-  connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(On_currentChanged(int)));
+  connect(this, SIGNAL(currentChanged(int)), this, SLOT(On_currentChanged(int)));
  }
  activeTab();
 }
@@ -429,30 +417,41 @@ void ConnectionsPreferencesPanel::addConnectionTab()
   if(pane->isRestartRequired())
    brs = true;
  }
-    return this->restartRequired | brs;//            || this->configPanes.stream().anyMatch((panel) -> (panel.isRestartRequired()));
-
+ return this->restartRequired | brs;//            || this->configPanes.stream().anyMatch((panel) -> (panel.isRestartRequired()));
 }
 
 int ConnectionsPreferencesPanel::indexOfTab(QString text)
 {
- for(int i=0; i < tabWidget->count(); i++)
+ for(int i=0; i < this->count(); i++)
  {
-  if(tabWidget->tabText(i) == text) return i;
+  if(this->tabText(i) == text) return i;
  }
  return -1;
 }
-MyTabWidget::MyTabWidget(QWidget *parent) : QTabWidget(parent) {}
 
-void MyTabWidget::setTabButton(int iTab, QToolButton * button)
-{
- tabBar()->setTabButton(iTab, QTabBar::RightSide, button);
-}
+//MyTabWidget::MyTabWidget(QWidget *parent) : QTabWidget(parent) {}
+
+//void MyTabWidget::setTabButton(int iTab, QToolButton * button)
+//{
+// tabBar()->setTabButton(iTab, QTabBar::RightSide, button);
+//}
 //@Override
 /*public*/ bool ConnectionsPreferencesPanel::isPreferencesValid()
 {
 //    return this.configPanes.stream().allMatch((panel) -> (panel.isPreferencesValid()));
- return true;  // TODO: figure out what allMactch means.
+ bool bValid = true;
+ foreach(JmrixConfigPane* panel, this->configPanes)
+ {
+  if(!panel->isPreferencesValid())
+  {
+   bValid = false;
+   break;
+  }
+ }
+ return bValid;
 }
+
+/*public*/ QString ConnectionsPreferencesPanel::className() {return "ConnectionsPreferencesPanel";}
 
 //@Override
 /*public*/ QList<PreferencesPanel*>* ConnectionsPreferencesPanel::getPreferencesPanels() {

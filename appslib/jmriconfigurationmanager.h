@@ -45,7 +45,7 @@ public:
 
 private:
  /*private*/ void initializeProvider( PreferencesManager* provider, Profile* profile);
- /*private*/ Logger* log;// = LoggerFactory.getLogger(JmriConfigurationManager.class);
+ static /*private*/ Logger* log;// = LoggerFactory.getLogger(JmriConfigurationManager.class);
  /*private*/ /*final*/ ConfigXmlManager* legacy;// = new ConfigXmlManager();
  /*private*/ /*final*/ QHash<PreferencesManager*, InitializationException*>* initializationExceptions;// = new HashMap<>();
  /*private*/ /*final*/ QList<PreferencesManager*>* initialized;// = new ArrayList<>();

@@ -52,8 +52,8 @@ public:
     RouteTableAction(const RouteTableAction&);
     /*public*/ /*final*/ static QString LOGIX_SYS_NAME;// = "RTX";
     /*public*/ /*final*/ static QString CONDITIONAL_SYS_PREFIX;// = LOGIX_SYS_NAME+"C";
-    /*public*/ void setMessagePreferencesDetails();
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     ConditionalVariable* makeCtrlSensorVar(JmriBeanComboBox* jmriBox, QComboBox* sensorbox,
                                            bool makeVeto, bool onChange);
     enum COLUMNS

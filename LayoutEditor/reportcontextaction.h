@@ -2,7 +2,9 @@
 #define REPORTCONTEXTACTION_H
 
 #include "abstractaction.h"
+#include <QtZeroConf/qzeroconf.h>
 
+class JTextArea;
 class JmriPanel;
 class JFrame;
 class QLabel;
@@ -21,8 +23,10 @@ public slots:
  void on_closeClicked();
 private:
  void common();
- QLabel* pane;
+ JTextArea* pane;
  JFrame* frame;
+ QZeroConf* zeroConf;
+
  void addString(QString val);
  void addProperty(QString prop);
 };

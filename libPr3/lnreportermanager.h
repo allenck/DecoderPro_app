@@ -25,10 +25,13 @@ class LIBPR3SHARED_EXPORT LnReporterManager : public AbstractReporterManager
     Q_OBJECT
 public:
     explicit LnReporterManager(LnTrafficController* tc, QString prefix, QObject *parent = 0);
-    virtual QString getSystemPrefix();
-    virtual void dispose();
-    virtual Reporter* createNewReporter(QString systemName, QString userName);
-    // listen for transponder messages, creating Reporters as needed
+    QString getSystemPrefix();
+    void dispose();
+    Reporter* createNewReporter(QString systemName, QString userName);
+    /*public*/ int getBitFromSystemName(QString systemName);
+    /*public*/ NameValidity validSystemNameFormat(QString systemName);
+    /*public*/ QString getEntryToolTip();
+
 public slots:
     void message(LocoNetMessage* l);
 

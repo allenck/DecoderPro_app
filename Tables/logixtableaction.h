@@ -80,9 +80,9 @@ public:
     bool checkLogixUserName(QString uName);
     bool checkLogixSysName();
     void deletePressed(QString sName);
-    /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
     QWidget* makeAddLogixFrame(QString titleId, QString messageId1, QString messageId2="");
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     void editVariableFrameWindowClosing();
     void makeEditActionWindow(int row);
 //    static QString getName();

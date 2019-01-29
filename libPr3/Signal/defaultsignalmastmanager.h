@@ -18,7 +18,7 @@ public:
     DefaultSignalMastManager(const DefaultSignalMastManager&) : SignalMastManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix() ;
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ SignalMast* getSignalMast(QString name) ;
     /*public*/ SignalMast* provideSignalMast(QString prefix, // nominally IF$shsm
                                         QString signalSystem,

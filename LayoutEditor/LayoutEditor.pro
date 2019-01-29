@@ -123,7 +123,6 @@ SOURCES += \
     layoutblockconnectivitytools.cpp \
     editlevelxingdlg.cpp \
     layoutslip.cpp \
-    savexml.cpp \
     memoryiconcoordinateedit.cpp \
     turnoutoperationmanagerxml.cpp \
     turnoutoperationxml.cpp \
@@ -229,6 +228,7 @@ SOURCES += \
     spinnernumbermodel.cpp \
     controlpaneleditor.cpp \
     itempalette.cpp \
+    portalicon.cpp \
     itempanel.cpp \
     familyitempanel.cpp \
     defaultcatalogtreemanager.cpp \
@@ -261,7 +261,6 @@ SOURCES += \
     memorycomboiconxml.cpp \
     memoryspinnericonxml.cpp \
     controlpaneleditorxml.cpp \
-    portalicon.cpp \
     portaliconxml.cpp \
     circuitbuilder.cpp \
     editcircuitframe.cpp \
@@ -299,7 +298,7 @@ SOURCES += \
     commonturnoutoperationconfig.cpp \
     rawturnoutoperationconfig.cpp \
     sensorturnoutoperationconfig.cpp \
-    rfidsensormanagerxml.cpp \
+    #rfidsensormanagerxml.cpp \
     simpleclockframe.cpp \
     analogclockframe.cpp \
     icondialog.cpp \
@@ -458,7 +457,10 @@ SOURCES += \
     beanswitch.cpp \
     layouttrackdrawingoptionsxml.cpp \
     layouttrackdrawingoptions.cpp \
-    newpaneleditor.cpp
+    newpaneleditor.cpp \
+    defaultusermessagepreferencesxml.cpp \
+    layouttrackexpectedstate.cpp \
+    rpsitempanel.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -496,7 +498,6 @@ HEADERS += liblayouteditor_global.h \
     layoutblockconnectivitytools.h \
     editlevelxingdlg.h \
     layoutslip.h \
-    savexml.h \
     addreporterdlg.h \
     memoryiconcoordinateedit.h \
     turnoutoperationmanagerxml.h \
@@ -676,7 +677,6 @@ HEADERS += liblayouteditor_global.h \
     commonturnoutoperationconfig.h \
     rawturnoutoperationconfig.h \
     sensorturnoutoperationconfig.h \
-    rfidsensormanagerxml.h \
     simpleclockframe.h \
     analogclockframe.h \
     icondialog.h \
@@ -840,8 +840,10 @@ HEADERS += liblayouteditor_global.h \
     beanswitch.h \
     layouttrackdrawingoptionsxml.h \
     layouttrackdrawingoptions.h \
-    newpaneleditor.h
-
+    newpaneleditor.h \
+    defaultusermessagepreferencesxml.h \
+    layouttrackexpectedstate.h \
+    rpsitempanel.h
 
 FORMS    += \
     edittracksegmentdlg.ui \
@@ -935,3 +937,11 @@ else:unix: LIBS += -L$$PWD/../Tables/ -lTables
 INCLUDEPATH += $$PWD/../Tables/debug
 DEPENDPATH += $$PWD/../Tables/debug
 
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../QT/5.10.0/gcc_64/lib/release/ -lQtZeroConf
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../QT/5.10.0/gcc_64/lib/debug/ -lQtZeroConf
+else:unix: LIBS += -L$$PWD/../../../../../QT/5.10.0/gcc_64/lib/ -lQtZeroConf
+
+INCLUDEPATH += $$PWD/../../../../../QT/5.10.0/gcc_64/include
+DEPENDPATH += $$PWD/../../../../../QT/5.10.0/gcc_64/include

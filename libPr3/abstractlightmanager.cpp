@@ -29,7 +29,7 @@ AbstractLightManager::AbstractLightManager(QObject *parent) :
 /**
  * Returns the second letter in the system name for a Light
  */
-/*public*/ char AbstractLightManager::typeLetter() { return 'L'; }
+/*public*/ char AbstractLightManager::typeLetter()  { return 'L'; }
 
 /**
  * Locate via user name, then system name if needed.
@@ -116,7 +116,7 @@ AbstractLightManager::AbstractLightManager(QObject *parent) :
   return NULL;
  }
  // is system name in correct format?
- if ( !validSystemNameFormat(systemName) )
+ if ( validSystemNameFormat(systemName) != NameValidity::VALID)
  {
   log->error("Invalid system name for newLight: "+systemName);
   return NULL;

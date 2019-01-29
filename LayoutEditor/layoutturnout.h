@@ -165,28 +165,28 @@ public:
     /*public*/ void setSignalD2Name(QString signalName);
 
     /*public*/ QString getSignalAMastName();
-    /*public*/ QString getSignalAMast();
+    /*public*/ SignalMast* getSignalAMast();
     /*public*/ void setSignalAMast(QString signalMast);
     /*public*/ QString getSignalBMastName();
-    /*public*/ QString getSignalBMast();
+    /*public*/ SignalMast* getSignalBMast();
     /*public*/ void setSignalBMast(QString signalMast);
     /*public*/ QString getSignalCMastName();
-    /*public*/ QString getSignalCMast();
+    /*public*/ SignalMast *getSignalCMast();
     /*public*/ void setSignalCMast(QString signalMast);
     /*public*/ QString getSignalDMastName();
-    /*public*/ QString getSignalDMast();
+    /*public*/ SignalMast* getSignalDMast();
     /*public*/ void setSignalDMast(QString signalMast);
     /*public*/ QString getSensorAName();
-    /*public*/ QString getSensorA();
+    /*public*/ Sensor* getSensorA();
     /*public*/ void setSensorA(QString sensorName);
     /*public*/ QString getSensorBName();
-    /*public*/ QString getSensorB();
+    /*public*/ Sensor* getSensorB();
     /*public*/ void setSensorB(QString sensorName);
     /*public*/ QString getSensorCName();
-    /*public*/ QString getSensorC();
+    /*public*/ Sensor* getSensorC();
     /*public*/ void setSensorC(QString sensorName);
     /*public*/ QString getSensorDName();
-    /*public*/ QString getSensorD();
+    /*public*/ Sensor* getSensorD();
     /*public*/ void setSensorD(QString sensorName);
     /*public*/ QString getLinkedTurnoutName();
     /*public*/ void setLinkedTurnoutName(QString s);
@@ -283,9 +283,10 @@ public:
 /*public*/ void setObjects(LayoutEditor* p);
 
 /*public*/ QStringList getBlockBoundaries();
+ /*public*/ QList<LayoutBlock*> getProtectedBlocks(NamedBean* bean);
 
  /*public*/ void reCheckBlockBoundary();
- void removeSML(QString signalMast);
+ void removeSML(SignalMast *signalMast);
  /**
   * Clean up when this object is no longer needed.  Should not
   * be called while the object is still displayed; see remove()
@@ -436,6 +437,11 @@ protected:
  /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // diverging
  /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // single or double crossover only
  /*protected*/ QPointF rotatePoint(QPointF p, double sineAng, double cosineAng);
+ /*protected*/ int getConnectivityStateForLayoutBlocks(        LayoutBlock* currLayoutBlock,
+                                                               LayoutBlock* prevLayoutBlock,
+                                                               LayoutBlock* nextLayoutBlock,
+                                                               bool suppress);
+
 
 /**
  * Edit a Layout Turnout
@@ -446,7 +452,7 @@ friend class LayoutSlip;
 friend class SetSignalsActionListener;
 friend class LayoutTurnoutXml;
 friend class ETWindowListener;
-
+friend class ConnectivityUtil;
 };
 class ETWindowListener : public WindowListener
 {

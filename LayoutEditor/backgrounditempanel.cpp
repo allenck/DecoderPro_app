@@ -11,6 +11,7 @@
 #include "flowlayout.h"
 #include "namedicon.h"
 #include "displayframe.h"
+#include "drawsquares.h"
 
 //BackgroundItemPanel::BackgroundItemPanel(QWidget *parent) :
 //    IconItemPanel(parent)
@@ -25,10 +26,11 @@
 /**
 * Constructor for plain icons and backgrounds
 */
-/*public*/ BackgroundItemPanel::BackgroundItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent) : IconItemPanel(parentFrame, type, family, editor, parent)
+/*public*/ BackgroundItemPanel::BackgroundItemPanel(DisplayFrame* parentFrame, QString type, Editor* editor, QWidget* parent) : IconItemPanel(parentFrame, type, editor, parent)
 {
  // super(parentFrame, type, family, editor);
   _level = Editor::BKG;
+  setObjectName("BackgroundItemPanel");
 }
 
 /*public*/ void BackgroundItemPanel::init()
@@ -37,7 +39,6 @@
  {
   QThread::yieldCurrentThread();
   IconItemPanel::init();
-  layout()->addWidget(initBottomPanel()/*, 2*/);
   resize(sizeHint());
  }
 }
@@ -52,27 +53,6 @@
  return panel;
 }
 
-/*private*/ QWidget* BackgroundItemPanel::initBottomPanel()
-{
- QWidget* bottomPanel = new QWidget();
- bottomPanel->setLayout(new QHBoxLayout);
- QPushButton* backgroundButton = new QPushButton(tr("Background Color"));
- QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(backgroundButton->sizePolicy().hasHeightForWidth());
- backgroundButton->setSizePolicy(sizePolicy);
-//        backgroundButton.addActionListener(new ActionListener() {
-//                /*public*/ void actionPerformed(ActionEvent a) {
-//                    hideCatalog();
-//                    new ColorDialog(_editor);
-//                }
-//        });
- connect(backgroundButton, SIGNAL(clicked()), this, SLOT(backgroundButton_clicked()));
- backgroundButton->setToolTip(tr("Choose a color for the background panel"));
- bottomPanel->layout()->addWidget(backgroundButton);
- return bottomPanel;
-}
 void BackgroundItemPanel::backgroundButton_clicked()
 {
  hideCatalog();
@@ -81,11 +61,19 @@ void BackgroundItemPanel::backgroundButton_clicked()
 }
 
 //@Override
-/*protected*/ QWidget* BackgroundItemPanel::makeBgButtonPanel(ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*> imgArray, DisplayFrame* parent) {
+/*protected*/ QWidget* BackgroundItemPanel::makeBgButtonPanel(ImagePanel* /*preview1*/, ImagePanel* /*preview2*/) {
         return NULL; // no button to set Preview Bg on BackgroundItemPanel
     }
 void BackgroundItemPanel::colorChanged(QColor)
 {
+ //QColor c = _editor->getTargetPanel()->getBackground();
+ QColor c;
+ QBrush b = _editor->editPanel->backgroundBrush();
+ if(b == Qt::NoBrush)
+  c = QColor(Qt::white);
+ c = b.color();
+ BufferedImage* im = DrawSquares::getImage(500, 400, 10, c, c);
+ _paletteFrame->updateBackground0(im);
 
 }
 

@@ -10,7 +10,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT WarrantManagerXml : public AbstractXmlAdapter
 {
     Q_OBJECT
 public:
-    explicit WarrantManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit WarrantManagerXml(QObject *parent = 0);
  ~WarrantManagerXml() {}
  WarrantManagerXml(const WarrantManagerXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);

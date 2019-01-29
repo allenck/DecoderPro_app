@@ -9,7 +9,7 @@
 #include <QButtonGroup>
 #include <QRadioButton>
 #include "multisensoricondialog.h"
-
+#include "tablecolumn.h"
 
 //MultiSensorItemPanel::MultiSensorItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -20,18 +20,18 @@
 
 /*public*/ MultiSensorItemPanel::MultiSensorItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor, parent)
 {
-    //super(parentFrame, type, family, model, editor);
-    _upDown = false;
-    //setToolTipText(tr("ToolTipDragSelection"));
-    setToolTip(tr("Drag the sensor selections from the table to add the multisensor to the panel"));
+  //super(parentFrame, type, family, model, editor);
+  _upDown = false;
+  setToolTip(tr("Drag the sensor selections from the table to add the multisensor to the panel"));
+  setObjectName("MultiSensorItemPanel");
 }
 
 /*protected*/ QWidget* MultiSensorItemPanel::initTablePanel(PickListModel* model, Editor* /*editor*/) {
     _table = model->makePickTable();
     ROW_HEIGHT = _table->getRowHeight();
-//    TableColumn column = new TableColumn(PickListModel::POSITION_COL);
-//    column.setHeaderValue("Position");
-//    _table.addColumn(column);
+    TableColumn* column = new TableColumn(PickListModel::POSITION_COL);
+    column->setHeaderValue("Position");
+    _table->addColumn(column);
     _selectionModel = new MultiSensorSelectionModel(model, this);
 //    _table->setSelectionModel(_selectionModel);
 //    _table->getSelectionModel().setSelectionMode(ListSelectionModel::SINGLE_SELECTION);
@@ -76,6 +76,7 @@
     topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the panel"));
     return topPanel;
 }
+
 /*public*/ void MultiSensorItemPanel::clearSelections() {
     _selectionModel->clearSelection();
     int size = 6;
@@ -95,8 +96,11 @@
 
 /*protected*/ void MultiSensorItemPanel::initIconFamiliesPanel() {
     TableItemPanel::initIconFamiliesPanel();
-    makeMultiSensorPanel();
-    _iconFamilyPanel->layout()->addWidget(_multiSensorPanel);
+    if (_multiSensorPanel == nullptr)
+    {
+     makeMultiSensorPanel();
+     _iconFamilyPanel->layout()->addWidget(_multiSensorPanel); // Panel containing up-dn, le-ri radio buttons
+    }
 }
 
 /*private*/ void MultiSensorItemPanel::makeMultiSensorPanel() {
@@ -153,11 +157,11 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
 }
 
 //@OverrideQMap
-/*protected*/ IconDialog* MultiSensorItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap)
+/*protected*/ void MultiSensorItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap)
 {
- IconDialog* dialog = new MultiSensorIconDialog(type, family, this, iconMap);
- dialog->sizeLocate();
- return dialog;
+ closeDialogs();
+ _dialog = new MultiSensorIconDialog(type, family, this, iconMap);
+ _dialog->sizeLocate();
 }
 
 /**
@@ -195,126 +199,126 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
 // /*protected*/ class MultiSensorSelectionModel : DefaultListSelectionModel {
 
 
-    MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, MultiSensorItemPanel* self)
-    {
-     //super();
-     log = new Logger("MultiSensorSelectionModel");
+MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, MultiSensorItemPanel* self)
+{
+ //super();
+ log = new Logger("MultiSensorSelectionModel");
 
-     _tableModel = tableModel;
-     this->self = self;
-     setPositionRange(0);
+ _tableModel = tableModel;
+ this->self = self;
+ setPositionRange(0);
+}
+
+/*protected*/ QList<NamedBean*>* MultiSensorSelectionModel::getSelections() {
+    if (log->isDebugEnabled()) log->debug("getSelections: size= "+QString::number(_selections->size())+
+                                        ", _nextPosition= "+QString::number(_nextPosition));
+    if (_nextPosition < _positions.length()) {
+        return NULL;
     }
+    return _selections;
+}
 
-    /*protected*/ QList<NamedBean*>* MultiSensorSelectionModel::getSelections() {
-        if (log->isDebugEnabled()) log->debug("getSelections: size= "+QString::number(_selections->size())+
-                                            ", _nextPosition= "+QString::number(_nextPosition));
-        if (_nextPosition < _positions.length()) {
-            return NULL;
-        }
-        return _selections;
+/*protected*/ QList<int> MultiSensorSelectionModel::getPositions() {
+    QList<int> positions =  QList<int>();//int[_positions.length()];
+    //System.arraycopy(_positions, 0, positions, 0, _positions.length());
+    foreach (int i, _positions) {
+     positions.append(i);
     }
+    return positions;
+}
 
-    /*protected*/ QList<int> MultiSensorSelectionModel::getPositions() {
-        QList<int> positions =  QList<int>();//int[_positions.length()];
-        //System.arraycopy(_positions, 0, positions, 0, _positions.length());
-        foreach (int i, _positions) {
-         positions.append(i);
-        }
-        return positions;
-    }
+/*protected*/ int MultiSensorSelectionModel::getNextPosition() {
+    return _nextPosition;
+}
 
-    /*protected*/ int MultiSensorSelectionModel::getNextPosition() {
-        return _nextPosition;
-    }
+/*protected*/ void MultiSensorSelectionModel::setPositionRange(int size)
+{
+ if (log->isDebugEnabled()) log->debug("setPositionRange: size= "+size);
+ if (size>self->POSITION.length()) {
+     size = self->POSITION.length();
+ }
+ _positions =  QList<int>(); //int[size];
+ for (int i=0; i<size; i++)
+ {
+  _positions.append(-1);
+ }
+ _selections =  new QList<NamedBean*>(/*size*/);
+ _nextPosition = 0;
+}
 
-    /*protected*/ void MultiSensorSelectionModel::setPositionRange(int size)
-    {
-     if (log->isDebugEnabled()) log->debug("setPositionRange: size= "+size);
-     if (size>self->POSITION.length()) {
-         size = self->POSITION.length();
-     }
-     _positions =  QList<int>(); //int[size];
-     for (int i=0; i<size; i++)
-     {
-      _positions.append(-1);
-     }
-     _selections =  new QList<NamedBean*>(/*size*/);
-     _nextPosition = 0;
-    }
+/*************** DefaultListSelectionModel overrides ********************/
 
-    /*************** DefaultListSelectionModel overrides ********************/
+/*public*/ bool MultiSensorSelectionModel::isSelectedIndex(int index)
+{
+ for (int i=0; i<_positions.length(); i++)
+ {
+  if (_positions[i] == index)
+  {
+   if (log->isDebugEnabled()) log->debug("isSelectedIndex("+QString::number(index)+") returned true");
+   return true;
+  }
+ }
+ if (log->isDebugEnabled()) log->debug("isSelectedIndex("+QString::number(index)+") returned false");
+ return false;
+}
 
-    /*public*/ bool MultiSensorSelectionModel::isSelectedIndex(int index)
-    {
-     for (int i=0; i<_positions.length(); i++)
-     {
-      if (_positions[i] == index)
-      {
-       if (log->isDebugEnabled()) log->debug("isSelectedIndex("+QString::number(index)+") returned true");
-       return true;
-      }
-     }
-     if (log->isDebugEnabled()) log->debug("isSelectedIndex("+QString::number(index)+") returned false");
-     return false;
-    }
+/*public*/ void MultiSensorSelectionModel::clearSelection()
+{
+ if (log->isDebugEnabled()) log->debug("clearSelection()");
+ for (int i=0; i<_positions.length(); i++)
+ {
+  if (_positions[i] >= 0)
+  {
+   _tableModel->setValueAt(QVariant(), _positions.at(i), PickListModel::POSITION_COL);
+   DefaultListSelectionModel::setSelectionInterval(_positions[i], _positions.at(i));
+   DefaultListSelectionModel::clearSelection();
+   _positions.replace(i, -1);
+  }
+ }
+ _selections = new QList<NamedBean*>();//_positions.length());
+ _nextPosition = 0;
+}
 
-    /*public*/ void MultiSensorSelectionModel::clearSelection()
-    {
-     if (log->isDebugEnabled()) log->debug("clearSelection()");
-     for (int i=0; i<_positions.length(); i++)
-     {
-      if (_positions[i] >= 0)
-      {
-       _tableModel->setValueAt(QVariant(), _positions.at(i), PickListModel::POSITION_COL);
-       DefaultListSelectionModel::setSelectionInterval(_positions[i], _positions.at(i));
-       DefaultListSelectionModel::clearSelection();
-       _positions.replace(i, -1);
-      }
-     }
-     _selections = new QList<NamedBean*>();//_positions.length());
-     _nextPosition = 0;
-    }
-
-    /*public*/ void MultiSensorSelectionModel::addSelectionInterval(int index0, int index1)
-    {
-     if (log->isDebugEnabled()) log->debug("addSelectionInterval("+QString::number(index0)+", "+QString::number(index1)+") - stubbed");
+/*public*/ void MultiSensorSelectionModel::addSelectionInterval(int index0, int index1)
+{
+ if (log->isDebugEnabled()) log->debug("addSelectionInterval("+QString::number(index0)+", "+QString::number(index1)+") - stubbed");
 //            super.addSelectionInterval(index0, index1);
-    }
+}
 
-    /*public*/ void MultiSensorSelectionModel::setSelectionInterval(int row, int index1)
-    {
-     if (_nextPosition>=_positions.length())
-     {
+/*public*/ void MultiSensorSelectionModel::setSelectionInterval(int row, int index1)
+{
+ if (_nextPosition>=_positions.length())
+ {
 //            JOptionPane.showMessageDialog(_paletteFrame,
 //                    java.text.MessageFormat.format(
 //                        tr("NeedIcon"), _selectionModel.getPositions().length),
 //                        ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
-      QMessageBox::warning(self->_paletteFrame, tr("Warning"), tr("This Multisensor has only %1} positions.  Clear selections to change position order./nFor additional positions, add another icon.").arg(self->_selectionModel->getPositions().length()));
-         return;
-     }
-     if (log->isDebugEnabled()) log->debug("setSelectionInterval("+QString::number(row)+", "+QString::number(index1)+")");
-     NamedBean* bean = _tableModel->getBeanAt(row);
-     //QString position = _tableModel->getValueAt(row, PickListModel::POSITION_COL);
-     QString position = _tableModel->data(_tableModel->index(row, PickListModel::POSITION_COL),Qt::DisplayRole).toString();
-     if (position!=NULL && position.length()>0)
-     {
+  QMessageBox::warning(self->_paletteFrame, tr("Warning"), tr("This Multisensor has only %1} positions.  Clear selections to change position order./nFor additional positions, add another icon.").arg(self->_selectionModel->getPositions().length()));
+     return;
+ }
+ if (log->isDebugEnabled()) log->debug("setSelectionInterval("+QString::number(row)+", "+QString::number(index1)+")");
+ NamedBean* bean = _tableModel->getBeanAt(row);
+ //QString position = _tableModel->getValueAt(row, PickListModel::POSITION_COL);
+ QString position = _tableModel->data(_tableModel->index(row, PickListModel::POSITION_COL),Qt::DisplayRole).toString();
+ if (position!=NULL && position.length()>0)
+ {
 //            JOptionPane.showMessageDialog(_paletteFrame,
 //                    java.text.MessageFormat.format(tr("DuplicatePosition"),
 //                        new Object[]{bean.getDisplayName(), position}),
 //                    ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
-      QMessageBox::warning(self->_paletteFrame, tr("Warning"), tr("Sensor %1 is already set to be the %2 position.").arg(bean->getDisplayName()).arg(position));
-  } else {
-      //_tableModel->setValueAt(tr(self->POSITION[_nextPosition]), row, PickListModel::POSITION_COL);
-      _tableModel->setData(_tableModel->index(row, PickListModel::POSITION_COL),QVariant(self->POSITION.at(_nextPosition)),Qt::EditRole);
-      _selections->append(/*_nextPosition,*/ bean);
-      _positions[_nextPosition] = row;
-      _nextPosition++;
-      DefaultListSelectionModel::setSelectionInterval(row, row);
-     }
-    }
+  QMessageBox::warning(self->_paletteFrame, tr("Warning"), tr("Sensor %1 is already set to be the %2 position.").arg(bean->getDisplayName()).arg(position));
+} else {
+  //_tableModel->setValueAt(tr(self->POSITION[_nextPosition]), row, PickListModel::POSITION_COL);
+  _tableModel->setData(_tableModel->index(row, PickListModel::POSITION_COL),QVariant(self->POSITION.at(_nextPosition)),Qt::EditRole);
+  _selections->append(/*_nextPosition,*/ bean);
+  _positions[_nextPosition] = row;
+  _nextPosition++;
+  DefaultListSelectionModel::setSelectionInterval(row, row);
+ }
+}
 
 
-/*protected*/ DragJLabel* MultiSensorItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map) {
+/*protected*/ DragJLabel* MultiSensorItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, NamedIcon *icon) {
     return new MSIconDragJLabel(flavor, map,this);
 }
 

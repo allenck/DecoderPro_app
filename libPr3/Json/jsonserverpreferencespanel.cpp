@@ -15,7 +15,7 @@
 /*public*/ /*static*/ /*final*/ int JsonServerPreferencesPanel::MAX_HEARTBEAT_INTERVAL = 3600;
 /*public*/ /*static*/ /*final*/ int JsonServerPreferencesPanel::MIN_HEARTBEAT_INTERVAL = 1;
 
-/*public*/JsonServerPreferencesPanel:: JsonServerPreferencesPanel(QWidget* parent) : PreferencesPanel(parent)
+/*public*/JsonServerPreferencesPanel:: JsonServerPreferencesPanel(QWidget* parent) : QWidget(parent)
 {
  parentFrame = NULL;
     this->preferences = new JsonServerPreferences();
@@ -24,7 +24,7 @@
     setGUI();
 }
 
-/*public*/ JsonServerPreferencesPanel::JsonServerPreferencesPanel(JFrame* f, QWidget* parent) : PreferencesPanel(parent)
+/*public*/ JsonServerPreferencesPanel::JsonServerPreferencesPanel(JFrame* f, QWidget* parent) : QWidget(parent)
  {
     //this();
     parentFrame = f;
@@ -75,8 +75,8 @@
 }
 
 /*protected*/ void JsonServerPreferencesPanel::cancelValues() {
-    if (getTopLevelAncestor() != NULL) {
-        ((JFrame*) getTopLevelAncestor())->setVisible(false);
+    if (window() != NULL) {
+        ((JFrame*) window())->setVisible(false);
     }
 }
 
@@ -185,3 +185,6 @@
 /*public*/ bool JsonServerPreferencesPanel::isPreferencesValid() {
     return true; // no validity checking performed
 }
+
+/*public*/ QString JsonServerPreferencesPanel::className() {return "JsonServerPreferencesPanel";}
+

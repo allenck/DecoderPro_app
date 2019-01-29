@@ -122,6 +122,8 @@ void JTextArea::common()
  text = "";
  rows = 0;
  columns =0;
+ wrap = false;
+ textOption = QTextOption::WrapMode::NoWrap;
 }
 /**
  * Constructs a new TextArea with the specified text displayed.
@@ -129,7 +131,7 @@ void JTextArea::common()
  *
  * @param text the text to be displayed, or NULL
  */
-/*public*/ JTextArea::JTextArea(QString text, QWidget *parent)
+/*public*/ JTextArea::JTextArea(QString text, QWidget */*parent*/)
 
 {
  //this(NULL, text, 0, 0);
@@ -181,7 +183,7 @@ void JTextArea::common()
  *
  * @param doc  the model to use
  */
-/*public*/ JTextArea::JTextArea(Document* doc, QWidget *parent) {
+/*public*/ JTextArea::JTextArea(Document* doc, QWidget */*parent*/) {
     //this(doc, NULL, 0, 0);
  common();
  setDocument(doc);
@@ -295,7 +297,7 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
     }
     return size;
 }
-
+#endif
 /**
  * Sets the line-wrapping policy of the text area.  If set
  * to true the lines will be wrapped if they are too long
@@ -311,10 +313,19 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
  *       bound: true
  * description: should lines be wrapped
  */
-/*public*/ void setLineWrap(boolean wrap) {
-    boolean old = this.wrap;
-    this.wrap = wrap;
-    firePropertyChange("lineWrap", old, wrap);
+/*public*/ void JTextArea::setLineWrap(bool wrap) {
+ textOption = wordWrapMode();
+    bool old = this->wrap;
+    this->wrap = wrap;
+    if(!wrap)
+     textOption = QTextOption::NoWrap;
+    else
+    {
+     if(textOption == QTextOption::NoWrap)
+      textOption = QTextOption::WrapAtWordBoundaryOrAnywhere;
+    }
+     setWordWrapMode(textOption);
+//    firePropertyChange("lineWrap", old, wrap);
 }
 
 /**
@@ -325,7 +336,7 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
  *
  * @return if lines will be wrapped
  */
-/*public*/ boolean getLineWrap() {
+/*public*/ bool JTextArea::getLineWrap() {
     return wrap;
 }
 
@@ -345,10 +356,16 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
  *       bound: true
  * description: should wrapping occur at word boundaries
  */
-/*public*/ void setWrapStyleWord(boolean word) {
-    boolean old = this.word;
-    this.word = word;
-    firePropertyChange("wrapStyleWord", old, word);
+/*public*/ void JTextArea::setWrapStyleWord(bool word) {
+ textOption = wordWrapMode();
+    bool old = this->word;
+    this->word = word;
+    if(word)
+     textOption = QTextOption::WordWrap;
+    else
+     textOption = QTextOption::WordWrap;
+    setWordWrapMode(textOption);
+    //firePropertyChange("wrapStyleWord", old, word);
 }
 
 /**
@@ -362,10 +379,22 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
  *  instead of character boundaries
  * @see #setWrapStyleWord
  */
-/*public*/ boolean getWrapStyleWord() {
-    return word;
+/*public*/ bool JTextArea::getWrapStyleWord() {
+ textOption = wordWrapMode();
+ if(textOption == QTextOption::WordWrap || textOption == QTextOption::WrapAtWordBoundaryOrAnywhere)
+  word = true;
+ else
+  word = false;
+
+ return word;
 }
 
+/*public*/ void JTextArea::setOpaque(bool)
+{
+ // TODO:
+}
+
+#if 0
 /**
  * Translates an offset into the components text to a
  * line number.

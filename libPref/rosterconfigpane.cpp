@@ -9,6 +9,10 @@
 #include <QPushButton>
 #include "rosterentry.h"
 #include <QMessageBox>
+#include "jframe.h"
+#include "rosterconfigmanager.h"
+#include "instancemanager.h"
+#include "profilemanager.h"
 
 //RosterConfigPane::RosterConfigPane(QWidget *parent) :
 //    PreferencesPanel(parent)
@@ -28,7 +32,7 @@
 //    private final ResourceBundle apb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
 /*public*/ RosterConfigPane::RosterConfigPane(QWidget *parent)
-    : PreferencesPanel(parent)
+    : QWidget(parent)
 {
  setObjectName("RosterConfigPane");
  owner = new JTextField(20);
@@ -131,7 +135,7 @@
     //p2.setLayout(new FlowLayout());
     FlowLayout* p2Layout = new FlowLayout;
     p2Layout->addWidget(new QLabel(tr("Default Owner")));
-    owner->setText(RosterEntry::getDefaultOwner());
+    owner->setText(static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->getDefaultOwner());
     p2Layout->addWidget(owner);
     thisLayout->addLayout(p2Layout);
 }
@@ -143,7 +147,7 @@ void RosterConfigPane::On_set_clicked()
 //            tr("DialogMsgMoveQuestion"),
 //            JOptionPane.OK_CANCEL_OPTION
 //    ))
-    if(QMessageBox::warning(getTopLevelAncestor(), tr("Question"), tr("Do you want to move this file?"),
+    if(QMessageBox::warning(window(), tr("Question"), tr("Do you want to move this file?"),
                             QMessageBox::Yes | QMessageBox::No)!= QMessageBox::Yes)
     {
         return;
@@ -160,8 +164,8 @@ void RosterConfigPane::On_set_clicked()
     }
     filename->setText(QFileInfo(fc->selectedFiles().at(0)).path() + QDir::separator());
     //validate();
-    if (getTopLevelAncestor() != NULL) {
-        ((JFrame*) getTopLevelAncestor())->pack();
+    if (window() != NULL) {
+        ((JFrame*) window())->pack();
     }
 
 }
@@ -170,8 +174,8 @@ void RosterConfigPane::On_b_clicked()
 {
  filename->setText("");
  //validate();
-if (getTopLevelAncestor() != NULL) {
-    ((JFrame*) getTopLevelAncestor())->pack();
+if (window() != NULL) {
+    ((JFrame*) window())->pack();
 }
 
 }
@@ -225,13 +229,16 @@ if (getTopLevelAncestor() != NULL) {
 
 //@Override
 /*public*/ void RosterConfigPane::savePreferences() {
-    // do nothing - the persistant manager will take care of this
+ RosterConfigManager* manager = static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"));
+ manager->setDefaultOwner(this->getDefaultOwner());
+ manager->setDirectory(this->getSelectedItem());
+ manager->savePreferences(ProfileManager::getDefault()->getActiveProfile());
 }
 
 //@Override
 /*public*/ bool RosterConfigPane::isDirty() {
     return (this->isFileLocationChanged()
-            || RosterEntry::getDefaultOwner()!=(this->getDefaultOwner()));
+            || static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->getDefaultOwner()!=(this->getDefaultOwner()));
 }
 
 //@Override
@@ -244,4 +251,8 @@ if (getTopLevelAncestor() != NULL) {
             ? Roster::getDefault()->getRosterLocation()!=(FileUtil::getUserFilesPath())
             : Roster::getDefault()->getRosterLocation()!=(this->getSelectedItem());
 }
+
+/*public*/ QString RosterConfigPane::className() {return "RosterConfigPane";}
+
+
 #endif

@@ -25,7 +25,7 @@ public:
      * Locate the single instance of Roster, loading it if need be.
      * @return The valid Roster object
      */
-    /*public*/ static /*synchronized*/ Roster* instance();
+    QT_DEPRECATED /*public*/ static /*synchronized*/ Roster* instance();
     /*public*/ static /*synchronized*/ Roster* getDefault();
     /*public*/ void addEntry(RosterEntry* e);
     /*public*/ void removeEntry(RosterEntry* e);

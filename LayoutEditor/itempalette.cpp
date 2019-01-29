@@ -1,4 +1,4 @@
-#include "itempalette.h"
+﻿#include "itempalette.h"
 #include "xmlfile.h"
 #include "namedicon.h"
 #include "catalogtreenode.h"
@@ -8,8 +8,6 @@
 #include "itempanel.h"
 #include "tableitempanel.h"
 #include "signalheaditempanel.h"
-//#include "signalmastitempanel.h"
-//#include "memoryitempanel.h"
 #include <QVBoxLayout>
 #include "gridbagconstraints.h"
 #include "catalogtree.h"
@@ -27,7 +25,6 @@
 #include <QHash>
 #include "imageindexeditor.h"
 #include "fileutil.h"
-//#include "multisensoritempanel.h"
 #include "clockitempanel.h"
 #include "signalmastitempanel.h"
 #include "memoryitempanel.h"
@@ -42,6 +39,7 @@
 #include "displayframe.h"
 #include "portalitempanel.h"
 #include "editor.h"
+#include "rpsitempanel.h"
 
 //ItemPalette::ItemPalette(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -253,9 +251,21 @@ void ItemPalette::changeEvent(QEvent * e)
     }
     return familyMap;
 }
+/*static*/ QDomNodeList ItemPalette::getDefaultIconItemTypes() throw (JDOMException, IOException) {
+        QUrl file = FileUtil::findURL("xml/defaultPanelIcons.xml");
+        if (!file.isValid()) {
+            log->error("defaultPanelIcons file (xml/defaultPanelIcons.xml) doesn't exist.");
+            throw new IllegalArgumentException("defaultPanelIcons file (xml/defaultPanelIcons.xml) doesn't exist.");
+        }
+         XmlFile* xf = new XmlFile();
+        QDomElement root = xf->rootFromURL(&file);
+        QDomNodeList typeList = root.firstChildElement("ItemTypes").childNodes();
+        return typeList;
+    }
 
 /*static*/ void ItemPalette::loadDefaultIcons(Editor *ed)
 {
+#if 0
  QFile* file = new QFile(FileUtil::getProgramPath()+ QString("xml")+QDir::separator()+"defaultPanelIcons.xml");
  if (!file->exists())
  {
@@ -301,6 +311,21 @@ void ItemPalette::changeEvent(QEvent * e)
  {
   log->error("error reading file \""+file->fileName()+"\" due to: "+ioe.getMessage());
  }
+#else
+ try {
+     QDomNodeList typeList = getDefaultIconItemTypes();
+     for (int i = 0; i < typeList.size(); i++) {
+         QString typeName = typeList.at(i).toElement().tagName();
+         QDomNodeList families = typeList.at(i).toElement().childNodes();
+         loadFamilies(typeName, families, ed);
+         QThread::yieldCurrentThread();
+     }
+ } catch (JDOMException e) {
+     log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e.getMessage());
+ } catch (IOException ioe) {
+     log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe.getMessage());
+ }
+#endif
 }
 
 /*static*/ void ItemPalette::loadFamilies(QString typeName, QDomNodeList families, Editor* ed)
@@ -325,6 +350,24 @@ void ItemPalette::changeEvent(QEvent * e)
  }
 }
 
+/*static*/ void ItemPalette::loadMissingItemType(QString itemType, Editor* ed) {
+        try {
+            QDomNodeList typeList = getDefaultIconItemTypes();
+            for (int i = 0; i < typeList.size(); i++) {
+                QString typeName = typeList.at(i).toElement().tagName();
+                if (typeName!=(itemType)) {
+                    continue;
+                }
+                QDomNodeList families = typeList.at(i).toElement().childNodes();
+                loadFamilies(itemType, families, ed);
+                static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"))->indexChanged(true);
+            }
+        } catch (JDOMException e) {
+            log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e.getMessage());
+        } catch (IOException ioe) {
+            log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe.getMessage());
+        }
+    }
 /*static*/ QMap<QString, QMap<QString, NamedIcon*>*>* ItemPalette::loadDefaultFamilyMap(QDomNodeList families, Editor *ed)
 {
 
@@ -411,7 +454,7 @@ void ItemPalette::init(QString title, Editor* ed)
 {
   STRUT_SIZE = 10;
   _iconMaps = NULL;
-  resize(551, 600);
+  //resize(551, 600);
   //setMinimumSize(500,600);
   _currentItemPanel = NULL;
 
@@ -427,17 +470,27 @@ void ItemPalette::init(QString title, Editor* ed)
 
     makeMenus(ed);
     buildTabPane(this, ed);
-    QWidget* centralWidget = new QWidget();
 
-    QVBoxLayout* thisLayout = new QVBoxLayout(centralWidget);
-    //setLayout(new BorderLayout(5, 5));
-    thisLayout->addWidget(_tabPane, 0, Qt::AlignCenter);//BorderLayout::CENTER);
+    QWidget* centralWidget = getContentPane();
+    if(centralWidget == nullptr)
+    {
+     centralWidget = new QWidget();
+     setCentralWidget(centralWidget);
+    }
+
+//    QVBoxLayout* thisLayout = (QVBoxLayout*)centralWidget->layout();
+//    if(centralWidget->layout() == nullptr)
+//     thisLayout = new QVBoxLayout(centralWidget);
+//    //setLayout(new BorderLayout(5, 5));
+//    thisLayout->addWidget(_tabPane, 0, Qt::AlignCenter);//BorderLayout::CENTER);
+    setCentralWidget(_tabPane);
     setLocation(10, 10);
 //    JScrollPane sp = (JScrollPane) _tabPane.getSelectedComponent();
 //    _currentItemPanel = (ItemPanel) sp.getViewport().getView();
     _currentItemPanel = (ItemPanel*)_tabPane->widget(_tabPane->currentIndex());
 //    if (!jmri.util.ThreadingUtil.isGUIThread()) log.error("Not on GUI thread", new Exception("traceback"));
-    setCentralWidget(centralWidget);
+    //setCentralWidget(centralWidget);
+
     pack();
 }
 
@@ -452,179 +505,109 @@ void IPWindowListener::windowClosing(QCloseEvent *)
  */
 /*static*/ void ItemPalette::buildTabPane(ItemPalette* palette, Editor* editor)
 {
-    QWidget* itemPaletteWidget = new QWidget;
-    itemPaletteWidget->setObjectName(QString::fromUtf8("ItemPaletteWidget"));
-//    QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
-    palette->resize(494, 846);
-    QVBoxLayout* itemPaletteWidgetLayout = new QVBoxLayout;
-    itemPaletteWidget->setLayout(itemPaletteWidgetLayout);
-//    QHBoxLayout* horizontalLayout_ItemPalette = new QHBoxLayout(itemPaletteWidget);
-//    horizontalLayout_ItemPalette->setObjectName(QString::fromUtf8("horizontalLayout_ItemPalette"));
-//    QScrollArea* scrollArea = new QScrollArea(itemPaletteWidget);
-//    scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
-//    QWidget* scrollAreaWidgetContents = new QWidget();
-//    scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-//    scrollAreaWidgetContents->setGeometry(QRect(0, 0, 493, 810));
-//    QVBoxLayout* verticalLayout_scrollArea = new QVBoxLayout(scrollAreaWidgetContents);
-//    verticalLayout_scrollArea->setObjectName(QString::fromUtf8("verticalLayout_scrollArea"));
-//    scrollArea->setWidgetResizable(true);
-//    _tabPane = new QTabWidget(scrollAreaWidgetContents);
     _tabPane = new QTabWidget();
     _tabPane->setObjectName(QString::fromUtf8("_tabPane"));
+    _tabIndex = new QMap<QString, ItemPanel*>();
 
     ItemPanel* itemPanel = new TableItemPanel(palette, "Turnout", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
-    itemPanel->init();
-    QScrollArea* scrollArea = new QScrollArea;
-    scrollArea->setWidget(itemPanel);
-    scrollArea->setWidgetResizable(true);
-    //_tabPane->addTab(/*new QScrollArea*/(itemPanel),tr("Turnout"));
-    _tabPane->addTab(scrollArea,tr("Turnout"));
-    _tabIndex->insert("Turnout", itemPanel);
+    addItemTab(itemPanel, "Turnout", tr("Turnout"));
+    itemPanel->init();  // show panel on start
 
-    itemPanel = new TableItemPanel(palette, "Sensor", NULL,
-                                   PickListModel::sensorPickModelInstance(), editor, palette);
+    itemPanel = new TableItemPanel(palette, "Sensor", "", PickListModel::sensorPickModelInstance(), editor, palette);
+    addItemTab(itemPanel, "Sensor", tr("Sensor"));
     itemPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(itemPanel);
-    scrollArea->setWidgetResizable(true);
-    //_tabPane->addTab(/*new QScrollArea*/(itemPanel), tr("Sensor"));
-    _tabPane->addTab(scrollArea, tr("Sensor"));
-    _tabIndex->insert("Sensor", itemPanel);
 
     itemPanel = new SignalHeadItemPanel(palette, "SignalHead", NULL, PickListModel::signalHeadPickModelInstance(), editor, palette);
+    addItemTab(itemPanel, ("SignalHead"), tr("Signal Head"));
     itemPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(itemPanel);
-    scrollArea->setWidgetResizable(true);
-    _tabPane->addTab(scrollArea, tr("Signal Head"));
-    _tabIndex->insert("SignalHead", itemPanel);
 
     itemPanel = new SignalMastItemPanel(palette, "SignalMast", NULL, PickListModel::signalMastPickModelInstance(), editor,palette);
+    addItemTab(itemPanel, ("SignalMast"), tr("SignalMast"));
     itemPanel->init();
-    _tabPane->addTab(/*new QScrollArea*/(itemPanel), tr("SignalMast"));
-    _tabIndex->insert("SignalMast", itemPanel);
 
     itemPanel = new MemoryItemPanel(palette, "Memory", NULL,PickListModel::memoryPickModelInstance(), editor, palette);
-     itemPanel->init();
-     scrollArea = new QScrollArea;
-     scrollArea->setWidget(itemPanel);
-     scrollArea->setWidgetResizable(true);
-     _tabPane->addTab(scrollArea, tr("Memory"));
-    _tabIndex->insert("Memory", itemPanel);
-
-    itemPanel = new ReporterItemPanel(palette, "Reporter", NULL, PickListModel::reporterPickModelInstance(), editor, palette);
+    addItemTab(itemPanel, "Memory", tr("Memory"));
     itemPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(itemPanel);
-    scrollArea->setWidgetResizable(true);
-    _tabPane->addTab(scrollArea, tr("Reporter"));
-    _tabIndex->insert("Reporter", itemPanel);
+
+     itemPanel = new ReporterItemPanel(palette, "Reporter", NULL, PickListModel::reporterPickModelInstance(), editor, palette);
+     addItemTab(itemPanel, "Reporter", tr("Reporter"));
+    itemPanel->init();
 
     itemPanel = new TableItemPanel(palette, "Light", NULL, PickListModel::lightPickModelInstance(), editor, palette);
+    addItemTab(itemPanel, "Light", tr("Light"));
     itemPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(itemPanel);
-    scrollArea->setWidgetResizable(true);
-    _tabPane->addTab(scrollArea, tr("Light"));
-    _tabIndex->insert("Light", itemPanel);
 
     itemPanel = new MultiSensorItemPanel(palette, "MultiSensor", NULL, PickListModel::multiSensorPickModelInstance(), editor,palette);
-     itemPanel->init();
-     scrollArea = new QScrollArea;
-     scrollArea->setWidget(itemPanel);
-     scrollArea->setWidgetResizable(true);
-     _tabPane->addTab(scrollArea, tr("MultiSensor"));
-    _tabIndex->insert("MultiSensor", itemPanel);
+    addItemTab(itemPanel, "MultiSensor", tr("MultiSensor"));
+    itemPanel->init();
 
-    ItemPanel* iconPanel = new IconItemPanel(palette, "Icon", NULL, editor,palette);
-    iconPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(iconPanel);
-    scrollArea->setWidgetResizable(true);
-    _tabPane->addTab(scrollArea, tr("Icon"));
-    _tabIndex->insert("Icon", itemPanel);
+    itemPanel = new IconItemPanel(palette, "Icon", editor,palette);
+    addItemTab(itemPanel, "Icon", tr("Icon"));
+    itemPanel->init();
 
-    iconPanel = new BackgroundItemPanel(palette, "Background", NULL, editor, palette);
-    iconPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(iconPanel);
-    scrollArea->setWidgetResizable(true);
-    _tabPane->addTab(scrollArea, tr("Background"));
-    _tabIndex->insert("Background", itemPanel);
+    itemPanel = new BackgroundItemPanel(palette, "Background", editor, palette);
+    addItemTab(itemPanel, "Background", tr("Background"));
+    itemPanel->init();
 
+    itemPanel = new TextItemPanel(palette, "Text", editor,palette);
+    addItemTab(itemPanel, "Text", tr("Text"));
+    itemPanel->init();
 
-    iconPanel = new TextItemPanel(palette, "Text", NULL, editor,palette);
-    iconPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(iconPanel);
-    scrollArea->setWidgetResizable(true);
-    _tabPane->addTab(scrollArea, tr("Text"));
-    _tabIndex->insert("Text", itemPanel);
-
-#if 0 //TODO:
-    iconPanel = new RPSItemPanel(this, "RPSReporter", NULL, editor);
-    iconPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(itemPanel);
-    scrollArea->setWidgetResizable(true);
-    tabPane->addTab(scrollArea, tr("RPSReporter"));
-    _tabIndex->insert("RPSReporter", itemPanel);
+#if 1 //TODO:
+    itemPanel = new RPSItemPanel(palette, "RPSReporter", NULL, editor);
+    addItemTab(itemPanel, "RPSReporter", tr("RPSReporter"));
+    itemPanel->init();
 #endif
-    iconPanel = new ClockItemPanel(palette, "FastClock", NULL, editor,palette);
-    iconPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(iconPanel);
-    scrollArea->setWidgetResizable(true);
-    _tabPane->addTab(scrollArea, tr("FastClock"));
-    _tabIndex->insert("FastClock", itemPanel);
+    itemPanel = new ClockItemPanel(palette, "FastClock", editor,palette);
+    addItemTab(itemPanel, "FastClock", tr("FastClock"));
+    itemPanel->init();
 
     itemPanel = new IndicatorItemPanel(palette, "IndicatorTrack", NULL, editor,palette);
+    addItemTab(itemPanel, "IndicatorTrack", tr("IndicatorTrack"));
     itemPanel->init();
-    scrollArea = new QScrollArea;
-    scrollArea->setWidget(itemPanel);
-    scrollArea->setWidgetResizable(true);
-    //_tabPane->addTab(/*new QScrollArea*/(itemPanel), tr("IndicatorTrack"));
-    _tabPane->addTab(scrollArea, tr("IndicatorTrack"));
-    _tabIndex->insert("IndicatorTrack", itemPanel);
 
     itemPanel = new IndicatorTOItemPanel(palette, "IndicatorTO", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
-     itemPanel->init();
-     scrollArea = new QScrollArea();
-     scrollArea->setWidget(itemPanel);
-     scrollArea->setWidgetResizable(true);
-    //_tabPane->addTab(/*new QScrollArea*/(itemPanel), tr("IndicatorTO"));
-    _tabPane->addTab(scrollArea, tr("IndicatorTO"));
-    _tabIndex->insert("IndicatorTO", itemPanel);
+    addItemTab(itemPanel, "IndicatorTO", tr("IndicatorTO"));
+    itemPanel->init();
 
     itemPanel = new PortalItemPanel(palette, "Portal", NULL, editor);
+    addItemTab(itemPanel, tr("Portal"), tr("Portal"));
     itemPanel->init();
-    scrollArea = new QScrollArea();
-    scrollArea->setWidget(itemPanel);
-    scrollArea->setWidgetResizable(true);
-    _tabPane->addTab(scrollArea, tr("Portal"));
-    _tabIndex->insert("Portal", itemPanel);
-
 
     //_tabPane->addChangeListener(this);
     connect(_tabPane, SIGNAL(currentChanged(int)), palette, SLOT(tabPaneChanged(int)));
 }
 
+/*static*/ void ItemPalette::addItemTab(ItemPanel* itemPanel, QString key, QString tabTitle)
+{
+ QLabel* testLabel = new QLabel("test label");
+ itemPanel->thisLayout->addWidget(testLabel);
+
+ log->debug(tr("add panel '%1', layout %2 contains %3 items, objectName = %4").arg(key).arg(itemPanel->layout()== nullptr?"null layout": itemPanel->thisLayout->metaObject()->className()).arg(itemPanel->thisLayout->children().size()).arg(itemPanel->thisLayout->objectName()));
+  QScrollArea* scrollPane = new QScrollArea(/*itemPanel*/);
+  scrollPane->setWidget(itemPanel);
+  scrollPane->setWidgetResizable(true);
+  _tabPane->addTab(scrollPane, tabTitle);
+ _tabIndex->insert(key, itemPanel);
+}
+
 void ItemPalette::tabPaneChanged(int)
 {
  adjustSize();
+ stateChanged(new ChangeEvent(_tabPane));
 }
 
-/*public*/ void ItemPalette::stateChanged(ChangeEvent* e) {
+/*public*/ void ItemPalette::stateChanged(ChangeEvent* /*e*/) {
 // if (!jmri.util.ThreadingUtil.isGUIThread()) log.error("Not on GUI thread", new Exception("traceback"));
  // long t = System.currentTimeMillis();
- QTabWidget* tp = (QTabWidget*) e->getSource();
+ QTabWidget* tp = _tabPane;//(QTabWidget*) e->getSource();
 // JScrollPane sp = (JScrollPane) tp.getSelectedComponent();
 // ItemPanel p = (ItemPanel) sp.getViewport().getView();
  ItemPanel* p = (ItemPanel*)tp->widget(tp->currentIndex());
  p->init(); // (re)initialize tab pane
  log->debug("different tab displayed");
- if (_currentItemPanel != NULL) {
-     _currentItemPanel->closeDialogs();
+ if (_currentItemPanel != nullptr) {
+//     _currentItemPanel->closeDialogs();
  }
  if (listener != NULL) listener->onInitEvent(DisplayFrame::getPreviewBg(), _tabPane->currentIndex()); // signal tab
  log->debug(tr("tab redisplayed, previewBgSet updated to %1").arg(DisplayFrame::getPreviewBg()));
@@ -690,7 +673,7 @@ void IPEditItemActionListener::actionPerformed()
         if(qobject_cast<ItemPanel*>(comps.at(i))!= NULL)
         {
             //log->debug("windowClosing "+i+"th panel= "+comps[i].getClass().getName());
-            ((ItemPanel*)comps.at(i))->dispose();
+// TODO:           ((ItemPanel*)comps.at(i))->dispose();
         }
     }
     JmriJFrame::windowClosing(NULL);

@@ -10,7 +10,7 @@ class LIBPR3SHARED_EXPORT Pr3ConnectionConfig : public AbstractSerialConnectionC
     Q_OBJECT
 
 public:
-    explicit Pr3ConnectionConfig(QObject *parent = 0);
+    Q_INVOKABLE explicit Pr3ConnectionConfig(QObject *parent = 0);
     ~Pr3ConnectionConfig() {}
     Pr3ConnectionConfig(const Pr3ConnectionConfig&)
         : AbstractSerialConnectionConfig(){}

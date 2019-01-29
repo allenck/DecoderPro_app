@@ -1,7 +1,7 @@
 #include "vetoablechangelistener.h"
 #include "propertychangeevent.h"
 
-VetoableChangeListener::VetoableChangeListener(QObject* parent) : EventListener(parent)
+VetoableChangeListener::VetoableChangeListener() : EventListener()
 {
 
 }
@@ -20,6 +20,6 @@ VetoableChangeListener::VetoableChangeListener(QObject* parent) : EventListener(
      * @exception PropertyVetoException if the recipient wishes the property
      *              change to be rolled back.
      */
-     void VetoableChangeListener::vetoableChange(PropertyChangeEvent* evt)
+     void VetoableChangeListener::vetoableChange(PropertyChangeEvent* /*evt*/)
                                 throw (PropertyVetoException) {}
 

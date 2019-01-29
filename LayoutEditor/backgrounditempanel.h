@@ -15,7 +15,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT BackgroundItemPanel : public IconItemPanel
     Q_OBJECT
 public:
     //explicit BackgroundItemPanel(QWidget *parent = 0);
-    /*public*/ BackgroundItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent);
+    /*public*/ BackgroundItemPanel(DisplayFrame* parentFrame, QString type, Editor* editor, QWidget* parent);
     /*public*/ void init();
 
 signals:
@@ -24,11 +24,10 @@ public slots:
     void backgroundButton_clicked();
     void colorChanged(QColor);
 private:
-    /*private*/ QWidget* initBottomPanel();
 
 protected:
     /*protected*/ QWidget* instructions();
-    /*protected*/ QWidget* makeBgButtonPanel(ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*> imgArray, DisplayFrame* parent);
+    /*protected*/ QWidget* makeBgButtonPanel(ImagePanel*, ImagePanel*);
 
 };
 

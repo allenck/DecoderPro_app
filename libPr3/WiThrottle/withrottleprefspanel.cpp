@@ -20,7 +20,7 @@
 ///*public*/ class WiThrottlePrefsPanel extends QWidget* implements PreferencesPanel {
 
 
-/*public*/ WiThrottlePrefsPanel::WiThrottlePrefsPanel(QWidget* parent) : PreferencesPanel(parent)
+/*public*/ WiThrottlePrefsPanel::WiThrottlePrefsPanel(QWidget* parent) : QWidget(parent)
 {
  common();
 }
@@ -37,7 +37,7 @@ void WiThrottlePrefsPanel::common()
     setGUI();
 }
 
-/*public*/ WiThrottlePrefsPanel::WiThrottlePrefsPanel(JFrame* f, QWidget* parent) : PreferencesPanel(parent) {
+/*public*/ WiThrottlePrefsPanel::WiThrottlePrefsPanel(JFrame* f, QWidget* parent) : QWidget(parent) {
     //this();
  common();
     parentFrame = f;
@@ -124,8 +124,8 @@ void WiThrottlePrefsPanel::common()
 }
 
 /*protected*/ void WiThrottlePrefsPanel::cancelValues() {
-    if (getTopLevelAncestor() != NULL) {
-        ((JFrame*) getTopLevelAncestor())->setVisible(false);
+    if (window() != NULL) {
+        ((JFrame*) window())->setVisible(false);
     }
 }
 
@@ -309,3 +309,5 @@ void WiThrottlePrefsPanel::common()
 //        }
         return false;
 }
+
+/*public*/ QString WiThrottlePrefsPanel::className() {return "WiThrottlePrefsPanel";}

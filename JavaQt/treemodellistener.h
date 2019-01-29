@@ -18,7 +18,7 @@
 {
 
 public:
- TreeModelListener(QObject* parent = 0) : EventListener(parent)
+ TreeModelListener() : EventListener()
  {
   setObjectName("TreeModelListener");
  }

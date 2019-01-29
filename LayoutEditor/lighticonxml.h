@@ -18,7 +18,7 @@ signals:
 
 public slots:
 private:
- Logger* log;
+ static Logger* log;
  LightIcon* l;
 };
 Q_DECLARE_METATYPE(LightIconXml)

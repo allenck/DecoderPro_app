@@ -1,13 +1,9 @@
 #include "reportertableaction.h"
-#include "reportermanager.h"
 #include "jmrijframe.h"
-#include "jtextfield.h"
 #include <QCheckBox>
 #include <QBoxLayout>
-#include <QPushButton>
 #include <QComboBox>
 #include <QLabel>
-#include "instancemanager.h"
 #include "connectionnamefromsystemname.h"
 #include "userpreferencesmanager.h"
 #include "addnewhardwaredevicepanel.h"
@@ -41,7 +37,7 @@
     common();
 
     // disable ourself if there is no primary Reporter manager available
-    if (reportManager == NULL) {
+    if (reportManager == nullptr) {
         setEnabled(false);
     }
 }
@@ -63,7 +59,8 @@ void ReporterTableAction::common()
 
  addFrame = NULL;
  //sysName = new JTextField(10);
- //hardwareAddressTextField = new JTextField(20);
+ hardwareAddressTextField = new JTextField(20);
+ hardwareAddressTextField->setValidator(new RTAValidator(hardwareAddressTextField, this));
  userNameTextField = new JTextField(20);
  prefixBox = new QComboBox();
  numberToAdd = new QSpinBox();
@@ -76,6 +73,7 @@ void ReporterTableAction::common()
  userNameLabel = new QLabel(tr("User Name"));
  systemSelectionCombo = QString(metaObject()->className()) + ".SystemSelected";
  userNameError = QString(this->metaObject()->className()) + ".DuplicateUserName";
+ connectionChoice = "";
  statusBar = new QLabel(tr("Enter a Hardware Address and (optional) User Name.")/*, JLabel.LEADING*/);
 }
 
@@ -99,7 +97,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 /*public*/ QString RtBeanTableDataModel::getValue(QString name) const
 {
     QVariant value;
-    return (value = act->reportManager->getBySystemName(name)->getCurrentReport()) == QVariant() ? "" : value.toString();
+    return (value = ((ProxyReporterManager*) act->reportManager)->getBySystemName(name)->getCurrentReport()) == QVariant() ? "" : value.toString();
 }
 
 /*public*/ Manager* RtBeanTableDataModel::getManager() {
@@ -236,17 +234,18 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
     pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if (addFrame == NULL) {
         addFrame = new JmriJFrame(tr("Add Reporter"), false, true);
+        addFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
         QWidget* centralWidget = new QWidget(addFrame);
         addFrameLayout = new QVBoxLayout(centralWidget);
         addFrame->setCentralWidget(centralWidget);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.ReporterAddEdit", true);
-        OkActionListener* okListener = new OkActionListener(this);
+        RTACreateListener* createListener = new RTACreateListener(this);
 //        {
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                okPressed(e);
 //            }
 //        };
-        CancelActionListener* cancelListener = new CancelActionListener(this);
+        RTACancelActionListener* cancelListener = new RTACancelActionListener(this);
 //        {
 //            /*public*/ void actionPerformed(ActionEvent e) { cancelPressed(e); }
 //        };
@@ -281,14 +280,17 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
         }
         userNameTextField->setObjectName("userName");
         prefixBox->setObjectName("prefixBox");
+        addButton = new QPushButton(tr("Create"));
+        addButton->setObjectName("createButton"); // for GUI test NOI18N
+        connect(addButton, SIGNAL(clicked(bool)), createListener, SLOT(actionPerformed()));
         addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAdd, range, addButton, cancelListener, rangeListener, statusBar));
         canAddRange(NULL);
     }
     hardwareAddressTextField->setObjectName("hwAddressTextField"); // for GUI test NOI18N
     //hardwareAddressTextField->setBackground(Color.yellow);
-    hardwareAddressTextField->setStyleSheet("QEditLine {background-color: yellow}");
+    hardwareAddressTextField->setBackground(QColor(Qt::yellow));
+    //addButton.addActionListener(createListener);
     addButton->setEnabled(false); // start as disabled (false) until a valid entry is typed in
-    addButton->setObjectName("createButton"); // for GUI test NOI18N
     // reset statusBar text
     statusBar->setText(tr("Enter a Hardware Address and (optional) User Name."));
     statusBar->setStyleSheet("QEditLine {color: gray}");
@@ -296,23 +298,33 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
     addFrame->pack();
     addFrame->setVisible(true);
 }
-OkActionListener::OkActionListener(ReporterTableAction* act) { this->act = act;}
-/*public*/ void OkActionListener::actionPerformed(ActionEvent* /*e*/) {
+RTACreateListener::RTACreateListener(ReporterTableAction* act) { this->act = act;}
+/*public*/ void RTACreateListener::actionPerformed(ActionEvent* /*e*/) {
     act->createPressed();
 }
-CancelActionListener::CancelActionListener(ReporterTableAction *act) { this->act = act;}
-/*public*/ void CancelActionListener::actionPerformed(ActionEvent* /*e*/) { act->cancelPressed(); }
+RTACancelActionListener::RTACancelActionListener(ReporterTableAction *act) { this->act = act;}
+/*public*/ void RTACancelActionListener::actionPerformed(ActionEvent* /*e*/) { act->cancelPressed(); }
 
 ReporterRangeListener::ReporterRangeListener(ReporterTableAction *act) { this->act = act;}
 /*public*/ void ReporterRangeListener::actionPerformed(ActionEvent* /*e*/) {
     act->canAddRange();
 }
 
+/*public*/ void ReporterTableAction::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
+    QString property = propertyChangeEvent->getPropertyName();
+    if ("background" == (property)) {
+        if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
+            addButton->setEnabled(true);
+        } else { // invalid
+            addButton->setEnabled(false);
+        }
+    }
+}
 
 void ReporterTableAction::cancelPressed(ActionEvent* /*e*/) {
     addFrame->setVisible(false);
     addFrame->dispose();
-    addFrame = NULL;
+    addFrame = nullptr;
 }
 
 void ReporterTableAction::createPressed(ActionEvent* /*e*/)
@@ -340,7 +352,7 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
   }
  }
 
- QString rName = NULL;
+ QString rName = "";
  QString reporterPrefix = ConnectionNameFromSystemName::getPrefixFromName((QString) prefixBox->currentText());
  QString curAddress = hardwareAddressTextField->text();
 // initial check for empty entry
@@ -348,11 +360,11 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
  {
    statusBar->setText(tr("You must provide a Hardware Address to start."));
    statusBar->setStyleSheet("QLabel {color: red}");
-   hardwareAddressTextField->setStyleSheet("QEditLine {background-color: red}");
+   hardwareAddressTextField->setBackground(QColor(Qt::red));
    return;
   }
  else {
-      hardwareAddressTextField->setStyleSheet("QEditLine {background-color: white}");
+      hardwareAddressTextField->setBackground(QColor(Qt::white));
   }
  // Add some entry pattern checking, before assembling sName and handing it to the ReporterManager
  QString statusMessage = tr("New %1(s) added:").arg(tr("Reporter"));
@@ -360,7 +372,7 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
  for (int x = 0; x < numberOfReporters; x++)
  {
   curAddress = ((ProxyReporterManager*)reportManager)->getNextValidAddress(curAddress, reporterPrefix);
-  if (curAddress == NULL) {
+  if (curAddress == "") {
    log->debug("Error converting HW or getNextValidAddress");
    errorMessage = (tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip)."));
    statusBar->setStyleSheet("QEditLine {color: red}");
@@ -369,10 +381,10 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
 
   // Compose the proposed system name from parts:
   rName = reporterPrefix + reportManager->typeLetter() + curAddress;
-  Reporter* r = NULL;
+  Reporter* r = nullptr;
   //try {
       r = ((ProxyReporterManager*)reportManager)->provideReporter(rName);
-  if(r == NULL)
+  if(r == nullptr)
   {
       // user input no good
    handleCreateException(rName); // displays message dialog to the user
@@ -424,25 +436,42 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
 
 /*private*/ void ReporterTableAction::canAddRange(ActionEvent* /*e*/)
 {
-    range->setEnabled(false);
-    range->setChecked(false);
-    if (QString(reportManager->metaObject()->className()).contains("ProxyReporterManager"))
-    {
-        ProxyReporterManager* proxy = (ProxyReporterManager*) reportManager;
-        QList<Manager*> managerList = proxy->getManagerList();
-        QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName(prefixBox->currentText());
-        for (int x = 0; x < managerList.size(); x++) {
-            ReporterManager* mgr = (ReporterManager*) managerList.at(x);
-            QString sp = mgr->getSystemPrefix();
-            bool bam = mgr->allowMultipleAdditions(systemPrefix);
-            if (mgr->getSystemPrefix() == (systemPrefix) && mgr->allowMultipleAdditions(systemPrefix)) {
-                range->setEnabled(true);
-                return;
-            }
-        }
-    } else if (reportManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()))) {
-        range->setEnabled(true);
-    }
+ range->setEnabled(false);
+ range->setChecked(false);
+ connectionChoice =  prefixBox->currentText(); // store in Field for CheckedTextField
+ if (connectionChoice == "") {
+     // Tab All or first time opening, default tooltip
+     connectionChoice = "TBD";
+ }
+ if (QString(reportManager->metaObject()->className()).contains("ProxyReporterManager"))
+ {
+  ProxyReporterManager* proxy = (ProxyReporterManager*) reportManager;
+  QList<Manager*> managerList = proxy->getManagerList();
+  QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName(connectionChoice);
+  for (int x = 0; x < managerList.size(); x++) {
+      ReporterManager* mgr = (ReporterManager*) managerList.at(x);
+      QString sp = mgr->getSystemPrefix();
+      bool bam = mgr->allowMultipleAdditions(systemPrefix);
+      if (mgr->getSystemPrefix() == (systemPrefix) && mgr->allowMultipleAdditions(systemPrefix)) {
+          range->setEnabled(true);
+          addEntryToolTip = mgr->getEntryToolTip();
+          log->debug("R add box set");
+          break;
+      }
+  }
+ } else if (reportManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()))) {
+     range->setEnabled(true);
+     log->debug("R add box enabled2");
+     // get tooltip from sensor manager
+     addEntryToolTip = reportManager->getEntryToolTip();
+     log->debug("ReporterManager tip");
+ }
+ // show hwAddressTextField field tooltip in the Add Reporter pane that matches system connection selected from combobox
+ hardwareAddressTextField->setToolTip("<html>"
+         + tr("For %1 %2 use one of these patterns:").arg(connectionChoice).arg(tr("Sensors"))
+         + "<br>" + addEntryToolTip + "</html>");
+ hardwareAddressTextField->setStyleSheet("QEditLine { background-color: yellow};"); // reset
+ addButton->setEnabled(true); // ambiguous, so start enabled
 }
 
 void ReporterTableAction::handleCreateException(QString sysName) {
@@ -460,6 +489,184 @@ void ReporterTableAction::handleCreateException(QString sysName) {
 }
 
 /*public*/ QString  ReporterTableAction::getClassDescription() {
-    return tr("TitleReporterTable");
+    return tr("Reporter Table");
+}
+#if 0
+/**
+ * Private class used in conjunction with CheckedTextField to provide
+ * the mechanisms required to validate the text field data upon loss of
+ * focus, and colorize the text field in case of validation failure.
+ */
+///*private*/ class MyVerifier : public InputVerifier //implements java.awt.event.ActionListener
+//{
+//Q_OBJECT
+
+//    // set default background color for invalid field data
+//    QColor mark = ColorUtil::stringToColor("orange");
+//public:
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ bool MyVerifier::shouldYieldFocus(QWidget* input) {
+        //if (input.getClass() == CheckedTextField.class)
+     if(qobject_cast<CheckedTextField*>(input))
+        {
+
+            bool inputOK = verify(input);
+            if (inputOK) {
+                //input.setBackground(Color.white);
+             input->setStyleSheet("QEditLine { background-color: white};");
+                return true;
+            } else {
+                //input.setBackground(mark);
+             input->setStyleSheet(tr("QEditLine { background-color: rgb(%1,%2,%3,%4)};").arg(mark.red()).arg(mark.green()).arg(mark.blue()).arg(mark.alpha()));
+                ((QLineEdit*) input)->selectAll();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ bool MyVerifier::verify(QWidget* input) {
+        //if (input.getClass() == CheckedTextField.class)
+     if(qobject_cast<CheckedTextField*>(input))
+        {
+            return ((CheckedTextField*) input)->isValid();
+        } else {
+            return false;
+        }
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ void MyVerifier::actionPerformed(ActionEvent* e) {
+        JTextField* source = (JTextField*) e->getSource();
+        shouldYieldFocus(source); //ignore return value
+        source->selectAll();
+    }
+//};
+
+/**
+ * Extends JTextField to provide a data validation function.
+ *
+ * @author Egbert Broerse 2017, based on
+ * jmri.jmrit.util.swing.ValidatedTextField by B. Milhaupt
+ */
+///*public*/ class CheckedTextField : public JTextField
+//{
+//Q_OBJECT
+//    CheckedTextField* fld;
+//    bool allow0Length = false; // for Add new bean item, a value that is zero-length is considered invalid.
+//    /*private*/ MyVerifier* verifier; // internal mechanism used for verifying field data before focus is lost
+//    ReporterTableAction* rta;
+//public:
+    /**
+     * Text entry field with an active key event checker.
+     *
+     * @param len field length
+     */
+    /*public*/ CheckedTextField::CheckedTextField(int len, ReporterTableAction* rta) : JTextField("", len){
+        //super("", len);
+     this->rta = rta;
+        fld = this;
+
+        // configure InputVerifier
+        verifier = new MyVerifier();
+        fld = this;
+        fld->setInputVerifier(verifier);
+#if 0
+        fld.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                setEditable(true);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                setEditable(true);
+            }
+        });
+#endif
+    }
+
+    /**
+     * Validate the field information. Does not make any GUI changes.
+     * <p>
+     * During validation, logging is capped at the Error level to keep the Console clean from repeated validation.
+     * This is reset to default level afterwards.
+     *
+     * @return 'true' if current field entry is valid according to the
+     *         system manager; otherwise 'false'
+     */
+    //@Override
+    /*public*/ bool CheckedTextField::isValid() {
+        QString value;
+        QString prefix = ConnectionNameFromSystemName::getPrefixFromName(rta->connectionChoice); // connectionChoice is set by canAddRange()
+
+        if (fld == nullptr) {
+            return false;
+        }
+        value = text().trimmed();
+        if ((value.length() < 1) && (allow0Length == false)) {
+            return QValidator::Invalid;
+        } else if ((allow0Length == true) && (value.length() == 0)) {
+            return QValidator::Acceptable;
+        } else {
+            bool validFormat = false;
+                // try {
+                validFormat = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->validSystemNameFormat(prefix + "R" + value) == Manager::NameValidity::VALID;
+                // } catch (jmri.JmriException e) {
+                // use it for the status bar?
+                // }
+            if (validFormat) {
+                rta->addButton->setEnabled(true); // directly update Create button
+                return true;
+            } else {
+                rta->addButton->setEnabled(false); // directly update Create button
+                return false;
+            }
+        }
+    }
+//};
+#endif
+RTAValidator::RTAValidator(JTextField *fld, ReporterTableAction *act)
+{
+ this->fld = fld;
+ this->act = act;
+ connect(act->prefixBox, SIGNAL(currentTextChanged(QString)), this, SLOT(prefixBoxChanged(QString)));
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(act->connectionChoice);
+ mark = ColorUtil::stringToColor("orange");
 }
 
+QValidator::State RTAValidator::validate(QString &s, int &pos) const
+{
+ QString value = s.trimmed();
+ if ((value.length() < 1) && (allow0Length == false)) {
+     return QValidator::Invalid;
+ } else if ((allow0Length == true) && (value.length() == 0)) {
+     return QValidator::Acceptable;
+ } else {
+     bool validFormat = false;
+         // try {
+         validFormat = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->validSystemNameFormat(prefix + "R" + value) == Manager::NameValidity::VALID;
+         // } catch (jmri.JmriException e) {
+         // use it for the status bar?
+         // }
+     if (validFormat) {
+         act->addButton->setEnabled(true); // directly update Create button
+         fld->setBackground(QColor(Qt::white));
+         return QValidator::Acceptable;
+     } else {
+         act->addButton->setEnabled(false); // directly update Create button
+         fld->setBackground(QColor(mark));
+         return QValidator::Invalid;
+     }
+ }
+}
+
+void RTAValidator::prefixBoxChanged(QString txt)
+{
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(txt);
+}

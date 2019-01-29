@@ -454,8 +454,8 @@ void SignalMastIcon::updateItem() {
     setFamily(_itemPanel->getFamilyName());
     _paletteFrame->dispose();
     _paletteFrame = nullptr;
-    _itemPanel->dispose();
-    _itemPanel = nullptr;
+//    _itemPanel->dispose();
+//    _itemPanel = nullptr;
     invalidate();
 }
 

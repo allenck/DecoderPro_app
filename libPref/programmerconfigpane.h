@@ -5,11 +5,13 @@
 #include "libpref_global.h"
 class QCheckBox;
 class QComboBox;
-class LIBPREFSHARED_EXPORT ProgrammerConfigPane : public PreferencesPanel
+class LIBPREFSHARED_EXPORT ProgrammerConfigPane : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
-    explicit ProgrammerConfigPane(QWidget *parent = 0);
+    Q_INVOKABLE explicit ProgrammerConfigPane(QWidget *parent = 0);
     ~ProgrammerConfigPane() {}
     ProgrammerConfigPane(const ProgrammerConfigPane&);
     /*public*/ QString getSelectedItem();
@@ -26,6 +28,8 @@ public:
     /*public*/ virtual void savePreferences();
     /*public*/ virtual bool isDirty();
     /*public*/ virtual bool isRestartRequired();
+    /*public*/ QString className();
+
 signals:
 
 public slots:

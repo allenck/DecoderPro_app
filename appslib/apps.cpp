@@ -194,7 +194,7 @@ bool Apps::configDeferredLoadOK = false;
  // Needs to be declared final as we might need to
  // refer to this on the Swing thread
  /*final*/ File* profileFile;
- Q_ASSERT(configFilename.endsWith(".xml"));
+ //Q_ASSERT(configFilename.endsWith(".xml"));
  profileFilename = configFilename.replace(".xml", ".properties");
  // decide whether name is absolute or relative
  File* info = new File(profileFilename);
@@ -1168,20 +1168,20 @@ void Apps::On_handleQuit()
 //@Override
 /*public*/ void windowOpened(WindowEvent e) {
 }
-
-static /*protected*/ void setJmriSystemProperty(String key, String value) {
+#endif
+/*static*/ /*protected*/ void Apps::setJmriSystemProperty(QString key, QString value) {
     try {
-        String current = System.getProperty("org.jmri.Apps." + key);
+        QString current = System::getProperty("org.jmri.Apps." + key);
         if (current == NULL) {
-            System.setProperty("org.jmri.Apps." + key, value);
-        } else if (!current.equals(value)) {
-            log->warn("JMRI property {} already set to {}, skipping reset to {}", key, current, value);
+            System::setProperty("org.jmri.Apps." + key, value);
+        } else if (current != (value)) {
+            log->warn(tr("JMRI property %1 already set to %2, skipping reset to %3").arg(key).arg(current).arg(value));
         }
     } catch (Exception e) {
-        log->error("Unable to set JMRI property {} to {} due to execption {}", key, value, e);
+        log->error(tr("Unable to set JMRI property %1 to %2 due to execption %3").arg(key).arg(value).arg(e.getMessage()));
     }
 }
-#endif
+
 /**
  * Provide access to a place where applications can expect the configuration
  * code to build run-time buttons.
@@ -1449,7 +1449,7 @@ void Apps::keyPressEvent(QKeyEvent *e)
  }
 #endif
  Apps::configFilename = def;
- //setJmriSystemProperty("configFilename", def);
+ setJmriSystemProperty("configFilename", def);
 }
 
 /*static*/ /*public*/ QString Apps::getConfigFileName() {

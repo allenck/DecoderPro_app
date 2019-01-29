@@ -41,7 +41,10 @@ AbstractReporter::AbstractReporter(QString systemName, QString userName, QObject
  state = 0;
 }
 
-QVariant AbstractReporter::getCurrentReport() {return _currentReport;}
+QVariant AbstractReporter::getCurrentReport()
+{
+ return _currentReport;
+}
 
 QVariant AbstractReporter::getLastReport() {return _lastReport;}
 

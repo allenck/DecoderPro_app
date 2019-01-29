@@ -20,6 +20,8 @@
 #include "system.h"
 #include "properties.h"
 #include <QToolBar>
+#include "firsttimestartupwizard.h"
+#include "firsttimestartupwizardaction.h"
 
 //Apps3::Apps3(QObject *parent) :
 //  AppsBase(parent)
@@ -83,10 +85,10 @@
  //    }
  if (((!configOK) || (!configDeferredLoadOK)) &&  (!preferenceFileExists))
  {
-#if 0
-    FirstTimeStartUpWizardAction* prefsAction = new FirstTimeStartUpWizardAction("Start Up Wizard");
-    prefsAction.setApp(this);
-    prefsAction.actionPerformed(NULL);
+#if 1
+    FirstTimeStartUpWizardAction* prefsAction = new FirstTimeStartUpWizardAction("Start Up Wizard",this);
+    prefsAction->setApp(this);
+    prefsAction->actionPerformed(nullptr);
     return;
 #endif
  }

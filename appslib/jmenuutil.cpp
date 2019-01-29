@@ -27,9 +27,9 @@
 
 /*static*/ /*public*/  QList<QMenu*> JMenuUtil::loadMenu(QString path, WindowInterface* wi, QObject* context)
 {
- File file(path);
- if(!file.isAbsolute())
-  path = FileUtil::getUserFilesPath() + path;
+// File file(path);
+// if(!file.isAbsolute())
+//  path = FileUtil::getUserFilesPath() + path;
  XmlFile* xmlFile = new XmlFile();
  QDomElement root = xmlFile->rootFromName(path);
 

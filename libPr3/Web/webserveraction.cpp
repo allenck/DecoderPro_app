@@ -10,6 +10,9 @@
 //#include "logging/logmessage.h"
 #endif
 #include "webserverpreferences.h"
+#include "json.h"
+#include "zeroconfservice.h"
+
 /**
  * Action to start a web server. Doesn't show a panel.
  *
@@ -73,6 +76,15 @@ void WebServerAction::common()
    listenerSettings->beginGroup("listener");
    listenerSettings->setValue("port", WebServerPreferences::getDefault()->getPort());
    new stefanfrings::HttpListener(listenerSettings,(stefanfrings::HttpRequestHandler*)new RequestHandler(this),this);
+
+   QMap<QString, QVariant> properties = QMap<QString, QVariant>();
+   properties.insert("path", "/"); // NOI18N
+   properties.insert(JSON::_JSON, JSON::JSON_PROTOCOL_VERSION);
+   log->info(tr("Starting ZeroConfService _http._tcp.local for Web Server with properties %1").arg(properties.keys().at(0)));
+   zeroConfService = ZeroConfService::create("_http._tcp.local.", WebServerPreferences::getDefault()->getPort(), properties); // NOI18N
+   zeroConfService->publish();
+   log->debug("Web Server finished starting");
+
 #endif
 }
 

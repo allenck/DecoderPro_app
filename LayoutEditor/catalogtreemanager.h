@@ -53,6 +53,10 @@ public:
      */
     /*public*/ virtual CatalogTree* newCatalogTree(QString /*systemName*/, QString /*userName*/) {return nullptr;}
 
+    /*public*/ virtual bool isIndexChanged() {return false;}
+
+    /*public*/ virtual void indexChanged(bool /*changed*/) {}
+
     /**
      * Get a list of all CatalogTree objects' system names.
      */

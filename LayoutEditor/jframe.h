@@ -52,6 +52,7 @@ public:
     JFrame(const JFrame& ) : QMainWindow() {}
     /*public*/ QSize getPreferredSize();
     /*public*/ QSize getMaximumSize();
+    QPoint getLocation();
     void setLocation(int x, int y);
     virtual void dispose();
     QWidget* getContentPane();

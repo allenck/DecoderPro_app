@@ -519,7 +519,7 @@ void SignallingPanel::on_destMastBox_currentSelectionChanged(int)
   try
   {
    bool valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedBean(),
-                            destMastBox->getSelectedBean());
+                            destMastBox->getSelectedBean(), LayoutBlockConnectivityTools::MASTTOMAST);
    if(!valid)
     //JOptionPane.showMessageDialog(NULL, tr("ErrorUnReachableDestination"));
        QMessageBox::critical(this, tr("Error"), tr("The Destination Mast is not directly reachable from the source Mast"));
@@ -600,7 +600,7 @@ void SignallingPanel::on_useLayoutEditor_toggled(bool)
    try
    {
     valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedBean(),
-                destMastBox->getSelectedBean());
+                destMastBox->getSelectedBean(), LayoutBlockConnectivityTools::MASTTOMAST);
     if(!valid)
     {
      //JOptionPane.showMessageDialog(NULL, tr("ErrorUnReachableDestination"));
@@ -866,7 +866,7 @@ QWidget* SignallingPanel::buildSignalMastPanel(){
 
     signalMastPanel->setLayout(new QVBoxLayout(signalMastPanel/*, BoxLayout.Y_AXIS*/));
 
-    SignalMastManager* bm = InstanceManager::signalMastManagerInstance();
+    SignalMastManager* bm = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
     QStringList systemNameList = ((DefaultSignalMastManager*)bm)->getSystemNameList();
     _manualSignalMastList = QList <ManualSignalMastList*> (); //systemNameList.size());
     QStringListIterator iter (systemNameList);
@@ -998,7 +998,7 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
   try
   {
    valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMast,
-                destMast);
+                destMast, LayoutBlockConnectivityTools::MASTTOMAST);
   if(!valid)
   {
    //JOptionPane.showMessageDialog(NULL,  tr("ErrorUnReachableDestination"));
@@ -1915,7 +1915,7 @@ void SignallingPanel::editDetails(){
     SignalMastModel::SignalMastModel(SignallingPanel* self) : SPTableModel(self)
     {
         //InstanceManager::signalMastManagerInstance().addPropertyChangeListener(this);
-        DefaultSignalMastManager* mgr = (DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance();
+        SignalMastManager* mgr = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
         connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 
@@ -1961,7 +1961,7 @@ void SignallingPanel::editDetails(){
     }
 
     /*public*/ QString SignalMastModel::getValue(QString name) {
-        return ((DefaultSignalMastManager*) InstanceManager::signalMastManagerInstance())->getBySystemName(name)->getAspect();
+        return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name)->getAspect();
     }
 
     /*public*/ QVariant SignalMastModel::headerData(int section, Qt::Orientation orientation, int role) const

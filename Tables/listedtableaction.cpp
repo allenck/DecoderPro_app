@@ -2,6 +2,7 @@
 #include "tablesframe.h"
 #include "libtables.h"
 #include "listedtableframe.h"
+#include "instancemanager.h"
 
 //ListedTableAction::ListedTableAction(QObject *parent) :
 //  QAction(parent)
@@ -86,6 +87,7 @@ void ListedTableAction::common()
  title = tr("Listed Table Access");
  dividerLocation = 0;
  libTables = NULL;
+ f = nullptr;
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
@@ -96,7 +98,15 @@ void ListedTableAction::common()
      hog the swing thread which is also used for connection traffic */
 //    Runnable r = new Runnable() {
 //        /*public*/ void run() {
+ if(InstanceManager::getNullableDefault("ListedTableFrame")!= nullptr)
+ {
+  f = static_cast<ListedTableFrame*>(InstanceManager::getNullableDefault("ListedTableFrame"));
+  f->setVisible(true);
+  f->gotoListItem(gotoListItem);
+  return;
+ }
             f = new ListedTableFrame(title);
+            f->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
 //                /**
 //                 *
 //                 */

@@ -2,20 +2,22 @@
 #define MANAGINGPREFERENCESPANEL_H
 #include "preferencespanel.h"
 #include "libpref_global.h"
+#include "jtabbedpane.h"
 
-class LIBPREFSHARED_EXPORT ManagingPreferencesPanel : public PreferencesPanel
+class QToolButton;
+class LIBPREFSHARED_EXPORT ManagingPreferencesPanel : public JTabbedPane, public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
 public:
  explicit ManagingPreferencesPanel(QWidget *parent = 0);
  ~ManagingPreferencesPanel() {}
- ManagingPreferencesPanel(const ManagingPreferencesPanel&) : PreferencesPanel() {}
+ ManagingPreferencesPanel(const ManagingPreferencesPanel&) : JTabbedPane() {}
  /*public*/ /*abstract*/virtual  QList<PreferencesPanel*>* getPreferencesPanels();
-
 signals:
 
 public slots:
 
 };
-
+Q_DECLARE_METATYPE(ManagingPreferencesPanel)
 #endif // MANAGINGPREFERENCESPANEL_H

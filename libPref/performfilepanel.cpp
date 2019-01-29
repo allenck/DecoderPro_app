@@ -6,6 +6,8 @@
 #include <QLabel>
 #include "jfilechooser.h"
 #include "file.h"
+#include "jframe.h"
+
 
 //PerformFilePanel::PerformFilePanel(QWidget *parent) :
 //    PreferencesPane(parent)
@@ -32,7 +34,7 @@
 ///*protected*/ ResourceBundle rb;
 
 /*public*/ PerformFilePanel::PerformFilePanel(QWidget *parent)
-    : PreferencesPanel(parent) {
+    : QWidget(parent) {
     //self = this;
     dirty = false;
     fc = XmlFile::userFileChooser("XML files", "xml");
@@ -73,9 +75,9 @@
   }
   thisLayout->addWidget(i);
   //validate();
-  if (getTopLevelAncestor() != NULL)
+  if (window() != NULL)
   {
-   ((JFrame*) getTopLevelAncestor())->pack();
+   ((JFrame*) window())->pack();
   }
   this->dirty = true;
  }
@@ -104,7 +106,7 @@
 
 //@Override
 /*public*/ QWidget* PerformFilePanel::getPreferencesComponent() {
-    return this;
+    return (QWidget*)this;
 }
 
 //@Override
@@ -185,7 +187,7 @@ PFItem::PFItem(PerformFileModel* m, PerformFilePanel* self) : QWidget()
     /*synchronized (self)*/ {
         // remove this item from display
         QWidget* parent = (QWidget*)this->parent();  // have to do this before remove
-        QWidget* topParent = self->getTopLevelAncestor();
+        QWidget* topParent = self->window();
         parent->layout()->removeWidget(this);
         //parent.validate();
         if (topParent != NULL) {
@@ -200,3 +202,5 @@ PFItem::PFItem(PerformFileModel* m, PerformFilePanel* self) : QWidget()
         self->dirty = true;
     }
 }
+
+/*public*/ QString PerformFilePanel::className() {return "PerformFilePanel";}

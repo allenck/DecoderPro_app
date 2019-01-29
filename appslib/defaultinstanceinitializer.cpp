@@ -10,7 +10,6 @@
 #include "transitmanager.h"
 #include "simpletimebase.h"
 //#include "sectionmanager.h"
-//#include "defaultcatalogtreemanager.h"
 #include "defaultsignalgroupmanager.h"
 #include "../LayoutEditor/configxmlmanager.h"
 //#include "transitmanager.h"
@@ -65,6 +64,7 @@
 #include "systemconnectionmemomanager.h"
 #include "listedtableframe.h"
 #include "lnprogrammermanager.h"
+#include "signalspeedmap.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -93,28 +93,17 @@ DefaultInstanceInitializer::DefaultInstanceInitializer()
 //public class DefaultInstanceInitializer implements jmri.InstanceInitializer {
 
 //public <T> Object getDefault(Class<T> type) {
-QObject* DefaultInstanceInitializer::getDefault(QString intype) const
+QObject* DefaultInstanceInitializer::getDefault(QString type) const
 {
- QString type = intype;
-// if(intype == "CatalogTreeManager")
-//  type = "DefaultCatalogTreeManager";
-#if 0
- int iType = QMetaType::type(type.toLocal8Bit());
- void* o;
- if(iType > 0)
- {
-  #if QT_VERSION < 0x050000
-   o = QMetaType::construct(iType);
-  #else
-   o = QMetaType::create(iType);
-  #endif
-   return (QObject*)o;
- }
- log->warn("Not able to create class "+ type);
-#endif
  if (type == "AudioManager")
  {
   return DefaultAudioManager::instance();
+ }
+
+ if (type == "ClockControl") {
+    DefaultClockControl* cc =new DefaultClockControl();
+    InstanceManager::store(cc,type);
+    return cc;
  }
 
  if (type == "BlockManager")
@@ -124,45 +113,11 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   return bm;
  }
 
- if (type == "CatalogTreeManager") {
-     DefaultCatalogTreeManager* ctm = new DefaultCatalogTreeManager();
-     InstanceManager::store(ctm,type);
-     return ctm;
- }
-
- if (type == "ClockControl") {
-    DefaultClockControl* cc =new DefaultClockControl();
-    InstanceManager::store(cc,type);
-    return cc;
- }
-
  if (type == "ConditionalManager") {
      DefaultConditionalManager* cm = new DefaultConditionalManager();
      InstanceManager::store(cm, type);
      return cm;
  }
-
- if(type == "JmriJTablePersistenceManager")
- {
-  JmriJTablePersistenceManager* jjtpm = new JmriJTablePersistenceManager();
-  InstanceManager::store (jjtpm, type);
-  InstanceManager::store(jjtpm, "JTablePersistenceManager");
-  return jjtpm;
- }
-
- if (type == "IdTagManager")
- {
-  DefaultIdTagManager* tm =new DefaultIdTagManager();
-  InstanceManager::store(tm, type);
-  return tm;
- }
-
-// if (type == "LayoutBlockManager")
-// {
-//  LayoutBlockManager* bm = new LayoutBlockManager();
-//  InstanceManager::store(bm,type);
-//  return bm;
-// }
 
  if (type == "LightManager")
  {
@@ -183,26 +138,9 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
     return mm;
  }
 
- if (type == "OBlockManager")
- {
-  OBlockManager* bm = new OBlockManager();
-  InstanceManager::store(bm,type);
-  return bm;
- }
-
- if (type == "PortalManager")
- {
-  PortalManager* pm = new PortalManager();
-  InstanceManager::store(pm,type);
-  return pm;
- }
-
- if (type == "ProgrammerManager")
- {
-  DeferringProgrammerManager* dpm = new DeferringProgrammerManager();
-  InstanceManager::store(dpm,type);
-  return dpm;
- }
+// if (type == RailComManager.class) {
+//             return new DefaultRailComManager();
+//         }
 
  if (type == "ReporterManager")
  {
@@ -211,18 +149,9 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   return rm;
  }
 
- if (type == "RosterIconFactory") {
-     return RosterIconFactory::instance();
- }
-
  if (type == "RouteManager") {
-     return new DefaultRouteManager();
+  return new DefaultRouteManager();
  }
-
- if (type == "PanelMenu") {
-  PanelMenu* pm =  new PanelMenu();
-  InstanceManager::store(pm, type);
-  return pm; }
 
  if (type == "SensorManager")
  {
@@ -230,13 +159,6 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   ProxySensorManager* psm = new ProxySensorManager();
   InstanceManager::store(psm, type);
   return psm;
- }
-
- if (type == "SectionManager")
- {
-  SectionManager* sm = new SectionManager();
-  InstanceManager::store(sm, type);
-  return sm;
  }
 
  if (type == "SignalGroupManager")
@@ -262,13 +184,6 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   return smlm;
  }
 
- if(type == "JTablePersistenceManager")
- {
-  JmriJTablePersistenceManager* jtpm = new JmriJTablePersistenceManager();
-  InstanceManager::store(jtpm, type);
-  return jtpm;
- }
-
  if (type == "SignalMastManager")
  {
    // ensure signal head manager exists first
@@ -291,6 +206,100 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
 //        return new SimpleTimebase();
  }
 
+ if (type == "TurnoutManager")
+ {
+  ProxyTurnoutManager* tm = new ProxyTurnoutManager();
+  InstanceManager::store(tm, type);
+  return tm;
+ }
+
+ if (type == "VSDecoderManager")
+ {
+  return VSDecoderManager::instance();
+ }
+
+ //return super.getDefault(type);
+
+ //***************************** added by ACK ***************
+ if (type == "CatalogTreeManager") {
+     DefaultCatalogTreeManager* ctm = new DefaultCatalogTreeManager();
+     InstanceManager::store(ctm,type);
+     return ctm;
+ }
+
+
+
+ if(type == "JmriJTablePersistenceManager")
+ {
+  JmriJTablePersistenceManager* jjtpm = new JmriJTablePersistenceManager();
+  InstanceManager::store (jjtpm, type);
+  InstanceManager::store(jjtpm, "JTablePersistenceManager");
+  return jjtpm;
+ }
+
+ if (type == "IdTagManager")
+ {
+  DefaultIdTagManager* tm =new DefaultIdTagManager();
+  InstanceManager::store(tm, type);
+  return tm;
+ }
+
+// if (type == "LayoutBlockManager")
+// {
+//  LayoutBlockManager* bm = new LayoutBlockManager();
+//  InstanceManager::store(bm,type);
+//  return bm;
+// }
+
+ if (type == "OBlockManager")
+ {
+  OBlockManager* bm = new OBlockManager();
+  InstanceManager::store(bm,type);
+  return bm;
+ }
+
+ if (type == "PortalManager")
+ {
+  PortalManager* pm = new PortalManager();
+  InstanceManager::store(pm,type);
+  return pm;
+ }
+
+ if (type == "ProgrammerManager")
+ {
+  DeferringProgrammerManager* dpm = new DeferringProgrammerManager();
+  InstanceManager::store(dpm,type);
+  return dpm;
+ }
+
+
+ if (type == "RosterIconFactory") {
+     return RosterIconFactory::instance();
+ }
+
+
+ if (type == "PanelMenu") {
+  PanelMenu* pm =  new PanelMenu();
+  InstanceManager::store(pm, type);
+  return pm; }
+
+
+ if (type == "SectionManager")
+ {
+  SectionManager* sm = new SectionManager();
+  InstanceManager::store(sm, type);
+  return sm;
+ }
+
+ if(type == "JTablePersistenceManager")
+ {
+  JmriJTablePersistenceManager* jtpm = new JmriJTablePersistenceManager();
+  InstanceManager::store(jtpm, type);
+  return jtpm;
+ }
+
+
+
  if (type == "TransitManager") {
   TransitManager* tm =new TransitManager();
   InstanceManager::store(tm,type);
@@ -309,18 +318,6 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
   InstanceManager::store(scmm,type);
   return scmm;
 
- }
-
- if (type == "TurnoutManager")
- {
-  ProxyTurnoutManager* tm = new ProxyTurnoutManager();
-  InstanceManager::store(tm, type);
-  return tm;
- }
-
- if (type == "VSDecoderManager")
- {
-  return VSDecoderManager::instance();
  }
 
  if(type == "ConfigureManager")
@@ -507,11 +504,10 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
 
  if (type == "UserPreferencesManager") {
      JmriUserPreferencesManager* jupm = new JmriUserPreferencesManager();
-     jupm->initialize();  // called instead of Java InstanceManagerAutoInitialize
      InstanceManager::store(jupm, type);
+     jupm->initialize();  // called instead of Java InstanceManagerAutoInitialize
      return jupm;
  }
-
 
  if(type == "TurnoutOperationManager")
  {
@@ -524,6 +520,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString intype) const
 // {
 //  SignalSpeedMap* ssm = new SignalSpeedMap();
 //  InstanceManager::store(ssm,type);
+//  ssm->initialize();
 //  return ssm;
 // }
 

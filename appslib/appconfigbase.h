@@ -20,8 +20,8 @@ public:
     /*public*/ virtual void dispose();
     /*public*/ void saveContents();
     /*public*/ void savePressed(bool restartRequired);
-    virtual /*public*/ QString getClassDescription();
-    virtual /*public*/ void setMessagePreferencesDetails() ;
+    Q_INVOKABLE virtual /*public*/ QString getClassDescription();
+    Q_INVOKABLE virtual /*public*/ void setMessagePreferencesDetails() ;
     /*virtual*/ /*public*/ QString getClassName() ;
     /*public*/ QMap<QString, PreferencesPanel*>* getPreferencesPanels();
 
@@ -47,5 +47,5 @@ protected:
 
 
 };
-
+Q_DECLARE_METATYPE(AppConfigBase)
 #endif // APPCONFIGBASE_H

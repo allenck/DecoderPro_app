@@ -5,13 +5,15 @@
 
 class QComboBox;
 class JToggleButton;
-class APPSLIBSHARED_EXPORT SystemConsoleConfigPanel : public PreferencesPanel
+class APPSLIBSHARED_EXPORT SystemConsoleConfigPanel : public QWidget,  public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
- explicit SystemConsoleConfigPanel(QWidget* parent = 0);
+ Q_INVOKABLE explicit SystemConsoleConfigPanel(QWidget* parent = 0);
  ~SystemConsoleConfigPanel() {}
- SystemConsoleConfigPanel(const SystemConsoleConfigPanel&) :PreferencesPanel() {}
+ SystemConsoleConfigPanel(const SystemConsoleConfigPanel&) :QWidget() {}
  /*public*/  QString getPreferencesItem();
  /*public*/  QString getPreferencesItemText();
  /*public*/  QString getTabbedPreferencesTitle();

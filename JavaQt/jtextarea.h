@@ -28,7 +28,11 @@ public:
     /*public*/ void setRows(int rows);
     /*public*/ int getColumns();
     /*public*/ void setColumns(int columns);
-
+    /*public*/ void setLineWrap(bool);
+    /*public*/ bool getLineWrap();
+    /*public*/ void setWrapStyleWord(bool);
+    /*public*/ bool getWrapStyleWord();
+    /*public*/ void setOpaque(bool);
 
 public slots:
 private:
@@ -43,6 +47,7 @@ private:
     Document* doc;
     QString text;
     void common();
+    QTextOption::WrapMode textOption;
 
 protected:
     /*protected*/ Document* createDefaultModel();

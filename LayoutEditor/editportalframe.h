@@ -25,7 +25,8 @@ signals:
 
 public slots:
 private:
-    void common();
+    /*private*/ void common(QString title, CircuitBuilder* parent, OBlock* block, bool update);
+
     /*private*/ OBlock* _homeBlock;
     /*private*/ CircuitBuilder* _parent;
     /*private*/ OBlock* _adjacentBlock;

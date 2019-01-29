@@ -16,10 +16,11 @@
 
 /*public*/ /*interface*/class TreeExpansionListener : public EventListener
 {
+ Q_OBJECT
 public:
- TreeExpansionListener(QObject* parent=0) : EventListener(parent)
+ TreeExpansionListener() : EventListener()
  {
-  setObjectName("TreeExpansionListener");
+  //setObjectName("TreeExpansionListener");
  }
 public slots:
     /**
@@ -32,4 +33,5 @@ public slots:
       */
  /*public*/ virtual void treeCollapsed(TreeExpansionEvent* /*event*/) {}
 };
+Q_DECLARE_INTERFACE(TreeExpansionListener, "TreeExpansionListener")
 #endif // TREEEXPANSIONLISTENER_H

@@ -1209,7 +1209,7 @@ namespace Operations
      pcs->firePropertyChange(p, old, n);
  }
  //@Override
- /*public*/ void initialize() {
+ /*public*/ void TrainManager::initialize() {
      static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
      static_cast<TrainManagerXml*>(InstanceManager::getDefault("TrainManagerXml")); // load trains
  }

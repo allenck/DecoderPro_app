@@ -3,6 +3,8 @@
 #include "jmrijframe.h"
 #include "initeventlistener.h"
 
+class Editor;
+class BufferedImage;
 class DisplayFrame : public JmriJFrame
 {
 public:
@@ -13,6 +15,8 @@ public:
  /*public*/ void setPreviewBg(int index);
  /*public*/ int getPreviewBg();
  /*public*/ void setInitEventListener(InitEventListener* listener);
+ /*public*/ void updateBackground0(BufferedImage* im);
+ /*public*/ void reSize(QWidget*container, QSize deltaDim, QSize newDim, Editor* ed);
 
 
 private:

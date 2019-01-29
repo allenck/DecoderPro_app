@@ -216,7 +216,7 @@
     }
      else
      {
-      qDebug() << "class not found: " << className;
+//      qDebug() << "class not found: " << className;
 //      if(className == "AbstractProxyManagerXml" || className == "AbstractTurnoutManagerXml")
 //       qDebug() << "stop";
       throw ClassNotFoundException(className);
@@ -413,8 +413,8 @@
         {
           QString msg = tr("Constructor may need Q_INVOKABLE %1").arg(metaObject()->className());
           log->error(msg);
-//          throw InvocationTargetException(msg);
-          return this;
+          throw InvocationTargetException(msg);
+          //return this;
         }
         return clazz;
     }

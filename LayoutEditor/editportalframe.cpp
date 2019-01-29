@@ -32,10 +32,9 @@
 /*static*/ QSize EditPortalFrame::_dim = QSize();
 
 /* Ctor for fix a portal error  */
-/*public*/ EditPortalFrame::EditPortalFrame(QString title, CircuitBuilder* parent, OBlock* block, Portal* portal, OBlock* adjacent) :   JmriJFrame((QWidget*)parent)
+/*public*/ EditPortalFrame::EditPortalFrame(QString title, CircuitBuilder* parent, OBlock* block, Portal* portal, OBlock* adjacent) :   JmriJFrame()
 {
- common();
-    //this(title, parent, block, true);
+ common(title, parent, block, true);
     _adjacentBlock = adjacent;
     QString name = portal->getName();
     _portalName->setText(name);
@@ -65,7 +64,11 @@
 }
 /*public*/ EditPortalFrame::EditPortalFrame(QString title, CircuitBuilder* parent, OBlock* block, bool update)
 {
- common();
+ common(title, parent, block, update);
+}
+
+/*private*/ void EditPortalFrame::common(QString title, CircuitBuilder* parent, OBlock* block, bool update)
+{
     _homeBlock = block;
     _parent = parent;
     setWindowTitle(QString(title).arg(_homeBlock->getDisplayName()));
@@ -79,6 +82,7 @@
 
     QWidget* contentPane = new QWidget();
     contentPane->setLayout(new QVBoxLayout(contentPane/*, BoxLayout.Y_AXIS*/));
+    setCentralWidget(contentPane);
 
     ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
     contentPane->layout()->addWidget(makePortalPanel(update));
@@ -100,14 +104,6 @@
         resize(_dim);
     }
     setVisible(true);
-}
-
-void EditPortalFrame::common()
-{
- log = new Logger("EditPortalFrame");
- _portalName = new JTextField();
-
-
 }
 
 /*private*/ QWidget* EditPortalFrame::MakeButtonPanel() {

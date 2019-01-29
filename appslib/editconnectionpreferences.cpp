@@ -16,6 +16,7 @@
 #include "joptionpane.h"
 #include "imageicon.h"
 #include "tabbedpreferences.h"
+#include <QStackedWidget>
 
 /**
  * Provide access to preferences via a tabbed pane.
@@ -113,10 +114,11 @@
     setLayout(thisLayout = new QHBoxLayout(this)); //this, BoxLayout.X_AXIS));
     //getTabbedPreferences()->preferencesArray.stream().forEach((preferences) -> {
 
-      foreach (PreferencesCatItems* preferences , getTabbedPreferences()->preferencesArray) {
+    foreach (PreferencesCatItems* preferences , getTabbedPreferences()->preferencesArray)
+    {
         //detailpanel.add(preferences.getPanel(), preferences->getPrefItem());
      detailpanelLayout->addRow(preferences->getPrefItem(), preferences->getPanel());
-    };//);
+    }//);
 
     QWidget* panel = new QWidget();
     FlowLayout* panelLayout = new FlowLayout(panel);
@@ -144,10 +146,10 @@ bool EditConnectionPreferences::isDirty() {
 
         // wrapped in isDebugEnabled test to prevent overhead of assembling message
         if (log->isDebugEnabled()) {
-            log->debug(tr("PreferencesPanel %1 (%2) is %3.").arg(
-                    QString(panel->metaObject()->className())).arg(
-                    (panel->getTabbedPreferencesTitle() != nullptr) ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
-                    (panel->isDirty()) ? "dirty" : "clean"));
+//            log->debug(tr("PreferencesPanel %1 (%2) is %3.").arg(
+//                    QString(panel->objectName())).arg(
+//                    (panel->getTabbedPreferencesTitle() != nullptr) ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
+//                    (panel->isDirty()) ? "dirty" : "clean"));
         }
 //     }
 //     return panel;
@@ -160,18 +162,18 @@ bool EditConnectionPreferences::invokeSaveOptions() {
     for (PreferencesPanel* panel : this->getPreferencesPanels()->values()) {
         // wrapped in isDebugEnabled test to prevent overhead of assembling message
         if (log->isDebugEnabled()) {
-            log->debug(tr("PreferencesPanel %1 (%2) is %3.").arg(
-                    QString(panel->metaObject()->className()).arg(
-                    (panel->getTabbedPreferencesTitle() != nullptr) ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
-                    (panel->isDirty()) ? "dirty" : "clean")));
+//            log->debug(tr("PreferencesPanel %1 (%2) is %3.").arg(
+//                    QString(panel->metaObject()->className()).arg(
+//                    (panel->getTabbedPreferencesTitle() != nullptr) ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
+//                    (panel->isDirty()) ? "dirty" : "clean")));
         }
         panel->savePreferences();
         // wrapped in isDebugEnabled test to prevent overhead of assembling message
         if (log->isDebugEnabled()) {
-            log->debug(tr("PreferencesPanel %1 (%2) restart is %3 required.").arg(
-                    QString(panel->metaObject()->className()).arg(
-                    (panel->getTabbedPreferencesTitle() != nullptr) ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
-                    (panel->isRestartRequired()) ? "" : "not ")));
+//            log->debug(tr("PreferencesPanel %1 (%2) restart is %3 required.").arg(
+//                    QString(panel->metaObject()->className()).arg(
+//                    (panel->getTabbedPreferencesTitle() != nullptr) ? panel->getTabbedPreferencesTitle() : panel->getPreferencesItemText()).arg(
+//                    (panel->isRestartRequired()) ? "" : "not ")));
         }
         if (!restartRequired) {
             restartRequired = panel->isRestartRequired();
@@ -186,7 +188,7 @@ void EditConnectionPreferences::selection(QString view) {
 }
 
 /*public*/ void EditConnectionPreferences::addPreferencesPanel(PreferencesPanel* panel) {
-    this->getPreferencesPanels()->insert(QString(panel->metaObject()->className()), panel);
+    this->getPreferencesPanels()->insert(QString(panel->className()), panel);
     addItem(panel->getPreferencesItem(),
             panel->getPreferencesItemText(),
             panel->getTabbedPreferencesTitle(),

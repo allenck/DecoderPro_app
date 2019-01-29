@@ -157,6 +157,18 @@ public:
     /*public*/ virtual void deActivateLogix() {}
 
     /**
+      * ConditionalVariables only have a single name field.  For user interface purposes
+      * a gui name is used for the referenced conditional user name.  This is not used
+      * for other object types.
+      * <p>
+      * In addition to setting the GUI name, any state variable references are changed to
+      * conditional system names.  This converts the XML system/user name field to the system name
+      * for conditional references.  It does not affect other objects such as sensors, turnouts, etc.
+      * @since 4.7.4
+      */
+ /*public*/virtual void setGuiNames() {}
+
+    /**
      * Assembles a list of state variables that both trigger the Logix, and are
      *   changed by it.  Returns true if any such variables were found.  Returns false
      *   otherwise.

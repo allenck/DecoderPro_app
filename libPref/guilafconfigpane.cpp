@@ -34,7 +34,7 @@
 
 
 /*public*/ GuiLafConfigPane::GuiLafConfigPane(QWidget *parent)
-    : PreferencesPanel(parent)
+    : QWidget(parent)
 {
  setObjectName("GuiLafConfigPane");
  localeBox = new QComboBox();
@@ -281,3 +281,5 @@ void GuiLafConfigPane::On_fontSizeConboBox_currentIndexChanged(QString txt)
 /*public*/ bool GuiLafConfigPane::isRestartRequired() {
     return this->isDirty(); // all changes require a restart
 }
+
+/*public*/ QString GuiLafConfigPane::className() {return "GuiLafConfigPane";}

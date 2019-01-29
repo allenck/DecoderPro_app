@@ -98,7 +98,7 @@ signals:
 public slots:
     
 private:
- Logger* log;
+ static Logger* log;
  /*private*/ QString getDate() const;
  QString currFile;
 QDomElement docElem;

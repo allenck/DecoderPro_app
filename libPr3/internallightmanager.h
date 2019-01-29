@@ -9,7 +9,7 @@ public:
  explicit InternalLightManager(QObject *parent = 0);
     /*public*/ QString getSystemPrefix();
     /*public*/ bool validSystemNameConfig(QString systemName);
-    /*public*/ bool validSystemNameFormat(QString systemName);
+    /*public*/ NameValidity validSystemNameFormat(QString systemName);
     /*public*/ bool supportsVariableLights(QString systemName);
     /*public*/ bool allowMultipleAdditions(QString systemName);
 

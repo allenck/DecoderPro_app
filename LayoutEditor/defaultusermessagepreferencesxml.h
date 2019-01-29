@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultUserMessagePreferencesXml : public Abs
 {
     Q_OBJECT
 public:
-    explicit DefaultUserMessagePreferencesXml(QObject *parent = 0);
+    Q_INVOKABLE explicit DefaultUserMessagePreferencesXml(QObject *parent = 0);
     ~DefaultUserMessagePreferencesXml() {}
     DefaultUserMessagePreferencesXml(const DefaultUserMessagePreferencesXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);

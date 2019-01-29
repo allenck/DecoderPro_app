@@ -421,7 +421,7 @@ void RosterGroupsPanel::on_addGroupBtn()
         _tree->setRootIsDecorated(false);
         setSelectionToGroup(selectedRosterGroup);
 //        Roster::getDefault().addPropertyChangeListener(new PropertyChangeListener());
-        connect(Roster::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+        connect(Roster::getDefault()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
     }
     return _tree;
 }

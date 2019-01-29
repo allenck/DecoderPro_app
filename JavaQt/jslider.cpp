@@ -93,7 +93,7 @@ JSlider::JSlider(QWidget *parent) :
  * Creates a horizontal slider using the specified
  * BoundedRangeModel.
  */
-/*public*/ JSlider::JSlider(BoundedRangeModel* brm, QWidget* parent)
+/*public*/ JSlider::JSlider(BoundedRangeModel* brm, QWidget* parent) : QSlider(parent)
 {
     this->orientation = Qt::Horizontal;
     setOrientation(Qt::Horizontal);

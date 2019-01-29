@@ -4,7 +4,9 @@
 #include "jsonqt.h"
 #include "quietshutdowntask.h"
 #include "exceptions.h"
+#include <qzeroconf.h>
 
+class ZeroConfService;
 class JSShutDownTask;
 class JsonClientTxHandler;
 class JsonClientRxHandler;
@@ -23,6 +25,8 @@ public:
 
 public slots:
  void on_newConnection();
+ void servicePublished();
+ void error(QZeroConf::error_t);
 
 private:
  /*private*/ static /*final*/ Logger* log;// = LoggerFactory::getLogger("JsonServer");
@@ -36,9 +40,14 @@ private:
  QThread* socketListener;
  QTcpServer* serverSocket;
  int connectionNbr;
+ QZeroConf* zeroConf;
+ QString buildName(void);
+ ZeroConfService* service;
 
 protected:
  /*protected*/ void advertise();
+ /*protected*/ void advertise(QString type);
+ /*protected*/ void advertise(QString type, QMap<QString, QVariant> properties);
  /*protected*/ void removeClient(JsonClientRxHandler* handler);
  /*protected*/ void addClient(JsonClientRxHandler* handler);
 

@@ -34,8 +34,8 @@ InternalLightManager::InternalLightManager(QObject *parent) :
 /*public*/ bool InternalLightManager::validSystemNameConfig(QString /*systemName*/) {
     return true;
 }
-/*public*/ bool InternalLightManager::validSystemNameFormat(QString /*systemName*/) {
-    return true;
+/*public*/ Manager::NameValidity InternalLightManager::validSystemNameFormat(QString /*systemName*/) {
+    return NameValidity::VALID;
 }
 /*public*/ bool InternalLightManager::supportsVariableLights(QString /*systemName*/) {
     return true;

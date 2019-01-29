@@ -5,12 +5,15 @@
 #include "loggerfactory.h"
 #include  <QPointF>
 #include <QRectF>
+#include "propertychangesupport.h"
 
 class LayoutTrack : public QObject
 {
  Q_OBJECT
 public:
- explicit LayoutTrack(QObject *parent = nullptr);
+ /*explicit*/ LayoutTrack(QObject *parent = nullptr);
+ ~LayoutTrack() {}
+ LayoutTrack(const LayoutTrack&) : QObject() {}
  enum CONNECTIONTYPES
  {
   // connection types
@@ -59,6 +62,7 @@ public:
  //@Deprecated // Java standard pattern for bool getters is "isHidden()"
  QT_DEPRECATED/*public*/ bool getHidden();
  /*public*/ void setHidden(bool hide);
+ PropertyChangeSupport* propertyChangeSupport;
 
 signals:
 

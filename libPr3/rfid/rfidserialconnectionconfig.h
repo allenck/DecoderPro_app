@@ -5,6 +5,7 @@
 class JPanel;
 class RfidSerialConnectionConfig : public AbstractSerialConnectionConfig
 {
+ Q_OBJECT
 public:
  Q_INVOKABLE RfidSerialConnectionConfig(QObject* parent = nullptr);
  ~RfidSerialConnectionConfig() {}

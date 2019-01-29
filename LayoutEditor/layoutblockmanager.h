@@ -56,6 +56,8 @@ static /*public*/ LayoutBlockManager* instance();
 /*public*/ LayoutBlock* getProtectedBlockByMast(SignalMast* signalMast, LayoutEditor* panel);
 /*public*/ LayoutBlock* getProtectedBlockByMast(QString signalMastName, LayoutEditor* panel);
 /*public*/ LayoutBlockConnectivityTools* getLayoutBlockConnectivityTools();
+/*public*/ QList<LayoutBlock*> getProtectingBlocksByNamedBean( /*@Nullable*/ NamedBean* nb, /*@Nullable*/ LayoutEditor* panel);
+/*private*/ QList<LayoutBlock*> getProtectingBlocksByBean(/*@Nullable*/ NamedBean* bean, /*@Nullable*/ LayoutEditor* panel);
 
 /**
 * returns true if advanced layout block routing has been enabled.
@@ -125,6 +127,7 @@ QThread* thr;// = NULL;
 /*private*/ NamedBeanHandle<Sensor*>* namedStabilisedIndicator;
 /*private*/ LayoutTurnout* getLayoutTurnoutFromTurnoutName(QString turnoutName,LayoutEditor* panel);
 LayoutBlockConnectivityTools* lbct;// = new LayoutBlockConnectivityTools();
+/*private*/ QList<LayoutBlock*> getProtectingBlocksByBeanByPanel(/*@Nullable*/ NamedBean* bean,/*@Nullable*/ LayoutEditor* panel);
 
 protected:
 /*protected*/ bool _enableAdvancedRouting;// = false;

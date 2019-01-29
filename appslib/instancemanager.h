@@ -202,7 +202,7 @@ static QObject* setDefault(QString type, QObject* val);
  */
 static QString contentsToString();
 Q_DECL_DEPRECATED static PowerManager* powerManagerInstance();
-Q_DECL_DEPRECATED static void setPowerManager(PowerManager* p);
+//Q_DECL_DEPRECATED static void setPowerManager(PowerManager* p);
 //Q_DECL_DEPRECATED static Timebase* timebaseInstance();
 //Q_DECL_DEPRECATED static ConfigureManager* configureManagerInstance();
 //Q_DECL_DEPRECATED static void setConfigureManager(ConfigureManager* p);
@@ -215,19 +215,19 @@ Q_DECL_DEPRECATED static ProgrammerManager* programmerManagerInstance();
 static ThrottleManager* throttleManagerInstance();
 static void setTurnoutManager(TurnoutManager* p);
 
-Q_DECL_DEPRECATED static SignalHeadManager* signalHeadManagerInstance();
-Q_DECL_DEPRECATED static SignalMastManager* signalMastManagerInstance();
-static void setSignalMastManager(SignalMastManager* p);
-Q_DECL_DEPRECATED static SignalSystemManager* signalSystemManagerInstance();
-static void setSignalSystemManager(SignalSystemManager* p);
-Q_DECL_DEPRECATED static SignalGroupManager* signalGroupManagerInstance() ;
-static void setSignalGroupManager(SignalGroupManager* p);
+//Q_DECL_DEPRECATED static SignalHeadManager* signalHeadManagerInstance();
+//Q_DECL_DEPRECATED static SignalMastManager* signalMastManagerInstance();
+//static void setSignalMastManager(SignalMastManager* p);
+//Q_DECL_DEPRECATED static SignalSystemManager* signalSystemManagerInstance();
+//static void setSignalSystemManager(SignalSystemManager* p);
+//Q_DECL_DEPRECATED static SignalGroupManager* signalGroupManagerInstance() ;
+//static void setSignalGroupManager(SignalGroupManager* p);
 //Q_DECL_DEPRECATED static ConsistManager* consistManagerInstance();
 static void setConsistManager(ConsistManager* p);
 Q_DECL_DEPRECATED static BlockManager* blockManagerInstance();
 Q_DECL_DEPRECATED static SectionManager* sectionManagerInstance();
 //static SensorManager* sensorManager;
-static InstanceManager* instance();
+//static InstanceManager* instance();
 static SignalMastLogicManager* signalMastLogicManagerInstance();
 static /*public*/  bool containsDefault(/*@Nonnull*/ QString type);
 
@@ -271,7 +271,9 @@ static void removePropertyChangeListener(PropertyChangeListener* l);
 
 signals:
   void propertyChange(PropertyChangeEvent*);
+
 public slots:
+
 private:
  QHash<QString,QObjectList*> managerLists;
  /*private*/ /*final*/ QMap</*Class<?>*/QString, QObject*> initializers;// = new HashMap<>();
@@ -279,7 +281,7 @@ private:
  /*private*/ /*final*/ QMap</*Class<?>*/QString, StateHolder*> initState;// = new HashMap<>();
  //Logger* log;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("InstanceManager");
- static void setRootInstance();
+ //static void setRootInstance();
  //static ConfigureManager* configureManager;
  ///*private*/ ClockControl* clockControl;// = NULL;
  //SectionManager* sectionManager;
@@ -297,7 +299,7 @@ private:
  //ConditionalManager* conditionalManager;
  //ReporterManager* reporterManager;
  //ShutDownManager* shutdownManager;
- LogixManager* logixManager;
+ //LogixManager* logixManager;
 
  //TabbedPreferences* tabbedPreferencesManager;
  //VSDecoderManager vsdecoderManager;
@@ -306,7 +308,7 @@ private:
  // support checking for overlapping intialization
  /*private*/ void setInitializationState(QString type, InitializationState state);
  /*private*/ InitializationState getInitializationState(QString type) ;
- /*private*/ Exception getInitializationException(QString type);
+ /*private*/ Exception* getInitializationException(QString type);
  // support creating a file with initialization summary information
  /*private*/ static /*final*/ bool traceFileActive;// = log.isTraceEnabled(); // or manually force true
  /*private*/ static /*final*/ bool traceFileAppend;// = false; // append from run to run

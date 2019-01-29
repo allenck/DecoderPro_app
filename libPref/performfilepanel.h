@@ -11,13 +11,15 @@ class PerformFileModel;
 class QPushButton;
 class XmlFile;
 class JFileChooser;
-class LIBPREFSHARED_EXPORT PerformFilePanel : public PreferencesPanel
+class LIBPREFSHARED_EXPORT PerformFilePanel : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
-    explicit PerformFilePanel(QWidget *parent = 0);
+    Q_INVOKABLE explicit PerformFilePanel(QWidget *parent = 0);
     ~PerformFilePanel() {}
-    PerformFilePanel(const PerformFilePanel&) : PreferencesPanel() {}
+    PerformFilePanel(const PerformFilePanel&) : QWidget() {}
     /*public*/ QString getPreferencesItem() ;
     /*public*/ QString getPreferencesItemText();
     /*public*/ QString getTabbedPreferencesTitle();
@@ -29,6 +31,7 @@ public:
     /*public*/ bool isDirty() ;
     /*public*/ bool isRestartRequired() ;
 
+    /*public*/ QString className();
 signals:
 
 public slots:

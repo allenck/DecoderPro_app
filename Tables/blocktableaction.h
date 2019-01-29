@@ -23,7 +23,7 @@ public:
  /*public*/ void addToFrame(BeanTableFrame* f);
 /*public*/ void setMenuBar(BeanTableFrame* f);
  /*public*/ void dispose();
- /*public*/ QString getClassDescription();
+ Q_INVOKABLE /*public*/ QString getClassDescription();
 
 signals:
 

@@ -34,7 +34,7 @@
 //    protected static final ResourceBundle rb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
 /*public*/UserMessagePreferencesPane::UserMessagePreferencesPane(QWidget *parent) :
-    PreferencesPanel(parent)
+    QWidget(parent)
 {
  if(objectName().isEmpty())
   setObjectName("UserMessagePreferencesPane");
@@ -62,6 +62,7 @@
   setMinimumMessagePref();
   thisLayout->addWidget(tab);
 }
+
 void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
 {
  if (e->getPropertyName()==("PreferencesUpdated"))
@@ -69,6 +70,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
     refreshOptions();
  }
 }
+
 /*private*/ void UserMessagePreferencesPane::setMinimumMessagePref()
 {
  //This ensures that as a minimum that the following items are at least initialised and appear in the preference panel
@@ -99,6 +101,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
 /*private*/ void UserMessagePreferencesPane::newMessageTab()
 {
  layout()->removeWidget(tab);
+ tab->deleteLater();
  tab = new QTabWidget();
 
  //might need to redo this so that it doesn't recreate everything all the time.
@@ -191,6 +194,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
     scrollPane->setWidget(classholder);
     scrollPane->setMinimumSize(QSize(300, 300));
 //                scrollPane.setBorder(BorderFactory.createEmptyBorder());
+    scrollPane->setWidget(classholder);
     tab->addTab(scrollPane, p->getClassDescription(strClass));
    }
   }
@@ -455,5 +459,6 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
  }
  newMessageTab();
 }
+/*public*/ QString UserMessagePreferencesPane::className() { return "UserMessagePreferencesPane";}
 //}
 #endif

@@ -28,6 +28,8 @@ signals:
 
 public slots:
     void OnSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected );
+    void cancelPressed(/*ActionEvent e*/);
+
 private:
     int ROW_HEIGHT;
     //JScrollPane _scrollPane;
@@ -37,15 +39,16 @@ private:
     QPushButton* _addTableButton;
 private:
     Logger* log;
+
 protected:
     /*protected*/ JTable*    _table;
     /*protected*/ PickListModel* _model;
     /*protected*/ virtual QWidget* initTablePanel(PickListModel* model, Editor* editor);
     /*protected*/ void addToTable();
-    /*protected*/ NamedBean* getNamedBean();
+    /*protected*/ NamedBean* getDeviceNamedBean();
 protected slots:
     /*protected*/ void makeAddToTableWindow();
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map);
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
 
 friend class SignalHeadItemPanel;
 friend class TIconDragJLabel;
@@ -62,7 +65,7 @@ friend class AddTableActionListener;
  TableItemPanel* self;
  QMap<QString, NamedIcon*>* iconMap;
 public:
- /*public*/ TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, TableItemPanel* self);
+ /*public*/ TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, NamedIcon *icon, TableItemPanel* self);
  /*public*/ bool isDataFlavorSupported(DataFlavor* flavor) ;
  /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) ;
  QString mimeData();

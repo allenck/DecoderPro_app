@@ -151,6 +151,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     Logix* x = getBySystemName(/*LRouteTableAction::LOGIX_INITIALIZER*/"RTXINITIALIZER");
     if (x!=nullptr) {
         x->activateLogix();
+        x->setGuiNames();
     }
     // iterate thru all Logixs that exist
     QStringListIterator iter(getSystemNameList());
@@ -178,6 +179,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
             //System.out.println("logix set enabled");
             x->activateLogix();
         }
+        x->setGuiNames();
     }
     // reset the load switch
     loadDisabled = false;

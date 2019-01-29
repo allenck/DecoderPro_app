@@ -100,7 +100,21 @@ public:
     * @param item The specific item that is being stored.
     * @param description A meaningful decription of the item that the user will understand.
     */
-    /*public*/ virtual void preferenceItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/) {}
+    //@Deprecated
+    QT_DEPRECATED /*public*/ virtual void preferenceItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/) {}
+
+    /**
+     * Register details about a particular preference, so that it can be
+     * displayed in the GUI and provide a meaning full description when
+     * presented to the user.
+     *
+     * @param strClass    A string form of the class that the preference is
+     *                    stored or grouped with
+     * @param item        The specific item that is being stored
+     * @param description A meaningful description of the item that the user
+     *                    will understand
+     */
+    /*public*/ virtual void setPreferenceItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/) {}
 
     /**
      * Returns a list of preferences that are registered against a specific class.
@@ -591,6 +605,26 @@ public:
             dialog.setVisible(true);
         }
         */
+    /**
+     * Check if saving preferences is allowed.
+     *
+     * @return true if saving is allowed; false otherwise
+     */
+    virtual /*public*/ bool isSaveAllowed() {return false;}
+
+    /**
+     * Set if saving preferences is allowed. When setting true, preferences will
+     * be saved immediately if needed.
+     * <p>
+     * <strong>Note</strong> only set false if a number of preferences will be
+     * set together to avoid excessive disk I/O while setting preferences.
+     * <p>
+     * <strong>Note</strong> remember to allow saving as soon as blocking saving
+     * is no longer needed.
+     *
+     * @param saveAllowed true to allow saving; false to block saving
+     */
+    virtual /*public*/ void setSaveAllowed(bool /*saveAllowed*/) {}
 };
 Q_DECLARE_METATYPE(UserPreferencesManager)
 #endif // USERPREFERENCESMANAGER_H

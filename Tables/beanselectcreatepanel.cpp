@@ -27,6 +27,9 @@
 */
 /*public*/ BeanSelectCreatePanel::BeanSelectCreatePanel(Manager* manager, NamedBean* defaultSelect, QWidget *parent) : QWidget(parent)
 {
+ systemSelectionCombo = "jmri.util.swing.BeanSelectCreatePanel.SystemSelected";
+
+
  _manager = manager;
  prefixBox = new QComboBox();
  hardwareAddress = new JTextField();

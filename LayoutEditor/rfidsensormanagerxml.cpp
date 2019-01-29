@@ -1,4 +1,4 @@
-#include "rfidsensormanagerxml.h"
+#include "rfid/rfidsensormanagerxml.h"
 
 RfidSensorManagerXml::RfidSensorManagerXml(QObject *parent) :
     AbstractSensorManagerConfigXML(parent)

@@ -15,7 +15,7 @@ public:
     explicit DefaultConditionalManager(QObject *parent = 0);
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ Conditional* createNewConditional(QString systemName, QString userName) ;
     /*public*/ Logix* getParentLogix(QString name);
     /*public*/ void deleteConditional(Conditional* c);

@@ -7,7 +7,7 @@ class LIBPR3SHARED_EXPORT HexFileConnectionConfig : public AbstractSimulatorConn
 {
     Q_OBJECT
 public:
-    explicit HexFileConnectionConfig(QObject *parent = 0);
+    Q_INVOKABLE explicit HexFileConnectionConfig(QObject *parent = 0);
     ~HexFileConnectionConfig() {}
     HexFileConnectionConfig(const HexFileConnectionConfig&) : AbstractSimulatorConnectionConfig() {}
     /*public*/ HexFileConnectionConfig(SerialPortAdapter* p, QObject *parent = 0);

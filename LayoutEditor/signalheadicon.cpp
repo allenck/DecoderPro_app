@@ -535,8 +535,8 @@ void SignalHeadIcon::updateItem()
 //        jmri.jmrit.catalog->ImageIndexEditor.checkImageIndex();
  _paletteFrame->dispose();
  _paletteFrame = NULL;
- _itemPanel->dispose();
- _itemPanel = NULL;
+// _itemPanel->dispose();
+// _itemPanel = NULL;
  invalidate();
 }
 

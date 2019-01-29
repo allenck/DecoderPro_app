@@ -303,7 +303,6 @@ if (_newIcon==nullptr)
 }
 
 /***************** setting the main panel and frame ****************/
-#if 1
 /**
 * An Editor may or may not choose to use 'this' as its frame or
 * the interior class 'TargetPane' for its targetPanel
@@ -328,9 +327,10 @@ if (_newIcon==nullptr)
     if(targetPanel != nullptr);
     _panelScrollPane = new QScrollArea(_targetPanel);
     QWidget* contentPane = frame->getContentPane();
+    QVBoxLayout* contentPaneLayout;
     if(contentPane->layout() == nullptr)
      QVBoxLayout* contentPaneLayout = new QVBoxLayout(contentPane);
-    contentPane->layout()->addWidget(_panelScrollPane);
+    contentPaneLayout->addWidget(_panelScrollPane);
     _panelScrollPane->setWidget(targetPanel);
 #if 0
     _targetFrame.addWindowListener(new WindowAdapter() {
@@ -395,7 +395,6 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
     editor->targetWindowClosingEvent(e);
 }
 
-#endif
 /*protected*/ void Editor::setTargetPanelSize(int w, int h) {
         if (_debug) log->debug("setTargetPanelSize now w="+QString::number(w)+", h="+QString::number(h));
     //_targetPanel->setSize(w, h);
@@ -3196,7 +3195,7 @@ TextAttrDialog::TextAttrDialog(Positionable* p, QWidget* _targetFrame) : JDialog
  QWidget* panel = new QWidget();
  QVBoxLayout* panelLayout;
  panel->setLayout(panelLayout = new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
- _decorator = new DecoratorPanel(((PositionableLabel*)_pos)->getEditor());
+ _decorator = new DecoratorPanel(((PositionableLabel*)_pos)->getEditor(), nullptr);
  _decorator->initDecoratorPanel(_pos);
  panelLayout->addWidget(_decorator);
  panelLayout->addWidget(makeDoneButtonPanel());

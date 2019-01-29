@@ -419,21 +419,21 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
     }
     switch (col) {
         case FROMPOINTCOL:
-            return parent->nxPairs->getPointAsString((NamedBean*) source->at(row), panel);
+            return parent->nxPairs->getPointAsString((NamedBean*) source.at(row), panel);
         case TOPOINTCOL:
-            return parent->nxPairs->getPointAsString((NamedBean*) dest->at(row), panel);
+            return parent->nxPairs->getPointAsString((NamedBean*) dest.at(row), panel);
         case ACTIVECOL:
             return isPairActive(row);
         case BOTHWAYCOL:
-            return !parent->nxPairs->isUniDirection(source->at(row), panel, dest->at(row));
+            return !parent->nxPairs->isUniDirection(source.at(row), panel, dest.at(row));
         case ENABLEDCOL:
-            return !parent->nxPairs->isEnabled(source->at(row), panel, dest->at(row));
+            return !parent->nxPairs->isEnabled(source.at(row), panel, dest.at(row));
         case CLEARCOL:
             return tr("Clear");
         case DELETECOL:  //
             return tr("Delete");
         case TYPECOL:
-            return NXTYPE_NAMES[parent->nxPairs->getEntryExitType(source->at(row), panel, dest->at(row))];
+            return NXTYPE_NAMES[parent->nxPairs->getEntryExitType(source.at(row), panel, dest.at(row))];
         default:
             return "";
     }
@@ -452,24 +452,24 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
         deleteEntryExit(row, col);
     }
     if (col == CLEARCOL) {
-        parent->nxPairs->cancelInterlock(source->at(row), panel, dest->at(row));
+        parent->nxPairs->cancelInterlock(source.at(row), panel, dest.at(row));
     }
     if (col == BOTHWAYCOL) {
         bool b = !value.toBool();
-        parent->nxPairs->setUniDirection(source->at(row), panel, dest->at(row), b);
+        parent->nxPairs->setUniDirection(source.at(row), panel, dest.at(row), b);
     }
     if (col == ENABLEDCOL) {
         bool b = !value.toBool();
-        parent->nxPairs->setEnabled(source->at(row), panel, dest->at(row), b);
+        parent->nxPairs->setEnabled(source.at(row), panel, dest.at(row), b);
     }
     if (col == TYPECOL) {
         QString val =  value.toString();
         if (val==("Turnout")) {
-            parent->nxPairs->setEntryExitType(source->at(row), panel, dest->at(row), 0x00);
+            parent->nxPairs->setEntryExitType(source.at(row), panel, dest.at(row), 0x00);
         } else if (val==("SignalMast")) {
-            parent->nxPairs->setEntryExitType(source->at(row), panel, dest->at(row), 0x01);
+            parent->nxPairs->setEntryExitType(source.at(row), panel, dest.at(row), 0x01);
         } else if (val==("Full InterLock")) {
-            parent->nxPairs->setEntryExitType(source->at(row), panel, dest->at(row), 0x02);
+            parent->nxPairs->setEntryExitType(source.at(row), panel, dest.at(row), 0x02);
         }
     }
     return true;
@@ -498,14 +498,14 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
 }
 
 /*protected*/ void AEPTableModel::deleteEntryExit(int row, int /*col*/) {
-    NamedBean* nbSource = ((NamedBean*) source->at(row));
-    NamedBean* nbDest = (NamedBean*) dest->at(row);
+    NamedBean* nbSource = ((NamedBean*) source.at(row));
+    NamedBean* nbDest = (NamedBean*) dest.at(row);
     parent->nxPairs->deleteNxPair(nbSource, nbDest, panel);
 }
 
 QString AEPTableModel::isPairActive(int row) const
 {
-    if (parent->nxPairs->isPathActive(source->at(row), dest->at(row), panel)) {
+    if (parent->nxPairs->isPathActive(source.at(row), dest.at(row), panel)) {
         return ("yes");
     }
     return ("");
@@ -567,7 +567,7 @@ QString AEPTableModel::isPairActive(int row) const
  {
   case BOTHWAYCOL:
   {
-   QObject* obj = parent->nxPairs->getEndPointLocation((NamedBean*) dest->at(row), panel);
+   QObject* obj = parent->nxPairs->getEndPointLocation((NamedBean*) dest.at(row), panel);
    //if (obj instanceof PositionablePoint)
    if(qobject_cast<PositionablePoint*>(obj))
    {
@@ -579,7 +579,7 @@ QString AEPTableModel::isPairActive(int row) const
      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
    }
-   if (!parent->nxPairs->canBeBiDirectional(source->at(row), panel, dest->at(row)))
+   if (!parent->nxPairs->canBeBiDirectional(source.at(row), panel, dest.at(row)))
    {
     //JOptionPane.showMessageDialog(NULL, tr("BothWayTurnoutOnly"));
     QMessageBox::information(NULL, tr("Information"), tr("Both Way Operation can not be used if a Signal is present at both Entry and Exit points"));

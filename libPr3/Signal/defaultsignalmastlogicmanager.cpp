@@ -6,7 +6,6 @@
 #include "defaultsignalmastlogic.h"
 #include "../LayoutEditor/configxmlmanager.h"
 
-/*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
 
 //DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) :
 //    SignalMastLogicManager(parent)
@@ -262,7 +261,7 @@
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ char DefaultSignalMastLogicManager::typeLetter() {
+/*public*/ char DefaultSignalMastLogicManager::typeLetter()  {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
@@ -336,7 +335,7 @@
  }
  try
  {
-  validPaths.insert((NamedBean*)source, lbm->getLayoutBlockConnectivityTools()->discoverPairDest(source, layout, "SignalMast"));
+  validPaths.insert((NamedBean*)source, lbm->getLayoutBlockConnectivityTools()->discoverPairDest(source, layout, "SignalMast", LayoutBlockConnectivityTools::MASTTOMAST));
  }
  catch (JmriException e)
  {
@@ -393,7 +392,7 @@
   return;
  }
 
- QHash<NamedBean*, QList<NamedBean*> > validPaths = lbm->getLayoutBlockConnectivityTools()->discoverValidBeanPairs(NULL, "SignalMast");
+ QHash<NamedBean*, QList<NamedBean*> > validPaths = lbm->getLayoutBlockConnectivityTools()->discoverValidBeanPairs(NULL, "SignalMast",LayoutBlockConnectivityTools::MASTTOMAST);
  QListIterator<NamedBean*> en ( validPaths.keys());
 
  while (en.hasNext()) {
@@ -476,3 +475,4 @@
         }
     }
 }
+/*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));

@@ -14,7 +14,9 @@
 #include "entrypoint.h"
 #include "layoutblockmanager.h"
 #include "layouteditorauxtools.h"
+#include "layouttrackexpectedstate.h"
 
+//class LayoutTrackExpectedState<LayoutTurnout*>;
 class LayoutTurnout;
 class LIBLAYOUTEDITORSHARED_EXPORT ConnectivityUtil : public QObject
 {
@@ -36,7 +38,9 @@ public:
      *   and other settings set to CLOSED.
      * Returns an empty list if a connectivity anamoly is discovered--specified blocks are not connected.
      */
-    /*public*/ QVector<LayoutTurnout*>* getTurnoutList(Block* block, Block* prevBlock, Block* nextBlock);
+    /*public*/ QList<LayoutTrackExpectedState<LayoutTurnout *> *> getTurnoutList(Block* block, Block* prevBlock, Block* nextBlock);
+ /*public*/ QList<LayoutTrackExpectedState<LayoutTurnout *> *> getTurnoutList(Block* block, Block* prevBlock, Block* nextBlock, bool suppress);
+
     /**
      * Returns a list of turnout settings (as Integer Objects) to accomplish the transition through
      *  the Block specified in 'getTurnoutList'.  Settings and Turnouts are in sync by position in
@@ -191,16 +195,18 @@ private:
     /*private*/ LayoutEditorTools* leTools;// = NULL;
     /*private*/ QVector<int>* companion;// = NULL;
     /*private*/ TrackSegment* ts;// = NULL;
+    /*private*/ TrackSegment* _tr = nullptr;
     /*private*/ int prevConnectType;// = 0;
     /*private*/	QObject* prevConnectObject;// = NULL;
-    LayoutBlock* lb;// = NULL;
-    LayoutBlock* nlb;// = NULL;
-    LayoutBlock* plb;// = NULL;
+    /*private*/ LayoutBlock* currLayoutBlock = nullptr;
+    /*private*/ LayoutBlock* nextLayoutBlock = nullptr;
+    /*private*/ LayoutBlock* prevLayoutBlock = nullptr;
+
     /**
      * Initializes the setting (as an object), sets the new track segment (if in Block), and sets the
      *    prevConnectType.
      */
-    /*private*/ int getTurnoutSetting(LayoutTurnout* lt, int cType);
+    /*private*/ int getTurnoutSetting(LayoutTurnout* lt, int cType, bool suppress);
     /**
      * This method follows the track from a beginning track segment to its exits
      *	from the current LayoutBlock 'lb' until the track connects to the designated

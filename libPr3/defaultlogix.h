@@ -2,6 +2,7 @@
 #define DEFAULTLOGIX_H
 #include "logix.h"
 #include "libPr3_global.h"
+#include <QRegExp>
 
 class JmriSimplePropertyListener;
 class LIBPR3SHARED_EXPORT DefaultLogix : public Logix
@@ -24,6 +25,7 @@ public:
     /*public*/ int getState();
     /*public*/ void setState(int state);
     /*public*/ Conditional* getConditional(QString systemName) ;
+    /*public*/ void setGuiNames();
 
 signals:
 
@@ -43,14 +45,15 @@ private:
      *  Operational instance variables (not saved between runs)
      */
     /*private*/ bool mEnabled;// = true;
-
     /*private*/ bool _isActivated;// = false;
+    /*private*/ bool _isGuiSet = false;
     /*private*/ void resetConditionals();
     /*private*/ void assembleListenerList();
     /*private*/ void startListener(JmriSimplePropertyListener* listener);
     /*private*/ void removeListener(JmriSimplePropertyListener* listener);
     Logger* log;
     /*private*/ int getPositionOfListener(int varListenerType, int varType, QString varName);
+    static QRegExp NXUUID;//("^IN:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 
 };
 

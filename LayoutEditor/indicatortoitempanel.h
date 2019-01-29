@@ -34,21 +34,21 @@ private:
     /*private*/ QWidget*          _tablePanel;
     /*private*/ JTextField* 		_familyName;
     /*private*/ void checkCurrentMaps(QMap<QString, QMap<QString, NamedIcon *> *> *iconMaps);
-    void createNewFamily();
+    void createNewFamily(QString family);
  Logger* log;
 protected:
     /*protected*/ QMap<QString, QMap<QString, NamedIcon*>*>* _iconGroupsMap;
     /*protected*/ QMap<QString, QMap<QString, NamedIcon*>*>* _updateGroupsMap;
     /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor, QWidget *parent);
     /*protected*/ void initIconFamiliesPanel();
-    /*protected*/ void updateFamiliesPanel();
+//    /*protected*/ void updateFamiliesPanel();
     /*protected*/ void addIcons2Panel(QMap<QString, QMap<QString, NamedIcon*>*>* map);
     /*protected*/ QWidget* makeBottom1Panel();
     /*protected*/ void hideIcons();
     /*protected*/ void updateIconGroupsMap(QString key, QMap<QString, NamedIcon*>* iconMap);
     /*protected*/ void setFamily(QString family) ;
     /*protected*/ void openEditDialog(QString key);
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map);
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
     /**
     *  CENTER Panel
     */

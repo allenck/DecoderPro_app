@@ -582,7 +582,7 @@ void RouteTableAction::setTurnoutModeBox(int mode, QComboBox* box) {
  initializeIncludedList();
     
  // Set up window
- if (addFrame==NULL)
+ if (addFrame==nullptr)
  {
   turnoutsAlignedSensor = new JmriBeanComboBox((Manager*)InstanceManager::sensorManagerInstance());
   turnoutsAlignedSensor->setFirstItemBlank(true);

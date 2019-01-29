@@ -77,23 +77,15 @@
  */
  /*public*/ void LightIcon::setLight(QString pName)
 {
- if (InstanceManager::lightManagerInstance()!=NULL)
+ if (InstanceManager::getNullableDefault("LightManager") != nullptr)
  {
   light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(pName);
-  if (light != NULL)
-  {
-   setLight(light);
-  }
-  else
-  {
-   log->error("Light '"+pName+"' not available, icon won't see changes");
-   }
-  }
-  else
-  {
-   log->error("No LightManager for this protocol, icon won't see changes");
-  }
+  setLight(light);
  }
+ else {
+     log->error("No LightManager for this protocol, icon won't see changes");
+ }
+}
 
 /*public*/ void LightIcon::setLight(Light* to)
 {

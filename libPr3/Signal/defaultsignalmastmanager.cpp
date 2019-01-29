@@ -16,9 +16,9 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  repeaterList = new QList<SignalMastRepeater*>();
  registerSelf();
  //jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
- connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoableChange(PropertyChangeEvent)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  //jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoableChange(PropertyChangeEvent)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
 
 }
 /**

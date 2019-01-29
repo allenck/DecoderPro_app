@@ -27,7 +27,7 @@ public slots:
     void buttonUD_clicked();
 
 private:
-    QWidget* _multiSensorPanel;
+    QWidget* _multiSensorPanel = nullptr;
     MultiSensorSelectionModel* _selectionModel;
     bool _upDown;// = false;
     /*private*/ void makeMultiSensorPanel();
@@ -38,8 +38,8 @@ protected:
     /*protected*/ void initIconFamiliesPanel();
     /*protected*/ void setFamily(QString family);
     /*protected*/ void setSelections();
-    /*protected*/ IconDialog* openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map);
+    /*protected*/ void openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
 friend class MultiSensorSelectionModel;
 friend class MSIconDragJLabel;
 friend class MultiSensorIconDialog;

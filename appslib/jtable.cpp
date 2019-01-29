@@ -2503,6 +2503,12 @@ private void changeSelectionModel(ListSelectionModel sm, int index,
                     in the view where the first column is column 0
  */
 /*public*/ QString JTable::getColumnName(int column) {
+    QAbstractItemModel* model =  (TableModel*)getModel();
+    if(qobject_cast<QSortFilterProxyModel*>(model))
+    {
+     QSortFilterProxyModel* sorter =((QSortFilterProxyModel*)model);
+     return ((TableModel*)sorter->sourceModel())->getColumnName(convertColumnIndexToModel(column));
+    }
     return ((TableModel*)getModel())->getColumnName(convertColumnIndexToModel(column));
 }
 #if 0

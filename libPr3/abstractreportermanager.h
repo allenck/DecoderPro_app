@@ -12,7 +12,7 @@ class LIBPR3SHARED_EXPORT AbstractReporterManager :  public ReporterManager
 public:
     explicit AbstractReporterManager(QObject *parent = 0);
     virtual int getXMLOrder();
-    virtual char typeLetter() const;
+    virtual char typeLetter();
     Reporter* provideReporter(QString sName);
     Reporter* getReporter(QString name);
     Reporter* getBySystemName(QString name) const;

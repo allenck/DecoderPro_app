@@ -131,4 +131,3 @@ BackingStoreException::BackingStoreException(QString s) {msg = s;}
 NoSuchMethodException::NoSuchMethodException(QString s) {msg = s;}
 InvocationTargetException::InvocationTargetException(QString s) {msg = s;}
 TransformerFactoryConfigurationError::TransformerFactoryConfigurationError(QString s) {msg = s;}
-

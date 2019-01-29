@@ -7,6 +7,9 @@
 #include <QRadioButton>
 #include "positionablelabel.h"
 
+class FontPanel;
+class ImagePanel;
+class BufferedImage;
 class JTextField;
 class DataFlavor;
 class QLabel;
@@ -65,13 +68,15 @@ enum VALUES
  TRANSPARENT_COLOR =31,
  BORDER_COLOR =32
 };
-    /*public*/ DecoratorPanel(Editor* editor, QWidget *parent = 0);
+    /*public*/ DecoratorPanel(Editor* editor, DisplayFrame* paletteFrame, QWidget *parent = 0);
     /*public*/ void initDecoratorPanel(Positionable* pos);
     /*public*/ void stateChanged(ChangeEvent* e);
     /*public*/ PositionablePopupUtil* getPositionablePopupUtil();
     /*public*/ void getText(Positionable* pos);
     /*public*/ bool isOpaque();
     /*public*/ void itemStateChanged(ItemEvent* e);
+    /*public*/ void setSuppressRecentColor(bool b);
+    /*public*/ void setAttributes(Positionable* pos);
 
 signals:
 
@@ -79,6 +84,7 @@ public slots:
     void AJRadioButton_toggled(bool);
     void currentColorChanged(QColor);
 private:
+    /*private*/ FontPanel* _fontPanel;
     AJComboBox* _fontSizeBox;
     AJComboBox* _fontStyleBox;
     AJComboBox* _fontJustBox;
@@ -87,13 +93,28 @@ private:
     AJSpinner* _marginSpin;
     AJSpinner* _widthSpin;
     AJSpinner* _heightSpin;
+    enum BUTTONS
+    {
+     FOREGROUND_BUTTON = 1,
+     BACKGROUND_BUTTON = 2,
+     TRANSPARENT_BUTTON = 3,
+     BORDERCOLOR_BUTTON = 4
+    };
+
+    /*private*/ AJRadioButton* _fontButton;
+    /*private*/ AJRadioButton* _borderButton;
+    /*private*/ AJRadioButton* _backgroundButton;
+
 
     QColorDialog* _chooser;
+    /*private*/ QWidget* makeBgButtonPanel(/*@Nonnull*/ ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*>* imgArray);
+
     /*private*/ PositionablePopupUtil* _util;
     bool _isOpaque;			// transfer opaqueness from decorator label here to panel label being edited
-    /*private*/ QHash <QString, PositionableLabel*>* _sample;// = null;
     /*private*/ QButtonGroup* _buttonGroup;
     /*private*/ int _selectedButton;
+    /*private*/ QString _selectedState;
+    /*private*/ QMap<QString, PositionableLabel*>* _samples = nullptr;
 
     Editor* _editor;
     /*private*/ QWidget* makeBoxPanel(QString caption, AJComboBox* box);
@@ -102,11 +123,30 @@ private:
     /*private*/ AJRadioButton* makeButton(AJRadioButton* button);
     /*private*/ void updateSamples();
     QString text;
+    QVector<BufferedImage*>* imgArray;
+    static Logger* log;
+    ImagePanel* preview1;
+    ImagePanel* _previewPanel;
+    /*private*/ /*final*/ QWidget* _samplePanel;
+    /*private*/ bool _isPositionableLabel;
+    /*protected*/ void fontChange();
+    /*private*/ void finishInit(bool addBgCombo);
+    /*private*/ void doPopupUtility(QString type, PositionableLabel* sample, bool editText);
+    /*private*/ void makeFontPanels();
 
-private slots:
+    private slots:
+    void on_bgColorBox();
+
+protected:
+    /*protected*/ QVector<BufferedImage*>* _backgrounds; // array of Image backgrounds
+    /*protected*/ QComboBox* _bgColorBox;
 
     friend class AJRBActionListener;
     friend class TextFieldListener;
+    /*protected*/ DisplayFrame* _paletteFrame;
+    /*protected*/ QVector<BufferedImage*>* getBackgrounds();
+    /*protected*/ void setBackgrounds(QVector<BufferedImage*>*  imgArray);
+friend class TextItemPanel;
 };
 /*static*/ class AJComboBox : public QComboBox
 {
@@ -173,13 +213,14 @@ public slots:
   self->itemStateChanged(new ItemEvent((QObject*)obj));
  }
 };
-class DragDecoratorLabel : public PositionableLabel //implements DragGestureListener, DragSourceListener, Transferable
+#if 1
+class DPDragDecoratorLabel : public PositionableLabel //implements DragGestureListener, DragSourceListener, Transferable
 {
     Q_OBJECT
 
  DataFlavor* dataFlavor;
 public:
-/*public*/ DragDecoratorLabel(QString s, Editor* editor, QObject* parent);
+/*public*/ DPDragDecoratorLabel(QString s, Editor* editor, QObject* parent);
     /**************** DragGestureListener ***************/
 //    /*public*/ void dragGestureRecognized(DragGestureEvent e);
     /**************** DragSourceListener ************/
@@ -195,7 +236,7 @@ public:
  void mousePressEvent(QMouseEvent *e);
 
 }; // end DragDecoratorLabel
-
+#endif
 class TextFieldListener : public ActionListener
 {
  Q_OBJECT

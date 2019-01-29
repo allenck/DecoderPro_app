@@ -249,8 +249,8 @@ ShutDownManager* sdm;
 }
 
 /*private*/ QWidget* ImageIndexEditor::makeCatalogPanel() {
-    _catalog = new CatalogPanel(tr("Default Catalogs:"), tr("Select a directory to view its images"));
-    _catalog->init(false);
+    _catalog = new CatalogPanel(tr("Default Catalogs:"), tr("Select a directory to view its images"),true);
+    _catalog->init(false, true);
     CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
     QStringList sysNames = ((DefaultCatalogTreeManager*)manager)->getSystemNameList();
     if (!sysNames.isEmpty()) {
@@ -268,8 +268,8 @@ ShutDownManager* sdm;
 }
 
 /*private*/ QWidget*  ImageIndexEditor::makeIndexPanel() {
-    _index = new CatalogPanel("ImageIndex", "selectIndexNode");
-    _index->init(true);
+    _index = new CatalogPanel(tr("Image Index:"), "Select a node, then use the Edit menu to add or edit subNodes", true);
+    _index->init(true, false);
 
     bool found = false;
 CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");    QStringList sysNames = ((DefaultCatalogTreeManager*)manager)->getSystemNameList();

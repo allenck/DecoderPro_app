@@ -102,7 +102,7 @@ void SignalSpeedMap::warrantPreferences_PropertyChange(PropertyChangeEvent * evt
 //            InstanceManager.getDefault(WarrantPreferences.class).addPropertyChangeListener(this.warrantPreferencesListener);
 //        }
 //    });
-   connect(InstanceManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(InstanceManager::getDefault()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 void SignalSpeedMap::propertyChange(PropertyChangeEvent *evt)
 {
@@ -211,7 +211,8 @@ void SignalSpeedMap::loadMap()
 }
 
 /*public*/ bool SignalSpeedMap::checkSpeed(QString name) {
-    return _table->value(name) != 0;
+    //return _table->value(name) != 0;
+ return _table->contains(name);
 }
 
 /**
@@ -239,7 +240,7 @@ void SignalSpeedMap::loadMap()
     return _headTable->value(name);
 }
 /*public*/ QStringListIterator SignalSpeedMap::getAppearanceIterator() {
- return _headTable->keys();
+ return QStringListIterator(_headTable->keys());
 }
 /*public*/ QStringListIterator SignalSpeedMap::getSpeedIterator() {
  return _table->keys();

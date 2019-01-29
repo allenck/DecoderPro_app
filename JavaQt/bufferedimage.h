@@ -7,6 +7,8 @@ class BufferedImage : public QImage
 {
 public:
  BufferedImage();
+ BufferedImage(int w, int h, QImage::Format format);
+
  /**
   * Image Type Constants
   */

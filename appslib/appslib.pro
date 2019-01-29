@@ -40,14 +40,14 @@ HEADERS +=     operations/trainscriptaction.h \
 }
 
 SOURCES += appslib.cpp \
+    metatypes.cpp \
+    instancemanager.cpp \
     apps.cpp \
     apps3.cpp \
     appsbase.cpp \
-    metatypes.cpp \
     jlist.cpp \
     defaultinstanceinitializer.cpp \
     jmripreferencesprovider.cpp \
-    instancemanager.cpp \
     nodeidentity.cpp \
     profilemanager.cpp \
     profile.cpp \
@@ -391,7 +391,6 @@ SOURCES += appslib.cpp \
     logframe.cpp \
     logpanel.cpp \
     logaction.cpp \
-    zeroconfservice.cpp \
     profileproperties.cpp \
     transformerfactory.cpp \
     outputkeys.cpp \
@@ -436,7 +435,9 @@ SOURCES += appslib.cpp \
     jynstrumentpopupmenu.cpp \
     preferencesbean.cpp \
     editconnectionpreferencesdialog.cpp \
-    editconnectionpreferences.cpp
+    editconnectionpreferences.cpp \
+    firsttimestartupwizard.cpp \
+    firsttimestartupwizardaction.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -793,7 +794,6 @@ HEADERS += appslib.h\
     logpanel.h \
     logaction.h \
     startupmodel.h \
-    zeroconfservice.h \
     auxiliaryproperties.h \
     profileproperties.h \
     transformerfactory.h \
@@ -843,7 +843,9 @@ HEADERS += appslib.h\
     jynstrumentpopupmenu.h \
     preferencesbean.h \
     editconnectionpreferencesdialog.h \
-    editconnectionpreferences.h
+    editconnectionpreferences.h \
+    firsttimestartupwizard.h \
+    firsttimestartupwizardaction.h
 
 unix:!symbian {
     maemo5 {

@@ -403,10 +403,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  */
 /*public*/ char AbstractProxyManager::typeLetter()
 {
- Manager* mgr = getMgr(0);
- if(qobject_cast<ProxySensorManager*>(this)!=nullptr)
-     return ((AbstractSensorManager*)mgr)->typeLetter();
- return mgr->typeLetter();
+ return getDefaultManager()->typeLetter();
 }
 
 /**

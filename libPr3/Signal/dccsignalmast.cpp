@@ -190,9 +190,9 @@ void DccSignalMast::common()
 
 /*public*/ /*static*/ QString DccSignalMast::isDCCAddressUsed(int addr)
 {
- foreach (QString val, InstanceManager::signalMastManagerInstance()->getSystemNameList())
+ foreach (QString val, static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSystemNameList())
  {
-  SignalMast* mast = InstanceManager::signalMastManagerInstance()->getSignalMast(val);
+  SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(val);
   //if (mast instanceof jmri.implementation.DccSignalMast)
   if(qobject_cast<DccSignalMast*>(mast)!= NULL)
   {

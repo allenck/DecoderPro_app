@@ -22,6 +22,8 @@ public:
  void debug(QString s);
  void setDebugEnabled(bool bState);
  void setInfoEnabled(bool bState);
+ void setTraceEnabled(bool bState);
+
  void sendError(QString s);
 
 signals:

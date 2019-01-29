@@ -4,13 +4,15 @@
 #include "libpref_global.h"
 
 class GuiLafConfigPane;
-class LIBPREFSHARED_EXPORT GuiLocalePreferencesPanel : public PreferencesSubPanel
+class LIBPREFSHARED_EXPORT GuiLocalePreferencesPanel : public QWidget, public PreferencesSubPanel, public PreferencesPanel
 {
     Q_OBJECT
+    Q_INTERFACES(PreferencesPanel PreferencesSubPanel)
+
 public:
-    explicit GuiLocalePreferencesPanel(QWidget *parent = 0);
+    Q_INVOKABLE explicit GuiLocalePreferencesPanel(QWidget *parent = 0);
     ~GuiLocalePreferencesPanel() {}
-//    GuiLocalePreferencesPanel(const GuiLocalePreferencesPanel&) : PreferencesSubPanel(0) {}
+    GuiLocalePreferencesPanel(const GuiLocalePreferencesPanel&) : QWidget() {}
     /*public*/ QString getParentClassName() ;
     /*public*/ void setParent(PreferencesPanel* parent);
     /*public*/ PreferencesPanel* getParent();
@@ -24,6 +26,7 @@ public:
     /*public*/ void savePreferences();
     /*public*/ bool isDirty();
     /*public*/ bool isRestartRequired();
+    /*public*/ QString className();
 
 signals:
 

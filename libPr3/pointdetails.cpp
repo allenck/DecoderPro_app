@@ -23,7 +23,8 @@
 /*public*/ PointDetails::PointDetails(LayoutBlock* facing, LayoutBlock* protecting, QObject *parent): QObject(parent)
 {
     this->facing=facing;
-    this->protecting = protecting;
+    protectingBlocks = QList<LayoutBlock*>();
+
     panel = NULL;
     routeToSet = false;
     routeFromSet = false;
@@ -34,7 +35,7 @@
 }
 
 LayoutBlock* PointDetails::getFacing(){ return facing; }
-LayoutBlock* PointDetails::getProtecting(){ return protecting; }
+QList<LayoutBlock *> PointDetails::getProtecting(){ return protectingBlocks; }
 
 //This might be better off a ref to the source pointdetail.
 void PointDetails::setRouteTo(bool boo){
@@ -450,11 +451,11 @@ Sensor* PointDetails::getSensor(){
         return (Sensor*)getRefObject();
     QObject* objLoc = getRefLocation();
     QObject* objRef = getRefObject();
-    SignalMast* mast=NULL;
-    SignalHead* head=NULL;
+    SignalMast* mast=nullptr;
+    SignalHead* head=nullptr;
     QString username = "";
     QString systemname = "";
-    Sensor* sensor = NULL;
+    Sensor* foundSensor = nullptr;
     //if(objRef instanceof SignalMast)
     if(qobject_cast<SignalMast*>(objRef)!= NULL)
     {
@@ -474,21 +475,21 @@ Sensor* PointDetails::getSensor(){
     if(qobject_cast<PositionablePoint*>(objLoc)!= NULL)
     {
         PositionablePoint* p = (PositionablePoint*)objLoc;
-        if(mast!=NULL) {
-            if((p->getEastBoundSignalMast()==(username)) ||
-                    p->getEastBoundSignalMast()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(p->getEastBoundSensor());
-            else if((p->getWestBoundSignalMast()==(username)) ||
-                    p->getWestBoundSignalMast()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(p->getWestBoundSensor());
+        if(mast!=nullptr) {
+         if (p->getEastBoundSignalMast() == objRef) {
+             foundSensor = p->getEastBoundSensor();
+         } else if (p->getWestBoundSignalMast() == objRef) {
+             foundSensor = p->getWestBoundSensor();
+         }
         }
-        else if(head!=NULL) {
-            if((p->getEastBoundSignal()==(username)) ||
-                    p->getEastBoundSignal()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(p->getEastBoundSensor());
-            else if((p->getWestBoundSignal()==(username)) ||
-                    p->getWestBoundSignal()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(p->getWestBoundSensor());
+        else if(head!=nullptr) {
+         if ((p->getEastBoundSignal() == (username))
+                 || p->getEastBoundSignal() == (systemname)) {
+             foundSensor = p->getEastBoundSensor();
+         } else if ((p->getWestBoundSignal() == (username))
+                 || p->getWestBoundSignal() == (systemname)) {
+             foundSensor = p->getWestBoundSensor();
+         }
         }
     }
     else
@@ -496,35 +497,38 @@ Sensor* PointDetails::getSensor(){
         if(qobject_cast<LayoutTurnout*>(objLoc)!= NULL)
         {
         LayoutTurnout* t = (LayoutTurnout*)objLoc;
-        if(mast!=NULL){
-            if((t->getSignalAMast()==(username)) || (t->getSignalAMast()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorA());
-            else if((t->getSignalBMast()==(username)) || (t->getSignalBMast()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorB());
-            else if((t->getSignalCMast()==(username)) || (t->getSignalCMast()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorC());
-            else if((t->getSignalDMast()==(username)) || (t->getSignalDMast()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorD());
+        if(mast!=NULL)
+        {
+         if (t->getSignalAMast() == objRef)
+         {
+             foundSensor = t->getSensorA();
+         } else if (t->getSignalBMast() == objRef) {
+             foundSensor = t->getSensorB();
+         } else if (t->getSignalCMast() == objRef) {
+             foundSensor = t->getSensorC();
+         } else if (t->getSignalDMast() == objRef) {
+             foundSensor = t->getSensorD();
+         }
         }
         if(head!=NULL){
             if((t->getSignalA1Name()==(username)) || (t->getSignalA1Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorA());
+                foundSensor =  t->getSensorA();
             else if((t->getSignalA2Name()==(username)) || (t->getSignalA2Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorA());
+                foundSensor =  t->getSensorA();
             else if((t->getSignalA3Name()==(username)) || (t->getSignalA3Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorA());
+                foundSensor =  t->getSensorA();
             else if((t->getSignalB1Name()==(username)) || (t->getSignalB1Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorB());
+                foundSensor =  t->getSensorB();
             else if((t->getSignalB2Name()==(username)) || (t->getSignalB2Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorB());
+                foundSensor =  t->getSensorB();
             else if((t->getSignalC1Name()==(username)) || (t->getSignalC1Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorC());
+                foundSensor =  t->getSensorC();
             else if((t->getSignalC2Name()==(username)) || (t->getSignalC2Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorC());
+                foundSensor =  t->getSensorC();
             else if((t->getSignalD1Name()==(username)) || (t->getSignalD1Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorD());
+                sensor =  t->getSensorD();
             else if((t->getSignalD2Name()==(username)) || (t->getSignalD2Name()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(t->getSensorD());
+                sensor =  t->getSensorD();
         }
     }
         else
@@ -534,23 +538,23 @@ Sensor* PointDetails::getSensor(){
         LevelXing* x = (LevelXing*)objLoc;
         if(mast!=NULL){
             if((x->getSignalAMastName()==(username)) || (x->getSignalAMastName()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorAName());
+                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorAName());
             else if((x->getSignalBMastName()==(username)) || (x->getSignalBMastName()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorBName());
+                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorBName());
             else if((x->getSignalCMastName()==(username)) || (x->getSignalCMastName()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorCName());
+                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorCName());
             else if((x->getSignalDMastName()==(username)) || (x->getSignalDMastName()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorDName());
+                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorDName());
         }
         if(head!=NULL){
             if((x->getSignalAName()==(username)) || (x->getSignalAName()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorAName());
+                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorAName());
             else if((x->getSignalBName()==(username)) || (x->getSignalBName()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorBName());
+                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorBName());
             else if((x->getSignalCName()==(username)) || (x->getSignalCName()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorCName());
+                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorCName());
             else if((x->getSignalDName()==(username)) || (x->getSignalDName()==(systemname)))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorDName());
+                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorDName());
         }
     }
     else
@@ -560,28 +564,30 @@ Sensor* PointDetails::getSensor(){
         LayoutSlip* sl = (LayoutSlip*)objLoc;
         if(mast!=NULL)
         {
-            if(sl->getSignalAMast()==(username) || sl->getSignalAMast()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorA());
-            else if(sl->getSignalBMast()==(username) || sl->getSignalBMast()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorB());
-            else if(sl->getSignalCMast()==(username) || sl->getSignalCMast()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorC());
-            else if(sl->getSignalDMast()==(username)|| sl->getSignalDMast()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorD());
+         if (sl->getSignalAMast() == objRef) {
+             foundSensor = sl->getSensorA();
+         } else if (sl->getSignalBMast() == objRef) {
+             foundSensor = sl->getSensorB();
+         } else if (sl->getSignalCMast() == objRef) {
+             foundSensor = sl->getSensorC();
+         } else if (sl->getSignalDMast() == objRef) {
+             foundSensor = sl->getSensorD();
+         }
         }
         if(head!=NULL){
-            if(sl->getSignalA1Name()==(username) || sl->getSignalA1Name()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorA());
-            else if(sl->getSignalB1Name()==(username) || sl->getSignalB1Name()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorB());
-            else if(sl->getSignalC1Name()==(username) || sl->getSignalC1Name()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorC());
-            else if(sl->getSignalD1Name()==(username) || sl->getSignalD1Name()==(systemname))
-                sensor =  ((ProxySensorManager*)sm)->getSensor(sl->getSensorD());
+         if ((sl->getSignalA1Name() == (username)) || (sl->getSignalA1Name() == (systemname))) {
+             foundSensor = sm->getSensor(sl->getSensorAName());
+         } else if ((sl->getSignalB1Name() == (username)) || (sl->getSignalB1Name() == (systemname))) {
+             foundSensor = sm->getSensor(sl->getSensorBName());
+         } else if ((sl->getSignalC1Name() == (username)) || (sl->getSignalC1Name() == (systemname))) {
+             foundSensor = sm->getSensor(sl->getSensorCName());
+         } else if ((sl->getSignalD1Name() == (username)) || (sl->getSignalD1Name() == (systemname))) {
+             foundSensor = sm->getSensor(sl->getSensorDName());
+         }
         }
     }
-    setSensor(sensor);
-    return sensor;
+    setSensor(foundSensor);
+    return foundSensor;
 }
 
 NamedBean* PointDetails::getSignal(){
@@ -589,8 +595,8 @@ NamedBean* PointDetails::getSignal(){
         return getSignalMast();
     if((getPanel()!=NULL) && (!getPanel()->isEditable()) && (getSignalHead()!=NULL))
         return getSignalHead();
-    SignalMastManager* sm = InstanceManager::signalMastManagerInstance();
-    SignalHeadManager* sh = InstanceManager::signalHeadManagerInstance();
+    SignalMastManager* sm = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
+    SignalHeadManager* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
     NamedBean* signal = NULL;
 
     if(getRefObject()==NULL) {
@@ -624,53 +630,52 @@ NamedBean* PointDetails::getSignal(){
     if(qobject_cast<PositionablePoint*>(getRefLocation())!= NULL)
     {
         PositionablePoint* p = (PositionablePoint*)getRefLocation();
-        if((p->getEastBoundSensor()==(username)) ||
-                p->getEastBoundSensor()==(systemname)){
-
-            if(p->getEastBoundSignalMast()!=(""))
-                signal =  ((DefaultSignalMastManager*)sm)->getSignalMast(p->getEastBoundSignalMast());
-
-            else if(p->getEastBoundSignal()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(p->getEastBoundSignal());
-        }
-        else if((p->getWestBoundSensor()==(username)) ||
-                p->getWestBoundSensor()==(systemname)){
-
-            if(p->getWestBoundSignalMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(p->getWestBoundSignalMast());
-
-            else if(p->getWestBoundSignal()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(p->getWestBoundSignal());
-        }
+        if (p->getEastBoundSensor() == sen)
+        {
+         if (p->getEastBoundSignalMast() != nullptr) {
+             signal = p->getEastBoundSignalMast();
+         } else if (p->getEastBoundSignal()!=("")) {
+             signal = sh->getSignalHead(p->getEastBoundSignal());
+         }
+     } else if (p->getWestBoundSensor() == sen) {
+         if (p->getWestBoundSignalMast() != nullptr) {
+             signal = p->getWestBoundSignalMast();
+         } else if (p->getWestBoundSignal()!=("")) {
+             signal = sh->getSignalHead(p->getWestBoundSignal());
+         }
+     }
     }
     else
         //if(getRefLocation() instanceof LayoutTurnout)
         if(qobject_cast<LayoutTurnout*>(getRefLocation())!= NULL)
         {
         LayoutTurnout* t = (LayoutTurnout*)getRefLocation();
-        if(t->getSensorA()==(username) || t->getSensorA()==(systemname))
-            if(t->getSignalAMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalAMast());
-            else if(t->getSignalA1Name()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalA1Name());
-
-        else if(t->getSensorB()==(username) || t->getSensorB()==(systemname))
-            if(t->getSignalBMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalBMast());
-            else if(t->getSignalB1Name()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalB1Name());
-
-            else if((t->getSensorC()==(username)) || (t->getSensorC()==(systemname)))
-            if(t->getSignalCMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalCMast());
-            else if(t->getSignalC1Name()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalC1Name());
-
-            else if((t->getSensorD()==(username)) || (t->getSensorD()==(systemname)))
-            if(t->getSignalDMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalDMast());
-            else if(t->getSignalD1Name()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalD1Name());
+        if (t->getSensorA() == sen)
+        {
+         if (t->getSignalAMast() != nullptr) {
+             signal = t->getSignalAMast();
+         } else if (t->getSignalA1Name() != ("")) {
+             signal = sh->getSignalHead(t->getSignalA1Name());
+         }
+     } else if (t->getSensorB() == sen) {
+         if (t->getSignalBMast() != nullptr) {
+             signal = t->getSignalBMast();
+         } else if (t->getSignalB1Name() != ("")) {
+             signal = sh->getSignalHead(t->getSignalB1Name());
+         }
+     } else if (t->getSensorC() == sen) {
+         if (t->getSignalCMast() != nullptr) {
+             signal = t->getSignalCMast();
+         } else if (t->getSignalC1Name() != ("")) {
+             signal = sh->getSignalHead(t->getSignalC1Name());
+         }
+     } else if (t->getSensorD() == sen) {
+         if (t->getSignalDMast() != nullptr) {
+             signal = t->getSignalDMast();
+         } else if (t->getSignalD1Name() != ("")) {
+             signal = sh->getSignalHead(t->getSignalD1Name());
+         }
+     }
     }
 
     else
@@ -706,29 +711,31 @@ NamedBean* PointDetails::getSignal(){
      //if(getRefLocation() instanceof LayoutSlip)
      if(qobject_cast<LayoutSlip*>(getRefLocation())!= NULL){
         LayoutSlip* t = (LayoutSlip*)getRefLocation();
-        if((t->getSensorA()==(username)) || (t->getSensorA()==(systemname)))
-            if(t->getSignalAMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalAMast());
-            else if(t->getSignalA1Name()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalA1Name());
-
-            else if((t->getSensorB()==(username)) || (t->getSensorB()==(systemname)))
-            if(t->getSignalBMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalBMast());
-            else if(t->getSignalB1Name()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalB1Name());
-
-            else if((t->getSensorC()==(username)) || (t->getSensorC()==(systemname)))
-            if(t->getSignalCMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalCMast());
-            else if(t->getSignalC1Name()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalC1Name());
-
-        else if(t->getSensorD()==(username) || t->getSensorD()==(systemname))
-            if(t->getSignalDMast()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(t->getSignalDMast());
-            else if(t->getSignalD1Name()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(t->getSignalD1Name());
+        if (t->getSensorA() == sen) {
+                        if (t->getSignalAMast() != nullptr) {
+                            signal = t->getSignalAMast();
+                        } else if (t->getSignalA1Name() != ("")) {
+                            signal = sh->getSignalHead(t->getSignalA1Name());
+                        }
+                    } else if (t->getSensorB() == sen) {
+                        if (t->getSignalBMast() != nullptr) {
+                            signal = t->getSignalBMast();
+                        } else if (t->getSignalB1Name() != ("")) {
+                            signal = sh->getSignalHead(t->getSignalB1Name());
+                        }
+                    } else if (t->getSensorC() == sen) {
+                        if (t->getSignalCMast() != nullptr) {
+                            signal = t->getSignalCMast();
+                        } else if (t->getSignalC1Name() != ("")) {
+                            signal = sh->getSignalHead(t->getSignalC1Name());
+                        }
+                    } else if (t->getSensorD() == sen) {
+                        if (t->getSignalDMast() != nullptr) {
+                            signal = t->getSignalDMast();
+                        } else if (t->getSignalD1Name() != ("")) {
+                            signal = sh->getSignalHead(t->getSignalD1Name());
+                        }
+                    }
     }
     //if(signal instanceof SignalMast)
     if(qobject_cast<SignalMast*>(signal)!= NULL)
@@ -752,7 +759,7 @@ NamedBean* PointDetails::getSignal(){
             PointDetails* tmp = (PointDetails*)obj;
             if(tmp->getFacing()!=this->facing)
                 return false;
-            if(tmp->getProtecting()!=this->protecting)
+            if(tmp->getProtecting()!=this->protectingBlocks)
                 return false;
             if(tmp->getPanel()!=this->panel)
                 return false;

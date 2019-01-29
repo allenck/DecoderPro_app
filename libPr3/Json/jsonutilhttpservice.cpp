@@ -108,7 +108,7 @@
     data.insert(JSON::JMRI, Version::name());
 //        data.insert(JSON::JSON, JSON::JSON_PROTOCOL_VERSION);
     data.insert(JSON::HEARTBEAT, qRound(heartbeat * 0.9f));
-    data.insert(JSON::RAILROAD, WebServerPreferences::getDefault()->getRailRoadName());
+    data.insert(JSON::RAILROAD, WebServerPreferences::getDefault()->getRailroadName());
     data.insert(JSON::NODE, NodeIdentity::identity());
     data.insert(JSON::ACTIVE_PROFILE, ProfileManager::getDefault()->getActiveProfile()->getName());
     root.insert(JSON::DATA, data);
@@ -310,7 +310,7 @@ return this->getPanels(locale, JSON::XML);
     root.insert(JSON::TYPE, JSON::RAILROAD);
     //ObjectNode data = root.putObject(JSON::DATA);
     QJsonObject data = QJsonObject();
-    data.insert(JSON::NAME, WebServerPreferences::getDefault()->getRailRoadName());
+    data.insert(JSON::NAME, WebServerPreferences::getDefault()->getRailroadName());
     root.insert(JSON::DATA, data);
     return root;
 }

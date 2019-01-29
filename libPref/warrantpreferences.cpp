@@ -70,7 +70,8 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
    preferences = (WarrantPreferences*)InstanceManager::setDefault("WarrantPreferences", new WarrantPreferences());
   try {
       preferences->initialize(ProfileManager::getDefault()->getActiveProfile());
-  } catch (InitializationException ex) {
+  }
+  catch (InitializationException ex) {
       Logger::error("Error initializing default WarrantPreferences", ex);
   }
  }//);
@@ -85,8 +86,8 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
  QDomElement root;
  try
  {
-   root = prefsXml->rootFromFile(file);
-   if(root.toElement().isNull())
+  root = prefsXml->rootFromFile(file);
+  if(root.toElement().isNull())
   {
    log->debug("Could not find Warrant preferences file.  Normal if preferences have not been saved before.");
    root = QDomElement();
@@ -95,6 +96,16 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
  catch (Exception eb)
  {
    Logger::error("Exception while loading warrant preferences: " + eb.getMessage());
+   root = QDomElement();
+ }
+ catch (InitializationException eb)
+ {
+   Logger::error("InitializationException while loading warrant preferences: " + eb.getMessage());
+   root = QDomElement();
+ }
+ catch (IllegalArgumentException eb)
+ {
+   Logger::error("IllegalArgumentException while loading warrant preferences: " + eb.getMessage());
    root = QDomElement();
  }
  if (!root.isNull())
@@ -157,7 +168,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   _speedNames.insert(name, map->getSpeed(name));
  }
 
-  QStringListIterator en = map->getAppearanceIterator();
+ QStringListIterator en = map->getAppearanceIterator();
  _headAppearances =  QMap<QString, QString>();
  while (en.hasNext())
  {
@@ -518,10 +529,12 @@ float WarrantPreferences::getSpeedNameValue(QString key) {
 void WarrantPreferences::setSpeedNames(QMap<QString, float> map)
 {
  _speedNames.clear();
-QMapIterator<QString, float>iter (map);
-while(iter.hasNext())
- iter.next();
- _speedNames.insert(iter.key(),iter.value());
+ QMapIterator<QString, float>iter (map);
+ while(iter.hasNext())
+ {
+  iter.next();
+  _speedNames.insert(iter.key(),iter.value());
+ }
 }
 
 // Called when preferences is updated from panel

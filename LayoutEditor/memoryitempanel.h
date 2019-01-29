@@ -23,7 +23,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void stateChanged(ChangeEvent* e = 0);
+    /*public*/ void stateChanged(/*ChangeEvent* e = 0*/);
     /*public*/ void valueChanged(/*ListSelectionEvent e*/);
 
 private:

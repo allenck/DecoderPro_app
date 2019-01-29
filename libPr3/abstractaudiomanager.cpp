@@ -28,7 +28,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
 //        implements AudioManager {
 
 //@Override
-/*public*/ char AbstractAudioManager::typeLetter() {
+/*public*/ char AbstractAudioManager::typeLetter() const{
     return 'A';
 }
 

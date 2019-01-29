@@ -9,7 +9,7 @@ class VetoableChangeListener : public EventListener
 {
  Q_OBJECT
 public:
- VetoableChangeListener(QObject* parent = 0);
+ VetoableChangeListener();
 public slots:
  virtual void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 };

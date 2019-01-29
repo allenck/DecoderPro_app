@@ -20,7 +20,7 @@ public:
     /*public*/ AbstractSerialConnectionConfig(PortAdapter* p, QObject *parent = 0);
     /*public*/ AbstractSerialConnectionConfig(SerialPortAdapter* p, QObject *parent = 0);
     /*public*/ PortAdapter* getAdapter() ;
-    /*public*/ AbstractSerialConnectionConfig(QObject *parent = 0);
+    Q_INVOKABLE /*public*/ AbstractSerialConnectionConfig(QObject *parent = 0);
     /*public*/ void updateAdapter();
     /*public*/ QString getInfo();
     /*public*/ void refreshPortBox();

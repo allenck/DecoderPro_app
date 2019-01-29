@@ -32,9 +32,9 @@ private:
 protected slots:
     void init();
 protected:
-    /*protected*/ bool configOK;
-    /*protected*/ bool configDeferredLoadOK;
-    /*protected*/ bool preferenceFileExists;
+    /*protected*/ bool configOK = false;
+    /*protected*/ bool configDeferredLoadOK = false;
+    /*protected*/ bool preferenceFileExists = false;
     virtual /*protected*/ void configureProfile();
     /*protected*/ void installConfigurationManager();
     /*protected*/ void installManagers();

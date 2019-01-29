@@ -284,26 +284,41 @@ void AppsBase::init()
 {
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
  /*final*/ File* file;
- // decide whether name is absolute or relative
- if (!(new File(getConfigFileName()))->isAbsolute())
- {
-  // must be relative, but we want it to
-  // be relative to the preferences directory
-  file = new File(FileUtil::getUserFilesPath() + getConfigFileName());
+ File* sharedConfig = nullptr;
+ try {
+     sharedConfig = FileUtil::getFile(FileUtil::PROFILE + Profile::SHARED_CONFIG);
+     if (!sharedConfig->canRead()) {
+         sharedConfig = nullptr;
+     }
+ } catch (FileNotFoundException ex) {
+     // ignore - this only means that sharedConfig does not exist.
  }
- else
+ if (sharedConfig != nullptr) {
+     file = sharedConfig;
+ }
+ else if (!(new File(getConfigFileName()))->isAbsolute())
  {
-  file = new File(getConfigFileName());
+     // must be relative, but we want it to
+     // be relative to the preferences directory
+     file = new File(FileUtil::getUserFilesPath() + getConfigFileName());
+ } else {
+     file = new File(getConfigFileName());
  }
  // don't try to load if doesn't exist, but mark as not OK
- if (!file->exists())
- {
-  preferenceFileExists = false;
-  configOK = false;
-  log->info("No pre-existing config file found, searched for '" + file->getPath() + "'");
-  return;
+ if (!file->exists()) {
+     preferenceFileExists = false;
+     configOK = false;
+     log->info(tr("No pre-existing config file found, searched for '%1'").arg(file->getPath()));
+     return;
  }
  preferenceFileExists = true;
+
+ // ensure the UserPreferencesManager has loaded. Done on GUI
+         // thread as it can modify GUI objects
+ //ThreadingUtil.runOnGUI(() -> {
+     InstanceManager::getDefault("UserPreferencesManager");
+ //});
+
  try
  {
   ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");

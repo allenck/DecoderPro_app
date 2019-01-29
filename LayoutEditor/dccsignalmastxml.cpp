@@ -129,12 +129,12 @@ DccSignalMastXml::DccSignalMastXml(QObject *parent) :
      }
  }
 
- InstanceManager::signalMastManagerInstance()->Register(m);
+ static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->Register(m);
  return true;
 
 }
 
-/*public*/  void DccSignalMastXml::load(QDomElement element, QObject* o) throw (Exception)
+/*public*/  void DccSignalMastXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
 {
     Logger::error("Invalid method called");
 }

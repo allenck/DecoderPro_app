@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+class Logger;
 class JTextField;
 class QPushButton;
 class QComboBox;
@@ -30,6 +31,7 @@ private:
     QLabel* userNameLabel;// = new JLabel(rb.getString("LabelUserName"));
     QLabel* finishLabel;// = new JLabel("Number to Add");
     QPushButton* cancel;
+    static Logger* log;
 
 private slots:
     /*private*/ void rangeState();

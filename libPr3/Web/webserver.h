@@ -6,7 +6,7 @@
 #include <QtCore/QList>
 #include <QtCore/QByteArray>
 
-
+class ZeroConfService;
 QT_FORWARD_DECLARE_CLASS(QTcpServer)
 QT_FORWARD_DECLARE_CLASS(QTcpSoocket)
 class ServletContextHandler;
@@ -70,7 +70,7 @@ private:
  };
 
  /*private*/ WebServer* server;
-// /*private*/ ZeroConfService zeroConfService = null;
+ /*private*/ ZeroConfService* zeroConfService = nullptr;
  /*private*/ WebServerPreferences* preferences;// = null;
  /*private*/ ShutDownTask* shutDownTask;// = null;
  /*private*/ /*final*/ QMap<QString, Registration>* registeredUrls;// = new HashMap<>();

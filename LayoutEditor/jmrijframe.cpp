@@ -14,6 +14,7 @@
 #include "panelmenu.h"
 #include "jmrijframeinterface.h"
 #include "rostergroupselector.h"
+#include "glasspane.h"
 
 //JmriJFrame::JmriJFrame(QWidget *parent) :
 //    QMainWindow(parent)
@@ -154,7 +155,8 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
  reuseFrameSavedPosition=savePosition;
  reuseFrameSavedSized=saveSize;
 
- addWindowListener(new JmriJFrameWindowListener(this));
+ //addWindowListener(new JmriJFrameWindowListener(this));
+ addWindowListener((WindowListener*)this);
 
 // TODO: addComponentListener(this);
  windowInterface = new JmriJFrameInterface();
@@ -1313,3 +1315,14 @@ void JmriJFrame::moveEvent(QMoveEvent *e) { componentMoved(e);}
 /*public*/ bool JmriJFrame::getAllowInFrameServlet() {
     return allowInFrameServlet;
 }
+
+/*public*/ QWidget* JmriJFrame::getGlassPane()
+{
+ if(glassPane == nullptr)
+  glassPane = new GlassPane(this);
+ return glassPane;
+}
+
+/*public*/ void JmriJFrame::setGlassPane(QWidget* glassPane) {
+       this->glassPane = glassPane;
+   }

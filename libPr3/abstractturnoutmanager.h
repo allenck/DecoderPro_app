@@ -12,7 +12,7 @@ class LIBPR3SHARED_EXPORT AbstractTurnoutManager : public TurnoutManager
 public:
     explicit AbstractTurnoutManager(QObject *parent = 0);
     virtual int getXMLOrder();
-    virtual char typeLetter();
+    virtual char typeLetter() ;
     Turnout* provideTurnout(QString name);
     Turnout* getTurnout(QString name);
     Turnout* newTurnout(QString systemName, QString userName);

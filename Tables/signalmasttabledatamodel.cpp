@@ -25,7 +25,7 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
 //private static final long serialVersionUID = 2753901812548953185L;
 
 /*public*/ QString SignalMastTableDataModel::getValue(QString name) const {
-    return InstanceManager::signalMastManagerInstance()->getBySystemName(name)->getAspect();
+    return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name)->getAspect();
 }
 
 /*public*/ int SignalMastTableDataModel::columnCount(const QModelIndex &parent) const
@@ -104,7 +104,7 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
     else if (col == EDITMASTCOL)
     {
         QString name = sysNameList.at(row);
-        SignalMast* s = InstanceManager::signalMastManagerInstance()->getBySystemName(name);
+        SignalMast* s = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name);
         //if (s instanceof jmri.implementation.TurnoutSignalMast) {
         if(qobject_cast<TurnoutSignalMast*>(s)!= NULL)
         {
@@ -125,16 +125,16 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
 }
 
 /*protected*/ Manager* SignalMastTableDataModel::getManager() {
-    return InstanceManager::signalMastManagerInstance();
+    return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
 }
 
 /*protected*/ NamedBean* SignalMastTableDataModel::getBySystemName(QString name)  const
 {
- return InstanceManager::signalMastManagerInstance()->getBySystemName(name);
+ return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name);
 }
 
 /*protected*/ NamedBean* SignalMastTableDataModel::getByUserName(QString name) {
-    return InstanceManager::signalMastManagerInstance()->getByUserName(name);
+    return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getByUserName(name);
 }
 
 /*protected*/ QString SignalMastTableDataModel::getMasterClassName() {
@@ -150,7 +150,7 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
  int row = index.row();
  int col = index.column();
  QString name = sysNameList.at(row);
- SignalMast* s = InstanceManager::signalMastManagerInstance()->getBySystemName(name);
+ SignalMast* s = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name);
 
  if(role == Qt::CheckStateRole)
  {
@@ -194,7 +194,7 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
  int row = index.row();
  int col = index.column();
  QString name = sysNameList.at(row);
- SignalMast* s = InstanceManager::signalMastManagerInstance()->getBySystemName(name);
+ SignalMast* s = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getBySystemName(name);
  if (s == NULL) {
      return false;  // device is going away anyway
  }

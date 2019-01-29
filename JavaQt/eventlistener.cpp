@@ -1,7 +1,6 @@
 #include "eventlistener.h"
 
-EventListener::EventListener(QObject *parent) :
-    QObject(parent)
+EventListener::EventListener()
 {
 }
 /**

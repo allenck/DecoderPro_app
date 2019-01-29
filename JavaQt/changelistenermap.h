@@ -12,7 +12,7 @@ class ChangeListenerMap : public EventListener
 
     //Q_OBJECT
 public:
-    ChangeListenerMap(QObject *parent = 0) : EventListener(parent)
+    ChangeListenerMap() : EventListener()
  {
   map = new QMap<QString, QList<L> >;
   //map = NULL;

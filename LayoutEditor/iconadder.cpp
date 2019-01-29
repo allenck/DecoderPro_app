@@ -68,7 +68,7 @@ void IconAdder::init()
  _table = NULL;
  _changeButton = NULL;
  QTimer::singleShot(50,this, SLOT(closeCatalog()));
- ;
+
  this->setLayout(thisLayout = new QVBoxLayout(this/*, BoxLayout.Y_AXIS*/));
 // this->setContentsMargins(0,0,0,0);
 // this->layout()->setContentsMargins(0,0,0,0);

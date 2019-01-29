@@ -13,6 +13,7 @@
 #include "borderlayout.h"
 #include "signalheadiconxml.h"
 #include "abstractsignalhead.h"
+#include "imagepanel.h"
 
 //SignalHeadItemPanel::SignnalHeadItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -24,6 +25,7 @@
 {
  //super(parentFrame, type, family, model, editor);
  log = new Logger("SignalHeadItemPanel");
+ setObjectName("SignalHeadItemPanel");
 }
 
 /*protected*/ QWidget* SignalHeadItemPanel::initTablePanel(PickListModel* model, Editor* /*editor*/)
@@ -64,38 +66,38 @@
  TableItemPanel::makeDndIconPanel(iconMap, "SignalHeadStateRed");
 }
 
-/*protected*/ void SignalHeadItemPanel::showIcons()
-{
- //updateFamiliesPanel();
-//    _iconFamilyPanel.remove(_iconPanel);
- _iconPanel = new QWidget();
- _iconFamilyPanel->layout()->addWidget(_iconPanel/*, 0*/);
- addIconsToPanel(_currentIconMap);
- _iconPanel->setVisible(true);
- if (!_update)
- {
-  _dragIconPanel->setVisible(false);
- }
- _showIconsButton->setText(tr("Hide Icons"));
-}
+///*protected*/ void SignalHeadItemPanel::showIcons()
+//{
+// //updateFamiliesPanel();
+////    _iconFamilyPanel.remove(_iconPanel);
+// _iconPanel = new ImagePanel();
+// _iconFamilyPanel->layout()->addWidget(_iconPanel/*, 0*/);
+// addIconsToPanel(_currentIconMap);
+// _iconPanel->setVisible(true);
+// if (!_update)
+// {
+//  _dragIconPanel->setVisible(false);
+// }
+// _showIconsButton->setText(tr("Hide Icons"));
+//}
 
-/*protected*/ void SignalHeadItemPanel::addIconsToPanel(QMap<QString, NamedIcon *> *allIconsMap)
-{
- QMap<QString, NamedIcon*>* iconMap = getFilteredIconMap(allIconsMap);
- if (iconMap==NULL)
- {
-  iconMap = ItemPalette::getIconMap(_itemType, _family);
-  if (iconMap==NULL)
-  {
-   _updateButton->setEnabled(false);
-   _updateButton->setToolTip(tr("Select an item from the table and an icon set to update the panel"));
-  }
- }
- else
- {
-  TableItemPanel::addIconsToPanel(iconMap);
- }
-}
+///*protected*/ void SignalHeadItemPanel::addIconsToPanel(QMap<QString, NamedIcon *> *allIconsMap)
+//{
+// QMap<QString, NamedIcon*>* iconMap = getFilteredIconMap(allIconsMap);
+// if (iconMap==NULL)
+// {
+//  iconMap = ItemPalette::getIconMap(_itemType, _family);
+//  if (iconMap==NULL)
+//  {
+//   _updateButton->setEnabled(false);
+//   _updateButton->setToolTip(tr("Select an item from the table and an icon set to update the panel"));
+//  }
+// }
+// else
+// {
+//  TableItemPanel::addIconsToPanel(iconMap);
+// }
+//}
 /**
 *  ListSelectionListener action
 */
@@ -142,7 +144,7 @@
   return allIconsMap;
  }
 
- SignalHead* sh = (SignalHead*)getNamedBean();
+ SignalHead* sh = (SignalHead*)getDeviceNamedBean();
  if (sh!=NULL)
  {
   QStringList states = ((AbstractSignalHead*)sh)->getValidStateNames().toList();
@@ -176,7 +178,7 @@
   return allIconsMap;
 }
 #if 1
-/*protected*/ DragJLabel* SignalHeadItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map) {
+/*protected*/ DragJLabel* SignalHeadItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, NamedIcon *icon) {
     return new SHIconDragJLabel(flavor, map, this);
 }
 
@@ -202,7 +204,7 @@
   log->error("IconDragJLabel.getTransferData: iconMap is NULL!");
   return NULL;
  }
- NamedBean* bean = self->getNamedBean();
+ NamedBean* bean = self->getDeviceNamedBean();
  if (bean==NULL)
  {
   log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");
@@ -225,7 +227,7 @@
 }
 QString SHIconDragJLabel::mimeData()
 {
- NamedBean* bean = self->getNamedBean();
+ NamedBean* bean = self->getDeviceNamedBean();
  if (bean==NULL)
  {
   log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");

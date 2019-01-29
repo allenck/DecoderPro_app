@@ -5,6 +5,7 @@
 #include <QUrl>
 #include "matcher.h"
 #include <QDebug>
+#include "loggerfactory.h"
 
 /**
  * Support the {@link jmri.util.FileUtil } static API while providing
@@ -30,7 +31,6 @@
  scriptsPath = "";
  userFilesPath = "";
  profilePath = "";
- log = new Logger("FileUtilSupport");
 }
 
 /**
@@ -659,11 +659,10 @@ public URL getURL(URI uri) {
 /*public*/ void FileUtilSupport::rotate(/*@NonNULL*/ File* file, int max, QString extension) //throws IOException
 {
     if (max < 1) {
-        //throw new IllegalArgumentException();
-     return;
+        throw IllegalArgumentException();
     }
     QString name = file->getName();
-    if (extension != NULL) {
+    if (extension != "") {
         if (extension.length() > 0 && !extension.startsWith(".")) {
             extension = "." + extension;
         }
@@ -684,7 +683,7 @@ public URL getURL(URI uri) {
 }
 
 /*public*/ /*static*/ FileUtilSupport* FileUtilSupport::getDefault() {
-    if (FileUtilSupport::defaultInstance == NULL) {
+    if (FileUtilSupport::defaultInstance == nullptr) {
         FileUtilSupport::defaultInstance = new FileUtilSupport();
     }
     return FileUtilSupport::defaultInstance;
@@ -773,7 +772,9 @@ public URL getURL(URI uri) {
   if ((new File(path.mid(FileUtil::PROFILE.length())))->isAbsolute()) {
       path = path.mid(FileUtil::PROFILE.length());
   } else {
-      path = path.replace(FileUtil::PROFILE, Matcher::quoteReplacement(this->getProfilePath()));
+      //path = path.replace(FileUtil::PROFILE, Matcher::quoteReplacement(this->getProfilePath()));
+  //path = path.replace(FileUtil::PROFILE, this->getProfilePath());
+      path = getProfilePath() + path.mid(8);
   }
  }
  else if (path.startsWith(FileUtil::SCRIPTS))
@@ -813,13 +814,13 @@ public URL getURL(URI uri) {
      {
       //throw FileNotFoundException(path);
       QString msg = tr("can't convert '%1' to '%2'").arg(path_save).arg(path);
-      log->error(msg);
+      //log->error(msg);
       //throw NullPointerException(msg);  // throw IOException??
       throw IOException(msg);
      }
      return (new File(path.replace(FileUtil::SEPARATOR, File::separatorChar)))->getCanonicalPath();
  } catch (IOException ex) {
-     log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
+     //log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
      return "";
  }
 }
@@ -946,7 +947,7 @@ public URL getURL(URI uri) {
     }
  }
  catch (NullPointerException ex) {
-        return NULL;
+        return "";
  }
  return "";
 }
@@ -988,13 +989,16 @@ public URL getURL(URI uri) {
  *
  * @param dir directory to create
  */
-/*public*/ void FileUtilSupport::createDirectory(File* dir) {
-    if (!dir->exists()) {
-        log->info(tr("Creating directory: %1").arg(dir->getPath()));
-        if (!dir->mkdirs()) {
-            log->error(tr("Failed to create directory: %1").arg(dir->getPath()));
-        }
-    }
+/*public*/ void FileUtilSupport::createDirectory(File* dir)
+{
+ if (!dir->exists())
+ {
+  log->info(tr("Creating directory: %1").arg(dir->getPath()));
+  if (!dir->mkdirs())
+  {
+   log->error(tr("Failed to create directory: %1").arg(dir->getPath()));
+  }
+ }
 }
 
 /**
@@ -1040,14 +1044,14 @@ public URL getURL(URI uri) {
    if (!ok)
    {
     log->error(tr("Could not use mkdirs to create destination directory").arg(dest->getParent()));
-    throw new IOException("Could not use mkdirs to create destination directory");
+    throw  IOException("Could not use mkdirs to create destination directory");
    }
   } else {
    bool ok = dest->createNewFile();
    if (!ok)
    {
-    log->error(tr("Could not create destination file %s ").arg(dest->getPath()));
-    throw new IOException(tr("Could not create destination file %s ").arg(dest->getPath()));
+    log->error(tr("Could not create destination file %1 ").arg(dest->getPath()));
+    throw IOException(tr("Could not create destination file %1 ").arg(dest->getPath()));
    }
   }
  }
@@ -1070,7 +1074,7 @@ public URL getURL(URI uri) {
   if(f.exists())
    f.remove();
   if(!QFile::copy(source->path, dest->path))
-   Logger::error(tr("copy of %1 to %2 failed!").arg(source->path).arg(dest->path) );
+   log->error(tr("copy of %1 to %2 failed!").arg(source->path).arg(dest->path) );
  }
 }
 /**
@@ -1134,7 +1138,7 @@ public URL getURL(URI uri) {
  */
 /*public*/ QTextStream* FileUtilSupport::findInputStream(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths) {
     QUrl file = this->findURL(path, locations, searchPaths);
-    if (file.path() != NULL) {
+    if (file.path() != nullptr) {
         try {
             //return file->openStream();
       QFile f(path);
@@ -1144,7 +1148,7 @@ public URL getURL(URI uri) {
             log->error(ex.getLocalizedMessage(), ex);
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 /**
@@ -1452,3 +1456,6 @@ public URL getURL(URI uri) {
 //    }
  return url.toLocalFile();
 }
+
+// initialize logging
+    /*private*/ /*static*/ /*final*/ Logger* FileUtilSupport::log = LoggerFactory::getLogger("FileUtilSupport");

@@ -1,15 +1,21 @@
 #ifndef JSONSERVERPREFERENCESPANEL_H
 #define JSONSERVERPREFERENCESPANEL_H
 #include "preferencespanel.h"
+#include <QWidget>
 
+class JFrame;
 class QSpinBox;
 class QPushButton;
 class JsonServerPreferences;
-class JsonServerPreferencesPanel : public PreferencesPanel
+class JsonServerPreferencesPanel : public QWidget, public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
- JsonServerPreferencesPanel(QWidget* parent = 0);
+ Q_INVOKABLE JsonServerPreferencesPanel(QWidget* parent = 0);
+ ~JsonServerPreferencesPanel() {}
+ JsonServerPreferencesPanel(const JsonServerPreferencesPanel&) : QWidget() {}
  /*public*/ static /*final*/ int MAX_HEARTBEAT_INTERVAL;// = 3600;
  /*public*/ static /*final*/ int MIN_HEARTBEAT_INTERVAL;// = 1;
  /*public*/ JsonServerPreferencesPanel(JFrame* f, QWidget* parent = 0);
@@ -25,6 +31,7 @@ public:
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired();
  /*public*/ bool isPreferencesValid();
+ /*public*/ QString className();
 
 
 private:
@@ -47,5 +54,5 @@ protected:
  /*protected*/ void cancelValues();
 
 };
-
+Q_DECLARE_METATYPE(JsonServerPreferencesPanel)
 #endif // JSONSERVERPREFERENCESPANEL_H

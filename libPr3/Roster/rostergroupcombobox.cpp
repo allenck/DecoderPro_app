@@ -54,7 +54,7 @@ void RosterGroupComboBox::common(Roster* roster, QString selection)
  //            }
  //        }
  //    });
-  connect(_roster, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(_roster->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }
 

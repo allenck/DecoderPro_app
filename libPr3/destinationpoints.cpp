@@ -10,6 +10,20 @@
 #include "abstractsignalmast.h"
 #include "abstractsignalmast.h"
 #include <QMessageBox>
+#include "joptionpane.h"
+#include "activetrain.h"
+#include "dispatcherframe.h"
+#include "layoutblock.h"
+#include "connectivityutil.h"
+#include <QPushButton>
+#include "jlabel.h"
+#include "jpanel.h"
+#include <QStyle>
+#include "sleeperthread.h"
+#include "signalmastlogicmanager.h"
+#include "runtimeexception.h"
+#include "signalmast.h"
+#include "signalhead.h"
 
 //DestinationPoints::DestinationPoints(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -44,6 +58,7 @@ DestinationPoints::DestinationPoints(PointDetails* point, QString id, Source* sr
     manager = (EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs");
     threadAutoClearFrame = NULL;
     log = new Logger("DestinationPoints");
+    jButton_Stack = new QPushButton(tr("Stack"));  // NOI18N
 
     this->src = src;
     this->point=point;
@@ -114,7 +129,7 @@ void DestinationPoints::setRouteFrom(bool set){
 bool DestinationPoints::isRouteToPointSet() { return point->isRouteToPointSet(); }
 
 LayoutBlock* DestinationPoints::getFacing() { return point->getFacing(); }
-LayoutBlock* DestinationPoints::getProtecting() { return point->getProtecting(); }
+QList<LayoutBlock*> DestinationPoints::getProtecting() { return point->getProtecting(); }
 
 int DestinationPoints::getEntryExitType(){
     return entryExitType;
@@ -248,72 +263,118 @@ void DestinationPoints::setEntryExitType(int type){
 
 //For a clear down we need to add a message, if it is a cancel, manual clear down or I didn't mean it.
 void DestinationPoints::setRoute(bool state){
-    if(disposed){
-        log->error("Set route called even though interlock has been disposed of");
-        return;
-    }
+ if (log->isDebugEnabled()) {
+     log->debug("Set route " + src->getPoint()->getDisplayName());  // NOI18N
+ }
+ if(disposed){
+     log->error("Set route called even though interlock has been disposed of");
+     return;
+ }
 
-    if(routeDetails.isEmpty())
-    {
-     log->error ("No route to set or clear down");
-     setActiveEntryExit(false);
-     setRouteTo(false);
-     setRouteFrom(false);
-     //if((getSignal() instanceof SignalMast) && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
-     if(qobject_cast<SignalMast*>(getSignal())!= NULL && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
-     {
-      SignalMast* mast = (SignalMast*) getSignal();
-            ((AbstractSignalMast*)mast)->setHeld(false);
-        }
-        /*synchronized(this)*/{
-            QMutexLocker locker(&mutex);
-            destination=NULL;
-        }
-        return;
-    }
-    if(!state){
-        switch(manager->getClearDownOption()){
-            case EntryExitPairs::PROMPTUSER : cancelClearOptionBox(); break;
-            case EntryExitPairs::AUTOCANCEL : cancelClearInterlock(EntryExitPairs::CANCELROUTE); break;
-            case EntryExitPairs::AUTOCLEAR  : cancelClearInterlock(EntryExitPairs::CLEARROUTE); break;
-            default         : cancelClearOptionBox(); break;
-        }
-        return;
-        /*if(src->entryExitPopUp!=NULL){
-            src->entryExitPopUp.setEnabled(false);
-        }
-        cancelClearOptionBox();
-        return;*/
-    }
-    /*We put the setting of the route into a seperate thread and put a glass pane infront of the layout editor,
-    the swing thread for flash the icons to carry on as without interuption */
-
-    DPRunnable* setRouteRun = new DPRunnable(this);
-    QThread* thrMain = new QThread(setRouteRun);
-    thrMain->setObjectName( "Entry Exit Set Route");
-    thrMain->start();
-}
-//Runnable setRouteRun = new Runnable() {
-DPRunnable::DPRunnable(DestinationPoints *p)
-{
-    this->p = p;
-}
-/*public*/ void DPRunnable::run()
-{
-// TODO:
-#if 0
- p->src->getPoint()->getPanel()->getGlassPane()->setVisible(true);
- try
+ if(routeDetails.isEmpty())
  {
-  QHash<Turnout*, int> turnoutSettings = new QHash<Turnout*, int>();
+  log->error ("No route to set or clear down");
+  setActiveEntryExit(false);
+  setRouteTo(false);
+  setRouteFrom(false);
+  //if((getSignal() instanceof SignalMast) && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
+  if(qobject_cast<SignalMast*>(getSignal())!= NULL && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
+  {
+   SignalMast* mast = (SignalMast*) getSignal();
+         ((AbstractSignalMast*)mast)->setHeld(false);
+     }
+     /*synchronized(this)*/{
+         QMutexLocker locker(&mutex);
+         destination=NULL;
+     }
+     return;
+ }
+ if(!state)
+ {
+     switch(manager->getClearDownOption())
+     {
+      case EntryExitPairs::PROMPTUSER : cancelClearOptionBox(); break;
+      case EntryExitPairs::AUTOCANCEL : cancelClearInterlock(EntryExitPairs::CANCELROUTE); break;
+      case EntryExitPairs::AUTOCLEAR  : cancelClearInterlock(EntryExitPairs::CLEARROUTE); break;
+      case EntryExitPairs::AUTOSTACK:
+       cancelClearInterlock(EntryExitPairs::STACKROUTE);
+       break;
+      default         : cancelClearOptionBox(); break;
+     }
+     if (log->isDebugEnabled())
+     {
+      log->debug("Exit " + src->getPoint()->getDisplayName());
+     }
+     return;
+ }
+ if (manager->isRouteStacked(this, false)) {
+     manager->cancelStackedRoute(this, false);
+ }
+ /*We put the setting of the route into a seperate thread and put a glass pane infront of the layout editor,
+ the swing thread for flash the icons to carry on as without interuption */
+ /*final*/ QList<QColor> realColorStd = QList<QColor>();
+ /*final*/ QList<QColor> realColorXtra = QList<QColor>();
+ /*final*/ QList<LayoutBlock*> routeBlocks = QList<LayoutBlock*>();
+ if (manager->useDifferentColorWhenSetting()) {
+     bool first = true;
+     for (LayoutBlock* lbk : routeDetails) {
+         if (first) {
+             // Don't change the color for the facing block
+             first = false;
+             continue;
+         }
+         routeBlocks.append(lbk);
+         realColorXtra.append(lbk->getBlockExtraColor());
+         realColorStd.append(lbk->getBlockTrackColor());
+         lbk->setBlockExtraColor(manager->getSettingRouteColor());
+         lbk->setBlockTrackColor(manager->getSettingRouteColor());
+     }
+     //Force a redraw, to reflect color change
+     src->getPoint()->getPanel()->redrawPanel();
+ }
+ ActiveTrain* tmpat = nullptr;
+ if (manager->getDispatcherIntegration() &&  InstanceManager::getNullableDefault("DispatcherFrame") != nullptr) {
+     DispatcherFrame* df = static_cast<DispatcherFrame*>(InstanceManager::getDefault("DispatcherFrame"));
+     for (ActiveTrain* atl : *df->getActiveTrainsList()) {
+         if (atl->getEndBlock() == src->getStart()->getBlock()) {
+             if (atl->getLastAllocatedSection() == atl->getEndBlockSection()) {
+                 if (!atl->getReverseAtEnd() && !atl->getResetWhenDone()) {
+                     tmpat = atl;
+                     break;
+                 }
+                 log->warn("Interlock will not be added to existing Active Train as it is set for back and forth operation");  // NOI18N
+             }
+         }
+     }
+  }
+  /*final*/ ActiveTrain* at = tmpat;
+  DPRunnable* setRouteRun = new DPRunnable(this);
+  QThread* thrMain = new QThread(setRouteRun);
+  thrMain->setObjectName( "Entry Exit Set Route");
+  thrMain->start();
+ }
+ //Runnable setRouteRun = new Runnable() {
+ DPRunnable::DPRunnable(DestinationPoints *p)
+ {
+     this->p = p;
+ }
+ /*public*/ void DPRunnable::run()
+ {
+ // TODO:
+ #if 1
+  p->src->getPoint()->getPanel()->getGlassPane()->setVisible(true);
+  try
+  {
+   QHash<Turnout*, int> turnoutSettings = QHash<Turnout*, int>();
 
-  ConnectivityUtil* connection = new ConnectivityUtil(point->getPanel());
+   ConnectivityUtil* connection = new ConnectivityUtil(p->point->getPanel());
 
-  //This for loop was after the if statement
-  //Last block in the route is the one that we are protecting at the last sensor/signalmast
-  for (int i = 0; i<p->routeDetails.size(); i++){
+   //This for loop was after the if statement
+   //Last block in the route is the one that we are protecting at the last sensor/signalmast
+   for (int i = 0; i<p->routeDetails.size(); i++)
+   {
     if (i>0) {
-        QList<LayoutTurnout*> turnoutlist;
+        QList<LayoutTrackExpectedState<LayoutTurnout*>* > turnoutlist;
         int nxtBlk = i+1;
         int preBlk = i-1;
         /*if (i==routeDetails.size()-1){
@@ -321,231 +382,274 @@ DPRunnable::DPRunnable(DestinationPoints *p)
         } else*/ if (i==0){
             preBlk=i;
         }
-        if(i<routeDetails.size()-1){
+        if(i<p->routeDetails.size()-1){
             //log->info(routeDetails.get(i).getBlock().getDisplayName() + " " + routeDetails.get(preBlk).getBlock().getDisplayName() + " " + routeDetails.get(nxtBlk).getBlock().getDisplayName());
-            turnoutlist=connection.getTurnoutList(routeDetails.get(i).getBlock(), routeDetails.get(preBlk).getBlock(), routeDetails.get(nxtBlk).getBlock());
-            ArrayList<Integer> throwlist=connection.getTurnoutSettingList();
-            for (int x=0; x<turnoutlist.size(); x++){
-                if(turnoutlist.get(x) instanceof LayoutSlip){
-                    int slipState = throwlist.get(x);
-                    LayoutSlip ls = (LayoutSlip)turnoutlist.get(x);
-                    int taState = ls.getTurnoutState(slipState);
-                    ls.getTurnout().setCommandedState(taState);
-                    turnoutSettings.put(ls.getTurnout(), taState);
-                    Runnable r = new Runnable() {
-                      /*public*/ void run() {
-                        try {
-                            Thread.sleep(250 + manager.turnoutSetDelay);
-                        } catch (InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        }
-                      }
-                    };
-                    Thread thr = new Thread(r, "Entry Exit Route, turnout setting");
-                    thr.start();
-                    try{
-                        thr.join();
-                    } catch (InterruptedException ex) {
-            //            log->info("interrupted at join " + ex);
-                    }
-                    int tbState = ls.getTurnoutBState(slipState);
-                    ls.getTurnoutB().setCommandedState(tbState);
-                    turnoutSettings.put(ls.getTurnoutB(), tbState);
+            turnoutlist=connection->getTurnoutList(p->routeDetails.at(i)->getBlock(), p->routeDetails.at(preBlk)->getBlock(), p->routeDetails.at(nxtBlk)->getBlock());
+            QVector<int>* throwlist = connection->getTurnoutSettingList();
+            for (int x=0; x<turnoutlist.size(); x++)
+            {
+                if(qobject_cast<LayoutSlip*>(turnoutlist.at(x)->getObject())){
+                    int slipState = throwlist->at(x);
+                    LayoutSlip* ls = (LayoutSlip*)turnoutlist.at(x)->getObject();
+                    int taState = ls->getTurnoutState(slipState);
+                    ls->getTurnout()->setCommandedState(taState);
+                    turnoutSettings.insert(ls->getTurnout(), taState);
+//                    Runnable r = new Runnable() {
+//                      /*public*/ void run() {
+//                        try {
+//                            Thread.sleep(250 + manager.turnoutSetDelay);
+//                        } catch (InterruptedException ex) {
+//                            Thread.currentThread().interrupt();
+//                        }
+//                      }
+//                    };
+//                    Thread thr = new Thread(r, "Entry Exit Route, turnout setting");
+//                    thr.start();
+//                    try{
+//                        thr.join();
+//                    } catch (InterruptedException ex) {
+//            //            log->info("interrupted at join " + ex);
+//                    }
+                    SleeperThread::msleep(250 + p->manager->turnoutSetDelay);
+                    int tbState = ls->getTurnoutBState(slipState);
+                    ls->getTurnoutB()->setCommandedState(tbState);
+                    turnoutSettings.insert(ls->getTurnoutB(), tbState);
                 } else {
-                    String t = turnoutlist.get(x).getTurnoutName();
-                    Turnout turnout = InstanceManager::turnoutManagerInstance().getTurnout(t);
-                    turnout.setCommandedState(throwlist.get(x));
-                    turnoutSettings.put(turnout, throwlist.get(x));
+                    QString t = turnoutlist.at(x)->getObject()->getTurnoutName();
+                    Turnout* turnout = InstanceManager::turnoutManagerInstance()->getTurnout(t);
+                    turnout->setCommandedState(throwlist->at(x));
+                    turnoutSettings.insert(turnout, throwlist->at(x));
                 }
-                Runnable r = new Runnable() {
-                  /*public*/ void run() {
-                    try {
-                        Thread.sleep(250 + manager.turnoutSetDelay);
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
-                  }
-                };
-                Thread thr = new Thread(r, "Entry Exit Route, turnout setting");
-                thr.start();
-                try{
-                    thr.join();
-                } catch (InterruptedException ex) {
-        //            log->info("interrupted at join " + ex);
-                }
+//                Runnable r = new Runnable() {
+//                  /*public*/ void run() {
+//                    try {
+//                        Thread.sleep(250 + manager.turnoutSetDelay);
+//                    } catch (InterruptedException ex) {
+//                        Thread.currentThread().interrupt();
+//                    }
+//                  }
+//                };
+//                Thread thr = new Thread(r, "Entry Exit Route, turnout setting");
+//                thr.start();
+//                try{
+//                    thr.join();
+//                } catch (InterruptedException ex) {
+//        //            log->info("interrupted at join " + ex);
+//                }
+                SleeperThread::msleep(250 + p->manager->turnoutSetDelay);
             }
         }
-        if(getEntryExitType()==EntryExitPairs::FULLINTERLOCK){
-            routeDetails.get(i).setUseExtraColor(true);
+        if(p->getEntryExitType()==EntryExitPairs::FULLINTERLOCK){
+            p->routeDetails.at(i)->setUseExtraColor(true);
         }
     }
-    if ((getEntryExitType()==EntryExitPairs::FULLINTERLOCK)){
-            routeDetails.get(i).getBlock().addPropertyChangeListener(propertyBlockListener); // was set against occupancy sensor
+    if ((p->getEntryExitType()==EntryExitPairs::FULLINTERLOCK)){
+            //p->routeDetails.at(i)->getBlock().addPropertyChangeListener(propertyBlockListener); // was set against occupancy sensor
+     connect(p->routeDetails.at(i)->getBlock()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), p, SLOT(propertyBlockListener(PropertyChangeEvent*)));
     } else {
-        routeDetails.get(i).getBlock().removePropertyChangeListener(propertyBlockListener); // was set against occupancy sensor
+        //routeDetails.get(i).getBlock().removePropertyChangeListener(propertyBlockListener); // was set against occupancy sensor
+     disconnect(p->routeDetails.at(i)->getBlock()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), p, SLOT(propertyBlockListener(PropertyChangeEvent*)));
+
     }
-}
-//Force a redraw
-src->getPoint().getPanel().redrawPanel();
-if (getEntryExitType()!=EntryExitPairs::SETUPTURNOUTSONLY){
-    if(getEntryExitType()==EntryExitPairs::FULLINTERLOCK){
+ }
+ //Force a redraw
+ p->src->getPoint()->getPanel()->redrawPanel();
+ if (p->getEntryExitType()!=EntryExitPairs::SETUPTURNOUTSONLY){
+    if(p->getEntryExitType()==EntryExitPairs::FULLINTERLOCK){
         //If our start block is already active we will set it as our lastSeenActiveBlock.
-        if(src->getStart().getState()==Block.OCCUPIED){
-            src->getStart().removePropertyChangeListener(propertyBlockListener);
-            lastSeenActiveBlockObject = src->getStart().getBlock().getValue();
-            log->debug("Last seen value " + lastSeenActiveBlockObject);
+        if(p->src->getStart()->getState()==Block::OCCUPIED){
+            //p->src->getStart().removePropertyChangeListener(p->propertyBlockListener);
+         disconnect(p->src->getStart()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), p, SLOT(propertyChangeListener(PropertyChangeEvent*)));
+            p->lastSeenActiveBlockObject = p->src->getStart()->getBlock()->getValue();
+            p->log->debug("Last seen value " + p->lastSeenActiveBlockObject.toString());
         }
     }
-    if((src->sourceSignal instanceof SignalMast) && (getSignal() instanceof SignalMast)){
-        SignalMast smSource = (SignalMast) src->sourceSignal;
-        SignalMast smDest = (SignalMast) getSignal();
-        synchronized(this){
-            sml = InstanceManager::signalMastLogicManagerInstance().newSignalMastLogic(smSource);
-            if(!sml.isDestinationValid(smDest)){
+    //if((src->sourceSignal instanceof SignalMast) && (getSignal() instanceof SignalMast))
+    if(qobject_cast<SignalMast*>(p->src->sourceSignal) && qobject_cast<SignalMast*>(p->getSignal()))
+    {
+        SignalMast* smSource = (SignalMast*) p->src->sourceSignal;
+        SignalMast* smDest = (SignalMast*) p->getSignal();
+        /*synchronized(this)*/{
+            p->sml = InstanceManager::signalMastLogicManagerInstance()->newSignalMastLogic(smSource);
+            if(!p->sml->isDestinationValid(smDest)){
                 //if no signalmastlogic existed then created it, but set it not to be stored.
-                sml.setDestinationMast(smDest);
-                sml.setStore(jmri.SignalMastLogic.STORENONE, smDest);
+                p->sml->setDestinationMast(smDest);
+                p->sml->setStore(SignalMastLogic::STORENONE, smDest);
             }
         }
-        LinkedHashMap<Block, Integer> blks = new LinkedHashMap<Block, Integer>();
+        //LinkedHashMap<Block, Integer> blks = new LinkedHashMap<Block, Integer>();
+        QMap<Block*, int> blks = QMap<Block*, int>();
         //Remove the first block as it is our start block
-        routeDetails.remove(0);
-        for(int i = 0; i<routeDetails.size(); i++){
-            if (routeDetails.get(i).getBlock().getState()==Block.UNKNOWN)
-                routeDetails.get(i).getBlock().setState(Block.UNOCCUPIED);
-            blks.put(routeDetails.get(i).getBlock(), Block.UNOCCUPIED);
+        p->routeDetails.removeAt(0);
+        for(int i = 0; i<p->routeDetails.size(); i++){
+            if (p->routeDetails.at(i)->getBlock()->getState()==Block::UNKNOWN)
+                p->routeDetails.at(i)->getBlock()->setState(Block::UNOCCUPIED);
+            blks.insert(p->routeDetails.at(i)->getBlock(), Block::UNOCCUPIED);
         }
-        synchronized(this){
-            smSource.setHeld(false);
-            sml.setAutoBlocks(blks, smDest);
-            sml.setAutoTurnouts(turnoutSettings, smDest);
-            sml.initialise(smDest);
+        /*synchronized(this)*/{
+            smSource->setHeld(false);
+            p->sml->setAutoBlocks(blks, smDest);
+            p->sml->setAutoTurnouts(turnoutSettings, smDest);
+            p->sml->initialise(smDest);
         }
-        smSource.addPropertyChangeListener( new PropertyChangeListener() {
-            /*public*/ void propertyChange(PropertyChangeEvent e) {
-                SignalMast source = (SignalMast)e.getSource();
-                source.removePropertyChangeListener(this);
-                setRouteFrom(true);
-                setRouteTo(true);
-            }
-        });
-        src->pd->extendedtime=true;
-        point->extendedtime=true;
+//        smSource.addPropertyChangeListener( new PropertyChangeListener() {
+//            /*public*/ void propertyChange(PropertyChangeEvent e) {
+//                SignalMast source = (SignalMast)e.getSource();
+//                source.removePropertyChangeListener(this);
+//                setRouteFrom(true);
+//                setRouteTo(true);
+//            }
+//        });
+        connect(smSource->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChangeListener(PropertyChangeEvent*)));
+
+        p->src->pd->extendedtime=true;
+        p->point->extendedtime=true;
     } else {
-        if (src->sourceSignal instanceof SignalMast){
-            SignalMast mast = (SignalMast) src->sourceSignal;
-            mast.setHeld(false);
-        } else if (src->sourceSignal instanceof SignalHead){
-            SignalHead head = (SignalHead) src->sourceSignal;
-            head.setHeld(false);
+        if (qobject_cast<SignalMast*>(p->src->sourceSignal)){
+            SignalMast* mast = (SignalMast*) p->src->sourceSignal;
+            mast->setHeld(false);
         }
-        setRouteFrom(true);
-        setRouteTo(true);
+        //else if (src->sourceSignal instanceof SignalHead){
+        else if (qobject_cast<SignalHead*>(p->src->sourceSignal)){
+    SignalHead* head = (SignalHead*) p->src->sourceSignal;
+            head->setHeld(false);
+        }
+        p->setRouteFrom(true);
+        p->setRouteTo(true);
     }
-} else {
-    src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-    point->setNXButtonState( EntryExitPairs::NXBUTTONINACTIVE);
-}
-} catch (RuntimeException ex) {
-log->error("An error occured while setting the route");
-ex.printStackTrace();
-src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-}
-    src->getPoint().getPanel().getGlassPane().setVisible(false);
-    src->setMenuEnabled(true);
+  } else {
+      p->src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+      p->point->setNXButtonState( EntryExitPairs::NXBUTTONINACTIVE);
+  }
+ } catch (RuntimeException ex) {
+  p->log->error("An error occured while setting the route");
+//  ex.printStackTrace();
+  p->src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+  p->point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+ }
+ p->src->getPoint()->getPanel()->getGlassPane()->setVisible(false);
+ p->src->setMenuEnabled(true);
 #endif
 }
 //};
 
+ /*public*/ void DestinationPoints::propertyChange(PropertyChangeEvent* e) {
+     SignalMast* source = (SignalMast*)e->getSource();
+     //source.removePropertyChangeListener(this);
+     disconnect(source->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChangeListener(PropertyChangeEvent*)));
+     setRouteFrom(true);
+     setRouteTo(true);
+ }
 
 void DestinationPoints::cancelClearOptionBox(){
 // TODO:
-#if 0
+#if 1
     if(cancelClearFrame==NULL){
-        JButton jButton_Clear = new JButton("Clear Down");
-        JButton jButton_Cancel = new JButton("Cancel");
-        JButton jButton_Exit = new JButton("Exit");
-        JLabel jLabel = new JLabel("What would you like to do with this interlock?");
-        JLabel jIcon = new JLabel(javax.swing.UIManager.getIcon("OptionPane.questionIcon"));
+        QPushButton* jButton_Clear = new QPushButton("Clear Down");
+        QPushButton* jButton_Cancel = new QPushButton("Cancel");
+        QPushButton* jButton_Exit = new QPushButton("Exit");
+        QLabel* jLabel = new QLabel("What would you like to do with this interlock?");
+        QLabel* jIcon = new QLabel(); //cancelClearFrame->style()->standardIcon(QStyle::SP_MessageBoxQuestion)); //javax.swing.UIManager.getIcon("OptionPane.questionIcon"));
+        QIcon icon = cancelClearFrame->style()->standardIcon(QStyle::SP_MessageBoxQuestion);
+        QSize iconSize = icon.actualSize(QSize(64,64));
+        jIcon->setPixmap(icon.pixmap(iconSize));
         cancelClearFrame = new JFrame("Interlock");
-        Container cont = cancelClearFrame.getContentPane();
-        JPanel qPanel = new JPanel();
-        qPanel.add(jIcon);
-        qPanel.add(jLabel);
-        cont.add(qPanel, BorderLayout.CENTER);
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.add(jButton_Cancel);
-        buttonsPanel.add(jButton_Clear);
-        buttonsPanel.add(jButton_Exit);
-        cont.add(buttonsPanel, BorderLayout.SOUTH);
-        cancelClearFrame.pack();
+        QWidget* cont = cancelClearFrame->getContentPane();
+        QVBoxLayout* contLayout = new QVBoxLayout(cont);
+        JPanel* qPanel = new JPanel();
+        QHBoxLayout* qPanelLayout = new QHBoxLayout(qPanel);
+        qPanelLayout->addWidget(jIcon);
+        qPanelLayout->addWidget(jLabel);
+        contLayout->addWidget(qPanel,0, Qt::AlignCenter); //BorderLayout.CENTER);
+        JPanel* buttonsPanel = new JPanel();
+        FlowLayout* buttonsPanelLayout = new FlowLayout(buttonsPanel);
+        buttonsPanelLayout->addWidget(jButton_Cancel);
+        buttonsPanelLayout->addWidget(jButton_Clear);
+        buttonsPanelLayout->addWidget(jButton_Exit);
+        contLayout->addWidget(buttonsPanel,0, Qt::AlignBottom);// BorderLayout.SOUTH);
+        cancelClearFrame->pack();
 
-        jButton_Clear.addActionListener( new ActionListener() {
-                    /*public*/ void actionPerformed(ActionEvent e) {
-                        cancelClearFrame.setVisible(false);
-                        threadAutoClearFrame.interrupt();
-                        cancelClearInterlock(EntryExitPairs::CLEARROUTE);
-                    }
-                });
-        jButton_Cancel.addActionListener( new ActionListener() {
-                    /*public*/ void actionPerformed(ActionEvent e) {
-                        cancelClearFrame.setVisible(false);
-                        threadAutoClearFrame.interrupt();
-                        cancelClearInterlock(EntryExitPairs::CANCELROUTE);
-                    }
-                });
-        jButton_Exit.addActionListener( new ActionListener() {
-                    /*public*/ void actionPerformed(ActionEvent e) {
-                        cancelClearFrame.setVisible(false);
-                        threadAutoClearFrame.interrupt();
-                        cancelClearInterlock(EntryExitPairs::EXITROUTE);
-                    }
-                });
-        src->getPoint().getPanel().setGlassPane(manager.getGlassPane());
+//        jButton_Clear.addActionListener( new ActionListener() {
+//                    /*public*/ void actionPerformed(ActionEvent e) {
+//                        cancelClearFrame.setVisible(false);
+//                        threadAutoClearFrame.interrupt();
+//                        cancelClearInterlock(EntryExitPairs::CLEARROUTE);
+//                    }
+//                });
+//        jButton_Cancel.addActionListener( new ActionListener() {
+//                    /*public*/ void actionPerformed(ActionEvent e) {
+//                        cancelClearFrame.setVisible(false);
+//                        threadAutoClearFrame.interrupt();
+//                        cancelClearInterlock(EntryExitPairs::CANCELROUTE);
+//                    }
+//                });
+//        jButton_Exit.addActionListener( new ActionListener() {
+//                    /*public*/ void actionPerformed(ActionEvent e) {
+//                        cancelClearFrame.setVisible(false);
+//                        threadAutoClearFrame.interrupt();
+//                        cancelClearInterlock(EntryExitPairs::EXITROUTE);
+//                    }
+//                });
+        src->getPoint()->getPanel()->setGlassPane(manager->getGlassPane());
     }
-    if(cancelClearFrame.isVisible()){
-        return;
+    cancelClearFrame->setTitle(getUserName());
+    if (manager->isRouteStacked(this, false)) {
+        jButton_Stack->setEnabled(false);
+    } else {
+        jButton_Stack->setEnabled(true);
+    }
+
+    if(cancelClearFrame->isVisible()){
+     return;
     }
     src->pd->extendedtime=true;
     point->extendedtime =true;
 
-    class MessageTimeOut implements Runnable {
-        MessageTimeOut(){
-        }
-        /*public*/ void run() {
-            try {
-                //Set a timmer before this window is automatically closed to 30 seconds
-                Thread.sleep(NXMESSAGEBOXCLEARTIMEOUT*1000);
-                cancelClearFrame.setVisible(false);
-                cancelClearInterlock(EntryExitPairs::EXITROUTE);
-            } catch (InterruptedException ex) {
-                log->debug("Flash timer cancelled");
-            }
-        }
-    }
-    MessageTimeOut mt = new MessageTimeOut();
-    threadAutoClearFrame = new Thread(mt, "NX Button Clear Message Timeout ");
-    threadAutoClearFrame.start();
-    cancelClearFrame.setAlwaysOnTop(true);
-    src->getPoint().getPanel().getGlassPane().setVisible(true);
-    int w = cancelClearFrame.getSize().width;
-    int h = cancelClearFrame.getSize().height;
-    int x = (int)src->getPoint().getPanel().getLocation().getX()+((src->getPoint().getPanel().getSize().width-w)/2);
-    int y = (int)src->getPoint().getPanel().getLocation().getY()+((src->getPoint().getPanel().getSize().height-h)/2);
-    cancelClearFrame.setLocation(x, y);
-    cancelClearFrame.setVisible(true);
+    MessageTimeOut* mt = new MessageTimeOut(this);
+//    threadAutoClearFrame = new Thread(mt, "NX Button Clear Message Timeout ");
+//    threadAutoClearFrame->start();
+    mt->start();
+    cancelClearFrame->setAlwaysOnTop(true);
+    src->getPoint()->getPanel()->getGlassPane()->setVisible(true);
+    int w = cancelClearFrame->size().width();
+    int h = cancelClearFrame->size().height();
+    int x = (int)src->getPoint()->getPanel()->getLocation().x()+((src->getPoint()->getPanel()->size().width()-w)/2);
+    int y = (int)src->getPoint()->getPanel()->getLocation().y()+((src->getPoint()->getPanel()->size().height()-h)/2);
+    cancelClearFrame->setLocation(x, y);
+    cancelClearFrame->setVisible(true);
 #endif
+}
+
+void DestinationPoints::on_jButton_Clear()
+{
+ cancelClearFrame->setVisible(false);
+ threadAutoClearFrame->terminate();//interrupt();
+ cancelClearInterlock(EntryExitPairs::CLEARROUTE);
+}
+
+void DestinationPoints::on_jButton_Cancel() {
+ cancelClearFrame->setVisible(false);
+ threadAutoClearFrame->terminate(); //interrupt();
+ cancelClearInterlock(EntryExitPairs::CANCELROUTE);
+}
+
+void DestinationPoints::on_jButton_Exit() {
+    cancelClearFrame->setVisible(false);
+    threadAutoClearFrame->terminate(); //interrupt();
+    cancelClearInterlock(EntryExitPairs::EXITROUTE);
 }
 
 void DestinationPoints::cancelClearInterlock(int cancelClear)
 {
 
- if (cancelClear==EntryExitPairs::EXITROUTE)
+ if (cancelClear==EntryExitPairs::EXITROUTE || (cancelClear == EntryExitPairs::STACKROUTE))
  {
   src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
   point->setNXButtonState( EntryExitPairs::NXBUTTONINACTIVE);
 //  src->getPoint()->getPanel()->getGlassPane().setVisible(false);
+  if (cancelClear == EntryExitPairs::STACKROUTE) {
+      manager->stackNXRoute(this, false);
+  }
   return;
  }
  src->setMenuEnabled(false);
@@ -687,147 +791,274 @@ void DestinationPoints::cancelClearInterlock(int cancelClear)
  }
  src->pd->cancelNXButtonTimeOut();
  point->cancelNXButtonTimeOut();
- //src->getPoint()->getPanel()->getGlassPane().setVisible(false);
+ src->getPoint()->getPanel()->getGlassPane()->setVisible(false);
 
+}
+/*public*/ void DestinationPoints::setInterlockRoute(bool reverseDirection) {
+    if (activeEntryExit) {
+        return;
+    }
+    activeBean(reverseDirection, false);
 }
 
 void DestinationPoints::activeBean(bool reverseDirection)
 {
-// TODO:
-#if 1
- if(activeEntryExit)
- {
-  // log->debug(mUserName + "  Our route is active so this would go for a clear down but we need to check that the we can clear it down" + activeEndPoint);
-  if(!isEnabled())
-  {
-   log->info("A disabled entry exit has been called will bomb out");
-  }
-  if (activeEntryExit)
-  {
-   log->debug(mUserName + "  We have a valid match on our end point so we can clear down");
-   //setRouteTo(false);
-   //src->pd->setRouteFrom(false);
-   setRoute(false);
-  }
-  else
-  {
-   log->debug(mUserName + "  sourceSensor that has gone active doesn't match the active end point so will not clear");
-   //JOptionPane.showMessageDialog(NULL, "A conflicting route has already been set");
-   QMessageBox::information(NULL, tr("Information"),tr("A conflicting route has already been set"));
-   src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-   point->setNXButtonState( EntryExitPairs::NXBUTTONINACTIVE);
-  }
- }
- else
- {
-  if (isRouteToPointSet())
-  {
-   log->debug(mUserName + "  route to this point is set therefore can not set another to it " /*+ destPoint.src->getPoint().getID()*/);
-   src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-   point->setNXButtonState( EntryExitPairs::NXBUTTONINACTIVE);
-   return;
-  }
-  else
-  {
-   LayoutBlock* startlBlock = src->getStart();
-   LayoutBlock* protectLBlock = src->getSourceProtecting();
-   LayoutBlock* destinationLBlock;
-
-   if(!reverseDirection)
-   {
-    //We have a problem, the destination point is already setup with a route, therefore we would need to
-    //check some how that a route hasn't been set to it.
-    destinationLBlock = getFacing();
-   }
-   else
-   {
-
-    protectLBlock = getFacing();
-    startlBlock = getProtecting();
-    destinationLBlock = src->getStart();
-    if(log->isDebugEnabled())
-     log->debug("reverse set destination is set going for " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());
-    try
-    {
-     if(!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, src->getSourceProtecting(), src->getStart()))
-     {
-      startlBlock = getFacing();
-      protectLBlock = getProtecting();
-      if(log->isDebugEnabled())
-       log->debug("That didn't work so try  " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());
-      if(!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, src->getSourceProtecting(), src->getStart()))
-      {
-       log->error("No route found");
-       //JOptionPane.showMessageDialog(NULL, "No Valid path found");
-       QMessageBox::critical(NULL, tr("Error"), tr("No Valid path found"));
-       src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-       point->setNXButtonState( EntryExitPairs::NXBUTTONINACTIVE);
-       return;
-      }
-     }
-     else if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(getFacing(), getProtecting(), src->getSourceProtecting(), src->getStart()))
-     {
-      //Both paths are valid, so will go for setting the shortest
-      int distance = startlBlock->getBlockHopCount(destinationLBlock->getBlock(), protectLBlock->getBlock());
-      int distance2 = getFacing()->getBlockHopCount(destinationLBlock->getBlock(), getProtecting()->getBlock());
-      if(distance > distance2)
-      {
-       //The alternative route is shorter we shall use that
-       startlBlock = getFacing();
-       protectLBlock = getProtecting();
-      }
-     }
-    }
-    catch (JmriException ex)
-    {
-     //JOptionPane.showMessageDialog(NULL, ex.getMessage());
-     QMessageBox::critical(NULL, tr("Error"), ex.getMessage());
-     log->error("Exception " + ex.getMessage());
-     src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-     point->setNXButtonState( EntryExitPairs::NXBUTTONINACTIVE);
-     return;
-    }
-   }
-   if(log->isDebugEnabled())
-   {
-    log->debug("Path chossen " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " +  protectLBlock->getDisplayName());
-   }
-   // synchronized(this)
-   {
-    destination = destinationLBlock;
-   }
-   try
-   {
-    routeDetails = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
-   }
-   catch (JmriException e)
-   {
-    //JOptionPane.showMessageDialog(NULL, e.getMessage());
-    QMessageBox::critical(NULL, tr("Error"), e.getMessage());
-
-    //Considered normal if not a valid through path
-    log->error(mUserName + " " + e.getMessage());
-    src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-    point->setNXButtonState( EntryExitPairs::NXBUTTONINACTIVE);
-    return;
-   }
-   if (log->isDebugEnabled())
-   {
-    foreach(LayoutBlock* blk, routeDetails)
-    {
-     log->debug(blk->getDisplayName());
-    }
-   }
-
-   if(getEntryExitType()==EntryExitPairs::FULLINTERLOCK)
-   {
-    setActiveEntryExit(true);
-   }
-   setRoute(true);
-  }
- }
-#endif
+ activeBean(reverseDirection, true);
 }
+
+/*synchronized*/ void DestinationPoints::activeBean(bool reverseDirection, bool showMessage)
+{
+ if (!isEnabled()) {
+             JOptionPane::showMessageDialog(nullptr, tr("NX Pair, \"%1\", is disabled.\nUnable to allocate route.").arg( getDisplayName()));  // NOI18N
+             src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+             point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+             return;
+         }
+         if (activeEntryExit) {
+             // log.debug(getUserName() + "  Our route is active so this would go for a clear down but we need to check that the we can clear it down" + activeEndPoint);
+             if (!isEnabled()) {
+                 log->debug("A disabled entry exit has been called will bomb out");  // NOI18N
+                 return;
+             }
+             log->debug(getUserName() + "  We have a valid match on our end point so we can clear down");  // NOI18N
+             //setRouteTo(false);
+             //src.pd.setRouteFrom(false);
+             setRoute(false);
+         } else {
+             if (isRouteToPointSet()) {
+                 log->debug(getUserName() + "  route to this point is set therefore can not set another to it " /*+ destPoint.src.getPoint().getID()*/);  // NOI18N
+                 if (showMessage && !manager->isRouteStacked(this, false)) {
+                     handleNoCurrentRoute(reverseDirection, "Route already set to the destination point");  // NOI18N
+                 }
+                 src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                 point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                 return;
+             } else {
+                 LayoutBlock* startlBlock = src->getStart();
+                 class BestPath {
+ public:
+                     LayoutBlock* srcProtecting = nullptr;
+                     LayoutBlock* srcStart = nullptr;
+                     LayoutBlock* destination = nullptr;
+
+                     BestPath(LayoutBlock* startPro, LayoutBlock* sourceProtecting, LayoutBlock* destinationBlock, QList<LayoutBlock*> blocks) {
+                         srcStart = startPro;
+                         srcProtecting = sourceProtecting;
+                         destination = destinationBlock;
+                         listOfBlocks = blocks;
+                     }
+
+                     LayoutBlock* getStartBlock() {
+                         return srcStart;
+                     }
+
+                     LayoutBlock* getProtectingBlock() {
+                         return srcProtecting;
+                     }
+
+                     LayoutBlock* getDestinationBlock() {
+                         return destination;
+                     }
+
+                     QList<LayoutBlock*> listOfBlocks = QList<LayoutBlock*>(/*0*/);
+                     QString errorMessage = "";
+
+                     QList<LayoutBlock*> getListOfBlocks() {
+                         return listOfBlocks;
+                     }
+
+                     void setErrorMessage(QString msg) {
+                         errorMessage = msg;
+                     }
+
+                     QString getErrorMessage() {
+                         return errorMessage;
+                     }
+                 };
+                 QList<BestPath*> pathList = QList<BestPath*>();//new ArrayList<BestPath>(2);
+                 LayoutBlock* protectLBlock;
+                 LayoutBlock* destinationLBlock;
+                 //Need to work out around here the best one.
+                 for (LayoutBlock* srcProLBlock : src->getSourceProtecting()) {
+                     protectLBlock = srcProLBlock;
+                     if (!reverseDirection) {
+                         //We have a problem, the destination point is already setup with a route, therefore we would need to
+                         //check some how that a route hasn't been set to it.
+                         destinationLBlock = getFacing();
+                         QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
+                         QString errorMessage = "";
+                         try {
+                             blocks = static_cast<LayoutBlockManager*>( InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
+                         } catch (Exception e) {
+                             errorMessage = e.getMessage();
+                             //can be considered normal if no free route is found
+                         }
+                         BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
+                         toadd->setErrorMessage(errorMessage);
+                         pathList.append(toadd);
+                     } else {
+                         startlBlock = srcProLBlock;
+                         protectLBlock = getFacing();
+
+                         destinationLBlock = src->getStart();
+                         if (log->isDebugEnabled()) {
+                             log->debug("reverse set destination is set going for " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());  // NOI18N
+                         }
+                         try {
+                             LayoutBlock* srcPro = src->getSourceProtecting().at(0);  //Don't care what block the facing is protecting
+                             //Need to add a check for the lengths of the returned lists, then choose the most appropriate
+                             if (!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
+                                 startlBlock = getFacing();
+                                 protectLBlock = srcProLBlock;
+                                 if (log->isDebugEnabled()) {
+                                     log->debug("That didn't work so try  " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());  // NOI18N
+                                 }
+                                 if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
+                                     log->error("No route found");  // NOI18N
+                                     JOptionPane::showMessageDialog(nullptr, "No Valid path found");  // NOI18N
+                                     src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                                     point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                                     return;
+                                 } else {
+                                     QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
+                                     QString errorMessage = "";
+                                     try {
+                                         blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
+                                     } catch (Exception e) {
+                                         errorMessage = e.getMessage();
+                                         //can be considered normal if no free route is found
+                                     }
+                                     BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
+                                     toadd->setErrorMessage(errorMessage);
+                                     pathList.append(toadd);
+                                 }
+                             } else if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(getFacing(), srcProLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
+                                 //Both paths are valid, so will go for setting the shortest
+                                 int distance = startlBlock->getBlockHopCount(destinationLBlock->getBlock(), protectLBlock->getBlock());
+                                 int distance2 = getFacing()->getBlockHopCount(destinationLBlock->getBlock(), srcProLBlock->getBlock());
+                                 if (distance > distance2) {
+                                     //The alternative route is shorter we shall use that
+                                     startlBlock = getFacing();
+                                     protectLBlock = srcProLBlock;
+                                 }
+                                 QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
+                                 QString errorMessage = "";
+                                 try {
+                                  blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, LayoutBlockConnectivityTools::NONE);
+                                 } catch (Exception e) {
+                                     //can be considered normal if no free route is found
+                                     errorMessage = e.getMessage();
+                                 }
+                                 BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
+                                 toadd->setErrorMessage(errorMessage);
+                                 pathList.append(toadd);
+                             } else {
+                                 QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
+                                 QString errorMessage = "";
+                                 try {
+                                     blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, LayoutBlockConnectivityTools::NONE);
+                                 } catch (Exception e) {
+                                     //can be considered normal if no free route is found
+                                     errorMessage = e.getMessage();
+                                 }
+                                 BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
+                                 toadd->setErrorMessage(errorMessage);
+                                 pathList.append(toadd);
+                             }
+                         } catch (JmriException ex) {
+                             log->error("Exception " + ex.getMessage());  // NOI18N
+                             if (showMessage) {
+                                 JOptionPane::showMessageDialog(nullptr, ex.getMessage());
+                             }
+                             src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                             point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                             return;
+                         }
+                     }
+                 }
+                 if (pathList.isEmpty()) {
+                     log->debug("Path list empty so exiting");  // NOI18N
+                     return;
+                 }
+                 BestPath* pathToUse = nullptr;
+                 if (pathList.size() == 1) {
+                     if (!(pathList.at(0)->getListOfBlocks().isEmpty())) {
+                         pathToUse = pathList.at(0);
+                     }
+                 } else {
+                     /*Need to filter out the remaining routes, in theory this should only ever be two.
+                      We simply pick at this stage the one with the least number of blocks as being preferred.
+                      This could be expanded at some stage to look at either the length or the metric*/
+                     int noOfBlocks = 0;
+                     for (BestPath* bp : pathList) {
+                         if (!bp->getListOfBlocks().isEmpty()) {
+                             if (noOfBlocks == 0 || bp->getListOfBlocks().size() < noOfBlocks) {
+                                 noOfBlocks = bp->getListOfBlocks().size();
+                                 pathToUse = bp;
+                             }
+                         }
+                     }
+                 }
+                 if (pathToUse == nullptr) {
+                     //No valid paths found so will quit
+                     if (pathList.at(0)->getListOfBlocks().isEmpty()) {
+                         if (showMessage) {
+                             //Considered normal if not a valid through path, provide an option to stack
+                             handleNoCurrentRoute(reverseDirection, pathList.at(0)->getErrorMessage());
+                             src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                             point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                         }
+                         return;
+                     }
+                     pathToUse = pathList.at(0);
+                 }
+                 startlBlock = pathToUse->getStartBlock();
+                 protectLBlock = pathToUse->getProtectingBlock();
+                 destinationLBlock = pathToUse->getDestinationBlock();
+                 routeDetails = pathToUse->getListOfBlocks();
+
+                 if (log->isDebugEnabled()) {
+                     log->debug(tr("Path chosen start = %1, dest = %2, protect = %3").arg(startlBlock->getDisplayName()).arg(  // NOI18N
+                             destinationLBlock->getDisplayName()).arg(protectLBlock->getDisplayName()));
+                 }
+                 /*synchronized (this)*/ {
+                     destination = destinationLBlock;
+                 }
+
+                 if (log->isDebugEnabled()) {
+                     log->debug("Route details:");
+                     for (LayoutBlock* blk : routeDetails) {
+                         log->debug(tr("  %1").arg(blk->getDisplayName()));
+                     }
+                 }
+
+                 if (getEntryExitType() == EntryExitPairs::FULLINTERLOCK) {
+                     setActiveEntryExit(true);
+                 }
+                 setRoute(true);
+             }
+         }
+}
+
+void DestinationPoints::handleNoCurrentRoute(bool reverse, QString message) {
+//        Object[] options = {Bundle.getMessage("ButtonYes"), // NOI18N
+//            Bundle.getMessage("ButtonNo")};  // NOI18N
+ QVariantList options = QVariantList() << "Yes" << "No";
+    int n = JOptionPane::showOptionDialog(nullptr,
+            message + "\n" +tr("Would you like to Stack the Route?"), tr("Route Not Clear"), // NOI18N
+            JOptionPane::YES_NO_CANCEL_OPTION,
+            JOptionPane::QUESTION_MESSAGE,
+            QIcon(),
+            options,
+            options[1]);
+    if (n == 0) {
+        manager->stackNXRoute(this, reverse);
+        firePropertyChange("stacked", QVariant(), QVariant());  // NOI18N
+    } else {
+        firePropertyChange("failed", QVariant(), QVariant());  // NOI18N
+    }
+}
+
 /*public*/ void DestinationPoints::dispose()
 {
     enabled = false;

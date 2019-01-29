@@ -10,7 +10,7 @@ class LIBPR3SHARED_EXPORT AbstractMemoryManager : public MemoryManager
 public:
     explicit AbstractMemoryManager(QObject *parent = 0);
     /*public*/ int getXMLOrder();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter()const;
     /*public*/ Memory* provideMemory(QString sName);
     /*public*/ Memory* getMemory(QString name);
     /*public*/ Memory* getBySystemName(QString name);

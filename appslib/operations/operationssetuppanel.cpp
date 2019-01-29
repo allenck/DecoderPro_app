@@ -666,13 +666,13 @@ OperationsPreferencesPanel(parent)
  }
  Setup::setRailroadName(railroadNameTextField->text());
 
- if (Setup::getRailroadName() != (WebServerPreferences::getDefault()->getRailRoadName()))
+ if (Setup::getRailroadName() != (WebServerPreferences::getDefault()->getRailroadName()))
  {
   Setup::setRailroadName(railroadNameTextField->text());
-  int results = JOptionPane::showConfirmDialog(this, tr("Do you want the change your railroad name from \"%1\" to \"%2\"?").arg(           WebServerPreferences::getDefault()->getRailRoadName()).arg( Setup::getRailroadName()), tr("Change your JMRI railroad name?"), JOptionPane::YES_NO_OPTION);
+  int results = JOptionPane::showConfirmDialog(this, tr("Do you want the change your railroad name from \"%1\" to \"%2\"?").arg(           WebServerPreferences::getDefault()->getRailroadName()).arg( Setup::getRailroadName()), tr("Change your JMRI railroad name?"), JOptionPane::YES_NO_OPTION);
   if (results == JOptionPane::OK_OPTION)
   {
-   WebServerPreferences::getDefault()->setRailRoadName(Setup::getRailroadName());
+   WebServerPreferences::getDefault()->setRailroadName(Setup::getRailroadName());
    WebServerPreferences::getDefault()->save();
   }
  }

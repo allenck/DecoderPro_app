@@ -176,7 +176,7 @@ bool XInclude::processStartElement(QXmlStreamReader* reader)
  return true;
 }
 
-bool XInclude::XInclude::processInclude(QUrl* href)
+bool XInclude::processInclude(QUrl* href)
 {
  this->href = href;
  QString hPath = href->path();

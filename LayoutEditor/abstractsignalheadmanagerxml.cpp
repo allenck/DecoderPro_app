@@ -173,5 +173,5 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
 
 /*public*/ int AbstractSignalHeadManagerXml::loadOrder()
 {
- return ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getXMLOrder();
+ return static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getXMLOrder();
 }

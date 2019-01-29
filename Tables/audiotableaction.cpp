@@ -701,12 +701,19 @@ void AudioSourceTableDataModel:: On_doDelete_triggered()
 //};
 
 //@Override
+/*public*/ void AudioTableAction::setMessagePreferencesDetails()
+{
+    static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->setPreferenceItemDetails(getClassName(), "nullAudio", tr("Hide Null Audio Warning Message"));
+    AbstractTableAction::setMessagePreferencesDetails();
+}
+
+//@Override
 /*public*/ QString AudioTableAction::getClassDescription() {
     return tr("Audio Table");
 }
 
 //@Override
 /*protected*/ QString AudioTableAction::getClassName() {
- return "AudioTableAction";
+ return "jmri.jmrit.beantable.AudioTableAction";
 }
 

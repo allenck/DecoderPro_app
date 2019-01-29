@@ -29,7 +29,7 @@ private:
     Logger* log;
 protected:
     /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map);
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, NamedIcon* icon);
 friend class IndicatorDragJLabel;
 };
 /*protected*/ class IndicatorDragJLabel : public DragJLabel {

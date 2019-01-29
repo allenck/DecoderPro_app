@@ -8,13 +8,15 @@
 #include "itemlistener.h"
 
 
-class LnTcpPreferencesPanel : public PreferencesPanel
+class LnTcpPreferencesPanel : public QWidget, public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
- LnTcpPreferencesPanel(QWidget* parent = nullptr);
+ Q_INVOKABLE LnTcpPreferencesPanel(QWidget* parent = nullptr);
  ~LnTcpPreferencesPanel() {}
- LnTcpPreferencesPanel(const LnTcpPreferencesPanel&) : PreferencesPanel() {}
+ LnTcpPreferencesPanel(const LnTcpPreferencesPanel&) : QWidget() {}
  /*public*/ QString getPreferencesItem();
  /*public*/ QString getPreferencesItemText();
  /*public*/ QString getTabbedPreferencesTitle();
@@ -26,6 +28,8 @@ public:
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired() ;
  /*public*/ virtual bool isPreferencesValid();
+ /*public*/ QString className();
+
 
 public slots:
  void on_startup_clicked();

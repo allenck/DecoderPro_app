@@ -40,11 +40,11 @@
 /*private*/ /*static*/ QStringList SignalGroupTableAction::COLUMN_NAMES = QStringList() << tr("System Name") <<
                                         tr("User Name") <<
                                         tr("Include") <<
-                                        tr("Set State");
+                                        tr("Set State"); // used in class SignalGroupOutputModel (Turnouts and Sensors)
 /*private*/ /*static*/ QStringList SignalGroupTableAction::COLUMN_SIG_NAMES = QStringList() << tr("System Name") <<
                                         tr("User Name") <<
                                         tr("Include") <<
-                                        tr("On State") << tr("Off State") << tr("Edit");
+                                        tr("On State") << tr("Off State") << tr("Edit"); // used in class SignalGroupSignalHeadModel
 
 /*private*/ /*static*/ QVector<QString> SignalGroupTableAction::signalStates =  QVector<QString>()  << tr("Dark") <<  tr("Red") << tr("Yellow") << tr("Green") << tr("Lunar");
 /*private*/ /*static*/ QVector<int> SignalGroupTableAction::signalStatesValues =  QVector<int>() << SignalHead::DARK << SignalHead::RED << SignalHead::YELLOW << SignalHead::GREEN << SignalHead::LUNAR;
@@ -336,7 +336,7 @@ void SGBeanTableDataModel::doDelete(NamedBean* bean) {
 
 /*public*/ Manager* SGBeanTableDataModel::getManager()
 {
- //return InstanceManager::signalGroupManagerInstance();
+ //return static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"));
  return (Manager*)InstanceManager::getNullableDefault("SignalGroupManager");
 }
 
@@ -401,9 +401,9 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
 
  TurnoutManager* tm = InstanceManager::turnoutManagerInstance();
  QStringList systemNameList = ((ProxyTurnoutManager*)tm)->getSystemNameList();
- _mastAppearancesList = QList <SignalMastAppearances*>();
+ _mastAppearancesList = QList <SignalMastAspect*>();
 
- SignalHeadManager* shm = InstanceManager::signalHeadManagerInstance();
+ SignalHeadManager* shm = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  systemNameList = ((AbstractSignalHeadManager*)shm)->getSystemNameList();
  _signalList = QList <SignalGroupSignal*> (/*systemNameList.size()*/);
 
@@ -422,7 +422,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
  // Set up window
  if (addFrame==NULL)
  {
-  mainSignal = new JmriBeanComboBox((Manager*)InstanceManager::signalMastManagerInstance(), NULL, JmriBeanComboBox::DISPLAYNAME);
+  mainSignal = new JmriBeanComboBox((Manager*)InstanceManager::getDefault("SignalMastManager"), NULL, JmriBeanComboBox::DISPLAYNAME);
   mainSignal->setFirstItemBlank(true);
   addFrame = new JmriJFrame("Add/Edit SignalGroup", false, true);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.SignalGroupAddEdit", true);
@@ -606,12 +606,12 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
   p21siLayout->addWidget(new QLabel(" in this Group."));
   //p2xsiLayout->addWidget(p21si);
   p2xsiLayout->addLayout(p21siLayout);
-  _signalGroupSignalModel = new SignalGroupSignalModel(this);
+  _signalGroupSignalModel = new SignalGroupSignalHeadModel(this);
  //JTable SignalGroupSignalTable = jmri.util.JTableUtil.sortableDataModel(_SignalGroupSignalModel);
   QTableView* signalGroupSignalTable = new QTableView();
   signalGroupSignalTable->setModel(_signalGroupSignalModel);
   signalGroupSignalTable->resize(480,160);
-  signalGroupSignalTable->setItemDelegateForColumn(SignalGroupSignalModel::EDIT_COLUMN, new PushButtonDelegate());
+  signalGroupSignalTable->setItemDelegateForColumn(SignalGroupSignalHeadModel::EDIT_COLUMN, new PushButtonDelegate());
 //        try {
 //            jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)SignalGroupSignalTable.getModel());
 //            tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
@@ -737,7 +737,7 @@ void SignalGroupTableAction::setColumnToHoldButton(JTable* /*table*/, int /*colu
  */
 void SignalGroupTableAction::initializeIncludedList()
 {
- _includedMastAppearancesList =  QList<SignalMastAppearances*>();
+ _includedMastAppearancesList =  QList<SignalMastAspect*>();
  for (int i=0; i<_mastAppearancesList.size();i++)
  {
   if (_mastAppearancesList.at(i)->isIncluded())
@@ -768,7 +768,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
     SignalGroup* g = NULL;
     // check if a SignalGroup with the same user name exists
     if (uName!=("")) {
-        g = InstanceManager::signalGroupManagerInstance()->getByUserName(uName);
+        g = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getByUserName(uName);
         if (g!=NULL) {
             // SignalGroup with this user name already exists
 //            javax.swing.JOptionPane.showMessageDialog(NULL,"Signal Group with this username already exists","User Name Error",javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -780,7 +780,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
         }
     }
     // check if a SignalGroup with this system name already exists
-    g = InstanceManager::signalGroupManagerInstance()->getBySystemName(sName);
+    g = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
     if (g!=NULL) {
         // SignalGroup already exists
 //        javax.swing.JOptionPane.showMessageDialog(NULL,"A SignalGroup with this system name already exists","System Name Error",javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -812,7 +812,7 @@ SignalGroup* SignalGroupTableAction::checkNamesOK() {
         QMessageBox::warning(NULL, tr("Warning"),tr("Please enter a system name and user name."));
         return NULL;
     }
-    SignalGroup* g = ((DefaultSignalGroupManager*) InstanceManager::signalGroupManagerInstance())->provideSignalGroup(sName, uName);
+    SignalGroup* g = ((DefaultSignalGroupManager*) static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager")))->provideSignalGroup(sName, uName);
     if (g==NULL) {
         // should never get here
         log->error("Unknown failure to create SignalGroup with System Name: "+sName);
@@ -879,10 +879,10 @@ void SignalGroupTableAction::setValidSignalAppearances()
    return;
  QVector<QString> appear = sh->getValidAspects();
 
- _mastAppearancesList =  QList <SignalMastAppearances*> (/*appear.size()*/);
+ _mastAppearancesList =  QList <SignalMastAspect*> (/*appear.size()*/);
  for(int i = 0; i<appear.size(); i++)
  {
-  _mastAppearancesList.append(new SignalMastAppearances(appear.at(i)));
+  _mastAppearancesList.append(new SignalMastAspect(appear.at(i)));
  }
  _AppearanceModel->fireTableDataChanged();
 }
@@ -893,26 +893,26 @@ void SignalGroupTableAction::setValidSignalAppearances()
 void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     // identify the SignalGroup with this name if it already exists
     QString sName = _systemName->text().toUpper();
-    SignalGroup* g = InstanceManager::signalGroupManagerInstance()->getBySystemName(sName);
+    SignalGroup* g = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
     if (g==NULL) {
         // SignalGroup does not exist, so cannot be edited
         return;
     }
     g->addPropertyChangeListener((PropertyChangeListener*)this);
-    SignalGroupManager* mgr = InstanceManager::signalGroupManagerInstance();
+    SignalGroupManager* mgr = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"));
     connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 
     // SignalGroup was found, make its system name not changeable
     curSignalGroup = g;
 
-    SignalMast* sh = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(((DefaultSignalGroup*)g)->getSignalMastName());
+    SignalMast* sh = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(((DefaultSignalGroup*)g)->getSignalMastName());
     QVector<QString> appear = sh->getValidAspects();
 
-    _mastAppearancesList =  QList <SignalMastAppearances*> (/*appear.size()*/);
+    _mastAppearancesList =  QList <SignalMastAspect*> (/*appear.size()*/);
 
     for(int i = 0; i<appear.size(); i++){
-        _mastAppearancesList.append(new SignalMastAppearances(appear.at(i)));
+        _mastAppearancesList.append(new SignalMastAspect(appear.at(i)));
     }
 
     fixedSystemName->setText(sName);
@@ -943,7 +943,7 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     _signalGroupSignalModel->fireTableDataChanged();
 
     for (int i=0; i<_mastAppearancesList.size(); i++){
-        SignalMastAppearances* appearance = _mastAppearancesList.at(i);
+        SignalMastAspect* appearance = _mastAppearancesList.at(i);
         QString app = appearance->getAppearance();
         if (g->isSignalMastAppearanceIncluded(app)){
             appearance->setIncluded(true);
@@ -968,7 +968,7 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
  * Responds to the Delete button
  */
 void SignalGroupTableAction::deletePressed(ActionEvent* /*e*/) {
-    InstanceManager::signalGroupManagerInstance()->deleteSignalGroup(curSignalGroup);
+    static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->deleteSignalGroup(curSignalGroup);
     curSignalGroup = NULL;
     finishUpdate();
 }
@@ -1055,7 +1055,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
 
     /*public*/ void ATSignalMastAppearanceModel::dispose()
 {
- InstanceManager::signalMastManagerInstance()->removePropertyChangeListener((PropertyChangeListener*)this);
+ static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->removePropertyChangeListener((PropertyChangeListener*)this);
 }
 
 /*public*/ void ATSignalMastAppearanceModel::propertyChange(PropertyChangeEvent* e)
@@ -1096,7 +1096,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
  int c = index.column();
  if(role == Qt::DisplayRole)
  {
-  QList <SignalGroupTableAction::SignalMastAppearances*> appearList = QList <SignalGroupTableAction::SignalMastAppearances*>();
+  QList <SignalGroupTableAction::SignalMastAspect*> appearList = QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
    appearList = act->_mastAppearancesList;
@@ -1123,7 +1123,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
  }
  if(role == Qt::CheckStateRole)
  {
-  QList <SignalGroupTableAction::SignalMastAppearances*> appearList = QList <SignalGroupTableAction::SignalMastAppearances*>();
+  QList <SignalGroupTableAction::SignalMastAspect*> appearList = QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
    appearList = act->_mastAppearancesList;
@@ -1148,7 +1148,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
  int r = index.row();
  int c = index.column();
 
- QList <SignalGroupTableAction::SignalMastAppearances*> appearList = QList <SignalGroupTableAction::SignalMastAppearances*>();
+ QList <SignalGroupTableAction::SignalMastAspect*> appearList = QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
    appearList = act->_mastAppearancesList;
@@ -1228,15 +1228,15 @@ this->act = act;
 
 //class SignalGroupSignalModel extends SignalGroupOutputModel
 //{
-SignalGroupSignalModel::SignalGroupSignalModel(SignalGroupTableAction *act) : SignalGroupOutputModel(act)
+SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *act) : SignalGroupOutputModel(act)
 {
- InstanceManager::signalHeadManagerInstance()->addPropertyChangeListener((PropertyChangeListener*)this);
- AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance();
+ static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
+ AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  editMapper = new QSignalMapper;
 }
 
-/*public*/ Qt::ItemFlags SignalGroupSignalModel::flags(const QModelIndex &index) const
+/*public*/ Qt::ItemFlags SignalGroupSignalHeadModel::flags(const QModelIndex &index) const
 {
  //return ( (c==INCLUDE_COLUMN) || (c==STATE_ON_COLUMN) || (c==STATE_OFF_COLUMN) || (c==EDIT_COLUMN));
  switch(index.column())
@@ -1253,7 +1253,7 @@ SignalGroupSignalModel::SignalGroupSignalModel(SignalGroupTableAction *act) : Si
  return SignalGroupOutputModel::flags(index);
 }
 
-/*public*/ int SignalGroupSignalModel::columnCount(const QModelIndex &/*parent*/) const {return 6+1;}
+/*public*/ int SignalGroupSignalHeadModel::columnCount(const QModelIndex &/*parent*/) const {return 6;}
 
 
 //    /*public*/ Class<?> getColumnClass(int c) {
@@ -1267,16 +1267,16 @@ SignalGroupSignalModel::SignalGroupSignalModel(SignalGroupTableAction *act) : Si
 //        }
 //    }
 
-    /*public*/ QVariant SignalGroupSignalModel::headerData(int section, Qt::Orientation orientation, int role) const
+    /*public*/ QVariant SignalGroupSignalHeadModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
  if(Qt::DisplayRole == role && orientation == Qt::Horizontal)
     return SignalGroupTableAction::COLUMN_SIG_NAMES[section];
  return QVariant();
 }
 
-/*public*/ void SignalGroupSignalModel::setSetToState(QString /*x*/){}
+/*public*/ void SignalGroupSignalHeadModel::setSetToState(QString /*x*/){}
 
-/*public*/ int SignalGroupSignalModel::rowCount(const QModelIndex &/*parent*/) const
+/*public*/ int SignalGroupSignalHeadModel::rowCount(const QModelIndex &/*parent*/) const
 {
  if (act->showAll)
   return act->_signalList.size();
@@ -1284,7 +1284,7 @@ SignalGroupSignalModel::SignalGroupSignalModel(SignalGroupTableAction *act) : Si
   return act->_includedSignalList.size();
  }
 
-/*public*/ QVariant SignalGroupSignalModel::data(const QModelIndex &index, int role) const
+/*public*/ QVariant SignalGroupSignalHeadModel::data(const QModelIndex &index, int role) const
 {
     QList <SignalGroupTableAction::SignalGroupSignal*> signalList = QList <SignalGroupTableAction::SignalGroupSignal*>();
  int c = index.column();
@@ -1336,7 +1336,7 @@ SignalGroupSignalModel::SignalGroupSignalModel(SignalGroupTableAction *act) : Si
  return QVariant();
 }
 
-/*public*/ QString SignalGroupSignalModel::getDisplayName(int r)
+/*public*/ QString SignalGroupSignalHeadModel::getDisplayName(int r)
 {
  if ((data(index(r, UNAME_COLUMN),Qt::DisplayRole).toString()!="")&&(!( data(index(r, UNAME_COLUMN),Qt::DisplayRole).toString()==(""))))
  {
@@ -1348,12 +1348,12 @@ SignalGroupSignalModel::SignalGroupSignalModel(SignalGroupTableAction *act) : Si
  }
 }
 
-/*public*/ SignalHead* SignalGroupSignalModel::getBean(int r)
+/*public*/ SignalHead* SignalGroupSignalHeadModel::getBean(int r)
 {
-        return InstanceManager::signalHeadManagerInstance()->getSignalHead(data(index(r, SNAME_COLUMN),Qt::DisplayRole).toString());
+        return static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(data(index(r, SNAME_COLUMN),Qt::DisplayRole).toString());
     }
 
-/*public*/ bool  SignalGroupSignalModel::setData(const QModelIndex &index, const QVariant &value, int role)
+/*public*/ bool  SignalGroupSignalHeadModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
  QList <SignalGroupTableAction::SignalGroupSignal*> signalList = QList <SignalGroupTableAction::SignalGroupSignal*>();
  int r = index.row();
@@ -1409,8 +1409,8 @@ SignalGroupSignalModel::SignalGroupSignalModel(SignalGroupTableAction *act) : Si
   }
  return false;
 }
-    /*public*/ void SignalGroupSignalModel::dispose() {
-        InstanceManager::signalHeadManagerInstance()->removePropertyChangeListener((PropertyChangeListener*)this);
+    /*public*/ void SignalGroupSignalHeadModel::dispose() {
+        static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->removePropertyChangeListener((PropertyChangeListener*)this);
     }
 //};
 
@@ -1454,10 +1454,10 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
  _onState = 0x00;
  _offState = 0x00;
 
- SignalHead* head = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getBySystemName(sysName);
+ SignalHead* head = ((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName);
  if (QString(head->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
-  SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) InstanceManager::signalHeadManagerInstance()->getBySystemName(sysName);
+  SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sysName);
   _onState = signal->getOnAppearance();
   _offState = signal->getOffAppearance();
   _signal = (SignalHead*)signal;
@@ -1591,23 +1591,23 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
 
 ///*private*/ /*static*/ class SignalMastAppearances
 //    {
-     SignalGroupTableAction::SignalMastAppearances::SignalMastAppearances(QString appearance){
+     SignalGroupTableAction::SignalMastAspect::SignalMastAspect(QString appearance){
         _appearance=appearance;
     }
 
-    void SignalGroupTableAction::SignalMastAppearances::setIncluded(bool include) {
+    void SignalGroupTableAction::SignalMastAspect::setIncluded(bool include) {
         _include = include;
     }
 
-    bool SignalGroupTableAction::SignalMastAppearances::isIncluded() {
+    bool SignalGroupTableAction::SignalMastAspect::isIncluded() {
         return _include;
     }
 
-    void SignalGroupTableAction::SignalMastAppearances::setAppearance(QString app){
+    void SignalGroupTableAction::SignalMastAspect::setAppearance(QString app){
         _appearance = app;
     }
 
-    QString SignalGroupTableAction::SignalMastAppearances::getAppearance(){
+    QString SignalGroupTableAction::SignalMastAspect::getAppearance(){
         return _appearance;
     }
 

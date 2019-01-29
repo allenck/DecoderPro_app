@@ -13,6 +13,7 @@
 #include "connectionconfigmanager.h"
 #include "loggerfactory.h"
 #include "configuremanager.h"
+#include "class.h"
 
 //JmrixConfigPane::JmrixConfigPane(QWidget *parent) :
 //    QWidget(parent)
@@ -186,7 +187,6 @@
 {
  setObjectName("JmrixConfigPane");
 
-
  _isDirty = false;
  modeBox = new QComboBox();
  modeBox->setMinimumWidth(100);
@@ -199,7 +199,7 @@
  QVBoxLayout* layout;
  setLayout(layout = new QVBoxLayout());
  //this->setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
-
+  resize(300,200);
   manuBox->addItem(NONE_SELECTED);
 
   manufactureNameList = DCCManufacturerList::getSystemNames();
@@ -258,21 +258,21 @@
       }
      else
      {
-//      Class<?> cl = Class.forName(className);
-//      config = (ConnectionConfig) cl.newInstance();
-      int id = QMetaType::type(className.toLocal8Bit());
-      if(id != 0)
-      {
-#if QT_VERSION < 0x050000
-       config = (ConnectionConfig*)QMetaType::construct(id);
-#else
-       config = (ConnectionConfig*)QMetaType::create(id);
-#endif
+      Class* cl = Class::forName(className);
+      config = (ConnectionConfig*) cl->newInstance();
+//      int id = QMetaType::type(className.toLocal8Bit());
+//      if(id != 0)
+//      {
+//#if QT_VERSION < 0x050000
+//       config = (ConnectionConfig*)QMetaType::construct(id);
+//#else
+//       config = (ConnectionConfig*)QMetaType::create(id);
+//#endif
 
        modeBox->addItem(config->name());
-      }
-      else
-       Logger::error("JmrixConfigPane: Can't construct " + className);
+//      }
+//      else
+//       Logger::error("JmrixConfigPane: Can't construct " + className);
      }
      //classConnectionList[n++] = config;
      classConnectionList.replace(n++,config);
@@ -285,6 +285,11 @@
 //    {
 //     log->debug("Attempt to load {} failed: {}.", className, e);
 //    }
+    catch (ClassNotFoundException e)
+    {
+     Logger::error(QString("Attempt to load %1 failed.").arg(className));
+    }
+
    }
    if ((modeBox->currentIndex() == 0) && (p->getComboBoxLastSelection( manuBox->currentText()) != NULL))
    {
@@ -373,12 +378,14 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
  {
   foreach (QString classConnectionNameList1, classConnectionNameList)
   {
-//      try
-//      {
-   ConnectionConfig* config = NULL;
-//       Class<?> cl = Class.forName(classConnectionNameList1);
-//       config = (ConnectionConfig*) cl.newInstance();
-//       modeBox.addItem(config.name());
+   try
+   {
+    ConnectionConfig* config = NULL;
+#if 1
+    Class* cl = Class::forName(classConnectionNameList1);
+    config = (ConnectionConfig*) cl->newInstance();
+    modeBox->addItem(config->name());
+#else
   int id = QMetaType::type(classConnectionNameList1.toLocal8Bit());
   if(id != 0)
   {
@@ -393,16 +400,29 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
   {
    log->warn(tr("Attempt to load %1 failed").arg(classConnectionNameList1));
   }
-  classConnectionList.replace(n++, config);
-  if (classConnectionNameList.length() == 1)
-  {
-   modeBox->setCurrentIndex(1);
-  }
-//      }
-//      catch (NullPointerException | ClassNotFoundException | InstantiationException | IllegalAccessException e)
-//      {
-//        log->warn("Attempt to load {} failed: {}", classConnectionNameList1, e);
-//      }
+#endif
+    classConnectionList.replace(n++, config);
+    if (classConnectionNameList.length() == 1)
+    {
+     modeBox->setCurrentIndex(1);
+    }
+   }
+   catch (NullPointerException e)
+   {
+     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e.getMessage()));
+   }
+   catch (ClassNotFoundException  e)
+   {
+     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e.getMessage()));
+   }
+   catch (InstantiationException  e)
+   {
+     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e.getMessage()));
+   }
+   catch (IllegalAccessException e)
+   {
+     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e.getMessage()));
+   }
   }
   if (p->getComboBoxLastSelection(manuBox->currentText()) != NULL)
   {
@@ -592,6 +612,6 @@ void JmrixConfigPane::selection()
 }
 
 //@Override
-/*public*/ bool isPreferencesValid() {
+/*public*/ bool JmrixConfigPane::isPreferencesValid() {
     return true; // no validity checking performed
 }

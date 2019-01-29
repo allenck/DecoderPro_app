@@ -131,11 +131,11 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  *      manager exists.
  * If a manager is found, return its determination of validity of system name format
  */
-/*public*/ bool ProxyLightManager::validSystemNameFormat(QString systemName) {
+/*public*/ Manager::NameValidity ProxyLightManager::validSystemNameFormat(QString systemName) {
     int i = matchTentative(systemName);
     if (i >= 0)
         return ( (AbstractLightManager*)getMgr(i))->validSystemNameFormat(systemName);
-    return false;
+    return NameValidity::INVALID;
 }
 
 /**

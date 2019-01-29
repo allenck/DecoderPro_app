@@ -2,17 +2,22 @@
 #define USERMESSAGEPREFERENCESPANE_H
 #include "preferencespanel.h"
 #include "libpref_global.h"
+#include "propertychangeevent.h"
+#include <QTabWidget>
+#include <QComboBox>
 
 class QComboBox;
 class QCheckBox;
 class UserPreferencesManager;
-class LIBPREFSHARED_EXPORT UserMessagePreferencesPane : public PreferencesPanel
+class LIBPREFSHARED_EXPORT UserMessagePreferencesPane : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
-    explicit UserMessagePreferencesPane(QWidget *parent = 0);
+    Q_INVOKABLE explicit UserMessagePreferencesPane(QWidget *parent = 0);
     ~UserMessagePreferencesPane() {}
-    UserMessagePreferencesPane(const UserMessagePreferencesPane&) : PreferencesPanel() {}
+    UserMessagePreferencesPane(const UserMessagePreferencesPane&) : QWidget() {}
     /*public*/ QString getPreferencesItem();
     /*public*/ QString getPreferencesItemText();
     /*public*/ QString getTabbedPreferencesTitle();
@@ -24,7 +29,7 @@ public:
     /*public*/ bool isDirty() ;
     /*public*/ bool isRestartRequired();
     /*public*/ void updateManager();
-
+    /*public*/ QString className();
 signals:
 
 public slots:

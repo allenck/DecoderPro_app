@@ -99,6 +99,7 @@ public:
     const QIcon getColourIcon(QColor color);
     /*public*/ void setHasBackground(bool set);
     /*public*/ bool hasBackground();
+    /*public*/ void setSuppressRecentColor(bool b);
 
 
 signals:
@@ -131,7 +132,7 @@ private:
  QVector<QMenu*>* viewAdditionalMenu;// = new QVector<QMenu*>(0);
  int saveType;
  /*private*/ bool _hasBackground;      // Should background be painted or clear
-
+ /*private*/ bool _suppressRecentColor = false;
  Logger* log;
 private slots:
  void on_italicAction_triggered();

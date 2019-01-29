@@ -10,13 +10,15 @@
 class ActionEvent;
 class ListSelectionEvent;
 class StartupActionsManager;
-class StartupActionsPreferencesPanel : public PreferencesPanel
+class StartupActionsPreferencesPanel : public QWidget, public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
- StartupActionsPreferencesPanel(QWidget* parent = 0);
+ Q_INVOKABLE StartupActionsPreferencesPanel(QWidget* parent = 0);
  ~StartupActionsPreferencesPanel() {}
- StartupActionsPreferencesPanel(const StartupActionsPreferencesPanel&) : PreferencesPanel() {}
+ StartupActionsPreferencesPanel(const StartupActionsPreferencesPanel&) : QWidget() {}
  /*public*/ QString getPreferencesItem();
  /*public*/ QString getPreferencesItemText();
  /*public*/ QString getTabbedPreferencesTitle();
@@ -28,6 +30,8 @@ public:
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired();
  /*public*/ bool isPreferencesValid();
+ /*public*/ QString className();
+
   public slots:
 
 private:

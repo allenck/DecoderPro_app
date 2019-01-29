@@ -130,7 +130,6 @@
 #include "internallightmanagerxml.h"
 #include "layoutslipxml.h"
 #include "layoutblockmanager.h"
-#include "rfidsensormanagerxml.h"
 #include "blocktableaction.h"
 #include "importrosteritemaction.h"
 #include "printrosteraction.h"
@@ -285,7 +284,10 @@
 #include "../libPr3/rfid/rfidsensormanagerxml.h"
 #include "../libPr3/rfid/rfidreportermanagerxml.h"
 #include "../libPr3/rfid/rfidserialconnectionconfig.h"
-#include "../libPr3/rfid/rfidserialconnectionconfigxml.h".h"
+#include "../libPr3/rfid/rfidserialconnectionconfigxml.h"
+#include "operationssetupxml.h"
+#include "sensortabledatamodel.h"
+#include "sensortableaction.h"
 
 bool Metatypes::done = false;
 
@@ -294,7 +296,7 @@ Metatypes::Metatypes(QObject *parent) :
 {
  if(done) return;
  qRegisterMetaType<CreateButtonModel>("CreateButtonModel");
- //qRegisterMetaType<DefaultUserMessagePreferencesXml>("DefaultUserMessagePreferencesXml");
+ qRegisterMetaType<DefaultUserMessagePreferencesXml>("DefaultUserMessagePreferencesXml");
  qRegisterMetaType<ConnectionConfigXml>("ConnectionConfigXml");
  qRegisterMetaType<ProgrammerConfigPaneXml>("ProgrammerConfigPaneXml");
  qRegisterMetaType<FileLocationPaneXml>("FileLocationPaneXml");
@@ -585,6 +587,9 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<RfidSensorManagerXml>("RfidSensorManagerXml");
  qRegisterMetaType<RfidSerialConnectionConfig>("RfidSerialConnectionConfig");
  qRegisterMetaType<RfidSerialConnectionConfigXml>("RfidSerialConnectionConfigXml");
+ qRegisterMetaType<Operations::OperationsSetupXml>("OperationsSetupXml");
+ qRegisterMetaType<SensorTableDataModel>("SensorTableDataModel");
+ qRegisterMetaType<SensorTableAction>("SensorTableAction");
 
  Metatypes::done = true;
 }

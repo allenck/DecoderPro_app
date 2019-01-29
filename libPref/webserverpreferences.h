@@ -82,8 +82,8 @@ public:
  /*public*/ static WebServerPreferences* getDefault();
  /*public*/ int getPort();
  /*public*/ void setPort(int value);
- /*public*/ QString getRailRoadName();
- /*public*/ void setRailRoadName(QString railRoadName);
+ /*public*/ QString getRailroadName();
+ /*public*/ void setRailroadName(QString railRoadName);
  /*public*/ bool isDefaultRailroadName();
  /*public*/ QString getDefaultRailroadName();
  /*public*/ void load(QDomElement child);

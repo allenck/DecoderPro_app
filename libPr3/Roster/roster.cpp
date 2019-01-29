@@ -75,6 +75,7 @@ Roster::Roster(QObject *parent) :
 
 /*private*/ void Roster::common()
 {
+ setObjectName("Roster");
  _list = new QList<RosterEntry*>();
  pcs = new PropertyChangeSupport(this);
  //schemaVersion = "";

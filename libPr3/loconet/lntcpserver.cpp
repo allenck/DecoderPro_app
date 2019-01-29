@@ -9,6 +9,7 @@
 #include "instancemanager.h"
 #include "loconetsystemconnectionmemo.h"
 #include "LnOverTcp/lntcppreferences.h"
+#include <QNetworkInterface>
 
 //Server::Server(QObject *parent) :
 //  QObject(parent)
@@ -74,6 +75,7 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
  }
 }
 
+//@Deprecated
 /*public*/ void LnTcpServer::setStateListner(ServerListner* l) {
  stateListner = l;
 }
@@ -90,6 +92,7 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
  return server;
 }
 
+//@Deprecated
 /*public*/ /*static synchronized*/ LnTcpServer* LnTcpServer::getInstance()
 {
  LnTcpServer* server = (LnTcpServer*)InstanceManager::getOptionalDefault("LnTcpServer");
@@ -252,6 +255,26 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
  log->info(tr("LnTcpServer listening on port %1").arg(portNumber));
  connect(this, SIGNAL(newConnection()), this, SLOT(on_newConnection()));
  updateServerStateListener();
+ // advertise over Zeroconf/Bonjour
+ // need https://github.com/jbagg/QtZeroConf, sudo apt-get install libavahi-client-dev
+#if 0
+ if (this->service == nullptr) {
+     //this->service = ZeroConfService.create("_loconetovertcpserver._tcp.local.", portNumber);
+  this->service = new QZeroConf();
+  this->service->clearServiceTxtRecords();
+ }
+ log->info("Starting ZeroConfService _loconetovertcpserver._tcp.local for LocoNetOverTCP Server");
+ connect(this->service, SIGNAL(servicePublished()), this, SLOT(servicePublished()));
+ connect(this->service, SIGNAL(error(QZeroConf::error_t)), this, SLOT(error(QZeroConf::error_t)));
+ this->service->startServicePublish(buildName().toUtf8(), "_loconetovertcpserver._tcp", "local", portNumber);
+#else
+ // advertise over Zeroconf/Bonjour
+ if (this->service == NULL) {
+     this->service = ZeroConfService::create("_loconetovertcpserver._tcp.local.", portNumber);
+ }
+ log->info("Starting ZeroConfService _loconetovertcpserver._tcp.local for LocoNetOverTCP Server");
+ this->service->publish();
+#endif
  if (this->shutDownTask == nullptr)
  {
 //  this.shutDownTask = new QuietShutDownTask("LocoNetOverTcpServer") {
@@ -264,6 +287,46 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
   this->shutDownTask = new ServerQuietShutDownTask("LocoNetOverTcpServer", this);
  }
  bIsEnabled = true;
+}
+
+#ifdef Q_OS_IOS
+ #define	OS_NAME		"iOS"
+#elif defined(Q_OS_MAC)
+ #define	OS_NAME		"Mac"
+#elif defined(Q_OS_ANDROID)
+ #define	OS_NAME		"Android"
+#elif defined(Q_OS_LINUX)
+ #define	OS_NAME		"Linux"
+#elif defined(Q_OS_WIN)
+ #define	OS_NAME		"Windows"
+#elif defined(Q_OS_FREEBSD)
+ #define	OS_NAME		"FreeBSD"
+#else
+ #define	OS_NAME		"Some OS"
+#endif
+
+QString LnTcpServer::buildName(void)
+{
+    QString name;
+
+ QList<QNetworkInterface> list = QNetworkInterface::allInterfaces(); // now you have interfaces list
+
+ name = list.last().hardwareAddress();
+ name.remove(":");
+ name.remove(0, 6);
+ name+= ')';
+ name.prepend("Qt ZeroConf Test - " OS_NAME " (");
+    return name;
+}
+
+void LnTcpServer::servicePublished()
+{
+ log->info(tr("ZeroService started"));
+}
+
+void LnTcpServer::error(QZeroConf::error_t e)
+{
+ log->error(tr("Zero conf Service error %1").arg(e));
 }
 
 void LnTcpServer::on_newConnection()
@@ -282,44 +345,45 @@ void LnTcpServer::on_newConnection()
 
 /*public*/ void LnTcpServer::disable()
 {
-#if 1 // TODO:
  //if (socketListener != nullptr)
 // {
 //  socketListener.interrupt();
 //  socketListener = NULL;
-  try
-  {
-   if (serverSocket != nullptr) {
-       serverSocket->close();
-   }
+ try
+ {
+  if (serverSocket != nullptr) {
+      serverSocket->close();
   }
-  catch (IOException ex) {
-  }
+ }
+ catch (IOException ex) {
+ }
 
-  updateServerStateListener();
+ updateServerStateListener();
 
-  // Now close all the client connections
-  QLinkedList<ClientRxHandler*> clientsArray;
+ // Now close all the client connections
+ QLinkedList<ClientRxHandler*> clientsArray;
 
-  /*synchronized (clients)*/
-  {
-   clientsArray = *clients;
+ /*synchronized (clients)*/
+ {
+  clientsArray = *clients;
 //  }
 //  for (int i = 0; i < clientsArray.size(); i++)
 //  {
 //   ((ClientRxHandler*) clientsArray[i])->close();
 //  }
-   while(!clientsArray.isEmpty())
-   {
-    clientsArray.takeFirst()->close();
-   }
+  while(!clientsArray.isEmpty())
+  {
+   clientsArray.takeFirst()->close();
+  }
  }
-// this->service.stop();
+ if (this->service != nullptr) {
+     this->service->stop();
+ }
+
  if (this->shutDownTask != nullptr && static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager")) != nullptr) {
      static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->deregister(this->shutDownTask);
  }
  bIsEnabled = false;
-#endif
 }
 
 /*public*/ void LnTcpServer::updateServerStateListener()

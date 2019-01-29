@@ -5,6 +5,7 @@
 #include "beantabledatamodel.h"
 #include "windowlistener.h"
 
+class LTAValidator;
 class QGroupBox;
 class LightControlTableModel;
 class LightControl;
@@ -25,9 +26,12 @@ public:
     ~LightTableAction() {}
     LightTableAction(const LightTableAction&) : AbstractTableAction() {}
     /*public*/ void setManager(Manager* man);
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     /*public*/ QString getControlTypeText(int type);
     /*public*/ QString getDescriptionText(LightControl* lc, int type);
+
+public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
 
 private:
     void common();
@@ -45,7 +49,7 @@ private:
     QLabel* systemLabel;// = new JLabel(tr("LightSystem"));
     QComboBox* prefixBox;// = new JComboBox<String>();
     QCheckBox* addRangeBox;// = new JCheckBox(tr("AddRangeBox"));
-    JTextField* fieldHardwareAddress;// = new JTextField(10);
+    JTextField* hardwareAddressTextField;// = new JTextField(10);
     JTextField* fieldNumToAdd;// = new JTextField(5);
     QLabel* labelNumToAdd;// = new JLabel("   " + tr("LabelNumberToAdd"));
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
@@ -127,6 +131,8 @@ private:
     void setUpControlType(QString ctype);
     /*private*/ bool setControlInformation(LightControl* g);
     QString addEntryToolTip;
+    LTAValidator* validator;
+    void handleCreateException(Exception ex, QString sysName);
 
 private slots:
     void createPressed(ActionEvent* e = nullptr);
@@ -134,6 +140,7 @@ private slots:
     void updatePressed(ActionEvent* e = nullptr);
     void cancelPressed(ActionEvent* e = nullptr);
     void controlTypeChanged();
+
 
 protected:
     /*protected*/ LightManager* lightManager;// = InstanceManager.lightManagerInstance();
@@ -159,6 +166,7 @@ protected slots:
  friend class LightControlTableModel;
  friend class LTAWindowListener;
  friend class ACFWindowListener;
+ friend class LTAValidator;
 };
 Q_DECLARE_METATYPE(LightTableAction)
 
@@ -197,7 +205,7 @@ protected:
     /*protected*/ QString getBeanType() ;
     /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
     /*protected*/ QString getMasterClassName();
-
+ friend class LTAValidator;
 };
 
 /*public*/ class LightControlTableModel : public AbstractTableModel //implements
@@ -246,5 +254,20 @@ public:
  void windowClosing(QCloseEvent *e);
 
 };
+class LTAValidator : public QValidator
+{
+ Q_OBJECT
+ LightTableAction* act;
+ JTextField* fld;
+ bool allow0Length = false; // for Add new bean item, a value that is zero-length is considered invalid.
+ QString prefix;// = ConnectionNameFromSystemName::getPrefixFromName(rta->connectionChoice);
+ QColor mark;// = ColorUtil::stringToColor("orange");
+public:
+ LTAValidator(JTextField* fld, LightTableAction* act);
+ QValidator::State validate(QString &, int &) const;
+ //void fixup(QString &input) const;
+public slots:
+ void prefixBoxChanged(QString txt);
 
+};
 #endif // LIGHTTABLEACTION_H

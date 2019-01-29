@@ -7,7 +7,7 @@ class ClockItemPanel : public IconItemPanel
     Q_OBJECT
 public:
     //explicit ClockItemPanel(QWidget *parent = 0);
-    /*public*/ ClockItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent);
+    /*public*/ ClockItemPanel(DisplayFrame* parentFrame, QString type, Editor* editor, QWidget *parent);
     /*public*/ void initButtonPanel();
 
 signals:

@@ -3,7 +3,7 @@
 #include <qmath.h>
 #include <QMessageBox>
 #include "inputdialog.h"
-//#include "editturnout.h"
+//#include "editTurnout::h"
 #include "layouteditor.h"
 #include <QComboBox>
 #include <QLabel>
@@ -46,7 +46,7 @@
  *      turnouts, the entire turnout is in one block,however, a block border may occur
  *      at any connection (A,B,C,D). For a double crossover turnout, up to four blocks
  *      may be assigned, one for each connection point, but if only one block is assigned,
- *      that block applies to the entire turnout.
+ *      that block applies to the entire Turnout::
  * <P>
  * For drawing purposes, each LayoutTurnout carries a center point and displacements
  *		for B and C. For right-handed or left-handed turnouts, the displacement for
@@ -68,7 +68,7 @@
  *		and connections may be added when available.
  * <P>
  * When a LayoutTurnout is first created, it is enabled for control of an assigned
- *		actual turnout. Clicking on the turnout center point will toggle the turnout.
+ *		actual Turnout:: Clicking on the turnout center point will toggle the Turnout::
  *		This can be disabled via the popup menu.
  * <P>
  * Signal Head names are saved here to keep track of where signals are. LayoutTurnout
@@ -81,7 +81,7 @@
  *			situation when two RH, LH, or WYE turnouts are used to model a double slip.
  *		3-Way Turnout - Two turnouts modeling a 3-way turnout, where the throat of the
  *			second turnout is closely connected to the continuing track of the first
- *			turnout.  The throat will have three heads, or one head.
+ *			Turnout::  The throat will have three heads, or one head.
  * A link is required to be able to correctly interpret the use of signal heads.
  *
  * @author Dave Duchamp Copyright (c) 2004-2007
@@ -120,7 +120,7 @@
  turnoutName = "";   // should be the name (system or user) of
                                     //	an existing physical turnout
  secondTurnoutName = "";   /* should be the name (system or user) of
-                                    an existing physical turnout. Second turnout is
+                                    an existing physical Turnout:: Second turnout is
                                     used to allow the throwing of two different turnout
                                     to control one cross-over
                                     */
@@ -379,7 +379,7 @@
         }
         return "";
     }
-/*public*/ QString LayoutTurnout::getSignalAMast() {return signalAMast;}
+/*public*/ SignalMast* LayoutTurnout::getSignalAMast() {return signalAMastNamed->getBean();}
 /*public*/ void LayoutTurnout::setSignalAMast(QString signalMast) {signalAMast = signalMast;}
 /*public*/ QString LayoutTurnout::getSignalBMastName()
 {
@@ -389,7 +389,7 @@
  }
  return "";
 }
-/*public*/ QString LayoutTurnout::getSignalBMast() {return signalBMast;}
+/*public*/ SignalMast *LayoutTurnout::getSignalBMast() {return signalBMastNamed->getBean();}
 /*public*/ void LayoutTurnout::setSignalBMast(QString signalMast) {signalBMast = signalMast;}
 /*public*/ QString LayoutTurnout::getSignalCMastName()
 {
@@ -399,7 +399,7 @@
  }
  return "";
 }
-/*public*/ QString LayoutTurnout::getSignalCMast() {return signalCMast;}
+/*public*/ SignalMast* LayoutTurnout::getSignalCMast() {return signalCMastNamed->getBean();}
 /*public*/ void LayoutTurnout::setSignalCMast(QString signalMast) {signalCMast = signalMast;}
 /*public*/ QString LayoutTurnout::getSignalDMastName()
 {
@@ -409,7 +409,7 @@
  }
  return "";
 }
-/*public*/ QString LayoutTurnout::getSignalDMast() {return signalDMast;}
+/*public*/ SignalMast *LayoutTurnout::getSignalDMast() {return signalDMastNamed->getBean();}
 /*public*/ void LayoutTurnout::setSignalDMast(QString signalMast) {signalDMast = signalMast;}
 
 /*public*/ QString LayoutTurnout::getSensorAName()
@@ -419,10 +419,11 @@
  }
  return "";
 }
-/*public*/ QString LayoutTurnout::getSensorA() {
+
+/*public*/ Sensor* LayoutTurnout::getSensorA() {
     if(sensorANamed!=nullptr)
-        return sensorANamed->getName();
-    return "";
+        return sensorANamed->getBean();
+    return nullptr;
 }
 
 /*public*/ void LayoutTurnout::setSensorA(QString sensorName)
@@ -441,10 +442,10 @@
     }
 }
 
-/*public*/ QString LayoutTurnout::getSensorB() {
+/*public*/ Sensor *LayoutTurnout::getSensorB() {
     if(sensorBNamed!=nullptr)
-        return sensorBNamed->getName();
-    return "";
+        return sensorBNamed->getBean();
+    return nullptr;
 }
 
 /*public*/ QString LayoutTurnout::getSensorBName()
@@ -480,10 +481,10 @@
  }
  return "";
 }
-/*public*/ QString LayoutTurnout::getSensorC() {
+/*public*/ Sensor* LayoutTurnout::getSensorC() {
     if(sensorCNamed!=nullptr)
-        return sensorCNamed->getName();
-    return "";
+        return sensorCNamed->getBean();
+    return nullptr;
 }
 
 /*public*/ void LayoutTurnout::setSensorC(QString sensorName) {
@@ -507,10 +508,10 @@
  }
  return "";
 }
-/*public*/ QString LayoutTurnout::getSensorD() {
+/*public*/ Sensor *LayoutTurnout::getSensorD() {
     if(sensorDNamed!=nullptr)
-        return sensorDNamed->getName();
-    return "";
+        return sensorDNamed->getBean();
+    return nullptr;
 }
 
 /*public*/ void LayoutTurnout::setSensorD(QString sensorName) {
@@ -886,7 +887,7 @@
 /**
  * Set Up a Layout Block(s) for this Turnout
  */
-/*public*/ void LayoutTurnout::setLayoutBlock (LayoutBlock* b) {
+/*public*/ void LayoutTurnout::setLayoutBlock(LayoutBlock* b) {
     block = b;
     if (b!=nullptr) blockName = b->getID();
     else blockName = "";
@@ -1218,7 +1219,7 @@
 //            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //                layoutEditor.redrawPanel();
 //            }
-//        }, namedTurnout.getName(), "Layout Editor Turnout");
+//        }, namedTurnout::getName(), "Layout Editor Turnout");
   AbstractTurnout* t = (AbstractTurnout*)namedTurnout->getBean();
   connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
  }
@@ -1883,7 +1884,7 @@ void LayoutTurnout::on_setSignalsAct_triggered()
 boundaryBetween = QVector<QString>(4);
  if ((type==WYE_TURNOUT) || (type ==RH_TURNOUT) || (type == LH_TURNOUT))
  {
-  //This should only be needed where we are looking at a single turnout.
+  //This should only be needed where we are looking at a single Turnout::
   if(block!=nullptr)
   {
    LayoutBlock* aLBlock = nullptr;
@@ -1925,7 +1926,7 @@ boundaryBetween = QVector<QString>(4);
      }
     }
    }
-   //if ((connectC instanceof TrackSegment) && (((TrackSegment)connectC).getLayoutBlock()!=block))
+   //if ((connectC instanceof TrackSegment) && (((TrackSegment*)connectC).getLayoutBlock()!=block))
    if(qobject_cast<TrackSegment*>(connectC)!= nullptr && (((TrackSegment*)connectC)->getLayoutBlock()!=block))
    {
     cLBlock = ((TrackSegment*)connectC)->getLayoutBlock();
@@ -2093,6 +2094,143 @@ boundaryBetween = QVector<QString>(4);
  return boundaryBetween.toList();
 }
 
+/*public*/ QList<LayoutBlock*> LayoutTurnout::getProtectedBlocks(NamedBean* bean) {
+     QList<LayoutBlock*> ret = QList<LayoutBlock*>();
+     if (getLayoutBlock() == nullptr) {
+         return ret;
+     }
+     if (getTurnoutType() >= DOUBLE_XOVER && getTurnoutType() <= LH_XOVER) {
+         if ((getTurnoutType() == DOUBLE_XOVER || getTurnoutType() == RH_XOVER)
+                 && (getSignalAMast() == bean || getSignalCMast() == bean || getSensorA() == bean || getSensorC() == bean)) {
+             if (getSignalAMast() == bean || getSensorA() == bean) {
+                 if (connectA != nullptr) {
+                     if (((TrackSegment*) connectA)->getLayoutBlock() == getLayoutBlock()) {
+                         if (getLayoutBlockB() != nullptr && getLayoutBlock() != getLayoutBlockB() && getLayoutBlockC() != nullptr && getLayoutBlock() != getLayoutBlockC()) {
+                             ret.append(getLayoutBlockB());
+                             ret.append(getLayoutBlockC());
+                         }
+                     } else {
+                         ret.append(getLayoutBlock());
+                     }
+                 }
+             } else {
+                 if (connectC != nullptr && getLayoutBlockC() != nullptr) {
+                     if (((TrackSegment*) connectC)->getLayoutBlock() == getLayoutBlockC()) {
+                         if (getLayoutBlockC() != getLayoutBlock() && getLayoutBlockD() != nullptr && getLayoutBlockC() != getLayoutBlockD()) {
+                             ret.append(getLayoutBlock());
+                             ret.append(getLayoutBlockD());
+                         }
+                     } else {
+                         ret.append(getLayoutBlockC());
+                     }
+                 }
+             }
+         }
+         if ((getTurnoutType() == DOUBLE_XOVER || getTurnoutType() == LH_XOVER)
+                 && (getSignalBMast() == bean || getSignalDMast() == bean || getSensorB() == bean || getSensorD() == bean)) {
+             if (getSignalBMast() == bean || getSensorB() == bean) {
+                 if (connectB != nullptr && getLayoutBlockB() != nullptr) {
+                     if (((TrackSegment*) connectB)->getLayoutBlock() == getLayoutBlockB()) {
+                         if (getLayoutBlock() != getLayoutBlockB() && getLayoutBlockD() != nullptr && getLayoutBlockB() != getLayoutBlockD()) {
+                             ret.append(getLayoutBlock());
+                             ret.append(getLayoutBlockD());
+                         }
+                     } else {
+                         ret.append(getLayoutBlockB());
+                     }
+                 }
+             } else {
+                 if (connectD != nullptr && getLayoutBlockD() != nullptr) {
+                     if (((TrackSegment*) connectD)->getLayoutBlock() == getLayoutBlockD()) {
+                         if (getLayoutBlockB() != nullptr && getLayoutBlockB() != getLayoutBlockD() && getLayoutBlockC() != nullptr && getLayoutBlockC() != getLayoutBlockD()) {
+                             ret.append(getLayoutBlockB());
+                             ret.append(getLayoutBlockC());
+                         }
+                     } else {
+                         ret.append(getLayoutBlockD());
+                     }
+                 }
+             }
+         }
+         if (getTurnoutType() == RH_XOVER && (getSignalBMast() == bean
+                 || getSignalDMast() == bean || getSensorB() == bean || getSensorD() == bean)) {
+             if (getSignalBMast() == bean || getSensorB() == bean) {
+                 if (connectB != nullptr && ((TrackSegment*) connectB)->getLayoutBlock() == getLayoutBlockB()) {
+                     if (getLayoutBlockB() != getLayoutBlock()) {
+                         ret.append(getLayoutBlock());
+                     }
+                 } else {
+                     ret.append(getLayoutBlockB());
+                 }
+             } else {
+                 if (connectD != nullptr && ((TrackSegment*) connectD)->getLayoutBlock() == getLayoutBlockD()) {
+                     if (getLayoutBlockC() != getLayoutBlockD()) {
+                         ret.append(getLayoutBlockC());
+                     }
+                 } else {
+                     ret.append(getLayoutBlockD());
+                 }
+             }
+         }
+         if (getTurnoutType() == LH_XOVER && (getSensorA() == bean
+                 || getSensorC() == bean || getSignalAMast() == bean || getSignalCMast() == bean)) {
+             if (getSignalAMast() == bean || getSensorA() == bean) {
+                 if (connectA != nullptr && ((TrackSegment*) connectA)->getLayoutBlock() == getLayoutBlock()) {
+                     if (getLayoutBlockB() != getLayoutBlock()) {
+                         ret.append(getLayoutBlockB());
+                     }
+                 } else {
+                     ret.append(getLayoutBlock());
+                 }
+             } else {
+                 if (connectC != nullptr && ((TrackSegment*) connectC)->getLayoutBlock() == getLayoutBlockC()) {
+                     if (getLayoutBlockC() != getLayoutBlockD()) {
+                         ret.append(getLayoutBlockD());
+                     }
+                 } else {
+                     ret.append(getLayoutBlockC());
+                 }
+             }
+         }
+     } else {
+         if (connectA != nullptr) {
+             if (getSignalAMast() == bean || getSensorA() == bean) {
+                 //Mast at throat
+                 //if the turnout is in the same block as the segment connected at the throat, then we can be protecting two blocks
+                 if (((TrackSegment*) connectA)->getLayoutBlock() == getLayoutBlock()) {
+                     if (connectB != nullptr && connectC != nullptr) {
+                         if (((TrackSegment*) connectB)->getLayoutBlock() != getLayoutBlock()
+                                 && ((TrackSegment*) connectC)->getLayoutBlock() != getLayoutBlock()) {
+                             ret.append(((TrackSegment*) connectB)->getLayoutBlock());
+                             ret.append(((TrackSegment*) connectC)->getLayoutBlock());
+                         }
+                     }
+                 } else {
+                     ret.append(getLayoutBlock());
+                 }
+             } else if (getSignalBMast() == bean || getSensorB() == bean) {
+                 //Mast at Continuing
+                 if (connectB != nullptr && ((TrackSegment*) connectB)->getLayoutBlock() == getLayoutBlock()) {
+                     if (((TrackSegment*) connectA)->getLayoutBlock() != getLayoutBlock()) {
+                         ret.append(((TrackSegment*) connectA)->getLayoutBlock());
+                     }
+                 } else {
+                     ret.append(getLayoutBlock());
+                 }
+             } else if (getSignalCMast() == bean || getSensorC() == bean) {
+                 //Mast at Diverging
+                 if (connectC != nullptr && ((TrackSegment*) connectC)->getLayoutBlock() == getLayoutBlock()) {
+                     if (((TrackSegment*) connectA)->getLayoutBlock() != getLayoutBlock()) {
+                         ret.append(((TrackSegment*) connectA)->getLayoutBlock());
+                     }
+                 } else {
+                     ret.append(getLayoutBlock());
+                 }
+             }
+         }
+     }
+     return ret;
+ }   // getProtectedBlocks
 
 /**
  * Edit a Layout Turnout
@@ -2132,16 +2270,16 @@ boundaryBetween = QVector<QString>(4);
   QLabel* turnoutNameLabel = new QLabel( tr("Turnout")+" "+tr("Name") );
   panel1Layout->addWidget(turnoutNameLabel);
   panel1Layout->addWidget(turnoutNameField);
-  turnoutNameField->setToolTip( tr("Edit turnout name to change the physical turnout linked to this panel turnout.") );
+  turnoutNameField->setToolTip( tr("Edit turnout name to change the physical turnout linked to this panel Turnout::") );
   centralWidgetLayout->addWidget(panel1);
 
   QWidget* panel1a = new QWidget();
   //panel1a.setLayout(new BoxLayout(panel1a, BoxLayout.Y_AXIS));
   QVBoxLayout* panel1aLayout = new QVBoxLayout(panel1a);
   secondTurnoutComboBox = new JmriBeanComboBox(InstanceManager::turnoutManagerInstance(), getSecondTurnout(), JmriBeanComboBox::DISPLAYNAME);
-//  additionalTurnout.addActionListener(new ActionListener() {
+//  additionalTurnout::addActionListener(new ActionListener() {
 //      /*public*/ void actionPerformed(ActionEvent e) {
-//          if(additionalTurnout.isSelected()){
+//          if(additionalTurnout::isSelected()){
 //              secondTurnoutLabel.setEnabled(true);
 //              secondTurnoutComboBox.setEnabled(true);
 //          } else  {
@@ -2250,7 +2388,7 @@ boundaryBetween = QVector<QString>(4);
 //      }
 //  });
   connect(turnoutEditDone, SIGNAL(clicked()), this, SLOT(turnoutEditDonePressed()));
-  turnoutEditDone->setToolTip(tr("Click Done to accept any changes made above and dismiss this dialog."));
+  turnoutEditDone->setToolTip(tr("Click Done to accept any changes made above and dismiss this dialog->"));
   // Cancel
   panel5Layout->addWidget(turnoutEditCancel = new QPushButton(tr("Cancel")));
 //  turnoutEditCancel.addActionListener(new ActionListener() {
@@ -2668,6 +2806,129 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
  blockDNameField->setCompleter(completer);
 }
+/*
+    this is used by ConnectivityUtil to determine the turnout state necessary to get from prevLayoutBlock*  ==> currLayoutBlock*  ==> nextLayoutBlock
+ */
+/*protected*/ int LayoutTurnout::getConnectivityStateForLayoutBlocks(
+        LayoutBlock* currLayoutBlock,
+        LayoutBlock* prevLayoutBlock,
+        LayoutBlock* nextLayoutBlock,
+        bool suppress) {
+    int result = UNKNOWN;
+
+    LayoutBlock*  layoutBlockA = ((TrackSegment*) getConnectA())->getLayoutBlock();
+    LayoutBlock*  layoutBlockB = ((TrackSegment*) getConnectB())->getLayoutBlock();
+    LayoutBlock*  layoutBlockC = ((TrackSegment*) getConnectC())->getLayoutBlock();
+    //TODO: Determine if this should be being used
+    //LayoutBlock*  layoutBlockD = ((TrackSegment*) getConnectD()).getLayoutBlock();
+
+    int tTyp = getTurnoutType();
+    switch (tTyp) {
+        case LayoutTurnout::RH_TURNOUT:
+        case LayoutTurnout::LH_TURNOUT:
+        case LayoutTurnout::WYE_TURNOUT: {
+            if (layoutBlockA == currLayoutBlock) {
+                if ((layoutBlockC == nextLayoutBlock) || (layoutBlockC == prevLayoutBlock)) {
+                    result = Turnout::THROWN;
+                } else if ((layoutBlockB == nextLayoutBlock) || (layoutBlockB == prevLayoutBlock)) {
+                    result = Turnout::CLOSED;
+                } else if (layoutBlockB == currLayoutBlock) {
+                    result = Turnout::CLOSED;
+                } else if (layoutBlockC == currLayoutBlock) {
+                    result = Turnout::THROWN;
+                } else {
+                    if (!suppress) {
+                        log->error("Cannot determine turnout setting - " + getTurnoutName());
+                    }
+                    result = Turnout::CLOSED;
+                }
+            } else if (layoutBlockB == currLayoutBlock) {
+                result = Turnout::CLOSED;
+            } else if (layoutBlockC == currLayoutBlock) {
+                result = Turnout::THROWN;
+            } else {
+                if (!suppress) {
+                    log->error("Cannot determine turnout setting for " + getTurnoutName());
+                }
+                if (!suppress) {
+                    log->error("lb " + currLayoutBlock->getDisplayName()  + " nlb " + nextLayoutBlock->getDisplayName()  + " connect B " + layoutBlockB->getDisplayName() + " connect C " + layoutBlockC->getDisplayName());
+                }
+                result = Turnout::CLOSED;
+            }
+            break;
+        }
+        case LayoutTurnout::RH_XOVER:
+        case LayoutTurnout::LH_XOVER:
+        case LayoutTurnout::DOUBLE_XOVER: {
+            if (getLayoutBlock() == currLayoutBlock) {
+                if ((tTyp != LayoutTurnout::LH_XOVER)
+                        && ((getLayoutBlockC() == nextLayoutBlock)
+                        || (getLayoutBlockC() == prevLayoutBlock))) {
+                    result = Turnout::THROWN;
+                } else if ((getLayoutBlockB() == nextLayoutBlock) || (getLayoutBlockB() == prevLayoutBlock)) {
+                    result = Turnout::CLOSED;
+                } else if (getLayoutBlockB() == currLayoutBlock) {
+                    result = Turnout::CLOSED;
+                } else if ((tTyp != LayoutTurnout::LH_XOVER)
+                        && (getLayoutBlockC() == currLayoutBlock)) {
+                    result = Turnout::THROWN;
+                } else {
+                    if (!suppress) {
+                        log->error("Cannot determine turnout setting(A) - " + getTurnoutName());
+                    }
+                    result = Turnout::CLOSED;
+                }
+            } else if (getLayoutBlockB() == currLayoutBlock) {
+                if ((getLayoutBlock() == nextLayoutBlock) || (getLayoutBlock() == prevLayoutBlock)) {
+                    result = Turnout::CLOSED;
+                } else if ((tTyp != LayoutTurnout::RH_XOVER)
+                        && ((getLayoutBlockD() == nextLayoutBlock)
+                        || (getLayoutBlockD() == prevLayoutBlock) || (getLayoutBlockD() == currLayoutBlock))) {
+                    result = Turnout::THROWN;
+                } else {
+                    if (!suppress) {
+                        log->error("Cannot determine turnout setting(B) - " + getTurnoutName());
+                    }
+                    result = Turnout::CLOSED;
+                }
+            } else if (getLayoutBlockC() == currLayoutBlock) {
+                if ((tTyp != LayoutTurnout::LH_XOVER)
+                        && ((getLayoutBlock() == nextLayoutBlock) || (getLayoutBlock() == prevLayoutBlock))) {
+                    result = Turnout::THROWN;
+                } else if ((getLayoutBlockD() == nextLayoutBlock) || (getLayoutBlockD() == prevLayoutBlock) || (getLayoutBlockD() == currLayoutBlock)) {
+                    result = Turnout::CLOSED;
+                } else if ((tTyp != LayoutTurnout::LH_XOVER)
+                        && (getLayoutBlockD() == currLayoutBlock)) {
+                    result = Turnout::THROWN;
+                } else {
+                    if (!suppress) {
+                        log->error("Cannot determine turnout setting(C) - " + getTurnoutName());
+                    }
+                    result = Turnout::CLOSED;
+                }
+            } else if (getLayoutBlockD() == currLayoutBlock) {
+                if ((getLayoutBlockC() == nextLayoutBlock) || (getLayoutBlockC() == prevLayoutBlock)) {
+                    result = Turnout::CLOSED;
+                } else if ((tTyp != LayoutTurnout::RH_XOVER)
+                        && ((getLayoutBlockB() == nextLayoutBlock) || (getLayoutBlockB() == prevLayoutBlock))) {
+                    result = Turnout::THROWN;
+                } else {
+                    if (!suppress) {
+                        log->error("Cannot determine turnout setting(D) - " + getTurnoutName());
+                    }
+                    result = Turnout::CLOSED;
+                }
+            }
+            break;
+        }
+        default: {
+            log->warn("getTurnoutList() unknown tTyp: " + QString::number(tTyp));
+            break;
+        }
+    }   // switch (tTyp)
+
+    return result;
+}   //
 
 /*public*/ void LayoutTurnout::reCheckBlockBoundary()
 {
@@ -2675,17 +2936,17 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  {
   if ((type==RH_TURNOUT) || (type==LH_TURNOUT) || (type==WYE_TURNOUT))
   {
-   if(getSignalAMast()!=(""))
+   if(signalAMastNamed!= nullptr)
     removeSML(getSignalAMast());
-   if(getSignalBMast()!=(""))
+   if(signalBMastNamed!=nullptr)
       removeSML(getSignalBMast());
-   if(getSignalCMast()!=(""))
+   if(signalCMastNamed!=nullptr)
       removeSML(getSignalCMast());
-   if(getSignalDMast()!=(""))
+   if(signalDMastNamed!=nullptr)
       removeSML(getSignalDMast());
-   signalAMast = "";
-   signalBMast = "";
-   signalCMast = "";
+   signalAMastNamed = nullptr;
+   signalBMastNamed = nullptr;
+   signalCMastNamed = nullptr;
    sensorANamed=nullptr;
    sensorBNamed=nullptr;
    sensorCNamed=nullptr;
@@ -2694,18 +2955,22 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
   }
   else if (((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)) && connectD==nullptr)
   {
-   if(getSignalAMast()!=(""))
-        removeSML(getSignalAMast());
-   if(getSignalBMast()!=(""))
-        removeSML(getSignalBMast());
-   if(getSignalCMast()!=(""))
-        removeSML(getSignalCMast());
-   if(getSignalDMast()!=(""))
-        removeSML(getSignalDMast());
-   signalAMast = "";
-   signalBMast = "";
-   signalCMast = "";
-   signalDMast = "";
+   if (signalAMastNamed != nullptr) {
+       removeSML(getSignalAMast());
+   }
+   if (signalBMastNamed != nullptr) {
+       removeSML(getSignalBMast());
+   }
+   if (signalCMastNamed != nullptr) {
+       removeSML(getSignalCMast());
+   }
+   if (signalDMastNamed != nullptr) {
+       removeSML(getSignalDMast());
+   }
+   signalAMastNamed = nullptr;
+   signalBMastNamed = nullptr;
+   signalCMastNamed = nullptr;
+   signalDMastNamed = nullptr;
    sensorANamed=nullptr;
    sensorBNamed=nullptr;
    sensorCNamed=nullptr;
@@ -2734,11 +2999,11 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  if(qobject_cast<TrackSegment*>(connectA)!= nullptr)
  {
   trkA = (TrackSegment*)connectA;
-  if(trkA->getLayoutBlock()==block)
+  if(trkA->getLayoutBlock()==getLayoutBlock())
   {
-   signalAMast = "";
+   signalAMastNamed = nullptr;
    sensorANamed=nullptr;
-   if(!(getSignalAMast()==("")))
+   if(!(signalAMastNamed == nullptr))
    removeSML(getSignalAMast());
   }
  }
@@ -2748,9 +3013,9 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
   trkB = (TrackSegment*)connectB;
   if(trkB->getLayoutBlock()==block || trkB->getLayoutBlock()==blockB)
   {
-   signalBMast = "";
+   signalBMastNamed = nullptr;
    sensorBNamed=nullptr;
-   if(!(getSignalBMast()==("")))
+   if(!(signalBMastNamed == nullptr))
     removeSML(getSignalBMast());
   }
  }
@@ -2760,9 +3025,9 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
   trkC = (TrackSegment*)connectC;
   if(trkC->getLayoutBlock()==block || trkC->getLayoutBlock()==blockB || trkC->getLayoutBlock()==blockC)
   {
-   signalCMast = "";
+   signalCMastNamed = nullptr;
    sensorCNamed=nullptr;
-   if(!(getSignalCMast()==("")))
+   if(!(signalCMastNamed == nullptr))
     removeSML(getSignalCMast());
   }
  }
@@ -2772,23 +3037,22 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
   trkD = (TrackSegment*)connectD;
   if(trkD->getLayoutBlock()==block || trkD->getLayoutBlock()==blockB || trkD->getLayoutBlock()==blockC || trkD->getLayoutBlock()==blockD)
   {
-   signalDMast = "";
+   signalDMastNamed = nullptr;
    sensorDNamed=nullptr;
-   if(!(getSignalDMast()==("")))
+   if(!(signalDMastNamed == nullptr))
     removeSML(getSignalDMast());
   }
  }
 }
 
-void LayoutTurnout::removeSML(QString signalMast){
-#if 1
-    if(signalMast==nullptr || signalMast==(""))
+void LayoutTurnout::removeSML(SignalMast* signalMast){
+    if(signalMast==nullptr)
         return;
-    SignalMast* mast = InstanceManager::signalMastManagerInstance()->getSignalMast(signalMast);
-    if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed(mast)){
-        SignallingGuiTools::removeSignalMastLogic(nullptr, mast);
-    }
-#endif
+    if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")
+            )->isAdvancedRoutingEnabled() && static_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"
+            ))->isSignalMastUsed(signalMast)) {
+                SignallingGuiTools::removeSignalMastLogic(nullptr, signalMast);
+            }
 }
 
 /**
@@ -2858,7 +3122,7 @@ void LayoutTurnout::remove()
    popup->addMenu((QMenu*)mi);
  }
 }
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LayoutTurnout.class.getName());
+//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LayoutTurnout::class.getName());
 
 //}
 void LayoutTurnout::on_removeAction_triggered() // [slot]

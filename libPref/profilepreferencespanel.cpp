@@ -43,7 +43,7 @@
  * Creates new form ProfilePreferencesPanel
  */
 /*public*/ ProfilePreferencesPanel::ProfilePreferencesPanel(QWidget *parent)
-    :  PreferencesPanel(parent)
+    :  QWidget(parent)
 {
  log= new Logger("ProfilePreferencesPanel");
  initComponents();
@@ -686,6 +686,11 @@
     // Nothing to do since ProfileManager preferences are saved immediately
 }
 
+//@Override
+/*public*/ int ProfilePreferencesPanel::getSortOrder() {
+    return 1000;
+}
+
 /*public*/ void ProfilePreferencesPanel::dispose() {
 //    ProfileManager::defaultManager()->removePropertyChangeListener((ProfileTableModel*) profilesTbl->model());
 }
@@ -782,3 +787,4 @@
  }
  }
  */
+/*public*/ QString ProfilePreferencesPanel::className() {return "ProfilePreferencesPanel";}

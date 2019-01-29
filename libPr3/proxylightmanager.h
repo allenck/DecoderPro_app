@@ -14,7 +14,7 @@ public:
  /*public*/ Light* getBySystemName(QString systemName);
  /*public*/ Light* getByUserName(QString userName);
  /*public*/ Light* newLight(QString systemName, QString userName);
- /*public*/ bool validSystemNameFormat(QString systemName);
+ /*public*/ NameValidity validSystemNameFormat(QString systemName);
  /*public*/ bool validSystemNameConfig(QString systemName);
  /*public*/ QString normalizeSystemName(QString systemName);
  /*public*/ QString convertSystemNameToAlternate(QString systemName);

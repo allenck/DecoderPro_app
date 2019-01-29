@@ -458,14 +458,14 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 /*public*/ void LayoutSlip::reCheckBlockBoundary(){
     if(connectA==NULL && connectB==NULL && connectC==NULL && connectD==NULL){
         //This is no longer a block boundary, therefore will remove signal masts and sensors if present
-        if(getSignalAMast()!=(""))
-            removeSML(getSignalAMast());
-        if(getSignalBMast()!=(""))
-            removeSML(getSignalBMast());
-        if(getSignalCMast()!=(""))
-            removeSML(getSignalCMast());
-        if(getSignalDMast()!=(""))
-            removeSML(getSignalDMast());
+        if(getSignalAMastName()!=(""))
+            removeSML(getSignalAMastName());
+        if(getSignalBMastName()!=(""))
+            removeSML(getSignalBMastName());
+        if(getSignalCMastName()!=(""))
+            removeSML(getSignalCMastName());
+        if(getSignalDMastName()!=(""))
+            removeSML(getSignalDMastName());
         setSignalAMast("");
         setSignalBMast("");
         setSignalCMast("");
@@ -491,8 +491,8 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
         trkA = (TrackSegment*)connectA;
         if(trkA->getLayoutBlock()==block)
         {
-            if(getSignalAMast()!=(""))
-                removeSML(getSignalAMast());
+            if(getSignalAMastName()!=(""))
+                removeSML(getSignalAMastName());
             setSignalAMast("");
             setSensorA("");
         }
@@ -502,8 +502,8 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     {
         trkC = (TrackSegment*)connectC;
         if(trkC->getLayoutBlock()==block){
-            if(getSignalCMast()!=(""))
-                removeSML(getSignalCMast());
+            if(getSignalCMastName()!=(""))
+                removeSML(getSignalCMastName());
             setSignalCMast("");
             setSensorC("");
         }
@@ -513,8 +513,8 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     {
         trkB = (TrackSegment*)connectB;
         if(trkB->getLayoutBlock()==block){
-            if(getSignalBMast()!=(""))
-                removeSML(getSignalBMast());
+            if(getSignalBMastName()!=(""))
+                removeSML(getSignalBMastName());
             setSignalBMast("");
             setSensorB("");
         }
@@ -525,8 +525,8 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     {
         trkD = (TrackSegment*)connectC;
         if(trkD->getLayoutBlock()==block){
-            if(getSignalDMast()!=(""))
-                removeSML(getSignalDMast());
+            if(getSignalDMastName()!=(""))
+                removeSML(getSignalDMastName());
             setSignalDMast("");
             setSensorD("");
         }
@@ -1398,14 +1398,14 @@ void LayoutSlip::dispose() {
  */
 void LayoutSlip::remove()
 {
- disableSML(getSignalAMast());
- disableSML(getSignalBMast());
- disableSML(getSignalCMast());
- disableSML(getSignalDMast());
- removeSML(getSignalAMast());
- removeSML(getSignalBMast());
- removeSML(getSignalCMast());
- removeSML(getSignalDMast());
+ disableSML(getSignalAMastName());
+ disableSML(getSignalBMastName());
+ disableSML(getSignalCMastName());
+ disableSML(getSignalDMastName());
+ removeSML(getSignalAMastName());
+ removeSML(getSignalBMastName());
+ removeSML(getSignalCMastName());
+ removeSML(getSignalDMastName());
  // remove from persistance by flagging inactive
  active = false;
 }
@@ -1414,7 +1414,7 @@ void LayoutSlip::disableSML(QString signalMast)
 {
  if(signalMast==NULL || signalMast==(""))
   return;
- SignalMast* mast = InstanceManager::signalMastManagerInstance()->getSignalMast(signalMast);
+ SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
  InstanceManager::signalMastLogicManagerInstance()->disableLayoutEditorUse(mast);
 }
 

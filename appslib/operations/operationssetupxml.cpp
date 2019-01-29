@@ -39,7 +39,8 @@ namespace Operations
   return static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml"));
  }
 
- /*public*/ void OperationsSetupXml::writeFile(QString name) throw (FileNotFoundException, IOException) {
+ /*public*/ void OperationsSetupXml::writeFile(QString name) //throw (FileNotFoundException, IOException)
+ {
      if (log->isDebugEnabled()) {
          log->debug(tr("writeFile %1").arg(name));
      }
@@ -92,7 +93,8 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void OperationsSetupXml::readFile(QString name) throw (JDOMException, IOException) {
+ /*public*/ void OperationsSetupXml::readFile(QString name) //throw (JDOMException, IOException)
+ {
      // suppress rootFromName(name) warning message by checking to see if file exists
      if (findFile(name) == NULL) {
          log->debug(tr("%1 file could not be found").arg(name));

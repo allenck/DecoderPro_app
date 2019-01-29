@@ -1,10 +1,11 @@
 #include "imagepanel.h"
 #include "loggerfactory.h"
 
-ImagePanel::ImagePanel(QWidget *parent) : QWidget(parent)
+ImagePanel::ImagePanel(QWidget *parent) : QFrame(parent)
 {
  back = NULL;
  clip = NULL;
+ setObjectName("ImagePanel");
 }
 /**
  * Common utility to draw a BufferedImage as background behind a JPanel.
@@ -23,7 +24,13 @@ ImagePanel::ImagePanel(QWidget *parent) : QWidget(parent)
  */
 /*public*/ void ImagePanel::setImage(QImage* img) {
     back = (BufferedImage*) img;
-    repaint();
+//    repaint();
+    QPixmap bkgnd = QPixmap::fromImage(*back);
+    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Background, bkgnd);
+    this->setPalette(palette);
+    update();
     log->debug("DrawPanel ready");
 }
 #if 0

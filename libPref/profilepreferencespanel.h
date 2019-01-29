@@ -14,13 +14,15 @@ class QListView;
 class QTabWidget;
 class QCheckBox;
 class QPushButton;
-class LIBPREFSHARED_EXPORT ProfilePreferencesPanel : public PreferencesPanel
+class LIBPREFSHARED_EXPORT ProfilePreferencesPanel : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
-    explicit ProfilePreferencesPanel(QWidget *parent = 0);
+    Q_INVOKABLE explicit ProfilePreferencesPanel(QWidget *parent = 0);
     ~ProfilePreferencesPanel() {}
-    ProfilePreferencesPanel(const ProfilePreferencesPanel&) : PreferencesPanel() {}
+    ProfilePreferencesPanel(const ProfilePreferencesPanel&) : QWidget() {}
     /*public*/ bool accept(File f);
     //@Override
     /*public*/ QString getPreferencesItem();
@@ -31,11 +33,14 @@ public:
     /*public*/ bool isPersistant();
     /*public*/ QString getPreferencesTooltip();
     /*public*/ void savePreferences();
+    /*public*/ int getSortOrder();
     /*public*/ void dispose();
     /*public*/ bool isDirty() ;
     /*public*/ bool isRestartRequired() ;
      /*public*/ bool accept(File* f);
      /*public*/ QString getDescription() ;
+    /*public*/ QString className();
+
 signals:
 
 public slots:

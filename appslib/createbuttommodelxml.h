@@ -4,8 +4,9 @@
 
 class CreateButtonModelXml  : public AbstractXmlAdapter
 {
+ Q_OBJECT
 public:
- CreateButtonModelXml (QObject* parent = 0);
+ Q_INVOKABLE CreateButtonModelXml (QObject* parent = 0);
  ~CreateButtonModelXml() {}
  CreateButtonModelXml(const CreateButtonModelXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

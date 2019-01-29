@@ -7,7 +7,7 @@
 #include "liblayouteditor_global.h"
 #include <QItemDelegate>
 
-
+class NamedBeanPropertyDescriptor;
 class RowSorter;
 class QMenu;
 class QTableView;
@@ -68,7 +68,8 @@ public:
  /*public*/ void removeName(int);
  /*public*/ void moveBean(int);
  virtual /*public*/ void addToPopUp(QMenu* popup);
- //Jable* table();
+ /*public*/ void setPropertyColumnsVisible(JTable* table, bool visible);
+
 
 signals:
  void buttonClicked(QModelIndex*, QString);
@@ -117,6 +118,8 @@ protected:
  /*protected*/ void printColumns(HardcopyWriter* w, QStringList columnStrings, int columnSize);
  /*protected*/ void addMouseListenerToHeader(JTable* table);
  /*protected*/ void showTableHeaderPopup(QMouseEvent* e, JTable* table);
+ /*protected*/ int getPropertyColumnCount() const;
+ /*protected*/ /*final*/ QList<NamedBeanPropertyDescriptor*>* propertyColumns = nullptr;
 
 protected slots:
  void On_itemClicked(QModelIndex);

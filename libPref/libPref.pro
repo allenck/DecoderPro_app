@@ -16,7 +16,6 @@ SOURCES += libpref.cpp \
     tabbedpreferences.cpp \
     tabbedpreferencesaction.cpp \
     usermessagepreferencespane.cpp \
-    preferencessubpanel.cpp \
     preferencespane.cpp \
     programmerconfigpane.cpp \
     performfilepanel.cpp \
@@ -186,17 +185,3 @@ INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ -lLayoutEditor
-else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
-
-INCLUDEPATH += $$PWD/../LayoutEditor
-DEPENDPATH += $$PWD/../LayoutEditor
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
-else:unix: LIBS += -L$$PWD/../Tables/ -lTables
-
-INCLUDEPATH += $$PWD/../Tables
-DEPENDPATH += $$PWD/../Tables

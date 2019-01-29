@@ -247,7 +247,7 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
  }
  _iconPanel->layout()->addWidget(rowPanel);
  ((QHBoxLayout*)_iconPanel->layout())->addStrut(STRUT_SIZE);
- this->layout()->addWidget(_iconPanel/*, 0*/);
+ thisLayout->addWidget(_iconPanel/*, 0*/);
  valueChanged();
  adjustSize();
 }
@@ -278,7 +278,7 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
 //       });
  connect(addIconButton, SIGNAL(clicked()), this, SLOT(addIcon()));
  p->layout()->addWidget(addIconButton);
- this->layout()->addWidget(p);
+ thisLayout->addWidget(p);
  //this.add(new JSeparator());
  IconAdder::complete(addIconAction, changeIcon, addToTable, update);
  _table->setDragEnabled(true);

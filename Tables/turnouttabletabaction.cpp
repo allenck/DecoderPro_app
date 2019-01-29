@@ -37,7 +37,7 @@ void TurnoutTableTabAction::common()
 }
 
 /*protected*/ QString TurnoutTableTabAction::getClassName() {
-    return /*TurnoutTableAction.class.getName()*/ "jmri.jmrit/beantable/TurnoutTableTabAction";
+    return /*TurnoutTableAction.class.getName()*/ "jmri.jmrit.beantable.TurnoutTableTabAction";
 }
 
 /*protected*/ AbstractTableAction* TurnoutTableTabAction::getNewTableAction (QString choice){

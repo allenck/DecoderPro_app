@@ -3,6 +3,15 @@
 #include "abstracttableaction.h"
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
+#include "colorutil.h"
+#include "inputverifier.h"
+#include "connectionnamefromsystemname.h"
+#include "jtextfield.h"
+#include "instancemanager.h"
+#include "reportermanager.h"
+#include <QPushButton>
+#include <QLineEdit>
+#include <QValidator>
 
 class QSpinBox;
 class QVBoxLayout;
@@ -21,7 +30,7 @@ public:
     ~ReporterTableAction() {}
     ReporterTableAction(const ReporterTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     /*public*/ void setManager(ReporterManager* man);
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
 
 private:
     void common();
@@ -38,8 +47,9 @@ private:
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
     QPushButton* addButton;
     QString userNameError;// = this.getClass().getName() + ".DuplicateUserName";
+    QString connectionChoice;// = "";
     QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
-
+    /*private*/ QString addEntryToolTip;
     UserPreferencesManager* pref;
     Logger* log;
 
@@ -47,6 +57,7 @@ private slots:
     void cancelPressed(ActionEvent* e = 0);
     void createPressed(ActionEvent* e = 0);
     /*private*/ void canAddRange(ActionEvent* e = 0);
+    void propertyChange(PropertyChangeEvent *);
 
 
 protected:
@@ -61,9 +72,10 @@ protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
 
  friend class RtBeanTableDataModel;
- friend class OkActionListener;
- friend class CancelActionListener;
+ friend class RTACreateListener;
+ friend class RTACancelActionListener;
  friend class ReporterRangeListener;
+ friend class RTAValidator;
 };
 Q_DECLARE_METATYPE(ReporterTableAction)
 
@@ -95,22 +107,25 @@ protected:
     /*protected*/ QString getBeanType();
     /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
 };
-class OkActionListener : public ActionListener
+
+class RTACreateListener : public ActionListener
 {
  Q_OBJECT
     ReporterTableAction* act;
 public:
-    OkActionListener(ReporterTableAction* act);
+    RTACreateListener(ReporterTableAction* act);
     /*public*/ void actionPerformed(ActionEvent* e = 0) ;
 };
-class CancelActionListener : public ActionListener
+
+class RTACancelActionListener : public ActionListener
 {
     Q_OBJECT
     ReporterTableAction* act;
    public:
-    CancelActionListener(ReporterTableAction* act);
+    RTACancelActionListener(ReporterTableAction* act);
     /*public*/ void actionPerformed(ActionEvent* e = 0);
 };
+
 class ReporterRangeListener : public ActionListener
 {
     Q_OBJECT
@@ -119,5 +134,64 @@ class ReporterRangeListener : public ActionListener
      ReporterRangeListener(ReporterTableAction* act);
     /*public*/ void actionPerformed(ActionEvent* e = 0);
 };
+#if 0
+/**
+ * Private class used in conjunction with CheckedTextField to provide
+ * the mechanisms required to validate the text field data upon loss of
+ * focus, and colorize the text field in case of validation failure.
+ */
+/*private*/ class MyVerifier : public InputVerifier //implements java.awt.event.ActionListener
+{
+Q_OBJECT
 
+    // set default background color for invalid field data
+    QColor mark;// = ColorUtil::stringToColor("orange");
+public:
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/ bool shouldYieldFocus(QWidget* input);
+    /*public*/ bool verify(QWidget* input);
+    //@Override
+    /*public*/ void actionPerformed(ActionEvent* e);
+};
+
+/**
+ * Extends JTextField to provide a data validation function.
+ *
+ * @author Egbert Broerse 2017, based on
+ * jmri.jmrit.util.swing.ValidatedTextField by B. Milhaupt
+ */
+/*public*/ class CheckedTextField : public JTextField
+{
+Q_OBJECT
+    CheckedTextField* fld;
+    bool allow0Length = false; // for Add new bean item, a value that is zero-length is considered invalid.
+    /*private*/ MyVerifier* verifier; // internal mechanism used for verifying field data before focus is lost
+    ReporterTableAction* rta;
+public:
+    /**
+     * Text entry field with an active key event checker.
+     *
+     * @param len field length
+     */
+    /*public*/ CheckedTextField(int len, ReporterTableAction* rta);
+    /*public*/ bool isValid() ;
+};
+#endif
+class RTAValidator : public QValidator
+{
+ Q_OBJECT
+ ReporterTableAction* act;
+ JTextField* fld;
+ bool allow0Length = false; // for Add new bean item, a value that is zero-length is considered invalid.
+ QString prefix;// = ConnectionNameFromSystemName::getPrefixFromName(rta->connectionChoice);
+ QColor mark;// = ColorUtil::stringToColor("orange");
+public:
+ RTAValidator(JTextField* fld, ReporterTableAction* act);
+ QValidator::State validate(QString &, int &) const;
+ //void fixup(QString &input) const;
+public slots:
+ void prefixBoxChanged(QString txt);
+
+};
 #endif // REPORTERTABLEACTION_H

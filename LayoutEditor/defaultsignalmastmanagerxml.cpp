@@ -267,5 +267,5 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
 }
 
 /*public*/ int DefaultSignalMastManagerXml::loadOrder(){
-    return InstanceManager::signalMastManagerInstance()->getXMLOrder();
+    return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getXMLOrder();
 }

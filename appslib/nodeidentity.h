@@ -15,21 +15,26 @@ public:
  /*synchronized*/ /*public*/ QString getIdentity();
  /*public*/ QStringList getFormerIdentities();
  /*synchronized*/ /*public*/ static QList<QString> formerIdentities();
+ /*public*/ static bool copyFormerIdentity(File* oldPath, File* newPath);
 
 signals:
 
 public slots:
 private:
- Logger* log;
+ static Logger* log;
  /*private*/ /*final*/ QStringList* _formerIdentities;// = new ArrayList<>();
  /*private*/ QString _identity;// = null;
+ /*private*/ QString uuid;// = null;
 
  /*private*/ static NodeIdentity* _instance;// = null;
 // /*private*/ /*final*/ static Logger log = LoggerFactory.getLogger(NodeIdentity.class);
 
  /*private*/ /*final*/ static QString ROOT_ELEMENT;// = "nodeIdentityConfig"; // NOI18N
+ /*private*/ static /*final*/ QString UUID;// = "uuid"; // NOI18N
  /*private*/ /*final*/ static QString NODE_IDENTITY;// = "nodeIdentity"; // NOI18N
  /*private*/ /*final*/ static QString FORMER_IDENTITIES;// = "formerIdentities"; // NOI18N
+ /*private*/ static /*final*/ QString IDENTITY_PREFIX;// = "jmri-";
+
  /*private*/ NodeIdentity();
  /*synchronized*/ /*private*/ void init();
  /*private*/ QString createIdentity(QByteArray mac);

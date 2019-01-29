@@ -19,9 +19,11 @@ class ActionEvent;
 class QPushButton;
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT OperationsPanel : public PreferencesPanel
+ class APPSLIBSHARED_EXPORT OperationsPanel : /*public PreferencesPanel,*/ public QWidget
  {
   Q_OBJECT
+  //Q_INTERFACES(PreferencesPanel)
+
  public:
   explicit OperationsPanel(QWidget *parent = 0);
   /*public*/ static /*final*/ QString NEW_LINE;// = "\n"; // NOI18N

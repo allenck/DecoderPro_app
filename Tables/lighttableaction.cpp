@@ -19,6 +19,8 @@
 #include "pushbuttondelegate.h"
 #include "abstractlight.h"
 #include "abstractlightmanager.h"
+#include "colorutil.h"
+#include "joptionpane.h"
 
 //LightTableAction::LightTableAction()
 //{
@@ -75,8 +77,8 @@ void LightTableAction::common()
  systemLabel = new QLabel(tr("System connection:"));
  prefixBox = new QComboBox();
  addRangeBox = new QCheckBox(tr("Add a sequential range"));
- fieldHardwareAddress = new JTextField(10);
- fieldNumToAdd = new JTextField(5);
+ hardwareAddressTextField = new JTextField(10);
+  fieldNumToAdd = new JTextField(5);
  labelNumToAdd = new QLabel("   " + tr("Number to Add:"));
  systemSelectionCombo = QString(this->metaObject()->className()) + ".SystemSelected";
  panel1a = nullptr;
@@ -128,6 +130,7 @@ void LightTableAction::common()
  field2a = new JTextField(8);  // Fast Clock
  field2b = new JTextField(8); // Timed ON
  f2Label = new QLabel(tr("Sense for ON"));
+ connectionChoice = "";
 }
 
 /*public*/ void LightTableAction::setManager(Manager* man) {
@@ -434,6 +437,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
     }
     if (addFrame == nullptr) {
         addFrame = new JmriJFrame(tr("Add Light"), false, true);
+        addFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.LightAddEdit", true);
         addFrame->setLocation(100, 30);
         QWidget* contentPane = addFrame->getContentPane();
@@ -442,6 +446,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         FlowLayout* panel1Layout;
         panel1->setLayout(panel1Layout = new FlowLayout());
         initializePrefixCombo();
+        hardwareAddressTextField->setValidator(validator = new LTAValidator(hardwareAddressTextField, this));
         panel1Layout->addWidget(systemLabel);
         panel1Layout->addWidget(prefixBox);
         panel1Layout->addWidget(new QLabel("   "));
@@ -469,11 +474,15 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         FlowLayout* panel1aLayout;
         panel1a->setLayout(panel1aLayout = new FlowLayout());
         panel1aLayout->addWidget(new QLabel(tr("Hardware Address")));
-        panel1aLayout->addWidget(fieldHardwareAddress);
-        fieldHardwareAddress->setToolTip(tr("LightHardwareAddressHint"));
-        panel1aLayout->addWidget(labelNumToAdd);
+        panel1aLayout->addWidget(hardwareAddressTextField);
+        hardwareAddressTextField->setValidator(validator = new LTAValidator(hardwareAddressTextField, this));
+        hardwareAddressTextField->setText("");
+        hardwareAddressTextField->setToolTip(tr("Enter an integer as the hardware address for the (first) new Light, e.g. '13'"));
+        hardwareAddressTextField->setName("hwAddressTextField"); // for GUI test NOI18N
+        hardwareAddressTextField->setBackground(QColor(Qt::yellow)); // reset after possible error notificationpanel1aLayout->addWidget(labelNumToAdd);
+        connect(hardwareAddressTextField, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT());
         panel1aLayout->addWidget(fieldNumToAdd);
-        fieldNumToAdd->setToolTip(tr("LightNumberToAddHint"));
+        fieldNumToAdd->setToolTip(tr("Set the number of sequential address Lights to add (Max. 50)"));
         contentPane->layout()->addWidget(panel1a);
         QWidget* panel2 = new QWidget();
         FlowLayout* panel2Layout;
@@ -633,6 +642,17 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
     addFrame->setVisible(true);
 }
 
+/*public*/ void LightTableAction::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
+    QString property = propertyChangeEvent->getPropertyName();
+    if ("background" == (property)) {
+        if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
+            create->setEnabled(true);
+        } else { // invalid
+            create->setEnabled(false);
+        }
+    }
+}
+
 LTAWindowListener::LTAWindowListener(LightTableAction *lta)
 {
  this->lta = lta;
@@ -683,6 +703,7 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
     fieldNumToAdd->setEnabled(false);
     labelNumToAdd->setEnabled(false);
 
+    connectionChoice= prefixBox->currentText();
     if (connectionChoice == "")
     {
            // Tab All or first time opening, keep default tooltip
@@ -774,7 +795,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     //ConnectionNameFromSystemName::getPrefixFromName((String) prefixBox.getSelectedItem())
     QString lightPrefix = ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()) + "L";
     QString turnoutPrefix = ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()) + "T";
-    QString curAddress = fieldHardwareAddress->text();
+    QString curAddress = hardwareAddressTextField->text();
     if (curAddress.length() < 1) {
         log->warn("Hardware Address was not entered");
         status1->setText(tr("Error: No Hardware Address was entered."));
@@ -789,7 +810,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         uName = "";   // a blank field means no user name
     }
     // Does System Name have a valid format
-    if (!InstanceManager::lightManagerInstance()->validSystemNameFormat(suName)) {
+    if (static_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(suName)!= Manager::NameValidity::VALID) {
         // Invalid System Name format
         log->warn("Invalid Light system name format entered: " + suName);
         status1->setText(tr("Error: System Name has an invalid format."));
@@ -800,9 +821,10 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         return;
     }
     // Format is valid, normalize it
-    QString sName = InstanceManager::lightManagerInstance()->normalizeSystemName(suName);
+    ProxyLightManager* mgr= static_cast<ProxyLightManager*> (InstanceManager::getDefault("LightManager"));
+    QString sName = mgr->normalizeSystemName(suName);
     // check if a Light with this name already exists
-    Light* g = InstanceManager::lightManagerInstance()->getBySystemName(sName);
+    Light* g = mgr->getBySystemName(sName);
     if (g != NULL) {
         // Light already exists
         status1->setText(tr("Error: an element with this System Name already exists."));
@@ -813,7 +835,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         return;
     }
     // check if Light exists under an alternate name if an alternate name exists
-    QString altName = InstanceManager::lightManagerInstance()->convertSystemNameToAlternate(suName);
+    QString altName = mgr->convertSystemNameToAlternate(suName);
     if (altName != ("")) {
         g = InstanceManager::lightManagerInstance()->getBySystemName(altName);
         if (g != NULL) {
@@ -828,7 +850,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     }
     // check if a Light with the same user name exists
     if (uName != NULL && uName != ("")) {
-        g = InstanceManager::lightManagerInstance()->getByUserName(uName);
+        g = mgr->getByUserName(uName);
         if (g != NULL) {
             // Light with this user name already exists
             status1->setText(tr("Error: an element with this User Name already exists."));
@@ -840,7 +862,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         }
     }
     // Does System Name correspond to configured hardware
-    if (!InstanceManager::lightManagerInstance()->validSystemNameConfig(sName)) {
+    if (!mgr->validSystemNameConfig(sName)) {
         // System Name not in configured hardware
         status1->setText(tr("Error: System Name doesn't refer to configured hardware."));
         status2->setText(tr("Please revise System Name and try again."));
@@ -851,9 +873,9 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     }
     // check if requested Light uses the same address as a Turnout
     QString testSN = turnoutPrefix + curAddress;
-    Turnout* testT = InstanceManager::turnoutManagerInstance()->
+    Turnout* testT = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
             getBySystemName(testSN);
-    if (testT != NULL) {
+    if (testT != nullptr) {
         // Address is already used as a Turnout
          log->warn("Requested Light " + sName + " uses same address as Turnout " + testT->getDisplayName());
         if (!noWarn) {
@@ -882,7 +904,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     // Check multiple Light creation request, if supported
     int numberOfLights = 1;
     int startingAddress = 0;
-    if ((InstanceManager::lightManagerInstance()->allowMultipleAdditions(sName))
+    if (mgr->allowMultipleAdditions(sName)
             && addRangeBox->isChecked() && (fieldNumToAdd->text().length() > 0)) {
         // get number requested
         bool bok;
@@ -898,13 +920,13 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         }
         // convert numerical hardware address
 
-            startingAddress = fieldHardwareAddress->text().toInt(&bok);
+            startingAddress = hardwareAddressTextField->text().toInt(&bok);
         if(!bok) {
             status1->setText(tr("Error: Entered hardware address does not convert to a number."));
             status2->setVisible(false);
             addFrame->adjustSize();
             addFrame->setVisible(true);
-             log->error("Unable to convert " + fieldHardwareAddress->text() + " to a number.");
+             log->error("Unable to convert " + hardwareAddressTextField->text() + " to a number.");
             return;
         }
         // check that requested address range is available
@@ -912,7 +934,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         QString testAdd = "";
         for (int i = 0; i < numberOfLights; i++) {
             testAdd = lightPrefix + add;
-            if (InstanceManager::lightManagerInstance()->getBySystemName(testAdd) != NULL) {
+            if (mgr->getBySystemName(testAdd) != NULL) {
                 status1->setText(tr("Error: Requested range of hardware addresses is not free."));
                 status2->setVisible(true);
                 addFrame->adjustSize();
@@ -921,7 +943,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
                 return;
             }
             testAdd = turnoutPrefix + add;
-            if (InstanceManager::turnoutManagerInstance()->getBySystemName(testAdd) != NULL) {
+            if (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getBySystemName(testAdd) != NULL) {
                 status1->setText(tr("Error: Requested range of hardware addresses is not free."));
                 status2->setVisible(true);
                 addFrame->adjustSize();
@@ -935,10 +957,10 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
 
     // Create a single new Light, or the first Light of a range
     try {
-        g = InstanceManager::lightManagerInstance()->newLight(sName, uName);
+        g = mgr->newLight(sName, uName);
     } catch (IllegalArgumentException ex) {
         // user input no good
-// TODO:        handleCreateException(ex, sName);
+        handleCreateException(ex, sName);
         return; // without creating
     }
     // set control information if any
@@ -1072,16 +1094,15 @@ void LightTableAction::editPressed() {
     addFrame->setVisible(true);
     lightControlTableModel->fireTableDataChanged();
 }
-#if 0
-void handleCreateException(Exception ex, String sysName) {
-    javax.swing.JOptionPane.showMessageDialog(addFrame,
-            java.text.MessageFormat.format(
-                    tr("ErrorLightAddFailed"),
-                    new Object[]{sysName}),
-            tr("ErrorTitle"),
-            javax.swing.JOptionPane.ERROR_MESSAGE);
+
+void LightTableAction::handleCreateException(Exception ex, QString sysName) {
+    JOptionPane::showMessageDialog(addFrame,
+                   tr("Could not create light \"%1\" to add it.").arg(
+                    sysName),
+            tr("Error"),
+            JOptionPane::ERROR_MESSAGE);
 }
-#endif
+
 /**
  * Responds to the Update button
  */
@@ -2099,3 +2120,43 @@ QString LightTableAction::formatTime(int hour, int minute) {
 /*protected*/ QString LightTableAction::getClassName() {
     return "jmri.jmrit.beantable.LightTableAction";
 }
+LTAValidator::LTAValidator(JTextField *fld, LightTableAction *act)
+{
+ this->fld = fld;
+ this->act = act;
+ connect(act->prefixBox, SIGNAL(currentTextChanged(QString)), this, SLOT(prefixBoxChanged(QString)));
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(act->connectionChoice);
+ mark = ColorUtil::stringToColor("orange");
+}
+
+QValidator::State LTAValidator::validate(QString &s, int &pos) const
+{
+ QString value = s.trimmed();
+ if ((value.length() < 1) && (allow0Length == false)) {
+     return QValidator::Invalid;
+ } else if ((allow0Length == true) && (value.length() == 0)) {
+     return QValidator::Acceptable;
+ } else {
+     bool validFormat = false;
+         // try {
+         validFormat = static_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
+         // } catch (jmri.JmriException e) {
+         // use it for the status bar?
+         // }
+     if (validFormat) {
+         act->create->setEnabled(true); // directly update Create button
+         fld->setBackground(QColor(Qt::white));
+         return QValidator::Acceptable;
+     } else {
+         act->create->setEnabled(false); // directly update Create button
+         fld->setBackground(QColor(mark));
+         return QValidator::Invalid;
+     }
+ }
+}
+
+void LTAValidator::prefixBoxChanged(QString txt)
+{
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(txt);
+}
+

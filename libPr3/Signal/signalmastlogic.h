@@ -242,7 +242,7 @@ public:
      * These masts are not stored in the panel file.
      * @param masts
      */
-    /*public*/ virtual void setAutoMasts(QHash<SignalMast*, QString> masts, SignalMast* destination) = 0;
+    /*public*/ virtual void setAutoMasts(QHash<SignalMast*, QString>* masts, SignalMast* destination) = 0;
 
     /**
      * Sets which blocks must be inactive for the signal not to be set at a stop aspect

@@ -53,7 +53,7 @@ ScriptButtonModel::ScriptButtonModel()
     }
 
     //@Override
-    /*public*/ void ScriptButtonAction::actionPerformed(ActionEvent* e) {
+    /*public*/ void ScriptButtonAction::actionPerformed(ActionEvent* /*e*/) {
         try {
             JmriScriptEngineManager::getDefault()->eval(model->getScript());
         } catch (/*ScriptException | */IOException ex) {

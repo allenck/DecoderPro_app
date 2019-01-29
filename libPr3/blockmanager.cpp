@@ -34,7 +34,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
  }//);
  powerManagerChangeName = InstanceManager::getListPropertyName("PowerManager");
  //InstanceManager.addPropertyChangeListener(this);
- connect(InstanceManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(InstanceManager::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 /**
  * Basic Implementation of a BlockManager.

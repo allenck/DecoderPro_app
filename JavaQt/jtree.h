@@ -10,6 +10,7 @@
 #include <QStack>
 #include "exceptions.h"
 #include "treeexpansionlistener.h"
+#include "treeselectionlistener.h"
 
 class JAVAQTSHARED_EXPORT ExpandVetoException : public Exception
 {
@@ -23,9 +24,10 @@ class TreeSelectionListener;
 class PropertyChangeSupport;
 class TreeSelectionModel;
 class TreeModel;
-class JAVAQTSHARED_EXPORT JTree : public QTreeView
+class JAVAQTSHARED_EXPORT JTree : public QTreeView //, public TreeSelectionListener, public TreeExpansionListener
 {
  Q_OBJECT
+ //Q_INTERFACES(TreeSelectionListener TreeExpansionListener)
 public:
  explicit JTree(QWidget *parent = 0);
  JTree(TreeModel* tree,QWidget *parent = 0);

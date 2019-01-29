@@ -245,7 +245,7 @@ Box::Box(QWidget *parent) :
  *
  * @param l the layout manager to use
  */
-/*public*/ void Box::setLayout(QLayout* l)
+/*public*/ void Box::setLayout(QLayout* /*l*/)
 {
     //throw new AWTError("Illegal request");
  Logger::error("Illegal request to set Box layout");

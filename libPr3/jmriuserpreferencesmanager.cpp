@@ -66,7 +66,7 @@
  }
 
 
-/*public*/ JmriUserPreferencesManager::JmriUserPreferencesManager()
+/*public*/ JmriUserPreferencesManager::JmriUserPreferencesManager(QObject* parent) : UserPreferencesManager(parent)
 {
  log = new Logger("JmriUserPreferencesManager");
   dirty = false;
@@ -597,38 +597,51 @@
 //@Override
 /*public*/ void JmriUserPreferencesManager::setClassDescription(QString strClass)
 {
-#if 1
-  //try {
-        //Class<?> cl = Class.forName(strClass);
-  int typeId = QMetaType::type(strClass.toLocal8Bit());
   QObject* cl;
-  if(typeId > 0)
+  try
   {
- #if QT_VERSION < 0x050000
-   cl = (QObject*)QMetaType::construct(typeId);
- #else
-   cl = (QObject*)QMetaType::create(typeId);
- #endif
-  }
-  else return;
-  //Object t = cl.newInstance();
-  bool classDesFound = false;
-  bool classSetFound = false;
+   /*Class<?>*/ cl = (QObject*)Class::forName(strClass);
+
+//   QString clazz = strClass;
+//   if(strClass.contains("."))
+//    clazz = strClass.mid(strClass.lastIndexOf(".")+1);
+//    int typeId = QMetaType::type(clazz.toLocal8Bit());
+
+//    if(typeId > 0)
+//    {
+//   #if QT_VERSION < 0x050000
+//     cl = (QObject*)QMetaType::construct(typeId);
+//   #else
+//     cl = (QObject*)QMetaType::create(typeId);
+//   #endif
+//    }
+//    else
+//     return;
+    //Object t = cl.newInstance();
+    bool classDesFound = false;
+    bool classSetFound = false;
   QString desc = "";
   //Method method;
   //look through declared methods first, then all methods
-//  try {
-  //method = cl.getDeclaredMethod("getClassDescription");
-  int ix = cl->metaObject()->indexOfMethod("getClassDescription");
-  if(ix >= 0)
+  try
   {
+   //method = cl.getDeclaredMethod("getClassDescription");
+   int ix = cl->metaObject()->indexOfMethod(QMetaObject::normalizedSignature("getClassDescription()"));
+   if(ix >= 0)
+   {
       //desc = (QString) method.invoke(t);
    if(QMetaObject::invokeMethod(cl, "getClassDescription", Qt::DirectConnection, Q_RETURN_ARG(QString, desc)))
       classDesFound = true;
+   else
+    throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
 //  } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex) {
-//            log->debug(ex.toQString());
-//            classDesFound = false;
-//        }
+   }
+   else throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
+  }
+  catch(NoSuchMethodException ex)
+  {
+   log->debug(ex.getMessage());
+   classDesFound = false;
   }
 //  if (!classDesFound)
 //  {
@@ -650,19 +663,26 @@
    this->savePreferencesState();
   }
 
-  //try {
+  try {
    //method = cl.getDeclaredMethod("setMessagePreferencesDetails");
-   ix = cl->metaObject()->indexOfMethod("setMessagePreferencesDetails");
+   int ix = cl->metaObject()->indexOfMethod(QMetaObject::normalizedSignature("setMessagePreferencesDetails()"));
    if(ix >= 0)
    {
     //method.invoke(t);
-    QMetaObject::invokeMethod(cl, "setMessagePreferencesDetails", Qt::DirectConnection);
+    if(QMetaObject::invokeMethod(cl, "setMessagePreferencesDetails", Qt::DirectConnection))
       classSetFound = true;
+     else
+      throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
    }
+    else throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
+
 //  } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex) {
-//      log->debug(ex.toQString()); // *TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
-//      classSetFound = false;
-//  }
+  }
+  catch(NoSuchMethodException ex)
+  {
+      log->debug(ex.getMessage()); // *TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
+      classSetFound = false;
+  }
 //  if (!classSetFound) {
 //      try {
 //          method = cl.getMethod("setMessagePreferencesDetails");
@@ -672,14 +692,14 @@
 //      }
 //  }
 
-//    } catch (ClassNotFoundException ex) {
-//        log->warn("class name \"{}\" cannot be found, perhaps an expected plugin is missing?", strClass);
-//    } catch (IllegalAccessException ex) {
+    } catch (ClassNotFoundException ex) {
+        log->warn(tr("class name \"%1\" cannot be found, perhaps an expected plugin is missing?").arg(strClass));
+  }
+//     catch (IllegalAccessException ex) {
 //        log->error("unable to access class \"{}\"", strClass, ex);
 //    } catch (InstantiationException ex) {
 //        log->error("unable to get a class name \"{}\"", strClass, ex);
 //    }
-#endif
 }
 
 /**
@@ -943,7 +963,7 @@
 }
 
 /*protected*/ /*final*/ QString JmriUserPreferencesManager::getClassName() {
-    return this->metaObject()->className();
+    return "jmri.managers.JmriUserPreferencesManager";
 }
 
 /*protected*/ /*final*/ ClassPreferences* JmriUserPreferencesManager::getClassPreferences(QString strClass) {
@@ -989,7 +1009,7 @@
   file = FileUtil::getFile(FileUtil::PROFILE + /*Profile::UI_CONFIG_FILENAME*/"UserPrefsProfileConfig.xml");
   if (file->exists())
   {
-   log->debug(tr("start load user pref file: %1").arg(file->getPath()));
+//   log->debug(tr("start load user pref file: %1").arg(file->getPath()));
 //                try {
    ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->load(file, true);
    this->allowSave = true;

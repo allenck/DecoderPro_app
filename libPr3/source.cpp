@@ -149,7 +149,7 @@ LayoutBlock* Source::getStart(){
     return pd->getFacing();
 }
 
-LayoutBlock* Source::getSourceProtecting(){
+QList<LayoutBlock*> Source::getSourceProtecting(){
     return pd->getProtecting();
 }
 
@@ -233,6 +233,10 @@ QObject* Source::getSourceObject() { return sourceObject; }
 
 void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
     dest->activeBean(reverseDirection);
+}
+
+/*public*/ DestinationPoints* Source::getDestForPoint(PointDetails* dp) {
+    return pointToDest->value(dp);
 }
 
 /*public*/ int Source::getNumberOfDestinations() { return pointToDest->size(); }

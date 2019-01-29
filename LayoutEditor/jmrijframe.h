@@ -66,11 +66,13 @@ public:
     /*public*/ void setFrameRef(QString windowFrameRef);
     virtual /*public*/ QVariant getProperty(QString key);
     /*public*/ void makePrivateWindow();
-    /*public*/ void windowClosing(QCloseEvent* e);
+    virtual /*public*/ void windowClosing(QCloseEvent* e);
     /*public*/ virtual QString getClassName();
     /*public*/ void addNotify();
     /*public*/ void setFrameLocation();
     QMenu* windowMenu;
+    /*public*/ QWidget* getGlassPane();
+    /*public*/ void setGlassPane(QWidget* glassPane);
 
 signals:
 
@@ -91,6 +93,7 @@ private:
  //void closeEvent(QCloseEvent *);
  /*private*/ void saveWindowSize(UserPreferencesManager* p);
  /*private*/ bool mShown;// = false;
+ QWidget* glassPane = nullptr;
 
 protected:
     /*protected*/ bool allowInFrameServlet;// = true;
@@ -122,6 +125,7 @@ protected:
     friend class RosterFrame;
     friend class JmriJFrameWindowListener;
     friend class ListedTableFrame;
+    friend class UserInterface;
 };
 class MyAbstractShutDownTask : public AbstractShutDownTask
 {

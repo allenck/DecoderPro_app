@@ -177,10 +177,10 @@
     }
     return "";
 }
-/*public*/ QString PositionablePoint::getEastBoundSensor() {
+/*public*/ Sensor* PositionablePoint::getEastBoundSensor() {
     if(eastBoundSensorNamed!=NULL)
-        return eastBoundSensorNamed->getName();
-    return "";
+        return eastBoundSensorNamed->getBean();
+    return nullptr;
 }
 /*public*/ void PositionablePoint::setEastBoundSensor(QString sensorName) {
     if(sensorName==NULL || sensorName==("")){
@@ -201,10 +201,11 @@
             return westBoundSensorNamed->getName();
         }
         return "";
-    }/*public*/ QString PositionablePoint::getWestBoundSensor() {
+    }
+/*public*/ Sensor* PositionablePoint::getWestBoundSensor() {
     if(westBoundSensorNamed!=NULL)
-        return westBoundSensorNamed->getName();
-    return "";
+        return westBoundSensorNamed->getBean();
+    return nullptr;
 }
 /*public*/ void PositionablePoint::setWestBoundSensor(QString sensorName) {
     if(sensorName==NULL || sensorName==("")){
@@ -224,7 +225,13 @@
         }
         return "";
     }
-/*public*/ QString PositionablePoint::getEastBoundSignalMast() {return eastBoundSignalMastName;}
+/*public*/ SignalMast* PositionablePoint::getEastBoundSignalMast()
+{
+ if (getEastBoundSignalMastNamed() != nullptr) {
+  return getEastBoundSignalMastNamed()->getBean();
+ }
+ return nullptr;
+}
 
 /*private*/ NamedBeanHandle<SignalMast*>* PositionablePoint::getEastBoundSignalMastNamed()
 {
@@ -242,6 +249,7 @@
  }
  return eastBoundSignalMastNamed;
 }
+
 /*private*/ NamedBeanHandle<SignalMast*>* PositionablePoint::getWestBoundSignalMastNamed()
 {
  if (getType() == EDGE_CONNECTOR)
@@ -261,14 +269,26 @@
  }
  return westBoundSignalMastNamed;
 }
-/*public*/ void PositionablePoint::setEastBoundSignalMast(QString signalMastName) {eastBoundSignalMastName = signalMastName;}
+
+/*public*/ void PositionablePoint::setEastBoundSignalMast(QString signalMastName)
+{
+  eastBoundSignalMastName = signalMastName;
+}
+
 /*public*/ QString PositionablePoint::getWestBoundSignalMastName() {
         if (getWestBoundSignalMastNamed() != NULL) {
             return getWestBoundSignalMastNamed()->getName();
         }
         return "";
     }
-/*public*/ QString PositionablePoint::getWestBoundSignalMast() {return westBoundSignalMastName;}
+/*public*/ SignalMast* PositionablePoint::getWestBoundSignalMast()
+{
+ if (getWestBoundSignalMastNamed() != nullptr) {
+  return getWestBoundSignalMastNamed()->getBean();
+}
+return nullptr;
+
+}
 /*public*/ void PositionablePoint::setWestBoundSignalMast(QString signalMastName) {westBoundSignalMastName = signalMastName;}
 
 // initialization instance variables (used when loading a LayoutEditor)

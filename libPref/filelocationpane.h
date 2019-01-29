@@ -6,11 +6,13 @@
 
 class JFileChooser;
 class JTextField;
-class LIBPREFSHARED_EXPORT FileLocationPane : public PreferencesPanel
+class LIBPREFSHARED_EXPORT FileLocationPane : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+    Q_INTERFACES(PreferencesPanel)
+
 public:
-    explicit FileLocationPane(QWidget *parent = 0);
+    Q_INVOKABLE explicit FileLocationPane(QWidget *parent = 0);
     ~FileLocationPane() {}
     FileLocationPane(const FileLocationPane&);
     virtual
@@ -33,6 +35,8 @@ public:
     /*public*/ bool isDirty();
     virtual
     /*public*/ bool isRestartRequired();
+
+    /*public*/ QString className();
 
 signals:
 

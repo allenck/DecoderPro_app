@@ -85,7 +85,7 @@ QDomElement SE8cSignalHeadXml::addTurnoutElement(Turnout* to) {
 
     loadCommon(h, element);
 
-    InstanceManager::signalHeadManagerInstance()->Register(h);
+    static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
     return true;
 }
 

@@ -13,7 +13,7 @@ public:
     explicit AbstractSignalHeadManager(QObject *parent = 0);
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ SignalHead* getSignalHead(QString name);
     /*public*/ SignalHead* getBySystemName(QString name);
     /*public*/ SignalHead* getByUserName(QString key);

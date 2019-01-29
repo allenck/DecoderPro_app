@@ -2,6 +2,8 @@
 #include "layoutblock.h"
 #include "panelmenu.h"
 #include "namedbean.h"
+#include "connectivityutil.h"
+#include "layouttrackexpectedstate.h"
 
 LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 {
@@ -31,7 +33,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
  * @return true if source and destination beans are reachable, or false if they are not
  * @throws Jmri.Exception if no blocks can be found that related to the named beans.
  */
-/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(NamedBean* sourceBean, NamedBean* destBean) throw (JmriException)
+/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(NamedBean* sourceBean, NamedBean* destBean, int pathMethod) throw (JmriException)
 {
  LayoutBlock* facingBlock = NULL;
  LayoutBlock* protectingBlock = NULL;
@@ -66,7 +68,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     //A simple to check to see if the remote signal is in the correct direction to ours.
     try
     {
-     return checkValidDest(facingBlock, protectingBlock, destFacingBlock, destProtectBlock);
+     return checkValidDest(facingBlock, protectingBlock, destFacingBlock, destProtectBlock, pathMethod);
      }
      catch (JmriException e)
      {
@@ -135,7 +137,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
         }
         if(log->isDebugEnabled())
             log->debug("No valid route from " + sourceBean->getDisplayName() + " to " + destBean->getDisplayName());
-        throw new JmriException("Blocks Not Found");
+        throw JmriException("Blocks Not Found");
     }
 #if 0
 
@@ -170,105 +172,202 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
         return beansInPath;
     }
 #endif
-    /**
+
+/**
+ * Returns a list of NamedBeans (Signalhead, Signalmast or Sensor) that are
+ * assinged to block boundaries in a given list
+ *
+ * @param blocklist The list of block in order that need to be checked.
+ * @param panel     (Optional) panel that the blocks need to be checked
+ *                  against
+ * @param T         (Optional) the class that we want to check against,
+ *                  either Sensor, SignalMast or SignalHead, set null will
+ *                  return any.
+ */
+/*public*/ QList<NamedBean*> LayoutBlockConnectivityTools::getBeansInPath(QList<LayoutBlock*> blocklist, LayoutEditor* panel, QString T) {
+    QList<NamedBean*> beansInPath = QList<NamedBean*>();
+    if (blocklist.size() >= 2) {
+        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
+        for (int x = 1; x < blocklist.size(); x++) {
+            LayoutBlock* facingBlock = blocklist.at(x - 1);
+            LayoutBlock* protectingBlock = blocklist.at(x);
+            NamedBean* nb = nullptr;
+            if (T == "") {
+                nb = lbm->getFacingNamedBean(facingBlock->getBlock(), protectingBlock->getBlock(), panel);
+            } else if (T == ("SignalMast")) {
+                nb = (NamedBean*)lbm->getFacingSignalMast(facingBlock->getBlock(), protectingBlock->getBlock(), panel);
+            } else if (T == ("Sensor")) {
+                nb = lbm->getFacingSensor(facingBlock->getBlock(), protectingBlock->getBlock(), panel);
+            } else if (T == ("SignalHead")) {
+                nb = lbm->getFacingSignalHead(facingBlock->getBlock(), protectingBlock->getBlock());
+            }
+            if (nb != nullptr) {
+                beansInPath.append(nb);
+            }
+        }
+    }
+    return beansInPath;
+}
+
+/**
      * Determines if one set of blocks is reachable from another set of blocks
      * based upon the directions of the set of blocks.
+     * <ul>
+     * <li>Called by {@link jmri.implementation.DefaultSignalMastLogic} using MASTTOMAST.</li>
+     * <li>Called by {@link jmri.jmrit.entryexit.DestinationPoints} using SENSORTOSENSOR.</li>
+     * <li>Called by {@link jmri.jmrit.entryexit.EntryExitPairs} using SENSORTOSENSOR.</li>
+     * </ul>
+     * Convert the destination protected block to an array list.
+     * Call the 3 block+list version of checkValidDest() to finish the checks.
      * <p>
-     * This is used to help with identifying items such as signalmasts located
-     * at positionable points or turnouts are facing in the same direction as
-     * other given signalmasts.
-     * <p>
-     * Given the current block and the next block we can work out the direction
-     * of travel.
-     * Given the destBlock and the next block on, we can determine the whether
-     * the destBlock comes before the destBlock+1.
-     * @return true if destBlock comes before destBlock+1 or
-     * false if destBlock comes after destBlock+1
-     * @throws Jmri.Exception if any Block is NULL;
+     * @param currentBlock The facing layout block for the source signal or sensor.
+     * @param nextBlock    The protected layout block for the source signal or sensor.
+     * @param destBlock    The facing layout block for the destination signal mast or sensor.
+     * @param destProBlock The protected destination block.
+     * @param pathMethod   Indicates the type of path:  Signal head, signal mast or sensor.
+     * @return true if a path to the destination is valid.
+     * @throws jmri.JmriException if any Block is null;
      */
-/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destBlockn1) throw (JmriException) {
-        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
-        if (!lbm->isAdvancedRoutingEnabled()){
-            log->info("Advanced routing has not been enabled therefore we cannot use this function");
-            throw new JmriException("Advanced routing has not been enabled therefore we cannot use this function");
-        }
-        if(log->isDebugEnabled()){
-            try {
-                log->debug("faci " + currentBlock->getDisplayName());
-                log->debug("next " + nextBlock->getDisplayName());
-                log->debug("dest " + destBlock->getDisplayName());
-                log->debug("dest + 1 " + destBlockn1->getDisplayName());
-            } catch (NullPointerException e){
+    /*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destProBlock, int pathMethod) throw (JmriException) {
 
-            }
+        QList<LayoutBlock*> destList = QList<LayoutBlock*>();
+        if (destProBlock != nullptr) {
+            destList.append(destProBlock);
         }
-        if((destBlock!=NULL) && (currentBlock!=NULL) && (nextBlock!=NULL)){
-            if(!currentBlock->isRouteToDestValid(nextBlock->getBlock(), destBlock->getBlock())){
-                log->debug("Route to dest not valid");
-                return false;
-            }
-            if(log->isDebugEnabled()){
-                log->debug("dest " + destBlock->getDisplayName());
-                if(destBlockn1!=NULL)
-                    log->debug("remote prot " + destBlockn1->getDisplayName());
-            }
-            //Do a simple test to see if one is reachable from the other.
-            int proCount = 0;
-            int desCount = 0;
-            if(destBlockn1!=NULL){
-                desCount = currentBlock->getBlockHopCount(destBlock->getBlock(), nextBlock->getBlock());
-                proCount = currentBlock->getBlockHopCount(destBlockn1->getBlock(), nextBlock->getBlock());
-                log->debug("dest " + QString::number(desCount) + " protecting " + QString::number(proCount));
-            }
-            if(proCount<desCount){
-                /*Need to do a more advanced check in this case as the destBlockn1
-                could be reached via a different route and therefore have a smaller
-                hop count we need to therefore step through each block until we reach
-                the end.
-                We also need to perform a more advanced check if the destBlockn1
-                is NULL as this indicates that the destination signal mast is assigned
-                on an end bumper*/
-                QList<LayoutBlock*> blockList = getLayoutBlocks(currentBlock, destBlock, nextBlock, true, NONE); //Was MASTTOMAST
-                if(blockList.contains(destBlockn1)){
-                    log->debug("Signal mast in the wrong direction");
-                    return false;
-                }
-                /*Work on the basis that if you get the blocks from source to dest
-                then the dest+1 block should not be included*/
-                log->debug("Signal mast in the correct direction");
-                return true;
-            } else if ((proCount==-1) && (desCount==-1)) {
-                //The destination block and destBlock+1 are both directly connected
-                return false;
-            }
-            return true;
-        } else if (destBlock==NULL){
-            throw new JmriException("Block in Destination Field returns as invalid");
-        } else if (currentBlock==NULL){
-            throw new JmriException("Block in Facing Field returns as invalid");
+        try {
+            return checkValidDest(currentBlock, nextBlock, destBlock, destList, pathMethod);
+        } catch (JmriException e) {
+            throw e;
         }
-        else if (nextBlock==NULL){
-            throw new JmriException("Block in Protecting Field returns as invalid");
-        }
-        throw new JmriException("BlockIsNull");
+
     }
 
-    /**
-    * This uses the layout editor to check if the destination location is
-    * reachable from the source location
-    *
-    * @param facing Layout Block that is considered our first block
-    * @param protecting Layout Block that is considered first block +1
-    * @param dest Layout Block that we want to get to
-    * @return true if valid, false if not valid.
-    */
 
-/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* facing, LayoutBlock* protecting, FacingProtecting* dest) throw (JmriException){
+/**
+ * Determines if one set of blocks is reachable from another set of blocks
+ * based upon the directions of the set of blocks.
+ * <p>
+ * This is used to help with identifying items such as signalmasts located
+ * at positionable points or turnouts are facing in the same direction as
+ * other given signalmasts.
+ * <p>
+ * Given the current block and the next block we can work out the direction
+ * of travel.
+ * Given the destBlock and the next block on, we can determine the whether
+ * the destBlock comes before the destBlock+1.
+ * @return true if destBlock comes before destBlock+1 or
+ * false if destBlock comes after destBlock+1
+ * @throws Jmri.Exception if any Block is NULL;
+ */
+/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, QList<LayoutBlock*> destBlockn1, int pathMethod) throw (JmriException)
+{
+ LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
+ if (!lbm->isAdvancedRoutingEnabled())
+ {
+  log->info("Advanced routing has not been enabled therefore we cannot use this function");
+  throw JmriException("Advanced routing has not been enabled therefore we cannot use this function");
+ }
+ if(log->isDebugEnabled())
+ {
+  try
+  {
+   log->debug("faci " + currentBlock->getDisplayName());
+   log->debug("next " + nextBlock->getDisplayName());
+   log->debug("dest " + destBlock->getDisplayName());
+   for (LayoutBlock* dp : destBlockn1)
+   {
+    log->debug(tr("dest + 1 %1").arg(dp->getDisplayName()));
+   }
+  }
+  catch (NullPointerException e)
+  {
+  }
+ }
+
+ if((destBlock!=NULL) && (currentBlock!=NULL) && (nextBlock!=NULL)){
+ if(!currentBlock->isRouteToDestValid(nextBlock->getBlock(), destBlock->getBlock())){
+  log->debug("Route to dest not valid");
+  return false;
+ }
+ if(log->isDebugEnabled()){
+  log->debug("dest " + destBlock->getDisplayName());
+ //                if(!destBlockn1.isEmpty())
+ //                    log->debug("remote prot " + destBlockn1->getDisplayName());
+ }
+ //Do a simple test to see if one is reachable from the other.
+ int proCount = 0;
+ int desCount = 0;
+ if(!destBlockn1.isEmpty()){
+  desCount = currentBlock->getBlockHopCount(destBlock->getBlock(), nextBlock->getBlock());
+  proCount = currentBlock->getBlockHopCount(destBlockn1.at(0)->getBlock(), nextBlock->getBlock());
+  log->debug("dest " + QString::number(desCount) + " protecting " + QString::number(proCount));
+ }
+ if (proCount > desCount && (proCount - 1) == desCount)
+ {
+       // The block that we are protecting should be one hop greater than the destination count.
+       log->debug("Protecting is one hop away from destination and therefore valid.");
+       return true;
+ }
+
+  /*Need to do a more advanced check in this case as the destBlockn1
+   could be reached via a different route and therefore have a smaller
+   hop count we need to therefore step through each block until we reach
+   the end.
+   The advanced check also covers cases where the route table is inconsistent.
+   We also need to perform a more advanced check if the destBlockn1
+   is null as this indicates that the destination signal mast is assigned
+   on an end bumper*/
+
+  if (pathMethod == SENSORTOSENSOR && destBlockn1.size() == 0) {
+      // Change the pathMethod to accept the NX sensor at the end bumper.
+      pathMethod = NONE;
+  }
+
+  QList<LayoutBlock*> blockList = getLayoutBlocks(currentBlock, destBlock, nextBlock, true, pathMethod); //Was MASTTOMAST
+  if (log->isDebugEnabled()) {
+      log->debug(tr("checkValidDest blockList for %1").arg(destBlock->getDisplayName()));
+      //blockList.forEach(blk -> log.debug("  block = {}", blk.getDisplayName()));
+      foreach(LayoutBlock* blk, blockList)
+       log->debug(tr("  block = %1").arg(blk->getDisplayName()));
+  }
+  for (LayoutBlock* dp : destBlockn1) {
+      log->debug(tr("dp = %1").arg(dp->getDisplayName()));
+      if (blockList.contains(dp) && currentBlock != dp) {
+          log->debug("Signal mast in the wrong direction");
+          return false;
+      }
+  }
+      /*Work on the basis that if you get the blocks from source to dest
+       then the dest+1 block should not be included*/
+  log->debug("Signal mast in the correct direction");
+  return true;
+
+ } else if (destBlock == nullptr) {
+     throw JmriException("Block in Destination Field returns as invalid");
+ } else if (currentBlock == nullptr) {
+     throw JmriException("Block in Facing Field returns as invalid");
+ } else if (nextBlock == nullptr) {
+     throw JmriException("Block in Protecting Field returns as invalid");
+ }
+ throw JmriException("BlockIsNull");
+}
+
+/**
+* This uses the layout editor to check if the destination location is
+* reachable from the source location
+*
+* @param facing Layout Block that is considered our first block
+* @param protecting Layout Block that is considered first block +1
+* @param dest Layout Block that we want to get to
+* @return true if valid, false if not valid.
+*/
+
+/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* facing, LayoutBlock* protecting, FacingProtecting* dest, int pathMethod) throw (JmriException){
         if(facing==NULL || protecting==NULL || dest == NULL){
             return false;
         }
         try{
-            return checkValidDest(facing, protecting, static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(dest->getFacing()), static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(dest->getProtecting()));
+            return checkValidDest(facing, protecting, static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(dest->getFacing()), static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getLayoutBlock(dest->getProtecting()), pathMethod);
         } catch (JmriException e){
             throw e;
         }
@@ -300,7 +399,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
         LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         if (!lbm->isAdvancedRoutingEnabled()){
             log->info("Advanced routing has not been enabled therefore we cannot use this function");
-            throw new JmriException("Advanced routing has not been enabled therefore we cannot use this function");
+            throw  JmriException("Advanced routing has not been enabled therefore we cannot use this function");
         }
 
         int directionOfTravel = sourceLayoutBlock->getNeighbourDirection(protectingLayoutBlock);
@@ -321,12 +420,12 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             } else {
                 lastErrorMessage = "Block we are protecting is already occupied or reserved";
                 log->debug(lastErrorMessage);
-                throw new JmriException(lastErrorMessage);
+                throw  JmriException(lastErrorMessage);
             }
             if (!canLBlockBeUsed(destinationLayoutBlock)){
                 lastErrorMessage = "Destination Block is already occupied or reserved";
                 log->debug(lastErrorMessage);
-                throw new JmriException(lastErrorMessage);
+                throw  JmriException(lastErrorMessage);
             }
         } else {
             blocksInRoute.append(new BlocksTested(protectingLayoutBlock));
@@ -423,7 +522,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             lastErrorMessage = "ttlExpired";
         }
         //we exited the loop without either finding the destination or we had error.
-        throw new JmriException(lastErrorMessage);
+        throw JmriException(lastErrorMessage);
     }
 #if 1
 
@@ -509,12 +608,58 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
         return -1;
     }
 
+    /*private*/ bool LayoutBlockConnectivityTools::checkForDoubleCrossover(Block* prevBlock, LayoutBlock* curBlock, Block* nextBlock) {
+            LayoutEditor* le = curBlock->getMaxConnectedPanel();
+            ConnectivityUtil* ct = le->getConnectivityUtil();
+            QList<LayoutTrackExpectedState<LayoutTurnout*>*> turnoutList = ct->getTurnoutList(curBlock->getBlock(), prevBlock, nextBlock);
+            for (int i = 0; i < turnoutList.size(); i++) {
+                LayoutTurnout* lt = turnoutList.at(i)->getObject();
+                if (lt->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER) {
+                    if (turnoutList.at(i)->getExpectedState() == Turnout::THROWN) {
+                        Turnout* t = lt->getTurnout();
+                        if (t->getKnownState() == Turnout::THROWN) {
+                            if (lt->getLayoutBlock() == curBlock || lt->getLayoutBlockC() == curBlock) {
+                                if (!canLBlockBeUsed(lt->getLayoutBlockB()) && !canLBlockBeUsed(lt->getLayoutBlockD())) {
+                                    return false;
+                                }
+                            } else if (lt->getLayoutBlockB() == curBlock || lt->getLayoutBlockD() == curBlock) {
+                                if (!canLBlockBeUsed(lt->getLayoutBlock()) && !canLBlockBeUsed(lt->getLayoutBlockC())) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        /*private*/ bool LayoutBlockConnectivityTools::checkForLevelCrossing(LayoutBlock* curBlock) {
+            LayoutEditor* lay = curBlock->getMaxConnectedPanel();
+            for (LayoutTrack* lt : lay->getLevelXings()) {
+             LevelXing* lx = (LevelXing*)lt;
+                if (lx->getLayoutBlockAC() == curBlock
+                        || lx->getLayoutBlockBD() == curBlock) {
+                    if ((lx->getLayoutBlockAC() != nullptr)
+                            && (lx->getLayoutBlockBD() != nullptr)
+                            && (lx->getLayoutBlockAC() != lx->getLayoutBlockBD())) {
+                        if (lx->getLayoutBlockAC() == curBlock) {
+                            return canLBlockBeUsed(lx->getLayoutBlockBD());
+                        } else if (lx->getLayoutBlockBD() == curBlock) {
+                            return canLBlockBeUsed(lx->getLayoutBlockAC());
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
     /**
     *   Discovers valid pairs of beans type T assigned to a layout editor.
     *   If no bean type is provided, then either SignalMasts or Sensors are discovered
     *   If no editor is provided, then all editors are considered
     */
-    /*public*/ QHash<NamedBean*, QList<NamedBean*> > LayoutBlockConnectivityTools::discoverValidBeanPairs(LayoutEditor* editor, QString T){
+    /*public*/ QHash<NamedBean*, QList<NamedBean*> > LayoutBlockConnectivityTools::discoverValidBeanPairs(LayoutEditor* editor, QString T, int pathMethod){
         LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         QHash<NamedBean*, QList<NamedBean*> > retPairs =  QHash<NamedBean*, QList<NamedBean*> >();
         QList<FacingProtecting*> beanList = generateBlocksWithBeans(editor, T);
@@ -533,7 +678,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             LayoutBlock* lProtecting = lbm->getLayoutBlock(protecting);
             NamedBean* source = beanList.at(i)->getBean();
             try {
-                retPairs.insert(source, discoverPairDest(source, lProtecting, lFacing, beanList));
+                retPairs.insert(source, discoverPairDest(source, lProtecting, lFacing, beanList, pathMethod));
             } catch (JmriException ex){
                 log->error(ex.toString());
             }
@@ -548,48 +693,59 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     * @param T The class of the remote destination, if NULL, then both SignalMasts and Sensors are considered
     * @return A list of all reachable NamedBeans
     */
-    /*public*/ QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T) throw (JmriException)
+    /*public*/ QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T, int pathMethod) throw (JmriException)
     {
-        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
-        LayoutBlock* lFacing = lbm->getFacingBlockByNamedBean(source, editor);
-        LayoutBlock* lProtecting = lbm->getProtectedBlockByNamedBean(source, editor);
-        try {
-            return discoverPairDest(source, lProtecting, lFacing, generateBlocksWithBeans(editor, T));
-        } catch (JmriException e){
-            throw e;
-        }
+     LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
+     LayoutBlock* lFacing = lbm->getFacingBlockByNamedBean(source, editor);
+     QList<LayoutBlock*> lProtecting = lbm->getProtectingBlocksByNamedBean(source, editor);
+     QList<NamedBean*> ret = QList<NamedBean*>();
+     QList<FacingProtecting*> beanList = generateBlocksWithBeans(editor, T);
+     try {
+         for (LayoutBlock* lb : lProtecting) {
+             //ret.addAll(discoverPairDest(source, lb, lFacing, beanList, pathMethod));
+          QList<NamedBean*> l = discoverPairDest(source, lb, lFacing, beanList, pathMethod);
+          foreach (NamedBean*bean, l) {
+          ret.append(bean);
+          }
+         }
+     } catch (JmriException e) {
+         throw e;
+     }
+     return ret;
     }
 
-    QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList) throw (JmriException)
+    QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList, int pathMethod) throw (JmriException)
     {
      LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
      if(!lbm->isAdvancedRoutingEnabled())
      {
-      throw new JmriException("advanced routing not enabled");
+      throw  JmriException("advanced routing not enabled");
      }
      if(!lbm->routingStablised())
      {
-      //throw new JmriException("routing not stablised");
       log->error(("routing not stablised"));
+      throw JmriException("routing not stablised");
+
      }
      QList<NamedBean*> validDestBean =  QList<NamedBean*>();
      for (int j = 0; j<blockList.size(); j++)
      {
-            if (blockList.at(j)->getBean()!=source){
- //               boolean alreadyExist = false;
-                NamedBean* destObj = blockList.at(j)->getBean();
-                if(log->isDebugEnabled())
-                    log->debug("looking for pair " + source->getDisplayName() + " " + destObj->getDisplayName());
-                try {
-                    if(checkValidDest(lFacing, lProtecting, blockList.at(j))){
-                        if(log->isDebugEnabled())
-                            log->debug("Valid pair " + source->getDisplayName() + " " + destObj->getDisplayName());
-                        LayoutBlock* ldstBlock = lbm->getLayoutBlock(blockList.at(j)->getFacing());
-                        try {
-                            QList<LayoutBlock*> lblks = getLayoutBlocks(lFacing, ldstBlock, lProtecting, true, MASTTOMAST);
-                            if(log->isDebugEnabled())
-                                log->debug("Adding block " + destObj->getDisplayName() + " to paths, current size " + lblks.size());
-                            validDestBean.append(destObj);
+      if (blockList.at(j)->getBean()!=source)
+      {
+//               boolean alreadyExist = false;
+          NamedBean* destObj = blockList.at(j)->getBean();
+          if(log->isDebugEnabled())
+              log->debug("looking for pair " + source->getDisplayName() + " " + destObj->getDisplayName());
+          try {
+              if(checkValidDest(lFacing, lProtecting, blockList.at(j),pathMethod)){
+                  if(log->isDebugEnabled())
+                      log->debug("Valid pair " + source->getDisplayName() + " " + destObj->getDisplayName());
+                  LayoutBlock* ldstBlock = lbm->getLayoutBlock(blockList.at(j)->getFacing());
+                  try {
+                      QList<LayoutBlock*> lblks = getLayoutBlocks(lFacing, ldstBlock, lProtecting, true, MASTTOMAST);
+                      if(log->isDebugEnabled())
+                          log->debug("Adding block " + destObj->getDisplayName() + " to paths, current size " + lblks.size());
+                      validDestBean.append(destObj);
          }
          catch (JmriException e)
          {  // Considered normal if route not found.

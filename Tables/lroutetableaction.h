@@ -72,8 +72,8 @@ public:
     /*public*/ static /*final*/ int CLEAR_SIGNAL_HELD;// = Conditional.ACTION_CLEAR_SIGNAL_HELD + OFFSET;
     /*public*/ static /*final*/ int SET_SIGNAL_DARK;// = Conditional.ACTION_SET_SIGNAL_DARK + OFFSET;
     /*public*/ static /*final*/ int SET_SIGNAL_LIT;//  = Conditional.ACTION_SET_SIGNAL_LIT + OFFSET;
-    /*public*/ void setMessagePreferencesDetails();
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     void initializeIncludedInputList();
     void initializeIncludedOutputList();
     void  initializeIncludedAlignList();

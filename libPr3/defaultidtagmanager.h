@@ -20,7 +20,7 @@ public:
     /*public*/ int getXMLOrder();
     /*public*/ bool isInitialised();
     /*public*/ void init();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ QString getSystemPrefix();
     /*public*/ IdTag* provideIdTag(QString name);
     /*public*/ IdTag* getIdTag(QString name);

@@ -365,7 +365,7 @@ static /*public*/ QString AppsLaunchPane::getConnection4() {
  * @param def  Default value if no other is provided
  * @param args Argument array from the main routine
  */
-/*static*/ /*protected*/ void setConfigFilename(QString def, QStringList args)
+/*static*/ /*protected*/ void AppsLaunchPane::setConfigFilename(QString def, QStringList args)
 {
  Logger log = Logger("Apps");
  // save the configuration filename if present on the command line
@@ -384,7 +384,7 @@ static /*public*/ QString AppsLaunchPane::getConnection4() {
  }
 #endif
  Apps::configFilename = def;
-//    setJmriSystemProperty("configFilename", def);
+ setJmriSystemProperty("configFilename", def);
 }
 
 /*static*/ /*public*/ QString AppsLaunchPane::getConfigFileName() {

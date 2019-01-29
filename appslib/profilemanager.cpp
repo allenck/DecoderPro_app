@@ -740,7 +740,7 @@ QString ProfileManager::FileFilter1::getDescription()
  {
         QString pn = tr("My JMRI Railroad");
         QString pid = FileUtil::sanitizeFilename(pn);
-        File* pp = new File(FileUtil::getPreferencesPath() + pid);
+        File* pp = new File(FileUtil::getPreferencesPath() + pid + Profile::EXTENSION);
         Profile* profile = new Profile(pn, pid, pp);
         this->addProfile(profile);
         this->setAutoStartActiveProfile(true);

@@ -69,6 +69,54 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
  return t;
 }
 
+/**
+ * Get the bit address from the system name.
+ *
+ * @param systemName the system name
+ * @return the bit address
+ */
+/*public*/ int LnReporterManager::getBitFromSystemName(QString systemName) {
+    // validate the system Name leader characters
+    if ((!systemName.startsWith(getSystemPrefix())) || (!systemName.startsWith(getSystemPrefix() + "R"))) {
+        // here if an illegal LocoNet Reporter system name
+        log.error(tr("invalid character in header field of loconet reporter system name: %1").arg(systemName));
+        return (0);
+    }
+    // name must be in the LRnnnnn format (L is user configurable)
+    int num;
+    bool bok;
+        num = systemName.mid(
+                getSystemPrefix().length() + 1, systemName.length()).toInt(&bok);
+    if(!bok) {
+        log.warn(tr("invalid character in number field of system name: %1").arg(systemName));
+        return (0);
+    }
+    if (num <= 0) {
+        log.warn(tr("invalid loconet reporter system name: %1").arg(systemName));
+        return (0);
+    } else if (num > 4096) {
+        log.warn(tr("bit number out of range in loconet reporter system name: %1").arg(systemName));
+        return (0);
+    }
+    return (num);
+}
+
+/**
+ * Validate system name format.
+ *
+ * @param systemName the name to validate
+ * @return VALID if system name has a valid format; otherwise return INVALID
+ */
+//@Override
+/*public*/ Manager::NameValidity LnReporterManager::validSystemNameFormat(QString systemName) {
+    return (getBitFromSystemName(systemName) != 0) ? NameValidity::VALID : NameValidity::INVALID;
+}
+
+//@Override
+/*public*/ QString LnReporterManager::getEntryToolTip() {
+    return tr("enter a number from 1 to 2048 (inclusive).");
+}
+
 // listen for transponder messages, creating Reporters as needed
 void LnReporterManager::message(LocoNetMessage* l)
 {

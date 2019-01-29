@@ -32,7 +32,13 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SHARED_PROPERTIES, ("profile/profile.pro
 /*public*/ /*static final*/ QString Profile::UI_CONFIG = "user-interface.xml"; // NOI18N
 /*public*/ /*static final*/ QString Profile::SHARED_UI_CONFIG = Profile::PROFILE + "/" + Profile::UI_CONFIG; // NOI18N
 /*public*/ /*static final*/ QString Profile::UI_CONFIG_FILENAME = "UserPrefsProfileConfig.xml"; // NOI18N
-
+/**
+ * The filename extension for JMRI profile directories. This is needed for
+ * external applications on some operating systems to recognize JMRI
+ * profiles.
+ */
+/*public*/ /*static*/ /*final*/ QString Profile::EXTENSION = ".jmri"; // NOI18N
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
 /**
  * Create a Profile object given just a path to it. The Profile must exist
  * in storage on the computer.
@@ -50,8 +56,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SHARED_PROPERTIES, ("profile/profile.pro
 /*public*/ Profile::Profile(File* path, QObject* parent) throw (IOException)
  : QObject(parent)
 {
- common(path, true);
+ common(path, ProfileManager::createUniqueId(), true);
 }
+
 /**
  * Create a Profile object and a profile in storage. A Profile cannot exist
  * in storage on the computer at the path given. Since this is a new
@@ -70,44 +77,37 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SHARED_PROPERTIES, ("profile/profile.pro
 /*public*/ Profile::Profile(QString name, QString id, File* path, QObject *parent) :
     QObject(parent)
 {
- if(name == "")
-  throw IllegalArgumentException();
- if (path->getName()!=(id))
- {
-  Logger::error(id + " " + path->getName() + " do not match");
-  throw new IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
+ File* pathWithExt; // path with extention
+ if (path->getName().endsWith(*_EXTENSION)) {
+     pathWithExt = path;
+ } else {
+     pathWithExt = new File(path->getParentFile(), path->getName() + *_EXTENSION);
  }
- if (( File(path, *_PROPERTIES)).canRead())
- {
-  Logger::error("A profile already exists at " + path->toString());
-  throw new IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
+ if (pathWithExt->getName() != (id + *_EXTENSION)) {
+     throw  IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
  }
- if (Profile::containsProfile(path))
- {
-  Logger::error(path->toString() + " contains a profile in a subdirectory.");
-  throw new IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
+ if (Profile::isProfile(path) || Profile::isProfile(pathWithExt)) {
+     throw IllegalArgumentException("A profile already exists at " + path->getPath()); // NOI18N
  }
- if (Profile::inProfile(path))
- {
-  Logger::error(path->toString() + " is within an existing profile.");
-  throw new IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
+ if (Profile::containsProfile(path) || Profile::containsProfile(pathWithExt)) {
+     throw IllegalArgumentException(path->getPath() + " contains a profile in a subdirectory."); // NOI18N
+ }
+ if (Profile::inProfile(path) || Profile::inProfile(pathWithExt)) {
+     throw IllegalArgumentException(path->getPath() + " is within an existing profile."); // NOI18N
  }
  this->name = name;
  this->id = id + "." + ProfileManager::createUniqueId();
- setObjectName(id);
- this->path = path;
- //path->mkdirs();
- QDir d = QDir();
- d.mkpath(path->toString());
- if (!path->isDirectory())
- {
-  throw new IllegalArgumentException(path->toString()+ " is not a directory"); // NOI18N
+ this->path = pathWithExt;
+ // use field, not local variables (path or pathWithExt) for paths below
+ if (!this->path->exists() && !this->path->mkdirs()) {
+     throw IOException("Unable to create directory " + this->path->getPath()); // NOI18N
+ }
+ if (!this->path->isDirectory()) {
+     throw IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
  }
  this->save();
- if (!( File(path, *_PROPERTIES)).canRead())
- {
-  throw new IllegalArgumentException(path->toString() + " does not contain a profile.properties file"); // NOI18N
-  Logger::error(path->toString() + " does not contain a profile.properties file"); // NOI18N
+ if (!Profile::isProfile(this->path)) {
+     throw  IllegalArgumentException(path->getPath() + " does not contain a profile.properties file"); // NOI18N
  }
 }
 
@@ -124,23 +124,48 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SHARED_PROPERTIES, ("profile/profile.pro
 /*protected*/ Profile::Profile(File* path, bool isReadable, QObject *parent) :
     QObject(parent)
 {
- common(path, isReadable);
+ common(path, ProfileManager::createUniqueId(), isReadable);
 }
 
-void Profile::common(File *path, bool isReadable)
+/**
+ * Create a Profile object given just a path to it. If isReadable is true,
+ * the Profile must exist in storage on the computer.
+ * <p>
+ * This method exists purely to support subclasses.
+ *
+ * @param path       The Profile's directory
+ * @param id         The Profile's id
+ * @param isReadable True if the profile has storage. See
+ *                   {@link jmri.profile.NullProfile} for a Profile subclass
+ *                   where this is not true.
+ * @throws java.io.IOException If the profile's preferences cannot be read.
+ */
+void Profile::common(File *path, QString id,bool isReadable)
 {
- this->path = path;
- this->name = path->getName();
- if (isReadable)
- {
-  this->readProfile();
-  setObjectName(id);
+ File* pathWithExt; // path with extention
+ if (path->getName().endsWith(*_EXTENSION)) {
+     pathWithExt = path;
+ } else {
+     pathWithExt = new File(path->getParentFile(), path->getName() + *_EXTENSION);
+ }
+ // if path does not exist, but pathWithExt exists, use pathWithExt
+ // to support a scenario where user adds .jmri extension to profile
+ // directory outside of JMRI application
+ if ((!path->exists() && pathWithExt->exists())) {
+     this->path = pathWithExt;
+ } else {
+     this->path = path;
+ }
+ this->id = id;
+ if (isReadable) {
+     this->readProfile();
  }
 }
+
 /*protected*/ Profile::Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent) throw (IOException) : QObject(parent)
 {
- common(path, isReadable);
- this->id = id;
+ common(path, id, isReadable);
+
 }
 
 /*protected*/ /*final*/ void Profile::save() throw (IOException)

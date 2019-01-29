@@ -35,7 +35,7 @@ public:
     /*protected*/ void addPressed(ActionEvent* e=0);
     /*public*/ void setEnabled(bool newValue);
     /*public*/ void dispose();
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
 signals:
     void propertyChange(PropertyChangeEvent *);
 public slots:

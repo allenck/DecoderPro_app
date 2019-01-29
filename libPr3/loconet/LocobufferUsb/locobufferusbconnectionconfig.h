@@ -7,7 +7,7 @@ class LIBPR3SHARED_EXPORT LocobufferUsbConnectionConfig : public AbstractSerialC
 {
     Q_OBJECT
 public:
-    explicit LocobufferUsbConnectionConfig(QObject *parent = 0);
+    Q_INVOKABLE explicit LocobufferUsbConnectionConfig(QObject *parent = 0);
     /*public*/ LocobufferUsbConnectionConfig(SerialPortAdapter* p, QObject *parent = 0);
     ~LocobufferUsbConnectionConfig() {}
     LocobufferUsbConnectionConfig(const LocobufferUsbConnectionConfig &)

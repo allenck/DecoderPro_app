@@ -518,7 +518,7 @@ while (iter.hasNext()) {
     inputTS->append(new LRouteInputLight(systemName, userName));
     outputTS->append(new LRouteOutputLight(systemName, userName));
 }
-SignalHeadManager* shm = InstanceManager::signalHeadManagerInstance();
+SignalHeadManager* shm = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
 systemNameList = ((AbstractSignalHeadManager*)shm)->getSystemNameList();
 iter = QStringListIterator(systemNameList);
 while (iter.hasNext()) {

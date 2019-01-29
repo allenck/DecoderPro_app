@@ -1,7 +1,7 @@
 #ifndef PICKLISTMODEL_H
 #define PICKLISTMODEL_H
 
-#include <QAbstractTableModel>
+#include "beantabledatamodel.h"
 #include "jtable.h"
 #include "logger.h"
 #include "abstractnamedbean.h"
@@ -41,7 +41,7 @@ class LightManager;
 class PropertyChangeEvent;
 class LogixManager;
 
-class LIBLAYOUTEDITORSHARED_EXPORT PickListModel : public /*AbstractNamedBean*/AbstractTableModel
+class LIBLAYOUTEDITORSHARED_EXPORT PickListModel : public /*AbstractNamedBean*/BeanTableDataModel
 {
     Q_OBJECT
 public:
@@ -113,6 +113,7 @@ protected:
  /*protected*/ QList <NamedBean*>* _pickList;
  /*protected*/ QString _name;
  /*protected*/ QSortFilterProxyModel* _sorter;
+ /*protected*/ /*synchronized*/ void updateNameList();
 
  friend class TurnoutPickModel;
 };

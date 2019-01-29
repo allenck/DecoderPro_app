@@ -1,5 +1,6 @@
 #include "displayframe.h"
 #include "loggerfactory.h"
+#include "editor.h"
 
 /**
  * Extended JmriJFrame that allows to add an InitEventListener for display of
@@ -115,6 +116,31 @@ jmri.util.swing.ImagePanel -- preview
 
 /*public*/ int DisplayFrame::getPreviewBg() {
     return previewBgSet;
+}
+
+/*public*/ void DisplayFrame::updateBackground0(BufferedImage* im) {
+}
+
+/**
+ *
+ * @param container Container to be resized
+ * @param deltaDim Size difference of container with old contents
+ * @param newDim Size of the new contents
+ * @param ed panel editor
+ */
+/*public*/ void DisplayFrame::reSize(QWidget*container, QSize deltaDim, QSize newDim, Editor* ed) {
+    QSize dim = QSize(deltaDim.width() + newDim.width() + 10,
+            deltaDim.height() + newDim.height() + 10);
+    container->resize(dim);
+    if (log->isDebugEnabled())
+        log->debug(tr(" deltaDim= (%1, %2) NewDim= (%3, %4) setPreferredSize to (%5, %6)" ).arg(
+            deltaDim.width() ).arg( deltaDim.height() ).arg( newDim.width() ).arg( newDim.height() ).arg( dim.width(), dim.height()));
+    pack();
+// TODO:    setLocation(PlaceWindow.nextTo(ed, null, this));
+    if (log->isDebugEnabled()) {
+        dim = container->size();
+        log->debug(tr(" Resized to (%1, %2)" ).arg( dim.width() ).arg( dim.height()));
+    }
 }
 
 /**

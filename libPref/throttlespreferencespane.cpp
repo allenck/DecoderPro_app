@@ -25,11 +25,11 @@
 
 #if 1
 /** Creates new form ThrottlesPreferencesPane */
-/*public*/ ThrottlesPreferencesPane::ThrottlesPreferencesPane(QWidget *parent) : PreferencesPanel(parent)
+/*public*/ ThrottlesPreferencesPane::ThrottlesPreferencesPane(QWidget *parent) : QWidget(parent)
 {
  common();
 }
-/*public*/ ThrottlesPreferencesPane::ThrottlesPreferencesPane(const ThrottlesPreferencesPane & ): PreferencesPanel()
+/*public*/ ThrottlesPreferencesPane::ThrottlesPreferencesPane(const ThrottlesPreferencesPane & ): QWidget()
 {
  //common();
 }
@@ -374,5 +374,7 @@ void ThrottlesPreferencesPane::common()
 /*public*/ bool ThrottlesPreferencesPane::isRestartRequired() {
     return false;
 }
+
+/*public*/ QString ThrottlesPreferencesPane::className() {return "ThrottlesPreferencesPane";}
 //}
 #endif

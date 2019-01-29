@@ -5,6 +5,7 @@
 #include "profilemanager.h"
 #include "profile.h"
 #include <QNetworkInterface>
+#include "loggerfactory.h"
 
 //NodeIdentity::NodeIdentity(QObject *parent) : QObject(parent)
 //{
@@ -32,17 +33,19 @@
 ///*public*/ class NodeIdentity {
 
 /*private*/ /*static*/ NodeIdentity* NodeIdentity::_instance = NULL;
-// /*private*/ /*final*/ static Logger log = LoggerFactory.getLogger(NodeIdentity.class);
+/*private*/ /*final*/ /*static*/ Logger* NodeIdentity::log = LoggerFactory::getLogger("NodeIdentity");
 
 /*private*/ /*final*/ /*static*/ QString NodeIdentity::ROOT_ELEMENT = "nodeIdentityConfig"; // NOI18N
+/*private*/ /*static*/ /*final*/ QString NodeIdentity::UUID = "uuid"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString NodeIdentity::NODE_IDENTITY = "nodeIdentity"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString NodeIdentity::FORMER_IDENTITIES = "formerIdentities"; // NOI18N
+/*private*/ /*static*/ /*final*/ QString NodeIdentity::IDENTITY_PREFIX = "jmri-";
 
 
 /*private*/ NodeIdentity::NodeIdentity() {
- log = new Logger("NodeIdentity");
-_formerIdentities = new QStringList();
-_identity = "";
+ _formerIdentities = new QStringList();
+ _identity = "";
+ uuid = "";
 
  init(); // init as a method so the init can be /*synchronized*/.
 }
@@ -61,6 +64,13 @@ _identity = "";
     doc.setContent(f);
    }
    else throw IOException(identityFile->getPath());
+   QDomElement uu = doc.documentElement().firstChildElement(UUID);
+   if (!uu.isNull()) {
+       this->uuid = uu.attribute(UUID);
+   } else {
+       this->uuid = "";
+       this->getIdentity(true);
+   }
    QString id = doc.documentElement().firstChildElement(NODE_IDENTITY).attribute(NODE_IDENTITY);
    this->_formerIdentities->clear();
   //            doc.getRootElement().getChild(FORMER_IDENTITIES).getChildren().stream().forEach((e) -> {
@@ -88,7 +98,8 @@ _identity = "";
       this->getIdentity(true);
   }
  } else {
-     this->getIdentity(true);
+  this->uuid = "";
+  this->getIdentity(true);
  }
 }
 
@@ -100,58 +111,44 @@ _identity = "";
  * unreliable and subject to change across JMRI restarts.
  */
 /*synchronized*/ /*public*/ /*static*/ QString NodeIdentity::identity() {
- Logger log("NodeIdentity");
-    QString uniqueId = "-";
-    try {
-        uniqueId += ProfileManager::getDefault()->getActiveProfile()->getUniqueId();
-    } catch (NullPointerException ex) {
-        uniqueId += ProfileManager::createUniqueId();
-    }
-    if (_instance == NULL) {
-        _instance = new NodeIdentity();
-        log.info(tr("Using %1 as the JMRI Node identity").arg(_instance->getIdentity() + uniqueId));
-    }
-    return _instance->getIdentity() + uniqueId;
+ QString uniqueId = "-";
+ try
+ {
+  uniqueId += ProfileManager::getDefault()->getActiveProfile()->getUniqueId();
+ }
+ catch (NullPointerException ex) {
+     uniqueId += ProfileManager::createUniqueId();
+ }
+ if (_instance == nullptr)
+ {
+     _instance = new NodeIdentity();
+     log->info(tr("Using %1 as the JMRI Node identity").arg(_instance->getIdentity() + uniqueId));
+ }
+ return _instance->getIdentity() + uniqueId;
 }
-#if 1
+
 /**
  * If network hardware on a node was replaced, the identity will change.
  *
  * @return A list of other identities this node may have had in the past.
  */
 /*synchronized*/ /*public*/ /*static*/ QList<QString> NodeIdentity::formerIdentities() {
- Logger log("NodeIdentity");
     if (_instance == NULL) {
         _instance = new NodeIdentity();
-        log.info(tr("Using %1 as the JMRI Node identity").arg(_instance->getIdentity()));
+        log->info(tr("Using %1 as the JMRI Node identity").arg(_instance->getIdentity()));
     }
     return _instance->getFormerIdentities();
 }
-#endif
+
 /**
  * Verify that the current identity is a valid identity for this hardware.
  *
  * @return true if the identity is based on this hardware.
  */
-/*synchronized*/ /*private*/ bool NodeIdentity::validateIdentity(QString identity) {
-//    try {
-//        Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
-//        while (enumeration.hasMoreElements()) {
-//            NetworkInterface nic = enumeration.nextElement();
- foreach(QNetworkInterface nic, QNetworkInterface::allInterfaces())
- {
-  if (/*!nic.isVirtual() &&*/ !nic.IsLoopBack)
-  {
-   QString nicIdentity = this->createIdentity(nic.hardwareAddress().toLocal8Bit());
-   if (nicIdentity != "" && nicIdentity == (identity)) {
-       return true;
-   }
-  }
- }
-//    } catch (SocketException ex) {
-//        log->error("Error accessing interface: {}", ex.getLocalizedMessage(), ex);
-//    }
- return false;
+/*synchronized*/ /*private*/ bool NodeIdentity::validateIdentity(QString ident) {
+ log->debug(tr("Validating Node identity %1.").arg(ident));
+ return (this->uuid != "" && ((IDENTITY_PREFIX + this->uuid) == (ident)));
+
 }
 
 /**
@@ -274,7 +271,7 @@ _identity = "";
  * @return An identity or null if input is null.
  */
 /*private*/ QString NodeIdentity::createIdentity(QByteArray mac) {
-    QString sb = QString("jmri-"); // NOI18N
+    QString sb = QString(IDENTITY_PREFIX); // NOI18N
 //    try {
         for (int i = 0; i < mac.length(); i++) {
 //            sb.append(tr("%02X").arg(mac[i])); // NOI18N
@@ -289,6 +286,50 @@ _identity = "";
 
 /*private*/ File* NodeIdentity::identityFile() {
     return new File(FileUtil::getPreferencesPath() + "nodeIdentity.xml"); // NOI18N
+}
+
+/**
+ * Creates a copy of the last-used old node identity for use with the new
+ * identity.
+ *
+ * @param oldPath the old node identity folder
+ * @param newPath the new node identity folder
+ * @return true if successful
+ */
+/*public*/ /*static*/ bool NodeIdentity::copyFormerIdentity(File* oldPath, File* newPath) {
+    QString uniqueId = "-";
+    try {
+        uniqueId += ProfileManager::getDefault()->getActiveProfile()->getUniqueId();
+    } catch (NullPointerException ex) { // because there is no active profile
+        uniqueId += ProfileManager::createUniqueId();
+        log->debug(tr("created uniqueID \"%1\" because of there (probably) is no active profile").arg( uniqueId));
+    }
+    QStringList formerIdList = NodeIdentity::formerIdentities();
+    int listSize = formerIdList.size();
+    if (listSize < 1) {
+        log->debug("Unable to copy from a former identity; no former identities found.");
+        return false;
+    }
+    log->debug(tr("%1 former identies found").arg(listSize));
+    for (int i = (listSize - 1); i >= 0; i--) {
+        QString theIdentity = formerIdList.at(i);
+        log->debug(tr("Trying to copy former identity %1, \"%2\"").arg(i + 1).arg(theIdentity));
+        File* theDir = new File(oldPath, theIdentity + uniqueId);
+        if (theDir->exists()) {
+            try {
+                log->info(tr("Copying from old node \"%1\"").arg(theDir->toString()));
+                log->info(tr("  to new node \"%1\"").arg(newPath->toString()));
+                FileUtil::copy(theDir, newPath);
+            } catch (IOException ex) {
+                log->warn(tr("Unable to copy \"%1\" to \"%2\"").arg(theDir->toString()).arg(newPath->toString()));
+                return false;
+            }
+            return true;
+        } else {
+            log->warn(tr("Non-existent old node \"%1\"").arg(theDir->toString()));
+        }
+    }
+    return false;
 }
 
 /**

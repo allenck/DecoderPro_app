@@ -9,13 +9,15 @@ class QLabel;
 class PerformScriptModel;
 class QPushButton;
 class JFileChooser;
-class LIBPREFSHARED_EXPORT PerformScriptPanel : public PreferencesPanel
+class LIBPREFSHARED_EXPORT PerformScriptPanel : public QWidget, public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
  explicit PerformScriptPanel(QWidget *parent = 0);
  ~PerformScriptPanel() {}
- PerformScriptPanel(const PerformScriptPanel&) : PreferencesPanel() {}
+ PerformScriptPanel(const PerformScriptPanel&) : QWidget() {}
  /*public*/ QString getPreferencesItem();
  /*public*/ QString getPreferencesItemText() ;
  /*public*/ QString getTabbedPreferencesTitle();
@@ -27,6 +29,7 @@ public:
  /*public*/ bool isDirty() ;
  /*public*/ bool isRestartRequired();
  /*public*/virtual bool isPreferencesValid();
+ /*public*/ QString className();
 
 signals:
 

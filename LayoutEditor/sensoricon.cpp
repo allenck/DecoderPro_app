@@ -593,10 +593,8 @@ void SensorIcon::updateItem()
   }
  }   // otherwise retain current map
 //        jmri.jmrit.catalog->ImageIndexLayoutEditor*.checkImageIndex();
- _paletteFrame->dispose();
- _paletteFrame = NULL;
- _itemPanel->dispose();
- _itemPanel = NULL;
+ finishItemUpdate(_paletteFrame, _itemPanel);
+
  invalidate();
 }
 

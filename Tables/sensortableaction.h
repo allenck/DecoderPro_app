@@ -11,6 +11,7 @@
 #include "propertychangelistener.h"
 #include <QSpinBox>
 
+class STAValidator;
 class QPushButton;
 class ProxySensorManager;
 class QTableView;
@@ -37,17 +38,18 @@ public:
     SensorTableAction(const SensorTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     /*public*/ void setManager(Manager* man);
     /*public*/ void setMenuBar(JmriJFrame* f);
-    /*public*/ void setEnabled(bool newValue);
+//    /*public*/ void setEnabled(bool newValue);
     /*public*/ void addToFrame(BeanTableFrame* f);
-    /*public*/ void setMessagePreferencesDetails();
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     static QString getName();
     /*public*/ void addToPanel(AbstractTableTabAction* f);
 
 signals:
-    void propertyChange(PropertyChangeEvent*);
+//    void propertyChange(PropertyChangeEvent*);
 public slots:
 //    void onDebounce();
+    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
 
 private:
     JmriJFrame* addFrame;// = NULL;
@@ -74,6 +76,7 @@ private:
     QPushButton* addButton;
     QString  addEntryToolTip;
     QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
+    STAValidator* validator;
 
 private slots:
     /*private*/ void canAddRange();
@@ -101,8 +104,9 @@ friend class DebounceActionListener;
 friend class SensorWidget;
 friend class SensorTableWidget;
 friend class DefaultStateActionListener;
-friend class ColorChangeListener;
+friend class STAValidator;
 };
+Q_DECLARE_METATYPE(SensorTableAction)
 
 class STOkButtonActionListener : public ActionListener
 {
@@ -156,26 +160,23 @@ public:
 public slots:
  void actionPerformed(ActionEvent *e = 0);
 };
-class ColorChangeListener : PropertyChangeListener
-{
-    Q_OBJECT
-    SensorTableAction* sensorTableAction;
-public:
-    ColorChangeListener(SensorTableAction* sensorTableAction)
-    {
-        this->sensorTableAction = sensorTableAction;
-    }
-public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent) {
-        QString property = propertyChangeEvent->getPropertyName();
-        if ("background" == (property)) {
-            if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
-                sensorTableAction->addButton->setEnabled(true);
-            } else { // invalid
-                sensorTableAction->addButton->setEnabled(false);
-            }
-        }
-    }
 
+class STAValidator : public QValidator
+{
+ Q_OBJECT
+ SensorTableAction* act;
+ JTextField* fld;
+ bool allow0Length = false; // for Add new bean item, a value that is zero-length is considered invalid.
+ QString prefix;// = ConnectionNameFromSystemName::getPrefixFromName(rta->connectionChoice);
+ QColor mark;// = ColorUtil::stringToColor("orange");
+
+public:
+ STAValidator(JTextField* fld, SensorTableAction* act);
+ QValidator::State validate(QString &, int &) const;
+ void setPrefix(QString);
+ //void fixup(QString &input) const;
+
+public slots:
+ void prefixBoxChanged(QString);
 };
 #endif // SENSORTABLEACTION_H

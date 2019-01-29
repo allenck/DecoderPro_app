@@ -7,7 +7,7 @@ class DateFormat;
 class PrintStream;
 class ActionEvent;
 class QScrollArea;
-class DefaultUserMessagePreferences;
+//class DefaultUserMessagePreferences;
 class JTextField;
 class QCheckBox;
 class JTextArea;
@@ -39,7 +39,7 @@ private:
     QString timeStampCheck;// = this.getClass().getName()+".TimeStamp";
     QString alwaysOnTopCheck;// = this.getClass().getName()+".alwaysOnTop";
     QString autoScrollCheck;// = this.getClass().getName()+".AutoScroll";
-    DefaultUserMessagePreferences* p;
+    UserPreferencesManager* p;
 
     // for locking
     AbstractMonFrame* self;

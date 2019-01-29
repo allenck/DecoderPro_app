@@ -10,11 +10,13 @@ class JFrame;
 class QPushButton;
 class QLabel;
 class QCheckBox;
-class LIBPREFSHARED_EXPORT ThrottlesPreferencesPane : public PreferencesPanel
+class LIBPREFSHARED_EXPORT ThrottlesPreferencesPane : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
-    explicit ThrottlesPreferencesPane(QWidget *parent = 0);
+    Q_INVOKABLE explicit ThrottlesPreferencesPane(QWidget *parent = 0);
     ~ThrottlesPreferencesPane() {}
     ThrottlesPreferencesPane(const ThrottlesPreferencesPane&);
     /*public*/ void setContainer(JFrame* f);
@@ -28,6 +30,8 @@ public:
     /*public*/ void savePreferences();
     /*public*/ bool isDirty();
     /*public*/ bool isRestartRequired();
+    /*public*/ QString className();
+
 signals:
 
 public slots:

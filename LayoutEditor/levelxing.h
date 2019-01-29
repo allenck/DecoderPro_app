@@ -136,6 +136,10 @@ public:
     /*public*/ QObject* getConnection(int location) throw (JmriException);
     /*public*/ void setConnection(int location, QObject* o, int type) throw (JmriException);
     /*public*/ QRectF getBounds();
+    /*public*/ Sensor* getSensorA();
+    /*public*/ Sensor* getSensorB();
+    /*public*/ Sensor* getSensorC();
+    /*public*/ Sensor* getSensorD();
 
 signals:
     

@@ -77,7 +77,7 @@ private:
  /*private*/ QString profilePath;// = null;
  // initialize logging
  ///*private*/ static /*final*/ Logger log = LoggerFactory.getLogger(FileUtilSupport.class);
- Logger* log;
+ static Logger* log;
  // default instance
  /*volatile*/ /*private*/ static FileUtilSupport* defaultInstance;// = null;
  /*private*/ void scanDir(QDir start, QStringList *paths, int depth);

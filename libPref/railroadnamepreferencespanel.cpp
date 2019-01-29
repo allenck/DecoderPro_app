@@ -20,7 +20,7 @@
 //private static final long serialVersionUID = -2483121076473347952L;
 //static Logger log = LoggerFactory.getLogger(RailroadNamePreferencesPanel.class);
 
-/*public*/ RailroadNamePreferencesPanel::RailroadNamePreferencesPanel(QWidget *parent) : PreferencesPanel(parent)
+/*public*/ RailroadNamePreferencesPanel::RailroadNamePreferencesPanel(QWidget *parent) : QWidget(parent)
 {
  parentFrame = (JFrame*)parent;
  preferences = WebServerPreferences::getDefault();
@@ -84,7 +84,7 @@
  */
 /*private*/ bool RailroadNamePreferencesPanel::setValues() {
     bool didSet = true;
-    preferences->setRailRoadName(railroadName->text());
+    preferences->setRailroadName(railroadName->text());
     return didSet;
 }
 
@@ -126,7 +126,7 @@
  QWidget* panel = new QWidget();
  FlowLayout* panelLayout = new FlowLayout;
  panel->setLayout(panelLayout);
- railroadName = new JTextField(preferences->getRailRoadName());
+ railroadName = new JTextField(preferences->getRailroadName());
  railroadName->setToolTip(tr("Used by various JMRI network services."));
  railroadName->setColumns(30);
  panelLayout->addWidget(new QLabel(tr("Railroad Name")));
@@ -195,3 +195,5 @@
  }
  return NULL;
 }
+
+/*public*/ QString RailroadNamePreferencesPanel::className() {return "RailroadNamePreferencesPanel";}

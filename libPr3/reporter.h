@@ -68,14 +68,14 @@ public:
          * current report will be equal.  If nothing has ever
          * been reported, this will return a null object.
          */
-        virtual QVariant getLastReport() const {return QVariant();}
+        virtual QVariant getLastReport()  {return QVariant();}
 
         /**
          * Query the current report.  If there is no current report
          * available (e.g. the reporting hardware says no information is
          * currently available) this will return a null object.
          */
-        virtual QVariant getCurrentReport() const{return QVariant();}
+        virtual QVariant getCurrentReport() {return QVariant();}
 
         /**
          * Set the report to an arbitrary object.
@@ -86,12 +86,12 @@ public:
          * to set it from inside the program, e.g. debugging via entering
          * values in the Reporter Table.  Hence provision of this method.
          */
-        virtual void setReport(QVariant /*r*/) const {}
+        virtual void setReport(QVariant /*r*/)  {}
         /**
          * Provide an int form of the last report.
          *
          */
-        virtual int getState() const {return 0;}
+        virtual int getState()  {return 0;}
  //PropertyChangeSupport* pcs;
 
 signals:

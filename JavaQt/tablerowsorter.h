@@ -5,6 +5,7 @@
 class TableStringConverter;
 class TableRowSorter : public DefaultRowSorter
 {
+    Q_OBJECT
 public:
  TableRowSorter();
  /*public*/ TableRowSorter(QAbstractItemModel* model);

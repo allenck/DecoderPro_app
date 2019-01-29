@@ -15,8 +15,7 @@ public:
  /*public*/ LnTcpServerFrame(LnTcpServer* server, QWidget* parent = 0);
  /*public*/ void windowClosing(QCloseEvent* e);
  /*public*/ void dispose();
- QT_DEPRECATED
- static /*public*/ /*synchronized*/ LnTcpServerFrame* getInstance();
+ QT_DEPRECATED static /*public*/ /*synchronized*/ LnTcpServerFrame* getInstance();
  static /*public*/ /*synchronized*/ LnTcpServerFrame* getDefault();
 
 signals:
@@ -42,7 +41,6 @@ private:
  QPushButton* stopButton;// = new JButton("Stop Server");
  //QPushButton* saveButton;// = new JButton("Save Settings");
 
- static LnTcpServerFrame* self;
  /*private*/ void updateServerStatus();
  /*private*/ void updateClientStatus();
  LnTcpServer* server;

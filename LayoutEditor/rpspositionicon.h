@@ -8,6 +8,10 @@ class RpsPositionIcon : public PositionableLabel
  Q_OBJECT
 public:
  RpsPositionIcon(Editor*);
+ /*public*/ NamedIcon* getActiveIcon();
+ /*public*/ void setActiveIcon(NamedIcon* i);
+ /*public*/ NamedIcon* getErrorIcon();
+ /*public*/ void setErrorIcon(NamedIcon* i);
 
 private:
  // store coordinate system information
@@ -22,6 +26,9 @@ private:
  // display icon if the last reading not OK
  QString errorName;// = "resources/icons/smallschematics/tracksegments/circuit-error.gif";
  NamedIcon* error;// = new NamedIcon(errorName, errorName);
+ void displayState();
+ // true if valid message received last
+ bool state = false;
 
 };
 

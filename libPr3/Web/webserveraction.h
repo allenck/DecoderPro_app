@@ -2,6 +2,7 @@
 #define WEBSERVERACTION_H
 #include "jmriabstractaction.h"
 
+class ZeroConfService;
 class ServerThread;
 class Logger;
 class WebServerAction : public JmriAbstractAction
@@ -21,7 +22,7 @@ private:
  void common();
  ///*private*/ static ServerThread* serverThread;// = null;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(WebServerAction.class);
-
+ ZeroConfService* zeroConfService;
 };
 Q_DECLARE_METATYPE(WebServerAction)
 #endif // WEBSERVERACTION_H

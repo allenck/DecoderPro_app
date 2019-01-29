@@ -77,6 +77,8 @@ equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 }
 
+DEFINES += USE_THREAD
+
 SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
@@ -108,9 +110,7 @@ SOURCES += \
     loconetthrottledtransmitter.cpp \
     lnprogrammermanager.cpp \
     defaultprogrammermanager.cpp \
-    #namedbeanhandle.cpp \
     abstractturnout.cpp \
-    #abstractnamedbean.cpp \
     turnout.cpp \
     namedbeanhandlemanager.cpp \
     turnoutoperation.cpp \
@@ -143,7 +143,6 @@ SOURCES += \
     defaultmemorymanager.cpp \
     abstractmemorymanager.cpp \
     defaultmemory.cpp \
-    #namedbean.cpp \
     internalreportermanager.cpp \
     Roster/roster.cpp \
     Roster/rosterentry.cpp \
@@ -197,8 +196,6 @@ SOURCES += \
     simpletimebase.cpp \
     loconetthrottle.cpp \
     Throttle/throttlewindow.cpp \
-    #Throttle/listthrottles.cpp \
-    #Roster/functionlabelsmediadlg.cpp \
     Roster/locofile.cpp \
     Roster/cvtablemodel.cpp \
     Roster/indexedcvtablemodel.cpp \
@@ -239,7 +236,6 @@ SOURCES += \
     Roster/watchinglabel.cpp \
     Roster/vartextfield.cpp \
     Roster/fnmappanel.cpp \
-    #Roster/functionlabelspane.cpp \
     Roster/paneprogframe.cpp \
     Roster/paneopsprogframe.cpp \
     Roster/rosterframe.cpp \
@@ -639,12 +635,6 @@ SOURCES += \
     Json/jsonrostersocketservice.cpp \
     Web/webserver.cpp \
     Web/webserveraction.cpp \
-#    Web/controller/dumpcontroller.cpp \
-#    Web/controller/fileuploadcontroller.cpp \
-#    Web/controller/formcontroller.cpp \
-#    Web/controller/sessioncontroller.cpp \
-#    Web/controller/templatecontroller.cpp \
-#    Web/requestmapper.cpp \
     Web/requesthandler.cpp \
     Web/httpservlet.cpp \
     Web/genericservlet.cpp \
@@ -655,7 +645,6 @@ SOURCES += \
     Web/servletcontext.cpp \
     Web/rosterservlet.cpp \
     Web/servletutil.cpp \
-#    Web/controller/servletcontroller.cpp \
     Web/httpservletresponse.cpp \
     Web/servletrequest.cpp \
     Web/configservlet.cpp \
@@ -855,7 +844,13 @@ SOURCES += \
     rfid/rfidportcontroller.cpp \
     rfid/coreidrfidprotocol.cpp \
     rfid/timeoutrfidsensor.cpp \
-    rfid/rfidmessage.cpp
+    rfid/rfidmessage.cpp \
+    rfid/olimexrfidprotocol.cpp \
+    rfid/id12larfidprotocol.cpp \
+    rfid/standalonemessage.cpp \
+    zeroconfservice.cpp \
+    zeroconfserviceevent.cpp \
+    stacknxpanel.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -900,10 +895,7 @@ HEADERS += \
     lnprogrammermanager.h \
     defaultprogrammermanager.h \
     turnout.h \
-    #namedbean.h \
-    #manager.h \
     abstractturnout.h \
-    #namedbeanhandle.h \
     namedbeanhandlemanager.h \
     turnoutoperation.h \
     turnoutmanager.h \
@@ -1010,8 +1002,6 @@ HEADERS += \
     simpletimebase.h \
     loconetthrottle.h \
     Throttle/throttlewindow.h \
-    #Throttle/listthrottles.h \
-    #Roster/functionlabelsmediadlg.h \
     Roster/locofile.h \
     Roster/cvtablemodel.h \
     Roster/indexedcvtablemodel.h \
@@ -1098,10 +1088,8 @@ HEADERS += \
     Signal/turnoutsignalmast.h \
     Signal/virtualsignalmast.h \
     Signal/addsignalmastpanel.h \
-    #document.h
     sensorturnoutoperator.h \
     Signal/signalmastrepeater.h \
-    #actionlistener.h \
     logix.h \
     defaultlogix.h \
     conditional.h \
@@ -1413,7 +1401,6 @@ HEADERS += \
      block.h \
      beansetting.h\
     blockmanager.h \
-    #sectionmanager.h \
     entrypoint.h \
     reportcontext.h \
     namedbeanhandlemanager.h \
@@ -1714,7 +1701,13 @@ HEADERS += \
     rfid/timeoutrfidreporter.h \
     rfid/rfidportcontroller.h \
     rfid/coreidrfidprotocol.h \
-    rfid/timeoutrfidsensor.h
+    rfid/timeoutrfidsensor.h \
+    rfid/olimexrfidprotocol.h \
+    rfid/id12larfidprotocol.h \
+    zeroconfservice.h \
+    zeroconfeventlistener.h \
+    zeroconfserviceevent.h \
+    stacknxpanel.h
 
  !contains(FTDI, 1) {
     HEADERS +=
@@ -1743,24 +1736,6 @@ unix:!symbian {
     }
     INSTALLS += target
 }
-#contains(SECTION_LOGIC, 1) {
-##    DEFINES += BLOCKS_AND_SECTIONS
-#    HEADERS += path.h \
-#     block.h \
-#     beansetting.h\
-#    blockmanager.h \
-#    #sectionmanager.h \
-#    defaultinstanceinitializer.h \
-#    instanceinitializer.h \
-#    entrypoint.h
-
-#    SOURCES += path.cpp \
-#     block.cpp \
-#     beansetting.cpp \
-#    blockmanager.cpp \
-#    entrypoint.cpp
-# }
-
 
 INCLUDEPATH += $$PWD LocoIObuild_nr
 
@@ -1796,10 +1771,7 @@ RESOURCES += \
 
 FORMS += \
     Throttle/throttlewindow.ui \
-    #Throttle/listthrottles.ui \
-    #Roster/functionlabelsmediadlg.ui \
     Roster/rosterentrypane.ui \
-    #Roster/functionlabelspane.ui \
     Roster/paneprogframe.ui \
     Roster/rosterframe.ui \
     Roster/factoryresetaction.ui \
@@ -1818,9 +1790,6 @@ OTHER_FILES += \
 
 DEPENDPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web
 INCLUDEPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web
-
-DEFINES += USE_THREAD
-
 
 win32:CONFIG(debug, debug|release): LIBS += -L"C:/Program Files (x86)/local/lib" -lquazip
 else:unix: LIBS += -L/usr/local/lib/ -lquazip
@@ -1893,5 +1862,27 @@ unix:!macx: LIBS += -L/home/allen/Projects/QtWebApp-master/QtWebApp/ -lQtWebAppd
 
 INCLUDEPATH += /home/allen/Projects/QtWebApp-master/QtWebApp /home/allen/Projects/QtWebApp-master/QtWebApp/httpserver/
 DEPENDPATH += /home/allen/Projects/QtWebApp-master/QtWebApp /home/allen/Projects/QtWebApp-master/QtWebApp/httpserver/
+message("link to libQtWebAppd")
 }
 
+DEFINES += QZEROCONF_STATIC
+
+
+unix|win32: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
+
+INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
+DEPENDPATH += $$PWD/../../../../QtZeroConf-master
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../QtWebApp-master/QtWebApp/ -lQtWebAppd
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../QtWebApp-master/QtWebApp/ -lQtWebAppdd
+else:unix: LIBS += -L$$PWD/../../../../QtWebApp-master/QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += $$PWD/../../../../QtWebApp-master/QtWebApp
+DEPENDPATH += $$PWD/../../../../QtWebApp-master/QtWebApp
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppdd
+else:unix: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += $$PWD/../QtWebApp
+DEPENDPATH += $$PWD/../QtWebApp

@@ -489,19 +489,19 @@ DefaultListModel::DefaultListModel(QObject *parent) :
         fireIntervalRemoved(this, index, index);
         return rv;
     }
-#if 0
+
     /**
      * Removes all of the elements from this list.  The list will
      * be empty after this call returns (unless it throws an exception).
      */
-    /*public*/ void clear() {
-        int index1 = delegate.size()-1;
-        delegate.removeAllElements();
+    /*public*/ void DefaultListModel::clear() {
+        int index1 = delegate->size()-1;
+        delegate->clear();
         if (index1 >= 0) {
             fireIntervalRemoved(this, 0, index1);
         }
     }
-
+#if 0
     /**
      * Deletes the components at the specified range of indexes.
      * The removal is inclusive, so specifying a range of (1,5)

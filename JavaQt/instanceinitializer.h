@@ -41,7 +41,7 @@
      *                                  supported by this InstanceInitalizer
      */
     //@Nonnull
- /*public*/ /*<T>*/ virtual QObject* getDefault(/*@Nonnull*/ /*Class<T>*/QString type) throw (IllegalArgumentException) {return nullptr;}
+ /*public*/ /*<T>*/ virtual QObject* getDefault(/*@Nonnull*/ /*Class<T>*/QString /*type*/) throw (IllegalArgumentException) {return nullptr;}
 
     /**
      * Get the set of classes for which this InstanceInitializer can provide

@@ -22,9 +22,10 @@ class TransitTableAction : public AbstractTableAction
     Q_OBJECT
 public:
     TransitTableAction(QObject* parent = 0);
+    ~TransitTableAction() {}
     Q_INVOKABLE /*public*/ TransitTableAction(QString actionName, QObject* parent);
     TransitTableAction(const TransitTableAction* that) : AbstractTableAction(that->text(), that->parent()) {}
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
 
 private:
    void common();

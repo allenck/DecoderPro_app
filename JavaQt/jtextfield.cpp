@@ -1,6 +1,8 @@
 #include "jtextfield.h"
 #include "exceptions.h"
 #include "../LayoutEditor/document.h"
+#include "propertychangeevent.h"
+#include "colorutil.h"
 
 //JTextField::JTextField(QWidget *parent) :
 //    QLineEdit(parent)
@@ -295,6 +297,23 @@ void JTextField::init()
  disconnect(share, SIGNAL(textChanged(QString)), this, SLOT(setText(QString)));
  share->setText(text());
  connect(share, SIGNAL(textChanged(QString)), this, SLOT(setText(QString)));
+}
+/**
+ * Sets the input verifier for this component.
+ *
+ * @param inputVerifier the new input verifier
+ * @since 1.3
+ * @see InputVerifier
+ * @beaninfo
+ *       bound: true
+ * description: The component's input verifier.
+ */
+/*public*/ void JTextField::setInputVerifier(InputVerifier* inputVerifier) {
+//    InputVerifier oldInputVerifier = (InputVerifier)getClientProperty(
+//                                     JComponent_INPUT_VERIFIER);
+//    putClientProperty(JComponent_INPUT_VERIFIER, inputVerifier);
+//    firePropertyChange("inputVerifier", oldInputVerifier, inputVerifier);
+ this->inputVerifier = inputVerifier;
 }
 
 #if 0
@@ -1023,12 +1042,14 @@ void JTextField::setBackground(QColor c )
  if(oldC != c)
  {
   if (log->isDebugEnabled()) log->debug("old stylesheet = " + styleSheet());
-  ss = QString("QLineEdit{ color: black; background-color: rgb(%1,%2,%3); selection-background-color: darkgray;} QLineEdit:read-only { background: lightblue;}").arg(c.red()).arg(c.green()).arg(c.blue());
+  ss = QString("QLineEdit{  background-color: rgb(%1,%2,%3); selection-background-color: darkgray;} QLineEdit:read-only { background: lightblue;}").arg(c.red()).arg(c.green()).arg(c.blue());
   setStyleSheet(ss);
   if (log->isDebugEnabled())log->debug("new stylesheet = " + ss + " value = '"+ text() + "'");
   update();
+  emit propertyChange(new PropertyChangeEvent(this, "background", QVariant(oldC), QVariant(c)));
  }
 }
+
 void JTextField::setForeground(QColor c)
 {
     //QLineEdit::setForeground(c);

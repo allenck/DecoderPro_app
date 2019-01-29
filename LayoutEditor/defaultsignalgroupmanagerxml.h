@@ -9,7 +9,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultSignalGroupManagerXml : public Abstrac
 {
     Q_OBJECT
 public:
-    explicit DefaultSignalGroupManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit DefaultSignalGroupManagerXml(QObject *parent = 0);
  ~DefaultSignalGroupManagerXml() {}
  DefaultSignalGroupManagerXml(const DefaultSignalGroupManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);

@@ -10,6 +10,7 @@
 #include "signalhead.h"
 #include "defaultsignalhead.h"
 #include "defaultsignalsystem.h"
+#include "signalheadmanager.h"
 
 //SignalHeadSignalMast::SignalHeadSignalMast(QObject *parent) :
 //    AbstractSignalMast(parent)
@@ -96,15 +97,17 @@ void SignalHeadSignalMast::configureFromName(QString systemName) {
     }
 }
 
-void SignalHeadSignalMast::configureHeads(QStringList parts, int start) {
-    heads = new QList<NamedBeanHandle<SignalHead*>* >();
-    for (int i = start; i < parts.length(); i++) {
-        QString name = parts.at(i);
-        NamedBeanHandle<SignalHead*>* s
-                = new NamedBeanHandle<SignalHead*>(parts.at(i),
-                    ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(name));
-        heads->append(s);
-    }
+void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
+{
+ heads = new QList<NamedBeanHandle<SignalHead*>* >();
+ for (int i = start; i < parts.length(); i++)
+ {
+  QString name = parts.at(i);
+  NamedBeanHandle<SignalHead*>* s
+          = new NamedBeanHandle<SignalHead*>(parts.at(i),
+              static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+  heads->append(s);
+ }
 }
 
 //@Override
@@ -263,9 +266,9 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start) {
 /*public*/ /*static*/ QList<SignalHead*>* SignalHeadSignalMast::getSignalHeadsUsed()
 {
  QList<SignalHead*>* headsUsed = new QList<SignalHead*>();
- foreach(QString val , ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSystemNameList())
+ foreach(QString val , (static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSystemNameList()))
  {
-  SignalMast* mast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(val);
+  SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(val);
   if(qobject_cast<SignalHeadSignalMast*>(mast)!=NULL)
   {
    QList<NamedBeanHandle<SignalHead*>*>* masthead = ((SignalHeadSignalMast*)mast)->getHeadsUsed();
@@ -279,9 +282,9 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start) {
 }
 
 /*public*/ /*static*/ QString SignalHeadSignalMast::isHeadUsed(SignalHead* head){
-    foreach(QString val,  ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSystemNameList())
+    foreach(QString val,  static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSystemNameList())
     {
-        SignalMast* mast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(val);
+        SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(val);
         if( qobject_cast<SignalHeadSignalMast*>(mast)!= NULL)
         {
             QList<NamedBeanHandle<SignalHead*>* >* masthead = ((SignalHeadSignalMast*)mast)->getHeadsUsed();

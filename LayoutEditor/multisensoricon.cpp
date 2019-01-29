@@ -306,11 +306,8 @@ void MultiSensorIcon::updateItem()
  _itemPanel->clearSelections();
  setUpDown(_itemPanel->getUpDown());
 //        jmri.jmrit.catalog->ImageIndexEditor.checkImageIndex();
- _paletteFrame->dispose();
- _paletteFrame = NULL;
- _itemPanel->dispose();
- _itemPanel = NULL;
-//invalidate();
+ finishItemUpdate(_paletteFrame, _itemPanel);
+
 #endif
 }
 

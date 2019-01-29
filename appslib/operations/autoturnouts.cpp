@@ -11,6 +11,7 @@
 #include "block.h"
 #include "layoutslip.h"
 #include "turnout.h"
+#include "layoutturnout.h"
 
 //AutoTurnouts::AutoTurnouts(QObject *parent) : QObject(parent)
 //{
@@ -173,7 +174,7 @@
         }
     }
 
-    QVector<LayoutTurnout*>* turnoutList = new QVector<LayoutTurnout*>();
+    QList<LayoutTrackExpectedState<LayoutTurnout*>* > turnoutList = QList<LayoutTrackExpectedState<LayoutTurnout*>* >();
     QVector<int>* settingsList = new QVector<int>();
     // get turnouts by Block
     bool turnoutsOK = true;
@@ -187,13 +188,13 @@
             settingsList = ct->getTurnoutSettingList();
         }
         // loop over turnouts checking and optionally setting turnouts
-        for (int i = 0; i < turnoutList->size(); i++) {
-            Turnout* to = turnoutList->at(i)->getTurnout();
+        for (int i = 0; i < turnoutList.size(); i++) {
+            Turnout* to = turnoutList.at(i)->getObject()->getTurnout();
             int setting = settingsList->at(i);
             //if (turnoutList->at(i) instanceof LayoutSlip) {
-            if(qobject_cast<LayoutSlip*>(turnoutList->at(i)))
+            if(qobject_cast<LayoutSlip*>(turnoutList.at(i)->getObject()))
             {
-                setting = ((LayoutSlip*) turnoutList->at(i))->getTurnoutState(settingsList->at(i));
+                setting = ((LayoutSlip*) turnoutList.at(i)->getObject())->getTurnoutState(settingsList->at(i));
             }
             // check or ignore current setting based on flag, set in Options
             if (!trustKnownTurnouts) {
@@ -226,11 +227,11 @@
                 }
             }
             //if (turnoutList.get(i) instanceof LayoutSlip) {
-            if(qobject_cast<LayoutSlip*>(turnoutList->at(i)))
+            if(qobject_cast<LayoutSlip*>(turnoutList.at(i)->getObject()))
             {
                 //Look at the state of the second turnout in the slip
-                setting = ((LayoutSlip*) turnoutList->at(i))->getTurnoutBState(settingsList->at(i));
-                to = ((LayoutSlip*) turnoutList->at(i))->getTurnoutB();
+                setting = ((LayoutSlip*) turnoutList.at(i)->getObject())->getTurnoutBState(settingsList->at(i));
+                to = ((LayoutSlip*) turnoutList.at(i)->getObject())->getTurnoutB();
                 if (!trustKnownTurnouts) {
                     to->setCommandedState(setting);
                 } else if (to->getKnownState() != setting) {

@@ -12,7 +12,7 @@
 ///*public*/ class WebServerPreferencesPanel extends JPanel implements PreferencesPanel {
 
 
-/*public*/ WebServerPreferencesPanel::WebServerPreferencesPanel(QWidget* parent) : PreferencesPanel(parent) {
+/*public*/ WebServerPreferencesPanel::WebServerPreferencesPanel(QWidget* parent) : QWidget(parent) {
  startupActionPosition = -1;
     preferences = (WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences");
     initComponents();
@@ -210,6 +210,11 @@ void WebServerPreferencesPanel::on_readonlyPower_checked(bool b)
     return true; // no validity checking performed
 }
 
+//@Override
+/*public*/ int WebServerPreferencesPanel::getSortOrder() {
+    return 1100;
+}
+
 /*private*/ bool WebServerPreferencesPanel::isStartupAction() {
     //return ((StartupActionsManager*) InstanceManager::getDefault("StartupActionsManager"))->getActions("PerformActionModel").stream()
 //            .anyMatch((model) -> (WebServerAction.class.getName().equals(model.getClassName())));
@@ -221,3 +226,5 @@ void WebServerPreferencesPanel::on_readonlyPower_checked(bool b)
  }
  return ret;
 }
+
+/*public*/ QString WebServerPreferencesPanel::className() {return "WebServerPreferencesPanel";}

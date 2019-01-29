@@ -10,6 +10,8 @@
 #include "turnoutsignalmast.h"
 #include "virtualsignalmast.h"
 #include "blockvaluefile.h"
+#include "panelmenu.h"
+#include "layouteditorfinditems.h"
 
 //LayoutBlockManager* LayoutBlockManager::_instance = NULL;
 
@@ -1171,20 +1173,20 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             if(t->getType1()==LayoutEditor::POS_POINT){
                 p = (PositionablePoint*) t->getConnect1();
                     if(p->getType()==PositionablePoint::END_BUMPER){
-                        if(p->getEastBoundSignalMast()!=(""))
-                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMast());
-                        if(p->getWestBoundSignalMast()!=(""))
-                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMast());
+                        if(p->getEastBoundSignalMastName()!=(""))
+                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMastName());
+                        if(p->getWestBoundSignalMastName()!=(""))
+                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMastName());
                     }
 
             }
             if (t->getType2()==LayoutEditor::POS_POINT){
                 p = (PositionablePoint*) t->getConnect2();
                     if(p->getType()==PositionablePoint::END_BUMPER){
-                        if(p->getEastBoundSignalMast()!=(""))
-                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMast());
-                        if(p->getWestBoundSignalMast()!=(""))
-                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMast());
+                        if(p->getEastBoundSignalMastName()!=(""))
+                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMastName());
+                        if(p->getWestBoundSignalMastName()!=(""))
+                            return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMastName());
                     }
             }
         }
@@ -1222,10 +1224,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     p = (PositionablePoint*) t->getConnect1();
     if(p->getType()==PositionablePoint::END_BUMPER)
     {
-     if(p->getEastBoundSensor()!=(""))
-      return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getEastBoundSensor());
-     if(p->getWestBoundSensor()!=(""))
-      return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getWestBoundSensor());
+     if(p->getEastBoundSensorName()!=(""))
+      return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getEastBoundSensorName());
+     if(p->getWestBoundSensorName()!=(""))
+      return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getWestBoundSensorName());
     }
 
    }
@@ -1234,10 +1236,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     p = (PositionablePoint*) t->getConnect2();
     if(p->getType()==PositionablePoint::END_BUMPER)
     {
-     if(p->getEastBoundSensor()!=(""))
-      return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getEastBoundSensor());
-     if(p->getWestBoundSensor()!=(""))
-      return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getWestBoundSensor());
+     if(p->getEastBoundSensorName()!=(""))
+      return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getEastBoundSensorName());
+     if(p->getWestBoundSensorName()!=(""))
+      return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getWestBoundSensorName());
     }
    }
   }
@@ -1344,10 +1346,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         bool block1IsWestEnd = tools->isAtWestEndOfAnchor(tr,p);
         if ( (block1IsWestEnd && facingIsBlock1) || (!block1IsWestEnd && !facingIsBlock1) ) {
             // block1 is on the west (north) end of the block boundary
-            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(p->getEastBoundSignalMast()));
+            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(p->getEastBoundSignalMastName()));
         }
         else {
-            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(p->getWestBoundSignalMast()));
+            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(p->getWestBoundSignalMastName()));
         }
     }
     if(!facingIsBlock1)
@@ -1355,8 +1357,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (cType==LayoutEditor::TURNOUT_A) {
         lt = (LayoutTurnout*)connected;
         if ((lt->getLinkType()==LayoutTurnout::NO_LINK) || (lt->getLinkType()==LayoutTurnout::FIRST_3_WAY)){
-            if ( (lt->getSignalAMast()!=NULL) || (lt->getSignalAMast()!=("")) ){
-                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalAMast()));
+            if ( (lt->getSignalAMast()!=NULL) || (lt->getSignalAMastName()!=("")) ){
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalAMastName()));
             }
             // we only allow signal masts inbound to the turnout.
             return NULL;
@@ -1368,23 +1370,23 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 
     if (cType==LayoutEditor::TURNOUT_B) {
         lt = (LayoutTurnout*)connected;
-        if ( (lt->getSignalBMast()!=NULL) || (lt->getSignalBMast()!=("")) ){
-            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalBMast()));
+        if ( (lt->getSignalBMast()!=NULL) || (lt->getSignalBMastName()!=("")) ){
+            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalBMastName()));
         }
         return NULL;
     }
     if (cType==LayoutEditor::TURNOUT_C) {
         lt = (LayoutTurnout*)connected;
-        if ( (lt->getSignalCMast()!=NULL) || (lt->getSignalCMast()!=("")) ){
-            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalCMast()));
+        if ( (lt->getSignalCMast()!=NULL) || (lt->getSignalCMastName()!=("")) ){
+            return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalCMastName()));
         }
         return NULL;
     }
 
     if (cType==LayoutEditor::TURNOUT_D) {
         lt = (LayoutTurnout*)connected;
-            if ( (lt->getSignalDMast()!=NULL) || (lt->getSignalDMast()!=("")) ){
-                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalDMast()));
+            if ( (lt->getSignalDMast()!=NULL) || (lt->getSignalDMastName()!=("")) ){
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(lt->getSignalDMastName()));
             }
         return NULL;
     }
@@ -1392,26 +1394,26 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if((cType>=LayoutEditor::SLIP_A) && (cType<=LayoutEditor::SLIP_D)){
         LayoutSlip* ls = (LayoutSlip*)connected;
         if(cType==LayoutEditor::SLIP_A){
-            if((ls->getSignalAMast()!=NULL) || (ls->getSignalAMast()!=(""))){
-                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalAMast()));
+            if((ls->getSignalAMast()!=NULL) || (ls->getSignalAMastName()!=(""))){
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalAMastName()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_B){
-            if((ls->getSignalBMast()!=NULL) || (ls->getSignalBMast()!=(""))){
-                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalBMast()));
+            if((ls->getSignalBMast()!=NULL) || (ls->getSignalBMastName()!=(""))){
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalBMastName()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_C){
-            if((ls->getSignalCMast()!=NULL) || (ls->getSignalCMast()!=(""))){
-                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalCMast()));
+            if((ls->getSignalCMast()!=NULL) || (ls->getSignalCMastName()!=(""))){
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalCMastName()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_D){
-            if((ls->getSignalDMast()!=NULL) || (ls->getSignalDMast()!=(""))){
-                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalDMast()));
+            if((ls->getSignalDMast()!=NULL) || (ls->getSignalDMastName()!=(""))){
+                return (((DefaultSignalMastManager*)((SignalMastManager*)InstanceManager::getDefault("SignalMastManager")))->getSignalMast(ls->getSignalDMastName()));
             }
             return NULL;
         }
@@ -1525,10 +1527,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         bool block1IsWestEnd = tools->isAtWestEndOfAnchor(tr,p);
         if ( (block1IsWestEnd && facingIsBlock1) || (!block1IsWestEnd && !facingIsBlock1) ) {
             // block1 is on the west (north) end of the block boundary
-            return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getEastBoundSensor()));
+            return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getEastBoundSensorName()));
         }
         else {
-            return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getWestBoundSensor()));
+            return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(p->getWestBoundSensorName()));
         }
     }
     if(!facingIsBlock1)
@@ -1536,8 +1538,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (cType==LayoutEditor::TURNOUT_A) {
         lt = (LayoutTurnout*)connected;
         if ((lt->getLinkType()==LayoutTurnout::NO_LINK) || (lt->getLinkType()==LayoutTurnout::FIRST_3_WAY)){
-            if ( (lt->getSensorA()!=NULL) || (lt->getSensorA()!=("")) ){
-                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(lt->getSensorA()));
+            if ( (lt->getSensorA()!=NULL) || (lt->getSensorAName()!=("")) ){
+                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(lt->getSensorAName()));
             }
             // we only allow signal s inbound to the turnout.
             return NULL;
@@ -1549,49 +1551,49 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 
     if (cType==LayoutEditor::TURNOUT_B) {
         lt = (LayoutTurnout*)connected;
-        if ( (lt->getSensorB()!=NULL) || (lt->getSensorB()!=("")) ){
-            return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(lt->getSensorB()));
+        if ( (lt->getSensorB()!=NULL) || (lt->getSensorBName()!=("")) ){
+            return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(lt->getSensorBName()));
         }
         return NULL;
     }
     if (cType==LayoutEditor::TURNOUT_C) {
         lt = (LayoutTurnout*)connected;
-        if ( (lt->getSensorC()!=NULL) || (lt->getSensorC()!=("")) ){
-            return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(lt->getSensorC()));
+        if ( (lt->getSensorC()!=NULL) || (lt->getSensorCName()!=("")) ){
+            return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(lt->getSensorCName()));
         }
         return NULL;
     }
 
     if (cType==LayoutEditor::TURNOUT_D) {
         lt = (LayoutTurnout*)connected;
-            if ( (lt->getSensorD()!=NULL) || (lt->getSensorD()!=("")) ){
-                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(lt->getSensorD()));
+            if ( (lt->getSensorD()!=NULL) || (lt->getSensorDName()!=("")) ){
+                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(lt->getSensorDName()));
             }
         return NULL;
     }
     if((cType>=LayoutEditor::SLIP_A) && (cType<=LayoutEditor::SLIP_D)){
         LayoutSlip* ls = (LayoutSlip*)connected;
         if(cType==LayoutEditor::SLIP_A){
-            if((ls->getSensorA()!=NULL) || (ls->getSensorA()!=(""))){
-                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(ls->getSensorA()));
+            if((ls->getSensorA()!=NULL) || (ls->getSensorAName()!=(""))){
+                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(ls->getSensorAName()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_B){
-            if((ls->getSensorB()!=NULL) || (ls->getSensorB()!=(""))){
-                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(ls->getSensorB()));
+            if((ls->getSensorB()!=NULL) || (ls->getSensorBName()!=(""))){
+                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(ls->getSensorBName()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_C){
-            if((ls->getSensorC()!=NULL) || (ls->getSensorC()!=(""))){
-                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(ls->getSensorC()));
+            if((ls->getSensorC()!=NULL) || (ls->getSensorCName()!=(""))){
+                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(ls->getSensorCName()));
             }
             return NULL;
         }
         if(cType==LayoutEditor::SLIP_D){
-            if((ls->getSensorD()!=NULL) || (ls->getSensorD()!=(""))){
-                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(ls->getSensorD()));
+            if((ls->getSensorD()!=NULL) || (ls->getSensorDName()!=(""))){
+                return (((AbstractSensorManager*)InstanceManager::sensorManagerInstance())->getSensor(ls->getSensorDName()));
             }
             return NULL;
         }
@@ -1686,6 +1688,144 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     return NULL;
 }
 
+//@CheckReturnValue
+//@Nullable
+/*public*/ QList<LayoutBlock*> LayoutBlockManager::getProtectingBlocksByNamedBean(
+        /*@Nullable*/ NamedBean* nb,
+        /*@Nullable*/ LayoutEditor* panel) {
+    QList<LayoutBlock*> ret = QList<LayoutBlock*>();
+
+    //if (nb instanceof SignalHead)
+    if(qobject_cast<SignalHead*>(nb))
+    {
+        ret.append(getProtectedBlock((SignalHead*) nb, panel));
+        return ret;
+    }
+    return getProtectingBlocksByBean(nb, panel);
+}
+
+/**
+ * If the panel variable is null, search all LE panels.
+ * This was added to support multi panel entry/exit.
+ * <p>
+ * @param bean  The sensor, mast or head to be located.
+ * @param panel The panel to search. If null, search all LE panels.
+ * @return a list of protected layout blocks.
+ */
+//@Nonnull
+/*private*/ QList<LayoutBlock*> LayoutBlockManager::getProtectingBlocksByBean(
+        /*@Nullable*/ NamedBean* bean,
+        /*@Nullable*/ LayoutEditor* panel) {
+    if (panel == nullptr) {
+        QList<LayoutEditor*>* panels = PanelMenu::instance()->
+                getLayoutEditorPanelList();
+        QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
+        for (LayoutEditor* p : *panels) {
+            protectingBlocks = getProtectingBlocksByBeanByPanel(bean, p);
+            if (!protectingBlocks.isEmpty()) {
+                break;
+            }
+        }
+        return protectingBlocks;
+    } else {
+        return getProtectingBlocksByBeanByPanel(bean, panel);
+    }
+}
+//@Nonnull
+    /*private*/ QList<LayoutBlock*> LayoutBlockManager::getProtectingBlocksByBeanByPanel(
+            /*@Nullable*/ NamedBean* bean,
+            /*@Nullable*/ LayoutEditor* panel) {
+        QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
+
+        //if (!(bean instanceof SignalMast) && !(bean instanceof Sensor))
+        if(qobject_cast<SignalMast*>(bean)== nullptr && qobject_cast<Sensor*>(bean)== nullptr)
+        {
+            log.error("Incorrect class type called, must be either SignalMast or Sensor");
+
+            return protectingBlocks;
+        }
+
+        PositionablePoint* pp = panel->getFinder()->findPositionablePointByEastBoundBean(bean);
+        TrackSegment* tr = nullptr;
+        bool east = true;
+
+        if (pp == nullptr) {
+            pp = panel->getFinder()->findPositionablePointByWestBoundBean(bean);
+            east = false;
+        }
+
+        if (pp != nullptr) {
+//            LayoutEditorTools tools = panel.getLETools(); //TODO: Dead-code strip this
+
+            if (east) {
+                if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+                    tr = pp->getConnect2();
+                } else {
+                    tr = pp->getConnect1();
+                }
+            } else {
+                if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+                    tr = pp->getConnect1();
+                } else {
+                    tr = pp->getConnect2();
+                }
+            }
+
+            if (tr != nullptr) {
+                protectingBlocks.append(tr->getLayoutBlock());
+
+                return protectingBlocks;
+            }
+        }
+
+        LevelXing* l = panel->getFinder()->findLevelXingByBean(bean);
+
+        if (l != nullptr) {
+            //if (bean instanceof SignalMast)
+         if(qobject_cast<SignalMast*>(bean))
+            {
+                if (l->getSignalAMast() == bean) {
+                    protectingBlocks.append(l->getLayoutBlockAC());
+                } else if (l->getSignalBMast() == bean) {
+                    protectingBlocks.append(l->getLayoutBlockBD());
+                } else if (l->getSignalCMast() == bean) {
+                    protectingBlocks.append(l->getLayoutBlockAC());
+                } else {
+                    protectingBlocks.append(l->getLayoutBlockBD());
+                }
+            }
+         //else if (bean instanceof Sensor)
+         else if(qobject_cast<Sensor*>(bean))
+         {
+                if (l->getSensorA() == bean) {
+                    protectingBlocks.append(l->getLayoutBlockAC());
+                } else if (l->getSensorB() == bean) {
+                    protectingBlocks.append(l->getLayoutBlockBD());
+                } else if (l->getSensorC() == bean) {
+                    protectingBlocks.append(l->getLayoutBlockAC());
+                } else {
+                    protectingBlocks.append(l->getLayoutBlockBD());
+                }
+            }
+            return protectingBlocks;
+        }
+
+        LayoutSlip* ls = panel->getFinder()->findLayoutSlipByBean(bean);
+
+        if (ls != nullptr) {
+            protectingBlocks.append(ls->getLayoutBlock());
+
+            return protectingBlocks;
+        }
+
+        LayoutTurnout* t = panel->getFinder()->findLayoutTurnoutByBean(bean);
+
+        if (t != nullptr) {
+            return t->getProtectedBlocks(bean);
+        }
+        return protectingBlocks;
+    }	//getProtectingBlocksByBean
+
 /*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockByMast(SignalMast* signalMast, LayoutEditor* panel){
     LayoutBlock* protect = getProtectedBlockByMast(signalMast->getUserName(), panel);
     if(protect == NULL)
@@ -1730,7 +1870,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 
     LayoutTurnout* t = panel->findLayoutTurnoutBySignalMast(signalMastName);
     if(t!=NULL){
-        if(t->getSignalAMast()==(signalMastName)){
+        if(t->getSignalAMastName()==(signalMastName)){
             if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockB()!=NULL){
                 if(t->getConnectA()!=NULL && qobject_cast<TrackSegment*>(t->getConnectA())!= NULL)
                 {
@@ -1743,7 +1883,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             }
             //This is only valid where the block boundary is external to the mast
             return t->getLayoutBlock();
-        } else if (t->getSignalBMast()==(signalMastName)) {
+        } else if (t->getSignalBMastName()==(signalMastName)) {
             if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlock()!=NULL){
                 if(t->getConnectB()!=NULL && qobject_cast<TrackSegment*>(t->getConnectB())!= NULL){
                     if(((TrackSegment*)t->getConnectB())->getLayoutBlock()==t->getLayoutBlockB()){
@@ -1754,7 +1894,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 }
             }
             return t->getLayoutBlockB();
-        } else if (t->getSignalCMast()==(signalMastName)) {
+        } else if (t->getSignalCMastName()==(signalMastName)) {
             if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockD()!=NULL){
                 if(t->getConnectC()!=NULL && qobject_cast<TrackSegment*>(t->getConnectC())!= NULL){
                     if(((TrackSegment*)t->getConnectC())->getLayoutBlock()==t->getLayoutBlockC()){
@@ -1849,11 +1989,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if(t!=NULL){
         log.debug("found signalmast at turnout " + t->getTurnout()->getDisplayName());
         QObject* connect;
-        if(t->getSignalAMast()==(signalMastName)){
+        if(t->getSignalAMastName()==(signalMastName)){
             connect = t->getConnectA();
-        } else if (t->getSignalBMast()==(signalMastName)) {
+        } else if (t->getSignalBMastName()==(signalMastName)) {
             connect = t->getConnectB();
-        } else if (t->getSignalCMast()==(signalMastName)) {
+        } else if (t->getSignalCMastName()==(signalMastName)) {
             connect = t->getConnectC();
         } else {
             connect = t->getConnectD();
@@ -1895,11 +2035,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     LayoutSlip* ls = ((LayoutEditor*)panel)->findLayoutSlipBySignalMast(signalMastName);
     if(ls!=NULL){
         QObject* connect;
-        if(ls->getSignalAMast()==(signalMastName)){
+        if(ls->getSignalAMastName()==(signalMastName)){
             connect = ls->getConnectA();
-        } else if (ls->getSignalBMast()==(signalMastName)) {
+        } else if (ls->getSignalBMastName()==(signalMastName)) {
             connect = ls->getConnectB();
-        } else if (ls->getSignalCMast()==(signalMastName)) {
+        } else if (ls->getSignalCMastName()==(signalMastName)) {
             connect = ls->getConnectC();
         } else {
             connect = ls->getConnectD();
@@ -1961,7 +2101,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 
     LayoutTurnout* t = panel->findLayoutTurnoutBySensor(sensorName);
     if(t!=NULL){
-        if(t->getSensorA()==(sensorName)){
+        if(t->getSensorAName()==(sensorName)){
             if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockB()!=NULL){
                 if(t->getConnectA()!=NULL && qobject_cast<TrackSegment*>(t->getConnectA())!=NULL){
                     if(((TrackSegment*)t->getConnectA())->getLayoutBlock()==t->getLayoutBlock()){
@@ -1972,7 +2112,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 }
             }
             return t->getLayoutBlock();
-        } else if (t->getSensorB()==(sensorName)) {
+        } else if (t->getSensorBName()==(sensorName)) {
             if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlock()!=NULL){
                 if(t->getConnectB()!=NULL && qobject_cast<TrackSegment*>(t->getConnectB())!=NULL){
                     if(((TrackSegment*)t->getConnectB())->getLayoutBlock()==t->getLayoutBlockB()){
@@ -1983,7 +2123,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 }
             }
             return t->getLayoutBlockB();
-        } else if (t->getSensorC()==(sensorName)) {
+        } else if (t->getSensorCName()==(sensorName)) {
             if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockD()!=NULL){
                 if(t->getConnectC()!=NULL && qobject_cast<TrackSegment*>(t->getConnectC())!=NULL){
                     if(((TrackSegment*)t->getConnectC())->getLayoutBlock()==t->getLayoutBlockC()){
@@ -2077,11 +2217,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if(t!=NULL){
         log.debug("found signalmast at turnout " + t->getTurnout()->getDisplayName());
         QObject* connect;
-        if(t->getSensorA()==(sensorName)){
+        if(t->getSensorAName()==(sensorName)){
             connect = t->getConnectA();
-        } else if (t->getSensorB()==(sensorName)) {
+        } else if (t->getSensorBName()==(sensorName)) {
             connect = t->getConnectB();
-        } else if (t->getSensorC()==(sensorName)) {
+        } else if (t->getSensorCName()==(sensorName)) {
             connect = t->getConnectC();
         } else {
             connect = t->getConnectD();
@@ -2118,11 +2258,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     LayoutSlip* ls = panel->findLayoutSlipBySensor(sensorName);
     if(ls!=NULL){
         QObject* connect;
-        if(ls->getSensorA()==(sensorName)){
+        if(ls->getSensorAName()==(sensorName)){
             connect = ls->getConnectA();
-        } else if (ls->getSensorB()==(sensorName)) {
+        } else if (ls->getSensorBName()==(sensorName)) {
             connect = ls->getConnectB();
-        } else if (ls->getSensorC()==(sensorName)) {
+        } else if (ls->getSensorCName()==(sensorName)) {
             connect = ls->getConnectC();
         } else {
             connect = ls->getConnectD();

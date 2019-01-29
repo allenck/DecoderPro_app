@@ -25,7 +25,7 @@ public:
     void setMenuEnabled(bool boo);
     PointDetails* getPoint();
     LayoutBlock* getStart();
-    LayoutBlock* getSourceProtecting();
+    QList<LayoutBlock *> getSourceProtecting();
     NamedBean* getSourceSignal();
     /*public*/ void addDestination(PointDetails* dest, QString id);
     /*public*/ void removeDestination(PointDetails* dest);
@@ -46,6 +46,8 @@ public:
     /*public*/ QStringList getDestinationUniqueId();
     /*public*/ DestinationPoints* getByUniqueId(QString id);
     /*public*/ DestinationPoints* getByUserName(QString id);
+    /*public*/ DestinationPoints* getDestForPoint(PointDetails* dp);
+
 signals:
 
 public slots:
@@ -71,6 +73,7 @@ private:
     /*transient*/ QMap<PointDetails*, DestinationPoints*>* pointToDest;// = new HashMap<PointDetails, DestinationPoints>();
     friend class PointDetails;
     friend class DestinationPoints;
+    friend class DPRunnable;
 };
 
 #endif // SOURCE_H

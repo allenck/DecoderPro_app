@@ -15,9 +15,9 @@ TEMPLATE = lib
 DEFINES += JAVAQT_LIBRARY
 
 SOURCES += javaqt.cpp \
-    logger.cpp \
-    loggerbase.cpp \
     loggerfactory.cpp \
+    loggerbase.cpp \
+    logger.cpp \
     fileutil.cpp \
     calendar.cpp \
     box.cpp \
@@ -178,7 +178,17 @@ SOURCES += javaqt.cpp \
     nosuchmethoderror.cpp \
     namedbeancomparator.cpp \
     runtimeexception.cpp \
-    abstractinstanceinitializer.cpp
+    abstractinstanceinitializer.cpp \
+    jtabbedpane.cpp \
+    serviceinfo.cpp \
+    serviceinfoimpl.cpp \
+    jmdns.cpp \
+    inetaddress.cpp \
+    jmdnsimpl.cpp \
+    inet4address.cpp \
+    inet6address.cpp \
+    glasspane.cpp \
+    drawsquares.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -397,7 +407,19 @@ HEADERS += javaqt.h\
     abstractinstanceinitializer.h \
     instanceinitializer.h \
     instancemanagerautodefault.h \
-    instancemanagerautoinitialize.h
+    instancemanagerautoinitialize.h \
+    inputverifier.h \
+    namedbeanpropertydescriptor.h \
+    jtabbedpane.h \
+    serviceinfo.h \
+    serviceinfoimpl.h \
+    jmdns.h \
+    inetaddress.h \
+    jmdnsimpl.h \
+    inet4address.h \
+    inet6address.h \
+    glasspane.h \
+    drawsquares.h
 
 unix {
     target.path = /usr/lib
@@ -407,3 +429,11 @@ unix {
 TRANSLATIONS += \
     languages/JavaQt_de.ts \
     languages/JavaQt_en.ts
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../QtZeroConf-master/release/ -lQtZeroConf
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../QtZeroConf-master/debug/ -lQtZeroConf
+else:unix: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
+
+INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
+DEPENDPATH += $$PWD/../../../../QtZeroConf-master

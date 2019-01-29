@@ -112,7 +112,7 @@ SingleTurnoutSignalHeadXml::SingleTurnoutSignalHeadXml(QObject *parent) :
 
     loadCommon(h, element);
 
-    ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->Register(h);
+    static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
     return true;
 }
 

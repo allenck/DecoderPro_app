@@ -28,7 +28,7 @@ public slots:
       * Called whenever the value of the selection changes.
       * @param e the event that characterizes the change.
       */
-    virtual void valueChanged(TreeSelectionEvent* /*e*/) {}
+    virtual void valueChanged(TreeSelectionEvent* /*e*/ = nullptr) {}
 };
 Q_DECLARE_METATYPE(TreeSelectionListener)
 #endif // TREESELECTIONLISTENER_H

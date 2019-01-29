@@ -32,6 +32,7 @@
 #include "turnouteditaction.h"
 #include "systemnamecomparator.h"
 #include <QSpinBox>
+#include "colorutil.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -111,6 +112,7 @@ void TurnoutTableAction::common()
  showLockBox = new QCheckBox("Show lock information");
  showTurnoutSpeedBox = new QCheckBox("Show Turnout Speed Details");
  doAutomationBox = new QCheckBox("Automatic retry");
+ connectionChoice = "";
 
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  // disable ourself if there is no primary turnout manager available
@@ -193,7 +195,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //@Override
 /*public*/ int TurnoutTableDataModel::columnCount(const QModelIndex &/*parent*/) const
 {
-    return DIVERGCOL+1;
+    return QUERYCOL+getPropertyColumnCount()+1;
 }
 
 //@Override
@@ -216,7 +218,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     case LOCKDECCOL: return "Decoder";
     case DIVERGCOL: return "Thrown Speed";
     case STRAIGHTCOL: return "Closed Speed";
-    case BeanTableDataModel::VALUECOL: return "Cmd";  // override default title
+    case FORGETCOL: return "State";
+    case QUERYCOL: return "State";
+    //case BeanTableDataModel::VALUECOL: return "Cmd";  // override default title
     case EDITCOL: return "";
     default:
       break;
@@ -262,7 +266,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   case EDITCOL : return  JTextField(7).getPreferredSize().width();
   case DIVERGCOL : return  JTextField(14).getPreferredSize().width();
   case STRAIGHTCOL : return  JTextField(14).getPreferredSize().width();
-  default:
+  case FORGETCOL: return  QPushButton(tr("Forget")).sizeHint().width();
+  case QUERYCOL: return  QPushButton(tr("Query")).sizeHint().width();
+ default:
    break;
  }
  return BeanTableDataModel::getPreferredWidth(col);
@@ -302,6 +308,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   case DIVERGCOL: return editable;
   case STRAIGHTCOL: return editable;
   case EDITCOL: return editable;
+  case FORGETCOL: return editable;
+  case QUERYCOL: return editable;
   default:
      return BeanTableDataModel::flags(index);
  }
@@ -497,6 +505,10 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //     return c;
       return t->getDivergingSpeed();
    }
+  case FORGETCOL:
+   return "Forget";
+  case QUERYCOL:
+   return "Query";
    default:
    {
     break;
@@ -695,6 +707,17 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     fireTableRowsUpdated(row,row);
     return true;
    }
+  case FORGETCOL:
+   t->setCommandedState(Turnout::UNKNOWN);
+   break;
+  case QUERYCOL:
+   t->setCommandedState(Turnout::UNKNOWN);
+   t->requestUpdateFromLayout();
+   break;
+  case VALUECOL:
+   clickOn(t);
+   fireTableRowsUpdated(row,row);
+   break;
    default:
     break;
   }
@@ -792,7 +815,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     setColumnToHoldDelegate(_table, LOCKOPRCOL, new TTComboBoxDelegate(self->lockOperations, self));
     setColumnToHoldDelegate(_table, STRAIGHTCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self,true));
     setColumnToHoldDelegate(_table, DIVERGCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self, true));
-    setColumnToHoldDelegate(_table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),self));
+    setColumnToHoldDelegate(_table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),self)); // ?? shuld be button?
+    setColumnToHoldButton(_table, FORGETCOL);
+    setColumnToHoldButton(_table, QUERYCOL);
   //self->showFeedbackChanged();
   //self->showLockChanged();
   //self->showTurnoutSpeedChanged();
@@ -840,8 +865,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 }
 
 /*protected*/ QString TurnoutTableDataModel::getBeanType(){
-    return AbstractTableAction::tr("Turnout");
+    return tr("Turnout");
 }
+
 #if 0
 TableSorter sorter;
 
@@ -963,8 +989,6 @@ TableSorter sorter;
     return "package.jmri.jmrit.beantable.TurnoutTable";
 }
 
-
-
 /*protected*/ void TurnoutTableAction::addPressed(ActionEvent* /*e*/)
 {
  //p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
@@ -972,6 +996,7 @@ TableSorter sorter;
  if (addFrame==NULL)
  {
   addFrame = new JmriJFrame(tr("Add Turnout"), false, true);
+  addFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.TurnoutAddEdit", true);
   QWidget* centralWidget = new QWidget;
   centralWidget->resize(600,300);
@@ -1026,14 +1051,30 @@ TableSorter sorter;
   prefixBox->setObjectName("prefixBox");
   addButton = new QPushButton(tr("Create"));
   connect(addButton, SIGNAL(clicked(bool)), this, SLOT(createPressed()));
+  connect(hardwareAddressTextField, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   centralWidgetLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBar));
 
   canAddRange(NULL);
  }
+ hardwareAddressTextField->setValidator(validator=new TTAValidator(hardwareAddressTextField, this));
+
  addFrame->adjustSize();
  addFrame->setVisible(true);
 }
+
+/*public*/ void TurnoutTableAction::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
+ QString property = propertyChangeEvent->getPropertyName();
+ if ("background"==(property))
+ {
+  if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
+      addButton->setEnabled(true);
+  } else { // invalid
+      addButton->setEnabled(false);
+  }
+ }
+}
+
 
 OkListener::OkListener(TurnoutTableAction *self)
 {
@@ -1899,11 +1940,16 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
 /*private*/ void TurnoutTableAction::canAddRange(ActionEvent* /*e*/){
     rangeBox->setEnabled(false);
     rangeBox->setChecked(false);
+    connectionChoice = prefixBox->currentText(); // store in Field for CheckedTextField
+    if (connectionChoice == "") {
+        // Tab All or first time opening, use default tooltip
+        connectionChoice = "TBD";
+    }
     if (QString(turnManager->metaObject()->className()).contains("ProxyTurnoutManager"))
     {
         ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) turnManager;
         QList<Manager*> managerList = proxy->getManagerList();
-        QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText());
+        QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName( connectionChoice);
         for(int x = 0; x<managerList.size(); x++){
             TurnoutManager* mgr = (TurnoutManager*) managerList.at(x);
             if (mgr->getSystemPrefix()==(systemPrefix) && mgr->allowMultipleAdditions(systemPrefix)){
@@ -1912,9 +1958,20 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
             }
         }
     }
-    else if (turnManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()))){
-        rangeBox->setEnabled(true);
+    else if (turnManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText())))
+    {
+     rangeBox->setEnabled(true);
+     log->debug("T Add box enabled2");
+     // get tooltip from turnout manager
+     addEntryToolTip = turnManager->getEntryToolTip();
+     log->debug("TurnoutManager tip");
     }
+    // show sysName (HW address) field tooltip in the Add Turnout pane that matches system connection selected from combobox
+    hardwareAddressTextField->setToolTip("<html>"
+            + tr("For %1 %2 use one of these patterns:").arg(connectionChoice).arg(tr("Turnouts"))
+            + "<br>" + addEntryToolTip + "</html>");
+    hardwareAddressTextField->setBackground(QColor(Qt::yellow)); // reset
+    addButton->setEnabled(true); // ambiguous, so start enabled
 }
 
 void TurnoutTableAction::handleCreateException(QString sysName)
@@ -2048,4 +2105,58 @@ void TTEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, co
 void TTEditDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
   editor->setGeometry(option.rect);
+}
+TTAValidator::TTAValidator(JTextField *fld, TurnoutTableAction *act)
+{
+ this->fld = fld;
+ this->act = act;
+ connect(act->prefixBox, SIGNAL(currentTextChanged(QString)), this, SLOT(prefixBoxChanged(QString)));
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(act->connectionChoice);
+ mark = ColorUtil::stringToColor("orange");
+}
+
+QValidator::State TTAValidator::validate(QString& s, int& pos) const
+{
+ QString value = s.trimmed();
+ if ((value.length() < 1) && (allow0Length == false)) {
+     return QValidator::Invalid;
+ } else if ((allow0Length == true) && (value.length() == 0)) {
+     return QValidator::Acceptable;
+ } else {
+  bool bok;
+  int num = s.toInt(&bok);
+  if(!bok )
+   return QValidator::Invalid;
+  else if(num == 0)
+   return QValidator::Intermediate;
+  else if(!(num > 0 && num <= 2047 ))
+   return QValidator::Invalid;
+ }
+// if(prefix == "")
+// {
+//  QString txt = act->prefixBox->currentText();
+//  this->prefix = ConnectionNameFromSystemName::getPrefixFromName(act->connectionChoice);
+// }
+ bool validFormat = false;
+ // try {
+ validFormat = static_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
+ // } catch (jmri.JmriException e) {
+ // use it for the status bar?
+ // }
+ if (validFormat) {
+  act->addButton->setEnabled(true); // directly update Create button
+  fld->setBackground(QColor(Qt::white));
+  return QValidator::Acceptable;
+ } else {
+  act->addButton->setEnabled(false); // directly update Create button
+  fld->setBackground(mark);
+  return QValidator::Invalid;
+ }
+}
+
+void TTAValidator::setPrefix(QString prefix) { this->prefix = prefix;}
+
+void TTAValidator::prefixBoxChanged(QString txt)
+{
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(txt);
 }

@@ -7,6 +7,7 @@
 #include "file.h"
 #include "performscriptmodel.h"
 #include <QLabel>
+#include "jframe.h"
 
 //PerformScriptPanel::PerformScriptPanel(QWidget *parent) :
 //  PreferencesPanel(parent)
@@ -33,7 +34,7 @@
 //protected ResourceBundle rb;
 
 /*public*/ PerformScriptPanel::PerformScriptPanel(QWidget *parent) :
-  PreferencesPanel(parent)
+  QWidget(parent)
 {
  self = this;
  dirty = false;
@@ -208,5 +209,8 @@ PSPItem::PSPItem(PerformScriptModel* m, QWidget* parent) : QWidget(parent)
   ((PerformScriptPanel*)parent)->dirty = true;
  }
 }
+
+/*public*/ QString PerformScriptPanel::className() {return "PerformScriptPanel";}
+
 //};
 #endif

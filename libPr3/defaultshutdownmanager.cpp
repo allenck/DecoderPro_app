@@ -138,7 +138,7 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
  if (!shuttingDown)
  {
   QDateTime start =  QDateTime::currentDateTime();
-  long timeout = 30; // all shut down tasks must complete within n seconds
+//  long timeout = 30; // all shut down tasks must complete within n seconds
   setShuttingDown(true);
   // trigger parallel tasks (see jmri.ShutDownTask#isParallel())
   if (!this->runShutDownTasks(true)) {

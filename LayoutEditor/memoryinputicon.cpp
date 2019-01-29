@@ -43,7 +43,7 @@
  _textBox->setVisible(true);
 
  _nCols = nCols;
- //_itemGroup = new QGraphicsItemGroup();
+ //_itemGroup = new MyGraphicsItemGroup();
  _itemGroup = NULL;
  widget = new MyGraphicsProxyWidget();
  widget->setWidget(_textBox);
@@ -51,6 +51,7 @@
  widget->setFlag(QGraphicsItem::ItemIsMovable, true);
  widget->setFlag(QGraphicsItem::ItemIsSelectable, true);
  widget->setLayout(new QGraphicsLinearLayout());
+
  _textBox->setEnabled(true);
  //_itemGroup->addToGroup(widget);
  setLevel(Editor::LABELS);
@@ -65,7 +66,7 @@
 //    GridBagConstraints* c = new GridBagConstraints();
 //    setLayout(g = new QGridLayout());
 //    g->addWidget(_textBox, c->gridy, c->gridx, 1,1);
-    setLayout(new QHBoxLayout);
+ setLayout(new QHBoxLayout);
 
  layout()->addWidget(_textDisplay = new JTextField(/*_textBox*/));
  _textDisplay->setEnabled(true);

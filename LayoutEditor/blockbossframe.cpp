@@ -763,7 +763,7 @@ QWidget* BlockBossFrame::fillModeFacing() {
 void BlockBossFrame::okPressed()  // SLOT[]
 {
  // check signal head exists
- if (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(outSignalField->text().trimmed())==NULL)
+ if (static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(outSignalField->text().trimmed())==NULL)
  {
   setWindowTitle(tr("Simple Signal Logic"));
     //    JOptionPane.showMessageDialog(this,tr("Signal_head_")+outSignalField->text()+tr(" is not defined yet"));
@@ -889,7 +889,7 @@ void BlockBossFrame::loadFacing(BlockBossLogic* b) {
 void BlockBossFrame::activate() // SLOT[]
 {
  // check signal head exists
- if (((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(outSignalField->text())==NULL)
+ if (static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(outSignalField->text())==NULL)
  {
   setWindowTitle(tr("Simple Signal Logic"));
   return;
@@ -1007,11 +1007,11 @@ void BlockBossFrame::on_sSensorField5_textChanged(QString s)
 }
 void BlockBossFrame::on_sNextSignalField1_textChanged(QString s)
 {
- sNextSignalField1->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ sNextSignalField1->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 void BlockBossFrame::on_sNextSignalField1Alt_textChanged(QString s)
 {
- sNextSignalField1Alt->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ sNextSignalField1Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 
 void BlockBossFrame::on_tmSensorField1_textChanged(QString s)
@@ -1040,11 +1040,11 @@ void BlockBossFrame::on_tmProtectTurnoutField_textChanged(QString s)
 }
 void BlockBossFrame::on_tmNextSignalField1_textChanged(QString s)
 {
- tmNextSignalField1->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ tmNextSignalField1->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 void BlockBossFrame::on_tmNextSignalField1Alt_textChanged(QString s)
 {
- tmNextSignalField1Alt->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ tmNextSignalField1Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 void BlockBossFrame::on_tdSensorField1_textChanged(QString s)
 {
@@ -1072,11 +1072,11 @@ void BlockBossFrame::on_tdProtectTurnoutField_textChanged(QString s)
 }
 void BlockBossFrame::on_tdNextSignalField1_textChanged(QString s)
 {
- tdNextSignalField1->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ tdNextSignalField1->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 void BlockBossFrame::on_tdNextSignalField1Alt_textChanged(QString s)
 {
- tdNextSignalField1Alt->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ tdNextSignalField1Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 
 void BlockBossFrame::on_fSensorField1_textChanged(QString s)
@@ -1105,19 +1105,19 @@ void BlockBossFrame::on_fProtectTurnoutField_textChanged(QString s)
 }
 void BlockBossFrame::on_fNextSignalField1_textChanged(QString s)
 {
- fNextSignalField1->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ fNextSignalField1->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 void BlockBossFrame::on_fNextSignalField1Alt_textChanged(QString s)
 {
- fNextSignalField1Alt->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ fNextSignalField1Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 void BlockBossFrame::on_fNextSignalField2_textChanged(QString s)
 {
- fNextSignalField2->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ fNextSignalField2->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 void BlockBossFrame::on_fNextSignalField2Alt_textChanged(QString s)
 {
- fNextSignalField2Alt->setCompleter(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getCompleter(s,true));
+ fNextSignalField2Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
 }
 void BlockBossFrame::on_fNextSensorField1_textChanged(QString s)
 {

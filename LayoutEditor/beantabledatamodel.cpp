@@ -57,6 +57,8 @@
  buttonMap = QList<int>();
  nbMan = (NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager");
  _table = NULL;
+ // propertyColumns = new ArrayList<>(getManager().getKnownBeanProperties());
+ propertyColumns = new QList<NamedBeanPropertyDescriptor*>();
 }
 //template<class T>
 void /*public*/ BeanTableDataModel::init()
@@ -73,6 +75,10 @@ void /*public*/ BeanTableDataModel::init()
 BeanTableDataModel::~BeanTableDataModel()
 {
  delete log;
+}
+
+/*protected*/ int BeanTableDataModel::getPropertyColumnCount() const{
+    return propertyColumns->size();
 }
 
 //template<class T>
@@ -845,6 +851,19 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 /*abstract*/ /*protected*/ QString BeanTableDataModel::getBeanType()
 {
     return "Bean";
+}
+/**
+ * Updates the visibility settings of the property columns.
+ *
+ * @param table   the JTable object for the current display.
+ * @param visible true to make the proeprty columns visible, false to hide.
+ */
+/*public*/ void BeanTableDataModel::setPropertyColumnsVisible(JTable* table, bool visible) {
+    XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+    for (int i = getColumnCount() - 1; i >= getColumnCount() - getPropertyColumnCount(); --i) {
+        TableColumn* column = columnModel->getColumnByModelIndex(i);
+        columnModel->setColumnVisible(column, visible);
+    }
 }
 #if 0
 class PopupListener extends MouseAdapter {

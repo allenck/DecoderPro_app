@@ -2,4 +2,4 @@
 
 using namespace Sprog;
 
-SprogVersionListener::SprogVersionListener(QObject* parent) : EventListener(parent) {}
+SprogVersionListener::SprogVersionListener() : EventListener() {}

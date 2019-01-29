@@ -11,7 +11,7 @@
 #include <QFileDialog>
 //#include "loadxml.h"
 #include <QColor>
-#include "savexml.h"
+//#include "savexml.h"
 #include "memoryiconcoordinateedit.h"
 #include "QFormLayout"
 #include "abstractsensor.h"
@@ -4001,7 +4001,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   return nullptr;
 }
 
-/*protected*/ QPointF LayoutEditor::getCoords(QObject* o, int type)
+/*static*/ /*protected*/ QPointF LayoutEditor::getCoords(QObject* o, int type)
 {
  if (o != nullptr)
  {
@@ -5821,25 +5821,40 @@ double LayoutEditor::toRadians(double degrees)
 }
 #endif
 
-/*public*/ QList<LayoutTrack*> LayoutEditor::getPositionablePoints() {
-    return getLayoutTracksOfClass("PositionablePoint");
+/*public*/ QList<PositionablePoint*> LayoutEditor::getPositionablePoints() {
+    //return getLayoutTracksOfClass("PositionablePoint");
+ QList<PositionablePoint*> list = QList<PositionablePoint*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
+ {
+  if(QString(metaObject()->className()) == "PositionablePoint")
+   list.append((PositionablePoint*)lt);
+ }
+ return list;
 //    )
 //            .map(PositionablePoint.class::cast)
 //            .collect(Collectors.toCollection(ArrayList<PositionablePoint>::new));
 }
 
-/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutSlips() {
-    return getLayoutTracksOfClass("LayoutSlip");
-//    )
-//            .map(LayoutSlip.class::cast)
-//            .collect(Collectors.toCollection(ArrayList<LayoutSlip>::new));
+/*public*/ QList<LayoutSlip*> LayoutEditor::getLayoutSlips() {
+//    return getLayoutTracksOfClass("LayoutSlip");
+ QList<LayoutSlip*> list = QList<LayoutSlip*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
+ {
+  if(QString(metaObject()->className()) == "LayoutSlip")
+   list.append((LayoutSlip*)lt);
+ }
+ return list;
 }
 
-/*public*/ QList<LayoutTrack*> LayoutEditor::getTrackSegments() {
-    return getLayoutTracksOfClass("TrackSegment");
-//            .map(TrackSegment.class::cast)
-//            .collect(Collectors.toCollection(ArrayList<TrackSegment>::new));
-}
+/*public*/ QList<TrackSegment*> LayoutEditor::getTrackSegments() {
+//    return getLayoutTracksOfClass("TrackSegment");
+ QList<TrackSegment*> list = QList<TrackSegment*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
+ {
+  if(QString(metaObject()->className()) == "TrackSegment")
+   list.append((TrackSegment*)lt);
+ }
+ return list;}
 
 /*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTurnouts() {
 //    return layoutTrackList.stream() // next line excludes LayoutSlips
@@ -5856,12 +5871,15 @@ double LayoutEditor::toRadians(double degrees)
  return list;
 }
 
-/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTurntables() {
-    return getLayoutTracksOfClass("LayoutTurntable");
-//    )
-//            .map(LayoutTurntable.class::cast)
-//            .collect(Collectors.toCollection(ArrayList<LayoutTurntable>::new));
-}
+/*public*/ QList<LayoutTurntable*> LayoutEditor::getLayoutTurntables() {
+//    return getLayoutTracksOfClass("LayoutTurntable");
+ QList<LayoutTurntable*> list = QList<LayoutTurntable*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
+ {
+  if(QString(metaObject()->className()) == "LayoutTurntable")
+   list.append((LayoutTurntable*)lt);
+ }
+ return list;}
 
 /*public*/ QList<LayoutTrack*> LayoutEditor::getLevelXings() {
     return getLayoutTracksOfClass("LevelXing");
@@ -5874,12 +5892,15 @@ double LayoutEditor::toRadians(double degrees)
     return layoutTrackList;
 }
 
-/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTurnoutsAndSlips() {
-    return getLayoutTracksOfClass("LayoutTurnout");
-//    )
-//            .map(LayoutTurnout.class::cast)
-//            .collect(Collectors.toCollection(ArrayList<LayoutTurnout>::new));
-}
+/*public*/ QList<LayoutTurnout*> LayoutEditor::getLayoutTurnoutsAndSlips() {
+//    return getLayoutTracksOfClass("LayoutTurnout");
+ QList<LayoutTurnout*> list = QList<LayoutTurnout*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
+ {
+  if(QString(metaObject()->className()) == "LayoutTurnout")
+   list.append((LayoutTurnout*)lt);
+ }
+ return list;}
 
 /*protected*/ bool LayoutEditor::showAlignPopup()
 {
@@ -6376,7 +6397,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 
      SignalHead* mHead = nullptr;
      if ( (newName!=("")) ) {
-         mHead = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(newName);
+         mHead = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(newName);
          /*if (mHead == nullptr)
              mHead = InstanceManager.signalHeadManagerInstance().getByUserName(tName);
          else */
@@ -6416,8 +6437,8 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  }
 
  SignalHead* LayoutEditor::getSignalHead(QString name) {
-     SignalHead* sh = InstanceManager::signalHeadManagerInstance()->getBySystemName(name);
-     if (sh == nullptr) sh = InstanceManager::signalHeadManagerInstance()->getByUserName(name);
+     SignalHead* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+     if (sh == nullptr) sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);
      if (sh == nullptr) log->warn("did not find a SignalHead named "+name);
      return sh;
  }
@@ -6461,7 +6482,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
      QString newName = ui->signalMastComboBox->getDisplayName();
      SignalMast* mMast = nullptr;
      if ( (newName!=("")) ) {
-         mMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(newName);
+         mMast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(newName);
          ui->signalMastComboBox->setText(newName);
      }
      if (mMast == nullptr) {
@@ -8314,7 +8335,7 @@ int LayoutEditor::getTurnoutType(QString name)
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByEastBoundSignalMast(QString signalMastName){
      for (int i = 0; i<pointList->size(); i++) {
          PositionablePoint* p = pointList->at(i);
-         if (p->getEastBoundSignalMast()==(signalMastName))
+         if (p->getEastBoundSignalMastName()==(signalMastName))
              return p;
      }
      return nullptr;
@@ -8323,7 +8344,7 @@ int LayoutEditor::getTurnoutType(QString name)
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByWestBoundSignalMast(QString signalMastName){
      for (int i = 0; i<pointList->size(); i++) {
          PositionablePoint* p = pointList->at(i);
-         if (p->getWestBoundSignalMast()==(signalMastName))
+         if (p->getWestBoundSignalMastName()==(signalMastName))
              return p;
 
      }
@@ -8332,10 +8353,10 @@ int LayoutEditor::getTurnoutType(QString name)
  /*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutBySignalMast(QString signalMastName){
      for(int i = 0; i<turnoutList->size(); i++){
          LayoutTurnout* t = turnoutList->at(i);
-         if((t->getSignalAMast()==(signalMastName)) ||
-             (t->getSignalBMast()==(signalMastName)) ||
-             (t->getSignalCMast()==(signalMastName)) ||
-             (t->getSignalDMast()==(signalMastName)))
+         if((t->getSignalAMastName()==(signalMastName)) ||
+             (t->getSignalBMastName()==(signalMastName)) ||
+             (t->getSignalCMastName()==(signalMastName)) ||
+             (t->getSignalDMastName()==(signalMastName)))
              return t;
      }
      return nullptr;
@@ -8343,10 +8364,10 @@ int LayoutEditor::getTurnoutType(QString name)
  /*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutBySensor(QString sensorName){
      for(int i = 0; i<turnoutList->size(); i++){
          LayoutTurnout* t = turnoutList->at(i);
-         if((t->getSensorA()==(sensorName)) ||
-             (t->getSensorB()==(sensorName)) ||
-             (t->getSensorC()==(sensorName)) ||
-             (t->getSensorD()==(sensorName)))
+         if((t->getSensorAName()==(sensorName)) ||
+             (t->getSensorBName()==(sensorName)) ||
+             (t->getSensorCName()==(sensorName)) ||
+             (t->getSensorDName()==(sensorName)))
              return t;
      }
      return nullptr;
@@ -8380,10 +8401,10 @@ int LayoutEditor::getTurnoutType(QString name)
   {
   foreach(LayoutSlip* l, *slipList)
   {
-   if((l->getSignalAMast()==(signalMastName)) ||
-       (l->getSignalBMast()==(signalMastName)) ||
-       (l->getSignalCMast()==(signalMastName)) ||
-       (l->getSignalDMast()==(signalMastName)))
+   if((l->getSignalAMastName()==(signalMastName)) ||
+       (l->getSignalBMastName()==(signalMastName)) ||
+       (l->getSignalCMastName()==(signalMastName)) ||
+       (l->getSignalDMastName()==(signalMastName)))
     return l;
   }
   return nullptr;
@@ -8391,10 +8412,10 @@ int LayoutEditor::getTurnoutType(QString name)
 
  /*public*/ LayoutSlip* LayoutEditor::findLayoutSlipBySensor(QString sensorName){
      foreach(LayoutSlip* l, *slipList){
-         if((l->getSensorA()==(sensorName)) ||
-             (l->getSensorB()==(sensorName)) ||
-             (l->getSensorC()==(sensorName)) ||
-             (l->getSensorD()==(sensorName)))
+         if((l->getSensorAName()==(sensorName)) ||
+             (l->getSensorBName()==(sensorName)) ||
+             (l->getSensorCName()==(sensorName)) ||
+             (l->getSensorDName()==(sensorName)))
              return l;
      }
      return nullptr;
@@ -8402,7 +8423,7 @@ int LayoutEditor::getTurnoutType(QString name)
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByEastBoundSensor(QString sensorName){
      for (int i = 0; i<pointList->size(); i++) {
          PositionablePoint* p = pointList->at(i);
-         if (p->getEastBoundSensor()==sensorName)
+         if (p->getEastBoundSensorName()==sensorName)
              return p;
      }
      return nullptr;
@@ -8411,7 +8432,7 @@ int LayoutEditor::getTurnoutType(QString name)
  /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByWestBoundSensor(QString sensorName){
      for (int i = 0; i<pointList->size(); i++) {
          PositionablePoint* p = pointList->at(i);
-         if (p->getWestBoundSensor()==(sensorName))
+         if (p->getWestBoundSensorName()==(sensorName))
              return p;
 
      }

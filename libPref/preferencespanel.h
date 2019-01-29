@@ -1,7 +1,7 @@
 #ifndef PREFERENCESPANEL_H
 #define PREFERENCESPANEL_H
-#include <QTabWidget>
-#include "jframe.h"
+#include <QWidget>
+#include <QString>
 #include "libpref_global.h"
 #include "limits.h"
 
@@ -16,13 +16,10 @@
  *
  * @author Randall Wood (C) 2012, 2014
  */
-/*public*/ /*interface*/ class LIBPREFSHARED_EXPORT PreferencesPanel : public QWidget
+/*public*/ /*interface*/ class LIBPREFSHARED_EXPORT PreferencesPanel
 {
- Q_OBJECT
+
 public:
- PreferencesPanel(QWidget* parent = 0) : QWidget(parent) {}
- ~PreferencesPanel() {}
- PreferencesPanel(const PreferencesPanel&) : QWidget() {}
     /**
      * Get the Preferences Item identifier.
      *
@@ -68,7 +65,7 @@ public:
      *
      * @return the preferences panel
      */
-    virtual /*public abstract*/ QWidget* getPreferencesComponent() {return NULL;}
+    virtual /*public abstract*/ QWidget* getPreferencesComponent() {return nullptr;}
 
     /**
      * Indicates that this PrefernecesPanel should be stored across application
@@ -120,18 +117,18 @@ public:
   * @return the top-level <code>Container</code> that this component is in,
   *          or <code>null</code> if not in any container
   */
- /*public*/ QWidget* getTopLevelAncestor()
- {
-  for(QObject* p = this; p != NULL; p = p->parent())
-  {
-   //if(p instanceof Window || p instanceof Applet)
-      if(qobject_cast<JFrame*>(p)!=NULL)
-   {
-    return (QWidget*)p;
-   }
-  }
-  return NULL;
- }
+// /*public*/ QWidget* getTopLevelAncestor()
+// {
+//  for(QObject* p = this; p != NULL; p = p->parent())
+//  {
+//   //if(p instanceof Window || p instanceof Applet)
+//      if(qobject_cast<JFrame*>(p)!=NULL)
+//   {
+//    return (QWidget*)p;
+//   }
+//  }
+//  return NULL;
+// }
  /**
   * Indicate that the preferences are valid.
   *
@@ -150,8 +147,7 @@ public:
  /*public*/ /*default*/ virtual int getSortOrder() {
      return INT_MAX;
  }
-public slots:
- virtual void propertyChange(PropertyChangeEvent* /*evt*/) {}
+ virtual QString className() {return "???";}
 };
-Q_DECLARE_METATYPE(PreferencesPanel)
+Q_DECLARE_INTERFACE(PreferencesPanel, "PreferencesPanel")
 #endif // PREFERENCESPANEL_H

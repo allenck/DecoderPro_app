@@ -24,6 +24,8 @@
 #include "box.h"
 #include <QHeaderView>
 #include "joptionpane.h"
+#include <QSpinBox>
+#include <QScrollArea>
 
 //WarrantPreferencesPanel::WarrantPreferencesPanel(QWidget *parent) :
 //  PreferencesPanel(parent)
@@ -36,7 +38,7 @@
 
 
 /*public*/ WarrantPreferencesPanel::WarrantPreferencesPanel(QWidget *parent)
- :    PreferencesPanel(parent)
+ :    QWidget(parent)
 {
  _isDirty = false;
  _interpretation = SignalSpeedMap::PERCENT_NORMAL;
@@ -55,11 +57,21 @@
  initGUI();
 // setGUI();
 }
+#if 1
 /*private*/ void WarrantPreferencesPanel::initGUI()
 {
  QVBoxLayout* thisLayout;
     this->setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.PAGE_AXIS));
-//        add(new JTitledSeparator(tr("TitleWarrantPreferences")));
+ setMinimumSize(600,300);
+ QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+ sizePolicy.setHorizontalStretch(0);
+ sizePolicy.setVerticalStretch(0);
+ sizePolicy.setHeightForWidth(this->sizePolicy().hasHeightForWidth());
+ this->setSizePolicy(sizePolicy);
+ QScrollArea* scrollArea = new QScrollArea();
+ scrollArea->setWidgetResizable(true);
+ QWidget* scrollPane = new QWidget();
+ QVBoxLayout* scrollPaneLayout = new QVBoxLayout(scrollPane);
  QWidget* leftPanel = new QWidget();
  QVBoxLayout* leftPanelLayout;
  leftPanel->setLayout(leftPanelLayout = new QVBoxLayout); //(leftPanel, BoxLayout.PAGE_AXIS));
@@ -72,8 +84,8 @@
  leftPanelLayout->addWidget(throttleIncrementPanel(true));
  leftPanelLayout->addWidget(throttleScalePanel(true));
  rightPanelLayout->addWidget(speedNamesPanel());
- //rightPanelLayout->addWidget(Box::createGlue());
- rightPanelLayout->addWidget(interpretationPanel());
+ rightPanelLayout->addWidget(Box::createGlue());
+ //rightPanelLayout->addWidget(interpretationPanel());
  //rightPanelLayout->addWidget(Box::createGlue());
  rightPanelLayout->addWidget(appearancePanel());
  QWidget* panel = new QWidget();
@@ -81,10 +93,43 @@
  panel->setLayout(panelLayout = new QHBoxLayout); //(panel, BoxLayout.LINE_AXIS));
  panelLayout->addWidget(leftPanel);
  panelLayout->addWidget(rightPanel);
- thisLayout->addWidget(panel);
+ //thisLayout->addWidget(panel);
+ scrollPaneLayout->addWidget(panel);
+ scrollArea->setWidget(scrollPane);
+ thisLayout->addWidget(scrollArea);
  //thisLayout->addWidget(applyPanel());
 }
-
+#else
+/*private*/ void WarrantPreferencesPanel::initGUI()
+{
+ QGridLayout* thisLayout;
+    this->setLayout(thisLayout = new QGridLayout); //(this, BoxLayout.PAGE_AXIS));
+ setMinimumSize(600,300);
+// QWidget* leftPanel = new QWidget();
+// QVBoxLayout* leftPanelLayout;
+// leftPanel->setLayout(leftPanelLayout = new QVBoxLayout); //(leftPanel, BoxLayout.PAGE_AXIS));
+// QWidget* rightPanel = new QWidget();
+// QVBoxLayout* rightPanelLayout;
+// rightPanel->setLayout(rightPanelLayout = new QVBoxLayout) ; //(rightPanel, BoxLayout.PAGE_AXIS));
+ thisLayout->addWidget(layoutScalePanel(),0,0);
+ thisLayout->addWidget(searchDepthPanel(true),1,0);
+ thisLayout->addWidget(timeIncrementPanel(true),2,0);
+ thisLayout->addWidget(throttleIncrementPanel(true),3,0);
+ thisLayout->addWidget(throttleScalePanel(true),4,0);
+ thisLayout->addWidget(speedNamesPanel(),0,1);
+ thisLayout->addWidget(Box::createGlue(),1,1);
+ //rightPanelLayout->addWidget(interpretationPanel());
+ //rightPanelLayout->addWidget(Box::createGlue());
+ thisLayout->addWidget(appearancePanel(),2,1,4,1);
+// QWidget* panel = new QWidget();
+// QHBoxLayout* panelLayout;
+// panel->setLayout(panelLayout = new QHBoxLayout); //(panel, BoxLayout.LINE_AXIS));
+// panelLayout->addWidget(leftPanel);
+// panelLayout->addWidget(rightPanel);
+// thisLayout->addWidget(panel);
+ //thisLayout->addWidget(applyPanel());
+}
+#endif
 ///*private*/ void WarrantPreferencesPanel::setGUI()
 //{
 // _preferences->apply();
@@ -235,22 +280,29 @@
 
 /*private*/ QWidget* WarrantPreferencesPanel::searchDepthPanel(bool vertical)
  {
-  _searchDepth =  new JTextField(5);
-  _searchDepth->setText(QString::number(WarrantPreferences::getDefault()->getSearchDepth()));
+  _searchDepth = new QSpinBox();//JSpinner(new SpinnerNumberModel(20, 1, 50, 1));
+  _searchDepth->setValue(20);
+  _searchDepth->setMinimum(1);
+  _searchDepth->setMaximum(50);
+  _searchDepth->setSingleStep(1);
+  int searchDepthPref = WarrantPreferences::getDefault()->getSearchDepth();
+  if (searchDepthPref >= 1 && searchDepthPref <= 50) {
+      _searchDepth->setValue(searchDepthPref);
+  }
   QWidget* p = new QWidget();
-  FlowLayout* pLayout = new FlowLayout(p);
-  pLayout->addWidget(WarrantRoute::makeTextBoxPanel(vertical, _searchDepth, "Max Number of Blocks in Route", "Upper limit for the number of OBlocks in a warrant route"));
-  _searchDepth->setColumns(5);
+  p->setLayout(new QVBoxLayout);
+  p->layout()->addWidget(WarrantRoute::makeTextBoxPanel(vertical, _searchDepth, "SearchDepth", "Upper limit for the number of OBlocks in a warrant route"));
   p->setToolTip(tr("Upper limit for the number of OBlocks in a warrant route"));
   return p;
 }
+
 /*private*/ QWidget* WarrantPreferencesPanel::throttleScalePanel(bool vertical)
  {
   _throttleScale =  new JTextField(5);
   _throttleScale->setText(QString::number(WarrantPreferences::getDefault()->getThrottleScale()));
   QWidget* p = new QWidget();
   QVBoxLayout* pLayout = new QVBoxLayout(p);
-  pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, _throttleScale, tr("Throttle Setting/Speed Factor"), "Ratio that calibrates the throttle setting to run trains at scale speed. (default value 0.7)"));
+  pLayout->addWidget(WarrantRoute::makeTextBoxPanel(vertical, _throttleScale, tr("Throttle Setting/Speed Factor"), "Ratio that calibrates the throttle setting to run trains at scale speed. (default value 0.7)"));
   _throttleScale->setColumns(8);
   p->setToolTip(tr("Ratio that calibrates the throttle setting to run trains at scale speed. (default value 0.7)"));
   return p;
@@ -298,6 +350,7 @@
 //        }
 //    };
  panelLayout->addWidget(tablePanel(_speedNameTable, "Every Speed Name used in your Signal System's aspects must be a row in this table", insertAction, deleteAction));
+ panelLayout->addWidget(interpretationPanel());
  return panel;
 }
 
@@ -305,7 +358,7 @@
  {
   this->panel = panel;
  }
- void InsertActionListener::actionPerformed(ActionEvent *e)
+ void InsertActionListener::actionPerformed(ActionEvent */*e*/)
  {
   panel->insertSpeedNameRow();
  }
@@ -485,8 +538,11 @@ void ButtonActionListener::actionPerformed(ActionEvent *e)
 
 /*private*/ QWidget* WarrantPreferencesPanel::timeIncrementPanel(bool vertical)
 {
- _timeIncre =  new JTextField(5);
- _timeIncre->setText(QString::number(WarrantPreferences::getDefault()->getTimeIncrement()));
+ _timeIncre =  new QSpinBox();
+ _timeIncre->setValue(750);
+ _timeIncre->setMinimum(200);
+ _timeIncre->setMaximum(10000);
+ _timeIncre->setValue(WarrantPreferences::getDefault()->getTimeIncrement());
  QWidget* p = new QWidget();
  QVBoxLayout* pLayout = new QVBoxLayout(p);
  pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, _timeIncre, tr("Ramp Step Time (milliseconds)"), "Length of time in milliseconds between each speed change when ramping speed"));
@@ -566,12 +622,7 @@ private QWidget* throttleIncrementPanel(bool vertical) {
 {
  WarrantPreferences* _preferences = WarrantPreferences::getDefault();
  int depth = _preferences->getSearchDepth();
- bool bok;
- depth =_searchDepth->text().toInt(&bok);
- if(!bok)
- {
-  _searchDepth->setText(QString::number(_preferences->getSearchDepth()));
- }
+ depth =_searchDepth->value();
  if (_preferences->getSearchDepth() != depth)
  {
      _preferences->setSearchDepth(depth);
@@ -586,18 +637,14 @@ private QWidget* throttleIncrementPanel(bool vertical) {
 
  int time = _preferences->getTimeIncrement();
 
- time =_timeIncre->text().toInt(&bok);
+ time =_timeIncre->value();
  if (time < 200)
  {
   time = 200;
 //            JOptionPane.showMessageDialog(NULL, tr("timeWarning"),
 //                    tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
    QMessageBox::warning(NULL, tr("Warning"), tr("between speed changes must be at least 200 milliseconds."));
-   _timeIncre->setText(QString::number(_preferences->getTimeIncrement()));
-  }
-  if(!bok)
-  {
-   _timeIncre->setText(QString::number(_preferences->getTimeIncrement()));
+   _timeIncre->setValue(_preferences->getTimeIncrement());
   }
   if (_preferences->getTimeIncrement() != time)
   {
@@ -606,7 +653,7 @@ private QWidget* throttleIncrementPanel(bool vertical) {
   }
 
   float scale = _preferences->getThrottleIncrement();
-
+  bool bok;
   scale = _rampIncre->text().toFloat(&bok);
   if(!bok)
   {
@@ -1236,4 +1283,7 @@ return Qt::ItemIsEditable | Qt::ItemIsEnabled;
  }
  return false;
 }
+
+/*public*/ QString WarrantPreferencesPanel::className() {return "WarrantPreferencesPanel";}
+
 //}

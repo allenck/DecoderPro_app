@@ -3,6 +3,7 @@
 #include "appconfigbase.h"
 #include <QtXml>
 #include "libpref_global.h"
+#include "preferencessubpanel.h"
 
 class TabDetails;
 class QStackedWidget;
@@ -15,6 +16,8 @@ class PreferencesCatItems;
 class LIBPREFSHARED_EXPORT TabbedPreferences : public AppConfigBase
 {
     Q_OBJECT
+ //Q_INTERFACES(PreferencesPanel PreferencesSubPanel)
+
 public:
     explicit TabbedPreferences(QWidget *parent = 0);
     enum STATES
@@ -31,7 +34,7 @@ public:
     virtual
     /*public*/ bool isMultipleInstances();
     /*public*/ /*synchronized*/ int init();
-    int startInit();
+    //int startInit();
     /*public*/ int getInitialisationState();
     /*public*/ bool isInitialised();
 //    /*public*/ void setUIFontSize(float size);
@@ -127,6 +130,7 @@ friend class EditConnectionPreferences;
 /*static*/ class PreferencesCatItems : public QObject
 {
  Q_OBJECT
+ //Q_INTERFACES(PreferencesPanel PreferencesSubPanel)
     /**
      *
      */
@@ -162,6 +166,7 @@ public:
 /*static*/ class TabDetails : public QObject
 {
 Q_OBJECT
+ //Q_INTERFACES(PreferencesPanel PreferencesSubPanel)
     /**
      *
      */
@@ -172,7 +177,7 @@ Q_OBJECT
     QString tabTitle;
     QWidget* tabPanel;// = new JPanel();
     //boolean store;
-    int sortOrder;
+    int sortOrder = 0;
 public:
     TabDetails(QString labelkey, QString tabTit, QWidget* item,
             QString tooltip, int sortOrder) ;

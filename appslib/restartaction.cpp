@@ -39,7 +39,7 @@
 }
 
 //@Override
-/*public*/ void RestartAction::actionPerformed(ActionEvent* e) {
+/*public*/ void RestartAction::actionPerformed(ActionEvent* /*e*/) {
 
     //log->debug(tr("Source: %1; class: %2").arg(*e->getSource(), e->getSource()->metaObject()->className());
 

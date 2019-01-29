@@ -4,6 +4,7 @@
 #include "file.h"
 #include "profile.h"
 #include "nodeidentity.h"
+#include "loggerfactory.h"
 
 /**
  *
@@ -38,8 +39,16 @@
  else
  {
   dir = new File(this->project->getPath(), /*Profile::PROFILE*/"profile");
-  if (!shared) {
-      dir = new File(dir, NodeIdentity::identity());
+  if (!shared)
+  {
+   File* nodeDir = new File(dir, NodeIdentity::identity());
+   if (!nodeDir->exists())
+   {
+    bool success = NodeIdentity::copyFormerIdentity(dir, nodeDir);
+    if (! success)
+     log->debug(tr("copyFormerIdentity(%1, %2) did not copy").arg(dir->toString()).arg(nodeDir->toString()));
+   }
+   dir = new File(dir, NodeIdentity::identity());
   }
  }
  FileUtil::createDirectory(dir);
@@ -73,3 +82,5 @@
 /*protected*/ void AbstractConfigurationProvider::setSharedBackedUp(bool sharedBackedUp) {
     this->sharedBackedUp = sharedBackedUp;
 }
+
+/*private*/ /*static*/ Logger* AbstractConfigurationProvider::log = LoggerFactory::getLogger("AbstractConfigurationProvider");

@@ -15,6 +15,7 @@
 #include "flowlayout.h"
 #include "abstractsignalmast.h"
 #include "signalmasticonxml.h"
+#include "imagepanel.h"
 
 //SignalMastItemPanel::SignalMastItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -27,7 +28,7 @@
 {
  //super(parentFrame, type, family, model, editor);
  _mast = NULL;
-
+ setObjectName("SignalMastItemPanel");
 }
 
 void SignalMastItemPanel::init()
@@ -73,10 +74,10 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIc
   int row = /*_table.getSelectedRow();*/ _table->currentIndex().row();
   getIconMap(row);        // sets _currentIconMap & _mast, if they exist.
  }
- _dragIconPanel = new QWidget();
+ _dragIconPanel = new ImagePanel();
  makeDndIconPanel(NULL, "");
- _iconPanel = new QWidget();
- addIconsToPanel(_currentIconMap);
+ _iconPanel = new ImagePanel();
+ addIconsToPanel(_currentIconMap, _iconPanel, false);
  iconFamilyPanelLayout->addWidget(_dragIconPanel,0,Qt::AlignCenter);
  QWidget* panel = new QWidget();
  panel->setLayout(new QVBoxLayout());
@@ -173,7 +174,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
    _family = "";
    return;
  }
- _mast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(bean->getDisplayName());
+ _mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(bean->getDisplayName());
  if (_mast == NULL)
  {
   log->error("getIconMap: No SignalMast called "+bean->getDisplayName());
@@ -269,7 +270,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
  {
   return NULL;
  }
- NamedBean* bean = self->getNamedBean();
+ NamedBean* bean = self->getDeviceNamedBean();
  if (bean==NULL)
  {
   self->log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");
@@ -284,7 +285,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
 
 QString SMIconDragJLabel::mimeData()
 {
- NamedBean* bean = self->getNamedBean();
+ NamedBean* bean = self->getDeviceNamedBean();
  if (bean==NULL)
  {
   log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");

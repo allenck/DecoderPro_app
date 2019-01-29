@@ -159,6 +159,16 @@
     }
     return variableList;
 }
+
+/**
+ * Get the list of state variables for this Conditional.
+ *
+ * @return the list of state variables
+ */
+/*public*/ QList<ConditionalVariable*>* DefaultConditional::getStateVariableList() {
+    return _variableList;
+}
+
 /**
  * Set list of actions
  */

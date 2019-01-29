@@ -21,6 +21,8 @@
 #include "joptionpane.h"
 #include "tabbedpreferencesaction.h"
 #include "vptr.h"
+#include "loggerfactory.h"
+#include "preferencespanel.h"
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -32,12 +34,12 @@
  */
 // /*public*/ class JmriConfigurationManager implements ConfigureManager {
 
+/*private*/ /*final*/ /*static*/ Logger* JmriConfigurationManager::log = LoggerFactory::getLogger("JmriConfigurationManager");
 
 //@SuppressWarnings("unchecked") // For types in InstanceManager.store()
 /*public*/ JmriConfigurationManager::JmriConfigurationManager(QObject* parent) : ConfigXmlManager(parent)
 {
  setObjectName("JmriConfigurationManager");
- log = new Logger("JmriConfigurationManager");
  legacy = new ConfigXmlManager();
  initializationExceptions = new QHash<PreferencesManager*, InitializationException*>();
  initialized = new QList<PreferencesManager*>();
@@ -86,6 +88,11 @@
 //@Override
 /*public*/ void JmriConfigurationManager::registerPref(QObject* o) {
     //if ((o instanceof PreferencesManager)) {
+ if(qobject_cast<PreferencesPanel*>(o))
+ {
+  this->legacy->registerPref(o);
+  return;
+ }
     if(qobject_cast<PreferencesManager*>(o) != NULL)
     {
         InstanceManager::store((PreferencesManager*) o, "PreferencesManager");

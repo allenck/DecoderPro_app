@@ -25,6 +25,7 @@
  */
 /*public*/ class TreeExpansionEvent : public EventObject
 {
+    Q_OBJECT
 protected:
     /**
       * Path to the value this event represents.

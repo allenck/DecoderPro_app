@@ -139,7 +139,7 @@
         return;
     }
 
-    SignalMast* mast = InstanceManager::signalMastManagerInstance()->provideSignalMast(signalMast);
+    SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(signalMast);
     if (mast != NULL) {
      signalAMastNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
     } else {
@@ -162,12 +162,19 @@
         return;
     }
 
-    SignalMast* mast = InstanceManager::signalMastManagerInstance()->provideSignalMast(signalMast);
+    SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(signalMast);
     if (mast != NULL) {
         signalBMastNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
     } else {
         signalBMastNamed = NULL;
     }
+}
+
+/*public*/ SignalMast* LevelXing::getSignalCMast() {
+    if (signalCMastNamed != NULL) {
+        return signalCMastNamed->getBean();
+    }
+    return NULL;
 }
 
 /*public*/ void LevelXing::setSignalCMast(QString signalMast) {
@@ -176,7 +183,7 @@
         return;
     }
 
-    SignalMast* mast = InstanceManager::signalMastManagerInstance()->provideSignalMast(signalMast);
+    SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(signalMast);
     if (mast != NULL) {
         signalCMastNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
     } else {
@@ -198,7 +205,7 @@
         return;
     }
 
-    SignalMast* mast = InstanceManager::signalMastManagerInstance()->provideSignalMast(signalMast);
+    SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(signalMast);
     if (mast != NULL) {
         signalDMastNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
     } else {
@@ -212,6 +219,12 @@
     return "";
 }
 
+/*public*/ Sensor* LevelXing::getSensorA() {
+        if (sensorANamed != nullptr) {
+            return sensorANamed->getBean();
+        }
+        return nullptr;
+    }
 /*public*/ void LevelXing::setSensorAName(QString sensorName)
 {
  if(sensorName==NULL || sensorName==(""))
@@ -237,6 +250,13 @@
     return "";
 }
 
+/*public*/ Sensor* LevelXing::getSensorB() {
+    if (sensorBNamed != nullptr) {
+        return sensorBNamed->getBean();
+    }
+    return nullptr;
+}
+
 /*public*/ void LevelXing::setSensorBName(QString sensorName) {
     if(sensorName==NULL || sensorName==("")){
         sensorBNamed=NULL;
@@ -257,6 +277,13 @@
     return "";
 }
 
+/*public*/ Sensor* LevelXing::getSensorC() {
+    if (sensorCNamed != nullptr) {
+        return sensorCNamed->getBean();
+    }
+    return nullptr;
+}
+
 /*public*/ void LevelXing::setSensorCName(QString sensorName) {
     if(sensorName==NULL || sensorName==("")){
         sensorCNamed=NULL;
@@ -275,6 +302,13 @@
     if(sensorDNamed!=NULL)
         return sensorDNamed->getName();
     return "";
+}
+
+/*public*/ Sensor* LevelXing::getSensorD() {
+    if (sensorDNamed != nullptr) {
+        return sensorDNamed->getBean();
+    }
+    return nullptr;
 }
 
 /*public*/ void LevelXing::setSensorDName(QString sensorName) {

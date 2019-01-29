@@ -40,14 +40,14 @@ public:
     /*public*/ void setWestBoundSignal(QString signalName);
 
     /*public*/ QString getEastBoundSensorName();
-    /*public*/ QString getEastBoundSensor();
+    /*public*/ Sensor *getEastBoundSensor();
     /*public*/ void setEastBoundSensor(QString sensorName);
-    /*public*/ QString getWestBoundSensor();
+    /*public*/ Sensor *getWestBoundSensor();
     /*public*/ QString getWestBoundSensorName();
     /*public*/ void setWestBoundSensor(QString sensorName);
-    /*public*/ QString getEastBoundSignalMast();
+    /*public*/ SignalMast *getEastBoundSignalMast();
     /*public*/ void setEastBoundSignalMast(QString signalMastName);
-    /*public*/ QString getWestBoundSignalMast();
+    /*public*/ SignalMast* getWestBoundSignalMast();
     /*public*/ void setWestBoundSignalMast(QString signalMastName);
     /**
      * Initialization method

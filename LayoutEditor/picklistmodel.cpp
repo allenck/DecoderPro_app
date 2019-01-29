@@ -173,7 +173,7 @@ bool systemNameComparator(QString o1, QString o2)
 /**
 * Default constructor makes a table sorted by System Name.
 */
-/*public*/ PickListModel::PickListModel(QObject *parent) : /*AbstractNamedBean*/AbstractTableModel(parent)
+/*public*/ PickListModel::PickListModel(QObject *parent) : /*AbstractNamedBean*/BeanTableDataModel(parent)
 {
     //super();
  log = new Logger("PickListModel");
@@ -289,6 +289,14 @@ bool systemNameComparator(QString o1, QString o2)
 
 /*public*/ QList <NamedBean*>* PickListModel::getBeanList() {
     return _pickList;
+}
+
+/**
+ * override BeanTableDataModel only lists SystemName
+ */
+//@Override
+/*protected*/ /*synchronized*/ void PickListModel::updateNameList() {
+    makePickList();
 }
 
 /*private*/ void PickListModel::makePickList()
@@ -436,6 +444,7 @@ bool systemNameComparator(QString o1, QString o2)
 /*public*/ void PickListModel::propertyChange(PropertyChangeEvent* e)
 {
  if(log->isDebugEnabled()) log->debug(tr("property name = %1").arg(e->getPropertyName()));
+
  if (e->getPropertyName()==("length"))
  {
   // a NamedBean added or deleted
@@ -740,7 +749,7 @@ void TurnoutPickModel::tableClicked(QModelIndex index)
 }
 void TurnoutPickModel::newTurnoutCreated(AbstractTurnoutManager *, Turnout *t)
 {
- //makePickList();
+ makePickList();
  _pickList->append((NamedBean*)t);
  fireTableRowsInserted(_pickList->count()-1,_pickList->count()-1);
 }
@@ -841,7 +850,7 @@ void MultiSensorPickModel::tableClicked(QModelIndex index)
 //class SignalHeadPickModel extends PickListModel {
 SignalHeadPickModel::SignalHeadPickModel (QObject *parent) : PickListModel(parent)
 {
- manager = InstanceManager::signalHeadManagerInstance();
+ manager = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  _name = tr("Signal Table");
  AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)manager;
  connect(mgr, SIGNAL(beanCreated(NamedBean*)),this, SLOT(newSignalHeadCreated(NamedBean*)));
@@ -886,7 +895,7 @@ void SignalHeadPickModel::newSignalHeadCreated(NamedBean *t)
 //class SignalMastPickModel extends PickListModel {
 SignalMastPickModel::SignalMastPickModel (QObject *parent) :PickListModel(parent)
 {
- manager = InstanceManager::signalMastManagerInstance();
+ manager = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
  _name = tr("Signal Mast Table");
  DefaultSignalMastManager* mgr = (DefaultSignalMastManager*)manager;
  connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newSignalMastCreated(NamedBean*)));

@@ -5,8 +5,9 @@
 class Logger;
 class PerformActionModelXml : public AbstractXmlAdapter
 {
+ Q_OBJECT
 public:
- PerformActionModelXml(QObject* parent = 0);
+ Q_INVOKABLE PerformActionModelXml(QObject* parent = 0);
  ~PerformActionModelXml() {}
  PerformActionModelXml(const PerformActionModelXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

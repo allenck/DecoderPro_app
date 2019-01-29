@@ -12,6 +12,20 @@
 #include "dataflavor.h"
 #include "positionablelabelxml.h"
 #include <QDrag>
+#include "bufferedimage.h"
+#include "drawsquares.h"
+#include "imagepanel.h"
+#include <QComboBox>
+#include "displayframe.h"
+#include "loggerfactory.h"
+#include "jmricolorchooser.h"
+#include "box.h"
+#include "itempanel.h"
+#include "colorutil.h"
+#include "memoryicon.h"
+#include "memoryinputicon.h"
+#include "memorycomboicon.h"
+#include "memoryspinnericon.h"
 
 //DecoratorPanel::DecoratorPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -28,10 +42,32 @@
 
 /*static*/ /*final*/ QStringList DecoratorPanel::FONTSIZE = QStringList() << "6" <<  "8" <<  "10" <<  "11" <<  "12" <<  "14" <<  "16" << "20" <<  "24" <<  "28" <<  "32" <<  "36";
 
-/*public*/ DecoratorPanel::DecoratorPanel(Editor* editor, QWidget *parent) : QWidget(parent)
+/*public*/ DecoratorPanel::DecoratorPanel(Editor* editor, DisplayFrame *paletteFrame, QWidget *parent) : QWidget(parent)
 {
  _editor = editor;
  setLayout(new QVBoxLayout(this/*, BoxLayout.Y_AXIS*/));
+ _paletteFrame = paletteFrame;
+  setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
+  QColor panelBackground;// = _editor->getTargetPanel()->getBackground(); // start using Panel background color
+  QBrush br = _editor->getTargetPanel()->backgroundBrush();
+  panelBackground = br.color();
+  // create array of backgrounds, _currentBackground already set and used
+  _backgrounds = ItemPanel::makeBackgrounds(nullptr,  panelBackground);
+  _chooser = new QColorDialog(panelBackground);
+  _samples = new QMap<QString, PositionableLabel*>();
+  _buttonGroup = new QButtonGroup(this);
+  _previewPanel = new ImagePanel();
+  QVBoxLayout* _previewPanelLayout;
+  _previewPanel->setLayout(_previewPanelLayout = new QVBoxLayout()); //new BorderLayout());
+//  _previewPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 1),
+//          Bundle.getMessage("PreviewBorderTitle")));
+  _previewPanelLayout->addWidget(Box::createVerticalStrut(STRUT), 0, Qt::AlignTop);//BorderLayout.PAGE_START);
+  _previewPanelLayout->addWidget(Box::createVerticalStrut(STRUT), 0, Qt::AlignBottom);//, BorderLayout.PAGE_END);
+
+  _samplePanel = new QWidget();
+  QHBoxLayout* _samplePanelLayout = new QHBoxLayout(_samplePanel);
+  _samplePanelLayout->addWidget(Box::createHorizontalStrut(STRUT));
+  //_samplePanel.setOpaque(false);
 }
 
 //static class AJComboBox extends JComboBox {
@@ -90,217 +126,166 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
 
 /*public*/ void DecoratorPanel::initDecoratorPanel(Positionable* pos)
 {
- _chooser = new QColorDialog(_editor->getTargetPanel()->backgroundBrush().color());
- _chooser->setOptions(QColorDialog::ShowAlphaChannel | QColorDialog::NoButtons);
- if(pos != NULL)
-  _chooser->setCurrentColor(((PositionableLabel*)pos)->getForeground());
- connect(_chooser, SIGNAL(currentColorChanged(QColor)), this, SLOT(currentColorChanged(QColor)));
- //QWidget* samplePanel = new QWidget();
- QVBoxLayout* samplePanelLayout= new QVBoxLayout;
- //samplePanel->setLayout(samplePanelLayout = new QVBoxLayout);
- QFrame* preview = new QFrame();
- //QSizePolicy previewSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
- QVBoxLayout* previewLayout;
- preview->setLayout(previewLayout = new QVBoxLayout);//(preview/*, BoxLayout.Y_AXIS*/));
-    //preview.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 1)));
- preview->setObjectName("myObject");
- preview->setStyleSheet("#myObject { border: 2px solid black; }");
+ Positionable* item = pos->deepClone(); // need copy of PositionableJPanel in PopupUtility
+ _util = item->getPopupUtility();
+ item->remove();      // don't need copy any more. Removes ghost image of PositionableJPanels
+ _isPositionableLabel = (qobject_cast<PositionableLabel*>(pos));
+ makeFontPanels();
 
- previewLayout->addStrut(STRUT);
- previewLayout->addLayout(samplePanelLayout);
- previewLayout->addStrut(STRUT);
-//    preview.setBackground(_editor.getTargetPanel().getBackground());
-//    samplePanel.setBackground(_editor.getTargetPanel().getBackground());
- text = tr("sample");
- _sample = new QHash <QString, PositionableLabel*>();
- _buttonGroup = new QButtonGroup();
- Positionable* item;		// copy of PositionableLabel being edited
- if (pos==NULL)
- {
-  item = (Positionable*)new PositionableLabel("crap", _editor);
-  _util = ((PositionableLabel*)item)->getPopupUtility();
- }
- else
- {
-  item = ((PositionableLabel*)pos)->deepClone();
-  //if (pos instanceof PositionableLabel)
-  if(qobject_cast<PositionableLabel*>(pos) != NULL)
-  {
-   PositionableLabel* item = (PositionableLabel*)pos->deepClone();
-   _isOpaque = ((PositionableLabel*)item)->getSaveOpaque();
-   ((PositionableLabel*)item)->rotate(0);
-   PositionablePopupUtil* u = ((PositionableLabel*)item)->getPopupUtility();
-   text = ((PositionableLabel*)item)->getUnRotatedText();
-   _util = ((PositionableLabel*)item)->getPopupUtility();
+ if (qobject_cast<SensorIcon*>(pos) && !((SensorIcon*)pos)->isIcon()) {
+     SensorIcon* si = (SensorIcon*) pos;
+     if (!si->isIcon() && si->isText()) {
+         PositionableLabel* sample = new PositionableLabel(si->getActiveText(), _editor);
+         sample->setForeground(si->getTextActive());
+         sample->setBackground(si->getBackgroundActive());
+         doPopupUtility("Active", sample, true); // NOI18N
 
-   PositionableLabel* p = (PositionableLabel*)pos;
-   if (p->isRotated())
-   {
-    _isOpaque = ((PositionableLabel*)pos)->getSaveOpaque();
-   }
-   else
-   {
-    _isOpaque = ((PositionableLabel*)pos)->isOpaque();
-   }
-  }
-  else
-  {
-   _isOpaque = ((PositionableLabel*)pos)->isOpaque();
-   //_util = pos.getPopupUtility().clone(pos);
-   _util = ((PositionableLabel*)item)->getPopupUtility();
-  }
- }
- //samplePanel->layout()->addWidget(Box.createHorizontalStrut(STRUT));
- samplePanelLayout->addStrut(STRUT);
- //if (pos instanceof SensorIcon)
- if(qobject_cast<SensorIcon*>(pos)!= NULL)
- {
-  SensorIcon* si = (SensorIcon*)pos;
-  if (!si->isIcon() && si->isText())
-  {
-    PositionableLabel* sample = new PositionableLabel(si->getActiveText(), _editor);
-    sample->setForeground(si->getTextActive());
-    sample->setBackground(si->getBackgroundActive());
-    sample->setPopupUtility(_util);
-    _sample->insert("Active", sample);
-    samplePanelLayout->addWidget(sample);
-    //samplePanel->layout()->addWidget(Box.createHorizontalStrut(STRUT));
-    samplePanelLayout->addStrut(STRUT);
-    this->layout()->addWidget(makeTextPanel("Active", sample, ACTIVE_FONT));
+         sample = new PositionableLabel(si->getInactiveText(), _editor);
+         sample->setForeground(si->getTextInActive());
+         sample->setBackground(si->getBackgroundInActive());
+         doPopupUtility("InActive", sample, true); // NOI18N
 
-    sample = new PositionableLabel(si->getInactiveText(), _editor);
-    sample->setForeground(si->getTextInActive());
-    sample->setBackground(si->getBackgroundInActive());
-    sample->setPopupUtility(_util);
-    _sample->insert("InActive", sample);
-    samplePanelLayout->addWidget(sample);
-    samplePanelLayout->addStrut(STRUT);
-    this->layout()->addWidget(makeTextPanel("InActive", sample, INACTIVE_FONT));
+         sample = new PositionableLabel(si->getUnknownText(), _editor);
+         sample->setForeground(si->getTextUnknown());
+         sample->setBackground(si->getBackgroundUnknown());
+         doPopupUtility("Unknown", sample, true); // NOI18N
 
-    sample = new PositionableLabel(si->getUnknownText(), _editor);
-    sample->setForeground(si->getTextUnknown());
-    sample->setBackground(si->getBackgroundUnknown());
-    sample->setPopupUtility(_util);
-    _sample->insert("Unknown", sample);
-    samplePanelLayout->addWidget(sample);
-    samplePanelLayout->addStrut(STRUT);
-    this->layout()->addWidget(makeTextPanel("Unknown", sample, UNKOWN_FONT));
-
-    sample = new PositionableLabel(si->getInconsistentText(), _editor);
-    sample->setForeground(si->getTextInconsistent());
-    sample->setBackground(si->getBackgroundInconsistent());
-    sample->setPopupUtility(_util);
-    _sample->insert("Inconsistent", sample);
-    samplePanelLayout->addWidget(sample);
-    this->layout()->addWidget(makeTextPanel("Inconsistent", sample, INCONSISTENT_FONT));
-  }
- }
-#if 1
- else
- {
-  PositionableLabel* sample;
-  if (pos==NULL)
-  {
-   sample = new DragDecoratorLabel(text, _editor, this);
-   sample->setLevel(Editor::LABELS);
-   sample->setPopupUtility(_util);
-  }
-  else
-  {
-   sample = new PositionableLabel(text, _editor);
-   sample->setPopupUtility(_util);
-   sample->setForeground(((PositionableLabel*)pos)->getForeground());
-   sample->setBackground(((PositionableLabel*)pos)->getBackground());
-      _util->setBackgroundColor(((PositionableLabel*)pos)->getBackground());
-      sample->setOpaque(true);
+         sample = new PositionableLabel(si->getInconsistentText(), _editor);
+         sample->setForeground(si->getTextInconsistent());
+         sample->setBackground(si->getBackgroundInconsistent());
+         doPopupUtility("Inconsistent", sample, true); // NOI18N
+     }   // else a non-text SensorIcon cannot be decorated.
+ } else { // not a SensorIcon
+     PositionableLabel* sample = new PositionableLabel("", _editor);
+     sample->setForeground(_util->getForeground());
+     sample->setBackground(_util->getBackground());
+     PositionablePopupUtil* util = sample->getPopupUtility();
+     util->setHasBackground(_util->hasBackground());
+     bool addtextField;
+     if (qobject_cast<PositionableLabel*>(pos)) {
+         sample->setText(((PositionableLabel*)pos)->getUnRotatedText());
+         if (qobject_cast<MemoryIcon*>(pos)) {
+             addtextField = false;
+         } else {
+             addtextField = true;
+         }
+     } else {
+         // To display PositionableJPanel types as PositionableLabels, set fixed sizes.
+         util->setFixedWidth(pos->getWidth() - 2*_util->getBorderSize());
+         util->setFixedHeight(pos->getHeight() - 2*_util->getBorderSize());
+         if (qobject_cast<MemoryInputIcon*>(pos)) {
+             JTextField* field = (JTextField*)((MemoryInputIcon*)pos)->getTextComponent();
+             sample->setText(field->text());
+             addtextField = false;
+         } else if (qobject_cast<MemoryComboIcon*>(pos)) {
+             QComboBox* box = (QComboBox*)((MemoryComboIcon*)pos)->getTextComponent();
+             sample->setText(box->currentText());
+             addtextField = false;
+         } else if (qobject_cast<MemorySpinnerIcon*>(pos)) {
+             JTextField* field = (JTextField*)((MemorySpinnerIcon*)pos)->getTextComponent();
+             sample->setText(field->text());
+             addtextField = false;
+         } else {
+             addtextField = true;
+             log->error(tr("Unknown Postionable Type %1").arg( pos->metaObject()->className()));
+         }
      }
-     _sample->insert("Text", sample);
-     samplePanelLayout->addWidget(sample);
-     this->layout()->addWidget(makeTextPanel("Text", sample, TEXT_FONT));
-    }
-#endif
-    samplePanelLayout->addStrut(STRUT);
-
-    QWidget* fontPanel = new QWidget();
-    fontPanel->setLayout(new FlowLayout);
-    _fontSizeBox = new AJComboBox(FONTSIZE, SIZE);
-    fontPanel->layout()->addWidget(makeBoxPanel("Font Size", _fontSizeBox));
-    int row = 4;
-    for (int i=0; i<FONTSIZE.count(); i++) {
-        if (_util->getFontSize()==FONTSIZE.at(i).toInt())
-        {
-            row = i;
-            break;
-        }
-    }
-    _fontSizeBox->setCurrentIndex(row);
-
-    _fontStyleBox = new AJComboBox(STYLES, STYLE);
-    fontPanel->layout()->addWidget(makeBoxPanel("Font Style", _fontStyleBox));
-    _fontStyleBox->setCurrentIndex(_util->getFont().style());
-
-    _fontJustBox = new AJComboBox(JUSTIFICATION, JUST);
-    fontPanel->layout()->addWidget(makeBoxPanel("Justification", _fontJustBox));
-    switch (_util->getJustification()){
-        case PositionablePopupUtil::LEFT:     row = 0;
-                        break;
-    case PositionablePopupUtil::RIGHT:    row = 2;
-                        break;
-    case PositionablePopupUtil::CENTRE:   row = 1;
-                        break;
-        default     :   row = 2;
-    }
-    _fontJustBox->setCurrentIndex(row);
-    this->layout()->addWidget(fontPanel);
-
-
-    QWidget* sizePanel = new QWidget();
-    sizePanel->setLayout(new FlowLayout);
-    SpinnerNumberModel* model = new SpinnerNumberModel(_util->getBorderSize(),0,100,1);
-    _borderSpin = new AJSpinner(model, BORDER);
-    sizePanel->layout()->addWidget(makeSpinPanel(tr("Border Size"), _borderSpin));
-    model = new SpinnerNumberModel(_util->getMargin(),0,100,1);
-    _marginSpin = new AJSpinner(model, MARGIN);
-    sizePanel->layout()->addWidget(makeSpinPanel(tr("Margin Size"), _marginSpin));
-    model = new SpinnerNumberModel(_util->getFixedWidth(),0,1000,1);
-    _widthSpin = new AJSpinner(model, FWIDTH);
-    sizePanel->layout()->addWidget(makeSpinPanel(tr("Fixed Width"), _widthSpin));
-    model = new SpinnerNumberModel(_util->getFixedHeight(),0,1000,1);
-    _heightSpin = new AJSpinner(model, FHEIGHT);
-    sizePanel->layout()->addWidget(makeSpinPanel(tr("Fixed Height"), _heightSpin));
-    this->layout()->addWidget(sizePanel);
-
-    QWidget* colorPanel = new QWidget();
-    colorPanel->setLayout(new FlowLayout);
-    colorPanel->layout()->addWidget(makeButton(new AJRadioButton(tr("Border Color"), BORDER_COLOR)));
-    //colorPanel->layout()->addWidget(makeButton(new AJRadioButton(ItemPalette.rbp.getString("transparentBack"), TRANSPARENT_COLOR)));
-    AJRadioButton* button = new AJRadioButton(tr("Transparent Background"), TRANSPARENT_COLOR);
-//    button->addActionListener(new ActionListener() {
-//        JRadioButton button ;
-//        /*public*/ void actionPerformed(ActionEvent a) {
-//            if (button.isSelected()) {
-//                _isOpaque = false;
-//                _util.setBackgroundColor(NULL);
-//                updateSamples();
-//            }
-//        }
-//        ActionListener init(JRadioButton b) {
-//            button = b;
-//            return this;
-//        }
-//    }.init(button));
-    connect(button, SIGNAL(toggled(bool)), this, SLOT(AJRadioButton_toggled(bool)));
-    _buttonGroup->addButton(button);
-    colorPanel->layout()->addWidget(button);
-    this->layout()->addWidget(colorPanel);
-
-//    _chooser->getSelectionModel()->addChangeListener(this);
-//    _chooser->setPreviewPanel(preview);
-    this->layout()->addWidget(_chooser);
-    ((QVBoxLayout*)this->layout())->addWidget(preview,0,Qt::AlignCenter);
-    updateSamples();
-    item->setVisible(false);		// otherwise leaves traces for PositionableJPanels
+     doPopupUtility("Text", sample, addtextField);
+     if (log->isDebugEnabled()) {
+         log->debug(tr("util width= %1 height= %2 POS width= %3 height= %4").arg(
+                 util->getFixedWidth()).arg( util->getFixedHeight()).arg( pos->getWidth()).arg( pos->getHeight()));
+     }
+ }
+ finishInit(false);
 }
+/*protected*/ void DecoratorPanel::fontChange() {
+    _selectedButton = FOREGROUND_BUTTON;
+    _fontButton->setChecked(true);
+//    _chooser->setColor(_util->getForeground());
+    _chooser->setCurrentColor(_util->getForeground());
+    log->debug("fontChange");
+    updateSamples();
+ }
+
+/*private*/ void DecoratorPanel::finishInit(bool addBgCombo) {
+//    _chooser = JmriColorChooser::extendColorChooser(_chooser);
+    setSuppressRecentColor(true);
+// TODO:    _chooser->getSelectionModel().addChangeListener(this);
+//    _chooser->setPreviewPanel(new JPanel());
+    layout()->addWidget(_chooser);
+    ((QVBoxLayout*)_previewPanel->layout())->addWidget(_samplePanel, 0, Qt::AlignCenter);// BorderLayout.CENTER);
+
+    // add a SetBackground combo
+    if (addBgCombo) {
+        layout()->addWidget(makeBgButtonPanel(_previewPanel, nullptr, _backgrounds)); // no listener on this variant
+    }
+    layout()->addWidget(_previewPanel);
+    _previewPanel->setImage(_backgrounds->at(0));
+    _previewPanel->update();        // force redraw
+    // after everything created, set selections
+//    _fontPanel.setFontSelections();
+    updateSamples();
+}
+
+/*private*/ void DecoratorPanel::doPopupUtility(QString type, PositionableLabel* sample, bool editText) {
+    PositionablePopupUtil* util = sample->getPopupUtility();
+    util->setJustification(_util->getJustification());
+    util->setHorizontalAlignment(_util->getJustification());
+    int size = _util->getFixedWidth();
+    if (_isPositionableLabel) {
+        util->setFixedWidth(size);
+    }
+    size = _util->getFixedHeight();
+    if (_isPositionableLabel) {
+        util->setFixedHeight(size);
+    }
+    util->setMargin(_util->getMargin());
+    util->setBorderSize(_util->getBorderSize());
+    util->setBorderColor(_util->getBorderColor());
+    QFont f = util->getFont();
+//    util->setFont(util->getFont().deriveFont(_util->getFontStyle()));
+    util->setFontSize(_util->getFontSize());
+    util->setFontStyle(_util->getFontStyle());
+    util->setOrientation(_util->getOrientation());
+    bool back = (sample->getBackground() != QColor());
+    util->setHasBackground(back);
+    sample->setOpaque(back);
+    sample->updateSize();
+
+    _samples->insert(type, sample);
+    _selectedState = type;
+    this->layout()->addWidget(makeTextPanel(type, sample, editText));
+    _samplePanel->layout()->addWidget(sample);
+    _samplePanel->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+}
+
+/*private*/ void DecoratorPanel::makeFontPanels() {
+#if 0
+    ActionListener fontAction = ((ActionEvent event) -> {
+        fontChange(); // callback
+    });
+    _fontPanel = new FontPanel(_util, fontAction);
+    add(_fontPanel);
+
+    JPanel sizePanel = new JPanel();
+    SpinnerNumberModel model = new SpinnerNumberModel(_util->getBorderSize(), 0, 100, 1);
+    _borderSpin = new AJSpinner(model, BORDER);
+    sizePanel.add(makeSpinPanel("borderSize", _borderSpin, this));
+    model = new SpinnerNumberModel(_util->getMargin(), 0, 100, 1);
+    _marginSpin = new AJSpinner(model, MARGIN);
+    sizePanel.add(makeSpinPanel("marginSize", _marginSpin, this));
+    if (_isPositionableLabel) {
+        model = new SpinnerNumberModel(_util->getFixedWidth(), 0, 1000, 1);
+        _widthSpin = new AJSpinner(model, FWIDTH);
+        sizePanel.add(makeSpinPanel("fixedWidth", _widthSpin, this));
+        model = new SpinnerNumberModel(_util->getFixedHeight(), 0, 1000, 1);
+        _heightSpin = new AJSpinner(model, FHEIGHT);
+        sizePanel.add(makeSpinPanel("fixedHeight", _heightSpin, this));
+    }
+    this.add(sizePanel);
+#endif
+}
+
 void DecoratorPanel::AJRadioButton_toggled(bool b)
 {
  if (b)
@@ -338,6 +323,7 @@ void DecoratorPanel::AJRadioButton_toggled(bool b)
     TextFieldListener* keylistener = new TextFieldListener();
     keylistener->init(textField, sample, this);
     connect(textField, SIGNAL(textEdited(QString)), keylistener, SLOT(actionPerformed()));
+
     pLayout->addWidget(textField);
     panelLayout->addLayout(pLayout);
 
@@ -353,6 +339,7 @@ void DecoratorPanel::AJRadioButton_toggled(bool b)
 
  return panel;
 }
+
 TextFieldListener* TextFieldListener::init(JTextField* textField, JLabel *sample, DecoratorPanel *panel)
 {
  this->sample = sample;
@@ -397,53 +384,53 @@ void TextFieldListener::actionPerformed(ActionEvent *e)
   case DecoratorPanel::TEXT_FONT:
 //   _sample->value("Text")->setForeground(_chooser->currentColor());
 //   util->setForeground(_chooser->currentColor());
-      self->_chooser->setCurrentColor(self->_sample->value("Text")->getForeground());
+      self->_chooser->setCurrentColor(self->_samples->value("Text")->getForeground());
    break;
   case DecoratorPanel::ACTIVE_FONT:
    //_sample->value("Active")->setForeground(_chooser->currentColor());
-      self->_chooser->setCurrentColor(self->_sample->value("Active")->getForeground());
+      self->_chooser->setCurrentColor(self->_samples->value("Active")->getForeground());
    break;
   case DecoratorPanel::INACTIVE_FONT:
    //_sample->value("InActive")->setForeground(_chooser->currentColor());
-      self->_chooser->setCurrentColor(self->_sample->value("InActive")->getForeground());
+      self->_chooser->setCurrentColor(self->_samples->value("InActive")->getForeground());
    break;
   case DecoratorPanel::UNKOWN_FONT:
    //_sample->value("Unknown")->setForeground(_chooser->currentColor());
-      self->_chooser->setCurrentColor(self->_sample->value("Unknown")->getForeground());
+      self->_chooser->setCurrentColor(self->_samples->value("Unknown")->getForeground());
    break;
   case DecoratorPanel::INCONSISTENT_FONT:
    //_sample->value("Inconsistent")->setForeground(_chooser->currentColor());
-      self->_chooser->setCurrentColor(self->_sample->value("Inconsistent")->getForeground());
+      self->_chooser->setCurrentColor(self->_samples->value("Inconsistent")->getForeground());
    break;
   case DecoratorPanel::TEXT_BACKGROUND:
 //   _sample->value("Text")->setBackground(_chooser->currentColor());
 //   util->setBackgroundColor(_chooser->currentColor());
 //   _isOpaque = true;
-   self->_chooser->setCurrentColor(self->_sample->value("Text")->getBackground());
+   self->_chooser->setCurrentColor(self->_samples->value("Text")->getBackground());
    break;
   case DecoratorPanel::ACTIVE_BACKGROUND:
 //   _sample->value("Active")->setBackground(_chooser->currentColor());
 //   _sample->value("Active")->setOpaque(true);
 //   _isOpaque = true;
-      self->_chooser->setCurrentColor(self->_sample->value("Active")->getBackground());
+      self->_chooser->setCurrentColor(self->_samples->value("Active")->getBackground());
    break;
   case DecoratorPanel::INACTIVE_BACKGROUND:
 //   _sample->value("InActive")->setBackground(_chooser->currentColor());
 //   _sample->value("InActive")->setOpaque(true);
 //   _isOpaque = true;
-      self->_chooser->setCurrentColor(self->_sample->value("InActive")->getBackground());
+      self->_chooser->setCurrentColor(self->_samples->value("InActive")->getBackground());
    break;
   case DecoratorPanel::UNKOWN_BACKGROUND:
 //   _sample->value("Unknown")->setBackground(_chooser->currentColor());
 //   _sample->value("Unknown")->setOpaque(true);
 //   _isOpaque = true;
-      self->_chooser->setCurrentColor(self->_sample->value("Unknown")->getBackground());
+      self->_chooser->setCurrentColor(self->_samples->value("Unknown")->getBackground());
    break;
   case DecoratorPanel::INCONSISTENT_BACKGROUND:
 //   _sample->value("Inconsistent")->setBackground(_chooser->currentColor());
 //   _sample->value("Inconsistent")->setOpaque(true);
 //   _isOpaque = true;
-      self->_chooser->setCurrentColor(self->_sample->value("Inconsistent")->getBackground());
+      self->_chooser->setCurrentColor(self->_samples->value("Inconsistent")->getBackground());
    break;
   case DecoratorPanel::TRANSPARENT_COLOR:
 //   util->setBackgroundColor(QColor());
@@ -473,12 +460,12 @@ AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* s
     if (bor==0) {
         outlineBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
     }else {
-        outlineBorder = new LineBorder(util.getBorderColor(), bor);
+        outlineBorder = new LineBorder(util->getBorderColor(), bor);
     }
 #endif
  QFont font = _util->getFont();
  int just = util->getJustification();
- QListIterator<PositionableLabel*> it(_sample->values());
+ QListIterator<PositionableLabel*> it(_samples->values());
  while (it.hasNext())
  {
   PositionableLabel* sam = it.next();
@@ -517,6 +504,91 @@ AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* s
  }
 }
 
+/**
+ * Create panel element containing [Set background:] drop down list.
+ * Special version for Decorator, no access to shared variable previewBgSet.
+ * @see jmri.jmrit.catalog.PreviewDialog#setupPanel()
+ * @see ItemPanel
+ *
+ * @param preview1 ImagePanel containing icon set
+ * @param preview2 not used, matches method in ItemPanel
+ * @param imgArray array of colored background images
+ * @return a JPanel with label and drop down
+ */
+/*private*/ QWidget* DecoratorPanel::makeBgButtonPanel(/*@Nonnull*/ ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*>* imgArray) {
+ this->imgArray = imgArray;
+ this->preview1 = preview1;
+
+    _bgColorBox = new QComboBox();
+    _bgColorBox->addItem(tr("PanelBgColor")); // PanelColor key is specific for CPE, too long for combo
+    _bgColorBox->addItem(tr("White"));
+    _bgColorBox->addItem(tr("LightGray"));
+    _bgColorBox->addItem(tr("DarkGray"));
+    _bgColorBox->addItem(tr("Checkers"));
+    int index;
+    if (_paletteFrame != nullptr) {
+        index = _paletteFrame->getPreviewBg();
+    } else {
+        index = 0;
+    }
+    _bgColorBox->setCurrentIndex(index);
+//    _bgColorBox.addActionListener((ActionEvent e) -> {
+//        if (imgArray != null) {
+//            // index may repeat
+//            int previewBgSet = _bgColorBox.getSelectedIndex(); // store user choice
+//            if (_paletteFrame != null) {
+//                _paletteFrame.setPreviewBg(previewBgSet);
+//            }
+//            // load background image
+//            log.debug("Palette Decorator setImage called {}", previewBgSet);
+//            preview1.setImage(imgArray[previewBgSet]);
+//            // preview.setOpaque(false); // needed?
+//            preview1.revalidate();        // force redraw
+//        } else {
+//            log.debug("imgArray is empty");
+//        }
+//    });
+    connect(_bgColorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_bgColorBox()));
+    QWidget* backgroundPanel = new QWidget();
+    backgroundPanel->setLayout(new QVBoxLayout()); //backgroundPanel, BoxLayout.Y_AXIS));
+    QWidget* pp = new QWidget();
+    pp->setLayout(new FlowLayout(/*FlowLayout.CENTER)*/));
+    pp->layout()->addWidget(new QLabel(tr("setBackground")));
+    pp->layout()->addWidget(_bgColorBox);
+    backgroundPanel->layout()->addWidget(pp);
+    backgroundPanel->setMaximumSize(backgroundPanel->sizeHint());
+    return backgroundPanel;
+}
+
+void DecoratorPanel::on_bgColorBox()
+{
+ if (imgArray != nullptr) {
+     // index may repeat
+     int previewBgSet = _bgColorBox->currentIndex(); // store user choice
+     if (_paletteFrame != nullptr) {
+         _paletteFrame->setPreviewBg(previewBgSet);
+     }
+     // load background image
+     log->debug(tr("Palette Decorator setImage called %1").arg(previewBgSet));
+     preview1->setImage(imgArray->at(previewBgSet));
+     // preview.setOpaque(false); // needed?
+     preview1->update();        // force redraw
+ } else {
+     log->debug("imgArray is empty");
+ }
+
+}
+// called when editor changed
+/*protected*/ QVector<BufferedImage*>* DecoratorPanel::getBackgrounds() {
+    return _backgrounds;
+}
+// called when editor changed
+/*protected*/ void DecoratorPanel::setBackgrounds(QVector<BufferedImage*>*  imgArray) {
+    _backgrounds = imgArray;
+    _previewPanel->setImage(imgArray->at(0));
+    _previewPanel->update();        // force redraw
+}
+
 /*public*/ void DecoratorPanel::stateChanged(ChangeEvent* e)
 {
  PositionablePopupUtil* util = getPositionablePopupUtil();
@@ -546,53 +618,53 @@ AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* s
   switch (_selectedButton)
   {
    case TEXT_FONT:
-    _sample->value("Text")->setForeground(_chooser->currentColor());
+    _samples->value("Text")->setForeground(_chooser->currentColor());
     util->setForeground(_chooser->currentColor());
     break;
    case ACTIVE_FONT:
-    _sample->value("Active")->setForeground(_chooser->currentColor());
+    _samples->value("Active")->setForeground(_chooser->currentColor());
     break;
    case INACTIVE_FONT:
-    _sample->value("InActive")->setForeground(_chooser->currentColor());
+    _samples->value("InActive")->setForeground(_chooser->currentColor());
     break;
    case UNKOWN_FONT:
-    _sample->value("Unknown")->setForeground(_chooser->currentColor());
+    _samples->value("Unknown")->setForeground(_chooser->currentColor());
     break;
    case INCONSISTENT_FONT:
-    _sample->value("Inconsistent")->setForeground(_chooser->currentColor());
+    _samples->value("Inconsistent")->setForeground(_chooser->currentColor());
     break;
    case TEXT_BACKGROUND:
-    _sample->value("Text")->setBackground(_chooser->currentColor());
+    _samples->value("Text")->setBackground(_chooser->currentColor());
     _util->setBackgroundColor(_chooser->currentColor());
     _isOpaque = true;
     break;
    case ACTIVE_BACKGROUND:
-    _sample->value("Active")->setBackground(_chooser->currentColor());
-    _sample->value("Active")->setOpaque(true);
+    _samples->value("Active")->setBackground(_chooser->currentColor());
+    _samples->value("Active")->setOpaque(true);
     util->setBackgroundColor(_chooser->currentColor());
     _isOpaque = true;
     break;
    case INACTIVE_BACKGROUND:
-    _sample->value("InActive")->setBackground(_chooser->currentColor());
-    _sample->value("InActive")->setOpaque(true);
+    _samples->value("InActive")->setBackground(_chooser->currentColor());
+    _samples->value("InActive")->setOpaque(true);
     util->setBackgroundColor(_chooser->currentColor());
     _isOpaque = true;
     break;
    case UNKOWN_BACKGROUND:
-    _sample->value("Unknown")->setBackground(_chooser->currentColor());
-    _sample->value("Unknown")->setOpaque(true);
+    _samples->value("Unknown")->setBackground(_chooser->currentColor());
+    _samples->value("Unknown")->setOpaque(true);
     util->setBackgroundColor(_chooser->currentColor());
     _isOpaque = true;
     break;
    case INCONSISTENT_BACKGROUND:
-    _sample->value("Inconsistent")->setBackground(_chooser->currentColor());
-    _sample->value("Inconsistent")->setOpaque(true);
+    _samples->value("Inconsistent")->setBackground(_chooser->currentColor());
+    _samples->value("Inconsistent")->setOpaque(true);
     util->setBackgroundColor(_chooser->currentColor());
     _isOpaque = true;
     break;
    case TRANSPARENT_COLOR:
     util->setBackgroundColor(QColor());
-    _sample->value("Text")->setOpaque(false);
+    _samples->value("Text")->setOpaque(false);
     _isOpaque = false;
     break;
    case BORDER_COLOR:
@@ -614,35 +686,35 @@ AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* s
  if((qobject_cast<SensorIcon*>(pos)!=NULL) &&(((SensorIcon*)pos)->isText()) )
  {
     SensorIcon* icon = (SensorIcon*)pos;
-    PositionableLabel* sample = _sample->value("Active");
+    PositionableLabel* sample = _samples->value("Active");
     icon->setActiveText(sample->getText());
     icon->setBackgroundActive(sample->getBackground());
     icon->setTextActive(sample->getForeground());
 
-    sample = _sample->value("InActive");
+    sample = _samples->value("InActive");
     icon->setInactiveText(sample->getText());
     icon->setBackgroundInActive(sample->getBackground());
     icon->setTextInActive(sample->getForeground());
 
-    sample = _sample->value("Unknown");
+    sample = _samples->value("Unknown");
     icon->setUnknownText(sample->getText());
     icon->setBackgroundUnknown(sample->getBackground());
     icon->setTextUnknown(sample->getForeground());
 
-    sample = _sample->value("Inconsistent");
+    sample = _samples->value("Inconsistent");
     icon->setInconsistentText(sample->getText());
     icon->setBackgroundInconsistent(sample->getBackground());
     icon->setTextInconsistent(sample->getForeground());
  }
  else
  {
-    PositionableLabel* sample = _sample->value("Text");
+    PositionableLabel* sample = _samples->value("Text");
     ((PositionableLabel*)pos)->setBackground(sample->getBackground());
     ((PositionableLabel*)pos)->setForeground(sample->getForeground());
     //if (pos instanceof PositionableLabel)
     if(qobject_cast<PositionableLabel*>(pos)!= NULL)
     {
-     ((PositionableLabel*)pos)->setText(_sample->value("Text")->getText());
+     ((PositionableLabel*)pos)->setText(_samples->value("Text")->getText());
     }
  }
  ((PositionableLabel*)pos)->setPopupUtility(_util);
@@ -742,7 +814,7 @@ AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* s
 
 //    DataFlavor dataFlavor;
 
-/*public*/ DragDecoratorLabel::DragDecoratorLabel(QString s, Editor* editor, QObject* parent) : PositionableLabel(s, editor,(Positionable*)parent)
+/*public*/ DPDragDecoratorLabel::DPDragDecoratorLabel(QString s, Editor* editor, QObject* parent) : PositionableLabel(s, editor,(Positionable*)parent)
 {
  //super(s, editor);
 //        DragSource dragSource = DragSource.getDefaultDragSource();
@@ -772,11 +844,11 @@ AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* s
 //    /*public*/ void dropActionChanged(DragSourceDragEvent e) {
 //        }
 //    /*************** Transferable *********************/
-    /*public*/ QList<DataFlavor*> DragDecoratorLabel::getTransferDataFlavors() {
+    /*public*/ QList<DataFlavor*> DPDragDecoratorLabel::getTransferDataFlavors() {
         //if (log.isDebugEnabled()) log.debug("DragPositionable.getTransferDataFlavors ");
     return  QList<DataFlavor*>() <<  dataFlavor ;
     }
-    /*public*/ bool DragDecoratorLabel::isDataFlavorSupported(DataFlavor* flavor) {
+    /*public*/ bool DPDragDecoratorLabel::isDataFlavorSupported(DataFlavor* flavor) {
         //if (log.isDebugEnabled()) log.debug("DragPositionable.isDataFlavorSupported ");
         return dataFlavor==(flavor);
     }
@@ -786,7 +858,7 @@ AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* s
 //        }
 //        return _sample->value("Text").deepClone();
 //    }
-void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)
+void DPDragDecoratorLabel::mousePressEvent(QMouseEvent *e)
 {
  QString text = mimeData();
  if(text != "")
@@ -803,7 +875,7 @@ void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)
   }
  }
 }
-QString DragDecoratorLabel::mimeData()
+QString DPDragDecoratorLabel::mimeData()
 {
  PositionableLabel* l;
  dataFlavor = new DataFlavor(l = new PositionableLabel(getText(),_editor,parent), "PositionableLabel");
@@ -831,3 +903,78 @@ void DecoratorPanel::currentColorChanged(QColor)
 {
  stateChanged(new ChangeEvent(_chooser));
 }
+/*public*/ void DecoratorPanel::setAttributes(Positionable* pos) {
+        if (qobject_cast<SensorIcon*>(pos)  && !((SensorIcon*)pos)->isIcon()) {
+            SensorIcon* icon = (SensorIcon*) pos;
+            PositionableLabel* sample = _samples->value("Active");
+            if (sample->isOpaque()) {
+                icon->setBackgroundActive(sample->getBackground());
+            } else {
+                icon->setBackgroundActive(QColor());
+            }
+            icon->setTextActive(sample->getForeground());
+            icon->setActiveText(sample->getText());
+
+            sample = _samples->value("InActive");
+            icon->setInactiveText(sample->getText());
+            if (sample->isOpaque()) {
+                icon->setBackgroundInActive(sample->getBackground());
+            } else {
+                icon->setBackgroundInActive(QColor());
+            }
+            icon->setTextInActive(sample->getForeground());
+
+            sample = _samples->value("Unknown");
+            icon->setUnknownText(sample->getText());
+            if (sample->isOpaque()) {
+                icon->setBackgroundUnknown(sample->getBackground());
+            } else {
+                icon->setBackgroundUnknown(QColor());
+            }
+            icon->setTextUnknown(sample->getForeground());
+
+            sample = _samples->value("Inconsistent");
+            icon->setInconsistentText(sample->getText());
+            if (sample->isOpaque()) {
+                icon->setBackgroundInconsistent(sample->getBackground());
+            } else {
+                icon->setBackgroundInconsistent(QColor());
+            }
+            icon->setTextInconsistent(sample->getForeground());
+        } else {
+            PositionableLabel* sample = _samples->value("Text");
+            pos->setForeground(sample->getForeground());
+            if ( qobject_cast<PositionableLabel*>(pos) &&
+                !(qobject_cast<MemoryIcon*>(pos)== nullptr)) {
+                ((PositionableLabel*) pos)->setText(sample->getText());
+            }
+            PositionablePopupUtil* util = pos->getPopupUtility();
+            if (sample->isOpaque()) {
+                util->setBackgroundColor(sample->getBackground());
+            } else {
+                util->setBackgroundColor(QColor());
+            }
+            util->setHasBackground(_util->hasBackground());
+            util->setFont(_util->getFont());
+            util->setFixedWidth(_util->getFixedWidth());
+            util->setFixedHeight(_util->getFixedHeight());
+            util->setMargin(_util->getMargin());
+            util->setBorderSize(_util->getBorderSize());
+            if (log->isDebugEnabled()) {
+                log->debug(tr("setAttributes(pos) opaque= %1 hasBackground= %2 background= %3").arg(pos->isOpaque()).arg(util->hasBackground()?"true":"false").arg(ColorUtil::colorToString(util->getBackground())));
+                PositionablePopupUtil* u = pos->getPopupUtility();
+                log->debug(tr("setAttributes text sample opaque= %1 hasBackground= {} background= %2").arg(sample->isOpaque()?"true":"false").arg(u->hasBackground()?"true":"false").arg( ColorUtil::colorToString(u->getBackground())));
+            }
+        }
+        pos->invalidate();
+}
+
+/*public*/ void DecoratorPanel::setSuppressRecentColor(bool b) {
+ QListIterator<PositionableLabel*> iter(_samples->values());
+ while (iter.hasNext()) {
+     iter.next()->getPopupUtility()->setSuppressRecentColor(b);
+ }
+ _util->setSuppressRecentColor(b);
+}
+
+/*private*/ /*final*/ /*static*/ Logger* DecoratorPanel::log = LoggerFactory::getLogger("DecoratorPanel");

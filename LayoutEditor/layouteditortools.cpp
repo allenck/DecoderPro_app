@@ -2,7 +2,7 @@
 #include "jtextfield.h"
 #include <QMessageBox>
 #include "signalheadmanager.h"
-#include "abstractsignalheadmanager.h"
+#include "signalheadmanager.h"
 #include "signalheadicon.h"
 #include "signalmast.h"
 #include "layoutturnout.h"
@@ -28,6 +28,7 @@
 #include "jmribeancombobox.h"
 #include "joptionpane.h"
 #include <QVariant>
+#include "layoutslip.h"
 
 //LayoutEditorTools::LayoutEditorTools(QObject *parent) :
 //    QObject(parent)
@@ -65,7 +66,6 @@
  C2 = 7;
  D1 = 8;
  D2 = 9;
- log = new Logger("LayoutEditorTools");
  // operational instance variables shared between tools
  layoutEditor = NULL;
  signalIconEditor = NULL;
@@ -603,7 +603,7 @@
   return;
  }
  // Initialize if needed
- if (setSignalsFrame == NULL)
+ if (setSignalsFrame == nullptr)
  {
   setSignalsFrame = new JmriJFrame(tr("Signals At Turnout"), false, true);
   setSignalsFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtTurnout", true);
@@ -754,11 +754,11 @@
  centralWidgetLayout->addWidget(panel6);
 //    setSignalsFrame->addWindowListener(new java.awt.event.WindowAdapter() {
 //        /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//            setSignalsCancelPressed(NULL);
+//            setSignalsCancelPressed(nullptr);
 //        }
 //    });
  setSignalsFrame->addWindowListener(new SSFWindowListener(this));
- if (turnoutFromMenu) turnoutSignalsGetSaved(NULL);
+ if (turnoutFromMenu) turnoutSignalsGetSaved(nullptr);
  }
  //setSignalsFrame.pack();
  setSignalsFrame->setVisible(true);
@@ -881,7 +881,7 @@ void LayoutEditorTools::on_changeSignalIcon_clicked() // SLOT[]
    // need to figure out what to do in this case.
   }
  }
- if ( (setThroatDiverging->isChecked()) && (throatDivergingHead!=NULL) )
+ if ( (setThroatDiverging->isChecked()) && (throatDivergingHead!=nullptr) )
  {
   if (isHeadOnPanel(throatDivergingHead) &&
     (throatDivergingHead!=getHeadFromName(layoutTurnout->getSignalA2Name())))
@@ -915,7 +915,7 @@ void LayoutEditorTools::on_changeSignalIcon_clicked() // SLOT[]
    needRedraw = true;
   }
  }
- else if (throatDivergingHead!=NULL) {
+ else if (throatDivergingHead!=nullptr) {
  int assigned = isHeadAssignedHere(throatDivergingHead,layoutTurnout);
  if (assigned == NONE)
  {
@@ -940,7 +940,7 @@ void LayoutEditorTools::on_changeSignalIcon_clicked() // SLOT[]
   // need to figure out what to do in this case.
  }
 }
-else if (throatDivergingHead==NULL)
+else if (throatDivergingHead==nullptr)
  {
   removeSignalHeadFromPanel(layoutTurnout->getSignalA2Name());
   layoutTurnout->setSignalA2Name("");
@@ -1080,7 +1080,7 @@ else if (throatDivergingHead==NULL)
  {
   setLogicThroatContinuing();
  }
- if ( (throatDivergingHead!=NULL) && setupLogicThroatDiverging->isChecked() )
+ if ( (throatDivergingHead!=nullptr) && setupLogicThroatDiverging->isChecked() )
  {
   setLogicThroatDiverging();
  }
@@ -1116,7 +1116,7 @@ else if (throatDivergingHead==NULL)
   layoutTurnout = NULL;
   if (!crossover) str = turnoutNameField->text().trimmed();
   else str = xoverTurnoutName.trimmed();
-  if ( (str==NULL) || (str==("")) )
+  if ( (str==nullptr) || (str==("")) )
   {
 //   JOptionPane.showMessageDialog(setSignalsFrame,tr("SignalsError1"),
 //                                tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -1135,7 +1135,7 @@ else if (throatDivergingHead==NULL)
    }
   }
 //  turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-  if (turnout==NULL)
+  if (turnout==nullptr)
   {
 //   JOptionPane.showMessageDialog(setSignalsFrame,
 //                java.text.MessageFormat.format(tr("SignalsError2"),
@@ -1145,7 +1145,7 @@ else if (throatDivergingHead==NULL)
 
    return false ;
   }
-  else if ( (turnout->getUserName()==NULL) || (turnout->getUserName()==("")) || turnout->getUserName()!=(str) )
+  else if ( (turnout->getUserName()==nullptr) || (turnout->getUserName()==("")) || turnout->getUserName()!=(str) )
   {
 //   str = str.toUpper();
    if (!crossover)
@@ -1172,7 +1172,7 @@ else if (throatDivergingHead==NULL)
 //                javax->swing.JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(layoutEditor, tr("information"), tr("Sorry, this tool does\nnot work with crossover turnouts."));
 
-     setSignalsCancelPressed(NULL);
+     setSignalsCancelPressed(nullptr);
      return false;
     }
     if ( (!( (t->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ||
@@ -1185,7 +1185,7 @@ else if (throatDivergingHead==NULL)
 //                javax->swing.JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(layoutEditor, tr("information"), tr("Sorry, Set Signals at Crossover does\nnot work with other types of turnouts."));
 
-     setXoverSignalsCancelPressed(NULL);
+     setXoverSignalsCancelPressed(nullptr);
      return false;
     }
     break;
@@ -1193,7 +1193,7 @@ else if (throatDivergingHead==NULL)
   }
  }
  t = layoutTurnout;
- if (t!=NULL)
+ if (t!=nullptr)
  {
   double delX = t->getCoordsA().x() - t->getCoordsB().x();
   double delY = t->getCoordsA().y() - t->getCoordsB().y();
@@ -1230,18 +1230,18 @@ else if (throatDivergingHead==NULL)
 /*private*/ bool LayoutEditorTools::getTurnoutSignalHeadInformation()
 {
  throatContinuingHead = getSignalHeadFromEntry(throatContinuingField,true,setSignalsFrame);
- if (throatContinuingHead==NULL) return false;
+ if (throatContinuingHead==nullptr) return false;
  throatDivergingHead = getSignalHeadFromEntry(throatDivergingField,false,setSignalsFrame);
  continuingHead = getSignalHeadFromEntry(continuingField,true,setSignalsFrame);
- if (continuingHead==NULL) return false;
+ if (continuingHead==nullptr) return false;
  divergingHead = getSignalHeadFromEntry(divergingField,true,setSignalsFrame);
- if (divergingHead==NULL) return false;
+ if (divergingHead==nullptr) return false;
   return true;
 }
 
 /*private*/ void LayoutEditorTools::placeThroatContinuing()
 {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
         setSignalHeadOnPanel(2,throatContinuingField->text().trimmed(),
@@ -1265,7 +1265,7 @@ else if (throatDivergingHead==NULL)
     }
 }
 /*private*/ void LayoutEditorTools::placeThroatDiverging() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
         setSignalHeadOnPanel(2,throatDivergingField->text().trimmed(),
@@ -1290,7 +1290,7 @@ else if (throatDivergingHead==NULL)
 }
 /*private*/ void LayoutEditorTools::placeContinuing(QString signalHeadName)
 {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft && layoutTurnoutBUp) {
         setSignalHeadOnPanel(0,signalHeadName,
@@ -1334,7 +1334,7 @@ else if (throatDivergingHead==NULL)
     }
 }
 /*private*/ void LayoutEditorTools::placeDiverging(QString signalHeadName) {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft && layoutTurnoutBUp) {
         setSignalHeadOnPanel(0,signalHeadName,
@@ -1383,7 +1383,7 @@ else if (throatDivergingHead==NULL)
         track = (TrackSegment*)layoutTurnout->getConnectB();
     else
         track = (TrackSegment*)layoutTurnout->getConnectC();
-    if (track==NULL)
+    if (track==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1391,7 +1391,7 @@ else if (throatDivergingHead==NULL)
      return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL)
+    if (block==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1399,7 +1399,7 @@ else if (throatDivergingHead==NULL)
      return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL)
+    if (occupancy==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
@@ -1411,7 +1411,7 @@ else if (throatDivergingHead==NULL)
     }
     SignalHead* nextHead = getNextSignalFromObject(track,
             layoutTurnout, throatContinuingField->text().trimmed(), setSignalsFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) )
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) )
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
@@ -1420,16 +1420,16 @@ else if (throatDivergingHead==NULL)
      QMessageBox::information(setSignalsFrame, tr("Information"), tr("Cannot set up logic because the next signal (in or\nat the end of block \"%1\") apparently is not yet defined.").arg(block->getUserName()));
      return;
     }
-    if (throatDivergingHead!=NULL)
+    if (throatDivergingHead!=nullptr)
     {
      if (!initializeBlockBossLogic(throatContinuingField->text().trimmed())) return;
         logic->setMode(BlockBossLogic::TRAILINGMAIN);
         logic->setTurnout(turnout->getSystemName());
         logic->setSensor1(occupancy->getSystemName());
-        if (nextHead!=NULL) {
+        if (nextHead!=nullptr) {
             logic->setWatchedSignal1(nextHead->getSystemName(),false);
         }
-        if (auxSignal!=NULL) {
+        if (auxSignal!=nullptr) {
             logic->setWatchedSignal1Alt(auxSignal->getSystemName());
         }
         finalizeBlockBossLogic();
@@ -1441,7 +1441,7 @@ else if (throatDivergingHead==NULL)
         track2 = (TrackSegment*)layoutTurnout->getConnectC();
     else
         track2 = (TrackSegment*)layoutTurnout->getConnectB();
-    if (track2==NULL)
+    if (track2==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1450,7 +1450,7 @@ else if (throatDivergingHead==NULL)
      return;
     }
     LayoutBlock* block2 = track2->getLayoutBlock();
-    if (block2==NULL)
+    if (block2==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1459,7 +1459,7 @@ else if (throatDivergingHead==NULL)
      return;
     }
     Sensor* occupancy2 = block2->getOccupancySensor();
-    if (occupancy2==NULL)
+    if (occupancy2==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
@@ -1471,7 +1471,7 @@ else if (throatDivergingHead==NULL)
     }
     SignalHead* nextHead2 = getNextSignalFromObject(track2,
             layoutTurnout, throatContinuingField->text().trimmed(), setSignalsFrame);
-    if ( (nextHead2==NULL) && (!reachedEndBumper()) )
+    if ( (nextHead2==nullptr) && (!reachedEndBumper()) )
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
@@ -1486,16 +1486,16 @@ else if (throatDivergingHead==NULL)
     logic->setTurnout(turnout->getSystemName());
     logic->setWatchedSensor1(occupancy->getSystemName());
     logic->setWatchedSensor2(occupancy2->getSystemName());
-    if (nextHead!=NULL) {
+    if (nextHead!=nullptr) {
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
     }
-    if (savedAuxSignal!=NULL) {
+    if (savedAuxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(savedAuxSignal->getSystemName());
     }
-    if (nextHead2!=NULL) {
+    if (nextHead2!=nullptr) {
         logic->setWatchedSignal2(nextHead2->getSystemName());
     }
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal2Alt(auxSignal->getSystemName());
     }
     if (!layoutTurnout->isMainlineC())
@@ -1509,14 +1509,14 @@ else if (throatDivergingHead==NULL)
         track = (TrackSegment*)layoutTurnout->getConnectC();
     else
         track = (TrackSegment*)layoutTurnout->getConnectB();
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
      return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL)
+    if (block==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1524,7 +1524,7 @@ else if (throatDivergingHead==NULL)
      return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL)
+    if (occupancy==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
@@ -1535,7 +1535,7 @@ else if (throatDivergingHead==NULL)
     }
     SignalHead* nextHead = getNextSignalFromObject(track,
             layoutTurnout, throatDivergingField->text().trimmed(), setSignalsFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) )
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) )
     {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
@@ -1548,9 +1548,9 @@ else if (throatDivergingHead==NULL)
     logic->setMode(BlockBossLogic::TRAILINGDIVERGING);
     logic->setTurnout(turnout->getSystemName());
     logic->setSensor1(occupancy->getSystemName());
-    if (nextHead!=NULL)
+    if (nextHead!=nullptr)
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     if (!layoutTurnout->isMainlineC())
@@ -1560,7 +1560,7 @@ else if (throatDivergingHead==NULL)
 /*private*/ void LayoutEditorTools::setLogicContinuing()
 {
  TrackSegment* track = (TrackSegment*)layoutTurnout->getConnectA();
- if (track==NULL)
+ if (track==nullptr)
  {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1568,7 +1568,7 @@ else if (throatDivergingHead==NULL)
   return;
  }
  LayoutBlock* block = track->getLayoutBlock();
- if (block==NULL)
+ if (block==nullptr)
  {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1576,7 +1576,7 @@ else if (throatDivergingHead==NULL)
   return;
  }
  Sensor* occupancy = block->getOccupancySensor();
- if (occupancy==NULL)
+ if (occupancy==nullptr)
  {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
@@ -1587,7 +1587,7 @@ else if (throatDivergingHead==NULL)
  }
  SignalHead* nextHead = getNextSignalFromObject(track,
                 layoutTurnout, continuingField->text().trimmed(), setSignalsFrame);
- if ( (nextHead==NULL) && (!reachedEndBumper()) )
+ if ( (nextHead==nullptr) && (!reachedEndBumper()) )
  {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
@@ -1600,11 +1600,11 @@ else if (throatDivergingHead==NULL)
  logic->setMode(BlockBossLogic::TRAILINGMAIN);
  logic->setTurnout(turnout->getSystemName());
  logic->setSensor1(occupancy->getSystemName());
- if (nextHead!=NULL)
+ if (nextHead!=nullptr)
  {
   logic->setWatchedSignal1(nextHead->getSystemName(),false);
  }
- if (auxSignal!=NULL)
+ if (auxSignal!=nullptr)
  {
   logic->setWatchedSignal1Alt(auxSignal->getSystemName());
  }
@@ -1613,7 +1613,7 @@ else if (throatDivergingHead==NULL)
 /*private*/ void LayoutEditorTools::setLogicDiverging()
 {
  TrackSegment* track = (TrackSegment*)layoutTurnout->getConnectA();
- if (track==NULL)
+ if (track==nullptr)
  {
 //    JOptionPane.showMessageDialog(setSignalsFrame,
 //            tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1621,7 +1621,7 @@ else if (throatDivergingHead==NULL)
   return;
  }
  LayoutBlock* block = track->getLayoutBlock();
- if (block==NULL)
+ if (block==nullptr)
  {
 //    JOptionPane.showMessageDialog(setSignalsFrame,
 //            tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -1629,7 +1629,7 @@ else if (throatDivergingHead==NULL)
   return;
  }
  Sensor* occupancy = block->getOccupancySensor();
- if (occupancy==NULL)
+ if (occupancy==nullptr)
  {
 //    JOptionPane.showMessageDialog(setSignalsFrame,
 //        java.text.MessageFormat.format(tr("InfoMessage4"),
@@ -1640,7 +1640,7 @@ else if (throatDivergingHead==NULL)
  }
  SignalHead* nextHead = getNextSignalFromObject(track,
         layoutTurnout, divergingField->text().trimmed(), setSignalsFrame);
- if ( (nextHead==NULL) && (!reachedEndBumper()) )
+ if ( (nextHead==nullptr) && (!reachedEndBumper()) )
  {
 //    JOptionPane.showMessageDialog(setSignalsFrame,
 //        java.text.MessageFormat.format(tr("InfoMessage5"),
@@ -1653,11 +1653,11 @@ else if (throatDivergingHead==NULL)
  logic->setMode(BlockBossLogic::TRAILINGDIVERGING);
  logic->setTurnout(turnout->getSystemName());
  logic->setSensor1(occupancy->getSystemName());
- if (nextHead!=NULL)
+ if (nextHead!=nullptr)
  {
     logic->setWatchedSignal1(nextHead->getSystemName(),false);
  }
- if (auxSignal!=NULL)
+ if (auxSignal!=nullptr)
  {
     logic->setWatchedSignal1Alt(auxSignal->getSystemName());
  }
@@ -1724,7 +1724,7 @@ else if (throatDivergingHead==NULL)
 /*public*/ SignalHead* LayoutEditorTools::getSignalHeadFromEntry(JTextField* signalName, bool requireEntry, JFrame* frame)
 {
  QString str = signalName->text().trimmed();
- if ( (str==NULL) || (str==("")) )
+ if ( (str==nullptr) || (str==("")) )
  {
   if (requireEntry)
   {
@@ -1735,7 +1735,7 @@ else if (throatDivergingHead==NULL)
   return NULL;
  }
  SignalHead* head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(str);
- if (head==NULL)
+ if (head==nullptr)
  {
 //        JOptionPane.showMessageDialog(frame,
 //                java.text.MessageFormat.format(tr("SignalsError4"),
@@ -1744,7 +1744,7 @@ else if (throatDivergingHead==NULL)
   QMessageBox::critical(0, tr("Error"), tr("Error - Signal head \"%1\" does not exist. Please correct name\nor enter this Signal Head in the Signal Table, and try again.").arg(str));
   return NULL ;
  }
- else if ( (head->getUserName()==NULL) || (head->getUserName()==("")) ||
+ else if ( (head->getUserName()==nullptr) || (head->getUserName()==("")) ||
                                 head->getUserName()!=(str) )
  {
 //  str = str.toUpper();
@@ -1756,7 +1756,7 @@ else if (throatDivergingHead==NULL)
  * Returns a SignalHead* given a name
  */
 /*public*/ SignalHead* LayoutEditorTools::getHeadFromName(QString str) {
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
         return NULL;
     }
     return  (((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(str));
@@ -1802,31 +1802,31 @@ else if (throatDivergingHead==NULL)
     QString sysName = head->getSystemName();
     QString uName = head->getUserName();
     QString name = lTurnout->getSignalA1Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return A1;
     name = lTurnout->getSignalA2Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return A2;
     name = lTurnout->getSignalA3Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return A3;
     name = lTurnout->getSignalB1Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return B1;
     name = lTurnout->getSignalB2Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return B2;
     name = lTurnout->getSignalC1Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return C1;
     name = lTurnout->getSignalC2Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return C2;
     name = lTurnout->getSignalD1Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return D1;
     name = lTurnout->getSignalD2Name();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return D2;
     return NONE;
 }
@@ -1855,56 +1855,56 @@ else if (throatDivergingHead==NULL)
     QString uName = head->getUserName();
     for (int i=0;i<layoutEditor->turnoutList->size();i++) {
         LayoutTurnout* to = layoutEditor->turnoutList->at(i);
-        if ((to->getSignalA1Name()!=NULL) &&
-                (to->getSignalA1Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalA1Name()!=nullptr) &&
+                (to->getSignalA1Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalA1Name()==(uName))))) return true;
-        if ((to->getSignalA2Name()!=NULL) &&
-                (to->getSignalA2Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalA2Name()!=nullptr) &&
+                (to->getSignalA2Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalA2Name()==(uName))))) return true;
-        if ((to->getSignalA3Name()!=NULL) &&
-                (to->getSignalA3Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalA3Name()!=nullptr) &&
+                (to->getSignalA3Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalA3Name()==(uName))))) return true;
-        if ((to->getSignalB1Name()!=NULL) &&
-                (to->getSignalB1Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalB1Name()!=nullptr) &&
+                (to->getSignalB1Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalB1Name()==(uName))))) return true;
-        if ((to->getSignalB2Name()!=NULL) &&
-                (to->getSignalB2Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalB2Name()!=nullptr) &&
+                (to->getSignalB2Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalB2Name()==(uName))))) return true;
-        if ((to->getSignalC1Name()!=NULL) &&
-                (to->getSignalC1Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalC1Name()!=nullptr) &&
+                (to->getSignalC1Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalC1Name()==(uName))))) return true;
-        if ((to->getSignalC2Name()!=NULL) &&
-                (to->getSignalC2Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalC2Name()!=nullptr) &&
+                (to->getSignalC2Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalC2Name()==(uName))))) return true;
-        if ((to->getSignalD1Name()!=NULL) &&
-                (to->getSignalD1Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalD1Name()!=nullptr) &&
+                (to->getSignalD1Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalD1Name()==(uName))))) return true;
-        if ((to->getSignalD2Name()!=NULL) &&
-                (to->getSignalD2Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalD2Name()!=nullptr) &&
+                (to->getSignalD2Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalD2Name()==(uName))))) return true;
     }
     for (int i=0;i<layoutEditor->pointList->size();i++) {
         PositionablePoint* po = layoutEditor->pointList->at(i);
-        if ((po->getEastBoundSignal()!=NULL) &&
-                (po->getEastBoundSignal()==(sName) || ((uName!=NULL) &&
+        if ((po->getEastBoundSignal()!=nullptr) &&
+                (po->getEastBoundSignal()==(sName) || ((uName!=nullptr) &&
                 (po->getEastBoundSignal()==(uName))))) return true;
-        if ((po->getWestBoundSignal()!=NULL) &&
-                (po->getWestBoundSignal()==(sName) || ((uName!=NULL) &&
+        if ((po->getWestBoundSignal()!=nullptr) &&
+                (po->getWestBoundSignal()==(sName) || ((uName!=nullptr) &&
                 (po->getWestBoundSignal()==(uName))))) return true;
     }
     for (int i=0;i<layoutEditor->xingList->size();i++) {
         LevelXing* x = layoutEditor->xingList->at(i);
-        if ((x->getSignalAName()!=NULL) &&
-                (x->getSignalAName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSignalAName()!=nullptr) &&
+                (x->getSignalAName()==(sName) || ((uName!=nullptr) &&
                 (x->getSignalAName()==(uName))))) return true;
-        if ((x->getSignalBName()!=NULL) &&
-                (x->getSignalBName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSignalBName()!=nullptr) &&
+                (x->getSignalBName()==(sName) || ((uName!=nullptr) &&
                 (x->getSignalBName()==(uName))))) return true;
-        if ((x->getSignalCName()!=NULL) &&
-                (x->getSignalCName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSignalCName()!=nullptr) &&
+                (x->getSignalCName()==(sName) || ((uName!=nullptr) &&
                 (x->getSignalCName()==(uName))))) return true;
-        if ((x->getSignalDName()!=NULL) &&
-                (x->getSignalDName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSignalDName()!=nullptr) &&
+                (x->getSignalDName()==(sName) || ((uName!=nullptr) &&
                 (x->getSignalDName()==(uName))))) return true;
     }
     return false;
@@ -1919,58 +1919,58 @@ else if (throatDivergingHead==NULL)
     QString uName = head->getUserName();
     for (int i=0;i<layoutEditor->turnoutList->size();i++) {
         LayoutTurnout* to = layoutEditor->turnoutList->at(i);
-        if ((to->getSignalA1Name()!=NULL) &&
-                (to->getSignalA1Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalA1Name()!=nullptr) &&
+                (to->getSignalA1Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalA1Name()==(uName))))) to->setSignalA1Name("");
-        if ((to->getSignalA2Name()!=NULL) &&
-                (to->getSignalA2Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalA2Name()!=nullptr) &&
+                (to->getSignalA2Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalA2Name()==(uName))))) to->setSignalA2Name("");
-        if ((to->getSignalA3Name()!=NULL) &&
-                (to->getSignalA3Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalA3Name()!=nullptr) &&
+                (to->getSignalA3Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalA3Name()==(uName))))) to->setSignalA3Name("");
-        if ((to->getSignalB1Name()!=NULL) &&
-                (to->getSignalB1Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalB1Name()!=nullptr) &&
+                (to->getSignalB1Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalB1Name()==(uName))))) to->setSignalB1Name("");
-        if ((to->getSignalB2Name()!=NULL) &&
-                (to->getSignalB2Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalB2Name()!=nullptr) &&
+                (to->getSignalB2Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalB2Name()==(uName))))) to->setSignalB2Name("");
-        if ((to->getSignalC1Name()!=NULL) &&
-                (to->getSignalC1Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalC1Name()!=nullptr) &&
+                (to->getSignalC1Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalC1Name()==(uName))))) to->setSignalC1Name("");
-        if ((to->getSignalC2Name()!=NULL) &&
-                (to->getSignalC2Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalC2Name()!=nullptr) &&
+                (to->getSignalC2Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalC2Name()==(uName))))) to->setSignalC2Name("");
-        if ((to->getSignalD1Name()!=NULL) &&
-                (to->getSignalD1Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalD1Name()!=nullptr) &&
+                (to->getSignalD1Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalD1Name()==(uName))))) to->setSignalD1Name("");
-        if ((to->getSignalD2Name()!=NULL) &&
-                (to->getSignalD2Name()==(sName) || ((uName!=NULL) &&
+        if ((to->getSignalD2Name()!=nullptr) &&
+                (to->getSignalD2Name()==(sName) || ((uName!=nullptr) &&
                 (to->getSignalD2Name()==(uName))))) to->setSignalD2Name("");
     }
     for (int i=0;i<layoutEditor->pointList->size();i++) {
         PositionablePoint* po = layoutEditor->pointList->at(i);
-        if ((po->getEastBoundSignal()!=NULL) &&
-                (po->getEastBoundSignal()==(sName) || ((uName!=NULL) &&
+        if ((po->getEastBoundSignal()!=nullptr) &&
+                (po->getEastBoundSignal()==(sName) || ((uName!=nullptr) &&
                 (po->getEastBoundSignal()==(uName)))))
             po->setEastBoundSignal("");
-        if ((po->getWestBoundSignal()!=NULL) &&
-                (po->getWestBoundSignal()==(sName) || ((uName!=NULL) &&
+        if ((po->getWestBoundSignal()!=nullptr) &&
+                (po->getWestBoundSignal()==(sName) || ((uName!=nullptr) &&
                 (po->getWestBoundSignal()==(uName)))))
             po->setWestBoundSignal("");
     }
     for (int i=0;i<layoutEditor->xingList->size();i++) {
         LevelXing* x = layoutEditor->xingList->at(i);
-        if ((x->getSignalAName()!=NULL) &&
-                (x->getSignalAName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSignalAName()!=nullptr) &&
+                (x->getSignalAName()==(sName) || ((uName!=nullptr) &&
                 (x->getSignalAName()==(uName))))) x->setSignalAName("");
-        if ((x->getSignalBName()!=NULL) &&
-                (x->getSignalBName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSignalBName()!=nullptr) &&
+                (x->getSignalBName()==(sName) || ((uName!=nullptr) &&
                 (x->getSignalBName()==(uName))))) x->setSignalBName("");
-        if ((x->getSignalCName()!=NULL) &&
-                (x->getSignalCName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSignalCName()!=nullptr) &&
+                (x->getSignalCName()==(sName) || ((uName!=nullptr) &&
                 (x->getSignalCName()==(uName))))) x->setSignalCName("");
-        if ((x->getSignalDName()!=NULL) &&
-                (x->getSignalDName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSignalDName()!=nullptr) &&
+                (x->getSignalDName()==(sName) || ((uName!=nullptr) &&
                 (x->getSignalDName()==(uName))))) x->setSignalDName("");
     }
 }
@@ -1981,7 +1981,7 @@ else if (throatDivergingHead==NULL)
  */
 //@SuppressWarnings("NULL")
 /*public*/ void LayoutEditorTools::removeSignalHeadFromPanel(QString signalName) {
-    if ( (signalName==NULL) || (signalName.length()<1) ) return;
+    if ( (signalName==nullptr) || (signalName.length()<1) ) return;
     SignalHead* head = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                                     getSignalHead(signalName);
     removeAssignment(head);
@@ -2009,7 +2009,7 @@ else if (throatDivergingHead==NULL)
  */
 /*public*/ bool LayoutEditorTools::initializeBlockBossLogic(QString signalHeadName) {
     logic = BlockBossLogic::getStoppedObject(signalHeadName);
-    if (logic==NULL) {
+    if (logic==nullptr) {
         log->error("Trouble creating BlockBossLogic for '"+signalHeadName+"'.");
         return false;
     }
@@ -2019,7 +2019,7 @@ else if (throatDivergingHead==NULL)
  * Finalizes a successfully created signal logic
  */
 /*public*/ void LayoutEditorTools::finalizeBlockBossLogic() {
-    if (logic==NULL) return;
+    if (logic==nullptr) return;
     logic->retain();
     logic->start();
     logic = NULL;
@@ -2068,14 +2068,14 @@ else if (throatDivergingHead==NULL)
                 t=p->getConnect2();
             else
                 t=p->getConnect1();
-            if (t==NULL) return NULL;
+            if (t==nullptr) return NULL;
             if (track->getLayoutBlock()!=t->getLayoutBlock()) {
                 // p is a block boundary - should be signalled
                 QString signalName;
                 if (isAtWestEndOfAnchor(t,p))
                     signalName = p->getWestBoundSignal();
                 else signalName = p->getEastBoundSignal();
-                if ((signalName==NULL)||(signalName==(""))) return NULL;
+                if ((signalName==nullptr)||(signalName==(""))) return NULL;
                 return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalName);
             }
             obj = p;
@@ -2084,15 +2084,15 @@ else if (throatDivergingHead==NULL)
             // Reached turnout throat, should be signalled
             LayoutTurnout* to = (LayoutTurnout*)connect;
             QString signalName = to->getSignalA2Name();
-            if ((!(signalName==NULL))&&(!(signalName==(""))))
+            if ((!(signalName==nullptr))&&(!(signalName==(""))))
                 auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             signalName = to->getSignalA1Name();
-            if ((signalName==NULL)||(signalName==(""))) {
+            if ((signalName==nullptr)||(signalName==(""))) {
                 if (!layoutEditor->skipIncludedTurnout)
                     return NULL;
                 t = getContinuingTrack(to,type);
-                if ( (t==NULL) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
+                if ( (t==nullptr) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
                     return NULL;
                 warnOfSkippedTurnout(frame, to->getTurnoutName(), headName);
                 obj = to;
@@ -2108,18 +2108,18 @@ else if (throatDivergingHead==NULL)
             QString signalName = to->getSignalB2Name();
             if (to->getContinuingSense()==Turnout::THROWN)
                 signalName = to->getSignalC2Name();
-            if ((!(signalName==NULL))&&(!(signalName==(""))))
+            if ((!(signalName==nullptr))&&(!(signalName==(""))))
                 auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             if (to->getContinuingSense()==Turnout::CLOSED)
                 signalName = to->getSignalB1Name();
             else
                 signalName = to->getSignalC1Name();
-            if ((signalName==NULL)||(signalName==("")))  {
+            if ((signalName==nullptr)||(signalName==("")))  {
                 if (!layoutEditor->skipIncludedTurnout)
                     return NULL;
                 t = getContinuingTrack(to,type);
-                if ( (t==NULL) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
+                if ( (t==nullptr) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
                     return NULL;
                 warnOfSkippedTurnout(frame, to->getTurnoutName(), headName);
                 obj = to;
@@ -2135,18 +2135,18 @@ else if (throatDivergingHead==NULL)
             QString signalName = to->getSignalC2Name();
             if (to->getContinuingSense()==Turnout::THROWN)
                 signalName = to->getSignalB2Name();
-            if ((!(signalName==NULL))&&(!(signalName==(""))))
+            if ((!(signalName==nullptr))&&(!(signalName==(""))))
                 auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             if (to->getContinuingSense()==Turnout::CLOSED)
                 signalName = to->getSignalC1Name();
             else
                 signalName = to->getSignalB1Name();
-            if ((signalName==NULL)||(signalName==("")))  {
+            if ((signalName==nullptr)||(signalName==("")))  {
                 if (!layoutEditor->skipIncludedTurnout)
                     return NULL;
                 t = getContinuingTrack(to,type);
-                if ( (t==NULL) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
+                if ( (t==nullptr) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
                     return NULL;
                 warnOfSkippedTurnout(frame, to->getTurnoutName(), headName);
                 obj = to;
@@ -2160,15 +2160,15 @@ else if (throatDivergingHead==NULL)
             // Reached turnout xover 4, should be signalled
             LayoutTurnout* to = (LayoutTurnout*)connect;
             QString signalName = to->getSignalD2Name();
-            if ((!(signalName==NULL))&&(!(signalName==(""))))
+            if ((!(signalName==nullptr))&&(!(signalName==(""))))
                 auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             signalName = to->getSignalD1Name();
-            if ((signalName==NULL)||(signalName==("")))   {
+            if ((signalName==nullptr)||(signalName==("")))   {
                 if (!layoutEditor->skipIncludedTurnout)
                     return NULL;
                 t = getContinuingTrack(to,type);
-                if ( (t==NULL) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
+                if ( (t==nullptr) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
                     return NULL;
                 warnOfSkippedTurnout(frame, to->getTurnoutName(), headName);
                 obj = to;
@@ -2182,11 +2182,11 @@ else if (throatDivergingHead==NULL)
             // Reached level crossing that may or may not be a block boundary
             LevelXing* x = (LevelXing*)connect;
             QString signalName = x->getSignalAName();
-            if ((signalName!=NULL)&&(signalName!=("")))
+            if ((signalName!=nullptr)&&(signalName!=("")))
                 return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             t=(TrackSegment*)x->getConnectC();
-            if (t==NULL) return NULL;
+            if (t==nullptr) return NULL;
             if (track->getLayoutBlock()!=t->getLayoutBlock()) return NULL;
             obj = x;
         }
@@ -2194,10 +2194,10 @@ else if (throatDivergingHead==NULL)
             // Reached level crossing that may or may not be a block boundary
             LevelXing* x = (LevelXing*)connect;
             QString signalName = x->getSignalBName();
-            if ((signalName!=NULL)&&(signalName!=("")))
+            if ((signalName!=nullptr)&&(signalName!=("")))
                 return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->                                getSignalHead(signalName);
             t=(TrackSegment*)x->getConnectD();
-            if (t==NULL) return NULL;
+            if (t==nullptr) return NULL;
             if (track->getLayoutBlock()!=t->getLayoutBlock()) return NULL;
             obj = x;
         }
@@ -2205,11 +2205,11 @@ else if (throatDivergingHead==NULL)
             // Reached level crossing that may or may not be a block boundary
             LevelXing* x = (LevelXing*)connect;
             QString signalName = x->getSignalCName();
-            if ((signalName!=NULL)&&(signalName!=("")))
+            if ((signalName!=nullptr)&&(signalName!=("")))
                 return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             t=(TrackSegment*)x->getConnectA();
-            if (t==NULL) return NULL;
+            if (t==nullptr) return NULL;
             if (track->getLayoutBlock()!=t->getLayoutBlock()) return NULL;
             obj = x;
         }
@@ -2217,26 +2217,26 @@ else if (throatDivergingHead==NULL)
             // Reached level crossing that may or may not be a block boundary
             LevelXing* x = (LevelXing*)connect;
             QString signalName = x->getSignalDName();
-            if ((signalName!=NULL)&&(signalName!=("")))
+            if ((signalName!=nullptr)&&(signalName!=("")))
                 return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             t=(TrackSegment*)x->getConnectB();
-            if (t==NULL) return NULL;
+            if (t==nullptr) return NULL;
             if (track->getLayoutBlock()!=t->getLayoutBlock()) return NULL;
             obj = x;
         }
         else if (type==LayoutEditor::SLIP_A) {
             LayoutSlip* sl = (LayoutSlip*)connect;
             QString signalName = sl->getSignalA2Name();
-            if ((!(signalName==NULL))&&(!(signalName==(""))))
+            if ((!(signalName==nullptr))&&(!(signalName==(""))))
                 auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             signalName = sl->getSignalA1Name();
-            if ((signalName==NULL)||(signalName==(""))) {
+            if ((signalName==nullptr)||(signalName==(""))) {
                 if (!layoutEditor->skipIncludedTurnout)
                     return NULL;
                 t = getContinuingTrack(sl,type);
-                if ( (t==NULL) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
+                if ( (t==nullptr) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
                     return NULL;
                 warnOfSkippedTurnout(frame, sl->getTurnoutName(), headName);
                 obj = sl;
@@ -2251,16 +2251,16 @@ else if (throatDivergingHead==NULL)
             QString signalName;
             if(sl->getTurnoutType()==LayoutSlip::DOUBLE_SLIP){
                 signalName = sl->getSignalB2Name();
-                if ((!(signalName==NULL))&&(!(signalName==(""))))
+                if ((!(signalName==nullptr))&&(!(signalName==(""))))
                     auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                     getSignalHead(signalName);
             }
             signalName = sl->getSignalB1Name();
-            if ((signalName==NULL)||(signalName==(""))) {
+            if ((signalName==nullptr)||(signalName==(""))) {
                 if (!layoutEditor->skipIncludedTurnout)
                     return NULL;
                 t = getContinuingTrack(sl,type);
-                if ( (t==NULL) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
+                if ( (t==nullptr) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
                     return NULL;
                 warnOfSkippedTurnout(frame, sl->getTurnoutName(), headName);
                 obj = sl;
@@ -2275,16 +2275,16 @@ else if (throatDivergingHead==NULL)
             QString signalName;
             if(sl->getTurnoutType()==LayoutSlip::DOUBLE_SLIP){
                 signalName = sl->getSignalC2Name();
-                if ((!(signalName==NULL))&&(!(signalName==(""))))
+                if ((!(signalName==nullptr))&&(!(signalName==(""))))
                     auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                     getSignalHead(signalName);
             }
             signalName = sl->getSignalC1Name();
-            if ((signalName==NULL)||(signalName==(""))) {
+            if ((signalName==nullptr)||(signalName==(""))) {
                 if (!layoutEditor->skipIncludedTurnout)
                     return NULL;
                 t = getContinuingTrack(sl,type);
-                if ( (t==NULL) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
+                if ( (t==nullptr) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
                     return NULL;
                 warnOfSkippedTurnout(frame, sl->getTurnoutName(), headName);
                 obj = sl;
@@ -2297,15 +2297,15 @@ else if (throatDivergingHead==NULL)
         else if (type==LayoutEditor::SLIP_D) {
             LayoutSlip* sl = (LayoutSlip*)connect;
             QString signalName = sl->getSignalD2Name();
-            if ((!(signalName==NULL))&&(!(signalName==(""))))
+            if ((!(signalName==nullptr))&&(!(signalName==(""))))
                 auxSignal = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->
                                 getSignalHead(signalName);
             signalName = sl->getSignalD1Name();
-            if ((signalName==NULL)||(signalName==(""))) {
+            if ((signalName==nullptr)||(signalName==(""))) {
                 if (!layoutEditor->skipIncludedTurnout)
                     return NULL;
                 t = getContinuingTrack(sl,type);
-                if ( (t==NULL) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
+                if ( (t==nullptr) || (track->getLayoutBlock()!=t->getLayoutBlock()) )
                     return NULL;
                 warnOfSkippedTurnout(frame, sl->getTurnoutName(), headName);
                 obj = sl;
@@ -2367,7 +2367,7 @@ else if (throatDivergingHead==NULL)
  *	"track" is a TrackSegment* connected to "point".
  *  "point" is an anchor point serving as a block boundary->
  */
-/*public*/ bool LayoutEditorTools::isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p) {
+/*static*/ /*public*/ bool LayoutEditorTools::isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p) {
     TrackSegment* tx = NULL;
     if (p->getConnect1()==t)
         tx = p->getConnect2();
@@ -2379,20 +2379,20 @@ else if (throatDivergingHead==NULL)
     }
     QPointF point1;
     if (t->getConnect1()==p)
-        point1 = layoutEditor->getCoords(t->getConnect2(),t->getType2());
+        point1 = LayoutEditor::getCoords(t->getConnect2(),t->getType2());
     else
-        point1 = layoutEditor->getCoords(t->getConnect1(),t->getType1());
+        point1 = LayoutEditor::getCoords(t->getConnect1(),t->getType1());
     QPointF point2;
-    if(tx!=NULL) {
+    if(tx!=nullptr) {
         if (tx->getConnect1()==p)
-            point2 = layoutEditor->getCoords(tx->getConnect2(),tx->getType2());
+            point2 = LayoutEditor::getCoords(tx->getConnect2(),tx->getType2());
         else
-            point2 = layoutEditor->getCoords(tx->getConnect1(),tx->getType1());
+            point2 = LayoutEditor::getCoords(tx->getConnect1(),tx->getType1());
     } else {
         if (t->getConnect1()==p)
-            point2 = layoutEditor->getCoords(t->getConnect1(),t->getType1());
+            point2 = LayoutEditor::getCoords(t->getConnect1(),t->getType1());
         else
-            point2 = layoutEditor->getCoords(t->getConnect2(),t->getType2());
+            point2 = LayoutEditor::getCoords(t->getConnect2(),t->getType2());
     }
     double delX = point1.x() - point2.x();
     double delY = point1.y() - point2.y();
@@ -2441,7 +2441,7 @@ else if (throatDivergingHead==NULL)
   return;
  }
  // Initialize if needed
- if (setSignalsAtBoundaryFrame == NULL)
+ if (setSignalsAtBoundaryFrame == nullptr)
  {
   setSignalsAtBoundaryFrame = new JmriJFrame(tr("Set Signals at Block Boundary"), false, true );
   //setSignalsAtBoundaryFrame->layout()->addWidgetHelpMenu("package.jmri.jmrit.display.SetSignalsAtBoundary", true);
@@ -2570,11 +2570,11 @@ else if (throatDivergingHead==NULL)
 // TODO: figure out how to process the close event.
 //    setSignalsAtBoundaryFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //        /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//            setSignalsAtBoundaryCancelPressed(NULL);
+//            setSignalsAtBoundaryCancelPressed(nullptr);
 //        }
 //    });
 
-  if (boundaryFromMenu) getSavedAnchorSignals(NULL);
+  if (boundaryFromMenu) getSavedAnchorSignals(nullptr);
  }
  //setSignalsAtBoundaryFrame.pack();
  setSignalsAtBoundaryFrame->setVisible(true);
@@ -2602,7 +2602,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
  if ( !getBlockInformation() ) return;
  eastBoundHead = getSignalHeadFromEntry(eastBoundField,false,setSignalsAtBoundaryFrame);
  westBoundHead = getSignalHeadFromEntry(westBoundField,false,setSignalsAtBoundaryFrame);
- if ( (eastBoundHead==NULL) && (westBoundHead==NULL) )
+ if ( (eastBoundHead==nullptr) && (westBoundHead==nullptr) )
  {
 //        JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,
 //                        tr("SignalsError12"),
@@ -2611,7 +2611,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
         return;
  }
  // place or update signals as requested
- if ( (eastBoundHead!=NULL) && setEastBound->isChecked() )
+ if ( (eastBoundHead!=nullptr) && setEastBound->isChecked() )
  {
   if (isHeadOnPanel(eastBoundHead) &&
                 (eastBoundHead!=getHeadFromName(boundary->getEastBoundSignal())))
@@ -2645,7 +2645,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
    needRedraw = true;
   }
  }
- else if ( (eastBoundHead!=NULL) &&
+ else if ( (eastBoundHead!=nullptr) &&
             (eastBoundHead!=getHeadFromName(boundary->getEastBoundSignal())) &&
             (eastBoundHead!=getHeadFromName(boundary->getWestBoundSignal())) )
  {
@@ -2666,12 +2666,12 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
    boundary->setEastBoundSignal(eastBoundField->text().trimmed());
   }
  }
- else if ( (eastBoundHead!=NULL) &&
+ else if ( (eastBoundHead!=nullptr) &&
             (eastBoundHead==getHeadFromName(boundary->getWestBoundSignal())) )
  {
 // need to figure out what to do in this case.
  }
- if ( (westBoundHead!=NULL) && setWestBound->isChecked() )
+ if ( (westBoundHead!=nullptr) && setWestBound->isChecked() )
  {
   if (isHeadOnPanel(westBoundHead) &&
                 (westBoundHead!=getHeadFromName(boundary->getWestBoundSignal())))
@@ -2706,7 +2706,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     needRedraw = true;
   }
  }
- else if ( (westBoundHead!=NULL) &&
+ else if ( (westBoundHead!=nullptr) &&
             (westBoundHead!=getHeadFromName(boundary->getEastBoundSignal())) &&
             (westBoundHead!=getHeadFromName(boundary->getWestBoundSignal())) )
  {
@@ -2727,16 +2727,16 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
    boundary->setWestBoundSignal(westBoundField->text().trimmed());
   }
  }
- else if ( (westBoundHead!=NULL) &&
+ else if ( (westBoundHead!=nullptr) &&
             (westBoundHead==getHeadFromName(boundary->getEastBoundSignal())) )
  {
 // need to figure out what to do in this case.
  }
- if ( (eastBoundHead!=NULL) && setupLogicEastBound->isChecked() )
+ if ( (eastBoundHead!=nullptr) && setupLogicEastBound->isChecked() )
  {
         setLogicEastBound();
  }
- if ( (westBoundHead!=NULL) && setupLogicWestBound->isChecked() )
+ if ( (westBoundHead!=nullptr) && setupLogicWestBound->isChecked() )
  {
    setLogicWestBound();
  }
@@ -2760,19 +2760,19 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     //might have to do something to trick it with an end bumper
     if (!boundaryFromMenu) {
         block1 = getBlockFromEntry(block1NameField);
-        if (block1==NULL) return false;
+        if (block1==nullptr) return false;
         block2 = getBlockFromEntry(block2NameField);
-        if (block2==NULL) return false;
+        if (block2==nullptr) return false;
         PositionablePoint* p = NULL;
         boundary = NULL;
-        for (int i = 0;(i<layoutEditor->pointList->size()) && (boundary==NULL);i++) {
+        for (int i = 0;(i<layoutEditor->pointList->size()) && (boundary==nullptr);i++) {
             p = layoutEditor->pointList->at(i);
             if (p->getType() == PositionablePoint::ANCHOR) {
                 LayoutBlock* bA = NULL;
                 LayoutBlock* bB = NULL;
-                if (p->getConnect1()!=NULL) bA = p->getConnect1()->getLayoutBlock();
-                if (p->getConnect2()!=NULL) bB = p->getConnect2()->getLayoutBlock();
-                if ( (bA!=NULL) && (bB!=NULL) && (bA!=bB) ) {
+                if (p->getConnect1()!=nullptr) bA = p->getConnect1()->getLayoutBlock();
+                if (p->getConnect2()!=nullptr) bB = p->getConnect2()->getLayoutBlock();
+                if ( (bA!=nullptr) && (bB!=nullptr) && (bA!=bB) ) {
                     if ( ( (bA==block1) && (bB==block2) ) ||
                                 ( (bA==block2) && (bB==block1) ) ) {
                         boundary = p;
@@ -2780,7 +2780,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
                 }
             }
         }
-        if (boundary==NULL) {
+        if (boundary==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,
 //                        tr("SignalsError7"),
 //                                tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -2831,7 +2831,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
             westTrack = track1;		// north
         }
     }
-    if (eastTrack==NULL) {
+    if (eastTrack==nullptr) {
         // did not meet the horizontal or vertical test, assume horizontal
         if (delX>0.0) {
             eastTrack = track1;
@@ -2847,7 +2847,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
 
 /*private*/ LayoutBlock* LayoutEditorTools::getBlockFromEntry(JTextField* blockNameField) {
     QString str = blockNameField->text().trimmed();
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,tr("SignalsError9"),
 //                                tr("Error"),JOptionPane.ERROR_MESSAGE);
         QMessageBox::critical(0, tr("Error"), tr("Error - Block name was not entered. Please\nenter the name of a block on the panel."));
@@ -2855,7 +2855,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     }
     LayoutBlock* block = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->
                                                     getByUserName(str);
-    if (block==NULL)
+    if (block==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,
 //                java.text.MessageFormat.format(tr("SignalsError10"),
@@ -2876,7 +2876,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
 }
 
 /*private*/ void LayoutEditorTools::placeEastBound() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     QPointF p = boundary->getCoords();
     if (trackHorizontal) {
@@ -2891,7 +2891,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     }
 }
 /*private*/ void LayoutEditorTools::placeWestBound() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     QPointF p = boundary->getCoords();
     if (trackHorizontal) {
@@ -2908,7 +2908,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
 /*private*/ void LayoutEditorTools::setLogicEastBound() {
     LayoutBlock* eastBlock = eastTrack->getLayoutBlock();
     Sensor* eastBlockOccupancy = eastBlock->getOccupancySensor();
-    if (eastBlockOccupancy==NULL) {
+    if (eastBlockOccupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{eastBlock.getUserName()}),
@@ -2918,7 +2918,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     }
     SignalHead* nextHead = getNextSignalFromObject(eastTrack,
             boundary, eastBoundField->text().trimmed(), setSignalsAtBoundaryFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{eastBlock.getUserName()}),
@@ -2929,10 +2929,10 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     if (!initializeBlockBossLogic(eastBoundField->text().trimmed())) return;
     logic->setMode(BlockBossLogic::SINGLEBLOCK);
     logic->setSensor1(eastBlockOccupancy->getSystemName());
-    if (nextHead!=NULL) {
+    if (nextHead!=nullptr) {
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
     }
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     finalizeBlockBossLogic();
@@ -2940,7 +2940,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
 /*private*/ void LayoutEditorTools::setLogicWestBound() {
     LayoutBlock* westBlock = westTrack->getLayoutBlock();
     Sensor* westBlockOccupancy = westBlock->getOccupancySensor();
-    if (westBlockOccupancy==NULL) {
+    if (westBlockOccupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{westBlock.getUserName()}),
@@ -2950,7 +2950,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     }
     SignalHead* nextHead = getNextSignalFromObject(westTrack,
             boundary, westBoundField->text().trimmed(), setSignalsAtBoundaryFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{westBlock.getUserName()}),
@@ -2962,10 +2962,10 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     if (!initializeBlockBossLogic(westBoundField->text().trimmed())) return;
     logic->setMode(BlockBossLogic::SINGLEBLOCK);
     logic->setSensor1(westBlockOccupancy->getSystemName());
-    if (nextHead!=NULL) {
+    if (nextHead!=nullptr) {
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
     }
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     finalizeBlockBossLogic();
@@ -3053,7 +3053,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
   return;
  }
  // Initialize if needed
- if (setSignalsAtXoverFrame == NULL)
+ if (setSignalsAtXoverFrame == nullptr)
  {
   setSignalsAtXoverFrame = new JmriJFrame(tr("Set Signals at Crossover"), false, true);
 //        setSignalsAtXoverFrame->layout()->addWidgetHelpMenu("package.jmri.jmrit.display.SetSignalsAtXoverTurnout", true);
@@ -3268,10 +3268,10 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
     centralWidgetLayout->addWidget(panel6);
 //    setSignalsAtXoverFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //        /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//            setXoverSignalsCancelPressed(NULL);
+//            setXoverSignalsCancelPressed(nullptr);
 //        }
 //    });
-    if (xoverFromMenu) xoverTurnoutSignalsGetSaved(NULL);
+    if (xoverFromMenu) xoverTurnoutSignalsGetSaved(nullptr);
 }
     //setSignalsAtXoverFrame.pack();
     setSignalsAtXoverFrame->setVisible(true);
@@ -3365,7 +3365,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 // need to figure out what to do in this case.
   }
  }
- if ( (a2Head!=NULL) && setA2Head->isChecked() )
+ if ( (a2Head!=nullptr) && setA2Head->isChecked() )
  {
         if (isHeadOnPanel(a2Head) &&
             (a2Head!=getHeadFromName(layoutTurnout->getSignalA2Name()))) {
@@ -3395,7 +3395,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             needRedraw = true;
         }
  }
- else if (a2Head!=NULL)
+ else if (a2Head!=nullptr)
  {
         int assigned = isHeadAssignedHere(a2Head,layoutTurnout);
         if (assigned == NONE) {
@@ -3418,7 +3418,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 // need to figure out what to do in this case.
         }
  }
- else if (a2Head==NULL)
+ else if (a2Head==nullptr)
  {
   removeSignalHeadFromPanel(layoutTurnout->getSignalA2Name());
         layoutTurnout->setSignalA2Name("");
@@ -3475,7 +3475,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 // need to figure out what to do in this case.
         }
     }
-    if ( (b2Head!=NULL) && setB2Head->isChecked() ) {
+    if ( (b2Head!=nullptr) && setB2Head->isChecked() ) {
         if (isHeadOnPanel(b2Head) &&
             (b2Head!=getHeadFromName(layoutTurnout->getSignalB2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
@@ -3504,7 +3504,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             needRedraw = true;
         }
     }
-    else if (b2Head!=NULL) {
+    else if (b2Head!=nullptr) {
         int assigned = isHeadAssignedHere(b2Head,layoutTurnout);
         if (assigned == NONE) {
             if ( isHeadOnPanel(b2Head) &&
@@ -3526,7 +3526,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 // need to figure out what to do in this case.
         }
     }
-    else if (b2Head==NULL) {
+    else if (b2Head==nullptr) {
         removeSignalHeadFromPanel(layoutTurnout->getSignalB2Name());
         layoutTurnout->setSignalB2Name("");
     }
@@ -3581,7 +3581,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 // need to figure out what to do in this case.
         }
     }
-    if ( (c2Head!=NULL) && setC2Head->isChecked() ) {
+    if ( (c2Head!=nullptr) && setC2Head->isChecked() ) {
         if (isHeadOnPanel(c2Head) &&
             (c2Head!=getHeadFromName(layoutTurnout->getSignalC2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
@@ -3610,7 +3610,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             needRedraw = true;
         }
     }
-    else if (c2Head!=NULL) {
+    else if (c2Head!=nullptr) {
         int assigned = isHeadAssignedHere(c2Head,layoutTurnout);
         if (assigned == NONE) {
             if ( isHeadOnPanel(c2Head) &&
@@ -3632,7 +3632,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 // need to figure out what to do in this case.
         }
     }
-    else if (c2Head==NULL) {
+    else if (c2Head==nullptr) {
         removeSignalHeadFromPanel(layoutTurnout->getSignalC2Name());
         layoutTurnout->setSignalC2Name("");
     }
@@ -3687,7 +3687,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 // need to figure out what to do in this case.
         }
     }
-    if ( (d2Head!=NULL) && setD2Head->isChecked() ) {
+    if ( (d2Head!=nullptr) && setD2Head->isChecked() ) {
         if (isHeadOnPanel(d2Head) &&
             (d2Head!=getHeadFromName(layoutTurnout->getSignalD2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
@@ -3716,7 +3716,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             needRedraw = true;
         }
     }
-    else if (d2Head!=NULL) {
+    else if (d2Head!=nullptr) {
         int assigned = isHeadAssignedHere(d2Head,layoutTurnout);
         if (assigned == NONE) {
             if ( isHeadOnPanel(d2Head) &&
@@ -3738,7 +3738,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 // need to figure out what to do in this case.
         }
     }
-    else if (d2Head==NULL) {
+    else if (d2Head==nullptr) {
         removeSignalHeadFromPanel(layoutTurnout->getSignalD2Name());
         layoutTurnout->setSignalD2Name("");
     }
@@ -3799,25 +3799,25 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 
 /*private*/ bool LayoutEditorTools::getXoverSignalHeadInformation() {
     a1Head = getSignalHeadFromEntry(a1Field,true,setSignalsAtXoverFrame);
-    if (a1Head==NULL) return false;
+    if (a1Head==nullptr) return false;
     if (!(xoverType == LayoutTurnout::LH_XOVER ))
         a2Head = getSignalHeadFromEntry(a2Field,false,setSignalsAtXoverFrame);
     else
         a2Head = NULL;
     b1Head = getSignalHeadFromEntry(b1Field,true,setSignalsAtXoverFrame);
-    if (b1Head==NULL) return false;
+    if (b1Head==nullptr) return false;
     if (!(xoverType == LayoutTurnout::RH_XOVER ))
         b2Head = getSignalHeadFromEntry(b2Field,false,setSignalsAtXoverFrame);
     else
         b2Head = NULL;
     c1Head = getSignalHeadFromEntry(c1Field,true,setSignalsAtXoverFrame);
-    if (c1Head==NULL) return false;
+    if (c1Head==nullptr) return false;
     if (!(xoverType == LayoutTurnout::LH_XOVER ))
         c2Head = getSignalHeadFromEntry(c2Field,false,setSignalsAtXoverFrame);
     else
         c2Head = NULL;
     d1Head = getSignalHeadFromEntry(d1Field,true,setSignalsAtXoverFrame);
-    if (d1Head==NULL) return false;
+    if (d1Head==nullptr) return false;
     if (!(xoverType == LayoutTurnout::RH_XOVER ))
         d2Head = getSignalHeadFromEntry(d2Field,false,setSignalsAtXoverFrame);
     else
@@ -3825,7 +3825,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     return true;
 }
 /*private*/ void LayoutEditorTools::placeA1() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
         setSignalHeadOnPanel(2,a1Field->text().trimmed(),
@@ -3849,7 +3849,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
 }
 /*private*/ void LayoutEditorTools::placeA2() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
         setSignalHeadOnPanel(2,a2Field->text().trimmed(),
@@ -3873,7 +3873,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
 }
 /*private*/ void LayoutEditorTools::placeB1() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
         setSignalHeadOnPanel(0,b1Field->text().trimmed(),
@@ -3897,7 +3897,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
 }
 /*private*/ void LayoutEditorTools::placeB2() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
         setSignalHeadOnPanel(0,b2Field->text().trimmed(),
@@ -3921,7 +3921,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
 }
 /*private*/ void LayoutEditorTools::placeC1() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
         setSignalHeadOnPanel(0,c1Field->text().trimmed(),
@@ -3946,7 +3946,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 }
 /*private*/ void LayoutEditorTools::placeC2()
 {
- if (testIcon == NULL)
+ if (testIcon == nullptr)
      testIcon = signalIconEditor->getIcon(0);
  if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
      setSignalHeadOnPanel(0,c2Field->text().trimmed(),
@@ -3971,7 +3971,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 }
 /*private*/ void LayoutEditorTools::placeD1()
 {
- if (testIcon == NULL)
+ if (testIcon == nullptr)
      testIcon = signalIconEditor->getIcon(0);
  if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
      setSignalHeadOnPanel(2,d1Field->text().trimmed(),
@@ -3995,7 +3995,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
  }
 }
 /*private*/ void LayoutEditorTools::placeD2() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutHorizontal && layoutTurnoutThroatLeft ) {
         setSignalHeadOnPanel(2,d2Field->text().trimmed(),
@@ -4022,7 +4022,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 /*private*/ void LayoutEditorTools::setLogicXover(SignalHead* head,TrackSegment* track,SignalHead* secondHead,TrackSegment* track2,
             bool setup1, bool setup2)
 {
- if ( (track==NULL) && setup1 )
+ if ( (track==nullptr) && setup1 )
  {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
@@ -4031,16 +4031,16 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
  }
  Sensor* occupancy = NULL;
  SignalHead* nextHead = NULL;
- if ( (track!=NULL) && setup1) {
+ if ( (track!=nullptr) && setup1) {
      LayoutBlock* block = track->getLayoutBlock();
-     if (block==NULL) {
+     if (block==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
          QMessageBox::information(setSignalsAtXoverFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
          return;
      }
      occupancy = block->getOccupancySensor();
-     if (occupancy==NULL) {
+     if (occupancy==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage4"),
 //                    new Object[]{block->getUserName()}),
@@ -4050,7 +4050,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
      }
      nextHead = getNextSignalFromObject(track,
              layoutTurnout, head->getSystemName(), setSignalsAtXoverFrame);
-     if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+     if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //            JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage5"),
 //                    new Object[]{block->getUserName()}),
@@ -4058,37 +4058,37 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
          QMessageBox::information(setSignalsAtXoverFrame, tr("Information"), tr("Cannot set up logic because the next signal (in or\nat the end of block \"%1\") apparently is not yet defined.").arg(block->getUserName()));
          return;
      }
-     if (secondHead!=NULL) {
+     if (secondHead!=nullptr) {
          if (!initializeBlockBossLogic(head->getSystemName())) return;
          logic->setMode(BlockBossLogic::TRAILINGMAIN);
          logic->setTurnout(turnout->getSystemName());
          logic->setSensor1(occupancy->getSystemName());
-         if (nextHead!=NULL) {
+         if (nextHead!=nullptr) {
              logic->setWatchedSignal1(nextHead->getSystemName(),false);
          }
-         if (auxSignal!=NULL) {
+         if (auxSignal!=nullptr) {
              logic->setWatchedSignal1Alt(auxSignal->getSystemName());
          }
          finalizeBlockBossLogic();
      }
  }
- if ( (secondHead!=NULL) && !setup2 ) return;
+ if ( (secondHead!=nullptr) && !setup2 ) return;
  SignalHead* savedAuxSignal = auxSignal;
- if (track2==NULL) {
+ if (track2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsAtXoverFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
      return;
  }
  LayoutBlock* block2 = track2->getLayoutBlock();
- if (block2==NULL) {
+ if (block2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsAtXoverFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
      return;
  }
  Sensor* occupancy2 = block2->getOccupancySensor();
- if (occupancy2==NULL) {
+ if (occupancy2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block2.getUserName()}),
@@ -4097,10 +4097,10 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
      return;
  }
  QString headName = head->getSystemName();
- if (secondHead!=NULL) headName = secondHead->getSystemName();
+ if (secondHead!=nullptr) headName = secondHead->getSystemName();
  SignalHead* nextHead2 = getNextSignalFromObject(track2,
          layoutTurnout, headName, setSignalsAtXoverFrame);
- if ( (nextHead2==NULL) && (!reachedEndBumper()) ) {
+ if ( (nextHead2==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{block2.getUserName()}),
@@ -4108,39 +4108,39 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
      QMessageBox::information(setSignalsAtXoverFrame, tr("Information"), tr("Cannot set up logic because the next signal (in or\nat the end of block \"%1\") apparently is not yet defined.").arg(block2->getUserName()));
      return;
  }
- if ( (secondHead==NULL) && (track!=NULL) && setup1 )
+ if ( (secondHead==nullptr) && (track!=nullptr) && setup1 )
  {
   if (!initializeBlockBossLogic(head->getSystemName())) return;
   logic->setMode(BlockBossLogic::FACING);
   logic->setTurnout(turnout->getSystemName());
   logic->setWatchedSensor1(occupancy->getSystemName());
   logic->setWatchedSensor2(occupancy2->getSystemName());
-  if (nextHead!=NULL) {
+  if (nextHead!=nullptr) {
       logic->setWatchedSignal1(nextHead->getSystemName(),false);
   }
-  if (savedAuxSignal!=NULL) {
+  if (savedAuxSignal!=nullptr) {
       logic->setWatchedSignal1Alt(savedAuxSignal->getSystemName());
   }
-  if (nextHead2!=NULL) {
+  if (nextHead2!=nullptr) {
       logic->setWatchedSignal2(nextHead2->getSystemName());
   }
-  if (auxSignal!=NULL) {
+  if (auxSignal!=nullptr) {
       logic->setWatchedSignal2Alt(auxSignal->getSystemName());
   }
   logic->setLimitSpeed2(true);
   finalizeBlockBossLogic();
  }
- else if ( (secondHead!=NULL) && setup2)
+ else if ( (secondHead!=nullptr) && setup2)
  {
   if (!initializeBlockBossLogic(secondHead->getSystemName())) return;
   logic->setMode(BlockBossLogic::TRAILINGDIVERGING);
   logic->setTurnout(turnout->getSystemName());
   logic->setSensor1(occupancy2->getSystemName());
-  if (nextHead2!=NULL)
+  if (nextHead2!=nullptr)
   {
    logic->setWatchedSignal1(nextHead2->getSystemName(),false);
   }
-  if (auxSignal!=NULL)
+  if (auxSignal!=nullptr)
   {
    logic->setWatchedSignal1Alt(auxSignal->getSystemName());
   }
@@ -4149,21 +4149,21 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
  }
 }
 /*private*/ void LayoutEditorTools::setLogicXoverContinuing(SignalHead* head,TrackSegment* track) {
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAtXoverFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
         return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL) {
+    if (block==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAtXoverFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL) {
+    if (occupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block->getUserName()}),
@@ -4173,7 +4173,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
     SignalHead* nextHead = getNextSignalFromObject(track,
             layoutTurnout, head->getSystemName(), setSignalsAtXoverFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtXoverFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{block->getUserName()}),
@@ -4185,10 +4185,10 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     logic->setMode(BlockBossLogic::TRAILINGMAIN);
     logic->setTurnout(turnout->getSystemName());
     logic->setSensor1(occupancy->getSystemName());
-    if (nextHead!=NULL) {
+    if (nextHead!=nullptr) {
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
     }
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     finalizeBlockBossLogic();
@@ -4235,7 +4235,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     cField->setText("");
     dField->setText("");
     // Initialize if needed
-    if (setSignalsAtXingFrame == NULL)
+    if (setSignalsAtXingFrame == nullptr)
     {
         setSignalsAtXingFrame = new JmriJFrame( tr("SignalsAtLevelXing"), false, true );
         setSignalsAtXingFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtLevelXing", true);
@@ -4387,11 +4387,11 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
         centralWidgetLayout->addWidget(panel6);
 //        setSignalsAtXingFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                setXingSignalsCancelPressed(NULL);
+//                setXingSignalsCancelPressed(nullptr);
 //            }
 //        });
         setSignalsAtXingFrame->addWindowListener(new SXWindowListener(this));
-        if (xingFromMenu) xingSignalsGetSaved(NULL);
+        if (xingFromMenu) xingSignalsGetSaved(nullptr);
     }
     setSignalsAtXingFrame->adjustSize();
     setSignalsAtXingFrame->setVisible(true);
@@ -4419,7 +4419,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     if ( !getLevelCrossingInformation() ) return;
     if ( !getXingSignalHeadInformation() ) return;
     // place or update signals as requested
-    if ( (aHead!=NULL) && setAHead->isChecked() ) {
+    if ( (aHead!=nullptr) && setAHead->isChecked() ) {
         if (isHeadOnPanel(aHead) &&
                 (aHead!=getHeadFromName(levelXing->getSignalAName())) ) {
 //            JOptionPane.showMessageDialog(setSignalsAtXingFrame,
@@ -4447,7 +4447,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             needRedraw = true;
         }
     }
-    else if ( (aHead!=NULL) &&
+    else if ( (aHead!=nullptr) &&
             (aHead!=getHeadFromName(levelXing->getSignalAName())) &&
             (aHead!=getHeadFromName(levelXing->getSignalBName())) &&
             (aHead!=getHeadFromName(levelXing->getSignalCName())) &&
@@ -4468,17 +4468,17 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             levelXing->setSignalAName(aField->text().trimmed());
         }
     }
-    else if ( (aHead!=NULL) &&
+    else if ( (aHead!=nullptr) &&
             ( (aHead==getHeadFromName(levelXing->getSignalBName())) ||
                 (aHead==getHeadFromName(levelXing->getSignalCName())) ||
                 (aHead==getHeadFromName(levelXing->getSignalDName())) ) ) {
 // need to figure out what to do in this case.
     }
-    else if (aHead==NULL) {
+    else if (aHead==nullptr) {
         removeSignalHeadFromPanel(levelXing->getSignalAName());
         levelXing->setSignalAName("");
     }
-    if ( (bHead!=NULL) && setBHead->isChecked() ) {
+    if ( (bHead!=nullptr) && setBHead->isChecked() ) {
         if (isHeadOnPanel(bHead) &&
                 (bHead!=getHeadFromName(levelXing->getSignalBName()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtXingFrame,
@@ -4506,7 +4506,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             needRedraw = true;
         }
     }
-    else if ( (bHead!=NULL) &&
+    else if ( (bHead!=nullptr) &&
             (bHead!=getHeadFromName(levelXing->getSignalAName())) &&
             (bHead!=getHeadFromName(levelXing->getSignalBName())) &&
             (bHead!=getHeadFromName(levelXing->getSignalCName())) &&
@@ -4525,17 +4525,17 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             levelXing->setSignalBName(bField->text().trimmed());
         }
     }
-    else if ( (bHead!=NULL) &&
+    else if ( (bHead!=nullptr) &&
             ( (bHead==getHeadFromName(levelXing->getSignalAName())) ||
                 (bHead==getHeadFromName(levelXing->getSignalCName())) ||
                 (bHead==getHeadFromName(levelXing->getSignalDName())) ) ) {
 // need to figure out what to do in this case.
     }
-    else if (bHead==NULL) {
+    else if (bHead==nullptr) {
         removeSignalHeadFromPanel(levelXing->getSignalBName());
         levelXing->setSignalBName("");
     }
-    if ( (cHead!=NULL) && setCHead->isChecked() ) {
+    if ( (cHead!=nullptr) && setCHead->isChecked() ) {
         if (isHeadOnPanel(cHead) &&
                 (cHead!=getHeadFromName(levelXing->getSignalCName())) ) {
 //            JOptionPane.showMessageDialog(setSignalsAtXingFrame,
@@ -4563,7 +4563,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             needRedraw = true;
         }
     }
-    else if ( (cHead!=NULL) &&
+    else if ( (cHead!=nullptr) &&
             (cHead!=getHeadFromName(levelXing->getSignalAName())) &&
             (cHead!=getHeadFromName(levelXing->getSignalBName())) &&
             (cHead!=getHeadFromName(levelXing->getSignalCName())) &&
@@ -4582,17 +4582,17 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             levelXing->setSignalCName(cField->text().trimmed());
         }
     }
-    else if ( (cHead!=NULL) &&
+    else if ( (cHead!=nullptr) &&
             ( (cHead==getHeadFromName(levelXing->getSignalBName())) ||
                 (cHead==getHeadFromName(levelXing->getSignalAName())) ||
                 (cHead==getHeadFromName(levelXing->getSignalDName())) ) ) {
 // need to figure out what to do in this case.
     }
-    else if (cHead==NULL) {
+    else if (cHead==nullptr) {
         removeSignalHeadFromPanel(levelXing->getSignalCName());
         levelXing->setSignalCName("");
     }
-    if ( (dHead!=NULL) && setDHead->isChecked() ) {
+    if ( (dHead!=nullptr) && setDHead->isChecked() ) {
         if (isHeadOnPanel(dHead) &&
                 (dHead!=getHeadFromName(levelXing->getSignalDName())) ) {
 //            JOptionPane.showMessageDialog(setSignalsAtXingFrame,
@@ -4620,7 +4620,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             needRedraw = true;
         }
     }
-    else if ( (dHead!=NULL) &&
+    else if ( (dHead!=nullptr) &&
             (dHead!=getHeadFromName(levelXing->getSignalAName())) &&
             (dHead!=getHeadFromName(levelXing->getSignalBName())) &&
             (dHead!=getHeadFromName(levelXing->getSignalCName())) &&
@@ -4639,33 +4639,33 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             levelXing->setSignalDName(dField->text().trimmed());
         }
     }
-    else if ( (dHead!=NULL) &&
+    else if ( (dHead!=nullptr) &&
             ( (dHead==getHeadFromName(levelXing->getSignalBName())) ||
                 (dHead==getHeadFromName(levelXing->getSignalCName())) ||
                 (dHead==getHeadFromName(levelXing->getSignalAName())) ) ) {
 // need to figure out what to do in this case.
     }
-    else if (dHead==NULL) {
+    else if (dHead==nullptr) {
         removeSignalHeadFromPanel(levelXing->getSignalDName());
         levelXing->setSignalDName("");
     }
     // setup logic if requested
-    if ( setupALogic->isChecked() && (aHead!=NULL) ) {
+    if ( setupALogic->isChecked() && (aHead!=nullptr) ) {
         setLogicXing( aHead, (TrackSegment*)levelXing->getConnectC(),
             levelXing->getLayoutBlockBD(), (TrackSegment*)levelXing->getConnectB(),
                 (TrackSegment*)levelXing->getConnectD(), aField->text());
     }
-    if ( setupBLogic->isChecked() && (bHead!=NULL) ) {
+    if ( setupBLogic->isChecked() && (bHead!=nullptr) ) {
         setLogicXing( bHead, (TrackSegment*)levelXing->getConnectD(),
             levelXing->getLayoutBlockAC(), (TrackSegment*)levelXing->getConnectA(),
                 (TrackSegment*)levelXing->getConnectC(), bField->text());
     }
-    if ( setupCLogic->isChecked() && (cHead!=NULL) ) {
+    if ( setupCLogic->isChecked() && (cHead!=nullptr) ) {
         setLogicXing( cHead, (TrackSegment*)levelXing->getConnectA(),
             levelXing->getLayoutBlockBD(), (TrackSegment*)levelXing->getConnectB(),
                 (TrackSegment*)levelXing->getConnectD(), cField->text());
     }
-    if ( setupDLogic->isChecked() && (dHead!=NULL) ) {
+    if ( setupDLogic->isChecked() && (dHead!=nullptr) ) {
         setLogicXing( dHead, (TrackSegment*)levelXing->getConnectB(),
             levelXing->getLayoutBlockAC(), (TrackSegment*)levelXing->getConnectA(),
                 (TrackSegment*)levelXing->getConnectC(), dField->text());
@@ -4699,15 +4699,15 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             LayoutBlock* xingBlockA = NULL;
             LayoutBlock* xingBlockC = NULL;
             xingBlockA = getBlockFromEntry(blockANameField);
-            if (xingBlockA==NULL) return false;
+            if (xingBlockA==nullptr) return false;
             if (blockCNameField->text().trimmed().length()>0) {
                 xingBlockC = getBlockFromEntry(blockCNameField);
-                if (xingBlockC==NULL) return false;
+                if (xingBlockC==nullptr) return false;
             }
             LevelXing* x = NULL;
             int foundCount = 0;
             // make two block tests first
-            if (xingBlockC!=NULL) {
+            if (xingBlockC!=nullptr) {
                 for (int i = 0;(i<layoutEditor->xingList->size());i++) {
                     x = layoutEditor->xingList->at(i);
                     LayoutBlock* xA = NULL;
@@ -4716,18 +4716,18 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
                     LayoutBlock* xD = NULL;
                     LayoutBlock* xAC = x->getLayoutBlockAC();
                     LayoutBlock* xBD = x->getLayoutBlockBD();
-                    if (x->getConnectA()!=NULL) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
-                    if (x->getConnectB()!=NULL) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
-                    if (x->getConnectC()!=NULL) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
-                    if (x->getConnectD()!=NULL) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
-                    if ( ( (xA!=NULL) && (xC!=NULL) && ( ((xA==xingBlockA)&&(xC==xingBlockC)) ||
+                    if (x->getConnectA()!=nullptr) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
+                    if (x->getConnectB()!=nullptr) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
+                    if (x->getConnectC()!=nullptr) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
+                    if (x->getConnectD()!=nullptr) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
+                    if ( ( (xA!=nullptr) && (xC!=nullptr) && ( ((xA==xingBlockA)&&(xC==xingBlockC)) ||
                             ((xA==xingBlockC)&&(xC==xingBlockA)) ) ) ||
-                            ( (xB!=NULL) && (xD!=NULL) && ( ((xB==xingBlockA)&&(xD==xingBlockC)) ||
+                            ( (xB!=nullptr) && (xD!=nullptr) && ( ((xB==xingBlockA)&&(xD==xingBlockC)) ||
                             ((xB==xingBlockC)&&(xD==xingBlockA)) ) ) ) {
                         levelXing = x;
                         foundCount ++;
                     }
-                    else if ( (xAC!=NULL) && (xBD!=NULL) && ( ((xAC==xingBlockA) && (xBD==xingBlockC)) ||
+                    else if ( (xAC!=nullptr) && (xBD!=nullptr) && ( ((xAC==xingBlockA) && (xBD==xingBlockC)) ||
                                 ((xAC==xingBlockC) && (xBD==xingBlockA)) ) ) {
                         levelXing = x;
                         foundCount ++;
@@ -4752,7 +4752,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
              QMessageBox::critical(setSignalsAtXingFrame, tr("Error"), tr("or - The entered block names match \"%1\" level crossings.\nPlease enter block names that match only one level crossing.").arg(foundCount));
                 return false;
             }
-            if (levelXing==NULL) {
+            if (levelXing==nullptr) {
 //                JOptionPane.showMessageDialog(setSignalsAtXingFrame,
 //                            tr("SignalsError17"),
 //                                    tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -4761,10 +4761,10 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
             }
         }
     }
-    //if (levelXing->getConnectA()!=NULL) xingTrackA = ((TrackSegment*)levelXing->getConnectA());
-    //if (levelXing->getConnectB()!=NULL) xingTrackB = ((TrackSegment*)levelXing->getConnectB());
-    //if (levelXing->getConnectC()!=NULL) xingTrackC = ((TrackSegment*)levelXing->getConnectC());
-    //if (levelXing->getConnectD()!=NULL) xingTrackD = ((TrackSegment*)levelXing->getConnectD());
+    //if (levelXing->getConnectA()!=nullptr) xingTrackA = ((TrackSegment*)levelXing->getConnectA());
+    //if (levelXing->getConnectB()!=nullptr) xingTrackB = ((TrackSegment*)levelXing->getConnectB());
+    //if (levelXing->getConnectC()!=nullptr) xingTrackC = ((TrackSegment*)levelXing->getConnectC());
+    //if (levelXing->getConnectD()!=nullptr) xingTrackD = ((TrackSegment*)levelXing->getConnectD());
     double delX = levelXing->getCoordsA().x() - levelXing->getCoordsC().x();
     double delY = levelXing->getCoordsA().y() - levelXing->getCoordsC().y();
     levelXingACHorizontal = false;
@@ -4794,15 +4794,15 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     bHead = getSignalHeadFromEntry(bField,false,setSignalsAtXingFrame);
     cHead = getSignalHeadFromEntry(cField,false,setSignalsAtXingFrame);
     dHead = getSignalHeadFromEntry(dField,false,setSignalsAtXingFrame);
-    if ( ((aHead!=NULL) && (cHead==NULL)) || ((aHead==NULL) && (cHead!=NULL)) ||
-            ((bHead!=NULL) && (dHead==NULL)) || ((bHead==NULL) && (dHead!=NULL)) ) {
+    if ( ((aHead!=nullptr) && (cHead==nullptr)) || ((aHead==nullptr) && (cHead!=nullptr)) ||
+            ((bHead!=nullptr) && (dHead==nullptr)) || ((bHead==nullptr) && (dHead!=nullptr)) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtXingFrame,
 //                tr("SignalsError14"),
 //                    tr("Error"),JOptionPane.ERROR_MESSAGE);
      QMessageBox::critical(setSignalsAtXingFrame, tr("Error"), tr("Error - This tool requires signal heads be entered as pairs, A and C,\nand/or B and D. You entered only one head of a pair. "));
         return false;
     }
-    if ( (aHead==NULL) && (bHead==NULL) && (cHead==NULL) && (dHead==NULL) ) {
+    if ( (aHead==nullptr) && (bHead==nullptr) && (cHead==nullptr) && (dHead==nullptr) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtXingFrame,
 //                tr("SignalsError12"),
 //                    tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -4813,7 +4813,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 }
 /*private*/ void LayoutEditorTools::placeXingA()
 {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     QPointF p = levelXing->getCoordsA();
     if (levelXingACHorizontal && levelXingALeft)
@@ -4841,7 +4841,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
 }
 /*private*/ void LayoutEditorTools::placeXingB() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     QPointF p = levelXing->getCoordsB();
     if (levelXingACVertical && levelXingBLeft) {
@@ -4866,7 +4866,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
 }
 /*private*/ void LayoutEditorTools::placeXingC() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     QPointF p = levelXing->getCoordsC();
     if (levelXingACHorizontal && (!levelXingALeft) ) {
@@ -4891,7 +4891,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
 }
 /*private*/ void LayoutEditorTools::placeXingD() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     QPointF p = levelXing->getCoordsD();
     if (levelXingACVertical && (!levelXingBLeft) ) {
@@ -4918,7 +4918,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
 //@SuppressWarnings("NULL")
 /*private*/ void LayoutEditorTools::setLogicXing(SignalHead* head, TrackSegment* track, LayoutBlock*crossBlock,
             TrackSegment* crossTrack1, TrackSegment* crossTrack2, QString headName) {
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtXingFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::critical(setSignalsAtXingFrame, tr("Error"), tr("Error - The two blocks entered do not join at an anchor point.\nPlease enter the correct blocks and try again."));
@@ -4930,12 +4930,12 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     Sensor* track2Occupancy = NULL;
     SignalHead* nextHead = NULL;
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL) {
+    if (block==nullptr) {
      QMessageBox::information(setSignalsAtXingFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     occupancy = block->getOccupancySensor();
-    if (occupancy==NULL)
+    if (occupancy==nullptr)
     {
 //        JOptionPane.showMessageDialog(setSignalsAtXingFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage4"),
@@ -4944,19 +4944,19 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
      QMessageBox::critical(setSignalsAtXingFrame, tr("Information"), tr("Cannot set up logic because block \"%1\"\ndoesn''t have an occupancy sensor.").arg(block->getUserName()));
         return;
     }
-    if (crossBlock!=NULL) {
+    if (crossBlock!=nullptr) {
         crossOccupancy = crossBlock->getOccupancySensor();
     }
-    if (crossTrack1!=NULL) {
+    if (crossTrack1!=nullptr) {
         block = crossTrack1->getLayoutBlock();
-        if (block!=NULL) {
+        if (block!=nullptr) {
             track1Occupancy = block->getOccupancySensor();
             if (track1Occupancy==crossOccupancy) track1Occupancy = NULL;
         }
     }
-    if (crossTrack2!=NULL) {
+    if (crossTrack2!=nullptr) {
         block = crossTrack2->getLayoutBlock();
-        if (block!=NULL) {
+        if (block!=nullptr) {
             track2Occupancy = block->getOccupancySensor();
             if ( (track2Occupancy==crossOccupancy) ||
                  (track2Occupancy==track1Occupancy) ) track2Occupancy = NULL;
@@ -4964,7 +4964,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     }
     nextHead = getNextSignalFromObject(track,levelXing,
                             head->getSystemName(), setSignalsAtXoverFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtXingFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage5"),
 //                    new Object[]{block->getUserName()}),
@@ -4972,7 +4972,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
      QMessageBox::critical(setSignalsAtXingFrame, tr("Information"), tr("Cannot set up logic because the next signal (in or\nat the end of block \"%1\") apparently is not yet defined.").arg(block->getUserName()));
         return;
     }
-    if ( (crossOccupancy==NULL) && (track1Occupancy==NULL) && (track2Occupancy==NULL) ) {
+    if ( (crossOccupancy==nullptr) && (track1Occupancy==nullptr) && (track2Occupancy==nullptr) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtXingFrame,
 //                java.text.MessageFormat.format(tr("SignalsWarn1"),
 //                    new Object[]{headName}),
@@ -4982,28 +4982,28 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     if (!initializeBlockBossLogic(head->getSystemName())) return;
     logic->setMode(BlockBossLogic::SINGLEBLOCK);
     logic->setSensor1(occupancy->getSystemName());
-    if (nextHead!=NULL) {
+    if (nextHead!=nullptr) {
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
     }
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
-    if (crossOccupancy!=NULL) {
+    if (crossOccupancy!=nullptr) {
         logic->setSensor2(crossOccupancy->getSystemName());
-        if (track1Occupancy!=NULL) {
+        if (track1Occupancy!=nullptr) {
             logic->setSensor3(track1Occupancy->getSystemName());
-            if (track2Occupancy!=NULL)
+            if (track2Occupancy!=nullptr)
                 logic->setSensor4(track2Occupancy->getSystemName());
         }
-        else if (track2Occupancy!=NULL)
+        else if (track2Occupancy!=nullptr)
             logic->setSensor3(track2Occupancy->getSystemName());
     }
-    else if (track1Occupancy!=NULL) {
+    else if (track1Occupancy!=nullptr) {
         logic->setSensor2(track1Occupancy->getSystemName());
-        if (track2Occupancy!=NULL)
+        if (track2Occupancy!=nullptr)
             logic->setSensor3(track2Occupancy->getSystemName());
     }
-    else if (track2Occupancy!=NULL)
+    else if (track2Occupancy!=nullptr)
         logic->setSensor2(track2Occupancy->getSystemName());
     finalizeBlockBossLogic();
 }
@@ -5065,7 +5065,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
      return;
  }
  // Initialize if needed
- if (setSignalsAtTToTFrame == NULL)
+ if (setSignalsAtTToTFrame == nullptr)
  {
      setSignalsAtTToTFrame = new JmriJFrame( tr("SignalsAtTToTTurnout"), false, true );
      setSignalsAtTToTFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtTToTTurnout", true);
@@ -5278,7 +5278,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
      centralWidgetLayout->addWidget(panel6);
 //        setSignalsAtTToTFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                setTToTSignalsCancelPressed(NULL);
+//                setTToTSignalsCancelPressed(nullptr);
 //            }
 //        });
 }
@@ -5316,11 +5316,11 @@ signalFrame->setVisible(true);
  layoutTurnout1 = NULL;
  layoutTurnout2 = NULL;
  str = turnout1NameField->text().trimmed();
- if ( (str==NULL) || (str==("")) )
+ if ( (str==nullptr) || (str==("")) )
  {
   // turnout 1 not entered, test turnout 2
   str = turnout2NameField->text().trimmed();
-  if ( (str==NULL) || (str==("")) )
+  if ( (str==nullptr) || (str==("")) )
   {
          // no entries in turnout fields
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,tr("SignalsError1"),
@@ -5329,7 +5329,7 @@ signalFrame->setVisible(true);
          return false;
   }
   turnout2 = (Turnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-  if (turnout2==NULL)
+  if (turnout2==nullptr)
   {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                java.text.MessageFormat.format(tr("SignalsError2"),
@@ -5338,17 +5338,17 @@ signalFrame->setVisible(true);
      QMessageBox::critical(setSignalsAtTToTFrame, tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\n                                                                    a turnout name in the Turnout Table and on the panel."));
      return false ;
      }
-     if ( (turnout2->getUserName()==NULL) || (turnout2->getUserName()==("")) ||
+     if ( (turnout2->getUserName()==nullptr) || (turnout2->getUserName()==("")) ||
                              turnout2->getUserName()!=(str) ) {
 //         str = str.toUpper();
          turnout2NameField->setText(str);
      }
      layoutTurnout2 = getLayoutTurnoutFromTurnout(turnout2,false,str,setSignalsAtTToTFrame);
-     if (layoutTurnout2==NULL)
+     if (layoutTurnout2==nullptr)
          return false;
      // have turnout 2 and layout turnout 2 - look for turnout 1
      connectorTrack = (TrackSegment*)layoutTurnout2->getConnectA();
-     if (connectorTrack == NULL)
+     if (connectorTrack == nullptr)
      {
          // Inform user of error, and terminate
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
@@ -5363,7 +5363,7 @@ signalFrame->setVisible(true);
          type = connectorTrack->getType2();
          connect = connectorTrack->getConnect2();
      }
-     if ( (type != LayoutEditor::TURNOUT_A) || (connect==NULL) ) {
+     if ( (type != LayoutEditor::TURNOUT_A) || (connect==nullptr) ) {
          // Not two turnouts connected throat-to-throat by a single Track Segment
          // Inform user of error and terminate
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
@@ -5374,7 +5374,7 @@ signalFrame->setVisible(true);
      }
      layoutTurnout1 = (LayoutTurnout*)connect;
      turnout1 = layoutTurnout1->getTurnout();
-     if (turnout1==NULL) {
+     if (turnout1==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                    tr("SignalsError18"),
 //                        tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -5386,7 +5386,7 @@ signalFrame->setVisible(true);
  else {
      // something was entered in the turnout 1 field
      turnout1 = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-     if (turnout1==NULL) {
+     if (turnout1==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                java.text.MessageFormat.format(tr("SignalsError2"),
 //                    new Object[]{str}), tr("Error"),
@@ -5394,22 +5394,22 @@ signalFrame->setVisible(true);
          QMessageBox::critical(setSignalsAtTToTFrame, tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\na turnout name in the Turnout Table and on the panel.").arg(str));
          return false ;
      }
-     if ( (turnout1->getUserName()==NULL) || (turnout1->getUserName()==("")) ||
+     if ( (turnout1->getUserName()==nullptr) || (turnout1->getUserName()==("")) ||
                              turnout1->getUserName()!=(str) ) {
 //         str = str.toUpper();
          turnout1NameField->setText(str);
      }
      // have turnout 1 - get corresponding layoutTurnout
      layoutTurnout1 = getLayoutTurnoutFromTurnout(turnout1,false,str,setSignalsAtTToTFrame);
-     if (layoutTurnout1 == NULL)
+     if (layoutTurnout1 == nullptr)
          return false;
      turnout1NameField->setText(str);
      // have turnout 1 and layout turnout 1 - was something entered for turnout 2
      str = turnout2NameField->text().trimmed();
-     if ( (str==NULL) || (str==("")) ) {
+     if ( (str==nullptr) || (str==("")) ) {
          // no entry for turnout 2
          connectorTrack = (TrackSegment*)layoutTurnout1->getConnectA();
-         if (connectorTrack == NULL) {
+         if (connectorTrack == nullptr) {
              // Inform user of error, and terminate
 //                JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                        tr("SignalsError18"),
@@ -5423,7 +5423,7 @@ signalFrame->setVisible(true);
              type = connectorTrack->getType2();
              connect = connectorTrack->getConnect2();
          }
-         if ( (type != LayoutEditor::TURNOUT_A) || (connect==NULL) ) {
+         if ( (type != LayoutEditor::TURNOUT_A) || (connect==nullptr) ) {
              // Not two turnouts connected throat-to-throat by a single Track Segment
              // Inform user of error and terminate
 //                JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
@@ -5434,7 +5434,7 @@ signalFrame->setVisible(true);
          }
          layoutTurnout2 = (LayoutTurnout*)connect;
          turnout2 = layoutTurnout2->getTurnout();
-         if (turnout2==NULL) {
+         if (turnout2==nullptr) {
 //                JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                        tr("SignalsError18"),
 //                            tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -5446,7 +5446,7 @@ signalFrame->setVisible(true);
      else {
          // turnout 2 entered also
          turnout2 = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-         if (turnout2==NULL) {
+         if (turnout2==nullptr) {
 //                JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                    java.text.MessageFormat.format(tr("SignalsError2"),
 //                            new Object[]{str}), tr("Error"),
@@ -5454,13 +5454,13 @@ signalFrame->setVisible(true);
              QMessageBox::critical(setSignalsAtTToTFrame, tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\na turnout name in the Turnout Table and on the panel.").arg(str));
              return false ;
          }
-         if ( (turnout2->getUserName()==NULL) || (turnout2->getUserName()==("")) ||
+         if ( (turnout2->getUserName()==nullptr) || (turnout2->getUserName()==("")) ||
                              turnout2->getUserName()!=(str) ) {
 //             str = str.toUpper();
              turnout2NameField->setText(str);
          }
          layoutTurnout2 = getLayoutTurnoutFromTurnout(turnout2,false,str,setSignalsAtTToTFrame);
-         if (layoutTurnout2==NULL)
+         if (layoutTurnout2==nullptr)
              return false;
          turnout2NameField->setText(str);
          // check that layout turnout 1 and layout turnout 2 are connected throat-to-throat
@@ -5578,7 +5578,7 @@ signalFrame->setVisible(true);
 // need to figure out what to do in this case - assigned to a different position on the same turnout.
         }
     }
-    if ( (a2TToTHead!=NULL) && setA2TToTHead->isChecked() ) {
+    if ( (a2TToTHead!=nullptr) && setA2TToTHead->isChecked() ) {
         if (isHeadOnPanel(a2TToTHead) &&
             (a2TToTHead!=getHeadFromName(layoutTurnout1->getSignalB2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
@@ -5610,7 +5610,7 @@ signalFrame->setVisible(true);
             needRedraw = true;
         }
     }
-    else if (a2TToTHead!=NULL) {
+    else if (a2TToTHead!=nullptr) {
         int assigned = isHeadAssignedHere(a2TToTHead,layoutTurnout1);
         if (assigned == NONE) {
             if ( isHeadOnPanel(a2TToTHead) &&
@@ -5632,7 +5632,7 @@ signalFrame->setVisible(true);
 // need to figure out what to do in this case.
         }
     }
-    else if (a2TToTHead==NULL) {
+    else if (a2TToTHead==nullptr) {
         removeSignalHeadFromPanel(layoutTurnout1->getSignalB2Name());
         layoutTurnout1->setSignalB2Name("");
     }
@@ -5690,7 +5690,7 @@ signalFrame->setVisible(true);
 // need to figure out what to do in this case.
         }
     }
-    if ( (b2TToTHead!=NULL) && setB2TToTHead->isChecked() ) {
+    if ( (b2TToTHead!=nullptr) && setB2TToTHead->isChecked() ) {
         if (isHeadOnPanel(b2TToTHead) &&
             (b2TToTHead!=getHeadFromName(layoutTurnout1->getSignalC2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
@@ -5722,7 +5722,7 @@ signalFrame->setVisible(true);
             needRedraw = true;
         }
     }
-    else if (b2TToTHead!=NULL) {
+    else if (b2TToTHead!=nullptr) {
         int assigned = isHeadAssignedHere(b2TToTHead,layoutTurnout1);
         if (assigned == NONE) {
             if ( isHeadOnPanel(b2TToTHead) &&
@@ -5744,7 +5744,7 @@ signalFrame->setVisible(true);
 // need to figure out what to do in this case.
         }
     }
-    else if (b2TToTHead==NULL) {
+    else if (b2TToTHead==nullptr) {
         removeSignalHeadFromPanel(layoutTurnout1->getSignalC2Name());
         layoutTurnout1->setSignalC2Name("");
     }
@@ -5804,7 +5804,7 @@ signalFrame->setVisible(true);
 // need to figure out what to do in this case.
         }
     }
-    if ( (c2TToTHead!=NULL) && setC2TToTHead->isChecked() ) {
+    if ( (c2TToTHead!=nullptr) && setC2TToTHead->isChecked() ) {
         if (isHeadOnPanel(c2TToTHead) &&
             (c2TToTHead!=getHeadFromName(layoutTurnout2->getSignalB2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
@@ -5836,7 +5836,7 @@ signalFrame->setVisible(true);
             needRedraw = true;
         }
     }
-    else if (c2TToTHead!=NULL) {
+    else if (c2TToTHead!=nullptr) {
         int assigned = isHeadAssignedHere(c2TToTHead,layoutTurnout2);
         if (assigned == NONE) {
             if ( isHeadOnPanel(c2TToTHead) &&
@@ -5858,7 +5858,7 @@ signalFrame->setVisible(true);
 // need to figure out what to do in this case.
         }
     }
-    else if (c2TToTHead==NULL) {
+    else if (c2TToTHead==nullptr) {
         removeSignalHeadFromPanel(layoutTurnout2->getSignalB2Name());
         layoutTurnout2->setSignalB2Name("");
     }
@@ -5916,7 +5916,7 @@ signalFrame->setVisible(true);
 // need to figure out what to do in this case.
         }
     }
-    if ( (d2TToTHead!=NULL) && setD2TToTHead->isChecked() ) {
+    if ( (d2TToTHead!=nullptr) && setD2TToTHead->isChecked() ) {
         if (isHeadOnPanel(d2TToTHead) &&
             (d2TToTHead!=getHeadFromName(layoutTurnout2->getSignalC2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
@@ -5948,7 +5948,7 @@ signalFrame->setVisible(true);
             needRedraw = true;
         }
     }
-    else if (d2TToTHead!=NULL) {
+    else if (d2TToTHead!=nullptr) {
         int assigned = isHeadAssignedHere(d2TToTHead,layoutTurnout2);
         if (assigned == NONE) {
             if ( isHeadOnPanel(d2TToTHead) &&
@@ -5970,7 +5970,7 @@ signalFrame->setVisible(true);
 // need to figure out what to do in this case.
         }
     }
-    else if (d2TToTHead==NULL) {
+    else if (d2TToTHead==nullptr) {
         removeSignalHeadFromPanel(layoutTurnout2->getSignalC2Name());
         layoutTurnout2->setSignalC2Name("");
     }
@@ -6012,22 +6012,22 @@ signalFrame->setVisible(true);
 }
 /*private*/ bool LayoutEditorTools::getTToTSignalHeadInformation() {
     a1TToTHead = getSignalHeadFromEntry(a1TToTField,true,setSignalsAtTToTFrame);
-    if (a1TToTHead==NULL) return false;
+    if (a1TToTHead==nullptr) return false;
     a2TToTHead = getSignalHeadFromEntry(a2TToTField,false,setSignalsAtTToTFrame);
     b1TToTHead = getSignalHeadFromEntry(b1TToTField,true,setSignalsAtTToTFrame);
-    if (b1TToTHead==NULL) return false;
+    if (b1TToTHead==nullptr) return false;
     b2TToTHead = getSignalHeadFromEntry(b2TToTField,false,setSignalsAtTToTFrame);
     c1TToTHead = getSignalHeadFromEntry(c1TToTField,true,setSignalsAtTToTFrame);
-    if (c1TToTHead==NULL) return false;
+    if (c1TToTHead==nullptr) return false;
     c2TToTHead = getSignalHeadFromEntry(c2TToTField,false,setSignalsAtTToTFrame);
     d1TToTHead = getSignalHeadFromEntry(d1TToTField,true,setSignalsAtTToTFrame);
-    if (d1TToTHead==NULL) return false;
+    if (d1TToTHead==nullptr) return false;
     d2TToTHead = getSignalHeadFromEntry(d2TToTField,false,setSignalsAtTToTFrame);
     return true;
 }
 /*private*/ void LayoutEditorTools::placeA1TToT(QString headName) {
     // place head near the continuing track of turnout 1
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnout1Horizontal && layoutTurnout1ThroatLeft && layoutTurnout1BUp ) {
         setSignalHeadOnPanel(0,headName,
@@ -6071,7 +6071,7 @@ signalFrame->setVisible(true);
     }
 }
 /*private*/ void LayoutEditorTools::placeA2TToT(QString headName) {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnout1Horizontal && layoutTurnout1ThroatLeft && layoutTurnout1BUp ) {
         setSignalHeadOnPanel(0,headName,
@@ -6115,7 +6115,7 @@ signalFrame->setVisible(true);
     }
 }
 /*private*/ void LayoutEditorTools::placeB1TToT(QString headName) {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnout1Horizontal && layoutTurnout1ThroatLeft && layoutTurnout1BUp) {
         setSignalHeadOnPanel(0,headName,
@@ -6159,7 +6159,7 @@ signalFrame->setVisible(true);
     }
 }
 /*private*/ void LayoutEditorTools::placeB2TToT(QString headName) {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnout1Horizontal && layoutTurnout1ThroatLeft && layoutTurnout1BUp) {
         setSignalHeadOnPanel(0,headName,
@@ -6203,7 +6203,7 @@ signalFrame->setVisible(true);
     }
 }
 /*private*/ void LayoutEditorTools::placeC1TToT(QString headName) {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnout2Horizontal && layoutTurnout2ThroatLeft && layoutTurnout2BUp ) {
         setSignalHeadOnPanel(0,headName,
@@ -6247,7 +6247,7 @@ signalFrame->setVisible(true);
     }
 }
 /*private*/ void LayoutEditorTools::placeC2TToT(QString headName) {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnout2Horizontal && layoutTurnout2ThroatLeft && layoutTurnout2BUp ) {
         setSignalHeadOnPanel(0,headName,
@@ -6291,7 +6291,7 @@ signalFrame->setVisible(true);
     }
 }
 /*private*/ void LayoutEditorTools::placeD1TToT(QString headName) {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnout2Horizontal && layoutTurnout2ThroatLeft && layoutTurnout2BUp) {
         setSignalHeadOnPanel(0,headName,
@@ -6335,7 +6335,7 @@ signalFrame->setVisible(true);
     }
 }
 /*private*/ void LayoutEditorTools::placeD2TToT(QString headName) {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnout2Horizontal && layoutTurnout2ThroatLeft && layoutTurnout2BUp) {
         setSignalHeadOnPanel(0,headName,
@@ -6387,14 +6387,14 @@ signalFrame->setVisible(true);
     LayoutBlock* nearTurnoutBlock = nearTurnout->getLayoutBlock();
     LayoutBlock* farTurnoutBlock = farTurnout->getLayoutBlock();
     Sensor* connectorOccupancy = NULL;
-    if ( (connectorBlock==NULL) || (nearTurnoutBlock==NULL) || (farTurnoutBlock==NULL) ) {
+    if ( (connectorBlock==nullptr) || (nearTurnoutBlock==nullptr) || (farTurnoutBlock==nullptr) ) {
 //        JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     connectorOccupancy = connectorBlock->getOccupancySensor();
-    if (connectorOccupancy==NULL) {
+    if (connectorOccupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage4"),
 //                    new Object[]{connectorBlock.getUserName()}),
@@ -6403,7 +6403,7 @@ signalFrame->setVisible(true);
         return;
     }
     // setup signal head for continuing track of far turnout (or both tracks of far turnout)
-    if ( (track1==NULL) && setup1 ) {
+    if ( (track1==nullptr) && setup1 ) {
 //        JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
@@ -6411,16 +6411,16 @@ signalFrame->setVisible(true);
     }
     Sensor* occupancy = NULL;
     SignalHead* nextHead = NULL;
-    if ( (track1!=NULL) && setup1) {
+    if ( (track1!=nullptr) && setup1) {
         LayoutBlock* block = track1->getLayoutBlock();
-        if (block==NULL) {
+        if (block==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
             QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
             return;
         }
         occupancy = block->getOccupancySensor();
-        if (occupancy==NULL) {
+        if (occupancy==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage4"),
 //                    new Object[]{block->getUserName()}),
@@ -6430,7 +6430,7 @@ signalFrame->setVisible(true);
         }
         nextHead = getNextSignalFromObject(track1,farTurnout,
                                     head->getSystemName(), setSignalsAtTToTFrame);
-        if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+        if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //            JOptionPane.showMessageDialog(setSignalsFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage5"),
 //                    new Object[]{block->getUserName()}),
@@ -6438,7 +6438,7 @@ signalFrame->setVisible(true);
             QMessageBox::information(setSignalsFrame, tr("Information"), tr("Cannot set up logic because the next signal (in or\nat the end of block \"%1\") apparently is not yet defined.").arg(block->getUserName()));
             return;
         }
-        if (secondHead!=NULL) {
+        if (secondHead!=nullptr) {
             // this head signals only the continuing track of the far turnout
             if (!initializeBlockBossLogic(head->getSystemName())) return;
             logic->setMode(BlockBossLogic::TRAILINGMAIN);
@@ -6446,10 +6446,10 @@ signalFrame->setVisible(true);
             logic->setSensor1(occupancy->getSystemName());
             if (occupancy!=connectorOccupancy)
                 logic->setSensor2(connectorOccupancy->getSystemName());
-            if (nextHead!=NULL) {
+            if (nextHead!=nullptr) {
                 logic->setWatchedSignal1(nextHead->getSystemName(),false);
             }
-            if (auxSignal!=NULL) {
+            if (auxSignal!=nullptr) {
                 logic->setWatchedSignal1Alt(auxSignal->getSystemName());
             }
             QString nearSensorName = setupNearLogix(nearTurnout,continuing,head);
@@ -6457,23 +6457,23 @@ signalFrame->setVisible(true);
             finalizeBlockBossLogic();
         }
     }
-    if ( (secondHead!=NULL) && !setup2 ) return;
+    if ( (secondHead!=nullptr) && !setup2 ) return;
     SignalHead* savedAuxSignal = auxSignal;
-    if (track2==NULL) {
+    if (track2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
         return;
     }
     LayoutBlock* block2 = track2->getLayoutBlock();
-    if (block2==NULL) {
+    if (block2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy2 = block2->getOccupancySensor();
-    if (occupancy2==NULL) {
+    if (occupancy2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block2.getUserName()}),
@@ -6482,10 +6482,10 @@ signalFrame->setVisible(true);
         return;
     }
     SignalHead* nextHead2 = NULL;
-    if (secondHead!=NULL) {
+    if (secondHead!=nullptr) {
         nextHead2 = getNextSignalFromObject(track2,
                 farTurnout, secondHead->getSystemName(), setSignalsAtTToTFrame);
-        if ( (nextHead2==NULL) && (!reachedEndBumper()) ) {
+        if ( (nextHead2==nullptr) && (!reachedEndBumper()) ) {
 //            JOptionPane.showMessageDialog(setSignalsAtTToTFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage5"),
 //                    new Object[]{block2.getUserName()}),
@@ -6494,23 +6494,23 @@ signalFrame->setVisible(true);
             return;
         }
     }
-    if ( (secondHead==NULL) && (track1!=NULL) && setup1 ) {
+    if ( (secondHead==nullptr) && (track1!=nullptr) && setup1 ) {
         if (!initializeBlockBossLogic(head->getSystemName())) return;
         logic->setMode(BlockBossLogic::FACING);
         logic->setTurnout(farTurnout->getTurnout()->getSystemName());
         logic->setWatchedSensor1(occupancy->getSystemName());
         logic->setWatchedSensor2(occupancy2->getSystemName());
         logic->setSensor2(connectorOccupancy->getSystemName());
-        if (nextHead!=NULL) {
+        if (nextHead!=nullptr) {
             logic->setWatchedSignal1(nextHead->getSystemName(),false);
         }
-        if (savedAuxSignal!=NULL) {
+        if (savedAuxSignal!=nullptr) {
             logic->setWatchedSignal1Alt(savedAuxSignal->getSystemName());
         }
-        if (nextHead2!=NULL) {
+        if (nextHead2!=nullptr) {
             logic->setWatchedSignal2(nextHead2->getSystemName());
         }
-        if (auxSignal!=NULL) {
+        if (auxSignal!=nullptr) {
             logic->setWatchedSignal2Alt(auxSignal->getSystemName());
         }
         QString nearSensorName = setupNearLogix(nearTurnout,continuing,head);
@@ -6518,17 +6518,17 @@ signalFrame->setVisible(true);
         logic->setLimitSpeed2(true);
         finalizeBlockBossLogic();
     }
-    else if ( (secondHead!=NULL) && setup2) {
+    else if ( (secondHead!=nullptr) && setup2) {
         if (!initializeBlockBossLogic(secondHead->getSystemName())) return;
         logic->setMode(BlockBossLogic::TRAILINGDIVERGING);
         logic->setTurnout(farTurnout->getTurnout()->getSystemName());
         logic->setSensor1(occupancy2->getSystemName());
         if (occupancy2!=connectorOccupancy)
             logic->setSensor2(connectorOccupancy->getSystemName());
-        if (nextHead2!=NULL) {
+        if (nextHead2!=nullptr) {
             logic->setWatchedSignal1(nextHead2->getSystemName(),false);
         }
-        if (auxSignal!=NULL) {
+        if (auxSignal!=nullptr) {
             logic->setWatchedSignal1Alt(auxSignal->getSystemName());
         }
         QString nearSensorName = setupNearLogix(nearTurnout,continuing,head);
@@ -6554,22 +6554,22 @@ signalFrame->setVisible(true);
     QString sensorName = "IS"+namer;
     QString logixName = "IX"+namer;
     Sensor* sensor = ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->provideSensor(sensorName);
-    if (sensor==NULL) {
+    if (sensor==nullptr) {
         log->error("Trouble creating sensor "+sensorName+" while setting up Logix->");
         return "";
     }
-    if (((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName)==NULL)
+    if (((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName)==nullptr)
     {
         // Logix does not exist, create it
         Logix* x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->createNewLogix(logixName,"");
-        if (x==NULL) {
+        if (x==nullptr) {
             log->error("Trouble creating logix "+logixName+" while setting up signal logic->");
             return "";
         }
         QString cName = x->getSystemName() + "C1";
         Conditional* c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->
                                             createNewConditional(cName,"");
-        if (c==NULL) {
+        if (c==nullptr) {
             log->error("Trouble creating conditional "+cName+" while setting up Logix->");
             return "";
         }
@@ -6596,19 +6596,19 @@ signalFrame->setVisible(true);
  *		provided there is an open slot. If 'name' is NULL or empty, returns without doing anything.
  */
 /*private*/ void LayoutEditorTools::addNearSensorToLogic(QString name) {
-    if ( (name==NULL) || name==("") ) return;
+    if ( (name==nullptr) || name==("") ) return;
     // return if a sensor by this name is already present
-    if ( (logic->getSensor1()!=NULL) && (logic->getSensor1())==(name) ) return;
-    if ( (logic->getSensor2()!=NULL) && (logic->getSensor2())==(name) ) return;
-    if ( (logic->getSensor3()!=NULL) && (logic->getSensor3())==(name) ) return;
-    if ( (logic->getSensor4()!=NULL) && (logic->getSensor4())==(name) ) return;
-    if ( (logic->getSensor5()!=NULL) && (logic->getSensor5())==(name) ) return;
+    if ( (logic->getSensor1()!=nullptr) && (logic->getSensor1())==(name) ) return;
+    if ( (logic->getSensor2()!=nullptr) && (logic->getSensor2())==(name) ) return;
+    if ( (logic->getSensor3()!=nullptr) && (logic->getSensor3())==(name) ) return;
+    if ( (logic->getSensor4()!=nullptr) && (logic->getSensor4())==(name) ) return;
+    if ( (logic->getSensor5()!=nullptr) && (logic->getSensor5())==(name) ) return;
     // add in the first available slot
-    if (logic->getSensor1()==NULL) logic->setSensor1(name);
-    else if (logic->getSensor2()==NULL) logic->setSensor2(name);
-    else if (logic->getSensor3()==NULL) logic->setSensor3(name);
-    else if (logic->getSensor4()==NULL) logic->setSensor4(name);
-    else if (logic->getSensor5()==NULL) logic->setSensor5(name);
+    if (logic->getSensor1()==nullptr) logic->setSensor1(name);
+    else if (logic->getSensor2()==nullptr) logic->setSensor2(name);
+    else if (logic->getSensor3()==nullptr) logic->setSensor3(name);
+    else if (logic->getSensor4()==nullptr) logic->setSensor4(name);
+    else if (logic->getSensor5()==nullptr) logic->setSensor5(name);
     else log->error("Error - could not add sensor to SSL for signal head "+logic->getDrivenSignal());
 }
 
@@ -6666,7 +6666,7 @@ signalFrame->setVisible(true);
         return;
     }
     // Initialize if needed
-    if (setSignalsAt3WayFrame == NULL) {
+    if (setSignalsAt3WayFrame == nullptr) {
         setSignalsAt3WayFrame = new JmriJFrame( tr("SignalsAt3WayTurnout"), false, true );
         setSignalsAt3WayFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAt3WayTurnout", true);
         setSignalsAt3WayFrame->setLocation(70,30);
@@ -6838,7 +6838,7 @@ signalFrame->setVisible(true);
         theContentPane->layout()->addWidget(panel6);
 //        setSignalsAt3WayFrame->addWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                set3WaySignalsCancelPressed(NULL);
+//                set3WaySignalsCancelPressed(nullptr);
 //            }
 //        });
         setSignalsAt3WayFrame->addWindowListener(new S3WWindowListener(this));
@@ -6877,10 +6877,10 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     layoutTurnoutA = NULL;
     layoutTurnoutB = NULL;
     str = turnoutANameField->text().trimmed();
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
         // turnout A not entered, test turnout B
         str = turnoutBNameField->text().trimmed();
-        if ( (str==NULL) || (str==("")) ) {
+        if ( (str==nullptr) || (str==("")) ) {
             // no entries in turnout fields
 //            JOptionPane.showMessageDialog(setSignalsAt3WayFrame,tr("SignalsError1"),
 //                                tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -6888,7 +6888,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
             return false;
         }
         turnoutB = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-        if (turnoutB==NULL) {
+        if (turnoutB==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                java.text.MessageFormat.format(tr("SignalsError2"),
 //                    new Object[]{str}), tr("Error"),
@@ -6896,17 +6896,17 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
          QMessageBox::critical(setSignalsAt3WayFrame,tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\na turnout name in the Turnout Table and on the panel.").arg(str) );
             return false ;
         }
-        if ( (turnoutB->getUserName()==NULL) || (turnoutB->getUserName()==("")) ||
+        if ( (turnoutB->getUserName()==nullptr) || (turnoutB->getUserName()==("")) ||
                                 turnoutB->getUserName()!=(str) ) {
 //            str = str.toUpper();
             turnoutBNameField->setText(str);
         }
         layoutTurnoutB = getLayoutTurnoutFromTurnout(turnoutB,false,str,setSignalsAt3WayFrame);
-        if (layoutTurnoutB==NULL)
+        if (layoutTurnoutB==nullptr)
             return false;
         // have turnout B and layout turnout B - look for turnout A
         connectorTrack = (TrackSegment*)layoutTurnoutB->getConnectA();
-        if (connectorTrack == NULL) {
+        if (connectorTrack == nullptr) {
             // Inform user of error, and terminate
 //            JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                    tr("SignalsError19"),
@@ -6920,7 +6920,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
             type = connectorTrack->getType2();
             connect = connectorTrack->getConnect2();
         }
-        if ( (type != LayoutEditor::TURNOUT_B) || (connect==NULL) ) {
+        if ( (type != LayoutEditor::TURNOUT_B) || (connect==nullptr) ) {
             // Not two turnouts connected as required by a single Track Segment
             // Inform user of error and terminate
 //            JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
@@ -6931,7 +6931,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
         }
         layoutTurnoutA = (LayoutTurnout*)connect;
         turnoutA = layoutTurnoutA->getTurnout();
-        if (turnoutA==NULL) {
+        if (turnoutA==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                    tr("SignalsError19"),
 //                        tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -6943,7 +6943,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     else {
         // something was entered in the turnout A field
         turnoutA = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-        if (turnoutA==NULL) {
+        if (turnoutA==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                java.text.MessageFormat.format(tr("SignalsError2"),
 //                    new Object[]{str}), tr("Error"),
@@ -6951,22 +6951,22 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
          QMessageBox::critical(setSignalsAt3WayFrame,tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\na turnout name in the Turnout Table and on the panel.").arg(str) );
             return false ;
         }
-        if ( (turnoutA->getUserName()==NULL) || (turnoutA->getUserName()==("")) ||
+        if ( (turnoutA->getUserName()==nullptr) || (turnoutA->getUserName()==("")) ||
                                 turnoutA->getUserName()!=(str) ) {
 //            str = str.toUpper();
             turnoutANameField->setText(str);
         }
         // have turnout A - get corresponding layoutTurnout
         layoutTurnoutA = getLayoutTurnoutFromTurnout(turnoutA,false,str,setSignalsAt3WayFrame);
-        if (layoutTurnoutA == NULL)
+        if (layoutTurnoutA == nullptr)
             return false;
         turnoutANameField->setText(str);
         // have turnout A and layout turnout A - was something entered for turnout B
         str = turnoutBNameField->text().trimmed();
-        if ( (str==NULL) || (str==("")) ) {
+        if ( (str==nullptr) || (str==("")) ) {
             // no entry for turnout B
             connectorTrack = (TrackSegment*)layoutTurnoutA->getConnectB();
-            if (connectorTrack == NULL) {
+            if (connectorTrack == nullptr) {
                 // Inform user of error, and terminate
 //                JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                        tr("SignalsError19"),
@@ -6980,7 +6980,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
                 type = connectorTrack->getType2();
                 connect = connectorTrack->getConnect2();
             }
-            if ( (type != LayoutEditor::TURNOUT_A) || (connect==NULL) ) {
+            if ( (type != LayoutEditor::TURNOUT_A) || (connect==nullptr) ) {
                 // Not two turnouts connected with the throat of B connected to the continuing of A
                 //    by a single Track Segment.  Inform user of error and terminat.e
 //                JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
@@ -6991,7 +6991,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
             }
             layoutTurnoutB = (LayoutTurnout*)connect;
             turnoutB = layoutTurnoutB->getTurnout();
-            if (turnoutB==NULL) {
+            if (turnoutB==nullptr) {
 //                JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                        tr("SignalsError19"),
 //                            tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -7003,7 +7003,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
         else {
             // turnout B entered also
             turnoutB = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-            if (turnoutB==NULL) {
+            if (turnoutB==nullptr) {
 //                JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                    java.text.MessageFormat.format(tr("SignalsError2"),
 //                            new Object[]{str}), tr("Error"),
@@ -7011,13 +7011,13 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
              QMessageBox::critical(setSignalsAt3WayFrame, tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\na turnout name in the Turnout Table and on the panel.").arg(str));
                 return false ;
             }
-            if ( (turnoutB->getUserName()==NULL) || (turnoutB->getUserName()==("")) ||
+            if ( (turnoutB->getUserName()==nullptr) || (turnoutB->getUserName()==("")) ||
                                 turnoutB->getUserName()!=(str) ) {
 //                str = str.toUpper();
                 turnoutBNameField->setText(str);
             }
             layoutTurnoutB = getLayoutTurnoutFromTurnout(turnoutB,false,str,setSignalsAt3WayFrame);
-            if (layoutTurnoutB==NULL)
+            if (layoutTurnoutB==nullptr)
                 return false;
             turnoutBNameField->setText(str);
             // check that layout turnout A and layout turnout B are connected as required
@@ -7131,7 +7131,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 // need to figure out what to do in this case.
         }
     }
-    if ( (setA23WayHead->isChecked()) && (a23WayHead!=NULL) ) {
+    if ( (setA23WayHead->isChecked()) && (a23WayHead!=nullptr) ) {
         if (isHeadOnPanel(a23WayHead) &&
             (a23WayHead!=getHeadFromName(layoutTurnoutA->getSignalA2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
@@ -7160,7 +7160,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
             needRedraw = true;
         }
     }
-    else if (a23WayHead!=NULL) {
+    else if (a23WayHead!=nullptr) {
         int assigned = isHeadAssignedHere(a23WayHead,layoutTurnoutA);
         if (assigned == NONE) {
             if ( isHeadOnPanel(a23WayHead) &&
@@ -7182,11 +7182,11 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 // need to figure out what to do in this case.
         }
     }
-    else if (a23WayHead==NULL) {
+    else if (a23WayHead==nullptr) {
         removeSignalHeadFromPanel(layoutTurnoutA->getSignalA2Name());
         layoutTurnoutA->setSignalA2Name("");
     }
-    if ( (setA33WayHead->isChecked()) && (a33WayHead!=NULL) ) {
+    if ( (setA33WayHead->isChecked()) && (a33WayHead!=nullptr) ) {
         if (isHeadOnPanel(a33WayHead) &&
             (a33WayHead!=getHeadFromName(layoutTurnoutA->getSignalA3Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
@@ -7215,7 +7215,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
             needRedraw = true;
         }
     }
-    else if (a33WayHead!=NULL) {
+    else if (a33WayHead!=nullptr) {
         int assigned = isHeadAssignedHere(a33WayHead,layoutTurnoutA);
         if (assigned == NONE) {
             if ( isHeadOnPanel(a33WayHead) &&
@@ -7237,7 +7237,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 // need to figure out what to do in this case.
         }
     }
-    else if (a33WayHead==NULL) {
+    else if (a33WayHead==nullptr) {
         removeSignalHeadFromPanel(layoutTurnoutA->getSignalA3Name());
         layoutTurnoutA->setSignalA3Name("");
     }
@@ -7399,10 +7399,10 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     if (setupA13WayLogic->isChecked()) {
         set3WayLogicThroatContinuing();
     }
-    if ( (a23WayHead!=NULL) && setupA23WayLogic->isChecked() ) {
+    if ( (a23WayHead!=nullptr) && setupA23WayLogic->isChecked() ) {
         set3WayLogicThroatDivergingA();
     }
-    if ( (a33WayHead!=NULL) && setupA33WayLogic->isChecked() ) {
+    if ( (a33WayHead!=nullptr) && setupA33WayLogic->isChecked() ) {
         set3WayLogicThroatDivergingB();
     }
     if (setupB3WayLogic->isChecked()) {
@@ -7431,21 +7431,21 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 
 /*private*/ bool LayoutEditorTools::get3WaySignalHeadInformation() {
     a13WayHead = getSignalHeadFromEntry(a13WayField,true,setSignalsAt3WayFrame);
-    if (a13WayHead==NULL) return false;
+    if (a13WayHead==nullptr) return false;
     a23WayHead = getSignalHeadFromEntry(a23WayField,false,setSignalsAt3WayFrame);
     a33WayHead = getSignalHeadFromEntry(a33WayField,false,setSignalsAt3WayFrame);
-    if ( ((a23WayHead==NULL) && (a33WayHead!=NULL)) || ((a33WayHead==NULL) &&
-                    (a23WayHead!=NULL)) ) return false;
+    if ( ((a23WayHead==nullptr) && (a33WayHead!=nullptr)) || ((a33WayHead==nullptr) &&
+                    (a23WayHead!=nullptr)) ) return false;
     b3WayHead = getSignalHeadFromEntry(b3WayField,true,setSignalsAt3WayFrame);
-    if (b3WayHead==NULL) return false;
+    if (b3WayHead==nullptr) return false;
     c3WayHead = getSignalHeadFromEntry(c3WayField,true,setSignalsAt3WayFrame);
-    if (c3WayHead==NULL) return false;
+    if (c3WayHead==nullptr) return false;
     d3WayHead = getSignalHeadFromEntry(d3WayField,true,setSignalsAt3WayFrame);
-    if (d3WayHead==NULL) return false;
+    if (d3WayHead==nullptr) return false;
     return true;
 }
 /*private*/ void LayoutEditorTools::place3WayThroatContinuing() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutAHorizontal && layoutTurnoutAThroatLeft ) {
         setSignalHeadOnPanel(2,a13WayField->text().trimmed(),
@@ -7470,7 +7470,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 }
 
 /*private*/ void LayoutEditorTools::place3WayThroatDivergingA() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutAHorizontal && layoutTurnoutAThroatLeft ) {
         setSignalHeadOnPanel(2,a23WayField->text().trimmed(),
@@ -7494,7 +7494,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
 }
 /*private*/ void LayoutEditorTools::place3WayThroatDivergingB() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutAHorizontal && layoutTurnoutAThroatLeft ) {
         setSignalHeadOnPanel(2,a33WayField->text().trimmed(),
@@ -7519,7 +7519,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 }
 
 /*private*/ void LayoutEditorTools::place3WayDivergingA() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutAHorizontal && layoutTurnoutAThroatLeft && layoutTurnoutABUp) {
         setSignalHeadOnPanel(0,b3WayField->text().trimmed(),
@@ -7563,7 +7563,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
 }
 /*private*/ void LayoutEditorTools::place3WayContinuing() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutBHorizontal && layoutTurnoutBThroatLeft && layoutTurnoutBBUp) {
         setSignalHeadOnPanel(0,c3WayField->text().trimmed(),
@@ -7607,7 +7607,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
 }
 /*private*/ void LayoutEditorTools::place3WayDivergingB() {
-    if (testIcon == NULL)
+    if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
     if( layoutTurnoutBHorizontal && layoutTurnoutBThroatLeft && layoutTurnoutBBUp) {
         setSignalHeadOnPanel(0,d3WayField->text().trimmed(),
@@ -7652,21 +7652,21 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 }
 /*private*/ void LayoutEditorTools::set3WayLogicThroatContinuing() {
     TrackSegment* track = (TrackSegment*)layoutTurnoutB->getConnectB();
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
         return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL) {
+    if (block==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAt3WayFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL) {
+    if (occupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block->getUserName()}),
@@ -7676,7 +7676,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
     SignalHead* nextHead = getNextSignalFromObject(track, layoutTurnoutB,
             a13WayField->text().trimmed(), setSignalsAt3WayFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{block->getUserName()}),
@@ -7684,16 +7684,16 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
      QMessageBox::critical(setSignalsAtSlipFrame, tr("Error"), tr("Cannot set up logic because the next signal (in or \nat the end of block \"%1\") apparently is not yet defined.").arg(block->getUserName()));
         return;
     }
-    if (a23WayHead!=NULL) {
+    if (a23WayHead!=nullptr) {
         // set up logic for continuing head with 3 heads at throat
         if (!initializeBlockBossLogic(a13WayField->text().trimmed())) return;
         logic->setMode(BlockBossLogic::TRAILINGMAIN);
         logic->setTurnout(turnoutB->getSystemName());
         logic->setSensor1(occupancy->getSystemName());
-        if (nextHead!=NULL) {
+        if (nextHead!=nullptr) {
             logic->setWatchedSignal1(nextHead->getSystemName(),false);
         }
-        if (auxSignal!=NULL) {
+        if (auxSignal!=nullptr) {
             logic->setWatchedSignal1Alt(auxSignal->getSystemName());
         }
         QString nearSensorName = setupNearLogix(layoutTurnoutA,true,a13WayHead);
@@ -7710,21 +7710,21 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 
 /*private*/ void LayoutEditorTools::set3WayLogicThroatDivergingA() {
     TrackSegment* track = (TrackSegment*)layoutTurnoutA->getConnectC();
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
         return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL) {
+    if (block==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAt3WayFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL) {
+    if (occupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block->getUserName()}),
@@ -7734,7 +7734,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
     SignalHead* nextHead = getNextSignalFromObject(track, layoutTurnoutA,
             a23WayField->text().trimmed(), setSignalsAt3WayFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{block->getUserName()}),
@@ -7746,9 +7746,9 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     logic->setMode(BlockBossLogic::TRAILINGDIVERGING);
     logic->setTurnout(turnoutA->getSystemName());
     logic->setSensor1(occupancy->getSystemName());
-    if (nextHead!=NULL)
+    if (nextHead!=nullptr)
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     if (!layoutTurnoutA->isMainlineC())
@@ -7757,21 +7757,21 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 }
 /*private*/ void LayoutEditorTools::set3WayLogicThroatDivergingB() {
     TrackSegment* track = (TrackSegment*)layoutTurnoutB->getConnectC();
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
         return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL) {
+    if (block==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAt3WayFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL) {
+    if (occupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block->getUserName()}),
@@ -7781,7 +7781,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
     SignalHead* nextHead = getNextSignalFromObject(track, layoutTurnoutB,
             a33WayField->text().trimmed(), setSignalsAt3WayFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{block->getUserName()}),
@@ -7793,9 +7793,9 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     logic->setMode(BlockBossLogic::TRAILINGDIVERGING);
     logic->setTurnout(turnoutB->getSystemName());
     logic->setSensor1(occupancy->getSystemName());
-    if (nextHead!=NULL)
+    if (nextHead!=nullptr)
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     QString nearSensorName = setupNearLogix(layoutTurnoutA,true,a33WayHead);
@@ -7806,21 +7806,21 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 }
 /*private*/ void LayoutEditorTools::set3WayLogicDivergingA() {
     TrackSegment* track = (TrackSegment*)layoutTurnoutA->getConnectA();
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
         return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL) {
+    if (block==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAt3WayFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL) {
+    if (occupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block->getUserName()}),
@@ -7830,7 +7830,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
     SignalHead* nextHead = getNextSignalFromObject(track, layoutTurnoutA,
             b3WayField->text().trimmed(), setSignalsAt3WayFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{block->getUserName()}),
@@ -7842,10 +7842,10 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     logic->setMode(BlockBossLogic::TRAILINGDIVERGING);
     logic->setTurnout(turnoutA->getSystemName());
     logic->setSensor1(occupancy->getSystemName());
-    if (nextHead!=NULL) {
+    if (nextHead!=nullptr) {
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
     }
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     if (!layoutTurnoutA->isMainlineC())
@@ -7854,21 +7854,21 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 }
 /*private*/ void LayoutEditorTools::set3WayLogicContinuing() {
     TrackSegment* track = (TrackSegment*)layoutTurnoutA->getConnectA();
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
         return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL) {
+    if (block==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAt3WayFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL) {
+    if (occupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block->getUserName()}),
@@ -7878,7 +7878,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
     SignalHead* nextHead = getNextSignalFromObject(track, layoutTurnoutA,
             c3WayField->text().trimmed(), setSignalsAt3WayFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{block->getUserName()}),
@@ -7890,10 +7890,10 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     logic->setMode(BlockBossLogic::TRAILINGMAIN);
     logic->setTurnout(turnoutB->getSystemName());
     logic->setSensor1(occupancy->getSystemName());
-    if (nextHead!=NULL) {
+    if (nextHead!=nullptr) {
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
     }
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     QString nearSensorName = setupNearLogix(layoutTurnoutA,true,c3WayHead);
@@ -7904,21 +7904,21 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 }
 /*private*/ void LayoutEditorTools::set3WayLogicDivergingB() {
     TrackSegment* track = (TrackSegment*)layoutTurnoutA->getConnectA();
-    if (track==NULL) {
+    if (track==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::information(setSignalsAtTToTFrame, tr("Information"), tr("Cannot set up logic because all connections\nhave not been defined around this item."));
         return;
     }
     LayoutBlock* block = track->getLayoutBlock();
-    if (block==NULL) {
+    if (block==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAt3WayFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy = block->getOccupancySensor();
-    if (occupancy==NULL) {
+    if (occupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block->getUserName()}),
@@ -7928,7 +7928,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     }
     SignalHead* nextHead = getNextSignalFromObject(track, layoutTurnoutA,
             d3WayField->text().trimmed(), setSignalsAt3WayFrame);
-    if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+    if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //        JOptionPane.showMessageDialog(setSignalsAt3WayFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage5"),
 //                new Object[]{block->getUserName()}),
@@ -7940,10 +7940,10 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
     logic->setMode(BlockBossLogic::TRAILINGDIVERGING);
     logic->setTurnout(turnoutB->getSystemName());
     logic->setSensor1(occupancy->getSystemName());
-    if (nextHead!=NULL) {
+    if (nextHead!=nullptr) {
         logic->setWatchedSignal1(nextHead->getSystemName(),false);
     }
-    if (auxSignal!=NULL) {
+    if (auxSignal!=nullptr) {
         logic->setWatchedSignal1Alt(auxSignal->getSystemName());
     }
     QString nearSensorName = setupNearLogix(layoutTurnoutA,true,d3WayHead);
@@ -7979,7 +7979,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   return;
  }
  // Initialize if needed
- if (setSensorsAtBoundaryFrame == NULL)
+ if (setSensorsAtBoundaryFrame == nullptr)
  {
   westBoundSensor = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
   eastBoundSensor = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
@@ -7987,7 +7987,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   setSensorsAtBoundaryFrame = new JmriJFrame( tr("Set Sensors at Block Boundary"), false, true );
   setSensorsAtBoundaryFrame->addHelpMenu("package.jmri.jmrit.display.SetSensorsAtBoundary", true);
   setSensorsAtBoundaryFrame->setLocation(70,30);
-//  if(setSensorsAtBoundaryFrame->centralWidget() == NULL)
+//  if(setSensorsAtBoundaryFrame->centralWidget() == nullptr)
 //  {
 //   QWidget* centralWidget = new QWidget();
 //   QVBoxLayout* centralWidgetLayout = new QVBoxLayout;
@@ -8135,17 +8135,17 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   centralWidgetLayout->addWidget(panel6, 0, Qt::AlignBottom); //BorderLayout::South);
 //        setSensorsAtBoundaryFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                setSensorsAtBoundaryCancelPressed(NULL);
+//                setSensorsAtBoundaryCancelPressed(nullptr);
 //            }
 //        });
 
-  if (boundaryFromMenu) getSavedAnchorSensors(NULL);
+  if (boundaryFromMenu) getSavedAnchorSensors(nullptr);
  }
  else
  {
-  if (boundaryFromMenu) getSavedAnchorSensors(NULL);
+  if (boundaryFromMenu) getSavedAnchorSensors(nullptr);
  }
- //setSensorsAtBoundaryFrame->setPreferredSize(NULL);
+ //setSensorsAtBoundaryFrame->setPreferredSize(nullptr);
  setSensorsAtBoundaryFrame->adjustSize();
  setSensorsAtBoundaryFrame->setVisible(true);
  setSensorsAtBoundaryOpen = true;
@@ -8166,7 +8166,7 @@ void LayoutEditorTools::On_changeSensorAtBoundaryIcon_clicked()
 /*public*/ Sensor* LayoutEditorTools::getSensorFromEntry(QString sensorName, bool requireEntry,
                 JmriJFrame* frame) {
     QString str = sensorName;
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
         if (requireEntry) {
 //            JOptionPane.showMessageDialog(frame,tr("SensorsError5"),
 //                                tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -8175,7 +8175,7 @@ void LayoutEditorTools::On_changeSensorAtBoundaryIcon_clicked()
         return NULL;
     }
     Sensor* head = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(str);
-    if (head==NULL) {
+    if (head==nullptr) {
 //        JOptionPane.showMessageDialog(frame,
 //                java.text.MessageFormat.format(tr("SensorsError4"),
 //                    new Object[]{str}), tr("Error"),
@@ -8189,7 +8189,7 @@ void LayoutEditorTools::On_changeSensorAtBoundaryIcon_clicked()
  * Returns a Sensor* given a name
  */
 /*public*/ Sensor* LayoutEditorTools::getSensorFromName(QString str) {
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
         return NULL;
     }
     return  (((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(str));
@@ -8213,94 +8213,71 @@ void LayoutEditorTools::On_changeSensorAtBoundaryIcon_clicked()
  */
 /*public*/ bool LayoutEditorTools::isSensorAssignedAnywhere(Sensor* sensor)
 {
-    QString sName = sensor->getSystemName();
-    QString uName = sensor->getUserName();
-    for (int i=0;i<layoutEditor->pointList->size();i++) {
-        PositionablePoint* po = layoutEditor->pointList->at(i);
-        //We allow the same sensor to be allocated in both directions.
-        if (po!=boundary){
-            if ((po->getEastBoundSensor()!=NULL) &&
-                    (po->getEastBoundSensor()==(sName) || ((uName!=NULL) &&
-                    (po->getEastBoundSensor()==(uName))))){
-                        if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                            return true;
-
-                    }
-            if ((po->getWestBoundSensor()!=NULL) &&
-                    (po->getWestBoundSensor()==(sName) || ((uName!=NULL) &&
-                    (po->getWestBoundSensor()==(uName))))){
-                        if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                            return true;
+    for (PositionablePoint* po : layoutEditor->getPositionablePoints()) {
+                if (po->getEastBoundSensor() == sensor) {
+                    return true;
+                }
+                if (po->getWestBoundSensor() == sensor) {
+                    return true;
+                }
             }
-        }
-    }
 
-    for (int i=0;i<layoutEditor->turnoutList->size();i++) {
-        LayoutTurnout* to = layoutEditor->turnoutList->at(i);
-        if ((to->getSensorA()!=NULL) &&
-                (to->getSensorA()==(sName) || ((uName!=NULL) &&
-                (to->getSensorA()==(uName))))){
-                    if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                        return true;
+    for (LayoutTrack* lt : layoutEditor->getLayoutTurnouts()) {
+     LayoutTurnout* to = (LayoutTurnout*) lt;
+                if ((to->getSensorA() != nullptr) && to->getSensorA() == sensor) {
+                    return true;
                 }
-        if ((to->getSensorB()!=NULL) &&
-                (to->getSensorB()==(sName) || ((uName!=NULL) &&
-                (to->getSensorB()==(uName))))){
-                    if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                        return true;
+                if ((to->getSensorB() != nullptr) && to->getSensorB() == sensor) {
+                    return true;
                 }
-        if ((to->getSensorC()!=NULL) &&
-                (to->getSensorC()==(sName) || ((uName!=NULL) &&
-                (to->getSensorC()==(uName))))){
-                    if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                        return true;
+                if ((to->getSensorC() != nullptr) && to->getSensorC() == sensor) {
+                    return true;
                 }
-        if ((to->getSensorD()!=NULL) &&
-                (to->getSensorD()==(sName) || ((uName!=NULL) &&
-                (to->getSensorD()==(uName))))){
-                    if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                        return true;
+                if ((to->getSensorD() != nullptr) && to->getSensorD() == sensor) {
+                    return true;
                 }
-    }
-
-    for (int i=0;i<layoutEditor->xingList->size();i++) {
-        LevelXing* x = layoutEditor->xingList->at(i);
-        if ((x->getSensorAName()!=NULL) &&
-                (x->getSensorAName()==(sName) || ((uName!=NULL) &&
-                (x->getSensorAName()==(uName))))){
-                    if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                        return true;
+            }
+            for (LayoutTrack* lt : layoutEditor->getLayoutSlips()) {
+             LayoutSlip* to = (LayoutSlip* )lt;
+                if ((to->getSensorA() != nullptr) && to->getSensorA() == sensor) {
+                    return true;
                 }
-        if ((x->getSensorBName()!=NULL) &&
-                (x->getSensorBName()==(sName) || ((uName!=NULL) &&
-                (x->getSensorBName()==(uName))))){
-                    if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                        return true;
+                if ((to->getSensorB() != nullptr) && to->getSensorB() == sensor) {
+                    return true;
                 }
-        if ((x->getSensorCName()!=NULL) &&
-                (x->getSensorCName()==(sName) || ((uName!=NULL) &&
-                (x->getSensorCName()==(uName))))){
-                    if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                        return true;
+                if ((to->getSensorC() != nullptr) && to->getSensorC() == sensor) {
+                    return true;
                 }
-        if ((x->getSensorDName()!=NULL) &&
-                (x->getSensorDName()==(sName) || ((uName!=NULL) &&
-                (x->getSensorDName()==(uName))))){
-                    if(!sensorAssignedElseWhere(sensor->getDisplayName()))
-                        return true;
+                if ((to->getSensorD() != nullptr) && to->getSensorD() == sensor) {
+                    return true;
                 }
-    }
+            }
+            for (LayoutTrack* lt : layoutEditor->getLevelXings()) {
+             LevelXing* x = (LevelXing*)lt;
+                if ((x->getSensorA() != nullptr) && x->getSensorA() == sensor) {
+                    return true;
+                }
+                if ((x->getSensorB() != nullptr) && x->getSensorB() == sensor) {
+                    return true;
+                }
+                if ((x->getSensorC() != nullptr) && x->getSensorC() == sensor) {
+                    return true;
+                }
+                if ((x->getSensorD() != nullptr) && x->getSensorD() == sensor) {
+                    return true;
+                }
+            }
     return false;
 }
 
-bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
+bool LayoutEditorTools::sensorAssignedElseWhere(Sensor* sensor){
 //        int i = JOptionPane.showConfirmDialog(NULL, java.text.MessageFormat.format(tr("DuplicateSensorAssign"),
 //                new Object[]{ sensor }),
 //        tr("DuplicateSensorAssignTitle"),
 //        JOptionPane.YES_NO_OPTION);
 //    if(i ==0) {
 //        return true;
-    switch(QMessageBox::question(0, tr("Sensor Already Assigned"), tr("Sensor \"%1\" has already been assigned on the panel\nAre you sure you want to assign it again?").arg(sensor), QMessageBox::Yes | QMessageBox::No))
+    switch(QMessageBox::question(0, tr("Sensor Already Assigned"), tr("Sensor \"%1\" has already been assigned on the panel\nAre you sure you want to assign it again?").arg(sensor->getDisplayName()), QMessageBox::Yes | QMessageBox::No))
     {
     case QMessageBox::Yes:
      return true;
@@ -8313,55 +8290,108 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
  * Removes the assignment of the specified Sensor* to either a turnout,
  *		a positionable point, or a level crossing wherever it is assigned
  */
-/*public*/ void LayoutEditorTools::removeSensorAssignment(Sensor* sensor)
+/*public*/ bool LayoutEditorTools::removeSensorAssignment(Sensor* sensor)
 {
-    if(sensor==NULL)
-        return;
-    QString sName = sensor->getSystemName();
-    QString uName = sensor->getUserName();
-    for (int i=0;i<layoutEditor->pointList->size();i++) {
-        PositionablePoint* po = layoutEditor->pointList->at(i);
-        if ((po->getEastBoundSensor()!=NULL) &&
-                (po->getEastBoundSensor()==(sName) || ((uName!=NULL) &&
-                (po->getEastBoundSensor()==(uName)))))
-            po->setEastBoundSensor("");
-        if ((po->getWestBoundSensor()!=NULL) &&
-                (po->getWestBoundSensor()==(sName) || ((uName!=NULL) &&
-                (po->getWestBoundSensor()==(uName)))))
-            po->setWestBoundSensor("");
-    }
+ log->trace(tr("Remove sensor assignment at block boundary for '%1'").arg(sensor->getDisplayName()));  // NOI18N
+         if (!static_cast<EntryExitPairs*>(InstanceManager::getDefault("EntryExitPairs"))->deleteNxPair(sensor)) {
+             log->trace(tr("Removal of NX pairs for sensor '%1' failed").arg(sensor->getDisplayName()));  // NOI18N
+             return false;
+         }
+         for (PositionablePoint* po : layoutEditor->getPositionablePoints()) {
+             if (po->getEastBoundSensor() == sensor) {
+                 po->setEastBoundSensor(nullptr);
+             }
+             if (po->getWestBoundSensor() == sensor) {
+                 po->setWestBoundSensor(nullptr);
+             }
+         }
+
+         for (LayoutTrack* lt : layoutEditor->getLayoutTurnouts()) {
+          LayoutTurnout* to = (LayoutTurnout*)lt;
+             if (to->getSensorA() == sensor) {
+                 to->setSensorA(nullptr);
+             }
+             if (to->getSensorB() == sensor) {
+                 to->setSensorB(nullptr);
+             }
+             if (to->getSensorC() == sensor) {
+                 to->setSensorC(nullptr);
+             }
+             if (to->getSensorD() == sensor) {
+                 to->setSensorD(nullptr);
+             }
+         }
+
+         for (LayoutTrack* lt : layoutEditor->getLayoutSlips())
+         {
+          LayoutSlip* to = (LayoutSlip*)lt;
+             if (to->getSensorA() == sensor) {
+                 to->setSensorA(nullptr);
+             }
+             if (to->getSensorB() == sensor) {
+                 to->setSensorB(nullptr);
+             }
+             if (to->getSensorC() == sensor) {
+                 to->setSensorC(nullptr);
+             }
+             if (to->getSensorD() == sensor) {
+                 to->setSensorD(nullptr);
+             }
+         }
+
+         for (LayoutTrack* lt : layoutEditor->getLevelXings()) {
+          LevelXing* x = (LevelXing*)lt;
+             if (x->getSensorA() == sensor) {
+                 x->setSensorAName(nullptr);
+             }
+             if (x->getSensorB() == sensor) {
+                 x->setSensorBName(nullptr);
+             }
+             if (x->getSensorC() == sensor) {
+                 x->setSensorCName(nullptr);
+             }
+             if (x->getSensorD() == sensor) {
+                 x->setSensorDName(nullptr);
+             }
+         }
+
+         return true;
 }
+
 /**
  * Removes the Sensor* with the specified name from the panel and from
  *		assignment to any turnout, positionable point, or level crossing
  */
 //@SuppressWarnings("NULL")
-/*public*/ void LayoutEditorTools::removeSensorFromPanel(QString sensorName) {
-    if ( (sensorName==NULL) || (sensorName.length()<1) ) return;
-    Sensor* sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
-                                                    getSensor(sensorName);
-    removeSensorAssignment(sensor);
-    SensorIcon* h = NULL;
-    int index = -1;
-    for (int i=0;(i<layoutEditor->sensorList->size())&&(index==-1);i++) {
-        h = layoutEditor->sensorList->at(i);
-        if (h->getSensor() == sensor) {
-            index = i;
-        }
-    }
-    if (index!=(-1)) {
-        layoutEditor->sensorList->remove(index);
-        h->remove();
-        h->dispose();
-        needRedraw = true;
-    }
+/*public*/ bool LayoutEditorTools::removeSensorFromPanel(Sensor* sensor)
+{
+ log->trace(tr("Remove sensor icon and assignment for '%1'").arg(sensor->getDisplayName()));  // NOI18N
+ if (!removeSensorAssignment(sensor)) {
+     return false;
+ }
+
+ SensorIcon* h = nullptr;
+ int index = -1;
+ for (int i = 0; (i < layoutEditor->sensorList->size()) && (index == -1); i++) {
+     h = layoutEditor->sensorList->at(i);
+     if (h->getSensor() == sensor) {
+         index = i;
+     }
+ }
+ if ((h != nullptr) && (index != -1)) {
+     layoutEditor->sensorList->remove(index);
+     h->remove();
+     h->dispose();
+     needRedraw = true;
+ }
+ return true;
 }
 
 /*private*/ void LayoutEditorTools::getSavedAnchorSensors (ActionEvent* /*a*/) // SLOT
 {
     if ( !getSimpleBlockInformation() ) return;
-    eastBoundSensor->setTextField(boundary->getEastBoundSensor());
-    westBoundSensor->setTextField(boundary->getWestBoundSensor());
+    eastBoundSensor->setTextField(boundary->getEastBoundSensorName());
+    westBoundSensor->setTextField(boundary->getWestBoundSensorName());
 
     if(boundary->getType()!=PositionablePoint::END_BUMPER)
     {
@@ -8385,7 +8415,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
         }
     }
 
-//    setSensorsAtBoundaryFrame->setPreferredSize(NULL);
+//    setSensorsAtBoundaryFrame->setPreferredSize(nullptr);
 //    setSensorsAtBoundaryFrame.pack();
 }
 
@@ -8397,103 +8427,118 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
 
 /*private*/ void LayoutEditorTools::setSensorsAtBoundaryDonePressed (ActionEvent* /*a*/) // SLOT
 {
-    if ( !getSimpleBlockInformation() ) return;
-    Sensor* eastSensor = getSensorFromEntry(eastBoundSensor->getText(),false,setSensorsAtBoundaryFrame);
-    Sensor* westSensor = getSensorFromEntry(westBoundSensor->getText(),false,setSensorsAtBoundaryFrame);
-    if (eastSensor==NULL) {
-        removeSensorAssignment(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(boundary->getEastBoundSensor()));
-        boundary->setEastBoundSensor(NULL);
-    }
-    if (westSensor==NULL) {
-        removeSensorAssignment(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(boundary->getWestBoundSensor()));
-        boundary->setWestBoundSensor(NULL);
-    }
-    // place or update signals as requested
-    if ( (eastSensor!=NULL) && eastBoundSensor->addToPanel() ) {
-        if (isSensorAssignedAnywhere(eastSensor) &&
-                (eastSensor!=getSensorFromName(boundary->getEastBoundSensor())))
-        {
-//            JOptionPane.showMessageDialog(setSensorsAtBoundaryFrame,
-//                java.text.MessageFormat.format(tr("SensorsError6"),
-//                    new Object[]{eastBoundSensor->text()}),
-//                        tr("Error"),JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(setSensorsAtBoundaryFrame, tr("Error"), tr("Error - Cannot place sensor \"%1\" on the panel\nbecause it is already on the panel.").arg(eastBoundSensor->getText()));
-            return;
-        }
-        else {
-            placeEastBoundIcon(getSensorIcon(eastBoundSensor->getText()), eastBoundSensor->isRightSelected(), 0.0);
-            removeSensorAssignment(eastSensor);
-            boundary->setEastBoundSensor(eastBoundSensor->getText());
-            needRedraw = true;
-        }
-    }
-    else if ( (eastSensor!=NULL) &&
-            (eastSensor!=getSensorFromName(boundary->getEastBoundSensor())) &&
-            (eastSensor!=getSensorFromName(boundary->getWestBoundSensor())) ) {
-        if (isSensorAssignedAnywhere(eastSensor)) {
-//            JOptionPane.showMessageDialog(setSensorsAtBoundaryFrame,
-//                java.text.MessageFormat.format(tr("SensorsError13"),
-//                    new Object[]{eastBoundSensor->text()}),
-//                        tr("Error"),JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(setSensorsAtBoundaryFrame, tr("Error"), tr("Error - Cannot assign sensor \"%1\" to this block boundary\nbecause it is already on the panel at a different place.").arg(eastBoundSensor->getText()));
-            return;
-        }
-        else {
-            removeSensorAssignment(eastSensor);
-            boundary->setEastBoundSensor(eastBoundSensor->getText());
-        }
-    }
-    else if ( (eastSensor!=NULL) &&
-            (eastSensor==getSensorFromName(boundary->getWestBoundSensor())) ) {
-        boundary->setEastBoundSensor(eastBoundSensor->getText());
-    }
+ if ( !getSimpleBlockInformation() ) return;
+ Sensor* eastSensor = getSensorFromEntry(eastBoundSensor->getText(),false,setSensorsAtBoundaryFrame);
+ Sensor* westSensor = getSensorFromEntry(westBoundSensor->getText(),false,setSensorsAtBoundaryFrame);
+ Sensor* currEastSensor = InstanceManager::sensorManagerInstance()->getSensor(boundary->getEastBoundSensorName());
+ Sensor* currWestSensor = InstanceManager::sensorManagerInstance()->getSensor(boundary->getWestBoundSensorName());
 
-    if ( (westSensor!=NULL) && westBoundSensor->addToPanel() ) {
-        if (isSensorAssignedAnywhere(westSensor) &&
-                (westSensor!=getSensorFromName(boundary->getWestBoundSensor()))) {
-//            JOptionPane.showMessageDialog(setSensorsAtBoundaryFrame,
-//                java.text.MessageFormat.format(tr("SensorsError6"),
-//                    new Object[]{westBoundSensor->text()}),
-//                        tr("Error"),JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(setSensorsAtBoundaryFrame, tr("Error"), tr("Error - Cannot place sensor \"%1\" on the panel\nbecause it is already on the panel.").arg(westBoundSensor->getText()));
-            return;
+ if (log->isTraceEnabled()) {
+     log->trace(tr("current sensors: east = %1, west = %2").arg(  // NOI18N
+             (currEastSensor == nullptr) ? "- none- " : currEastSensor->getDisplayName()).arg(  // NOI18N
+             (currWestSensor == nullptr) ? "- none- " : currWestSensor->getDisplayName()));  // NOI18N
+     log->trace(tr("new sensors: east = %1, west = %2").arg(  // NOI18N
+             (eastSensor == nullptr) ? "- none- " : eastSensor->getDisplayName()).arg(  // NOI18N
+             (westSensor == nullptr) ? "- none- " : westSensor->getDisplayName()));  // NOI18N
+ }
+
+ if (eastSensor == nullptr) {
+     if (currEastSensor != nullptr && removeSensorFromPanel(currEastSensor)) {
+         boundary->setEastBoundSensor(nullptr);
+     }
+ } else if (eastBoundSensor != nullptr) {
+     setBoundarySensor(eastSensor, currEastSensor, eastBoundSensor, "East");  // NOI18N
+ }
+
+ if (westSensor == nullptr) {
+     if (currWestSensor != nullptr && removeSensorFromPanel(currWestSensor)) {
+         boundary->setWestBoundSensor(nullptr);
+     }
+ } else if (westBoundSensor != nullptr) {
+     setBoundarySensor(westSensor, currWestSensor, westBoundSensor, "West");  // NOI18N
+ }
+
+ setSensorsAtBlockBoundaryOpenFlag = false;
+ setSensorsAtBlockBoundaryFrame.setVisible(false);
+ if (needRedraw) {
+     layoutEditor->redrawPanel();
+     needRedraw = false;
+     layoutEditor->setDirty();
+ }
+}
+
+/**
+ * Attached a sensor to the block boundary positional point.
+ * @since 4.11.2
+ * @param newSensor The sensor that is being added.
+ * @param currSensor The sensor that might already be there, otherwise null.
+ * @param beanDetail The BeanDetails object that contains the supporting data.
+ * @param direction The direction, East or West.
+ */
+void LayoutEditorTools::setBoundarySensor(Sensor* newSensor, Sensor* currSensor,
+        BeanDetails* beanDetail, QString direction) {
+    if (currSensor == nullptr) {
+        if (!isSensorAssignedAnywhere(newSensor)) {
+            log->trace(tr("Add sensor '%1'").arg(newSensor->getDisplayName()));  // NOI18N
+            if (direction == ("West")) {  // NOI18N
+                boundary->setWestBoundSensor(beanDetail->getText());
+            } else {
+                boundary->setEastBoundSensor(beanDetail->getText());
+            }
+            if (beanDetail->addToPanel()) {
+                log->trace(tr("Add icon for sensor '%1'").arg(newSensor->getDisplayName()));  // NOI18N
+                if (direction == ("West")) {  // NOI18N
+                    placeWestBoundIcon(getSensorIcon(beanDetail->getText()),
+                            beanDetail->isRightSelected(), 0.0);
+                } else {
+                    placeEastBoundIcon(getSensorIcon(beanDetail->getText()),
+                            beanDetail->isRightSelected(), 0.0);
+                }
+                needRedraw = true;
+            }
+        } else {
+            sensorAssignedElseWhere(newSensor);
         }
-        else {
-            placeWestBoundIcon(getSensorIcon(westBoundSensor->getText()),  westBoundSensor->isRightSelected(), 0.0);
-            removeSensorAssignment(westSensor);
-            boundary->setWestBoundSensor(westBoundSensor->getText());
-            needRedraw = true;
+    } else if (currSensor == newSensor) {
+         if (beanDetail->addToPanel()) {
+            if (!isSensorOnPanel(newSensor)) {
+                log->trace(tr("Add icon for existing sensor '%1'").arg(newSensor->getDisplayName()));  // NOI18N
+                if (direction == ("West")) {  // NOI18N
+                    placeWestBoundIcon(getSensorIcon(beanDetail->getText()),
+                            beanDetail->isRightSelected(), 0.0);
+                } else {
+                    placeEastBoundIcon(getSensorIcon(beanDetail->getText()),
+                            beanDetail->isRightSelected(), 0.0);
+                }
+                needRedraw = true;
+            }
         }
-    }
-    else if ( (westSensor!=NULL) &&
-            (westSensor!=getSensorFromName(boundary->getEastBoundSensor())) &&
-            (westSensor!=getSensorFromName(boundary->getWestBoundSensor())) ) {
-        if (isSensorAssignedAnywhere(westSensor)) {
-            //Need to do this better, so that the sensor can be on panel multiple times but only alocated to one anchor at a time
-//            JOptionPane.showMessageDialog(setSensorsAtBoundaryFrame,
-//                java.text.MessageFormat.format(tr("SensorsError13"),
-//                    new Object[]{westBoundSensor->text()}),
-//                        tr("Error"),JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(setSensorsAtBoundaryFrame, tr("Error"), tr("Error - Cannot assign sensor \"%1\" to this block boundary\nbecause it is already on the panel at a different place.").arg(westBoundSensor->getText()));
-            return;
+    } else {
+        if (!isSensorAssignedAnywhere(newSensor)) {
+            if (removeSensorFromPanel(currSensor)) {
+                log->trace(tr("Replace sensor '%1' with sensor '%2'").arg(  // NOI18N
+                        currSensor->getDisplayName()).arg(newSensor->getDisplayName()));
+                if (direction == ("West")) {  // NOI18N
+                    boundary->setWestBoundSensor(beanDetail->getText());
+                } else {
+                    boundary->setEastBoundSensor(beanDetail->getText());
+                }
+                if (beanDetail->addToPanel()) {
+                    log->trace(tr("Add icon for replacement sensor '%1'").arg(  // NOI18N
+                            newSensor->getDisplayName()));
+                    if (direction == ("West")) {  // NOI18N
+                        placeWestBoundIcon(getSensorIcon(beanDetail->getText()),
+                                beanDetail->isRightSelected(), 0.0);
+                    } else {
+                        placeEastBoundIcon(getSensorIcon(beanDetail->getText()),
+                                beanDetail->isRightSelected(), 0.0);
+                    }
+                    needRedraw = true;
+                }
+            }
+        } else {
+            sensorAssignedElseWhere(newSensor);
         }
-        else {
-            removeSensorAssignment(westSensor);
-            boundary->setWestBoundSensor(westBoundSensor->getText());
-        }
-    }
-    else if ( (westSensor!=NULL) &&
-            (westSensor==getSensorFromName(boundary->getEastBoundSensor())) ) {
-        boundary->setWestBoundSensor(westBoundSensor->getText());
-// need to figure out what to do in this case.
-    }
-    setSensorsAtBoundaryOpen = false;
-    boundaryFromMenu = false;
-    setSensorsAtBoundaryFrame->setVisible(false);
-    if (needRedraw) {
-        layoutEditor->redrawPanel();
-        needRedraw = false;
-        layoutEditor->setDirty();
     }
 }
 
@@ -8529,7 +8574,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
      return;
  }
  // Initialize if needed
- if (setSignalMastsAtBoundaryFrame == NULL)
+ if (setSignalMastsAtBoundaryFrame == nullptr)
  {
   eastSignalMast = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
   westSignalMast = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
@@ -8672,15 +8717,15 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
   ((BorderLayout*)centralWidgetLayout)->addWidget(panel6, BorderLayout::South);
 //        setSignalMastsAtBoundaryFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                setSignalMastsAtBoundaryCancelPressed(NULL);
+//                setSignalMastsAtBoundaryCancelPressed(nullptr);
 //            }
 //        });
-  if (boundaryFromMenu) getSavedAnchorSignalMasts(NULL);
+  if (boundaryFromMenu) getSavedAnchorSignalMasts(nullptr);
  } else if (boundaryFromMenu) {
-     getSavedAnchorSignalMasts(NULL);
+     getSavedAnchorSignalMasts(nullptr);
  }
  refreshSignalMastAtBoundaryComboBox();
- //setSignalMastsAtBoundaryFrame->setPreferredSize(NULL);
+ //setSignalMastsAtBoundaryFrame->setPreferredSize(nullptr);
  setSignalMastsAtBoundaryFrame->pack();
  setSignalMastsAtBoundaryFrame->setVisible(true);
  setSignalMastsAtBoundaryOpen = true;
@@ -8696,7 +8741,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
 /*public*/ SignalMast* LayoutEditorTools::getSignalMastFromEntry(QString signalMastName,bool requireEntry,
                 JmriJFrame* /*frame*/) {
     QString str = signalMastName;
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
         if (requireEntry) {
 //            JOptionPane.showMessageDialog(frame,tr("SignalMastsError5"),
 //                                tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -8705,7 +8750,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
         return NULL;
     }
     SignalMast* head = ((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(str);
-    if (head==NULL) {
+    if (head==nullptr) {
 //        JOptionPane.showMessageDialog(frame,
 //                java.text.MessageFormat.format(tr("SignalMastsError4"),
 //                    new Object[]{str}), tr("Error"),
@@ -8719,7 +8764,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
  * Returns a SignalMast given a name
  */
 /*public*/ SignalMast* LayoutEditorTools::getSignalMastFromName(QString str) {
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
         return NULL;
     }
     return  (((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(str));
@@ -8731,59 +8776,64 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
  */
 /*public*/ bool LayoutEditorTools::isSignalMastAssignedAnywhere(SignalMast* signalMast)
 {
-    QString sName = signalMast->getSystemName();
-    QString uName = signalMast->getUserName();
-    for (int i=0;i<layoutEditor->pointList->size();i++) {
-        PositionablePoint* po = layoutEditor->pointList->at(i);
-        if ((po->getEastBoundSignalMast()!=NULL) &&
-                (po->getEastBoundSignalMast()==(sName) || ((uName!=NULL) &&
-                (po->getEastBoundSignalMast()==(uName))))) return true;
-        if ((po->getWestBoundSignalMast()!=NULL) &&
-                (po->getWestBoundSignalMast()==(sName) || ((uName!=NULL) &&
-                (po->getWestBoundSignalMast()==(uName))))) return true;
-    }
+ for (PositionablePoint* po : layoutEditor->getPositionablePoints()) {
+     if ((po->getEastBoundSignalMast() != nullptr) && po->getEastBoundSignalMast() == signalMast) {
+         return true;
+     }
+     if ((po->getWestBoundSignalMast() != nullptr) && po->getWestBoundSignalMast() == signalMast) {
+         return true;
+     }
+ }
 
-    for (int i=0;i<layoutEditor->turnoutList->size();i++) {
-        LayoutTurnout* to = layoutEditor->turnoutList->at(i);
-        if ((to->getSignalAMast()!=NULL) &&
-                (to->getSignalAMast()==(sName) || ((uName!=NULL) &&
-                (to->getSignalAMast()==(uName)))))
-                        return true;
-        if ((to->getSignalBMast()!=NULL) &&
-                (to->getSignalBMast()==(sName) || ((uName!=NULL) &&
-                (to->getSignalBMast()==(uName)))))
-                        return true;
-        if ((to->getSignalCMast()!=NULL) &&
-                (to->getSignalCMast()==(sName) || ((uName!=NULL) &&
-                (to->getSignalCMast()==(uName)))))
-                        return true;
-        if ((to->getSignalDMast()!=NULL) &&
-                (to->getSignalDMast()==(sName) || ((uName!=NULL) &&
-                (to->getSignalDMast()==(uName)))))
-                          return true;
-    }
+ for (LayoutTrack* lt : layoutEditor->getLayoutTurnouts()) {
+  LayoutTurnout* to = (LayoutTurnout*)lt;
+     if ((to->getSignalAMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         return true;
+     }
+     if ((to->getSignalBMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         return true;
+     }
+     if ((to->getSignalCMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         return true;
+     }
+     if ((to->getSignalDMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         return true;
+     }
+ }
 
-    for (int i=0;i<layoutEditor->xingList->size();i++) {
-        LevelXing* x = layoutEditor->xingList->at(i);
-        if ((x->getSignalAMastName()!=NULL) &&
-                (x->getSignalAMastName()==(sName) || ((uName!=NULL) &&
-                (x->getSignalAMastName()==(uName)))))
-                        return true;
-        if ((x->getSignalBMastName()!=NULL) &&
-                (x->getSignalBMastName()==(sName) || ((uName!=NULL) &&
-                (x->getSignalBMastName()==(uName)))))
-                        return true;
-        if ((x->getSignalCMastName()!=NULL) &&
-                (x->getSignalCMastName()==(sName) || ((uName!=NULL) &&
-                (x->getSignalCMastName()==(uName)))))
-                        return true;
-        if ((x->getSignalDMastName()!=NULL) &&
-                (x->getSignalDMastName()==(sName) || ((uName!=NULL) &&
-                (x->getSignalDMastName()==(uName)))))
-                        return true;
-    }
+ for (LayoutTrack* lt : layoutEditor->getLayoutSlips()) {
+  LayoutSlip* to = (LayoutSlip*)lt;
+     if ((to->getSignalAMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         return true;
+     }
+     if ((to->getSignalBMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         return true;
+     }
+     if ((to->getSignalCMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         return true;
+     }
+     if ((to->getSignalDMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         return true;
+     }
+ }
 
-    return false;
+ for (LayoutTrack* lt : layoutEditor->getLevelXings()) {
+  LevelXing* x = (LevelXing*)lt;
+     if ((x->getSignalAMast() != nullptr) && x->getSignalAMast() == signalMast) {
+         return true;
+     }
+     if ((x->getSignalBMast() != nullptr) && x->getSignalAMast() == signalMast) {
+         return true;
+     }
+     if ((x->getSignalCMast() != nullptr) && x->getSignalAMast() == signalMast) {
+         return true;
+     }
+     if ((x->getSignalDMast() != nullptr) && x->getSignalAMast() == signalMast) {
+         return true;
+     }
+ }
+
+ return false;
 }
 /**
  * Removes the assignment of the specified SignalMast to either a turnout,
@@ -8791,21 +8841,72 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
  */
 /*public*/ void LayoutEditorTools::removeSignalMastAssignment(SignalMast* signalMast)
 {
-    if (signalMast==NULL)
+    if (signalMast==nullptr)
         return;
-    QString sName = signalMast->getSystemName();
-    QString uName = signalMast->getUserName();
     for (int i=0;i<layoutEditor->pointList->size();i++) {
         PositionablePoint* po = layoutEditor->pointList->at(i);
-        if ((po->getEastBoundSignalMast()!=NULL) &&
-                (po->getEastBoundSignalMast()==(sName) || ((uName!=NULL) &&
-                (po->getEastBoundSignalMast()==(uName)))))
-            po->setEastBoundSignalMast("");
-        if ((po->getWestBoundSignalMast()!=NULL) &&
-                (po->getWestBoundSignalMast()==(sName) || ((uName!=NULL) &&
-                (po->getWestBoundSignalMast()==(uName)))))
-            po->setWestBoundSignalMast("");
+        if ((po->getEastBoundSignalMast() != nullptr) && po->getEastBoundSignalMast() == signalMast) {
+            po->setEastBoundSignalMast(nullptr);
+        }
+        if ((po->getWestBoundSignalMast() != nullptr) && po->getWestBoundSignalMast() == signalMast) {
+            po->setWestBoundSignalMast(nullptr);
+        }
     }
+
+    for (LayoutTrack* lt : layoutEditor->getLayoutTurnouts())
+    {
+     LayoutTurnout* to = (LayoutTurnout*)lt;
+     if ((to->getSignalAMast() != nullptr) && to->getSignalAMast() == signalMast) {
+         to->setSignalAMast(nullptr);
+     }
+     if ((to->getSignalBMast() != nullptr) && to->getSignalBMast() == signalMast) {
+         to->setSignalBMast(nullptr);
+     }
+     if ((to->getSignalCMast() != nullptr) && to->getSignalCMast() == signalMast) {
+         to->setSignalCMast(nullptr);
+     }
+     if ((to->getSignalDMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         to->setSignalDMast(nullptr);
+     }
+ }
+
+ for (LayoutTrack* lt : layoutEditor->getLayoutSlips()) {
+  LayoutSlip* to = (LayoutSlip*)lt;
+     if ((to->getSignalAMast() != nullptr) && to->getSignalAMast() == signalMast) {
+         to->setSignalAMast(nullptr);
+     }
+
+     if ((to->getSignalBMast() != nullptr) && to->getSignalBMast() == signalMast) {
+         to->setSignalBMast(nullptr);
+     }
+
+     if ((to->getSignalCMast() != nullptr) && to->getSignalCMast() == signalMast) {
+         to->setSignalCMast(nullptr);
+     }
+
+     if ((to->getSignalDMast() != nullptr) && to->getSignalDMast() == signalMast) {
+         to->setSignalDMast(nullptr);
+     }
+ }
+
+ for (LayoutTrack* lt : layoutEditor->getLevelXings()) {
+  LevelXing* x = (LevelXing*)lt;
+     if ((x->getSignalAMast() != nullptr) && x->getSignalAMast() == signalMast) {
+         x->setSignalAMast(nullptr);
+     }
+
+     if ((x->getSignalBMast() != nullptr) && x->getSignalBMast() == signalMast) {
+         x->setSignalBMast(nullptr);
+     }
+
+     if ((x->getSignalCMast() != nullptr) && x->getSignalCMast() == signalMast) {
+         x->setSignalCMast(nullptr);
+     }
+
+     if ((x->getSignalDMast() != nullptr) && x->getSignalDMast() == signalMast) {
+         x->setSignalDMast(nullptr);
+     }
+ }
 }
 /**
  * Removes the SignalMast with the specified name from the panel and from
@@ -8813,7 +8914,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
  */
 //@SuppressWarnings("NULL")
 /*public*/ void LayoutEditorTools::removeSignalMastFromPanel(QString signalMastName) {
-    if ( (signalMastName==NULL) || (signalMastName.length()<1) ) return;
+    if ( (signalMastName==nullptr) || (signalMastName.length()<1) ) return;
     SignalMast* signalMast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->
                                                     getSignalMast(signalMastName);
     removeSignalMastAssignment(signalMast);
@@ -8835,8 +8936,8 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
 
 /*private*/ void LayoutEditorTools::getSavedAnchorSignalMasts (ActionEvent* /*a*/) {
     if ( !getSimpleBlockInformation() ) return;
-    eastSignalMast->setTextField(boundary->getEastBoundSignalMast());
-    westSignalMast->setTextField(boundary->getWestBoundSignalMast());
+    eastSignalMast->setTextField(boundary->getEastBoundSignalMastName());
+    westSignalMast->setTextField(boundary->getWestBoundSignalMastName());
     if(boundary->getType()!=PositionablePoint::END_BUMPER){
         if(isAtWestEndOfAnchor(boundary->getConnect1(), boundary)){
             eastSignalMast->setBoundaryLabelText("Protecting Block : " + boundary->getConnect2()->getLayoutBlock()->getDisplayName());
@@ -8856,7 +8957,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(QString sensor){
             eastSignalMast->setBoundaryLabelText("End of Block " + boundary->getConnect1()->getLayoutBlock()->getDisplayName());
         }
     }
-//    setSignalMastsAtBoundaryFrame->setPreferredSize(NULL);
+//    setSignalMastsAtBoundaryFrame->setPreferredSize(nullptr);
 //    setSignalMastsAtBoundaryFrame.pack();
 }
 
@@ -8877,34 +8978,34 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
 /*private*/ void LayoutEditorTools::setSignalMastsAtBoundaryDonePressed (ActionEvent* /*a*/) // SLOT[]
 {
  if ( !getSimpleBlockInformation() ) return;
- SignalMast* oldBlock1SignalMast = getSignalMastFromName(boundary->getEastBoundSignalMast());
- SignalMast* oldBlock2SignalMast = getSignalMastFromName(boundary->getWestBoundSignalMast());
+ SignalMast* oldBlock1SignalMast = getSignalMastFromName(boundary->getEastBoundSignalMastName());
+ SignalMast* oldBlock2SignalMast = getSignalMastFromName(boundary->getWestBoundSignalMastName());
  SignalMast* block1BoundSignalMast = getSignalMastFromEntry(eastSignalMast->getText(),false,setSignalMastsAtBoundaryFrame);
  SignalMast* block2BoundSignalMast = getSignalMastFromEntry(westSignalMast->getText(),false,setSignalMastsAtBoundaryFrame);
 
- if(block1BoundSignalMast==NULL)
+ if(block1BoundSignalMast==nullptr)
  {
   if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->isSignalMastUsed(oldBlock1SignalMast))
   {
    SignallingGuiTools::removeSignalMastLogic(setSignalMastsAtBoundaryFrame, oldBlock1SignalMast);
   }
 
-  removeSignalMastFromPanel(boundary->getEastBoundSignalMast());
-  removeSignalMastAssignment(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(boundary->getEastBoundSignalMast()));
+  removeSignalMastFromPanel(boundary->getEastBoundSignalMastName());
+  removeSignalMastAssignment(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(boundary->getEastBoundSignalMastName()));
   boundary->setEastBoundSignalMast("");
  }
- if(block2BoundSignalMast==NULL)
+ if(block2BoundSignalMast==nullptr)
  {
   if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->isSignalMastUsed(oldBlock2SignalMast))
   {
    SignallingGuiTools::removeSignalMastLogic(setSignalMastsAtBoundaryFrame, oldBlock2SignalMast);
   }
 
-  removeSignalMastFromPanel(boundary->getWestBoundSignalMast());
-  removeSignalMastAssignment(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(boundary->getWestBoundSignalMast()));
+  removeSignalMastFromPanel(boundary->getWestBoundSignalMastName());
+  removeSignalMastAssignment(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(boundary->getWestBoundSignalMastName()));
   boundary->setWestBoundSignalMast("");
  }
- if(block2BoundSignalMast!=NULL && block1BoundSignalMast!=NULL)
+ if(block2BoundSignalMast!=NULL && block1BoundSignalMast!=nullptr)
  {
   if(block1BoundSignalMast == block2BoundSignalMast)
   {
@@ -8918,8 +9019,8 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
   {
    //We are going for a swap!
    //Need to remove old items first
-   removeSignalMastFromPanel(boundary->getWestBoundSignalMast());
-   removeSignalMastFromPanel(boundary->getEastBoundSignalMast());
+   removeSignalMastFromPanel(boundary->getWestBoundSignalMastName());
+   removeSignalMastFromPanel(boundary->getEastBoundSignalMastName());
    removeSignalMastAssignment(block1BoundSignalMast);
    removeSignalMastAssignment(block2BoundSignalMast);
    //Then place new ones
@@ -8948,7 +9049,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
  }
  if(!needRedraw)
  {
-  if(block1BoundSignalMast!=NULL)
+  if(block1BoundSignalMast!=nullptr)
   {
    if (eastSignalMast->addToPanel())
    {
@@ -8964,7 +9065,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
     }
     else
     {
-     removeSignalMastFromPanel(boundary->getEastBoundSignalMast());
+     removeSignalMastFromPanel(boundary->getEastBoundSignalMastName());
      SignalMastIcon* l = new SignalMastIcon(layoutEditor);
      l->setSignalMast(eastSignalMast->getText());
      placeEastBoundIcon(l, eastSignalMast->isRightSelected(), 0);
@@ -8973,8 +9074,8 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
      needRedraw = true;
     }
    }
-   else if ((block1BoundSignalMast!=getSignalMastFromName(boundary->getEastBoundSignalMast())) &&
-    (block1BoundSignalMast!=getSignalMastFromName(boundary->getWestBoundSignalMast())) )
+   else if ((block1BoundSignalMast!=getSignalMastFromName(boundary->getEastBoundSignalMastName())) &&
+    (block1BoundSignalMast!=getSignalMastFromName(boundary->getWestBoundSignalMastName())) )
    {
     if (isSignalMastOnPanel(block1BoundSignalMast))
     {
@@ -8987,13 +9088,13 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
     }
     else
     {
-     removeSignalMastFromPanel(boundary->getEastBoundSignalMast());
+     removeSignalMastFromPanel(boundary->getEastBoundSignalMastName());
      removeSignalMastAssignment(block1BoundSignalMast);
      boundary->setEastBoundSignalMast(eastSignalMast->getText());
     }
    }
   }
-  if(block2BoundSignalMast!=NULL)
+  if(block2BoundSignalMast!=nullptr)
   {
    if (westSignalMast->addToPanel() )
    {
@@ -9009,7 +9110,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
     }
     else /*(oldBlock2SignalMast!=block2BoundSignalMast)*/
     {
-     removeSignalMastFromPanel(boundary->getWestBoundSignalMast());
+     removeSignalMastFromPanel(boundary->getWestBoundSignalMastName());
      SignalMastIcon* l = new SignalMastIcon(layoutEditor);
      l->setSignalMast(westSignalMast->getText());
      placeWestBoundIcon(l, westSignalMast->isRightSelected(), 0);
@@ -9018,7 +9119,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
      needRedraw = true;
     }
    }
-   else if ( (block2BoundSignalMast!=getSignalMastFromName(boundary->getEastBoundSignalMast())) &&
+   else if ( (block2BoundSignalMast!=getSignalMastFromName(boundary->getEastBoundSignalMastName())) &&
     (block2BoundSignalMast!=oldBlock2SignalMast) )
    {
     if (isSignalMastAssignedAnywhere(block2BoundSignalMast))
@@ -9033,7 +9134,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
     }
     else
     {
-     removeSignalMastFromPanel(boundary->getWestBoundSignalMast());
+     removeSignalMastFromPanel(boundary->getWestBoundSignalMastName());
      removeSignalMastAssignment(block2BoundSignalMast);
      boundary->setWestBoundSignalMast(westSignalMast->getText());
     }
@@ -9041,7 +9142,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
   }
 
     //If advanced routing is enabled and then this indicates that we are using this for discovering the signalmast logic paths.
-  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && (block1BoundSignalMast!=NULL || block2BoundSignalMast!=NULL))
+  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && (block1BoundSignalMast!=NULL || block2BoundSignalMast!=nullptr))
   {
    updateBoundaryBasedSignalMastLogic(oldBlock1SignalMast, oldBlock2SignalMast,
                                                         block1BoundSignalMast,block2BoundSignalMast);
@@ -9075,7 +9176,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
                 SignallingGuiTools::removeAlreadyAssignedSignalMastLogic(setSignalMastsAtBoundaryFrame, block2BoundSignalMast);
             }
         }
-        if(block1BoundSignalMast!=NULL){
+        if(block1BoundSignalMast!=nullptr){
             if (oldBlock2SignalMast!=NULL && old2Used &&
                   oldBlock2SignalMast==block1BoundSignalMast){
                 SignallingGuiTools::updateSignalMastLogic(setSignalMastsAtBoundaryFrame, oldBlock2SignalMast, block1BoundSignalMast);
@@ -9087,7 +9188,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
                 SignallingGuiTools::updateSignalMastLogic(setSignalMastsAtBoundaryFrame, oldBlock1SignalMast, block1BoundSignalMast);
             }
         }
-        if(block2BoundSignalMast!=NULL){
+        if(block2BoundSignalMast!=nullptr){
             if(oldBlock1SignalMast!=NULL && old1Used &&
                   oldBlock1SignalMast==block2BoundSignalMast){
 
@@ -9107,11 +9208,11 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
     if (rotation>0) {
         l->rotate(rotation);
     }
-    if(qobject_cast<SignalMastIcon*>(l)!=NULL){
+    if(qobject_cast<SignalMastIcon*>(l)!=nullptr){
         layoutEditor->putSignalMast((SignalMastIcon*) l);
-    } else if (qobject_cast<SensorIcon*>(l)!=NULL){
+    } else if (qobject_cast<SensorIcon*>(l)!=nullptr){
         layoutEditor->putSensor((SensorIcon*) l);
-    } else if (qobject_cast<SignalHeadIcon*>(l)!=NULL){
+    } else if (qobject_cast<SignalHeadIcon*>(l)!=nullptr){
         layoutEditor->putSignal((SignalHeadIcon*) l);
     }
 }
@@ -9122,11 +9223,11 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
     if (rotation>0) {
         l->rotate(rotation);
     }
-    if(qobject_cast<SignalMastIcon*>(l)!=NULL){
+    if(qobject_cast<SignalMastIcon*>(l)!=nullptr){
         layoutEditor->putSignalMast((SignalMastIcon*) l);
-    } else if (qobject_cast<SensorIcon*>(l)!=NULL){
+    } else if (qobject_cast<SensorIcon*>(l)!=nullptr){
         layoutEditor->putSensor((SensorIcon*) l);
-    } else if (qobject_cast<SignalHeadIcon*>(l)!=NULL){
+    } else if (qobject_cast<SignalHeadIcon*>(l)!=nullptr){
         layoutEditor->putSignal((SignalHeadIcon*) l);
     }
 }
@@ -9647,22 +9748,22 @@ void LayoutEditorTools::createListUsedSignalMasts(){
         PositionablePoint* po = layoutEditor->pointList->at(i);
         //We allow the same sensor to be allocated in both directions.
         if (po!=boundary){
-            if (po->getEastBoundSignalMast()!=NULL && po->getEastBoundSignalMast()!=(""))
-                usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getEastBoundSignalMast()));
-            if (po->getWestBoundSignalMast()!=NULL && po->getWestBoundSignalMast()!=(""))
-                usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getWestBoundSignalMast()));
+            if (po->getEastBoundSignalMast()!=NULL && po->getEastBoundSignalMastName()!=(""))
+                usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getEastBoundSignalMastName()));
+            if (po->getWestBoundSignalMast()!=NULL && po->getWestBoundSignalMastName()!=(""))
+                usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(po->getWestBoundSignalMastName()));
         }
     }
 
     foreach (LayoutTurnout* to , *layoutEditor->turnoutList) {
-        if (to->getSignalAMast()!=NULL && to->getSignalAMast()!=(""))
-            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalAMast()));
-        if (to->getSignalBMast()!=NULL && to->getSignalBMast()!=(""))
-            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalBMast()));
-        if (to->getSignalCMast()!=NULL && to->getSignalCMast()!=(""))
-            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalCMast()));
-        if (to->getSignalDMast()!=NULL && to->getSignalDMast()!=("") )
-            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalDMast()));
+        if (to->getSignalAMast()!=NULL && to->getSignalAMastName()!=(""))
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalAMastName()));
+        if (to->getSignalBMastName()!=NULL && to->getSignalBMastName()!=(""))
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalBMastName()));
+        if (to->getSignalCMastName()!=NULL && to->getSignalCMastName()!=(""))
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalCMastName()));
+        if (to->getSignalDMast()!=NULL && to->getSignalDMastName()!=("") )
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(to->getSignalDMastName()));
     }
     foreach (LevelXing* x, *layoutEditor->xingList) {
         if (x->getSignalAMastName()!=NULL && x->getSignalAMastName()!=(""))
@@ -9676,20 +9777,20 @@ void LayoutEditorTools::createListUsedSignalMasts(){
     }
 #if 1
     for (LayoutSlip* sl : *layoutEditor->slipList) {
-        if (sl->getSignalAMast()!=NULL && sl->getSignalAMast()!=(""))
-            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalAMast()));
-        if (sl->getSignalBMast()!=NULL && sl->getSignalBMast()!=(""))
-            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalBMast()));
-        if (sl->getSignalCMast()!=NULL && sl->getSignalCMast()!=(""))
-            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalCMast()));
-        if (sl->getSignalDMast()!=NULL && sl->getSignalDMast()!=(""))
-            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalDMast()));
+        if (sl->getSignalAMast()!=NULL && sl->getSignalAMastName()!=(""))
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalAMastName()));
+        if (sl->getSignalBMast()!=NULL && sl->getSignalBMastName()!=(""))
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalBMastName()));
+        if (sl->getSignalCMast()!=NULL && sl->getSignalCMastName()!=(""))
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalCMastName()));
+        if (sl->getSignalDMast()!=NULL && sl->getSignalDMastName()!=(""))
+            usedMasts.append(((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sl->getSignalDMastName()));
     }
 #endif
 }
 
 void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
-    turnoutSignalMastsGetSaved(NULL);
+    turnoutSignalMastsGetSaved(nullptr);
     createListUsedSignalMasts();
     usedMasts.removeAt(usedMasts.indexOf(turnoutSignalMastA->getBean()));
     usedMasts.removeAt(usedMasts.indexOf(turnoutSignalMastB->getBean()));
@@ -9704,13 +9805,13 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
 /*public*/ void LayoutEditorTools::setSignalMastsAtTurnouts(){
     if (setSignalMastsOpen) {
         //We will do a refresh in case the block boundaries have changed.
-        turnoutSignalMastsGetSaved(NULL);
+        turnoutSignalMastsGetSaved(nullptr);
         refreshSignalMastAtTurnoutComboBox();
         signalMastsJmriFrame->setVisible(true);
         return;
     }
     // Initialize if needed
-    if (signalMastsJmriFrame == NULL) {
+    if (signalMastsJmriFrame == nullptr) {
         signalMastsJmriFrame = new JmriJFrame(tr("Set Signal Masts at Turnout"), false, true);
         signalMastsJmriFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalMastsAtTurnout", true);
 //        signalMastsJmriFrame->setLocation(70,30);
@@ -9729,10 +9830,10 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
             QLabel* turnoutMastNameLabel = new QLabel( tr("Turnout")+" "+
                 tr("Name")+" : "+layoutTurnout->getTurnoutName());
             panel1->layout()->addWidget(turnoutMastNameLabel);
-            turnoutSignalMastA->setTextField(layoutTurnout->getSignalAMast());
-            turnoutSignalMastB->setTextField(layoutTurnout->getSignalBMast());
-            turnoutSignalMastC->setTextField(layoutTurnout->getSignalCMast());
-            turnoutSignalMastD->setTextField(layoutTurnout->getSignalDMast());
+            turnoutSignalMastA->setTextField(layoutTurnout->getSignalAMastName());
+            turnoutSignalMastB->setTextField(layoutTurnout->getSignalBMastName());
+            turnoutSignalMastC->setTextField(layoutTurnout->getSignalCMastName());
+            turnoutSignalMastD->setTextField(layoutTurnout->getSignalDMastName());
         }
         else {
             QLabel* turnoutMastNameLabel = new QLabel( tr("Turnout")+" "+
@@ -9782,13 +9883,13 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
         turnoutSignalMastC->setBoundaryLabel(turnoutBlocks.at(2));
         turnoutSignalMastD->setBoundaryLabel(turnoutBlocks.at(3));
 
-        if(turnoutBlocks.at(0)!=NULL)
+        if(turnoutBlocks.at(0)!=nullptr)
             signalMastTurnoutPanelLayout->addWidget(turnoutSignalMastA->getDetailsPanel(),0,0);
-        if(turnoutBlocks.at(1)!=NULL)
+        if(turnoutBlocks.at(1)!=nullptr)
             signalMastTurnoutPanelLayout->addWidget(turnoutSignalMastB->getDetailsPanel(),0,1);
-        if(turnoutBlocks.at(2)!=NULL)
+        if(turnoutBlocks.at(2)!=nullptr)
             signalMastTurnoutPanelLayout->addWidget(turnoutSignalMastC->getDetailsPanel(),1,0);
-        if(turnoutBlocks.at(3)!=NULL)
+        if(turnoutBlocks.at(3)!=nullptr)
             signalMastTurnoutPanelLayout->addWidget(turnoutSignalMastD->getDetailsPanel(),1,1);
         centralWidgetLayout->addWidget(signalMastTurnoutPanel);
 
@@ -9818,13 +9919,13 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
         centralWidgetLayout->addWidget(panel6);
 //        signalMastsJmriFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-////					setSignalMastsCancelPressed(NULL);
+////					setSignalMastsCancelPressed(nullptr);
 //            }
 //        });
-        if (turnoutFromMenu) turnoutSignalMastsGetSaved(NULL);
+        if (turnoutFromMenu) turnoutSignalMastsGetSaved(nullptr);
     }
     refreshSignalMastAtTurnoutComboBox();
-//    signalMastsJmriFrame->setPreferredSize(NULL);
+//    signalMastsJmriFrame->setPreferredSize(nullptr);
 //    signalMastsJmriFrame.pack();
     signalMastsJmriFrame->setVisible(true);
     setSignalMastsOpen = true;
@@ -9833,10 +9934,10 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
 {
  if ( !getTurnoutMastInformation() ) return;
  turnoutBlocks = layoutTurnout->getBlockBoundaries().toVector();
- turnoutSignalMastA->setTextField(layoutTurnout->getSignalAMast());
- turnoutSignalMastB->setTextField(layoutTurnout->getSignalBMast());
- turnoutSignalMastC->setTextField(layoutTurnout->getSignalCMast());
- turnoutSignalMastD->setTextField(layoutTurnout->getSignalDMast());
+ turnoutSignalMastA->setTextField(layoutTurnout->getSignalAMastName());
+ turnoutSignalMastB->setTextField(layoutTurnout->getSignalBMastName());
+ turnoutSignalMastC->setTextField(layoutTurnout->getSignalCMastName());
+ turnoutSignalMastD->setTextField(layoutTurnout->getSignalDMastName());
 
  turnoutSignalMastA->setBoundaryLabel(turnoutBlocks.at(0));
  turnoutSignalMastB->setBoundaryLabel(turnoutBlocks.at(1));
@@ -9848,22 +9949,22 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
  signalMastTurnoutPanel->layout()->removeWidget(turnoutSignalMastD->getDetailsPanel());
 
  bool blockBoundary = false;
- if(turnoutBlocks.at(0)!=NULL)
+ if(turnoutBlocks.at(0)!=nullptr)
  {
   signalMastTurnoutPanelLayout->addWidget(turnoutSignalMastA->getDetailsPanel(),0,0);
   blockBoundary = true;
  }
- if(turnoutBlocks.at(1)!=NULL)
+ if(turnoutBlocks.at(1)!=nullptr)
  {
   signalMastTurnoutPanelLayout->addWidget(turnoutSignalMastB->getDetailsPanel(),0,1);
   blockBoundary = true;
  }
- if(turnoutBlocks.at(2)!=NULL)
+ if(turnoutBlocks.at(2)!=nullptr)
  {
   signalMastTurnoutPanelLayout->addWidget(turnoutSignalMastC->getDetailsPanel(),1,0);
   blockBoundary = true;
  }
- if(turnoutBlocks.at(3)!=NULL)
+ if(turnoutBlocks.at(3)!=nullptr)
  {
   signalMastTurnoutPanelLayout->addWidget(turnoutSignalMastD->getDetailsPanel(),1,1);
   blockBoundary = true;
@@ -9877,21 +9978,21 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
 
 /*private*/ int LayoutEditorTools::isMastAssignedHere(SignalMast* mast, LayoutTurnout* lTurnout)
 {
- if ((mast==NULL) || (lTurnout==NULL))
+ if ((mast==nullptr) || (lTurnout==nullptr))
      return NONE;
  QString sysName = mast->getSystemName();
  QString uName = mast->getUserName();
- QString name = lTurnout->getSignalAMast();
- if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+ QString name = lTurnout->getSignalAMastName();
+ if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                  (name==(sysName))) ) return A1;
- name = lTurnout->getSignalBMast();
- if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+ name = lTurnout->getSignalBMastName();
+ if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                  (name==(sysName))) ) return A2;
- name = lTurnout->getSignalCMast();
- if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+ name = lTurnout->getSignalCMastName();
+ if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                  (name==(sysName))) ) return A3;
- name = lTurnout->getSignalDMast();
- if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+ name = lTurnout->getSignalDMastName();
+ if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                  (name==(sysName))) ) return B1;
  return NONE;
 }
@@ -9903,45 +10004,45 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
  for (int i=0;i<layoutEditor->turnoutList->size();i++)
  {
      LayoutTurnout* to = layoutEditor->turnoutList->at(i);
-     if ((to->getSignalAMast()!=NULL) &&
-             (to->getSignalAMast()==(sName) || ((uName!=NULL) &&
-             (to->getSignalAMast()==(uName))))) to->setSignalAMast("");
-     if ((to->getSignalBMast()!=NULL) &&
-             (to->getSignalBMast()==(sName) || ((uName!=NULL) &&
-             (to->getSignalBMast()==(uName))))) to->setSignalBMast("");
-     if ((to->getSignalCMast()!=NULL) &&
-             (to->getSignalCMast()==(sName) || ((uName!=NULL) &&
-             (to->getSignalCMast()==(uName))))) to->setSignalCMast("");
-     if ((to->getSignalDMast()!=NULL) &&
-             (to->getSignalDMast()==(sName) || ((uName!=NULL) &&
-             (to->getSignalDMast()==(uName))))) to->setSignalDMast("");
+     if ((to->getSignalAMast()!=nullptr) &&
+             (to->getSignalAMastName()==(sName) || ((uName!=nullptr) &&
+             (to->getSignalAMastName()==(uName))))) to->setSignalAMast("");
+     if ((to->getSignalBMast()!=nullptr) &&
+             (to->getSignalBMastName()==(sName) || ((uName!=nullptr) &&
+             (to->getSignalBMastName()==(uName))))) to->setSignalBMast("");
+     if ((to->getSignalCMast()!=nullptr) &&
+             (to->getSignalCMastName()==(sName) || ((uName!=nullptr) &&
+             (to->getSignalCMastName()==(uName))))) to->setSignalCMast("");
+     if ((to->getSignalDMast()!=nullptr) &&
+             (to->getSignalDMastName()==(sName) || ((uName!=nullptr) &&
+             (to->getSignalDMastName()==(uName))))) to->setSignalDMast("");
  }
  for (int i=0;i<layoutEditor->pointList->size();i++)
  {
      PositionablePoint* po = layoutEditor->pointList->at(i);
-     if ((po->getEastBoundSignalMast()!=NULL) &&
-             (po->getEastBoundSignalMast()==(sName) || ((uName!=NULL) &&
-             (po->getEastBoundSignalMast()==(uName)))))
+     if ((po->getEastBoundSignalMast()!=nullptr) &&
+             (po->getEastBoundSignalMastName()==(sName) || ((uName!=nullptr) &&
+             (po->getEastBoundSignalMastName()==(uName)))))
          po->setEastBoundSignalMast("");
-     if ((po->getWestBoundSignalMast()!=NULL) &&
-             (po->getWestBoundSignalMast()==(sName) || ((uName!=NULL) &&
-             (po->getWestBoundSignalMast()==(uName)))))
+     if ((po->getWestBoundSignalMast()!=nullptr) &&
+             (po->getWestBoundSignalMastName()==(sName) || ((uName!=nullptr) &&
+             (po->getWestBoundSignalMastName()==(uName)))))
          po->setWestBoundSignalMast("");
  }
  for (int i=0;i<layoutEditor->xingList->size();i++)
  {
      LevelXing* x = layoutEditor->xingList->at(i);
-     if ((x->getSignalAMastName()!=NULL) &&
-             (x->getSignalAMastName()==(sName) || ((uName!=NULL) &&
+     if ((x->getSignalAMastName()!=nullptr) &&
+             (x->getSignalAMastName()==(sName) || ((uName!=nullptr) &&
              (x->getSignalAMastName()==(uName))))) x->setSignalAMastName("");
-     if ((x->getSignalBMastName()!=NULL) &&
-             (x->getSignalBMastName()==(sName) || ((uName!=NULL) &&
+     if ((x->getSignalBMastName()!=nullptr) &&
+             (x->getSignalBMastName()==(sName) || ((uName!=nullptr) &&
              (x->getSignalBMastName()==(uName))))) x->setSignalBMastName("");
-     if ((x->getSignalCMastName()!=NULL) &&
-             (x->getSignalCMastName()==(sName) || ((uName!=NULL) &&
+     if ((x->getSignalCMastName()!=nullptr) &&
+             (x->getSignalCMastName()==(sName) || ((uName!=nullptr) &&
              (x->getSignalCMastName()==(uName))))) x->setSignalCMastName("");
-     if ((x->getSignalDMastName()!=NULL) &&
-             (x->getSignalDMastName()==(sName) || ((uName!=NULL) &&
+     if ((x->getSignalDMastName()!=nullptr) &&
+             (x->getSignalDMastName()==(sName) || ((uName!=nullptr) &&
              (x->getSignalDMastName()==(uName))))) x->setSignalDMastName("");
  }
 }
@@ -9956,7 +10057,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
     // place signals as requested
     if (turnoutSignalMastA->addToPanel()) {
         if (isSignalMastOnPanel(turnoutMast) &&
-            (turnoutMast!=getSignalMastFromName(layoutTurnout->getSignalAMast())))
+            (turnoutMast!=getSignalMastFromName(layoutTurnout->getSignalAMastName())))
         {
 //            JOptionPane.showMessageDialog(setSignalsFrame,
 //                java.text.MessageFormat.format(tr("SignalsError6"),
@@ -9966,7 +10067,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
             return;
         }
         else {
-            removeSignalMastFromPanel(layoutTurnout->getSignalAMast());
+            removeSignalMastFromPanel(layoutTurnout->getSignalAMastName());
             SignalMastIcon* l = new SignalMastIcon(layoutEditor);
             l->setSignalMast(turnoutSignalMastA->getText());
             placingBlock(l, turnoutSignalMastA->isRightSelected(), 0.0);
@@ -9975,7 +10076,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
             needRedraw = true;
         }
     }
-    else if (turnoutMast!=NULL){
+    else if (turnoutMast!=nullptr){
         int assigned = isMastAssignedHere(turnoutMast,layoutTurnout);
         if (assigned == NONE) {
             if ( isSignalMastOnPanel(turnoutMast) &&
@@ -9988,7 +10089,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
                 return;
             }
             else {
-                removeSignalMastFromPanel(layoutTurnout->getSignalAMast());
+                removeSignalMastFromPanel(layoutTurnout->getSignalAMastName());
                 removeAssignment(turnoutMast);
                 layoutTurnout->setSignalAMast(turnoutSignalMastA->getText());
             }
@@ -9998,12 +10099,12 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
         }
     }
     else {
-        removeSignalMastFromPanel(layoutTurnout->getSignalAMast());
+        removeSignalMastFromPanel(layoutTurnout->getSignalAMastName());
         layoutTurnout->setSignalAMast("");
     }
-    if ( (turnoutSignalMastB->addToPanel()) && (turnoutMastB!=NULL) ) {
+    if ( (turnoutSignalMastB->addToPanel()) && (turnoutMastB!=nullptr) ) {
         if (isSignalMastOnPanel(turnoutMastB) &&
-            (turnoutMastB!=getSignalMastFromName(layoutTurnout->getSignalBMast()))) {
+            (turnoutMastB!=getSignalMastFromName(layoutTurnout->getSignalBMastName()))) {
 //            JOptionPane.showMessageDialog(setSignalsFrame,
 //                java.text.MessageFormat.format(tr("SignalsError6"),
 //                    new Object[]{turnoutSignalMastB->text()}),
@@ -10012,7 +10113,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
             return;
         }
         else {
-            removeSignalMastFromPanel(layoutTurnout->getSignalBMast());
+            removeSignalMastFromPanel(layoutTurnout->getSignalBMastName());
             SignalMastIcon* l = new SignalMastIcon(layoutEditor);
             l->setSignalMast(turnoutSignalMastB->getText());
             placingBlockB(l, turnoutSignalMastB->isRightSelected(), 0.0);
@@ -10021,7 +10122,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
             needRedraw = true;
         }
     }
-    else if (turnoutMastB!=NULL) {
+    else if (turnoutMastB!=nullptr) {
         int assigned = isMastAssignedHere(turnoutMastB,layoutTurnout);
         if (assigned == NONE) {
             if (isSignalMastOnPanel(turnoutMastB) &&
@@ -10034,7 +10135,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
                 return;
             }
             else {
-                removeSignalMastFromPanel(layoutTurnout->getSignalBMast());
+                removeSignalMastFromPanel(layoutTurnout->getSignalBMastName());
                 removeAssignment(turnoutMastB);
                 layoutTurnout->setSignalBMast(turnoutSignalMastB->getText());
             }
@@ -10044,13 +10145,13 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
         }
     }
     else {
-        removeSignalMastFromPanel(layoutTurnout->getSignalBMast());
+        removeSignalMastFromPanel(layoutTurnout->getSignalBMastName());
         layoutTurnout->setSignalBMast("");
     }
-    if(turnoutMastC!=NULL){
+    if(turnoutMastC!=nullptr){
         if (turnoutSignalMastC->addToPanel()) {
             if (isSignalMastOnPanel(turnoutMastC) &&
-                (turnoutMastC!=getSignalMastFromName(layoutTurnout->getSignalCMast()))) {
+                (turnoutMastC!=getSignalMastFromName(layoutTurnout->getSignalCMastName()))) {
 //                JOptionPane.showMessageDialog(setSignalsFrame,
 //                    java.text.MessageFormat.format(tr("SignalsError6"),
 //                        new Object[]{turnoutSignalMastC->text()}),
@@ -10059,7 +10160,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
                 return;
             }
             else {
-                removeSignalMastFromPanel(layoutTurnout->getSignalCMast());
+                removeSignalMastFromPanel(layoutTurnout->getSignalCMastName());
                 SignalMastIcon* l = new SignalMastIcon(layoutEditor);
                 l->setSignalMast(turnoutSignalMastC->getText());
                 placingBlockC(l, turnoutSignalMastC->isRightSelected(), 0.0);
@@ -10081,7 +10182,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
                     return;
                 }
                 else {
-                    removeSignalMastFromPanel(layoutTurnout->getSignalCMast());
+                    removeSignalMastFromPanel(layoutTurnout->getSignalCMastName());
                     removeAssignment(turnoutMastC);
                     layoutTurnout->setSignalCMast(turnoutSignalMastC->getText());
                 }
@@ -10092,22 +10193,22 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
         }
     }
     else{
-        removeSignalMastFromPanel(layoutTurnout->getSignalCMast());
+        removeSignalMastFromPanel(layoutTurnout->getSignalCMastName());
         layoutTurnout->setSignalCMast("");
     }
-    if(turnoutMastD!=NULL){
+    if(turnoutMastD!=nullptr){
         if (turnoutSignalMastD->addToPanel()) {
             if (isSignalMastOnPanel(turnoutMastD) &&
-                (turnoutMastD!=getSignalMastFromName(layoutTurnout->getSignalDMast()))) {
+                (turnoutMastD!=getSignalMastFromName(layoutTurnout->getSignalDMastName()))) {
 //                JOptionPane.showMessageDialog(setSignalsFrame,
 //                    java.text.MessageFormat.format(tr("SignalsError6"),
 //                        new Object[]{divergingField->text()}),
 //                            tr("Error"),JOptionPane.ERROR_MESSAGE);
-                QMessageBox::critical(setSignalsFrame, tr("Error"), tr("Error - Cannot place signal head \"%1\" on the panel\n                                                                   because it is already on the panel.").arg(turnoutSignalMastD->getText()));
+                QMessageBox::critical(setSignalsFrame, tr("Error"), tr("Error - Cannot place signal head \"%1\" on the panel\nbecause it is already on the panel.").arg(turnoutSignalMastD->getText()));
                 return;
             }
             else {
-                removeSignalMastFromPanel(layoutTurnout->getSignalDMast());
+                removeSignalMastFromPanel(layoutTurnout->getSignalDMastName());
                 SignalMastIcon* l = new SignalMastIcon(layoutEditor);
                 l->setSignalMast(turnoutSignalMastD->getText());
                 placingBlockD(l, turnoutSignalMastD->isRightSelected(), 0.0);
@@ -10129,7 +10230,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
 return;
                 }
                 else {
-                    removeSignalMastFromPanel(layoutTurnout->getSignalDMast());
+                    removeSignalMastFromPanel(layoutTurnout->getSignalDMastName());
                     removeAssignment(turnoutMastD);
                     layoutTurnout->setSignalDMast(turnoutSignalMastD->getText());
                 }
@@ -10139,7 +10240,7 @@ return;
             }
         }
     } else {
-        removeSignalMastFromPanel(layoutTurnout->getSignalDMast());
+        removeSignalMastFromPanel(layoutTurnout->getSignalDMastName());
         layoutTurnout->setSignalDMast("");
     }
 
@@ -10163,14 +10264,14 @@ return;
     turnout = NULL;
     layoutTurnout = NULL;
     str = turnoutMastNameField->text();
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
 //        JOptionPane.showMessageDialog(setSignalsFrame,tr("SignalsError1"),
 //                            tr("Error"),JOptionPane.ERROR_MESSAGE);
         QMessageBox::critical(setSignalsFrame,tr("Error"), tr("Error - No turnout name was entered. Please enter a turnout name or cancel.") );
         return false;
     }
     turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-    if (turnout==NULL) {
+    if (turnout==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("SignalsError2"),
 //                new Object[]{str}), tr("Error"),
@@ -10178,7 +10279,7 @@ return;
         QMessageBox::critical(setSignalsFrame,tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\na turnout name in the Turnout Table and on the panel.").arg(str) );
         return false ;
     }
-    else if ( (turnout->getUserName()==NULL) || (turnout->getUserName()==("")) ||
+    else if ( (turnout->getUserName()==nullptr) || (turnout->getUserName()==("")) ||
                             turnout->getUserName()!=(str) ) {
         turnoutMastNameField->setText(str);
     }
@@ -10190,7 +10291,7 @@ return;
     }
 
     t = layoutTurnout;
-    if (t==NULL) {
+    if (t==nullptr) {
 //    JOptionPane.showMessageDialog(setSignalsFrame,
 //            java.text.MessageFormat.format(tr("SignalsError3"),
 //                    new Object[]{str}), tr("Error"),
@@ -10202,7 +10303,7 @@ return;
 }
 
 /*private*/ void LayoutEditorTools::placingBlock(PositionableIcon* icon, bool right, double fromPoint) {
-    if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectA())!= NULL)
+    if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectA())!= nullptr)
     {
         TrackSegment* t = (TrackSegment*) layoutTurnout->getConnectA();
         QPointF p = layoutTurnout->getCoordsA();
@@ -10224,7 +10325,7 @@ return;
 }
 /*private*/ void LayoutEditorTools::placingBlockB(PositionableIcon* icon, bool right, double fromPoint) {
 
-    if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectB())!= NULL)
+    if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectB())!= nullptr)
     {
         TrackSegment* t = (TrackSegment*) layoutTurnout->getConnectB();
         QPointF p = layoutTurnout->getCoordsB();
@@ -10246,7 +10347,7 @@ return;
 }
 /*private*/ void LayoutEditorTools::placingBlockC(PositionableIcon* icon, bool right, double fromPoint) {
 
-    if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectC())!= NULL)
+    if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectC())!= nullptr)
     {
         TrackSegment* t = (TrackSegment*) layoutTurnout->getConnectC();
         QPointF p = layoutTurnout->getCoordsC();
@@ -10269,7 +10370,7 @@ return;
 /*private*/ void LayoutEditorTools::placingBlockD(PositionableIcon* icon, bool right, double fromPoint)
 {
     //if(layoutTurnout->getConnectD() instanceof TrackSegment){
-    if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectD())!= NULL)
+    if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectD())!= nullptr)
     {
         TrackSegment* t = (TrackSegment*) layoutTurnout->getConnectD();
         QPointF p = layoutTurnout->getCoordsD();
@@ -10318,12 +10419,12 @@ return;
 #if 1
  if (setSignalMastsAtSlipOpen)
  {
-  slipSignalMastsGetSaved(NULL);
+  slipSignalMastsGetSaved(nullptr);
   signalMastsAtSlipFrame->setVisible(true);
   return;
  }
  // Initialize if needed
- if (signalMastsAtSlipFrame == NULL)
+ if (signalMastsAtSlipFrame == nullptr)
  {
   slipSignalMastA = new BeanDetails("Signal Mast", (Manager*) InstanceManager::getDefault("SignalMastManager"));
   slipSignalMastB = new BeanDetails("Signal Mast", (Manager*) InstanceManager::getDefault("SignalMastManager"));
@@ -10349,10 +10450,10 @@ return;
                tr("Name")+" : "+layoutSlip->getBlockName());
 
    panel11->layout()->addWidget(blockANameLabel);
-   slipSignalMastA->setTextField(layoutSlip->getSignalAMast());
-   slipSignalMastB->setTextField(layoutSlip->getSignalBMast());
-   slipSignalMastC->setTextField(layoutSlip->getSignalCMast());
-   slipSignalMastD->setTextField(layoutSlip->getSignalDMast());
+   slipSignalMastA->setTextField(layoutSlip->getSignalAMastName());
+   slipSignalMastB->setTextField(layoutSlip->getSignalBMastName());
+   slipSignalMastC->setTextField(layoutSlip->getSignalCMastName());
+   slipSignalMastD->setTextField(layoutSlip->getSignalDMastName());
   }
   else
   {
@@ -10409,13 +10510,13 @@ return;
   slipSignalMastC->setBoundaryLabel(slipBlocks->at(2));
   slipSignalMastD->setBoundaryLabel(slipBlocks->at(3));
 
-  if(slipBlocks->at(0)!=NULL)
+  if(slipBlocks->at(0)!=nullptr)
       signalMastLayoutSlipPanelLayout->addWidget(slipSignalMastA->getDetailsPanel(),0,0);
-  if(slipBlocks->at(1)!=NULL)
+  if(slipBlocks->at(1)!=nullptr)
       signalMastLayoutSlipPanelLayout->addWidget(slipSignalMastB->getDetailsPanel(),0,1);
-  if(slipBlocks->at(2)!=NULL)
+  if(slipBlocks->at(2)!=nullptr)
       signalMastLayoutSlipPanelLayout->addWidget(slipSignalMastC->getDetailsPanel(),1,0);
-  if(slipBlocks->at(3)!=NULL)
+  if(slipBlocks->at(3)!=nullptr)
       signalMastLayoutSlipPanelLayout->addWidget(slipSignalMastD->getDetailsPanel(),1,1);
 
   centralWidgetLayout->addWidget(signalMastLayoutSlipPanel);
@@ -10443,11 +10544,11 @@ return;
   centralWidgetLayout->addWidget(panel6);
 //        signalMastsAtSlipFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                setSlipSignalMastsCancelPressed(NULL);
+//                setSlipSignalMastsCancelPressed(nullptr);
 //            }
 //        });
   signalMastsAtSlipFrame->addWindowListener(new SMSWindowListener(this));
-  if (slipMastFromMenu) slipSignalMastsGetSaved(NULL);
+  if (slipMastFromMenu) slipSignalMastsGetSaved(nullptr);
  }
  refreshSignalMastAtSlipComboBox();
  //signalMastsAtSlipFrame->setMinimumSize(QSize());
@@ -10459,7 +10560,7 @@ return;
 
 
 void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
- slipSignalMastsGetSaved(NULL);
+ slipSignalMastsGetSaved(nullptr);
  createListUsedSignalMasts();
  usedMasts.removeOne(slipSignalMastA->getBean());
  usedMasts.removeOne(slipSignalMastB->getBean());
@@ -10474,10 +10575,10 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
 /*private*/ void LayoutEditorTools::slipSignalMastsGetSaved (ActionEvent* /*a*/) {
  if ( !getSlipMastInformation() ) return;
  slipBlocks = layoutSlip->getBlockBoundaries();
- slipSignalMastA->setTextField(layoutSlip->getSignalAMast());
- slipSignalMastB->setTextField(layoutSlip->getSignalBMast());
- slipSignalMastC->setTextField(layoutSlip->getSignalCMast());
- slipSignalMastD->setTextField(layoutSlip->getSignalDMast());
+ slipSignalMastA->setTextField(layoutSlip->getSignalAMastName());
+ slipSignalMastB->setTextField(layoutSlip->getSignalBMastName());
+ slipSignalMastC->setTextField(layoutSlip->getSignalCMastName());
+ slipSignalMastD->setTextField(layoutSlip->getSignalDMastName());
 
  slipSignalMastA->setBoundaryLabel(slipBlocks->at(0));
  slipSignalMastB->setBoundaryLabel(slipBlocks->at(1));
@@ -10489,19 +10590,19 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
  signalMastLayoutSlipPanel->layout()->removeWidget(slipSignalMastB->getDetailsPanel());
  signalMastLayoutSlipPanel->layout()->removeWidget(slipSignalMastC->getDetailsPanel());
  signalMastLayoutSlipPanel->layout()->removeWidget(slipSignalMastD->getDetailsPanel());
- if(slipBlocks->at(0)!=NULL){
+ if(slipBlocks->at(0)!=nullptr){
      signalMastLayoutSlipPanelLayout->addWidget(slipSignalMastA->getDetailsPanel());
      boundary = true;
  }
- if(slipBlocks->at(1)!=NULL){
+ if(slipBlocks->at(1)!=nullptr){
      signalMastLayoutSlipPanelLayout->addWidget(slipSignalMastB->getDetailsPanel());
      boundary = true;
  }
- if(slipBlocks->at(2)!=NULL){
+ if(slipBlocks->at(2)!=nullptr){
      signalMastLayoutSlipPanelLayout->addWidget(slipSignalMastC->getDetailsPanel());
      boundary = true;
  }
- if(slipBlocks->at(3)!=NULL){
+ if(slipBlocks->at(3)!=nullptr){
      signalMastLayoutSlipPanelLayout->addWidget(slipSignalMastD->getDetailsPanel());
      boundary = true;
  }
@@ -10530,7 +10631,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
             LayoutBlock*slipBlockA = NULL;
             //LayoutBlock*slipBlockC = NULL;
             slipBlockA = getBlockFromEntry(blockANameMastField);
-            if (slipBlockA==NULL) return false;
+            if (slipBlockA==nullptr) return false;
 
             LayoutSlip* x = NULL;
             int foundCount = 0;
@@ -10542,18 +10643,18 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
                 LayoutBlock* xC = NULL;
                 LayoutBlock* xD = NULL;
                 LayoutBlock* xAC = x->getLayoutBlock();
-                if (x->getConnectA()!=NULL) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
-                if (x->getConnectB()!=NULL) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
-                if (x->getConnectC()!=NULL) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
-                if (x->getConnectD()!=NULL) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
-                if ( ( (xA!=NULL) && (xC!=NULL) && ( (xA==slipBlockA) ||
+                if (x->getConnectA()!=nullptr) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
+                if (x->getConnectB()!=nullptr) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
+                if (x->getConnectC()!=nullptr) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
+                if (x->getConnectD()!=nullptr) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
+                if ( ( (xA!=nullptr) && (xC!=nullptr) && ( (xA==slipBlockA) ||
                         (xC==slipBlockA) ) ) ||
-                        ( (xB!=NULL) && (xD!=NULL) && ( (xB==slipBlockA) ||
+                        ( (xB!=nullptr) && (xD!=nullptr) && ( (xB==slipBlockA) ||
                         (xD==slipBlockA) ) ) ) {
                     layoutSlip = x;
                     foundCount ++;
                 }
-                else if ( (xAC!=NULL) && ( xAC==slipBlockA
+                else if ( (xAC!=nullptr) && ( xAC==slipBlockA
                              )) {
                     layoutSlip = x;
                     foundCount ++;
@@ -10577,7 +10678,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
 //                                tr("Error"),JOptionPane.ERROR_MESSAGE);
              QMessageBox::critical(signalMastsAtSlipFrame, tr("Error"), tr("Error - The entered block names match \"%1\" level crossings.\n           Please enter block names that match only one level crossing.").arg(foundCount)); return false;
             }
-            if (layoutSlip==NULL) {
+            if (layoutSlip==nullptr) {
 //                JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
 //                            tr("SignalsError17"),
 //                                    tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -10602,10 +10703,10 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
  SignalMast* cMast = getSignalMastFromEntry(slipSignalMastC->getText(),false,signalMastsAtSlipFrame);
  SignalMast* dMast = getSignalMastFromEntry(slipSignalMastD->getText(),false,signalMastsAtSlipFrame);
  // place or update signals as requested
- if ( (aMast!=NULL) && slipSignalMastA->addToPanel() )
+ if ( (aMast!=nullptr) && slipSignalMastA->addToPanel() )
  {
      if (isSignalMastOnPanel(aMast) &&
-             (aMast!=getSignalMastFromName(layoutSlip->getSignalAMast())) )
+             (aMast!=getSignalMastFromName(layoutSlip->getSignalAMastName())) )
      {
 //            JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("SignalMastsError6"),
@@ -10615,7 +10716,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          return;
      }
      else {
-         removeSignalMastFromPanel(layoutSlip->getSignalAMast());
+         removeSignalMastFromPanel(layoutSlip->getSignalAMastName());
          SignalMastIcon* l = new SignalMastIcon(layoutEditor);
          l->setSignalMast(slipSignalMastA->getText());
          placingBlock(l, slipSignalMastA->isRightSelected(), 0.0);
@@ -10624,11 +10725,11 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          needRedraw = true;
      }
  }
- else if ( (aMast!=NULL) &&
-         (aMast!=getSignalMastFromName(layoutSlip->getSignalAMast())) &&
-         (aMast!=getSignalMastFromName(layoutSlip->getSignalBMast())) &&
-         (aMast!=getSignalMastFromName(layoutSlip->getSignalCMast())) &&
-         (aMast!=getSignalMastFromName(layoutSlip->getSignalDMast())) ) {
+ else if ( (aMast!=nullptr) &&
+         (aMast!=getSignalMastFromName(layoutSlip->getSignalAMastName())) &&
+         (aMast!=getSignalMastFromName(layoutSlip->getSignalBMastName())) &&
+         (aMast!=getSignalMastFromName(layoutSlip->getSignalCMastName())) &&
+         (aMast!=getSignalMastFromName(layoutSlip->getSignalDMastName())) ) {
      if (isSignalMastOnPanel(aMast)) {
 //            JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("SignalMastsError13"),
@@ -10638,24 +10739,24 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          return;
      }
      else {
-         removeSignalMastFromPanel(layoutSlip->getSignalAMast());
+         removeSignalMastFromPanel(layoutSlip->getSignalAMastName());
          removeAssignment(aMast);
          layoutSlip->setSignalAMast(slipSignalMastA->getText());
      }
  }
- else if ( (aMast!=NULL) &&
-         ( (aMast==getSignalMastFromName(layoutSlip->getSignalBMast())) ||
-             (aMast==getSignalMastFromName(layoutSlip->getSignalCMast())) ||
-             (aMast==getSignalMastFromName(layoutSlip->getSignalDMast())) ) ) {
+ else if ( (aMast!=nullptr) &&
+         ( (aMast==getSignalMastFromName(layoutSlip->getSignalBMastName())) ||
+             (aMast==getSignalMastFromName(layoutSlip->getSignalCMastName())) ||
+             (aMast==getSignalMastFromName(layoutSlip->getSignalDMastName())) ) ) {
 // need to figure out what to do in this case.
  }
- else if (aMast==NULL) {
-     removeSignalMastFromPanel(layoutSlip->getSignalAMast());
+ else if (aMast==nullptr) {
+     removeSignalMastFromPanel(layoutSlip->getSignalAMastName());
      layoutSlip->setSignalAMast("");
  }
- if ( (bMast!=NULL) && slipSignalMastB->addToPanel()) {
+ if ( (bMast!=nullptr) && slipSignalMastB->addToPanel()) {
      if (isSignalMastOnPanel(bMast) &&
-             (bMast!=getSignalMastFromName(layoutSlip->getSignalBMast()))) {
+             (bMast!=getSignalMastFromName(layoutSlip->getSignalBMastName()))) {
 //            JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("SignalMastsError6"),
 //                    new Object[]{slipSignalMastB->text()}),
@@ -10664,7 +10765,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          return;
      }
      else {
-         removeSignalMastFromPanel(layoutSlip->getSignalBMast());
+         removeSignalMastFromPanel(layoutSlip->getSignalBMastName());
          SignalMastIcon* l = new SignalMastIcon(layoutEditor);
          l->setSignalMast(slipSignalMastB->getText());
          placingBlockB(l, slipSignalMastB->isRightSelected(), 0.0);
@@ -10673,11 +10774,11 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          needRedraw = true;
      }
  }
- else if ( (bMast!=NULL) &&
-         (bMast!=getSignalMastFromName(layoutSlip->getSignalAMast())) &&
-         (bMast!=getSignalMastFromName(layoutSlip->getSignalBMast())) &&
-         (bMast!=getSignalMastFromName(layoutSlip->getSignalCMast())) &&
-         (bMast!=getSignalMastFromName(layoutSlip->getSignalDMast())) ) {
+ else if ( (bMast!=nullptr) &&
+         (bMast!=getSignalMastFromName(layoutSlip->getSignalAMastName())) &&
+         (bMast!=getSignalMastFromName(layoutSlip->getSignalBMastName())) &&
+         (bMast!=getSignalMastFromName(layoutSlip->getSignalCMastName())) &&
+         (bMast!=getSignalMastFromName(layoutSlip->getSignalDMastName())) ) {
      if (isSignalMastOnPanel(bMast)) {
 //            JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("SignalMastsError13"),
@@ -10687,24 +10788,24 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          return;
      }
      else {
-         removeSignalMastFromPanel(layoutSlip->getSignalBMast());
+         removeSignalMastFromPanel(layoutSlip->getSignalBMastName());
          removeAssignment(bMast);
          layoutSlip->setSignalBMast(slipSignalMastB->getText());
      }
  }
- else if ( (bMast!=NULL) &&
-         ( (bMast==getSignalMastFromName(layoutSlip->getSignalAMast())) ||
-             (bMast==getSignalMastFromName(layoutSlip->getSignalCMast())) ||
-             (bMast==getSignalMastFromName(layoutSlip->getSignalDMast())) ) ) {
+ else if ( (bMast!=nullptr) &&
+         ( (bMast==getSignalMastFromName(layoutSlip->getSignalAMastName())) ||
+             (bMast==getSignalMastFromName(layoutSlip->getSignalCMastName())) ||
+             (bMast==getSignalMastFromName(layoutSlip->getSignalDMastName())) ) ) {
 // need to figure out what to do in this case.
  }
- else if (bMast==NULL) {
-     removeSignalMastFromPanel(layoutSlip->getSignalBMast());
+ else if (bMast==nullptr) {
+     removeSignalMastFromPanel(layoutSlip->getSignalBMastName());
      layoutSlip->setSignalBMast("");
  }
- if ( (cMast!=NULL) && slipSignalMastC->addToPanel() ) {
+ if ( (cMast!=nullptr) && slipSignalMastC->addToPanel() ) {
      if (isSignalMastOnPanel(cMast) &&
-             (cMast!=getSignalMastFromName(layoutSlip->getSignalCMast())) ) {
+             (cMast!=getSignalMastFromName(layoutSlip->getSignalCMastName())) ) {
 //            JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("SignalMastsError6"),
 //                    new Object[]{slipSignalMastC->text()}),
@@ -10713,7 +10814,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          return;
      }
      else {
-         removeSignalMastFromPanel(layoutSlip->getSignalCMast());
+         removeSignalMastFromPanel(layoutSlip->getSignalCMastName());
          SignalMastIcon* l = new SignalMastIcon(layoutEditor);
          l->setSignalMast(slipSignalMastC->getText());
          placingBlockC(l, slipSignalMastA->isRightSelected(), 0.0);
@@ -10722,11 +10823,11 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          needRedraw = true;
      }
  }
- else if ( (cMast!=NULL) &&
-         (cMast!=getSignalMastFromName(layoutSlip->getSignalAMast())) &&
-         (cMast!=getSignalMastFromName(layoutSlip->getSignalBMast())) &&
-         (cMast!=getSignalMastFromName(layoutSlip->getSignalCMast())) &&
-         (cMast!=getSignalMastFromName(layoutSlip->getSignalDMast())) ) {
+ else if ( (cMast!=nullptr) &&
+         (cMast!=getSignalMastFromName(layoutSlip->getSignalAMastName())) &&
+         (cMast!=getSignalMastFromName(layoutSlip->getSignalBMastName())) &&
+         (cMast!=getSignalMastFromName(layoutSlip->getSignalCMastName())) &&
+         (cMast!=getSignalMastFromName(layoutSlip->getSignalDMastName())) ) {
      if (isSignalMastOnPanel(cMast)) {
 //            JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("SignalMastsError13"),
@@ -10736,24 +10837,24 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          return;
      }
      else {
-         removeSignalMastFromPanel(layoutSlip->getSignalCMast());
+         removeSignalMastFromPanel(layoutSlip->getSignalCMastName());
          removeAssignment(cMast);
          layoutSlip->setSignalCMast(slipSignalMastC->getText());
      }
  }
- else if ( (cMast!=NULL) &&
-         ( (cMast==getSignalMastFromName(layoutSlip->getSignalBMast())) ||
-             (cMast==getSignalMastFromName(layoutSlip->getSignalAMast())) ||
-             (cMast==getSignalMastFromName(layoutSlip->getSignalDMast())) ) ) {
+ else if ( (cMast!=nullptr) &&
+         ( (cMast==getSignalMastFromName(layoutSlip->getSignalBMastName())) ||
+             (cMast==getSignalMastFromName(layoutSlip->getSignalAMastName())) ||
+             (cMast==getSignalMastFromName(layoutSlip->getSignalDMastName())) ) ) {
 // need to figure out what to do in this case.
  }
- else if (cMast==NULL) {
-     removeSignalMastFromPanel(layoutSlip->getSignalCMast());
+ else if (cMast==nullptr) {
+     removeSignalMastFromPanel(layoutSlip->getSignalCMastName());
      layoutSlip->setSignalCMast("");
  }
- if ( (dMast!=NULL) && slipSignalMastD->addToPanel() ) {
+ if ( (dMast!=nullptr) && slipSignalMastD->addToPanel() ) {
      if (isSignalMastOnPanel(dMast) &&
-             (dMast!=getSignalMastFromName(layoutSlip->getSignalDMast())) ) {
+             (dMast!=getSignalMastFromName(layoutSlip->getSignalDMastName())) ) {
       //            JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
       //                java.text.MessageFormat.format(tr("SignalMastsError6"),
       //                    new Object[]{slipSignalMastD->text()}),
@@ -10762,7 +10863,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          return;
      }
      else {
-         removeSignalMastFromPanel(layoutSlip->getSignalDMast());
+         removeSignalMastFromPanel(layoutSlip->getSignalDMastName());
          SignalMastIcon* l = new SignalMastIcon(layoutEditor);
          l->setSignalMast(slipSignalMastD->getText());
          placingBlockD(l, slipSignalMastD->isRightSelected(), 0.0);
@@ -10771,11 +10872,11 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          needRedraw = true;
      }
  }
- else if ( (dMast!=NULL) &&
-         (dMast!=getSignalMastFromName(layoutSlip->getSignalAMast())) &&
-         (dMast!=getSignalMastFromName(layoutSlip->getSignalBMast())) &&
-         (dMast!=getSignalMastFromName(layoutSlip->getSignalCMast())) &&
-         (dMast!=getSignalMastFromName(layoutSlip->getSignalDMast())) ) {
+ else if ( (dMast!=nullptr) &&
+         (dMast!=getSignalMastFromName(layoutSlip->getSignalAMastName())) &&
+         (dMast!=getSignalMastFromName(layoutSlip->getSignalBMastName())) &&
+         (dMast!=getSignalMastFromName(layoutSlip->getSignalCMastName())) &&
+         (dMast!=getSignalMastFromName(layoutSlip->getSignalDMastName())) ) {
      if (isSignalMastOnPanel(dMast)) {
 //            JOptionPane.showMessageDialog(signalMastsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("SignalMastsError13"),
@@ -10785,19 +10886,19 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
          return;
      }
      else {
-         removeSignalMastFromPanel(layoutSlip->getSignalDMast());
+         removeSignalMastFromPanel(layoutSlip->getSignalDMastName());
          removeAssignment(dMast);
          layoutSlip->setSignalDMast(slipSignalMastD->getText());
      }
  }
- else if ( (dMast!=NULL) &&
-         ( (dMast==getSignalMastFromName(layoutSlip->getSignalBMast())) ||
-             (dMast==getSignalMastFromName(layoutSlip->getSignalCMast())) ||
-             (dMast==getSignalMastFromName(layoutSlip->getSignalAMast())) ) ) {
+ else if ( (dMast!=nullptr) &&
+         ( (dMast==getSignalMastFromName(layoutSlip->getSignalBMastName())) ||
+             (dMast==getSignalMastFromName(layoutSlip->getSignalCMastName())) ||
+             (dMast==getSignalMastFromName(layoutSlip->getSignalAMastName())) ) ) {
 // need to figure out what to do in this case.
  }
- else if (dMast==NULL) {
-     removeSignalMastFromPanel(layoutSlip->getSignalDMast());
+ else if (dMast==nullptr) {
+     removeSignalMastFromPanel(layoutSlip->getSignalDMastName());
      layoutSlip->setSignalDMast("");
  }
  // setup logic if requested
@@ -10833,12 +10934,12 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
  signalFrame = theFrame;
  if (setSignalMastsAtXingOpen)
  {
-  xingSignalMastsGetSaved(NULL);
+  xingSignalMastsGetSaved(nullptr);
   signalMastsAtXingFrame->setVisible(true);
   return;
  }
  // Initialize if needed
- if (signalMastsAtXingFrame == NULL)
+ if (signalMastsAtXingFrame == nullptr)
  {
   xingSignalMastA = new BeanDetails("Signal Mast", (Manager*) InstanceManager::getDefault("SignalMastManager"));
   xingSignalMastB = new BeanDetails("Signal Mast",(Manager*) InstanceManager::getDefault("SignalMastManager"));
@@ -10925,13 +11026,13 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
   xingSignalMastC->setBoundaryLabel(xingBlocks->at(2));
   xingSignalMastD->setBoundaryLabel(xingBlocks->at(3));
 
-  if(xingBlocks->at(0)!=NULL)
+  if(xingBlocks->at(0)!=nullptr)
       signalMastLevelXingPanelLayout->addWidget(xingSignalMastA->getDetailsPanel(),0,0);
-  if(xingBlocks->at(1)!=NULL)
+  if(xingBlocks->at(1)!=nullptr)
       signalMastLevelXingPanelLayout->addWidget(xingSignalMastB->getDetailsPanel(),0,1);
-  if(xingBlocks->at(2)!=NULL)
+  if(xingBlocks->at(2)!=nullptr)
       signalMastLevelXingPanelLayout->addWidget(xingSignalMastC->getDetailsPanel(),1, 0);
-  if(xingBlocks->at(3)!=NULL)
+  if(xingBlocks->at(3)!=nullptr)
       signalMastLevelXingPanelLayout->addWidget(xingSignalMastD->getDetailsPanel(),1,1);
 
   centralWidgetLayout->addWidget(signalMastLevelXingPanel);
@@ -10959,11 +11060,11 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
   centralWidgetLayout->addWidget(panel6);
 //  signalMastsAtXingFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //      /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//          setXingSignalMastsCancelPressed(NULL);
+//          setXingSignalMastsCancelPressed(nullptr);
 //      }
 //  });
   signalMastsAtXingFrame->addWindowListener(new XSMSWindowListener(this));
-  if (xingMastFromMenu) xingSignalMastsGetSaved(NULL);
+  if (xingMastFromMenu) xingSignalMastsGetSaved(nullptr);
  }
  refreshSignalMastAtXingComboBox();
  signalMastsAtXingFrame->setMinimumSize(QSize());
@@ -10973,7 +11074,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
 }
 void LayoutEditorTools::refreshSignalMastAtXingComboBox()
 {
- xingSignalMastsGetSaved(NULL);
+ xingSignalMastsGetSaved(nullptr);
  createListUsedSignalMasts();
  usedMasts.removeOne(xingSignalMastA->getBean());
  usedMasts.removeOne(xingSignalMastB->getBean());
@@ -11004,19 +11105,19 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
  signalMastLevelXingPanel->layout()->removeWidget(xingSignalMastB->getDetailsPanel());
  signalMastLevelXingPanel->layout()->removeWidget(xingSignalMastC->getDetailsPanel());
  signalMastLevelXingPanel->layout()->removeWidget(xingSignalMastD->getDetailsPanel());
- if(xingBlocks->at(0)!=NULL){
+ if(xingBlocks->at(0)!=nullptr){
      signalMastLevelXingPanelLayout->addWidget(xingSignalMastA->getDetailsPanel());
      boundary = true;
  }
- if(xingBlocks->at(1)!=NULL){
+ if(xingBlocks->at(1)!=nullptr){
      signalMastLevelXingPanelLayout->addWidget(xingSignalMastB->getDetailsPanel());
      boundary = true;
  }
- if(xingBlocks->at(2)!=NULL){
+ if(xingBlocks->at(2)!=nullptr){
      signalMastLevelXingPanelLayout->addWidget(xingSignalMastC->getDetailsPanel());
      boundary = true;
  }
- if(xingBlocks->at(3)!=NULL){
+ if(xingBlocks->at(3)!=nullptr){
      signalMastLevelXingPanelLayout->addWidget(xingSignalMastD->getDetailsPanel());
      boundary = true;
  }
@@ -11049,16 +11150,16 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
    LayoutBlock* xingBlockA = NULL;
    LayoutBlock* xingBlockC = NULL;
    xingBlockA = getBlockFromEntry(blockANameMastField);
-   if (xingBlockA==NULL) return false;
+   if (xingBlockA==nullptr) return false;
    if (blockCNameMastField->text().length()>0)
    {
     xingBlockC = getBlockFromEntry(blockCNameMastField);
-    if (xingBlockC==NULL) return false;
+    if (xingBlockC==nullptr) return false;
    }
    LevelXing* x = NULL;
    int foundCount = 0;
    // make two block tests first
-   if (xingBlockC!=NULL)
+   if (xingBlockC!=nullptr)
    {
     for (int i = 0;(i<layoutEditor->xingList->size());i++)
     {
@@ -11069,19 +11170,19 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
      LayoutBlock* xD = NULL;
      LayoutBlock* xAC = x->getLayoutBlockAC();
      LayoutBlock* xBD = x->getLayoutBlockBD();
-     if (x->getConnectA()!=NULL) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
-     if (x->getConnectB()!=NULL) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
-     if (x->getConnectC()!=NULL) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
-     if (x->getConnectD()!=NULL) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
-     if ( ( (xA!=NULL) && (xC!=NULL) && ( ((xA==xingBlockA)&&(xC==xingBlockC)) ||
+     if (x->getConnectA()!=nullptr) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
+     if (x->getConnectB()!=nullptr) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
+     if (x->getConnectC()!=nullptr) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
+     if (x->getConnectD()!=nullptr) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
+     if ( ( (xA!=nullptr) && (xC!=nullptr) && ( ((xA==xingBlockA)&&(xC==xingBlockC)) ||
              ((xA==xingBlockC)&&(xC==xingBlockA)) ) ) ||
-             ( (xB!=NULL) && (xD!=NULL) && ( ((xB==xingBlockA)&&(xD==xingBlockC)) ||
+             ( (xB!=nullptr) && (xD!=nullptr) && ( ((xB==xingBlockA)&&(xD==xingBlockC)) ||
              ((xB==xingBlockC)&&(xD==xingBlockA)) ) ) )
      {
       levelXing = x;
       foundCount ++;
      }
-     else if ( (xAC!=NULL) && (xBD!=NULL) && ( ((xAC==xingBlockA) && (xBD==xingBlockC)) ||
+     else if ( (xAC!=nullptr) && (xBD!=nullptr) && ( ((xAC==xingBlockA) && (xBD==xingBlockC)) ||
                  ((xAC==xingBlockC) && (xBD==xingBlockA)) ) )
      {
       levelXing = x;
@@ -11111,7 +11212,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     QMessageBox::critical(signalMastsAtXingFrame, tr("Error"), tr("Error - The entered block names match \"%1\" level crossings.\n           Please enter block names that match only one level crossing.").arg(foundCount)); return false;
     return false;
    }
-   if (levelXing==NULL)
+   if (levelXing==nullptr)
    {
 //       JOptionPane.showMessageDialog(signalMastsAtXingFrame,
 //                   tr("SignalsError17"),
@@ -11140,7 +11241,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     SignalMast* dMast = getSignalMastFromEntry(xingSignalMastD->getText(),false,signalMastsAtXingFrame);
     //if ( !getXingSignalMastInformation() ) return;
     // place or update signals as requested
-    if ( (aMast!=NULL) && xingSignalMastA->addToPanel() ) {
+    if ( (aMast!=nullptr) && xingSignalMastA->addToPanel() ) {
         if (isSignalMastOnPanel(aMast) &&
                 (aMast!=getSignalMastFromName(levelXing->getSignalAMastName())) ) {
 //            JOptionPane.showMessageDialog(signalMastsAtXingFrame,
@@ -11160,7 +11261,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             needRedraw = true;
         }
     }
-    else if ( (aMast!=NULL) &&
+    else if ( (aMast!=nullptr) &&
             (aMast!=getSignalMastFromName(levelXing->getSignalAMastName())) &&
             (aMast!=getSignalMastFromName(levelXing->getSignalBMastName())) &&
             (aMast!=getSignalMastFromName(levelXing->getSignalCMastName())) &&
@@ -11179,17 +11280,17 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             levelXing->setSignalAMastName(xingSignalMastA->getText());
         }
     }
-    else if ( (aMast!=NULL) &&
+    else if ( (aMast!=nullptr) &&
             ( (aMast==getSignalMastFromName(levelXing->getSignalBMastName())) ||
                 (aMast==getSignalMastFromName(levelXing->getSignalCMastName())) ||
                 (aMast==getSignalMastFromName(levelXing->getSignalDMastName())) ) ) {
 // need to figure out what to do in this case.
     }
-    else if (aMast==NULL) {
+    else if (aMast==nullptr) {
         removeSignalMastFromPanel(levelXing->getSignalAMastName());
         levelXing->setSignalAMastName("");
     }
-    if ( (bMast!=NULL) && xingSignalMastB->addToPanel()) {
+    if ( (bMast!=nullptr) && xingSignalMastB->addToPanel()) {
         if (isSignalMastOnPanel(bMast) &&
                 (bMast!=getSignalMastFromName(levelXing->getSignalBMastName()))) {
 //            JOptionPane.showMessageDialog(signalMastsAtXingFrame,
@@ -11209,7 +11310,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             needRedraw = true;
         }
     }
-    else if ( (bMast!=NULL) &&
+    else if ( (bMast!=nullptr) &&
             (bMast!=getSignalMastFromName(levelXing->getSignalAMastName())) &&
             (bMast!=getSignalMastFromName(levelXing->getSignalBMastName())) &&
             (bMast!=getSignalMastFromName(levelXing->getSignalCMastName())) &&
@@ -11228,17 +11329,17 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             levelXing->setSignalBMastName(xingSignalMastB->getText());
         }
     }
-    else if ( (bMast!=NULL) &&
+    else if ( (bMast!=nullptr) &&
             ( (bMast==getSignalMastFromName(levelXing->getSignalAMastName())) ||
                 (bMast==getSignalMastFromName(levelXing->getSignalCMastName())) ||
                 (bMast==getSignalMastFromName(levelXing->getSignalDMastName())) ) ) {
 // need to figure out what to do in this case.
     }
-    else if (bMast==NULL) {
+    else if (bMast==nullptr) {
         removeSignalMastFromPanel(levelXing->getSignalBMastName());
         levelXing->setSignalBMastName("");
     }
-    if ( (cMast!=NULL) && xingSignalMastC->addToPanel() ) {
+    if ( (cMast!=nullptr) && xingSignalMastC->addToPanel() ) {
         if (isSignalMastOnPanel(cMast) &&
                 (cMast!=getSignalMastFromName(levelXing->getSignalCMastName())) ) {
 //            JOptionPane.showMessageDialog(signalMastsAtXingFrame,
@@ -11258,7 +11359,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             needRedraw = true;
         }
     }
-    else if ( (cMast!=NULL) &&
+    else if ( (cMast!=nullptr) &&
             (cMast!=getSignalMastFromName(levelXing->getSignalAMastName())) &&
             (cMast!=getSignalMastFromName(levelXing->getSignalBMastName())) &&
             (cMast!=getSignalMastFromName(levelXing->getSignalCMastName())) &&
@@ -11277,18 +11378,18 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             levelXing->setSignalCMastName(xingSignalMastC->getText());
         }
     }
-    else if ( (cMast!=NULL) &&
+    else if ( (cMast!=nullptr) &&
             ( (cMast==getSignalMastFromName(levelXing->getSignalBMastName())) ||
                 (cMast==getSignalMastFromName(levelXing->getSignalAMastName())) ||
                 (cMast==getSignalMastFromName(levelXing->getSignalDMastName())) ) )
     {
 // need to figure out what to do in this case.
     }
-    else if (cMast==NULL) {
+    else if (cMast==nullptr) {
         removeSignalMastFromPanel(levelXing->getSignalCMastName());
         levelXing->setSignalCName("");
     }
-    if ( (dMast!=NULL) && xingSignalMastD->addToPanel() )
+    if ( (dMast!=nullptr) && xingSignalMastD->addToPanel() )
     {
         if (isSignalMastOnPanel(dMast) &&
                 (dMast!=getSignalMastFromName(levelXing->getSignalDMastName())) ) {
@@ -11309,7 +11410,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             needRedraw = true;
         }
     }
-    else if ( (dMast!=NULL) &&
+    else if ( (dMast!=nullptr) &&
             (dMast!=getSignalMastFromName(levelXing->getSignalAMastName())) &&
             (dMast!=getSignalMastFromName(levelXing->getSignalBMastName())) &&
             (dMast!=getSignalMastFromName(levelXing->getSignalCMastName())) &&
@@ -11328,13 +11429,13 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             levelXing->setSignalDMastName(xingSignalMastD->getText());
         }
     }
-    else if ( (dMast!=NULL) &&
+    else if ( (dMast!=nullptr) &&
             ( (dMast==getSignalMastFromName(levelXing->getSignalBMastName())) ||
                 (dMast==getSignalMastFromName(levelXing->getSignalCMastName())) ||
                 (dMast==getSignalMastFromName(levelXing->getSignalAMastName())) ) ) {
 // need to figure out what to do in this case.
     }
-    else if (dMast==NULL) {
+    else if (dMast==nullptr) {
         removeSignalMastFromPanel(levelXing->getSignalDMastName());
         levelXing->setSignalDMastName("");
     }
@@ -11478,12 +11579,12 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
 {
     turnoutSensorFrame = frame;
     if (setSensorsOpen) {
-        turnoutSensorsGetSaved(NULL);
+        turnoutSensorsGetSaved(nullptr);
         setSensorsFrame->setVisible(true);
         return;
     }
     // Initialize if needed
-    if (setSensorsFrame == NULL) {
+    if (setSensorsFrame == nullptr) {
         setSensorsFrame = new JmriJFrame(tr("Set Sensors at Turnout") ,false,true);
 //        setSensorsFrame->layout()->addWidgetHelpMenu("package.jmri.jmrit.display.SetSensorsAtTurnout", true);
 //        setSensorsFrame->setLocation(70,30);
@@ -11542,13 +11643,13 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
         turnoutSensorC->setBoundaryLabel(turnoutSenBlocks.at(2));
         turnoutSensorD->setBoundaryLabel(turnoutSenBlocks.at(3));
 
-        if(turnoutSenBlocks[0]!=NULL)
+        if(turnoutSenBlocks[0]!=nullptr)
             sensorTurnoutPanel->layout()->addWidget(turnoutSensorA->getDetailsPanel());
-        if(turnoutSenBlocks[1]!=NULL)
+        if(turnoutSenBlocks[1]!=nullptr)
             sensorTurnoutPanel->layout()->addWidget(turnoutSensorB->getDetailsPanel());
-        if(turnoutSenBlocks[2]!=NULL)
+        if(turnoutSenBlocks[2]!=nullptr)
             sensorTurnoutPanel->layout()->addWidget(turnoutSensorC->getDetailsPanel());
-        if(turnoutSenBlocks[3]!=NULL)
+        if(turnoutSenBlocks[3]!=nullptr)
             sensorTurnoutPanel->layout()->addWidget(turnoutSensorD->getDetailsPanel());
         centralWidgetLayout->addWidget(sensorTurnoutPanel);
 
@@ -11588,12 +11689,12 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
         centralWidgetLayout->addWidget(panel6);
 //        setSensorsFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                setSensorsCancelPressed(NULL);
+//                setSensorsCancelPressed(nullptr);
 //            }
 //        });
     }
-    if (turnoutFromMenu) turnoutSensorsGetSaved(NULL);
-//    setSensorsFrame->setPreferredSize(NULL);
+    if (turnoutFromMenu) turnoutSensorsGetSaved(nullptr);
+//    setSensorsFrame->setPreferredSize(nullptr);
 //    setSensorsFrame.pack();
     setSensorsFrame->setVisible(true);
     setSensorsOpen = true;
@@ -11602,10 +11703,10 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
 /*private*/ void LayoutEditorTools::turnoutSensorsGetSaved (ActionEvent* /*a*/) {
     if ( !getTurnoutSensorInformation() ) return;
     turnoutSenBlocks = layoutTurnout->getBlockBoundaries().toVector();
-    turnoutSensorA->setTextField(layoutTurnout->getSensorA());
-    turnoutSensorB->setTextField(layoutTurnout->getSensorB());
-    turnoutSensorC->setTextField(layoutTurnout->getSensorC());
-    turnoutSensorD->setTextField(layoutTurnout->getSensorD());
+    turnoutSensorA->setTextField(layoutTurnout->getSensorAName());
+    turnoutSensorB->setTextField(layoutTurnout->getSensorBName());
+    turnoutSensorC->setTextField(layoutTurnout->getSensorCName());
+    turnoutSensorD->setTextField(layoutTurnout->getSensorDName());
 
     turnoutSensorA->setBoundaryLabel(turnoutSenBlocks.at(0));
     turnoutSensorB->setBoundaryLabel(turnoutSenBlocks.at(1));
@@ -11618,46 +11719,46 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     sensorTurnoutPanel->layout()->removeWidget(turnoutSensorD->getDetailsPanel());
 
     bool blockBoundary = false;
-    if(turnoutSenBlocks[0]!=NULL){
+    if(turnoutSenBlocks[0]!=nullptr){
         sensorTurnoutPanel->layout()->addWidget(turnoutSensorA->getDetailsPanel());
         blockBoundary = true;
     }
-    if(turnoutSenBlocks[1]!=NULL){
+    if(turnoutSenBlocks[1]!=nullptr){
         sensorTurnoutPanel->layout()->addWidget(turnoutSensorB->getDetailsPanel());
         blockBoundary = true;
     }
-    if(turnoutSenBlocks[2]!=NULL){
+    if(turnoutSenBlocks[2]!=nullptr){
         sensorTurnoutPanel->layout()->addWidget(turnoutSensorC->getDetailsPanel());
         blockBoundary = true;
     }
-    if(turnoutSenBlocks[3]!=NULL){
+    if(turnoutSenBlocks[3]!=nullptr){
         sensorTurnoutPanel->layout()->addWidget(turnoutSensorD->getDetailsPanel());
         blockBoundary = true;
     }
     if (!blockBoundary)
 //        JOptionPane.showMessageDialog(setSensorsFrame, "There are no block boundaries on this turnout\nIt is therefore not possible to add Sensors to it");
         QMessageBox::information(setSensorsFrame, tr("Information"), tr("There are no block boundaries on this turnout\nIt is therefore not possible to add Sensors to it"));
-//    setSensorsFrame->setPreferredSize(NULL);
+//    setSensorsFrame->setPreferredSize(nullptr);
 //    setSensorsFrame.pack();
 }
 
 /*private*/ int LayoutEditorTools::isSensorAssignedHere(Sensor* sensor, LayoutTurnout* lTurnout)
 {
-    if ((sensor==NULL) || (lTurnout==NULL))
+    if ((sensor==nullptr) || (lTurnout==nullptr))
         return NONE;
     QString sysName = sensor->getSystemName();
     QString uName = sensor->getUserName();
-    QString name = lTurnout->getSensorA();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    QString name = lTurnout->getSensorAName();
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return A1;
-    name = lTurnout->getSensorB();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    name = lTurnout->getSensorBName();
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return A2;
-    name = lTurnout->getSensorC();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    name = lTurnout->getSensorCName();
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return A3;
-    name = lTurnout->getSensorD();
-    if ( (name!=NULL) && (name.length()>0) && ((name==(uName)) ||
+    name = lTurnout->getSensorDName();
+    if ( (name!=nullptr) && (name.length()>0) && ((name==(uName)) ||
                     (name==(sysName))) ) return B1;
     return NONE;
 }
@@ -11668,43 +11769,43 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     QString uName = sensor->getUserName();
     for (int i=0;i<layoutEditor->turnoutList->size();i++) {
         LayoutTurnout* to = layoutEditor->turnoutList->at(i);
-        if ((to->getSensorA()!=NULL) &&
-                (to->getSensorA()==(sName) || ((uName!=NULL) &&
-                (to->getSensorA()==(uName))))) to->setSensorA("");
-        if ((to->getSensorB()!=NULL) &&
-                (to->getSensorB()==(sName) || ((uName!=NULL) &&
-                (to->getSensorB()==(uName))))) to->setSensorB("");
-        if ((to->getSensorC()!=NULL) &&
-                (to->getSensorC()==(sName) || ((uName!=NULL) &&
-                (to->getSensorC()==(uName))))) to->setSensorC("");
-        if ((to->getSensorD()!=NULL) &&
-                (to->getSensorD()==(sName) || ((uName!=NULL) &&
-                (to->getSensorD()==(uName))))) to->setSensorD("");
+        if ((to->getSensorA()!=nullptr) &&
+                (to->getSensorAName()==(sName) || ((uName!=nullptr) &&
+                (to->getSensorAName()==(uName))))) to->setSensorA("");
+        if ((to->getSensorB()!=nullptr) &&
+                (to->getSensorBName()==(sName) || ((uName!=nullptr) &&
+                (to->getSensorBName()==(uName))))) to->setSensorB("");
+        if ((to->getSensorC()!=nullptr) &&
+                (to->getSensorCName()==(sName) || ((uName!=nullptr) &&
+                (to->getSensorCName()==(uName))))) to->setSensorC("");
+        if ((to->getSensorD()!=nullptr) &&
+                (to->getSensorDName()==(sName) || ((uName!=nullptr) &&
+                (to->getSensorDName()==(uName))))) to->setSensorD("");
     }
     for (int i=0;i<layoutEditor->pointList->size();i++) {
         PositionablePoint* po = layoutEditor->pointList->at(i);
-        if ((po->getEastBoundSensor()!=NULL) &&
-                (po->getEastBoundSensor()==(sName) || ((uName!=NULL) &&
-                (po->getEastBoundSensor()==(uName)))))
+        if ((po->getEastBoundSensor()!=nullptr) &&
+                (po->getEastBoundSensorName()==(sName) || ((uName!=nullptr) &&
+                (po->getEastBoundSensorName()==(uName)))))
             po->setEastBoundSensor("");
-        if ((po->getWestBoundSensor()!=NULL) &&
-                (po->getWestBoundSensor()==(sName) || ((uName!=NULL) &&
-                (po->getWestBoundSensor()==(uName)))))
+        if ((po->getWestBoundSensor()!=nullptr) &&
+                (po->getWestBoundSensorName()==(sName) || ((uName!=nullptr) &&
+                (po->getWestBoundSensorName()==(uName)))))
             po->setWestBoundSensor("");
     }
     for (int i=0;i<layoutEditor->xingList->size();i++) {
         LevelXing* x = layoutEditor->xingList->at(i);
-        if ((x->getSensorAName()!=NULL) &&
-                (x->getSensorAName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSensorAName()!=nullptr) &&
+                (x->getSensorAName()==(sName) || ((uName!=nullptr) &&
                 (x->getSensorAName()==(uName))))) x->setSensorAName("");
-        if ((x->getSensorBName()!=NULL) &&
-                (x->getSensorBName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSensorBName()!=nullptr) &&
+                (x->getSensorBName()==(sName) || ((uName!=nullptr) &&
                 (x->getSensorBName()==(uName))))) x->setSensorBName("");
-        if ((x->getSensorCName()!=NULL) &&
-                (x->getSensorCName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSensorCName()!=nullptr) &&
+                (x->getSensorCName()==(sName) || ((uName!=nullptr) &&
                 (x->getSensorCName()==(uName))))) x->setSensorCName("");
-        if ((x->getSensorDName()!=NULL) &&
-                (x->getSensorDName()==(sName) || ((uName!=NULL) &&
+        if ((x->getSensorDName()!=nullptr) &&
+                (x->getSensorDName()==(sName) || ((uName!=nullptr) &&
                 (x->getSensorDName()==(uName))))) x->setSensorDName("");
     }
 }
@@ -11718,17 +11819,17 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     // process signal head names
     //if ( !getSensorTurnoutInformation() ) return;
     Sensor* sensorA = getSensorFromEntry(turnoutSensorA->getText(),false,setSensorsFrame);
-    //if (turnoutSensor==NULL) return false;
+    //if (turnoutSensor==nullptr) return false;
     Sensor* sensorB = getSensorFromEntry(turnoutSensorB->getText(),false,setSensorsFrame);
-    //if (turnoutSensorB==NULL) return false;
+    //if (turnoutSensorB==nullptr) return false;
     Sensor* sensorC = getSensorFromEntry(turnoutSensorC->getText(),false,setSensorsFrame);
-    //if (turnoutSensorC==NULL) return false;
+    //if (turnoutSensorC==nullptr) return false;
     Sensor* sensorD = getSensorFromEntry(turnoutSensorD->getText(),false,setSensorsFrame);
     // place signals as requested
     if (turnoutSensorA->addToPanel())
     {
      if (isSensorOnPanel(sensorA) &&
-            (sensorA!=getSensorFromName(layoutTurnout->getSensorA())))
+            (sensorA!=getSensorFromName(layoutTurnout->getSensorAName())))
      {
 //            JOptionPane.showMessageDialog(setSensorsFrame,
 //                java.text.MessageFormat.format(tr("SensorsError6"),
@@ -11745,7 +11846,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             needRedraw = true;
         }
     }
-    else if (sensorA!=NULL)
+    else if (sensorA!=nullptr)
     {
         int assigned = isSensorAssignedHere(sensorA,layoutTurnout);
         if (assigned == NONE) {
@@ -11774,9 +11875,9 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
         removeSensorFromPanel(layoutTurnout->getSensorA());
         layoutTurnout->setSensorA("");
     }
-    if ( (turnoutSensorB!=NULL) && (turnoutSensorB->addToPanel())) {
+    if ( (turnoutSensorB!=nullptr) && (turnoutSensorB->addToPanel())) {
         if (isSensorOnPanel(sensorB) &&
-            (sensorB!=getSensorFromName(layoutTurnout->getSensorB())))
+            (sensorB!=getSensorFromName(layoutTurnout->getSensorBName())))
         {
 //            JOptionPane.showMessageDialog(setSensorsFrame,
 //                java.text.MessageFormat.format(tr("SensorsError6"),
@@ -11794,7 +11895,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
             needRedraw = true;
         }
     }
-    else if (sensorB!=NULL) {
+    else if (sensorB!=nullptr) {
         int assigned = isSensorAssignedHere(sensorB,layoutTurnout);
         if (assigned == NONE) {
             if (isSensorOnPanel(sensorB) &&
@@ -11821,10 +11922,10 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
         removeSensorFromPanel(layoutTurnout->getSensorB());
         layoutTurnout->setSensorB("");
     }
-    if(sensorC!=NULL){
+    if(sensorC!=nullptr){
         if (turnoutSensorC->addToPanel()) {
             if (isSensorOnPanel(sensorC) &&
-                (sensorC!=getSensorFromName(layoutTurnout->getSensorC()))) {
+                (sensorC!=getSensorFromName(layoutTurnout->getSensorCName()))) {
 //                JOptionPane.showMessageDialog(setSensorsFrame,
 //                    java.text.MessageFormat.format(tr("SensorsError6"),
 //                        new Object[]{turnoutSensorC->text()}),
@@ -11870,10 +11971,10 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
         removeSensorFromPanel(layoutTurnout->getSensorC());
         layoutTurnout->setSensorC("");
     }
-    if(sensorD!=NULL){
+    if(sensorD!=nullptr){
         if (turnoutSensorD->addToPanel()) {
             if (isSensorOnPanel(sensorD) &&
-                (sensorD!=getSensorFromName(layoutTurnout->getSensorD()))) {
+                (sensorD!=getSensorFromName(layoutTurnout->getSensorDName()))) {
 //                JOptionPane.showMessageDialog(setSensorsFrame,
 //                    java.text.MessageFormat.format(tr("SensorsError6"),
 //                        new Object[]{divergingField->text()}),
@@ -11938,14 +12039,14 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     turnout = NULL;
     layoutTurnout = NULL;
     str = sensorsTurnoutComboBox->currentText();
-    if ( (str==NULL) || (str==("")) ) {
+    if ( (str==nullptr) || (str==("")) ) {
 //        JOptionPane.showMessageDialog(setSensorsFrame,tr("SensorsError1"),
 //                            tr("Error"),JOptionPane.ERROR_MESSAGE);
         QMessageBox::critical(setSensorsFrame, tr("Error"),tr("Error - No turnout name was entered. Please enter a turnout name or cancel."));
         return false;
     }
     turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(str);
-    if (turnout==NULL) {
+    if (turnout==nullptr) {
 //        JOptionPane.showMessageDialog(setSensorsFrame,
 //            java.text.MessageFormat.format(tr("SensorsError2"),
 //                new Object[]{str}), tr("Error"),
@@ -11953,7 +12054,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
         QMessageBox::critical(setSensorsFrame, tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\n                                                               a turnout name in the Turnout Table and on the panel.").arg(str));
         return false ;
     }
-    else if ( (turnout->getUserName()==NULL) || (turnout->getUserName()==("")) ||
+    else if ( (turnout->getUserName()==nullptr) || (turnout->getUserName()==("")) ||
                             turnout->getUserName()!=(str) ) {
         sensorsTurnoutComboBox->setText(str);
     }
@@ -11965,7 +12066,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
     }
 
     t = layoutTurnout;
-    if (t==NULL) {
+    if (t==nullptr) {
 //    JOptionPane.showMessageDialog(setSensorsFrame,
 //            java.text.MessageFormat.format(tr("SensorsError3"),
 //                    new Object[]{str}), tr("Error"),
@@ -12005,12 +12106,12 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
  sensorXingFrame = theFrame;
  if (setSensorsAtXingOpen)
  {
-     xingSensorsGetSaved(NULL);
+     xingSensorsGetSaved(nullptr);
      sensorsAtXingFrame->setVisible(true);
      return;
  }
  // Initialize if needed
- if (sensorsAtXingFrame == NULL)
+ if (sensorsAtXingFrame == nullptr)
   sensorsAtXingFrame = new JmriJFrame( tr("Set Sensors at Level Crossing"), false, true );
 
   sensorsAtXingFrame->addHelpMenu("package.jmri.jmrit.display.SetSensorsAtLevelXing", true);
@@ -12100,13 +12201,13 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
   xingSensorC->setBoundaryLabel(xingSensorBlocks->at(2));
   xingSensorD->setBoundaryLabel(xingSensorBlocks->at(3));
 
-  if(xingSensorBlocks->at(0)!=NULL)
+  if(xingSensorBlocks->at(0)!=nullptr)
       sensorXingPanelLayout->addWidget(xingSensorA->getDetailsPanel(),0,0);
-  if(xingSensorBlocks->at(1)!=NULL)
+  if(xingSensorBlocks->at(1)!=nullptr)
       sensorXingPanelLayout->addWidget(xingSensorB->getDetailsPanel(),0,1);
-  if(xingSensorBlocks->at(2)!=NULL)
+  if(xingSensorBlocks->at(2)!=nullptr)
       sensorXingPanelLayout->addWidget(xingSensorC->getDetailsPanel(),1,0);
-  if(xingSensorBlocks->at(3)!=NULL)
+  if(xingSensorBlocks->at(3)!=nullptr)
       sensorXingPanelLayout->addWidget(xingSensorD->getDetailsPanel(), 1,1);
   centralWidgetLayout->addWidget(sensorXingPanel);
 
@@ -12142,12 +12243,12 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
   centralWidgetLayout->addWidget(panel6);
 //  sensorsAtXingFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //      /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//          setXingSensorsCancelPressed(NULL);
+//          setXingSensorsCancelPressed(nullptr);
 //      }
 //     });
   sensorsAtXingFrame->addWindowListener(new XSSSWindowListener(this));
 
- if (xingSensorFromMenu) xingSensorsGetSaved(NULL);
+ if (xingSensorFromMenu) xingSensorsGetSaved(nullptr);
  sensorsAtXingFrame->setMinimumSize(QSize());
  sensorsAtXingFrame->adjustSize();
  sensorsAtXingFrame->setVisible(true);
@@ -12175,21 +12276,21 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
  xingSensorD->setBoundaryLabel(xingSensorBlocks->at(3));
 
  bool boundary = false;
- if(xingSensorBlocks->at(0)!=NULL)
+ if(xingSensorBlocks->at(0)!=nullptr)
  {
   sensorXingPanelLayout->addWidget(xingSensorA->getDetailsPanel());
   boundary = true;
  }
- if(xingSensorBlocks->at(1)!=NULL)
+ if(xingSensorBlocks->at(1)!=nullptr)
  {
   sensorXingPanelLayout->addWidget(xingSensorB->getDetailsPanel());
   boundary = true;
  }
- if(xingSensorBlocks->at(2)!=NULL){
+ if(xingSensorBlocks->at(2)!=nullptr){
      sensorXingPanelLayout->addWidget(xingSensorC->getDetailsPanel());
      boundary = true;
  }
- if(xingSensorBlocks->at(3)!=NULL){
+ if(xingSensorBlocks->at(3)!=nullptr){
      sensorXingPanelLayout->addWidget(xingSensorD->getDetailsPanel());
      boundary = true;
  }
@@ -12228,16 +12329,16 @@ if (!xingSensorFromMenu)
   LayoutBlock* xingSensorBlockA = NULL;
   LayoutBlock* xingSensorBlockC = NULL;
   xingSensorBlockA = getBlockFromEntry(blockANameSensorField);
-  if (xingSensorBlockA==NULL) return false;
+  if (xingSensorBlockA==nullptr) return false;
   if (blockCNameSensorField->text().length()>0)
   {
    xingSensorBlockC = getBlockFromEntry(blockCNameSensorField);
-   if (xingSensorBlockC==NULL) return false;
+   if (xingSensorBlockC==nullptr) return false;
   }
   LevelXing* x = NULL;
   int foundCount = 0;
   // make two block tests first
-  if (xingSensorBlockC!=NULL)
+  if (xingSensorBlockC!=nullptr)
   {
    for (int i = 0;(i<layoutEditor->xingList->size());i++)
    {
@@ -12248,19 +12349,19 @@ if (!xingSensorFromMenu)
     LayoutBlock* xD = NULL;
     LayoutBlock* xAC = x->getLayoutBlockAC();
     LayoutBlock* xBD = x->getLayoutBlockBD();
-    if (x->getConnectA()!=NULL) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
-    if (x->getConnectB()!=NULL) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
-    if (x->getConnectC()!=NULL) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
-    if (x->getConnectD()!=NULL) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
-    if ( ( (xA!=NULL) && (xC!=NULL) && ( ((xA==xingSensorBlockA)&&(xC==xingSensorBlockC)) ||
+    if (x->getConnectA()!=nullptr) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
+    if (x->getConnectB()!=nullptr) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
+    if (x->getConnectC()!=nullptr) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
+    if (x->getConnectD()!=nullptr) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
+    if ( ( (xA!=nullptr) && (xC!=nullptr) && ( ((xA==xingSensorBlockA)&&(xC==xingSensorBlockC)) ||
             ((xA==xingSensorBlockC)&&(xC==xingSensorBlockA)) ) ) ||
-            ( (xB!=NULL) && (xD!=NULL) && ( ((xB==xingSensorBlockA)&&(xD==xingSensorBlockC)) ||
+            ( (xB!=nullptr) && (xD!=nullptr) && ( ((xB==xingSensorBlockA)&&(xD==xingSensorBlockC)) ||
             ((xB==xingSensorBlockC)&&(xD==xingSensorBlockA)) ) ) )
     {
      levelXing = x;
      foundCount ++;
     }
-    else if ( (xAC!=NULL) && (xBD!=NULL) && ( ((xAC==xingSensorBlockA) && (xBD==xingSensorBlockC)) ||
+    else if ( (xAC!=nullptr) && (xBD!=nullptr) && ( ((xAC==xingSensorBlockA) && (xBD==xingSensorBlockC)) ||
                 ((xAC==xingSensorBlockC) && (xBD==xingSensorBlockA)) ) )
     {
      levelXing = x;
@@ -12289,7 +12390,7 @@ if (!xingSensorFromMenu)
    QMessageBox::critical(signalMastsAtXingFrame, tr("Error"), tr("Error - The entered block names match \"%1\" level crossings.\n           Please enter block names that match only one level crossing.").arg(foundCount)); return false;
    return false;
   }
-  if (levelXing==NULL)
+  if (levelXing==nullptr)
   {
 //      JOptionPane.showMessageDialog(sensorsAtXingFrame,
 //                  tr("SignalsError17"),
@@ -12317,7 +12418,7 @@ return true;
  Sensor* cSensor = getSensorFromEntry(xingSensorC->getText(),false,sensorsAtXingFrame);
  Sensor* dSensor = getSensorFromEntry(xingSensorD->getText(),false,sensorsAtXingFrame);
  // place or update signals as requested
- if ( (aSensor!=NULL) && xingSensorA->addToPanel() )
+ if ( (aSensor!=nullptr) && xingSensorA->addToPanel() )
  {
   if (isSensorOnPanel(aSensor) &&
             (aSensor!=getSensorFromName(levelXing->getSensorAName())) )
@@ -12331,14 +12432,14 @@ return true;
   }
   else
   {
-   removeSensorFromPanel(levelXing->getSensorAName());
+   removeSensorFromPanel(levelXing->getSensorA());
    placeXingAIcon(getSensorIcon(xingSensorA->getText()), xingSensorA->isRightSelected(), 0.0);
    removeAssignment(aSensor);
    levelXing->setSensorAName(xingSensorB->getText());
    needRedraw = true;
   }
  }
- else if ( (aSensor!=NULL) &&
+ else if ( (aSensor!=nullptr) &&
         (aSensor!=getSensorFromName(levelXing->getSensorAName())) &&
         (aSensor!=getSensorFromName(levelXing->getSensorBName())) &&
         (aSensor!=getSensorFromName(levelXing->getSensorCName())) &&
@@ -12355,25 +12456,25 @@ return true;
     }
     else
   {
-      removeSensorFromPanel(levelXing->getSensorAName());
+      removeSensorFromPanel(levelXing->getSensorA());
       removeAssignment(aSensor);
       levelXing->setSensorAName(xingSensorA->getText());
   }
  }
- else if ( (aSensor!=NULL) &&
+ else if ( (aSensor!=nullptr) &&
         ( (aSensor==getSensorFromName(levelXing->getSensorBName())) ||
             (aSensor==getSensorFromName(levelXing->getSensorCName())) ||
             (aSensor==getSensorFromName(levelXing->getSensorDName())) ) )
  {
  // need to figure out what to do in this case.
  }
- else if (aSensor==NULL)
+ else if (aSensor==nullptr)
  {
-  removeSensorFromPanel(levelXing->getSensorAName());
+  removeSensorFromPanel(levelXing->getSensorA());
   levelXing->setSensorAName("");
  }
 
- if ( (bSensor!=NULL) && xingSensorB->addToPanel() )
+ if ( (bSensor!=nullptr) && xingSensorB->addToPanel() )
  {
   if (isSensorOnPanel(bSensor) &&
           (bSensor!=getSensorFromName(levelXing->getSensorBName()))) {
@@ -12386,14 +12487,14 @@ return true;
   }
   else
   {
-   removeSensorFromPanel(levelXing->getSensorBName());
+   removeSensorFromPanel(levelXing->getSensorB());
    placeXingBIcon(getSensorIcon(xingSensorB->getText()), xingSensorB->isRightSelected(), 0.0);
    removeAssignment(bSensor);
    levelXing->setSensorBName(xingSensorB->getText());
    needRedraw = true;
   }
  }
- else if ( (bSensor!=NULL) &&
+ else if ( (bSensor!=nullptr) &&
         (bSensor!=getSensorFromName(levelXing->getSensorAName())) &&
         (bSensor!=getSensorFromName(levelXing->getSensorBName())) &&
         (bSensor!=getSensorFromName(levelXing->getSensorCName())) &&
@@ -12410,25 +12511,25 @@ return true;
   }
   else
   {
-   removeSensorFromPanel(levelXing->getSensorBName());
+   removeSensorFromPanel(levelXing->getSensorB());
    removeAssignment(bSensor);
    levelXing->setSensorBName(xingSensorB->getText());
   }
  }
- else if ( (bSensor!=NULL) &&
+ else if ( (bSensor!=nullptr) &&
         ( (bSensor==getSensorFromName(levelXing->getSensorAName())) ||
             (bSensor==getSensorFromName(levelXing->getSensorCName())) ||
             (bSensor==getSensorFromName(levelXing->getSensorDName())) ) )
  {
   // need to figure out what to do in this case.
  }
- else if (bSensor==NULL)
+ else if (bSensor==nullptr)
  {
-  removeSensorFromPanel(levelXing->getSensorBName());
+  removeSensorFromPanel(levelXing->getSensorB());
   levelXing->setSensorBName("");
  }
 
- if ( (cSensor!=NULL) && xingSensorC->addToPanel() )
+ if ( (cSensor!=nullptr) && xingSensorC->addToPanel() )
  {
   if (isSensorOnPanel(cSensor) &&
             (cSensor!=getSensorFromName(levelXing->getSensorCName())) )
@@ -12442,14 +12543,14 @@ return true;
   }
   else
   {
-    removeSensorFromPanel(levelXing->getSensorCName());
+    removeSensorFromPanel(levelXing->getSensorC());
     placeXingCIcon(getSensorIcon(xingSensorC->getText()), xingSensorC->isRightSelected(), 0.0);
     removeAssignment(cSensor);
     levelXing->setSensorCName(xingSensorC->getText());
     needRedraw = true;
   }
  }
- else if ( (cSensor!=NULL) &&
+ else if ( (cSensor!=nullptr) &&
         (cSensor!=getSensorFromName(levelXing->getSensorAName())) &&
         (cSensor!=getSensorFromName(levelXing->getSensorBName())) &&
         (cSensor!=getSensorFromName(levelXing->getSensorCName())) &&
@@ -12466,25 +12567,25 @@ return true;
   }
   else
   {
-    removeSensorFromPanel(levelXing->getSensorCName());
+    removeSensorFromPanel(levelXing->getSensorC());
     removeAssignment(cSensor);
    levelXing->setSensorCName(xingSensorC->getText());
   }
  }
- else if ( (cSensor!=NULL) &&
+ else if ( (cSensor!=nullptr) &&
         ( (cSensor==getSensorFromName(levelXing->getSensorBName())) ||
             (cSensor==getSensorFromName(levelXing->getSensorAName())) ||
             (cSensor==getSensorFromName(levelXing->getSensorDName())) ) )
  {
    // need to figure out what to do in this case.
  }
- else if (cSensor==NULL)
+ else if (cSensor==nullptr)
  {
-   removeSensorFromPanel(levelXing->getSensorCName());
+   removeSensorFromPanel(levelXing->getSensorC());
    levelXing->setSensorCName("");
  }
 
- if ( (dSensor!=NULL) && xingSensorD->addToPanel() )
+ if ( (dSensor!=nullptr) && xingSensorD->addToPanel() )
  {
   if (isSensorOnPanel(dSensor) &&
           (dSensor!=getSensorFromName(levelXing->getSensorDName())) )
@@ -12498,14 +12599,14 @@ return true;
   }
   else
   {
-    removeSensorFromPanel(levelXing->getSensorDName());
+    removeSensorFromPanel(levelXing->getSensorD());
     placeXingDIcon(getSensorIcon(xingSensorD->getText()), xingSensorD->isRightSelected(), 0.0);
     removeAssignment(dSensor);
     levelXing->setSensorDName(xingSensorD->getText());
     needRedraw = true;
   }
  }
- else if ( (dSensor!=NULL) &&
+ else if ( (dSensor!=nullptr) &&
         (dSensor!=getSensorFromName(levelXing->getSensorAName())) &&
         (dSensor!=getSensorFromName(levelXing->getSensorBName())) &&
         (dSensor!=getSensorFromName(levelXing->getSensorCName())) &&
@@ -12522,21 +12623,21 @@ return true;
   }
   else
   {
-   removeSensorFromPanel(levelXing->getSensorDName());
+   removeSensorFromPanel(levelXing->getSensorD());
    removeAssignment(dSensor);
    levelXing->setSensorDName(xingSensorD->getText());
   }
  }
- else if ( (dSensor!=NULL) &&
+ else if ( (dSensor!=nullptr) &&
         ( (dSensor==getSensorFromName(levelXing->getSensorBName())) ||
             (dSensor==getSensorFromName(levelXing->getSensorCName())) ||
             (dSensor==getSensorFromName(levelXing->getSensorAName())) ) )
  {
   // need to figure out what to do in this case.
  }
- else if (dSensor==NULL)
+ else if (dSensor==nullptr)
  {
-  removeSensorFromPanel(levelXing->getSensorDName());
+  removeSensorFromPanel(levelXing->getSensorD());
   levelXing->setSensorDName("");
  }
  // setup logic if requested
@@ -12556,11 +12657,11 @@ return true;
     //might have to do something to trick it with an end bumper
     if (!boundaryFromMenu) {
         block1 = getBlockFromEntry(block1NameField);
-        if (block1==NULL) return false;
+        if (block1==nullptr) return false;
         block2 = getBlockFromEntry(block2NameField);
-        if (block2==NULL){
+        if (block2==nullptr){
             PositionablePoint* p = NULL;
-            for (int i = 0;(i<layoutEditor->pointList->size()) && (boundary==NULL);i++) {
+            for (int i = 0;(i<layoutEditor->pointList->size()) && (boundary==nullptr);i++) {
                 p = layoutEditor->pointList->at(i);
                 if (p->getType() == PositionablePoint::END_BUMPER) {
                     boundary = p;
@@ -12571,14 +12672,14 @@ return true;
         }
         PositionablePoint* p = NULL;
         boundary = NULL;
-        for (int i = 0;(i<layoutEditor->pointList->size()) && (boundary==NULL);i++) {
+        for (int i = 0;(i<layoutEditor->pointList->size()) && (boundary==nullptr);i++) {
             p = layoutEditor->pointList->at(i);
             if (p->getType() == PositionablePoint::ANCHOR) {
                 LayoutBlock* bA = NULL;
                 LayoutBlock* bB = NULL;
-                if (p->getConnect1()!=NULL) bA = p->getConnect1()->getLayoutBlock();
-                if (p->getConnect2()!=NULL) bB = p->getConnect2()->getLayoutBlock();
-                if ( (bA!=NULL) && (bB!=NULL) && (bA!=bB) ) {
+                if (p->getConnect1()!=nullptr) bA = p->getConnect1()->getLayoutBlock();
+                if (p->getConnect2()!=nullptr) bB = p->getConnect2()->getLayoutBlock();
+                if ( (bA!=nullptr) && (bB!=nullptr) && (bA!=bB) ) {
                     if ( ( (bA==block1) && (bB==block2) ) ||
                                 ( (bA==block2) && (bB==block1) ) ) {
                         boundary = p;
@@ -12586,7 +12687,7 @@ return true;
                 }
             }
         }
-        if (boundary==NULL) {
+        if (boundary==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtBoundaryFrame,
 //                        tr("SignalsError7"),
 //                                tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -12618,12 +12719,12 @@ return true;
  sensorSlipFrame = theFrame;
  if (setSensorsAtSlipOpen)
  {
-  slipSensorsGetSaved(NULL);
+  slipSensorsGetSaved(nullptr);
   sensorsAtSlipFrame->setVisible(true);
   return;
  }
  // Initialize if needed
- if (sensorsAtSlipFrame == NULL)
+ if (sensorsAtSlipFrame == nullptr)
  {
   sensorsAtSlipFrame = new JmriJFrame( tr("Set Sensors at a Slip"), false, true );
   sensorsAtSlipFrame->addHelpMenu("package.jmri.jmrit.display.SetSensorsAtLevelSlip", true);
@@ -12649,10 +12750,10 @@ return true;
                tr("Name")+" : "+layoutSlip->getBlockName());
 
    panel11Layout->addWidget(blockANameLabel);
-   slipSensorA->setTextField(layoutSlip->getSensorA());
-   slipSensorB->setTextField(layoutSlip->getSensorB());
-   slipSensorC->setTextField(layoutSlip->getSensorC());
-   slipSensorD->setTextField(layoutSlip->getSensorD());
+   slipSensorA->setTextField(layoutSlip->getSensorAName());
+   slipSensorB->setTextField(layoutSlip->getSensorBName());
+   slipSensorC->setTextField(layoutSlip->getSensorCName());
+   slipSensorD->setTextField(layoutSlip->getSensorDName());
   }
   else
   {
@@ -12700,19 +12801,19 @@ return true;
   slipSensorC->setBoundaryLabel(slipSensorBlocks->at(2));
   slipSensorD->setBoundaryLabel(slipSensorBlocks->at(3));
 
-  if(slipSensorBlocks->at(0)!=NULL)
+  if(slipSensorBlocks->at(0)!=nullptr)
       sensorSlipPanelLayout->addWidget(slipSensorA->getDetailsPanel(),0,0);
   else
       sensorSlipPanelLayout->addWidget(new QWidget(),0,0);
-  if(slipSensorBlocks->at(3)!=NULL)
+  if(slipSensorBlocks->at(3)!=nullptr)
       sensorSlipPanelLayout->addWidget(slipSensorD->getDetailsPanel(),0,1);
   else
       sensorSlipPanelLayout->addWidget(new QWidget(),0,1);
-  if(slipSensorBlocks->at(1)!=NULL)
+  if(slipSensorBlocks->at(1)!=nullptr)
       sensorSlipPanelLayout->addWidget(slipSensorB->getDetailsPanel(),1,0);
   else
       sensorSlipPanelLayout->addWidget(new QWidget(),1,0);
-  if(slipSensorBlocks->at(2)!=NULL)
+  if(slipSensorBlocks->at(2)!=nullptr)
       sensorSlipPanelLayout->addWidget(slipSensorC->getDetailsPanel(),1,1);
   else
       sensorSlipPanelLayout->addWidget(new QWidget(),1,1);
@@ -12751,13 +12852,13 @@ return true;
   centralWidgetLayout->addWidget(panel6);
 //     sensorsAtSlipFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //         /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//             setSlipSensorsCancelPressed(NULL);
+//             setSlipSensorsCancelPressed(nullptr);
 //         }
 //     });
   sensorsAtSlipFrame->addWindowListener(new SASWindowListener(this));
  }
- if (slipSensorFromMenu) slipSensorsGetSaved(NULL);
- //sensorsAtSlipFrame->setPreferredSize(NULL);
+ if (slipSensorFromMenu) slipSensorsGetSaved(nullptr);
+ //sensorsAtSlipFrame->setPreferredSize(nullptr);
  sensorsAtSlipFrame->adjustSize();
  sensorsAtSlipFrame->setVisible(true);
  setSensorsAtSlipOpen = true;
@@ -12773,10 +12874,10 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
  if ( !getSlipSensorInformation() ) return;
 
  slipSensorBlocks = layoutSlip->getBlockBoundaries();
- slipSensorA->setTextField(layoutSlip->getSensorA());
- slipSensorB->setTextField(layoutSlip->getSensorB());
- slipSensorC->setTextField(layoutSlip->getSensorC());
- slipSensorD->setTextField(layoutSlip->getSensorD());
+ slipSensorA->setTextField(layoutSlip->getSensorAName());
+ slipSensorB->setTextField(layoutSlip->getSensorBName());
+ slipSensorC->setTextField(layoutSlip->getSensorCName());
+ slipSensorD->setTextField(layoutSlip->getSensorDName());
 
  sensorSlipPanel->layout()->removeWidget(slipSensorA->getDetailsPanel());
  sensorSlipPanel->layout()->removeWidget(slipSensorB->getDetailsPanel());
@@ -12789,19 +12890,19 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
  slipSensorD->setBoundaryLabel(slipSensorBlocks->at(3));
 
  bool boundary = false;
- if(slipSensorBlocks->at(0)!=NULL){
+ if(slipSensorBlocks->at(0)!=nullptr){
      sensorSlipPanelLayout->addWidget(slipSensorA->getDetailsPanel());
      boundary = true;
  }
- if(slipSensorBlocks->at(1)!=NULL){
+ if(slipSensorBlocks->at(1)!=nullptr){
      sensorSlipPanelLayout->addWidget(slipSensorB->getDetailsPanel());
      boundary = true;
  }
- if(slipSensorBlocks->at(2)!=NULL){
+ if(slipSensorBlocks->at(2)!=nullptr){
      sensorSlipPanelLayout->addWidget(slipSensorC->getDetailsPanel());
      boundary = true;
  }
- if(slipSensorBlocks->at(3)!=NULL){
+ if(slipSensorBlocks->at(3)!=nullptr){
      sensorSlipPanelLayout->addWidget(slipSensorD->getDetailsPanel());
      boundary = true;
  }
@@ -12810,7 +12911,7 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
 //     JOptionPane.showMessageDialog(sensorsAtSlipFrame, tr("NoBoundarySlipSensor"));
   QMessageBox::warning(sensorsAtSlipFrame, tr("Warning"), tr("There are no block boundaries on this slip turnout\n                                                             It is therefore not possible to add Sensors to it"));
  }
- //sensorsAtSlipFrame->setPreferredSize(NULL);
+ //sensorsAtSlipFrame->setPreferredSize(nullptr);
  sensorsAtSlipFrame->pack();
 }
 
@@ -12833,7 +12934,7 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
   else {
       LayoutBlock* slipSensorBlockA = NULL;
       slipSensorBlockA = getBlockFromEntry(blockANameSensorField);
-      if (slipSensorBlockA==NULL) return false;
+      if (slipSensorBlockA==nullptr) return false;
       LayoutSlip* x = NULL;
       int foundCount = 0;
 
@@ -12844,18 +12945,18 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
           LayoutBlock* xC = NULL;
           LayoutBlock* xD = NULL;
           LayoutBlock* xAC = x->getLayoutBlock();
-          if (x->getConnectA()!=NULL) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
-          if (x->getConnectB()!=NULL) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
-          if (x->getConnectC()!=NULL) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
-          if (x->getConnectD()!=NULL) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
-          if ( ( (xA!=NULL) && (xC!=NULL) && ( (xA==slipSensorBlockA) ||
+          if (x->getConnectA()!=nullptr) xA = ((TrackSegment*)x->getConnectA())->getLayoutBlock();
+          if (x->getConnectB()!=nullptr) xB = ((TrackSegment*)x->getConnectB())->getLayoutBlock();
+          if (x->getConnectC()!=nullptr) xC = ((TrackSegment*)x->getConnectC())->getLayoutBlock();
+          if (x->getConnectD()!=nullptr) xD = ((TrackSegment*)x->getConnectD())->getLayoutBlock();
+          if ( ( (xA!=nullptr) && (xC!=nullptr) && ( (xA==slipSensorBlockA) ||
                   (xC==slipSensorBlockA) ) ) ||
-                  ( (xB!=NULL) && (xD!=NULL) && ( ((xB==slipSensorBlockA)) ||
+                  ( (xB!=nullptr) && (xD!=nullptr) && ( ((xB==slipSensorBlockA)) ||
                   ((xD==slipSensorBlockA)) ) ) ) {
               layoutSlip = x;
               foundCount ++;
           }
-          else if ( (xAC!=NULL) && (xAC==slipSensorBlockA) ) {
+          else if ( (xAC!=nullptr) && (xAC==slipSensorBlockA) ) {
               layoutSlip = x;
               foundCount ++;
           }
@@ -12880,7 +12981,7 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
 
           return false;
       }
-      if (layoutSlip==NULL) {
+      if (layoutSlip==nullptr) {
 //          JOptionPane.showMessageDialog(sensorsAtSlipFrame,
 //                      tr("SignalsError17"),
 //                              tr("Error"),JOptionPane.ERROR_MESSAGE);
@@ -12907,10 +13008,10 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
  Sensor* cSensor = getSensorFromEntry(slipSensorC->getText(),false,sensorsAtSlipFrame);
  Sensor* dSensor = getSensorFromEntry(slipSensorD->getText(),false,sensorsAtSlipFrame);
  // place or update signals as requested
- if ( (aSensor!=NULL) && slipSensorA->addToPanel() )
+ if ( (aSensor!=nullptr) && slipSensorA->addToPanel() )
  {
   if (isSensorOnPanel(aSensor) &&
-             (aSensor!=getSensorFromName(layoutSlip->getSensorA())) )
+             (aSensor!=getSensorFromName(layoutSlip->getSensorAName())) )
   {
 //         JOptionPane.showMessageDialog(sensorsAtSlipFrame,
 //             java.text.MessageFormat.format(tr("SensorsError6"),
@@ -12928,11 +13029,11 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
    needRedraw = true;
   }
  }
- else if ( (aSensor!=NULL) &&
-         (aSensor!=getSensorFromName(layoutSlip->getSensorA())) &&
-         (aSensor!=getSensorFromName(layoutSlip->getSensorB())) &&
-         (aSensor!=getSensorFromName(layoutSlip->getSensorC())) &&
-         (aSensor!=getSensorFromName(layoutSlip->getSensorD())) )
+ else if ( (aSensor!=nullptr) &&
+         (aSensor!=getSensorFromName(layoutSlip->getSensorAName())) &&
+         (aSensor!=getSensorFromName(layoutSlip->getSensorBName())) &&
+         (aSensor!=getSensorFromName(layoutSlip->getSensorCName())) &&
+         (aSensor!=getSensorFromName(layoutSlip->getSensorDName())) )
  {
   if (isSensorOnPanel(aSensor))
   {
@@ -12950,22 +13051,22 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
    layoutSlip->setSensorA(slipSensorA->getText());
   }
  }
- else if ( (aSensor!=NULL) &&
-         ( (aSensor==getSensorFromName(layoutSlip->getSensorB())) ||
-             (aSensor==getSensorFromName(layoutSlip->getSensorC())) ||
-             (aSensor==getSensorFromName(layoutSlip->getSensorD())) ) )
+ else if ( (aSensor!=nullptr) &&
+         ( (aSensor==getSensorFromName(layoutSlip->getSensorBName())) ||
+             (aSensor==getSensorFromName(layoutSlip->getSensorCName())) ||
+             (aSensor==getSensorFromName(layoutSlip->getSensorDName())) ) )
  {
   // need to figure out what to do in this case.
  }
- else if (aSensor==NULL)
+ else if (aSensor==nullptr)
  {
   removeSensorFromPanel(layoutSlip->getSensorA());
   layoutSlip->setSensorA("");
  }
- if ( (bSensor!=NULL) && slipSensorB->addToPanel() )
+ if ( (bSensor!=nullptr) && slipSensorB->addToPanel() )
  {
   if (isSensorOnPanel(bSensor) &&
-             (bSensor!=getSensorFromName(layoutSlip->getSensorB())))
+             (bSensor!=getSensorFromName(layoutSlip->getSensorBName())))
   {
 //         JOptionPane.showMessageDialog(sensorsAtSlipFrame,
 //             java.text.MessageFormat.format(tr("SensorsError6"),
@@ -12983,11 +13084,11 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
    needRedraw = true;
   }
  }
- else if ( (bSensor!=NULL) &&
-         (bSensor!=getSensorFromName(layoutSlip->getSensorA())) &&
-         (bSensor!=getSensorFromName(layoutSlip->getSensorB())) &&
-         (bSensor!=getSensorFromName(layoutSlip->getSensorC())) &&
-         (bSensor!=getSensorFromName(layoutSlip->getSensorD())) )
+ else if ( (bSensor!=nullptr) &&
+         (bSensor!=getSensorFromName(layoutSlip->getSensorAName())) &&
+         (bSensor!=getSensorFromName(layoutSlip->getSensorBName())) &&
+         (bSensor!=getSensorFromName(layoutSlip->getSensorCName())) &&
+         (bSensor!=getSensorFromName(layoutSlip->getSensorDName())) )
  {
   if (isSensorOnPanel(bSensor))
   {
@@ -13005,21 +13106,21 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
    layoutSlip->setSensorB(slipSensorB->getText());
   }
  }
- else if ( (bSensor!=NULL) &&
-         ( (bSensor==getSensorFromName(layoutSlip->getSensorA())) ||
-             (bSensor==getSensorFromName(layoutSlip->getSensorC())) ||
-             (bSensor==getSensorFromName(layoutSlip->getSensorD())) ) ) {
+ else if ( (bSensor!=nullptr) &&
+         ( (bSensor==getSensorFromName(layoutSlip->getSensorAName())) ||
+             (bSensor==getSensorFromName(layoutSlip->getSensorCName())) ||
+             (bSensor==getSensorFromName(layoutSlip->getSensorDName())) ) ) {
 // need to figure out what to do in this case.
  }
- else if (bSensor==NULL)
+ else if (bSensor==nullptr)
  {
   removeSensorFromPanel(layoutSlip->getSensorB());
   layoutSlip->setSensorB("");
  }
- if ( (cSensor!=NULL) && slipSensorC->addToPanel() )
+ if ( (cSensor!=nullptr) && slipSensorC->addToPanel() )
  {
   if (isSensorOnPanel(cSensor) &&
-             (cSensor!=getSensorFromName(layoutSlip->getSensorC())) )
+             (cSensor!=getSensorFromName(layoutSlip->getSensorCName())) )
   {
 //         JOptionPane.showMessageDialog(sensorsAtSlipFrame,
 //             java.text.MessageFormat.format(tr("SensorsError6"),
@@ -13037,11 +13138,11 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
    needRedraw = true;
   }
  }
- else if ( (cSensor!=NULL) &&
-         (cSensor!=getSensorFromName(layoutSlip->getSensorA())) &&
-         (cSensor!=getSensorFromName(layoutSlip->getSensorB())) &&
-         (cSensor!=getSensorFromName(layoutSlip->getSensorC())) &&
-         (cSensor!=getSensorFromName(layoutSlip->getSensorD())) )
+ else if ( (cSensor!=nullptr) &&
+         (cSensor!=getSensorFromName(layoutSlip->getSensorAName())) &&
+         (cSensor!=getSensorFromName(layoutSlip->getSensorBName())) &&
+         (cSensor!=getSensorFromName(layoutSlip->getSensorCName())) &&
+         (cSensor!=getSensorFromName(layoutSlip->getSensorDName())) )
  {
      if (isSensorOnPanel(cSensor)) {
 //         JOptionPane.showMessageDialog(sensorsAtSlipFrame,
@@ -13056,20 +13157,20 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
          layoutSlip->setSensorC(slipSensorC->getText());
      }
  }
- else if ( (cSensor!=NULL) &&
-         ( (cSensor==getSensorFromName(layoutSlip->getSensorB())) ||
-             (cSensor==getSensorFromName(layoutSlip->getSensorA())) ||
-             (cSensor==getSensorFromName(layoutSlip->getSensorD())) ) ) {
+ else if ( (cSensor!=nullptr) &&
+         ( (cSensor==getSensorFromName(layoutSlip->getSensorBName())) ||
+             (cSensor==getSensorFromName(layoutSlip->getSensorAName())) ||
+             (cSensor==getSensorFromName(layoutSlip->getSensorDName())) ) ) {
 // need to figure out what to do in this case.
  }
- else if (cSensor==NULL) {
+ else if (cSensor==nullptr) {
      removeSensorFromPanel(layoutSlip->getSensorC());
      layoutSlip->setSensorC("");
  }
- if ( (dSensor!=NULL) && slipSensorD->addToPanel() )
+ if ( (dSensor!=nullptr) && slipSensorD->addToPanel() )
  {
      if (isSensorOnPanel(dSensor) &&
-             (dSensor!=getSensorFromName(layoutSlip->getSensorD())) ) {
+             (dSensor!=getSensorFromName(layoutSlip->getSensorDName())) ) {
 //         JOptionPane.showMessageDialog(sensorsAtSlipFrame,
 //             java.text.MessageFormat.format(tr("SensorsError6"),
 //                 new Object[]{slipSensorD->text()}),
@@ -13085,11 +13186,11 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
          needRedraw = true;
      }
  }
- else if ( (dSensor!=NULL) &&
-         (dSensor!=getSensorFromName(layoutSlip->getSensorA())) &&
-         (dSensor!=getSensorFromName(layoutSlip->getSensorB())) &&
-         (dSensor!=getSensorFromName(layoutSlip->getSensorC())) &&
-         (dSensor!=getSensorFromName(layoutSlip->getSensorD())) )
+ else if ( (dSensor!=nullptr) &&
+         (dSensor!=getSensorFromName(layoutSlip->getSensorAName())) &&
+         (dSensor!=getSensorFromName(layoutSlip->getSensorBName())) &&
+         (dSensor!=getSensorFromName(layoutSlip->getSensorCName())) &&
+         (dSensor!=getSensorFromName(layoutSlip->getSensorDName())) )
  {
   if (isSensorOnPanel(dSensor))
   {
@@ -13107,14 +13208,14 @@ void LayoutEditorTools::on_changeSensorSlipIcon()
    layoutSlip->setSensorD(slipSensorD->getText());
   }
  }
- else if ( (dSensor!=NULL) &&
-         ( (dSensor==getSensorFromName(layoutSlip->getSensorB())) ||
-             (dSensor==getSensorFromName(layoutSlip->getSensorC())) ||
-             (dSensor==getSensorFromName(layoutSlip->getSensorA())) ) )
+ else if ( (dSensor!=nullptr) &&
+         ( (dSensor==getSensorFromName(layoutSlip->getSensorBName())) ||
+             (dSensor==getSensorFromName(layoutSlip->getSensorCName())) ||
+             (dSensor==getSensorFromName(layoutSlip->getSensorAName())) ) )
  {
   // need to figure out what to do in this case.
  }
- else if (dSensor==NULL)
+ else if (dSensor==nullptr)
  {
   removeSensorFromPanel(layoutSlip->getSensorD());
   layoutSlip->setSensorD("");
@@ -13287,7 +13388,7 @@ QWidget* BeanDetails::addIconPanel()
   return;
  }
  // Initialize if needed
- if (setSignalsAtSlipFrame == NULL)
+ if (setSignalsAtSlipFrame == nullptr)
  {
   setSignalsAtSlipFrame = new JmriJFrame( tr("Set Signals at a Slip"), false, true );
   setSignalsAtSlipFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtSlip", true);
@@ -13313,10 +13414,10 @@ QWidget* BeanDetails::addIconPanel()
 
   slipNameCombo->insertItem(0, "");
 
-  if(layoutSlip!=NULL)
+  if(layoutSlip!=nullptr)
   {
    slipNameCombo->setCurrentIndex(slipNameCombo->findText(layoutSlip->getDisplayName()));
-   getSlipTurnoutSignalsGetSaved(NULL);
+   getSlipTurnoutSignalsGetSaved(nullptr);
   }
   else
   {
@@ -13526,7 +13627,7 @@ QWidget* BeanDetails::addIconPanel()
   centralWidgetLayout->addWidget(panel6);
 //        setSignalsAtSlipFrame->layout()->addWidgetWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                setSlipSignalsCancelPressed(NULL);
+//                setSlipSignalsCancelPressed(nullptr);
 //            }
 //        });
   setSignalsAtSlipFrame->addWindowListener(new SSWindowListener(this));
@@ -13538,7 +13639,7 @@ QWidget* BeanDetails::addIconPanel()
   dblSlipB2SigPanel->setVisible(true);
   dblSlipC2SigPanel->setVisible(true);
  }
- if (slipSignalFromMenu) getSlipTurnoutSignalsGetSaved(NULL);
+ if (slipSignalFromMenu) getSlipTurnoutSignalsGetSaved(nullptr);
  setSignalsAtSlipFrame->adjustSize();
  setSignalsAtSlipFrame->setVisible(true);
  setSignalsAtSlipOpen = true;
@@ -13599,10 +13700,10 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
    break;
   }
  }
- if(layoutSlip==NULL){
+ if(layoutSlip==nullptr){
      return false;
  }
- if (turnout1==NULL) {
+ if (turnout1==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //            java.text.MessageFormat.format(tr("SignalsError2"),
 //                new Object[]{str}), tr("Error"),
@@ -13610,7 +13711,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
   QMessageBox::critical(setSignalsAtSlipFrame, tr("Error"), tr("Error - No turnout is defined for \"%1\". Please enter\na turnout name in the Turnout Table and on the panel.").arg(str));
      return false ;
  }
- if (turnout2==NULL) {
+ if (turnout2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //            java.text.MessageFormat.format(tr("SignalsError2"),
 //                    new Object[]{str}), tr("Error"),
@@ -13667,7 +13768,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
 // need to figure out what to do in this case - assigned to a different position on the same turnout.
         }
     }
-    if ( (a2SlipHead!=NULL) && setA2SlipHead->isChecked() ) {
+    if ( (a2SlipHead!=nullptr) && setA2SlipHead->isChecked() ) {
         if (isHeadOnPanel(a2SlipHead) &&
             (a2SlipHead!=getHeadFromName(layoutSlip->getSignalB2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
@@ -13688,7 +13789,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
             needRedraw = true;
         }
     }
-    else if (a2SlipHead!=NULL) {
+    else if (a2SlipHead!=nullptr) {
         int assigned = isHeadAssignedHere(a2SlipHead,layoutSlip);
         if (assigned == NONE) {
             if ( isHeadOnPanel(a2SlipHead) &&
@@ -13710,7 +13811,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
 // need to figure out what to do in this case.
         }
     }
-    else if (a2SlipHead==NULL) {
+    else if (a2SlipHead==nullptr) {
         removeSignalHeadFromPanel(layoutSlip->getSignalA2Name());
         layoutSlip->setSignalB2Name("");
     }
@@ -13760,7 +13861,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
         }
     }
     if(layoutSlip->getTurnoutType()==LayoutSlip::DOUBLE_SLIP){
-        if ( (b2SlipHead!=NULL) && setB2SlipHead->isChecked() ) {
+        if ( (b2SlipHead!=nullptr) && setB2SlipHead->isChecked() ) {
             if (isHeadOnPanel(b2SlipHead) &&
                 (b2SlipHead!=getHeadFromName(layoutSlip->getSignalC2Name()))) {
 //                JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
@@ -13781,7 +13882,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
                 needRedraw = true;
             }
         }
-        else if (b2SlipHead!=NULL) {
+        else if (b2SlipHead!=nullptr) {
             int assigned = isHeadAssignedHere(b2SlipHead,layoutSlip);
             if (assigned == NONE) {
                 if ( isHeadOnPanel(b2SlipHead) &&
@@ -13803,12 +13904,12 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
 // need to figure out what to do in this case.
             }
         }
-        else if (b2SlipHead==NULL) {
+        else if (b2SlipHead==nullptr) {
             removeSignalHeadFromPanel(layoutSlip->getSignalB2Name());
             layoutSlip->setSignalB2Name("");
         }
     } else {
-        if(b2SlipHead!=NULL){
+        if(b2SlipHead!=nullptr){
             BlockBossLogic::getStoppedObject(layoutSlip->getSignalB2Name());
             removeSignalHeadFromPanel(layoutSlip->getSignalB2Name());
             layoutSlip->setSignalB2Name("");
@@ -13860,7 +13961,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
         }
     }
     if(layoutSlip->getTurnoutType()==LayoutSlip::DOUBLE_SLIP){
-        if ( (c2SlipHead!=NULL) && setC2SlipHead->isChecked() ) {
+        if ( (c2SlipHead!=nullptr) && setC2SlipHead->isChecked() ) {
             if (isHeadOnPanel(c2SlipHead) &&
                 (c2SlipHead!=getHeadFromName(layoutSlip->getSignalB2Name()))) {
 //                JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
@@ -13881,7 +13982,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
                 needRedraw = true;
             }
         }
-        else if (c2SlipHead!=NULL) {
+        else if (c2SlipHead!=nullptr) {
             int assigned = isHeadAssignedHere(c2SlipHead,layoutSlip);
             if (assigned == NONE) {
                 if ( isHeadOnPanel(c2SlipHead) &&
@@ -13903,12 +14004,12 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
 // need to figure out what to do in this case.
             }
         }
-        else if (c2SlipHead==NULL) {
+        else if (c2SlipHead==nullptr) {
             removeSignalHeadFromPanel(layoutSlip->getSignalC2Name());
             layoutSlip->setSignalC2Name("");
         }
     } else {
-        if(c2SlipHead!=NULL){
+        if(c2SlipHead!=nullptr){
             BlockBossLogic::getStoppedObject(layoutSlip->getSignalC2Name());
             removeSignalHeadFromPanel(layoutSlip->getSignalC2Name());
             layoutSlip->setSignalC2Name("");
@@ -13958,7 +14059,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
 // need to figure out what to do in this case.
         }
     }
-    if ( (d2SlipHead!=NULL) && setD2SlipHead->isChecked() ) {
+    if ( (d2SlipHead!=nullptr) && setD2SlipHead->isChecked() ) {
         if (isHeadOnPanel(d2SlipHead) &&
             (d2SlipHead!=getHeadFromName(layoutSlip->getSignalC2Name()))) {
 //            JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
@@ -13979,7 +14080,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
             needRedraw = true;
         }
     }
-    else if (d2SlipHead!=NULL) {
+    else if (d2SlipHead!=nullptr) {
         int assigned = isHeadAssignedHere(d2SlipHead,layoutSlip);
         if (assigned == NONE) {
             if ( isHeadOnPanel(d2SlipHead) &&
@@ -14001,7 +14102,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
 // need to figure out what to do in this case.
         }
     }
-    else if (d2SlipHead==NULL) {
+    else if (d2SlipHead==nullptr) {
         removeSignalHeadFromPanel(layoutSlip->getSignalD2Name());
         layoutSlip->setSignalD2Name("");
     }
@@ -14041,16 +14142,16 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
 }
 /*private*/ bool LayoutEditorTools::getSlipSignalHeadInformation() {
     a1SlipHead = getSignalHeadFromEntry(a1SlipField,true,setSignalsAtSlipFrame);
-    if (a1SlipHead==NULL) return false;
+    if (a1SlipHead==nullptr) return false;
     a2SlipHead = getSignalHeadFromEntry(a2SlipField,false,setSignalsAtSlipFrame);
     b1SlipHead = getSignalHeadFromEntry(b1SlipField,true,setSignalsAtSlipFrame);
-    if (b1SlipHead==NULL) return false;
+    if (b1SlipHead==nullptr) return false;
     b2SlipHead = getSignalHeadFromEntry(b2SlipField,false,setSignalsAtSlipFrame);
     c1SlipHead = getSignalHeadFromEntry(c1SlipField,true,setSignalsAtSlipFrame);
-    if (c1SlipHead==NULL) return false;
+    if (c1SlipHead==nullptr) return false;
     c2SlipHead = getSignalHeadFromEntry(c2SlipField,false,setSignalsAtSlipFrame);
     d1SlipHead = getSignalHeadFromEntry(d1SlipField,true,setSignalsAtSlipFrame);
-    if (d1SlipHead==NULL) return false;
+    if (d1SlipHead==nullptr) return false;
     d2SlipHead = getSignalHeadFromEntry(d2SlipField,false,setSignalsAtSlipFrame);
     return true;
 }
@@ -14089,14 +14190,14 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
     // initialize common components and ensure all is defined
     LayoutBlock*connectorBlock = slip->getLayoutBlock();
     Sensor* connectorOccupancy = NULL;
-    if (connectorBlock==NULL){
+    if (connectorBlock==nullptr){
 //        JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAtSlipFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     connectorOccupancy = connectorBlock->getOccupancySensor();
-    if (connectorOccupancy==NULL) {
+    if (connectorOccupancy==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage4"),
 //                    new Object[]{connectorBlock.getUserName()}),
@@ -14109,7 +14210,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
     int farState = layoutSlip->getTurnoutState(farTurnout, continueState);
 
     // setup signal head for continuing track of far turnout (or both tracks of far turnout)
-    if ( (track1==NULL) && setup1 ) {
+    if ( (track1==nullptr) && setup1 ) {
 //        JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::critical(setSignalsAtSlipFrame, tr("Error"), tr("Cannot set up logic because all connections\n                                                                  have not been defined around this item."));
@@ -14117,16 +14218,16 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
     }
     Sensor* occupancy = NULL;
     SignalHead* nextHead = NULL;
-    if ( (track1!=NULL) && setup1) {
+    if ( (track1!=nullptr) && setup1) {
         LayoutBlock* block = track1->getLayoutBlock();
-        if (block==NULL) {
+        if (block==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
             QMessageBox::information(setSignalsAtSlipFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
             return;
         }
         occupancy = block->getOccupancySensor();
-        if (occupancy==NULL) {
+        if (occupancy==nullptr) {
 //            JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage4"),
 //                    new Object[]{block->getUserName()}),
@@ -14137,7 +14238,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
         //need to sort this out???
         nextHead = getNextSignalFromObject(track1,slip,
                                     head->getSystemName(), setSignalsAtSlipFrame);
-        if ( (nextHead==NULL) && (!reachedEndBumper()) ) {
+        if ( (nextHead==nullptr) && (!reachedEndBumper()) ) {
 //            JOptionPane.showMessageDialog(setSignalsFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage5"),
 //                    new Object[]{block->getUserName()}),
@@ -14145,7 +14246,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
          QMessageBox::critical(setSignalsAtSlipFrame, tr("Error"), tr("Cannot set up logic because the next signal (in or \nat the end of block \"%1\") apparently is not yet defined.").arg(block->getUserName()));
             return;
         }
-        if (secondHead!=NULL)
+        if (secondHead!=nullptr)
         {
          // this head signals only the continuing track of the far turnout
          if (!initializeBlockBossLogic(head->getSystemName())) return;
@@ -14156,10 +14257,10 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
          logic->setSensor1(occupancy->getSystemName());
          if (occupancy!=connectorOccupancy)
              logic->setSensor2(connectorOccupancy->getSystemName());
-         if (nextHead!=NULL) {
+         if (nextHead!=nullptr) {
              logic->setWatchedSignal1(nextHead->getSystemName(),false);
          }
-         if (auxSignal!=NULL) {
+         if (auxSignal!=nullptr) {
              logic->setWatchedSignal1Alt(auxSignal->getSystemName());
          }
          QString nearSensorName = setupNearLogixSlip(nearTurnout, nearState, head, farTurnout, farState, slip, number);
@@ -14167,23 +14268,23 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
          finalizeBlockBossLogic();
         }
        }
-    if ( (secondHead!=NULL) && !setup2 ) return;
+    if ( (secondHead!=nullptr) && !setup2 ) return;
     SignalHead* savedAuxSignal = auxSignal;
-    if (track2==NULL) {
+    if (track2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //                tr("InfoMessage7"),"",JOptionPane.INFORMATION_MESSAGE);
      QMessageBox::critical(setSignalsAtSlipFrame, tr("Error"), tr("Cannot set up logic because all connections\n                                                                  have not been defined around this item."));
         return;
     }
     LayoutBlock* block2 = track2->getLayoutBlock();
-    if (block2==NULL) {
+    if (block2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //                tr("InfoMessage6"),"",JOptionPane.INFORMATION_MESSAGE);
         QMessageBox::information(setSignalsAtSlipFrame, tr("Information"), tr("Cannot set up logic because blocks have\nnot been defined around this item."));
         return;
     }
     Sensor* occupancy2 = block2->getOccupancySensor();
-    if (occupancy2==NULL) {
+    if (occupancy2==nullptr) {
 //        JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //            java.text.MessageFormat.format(tr("InfoMessage4"),
 //                new Object[]{block2.getUserName()}),
@@ -14192,11 +14293,11 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
         return;
     }
     SignalHead* nextHead2 = NULL;
-    if (secondHead!=NULL)
+    if (secondHead!=nullptr)
     {
      nextHead2 = getNextSignalFromObject(track2,
              slip, secondHead->getSystemName(), setSignalsAtSlipFrame);
-     if ( (nextHead2==NULL) && (!reachedEndBumper()) ) {
+     if ( (nextHead2==nullptr) && (!reachedEndBumper()) ) {
 //            JOptionPane.showMessageDialog(setSignalsAtSlipFrame,
 //                java.text.MessageFormat.format(tr("InfoMessage5"),
 //                    new Object[]{block2.getUserName()}),
@@ -14205,25 +14306,25 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
          return;
      }
     }
-    if ( (secondHead==NULL) && (track1!=NULL) && setup1 )
+    if ( (secondHead==nullptr) && (track1!=nullptr) && setup1 )
     {
      if (!initializeBlockBossLogic(head->getSystemName())) return;
      logic->setMode(BlockBossLogic::FACING);
      logic->setTurnout(farTurnout->getSystemName());
-     if(occupancy!=NULL)
+     if(occupancy!=nullptr)
          logic->setWatchedSensor1(occupancy->getSystemName());
      logic->setWatchedSensor2(occupancy2->getSystemName());
      logic->setSensor2(connectorOccupancy->getSystemName());
-     if (nextHead!=NULL) {
+     if (nextHead!=nullptr) {
          logic->setWatchedSignal1(nextHead->getSystemName(),false);
      }
-     if (savedAuxSignal!=NULL) {
+     if (savedAuxSignal!=nullptr) {
          logic->setWatchedSignal1Alt(savedAuxSignal->getSystemName());
      }
-     if (nextHead2!=NULL) {
+     if (nextHead2!=nullptr) {
          logic->setWatchedSignal2(nextHead2->getSystemName());
      }
-     if (auxSignal!=NULL) {
+     if (auxSignal!=nullptr) {
          logic->setWatchedSignal2Alt(auxSignal->getSystemName());
      }
      QString nearSensorName = setupNearLogixSlip(nearTurnout, nearState,head, farTurnout, farState, slip, number+1);
@@ -14231,7 +14332,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
      logic->setLimitSpeed2(true);
      finalizeBlockBossLogic();
     }
-    else if ( (secondHead!=NULL) && setup2)
+    else if ( (secondHead!=nullptr) && setup2)
     {
         if (!initializeBlockBossLogic(secondHead->getSystemName())) return;
         nearState = layoutSlip->getTurnoutState(nearTurnout, divergeState);
@@ -14248,10 +14349,10 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
         logic->setSensor1(occupancy2->getSystemName());
         if (occupancy2!=connectorOccupancy)
             logic->setSensor2(connectorOccupancy->getSystemName());
-        if (nextHead2!=NULL) {
+        if (nextHead2!=nullptr) {
             logic->setWatchedSignal1(nextHead2->getSystemName(),false);
         }
-        if (auxSignal!=NULL) {
+        if (auxSignal!=nullptr) {
             logic->setWatchedSignal1Alt(auxSignal->getSystemName());
         }
         QString nearSensorName = setupNearLogixSlip(nearTurnout, nearState, secondHead, farTurnout, farState, slip, number+1);
@@ -14267,17 +14368,17 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
  QString logixName = "SYS_LAYOUTSLIP:"+slip->ident;
  QString sensorName = "IS:"+logixName+"C"+number;
  Sensor* sensor = ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->provideSensor(sensorName);
- if (sensor==NULL) {
+ if (sensor==nullptr) {
      log->error("Trouble creating sensor "+sensorName+" while setting up Logix->");
      return "";
  }
  bool newConditional = false;
  Logix* x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName);
- if(x == NULL)
+ if(x == nullptr)
  {
   // Logix does not exist, create it
   x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->createNewLogix(logixName, "");
-  if(x==NULL)
+  if(x==nullptr)
   {
    log->error("Trouble creating logix "+logixName+" while setting up signal logic->");
    return "";
@@ -14288,12 +14389,12 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
  QString cName = logixName+"C" + QString::number(number);
 
  Conditional* c = ((ConditionalManager*) InstanceManager::getDefault("ConditionalManager"))->getBySystemName(cName);
- if (c == NULL)
+ if (c == nullptr)
  {
   c = ((ConditionalManager*) InstanceManager::getDefault("ConditionalManager"))->
                      createNewConditional(cName, "");
   newConditional = true;
-  if (c == NULL)
+  if (c == nullptr)
   {
    log->error("Trouble creating conditional " + cName + " while setting up Logix.");
                  return "";
@@ -14335,19 +14436,19 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
  */
 /*private*/ void LayoutEditorTools::addNearSensorToSlipLogic(QString name)
 {
- if ( (name==NULL) || name==("") ) return;
+ if ( (name==nullptr) || name==("") ) return;
  // return if a sensor by this name is already present
- if ( (logic->getSensor1()!=NULL) && (logic->getSensor1())==(name) ) return;
- if ( (logic->getSensor2()!=NULL) && (logic->getSensor2())==(name) ) return;
- if ( (logic->getSensor3()!=NULL) && (logic->getSensor3())==(name) ) return;
- if ( (logic->getSensor4()!=NULL) && (logic->getSensor4())==(name) ) return;
- if ( (logic->getSensor5()!=NULL) && (logic->getSensor5())==(name) ) return;
+ if ( (logic->getSensor1()!=nullptr) && (logic->getSensor1())==(name) ) return;
+ if ( (logic->getSensor2()!=nullptr) && (logic->getSensor2())==(name) ) return;
+ if ( (logic->getSensor3()!=nullptr) && (logic->getSensor3())==(name) ) return;
+ if ( (logic->getSensor4()!=nullptr) && (logic->getSensor4())==(name) ) return;
+ if ( (logic->getSensor5()!=nullptr) && (logic->getSensor5())==(name) ) return;
  // add in the first available slot
- if (logic->getSensor1()==NULL) logic->setSensor1(name);
- else if (logic->getSensor2()==NULL) logic->setSensor2(name);
- else if (logic->getSensor3()==NULL) logic->setSensor3(name);
- else if (logic->getSensor4()==NULL) logic->setSensor4(name);
- else if (logic->getSensor5()==NULL) logic->setSensor5(name);
+ if (logic->getSensor1()==nullptr) logic->setSensor1(name);
+ else if (logic->getSensor2()==nullptr) logic->setSensor2(name);
+ else if (logic->getSensor3()==nullptr) logic->setSensor3(name);
+ else if (logic->getSensor4()==nullptr) logic->setSensor4(name);
+ else if (logic->getSensor5()==nullptr) logic->setSensor5(name);
  else log->error("Error - could not add sensor to SSL for signal head "+logic->getDrivenSignal());
 }
 
@@ -14368,32 +14469,32 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
  l->rotate(90);
  return l;
 }
-//   static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LayoutEditorTools.class.getName());
+  /*static*/ Logger* LayoutEditorTools::log = LoggerFactory::getLogger("LayoutEditorTools");
 //}
 
 void LayoutEditorTools::block1NameField_textChanged(QString text)
 {
  QCompleter* completer = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getCompleter(text, true);
- if(completer!= NULL)
+ if(completer!= nullptr)
    block1NameField->setCompleter(completer);
 }
 
 void LayoutEditorTools::block2NameField_textChanged(QString text)
 {
     QCompleter* completer = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->getCompleter(text, true);
-    if(completer!= NULL)
+    if(completer!= nullptr)
       block2NameField->setCompleter(completer);
 }
 void LayoutEditorTools::eastBoundField_textChanged(QString text)
 {
-    QCompleter* completer = ((AbstractSignalHeadManager*) InstanceManager::signalHeadManagerInstance())->getCompleter(text, true);
-    if(completer!= NULL)
+    QCompleter* completer = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(text, true);
+    if(completer!= nullptr)
       eastBoundField->setCompleter(completer);
 }
 void LayoutEditorTools::westBoundField_textChanged(QString text)
 {
     QCompleter* completer = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getCompleter(text, true);
-    if(completer!= NULL)
+    if(completer!= nullptr)
       eastBoundField->setCompleter(completer);
 }
 

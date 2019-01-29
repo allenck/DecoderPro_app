@@ -35,7 +35,7 @@ public:
     Q_INVOKABLE /*public*/ SectionTableAction(QString actionName, QObject *parent = 0);
     ~SectionTableAction() {}
     SectionTableAction(const SectionTableAction& that) : AbstractTableAction(that.text(), that.parent()){}
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     /*public*/ void setMenuBar(BeanTableFrame* f);
     /*public*/ QMenu* createToolsMenu();
 

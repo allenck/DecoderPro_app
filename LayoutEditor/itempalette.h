@@ -35,6 +35,7 @@ public:
     static QMap<QString, QMap<QString, NamedIcon *> *> *loadDefaultFamilyMap(QDomNodeList families, Editor* ed);
     static QMap<QString, QMap<QString, QMap<QString, NamedIcon *> *> *> *loadDefaultIndicatorTOMap(QDomNodeList typeList, Editor*ed);
     static void buildTabPane(ItemPalette* palette, Editor* editor);
+    static void addItemTab(ItemPanel* itemPanel, QString key, QString tabTitle);
     static void loadFamilies(QString typeName, QDomNodeList families, Editor* ed);
 
     /*public*/ ItemPalette(QString _title, Editor* editor, QWidget* parent = 0);
@@ -42,6 +43,8 @@ public:
     /*public*/ void closePanels(/*WindowEvent* e*/);
     static bool familyNameOK(QWidget* frame, QString type, QString family, QStringListIterator it);
     static /*public*/ QString convertText(QString name);
+    static void loadMissingItemType(QString itemType, Editor* ed);
+    static QDomNodeList getDefaultIconItemTypes() throw (JDOMException, IOException);
 
 signals:
 

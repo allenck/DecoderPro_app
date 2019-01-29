@@ -13,7 +13,7 @@ public:
     explicit DefaultLogixManager(QObject *parent = 0);
     int getXMLOrder();
     /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ Logix* createNewLogix(QString systemName, QString userName);
     /*public*/ Logix* createNewLogix(QString userName);
     /*public*/ void deleteLogix(Logix* x);

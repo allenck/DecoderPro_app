@@ -562,7 +562,7 @@ protected slots:
    * @param p     the item containing or requiring the context menu
    * @param event the event triggering the menu
    */
-  virtual /*abstract*/ /*protected*/ void showPopUp(Positionable* p, QMouseEvent* event) {}
+  virtual /*abstract*/ /*protected*/ void showPopUp(Positionable* /*p*/, QMouseEvent* /*event*/) {}
   /*protected*/ bool setSelectionsPositionable(bool enabled, Positionable* p);
   virtual /*abstract*/ /*protected*/ void paintTargetPanel(QGraphicsScene* g);
   /*protected*/ void deselectSelectionGroup();
@@ -601,6 +601,8 @@ protected slots:
   friend class PolygonAction;
   friend class UrlErrorDialog;
   friend class NewPanelEditor;
+  friend class ItemPanel;
+  friend class BackgroundItemPanel;
 public:
   class AddRightTOActionListener : public ActionListener
   {

@@ -1,6 +1,6 @@
 #include "defaultusermessagepreferencesxml.h"
 #include "userpreferencesmanager.h"
-#include "defaultusermessagepreferences.h"
+//#include "defaultusermessagepreferences.h"
 #include "instancemanager.h"
 
 DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *parent) :
@@ -23,202 +23,8 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
  */
 /*public*/ QDomElement DefaultUserMessagePreferencesXml::store(QObject* o)
 {
- UserPreferencesManager* p = (UserPreferencesManager*) o;
-
- QDomElement messages = doc.createElement("UserMessagePreferences");
- setStoreElementClass(messages);
-
- QStringList preferenceList = ((DefaultUserMessagePreferences*)p)->getSimplePreferenceStateList();
- for (int i = 0; i < preferenceList.size(); i++)
- {
-  QDomElement pref = doc.createElement("setting");
-  pref.appendChild(doc.createTextNode( preferenceList.at(i)));
-  messages.appendChild(pref);
- }
-
- int comboBoxSize = p->getComboBoxSelectionSize();
- if (comboBoxSize >0)
- {
-  QDomElement comboList = doc.createElement("comboBoxLastValue");
-  for(int i = 0; i<comboBoxSize; i++)
-  {
-   //No point in storing the last entered/selected value if it is blank
-   if ((p->getComboBoxLastSelection(i)!=NULL)&&(p->getComboBoxLastSelection(i)!=("")))
-   {
-    QDomElement combo = doc.createElement("comboBox");
-    combo.setAttribute("name", p->getComboBoxName(i));
-    combo.setAttribute("lastSelected", p->getComboBoxLastSelection(i));
-    comboList.appendChild(combo);
-   }
-  }
-  messages.appendChild(comboList);
- }
- QStringList preferenceClassList = p->getPreferencesClasses();
- for (int k = 0; k<preferenceClassList.size(); k++)
- {
-  QString strClass = preferenceClassList.at(k);
-  QStringList multipleList = p->getMultipleChoiceList(strClass);
-  QDomElement classElement = doc.createElement("classPreferences");
-  classElement.setAttribute("class", strClass);
-  //This bit deals with the multiple choice
-  bool store = false;
-  QDomElement multiOption = doc.createElement("multipleChoice");
-  for (int i=0; i<multipleList.size(); i++)
-  {
-   QString itemName = p->getChoiceName(strClass, i);
-   if (p->getMultipleChoiceDefaultOption(strClass, itemName)!=p->getMultipleChoiceOption(strClass, itemName))
-   {
-    //Only save if we are not at the default value.
-    QDomElement multiOptionItem = doc.createElement("option");
-    store = true;
-    multiOptionItem.setAttribute("item", itemName);
-    multiOptionItem.setAttribute("value", p->getMultipleChoiceOption(strClass, itemName));
-    multiOption.appendChild(multiOptionItem);
-   }
-  }
-  if (store)
-  {
-   classElement.appendChild(multiOption);
-  }
-
-  bool listStore=false;
-  QStringList singleList = p->getPreferenceList(strClass);
-  if (singleList.size()!=0)
-  {
-   QDomElement singleOption = doc.createElement("reminderPrompts");
-   for (int i = 0; i<singleList.size(); i++)
-   {
-    QString itemName = p->getPreferenceItemName(strClass, i);
-    if(p->getPreferenceState(strClass, itemName))
-    {
-     QDomElement pref = doc.createElement("reminder");
-     pref.appendChild(doc.createTextNode(singleList.at(i)));
-     singleOption.appendChild(pref);
-     listStore = true;
-    }
-   }
-   if (listStore)
-     classElement.appendChild(singleOption);
-  }
-
-  //This bit deals with simple hiding of messages
-  if ((store) || (listStore))
-   messages.appendChild(classElement);
- }
-
- QStringList windowList = p->getWindowList();
- if (/*windowList != NULL &&*/ windowList.size() != 0)
- {
-  foreach(QString strClass, windowList)
-  {
-   QDomElement windowElement = doc.createElement("windowDetails");
-   windowElement.setAttribute("class", strClass);
-   bool set = false;
-   if(p->getSaveWindowLocation(strClass))
-   {
-    try {
-    double x = p->getWindowLocation(strClass).x();
-    double y = p->getWindowLocation(strClass).y();
-    QDomElement loc = doc.createElement("locX");
-    loc.appendChild(doc.createTextNode(QString::number(x)));
-    windowElement.appendChild(loc);
-    loc = doc.createElement("locY");
-    windowElement.appendChild(loc);
-    loc.appendChild(doc.createTextNode(QString::number(y)));
-    set=true;
-    } catch (NullPointerException ex){
-        //Considered normal if the window hasn't been closed or all of the information hasn't been set
-    }
-   }
-   if(p->getSaveWindowSize(strClass))
-   {
-    try
-    {
-     double width=p->getWindowSize(strClass).width();
-     double height=p->getWindowSize(strClass).height();
-     //We do not want to save the width or height if it is set to zero!
-     if (!(width==0.0 && height==0.0))
-     {
-      QDomElement size = doc.createElement("width");
-      size.appendChild(doc.createTextNode(QString::number(width)));
-      windowElement.appendChild(size);
-      size = doc.createElement("height");
-      size.appendChild(doc.createTextNode(QString::number(height)));
-      windowElement.appendChild(size);
-      set=true;
-     }
-    } catch (NullPointerException ex){
-     //Considered normal if the window hasn't been closed
-    }
-   }
-   QSet<QString> s = p->getPropertyKeys(strClass);
-   if (/*s != NULL &&*/ s.size() != 0)
-   {
-    QDomElement ret = doc.createElement("properties");
-    windowElement.appendChild(ret);
-    foreach (QVariant key, s)
-    {
-     QVariant value = p->getProperty(strClass, key.toString());
-     QDomElement prop = doc.createElement("property");
-     ret.appendChild(prop);
-     QDomElement e;
-     prop.appendChild(e = doc.createElement("key"));
-     QString s_class;
-     //e.setAttribute("class", key.getClass().getName());
-     //if(key.toString() == "QString")
-     if(key.toString() != "")
-      s_class = "java.lang.String";
-     e.setAttribute("class", s_class);
-     e.appendChild(doc.createTextNode(key.toString()));
-     if (value != QVariant())
-     {
-      prop.appendChild(e = doc.createElement("value"));
-      //e.setAttribute("class", value.getClass().getName())
-      e.setAttribute("value", s_class);
-      e.appendChild(doc.createTextNode(value.toString()));
-     }
-    }
-    set=true;
-   }
-   if (set)
-    messages.appendChild(windowElement);
-  }
- }
-
- if(p->getTablesList().size()!=0)
- {
-  QDomElement tablesElement = doc.createElement("tableDetails");
-  foreach(QString table, p->getTablesList())
-  {
-   QDomElement tableElement = doc.createElement("table");
-   tableElement.setAttribute("name", table);
-   foreach(QString column, p->getTablesColumnList(table))
-   {
-    QDomElement columnElement = doc.createElement("column");
-    columnElement.setAttribute("name", column);
-    if(p->getTableColumnOrder(table, column)!=-1)
-    {
-     columnElement.appendChild(doc.createElement("order").appendChild(doc.createTextNode(QString::number(p->getTableColumnOrder(table, column)))));
-    }
-    if(p->getTableColumnWidth(table, column)!=-1)
-    {
-     columnElement.appendChild(doc.createElement("width").appendChild(doc.createTextNode(QString::number(p->getTableColumnWidth(table, column)))));
-    }
-    if(p->getTableColumnSort(table, column)!=0)
-    {
-     columnElement.appendChild(doc.createElement("sort").appendChild(doc.createTextNode(QString::number(p->getTableColumnSort(table, column)))));
-    }
-    if(p->getTableColumnHidden(table, column))
-    {
-     columnElement.appendChild(doc.createElement("hidden").appendChild(doc.createTextNode("yes")));
-    }
-    tableElement.appendChild(columnElement);
-   }
-   tablesElement.appendChild(tableElement);
-  }
-  messages.appendChild(tablesElement);
- }
- return messages;
+ // nothing to do, since this class exists only to load older preferences if they exist
+         return QDomElement();
 }
 
 /*public*/ void DefaultUserMessagePreferencesXml::setStoreElementClass(QDomElement messages) {
@@ -242,7 +48,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
  UserPreferencesManager* p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
 
  if(p == NULL)
-  p = new DefaultUserMessagePreferences();
+  p = static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"));
 
  p->setLoading();
 
@@ -419,7 +225,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
   #endif
       if(ptr != NULL)
       {
-       ((DefaultUserMessagePreferences*)p)->setProperty(strClass, keyText, valueText);
+       p->setProperty(strClass, keyText, valueText);
       }
      }
     }

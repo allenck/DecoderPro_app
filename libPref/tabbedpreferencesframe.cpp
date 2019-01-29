@@ -42,10 +42,12 @@
  QVBoxLayout* layout = new QVBoxLayout;
  centralWidget->setLayout(layout);
  setWindowTitle(getTabbedPreferences()->getTitle());
+ //addWindowListener((WindowListener*)this);
 
  layout->addWidget(getTabbedPreferences());
  addHelpMenu("package.apps.TabbedPreferences", true);
  resize(800,800);
+ setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
 }
 
 /*public*/ void TabbedPreferencesFrame::gotoPreferenceItem(QString item,QString sub){
@@ -56,13 +58,13 @@
 /*public*/ void TabbedPreferencesFrame::windowClosing(QCloseEvent* /*e*/)
 {
  ShutDownManager* sdm = (ShutDownManager*)InstanceManager::getNullableDefault("ShutDownManager");
- if (!getTabbedPreferences()->isPreferencesValid() && (sdm == NULL || !sdm->isShuttingDown()))
+ if (!getTabbedPreferences()->isPreferencesValid() && (sdm == nullptr || !sdm->isShuttingDown()))
  {
   for (PreferencesPanel* panel : getTabbedPreferences()->getPreferencesPanels()->values())
   {
    if (!panel->isPreferencesValid())
    {
-    switch(QMessageBox::question(this, tr("Unsaved Changes"), tr("There are unsaved changes to this panel. Do you wish to cloase?"), QMessageBox::Yes |QMessageBox::No | QMessageBox::Cancel))
+    switch(QMessageBox::question(this, tr("Unsaved Changes"), tr("There are unsaved changes to this panel. Do you wish to close?"), QMessageBox::Yes |QMessageBox::No | QMessageBox::Cancel))
     {
      case QMessageBox::Yes:
       // save preferences

@@ -105,7 +105,7 @@ public:
     * order eg 11 thru 18, primarily used to show/not show the add range box in the add Light window
     **/
     /*public*/ bool allowMultipleAdditions(QString systemName);
-    virtual bool validSystemNameFormat(QString systemName) = 0;
+
 signals:
  void newLightCreated(AbstractLightManager*,Light*);
 

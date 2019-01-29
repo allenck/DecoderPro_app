@@ -112,6 +112,7 @@ public:
 //    /*public*/ virtual Sound getSound() = 0;
 
     /*public*/ virtual NamedBeanHandle<NamedBean*>* getNamedBean() = 0;
+    /*public*/ virtual NamedBean* getBean() {return nullptr;}
 };
 
 #endif // CONDITIONALACTION_H

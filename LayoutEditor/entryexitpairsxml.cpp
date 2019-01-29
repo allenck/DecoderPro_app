@@ -186,11 +186,11 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
     QString sourceItem = sourceList.at(i).toElement().attribute("item");
     NamedBean* source = NULL;
     if(sourceType==("signalMast")){
-        source = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(sourceItem);
+        source = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(sourceItem);
     } else if (sourceType==("sensor")){
         source = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(sourceItem);
     } else if (sourceType==("signalHead")){
-        source = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(sourceItem);
+        source = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(sourceItem);
     }
 
     //These two could be subbed off.
@@ -209,7 +209,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      NamedBean* dest = NULL;
      if(destType==("signalMast"))
      {
-      dest = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(destItem);
+      dest = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(destItem);
      }
      else if (destType==("sensor"))
      {
@@ -217,7 +217,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      }
      else if (destType==("signalHead"))
      {
-      dest = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(destItem);
+      dest = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(destItem);
      }
      try
      {

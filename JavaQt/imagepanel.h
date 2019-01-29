@@ -1,11 +1,11 @@
 #ifndef IMAGEPANEL_H
 #define IMAGEPANEL_H
 
-#include <QWidget>
+#include <QFrame>
 #include "bufferedimage.h"
 
 class Logger;
-class ImagePanel : public QWidget
+class ImagePanel : public QFrame
 {
  Q_OBJECT
 public:

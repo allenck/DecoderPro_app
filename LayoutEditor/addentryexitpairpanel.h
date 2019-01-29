@@ -145,8 +145,8 @@ public:
 private:
     LayoutEditor* panel;
     AddEntryExitPairPanel* parent;
-    QObjectList* source;// = NULL;
-    QObjectList* dest;// = NULL;
+    QObjectList source;// = NULL;
+    QObjectList dest;// = NULL;
 
     void updateNameList();
     int _rowCount;// = 0;

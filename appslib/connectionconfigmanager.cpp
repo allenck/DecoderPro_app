@@ -97,6 +97,9 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
      {
       QStringList sl = className.split(".");
       QString prefix;
+      if(sl.at(2) == "rfid" && sl.at(3) == "serialdriver")
+       prefix = "RfidSerial";
+      else
       if(sl.at(3) == "pr3")
       {
        //prefix = "Pr3";

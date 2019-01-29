@@ -61,3 +61,5 @@ void Logger::trace(QString s)
 
 void Logger::setDebugEnabled(bool bState) { bDebugEnabled = bState;}
 void Logger::setInfoEnabled(bool bState) { bInfoEnabled = bState;}
+void Logger::setTraceEnabled(bool bState) { bTraceEnabled = bState;}
+

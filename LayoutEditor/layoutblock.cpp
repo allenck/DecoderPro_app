@@ -887,7 +887,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   editLayoutBlockFrame->setVisible(true);
   return;
  }
-#if 0
+#if 1
  // Initialize if needed
  if (editLayoutBlockFrame == NULL)
  {
@@ -904,21 +904,21 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   panel1->setLayout(new FlowLayout());
   /*JLabel*/ QLabel* blockNameLabel = new /*JLabel*/ QLabel( tr("Name")+": "+blockName );
   panel1->layout()->addWidget(blockNameLabel);
-  contentPane->layout()->addWidget(panel1);
+  contentPaneLayout->addWidget(panel1);
   // show current use count (not editable)
   QWidget* panel2 = new QWidget();
   panel2->setLayout(new FlowLayout());
   panel2->layout()->addWidget(blockUseLabel);
-  contentPane->layout()->addWidget(panel2);
+  contentPaneLayout->addWidget(panel2);
   // set up occupancy sensor (changeable)
-  contentPane->layout()->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
   QWidget* panel3 = new QWidget();
   panel3->setLayout(new FlowLayout());
   /*JLabel*/ QLabel* sensorLabel = new /*JLabel*/ QLabel( tr("Occupancy Sensor")+":");
   panel3->layout()->addWidget(sensorLabel);
   panel3->layout()->addWidget(sensorNameField);
   sensorNameField->setToolTip( tr("Enter name of occupancy sensor for this block; no entry means don't change.") );
-  contentPane->layout()->addWidget(panel3);
+  contentPaneLayout->addWidget(panel3);
 
   // set up occupied sense (changeable)
   QWidget* panel4 = new QWidget();
@@ -932,25 +932,25 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   senseInactiveIndex = 1;
   panel4->layout()->addWidget(senseBox);
   senseBox->setToolTip( tr("Select the occupancy sensor state when the block is occupied.") );
-  contentPane->layout()->addWidget(panel4);
+  contentPaneLayout->addWidget(panel4);
 
-  contentPane->layout()->addWidget(sensorDebounceGlobalCheck);
+  contentPaneLayout->addWidget(sensorDebounceGlobalCheck);
   sensorDebounceGlobalCheck->setToolTip(tr("Use Global Debounce Values"));
   QWidget* panel4a = new QWidget();
   QHBoxLayout* panel4aLayout= new QHBoxLayout(panel4a);
   panel4aLayout->addWidget(new /*JLabel*/ QLabel(tr("Sensor InActive Debounce")));
   sensorDebounceInactiveField->setToolTip(tr("Enter in the duration (milli seconds) which the sensor has to be InActive, before the change is acted upon."));
   panel4aLayout->addWidget(sensorDebounceInactiveField);
-  contentPane->layout()->addWidget(panel4a);
+  contentPaneLayout->addWidget(panel4a);
   QWidget* panel4b = new QWidget();
   QHBoxLayout* panel4bLayout= new QHBoxLayout(panel4b);
   panel4bLayout->addWidget(new /*JLabel*/ QLabel(tr("Sensor Active Debounce")));
   panel4bLayout->addWidget(sensorDebounceActiveField);
   sensorDebounceActiveField->setToolTip(tr("Enter in the duration (milli seconds) which the sensor has to be Active, before the change is acted upon."));
-  contentPane->layout()->addWidget(panel4b);
+  contentPaneLayout->addWidget(panel4b);
 
   // set up track color (changeable)
-  contentPane->layout()->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
   QWidget* panel6 = new QWidget();
   panel6->setLayout(new FlowLayout());
   /*JLabel*/ QLabel* trackColorLabel = new /*JLabel*/ QLabel( tr("Track Color:") );
@@ -958,7 +958,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   initializeColorCombo(trackColorBox);
   panel6->layout()->addWidget(trackColorBox);
   trackColorBox->setToolTip( tr("Select the track color when this block is unoccupied.") );
-  contentPane->layout()->addWidget(panel6);
+  contentPaneLayout->addWidget(panel6);
   // set up occupied color (changeable)
   QWidget* panel7 = new QWidget();
   panel7->setLayout(new FlowLayout());
@@ -967,7 +967,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   initializeColorCombo(occupiedColorBox);
   panel7->layout()->addWidget(occupiedColorBox);
   occupiedColorBox->setToolTip( tr("Select the track color when this block is occupied.") );
-  contentPane->layout()->addWidget(panel7);
+  contentPaneLayout->addWidget(panel7);
   // set up extra color (changeable)
   QWidget* panel7a = new QWidget();
   panel7a->setLayout(new FlowLayout());
@@ -976,28 +976,28 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   initializeColorCombo(extraColorBox);
   panel7a->layout()->addWidget(extraColorBox);
   extraColorBox->setToolTip( tr("Select the track color for unoccupied special use, e.g. allocated.") );
-  contentPane->layout()->addWidget(panel7a);
+  contentPaneLayout->addWidget(panel7a);
   // set up Memory entry (changeable)
-  contentPane->layout()->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
   QWidget* panel8 = new QWidget();
   panel8->setLayout(new FlowLayout());
   /*JLabel*/ QLabel* memoryLabel = new /*JLabel*/ QLabel( tr("MemoryVariable")+":");
   panel8->layout()->addWidget(memoryLabel);
   panel8->layout()->addWidget(memoryNameField);
   memoryNameField->setToolTip( tr("Enter name (system or user) of Memory Variable (optional).") );
-  contentPane->layout()->addWidget(panel8);
+  contentPaneLayout->addWidget(panel8);
 
   //if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
   if(((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
   {
-    contentPane->layout()->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
     QWidget* panel19 = new QWidget();
     panel19->setLayout(new FlowLayout());
     /*JLabel*/ QLabel* metricLabel = new /*JLabel*/ QLabel("Block Metric");
     panel19->layout()->addWidget(metricLabel);
     panel19->layout()->addWidget(metricField);
     metricField->setToolTip("set the cost for going over this block");
-    contentPane->layout()->addWidget(panel19);
+    contentPaneLayout->addWidget(panel19);
     neighbourDir =  QVector<QComboBox*>(getNumberOfNeighbours());
     for(int i = 0; i<getNumberOfNeighbours(); i++)
     {
@@ -1015,19 +1015,19 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
       dir->setCurrentIndex(0);
      panel->layout()->addWidget(dir);
      neighbourDir.append(dir);
-     contentPane->layout()->addWidget(panel);
+     contentPaneLayout->addWidget(panel);
      }
     }
-    contentPane->layout()->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
     QWidget* panel20 = new QWidget();
     panel20->setLayout(new FlowLayout());
     panel20->layout()->addWidget(permissiveCheck);
     permissiveCheck->setToolTip("Is another train allowed to enter the block when it is already occupied");
-    contentPane->layout()->addWidget(panel20);
+    contentPaneLayout->addWidget(panel20);
 
 
     // set up Done and Cancel buttons
-    contentPane->layout()->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
     QWidget* panel5 = new QWidget();
     panel5->setLayout(new FlowLayout());
     // Done
@@ -1048,7 +1048,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
 //        });
     connect(blockEditCancel, SIGNAL(clicked()), this, SLOT(blockEditCancelPressed()));
     blockEditCancel->setToolTip( tr("CancelHint") );
-    contentPane->layout()->addWidget(panel5);
+    contentPaneLayout->addWidget(panel5);
 
 
     }
@@ -2369,18 +2369,19 @@ void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock){
 */
 //Was /*public*/
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="DLS_DEAD_LOCAL_STORE")
-void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock, LayoutEditor* /*panel*/){
+void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock, LayoutEditor* panel){
     //Reset connectivity flag.
     layoutConnectivity = true;
+
     if (srcBlock==dstBlock){
         //Do not do anything if the blocks are the same!
         return;
     }
     if(enableAddRouteLogging)
         log->info("From " + this->getDisplayName() + " Add ThroughPath with panel " +srcBlock->getDisplayName() + " " + dstBlock->getDisplayName());
+
     //Initally check to make sure that the through path doesn't already exist.
     //no point in going through the checks if the path already exists.
-
     bool add = true;
     for (int i = 0; i<throughPaths->size(); i++){
         if (throughPaths->at(i)->getSourceBlock()==srcBlock){
@@ -2390,174 +2391,182 @@ void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock, LayoutEditor*
     }
     if(!add)
         return;
+
     if(enableAddRouteLogging)
         log->info(block->getDisplayName() + " Source " + srcBlock->getDisplayName() + ", dest  " + dstBlock->getDisplayName());
-#if 0 // TODO:
+#if 1 // TODO:
 
     connection = new ConnectivityUtil(panel);
-    QVector<LayoutTurnout*>* stod = new QVector<LayoutTurnout>();
-    QVector<int>* stodSet = new QVector<int>();
-    /* We change the logging level to fatal in the connectivity Util as we are testing all possible
-    combinations including those that are invalid which would generate errors */
-    Logger connectionLog = Logger::getLogger(connection.getClass().getName());
-    Level* currentLevel = connectionLog.getLevel();
-
-    try{
-        connectionLog.setLevel(org.apache.log4j.Level.FATAL);
-        stod = connection.getTurnoutList(block, srcBlock, dstBlock);
-        stodSet = connection.getTurnoutSettingList();
-        connectionLog.setLevel(currentLevel);
-    } catch (NullPointerException ex){
-        connectionLog.setLevel(currentLevel);
-        if(enableAddRouteLogging)
-            log->error(block->getDisplayName() + " Exception caught while trying to discover turnout connectivity\nSource " + srcBlock->getDisplayName() + ", dest  " + dstBlock->getDisplayName()+"\n"+ex.toString());
+    QList<LayoutTrackExpectedState<LayoutTurnout*>*> stod;
+   # if 0
+    try {
+        MDC.put("loggingDisabled", connection.getClass().getCanonicalName());
+        stod = connection.getTurnoutList(block, srcBlock, dstBlock, true);
+        MDC.remove("loggingDisabled");
+    } catch (java.lang.NullPointerException ex) {
+        MDC.remove("loggingDisabled");
+        if (enableAddRouteLogging) {
+            log.error("Exception (" + ex.toString() + ") caught while trying to discover turnout connectivity\n"
+                    + "Block: " + block.getDisplayName()
+                    + ", srcBlock (" + srcBlock.getDisplayName()
+                    + ") to dstBlock (" + dstBlock.getDisplayName() + ")");
+            log.error("@ Line # " + ex.getStackTrace()[1].getLineNumber());
+        }
         return;
     }
-    if(!connection.isTurnoutConnectivityComplete())
-        layoutConnectivity=false;
-
-    QVector<LayoutTurnout*>* tmpdtos = new QVector<LayoutTurnout*>();
-    QVector<int>* tmpdtosSet = new QVector<int>();
-
-    try{
-        connectionLog.setLevel(org.apache.log4j.Level.FATAL);
-        tmpdtos = connection.getTurnoutList(block, dstBlock, srcBlock);
-        tmpdtosSet = connection.getTurnoutSettingList();
-        connectionLog.setLevel(currentLevel);
-    } catch (NullPointerException ex){
-        connectionLog.setLevel(currentLevel);
-        if(enableAddRouteLogging)
-            log->error(block->getDisplayName() + " Exception caught while trying to discover turnout connectivity\nSource " + srcBlock->getDisplayName() + ", dest  " + dstBlock->getDisplayName()+"\n"+ex.toString());
+   # endif
+    if (!connection->isTurnoutConnectivityComplete()) {
+        layoutConnectivity = false;
+    }
+    QList<LayoutTrackExpectedState<LayoutTurnout*>*> tmpdtos;
+   # if 0
+    try {
+        MDC.put("loggingDisabled", connection.getClass().getName());
+        tmpdtos = connection.getTurnoutList(block, dstBlock, srcBlock, true);
+        MDC.remove("loggingDisabled");
+    } catch (java.lang.NullPointerException ex) {
+        MDC.remove("loggingDisabled");
+        if (enableAddRouteLogging) {
+            log.error("Exception (" + ex.toString() + ") caught while trying to discover turnout connectivity\n"
+                    + "Block: " + block.getDisplayName()
+                    + ", dstBlock (" + dstBlock.getDisplayName()
+                    + ") to  srcBlock (" + srcBlock.getDisplayName() + ")");
+            log.error("@ Line # " + ex.getStackTrace()[1].getLineNumber());
+        }
         return;
     }
-
-    if(!connection.isTurnoutConnectivityComplete())
-        layoutConnectivity=false;
-
-    if ((stod.size()==tmpdtos.size()) && (stodSet.size()==tmpdtosSet.size())){
-        //Need to reorder the tmplist (dst-src) to be the same order as src-dst
-        QVector<LayoutTurnout> dtos = new QVector<LayoutTurnout>();
-        for (int i=tmpdtos.size();i>0;i--){
-            dtos.add(tmpdtos.get(i-1));
-        }
-        //check to make sure that we pass through the same turnouts
-        if(enableAddRouteLogging){
-            log->info("From " + this->getDisplayName() + " destination size " + dtos.size() + " v source size " + stod.size());
-            log->info("From " + this->getDisplayName() + " destination setting size " + tmpdtosSet.size() + " v source setting size " + stodSet.size());
-        }
-        for (int i=0;i<dtos.size();i++){
-            if(dtos.get(i)!=stod.get(i)){
-                if(enableAddRouteLogging)
-                    log->info("not equal will quit " + dtos.get(i) + ", " + stod.get(i));
-                return;
-            }
-        }
-        QVector<int>* dtosSet = new QVector<int>();
-        for(int i=tmpdtosSet.size();i>0;i--){
-            //Need to reorder the tmplist (dst-src) to be the same order as src-dst
-            dtosSet.add(tmpdtosSet.get(i-1));
-        }
-        for (int i=0;i<dtosSet.size();i++){
-            int x = stodSet.get(i);
-            int y = dtosSet.get(i);
-            if(x!=y){
-                if(enableAddRouteLogging)
-                    log->info(block->getDisplayName() + " not on setting equal will quit " + x + ", " + y);
-                return;
-            } else if(x==Turnout.UNKNOWN){
-                if(enableAddRouteLogging)
-                    log->info(block->getDisplayName() + " turnout state returned as UNKNOWN");
-                return;
-            }
-        }
-        HashSet<LayoutTurnout*> set = new HashSet<LayoutTurnout*>();
-        for (int i = 0; i<stod.size();i++){
-            bool val = set.add(stod.get(i));
-            if(val == false) {
-                //Duplicate found. will not add
-                return;
-            }
-        }
-
-        /*for(LayoutTurnout turn: stod){
-            if(turn.type==LayoutTurnout.DOUBLE_XOVER){
-            //Further checks might be required.
-            }
-
-        }*/
-        addThroughPathPostChecks(srcBlock, dstBlock, stod, stodSet);
+   # endif
+    if (!connection->isTurnoutConnectivityComplete()) {
+        layoutConnectivity = false;
     }
-    else {
-        //We know that a path that contains a double cross-over, is not reported correctly,
-        //therefore we shall so some additional checks and add it.
-        if(enableAddRouteLogging)
-            log->info("sizes are not the same therefore, we will do some further checks");
-        QVector<LayoutTurnout> maxt;
-        QVector<Integer> maxtSet;
-        if(stod.size()>=tmpdtos.size()){
-            maxt = stod;
-            maxtSet=stodSet;
-        }
-        else {
-            maxt = tmpdtos;
-            maxtSet=tmpdtosSet;
-        }
 
-        Set<LayoutTurnout> set = new HashSet<LayoutTurnout>(maxt);
+ if (stod.size() == tmpdtos.size()) {
+     //Need to reorder the tmplist (dst-src) to be the same order as src-dst
+     QList<LayoutTrackExpectedState<LayoutTurnout*>*> dtos = QList<LayoutTrackExpectedState<LayoutTurnout*>*>();
+     for (int i = tmpdtos.size(); i > 0; i--) {
+         dtos.append(tmpdtos.at(i - 1));
+     }
 
-        if(set.size() == maxt.size()){
-            if(enableAddRouteLogging)
-                log->info("All turnouts are unique so potentially a valid path");
-            bool allowAddition = false;
-            for(int i = 0; i<maxt.size(); i++){
-                LayoutTurnout turn = maxt.get(i);
-                if(turn.type==LayoutTurnout.DOUBLE_XOVER){
-                    allowAddition=true;
-                    //The double crossover gets reported in the opposite setting.
-                    if(maxtSet.get(i)==2){
-                        maxtSet.set(i, 4);
-                    } else {
-                        maxtSet.set(i, 2);
-                    }
-                }
-            }
-            if(allowAddition){
-                if(enableAddRouteLogging)
-                    log->info("addition allowed");
-                addThroughPathPostChecks(srcBlock, dstBlock, maxt, maxtSet);
-            } else if(enableAddRouteLogging){
-                log->info("No double cross-over so not a valid path");
-            }
-        }
-    }
+     //check to make sure that we pass through the same turnouts
+     if (enableAddRouteLogging) {
+         log->info(tr("From %1 destination size %2 v source size %3").arg(this->getDisplayName()).arg(dtos.size()).arg(stod.size()));
+     }
+
+     for (int i = 0; i < dtos.size(); i++) {
+         if (dtos.at(i)->getObject() != stod.at(i)->getObject()) {
+             if (enableAddRouteLogging) {
+                 log->info(tr("%1 != %2: will quit").arg(dtos.at(i)->getObject()->getName(), stod.at(i)->getObject()->getName()));
+             }
+             return;
+         }
+     }
+
+     for (int i = 0; i < dtos.size(); i++) {
+         int x = stod.at(i)->getExpectedState();
+         int y = dtos.at(i)->getExpectedState();
+
+         if (x != y) {
+             if (enableAddRouteLogging) {
+                 log->info(tr("%1 not on setting equal will quit %2, %3").arg(block->getDisplayName(), x, y));
+             }
+             return;
+         } else if (x == Turnout::UNKNOWN) {
+             if (enableAddRouteLogging) {
+                 log->info(tr("%1 turnout state returned as UNKNOWN").arg(block->getDisplayName()));
+             }
+             return;
+         }
+     }
+     QSet<LayoutTurnout*> set = QSet<LayoutTurnout*>();
+
+     for (int i = 0; i < stod.size(); i++) {
+         /*bool val =*/ set.insert(stod.at(i)->getObject());
+//         if (val == false) {
+//             //Duplicate found. will not add
+//             return;
+//         }
+     }
+     //for (LayoutTurnout turn : stod) {
+     //    if (turn.type == LayoutTurnout.DOUBLE_XOVER) {
+     //        //Further checks might be required.
+     //    }
+     //}
+     addThroughPathPostChecks(srcBlock, dstBlock, stod);
+ } else {
+     //We know that a path that contains a double cross-over, is not reported correctly,
+     //therefore we shall do some additional checks and add it.
+     if (enableAddRouteLogging) {
+         log->info("sizes are not the same therefore, we will do some further checks");
+     }
+     QList<LayoutTrackExpectedState<LayoutTurnout*>*> maxt;
+     if (stod.size() >= tmpdtos.size()) {
+         maxt = stod;
+     } else {
+         maxt = tmpdtos;
+     }
+
+     QSet<LayoutTrackExpectedState<LayoutTurnout*>*> set = QSet<LayoutTrackExpectedState<LayoutTurnout*>*>(maxt.toSet());
+     if (set.size() == maxt.size()) {
+         if (enableAddRouteLogging) {
+             log->info("All turnouts are unique so potentially a valid path");
+         }
+         bool allowAddition = false;
+         for (int i = 0; i < maxt.size(); i++) {
+             LayoutTurnout* turn = maxt.at(i)->getObject();
+             if (turn->type == LayoutTurnout::DOUBLE_XOVER) {
+                 allowAddition = true;
+                 //The double crossover gets reported in the opposite setting.
+                 if (maxt.at(i)->getExpectedState() == 2) {
+                     maxt.at(i)->setExpectedState(4);
+                 } else {
+                     maxt.at(i)->setExpectedState(2);
+                 }
+             }
+         }
+
+         if (allowAddition) {
+             if (enableAddRouteLogging) {
+                 log->info("addition allowed");
+             }
+             addThroughPathPostChecks(srcBlock, dstBlock, maxt);
+         } else if (enableAddRouteLogging) {
+             log->info("No double cross-over so not a valid path");
+         }
+     }
+ }
 #endif
-}
+} // addThroughPath
 
-/*private*/ void LayoutBlock::addThroughPathPostChecks(Block* srcBlock, Block* dstBlock, QVector<LayoutTurnout*>* stod, QVector<int>* stodSet )
+/*private*/ void LayoutBlock::addThroughPathPostChecks(Block* srcBlock, Block* dstBlock, QList<LayoutTrackExpectedState<LayoutTurnout*>*> stod )
 {
  QVector<Path*>* paths = block->getPaths();
- Path* srcPath = NULL;
- for (int i = 0; i<paths->size(); i++)
- {
-  if (paths->at(i)->getBlock()==srcBlock)
-   srcPath = paths->at(i);
- }
- Path* dstPath =NULL;
- for (int i = 0; i<paths->size(); i++)
- {
-  if (paths->at(i)->getBlock()==dstBlock)
-   dstPath = paths->at(i);
- }
- ThroughPaths* path = new ThroughPaths(srcBlock, srcPath, dstBlock, dstPath, this);
- path->setTurnoutList(stod, stodSet);
- if(enableAddRouteLogging)
-  log->info("From " + this->getDisplayName() + " added Throughpath " + path->getSourceBlock()->getDisplayName() + " " + path->getDestinationBlock()->getDisplayName());
- throughPaths->append(path);
- firePropertyChange("through-path-added", QVariant(), QVariant());
- //update our neighbours of the new valid paths;
- informNeighbourOfValidRoutes(srcBlock);
- informNeighbourOfValidRoutes(dstBlock);
+ Path* srcPath = nullptr;
 
+  for (int i = 0; i < paths->size(); i++) {
+      if (paths->at(i)->getBlock() == srcBlock) {
+          srcPath = paths->at(i);
+      }
+  }
+  Path* dstPath = nullptr;
+
+  for (int i = 0; i < paths->size(); i++) {
+      if (paths->at(i)->getBlock() == dstBlock) {
+          dstPath = paths->at(i);
+      }
+  }
+  ThroughPaths* path = new ThroughPaths(srcBlock, srcPath, dstBlock, dstPath, this);
+  path->setTurnoutList(stod);
+
+  if (enableAddRouteLogging) {
+      log->info("From " + this->getDisplayName() + " added Throughpath "
+              + path->getSourceBlock()->getDisplayName() + " " + path->getDestinationBlock()->getDisplayName());
+  }
+  throughPaths->append(path);
+  firePropertyChange("through-path-added", 0, 0);
+
+  //update our neighbours of the new valid paths;
+  informNeighbourOfValidRoutes(srcBlock);
+  informNeighbourOfValidRoutes(dstBlock);
 }
 
 
@@ -3948,14 +3957,15 @@ void Routes::firePropertyChange(QString propertyName, QVariant oldVal, QVariant 
 }
 
 ///*private*/ class ThroughPaths implements java.beans.PropertyChangeListener{
-ThroughPaths::ThroughPaths(Block* srcBlock, Path* srcPath, Block* destBlock, Path* dstPath, LayoutBlock*)
+ThroughPaths::ThroughPaths(Block* srcBlock, Path* srcPath, Block* destBlock, Path* dstPath, LayoutBlock*parent)
 {
  log = new Logger("ThroughPaths");
-  _turnouts =new QHash<Turnout*, int>();
+  _turnouts = QHash<Turnout*, int>();
  sourceBlock = srcBlock;
  destinationBlock = destBlock;
  sourcePath = srcPath;
  destinationPath=dstPath;
+ this->parent = parent;
 }
 
 Block* ThroughPaths::getSourceBlock(){
@@ -3978,65 +3988,51 @@ bool ThroughPaths::isPathActive(){
     return pathActive;
 }
 
-void ThroughPaths::setTurnoutList(QVector<LayoutTurnout*>* turnouts, QVector<int>* turnoutSettings)
+void ThroughPaths::setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>*> turnouts)
 {
- if (!_turnouts->isEmpty())
- {
-  //Enumeration<Turnout> en = _turnouts.keys();
-  QHashIterator<Turnout*, int> en(*_turnouts);
-  while (en.hasNext())
-  {
-   en.next();
-   Turnout* listTurnout = en.key();
-   listTurnout->removePropertyChangeListener((PropertyChangeListener*)this);
-  }
+ if (!_turnouts.isEmpty()) {
+     QSet<Turnout*> en = _turnouts.keys().toSet();
+     for (Turnout* listTurnout : en) {
+         //listTurnout.removePropertyChangeListener(this);
+      disconnect(listTurnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     }
  }
- //If we have no turnouts in this path, then this path is always active
- if (turnouts->size()==0)
- {
-  pathActive=true;
-  parent->setRoutesValid(sourceBlock, true);
-  parent->setRoutesValid(destinationBlock, true);
-  return;
- }
- _turnouts = new QHash<Turnout*, int>();
- for(int i = 0; i<turnouts->size(); i++)
- {
-//  if(turnouts.at(i) instanceof LayoutSlip)
-  if(qobject_cast<LayoutSlip*>(turnouts->at(i))!= NULL)
-  {
-   int slipState = turnoutSettings->at(i);
-   LayoutSlip* ls = (LayoutSlip*)turnouts->at(i);
-   int taState = ls->getTurnoutState(slipState);
-   _turnouts->insert(ls->getTurnout(), taState);
-   ls->getTurnout()->addPropertyChangeListener((PropertyChangeListener*)this, ls->getTurnoutName(), "Layout Block Routing");
-   connect(ls->getTurnout(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   connect(ls->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
-   int tbState = ls->getTurnoutBState(slipState);
-   _turnouts->insert(ls->getTurnoutB(), tbState);
-   ls->getTurnoutB()->addPropertyChangeListener((PropertyChangeListener*)this, ls->getTurnoutBName(), "Layout Block Routing");
-   connect(ls->getTurnoutB(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   connect(ls->getTurnoutB()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  }
-  else
-  {
-   if(turnouts->at(i)->getTurnout()!=NULL)
-   {
-    _turnouts->insert(turnouts->at(i)->getTurnout(), turnoutSettings->at(i));
-    turnouts->at(i)->getTurnout()->addPropertyChangeListener((PropertyChangeListener*)this, turnouts->at(i)->getTurnoutName(), "Layout Block Routing");
-    connect(turnouts->at(i)->getTurnout(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-    connect(turnouts->at(i)->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   }
-   else
-   {
-    log->error(turnouts->at(i)->getName() + " has no physical turnout allocated");
-   }
-  }
+ //If we have no turnouts in this path, then this path is always active
+ if (turnouts.size() == 0) {
+     pathActive = true;
+     parent->setRoutesValid(sourceBlock, true);
+     parent->setRoutesValid(destinationBlock, true);
+     return;
+ }
+ _turnouts = QHash<Turnout*, int>(/*turnouts.size()*/);
+ for (int i = 0; i < turnouts.size(); i++) {
+     if (qobject_cast<LayoutSlip*>(turnouts.at(i)->getObject())) {
+         int slipState = turnouts.at(i)->getExpectedState();
+         LayoutSlip* ls = (LayoutSlip*) turnouts.at(i)->getObject();
+         int taState = ls->getTurnoutState(slipState);
+         _turnouts.insert(ls->getTurnout(), taState);
+         //ls->getTurnout().addPropertyChangeListener(this, ls.getTurnoutName(), "Layout Block Routing");
+         connect(ls->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
+         int tbState = ls->getTurnoutBState(slipState);
+         _turnouts.insert(ls->getTurnoutB(), tbState);
+         //ls->getTurnoutB().addPropertyChangeListener(this, ls.getTurnoutBName(), "Layout Block Routing");
+         connect(ls->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     } else {
+         LayoutTurnout* lt = turnouts.at(i)->getObject();
+         if (lt->getTurnout() != nullptr) {
+             _turnouts.insert(lt->getTurnout(), turnouts.at(i)->getExpectedState());
+             //lt->getTurnout().addPropertyChangeListener(this, lt.getTurnoutName(), "Layout Block Routing");
+             connect(lt->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         } else {
+             log->error(tr("%1 has no physical turnout allocated, block = %2").arg(lt->getName()).arg(parent->block->getDisplayName()));
+         }
+     }
  }
 }
 
-/*public*/ QHash<Turnout*, int>* ThroughPaths::getTurnoutList(){
+/*public*/ QHash<Turnout*, int> ThroughPaths::getTurnoutList(){
     return _turnouts;
 }
 
@@ -4046,16 +4042,16 @@ void ThroughPaths::setTurnoutList(QVector<LayoutTurnout*>* turnouts, QVector<int
  {
   Turnout* srcTurnout = (Turnout*) e->getSource();
   int newVal =  e->getNewValue().toInt();
-  int values = _turnouts->value(srcTurnout);
+  int values = _turnouts.value(srcTurnout);
   bool allset=false;
   pathActive=false;
   if (newVal==values)
   {
    allset=true;
-   if (_turnouts->size()>1)
+   if (_turnouts.size()>1)
    {
     //Enumeration<Turnout> en = _turnouts->keys();
-    QHashIterator<Turnout*, int> en(*_turnouts);
+    QHashIterator<Turnout*, int> en(_turnouts);
     while (en.hasNext())
     {
      en.next();
@@ -4063,7 +4059,7 @@ void ThroughPaths::setTurnoutList(QVector<LayoutTurnout*>* turnouts, QVector<int
      if (srcTurnout!=listTurnout)
      {
       int state = listTurnout->getState();
-      int required = _turnouts->value(listTurnout);
+      int required = _turnouts.value(listTurnout);
       if (state!=required)
       {
        allset=false;
@@ -4082,16 +4078,16 @@ void ThroughPaths::handlePropertyChange(QString propertyName, Turnout* source, i
  {
   Turnout* srcTurnout = (Turnout*) source;
   //int newVal =  e->getNewValue().toInt();
-  int values = _turnouts->value(srcTurnout);
+  int values = _turnouts.value(srcTurnout);
   bool allset=false;
   pathActive=false;
   if (newVal==values)
   {
    allset=true;
-   if (_turnouts->size()>1)
+   if (_turnouts.size()>1)
    {
     //Enumeration<Turnout> en = _turnouts->keys();
-    QHashIterator<Turnout*, int> en(*_turnouts);
+    QHashIterator<Turnout*, int> en(_turnouts);
     while (en.hasNext())
     {
      en.next();
@@ -4099,7 +4095,7 @@ void ThroughPaths::handlePropertyChange(QString propertyName, Turnout* source, i
      if (srcTurnout!=listTurnout)
      {
       int state = listTurnout->getState();
-      int required = _turnouts->value(listTurnout);
+      int required = _turnouts.value(listTurnout);
       if (state!=required)
       {
        allset=false;
@@ -4216,6 +4212,7 @@ void LayoutBlock::setRoutesValid(Block* nxtHopActive, bool state)
   rtr->at(i)->setValidCurrentRoute(state);
  }
 }
+
 const QIcon* LayoutBlock::getColourIcon(QColor color)
 {
  Q_ASSERT(color.isValid());

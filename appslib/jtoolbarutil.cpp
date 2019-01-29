@@ -33,9 +33,9 @@ JToolBarUtil::JToolBarUtil(QObject *parent) :
 
 /*static*/ /*public*/  QToolBar* JToolBarUtil::loadToolBar(QString name, WindowInterface* wi, QObject *context)
 {
- File file(name);
- if(!file.isAbsolute())
-  name = FileUtil::getUserFilesPath() + name;
+// File file(name);
+// if(!file.isAbsolute())
+//  name = FileUtil::getUserFilesPath() + name;
 
  QDomElement root = rootFromName(name);
 

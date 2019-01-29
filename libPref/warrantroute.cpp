@@ -1563,29 +1563,29 @@ if(role == Qt::EditRole)
       panelLayout = new QVBoxLayout(panel);
         //l.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         //comp.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
-        panelLayout->addWidget(l, 0, Qt::AlignCenter);
+//        panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+        panelLayout->addWidget(l, 0, Qt::AlignVCenter);
     } else {
         //panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
      panelLayout = new QHBoxLayout(panel);
 //        l.setAlignmentX(JComponent.LEFT_ALIGNMENT);
 //        comp.setAlignmentX(JComponent.RIGHT_ALIGNMENT);
-        panel->layout()->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+//        panel->layout()->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
         panelLayout->addWidget(l, 0, Qt::AlignLeft);
     }
     //panelLayout.add(l);
-    if (!vertical) {
-        panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
-    }
+//    if (!vertical) {
+//        panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+//    }
     comp->setMaximumSize(QSize(300, comp->sizeHint().height()));
     comp->setMinimumSize(QSize(30, comp->sizeHint().height()));
     //panelLayout.add(comp);
     if (vertical) {
-     panelLayout->addWidget(comp, 0, Qt::AlignCenter);
-        panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+     panelLayout->addWidget(comp, 0, Qt::AlignVCenter);
+//        panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
     } else {
      panelLayout->addWidget(comp, 0, Qt::AlignRight);
-        panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+//        panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
     }
 //    if (comp instanceof JTextField || comp instanceof JComboBox) {
 //        comp.setBackground(Color.white);

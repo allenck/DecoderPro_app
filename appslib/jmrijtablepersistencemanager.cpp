@@ -46,7 +46,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
 //    Objects.requireNonNull(table->getName(), "Table name must be nonNULL");
  if ( this->listeners->contains(table->getName()) && this->listeners->value(table->getName())->getTable() != (table))
  {
-  throw new IllegalArgumentException("Table name must be unique");
+  throw  IllegalArgumentException("Table name must be unique");
  }
  if (! this->listeners->contains(table->getName())) {
   JTableListener* listener = new JTableListener(table, this);

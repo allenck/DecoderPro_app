@@ -15,7 +15,7 @@ public:
     Q_INVOKABLE /*public*/ IdTagTableAction(QString actionName, QObject* parent);
     ~IdTagTableAction() {}
     IdTagTableAction(const IdTagTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     /*public*/ void addToFrame(BeanTableFrame* f);
     /*public*/ void addToPanel(AbstractTableTabAction* f);
 

@@ -27,6 +27,8 @@
 #include "tabbedpreferencesaction.h"
 #include <QThread>
 #include <QHeaderView>
+#include "zeroconfservice.h"
+#include "inet4address.h"
 
 //UserInterface::UserInterface()
 //{
@@ -62,6 +64,9 @@ UserInterface::UserInterface(QWidget* parent) : JmriJFrame(false, false, parent)
      deviceList = new QVector<WiDevice*>();
  }
 
+ //show all IPv4 addresses in window, for use by manual connections
+ addIPAddressesToUI();
+
  createWindow();
 
 // setShutDownTask();
@@ -75,9 +80,25 @@ UserInterface::UserInterface(QWidget* parent) : JmriJFrame(false, false, parent)
 
     s->start();
 #else
- server =  DeviceServer::instance();
- server->run();
+ listen(); // Do ZeroConf stuff
+ device =  DeviceServer::instance();
+ device->run();
 #endif
+}
+
+/*private*/ void UserInterface::addIPAddressesToUI() {
+ //get port# directly from prefs
+ int port = static_cast<WiThrottlePreferences*>(InstanceManager::getDefault("WiThrottlePreferences"))->getPort();
+ //list the local IPv4 addresses on the UI, for manual connections
+ QList<InetAddress*> has = ZeroConfService::hostAddresses(); //get list of local, non-loopback addresses
+ QString as = ""; //build multiline string of valid addresses
+ for (InetAddress* ha : has) {
+     //if (ha instanceof Inet4Address) { //ignore IPv6 addresses
+  if(qobject_cast<Inet4Address*>(ha))
+         this->portLabel->setText(ha->getHostName());
+         as += ha->getHostAddress() + ":" + port + "<br />";
+         this->manualPortLabel->setText("<html>" + as + "</html>"); // NOI18N
+     }
 }
 
 /*protected*/ void UserInterface::createWindow() {
@@ -219,12 +240,14 @@ UserInterface::UserInterface(QWidget* parent) : JmriJFrame(false, false, parent)
 
 void UserInterface::on_rosterGroupSelector(QString text)
 {
-  userPreferences->addComboBoxLastSelection(rosterGroupSelectorPreferencesName, /*String) ((JComboBox<String>) e.getSource()).getSelectedItem()*/text);
+ userPreferences->setComboBoxLastSelection(rosterGroupSelectorPreferencesName, text);
+//                 facelessServer.setSelectedRosterGroup(s);
  //              Send new selected roster group to all devices
  foreach (WiDevice* device, *deviceList)
  {
-#if 0 // TODO:
-  device->sendPacketToDevice(device->sendRoster());
+  Q_UNUSED(device)
+#if 1 // TODO:
+  device->deviceServer->sendPacketToDevice(device->deviceServer->sendRoster());
 #endif
  }
 }
@@ -286,10 +309,12 @@ void UserInterface::on_serverOnOff()
      isListen = true;
 
      createServerThread();
+     addIPAddressesToUI();
+
  }
 }
 
-void UserInterface::on_serverStateChanged(DeviceServer *)
+void UserInterface::on_serverStateChanged(DeviceServer */*s*/)
 {
 
 }
@@ -345,7 +370,12 @@ void UserInterface::on_serverStateChanged(DeviceServer *)
 #endif
  }
 #endif
- server = new DeviceServer(socketPort, (DeviceManager*)this);
+ log->info("Creating new WiThrottle DeviceServer(socket) on port " + QString::number(socketPort) + ", waiting for incoming connection...");
+ device = new DeviceServer(socketPort, (DeviceManager*)this);
+ service = ZeroConfService::create("_withrottle._tcp.local.", socketPort);
+ //service->addEventListener((ZeroConfServiceListener*)this);
+ connect(service, SIGNAL(servicePublished(ZeroConfServiceEvent*)), this, SLOT(servicePublished(ZeroConfServiceEvent*)));
+ service->publish();
 }
 
 //@Override
@@ -448,21 +478,33 @@ void UserInterface::on_serverStateChanged(DeviceServer *)
 #endif
 }
 
-#if 0
-@Override
-protected void setShutDownTask() {
-    if (jmri.InstanceManager.getNullableDefault(jmri.ShutDownManager.class) != NULL) {
-        task = new jmri.implementation.AbstractShutDownTask(getTitle()) {
-            @Override
-            /*public*/ boolean execute() {
-                disableServer();
-                return true;
-            }
-        };
-        jmri.InstanceManager.getDefault(jmri.ShutDownManager.class).register(task);
-    }
+#if 1
+//@Override
+/*protected*/ void UserInterface::setShutDownTask()
+{
+ if (InstanceManager::getNullableDefault("ShutDownManager") != nullptr)
+ {
+//     task = new jmri.implementation.AbstractShutDownTask(getTitle()) {
+//         @Override
+//         /*public*/ boolean execute() {
+//             disableServer();
+//             return true;
+//         }
+//     };
+  task = new UIShutdownTask(getTitle(), this);
+     static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->_register(task);
+ }
 }
 #endif
+UIShutdownTask::UIShutdownTask(QString title, UserInterface *ui) : AbstractShutDownTask(title)
+{
+ this->ui = ui;
+}
+bool UIShutdownTask::execute()
+{
+ ui->disableServer();
+ return true;
+}
 /*private*/ void UserInterface::disableServer() {
     isListen = false;
 //    stopDevices();
@@ -544,4 +586,19 @@ protected void setShutDownTask() {
     /*public*/ void ServerThread::start() {
         UI->listen();
         UI->log->debug("Leaving serverThread.run()");
+    }
+
+    //@Override
+    /*public*/ void UserInterface::servicePublished(ZeroConfServiceEvent* se) {
+        try {
+            InetAddress* addr = se->getDNS()->getInetAddress();
+            // most addresses are Inet6Address objects,
+            if (!addr->isLoopbackAddress()) {
+                log->info(tr("Published ZeroConf service for '%1' on %2:%3").arg(se->getService()->key()).arg( addr->getHostAddress()).arg(port)); // NOI18N
+            }
+        } catch (NullPointerException ex) {
+            log->error(tr("NPE in FacelessServer.servicePublished(): %1").arg(ex.getLocalizedMessage()));
+        } catch (IOException ex) {
+            log->error(tr("IOException in FacelessServer.servicePublished(): %1").arg(ex.getLocalizedMessage()));
+        }
     }

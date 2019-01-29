@@ -1,7 +1,7 @@
 #include "managingpreferencespanel.h"
 
 ManagingPreferencesPanel::ManagingPreferencesPanel(QWidget* parent) :
-  PreferencesPanel(parent)
+  JTabbedPane(parent)
 {
 }
 /**

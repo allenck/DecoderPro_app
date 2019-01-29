@@ -32,7 +32,7 @@
 //private static final ResourceBundle rb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
 /*public*/ ManagerDefaultsConfigPane::ManagerDefaultsConfigPane(QWidget *parent)
-    : PreferencesPanel(parent)
+    : QWidget(parent)
 {
  setObjectName("ManagerDefaultsConfigFile");
  dirty = false;
@@ -40,7 +40,7 @@
 
  matrix = new QWidget();
  matrix->setObjectName("matrix");
- matrixLayout = NULL;
+ matrixLayout = new QGridLayout(matrix);
  thisLayout->addWidget(matrix);
 //  manager.addPropertyChangeListener((PropertyChangeEvent e) -> {
 //        if (e.getPropertyName().equals("Updated")) {
@@ -81,8 +81,8 @@ void ManagerDefaultsConfigPane::propertyChange(PropertyChangeEvent * e)
     o->deleteLater();
    }
   }
-  matrixLayout->deleteLater();
-  matrixLayout = NULL;
+//  matrixLayout->deleteLater();
+//  matrixLayout = NULL;
  }
 
  // this doesn't find non-migrated systems, how do we handle that eventually?
@@ -252,5 +252,8 @@ ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::get
      }
     }
 //};
-    /*private*/ /*final*/ /*static*/ Logger* ManagerDefaultsConfigPane::log = LoggerFactory::getLogger("ManagerDefaultsConfigPane");
+
+/*public*/ QString ManagerDefaultsConfigPane::className() {return "ManagerDefaultsConfigPane";}
+
+/*private*/ /*final*/ /*static*/ Logger* ManagerDefaultsConfigPane::log = LoggerFactory::getLogger("ManagerDefaultsConfigPane");
 

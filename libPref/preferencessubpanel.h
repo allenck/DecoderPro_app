@@ -5,22 +5,14 @@
 #include "libpref_global.h"
 
 class  PropertyChangeEvent;
-/*public*/ class LIBPREFSHARED_EXPORT PreferencesSubPanel : public PreferencesPanel
-{
-    Q_OBJECT
+/*public*/ class LIBPREFSHARED_EXPORT PreferencesSubPanel {
 public:
-    PreferencesSubPanel(QWidget* parent = 0);
-~PreferencesSubPanel() {}
 //    PreferencesSubPanel(const PreferencesSubPanel&) {}
     /*public*/ /*abstract*/ virtual QString getParentClassName() {return "";}
 
     /*public*/ /*abstract*/ virtual void setParent(PreferencesPanel* /*parent*/) {}
 
     /*public*/ /*abstract*/ virtual PreferencesPanel* getParent() {return NULL;}
- signals:
-  void propertyChange(PropertyChangeEvent*);
- public slots:
-  void On_propertyChange(PropertyChangeEvent*);
 };
-
+Q_DECLARE_INTERFACE(PreferencesSubPanel, "PreferencesSubPanel")
 #endif // PREFERENCESSUBPANEL_H

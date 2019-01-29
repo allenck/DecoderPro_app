@@ -1,5 +1,5 @@
 #include "itemdialog.h"
-#include "itempanel.h"
+#include "familyitempanel.h"
 
 //ItemDialog::ItemDialog(QWidget *parent) :
 //    QDialog(parent)
@@ -14,7 +14,7 @@
 
 /**
 */
-/*public*/ ItemDialog::ItemDialog(QString type, QString family, QString title, ItemPanel* parent, bool mode) : JDialog((QWidget*)parent->_paletteFrame, title, mode)
+/*public*/ ItemDialog::ItemDialog(QString type, QString family, QString title, FamilyItemPanel* parent, bool mode) : JDialog((QWidget*)parent->_paletteFrame, title, mode)
 {
  //super(parent._paletteFrame, title, mode);
  _type = type;

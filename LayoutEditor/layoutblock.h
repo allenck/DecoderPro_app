@@ -18,10 +18,11 @@
 #include "liblayouteditor_global.h"
 #include "windowlistener.h"
 #include <QRunnable>
+#include "layouttrackexpectedstate.h"
 
 class ConnectivityUtil;
 class ActionEvent;
-class QMainWindow;
+class JmriJFrame;
 class RoutingPacket;
 class LayoutEditor;
 class LayoutEditorAuxTools;
@@ -348,6 +349,8 @@ public:
     /*public*/ Block* getNeighbourAtIndex(int i);
     /*public*/ int getNeighbourDirection(int i);
     /*public*/ int getNeighbourMetric(int i);
+    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+
 signals:
     
 public slots:
@@ -383,11 +386,10 @@ private:
     /*adds a path between two blocks, but without spec a panel*/
     void addThroughPath(Block* srcBlock, Block* dstBlock);
     void addThroughPath(Block* srcBlock, Block* dstBlock, LayoutEditor* panel);
-    /*private*/ void addThroughPathPostChecks(Block* srcBlock, Block* dstBlock, QVector<LayoutTurnout*>* stod, QVector<int>* stodSet );
+    /*private*/ void addThroughPathPostChecks(Block* srcBlock, Block* dstBlock, QList<LayoutTrackExpectedState<LayoutTurnout *> *> stod);
     bool isValidNeighbour(Block* blk);
     //We keep this vector list so that we only keep one instance of a registered listener
     /*protected*/ QVector<PropertyChangeListener*>* listeners;// = new QVector<PropertyChangeListener*>();
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     QMutex mutex;
     Logger* log;
     /*private*/ LayoutBlock* _instance;// = null;
@@ -412,7 +414,7 @@ private:
     /*private*/ void deactivateBlock();
 
     // variables for Edit Layout Block pane
-    /*JmriJFrame*/ QMainWindow* editLayoutBlockFrame; //NULL;
+    /*JmriJFrame*/ JmriJFrame* editLayoutBlockFrame; //NULL;
     /*Component*/ QWidget* callingPane;
     /*JTextField*/ QLineEdit* sensorNameField; //new /*JTextField*/ QLineEdit(16);
     /*JTextField*/ QLineEdit* sensorDebounceInactiveField; //new /*JTextField*/ QLineEdit(5);
@@ -487,7 +489,8 @@ private:
     /*public*/ void refreshValidRoutes();
     void updateActiveThroughPaths(ThroughPaths* tp, bool active);
     //Sets the valid flag for routes that are on a valid through path.
-    void setRoutesValid(Block* nxtHopActive, bool state);void firePropertyChange(QString propertyName, QVariant oldVal, QVariant newVal);
+    void setRoutesValid(Block* nxtHopActive, bool state);
+    void firePropertyChange(QString propertyName, QVariant oldVal, QVariant newVal);
     QVector<Block*>* getThroughPathSourceByDestination(Block* dest);
     QVector<Block*>* getThroughPathDestinationBySource(Block* source);
     const QIcon* getColourIcon(QColor color);
@@ -659,6 +662,7 @@ private:
  QHash<Block*, Routes*>* adjDestRoutes;// = new Hashtable<Block*, Routes*>();
  QVector<int>* actedUponUpdates;// = new QVector<int>();
  Logger* log;
+
 };
 
 class ThroughPaths : public QObject
@@ -666,14 +670,14 @@ class ThroughPaths : public QObject
  Q_OBJECT
     LayoutBlock* parent;
 public:
-    ThroughPaths(Block* srcBlock, Path* srcPath, Block* destBlock, Path* dstPath, LayoutBlock* parent);
+    ThroughPaths(Block* srcBlock, Path* srcPath, Block* destBlock, Path* dstPath, LayoutBlock * parent);
     Block* getSourceBlock();
     Block* getDestinationBlock();
     Path* getSourcePath();
     Path* getDestinationPath();
     bool isPathActive();
-    void setTurnoutList(QVector<LayoutTurnout*>* turnouts, QVector<int>* turnoutSettings);
-    /*/*public*/ QHash<Turnout*, int>* getTurnoutList();
+    void setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>*> turnouts);
+    /*/*public*/ QHash<Turnout*, int> getTurnoutList();
 
 public slots:
     void handlePropertyChange(QString propertyName, Turnout* source, int newVal);
@@ -687,7 +691,7 @@ private:
 
     bool pathActive;// = false;
 
-    QHash <Turnout*, int>* _turnouts;// =new QHash<Turnout*, int>();
+    QHash <Turnout*, int> _turnouts;// =new QHash<Turnout*, int>();
 Logger* log;
 
 };

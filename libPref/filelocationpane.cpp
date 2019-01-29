@@ -33,11 +33,11 @@
 //private static final long serialVersionUID = -2492371396905648159L;
 //protected static final ResourceBundle rb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
-/*public*/ FileLocationPane::FileLocationPane(QWidget *parent) : PreferencesPanel(parent)
+/*public*/ FileLocationPane::FileLocationPane(QWidget *parent) : QWidget(parent)
 {
  common();
 }
-FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel()
+FileLocationPane::FileLocationPane(const FileLocationPane &) : QWidget()
 {
  common();
 }
@@ -78,8 +78,8 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
     OpenAction* act = new OpenAction(fcScript, scriptLocation, this);
     //bScript.addActionListener(new OpenAction(fcScript, scriptLocation));
     connect(bScript, SIGNAL(clicked(bool)), act, SLOT(actionPerformed()));
-    QVBoxLayout* thisLayout;
-    setLayout(thisLayout = new QVBoxLayout()); //this, BoxLayout.Y_AXIS));
+//    QVBoxLayout* thisLayout;
+//    setLayout(thisLayout = new QVBoxLayout()); //this, BoxLayout.Y_AXIS));
     QWidget* p = new QWidget();
     QHBoxLayout* pLayout = new QHBoxLayout(p);
     QLabel* scripts = new QLabel(tr("Script Dir"));
@@ -97,8 +97,8 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
     cbProgram->findText(FileUtil::getProgramPath());
     _programLocation->setText(cbProgram->currentText());
     connect(cbProgram, SIGNAL(currentIndexChanged(QString)), this, SLOT(programLocationChange(QString)));
-    QVBoxLayout* thisLayout;
-    setLayout(thisLayout = new QVBoxLayout()); //this, BoxLayout.Y_AXIS));
+//    QVBoxLayout* thisLayout;
+//    setLayout(thisLayout = new QVBoxLayout()); //this, BoxLayout.Y_AXIS));
     QWidget* p = new QWidget();
     QHBoxLayout* pLayout = new QHBoxLayout(p);
     QLabel* label = new QLabel(tr("Program Dir"));
@@ -160,9 +160,9 @@ FileLocationPane::FileLocationPane(const FileLocationPane &) : PreferencesPanel(
 void FileLocationPane::On_fileSelected(QString file)
 {
  userLocation->setText(file + QDir::separator());
- if (getTopLevelAncestor() != NULL)
+ if (window() != NULL)
  {
-   ((JFrame*) getTopLevelAncestor())->pack();
+   ((JFrame*) window())->pack();
  }
 }
 
@@ -251,9 +251,11 @@ void FileLocationPane::On_fileSelected(QString file)
     }
     field->setText(chooser->getSelectedFile()->getPath() + File::separator);
 //        validate();
-    if (pane->getTopLevelAncestor() != NULL && qobject_cast<JFrame*>(pane->getTopLevelAncestor()) != NULL) {
-        ((JFrame*)pane->getTopLevelAncestor())->adjustSize();
+    if (pane->window() != NULL && qobject_cast<JFrame*>(pane->window()) != NULL) {
+        ((JFrame*)pane->window())->adjustSize();
 
     }
 }
+
+    /*public*/ QString FileLocationPane::className() {return "FileLocationPane";}
 //}

@@ -18,6 +18,8 @@
 #include <QNetworkInterface>
 #include <QNetworkAddressEntry>
 #include "configuremanager.h"
+#include "zeroconfservice.h"
+#include <QHostInfo>
 
 /**
  * Provide the JMRI context info.
@@ -46,7 +48,7 @@
 
     addString("JMRI Version: " + Version::name() + "   ");
     addString("JMRI configuration file name: "
-            + System::getProperty("org.jmri.apps.Apps.configFilename") + "   ");
+            + System::getProperty("org.jmri.apps.Apps.configFilename") + "  (from org.jmri.apps.Apps.configFilename system property)");
     if (JmriJFrame::getFrameList()->at(0) != nullptr) {
         addString("JMRI main window name: "
                 + JmriJFrame::getFrameList()->at(0)->getTitle() + "   ");
@@ -58,7 +60,7 @@
     if (!connList.isEmpty()) {
         for (int x = 0; x < connList.length(); x++) {
             ConnectionConfig* conn = (ConnectionConfig*)connList.at(x);
-            addString("Connection " + QString::number(x) + ": " + conn->getManufacturer() + " connected via " + conn->name() + " on " + conn->getInfo() + " Disabled " + conn->getDisabled() + "   ");
+            addString("Connection " + QString::number(x) + ": " + conn->getManufacturer() + " connected via " + conn->name() + " on " + conn->getInfo() + " Disabled " + (conn->getDisabled()?"yes":"no") + "   ");
         }
     }
 
@@ -261,40 +263,41 @@ void ReportContext::addProperty(QString prop) {
    if (hostAddress!=("0.0.0.0") /*&& !hostAddress.regionMatches(0, "127", 0, 3) */&& !hostAddress.contains(":")) {
        addString("Network Interface: " + networkInterface.name());
        addString(" Long Name: " + networkInterface.humanReadableName());
-       //addString(" Host Name: " + inetAddress.getHostName());
+       //addString(" Host Name: " + QHostInfo::lookupHost(hostAddress);
        addString(" IP address: " + hostAddress);
    }
 
   }
  }
-#if 0
+#if 1
 
-    Collection<ZeroConfService> services = ZeroConfService.allServices();
-    for (InetAddress address : ZeroConfService.netServices().keySet()) {
-        addString("ZeroConfService host: " + ZeroConfService.hostName(address) + " running " + services.size() + " service(s)");
+    QList<ZeroConfService*> services = ZeroConfService::allServices();
+    for (InetAddress* address : ZeroConfService::netServices().keys())
+    {
+        addString("ZeroConfService host: " + ZeroConfService::hostName(address) + " running " + QString::number(services.size()) + " service(s)");
     }
     if (services.size() > 0) {
-        for (ZeroConfService service : services) {
-            addString("ZeroConfService: " + service.serviceInfo().getQualifiedName() + "  ");
-            addString(" Name: " + service.name() + "   ");
+        for (ZeroConfService* service : services) {
+            addString("ZeroConfService: " + service->serviceInfo()->getQualifiedName() + "  ");
+            addString(" Name: " + service->name() + "   ");
             try {
-                for (String address : service.serviceInfo().getHostAddresses()) {
+                for (QString address : service->serviceInfo()->getHostAddresses()) {
                     addString(" Address:" + address + "   ");
                 }
             } catch (NullPointerException ex) {
                 addString(" Address: [unknown due to NPE]");
             }
-            addString(" Port: " + service.serviceInfo().getPort() + "   ");
-            addString(" Server: " + service.serviceInfo().getServer() + "   ");
-            addString(" Type: " + service.type() + "   ");
+            addString(" Port: " + QString::number(service->serviceInfo()->getPort()) + "   ");
+            addString(" Server: " + service->serviceInfo()->getServer() + "   ");
+            addString(" Type: " + service->type() + "   ");
             try {
-                for (String url : service.serviceInfo().getURLs()) {
+                for (QString url : service->serviceInfo()->getURLs()) {
                     addString(" URL: " + url + "   ");
                 }
             } catch (NullPointerException ex) {
                 addString(" URL: [unknown due to NPE]");
             }
-            addString(" Published: " + (service.isPublished() ? "yes" : "no"));
+            addString(tr(" Published: ") + (service->isPublished() ? "yes" : "no"));
         }
     }
 #endif

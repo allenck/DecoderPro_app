@@ -139,21 +139,27 @@
  */
 /*final*/ bool File::isInvalid()
 {
-#if 0
-    if (status == UNKNOWN) {
-        status = (this->path.indexOf('\u0000') < 0) ? CHECKED
-                                                   : INVALID;
-    }
-    return status == INVALID;
-#else
- QFileInfo info(path);
- if(info.exists())
-  return false;
- QDir d(info.absolutePath());
- if(d.exists())
-  return false;
- return true;
-#endif
+//#if 0
+//    if (status == UNKNOWN) {
+//        status = (this->path.indexOf('\u0000') < 0) ? CHECKED
+//                                                   : INVALID;
+//    }
+//    return status == INVALID;
+//#else
+// QFileInfo info(path);
+// if(info.exists())
+//  return false;
+// QDir d(info.absolutePath());
+// if(d.exists())
+//  return false;
+// return true;
+//#endif
+ // possible enhancement:
+ // https://stackoverflow.com/questions/3038351/check-whether-a-string-is-a-valid-filename-with-qt/3038546#3038546
+ if(path.isEmpty())
+  return true;
+
+ return false;
 }
 
 /**
@@ -238,6 +244,8 @@ int File::getPrefixLength() {
     : QObject(parent)
 {
  Logger log("File");
+ prefixLength = 0;
+
  if (inpathname.isNull())
  {
   throw new NullPointerException();
@@ -281,9 +289,11 @@ int File::getPrefixLength() {
 /*public*/ File::File(QString parent, QString child, QObject* obj)
     : QObject(obj)
 {
+ prefixLength = 0;
+
  if (child.isNull())
  {
-  throw new NullPointerException();
+  throw  NullPointerException();
  }
  if (parent != "")
  {
@@ -336,9 +346,10 @@ int File::getPrefixLength() {
 /*public*/ File::File(File* parent, QString child, QObject* obj)
     : QObject(obj)
 {
+ prefixLength = 0;
  if (child.isNull())
  {
-  throw new NullPointerException();
+  throw  NullPointerException();
  }
  if (parent != NULL)
  {
@@ -615,7 +626,8 @@ int File::getPrefixLength() {
      throw  IOException("Invalid file path");
  }
 //    return fs.canonicalize(fs.resolve(this));
- QString p = QFileInfo(path).canonicalFilePath();
+ QDir dir(path);
+ QString p = dir.absolutePath();
  return p;
 }
 
@@ -642,7 +654,7 @@ int File::getPrefixLength() {
  */
 /*public*/ File* File::getCanonicalFile() /*throws IOException*/ {
     QString canonPath = getCanonicalPath();
-    return new File(canonPath, /*fs.prefixLength(canonPath)*/getParent().length());
+    return new File(canonPath, /*fs.prefixLength(canonPath)*/getParent().length(), nullptr);
 }
 #if 0
 /*private*/ static String slashify(String path, bool isDirectory) {

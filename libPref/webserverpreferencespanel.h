@@ -9,13 +9,15 @@ class QCheckBox;
 class ItemListener;
 class BindingGroup;
 class WebServerPreferences;
-class WebServerPreferencesPanel : public PreferencesPanel
+class WebServerPreferencesPanel : public QWidget, public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
- WebServerPreferencesPanel(QWidget* parent = 0);
+ Q_INVOKABLE WebServerPreferencesPanel(QWidget* parent = 0);
  ~WebServerPreferencesPanel(){}
- WebServerPreferencesPanel(const WebServerPreferencesPanel&) : PreferencesPanel() {}
+ WebServerPreferencesPanel(const WebServerPreferencesPanel&) : QWidget() {}
  /*public*/ QString getPreferencesItem() ;
  /*public*/ QString getPreferencesItemText();
  /*public*/ QString getTabbedPreferencesTitle();
@@ -27,6 +29,9 @@ public:
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired() ;
  /*public*/ bool isPreferencesValid();
+ /*public*/ int getSortOrder();
+ /*public*/ QString className();
+
 
 public slots:
  void on_readonlyPower_checked(bool);

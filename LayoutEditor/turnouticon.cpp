@@ -504,10 +504,8 @@ void TurnoutIcon::updateItem()
   }
  }   // otherwise retain current map
 //        jmri.jmrit.catalog.ImageIndexEditor.checkImageIndex();  _paletteFrame->dispose();
- _paletteFrame = NULL;
- _itemPanel->dispose();
- _itemPanel = NULL;
-//    invalidate();
+ finishItemUpdate(_paletteFrame, _itemPanel);
+
 }
 
 /*public*/ bool TurnoutIcon::setEditIconMenu(QMenu* popup)

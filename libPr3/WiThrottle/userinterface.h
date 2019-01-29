@@ -1,6 +1,8 @@
 #ifndef USERINTERFACE_H
 #define USERINTERFACE_H
 #include "jmrijframe.h"
+#include "zeroconfeventlistener.h"
+#include "abstractshutdowntask.h"
 
 struct WiDevice;
 class DeviceServer;
@@ -11,9 +13,10 @@ class QLabel;
 class JTable;
 class RosterGroupComboBox;
 class Logger;
-class UserInterface : public JmriJFrame
+class UserInterface : public JmriJFrame//, public ZeroConfServiceListener
 {
  Q_OBJECT
+ //Q_INTERFACES(ZeroConfServiceListener)
 public:
  UserInterface(QWidget* parent = 0);
  /*public*/ void createServerThread();
@@ -37,13 +40,15 @@ private:
 
  // Server iVars
  int port;
- ZeroConfService* service;
+ ZeroConfService* service = nullptr;
  bool isListen;// = true;
  ServerSocket* socket;// = NULL;
  QVector<WiDevice*>* deviceList;
  /*private*/ void disableServer();
  /*private*/ void stopDevices();
- DeviceServer* server;
+ DeviceServer* device;
+ /*private*/ void addIPAddressesToUI();
+
 
 public slots:
  void on_rosterGroupSelector(QString);
@@ -53,13 +58,16 @@ public slots:
  /*public*/ void notifyDeviceAddressChanged(WiDevice* device);
  /*public*/ void notifyDeviceInfoChanged(WiDevice* device);
  void on_serverStateChanged(DeviceServer*);
+ /*public*/ void servicePublished(ZeroConfServiceEvent* se);
 
 
 protected:
  /*protected*/ void createWindow();
  /*protected*/ void buildMenu();
+ /*protected*/ void setShutDownTask();
 
  friend class ServerThread;
+ friend class UIShutdownTask;
 };
 
 /*static*/ class ServerThread : public  QObject {
@@ -75,5 +83,14 @@ signals:
     //@Override
 public slots:
     /*public*/ void start();
+};
+
+class UIShutdownTask : public AbstractShutDownTask
+{
+ Q_OBJECT
+ UserInterface* ui;
+public:
+ UIShutdownTask(QString title, UserInterface* ui);
+ bool execute();
 };
 #endif // USERINTERFACE_H

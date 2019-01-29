@@ -58,6 +58,7 @@ private:
     LTFTabbedTableItem* lastSelectedItem;// = NULL;
     void buildMenus(/*final*/ LTFTabbedTableItem* item);
     QVBoxLayout * thisLayout;
+    int currTableIndex =0;
 
 protected:
     /*protected*/ static QList<QString> getChoices();
@@ -83,16 +84,17 @@ protected:
 /*protected*/ BeanTableFrame* frame;
 
 public:
- ActionJList(BeanTableFrame* f);
+ ActionJList(int index,BeanTableFrame* f);
  /*public*/ void mouseReleased(QMouseEvent* e);
  void showPopUp(QMouseEvent* e);
  void setCurrentItem(int current);
  /*public*/ void mouseClicked(QMouseEvent* e) ;
  /*public*/ void mousePressed(QMouseEvent* e) ;
  void selectListItem(int index);
+ void openNewTableWindow(int index) ;
 
 public slots:
- void openNewTableWindow(int index) ;
+ void onOpenNewTableWindow();
 
 private:
 
@@ -142,6 +144,10 @@ QString getItemString() ;
     JTable* getDataTable();
     void dispose();
     Logger* log;
+
+public slots:
+    void onPropertyVisible(bool);
+
 
  protected:
     /*protected*/ void addToBottomBox(QWidget* comp);

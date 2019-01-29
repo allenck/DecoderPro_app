@@ -17,7 +17,7 @@ public:
     DefaultCatalogTreeManager(const DefaultCatalogTreeManager&) : CatalogTreeManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix() ;
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ CatalogTree* getCatalogTree(QString name) ;
     /*public*/ CatalogTree* getBySystemName(QString key);
     /*public*/ CatalogTree* getByUserName(QString key);
@@ -28,7 +28,6 @@ public:
     /*public*/ void storeImageIndex();
     /*public*/ bool isIndexChanged();
     /*public*/ /*final*/ /*synchronized*/ void indexChanged(bool changed);
-
 signals:
 
 public slots:

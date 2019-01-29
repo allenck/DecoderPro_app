@@ -23,7 +23,7 @@ public:
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     /*public*/ void configureTable(JTable *table);
 
 public slots:

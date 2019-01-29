@@ -13,7 +13,7 @@ public:
     OBlockManager(const OBlockManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ OBlock* createNewOBlock(QString systemName, QString userName);
     /*public*/ OBlock* getOBlock(QString name);
     /*public*/ OBlock* getBySystemName(QString name);

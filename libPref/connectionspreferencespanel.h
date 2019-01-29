@@ -4,8 +4,9 @@
 #include "logger.h"
 #include "actionlistener.h"
 #include "libpref_global.h"
+
 class QToolButton;
-class MyTabWidget;
+//class MyTabWidget;
 class QPushButton;
 class QCheckBox;
 class TabbedPreferences;
@@ -15,7 +16,7 @@ class LIBPREFSHARED_EXPORT ConnectionsPreferencesPanel : public ManagingPreferen
 {
     Q_OBJECT
 public:
-    explicit ConnectionsPreferencesPanel(QWidget *parent = 0);
+    Q_INVOKABLE explicit ConnectionsPreferencesPanel(QWidget *parent = 0);
     /*public*/ ConnectionsPreferencesPanel(TabbedPreferences* preference, QWidget* parent=0);
     ~ConnectionsPreferencesPanel() {}
     ConnectionsPreferencesPanel(const ConnectionsPreferencesPanel &); //: PreferencesPanel(parent)
@@ -41,13 +42,14 @@ public:
     /*public*/ bool isRestartRequired();
     /*public*/ bool isPreferencesValid() ;
     /*public*/ QList<PreferencesPanel*>* getPreferencesPanels();
+    /*public*/ QString className();
 
 signals:
 
 public slots:
     void On_currentChanged(int);
 private:
-    MyTabWidget* tabWidget;
+    //MyTabWidget* tabWidget;
     /*private*/ /*final*/ TabbedPreferences* preferences;
     /*private*/ /*final*/ QIcon deleteIcon;
     /*private*/ /*final*/ QIcon deleteIconRollOver;
@@ -62,7 +64,7 @@ private:
     void addConnectionTab();
     /*private*/ void newConnectionTab() ;
     /*private*/ void removeTab(/*ActionEvent* e,*/ int x);
-Logger* log;
+    static Logger* log;
     int indexOfTab(QString text);
     bool bDeleteFlag;
  friend class CloseButtonListener;
@@ -87,12 +89,12 @@ public:
 public slots:
     void actionPerformed(ActionEvent * = 0);
 };
-class MyTabWidget: public QTabWidget
-{
- Q_OBJECT
+//class MyTabWidget: public QTabWidget
+//{
+// Q_OBJECT
 
- public:
-  MyTabWidget(QWidget *parent = 0);
-  void setTabButton(int, QToolButton*);
-};
+// public:
+//  MyTabWidget(QWidget *parent = 0);
+//  void setTabButton(int, QToolButton*);
+//};
 #endif // CONNECTIONPREFERENCESPANEL_H

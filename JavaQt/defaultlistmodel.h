@@ -19,6 +19,7 @@ public:
     /*public*/ QVariant remove(int index);
     /*public*/ QVariant elementAt(int index);
     /*public*/ QListIterator<QVariant> elements();
+    /*public*/ void clear();
 
 signals:
 

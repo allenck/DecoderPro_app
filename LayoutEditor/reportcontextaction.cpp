@@ -10,6 +10,8 @@
 #include "system.h"
 #include <QScrollArea>
 #include <QLabel>
+#include "jtextarea.h"
+
 /**
  * Swing action to display the JMRI context for the user
  *
@@ -44,6 +46,7 @@
 void ReportContextAction::common()
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
+ zeroConf = new QZeroConf();
 }
 
 /*public*/ void ReportContextAction::actionPerformed(ActionEvent* )
@@ -53,16 +56,17 @@ void ReportContextAction::common()
     QVBoxLayout* frameLayout = (QVBoxLayout*)frame->getContentPane()->layout();
     ///*final*/ Clipboard clipboard = frame.getToolkit().getSystemClipboard();
 
-    pane = new QLabel();
+    pane = new JTextArea();
+    frame->setMaximumSize(400,300);
     //pane->("\n"); // add a little space at top
     addString(""); // add a little space at top
     //pane->setReadOnly(true);
-    pane->setWordWrap(true);
+    //pane->setWordWrap(true);
     pane->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    //pane.setEditable(false);
-    //pane->setLineWrap(true);
-    //pane->setWrapStyleWord(true);
-    //pane.setColumns(120);
+    pane->setEditable(true);
+    pane->setLineWrap(true);
+    pane->setWrapStyleWord(true);
+    pane->setColumns(120);
 
     //QFont font = pane->document()->defaultFont();    //# or another font if you change it
     QFont font = pane->font();
@@ -73,18 +77,19 @@ void ReportContextAction::common()
     int textHeight = textSize.height() + 30;    // # constant may need to be tweaked
 
     //pane->setMinimumSize(textWidth, textHeight);
-    pane->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    pane->sizePolicy().setHorizontalStretch(1);
-    pane->sizePolicy().setVerticalStretch(1);
+//    pane->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+//    pane->sizePolicy().setHorizontalStretch(1);
+//    pane->sizePolicy().setVerticalStretch(1);
 //    pane->setLineWrapMode(QTextEdit::FixedColumnWidth);
 //    pane->setLineWrapColumnOrWidth(800);
-    pane->setMaximumSize(16777215,16777215);
+//    pane->setMaximumSize(16777215,16777215);
 
-    QScrollArea* scroll = new QScrollArea(/*pane*/);
-    frameLayout->addWidget(scroll, /*BorderLayout.CENTER*/0, Qt::AlignCenter);
-    frameLayout->addWidget(scroll,0, Qt::AlignCenter);
-    scroll->setWidget(pane);
-    scroll->setWidgetResizable(true);
+//    QScrollArea* scroll = new QScrollArea(/*pane*/);
+//    frameLayout->addWidget(scroll, /*BorderLayout.CENTER*/0, Qt::AlignCenter);
+//    frameLayout->addWidget(scroll,0, Qt::AlignCenter);
+//    scroll->setWidget(pane);
+//    scroll->setWidgetResizable(true);
+    frameLayout->addWidget(pane);
 
     ReportContext* r = new ReportContext();
     addString(r->getReport(true));
@@ -136,7 +141,7 @@ void ReportContextAction::common()
 //    clipboard.setContents(text, text);
  //pane->copy();
  QClipboard* clipboard = QApplication::clipboard();
- QString selected = pane->selectedText();
+ QString selected = pane->textCursor().selectedText();
  clipboard->setText(selected);
 
 }
@@ -148,7 +153,7 @@ void ReportContextAction::common()
 
 void ReportContextAction::addString(QString val) {
     //pane->append(val + "\n");
- pane->setText(pane->text().append(val+ "\n"));
+ pane->append(val+ "\n");
 }
 
 void ReportContextAction::addProperty(QString prop) {

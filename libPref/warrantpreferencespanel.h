@@ -6,6 +6,7 @@
 #include "actionlistener.h"
 #include "libpref_global.h"
 
+class QSpinBox;
 class FlowLayout;
 class QRadioButton;
 class QButtonGroup;
@@ -17,11 +18,13 @@ class SpeedNameTableModel;
 class QComboBox;
 class JTextField;
 class WarrantPreferences;
-class LIBPREFSHARED_EXPORT WarrantPreferencesPanel : public PreferencesPanel
+class LIBPREFSHARED_EXPORT WarrantPreferencesPanel : public QWidget, public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
- explicit WarrantPreferencesPanel(QWidget *parent = 0);
+ Q_INVOKABLE explicit WarrantPreferencesPanel(QWidget *parent = 0);
  ~WarrantPreferencesPanel() {}
  WarrantPreferencesPanel(const WarrantPreferencesPanel&) : PreferencesPanel() {}
  /*public*/ QString getPreferencesItem();
@@ -36,6 +39,8 @@ public:
  /*public*/ bool isPreferencesValid();
  /*public*/ QString getPreferencesTooltip();
 
+ /*public*/ QString className();
+
 signals:
 
 public slots:
@@ -49,8 +54,8 @@ private:
  /*private*/ bool _isDirty;// = false;
 
  /*private*/ QComboBox* _layoutScales;
- /*private*/ JTextField*  _searchDepth;
- /*private*/ JTextField*  _timeIncre;
+ /*private*/ QSpinBox*  _searchDepth;
+ /*private*/ QSpinBox*  _timeIncre;
  /*private*/ JTextField*  _rampIncre;
  /*private*/ JTextField*  _throttleScale;
  /*private*/ int _interpretation;// = SignalSpeedMap::PERCENT_NORMAL;

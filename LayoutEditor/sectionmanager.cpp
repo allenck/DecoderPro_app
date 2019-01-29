@@ -222,7 +222,7 @@ Section* SectionManager::createNewSection(QString userName) {
   if ( (name!=NULL) && (name!=("")) )
    sensorList.append(name);
  }
- AbstractSignalHeadManager* shManager = (AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance();
+ SignalHeadManager* shManager = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
     QStringList signalList = shManager->getSystemNameList();
     for (int j=0; j<signalList.size(); j++)
     {

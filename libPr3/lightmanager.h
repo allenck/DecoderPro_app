@@ -103,7 +103,7 @@ public:
          * Validate system name format
          *   returns 'true' if system name has a valid format, else returns 'false'
          */
-        virtual bool validSystemNameFormat(QString /*systemName*/){return false;}
+        virtual NameValidity validSystemNameFormat(QString /*systemName*/){return INVALID;;}
 
         /**
          * Validate system name for the current hardware configuration

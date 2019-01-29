@@ -84,7 +84,7 @@ private:
     /*private*/ bool hasOBlocks;// = false;
 
 //    // "Editing Frames" - Called from menu in Main Frame
-   /*private*/ EditCircuitFrame* _editCircuitFrame;
+    /*private*/ EditCircuitFrame* _editCircuitFrame;
     /*private*/ EditPortalFrame*  _editPortalFrame;
     /*private*/ EditCircuitPaths* _editPathsFrame;
 

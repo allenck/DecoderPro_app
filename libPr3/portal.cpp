@@ -265,9 +265,9 @@
 }
 
 /*static*/ /*public*/ NamedBean* Portal::getSignal(QString name) {
-    NamedBean* signal = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(name);
+    NamedBean* signal = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(name);
     if (signal==NULL) {
-        signal = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(name);
+        signal = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
     }
     return signal;
 }

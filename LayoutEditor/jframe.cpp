@@ -204,6 +204,7 @@ return  QSize(width, height);
  return sizeHint();
 #endif
 }
+QPoint JFrame::getLocation() { return pos();}
 void JFrame::setLocation(int x, int y)
 {
     move(x, y);

@@ -38,6 +38,7 @@ public:
     bool wantsToTrigger(PropertyChangeEvent* evt);
     /*public*/ QString validateAntecedent(QString ant, QList <ConditionalVariable*>* variableList);
     /*public*/ QList<ConditionalAction*> getActionList();
+    /*public*/ QList<ConditionalVariable *> *getStateVariableList();
 
 
 signals:

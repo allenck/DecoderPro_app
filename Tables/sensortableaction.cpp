@@ -23,6 +23,7 @@
 #include "abstracttabletabaction.h"
 #include <QPushButton>
 #include "joptionpane.h"
+#include "colorutil.h"
 
 SensorTableAction::SensorTableAction(QObject *parent) :
     AbstractTableAction(tr("Sensor Table"), parent)
@@ -120,7 +121,8 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
  if (addFrame==nullptr)
  {
-  addFrame = new JmriJFrame(tr("Add Sensor"));
+  addFrame = new JmriJFrame(tr("Add Sensor"),false, true);
+  addFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   //addFrame.addHelpMenu("package.jmri.jmrit.beantable.SensorAddEdit", true);
   QVBoxLayout* addFrameLayout = (QVBoxLayout*)addFrame->getContentPane()->layout();
   if(addFrameLayout == nullptr)
@@ -189,17 +191,20 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 //          }
 //      }
 //  };
-  ColorChangeListener* colorChangeListener = new ColorChangeListener(this);
+  //ColorChangeListener* colorChangeListener = new ColorChangeListener(this);
 //  TODO: hardwareAddressTextField->addPropertyChangeListener(colorChangeListener);
+  connect(hardwareAddressTextField, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // create panel
-  addFrame->layout()->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameField, prefixBox,
+  addFrame->getContentPane()->layout()->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameField, prefixBox,
       numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBarLabel));
 // tooltip for hwAddressTextField will be assigned later by canAddRange()
   canAddRange();
  }
+ hardwareAddressTextField->setValidator(validator = new STAValidator(hardwareAddressTextField,this));
+
  hardwareAddressTextField->setObjectName("hwAddressTextField"); // for GUI test NOI18N
- hardwareAddressTextField->setStyleSheet("QEditLine {background-color: yellow}");
+ hardwareAddressTextField->setBackground(QColor(Qt::yellow));
  addButton->setEnabled(false); // start as disabled (false) until a valid entry is typed in
  addButton->setObjectName("createButton"); // for GUI test NOI18N
  // reset statusBar text
@@ -208,6 +213,17 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
  addFrame->pack();
  addFrame->setVisible(true);
+}
+
+/*public*/ void SensorTableAction::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
+    QString property = propertyChangeEvent->getPropertyName();
+    if ("background" == (property)) {
+        if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
+            addButton->setEnabled(true);
+        } else { // invalid
+            addButton->setEnabled(false);
+        }
+    }
 }
 
 STOkButtonActionListener::STOkButtonActionListener(SensorTableAction *act)
@@ -280,10 +296,10 @@ void SensorTableAction::createPressed()
  {
      statusBar->setText(tr("You must provide a Hardware Address to start."));
      statusBar->setStyleSheet("QLabel {color: red}");
-     hardwareAddressTextField->setStyleSheet("QEditLine {background-color: red}");
+     hardwareAddressTextField->setBackground(QColor(Qt::red));
      return;
  } else {
-     hardwareAddressTextField->setStyleSheet("QEditLine {background-color: white}");
+     hardwareAddressTextField->setBackground(QColor(Qt::white));
  }
 
  QString statusMessage = tr("New %1(s) added:").arg(tr("Sensor"));
@@ -310,7 +326,7 @@ void SensorTableAction::createPressed()
  sName = sensorPrefix + InstanceManager::sensorManagerInstance()->typeLetter() + curAddress;
  Sensor* s = nullptr;
  try {
-     s = InstanceManager::sensorManagerInstance()->provideSensor(sName);
+     s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(sName);
  } catch (IllegalArgumentException ex) {
      // user input no good
      handleCreateException(sName);
@@ -364,7 +380,7 @@ void SensorTableAction::createPressed()
  rangeBox->setEnabled(false);
  rangeBox->setChecked(false);
  connectionChoice =  prefixBox->currentText(); // store in Field for CheckedTextField
- if (connectionChoice == nullptr) {
+ if (connectionChoice == "") {
      // Tab All or first time opening, default tooltip
      connectionChoice = "TBD";
  }
@@ -591,6 +607,7 @@ AbstractTableAction::setMessagePreferencesDetails();
 
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SensorTableAction.class.getName());
 //}
+#if 0
 /**
  * Sets whether the {@code Action} is enabled. The default is {@code true}.
  *
@@ -610,7 +627,63 @@ AbstractTableAction::setMessagePreferencesDetails();
   emit propertyChange(new PropertyChangeEvent(this,"enabled", (oldValue),(newValue) ));
  }
 }
+#endif
 QString SensorTableAction::getName()
 {
  return "jmri.jmrit.beantable.SensorTableAction";
+}
+
+STAValidator::STAValidator(JTextField *fld, SensorTableAction *act)
+{
+ this->fld = fld;
+ this->act = act;
+ connect(act->prefixBox, SIGNAL(currentTextChanged(QString)), this, SLOT(prefixBoxChanged(QString)));
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(act->connectionChoice);
+ mark = ColorUtil::stringToColor("orange");
+}
+
+QValidator::State STAValidator::validate(QString& s, int& pos) const
+{
+ QString value = s.trimmed();
+ if ((value.length() < 1) && (allow0Length == false)) {
+     return QValidator::Invalid;
+ } else if ((allow0Length == true) && (value.length() == 0)) {
+     return QValidator::Acceptable;
+ } else {
+  bool bok;
+  int num = s.toInt(&bok);
+  if(!bok )
+   return QValidator::Invalid;
+  else if(num == 0)
+   return QValidator::Intermediate;
+  else if(!(num > 0 && num <= 2047 ))
+   return QValidator::Invalid;
+ }
+// if(prefix == "")
+// {
+//  QString txt = act->prefixBox->currentText();
+//  this->prefix = ConnectionNameFromSystemName::getPrefixFromName(act->connectionChoice);
+// }
+ bool validFormat = false;
+ // try {
+ validFormat = static_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
+ // } catch (jmri.JmriException e) {
+ // use it for the status bar?
+ // }
+ if (validFormat) {
+  act->addButton->setEnabled(true); // directly update Create button
+  fld->setBackground(QColor(Qt::white));
+  return QValidator::Acceptable;
+ } else {
+  act->addButton->setEnabled(false); // directly update Create button
+  fld->setBackground(QColor(mark));
+  return QValidator::Invalid;
+ }
+}
+
+void STAValidator::setPrefix(QString prefix) { this->prefix = prefix;}
+
+void STAValidator::prefixBoxChanged(QString txt)
+{
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(txt);
 }

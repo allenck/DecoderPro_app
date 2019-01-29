@@ -17643,7 +17643,7 @@ QList<QObject* >*  PythonQtWrapper_InstanceManager::static_InstanceManager_getLi
 
 InstanceManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_instance()
 {
-  return (InstanceManager::instance());
+  return (InstanceManager::getDefault());
 }
 
 //LayoutBlockManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_layoutBlockManagerInstance()
@@ -17711,10 +17711,10 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setDefault(QString 
 //  (InstanceManager::setLayoutBlockManager(p));
 //}
 
-void PythonQtWrapper_InstanceManager::static_InstanceManager_setPowerManager(PowerManager*  p)
-{
-  (InstanceManager::setPowerManager(p));
-}
+//void PythonQtWrapper_InstanceManager::static_InstanceManager_setPowerManager(PowerManager*  p)
+//{
+//  (InstanceManager::setPowerManager(p));
+//}
 
 //void PythonQtWrapper_InstanceManager::static_InstanceManager_setProgrammerManager(ProgrammerManager*  p)
 //{
@@ -17741,25 +17741,25 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setSignalHeadManage
   (InstanceManager::setSignalHeadManager(p));
 }
 
-void PythonQtWrapper_InstanceManager::static_InstanceManager_setSignalMastManager(SignalMastManager*  p)
-{
-  (InstanceManager::setSignalMastManager(p));
-}
+//void PythonQtWrapper_InstanceManager::static_InstanceManager_setSignalMastManager(SignalMastManager*  p)
+//{
+//  (InstanceManager::setSignalMastManager(p));
+//}
 
 //ShutDownManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_shutDownManagerInstance()
 //{
 //  return (InstanceManager::shutDownManagerInstance());
 //}
 
-SignalHeadManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_signalHeadManagerInstance()
-{
-  return (InstanceManager::signalHeadManagerInstance());
-}
+//SignalHeadManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_signalHeadManagerInstance()
+//{
+//  return (InstanceManager::signalHeadManagerInstance());
+//}
 
-SignalMastManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_signalMastManagerInstance()
-{
-  return (InstanceManager::signalMastManagerInstance());
-}
+//SignalMastManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_signalMastManagerInstance()
+//{
+//  return (InstanceManager::signalMastManagerInstance());
+//}
 
 void PythonQtWrapper_InstanceManager::static_InstanceManager_store(QObject*  item, QString  type)
 {

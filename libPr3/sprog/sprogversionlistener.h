@@ -14,7 +14,7 @@ namespace Sprog
  {
   Q_OBJECT
   public:
-   SprogVersionListener(QObject* parent = 0);
+   SprogVersionListener();
   public slots:
    virtual /*public*/ void notifyVersion(SprogVersion* /*v*/) {}
  };

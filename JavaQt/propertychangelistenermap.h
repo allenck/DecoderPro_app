@@ -8,7 +8,7 @@ class PropertyChangeListenerMap : public ChangeListenerMap<PropertyChangeListene
 {
     Q_OBJECT
 public:
-    explicit PropertyChangeListenerMap(QObject *parent = 0);
+    explicit PropertyChangeListenerMap();
     /*public final */PropertyChangeListener* extract(PropertyChangeListener* listener);
 
 signals:

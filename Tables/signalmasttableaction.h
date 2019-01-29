@@ -19,7 +19,7 @@ public:
      SYSNAMECOL = BeanTableDataModel::SYSNAMECOL
     };
     /*public*/ void setMenuBar(BeanTableFrame* f);
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
 
 public slots:
     /*public*/ void actionPerformed(ActionEvent* e = 0);

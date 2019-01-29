@@ -6,6 +6,8 @@
 #include "logger.h"
 #include "javaqt_global.h"
 
+class PropertyChangeEvent;
+class InputVerifier;
 class Document;
 class Action;
 class PropertyChangeListener;
@@ -32,10 +34,13 @@ public:
     /*public*/ void setShare(JTextField* share);
     /*public*/ void setName(QString name);
     /*public*/ Document* getDocument();
+    /*public*/ void setInputVerifier(InputVerifier* inputVerifier);
+
 
 signals:
  void enterField();
  void leaveField();
+ void propertyChange(PropertyChangeEvent*);
 
 public slots:
 private:
@@ -52,6 +57,7 @@ private:
  void leaveEvent(QEvent *);
  Logger* log;
  bool nameExplicitlySet;
+ InputVerifier* inputVerifier;
 
 private slots:
  void updateShare();

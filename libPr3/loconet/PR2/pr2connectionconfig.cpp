@@ -20,7 +20,8 @@
 /**
  * Ctor for a functional Swing object with no prexisting adapter
  */
-/*public*/ Pr2ConnectionConfig::Pr2ConnectionConfig(QObject* parent) {
+/*public*/ Pr2ConnectionConfig::Pr2ConnectionConfig(QObject* parent) : AbstractSerialConnectionConfig(parent)
+{
     //super();
 }
 

@@ -386,14 +386,14 @@ public:
     /*public*/ QVector<SignalMastIcon*>* signalMastList;// = new QVector<SignalMastIcon*>();  // Signal Head Icons
     /*public*/ QVector<MultiSensorIcon*>* multiSensors; // = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
     /*public*/ void dispose();
-    /*public*/ QList<LayoutTrack *> getPositionablePoints();
-    /*public*/ QList<LayoutTrack *> getLayoutSlips();
-    /*public*/ QList<LayoutTrack *> getTrackSegments();
+    /*public*/ QList<PositionablePoint *> getPositionablePoints();
+    /*public*/ QList<LayoutSlip *> getLayoutSlips();
+    /*public*/ QList<TrackSegment *> getTrackSegments();
     /*public*/ QList<LayoutTrack *> getLayoutTurnouts();
-    /*public*/ QList<LayoutTrack *> getLayoutTurntables();
+    /*public*/ QList<LayoutTurntable *> getLayoutTurntables();
     /*public*/ QList<LayoutTrack *> getLevelXings();
     /*public*/ QList<LayoutTrack *> getLayoutTracks();
-    /*public*/ QList<LayoutTrack *> getLayoutTurnoutsAndSlips();
+    /*public*/ QList<LayoutTurnout *> getLayoutTurnoutsAndSlips();
 
 
 
@@ -810,7 +810,7 @@ protected:
  ///*protected*/ QVector <Positionable*>* _contents;// = new QVector<Positionable*>();
  void init();
  /*protected*/ double _paintScale;// = 1.0;   // scale for _targetPanel drawing
- /*protected*/ QPointF getCoords(QObject* o, int type);
+ /*protected*/ static QPointF getCoords(QObject* o, int type);
  /**
  *  Special internal class to allow drawing of layout to a JLayeredPane
  *  This is the 'target' pane where the layout is displayed

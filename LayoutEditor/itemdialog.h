@@ -4,19 +4,20 @@
 #include "jdialog.h"
 
 class ItemPanel;
+class FamilyItemPanel;
 class ItemDialog : public JDialog
 {
     Q_OBJECT
 public:
     //explicit ItemDialog(QWidget *parent = 0);
-    /*public*/ ItemDialog(QString type, QString family, QString title, ItemPanel* parent, bool mode);
+    /*public*/ ItemDialog(QString type, QString family, QString title, FamilyItemPanel *parent, bool mode);
  /*public*/ void dispose();
 
 signals:
 
 public slots:
 protected:
-    /*protected*/ ItemPanel* _parent;
+    /*protected*/ FamilyItemPanel* _parent;
     /*protected*/ QString    _type;
     /*protected*/ QString    _family;
     /*protected*/ void sizeLocate();

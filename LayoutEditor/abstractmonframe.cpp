@@ -1,12 +1,11 @@
 #include "abstractmonframe.h"
 #include "instancemanager.h"
-#include "defaultusermessagepreferences.h"
+#include "userpreferencesmanager.h"
 #include "jtogglebutton.h"
 #include "jtextarea.h"
 #include "jtextfield.h"
 #include <QCheckBox>
 #include <QPushButton>
-#include "defaultusermessagepreferences.h"
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include <QFileDialog>
@@ -79,7 +78,7 @@
 /*public*/ void AbstractMonFrame::initComponents() throw (Exception)
 {
 
-    p = (DefaultUserMessagePreferences*) InstanceManager::getDefault("UserPreferencesManager");
+    p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
     // the following code sets the frame's initial state
 
     clearButton->setText("Clear screen");

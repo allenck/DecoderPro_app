@@ -11,6 +11,7 @@
 #include "flowlayout.h"
 #include "jtextfield.h"
 #include <QFont>
+#include "loggerfactory.h"
 
 //AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(QWidget *parent) :
 //    QWidget(parent)
@@ -24,7 +25,8 @@
  setObjectName("AddNewHardwareDevicePanel");
  sysNameLabel = new QLabel(tr("System:"));
  sysAddressLabel = new QLabel(tr("Hardware Address:"));
- sysAddress->setValidator(new QIntValidator(1,2047));
+ if(sysAddress->validator() == nullptr)
+  sysAddress->setValidator(new QIntValidator(1,2047));
  userNameLabel = new QLabel(tr("User Name:"));
  finishLabel = new QLabel(tr("Number to Add:"));
  QVBoxLayout* thisLayout;
@@ -134,5 +136,5 @@
 
 
 //    static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.beantable.BeanTableBundle");
-//    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AddNewHardwareDevicePanel.class.getName());
+/*static*/ Logger* AddNewHardwareDevicePanel::log = LoggerFactory::getLogger("AddNewHardwareDevicePanel");
 //}

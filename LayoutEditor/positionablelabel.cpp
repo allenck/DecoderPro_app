@@ -14,6 +14,7 @@
 #include "iconadder.h"
 #include "loggerfactory.h"
 #include "displayframe.h"
+#include "itempanel.h"
 
 PositionableLabel::PositionableLabel(QWidget *parent) :
     JLabel(parent)
@@ -522,6 +523,12 @@ return _displayLevel; }
    myLayoutEditor->paintTargetPanel(myLayoutEditor->getScene());
   }
   _editor->addToTarget((Positionable*)this);
+}
+
+/*public*/ void PositionableLabel::finishItemUpdate(DisplayFrame* paletteFrame, ItemPanel* itemPanel) {
+    itemPanel->closeDialogs();
+    paletteFrame->dispose();
+    invalidate();
 }
 
 /*public*/ bool PositionableLabel::setEditItemMenu(QMenu* popup)

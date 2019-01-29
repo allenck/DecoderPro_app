@@ -15,7 +15,7 @@ public:
     DefaultRouteManager(const DefaultRouteManager&) : RouteManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
 
     /**
      * Method to provide a  Route

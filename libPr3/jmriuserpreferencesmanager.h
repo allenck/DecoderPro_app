@@ -19,7 +19,7 @@ class JmriUserPreferencesManager : public UserPreferencesManager
 public:
  /*public*/ /*final*/ static QString SAVE_ALLOWED;// = "saveAllowed";
 
- JmriUserPreferencesManager();
+ JmriUserPreferencesManager(QObject* parent = nullptr);
  ~JmriUserPreferencesManager() {}
  JmriUserPreferencesManager(const JmriUserPreferencesManager&) : UserPreferencesManager() {}
  /*public*/ static UserPreferencesManager* getInstance();

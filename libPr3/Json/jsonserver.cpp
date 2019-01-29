@@ -5,6 +5,9 @@
 #include "jsonconnection.h"
 #include "jsonclienthandler.h"
 #include "sleeperthread.h"
+#include "json.h"
+#include <QNetworkInterface>
+#include "zeroconfservice.h"
 
 /**
  * This is an implementation of a JSON server for JMRI. See
@@ -79,6 +82,7 @@ JSShutDownTask::JSShutDownTask(QString title, JsonServer* js) :QuietShutDownTask
 {
       this->js = js;
 }
+
 #if 0
 bool JSShutDownTask::eventFilter(QObject *watched, QEvent *event)
 {
@@ -108,6 +112,22 @@ bool JSShutDownTask::eventFilter(QObject *watched, QEvent *event)
     //JmriServer::start();
     listen(QHostAddress::Any, port);
     connect(this, SIGNAL(newConnection()), this, SLOT(on_newConnection()));
+}
+
+// Advertise the service with ZeroConf
+//protected void advertise() {
+//    this.advertise("_jmri._tcp.local.");
+//}
+
+/*protected*/ void JsonServer::advertise(QString type) {
+    this->advertise(type, QMap<QString, QVariant>());
+}
+
+/*protected*/ void JsonServer::advertise(QString type, QMap<QString, QVariant> properties) {
+    if (this->service == nullptr) {
+        this->service = ZeroConfService::create(type, this->port, properties);
+    }
+    this->service->publish();
 }
 
 //@Override
@@ -144,11 +164,19 @@ bool JSShutDownTask::eventFilter(QObject *watched, QEvent *event)
 
 //@Override
 /*protected*/ void JsonServer::advertise() {
-#if 0
-    HashMap<String, String> properties = new HashMap<>();
-    properties.put(JSON, JSON_PROTOCOL_VERSION);
-    this->advertise(ZEROCONF_SERVICE_TYPE, properties);
-#endif
+    QMap<QString, QVariant> properties = QMap<QString, QVariant>();
+    properties.insert(JSON::_JSON, JSON::JSON_PROTOCOL_VERSION);
+    this->advertise(JSON::ZEROCONF_SERVICE_TYPE, properties);
+}
+
+void JsonServer::servicePublished()
+{
+ log->info(tr("JsonServer: ZeroService started"));
+}
+
+void JsonServer::error(QZeroConf::error_t e)
+{
+ log->error(tr("JsonServer: Zero conf Service error %1").arg(e));
 }
 #if 0
 // Handle communication to a client through inStream and outStream
@@ -356,5 +384,8 @@ void JsonClientTxHandler::sendMessage(QString msg)
 }
 JsonClientTxHandler::JsonClientTxHandler(QString newRemoteAddress, QTcpSocket *newSocket, int connectionNbr)
 {
-
+ Q_UNUSED(newRemoteAddress);
+ Q_UNUSED(newSocket);
+ Q_UNUSED(connectionNbr);
+ log->debug("JsonClientTxHandler called");
 }

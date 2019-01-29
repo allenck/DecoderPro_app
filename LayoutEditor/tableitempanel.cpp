@@ -47,6 +47,7 @@
  _userNametext = new JTextField();
  //_initialized = false;
  _table = NULL;
+ setObjectName("TableItemPanel");
 }
 
 /**
@@ -58,9 +59,8 @@
  if (!_initialized)
  {
   FamilyItemPanel::init();
-  //((QVBoxLayout*)layout())->addWidget(initTablePanel(_model, _editor),0,Qt::AlignTop/*, 0*/);      // top of Panel
-  ((QBoxLayout*)layout())->insertWidget(0,initTablePanel(_model, _editor));
-  //((BorderLayout*)layout())->addWidget(initTablePanel(_model,_editor),BorderLayout::North);
+  thisLayout->addWidget(/*0,*/initTablePanel(_model, _editor));
+  _buttonPosition = 1;
  }
 }
 
@@ -70,8 +70,9 @@
 */
 /*public*/ void TableItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
-    FamilyItemPanel::init(doneAction, iconMap);
-    thisLayout->addWidget(initTablePanel(_model, _editor)/*, 0*/);
+ FamilyItemPanel::init(doneAction, iconMap);
+ thisLayout->addWidget(initTablePanel(_model, _editor)/*, 0*/);
+ _buttonPosition = 1;
 }
 
 /**
@@ -87,58 +88,47 @@
  font.setPointSize(8);
  _table->setFont(font);
 //    _table->getSelectionModel().addListSelectionListener(this);
- ROW_HEIGHT = _table->getRowHeight(0);
+ ROW_HEIGHT = _table->getRowHeight();
  QWidget* topPanel = new QWidget();
- //topPanel->setLayout(new BorderLayout());
- QGridLayout* topPanelLayout;
- topPanel->setLayout(topPanelLayout = new QGridLayout);
-// topPanel->setMinimumHeight(60);
- //topPanel->resize(300,120);
-    //((BorderLayout*)topPanelLayout)->addWidget(new QLabel(model->getName())/* SwingConstants.CENTER)*/, BorderLayout::North);
- topPanelLayout->addWidget(new QLabel(model->getName()),0,0);
-    //_scrollPane = new JScrollPane(_table);
-    //((BorderLayout*)topPanelLayout)->addWidget(_table, BorderLayout::Center);
- topPanelLayout->addWidget(_table,1,0);
- topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the panel"));
-// QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-// sizePolicy.setHorizontalStretch(0);
-// sizePolicy.setVerticalStretch(0);
-// sizePolicy.setHeightForWidth(topPanel->sizePolicy().hasHeightForWidth());
-// topPanel->setSizePolicy(sizePolicy);
- QSize dim = _table->sizeHint();
- if(ROW_HEIGHT > 0)
-  dim.setHeight( ROW_HEIGHT*6);
-    //_scrollPane.getViewport().setPreferredSize(dim);
- //_table->resize(dim);
- _table->setMaximumSize(dim);
+ QVBoxLayout* topPanelLayout;
+ topPanel->setLayout(topPanelLayout = new QVBoxLayout());//BorderLayout());
+ topPanelLayout->addWidget(new QLabel(model->getName()), 0, Qt::AlignCenter);//SwingConstants.CENTER), BorderLayout.NORTH);
+// _scrollPane = new JScrollPane(_table);
+// int cnt = Math.min(8, _table.getRowCount()) + 2;
+// _scrollPane.setPreferredSize(new Dimension(_scrollPane.getPreferredSize().width, cnt*ROW_HEIGHT));
+ topPanelLayout->addWidget(/*_scrollPane*/_table,0, Qt::AlignCenter);// BorderLayout.CENTER);
+ topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the Panel"));
+
  QWidget* panel = new QWidget();
- QHBoxLayout* panelLayout;
- panel->setLayout(panelLayout = new QHBoxLayout());
- _addTableButton = new QPushButton(tr("Add New Table Item"));
-//    _addTableButton.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                makeAddToTableWindow();
-//            }
-//    });
- connect(_addTableButton, SIGNAL(clicked()), this, SLOT(makeAddToTableWindow()));
- _addTableButton->setToolTip(tr("Press to add a new item to the above table"));
+ FlowLayout* panelLayout = new FlowLayout(panel);
+ _addTableButton = new QPushButton(tr("Add New Table Item..."));
+// _addTableButton.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent a) {
+//         makeAddToTableWindow();
+//     }
+// });
+ connect(_addTableButton, SIGNAL(clicked(bool)), this, SLOT(makeAddToTableWindow()));
+ _addTableButton->setToolTip(tr("Press to add a new item to the table"));
  panelLayout->addWidget(_addTableButton);
  QPushButton* clearSelectionButton = new QPushButton(tr("Clear Table Selections"));
-//    clearSelectionButton.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                _table.clearSelection();
-//            }
-//    });
- connect(clearSelectionButton, SIGNAL(clicked()), _table, SLOT(clearSelection()));
- clearSelectionButton->setToolTip(tr("ToolTipClearSelection"));
+// clearSelectionButton.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent a) {
+//         _table.clearSelection();
+//         hideIcons();
+//     }
+// });
+ connect(clearSelectionButton, SIGNAL(clicked(bool)), this, SLOT(hideIcons()));
+ clearSelectionButton->setToolTip(tr("Clear selected table rows"));
  panelLayout->addWidget(clearSelectionButton);
-    //((BorderLayout*)topPanelLayout)->addWidget(panel, BorderLayout::South);
- topPanelLayout->addWidget(panel, 0, Qt::AlignHCenter);
- _table->setToolTip(tr("Drag a row from the table to add a label of the item to the panel"));
-    //_scrollPane->setToolTip(tr("ToolTipDragTableRow"));
- topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the panel"));
+ topPanelLayout->addWidget(panel, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
+ _table->setToolTip(tr("Drag a row from the table to add a label of the item to the Panel"));
+ //_scrollPane.setToolTip(tr("Drag a row from the table to add a label of the item to the Panel"));
+ topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the Panel"));
  return topPanel;
 }
+
 AddTableActionListener::AddTableActionListener(TableItemPanel *parent)
 {
  this->parent = parent;
@@ -158,6 +148,7 @@ void AddTableActionListener::actionPerformed(ActionEvent *e)
 #if 1
     AddTableActionListener* listener = new AddTableActionListener(this);
     AtCancelListener* cancelListener = new AtCancelListener(this);
+
     JmriPanel* addPanel = new AddNewDevicePanel(
                 _sysNametext, _userNametext, "addToTable", listener, cancelListener);
     _addTableDialog->getContentPane()->layout()->addWidget(addPanel);
@@ -169,13 +160,21 @@ void AddTableActionListener::actionPerformed(ActionEvent *e)
     _addTableDialog->setVisible(true);
 #endif
 }
+
 AtCancelListener::AtCancelListener(TableItemPanel *self)
 {
  this->self = self;
 }
 void AtCancelListener::actionPerformed()
 {
- self->close();
+ //self->close();
+ self->cancelPressed();
+}
+
+void TableItemPanel::cancelPressed(/*ActionEvent e*/) {
+    _addTableDialog->setVisible(false);
+    _addTableDialog->dispose();
+    _addTableDialog = nullptr;
 }
 
 /*protected*/ void TableItemPanel::addToTable()
@@ -284,7 +283,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
 
 }
 
-/*protected*/ NamedBean* TableItemPanel::getNamedBean() {
+/*protected*/ NamedBean* TableItemPanel::getDeviceNamedBean() {
     if (_table == NULL) {
         return NULL;
     }
@@ -292,22 +291,21 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
     int row = _table->currentIndex().row();
     if(log->isDebugEnabled()) log->debug("getNamedBean: from table \""+_itemType+ "\" at row "+QString::number(row));
     if (row<0) {
-//        	JOptionPane.showMessageDialog(NULL, tr("noRowSelected"),
-//        				ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
         return NULL;
     }
     return _model->getBeanAt(row);
 }
 
-/*protected*/ DragJLabel* TableItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map) {
-    return new TIconDragJLabel(flavor, map,this);
+/*protected*/ DragJLabel* TableItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon) {
+    return new TIconDragJLabel(flavor, map, icon, this);
 }
 
 ///*protected*/ class IconDragJLabel extends DragJLabel {
 //    Hashtable<String, NamedIcon> iconMap;
 
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-/*public*/ TIconDragJLabel::TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, TableItemPanel* self) : DragJLabel(flavor,self)
+/*public*/ TIconDragJLabel::TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map,
+                                            NamedIcon* icon,TableItemPanel* self) : DragJLabel(flavor,self)
 {
  //DragJLabel(flavor,(QWidget*)self);
  iconMap = map;
@@ -329,7 +327,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
   log->error("IconDragJLabel.getTransferData: iconMap is NULL!");
   return NULL;
  }
- NamedBean* bean = self->getNamedBean();
+ NamedBean* bean = self->getDeviceNamedBean();
  if (bean==NULL)
  {
   log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");

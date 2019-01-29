@@ -15,7 +15,7 @@ class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean
 {
     Q_OBJECT
 public:
-    explicit SignalSpeedMap(QObject *parent = 0);
+ Q_INVOKABLE SignalSpeedMap(QObject *parent = nullptr);
  ~SignalSpeedMap() {}
  SignalSpeedMap(const SignalSpeedMap&): Bean() {}
  enum SPEEDS

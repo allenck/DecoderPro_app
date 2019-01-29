@@ -12,6 +12,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT SensorTableDataModel : public BeanTableDataMo
     Q_OBJECT
 public:
     explicit SensorTableDataModel(QObject *parent = nullptr);
+ ~SensorTableDataModel() {}
+ SensorTableDataModel(const SensorTableDataModel&) : BeanTableDataModel() {}
 enum COLUMNS
 {
   INVERTCOL = NUMCOLUMN,            // 5
@@ -29,7 +31,7 @@ enum COLUMNS
 /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 /*public*/ void configureTable(JTable* table);
 /*public*/ void showDebounce(bool show);
-/*public*/ QString getClassDescription() ;
+Q_INVOKABLE /*public*/ QString getClassDescription() ;
 
 signals:
 
@@ -59,5 +61,5 @@ protected slots:
 friend class SensorTableAction;
 friend class SensorTableWidget;
 };
-
+Q_DECLARE_METATYPE(SensorTableDataModel)
 #endif // SENSORTABLEDATAMODEL_H

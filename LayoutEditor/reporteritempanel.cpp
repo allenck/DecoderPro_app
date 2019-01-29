@@ -7,6 +7,7 @@
 #include "dataflavor.h"
 #include <QTableView>
 #include <QGroupBox>
+#include "imagepanel.h"
 
 //ReporterItemPanel::ReporterItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -51,8 +52,11 @@
     if (!_update) {
         _iconFamilyPanel->layout()->addWidget(instructions());
     }
+    makeDragIconPanel(1);
     makeDndIconPanel(NULL, NULL);
-
+    if (_iconPanel == nullptr) { // keep an existing panel
+     _iconPanel = new ImagePanel(); // never shown, so don't bother to configure, but element must exist
+    }
     _iconFamilyPanel->layout()->addWidget(_dragIconPanel);
 }
 
@@ -87,7 +91,7 @@
  int width = qMax(100, panel->sizeHint().width());
  panel->setMinimumSize( QSize(width, panel->minimumSize().height()));
  panel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
- _dragIconPanel = panel;
+ _dragIconPanel->layout()->addWidget( panel);
  _dragIconPanel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
 }
 
@@ -109,7 +113,7 @@
    _updateButton->setEnabled(true);
    _updateButton->setToolTip("");
   }
-  NamedBean* bean = getNamedBean();
+  NamedBean* bean = getDeviceNamedBean();
   _reporter->setReporter(bean->getDisplayName());
  }
  else
@@ -139,7 +143,7 @@
  {
   return NULL;
  }
- NamedBean* bean = self->getNamedBean();
+ NamedBean* bean = self->getDeviceNamedBean();
  if (bean==NULL)
  {
   self->log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");

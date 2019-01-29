@@ -69,7 +69,7 @@
 #include "jmriuserpreferencesmanager.h"
 //#include "webserverpreferencesinstanceinitializer.h"
 #include "vptr.h"
-
+#include <QApplication>
 
 class ManagerLists : public QHash<QString,QObjectList*>
 {
@@ -88,6 +88,8 @@ QVector<PropertyChangeListener*> InstanceManager::listeners;
 QMutex InstanceManager::mutex;// = QMutex();
 //Logger InstanceManager::log = Logger("InstanceManager");
 
+///*public*/ /*static*/ InstanceManager* LazyInstanceManager::instanceManager = nullptr;//new InstanceManager();
+Q_GLOBAL_STATIC_WITH_ARGS(InstanceManager*, _instancePtr, (new InstanceManager()))
 /* *************************************************************************** */
 
 /**
@@ -120,6 +122,7 @@ InstanceManager::InstanceManager(QObject *parent) :
 #endif
  pcs = new PropertyChangeSupport(this);
  initState = QMap</*Class<?>*/QString, StateHolder*>();
+
  //root = this;
  //init();
 }
@@ -136,7 +139,7 @@ InstanceManager::InstanceManager(QObject *parent) :
 //@Nonnull
 //template<class T>
 /*public*/ /*<T>*/ QObjectList* InstanceManager::getInstances(/*@Nonnull Class<T>*/ QString type) {
-    if(log->isTraceEnabled())
+    if(log && log->isTraceEnabled())
      log->trace(tr("Get list of type %1").arg(type/*.getName()*/));
     /*synchronized (type)*/ {
         if (managerLists.value(type) == nullptr) {
@@ -267,10 +270,7 @@ void InstanceManager::reset(QString type)
  */
 void InstanceManager::deregister(QObject* item, QString type)
 {
- if (InstanceManager::instance()->managerLists.isEmpty()) return;
- QObjectList* l =InstanceManager::instance()-> managerLists.value(type);
- if(!l->isEmpty())
-  l->removeOne(item);
+ getDefault()->remove(item, type);
 }
 
 /**
@@ -310,19 +310,27 @@ void InstanceManager::deregister(QObject* item, QString type)
  * but for now it's the last one stored, see the
  * {@link #setDefault} method.
  */
-/*static*/ /*public*/ QObject* InstanceManager::getDefault(/*@Nonnull Class<T>*/ QString type) {
-//    log->trace(tr("getDefault of type %1").arg(type));
+/*static*/ /*public*/ QObject* InstanceManager::getDefault(/*@Nonnull Class<T>*/ QString type)
+{
+ if(log == nullptr)
+  log = LoggerFactory::getLogger("InstanceManager");
+ if(log->isTraceEnabled())
+  log->trace(tr("getDefault of type %1").arg(type));
 //    return Objects.requireNonNull(InstanceManager.getNullableDefault(type),
 //            "Required nonnull default for " + type.getName() + " does not exist.");
-    QObject* o = InstanceManager::getNullableDefault(type);
-    if(o == nullptr)
-     log->error( "Required nonnull default for " + type + " does not exist.");
-    else
-    {
-     if(o->objectName() == "")
-      o->setObjectName(o->metaObject()->className());
-    }
-  return o;
+ QObject* o = InstanceManager::getNullableDefault(type);
+ if(o == nullptr)
+ {
+  QString msg = "Required nonnull default for " + type + " does not exist.";
+  log->error(msg);
+  //throw NullPointerException(msg);
+ }
+ else
+ {
+  if(o->objectName() == "")
+   o->setObjectName(o->metaObject()->className());
+ }
+ return o;
 }
 #if 0
 template<class T>
@@ -368,7 +376,7 @@ template<class T>
 //@CheckForNull
 /*public*/ QObject* InstanceManager::getInstance(/*@Nonnull Class<T>*/QString type)
 {
- if( log->isTraceEnabled())
+ if(log && log->isTraceEnabled())
   log->trace(tr("getOptionalDefault of type %1").arg(type/*.getName()*/));
  QObjectList* l = getList(type);
  if (l->isEmpty())
@@ -383,12 +391,12 @@ template<class T>
 
   // check whether already working on this type
   InitializationState working = getInitializationState(type);
-  Exception except = getInitializationException(type);
+  Exception* except = getInitializationException(type);
   setInitializationState(type, InitializationState::STARTED);
   if (working == InitializationState::STARTED)
   {
    log->error(tr("Proceeding to initialize %1 while already in initialization").arg(type),  Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
-   log->error(tr("    Prior initialization:"), except);
+   log->error(tr("    Prior initialization:"), *except);
    if (traceFileActive) {
        traceFilePrint("*** Already in process ***");
    }
@@ -399,8 +407,11 @@ template<class T>
   }
 
   // see if can autocreate
+  if(log)
   log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
         //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
+  if(Metatypes::done == 0)
+   new Metatypes();
   QObject* obj1;
   try
   {
@@ -408,6 +419,7 @@ template<class T>
   }
   catch (ClassNotFoundException ex)
   {
+   setInitializationState(type, InitializationState::FAILED);
    obj1 = nullptr;
   }
   if(obj1 != nullptr )
@@ -424,11 +436,13 @@ template<class T>
      if(methodIndex >= 0)
      {
       //QMetaMethod  method = obj1->metaObject()->method(methodIndex);
-      QMetaObject::invokeMethod(obj1, QMetaObject::normalizedSignature("initialize()"), Qt::DirectConnection);
+      if(!QMetaObject::invokeMethod(obj1, QMetaObject::normalizedSignature("initialize"), Qt::DirectConnection))
+       throw NoSuchMethodException(tr("no method initialize found for type %1").arg(type));
      }
      else throw NoSuchMethodException(tr("no method initialize found for type %1").arg(type));
      log->debug(tr("      auto-created default of %1").arg(type/*.getName()*/));
     }
+    setInitializationState(type, InitializationState::DONE);
     l->append((QObject*)obj1);
      store(obj1, type);
      return l->value(l->size() - 1);
@@ -443,12 +457,14 @@ template<class T>
     catch (NoSuchMethodException e)
     {
      log->error("Exception creating auto-default object", e); // unexpected
+     setInitializationState(type, InitializationState::FAILED);
      return nullptr;
     }
    }
   }
   // see if initializer can handle
-  log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
+  if(log)
+   log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
   //@SuppressWarnings("unchecked")
 //  if(initializers.contains(type))
 //  {
@@ -457,6 +473,7 @@ template<class T>
    if (obj != nullptr)
    {
     log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
+    setInitializationState(type, InitializationState::DONE);
     l->append(obj);
     store(obj,type);
     //return l->at(l->size() - 1);
@@ -464,6 +481,7 @@ template<class T>
    }
 //  }
   // don't have, can't make
+  setInitializationState(type, InitializationState::FAILED);
   return nullptr;
  }
  return l->at(l->size() - 1);
@@ -575,11 +593,11 @@ PowerManager* InstanceManager::powerManagerInstance()
  return (PowerManager*)getDefault("PowerManager");
 }
 
-void InstanceManager::setPowerManager(PowerManager* p)
-{
-    //store(p, p->metaObject()->className());
-    store(p,"PowerManager");
-}
+//void InstanceManager::setPowerManager(PowerManager* p)
+//{
+//    //store(p, p->metaObject()->className());
+//    store(p,"PowerManager");
+//}
 
 ProgrammerManager* InstanceManager::programmerManagerInstance()
 {
@@ -607,16 +625,16 @@ ThrottleManager* InstanceManager::throttleManagerInstance()  {
  * @deprecated 4.5.1
  */
 //@Deprecated
-SignalHeadManager* InstanceManager::signalHeadManagerInstance()
-{
-//    if (instance()->signalHeadManager != NULL) return instance()->signalHeadManager;
-//    // As a convenience, we create a default object if none was provided explicitly.
-//    // This must be replaced when we start registering specific implementations
-//    //instance()->signalHeadManager = (SignalHeadManager*)initializer->getDefault(/*SignalHeadManager.class)*/"SignalHeadManager");
-//    instance()->signalHeadManager = (SignalHeadManager*)new  AbstractSignalHeadManager();
-//    return instance()->signalHeadManager;
- return (SignalHeadManager*)getDefault("SignalHeadManager");
-}
+//SignalHeadManager* InstanceManager::signalHeadManagerInstance()
+//{
+////    if (instance()->signalHeadManager != NULL) return instance()->signalHeadManager;
+////    // As a convenience, we create a default object if none was provided explicitly.
+////    // This must be replaced when we start registering specific implementations
+////    //instance()->signalHeadManager = (SignalHeadManager*)initializer->getDefault(/*SignalHeadManager.class)*/"SignalHeadManager");
+////    instance()->signalHeadManager = (SignalHeadManager*)new  AbstractSignalHeadManager();
+////    return instance()->signalHeadManager;
+// return (SignalHeadManager*)getDefault("SignalHeadManager");
+//}
 
 /**
  * Will eventually be deprecated, use @{link #getDefault} directly.
@@ -625,48 +643,48 @@ SignalHeadManager* InstanceManager::signalHeadManagerInstance()
  * @deprecated 4.5.1
  */
 //@Deprecated
-SignalMastManager* InstanceManager::signalMastManagerInstance()
-{
- SignalMastManager* m = (SignalMastManager*)getDefault("SignalMastManager");
+//SignalMastManager* InstanceManager::signalMastManagerInstance()
+//{
+// SignalMastManager* m = (SignalMastManager*)getDefault("SignalMastManager");
+//// if (m == nullptr)
+//// {
+////  m = (SignalMastManager*)initializer->getDefault("SignalMastManager");
+////  setSignalMastManager(m);
+//// }
+// return m;
+//}
+//void InstanceManager::setSignalMastManager(SignalMastManager* p)
+//{
+//    store(p, "SignalMastManager");
+//}
+
+//SignalSystemManager* InstanceManager::signalSystemManagerInstance()
+//{
+// SignalSystemManager* m = (SignalSystemManager*)getDefault("SignalSystemManager");
 // if (m == nullptr)
 // {
-//  m = (SignalMastManager*)initializer->getDefault("SignalMastManager");
-//  setSignalMastManager(m);
+//  m = (SignalSystemManager*)initializer->getDefault("SignalSystemManager");
+//  setSignalSystemManager(m);
 // }
- return m;
-}
-void InstanceManager::setSignalMastManager(SignalMastManager* p)
-{
-    store(p, "SignalMastManager");
-}
+// return m;
+//}
 
-SignalSystemManager* InstanceManager::signalSystemManagerInstance()
-{
- SignalSystemManager* m = (SignalSystemManager*)getDefault("SignalSystemManager");
- if (m == nullptr)
- {
-  m = (SignalSystemManager*)initializer->getDefault("SignalSystemManager");
-  setSignalSystemManager(m);
- }
- return m;
-}
+//void InstanceManager::setSignalSystemManager(SignalSystemManager* p) {
+//    store(p, "SignalSystemManager");
+//}
 
-void InstanceManager::setSignalSystemManager(SignalSystemManager* p) {
-    store(p, "SignalSystemManager");
-}
+//SignalGroupManager* InstanceManager::signalGroupManagerInstance()  {
+// SignalGroupManager* m = (SignalGroupManager*)getDefault("DefaultSignalGroupManager");
+// if (m == nullptr) {
+//     m = (SignalGroupManager*)initializer->getDefault("SignalGroupManager");
+//     setSignalGroupManager(m);
+// }
+// return m;
+//}
 
-SignalGroupManager* InstanceManager::signalGroupManagerInstance()  {
- SignalGroupManager* m = (SignalGroupManager*)getDefault("DefaultSignalGroupManager");
- if (m == nullptr) {
-     m = (SignalGroupManager*)initializer->getDefault("SignalGroupManager");
-     setSignalGroupManager(m);
- }
- return m;
-}
-
-void InstanceManager::setSignalGroupManager(SignalGroupManager* p) {
-    store(p, "SignalGroupManager");
-}
+//void InstanceManager::setSignalGroupManager(SignalGroupManager* p) {
+//    store(p, "SignalGroupManager");
+//}
 
 BlockManager* InstanceManager::blockManagerInstance()
 {
@@ -833,21 +851,21 @@ RosterIconFactory* InstanceManager::rosterIconFactoryInstance()  {
 //return instance()->vsdecoderManager;
 //}
 
-InstanceManager* InstanceManager::instance()
-{
- if (root==nullptr)
- {
-  setRootInstance();
- }
- return root;
-}
+//InstanceManager* InstanceManager::instance()
+//{
+// if (root==nullptr)
+// {
+//  setRootInstance();
+// }
+// return root;
+//}
 
-void InstanceManager::setRootInstance()
-{
- if(root!=nullptr)
-  return;
- root = new InstanceManager();
-}
+//void InstanceManager::setRootInstance()
+//{
+// if(root!=nullptr)
+//  return;
+// root = new InstanceManager();
+//}
 
 //    public InstanceManager() {
 //        init();
@@ -1195,12 +1213,17 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
   */
  //@Nonnull
  /*public*/ /*static*/ InstanceManager* InstanceManager::getDefault() {
-     return LazyInstanceManager::instanceManager;
- }
-/*public*/ /*static*/ InstanceManager* LazyInstanceManager::instanceManager = new InstanceManager();
+ if(log == nullptr)
+  log = LoggerFactory::getLogger("InstanceManager");
+
+// if(LazyInstanceManager::instanceManager == nullptr)
+//  LazyInstanceManager::instanceManager = new InstanceManager();
+// return LazyInstanceManager::instanceManager;
+ return *_instancePtr;
+}
 
 /*private*/ void InstanceManager::setInitializationState(QString type, InitializationState state) {
-    log->trace(tr("set state %1 for %2").arg(type).arg(state));
+//    log->trace(tr("set state %1 for %2").arg(type).arg(state));
     if (state == InitializationState::STARTED) {
         initState.insert(type, new StateHolder(state, new Exception("Thread " + QThread::currentThread()->objectName())));
     } else {
@@ -1216,10 +1239,10 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
     return holder->state;
 }
 
-/*private*/ Exception InstanceManager::getInitializationException(QString type) {
+/*private*/ Exception* InstanceManager::getInitializationException(QString type) {
     StateHolder* holder = initState.value(type);
     if (holder == nullptr) {
-        return Exception();
+        return new Exception();
     }
     return holder->exception;
 }

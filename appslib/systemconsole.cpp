@@ -84,8 +84,8 @@
  fontStyle = PLAIN;
  fontFamily = "Monospace";  //NOI18N
  wrapStyle = WRAP_STYLE_WORD;
- alwaysScrollCheck = QString(this->metaObject()->className()) + ".alwaysScroll"; //NO
- alwaysOnTopCheck = QString(this->metaObject()->className()) + ".alwaysOnTop";   //NOI18N
+ alwaysScrollCheck = QString("apps.SystemConsole.alwaysScroll"); //NO
+ alwaysOnTopCheck = QString("apps.SystemConsole.alwaysOnTop");   //NOI18N
  schemes = NULL;
  autoScroll = new QCheckBox(tr("Auto-scroll"));
 

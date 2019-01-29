@@ -220,11 +220,11 @@ void AbstractLight::common()
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="FE_FLOATING_POINT_EQUALITY") // OK to compare floating point
 /*public*/ void AbstractLight::setMaxIntensity(double intensity) {
     if (intensity<0.0 || intensity>1.0)
-        throw new IllegalArgumentException("Illegal intensity value: "+QString("%1").arg(intensity));
+        throw  IllegalArgumentException("Illegal intensity value: "+QString("%1").arg(intensity));
     if (intensity <= mMinIntensity)
     {
      log->error("Requested intensity "+QString("%1").arg(intensity)+" not less than minIntensity "+mMinIntensity);
-     throw new IllegalArgumentException("Requested intensity "+QString("%1").arg(intensity)+" not less than minIntensity "+mMinIntensity);
+     throw  IllegalArgumentException("Requested intensity "+QString("%1").arg(intensity)+" not less than minIntensity "+mMinIntensity);
     }
 
     double oldValue = mMaxIntensity;
@@ -255,9 +255,9 @@ void AbstractLight::common()
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="FE_FLOATING_POINT_EQUALITY") // OK to compare floating point
 /*public*/ void AbstractLight::setMinIntensity(double intensity) {
     if (intensity<0.0 || intensity>1.0)
-        throw new IllegalArgumentException("Illegal intensity value: "+QString("%1").arg(intensity));
+        throw  IllegalArgumentException("Illegal intensity value: "+QString("%1").arg(intensity));
     if (intensity >= mMaxIntensity)
-        throw new IllegalArgumentException("Requested intensity "+QString("%1").arg(intensity)+" not more than maxIntensity "+mMaxIntensity);
+        throw  IllegalArgumentException("Requested intensity "+QString("%1").arg(intensity)+" not more than maxIntensity "+mMaxIntensity);
 
     double oldValue = mMinIntensity;
     mMinIntensity = intensity;
@@ -328,7 +328,7 @@ void AbstractLight::common()
  if (log->isDebugEnabled()) log->debug("setState "+QString("%1").arg(newState)+" was "+mState);
     //int oldState = mState;
  if ( newState != Light::ON && newState != Light::OFF)
-  throw new IllegalArgumentException("cannot set state value "+QString("%1").arg(newState));
+  throw  IllegalArgumentException("cannot set state value "+QString("%1").arg(newState));
  double intensity = getTargetIntensity();
  if (newState == Light::ON && intensity < getMaxIntensity() )
  {

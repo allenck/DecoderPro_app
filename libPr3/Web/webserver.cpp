@@ -6,6 +6,8 @@
 #include "QtWebSockets/QWebSocket"
 #include <QtCore/QDebug>
 #include "rosterservlet.h"
+#include "zeroconfservice.h"
+#include "json.h"
 
 /**
  * An HTTP server that handles requests for HTTPServlets.
@@ -129,6 +131,14 @@ WebServer::~WebServer()
     }
     qRegisterMetaType<RosterServlet>("RosterServlet");
 
+    QMap<QString, QVariant> properties = QMap<QString, QVariant>();
+    properties.insert("path", "/"); // NOI18N
+    properties.insert(JSON::_JSON, JSON::JSON_PROTOCOL_VERSION);
+    log->info(tr("Starting ZeroConfService _http._tcp.local for Web Server with properties %1").arg(properties.keys().at(0)));
+    zeroConfService = ZeroConfService::create("_http._tcp.local.", preferences->getPort(), properties); // NOI18N
+    zeroConfService->publish();
+    log->debug("Web Server finished starting");
+
 }
 
 /**
@@ -138,6 +148,7 @@ WebServer::~WebServer()
  */
 /*public*/ void WebServer::stop() throw (Exception) {
     server->stop();
+    zeroConfService->stop();
 }
 
 /**

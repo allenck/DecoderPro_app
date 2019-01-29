@@ -79,9 +79,14 @@ void MultiSensorIconDialog::onAddSensor_clicked()
  if (addNewIcon(getIconName())) {
      ((ImageIndexEditor*)InstanceManager::getDefault("ImageIndexEditor"))->indexChanged(true);
      QWidget* p = (QWidget*) getContentPane()->children().at(0);//(getContentPane().getComponent(0));
-     p->layout()->removeWidget(_iconPanel); // OK to replace on a Dialog
-     _iconPanel = makeIconPanel(_iconMap);
-     p->layout()->addWidget(_iconPanel/*, 1*/);
+     //p->layout()->removeWidget(_iconPanel); // OK to replace on a Dialog
+     QObjectList ol = p->layout()->children();
+     foreach (QObject* obj, ol) {
+      if(qobject_cast<QWidget*>(obj))
+       p->layout()->removeWidget(qobject_cast<QWidget*>(obj));
+     }
+     makeIconPanel(_iconMap, _iconEditPanel);
+//     p->layout()->addWidget(_iconPanel/*, 1*/);
      pack();
  }
 
@@ -92,9 +97,14 @@ void MultiSensorIconDialog::onDeleteSensor_clicked()
  if (deleteIcon()) {
      ((ImageIndexEditor*)InstanceManager::getDefault("ImageIndexEditor"))->indexChanged(true);
      QWidget* p = (QWidget*) (getContentPane()->children().at(0));
-     p->layout()->removeWidget(_iconPanel); // OK to replace on a Dialog
-     _iconPanel = makeIconPanel(_iconMap);
-     p->layout()->addWidget(_iconPanel/*, 1*/);
+//     p->layout()->removeWidget(_iconPanel); // OK to replace on a Dialog
+     QObjectList ol = p->layout()->children();
+     foreach (QObject* obj, ol) {
+      if(qobject_cast<QWidget*>(obj))
+       p->layout()->removeWidget(qobject_cast<QWidget*>(obj));
+     }
+     makeIconPanel(_iconMap, _iconEditPanel);
+//     p->layout()->addWidget(_iconPanel/*, 1*/);
      pack();
  }
 

@@ -3,16 +3,11 @@
 
 #include <QObject>
 #include "javaqt_global.h"
-class JAVAQTSHARED_EXPORT EventListener : public QObject
+class JAVAQTSHARED_EXPORT EventListener :public QObject
 {
-  Q_OBJECT
 public:
-    explicit EventListener(QObject *parent = 0);
-    
-signals:
-    
-public slots:
+ EventListener();
     
 };
-
+Q_DECLARE_INTERFACE(EventListener, "EventListener")
 #endif // EVENTLISTENER_H

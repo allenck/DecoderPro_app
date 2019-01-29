@@ -15,7 +15,7 @@ public:
     SectionManager(const SectionManager&) : AbstractManager() {}
     int getXMLOrder();
     QString getSystemPrefix();
-    char typeLetter();
+    char typeLetter() ;
     /**
      * Method to create a new Section if the Section does not exist
      *   Returns null if a Section with the same systemName or userName

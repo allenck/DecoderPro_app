@@ -30,7 +30,10 @@ BufferedImage::BufferedImage()
 //                           implements WritableRenderedImage, Transparency
 //{
 
+BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, format)
+{
 
+}
 
 #if 0
     static /*private*/ native void initIDs();

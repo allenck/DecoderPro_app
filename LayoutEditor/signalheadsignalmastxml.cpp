@@ -64,7 +64,7 @@ SignalHeadSignalMastXml::SignalHeadSignalMastXml(QObject *parent) :
  QString sys = getSystemName(element);
  try
  {
-  m = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(sys);
+  m = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(sys);
  }
  catch (Exception e)
  {

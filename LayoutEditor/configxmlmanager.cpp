@@ -36,8 +36,8 @@ ConfigXmlManager::ConfigXmlManager(QObject *parent) :
     ConfigureManager(parent)
 {
  setObjectName("ConfigXmlManager");
- if(log != nullptr)
-  log->setDebugEnabled(true);
+// if(log != nullptr)
+//  log->setDebugEnabled(true);
  plist =  QList<QObject*> ();
  //clist =  QHash<QObject*, int>();
  //clist = Collections.synchronizedMap(new QHash<QObject*, int>());
@@ -737,7 +737,6 @@ File userPrefsFile;*/
  if(!doc.setContent(&file))
  {
    file.close();
-
  }
  file.close();
 
@@ -825,7 +824,7 @@ File userPrefsFile;*/
   //QDomElement item = l.get(i).getKey();
   QDomElement item = iter.value();
   QString adapterName = item.attribute("class");
-  log->debug(tr("load adapter: %1").arg(adapterName));
+  //log->debug(tr("load adapter: %1").arg(adapterName));
   QString className = adapterName.mid(adapterName.lastIndexOf(".")+1);
   if(className == "ConnectionConfigXml")
   {

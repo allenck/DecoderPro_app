@@ -4,6 +4,7 @@
 #include "abstracttablemodel.h"
 class MySortFilterProxyModel : public RowSorter
 {
+ Q_OBJECT
 public:
  MySortFilterProxyModel(AbstractTableModel* =0);
  bool lessThan(const QModelIndex &left, const QModelIndex &right) const;

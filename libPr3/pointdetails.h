@@ -28,7 +28,7 @@ public:
     //explicit PointDetails(QObject *parent = 0);
     /*public*/ PointDetails(LayoutBlock* facing, LayoutBlock* protecting, QObject *parent = 0);
     LayoutBlock* getFacing();
-    LayoutBlock* getProtecting();
+    QList<LayoutBlock*> getProtecting();
     void setRouteTo(bool boo);
     void setRouteFrom(bool boo);
     /*public*/ void setPanel(LayoutEditor* panel);
@@ -67,7 +67,7 @@ public slots:
 private:
     LayoutEditor* panel;// = null;
     LayoutBlock* facing;
-    LayoutBlock* protecting;
+    QList<LayoutBlock*> protectingBlocks;
     /*private*/ NamedBean* refObj;
     /*private*/ QObject* refLoc;
     /*private*/ Sensor* sensor;
@@ -91,6 +91,7 @@ private:
     Logger* log;
     friend class ButtonTimeOut;
     friend class DestinationPoints;
+    friend class DPRunnable;
 };
 class ButtonTimeOut :public  Runnable
 {

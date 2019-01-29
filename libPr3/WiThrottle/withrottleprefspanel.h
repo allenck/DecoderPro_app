@@ -2,18 +2,21 @@
 #define WITHROTTLEPREFSPANEL_H
 #include "preferencespanel.h"
 
+class JFrame;
 class ItemListener;
 class WiThrottlePreferences;
 class QSpinBox;
 class QRadioButton;
 class QCheckBox;
-class WiThrottlePrefsPanel : public PreferencesPanel
+class WiThrottlePrefsPanel : public QWidget, public PreferencesPanel
 {
  Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
- WiThrottlePrefsPanel(QWidget* parent = 0);
+ Q_INVOKABLE WiThrottlePrefsPanel(QWidget* parent = 0);
  ~WiThrottlePrefsPanel() {}
- WiThrottlePrefsPanel(const WiThrottlePrefsPanel&) : PreferencesPanel() {}
+ WiThrottlePrefsPanel(const WiThrottlePrefsPanel&) : QWidget() {}
  /*public*/ WiThrottlePrefsPanel(JFrame* f, QWidget* parent = 0);
  /*public*/ void initGUI();
  /*public*/ void storeValues();
@@ -28,6 +31,7 @@ public:
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired() ;
  /*public*/ bool isPreferencesValid();
+ /*public*/ QString className();
 
 
 private:

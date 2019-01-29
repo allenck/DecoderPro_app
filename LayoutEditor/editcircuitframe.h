@@ -14,7 +14,7 @@ class EditCircuitFrame : public JmriJFrame
     Q_OBJECT
 public:
     //explicit EditCircuitFrame(QWidget *parent = 0);
-    /*public*/ EditCircuitFrame(QString _title, CircuitBuilder* parent, OBlock* block);
+    /*public*/ EditCircuitFrame(QString _title, CircuitBuilder* parent, OBlock* block, QWidget *parentWidget = 0);
     static int STRUT_SIZE;// = 10;
     static bool _firstInstance;// = true;
     static QPoint _loc;// = null;

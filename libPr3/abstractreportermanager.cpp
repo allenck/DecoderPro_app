@@ -23,20 +23,20 @@ int AbstractReporterManager::getXMLOrder(){
     return Manager::REPORTERS;
 }
 
-char AbstractReporterManager::typeLetter() const  { return 'R'; }
+char AbstractReporterManager::typeLetter()   { return 'R'; }
 
 Reporter* AbstractReporterManager::provideReporter(QString sName) {
     Reporter* t = getReporter(sName);
-    if (t!=NULL) return t;
+    if (t!=nullptr) return t;
     if (sName.startsWith(getSystemPrefix()+typeLetter()))
-        return newReporter(sName, NULL);
+        return newReporter(sName, nullptr);
     else
-        return newReporter(makeSystemName(sName), NULL);
+        return newReporter(makeSystemName(sName), "");
 }
 
 Reporter* AbstractReporterManager::getReporter(QString name) {
     Reporter* t = getByUserName(name);
-    if (t!=NULL) return t;
+    if (t!=nullptr) return t;
 
     return getBySystemName(name);
 }
@@ -54,7 +54,7 @@ Reporter* AbstractReporterManager::getByDisplayName(QString key) {
 // First try to find it in the user list.
 // If that fails, look it up in the system list
 Reporter* retv = this->getByUserName(key);
-if (retv == NULL) {
+if (retv == nullptr) {
     retv = this->getBySystemName(key);
 }
 // If it's not in the system list, go ahead and return NULL
@@ -68,7 +68,7 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
     if (systemName == NULL){
         log->error("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
-        throw new IllegalArgumentException("SystemName cannot be NULL. UserName was "
+        throw  IllegalArgumentException("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
     }
     // return existing if there is one
@@ -89,13 +89,13 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
     // doesn't exist, make a new one
     r = createNewReporter(systemName, userName);
 
-    emit newReporterCreated(this, r);
+    //emit newReporterCreated(this, r);
     // save in the maps
     Register(r);
 
 
     // if that failed, blame it on the input arguements
-    if (r == NULL) throw new IllegalArgumentException();
+    if (r == nullptr) throw  IllegalArgumentException();
 
     return r;
 }
@@ -118,8 +118,8 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
 {
  //If the hardware address past does not already exist then this can
  //be considered the next valid address.
- Reporter* r = getBySystemName(prefix+typeLetter()+curAddress);
- if(r==NULL)
+ Reporter* r = getBySystemName(prefix+'R'+curAddress);
+ if(r==nullptr)
  {
   return curAddress;
  }
@@ -143,15 +143,16 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
   return NULL;
  }
 
+ char tl = 'R';
  //Check to determine if the systemName is in use, return NULL if it is,
  //otherwise return the next valid address.
- r = getBySystemName(prefix+typeLetter()+QString("%1").arg(iName));
+ r = getBySystemName(prefix+tl+QString("%1").arg(iName));
  if(r!=NULL)
  {
   for(int x = 1; x<10; x++)
   {
    iName++;
-   r = getBySystemName(prefix+typeLetter()+QString("%1").arg(iName));
+   r = getBySystemName(prefix+'R'+QString("%1").arg(iName));
    if(r==NULL)
     return QString("%1").arg(iName);
   }

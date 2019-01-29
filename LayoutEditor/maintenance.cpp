@@ -133,7 +133,7 @@ Maintenance::Maintenance(QObject *parent) :
    names->append( name);
   }
  }
- iter = QStringListIterator(((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSystemNameList());
+ iter = QStringListIterator(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSystemNameList());
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -499,7 +499,7 @@ Maintenance::Maintenance(QObject *parent) :
   return list;
  }
 
- SignalHeadManager* signalManager = InstanceManager::signalHeadManagerInstance();
+ SignalHeadManager* signalManager = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  SignalHead* sh = ((AbstractSignalHeadManager*)signalManager)->getBySystemName(sysName);
  if ( sh!=NULL )
  {

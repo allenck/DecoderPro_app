@@ -17,7 +17,7 @@ class QLabel;
 class JmriBeanComboBox;
 class ATSignalMastAppearanceModel;
 class QScrollArea;
-class SignalGroupSignalModel;
+class SignalGroupSignalHeadModel;
 class JTextField;
 class JmriJFrame;
 class QComboBox;
@@ -33,7 +33,7 @@ public:
     Q_INVOKABLE /*public*/ SignalGroupTableAction(QString s, QObject *parent = 0);
     ~SignalGroupTableAction() {}
     SignalGroupTableAction(const SignalGroupTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     int signalStateFromBox(QComboBox* box);
     void setSignalStateBox(int mode, QComboBox* box);
     SGBeanTableDataModel* model();
@@ -75,7 +75,7 @@ private:
 
     JmriJFrame* addFrame;// = NULL;
 
-    SignalGroupSignalModel* _signalGroupSignalModel;
+    SignalGroupSignalHeadModel* _signalGroupSignalModel;
     QScrollArea* _SignalGroupSignalScrollPane;
 
     ATSignalMastAppearanceModel* _AppearanceModel;
@@ -130,10 +130,10 @@ private:
         int _offState;// = 0x00;
     };
 
-    /*private*/ /*static*/ class SignalMastAppearances
+    /*private*/ /*static*/ class SignalMastAspect
     {
     public:
-        SignalMastAppearances(QString appearance);
+        SignalMastAspect(QString appearance);
         void setIncluded(bool include);
         bool isIncluded();
         void setAppearance(QString app);
@@ -146,8 +146,8 @@ private:
     /*private*/ QList <SignalGroupSignal*> _signalList;        // array of all Sensorsy
     /*private*/ QList <SignalGroupSignal*> _includedSignalList;
 
-    /*private*/ QList <SignalMastAppearances*> _mastAppearancesList;        // array of all Sensorsy
-    /*private*/ QList <SignalMastAppearances*> _includedMastAppearancesList;
+    /*private*/ QList <SignalMastAspect*> _mastAppearancesList;        // array of all Sensorsy
+    /*private*/ QList <SignalMastAspect*> _includedMastAppearancesList;
  //SGBeanTableDataModel* m;
  void setColumnToHoldButton(JTable* table, int column, QPushButton* sample);
  void initializeIncludedList();
@@ -173,7 +173,7 @@ protected slots:
 
  friend class SGBeanTableDataModel;
  friend class ATSignalMastAppearanceModel;
- friend class SignalGroupSignalModel;
+ friend class SignalGroupSignalHeadModel;
  friend class SignalGroupOutputModel;
  friend class SignalGroupsWidget;
 };
@@ -262,17 +262,17 @@ public:
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    friend class SignalGroupSignalModel;
+    friend class SignalGroupSignalHeadModel;
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 };
 
-class SignalGroupSignalModel : public SignalGroupOutputModel
+class SignalGroupSignalHeadModel : public SignalGroupOutputModel
 {
     Q_OBJECT
 public:
-    SignalGroupSignalModel(SignalGroupTableAction *act) ;
+    SignalGroupSignalHeadModel(SignalGroupTableAction *act) ;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ int columnCount(const QModelIndex &parent) const;
     enum COLUMNS

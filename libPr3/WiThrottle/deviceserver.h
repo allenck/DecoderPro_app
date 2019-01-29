@@ -6,6 +6,7 @@
 #include "runnable.h"
 #include "logger.h"
 
+class DeviceServer;
 class JsonClientHandler;
 class ServerRxHandler;
 class ServerTxHandler;
@@ -25,11 +26,13 @@ struct WiDevice
  QString name;
  QString address;
  QString deviceUDID;
- inline WiDevice(QString name, QString address, QString deviceUDID)
+ DeviceServer* deviceServer;
+ inline WiDevice(QString name, QString address, QString deviceUDID, DeviceServer* deviceServer)
  {
   this->name = name;
   this->address = address;
   this->deviceUDID = deviceUDID;
+  this->deviceServer = deviceServer;
  }
  inline bool operator ==(WiDevice* dev) {return this->address == dev->address;}
 };

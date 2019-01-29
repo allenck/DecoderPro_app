@@ -37,7 +37,7 @@
 /*static*/ QPoint EditCircuitFrame::_loc  = QPoint();
 /*static*/ QSize EditCircuitFrame::_dim = QSize(200,500);
 
-/*public*/ EditCircuitFrame::EditCircuitFrame(QString title, CircuitBuilder* parent, OBlock* block)
+/*public*/ EditCircuitFrame::EditCircuitFrame(QString title, CircuitBuilder* parent, OBlock* block, QWidget* parentWidget) : JmriJFrame(false, false, parentWidget)
 {
  _blockName = new JTextField(5);
  _detectorSensorName = new JTextField(5);

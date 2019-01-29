@@ -4,6 +4,7 @@
 
 class PortalItemPanel : public FamilyItemPanel
 {
+ Q_OBJECT
 public:
  /*public*/ PortalItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent = nullptr);
  /*public*/ void init();

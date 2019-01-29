@@ -7,6 +7,7 @@
 #include "jfilechooser.h"
 #include <QUrl>
 #include <QDataStream>
+#include "loggerfactory.h"
 
 QString XmlFile::dtdLocation = "/xml/DTD/";
 //bool XmlFile::validate = false;
@@ -29,7 +30,6 @@ QDomDocument XmlFile::doc = QDomDocument();
 XmlFile::XmlFile(QObject *parent) :
     QObject(parent)
 {
- log = new Logger("XmlFile");
  dtdLocation = defaultDtdLocation;
  validate = defaultValidate;
 
@@ -72,20 +72,17 @@ XmlFile::XmlFile(QObject *parent) :
   }
   return rootFromFile(fp);
  }
-#if 0
- URL resource = this.getClass().getClassLoader().getResource(name);
- if (resource != NULL) {
-     return this.rootFromURL(resource);
+
+ QUrl resource = FileUtil::findURL(name);
+ if (resource.isValid()) {
+     return this->rootFromURL(&resource);
  } else {
      if (!name.startsWith("xml")) {
-         return this.rootFromName("xml" + File.separator + name);
+         return this->rootFromName("xml" + File::separator + name);
      }
      log->warn("Did not find file or resource " + name);
-     throw new FileNotFoundException("Did not find file or resource " + name);
+     throw FileNotFoundException("Did not find file or resource " + name);
  }
-#endif
- log->error(tr("Xml file %1 not found").arg(name));
- return QDomElement();
 }
 
 /*public*/ QString XmlFile::getPathname()
@@ -176,8 +173,10 @@ XmlFile::XmlFile(QObject *parent) :
  {
   log->debug("reading xml from URL: " + url->toString());
  }
+ QFile file(url->toString());
+ return rootFromFile(&file);
  //return getRoot(verify, url.openConnection().getInputStream());
- return QDomElement();
+ //return QDomElement();
 }
 
 /**
@@ -738,5 +737,5 @@ XmlFile::XmlFile(QObject *parent) :
 }
 #endif
 // initialize logging
-//static private Logger log = Logger.getLogger(XmlFile.class.getName());
+/*static*/ /*private*/ Logger* XmlFile::log = LoggerFactory::getLogger("XmlFile");
 //}

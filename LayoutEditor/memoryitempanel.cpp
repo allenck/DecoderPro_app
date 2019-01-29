@@ -27,6 +27,9 @@
 #include "memorycomboiconxml.h"
 #include "memoryinputiconxml.h"
 #include "memoryspinnericonxml.h"
+#include "gridbagconstraints.h"
+#include "gridbaglayout.h"
+#include "imagepanel.h"
 
 //MemoryItemPanel::MemoryItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -40,14 +43,21 @@
 {
  //super(parentFrame, type, family, model, editor);
  log = new Logger("MemoryItemPanel");
+ setObjectName("MemoryItemPanel");
 }
 
 /*public*/ void MemoryItemPanel::init()
 {
- layout()->addWidget(initTablePanel(_model, _editor));
- this->initIconFamiliesPanel();
- layout()->addWidget(_iconFamilyPanel);
- connect(_table, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
+ if(!_initialized)
+ {
+  thisLayout->addWidget(initTablePanel(_model, _editor));
+  this->initIconFamiliesPanel();
+  thisLayout->addWidget(_iconFamilyPanel);
+  thisLayout->addWidget(makeBgButtonPanel(_dragIconPanel, _iconPanel));
+  connect(_table, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
+  _initialized = true;
+  update();
+ }
 }
 
 /*protected*/ QWidget* MemoryItemPanel::instructions() {
@@ -98,9 +108,11 @@
  {
   _iconFamilyPanel->layout()->addWidget(instructions());
  }
+ makeDragIconPanel(1);
  this->makeDndIconPanel(NULL, "");
 
- _iconFamilyPanel->layout()->addWidget(_dragIconPanel);
+ //_iconFamilyPanel->layout()->addWidget(_dragIconPanel);
+ log->debug("initIconFamiliesPanel done");
 }
 
 /*protected*/ void MemoryItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/)
@@ -109,59 +121,76 @@
  {
   return;
  }
- QWidget* _DnDIconPanel = new QWidget();
- _DnDIconPanel->setObjectName(QString::fromUtf8("_DnDIconPanel"));
+ QWidget* panel = new QWidget();
+  //panel.setOpaque(false);
+ GridBagLayout* panelLayout;
+  panel->setLayout(panelLayout = new GridBagLayout());
+  GridBagConstraints c = GridBagConstraints();
+  c.gridwidth = 1;
+  c.gridheight = 1;
+  c.gridx = 0;
+  c.gridy = 0;
+  c.anchor = GridBagConstraints::CENTER;
+  c.weightx = 1.0;
 
- QGridLayout* gridLayout_DND = new QGridLayout(_DnDIconPanel);
- gridLayout_DND->setObjectName(QString::fromUtf8("gridLayout_DND"));
- gridLayout_DND->setSizeConstraint(QLayout::SetFixedSize);
- gridLayout_DND->addWidget(new JLabel(tr("Input Box Memory")),0,0,1, 1);
- _DnDIconPanel->setLayout(gridLayout_DND);
-#if 1
- _writeMem = new MemoryInputIcon(5, _editor);
- QWidget* p0 = makeDragIcon(_writeMem->_textDisplay, READWRITE);
- gridLayout_DND->addWidget(p0,1,0,1,1);
- _spinner = new QSpinBox(/*new SpinnerNumberModel(0,0,100,1)*/);
- _spinner->setMinimum(0);
- _spinner->setMaximum(100);
- _spinner->setSingleStep(1);
- _spinner->setValue(0);
-    //JTextField* field = ((JSpinner.DefaultEditor)_spinner.getEditor()).getTextField();
-//    field.setColumns(2);
-//    field.setText("5");
-    //_spinner->setMaximumSize(_spinner->size());
-//    _spinner.addChangeListener(this);
- connect(_spinner, SIGNAL(valueChanged(QString)), this, SLOT(stateChanged()));
- QHBoxLayout* horizontalLayout_colWidth = new QHBoxLayout();
- horizontalLayout_colWidth->setObjectName(QString::fromUtf8("horizontalLayout_colWidth"));
+  QLabel* label = new QLabel(tr("Input Box Memory"));
+  //label.setOpaque(false);
+  panelLayout->addWidget(label, c);
+  c.gridy = 1;
+  _writeMem = new MemoryInputIcon(5, _editor);
+  panelLayout->addWidget(makeDragIcon(_writeMem, Type::READWRITE), c);
 
- horizontalLayout_colWidth->addWidget(new JLabel(tr("Num Cols")));
- horizontalLayout_colWidth->addWidget(_spinner);
- QWidget* p2 =new QWidget();
- gridLayout_DND->addLayout(horizontalLayout_colWidth, 2, 0, 1, 1);
-#endif
+  _spinner = new QSpinBox(); //new SpinnerNumberModel(0, 0, 100, 1));
+  _spinner->setMinimum(0);
+  _spinner->setMaximum(100);
+  _spinner->setSingleStep(1);
+  _spinner->setValue(0);
+//  JTextField* field = ((JSpinner.DefaultEditor) _spinner.getEditor()).getTextField();
+//  field.setColumns(2);
+//  field.setText("5");
+  _spinner->setMaximumSize(_spinner->sizeHint());
+  //_spinner.addChangeListener(this);
+  connect(_spinner, SIGNAL(valueChanged(int)), this, SLOT(stateChanged()));
+  c.gridy = 2;
+  panelLayout->addWidget(_spinner, c);
 
- gridLayout_DND->addWidget(new QLabel(tr("Display Memory")), 0,1,1,1);
- _readMem = new MemoryIcon(NamedIcon::getIconByName(FileUtil::getProgramPath()+"resources/icons/misc/X-red.gif"), _editor);
- gridLayout_DND->addWidget(makeDragIcon(_readMem, READONLY),1,1,1,1);
- gridLayout_DND->addWidget(new QLabel(tr("Spinner Memory")),0,3,1,1);
- _spinMem = new MemorySpinnerIcon(_editor);
- QWidget* spinMemIcon;
- gridLayout_DND->addWidget(spinMemIcon =makeDragIcon(/*_spinMem*/new QSpinBox(), SPINNER),1,2,1,2);
- QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
- sizePolicy2.setHorizontalStretch(0);
- sizePolicy2.setVerticalStretch(0);
- sizePolicy2.setHeightForWidth(spinMemIcon->sizePolicy().hasHeightForWidth());
- spinMemIcon->setSizePolicy(sizePolicy2);
- gridLayout_DND->addWidget(new QLabel(tr("ComboBox Memory")),3,1,1,1);
-// _comboMem = new MemoryComboIcon(_editor, QStringList());
-// gridLayout_DND->addWidget(makeDragIcon((QWidget*)_comboMem->_comboBox, COMBO),4,1,1,1);
- QSpacerItem* horizontalSpacer_3 = new QSpacerItem(207, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  c.gridy = 3;
+  c.anchor = GridBagConstraints::NORTH;
+  label = new QLabel(tr("NumColsLabel"));
+  //label.setOpaque(false);
+  panelLayout->addWidget(label, c);
 
- gridLayout_DND->addItem(horizontalSpacer_3, 3, 3, 1, 1);
+  c.gridx = 1;
+  c.gridy = 0;
+  c.anchor = GridBagConstraints::CENTER;
+  label = new QLabel(tr("ReadMemory"));
+  //label.setOpaque(false);
+  panelLayout->addWidget(label, c);
+  c.gridy = 1;
+  _readMem = new MemoryIcon(NamedIcon::getIconByName("resources/icons/misc/X-red.gif"), _editor);
+  panelLayout->addWidget(makeDragIcon(_readMem, Type::READONLY), c);
 
- _dragIconPanel = _DnDIconPanel;
+  c.gridx = 2;
+  c.gridy = 0;
+  label = new JLabel(tr("Spinner Memory"));
+//  label.setOpaque(false);
+  panelLayout->addWidget(label, c);
+  c.gridy = 1;
+  _spinMem = new MemorySpinnerIcon(_editor);
+  panelLayout->addWidget(makeDragIcon(_spinMem, Type::SPINNER), c);
 
+  c.gridx = 0;
+  c.gridy = 2;
+  c.gridwidth = 4;
+  label = new JLabel(tr("ComboBox Memory"));
+//  label->setOpaque(false);
+  panelLayout->addWidget(label, c);
+  c.gridy = 3;
+  _comboMem = new MemoryComboIcon(_editor, QStringList());
+  panelLayout->addWidget(makeDragIcon(_comboMem, Type::COMBO), c);
+
+  _dragIconPanel->layout()->addWidget(panel);
+  _dragIconPanel->update();
 }
 
 /*private*/ QWidget* MemoryItemPanel::makeDragIcon(QWidget* mem, Type type)
@@ -194,7 +223,7 @@
 /*
 * Set column width for InputMemoryIcon
 */
-/*public*/ void MemoryItemPanel::stateChanged(ChangeEvent* /*e*/) {
+/*public*/ void MemoryItemPanel::stateChanged(/*ChangeEvent* e*/) {
 //    if (log->isDebugEnabled()) log->debug("stateChanged: class= "+_spinner.value().getClass().getName()+
 //                                        ", value= "+_spinner.getValue());
 
@@ -222,7 +251,7 @@
    _updateButton->setEnabled(true);
    _updateButton->setToolTip("");
   }
-  NamedBean* bean = getNamedBean();
+  NamedBean* bean = getDeviceNamedBean();
   _readMem->setMemory(bean->getDisplayName());
   _writeMem->setMemory(bean->getDisplayName());
   _spinMem->setMemory(bean->getDisplayName());
@@ -262,7 +291,7 @@
 //        if (!isDataFlavorSupported(flavor)) {
 //            return NULL;
 //        }
- NamedBean* bean = self->getNamedBean();
+ NamedBean* bean = self->getDeviceNamedBean();
  if (bean==NULL)
  {
   self->log->error("IconDragJComponent.getTransferData: NamedBean is NULL!");

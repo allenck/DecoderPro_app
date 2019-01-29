@@ -6,6 +6,7 @@
 #include "jdialog.h"
 #include "libtables_global.h"
 
+class TTAValidator;
 class QSpinBox;
 class JTable;
 class TurnoutOperationConfig;
@@ -31,7 +32,7 @@ public:
     ~TurnoutTableAction() {}
     Q_INVOKABLE TurnoutTableAction(const TurnoutTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     /*public*/ void setManager(Manager* man);
-    /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ QString getClassDescription();
     static QString getName();
     /*public*/ static void updateAutomationBox(Turnout* t, /*QComboBox* cb*/QStringList* sl);
     /*public*/ void addToFrame(BeanTableFrame* f);
@@ -47,6 +48,8 @@ public slots:
     void showLockChanged();
     /*public*/ void showTurnoutSpeedChanged();
     void On_doAutomationBox_toggled(bool);
+    /*public*/ void propertyChange(PropertyChangeEvent* e);
+
 private:
     void common();
     QString closedText;
@@ -62,7 +65,7 @@ private:
     /*private*/ QVector<QString> speedListClosed;// =  QVector<QString>();
     /*private*/ QVector<QString> speedListThrown;// =  QVector<QString>();
     /*private*/ bool noWarn;// = false;
-    /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
     /*private*/ void updateClosedList();
     /*private*/ void updateThrownList();
     JmriJFrame* addFrame;// = NULL;
@@ -86,6 +89,9 @@ private:
     QCheckBox* showTurnoutSpeedBox;// = new JCheckBox("Show Turnout Speed Details");
     QCheckBox* doAutomationBox;// = new JCheckBox("Automatic retry");
     void handleCreateException(QString sysName);
+    TTAValidator* validator;
+    QString connectionChoice;
+    QString addEntryToolTip;
 
 protected:
     /*protected*/ TurnoutManager* turnManager;// = InstanceManager::turnoutManagerInstance();
@@ -108,6 +114,7 @@ protected slots:
  friend class OkListener;
  friend class TurnoutTableDataModel;
  friend class ItemListener2;
+ friend class TTAValidator;
 };
 Q_DECLARE_METATYPE(TurnoutTableAction)
 //class CBActionListener : public ActionListener
@@ -171,8 +178,11 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
      LOCKOPRCOL = OPSEDITCOL+1,
      LOCKDECCOL = LOCKOPRCOL+1,
      STRAIGHTCOL = LOCKDECCOL+1,
-     DIVERGCOL = STRAIGHTCOL+1
+     DIVERGCOL = STRAIGHTCOL+1,
+     FORGETCOL = DIVERGCOL+1,
+     QUERYCOL = FORGETCOL+1
     };
+
     TurnoutTableDataModel(TurnoutTableAction* self);
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
@@ -281,5 +291,22 @@ public slots:
 private:
     /*private*/ void setTitle();
 };
+class TTAValidator : public QValidator
+{
+ Q_OBJECT
+ TurnoutTableAction* act;
+ JTextField* fld;
+ bool allow0Length = false; // for Add new bean item, a value that is zero-length is considered invalid.
+ QString prefix;// = ConnectionNameFromSystemName::getPrefixFromName(rta->connectionChoice);
+ QColor mark;// = ColorUtil::stringToColor("orange");
 
+public:
+ TTAValidator(JTextField* fld, TurnoutTableAction* act);
+ QValidator::State validate(QString &, int &) const;
+ void setPrefix(QString);
+ //void fixup(QString &input) const;
+
+public slots:
+ void prefixBoxChanged(QString);
+};
 #endif // TURNOUTTABLEACTION_H

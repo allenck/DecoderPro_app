@@ -14,7 +14,7 @@
 // /*public*/ class LnTcpPreferencesPanel extends JPanel implements PreferencesPanel {
 
 
-/*public*/ LnTcpPreferencesPanel::LnTcpPreferencesPanel(QWidget* parent) : PreferencesPanel(parent)
+/*public*/ LnTcpPreferencesPanel::LnTcpPreferencesPanel(QWidget* parent) : QWidget(parent)
 {
  startupActionPosition = -1;
  preferences = (LnTcpPreferences*)InstanceManager::getOptionalDefault("LnTcpPreferences");
@@ -202,3 +202,5 @@ void LnTcpPreferencesPanel::on_startup_clicked()
 /*public*/ bool LnTcpPreferencesPanel::isPreferencesValid() {
     return this->preferences->isPreferencesValid();
 }
+
+/*public*/ QString LnTcpPreferencesPanel::className() {return "LnTcpPreferencesPanel";}

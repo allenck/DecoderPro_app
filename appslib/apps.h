@@ -139,6 +139,7 @@ protected:
 #ifdef SCRIPTING_ENABLED
     /*protected*/ void setJynstrumentSpace();
 #endif
+    static /*protected*/ void setJmriSystemProperty(QString key, QString value);
 
 };
 class WriteBlocksShutdownTask : public AbstractShutDownTask

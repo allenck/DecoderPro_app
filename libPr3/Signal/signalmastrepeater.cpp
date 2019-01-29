@@ -38,9 +38,9 @@
 /*public*/ SignalMastRepeater::SignalMastRepeater(QString master, QString slave, QObject *parent) : QObject(parent)
 {
  init();
- SignalMast* masterMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(master);
+ SignalMast* masterMast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(master);
  _master = nbhm->getNamedBeanHandle(master, masterMast);
- SignalMast* slaveMast = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getSignalMast(slave);
+ SignalMast* slaveMast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(slave);
  _slave = nbhm->getNamedBeanHandle(slave, slaveMast);
 }
 void SignalMastRepeater::init()

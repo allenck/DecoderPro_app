@@ -9,13 +9,15 @@ class QCheckBox;
 class QButtonGroup;
 class QComboBox;
 class QLocale;
-class LIBPREFSHARED_EXPORT GuiLafConfigPane : public PreferencesPanel
+class LIBPREFSHARED_EXPORT GuiLafConfigPane : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+    Q_INTERFACES(PreferencesPanel)
+
 public:
-    explicit GuiLafConfigPane(QWidget *parent = 0);
+    Q_INVOKABLE explicit GuiLafConfigPane(QWidget *parent = 0);
     ~GuiLafConfigPane() {}
-    GuiLafConfigPane(const GuiLafConfigPane&) : PreferencesPanel() {}
+    GuiLafConfigPane(const GuiLafConfigPane&) : QWidget() {}
     /*public*/ QWidget* doLocale();
     /*public*/ void setLocale(QString loc);
     virtual
@@ -47,6 +49,8 @@ public:
     /*public*/ bool isDirty();
     virtual
     /*public*/ bool isRestartRequired();
+
+    /*public*/ QString className();
 signals:
 
 public slots:

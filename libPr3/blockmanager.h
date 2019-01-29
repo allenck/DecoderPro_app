@@ -15,7 +15,7 @@ public:
  BlockManager(const BlockManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() ;
     /*public*/ bool savePathInfo();
     /*public*/ void savePathInfo(bool save);
     /**

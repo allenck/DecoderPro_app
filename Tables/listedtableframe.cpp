@@ -18,6 +18,8 @@
 #include <QStatusBar>
 #include <QGridLayout>
 #include "mysortfilterproxymodel.h"
+#include "namedbeanpropertydescriptor.h"
+#include <QCheckBox>
 
 //ListedTableFrame::ListedTableFrame()
 //{
@@ -64,8 +66,10 @@ void ListedTableFrame::common()
  lastSelectedItem = NULL;
  thisLayout = new QVBoxLayout(getContentPane());
  statusBar()->show();
+ setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
 
- if (InstanceManager::getNullableDefault("ListedTableFrame") == NULL) {
+
+ if (InstanceManager::getNullableDefault("ListedTableFrame") == nullptr) {
     //We add this to the instanceManager so that other components can add to the table
     InstanceManager::store(this, "ListedTableFrame");
  }
@@ -98,7 +102,8 @@ void ListedTableFrame::common()
 {
  JmriJFrame::initComponents();
 
- actionList = new ActionJList(this);
+
+ actionList = new ActionJList(currTableIndex, this);
 
  detailpanel = new QStackedWidget();
  detailpanel->setObjectName("detailPanel");
@@ -122,8 +127,7 @@ void ListedTableFrame::common()
    itemBeingAdded->getAAClass()->addToFrame(this);
   }
   catch (Exception ex) {
-  //detailpanel->layout()->addWidget(errorPanel(item->getItemString()), item->getClassAsString());
-   //detailPanelLayout->addWidget(errorPanel(item->getItemString()));
+   detailpanel->addWidget(errorPanel(item->getItemString())/*, item->getClassAsString()*/);
    log->error("Error when adding " + item->getClassAsString() + " to display\n" /*+ ex*/);
   //ex.printStackTrace();
    removeItem->append(item);
@@ -213,6 +217,7 @@ for (int x = 0; x < tabbedTableArray->size(); x++)
     try {
         if (tabbedTableArray->value(x)->getClassAsString()==(selection)) {
             actionList->selectListItem(x);
+            currTableIndex = x;
             return;
         }
     } catch (Exception ex) {
@@ -240,16 +245,17 @@ for (int x = 0; x < tabbedTableArray->size(); x++)
  }
 }
 
-/*public*/ void ListedTableFrame::dispose() {
- for (int x = 0; x < tabbedTableArray->size(); x++)
- {
-  tabbedTableArray->value(x)->dispose();
- }
- //if (list->getListSelectionListeners().length() > 0) {
- //    list->removeListSelectionListener(list->getListSelectionListeners()[0]);
- //}
- //super.dispose();
- BeanTableFrame::dispose();
+/*public*/ void ListedTableFrame::dispose()
+{
+  pref->setSaveAllowed(false);
+  for (LTFTabbedTableItem* tti : *tabbedTableArray) {
+      tti->dispose();
+  }
+//  if (list->getListSelectionListeners().length > 0) {
+//      list.removeListSelectionListener(list.getListSelectionListeners()[0]);
+//  }
+  BeanTableFrame::dispose();
+  pref->setSaveAllowed(true);
 }
 
 void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
@@ -320,7 +326,7 @@ void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
 
 void ListedTableFrame::On_newItem_triggered()
 {
- actionList->openNewTableWindow(list->getSelectedIndex());
+ actionList->openNewTableWindow(list->getSelectedIndex()==-1? 0:list->getSelectedIndex());
 }
 
 void ListedTableFrame::On_viewMenu_triggered(QObject* obj)
@@ -543,9 +549,31 @@ void LTFTabbedTableItem::createDataModel() {
      addButton->setSizePolicy(sizePolicy);
      connect(addButton, SIGNAL(clicked()), tableAction, SLOT(addPressed()));
     }
+
+    if (dataModel->getPropertyColumnCount() > 0)
+    {
+        /*final*/ QCheckBox* propertyVisible = new QCheckBox(tr
+                ("Show System-specific columns"));
+        propertyVisible->setToolTip(tr
+                ("If the underlying hardware has additional options to set, shows the columns for these options."));
+        addToBottomBox(propertyVisible);
+//        propertyVisible.addActionListener((ActionEvent e) -> {
+//            dataModel.setPropertyColumnsVisible(dataTable, propertyVisible.isSelected());
+//        });
+        connect(propertyVisible, SIGNAL(clicked(bool)), this, SLOT(onPropertyVisible(bool)));
+        dataModel->setPropertyColumnsVisible(dataTable, false);
+    }
+    dataModel->persistTable(dataTable);
+
     dataPanel->adjustSize();
 
     dataModel->loadTableColumnDetails(dataTable);
+}
+
+void LTFTabbedTableItem::onPropertyVisible(bool bChecked)
+{
+ dataModel->setPropertyColumnsVisible(dataTable, bChecked);
+
 }
 
 void LTFTabbedTableItem::addPanelModel() {
@@ -604,6 +632,7 @@ void LTFTabbedTableItem::dispose() {
     dataModel = NULL;
     dataTable = NULL;
     //dataScroll = NULL;
+    dataTable = nullptr;
 }
 //};
 
@@ -646,9 +675,9 @@ QString TabbedTableItemListArray::getItemString() {
 //protected BeanTableFrame frame;
 
 
-ActionJList::ActionJList(BeanTableFrame* f) {
+ActionJList::ActionJList(int index, BeanTableFrame* f) {
    clickDelay = 500;
-   currentItemSelected = -1;
+   currentItemSelected = index;
    clickTimer = NULL;
    log = new Logger("ActionJList");
    currentWidget = NULL;
@@ -683,6 +712,10 @@ ActionJList::ActionJList(BeanTableFrame* f) {
     currentItemSelected = 0;
 }
 
+void ActionJList::onOpenNewTableWindow()
+{
+ openNewTableWindow(currentItemSelected);
+}
 //int clickDelay = 500;
 //int currentItemSelected = -1;
 

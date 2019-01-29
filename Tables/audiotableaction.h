@@ -27,7 +27,8 @@ public:
  /*public*/ void addToFrame(BeanTableFrame* f);
  /*public*/ QWidget* getPanel();
  /*public*/ void setMenuBar(BeanTableFrame* f);
- /*public*/ QString getClassDescription();
+ Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+ Q_INVOKABLE /*public*/ QString getClassDescription();
 signals:
 
 public slots:

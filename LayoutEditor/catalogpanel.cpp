@@ -30,6 +30,11 @@
 #include "jtree.h"
 #include "namedicon.h"
 #include "joptionpane.h"
+#include "imagepanel.h"
+#include "drawsquares.h"
+#include <QComboBox>
+#include "flowlayout.h"
+#include "iconitempanel.h"
 
 //CatalogPanel::CatalogPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -66,6 +71,7 @@
 /*public*/ /*static*/ /*final*/ int CatalogPanel::ICON_WIDTH = 100;
 /*public*/ /*static*/ /*final*/ int CatalogPanel::ICON_HEIGHT = 100;
 /*static*/ QColor    CatalogPanel::_grayColor =  QColor(235,235,235);
+/*static*/ QColor    CatalogPanel::_darkGrayColor = QColor(150, 150, 150);
     //static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.catalog->CatalogBundle");
 
 /*public*/ CatalogPanel::CatalogPanel(QWidget *parent) : QWidget(parent)
@@ -75,7 +81,7 @@
  //_model = new CatalogTreeModel();
 }
 
-/*public*/ CatalogPanel::CatalogPanel(QString label1, QString label2, QWidget *parent) : QWidget(parent)
+/*public*/ CatalogPanel::CatalogPanel(QString label1, QString label2, bool addButtonPanel, QWidget *parent) : QWidget(parent)
 {
  //super(true);
  common();
@@ -90,6 +96,10 @@
  pLayout->addLayout(p2Layout);
 // p->setMaximumSize(p->size());
  thisLayout->addLayout(p1Layout);
+ if (addButtonPanel)
+ {
+  thisLayout->addWidget(makeButtonPanel(),0, Qt::AlignBottom); //BorderLayout.SOUTH); // add the background chooser
+         }
 }
 CatalogPanel::~CatalogPanel()
 {
@@ -109,6 +119,8 @@ void CatalogPanel::common()
  _noMemory = false;
  _model = nullptr;
  _preview = nullptr;
+ colorChoice =  QList<QColor>() <<QColor(Qt::white) << _grayColor << _darkGrayColor;
+
 }
 #if 0
 /*public*/ void setToolTipText(QString tip) {
@@ -121,7 +133,7 @@ void CatalogPanel::common()
     super.setToolTipText(tip);
 }
 #endif
-/*public*/ void CatalogPanel::init(bool treeDnD)
+/*public*/ void CatalogPanel::init(bool treeDnD, bool dragIcons)
 {
  _model =new DefaultTreeModel(new CatalogTreeNode("mainRoot"));
 
@@ -142,6 +154,10 @@ void CatalogPanel::common()
 //   _dTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
    _dTree->setAcceptDrops(false);
   }
+ _treeDnd = treeDnD;
+ _dragIcons = dragIcons;
+ log->debug(tr("CatalogPanel.init _treeDnd= %1, _dragIcons= %2").arg(_treeDnd?"true":"false").arg( _dragIcons?"true":"false"));
+
   _dTree->setIndentation(10);
   _dTree->setAnimated(true);
   _dTree->setHeaderHidden(true);
@@ -454,7 +470,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
  QHBoxLayout* pLayout = new QHBoxLayout;
  pLayout->addWidget(_previewLabel);
  previewPanelLayout->addLayout(pLayout);
- _preview = new QWidget();
+ _preview = new ImagePanel();
  _preview->setObjectName("preview");
  QScrollArea* js = new QScrollArea;
  _preview->setMinimumSize(300,200);
@@ -564,6 +580,66 @@ void CatalogPanel::grayButtonClicked()
  container->setStyleSheet(QString("QWidget {background-color : rgb(%1,%2,%3); font-size : 7pt; }").arg(_currentBackground.red()).arg(_currentBackground.green()).arg(_currentBackground.blue()));
 }
 
+/**
+ * Create panel element containing a "View on:" drop down list.
+ * Employs a normal JComboBox, no Panel Background option.
+ * @see jmri.jmrit.catalog.PreviewDialog#setupPanel()
+ *
+ * @return the JPanel with label and drop down
+ */
+/*private*/ QWidget* CatalogPanel::makeButtonPanel() {
+    // create array of backgrounds
+    if (_backgrounds == nullptr) {
+        _backgrounds = new QVector<BufferedImage*>(4);
+        for (int i = 0; i <= 2; i++) {
+            _backgrounds->replace(i, DrawSquares::getImage(300, 400, 10, colorChoice[i], colorChoice[i]));
+        }
+        _backgrounds->replace(3, DrawSquares::getImage(300, 400, 10, QColor(Qt::white), _grayColor));
+    }
+    QComboBox* bgColorBox = new QComboBox();
+    bgColorBox->addItem(tr("White"));
+    bgColorBox->addItem(tr("LightGray"));
+    bgColorBox->addItem(tr("DarkGray"));
+    bgColorBox->addItem(tr("Checkers")); // checkers option
+    bgColorBox->setCurrentIndex(0); // start as "White"
+//    bgColorBox.addActionListener((ActionEvent e) -> {
+//        // load background image
+//        _preview.setImage(_backgrounds[bgColorBox.getSelectedIndex()]);
+//        log.debug("Catalog setImage called");
+//        _preview.setOpaque(false);
+//        _preview.invalidate();
+//    });
+    connect(bgColorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onBgColorBox(int)));
+    QWidget* backgroundPanel = new QWidget();
+    backgroundPanel->setLayout(new QVBoxLayout());//backgroundPanel, BoxLayout.Y_AXIS));
+    QWidget* pp = new QWidget();
+    pp->setLayout(new FlowLayout(/*FlowLayout.CENTER*/));
+    pp->layout()->addWidget(new QLabel(tr("setBackground")));
+    pp->layout()->addWidget(bgColorBox);
+    backgroundPanel->layout()->addWidget(pp);
+    backgroundPanel->setMaximumSize(backgroundPanel->sizeHint());
+    return backgroundPanel;
+}
+
+void CatalogPanel::onBgColorBox(int index)
+{
+ // load background image
+ _preview->setImage(_backgrounds->at(index));
+ log->debug("Catalog setImage called");
+ //_preview.setOpaque(false);
+ _preview->update();
+
+}
+/**
+ * Allows ItemPalette to set the preview panel background to match that of
+ * the icon set being edited.
+ *
+ * @return Preview panel
+ */
+/*public*/ ImagePanel* CatalogPanel::getPreviewPanel() {
+    return _preview;
+}
+
 /*protected*/ void CatalogPanel::resetPanel()
 {
 //    _selectedImage = NULL;
@@ -587,6 +663,38 @@ void CatalogPanel::grayButtonClicked()
 //    setBackground(_preview);
 //    _preview.repaint();
 }
+// called by palette.IconItemPanel to get user's selection from catalog
+/*public*/ NamedIcon* CatalogPanel::getIcon() {
+    if (_selectedImage != nullptr) {
+//        return _selectedImage->getIcon();
+    }
+    return nullptr;
+}
+
+// called by palette.IconItemPanel when selection is made for its iconMap
+/*public*/ void CatalogPanel::deselectIcon() {
+    if (_selectedImage !=nullptr) {
+//        _selectedImage.setBorder(null);
+        _selectedImage = nullptr;
+    }
+}
+
+/*protected*/ void CatalogPanel::setSelection(CPIconDisplayPanel* panel) {
+    if (_parent == nullptr) {
+        return;
+    }
+    if (_selectedImage != nullptr && panel!=(_selectedImage)) {
+        deselectIcon();
+    }
+    if (panel != nullptr) {
+//        panel.setBorder(BorderFactory.createLineBorder(Color.red, 2));
+        _selectedImage = panel;
+    } else {
+        deselectIcon();
+    }
+    _parent->deselectIcon();
+}
+
 #if 0
 /*public*/ class MemoryExceptionHandler implements Thread.UncaughtExceptionHandler {
     /*public*/ void uncaughtException(Thread t, Throwable e) {
@@ -760,10 +868,14 @@ void CatalogPanel::grayButtonClicked()
  return tr("Node \"%1\" has %2 image files.").arg(node->getUserObject().toString()).arg(leaves->size());
 }
 
-/*public*/ /*static*/ CatalogPanel* CatalogPanel::makeDefaultCatalog()
+/*public*/ /*static*/ CatalogPanel* CatalogPanel::makeDefaultCatalog() {
+        // log.debug("CatalogPanel catalog requested");
+        return makeDefaultCatalog(true, false, true); // deactivate dragNdrop? (true, true, false)
+    }
+/*public*/ /*static*/ CatalogPanel* CatalogPanel::makeDefaultCatalog(bool addButtonPanel, bool treeDrop, bool dragIcon)
 {
- CatalogPanel* catalog = new CatalogPanel("Catalogues:", "Select a directory to view its images");
- catalog->init(false);
+ CatalogPanel* catalog = new CatalogPanel(tr("Catalogues:"), tr("Select a directory to view its images"), addButtonPanel);
+ catalog->init(treeDrop, dragIcon);
  CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  QStringList sysNames = manager->getSystemNameList();
  if (!sysNames .isEmpty())
@@ -1101,3 +1213,92 @@ void CatalogPanel::on_tree_clicked(QModelIndex index)
 
 // }
 }
+//public class IconDisplayPanel extends JPanel implements MouseListener{
+//        String _name;
+//        NamedIcon _icon;
+
+        /*public*/ CPIconDisplayPanel::CPIconDisplayPanel(QString leafName, NamedIcon* icon, CatalogPanel* catalogPanel) : JPanel()
+{
+            //super();
+            _name = leafName;
+            _icon = icon;
+            this->catalogPanel = catalogPanel;
+            // setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            setLayout(new BorderLayout());
+//            setOpaque(false);
+            if (_name != "") {
+                setBorderAndIcon(icon);
+            }
+//            addMouseListener(new IconListener());
+        }
+
+        NamedIcon* CPIconDisplayPanel::getIcon() {
+            return _icon;
+        }
+
+        void CPIconDisplayPanel::setBorderAndIcon(NamedIcon* icon) {
+            if (icon == nullptr) {
+                catalogPanel->log->error(tr("IconDisplayPanel: No icon for \"%1\"").arg(_name));
+                return;
+            }
+            try {
+                JLabel* image;
+                if (catalogPanel->_dragIcons) {
+                    image = (JLabel*)new DragJLabel(new DataFlavor(ImageIndexEditor::IconDataFlavorMime));
+                } else {
+                    image = new JLabel();
+                }
+//                image.setOpaque(false);
+                image->setName(_name);
+                image->setToolTip(icon->getName());
+                double scale;
+                if (icon->getIconWidth() < 1 || icon->getIconHeight() < 1) {
+                    image->setText(tr("invisible Icon"));
+                    image->setForeground(QColor(Qt::lightGray));
+                    scale = 0;
+                } else {
+                    scale = icon->reduceTo(catalogPanel->ICON_WIDTH, catalogPanel->ICON_HEIGHT, catalogPanel->ICON_SCALE);
+                }
+                image->setIcon(icon);
+//                image.setHorizontalAlignment(JLabel.CENTER);
+//                image.addMouseListener(new IconListener());
+                ((QVBoxLayout*)layout())->addWidget(image, 0, Qt::AlignTop); //BorderLayout.NORTH);
+
+                QString scaleMessage = tr("scale %1").arg(CatalogPanel::printDbl(scale, 2));
+                JLabel* label = new JLabel(scaleMessage);
+//                label.setOpaque(false);
+//                label.setHorizontalAlignment(JLabel.CENTER);
+                ((QVBoxLayout*)layout())->addWidget(label, 0, Qt::AlignCenter); // BorderLayout.CENTER);
+                label = new JLabel(_name);
+//                label.setOpaque(false);
+//                label.setHorizontalAlignment(JLabel.CENTER);
+//                label.addMouseListener(new IconListener());
+                ((QVBoxLayout*)layout())->addWidget(label, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
+//                setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+            } catch (ClassNotFoundException cnfe) {
+                catalogPanel->log->error(tr("Unable to find class supporting %1").arg( /*Editor.POSITIONABLE_FLAVOR),*/ cnfe.getMessage()));
+            }
+        }
+
+        /*public*/ QString CPIconDisplayPanel::getIconName() {
+            return _name;
+        }
+        //@Override
+        /*public*/ void CPIconDisplayPanel::mouseClicked(QMouseEvent* event) {
+//            if (event.getSource() instanceof JLabel ) {
+//                setSelection(this);
+//            }
+        }
+        //@Override
+        /*public*/ void mousePressed(QMouseEvent* event) {
+        }
+        //@Override
+        /*public*/ void mouseReleased(QMouseEvent* event) {
+        }
+        //@Override
+        /*public*/ void mouseEntered(QMouseEvent* event) {
+        }
+        //@Override
+        /*public*/ void mouseExited(QMouseEvent* event) {
+        }
+    //}

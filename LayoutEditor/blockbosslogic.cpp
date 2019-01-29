@@ -203,7 +203,7 @@ BlockBossLogic::~BlockBossLogic()
 // umap = smap = NULL;
 
  //if (log->isTraceEnabled()) log->trace("Create BBL "+name);
-    driveSignal = new NamedBeanHandle<SignalHead*> (name, ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(name));
+    driveSignal = new NamedBeanHandle<SignalHead*> (name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
     if (driveSignal->getBean() == NULL) log->warn(tr("Signal_")+name+tr(" was not found!"));
 }
 
@@ -363,7 +363,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal1 = NULL;
   return;
  }
- watchedSignal1 = new NamedBeanHandle<SignalHead*>(name,  ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(name));
+ watchedSignal1 = new NamedBeanHandle<SignalHead*>(name,  static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal1 == NULL || watchedSignal1->getBean() == NULL)
  {
   log->warn(tr("Signal \"")+name+tr("\" was not found!"));
@@ -371,7 +371,7 @@ BlockBossLogic::~BlockBossLogic()
  }
  else
  {
-  AbstractSignalHead* head = (AbstractSignalHead*)((AbstractSignalHeadManager*) InstanceManager::signalHeadManagerInstance() )->getSignalHead(name);
+  AbstractSignalHead* head = (AbstractSignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
   connect(head->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(signalChange(PropertyChangeEvent*)));
  }
  protectWithFlashing = useFlash;
@@ -393,7 +393,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal1Alt = NULL;
   return;
  }
- watchedSignal1Alt = new NamedBeanHandle<SignalHead*>(name, ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(name));
+ watchedSignal1Alt = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal1Alt == NULL || watchedSignal1Alt->getBean() == NULL) log->warn(tr("Signal")+name+tr(" was not found!"));
 }
 /**
@@ -412,7 +412,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal2 = NULL;
   return;
  }
- watchedSignal2 = new NamedBeanHandle<SignalHead*>(name, ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(name));
+ watchedSignal2 = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal2 == NULL || watchedSignal2->getBean() == NULL) log->warn(tr("Signal_")+name+tr("_was not found!"));
 }
 /**
@@ -431,7 +431,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal2Alt = NULL;
   return;
  }
- watchedSignal2Alt = new NamedBeanHandle<SignalHead*>(name, ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getSignalHead(name));
+ watchedSignal2Alt = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal2Alt == NULL || watchedSignal2Alt->getBean() == NULL) log->warn(tr("Signal_")+name+tr(" was not found!"));
 }
 /**

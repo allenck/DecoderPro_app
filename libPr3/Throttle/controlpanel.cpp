@@ -598,7 +598,7 @@
  this->setWidget(mainPanel);
  QVBoxLayout* mainPanelLayout;
  mainPanel->setLayout(mainPanelLayout = new QVBoxLayout());
- //this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+ //((JFrame*)this->window())->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
 
  speedControlPanel = new QFrame();
  //speedControlPanel->setMinimumHeight(200);
@@ -1494,7 +1494,7 @@ void ControlPanel::on_menu_requested()
 //            java.lang.reflect.Method getter = throttle.getClass().getMethod("get" + switchSliderFunction, (Class[]) null);
    QByteArray member = QMetaObject::normalizedSignature(QString("get"+switchSliderFunction).toLocal8Bit());
 
-//   int methodIndex = _throttle->metaObject()->indexOfMethod(member);
+   int methodIndex = _throttle->metaObject()->indexOfMethod(member);
 //   if(methodIndex < 0) throw Exception("invalid switchslider function "+ switchSliderFunction);
 
 //            bool state = (Boolean) getter.invoke(throttle, (Object[]) null);

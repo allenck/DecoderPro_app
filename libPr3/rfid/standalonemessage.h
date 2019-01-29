@@ -4,6 +4,7 @@
 
 class StandaloneMessage : public RfidMessage
 {
+ Q_OBJECT
 public:
  /*public*/ StandaloneMessage(int l, QObject *parent = nullptr);
  /*public*/ StandaloneMessage(QString m, int l, QObject * parent = nullptr);

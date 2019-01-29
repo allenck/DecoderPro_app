@@ -25,6 +25,8 @@
 #include "warrantmanager.h"
 #include "warrant.h"
 #include "abstractnamedbean.h"
+#include "destinationpoints.h"
+#include "conditionalaction.h"
 
 //DefaultLogix::DefaultLogix(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -315,6 +317,152 @@
             }
         }
     }
+}
+
+// Pattern to check for new style NX system name
+//    static /*final*/ Pattern NXUUID = Pattern.compile(
+//        "^IN:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",   // NOI18N
+//        Pattern.CASE_INSENSITIVE);
+/*static*/ QRegExp DefaultLogix::NXUUID = QRegExp("^IN:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+
+/**
+ * ConditionalVariables only have a single name field.  For user interface purposes
+ * a gui name is used for the referenced conditional user name.  This is not used
+ * for other object types.
+ * <p>
+ * In addition to setting the GUI name, any state variable references are changed to
+ * conditional system names.  This converts the XML system/user name field to the system name
+ * for conditional references.  It does not affect other objects such as sensors, turnouts, etc.
+ * <p>
+ * For Entry/Exit references, replace NX user names and old style NX UUID references
+ * with the new style "IN:" + UUID reference.  If the referenced NX does not exist,
+ * it will be removed from the the Variable or Action list. (4.11.4)
+ * <p>
+ * Called by {@link jmri.managers.DefaultLogixManager#activateAllLogixs}
+ * @since 4.7.4
+ */
+//@Override
+/*public*/ void DefaultLogix::setGuiNames() {
+    if (_isGuiSet) {
+        return;
+    }
+    if (getSystemName() == ("SYS")) {
+        _isGuiSet = true;
+        return;
+    }
+    QRegExpValidator validator(NXUUID, 0);
+    int pos = 0;
+
+    for (int i = 0; i < _conditionalSystemNames->size(); i++) {
+        QString cName = _conditionalSystemNames->value(i);
+        Conditional* conditional = getConditional(cName);
+        if (conditional == nullptr) {
+            // A Logix index entry exists without a corresponding conditional.  This
+            // should never happen.
+            log->error(tr("setGuiNames: Missing conditional for Logix index entry,  Logix name = '%1', Conditional index name = '%2'").arg(  // NOI18N
+                getSystemName()).arg(cName));
+            continue;
+        }
+        QList<ConditionalVariable*>* varList = conditional->getCopyOfStateVariables();
+        bool isDirty = false;
+        QList<ConditionalVariable*> badVariable = QList<ConditionalVariable*>();
+        for (ConditionalVariable* var : *varList) {
+            // Find any Conditional State Variables
+            if (var->getType() == Conditional::TYPE_CONDITIONAL_TRUE || var->getType() == Conditional::TYPE_CONDITIONAL_FALSE) {
+                // Get the referenced (target) conditonal -- The name can be either a system name or a user name
+                Conditional* cRef = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->getConditional(var->getName());
+                if (cRef != nullptr) {
+                    // re-arrange names as needed
+                    var->setName(cRef->getSystemName());      // The state variable reference is now a conditional system name
+                    QString uName = cRef->getUserName();
+                    if (uName == "" || uName.isEmpty()) {
+                        var->setGuiName(cRef->getSystemName());
+                    } else {
+                        var->setGuiName(uName);
+                    }
+                    // Add the conditional reference to the where used map
+                    static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"))->addWhereUsed(var->getName(), cName);
+                    isDirty = true;
+                } else {
+                    log->error(tr("setGuiNames: For conditional '%1' in logix '%2', the referenced conditional, '%3',  does not exist").arg(  // NOI18N
+                         cName).arg(getSystemName()).arg(var->getName()));
+                }
+            }
+
+            // Find any Entry/Exit State Variables
+            if (var->getType() == Conditional::TYPE_ENTRYEXIT_ACTIVE
+                    || var->getType() == Conditional::TYPE_ENTRYEXIT_INACTIVE) {
+                //if (!NXUUID.matcher(var.getName()).find())
+             pos = 0;
+             QString s = var->getName();
+             if(validator.validate(s, pos) != QValidator::Acceptable)
+             {
+                    // Either a user name or an old style system name (plain UUID)
+                    DestinationPoints* dp = (DestinationPoints* )static_cast<EntryExitPairs*>(
+                            InstanceManager::getDefault("EntryExitPairs"))->
+                            getNamedBean(var->getName());
+                    if (dp != nullptr) {
+                        // Replace name with current system name
+                        var->setName(dp->getSystemName());
+                        isDirty = true;
+                    } else {
+                        log->error(tr("setGuiNames: For conditional '%1' in logix '%2', the referenced Entry Exit Pair, '%3',  does not exist").arg(  // NOI18N
+                             cName).arg(getSystemName()).arg(var->getName()));
+                        badVariable.append(var);
+                    }
+                }
+            }
+        }
+        if (badVariable.size() > 0) {
+            isDirty = true;
+            //badVariable.forEach((badVar) -> varList.remove(badVar));
+            foreach(ConditionalVariable* var, badVariable)
+             varList->removeOne(var);
+        }
+        if (isDirty) {
+            conditional->setStateVariables(varList);
+        }
+
+        QList<ConditionalAction*>* actionList = conditional->getCopyOfActions();
+        isDirty = false;
+        QList<ConditionalAction*> badAction = QList<ConditionalAction*>();
+        for (ConditionalAction* action : *actionList) {
+            // Find any Entry/Exit Actions
+            if (action->getType() == Conditional::ACTION_SET_NXPAIR_ENABLED
+                    || action->getType() == Conditional::ACTION_SET_NXPAIR_DISABLED
+                    || action->getType() == Conditional::ACTION_SET_NXPAIR_SEGMENT) {
+                //if (!NXUUID.matcher(action.getDeviceName()).find())
+             pos = 0;
+             QString s = action->getDeviceName();
+             if(validator.validate(s, pos) != QValidator::Acceptable)
+                {
+                    // Either a user name or an old style system name (plain UUID)
+                    DestinationPoints* dp = (DestinationPoints*)static_cast<EntryExitPairs*>(
+                       InstanceManager::getDefault("EntryExitPairs"))->
+                            getNamedBean(action->getDeviceName());
+                    if (dp != nullptr) {
+                        // Replace name with current system name
+                        action->setDeviceName(dp->getSystemName());
+                        isDirty = true;
+                    } else {
+                        log->error(tr("setGuiNames: For conditional '%1' in logix '%2', the referenced Entry Exit Pair, '%3',  does not exist").arg(  // NOI18N
+                             cName).arg(getSystemName()).arg(action->getDeviceName()));
+                        badAction.append(action);
+                    }
+                }
+            }
+        }
+        if (badAction.size() > 0) {
+            isDirty = true;
+//                badAction.forEach((badAct) -> actionList.remove(badAct));
+            foreach(ConditionalAction* var, badAction)
+             actionList->removeOne(var);
+        }
+        if (isDirty) {
+            conditional->setAction(actionList);
+        }
+    }
+    _isGuiSet = true;
 }
 
 /**

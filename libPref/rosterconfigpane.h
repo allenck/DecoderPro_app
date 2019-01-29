@@ -6,11 +6,13 @@
 class QFileDialog;
 class QLabel;
 class JTextField;
-class LIBPREFSHARED_EXPORT RosterConfigPane : public PreferencesPanel
+class LIBPREFSHARED_EXPORT RosterConfigPane : public QWidget, public PreferencesPanel
 {
     Q_OBJECT
+ Q_INTERFACES(PreferencesPanel)
+
 public:
-    explicit RosterConfigPane(QWidget *parent = 0);
+   Q_INVOKABLE  explicit RosterConfigPane(QWidget *parent = 0);
     ~RosterConfigPane() {}
     RosterConfigPane(const RosterConfigPane&) : PreferencesPanel() {}
     /*public*/ QString getDefaultOwner();
@@ -26,6 +28,8 @@ public:
     /*public*/ void savePreferences();
     /*public*/ bool isDirty() ;
     /*public*/ bool isRestartRequired();
+    /*public*/ QString className();
+
 
 signals:
 

@@ -7,7 +7,7 @@ class LIBPR3SHARED_EXPORT LnOverTcpConnectionConfig : public AbstractNetworkConn
 {
  Q_OBJECT
 public:
- explicit LnOverTcpConnectionConfig(QObject *parent = 0);
+ Q_INVOKABLE explicit LnOverTcpConnectionConfig(QObject *parent = 0);
  ~LnOverTcpConnectionConfig() {}
  LnOverTcpConnectionConfig(const LnOverTcpConnectionConfig&) : AbstractNetworkConnectionConfig() {}
  /*public*/ LnOverTcpConnectionConfig(NetworkPortAdapter* p, QObject *parent = 0) ;

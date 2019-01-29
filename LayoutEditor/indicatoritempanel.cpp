@@ -23,6 +23,7 @@
 {
     //super(parentFrame, type, family, editor);
     log = new Logger("IndicatorItemPanel");
+    setObjectName("IndicatorItemPanel");
 }
 
 /**
@@ -111,7 +112,7 @@ public void setErrSensor(QString name) {
 
 /*******************************************************/
 
-/*protected*/ DragJLabel* IndicatorItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map) {
+/*protected*/ DragJLabel* IndicatorItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon *icon) {
     return new IndicatorDragJLabel(flavor, map, this);
 }
 
