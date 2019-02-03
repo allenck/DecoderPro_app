@@ -94,7 +94,7 @@ void DefaultConditionalAction::common()
                 }
                 break;
             case Conditional::ITEM_TYPE_LIGHT:
-                bean = (NamedBean*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
+                bean = (NamedBean*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
                 if (bean == NULL) {
                     log->error("invalid light name= \""+_deviceName+"\" in conditional action");
                     return;
@@ -173,7 +173,7 @@ void DefaultConditionalAction::common()
                 bean = (NamedBean*)((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(_deviceName);
                 break;
             case Conditional::ITEM_TYPE_LIGHT:
-                bean = (NamedBean*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
+                bean = (NamedBean*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
                 break;
             case Conditional::ITEM_TYPE_SIGNALMAST:
                 bean = (NamedBean*)static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_deviceName);

@@ -31,7 +31,7 @@ protected:
  /**
   * Listens for init()  = display of the frame
   */
- /*protected*/ InitEventListener* listener;
+ /*protected*/ InitEventListener* listener = nullptr;
 
 };
 

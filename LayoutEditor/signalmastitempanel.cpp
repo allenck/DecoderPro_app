@@ -16,6 +16,7 @@
 #include "abstractsignalmast.h"
 #include "signalmasticonxml.h"
 #include "imagepanel.h"
+#include "jpanel.h"
 
 //SignalMastItemPanel::SignalMastItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -33,61 +34,91 @@
 
 void SignalMastItemPanel::init()
 {
- TableItemPanel::init();
- //_table.getSelectionModel().addListSelectionListener(this);
- connect(_table, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
- _showIconsButton->setEnabled(false);
- _showIconsButton->setToolTip(tr("Select a row from the table to show the icons for the item"));
+ if(!_initialized)
+ {
+  TableItemPanel::init();
+  //_table.getSelectionModel().addListSelectionListener(this);
+  connect(_table, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
+  _showIconsButton->setEnabled(false);
+  _showIconsButton->setToolTip(tr("Select a row from the table to show the icons for the item"));
+ }
 }
 void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
  TableItemPanel::init(doneAction, iconMap);
+// _table->getSelectionModel().addListSelectionListener(this);
+ _previewPanel->setVisible(false);
 }
 
 /*protected*/ QWidget* SignalMastItemPanel::instructions()
 {
- QWidget* blurb = new QWidget();
- blurb->setLayout(new QVBoxLayout(blurb/*, BoxLayout.Y_AXIS*/));
- ((QBoxLayout*)blurb->layout())->addStrut(ItemPalette::STRUT_SIZE);
-    blurb->layout()->addWidget(new JLabel(tr("To Add an Icon to your control panel:")));
-    blurb->layout()->addWidget(new JLabel(tr("--drag an icon from the display panel below to your control panel")));
-    ((QBoxLayout*)blurb->layout())->addStrut(ItemPalette::STRUT_SIZE);
-    blurb->layout()->addWidget(new JLabel(tr("Select a row from the table to show the icons for the item")));
-    ((QBoxLayout*)blurb->layout())->addStrut(ItemPalette::STRUT_SIZE);
+ _blurb = new QWidget();
+ _blurb->setLayout(new QVBoxLayout(_blurb/*, BoxLayout.Y_AXIS*/));
+ ((QBoxLayout*)_blurb->layout())->addStrut(ItemPalette::STRUT_SIZE);
+    _blurb->layout()->addWidget(new JLabel(tr("To Add an Icon to your control panel:")));
+    _blurb->layout()->addWidget(new JLabel(tr("--drag an icon from the display panel below to your control panel")));
+    ((QBoxLayout*)_blurb->layout())->addStrut(ItemPalette::STRUT_SIZE);
+    _blurb->layout()->addWidget(new JLabel(tr("Select a row from the table to show the icons for the item")));
+    ((QBoxLayout*)_blurb->layout())->addStrut(ItemPalette::STRUT_SIZE);
     QWidget* panel = new QWidget();
     panel->setLayout(new QVBoxLayout());
-    panel->layout()->addWidget(blurb);
+    panel->layout()->addWidget(_blurb);
     return panel;
 }
 
+//@Override
 /*protected*/ void SignalMastItemPanel::initIconFamiliesPanel()
 {
- _iconFamilyPanel = new QWidget();
- QVBoxLayout* iconFamilyPanelLayout;
- _iconFamilyPanel->setLayout(iconFamilyPanelLayout = new QVBoxLayout(_iconFamilyPanel/*, BoxLayout.Y_AXIS*/));
- if (!_update)
+ if (log->isDebugEnabled())
  {
-  iconFamilyPanelLayout->addWidget(instructions());
+     log->debug(tr("initIconFamiliesPanel for= %1, %2").arg(_itemType).arg(_family));
  }
- if (_table!=NULL)
+ if (_table!=nullptr)
  {
   int row = /*_table.getSelectedRow();*/ _table->currentIndex().row();
   getIconMap(row);        // sets _currentIconMap & _mast, if they exist.
  }
- _dragIconPanel = new ImagePanel();
- makeDndIconPanel(NULL, "");
- _iconPanel = new ImagePanel();
- addIconsToPanel(_currentIconMap, _iconPanel, false);
- iconFamilyPanelLayout->addWidget(_dragIconPanel,0,Qt::AlignCenter);
- QWidget* panel = new QWidget();
- panel->setLayout(new QVBoxLayout());
- if (_mast!=NULL)
- {
-  panel->layout()->addWidget(new JLabel(tr("Icon Set Name:")+" "+((AbstractSignalMast*)_mast)->getSignalSystem()->getSystemName()));
+ if (_iconFamilyPanel == nullptr) {
+  log->debug("new _iconFamilyPanel created");
+  _iconFamilyPanel = new QWidget();
+  _iconFamilyPanel->setLayout(new QVBoxLayout()); //(_iconFamilyPanel, BoxLayout.Y_AXIS));
+  //_iconFamilyPanel->setOpaque(true);
+  if (!_update) {
+      _blurb = instructions();
+      _iconFamilyPanel->layout()->addWidget(_blurb);
+  }
  }
- iconFamilyPanelLayout->addWidget(panel);
- iconFamilyPanelLayout->addWidget(_iconPanel);
- _iconPanel->setVisible(false);
+ if (!_update) {
+   makeDragIconPanel(1);
+   makeDndIconPanel(nullptr, nullptr);
+ }
+ if (_iconPanel == nullptr) { // keep an existing panel
+     _iconPanel = new ImagePanel();
+//     _iconPanel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+     _iconPanel->setStyleSheet(gbStyleSheet);
+     _promptLabel = new QLabel();
+     QWidget* panel = new QWidget();
+     QHBoxLayout* panelLayout = new QHBoxLayout(panel);
+     panelLayout->addWidget(_promptLabel);
+     _iconFamilyPanel->layout()->addWidget(panel);
+     if (!_update) {
+         _previewPanel = makePreviewPanel(_iconPanel, _dragIconPanel);
+     } else {
+         _previewPanel = makePreviewPanel(_iconPanel, nullptr);
+     }
+     _iconFamilyPanel->layout()->addWidget(_previewPanel);
+ }
+
+ addIconsToPanel(_currentIconMap, _iconPanel, false);
+
+ if (_mast != nullptr)
+ {
+  _promptLabel->setText(tr("Icon Set Name: %1").arg(_mast->getSignalSystem()->getSystemName()));
+  } else {
+      _promptLabel->setText(tr("To add a Signal Mast, select its row from the table"));
+  }
+
+  _iconPanel->setVisible(false);
 }
 
 /*protected*/ void SignalMastItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/) {
@@ -127,24 +158,34 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIc
     _dragIconPanel->layout()->addWidget(panel);
 }
 
-/*protected*/ QWidget* SignalMastItemPanel::makeBottom1Panel() {
-    QWidget* bottomPanel = new QWidget();
-    bottomPanel->setLayout(new QHBoxLayout());
-    _showIconsButton = new QPushButton(tr("Show Icons"));
+//@Override
+    /*protected*/ void SignalMastItemPanel::makeBottomPanel(ActionListener* doneAction) {
+    QWidget* panel = new QWidget();
+    FlowLayout* panelLayout = new FlowLayout(panel);
+    _showIconsButton = new QPushButton(tr("Hide Icons"));
 //    _showIconsButton.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                if (_iconPanel.isVisible()) {
-//                    hideIcons();
-//                } else {
-//                    showIcons();
-//                }
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            if (_iconPanel.isVisible()) {
+//                hideIcons();
+//            } else {
+//                showIcons();
 //            }
-//        });
-    connect(_showIconsButton, SIGNAL(clicked()), this, SLOT(_showIconsButton_clicked()));
-    _showIconsButton->setToolTip(tr("ToolTipShowIcons"));
-    bottomPanel->layout()->addWidget(_showIconsButton);
-    return bottomPanel;
+//        }
+//    });
+    connect(_showIconsButton, SIGNAL(clicked(bool)), this, SLOT(_showIconsButton_clicked()));
+    _showIconsButton->setToolTip(tr("Press to display the icons for the current Icon Set"));
+    panelLayout->addWidget(_showIconsButton);
+    _bottom1Panel = new JPanel(/*new FlowLayout()*/);
+    FlowLayout* _bottom1PanelLayout = new FlowLayout(_bottom1Panel);
+    _bottom1PanelLayout->addWidget(panel);
+    if (doneAction != nullptr) {
+        addUpdateButtonToBottom(doneAction);
+    }
+    initIconFamiliesPanel(); // (if null: creates and) adds a new _iconFamilyPanel for the new mast map
+    thisLayout->addWidget(_bottom1Panel);
 }
+
 void SignalMastItemPanel::_showIconsButton_clicked()
 {
  if (_iconPanel->isVisible()) {
@@ -154,44 +195,49 @@ void SignalMastItemPanel::_showIconsButton_clicked()
  }
 }
 
-/*protected*/ QWidget* SignalMastItemPanel::makeBottom2Panel() {
-    return new QWidget();
-}
 /*private*/ void SignalMastItemPanel::getIconMap(int row)
 {
- if (row<0)
- {
-  _currentIconMap = NULL;
-  _family = "";
-  return;
- }
- NamedBean* bean = _model->getBeanAt(row);
+    if (row < 0) {
+        _iconMastMap = nullptr;
+        _family = "";
+        return;
+    }
+    NamedBean* bean = _model->getBySystemName( _table->getValueAt(row, 0).toString());
 
- if (bean==NULL)
- {
-  if (log->isDebugEnabled()) log->debug("getIconMap: NamedBean is NULL at row "+QString::number(row));
-  _currentIconMap = NULL;
-   _family = "";
-   return;
- }
- _mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(bean->getDisplayName());
- if (_mast == NULL)
- {
-  log->error("getIconMap: No SignalMast called "+bean->getDisplayName());
-  _currentIconMap = NULL;
-  return;
- }
- _family = _mast->getSignalSystem()->getSystemName();
- _currentIconMap = new QMap<QString, NamedIcon*>();  QStringListIterator e(_mast->getAppearanceMap()->getAspects());
- while (e.hasNext())
- {
-  QString s = _mast->getAppearanceMap()->getProperty(e.next(), "imagelink");
-  s = s.mid(s.indexOf("resources"));
-  NamedIcon* n = new NamedIcon(s,s);
-  _currentIconMap->insert(s, n);
- }
- if (log->isDebugEnabled()) log->debug("getIconMap: for "+_family+
-                                        " size= "+QString::number(_currentIconMap->size()));
+
+    if (bean == nullptr) {
+        log->debug(tr("getIconMap: NamedBean is null at row %1").arg(row));
+        _mast = nullptr;
+        _iconMastMap = nullptr;
+        _family = "";
+        return;
+    }
+
+    try {
+        _mast = static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(bean->getDisplayName());
+    } catch (IllegalArgumentException ex) {
+        log->error(tr("getIconMap: No SignalMast called %1").arg(bean->getDisplayName()));
+        _iconMastMap = nullptr;
+        return;
+    }
+    _family = _mast->getSignalSystem()->getSystemName();
+    _iconMastMap = new QMap<QString, NamedIcon*>();
+    SignalAppearanceMap* appMap = _mast->getAppearanceMap();
+    QStringListIterator e (_mast->getAppearanceMap()->getAspects());
+    while (e.hasNext()) {
+        QString aspect = e.next();
+        QString s = appMap->getImageLink(aspect, _family);
+        if (s !="" ) {
+            if (!s.contains("preference:")) {
+                s = s.mid(s.indexOf("resources"));
+            }
+            NamedIcon* n = new NamedIcon(s, s);
+            _iconMastMap->insert(aspect, n);
+        }
+    }
+    if (log->isDebugEnabled()) {
+        log->debug(tr("getIconMap for %1  size= %2").arg(_family).arg(_iconMastMap->size()));
+    }
 }
 
 /*private*/ NamedIcon* SignalMastItemPanel::getDragIcon()
@@ -212,6 +258,96 @@ void SignalMastItemPanel::_showIconsButton_clicked()
  return new NamedIcon(fileName, fileName);
 }
 
+//@Override
+    /*protected*/ void SignalMastItemPanel::setFamily(QString family) {
+        _family = family;
+        //_iconPanel.removeAll(); // just clear contents
+        QList<QWidget*> widgets = _iconPanel->findChildren<QWidget*>();
+        foreach(QWidget* widget, widgets)
+        {
+         _iconPanel->layout()->removeWidget(widget);
+         widget->deleteLater();
+        }
+        QMap<QString, NamedIcon*>* map = ItemPalette::getIconMap(_itemType, _family);
+        if (map != nullptr) {
+            _iconMastMap = map;
+        } else {
+            log->warn(tr("Family \"%1\" for type \"%2\" for not found in Catalog.").arg( _family).arg(_itemType));
+        }
+        if (!_suppressDragging) {
+            makeDragIconPanel(0);
+            makeDndIconPanel(_iconMastMap, ""); // empty key OK, this uses getDragIcon()
+        }
+        if (_iconMastMap != nullptr) {
+            addIconsToPanel(_iconMastMap, _iconPanel, false);
+        }
+    }
+
+    //@Override
+    /*protected*/ void SignalMastItemPanel::showIcons() {
+        if (log->isDebugEnabled()) {
+            log->debug(tr("showIcons for= %1, %2").arg(_itemType).arg(_family));
+        }
+        bool isPalette = (qobject_cast<ItemPalette*>(_paletteFrame));
+        QSize totalDim;
+        if (isPalette) {
+            totalDim = ItemPalette::_tabPane->size();
+        } else {
+            totalDim = _paletteFrame->size();
+        }
+        QSize oldDim = size();
+        _iconPanel->setVisible(true);
+        _iconPanel->update();
+        _previewPanel->setVisible(true);
+        _previewPanel->update();
+        if (!_update) {
+//            _dragIconPanel.removeAll();
+         QList<QWidget*> widgets = _dragIconPanel->findChildren<QWidget*>();
+         foreach(QWidget* widget, widgets)
+         {
+          _dragIconPanel->layout()->removeWidget(widget);
+          widget->deleteLater();
+         }
+            _dragIconPanel->setVisible(false);
+            _dragIconPanel->update();
+            _blurb->setVisible(false);
+            _blurb->update();
+
+        }
+        reSizeDisplay(isPalette, oldDim, totalDim);
+        _showIconsButton->setText(tr("Show Icons"));
+    }
+
+    //@Override
+    /*protected*/ void SignalMastItemPanel::hideIcons() {
+        if (log->isDebugEnabled()) {
+            log->debug(tr("hideIcons for= %1, %2").arg(_itemType).arg(_family));
+        }
+        bool isPalette = (qobject_cast<ItemPalette*>(_paletteFrame));
+        QSize totalDim;
+        if (isPalette) {
+            totalDim = ItemPalette::_tabPane->size();
+        } else {
+            totalDim = _paletteFrame->size();
+        }
+        QSize oldDim = size();
+        _iconPanel->setVisible(false);
+        _iconPanel->update();
+        if (!_update) {
+            _dragIconPanel->setVisible(true);
+            makeDndIconPanel(nullptr, nullptr);
+            _dragIconPanel->update();
+            _blurb->setVisible(true);
+            _blurb->update();
+            _previewPanel->setVisible(true);
+            _previewPanel->update();
+        } else {
+            _previewPanel->setVisible(false);
+            _previewPanel->update();
+        }
+        reSizeDisplay(isPalette, oldDim, totalDim);
+        _showIconsButton->setText(tr("Hide Icons"));
+    }
 
 /**
 *  ListSelectionListener action
@@ -224,11 +360,15 @@ void SignalMastItemPanel::_showIconsButton_clicked()
  }
  int row = _table->currentIndex().row();
  if (log->isDebugEnabled()) log->debug("Table valueChanged: row= "+QString::number(row));
- //remove(_iconFamilyPanel);
- layout()->removeWidget(_iconFamilyPanel);
- delete _iconFamilyPanel;
- initIconFamiliesPanel();
- ((QVBoxLayout*)layout())->insertWidget(1,_iconFamilyPanel/*, 1*/);
+
+ // update the family icons
+ //_iconPanel.removeAll();
+ QList<QWidget*> widgets = _iconPanel->findChildren<QWidget*>();
+ foreach(QWidget* widget, widgets)
+ {
+  _iconPanel->layout()->removeWidget(widget);
+  widget->deleteLater();
+ }
  if (row >= 0)
  {
   if (_updateButton!=NULL)
@@ -249,7 +389,9 @@ void SignalMastItemPanel::_showIconsButton_clicked()
   _showIconsButton->setEnabled(false);
   _showIconsButton->setToolTip(tr("Select a row from the table to show the icons for the item"));
  }
-//    validate();
+ initIconFamiliesPanel(); // (if null: creates and) adds a new _iconFamilyPanel for the new mast map
+ update();
+
 }
 
 /*protected*/ DragJLabel* SignalMastItemPanel::getDragger(DataFlavor* flavor) {

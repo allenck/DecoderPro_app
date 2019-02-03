@@ -27,7 +27,7 @@ public:
 signals:
 
 public slots:
-    void on_showIconsButton_clicked();
+//    void on_showIconsButton_clicked();
     void on_newFamilyButton_clicked();
 
 private:
@@ -46,6 +46,7 @@ private:
     /*private*/ QString findFamilyOfMap(QMap<QString, NamedIcon*>* iconMap, QMap<QString, QMap<QString, NamedIcon*>*>* families);
     /*private*/ void addShowButtonToBottom();
     /*private*/ void addFamilyButtonListener (QRadioButton* button, QString family);
+    QString     gbStyleSheet;
 
 private slots:
     /*private*/ QWidget* makeCreateNewFamilyPanel();
@@ -63,16 +64,16 @@ protected:
     /*protected*/ static bool _suppressNamePrompts;// = false;
     /*protected*/ bool _isUnstoredMap = false;
 
-    /*protected*/ void makeBottomPanel(ActionListener* doneAction);
+    /*protected*/ virtual void makeBottomPanel(ActionListener* doneAction);
     /*protected*/ virtual void initIconFamiliesPanel();
     /*protected*/ JPanel* makeFamilyButtons (QStringList keySet);
     /*protected*/ void addFamilyPanels(JPanel *familyPanel);
     /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon *> *iconMap, ImagePanel *iconPanel, bool dropIcon);
     /*abstract*/ virtual /*protected*/ DragJLabel* getDragger(DataFlavor* /*flavor*/, QMap <QString, NamedIcon*>* /*map*/, NamedIcon* /*icon*/);
     /*protected*/ virtual void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
-    /*protected*/ virtual QWidget* makeBottom1Panel();
-    /*protected*/ virtual QWidget* makeBottom2Panel();
-    /*protected*/ virtual QWidget* makeBottom3Panel(ActionListener* doneAction, QWidget* bottom1Panel) ;
+//    /*protected*/ virtual QWidget* makeBottom1Panel();
+//    /*protected*/ virtual QWidget* makeBottom2Panel();
+//    /*protected*/ virtual QWidget* makeBottom3Panel(ActionListener* doneAction, QWidget* bottom1Panel) ;
     /*protected*/ virtual void setFamily(QString family) ;
     /*protected*/ virtual void openDialog(QString type, QString family, QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void closeDialogs();
@@ -98,8 +99,9 @@ protected slots:
     /*protected*/ bool addFamily(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
     /*protected*/ bool mapsAreEqual(QMap<QString, NamedIcon*>* map1, QMap<QString, NamedIcon*>* map2);
     /*protected*/ void deleteFamilySet();
-    /*protected*/ void hideIcons();
-    /*protected*/ void showIcons();
+    /*protected*/ virtual void hideIcons();
+    /*protected*/ virtual void showIcons();
+    void on_editIconsButton();
 
 friend class ItemPalette;
 friend class TableItemPanel;

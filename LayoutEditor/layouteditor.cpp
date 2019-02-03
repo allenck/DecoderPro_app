@@ -2753,6 +2753,8 @@ double LayoutEditor::getPaintScale()
    item->setPen(QPen(QBrush(_highlightColor),1,Qt::SolidLine));
 
    highlightRect->addToGroup(item);
+   if(highlightRect && highlightRect->scene())
+    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
    editScene->addItem(highlightRect);
   }
   else
@@ -2761,6 +2763,8 @@ double LayoutEditor::getPaintScale()
    LayoutTurnout* t = (LayoutTurnout*)selection;
    QGraphicsRectItem* item = new QGraphicsRectItem(t->item->boundingRect());
    highlightRect->addToGroup(item);
+   if(highlightRect && highlightRect->scene())
+    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
    editScene->addItem(highlightRect);
   }
   _prevNumSel = numSel;
@@ -3507,6 +3511,8 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   }
 //  g.setColor(color);
 //  g.setStroke(stroke);
+  if(highlightRect && highlightRect->scene())
+   log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
   g->addItem(highlightRect);
 }
 
@@ -4507,6 +4513,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
    }
   }
+  if(x->item && x->item->scene())
+   log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
   g2->addItem(x->item);
  }
 }
@@ -4615,6 +4623,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
     line1->setPen(QPen(color,trackWidth));
     x->item->addToGroup(line1);
    }
+   if(x->item && x->item->scene())
+    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
    g2->addItem(x->item);
   }
 }
@@ -4838,6 +4848,8 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
    QGraphicsLineItem* item  = new QGraphicsLineItem(QLineF(beginLocation,currentLocation));
    item->setPen(QPen(QColor(defaultTrackColor),1));
    trackInProgress = item;
+   if(trackInProgress && trackInProgress->scene())
+    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
    g2->addItem(trackInProgress);
   }
 }
@@ -4879,6 +4891,8 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
    }
    rectItem = new QGraphicsRectItem(QRect(selectionX, selectionY, selectionWidth, selectionHeight),0);
    rectItem->setPen(QPen(defaultTrackColor, 3, Qt::SolidLine));
+   if(rectItem && rectItem->scene())
+    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
    editScene->addItem(rectItem);
   }
 }
@@ -4906,6 +4920,8 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(l->getX(), l->getY(), l->getSize().width(), l->getSize().height()));
    item->setPen(QPen(color, 1));
    l->_itemGroup->addToGroup(item);
+   if(l->_itemGroup && l->_itemGroup->scene())
+    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
    g2->addItem(l->_itemGroup);
   }
 }
@@ -4989,6 +5005,8 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   }
   pix += 10.0;
  }
+ if(panelGridGroup && panelGridGroup->scene())
+  log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
  g2->addItem(panelGridGroup);
 }
 #endif

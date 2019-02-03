@@ -209,6 +209,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  */
 /*public*/ void DefaultLogixManager::setLoadDisabled(bool s) {loadDisabled = s;}
 
+/*public*/ bool DefaultLogixManager::getLoadDisabled() {return loadDisabled;}
+
 /*static*/ /*public*/ DefaultLogixManager* DefaultLogixManager::instance() {
     if (_instance == nullptr) {
         _instance = new DefaultLogixManager();

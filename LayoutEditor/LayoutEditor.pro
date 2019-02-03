@@ -460,7 +460,8 @@ SOURCES += \
     newpaneleditor.cpp \
     defaultusermessagepreferencesxml.cpp \
     layouttrackexpectedstate.cpp \
-    rpsitempanel.cpp
+    rpsitempanel.cpp \
+    signalheadicondialog.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -843,7 +844,8 @@ HEADERS += liblayouteditor_global.h \
     newpaneleditor.h \
     defaultusermessagepreferencesxml.h \
     layouttrackexpectedstate.h \
-    rpsitempanel.h
+    rpsitempanel.h \
+    signalheadicondialog.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

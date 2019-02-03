@@ -87,6 +87,7 @@ public:
          * Support for loading Logixs in a disabled state to debug loops
          */
         virtual void setLoadDisabled(bool /*s*/) {}
+        virtual bool getLoadDisabled() {return false;}
 
 signals:
     

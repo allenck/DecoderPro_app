@@ -1,7 +1,7 @@
 #include "imagepanel.h"
 #include "loggerfactory.h"
 
-ImagePanel::ImagePanel(QWidget *parent) : QFrame(parent)
+ImagePanel::ImagePanel(QWidget *parent) : QGroupBox(parent)
 {
  back = NULL;
  clip = NULL;
@@ -25,8 +25,8 @@ ImagePanel::ImagePanel(QWidget *parent) : QFrame(parent)
 /*public*/ void ImagePanel::setImage(QImage* img) {
     back = (BufferedImage*) img;
 //    repaint();
-    QPixmap bkgnd = QPixmap::fromImage(*back);
-    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    bkgnd = QPixmap::fromImage(*back);
+    bkgnd = bkgnd.scaled(this->size(), Qt::KeepAspectRatioByExpanding);
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
@@ -63,6 +63,14 @@ ImagePanel::ImagePanel(QWidget *parent) : QFrame(parent)
     }
 }
 #endif
+void ImagePanel::paintEvent(QPaintEvent* p)
+{
+ if(bkgnd.isNull()) return;
+ QPainter* pPainter = new QPainter(this);
+     pPainter->drawPixmap(rect(), bkgnd);
+     delete pPainter;
+     QWidget::paintEvent(p);
+}
 //private void update() {
 //    repaint();
 //}

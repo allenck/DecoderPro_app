@@ -219,10 +219,13 @@ void ItemPanel::on_bgColorBox()
 /*static*/ QColor ItemPanel::_darkGrayColor = QColor(150, 150, 150);
 /*static*/ /*protected*/ QVector<QColor> ItemPanel::colorChoice = QVector<QColor>() <<QColor(Qt::white) << ItemPanel::_grayColor << ItemPanel::_darkGrayColor; // panel bg color picked up directly
 
-/*protected*/ JPanel* ItemPanel::makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2) {
-    JPanel* previewPanel = new JPanel();
+/*protected*/ QGroupBox* ItemPanel::makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2) {
+    QGroupBox* previewPanel = new QGroupBox();
     QVBoxLayout* previewPanelLayout;
     previewPanel->setLayout(previewPanelLayout =new QVBoxLayout());//(previewPanel, BoxLayout.Y_AXIS));
+    QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+
+    previewPanel->setStyleSheet(gbStyleSheet);
 #if 0 // for testing ACK
     QWidget* testWidget = new QWidget();
     QHBoxLayout* testLayout = new QHBoxLayout(testWidget);
@@ -236,7 +239,7 @@ void ItemPanel::on_bgColorBox()
 #endif
     //previewPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 1),
 //            tr("PreviewBorderTitle")));
-//    previewPanel->setTitle(tr("Preview"));
+    previewPanel->setTitle(tr("Preview"));
     makeBgButtonPanel(panel1, panel2);
     if (_bgColorBox != nullptr) {
         QWidget* bkgdBoxPanel = new QWidget();
@@ -288,7 +291,7 @@ void ItemPanel::on_bgColorBox()
 /*static*/ /*final*/ QStringList ItemPanel::INDICATOR_TRACK  = QStringList() <<"ClearTrack"<< "OccupiedTrack" << "AllocatedTrack" <<"PositionTrack"<< "DontUseTrack"<< "ErrorTrack";
 /*static*/ /*final*/ QStringList ItemPanel::PORTAL = QStringList() << PortalIcon::HIDDEN << PortalIcon::VISIBLE << PortalIcon::PATH <<
             PortalIcon::TO_ARROW<< PortalIcon::FROM_ARROW;
-/*static*/ QString ItemPanel::redX = "resources/icons/misc/X-red.gif";
+/*static*/ QString ItemPanel::redX = ":/resources/icons/misc/X-red.gif";
 
 /*static*/ /*private*/ QStringList ItemPanel::getNames(QString type) {
         if (type == ("Turnout")) {

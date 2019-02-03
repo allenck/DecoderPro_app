@@ -285,11 +285,11 @@ HelpFrame::HelpFrame(QString ref)
  view->page()->settings()->setAttribute(QWebEnginePage::PluginsEnabled, true);
 #endif
  connect(view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
- connect(view, SIGNAL(statusBarMessage(QString)), this, SLOT(statusBarMessage(QString)));
+ connect(view->page(), SIGNAL(statusBarMessage(QString)), this, SLOT(statusBarMessage(QString)));
  centralWidget->layout()->addWidget(view);
- connect(view, SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
- connect(view, SIGNAL(titleChanged(QString)), this, SLOT(titleChanged(QString)));
- connect(view->page(), SIGNAL(linkHovered(QString,QString,QString)), this, SLOT(linkHovered(QString,QString,QString)));
+ //connect(view, SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
+ connect(view->page(), SIGNAL(titleChanged(QString)), this, SLOT(titleChanged(QString)));
+ connect(view->page(), SIGNAL(linkHovered(QString)), this, SLOT(linkHovered(QString)));
  QString path = FileUtil::getProgramPath()+ "help" + QDir::separator()+ "en" +  QDir::separator() + ref ;
  QString html;
  if(path.endsWith("index"))
@@ -327,7 +327,10 @@ HelpFrame::HelpFrame(QString ref)
   QAction* act = (QAction*)o;
   QString ref = act->data().toString();
   if(_frame == NULL)
+  {
    _frame = new HelpFrame(ref);
+  _frame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
+  }
   else
    _frame->setUrl(ref);
  }
@@ -437,7 +440,7 @@ QString HelpFrame::loadHtml(QString path)
  }
  return html;
 }
-void HelpFrame::linkHovered(const QString &link, const QString &/*title*/, const QString &/*textContent*/)
+void HelpFrame::linkHovered(const QString &link)
 {
  statusBar()->showMessage(link);
 }

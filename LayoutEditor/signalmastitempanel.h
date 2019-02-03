@@ -22,14 +22,20 @@ private:
     SignalMast* _mast;
     /*private*/ NamedIcon* getDragIcon();
     /*private*/ void getIconMap(int row);
+    QLabel* _promptLabel = nullptr;
+    QWidget* _blurb = nullptr;
+    /*private*/ QMap<QString, NamedIcon*>* _iconMastMap = nullptr;
 
 protected:
     /*protected*/ QWidget* instructions();
     /*protected*/ void initIconFamiliesPanel();
     /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
-    /*protected*/ QWidget* makeBottom1Panel();
-    /*protected*/ QWidget* makeBottom2Panel();
+    /*protected*/ void makeBottomPanel(ActionListener* doneAction);
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor);
+    /*protected*/ void setFamily(QString family);
+    /*protected*/ void showIcons();
+    /*protected*/ void hideIcons();
+
 friend class SMIconDragJLabel;
 };
     /*protected*/ class SMIconDragJLabel : public DragJLabel

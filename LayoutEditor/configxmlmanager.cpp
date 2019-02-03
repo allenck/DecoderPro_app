@@ -375,17 +375,18 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
 //  qSort(l.begin(), l.end(), compareValue);
   for (int i=0; i<l.size(); i++)
   {
-//        try {
-   //QObject* o = l.value(i).key();
-   QObject* o = l.at(i);
-   QDomElement e = elementFromObject(o);
-   if (!e.isNull())
-    root.appendChild(e);
-//        } catch (java.lang.Exception e) {
-//            storingErrorEncountered (NULL, "storing to file", Level.ERROR,
-//                                      "Unknown error (Exception)", NULL,NULL,e);
-//            result = false;
-//        }
+   try
+   {
+    //QObject* o = l.value(i).key();
+    QObject* o = l.at(i);
+    QDomElement e = elementFromObject(o);
+    if (!e.isNull())
+     root.appendChild(e);
+  } catch (Exception e) {
+      storingErrorEncountered (nullptr, "storing to file", Level::_ERROR,
+                                "Unknown error (Exception)", "","",e);
+      result = false;
+  }
  }
  return result;
 }

@@ -382,7 +382,8 @@
  *                 field
  * @since 1.4
  */
-/*public*/ /*static*/ QString JOptionPane::showInputDialog(QWidget* parentComponent, QVariant message, QVariant initialSelectionValue) {
+/*public*/ /*static*/ QString JOptionPane::showInputDialog(QWidget* parentComponent, QVariant message, QVariant initialSelectionValue)
+{
     return showInputDialog(parentComponent, message,
                   /*UIManager.getString*/QString("OptionPane.inputDialogTitle"/*,
                   parentComponent*/), QUESTION_MESSAGE, QIcon(), QList<QVariant>(),
@@ -476,7 +477,8 @@
     dialog->show();
     int rslt = dialog->exec();
     //dialog->/*dispose*/close();
-    if(rslt == QDialog::Rejected)
+//    if(rslt == QDialog::Rejected)
+    if(rslt == JOptionPane::CANCEL_OPTION)
         return QVariant();
 
     QVariant value = pane->getInputValue();
@@ -484,7 +486,7 @@
     if (value == UNINITIALIZED_VALUE) {
         return QVariant();
     }
-    return rslt;
+    return value;
 }
 
 /**

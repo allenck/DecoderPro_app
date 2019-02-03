@@ -312,7 +312,8 @@ void AnalogClock2Display::rateChange(int rate) // SLOT[]
  QPointF locAmPm = QPointF(locHands.x()-bounds.width()/2, locHands.y()+ bounds.height()/2);
  textItem->setPos(locAmPm);
  _itemGroup->addToGroup(textItem);
-
+ if(_itemGroup && _itemGroup->scene())
+  log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
  g->addItem(_itemGroup);
 
 }

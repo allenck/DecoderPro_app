@@ -2523,7 +2523,7 @@ private void changeSelectionModel(ListSelectionModel sm, int index,
 /*public*/ Class<?> getColumnClass(int column) {
     return getModel().getColumnClass(convertColumnIndexToModel(column));
 }
-
+#endif
 /**
  * Returns the cell value at <code>row</code> and <code>column</code>.
  * <p>
@@ -2539,11 +2539,11 @@ private void changeSelectionModel(ListSelectionModel sm, int index,
  * @param   column          the column whose value is to be queried
  * @return  the Object at the specified cell
  */
-/*public*/ Object getValueAt(int row, int column) {
-    return getModel().getValueAt(convertRowIndexToModel(row),
-                                 convertColumnIndexToModel(column));
+/*public*/ QVariant JTable::getValueAt(int row, int column) {
+    return getModel()->data(getModel()->index(convertRowIndexToModel(row),
+                                 convertColumnIndexToModel(column),QModelIndex()));
 }
-
+#if 0
 /**
  * Sets the value for the cell in the table model at <code>row</code>
  * and <code>column</code>.

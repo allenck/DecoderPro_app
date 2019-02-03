@@ -6,6 +6,8 @@
 #include "exceptions.h"
 #include "actionlistener.h"
 #include "libPr3_global.h"
+#include "jdialog.h"
+#include <QCheckBox>
 
 class BitSet;
 class Memory;
@@ -68,6 +70,7 @@ private:
     throw (JmriException);
     friend class TimeTurnout;
     friend class TimeSensor;
+    friend class ErrorDialog;
 };
 /*static*/ class DataPair
 {
@@ -102,6 +105,17 @@ public:
 public slots:
     /*public*/ void actionPerformed(ActionEvent* event = 0);
 
+};
+class ErrorDialog : public  JDialog
+{
+ Q_OBJECT
+
+    QCheckBox* rememberSession;
+    DefaultConditional* cond;
+public:
+    ErrorDialog(QStringList* list, DefaultConditional* cond);
+public slots:
+    void onCloseButton();
 };
 
 #endif // DEFAULTCONDITIONAL_H

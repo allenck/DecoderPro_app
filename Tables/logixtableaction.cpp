@@ -134,6 +134,7 @@
  addLogixFrame = NULL;
  _systemName = new JTextField(10);
  _addUserName = new JTextField(10);
+ _addUserName->setMinimumSize(_addUserName->sizeHint());
  _autoSystemName = new QCheckBox(tr("Automatically Generate System Name"));
  _sysNameLabel = new QLabel(tr("Logix System Name"));
  _userNameLabel = new QLabel(tr("Logix User Name"));
@@ -839,14 +840,14 @@ void LogixTableAction::enableAll(bool enable) {
  // make an Add Logix Frame
  if (addLogixFrame == NULL)
  {
-  QWidget* panel5 = makeAddLogixFrame("Add Logix", "Please enter system name and user name, then","click Create Logix, then add Conditionals.");
+  QWidget* panel5 = makeAddLogixFrame(tr("Add Logix"), tr("Please enter system name and user name, then","click Create Logix, then add Conditionals."));
   // Create Logix
   create = new QPushButton(tr("Create Logix"));
-  QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  sizePolicy.setVerticalStretch(0);
-  sizePolicy.setHorizontalStretch(0);
-  sizePolicy.setWidthForHeight(create->sizePolicy().hasHeightForWidth());
-  create->setSizePolicy(sizePolicy);
+//  QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+//  sizePolicy.setVerticalStretch(0);
+//  sizePolicy.setHorizontalStretch(0);
+//  sizePolicy.setWidthForHeight(create->sizePolicy().hasHeightForWidth());
+//  create->setSizePolicy(sizePolicy);
   panel5->layout()->addWidget(create);
   //        create->layout()->addActionListener(new ActionListener() {
   //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -856,7 +857,7 @@ void LogixTableAction::enableAll(bool enable) {
   connect(create, SIGNAL(clicked()), this, SLOT(createPressed()));
   create->setToolTip(tr("Press to create a new Logix"));
  }
- addLogixFrame->adjustSize();
+ addLogixFrame->pack();
  addLogixFrame->setVisible(true);
  _autoSystemName->setChecked(false);
  if(((UserPreferencesManager*) prefMgr)->getSimplePreferenceState(systemNameAuto))
@@ -873,6 +874,7 @@ QWidget* LogixTableAction::makeAddLogixFrame(QString titleId, QString messageId1
  addLogixFrame->addHelpMenu(
             "package.jmri.jmrit.beantable.LogixAddEdit", true);
  addLogixFrame->setLocation(50, 30);
+ addLogixFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
  if(addLogixFrame->centralWidget() == NULL)
  {
   QWidget* centralWidget = new QWidget();
@@ -934,11 +936,11 @@ QWidget* LogixTableAction::makeAddLogixFrame(QString titleId, QString messageId1
  panel5->setLayout(new QHBoxLayout());
  // Cancel
  QPushButton* cancel = new QPushButton(tr("Cancel"));
- QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(cancel->sizePolicy().hasHeightForWidth());
- cancel->setSizePolicy(sizePolicy);
+// QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+// sizePolicy.setHorizontalStretch(0);
+// sizePolicy.setVerticalStretch(0);
+// sizePolicy.setHeightForWidth(cancel->sizePolicy().hasHeightForWidth());
+// cancel->setSizePolicy(sizePolicy);
  panel5->layout()->addWidget(cancel);
 // cancel->layout()->addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
@@ -953,7 +955,7 @@ QWidget* LogixTableAction::makeAddLogixFrame(QString titleId, QString messageId1
 //        }
 //    });
  addLogixFrame->addWindowListener(addLogixFrameWindowListener = new AddLogixFrameWindowListener(this));
-  contentPane->layout()->addWidget(panel5);
+ ((QVBoxLayout*)contentPane->layout())->addWidget(panel5,0,Qt::AlignCenter);
 
 //  _autoSystemName->layout()->addWidgetItemListener(
 //        new ItemListener() {
@@ -969,8 +971,9 @@ AddLogixFrameWindowListener::AddLogixFrameWindowListener(LogixTableAction *self)
 {
  this->self = self;
 }
-void AddLogixFrameWindowListener::windowClosing(QCloseEvent */*e*/)
+void AddLogixFrameWindowListener::windowClosing(QCloseEvent * e)
 {
+ e->ignore();
  self->cancelAddPressed(NULL);
 }
 
@@ -1219,42 +1222,39 @@ bool LogixTableAction::checkLogixSysName()
 
 bool LogixTableAction::checkFlags(QString sName)
 {
-    if (_inEditMode)
-    {
-        // Already editing a Logix, ask for completion of that edit
-//        javax.swing.JOptionPane.showMessageDialog(NULL,
-//                java.text.MessageFormat.format(tr("Error32"),
-//                new Object[] { _curLogix.getSystemName() }), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(NULL, tr("Error"), tr("Cannot edit two Logixs at the same time. Please complete edit of Logix \"%1\" and try again.").arg(_curLogix->getSystemName()));
-        return false;
-    }
-    if (_inCopyMode) {
-        // Already editing a Logix, ask for completion of that edit
+ if (_inEditMode)
+ {
+  // Already editing a Logix, ask for completion of that edit
+  JOptionPane::showMessageDialog(nullptr,
+          tr("Cannot edit two Logixs at the same time. Please complete edit of Logix \"%1\" and try again.").arg(_curLogix->getSystemName()), tr("Error"),
+          JOptionPane::ERROR_MESSAGE);
+  if (_treeEdit != nullptr) {
+      _treeEdit->bringToFront();
+  } else if (_listEdit != nullptr) {
+      _listEdit->bringToFront();
+  }
+  return false;
+ }
+ if (_inCopyMode) {
+     // Already editing a Logix, ask for completion of that edit
 //        javax.swing.JOptionPane.showMessageDialog(editLogixFrame,
 //                java.text.MessageFormat.format(tr("Error31"),
 //                new Object[] { _logixSysName }), tr("ErrorTitle"),
 //                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(NULL,tr("Error"), tr("Copy of Logix \"{0}\" in progress.  Please complete and try again.").arg(_logixSysName) );
-        return false;
-    }
-    if (sName != NULL) {
-        // check if a Logix with this name exists
-        Logix* x = _logixManager->getBySystemName(sName);
-        if (x == NULL) {
-            // Logix does not exist, so cannot be edited
-            log->error("No Logix with system name: " + sName);
-//            javax.swing.JOptionPane.showMessageDialog(editLogixFrame, rbx
-//                    .getString("Error5"), tr("ErrorTitle"),
-//                    javax.swing.JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(NULL,tr("Error"), tr("Cannot find a Logix with that system name."));
-//            if (editLogixFrame != NULL) {
-//                editLogixFrame->setVisible(false);
-//            }
-            return false;
-        }
-    }
-    return true;
+     QMessageBox::critical(nullptr,tr("Error"), tr("Copy of Logix \"{0}\" in progress.  Please complete and try again.").arg(_logixSysName) );
+     return false;
+ }
+ if (sName != "") {
+  // check if a Logix with this name exists
+  Logix* x = _logixManager->getBySystemName(sName);
+  if (x == nullptr) {
+      // Logix does not exist, so cannot be edited
+      log->error("No Logix with system name: " + sName);
+      JOptionPane::showMessageDialog(nullptr, tr("Cannot find a Logix with that system name."), tr("Error"), JOptionPane::ERROR_MESSAGE);
+      return false;
+  }
+ }
+ return true;
 }
 
 
@@ -1405,6 +1405,7 @@ void LogixTableAction::editPressed(QString sName) {
 //     });
  }
 }
+
 /*public*/ LTALogixEventListener::LTALogixEventListener(QString sName, LogixTableAction *lta) : LogixEventListener((ConditionalEditBase*)lta)
 {
  this->sName = sName;
@@ -1446,6 +1447,7 @@ void LogixTableAction::editPressed(QString sName) {
 {
  QString lgxName = sName;
  //_listEdit.logixData.forEach((key, value) ->
+ if(lta->_listEdit->logixData == nullptr) return;
  QMapIterator<QString, QString> iter(*lta->_listEdit->logixData);
  while(iter.hasNext())
  {
@@ -1779,7 +1781,7 @@ QWidget* LogixTableAction::makeEditPanel(QWidget* comp, QString label, QString h
     if (hint != NULL) {
         panel->setToolTip(hint);
     }
-    comp->setMaximumSize(comp->sizeHint());  // override for text fields
+//    comp->setMaximumSize(comp->sizeHint());  // override for text fields
     panelLayout->addWidget(comp);
     panelLayout->addWidget(Box::createVerticalGlue());
     return panel;
@@ -1826,222 +1828,6 @@ void LogixTableAction::on_actionSetButton_Pressed()
 #endif
 /******* Methods shared by Edit Variable and Edit Action Windows **********/
 
-
-
-
-
-#if 0
-transient ActionListener actionOBlockPathListener = new ActionListener() {
-    /*public*/ void actionPerformed(ActionEvent e) {
-        // fired when oblock name changes
-        log->debug("actionOBlockPathListener fires; _actionNameField : "+_actionNameField->text().trimmed());
-        loadJComboBoxWithBlockPaths(_actionBox,_actionNameField->text().trimmed());
-    }
-};
-
-void loadJComboBoxWithBlockPaths(JComboBox box, String blockName) {
-    box.removeAllItems();
-    log->debug("loadJComboBoxWithBlockPaths called with name: "+blockName);
-    OBlock b = InstanceManager::oBlockManagerInstance().getOBlock(blockName);
-    if (b == NULL) {
-        box->layout()->addWidget(new QLabel("PromptLoadOBlockName"));
-    } else {
-        List<Path> l = b.getPaths();
-        for (int i = 0; i<l.size(); i++) {
-            box->addItem(((OPath)l.get(i)).getName());
-        }
-        box.setSelectedItem(b.getAllocatedPathName());
-    }
-}
-
-/**
- * Responds to change in variable type in State Variable Table in the Edit
- * Conditional window Also used to set up for Edit of a Conditional with
- * state variables.
- */
-/*private*/ void LogixTableAction::variableTypeChanged(int itemType)
-{
- int testType = _curVariable->getType();
- if (log->isDebugEnabled()) log->debug("variableTypeChanged: itemType= "+QString::number(itemType)+", testType= "+QString::number(testType));
- _variableNamePanel->setVisible(false);
- _variableStatePanel->setVisible(false);
- _variableComparePanel->setVisible(false);
- _variableSignalPanel->setVisible(false);
- _variableData1Panel->setVisible(false);
- _variableData2Panel->setVisible(false);
- _variableStateBox->clear();
-// _variableNameField->removeActionListener(variableSignalHeadNameListener);
-// _variableNameField->removeActionListener(variableSignalMastNameListener);
- disconnect(_variableNameField, SIGNAL(editingFinished()), this, SLOT(variableSignalMastNameListener()));
-
-// _variableStateBox->removeActionListener(variableSignalTestStateListener);
- disconnect(_variableStateBox, SIGNAL(currentIndexChanged(int)), this, SLOT(variableSignalTestStateListener()));
- switch (itemType)
- {
-  case Conditional::TYPE_NONE:
-   return;
-  case Conditional::ITEM_TYPE_SENSOR:
-   _variableNamePanel->setToolTip(tr("Enter Name (system or user) for Sensor (e.g. CS2)"));
-   for (int i=0; i<Conditional::ITEM_TO_SENSOR_TEST.length(); i++)
-   {
-    _variableStateBox->addItem(
-    ConditionalVariable::getStateString(Conditional::ITEM_TO_SENSOR_TEST.at(i)));
-   }
-   _variableStatePanel->setVisible(true);
-   _variableNamePanel->setVisible(true);
-   break;
-  case Conditional::ITEM_TYPE_TURNOUT:
-   _variableNamePanel->setToolTip(tr("Enter Name (system or user) for Turnout (e.g. LT12)"));
-   for (int i=0; i<Conditional::ITEM_TO_LIGHT_TEST.length(); i++)
-   {
-    _variableStateBox->addItem(
-            ConditionalVariable::getStateString(Conditional::ITEM_TO_TURNOUT_TEST.at(i)));
-   }
-    _variableNamePanel->setVisible(true);
-    _variableStatePanel->setVisible(true);
-    break;
-  case Conditional::ITEM_TYPE_LIGHT:
-   _variableNamePanel->setToolTip(tr("Enter Name (system or user) for Light (e.g. CL21)"));
-   for (int i=0; i<Conditional::ITEM_TO_LIGHT_TEST.length(); i++)
-   {
-    _variableStateBox->addItem(
-            ConditionalVariable::getStateString(Conditional::ITEM_TO_LIGHT_TEST.at(i)));
-   }
-   _variableStatePanel->setVisible(true);
-   _variableNamePanel->setVisible(true);
-   break;
-  case Conditional::ITEM_TYPE_SIGNALHEAD:
-//   _variableNameField->layout()->addActionListener(variableSignalHeadNameListener);
-//   _variableStateBox->layout()->addActionListener(variableSignalTestStateListener);
-   loadJComboBoxWithSignalAspects(_variableSignalBox,_variableNameField->text().trimmed());
-
-   for (int i=0; i<Conditional::ITEM_TO_SIGNAL_HEAD_TEST.length(); i++)
-   {
-    _variableStateBox->addItem(
-            ConditionalVariable::getStateString(Conditional::ITEM_TO_SIGNAL_HEAD_TEST.at(i)));
-   }
-   _variableNamePanel->setToolTip(tr("Enter Name (system or user) for Signal Head (e.g. IH34)"));
-   _variableNamePanel->setVisible(true);
-   _variableStatePanel->setVisible(true);
-   if (testType==Conditional::TYPE_SIGNAL_HEAD_APPEARANCE_EQUALS)
-   {
-    _variableSignalPanel->setVisible(true);
-   }
-   else
-   {
-    _variableSignalPanel->setVisible(false);
-   }
-   break;
-  case Conditional::ITEM_TYPE_SIGNALMAST:
-//   _variableNameField->layout()->addActionListener(variableSignalMastNameListener);
-     connect(_variableNameField, SIGNAL(editingFinished()), this, SLOT(variableSignalMastNameListener()));
-//   _variableStateBox->layout()->addActionListener(variableSignalTestStateListener);
-     connect(_variableStateBox, SIGNAL(currentIndexChanged(int)), this, SLOT(variableSignalTestStateListener()));
-   loadJComboBoxWithMastAspects(_variableSignalBox,_variableNameField->text().trimmed());
-
-   for (int i=0; i<Conditional::ITEM_TO_SIGNAL_MAST_TEST.length(); i++)
-   {
-    _variableStateBox->addItem(
-            ConditionalVariable::getStateString(Conditional::ITEM_TO_SIGNAL_MAST_TEST.at(i)));
-   }
-   _variableNamePanel->setToolTip(tr("Enter Name (system or user) for Signal Mast and hit Enter/Return to load aspects"));
-   _variableNamePanel->setVisible(true);
-   _variableStatePanel->setVisible(true);
-   if (testType==Conditional::TYPE_SIGNAL_MAST_ASPECT_EQUALS)
-   {
-    _variableSignalPanel->setVisible(true);
-   }
-   else
-   {
-    _variableSignalPanel->setVisible(false);
-   }
-   break;
-  case Conditional::ITEM_TYPE_MEMORY:
-  {
-   QWidget* p = (QWidget*)_variableData1Panel->children().at(1);
-   QLabel* l = (QLabel*)p->children().at(1);
-   if ((testType==Conditional::TYPE_MEMORY_COMPARE) ||
-                    (testType==Conditional::TYPE_MEMORY_COMPARE_INSENSITIVE))
-   {
-    l->setText(tr("Memory Value"));
-        _variableData1Panel->setToolTip(tr("Enter Memory whose value is compared"));
-   }
-   else
-   {
-    l->setText(tr("Literal Value"));
-    _variableData1Panel->setToolTip(tr("Enter Value is to be compared"));
-   }
-   _variableNamePanel->setToolTip(tr("Enter name (system or user) of Memory"));
-   _variableNamePanel->setVisible(true);
-   _variableData1Panel->setToolTip(tr("Enter Memory whose value is compared"));
-   _variableData1Panel->setVisible(true);
-   _variableComparePanel->setVisible(true);
-   break;
-  }
-  case Conditional::ITEM_TYPE_CONDITIONAL:
-  {
-   _variableNamePanel->setToolTip(tr("Enter System Name for Conditional (or User Name if in this Logix)"));
-   for (int i=0; i<Conditional::ITEM_TO_CONDITIONAL_TEST.length(); i++)
-   {
-    _variableStateBox->addItem(
-            ConditionalVariable::getStateString(Conditional::ITEM_TO_CONDITIONAL_TEST.at(i)));
-   }
-   _variableNamePanel->setVisible(true);
-   _variableStatePanel->setVisible(true);
-   break;
-  }
-  case Conditional::ITEM_TYPE_WARRANT:
-  {
-   _variableNamePanel->setToolTip(tr("Enter name (system or user) of Warrant"));
-   for (int i=0; i<Conditional::ITEM_TO_WARRANT_TEST.length(); i++) {
-        _variableStateBox->addItem(
-            ConditionalVariable::getStateString(Conditional::ITEM_TO_WARRANT_TEST.at(i)));
-   }
-   _variableNamePanel->setVisible(true);
-   _variableStatePanel->setVisible(true);
-   break;
-  }
-  case Conditional::ITEM_TYPE_CLOCK:
-  {
-   QWidget*p = (QWidget*)_variableData1Panel->children().at(1);
-   QLabel* l = (QLabel*)p->children().at(1);
-   l->setText(tr("Start Time"));
-   _variableData1Panel->setToolTip(tr("Enter time (hh:mm) for a 24-hour clock"));
-   _variableData1Panel->setVisible(true);
-   _variableData2Panel->setVisible(true);
-   break;
-  }
-#if 0
-  case Conditional::ITEM_TYPE_OBLOCK:
-    _variableNamePanel->setToolTip(tr("Enter name (system or user) of OBlock"));
-    _variableNamePanel->setVisible(true);
-    _variableStateBox.removeAllItems();
-    Enumeration<String> names = OBlock.getLocalStatusNames();
-    while (names.hasMoreElements()) {
-        _variableStateBox->addItem(names.nextElement());
-   }
-   _variableStatePanel->setVisible(true);
-   break;
-  case Conditional::ITEM_TYPE_ENTRYEXIT:
-   _variableNameField->setText(_curVariable->getName());
-   for (int i=0; i<Conditional::ITEM_TO_ENTRYEXIT_TEST.length(); i++)
-   {
-    _variableStateBox->addItem(
-    ConditionalVariable::getStateString(Conditional::ITEM_TO_ENTRYEXIT_TEST.at(i)));
-   }
-   variableStatePanel->setVisible(true);
-   _variableNamePanel->setVisible(true);
-   break;
-#endif
-  default :
-   break;
- }
- _variableStateBox->setMaximumSize(_variableStateBox->size());
-} /* variableTypeChanged */
-
-#endif
-
-
 /**
  * Validates Action data from Edit Action Window, and transfers it to
  * current action object as appropriate
@@ -2053,468 +1839,6 @@ void loadJComboBoxWithBlockPaths(JComboBox box, String blockName) {
  * errors.
  */
 
-
-#if 0
-// *********** Utility Methods ********************
-
-/**
-* Checks if String is an integer or references an integer
-*/
-bool LogixTableAction::validateIntegerReference(int actionType, QString intReference) {
-    if (intReference == NULL || intReference.trimmed().length() == 0) {
-        displayBadIntegerReference(actionType);
-        return false;
-    }
-    try {
-        return validateInteger(actionType, (intReference).toInt());
-    } catch (NumberFormatException e) {
-        intReference = validateMemoryReference(intReference);
-        if (intReference != NULL)		// memory named 'intReference' exits
-        {
-            Memory* m = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->getByUserName(intReference);
-            if (m == NULL) {
-                m = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->getBySystemName(intReference);
-            }
-            try {
-                return validateInteger(actionType, m->getValue().toInt());
-            } catch (NumberFormatException ex) {
-//                javax.swing.JOptionPane.showMessageDialog(
-//                   editConditionalFrame, java.text.MessageFormat.format(tr("Error24"),
-//                   intReference), tr("WarnTitle"), javax.swing.JOptionPane.WARNING_MESSAGE);
-                QMessageBox::warning(NULL, tr("Warning"), tr("Memory variable \"%1\" currently does not contain an integer value.\nThe action cannot be performed until this value is corrected! ").arg(intReference));
-
-                return true;
-            }
-        }
-        displayBadIntegerReference(actionType);
-    }
-    return false;
-}
-
-/**
-* Checks text represents an integer suitable for timing
-* throws NumberFormatException
-*/
-bool LogixTableAction::validateInteger(int actionType, int time) {
-    int maxTime = 3600;     // more than 1 hour
-    int minTime = 1;
-    if (actionType == Conditional::ACTION_SET_LIGHT_INTENSITY)
-    {
-        maxTime = 100;
-        minTime = 0;
-
-    }
-    if (time < minTime || time > maxTime) {
-        QString errorNum = " ";
-        switch(actionType) {
-            case Conditional::ACTION_DELAYED_TURNOUT:
-                errorNum = "Set Delayed Turnout action";
-                break;
-            case Conditional::ACTION_RESET_DELAYED_TURNOUT:
-                errorNum = "Reset Delayed Set Turnout action";
-                break;
-            case Conditional::ACTION_DELAYED_SENSOR:
-                errorNum = "Error23";
-                break;
-            case Conditional::ACTION_RESET_DELAYED_SENSOR:
-                errorNum = "Error27";
-                break;
-            case Conditional::ACTION_SET_LIGHT_INTENSITY:
-                errorNum = "Error42";
-                break;
-            case Conditional::ACTION_SET_LIGHT_TRANSITION_TIME:
-                errorNum = "Error29";
-                break;
-            default : break;
-        }
-//        javax.swing.JOptionPane.showMessageDialog(
-//                editConditionalFrame, java.text.MessageFormat.format(tr("Error38"),
-//                time, tr(errorNum)), tr("ErrorTitle"), javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(NULL, tr("Error"), tr("Please enter a positive number of seconds less than 1 hour, and try again."));
-
-        return false;
-    }
-    return true;
-}
-
-void LogixTableAction::displayBadIntegerReference(int actionType)
-{
-    QString errorNum = " ";
-    switch(actionType) {
-        case Conditional::ACTION_DELAYED_TURNOUT:
-            errorNum = "Error39";
-            break;
-        case Conditional::ACTION_RESET_DELAYED_TURNOUT:
-            errorNum = "Error41";
-            break;
-        case Conditional::ACTION_DELAYED_SENSOR:
-            errorNum = "Error23";
-            break;
-        case Conditional::ACTION_RESET_DELAYED_SENSOR:
-            errorNum = "Error27";
-            break;
-        case Conditional::ACTION_SET_LIGHT_INTENSITY:
-//            javax.swing.JOptionPane.showMessageDialog(
-//                    editConditionalFrame, tr("Error43"),
-//                    tr("ErrorTitle"), javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(NULL, tr("Error"), tr("Enter an integer (digits only) or a Memory variable containing\nan integer to Set Light Intensity."));
-            return;
-        case Conditional::ACTION_SET_LIGHT_TRANSITION_TIME:
-            errorNum = "Error29";
-            break;
-    }
-//    javax.swing.JOptionPane.showMessageDialog(
-//            editConditionalFrame, java.text.MessageFormat.format(tr("Error9"),
-//            tr(errorNum)), tr("ErrorTitle"), javax.swing.JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(NULL, tr("Error"), tr("Enter an integer (digits only) or a Memory variable containing\nan integer for the number of seconds to %1 .").arg(errorNum));
-
-}
-
-/**
-* Checks Memory reference of text.
-*/
-QString LogixTableAction::validateMemoryReference(QString name) {
-    Memory* m = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            m = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->getByUserName(name);
-            if (m != NULL) {
-                return name;
-            }
-        }
-        m = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->getBySystemName(name);
-    }
-    if (m == NULL) {
-        messageInvalidActionItemName(name, "Memory");
-        return NULL;
-    }
-    return name;
-}
-
-/**
-* Checks Turnout reference of text.
-*/
-QString LogixTableAction::validateTurnoutReference(QString name) {
-    Turnout* t = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getByUserName(name);
-            if (t != NULL) {
-                return name;
-            }
-        }
-        t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getBySystemName(name);
-    }
-    if (t == NULL) {
-        messageInvalidActionItemName(name, "Turnout");
-        return NULL;
-    }
-    return name;
-}
-
-/**
-* Checks SignalHead reference of text.
-*/
-QString LogixTableAction::validateSignalHeadReference(QString name) {
-    SignalHead* h = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            h = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getByUserName(name);
-            if (h != NULL) {
-                return name;
-            }
-        }
-        h = ((AbstractSignalHeadManager*)InstanceManager::signalHeadManagerInstance())->getBySystemName(name);
-    }
-    if (h == NULL) {
-        messageInvalidActionItemName(name, "SignalHead");
-        return NULL;
-    }
-    return name;
-}
-/**
-* Checks SignalMast reference of text.
-*/
-QString LogixTableAction::validateSignalMastReference(QString name) {
-    SignalMast* h = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            h = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->getByUserName(name);
-            if (h != NULL) {
-                return name;
-            }
-        }
-        h = ((DefaultSignalMastManager*)InstanceManager::signalMastManagerInstance())->provideSignalMast(name);
-    }
-    if (h == NULL) {
-        messageInvalidActionItemName(name, "SignalMast");
-        return NULL;
-    }
-    return name;
-}
-
-QString LogixTableAction::validateWarrantReference(QString name) {
-    Warrant w = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            w = InstanceManager::warrantManagerInstance().getByUserName(name);
-            if (w != NULL) {
-                return name;
-            }
-        }
-        w = InstanceManager::warrantManagerInstance().getBySystemName(name);
-    }
-    if (w == NULL) {
-        messageInvalidActionItemName(name, "Warrant");
-        return NULL;
-    }
-    return name;
-}
-QString LogixTableAction::validateOBlockReference(QString name) {
-    OBlock b = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            b = InstanceManager::oBlockManagerInstance().getByUserName(name);
-            if (b != NULL) {
-                return name;
-            }
-        }
-        b = InstanceManager::oBlockManagerInstance().getBySystemName(name);
-    }
-    if (b == NULL) {
-        messageInvalidActionItemName(name, "OBlock");
-        return NULL;
-    }
-    return name;
-}
-
-/**
-* Checks Sensor reference of text.
-*/
-QString LogixTableAction::validateSensorReference(QString name) {
-    Sensor* s = NULL;
-    if (name != "") {
-        name = name.trimmed();
-        if (name.length()>0) {
-            s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(name);
-            if (s != NULL) {
-                return name;
-            }
-        }
-        s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getBySystemName(name);
-    }
-    s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getBySystemName(name);
-    if (s == NULL) {
-        messageInvalidActionItemName(name, "Sensor");
-        return NULL;
-    }
-    return name;
-}
-
-/**
-* Checks Light reference of text.
-*/
-QString LogixTableAction::validateLightReference(QString name) {
-    Light* l = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getByUserName(name);
-            if (l != NULL) {
-                return name;
-            }
-        }
-        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(name);
-    }
-    if (l == NULL) {
-        messageInvalidActionItemName(name, "Light");
-        return NULL;
-    }
-    return name;
-}
-
-/**
-* Checks Conditional reference of text.
-* Forces name to System name
-*/
-QString LogixTableAction::validateConditionalReference(QString name) {
-    Conditional* c = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            c = ((DefaultConditionalManager*)_conditionalManager)->getByUserName(name);
-            if (c != NULL) {
-                return name;
-            }
-        }
-        c = ((DefaultConditionalManager*)_conditionalManager)->getBySystemName(name);
-    }
-    if (c == NULL) {
-        messageInvalidActionItemName(name, "Conditional");
-        return NULL;
-    }
-    return name;
-}
-
-/**
-* Checks Logix reference of text.
-*/
-QString LogixTableAction::validateLogixReference(QString name) {
-    Logix* l = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            l = ((DefaultLogixManager*)_logixManager)->getByUserName(name);
-            if (l != NULL) {
-                return name;
-            }
-        }
-        l = ((DefaultLogixManager*)_logixManager)->getBySystemName(name);
-    }
-    if (l == NULL) {
-        messageInvalidActionItemName(name, "Logix");
-        return NULL;
-    }
-    return name;
-}
-/**
-* Checks Route reference of text.
-*/
-QString LogixTableAction::validateRouteReference(QString name) {
-    Route* r = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            r = ((DefaultRouteManager*)InstanceManager::routeManagerInstance())->getByUserName(name);
-            if (r != NULL) {
-                return name;
-            }
-        }
-        r = ((DefaultRouteManager*)InstanceManager::routeManagerInstance())->getBySystemName(name);
-    }
-    if (r == NULL) {
-        messageInvalidActionItemName(name, "Route");
-        return NULL;
-    }
-    return name;
-}
-
-String validateAudioReference(String name) {
-    Audio a = NULL;
-    if (name != NULL) {
-        name = name.trimmed();
-        if (name.length()>0) {
-            a = InstanceManager::audioManagerInstance().getByUserName(name);
-            if (a != NULL) {
-                return name;
-            }
-        }
-        a = InstanceManager::audioManagerInstance().getBySystemName(name);
-    }
-    if (a == NULL || ( a.getSubType()!=Audio.SOURCE && a.getSubType()!=Audio.LISTENER) ) {
-        messageInvalidActionItemName(name, "Audio");
-        return NULL;
-    }
-    return name;
-}
-
-String validateEntryExitReference(String name) {
-    NamedBean nb = NULL;
-    if( name != NULL){
-        name = name.trimmed();
-        if (name.length()>0) {
-            nb = jmri.InstanceManager::getDefault(jmri.jmrit.signalling.EntryExitPairs.class).getNamedBean(name);
-            if (nb != NULL) {
-                return nb.getSystemName();
-            }
-        }
-    }
-    messageInvalidActionItemName(name, "Entry Exit");
-    return NULL;
-}
-
-/**
-* get Light instance.
-*/
-Light* LogixTableAction::getLight(QString name) {
-    if (name==NULL) {
-        return NULL;
-    }
-    Light* l = NULL;
-    name = name.trimmed();
-    if (name.length()>0) {
-        l = (Light*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->getByUserName(name);
-        if (l != NULL) {
-            return l;
-        }
-        l = (Light*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(name);
-    }
-    if (l == NULL) {
-        messageInvalidActionItemName(name, "Light");
-    }
-    return l;
-}
-
-int LogixTableAction::parseTime(QString s) {
-    int nHour = 0;
-    int nMin = 0;
-    bool error = false;
-    int index = s.indexOf(':');
-    QString hour = NULL;
-    QString minute = NULL;
-    try {
-        if (index > 0)
-        {
-            hour = s.mid(0, index);
-            if (index > 1)
-
-                minute = s.mid(index+1);
-            else
-                minute = "0";
-        } else if (index == 0)
-        {
-            hour = "0";
-            minute = s.mid(index+1);
-        } else {
-            hour = s;
-            minute = "0";
-        }
-    } catch (IndexOutOfBoundsException ioob ) {
-        error = true;
-    }
-    if (!error)  {
-        try {
-            nHour = hour.toInt();
-            if ((nHour < 0) || (nHour > 24)) {
-                error = true;
-            }
-            nMin = minute.toInt();
-            if ((nMin < 0) || (nMin > 59)) {
-                error = true;
-            }
-        } catch (NumberFormatException e) {
-            error = true;
-        }
-    }
-    if (error) {
-        // if unsuccessful, print error message
-//        javax.swing.JOptionPane.showMessageDialog(editConditionalFrame,
-//                java.text.MessageFormat.format(tr("Error26"),
-//                new Object[] { s }), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(NULL, tr("Error"), tr("for a 24-hour clock. Please reenter in correct format, and try again. "));
-        return (-1);
-    }
-    // here if successful
-    return ((nHour * 60) + nMin);
-}
-#endif
 /**
  * Formats time to hh:mm given integer hour and minute
  */

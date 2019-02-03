@@ -8,6 +8,7 @@
 #include "generalpath.h"
 #include "box.h"
 #include <QVBoxLayout>
+#include "loggerfactory.h"
 
 DrawPolygon::DrawPolygon(): DrawFrame(NULL)
 {
@@ -176,7 +177,11 @@ DrawPolygon::DrawPolygon(): DrawFrame(NULL)
     _pShape->paint(g);
    }
    else
+   {
+    if(item && item->scene())
+     log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
     g->addItem(item);
+   }
  }
 }
 
@@ -423,3 +428,4 @@ void DrawPolygon::setDisplayHeight(int h) {
     }
 }
 
+ /*private*/ /*final*/ /*static*/ Logger* DrawPolygon::log = LoggerFactory::getLogger("DrawPolygon");

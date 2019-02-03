@@ -22,6 +22,7 @@ public:
     /*public*/ Logix* getBySystemName(QString name);
     /*public*/ Logix* getByUserName(QString key);
     /*public*/ void setLoadDisabled(bool s);
+    /*public*/ bool getLoadDisabled();
     static DefaultLogixManager* _instance;// = NULL;
     static /*public*/ DefaultLogixManager* instance();
 
@@ -32,7 +33,7 @@ private:
     DecimalFormat* paddedNumber;// = new DecimalFormat("0000");
 
     int lastAutoLogixRef;// = 0;
-    bool loadDisabled;// = false;
+    bool loadDisabled = false;
     Logger* log;
 };
 

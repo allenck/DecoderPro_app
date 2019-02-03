@@ -1,7 +1,7 @@
 #include "displayframe.h"
 #include "loggerfactory.h"
 #include "editor.h"
-
+#include "placewindow.h"
 /**
  * Extended JmriJFrame that allows to add an InitEventListener for display of
  * a tabbed frame in the CPE Add Item {@link jmri.jmrit.display.palette.ItemPalette} pane.
@@ -136,7 +136,7 @@ jmri.util.swing.ImagePanel -- preview
         log->debug(tr(" deltaDim= (%1, %2) NewDim= (%3, %4) setPreferredSize to (%5, %6)" ).arg(
             deltaDim.width() ).arg( deltaDim.height() ).arg( newDim.width() ).arg( newDim.height() ).arg( dim.width(), dim.height()));
     pack();
-// TODO:    setLocation(PlaceWindow.nextTo(ed, null, this));
+    move(PlaceWindow::nextTo(ed, nullptr, this));
     if (log->isDebugEnabled()) {
         dim = container->size();
         log->debug(tr(" Resized to (%1, %2)" ).arg( dim.width() ).arg( dim.height()));

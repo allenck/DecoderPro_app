@@ -475,6 +475,7 @@ public slots:
 
 class LTALogixEventListener : public LogixEventListener
 {
+ Q_OBJECT
  LogixTableAction* lta;
  QString sName;
 
@@ -485,6 +486,7 @@ public:
 
 class LTALogixEventListener1 : public LogixEventListener
 {
+ Q_OBJECT
  QString sName;
  LogixTableAction* lta;
 public:

@@ -25,7 +25,10 @@ protected:
 //    /*protected*/ QLabel* getDragger(DataFlavor flavor, QHash<QString, NamedIcon*>* map);
 //    /*protected*/ void showIcons();
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
+    /*protected*/ void openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
+
 friend class SHIconDragJLabel;
+friend class SignalHeadIconDialog;
 };
 /*protected*/ class SHIconDragJLabel : public DragJLabel {
     QMap <QString, NamedIcon*>* iconMap;
@@ -33,9 +36,11 @@ friend class SHIconDragJLabel;
     SignalHeadItemPanel* self;
  public:
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
+    QString mimeData();
     /*public*/ SHIconDragJLabel(DataFlavor* flavor, QMap <QString, NamedIcon*>* map, SignalHeadItemPanel* self);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
-    QString mimeData();
+
+
 };
 
 #endif // SIGNNALHEADITEMPANEL_H

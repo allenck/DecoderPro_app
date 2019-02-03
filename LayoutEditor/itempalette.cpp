@@ -40,6 +40,8 @@
 #include "portalitempanel.h"
 #include "editor.h"
 #include "rpsitempanel.h"
+#include "placewindow.h"
+#include "joptionpane.h"
 
 //ItemPalette::ItemPalette(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -386,7 +388,7 @@ void ItemPalette::changeEvent(QEvent * e)
    QString fileName = iconfiles.at(j).toElement().text().trimmed();
    if (fileName=="" || fileName.length()==0)
    {
-    fileName = "resources/icons/misc/X-red.gif";
+    fileName = ":/resources/icons/misc/X-red.gif";
     log->warn("loadDefaultIcons: iconName= "+iconName+" in family "+familyName+" has no image file.");
    }
    if(fileName.startsWith("resources"))
@@ -436,6 +438,30 @@ void ItemPalette::changeEvent(QEvent * e)
  return familyTOMap;
 }
 
+/*static*/ /*public*/ ItemPalette* ItemPalette::getDefault(QString title,/* @Nonnull */Editor* ed) {
+//        if (GraphicsEnvironment.isHeadless()) {
+//            return null;
+//        }
+        ItemPalette* instance = static_cast<ItemPalette*>( InstanceManager::getOptionalDefault("ItemPalette"));//.orElseGet(() -> {
+          if(instance == nullptr)
+            return (ItemPalette*)InstanceManager::setDefault("ItemPalette", new ItemPalette(title, ed));
+//        });
+        QListIterator<ItemPanel*> iter(_tabIndex->values());
+        while (iter.hasNext()) {
+            iter.next()->setEditor(ed);
+        }
+        QString name = ed->getName();
+        if (name == "" || name == ("")) {
+            name = tr("Untitled");
+        }
+        instance->setTitle(tr("Item Palette") + " - " + name);
+        // pack before setLocation
+        instance->pack();
+        instance->move(PlaceWindow::nextTo(ed, nullptr, instance));
+        instance->setVisible(true);
+        return instance;
+    }
+
 /*public*/ ItemPalette::ItemPalette(QWidget* parent) : DisplayFrame(true, true, parent)
 {
  // super(true, true);
@@ -461,7 +487,7 @@ void ItemPalette::init(QString title, Editor* ed)
  _tabIndex = new QMap<QString, ItemPanel*>();
  this->setTitle(title);
  loadIcons(ed);
- //addWindowListener(new IPWindowListener(this));
+ addWindowListener(new IPWindowListener(this));
 // @Override
 // public void windowClosing(java.awt.event.WindowEvent e) {
 //     closePanels(e);
@@ -580,10 +606,7 @@ void IPWindowListener::windowClosing(QCloseEvent *)
 
 /*static*/ void ItemPalette::addItemTab(ItemPanel* itemPanel, QString key, QString tabTitle)
 {
- QLabel* testLabel = new QLabel("test label");
- itemPanel->thisLayout->addWidget(testLabel);
-
- log->debug(tr("add panel '%1', layout %2 contains %3 items, objectName = %4").arg(key).arg(itemPanel->layout()== nullptr?"null layout": itemPanel->thisLayout->metaObject()->className()).arg(itemPanel->thisLayout->children().size()).arg(itemPanel->thisLayout->objectName()));
+ log->debug(tr("add panel '%1', layout %2 contains %3 items, objectName = %4").arg(key).arg(itemPanel->layout()== nullptr?"null layout": itemPanel->thisLayout->metaObject()->className()).arg(itemPanel->children().size()).arg(itemPanel->thisLayout->objectName()));
   QScrollArea* scrollPane = new QScrollArea(/*itemPanel*/);
   scrollPane->setWidget(itemPanel);
   scrollPane->setWidgetResizable(true);
@@ -663,7 +686,6 @@ void IPEditItemActionListener::actionPerformed()
 }
 
 /*public*/ void ItemPalette::closePanels(/*java.awt.event.WindowEvent e*/) {
-#if 1
     //java.awt.Component[] comps = _tabPane.getComponents();
     QObjectList comps = _tabPane->children();
     if (log->isDebugEnabled()) log->debug("closePanels: tab count= "+_tabPane->count());
@@ -677,31 +699,33 @@ void IPEditItemActionListener::actionPerformed()
         }
     }
     JmriJFrame::windowClosing(NULL);
-#endif
 }
 
 /**
 * Look for duplicate name of family in the iterated set
 */
-/*static*/ bool ItemPalette::familyNameOK(QWidget* frame, QString type, QString family, QStringListIterator it) {
-    if (family==NULL || family.length()==0) {
-//        JOptionPane.showMessageDialog(frame,
-//                ItemPalette.tr("EnterFamilyName"),
-//                ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
-        QMessageBox::warning(frame, tr("Warning"), tr("Enter a name for this icon set."));
-        return false;
-    }
-    while (it.hasNext()) {
-       if (family==(it.next())) {
-//           JOptionPane.showMessageDialog(frame,
-//                java.text.MessageFormat.format(ItemPalette.tr("DuplicateFamilyName"),
-//                new Object[] { family, type }),
-//                ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
-           QMessageBox::warning(frame, tr("Warning"), tr("%1 is already the name of an icon set for %2 icons.").arg(family).arg(type));
-           return false;
-       }
-    }
-    return true;
+/*static*/ bool ItemPalette::familyNameOK(QWidget* frame, QString type, QString family, QStringListIterator it)
+{
+ if (family=="" || family.length()==0)
+ {
+  JOptionPane::showMessageDialog(frame,
+          tr("Enter a name for this icon set."),
+          tr("Warning"), JOptionPane::WARNING_MESSAGE);
+     return false;
+ }
+ while (it.hasNext())
+ {
+  QString f = it.next();
+  log->debug(tr("familyNameOK compare %1 %2 to %3").arg(type).arg(family).arg(f));
+  if(family == f)
+  {
+     JOptionPane::showMessageDialog(frame,
+          tr("%1 is already the name of an icon set for %2 icons.").arg(family).arg(type),
+          tr("Warning"), JOptionPane::WARNING_MESSAGE);
+     return false;
+  }
+ }
+ return true;
 }
 
 /**

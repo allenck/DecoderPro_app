@@ -1371,13 +1371,13 @@ void Apps::keyPressEvent(QKeyEvent *e)
 
 //    Object[] options = {"Disable",
 //        "Enable"};
+ QVariantList options = QVariantList() << "Disable" << "Enable";
 
-//    int retval = JOptionPane.showOptionDialog(NULL, "Start JMRI with Logix enabled or disabled?", "Start Up",
-//            JOptionPane.YES_NO_OPTION,
-//            JOptionPane.QUESTION_MESSAGE, NULL, options, options[0]);
+    int retval = JOptionPane::showOptionDialog(NULL, "Start JMRI with Logix enabled or disabled?", "Start Up",
+            JOptionPane::YES_NO_OPTION,
+            JOptionPane::QUESTION_MESSAGE, QIcon(), options, options[0]);
 
-//    if (retval != 0)
- if(QMessageBox::question(NULL, tr("Start Up"),tr("Start JMRI with Logix enabled or disabled?"), QMessageBox ::Yes | QMessageBox::No)!= QMessageBox::Yes)
+ if (retval != 0)
  {
   debugmsg = false;
   return;

@@ -205,7 +205,7 @@ ControlPanelEditor::~ControlPanelEditor()
 // }
  editScene = (EditScene*)Editor::getTargetPanel();
  editScene->setObjectName("editScene");
- _itemPalette = new ItemPalette(tr("Item Palette"), this);
+ //_itemPalette = new ItemPalette(tr("Item Palette"), this);
  editPanel->setDragMode(QGraphicsView::NoDrag);
  editPanel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
  editPanel->setObjectName("editPanel");
@@ -250,6 +250,7 @@ ControlPanelEditor::~ControlPanelEditor()
 }
 void ControlPanelEditor::on_itemPallette()
 {
+ _itemPalette = ItemPalette::getDefault(tr("Item Palette"), this);
  _itemPalette->setVisible(true);
 }
 
@@ -2495,6 +2496,8 @@ void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
    {
     QGraphicsRectItem* item = new QGraphicsRectItem(p->getX(), p->getY(), p->maxWidth(), p->maxHeight());
     item->setPen(QPen(QColor(150, 150, 255),2));
+    if(item && item->scene())
+     log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
     g->addItem(item);
    }
    else

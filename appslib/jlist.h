@@ -16,6 +16,8 @@ public:
  /*public*/ int getSelectedIndex();
  /*public*/ void setSelectedValue(QVariant anObject, bool shouldScroll);
  /*public*/ QVariant getSelectedValue();
+ /*public*/ void setSelectedIndex(int index);
+ /*public*/ void ensureIndexIsVisible(int index);
 
 private:
  void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);

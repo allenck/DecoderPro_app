@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutSlipXml : public AbstractXmlAdapter
 {
  Q_OBJECT
 public:
- explicit LayoutSlipXml(QObject *parent = 0);
+ Q_INVOKABLE explicit LayoutSlipXml(QObject *parent = 0);
  ~LayoutSlipXml() {}
  LayoutSlipXml(const LayoutSlipXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

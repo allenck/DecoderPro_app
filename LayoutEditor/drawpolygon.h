@@ -16,6 +16,7 @@ class DrawPolygon : public DrawFrame
   /*public*/ void paint(QGraphicsScene* g);
 
  private:
+  static Logger* log;
   QList<QPoint>* _vertices;
   QGraphicsPathItem* item;
      int _curX;

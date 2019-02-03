@@ -68,7 +68,7 @@ private:
  /*private*/ CircuitBuilder* _circuitBuilder;
  /*private*/ QList<Positionable*>* _secondSelectionGroup;
  /*private*/ ShapeDrawer* _shapeDrawer;
- /*private*/ ItemPalette* _itemPalette;
+ /*private*/ ItemPalette* _itemPalette = nullptr;
  /*private*/ bool _disableShapeSelection;
  /*private*/ bool _disablePortalSelection;// = true;		// only select PortalIcon in CircuitBuilder
  /*private*/ QAction* useGlobalFlagBox;// = new QAction(tr("Override individual Position & Control settings "));
@@ -103,8 +103,6 @@ private:
  DataFlavor* _positionableDataFlavor;
  DataFlavor* _positionableListDataFlavor;
  DataFlavor* _namedIconDataFlavor;
-
-
 
 private slots:
  /*private*/ void zoomRestore(); // SLOT

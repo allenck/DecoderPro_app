@@ -3,9 +3,11 @@
 
 #include <QFrame>
 #include "bufferedimage.h"
+#include <QPainter>
+#include <QGroupBox>
 
 class Logger;
-class ImagePanel : public QFrame
+class ImagePanel : public QGroupBox
 {
  Q_OBJECT
 public:
@@ -20,7 +22,8 @@ private:
  /*private*/ BufferedImage* back;// = null;
  /*private*/ BufferedImage* clip;// = null;
 /*private*/ static /*final*/ Logger* log;// = LoggerFactory::getLogger("ImagePanel");
-
+ void paintEvent(QPaintEvent*);
+ QPixmap bkgnd;
 };
 
 #endif // IMAGEPANEL_H

@@ -847,8 +847,8 @@ void Editor::closeEvent(QCloseEvent */*e*/)
   }
   if (!static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->isShuttingDown())
   {
-    //new Object[]{Bundle.getMessage("ButtonHide"), Bundle.getMessage("ButtonDeletePanel"),
-   //Bundle.getMessage("ButtonDontShow")}, Bundle.getMessage("ButtonHide"));
+    //new Object[]{tr("ButtonHide"), tr("ButtonDeletePanel"),
+   //tr("ButtonDontShow")}, tr("ButtonHide"));
    QVariantList vl = QVariantList() << tr("Hide Panel") << tr("Delete Panel") << tr("Don't show this again");
    int selectedValue = JOptionPane::showOptionDialog(_targetFrame,
              message, tr("Reminder"),
@@ -1554,6 +1554,10 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     bAdded = l->updateScene();
     if(l->_itemGroup != nullptr && l->_itemGroup->parentObject() != nullptr)
      log->debug(tr("Item already has a parent %1 ").arg(l->getNameString()));
+    if(l->_itemGroup && l->_itemGroup->scene())
+     log->warn("item already has been added ");
+    if(l->_itemGroup && l->_itemGroup->scene())
+     log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
     editScene->addItem(l->_itemGroup);
     if(l->_itemGroup != nullptr && l->_itemGroup->name() == "")
      l->_itemGroup->setName(l->getGroupName());
@@ -2288,7 +2292,7 @@ void Editor::addSlip()
  return l;
 }
 /*protected*/ BlockContentsIcon* Editor::putBlockContents() {
-    BlockContentsIcon* result = new BlockContentsIcon(new NamedIcon(":resources/icons/misc/X-red.gif",
+    BlockContentsIcon* result = new BlockContentsIcon(new NamedIcon(":/resources/icons/misc/X-red.gif",
             "resources/icons/misc/X-red.gif"), this);
     IconAdder* blockIconEditor = getIconEditor("BlockLabel");
     result->setBlock(blockIconEditor->getTableSelection()->getDisplayName());
@@ -2453,147 +2457,125 @@ void Editor::putBackground() {
 {
  if (_debug) log->debug("makeAddIconFrame for "+name+", add= "+add+", table= "+table);
  QString txt;
+ QString BundleName;
  JFrameItem* frame = new JFrameItem(name, editor);
  frame->setMinimumSize(300, 600);
-#if 1
+ // use NamedBeanBundle property for basic beans like "Turnout" I18N
+ if ("Sensor" == (name)) {
+     BundleName = tr("Sensor");
+ } else if ("SignalHead" == (name)) {
+     BundleName = tr("SignalHead");
+ } else if ("SignalMast" == (name)) {
+     BundleName = tr("SignalMast");
+ } else if ("Memory" == (name)) {
+     BundleName = tr("Memory");
+ } else if ("Reporter" == (name)) {
+     BundleName = tr("Reporter");
+ } else if ("Light" == (name)) {
+     BundleName = tr("Light");
+ } else if ("Turnout" == (name)) {
+     BundleName = tr("Turnout"); // called by RightTurnout and LeftTurnout objects in TurnoutIcon.java edit() method
+ } else if ("Block" == (name)) {
+     BundleName = tr("Block");
+ } else {
+     BundleName = name;
+ }
  if (editor != nullptr)
  {
-//  QWidget* p = new QWidget();
-  QVBoxLayout* pLayout= new QVBoxLayout;
-//  p->setLayout(pLayout = new QVBoxLayout);
-//  p->setContentsMargins(0,0,0,0);
-//  pLayout->setContentsMargins(0,0,0,0);
-//  pLayout->setSpacing(0);
-  if (add)
-  {
-   txt = tr("To add a %1 to the Panel,").arg( /*tr*/name);
-  }
-  else
-  {
-   txt = tr("To edit a %1 in the Panel,").arg(name);
-  }
-  pLayout->addWidget(new QLabel(txt));
-  if (table)
-  {
-   txt = tr("Select a %1 from table, then press %2").arg(name).arg
-                                 (add ? tr("Add to Panel") : tr("Update Panel"));
-  }
-  else
-  {
-   if ("MultiSensor"==(name))
-   {
-    txt = tr("Drag Sensors from table into the red boxes, then press %1").arg
-                                     (add ? tr("Add to Panel") : tr("Update Panel"));
-   }
-   else
-   {
-    txt = tr("Select a %1 image, then press %2").arg(name).arg
-                                     (add ? tr("Add to Panel") : tr("Update Panel"));
-   }
-  }
-  QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  sizePolicy.setHorizontalStretch(0);
-  sizePolicy.setVerticalStretch(0);
+     QWidget* p = new QWidget();
+     p->setLayout(new QVBoxLayout()); //(p, BoxLayout.Y_AXIS));
+     if (add) {
+         txt = tr("To add a %1 to the Panel,").arg(BundleName);
+     } else {
+         txt = tr("To edit a %1 in the Panel,").arg(BundleName);
+     }
+     p->layout()->addWidget(new QLabel(txt));
+     if (table)
+     {
+         txt = tr("select a %1 from the table, then press [%2].").arg(BundleName).arg(
+                 (add ? tr("Add to Panel") : tr("Update Panel")));
+     } else
+     {
+         if ("MultiSensor" == (name)) {
+             txt = tr("Drag Sensors from the table into the red boxes, then press [%1]").arg(
+                     (add ? tr("Add to Panel") : tr("Update Panel")));
+         } else {
+             txt = tr("select a %1 image, then press [%2].").arg(BundleName).arg(
+                     (add ? tr("ButtonAddIcon") : tr("ButtonUpdateIcon")));
+         }
+     }
+     p->layout()->addWidget(new QLabel(txt));
+     p->layout()->addWidget(new QLabel("    ")); // add a bit of space on pane above icons
+     QWidget* contentPane = frame->getContentPane();
+     QVBoxLayout* contentPaneLayout = (QVBoxLayout*)contentPane->layout();
+     if(contentPaneLayout == nullptr)
+      contentPaneLayout = new QVBoxLayout(contentPane);
+     contentPaneLayout->addWidget(p, 0, Qt::AlignTop); //BorderLayout.NORTH);
+     contentPaneLayout->addWidget(editor);
 
-  pLayout->addWidget(new QLabel(txt));
-//  QVBoxLayout* centralWidgetLayout;
-//  if(frame->centralWidget() == NULL)
-//  {
-//   QWidget* centralWidget = new QWidget();
-//   //centralWidget->setLayout(new BorderLayout);
-//   centralWidget->setLayout(centralWidgetLayout = new QVBoxLayout);
-//   frame->setCentralWidget(centralWidget);
-//  }
-//  else
-//    centralWidgetLayout = (QVBoxLayout*)getContentPane()->layout();
-  //frame->setSizePolicy(sizePolicy);
+     QMenuBar* menuBar = new QMenuBar();
+     QMenu* findIcon = new QMenu(tr("Find Icons"));
+     menuBar->addMenu(findIcon);
 
-  //((BorderLayout*)frame->centralWidget()->layout())->addWidget(p,BorderLayout::North);
-  QScrollArea* scrollArea = new QScrollArea;
-  QWidget* scrollAreaWidget = new QWidget;
-  QVBoxLayout* scrollAreaLayout;
-  scrollAreaWidget->setLayout(scrollAreaLayout = new QVBoxLayout);
-  scrollArea->setWidget(scrollAreaWidget);
-  scrollArea->setWidgetResizable(true);
-//  centralWidgetLayout->addWidget(scrollArea);
-  frame->setCentralWidget(scrollArea);
+     QAction* editItem = new QAction(tr("Create/Edit Image Index..."), this);
+//     editItem.addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             ImageIndexEditor ii = InstanceManager.getDefault(ImageIndexEditor.class);
+//             ii.pack();
+//             ii.setVisible(true);
+//         }
+//     });
+     EditItemActionListener* editItemActionListener = new EditItemActionListener();
+     connect(editItem, SIGNAL(triggered(bool)), editItemActionListener, SLOT(actionPerformed()));
+     findIcon->addAction(editItem);
+     findIcon->addSeparator();
 
-//  centralWidgetLayout->addLayout(pLayout);
-//  centralWidgetLayout->addWidget(editor);
-  scrollAreaLayout->addLayout(pLayout);
-  scrollAreaLayout->addWidget(editor);
+     QAction* searchItem = new QAction(tr("Search File System for Icons..."),this);
+//     searchItem.addActionListener(new ActionListener() {
+//         IconAdder ea;
 
-  QMenuBar* menuBar = new QMenuBar();
-  QMenu* findIcon = new QMenu(tr("Find Icons"));
-  menuBar->addMenu(findIcon);
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             InstanceManager.getDefault(DirectorySearcher.class).searchFS();
+//             ea.addDirectoryToCatalog();
+//         }
 
-  QAction* editItem = new QAction(tr("Create/Edit Image Index"),this);
-//        editItem.addActionListener(new ActionListener() {
-//                Editor editor;
-//                /*public*/ void actionPerformed(ActionEvent e) {
-//                    ImageIndexEditor ii = ImageIndexEditor.instance(editor);
-//                    ii.pack();
-//                    ii.setVisible(true);
-//                }
-//                ActionListener init(Editor ed) {
-//                    editor = ed;
-//                    return this;
-//                }
-//            }.init(this));
-  EditItemActionListener* eial = new EditItemActionListener();
-  eial->init(this);
-  connect(editItem, SIGNAL(triggered()), eial, SLOT(actionPerformed()));
-  findIcon->addAction(editItem);
-  findIcon->addSeparator();
+//         ActionListener init(IconAdder ed) {
+//             ea = ed;
+//             return this;
+//         }
+//     }.init(editor));
+     SearchItemActionListener* searchItemActionListener  = new SearchItemActionListener();
+     searchItemActionListener->init(editor);
+     connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener, SLOT(actionPerformed()));
 
-  QAction* searchItem = new QAction(tr("Search File System for Icons"),this);
-//        searchItem.addActionListener(new ActionListener() {
-//                IconAdder ea;
-//                /*public*/ void actionPerformed(ActionEvent e) {
-//                    File dir = jmri.jmrit.catalog->DirectorySearcher.instance().searchFS();
-//                    if (dir != NULL) {
-//                        ea.addDirectoryToCatalog(dir);
-//                    }
-//                }
-//                ActionListener init(IconAdder ed) {
-//                    ea = ed;
-//                    return this;
-//                }
-//        }.init(editor));
-  SearchItemActionListener* sal = new SearchItemActionListener();
-  sal->init(editor);
-  connect(searchItem, SIGNAL(triggered()), sal,SLOT(actionPerformed()));
-  findIcon->addAction(searchItem);
-  frame->setMenuBar(menuBar);
-  editor->setParent(frame);
-  // when this window closes, check for saving
-  if (add)
-  {
-//            frame.addWindowListener(new java.awt.event.WindowAdapter() {
-//                    /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                        jmri.jmrit.catalog->ImageIndexEditor.checkImageIndex();
-//                        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-//                        if (_debug) log->debug("windowClosing: HIDE "+toQString());
-//                    }
-//            });
-   frame->addWindowListener(new AddIconFrameWindowListener(this));
-  }
+     findIcon->addAction(searchItem);
+     frame->setMenuBar(menuBar);
+     editor->setParent(frame);
+     // when this window closes, check for saving
+     if (add) {
+//         frame.addWindowListener(new WindowAdapter() {
+//             @Override
+//             public void windowClosing(WindowEvent e) {
+//                 setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+//                 if (log.isDebugEnabled()) {
+//                     log.debug("windowClosing: HIDE {}", toString());
+//                 }
+//             }
+//         });
+      frame->addWindowListener(new AddIconFrameWindowListener(this));
+     }
+ } else {
+     log->error(tr("No icon editor specified for %1").arg(name)); //NOI18N
  }
- else
- {
-  log->error("No icon editor specified for "+name);
+ if (add) {
+     txt = tr("Add %1").arg(BundleName);
+     _iconEditorFrame->insert(name, frame);
+ } else {
+     txt = tr("Edit %1").arg(BundleName);
  }
- if (add)
- {
-  txt = tr("Add %1").arg(name);
-  _iconEditorFrame->insert(name, frame);
- }
- else
- {
-  txt = tr("Edit %1 Icon").arg(name);
- }
-
- frame->setWindowTitle(txt+" ("+getTitle()+")");
+ frame->setTitle(txt + " (" + getTitle() + ")");
  frame->pack();
  return frame;
 }
@@ -2629,7 +2611,7 @@ EditItemActionListener* EditItemActionListener::init(Editor *ed)
  editor = ed;
  return this;
 }
-void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
+void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 {
  ImageIndexEditor* ii = ImageIndexEditor::instance(editor);
  ii->pack();
@@ -2637,7 +2619,7 @@ void EditItemActionListener::actionPerformed(ActionEvent */*e*/)
 }
 
 /********************* cleanup *************************/
-#endif
+
 /*protected*/ void Editor::removeFromTarget(Positionable* l)
 {
  if(l->_itemGroup != nullptr && l->_itemGroup->scene()!= nullptr)
@@ -3526,6 +3508,8 @@ void TextAttrDialog::doneButton_clicked()
     selectRectItem->setPos(aX, aY);
     selectRectItem->setPen(QPen(QBrush(QColor(_selectRectColor)),1,Qt::DashLine));
     _selectRectItemGroup->addToGroup(selectRectItem);
+    if(_selectRectItemGroup && _selectRectItemGroup->scene())
+     log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
     editScene->addItem(_selectRectItemGroup);
 }
 
@@ -3712,7 +3696,16 @@ abstract /*protected*/ void copyItem(Positionable p);
 //    if (_tooltip != null) {
 //        _tooltip.paint(g2d, _paintScale);
 //    }
- g2d->addItem(_selectRectItemGroup);
+    QGraphicsScene* parentScene;
+    if(_selectRectItemGroup && ((parentScene = _selectRectItemGroup->scene()) == g2d))
+     return;
+    else
+    {
+     log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
+     if(parentScene)
+      parentScene->removeItem(_selectRectItemGroup);
+    }
+    g2d->addItem(_selectRectItemGroup);
 }
 
 void Editor::setName(QString name)

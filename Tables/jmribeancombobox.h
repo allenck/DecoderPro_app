@@ -172,7 +172,7 @@ private:
     int _displayOrder;
     bool _firstBlank;// = false;
 
-    Manager* _manager;
+    Manager* _manager = nullptr;
 
     QHash<QString, NamedBean*>* displayToBean;// = new QHash<QString, NamedBean*>();
     QList<NamedBean*> exclude;// = new QList<NamedBean*>();

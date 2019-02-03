@@ -48,7 +48,7 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
    if (sname==NULL) log->error("System name NULL during store");
    log->debug("logix system name is "+sname);
    Logix* x = tm->getBySystemName(sname);
-   bool enabled = ((DefaultLogix*)x)->getEnabled();
+   bool enabled = x->getEnabled();
    QDomElement elem = doc.createElement("logix");
    elem.setAttribute("systemName", sname);
    QDomElement e1;
@@ -117,61 +117,64 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
  */
 //@SuppressWarnings("unchecked")
 /*public*/ void DefaultLogixManagerXml::loadLogixs(QDomElement logixs) {
-    QDomNodeList logixList = logixs.elementsByTagName("logix");
-    if (log->isDebugEnabled()) log->debug("Found "+QString::number(logixList.size())+" logixs");
-    LogixManager* tm = (LogixManager*)InstanceManager::getDefault("LogixManager");
+ QDomNodeList logixList = logixs.elementsByTagName("logix");
+ if (log->isDebugEnabled()) log->debug("Found "+QString::number(logixList.size())+" logixs");
+ LogixManager* tm = (LogixManager*)InstanceManager::getDefault("LogixManager");
 
-    for (int i=0; i<logixList.size(); i++)
+ for (int i=0; i<logixList.size(); i++)
+ {
+  QString sysName = getSystemName(logixList.at(i).toElement());
+  if (sysName == NULL) {
+      log->warn("unexpected NULL in systemName "+logixList.at(i).toElement().tagName());
+      break;
+  }
+
+  QString userName = getUserName(logixList.at(i).toElement());
+
+  QString yesno = "";
+  if (logixList.at(i).toElement().attribute("enabled") != "")
+  {  // NOI18N
+      yesno = logixList.at(i).toElement().attribute("enabled");  // NOI18N
+  }
+  if (log->isDebugEnabled()) {
+      log->debug("create logix: (" + sysName + ")("  // NOI18N
+              + (userName == "" ? "<null>" : userName) + ")");  // NOI18N
+  }
+
+  Logix* x = ((DefaultLogixManager*)tm)->createNewLogix(sysName, userName);
+  if (x!=nullptr)
+  {
+   // load common part
+   loadCommon(x, logixList.at(i).toElement());
+
+   // set enabled/disabled if attribute was present
+   if ( (yesno!="")  ) {
+       if (yesno==("yes")) ((DefaultLogix*)x)->setEnabled(true);
+       else if (yesno==("no"))((DefaultLogix*)x)->setEnabled(false);
+   }
+   // load conditionals, if there are any
+   QDomNodeList logixConditionalList = logixList.at(i).toElement().elementsByTagName("logixConditional");
+   if (logixConditionalList.size()>0)
+   {
+    // add conditionals
+    for (int n=0; n<logixConditionalList.size(); n++)
     {
-
-        QString sysName = getSystemName(logixList.at(i).toElement());
-        if (sysName == NULL) {
-            log->warn("unexpected NULL in systemName "+logixList.at(i).toElement().tagName());
-            break;
-        }
-
-        QString userName = NULL;
-        //bool enabled = true;
-        QString yesno = "";
-        if (logixList.at(i).toElement().attribute("userName") != NULL) {
-            userName = logixList.at(i).toElement().attribute("userName");
-        }
-        if (logixList.at(i).toElement().attribute("enabled") != NULL) {
-            yesno = logixList.at(i).toElement().attribute("enabled");
-        }
-        if (log->isDebugEnabled()) log->debug("create logix: ("+sysName+")("+
-                                    (userName==NULL?"<NULL>":userName)+")");
-        Logix* x = ((DefaultLogixManager*)tm)->createNewLogix(sysName, userName);
-        if (x!=NULL) {
-            // load common part
-            loadCommon(x, logixList.at(i).toElement());
-
-            // set enabled/disabled if attribute was present
-            if ( (yesno!="")  ) {
-                if (yesno==("yes")) ((DefaultLogix*)x)->setEnabled(true);
-                else if (yesno==("no"))((DefaultLogix*)x)->setEnabled(false);
-            }
-            // load conditionals, if there are any
-            QDomNodeList logixConditionalList = logixList.at(i).toElement().elementsByTagName("logixConditional");
-            if (logixConditionalList.size()>0) {
-                // add conditionals
-                for (int n=0; n<logixConditionalList.size(); n++) {
-                    if (logixConditionalList.at(n).toElement().attribute("systemName") == NULL) {
-                        log->warn("unexpected NULL in systemName "+logixConditionalList.at(n).toElement().tagName()+
-                                            " "+logixConditionalList.at(n).toElement().tagName());
-                        break;
-                    }
-                    QString cSysName = logixConditionalList.at(n).toElement()
-                                                        .attribute("systemName");
-                    int cOrder = logixConditionalList.at(n).toElement()
-                                                        .attribute("order").toInt();
-                    // add conditional to logix
-                    x->addConditional(cSysName,cOrder);
-                    //x->addConditional(cSysName,((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->createNewConditional(cSysName, ""));
-                }
-            }
-        }
+     if (logixConditionalList.at(n).toElement().attribute("systemName") == "")
+     {
+         log->warn("unexpected NULL in systemName "+logixConditionalList.at(n).toElement().tagName()+
+                             " "+logixConditionalList.at(n).toElement().tagName());
+         break;
+     }
+     QString cSysName = logixConditionalList.at(n).toElement()
+                                         .attribute("systemName");
+     int cOrder = logixConditionalList.at(n).toElement()
+                                         .attribute("order").toInt();
+     // add conditional to logix
+     x->addConditional(cSysName,cOrder);
     }
+   }
+  }
+ }
 }
 
 /**

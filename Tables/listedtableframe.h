@@ -91,10 +91,10 @@ public:
  /*public*/ void mouseClicked(QMouseEvent* e) ;
  /*public*/ void mousePressed(QMouseEvent* e) ;
  void selectListItem(int index);
- void openNewTableWindow(int index) ;
 
 public slots:
  void onOpenNewTableWindow();
+ void openNewTableWindow(int index) ;
 
 private:
 

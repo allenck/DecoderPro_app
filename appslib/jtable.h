@@ -134,6 +134,7 @@ public:
  /*public*/ void setRowMargin(int rowMargin);
  /*public*/ int getRowMargin();
  /*public*/ void setRowHeight(int row, int rowHeight);
+ /*public*/ QVariant getValueAt(int row, int column);
 
 signals:
  void propertyChange(PropertyChangeEvent*);

@@ -304,11 +304,10 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
 //    Hashtable<String, NamedIcon> iconMap;
 
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-/*public*/ TIconDragJLabel::TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map,
-                                            NamedIcon* icon,TableItemPanel* self) : DragJLabel(flavor,self)
+/*public*/ TIconDragJLabel::TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon,TableItemPanel* self) : DragJLabel(flavor,self)
 {
  //DragJLabel(flavor,(QWidget*)self);
- iconMap = map;
+ iMap = map;
  this->self = self;
 }
 /*public*/ bool TIconDragJLabel::isDataFlavorSupported(DataFlavor* flavor)
@@ -322,7 +321,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
  {
   return NULL;
  }
- if (iconMap==NULL)
+ if (iMap==NULL)
  {
   log->error("IconDragJLabel.getTransferData: iconMap is NULL!");
   return NULL;
@@ -338,7 +337,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
  {
   TurnoutIcon* t = new TurnoutIcon(self->_editor);
   t->setTurnout(bean->getDisplayName());
-  QMapIterator<QString, NamedIcon*> iter(* iconMap);
+  QMapIterator<QString, NamedIcon*> iter(* iMap);
   while (iter.hasNext())
   {
    iter.next();
@@ -352,7 +351,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
  {
   SensorIcon* s = new SensorIcon(new   NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
             "resources/icons/smallschematics/tracksegments/circuit-error.gif"), self->_editor);
-  QMapIterator<QString, NamedIcon*> iter(*iconMap);
+  QMapIterator<QString, NamedIcon*> iter(*iMap);
   while (iter.hasNext())
   {
    iter.next();
@@ -366,10 +365,10 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
  else if (self->_itemType==("Light"))
  {
   LightIcon* l = new LightIcon(self->_editor);
-  l->setOffIcon(iconMap->value("LightStateOff"));
-  l->setOnIcon(iconMap->value("LightStateOn"));
-  l->setInconsistentIcon(iconMap->value("BeanStateInconsistent"));
-  l->setUnknownIcon(iconMap->value("BeanStateUnknown"));
+  l->setOffIcon(iMap->value("StateOff"));
+  l->setOnIcon(iMap->value("StateOn"));
+  l->setInconsistentIcon(iMap->value("BeanStateInconsistent"));
+  l->setUnknownIcon(iMap->value("BeanStateUnknown"));
   l->setLight((Light*)bean);
   l->setLevel(Editor::LIGHTS);
   return l;

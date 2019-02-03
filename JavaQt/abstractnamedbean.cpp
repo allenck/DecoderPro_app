@@ -101,7 +101,8 @@ QString AbstractNamedBean::getDisplayName()
 //@Override
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l, const QString beanRef, QString listenerRef)
 {
- pcs->addPropertyChangeListener(l);
+ //pcs->addPropertyChangeListener(l);
+ connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
  if(beanRef!=NULL)
      _Register->insert(l, beanRef);
  if(listenerRef!=NULL)
@@ -113,13 +114,14 @@ QString AbstractNamedBean::getDisplayName()
 //@OverridingMethodsMustInvokeSuper
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->addPropertyChangeListener(l);
+ //pcs->addPropertyChangeListener(l);
+ connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->removePropertyChangeListener(l);
- disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+ //pcs->removePropertyChangeListener(l);
+ disconnect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
 
  _Register->remove(l);
  listenerRefs->remove(l);

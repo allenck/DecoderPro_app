@@ -123,3 +123,46 @@ QModelIndex JList::locationToIndex(QPoint p)
  if(list.isEmpty()) return -1;
  return model()->data(list.at(0));
 }
+
+/**
+ * Selects a single cell. Does nothing if the given index is greater
+ * than or equal to the model size. This is a convenience method that uses
+ * {@code setSelectionInterval} on the selection model. Refer to the
+ * documentation for the selection model class being used for details on
+ * how values less than {@code 0} are handled.
+ *
+ * @param index the index of the cell to select
+ * @see ListSelectionModel#setSelectionInterval
+ * @see #isSelectedIndex
+ * @see #addListSelectionListener
+ * @beaninfo
+ * description: The index of the selected cell.
+ */
+/*public*/ void JList::setSelectedIndex(int index) {
+    if (index >= model()->rowCount()) {
+        return;
+    }
+    //getSelectionModel().setSelectionInterval(index, index);
+    selectionModel()->setCurrentIndex(model()->index(index,0), QItemSelectionModel::ClearAndSelect);
+}
+
+/**
+ * Scrolls the list within an enclosing viewport to make the specified
+ * cell completely visible. This calls {@code scrollRectToVisible} with
+ * the bounds of the specified cell. For this method to work, the
+ * {@code JList} must be within a <code>JViewport</code>.
+ * <p>
+ * If the given index is outside the list's range of cells, this method
+ * results in nothing.
+ *
+ * @param index  the index of the cell to make visible
+ * @see JComponent#scrollRectToVisible
+ * @see #getVisibleRect
+ */
+/*public*/ void JList::ensureIndexIsVisible(int index) {
+//    Rectangle cellBounds = getCellBounds(index, index);
+//    if (cellBounds != null) {
+//        scrollRectToVisible(cellBounds);
+//    }
+ scrollTo(model()->index(index,0), QAbstractItemView::EnsureVisible);
+}

@@ -586,13 +586,13 @@ public URL getURL(URI uri) {
 //@CheckReturnValue
 /*public*/ QString FileUtilSupport::findExternalFilename(/*@Nonnull*/ QString path)
 {
- log->debug(tr("Finding external path %1").arg(path));
+ if(log->isDebugEnabled()) log->debug(tr("Finding external path %1").arg(path));
  if (this->isPortableFilename(path))
  {
   int index = path.indexOf(":") + 1;
   QString location = path.mid(0, index);
   path = path.mid(index);
-  log->debug(tr("Finding %1 and %2").arg(location).arg(path));
+  if(log->isDebugEnabled()) log->debug(tr("Finding %1 and %2").arg(location).arg(path));
   if(location == FileUtil::PROGRAM)
    return this->findURI(path, FileUtil::Location::INSTALLED);
   if(location ==  FileUtil::PREFERENCES)

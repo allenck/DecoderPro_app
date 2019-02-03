@@ -769,7 +769,7 @@ class EditItemActionListener : public ActionListener
  Q_OBJECT
  Editor* editor;
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed();
  EditItemActionListener* init(Editor* ed);
 };
 

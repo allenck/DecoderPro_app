@@ -43,7 +43,7 @@ protected:
     /*protected*/ bool doDoneAction();
     /*protected*/ void addFamilySet();
     /*protected*/ void deleteFamilySet();
-    /*protected*/ void makeDoneButtonPanel(QWidget* buttonPanel, QMap<QString, NamedIcon *> *iconMap);
+    /*protected*/ virtual void makeDoneButtonPanel(QWidget* buttonPanel, QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void makeDoneButtonPanel(QWidget* buttonPanel, QString text);
     /*protected*/ void makeIconPanel(QMap<QString, NamedIcon*>* iconMap, ImagePanel* iconPanel);
     void checkIconSizes();

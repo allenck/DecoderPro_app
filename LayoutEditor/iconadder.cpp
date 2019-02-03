@@ -56,9 +56,10 @@ IconAdder::~IconAdder()
 
 /*public*/ IconAdder::IconAdder(QWidget *parent) : QWidget(parent)
 {
- init();
+ common();
 }
-void IconAdder::init()
+
+void IconAdder::common()
 {
  log = new Logger("IconAdder");
  _userDefaults = false;
@@ -67,9 +68,9 @@ void IconAdder::init()
  _order = QStringList();
  _table = NULL;
  _changeButton = NULL;
- QTimer::singleShot(50,this, SLOT(closeCatalog()));
+ //QTimer::singleShot(50,this, SLOT(closeCatalog()));
 
- this->setLayout(thisLayout = new QVBoxLayout(this/*, BoxLayout.Y_AXIS*/));
+ this->setLayout(thisLayout = new QVBoxLayout()); //this/*, BoxLayout.Y_AXIS*/));
 // this->setContentsMargins(0,0,0,0);
 // this->layout()->setContentsMargins(0,0,0,0);
 // thisLayout->setSpacing(0);
@@ -83,7 +84,7 @@ void IconAdder::init()
 /*public*/ IconAdder::IconAdder(bool allowDeletes, QWidget *parent) : QWidget(parent)
 {
  // this();
- init();
+ common();
  _allowDeletes = allowDeletes;
 }
 
@@ -105,7 +106,7 @@ void IconAdder::init()
 /*public*/ IconAdder::IconAdder(QString type, QWidget *parent) : QWidget(parent)
 {
  //this();
- init();
+ common();
  _type = type;
  initDefaultIcons();
 }
@@ -216,7 +217,7 @@ void IconAdder::init()
 
  if (_allowDeletes)
  {
-  QString fileName = "resources/icons/misc/X-red.gif";
+  QString fileName = ":/resources/icons/misc/X-red.gif";
   button->setSelectedIcon(new NamedIcon(fileName, fileName));
  }
  if (icon!=NULL)
@@ -263,7 +264,7 @@ void IconAdder::init()
 }
 
 void IconAdder::pack() {
- _parent->adjustSize();
+ _parent->pack();
 }
 
 /*public*/ int IconAdder::getNumIcons() {
@@ -614,7 +615,7 @@ void IconAdder::checkIconSizes()
  }
  _buttonPanel = new QWidget();
  QVBoxLayout* buttonPanelLayout;
- _buttonPanel->setLayout(buttonPanelLayout = new QVBoxLayout);//(_buttonPanel/*, BoxLayout.Y_AXIS*/));
+ _buttonPanel->setLayout(buttonPanelLayout = new QVBoxLayout());//(_buttonPanel/*, BoxLayout.Y_AXIS*/));
 // _buttonPanel->setContentsMargins(0,0,0,0);
 // buttonPanelLayout->setSpacing(0);
 // buttonPanelLayout->setContentsMargins(0,0,0,0);
@@ -709,7 +710,6 @@ void IconAdder::checkIconSizes()
 // p->setLayout(new QHBoxLayout);
 // p->layout()->setContentsMargins(0,0,0,0);
 // p->layout()->setSpacing(0);
- pLayout = new QHBoxLayout;
  pLayout->addWidget(_addButton);
  buttonPanelLayout->addLayout(pLayout);
 
@@ -809,13 +809,11 @@ void IconAdder::closeCatalog()
   _changeButton->setVisible(true);
   _closeButton->setVisible(false);
  }
-// if (_pickTablePane != NULL)
-// {
-//  _pickTablePane.setVisible(true);
-// }
- if(_table != NULL) _table->setVisible(true);
+ if (_pickTablePane != nullptr)
+ {
+     _pickTablePane->setVisible(true);
+ }
  pack();
-// ((JmriJFrame*)parent())->pack();
 }
 
 /*public*/ void IconAdder::addDirectoryToCatalog(QDir* dir)

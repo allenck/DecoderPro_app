@@ -96,7 +96,7 @@ private slots:
   void statusBarMessage(QString);
   void linkClicked(const QUrl &);
   void titleChanged(QString);
-  void linkHovered(const QString & link, const QString & title, const QString & textContent);
+  void linkHovered(const QString & link);
 
  private:
   QString ref;

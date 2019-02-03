@@ -815,10 +815,12 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
     table->setName(name);
     table->setSortingEnabled(true);
 //    table->setRowSorter(sorter);
-    table->horizontalHeader()->sectionsMovable(); //table->getTableHeader().setReorderingAllowed(true);
+    table->horizontalHeader()->sectionsMovable();
+    //table->getTableHeader().setReorderingAllowed(true);
     table->setColumnModel(new XTableColumnModel());
     //table->createDefaultColumnsFromModel();
     //table->resizeColumnsToContents();
+    //table->horizontalHeader()->setStretchLastSection(true);
 
 //    addMouseListenerToHeader(table);
     return table;

@@ -243,7 +243,7 @@
     contentPane = autoTrainsFrame->getContentPane();
     contentPane->setLayout(contentPaneLayout = new QVBoxLayout); //(contentPane, BoxLayout.Y_AXIS));
     // set up 6 auto trains to size the panel
-                   #if 0
+#if 0
     for (int i = 0; i < 6; i++) {
         newTrainLine();
         if (i == 0) {
@@ -266,7 +266,7 @@
     contentPaneLayout->addWidget(pB);
     autoTrainsFrame.pack();
     placeWindow();
-                   #endif
+#endif
     displayAutoTrains();
     autoTrainsFrame->setVisible(true);
 }

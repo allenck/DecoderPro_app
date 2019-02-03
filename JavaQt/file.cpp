@@ -248,7 +248,7 @@ int File::getPrefixLength() {
 
  if (inpathname.isNull())
  {
-  throw new NullPointerException();
+  throw NullPointerException();
  }
  this->path = inpathname; //fs.normalize(pathname);
  this->prefixLength = getParent().length(); /*fs.prefixLength(this.path);*/

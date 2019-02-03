@@ -39,7 +39,7 @@ private:
     JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
     //JTextField* sysName;// = new JTextField(10);
     JTextField* userNameTextField;// = new JTextField(20);
-    QComboBox* prefixBox;// = new JComboBox<String>();
+    QComboBox* prefixBox = nullptr;// = new JComboBox<String>();
     QSpinBox* numberToAdd;// = new JTextField(10);
     QCheckBox* range;// = new JCheckBox(tr("AddRangeBox"));
     QLabel* sysNameLabel;// = new JLabel("Hardware Address");

@@ -8,6 +8,8 @@
 #include "conditionalvariable.h"
 #include "actionevent.h"
 
+class ActionSignalMastNameListener;
+class ActionSignalHeadNameListener;
 class EditActionFrameWindowListener;
 class EditVariableFrameWindowListener;
 class LVariableTableModel;
@@ -95,7 +97,7 @@ private:
 
  // ------------ Components of Edit Action panes ------------
  JmriJFrame* _editActionFrame;// = null;
- QComboBox* _actionItemBox;
+ QComboBox* _actionItemBox = nullptr;
  QComboBox* _actionTypeBox;
  QComboBox* _actionBox;
  JTextField* _actionNameField;
@@ -122,7 +124,7 @@ private:
 
  // ------------ Current Action Information ------------
  QList<ConditionalAction*>* _actionList;
- ConditionalAction* _curAction;
+ ConditionalAction* _curAction = nullptr;
  int _curActionRowNumber;
  int _curActionItem;// = 0;
  static /*final*/ int STRUT;// = 10;
@@ -132,7 +134,8 @@ private:
  ActionTypeListener* _actionTypeListener;
  EditLogixFrameWindowListener* editLogixFrameWindowListener;
  EditVariableFrameWindowListener* editVariableFrameWindowListener;
-
+ ActionSignalHeadNameListener* _actionSignalHeadNameListener;
+ ActionSignalMastNameListener* _actionSignalMastNameListener;
  void makeEditLogixWindow();
  void showSaveReminder();
  bool checkEditConditional();
@@ -165,7 +168,6 @@ private:
  void actionItemChanged(int type);
  void setActionNameBox(int itemType);
  void cleanUpAction();
- void deleteActionPressed();
  void deleteActionPressed(int row);
  int getActionTypeFromBox(int itemType, int actionTypeSelection);
  void swapConditional(int row);
@@ -187,7 +189,7 @@ private slots:
  void addActionPressed(ActionEvent* /*e*/ = 0);
  void reorderActionPressed(ActionEvent* /*e*/ = 0);
  void swapActions(int row);
- void updateConditionalPressed(ActionEvent* /*e*/ = 0);
+ void updateConditionalPressed();
  void cancelConditionalPressed(ActionEvent* /*e*/= 0);
  void on_deleteConditionalPressed();
  bool logicTypeChanged(ActionEvent* /*e*/= 0);
@@ -203,11 +205,16 @@ private slots:
  //void actionTypeListener(int type); // SLOT[]
  void actionSignalMastNameListener(); // SLOT[]
  void reorderPressed(ActionEvent* /*e*/ =0);
- void variableItemStateChanged();
+ void variableItemStateChanged(int);
  void itemStateChanged(int);
+ void deleteActionPressed();
+ void on_actionItemType_changed(int);
+ void on_actionSetButton_Pressed();
+ void on_actionItemBox();
 
 protected:
  /*protected*/ QString getClassName();
+
 
  friend class EditActionFrameWindowListener;
  friend class ECFWindowListener;
@@ -325,10 +332,12 @@ class ActionTypeListener : public /*ActionListener*/ QObject
     int _itemType;
 
 public:
-    ActionTypeListener(int type, ConditionalListEdit* self);
-    /*public*/ void actionPerformed(ActionEvent* e = NULL);
+    ActionTypeListener( ConditionalListEdit* self);
     /*public*/ void setItemType(int type);
 
+public slots:
+    /*public*/ void actionPerformed(/*ActionEvent* e = NULL*/);
+    //void on_actionSetButton_Pressed();
 };
 //transient ActionListener variableSignalTestStateListener = new ActionListener() {
 class VariableSignalTestStateListener : public QObject
@@ -371,5 +380,7 @@ public:
  void windowDeiconified(QResizeEvent *){}
  void windowIconified(QResizeEvent *){}
 };
+
+
 
 #endif // CONDITIONALLISTEDIT_H

@@ -11,6 +11,11 @@ class LIBPR3SHARED_EXPORT Conditional : public AbstractNamedBean
 {
     Q_OBJECT
 public:
+ /*public*/ enum Operator {
+         NONE,
+         AND,
+         OR
+ };
  explicit Conditional(QObject *parent = 0) :AbstractNamedBean(parent) {}
  Conditional(QString sysName, QString userName, QObject*parent = 0) : AbstractNamedBean(sysName, userName, parent) {}
     /**

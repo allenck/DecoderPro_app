@@ -14,6 +14,7 @@
 #include "signalheadiconxml.h"
 #include "abstractsignalhead.h"
 #include "imagepanel.h"
+#include "signalheadicondialog.h"
 
 //SignalHeadItemPanel::SignnalHeadItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -66,38 +67,12 @@
  TableItemPanel::makeDndIconPanel(iconMap, "SignalHeadStateRed");
 }
 
-///*protected*/ void SignalHeadItemPanel::showIcons()
-//{
-// //updateFamiliesPanel();
-////    _iconFamilyPanel.remove(_iconPanel);
-// _iconPanel = new ImagePanel();
-// _iconFamilyPanel->layout()->addWidget(_iconPanel/*, 0*/);
-// addIconsToPanel(_currentIconMap);
-// _iconPanel->setVisible(true);
-// if (!_update)
-// {
-//  _dragIconPanel->setVisible(false);
-// }
-// _showIconsButton->setText(tr("Hide Icons"));
-//}
+//@Override
+/*protected*/ void SignalHeadItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap) {
+    closeDialogs();
+    _dialog = new SignalHeadIconDialog(type, family, this, iconMap);
+}
 
-///*protected*/ void SignalHeadItemPanel::addIconsToPanel(QMap<QString, NamedIcon *> *allIconsMap)
-//{
-// QMap<QString, NamedIcon*>* iconMap = getFilteredIconMap(allIconsMap);
-// if (iconMap==NULL)
-// {
-//  iconMap = ItemPalette::getIconMap(_itemType, _family);
-//  if (iconMap==NULL)
-//  {
-//   _updateButton->setEnabled(false);
-//   _updateButton->setToolTip(tr("Select an item from the table and an icon set to update the panel"));
-//  }
-// }
-// else
-// {
-//  TableItemPanel::addIconsToPanel(iconMap);
-// }
-//}
 /**
 *  ListSelectionListener action
 */

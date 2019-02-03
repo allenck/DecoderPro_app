@@ -27,6 +27,11 @@
 #include "warrant.h"
 #include "warrantmanager.h"
 #include "instancemanager.h"
+#include <QApplication>
+#include <QBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include "jlist.h"
 
 //DefaultConditional::DefaultConditional(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -1407,10 +1412,11 @@ throw (JmriException)
   {
    log->error(getDisplayName()+" - "+errorList->at(i));
   }
-//        java.awt.Toolkit.getDefaultToolkit().beep();
-//        if (!_skipErrorDialog) {
-//            new ErrorDialog(errorList, this);
-//        }
+  //Toolkit.getDefaultToolkit().beep();
+  QApplication::beep();
+  if (!_skipErrorDialog) {
+      new ErrorDialog(errorList, this);
+  }
  }
  if (log->isDebugEnabled())
         log->debug("Conditional \""+getUserName()+"\" ("+getSystemName()+" has "+QString::number(_actionList->size())+
@@ -1431,49 +1437,65 @@ DataPair::DataPair()
 }
 
 /*static*/ /*private*/ bool DefaultConditional::_skipErrorDialog = false;
-#if 0
-class ErrorDialog : public  QDialog {
-    JCheckBox rememberSession;
-    ErrorDialog(List<String> list, Conditional cond) {
-        super();
+#if 1
+//class ErrorDialog : public  QDialog {
+//    JCheckBox rememberSession;
+    ErrorDialog::ErrorDialog(QStringList *list, DefaultConditional *cond) {
+        //super();
+     this->cond = cond;
         setTitle("Logix Runtime Errors");
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Errors occurred executing Actions in Conditional:"));
-        contentPanel.add(panel);
+        QWidget* contentPanel = new QWidget();
+        contentPanel->setLayout(new QVBoxLayout()); //contentPanel, BoxLayout.Y_AXIS));
+        QWidget* panel = new QWidget();
+        panel->setLayout(new QHBoxLayout());
+        panel->layout()->addWidget(new QLabel("Errors occurred executing Actions in Conditional:"));
+        contentPanel->layout()->addWidget(panel);
 
-        panel = new JPanel();
-        panel.add(new JLabel(getUserName()+" ("+getSystemName()+")"));
-        contentPanel.add(panel);
+        panel = new QWidget();
+        panel->setLayout(new QHBoxLayout());
+        panel->setLayout(new QHBoxLayout());
+        panel->layout()->addWidget(new QLabel(cond->getUserName()+" ("+cond->getSystemName()+")"));
+        contentPanel->layout()->addWidget(panel);
 
-        panel = new JPanel();
-        panel.add(new JList(list.toArray()));
-        contentPanel.add(panel);
+        panel = new QWidget();
+        panel->layout()->addWidget(new JList(*list));
+        contentPanel->layout()->addWidget(panel);
 
-        panel = new JPanel();
-        rememberSession = new JCheckBox("Skip error dialog for this session only?");
-        panel.add(rememberSession);
-        contentPanel.add(panel);
+        panel = new QWidget();
+        panel->setLayout(new QHBoxLayout());
+        rememberSession = new QCheckBox("Skip error dialog for this session only?");
+        panel->layout()->addWidget(rememberSession);
+        contentPanel->layout()->addWidget(panel);
 
-        panel = new JPanel();
-        JButton closeButton = new JButton("Close");
-        closeButton.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent a) {
-                    if(rememberSession.isSelected()){
-                        _skipErrorDialog = true;
-                    }
-                    dispose();
-                }
-        });
-        panel.add(closeButton);
-        contentPanel.add(panel);
-        setContentPane(contentPanel);
+        panel = new QWidget();
+        QPushButton* closeButton = new QPushButton("Close");
+//        closeButton.addActionListener(new ActionListener() {
+//                /*public*/ void actionPerformed(ActionEvent a) {
+//                    if(rememberSession.isSelected()){
+//                        _skipErrorDialog = true;
+//                    }
+//                    dispose();
+//                }
+//        });
+        connect(closeButton, SIGNAL(clicked(bool)),this, SLOT(onCloseButton()));
+        panel->layout()->addWidget(closeButton);
+        contentPanel->layout()->addWidget(panel);
+        //setContentPane(contentPanel);
+        this->setLayout(new QVBoxLayout());
+        this->layout()->addWidget(contentPanel);
         setLocation(250, 150);
         pack();
         setVisible(true);
     }
-};
+
+    void ErrorDialog::onCloseButton()
+    {
+     if(rememberSession->isChecked()){
+         cond->_skipErrorDialog = true;
+     }
+     dispose();
+    }
+//};
 #endif
 /*private*/ QString DefaultConditional::getDeviceName(ConditionalAction* action) {
     QString devName = ((DefaultConditionalAction*)action)->getDeviceName();

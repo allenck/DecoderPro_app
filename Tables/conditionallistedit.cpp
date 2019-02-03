@@ -23,7 +23,8 @@
 #include "jfilechooser.h"
 #include "fileutil.h"
 #include "warrant.h"
-
+#include "flowlayout.h"
+#include "box.h"
 
 /**
  * The traditional list based conditional editor based on the original editor
@@ -118,6 +119,7 @@ void ConditionalListEdit::common()
  // ------------ Current Action Information ------------
 
  _curActionItem = 0;
+ _actionTypeListener = new ActionTypeListener(this);
 }
 
 
@@ -140,6 +142,8 @@ void ConditionalListEdit::makeEditLogixWindow()
      if (_editLogixFrame == NULL)
      {
       _editLogixFrame = new JmriJFrame(tr("Edit Logix"), false, false);
+      _editLogixFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
+
       _editLogixFrame->addHelpMenu(
                  "package.jmri.jmrit.beantable.LogixAddEdit", true);
       _editLogixFrame->setLocation(100, 30);
@@ -716,35 +720,36 @@ void ConditionalListEdit::makeEditConditionalWindow()
  if (_editConditionalFrame == NULL)
  {
   _editConditionalFrame = new JmriJFrame(tr("Edit Conditional"), false, false);
+  _editConditionalFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   _editConditionalFrame->addHelpMenu(
-        "package.jmri.jmrit.beantable.ConditionalAddEdit", true);
+        "package.jmri.jmrit.conditional.ConditionalListEditor", true);
   _editConditionalFrame->resize(400,600);
   if(_editConditionalFrame->centralWidget() == NULL)
   {
    QWidget* centralWidget = new QWidget();
    _editConditionalFrame->setCentralWidget(centralWidget);
   }
-  _editConditionalFrame->resize(400, 667);
+//  _editConditionalFrame->resize(400, 667);
   QFont font;
   font.setPointSize(9);
   _editConditionalFrame->setFont(font);
   QWidget* contentPane = _editConditionalFrame->centralWidget();
-  contentPane->setLayout(new QVBoxLayout(contentPane/*, BoxLayout.Y_AXIS*/));
+  QVBoxLayout* contentPaneLayout;
+  contentPane->setLayout(contentPaneLayout = new QVBoxLayout(contentPane/*, BoxLayout.Y_AXIS*/));
   QWidget* panel1 = new QWidget();
-  QVBoxLayout* verticalLayout1;
-  panel1->setLayout(verticalLayout1 = new  QVBoxLayout());
-  QHBoxLayout* p1HBoxLayout1 = new QHBoxLayout();
-  p1HBoxLayout1->addWidget(new QLabel(tr("Conditional System Name")));
-  p1HBoxLayout1->addWidget(new QLabel(_curConditional->getSystemName()));
-  verticalLayout1->addLayout(p1HBoxLayout1);
-  QHBoxLayout* p1HBoxLayout2 = new QHBoxLayout();
-  p1HBoxLayout2->setObjectName(QString::fromUtf8("p1HBoxLayout2"));
-  p1HBoxLayout2->addWidget(new QLabel(tr("Conditional User Name")));
-  p1HBoxLayout2->addWidget(_conditionalUserName);
+  FlowLayout* panel1Layout;
+  panel1->setLayout(panel1Layout = new  FlowLayout());
+  panel1Layout->addWidget(new QLabel(tr("Conditional System Name")));
+  panel1Layout->addWidget(new QLabel(_curConditional->getSystemName()));
+  contentPaneLayout->addWidget(panel1);
+  QWidget* panel2 = new QWidget();
+  FlowLayout* panel2Layout = new FlowLayout(panel2);
+  panel2Layout->addWidget(new QLabel(tr("Conditional User Name")));
+  panel2Layout->addWidget(_conditionalUserName);
   _conditionalUserName->setToolTip(tr("Enter user name for Conditional, e.g. Signal 2 Red"));
-  verticalLayout1->addLayout(p1HBoxLayout2);
-  contentPane->layout()->addWidget(panel1);
+  contentPaneLayout->addWidget(panel2);
   QString gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+
   // add Logical Expression Section
   QGroupBox* logicPanel = new QGroupBox(tr("Logical Expression"));
   logicPanel->setLayout(new QVBoxLayout(logicPanel/*, BoxLayout.Y_AXIS)*/));
@@ -755,7 +760,7 @@ void ConditionalListEdit::makeEditConditionalWindow()
   _antecedentField = new JTextField(65);
   _antecedentField->setFont( QFont("SansSerif", 14, QFont::Bold));
   _antecedentField->setText(_antecedent);
-  _antecedentPanel = makeEditPanel(_antecedentField, "Antecedent Expression (the 'if' part of the Conditional)", "Insert parenthesis so the statement satisfies the logic you want");
+  _antecedentPanel = makeEditPanel(_antecedentField, tr("Antecedent Expression (the 'if' part of the Conditional)"), tr("Insert parenthesis so the statement satisfies the logic you want"));
 
   QPushButton* helpButton = new QPushButton(tr("Help"));
   _antecedentPanel->layout()->addWidget(helpButton);
@@ -771,7 +776,7 @@ void ConditionalListEdit::makeEditConditionalWindow()
 
   // add state variable table title
   QWidget* varTitle = new QWidget();
-  varTitle->setLayout(new QHBoxLayout());
+  varTitle->setLayout(new FlowLayout());
   QFont font2 = varTitle->font();
   font2.setBold(true);
   varTitle->setFont(font2);
@@ -889,7 +894,7 @@ JScrollPane variableTableScrollPane = new JScrollPane(variableTable);
           tr("Mixed");
  _operatorBox = new QComboBox();
  _operatorBox->addItems(l);
- QWidget* typePanel = makeEditPanel(_operatorBox, "Logic Operator", "Choose logic operator joining state variables for the antecedent ('if' part) of this conditional");
+ QWidget* typePanel = makeEditPanel(_operatorBox, tr("Logic Operator"), tr("Choose logic operator joining state variables for the antecedent ('if' part) of this conditional"));
 // _operatorBox->layout()->addActionListener(new ActionListener() {
 //    /*public*/ void actionPerformed(ActionEvent e) {
 //        logicTypeChanged(e);
@@ -1087,7 +1092,7 @@ JScrollPane actionTableScrollPane = new JScrollPane(actionTable);
  _variableTableModel->fireTableDataChanged();
  // initialize action variables
  _actionTableModel->fireTableDataChanged();
- _editConditionalFrame->adjustSize();
+ _editConditionalFrame->pack();
  _editConditionalFrame->setVisible(true);
  _inEditConditionalMode = true;
  checkVariablePressed(NULL);     // update variables to their current states
@@ -1201,7 +1206,6 @@ void ConditionalListEdit::addActionPressed(ActionEvent* /*e*/) {
     _actionTableModel->fireTableRowsInserted(_actionList->size(),
             _actionList->size());
     makeEditActionWindow(_actionList->size() - 1);
-    _pickTables->setWindowState(Qt::WindowActive);
 }
 
 /**
@@ -1248,7 +1252,7 @@ void ConditionalListEdit::swapActions(int row) {
 /**
 * Responds to the Update Conditional Button in the Edit Conditional window
 */
-void ConditionalListEdit::updateConditionalPressed(ActionEvent* /*e*/) {
+void ConditionalListEdit::updateConditionalPressed(/*ActionEvent* e*/) {
     if (alreadyEditingActionOrVariable()) {
         return;
     }
@@ -1636,7 +1640,7 @@ void ConditionalListEdit::loadJComboBoxWithSignalAspects(QComboBox* box, QString
  * @param height fixed dimension to use
  * @return JPanel containing interface
  */
-QWidget* ConditionalListEdit::makeTopPanel(QWidget* /*frame*/, QString title, int /*width*/, int /*height*/) {
+QWidget* ConditionalListEdit::makeTopPanel(QWidget* /*frame*/, QString title, int width, int /*height*/) {
 //    Container contentPane = frame.getContentPane();
 //    contentPane->setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
 //    contentPane->layout()->addWidget(Box.createRigidArea(new Dimension(0, height)));
@@ -1645,8 +1649,9 @@ QWidget* ConditionalListEdit::makeTopPanel(QWidget* /*frame*/, QString title, in
 //    Border panelBorder = BorderFactory.createEtchedBorder();
 //    Border panelTitled = BorderFactory.createTitledBorder(panelBorder, tr(title));
 //    topPanel->setBorder(panelTitled);
-//    topPanel->layout()->addWidget(Box.createRigidArea(new Dimension(width, 0)));
-//    topPanel->layout()->addWidget(Box.createVerticalGlue());
+    topPanel->setStyleSheet("QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ");
+//    topPanel->layout()->addWidget(Box::createRigidArea(QSize(width, 0)));
+//    topPanel->layout()->addWidget(Box::createVerticalGlue());
     return topPanel;
 }
 /**
@@ -1661,15 +1666,11 @@ QWidget* ConditionalListEdit::makeEditPanel(QWidget* comp, QString label, QStrin
 {
     QWidget* panel = new QWidget();
     panel->setObjectName("panel");
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    sizePolicy.setHorizontalStretch(1);
-    sizePolicy.setVerticalStretch(0);
-    panel->setSizePolicy(sizePolicy);
-    QVBoxLayout* editPanelVerticalLayout;
-    panel->setLayout(editPanelVerticalLayout = new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
-    editPanelVerticalLayout->setObjectName("editPanelVerticalLayout");
-    //QWidget* p = new QWidget();
-
+    QVBoxLayout* panelLayout;
+    panel->setLayout(panelLayout = new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
+    panelLayout->setObjectName("editPanelVerticalLayout");
+    QWidget* p = new QWidget();
+    p->setLayout(new QHBoxLayout());
     QLabel* l = new QLabel(label);
     QFont font1;
     font1.setBold(true);
@@ -1677,18 +1678,18 @@ QWidget* ConditionalListEdit::makeEditPanel(QWidget* comp, QString label, QStrin
     l->setFont(font1);
     l->setFrameShape(QFrame::NoFrame);
     l->setAlignment(Qt::AlignCenter);
-    editPanelVerticalLayout->addWidget(l);
     l->setObjectName("panelWidgetLabel");
+    p->layout()->addWidget(l);
+    panelLayout->addWidget(p);
     //editPanelVerticalLayout->addWidget(l);
     if (hint != "")
     {
      panel->setToolTip(hint);
     }
-    panel->setMinimumSize(comp->size());  // override for  text fields
-    editPanelVerticalLayout->addWidget(comp);
-    editPanelVerticalLayout->setAlignment(Qt::AlignHCenter);
-
-    //panel->layout()->addWidget(Box.createVerticalGlue());
+//    comp->setMaximumSize(comp->sizeHint());  // override for  text fields
+    panelLayout->addWidget(comp);
+    panelLayout->setAlignment(Qt::AlignHCenter);
+//    panel->layout()->addWidget(Box::createVerticalGlue());
     return panel;
 }
 
@@ -1707,14 +1708,14 @@ QWidget* ConditionalListEdit::makeButtonPanel(QPushButton* updateAction,
                        QPushButton*  deleteAction)
 {
     QWidget* panel3 = new QWidget();
-    panel3->setLayout(new QHBoxLayout(panel3/*, BoxLayout.X_AXIS*/));
+    panel3->setLayout(new FlowLayout(panel3/*, BoxLayout.X_AXIS*/));
     //QPushButton updateAction = new QPushButton(tr("UpdateButton"));
     updateAction->setText(tr("Update"));
-    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(updateAction->sizePolicy().hasHeightForWidth());
-    updateAction->setSizePolicy(sizePolicy);
+//    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+//    sizePolicy.setHorizontalStretch(0);
+//    sizePolicy.setVerticalStretch(0);
+//    sizePolicy.setHeightForWidth(updateAction->sizePolicy().hasHeightForWidth());
+//    updateAction->setSizePolicy(sizePolicy);
     panel3->layout()->addWidget(updateAction);
     //panel3->layout()->addWidget(Box.createHorizontalStrut(STRUT));
     //updateAction->layout()->addActionListener(updateListener);
@@ -1722,7 +1723,6 @@ QWidget* ConditionalListEdit::makeButtonPanel(QPushButton* updateAction,
 
     //QPushButton cancelAction = new QPushButton(tr("CancelButton"));
     cancelAction->setText(tr("Cancel"));
-    cancelAction->setSizePolicy(sizePolicy);
     panel3->layout()->addWidget(cancelAction);
     //panel3->layout()->addWidget(Box.createHorizontalStrut(STRUT));
     //cancelAction->layout()->addActionListener(cancelListener);
@@ -1730,7 +1730,6 @@ QWidget* ConditionalListEdit::makeButtonPanel(QPushButton* updateAction,
 
     //QPushButton deleteAction = new QPushButton(tr("DeleteButton"));
     deleteAction->setText(tr("Delete"));
-    deleteAction->setSizePolicy(sizePolicy);
     panel3->layout()->addWidget(deleteAction);
     //deleteAction->layout()->addActionListener(deleteListener);
     deleteAction->setToolTip(tr("Press to delete and return to Edit Conditional "));
@@ -1756,55 +1755,79 @@ void ConditionalListEdit::makeEditVariableWindow(int row)
  _curVariableRowNumber = row;
  _curVariable = _variableList->at(row);
  _editVariableFrame = new JmriJFrame(tr("Edit Variable"), true, true);
- //_editVariableFrame->setLocation(10, 100);
- QWidget* topPanel = makeTopPanel(_editVariableFrame, "Antecedent Variable", 500, 120);
+ _editVariableFrame->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
+ QWidget* topPanel = makeTopPanel(_editVariableFrame, tr("Antecedent Variable"), 500, 120);
  _editVariableFrame->setAcceptDrops(true);
-//    Box panel1 = Box.createHorizontalBox();
-//    panel1->layout()->addWidget(Box.createHorizontalGlue());
-//    panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
-// QFrame* panel1 = new QFrame();
-// panel1->setLayout(new QHBoxLayout());
- QHBoxLayout* panel1HLayout = new QHBoxLayout();
- ((QVBoxLayout*)topPanel->layout())->addLayout(panel1HLayout);
-// Item Type
+ //QVBoxLayout* topPanelLayout = new QVBoxLayout(topPanel);
+
+ //Box* panel1 = Box::createHorizontalBox();
+ QWidget* panel1 = new QWidget();
+ panel1->setLayout(new QHBoxLayout());
+// panel1->layout()->addWidget(Box::createHorizontalGlue());
+// panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
+ // Item Type
  _variableItemBox = new QComboBox();
  _variableItemBox->setLayout(new QVBoxLayout());
  for (int i = 0; i <= Conditional::ITEM_TYPE_LAST_STATE_VAR; i++)
- {
   _variableItemBox->addItem(ConditionalVariable::getItemTypeString(i));
- }
- panel1HLayout->addWidget(makeEditPanel(_variableItemBox, tr("Variable Type"), tr("Select type of state variable for Conditional to test")));
- //panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
- panel1HLayout->addStrut(50);
-// Item Name
+ //JComboBoxUtil.setupComboBoxMaxRows(_variableItemBox);
+ panel1->layout()->addWidget(makeEditPanel(_variableItemBox, tr("Variable Type"), tr("Select type of state variable for Conditional to test")));
+ //panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
+ // Item Name
  _variableNameField = new JTextField(30);
  _variableNameField->setMinimumWidth(150);
 
- _variableNamePanel = makeEditPanel(_variableNameField, "System / User Name", "");
- _variableNamePanel->setMinimumSize(
-              QSize(50, _variableNamePanel->size().height()));
+ _variableNamePanel = makeEditPanel(_variableNameField, tr("System / User Name"), "");
+// _variableNamePanel->setMaximumSize(
+//              QSize(50, _variableNamePanel->sizeHint().height()));
  _variableNamePanel->setVisible(false);
-  QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  sizePolicy.setVerticalStretch(0);
-  sizePolicy.setHorizontalStretch(1);
-  sizePolicy.setHeightForWidth(_variableNamePanel->sizePolicy().hasHeightForWidth());
-  _variableNamePanel->setSizePolicy(sizePolicy);
- panel1HLayout->addWidget(_variableNamePanel);
- //panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
-// State Box
+//  QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+//  sizePolicy.setVerticalStretch(0);
+//  sizePolicy.setHorizontalStretch(1);
+//  sizePolicy.setHeightForWidth(_variableNamePanel->sizePolicy().hasHeightForWidth());
+//  _variableNamePanel->setSizePolicy(sizePolicy);
+ panel1->layout()->addWidget(_variableNamePanel);
+ //panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
+ // Arbitrary name combo box to facilitate the panel construction
+ if (_selectionMode == SelectionMode::USECOMBO) {
+     _comboNameBox = createNameBox(1);
+     _variableComboNamePanel = makeEditPanel(_comboNameBox, "Item Name", "");  // NOI18N
+     _variableComboNamePanel->setVisible(false);
+     panel1->layout()->addWidget(_variableComboNamePanel);
+     //panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+ }
+
+ // Combo box section for selecting conditional reference
+ //   First box selects the Logix, the second selects the conditional within the logix
+ _selectLogixBox->addItem("XXXXXXXXXXXXXXXXXXXXX");  // NOI18N
+ _selectConditionalBox->addItem("XXXXXXXXXXXXXXXXXXXXX");  // NOI18N
+ _selectLogixPanel = makeEditPanel(_selectLogixBox, tr("Select Logix"), "");  // NOI18N
+ _selectConditionalPanel = makeEditPanel(_selectConditionalBox, "SelectConditional", "");  // NOI18N
+ _selectLogixPanel->setVisible(false);
+ _selectConditionalPanel->setVisible(false);
+ panel1->layout()->addWidget(_selectLogixPanel);
+ panel1->layout()->addWidget(_selectConditionalPanel);
+ //panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
+ // State Box
  _variableStateBox = new QComboBox();
  _variableStateBox->addItem("XXXXXXX");
  _variableStatePanel = makeEditPanel(_variableStateBox, tr("Variable State"), tr("Select the state of the variable to test"));
  _variableStatePanel->setVisible(false);
- panel1HLayout->addWidget(_variableStatePanel);
- //panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
+ panel1->layout()->addWidget(_variableStatePanel);
+ //panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
  // Aspects
  _variableSignalBox = new QComboBox();
  _variableSignalBox->addItem("XXXXXXXXX");
  _variableSignalPanel = makeEditPanel(_variableSignalBox, tr("Variable Aspect"), tr("Select the Aspect of the Signal to test"));
  _variableSignalPanel->setVisible(false);
- panel1HLayout->addWidget(_variableSignalPanel);
- //panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
+ panel1->layout()->addWidget(_variableSignalPanel);
+ //panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
 // Compare operator
  _variableComparePanel = new QWidget();
  _variableComparePanel->setLayout(new QHBoxLayout(_variableComparePanel/*, BoxLayout.X_AXIS*/));
@@ -1814,7 +1837,8 @@ void ConditionalListEdit::makeEditVariableWindow(int row)
   _variableCompareOpBox->addItem(ConditionalVariable::getCompareOperationString(i));
  }
  _variableComparePanel->layout()->addWidget(makeEditPanel(_variableCompareOpBox, tr("Comparison Operator"), tr("Select an operator to compare memory values")));
- //_variableComparePanel->layout()->addWidget(Box.createHorizontalStrut(STRUT));
+ //_variableComparePanel->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
 // Compare type
 _variableCompareTypeBox = new QComboBox();
  for (int i = 0; i < Conditional::ITEM_TO_MEMORY_TEST.length(); i++)
@@ -1830,26 +1854,28 @@ _variableCompareTypeBox = new QComboBox();
 //        }
 //    });
  connect(_variableCompareTypeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(itemStateChanged(int)));
- panel1HLayout->addWidget(_variableComparePanel);
- //panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
+ panel1->layout()->addWidget(_variableComparePanel);
+ //panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
 // Data 1
  _variableData1Field = new JTextField(30);
  _variableData1Panel = makeEditPanel(_variableData1Field, tr("Start Time"), tr("Enter time (hh:mm) for a 24-hour clock"));
  _variableData1Panel->setMaximumSize(
               QSize(45, _variableData1Panel->size().height()));
  _variableData1Panel->setVisible(false);
- panel1HLayout->addWidget(_variableData1Panel);
- //panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
+ panel1->layout()->addWidget(_variableData1Panel);
+ //panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+
 // Data 2
  _variableData2Field = new JTextField(30);
  _variableData2Panel = makeEditPanel(_variableData2Field, tr("End Time"), tr("Enter time (hh:mm) for a 24-hour clock"));
  _variableData2Panel->setMaximumSize(
              QSize(45, _variableData2Panel->size().height()));
  _variableData2Panel->setVisible(false);
- panel1HLayout->addWidget(_variableData2Panel);
-// panel1VLayout->addWidget(Box.createHorizontalStrut(STRUT));
-// panel1->layout()->addWidget(Box.createHorizontalGlue());
- //topPanel->layout()->addWidget(panel1);
+ panel1->layout()->addWidget(_variableData2Panel);
+// panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+// panel1->layout()->addWidget(Box::createHorizontalGlue());
+ topPanel->layout()->addWidget(panel1);
 
 // ActionListener updateListener = new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -1876,7 +1902,7 @@ _variableCompareTypeBox = new QComboBox();
 
  QWidget* panel = makeButtonPanel(updateListener, cancelListener, deleteListener);
  topPanel->layout()->addWidget(panel);
- //topPanel->layout()->addWidget(Box.createVerticalGlue());
+ //topPanel->layout()->addWidget(Box::createVerticalGlue());
 
  if(_editVariableFrame->centralWidget()== NULL)
  {
@@ -1884,7 +1910,7 @@ _variableCompareTypeBox = new QComboBox();
      centralWidget->setLayout(new QVBoxLayout);
      _editVariableFrame->setCentralWidget(centralWidget);
  }
- QWidget* contentPane = _editVariableFrame->centralWidget();
+ QWidget* contentPane = _editVariableFrame->getContentPane();
  contentPane->layout()->addWidget(topPanel);
  // note - this listener cannot be added before other action items
  // have been created
@@ -1909,22 +1935,47 @@ _variableCompareTypeBox = new QComboBox();
  _editVariableFrame->setVisible(true);
 }
 
-void ConditionalListEdit::variableItemStateChanged()
+void ConditionalListEdit::variableItemStateChanged(int)
 {
  int newVariableItem = _variableItemBox->currentIndex();
  if (log->isDebugEnabled())
  {
-     log->debug(tr("_variableItemBox Listener: new = %1, curr = %2, row = %3").arg(newVariableItem).arg(_curVariableItem).arg(_curVariableRowNumber));
+  log->debug(tr("_variableItemBox Listener: new = %1, curr = %2, row = %3").arg(  // NOI18N
+  newVariableItem).arg(_curVariableItem).arg(_curVariableRowNumber));
  }
- if (newVariableItem != _curVariableItem) {
-     if (_curVariableRowNumber >= 0) {
-         _curVariable = new ConditionalVariable();
-         _variableList->replace(_curVariableRowNumber, _curVariable);
-     }
-     _curVariableItem = newVariableItem;
+ if (newVariableItem != _curVariableItem)
+ {
+  if (_curVariableRowNumber >= 0)
+  {
+      _curVariable = new ConditionalVariable();
+      if (_curVariableRowNumber > 0) {
+          if (_logicType == Conditional::ALL_OR) {
+              _curVariable->setOpern(Conditional::Operator::OR);
+          } else {
+              _curVariable->setOpern(Conditional::Operator::AND);
+          }
+      }
+      _variableList->replace(_curVariableRowNumber, _curVariable);
+  }
+  _curVariableItem = newVariableItem;
  }
  variableItemChanged(newVariableItem);
  _editVariableFrame->pack();
+
+
+ // setup window closing listener
+ //_editVariableFrame.addWindowListener(
+ //        new java.awt.event.WindowAdapter() {
+ //    @Override
+ //    public void windowClosing(java.awt.event.WindowEvent e) {
+ //        cancelEditVariablePressed();
+ //    }
+ // });
+ _editVariableFrame->addWindowListener(new EditVariableFrameWindowListener(this));
+ _curVariableItem = Conditional::TEST_TO_ITEM[_curVariable->getType()];
+ initializeStateVariables();
+ _editVariableFrame->pack();
+ _editVariableFrame->setVisible(true);
 }
 
 void ConditionalListEdit::itemStateChanged(int )
@@ -2116,7 +2167,7 @@ void ConditionalListEdit::initializeStateVariables()
     } else if (_selectionMode == SelectionMode::USESINGLE) {
         createSinglePanelPickList(itemType, new PickSingleListener(_variableNameField, itemType, this), false);
     } else {
-        // Default and USEMULTI
+        // Default and USEMULTINameHintSensor
         setPickListTab(itemType, false);
     }
 
@@ -2820,6 +2871,7 @@ void ConditionalListEdit::makeEditActionWindow(int row)
     _curActionRowNumber = row;
     _curAction = _actionList->at(row);
     _editActionFrame = new JmriJFrame(tr("Edit Action"), true, true);
+    _editActionFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
 #if 1
 //        _editActionFrame->setLocation(10, 300);
     QWidget* topPanel = makeTopPanel(_editActionFrame, "Consequent Action ", 600, 160);
@@ -2829,11 +2881,11 @@ void ConditionalListEdit::makeEditActionWindow(int row)
     QWidget* panel1 = new QWidget();
     panel1->setLayout(new QHBoxLayout());
 
-    _actionTypeBox = new QComboBox();
+    _actionItemBox = new QComboBox();
     for (int i = 0; i <= Conditional::ITEM_TYPE_LAST_ACTION; i++) {
-        _actionTypeBox->addItem(DefaultConditionalAction::getItemTypeString(i));
+        _actionItemBox->addItem(DefaultConditionalAction::getItemTypeString(i));
     }
-    panel1->layout()->addWidget(makeEditPanel(_actionTypeBox, "Action Group", "Select action item for Conditional to execute"));
+    panel1->layout()->addWidget(makeEditPanel(_actionItemBox, "Action Group", "Select action item for Conditional to execute"));
     //panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
 
     _actionNameField = new JTextField(30);
@@ -2844,6 +2896,15 @@ void ConditionalListEdit::makeEditActionWindow(int row)
     _namePanel->setVisible(false);
     panel1->layout()->addWidget(_namePanel);
     //panel1->layout()->addWidget(Box.createHorizontalStrut(STRUT));
+
+    // Arbitrary name combo box to facilitate the panel construction
+    if (_selectionMode == SelectionMode::USECOMBO) {
+        _comboNameBox = createNameBox(1);
+        _actionComboNamePanel = makeEditPanel(_comboNameBox, "LabelItemName", "");  // NOI18N
+        _actionComboNamePanel->setVisible(false);
+        panel1->layout()->addWidget(_actionComboNamePanel);
+        panel1->layout()->addWidget(Box::createHorizontalStrut(STRUT));
+    }
 
     _actionTypeBox = new QComboBox();
     _actionTypeBox->addItem("");
@@ -2884,7 +2945,7 @@ void ConditionalListEdit::makeEditActionWindow(int row)
 
 //    Box panel2 = Box.createHorizontalBox();
 //    panel2->layout()->addWidget(Box.createHorizontalGlue());
-    QGroupBox* panel2 = new QGroupBox();
+    QGroupBox* panel2 = new QGroupBox("xx");
     panel2->setLayout(new QVBoxLayout());
 
     _setPanel = new QWidget();
@@ -2894,11 +2955,11 @@ void ConditionalListEdit::makeEditActionWindow(int row)
     p->layout()->addWidget(new QLabel(tr("Set File")));
     _setPanel->layout()->addWidget(p);
     _actionSetButton = new QPushButton(tr("File"));
-    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(_actionSetButton->sizePolicy().hasHeightForWidth());
-    _actionSetButton->setSizePolicy(sizePolicy);
+//    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+//    sizePolicy.setHorizontalStretch(0);
+//    sizePolicy.setVerticalStretch(0);
+//    sizePolicy.setHeightForWidth(_actionSetButton->sizePolicy().hasHeightForWidth());
+//    _actionSetButton->setSizePolicy(sizePolicy);
 //    _actionSetButton->layout()->addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                validateAction();
@@ -2908,6 +2969,7 @@ void ConditionalListEdit::makeEditActionWindow(int row)
     connect(_actionSetButton, SIGNAL(clicked()), this, SLOT(on_actionSetButton_Pressed()));
     _actionSetButton->setMaximumSize(_actionSetButton->size());
     _setPanel->layout()->addWidget(_actionSetButton);
+    _actionSetButton->setToolTip(tr("FileButtonHint"));  // NOI18N
     //_setPanel->layout()->addWidget(Box.createVerticalGlue());
     _setPanel->setVisible(false);
     panel2->layout()->addWidget(_setPanel);
@@ -2931,7 +2993,6 @@ void ConditionalListEdit::makeEditActionWindow(int row)
 //            }
 //        };
     QPushButton* updateButton = new QPushButton();
-    updateButton->setSizePolicy(sizePolicy);
     connect(updateButton, SIGNAL(clicked()), this, SLOT(updateActionPressed()));
 //   ActionListener cancelListener = new ActionListener() {
 //           /*public*/ void actionPerformed(ActionEvent e) {
@@ -2939,7 +3000,6 @@ void ConditionalListEdit::makeEditActionWindow(int row)
 //           }
 //       };
     QPushButton* cancelButton = new QPushButton();
-    cancelButton->setSizePolicy(sizePolicy);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelEditActionPressed()));
 //   ActionListener deleteListener = new ActionListener() {
 //           /*public*/ void actionPerformed(ActionEvent e) {
@@ -2947,7 +3007,6 @@ void ConditionalListEdit::makeEditActionWindow(int row)
 //           }
 //       };
     QPushButton* deleteButton = new QPushButton();
-    deleteButton->setSizePolicy(sizePolicy);
     connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteActionPressed()));
     QWidget* panel = makeButtonPanel(updateButton, cancelButton, deleteButton);
     topPanel->layout()->addWidget(panel);
@@ -2962,15 +3021,24 @@ void ConditionalListEdit::makeEditActionWindow(int row)
     QWidget* contentPane = _editActionFrame->centralWidget();
     contentPane->layout()->addWidget(topPanel);
     // note - this listener cannot be added until all items are entered into _actionItemTypeBox
-//    _actionItemTypeBox->addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            int select = _actionItemTypeBox->currentIndex();
-//            if (log->isDebugEnabled()) log->debug("_actionItemTypeBoxListener: select= "+select);
-//            actionItemChanged(select);
+   // _actionItemBox.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            int newActionItem = _actionItemBox.getSelectedIndex();
+//            log.debug("_actionItemBox Listener: new = {}, curr = {}, row = {}",  // NOI18N
+//                    newActionItem, _curActionItem, _curActionRowNumber);
+//            if (newActionItem != _curActionItem) {
+//                if (_curActionRowNumber >= 0) {
+//                    _curAction = new DefaultConditionalAction();
+//                    _actionList.set(_curActionRowNumber, _curAction);
+//                }
+//                _curActionItem = newActionItem;
+//            }
+//            actionItemChanged(newActionItem);
 //            _editActionFrame.pack();
 //        }
 //    });
-    connect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_actionItemType_changed(int)));
+    connect(_actionItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_actionItemBox()));
 //    // setup window closing listener
 //    _editActionFrame->addWindowListener(
 //        new java.awt.event.WindowAdapter() {
@@ -2979,12 +3047,43 @@ void ConditionalListEdit::makeEditActionWindow(int row)
 //                }
 //            });
     _editActionFrame->addWindowListener(editActionFrameWindowListener = new EditActionFrameWindowListener(this));
-    actionItemChanged(Conditional::TYPE_NONE);
+    _curActionItem = Conditional::ACTION_TO_ITEM[_curAction->getType()];
     initializeActionVariables();
     _editActionFrame->setVisible(true);
     _editActionFrame->adjustSize();
 #endif
 } /* makeEditActionWindow */
+
+void ConditionalListEdit::on_actionSetButton_Pressed()
+{
+  validateAction();
+  setFileLocation(0);
+}
+
+void ConditionalListEdit::on_actionItemType_changed(int select)
+{
+  if (log->isDebugEnabled()) log->debug("_actionItemTypeBoxListener: select= "+select);
+  actionItemChanged(select);
+  _editActionFrame->pack();
+
+}
+
+void ConditionalListEdit::on_actionItemBox()
+{
+ int newActionItem = _actionItemBox->currentIndex();
+ log->debug(tr("_actionItemBox Listener: new = %1, curr = %2, row = %3").arg(  // NOI18N
+         newActionItem).arg(_curActionItem).arg(_curActionRowNumber));
+ if (newActionItem != _curActionItem) {
+     if (_curActionRowNumber >= 0) {
+         _curAction = new DefaultConditionalAction();
+         _actionList->replace(_curActionRowNumber, _curAction);
+     }
+     _curActionItem = newActionItem;
+ }
+ actionItemChanged(newActionItem);
+ _editActionFrame->pack();
+}
+
 
 // ------------ Main Action methods ------------
 /**
@@ -2997,8 +3096,9 @@ void ConditionalListEdit::initializeActionVariables() {
     if (actionType==Conditional::ACTION_NONE) {
         return;
     }
-    _actionTypeBox->setCurrentIndex(itemType);
+    _actionItemBox->setCurrentIndex(itemType);
     _actionNameField->setText(((ConditionalAction*)_curAction)->getDeviceName());
+    int oldState = _actionTypeBox->blockSignals(true);
     switch (itemType)
     {
         case Conditional::ITEM_TYPE_SENSOR:
@@ -3178,6 +3278,7 @@ void ConditionalListEdit::initializeActionVariables() {
             // ACTION_TRIGGER_ROUTE
             break;
     }
+    _actionTypeBox->blockSignals(oldState);
     _actionOptionBox->setCurrentIndex(((ConditionalAction*)_curAction)->getOption() - 1);
     _editActionFrame->adjustSize();
    // _editActionFrame->transferFocusBackward();
@@ -3193,8 +3294,7 @@ void ConditionalListEdit::actionItemChanged(int type)
  int actionType = ((DefaultConditionalAction*)_curAction)->getType();
  if (log->isDebugEnabled()) log->debug("actionItemChanged: itemType= "+QString::number(type)+", actionType= "+QString::number(actionType));
  //_actionTypeBox->removeActionListener(_actionTypeListener);
- disconnect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(_actionTypeListener(int)));
-
+ disconnect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), _actionTypeListener, SLOT(actionPerformed()));
  _actionTypePanel->setVisible(false);
  _setPanel->setVisible(false);
  _shortTextPanel->setVisible(false);
@@ -3222,8 +3322,9 @@ void ConditionalListEdit::actionItemChanged(int type)
  }
  _actionTypeBox->addItem("");
 //    _actionNameField.removeActionListener(actionSignalHeadNameListener);
+ disconnect(_actionNameField, SIGNAL(editingFinished()), this, SLOT(actionSignalMastNameListener()));
 //    _actionNameField.removeActionListener(actionSignalMastNameListener);
-//    _actionNameField.removeActionListener(actionOBlockPathListener);
+ disconnect(_actionNameField, SIGNAL(editingFinished()), this, SLOT(actionSignalMastNameListener()));
 
  switch (itemType)
  {
@@ -3581,15 +3682,13 @@ void ConditionalListEdit::actionItemChanged(int type)
     {
         break;
     }
-    }
-    _actionTypeBox->setMaximumSize(_actionTypeBox->size());
-    _actionBox->setMaximumSize(_actionBox->size());
-    //_actionTypeListener->setItemType(itemType);
-    //itemType = itemType;
-    //_actionTypeBox->addActionListener(_actionTypeListener);
-    connect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(_actionTypeListener(int)));
-    if (log->isDebugEnabled()) log->debug("Exit actionItemChanged size: "+QString::number(_editActionFrame->width())+
-                                        " X "+QString::number(_editActionFrame->height()));
+ }
+ _actionTypeBox->setMaximumSize(_actionTypeBox->size());
+ _actionBox->setMaximumSize(_actionBox->size());
+ _actionTypeListener->setItemType(itemType);
+ //_actionTypeBox->addActionListener(_actionTypeListener);
+ connect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), _actionTypeListener, SLOT(actionPerformed()));
+ _editActionFrame->pack();
 } /* actionItemChanged */
 
 
@@ -3672,11 +3771,12 @@ void ConditionalListEdit::cleanUpAction()
  if (_editActionFrame != NULL)
  {
   //_actionTypeBox->removeActionListener(_actionTypeListener);
-  disconnect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(_actionTypeListener(int)));
+  disconnect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), _actionTypeListener, SLOT(actionPerformed()));
 
   _editActionFrame->setVisible(false);
   _editActionFrame->dispose();
-  _editActionFrame = NULL;
+  _editActionFrame = nullptr;
+  closeSinglePanelPickList();
  }
  _curActionRowNumber = -1;
 }
@@ -4216,34 +4316,33 @@ ActionTypeListener::ActionTypeListener(LogixTableAction *self)
 }
 #endif
 //};
-ActionTypeListener::ActionTypeListener(int type, ConditionalListEdit* self) // SLOT[]
+ActionTypeListener::ActionTypeListener(ConditionalListEdit* self) // SLOT[]
 {
  this->self = self;
- int select1 = type;
- int select2 = type-1;
- if (self->log->isDebugEnabled()) self->log->debug("ActionTypeListener: actionItemType= "+QString::number(select1)+", _itemType= "
-                                        +QString::number(_itemType)+", action= "+QString::number(select2));
- if (select1 != _itemType)
- {
-  if (self->log->isDebugEnabled())self->log->error("ActionTypeListener actionItem selection ("+QString::number(select1)+
-                                            ") != expected actionItem ("+QString::number(_itemType)+")");
+}
+
+void ActionTypeListener::setItemType(int type) { this->_itemType = type;}
+
+void ActionTypeListener::actionPerformed()
+{
+ int select1 = self->_actionItemBox->currentIndex();
+ int select2 = self->_actionTypeBox->currentIndex() - 1;
+ self->log->debug(tr("ActionTypeListener: actionItemType= %1, _itemType= %2, action= %3").arg(select1).arg(_itemType).arg(select2));  // NOI18N
+ if (select1 != _itemType) {
+     self->log->debug(tr("ActionTypeListener actionItem selection (%1) != expected actionItem (%2)").arg(select1).arg(_itemType));  // NOI18N
  }
- if (self->_curAction!=NULL)
- {
-  if (select1 > 0 && _itemType==select1)
-  {
-   ((ConditionalAction*)self->_curAction)->setType(self->getActionTypeFromBox(_itemType, select2));
-   if (select1 == _itemType)
-   {
-    QString text = self->_actionNameField->text();
-    if (text != NULL && text.length()>0)
-    {
-     ((ConditionalAction*)self->_curAction)->setDeviceName(text);
-    }
-   }
-   self->actionItemChanged(_itemType);
-   self->initializeActionVariables();
-  }
+ if (self->_curAction != nullptr) {
+     if (select1 > 0 && _itemType == select1) {
+         self->_curAction->setType(self->getActionTypeFromBox(_itemType, select2));
+         if (select1 == _itemType) {
+             QString text = self->_actionNameField->text();
+             if (text != "" && text.length() > 0) {
+                 self->_curAction->setDeviceName(text);
+             }
+         }
+         self->actionItemChanged(_itemType);
+         self->initializeActionVariables();
+     }
  }
 }
 

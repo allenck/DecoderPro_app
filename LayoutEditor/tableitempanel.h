@@ -63,7 +63,7 @@ friend class AddTableActionListener;
 {
  Q_OBJECT
  TableItemPanel* self;
- QMap<QString, NamedIcon*>* iconMap;
+ QMap<QString, NamedIcon*>* iMap;
 public:
  /*public*/ TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, NamedIcon *icon, TableItemPanel* self);
  /*public*/ bool isDataFlavorSupported(DataFlavor* flavor) ;

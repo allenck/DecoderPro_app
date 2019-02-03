@@ -14,6 +14,7 @@
 #include <QGroupBox>
 #include "joptionpane.h"
 #include "box.h"
+#include <QScrollArea>
 
 //IconDialog::IconDialog(QWidget *parent) :
 //    ItemDialog(parent)
@@ -33,9 +34,7 @@
 /*public*/ IconDialog::IconDialog(QString type, QString family, FamilyItemPanel* parent, QMap<QString, NamedIcon *> *iconMap ) : ItemDialog(type, family,                                                                                                                          tr("Show Icons for %1").arg(type), parent, true)
 {
 //    super(type, family,
-//          tr("Show Icons for %1").arg(type), parent, true);
-
- setLayout(new QVBoxLayout);
+ QVBoxLayout* thisLayout = new QVBoxLayout(this);
  _newIconSet = false;
  log = new Logger("IconDialog");
  QFont f = font();
@@ -52,14 +51,15 @@
  panel->layout()->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
 
  QWidget* p = new QWidget();
+ QHBoxLayout* pLayout = new QHBoxLayout(p);
  _nameLabel = new JLabel(tr("Icon Set \"%1\".").arg(family));
- p->layout()->addWidget(_nameLabel);
+ pLayout->addWidget(_nameLabel);
  panel->layout()->addWidget(p);
  QWidget* buttonPanel = new QWidget();
  buttonPanel->setLayout(new QVBoxLayout()); //(buttonPanel, BoxLayout.Y_AXIS));
  makeDoneButtonPanel(buttonPanel, iconMap);
  // null method for all except multisensor.
- makeAddIconButtonPanel(buttonPanel, "ToolTipAddPosition", "ToolTipDeletePosition");
+ makeAddIconButtonPanel(buttonPanel, "Add an additional Sensor position to this Icon Set", "Delete the last Sensor position from this Icon Set");
 
  if (!(type==("IndicatorTO") || type==("MultiSensor") || type==("SignalHead"))) {
      ItemPanel::checkIconMap(type, _iconMap);
@@ -76,9 +76,11 @@
  _catalog = makeCatalog();
  p->layout()->addWidget(_catalog);
 
-// JScrollPane sp = new JScrollPane(p);
+ QScrollArea* sp = new QScrollArea();
 // setContentPane(sp);
- this->layout()->addWidget(p);
+ sp->setWidgetResizable(true);
+ sp->setWidget(p);
+ thisLayout->addWidget(sp);
  setLocationRelativeTo(_parent);
  setVisible(true);
  pack();

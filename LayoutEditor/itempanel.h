@@ -5,6 +5,7 @@
 #include "displayframe.h"
 #include "imagepanel.h"
 
+class QGroupBox;
 class ActionListener;
 class JPanel;
 class JTextField;
@@ -88,7 +89,7 @@ protected:
     ImagePanel* preview2 = nullptr;
     /*protected*/ void updateBackgrounds(Editor* ed);
     static /*protected*/ QVector<BufferedImage*>* makeBackgrounds(QVector<BufferedImage*> *backgrounds, QColor panelBackground);
-    /*protected*/ JPanel *makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2);
+    /*protected*/ QGroupBox *makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2);
     static /*protected*/ void checkIconMap(QString type, QMap<QString, NamedIcon*>* map);
     /*protected*/ DisplayFrame* getParentFrame();
     /*protected*/ void reSizeDisplay(bool isPalette, QSize oldDim, QSize totalDim);

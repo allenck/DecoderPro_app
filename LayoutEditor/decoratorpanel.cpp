@@ -61,6 +61,7 @@
   _previewPanel->setLayout(_previewPanelLayout = new QVBoxLayout()); //new BorderLayout());
 //  _previewPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 1),
 //          Bundle.getMessage("PreviewBorderTitle")));
+  
   _previewPanelLayout->addWidget(Box::createVerticalStrut(STRUT), 0, Qt::AlignTop);//BorderLayout.PAGE_START);
   _previewPanelLayout->addWidget(Box::createVerticalStrut(STRUT), 0, Qt::AlignBottom);//, BorderLayout.PAGE_END);
 
@@ -216,8 +217,9 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
     ((QVBoxLayout*)_previewPanel->layout())->addWidget(_samplePanel, 0, Qt::AlignCenter);// BorderLayout.CENTER);
 
     // add a SetBackground combo
-    if (addBgCombo) {
-        layout()->addWidget(makeBgButtonPanel(_previewPanel, nullptr, _backgrounds)); // no listener on this variant
+    if (addBgCombo)
+    {
+     layout()->addWidget(makeBgButtonPanel(_previewPanel, nullptr, _backgrounds)); // no listener on this variant
     }
     layout()->addWidget(_previewPanel);
     _previewPanel->setImage(_backgrounds->at(0));

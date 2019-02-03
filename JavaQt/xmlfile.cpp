@@ -690,8 +690,13 @@ XmlFile::XmlFile(QObject *parent) :
  // if (suffix2 != null) {
  //     filt.addExtension(suffix2);
  // }
- //QString filt = tr("files (*.%1 *.%2").arg(suffix1).arg(suffix2);
- fc->setFileFilter(filter);
+ QString filt;
+ if(suffix2 == "")
+  filt = tr("%1 (*.%2)").arg(filter).arg(suffix1);
+ else
+  filt = tr("%1 (*.%2 *.%3)").arg(filter).arg(suffix1).arg(suffix2);
+
+ fc->setFileFilter(filt);
  return fc;
 }
 
@@ -710,7 +715,7 @@ XmlFile::XmlFile(QObject *parent) :
 
 /*public*/ /*static*/ JFileChooser* XmlFile::userFileChooser(
         QString filter, QString suffix1) {
-    return userFileChooser(filter, suffix1, NULL);
+    return userFileChooser(filter, suffix1, "");
 }
 
 #if 0

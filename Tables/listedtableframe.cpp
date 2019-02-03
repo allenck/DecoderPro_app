@@ -827,8 +827,8 @@ void ActionJList::selectListItem(int index) {
     } catch (Exception ex) {
         log->error(ex.getLocalizedMessage()/*, ex*/);
     }
-//    ((ListedTableFrame*)frame)->list->ensureIndexIsVisible(index);
-//    ((ListedTableFrame*)frame)->list->setSelectedIndex(index);
+    ((ListedTableFrame*)frame)->list->ensureIndexIsVisible(index);
+    ((ListedTableFrame*)frame)->list->setSelectedIndex(index);
 }
 //}
 

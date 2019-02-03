@@ -188,7 +188,9 @@ SOURCES += javaqt.cpp \
     inet4address.cpp \
     inet6address.cpp \
     glasspane.cpp \
-    drawsquares.cpp
+    drawsquares.cpp \
+    placewindow.cpp \
+    objects.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -419,7 +421,9 @@ HEADERS += javaqt.h\
     inet4address.h \
     inet6address.h \
     glasspane.h \
-    drawsquares.h
+    drawsquares.h \
+    placewindow.h \
+    objects.h
 
 unix {
     target.path = /usr/lib

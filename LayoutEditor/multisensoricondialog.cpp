@@ -135,7 +135,7 @@ void MultiSensorIconDialog::onDeleteSensor_clicked()
                 tr("Warning"), JOptionPane::WARNING_MESSAGE);
         return false;
     }
-    QString fileName = "resources/icons/misc/X-red.gif";
+    QString fileName = ":/resources/icons/misc/X-red.gif";
     NamedIcon* icon = new NamedIcon(fileName, fileName);
     _iconMap->insert(name, icon);
     return true;

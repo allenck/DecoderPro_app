@@ -104,14 +104,14 @@ private:
     QPushButton*      _changeButton;
     QPushButton*      _closeButton;
     CatalogPanel*     _catalog;
-    JFrame*           _parent;
+    JFrame*           _parent = nullptr;
     bool              _allowDeletes;
     bool			  _update;				// updating existing icon from popup
     QVBoxLayout* thisLayout;
 
     /*private*/ CatalogTreeNode* getDefaultIconNodeFromMap();
     Logger* log;
-    void init();
+    void common();
     /*private*/ void clearIconPanel() ;
     void makeIconMap(NamedBean* bean) ;
     void checkIconSizes();

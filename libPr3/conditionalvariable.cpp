@@ -273,7 +273,7 @@ void ConditionalVariable::common()
      bean = (NamedBean*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(_name);
      break;
  case Conditional::ITEM_TYPE_LIGHT:
-     bean = (NamedBean*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(_name);
+     bean = (NamedBean*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getLight(_name);
      break;
  case Conditional::ITEM_TYPE_MEMORY:
      bean = (NamedBean*)((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(_name);
