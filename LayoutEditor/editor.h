@@ -271,7 +271,7 @@ public:
     /*public*/ bool setShowAlignmentMenu(Positionable* p, QMenu* popup);
     /*public*/ void setDisplayLevelMenu(Positionable* p, QMenu* popup);
     /*public*/ void setHiddenMenu(Positionable* p, QMenu* popup);
-    /*public*/ void setRemoveMenu(Positionable* p, QMenu* popup);
+    /*public*/ virtual void setRemoveMenu(Positionable* p, QMenu* popup);
     /*public*/ PositionableLabel* setUpBackground(QString name);
     /*public*/ void displayLevelChange(Positionable* l);
     /*public*/ TrainIcon* addTrainIcon (QString name);
@@ -319,6 +319,11 @@ public:
     /*public*/ JFrameItem* getIconFrame(QString name);
     /*public*/ void showToolTip(Positionable* selection, QGraphicsSceneMouseEvent* event);
     /*public*/ const QScrollArea* getPanelScrollPane();
+    /**
+     * After construction, initialize all the widgets to their saved config
+     * settings.
+     */
+    /*abstract*/ /*public*/ virtual void initView() {}
 
 signals:
     
@@ -434,6 +439,22 @@ private slots:
 
 //    ToolTipTimer* _tooltipTimer;
   /*protected*/ virtual void targetWindowClosing(bool save);
+  /**
+   * Set an object's location when it is created.
+   *
+   * @param obj the object to locate
+   */
+  /*abstract*/ /*protected*/ virtual void setNextLocation(Positionable* obj) {}
+
+  /**
+   * Editor Views should make calls to this class (Editor) to set popup menu
+   * items. See 'Popup Item Methods' above for the calls.
+   *
+   * @param p     the item containing or requiring the context menu
+   * @param event the event triggering the menu
+   */
+  /*abstract*/ /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event) {}
+
   /*protected*/ LocoIcon* selectLoco(QString rosterEntryTitle);
   /*protected*/ LocoIcon* selectLoco(RosterEntry* entry);
   /*protected*/ PositionableLabel* addLabel(QString text);
@@ -554,7 +575,6 @@ protected slots:
   void putBackground();
   /*protected*/ Positionable* putIcon();
   /*public*/ MultiSensorIcon* addMultiSensor();
-  virtual /*abstract*/ /*protected*/ void setNextLocation(Positionable* /*obj*/){}
   /**
    * Editor Views should make calls to this class (Editor) to set popup menu
    * items. See 'Popup Item Methods' above for the calls.

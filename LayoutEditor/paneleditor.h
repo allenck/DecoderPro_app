@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "editor.h"
 #include "actionlistener.h"
+#include "abstractaction.h"
 
 namespace Ui {
 class PanelEditor;
@@ -26,6 +27,7 @@ public:
  PanelEditor(const PanelEditor&) :Editor() {}
     /*public*/ bool _debug;
  /*public*/ void initView();
+ /*public*/ void setRemoveMenu(Positionable* p, QMenu* popup);
 
 public slots:
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
@@ -88,6 +90,9 @@ private:
  void closeEvent(QCloseEvent *);
  JTextField* nextX;// = new JTextField(tr("Default X"),4);
  JTextField* nextY;// = new JTextField(tr("Default Y"),4);
+ /*private*/ void removeMultiItems();
+ /*private*/ void setMultiItemsPositionableMenu(QMenu* popup);
+
 private slots:
  void on_storeIndexItem_triggered();
  void on_CPEView_triggered();
@@ -96,7 +101,7 @@ protected:
  /*protected*/ void init(QString name);
  /*protected*/ virtual void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
  /*protected*/ void showMultiSelectPopUp(/*final*/ QGraphicsSceneMouseEvent* event, Positionable* p);
- /*protected*/ QVector <Positionable*>* _multiItemCopyGroup;// = NULL;  // items gathered inside fence
+ /*protected*/ QList <Positionable*>* _multiItemCopyGroup;// = NULL;  // items gathered inside fence
  /*protected*/ void backgroundPopUp(QGraphicsSceneMouseEvent* event);
  /*protected*/ bool pasteItemFlag;// = false;
  /*protected*/ void makeColorMenu(QMenu* colorMenu);
@@ -113,6 +118,33 @@ protected:
  /*protected*/ void setNextLocation(Positionable* obj);
 
  friend class PositionableLabel;
+ friend class RemoveMenuAction;
+ friend class LockItemListener;
 };
 Q_DECLARE_METATYPE(PanelEditor)
+
+class RemoveMenuAction : public AbstractAction
+{
+ Q_OBJECT
+ Positionable* comp;
+ PanelEditor *parent;
+public slots:
+ /*public*/ void actionPerformed();
+public:
+ RemoveMenuAction(QString title, PanelEditor *parent);
+ AbstractAction* init(Positionable* pos);
+};
+
+class LockItemListener : public ActionListener
+{
+ Q_OBJECT
+ Positionable* comp;
+ QAction* checkBox;
+ PanelEditor* editor;
+public slots:
+ /*public*/ void actionPerformed();
+public:
+ LockItemListener(PanelEditor* editor);
+ ActionListener* init(Positionable* pos, QAction* cb);
+};
 #endif // PANELEDITOR_H

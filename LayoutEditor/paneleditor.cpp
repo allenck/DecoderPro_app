@@ -1069,7 +1069,7 @@ protected void paintTargetPanel(Graphics g) {
 #endif
 /*protected*/ void PanelEditor::copyItem(Positionable* p)
 {
- _multiItemCopyGroup = new QVector <Positionable*>();
+ _multiItemCopyGroup = new QList <Positionable*>();
  _multiItemCopyGroup->append(p);
 }
 
@@ -1125,7 +1125,7 @@ protected void paintTargetPanel(Graphics g) {
 //        }
 //    });
 
-//    setMultiItemsPositionableMenu(popup); // adding Lock Position for all
+    setMultiItemsPositionableMenu(popup); // adding Lock Position for all
                                           // selected items
 
     setRemoveMenu(p, popup);
@@ -1340,93 +1340,135 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
  pasteItemFlag = false;
  //_targetPanel->repaint();
 }
-#if 0
+#if 1
 /**
 * Add an action to remove the Positionable item.
 */
-/*public*/ void setRemoveMenu(Positionable p, JPopupMenu popup) {
-    popup.add(new AbstractAction(Bundle.getMessage("Remove")) {
-        Positionable comp;
-        /*public*/ void actionPerformed(ActionEvent e) {
-            if (_selectionGroup==NULL)
-                comp.remove();
-            else
-                removeMultiItems();
-        }
-        AbstractAction init(Positionable pos) {
-            comp = pos;
-            return this;
-        }
-    }.init(p));
+/*public*/ void PanelEditor::setRemoveMenu(Positionable* p, QMenu* popup) {
+    popup->addAction(new RemoveMenuAction(tr("Remove"), this));
+//    {
+//        Positionable comp;
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            if (_selectionGroup==NULL)
+//                comp.remove();
+//            else
+//                removeMultiItems();
+//        }
+//        AbstractAction init(Positionable pos) {
+//            comp = pos;
+//            return this;
+//        }
+//    }.init(p));
 }
+ RemoveMenuAction::RemoveMenuAction(QString title, PanelEditor *parent) : AbstractAction(title, parent)
+ {
+  this->parent = parent;
+  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
+ }
 
-private void removeMultiItems(){
-    boolean itemsInCopy = false;
-    if (_selectionGroup==_multiItemCopyGroup){
+ void RemoveMenuAction::actionPerformed()
+ {
+  if (parent->_selectionGroup==NULL)
+      comp->remove();
+  else
+      parent->removeMultiItems();
+
+ }
+ AbstractAction* RemoveMenuAction::init(Positionable *pos)
+ {
+  comp = pos;
+  return this;
+ }
+
+/*private*/ void PanelEditor::removeMultiItems(){
+    bool itemsInCopy = false;
+    if (_selectionGroup== _multiItemCopyGroup){
         itemsInCopy=true;
     }
-    for (int i=0; i<_selectionGroup.size(); i++) {
-        Positionable comp = _selectionGroup.get(i);
-        comp.remove();
+    for (int i=0; i<_selectionGroup->size(); i++) {
+        Positionable* comp = _selectionGroup->at(i);
+        comp->remove();
     }
     //As we have removed all the items from the panel we can remove the group.
-    _selectionGroup = NULL;
+    _selectionGroup = nullptr;
     //If the items in the selection group and copy group are the same we need to
     //clear the copy group as the originals no longer exist.
     if (itemsInCopy)
-        _multiItemCopyGroup = NULL;
+        _multiItemCopyGroup = nullptr;
 }
 
 // This adds a single CheckBox in the PopupMenu to set or clear all the selected
 // items "Lock Position" or Positionable setting, when clicked, all the items in
 // the selection will be changed accordingly.
-private void setMultiItemsPositionableMenu(JPopupMenu popup) {
+/*private*/ void PanelEditor::setMultiItemsPositionableMenu(QMenu* popup) {
     // This would do great with a "greyed" CheckBox if the multiple items have different states.
     // Then selecting the true or false state would force all to change to true or false
 
-    JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(Bundle.getMessage("LockPosition"));
-    boolean allSetToMove = false;  // used to decide the state of the checkbox shown
+    QAction* lockItem = new QAction(tr("Lock Position"));
+    lockItem->setCheckable(true);
+    bool allSetToMove = false;  // used to decide the state of the checkbox shown
     int trues = 0;                 // used to see if all items have the same setting
 
-    int size = _selectionGroup.size();
+    int size = _selectionGroup->size();
 
     for (int i = 0; i < size; i++) {
-        Positionable comp = _selectionGroup.get(i);
+        Positionable* comp = _selectionGroup->at(i);
 
-        if (!comp.isPositionable()) {
+        if (!comp->isPositionable()) {
             allSetToMove = true;
             trues++;
         }
 
-        lockItem.setSelected( allSetToMove );
+        lockItem->setChecked(allSetToMove );
 
-        lockItem.addActionListener(new ActionListener() {
-            Positionable comp;
-            JCheckBoxMenuItem checkBox;
+//        lockItem.addActionListener(new ActionListener() {
+//            Positionable* comp;
+//            JCheckBoxMenuItem checkBox;
 
-            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-                comp.setPositionable(!checkBox.isSelected());
-                setSelectionsPositionable(!checkBox.isSelected(), comp);
-            }
+//            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
+//                comp.setPositionable(!checkBox.isSelected());
+//                setSelectionsPositionable(!checkBox.isSelected(), comp);
+//            }
 
-            ActionListener init(Positionable pos, JCheckBoxMenuItem cb) {
-                comp = pos;
-                checkBox = cb;
-                return this;
-            }
-        }.init(comp, lockItem));
+//            ActionListener init(Positionable pos, JCheckBoxMenuItem cb) {
+//                comp = pos;
+//                checkBox = cb;
+//                return this;
+//            }
+//        }.init(comp, lockItem));
+        LockItemListener* listener = new LockItemListener(this);
+        listener->init(comp, lockItem);
     }
 
     // Add "~" to the Text when all items do not have the same setting,
     // until we get a "greyed" CheckBox ;) - GJM
     if ((trues != size) && (trues != 0)) {
-        lockItem.setText("~ "+lockItem.getText());
+        lockItem->setText("~ "+lockItem->text());
         // uncheck box if all not the same
-        lockItem.setSelected( false );
+        lockItem->setChecked(false );
     }
-    popup.add(lockItem);
+    popup->addAction(lockItem);
 }
 #endif
+
+ LockItemListener::LockItemListener(PanelEditor *editor)
+ {
+  this->editor = editor;
+ }
+
+ void LockItemListener::actionPerformed()
+ {
+   comp->setPositionable(!checkBox->isChecked());
+   editor->setSelectionsPositionable(!checkBox->isChecked(), comp);
+ }
+
+ ActionListener* LockItemListener::init(Positionable *pos, QAction *cb)
+ {
+  comp = pos;
+  checkBox = cb;
+  return this;
+ }
+
 /*public*/ void PanelEditor::setBackgroundMenu(QMenu* popup) {
     QMenu* edit = new QMenu(tr("Background color"));
     makeColorMenu(edit);

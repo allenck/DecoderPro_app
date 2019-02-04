@@ -217,7 +217,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
 //    catch ( NullPointerException e) {  // considered normal if the attributes are not present
 //    }
     //set the (global) editor display widgets to their flag settings
-//    panel->initView();
+    panel->initView();
 
     // load the contents with their individual option settings
     QDomNodeList items = element.childNodes();
