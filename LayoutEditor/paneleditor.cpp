@@ -31,6 +31,14 @@
 #include "storexmluseraction.h"
 #include "imageindexeditor.h"
 #include "warranttableaction.h"
+#include <QCheckBox>
+#include "jtextfield.h"
+#include <QPushButton>
+#include <QLabel>
+#include "joptionpane.h"
+#include <QComboBox>
+#include "xmladapter.h"
+#include "class.h"
 
 PanelEditor::PanelEditor(QWidget *parent) :
     Editor("NoName", false, true, parent),
@@ -87,22 +95,6 @@ PanelEditor::~PanelEditor()
 
 
 
-#if 0
-    JCheckBox editableBox = new JCheckBox(Bundle.getMessage("CheckBoxEditable"));
-    JCheckBox positionableBox = new JCheckBox(Bundle.getMessage("CheckBoxPositionable"));
-    JCheckBox controllingBox = new JCheckBox(Bundle.getMessage("CheckBoxControlling"));
-    //JCheckBox showCoordinatesBox = new JCheckBox(Bundle.getMessage("CheckBoxShowCoordinates"));
-    JCheckBox showTooltipBox = new JCheckBox(Bundle.getMessage("CheckBoxShowTooltips"));
-    JCheckBox hiddenBox = new JCheckBox(Bundle.getMessage("CheckBoxHidden"));
-    JCheckBox menuBox = new JCheckBox(Bundle.getMessage("CheckBoxMenuBar"));
-    JLabel scrollableLabel = new JLabel(Bundle.getMessage("ComboBoxScrollable"));
-    JComboBox scrollableComboBox = new JComboBox();
-
-    JButton labelAdd = new JButton(Bundle.getMessage("ButtonAddText"));
-    JTextField nextLabel = new JTextField(10);
-
-    JComboBox _addIconBox;
-#endif
 //    /*public*/ PanelEditor() {}
 
 /*public*/ PanelEditor::PanelEditor(QString name, QWidget *parent) :
@@ -132,6 +124,235 @@ PanelEditor::~PanelEditor()
  delayedPopupTrigger = false;
  addItemViaMouseClick = false;
  _lastX = _lastY = 0;
+
+ editableBox = new QCheckBox(tr("Panel items popup menus active"));
+ positionableBox = new QCheckBox(tr("All panel items can be repositioned"));
+ controllingBox = new QCheckBox(tr("Panel items control layout"));
+ //showCoordinatesBox = new QCheckBox(tr("Show item coordinates in popup menu"));
+ showTooltipBox = new QCheckBox(tr("Show Tooltips for all items"));
+ hiddenBox = new QCheckBox(tr("Show all hidden Items"));
+ menuBox = new QCheckBox(tr("Panel has menu"));
+ scrollableLabel = new QLabel(tr("Panel scrollbars"));
+ scrollableComboBox = new QComboBox();
+
+ labelAdd = new QPushButton(tr("Add text:"));
+ nextLabel = new JTextField(10);
+ nextX = new JTextField(tr("Default X"),9);
+ nextY = new JTextField(tr("Default Y"),9);
+
+ JmriJFrame* frame = new JmriJFrame(tr("Panel Editor"));
+ QWidget* contentPane = frame->getContentPane();
+ QVBoxLayout* contentPaneLayout = new QVBoxLayout(contentPane);
+ QWidget* common = new QWidget();
+ common->setLayout(new FlowLayout());
+ common->layout()->addWidget(new QLabel(" x:"));
+ common->layout()->addWidget(nextX);
+ common->layout()->addWidget(new QLabel(" y:"));
+ common->layout()->addWidget(nextY);
+ contentPaneLayout->addWidget(common);
+ setAllEditable(true);
+ setShowHidden(true);
+// super.setTargetPanel(null, makeFrame(name));
+// super.setTargetPanelSize(400, 300);
+// super.setDefaultToolTip(new ToolTip(null, 0, 0, new Font("SansSerif", Font.PLAIN, 12),
+//         Color.black, new Color(215, 225, 255), Color.black));
+ // set scrollbar initial state
+ setScroll(SCROLL_BOTH);
+
+ // allow renaming the panel
+ {
+     QWidget* namep = new QWidget();
+     namep->setLayout(new FlowLayout());
+     QPushButton* b = new QPushButton(tr("Rename Panel%1").arg("..."));
+//     b.addActionListener(new ActionListener() {
+//         PanelEditor editor;
+
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             // prompt for name
+//             String newName = JOptionPane.showInputDialog(null, tr("PromptNewName"));
+//             if (newName == null) {
+//                 return;  // cancelled
+//             }
+//             if (InstanceManager.getDefault(PanelMenu.class).isPanelNameUsed(newName)) {
+//                 JOptionPane.showMessageDialog(null, tr("CanNotRename"), tr("PanelExist"),
+//                         JOptionPane.ERROR_MESSAGE);
+//                 return;
+//             }
+//             if (getTargetPanel().getTopLevelAncestor() != null) {
+//                 ((JFrame) getTargetPanel().getTopLevelAncestor()).setTitle(newName);
+//             }
+//             editor.setTitle();
+//             InstanceManager.getDefault(PanelMenu.class).renameEditorPanel(editor);
+//         }
+
+//         ActionListener init(PanelEditor e) {
+//             editor = e;
+//             return this;
+//         }
+//     }.init(this));
+     (new RenameActionListener())->init(this);
+     namep->layout()->addWidget(b);
+     //this.getContentPane().add(namep);
+     contentPaneLayout->addWidget(namep);
+ }
+ // add a text label
+ {
+     QWidget* panel = new QWidget();
+     panel->setLayout(new FlowLayout());
+     panel->layout()->addWidget(labelAdd);
+     labelAdd->setEnabled(false);
+     labelAdd->setToolTip(tr("This button will be active after you type text into the text box"));
+     panel->layout()->addWidget(nextLabel);
+//     labelAdd.addActionListener(new ActionListener() {
+//         PanelEditor editor;
+
+//         @Override
+//         public void actionPerformed(ActionEvent a) {
+//             editor.addLabel(nextLabel.getText());
+//         }
+
+//         ActionListener init(PanelEditor e) {
+//             editor = e;
+//             return this;
+//         }
+//     }.init(this));
+     connect(labelAdd, SIGNAL(clicked(bool)), this, SLOT(onLabelAdd()));
+//     nextLabel.addKeyListener(new KeyAdapter() {
+//         @Override
+//         public void keyReleased(KeyEvent a) {
+//             if (nextLabel.getText().equals("")) {
+//                 labelAdd.setEnabled(false);
+//                 labelAdd.setToolTipText(tr("ToolTipWillActivate"));
+//             } else {
+//                 labelAdd.setEnabled(true);
+//                 labelAdd.setToolTipText(null);
+//             }
+//         }
+//     });
+  contentPaneLayout->addWidget(panel);
+ }
+ // Selection of the type of entity for the icon to represent is done from a combobox
+ _addIconBox = new QComboBox();
+ _addIconBox->setMinimumSize(QSize(75, 75));
+ _addIconBox->setMaximumSize(QSize(200, 200));
+ _addIconBox->addItem(tr("Right Hand Turnout"), "RightTurnout");//new ComboBoxItem("RightTurnout"));
+ _addIconBox->addItem(tr("Left Hand Turnout"), "LeftTurnout");//new ComboBoxItem("LeftTurnout"));
+ _addIconBox->addItem(tr("Slip/3-Way Turnout/Scissor"), "SlipTOEditor");//new ComboBoxItem("SlipTOEditor"));
+ _addIconBox->addItem(tr("Sensor"), "Sensor");//new ComboBoxItem("Sensor")); // NOI18N
+ _addIconBox->addItem(tr("SignalHead"), "SignalHead");//new ComboBoxItem("SignalHead"));
+ _addIconBox->addItem(tr("SignalMast"), "SignalMast");//new ComboBoxItem("SignalMast"));
+ _addIconBox->addItem(tr("Memory"), "Memory");//new ComboBoxItem("Memory"));
+ _addIconBox->addItem(tr("Block Contents Label"), "BlockLabel");//new ComboBoxItem("BlockLabel"));
+ _addIconBox->addItem(tr("Reporter"), "Reporter");//new ComboBoxItem("Reporter"));
+ _addIconBox->addItem(tr("Light"), "Light");//new ComboBoxItem("Light"));
+ _addIconBox->addItem(tr("Background"), "Background");//new ComboBoxItem("Background"));
+ _addIconBox->addItem(tr("MultiSensor"), "MultiSensor");//new ComboBoxItem("MultiSensor"));
+ _addIconBox->addItem(tr("RPS Reporter"), "RPSreporter");//new ComboBoxItem("RPSreporter"));
+ _addIconBox->addItem(tr("FastClock"), "FastClock");//new ComboBoxItem("FastClock"));
+ _addIconBox->addItem(tr("Icon"), "Icon");//new ComboBoxItem("Icon"));
+ _addIconBox->setCurrentIndex(-1);
+ //_addIconBox.addItemListener(this);  // must be AFTER no selection is set
+ connect(_addIconBox, SIGNAL(currentIndexChanged(int)), this, SLOT(itemStateChanged(int)));
+ QWidget* p1 = new QWidget();
+ p1->setLayout(new QVBoxLayout());//p1, BoxLayout.Y_AXIS));
+ QWidget* p2 = new QWidget();
+ p2->setLayout(new FlowLayout());
+ p2->layout()->addWidget(new QLabel(tr("Select the type of icon to Add to Panel:")));
+ p1->layout()->addWidget(p2);
+ p1->layout()->addWidget(_addIconBox);
+ contentPaneLayout->addWidget(p1);
+
+ // edit, position, control controls
+ {
+     // edit mode item
+     contentPane->layout()->addWidget(editableBox);
+//     editableBox.addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent event) {
+//             setAllEditable(editableBox.isSelected());
+//             hiddenCheckBoxListener();
+//         }
+//     });
+     connect(editableBox, SIGNAL(clicked(bool)), this, SLOT(onEditableBox()));
+     editableBox->setChecked(isEditable());
+     // positionable item
+     contentPaneLayout->addWidget(positionableBox);
+//     positionableBox.addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent event) {
+//             setAllPositionable(positionableBox.isSelected());
+//         }
+//     });
+     connect(positionableBox, SIGNAL(clicked(bool)), this, SLOT(setAllPositionable(bool)));
+     positionableBox->setChecked(allPositionable());
+     // controlable item
+     contentPaneLayout->addWidget(controllingBox);
+//     controllingBox.addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent event) {
+//             setAllControlling(controllingBox.isSelected());
+//         }
+//     });
+     connect(controllingBox, SIGNAL(clicked(bool)), this, SLOT(onControllingBox()));
+     controllingBox->setChecked(allControlling());
+     // hidden item
+     contentPaneLayout->addWidget(hiddenBox);
+     hiddenCheckBoxListener();
+     hiddenBox->setChecked(showHidden());
+
+     /*
+      contentPane.add(showCoordinatesBox);
+      showCoordinatesBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+      setShowCoordinates(showCoordinatesBox.isSelected());
+      }
+      });
+      showCoordinatesBox.setSelected(showCoordinates());
+      */
+     contentPaneLayout->addWidget(showTooltipBox);
+//     showTooltipBox.addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             setAllShowToolTip(showTooltipBox.isSelected());
+//         }
+//     });
+     connect(showTooltipBox, SIGNAL(clicked(bool)), this, SLOT(onShowToolTipBox()));
+     showTooltipBox->setChecked(showToolTip());
+
+     contentPaneLayout->addWidget(menuBox);
+//     menuBox.addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             setPanelMenuVisible(menuBox.isSelected());
+//         }
+//     });
+     connect(menuBox, SIGNAL(toggled(bool)), this, SLOT(setPanelMenuVisible(bool)));
+     menuBox->setChecked(true);
+
+     // Show/Hide Scroll Bars
+     QWidget* scrollPanel = new QWidget();
+     scrollPanel->setLayout(new FlowLayout());
+//     scrollableLabel->setLabelFor(scrollableComboBox);
+     scrollPanel->layout()->addWidget(scrollableLabel);
+     scrollPanel->layout()->addWidget(scrollableComboBox);
+     contentPaneLayout->addWidget(scrollPanel);
+     scrollableComboBox->addItem(tr("No scrollbars"));
+     scrollableComboBox->addItem(tr("Both scrollbars"));
+     scrollableComboBox->addItem(tr("Horizontal only"));
+     scrollableComboBox->addItem(tr("Vertical only"));
+     scrollableComboBox->setCurrentIndex(SCROLL_BOTH);
+//     scrollableComboBox->addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             setScroll(scrollableComboBox.getSelectedIndex());
+//         }
+//     });
+     connect(scrollableComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onScrollableComboBox()));
+ }
+ frame->setVisible(true);
+ frame->pack();
+
  bDirty = false;
  ui->menuFile->addAction(new NewPanelAction(tr("New Panel..."),this));
  ui->menuFile->addAction(new StoreXmlUserAction(tr("Save Panels..."),this));
@@ -208,8 +429,6 @@ PanelEditor::~PanelEditor()
 // addSignalMastDlg = NULL;
 // addMultiSensorDlg = NULL;
 // addBackgroundDlg = NULL;
- nextX = new JTextField(tr("Default X"),4);
- nextY = new JTextField(tr("Default Y"),4);
  menuBar()->addMenu(WarrantTableAction::makeWarrantMenu(isEditable(),this));
  menuBar()->addMenu(HelpUtil::instance()->makeHelpMenu("package.jmri.jmrit.display.PanelEditor", true, this));
 
@@ -250,24 +469,74 @@ void PanelEditor::on_CPEView_triggered()
 changeView("ControlPanelEditor");
 }
 
-#if 0
+/*public*/ void RenameActionListener::actionPerformed(/*ActionEvent e*/) {
+    // prompt for name
+    QString newName = JOptionPane::showInputDialog(nullptr, tr("Enter new name:"));
+    if (newName == "") {
+        return;  // cancelled
+    }
+    if (static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(newName)) {
+        JOptionPane::showMessageDialog(nullptr, tr("Can not rename Panel with the same name as an existing panel"), tr("Panel name already exists!"),
+                JOptionPane::ERROR_MESSAGE);
+        return;
+    }
+    if (editor->getTargetPanel()->views().at(0)->window() != nullptr) {
+        ((JFrame*) editor->getTargetPanel()->views().at(0)->window())->setTitle(newName);
+    }
+    editor->setTitle();
+    static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->renameEditorPanel(editor);
+}
+
+ActionListener* RenameActionListener::init(PanelEditor* e) {
+    editor = e;
+    return this;
+}
+
+void PanelEditor::onLabelAdd()
+{
+ addLabel(nextLabel->text());
+}
+
+void PanelEditor::onEditableBox()
+{
+ setAllEditable(editableBox->isChecked());
+ hiddenCheckBoxListener();
+}
+
+void PanelEditor::onControllingBox()
+{
+ setAllControlling(controllingBox->isChecked());
+}
+
+void PanelEditor::onShowToolTipBox()
+{
+ //setAllShowToolTip(showTooltipBox->isChecked());
+}
+
+void PanelEditor::onScrollableComboBox()
+{
+ setScroll(scrollableComboBox->currentIndex());
+}
+
+#if 1
 /**
 * Initializes the hiddencheckbox and its listener.
 * This has been taken out of the init, as checkbox is
 * enable/disabled by the editableBox.
 */
-private void hiddenCheckBoxListener(){
-    setShowHidden(hiddenBox.isSelected());
-    if (editableBox.isSelected()){
-        hiddenBox.setEnabled(false);
-        hiddenBox.setSelected(true);
+/*private*/ void PanelEditor::hiddenCheckBoxListener(){
+    setShowHidden(hiddenBox->isChecked());
+    if (editableBox->isChecked()){
+        hiddenBox->setEnabled(false);
+        hiddenBox->setChecked(true);
     } else {
-        hiddenBox.setEnabled(true);
-        hiddenBox.addActionListener(new ActionListener() {
-            /*public*/ void actionPerformed(ActionEvent event) {
-                setShowHidden(hiddenBox.isSelected());
-            }
-        });
+        hiddenBox->setEnabled(true);
+//        hiddenBox.addActionListener(new ActionListener() {
+//            /*public*/ void actionPerformed(ActionEvent event) {
+//                setShowHidden(hiddenBox.isSelected());
+//            }
+//        });
+        connect(hiddenBox, SIGNAL(clicked(bool)), this, SLOT(setShowHidden(bool)));
     }
 
 }
@@ -278,14 +547,14 @@ private void hiddenCheckBoxListener(){
  */
 //@Override
 /*public*/ void PanelEditor::initView() {
-#if 0
-    editableBox.setSelected(isEditable());
-    positionableBox.setSelected(allPositionable());
-    controllingBox.setSelected(allControlling());
+#if 1
+    editableBox->setChecked(isEditable());
+    positionableBox->setChecked(allPositionable());
+    controllingBox->setChecked(allControlling());
     //showCoordinatesBox.setSelected(showCoordinates());
-    showTooltipBox.setSelected(showToolTip());
-    hiddenBox.setSelected(showHidden());
-    menuBox.setSelected(getTargetFrame().getJMenuBar().isVisible());
+    showTooltipBox->setChecked(showToolTip());
+    hiddenBox->setChecked(showHidden());
+    menuBox->setChecked(getTargetFrame()->menuBar()->isVisible());
 #endif
 }
 #if 0
@@ -298,36 +567,39 @@ static class ComboBoxItem {
         return name;
     }
     /*public*/ QString toQString() {
-        return Bundle.getMessage(name);
+        return tr(name);
     }
 }
 
 int locationX = 0;
 int locationY = 0;
 static final int DELTA = 20;
-
+#endif
 /*
 *  itemListener for JComboBox
 */
-/*public*/ void itemStateChanged(ItemEvent e) {
-    if (e.getStateChange() == ItemEvent.SELECTED) {
-        ComboBoxItem item = (ComboBoxItem)e.getItem();
-        QString name = item.getName();
-        JFrameItem frame = super.getIconFrame(name);
+/*public*/ void PanelEditor::itemStateChanged(int index) {
+//    if (e.getStateChange() == ItemEvent.SELECTED)
+ if(index >= 0)
+    {
+//        ComboBoxItem item = (ComboBoxItem)e.getItem();
+  QString item = _addIconBox->itemData(index).toString();
+        QString name = _addIconBox->itemText(index);
+        JFrameItem* frame = Editor::getIconFrame(item);
         if (frame != NULL) {
-            frame.getEditor().reset();
-            frame.setVisible(true);
+            frame->getEditor()->reset();
+            frame->setVisible(true);
         } else {
-            if (name.equals("FastClock")) {
+            if (item == ("FastClock")) {
                 addClock();
-            } else if (name.equals("RPSreporter")) {
+            } else if (name == ("RPSreporter")) {
                 addRpsReporter();
             } else {
-                log->error("Unable to open Icon Editor \""+item.getName()+"\"");
+                log->error("Unable to open Icon Editor \""+item+"\"");
             }
         }
-        _addIconBox.setSelectedIndex(-1);
-    }
+        _addIconBox->setCurrentIndex(-1);
+ }
 }
 
 /**
@@ -338,10 +610,10 @@ static final int DELTA = 20;
  * Here, we just want to make it invisible, so we
  * don't dispose it (yet).
  **/
-/*public*/ void windowClosing(java.awt.event.WindowEvent e) {
+/*public*/ void PanelEditor::windowClosing(QCloseEvent* e) {
     setVisible(false);
 }
-
+#if 0
 /**
  * Create sequence of panels, etc, for layout:
  * JFrame contains its ContentPane
@@ -354,16 +626,16 @@ static final int DELTA = 20;
     JmriJFrame targetFrame = new JmriJFrame(name);
     targetFrame.setVisible(false);
 
-    JMenuBar menuBar = new JMenuBar();
-    JMenu editMenu = new JMenu(Bundle.getMessage("MenuEdit"));
-    menuBar.add(editMenu);
-    editMenu.add(new AbstractAction(Bundle.getMessage("OpenEditor")) {
+    QMenuBar* menuBar = new QMenuBar();
+    QMenu* editMenu = new Menu(tr("MenuEdit"));
+    menuBar->addMenu(editMenu);
+    editMenu.add(new AbstractAction(tr("OpenEditor")) {
             /*public*/ void actionPerformed(ActionEvent e) {
                 setVisible(true);
             }
         });
     editMenu.addSeparator();
-    editMenu.add(new AbstractAction(Bundle.getMessage("DeletePanel")){
+    editMenu.add(new AbstractAction(tr("DeletePanel")){
             /*public*/ void actionPerformed(ActionEvent e) {
                 if (deletePanel()) {
                     dispose(true);
@@ -372,19 +644,19 @@ static final int DELTA = 20;
         });
     targetFrame.setJMenuBar(menuBar);
     // add maker menu
-    JMenu markerMenu = new JMenu(Bundle.getMessage("MenuMarker"));
+    JMenu markerMenu = new JMenu(tr("MenuMarker"));
     menuBar.add(markerMenu);
-    markerMenu.add(new AbstractAction(Bundle.getMessage("AddLoco")){
+    markerMenu.add(new AbstractAction(tr("AddLoco")){
         /*public*/ void actionPerformed(ActionEvent e) {
             locoMarkerFromInput();
         }
     });
-    markerMenu.add(new AbstractAction(Bundle.getMessage("AddLocoRoster")){
+    markerMenu.add(new AbstractAction(tr("AddLocoRoster")){
         /*public*/ void actionPerformed(ActionEvent e) {
             locoMarkerFromRoster();
         }
     });
-    markerMenu.add(new AbstractAction(Bundle.getMessage("RemoveMarkers")){
+    markerMenu.add(new AbstractAction(tr("RemoveMarkers")){
         /*public*/ void actionPerformed(ActionEvent e) {
             removeMarkers();
         }
@@ -603,6 +875,8 @@ protected void paintTargetPanel(Graphics g) {
 
  //setToolTip(NULL); // ends tooltip if displayed
  if (_debug) log->debug("mousePressed at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") _dragging="+(_dragging?"true":"false") + " right button="+(bRightButton?"Down":"up"));
+ _anchorX = event->pos().x();
+ _anchorY = event->pos().y();
  _lastX = _anchorX;
  _lastY = _anchorY;
  QList <Positionable*>* selections = getSelectedItems(event);
@@ -623,11 +897,11 @@ protected void paintTargetPanel(Graphics g) {
   if (bRightButton) //isPopupTrigger()
   {
    if (_debug) log->debug("mousePressed calls showPopUp");
-   if (!(bMeta || bAlt ))
+   if ( (bMeta || bAlt ))
    {
     // if requesting a popup and it might conflict with moving, delay the request to mouseReleased
     delayedPopupTrigger = true;
-    _dragging = true;
+    //_dragging = true;
    }
    else
    {
@@ -666,7 +940,7 @@ protected void paintTargetPanel(Graphics g) {
    else
     ((PositionableLabel*)_currentSelection)->doMousePressed(event);if (_multiItemCopyGroup!=NULL && !_multiItemCopyGroup->contains(_currentSelection))
     _multiItemCopyGroup = NULL;
-//                    _selectionGroup = NULL;
+//    _selectionGroup = NULL;
   }
  }
  else
@@ -710,12 +984,14 @@ protected void paintTargetPanel(Graphics g) {
                 (!_selectRect.isNull() && !_selectRect.contains(_anchorX, _anchorY)))
  {
   _selectRect =  QRect(_anchorX, _anchorY, 0, 0);
-  _selectionGroup = new  QList<Positionable*>();
+  //_selectionGroup = new  QList<Positionable*>();
+  _selectionGroup = nullptr;
  }
  else
  {
   _selectRect = QRect();
-  _selectionGroup = new QList<Positionable*>();
+  //_selectionGroup = new QList<Positionable*>();
+  _selectionGroup = nullptr;
  }
  //_targetPanel->repaint(); // needed for ToolTip
 }
@@ -1139,7 +1415,7 @@ protected void paintTargetPanel(Graphics g) {
 {
  if(!isEditable())
         return;
- QMenu* _add = new QMenu("Add Item"/*Bundle.getMessage("FontBackgroundColor")*/);
+ QMenu* _add = new QMenu("Add Item"/*tr("FontBackgroundColor")*/);
 //    addItemPopUp(new ComboBoxItem("Right Hand Turnout"),_add);
  QAction* addRHTurnout = new QAction(tr("RightTurnout"), this);
  connect(addRHTurnout, SIGNAL(triggered()), this, SLOT(on_addRHTurnout_triggered()));
@@ -1205,13 +1481,13 @@ protected void paintTargetPanel(Graphics g) {
  connect(addClockAct, SIGNAL(triggered()), this, SLOT(on_addClock_triggered()));
  _add->addAction(addClockAct);
 
-// QAction* addLcdClockAct = new QAction(tr("Lcd clock"),this);
-// connect(addLcdClockAct, SIGNAL(triggered()), this, SLOT(on_addLcdClock_triggered()));
-// _add->addAction(addLcdClockAct);//    addItemPopUp(new ComboBoxItem("Icon"),_add);
+ QAction* addLcdClockAct = new QAction(tr("Lcd clock"),this);
+ connect(addLcdClockAct, SIGNAL(triggered()), this, SLOT(on_addLcdClock_triggered()));
+ _add->addAction(addLcdClockAct);//    addItemPopUp(new ComboBoxItem("Icon"),_add);
 
-// QAction* addNixieClockAct = new QAction(tr("Nixie clock"),this);
-// connect(addNixieClockAct, SIGNAL(triggered()), this, SLOT(on_addNixieClockAct_triggered()));
-// _add->addAction(addNixieClockAct);//    addItemPopUp(new ComboBoxItem("Icon"),_add);
+ QAction* addNixieClockAct = new QAction(tr("Nixie clock"),this);
+ connect(addNixieClockAct, SIGNAL(triggered()), this, SLOT(on_addNixieClockAct_triggered()));
+ _add->addAction(addNixieClockAct);//    addItemPopUp(new ComboBoxItem("Icon"),_add);
 
  QAction* addIconAct = new QAction(tr("Icon"),this);
  connect(addIconAct, SIGNAL(triggered()), this, SLOT(on_addIcon_triggered()));
@@ -1288,53 +1564,56 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
 }
 
 
-/*protected*/ void PanelEditor::pasteItem(/*MouseEvent e*/)
+/*protected*/ void PanelEditor::pasteItem(QGraphicsSceneMouseEvent* e)
 {
  //QGraphicsSceneMouseEvent* e = saveEvent;
  pasteItemFlag = true;
- //XmlAdapter* adapter;
+ XmlAdapter* adapter;
  QString className;
-// int x;
-// int y;
-// int xOrig;
-// int yOrig;
+ int x;
+ int y;
+ int xOrig;
+ int yOrig;
  if (_multiItemCopyGroup!=NULL)
  {
-#if 0 // TODO:
-        JComponent copied;
+#if 1 // TODO:
+        Positionable* copied;
         int xoffset;
         int yoffset;
-        x = _multiItemCopyGroup.get(0).getX();
-        y = _multiItemCopyGroup.get(0).getY();
-        xoffset=e.getX()-x;
-        yoffset=e.getY()-y;
+        x = _multiItemCopyGroup->at(0)->getX();
+        y = _multiItemCopyGroup->at(0)->getY();
+        xoffset=e->pos().x()-x;
+        yoffset=e->pos().y()-y;
         /*We make a copy of the selected items and work off of that copy
         as amendments are made to the multiItemCopyGroup during this process
         which can result in a loop*/
-        ArrayList <Positionable> _copyOfMultiItemCopyGroup = new ArrayList<Positionable>(_multiItemCopyGroup);
-        Collections.copy(_copyOfMultiItemCopyGroup, _multiItemCopyGroup);
+        QList <Positionable*> _copyOfMultiItemCopyGroup =  QList<Positionable*>(/*_multiItemCopyGroup*/);
+        //Collections.copy(_copyOfMultiItemCopyGroup, _multiItemCopyGroup);
+        foreach(Positionable* pos, *_multiItemCopyGroup)
+         _copyOfMultiItemCopyGroup.append(pos);
         for(int i = 0; i<_copyOfMultiItemCopyGroup.size(); i++){
-            copied = (JComponent)_copyOfMultiItemCopyGroup.get(i);
-            xOrig = copied.getX();
-            yOrig = copied.getY();
+            copied = (Positionable*)_copyOfMultiItemCopyGroup.at(i);
+            xOrig = copied->getX();
+            yOrig = copied->getY();
             x = xOrig+xoffset;
             y = yOrig+yoffset;
             if (x<0) x=1;
             if (y<0) y=1;
-            className=ConfigXmlManager.adapterName(copied);
-            copied.setLocation(x, y);
+            className=ConfigXmlManager::adapterName(copied);
+            copied->setLocation(x, y);
             try{
-                adapter = (XmlAdapter)Class.forName(className).newInstance();
-                Element el = adapter.store(copied);
-                adapter.load(el, this);
+                adapter = (XmlAdapter*)Class::forName(className)->newInstance();
+                QDomElement el = adapter->store(copied);
+                adapter->load(el, this);
             } catch (Exception ex) {
-                log->debug(ex);
+                log->debug(ex.getMessage());
             }
             /*We remove the original item from the list, so we end up with
             just the new items selected and allow the items to be moved around */
-            amendSelectionGroup(_copyOfMultiItemCopyGroup.get(i));
-            copied.setLocation(xOrig, yOrig);
+            amendSelectionGroup(_copyOfMultiItemCopyGroup.at(i));
+            copied->setLocation(xOrig, yOrig);
 #endif
+        }
   }
   _selectionGroup=NULL;
  pasteItemFlag = false;
@@ -1345,7 +1624,8 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
 * Add an action to remove the Positionable item.
 */
 /*public*/ void PanelEditor::setRemoveMenu(Positionable* p, QMenu* popup) {
-    popup->addAction(new RemoveMenuAction(tr("Remove"), this));
+ RemoveMenuAction* act;
+    popup->addAction(act = new RemoveMenuAction(tr("Remove"), this));
 //    {
 //        Positionable comp;
 //        /*public*/ void actionPerformed(ActionEvent e) {
@@ -1359,6 +1639,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
 //            return this;
 //        }
 //    }.init(p));
+    act->init(p);
 }
  RemoveMenuAction::RemoveMenuAction(QString title, PanelEditor *parent) : AbstractAction(title, parent)
  {

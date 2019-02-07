@@ -206,7 +206,7 @@ LogixTableAction::LogixTableAction(const LogixTableAction & that) : AbstractTabl
 {
  m = new LogixTableModel(this);
  AbstractManager* manager = (AbstractManager*)m->getManager();
- connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), m, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), m, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 // overlay the state column with the edit column

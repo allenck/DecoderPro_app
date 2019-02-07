@@ -184,11 +184,11 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  
  if(qobject_cast<TreeModel*>(s) != NULL)
  {
-  connect((AbstractCatalogTree*)s, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  connect((AbstractCatalogTree*)s, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else {
  AbstractNamedBean* ab = (AbstractNamedBean*)s;
- connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+ connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
     emit beanCreated(s);
 }
@@ -216,7 +216,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  * It is not completely implemented yet. In particular, listeners
  * are not added to newly registered objects.
  */
-/*public*/ void AbstractManager::on_propertyChange(PropertyChangeEvent* e)
+/*public*/ void AbstractManager::propertyChange(PropertyChangeEvent* e)
 {
  if(e->getPropertyName() == "length")
   firePropertyChange(e->getPropertyName(), e->getOldValue(), e->getNewValue());

@@ -5,6 +5,7 @@
 #include <QMap>
 #include "liblayouteditor_global.h"
 
+class ScriptException;
 class Logger;
 class File;
 class PythonInterpreter;
@@ -25,6 +26,7 @@ public:
  /*public*/ ScriptEngine* getEngineByExtension(QString extension);
  /*public*/ ScriptEngine* getEngine(QString engineName);
  /*public*/ void initializePython();
+ /*public*/ QObject* eval(QString script, ScriptEngine* engine) throw (ScriptException);
 
 signals:
 

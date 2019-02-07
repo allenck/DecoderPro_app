@@ -17,7 +17,7 @@ SOURCES +=  slotmonitor.cpp \
     jmribeancombobox.cpp \
     dialogsignalgroupstablewidget.cpp \
     logixtableaction.cpp \
-    defaultconditionalaction.cpp \
+    #defaultconditionalaction.cpp \
     pickframe.cpp \
     lroutetableaction.cpp \
     sectiontableaction.cpp \
@@ -95,7 +95,7 @@ HEADERS += libtables_global.h \
     dialogsignalgroupstablewidget.h \
     routetableaction.h \
     logixtableaction.h \
-    defaultconditionalaction.h \
+    #defaultconditionalaction.h \
     pickframe.h \
     lroutetableaction.h \
     signalheadtableaction.h \

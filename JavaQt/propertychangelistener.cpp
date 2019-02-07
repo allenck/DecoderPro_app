@@ -7,6 +7,6 @@ PropertyChangeListener::PropertyChangeListener(QObject *parent) :
 
 }
 //@Override
-void PropertyChangeListener::propertyChange(PropertyChangeEvent* e) {
+void PropertyChangeListener::propertyChange(PropertyChangeEvent* /*e*/) {
  //qDebug() << tr("Property change received");
 }

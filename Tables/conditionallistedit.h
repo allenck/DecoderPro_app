@@ -8,6 +8,8 @@
 #include "conditionalvariable.h"
 #include "actionevent.h"
 
+class CLESelectLogixBoxListener;
+class CLESelectConditionalBoxListener;
 class ActionSignalMastNameListener;
 class ActionSignalHeadNameListener;
 class EditActionFrameWindowListener;
@@ -178,6 +180,8 @@ private:
  bool validateTimeReference(int actionType, QString ref);
  bool validateTime(int actionType, float time);
  EditActionFrameWindowListener *editActionFrameWindowListener;
+CLESelectLogixBoxListener* selectLogixBoxListener = nullptr;
+CLESelectConditionalBoxListener* selectConditionalBoxListener = nullptr;
 
 private slots:
  void newConditionalPressed(ActionEvent* /*e*/ = 0);
@@ -224,6 +228,8 @@ protected:
  friend class ConditionalTableModel;
  friend class ActionTypeListener;
  friend class EditLogixFrameWindowListener;
+ friend class CLESelectConditionalBoxListener;
+ friend class CLESelectLogixBoxListener;
 };
 
 /*public*/ class LIBTABLESSHARED_EXPORT ConditionalTableModel : public  QAbstractTableModel //implements PropertyChangeListener
@@ -381,6 +387,24 @@ public:
  void windowIconified(QResizeEvent *){}
 };
 
+class CLESelectLogixBoxListener : public ActionListener
+{
+ Q_OBJECT
+ ConditionalListEdit* self;
+public:
+ CLESelectLogixBoxListener(ConditionalListEdit* self);
+public slots:
+ void actionPerformed();
+};
 
+class CLESelectConditionalBoxListener : public ActionListener
+{
+ Q_OBJECT
+ ConditionalListEdit* self;
+public:
+ CLESelectConditionalBoxListener(ConditionalListEdit* self);
+public slots:
+ void actionPerformed();
+};
 
 #endif // CONDITIONALLISTEDIT_H

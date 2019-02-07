@@ -12,6 +12,7 @@
 #include "../Tables/logixtableaction.h"
 #include "warrant.h"
 #include "audio.h"
+#include "sound.h"
 
 DefaultConditionalAction::DefaultConditionalAction(QObject *parent) :
     ConditionalAction(parent)
@@ -303,9 +304,9 @@ void DefaultConditionalAction::common()
 /**
 * get Sound file
 */
-///*public*/ Sound* DefaultConditionalAction::getSound() {
-//    return _sound;
-//}
+/*public*/ Sound* DefaultConditionalAction::getSound() {
+    return _sound;
+}
 
 /**
 * set Sound file
@@ -359,7 +360,7 @@ void DefaultConditionalAction::common()
         case Conditional::ITEM_TYPE_OBLOCK:
             return (tr("OBlock"));
         case Conditional::ITEM_TYPE_CLOCK:
-            return (tr("FastClock"));
+            return (tr("Fast Clock"));
         case Conditional::ITEM_TYPE_AUDIO:
             return (tr("Audio"));
         case Conditional::ITEM_TYPE_SCRIPT:
@@ -369,7 +370,6 @@ void DefaultConditionalAction::common()
     }
     return "";
 }
-
 
 /**
  * Convert Consequent Type to Text String
@@ -465,7 +465,12 @@ void DefaultConditionalAction::common()
            return (tr("Set Signal Mast Dark"));
         case Conditional::ACTION_SET_SIGNALMAST_LIT:
            return (tr("Clear Signal Mast Dark"));
-           return (tr("Set Bloc kPath Turnouts"));
+        case Conditional::ACTION_SET_BLOCK_VALUE:
+           return (tr("Set Block Value"));
+        case Conditional::ACTION_SET_BLOCK_ERROR:
+           return (tr("Set Block Error"));
+        case Conditional::ACTION_CLEAR_BLOCK_ERROR:
+           return (tr("Clear Block Error"));
         case Conditional::ACTION_DEALLOCATE_BLOCK:
            return (tr("Deallocate Block"));
         case Conditional::ACTION_SET_BLOCK_OUT_OF_SERVICE:

@@ -12,6 +12,11 @@
 #include "defaultsignalhead.h"
 #include "../Tables/logixtableaction.h"
 #include "warrant.h"
+#include "sound.h"
+#include "warrantmanager.h"
+#include "oblockmanager.h"
+#include "entryexitpairs.h"
+#include "oblock.h"
 
 DefaultConditionalAction::DefaultConditionalAction(QObject* parent) :
     ConditionalAction(parent)
@@ -37,11 +42,12 @@ void DefaultConditionalAction::common()
 {
     log = new Logger("DefaultConditionalAction");
     _option = Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE;
-    int _type = Conditional::ACTION_NONE ;
-    QString _deviceName = " ";
+    _type = Conditional::ACTION_NONE ;
+    _deviceName = " ";
     _actionData = 0;
     _actionString = "";
     _namedBean = NULL;
+    _type = 0;
 
     _timer = NULL;
     _listener = NULL;
@@ -68,60 +74,180 @@ void DefaultConditionalAction::common()
  _actionData = actionData;
  _actionString = actionStr;
 
- NamedBean* bean = NULL;
+ NamedBean* bean = getIndirectBean(_deviceName);
+    if (bean == nullptr) {
+        bean = getActionBean(_deviceName);
+    }
+    if (bean != nullptr) {
+        _namedBean = nbhm->getNamedBeanHandle(_deviceName, bean);
+    } else {
+        _namedBean = nullptr;
+    }
+}
+
+//@Override
+/*public*/ bool DefaultConditionalAction::equals(QObject* obj) {
+    if (obj == this) {
+        return true;
+    }
+    if (obj == nullptr) {
+        return false;
+    }
+
+    if (!(metaObject()->className() == obj->metaObject()->className())) {
+        return false;
+    } else {
+        DefaultConditionalAction* p = (DefaultConditionalAction*)obj;
+        if ((p->_option != this->_option)
+                || (p->_type != this->_type)
+                || (p->_actionData != this->_actionData)) {
+            return false;
+        }
+
+        if ((p->_namedBean == nullptr && this->_namedBean != nullptr)
+                || (p->_namedBean != nullptr && this->_namedBean == nullptr)
+                || (p->_namedBean != nullptr && this->_namedBean != nullptr && !p->_namedBean->equals(this->_namedBean))) {
+            return false;
+        }
+
+        if ((p->_deviceName == "" && this->_deviceName != "")
+                || (p->_deviceName != "" && this->_deviceName == "")
+                || (p->_deviceName != "" && this->_deviceName != "" && p->_deviceName != (this->_deviceName))) {
+            return false;
+        }
+
+        if ((p->_actionString == "" && this->_actionString != "")
+                || (p->_actionString != "" && this->_actionString == "")
+                || (p->_actionString != "" && this->_actionString != "" && p->_actionString != (this->_actionString))) {
+            return false;
+        }
+
+    }
+    return true;
+}
+
+//@Override
+/*public*/ int DefaultConditionalAction::hashCode() {
+    int hash = _option * 1000 + _type * 1000 * 1000 + _actionData;
+    if (_deviceName != "") {
+        //hash += _deviceName.hashCode();
+     int h = hash;
+             if (h == 0 && _deviceName.length() > 0) {
+                 //char val[] = value;
+                 QByteArray val = _deviceName.toLocal8Bit();
+
+                 for (int i = 0; i < _deviceName.length(); i++) {
+                     h = 31 * h + val.at(i);
+                 }
+                 hash = h;
+             }
+             hash += h;
+    }
+    return hash;
+}
+
+/**
+ * If this is an indirect reference, return the Memory bean.
+ *
+ */
+/*private*/ Memory* DefaultConditionalAction::getIndirectBean(QString devName) {
+    if (devName != "" && devName.length() > 0 && devName.at(0) == '@') {
+        QString memName = devName.mid(1);
+        Memory* m = InstanceManager::memoryManagerInstance()->getMemory(memName);
+        if (m != nullptr) {
+            _indirectAction = true;
+            return m;
+        }
+        log->error(tr("\"%1\" invalid indirect memory name in action %2 of type %3").arg(devName).arg(_actionString).arg(_type));
+    } else {
+        _indirectAction = false;
+    }
+    return nullptr;
+}
+
+/**
+ * Return the device bean that will do the action.
+ *
+ */
+/*private*/ NamedBean* DefaultConditionalAction::getActionBean(QString devName) {
+ NamedBean* bean = nullptr;
  try
  {
   int itemType = Conditional::ACTION_TO_ITEM[_type];
   switch (itemType)
   {
   case Conditional::ITEM_TYPE_SENSOR:
-   bean = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(_deviceName);
+   bean = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(devName);
    if (bean == NULL)
    {
     log->error("invalid sensor name= \""+_deviceName+"\" in conditional action");
-    return;
    }
    break;
   case Conditional::ITEM_TYPE_TURNOUT:
-   bean = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(_deviceName);
+   bean = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(devName);
    if (bean == NULL)
    {
     log->error("invalid turnout name= \""+_deviceName+"\" in conditional action");
-    return;
    }
    break;
   case Conditional::ITEM_TYPE_MEMORY:
-   bean = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(_deviceName);
+   bean = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(devName);
    if (bean == NULL)
    {
     log->error("invalid memory name= \""+_deviceName+"\" in conditional action");
-    return;
    }
    break;
   case Conditional::ITEM_TYPE_LIGHT:
-   bean = ((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
+   bean = ((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(devName);
    if (bean == NULL)
    {
         log->error("invalid light name= \""+_deviceName+"\" in conditional action");
-        return;
    }
    break;
   case Conditional::ITEM_TYPE_SIGNALMAST:
-   bean = (NamedBean*)static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_deviceName);
+   bean = (NamedBean*)static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(devName);
    if (bean == NULL)
    {
         log->error("invalid signal mast name= \""+_deviceName+"\" in conditional action");
-        return;
    }
    break;
   case Conditional::ITEM_TYPE_SIGNALHEAD:
-   bean = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(_deviceName);
+   bean = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(devName);
    if (bean == NULL)
    {
         log->error("invalid signal head name= \""+_deviceName+"\" in conditional action");
-        return;
    }
    break;
+  case Conditional::ITEM_TYPE_WARRANT:
+       bean = static_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"))->getWarrant(devName);
+       if (bean == nullptr)
+       {
+       log->error(tr("invalid Warrant name= \"%1\" in conditional action").arg(devName));
+   }
+   break;
+case Conditional::ITEM_TYPE_OBLOCK:
+       bean =  static_cast<OBlockManager*>(InstanceManager::getDefault("OBlockManager"))->getOBlock(devName);
+         if (bean == NULL)
+         {
+       log->error(tr("invalid OBlock name= \"%1\" in conditional action").arg(devName));
+   }
+   break;
+case Conditional::ITEM_TYPE_ENTRYEXIT:
+       bean = static_cast<EntryExitPairs*>(InstanceManager::getDefault("EntryExitPairs"))->getNamedBean(devName);
+       if (bean == NULL)
+       {
+
+       log->error(tr("invalid NX name= \"%1\" in conditional action").arg(devName));
+   }
+   break;
+default:
+   if (getType() == Conditional::ACTION_TRIGGER_ROUTE) {
+           bean = static_cast<RouteManager*>(InstanceManager::getDefault("RouteManager"))->getRoute(devName);
+           if (bean == NULL)
+           {
+           log->error(tr("invalid Route name= \"%1\" in conditional action").arg(devName));
+       }
+   }
   }
  }
  catch (NumberFormatException ex)
@@ -135,6 +261,7 @@ void DefaultConditionalAction::common()
  {
   _namedBean = NULL;
  }
+ return bean;
 }
 
 /**
@@ -185,7 +312,7 @@ void DefaultConditionalAction::common()
                 bean = (NamedBean*) ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(_deviceName);
                 break;
             case Conditional::ITEM_TYPE_LIGHT:
-                bean = (NamedBean*) ((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
+                bean = (NamedBean*) ((ProxyLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
                 break;
             case Conditional::ITEM_TYPE_SIGNALMAST:
                 bean = (NamedBean*) static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_deviceName);
@@ -251,7 +378,7 @@ void DefaultConditionalAction::common()
  * String data for action
  */
 /*public*/ QString DefaultConditionalAction::getActionString() {
-    if (_actionString==NULL) {
+    if (_actionString=="") {
         _actionString = getTypeString();
     }
     return _actionString;
@@ -315,16 +442,16 @@ void DefaultConditionalAction::common()
 /**
 * get Sound file
 */
-///*public*/ Sound DefaultConditionalAction::getSound() {
-//    return _sound;
-//}
+/*public*/ Sound* DefaultConditionalAction::getSound() {
+    return _sound;
+}
 
 /**
 * set Sound file
 */
-//protected void DefaultConditionalAction::setSound(Sound sound) {
-//    _sound = sound;
-//}
+/*protected*/ void DefaultConditionalAction::setSound(Sound* sound) {
+    _sound = sound;
+}
 
 /**** Methods that return user interface strings *****/
 
@@ -359,9 +486,9 @@ void DefaultConditionalAction::common()
         case Conditional::ITEM_TYPE_LIGHT:
             return (tr("Light"));
         case Conditional::ITEM_TYPE_SIGNALHEAD:
-            return (tr("SignalHead"));
+            return (tr("Signal Head"));
         case Conditional::ITEM_TYPE_SIGNALMAST:
-            return (tr("SignalMast"));
+            return (tr("Signal Mast"));
         case Conditional::ITEM_TYPE_MEMORY:
             return (tr("Memory"));
         case Conditional::ITEM_TYPE_LOGIX:
@@ -370,8 +497,10 @@ void DefaultConditionalAction::common()
             return (tr("Warrant"));
         case Conditional::ITEM_TYPE_OBLOCK:
             return (tr("OBlock"));
+        case Conditional::ITEM_TYPE_ENTRYEXIT:
+            return (tr("Entry Exit"));
         case Conditional::ITEM_TYPE_CLOCK:
-            return (tr("FastClock"));
+            return (tr("Fast Clock"));
         case Conditional::ITEM_TYPE_AUDIO:
             return (tr("Audio"));
         case Conditional::ITEM_TYPE_SCRIPT:

@@ -1,4 +1,6 @@
 #include "dataline.h"
+#include "audiosystem.h"
+#include "audioformat.h"
 
 DataLine::DataLine(QObject *parent) :
   Line(parent)
@@ -238,7 +240,7 @@ DataLine::DataLine(QObject *parent) :
  * <code>{@link AudioSystem#NOT_SPECIFIED}</code>
  */
 /*public*/ float DataLine::getLevel() { return 0;}
-#if 0
+#if 1
 /**
  * Besides the class information inherited from its superclass,
  * <code>DataLine.Info</code> provides additional information specific to data lines.
@@ -259,214 +261,228 @@ DataLine::DataLine(QObject *parent) :
  * @author Kara Kytle
  * @since 1.3
  */
-/*public*/ static class Info extends Line.Info {
+///*public*/ static class Info extends Line.Info {
 
-    private final AudioFormat[] formats;
-    private final int minBufferSize;
-    private final int maxBufferSize;
+//    private final AudioFormat[] formats;
+//    private final int minBufferSize;
+//    private final int maxBufferSize;
 
-    /**
-     * Constructs a data line's info object from the specified information,
-     * which includes a set of supported audio formats and a range for the buffer size.
-     * This constructor is typically used by mixer implementations
-     * when returning information about a supported line.
-     *
-     * @param lineClass the class of the data line described by the info object
-     * @param formats set of formats supported
-     * @param minBufferSize minimum buffer size supported by the data line, in bytes
-     * @param maxBufferSize maximum buffer size supported by the data line, in bytes
-     */
-    /*public*/ Info(Class<?> lineClass, AudioFormat[] formats, int minBufferSize, int maxBufferSize) {
+/**
+ * Constructs a data line's info object from the specified information,
+ * which includes a set of supported audio formats and a range for the buffer size.
+ * This constructor is typically used by mixer implementations
+ * when returning information about a supported line.
+ *
+ * @param lineClass the class of the data line described by the info object
+ * @param formats set of formats supported
+ * @param minBufferSize minimum buffer size supported by the data line, in bytes
+ * @param maxBufferSize maximum buffer size supported by the data line, in bytes
+ */
+/*public*/ DataLine::Info::Info(/*Class<?>*/QString lineClass, QList<AudioFormat*> formats, int minBufferSize, int maxBufferSize) : Line::Info(lineClass){
 
-        super(lineClass);
+    //super(lineClass);
 
-        if (formats == null) {
-            this.formats = new AudioFormat[0];
-        } else {
-            this.formats = Arrays.copyOf(formats, formats.length);
+    if (formats.isEmpty()) {
+        this->formats = QList<AudioFormat*>();
+    } else {
+        //this.formats = Arrays.copyOf(formats, formats.length);
+     this->formats = QList<AudioFormat*>(formats);
+    }
+
+    this->minBufferSize = minBufferSize;
+    this->maxBufferSize = maxBufferSize;
+}
+
+
+/**
+ * Constructs a data line's info object from the specified information,
+ * which includes a single audio format and a desired buffer size.
+ * This constructor is typically used by an application to
+ * describe a desired line.
+ *
+ * @param lineClass the class of the data line described by the info object
+ * @param format desired format
+ * @param bufferSize desired buffer size in bytes
+ */
+/*public*/ DataLine::Info::Info(/*Class<?>*/QString lineClass, AudioFormat* format, int bufferSize) : Line::Info(lineClass){
+
+    //super(lineClass);
+
+if (formats.isEmpty()) {
+ this->formats = QList<AudioFormat*>();
+} else {
+ //this.formats = Arrays.copyOf(formats, formats.length);
+this->formats = QList<AudioFormat*>(formats);
+}
+
+    this->minBufferSize = bufferSize;
+    this->maxBufferSize = bufferSize;
+}
+
+
+/**
+ * Constructs a data line's info object from the specified information,
+ * which includes a single audio format.
+ * This constructor is typically used by an application to
+ * describe a desired line.
+ *
+ * @param lineClass the class of the data line described by the info object
+ * @param format desired format
+ */
+/*public*/ DataLine::Info::Info(/*Class<?>*/QString lineClass, AudioFormat* format) : Line::Info(lineClass) {
+    //this(lineClass, format, AudioSystem.NOT_SPECIFIED);
+if (formats.isEmpty()) {
+ this->formats = QList<AudioFormat*>();
+} else {
+ //this.formats = Arrays.copyOf(formats, formats.length);
+this->formats = QList<AudioFormat*>(formats);
+}
+
+    this->minBufferSize = AudioSystem::NOT_SPECIFIED;
+    this->maxBufferSize = AudioSystem::NOT_SPECIFIED;
+
+}
+
+
+/**
+ * Obtains a set of audio formats supported by the data line.
+ * Note that <code>isFormatSupported(AudioFormat)</code> might return
+ * <code>true</code> for certain additional formats that are missing from
+ * the set returned by <code>getFormats()</code>.  The reverse is not
+ * the case: <code>isFormatSupported(AudioFormat)</code> is guaranteed to return
+ * <code>true</code> for all formats returned by <code>getFormats()</code>.
+ *
+ * Some fields in the AudioFormat instances can be set to
+ * {@link javax.sound.sampled.AudioSystem#NOT_SPECIFIED NOT_SPECIFIED}
+ * if that field does not apply to the format,
+ * or if the format supports a wide range of values for that field.
+ * For example, a multi-channel device supporting up to
+ * 64 channels, could set the channel field in the
+ * <code>AudioFormat</code> instances returned by this
+ * method to <code>NOT_SPECIFIED</code>.
+ *
+ * @return a set of supported audio formats.
+ * @see #isFormatSupported(AudioFormat)
+ */
+/*public*/ QList<AudioFormat*> DataLine::Info::getFormats() {
+    //return Arrays.copyOf(formats, formats.length);
+    return QList<AudioFormat*>(formats);
+}
+
+/**
+ * Indicates whether this data line supports a particular audio format.
+ * The default implementation of this method simply returns <code>true</code> if
+ * the specified format matches any of the supported formats.
+ *
+ * @param format the audio format for which support is queried.
+ * @return <code>true</code> if the format is supported, otherwise <code>false</code>
+ * @see #getFormats
+ * @see AudioFormat#matches
+ */
+/*public*/ bool DataLine::Info::isFormatSupported(AudioFormat* format) {
+
+    for (int i = 0; i < formats.length(); i++) {
+        if (format->matches(formats[i])) {
+            return true;
         }
-
-        this.minBufferSize = minBufferSize;
-        this.maxBufferSize = maxBufferSize;
     }
 
+    return false;
+}
 
-    /**
-     * Constructs a data line's info object from the specified information,
-     * which includes a single audio format and a desired buffer size.
-     * This constructor is typically used by an application to
-     * describe a desired line.
-     *
-     * @param lineClass the class of the data line described by the info object
-     * @param format desired format
-     * @param bufferSize desired buffer size in bytes
-     */
-    /*public*/ Info(Class<?> lineClass, AudioFormat format, int bufferSize) {
-
-        super(lineClass);
-
-        if (format == null) {
-            this.formats = new AudioFormat[0];
-        } else {
-            this.formats = new AudioFormat[]{format};
-        }
-
-        this.minBufferSize = bufferSize;
-        this.maxBufferSize = bufferSize;
-    }
+/**
+ * Obtains the minimum buffer size supported by the data line.
+ * @return minimum buffer size in bytes, or <code>AudioSystem.NOT_SPECIFIED</code>
+ */
+/*public*/ int DataLine::Info::getMinBufferSize() {
+    return minBufferSize;
+}
 
 
-    /**
-     * Constructs a data line's info object from the specified information,
-     * which includes a single audio format.
-     * This constructor is typically used by an application to
-     * describe a desired line.
-     *
-     * @param lineClass the class of the data line described by the info object
-     * @param format desired format
-     */
-    /*public*/ Info(Class<?> lineClass, AudioFormat format) {
-        this(lineClass, format, AudioSystem.NOT_SPECIFIED);
-    }
+/**
+ * Obtains the maximum buffer size supported by the data line.
+ * @return maximum buffer size in bytes, or <code>AudioSystem.NOT_SPECIFIED</code>
+ */
+/*public*/ int DataLine::Info::getMaxBufferSize() {
+    return maxBufferSize;
+}
 
 
-    /**
-     * Obtains a set of audio formats supported by the data line.
-     * Note that <code>isFormatSupported(AudioFormat)</code> might return
-     * <code>true</code> for certain additional formats that are missing from
-     * the set returned by <code>getFormats()</code>.  The reverse is not
-     * the case: <code>isFormatSupported(AudioFormat)</code> is guaranteed to return
-     * <code>true</code> for all formats returned by <code>getFormats()</code>.
-     *
-     * Some fields in the AudioFormat instances can be set to
-     * {@link javax.sound.sampled.AudioSystem#NOT_SPECIFIED NOT_SPECIFIED}
-     * if that field does not apply to the format,
-     * or if the format supports a wide range of values for that field.
-     * For example, a multi-channel device supporting up to
-     * 64 channels, could set the channel field in the
-     * <code>AudioFormat</code> instances returned by this
-     * method to <code>NOT_SPECIFIED</code>.
-     *
-     * @return a set of supported audio formats.
-     * @see #isFormatSupported(AudioFormat)
-     */
-    /*public*/ AudioFormat[] getFormats() {
-        return Arrays.copyOf(formats, formats.length);
-    }
+/**
+ * Determines whether the specified info object matches this one.
+ * To match, the superclass match requirements must be met.  In
+ * addition, this object's minimum buffer size must be at least as
+ * large as that of the object specified, its maximum buffer size must
+ * be at most as large as that of the object specified, and all of its
+ * formats must match formats supported by the object specified.
+ * @return <code>true</code> if this object matches the one specified,
+ * otherwise <code>false</code>.
+ */
+/*public*/ bool DataLine::Info::matches(Line::Info* info) {
 
-    /**
-     * Indicates whether this data line supports a particular audio format.
-     * The default implementation of this method simply returns <code>true</code> if
-     * the specified format matches any of the supported formats.
-     *
-     * @param format the audio format for which support is queried.
-     * @return <code>true</code> if the format is supported, otherwise <code>false</code>
-     * @see #getFormats
-     * @see AudioFormat#matches
-     */
-    /*public*/ bool isFormatSupported(AudioFormat* format) {
-
-        for (int i = 0; i < formats.length; i++) {
-            if (format.matches(formats[i])) {
-                return true;
-            }
-        }
-
+    if (! (Info::matches(info)) ) {
         return false;
     }
 
-    /**
-     * Obtains the minimum buffer size supported by the data line.
-     * @return minimum buffer size in bytes, or <code>AudioSystem.NOT_SPECIFIED</code>
-     */
-    /*public*/ int getMinBufferSize() {
-        return minBufferSize;
-    }
+    Info* dataLineInfo = (Info*)info;
 
-
-    /**
-     * Obtains the maximum buffer size supported by the data line.
-     * @return maximum buffer size in bytes, or <code>AudioSystem.NOT_SPECIFIED</code>
-     */
-    /*public*/ int getMaxBufferSize() {
-        return maxBufferSize;
-    }
-
-
-    /**
-     * Determines whether the specified info object matches this one.
-     * To match, the superclass match requirements must be met.  In
-     * addition, this object's minimum buffer size must be at least as
-     * large as that of the object specified, its maximum buffer size must
-     * be at most as large as that of the object specified, and all of its
-     * formats must match formats supported by the object specified.
-     * @return <code>true</code> if this object matches the one specified,
-     * otherwise <code>false</code>.
-     */
-    /*public*/ bool matches(Line.Info info) {
-
-        if (! (super.matches(info)) ) {
+    // treat anything < 0 as NOT_SPECIFIED
+    // demo code in old Java Sound Demo used a wrong buffer calculation
+    // that would lead to arbitrary negative values
+    if ((getMaxBufferSize() >= 0) && (dataLineInfo->getMaxBufferSize() >= 0)) {
+        if (getMaxBufferSize() > dataLineInfo->getMaxBufferSize()) {
             return false;
         }
+    }
 
-        Info dataLineInfo = (Info)info;
-
-        // treat anything < 0 as NOT_SPECIFIED
-        // demo code in old Java Sound Demo used a wrong buffer calculation
-        // that would lead to arbitrary negative values
-        if ((getMaxBufferSize() >= 0) && (dataLineInfo.getMaxBufferSize() >= 0)) {
-            if (getMaxBufferSize() > dataLineInfo.getMaxBufferSize()) {
-                return false;
-            }
+    if ((getMinBufferSize() >= 0) && (dataLineInfo->getMinBufferSize() >= 0)) {
+        if (getMinBufferSize() < dataLineInfo->getMinBufferSize()) {
+            return false;
         }
+    }
 
-        if ((getMinBufferSize() >= 0) && (dataLineInfo.getMinBufferSize() >= 0)) {
-            if (getMinBufferSize() < dataLineInfo.getMinBufferSize()) {
-                return false;
-            }
-        }
+    QList<AudioFormat*> localFormats = getFormats();
 
-        AudioFormat[] localFormats = getFormats();
+    if (!localFormats.isEmpty()) {
 
-        if (localFormats != null) {
-
-            for (int i = 0; i < localFormats.length; i++) {
-                if (! (localFormats[i] == null) ) {
-                    if (! (dataLineInfo.isFormatSupported(localFormats[i])) ) {
-                        return false;
-                    }
+        for (int i = 0; i < localFormats.length(); i++) {
+            if (! (localFormats[i] == nullptr) ) {
+                if (! (dataLineInfo->isFormatSupported(localFormats[i])) ) {
+                    return false;
                 }
             }
         }
-
-        return true;
     }
 
-    /**
-     * Obtains a textual description of the data line info.
-     * @return a string description
-     */
-    /*public*/ String toString() {
+    return true;
+}
 
-        StringBuffer buf = new StringBuffer();
+/**
+ * Obtains a textual description of the data line info.
+ * @return a string description
+ */
+/*public*/ QString DataLine::Info::toString() {
 
-        if ( (formats.length == 1) && (formats[0] != null) ) {
-            buf.append(" supporting format " + formats[0]);
-        } else if (getFormats().length > 1) {
-            buf.append(" supporting " + getFormats().length + " audio formats");
-        }
+    QString buf;// = new StringBuffer();
 
-        if ( (minBufferSize != AudioSystem.NOT_SPECIFIED) && (maxBufferSize != AudioSystem.NOT_SPECIFIED) ) {
-            buf.append(", and buffers of " + minBufferSize + " to " + maxBufferSize + " bytes");
-        } else if ( (minBufferSize != AudioSystem.NOT_SPECIFIED) && (minBufferSize > 0) ) {
-            buf.append(", and buffers of at least " + minBufferSize + " bytes");
-        } else if (maxBufferSize != AudioSystem.NOT_SPECIFIED) {
-            buf.append(", and buffers of up to " + minBufferSize + " bytes");
-        }
-
-        return new String(super.toString() + buf);
+    if ( (formats.length() == 1) && (formats[0] != nullptr) ) {
+        buf.append(tr(" supporting format ") + formats[0]->toString());
+    } else if (getFormats().length() > 1) {
+        buf.append(tr(" supporting ") + QString::number(getFormats().length()) + " audio formats");
     }
-} // class Info
 
-} // interface DataLine
+    if ( (minBufferSize != AudioSystem::NOT_SPECIFIED) && (maxBufferSize != AudioSystem::NOT_SPECIFIED) ) {
+        buf.append(", and buffers of " + QString::number(minBufferSize) + " to " + QString::number(maxBufferSize) + " bytes");
+    } else if ( (minBufferSize != AudioSystem::NOT_SPECIFIED) && (minBufferSize > 0) ) {
+        buf.append(", and buffers of at least " + QString::number(minBufferSize) + " bytes");
+    } else if (maxBufferSize != AudioSystem::NOT_SPECIFIED) {
+        buf.append(", and buffers of up to " + QString::number(minBufferSize) + " bytes");
+    }
+
+    //return new String(super.toString() + buf);
+    return Info::toString() + buf;
+}
+//} // class Info
+
+//} // interface DataLine
 #endif

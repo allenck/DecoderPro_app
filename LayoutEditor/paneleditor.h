@@ -11,6 +11,7 @@ namespace Ui {
 class PanelEditor;
 }
 
+class QComboBox;
 class JTextField;
 //class AddPanelIconDialog;
 //class AddPanelEditorDialog;
@@ -64,6 +65,14 @@ public slots:
     void on_addMultiSensor_triggered();
     void on_addBackground_triggered();
     void on_actionOpenEditor_triggered();
+    void onLabelAdd();
+    void onEditableBox();
+    void onControllingBox();
+    void onShowToolTipBox();
+    void onScrollableComboBox();
+    /*public*/ void itemStateChanged(int index);
+    /*public*/ void windowClosing(QCloseEvent* e);
+
 private:
     Ui::PanelEditor *ui;
  Logger* log;
@@ -92,6 +101,21 @@ private:
  JTextField* nextY;// = new JTextField(tr("Default Y"),4);
  /*private*/ void removeMultiItems();
  /*private*/ void setMultiItemsPositionableMenu(QMenu* popup);
+ QCheckBox* editableBox;// = new JCheckBox(Bundle.getMessage("CheckBoxEditable"));
+ QCheckBox* positionableBox;// = new JCheckBox(Bundle.getMessage("CheckBoxPositionable"));
+ QCheckBox* controllingBox;// = new JCheckBox(Bundle.getMessage("CheckBoxControlling"));
+ //QCheckBox* showCoordinatesBox = new JCheckBox(Bundle.getMessage("CheckBoxShowCoordinates"));
+ QCheckBox* showTooltipBox;// = new JCheckBox(Bundle.getMessage("CheckBoxShowTooltips"));
+ QCheckBox* hiddenBox;// = new JCheckBox(Bundle.getMessage("CheckBoxHidden"));
+ QCheckBox* menuBox;// = new JCheckBox(Bundle.getMessage("CheckBoxMenuBar"));
+ QLabel* scrollableLabel;// = new JLabel(Bundle.getMessage("ComboBoxScrollable"));
+ QComboBox* scrollableComboBox;// = new JComboBox();
+
+ QPushButton* labelAdd;// = new JButton(Bundle.getMessage("ButtonAddText"));
+ JTextField* nextLabel;// = new JTextField(10);
+
+ QComboBox* _addIconBox;
+ /*private*/ void hiddenCheckBoxListener();
 
 private slots:
  void on_storeIndexItem_triggered();
@@ -110,7 +134,7 @@ protected:
 // /*protected*/ void PanelEditor::setColorButton(QColor color, QColor buttonColor, JRadioButtonMenuItem r);
  /*protected*/ void showAddItemPopUp(/*final*/ QGraphicsSceneMouseEvent* event, QMenu* popup);
  /*protected*/ void pasteItemPopUp(/*final*/ QGraphicsSceneMouseEvent* event);
- /*protected*/ void pasteItem();
+ /*protected*/ void pasteItem(QGraphicsSceneMouseEvent* e);
 // /*protected*/ void setNextLocation(Positionable* obj);
  /*protected*/ bool addItemViaMouseClick;// = false;
  /*protected*/ void copyItem(Positionable* p);
@@ -146,5 +170,17 @@ public slots:
 public:
  LockItemListener(PanelEditor* editor);
  ActionListener* init(Positionable* pos, QAction* cb);
+};
+
+class RenameActionListener : public ActionListener
+{
+ Q_OBJECT
+ PanelEditor* editor;
+
+public slots:
+ //@Override
+ /*public*/ void actionPerformed(/*ActionEvent e*/);
+
+ ActionListener* init(PanelEditor* e);
 };
 #endif // PANELEDITOR_H

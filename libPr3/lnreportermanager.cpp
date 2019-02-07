@@ -64,7 +64,7 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
  t = (Reporter*)(new LnReporter(addr, tc, prefix, this));
  t->setUserName(userName);
  t->addPropertyChangeListener((PropertyChangeListener*)this);
- connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+ connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  return t;
 }

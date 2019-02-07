@@ -96,11 +96,11 @@ public:
 signals:
     void beanDeleted(NamedBean* s);
     void beanCreated(NamedBean* s);
-    void propertyChange(PropertyChangeEvent* e);
+    //void propertyChange(PropertyChangeEvent* e);
     void vetoablePropertyChange(PropertyChangeEvent *evt);
 
 public slots:
-    virtual void on_propertyChange(PropertyChangeEvent* e);
+    virtual void propertyChange(PropertyChangeEvent* e);
     /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt); //throw PropertyVetoException
 protected:
     /*protected*/void registerSelf();

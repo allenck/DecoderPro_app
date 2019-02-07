@@ -135,6 +135,7 @@ public:
  /*public*/ int getRowMargin();
  /*public*/ void setRowHeight(int row, int rowHeight);
  /*public*/ QVariant getValueAt(int row, int column);
+ /*public*/ int rowHeight();
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -255,7 +256,7 @@ protected:
  /*protected*/ QHeaderView*      tableHeader;
 
  /** The height in pixels of each row in the table. */
- /*protected*/ int               rowHeight;
+ /*protected*/ int               _rowHeight;
 
  /** The height in pixels of the margin between the cells in each row. */
  /*protected*/ int               rowMargin;

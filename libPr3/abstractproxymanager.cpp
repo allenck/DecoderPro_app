@@ -131,7 +131,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 
  if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
  AbstractManager* am = static_cast<AbstractManager*>(m);
- connect(am->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+ connect(am->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  updateOrderList();
  //updateNamedBeanSet();
@@ -535,7 +535,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  return arr;
 }
 
-void AbstractProxyManager::on_propertyChange(PropertyChangeEvent *e)
+void AbstractProxyManager::propertyChange(PropertyChangeEvent *e)
 {
  //emit this->propertyChange(e);
 }

@@ -3,6 +3,8 @@
 #include "conditionalaction.h"
 #include "logger.h"
 
+class Memory;
+class Sound;
 class NamedBeanHandleManager;
 class Conditional;
 class LIBPR3SHARED_EXPORT DefaultConditionalAction : public ConditionalAction
@@ -11,6 +13,9 @@ class LIBPR3SHARED_EXPORT DefaultConditionalAction : public ConditionalAction
 public:
     explicit DefaultConditionalAction(QObject *parent = 0);
     /*public*/ DefaultConditionalAction(int option, int type, QString name, int actionData, QString actionStr, QObject *parent = 0);
+    /*public*/ bool equals(QObject* obj);
+    /*public*/ int hashCode();
+
     /*public*/ int getType();
     /*public*/ void setType(int type);
     /*public*/ void setType(QString type);
@@ -32,7 +37,7 @@ public:
     /*public*/ void stopTimer();
     /*public*/ ActionListener* getListener();
     /*public*/ void setListener(ActionListener* listener);
-    ///*public*/ Sound getSound();
+    /*public*/ Sound* getSound();
     /*public*/ QString getTypeString();
     /*public*/ QString getOptionString(bool type);
     /*public*/ QString getActionDataString();
@@ -52,17 +57,21 @@ private:
     /*private*/ QString _deviceName;// = " ";
     /*private*/ int _actionData;// = 0;
     /*private*/ QString _actionString;// = "";
-    /*private*/ NamedBeanHandle<NamedBean*>* _namedBean;// = null;
+    /*private*/ NamedBeanHandle<NamedBean*>* _namedBean = nullptr;
 
     /*private*/ QTimer* _timer;// = null;
     /*private*/ ActionListener* _listener;// = null;
     /*private*/ bool _timerActive;// = false;
-//    /*private*/ Sound _sound;// = null;
+    /*private*/ bool _indirectAction = false;
+    /*private*/ Sound* _sound = nullptr;
     void common();
+    /*private*/ Memory* getIndirectBean(QString devName);
+    /*private*/ NamedBean* getActionBean(QString devName);
+
  Logger* log;
  NamedBeanHandleManager* nbhm;
 protected:
- //protected void setSound(Sound sound) ;
+ /*protected*/ void setSound(Sound* sound) ;
 
 };
 

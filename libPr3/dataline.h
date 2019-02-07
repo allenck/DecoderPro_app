@@ -23,6 +23,22 @@ public:
  virtual /*public*/ long getLongFramePosition();
  virtual /*public*/ long getMicrosecondPosition();
  virtual /*public*/ float getLevel();
+ /*public*/ /*static*/ class Info : public Line::Info {
+
+     /*private*/ /*final*/ QList<AudioFormat*> formats;
+     /*private*/ /*final*/ int minBufferSize;
+     /*private*/ /*final*/ int maxBufferSize;
+ public:
+     /*public*/ Info(/*Class<?>*/QString lineClass, QList<AudioFormat*> formats, int minBufferSize, int maxBufferSize);
+     /*public*/ Info(/*Class<?>*/QString lineClass, AudioFormat* format, int bufferSize);
+     /*public*/ Info(/*Class<?>*/QString lineClass, AudioFormat* format);
+     /*public*/ QList<AudioFormat*> getFormats();
+     /*public*/ bool isFormatSupported(AudioFormat* format);
+     /*public*/ int getMinBufferSize() ;
+     /*public*/ int getMaxBufferSize() ;
+     /*public*/ bool matches(Line::Info* info);
+     /*public*/ QString toString();
+ }; // class Info
 
 signals:
 

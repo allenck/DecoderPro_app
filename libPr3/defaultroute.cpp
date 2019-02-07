@@ -1,6 +1,9 @@
 #include "defaultroute.h"
 #include "exceptions.h"
 #include "instancemanager.h"
+#include "sound.h"
+#include "jmriscriptenginemanager.h"
+#include "fileutil.h"
 
 //DefaultRoute::DefaultRoute(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -1095,17 +1098,21 @@ void OutputTurnout::removeListener()
 */
 /*public*/ void SetRouteThread::run()
 {
-#if 0 // TODO:
+#if 1 // TODO:
    // run script defined for start of route set
-   if ((r.getOutputScriptName() != NULL) && (!r.getOutputScriptName().equals(""))) {
-       jmri.util.PythonInterp.runScript(jmri.util.FileUtil.getExternalFilename(r.getOutputScriptName()));
+   if ((r->getOutputScriptName() != nullptr) && (r->getOutputScriptName() != (""))) {
+    JmriScriptEngineManager::getDefault()->runScript(new File(FileUtil::getExternalFilename(r->getOutputScriptName())));
+
    }
 
    // play sound defined for start of route set
-   if ((r.getOutputSoundName() != NULL) && (!r.getOutputSoundName().equals("")))
+   if ((r->getOutputSoundName() != "") && (r->getOutputSoundName() != ("")))
    {
-//        jmri.jmrit.Sound snd = new jmri.jmrit.Sound(jmri.util.FileUtil.getExternalFilename(r.getOutputSoundName()));
-//        snd.play();
+    try {
+        (new Sound(r->getOutputSoundName()))->play();
+    } catch (NullPointerException ex) {
+        log->error(tr("Cannot find file %1").arg(r->getOutputSoundName()));
+    }
    }
 #endif
  // set sensors at

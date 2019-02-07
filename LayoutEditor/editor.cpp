@@ -734,7 +734,8 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
     {
      _targetFrame->menuBar()->setVisible(state);
      //this.revalidate();
-     this->repaint();
+     //this->repaint();
+     _targetFrame->update();
     }
 }
 

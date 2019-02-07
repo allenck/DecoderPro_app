@@ -38,7 +38,7 @@
     TimeoutRfidSensor* s;
     s = new TimeoutRfidSensor(systemName, userName);
     //s.addPropertyChangeListener(this);
-    connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+    connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     return s;
 }
 

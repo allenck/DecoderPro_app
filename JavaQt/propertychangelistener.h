@@ -12,7 +12,7 @@ class JAVAQTSHARED_EXPORT PropertyChangeListener : public QObject
 public:
  explicit PropertyChangeListener(QObject *parent = 0);
 public slots:
- virtual void propertyChange(PropertyChangeEvent* e) = 0;
+ virtual void propertyChange(PropertyChangeEvent* e);
 // {
 //  //Q_UNUSED(e)
 //  emit signalPropertyChange(e);

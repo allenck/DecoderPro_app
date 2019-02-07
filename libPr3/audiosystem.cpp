@@ -7,6 +7,8 @@
 #include "audiofilereader.h"
 #include "wavfilereader.h"
 #include "logger.h"
+#include "mixer.h"
+#include "mixerprovider.h"
 
 //AudioSystem::AudioSystem(QObject *parent) :
 //  QObject(parent)
@@ -150,7 +152,7 @@
 {
  log = new Logger("AudioSystem");
 }
-#if 0
+
 
 /**
  * Obtains an array of mixer info objects that represents
@@ -159,10 +161,10 @@
  * are available on the system, an array of length 0 is returned.
  * @see #getMixer
  */
-/*public*/ static Mixer.Info[] getMixerInfo() {
+/*public*/ /*static*/ QList<Mixer::Info *>* AudioSystem::getMixerInfo() {
 
-    List infos = getMixerInfoList();
-    Mixer.Info[] allInfos = (Mixer.Info[]) infos.toArray(new Mixer.Info[infos.size()]);
+    QList<AudioFileReader*>* infos = getMixerInfoList();
+    QList<Mixer::Info*>* allInfos = (QList<Mixer::Info*>*) infos;//->toArray(new Mixer::Info[infos->size()]);
     return allInfos;
 }
 
@@ -178,15 +180,15 @@
  * a mixer installed on the system
  * @see #getMixerInfo
  */
-/*public*/ static Mixer getMixer(Mixer.Info info) {
+/*public*/ /*static*/ Mixer* AudioSystem::getMixer(Mixer::Info* info) {
 
-    Mixer mixer = NULL;
-    List providers = getMixerProviders();
-
-    for(int i = 0; i < providers.size(); i++ ) {
+    Mixer* mixer = NULL;
+    QList<AudioFileReader*>* providers = getMixerProviders();
+#if 0
+    for(int i = 0; i < providers->size(); i++ ) {
 
         try {
-            return ((MixerProvider)providers.get(i)).getMixer(info);
+            return ((MixerProvider*)providers->at(i))->getMixer(info);
 
         } catch (IllegalArgumentException e) {
         } catch (NullPointerException e) {
@@ -201,14 +203,14 @@
 
     //$$fb if looking for default mixer, and not found yet, add a round of looking
     if (info == NULL) {
-        for(int i = 0; i < providers.size(); i++ ) {
+        for(int i = 0; i < providers->size(); i++ ) {
             try {
-                MixerProvider provider = (MixerProvider) providers.get(i);
-                Mixer.Info[] infos = provider.getMixerInfo();
+                MixerProvider* provider = (MixerProvider*) providers->at(i);
+                QList<Mixer::Info*>* infos = provider->getMixerInfo();
                 // start from 0 to last device (do not reverse this order)
-                for (int ii = 0; ii < infos.length; ii++) {
+                for (int ii = 0; ii < infos->length(); ii++) {
                     try {
-                        return provider.getMixer(infos[ii]);
+                        return provider->getMixer(infos->at(ii));
                     } catch (IllegalArgumentException e) {
                         // this is not a good default device :)
                     }
@@ -218,12 +220,12 @@
             }
         }
     }
+#endif
 
-
-    throw new IllegalArgumentException("Mixer not supported: "
-                                       + (info!=NULL?info.toString():"NULL"));
+    throw  IllegalArgumentException("Mixer not supported: "
+                                       + (info!=NULL?info->toString():"NULL"));
 }
-
+#if 0
 
 //$$fb 2002-11-26: fix for 4757930: DOC: AudioSystem.getTarget/SourceLineInfo() is ambiguous
 /**
@@ -305,7 +307,7 @@
     return returnedArray;
 }
 
-
+#endif
 /**
  * Indicates whether the system supports any lines that match
  * the specified <code>Line.Info</code> object.  A line is supported if
@@ -316,16 +318,16 @@
  *
  * @see Mixer#isLineSupported(Line.Info)
  */
-/*public*/ static boolean isLineSupported(Line.Info info) {
+/*public*/ /*static*/ bool AudioSystem::isLineSupported(Line::Info* info) {
 
-    Mixer mixer;
-    Mixer.Info[] infoArray = getMixerInfo();
+    Mixer* mixer;
+    QList<Mixer::Info*>* infoArray = getMixerInfo();
 
-    for (int i = 0; i < infoArray.length; i++) {
+    for (int i = 0; i < infoArray->length(); i++) {
 
-        if( infoArray[i] != NULL ) {
-            mixer = getMixer(infoArray[i]);
-            if (mixer.isLineSupported(info)) {
+        if( infoArray->at(i) != NULL ) {
+            mixer = getMixer(infoArray->at(i));
+            if (mixer->isLineSupported(info)) {
                 return true;
             }
         }
@@ -333,7 +335,7 @@
 
     return false;
 }
-
+#if 0
 /**
  * Obtains a line that matches the description in the specified
  * <code>Line.Info</code> object.
@@ -1358,17 +1360,17 @@
     }
 }
 
-
+#endif
 // METHODS FOR INTERNAL IMPLEMENTATION USE
 
 /**
  * Obtains the set of MixerProviders on the system.
  */
-/*private*/ static List getMixerProviders() {
-    return getProviders(MixerProvider.class);
+/*private*/ /*static*/ QList<AudioFileReader*>* AudioSystem::getMixerProviders() {
+    return getProviders("MixerProvider");
 }
 
-
+#if 0
 /**
  * Obtains the set of format converters (codecs, transcoders, etc.)
  * that are currently installed on the system.
@@ -1583,13 +1585,13 @@
     return true;
 }
 
-
+#endif
 
 /**
  * Like getMixerInfo, but return List
  */
-/*private*/ static List getMixerInfoList() {
-    List providers = getMixerProviders();
+/*private*/ /*static*/ QList<AudioFileReader*>* AudioSystem::getMixerInfoList() {
+    QList<AudioFileReader*>* providers = getMixerProviders();
     return getMixerInfoList(providers);
 }
 
@@ -1597,21 +1599,21 @@
 /**
  * Like getMixerInfo, but return List
  */
-/*private*/ static List getMixerInfoList(List providers) {
-    List infos = new ArrayList();
-
-    Mixer.Info[] someInfos; // per-mixer
-    Mixer.Info[] allInfos;  // for all mixers
+/*private*/ static QList<AudioFileReader*>* getMixerInfoList(QList<AudioFileReader*>* providers) {
+    QList<AudioFileReader*>* infos = new QList<AudioFileReader*>();
+#if 0
+    QList<Mixer::Info*>* someInfos; // per-mixer
+    QList<Mixer::Info*>* allInfos;  // for all mixers
 
     for(int i = 0; i < providers.size(); i++ ) {
-        someInfos = (Mixer.Info[])
+        someInfos = (QList<Mixer::Info*>*)
             ((MixerProvider)providers.get(i)).getMixerInfo();
 
         for (int j = 0; j < someInfos.length; j++) {
             infos.add(someInfos[j]);
         }
     }
-
+#endif
     return infos;
 }
 
@@ -1622,8 +1624,9 @@
  * @return a List of instances of providers for the requested service.
  * If no providers are available, a vector of length 0 will be returned.
  */
-/*private*/ static List getProviders(Class providerClass) {
-    return JDK13Services.getProviders(providerClass);
+/*private*/ static QList<AudioFileReader*>* getProviders(QString providerClass) {
+    //return JDK13Services.getProviders(providerClass);
+ return new QList<AudioFileReader*>();
 }
-#endif
+
 //}

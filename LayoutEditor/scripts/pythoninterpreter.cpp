@@ -13,6 +13,11 @@ PythonInterpreter::PythonInterpreter()
 
 }
 
+/*public*/ void exec(QString text)
+{
+ PythonQt::self()->getMainModule().evalScript(text);
+}
+
 /*public*/ PyObject eval(QString s)
 {
 }

@@ -1,6 +1,7 @@
 #include "mixer.h"
 #include <QAudioDeviceInfo>
 #include "logger.h"
+#include "lineunavailableexception.h"
 
 Mixer::Mixer(QObject *parent) :
   QObject(parent)
@@ -75,7 +76,7 @@ QAudioDeviceInfo* Mixer::deviceInfo() { return _deviceInfo;}
  * for this mixer.  If no source lines are supported,
  * an array of length 0 is returned.
  */
-/*public*/ QList<Line::Info<QAudioDeviceInfo*>*>* Mixer::getSourceLineInfo() {return NULL;}
+/*public*/ QList<Line::Info*>* Mixer::getSourceLineInfo() {return NULL;}
 
 /**
  * Obtains information about the set of target lines supported
@@ -85,7 +86,7 @@ QAudioDeviceInfo* Mixer::deviceInfo() { return _deviceInfo;}
  * for this mixer.  If no target lines are supported,
  * an array of length 0 is returned.
  */
-/*public*/ QList<Line::Info<QAudioDeviceInfo*>*>* Mixer::getTargetLineInfo() {return NULL;}
+/*public*/ QList<Line::Info*>* Mixer::getTargetLineInfo() {return NULL;}
 
 
 /**
@@ -98,7 +99,7 @@ QAudioDeviceInfo* Mixer::deviceInfo() { return _deviceInfo;}
  * the type requested.  If no matching source lines are supported, an array of length 0
  * is returned.
  */
-/*public*/ QList<Line::Info<QAudioDeviceInfo*>*>* Mixer::getSourceLineInfo(Line::Info<QAudioDeviceInfo*>* info) {return NULL;}
+/*public*/ QList<Line::Info *> *Mixer::getSourceLineInfo(Line::Info *info) {return NULL;}
 
 
 /**
@@ -111,7 +112,7 @@ QAudioDeviceInfo* Mixer::deviceInfo() { return _deviceInfo;}
  * the type requested.  If no matching target lines are supported, an array of length 0
  * is returned.
  */
-/*public*/ QList<Line::Info<QAudioDeviceInfo*>*>* Mixer::getTargetLineInfo(Line::Info<QAudioDeviceInfo*>* info) {return NULL;}
+/*public*/ QList<Line::Info*>* Mixer::getTargetLineInfo(Line::Info *info) {return NULL;}
 
 
 /**
@@ -122,7 +123,7 @@ QAudioDeviceInfo* Mixer::deviceInfo() { return _deviceInfo;}
  * @return <code>true</code> if at least one matching line is
  * supported, <code>false</code> otherwise
  */
-/*public*/ bool Mixer::isLineSupported(Line::Info<QAudioDeviceInfo*>* info) {return false;}
+/*public*/ bool Mixer::isLineSupported(Line::Info* info) {return false;}
 
 /**
  * Obtains a line that is available for use and that matches the description
@@ -144,7 +145,7 @@ QAudioDeviceInfo* Mixer::deviceInfo() { return _deviceInfo;}
  * @throws SecurityException if a matching line
  * is not available due to security restrictions
  */
-/*public*/ Line* Mixer::getLine(Line::Info<QAudioDeviceInfo*>* info) /*throws LineUnavailableException*/ {return NULL;}
+/*public*/ Line* Mixer::getLine(Line::Info *info) throw (LineUnavailableException) {return NULL;}
 
 //$$fb 2002-04-12: fix for 4667258: behavior of Mixer.getMaxLines(Line.Info) method doesn't match the spec
 /**
@@ -167,7 +168,7 @@ QAudioDeviceInfo* Mixer::deviceInfo() { return _deviceInfo;}
  * the number of supported instances is queried
  * @return the maximum number of matching lines supported, or <code>AudioSystem.NOT_SPECIFIED</code>
  */
-/*public*/ int Mixer::getMaxLines(Line::Info<QAudioDeviceInfo*>* info) {return 0;}
+/*public*/ int Mixer::getMaxLines(Line::Info *info) {return 0;}
 
 
 /**

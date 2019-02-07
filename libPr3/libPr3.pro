@@ -850,7 +850,9 @@ SOURCES += \
     rfid/standalonemessage.cpp \
     zeroconfservice.cpp \
     zeroconfserviceevent.cpp \
-    stacknxpanel.cpp
+    stacknxpanel.cpp \
+    sound.cpp \
+    mixerprovider.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1707,7 +1709,9 @@ HEADERS += \
     zeroconfservice.h \
     zeroconfeventlistener.h \
     zeroconfserviceevent.h \
-    stacknxpanel.h
+    stacknxpanel.h \
+    sound.h \
+    mixerprovider.h
 
  !contains(FTDI, 1) {
     HEADERS +=
@@ -1803,6 +1807,7 @@ INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip" "C:\Program Files (
 DEPENDPATH += "C:/Program Files (x86)/local/include/quazip"
 }
 
+INCLUDEPATH += "/home/allen/Qt/5.7/gcc_64/include/QtMultimedia"
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
@@ -1837,8 +1842,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug -lLayoutEditor
 else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
 
-INCLUDEPATH += $$PWD/../LayoutEditor
-DEPENDPATH += $$PWD/../LayoutEditor
+INCLUDEPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
+DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref

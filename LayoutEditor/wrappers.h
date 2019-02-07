@@ -1,6 +1,8 @@
 /* Include in this file, header files for each class for which Python bindings are to be
  * generated.
  */
+#include <QObject>
+#include <QMainWindow>
 #include "siglet.h"
 #include "sensor.h"
 #include "turnout.h"
@@ -54,3 +56,15 @@
 #include "rfidsensormanager.h"
 #include "abstractsensormanager.h"
 #include "turnout.h"
+#include "sound.h"
+#include "addressedprogrammermanager.h"
+#include "abstractnamedbean.h"
+#include "joptionpanel.h"
+#include "scriptoutput.h"
+#include "jtextarea.h"
+#include "defaultlogixmanager.h"
+#include "defaultmemorymanager.h"
+#include "lnpowermanager.h"
+
+
+

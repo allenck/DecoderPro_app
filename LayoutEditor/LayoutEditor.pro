@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml   printsupport dbus webengine webenginewidgets #webkitwidgets webkit
+QT       += core gui xml   printsupport dbus webengine webenginewidgets multimedia #webkitwidgets webkit
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport  printsupport  gui  #webkitwidgets webkit
 
@@ -461,7 +461,8 @@ SOURCES += \
     defaultusermessagepreferencesxml.cpp \
     layouttrackexpectedstate.cpp \
     rpsitempanel.cpp \
-    signalheadicondialog.cpp
+    signalheadicondialog.cpp \
+    scripts/scriptoutput.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -845,7 +846,8 @@ HEADERS += liblayouteditor_global.h \
     defaultusermessagepreferencesxml.h \
     layouttrackexpectedstate.h \
     rpsitempanel.h \
-    signalheadicondialog.h
+    signalheadicondialog.h \
+    scripts/scriptoutput.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

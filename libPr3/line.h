@@ -6,24 +6,23 @@
 
 class LineListener;
 class Control;
-class Line : public QObject
+class /*interface*/ Line : public QObject
 {
  Q_OBJECT
 public:
  explicit Line(QObject *parent = 0);
- template <class T>
  /*public*/ /*static*/ class Info
  {
-  /*private*/ /*final*/ T lineClass;
-  /*public*/ Info(T lineClass);
-  /*public*/ T getLineClass();
-  /*public*/ bool matches(Info<T>* info);
-  /*public*/ QString toString();
-  /*public*/ void close();
+  /*private*/ /*final*/ QString lineClass;
+ public:
+  /*public*/ Info(QString lineClass);
+  /*public*/ virtual QString getLineClass();
+  /*public*/ virtual bool matches(Info* info);
+  /*public*/ virtual QString toString();
+  /*public*/ virtual void close() {}
 
  }; // class Info
- template<class T>
- /*public*/ Info<T>* getLineInfo();
+ /*public*/ virtual Info* getLineInfo();
  virtual /*public*/ void open() /*throws LineUnavailableException*/;
  virtual /*public*/ void close();
  virtual /*public*/ bool isOpen();

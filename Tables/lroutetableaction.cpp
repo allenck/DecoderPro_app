@@ -138,7 +138,7 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
  sysNameList = QStringList();
  //updateNameList();
  AbstractManager* abstractManager= (AbstractManager*)self->_logixManager;
- connect(abstractManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(abstractManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  init();
 }
 

@@ -264,7 +264,6 @@ public:
     /*public*/ void setShowCoordinates(bool state);
     /*public*/ bool showCoordinates();
     /*public*/ Q_DECL_DEPRECATED void setPanelMenu(bool state);
-    /*public*/ void setPanelMenuVisible(bool state);
     /*public*/ bool isPanelMenuVisible();
     /*public*/ void setPositionableMenu(Positionable* p, QMenu* popup);
     /*public*/ bool setShowCoordinatesMenu(Positionable* p, QMenu* popup);
@@ -333,6 +332,7 @@ public slots:
     /*public*/ void setAllPositionable(bool state) ;
     /*public*/ void setShowHidden(bool state);
     /*public*/ void setAllShowTooltip(bool state);
+    /*public*/ void setPanelMenuVisible(bool state);
 
 private:
     /*private*/ bool _debug;// = false;
@@ -444,7 +444,7 @@ private slots:
    *
    * @param obj the object to locate
    */
-  /*abstract*/ /*protected*/ virtual void setNextLocation(Positionable* obj) {}
+  /*abstract*/ /*protected*/ virtual void setNextLocation(Positionable* /*obj*/) {}
 
   /**
    * Editor Views should make calls to this class (Editor) to set popup menu
@@ -453,7 +453,7 @@ private slots:
    * @param p     the item containing or requiring the context menu
    * @param event the event triggering the menu
    */
-  /*abstract*/ /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event) {}
+  /*abstract*/ /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* /*event*/) {}
 
   /*protected*/ LocoIcon* selectLoco(QString rosterEntryTitle);
   /*protected*/ LocoIcon* selectLoco(RosterEntry* entry);

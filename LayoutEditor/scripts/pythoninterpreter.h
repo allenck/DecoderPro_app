@@ -6,6 +6,8 @@
   Q_OBJECT
 public:
  /*public*/ void execfile(QTextStream* s);
+ /*public*/ void exec(QString text);
+
 #if 0
      /*protected*/ PySystemState systemState;
     PyObject globals;

@@ -1,4 +1,5 @@
 #include "line.h"
+#include "class.h"
 
 Line::Line(QObject *parent) :
   QObject(parent)
@@ -56,8 +57,7 @@ Line::Line(QObject *parent) :
  * line.
  * @return description of the line
  */
-template <class T>
-/*public*/Line::Info<T>*  Line::getLineInfo() {return NULL;}
+/*public*/Line::Info* Line::getLineInfo() {return nullptr;}
 
 /**
  * Opens the line, indicating that it should acquire any required
@@ -231,10 +231,9 @@ template <class T>
      * describe a desired line.
      * @param lineClass the class of the line that the new Line.Info object describes
      */
-template<class T>
-    /*public*/ Line::Info<T>::Info(T lineClass) {
+    /*public*/ Line::Info::Info(QString lineClass) {
 
-        if (lineClass == NULL) {
+        if (lineClass == "") {
          this->lineClass = "Line";// ::class;
         } else {
             this->lineClass = lineClass;
@@ -247,8 +246,7 @@ template<class T>
      * Obtains the class of the line that this Line.Info object describes.
      * @return the described line's class
      */
-    template<class T>
-/*public*/ T Line::Info<T>::getLineClass() {
+/*public*/ QString Line::Info::getLineClass() {
         return lineClass;
     }
 
@@ -270,8 +268,7 @@ template<class T>
      * @return <code>true</code> if the specified object matches this one,
      * <code>false</code> otherwise
      */
-template <class T>
-    /*public*/ bool Line::Info<T>::matches(Line::Info<T>* info) {
+    /*public*/ bool Line::Info::matches(Line::Info* info) {
 
         // $$kk: 08.30.99: is this backwards?
         // dataLine.matches(targetDataLine) == true: targetDataLine is always dataLine
@@ -298,8 +295,9 @@ template <class T>
         // GainControlClass.isInstance(MyGainObj) => true
         // GainControlClass.isInstance(GenericControlObj) => may be false
         // => that may be more specific
-
-        if (! (this->getClass().isInstance(info)) ) {
+#if 0 // TODO:
+        if (! (this->getClass().isInstance(info)) )
+        {
             return false;
         }
 
@@ -308,10 +306,11 @@ template <class T>
         //                                                          =>      this is at least as general as that
         //                                                          =>      that may be subtype of this
 
-        if (! (getLineClass().isAssignableFrom(info.getLineClass())) ) {
+        if (! (getLineClass().isAssignableFrom(info->getLineClass())) )
+        {
             return false;
         }
-
+#endif
         return true;
     }
 
@@ -320,11 +319,10 @@ template <class T>
      * Obtains a textual description of the line info.
      * @return a string description
      */
-template<class T>
-    /*public*/ QString Line::Info<T>::toString() {
+    /*public*/ QString Line::Info::toString() {
 
         QString fullPackagePath = "javax.sound.sampled.";
-        QString initialString = new QString(getLineClass().toString());
+        QString initialString =  QString(getLineClass()/*.toString()*/);
         QString finalString;
 
         int index = initialString.indexOf(fullPackagePath);

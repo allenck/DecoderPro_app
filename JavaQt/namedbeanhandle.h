@@ -28,7 +28,7 @@ public slots:
 private:
     QString name;
     //template<class T>
-    T bean;
+    T bean = nullptr;
 
     
 };

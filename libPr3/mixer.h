@@ -6,6 +6,7 @@
 #include "line.h"
 #include <QAudioDeviceInfo>
 
+class LineUnavailableException;
 class QAudioFormat;
 class Logger;
 class QAudioDeviceInfo;
@@ -40,7 +41,7 @@ public:
    * Mixer version.
    */
   /*private*/ /*final*/ QString version;
-
+protected:
   /**
    * Constructs a mixer's info object, passing it the given
    * textual information.
@@ -51,7 +52,7 @@ public:
    * @param version version information for the mixer
    */
   /*protected*/ Info(QString name, QString vendor, QString description, QString version);
-
+public:
   /**
    * Indicates whether two info objects are equal, returning <code>true</code> if
    * they are identical.
@@ -101,13 +102,13 @@ public:
  }; // class Info
 
  /*public*/ virtual Info* getMixerInfo();
- /*public*/ virtual QList<Line::Info<QAudioDeviceInfo*>*>* getSourceLineInfo();
- /*public*/ virtual QList<Line::Info<QAudioDeviceInfo*>*>* getTargetLineInfo();
- /*public*/ virtual QList<Line::Info<QAudioDeviceInfo*>*>* getSourceLineInfo(Line::Info<QAudioDeviceInfo*>* info);
- /*public*/ virtual QList<Line::Info<QAudioDeviceInfo*>*>* getTargetLineInfo(Line::Info<QAudioDeviceInfo*>* info);
- /*public*/ virtual bool isLineSupported(Line::Info<QAudioDeviceInfo*>* info);
- /*public*/ virtual Line* getLine(Line::Info<QAudioDeviceInfo*>* info) /*throws LineUnavailableException*/;
- /*public*/ virtual int getMaxLines(Line::Info<QAudioDeviceInfo*>* info);
+ /*public*/ virtual QList<Line::Info*>* getSourceLineInfo();
+ /*public*/ virtual QList<Line::Info*>* getTargetLineInfo();
+ /*public*/ virtual QList<Line::Info*>* getSourceLineInfo(Line::Info* info);
+ /*public*/ virtual QList<Line::Info *> *getTargetLineInfo(Line::Info* info);
+ /*public*/ virtual bool isLineSupported(Line::Info* info);
+ /*public*/ virtual Line* getLine(Line::Info* info) throw (LineUnavailableException);
+ /*public*/ virtual int getMaxLines(Line::Info* info);
  /*public*/ virtual QList<Line*> getSourceLines();
  /*public*/ virtual QList<Line*> getTargetLines();
  /*public*/ virtual void synchronize(QList<Line*> lines, bool maintainSync);

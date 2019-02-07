@@ -16,6 +16,17 @@ class LIBPR3SHARED_EXPORT VariableTableModel : public AbstractTableModel
 {
     Q_OBJECT
 public:
+ enum COLUMNS
+ {
+  ROWNUM_COLUMN = 0,
+  AND_COLUMN = 1,
+  NOT_COLUMN = 2,
+  DESCRIPTION_COLUMN = 3,
+  STATE_COLUMN = 4,
+  TRIGGERS_COLUMN = 5,
+  EDIT_COLUMN = 6,
+  DELETE_COLUMN = 7
+ };
     explicit VariableTableModel(QObject *parent = 0);
 /*public*/ VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, IndexedCvTableModel* iCvModel, QObject *parent = 0);
     /*public*/ int rowCount(const QModelIndex &parent) const;

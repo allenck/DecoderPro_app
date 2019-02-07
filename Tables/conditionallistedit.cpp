@@ -25,6 +25,9 @@
 #include "warrant.h"
 #include "flowlayout.h"
 #include "box.h"
+#include "tablecolumnmodel.h"
+#include "tablecolumn.h"
+#include "variabletablemodel.h"
 
 /**
  * The traditional list based conditional editor based on the original editor
@@ -120,6 +123,9 @@ void ConditionalListEdit::common()
 
  _curActionItem = 0;
  _actionTypeListener = new ActionTypeListener(this);
+ selectLogixBoxListener = new CLESelectLogixBoxListener(this);
+ selectConditionalBoxListener = new CLESelectConditionalBoxListener(this);
+
 }
 
 
@@ -794,67 +800,69 @@ void ConditionalListEdit::makeEditConditionalWindow()
   _andOperatorBox->addItem(tr(" OR"));
   // initialize table of state variables
   _variableTableModel = new LVariableTableModel(this);
-  QTableView* variableTable = new QTableView();
+  JTable* variableTable = new JTable();
   variableTable->setModel(_variableTableModel);
   variableTable->setItemDelegateForColumn(LVariableTableModel::EDIT_COLUMN,new PushButtonDelegate());
   variableTable->setItemDelegateForColumn(LVariableTableModel::DELETE_COLUMN,new PushButtonDelegate());
   //variableTable->setRowHeight(_notOperatorBox.getPreferredSize().height);
   //variableTable->setRowSelectionAllowed(false);
-  int rowHeight = variableTable->rowHeight(0);
-#if 0
-TableColumnModel variableColumnModel = variableTable.getColumnModel();
+  //int rowHeight = variableTable->rowHeight(0);
+#if 1
+TableColumnModel* variableColumnModel = variableTable->getColumnModel();
 
-TableColumn rowColumn = variableColumnModel.getColumn(VariableTableModel.ROWNUM_COLUMN);
+TableColumn* rowColumn = variableColumnModel->getColumn(VariableTableModel::ROWNUM_COLUMN);
 rowColumn->setResizable(false);
-rowColumn->setMaxWidth(new JTextField(3).getPreferredSize().width);
+rowColumn->setMaxWidth( JTextField(3).getPreferredSize().width());
 
-TableColumn andColumn = variableColumnModel.getColumn(VariableTableModel.AND_COLUMN);
+TableColumn* andColumn = variableColumnModel->getColumn(VariableTableModel::AND_COLUMN);
 andColumn->setResizable(false);
-andColumn->setCellEditor(new DefaultCellEditor(_andOperatorBox));
-andColumn->setMaxWidth(_andOperatorBox.getPreferredSize().width - 5);
+//andColumn->setCellEditor(new DefaultCellEditor(_andOperatorBox));
+andColumn->setMaxWidth(_andOperatorBox->sizeHint().width() - 5);
 
-TableColumn notColumn = variableColumnModel.getColumn(VariableTableModel.NOT_COLUMN);
-notColumn->setCellEditor(new DefaultCellEditor(_notOperatorBox));
-notColumn->setMaxWidth(_notOperatorBox.getPreferredSize().width - 5);
+TableColumn* notColumn = variableColumnModel->getColumn(VariableTableModel::NOT_COLUMN);
+//notColumn->setCellEditor(new DefaultCellEditor(_notOperatorBox));
+notColumn->setMaxWidth(_notOperatorBox->sizeHint().width() - 5);
 notColumn->setResizable(false);
 
-TableColumn descColumn = variableColumnModel.getColumn(VariableTableModel.DESCRIPTION_COLUMN);
+TableColumn* descColumn = variableColumnModel->getColumn(VariableTableModel::DESCRIPTION_COLUMN);
 descColumn->setPreferredWidth(300);
 descColumn->setMinWidth(200);
 descColumn->setResizable(true);
 
-TableColumn stateColumn = variableColumnModel.getColumn(VariableTableModel.STATE_COLUMN);
+TableColumn* stateColumn = variableColumnModel->getColumn(VariableTableModel::STATE_COLUMN);
 stateColumn->setResizable(true);
 stateColumn->setMinWidth(50);
 stateColumn->setMaxWidth(80);
 
-TableColumn triggerColumn = variableColumnModel.getColumn(VariableTableModel.TRIGGERS_COLUMN);
+TableColumn* triggerColumn = variableColumnModel->getColumn(VariableTableModel::TRIGGERS_COLUMN);
 triggerColumn->setResizable(true);
 triggerColumn->setMinWidth(30);
 triggerColumn->setMaxWidth(80);
 
-TableColumn editColumn = variableColumnModel.getColumn(VariableTableModel.EDIT_COLUMN);
-ButtonRenderer buttonRenderer = new ButtonRenderer();
-variableTable->setDefaultRenderer(QPushButton.class, buttonRenderer);
-TableCellEditor buttonEditor = new ButtonEditor(new QPushButton());
-variableTable->setDefaultEditor(QPushButton.class, buttonEditor);
-QPushButton testButton = new QPushButton("XXXXXX");
-variableTable->setRowHeight(testButton.getPreferredSize().height);
-editColumn->setMinWidth(testButton.getPreferredSize().width);
-editColumn->setMaxWidth(testButton.getPreferredSize().width);
+TableColumn* editColumn = variableColumnModel->getColumn(VariableTableModel::EDIT_COLUMN);
+//ButtonRenderer buttonRenderer = new ButtonRenderer();
+//variableTable->setDefaultRenderer(QPushButton.class, buttonRenderer);
+//TableCellEditor buttonEditor = new ButtonEditor(new QPushButton());
+//variableTable->setDefaultEditor(QPushButton.class, buttonEditor);
+QPushButton* testButton = new QPushButton("XXXXXX");
+variableTable->setRowHeight(testButton->sizeHint().height());
+editColumn->setMinWidth(testButton->sizeHint().width());
+editColumn->setMaxWidth(testButton->sizeHint().width());
 editColumn->setResizable(false);
 
-TableColumn deleteColumn = variableColumnModel.getColumn(VariableTableModel.DELETE_COLUMN);
+TableColumn* deleteColumn = variableColumnModel->getColumn(VariableTableModel::DELETE_COLUMN);
 // ButtonRenderer and TableCellEditor already set
-deleteColumn->setMinWidth(testButton.getPreferredSize().width);
-deleteColumn->setMaxWidth(testButton.getPreferredSize().width);
+deleteColumn->setMinWidth(testButton->sizeHint().width());
+deleteColumn->setMaxWidth(testButton->sizeHint().width());
 deleteColumn->setResizable(false);
 // add a scroll pane
-JScrollPane variableTableScrollPane = new JScrollPane(variableTable);
+//JScrollPane variableTableScrollPane = new JScrollPane(variableTable);
 #endif
+int rowHeight = variableTable->rowHeight();
   QSize dim = variableTable->size();
   dim.setHeight(7*rowHeight);
   //variableTableScrollPane.getViewport()->setPreferredSize(dim);
+  variableTable->viewport()->resize(dim);
 
   logicPanel->layout()->addWidget(variableTable);
 
@@ -2160,7 +2168,9 @@ void ConditionalListEdit::initializeStateVariables()
 //    _variableNameField->removeActionListener(variableSignalMastNameListener);
 //    _variableStateBox->removeActionListener(variableSignalTestStateListener);
 //    _selectLogixBox->removeActionListener(selectLogixBoxListener);
+    disconnect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener, SLOT());
 //    _selectConditionalBox->removeActionListener(selectConditionalBoxListener);
+    disconnect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectConditionalBoxListener, SLOT());
 
     if (_selectionMode == SelectionMode::USECOMBO) {
         _variableComboNamePanel->setVisible(false);
@@ -2250,32 +2260,39 @@ void ConditionalListEdit::initializeStateVariables()
             }
             setVariableNameBox(itemType);
             break;
-#if 0
+#if 1
         case Conditional::ITEM_TYPE_MEMORY:
-            QWidget* p = (QWidget*) _variableData1Panel->children().at(0);
-            QWidget* l = (QWidget*) p->children().at(0);
+    {
+//            QWidget* p = (QWidget*) _variableData1Panel->children().at(0);
+//            QWidget* l = (QWidget*) p->children().at(0);
+            QWidget* p = _variableData1Panel->findChildren<QWidget*>().at(0);
+            QLabel* l = p->findChildren<QLabel*>().at(0);
             if ((testType == Conditional::TYPE_MEMORY_COMPARE)
                     || (testType == Conditional::TYPE_MEMORY_COMPARE_INSENSITIVE)) {
                 l->setText(tr("LabelMemoryValue"));  // NOI18N
-                _variableData1Panel->setToolTipText(tr("DataHintMemory"));  // NOI18N
+                _variableData1Panel->setToolTip(tr("Enter Memory name whose value is compared"));  // NOI18N
             } else {
                 l->setText(tr("LabelLiteralValue"));  // NOI18N
-                _variableData1Panel->setToolTipText(tr("DataHintValue"));  // NOI18N
+                _variableData1Panel->setToolTip(tr("Enter Value to be compared"));  // NOI18N
             }
-            _variableNamePanel->setToolTipText(tr("NameHintMemory"));  // NOI18N
+            _variableNamePanel->setToolTip(tr("Enter Name (system or user) of Memory"));  // NOI18N
             _variableNamePanel->setVisible(true);
-            _variableData1Panel->setToolTipText(tr("DataHintMemory"));  // NOI18N
+            _variableData1Panel->setToolTip(tr("Enter Memory name whose value is compared"));  // NOI18N
             _variableData1Panel->setVisible(true);
             _variableComparePanel->setVisible(true);
             setVariableNameBox(itemType);
+    }
             break;
 
         case Conditional::ITEM_TYPE_CONDITIONAL:
-            _variableNamePanel->setToolTipText(tr("NameHintConditional"));  // NOI18N
-            _selectLogixBox.addActionListener(selectLogixBoxListener);
-            _selectConditionalBox.addActionListener(selectConditionalBoxListener);
-            for (int i = 0; i < Conditional::ITEM_TO_CONDITIONAL_TEST.length; i++) {
-                _variableStateBox->addItem(
+            _variableNamePanel->setToolTip(tr("Enter System Name for Conditional (or User Name if in this Logix)"));  // NOI18N
+            //_selectLogixBox.addActionListener(selectLogixBoxListener);
+            connect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener, SLOT());
+            //_selectConditionalBox.addActionListener(selectConditionalBoxListener);
+            connect(_selectConditionalBox, SIGNAL(currentIndexChanged(int)), selectConditionalBoxListener, SLOT());
+            for (int i = 0; i < Conditional::ITEM_TO_CONDITIONAL_TEST.length(); i++)
+            {
+             _variableStateBox->addItem(
                         ConditionalVariable::describeState(Conditional::ITEM_TO_CONDITIONAL_TEST[i]));
             }
             // Load the Logix and Conditional combo boxes
@@ -2288,8 +2305,8 @@ void ConditionalListEdit::initializeStateVariables()
             break;
 
         case Conditional::ITEM_TYPE_WARRANT:
-            _variableNamePanel->setToolTip(tr("NameHintWarrant"));  // NOI18N
-            for (int i = 0; i < Conditional::ITEM_TO_WARRANT_TEST.length; i++) {
+            _variableNamePanel->setToolTip(tr("Enter Name (system or user) of Warrant"));  // NOI18N
+            for (int i = 0; i < Conditional::ITEM_TO_WARRANT_TEST.length(); i++) {
                 _variableStateBox->addItem(
                         ConditionalVariable::describeState(Conditional::ITEM_TO_WARRANT_TEST[i]));
             }
@@ -2299,31 +2316,37 @@ void ConditionalListEdit::initializeStateVariables()
             break;
 
         case Conditional::ITEM_TYPE_CLOCK:
-            p = (JPanel) _variableData1Panel.getComponent(0);
-            l = (JLabel) p.getComponent(0);
-            l->setText(tr("LabelStartTime"));  // NOI18N
-            _variableData1Panel->setToolTipText(tr("DataHintTime"));  // NOI18N
+    {
+//            p = (JPanel) _variableData1Panel.getComponent(0);
+//            l = (JLabel) p.getComponent(0);
+     QWidget* p = _variableData1Panel->findChildren<QWidget*>().at(0);
+     QLabel* l = p->findChildren<QLabel*>().at(0);
+            l->setText(tr("Start Time"));  // NOI18N
+            _variableData1Panel->setToolTip(tr("Enter time (hh:mm) for a 24-hour clock"));  // NOI18N
             _variableData1Panel->setVisible(true);
             _variableData2Panel->setVisible(true);
+    }
             break;
 
         case Conditional::ITEM_TYPE_OBLOCK:
-            _variableNamePanel->setToolTipText(tr("NameHintOBlock"));  // NOI18N
+    {
+            _variableNamePanel->setToolTip(tr("Enter Name (system or user) of OBlock"));  // NOI18N
             _variableNamePanel->setVisible(true);
-            _variableStateBox.removeAllItems();
-            Iterator<String> names = OBlock.getLocalStatusNames();
+            _variableStateBox->clear();
+            QStringListIterator names = OBlock::getLocalStatusNames();
             while (names.hasNext()) {
-                _variableStateBox.addItem(names.next());
+                _variableStateBox->addItem(names.next());
             }
             _variableStatePanel->setVisible(true);
             setVariableNameBox(itemType);
+    }
             break;
 
         case Conditional::ITEM_TYPE_ENTRYEXIT:
-            _variableNamePanel->setToolTipText(tr("NameHintEntryExit"));  // NOI18N
-            _variableNameField->setText(_curVariable.getName());
-            for (int i = 0; i < Conditional::ITEM_TO_ENTRYEXIT_TEST.length; i++) {
-                _variableStateBox.addItem(
+            _variableNamePanel->setToolTip(tr("Enter Name of Entry/Exit Pair"));  // NOI18N
+            _variableNameField->setText(_curVariable->getName());
+            for (int i = 0; i < Conditional::ITEM_TO_ENTRYEXIT_TEST.length(); i++) {
+                _variableStateBox->addItem(
                         ConditionalVariable::describeState(Conditional::ITEM_TO_ENTRYEXIT_TEST[i]));
             }
             _variableStatePanel->setVisible(true);
@@ -2833,29 +2856,31 @@ void ConditionalListEdit::variableSignalMastNameListener() // SLOT[]
  log->debug("variableSignalMastNameListener fires; _variableNameField : "+_variableNameField->text().trimmed());
  loadJComboBoxWithMastAspects(_variableSignalBox,_variableNameField->text().trimmed());
 }
-#if 0
+#if 1
 //};
-transient ActionListener* selectLogixBoxListener = new ActionListener() {
+///*transient*/ CLESelectLogixBoxListener* selectLogixBoxListener = new CLESelectLogixBoxListener(this);
+CLESelectLogixBoxListener::CLESelectLogixBoxListener(ConditionalListEdit *self) {this->self = self;}
      //QOverride
-    /*public*/ void actionPerformed(ActionEvent e) {
-        int lgxIndex = _selectLogixBox.getSelectedIndex();
-        if (lgxIndex >= 0 && lgxIndex < _selectLogixList.size()) {
-            String lgxName = _selectLogixList.get(lgxIndex);
-            loadSelectConditionalBox(lgxName);
+    /*public*/ void CLESelectLogixBoxListener::actionPerformed(/*ActionEvent e*/) {
+        int lgxIndex = self->_selectLogixBox->currentIndex();
+        if (lgxIndex >= 0 && lgxIndex < self->_selectLogixList.size()) {
+            QString lgxName = self->_selectLogixList.at(lgxIndex);
+            self->loadSelectConditionalBox(lgxName);
         }
     }
-};
+//};
 
-transient ActionListener selectConditionalBoxListener = new ActionListener() {
+///*transient*/ CLESelectConditionalBoxListener* selectConditionalBoxListener = new CLESelectConditionalBoxListener(this);
+CLESelectConditionalBoxListener::CLESelectConditionalBoxListener(ConditionalListEdit *self) {this->self = self;}
      //QOverride
-    /*public*/ void actionPerformed(ActionEvent e) {
-        int cdlIndex = _selectConditionalBox.getSelectedIndex();
-        if (cdlIndex > 0 && cdlIndex < _selectConditionalList.size()) {
-            String cdlName = _selectConditionalList.get(cdlIndex);
-            _variableNameField->setText(cdlName);
+    /*public*/ void CLESelectConditionalBoxListener::actionPerformed(/*ActionEvent e*/) {
+        int cdlIndex = self->_selectConditionalBox->currentIndex();
+        if (cdlIndex > 0 && cdlIndex < self->_selectConditionalList.size()) {
+            QString cdlName = self->_selectConditionalList.at(cdlIndex);
+            self->_variableNameField->setText(cdlName);
         }
     }
-};
+//};
 #endif
 // ============ Edit Action Window and Methods ============
 /**
@@ -2943,49 +2968,39 @@ void ConditionalListEdit::makeEditActionWindow(int row)
     //topPanel->layout()->addWidget(Box.createVerticalStrut(5));
     //topPanel->layout()->addWidget(Box.createVerticalGlue());
 
-//    Box panel2 = Box.createHorizontalBox();
-//    panel2->layout()->addWidget(Box.createHorizontalGlue());
-    QGroupBox* panel2 = new QGroupBox("xx");
+//    Box* panel2 = Box::createHorizontalBox();
+//    panel2->layout()->addWidget(Box::createHorizontalGlue());
+    //QGroupBox* panel2 = new QGroupBox(/*"xx"*/);
+    QWidget* panel2 = new QWidget();
     panel2->setLayout(new QVBoxLayout());
 
     _setPanel = new QWidget();
     _setPanel->setLayout(new QVBoxLayout(_setPanel/*, BoxLayout.Y_AXIS*/));
     QWidget* p = new QWidget();
-    p->setLayout(new QVBoxLayout());
+    p->setLayout(new QHBoxLayout());
     p->layout()->addWidget(new QLabel(tr("Set File")));
     _setPanel->layout()->addWidget(p);
     _actionSetButton = new QPushButton(tr("File"));
-//    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-//    sizePolicy.setHorizontalStretch(0);
-//    sizePolicy.setVerticalStretch(0);
-//    sizePolicy.setHeightForWidth(_actionSetButton->sizePolicy().hasHeightForWidth());
-//    _actionSetButton->setSizePolicy(sizePolicy);
-//    _actionSetButton->layout()->addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                validateAction();
-//                setFileLocation(e);
-//            }
-//        });
     connect(_actionSetButton, SIGNAL(clicked()), this, SLOT(on_actionSetButton_Pressed()));
     _actionSetButton->setMaximumSize(_actionSetButton->size());
-    _setPanel->layout()->addWidget(_actionSetButton);
-    _actionSetButton->setToolTip(tr("FileButtonHint"));  // NOI18N
+    ((QVBoxLayout*)_setPanel->layout())->addWidget(_actionSetButton, 0, Qt::AlignCenter);
+    _actionSetButton->setToolTip(tr("Click to select a file from disk"));  // NOI18N
     //_setPanel->layout()->addWidget(Box.createVerticalGlue());
     _setPanel->setVisible(false);
     panel2->layout()->addWidget(_setPanel);
-    //panel2->layout()->addWidget(Box.createHorizontalStrut(5));
+    panel2->layout()->addWidget(Box::createHorizontalStrut(5));
 
-    _longActionString = new JTextField(50);
+    _longActionString = new JTextField(/*50*/100);
     _textPanel = makeEditPanel(_longActionString, "Action Text", NULL);
     _textPanel->setMaximumSize(
                  QSize(80, _textPanel->size().height()));
-    //_textPanel->layout()->addWidget(Box.createVerticalGlue());
+    _textPanel->layout()->addWidget(Box::createVerticalGlue());
     _textPanel->setVisible(false);
     panel2->layout()->addWidget(_textPanel);
-    //panel2->layout()->addWidget(Box.createHorizontalGlue());
+    panel2->layout()->addWidget(Box::createHorizontalGlue());
     topPanel->layout()->addWidget(panel2);
-//    topPanel->layout()->addWidget(Box.createVerticalStrut(5));
-//    topPanel->layout()->addWidget(Box.createVerticalGlue());
+    topPanel->layout()->addWidget(Box::createVerticalStrut(5));
+    topPanel->layout()->addWidget(Box::createVerticalGlue());
 
 //    ActionListener updateListener = new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -3090,14 +3105,14 @@ void ConditionalListEdit::on_actionItemBox()
 * set display to show current action (curAction) parameters
 */
 void ConditionalListEdit::initializeActionVariables() {
-    int actionType = ((ConditionalAction*)_curAction)->getType();
+    int actionType = _curAction->getType();
     int itemType = Conditional::ACTION_TO_ITEM[actionType];
     if (log->isDebugEnabled()) log->debug("initializeActionVariables: itemType= "+QString::number(itemType)+", actionType= "+QString::number(actionType));
     if (actionType==Conditional::ACTION_NONE) {
         return;
     }
     _actionItemBox->setCurrentIndex(itemType);
-    _actionNameField->setText(((ConditionalAction*)_curAction)->getDeviceName());
+    _actionNameField->setText(_curAction->getDeviceName());
     int oldState = _actionTypeBox->blockSignals(true);
     switch (itemType)
     {
@@ -3106,16 +3121,16 @@ void ConditionalListEdit::initializeActionVariables() {
                             Conditional::ITEM_TO_SENSOR_ACTION, actionType)+1);
             if ((actionType==Conditional::ACTION_RESET_DELAYED_SENSOR) ||
                             (actionType==Conditional::ACTION_DELAYED_SENSOR)) {
-                _shortActionString->setText(((ConditionalAction*)_curAction)->getActionString());
+                _shortActionString->setText(_curAction->getActionString());
             }
             if (actionType==Conditional::ACTION_SET_SENSOR ||
                     actionType==Conditional::ACTION_DELAYED_SENSOR ||
                     actionType==Conditional::ACTION_RESET_DELAYED_SENSOR ) {
-                if (((ConditionalAction*)_curAction)->getActionData() == Sensor::ACTIVE) {
+                if (_curAction->getActionData() == Sensor::ACTIVE) {
                     _actionBox->setCurrentIndex(0);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Sensor::INACTIVE) {
+                } else if (_curAction->getActionData() == Sensor::INACTIVE) {
                     _actionBox->setCurrentIndex(1);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Route::TOGGLE) {
+                } else if (_curAction->getActionData() == Route::TOGGLE) {
                     _actionBox->setCurrentIndex(2);
                 }
             }
@@ -3125,24 +3140,24 @@ void ConditionalListEdit::initializeActionVariables() {
                             Conditional::ITEM_TO_TURNOUT_ACTION, actionType)+1);
             if ((actionType==Conditional::ACTION_RESET_DELAYED_TURNOUT) ||
                             (actionType==Conditional::ACTION_DELAYED_TURNOUT) ) {
-                _shortActionString->setText(((ConditionalAction*)_curAction)->getActionString());
+                _shortActionString->setText(_curAction->getActionString());
             }
             if ((actionType==Conditional::ACTION_SET_TURNOUT) ||
                             (actionType==Conditional::ACTION_RESET_DELAYED_TURNOUT) ||
                             (actionType==Conditional::ACTION_DELAYED_TURNOUT) ) {
-                if (((ConditionalAction*)_curAction)->getActionData() == Turnout::CLOSED) {
+                if (_curAction->getActionData() == Turnout::CLOSED) {
                     _actionBox->setCurrentIndex(0);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Turnout::THROWN) {
+                } else if (_curAction->getActionData() == Turnout::THROWN) {
                     _actionBox->setCurrentIndex(1);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Route::TOGGLE) {
+                } else if (_curAction->getActionData() == Route::TOGGLE) {
                     _actionBox->setCurrentIndex(2);
                 }
             } else if (actionType==Conditional::ACTION_LOCK_TURNOUT) {
-                if (((ConditionalAction*)_curAction)->getActionData() == Turnout::UNLOCKED) {
+                if (_curAction->getActionData() == Turnout::UNLOCKED) {
                     _actionBox->setCurrentIndex(0);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Turnout::LOCKED) {
+                } else if (_curAction->getActionData() == Turnout::LOCKED) {
                     _actionBox->setCurrentIndex(1);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Route::TOGGLE) {
+                } else if (_curAction->getActionData() == Route::TOGGLE) {
                     _actionBox->setCurrentIndex(2);
                 }
             }
@@ -3151,16 +3166,16 @@ void ConditionalListEdit::initializeActionVariables() {
             _actionTypeBox->setCurrentIndex(DefaultConditional::getIndexInTable(
                             Conditional::ITEM_TO_LIGHT_ACTION, actionType)+1);
             if (actionType==Conditional::ACTION_SET_LIGHT) {
-                if (((ConditionalAction*)_curAction)->getActionData() == Light::ON) {
+                if (_curAction->getActionData() == Light::ON) {
                     _actionBox->setCurrentIndex(0);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Light::OFF) {
+                } else if (_curAction->getActionData() == Light::OFF) {
                     _actionBox->setCurrentIndex(1);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Route::TOGGLE) {
+                } else if (_curAction->getActionData() == Route::TOGGLE) {
                     _actionBox->setCurrentIndex(2);
                 }
             } else if ((actionType==Conditional::ACTION_SET_LIGHT_INTENSITY) ||
                        (actionType==Conditional::ACTION_SET_LIGHT_TRANSITION_TIME)) {
-                _shortActionString->setText(((ConditionalAction*)_curAction)->getActionString());
+                _shortActionString->setText(_curAction->getActionString());
             }
             break;
         case Conditional::ITEM_TYPE_SIGNALHEAD:
@@ -3169,7 +3184,7 @@ void ConditionalListEdit::initializeActionVariables() {
                             Conditional::ITEM_TO_SIGNAL_HEAD_ACTION, actionType)+1);
             if (actionType==Conditional::ACTION_SET_SIGNAL_APPEARANCE) {
                 _actionBox->setCurrentIndex(DefaultConditional::getIndexInTable(
-                            AbstractSignalHead.getDefaultValidStates(), ((ConditionalAction*)_curAction)->getActionData()));
+                            AbstractSignalHead.getDefaultValidStates(), _curAction->getActionData()));
             }
             */
             _actionTypeBox->setCurrentIndex(DefaultConditional::getIndexInTable(
@@ -3186,7 +3201,7 @@ void ConditionalListEdit::initializeActionVariables() {
             _actionTypeBox->setCurrentIndex(DefaultConditional::getIndexInTable(
                             Conditional::ITEM_TO_CLOCK_ACTION, actionType)+1);
             if (actionType==Conditional::ACTION_SET_FAST_CLOCK_TIME) {
-                int time = ((ConditionalAction*)_curAction)->getActionData();
+                int time = _curAction->getActionData();
                 _shortActionString->setText(formatTime(time / 60, time - ((time / 60) * 60)));
                 _actionNameField->setText("");
             }
@@ -3194,7 +3209,7 @@ void ConditionalListEdit::initializeActionVariables() {
         case Conditional::ITEM_TYPE_MEMORY:
             _actionTypeBox->setCurrentIndex(DefaultConditional::getIndexInTable(
                             Conditional::ITEM_TO_MEMORY_ACTION, actionType)+1);
-            _shortActionString->setText(((ConditionalAction*)_curAction)->getActionString());
+            _shortActionString->setText(_curAction->getActionString());
             break;
         case Conditional::ITEM_TYPE_LOGIX:
             _actionTypeBox->setCurrentIndex(DefaultConditional::getIndexInTable(
@@ -3205,17 +3220,17 @@ void ConditionalListEdit::initializeActionVariables() {
             _actionTypeBox->setCurrentIndex(DefaultConditional::getIndexInTable(
                             Conditional::ITEM_TO_WARRANT_ACTION, actionType)+1);
             if (actionType==Conditional::ACTION_CONTROL_TRAIN) {
-                if (((ConditionalAction*)_curAction)->getActionData() == Warrant::HALT) {
+                if (_curAction->getActionData() == Warrant::HALT) {
                     _actionBox->setCurrentIndex(0);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Warrant::RESUME) {
+                } else if (_curAction->getActionData() == Warrant::RESUME) {
                     _actionBox->setCurrentIndex(1);
-                } else if (((ConditionalAction*)_curAction)->getActionData() == Warrant::ABORT) {
+                } else if (_curAction->getActionData() == Warrant::ABORT) {
                     _actionBox->setCurrentIndex(2);
                 }
             } else if (actionType==Conditional::ACTION_SET_TRAIN_ID ||
                             actionType==Conditional::ACTION_SET_TRAIN_NAME ||
                             actionType==Conditional::ACTION_THROTTLE_FACTOR) {
-                _shortActionString->setText(((ConditionalAction*)_curAction)->getActionString());
+                _shortActionString->setText(_curAction->getActionString());
             }
             break;
         case Conditional::ITEM_TYPE_OBLOCK:
@@ -3226,9 +3241,9 @@ void ConditionalListEdit::initializeActionVariables() {
             _actionTypeBox->setCurrentIndex(DefaultConditional::getIndexInTable(
                             Conditional::ITEM_TO_AUDIO_ACTION, actionType)+1);
             if (actionType==Conditional::ACTION_PLAY_SOUND) {
-                _longActionString->setText(((ConditionalAction*)_curAction)->getActionString());
+                _longActionString->setText(_curAction->getActionString());
             } else if (actionType==Conditional::ACTION_CONTROL_AUDIO) {
-                switch (((ConditionalAction*)_curAction)->getActionData()) {
+                switch (_curAction->getActionData()) {
                     case Audio::CMD_PLAY:
                         _actionBox->setCurrentIndex(0);
                         break;
@@ -3267,9 +3282,9 @@ void ConditionalListEdit::initializeActionVariables() {
             _actionTypeBox->setCurrentIndex(DefaultConditional::getIndexInTable(
                             Conditional::ITEM_TO_SCRIPT_ACTION, actionType)+1);
             if (actionType==Conditional::ACTION_RUN_SCRIPT) {
-                _longActionString->setText(((ConditionalAction*)_curAction)->getActionString());
+                _longActionString->setText(_curAction->getActionString());
             } else if (actionType==Conditional::ACTION_JYTHON_COMMAND) {
-                _shortActionString->setText(((ConditionalAction*)_curAction)->getActionString());
+                _shortActionString->setText(_curAction->getActionString());
             }
             break;
         case Conditional::ITEM_TYPE_OTHER:
@@ -3279,7 +3294,7 @@ void ConditionalListEdit::initializeActionVariables() {
             break;
     }
     _actionTypeBox->blockSignals(oldState);
-    _actionOptionBox->setCurrentIndex(((ConditionalAction*)_curAction)->getOption() - 1);
+    _actionOptionBox->setCurrentIndex(_curAction->getOption() - 1);
     _editActionFrame->adjustSize();
    // _editActionFrame->transferFocusBackward();
 }   /* initializeActionVariables */
@@ -3551,21 +3566,25 @@ void ConditionalListEdit::actionItemChanged(int type)
             _namePanel->setVisible(true);
             if (actionType==Conditional::ACTION_CONTROL_TRAIN) {
                 //p = (JPanel)_actionPanel->getComponent(0);
-             QWidget* p = (QWidget*)_actionPanel->children().at(0);
+//             QWidget* p = (QWidget*)_actionPanel->children().at(0);
 //                l = (JLabel)p->getComponent(0);
-             QLabel* l = (QLabel*)p->children().at(0);
-                _actionBox->layout()->addWidget(new QLabel("WarrantHalt"));
-                _actionBox->layout()->addWidget(new QLabel("WarrantResume"));
-                _actionBox->layout()->addWidget(new QLabel("WarrantAbort"));
+//             QLabel* l = (QLabel*)p->children().at(0);
+             QWidget* p = _actionPanel->findChildren<QWidget*>().at(0);
+             QLabel* l = p->findChildren<QLabel*>().at(0);
+                _actionBox->layout()->addWidget(new QLabel("Halt"));
+                _actionBox->layout()->addWidget(new QLabel("Resume"));
+                _actionBox->layout()->addWidget(new QLabel("Abort"));
                 l->setText(tr("Control Train"));
                _actionPanel->setVisible(true);
             } else if (actionType==Conditional::ACTION_SET_TRAIN_ID ||
                             actionType==Conditional::ACTION_SET_TRAIN_NAME ||
                             actionType==Conditional::ACTION_THROTTLE_FACTOR) {
                 //p = (JPanel)_shortTextPanel->getComponent(0);
-              QWidget* p = (QWidget*)_shortTextPanel->children().at(0);
+//              QWidget* p = (QWidget*)_shortTextPanel->children().at(0);
                 //l = (JLabel)p->getComponent(0);
-               QLabel* l = (QLabel*)p->children().at(0);
+//               QLabel* l = (QLabel*)p->children().at(0);
+             QWidget* p = _shortTextPanel->findChildren<QWidget*>().at(0);
+             QLabel* l = p->findChildren<QLabel*>().at(0);
 
                 if (actionType==Conditional::ACTION_SET_TRAIN_ID) {
                     _shortTextPanel->setToolTip(tr("Enter a train ID from the Roster - or enter a DCC address indicating long or short e.g. 1234(L) or 10(S)"));
@@ -3610,20 +3629,30 @@ void ConditionalListEdit::actionItemChanged(int type)
                 _actionTypeBox->addItem(
                     DefaultConditionalAction::getActionTypeString(Conditional::ITEM_TO_AUDIO_ACTION.at(i)));
             }
-            if (actionType==Conditional::ACTION_PLAY_SOUND) {
+            if (actionType==Conditional::ACTION_PLAY_SOUND)
+            {
                 //p = (JPanel)_textPanel.getComponent(0);
-                QWidget* p = (QWidget*)_textPanel->children().at(0);
+             QList<QWidget*> widgets = _textPanel->findChildren<QWidget*>();
+                //= (QWidget*)_textPanel->children().at(0);
+             QWidget* p = widgets.at(0);
                 //l = (JLabel)p.getComponent(0);
-                QLabel* l = (QLabel*)p->children().at(0);
-                l->setText(tr("Set File"));
-                _textPanel->setToolTip(tr("Click for a file selection dialog for choosing a sound file"));
-                _textPanel->setVisible(true);
-                _setPanel->setVisible(true);
+             QList<QLabel*> labels = p->findChildren<QLabel*>();
+             //QLabel* l = (QLabel*)p->children().at(0);
+             QLabel* l = labels.at(0);
+             l->setText(tr("Set File"));
+             _textPanel->setToolTip(tr("Click for a file selection dialog for choosing a sound file"));
+             _textPanel->setVisible(true);
+             _setPanel->setVisible(true);
             } else if (actionType==Conditional::ACTION_CONTROL_AUDIO) {
-                //p = (JPanel)_actionPanel.getComponent(0);
-               QWidget* p = (QWidget*)_actionPanel->children().at(0);
-                //l = (JLabel)p.getComponent(0);
-                QLabel* l= (QLabel*)p->children().at(0);
+             //p = (JPanel)_textPanel.getComponent(0);
+          QList<QWidget*> widgets = _textPanel->findChildren<QWidget*>();
+             //= (QWidget*)_textPanel->children().at(0);
+          QWidget* p = widgets.at(0);
+             //l = (JLabel)p.getComponent(0);
+          QList<QLabel*> labels = p->findChildren<QLabel*>();
+          //QLabel* l = (QLabel*)p->children().at(0);
+          QLabel* l = labels.at(0);
+
                 l->setText(tr("Action Audio"));
                 _actionBox->layout()->addWidget(new QLabel("AudioSourcePlay"));
                 _actionBox->layout()->addWidget(new QLabel("AudioSourceStop"));
@@ -3647,19 +3676,27 @@ void ConditionalListEdit::actionItemChanged(int type)
                     DefaultConditionalAction::getActionTypeString(Conditional::ITEM_TO_SCRIPT_ACTION.at(i)));
             }
             if (actionType==Conditional::ACTION_RUN_SCRIPT) {
-//                p = (JPanel)_textPanel.getComponent(0);
-             QWidget* p = (QWidget*)_textPanel->children().at(0);
-//                l = (JLabel)p.getComponent(0);
-             QLabel* l = (QLabel*)p->children().at(0);
+             //p = (JPanel)_textPanel.getComponent(0);
+          QList<QWidget*> widgets = _textPanel->findChildren<QWidget*>();
+             //= (QWidget*)_textPanel->children().at(0);
+          QWidget* p = widgets.at(0);
+             //l = (JLabel)p.getComponent(0);
+          QList<QLabel*> labels = p->findChildren<QLabel*>();
+          //QLabel* l = (QLabel*)p->children().at(0);
+          QLabel* l = labels.at(0);
                 l->setText(tr("Set File"));
                 _textPanel->setToolTip(tr("Click for a file selection dialog for choosing a script file"));
                 _textPanel->setVisible(true);
                 _setPanel->setVisible(true);
             } else if (actionType==Conditional::ACTION_JYTHON_COMMAND) {
-//                p = (JPanel)_shortTextPanel.getComponent(0);
-             QWidget* p = (QWidget*)_shortTextPanel->children().at(0);
-//                l = (JLabel)p.getComponent(0);
-             QLabel* l = (QLabel*)p->children().at(0);
+             //p = (JPanel)_textPanel.getComponent(0);
+          QList<QWidget*> widgets = _textPanel->findChildren<QWidget*>();
+             //= (QWidget*)_textPanel->children().at(0);
+          QWidget* p = widgets.at(0);
+             //l = (JLabel)p.getComponent(0);
+          QList<QLabel*> labels = p->findChildren<QLabel*>();
+          //QLabel* l = (QLabel*)p->children().at(0);
+          QLabel* l = labels.at(0);
                 l->setText(tr("Script Command"));
                 _shortTextPanel->setToolTip(tr("Enter Jython command text"));
                 _shortTextPanel->setVisible(true);
@@ -3731,7 +3768,7 @@ void ConditionalListEdit::setActionNameBox(int itemType) {
 */
 void ConditionalListEdit::updateActionPressed() {
     if (!validateAction() ) {
-//        _editActionFrame->toFront();
+        _editActionFrame->toFront();
         return;
     }
     _actionTableModel->fireTableRowsUpdated(_curActionRowNumber, _curActionRowNumber);
@@ -3819,53 +3856,58 @@ void ConditionalListEdit::deleteActionPressed(int row) {
  *
  * @param e the event heard
  */
-void ConditionalListEdit::setFileLocation(ActionEvent* e) {
-    ConditionalAction* action = _actionList->value(_curActionRowNumber);
-    JFileChooser* currentChooser;
-    int actionType = action->getType();
-    if (actionType == Conditional::ACTION_PLAY_SOUND) {
-        if (sndFileChooser == NULL) {
-            sndFileChooser = new JFileChooser(System::getProperty("user.dir") // NOI18N
-                    + File::separator + "resources" // NOI18N
-                    + File::separator + "sounds");  // NOI18N
+void ConditionalListEdit::setFileLocation(ActionEvent* e)
+{
+ ConditionalAction* action = _actionList->value(_curActionRowNumber);
+ JFileChooser* currentChooser;
+ int actionType = action->getType();
+ if (actionType == Conditional::ACTION_PLAY_SOUND)
+ {
+  if (sndFileChooser == NULL)
+  {
+      sndFileChooser = new JFileChooser(System::getProperty("user.dir") // NOI18N
+              + File::separator + "resources" // NOI18N
+              + File::separator + "sounds");  // NOI18N
 //            FileChooserFilter filt = new jmri.util.FileChooserFilter("wav sound files");  // NOI18N
 //            filt.addExtension("wav");  // NOI18N
-            QString filt = "wav sound files (*.wav)";
-            sndFileChooser->setFileFilter(filt);
-        }
-        currentChooser = sndFileChooser;
-    } else if (actionType == Conditional::ACTION_RUN_SCRIPT) {
-        if (scriptFileChooser == NULL) {
-            scriptFileChooser = new JFileChooser(FileUtil::getScriptsPath());
+      QString filt = "wav sound files (*.wav)";
+      sndFileChooser->setFileFilter(filt);
+     }
+     currentChooser = sndFileChooser;
+ } else if (actionType == Conditional::ACTION_RUN_SCRIPT) {
+     if (scriptFileChooser == NULL) {
+         scriptFileChooser = new JFileChooser(FileUtil::getScriptsPath());
 //            FileChooserFilter filt = new FileChooserFilter("Python script files");  // NOI18N
 //            filt.addExtension("py");  // NOI18N
-            QString filt = "Python Script files (*.py)";
-            scriptFileChooser->setFileFilter(filt);
-        }
-        currentChooser = scriptFileChooser;
-    } else {
-         log->warn("Unexpected actionType[" + QString::number(actionType) + "] = " + DefaultConditionalAction::getActionTypeString(actionType));  // NOI18N
-        if (defaultFileChooser == NULL) {
-            defaultFileChooser = new JFileChooser(FileUtil::getUserFilesPath());
+         QString filt = "Python Script files (*.py)";
+         scriptFileChooser->setFileFilter(filt);
+     }
+     currentChooser = scriptFileChooser;
+ } else {
+      log->warn("Unexpected actionType[" + QString::number(actionType) + "] = " + DefaultConditionalAction::getActionTypeString(actionType));  // NOI18N
+     if (defaultFileChooser == NULL) {
+         defaultFileChooser = new JFileChooser(FileUtil::getUserFilesPath());
 //            defaultFileChooser->setFileFilter(new NoArchiveFileFilter());
-        }
-        currentChooser = defaultFileChooser;
-    }
+     }
+     currentChooser = defaultFileChooser;
+ }
 
-    //currentChooser.rescanCurrentDirectory();
-    int retVal = currentChooser->showOpenDialog(NULL);
-    // handle selection or cancel
-    if (retVal == JFileChooser::APPROVE_OPTION) {
-        // set selected file location in data string
-        try {
-            _longActionString->setText(FileUtil::getPortableFilename(currentChooser->getSelectedFile()->getCanonicalPath()));
-        } catch (IOException ex) {
-            if ( log->isDebugEnabled()) {
-                 log->error("exception setting file location: " + ex.getMessage());  // NOI18N
-            }
-            _longActionString->setText("");
-        }
-    }
+ //currentChooser.rescanCurrentDirectory();
+ int retVal = currentChooser->showOpenDialog(NULL);
+ // handle selection or cancel
+ if (retVal == JFileChooser::APPROVE_OPTION)
+ {
+  // set selected file location in data string
+  try {
+      _longActionString->setText(FileUtil::getPortableFilename(currentChooser->getSelectedFile()->getCanonicalPath()));
+  } catch (IOException ex)
+  {
+   if ( log->isDebugEnabled()) {
+        log->error("exception setting file location: " + ex.getMessage());  // NOI18N
+   }
+   _longActionString->setText("");
+  }
+ }
 }
 
 /**
@@ -3929,357 +3971,353 @@ bool ConditionalListEdit::validateAction() {
     int selection = _actionTypeBox->currentIndex();
     if (selection==0)
     {
-//        javax.swing.JOptionPane.showMessageDialog(
-//           editConditionalFrame, tr("makeSelection"),
-//                    tr("WarnTitle"), javax.swing.JOptionPane.WARNING_MESSAGE);
-        QMessageBox::warning(_editConditionalFrame, tr("Warning"), tr("Please select an action type."));
+     JOptionPane::showMessageDialog(
+           _editConditionalFrame, tr("Please select an action type."),
+                    tr("Warning"), JOptionPane::WARNING_MESSAGE);
         return false;
     }
     QString name = _actionNameField->text().trimmed();
     QString actionString = _shortActionString->text().trimmed();
-    ((ConditionalAction*)_curAction)->setActionString("");
-    ((ConditionalAction*)_curAction)->setActionData(-1);
+    _curAction->setActionString("");
+    _curAction->setActionData(-1);
     bool referenceByMemory = false;
-    if (name.length() > 0 && name.at(0)== '@') {
-        QString memName = name.mid(1);
-        if (!_suppressIndirectRef)
-        {
-//            int response = JOptionPane.showConfirmDialog(_editActionFrame, java.text.MessageFormat.format(
-//                                                tr("ConfirmIndirectReference"), memName),
-//                                                tr("ConfirmTitle"), JOptionPane.YES_NO_CANCEL_OPTION,
-//                                                JOptionPane.QUESTION_MESSAGE);
-         int response =QMessageBox::question(_editActionFrame, tr("Question"), tr("Press \"YES\" if at run time Memory location \"%1\" will contain a valid item name for this action.\n                                                                        Press \"NO\" if you want to enter the item name directly.\n                                                                        Press \"CANCEL\" if you want to suppress this warning.\n"),QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-            if (response==QMessageBox::No) {
-                return false;
-            } else if (response==QMessageBox::Cancel) {
-                _suppressIndirectRef = true;
-            }
-        }
-        memName = validateMemoryReference(memName);
-        if (memName == "") {
-            return false;
-        }
-        referenceByMemory = true;
+    if (name.length() > 0 && name.at(0)== '@')
+    {
+     QString memName = name.mid(1);
+     if (!confirmIndirectMemory(memName))
+     {
+      return false;
+     }
+     memName = validateMemoryReference(memName);
+     if (memName == nullptr) {
+         return false;
+     }
+     referenceByMemory = true;
     }
-    switch (itemType) {
-        case Conditional::ITEM_TYPE_SENSOR:
-            if (!referenceByMemory){
-                name = validateSensorReference(name);
-                if (name == NULL) {
-                    return false;
-                }
-            }
-            actionType = Conditional::ITEM_TO_SENSOR_ACTION.at(selection-1);
-            if ((actionType==Conditional::ACTION_RESET_DELAYED_SENSOR) ||
-                            (actionType==Conditional::ACTION_DELAYED_SENSOR)) {
-                if (!validateTimeReference(actionType, actionString))
-                {
-                    return (false);
-                }
-                ((ConditionalAction*)_curAction)->setActionString(actionString);
-            }
-            if ((actionType==Conditional::ACTION_SET_SENSOR) ||
-                            (actionType==Conditional::ACTION_RESET_DELAYED_SENSOR) ||
-                            (actionType==Conditional::ACTION_DELAYED_SENSOR)) {
-                if (_actionBox->currentIndex() == 0)
-                    ((ConditionalAction*)_curAction)->setActionData(Sensor::ACTIVE);
-                else if (_actionBox->currentIndex() == 1)
-                    ((ConditionalAction*)_curAction)->setActionData(Sensor::INACTIVE);
-                else
-                    ((ConditionalAction*)_curAction)->setActionData(Route::TOGGLE);
-            }
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
-            break;
-        case Conditional::ITEM_TYPE_TURNOUT:
-            if (!referenceByMemory){
-                name = validateTurnoutReference(name);
-                if (name == NULL) {
-                    return false;
-                }
-            }
-            actionType = Conditional::ITEM_TO_TURNOUT_ACTION[selection-1];
-            if ((actionType==Conditional::ACTION_RESET_DELAYED_TURNOUT) ||
-                            (actionType==Conditional::ACTION_DELAYED_TURNOUT)) {
-                if (!validateTimeReference(actionType, actionString))
-                {
-                    return (false);
-                }
-                ((ConditionalAction*)_curAction)->setActionString(actionString);
-            }
-            if ((actionType==Conditional::ACTION_SET_TURNOUT) ||
-                            (actionType==Conditional::ACTION_RESET_DELAYED_TURNOUT) ||
-                            (actionType==Conditional::ACTION_DELAYED_TURNOUT)) {
-                if (_actionBox->currentIndex() == 0)
-                    ((ConditionalAction*)_curAction)->setActionData(Turnout::CLOSED);
-                else if (_actionBox->currentIndex() == 1)
-                    ((ConditionalAction*)_curAction)->setActionData(Turnout::THROWN);
-                else
-                    ((ConditionalAction*)_curAction)->setActionData(Route::TOGGLE);
-            } else if (actionType==Conditional::ACTION_LOCK_TURNOUT) {
-                if (_actionBox->currentIndex() == 0)
-                    ((ConditionalAction*)_curAction)->setActionData(Turnout::UNLOCKED);
-                else if (_actionBox->currentIndex() == 1)
-                    ((ConditionalAction*)_curAction)->setActionData(Turnout::LOCKED);
-                else
-                    ((ConditionalAction*)_curAction)->setActionData(Route::TOGGLE);
-            }
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
-            break;
-        case Conditional::ITEM_TYPE_LIGHT:
-            if (!referenceByMemory){
-                name = validateLightReference(name);
-                if (name == NULL) {
-                    return false;
-                }
-            }
-            actionType = Conditional::ITEM_TO_LIGHT_ACTION[selection-1];
-            if (actionType==Conditional::ACTION_SET_LIGHT_INTENSITY) {
-                Light* lgtx = getLight(name);
-                // check if light user name was entered
-                if (lgtx == NULL) {
-                    return false;
-                }
-                if (!lgtx->isIntensityVariable()) {
+    switch (itemType)
+    {
+     case Conditional::ITEM_TYPE_SENSOR:
+         if (!referenceByMemory){
+             name = validateSensorReference(name);
+             if (name == NULL) {
+                 return false;
+             }
+         }
+         actionType = Conditional::ITEM_TO_SENSOR_ACTION.at(selection-1);
+         if ((actionType==Conditional::ACTION_RESET_DELAYED_SENSOR) ||
+                         (actionType==Conditional::ACTION_DELAYED_SENSOR)) {
+             if (!validateTimeReference(actionType, actionString))
+             {
+                 return (false);
+             }
+             _curAction->setActionString(actionString);
+         }
+         if ((actionType==Conditional::ACTION_SET_SENSOR) ||
+                         (actionType==Conditional::ACTION_RESET_DELAYED_SENSOR) ||
+                         (actionType==Conditional::ACTION_DELAYED_SENSOR)) {
+             if (_actionBox->currentIndex() == 0)
+                 _curAction->setActionData(Sensor::ACTIVE);
+             else if (_actionBox->currentIndex() == 1)
+                 _curAction->setActionData(Sensor::INACTIVE);
+             else
+                 _curAction->setActionData(Route::TOGGLE);
+         }
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
+         break;
+     case Conditional::ITEM_TYPE_TURNOUT:
+         if (!referenceByMemory){
+             name = validateTurnoutReference(name);
+             if (name == NULL) {
+                 return false;
+             }
+         }
+         actionType = Conditional::ITEM_TO_TURNOUT_ACTION[selection-1];
+         if ((actionType==Conditional::ACTION_RESET_DELAYED_TURNOUT) ||
+                         (actionType==Conditional::ACTION_DELAYED_TURNOUT)) {
+             if (!validateTimeReference(actionType, actionString))
+             {
+                 return (false);
+             }
+             _curAction->setActionString(actionString);
+         }
+         if ((actionType==Conditional::ACTION_SET_TURNOUT) ||
+                         (actionType==Conditional::ACTION_RESET_DELAYED_TURNOUT) ||
+                         (actionType==Conditional::ACTION_DELAYED_TURNOUT)) {
+             if (_actionBox->currentIndex() == 0)
+                 _curAction->setActionData(Turnout::CLOSED);
+             else if (_actionBox->currentIndex() == 1)
+                 _curAction->setActionData(Turnout::THROWN);
+             else
+                 _curAction->setActionData(Route::TOGGLE);
+         } else if (actionType==Conditional::ACTION_LOCK_TURNOUT) {
+             if (_actionBox->currentIndex() == 0)
+                 _curAction->setActionData(Turnout::UNLOCKED);
+             else if (_actionBox->currentIndex() == 1)
+                 _curAction->setActionData(Turnout::LOCKED);
+             else
+                 _curAction->setActionData(Route::TOGGLE);
+         }
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
+         break;
+     case Conditional::ITEM_TYPE_LIGHT:
+         if (!referenceByMemory){
+             name = validateLightReference(name);
+             if (name == NULL) {
+                 return false;
+             }
+         }
+         actionType = Conditional::ITEM_TO_LIGHT_ACTION[selection-1];
+         if (actionType==Conditional::ACTION_SET_LIGHT_INTENSITY) {
+             Light* lgtx = getLight(name);
+             // check if light user name was entered
+             if (lgtx == NULL) {
+                 return false;
+             }
+             if (!lgtx->isIntensityVariable()) {
 //                    javax.swing.JOptionPane.showMessageDialog(editConditionalFrame,
 //                            java.text.MessageFormat.format(
 //                            tr("Error45"), new Object[] { name }),
 //                            tr("ErrorTitle"),  javax.swing.JOptionPane.ERROR_MESSAGE);
-                    QMessageBox::critical(_editConditionalFrame, tr("Error"), tr("Light - %1 - does not have variable intensity.\nPlease enter a light with variable intensity or change action type, and try again.").arg(name));
-                    return (false);
-                }
-                if (!validateIntensityReference(actionType, actionString))
-                {
-                    return (false);
-                }
-                ((ConditionalAction*)_curAction)->setActionString(actionString);
-            } else if (actionType==Conditional::ACTION_SET_LIGHT_TRANSITION_TIME) {
-                Light* lgtx = getLight(name);
-                // check if light user name was entered
-                if (lgtx == NULL) {
-                    return false;
-                }
-                if (!(lgtx)->isTransitionAvailable()) {
+                 QMessageBox::critical(_editConditionalFrame, tr("Error"), tr("Light - %1 - does not have variable intensity.\nPlease enter a light with variable intensity or change action type, and try again.").arg(name));
+                 return (false);
+             }
+             if (!validateIntensityReference(actionType, actionString))
+             {
+                 return (false);
+             }
+             _curAction->setActionString(actionString);
+         } else if (actionType==Conditional::ACTION_SET_LIGHT_TRANSITION_TIME) {
+             Light* lgtx = getLight(name);
+             // check if light user name was entered
+             if (lgtx == NULL) {
+                 return false;
+             }
+             if (!(lgtx)->isTransitionAvailable()) {
 //                    javax.swing.JOptionPane.showMessageDialog(editConditionalFrame,
 //                            java.text.MessageFormat.format(
 //                            tr("Error40"), new Object[] { name }),
 //                            tr("ErrorTitle"),  javax.swing.JOptionPane.ERROR_MESSAGE);
-                    QMessageBox::critical(_editConditionalFrame, tr("Error"), tr("Light - {0} - does not support transition time.\n                                                                                Please enter a light with Transition Time or change action type, and try again.").arg(name));
-                    return (false);
-                }
-                if (!validateTimeReference(actionType, actionString))
-                {
-                    return (false);
-                }
-                ((ConditionalAction*)_curAction)->setActionString(actionString);
-            } else if (actionType==Conditional::ACTION_SET_LIGHT) {
-                if (_actionBox->currentIndex() == 0)
-                    ((ConditionalAction*)_curAction)->setActionData(Light::ON);
-                else if (_actionBox->currentIndex() == 1)
-                    ((ConditionalAction*)_curAction)->setActionData(Light::OFF);
-                else
-                    ((ConditionalAction*)_curAction)->setActionData(Route::TOGGLE);
-            }
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
-            break;
-        case Conditional::ITEM_TYPE_SIGNALHEAD:
-            if (!referenceByMemory){
-                name = validateSignalHeadReference(name);
-                if (name == NULL) {
-                    return false;
-                }
-            }
-            actionType = Conditional::ITEM_TO_SIGNAL_HEAD_ACTION[selection-1];
-            if (actionType==Conditional::ACTION_SET_SIGNAL_APPEARANCE) {
-                QString appStr = (QString)_actionBox->currentText();
-                ((ConditionalAction*)_curAction)->setActionData(DefaultConditionalAction::stringToActionData(appStr));
-                ((ConditionalAction*)_curAction)->setActionString(appStr);
-            }
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
-            break;
-        case Conditional::ITEM_TYPE_SIGNALMAST:
-            if (!referenceByMemory){
-                name = validateSignalMastReference(name);
-                if (name == NULL) {
-                    return false;
-                }
-            }
-            actionType = Conditional::ITEM_TO_SIGNAL_MAST_ACTION[selection-1];
-            if (actionType==Conditional::ACTION_SET_SIGNALMAST_ASPECT) {
-                ((ConditionalAction*)_curAction)->setActionString(_actionBox->currentText());
-            }
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
-            break;
-        case Conditional::ITEM_TYPE_MEMORY:
-            if (referenceByMemory){
+                 QMessageBox::critical(_editConditionalFrame, tr("Error"), tr("Light - {0} - does not support transition time.\n                                                                                Please enter a light with Transition Time or change action type, and try again.").arg(name));
+                 return (false);
+             }
+             if (!validateTimeReference(actionType, actionString))
+             {
+                 return (false);
+             }
+             _curAction->setActionString(actionString);
+         } else if (actionType==Conditional::ACTION_SET_LIGHT) {
+             if (_actionBox->currentIndex() == 0)
+                 _curAction->setActionData(Light::ON);
+             else if (_actionBox->currentIndex() == 1)
+                 _curAction->setActionData(Light::OFF);
+             else
+                 _curAction->setActionData(Route::TOGGLE);
+         }
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
+         break;
+     case Conditional::ITEM_TYPE_SIGNALHEAD:
+         if (!referenceByMemory){
+             name = validateSignalHeadReference(name);
+             if (name == NULL) {
+                 return false;
+             }
+         }
+         actionType = Conditional::ITEM_TO_SIGNAL_HEAD_ACTION[selection-1];
+         if (actionType==Conditional::ACTION_SET_SIGNAL_APPEARANCE) {
+             QString appStr = (QString)_actionBox->currentText();
+             _curAction->setActionData(DefaultConditionalAction::stringToActionData(appStr));
+             _curAction->setActionString(appStr);
+         }
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
+         break;
+     case Conditional::ITEM_TYPE_SIGNALMAST:
+         if (!referenceByMemory){
+             name = validateSignalMastReference(name);
+             if (name == NULL) {
+                 return false;
+             }
+         }
+         actionType = Conditional::ITEM_TO_SIGNAL_MAST_ACTION[selection-1];
+         if (actionType==Conditional::ACTION_SET_SIGNALMAST_ASPECT) {
+             _curAction->setActionString(_actionBox->currentText());
+         }
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
+         break;
+     case Conditional::ITEM_TYPE_MEMORY:
+         if (referenceByMemory){
 //                javax.swing.JOptionPane.showMessageDialog(_editActionFrame, tr("Warn6"), tr("WarnTitle"),
 //                        javax.swing.JOptionPane.WARNING_MESSAGE);
-                QMessageBox::warning(_editActionFrame, tr("Warning"), tr("A Memory action cannot be referred to indirectly through a memory location."));
-                return false;
-            }
-            name = validateMemoryReference(name);
-            if (name == NULL) {
-                return false;
-            }
-            actionType = Conditional::ITEM_TO_MEMORY_ACTION[selection-1];
-            if (actionType==Conditional::ACTION_COPY_MEMORY) {
-                actionString = validateMemoryReference(actionString);
-                if (actionString == "") {
-                    return false;
-                }
-            }
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
-            ((ConditionalAction*)_curAction)->setActionString(actionString);
-            break;
-        case Conditional::ITEM_TYPE_LOGIX:
-            if (!referenceByMemory){
-                name = validateLogixReference(name);
-                if (name == NULL) {
-                    return false;
-                }
-            }
-            actionType = Conditional::ITEM_TO_LOGIX_ACTION[selection-1];
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
-            break;
-#if 0
-        case Conditional::ITEM_TYPE_WARRANT:
-            if (!referenceByMemory){
-                name = validateWarrantReference(name);
-                if (name == NULL) {
-                    return false;
-                }
-            }
-            actionType = Conditional::ITEM_TO_WARRANT_ACTION[selection-1];
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
-            if (actionType==Conditional::ACTION_CONTROL_TRAIN) {
-                if (_actionBox->currentIndex() == 0)
-                    ((ConditionalAction*)_curAction)->setActionData(Warrant.HALT);
-                else if (_actionBox->currentIndex() == 1)
-                    ((ConditionalAction*)_curAction)->setActionData(Warrant.RESUME);
-                else
-                    ((ConditionalAction*)_curAction)->setActionData(Warrant.ABORT);
-            } else if (actionType==Conditional::ACTION_SET_TRAIN_ID ||
-                            actionType==Conditional::ACTION_SET_TRAIN_NAME ||
-                            actionType==Conditional::ACTION_THROTTLE_FACTOR ) {
-                ((ConditionalAction*)_curAction)->setActionString(actionString);
-            }
-            break;
-        case Conditional::ITEM_TYPE_OBLOCK:
-            if (!referenceByMemory){
-                name = validateOBlockReference(name);
-                if (name == NULL) {
-                    return false;
-                }
-            }
-            actionType = Conditional::ITEM_TO_OBLOCK_ACTION[selection-1];
-            _actionNameField->setText(name);
-            ((ConditionalAction*)_curAction)->setDeviceName(name);
+             QMessageBox::warning(_editActionFrame, tr("Warning"), tr("A Memory action cannot be referred to indirectly through a memory location."));
+             return false;
+         }
+         name = validateMemoryReference(name);
+         if (name == NULL) {
+             return false;
+         }
+         actionType = Conditional::ITEM_TO_MEMORY_ACTION[selection-1];
+         if (actionType==Conditional::ACTION_COPY_MEMORY) {
+             actionString = validateMemoryReference(actionString);
+             if (actionString == "") {
+                 return false;
+             }
+         }
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
+         _curAction->setActionString(actionString);
+         break;
+     case Conditional::ITEM_TYPE_LOGIX:
+         if (!referenceByMemory){
+             name = validateLogixReference(name);
+             if (name == NULL) {
+                 return false;
+             }
+         }
+         actionType = Conditional::ITEM_TO_LOGIX_ACTION[selection-1];
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
+         break;
+#if 1
+     case Conditional::ITEM_TYPE_WARRANT:
+         if (!referenceByMemory){
+             name = validateWarrantReference(name);
+             if (name == NULL) {
+                 return false;
+             }
+         }
+         actionType = Conditional::ITEM_TO_WARRANT_ACTION[selection-1];
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
+         if (actionType==Conditional::ACTION_CONTROL_TRAIN) {
+             if (_actionBox->currentIndex() == 0)
+                 _curAction->setActionData(Warrant::HALT);
+             else if (_actionBox->currentIndex() == 1)
+                 _curAction->setActionData(Warrant::RESUME);
+             else
+                 _curAction->setActionData(Warrant::ABORT);
+         } else if (actionType==Conditional::ACTION_SET_TRAIN_ID ||
+                         actionType==Conditional::ACTION_SET_TRAIN_NAME ||
+                         actionType==Conditional::ACTION_THROTTLE_FACTOR ) {
+             _curAction->setActionString(actionString);
+         }
+         break;
+     case Conditional::ITEM_TYPE_OBLOCK:
+         if (!referenceByMemory){
+             name = validateOBlockReference(name);
+             if (name == NULL) {
+                 return false;
+             }
+         }
+         actionType = Conditional::ITEM_TO_OBLOCK_ACTION[selection-1];
+         _actionNameField->setText(name);
+         _curAction->setDeviceName(name);
 /*                if (actionType==Conditional::ACTION_ALLOCATE_BLOCK_PATH ||
-                        actionType==Conditional::ACTION_SET_BLOCK_PATH_TURNOUTS) {
-                ((ConditionalAction*)_curAction)->setActionString(_actionBox->currentText());
-            }*/
-            break;
+                     actionType==Conditional::ACTION_SET_BLOCK_PATH_TURNOUTS) {
+             _curAction->setActionString(_actionBox->currentText());
+         }*/
+         break;
 #endif
-        case Conditional::ITEM_TYPE_CLOCK:
-            actionType = Conditional::ITEM_TO_CLOCK_ACTION[selection-1];
-            if (actionType==Conditional::ACTION_SET_FAST_CLOCK_TIME) {
-                int time = parseTime(actionString);
-                if ( time<0 ) {
-                    return (false);
-                }
-                ((ConditionalAction*)_curAction)->setActionData(time);
-            }
-            break;
-#if 0
-        case Conditional::ITEM_TYPE_AUDIO:
-            actionType = Conditional::ITEM_TO_AUDIO_ACTION[selection-1];
-            if (actionType==Conditional::ACTION_PLAY_SOUND) {
-                ((ConditionalAction*)_curAction)->setActionString(_longActionString->text().trimmed());
-            } else if (actionType==Conditional::ACTION_CONTROL_AUDIO) {
-                if (!referenceByMemory){
-                    name = validateAudioReference(name);
-                    if (name == NULL) {
-                        return false;
-                    }
-                }
-                _actionNameField->setText(name);
-                ((ConditionalAction*)_curAction)->setDeviceName(name);
-                switch (_actionBox->currentIndex()) {
-                    case 0:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_PLAY);
-                        break;
-                    case 1:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_STOP);
-                        break;
-                    case 2:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_PLAY_TOGGLE);
-                        break;
-                    case 3:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_PAUSE);
-                        break;
-                    case 4:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_RESUME);
-                        break;
-                    case 5:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_PAUSE_TOGGLE);
-                        break;
-                    case 6:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_REWIND);
-                        break;
-                    case 7:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_FADE_IN);
-                        break;
-                    case 8:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_FADE_OUT);
-                        break;
-                    case 9:
-                        ((ConditionalAction*)_curAction)->setActionData(Audio::CMD_RESET_POSITION);
-                        break;
-                }
-            }
-            break;
-        case Conditional::ITEM_TYPE_SCRIPT:
-            actionType = Conditional::ITEM_TO_SCRIPT_ACTION[selection-1];
-            if (actionType==Conditional::ACTION_RUN_SCRIPT) {
-                ((ConditionalAction*)_curAction)->setActionString(_longActionString->text().trimmed());
-            } else if (actionType==Conditional::ACTION_JYTHON_COMMAND) {
-                ((ConditionalAction*)_curAction)->setActionString(_shortActionString->text().trimmed());
-            }
-            break;
+     case Conditional::ITEM_TYPE_CLOCK:
+         actionType = Conditional::ITEM_TO_CLOCK_ACTION[selection-1];
+         if (actionType==Conditional::ACTION_SET_FAST_CLOCK_TIME) {
+             int time = parseTime(actionString);
+             if ( time<0 ) {
+                 return (false);
+             }
+             _curAction->setActionData(time);
+         }
+         break;
+#if 1
+     case Conditional::ITEM_TYPE_AUDIO:
+      actionType = Conditional::ITEM_TO_AUDIO_ACTION[selection-1];
+      if (actionType==Conditional::ACTION_PLAY_SOUND)
+      {
+       _curAction->setActionString(_longActionString->text().trimmed());
+      } else if (actionType==Conditional::ACTION_CONTROL_AUDIO)
+      {
+       if (!referenceByMemory)
+       {
+        name = validateAudioReference(name);
+        if (name == NULL) {
+            return false;
+        }
+       }
+       _actionNameField->setText(name);
+       _curAction->setDeviceName(name);
+       switch (_actionBox->currentIndex())
+       {
+     case 0:
+         _curAction->setActionData(Audio::CMD_PLAY);
+         break;
+     case 1:
+         _curAction->setActionData(Audio::CMD_STOP);
+         break;
+     case 2:
+         _curAction->setActionData(Audio::CMD_PLAY_TOGGLE);
+         break;
+     case 3:
+         _curAction->setActionData(Audio::CMD_PAUSE);
+         break;
+     case 4:
+         _curAction->setActionData(Audio::CMD_RESUME);
+         break;
+     case 5:
+         _curAction->setActionData(Audio::CMD_PAUSE_TOGGLE);
+         break;
+     case 6:
+         _curAction->setActionData(Audio::CMD_REWIND);
+         break;
+     case 7:
+         _curAction->setActionData(Audio::CMD_FADE_IN);
+         break;
+     case 8:
+         _curAction->setActionData(Audio::CMD_FADE_OUT);
+         break;
+     case 9:
+         _curAction->setActionData(Audio::CMD_RESET_POSITION);
+         break;
+       }
+      }
+      break;
+     case Conditional::ITEM_TYPE_SCRIPT:
+         actionType = Conditional::ITEM_TO_SCRIPT_ACTION[selection-1];
+         if (actionType==Conditional::ACTION_RUN_SCRIPT) {
+             _curAction->setActionString(_longActionString->text().trimmed());
+         } else if (actionType==Conditional::ACTION_JYTHON_COMMAND) {
+             _curAction->setActionString(_shortActionString->text().trimmed());
+         }
+         break;
 #endif
-        case Conditional::ITEM_TYPE_OTHER:
-            actionType = Conditional::ITEM_TO_OTHER_ACTION[selection-1];
-            if (actionType==Conditional::ACTION_TRIGGER_ROUTE) {
-                if (!referenceByMemory){
-                    name = validateRouteReference(name);
-                    if (name == NULL) {
-                        return false;
-                    }
-                }
-                _actionNameField->setText(name);
-                ((ConditionalAction*)_curAction)->setDeviceName(name);
-            }
-            break;
-        default : break;
+     case Conditional::ITEM_TYPE_OTHER:
+         actionType = Conditional::ITEM_TO_OTHER_ACTION[selection-1];
+         if (actionType==Conditional::ACTION_TRIGGER_ROUTE) {
+             if (!referenceByMemory){
+                 name = validateRouteReference(name);
+                 if (name == NULL) {
+                     return false;
+                 }
+             }
+             _actionNameField->setText(name);
+             _curAction->setDeviceName(name);
+         }
+         break;
+     default : break;
     }
-    ((ConditionalAction*)_curAction)->setType(actionType);
+    _curAction->setType(actionType);
     if (actionType != Conditional::ACTION_NONE) {
-        ((ConditionalAction*)_curAction)->setOption(_actionOptionBox->currentIndex() + 1);
+        _curAction->setOption(_actionOptionBox->currentIndex() + 1);
     }
     else {
-        ((ConditionalAction*)_curAction)->setOption(0);
+        _curAction->setOption(0);
     }
     _editActionFrame->adjustSize();
     return (true);
 }
-#if 0
+#if 0 // Done ...
 // ------------ Action detail listeners ------------
 /* Listener for _actionTypeBox
 */

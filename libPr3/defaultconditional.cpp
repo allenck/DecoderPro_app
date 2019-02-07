@@ -32,6 +32,13 @@
 #include <QLabel>
 #include <QPushButton>
 #include "jlist.h"
+#include "sound.h"
+#include "fileutil.h"
+#include "scripts/jmriscriptenginemanager.h"
+#include "file.h"
+#include "audiosource.h"
+#include "scriptoutput.h"
+#include "scriptexception.h"
 
 //DefaultConditional::DefaultConditional(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -594,7 +601,8 @@ throw (JmriException)
 // have to apply to more than 500 lines of code - jake
 /*private*/ void DefaultConditional::takeActionIfNeeded()
 {
- //if (log->isTraceEnabled()) log->trace("takeActionIfNeeded starts for "+getSystemName());
+ if (log->isTraceEnabled())
+  log->trace("takeActionIfNeeded starts for "+getSystemName());
  int actionCount = 0;
  int actionNeeded = 0;
  int act = 0;
@@ -608,7 +616,8 @@ throw (JmriException)
   ConditionalAction* action = _actionList->at(i);
   int neededAction = actionNeeded;
   int option = ((DefaultConditionalAction*)action)->getOption();
-  //if (log->isTraceEnabled()) log->trace(" takeActionIfNeeded considers action "+i+" with currentState: "+currentState+" and option: "+option);
+  if (log->isTraceEnabled())
+   log->trace(" takeActionIfNeeded considers action "+QString::number(i)+" with currentState: "+QString::number(currentState)+" and option: "+QString::number(option));
   if ( ((currentState==Conditional::_TRUE) && (option==Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE)) ||
       ((currentState==Conditional::_FALSE) && (option==Conditional::ACTION_OPTION_ON_CHANGE_TO_FALSE)) ||
           (option==Conditional::ACTION_OPTION_ON_CHANGE) )
@@ -1019,14 +1028,14 @@ throw (JmriException)
         actionCount++;
     }
     break;
-#if 0
+#if 1
    case Conditional::ACTION_PLAY_SOUND:
        if (!(getActionString(action) ==(""))) {
-           Sound sound = ((DefaultConditionalAction*)action)->getSound();
+           Sound* sound = ((DefaultConditionalAction*)action)->getSound();
            if (sound == nullptr) {
                sound = new Sound(FileUtil::getExternalFilename(getActionString(action)));
            }
-           sound.play();
+           sound->play();
            actionCount++;
        }
        break;
@@ -1060,80 +1069,72 @@ throw (JmriException)
     actionCount++;
     break;
    }
-#if 0
+#if 1
    case Conditional::ACTION_CONTROL_AUDIO:
    {
-    Audio audio = InstanceManager.audioManagerInstance().getAudio(devName);
-    if (audio.getSubType()==Audio::SOURCE)
+    Audio* audio = static_cast<AudioManager*>(InstanceManager::getDefault("AudioManager"))->getAudio(devName);
+    if (audio->getSubType()==Audio::SOURCE)
     {
-     AudioSource audioSource = (AudioSource) audio;
+     AudioSource* audioSource = (AudioSource*) audio;
      switch (((DefaultConditionalAction*)action)->getActionData())
      {
       case Audio::CMD_PLAY:
-          audioSource.play();
+          audioSource->play();
           break;
       case Audio::CMD_STOP:
-          audioSource.stop();
+          audioSource->stop();
           break;
       case Audio::CMD_PLAY_TOGGLE:
-          audioSource.togglePlay();
+          audioSource->togglePlay();
           break;
       case Audio::CMD_PAUSE:
-          audioSource.pause();
+          audioSource->pause();
           break;
       case Audio::CMD_RESUME:
-          audioSource.resume();
+          audioSource->resume();
           break;
       case Audio::CMD_PAUSE_TOGGLE:
-          audioSource.togglePause();
+          audioSource->togglePause();
           break;
       case Audio::CMD_REWIND:
-          audioSource.rewind();
+          audioSource->rewind();
           break;
       case Audio::CMD_FADE_IN:
-          audioSource.fadeIn();
+          audioSource->fadeIn();
           break;
       case Audio::CMD_FADE_OUT:
-          audioSource.fadeOut();
+          audioSource->fadeOut();
           break;
       case Audio::CMD_RESET_POSITION:
-          audioSource.resetCurrentPosition();
+          audioSource->resetCurrentPosition();
           break;
       default : break;
       }
      }
-    else if (audio.getSubType()==Audio::LISTENER)
-    {
-     AudioListener audioListener = (AudioListener) audio;
-     switch (((DefaultConditionalAction*)action)->getActionData()) {
-         case Audio::CMD_RESET_POSITION:
-             audioListener.resetCurrentPosition();
-             break;
+     else if (audio->getSubType()==Audio::LISTENER)
+     {
+      AudioListener* audioListener = (AudioListener*) audio;
+      switch (((DefaultConditionalAction*)action)->getActionData()) {
+          case Audio::CMD_RESET_POSITION:
+              audioListener->resetCurrentPosition();
+              break;
+      }
      }
     }
     break;
    case Conditional::ACTION_JYTHON_COMMAND:
-    if (!(getActionString(action) ==("")))
-    {
-     PythonInterp.getPythonInterpreter();
-
-     QString cmd = getActionString(action) + "\n";
-
-     // The command must end with exactly one \n
-     while ((cmd.length() > 1 ) && cmd.charAt(cmd.length() - 2) == '\n')
-         cmd = cmd.substring(0, cmd.length() - 1);
-
-     // add the text to the output frame
-     QString echo = ">>> " + cmd;
-     // intermediate \n characters need to be prefixed
-     echo = echo.replaceAll("\n", "\n... ");
-     echo = echo.substring(0, echo.length() - 4);
-     PythonInterp.getOutputArea().append(echo);
-
-     // and execute
-     PythonInterp.execCommand(cmd);
-     actionCount++;
-    }
+     if (!(getActionString(action).isEmpty()))
+     {
+         // add the text to the output frame
+         ScriptOutput::writeScript(getActionString(action));
+         // and execute
+         try {
+             JmriScriptEngineManager::getDefault()->eval(getActionString(action), JmriScriptEngineManager::getDefault()->getEngine(JmriScriptEngineManager::PYTHON));
+         } catch (ScriptException ex) {
+             log->error(tr("Error executing script:"), ex);  // NOI18N
+         }
+         actionCount++;
+     }
     break;
 #endif
    case Conditional::ACTION_ALLOCATE_WARRANT_ROUTE:

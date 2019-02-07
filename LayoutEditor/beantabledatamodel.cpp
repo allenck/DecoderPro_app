@@ -69,7 +69,7 @@ void /*public*/ BeanTableDataModel::init()
   manager->addPropertyChangeListener((PropertyChangeListener*)this);
   updateNameList();
   connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 BeanTableDataModel::~BeanTableDataModel()

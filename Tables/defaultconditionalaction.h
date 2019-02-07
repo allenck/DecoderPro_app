@@ -2,6 +2,7 @@
 #define DEFAULTCONDITONALACTION_H
 #include "conditionalaction.h"
 
+class Sound;
 class Logger;
 class NamedBeanHandleManager;
 class DefaultConditionalAction : public ConditionalAction
@@ -31,7 +32,7 @@ public:
     /*public*/ void stopTimer();
     /*public*/ ActionListener* getListener();
     /*public*/ void setListener(ActionListener* listener);
-//    /*public*/ Sound getSound() ;
+    /*public*/ Sound* getSound() ;
     /**** Methods that return user interface strings *****/
     /*public*/ QString getTypeString();
     /*public*/ QString getOptionString(bool type) ;
@@ -58,9 +59,10 @@ private:
     /*private*/ QTimer* _timer;// = null;
     /*private*/ ActionListener* _listener;// = null;
     /*private*/ bool _timerActive;// = false;
-//    /*private*/ Sound _sound;// = null;
+    /*private*/ Sound* _sound = nullptr;
     void common();
    Logger* log;
+
 protected:
    /*protected*/ NamedBeanHandleManager* nbhm;// = jmri.InstanceManager::getDefault(jmri.NamedBeanHandleManager.class);
 

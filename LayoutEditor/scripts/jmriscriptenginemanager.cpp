@@ -10,6 +10,7 @@
 #include "properties.h"
 #include "system.h"
 #include "pythoninterpreter.h"
+#include "scriptexception.h"
 
 //JmriScriptEngineManager::JmriScriptEngineManager(QObject *parent) : QObject(parent)
 //{
@@ -210,19 +211,19 @@
  }
  return this->engines.value(engineName);
 }
-#if 0
+
 /**
  * Evaluate a script using the given ScriptEngine.
  *
  */
-/*public*/ Object eval(String script, ScriptEngine engine) throws ScriptException {
-    if (PYTHON.equals(engine.getFactory().getEngineName()) && this.jython != NULL) {
-        this.jython.exec(script);
-        return NULL;
+/*public*/ QObject* JmriScriptEngineManager::eval(QString script, ScriptEngine* engine) throw (ScriptException) {
+    if (PYTHON == (engine->getFactory()->getEngineName()) && this->jython != nullptr) {
+        this->jython->exec(script);
+        return nullptr;
     }
-    return engine.eval(script);
+    return engine->eval(script);
 }
-
+#if 0
 /**
  * Evaluate a script using the given ScriptEngine.
  *

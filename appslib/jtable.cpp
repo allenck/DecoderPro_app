@@ -720,8 +720,8 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
     if (rowHeight <= 0) {
         throw new IllegalArgumentException("New row height less than 1");
     }
-    int old = this->rowHeight;
-    this->rowHeight = rowHeight;
+    int old = this->_rowHeight;
+    this->_rowHeight = rowHeight;
     rowModel = NULL;
     if (sortManager != NULL) {
         sortManager->modelRowSizes = NULL;
@@ -738,7 +738,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  * @see     #setRowHeight
  */
 /*public*/ int JTable::getRowHeight() {
-    return rowHeight;
+    return _rowHeight;
 }
 /**
  * Returns the height of a table row, in pixels.
@@ -9681,6 +9681,15 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
     return viewRowIndex;
 }
 
+/*public*/ int JTable::rowHeight()
+{
+ if(this->model() && this->model()->rowCount()>0)
+ {
+  _rowHeight = QTableView::rowHeight(0);
+  return _rowHeight;
+ }
+ return 10;
+}
 
 
 

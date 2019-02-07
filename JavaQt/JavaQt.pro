@@ -190,7 +190,11 @@ SOURCES += javaqt.cpp \
     glasspane.cpp \
     drawsquares.cpp \
     placewindow.cpp \
-    objects.cpp
+    objects.cpp \
+    lineunavailableexception.cpp \
+    urisyntaxexception.cpp \
+    unsupportedaudiofileexception.cpp \
+    scriptexception.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -423,7 +427,11 @@ HEADERS += javaqt.h\
     glasspane.h \
     drawsquares.h \
     placewindow.h \
-    objects.h
+    objects.h \
+    lineunavailableexception.h \
+    urisyntaxexception.h \
+    unsupportedaudiofileexception.h \
+    scriptexception.h
 
 unix {
     target.path = /usr/lib

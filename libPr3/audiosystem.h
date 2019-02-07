@@ -2,6 +2,8 @@
 #define AUDIOSYSTEM_H
 
 #include <QObject>
+#include "line.h"
+#include "mixer.h"
 
 class Logger;
 class AudioFileReader;
@@ -19,6 +21,9 @@ public:
  /*public*/ static AudioInputStream* getAudioInputStream(File* file);
  // /*public*/ static AudioFileFormat* getAudioFileFormat(QDataStream* stream);
  /*public*/ static AudioInputStream* getAudioInputStream(QDataStream* stream);
+ /*public*/ static bool isLineSupported(Line::Info* info);
+ /*public*/ static QList<Mixer::Info *>* getMixerInfo();
+ /*public*/ static Mixer* getMixer(Mixer::Info *info);
 
 signals:
 
@@ -27,6 +32,11 @@ private:
  /*private*/ AudioSystem(QObject *parent = 0);
  /*private*/ static QList<AudioFileReader*>* getAudioFileReaders();
  Logger* log;
+ /*private*/ static QList<AudioFileReader*>* getMixerInfoList();
+ /*private*/ static QList<AudioFileReader*>* getProviders(QString providerClass);
+ /*private*/ static QList<AudioFileReader*>* getMixerInfoList(QList<AudioFileReader*>* providers);
+ /*private*/ static QList<AudioFileReader*>* getMixerProviders();
+
 };
 
 #endif // AUDIOSYSTEM_H
