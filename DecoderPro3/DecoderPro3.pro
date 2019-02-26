@@ -16,10 +16,17 @@ MOC_DIR = moc_obj
 OBJECTS_DIR += moc_obj
 
 
+PROJ_DIR=$$(PROJ_DIR) # get project directory from env
+isEmpty( PROJ_DIR ) {
+  win32:PROJ_DIR=C:/Projects
+  unix:PROJ_DIR=/home/allen/Projects
+}
+
+
 PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 isEmpty( PYTHONQT_PREFIX ) {
   win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code
+  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
 }
 
 include($$PYTHONQT_PREFIX/build/python.prf)

@@ -69,12 +69,25 @@ DEFINES += LIBPR3_LIBRARY
 #QMAKE_EXTRA_TARGETS += build_nr
 #PRE_TARGETDEPS += build_nr
 
-win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
- ENABLE_SCRIPTING = "Y"
+PROJ_DIR=$$(PROJ_DIR) # get project directory from env
+isEmpty( PROJ_DIR ) {
+  win32:PROJ_DIR=C:/Projects
+  unix:PROJ_DIR=/home/allen/Projects
 }
-unix:exists(~/Projects/PythonQt-master/lib/libPythonQt_d.so) {
- ENABLE_SCRIPTING = "Y"
+
+
+PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+isEmpty( PYTHONQT_PREFIX ) {
+  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
 }
+win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
+ENABLE_SCRIPTING = "Y"
+}
+unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+ENABLE_SCRIPTING = "Y"
+}
+
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
